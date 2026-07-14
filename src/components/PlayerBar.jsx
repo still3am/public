@@ -15,10 +15,12 @@ import { usePlayer } from "@/context/PlayerContext";
 import { Link } from "react-router-dom";
 import { formatTime } from "@/lib/audio-utils";
 import QueueDrawer from "@/components/QueueDrawer";
+import FullScreenPlayer from "@/components/FullScreenPlayer";
 
 export default function PlayerBar() {
   const p = usePlayer();
   const [queueOpen, setQueueOpen] = useState(false);
+  const [fullOpen, setFullOpen] = useState(false);
   if (!p.currentTrack) return null;
   const t = p.currentTrack;
   const bars = p.getBars(t.id);
@@ -55,26 +57,36 @@ export default function PlayerBar() {
           </div>
         </div>
         <div className="flex items-center gap-3 px-4 pb-2">
-          <Link
-            to={`/track/${t.id}`}
-            className="flex items-center gap-3 min-w-0 flex-1"
-          >
-            {t.cover_art_url ? (
-              <img
-                src={t.cover_art_url}
-                alt=""
-                className="w-12 h-12 rounded-lg object-cover shrink-0"
-              />
-            ) : (
-              <div className="w-12 h-12 rounded-lg bg-foreground/10 shrink-0" />
-            )}
-            <div className="min-w-0">
-              <div className="text-sm font-semibold truncate">{t.title}</div>
-              <div className="text-xs text-foreground/50 truncate">
-                {t.uploader_name || "Unknown"}
+          <div className="flex items-center gap-3 min-w-0 flex-1">
+            <button
+              onClick={() => setFullOpen(true)}
+              className="shrink-0"
+              aria-label="Open Now Playing"
+            >
+              {t.cover_art_url ? (
+                <img
+                  src={t.cover_art_url}
+                  alt=""
+                  className="w-12 h-12 rounded-lg object-cover"
+                />
+              ) : (
+                <div className="w-12 h-12 rounded-lg bg-foreground/10" />
+              )}
+            </button>
+            <Link to={`/track/${t.id}`} className="min-w-0">
+              <div className="text-sm font-semibold truncate flex items-center gap-1.5">
+                {t.title}
+                {t.explicit && (
+                  <span className="px-1 py-0.5 rounded bg-foreground/15 text-[9px] font-extrabold leading-none">
+                    E
+                  </span>
+                )}
               </div>
-            </div>
-          </Link>
+              <div className="text-xs text-foreground/50 truncate">
+                {t.artist || t.uploader_name || "Unknown"}
+              </div>
+            </Link>
+          </div>
           <div className="flex items-center gap-1 shrink-0">
             <button
               onClick={p.prev}
@@ -154,6 +166,15 @@ export default function PlayerBar() {
           </div>
         </div>
       </div>
+      {fullOpen && (
+        <FullScreenPlayer
+          onClose={() => setFullOpen(false)}
+          onOpenQueue={() => {
+            setFullOpen(false);
+            setQueueOpen(true);
+          }}
+        />
+      )}
       {queueOpen && <QueueDrawer p={p} onClose={() => setQueueOpen(false)} />}
     </>
   );

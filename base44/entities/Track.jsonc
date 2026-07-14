@@ -23,6 +23,10 @@
       "type": "string",
       "default": ""
     },
+    "artist": {
+      "type": "string",
+      "default": ""
+    },
     "album_id": {
       "type": "string",
       "default": ""
@@ -43,6 +47,21 @@
         "Classical",
         "Ambient",
         "Experimental",
+        "Dance",
+        "Indie",
+        "Folk",
+        "Country",
+        "Metal",
+        "Punk",
+        "Lo-Fi",
+        "Soul",
+        "Funk",
+        "Techno",
+        "House",
+        "Trap",
+        "Latin",
+        "Reggae",
+        "World",
         "Other"
       ],
       "default": "Other"
@@ -62,6 +81,14 @@
     "description": {
       "type": "string",
       "default": ""
+    },
+    "lyrics_text": {
+      "type": "string",
+      "default": ""
+    },
+    "explicit": {
+      "type": "boolean",
+      "default": false
     },
     "rights_confirmed": {
       "type": "boolean",

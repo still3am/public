@@ -8,6 +8,21 @@ export const GENRES = [
   "Classical",
   "Ambient",
   "Experimental",
+  "Dance",
+  "Indie",
+  "Folk",
+  "Country",
+  "Metal",
+  "Punk",
+  "Lo-Fi",
+  "Soul",
+  "Funk",
+  "Techno",
+  "House",
+  "Trap",
+  "Latin",
+  "Reggae",
+  "World",
   "Other",
 ];
 
@@ -44,5 +59,16 @@ export function deriveDefaultTitle(fileOrName) {
       .replace(/\.[^.]+$/, "")
       .replace(/[_-]+/g, " ")
       .trim() || "Untitled"
+  );
+}
+
+// Returns the artist name to display for a track: explicit artist overrides
+// uploader identity. Falls back to uploader_name if artist is missing.
+export function displayArtist(track) {
+  if (!track) return "Unknown";
+  return (
+    (track.artist && track.artist.trim()) ||
+    track.uploader_name ||
+    "Unknown"
   );
 }

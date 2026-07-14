@@ -45,9 +45,16 @@ export default function TrackCard({ track }) {
         onClick={(e) => e.stopPropagation()}
         className="block"
       >
-        <div className="font-semibold truncate text-sm">{track.title}</div>
+        <div className="font-semibold truncate text-sm flex items-center gap-1.5">
+          <span className="truncate">{track.title}</span>
+          {track.explicit && (
+            <span className="shrink-0 text-[9px] font-extrabold px-1 py-0.5 rounded bg-foreground/15 text-foreground/70">
+              E
+            </span>
+          )}
+        </div>
         <div className="text-xs text-foreground/50 truncate">
-          {track.uploader_name || "Unknown"}
+          {track.artist || track.uploader_name || "Unknown"}
         </div>
       </Link>
     </div>

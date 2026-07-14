@@ -12,6 +12,10 @@
     "creator_id": {
       "type": "string"
     },
+    "artisan": {
+      "type": "string",
+      "default": ""
+    },
     "genre": {
       "type": "string",
       "enum": [
@@ -24,6 +28,21 @@
         "Classical",
         "Ambient",
         "Experimental",
+        "Dance",
+        "Indie",
+        "Folk",
+        "Country",
+        "Metal",
+        "Punk",
+        "Lo-Fi",
+        "Soul",
+        "Funk",
+        "Techno",
+        "House",
+        "Trap",
+        "Latin",
+        "Reggae",
+        "World",
         "Other"
       ],
       "default": "Other"

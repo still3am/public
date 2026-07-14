@@ -2,7 +2,6 @@ import { useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { useAuth } from "@/lib/AuthContext";
 import { useNavigate } from "react-router-dom";
-import EmptyState from "@/components/EmptyState";
 import {
   UploadCloud,
   Music,
@@ -77,6 +76,9 @@ export default function Upload() {
           title: deriveDefaultTitle(f),
           cover: null,
           genre: "Other",
+          artist: "",
+          explicit: false,
+          lyrics: "",
           description: "",
           duration,
           audio_url: "",
@@ -133,9 +135,12 @@ export default function Upload() {
         uploader_id: user.id,
         uploader_name: user.display_name || user.full_name || user.email,
         uploader_avatar_url: user.avatar_url || "",
+        artist: (item.artist || "").trim() || (user.display_name || user.full_name || user.email),
         genre: item.genre,
         duration_seconds: item.duration,
         description: item.description,
+        lyrics_text: item.lyrics || "",
+        explicit: !!item.explicit,
         rights_confirmed: true,
         is_published: true,
       });
@@ -170,11 +175,14 @@ export default function Upload() {
             uploader_id: user.id,
             uploader_name: user.display_name || user.full_name || user.email,
             uploader_avatar_url: user.avatar_url || "",
+            artist: (it.artist || "").trim() || (user.display_name || user.full_name || user.email),
             album_id: albumRec.id,
             track_number: i + 1,
-            genre: album.genre,
+            genre: it.genre || album.genre,
             duration_seconds: it.duration,
-            description: "",
+            description: it.description || "",
+            lyrics_text: it.lyrics || "",
+            explicit: !!it.explicit,
             rights_confirmed: true,
             is_published: true,
           });
@@ -194,9 +202,12 @@ export default function Upload() {
             uploader_id: user.id,
             uploader_name: user.display_name || user.full_name || user.email,
             uploader_avatar_url: user.avatar_url || "",
+            artist: (it.artist || "").trim() || (user.display_name || user.full_name || user.email),
             genre: it.genre,
             duration_seconds: it.duration,
             description: it.description,
+            lyrics_text: it.lyrics || "",
+            explicit: !!it.explicit,
             rights_confirmed: true,
             is_published: true,
           });
@@ -427,24 +438,47 @@ export default function Upload() {
                           )}
                         </div>
                         {bulkKind === "separate" && (
-                          <div className="flex gap-2">
-                            <label className="text-xs px-2 py-1 rounded border border-border cursor-pointer">
-                              {it.cover ? it.cover.name : "Cover art"}
+                          <div className="space-y-2 mt-1">
+                            <div className="flex gap-2 flex-wrap items-center">
+                              <label className="text-xs px-2 py-1 rounded border border-border cursor-pointer flex items-center gap-1">
+                                {it.cover ? it.cover.name : "Cover art"}
+                                <input
+                                  type="file"
+                                  accept="image/*"
+                                  className="hidden"
+                                  onChange={(e) => {
+                                    const f = e.target.files?.[0];
+                                    if (f) updateItem(i, { cover: f });
+                                  }}
+                                />
+                              </label>
                               <input
-                                type="file"
-                                accept="image/*"
-                                className="hidden"
-                                onChange={(e) => {
-                                  const f = e.target.files?.[0];
-                                  if (f) updateItem(i, { cover: f });
-                                }}
+                                value={it.artist}
+                                onChange={(e) => updateItem(i, { artist: e.target.value })}
+                                placeholder="Artist (defaults to your name)"
+                                className="flex-1 min-w-[10rem] px-2 py-1 rounded border border-border text-xs"
                               />
-                            </label>
+                              <label className="text-xs flex items-center gap-1 px-2 py-1">
+                                <input
+                                  type="checkbox"
+                                  checked={!!it.explicit}
+                                  onChange={(e) => updateItem(i, { explicit: e.target.checked })}
+                                />
+                                Explicit
+                              </label>
+                            </div>
                             <input
                               value={it.description}
                               onChange={(e) => updateItem(i, { description: e.target.value })}
                               placeholder="Description (optional)"
-                              className="flex-1 min-w-0 px-2 py-1 rounded border border-border text-xs"
+                              className="w-full px-2 py-1 rounded border border-border text-xs"
+                            />
+                            <textarea
+                              value={it.lyrics}
+                              onChange={(e) => updateItem(i, { lyrics: e.target.value })}
+                              placeholder="Lyrics (optional)"
+                              rows={3}
+                              className="w-full px-2 py-1 rounded border border-border text-xs font-mono"
                             />
                           </div>
                         )}
@@ -513,6 +547,12 @@ function SingleForm({ item, update, rights, setRights, publishing, onPublish }) 
             placeholder="Track title"
             className="w-full px-3 py-2 rounded-lg border border-border bg-white text-sm font-semibold"
           />
+          <input
+            value={item.artist}
+            onChange={(e) => update({ artist: e.target.value })}
+            placeholder="Artist (defaults to your name)"
+            className="w-full px-3 py-2 rounded-lg border border-border bg-white text-sm"
+          />
           <select
             value={item.genre}
             onChange={(e) => update({ genre: e.target.value })}
@@ -533,6 +573,26 @@ function SingleForm({ item, update, rights, setRights, publishing, onPublish }) 
         rows={2}
         className="w-full px-3 py-2 rounded-lg border border-border bg-white text-sm"
       />
+      <label className="flex items-center gap-2 text-sm">
+        <input
+          type="checkbox"
+          checked={!!item.explicit}
+          onChange={(e) => update({ explicit: e.target.checked })}
+        />
+        Contains explicit content
+      </label>
+      <div>
+        <div className="text-xs font-semibold text-foreground/50 mb-1">
+          Lyrics (optional)
+        </div>
+        <textarea
+          value={item.lyrics}
+          onChange={(e) => update({ lyrics: e.target.value })}
+          placeholder="Paste the full lyrics — one line per row"
+          rows={5}
+          className="w-full px-3 py-2 rounded-lg border border-border bg-white text-sm font-mono"
+        />
+      </div>
       <div className="text-xs text-foreground/40">
         {item.file.name} · {Math.round(item.duration)} seconds
       </div>

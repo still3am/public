@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useNavigate } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import { useAuth } from "@/lib/AuthContext";
 import { useLikes } from "@/hooks/useLikes";
 import { useAddToPlaylist } from "@/hooks/useAddToPlaylist";
 import { usePlayer } from "@/context/PlayerContext";
 import EmptyState from "@/components/EmptyState";
+import EditTrackModal from "@/components/EditTrackModal";
 import {
   Loader2,
   Play,
@@ -15,10 +16,13 @@ import {
   Flag,
   Shield,
   ArrowLeft,
+  Pencil,
+  Music2,
 } from "lucide-react";
 
 export default function TrackDetail() {
   const { id } = useParams();
+  const nav = useNavigate();
   const { user } = useAuth();
   const likes = useLikes(user);
   const ap = useAddToPlaylist();
@@ -27,22 +31,27 @@ export default function TrackDetail() {
   const [loading, setLoading] = useState(true);
   const [uploader, setUploader] = useState(null);
   const [reporting, setReporting] = useState(false);
+  const [editing, setEditing] = useState(false);
+
+  async function load() {
+    setLoading(true);
+    try {
+      const t = await base44.entities.Track.get(id).catch(() => null);
+      setTrack(t);
+      if (t?.uploader_id) {
+        const u = await base44.entities.User
+          .get(t.uploader_id)
+          .catch(() => null);
+        setUploader(u);
+      }
+    } finally {
+      setLoading(false);
+    }
+  }
 
   useEffect(() => {
-    async function load() {
-      setLoading(true);
-      try {
-        const t = await base44.entities.Track.get(id).catch(() => null);
-        setTrack(t);
-        if (t?.uploader_id) {
-          const u = await base44.entities.User.get(t.uploader_id).catch(() => null);
-          setUploader(u);
-        }
-      } finally {
-        setLoading(false);
-      }
-    }
     load();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 
   async function report() {
@@ -63,16 +72,18 @@ export default function TrackDetail() {
     }
   }
 
-  if (loading)
+  if (loading) {
     return (
       <div className="py-20 grid place-items-center">
         <Loader2 className="animate-spin" />
       </div>
     );
+  }
   if (!track) return <EmptyState title="Track not found" />;
 
   const liked = likes.likedIds.has(track.id);
   const isCurrent = p.currentTrack?.id === track.id;
+  const isOwner = track.uploader_id === user?.id;
 
   return (
     <div className="max-w-2xl mx-auto">
@@ -97,37 +108,58 @@ export default function TrackDetail() {
           <div className="text-xs uppercase tracking-wider text-foreground/50 font-semibold mb-1">
             {track.genre}
           </div>
-          <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight mb-2">
-            {track.title}
-          </h1>
-          {uploader && (
-            <Link
-              to={`/profile/${uploader.id}`}
-              className="text-sm text-foreground/70 hover:underline flex items-center gap-2"
-            >
-              {uploader.avatar_url ? (
-                <img
-                  src={uploader.avatar_url}
-                  alt=""
-                  className="w-6 h-6 rounded-full object-cover"
-                />
-              ) : (
-                <div className="w-6 h-6 rounded-full bg-foreground/10 grid place-items-center text-[10px] font-semibold">
-                  {(uploader.display_name || uploader.email || "?").charAt(0)}
-                </div>
+          <div className="flex items-center gap-2 mb-1">
+            <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight">
+              {track.title}
+            </h1>
+            {track.explicit && (
+              <span className="px-1.5 py-0.5 rounded bg-foreground/15 text-xs font-extrabold">
+                E
+              </span>
+            )}
+          </div>
+          {(track.artist || uploader) && (
+            <div className="text-sm text-foreground/60 mb-1 flex flex-wrap items-center gap-x-1.5 gap-y-0.5">
+              {track.artist && (
+                <span className="font-semibold text-foreground/80">
+                  {track.artist}
+                </span>
               )}
-              {uploader.display_name || uploader.full_name || "Unknown"}
-              {uploader.is_verified && <Shield size={12} />}
-            </Link>
+              {track.artist && uploader && (
+                <span className="text-foreground/40">· uploaded by</span>
+              )}
+              {uploader && (
+                <Link
+                  to={`/profile/${uploader.id}`}
+                  className="hover:underline inline-flex items-center gap-1.5"
+                >
+                  {uploader.avatar_url ? (
+                    <img
+                      src={uploader.avatar_url}
+                      alt=""
+                      className="w-5 h-5 rounded-full object-cover"
+                    />
+                  ) : (
+                    <div className="w-5 h-5 rounded-full bg-foreground/10 grid place-items-center text-[9px] font-semibold">
+                      {(uploader.display_name || uploader.email || "?").charAt(0)}
+                    </div>
+                  )}
+                  {uploader.display_name || uploader.full_name || "Unknown"}
+                  {uploader.is_verified && <Shield size={11} />}
+                </Link>
+              )}
+            </div>
           )}
           <div className="text-xs text-foreground/40 mt-2">
             {track.play_count || 0} plays · {track.like_count || 0} likes
           </div>
           {track.description && (
-            <p className="text-sm text-foreground/70 mt-3">{track.description}</p>
+            <p className="text-sm text-foreground/70 mt-3">
+              {track.description}
+            </p>
           )}
 
-          <div className="flex items-center gap-2 mt-5">
+          <div className="flex items-center gap-2 mt-5 flex-wrap">
             <button
               onClick={() => {
                 if (isCurrent) p.togglePlay();
@@ -165,6 +197,15 @@ export default function TrackDetail() {
                 <Download size={18} />
               </a>
             )}
+            {isOwner && (
+              <button
+                onClick={() => setEditing(true)}
+                className="px-3 py-2.5 rounded-full border border-border text-sm font-semibold flex items-center gap-1.5"
+                aria-label="Edit"
+              >
+                <Pencil size={14} /> Edit
+              </button>
+            )}
             {track.uploader_id !== user?.id && (
               <button
                 onClick={report}
@@ -172,12 +213,36 @@ export default function TrackDetail() {
                 className="p-2.5 rounded-full border border-border text-foreground/50 hover:text-red-500"
                 aria-label="Report"
               >
-                {reporting ? <Loader2 size={18} className="animate-spin" /> : <Flag size={18} />}
+                {reporting ? (
+                  <Loader2 size={18} className="animate-spin" />
+                ) : (
+                  <Flag size={18} />
+                )}
               </button>
             )}
           </div>
         </div>
       </div>
+
+      {track.lyrics_text && track.lyrics_text.trim() && (
+        <div className="mb-6">
+          <h2 className="text-lg font-extrabold tracking-tight mb-3 flex items-center gap-2">
+            <Music2 size={18} /> Lyrics
+          </h2>
+          <div className="whitespace-pre-line text-sm text-foreground/70 leading-relaxed max-h-96 overflow-y-auto px-1">
+            {track.lyrics_text}
+          </div>
+        </div>
+      )}
+
+      {editing && (
+        <EditTrackModal
+          track={track}
+          onClose={() => setEditing(false)}
+          onSaved={(updated) => setTrack((prev) => ({ ...prev, ...updated }))}
+          onDeleted={() => nav("/profile", { replace: true })}
+        />
+      )}
       {ap.modal}
     </div>
   );

@@ -97,9 +97,14 @@ export default function TrackRow({
           to={`/profile/${track.uploader_id}`}
           className="text-xs text-foreground/50 truncate hover:underline"
         >
-          {track.uploader_name || "Unknown"}
+          {track.artist || track.uploader_name || "Unknown"}
         </Link>
       </div>
+      {track.explicit && (
+        <span className="text-[9px] font-extrabold px-1 py-0.5 rounded bg-foreground/15 text-foreground/70 shrink-0">
+          E
+        </span>
+      )}
       {track.genre && (
         <div className="hidden md:block text-xs text-foreground/40 px-2 py-0.5 rounded-full bg-foreground/[0.04]">
           {track.genre}

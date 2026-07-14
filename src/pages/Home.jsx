@@ -65,12 +65,13 @@ export default function Home() {
   const [trending, setTrending] = useState([]);
   const [newReleases, setNewReleases] = useState([]);
   const [byGenre, setByGenre] = useState([]);
+  const [fromFollowing, setFromFollowing] = useState([]);
 
   useEffect(() => {
     async function load() {
       setLoading(true);
       try {
-        const [t, n] = await Promise.all([
+        const [t, n, fols] = await Promise.all([
           base44.entities.Track.filter(
             { is_published: true },
             "-play_count",
@@ -79,11 +80,22 @@ export default function Home() {
           base44.entities.Track.filter(
             { is_published: true },
             "-created_date",
-            12
+            50
           ),
+          user?.id
+            ? base44.entities.Follow
+                .filter({ follower_id: user.id }, "-created_date", 200)
+                .catch(() => [])
+            : Promise.resolve([]),
         ]);
+        const followed = new Set(
+          (Array.isArray(fols) ? fols : []).map((f) => f.following_id)
+        );
         setTrending(t);
-        setNewReleases(n);
+        setNewReleases(n.slice(0, 12));
+        setFromFollowing(
+          n.filter((tk) => followed.has(tk.uploader_id)).slice(0, 12)
+        );
         const genres = ["Electronic", "Hip-Hop", "Ambient"];
         const perGenre = await Promise.all(
           genres.map(async (g) => ({
@@ -164,6 +176,11 @@ export default function Home() {
       <Section title="New Releases">
         {CardGrid({ tracks: newReleases })}
       </Section>
+      {fromFollowing.length > 0 && (
+        <Section title="From People You Follow">
+          {CardGrid({ tracks: fromFollowing })}
+        </Section>
+      )}
       {byGenre
         .filter((sg) => sg.tracks.length > 0)
         .map((sg) => (
