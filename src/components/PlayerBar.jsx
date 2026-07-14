@@ -29,33 +29,33 @@ export default function PlayerBar() {
   return (
     <>
       <div className="fixed left-0 right-0 bottom-16 md:bottom-0 md:left-64 z-30 bg-white/80 backdrop-blur-xl border-t border-border">
-        <div className="px-4 pt-2 relative hidden">
-          <div className="flex items-end gap-[2px] h-3 w-full">
-            {bars.map((h, i) =>
-            <div
-              key={i}
-              className={`flex-1 rounded-full ${
-              i < played ? "bg-foreground" : "bg-foreground/15"}`
-              }
-              style={{ height: `${Math.max(8, h * 100)}%` }} />
+        
 
-            )}
-          </div>
-          <input
-            type="range"
-            min={0}
-            max={p.duration || 0}
-            step="0.1"
-            value={p.position}
-            onChange={(e) => p.seek(Number(e.target.value))}
-            className="absolute inset-x-4 top-0 h-4 w-auto opacity-0 cursor-pointer"
-            aria-label="Seek" />
-          
-          <div className="flex justify-between text-[10px] text-foreground/40 mt-1">
-            <span>{formatTime(p.position)}</span>
-            <span>{formatTime(p.duration)}</span>
-          </div>
-        </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
         <div className="flex items-center gap-3 px-4 pb-2">
           <div className="flex items-center gap-3 min-w-0 flex-1">
             <button
