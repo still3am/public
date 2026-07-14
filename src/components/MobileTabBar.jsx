@@ -10,22 +10,24 @@ export default function MobileTabBar() {
     { to: "/profile", icon: User, label: "Me" },
   ];
   return (
-    <nav className="md:hidden fixed bottom-0 inset-x-0 z-20 bg-white/85 backdrop-blur-xl border-t border-border grid grid-cols-5 h-16">
-      {items.map(({ to, icon: Icon, label, end }) => (
-        <NavLink
-          key={to}
-          to={to}
-          end={end}
-          className={({ isActive }) =>
-            `flex flex-col items-center justify-center gap-1 text-[10px] font-medium ${
-              isActive ? "text-foreground" : "text-foreground/40"
-            }`
-          }
-        >
-          <Icon size={20} />
-          {label}
-        </NavLink>
-      ))}
+    <nav className="md:hidden fixed bottom-0 inset-x-0 z-20 bg-white/85 backdrop-blur-xl border-t border-border tab-bar-safe">
+      <div className="grid grid-cols-5 h-16">
+        {items.map(({ to, icon: Icon, label, end }) => (
+          <NavLink
+            key={to}
+            to={to}
+            end={end}
+            className={({ isActive }) =>
+              `flex flex-col items-center justify-center gap-1 text-[10px] font-medium ${
+                isActive ? "text-foreground" : "text-foreground/40"
+              }`
+            }
+          >
+            <Icon size={20} />
+            {label}
+          </NavLink>
+        ))}
+      </div>
     </nav>
   );
 }

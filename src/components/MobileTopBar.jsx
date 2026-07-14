@@ -29,21 +29,23 @@ export default function MobileTopBar() {
   const nav = useNavigate();
   const title = titleFor(loc.pathname);
   return (
-    <header className="md:hidden sticky top-0 z-20 bg-background/85 backdrop-blur-xl border-b border-border px-4 h-14 flex items-center justify-between">
-      <Link to="/" className="flex items-center gap-2 shrink-0">
-        <Logo size={22} />
-        <span className="font-extrabold tracking-tight">PUBLIC.</span>
-      </Link>
-      <div className="text-sm font-semibold text-foreground/70 truncate mx-3 flex-1 text-center">
-        {title}
+    <header className="md:hidden sticky top-0 z-20 bg-background/85 backdrop-blur-xl border-b border-border top-bar-safe">
+      <div className="px-4 h-14 flex items-center justify-between">
+        <Link to="/" className="flex items-center gap-2 shrink-0">
+          <Logo size={22} />
+          <span className="font-extrabold tracking-tight">PUBLIC.</span>
+        </Link>
+        <div className="text-sm font-semibold text-foreground/70 truncate mx-3 flex-1 text-center">
+          {title}
+        </div>
+        <button
+          onClick={() => nav("/search")}
+          className="p-2 -mr-2 shrink-0"
+          aria-label="Search"
+        >
+          <SearchIcon size={20} />
+        </button>
       </div>
-      <button
-        onClick={() => nav("/search")}
-        className="p-2 -mr-2 shrink-0"
-        aria-label="Search"
-      >
-        <SearchIcon size={20} />
-      </button>
     </header>
   );
 }

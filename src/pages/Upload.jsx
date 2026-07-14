@@ -11,7 +11,8 @@ import {
   Loader2,
   CheckCircle2,
 } from "lucide-react";
-import { GENRES, getAudioDuration, deriveDefaultTitle, AUDIO_ACCEPT } from "@/lib/audio-utils";
+import { getAudioDuration, deriveDefaultTitle, AUDIO_ACCEPT } from "@/lib/audio-utils";
+import GenrePicker from "@/components/GenrePicker";
 
 function UploadButton({ active, onClick, icon: Icon, title, sub }) {
   return (
@@ -33,19 +34,7 @@ function UploadButton({ active, onClick, icon: Icon, title, sub }) {
 }
 
 function GenreSelect({ value, onChange }) {
-  return (
-    <select
-      value={value}
-      onChange={(e) => onChange(e.target.value)}
-      className="px-3 py-2 rounded-lg border border-border bg-white text-sm w-full"
-    >
-      {GENRES.map((g) => (
-        <option key={g} value={g}>
-          {g}
-        </option>
-      ))}
-    </select>
-  );
+  return <GenrePicker value={value} onChange={onChange} />;
 }
 
 export default function Upload() {
@@ -580,17 +569,10 @@ function SingleForm({ item, update, rights, setRights, publishing, onPublish }) 
             placeholder="Artist (defaults to your name)"
             className="w-full px-3 py-2 rounded-lg border border-border bg-white text-sm"
           />
-          <select
+          <GenrePicker
             value={item.genre}
-            onChange={(e) => update({ genre: e.target.value })}
-            className="px-3 py-2 rounded-lg border border-border bg-white text-sm w-full"
-          >
-            {GENRES.map((g) => (
-              <option key={g} value={g}>
-                {g}
-              </option>
-            ))}
-          </select>
+            onChange={(g) => update({ genre: g })}
+          />
         </div>
       </div>
       <textarea

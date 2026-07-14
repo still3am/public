@@ -27,6 +27,7 @@ import {
   Share2,
   Play,
   BarChart2,
+  Trash2,
 } from "lucide-react";
 
 export default function Profile() {
@@ -48,6 +49,9 @@ export default function Profile() {
   const [stats, setStats] = useState({ followers: 0, following: 0, plays: 0, likes: 0 });
   const [editMode, setEditMode] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [showDelete, setShowDelete] = useState(false);
+  const [deleteConfirm, setDeleteConfirm] = useState("");
+  const [deleting, setDeleting] = useState(false);
   const [saving, setSaving] = useState(false);
   const [uploadingAvatar, setUploadingAvatar] = useState(false);
   const [uploadingBanner, setUploadingBanner] = useState(false);
@@ -215,6 +219,21 @@ export default function Profile() {
       setCopied(true);
       setTimeout(() => setCopied(false), 1500);
     });
+  }
+
+  async function confirmDelete() {
+    if (deleteConfirm.trim().toUpperCase() !== "DELETE") return;
+    setDeleting(true);
+    try {
+      await base44.functions.invoke("deleteMyAccount", {});
+      await base44.auth.logout();
+      window.location.href = "/login";
+    } catch {
+      setDeleting(false);
+      alert(
+        "Could not delete your account right now. Please try again or contact support."
+      );
+    }
   }
 
   if (loading)
@@ -596,6 +615,63 @@ export default function Profile() {
           </div>
         </>
       )}
+      {isOwn && !editMode && (
+        <div className="mt-10 p-5 rounded-2xl border border-red-200 bg-red-50/30">
+          <h2 className="text-base font-extrabold tracking-tight mb-1 text-red-700">
+            Danger Zone
+          </h2>
+          <p className="text-sm text-foreground/60 mb-4">
+            Permanently delete your account and all data you've contributed to
+            PUBLIC. This action cannot be undone.
+          </p>
+          <button
+            onClick={() => setShowDelete(true)}
+            className="px-4 py-2 rounded-full bg-red-600 text-white text-sm font-semibold flex items-center gap-2"
+          >
+            <Trash2 size={14} /> Delete account
+          </button>
+        </div>
+      )}
+
+      {showDelete && (
+        <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm grid place-items-center p-4">
+          <div className="bg-white rounded-2xl w-full max-w-md p-5 shadow-2xl">
+            <h3 className="text-lg font-extrabold mb-1">Delete your account</h3>
+            <p className="text-sm text-foreground/60 mb-4">
+              This will permanently remove your profile, uploads, likes,
+              follows, and playlists. To confirm, type{" "}
+              <strong>DELETE</strong> below.
+            </p>
+            <input
+              value={deleteConfirm}
+              onChange={(e) => setDeleteConfirm(e.target.value)}
+              placeholder="DELETE"
+              className="w-full px-3 py-2 rounded-lg border border-border bg-white text-sm mb-3 font-mono uppercase tracking-widest"
+            />
+            <div className="flex justify-end gap-2">
+              <button
+                onClick={() => {
+                  setShowDelete(false);
+                  setDeleteConfirm("");
+                }}
+                className="px-4 py-2 rounded-full border border-border text-sm font-semibold"
+                disabled={deleting}
+              >
+                Cancel
+              </button>
+              <button
+                onClick={confirmDelete}
+                disabled={deleting || deleteConfirm.trim().toUpperCase() !== "DELETE"}
+                className="px-4 py-2 rounded-full bg-red-600 text-white text-sm font-semibold disabled:opacity-40 flex items-center gap-2"
+              >
+                {deleting && <Loader2 size={14} className="animate-spin" />}
+                {deleting ? "Deleting…" : "Permanently delete"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {ap.modal}
     </div>
   );

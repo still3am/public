@@ -28,7 +28,7 @@ export default function PlayerBar() {
 
   return (
     <>
-      <div className="fixed left-0 right-0 bottom-16 md:bottom-0 md:left-64 z-30 bg-white/80 backdrop-blur-xl border-t border-border">
+      <div className="fixed left-0 right-0 md:left-64 z-30 bg-white/80 backdrop-blur-xl border-t border-border player-bar-mobile-bottom">
         
 
 
