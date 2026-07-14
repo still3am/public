@@ -11,7 +11,6 @@ import {
   X,
   Loader2,
   CheckCircle2,
-  ShieldAlert,
 } from "lucide-react";
 import { GENRES, getAudioDuration, deriveDefaultTitle } from "@/lib/audio-utils";
 
@@ -65,16 +64,6 @@ export default function Upload() {
   const [rights, setRights] = useState(false);
   const [publishing, setPublishing] = useState(false);
   const [done, setDone] = useState(false);
-
-  if (!user?.can_upload) {
-    return (
-      <EmptyState
-        icon={ShieldAlert}
-        title="Upload access required"
-        description="Admins grant upload rights. Ask for access to share audio on the PUBLIC network."
-      />
-    );
-  }
 
   async function onFilesSelected(files, isBulk) {
     const arr = Array.from(files).filter((f) => f.type.startsWith("audio/"));

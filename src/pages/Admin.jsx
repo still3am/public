@@ -5,11 +5,9 @@ import EmptyState from "@/components/EmptyState";
 import {
   Loader2,
   Shield,
-  Upload,
   Flag,
   Music,
   Users,
-  Ban,
   CheckCircle2,
 } from "lucide-react";
 
@@ -53,20 +51,6 @@ export default function Admin() {
     );
   }
 
-  async function toggleUpload(u) {
-    const next = !u.can_upload;
-    setUsers((prev) =>
-      prev.map((x) => (x.id === u.id ? { ...x, can_upload: next } : x))
-    );
-    try {
-      await base44.entities.User.update(u.id, { can_upload: next });
-    } catch {
-      setUsers((prev) =>
-        prev.map((x) => (x.id === u.id ? { ...x, can_upload: !next } : x))
-      );
-    }
-  }
-
   async function toggleVerified(u) {
     const next = !u.is_verified;
     setUsers((prev) =>
@@ -90,9 +74,7 @@ export default function Admin() {
     setReports((prev) => prev.filter((r) => r.id !== id));
   }
 
-  async function resolveReport(trackUploader, reportId) {
-    const target = users.find((u) => u.id === trackUploader);
-    if (target?.can_upload) await toggleUpload(target);
+  async function resolveReport(reportId) {
     await dismissReport(reportId);
   }
 
@@ -108,7 +90,7 @@ export default function Admin() {
         <Shield size={22} /> Admin
       </h1>
       <p className="text-sm text-foreground/50 mb-6">
-        Grant upload access, verify artists, and review reports.
+        Verify artists and review reports.
       </p>
 
       <div className="flex gap-1 mb-4 border-b border-border">
@@ -172,12 +154,6 @@ export default function Admin() {
                     {u.email}
                   </div>
                 </div>
-                <Toggle
-                  label="Upload"
-                  on={!!u.can_upload}
-                  onClick={() => toggleUpload(u)}
-                  icon={Upload}
-                />
                 <Toggle
                   label="Verified"
                   on={!!u.is_verified}

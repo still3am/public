@@ -61,7 +61,6 @@ function Skeleton() {
 
 export default function Home() {
   const { user } = useAuth();
-  const canUpload = !!user?.can_upload;
   const [loading, setLoading] = useState(true);
   const [trending, setTrending] = useState([]);
   const [newReleases, setNewReleases] = useState([]);
@@ -116,20 +115,14 @@ export default function Home() {
       <EmptyState
         icon={Music}
         title="Nothing here yet"
-        description={
-          canUpload
-            ? "Be the first to upload audio to the PUBLIC network."
-            : "Check back soon — the people are about to upload."
-        }
+        description="Be the first to upload audio to the PUBLIC network."
         action={
-          canUpload ? (
-            <Link
-              to="/upload"
-              className="px-4 py-2 rounded-full bg-foreground text-background text-sm font-semibold flex items-center gap-2"
-            >
-              <Upload size={14} /> Upload now
-            </Link>
-          ) : null
+          <Link
+            to="/upload"
+            className="px-4 py-2 rounded-full bg-foreground text-background text-sm font-semibold flex items-center gap-2"
+          >
+            <Upload size={14} /> Upload now
+          </Link>
         }
       />
     );
@@ -157,14 +150,12 @@ export default function Home() {
           Welcome{user?.display_name ? `, ${user.display_name}` : ""}. Listen,
           upload, share. PUBLIC is yours.
         </p>
-        {canUpload && (
-          <Link
-            to="/upload"
-            className="inline-flex items-center gap-2 px-4 py-2 mt-5 rounded-full bg-foreground text-background text-sm font-semibold hover:scale-[1.02] transition"
-          >
-            <Upload size={14} /> Upload music
-          </Link>
-        )}
+        <Link
+          to="/upload"
+          className="inline-flex items-center gap-2 px-4 py-2 mt-5 rounded-full bg-foreground text-background text-sm font-semibold hover:scale-[1.02] transition"
+        >
+          <Upload size={14} /> Upload music
+        </Link>
       </div>
 
       <Section title="Trending" icon={TrendingUp}>

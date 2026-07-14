@@ -14,7 +14,6 @@ const navLinkCls = ({ isActive }) =>
 export default function Sidebar() {
   const { user } = useAuth();
   const isAdmin = user?.role === "admin";
-  const canUpload = !!user?.can_upload;
   return (
     <aside className="hidden md:flex flex-col w-64 shrink-0 border-r border-border bg-white h-screen sticky top-0">
       <div className="px-6 py-6 flex items-center gap-2.5">
@@ -34,11 +33,9 @@ export default function Sidebar() {
         <NavLink to="/liked" className={navLinkCls}>
           <Heart size={18} /> Liked Songs
         </NavLink>
-        {canUpload && (
-          <NavLink to="/upload" className={navLinkCls}>
-            <Upload size={18} /> Upload
-          </NavLink>
-        )}
+        <NavLink to="/upload" className={navLinkCls}>
+          <Upload size={18} /> Upload
+        </NavLink>
         {isAdmin && (
           <NavLink to="/admin" className={navLinkCls}>
             <Shield size={18} /> Admin

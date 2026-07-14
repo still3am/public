@@ -231,11 +231,7 @@ export default function Profile() {
             <span>{stats.followers} followers</span>
             <span>·</span>
             <span>{stats.following} following</span>
-            {profile.can_upload && (
-              <span className="inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full bg-foreground/[0.06]">
-                <Upload size={10} /> uploader
-              </span>
-            )}
+
           </div>
           {editMode ? (
             <textarea
@@ -316,12 +312,10 @@ export default function Profile() {
           icon={Music}
           title={isOwn ? "You haven't uploaded anything" : "No uploads yet"}
           description={
-            isOwn && me?.can_upload
-              ? "Share your first track with the PUBLIC network."
-              : ""
+            isOwn ? "Share your first track with the PUBLIC network." : ""
           }
           action={
-            isOwn && me?.can_upload ? (
+            isOwn ? (
               <Link
                 to="/upload"
                 className="px-4 py-2 rounded-full bg-foreground text-background text-sm font-semibold flex items-center gap-2"
