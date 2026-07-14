@@ -13,7 +13,7 @@ const TITLES = {
   "/top": "Top Charts",
   "/recent": "Recently Added",
   "/notifications": "Notifications",
-  "/admin": "Admin",
+  "/admin": "Admin"
 };
 
 function titleFor(pathname) {
@@ -29,8 +29,8 @@ export default function MobileTopBar() {
   const nav = useNavigate();
   const title = titleFor(loc.pathname);
   return (
-    <header className="md:hidden sticky top-0 z-20 bg-background/85 backdrop-blur-xl border-b border-border top-bar-safe">
-      <div className="px-4 h-14 flex items-center justify-between">
+    <header className="md:hidden sticky top-0 z-20 bg-background/85 backdrop-blur-xl border-b border-border top-bar-safe hidden">
+      <div className="px-4 h-14 flex items-center justify-between hidden">
         <Link to="/" className="flex items-center gap-2 shrink-0">
           <Logo size={22} />
           <span className="font-extrabold tracking-tight">PUBLIC.</span>
@@ -41,11 +41,11 @@ export default function MobileTopBar() {
         <button
           onClick={() => nav("/search")}
           className="p-2 -mr-2 shrink-0"
-          aria-label="Search"
-        >
+          aria-label="Search">
+          
           <SearchIcon size={20} />
         </button>
       </div>
-    </header>
-  );
+    </header>);
+
 }
