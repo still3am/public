@@ -16,6 +16,8 @@ import {
   Mic2,
   Volume2,
   VolumeX,
+  Gauge,
+  Timer,
 } from "lucide-react";
 
 export default function FullScreenPlayer({ onClose, onOpenQueue }) {
@@ -176,6 +178,58 @@ export default function FullScreenPlayer({ onClose, onOpenQueue }) {
               aria-label="Volume"
             />
           </div>
+        </div>
+
+        {/* advanced controls */}
+        <div className="flex items-center justify-between mb-4 text-[11px] gap-2">
+          <button
+            onClick={() => p.skipBy(-15)}
+            className="flex flex-col items-center opacity-80 hover:opacity-100"
+          >
+            <SkipBack size={18} />
+            <span className="mt-0.5">15s</span>
+          </button>
+          <button
+            onClick={() => p.skipBy(15)}
+            className="flex flex-col items-center opacity-80 hover:opacity-100"
+          >
+            <SkipForward size={18} />
+            <span className="mt-0.5">15s</span>
+          </button>
+          <button
+            onClick={() => {
+              const rates = [0.75, 1, 1.25, 1.5, 2];
+              const i = rates.indexOf(p.playbackRate);
+              p.setPlaybackRate(rates[(i + 1) % rates.length]);
+            }}
+            className={`flex items-center gap-1 px-2 py-1 rounded-full border border-white/20 ${
+              p.playbackRate !== 1 ? "bg-white/15" : ""
+            }`}
+          >
+            <Gauge size={14} /> {p.playbackRate}x
+          </button>
+          <button
+            onClick={() => {
+              const opts = [0, 5, 15, 30, 60];
+              const remaining = p.sleepTimerEndsAt
+                ? Math.max(0, Math.round((p.sleepTimerEndsAt - Date.now()) / 60000))
+                : 0;
+              let idx = 0;
+              if (remaining >= 60) idx = 4;
+              else if (remaining >= 30) idx = 3;
+              else if (remaining >= 15) idx = 2;
+              else if (remaining >= 5) idx = 1;
+              p.setSleepTimer(opts[(idx + 1) % opts.length]);
+            }}
+            className={`flex items-center gap-1 px-2 py-1 rounded-full border border-white/20 ${
+              p.sleepTimerEndsAt ? "bg-white/15" : ""
+            }`}
+          >
+            <Timer size={14} />
+            {p.sleepTimerEndsAt
+              ? `${Math.max(0, Math.round((p.sleepTimerEndsAt - Date.now()) / 60000))}m`
+              : "Sleep"}
+          </button>
         </div>
 
         {/* lyrics panel */}

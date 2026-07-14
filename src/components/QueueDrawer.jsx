@@ -12,13 +12,24 @@ export default function QueueDrawer({ p, onClose }) {
       <div className="absolute right-0 top-0 bottom-0 w-full max-w-md bg-white border-l border-border shadow-2xl flex flex-col">
         <div className="flex items-center justify-between px-5 py-4 border-b border-border">
           <h3 className="font-bold">Up Next</h3>
-          <button
-            onClick={onClose}
-            className="p-2 rounded-full hover:bg-foreground/5"
-            aria-label="Close queue"
-          >
-            <X size={18} />
-          </button>
+          <div className="flex items-center gap-1">
+            {p.queue.length > 0 && (
+              <button
+                onClick={() => p.clearQueue()}
+                className="p-2 rounded-full hover:bg-foreground/5 text-foreground/60 hover:text-red-500"
+                aria-label="Clear queue"
+              >
+                <Trash2 size={16} />
+              </button>
+            )}
+            <button
+              onClick={onClose}
+              className="p-2 rounded-full hover:bg-foreground/5"
+              aria-label="Close queue"
+            >
+              <X size={18} />
+            </button>
+          </div>
         </div>
         <div className="flex-1 overflow-y-auto p-2">
           {p.queue.length === 0 && (

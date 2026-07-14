@@ -26,6 +26,9 @@ export function PlayerProvider({ children }) {
   const [muted, setMuted] = useState(false);
   const [repeat, setRepeat] = useState("off"); // off | all | one
   const [shuffle, setShuffle] = useState(false);
+  const [playbackRate, setPlaybackRateState] = useState(1);
+  const sleepTimerRef = useRef(null);
+  const [sleepTimerEndsAt, setSleepTimerEndsAt] = useState(null);
 
   const currentTrack =
     currentIndex >= 0 && currentIndex < queue.length ? queue[currentIndex] : null;
@@ -39,6 +42,11 @@ export function PlayerProvider({ children }) {
     const a = audioRef.current;
     if (a) a.muted = muted;
   }, [muted]);
+
+  useEffect(() => {
+    const a = audioRef.current;
+    if (a) a.playbackRate = playbackRate;
+  }, [playbackRate]);
 
   // swap src when track changes
   useEffect(() => {
@@ -89,6 +97,26 @@ export function PlayerProvider({ children }) {
       { id: track.id },
       { $inc: { play_count: 1 } }
     ).catch(() => {});
+    try {
+      const KEY = "public:recently_played";
+      const v = JSON.parse(localStorage.getItem(KEY) || "[]");
+      const s = {
+        id: track.id,
+        title: track.title,
+        artist: track.artist,
+        uploader_name: track.uploader_name,
+        uploader_id: track.uploader_id,
+        cover_art_url: track.cover_art_url,
+        audio_url: track.audio_url,
+        duration_seconds: track.duration_seconds,
+        genre: track.genre,
+        explicit: track.explicit,
+        is_published: true,
+      };
+      const next = [s, ...v.filter((t) => t.id !== s.id)].slice(0, 20);
+      localStorage.setItem(KEY, JSON.stringify(next));
+      window.dispatchEvent(new CustomEvent("recentplays:change"));
+    } catch {}
   }, []);
 
   useEffect(() => {
@@ -219,6 +247,44 @@ export function PlayerProvider({ children }) {
     return bars;
   }, []);
 
+  const setPlaybackRate = useCallback((r) => {
+    setPlaybackRateState(r);
+    if (audioRef.current) audioRef.current.playbackRate = r;
+  }, []);
+
+  const skipBy = useCallback((delta) => {
+    const a = audioRef.current;
+    if (!a) return;
+    const t = Math.max(0, Math.min(a.duration || 0, (a.currentTime || 0) + delta));
+    a.currentTime = t;
+    setPosition(t);
+  }, []);
+
+  const clearQueue = useCallback(() => {
+    setQueue([]);
+    setCurrentIndex(-1);
+  }, []);
+
+  const setSleepTimer = useCallback((minutes) => {
+    if (sleepTimerRef.current) {
+      clearTimeout(sleepTimerRef.current);
+      sleepTimerRef.current = null;
+    }
+    if (!minutes || minutes <= 0) {
+      setSleepTimerEndsAt(null);
+      return;
+    }
+    const ends = Date.now() + minutes * 60 * 1000;
+    setSleepTimerEndsAt(ends);
+    sleepTimerRef.current = setTimeout(() => {
+      const a = audioRef.current;
+      if (a) a.pause();
+      setIsPlaying(false);
+      setSleepTimerEndsAt(null);
+      sleepTimerRef.current = null;
+    }, minutes * 60 * 1000);
+  }, []);
+
   const value = {
     queue,
     setQueue,
@@ -244,6 +310,12 @@ export function PlayerProvider({ children }) {
     setRepeat,
     setShuffle,
     getBars,
+    playbackRate,
+    setPlaybackRate,
+    skipBy,
+    clearQueue,
+    sleepTimerEndsAt,
+    setSleepTimer,
   };
 
   return (

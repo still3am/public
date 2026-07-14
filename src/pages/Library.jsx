@@ -22,6 +22,7 @@ export default function Library() {
   const [showCreate, setShowCreate] = useState(false);
   const [newName, setNewName] = useState("");
   const [creating, setCreating] = useState(false);
+  const [sort, setSort] = useState("recent"); // recent | alpha | count
 
   async function load() {
     setLoading(true);
@@ -82,17 +83,38 @@ export default function Library() {
       </div>
     );
 
+  const sortedPlaylists = [...playlists].sort((a, b) => {
+    if (sort === "alpha") return (a.name || "").localeCompare(b.name || "");
+    if (sort === "count")
+      return (b.track_ids?.length || 0) - (a.track_ids?.length || 0);
+    return (
+      new Date(b.created_date || 0).getTime() -
+      new Date(a.created_date || 0).getTime()
+    );
+  });
+
   return (
     <div className="space-y-10">
       <div>
-        <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center justify-between mb-4 gap-2">
           <h2 className="text-xl font-extrabold tracking-tight">Your Playlists</h2>
-          <button
-            onClick={() => setShowCreate((v) => !v)}
-            className="px-3 py-1.5 rounded-full bg-foreground text-background text-xs font-semibold flex items-center gap-1.5"
-          >
-            <Plus size={14} /> New
-          </button>
+          <div className="flex items-center gap-2">
+            <select
+              value={sort}
+              onChange={(e) => setSort(e.target.value)}
+              className="px-2 py-1.5 rounded-lg border border-border bg-white text-xs font-medium"
+            >
+              <option value="recent">Recent</option>
+              <option value="alpha">A–Z</option>
+              <option value="count">Tracks</option>
+            </select>
+            <button
+              onClick={() => setShowCreate((v) => !v)}
+              className="px-3 py-1.5 rounded-full bg-foreground text-background text-xs font-semibold flex items-center gap-1.5"
+            >
+              <Plus size={14} /> New
+            </button>
+          </div>
         </div>
         {showCreate && (
           <div className="flex gap-2 mb-4">
@@ -113,7 +135,7 @@ export default function Library() {
             </button>
           </div>
         )}
-        {playlists.length === 0 ? (
+        {sortedPlaylists.length === 0 ? (
           <EmptyState
             icon={ListMusic}
             title="No playlists yet"
@@ -129,7 +151,7 @@ export default function Library() {
           />
         ) : (
           <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-2">
-            {playlists.map((pl) => (
+            {sortedPlaylists.map((pl) => (
               <Link
                 key={pl.id}
                 to={`/playlist/${pl.id}`}

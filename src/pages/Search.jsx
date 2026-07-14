@@ -25,9 +25,7 @@ export default function Search() {
   const likes = useLikes(user);
   const ap = useAddToPlaylist();
   const isAdmin = user?.role === "admin";
-  const tabs = isAdmin
-    ? [...TABS, { id: "people", label: "People", icon: Shield }]
-    : TABS;
+  const tabs = [...TABS, { id: "people", label: "People", icon: Shield }];
   const [q, setQ] = useState("");
   const [tab, setTab] = useState("tracks");
   const [data, setData] = useState({
@@ -63,16 +61,14 @@ export default function Search() {
         ),
         people: [],
       };
-      if (isAdmin) {
-        const users = await base44.entities.User
-          .list("-created_date", 200)
-          .catch(() => []);
-        filtered.people = users.filter((u) =>
-          (u.display_name || u.full_name || u.email || "")
-            .toLowerCase()
-            .includes(Q)
-        );
-      }
+      const users = await base44.entities.User
+        .list("-created_date", 200)
+        .catch(() => []);
+      filtered.people = users.filter((u) =>
+        (u.display_name || u.full_name || u.email || "")
+          .toLowerCase()
+          .includes(Q)
+      );
       setData(filtered);
     } finally {
       setLoading(false);
@@ -212,7 +208,7 @@ export default function Search() {
                 No playlists found.
               </p>
             ))}
-          {tab === "people" && isAdmin && (
+          {tab === "people" && (
             <div className="space-y-1">
               {data.people.length === 0 ? (
                 <p className="text-sm text-foreground/50 text-center py-12">

@@ -12,6 +12,7 @@ import {
 import TrackCard from "@/components/TrackCard";
 import EmptyState from "@/components/EmptyState";
 import Logo, { LOGO_URL } from "@/components/Logo";
+import { getRecentPlays } from "@/lib/recentPlays";
 
 function Section({ title, icon: Icon, children }) {
   return (
@@ -66,6 +67,18 @@ export default function Home() {
   const [newReleases, setNewReleases] = useState([]);
   const [byGenre, setByGenre] = useState([]);
   const [fromFollowing, setFromFollowing] = useState([]);
+  const [recentlyPlayed, setRecentlyPlayed] = useState([]);
+
+  useEffect(() => {
+    const handler = () => setRecentlyPlayed(getRecentPlays());
+    handler();
+    window.addEventListener("recentplays:change", handler);
+    window.addEventListener("storage", handler);
+    return () => {
+      window.removeEventListener("recentplays:change", handler);
+      window.removeEventListener("storage", handler);
+    };
+  }, []);
 
   useEffect(() => {
     async function load() {
@@ -179,6 +192,11 @@ export default function Home() {
       {fromFollowing.length > 0 && (
         <Section title="From People You Follow">
           {CardGrid({ tracks: fromFollowing })}
+        </Section>
+      )}
+      {recentlyPlayed.length > 0 && (
+        <Section title="Recently Played">
+          {CardGrid({ tracks: recentlyPlayed })}
         </Section>
       )}
       {byGenre

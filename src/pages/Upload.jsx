@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { base44 } from "@/api/base44Client";
 import { useAuth } from "@/lib/AuthContext";
 import { useNavigate } from "react-router-dom";
@@ -11,7 +11,7 @@ import {
   Loader2,
   CheckCircle2,
 } from "lucide-react";
-import { GENRES, getAudioDuration, deriveDefaultTitle } from "@/lib/audio-utils";
+import { GENRES, getAudioDuration, deriveDefaultTitle, AUDIO_ACCEPT } from "@/lib/audio-utils";
 
 function UploadButton({ active, onClick, icon: Icon, title, sub }) {
   return (
@@ -63,6 +63,17 @@ export default function Upload() {
   const [rights, setRights] = useState(false);
   const [publishing, setPublishing] = useState(false);
   const [done, setDone] = useState(false);
+  const singleInputRef = useRef(null);
+  const bulkInputRef = useRef(null);
+  const pendingBulkKind = useRef(null);
+
+  function pickSingle() {
+    singleInputRef.current?.click();
+  }
+  function pickBulk(kind) {
+    pendingBulkKind.current = kind;
+    bulkInputRef.current?.click();
+  }
 
   async function onFilesSelected(files, isBulk) {
     const arr = Array.from(files).filter((f) => f.type.startsWith("audio/"));
@@ -241,42 +252,57 @@ export default function Upload() {
   }
 
   return (
-    <div className="max-w-3xl mx-auto">
-      <h1 className="text-2xl font-extrabold tracking-tight mb-6">Upload</h1>
+    <>
+      <input
+        ref={singleInputRef}
+        type="file"
+        accept={AUDIO_ACCEPT}
+        className="hidden"
+        onChange={async (e) => {
+          const files = e.target.files;
+          await onFilesSelected(files, false);
+          if (files && files.length) setMode("single");
+          if (singleInputRef.current) singleInputRef.current.value = "";
+        }}
+      />
+      <input
+        ref={bulkInputRef}
+        type="file"
+        accept={AUDIO_ACCEPT}
+        multiple
+        className="hidden"
+        onChange={async (e) => {
+          const files = e.target.files;
+          await onFilesSelected(files, true);
+          const kind = pendingBulkKind.current;
+          if (files && files.length && kind) {
+            setBulkKind(kind);
+            setMode("bulk");
+          }
+          if (bulkInputRef.current) bulkInputRef.current.value = "";
+        }}
+      />
+      <div className="max-w-3xl mx-auto">
+        <h1 className="text-2xl font-extrabold tracking-tight mb-6">Upload</h1>
 
       {mode === "choose" && (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
           <UploadButton
-            onClick={async () => {
-              const inp = document.createElement("input");
-              inp.type = "file";
-              inp.accept = "audio/*";
-              inp.onchange = async (e) => {
-                await onFilesSelected(e.target.files, false);
-                if (e.target.files.length) setMode("single");
-              };
-              inp.click();
-            }}
+            onClick={pickSingle}
             icon={Music}
             title="Single Track"
             sub="Upload one audio file with title, cover art, and details."
             active
           />
           <UploadButton
-            onClick={() => {
-              setMode("bulk");
-              setBulkKind(null);
-            }}
+            onClick={() => pickBulk("album")}
             icon={Disc}
             title="Album"
             sub="Multiple files grouped as one album with a shared cover."
             active
           />
           <UploadButton
-            onClick={() => {
-              setMode("bulk");
-              setBulkKind("separate");
-            }}
+            onClick={() => pickBulk("separate")}
             icon={ListMusic}
             title="Separate Tracks"
             sub="Upload many tracks at once, each with its own details."
@@ -299,7 +325,7 @@ export default function Upload() {
               <p className="text-sm font-medium">Choose an audio file</p>
               <input
                 type="file"
-                accept="audio/*"
+                accept={AUDIO_ACCEPT}
                 className="hidden"
                 onChange={async (e) => {
                   await onFilesSelected(e.target.files, false);
@@ -355,7 +381,7 @@ export default function Upload() {
                   <p className="text-sm font-medium">Choose multiple audio files</p>
                   <input
                     type="file"
-                    accept="audio/*"
+                    accept={AUDIO_ACCEPT}
                     multiple
                     className="hidden"
                     onChange={async (e) => {
@@ -514,7 +540,8 @@ export default function Upload() {
           )}
         </div>
       )}
-    </div>
+      </div>
+    </>
   );
 }
 

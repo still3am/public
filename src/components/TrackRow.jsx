@@ -7,9 +7,11 @@ import {
   Plus,
   ListPlus,
   Flag,
+  Link2,
+  Flame,
 } from "lucide-react";
 import { usePlayer } from "@/context/PlayerContext";
-import { formatTime } from "@/lib/audio-utils";
+import { formatTime, timeAgo } from "@/lib/audio-utils";
 import { Link } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import { useAuth } from "@/lib/AuthContext";
@@ -41,6 +43,10 @@ export default function TrackRow({
   const [menuOpen, setMenuOpen] = useState(false);
   const isCurrent = p.currentTrack?.id === track.id;
   const isPlayingHere = isCurrent && p.isPlaying;
+  const isRecent =
+    track.created_date &&
+    Date.now() - new Date(track.created_date).getTime() < 7 * 86400 * 1000;
+  const isTrending = (track.play_count || 0) > 30;
 
   return (
     <div
@@ -105,10 +111,22 @@ export default function TrackRow({
           E
         </span>
       )}
+      {isTrending && (
+        <span className="hidden md:inline-flex items-center gap-0.5 text-[9px] font-extrabold px-1.5 py-0.5 rounded bg-amber-400/20 text-amber-700 shrink-0">
+          <Flame size={10} /> Top
+        </span>
+      )}
+      {!isTrending && isRecent && (
+        <span className="hidden md:inline-flex text-[9px] font-extrabold px-1.5 py-0.5 rounded bg-emerald-400/20 text-emerald-700 shrink-0">NEW</span>
+      )}
       {track.genre && (
-        <div className="hidden md:block text-xs text-foreground/40 px-2 py-0.5 rounded-full bg-foreground/[0.04]">
+        <Link
+          to="/discover"
+          state={{ initialGenre: track.genre }}
+          className="hidden md:block text-xs text-foreground/40 px-2 py-0.5 rounded-full bg-foreground/[0.04] hover:bg-foreground/10 hover:text-foreground/70 transition"
+        >
           {track.genre}
-        </div>
+        </Link>
       )}
       <button
         onClick={() => onLikeToggle?.(track)}
@@ -120,6 +138,11 @@ export default function TrackRow({
           className={liked ? "fill-red-500 text-red-500" : "text-foreground/50"}
         />
       </button>
+      {track.created_date && (
+        <div className="hidden lg:block text-[11px] text-foreground/40 w-14 text-right">
+          {timeAgo(track.created_date)}
+        </div>
+      )}
       <div className="hidden md:block text-xs text-foreground/40 w-10 text-right">
         {formatTime(track.duration_seconds)}
       </div>
@@ -138,6 +161,15 @@ export default function TrackRow({
               onClick={() => setMenuOpen(false)}
             />
             <div className="absolute right-0 top-full z-20 mt-1 bg-white border border-border rounded-lg shadow-xl py-1 min-w-[200px]">
+              <MenuBtn
+                icon={Link2}
+                label="Copy link"
+                onClick={() => {
+                  const url = `${window.location.origin}/track/${track.id}`;
+                  navigator.clipboard?.writeText(url);
+                  setMenuOpen(false);
+                }}
+              />
               {onAddToPlaylist && (
                 <MenuBtn
                   icon={Plus}
