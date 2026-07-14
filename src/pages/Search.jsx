@@ -96,12 +96,12 @@ export default function Search() {
         />
       </div>
 
-      <div className="flex gap-1 mb-6 border-b border-border">
+      <div className="flex gap-1 mb-6 border-b border-border tab-strip no-scrollbar">
         {tabs.map(({ id, label, icon: Icon }) => (
           <button
             key={id}
             onClick={() => setTab(id)}
-            className={`flex items-center gap-1.5 px-4 py-3 text-sm font-medium border-b-2 -mb-px transition ${
+            className={`flex items-center gap-1.5 px-4 py-3 text-sm font-medium border-b-2 -mb-px transition shrink-0 whitespace-nowrap ${
               tab === id
                 ? "border-foreground text-foreground"
                 : "border-transparent text-foreground/50 hover:text-foreground"

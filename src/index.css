@@ -86,19 +86,29 @@
     @apply border-border outline-ring/50;
   }
 
-  html, body { overscroll-behavior: none; -webkit-overflow-scrolling: touch; }
+  html, body { overscroll-behavior: none; -webkit-overflow-scrolling: touch; max-width: 100%; overflow-x: hidden; }
   body {
     @apply bg-background text-foreground font-body;
     font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
     -webkit-user-select: none; user-select: none;
     -webkit-touch-callout: none;
     -webkit-tap-highlight-color: transparent;
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
   }
 
   button, a, nav, summary, [role="button"], [role="menu"], [role="menuitem"], .chip, svg {
     -webkit-user-select: none; user-select: none;
     -webkit-touch-callout: none;
     -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+  }
+
+  @media (max-width: 768px) {
+    input, textarea, select { font-size: 16px !important; }
+    img { max-width: 100%; height: auto; }
+    .tab-strip { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+    .tab-strip > * { flex-shrink: 0; white-space: nowrap; }
   }
 
   input, textarea, select, [contenteditable="true"], [contenteditable=""] {
