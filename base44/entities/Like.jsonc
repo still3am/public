@@ -1,0 +1,16 @@
+{
+  "name": "Like",
+  "type": "object",
+  "properties": {
+    "user_id": {
+      "type": "string"
+    },
+    "track_id": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "user_id",
+    "track_id"
+  ]
+}

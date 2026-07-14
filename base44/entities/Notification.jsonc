@@ -1,0 +1,35 @@
+{
+  "name": "Notification",
+  "type": "object",
+  "properties": {
+    "user_id": {
+      "type": "string"
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "new_follower",
+        "new_upload_from_followed",
+        "track_liked"
+      ],
+      "default": "track_liked"
+    },
+    "actor_id": {
+      "type": "string",
+      "default": ""
+    },
+    "track_id": {
+      "type": "string",
+      "default": ""
+    },
+    "read": {
+      "type": "boolean",
+      "default": false
+    }
+  },
+  "required": [
+    "user_id",
+    "type",
+    "actor_id"
+  ]
+}

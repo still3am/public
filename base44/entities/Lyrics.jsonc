@@ -1,0 +1,52 @@
+{
+  "name": "Lyrics",
+  "type": "object",
+  "properties": {
+    "track_id": {
+      "type": "string"
+    },
+    "uploader_id": {
+      "type": "string"
+    },
+    "language_code": {
+      "type": "string",
+      "default": "en"
+    },
+    "lines": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "text": {
+            "type": "string"
+          },
+          "start_time_ms": {
+            "type": "integer",
+            "default": 0
+          },
+          "end_time_ms": {
+            "type": "integer",
+            "default": 0
+          }
+        }
+      },
+      "default": []
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "approved"
+      ],
+      "default": "pending"
+    },
+    "out_of_sync": {
+      "type": "boolean",
+      "default": false
+    }
+  },
+  "required": [
+    "track_id",
+    "uploader_id"
+  ]
+}

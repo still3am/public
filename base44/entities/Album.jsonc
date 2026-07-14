@@ -1,0 +1,40 @@
+{
+  "name": "Album",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string"
+    },
+    "cover_art_url": {
+      "type": "string",
+      "default": ""
+    },
+    "creator_id": {
+      "type": "string"
+    },
+    "genre": {
+      "type": "string",
+      "enum": [
+        "Pop",
+        "Hip-Hop",
+        "Electronic",
+        "Rock",
+        "R&B",
+        "Jazz",
+        "Classical",
+        "Ambient",
+        "Experimental",
+        "Other"
+      ],
+      "default": "Other"
+    },
+    "description": {
+      "type": "string",
+      "default": ""
+    }
+  },
+  "required": [
+    "title",
+    "creator_id"
+  ]
+}

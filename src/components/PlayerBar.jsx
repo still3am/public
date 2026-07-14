@@ -1,0 +1,160 @@
+import { useState } from "react";
+import {
+  Play,
+  Pause,
+  SkipBack,
+  SkipForward,
+  Volume2,
+  VolumeX,
+  Repeat,
+  Repeat1,
+  Shuffle,
+  ListMusic,
+} from "lucide-react";
+import { usePlayer } from "@/context/PlayerContext";
+import { Link } from "react-router-dom";
+import { formatTime } from "@/lib/audio-utils";
+import QueueDrawer from "@/components/QueueDrawer";
+
+export default function PlayerBar() {
+  const p = usePlayer();
+  const [queueOpen, setQueueOpen] = useState(false);
+  if (!p.currentTrack) return null;
+  const t = p.currentTrack;
+  const bars = p.getBars(t.id);
+  const played = p.duration ? (p.position / p.duration) * bars.length : 0;
+
+  return (
+    <>
+      <div className="fixed left-0 right-0 bottom-16 md:bottom-0 md:left-64 z-30 bg-white/80 backdrop-blur-xl border-t border-border">
+        <div className="px-4 pt-2 relative">
+          <div className="flex items-end gap-[2px] h-3 w-full">
+            {bars.map((h, i) => (
+              <div
+                key={i}
+                className={`flex-1 rounded-full ${
+                  i < played ? "bg-foreground" : "bg-foreground/15"
+                }`}
+                style={{ height: `${Math.max(8, h * 100)}%` }}
+              />
+            ))}
+          </div>
+          <input
+            type="range"
+            min={0}
+            max={p.duration || 0}
+            step="0.1"
+            value={p.position}
+            onChange={(e) => p.seek(Number(e.target.value))}
+            className="absolute inset-x-4 top-0 h-4 w-auto opacity-0 cursor-pointer"
+            aria-label="Seek"
+          />
+          <div className="flex justify-between text-[10px] text-foreground/40 mt-1">
+            <span>{formatTime(p.position)}</span>
+            <span>{formatTime(p.duration)}</span>
+          </div>
+        </div>
+        <div className="flex items-center gap-3 px-4 pb-2">
+          <Link
+            to={`/track/${t.id}`}
+            className="flex items-center gap-3 min-w-0 flex-1"
+          >
+            {t.cover_art_url ? (
+              <img
+                src={t.cover_art_url}
+                alt=""
+                className="w-12 h-12 rounded-lg object-cover shrink-0"
+              />
+            ) : (
+              <div className="w-12 h-12 rounded-lg bg-foreground/10 shrink-0" />
+            )}
+            <div className="min-w-0">
+              <div className="text-sm font-semibold truncate">{t.title}</div>
+              <div className="text-xs text-foreground/50 truncate">
+                {t.uploader_name || "Unknown"}
+              </div>
+            </div>
+          </Link>
+          <div className="flex items-center gap-1 shrink-0">
+            <button
+              onClick={p.prev}
+              className="p-2 rounded-full hover:bg-foreground/5"
+              aria-label="Previous"
+            >
+              <SkipBack size={18} />
+            </button>
+            <button
+              onClick={p.togglePlay}
+              className="p-3 rounded-full bg-foreground text-background hover:scale-105 transition"
+              aria-label={p.isPlaying ? "Pause" : "Play"}
+            >
+              {p.isPlaying ? <Pause size={18} /> : <Play size={18} />}
+            </button>
+            <button
+              onClick={p.next}
+              className="p-2 rounded-full hover:bg-foreground/5"
+              aria-label="Next"
+            >
+              <SkipForward size={18} />
+            </button>
+          </div>
+          <div className="hidden md:flex items-center gap-2 shrink-0">
+            <button
+              onClick={() =>
+                p.setRepeat(
+                  p.repeat === "off" ? "all" : p.repeat === "all" ? "one" : "off"
+                )
+              }
+              className={`p-2 rounded-full hover:bg-foreground/5 ${
+                p.repeat !== "off" ? "text-foreground" : "text-foreground/40"
+              }`}
+              aria-label="Repeat"
+            >
+              {p.repeat === "one" ? <Repeat1 size={18} /> : <Repeat size={18} />}
+            </button>
+            <button
+              onClick={() => p.setShuffle(!p.shuffle)}
+              className={`p-2 rounded-full hover:bg-foreground/5 ${
+                p.shuffle ? "text-foreground" : "text-foreground/40"
+              }`}
+              aria-label="Shuffle"
+            >
+              <Shuffle size={18} />
+            </button>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => p.setMuted(!p.muted)}
+                className="p-1"
+                aria-label="Mute"
+              >
+                {p.muted || p.volume === 0 ? (
+                  <VolumeX size={18} />
+                ) : (
+                  <Volume2 size={18} />
+                )}
+              </button>
+              <input
+                type="range"
+                min="0"
+                max="1"
+                step="0.01"
+                value={p.muted ? 0 : p.volume}
+                onChange={(e) => p.setVolume(Number(e.target.value))}
+                className="w-24 accent-foreground"
+                aria-label="Volume"
+              />
+            </div>
+            <button
+              onClick={() => setQueueOpen(true)}
+              className="p-2 rounded-full hover:bg-foreground/5"
+              aria-label="Queue"
+            >
+              <ListMusic size={18} />
+            </button>
+          </div>
+        </div>
+      </div>
+      {queueOpen && <QueueDrawer p={p} onClose={() => setQueueOpen(false)} />}
+    </>
+  );
+}

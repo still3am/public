@@ -1,0 +1,45 @@
+{
+  "name": "User",
+  "type": "object",
+  "properties": {
+    "display_name": {
+      "type": "string",
+      "default": ""
+    },
+    "avatar_url": {
+      "type": "string",
+      "default": ""
+    },
+    "bio": {
+      "type": "string",
+      "default": ""
+    },
+    "can_upload": {
+      "type": "boolean",
+      "default": false
+    },
+    "is_verified": {
+      "type": "boolean",
+      "default": false
+    },
+    "follower_count": {
+      "type": "integer",
+      "default": 0
+    },
+    "following_count": {
+      "type": "integer",
+      "default": 0
+    },
+    "listening_now_track_id": {
+      "type": "string",
+      "default": ""
+    },
+    "listening_now_opt_in": {
+      "type": "boolean",
+      "default": false
+    }
+  },
+  "required": [
+    "display_name"
+  ]
+}

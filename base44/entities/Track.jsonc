@@ -1,0 +1,85 @@
+{
+  "name": "Track",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string"
+    },
+    "audio_url": {
+      "type": "string"
+    },
+    "cover_art_url": {
+      "type": "string",
+      "default": ""
+    },
+    "uploader_id": {
+      "type": "string"
+    },
+    "uploader_name": {
+      "type": "string",
+      "default": ""
+    },
+    "uploader_avatar_url": {
+      "type": "string",
+      "default": ""
+    },
+    "album_id": {
+      "type": "string",
+      "default": ""
+    },
+    "track_number": {
+      "type": "integer",
+      "default": 0
+    },
+    "genre": {
+      "type": "string",
+      "enum": [
+        "Pop",
+        "Hip-Hop",
+        "Electronic",
+        "Rock",
+        "R&B",
+        "Jazz",
+        "Classical",
+        "Ambient",
+        "Experimental",
+        "Other"
+      ],
+      "default": "Other"
+    },
+    "play_count": {
+      "type": "integer",
+      "default": 0
+    },
+    "like_count": {
+      "type": "integer",
+      "default": 0
+    },
+    "duration_seconds": {
+      "type": "integer",
+      "default": 0
+    },
+    "description": {
+      "type": "string",
+      "default": ""
+    },
+    "rights_confirmed": {
+      "type": "boolean",
+      "default": false
+    },
+    "is_downloadable": {
+      "type": "boolean",
+      "default": false
+    },
+    "is_published": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "title",
+    "audio_url",
+    "uploader_id",
+    "genre"
+  ]
+}
