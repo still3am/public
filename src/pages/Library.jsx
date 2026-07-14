@@ -11,12 +11,14 @@ import {
   UserCheck,
   Upload,
   Music,
+  Disc,
 } from "lucide-react";
 import Avatar from "@/components/Avatar";
 
 export default function Library() {
   const { user } = useAuth();
   const [playlists, setPlaylists] = useState([]);
+  const [albums, setAlbums] = useState([]);
   const [following, setFollowing] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showCreate, setShowCreate] = useState(false);
@@ -27,12 +29,17 @@ export default function Library() {
   async function load() {
     setLoading(true);
     try {
-      const [pl, followingRows] = await Promise.all([
+      const [pl, al, followingRows] = await Promise.all([
         base44.entities.Playlist.filter(
           { creator_id: user.id },
           "-created_date",
           100
         ),
+        base44.entities.Album.filter(
+          { creator_id: user.id },
+          "-created_date",
+          50
+        ).catch(() => []),
         base44.entities.Follow.filter(
           { follower_id: user.id },
           "-created_date",
@@ -40,6 +47,7 @@ export default function Library() {
         ),
       ]);
       setPlaylists(pl);
+      setAlbums(Array.isArray(al) ? al : []);
       const ids = followingRows.map((f) => f.following_id);
       const followed = ids.length
         ? await Promise.all(
@@ -178,6 +186,35 @@ export default function Library() {
           </div>
         )}
       </div>
+
+      {albums.length > 0 && (
+        <div>
+          <h2 className="text-xl font-extrabold tracking-tight mb-4 flex items-center gap-2">
+            <Disc size={20} /> Your Albums
+          </h2>
+          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-2">
+            {albums.map((a) => (
+              <Link
+                key={a.id}
+                to={`/playlist/album-${a.id}`}
+                className="rounded-xl p-3 hover:bg-foreground/[0.03] transition"
+              >
+                <div className="aspect-square rounded-lg overflow-hidden bg-foreground/10 mb-3 grid place-items-center text-foreground/40">
+                  {a.cover_art_url ? (
+                    <img src={a.cover_art_url} alt="" className="w-full h-full object-cover" />
+                  ) : (
+                    <Disc size={28} />
+                  )}
+                </div>
+                <div className="font-semibold truncate text-sm">{a.title}</div>
+                <div className="text-xs text-foreground/50 truncate">
+                  {a.artisan || a.genre || "Album"}
+                </div>
+              </Link>
+            ))}
+          </div>
+        </div>
+      )}
 
       <div>
         <h2 className="text-xl font-extrabold tracking-tight mb-4">Following</h2>

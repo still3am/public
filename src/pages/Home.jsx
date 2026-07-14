@@ -7,6 +7,7 @@ import {
   Sparkles,
   Upload,
   Music,
+  Disc,
   Loader2,
 } from "lucide-react";
 import TrackCard from "@/components/TrackCard";
@@ -68,6 +69,7 @@ export default function Home() {
   const [byGenre, setByGenre] = useState([]);
   const [fromFollowing, setFromFollowing] = useState([]);
   const [recentlyPlayed, setRecentlyPlayed] = useState([]);
+  const [albums, setAlbums] = useState([]);
 
   useEffect(() => {
     const handler = () => setRecentlyPlayed(getRecentPlays());
@@ -84,7 +86,7 @@ export default function Home() {
     async function load() {
       setLoading(true);
       try {
-        const [t, n, fols] = await Promise.all([
+        const [t, n, fols, al] = await Promise.all([
           base44.entities.Track.filter(
             { is_published: true },
             "-play_count",
@@ -100,12 +102,14 @@ export default function Home() {
                 .filter({ follower_id: user.id }, "-created_date", 200)
                 .catch(() => [])
             : Promise.resolve([]),
+          base44.entities.Album.list("-created_date", 20).catch(() => []),
         ]);
         const followed = new Set(
           (Array.isArray(fols) ? fols : []).map((f) => f.following_id)
         );
         setTrending(t);
         setNewReleases(n.slice(0, 12));
+        setAlbums(Array.isArray(al) ? al : []);
         setFromFollowing(
           n.filter((tk) => followed.has(tk.uploader_id)).slice(0, 12)
         );
@@ -189,6 +193,31 @@ export default function Home() {
       <Section title="New Releases">
         {CardGrid({ tracks: newReleases })}
       </Section>
+      {albums.length > 0 && (
+        <Section title="Albums" icon={Disc}>
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2">
+            {albums.map((a) => (
+              <Link
+                key={a.id}
+                to={`/playlist/album-${a.id}`}
+                className="rounded-xl p-3 hover:bg-foreground/[0.03] transition"
+              >
+                <div className="aspect-square rounded-lg overflow-hidden bg-foreground/10 mb-3 grid place-items-center text-foreground/40">
+                  {a.cover_art_url ? (
+                    <img src={a.cover_art_url} alt="" className="w-full h-full object-cover" />
+                  ) : (
+                    <Disc size={28} />
+                  )}
+                </div>
+                <div className="font-semibold truncate text-sm">{a.title}</div>
+                <div className="text-xs text-foreground/50 truncate">
+                  {a.artisan || a.genre || "Album"}
+                </div>
+              </Link>
+            ))}
+          </div>
+        </Section>
+      )}
       {fromFollowing.length > 0 && (
         <Section title="From People You Follow">
           {CardGrid({ tracks: fromFollowing })}
