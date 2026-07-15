@@ -118,14 +118,14 @@ function UrlAddRow({ onAdded, disabled }) {
     }
   }
   if (!open) {
-    return (
-      <button
-        type="button"
-        onClick={() => setOpen(true)}
-        className="inline-flex items-center gap-1.5 text-xs text-foreground/50 hover:text-foreground hidden">
-        
-        <Link2 size={12} /> Add from URL
-      </button>);
+    return null;
+
+
+
+
+
+
+
 
   }
   return (
@@ -604,10 +604,10 @@ export default function Upload() {
               setMode("single");
             }} />
           
-            <div className="mt-6 p-4 rounded-2xl border border-border bg-foreground/[0.02] text-xs text-foreground/50 hidden">
-              Tip: drag and drop files anywhere on this page to start a Single Track upload, paste a direct audio
-              URL above, or pick a mode. You own the rights to everything you publish.
-            </div>
+            
+
+
+          
           </>
         }
 
