@@ -6,69 +6,69 @@ export default function TrackCard({ track }) {
   const p = usePlayer();
   const isCurrent = p.currentTrack?.id === track.id;
   const isRecent =
-    track.created_date &&
-    Date.now() - new Date(track.created_date).getTime() < 7 * 86400 * 1000;
+  track.created_date &&
+  Date.now() - new Date(track.created_date).getTime() < 7 * 86400 * 1000;
   const isTrending = (track.play_count || 0) > 30;
   return (
     <div
       className="group rounded-xl p-3 hover:bg-foreground/[0.03] transition cursor-pointer relative"
-      onClick={() => p.playTrackAt([track])}
-    >
+      onClick={() => p.playTrackAt([track])}>
+      
       <div className="relative aspect-square rounded-lg overflow-hidden bg-foreground/10 mb-3">
-        {track.cover_art_url ? (
-          <img
-            src={track.cover_art_url}
-            alt=""
-            className={`w-full h-full object-cover transition ${
-              isCurrent ? "" : "group-hover:scale-[1.03]"
-            }`}
-          />
-        ) : (
-          <div className="w-full h-full grid place-items-center text-foreground/30 text-xs font-medium">
+        {track.cover_art_url ?
+        <img
+          src={track.cover_art_url}
+          alt=""
+          className={`w-full h-full object-cover transition ${
+          isCurrent ? "" : "group-hover:scale-[1.03]"}`
+          } /> :
+
+
+        <div className="w-full h-full grid place-items-center text-foreground/30 text-xs font-medium">
             {track.genre}
           </div>
-        )}
+        }
         <button
           onClick={(e) => {
             e.stopPropagation();
-            if (isCurrent) p.togglePlay();
-            else p.playTrackAt([track]);
+            if (isCurrent) p.togglePlay();else
+            p.playTrackAt([track]);
           }}
           className="absolute bottom-2 right-2 w-11 h-11 rounded-full bg-foreground text-background grid place-items-center shadow-lg opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all hover:scale-105"
-          aria-label="Play track"
-        >
-          {isCurrent && p.isPlaying ? (
-            <Pause size={18} />
-          ) : (
-            <Play size={18} />
-          )}
+          aria-label="Play track">
+          
+          {isCurrent && p.isPlaying ?
+          <Pause size={18} /> :
+
+          <Play size={18} />
+          }
         </button>
       </div>
       <Link
         to={`/track/${track.id}`}
         onClick={(e) => e.stopPropagation()}
-        className="block"
-      >
+        className="block">
+        
         <div className="font-semibold truncate text-sm flex items-center gap-1.5">
           <span className="truncate">{track.title}</span>
-          {track.explicit && (
-            <span className="shrink-0 text-[9px] font-extrabold px-1 py-0.5 rounded bg-foreground/15 text-foreground/70">
+          {track.explicit &&
+          <span className="shrink-0 text-[9px] font-extrabold px-1 py-0.5 rounded bg-foreground/15 text-foreground/70">
               E
             </span>
-          )}
+          }
         </div>
         <div className="text-xs text-foreground/50 truncate flex items-center gap-1.5">
           <span className="truncate">{track.artist || track.uploader_name || "Unknown"}</span>
-          {isTrending && (
-            <span className="shrink-0 inline-flex items-center gap-0.5 text-[9px] font-extrabold px-1.5 py-0.5 rounded bg-amber-400/20 text-amber-700">
+          {isTrending &&
+          <span className="shrink-0 inline-flex items-center gap-0.5 text-[9px] font-extrabold px-1.5 py-0.5 rounded bg-amber-400/20 text-amber-700">
               <Flame size={9} /> Top
             </span>
-          )}
-          {!isTrending && isRecent && (
-            <span className="shrink-0 inline-flex text-[9px] font-extrabold px-1.5 py-0.5 rounded bg-emerald-400/20 text-emerald-700">NEW</span>
-          )}
+          }
+          {!isTrending && isRecent &&
+          <span className="shrink-0 inline-flex text-[9px] font-extrabold px-1.5 py-0.5 rounded bg-emerald-400/20 text-emerald-700 hidden">NEW</span>
+          }
         </div>
       </Link>
-    </div>
-  );
+    </div>);
+
 }
