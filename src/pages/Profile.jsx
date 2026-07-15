@@ -364,10 +364,10 @@ export default function Profile() {
               <span className="font-bold">{formatNumber(stats.followers)}</span>{" "}
               <span className="text-foreground/50">followers</span>
             </div>
-            <div className="hidden">
-              <span className="font-bold">{formatNumber(stats.following)}</span>{" "}
-              <span className="text-foreground/50">following</span>
-            </div>
+            
+
+
+            
             <div>
               <span className="font-bold">{formatNumber(stats.plays)}</span>{" "}
               <span className="text-foreground/50">plays</span>
