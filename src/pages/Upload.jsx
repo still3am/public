@@ -1157,7 +1157,7 @@ function SingleForm({ item, update, rights, setRights, publishing, onPublish, ca
           
           <Download size={14} /> Allow download
         </label>
-        <label className="flex items-center gap-2 cursor-pointer">
+        <label className="flex items-center gap-2 cursor-pointer hidden">
           <input
             type="checkbox"
             checked={!!item.is_published}
