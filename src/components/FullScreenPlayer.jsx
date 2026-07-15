@@ -181,7 +181,7 @@ export default function FullScreenPlayer({ onClose, onOpenQueue }) {
         </div>
 
         {/* advanced controls */}
-        <div className="flex items-center justify-between mb-4 text-[11px] gap-2">
+        <div className="flex items-center justify-between text-[11px] gap-2 mb-4 hidden">
           <button
             onClick={() => p.skipBy(-15)}
             className="flex flex-col items-center opacity-80 hover:opacity-100">
