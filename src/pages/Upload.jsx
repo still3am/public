@@ -1157,15 +1157,15 @@ function SingleForm({ item, update, rights, setRights, publishing, onPublish, ca
           
           <Download size={14} /> Allow download
         </label>
-        <label className="flex items-center gap-2 cursor-pointer hidden">
-          <input
-            type="checkbox"
-            checked={!!item.is_published}
-            onChange={(e) => update({ is_published: e.target.checked })} />
-          
-          {item.is_published ? <Eye size={14} /> : <EyeOff size={14} />}
-          {item.is_published ? "Public" : "Draft"}
-        </label>
+        
+
+
+
+
+
+
+
+        
       </div>
 
       <button
