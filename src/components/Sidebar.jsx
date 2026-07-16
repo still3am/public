@@ -93,7 +93,7 @@ export default function Sidebar() {
               {user?.display_name || user?.full_name || "You"}
               
             </div>
-            <div className="text-xs text-foreground/50 truncate hidden">{user?.email}</div>
+            
           </div>
         </NavLink>
       </div>
