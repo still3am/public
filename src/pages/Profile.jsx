@@ -182,6 +182,10 @@ export default function Profile() {
     try {
       const { file_url } = await base44.integrations.Core.UploadFile({ file });
       setForm((f) => ({ ...f, avatar_url: file_url }));
+    } catch {
+      alert(
+        "Profile image uploads are temporarily unavailable. Please try again later."
+      );
     } finally {
       setUploadingAvatar(false);
     }
@@ -192,6 +196,10 @@ export default function Profile() {
     try {
       const { file_url } = await base44.integrations.Core.UploadFile({ file });
       setForm((f) => ({ ...f, banner_url: file_url }));
+    } catch {
+      alert(
+        "Profile image uploads are temporarily unavailable. Please try again later."
+      );
     } finally {
       setUploadingBanner(false);
     }

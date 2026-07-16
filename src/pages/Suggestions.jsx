@@ -28,6 +28,7 @@ export default function Suggestions() {
   const [title, setTitle] = useState("");
   const [details, setDetails] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  const [sort, setSort] = useState("recent");
 
   async function load() {
     setLoading(true);
@@ -86,6 +87,14 @@ export default function Suggestions() {
   }
 
   const hasVoted = (s) => !!user?.id && (s.voter_ids || []).includes(user.id);
+
+  const sortedItems =
+    sort === "top"
+      ? [...items].sort(
+          (a, b) =>
+            (b.voter_ids?.length || 0) - (a.voter_ids?.length || 0)
+        )
+      : items;
 
   return (
     <PullToRefresh onRefresh={load}>
@@ -157,6 +166,27 @@ export default function Suggestions() {
           </div>
         </form>
 
+        {items.length > 0 && (
+          <div className="flex items-center gap-1.5 mb-4">
+            {[
+              { id: "recent", label: "Recent" },
+              { id: "top", label: "Top voted" },
+            ].map((opt) => (
+              <button
+                key={opt.id}
+                onClick={() => setSort(opt.id)}
+                className={`px-3 py-1.5 rounded-full text-xs font-semibold border transition ${
+                  sort === opt.id
+                    ? "bg-foreground text-background border-foreground"
+                    : "border-border text-foreground/60 hover:bg-foreground/5"
+                }`}
+              >
+                {opt.label}
+              </button>
+            ))}
+          </div>
+        )}
+
         {loading && !items.length ? (
           <div className="py-16 grid place-items-center">
             <Loader2 className="animate-spin" />
@@ -169,7 +199,7 @@ export default function Suggestions() {
           />
         ) : (
           <div className="space-y-2">
-            {items.map((s) => (
+            {sortedItems.map((s) => (
               <SuggestionCard
                 key={s.id}
                 s={s}

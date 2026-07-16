@@ -185,6 +185,25 @@ export default function TrackDetail() {
         setMenuOpen(false);
       },
     });
+  if (isOwner && track.album_id)
+    menuItems.push({
+      icon: Disc,
+      label: "Remove from album",
+      onClick: () => {
+        if (!confirm("Remove this track from its album?")) {
+          setMenuOpen(false);
+          return;
+        }
+        base44.entities.Track
+          .update(track.id, { album_id: "", track_number: 0 })
+          .then(() => {
+            setTrack((prev) => ({ ...prev, album_id: "" }));
+            setAlbum(null);
+            setMenuOpen(false);
+          })
+          .catch(() => alert("Could not update the track. Try again later."));
+      },
+    });
   menuItems.push({
     icon: Link2,
     label: copied ? "Link copied" : "Copy link",
