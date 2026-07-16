@@ -16,6 +16,7 @@ import {
   Trash2,
   X,
   Save,
+  Share2,
 } from "lucide-react";
 
 export default function PlaylistDetail() {
@@ -33,9 +34,20 @@ export default function PlaylistDetail() {
   const [uploadingCover, setUploadingCover] = useState(false);
   const [showDelete, setShowDelete] = useState(false);
   const [deleting, setDeleting] = useState(false);
+  const [copied, setCopied] = useState(false);
   const nav = useNavigate();
 
   const isOwner = playlist?.creator_id === user?.id;
+
+  function shareLink() {
+    if (!playlist) return;
+    navigator.clipboard
+      ?.writeText(`${window.location.origin}/playlist/${playlist.id}`)
+      .then(() => {
+        setCopied(true);
+        setTimeout(() => setCopied(false), 1500);
+      });
+  }
 
   async function load() {
     setLoading(true);
@@ -147,6 +159,14 @@ export default function PlaylistDetail() {
               />
             </label>
           )}
+          {editing && (
+            <input
+              value={form.cover_art_url}
+              onChange={(e) => setForm((f) => ({ ...f, cover_art_url: e.target.value }))}
+              placeholder="…or paste cover URL"
+              className="block mt-2 w-36 md:w-44 text-xs px-2 py-1.5 rounded-lg border border-border bg-white"
+            />
+          )}
         </div>
         <div className="flex-1 min-w-0">
           <div className="text-xs uppercase tracking-wider text-foreground/50 font-semibold mb-1">
@@ -190,6 +210,12 @@ export default function PlaylistDetail() {
                 <Play size={16} /> Play
               </button>
             )}
+            <button
+              onClick={shareLink}
+              className="px-4 py-2 rounded-full border border-border text-sm font-semibold flex items-center gap-2"
+            >
+              <Share2 size={14} /> {copied ? "Copied!" : "Share"}
+            </button>
             {isOwner && !editing && (
               <>
                 <button

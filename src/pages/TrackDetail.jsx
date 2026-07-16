@@ -17,8 +17,12 @@ import {
   Flag,
   Shield,
   Pencil,
-  Music2 } from
+  Music2,
+  Share2,
+  Disc,
+  Music } from
 "lucide-react";
+import TrackRow from "@/components/TrackRow";
 
 export default function TrackDetail() {
   const { id } = useParams();
@@ -32,6 +36,9 @@ export default function TrackDetail() {
   const [uploader, setUploader] = useState(null);
   const [reporting, setReporting] = useState(false);
   const [editing, setEditing] = useState(false);
+  const [album, setAlbum] = useState(null);
+  const [moreTracks, setMoreTracks] = useState([]);
+  const [copied, setCopied] = useState(false);
 
   async function load() {
     setLoading(true);
@@ -39,14 +46,48 @@ export default function TrackDetail() {
       const t = await base44.entities.Track.get(id).catch(() => null);
       setTrack(t);
       if (t?.uploader_id) {
-        const u = await base44.entities.User.
-        get(t.uploader_id).
-        catch(() => null);
+        const u = await base44.entities.User
+          .get(t.uploader_id)
+          .catch(() => null);
         setUploader(u);
+      }
+      if (t?.album_id) {
+        base44.entities.Album
+          .get(t.album_id)
+          .then(setAlbum)
+          .catch(() => setAlbum(null));
+      } else {
+        setAlbum(null);
+      }
+      if (t?.artist) {
+        const all = await base44.entities.Track
+          .list("-play_count", 50)
+          .catch(() => []);
+        const lc = t.artist.toLowerCase();
+        setMoreTracks(
+          all.filter(
+            (x) =>
+              x.id !== t.id &&
+              (x.artist || "").toLowerCase() === lc &&
+              x.is_published !== false
+          ).slice(0, 6)
+        );
+      } else {
+        setMoreTracks([]);
       }
     } finally {
       setLoading(false);
     }
+  }
+
+  function shareLink() {
+    if (!track) return;
+    navigator.clipboard
+      ?.writeText(`${window.location.origin}/track/${track.id}`)
+      .then(() => {
+        setCopied(true);
+        setTimeout(() => setCopied(false), 1500);
+      });
   }
 
   useEffect(() => {
@@ -100,9 +141,13 @@ export default function TrackDetail() {
           }
         </div>
         <div className="flex-1 min-w-0">
-          <div className="text-xs uppercase tracking-wider text-foreground/50 font-semibold mb-1">
+          <Link
+            to="/discover"
+            state={{ initialGenre: track.genre }}
+            className="text-xs uppercase tracking-wider text-foreground/50 font-semibold mb-1 hover:underline inline-block"
+          >
             {track.genre}
-          </div>
+          </Link>
           <div className="flex items-center gap-2 mb-1">
             <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight">
               {track.title}
@@ -195,6 +240,12 @@ export default function TrackDetail() {
               
               Add to queue
             </button>
+            <button
+              onClick={shareLink}
+              className="px-3 py-2.5 rounded-full border border-border text-sm font-semibold flex items-center gap-1.5">
+              
+              <Share2 size={14} /> {copied ? "Copied!" : "Share"}
+            </button>
             {track.is_downloadable &&
             <a
               href={track.audio_url}
@@ -240,6 +291,47 @@ export default function TrackDetail() {
           </h2>
           <div className="whitespace-pre-line text-sm text-foreground/70 leading-relaxed max-h-96 overflow-y-auto px-1">
             {track.lyrics_text}
+          </div>
+        </div>
+      }
+
+      {album &&
+      <Link
+        to={`/album/${album.id}`}
+        className="flex items-center gap-3 p-3 rounded-xl bg-foreground/[0.03] hover:bg-foreground/[0.06] transition mb-6">
+        
+          <div className="w-12 h-12 rounded-lg overflow-hidden bg-foreground/10 grid place-items-center text-foreground/40 shrink-0">
+            {album.cover_art_url ?
+            <img src={album.cover_art_url} alt="" className="w-full h-full object-cover" /> :
+
+            <Disc size={20} />
+            }
+          </div>
+          <div className="min-w-0">
+            <div className="text-xs uppercase tracking-wider text-foreground/50 font-semibold mb-0.5">
+              Part of album
+            </div>
+            <div className="text-sm font-semibold truncate">{album.title}</div>
+          </div>
+        </Link>
+      }
+
+      {moreTracks.length > 0 &&
+      <div className="mb-6">
+          <h2 className="text-lg font-extrabold tracking-tight mb-3 flex items-center gap-2">
+            <Music size={18} /> More from {track.artist}
+          </h2>
+          <div className="space-y-0.5">
+            {moreTracks.map((t, i) =>
+          <TrackRow
+            key={t.id}
+            track={t}
+            index={i}
+            liked={likes.likedIds.has(t.id)}
+            onLikeToggle={likes.toggleLike}
+            onAddToPlaylist={(tk) => ap.addToPlaylist(tk.id)} />
+
+          )}
           </div>
         </div>
       }
