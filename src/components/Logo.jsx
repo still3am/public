@@ -1,7 +1,7 @@
 export const LOGO_URL =
 "https://media.base44.com/images/public/6a5676aa61ea8a51237aa4ee/89dfc5da1_IMG_9177.png";
 
-export default function Logo({ size = 26, className = "" }) {
+export default function Logo({ size = 34, className = "" }) {
   return (
     <img
       src={LOGO_URL}

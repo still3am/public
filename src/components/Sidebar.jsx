@@ -42,7 +42,7 @@ export default function Sidebar() {
   return (
     <aside className="hidden md:flex flex-col w-64 shrink-0 border-r border-border bg-background h-screen sticky top-0">
       <div className="px-6 py-6 flex items-center">
-        <Logo size={26} />
+        <Logo size={40} />
       </div>
       <nav className="px-3 flex-1 flex flex-col gap-1 overflow-y-auto pb-2">
         <NavLink to="/" className={navLinkCls} end>
