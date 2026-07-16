@@ -4,9 +4,11 @@ import Sidebar from "@/components/Sidebar";
 import MobileTabBar from "@/components/MobileTabBar";
 import MobileTopBar from "@/components/MobileTopBar";
 import PlayerBar from "@/components/PlayerBar";
+import { useScrollRestore } from "@/hooks/useScrollRestore";
 
 export default function Layout() {
   const location = useLocation();
+  useScrollRestore();
   return (
     <div className="flex min-h-screen bg-background text-foreground">
       <Sidebar />

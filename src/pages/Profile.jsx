@@ -8,6 +8,8 @@ import { usePlayer } from "@/context/PlayerContext";
 import EmptyState from "@/components/EmptyState";
 import TrackRow from "@/components/TrackRow";
 import Avatar from "@/components/Avatar";
+import PullToRefresh from "@/components/PullToRefresh";
+import BackHeader from "@/components/BackHeader";
 import { formatNumber } from "@/lib/audio-utils";
 import {
   Loader2,
@@ -240,7 +242,7 @@ export default function Profile() {
     }
   }
 
-  if (loading)
+  if (loading && !profile)
   return (
     <div className="py-20 grid place-items-center">
         <Loader2 className="animate-spin" />
@@ -254,7 +256,9 @@ export default function Profile() {
   const standaloneTracks = tracks.filter((t) => !t.album_id);
 
   return (
+    <PullToRefresh onRefresh={load}>
     <div className="max-w-5xl mx-auto">
+      {!isOwn && <BackHeader title={displayName} />}
       <div className="relative h-40 md:h-56 rounded-2xl bg-gradient-to-br from-foreground/[0.08] to-foreground/[0.03] overflow-hidden mb-4">
         {banner && <img src={banner} alt="" className="w-full h-full object-cover" />}
         {editMode &&
@@ -715,6 +719,7 @@ export default function Profile() {
       }
 
       {ap.modal}
-    </div>);
+    </div>
+    </PullToRefresh>);
 
 }

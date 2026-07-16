@@ -6,6 +6,7 @@ import { useLikes } from "@/hooks/useLikes";
 import { useAddToPlaylist } from "@/hooks/useAddToPlaylist";
 import { usePlayer } from "@/context/PlayerContext";
 import EmptyState from "@/components/EmptyState";
+import BackHeader from "@/components/BackHeader";
 import TrackRow from "@/components/TrackRow";
 import {
   Loader2,
@@ -124,6 +125,7 @@ export default function AlbumDetail() {
 
   return (
     <div className="max-w-5xl mx-auto">
+      <BackHeader title="Album" />
       <div className="flex flex-col md:flex-row md:items-end gap-5 mb-8">
         <div className="relative shrink-0">
           <div className="w-40 h-40 md:w-48 md:h-48 rounded-2xl overflow-hidden bg-foreground/10 grid place-items-center text-foreground/40">

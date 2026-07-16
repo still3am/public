@@ -6,6 +6,7 @@ import { useAddToPlaylist } from "@/hooks/useAddToPlaylist";
 import TrackRow from "@/components/TrackRow";
 import EmptyState from "@/components/EmptyState";
 import { Music, Loader2 } from "lucide-react";
+import PullToRefresh from "@/components/PullToRefresh";
 
 export default function TopCharts() {
   const { user } = useAuth();
@@ -14,15 +15,27 @@ export default function TopCharts() {
   const [tracks, setTracks] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  async function load() {
+    setLoading(true);
+    try {
+      const t = await base44.entities.Track.filter(
+        { is_published: true },
+        "-play_count",
+        100
+      );
+      setTracks(t);
+    } catch {
+      // ignore on refresh
+    } finally {
+      setLoading(false);
+    }
+  }
+
   useEffect(() => {
-    base44.entities.Track
-      .filter({ is_published: true }, "-play_count", 100)
-      .then(setTracks)
-      .catch(() => {})
-      .finally(() => setLoading(false));
+    load();
   }, []);
 
-  if (loading)
+  if (loading && !tracks.length)
     return (
       <div className="py-20 grid place-items-center">
         <Loader2 className="animate-spin" />
@@ -31,6 +44,7 @@ export default function TopCharts() {
   if (!tracks.length) return <EmptyState icon={Music} title="No tracks yet" />;
 
   return (
+    <PullToRefresh onRefresh={load}>
     <div>
       <h1 className="text-2xl font-extrabold tracking-tight mb-1">Top Charts</h1>
       <p className="text-sm text-foreground/50 mb-5">
@@ -49,5 +63,6 @@ export default function TopCharts() {
         ))}
       </div>
     </div>
+    </PullToRefresh>
   );
 }

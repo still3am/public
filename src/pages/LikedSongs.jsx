@@ -7,6 +7,7 @@ import EmptyState from "@/components/EmptyState";
 import TrackRow from "@/components/TrackRow";
 import { Heart, Loader2, Play } from "lucide-react";
 import { usePlayer } from "@/context/PlayerContext";
+import PullToRefresh from "@/components/PullToRefresh";
 
 export default function LikedSongs() {
   const { user } = useAuth();
@@ -16,23 +17,25 @@ export default function LikedSongs() {
   const [tracks, setTracks] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    async function load() {
-      try {
-        const all = await base44.entities.Track.list("-created_date", 200);
-        setTracks(
-          all.filter(
-            (t) => likes.likedIds.has(t.id) && t.is_published !== false
-          )
-        );
-      } finally {
-        setLoading(false);
-      }
+  async function load() {
+    try {
+      const all = await base44.entities.Track.list("-created_date", 200);
+      setTracks(
+        all.filter(
+          (t) => likes.likedIds.has(t.id) && t.is_published !== false
+        )
+      );
+    } finally {
+      setLoading(false);
     }
+  }
+
+  useEffect(() => {
     if (likes.ready) load();
   }, [likes.ready, likes.likedIds]);
 
   return (
+    <PullToRefresh onRefresh={load}>
     <div>
       <div className="flex items-center gap-4 mb-8">
         <div className="w-20 h-20 md:w-28 md:h-28 rounded-2xl bg-gradient-to-br from-foreground/15 to-foreground/5 grid place-items-center">
@@ -60,7 +63,7 @@ export default function LikedSongs() {
         </button>
       )}
 
-      {!likes.ready || loading ? (
+      {!likes.ready || (loading && !tracks.length) ? (
         <div className="py-20 grid place-items-center">
           <Loader2 className="animate-spin" />
         </div>
@@ -86,5 +89,6 @@ export default function LikedSongs() {
       )}
       {ap.modal}
     </div>
+    </PullToRefresh>
   );
 }

@@ -13,6 +13,7 @@ import { useAuth } from "@/lib/AuthContext";
 import { useLikes } from "@/hooks/useLikes";
 import { useAddToPlaylist } from "@/hooks/useAddToPlaylist";
 import TrackRow from "@/components/TrackRow";
+import PullToRefresh from "@/components/PullToRefresh";
 
 const TABS = [
 { id: "tracks", label: "Tracks", icon: Music },
@@ -87,6 +88,7 @@ export default function Search() {
   }, [q]);
 
   return (
+    <PullToRefresh onRefresh={() => runSearch(q)}>
     <div>
       <div className="relative mb-6">
         <SearchIcon
@@ -123,7 +125,7 @@ export default function Search() {
       <p className="text-sm text-foreground/50 text-center py-12">
           Start typing to search across the PUBLIC network.
         </p> :
-      loading ?
+      loading && !data.tracks.length && !data.albums.length && !data.playlists.length && !data.people.length ?
       <div className="py-12 text-center">
           <Loader2 className="animate-spin inline" />
         </div> :
@@ -261,6 +263,7 @@ export default function Search() {
         </div>
       }
       {ap.modal}
-    </div>);
+    </div>
+    </PullToRefresh>);
 
 }

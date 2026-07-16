@@ -15,6 +15,8 @@ import {
   Trash2,
 } from "lucide-react";
 import Avatar from "@/components/Avatar";
+import PullToRefresh from "@/components/PullToRefresh";
+import BottomSheetSelect from "@/components/BottomSheetSelect";
 
 export default function Library() {
   const { user } = useAuth();
@@ -99,7 +101,7 @@ export default function Library() {
     }
   }
 
-  if (loading)
+  if (loading && !playlists.length && !albums.length)
     return (
       <div className="py-20 grid place-items-center">
         <Loader2 className="animate-spin" />
@@ -117,20 +119,22 @@ export default function Library() {
   });
 
   return (
+    <PullToRefresh onRefresh={load}>
     <div className="space-y-10">
       <div>
         <div className="flex items-center justify-between mb-4 gap-2">
           <h2 className="text-xl font-extrabold tracking-tight">Your Playlists</h2>
           <div className="flex items-center gap-2">
-            <select
+            <BottomSheetSelect
               value={sort}
-              onChange={(e) => setSort(e.target.value)}
-              className="px-2 py-1.5 rounded-lg border border-border bg-white text-xs font-medium"
-            >
-              <option value="recent">Recent</option>
-              <option value="alpha">A–Z</option>
-              <option value="count">Tracks</option>
-            </select>
+              onChange={setSort}
+              options={[
+                { value: "recent", label: "Recent" },
+                { value: "alpha", label: "A–Z" },
+                { value: "count", label: "Tracks" },
+              ]}
+              className="text-xs font-medium"
+            />
             <button
               onClick={() => setShowCreate((v) => !v)}
               className="px-3 py-1.5 rounded-full bg-foreground text-background text-xs font-semibold flex items-center gap-1.5"
@@ -301,5 +305,6 @@ export default function Library() {
         </div>
       )}
     </div>
+    </PullToRefresh>
   );
 }

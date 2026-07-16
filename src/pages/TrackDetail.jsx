@@ -7,6 +7,7 @@ import { useAddToPlaylist } from "@/hooks/useAddToPlaylist";
 import { usePlayer } from "@/context/PlayerContext";
 import EmptyState from "@/components/EmptyState";
 import EditTrackModal from "@/components/EditTrackModal";
+import BackHeader from "@/components/BackHeader";
 import {
   Loader2,
   Play,
@@ -15,7 +16,6 @@ import {
   Download,
   Flag,
   Shield,
-  ArrowLeft,
   Pencil,
   Music2 } from
 "lucide-react";
@@ -87,12 +87,7 @@ export default function TrackDetail() {
 
   return (
     <div className="max-w-2xl mx-auto">
-      <Link
-        to="/"
-        className="inline-flex items-center gap-1 text-sm text-foreground/50 hover:text-foreground mb-6">
-        
-        <ArrowLeft size={14} /> Back
-      </Link>
+      <BackHeader title="Track" />
 
       <div className="flex flex-col md:flex-row gap-6 mb-6">
         <div className="w-44 h-44 md:w-56 md:h-56 rounded-2xl overflow-hidden bg-foreground/10 shrink-0">

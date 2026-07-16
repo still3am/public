@@ -5,6 +5,7 @@ import { GENRES } from "@/lib/audio-utils";
 import TrackCard from "@/components/TrackCard";
 import EmptyState from "@/components/EmptyState";
 import { Music, Loader2, Plus } from "lucide-react";
+import PullToRefresh from "@/components/PullToRefresh";
 
 export default function Discover() {
   const loc = useLocation();
@@ -32,6 +33,7 @@ export default function Discover() {
   }, [genre]);
 
   return (
+    <PullToRefresh onRefresh={load}>
     <div>
       <h1 className="text-2xl font-extrabold tracking-tight mb-1">Discover</h1>
       <p className="text-sm text-foreground/50 mb-5">Browse PUBLIC by genre.</p>
@@ -78,7 +80,7 @@ export default function Discover() {
           ))}
         </div>
       )}
-      {loading ? (
+      {loading && !tracks.length ? (
         <div className="py-16 grid place-items-center">
           <Loader2 className="animate-spin" />
         </div>
@@ -96,5 +98,6 @@ export default function Discover() {
         </div>
       )}
     </div>
+    </PullToRefresh>
   );
 }

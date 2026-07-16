@@ -104,6 +104,16 @@
     touch-action: manipulation;
   }
 
+  button:focus-visible, a:focus-visible, [role="button"]:focus-visible,
+  input:focus-visible, select:focus-visible, textarea:focus-visible {
+    outline: 2px solid hsl(var(--ring));
+    outline-offset: 2px;
+  }
+  button:active:not(:disabled), a:active, [role="button"]:active {
+    transform: scale(0.98);
+    transition: transform .08s ease;
+  }
+
   @media (max-width: 768px) {
     input, textarea, select { font-size: 16px !important; }
     img { max-width: 100%; height: auto; }
@@ -119,6 +129,7 @@
   }
 
   @layer utilities {
+  .tap-target { min-width: 44px; min-height: 44px; display: inline-flex; align-items: center; justify-content: center; }
   .no-scrollbar { scrollbar-width: none; -ms-overflow-style: none; }
   .no-scrollbar::-webkit-scrollbar { display: none; }
   *::-webkit-scrollbar { width: 0 !important; height: 0 !important; display: none !important; }

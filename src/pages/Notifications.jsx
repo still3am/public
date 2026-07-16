@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import { useAuth } from "@/lib/AuthContext";
 import EmptyState from "@/components/EmptyState";
+import PullToRefresh from "@/components/PullToRefresh";
 import { timeAgo } from "@/lib/audio-utils";
 import { Bell, Heart, UserPlus, Music, Loader2 } from "lucide-react";
 
@@ -71,7 +72,7 @@ export default function Notifications() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user?.id]);
 
-  if (loading)
+  if (loading && !items.length)
     return (
       <div className="py-20 grid place-items-center">
         <Loader2 className="animate-spin" />
@@ -87,6 +88,7 @@ export default function Notifications() {
     );
 
   return (
+    <PullToRefresh onRefresh={load}>
     <div>
       <h1 className="text-2xl font-extrabold tracking-tight mb-6">Notifications</h1>
       <div className="space-y-1">
@@ -117,5 +119,6 @@ export default function Notifications() {
         })}
       </div>
     </div>
+    </PullToRefresh>
   );
 }
