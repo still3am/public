@@ -91,7 +91,7 @@ export default function ProfileQRModal({ url, name, avatar, onClose }) {
             </a>
             <button
               onClick={copy}
-              className="rounded-full border border-border font-semibold flex items-center justify-center gap-2 hover:bg-foreground/5 transition text-sm px-6">
+              className="rounded-full border border-border font-semibold flex items-center justify-center gap-2 hover:bg-foreground/5 transition text-sm px-8 py-2">
               
               <Copy size={14} /> Link
             </button>
