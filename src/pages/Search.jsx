@@ -53,8 +53,8 @@ export default function Search() {
       const filtered = {
         tracks: tracks.filter(
           (t) =>
-          t.is_published !== false &&
-          (t.title?.toLowerCase().includes(Q) ||
+          t.is_published !== false && (
+          t.title?.toLowerCase().includes(Q) ||
           t.artist?.toLowerCase().includes(Q) ||
           t.uploader_name?.toLowerCase().includes(Q))
         ),
@@ -92,81 +92,81 @@ export default function Search() {
     <div>
       <div className="relative mb-6">
         <SearchIcon
-          size={18}
-          className="absolute left-4 top-1/2 -translate-y-1/2 text-foreground/40" />
+            size={18}
+            className="absolute left-4 top-1/2 -translate-y-1/2 text-foreground/40" />
         
         <input
-          autoFocus
-          value={q}
-          onChange={(e) => setQ(e.target.value)}
-          placeholder="Search tracks, albums, artists…"
-          className="w-full pl-11 pr-4 py-3 rounded-full border border-border bg-white text-sm font-medium focus:outline-none focus:ring-2 focus:ring-foreground/10" />
+            autoFocus
+            value={q}
+            onChange={(e) => setQ(e.target.value)}
+            placeholder="Search tracks, albums, artists…"
+            className="w-full pl-11 pr-4 py-3 rounded-full border border-border bg-white text-sm font-medium focus:outline-none focus:ring-2 focus:ring-foreground/10" />
         
       </div>
 
-      <div className="flex gap-1 mb-6 border-b border-border tab-strip no-scrollbar">
+      <div className="flex gap-1 mb-6 border-b border-border tab-strip no-scrollbar hidden">
         {tabs.map(({ id, label, icon: Icon }) =>
-        <button
-          key={id}
-          onClick={() => setTab(id)}
-          className={`flex items-center gap-1.5 px-4 py-3 text-sm font-medium border-b-2 -mb-px transition shrink-0 whitespace-nowrap ${
-          tab === id ?
-          "border-foreground text-foreground" :
-          "border-transparent text-foreground/50 hover:text-foreground"}`
-          }
-          >
+          <button
+            key={id}
+            onClick={() => setTab(id)}
+            className={`flex items-center gap-1.5 px-4 py-3 text-sm font-medium border-b-2 -mb-px transition shrink-0 whitespace-nowrap ${
+            tab === id ?
+            "border-foreground text-foreground" :
+            "border-transparent text-foreground/50 hover:text-foreground"}`
+            }>
+            
           
             <Icon size={16} /> {label}
           </button>
-        )}
+          )}
       </div>
 
       {!q.trim() ?
-      <p className="text-sm text-foreground/50 text-center py-12">
+        <p className="text-sm text-foreground/50 text-center py-12">
           Start typing to search across the PUBLIC network.
         </p> :
-      loading && !data.tracks.length && !data.albums.length && !data.playlists.length && !data.people.length ?
-      <div className="py-12 text-center">
+        loading && !data.tracks.length && !data.albums.length && !data.playlists.length && !data.people.length ?
+        <div className="py-12 text-center">
           <Loader2 className="animate-spin inline" />
         </div> :
 
-      <div>
+        <div>
           {tab === "tracks" && (
-        data.tracks.length ?
-        <div className="space-y-0.5">
+          data.tracks.length ?
+          <div className="space-y-0.5">
                 {data.tracks.map((t, i) =>
-          <TrackRow
-            key={t.id}
-            track={t}
-            index={i}
-            liked={likes.likedIds.has(t.id)}
-            onLikeToggle={likes.toggleLike}
-            onAddToPlaylist={(tk) => ap.addToPlaylist(tk.id)} />
+            <TrackRow
+              key={t.id}
+              track={t}
+              index={i}
+              liked={likes.likedIds.has(t.id)}
+              onLikeToggle={likes.toggleLike}
+              onAddToPlaylist={(tk) => ap.addToPlaylist(tk.id)} />
 
-          )}
+            )}
               </div> :
 
-        <p className="text-sm text-foreground/50 text-center py-12">
+          <p className="text-sm text-foreground/50 text-center py-12">
                 No tracks found.
               </p>)
-        }
+          }
           {tab === "albums" && (
-        data.albums.length ?
-        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-2">
+          data.albums.length ?
+          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-2">
                 {data.albums.map((a) =>
-          <Link
-            key={a.id}
-            to={`/album/${a.id}`}
-            className="rounded-xl p-3 hover:bg-foreground/[0.03] transition">
+            <Link
+              key={a.id}
+              to={`/album/${a.id}`}
+              className="rounded-xl p-3 hover:bg-foreground/[0.03] transition">
             
                     <div className="aspect-square rounded-lg overflow-hidden bg-foreground/10 mb-3">
                       {a.cover_art_url &&
-              <img
-                src={a.cover_art_url}
-                alt=""
-                className="w-full h-full object-cover" />
+                <img
+                  src={a.cover_art_url}
+                  alt=""
+                  className="w-full h-full object-cover" />
 
-              }
+                }
                     </div>
                     <div className="font-semibold truncate text-sm">
                       {a.title}
@@ -175,32 +175,32 @@ export default function Search() {
                       Album
                     </div>
                   </Link>
-          )}
+            )}
               </div> :
 
-        <p className="text-sm text-foreground/50 text-center py-12">
+          <p className="text-sm text-foreground/50 text-center py-12">
                 No albums found.
               </p>)
-        }
+          }
           {tab === "playlists" && (
-        data.playlists.length ?
-        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-2">
+          data.playlists.length ?
+          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-2">
                 {data.playlists.map((pl) =>
-          <Link
-            key={pl.id}
-            to={`/playlist/${pl.id}`}
-            className="rounded-xl p-3 hover:bg-foreground/[0.03] transition">
+            <Link
+              key={pl.id}
+              to={`/playlist/${pl.id}`}
+              className="rounded-xl p-3 hover:bg-foreground/[0.03] transition">
             
                     <div className="aspect-square rounded-lg overflow-hidden bg-foreground/10 mb-3 grid place-items-center text-foreground/40">
                       {pl.cover_art_url ?
-              <img
-                src={pl.cover_art_url}
-                alt=""
-                className="w-full h-full object-cover" /> :
+                <img
+                  src={pl.cover_art_url}
+                  alt=""
+                  className="w-full h-full object-cover" /> :
 
 
-              <ListMusic size={28} />
-              }
+                <ListMusic size={28} />
+                }
                     </div>
                     <div className="font-semibold truncate text-sm">
                       {pl.name}
@@ -210,58 +210,58 @@ export default function Search() {
                       {(pl.track_ids?.length || 0) === 1 ? "" : "s"}
                     </div>
                   </Link>
-          )}
+            )}
               </div> :
 
-        <p className="text-sm text-foreground/50 text-center py-12">
+          <p className="text-sm text-foreground/50 text-center py-12">
                 No playlists found.
               </p>)
-        }
+          }
           {tab === "people" &&
-        <div className="space-y-1">
+          <div className="space-y-1">
               {data.people.length === 0 ?
-          <p className="text-sm text-foreground/50 text-center py-12">
+            <p className="text-sm text-foreground/50 text-center py-12">
                   No people found.
                 </p> :
 
-          data.people.map((u) =>
-          <Link
-            key={u.id}
-            to={`/profile/${u.id}`}
-            className="flex items-center gap-3 p-2 rounded-lg hover:bg-foreground/[0.03]">
+            data.people.map((u) =>
+            <Link
+              key={u.id}
+              to={`/profile/${u.id}`}
+              className="flex items-center gap-3 p-2 rounded-lg hover:bg-foreground/[0.03]">
             
                     {u.avatar_url ?
-            <img
-              src={u.avatar_url}
-              alt=""
-              className="w-10 h-10 rounded-full object-cover" /> :
+              <img
+                src={u.avatar_url}
+                alt=""
+                className="w-10 h-10 rounded-full object-cover" /> :
 
 
-            <div className="w-10 h-10 rounded-full bg-foreground/10 grid place-items-center font-semibold text-foreground/70">
+              <div className="w-10 h-10 rounded-full bg-foreground/10 grid place-items-center font-semibold text-foreground/70">
                         {(u.display_name || u.email || "?").charAt(0)}
                       </div>
-            }
+              }
                     <div className="min-w-0">
                       <div className="text-sm font-semibold truncate flex items-center gap-1">
                         {u.display_name || u.full_name || "Unnamed"}
                         {u.is_verified && <Shield size={12} />}
                         {u.can_upload &&
-                <span className="text-[10px] px-1.5 py-0.5 rounded bg-foreground/10 text-foreground/60">
+                  <span className="text-[10px] px-1.5 py-0.5 rounded bg-foreground/10 text-foreground/60">
                             uploader
                           </span>
-                }
+                  }
                       </div>
                       <div className="text-xs text-foreground/50 truncate">
                         {u.email}
                       </div>
                     </div>
                   </Link>
-          )
-          }
+            )
+            }
             </div>
-        }
+          }
         </div>
-      }
+        }
       {ap.modal}
     </div>
     </PullToRefresh>);
