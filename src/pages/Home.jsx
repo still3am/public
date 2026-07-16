@@ -166,12 +166,12 @@ export default function Home() {
           className="absolute -right-6 -top-6 opacity-20 h-40 pointer-events-none select-none"
           style={{ width: "auto" }} />
         
-        <div className="flex items-center gap-3 mb-4 hidden">
-          <Logo size={28} />
-          <span className="text-sm font-bold tracking-[0.2em] uppercase text-foreground/60">
-            PUBLIC
-          </span>
-        </div>
+        
+
+
+
+
+        
         <h1 className="text-3xl md:text-5xl font-extrabold tracking-tighter mb-2 max-w-2xl">
           Made by the people, for the people.
         </h1>
