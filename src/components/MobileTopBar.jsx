@@ -1,5 +1,4 @@
 import { Link, useLocation } from "react-router-dom";
-import Logo from "@/components/Logo";
 
 const TITLES = {
   "/search": "Search",
@@ -25,8 +24,7 @@ export default function MobileTopBar() {
     <header className="md:hidden sticky top-0 z-20 bg-background/85 backdrop-blur-xl border-b border-border top-bar-safe">
       <div className="h-14 px-4 flex items-center">
         {isHome ? (
-          <Link to="/" className="flex items-center gap-2">
-            <Logo size={26} />
+          <Link to="/" className="flex items-center">
             <span className="font-extrabold tracking-tight text-lg leading-none">
               PUBLIC.
             </span>

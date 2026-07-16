@@ -12,7 +12,6 @@ import {
   Bell } from
 "lucide-react";
 import { useEffect, useState } from "react";
-import Logo from "@/components/Logo";
 import Avatar from "@/components/Avatar";
 import { useAuth } from "@/lib/AuthContext";
 import { base44 } from "@/api/base44Client";
@@ -39,8 +38,7 @@ export default function Sidebar() {
 
   return (
     <aside className="hidden md:flex flex-col w-64 shrink-0 border-r border-border bg-white h-screen sticky top-0">
-      <div className="px-6 py-6 flex items-center gap-2.5">
-        <Logo size={26} />
+      <div className="px-6 py-6 flex items-center">
         <span className="text-base font-extrabold tracking-tight">PUBLIC.</span>
       </div>
       <nav className="px-3 flex-1 flex flex-col gap-1 overflow-y-auto">
