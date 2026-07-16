@@ -12,7 +12,6 @@ import {
 } from "lucide-react";
 import TrackCard from "@/components/TrackCard";
 import EmptyState from "@/components/EmptyState";
-import Logo, { LOGO_URL } from "@/components/Logo";
 import { getRecentPlays } from "@/lib/recentPlays";
 import PullToRefresh from "@/components/PullToRefresh";
 
@@ -170,14 +169,7 @@ export default function Home() {
                 "radial-gradient(circle at 18% 22%, hsl(var(--foreground)) 0, transparent 36%), radial-gradient(circle at 82% 78%, hsl(var(--foreground)) 0, transparent 32%)",
             }}
           />
-          <img
-            src={LOGO_URL}
-            alt=""
-            className="absolute -right-6 -top-6 opacity-20 h-40 pointer-events-none select-none"
-            style={{ width: "auto" }}
-          />
           <div className="relative flex items-center gap-3 mb-5">
-            <Logo size={28} />
             <span className="text-sm font-bold tracking-[0.25em] uppercase text-foreground/60">
               PUBLIC
             </span>
