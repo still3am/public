@@ -262,297 +262,280 @@ export default function Profile() {
     <PullToRefresh onRefresh={load}>
     <div className="max-w-5xl mx-auto">
       {!isOwn && <BackHeader title={displayName} />}
-      <div className="relative h-40 md:h-56 rounded-2xl bg-gradient-to-br from-foreground/[0.08] to-foreground/[0.03] overflow-hidden mb-4">
-        {banner && <img src={banner} alt="" className="w-full h-full object-cover" />}
-        {editMode &&
-          <label className="absolute inset-0 grid place-items-center cursor-pointer bg-foreground/40 text-white text-sm font-semibold">
-            {uploadingBanner ?
-            <Loader2 size={16} className="animate-spin" /> :
-
-            <span className="inline-flex items-center gap-1.5">
-                <Upload size={14} /> Change banner
-              </span>
-            }
-            <input
-              type="file"
-              accept="image/*"
-              className="hidden"
-              onChange={(e) => {
-                const f = e.target.files?.[0];
-                if (f) uploadBanner(f);
-              }} />
-          
-          </label>
-          }
-      </div>
-
-      <div className="flex flex-col md:flex-row md:items-end gap-4 -mt-12 md:-mt-20 mb-8">
-        <div className="relative">
-          <div className="rounded-full bg-white p-1 inline-block">
-            <Avatar
-                user={{ ...profile, avatar_url: avatarUrl }}
-                size={104}
-                className="border-2 border-border" />
-            
-          </div>
-          {editMode &&
-            <label className="absolute bottom-1 right-1 p-2 rounded-full bg-foreground text-background cursor-pointer shadow-lg">
-              {uploadingAvatar ?
-              <Loader2 size={14} className="animate-spin" /> :
-
-              <Pencil size={14} />
-              }
+      <div className="rounded-2xl overflow-hidden ring-1 ring-inset ring-foreground/10 mb-8 bg-gradient-to-br from-violet-500/[0.08] via-foreground/[0.02] to-amber-400/[0.08]">
+        {/* Banner */}
+        <div className="relative h-28 sm:h-36 md:h-44">
+          {banner && <img src={banner} alt="" className="w-full h-full object-cover" />}
+          {editMode && (
+            <label className="absolute inset-0 grid place-items-center cursor-pointer bg-foreground/40 text-white text-sm font-semibold">
+              {uploadingBanner ? (
+                <Loader2 size={16} className="animate-spin" />
+              ) : (
+                <span className="inline-flex items-center gap-1.5">
+                  <Upload size={14} /> Change banner
+                </span>
+              )}
               <input
                 type="file"
                 accept="image/*"
                 className="hidden"
                 onChange={(e) => {
                   const f = e.target.files?.[0];
-                  if (f) uploadAvatar(f);
-                }} />
-            
+                  if (f) uploadBanner(f);
+                }}
+              />
             </label>
-            }
+          )}
         </div>
 
-        <div className="flex-1 min-w-0">
-          
-
-
-
-          
-          <div className="flex items-baseline gap-2 flex-wrap">
-            {editMode ?
-              <input
-                value={form.display_name}
-                onChange={(e) => setForm((f) => ({ ...f, display_name: e.target.value }))}
-                className="text-3xl md:text-4xl font-extrabold tracking-tight w-full max-w-md bg-transparent border-b border-border focus:outline-none"
-                placeholder="Display name" /> :
-
-
-              <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight">
-                {displayName}
-              </h1>
-              }
-            {!editMode && profile.pronouns &&
-              <span className="text-sm text-foreground/40">{profile.pronouns}</span>
-              }
-            {editMode &&
-              <input
-                value={form.pronouns}
-                onChange={(e) => setForm((f) => ({ ...f, pronouns: e.target.value }))}
-                placeholder="Pronouns"
-                className="text-sm text-foreground/40 bg-transparent border-b border-border focus:outline-none w-32 px-1" />
-
-              }
-          </div>
-
-          {!editMode &&
-            <div className="flex flex-wrap items-center gap-3 text-xs text-foreground/40 mt-1">
-              {profile.location &&
-              <span className="inline-flex items-center gap-1">
-                  <MapPin size={12} /> {profile.location}
-                </span>
-              }
-              {profile.created_date &&
-              <span className="inline-flex items-center gap-1">
-                  <Calendar size={12} /> Joined{" "}
-                  {new Date(profile.created_date).toLocaleDateString(undefined, {
-                  month: "short",
-                  year: "numeric"
-                })}
-                </span>
-              }
-            </div>
-            }
-
-          <div className="flex items-center gap-5 sm:gap-6 mt-3 text-sm flex-wrap">
-            <div className="flex items-baseline gap-1">
-              <span className="font-bold text-lg">{formatNumber(stats.followers)}</span>
-              <span className="text-foreground/50">followers</span>
-            </div>
-            <div className="flex items-baseline gap-1">
-              <span className="font-bold text-lg">{formatNumber(stats.following)}</span>
-              <span className="text-foreground/50">following</span>
-            </div>
-            
-
-
-            
-            <div className="flex items-baseline gap-1">
-              <span className="font-bold text-lg">{formatNumber(stats.plays)}</span>
-              <span className="text-foreground/50">plays</span>
-            </div>
-            <div className="flex items-baseline gap-1">
-              <span className="font-bold text-lg">{formatNumber(stats.likes)}</span>
-              <span className="text-foreground/50">likes</span>
-            </div>
-          </div>
-
-          {editMode ?
-            <textarea
-              value={form.bio}
-              onChange={(e) => setForm((f) => ({ ...f, bio: e.target.value }))}
-              placeholder="Add a bio"
-              className="mt-3 w-full max-w-lg px-3 py-2 rounded-lg border border-border bg-white text-sm"
-              rows={2} /> :
-
-
-            profile.bio &&
-            <p className="text-sm text-foreground/70 max-w-lg mt-3">{profile.bio}</p>
-
-            }
-
-          {editMode &&
-            <div className="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-2 max-w-lg">
-              <input
-                value={form.location}
-                onChange={(e) => setForm((f) => ({ ...f, location: e.target.value }))}
-                placeholder="Location"
-                className="px-3 py-2 rounded-lg border border-border bg-white text-sm" />
-            
-              <input
-                value={form.website}
-                onChange={(e) => setForm((f) => ({ ...f, website: e.target.value }))}
-                placeholder="Website URL"
-                className="px-3 py-2 rounded-lg border border-border bg-white text-sm" />
-            
-              <input
-                value={form.instagram}
-                onChange={(e) => setForm((f) => ({ ...f, instagram: e.target.value }))}
-                placeholder="Instagram @handle"
-                className="px-3 py-2 rounded-lg border border-border bg-white text-sm" />
-            
-              <input
-                value={form.twitter}
-                onChange={(e) => setForm((f) => ({ ...f, twitter: e.target.value }))}
-                placeholder="X / Twitter @handle"
-                className="px-3 py-2 rounded-lg border border-border bg-white text-sm" />
-            
-              
-
-
-
-            
-            
-            </div>
-            }
-
-          {!editMode && (
-            profile.website || profile.instagram || profile.twitter || profile.soundcloud) &&
-            <div className="flex flex-wrap gap-2 mt-3">
-                {profile.website &&
-              <a
-                href={profile.website}
-                target="_blank"
-                rel="noreferrer"
-                className="chip">
-              
-                    <Globe size={12} /> Website
-                  </a>
-              }
-                {profile.instagram &&
-              <a
-                href={`https://instagram.com/${profile.instagram.replace(/^@/, "")}`}
-                target="_blank"
-                rel="noreferrer"
-                className="chip">
-              
-                    <AtSign size={12} /> {profile.instagram}
-                  </a>
-              }
-                {profile.twitter &&
-              <a
-                href={`https://twitter.com/${profile.twitter.replace(/^@/, "")}`}
-                target="_blank"
-                rel="noreferrer"
-                className="chip">
-              
-                    <AtSign size={12} /> {profile.twitter}
-                  </a>
-              }
-                {profile.soundcloud &&
-              <a
-                href={profile.soundcloud}
-                target="_blank"
-                rel="noreferrer"
-                className="chip">
-              
-                    <Music size={12} /> SoundCloud
-                  </a>
-              }
+        {/* Identity, stats, actions */}
+        <div className="px-4 md:px-6 pb-5 md:pb-6 -mt-10 md:-mt-12">
+          <div className="flex flex-col md:flex-row md:items-end gap-4 md:gap-6">
+            <div className="relative shrink-0">
+              <div className="rounded-full bg-background p-1.5 inline-block ring-1 ring-foreground/10 shadow-sm">
+                <Avatar
+                  user={{ ...profile, avatar_url: avatarUrl }}
+                  size={96}
+                />
               </div>
-            }
+              {editMode && (
+                <label className="absolute bottom-1 right-1 p-2 rounded-full bg-foreground text-background cursor-pointer shadow-lg">
+                  {uploadingAvatar ? (
+                    <Loader2 size={14} className="animate-spin" />
+                  ) : (
+                    <Pencil size={14} />
+                  )}
+                  <input
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    onChange={(e) => {
+                      const f = e.target.files?.[0];
+                      if (f) uploadAvatar(f);
+                    }}
+                  />
+                </label>
+              )}
+            </div>
 
-          <div className="flex items-center gap-2 mt-4 flex-wrap">
-            {isOwn ?
-              editMode ?
-              <>
+            <div className="flex-1 min-w-0">
+              <div className="flex items-baseline gap-2 flex-wrap">
+                {editMode ? (
+                  <input
+                    value={form.display_name}
+                    onChange={(e) => setForm((f) => ({ ...f, display_name: e.target.value }))}
+                    className="text-2xl md:text-3xl font-extrabold tracking-tight w-full max-w-md bg-transparent border-b border-border focus:outline-none pb-1"
+                    placeholder="Display name"
+                  />
+                ) : (
+                  <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight">
+                    {displayName}
+                  </h1>
+                )}
+                {!editMode && profile.pronouns && (
+                  <span className="text-sm text-foreground/40">{profile.pronouns}</span>
+                )}
+                {editMode && (
+                  <input
+                    value={form.pronouns}
+                    onChange={(e) => setForm((f) => ({ ...f, pronouns: e.target.value }))}
+                    placeholder="Pronouns"
+                    className="text-sm text-foreground/40 bg-transparent border-b border-border focus:outline-none w-32 px-1 pb-0.5"
+                  />
+                )}
+              </div>
+
+              {!editMode && (
+                <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-foreground/40 mt-1.5">
+                  {profile.location && (
+                    <span className="inline-flex items-center gap-1">
+                      <MapPin size={12} /> {profile.location}
+                    </span>
+                  )}
+                  {profile.created_date && (
+                    <span className="inline-flex items-center gap-1">
+                      <Calendar size={12} /> Joined{" "}
+                      {new Date(profile.created_date).toLocaleDateString(undefined, {
+                        month: "short",
+                        year: "numeric"
+                      })}
+                    </span>
+                  )}
+                </div>
+              )}
+
+              <div className="flex items-center divide-x divide-foreground/10 mt-3 text-sm overflow-x-auto no-scrollbar">
+                <div className="pr-4 sm:pr-5 shrink-0">
+                  <span className="font-bold text-base">{formatNumber(stats.followers)}</span>{" "}
+                  <span className="text-foreground/50">followers</span>
+                </div>
+                <div className="px-4 sm:px-5 shrink-0">
+                  <span className="font-bold text-base">{formatNumber(stats.following)}</span>{" "}
+                  <span className="text-foreground/50">following</span>
+                </div>
+                <div className="px-4 sm:px-5 shrink-0">
+                  <span className="font-bold text-base">{formatNumber(stats.plays)}</span>{" "}
+                  <span className="text-foreground/50">plays</span>
+                </div>
+                <div className="pl-4 sm:pl-5 shrink-0">
+                  <span className="font-bold text-base">{formatNumber(stats.likes)}</span>{" "}
+                  <span className="text-foreground/50">likes</span>
+                </div>
+              </div>
+
+              {editMode ? (
+                <textarea
+                  value={form.bio}
+                  onChange={(e) => setForm((f) => ({ ...f, bio: e.target.value }))}
+                  placeholder="Add a bio"
+                  className="mt-3 w-full max-w-lg px-3 py-2 rounded-lg border border-border bg-background text-sm"
+                  rows={2}
+                />
+              ) : (
+                profile.bio && (
+                  <p className="text-sm text-foreground/70 max-w-lg mt-3 leading-relaxed">
+                    {profile.bio}
+                  </p>
+                )
+              )}
+
+              {editMode && (
+                <div className="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-2 max-w-lg">
+                  <input
+                    value={form.location}
+                    onChange={(e) => setForm((f) => ({ ...f, location: e.target.value }))}
+                    placeholder="Location"
+                    className="px-3 py-2 rounded-lg border border-border bg-background text-sm"
+                  />
+                  <input
+                    value={form.website}
+                    onChange={(e) => setForm((f) => ({ ...f, website: e.target.value }))}
+                    placeholder="Website URL"
+                    className="px-3 py-2 rounded-lg border border-border bg-background text-sm"
+                  />
+                  <input
+                    value={form.instagram}
+                    onChange={(e) => setForm((f) => ({ ...f, instagram: e.target.value }))}
+                    placeholder="Instagram @handle"
+                    className="px-3 py-2 rounded-lg border border-border bg-background text-sm"
+                  />
+                  <input
+                    value={form.twitter}
+                    onChange={(e) => setForm((f) => ({ ...f, twitter: e.target.value }))}
+                    placeholder="X / Twitter @handle"
+                    className="px-3 py-2 rounded-lg border border-border bg-background text-sm"
+                  />
+                </div>
+              )}
+
+              {!editMode && (
+                profile.website || profile.instagram || profile.twitter || profile.soundcloud
+              ) && (
+                <div className="flex flex-wrap gap-2 mt-3">
+                  {profile.website && (
+                    <a href={profile.website} target="_blank" rel="noreferrer" className="chip">
+                      <Globe size={12} /> Website
+                    </a>
+                  )}
+                  {profile.instagram && (
+                    <a
+                      href={`https://instagram.com/${profile.instagram.replace(/^@/, "")}`}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="chip"
+                    >
+                      <AtSign size={12} /> {profile.instagram}
+                    </a>
+                  )}
+                  {profile.twitter && (
+                    <a
+                      href={`https://twitter.com/${profile.twitter.replace(/^@/, "")}`}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="chip"
+                    >
+                      <AtSign size={12} /> {profile.twitter}
+                    </a>
+                  )}
+                  {profile.soundcloud && (
+                    <a href={profile.soundcloud} target="_blank" rel="noreferrer" className="chip">
+                      <Music size={12} /> SoundCloud
+                    </a>
+                  )}
+                </div>
+              )}
+
+              <div className="flex items-center gap-2 mt-4 flex-wrap">
+                {isOwn ? (
+                  editMode ? (
+                    <>
+                      <button
+                        onClick={saveProfile}
+                        disabled={saving}
+                        className="px-4 py-2 rounded-full bg-foreground text-background text-sm font-semibold flex items-center gap-2 disabled:opacity-40"
+                      >
+                        {saving ? <Loader2 size={14} className="animate-spin" /> : <Save size={14} />} Save
+                      </button>
+                      <button
+                        onClick={() => setEditMode(false)}
+                        className="px-4 py-2 rounded-full border border-border text-sm font-semibold flex items-center gap-2"
+                      >
+                        <X size={14} /> Cancel
+                      </button>
+                    </>
+                  ) : (
+                    <button
+                      onClick={() => setEditMode(true)}
+                      className="px-4 py-2 rounded-full border border-border font-semibold flex items-center gap-2 text-xs"
+                    >
+                      <Pencil size={14} /> Edit profile
+                    </button>
+                  )
+                ) : (
                   <button
-                  onClick={saveProfile}
-                  disabled={saving}
-                  className="px-4 py-2 rounded-full bg-foreground text-background text-sm font-semibold flex items-center gap-2 disabled:opacity-40">
-                
-                    {saving ? <Loader2 size={14} className="animate-spin" /> : <Save size={14} />} Save
+                    onClick={toggleFollow}
+                    className={`px-4 py-2 rounded-full text-sm font-semibold flex items-center gap-2 ${
+                      following ? "border border-border" : "bg-foreground text-background"
+                    }`}
+                  >
+                    {following ? <UserCheck size={14} /> : <UserPlus size={14} />}{" "}
+                    {following ? "Following" : "Follow"}
                   </button>
+                )}
+                {!editMode && (
                   <button
-                  onClick={() => setEditMode(false)}
-                  className="px-4 py-2 rounded-full border border-border text-sm font-semibold flex items-center gap-2">
-                
-                    <X size={14} /> Cancel
+                    onClick={shareProfile}
+                    className="px-3 py-2 rounded-full border border-border font-semibold flex items-center gap-2 text-xs hidden"
+                  >
+                    <Share2 size={14} /> {copied ? "Copied!" : "Share"}
                   </button>
-                </> :
-
-              <button
-                onClick={() => setEditMode(true)}
-                className="px-4 py-2 rounded-full border border-border font-semibold flex items-center gap-2 text-xs">
-              
-                  <Pencil size={14} /> Edit profile
-                </button> :
-
-
-              <button
-                onClick={toggleFollow}
-                className={`px-4 py-2 rounded-full text-sm font-semibold flex items-center gap-2 ${
-                following ? "border border-border" : "bg-foreground text-background"}`
-                }>
-              
-                {following ? <UserCheck size={14} /> : <UserPlus size={14} />}{" "}
-                {following ? "Following" : "Follow"}
-              </button>
-              }
-            {!editMode &&
-              <button
-                onClick={shareProfile}
-                className="px-3 py-2 rounded-full border border-border font-semibold flex items-center gap-2 text-xs hidden">
-              
-                <Share2 size={14} /> {copied ? "Copied!" : "Share"}
-              </button>
-              }
-            {!editMode &&
-              <button
-                onClick={() => setShowQR(true)}
-                className="px-3 py-2 rounded-full border border-border font-semibold flex items-center gap-2 text-xs">
-              
-                <QrCode size={14} /> QR
-              </button>
-              }
-            {!editMode && tracks.length > 0 &&
-              <button
-                onClick={() => p.playTrackAt(tracks)}
-                className="px-4 py-2 rounded-full border border-border font-semibold flex items-center gap-2 text-xs">
-              
-                <Play size={14} /> Play all
-              </button>
-              }
-            {isOwn && !editMode &&
-              <Link
-                to="/upload"
-                className="px-3 py-2 rounded-full font-semibold flex items-center gap-2 border border-border text-xs">Upload
-
-
-            </Link>
-              }
+                )}
+                {!editMode && (
+                  <button
+                    onClick={() => setShowQR(true)}
+                    className="px-3 py-2 rounded-full border border-border font-semibold flex items-center gap-2 text-xs"
+                  >
+                    <QrCode size={14} /> QR
+                  </button>
+                )}
+                {!editMode && tracks.length > 0 && (
+                  <button
+                    onClick={() => p.playTrackAt(tracks)}
+                    className="px-4 py-2 rounded-full border border-border font-semibold flex items-center gap-2 text-xs"
+                  >
+                    <Play size={14} /> Play all
+                  </button>
+                )}
+                {isOwn && !editMode && (
+                  <Link
+                    to="/upload"
+                    className="px-3 py-2 rounded-full font-semibold flex items-center gap-2 border border-border text-xs"
+                  >
+                    Upload
+                  </Link>
+                )}
+              </div>
+            </div>
           </div>
         </div>
       </div>
