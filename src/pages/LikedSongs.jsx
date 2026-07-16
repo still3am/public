@@ -38,7 +38,7 @@ export default function LikedSongs() {
     <PullToRefresh onRefresh={load}>
     <div>
       <div className="flex items-center gap-4 mb-8">
-        <div className="w-20 h-20 md:w-28 md:h-28 rounded-2xl bg-gradient-to-br from-foreground/15 to-foreground/5 grid place-items-center">
+        <div className="w-20 h-20 md:w-28 md:h-28 rounded-2xl bg-gradient-to-br from-foreground/15 to-foreground/5 grid place-items-center hidden">
           <Heart className="fill-foreground text-foreground" size={36} />
         </div>
         <div>
@@ -54,41 +54,41 @@ export default function LikedSongs() {
         </div>
       </div>
 
-      {tracks.length > 0 && (
+      {tracks.length > 0 &&
         <button
           onClick={() => p.playTrackAt(tracks)}
-          className="mb-5 inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-foreground text-background text-sm font-semibold hover:scale-[1.02] transition"
-        >
+          className="mb-5 inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-foreground text-background text-sm font-semibold hover:scale-[1.02] transition">
+          
           <Play size={16} /> Play
         </button>
-      )}
+        }
 
-      {!likes.ready || (loading && !tracks.length) ? (
+      {!likes.ready || loading && !tracks.length ?
         <div className="py-20 grid place-items-center">
           <Loader2 className="animate-spin" />
-        </div>
-      ) : tracks.length === 0 ? (
+        </div> :
+        tracks.length === 0 ?
         <EmptyState
           icon={Heart}
           title="No liked songs yet"
-          description="Tap the heart on any track to save it here."
-        />
-      ) : (
+          description="Tap the heart on any track to save it here." /> :
+
+
         <div className="space-y-0.5">
-          {tracks.map((t, i) => (
-            <TrackRow
-              key={t.id}
-              track={t}
-              index={i}
-              liked={true}
-              onLikeToggle={likes.toggleLike}
-              onAddToPlaylist={(tk) => ap.addToPlaylist(tk.id)}
-            />
-          ))}
+          {tracks.map((t, i) =>
+          <TrackRow
+            key={t.id}
+            track={t}
+            index={i}
+            liked={true}
+            onLikeToggle={likes.toggleLike}
+            onAddToPlaylist={(tk) => ap.addToPlaylist(tk.id)} />
+
+          )}
         </div>
-      )}
+        }
       {ap.modal}
     </div>
-    </PullToRefresh>
-  );
+    </PullToRefresh>);
+
 }
