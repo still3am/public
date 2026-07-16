@@ -494,7 +494,7 @@ export default function Profile() {
 
             <button
               onClick={() => setEditMode(true)}
-              className="px-4 py-2 rounded-full border border-border text-sm font-semibold flex items-center gap-2">
+              className="px-4 py-2 rounded-full border border-border font-semibold flex items-center gap-2 text-xs">
               
                   <Pencil size={14} /> Edit profile
                 </button> :
@@ -513,7 +513,7 @@ export default function Profile() {
             {!editMode &&
             <button
               onClick={shareProfile}
-              className="px-3 py-2 rounded-full border border-border text-sm font-semibold flex items-center gap-2">
+              className="px-3 py-2 rounded-full border border-border font-semibold flex items-center gap-2 text-xs">
               
                 <Share2 size={14} /> {copied ? "Copied!" : "Share"}
               </button>
@@ -521,7 +521,7 @@ export default function Profile() {
             {!editMode && tracks.length > 0 &&
             <button
               onClick={() => p.playTrackAt(tracks)}
-              className="px-4 py-2 rounded-full border border-border text-sm font-semibold flex items-center gap-2">
+              className="px-4 py-2 rounded-full border border-border font-semibold flex items-center gap-2 text-xs">
               
                 <Play size={14} /> Play all
               </button>
@@ -529,10 +529,10 @@ export default function Profile() {
             {isOwn && !editMode &&
             <Link
               to="/upload"
-              className="px-3 py-2 rounded-full text-sm font-semibold flex items-center gap-2 border border-border">
-              
-                <Upload size={14} /> Upload
-              </Link>
+              className="px-3 py-2 rounded-full font-semibold flex items-center gap-2 border border-border text-xs">Upload
+
+
+            </Link>
             }
           </div>
         </div>
