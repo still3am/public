@@ -40,15 +40,15 @@ export default function ProfileQRModal({ url, name, avatar, onClose }) {
           <X size={18} />
         </button>
 
-        <div className="text-[10px] uppercase tracking-[0.3em] text-foreground/40 mb-5">
+        <div className="text-[10px] uppercase tracking-[0.3em] text-foreground/40 mb-5 hidden">
           PUBLIC.
         </div>
 
         {/* Profile badge */}
         <div className="flex flex-col items-center mb-5">
-          <div className="w-16 h-16 rounded-full overflow-hidden bg-foreground/10 grid place-items-center text-foreground/50 font-extrabold text-2xl mb-3 ring-1 ring-foreground/10">
+          <div className="w-16 h-16 rounded-full overflow-hidden bg-foreground/10 grid place-items-center text-foreground/50 font-extrabold text-2xl mb-3 ring-1 ring-foreground/10 hidden">
             {avatar ?
-            <img src={avatar} alt="" className="w-full h-full object-cover" /> :
+            <img src={avatar} alt="" className="w-full h-full object-cover hidden" /> :
 
             (name || "?").charAt(0).toUpperCase()
             }
