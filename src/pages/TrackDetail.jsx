@@ -145,7 +145,7 @@ export default function TrackDetail() {
                     </div>
               }
                   {uploader.display_name || uploader.full_name || "Unknown"}
-                  {uploader.is_verified && <Shield size={11} className="hidden" />}
+                  
                 </Link>
             }
             </div>
