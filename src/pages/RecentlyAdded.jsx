@@ -46,6 +46,7 @@ export default function RecentlyAdded() {
   return (
     <PullToRefresh onRefresh={load}>
     <div>
+      <div className="text-[11px] uppercase tracking-[0.2em] text-foreground/40 font-semibold mb-1.5">Newest</div>
       <h1 className="text-2xl font-extrabold tracking-tight mb-1">Recently Added</h1>
       <p className="text-sm text-foreground/50 mb-5">
         Fresh uploads from across the network.

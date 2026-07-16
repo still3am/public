@@ -28,7 +28,15 @@ export default function PlayerBar() {
 
   return (
     <>
-      <div className="fixed left-0 right-0 md:left-64 z-30 bg-white/80 backdrop-blur-xl border-t border-border player-bar-mobile-bottom">
+      <div className="fixed left-0 right-0 md:left-64 z-30 bg-background/85 backdrop-blur-xl border-t border-border player-bar-mobile-bottom">
+        {p.duration > 0 && (
+          <div className="h-1 w-full bg-foreground/[0.08] relative overflow-hidden">
+            <div
+              className="absolute left-0 top-0 h-1 bg-foreground/70"
+              style={{ width: `${(p.position / p.duration) * 100}%` }}
+            />
+          </div>
+        )}
         
 
 

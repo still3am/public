@@ -90,6 +90,7 @@ export default function Notifications() {
   return (
     <PullToRefresh onRefresh={load}>
     <div>
+      <div className="text-[11px] uppercase tracking-[0.2em] text-foreground/40 font-semibold mb-1.5">Activity</div>
       <h1 className="text-2xl font-extrabold tracking-tight mb-6">Notifications</h1>
       <div className="space-y-1">
         {items.map((n) => {

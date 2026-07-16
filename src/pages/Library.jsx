@@ -121,6 +121,10 @@ export default function Library() {
   return (
     <PullToRefresh onRefresh={load}>
     <div className="space-y-10">
+      <div className="mb-2">
+        <div className="text-[11px] uppercase tracking-[0.2em] text-foreground/40 font-semibold mb-1.5">Your Collection</div>
+        <h1 className="text-2xl font-extrabold tracking-tight">Library</h1>
+      </div>
       <div>
         <div className="flex items-center justify-between mb-4 gap-2">
           <h2 className="text-xl font-extrabold tracking-tight">Your Playlists</h2>

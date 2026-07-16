@@ -99,8 +99,8 @@ export default function Search() {
             autoFocus
             value={q}
             onChange={(e) => setQ(e.target.value)}
-            placeholder="Search tracks, albums, artists…"
-            className="w-full pl-11 pr-4 py-3 rounded-full border border-border bg-white text-sm font-medium focus:outline-none focus:ring-2 focus:ring-foreground/10" />
+            placeholder="Search tracks, albums, playlists…"
+            className="w-full pl-11 pr-4 py-3 rounded-full border border-border bg-background text-sm font-medium focus:outline-none focus:ring-2 focus:ring-foreground/10" />
         
       </div>
 
@@ -120,6 +120,27 @@ export default function Search() {
 
 
         
+
+      <div className="flex items-center gap-1.5 mb-6 overflow-x-auto no-scrollbar">
+        {tabs.map((T) => {
+          const Icon = T.icon;
+          const active = tab === T.id;
+          return (
+            <button
+              key={T.id}
+              onClick={() => setTab(T.id)}
+              className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-sm font-semibold whitespace-nowrap shrink-0 transition ${
+                active
+                  ? "bg-foreground text-background"
+                  : "text-foreground/55 hover:text-foreground hover:bg-foreground/5"
+              }`}
+            >
+              {Icon && <Icon size={14} />}
+              {T.label}
+            </button>
+          );
+        })}
+      </div>
 
       {!q.trim() ?
         <p className="text-sm text-foreground/50 text-center py-12">
