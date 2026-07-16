@@ -273,7 +273,7 @@ export default function Profile() {
       {!isOwn && <BackHeader title={displayName} />}
       <div className="rounded-2xl overflow-hidden ring-1 ring-inset ring-foreground/10 mb-8 bg-gradient-to-br from-violet-500/[0.08] via-foreground/[0.02] to-amber-400/[0.08]">
         {/* Banner */}
-        <div className="relative h-28 sm:h-36 md:h-44">
+        <div className="relative h-32 sm:h-40 md:h-56">
           {banner && <img src={banner} alt="" className="w-full h-full object-cover" />}
           {editMode &&
             <label className="absolute inset-0 grid place-items-center cursor-pointer bg-foreground/40 text-white text-sm font-semibold">
@@ -298,13 +298,13 @@ export default function Profile() {
         </div>
 
         {/* Identity, stats, actions */}
-        <div className="px-4 md:px-6 pb-5 md:pb-6 -mt-10 md:-mt-12">
+        <div className="px-4 md:px-8 pb-6 md:pb-8 -mt-14 md:-mt-20">
           <div className="flex flex-col md:flex-row md:items-end gap-4 md:gap-6">
             <div className="relative shrink-0">
               <div className="rounded-full bg-background p-1.5 inline-block ring-1 ring-foreground/10 shadow-sm">
                 <Avatar
                     user={{ ...profile, avatar_url: avatarUrl }}
-                    size={96} />
+                    size={128} />
                   
               </div>
               {editMode &&
@@ -333,11 +333,11 @@ export default function Profile() {
                   <input
                     value={form.display_name}
                     onChange={(e) => setForm((f) => ({ ...f, display_name: e.target.value }))}
-                    className="text-2xl md:text-3xl font-extrabold tracking-tight w-full max-w-md bg-transparent border-b border-border focus:outline-none pb-1"
+                    className="text-2xl md:text-4xl font-extrabold tracking-tight w-full max-w-2xl bg-transparent border-b border-border focus:outline-none pb-1"
                     placeholder="Display name" /> :
 
 
-                  <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight">
+                  <h1 className="text-2xl md:text-4xl font-extrabold tracking-tight">
                     {displayName}
                   </h1>
                   }
@@ -397,19 +397,19 @@ export default function Profile() {
                   value={form.bio}
                   onChange={(e) => setForm((f) => ({ ...f, bio: e.target.value }))}
                   placeholder="Add a bio"
-                  className="mt-3 w-full max-w-lg px-3 py-2 rounded-lg border border-border bg-background text-sm"
+                  className="mt-3 w-full max-w-2xl px-3 py-2 rounded-lg border border-border bg-background text-sm"
                   rows={2} /> :
 
 
                 profile.bio &&
-                <p className="text-sm text-foreground/70 max-w-lg mt-3 leading-relaxed">
+                <p className="text-sm text-foreground/70 max-w-2xl mt-3 leading-relaxed">
                     {profile.bio}
                   </p>
 
                 }
 
               {editMode &&
-                <div className="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-2 max-w-lg">
+                <div className="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-2 max-w-2xl">
                   <input
                     value={form.location}
                     onChange={(e) => setForm((f) => ({ ...f, location: e.target.value }))}
