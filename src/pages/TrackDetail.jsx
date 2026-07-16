@@ -247,7 +247,7 @@ export default function TrackDetail() {
               href={track.audio_url}
               target="_blank"
               rel="noreferrer"
-              className="p-2.5 rounded-full border border-border"
+              className="p-2.5 rounded-full border border-border hidden"
               aria-label="Download">
               
                 <Download size={18} />
