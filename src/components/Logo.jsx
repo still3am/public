@@ -6,7 +6,7 @@ export default function Logo({ size = 26, className = "" }) {
     <img
       src={LOGO_URL}
       alt="PUBLIC."
-      className={`logo-dark-invert my-1 ${className}`}
+      className={`logo-dark-invert ${className}`}
       style={{ height: size, width: "auto", display: "block" }}
       draggable={false} />);
 
