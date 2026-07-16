@@ -343,17 +343,17 @@ export default function TrackDetail() {
             className={liked ? "fill-red-500 text-red-500" : ""} />
           
         </button>
-        <button
-          onClick={shareLink}
-          className="p-2.5 rounded-full border border-border hidden"
-          aria-label="Share link">
-          
-          {copied ?
-          <Link2 size={18} className="text-green-600" /> :
+        
 
-          <Link2 size={18} />
-          }
-        </button>
+
+
+
+
+
+
+
+
+        
         <div className="relative shrink-0 ml-auto">
           <button
             onClick={() => setMenuOpen((v) => !v)}
