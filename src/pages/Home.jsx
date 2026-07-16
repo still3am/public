@@ -205,7 +205,7 @@ export default function Home() {
           <div className="flex flex-col md:flex-row md:items-center gap-3">
             <div className="flex-1 min-w-0">
               <h3 className="text-base md:text-lg font-extrabold tracking-tight flex items-center gap-2">
-                <Lightbulb size={18} className="hidden" /> Ideas & Suggestions
+                 Ideas & Suggestions
               </h3>
               <p className="text-sm text-foreground/60 mt-0.5">
                 PUBLIC is made by the people, for the people. Tell us what should come next.
