@@ -236,23 +236,23 @@ export default function TrackDetail() {
               
               Add to queue
             </button>
-            <button
-              onClick={shareLink}
-              className="px-3 py-2.5 rounded-full border border-border text-sm font-semibold flex items-center gap-1.5 hidden">
-              
-              <Share2 size={14} /> {copied ? "Copied!" : "Share"}
-            </button>
-            {track.is_downloadable &&
-            <a
-              href={track.audio_url}
-              target="_blank"
-              rel="noreferrer"
-              className="p-2.5 rounded-full border border-border hidden"
-              aria-label="Download">
-              
-                <Download size={18} />
-              </a>
-            }
+            
+
+
+
+
+            
+            
+
+
+
+
+
+
+
+
+
+            
             {isOwner &&
             <button
               onClick={() => setEditing(true)}
