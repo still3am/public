@@ -494,7 +494,7 @@ export default function Profile() {
 
             <button
               onClick={() => setEditMode(true)}
-              className="px-4 py-2 rounded-full border border-border text-sm font-semibold flex items-center gap-2">
+              className="px-4 py-2 rounded-full border border-border font-semibold flex items-center gap-2 text-xs">
               
                   <Pencil size={14} /> Edit profile
                 </button> :
