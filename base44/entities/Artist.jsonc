@@ -1,0 +1,69 @@
+{
+  "name": "Artist",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Display / canonical name of the artist"
+    },
+    "bio": {
+      "type": "string",
+      "default": ""
+    },
+    "avatar_url": {
+      "type": "string",
+      "default": ""
+    },
+    "cover_art_url": {
+      "type": "string",
+      "default": ""
+    },
+    "location": {
+      "type": "string",
+      "default": ""
+    },
+    "formed_year": {
+      "type": "string",
+      "default": ""
+    },
+    "members": {
+      "type": "string",
+      "default": ""
+    },
+    "website": {
+      "type": "string",
+      "default": ""
+    },
+    "spotify_url": {
+      "type": "string",
+      "default": ""
+    },
+    "apple_music_url": {
+      "type": "string",
+      "default": ""
+    },
+    "soundcloud_url": {
+      "type": "string",
+      "default": ""
+    },
+    "instagram": {
+      "type": "string",
+      "default": ""
+    },
+    "twitter": {
+      "type": "string",
+      "default": ""
+    },
+    "youtube": {
+      "type": "string",
+      "default": ""
+    },
+    "last_updated_by_id": {
+      "type": "string",
+      "default": ""
+    }
+  },
+  "required": [
+    "name"
+  ]
+}

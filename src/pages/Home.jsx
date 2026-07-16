@@ -162,32 +162,50 @@ export default function Home() {
   return (
     <PullToRefresh onRefresh={load}>
       <div className="space-y-2">
-        <div className="relative rounded-2xl overflow-hidden border border-border bg-gradient-to-br from-white to-foreground/[0.03] p-6 md:p-10 mb-10">
+        <div className="relative rounded-2xl overflow-hidden border border-border bg-gradient-to-br from-violet-500/10 via-foreground/[0.02] to-amber-400/10 p-6 md:p-12 mb-10">
+          <div
+            className="absolute inset-0 opacity-[0.05] pointer-events-none"
+            style={{
+              backgroundImage:
+                "radial-gradient(circle at 18% 22%, hsl(var(--foreground)) 0, transparent 36%), radial-gradient(circle at 82% 78%, hsl(var(--foreground)) 0, transparent 32%)",
+            }}
+          />
           <img
             src={LOGO_URL}
             alt=""
             className="absolute -right-6 -top-6 opacity-20 h-40 pointer-events-none select-none"
             style={{ width: "auto" }}
           />
-          <div className="flex items-center gap-3 mb-4">
+          <div className="relative flex items-center gap-3 mb-5">
             <Logo size={28} />
-            <span className="text-sm font-bold tracking-[0.2em] uppercase text-foreground/60">
+            <span className="text-sm font-bold tracking-[0.25em] uppercase text-foreground/60">
               PUBLIC
             </span>
+            <span className="hidden sm:inline-flex items-center gap-1 chip ml-auto">
+              <Sparkles size={12} /> {trending.length + newReleases.length}+ fresh tracks
+            </span>
           </div>
-          <h1 className="text-3xl md:text-5xl font-extrabold tracking-tighter mb-2 max-w-2xl">
-            Made by the people, for the people.
+          <h1 className="relative text-4xl md:text-6xl font-extrabold tracking-tighter mb-3 max-w-2xl leading-[1.05]">
+            Made by the people,<br />for the people.
           </h1>
-          <p className="text-foreground/60 max-w-md">
+          <p className="relative text-foreground/60 max-w-lg text-sm md:text-base">
             Welcome{user?.display_name ? `, ${user.display_name}` : ""}. Listen,
             upload, share. PUBLIC is yours.
           </p>
-          <Link
-            to="/upload"
-            className="inline-flex items-center gap-2 px-4 py-2 mt-5 rounded-full bg-foreground text-background text-sm font-semibold hover:scale-[1.02] transition"
-          >
-            <Upload size={14} /> Upload music
-          </Link>
+          <div className="relative flex items-center gap-2 mt-6 flex-wrap">
+            <Link
+              to="/upload"
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-foreground text-background text-sm font-semibold hover:scale-[1.02] transition"
+            >
+              <Upload size={14} /> Upload music
+            </Link>
+            <Link
+              to="/discover"
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full border border-border text-sm font-semibold hover:bg-foreground/5 transition"
+            >
+              <Disc size={14} /> Explore genres
+            </Link>
+          </div>
         </div>
 
         <Section title="Trending" icon={TrendingUp}>

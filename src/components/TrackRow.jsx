@@ -6,6 +6,7 @@ import {
   MoreHorizontal,
   Plus,
   ListPlus,
+  ListMusic,
   Flag,
   Link2,
   Flame } from
@@ -99,12 +100,19 @@ export default function TrackRow({
           
           {track.title}
         </Link>
-        <Link
-          to={`/profile/${track.uploader_id}`}
-          className="text-xs text-foreground/50 truncate hover:underline">
-          
-          {track.artist || track.uploader_name || "Unknown"}
-        </Link>
+        {track.artist ? (
+          <Link
+            to={`/artist/${encodeURIComponent(track.artist)}`}
+            className="text-xs text-foreground/50 truncate hover:underline">
+            {track.artist}
+          </Link>
+        ) : (
+          <Link
+            to={`/profile/${track.uploader_id}`}
+            className="text-xs text-foreground/50 truncate hover:underline">
+            {track.uploader_name || "Unknown"}
+          </Link>
+        )}
       </div>
       {track.explicit &&
       <span className="text-[9px] font-extrabold px-1 py-0.5 rounded bg-foreground/15 text-foreground/70 shrink-0">
@@ -180,6 +188,21 @@ export default function TrackRow({
               }} />
 
             }
+              <MenuBtn
+              icon={ListPlus}
+              label="Play next"
+              onClick={() => {
+                p.playNext?.(track);
+                setMenuOpen(false);
+              }} />
+
+              <MenuBtn
+              icon={ListMusic}
+              label="Add to queue"
+              onClick={() => {
+                p.addToQueue?.(track);
+                setMenuOpen(false);
+              }} />
               <MenuBtn
               icon={Heart}
               label={liked ? "Remove from liked" : "Like"}

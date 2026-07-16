@@ -10,6 +10,7 @@ import TrackRow from "@/components/TrackRow";
 import Avatar from "@/components/Avatar";
 import PullToRefresh from "@/components/PullToRefresh";
 import BackHeader from "@/components/BackHeader";
+import ProfileQRModal from "@/components/ProfileQRModal";
 import { formatNumber } from "@/lib/audio-utils";
 import {
   Loader2,
@@ -27,6 +28,7 @@ import {
   AtSign,
   Calendar,
   Share2,
+  QrCode,
   Play,
   BarChart2,
   Trash2,
@@ -53,6 +55,7 @@ export default function Profile() {
   const [stats, setStats] = useState({ followers: 0, following: 0, plays: 0, likes: 0 });
   const [editMode, setEditMode] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [showQR, setShowQR] = useState(false);
   const [showDelete, setShowDelete] = useState(false);
   const [deleteConfirm, setDeleteConfirm] = useState("");
   const [deleting, setDeleting] = useState(false);
@@ -526,6 +529,14 @@ export default function Profile() {
                 <Share2 size={14} /> {copied ? "Copied!" : "Share"}
               </button>
             }
+            {!editMode &&
+            <button
+              onClick={() => setShowQR(true)}
+              className="px-3 py-2 rounded-full border border-border font-semibold flex items-center gap-2 text-xs">
+              
+                <QrCode size={14} /> QR
+              </button>
+            }
             {!editMode && tracks.length > 0 &&
             <button
               onClick={() => p.playTrackAt(tracks)}
@@ -718,6 +729,13 @@ export default function Profile() {
         </div>
       }
 
+      {showQR && (
+        <ProfileQRModal
+          url={`${window.location.origin}/profile/${targetId}`}
+          name={displayName}
+          onClose={() => setShowQR(false)}
+        />
+      )}
       {ap.modal}
     </div>
     </PullToRefresh>);

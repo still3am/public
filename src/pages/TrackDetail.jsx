@@ -116,9 +116,11 @@ export default function TrackDetail() {
           {(track.artist || uploader) &&
           <div className="text-sm text-foreground/60 mb-1 flex flex-wrap items-center gap-x-1.5 gap-y-0.5">
               {track.artist &&
-            <span className="font-semibold text-foreground/80">
+            <Link
+              to={`/artist/${encodeURIComponent(track.artist)}`}
+              className="font-semibold text-foreground/80 hover:underline">
                   {track.artist}
-                </span>
+                </Link>
             }
               {track.artist && uploader &&
             <span className="text-foreground/40">· uploaded by</span>
@@ -180,6 +182,18 @@ export default function TrackDetail() {
               className="px-3 py-2.5 rounded-full border border-border text-sm font-semibold">
               
               Add to playlist
+            </button>
+            <button
+              onClick={() => p.playNext(track)}
+              className="px-3 py-2.5 rounded-full border border-border text-sm font-semibold">
+              
+              Play next
+            </button>
+            <button
+              onClick={() => p.addToQueue(track)}
+              className="px-3 py-2.5 rounded-full border border-border text-sm font-semibold">
+              
+              Add to queue
             </button>
             {track.is_downloadable &&
             <a

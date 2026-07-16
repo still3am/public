@@ -179,6 +179,20 @@ export function PlayerProvider({ children }) {
     });
   }, []);
 
+  const playNext = useCallback(
+    (track) => {
+      if (!track) return;
+      if (queue.some((t) => t.id === track.id)) return;
+      const nq = [...queue];
+      const at = Math.max(0, Math.min(currentIndex + 1, nq.length));
+      nq.splice(at, 0, track);
+      setQueue(nq);
+      if (currentIndex < 0) setCurrentIndex(0);
+      else if (currentIndex >= at) setCurrentIndex(currentIndex + 1);
+    },
+    [queue, currentIndex]
+  );
+
   const removeFromQueue = useCallback((trackId) => {
     setQueue((q) => {
       const i = q.findIndex((t) => t.id === trackId);
@@ -306,6 +320,7 @@ export function PlayerProvider({ children }) {
     prev,
     playTrackAt,
     addToQueue,
+    playNext,
     removeFromQueue,
     setRepeat,
     setShuffle,
