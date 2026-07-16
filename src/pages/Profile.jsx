@@ -490,14 +490,14 @@ export default function Profile() {
                 
                     <X size={14} /> Cancel
                   </button>
-                </> :
+                </> : null :
 
-            <button
-              onClick={() => setEditMode(true)}
-              className="px-4 py-2 rounded-full border border-border font-semibold flex items-center gap-2 text-xs hidden">
-              
-                  <Pencil size={14} /> Edit profile
-                </button> :
+
+
+
+
+
+
 
 
             <button
