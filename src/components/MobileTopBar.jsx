@@ -1,9 +1,7 @@
-import { Link, useLocation, useNavigate } from "react-router-dom";
-import { Search as SearchIcon } from "lucide-react";
+import { Link, useLocation } from "react-router-dom";
 import Logo from "@/components/Logo";
 
 const TITLES = {
-  "/": "Home",
   "/search": "Search",
   "/library": "Library",
   "/liked": "Liked Songs",
@@ -13,39 +11,32 @@ const TITLES = {
   "/top": "Top Charts",
   "/recent": "Recently Added",
   "/notifications": "Notifications",
-  "/admin": "Admin"
+  "/admin": "Admin",
 };
-
-function titleFor(pathname) {
-  if (TITLES[pathname]) return TITLES[pathname];
-  if (pathname.startsWith("/track/")) return "Track";
-  if (pathname.startsWith("/playlist/")) return "Playlist";
-  if (pathname.startsWith("/profile/")) return "Profile";
-  return "PUBLIC";
-}
 
 export default function MobileTopBar() {
   const loc = useLocation();
-  const nav = useNavigate();
-  const title = titleFor(loc.pathname);
-  return null;
+  const isHome = loc.pathname === "/";
+  const title = TITLES[loc.pathname];
 
+  if (!isHome && !title) return null;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+  return (
+    <header className="md:hidden sticky top-0 z-20 bg-background/85 backdrop-blur-xl border-b border-border top-bar-safe">
+      <div className="h-14 px-4 flex items-center">
+        {isHome ? (
+          <Link to="/" className="flex items-center gap-2">
+            <Logo size={26} />
+            <span className="font-extrabold tracking-tight text-lg leading-none">
+              PUBLIC.
+            </span>
+          </Link>
+        ) : (
+          <h1 className="text-lg font-extrabold tracking-tight leading-none">
+            {title}
+          </h1>
+        )}
+      </div>
+    </header>
+  );
 }

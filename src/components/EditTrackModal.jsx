@@ -2,6 +2,7 @@ import { useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { GENRES } from "@/lib/audio-utils";
 import { Loader2, X, Save, Trash2 } from "lucide-react";
+import BottomSheetSelect from "@/components/BottomSheetSelect";
 
 export default function EditTrackModal({ track, onClose, onSaved, onDeleted }) {
   const [form, setForm] = useState({
@@ -120,17 +121,12 @@ export default function EditTrackModal({ track, onClose, onSaved, onDeleted }) {
             </div>
           </div>
 
-          <select
+          <BottomSheetSelect
             value={form.genre}
-            onChange={(e) => patch({ genre: e.target.value })}
-            className="px-3 py-2 rounded-lg border border-border bg-white text-sm w-full focus:outline-none"
-          >
-            {GENRES.map((g) => (
-              <option key={g} value={g}>
-                {g}
-              </option>
-            ))}
-          </select>
+            options={GENRES}
+            onChange={(v) => patch({ genre: v })}
+            className="w-full"
+          />
 
           <textarea
             value={form.description}
