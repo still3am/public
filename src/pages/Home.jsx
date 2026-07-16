@@ -211,7 +211,7 @@ export default function Home() {
                 PUBLIC is made by the people, for the people. Tell us what should come next.
               </p>
             </div>
-            <span className="inline-flex items-center gap-1.5 px-4 rounded-full bg-foreground text-background text-sm font-semibold self-start py-2 my-1">Share an idea
+            <span className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-foreground text-background text-sm font-semibold self-start">Share an idea
 
             </span>
           </div>
