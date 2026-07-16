@@ -51,9 +51,9 @@ export default function FullScreenPlayer({ onClose, onOpenQueue }) {
           <div className="text-[11px] uppercase tracking-[0.25em] opacity-70">
             Now Playing
           </div>
-          <button className="p-2 -mr-2 hidden" aria-label="More">
-            <MoreHorizontal size={24} />
-          </button>
+          
+
+          
         </div>
 
         {/* album art */}
