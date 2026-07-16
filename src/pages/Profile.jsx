@@ -273,10 +273,18 @@ export default function Profile() {
       {!isOwn && <BackHeader title={displayName} />}
       <div className="rounded-2xl overflow-hidden ring-1 ring-inset ring-foreground/10 mb-8 bg-gradient-to-br from-violet-500/[0.08] via-foreground/[0.02] to-amber-400/[0.08]">
         {/* Banner */}
-        <div className="relative h-32 sm:h-40 md:h-56">
+        <div className="relative h-32 sm:h-40 md:h-56 bg-gradient-to-br from-violet-500/40 via-fuchsia-500/25 to-amber-400/40 overflow-hidden">
           {banner && <img src={banner} alt="" className="w-full h-full object-cover" />}
+          {!banner && (
+            <div className="absolute inset-0 grid place-items-center">
+              <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(255,255,255,0.18),transparent_55%)]" />
+              <span className="text-7xl md:text-8xl font-black text-white/25 select-none relative">
+                {(displayName || "?").charAt(0).toUpperCase()}
+              </span>
+            </div>
+          )}
           {editMode &&
-            <label className="absolute inset-0 grid place-items-center cursor-pointer bg-foreground/40 text-white text-sm font-semibold">
+            <label className="absolute inset-0 grid place-items-center cursor-pointer bg-black/40 text-white text-sm font-semibold backdrop-blur-sm">
               {uploadingBanner ?
               <Loader2 size={16} className="animate-spin" /> :
 
