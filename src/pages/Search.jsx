@@ -121,26 +121,26 @@ export default function Search() {
 
         
 
-      <div className="flex items-center gap-1.5 mb-6 overflow-x-auto no-scrollbar hidden">
-        {tabs.map((T) => {
-            const Icon = T.icon;
-            const active = tab === T.id;
-            return (
-              <button
-                key={T.id}
-                onClick={() => setTab(T.id)}
-                className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-sm font-semibold whitespace-nowrap shrink-0 transition ${
-                active ?
-                "bg-foreground text-background" :
-                "text-foreground/55 hover:text-foreground hover:bg-foreground/5"}`
-                }>
-                
-              {Icon && <Icon size={14} />}
-              {T.label}
-            </button>);
+      
 
-          })}
-      </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
 
       {!q.trim() ?
         <p className="text-sm text-foreground/50 text-center py-12">
