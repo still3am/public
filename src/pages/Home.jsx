@@ -175,7 +175,7 @@ export default function Home() {
         <h1 className="text-3xl md:text-5xl font-extrabold tracking-tighter mb-2 max-w-2xl">
           Made by the people, for the people.
         </h1>
-        <p className="text-foreground/60 max-w-md">
+        <p className="text-foreground/60 max-w-md px-1">
           Welcome{user?.display_name ? `, ${user.display_name}` : ""}. Listen,
           upload, share. PUBLIC is yours.
         </p>
