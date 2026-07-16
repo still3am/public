@@ -91,7 +91,7 @@ export default function Sidebar() {
           <div className="min-w-0">
             <div className="text-sm font-semibold truncate flex items-center gap-1">
               {user?.display_name || user?.full_name || "You"}
-              {user?.is_verified && <Shield className="text-foreground hidden" size={12} />}
+              
             </div>
             <div className="text-xs text-foreground/50 truncate">{user?.email}</div>
           </div>
