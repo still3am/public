@@ -2,14 +2,21 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="https://base44.com/logo_v2.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <link rel="manifest" href="/manifest.json" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
-    <link rel="icon" type="image/png" href="https://media.base44.com/images/public/user_6a5155a801ae4d5ca6b4cef9/5bedc8ddf_IMG_9009.png" />
+    <link rel="icon" type="image/png" href="https://media.base44.com/images/public/6a5676aa61ea8a51237aa4ee/89dfc5da1_IMG_9177.png" />
     <title>PUBLIC.</title>
+    <script>
+      (function () {
+        try {
+          if (localStorage.getItem("public-theme") === "dark")
+            document.documentElement.classList.add("dark");
+        } catch (e) {}
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>

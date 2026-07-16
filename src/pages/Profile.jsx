@@ -11,6 +11,7 @@ import Avatar from "@/components/Avatar";
 import PullToRefresh from "@/components/PullToRefresh";
 import BackHeader from "@/components/BackHeader";
 import ProfileQRModal from "@/components/ProfileQRModal";
+import ThemeToggle from "@/components/ThemeToggle";
 import { formatNumber } from "@/lib/audio-utils";
 import {
   Loader2,
@@ -656,6 +657,17 @@ export default function Profile() {
         </>
         }
       {isOwn && !editMode &&
+        <div className="mt-10 p-5 rounded-2xl border border-border bg-foreground/[0.02]">
+          <h2 className="text-base font-extrabold tracking-tight mb-1 text-foreground">
+            Appearance
+          </h2>
+          <p className="text-sm text-foreground/60 mb-4">
+            Choose how PUBLIC looks for you. Dark mode applies across every page.
+          </p>
+          <ThemeToggle />
+        </div>
+      }
+      {isOwn && !editMode &&
         <div className="mt-10 p-5 rounded-2xl border border-red-200 bg-red-50/30">
           <h2 className="text-base font-extrabold tracking-tight mb-1 text-red-700">
             Danger Zone
@@ -675,7 +687,7 @@ export default function Profile() {
 
       {showDelete &&
         <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm grid place-items-center p-4">
-          <div className="bg-white rounded-2xl w-full max-w-md p-5 shadow-2xl">
+          <div className="bg-card rounded-2xl w-full max-w-md p-5 shadow-2xl">
             <h3 className="text-lg font-extrabold mb-1">Delete your account</h3>
             <p className="text-sm text-foreground/60 mb-4">
               This will permanently remove your profile, uploads, likes,
@@ -686,7 +698,7 @@ export default function Profile() {
               value={deleteConfirm}
               onChange={(e) => setDeleteConfirm(e.target.value)}
               placeholder="DELETE"
-              className="w-full px-3 py-2 rounded-lg border border-border bg-white text-sm mb-3 font-mono uppercase tracking-widest" />
+              className="w-full px-3 py-2 rounded-lg border border-border bg-background text-sm mb-3 font-mono uppercase tracking-widest" />
           
             <div className="flex justify-end gap-2">
               <button

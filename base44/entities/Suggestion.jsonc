@@ -1,0 +1,51 @@
+{
+  "name": "Suggestion",
+  "type": "object",
+  "properties": {
+    "user_id": {
+      "type": "string"
+    },
+    "user_name": {
+      "type": "string",
+      "default": ""
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "feature",
+        "music",
+        "improvement",
+        "other"
+      ],
+      "default": "feature"
+    },
+    "title": {
+      "type": "string"
+    },
+    "details": {
+      "type": "string",
+      "default": ""
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "open",
+        "reviewing",
+        "planned",
+        "done"
+      ],
+      "default": "open"
+    },
+    "voter_ids": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "default": []
+    }
+  },
+  "required": [
+    "user_id",
+    "title"
+  ]
+}

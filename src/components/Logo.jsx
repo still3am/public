@@ -1,12 +1,12 @@
 export const LOGO_URL =
-  "https://media.base44.com/images/public/user_6a5155a801ae4d5ca6b4cef9/5bedc8ddf_IMG_9009.png";
+  "https://media.base44.com/images/public/6a5676aa61ea8a51237aa4ee/89dfc5da1_IMG_9177.png";
 
-export default function Logo({ size = 28, className = "" }) {
+export default function Logo({ size = 26, className = "" }) {
   return (
     <img
       src={LOGO_URL}
       alt="PUBLIC."
-      className={className}
+      className={`logo-dark-invert ${className}`}
       style={{ height: size, width: "auto", display: "block" }}
       draggable={false}
     />

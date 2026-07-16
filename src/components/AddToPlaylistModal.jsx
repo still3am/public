@@ -62,7 +62,7 @@ export default function AddToPlaylistModal({ trackId, onClose }) {
         className="absolute inset-0 bg-foreground/30 backdrop-blur-sm"
         onClick={onClose}
       />
-      <div className="absolute inset-x-4 top-1/2 -translate-y-1/2 md:inset-x-auto md:left-1/2 md:-translate-x-1/2 w-full max-w-md bg-white border border-border rounded-2xl shadow-2xl flex flex-col max-h-[80vh]">
+      <div className="absolute inset-x-4 top-1/2 -translate-y-1/2 md:inset-x-auto md:left-1/2 md:-translate-x-1/2 w-full max-w-md bg-card border border-border rounded-2xl shadow-2xl flex flex-col max-h-[80vh]">
         <div className="flex items-center justify-between px-5 py-4 border-b border-border">
           <h3 className="font-bold">Add to playlist</h3>
           <button

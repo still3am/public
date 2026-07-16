@@ -9,12 +9,14 @@ import {
   Music,
   Users,
   CheckCircle2,
+  Lightbulb,
 } from "lucide-react";
 
 export default function Admin() {
   const { user } = useAuth();
   const [users, setUsers] = useState([]);
   const [reports, setReports] = useState([]);
+  const [suggestions, setSuggestions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [tab, setTab] = useState("users");
   const [q, setQ] = useState("");
@@ -23,14 +25,16 @@ export default function Admin() {
     if (user?.role !== "admin") return;
     setLoading(true);
     try {
-      const [u, r] = await Promise.all([
+      const [u, r, s] = await Promise.all([
         base44.entities.User.list("-created_date", 200).catch(() => []),
         base44.entities.Report
           .filter({ status: "pending" }, "-created_date", 100)
           .catch(() => []),
+        base44.entities.Suggestion.list("-created_date", 100).catch(() => []),
       ]);
       setUsers(u);
       setReports(r);
+      setSuggestions(s);
     } finally {
       setLoading(false);
     }
@@ -74,8 +78,16 @@ export default function Admin() {
     setReports((prev) => prev.filter((r) => r.id !== id));
   }
 
-  async function resolveReport(reportId) {
-    await dismissReport(reportId);
+  async function updateSuggestionStatus(id, status) {
+    const prev = suggestions;
+    setSuggestions((list) =>
+      list.map((s) => (s.id === id ? { ...s, status } : s))
+    );
+    try {
+      await base44.entities.Suggestion.update(id, { status });
+    } catch {
+      setSuggestions(prev);
+    }
   }
 
   const filtered = users.filter((u) =>
@@ -90,10 +102,10 @@ export default function Admin() {
         <Shield size={22} /> Admin
       </h1>
       <p className="text-sm text-foreground/50 mb-6">
-        Verify artists and review reports.
+        Verify artists, review reports, and triage community ideas.
       </p>
 
-      <div className="flex gap-1 mb-4 border-b border-border">
+      <div className="flex gap-1 mb-4 border-b border-border overflow-x-auto no-scrollbar">
         {[
           { id: "users", label: "Users", icon: Users },
           {
@@ -101,11 +113,16 @@ export default function Admin() {
             label: `Reports${reports.length ? ` (${reports.length})` : ""}`,
             icon: Flag,
           },
+          {
+            id: "suggestions",
+            label: `Ideas${suggestions.length ? ` (${suggestions.length})` : ""}`,
+            icon: Lightbulb,
+          },
         ].map(({ id, label, icon: Icon }) => (
           <button
             key={id}
             onClick={() => setTab(id)}
-            className={`flex items-center gap-1.5 px-4 py-3 text-sm font-medium border-b-2 -mb-px ${
+            className={`flex items-center gap-1.5 px-4 py-3 text-sm font-medium border-b-2 -mb-px whitespace-nowrap ${
               tab === id
                 ? "border-foreground text-foreground"
                 : "border-transparent text-foreground/50"
@@ -126,7 +143,7 @@ export default function Admin() {
             value={q}
             onChange={(e) => setQ(e.target.value)}
             placeholder="Search users by name or email"
-            className="w-full max-w-md px-3 py-2 mb-4 rounded-full border border-border bg-white text-sm"
+            className="w-full max-w-md px-3 py-2 mb-4 rounded-full border border-border bg-background text-sm"
           />
           <div className="space-y-1">
             {filtered.map((u) => (
@@ -164,7 +181,7 @@ export default function Admin() {
             ))}
           </div>
         </>
-      ) : (
+      ) : tab === "reports" ? (
         <div className="space-y-2">
           {reports.length === 0 ? (
             <EmptyState
@@ -197,6 +214,44 @@ export default function Admin() {
                   >
                     Dismiss
                   </button>
+                </div>
+              </div>
+            ))
+          )}
+        </div>
+      ) : (
+        <div className="space-y-2">
+          {suggestions.length === 0 ? (
+            <EmptyState
+              icon={Lightbulb}
+              title="No community ideas yet"
+              description="Suggestions submitted in the Suggestions page will appear here."
+            />
+          ) : (
+            suggestions.map((s) => (
+              <div key={s.id} className="p-4 rounded-xl border border-border">
+                <div className="flex items-center justify-between gap-2">
+                  <div className="text-[10px] uppercase tracking-wider font-bold text-foreground/60">
+                    {s.category || "other"}
+                  </div>
+                  <select
+                    value={s.status || "open"}
+                    onChange={(e) => updateSuggestionStatus(s.id, e.target.value)}
+                    className="text-xs px-2 py-1 rounded-lg border border-border bg-background"
+                  >
+                    <option value="open">Open</option>
+                    <option value="reviewing">Reviewing</option>
+                    <option value="planned">Planned</option>
+                    <option value="done">Shipped</option>
+                  </select>
+                </div>
+                <div className="text-sm font-semibold mt-1">{s.title}</div>
+                {s.details && (
+                  <p className="text-sm text-foreground/60 mt-1">{s.details}</p>
+                )}
+                <div className="text-[11px] text-foreground/40 mt-2 flex items-center gap-2">
+                  By {s.user_name || "anonymous"} · {(s.voter_ids || []).length}{" "}
+                  vote(s)
                 </div>
               </div>
             ))

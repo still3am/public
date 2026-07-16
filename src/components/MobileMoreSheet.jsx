@@ -1,5 +1,15 @@
 import { useNavigate, useLocation } from "react-router-dom";
-import { X, Compass, BarChart3, Clock, Bell, Heart, Upload } from "lucide-react";
+import {
+  X,
+  Compass,
+  BarChart3,
+  Clock,
+  Bell,
+  Heart,
+  Upload,
+  Lightbulb,
+} from "lucide-react";
+import ThemeToggle from "@/components/ThemeToggle";
 
 const ITEMS = [
   { to: "/discover", icon: Compass, label: "Discover" },
@@ -7,6 +17,7 @@ const ITEMS = [
   { to: "/recent", icon: Clock, label: "Recently Added" },
   { to: "/notifications", icon: Bell, label: "Notifications" },
   { to: "/liked", icon: Heart, label: "Liked Songs" },
+  { to: "/suggestions", icon: Lightbulb, label: "Suggestions" },
   { to: "/upload", icon: Upload, label: "Upload" },
 ];
 
@@ -21,7 +32,7 @@ export default function MobileMoreSheet({ onClose }) {
     <div className="fixed inset-0 z-50 md:hidden" onClick={onClose}>
       <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" />
       <div
-        className="absolute left-1/2 -translate-x-1/2 bottom-[calc(4.5rem+env(safe-area-inset-bottom))] w-[min(94vw,28rem)] bg-white rounded-2xl shadow-2xl border border-border overflow-hidden animate-[accordion-down_.18s_ease-out]"
+        className="absolute left-1/2 -translate-x-1/2 bottom-[calc(4.5rem+env(safe-area-inset-bottom))] w-[min(94vw,28rem)] bg-card rounded-2xl shadow-2xl border border-border overflow-hidden animate-[accordion-down_.18s_ease-out]"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-center justify-between px-4 py-3 border-b border-border">
@@ -49,6 +60,9 @@ export default function MobileMoreSheet({ onClose }) {
               <span className="text-[11px] font-medium">{label}</span>
             </button>
           ))}
+        </div>
+        <div className="px-3 pb-3">
+          <ThemeToggle />
         </div>
       </div>
     </div>

@@ -164,7 +164,7 @@ export default function TrackRow({
             className="fixed inset-0 z-10"
             onClick={() => setMenuOpen(false)} />
           
-            <div className="absolute right-0 top-full z-20 mt-1 bg-white border border-border rounded-lg shadow-xl py-1 min-w-[200px]">
+            <div className="absolute right-0 top-full z-20 mt-1 bg-popover border border-border rounded-lg shadow-xl py-1 min-w-[200px]">
               <MenuBtn
               icon={Link2}
               label="Copy link"

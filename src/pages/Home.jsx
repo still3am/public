@@ -8,7 +8,8 @@ import {
   Upload,
   Music,
   Disc,
-  Loader2 } from
+  Loader2,
+  Lightbulb } from
 "lucide-react";
 import TrackCard from "@/components/TrackCard";
 import EmptyState from "@/components/EmptyState";
@@ -199,6 +200,22 @@ export default function Home() {
             </Link>
           </div>
         </div>
+
+        <Link to="/suggestions" className="block mb-10 rounded-2xl border border-border bg-foreground/[0.02] hover:bg-foreground/[0.05] transition p-5">
+          <div className="flex flex-col md:flex-row md:items-center gap-3">
+            <div className="flex-1 min-w-0">
+              <h3 className="text-base md:text-lg font-extrabold tracking-tight flex items-center gap-2">
+                <Lightbulb size={18} /> Ideas & Suggestions
+              </h3>
+              <p className="text-sm text-foreground/60 mt-0.5">
+                PUBLIC is made by the people, for the people. Tell us what should come next.
+              </p>
+            </div>
+            <span className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-foreground text-background text-sm font-semibold self-start">
+              Share an idea
+            </span>
+          </div>
+        </Link>
 
         <Section title="Trending" icon={TrendingUp}>
           {CardGrid({ tracks: trending })}

@@ -27,6 +27,7 @@ import PlaylistDetail from '@/pages/PlaylistDetail';
 import TrackDetail from '@/pages/TrackDetail';
 import AlbumDetail from '@/pages/AlbumDetail';
 import Admin from '@/pages/Admin';
+import Suggestions from '@/pages/Suggestions';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -74,6 +75,7 @@ const AuthenticatedApp = () => {
           <Route path="/track/:id" element={<TrackDetail />} />
           <Route path="/playlist/:id" element={<PlaylistDetail />} />
         <Route path="/album/:id" element={<AlbumDetail />} />
+          <Route path="/suggestions" element={<Suggestions />} />
           <Route path="/admin" element={<Admin />} />
         </Route>
       </Route>
