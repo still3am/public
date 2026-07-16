@@ -38,9 +38,9 @@ export default function LikedSongs() {
     <PullToRefresh onRefresh={load}>
     <div>
       <div className="flex items-center gap-4 mb-8">
-        <div className="w-20 h-20 md:w-28 md:h-28 rounded-2xl bg-gradient-to-br from-foreground/15 to-foreground/5 grid place-items-center hidden">
-          <Heart className="fill-foreground text-foreground" size={36} />
-        </div>
+        
+
+          
         <div>
           <div className="text-xs uppercase tracking-wider text-foreground/50 font-semibold">
             Playlist
