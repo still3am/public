@@ -9,8 +9,8 @@ import {
   Compass,
   TrendingUp,
   Clock,
-  Bell,
-} from "lucide-react";
+  Bell } from
+"lucide-react";
 import { useEffect, useState } from "react";
 import Logo from "@/components/Logo";
 import Avatar from "@/components/Avatar";
@@ -18,11 +18,11 @@ import { useAuth } from "@/lib/AuthContext";
 import { base44 } from "@/api/base44Client";
 
 const navLinkCls = ({ isActive }) =>
-  `flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition ${
-    isActive
-      ? "bg-foreground/[0.06] text-foreground"
-      : "text-foreground/60 hover:text-foreground hover:bg-foreground/[0.03]"
-  }`;
+`flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition ${
+isActive ?
+"bg-foreground/[0.06] text-foreground" :
+"text-foreground/60 hover:text-foreground hover:bg-foreground/[0.03]"}`;
+
 
 export default function Sidebar() {
   const { user } = useAuth();
@@ -31,10 +31,10 @@ export default function Sidebar() {
 
   useEffect(() => {
     if (!user?.id) return;
-    base44.entities.Notification
-      .filter({ user_id: user.id, read: false }, "-created_date", 50)
-      .then((r) => setUnread(r.length))
-      .catch(() => {});
+    base44.entities.Notification.
+    filter({ user_id: user.id, read: false }, "-created_date", 50).
+    then((r) => setUnread(r.length)).
+    catch(() => {});
   }, [user?.id]);
 
   return (
@@ -70,33 +70,33 @@ export default function Sidebar() {
         </NavLink>
         <NavLink to="/notifications" className={navLinkCls}>
           <Bell size={18} /> Notifications
-          {unread > 0 && (
-            <span className="ml-auto bg-foreground text-background text-[10px] font-bold px-1.5 py-0.5 rounded-full min-w-[18px] text-center">
+          {unread > 0 &&
+          <span className="ml-auto bg-foreground text-background text-[10px] font-bold px-1.5 py-0.5 rounded-full min-w-[18px] text-center">
               {unread > 99 ? "99+" : unread}
             </span>
-          )}
+          }
         </NavLink>
-        {isAdmin && (
-          <NavLink to="/admin" className={navLinkCls}>
+        {isAdmin &&
+        <NavLink to="/admin" className={navLinkCls}>
             <Shield size={18} /> Admin
           </NavLink>
-        )}
+        }
       </nav>
       <div className="p-3 border-t border-border pb-28">
         <NavLink
           to="/profile"
-          className="flex items-center gap-3 px-2 py-2 rounded-lg hover:bg-foreground/[0.03]"
-        >
+          className="flex items-center gap-3 px-2 py-2 rounded-lg hover:bg-foreground/[0.03]">
+          
           <Avatar user={user} size={36} />
           <div className="min-w-0">
             <div className="text-sm font-semibold truncate flex items-center gap-1">
               {user?.display_name || user?.full_name || "You"}
-              {user?.is_verified && <Shield className="text-foreground" size={12} />}
+              {user?.is_verified && <Shield className="text-foreground hidden" size={12} />}
             </div>
             <div className="text-xs text-foreground/50 truncate">{user?.email}</div>
           </div>
         </NavLink>
       </div>
-    </aside>
-  );
+    </aside>);
+
 }
