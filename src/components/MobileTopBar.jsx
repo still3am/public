@@ -20,21 +20,21 @@ export default function MobileTopBar() {
 
   if (!isHome && !title) return null;
 
-  return (
-    <header className="md:hidden sticky top-0 z-20 bg-background/85 backdrop-blur-xl border-b border-border top-bar-safe hidden">
-      <div className="h-14 px-4 flex items-center hidden">
-        {isHome ?
-        <Link to="/" className="flex items-center">
-            <span className="font-extrabold tracking-tight text-lg leading-none">
-              PUBLIC.
-            </span>
-          </Link> :
+  return null;
 
-        <h1 className="text-lg font-extrabold tracking-tight leading-none">
-            {title}
-          </h1>
-        }
-      </div>
-    </header>);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 }
