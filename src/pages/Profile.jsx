@@ -300,7 +300,7 @@ export default function Profile() {
 
         {/* Identity, stats, actions */}
         <div className="relative z-10 px-4 md:px-8 pb-6 md:pb-8 pt-20 sm:pt-24 md:pt-28">
-          <div className="flex flex-col md:flex-row md:items-end gap-4 md:gap-6">
+          <div className="flex flex-col items-center md:flex-row md:items-end gap-4 md:gap-6">
             <div className="relative shrink-0">
               <div className="rounded-full bg-background p-1.5 inline-block ring-1 ring-foreground/10 shadow-sm">
                 <Avatar
@@ -328,8 +328,8 @@ export default function Profile() {
                 }
             </div>
 
-            <div className="flex-1 min-w-0">
-              <div className="flex items-baseline gap-2 flex-wrap">
+            <div className="flex-1 min-w-0 w-full md:w-auto text-center md:text-left">
+              <div className="flex items-baseline gap-2 flex-wrap justify-center md:justify-start">
                 {editMode ?
                   <input
                     value={form.display_name}
@@ -356,7 +356,7 @@ export default function Profile() {
               </div>
 
               {!editMode &&
-                <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-foreground/40 mt-1.5">
+                <div className="flex flex-wrap items-center justify-center md:justify-start gap-x-3 gap-y-1 text-xs text-foreground/40 mt-1.5">
                   {profile.location &&
                   <span className="inline-flex items-center gap-1">
                       <MapPin size={12} /> {profile.location}
@@ -374,7 +374,7 @@ export default function Profile() {
                 </div>
                 }
 
-              <div className="flex items-center divide-x divide-foreground/10 mt-3 text-sm overflow-x-auto no-scrollbar">
+              <div className="flex items-center justify-center md:justify-start divide-x divide-foreground/10 mt-3 text-sm overflow-x-auto no-scrollbar">
                 <div className="pr-4 sm:pr-5 shrink-0">
                   <span className="font-bold text-base">{formatNumber(stats.followers)}</span>{" "}
                   <span className="text-foreground/50">followers</span>
@@ -403,14 +403,14 @@ export default function Profile() {
 
 
                 profile.bio &&
-                <p className="text-sm text-foreground/70 max-w-2xl mt-3 leading-relaxed">
+                <p className="text-sm text-foreground/70 max-w-2xl mt-3 leading-relaxed mx-auto md:mx-0">
                     {profile.bio}
                   </p>
 
                 }
 
               {editMode &&
-                <div className="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-2 max-w-2xl">
+                <div className="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-2 max-w-2xl mx-auto md:mx-0">
                   <input
                     value={form.location}
                     onChange={(e) => setForm((f) => ({ ...f, location: e.target.value }))}
@@ -441,7 +441,7 @@ export default function Profile() {
               {!editMode && (
                 profile.website || profile.instagram || profile.twitter || profile.soundcloud) &&
 
-                <div className="flex flex-wrap gap-2 mt-3">
+                <div className="flex flex-wrap gap-2 mt-3 justify-center md:justify-start">
                   {profile.website &&
                   <a href={profile.website} target="_blank" rel="noreferrer" className="chip">
                       <Globe size={12} /> Website
@@ -475,7 +475,7 @@ export default function Profile() {
                 </div>
                 }
 
-              <div className="flex items-center gap-2 mt-4 flex-wrap">
+              <div className="flex items-center gap-2 mt-4 flex-wrap justify-center md:justify-start">
                 {isOwn ?
                   editMode ?
                   <>
