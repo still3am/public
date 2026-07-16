@@ -310,7 +310,7 @@ export default function Profile() {
 
         <div className="flex-1 min-w-0">
           {profile.is_verified &&
-          <span className="inline-flex items-center gap-1 text-xs uppercase tracking-wider font-semibold text-foreground/60 mb-1">
+          <span className="inline-flex items-center gap-1 text-xs uppercase tracking-wider font-semibold text-foreground/60 mb-1 hidden">
               <Shield size={12} /> Verified
             </span>
           }
