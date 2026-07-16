@@ -299,7 +299,7 @@ export default function Profile() {
 
         {/* Identity, stats, actions */}
         <div className="px-4 md:px-6 pb-5 md:pb-6 -mt-10 md:-mt-12">
-          <div className="flex flex-col md:flex-row md:items-end gap-4 md:gap-6">
+          <div className="flex flex-col md:flex-row md:items-end gap-4 md:gap-6 py-4">
             <div className="relative shrink-0">
               <div className="rounded-full bg-background p-1.5 inline-block ring-1 ring-foreground/10 shadow-sm">
                 <Avatar
@@ -674,7 +674,7 @@ export default function Profile() {
           </p>
           <ThemeToggle />
         </div>
-      }
+        }
       {isOwn && !editMode &&
         <div className="mt-10 p-5 rounded-2xl border border-red-200 bg-red-50/30">
           <h2 className="text-base font-extrabold tracking-tight mb-1 text-red-700">
