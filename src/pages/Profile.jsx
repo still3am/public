@@ -271,12 +271,13 @@ export default function Profile() {
     <PullToRefresh onRefresh={load}>
     <div className="max-w-5xl mx-auto">
       {!isOwn && <BackHeader title={displayName} />}
-      <div className="rounded-2xl overflow-hidden ring-1 ring-inset ring-foreground/10 mb-8 bg-gradient-to-br from-violet-500/[0.08] via-foreground/[0.02] to-amber-400/[0.08]">
-        {/* Banner */}
-        <div className="relative h-32 sm:h-40 md:h-56">
+      <div className="relative rounded-2xl overflow-hidden ring-1 ring-inset ring-foreground/10 mb-8 bg-card">
+        {/* Banner as background */}
+        <div className="absolute inset-x-0 top-0 h-40 sm:h-48 md:h-60 bg-gradient-to-br from-violet-500/[0.15] via-foreground/[0.05] to-amber-400/[0.15]">
           {banner && <img src={banner} alt="" className="w-full h-full object-cover" />}
+          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-background" />
           {editMode &&
-            <label className="absolute inset-0 grid place-items-center cursor-pointer bg-foreground/40 text-white text-sm font-semibold">
+            <label className="absolute inset-0 grid place-items-center cursor-pointer bg-foreground/40 text-white text-sm font-semibold z-10">
               {uploadingBanner ?
               <Loader2 size={16} className="animate-spin" /> :
 
@@ -292,19 +293,19 @@ export default function Profile() {
                   const f = e.target.files?.[0];
                   if (f) uploadBanner(f);
                 }} />
-              
+
             </label>
             }
         </div>
 
         {/* Identity, stats, actions */}
-        <div className="px-4 md:px-8 pb-6 md:pb-8 -mt-14 md:-mt-20">
+        <div className="relative z-10 px-4 md:px-8 pb-6 md:pb-8 pt-20 sm:pt-24 md:pt-28">
           <div className="flex flex-col md:flex-row md:items-end gap-4 md:gap-6">
             <div className="relative shrink-0">
               <div className="rounded-full bg-background p-1.5 inline-block ring-1 ring-foreground/10 shadow-sm">
                 <Avatar
                     user={{ ...profile, avatar_url: avatarUrl }}
-                    size={128} />
+                    size={150} />
                   
               </div>
               {editMode &&
