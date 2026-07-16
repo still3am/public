@@ -301,7 +301,7 @@ export default function Profile() {
         <div className="px-4 md:px-6 pb-5 md:pb-6 -mt-10 md:-mt-12">
           <div className="flex flex-col md:flex-row md:items-end gap-4 md:gap-6 py-4">
             <div className="relative shrink-0">
-              <div className="rounded-full bg-background p-1.5 inline-block ring-1 ring-foreground/10 shadow-sm">
+              <div className="rounded-full bg-background p-1.5 inline-block ring-1 ring-foreground/10 shadow-sm my-10">
                 <Avatar
                     user={{ ...profile, avatar_url: avatarUrl }}
                     size={96} />
