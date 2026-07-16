@@ -40,19 +40,19 @@ export default function ProfileQRModal({ url, name, avatar, onClose }) {
           <X size={18} />
         </button>
 
-        <div className="text-[10px] uppercase tracking-[0.3em] text-foreground/40 mb-5 hidden">
-          PUBLIC.
-        </div>
+        
+
+        
 
         {/* Profile badge */}
         <div className="flex flex-col items-center mb-5">
-          <div className="w-16 h-16 rounded-full overflow-hidden bg-foreground/10 grid place-items-center text-foreground/50 font-extrabold text-2xl mb-3 ring-1 ring-foreground/10 hidden">
-            {avatar ?
-            <img src={avatar} alt="" className="w-full h-full object-cover hidden" /> :
+          
 
-            (name || "?").charAt(0).toUpperCase()
-            }
-          </div>
+
+
+
+
+          
           <h3 className="text-lg font-extrabold tracking-tight">{name}</h3>
         </div>
 
@@ -67,10 +67,10 @@ export default function ProfileQRModal({ url, name, avatar, onClose }) {
           
         </div>
 
-        <div className="inline-flex items-center gap-1.5 text-[11px] text-foreground/50 mb-5 hidden">
-          <ScanLine size={12} />
-          Scan with a phone camera to open this profile
-        </div>
+        
+
+
+        
 
         <div className="flex flex-col gap-2">
           {navigator.share &&
@@ -82,19 +82,19 @@ export default function ProfileQRModal({ url, name, avatar, onClose }) {
             </button>
           }
           <div className="grid grid-cols-2 gap-2">
-            <a
-              href={qrUrl}
-              download={`public-${name}-qr.png`}
-              className="px-4 py-2.5 rounded-full border border-border text-sm font-semibold flex items-center justify-center gap-2 hover:bg-foreground/5 transition hidden">
-              
-              <Download size={14} /> QR
-            </a>
-            <button
-              onClick={copy}
-              className="rounded-full border border-border font-semibold flex items-center justify-center gap-2 hover:bg-foreground/5 transition text-sm py-2 px-4 hidden">
-              
-              <Copy size={14} /> Link
-            </button>
+            
+
+
+
+
+
+            
+            
+
+
+
+
+            
           </div>
         </div>
       </div>
