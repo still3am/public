@@ -716,6 +716,7 @@ export default function Profile() {
         <ProfileQRModal
           url={`${window.location.origin}/profile/${targetId}`}
           name={displayName}
+          avatar={profile.avatar_url}
           onClose={() => setShowQR(false)} />
 
         }

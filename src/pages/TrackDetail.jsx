@@ -161,11 +161,7 @@ export default function TrackDetail() {
           {(track.artist || uploader) &&
           <div className="text-sm text-foreground/60 mb-1 flex flex-wrap items-center gap-x-1.5 gap-y-0.5">
               {track.artist &&
-            <Link
-              to={`/artist/${encodeURIComponent(track.artist)}`}
-              className="font-semibold text-foreground/80 hover:underline">
-                  {track.artist}
-                </Link>
+            <span className="font-semibold text-foreground/80">{track.artist}</span>
             }
               {track.artist && uploader &&
             <span className="text-foreground/40">· uploaded by</span>

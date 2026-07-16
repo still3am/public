@@ -101,11 +101,7 @@ export default function TrackRow({
           {track.title}
         </Link>
         {track.artist ? (
-          <Link
-            to={`/artist/${encodeURIComponent(track.artist)}`}
-            className="text-xs text-foreground/50 truncate hover:underline">
-            {track.artist}
-          </Link>
+          <span className="text-xs text-foreground/50 truncate">{track.artist}</span>
         ) : (
           <Link
             to={`/profile/${track.uploader_id}`}

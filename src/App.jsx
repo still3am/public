@@ -26,7 +26,6 @@ import Library from '@/pages/Library';
 import PlaylistDetail from '@/pages/PlaylistDetail';
 import TrackDetail from '@/pages/TrackDetail';
 import AlbumDetail from '@/pages/AlbumDetail';
-import Artist from '@/pages/Artist';
 import Admin from '@/pages/Admin';
 
 const AuthenticatedApp = () => {
@@ -75,7 +74,6 @@ const AuthenticatedApp = () => {
           <Route path="/track/:id" element={<TrackDetail />} />
           <Route path="/playlist/:id" element={<PlaylistDetail />} />
         <Route path="/album/:id" element={<AlbumDetail />} />
-          <Route path="/artist/:name" element={<Artist />} />
           <Route path="/admin" element={<Admin />} />
         </Route>
       </Route>
