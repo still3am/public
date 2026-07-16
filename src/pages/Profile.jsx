@@ -418,11 +418,11 @@ export default function Profile() {
               placeholder="X / Twitter @handle"
               className="px-3 py-2 rounded-lg border border-border bg-white text-sm" />
             
-              <input
-              value={form.soundcloud}
-              onChange={(e) => setForm((f) => ({ ...f, soundcloud: e.target.value }))}
-              placeholder="SoundCloud URL"
-              className="px-3 py-2 rounded-lg border border-border bg-white text-sm sm:col-span-2 hidden" />
+              
+
+
+
+            
             
             </div>
           }
