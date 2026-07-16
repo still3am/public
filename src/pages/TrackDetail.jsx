@@ -46,30 +46,30 @@ export default function TrackDetail() {
       const t = await base44.entities.Track.get(id).catch(() => null);
       setTrack(t);
       if (t?.uploader_id) {
-        const u = await base44.entities.User
-          .get(t.uploader_id)
-          .catch(() => null);
+        const u = await base44.entities.User.
+        get(t.uploader_id).
+        catch(() => null);
         setUploader(u);
       }
       if (t?.album_id) {
-        base44.entities.Album
-          .get(t.album_id)
-          .then(setAlbum)
-          .catch(() => setAlbum(null));
+        base44.entities.Album.
+        get(t.album_id).
+        then(setAlbum).
+        catch(() => setAlbum(null));
       } else {
         setAlbum(null);
       }
       if (t?.artist) {
-        const all = await base44.entities.Track
-          .list("-play_count", 50)
-          .catch(() => []);
+        const all = await base44.entities.Track.
+        list("-play_count", 50).
+        catch(() => []);
         const lc = t.artist.toLowerCase();
         setMoreTracks(
           all.filter(
             (x) =>
-              x.id !== t.id &&
-              (x.artist || "").toLowerCase() === lc &&
-              x.is_published !== false
+            x.id !== t.id &&
+            (x.artist || "").toLowerCase() === lc &&
+            x.is_published !== false
           ).slice(0, 6)
         );
       } else {
@@ -82,12 +82,12 @@ export default function TrackDetail() {
 
   function shareLink() {
     if (!track) return;
-    navigator.clipboard
-      ?.writeText(`${window.location.origin}/track/${track.id}`)
-      .then(() => {
-        setCopied(true);
-        setTimeout(() => setCopied(false), 1500);
-      });
+    navigator.clipboard?.
+    writeText(`${window.location.origin}/track/${track.id}`).
+    then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1500);
+    });
   }
 
   useEffect(() => {
@@ -144,8 +144,8 @@ export default function TrackDetail() {
           <Link
             to="/discover"
             state={{ initialGenre: track.genre }}
-            className="text-xs uppercase tracking-wider text-foreground/50 font-semibold mb-1 hover:underline inline-block"
-          >
+            className="text-xs uppercase tracking-wider text-foreground/50 font-semibold mb-1 hover:underline inline-block">
+            
             {track.genre}
           </Link>
           <div className="flex items-center gap-2 mb-1">
@@ -238,7 +238,7 @@ export default function TrackDetail() {
             </button>
             <button
               onClick={shareLink}
-              className="px-3 py-2.5 rounded-full border border-border text-sm font-semibold flex items-center gap-1.5">
+              className="px-3 py-2.5 rounded-full border border-border text-sm font-semibold flex items-center gap-1.5 hidden">
               
               <Share2 size={14} /> {copied ? "Copied!" : "Share"}
             </button>
@@ -298,10 +298,10 @@ export default function TrackDetail() {
         
           <div className="w-12 h-12 rounded-lg overflow-hidden bg-foreground/10 grid place-items-center text-foreground/40 shrink-0">
             {album.cover_art_url ?
-            <img src={album.cover_art_url} alt="" className="w-full h-full object-cover" /> :
+          <img src={album.cover_art_url} alt="" className="w-full h-full object-cover" /> :
 
-            <Disc size={20} />
-            }
+          <Disc size={20} />
+          }
           </div>
           <div className="min-w-0">
             <div className="text-xs uppercase tracking-wider text-foreground/50 font-semibold mb-0.5">
