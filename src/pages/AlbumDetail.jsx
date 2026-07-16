@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link, useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import { useAuth } from "@/lib/AuthContext";
 import { useLikes } from "@/hooks/useLikes";
@@ -10,55 +10,58 @@ import TrackRow from "@/components/TrackRow";
 import {
   Loader2,
   Play,
-  ListMusic,
+  Disc,
   Pencil,
-  Trash2,
-  X,
   Save,
+  X,
+  Trash2,
 } from "lucide-react";
 
-export default function PlaylistDetail() {
+export default function AlbumDetail() {
   const { id } = useParams();
+  const nav = useNavigate();
   const { user } = useAuth();
   const likes = useLikes(user);
   const ap = useAddToPlaylist();
   const p = usePlayer();
-  const [playlist, setPlaylist] = useState(null);
+  const [album, setAlbum] = useState(null);
   const [tracks, setTracks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [editing, setEditing] = useState(false);
-  const [form, setForm] = useState({ name: "", description: "", cover_art_url: "" });
+  const [form, setForm] = useState({
+    title: "",
+    description: "",
+    cover_art_url: "",
+    artisan: "",
+    genre: "Other",
+  });
   const [saving, setSaving] = useState(false);
   const [uploadingCover, setUploadingCover] = useState(false);
   const [showDelete, setShowDelete] = useState(false);
   const [deleting, setDeleting] = useState(false);
-  const nav = useNavigate();
 
-  const isOwner = playlist?.creator_id === user?.id;
+  const isOwner = album?.creator_id === user?.id;
 
   async function load() {
     setLoading(true);
     try {
-      const pl = await base44.entities.Playlist.get(id).catch(() => null);
-      if (!pl) {
-        setPlaylist(null);
+      const al = await base44.entities.Album.get(id).catch(() => null);
+      if (!al) {
+        setAlbum(null);
         return;
       }
-      setPlaylist(pl);
+      setAlbum(al);
       setForm({
-        name: pl.name,
-        description: pl.description || "",
-        cover_art_url: pl.cover_art_url || "",
+        title: al.title || "",
+        description: al.description || "",
+        cover_art_url: al.cover_art_url || "",
+        artisan: al.artisan || "",
+        genre: al.genre || "Other",
       });
-      const ids = pl.track_ids || [];
-      const fetched = ids.length
-        ? await Promise.all(
-            ids.map((tid) =>
-              base44.entities.Track.get(tid).catch(() => null)
-            )
-          )
-        : [];
-      setTracks(fetched.filter(Boolean));
+      const t = await base44.entities.Track
+        .filter({ album_id: id }, "track_number", 200)
+        .catch(() => []);
+      setTracks(Array.isArray(t) ? t : []);
     } finally {
       setLoading(false);
     }
@@ -80,31 +83,31 @@ export default function PlaylistDetail() {
   }
 
   async function saveEdits() {
+    if (!form.title.trim()) return;
     setSaving(true);
     try {
-      const updated = await base44.entities.Playlist.update(id, form);
-      setPlaylist(updated);
+      const updated = await base44.entities.Album.update(id, form);
+      setAlbum(updated);
       setEditing(false);
     } finally {
       setSaving(false);
     }
   }
 
-  async function removeTrack(tid) {
-    const newIds = (playlist.track_ids || []).filter((x) => x !== tid);
-    await base44.entities.Playlist.update(id, { track_ids: newIds });
-    setPlaylist((prev) => ({ ...prev, track_ids: newIds }));
-    setTracks((prev) => prev.filter((t) => t.id !== tid));
-  }
-
-  async function deletePlaylist() {
+  async function deleteAlbum() {
     setDeleting(true);
     try {
-      await base44.entities.Playlist.delete(id);
+      await base44.entities.Track
+        .updateMany(
+          { album_id: id },
+          { $unset: { album_id: "", track_number: "" } }
+        )
+        .catch(() => {});
+      await base44.entities.Album.delete(id);
       nav("/library");
     } catch {
       setDeleting(false);
-      alert("Could not delete this playlist right now.");
+      alert("Could not delete this album right now.");
     }
   }
 
@@ -114,26 +117,33 @@ export default function PlaylistDetail() {
         <Loader2 className="animate-spin" />
       </div>
     );
-  if (!playlist) return <EmptyState title="Playlist not found" />;
+  if (!album) return <EmptyState title="Album not found" />;
+
+  const totalDur = tracks.reduce((s, t) => s + (t.duration_seconds || 0), 0);
+  const totalMin = Math.round(totalDur / 60);
 
   return (
-    <div>
+    <div className="max-w-5xl mx-auto">
       <div className="flex flex-col md:flex-row md:items-end gap-5 mb-8">
-        <div className="relative">
-          <div className="w-36 h-36 md:w-44 md:h-44 rounded-2xl overflow-hidden bg-foreground/10 grid place-items-center text-foreground/40">
-            {form.cover_art_url || playlist.cover_art_url ? (
+        <div className="relative shrink-0">
+          <div className="w-40 h-40 md:w-48 md:h-48 rounded-2xl overflow-hidden bg-foreground/10 grid place-items-center text-foreground/40">
+            {form.cover_art_url || album.cover_art_url ? (
               <img
-                src={form.cover_art_url || playlist.cover_art_url}
+                src={form.cover_art_url || album.cover_art_url}
                 alt=""
                 className="w-full h-full object-cover"
               />
             ) : (
-              <ListMusic size={40} />
+              <Disc size={48} />
             )}
           </div>
           {editing && (
             <label className="absolute inset-0 grid place-items-center cursor-pointer bg-foreground/40 rounded-2xl text-white text-xs font-semibold">
-              {uploadingCover ? <Loader2 size={16} className="animate-spin" /> : "Change"}
+              {uploadingCover ? (
+                <Loader2 size={16} className="animate-spin" />
+              ) : (
+                "Change"
+              )}
               <input
                 type="file"
                 accept="image/*"
@@ -148,38 +158,61 @@ export default function PlaylistDetail() {
         </div>
         <div className="flex-1 min-w-0">
           <div className="text-xs uppercase tracking-wider text-foreground/50 font-semibold mb-1">
-            Playlist
+            Album
           </div>
           {editing ? (
             <input
-              value={form.name}
-              onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))}
-              className="text-3xl md:text-4xl font-extrabold tracking-tight w-full bg-transparent border-b border-border focus:outline-none"
+              value={form.title}
+              onChange={(e) => setForm((f) => ({ ...f, title: e.target.value }))}
+              className="text-3xl md:text-4xl font-extrabold tracking-tight w-full max-w-md bg-transparent border-b border-border focus:outline-none"
+              placeholder="Album title"
             />
           ) : (
-            <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight mb-1">
-              {playlist.name}
+            <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight mb-1 break-words">
+              {album.title}
             </h1>
+          )}
+          {editing ? (
+            <input
+              value={form.artisan}
+              onChange={(e) =>
+                setForm((f) => ({ ...f, artisan: e.target.value }))
+              }
+              placeholder="Artist name"
+              className="mt-1 w-full max-w-md px-3 py-1.5 rounded-lg border border-border bg-white text-sm"
+            />
+          ) : (
+            <div className="text-sm text-foreground/60 mt-1">
+              {album.artisan || "Unknown artist"}
+            </div>
           )}
           {editing ? (
             <textarea
               value={form.description}
-              onChange={(e) => setForm((f) => ({ ...f, description: e.target.value }))}
+              onChange={(e) =>
+                setForm((f) => ({ ...f, description: e.target.value }))
+              }
+              placeholder="Description"
               className="mt-2 w-full max-w-lg px-3 py-2 rounded-lg border border-border bg-white text-sm"
               rows={2}
-              placeholder="Description"
             />
           ) : (
-            playlist.description && (
+            album.description && (
               <p className="text-sm text-foreground/60 max-w-lg mt-1">
-                {playlist.description}
+                {album.description}
               </p>
             )
           )}
-          <div className="text-sm text-foreground/50 mt-2">
-            {tracks.length} track{tracks.length === 1 ? "" : "s"}
+          <div className="text-sm text-foreground/50 mt-2 flex items-center gap-2 flex-wrap">
+            <span>
+              {tracks.length} track{tracks.length === 1 ? "" : "s"}
+            </span>
+            {totalMin > 0 && <span>· {totalMin} min</span>}
+            {album.genre && album.genre !== "Other" && (
+              <span>· {album.genre}</span>
+            )}
           </div>
-          <div className="flex items-center gap-2 mt-4">
+          <div className="flex items-center gap-2 mt-4 flex-wrap">
             {tracks.length > 0 && (
               <button
                 onClick={() => p.playTrackAt(tracks)}
@@ -211,7 +244,11 @@ export default function PlaylistDetail() {
                   disabled={saving}
                   className="px-4 py-2 rounded-full bg-foreground text-background text-sm font-semibold flex items-center gap-2 disabled:opacity-40"
                 >
-                  {saving ? <Loader2 size={14} className="animate-spin" /> : <Save size={14} />}
+                  {saving ? (
+                    <Loader2 size={14} className="animate-spin" />
+                  ) : (
+                    <Save size={14} />
+                  )}
                   Save
                 </button>
                 <button
@@ -228,44 +265,36 @@ export default function PlaylistDetail() {
 
       {tracks.length === 0 ? (
         <EmptyState
-          icon={ListMusic}
-          title="No tracks yet"
+          icon={Disc}
+          title="No tracks in this album"
           description={
             isOwner
-              ? "Add tracks from any upload across PUBLIC."
+              ? "Add tracks to this album from the Upload page."
               : "The owner hasn't added any tracks yet."
           }
         />
       ) : (
         <div className="space-y-0.5">
           {tracks.map((t, i) => (
-            <div key={t.id} className="group relative">
-              <TrackRow
-                track={t}
-                index={i}
-                liked={likes.likedIds.has(t.id)}
-                onLikeToggle={likes.toggleLike}
-                onAddToPlaylist={(tk) => ap.addToPlaylist(tk.id)}
-              />
-              {isOwner && (
-                <button
-                  onClick={() => removeTrack(t.id)}
-                  className="absolute right-0 top-1/2 -translate-y-1/2 p-2 opacity-0 group-hover:opacity-100 text-foreground/50 hover:text-red-500"
-                  aria-label="Remove from playlist"
-                >
-                  <Trash2 size={14} />
-                </button>
-              )}
-            </div>
+            <TrackRow
+              key={t.id}
+              track={t}
+              index={i}
+              liked={likes.likedIds.has(t.id)}
+              onLikeToggle={likes.toggleLike}
+              onAddToPlaylist={(tk) => ap.addToPlaylist(tk.id)}
+            />
           ))}
         </div>
       )}
+
       {showDelete && (
         <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm grid place-items-center p-4">
           <div className="bg-white rounded-2xl w-full max-w-md p-5 shadow-2xl">
-            <h3 className="text-lg font-extrabold mb-1">Delete playlist?</h3>
+            <h3 className="text-lg font-extrabold mb-1">Delete album?</h3>
             <p className="text-sm text-foreground/60 mb-4">
-              "{playlist.name}" will be permanently removed. This cannot be undone.
+              "{album.title}" will be removed. Its tracks stay on your profile as
+              standalone uploads. This cannot be undone.
             </p>
             <div className="flex justify-end gap-2">
               <button
@@ -276,12 +305,12 @@ export default function PlaylistDetail() {
                 Cancel
               </button>
               <button
-                onClick={deletePlaylist}
+                onClick={deleteAlbum}
                 disabled={deleting}
                 className="px-4 py-2 rounded-full bg-red-600 text-white text-sm font-semibold disabled:opacity-40 flex items-center gap-2"
               >
                 {deleting && <Loader2 size={14} className="animate-spin" />}
-                {deleting ? "Deleting…" : "Delete"}
+                {deleting ? "Deleting…" : "Delete album"}
               </button>
             </div>
           </div>

@@ -255,7 +255,7 @@ export default function Profile() {
 
   return (
     <div className="max-w-5xl mx-auto">
-      <div className="relative h-32 md:h-44 rounded-2xl bg-gradient-to-br from-foreground/[0.08] to-foreground/[0.03] overflow-hidden mb-4">
+      <div className="relative h-40 md:h-56 rounded-2xl bg-gradient-to-br from-foreground/[0.08] to-foreground/[0.03] overflow-hidden mb-4">
         {banner && <img src={banner} alt="" className="w-full h-full object-cover" />}
         {editMode &&
         <label className="absolute inset-0 grid place-items-center cursor-pointer bg-foreground/40 text-white text-sm font-semibold">
@@ -279,7 +279,7 @@ export default function Profile() {
         }
       </div>
 
-      <div className="flex flex-col md:flex-row md:items-end gap-4 -mt-12 md:-mt-16 mb-8">
+      <div className="flex flex-col md:flex-row md:items-end gap-4 -mt-12 md:-mt-20 mb-8">
         <div className="relative">
           <div className="rounded-full bg-white p-1 inline-block">
             <Avatar
@@ -359,21 +359,25 @@ export default function Profile() {
             </div>
           }
 
-          <div className="flex items-center gap-4 mt-2 text-sm">
-            <div>
-              <span className="font-bold">{formatNumber(stats.followers)}</span>{" "}
+          <div className="flex items-center gap-5 sm:gap-6 mt-3 text-sm flex-wrap">
+            <div className="flex items-baseline gap-1">
+              <span className="font-bold text-lg">{formatNumber(stats.followers)}</span>
               <span className="text-foreground/50">followers</span>
             </div>
+            <div className="flex items-baseline gap-1">
+              <span className="font-bold text-lg">{formatNumber(stats.following)}</span>
+              <span className="text-foreground/50">following</span>
+            </div>
             
 
 
             
-            <div>
-              <span className="font-bold">{formatNumber(stats.plays)}</span>{" "}
+            <div className="flex items-baseline gap-1">
+              <span className="font-bold text-lg">{formatNumber(stats.plays)}</span>
               <span className="text-foreground/50">plays</span>
             </div>
-            <div>
-              <span className="font-bold">{formatNumber(stats.likes)}</span>{" "}
+            <div className="flex items-baseline gap-1">
+              <span className="font-bold text-lg">{formatNumber(stats.likes)}</span>
               <span className="text-foreground/50">likes</span>
             </div>
           </div>
@@ -567,7 +571,7 @@ export default function Profile() {
             {albums.map((a) =>
           <Link
             key={a.id}
-            to={`/playlist/album-${a.id}`}
+            to={`/album/${a.id}`}
             className="rounded-xl p-3 hover:bg-foreground/[0.03] transition">
             
                 <div className="aspect-square rounded-lg overflow-hidden bg-foreground/10 mb-3 grid place-items-center text-foreground/40">

@@ -26,6 +26,7 @@ import LikedSongs from '@/pages/LikedSongs';
 import Library from '@/pages/Library';
 import PlaylistDetail from '@/pages/PlaylistDetail';
 import TrackDetail from '@/pages/TrackDetail';
+import AlbumDetail from '@/pages/AlbumDetail';
 import Admin from '@/pages/Admin';
 
 const AuthenticatedApp = () => {
@@ -73,6 +74,7 @@ const AuthenticatedApp = () => {
           <Route path="/profile/:id" element={<Profile />} />
           <Route path="/track/:id" element={<TrackDetail />} />
           <Route path="/playlist/:id" element={<PlaylistDetail />} />
+        <Route path="/album/:id" element={<AlbumDetail />} />
           <Route path="/admin" element={<Admin />} />
         </Route>
       </Route>

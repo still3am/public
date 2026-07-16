@@ -12,6 +12,7 @@ import {
   Upload,
   Music,
   Disc,
+  Trash2,
 } from "lucide-react";
 import Avatar from "@/components/Avatar";
 
@@ -25,6 +26,20 @@ export default function Library() {
   const [newName, setNewName] = useState("");
   const [creating, setCreating] = useState(false);
   const [sort, setSort] = useState("recent"); // recent | alpha | count
+  const [pendingDelete, setPendingDelete] = useState(null);
+  const [deleting, setDeleting] = useState(false);
+
+  async function confirmDeletePlaylist() {
+    if (!pendingDelete) return;
+    setDeleting(true);
+    try {
+      await base44.entities.Playlist.delete(pendingDelete.id);
+      setPlaylists((prev) => prev.filter((p) => p.id !== pendingDelete.id));
+      setPendingDelete(null);
+    } finally {
+      setDeleting(false);
+    }
+  }
 
   async function load() {
     setLoading(true);
@@ -160,28 +175,36 @@ export default function Library() {
         ) : (
           <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-2">
             {sortedPlaylists.map((pl) => (
-              <Link
-                key={pl.id}
-                to={`/playlist/${pl.id}`}
-                className="rounded-xl p-3 hover:bg-foreground/[0.03] transition"
-              >
-                <div className="aspect-square rounded-lg overflow-hidden bg-foreground/10 mb-3 grid place-items-center text-foreground/40">
-                  {pl.cover_art_url ? (
-                    <img
-                      src={pl.cover_art_url}
-                      alt=""
-                      className="w-full h-full object-cover"
-                    />
-                  ) : (
-                    <ListMusic size={28} />
-                  )}
-                </div>
-                <div className="font-semibold truncate text-sm">{pl.name}</div>
-                <div className="text-xs text-foreground/50 truncate">
-                  {pl.track_ids?.length || 0} track
-                  {(pl.track_ids?.length || 0) === 1 ? "" : "s"}
-                </div>
-              </Link>
+              <div key={pl.id} className="relative group">
+                <Link
+                  to={`/playlist/${pl.id}`}
+                  className="block rounded-xl p-3 hover:bg-foreground/[0.03] transition"
+                >
+                  <div className="aspect-square rounded-lg overflow-hidden bg-foreground/10 mb-3 grid place-items-center text-foreground/40">
+                    {pl.cover_art_url ? (
+                      <img
+                        src={pl.cover_art_url}
+                        alt=""
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <ListMusic size={28} />
+                    )}
+                  </div>
+                  <div className="font-semibold truncate text-sm">{pl.name}</div>
+                  <div className="text-xs text-foreground/50 truncate">
+                    {pl.track_ids?.length || 0} track
+                    {(pl.track_ids?.length || 0) === 1 ? "" : "s"}
+                  </div>
+                </Link>
+                <button
+                  onClick={() => setPendingDelete(pl)}
+                  className="absolute top-2 right-2 p-1.5 rounded-full bg-foreground/80 text-background opacity-0 group-hover:opacity-100 transition"
+                  aria-label="Delete playlist"
+                >
+                  <Trash2 size={14} />
+                </button>
+              </div>
             ))}
           </div>
         )}
@@ -196,7 +219,7 @@ export default function Library() {
             {albums.map((a) => (
               <Link
                 key={a.id}
-                to={`/playlist/album-${a.id}`}
+                to={`/album/${a.id}`}
                 className="rounded-xl p-3 hover:bg-foreground/[0.03] transition"
               >
                 <div className="aspect-square rounded-lg overflow-hidden bg-foreground/10 mb-3 grid place-items-center text-foreground/40">
@@ -249,6 +272,34 @@ export default function Library() {
           </div>
         )}
       </div>
+
+      {pendingDelete && (
+        <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm grid place-items-center p-4">
+          <div className="bg-white rounded-2xl w-full max-w-md p-5 shadow-2xl">
+            <h3 className="text-lg font-extrabold mb-1">Delete playlist?</h3>
+            <p className="text-sm text-foreground/60 mb-4">
+              "{pendingDelete.name}" will be permanently removed. This cannot be undone.
+            </p>
+            <div className="flex justify-end gap-2">
+              <button
+                onClick={() => setPendingDelete(null)}
+                disabled={deleting}
+                className="px-4 py-2 rounded-full border border-border text-sm font-semibold"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={confirmDeletePlaylist}
+                disabled={deleting}
+                className="px-4 py-2 rounded-full bg-red-600 text-white text-sm font-semibold disabled:opacity-40 flex items-center gap-2"
+              >
+                {deleting && <Loader2 size={14} className="animate-spin" />}
+                {deleting ? "Deleting…" : "Delete"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

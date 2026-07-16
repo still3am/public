@@ -4,13 +4,14 @@ import { base44 } from "@/api/base44Client";
 import { GENRES } from "@/lib/audio-utils";
 import TrackCard from "@/components/TrackCard";
 import EmptyState from "@/components/EmptyState";
-import { Music, Loader2 } from "lucide-react";
+import { Music, Loader2, Plus } from "lucide-react";
 
 export default function Discover() {
   const loc = useLocation();
   const [genre, setGenre] = useState(loc.state?.initialGenre || null);
   const [tracks, setTracks] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [showGenres, setShowGenres] = useState(false);
 
   async function load() {
     setLoading(true);
@@ -34,23 +35,49 @@ export default function Discover() {
     <div>
       <h1 className="text-2xl font-extrabold tracking-tight mb-1">Discover</h1>
       <p className="text-sm text-foreground/50 mb-5">Browse PUBLIC by genre.</p>
-      <div className="flex flex-wrap gap-2 mb-6">
+      <div className="flex items-center gap-2 mb-6 flex-wrap">
         <button
           onClick={() => setGenre(null)}
           className={`chip ${!genre ? "active" : ""}`}
         >
           All
         </button>
-        {GENRES.map((g) => (
+        {genre && (
           <button
-            key={g}
-            onClick={() => setGenre(g)}
-            className={`chip ${genre === g ? "active" : ""}`}
+            onClick={() => setGenre(null)}
+            className="chip active flex items-center gap-1.5"
           >
-            {g}
+            {genre}
+            <span className="text-foreground/60 text-base leading-none">×</span>
           </button>
-        ))}
+        )}
+        <button
+          onClick={() => setShowGenres((v) => !v)}
+          className="chip flex items-center gap-1.5"
+        >
+          {showGenres ? "Hide" : "More genres"}
+          <Plus
+            size={14}
+            className={`transition-transform ${showGenres ? "rotate-45" : ""}`}
+          />
+        </button>
       </div>
+      {showGenres && (
+        <div className="mb-6 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2">
+          {GENRES.map((g) => (
+            <button
+              key={g}
+              onClick={() => {
+                setGenre(g);
+                setShowGenres(false);
+              }}
+              className={`chip w-full justify-center ${genre === g ? "active" : ""}`}
+            >
+              {g}
+            </button>
+          ))}
+        </div>
+      )}
       {loading ? (
         <div className="py-16 grid place-items-center">
           <Loader2 className="animate-spin" />

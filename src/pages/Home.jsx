@@ -199,7 +199,7 @@ export default function Home() {
             {albums.map((a) =>
           <Link
             key={a.id}
-            to={`/playlist/album-${a.id}`}
+            to={`/album/${a.id}`}
             className="rounded-xl p-3 hover:bg-foreground/[0.03] transition">
             
                 <div className="aspect-square rounded-lg overflow-hidden bg-foreground/10 mb-3 grid place-items-center text-foreground/40">

@@ -53,9 +53,15 @@ export default function Search() {
         tracks: tracks.filter(
           (t) =>
           t.is_published !== false &&
-          t.title?.toLowerCase().includes(Q)
+          (t.title?.toLowerCase().includes(Q) ||
+          t.artist?.toLowerCase().includes(Q) ||
+          t.uploader_name?.toLowerCase().includes(Q))
         ),
-        albums: albums.filter((a) => a.title?.toLowerCase().includes(Q)),
+        albums: albums.filter(
+          (a) =>
+          a.title?.toLowerCase().includes(Q) ||
+          a.artisan?.toLowerCase().includes(Q)
+        ),
         playlists: playlists.filter(
           (p) => p.is_public !== false && p.name?.toLowerCase().includes(Q)
         ),
@@ -91,7 +97,7 @@ export default function Search() {
           autoFocus
           value={q}
           onChange={(e) => setQ(e.target.value)}
-          placeholder="Search tracks, albums, playlists…"
+          placeholder="Search tracks, albums, artists…"
           className="w-full pl-11 pr-4 py-3 rounded-full border border-border bg-white text-sm font-medium focus:outline-none focus:ring-2 focus:ring-foreground/10" />
         
       </div>
@@ -101,11 +107,12 @@ export default function Search() {
         <button
           key={id}
           onClick={() => setTab(id)}
-          className={`flex items-center gap-1.5 px-4 py-3 text-sm font-medium border-b-2 -mb-px transition shrink-0 whitespace-nowrap hidden ${
+          className={`flex items-center gap-1.5 px-4 py-3 text-sm font-medium border-b-2 -mb-px transition shrink-0 whitespace-nowrap ${
           tab === id ?
           "border-foreground text-foreground" :
           "border-transparent text-foreground/50 hover:text-foreground"}`
-          }>
+          }
+          >
           
             <Icon size={16} /> {label}
           </button>
@@ -147,7 +154,7 @@ export default function Search() {
                 {data.albums.map((a) =>
           <Link
             key={a.id}
-            to={`/playlist/album-${a.id}`}
+            to={`/album/${a.id}`}
             className="rounded-xl p-3 hover:bg-foreground/[0.03] transition">
             
                     <div className="aspect-square rounded-lg overflow-hidden bg-foreground/10 mb-3">
