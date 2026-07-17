@@ -100,15 +100,15 @@ export default function TrackRow({
           
           {track.title}
         </Link>
-        {track.artist ? (
-          <span className="text-xs text-foreground/50 truncate">{track.artist}</span>
-        ) : (
-          <Link
-            to={`/profile/${track.uploader_id}`}
-            className="text-xs text-foreground/50 truncate hover:underline">
+        {track.artist ?
+        <span className="text-xs text-foreground/50 truncate">{track.artist}</span> :
+
+        <Link
+          to={`/profile/${track.uploader_id}`}
+          className="text-xs text-foreground/50 truncate hover:underline">
             {track.uploader_name || "Unknown"}
           </Link>
-        )}
+        }
       </div>
       {track.explicit &&
       <span className="text-[9px] font-extrabold px-1 py-0.5 rounded bg-foreground/15 text-foreground/70 shrink-0">
@@ -116,9 +116,9 @@ export default function TrackRow({
         </span>
       }
       {isTrending &&
-      <span className="hidden md:inline-flex items-center gap-0.5 text-[9px] font-extrabold px-1.5 py-0.5 rounded bg-amber-400/20 text-amber-700 shrink-0">
-          <Flame size={10} /> Top
-        </span>
+      <span className="hidden md:inline-flex items-center gap-0.5 text-[9px] font-extrabold px-1.5 py-0.5 rounded bg-amber-400/20 text-amber-700 shrink-0">top
+
+      </span>
       }
       
 
