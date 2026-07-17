@@ -482,66 +482,69 @@ export default function Profile() {
                       <button
                       onClick={saveProfile}
                       disabled={saving}
-                      className="px-4 py-2 rounded-full bg-foreground text-background text-sm font-semibold flex items-center gap-2 disabled:opacity-40">
-                      
-                        {saving ? <Loader2 size={14} className="animate-spin" /> : <Save size={14} />} Save
+                      title="Save"
+                      aria-label="Save changes"
+                      className="w-10 h-10 rounded-full bg-foreground text-background grid place-items-center disabled:opacity-40">
+                        {saving ? <Loader2 size={16} className="animate-spin" /> : <Save size={16} />}
                       </button>
                       <button
                       onClick={() => setEditMode(false)}
-                      className="px-4 py-2 rounded-full border border-border text-sm font-semibold flex items-center gap-2">
-                      
-                        <X size={14} /> Cancel
+                      title="Cancel"
+                      aria-label="Cancel editing"
+                      className="w-10 h-10 rounded-full border border-border grid place-items-center">
+                        <X size={16} />
                       </button>
                     </> :
-
                   <button
                     onClick={() => setEditMode(true)}
-                    className="px-4 py-2 rounded-full border border-border font-semibold flex items-center gap-2 text-xs">
-                    
-                      <Pencil size={14} /> Edit profile
-                    </button> :
-
-
+                    title="Edit profile"
+                    aria-label="Edit profile"
+                    className="w-10 h-10 rounded-full border border-border grid place-items-center">
+                    <Pencil size={16} />
+                  </button> :
                   <button
                     onClick={toggleFollow}
-                    className={`px-4 py-2 rounded-full text-sm font-semibold flex items-center gap-2 ${
-                    following ? "border border-border" : "bg-foreground text-background"}`
-                    }>
-                    
-                    {following ? <UserCheck size={14} /> : <UserPlus size={14} />}{" "}
-                    {following ? "Following" : "Follow"}
+                    title={following ? "Following (click to unfollow)" : "Follow"}
+                    aria-label={following ? "Unfollow" : "Follow"}
+                    className={`w-10 h-10 rounded-full grid place-items-center transition ${
+                    following ? "border border-border" : "bg-foreground text-background"}`}>
+                    {following ? <UserCheck size={16} /> : <UserPlus size={16} />}
                   </button>
                   }
                 {!editMode &&
                   <button
                     onClick={shareProfile}
-                    className="px-3 py-2 rounded-full border border-border font-semibold flex items-center gap-2 text-xs hidden">
-                    
-                    <Share2 size={14} /> {copied ? "Copied!" : "Share"}
+                    title={copied ? "Copied!" : "Share"}
+                    aria-label="Share profile"
+                    className="w-10 h-10 rounded-full border border-border grid place-items-center hidden">
+                    <Share2 size={16} />
                   </button>
                   }
                 {!editMode &&
                   <button
                     onClick={() => setShowQR(true)}
-                    className="px-3 py-2 rounded-full border border-border font-semibold flex items-center gap-2 text-xs">
-                    
-                    <QrCode size={14} /> QR
+                    title="QR code"
+                    aria-label="Show QR code"
+                    className="w-10 h-10 rounded-full border border-border grid place-items-center">
+                    <QrCode size={16} />
                   </button>
                   }
                 {!editMode && tracks.length > 0 &&
                   <button
                     onClick={() => p.playTrackAt(tracks)}
-                    className="px-4 py-2 rounded-full border border-border font-semibold flex items-center gap-2 text-xs">
-                    
-                    <Play size={14} /> Play all
+                    title="Play all"
+                    aria-label="Play all tracks"
+                    className="w-10 h-10 rounded-full border border-border grid place-items-center">
+                    <Play size={16} />
                   </button>
                   }
                 {isOwn && !editMode &&
                   <Link
                     to="/upload"
-                    className="px-3 py-2 rounded-full font-semibold flex items-center gap-2 border border-border text-xs">
-                    
-                    Upload
+                    title="Upload a track"
+                    aria-label="Upload a track"
+                    className="w-10 h-10 rounded-full border border-border grid place-items-center">
+                    <Upload size={16} />
                   </Link>
                   }
               </div>
