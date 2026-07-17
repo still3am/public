@@ -115,11 +115,11 @@ export default function TrackRow({
           E
         </span>
       }
-      {isTrending &&
-      <span className="hidden md:inline-flex items-center gap-0.5 text-[9px] font-extrabold px-1.5 py-0.5 rounded bg-amber-400/20 text-amber-700 shrink-0">Top
+      
 
-      </span>
-      }
+
+
+      
       
 
       
