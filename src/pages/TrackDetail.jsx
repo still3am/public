@@ -284,7 +284,7 @@ export default function TrackDetail() {
             {(track.artist || uploader) &&
             <div className="text-sm text-foreground/60 mb-2 flex flex-wrap items-center gap-x-1.5 gap-y-0.5">
                 {track.artist &&
-              <span className="font-semibold text-foreground/80">
+              <span className="font-semibold text-foreground/80 px-1">
                     {track.artist}
                   </span>
               }
