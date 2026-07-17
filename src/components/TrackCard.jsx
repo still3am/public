@@ -60,7 +60,7 @@ export default function TrackCard({ track }) {
         <div className="text-xs text-foreground/50 truncate flex items-center gap-1.5">
           <span className="truncate">{track.artist || track.uploader_name || "Unknown"}</span>
           {isTrending &&
-          <span className="shrink-0 inline-flex items-center gap-0.5 text-[9px] font-extrabold px-1.5 py-0.5 rounded bg-amber-400/20 text-amber-700">
+          <span className="shrink-0 inline-flex items-center gap-0.5 text-[9px] font-extrabold px-1.5 py-0.5 rounded bg-amber-400/20 text-amber-700 hidden">
               <Flame size={9} /> Top
             </span>
           }
