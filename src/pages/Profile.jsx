@@ -328,7 +328,7 @@ export default function Profile() {
                 }
             </div>
 
-            <div className="flex-1 min-w-0 w-full md:w-auto text-center md:text-left">
+            <div className="flex-1 min-w-0 w-full md:w-auto text-center md:text-left my-1">
               <div className="flex items-baseline gap-2 flex-wrap justify-center md:justify-start">
                 {editMode ?
                   <input
@@ -678,7 +678,7 @@ export default function Profile() {
           </p>
           <ThemeToggle />
         </div>
-      }
+        }
       {isOwn && !editMode &&
         <div className="mt-10 p-5 rounded-2xl border border-red-200 bg-red-50/30">
           <h2 className="text-base font-extrabold tracking-tight mb-1 text-red-700">
