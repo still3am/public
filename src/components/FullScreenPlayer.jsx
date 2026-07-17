@@ -51,9 +51,9 @@ export default function FullScreenPlayer({ onClose, onOpenQueue }) {
         </button>
         <div className="text-center">
           <div className="text-[10px] uppercase tracking-[0.3em] opacity-60">Now Playing</div>
-          <div className="text-xs font-semibold opacity-90 truncate max-w-[180px] hidden">
-            {t.album_id ? "From album" : "PUBLIC"}
-          </div>
+          
+
+          
         </div>
         <button onClick={onOpenQueue} className="p-2 -mr-2 active:scale-90 transition" aria-label="Queue">
           <ListMusic size={22} />
