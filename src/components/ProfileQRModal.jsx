@@ -93,24 +93,24 @@ export default function ProfileQRModal({ url, name, avatar, onClose }) {
               <Share2 size={14} /> Share profile
             </button> :
           null}
-          <button
-            onClick={copy}
-            className="px-4 py-2.5 rounded-full border border-border text-sm font-semibold flex items-center justify-center gap-2 hidden">
-            
-            {copied ?
-            "Copied!" :
+          
 
-            <>
-                <Copy size={14} /> Copy link
-              </>
-            }
-          </button>
-          <button
-            onClick={download}
-            className="px-4 py-2.5 rounded-full border border-border text-sm font-semibold flex items-center justify-center gap-2 hidden">
-            
-            <Download size={14} /> Save PNG
-          </button>
+
+
+
+
+
+
+
+
+
+          
+          
+
+
+
+
+          
         </div>
 
         <button
