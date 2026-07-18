@@ -19,7 +19,7 @@ import PullToRefresh from "@/components/PullToRefresh";
 function Section({ title, icon: Icon, children }) {
   return (
     <section className="mb-10">
-      <div className="flex items-center justify-between mb-4">
+      <div className="flex items-center justify-between mb-4 py-3">
         <h2 className="text-xl font-extrabold tracking-tight flex items-center gap-2">
           {Icon && <Icon size={20} />}
           {title}
