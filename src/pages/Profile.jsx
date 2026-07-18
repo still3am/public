@@ -529,15 +529,15 @@ export default function Profile() {
                     <QrCode size={16} />
                   </button>
                   }
-                {!editMode && tracks.length > 0 &&
-                  <button
-                    onClick={() => p.playTrackAt(tracks)}
-                    title="Play all"
-                    aria-label="Play all tracks"
-                    className="w-10 h-10 rounded-full border border-border grid place-items-center hidden">
-                    <Play size={16} />
-                  </button>
-                  }
+                
+
+
+
+
+
+
+
+                  
                 {isOwn && !editMode &&
                   <Link
                     to="/upload"
