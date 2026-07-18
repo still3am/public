@@ -534,7 +534,7 @@ export default function Profile() {
                     onClick={() => p.playTrackAt(tracks)}
                     title="Play all"
                     aria-label="Play all tracks"
-                    className="w-10 h-10 rounded-full border border-border grid place-items-center">
+                    className="w-10 h-10 rounded-full border border-border grid place-items-center hidden">
                     <Play size={16} />
                   </button>
                   }
@@ -678,7 +678,7 @@ export default function Profile() {
           </p>
           <ThemeToggle />
         </div>
-      }
+        }
       {isOwn && !editMode &&
         <div className="mt-10 p-5 rounded-2xl border border-red-200 bg-red-50/30">
           <h2 className="text-base font-extrabold tracking-tight mb-1 text-red-700">
