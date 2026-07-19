@@ -171,9 +171,9 @@ export default function Home() {
             }} />
           
           <div className="relative flex items-center gap-3 mb-5">
-            <span className="text-sm font-bold tracking-[0.25em] uppercase text-foreground/60 hidden">
-              PUBLIC.
-            </span>
+            
+
+            
             
 
             
