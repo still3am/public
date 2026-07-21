@@ -328,7 +328,7 @@ export default function Profile() {
                 }
             </div>
 
-            <div className="flex-1 min-w-0 w-full md:w-auto text-center md:text-left">
+            <div className="flex-1 min-w-0 w-full md:w-auto text-center md:text-left py-5">
               <div className="flex items-baseline gap-2 flex-wrap justify-center md:justify-start">
                 {editMode ?
                   <input
