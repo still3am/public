@@ -24,9 +24,11 @@ import {
   Tag,
   ChevronDown,
   ChevronUp,
-  Music2 } from
+  Music2,
+  AlertTriangle } from
 "lucide-react";
 import { getAudioDuration, deriveDefaultTitle, AUDIO_ACCEPT } from "@/lib/audio-utils";
+import { findDuplicateTracks } from "@/lib/duplicateCheck";
 import GenrePicker from "@/components/GenrePicker";
 import { useToast } from "@/components/ui/use-toast";
 
@@ -85,12 +87,63 @@ function PreviewButton({ item }) {
         src={item.audio_url || (item.file ? URL.createObjectURL(item.file) : "")}
         onEnded={() => setPlaying(false)}
         className="hidden" />
-      
-    </button>);
+        
+        </button>);
+        }
 
-}
+        function AudioVerify({ item }) {
+        const [playing, setPlaying] = useState(false);
+        const [pos, setPos] = useState(0);
+        const [dur, setDur] = useState(item.duration || 0);
+        const ref = useRef(null);
+        const src = item.audio_url || (item.file ? URL.createObjectURL(item.file) : "");
+        if (!src) return null;
+        const toggle = () => {
+        const a = ref.current;
+        if (!a) return;
+        if (playing) a.pause();
+        else a.play().catch(() => {});
+        };
+        return (
+        <div className="flex items-center gap-3 p-3 rounded-xl border border-dashed border-foreground/30 bg-foreground/[0.02]">
+        <button
+        type="button"
+        onClick={toggle}
+        className="w-10 h-10 rounded-full bg-foreground text-background grid place-items-center shrink-0 active:scale-90 transition"
+        aria-label={playing ? "Pause" : "Play"}
+        >
+        {playing ? <Pause size={18} /> : <Play size={18} className="ml-0.5" />}
+        </button>
+        <div className="flex-1 min-w-0">
+        <div className="text-xs font-semibold text-foreground/70 mb-1.5 flex items-center gap-1">
+          <CheckCircle2 size={12} className="text-foreground/50" /> Play to verify this is the right audio
+        </div>
+        <div className="relative h-1.5 bg-foreground/15 rounded-full">
+          <div
+            className="absolute left-0 top-0 h-1.5 bg-foreground/70 rounded-full"
+            style={{ width: `${dur ? (pos / dur) * 100 : 0}%` }}
+          />
+        </div>
+        <div className="flex justify-between text-[10px] text-foreground/40 mt-1">
+          <span>{fmtDur(pos)}</span>
+          <span>{fmtDur(dur)}</span>
+        </div>
+        </div>
+        <audio
+        ref={ref}
+        src={src}
+        onPlay={() => setPlaying(true)}
+        onPause={() => setPlaying(false)}
+        onEnded={() => { setPlaying(false); setPos(0); }}
+        onTimeUpdate={(e) => setPos(e.target.currentTime || 0)}
+        onLoadedMetadata={(e) => setDur(e.target.duration || item.duration || 0)}
+        className="hidden"
+        />
+        </div>
+        );
+        }
 
-function UrlAddRow({ onAdded, disabled }) {
+        function UrlAddRow({ onAdded, disabled }) {
   const [url, setUrl] = useState("");
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -213,6 +266,7 @@ export default function Upload() {
   const [progress, setProgress] = useState(0);
   const [done, setDone] = useState(null); // { id, kind, title, count }
   const [dragOver, setDragOver] = useState(false);
+  const [dupWarning, setDupWarning] = useState(null);
   const [showAdvanced, setShowAdvanced] = useState(false);
   const singleInputRef = useRef(null);
   const bulkInputRef = useRef(null);
@@ -306,6 +360,26 @@ export default function Upload() {
   }
 
   // ---------- publication ----------
+  async function dupCheck(candidates, kind) {
+    try {
+      const existing = await base44.entities.Track.filter(
+        { uploader_id: user.id },
+        "-created_date",
+        500
+      ).catch(() => []);
+      const matches = [];
+      candidates.forEach((it) => {
+        const found = findDuplicateTracks(existing, it);
+        if (found.length) matches.push({ item: it, existing: found[0] });
+      });
+      if (matches.length) {
+        setDupWarning({ matches, kind });
+        return true;
+      }
+    } catch {}
+    return false;
+  }
+
   function trackPayload(item, extra) {
     return {
       title: item.title || item.file_name || "Untitled",
@@ -347,6 +421,11 @@ export default function Upload() {
 
   async function publishSingle() {
     if (!validSingle()) return;
+    if (await dupCheck([items[0]], "single")) return;
+    await doPublishSingle();
+  }
+
+  async function doPublishSingle() {
     setPublishing(true);
     setProgress(0);
     try {
@@ -371,6 +450,11 @@ export default function Upload() {
 
   async function publishBulk() {
     if (!validBulk()) return;
+    if (await dupCheck(items, "bulk")) return;
+    await doPublishBulk();
+  }
+
+  async function doPublishBulk() {
     setPublishing(true);
     setProgress(0);
     try {
@@ -549,6 +633,18 @@ export default function Upload() {
   return (
     <>
       {hiddenInputs}
+      {dupWarning && (
+        <DuplicateConfirmModal
+          matches={dupWarning.matches}
+          onCancel={() => setDupWarning(null)}
+          onContinue={() => {
+            const k = dupWarning.kind;
+            setDupWarning(null);
+            if (k === "single") doPublishSingle();
+            else doPublishBulk();
+          }}
+        />
+      )}
       <div className="max-w-3xl mx-auto">
         <div className="flex items-center justify-between mb-6 flex-wrap gap-3">
           <h1 className="text-2xl font-extrabold tracking-tight">Upload</h1>
@@ -1018,6 +1114,62 @@ function PublishBar({
 
 }
 
+function DuplicateConfirmModal({ matches, onContinue, onCancel }) {
+  return (
+    <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm grid place-items-center p-4">
+      <div className="bg-card rounded-2xl w-full max-w-md p-5 shadow-2xl">
+        <div className="flex items-center gap-2 mb-1">
+          <AlertTriangle size={18} className="text-amber-500" />
+          <h3 className="text-lg font-extrabold tracking-tight">Possible duplicate</h3>
+        </div>
+        <p className="text-sm text-foreground/60 mb-4">
+          We found a track on your profile that looks very similar. Upload it
+          anyway, or review the existing one first.
+        </p>
+        <div className="space-y-2 mb-4 max-h-52 overflow-y-auto no-scrollbar">
+          {matches.map((m, i) => (
+            <Link
+              key={i}
+              to={`/track/${m.existing.id}`}
+              onClick={onCancel}
+              className="flex items-center gap-3 p-2 rounded-xl border border-border hover:bg-foreground/[0.03] transition"
+            >
+              <div className="w-10 h-10 rounded bg-foreground/10 overflow-hidden shrink-0">
+                {m.existing.cover_art_url ? (
+                  <img src={m.existing.cover_art_url} alt="" className="w-full h-full object-cover" />
+                ) : (
+                  <div className="w-full h-full grid place-items-center text-foreground/40">
+                    <Music size={14} />
+                  </div>
+                )}
+              </div>
+              <div className="min-w-0 flex-1">
+                <div className="text-sm font-semibold truncate">{m.existing.title}</div>
+                <div className="text-xs text-foreground/50 truncate">{m.existing.artist || "you"}</div>
+              </div>
+              <span className="text-xs text-foreground/40 shrink-0">View &rarr;</span>
+            </Link>
+          ))}
+        </div>
+        <div className="flex justify-end gap-2">
+          <button
+            onClick={onCancel}
+            className="px-4 py-2 rounded-full border border-border text-sm font-semibold hover:bg-foreground/5"
+          >
+            Go back
+          </button>
+          <button
+            onClick={onContinue}
+            className="px-4 py-2 rounded-full bg-foreground text-background text-sm font-semibold hover:scale-[1.02] transition"
+          >
+            Upload anyway
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function SingleEditor({ item, update, rights, setRights, publishing, onPublish, canPublish, progress, onPickFile, onAddUrl, onClear }) {
   if (!item)
   return (
@@ -1131,6 +1283,8 @@ function SingleForm({ item, update, rights, setRights, publishing, onPublish, ca
         }
         {item.audio_url && <span className="ml-1 px-1.5 py-0.5 rounded bg-foreground/10 text-[10px]">From URL</span>}
       </div>
+
+      <AudioVerify item={item} />
 
       <textarea
         value={item.description}
