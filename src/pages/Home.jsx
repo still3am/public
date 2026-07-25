@@ -174,7 +174,7 @@ export default function Home() {
 
           <div className="relative">
             <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-foreground/[0.05] border border-foreground/[0.06] text-[11px] font-semibold uppercase tracking-wider text-foreground/60 mb-5">
-              <Sparkles size={12} className="hidden" /> {greeting}
+               {greeting}
             </span>
             <h1 className="text-3xl md:text-5xl font-extrabold tracking-tighter mb-3 max-w-2xl leading-[1.05]">
               Made by the people,<br />for the people.
@@ -202,9 +202,9 @@ export default function Home() {
           to="/suggestions"
           className="group block mb-10 rounded-2xl border border-foreground/[0.06] bg-foreground/[0.02] hover:bg-foreground/[0.04] transition p-4 md:p-5">
           <div className="flex items-center gap-4">
-            <span className="grid place-items-center w-11 h-11 rounded-xl bg-amber-400/15 text-amber-600 dark:text-amber-400 shrink-0 hidden">
-              <Lightbulb size={20} />
-            </span>
+            
+
+            
             <div className="flex-1 min-w-0">
               <h3 className="text-sm md:text-base font-extrabold tracking-tight">Ideas & Suggestions</h3>
               <p className="text-xs md:text-sm text-foreground/55 truncate">
