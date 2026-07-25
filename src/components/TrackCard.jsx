@@ -1,10 +1,39 @@
+import { useEffect, useState } from "react";
 import { Play, Pause, Flame } from "lucide-react";
 import { Link } from "react-router-dom";
 import { usePlayer } from "@/context/PlayerContext";
+import { base44 } from "@/api/base44Client";
+
+const albumCoverCache = new Map();
 
 export default function TrackCard({ track }) {
   const p = usePlayer();
   const isCurrent = p.currentTrack?.id === track.id;
+  const [albumCover, setAlbumCover] = useState(
+    track.album_id ? albumCoverCache.get(track.album_id) : undefined
+  );
+
+  useEffect(() => {
+    if (track.cover_art_url || !track.album_id) return;
+    const cached = albumCoverCache.get(track.album_id);
+    if (cached !== undefined) {
+      setAlbumCover(cached);
+      return;
+    }
+    let alive = true;
+    base44.entities.Album
+      .get(track.album_id)
+      .then((al) => {
+        if (!alive) return;
+        const url = al?.cover_art_url || "";
+        albumCoverCache.set(track.album_id, url);
+        setAlbumCover(url);
+      })
+      .catch(() => {});
+    return () => { alive = false; };
+  }, [track.album_id, track.cover_art_url]);
+
+  const coverUrl = track.cover_art_url || albumCover;
   const isRecent =
   track.created_date &&
   Date.now() - new Date(track.created_date).getTime() < 7 * 86400 * 1000;
@@ -15,9 +44,9 @@ export default function TrackCard({ track }) {
       onClick={() => p.playTrackAt([track])}>
       
       <div className="relative aspect-square rounded-lg overflow-hidden bg-foreground/10 mb-3">
-        {track.cover_art_url ?
+        {coverUrl ?
         <img
-          src={track.cover_art_url}
+          src={coverUrl}
           alt=""
           className={`w-full h-full object-cover transition ${
           isCurrent ? "" : "group-hover:scale-[1.03]"}`
