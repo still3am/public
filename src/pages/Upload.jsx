@@ -291,6 +291,7 @@ export default function Upload() {
           file_name: f.name,
           size: f.size,
           title: deriveDefaultTitle(f),
+          artist: albumUploaderName,
           duration: dur
         });
       })
@@ -316,7 +317,8 @@ export default function Upload() {
       audio_url: url,
       file_name,
       size,
-      title: deriveDefaultTitle({ name: file_name })
+      title: deriveDefaultTitle({ name: file_name }),
+      artist: albumUploaderName
     });
     setItems((prev) => [...prev, item]);
   }
@@ -699,7 +701,8 @@ export default function Upload() {
                 audio_url: urlItem.url,
                 file_name: urlItem.file_name,
                 size: urlItem.size,
-                title: deriveDefaultTitle({ name: urlItem.file_name })
+                title: deriveDefaultTitle({ name: urlItem.file_name }),
+                artist: albumUploaderName
               })]);
               setMode("single");
             }} />
