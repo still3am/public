@@ -86,7 +86,8 @@
     @apply border-border outline-ring/50;
   }
 
-  html, body { overscroll-behavior: none; -webkit-overflow-scrolling: touch; max-width: 100%; overflow-x: hidden; }
+  html { overscroll-behavior: none; }
+  body { overscroll-behavior: none; -webkit-overflow-scrolling: touch; max-width: 100%; overflow-x: hidden; }
   body {
     @apply bg-background text-foreground font-body;
     font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
