@@ -22,8 +22,8 @@ import {
   Repeat1,
   Shuffle,
   Disc3,
-  Share2,
-} from "lucide-react";
+  Share2 } from
+"lucide-react";
 
 const clampVol = (v) => Math.max(0, Math.min(1, v));
 
@@ -33,12 +33,12 @@ function IconButton({ icon: Icon, onClick, active, size = 22, label, className =
       onClick={onClick}
       aria-label={label}
       className={`p-2.5 rounded-full active:scale-90 hover:bg-white/10 transition ${
-        active ? "opacity-100" : "opacity-50"
-      } ${className}`}
-    >
+      active ? "opacity-100" : "opacity-50"} ${
+      className}`}>
+      
       <Icon size={size} />
-    </button>
-  );
+    </button>);
+
 }
 
 export default function FullScreenPlayer({ onClose, onOpenQueue }) {
@@ -63,12 +63,12 @@ export default function FullScreenPlayer({ onClose, onOpenQueue }) {
           p.togglePlay();
           break;
         case "ArrowRight":
-          if (e.shiftKey) p.next();
-          else p.seek(Math.min((p.position || 0) + 5, p.duration || 0));
+          if (e.shiftKey) p.next();else
+          p.seek(Math.min((p.position || 0) + 5, p.duration || 0));
           break;
         case "ArrowLeft":
-          if (e.shiftKey) p.prev();
-          else p.seek(Math.max((p.position || 0) - 5, 0));
+          if (e.shiftKey) p.prev();else
+          p.seek(Math.max((p.position || 0) - 5, 0));
           break;
         case "ArrowUp":
           e.preventDefault();
@@ -131,7 +131,7 @@ export default function FullScreenPlayer({ onClose, onOpenQueue }) {
 
   if (!t) return null;
   const liked = likes.likedIds.has(t.id);
-  const progress = p.duration ? (p.position / p.duration) * 100 : 0;
+  const progress = p.duration ? p.position / p.duration * 100 : 0;
   const remaining = Math.max(0, (p.duration || 0) - (p.position || 0));
   const volPct = (p.muted ? 0 : p.volume) * 100;
   const repeatOff = p.repeat === "off";
@@ -141,13 +141,13 @@ export default function FullScreenPlayer({ onClose, onOpenQueue }) {
   return (
     <div
       className="fixed inset-0 z-50 text-white animate-[fadeIn_.25s_ease-out] flex flex-col overflow-hidden"
-      style={{ background: `linear-gradient(170deg, ${bg} 0%, #0d0d0f 55%, #000 100%)` }}
-    >
+      style={{ background: `linear-gradient(170deg, ${bg} 0%, #0d0d0f 55%, #000 100%)` }}>
+      
       {/* ambient glow */}
       <div
         className="pointer-events-none absolute -top-1/3 left-0 right-0 h-2/3 opacity-40 blur-3xl"
-        style={{ background: `radial-gradient(ellipse at center, ${bg} 0%, transparent 70%)` }}
-      />
+        style={{ background: `radial-gradient(ellipse at center, ${bg} 0%, transparent 70%)` }} />
+      
 
       {/* top bar */}
       <div className="relative flex items-center justify-between px-4 md:px-8 pt-8 pb-2 shrink-0">
@@ -181,22 +181,22 @@ export default function FullScreenPlayer({ onClose, onOpenQueue }) {
               onTouchMove={onVolTouchMove}
               onTouchEnd={onVolTouchEnd}
               className={`relative aspect-square w-full max-w-[min(46vh,86vw)] xl:max-w-[520px] rounded-3xl overflow-hidden shadow-2xl bg-white/10 shrink-0 touch-none transition-transform duration-500 ${
-                p.isPlaying ? "scale-100" : "scale-[0.97]"
-              }`}
-            >
-              {t.cover_art_url ? (
-                <img src={t.cover_art_url} alt="" className="w-full h-full object-cover" />
-              ) : (
-                <div className="w-full h-full grid place-items-center opacity-40">
+              p.isPlaying ? "scale-100" : "scale-[0.97]"}`
+              }>
+              
+              {t.cover_art_url ?
+              <img src={t.cover_art_url} alt="" className="w-full h-full object-cover" /> :
+
+              <div className="w-full h-full grid place-items-center opacity-40">
                   <Disc3 size={64} />
                 </div>
-              )}
+              }
               {/* volume hint */}
               <div
                 className={`absolute inset-0 grid place-items-center bg-black/30 backdrop-blur-sm transition-opacity duration-200 ${
-                  showVolHint ? "opacity-100" : "opacity-0 pointer-events-none"
-                }`}
-              >
+                showVolHint ? "opacity-100" : "opacity-0 pointer-events-none"}`
+                }>
+                
                 <div className="flex flex-col items-center gap-2">
                   <VolIcon size={40} />
                   <span className="text-4xl font-extrabold tabular-nums">{Math.round(volPct)}%</span>
@@ -213,16 +213,16 @@ export default function FullScreenPlayer({ onClose, onOpenQueue }) {
               <Link
                 to={`/track/${t.id}`}
                 onClick={onClose}
-                className="text-sm md:text-base opacity-70 hover:opacity-100 truncate block mt-1"
-              >
+                className="text-sm md:text-base opacity-70 hover:opacity-100 truncate block mt-1">
+                
                 {t.artist || t.uploader_name || "Unknown"}
               </Link>
             </div>
             <button
               onClick={() => likes.toggleLike(t)}
               className="p-2 shrink-0 active:scale-90 hover:bg-white/10 rounded-full transition"
-              aria-label="Like"
-            >
+              aria-label="Like">
+              
               <Heart size={26} className={liked ? "fill-red-500 text-red-500" : ""} />
             </button>
           </div>
@@ -233,8 +233,8 @@ export default function FullScreenPlayer({ onClose, onOpenQueue }) {
               <div className="absolute left-0 top-0 h-1.5 bg-white rounded-full" style={{ width: `${progress}%` }} />
               <div
                 className="absolute top-1/2 -translate-y-1/2 w-3 h-3 bg-white rounded-full shadow-md opacity-0 group-hover:opacity-100 transition"
-                style={{ left: `calc(${progress}% - 6px)` }}
-              />
+                style={{ left: `calc(${progress}% - 6px)` }} />
+              
               <input
                 type="range"
                 min={0}
@@ -243,8 +243,8 @@ export default function FullScreenPlayer({ onClose, onOpenQueue }) {
                 value={p.position}
                 onChange={(e) => p.seek(Number(e.target.value))}
                 className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                aria-label="Seek"
-              />
+                aria-label="Seek" />
+              
             </div>
             <div className="flex justify-between text-[11px] opacity-70 mt-1.5 tabular-nums">
               <span>{formatTime(p.position)}</span>
@@ -261,8 +261,8 @@ export default function FullScreenPlayer({ onClose, onOpenQueue }) {
             <button
               onClick={() => p.togglePlay()}
               className="w-16 h-16 xl:w-20 xl:h-20 rounded-full bg-white text-black grid place-items-center hover:scale-105 active:scale-95 transition shadow-xl"
-              aria-label={p.isPlaying ? "Pause" : "Play"}
-            >
+              aria-label={p.isPlaying ? "Pause" : "Play"}>
+              
               {p.isPlaying ? <Pause size={28} fill="black" /> : <Play size={28} fill="black" className="ml-1" />}
             </button>
             <button onClick={() => p.next()} className="p-2 active:scale-90 transition" aria-label="Next">
@@ -273,8 +273,8 @@ export default function FullScreenPlayer({ onClose, onOpenQueue }) {
               onClick={() => p.setRepeat(p.repeat === "off" ? "all" : p.repeat === "all" ? "one" : "off")}
               active={!repeatOff}
               label="Repeat"
-              size={20}
-            />
+              size={20} />
+            
           </div>
 
           {/* volume (desktop inline) */}
@@ -286,8 +286,8 @@ export default function FullScreenPlayer({ onClose, onOpenQueue }) {
               <div className="absolute left-0 top-0 h-1.5 bg-white rounded-full" style={{ width: `${volPct}%` }} />
               <div
                 className="absolute top-1/2 -translate-y-1/2 w-3 h-3 bg-white rounded-full opacity-0 group-hover:opacity-100 transition"
-                style={{ left: `calc(${volPct}% - 6px)` }}
-              />
+                style={{ left: `calc(${volPct}% - 6px)` }} />
+              
               <input
                 type="range"
                 min={0}
@@ -296,8 +296,8 @@ export default function FullScreenPlayer({ onClose, onOpenQueue }) {
                 value={p.muted ? 0 : p.volume}
                 onChange={(e) => p.setVolume(Number(e.target.value))}
                 className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                aria-label="Volume"
-              />
+                aria-label="Volume" />
+              
             </div>
             <span className="text-[11px] tabular-nums opacity-60 w-9 text-right">{Math.round(volPct)}%</span>
           </div>
@@ -306,8 +306,8 @@ export default function FullScreenPlayer({ onClose, onOpenQueue }) {
           <button
             onClick={() => setLyricsMode(true)}
             className="xl:hidden flex items-center justify-center gap-2 mx-auto mt-1 mb-3 px-4 py-2 rounded-full bg-white/10 active:scale-95 transition text-xs font-semibold shrink-0"
-            aria-label="Lyrics"
-          >
+            aria-label="Lyrics">
+            
             <Mic2 size={16} /> Lyrics
           </button>
         </div>
@@ -318,26 +318,26 @@ export default function FullScreenPlayer({ onClose, onOpenQueue }) {
             <button
               onClick={() => setLyricsMode(false)}
               className={`text-xs uppercase tracking-widest font-semibold transition ${
-                !lyricsMode ? "opacity-100" : "opacity-40"
-              }`}
-            >
+              !lyricsMode ? "opacity-100" : "opacity-40"}`
+              }>
+              
               <Disc3 size={18} className="inline mr-1" /> Cover
             </button>
             <div className="w-px h-3 bg-white/20" />
             <button
               onClick={() => setLyricsMode(true)}
               className={`text-xs uppercase tracking-widest font-semibold transition ${
-                lyricsMode ? "opacity-100" : "opacity-40"
-              }`}
-            >
+              lyricsMode ? "opacity-100" : "opacity-40"}`
+              }>
+              
               <Mic2 size={18} className="inline mr-1" /> Lyrics
             </button>
           </div>
           <div className="flex-1 min-h-0">
-            {lyricsMode ? (
-              <SyncedLyrics trackId={t.id} position={p.position} fallbackText={t.lyrics_text} onSeek={p.seek} />
-            ) : (
-              <div className="h-full grid place-items-center p-8 text-center">
+            {lyricsMode ?
+            <SyncedLyrics trackId={t.id} position={p.position} fallbackText={t.lyrics_text} onSeek={p.seek} /> :
+
+            <div className="h-full grid place-items-center p-8 text-center">
                 <div>
                   <Disc3 size={48} className="mx-auto opacity-30 mb-3" />
                   <p className="text-sm opacity-50 leading-relaxed">
@@ -346,41 +346,41 @@ export default function FullScreenPlayer({ onClose, onOpenQueue }) {
                   </p>
                 </div>
               </div>
-            )}
+            }
           </div>
         </div>
       </div>
 
       {/* copied toast */}
-      {copied && (
-        <div className="absolute bottom-24 left-1/2 -translate-x-1/2 px-4 py-2 rounded-full bg-white text-black text-xs font-semibold shadow-xl">
+      {copied &&
+      <div className="absolute bottom-24 left-1/2 -translate-x-1/2 px-4 py-2 rounded-full bg-white text-black text-xs font-semibold shadow-xl">
           Link copied
         </div>
-      )}
+      }
 
       {/* mobile bottom toggle bar */}
-      <div className="xl:hidden flex items-center justify-center gap-10 py-3 pb-7 border-t border-white/10 shrink-0 relative">
+      <div className="xl:hidden flex items-center justify-center gap-10 py-3 pb-7 border-t border-white/10 shrink-0 relative hidden">
         <button
           onClick={() => setLyricsMode(false)}
           className={`flex flex-col items-center text-[10px] uppercase tracking-wider active:scale-95 transition ${
-            !lyricsMode ? "opacity-100" : "opacity-45"
-          }`}
-          aria-label="Show cover"
-        >
+          !lyricsMode ? "opacity-100" : "opacity-45"}`
+          }
+          aria-label="Show cover">
+          
           <Disc3 size={20} />
           <span className="mt-1">Artwork</span>
         </button>
         <button
           onClick={() => setLyricsMode(true)}
           className={`flex flex-col items-center text-[10px] uppercase tracking-wider active:scale-95 transition ${
-            lyricsMode ? "opacity-100" : "opacity-45"
-          }`}
-          aria-label="Show lyrics"
-        >
+          lyricsMode ? "opacity-100" : "opacity-45"}`
+          }
+          aria-label="Show lyrics">
+          
           <Mic2 size={20} />
           <span className="mt-1">Lyrics</span>
         </button>
       </div>
-    </div>
-  );
+    </div>);
+
 }
