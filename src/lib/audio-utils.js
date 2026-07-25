@@ -103,3 +103,113 @@ export function isRecentlyAdded(track, days = 7) {
 export function isTrending(track, threshold = 30) {
   return (track?.play_count || 0) > threshold;
 }
+
+function readSynchsafe(buf, off) {
+  return (
+    ((buf[off] & 0x7f) << 21) |
+    ((buf[off + 1] & 0x7f) << 14) |
+    ((buf[off + 2] & 0x7f) << 7) |
+    (buf[off + 3] & 0x7f)
+  );
+}
+
+function readUInt32BE(buf, off) {
+  return (buf[off] << 24) | (buf[off + 1] << 16) | (buf[off + 2] << 8) | buf[off + 3];
+}
+
+// Extracts embedded cover art (ID3v2 APIC for mp3; FLAC PICTURE block).
+// Returns a File ready for upload, or null.
+export async function extractEmbeddedCover(file) {
+  try {
+    const headBuf = await file.slice(0, 16).arrayBuffer();
+    const head = new Uint8Array(headBuf);
+
+    // ID3v2 (mp3)
+    if (head[0] === 0x49 && head[1] === 0x44 && head[2] === 0x33) {
+      const major = head[3];
+      const tagSize = readSynchsafe(head, 6);
+      const total = 10 + tagSize;
+      const buf = new Uint8Array(await file.slice(0, Math.min(total, 2 * 1024 * 1024)).arrayBuffer());
+      let off = 10;
+      const frameIdLen = major === 2 ? 3 : 4;
+      const sizeLen = major === 2 ? 3 : 4;
+      while (off + frameIdLen + sizeLen + 2 <= buf.length) {
+        let id = "";
+        for (let i = 0; i < frameIdLen; i++) id += String.fromCharCode(buf[off + i]);
+        if (!/^[A-Z0-9]+$/.test(id)) break;
+        let fsize;
+        if (major === 2) {
+          fsize = (buf[off + 3] << 16) | (buf[off + 4] << 8) | buf[off + 5];
+        } else if (major === 4) {
+          fsize = readSynchsafe(buf, off + 4);
+        } else {
+          fsize = readUInt32BE(buf, off + 4);
+        }
+        const headerLen = frameIdLen + sizeLen + 2;
+        const dataStart = off + headerLen;
+        if (id === "APIC" || id === "PIC") {
+          let p = dataStart;
+          const encoding = buf[p];
+          p++;
+          let mime = "";
+          if (id === "PIC") {
+            mime = String.fromCharCode(buf[p], buf[p + 1], buf[p + 2]);
+            p += 3;
+          } else {
+            while (p < buf.length && buf[p] !== 0) {
+              mime += String.fromCharCode(buf[p]);
+              p++;
+            }
+            p++; // skip null terminator
+          }
+          p++; // picture type byte
+          // skip description (null-terminated; UTF-16 uses double null)
+          if (encoding === 1 || encoding === 2) {
+            while (p + 1 < buf.length && !(buf[p] === 0 && buf[p + 1] === 0)) p += 2;
+            p += 2;
+          } else {
+            while (p < buf.length && buf[p] !== 0) p++;
+            p++;
+          }
+          if (!mime) mime = "image/jpeg";
+          const imgBytes = buf.slice(p, dataStart + fsize);
+          if (imgBytes.length > 0) {
+            return new File([imgBytes], "cover", { type: mime });
+          }
+        }
+        off = dataStart + fsize;
+      }
+    }
+
+    // FLAC
+    if (head[0] === 0x66 && head[1] === 0x4c && head[2] === 0x61 && head[3] === 0x43) {
+      const buf = new Uint8Array(await file.slice(0, Math.min(file.size, 5 * 1024 * 1024)).arrayBuffer());
+      let p = 4;
+      while (p + 4 < buf.length) {
+        const blockType = buf[p] & 0x7f;
+        const last = (buf[p] & 0x80) !== 0;
+        const len = readUInt32BE(buf, p + 1);
+        p += 4;
+        if (blockType === 6) {
+          const mimeLen = readUInt32BE(buf, p + 4);
+          let mp = p + 8;
+          let mime = "";
+          for (let i = 0; i < mimeLen; i++) mime += String.fromCharCode(buf[mp + i]);
+          mp += mimeLen;
+          const descLen = readUInt32BE(buf, mp);
+          mp += 4 + descLen;
+          const dataLen = readUInt32BE(buf, mp);
+          mp += 4;
+          if (!mime) mime = "image/jpeg";
+          const imgBytes = buf.slice(mp, mp + dataLen);
+          if (imgBytes.length > 0) {
+            return new File([imgBytes], "cover", { type: mime });
+          }
+        }
+        if (last) break;
+        p += len;
+      }
+    }
+  } catch {}
+  return null;
+}

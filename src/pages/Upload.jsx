@@ -27,7 +27,7 @@ import {
   Music2,
   AlertTriangle } from
 "lucide-react";
-import { getAudioDuration, deriveDefaultTitle, deriveDefaultArtist, AUDIO_ACCEPT } from "@/lib/audio-utils";
+import { getAudioDuration, deriveDefaultTitle, deriveDefaultArtist, AUDIO_ACCEPT, extractEmbeddedCover } from "@/lib/audio-utils";
 import { findDuplicateTracks } from "@/lib/duplicateCheck";
 import { useStableAudioSrc } from "@/hooks/useStableAudioSrc";
 import GenrePicker from "@/components/GenrePicker";
@@ -285,14 +285,18 @@ export default function Upload() {
     if (!arr.length) return [];
     return Promise.all(
       arr.map(async (f) => {
-        const dur = await getAudioDuration(f).catch(() => 0);
+        const [dur, cover] = await Promise.all([
+          getAudioDuration(f).catch(() => 0),
+          extractEmbeddedCover(f)
+        ]);
         return FACTORY({
           file: f,
           file_name: f.name,
           size: f.size,
           title: deriveDefaultTitle(f),
           artist: deriveDefaultArtist(f),
-          duration: dur
+          duration: dur,
+          cover
         });
       })
     );
