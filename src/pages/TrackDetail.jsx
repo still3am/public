@@ -149,7 +149,7 @@ export default function TrackDetail() {
   const isCurrent = p.currentTrack?.id === track.id;
   const isOwner = track.uploader_id === user?.id;
   const isPlaying = isCurrent && p.isPlaying;
-  const displayArtist = track.artist || album?.artisan || "";
+  const displayArtist = album?.artisan || track.artist || "";
 
   const menuItems = [
   {
