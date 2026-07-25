@@ -285,9 +285,9 @@ export default function TrackDetail() {
               }
             </div>
             {(() => {
-              const artistName = track.artist || album?.artisan;
-              if (!artistName && !uploader) return null;
-              if (!artistName && uploader) {
+              const hasArtist = Boolean(track.artist || album?.artisan);
+              const artistName = track.artist || album?.artisan || track.uploader_name || "Unknown";
+              if (!hasArtist && uploader) {
                 return (
                   <div className="text-sm text-foreground/60 mb-2 flex flex-wrap items-center gap-1.5">
                     <span className="text-foreground/40">Uploaded by</span>
