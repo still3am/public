@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { usePlayer } from "@/context/PlayerContext";
 import { useColorExtraction } from "@/hooks/useColorExtraction";
 import { useLikes } from "@/hooks/useLikes";
@@ -30,6 +30,23 @@ export default function FullScreenPlayer({ onClose, onOpenQueue }) {
   const bg = useColorExtraction(p.currentTrack?.cover_art_url);
   const [lyricsMode, setLyricsMode] = useState(false);
   const t = p.currentTrack;
+  const volDrag = useRef({ startY: 0, start: 0, active: false });
+
+  const clampVol = (v) => Math.max(0, Math.min(1, v));
+  const onVolTouchStart = (e) => {
+    const touch = e.touches[0];
+    volDrag.current = { startY: touch.clientY, start: p.muted ? 0 : p.volume, active: true };
+  };
+  const onVolTouchMove = (e) => {
+    if (!volDrag.current.active) return;
+    const touch = e.touches[0];
+    const dy = volDrag.current.startY - touch.clientY;
+    p.setVolume(clampVol(volDrag.current.start + dy / 240));
+    e.preventDefault();
+  };
+  const onVolTouchEnd = () => {
+    volDrag.current.active = false;
+  };
 
   if (!t) return null;
   const liked = likes.likedIds.has(t.id);
@@ -67,7 +84,11 @@ export default function FullScreenPlayer({ onClose, onOpenQueue }) {
 
       <div className="flex-1 flex flex-col px-6 min-h-0">
           {/* artwork */}
-          <div className="aspect-square w-full rounded-3xl overflow-hidden shadow-2xl bg-white/10 mt-3 mb-7 shrink-0">
+          <div
+            onTouchStart={onVolTouchStart}
+            onTouchMove={onVolTouchMove}
+            onTouchEnd={onVolTouchEnd}
+            className="aspect-square w-full rounded-3xl overflow-hidden shadow-2xl bg-white/10 mt-3 mb-7 shrink-0 touch-none">
             {t.cover_art_url ?
           <img src={t.cover_art_url} alt="" className="w-full h-full object-cover" /> :
 
