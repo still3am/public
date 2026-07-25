@@ -12,7 +12,6 @@ import PullToRefresh from "@/components/PullToRefresh";
 import BackHeader from "@/components/BackHeader";
 import ProfileQRModal from "@/components/ProfileQRModal";
 import ThemeToggle from "@/components/ThemeToggle";
-import { getAlbumsMapForTracks } from "@/lib/albumEnrich";
 import { formatNumber } from "@/lib/audio-utils";
 import {
   Loader2,
@@ -62,7 +61,6 @@ export default function Profile() {
   const [deleteConfirm, setDeleteConfirm] = useState("");
   const [deleting, setDeleting] = useState(false);
   const [saving, setSaving] = useState(false);
-  const [albumsMap, setAlbumsMap] = useState({});
   const [uploadingAvatar, setUploadingAvatar] = useState(false);
   const [uploadingBanner, setUploadingBanner] = useState(false);
   const [form, setForm] = useState({
@@ -121,7 +119,6 @@ export default function Profile() {
       Promise.resolve([])]
       );
       setTracks(t);
-      getAlbumsMapForTracks(t).then(setAlbumsMap);
       setTopTracks(
         [...t].sort((a, b) => (b.play_count || 0) - (a.play_count || 0)).slice(0, 5)
       );
@@ -569,9 +566,7 @@ export default function Profile() {
               index={i}
               liked={likes.likedIds.has(t.id)}
               onLikeToggle={likes.toggleLike}
-              onAddToPlaylist={(tk) => ap.addToPlaylist(tk.id)}
-              albumArtist={albumsMap[t.album_id]?.artisan}
-              albumCover={albumsMap[t.album_id]?.cover_art_url} />
+              onAddToPlaylist={(tk) => ap.addToPlaylist(tk.id)} />
 
             )}
           </div>

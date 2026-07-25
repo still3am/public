@@ -27,15 +27,11 @@ export default function FullScreenPlayer({ onClose, onOpenQueue }) {
   const p = usePlayer();
   const { user } = useAuth();
   const likes = useLikes(user);
-  const al = p.currentAlbum;
-  const t0 = p.currentTrack;
-  const cover = t0?.cover_art_url || al?.cover_art_url;
-  const bg = useColorExtraction(cover);
+  const bg = useColorExtraction(p.currentTrack?.cover_art_url);
   const [lyricsMode, setLyricsMode] = useState(false);
-  const t = t0;
+  const t = p.currentTrack;
 
   if (!t) return null;
-  const artist = t.artist || al?.artisan || t.uploader_name || "Unknown";
   const liked = likes.likedIds.has(t.id);
   const progress = p.duration ? p.position / p.duration * 100 : 0;
   const remaining = Math.max(0, (p.duration || 0) - (p.position || 0));
@@ -72,8 +68,8 @@ export default function FullScreenPlayer({ onClose, onOpenQueue }) {
       <div className="flex-1 flex flex-col px-6 min-h-0">
           {/* artwork */}
           <div className="aspect-square w-full rounded-3xl overflow-hidden shadow-2xl bg-white/10 mt-3 mb-7 shrink-0">
-            {cover ?
-          <img src={cover} alt="" className="w-full h-full object-cover" /> :
+            {t.cover_art_url ?
+          <img src={t.cover_art_url} alt="" className="w-full h-full object-cover" /> :
 
           <div className="w-full h-full grid place-items-center opacity-40">
                 <Disc3 size={64} />
@@ -86,7 +82,7 @@ export default function FullScreenPlayer({ onClose, onOpenQueue }) {
             <div className="min-w-0">
               <h2 className="text-2xl font-extrabold tracking-tight truncate">{t.title}</h2>
               <Link to={`/track/${t.id}`} className="text-base opacity-70 hover:opacity-100 truncate block mt-0.5">
-                {artist}
+                {t.artist || t.uploader_name || "Unknown"}
               </Link>
             </div>
             <button onClick={() => likes.toggleLike(t)} className="p-2 shrink-0 active:scale-90 transition" aria-label="Like">

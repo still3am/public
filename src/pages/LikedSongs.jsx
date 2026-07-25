@@ -8,7 +8,6 @@ import TrackRow from "@/components/TrackRow";
 import { Heart, Loader2, Play } from "lucide-react";
 import { usePlayer } from "@/context/PlayerContext";
 import PullToRefresh from "@/components/PullToRefresh";
-import { getAlbumsMapForTracks } from "@/lib/albumEnrich";
 
 export default function LikedSongs() {
   const { user } = useAuth();
@@ -17,16 +16,15 @@ export default function LikedSongs() {
   const p = usePlayer();
   const [tracks, setTracks] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [albumsMap, setAlbumsMap] = useState({});
 
   async function load() {
     try {
       const all = await base44.entities.Track.list("-created_date", 200);
-      const liked = all.filter(
-        (t) => likes.likedIds.has(t.id) && t.is_published !== false
+      setTracks(
+        all.filter(
+          (t) => likes.likedIds.has(t.id) && t.is_published !== false
+        )
       );
-      setTracks(liked);
-      getAlbumsMapForTracks(liked).then(setAlbumsMap);
     } finally {
       setLoading(false);
     }
@@ -84,9 +82,7 @@ export default function LikedSongs() {
             index={i}
             liked={true}
             onLikeToggle={likes.toggleLike}
-            onAddToPlaylist={(tk) => ap.addToPlaylist(tk.id)}
-            albumArtist={albumsMap[t.album_id]?.artisan}
-            albumCover={albumsMap[t.album_id]?.cover_art_url} />
+            onAddToPlaylist={(tk) => ap.addToPlaylist(tk.id)} />
 
           )}
         </div>

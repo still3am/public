@@ -7,7 +7,6 @@ import React, {
   useCallback,
 } from "react";
 import { base44 } from "@/api/base44Client";
-import { getAlbumsMapForTracks } from "@/lib/albumEnrich";
 
 const PlayerContext = createContext(null);
 export const usePlayer = () => useContext(PlayerContext);
@@ -30,21 +29,9 @@ export function PlayerProvider({ children }) {
   const [playbackRate, setPlaybackRateState] = useState(1);
   const sleepTimerRef = useRef(null);
   const [sleepTimerEndsAt, setSleepTimerEndsAt] = useState(null);
-  const [currentAlbum, setCurrentAlbum] = useState(null);
 
   const currentTrack =
     currentIndex >= 0 && currentIndex < queue.length ? queue[currentIndex] : null;
-
-  // enrich the current track with its parent album (cover + artist fallback)
-  useEffect(() => {
-    const id = currentTrack?.album_id;
-    if (!id) { setCurrentAlbum(null); return; }
-    let active = true;
-    getAlbumsMapForTracks([currentTrack]).then((m) => {
-      if (active) setCurrentAlbum(m[id] || null);
-    });
-    return () => { active = false; };
-  }, [currentTrack?.album_id]);
 
   // volume / mute sync
   useEffect(() => {
@@ -325,7 +312,6 @@ export function PlayerProvider({ children }) {
     repeat,
     shuffle,
     currentTrack,
-    currentAlbum,
     togglePlay,
     seek,
     setVolume,

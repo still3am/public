@@ -57,28 +57,25 @@ export default function TrackDetail() {
         catch(() => null);
         setUploader(u);
       }
-      let al = null;
       if (t?.album_id) {
-        al = await base44.entities.Album.get(t.album_id).catch(() => null);
-        setAlbum(al);
+        base44.entities.Album.
+        get(t.album_id).
+        then(setAlbum).
+        catch(() => setAlbum(null));
       } else {
         setAlbum(null);
       }
-      const artistName = t?.artist || al?.artisan;
-      if (artistName) {
+      if (t?.artist) {
         const all = await base44.entities.Track.list("-play_count", 50).catch(
           () => []
         );
-        const lc = artistName.toLowerCase();
+        const lc = t.artist.toLowerCase();
         setMoreTracks(
           all.
           filter(
             (x) =>
             x.id !== t.id &&
-            (
-            (x.artist || "").toLowerCase() === lc ||
-            (!x.artist && (x.uploader_name || "").toLowerCase() === lc)
-            ) &&
+            (x.artist || "").toLowerCase() === lc &&
             x.is_published !== false
           ).
           slice(0, 6)
@@ -284,56 +281,37 @@ export default function TrackDetail() {
                 </span>
               }
             </div>
-            {(() => {
-              const hasArtist = Boolean(track.artist || album?.artisan);
-              const artistName = track.artist || album?.artisan || track.uploader_name || "Unknown";
-              if (!hasArtist && uploader) {
-                return (
-                  <div className="text-sm text-foreground/60 mb-2 flex flex-wrap items-center gap-1.5">
-                    <span className="text-foreground/40">Uploaded by</span>
-                    <Link
-                      to={`/profile/${uploader.id}`}
-                      className="hover:underline inline-flex items-center gap-1.5 font-semibold text-foreground/80">
-                      {uploader.avatar_url ?
-                        <img
-                          src={uploader.avatar_url}
-                          alt=""
-                          className="w-5 h-5 rounded-full object-cover" />
-                        :
-                        <div className="w-5 h-5 rounded-full bg-foreground/10 grid place-items-center text-[9px] font-semibold">
-                          {(uploader.display_name || uploader.email || "?").charAt(0)}
-                        </div>}
-                      {uploader.display_name || uploader.full_name || "Unknown"}
-                    </Link>
-                  </div>
-                );
-              }
-              return (
-                <div className="text-sm text-foreground/60 mb-2 flex flex-wrap items-center gap-x-1.5 gap-y-0.5">
-                  <span className="font-semibold text-foreground/80 px-1">
-                    {artistName}
+            {(track.artist || uploader) &&
+            <div className="text-sm text-foreground/60 mb-2 flex flex-wrap items-center gap-x-1.5 gap-y-0.5">
+                {track.artist &&
+              <span className="font-semibold text-foreground/80 px-1">
+                    {track.artist}
                   </span>
-                  {uploader &&
-                    <>
-                      <span className="text-foreground/40">· uploaded by</span>
-                      <Link
-                        to={`/profile/${uploader.id}`}
-                        className="hover:underline inline-flex items-center gap-1.5">
-                        {uploader.avatar_url ?
-                          <img
-                            src={uploader.avatar_url}
-                            alt=""
-                            className="w-5 h-5 rounded-full object-cover" />
-                          :
-                          <div className="w-5 h-5 rounded-full bg-foreground/10 grid place-items-center text-[9px] font-semibold">
-                            {(uploader.display_name || uploader.email || "?").charAt(0)}
-                          </div>}
-                        {uploader.display_name || uploader.full_name || "Unknown"}
-                      </Link>
-                    </>}
-                </div>
-              );
-            })()}
+              }
+                {track.artist && uploader &&
+              <span className="text-foreground/40">· uploaded by</span>
+              }
+                {uploader &&
+              <Link
+                to={`/profile/${uploader.id}`}
+                className="hover:underline inline-flex items-center gap-1.5">
+                
+                    {uploader.avatar_url ?
+                <img
+                  src={uploader.avatar_url}
+                  alt=""
+                  className="w-5 h-5 rounded-full object-cover" /> :
+
+
+                <div className="w-5 h-5 rounded-full bg-foreground/10 grid place-items-center text-[9px] font-semibold">
+                        {(uploader.display_name || uploader.email || "?").charAt(0)}
+                      </div>
+                }
+                    {uploader.display_name || uploader.full_name || "Unknown"}
+                  </Link>
+              }
+              </div>
+            }
             <div className="text-xs text-foreground/40 mb-3">
               {track.play_count || 0} plays · {track.like_count || 0} likes
             </div>
@@ -442,10 +420,6 @@ export default function TrackDetail() {
               Part of album
             </div>
             <div className="text-sm font-semibold truncate">{album.title}</div>
-            {album.artisan &&
-            <div className="text-xs text-foreground/50 truncate">
-              {album.artisan}
-            </div>}
           </div>
         </Link>
       }
@@ -453,7 +427,7 @@ export default function TrackDetail() {
       {moreTracks.length > 0 &&
       <div className="mb-6">
           <h2 className="text-lg font-extrabold tracking-tight mb-3 flex items-center gap-2">
-            <Music size={18} /> More from {track.artist || album?.artisan || track.uploader_name || "this artist"}
+            <Music size={18} /> More from {track.artist}
           </h2>
           <div className="space-y-0.5">
             {moreTracks.map((t, i) =>

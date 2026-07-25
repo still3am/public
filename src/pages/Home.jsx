@@ -30,18 +30,13 @@ function Section({ title, icon: Icon, children }) {
 
 }
 
-function CardGrid({ tracks, albumsMap = {} }) {
+function CardGrid({ tracks }) {
   if (!tracks?.length) return null;
   return (
     <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2">
-      {tracks.map((t) => {
-      const al = albumsMap[t.album_id];
-      return (
-      <TrackCard key={t.id} track={t}
-        albumCover={al?.cover_art_url}
-        albumArtist={al?.artisan} />
-      );
-      })}
+      {tracks.map((t) =>
+      <TrackCard key={t.id} track={t} />
+      )}
     </div>);
 
 }
@@ -76,7 +71,6 @@ export default function Home() {
   const [fromFollowing, setFromFollowing] = useState([]);
   const [recentlyPlayed, setRecentlyPlayed] = useState([]);
   const [albums, setAlbums] = useState([]);
-  const [albumsMap, setAlbumsMap] = useState({});
 
   useEffect(() => {
     const handler = () => setRecentlyPlayed(getRecentPlays());
@@ -108,7 +102,7 @@ export default function Home() {
       filter({ follower_id: user.id }, "-created_date", 200).
       catch(() => []) :
       Promise.resolve([]),
-      base44.entities.Album.list("-created_date", 200).catch(() => [])]
+      base44.entities.Album.list("-created_date", 20).catch(() => [])]
       );
       const followed = new Set(
         (Array.isArray(fols) ? fols : []).map((f) => f.following_id)
@@ -121,21 +115,16 @@ export default function Home() {
       );
       const genres = ["Electronic", "Hip-Hop", "Ambient"];
       const perGenre = await Promise.all(
-        genres.map((g) =>
-          base44.entities.Track
-            .filter({ is_published: true, genre: g }, "-play_count", 8)
-            .catch(() => [])
-            .then((tracks) => ({ genre: g, tracks }))
-        )
+        genres.map(async (g) => ({
+          genre: g,
+          tracks: await base44.entities.Track.filter(
+            { is_published: true, genre: g },
+            "-play_count",
+            8
+          )
+        }))
       );
       setByGenre(perGenre);
-      // Build the album lookup from the single batch we already fetched,
-      // instead of issuing one Album.get() per track (rate-limit fix).
-      const map = {};
-      (Array.isArray(al) ? al : []).forEach((a) => {
-        if (a?.id) map[a.id] = a;
-      });
-      setAlbumsMap(map);
     } finally {
       setLoading(false);
     }
@@ -229,10 +218,10 @@ export default function Home() {
         </Link>
 
         <Section title="Trending" icon={TrendingUp}>
-          {CardGrid({ tracks: trending, albumsMap })}
+          {CardGrid({ tracks: trending })}
         </Section>
         <Section title="New Releases">
-          {CardGrid({ tracks: newReleases, albumsMap })}
+          {CardGrid({ tracks: newReleases })}
         </Section>
         {albums.length > 0 &&
         <Section title="Albums" icon={Disc}>
@@ -261,19 +250,19 @@ export default function Home() {
         }
         {fromFollowing.length > 0 &&
         <Section title="From People You Follow">
-            {CardGrid({ tracks: fromFollowing, albumsMap })}
+            {CardGrid({ tracks: fromFollowing })}
           </Section>
         }
         {recentlyPlayed.length > 0 &&
         <Section title="Recently Played">
-            {CardGrid({ tracks: recentlyPlayed, albumsMap })}
+            {CardGrid({ tracks: recentlyPlayed })}
           </Section>
         }
         {byGenre.
         filter((sg) => sg.tracks.length > 0).
         map((sg) =>
         <Section key={sg.genre} title={sg.genre}>
-              {CardGrid({ tracks: sg.tracks, albumsMap })}
+              {CardGrid({ tracks: sg.tracks })}
             </Section>
         )}
       </div>

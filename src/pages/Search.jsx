@@ -15,7 +15,6 @@ import { useLikes } from "@/hooks/useLikes";
 import { useAddToPlaylist } from "@/hooks/useAddToPlaylist";
 import TrackRow from "@/components/TrackRow";
 import PullToRefresh from "@/components/PullToRefresh";
-import { getAlbumsMapForTracks } from "@/lib/albumEnrich";
 
 const TABS = [
 { id: "tracks", label: "Tracks", icon: Music },
@@ -38,7 +37,6 @@ export default function Search() {
     people: []
   });
   const [loading, setLoading] = useState(false);
-  const [albumsMap, setAlbumsMap] = useState({});
 
   async function runSearch(query) {
     if (!query.trim()) {
@@ -80,7 +78,6 @@ export default function Search() {
       includes(Q)
       );
       setData(filtered);
-      setAlbumsMap(await getAlbumsMapForTracks(filtered.tracks));
     } finally {
       setLoading(false);
     }
@@ -197,9 +194,7 @@ export default function Search() {
               index={i}
               liked={likes.likedIds.has(t.id)}
               onLikeToggle={likes.toggleLike}
-              onAddToPlaylist={(tk) => ap.addToPlaylist(tk.id)}
-              albumArtist={albumsMap[t.album_id]?.artisan}
-              albumCover={albumsMap[t.album_id]?.cover_art_url} />
+              onAddToPlaylist={(tk) => ap.addToPlaylist(tk.id)} />
 
             )}
               </div> :
@@ -230,7 +225,7 @@ export default function Search() {
                       {a.title}
                     </div>
                     <div className="text-xs text-foreground/50 truncate">
-                      {a.artisan || a.genre || "Album"}
+                      Album
                     </div>
                   </Link>
             )}

@@ -2,7 +2,7 @@ import { Play, Pause, Flame } from "lucide-react";
 import { Link } from "react-router-dom";
 import { usePlayer } from "@/context/PlayerContext";
 
-export default function TrackCard({ track, albumArtist, albumCover }) {
+export default function TrackCard({ track }) {
   const p = usePlayer();
   const isCurrent = p.currentTrack?.id === track.id;
   const isRecent =
@@ -15,9 +15,9 @@ export default function TrackCard({ track, albumArtist, albumCover }) {
       onClick={() => p.playTrackAt([track])}>
       
       <div className="relative aspect-square rounded-lg overflow-hidden bg-foreground/10 mb-3">
-        {(track.cover_art_url || albumCover) ?
+        {track.cover_art_url ?
         <img
-          src={track.cover_art_url || albumCover}
+          src={track.cover_art_url}
           alt=""
           className={`w-full h-full object-cover transition ${
           isCurrent ? "" : "group-hover:scale-[1.03]"}`
@@ -58,7 +58,7 @@ export default function TrackCard({ track, albumArtist, albumCover }) {
           }
         </div>
         <div className="text-xs text-foreground/50 truncate flex items-center gap-1.5">
-          <span className="truncate">{track.artist || albumArtist || track.uploader_name || "Unknown"}</span>
+          <span className="truncate">{track.artist || track.uploader_name || "Unknown"}</span>
           
 
 

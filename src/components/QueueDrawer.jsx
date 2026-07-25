@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import {
   X,
   Trash2,
@@ -13,7 +13,6 @@ import { formatTime } from "@/lib/audio-utils";
 import { base44 } from "@/api/base44Client";
 import { useAuth } from "@/lib/AuthContext";
 import { useLikes } from "@/hooks/useLikes";
-import { getAlbumsMapForTracks } from "@/lib/albumEnrich";
 
 export default function QueueDrawer({ p, onClose }) {
   const { user } = useAuth();
@@ -23,11 +22,6 @@ export default function QueueDrawer({ p, onClose }) {
   const [loaded, setLoaded] = useState(false);
   const [loadingLiked, setLoadingLiked] = useState(false);
   const [justAdded, setJustAdded] = useState(new Set());
-  const [albumsMap, setAlbumsMap] = useState({});
-
-  useEffect(() => {
-    getAlbumsMapForTracks(p.queue).then(setAlbumsMap);
-  }, [p.queue]);
 
   async function openAdd() {
     setAddMode(true);
@@ -35,10 +29,7 @@ export default function QueueDrawer({ p, onClose }) {
       setLoadingLiked(true);
       try {
         const all = await base44.entities.Track.list("-created_date", 200);
-        const liked = all.filter((t) => likes.likedIds.has(t.id));
-        setLikedTracks(liked);
-        const extra = await getAlbumsMapForTracks(liked);
-        setAlbumsMap((prev) => ({ ...prev, ...extra }));
+        setLikedTracks(all.filter((t) => likes.likedIds.has(t.id)));
         setLoaded(true);
       } catch {
         // ignore
@@ -145,9 +136,6 @@ export default function QueueDrawer({ p, onClose }) {
                 {likedTracks.map((t) => {
                   const inQueue = queuedIds.has(t.id);
                   const added = justAdded.has(t.id);
-                  const al = albumsMap[t.album_id];
-                  const cover = t.cover_art_url || al?.cover_art_url;
-                  const artist = t.artist || al?.artisan || t.uploader_name || "Unknown";
                   return (
                     <button
                       key={t.id}
@@ -156,9 +144,9 @@ export default function QueueDrawer({ p, onClose }) {
                       className="w-full flex items-center gap-3 p-2 rounded-lg hover:bg-foreground/[0.03] text-left disabled:opacity-50"
                     >
                       <div className="w-10 h-10 rounded overflow-hidden bg-foreground/10 shrink-0">
-                        {cover && (
+                        {t.cover_art_url && (
                           <img
-                            src={cover}
+                            src={t.cover_art_url}
                             alt=""
                             className="w-full h-full object-cover"
                           />
@@ -167,7 +155,7 @@ export default function QueueDrawer({ p, onClose }) {
                       <div className="min-w-0 flex-1">
                         <div className="text-sm font-medium truncate">{t.title}</div>
                         <div className="text-xs text-foreground/50 truncate">
-                          {artist}
+                          {t.artist || t.uploader_name || "Unknown"}
                         </div>
                       </div>
                       <span className="text-[11px] text-foreground/40 hidden sm:block shrink-0">
@@ -205,16 +193,10 @@ export default function QueueDrawer({ p, onClose }) {
                     Now Playing
                   </div>
                   <div className="flex items-center gap-3 p-2 rounded-xl bg-foreground/[0.06]">
-                    {(() => {
-                      const al = albumsMap[p.currentTrack.album_id];
-                      const cover = p.currentTrack.cover_art_url || al?.cover_art_url;
-                      const artist = p.currentTrack.artist || al?.artisan || p.currentTrack.uploader_name || "Unknown";
-                      return (
-                        <>
                     <div className="w-10 h-10 rounded overflow-hidden bg-foreground/10 shrink-0">
-                      {cover && (
+                      {p.currentTrack.cover_art_url && (
                         <img
-                          src={cover}
+                          src={p.currentTrack.cover_art_url}
                           alt=""
                           className="w-full h-full object-cover"
                         />
@@ -225,12 +207,11 @@ export default function QueueDrawer({ p, onClose }) {
                         {p.currentTrack.title}
                       </div>
                       <div className="text-xs text-foreground/55 truncate">
-                        {artist}
+                        {p.currentTrack.artist ||
+                          p.currentTrack.uploader_name ||
+                          "Unknown"}
                       </div>
                     </div>
-                        </>
-                      );
-                    })()}
                     <div className="flex items-end gap-0.5 h-4 mr-1">
                       <span className="w-1 h-2 bg-foreground rounded-full animate-pulse" />
                       <span
@@ -269,9 +250,6 @@ export default function QueueDrawer({ p, onClose }) {
                 )}
                 {upcoming.map((t, i) => {
                   const idx = p.currentIndex + 1 + i;
-                  const al = albumsMap[t.album_id];
-                  const cover = t.cover_art_url || al?.cover_art_url;
-                  const artist = t.artist || al?.artisan || t.uploader_name || "Unknown";
                   return (
                     <div
                       key={t.id}
@@ -281,9 +259,9 @@ export default function QueueDrawer({ p, onClose }) {
                       <div className="text-[11px] text-foreground/40 w-4 text-center shrink-0">
                         {i + 1}
                       </div>
-                      {cover ? (
+                      {t.cover_art_url ? (
                         <img
-                          src={cover}
+                          src={t.cover_art_url}
                           alt=""
                           className="w-10 h-10 rounded object-cover shrink-0"
                         />
@@ -293,7 +271,7 @@ export default function QueueDrawer({ p, onClose }) {
                       <div className="min-w-0 flex-1">
                         <div className="text-sm font-medium truncate">{t.title}</div>
                         <div className="text-xs text-foreground/50 truncate">
-                          {artist}
+                          {t.artist || t.uploader_name || "Unknown"}
                         </div>
                       </div>
                       <span className="text-xs text-foreground/40 shrink-0">

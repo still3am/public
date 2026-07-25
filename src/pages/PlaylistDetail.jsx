@@ -18,7 +18,6 @@ import {
   Save,
   Share2,
 } from "lucide-react";
-import { getAlbumsMapForTracks } from "@/lib/albumEnrich";
 
 export default function PlaylistDetail() {
   const { id } = useParams();
@@ -36,7 +35,6 @@ export default function PlaylistDetail() {
   const [showDelete, setShowDelete] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [copied, setCopied] = useState(false);
-  const [albumsMap, setAlbumsMap] = useState({});
   const nav = useNavigate();
 
   const isOwner = playlist?.creator_id === user?.id;
@@ -74,7 +72,6 @@ export default function PlaylistDetail() {
           )
         : [];
       setTracks(fetched.filter(Boolean));
-      getAlbumsMapForTracks(fetched.filter(Boolean)).then(setAlbumsMap);
     } finally {
       setLoading(false);
     }
@@ -277,8 +274,6 @@ export default function PlaylistDetail() {
                 liked={likes.likedIds.has(t.id)}
                 onLikeToggle={likes.toggleLike}
                 onAddToPlaylist={(tk) => ap.addToPlaylist(tk.id)}
-                albumArtist={albumsMap[t.album_id]?.artisan}
-                albumCover={albumsMap[t.album_id]?.cover_art_url}
               />
               {isOwner && (
                 <button

@@ -7,7 +7,6 @@ import TrackRow from "@/components/TrackRow";
 import EmptyState from "@/components/EmptyState";
 import { Music, Loader2 } from "lucide-react";
 import PullToRefresh from "@/components/PullToRefresh";
-import { getAlbumsMapForTracks } from "@/lib/albumEnrich";
 
 export default function TopCharts() {
   const { user } = useAuth();
@@ -15,7 +14,6 @@ export default function TopCharts() {
   const ap = useAddToPlaylist();
   const [tracks, setTracks] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [albumsMap, setAlbumsMap] = useState({});
 
   async function load() {
     setLoading(true);
@@ -26,7 +24,6 @@ export default function TopCharts() {
         100
       );
       setTracks(t);
-      setAlbumsMap(await getAlbumsMapForTracks(t));
     } catch {
       // ignore on refresh
     } finally {
@@ -55,9 +52,7 @@ export default function TopCharts() {
         The 100 most-played tracks on PUBLIC right now.
       </p>
       <div className="space-y-0.5">
-        {tracks.map((t, i) => {
-          const al = albumsMap[t.album_id];
-          return (
+        {tracks.map((t, i) => (
           <TrackRow
             key={t.id}
             track={t}
@@ -65,11 +60,8 @@ export default function TopCharts() {
             liked={likes.likedIds.has(t.id)}
             onLikeToggle={likes.toggleLike}
             onAddToPlaylist={(tk) => ap.addToPlaylist(tk.id)}
-            albumArtist={al?.artisan}
-            albumCover={al?.cover_art_url}
           />
-          );
-        })}
+        ))}
       </div>
     </div>
     </PullToRefresh>

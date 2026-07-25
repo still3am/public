@@ -28,9 +28,6 @@ export default function PlayerBar() {
   const [fullOpen, setFullOpen] = useState(false);
   if (!p.currentTrack) return null;
   const t = p.currentTrack;
-  const al = p.currentAlbum;
-  const cover = t.cover_art_url || al?.cover_art_url;
-  const artist = t.artist || al?.artisan || t.uploader_name || "Unknown";
   const liked = likes.likedIds.has(t.id);
   const pct = p.duration ? (p.position / p.duration) * 100 : 0;
   const remaining = Math.max(0, (p.duration || 0) - (p.position || 0));
@@ -51,8 +48,8 @@ export default function PlayerBar() {
           {/* artwork + meta */}
           <button onClick={() => setFullOpen(true)} className="flex items-center gap-3 min-w-0 flex-1 text-left" aria-label="Open Now Playing">
             <div className="shrink-0 relative">
-              {cover ? (
-                <img src={cover} alt="" className="w-12 h-12 sm:w-14 sm:h-14 rounded-xl object-cover shadow-md" />
+              {t.cover_art_url ? (
+                <img src={t.cover_art_url} alt="" className="w-12 h-12 sm:w-14 sm:h-14 rounded-xl object-cover shadow-md" />
               ) : (
                 <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-xl bg-foreground/10 grid place-items-center text-foreground/30">
                   <ListMusic size={18} />
@@ -67,7 +64,7 @@ export default function PlayerBar() {
                 )}
               </div>
               <div className="text-xs text-foreground/50 truncate">
-                {artist}
+                {t.artist || t.uploader_name || "Unknown"}
               </div>
               <div className="text-[10px] text-foreground/40 mt-0.5 hidden sm:flex items-center gap-1">
                 <span>{formatTime(p.position)}</span>

@@ -103,7 +103,7 @@ export default function TrackRow({
           {track.title}
         </Link>
         {(() => {
-          const artist = track.artist || albumArtist;
+          const artist = albumArtist || track.artist;
           if (artist) {
             return <span className="text-xs text-foreground/50 truncate">{artist}</span>;
           }
