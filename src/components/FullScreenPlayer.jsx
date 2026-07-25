@@ -182,36 +182,41 @@ export default function FullScreenPlayer({ onClose, onOpenQueue }) {
       <div className="relative flex-1 flex flex-col xl:flex-row min-h-0 gap-2 xl:gap-10 xl:px-10 xl:pb-3">
         {/* LEFT: artwork + controls */}
         <div className="flex-1 flex flex-col px-5 md:px-10 xl:px-2 min-h-0">
-          {/* artwork */}
+          {/* artwork / mobile lyrics */}
           <div className="relative flex-1 flex items-center justify-center min-h-0 py-3">
-            <div
-              onTouchStart={onVolTouchStart}
-              onTouchMove={onVolTouchMove}
-              onTouchEnd={onVolTouchEnd}
-              className={`relative aspect-square w-full max-w-[min(46vh,86vw)] xl:max-w-[520px] rounded-3xl overflow-hidden shadow-2xl bg-white/10 shrink-0 touch-none transition-transform duration-500 ${
-              p.isPlaying ? "scale-100" : "scale-[0.97]"}`
-              }>
-              
-              {t.cover_art_url ?
-              <img src={t.cover_art_url} alt="" className="w-full h-full object-cover" /> :
-
-              <div className="w-full h-full grid place-items-center opacity-40">
-                  <Disc3 size={64} />
-                </div>
-              }
-              {/* volume hint */}
+            {lyricsMode && (
+              <div className="xl:hidden w-full h-full rounded-3xl bg-white/[0.06] overflow-hidden">
+                <SyncedLyrics trackId={t.id} position={p.position} fallbackText={t.lyrics_text} onSeek={p.seek} />
+              </div>
+            )}
               <div
-                className={`absolute inset-0 grid place-items-center bg-black/30 backdrop-blur-sm transition-opacity duration-200 ${
-                showVolHint ? "opacity-100" : "opacity-0 pointer-events-none"}`
-                }>
+                onTouchStart={onVolTouchStart}
+                onTouchMove={onVolTouchMove}
+                onTouchEnd={onVolTouchEnd}
+                className={`relative aspect-square w-full max-w-[min(46vh,86vw)] xl:max-w-[520px] rounded-3xl overflow-hidden shadow-2xl bg-white/10 shrink-0 touch-none transition-transform duration-500 ${
+                p.isPlaying ? "scale-100" : "scale-[0.97]"} ${
+                lyricsMode ? "hidden xl:flex" : "flex"}`}>
                 
-                <div className="flex flex-col items-center gap-2">
-                  <VolIcon size={40} />
-                  <span className="text-4xl font-extrabold tabular-nums">{Math.round(volPct)}%</span>
-                  <span className="text-[10px] uppercase tracking-widest opacity-70">Swipe to adjust</span>
+                {t.cover_art_url ?
+                <img src={t.cover_art_url} alt="" className="w-full h-full object-cover" /> :
+
+                <div className="w-full h-full grid place-items-center opacity-40">
+                    <Disc3 size={64} />
+                  </div>
+                }
+                {/* volume hint */}
+                <div
+                  className={`absolute inset-0 grid place-items-center bg-black/30 backdrop-blur-sm transition-opacity duration-200 ${
+                  showVolHint ? "opacity-100" : "opacity-0 pointer-events-none"}`
+                  }>
+                  
+                  <div className="flex flex-col items-center gap-2">
+                    <VolIcon size={40} />
+                    <span className="text-4xl font-extrabold tabular-nums">{Math.round(volPct)}%</span>
+                    <span className="text-[10px] uppercase tracking-widest opacity-70">Swipe to adjust</span>
+                  </div>
                 </div>
               </div>
-            </div>
           </div>
 
           {/* metadata */}
