@@ -5,6 +5,8 @@ import { useLikes } from "@/hooks/useLikes";
 import { useAuth } from "@/lib/AuthContext";
 import { formatTime } from "@/lib/audio-utils";
 import SyncedLyrics from "@/components/SyncedLyrics";
+import NowPlayingAddMenu from "@/components/NowPlayingAddMenu";
+import { useAddToPlaylist } from "@/hooks/useAddToPlaylist";
 import { Link } from "react-router-dom";
 import {
   Play,
@@ -45,6 +47,7 @@ export default function FullScreenPlayer({ onClose, onOpenQueue }) {
   const p = usePlayer();
   const { user } = useAuth();
   const likes = useLikes(user);
+  const ap = useAddToPlaylist();
   const bg = useColorExtraction(p.currentTrack?.cover_art_url);
   const [lyricsMode, setLyricsMode] = useState(false);
   const [showVolHint, setShowVolHint] = useState(false);
@@ -115,9 +118,13 @@ export default function FullScreenPlayer({ onClose, onOpenQueue }) {
     volDrag.current.active = false;
   };
 
-  async function shareNow() {
+  async function shareNow(copyOnly = false) {
     if (!t) return;
     const url = `${window.location.origin}/track/${t.id}`;
+    if (copyOnly) {
+      navigator.clipboard?.writeText(url);
+      return;
+    }
     if (navigator.share) {
       try {
         await navigator.share({ title: `${t.title} on PUBLIC.`, url });
@@ -160,14 +167,15 @@ export default function FullScreenPlayer({ onClose, onOpenQueue }) {
             {t.artist || t.uploader_name || "Unknown"}
           </div>
         </div>
-        <div className="flex items-center">
-          <button onClick={shareNow} className="p-2 active:scale-90 hover:bg-white/10 rounded-full transition" aria-label="Share">
-            <Share2 size={20} />
-          </button>
-          <button onClick={onOpenQueue} className="p-2 -mr-2 active:scale-90 hover:bg-white/10 rounded-full transition" aria-label="Queue">
-            <ListMusic size={22} />
-          </button>
-        </div>
+        <NowPlayingAddMenu
+          onAddToPlaylist={() => ap.addToPlaylist(t.id)}
+          onPlayNext={() => p.playNext?.(t)}
+          onAddToQueue={() => p.addToQueue?.(t)}
+          onShare={shareNow}
+          onOpenQueue={onOpenQueue}
+          onLike={() => likes.toggleLike(t)}
+          liked={likes.likedIds.has(t.id)}
+        />
       </div>
 
       {/* body */}
@@ -359,28 +367,30 @@ export default function FullScreenPlayer({ onClose, onOpenQueue }) {
       }
 
       {/* mobile bottom toggle bar */}
-      
+      <div className="xl:hidden flex items-center justify-center gap-10 py-3 pb-7 border-t border-white/10 shrink-0 relative">
+        <button
+          onClick={() => setLyricsMode(false)}
+          className={`flex flex-col items-center text-[10px] uppercase tracking-wider active:scale-95 transition ${
+            !lyricsMode ? "opacity-100" : "opacity-45"
+          }`}
+          aria-label="Show cover"
+        >
+          <Disc3 size={20} />
+          <span className="mt-1">Artwork</span>
+        </button>
+        <button
+          onClick={() => setLyricsMode(true)}
+          className={`flex flex-col items-center text-[10px] uppercase tracking-wider active:scale-95 transition ${
+            lyricsMode ? "opacity-100" : "opacity-45"
+          }`}
+          aria-label="Show lyrics"
+        >
+          <Mic2 size={20} />
+          <span className="mt-1">Lyrics</span>
+        </button>
+      </div>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-      
+      {ap.modal}
     </div>);
 
 }
