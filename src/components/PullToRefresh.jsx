@@ -38,7 +38,6 @@ export default function PullToRefresh({
       if (startY.current == null || refreshingRef.current) return;
       const delta = (e.touches[0]?.clientY ?? 0) - startY.current;
       if (delta > 4 && window.scrollY <= 0) {
-        if (e.cancelable) e.preventDefault();
         setPull(Math.min(THRESHOLD * 1.5, delta * 0.5));
       }
     };
@@ -59,7 +58,7 @@ export default function PullToRefresh({
       }
     };
     window.addEventListener("touchstart", onStart, { passive: true });
-    window.addEventListener("touchmove", onMove, { passive: false });
+    window.addEventListener("touchmove", onMove, { passive: true });
     window.addEventListener("touchend", onEnd, { passive: true });
     return () => {
       window.removeEventListener("touchstart", onStart);
