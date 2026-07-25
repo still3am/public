@@ -36,6 +36,16 @@ import {
   Disc } from
 "lucide-react";
 
+function safeUrl(u) {
+  if (!u) return undefined;
+  try {
+    const p = new URL(u);
+    return p.protocol === "http:" || p.protocol === "https:" ? p.href : undefined;
+  } catch {
+    return undefined;
+  }
+}
+
 export default function Profile() {
   const { id } = useParams();
   const nav = useNavigate();
@@ -443,7 +453,7 @@ export default function Profile() {
 
                 <div className="flex flex-wrap gap-2 mt-3 justify-center md:justify-start">
                   {profile.website &&
-                  <a href={profile.website} target="_blank" rel="noreferrer" className="chip">
+                  <a href={safeUrl(profile.website)} target="_blank" rel="noreferrer" className="chip">
                       <Globe size={12} /> Website
                     </a>
                   }
@@ -468,7 +478,7 @@ export default function Profile() {
                     </a>
                   }
                   {profile.soundcloud &&
-                  <a href={profile.soundcloud} target="_blank" rel="noreferrer" className="chip">
+                  <a href={safeUrl(profile.soundcloud)} target="_blank" rel="noreferrer" className="chip">
                       <Music size={12} /> SoundCloud
                     </a>
                   }

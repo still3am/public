@@ -20,6 +20,12 @@ Deno.serve(async (req) => {
     if (!/^https?:$/.test(parsed.protocol))
       return Response.json({ error: 'Only http(s) URLs are supported' }, { status: 400 });
 
+    const hostname = parsed.hostname.toLowerCase();
+    if (hostname === 'localhost' || hostname.endsWith('.localhost') ||
+        hostname === 'metadata.google.internal' ||
+        /^(169\.254\.|127\.|10\.|192\.168\.|172\.(1[6-9]|2\d|3[01])\.|0\.|::1|fe80:|fc00:|fd)/.test(hostname))
+      return Response.json({ error: 'Requests to private or internal addresses are not allowed' }, { status: 400 });
+
     const fetchInit = { method: 'GET', redirect: 'follow' };
 
     let upstream;
