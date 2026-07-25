@@ -33,13 +33,9 @@ function Section({ title, icon: Icon, children }) {
 function CardGrid({ tracks }) {
   if (!tracks?.length) return null;
   return (
-    <div className="flex gap-3 overflow-x-auto no-scrollbar snap-x snap-mandatory pb-2 -mx-1 px-1 sm:grid sm:grid-cols-3 sm:gap-2 sm:overflow-visible sm:snap-none sm:pb-0 md:grid-cols-4 lg:grid-cols-5">
+    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2">
       {tracks.map((t) =>
-      <div
-        key={t.id}
-        className="min-w-[44%] shrink-0 snap-start sm:min-w-0 sm:snap-none">
-        <TrackCard track={t} />
-      </div>
+      <TrackCard key={t.id} track={t} />
       )}
     </div>);
 
