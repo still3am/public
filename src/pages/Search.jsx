@@ -6,7 +6,8 @@ import {
   ListMusic,
   Disc,
   Music,
-  Shield } from
+  Shield,
+  X } from
 "lucide-react";
 import { base44 } from "@/api/base44Client";
 import { useAuth } from "@/lib/AuthContext";
@@ -100,7 +101,16 @@ export default function Search() {
             value={q}
             onChange={(e) => setQ(e.target.value)}
             placeholder="Search tracks, albums, playlists…"
-            className="w-full pl-11 pr-4 py-3 rounded-full border border-border bg-background text-sm font-medium focus:outline-none focus:ring-2 focus:ring-foreground/10" />
+            className="w-full pl-11 pr-10 py-3 rounded-full border border-border bg-background text-sm font-medium focus:outline-none focus:ring-2 focus:ring-foreground/10" />
+        {q.trim() && (
+          <button
+            onClick={() => setQ("")}
+            className="absolute right-3 top-1/2 -translate-y-1/2 p-1 rounded-full hover:bg-foreground/5 text-foreground/40"
+            aria-label="Clear search"
+          >
+            <X size={16} />
+          </button>
+        )}
         
       </div>
 
@@ -141,6 +151,28 @@ export default function Search() {
 
 
         
+
+      {q.trim() && !loading && (
+        <div className="tab-strip flex items-center gap-2 mb-5 overflow-x-auto no-scrollbar">
+          {tabs.map((tb) => {
+            const TIcon = tb.icon;
+            const active = tab === tb.id;
+            return (
+              <button
+                key={tb.id}
+                onClick={() => setTab(tb.id)}
+                className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-sm font-semibold whitespace-nowrap transition ${
+                  active
+                    ? "bg-foreground text-background"
+                    : "border border-border text-foreground/60 hover:bg-foreground/5"
+                }`}
+              >
+                <TIcon size={14} /> {tb.label}
+              </button>
+            );
+          })}
+        </div>
+      )}
 
       {!q.trim() ?
         <p className="text-sm text-foreground/50 text-center py-12">
