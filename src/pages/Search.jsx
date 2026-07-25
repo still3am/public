@@ -69,14 +69,12 @@ export default function Search() {
         ),
         people: []
       };
-      const users = await base44.entities.User.
-      list("-created_date", 200).
-      catch(() => []);
-      filtered.people = users.filter((u) =>
-      (u.display_name || u.full_name || u.email || "").
-      toLowerCase().
-      includes(Q)
-      );
+      try {
+        const res = await base44.functions.invoke("searchUsers", { q: Q });
+        filtered.people = res?.data?.results || [];
+      } catch {
+        filtered.people = [];
+      }
       setData(filtered);
     } finally {
       setLoading(false);
