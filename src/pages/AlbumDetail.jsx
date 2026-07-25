@@ -325,6 +325,7 @@ export default function AlbumDetail() {
                 onLikeToggle={likes.toggleLike}
                 onAddToPlaylist={(tk) => ap.addToPlaylist(tk.id)}
                 albumArtist={album?.artisan}
+                albumCover={album?.cover_art_url}
               />
             ))}
           </div>

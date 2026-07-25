@@ -38,7 +38,8 @@ export default function TrackRow({
   onAddToPlaylist,
   onReport,
   showArt = true,
-  albumArtist
+  albumArtist,
+  albumCover
 }) {
   const p = usePlayer();
   const { user } = useAuth();
@@ -83,9 +84,9 @@ export default function TrackRow({
       </div>
       {showArt &&
       <div className="w-10 h-10 rounded overflow-hidden bg-foreground/10 shrink-0">
-          {track.cover_art_url &&
+          {(track.cover_art_url || albumCover) &&
         <img
-          src={track.cover_art_url}
+          src={track.cover_art_url || albumCover}
           alt=""
           className="w-full h-full object-cover" />
 
