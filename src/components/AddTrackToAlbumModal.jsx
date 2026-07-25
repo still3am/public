@@ -33,12 +33,14 @@ export default function AddTrackToAlbumModal({ albumId, currentCount = 0, onClos
   async function add() {
     setAdding(true);
     const list = tracks.filter((t) => sel.has(t.id));
-    const updates = list.map((t, i) => ({
-      id: t.id,
-      album_id: albumId,
-      track_number: currentCount + i,
-    }));
     try {
+      const album = await base44.entities.Album.get(albumId).catch(() => null);
+      const updates = list.map((t, i) => {
+        const patch = { id: t.id, album_id: albumId, track_number: currentCount + i };
+        if (album?.artisan && !t.artist) patch.artist = album.artisan;
+        if (album?.cover_art_url && !t.cover_art_url) patch.cover_art_url = album.cover_art_url;
+        return patch;
+      });
       await base44.entities.Track.bulkUpdate(updates);
       setDone(true);
       onAdded?.();

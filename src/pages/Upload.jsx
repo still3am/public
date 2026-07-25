@@ -487,6 +487,7 @@ export default function Upload() {
             cover_art_url: cover_url,
             album_id: albumRec.id,
             track_number: i + 1,
+            artist: albumRec.artisan,
             is_published: !!album.is_published,
             explicit: !!(src.explicit ?? album.explicit),
             genre: resolvedGenre

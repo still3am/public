@@ -29,10 +29,11 @@ export default function AddToAlbumModal({
     }
     setBusy(true);
     try {
-      await base44.entities.Track.update(trackId, {
-        album_id: album.id,
-        track_number: 0,
-      });
+      const t = await base44.entities.Track.get(trackId).catch(() => null);
+      const patch = { album_id: album.id, track_number: 0 };
+      if (t && !t.artist && album.artisan) patch.artist = album.artisan;
+      if (t && !t.cover_art_url && album.cover_art_url) patch.cover_art_url = album.cover_art_url;
+      await base44.entities.Track.update(trackId, patch);
       onAdded?.(album);
       onClose();
     } catch {

@@ -149,6 +149,7 @@ export default function TrackDetail() {
   const isCurrent = p.currentTrack?.id === track.id;
   const isOwner = track.uploader_id === user?.id;
   const isPlaying = isCurrent && p.isPlaying;
+  const displayArtist = track.artist || album?.artisan || "";
 
   const menuItems = [
   {
@@ -281,14 +282,14 @@ export default function TrackDetail() {
                 </span>
               }
             </div>
-            {(track.artist || uploader) &&
+            {(displayArtist || uploader) &&
             <div className="text-sm text-foreground/60 mb-2 flex flex-wrap items-center gap-x-1.5 gap-y-0.5">
-                {track.artist &&
+                {displayArtist &&
               <span className="font-semibold text-foreground/80 px-1">
-                    {track.artist}
+                    {displayArtist}
                   </span>
               }
-                {track.artist && uploader &&
+                {displayArtist && uploader &&
               <span className="text-foreground/40">· uploaded by</span>
               }
                 {uploader &&
@@ -420,6 +421,9 @@ export default function TrackDetail() {
               Part of album
             </div>
             <div className="text-sm font-semibold truncate">{album.title}</div>
+            {album.artisan &&
+              <div className="text-xs text-foreground/50 truncate">by {album.artisan}</div>
+            }
           </div>
         </Link>
       }
@@ -459,7 +463,15 @@ export default function TrackDetail() {
         trackId={track.id}
         currentAlbumId={track.album_id}
         onClose={() => setAddToAlbum(false)}
-        onAdded={(alb) => setAlbum(alb)} />
+        onAdded={(alb) => {
+          setAlbum(alb);
+          setTrack((prev) => prev ? {
+            ...prev,
+            album_id: alb.id,
+            artist: prev.artist || alb.artisan || "",
+            cover_art_url: prev.cover_art_url || alb.cover_art_url || ""
+          } : prev);
+        }} />
 
       }
       {ap.modal}

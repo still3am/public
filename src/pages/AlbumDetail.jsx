@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link, useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import { useAuth } from "@/lib/AuthContext";
 import { useLikes } from "@/hooks/useLikes";
@@ -188,9 +188,7 @@ export default function AlbumDetail() {
           ) : (
             <div className="text-base text-foreground/70 mt-1">
               {album.artisan ? (
-                <Link to={`/artist/${encodeURIComponent(album.artisan)}`} className="hover:underline font-semibold text-foreground">
-                  {album.artisan}
-                </Link>
+                <span className="font-semibold text-foreground">{album.artisan}</span>
               ) : (
                 "Unknown artist"
               )}
