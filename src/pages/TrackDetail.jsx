@@ -243,10 +243,10 @@ export default function TrackDetail() {
 
       {/* Hero */}
       <div className="relative rounded-3xl overflow-hidden border border-border mb-6">
-        {track.cover_art_url &&
+        {(track.cover_art_url || album?.cover_art_url) &&
         <div className="absolute inset-0">
             <img
-            src={track.cover_art_url}
+            src={track.cover_art_url || album.cover_art_url}
             alt=""
             className="w-full h-full object-cover blur-2xl scale-125 opacity-30" />
           
@@ -255,9 +255,9 @@ export default function TrackDetail() {
         }
         <div className="relative p-5 md:p-8 flex flex-col md:flex-row gap-5 md:gap-7">
           <div className="w-40 h-40 md:w-48 md:h-48 rounded-2xl overflow-hidden bg-foreground/10 shrink-0 shadow-lg ring-1 ring-foreground/10">
-            {track.cover_art_url &&
+            {(track.cover_art_url || album?.cover_art_url) &&
             <img
-              src={track.cover_art_url}
+              src={track.cover_art_url || album.cover_art_url}
               alt=""
               className="w-full h-full object-cover" />
 
@@ -437,7 +437,9 @@ export default function TrackDetail() {
             index={i}
             liked={likes.likedIds.has(t.id)}
             onLikeToggle={likes.toggleLike}
-            onAddToPlaylist={(tk) => ap.addToPlaylist(tk.id)} />
+            onAddToPlaylist={(tk) => ap.addToPlaylist(tk.id)}
+            albumArtist={album?.artisan || track.artist}
+            albumCover={album?.cover_art_url || track.cover_art_url} />
 
           )}
           </div>
