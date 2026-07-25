@@ -7,6 +7,7 @@ import TrackRow from "@/components/TrackRow";
 import EmptyState from "@/components/EmptyState";
 import { Music, Loader2 } from "lucide-react";
 import PullToRefresh from "@/components/PullToRefresh";
+import { getAlbumsMapForTracks } from "@/lib/albumEnrich";
 
 export default function RecentlyAdded() {
   const { user } = useAuth();
@@ -14,6 +15,7 @@ export default function RecentlyAdded() {
   const ap = useAddToPlaylist();
   const [tracks, setTracks] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [albumsMap, setAlbumsMap] = useState({});
 
   async function load() {
     setLoading(true);
@@ -24,6 +26,7 @@ export default function RecentlyAdded() {
         100
       );
       setTracks(t);
+      setAlbumsMap(await getAlbumsMapForTracks(t));
     } catch {
       // ignore on refresh
     } finally {
@@ -52,7 +55,9 @@ export default function RecentlyAdded() {
         Fresh uploads from across the network.
       </p>
       <div className="space-y-0.5">
-        {tracks.map((t, i) => (
+        {tracks.map((t, i) => {
+          const al = albumsMap[t.album_id];
+          return (
           <TrackRow
             key={t.id}
             track={t}
@@ -60,8 +65,11 @@ export default function RecentlyAdded() {
             liked={likes.likedIds.has(t.id)}
             onLikeToggle={likes.toggleLike}
             onAddToPlaylist={(tk) => ap.addToPlaylist(tk.id)}
+            albumArtist={al?.artisan}
+            albumCover={al?.cover_art_url}
           />
-        ))}
+          );
+        })}
       </div>
     </div>
     </PullToRefresh>

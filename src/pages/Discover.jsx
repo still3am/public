@@ -6,6 +6,7 @@ import TrackCard from "@/components/TrackCard";
 import EmptyState from "@/components/EmptyState";
 import { Music, Loader2, Plus } from "lucide-react";
 import PullToRefresh from "@/components/PullToRefresh";
+import { getAlbumsMapForTracks } from "@/lib/albumEnrich";
 
 export default function Discover() {
   const loc = useLocation();
@@ -13,6 +14,7 @@ export default function Discover() {
   const [tracks, setTracks] = useState([]);
   const [loading, setLoading] = useState(false);
   const [showGenres, setShowGenres] = useState(false);
+  const [albumsMap, setAlbumsMap] = useState({});
 
   async function load() {
     setLoading(true);
@@ -22,6 +24,7 @@ export default function Discover() {
         : { is_published: true };
       const t = await base44.entities.Track.filter(filter, "-play_count", 50);
       setTracks(t);
+      setAlbumsMap(await getAlbumsMapForTracks(t));
     } finally {
       setLoading(false);
     }
@@ -98,9 +101,14 @@ export default function Discover() {
             {genre ? ` in ${genre}` : ""}
           </p>
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2">
-            {tracks.map((t) => (
-              <TrackCard key={t.id} track={t} />
-            ))}
+            {tracks.map((t) => {
+              const al = albumsMap[t.album_id];
+              return (
+              <TrackCard key={t.id} track={t}
+                albumCover={al?.cover_art_url}
+                albumArtist={al?.artisan} />
+              );
+            })}
           </div>
         </div>
       )}

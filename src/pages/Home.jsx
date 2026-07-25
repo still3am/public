@@ -14,6 +14,7 @@ import {
 import TrackCard from "@/components/TrackCard";
 import EmptyState from "@/components/EmptyState";
 import { getRecentPlays } from "@/lib/recentPlays";
+import { getAlbumsMapForTracks } from "@/lib/albumEnrich";
 import PullToRefresh from "@/components/PullToRefresh";
 
 function Section({ title, icon: Icon, children }) {
@@ -30,13 +31,18 @@ function Section({ title, icon: Icon, children }) {
 
 }
 
-function CardGrid({ tracks }) {
+function CardGrid({ tracks, albumsMap = {} }) {
   if (!tracks?.length) return null;
   return (
     <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2">
-      {tracks.map((t) =>
-      <TrackCard key={t.id} track={t} />
-      )}
+      {tracks.map((t) => {
+      const al = albumsMap[t.album_id];
+      return (
+      <TrackCard key={t.id} track={t}
+        albumCover={al?.cover_art_url}
+        albumArtist={al?.artisan} />
+      );
+      })}
     </div>);
 
 }
@@ -71,6 +77,7 @@ export default function Home() {
   const [fromFollowing, setFromFollowing] = useState([]);
   const [recentlyPlayed, setRecentlyPlayed] = useState([]);
   const [albums, setAlbums] = useState([]);
+  const [albumsMap, setAlbumsMap] = useState({});
 
   useEffect(() => {
     const handler = () => setRecentlyPlayed(getRecentPlays());
@@ -125,6 +132,13 @@ export default function Home() {
         }))
       );
       setByGenre(perGenre);
+      setAlbumsMap(
+        await getAlbumsMapForTracks([
+          ...t,
+          ...n,
+          ...perGenre.flatMap((g) => g.tracks),
+        ])
+      );
     } finally {
       setLoading(false);
     }
@@ -218,10 +232,10 @@ export default function Home() {
         </Link>
 
         <Section title="Trending" icon={TrendingUp}>
-          {CardGrid({ tracks: trending })}
+          {CardGrid({ tracks: trending, albumsMap })}
         </Section>
         <Section title="New Releases">
-          {CardGrid({ tracks: newReleases })}
+          {CardGrid({ tracks: newReleases, albumsMap })}
         </Section>
         {albums.length > 0 &&
         <Section title="Albums" icon={Disc}>
@@ -250,19 +264,19 @@ export default function Home() {
         }
         {fromFollowing.length > 0 &&
         <Section title="From People You Follow">
-            {CardGrid({ tracks: fromFollowing })}
+            {CardGrid({ tracks: fromFollowing, albumsMap })}
           </Section>
         }
         {recentlyPlayed.length > 0 &&
         <Section title="Recently Played">
-            {CardGrid({ tracks: recentlyPlayed })}
+            {CardGrid({ tracks: recentlyPlayed, albumsMap })}
           </Section>
         }
         {byGenre.
         filter((sg) => sg.tracks.length > 0).
         map((sg) =>
         <Section key={sg.genre} title={sg.genre}>
-              {CardGrid({ tracks: sg.tracks })}
+              {CardGrid({ tracks: sg.tracks, albumsMap })}
             </Section>
         )}
       </div>
