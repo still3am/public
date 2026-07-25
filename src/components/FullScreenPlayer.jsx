@@ -315,14 +315,23 @@ export default function FullScreenPlayer({ onClose, onOpenQueue }) {
             <span className="text-[11px] tabular-nums opacity-60 w-9 text-right">{Math.round(volPct)}%</span>
           </div>
 
-          {/* mobile lyrics toggle button */}
-          <button
-            onClick={() => setLyricsMode(true)}
-            className="xl:hidden flex items-center justify-center gap-2 mx-auto mt-1 mb-3 px-4 py-2 rounded-full bg-white/10 active:scale-95 transition text-xs font-semibold shrink-0"
-            aria-label="Lyrics">
-            
-             Lyrics
-          </button>
+          {/* mobile artwork / lyrics toggle */}
+          <div className="xl:hidden flex items-center gap-1 mx-auto mt-1 mb-3 p-1 rounded-full bg-white/10 shrink-0">
+            <button
+              onClick={() => setLyricsMode(false)}
+              className={`flex items-center justify-center gap-1.5 px-4 py-1.5 rounded-full transition text-xs font-semibold ${
+                !lyricsMode ? "bg-white text-black" : "opacity-70"}`}
+              aria-label="Artwork">
+              <Disc3 size={14} /> Artwork
+            </button>
+            <button
+              onClick={() => setLyricsMode(true)}
+              className={`flex items-center justify-center gap-1.5 px-4 py-1.5 rounded-full transition text-xs font-semibold ${
+                lyricsMode ? "bg-white text-black" : "opacity-70"}`}
+              aria-label="Lyrics">
+              <Mic2 size={14} /> Lyrics
+            </button>
+          </div>
         </div>
 
         {/* RIGHT (desktop): lyrics panel */}
