@@ -100,15 +100,15 @@ export default function TrackRow({
           
           {track.title}
         </Link>
-        {track.artist ?
-        <span className="text-xs text-foreground/50 truncate">{track.artist}</span> :
-
-        <Link
-          to={`/profile/${track.uploader_id}`}
-          className="text-xs text-foreground/50 truncate hover:underline">
+        <div className="flex items-center gap-1.5 text-xs text-foreground/50 truncate">
+          {track.artist && <span className="truncate">{track.artist}</span>}
+          {track.artist && track.uploader_name && <span className="opacity-40">·</span>}
+          <Link
+            to={`/profile/${track.uploader_id}`}
+            className="truncate hover:underline">
             {track.uploader_name || "Unknown"}
           </Link>
-        }
+        </div>
       </div>
       {track.explicit &&
       <span className="text-[9px] font-extrabold px-1 py-0.5 rounded bg-foreground/15 text-foreground/70 shrink-0">
