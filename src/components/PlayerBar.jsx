@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import {
   Play,
   Pause,
@@ -26,6 +26,32 @@ export default function PlayerBar() {
   const likes = useLikes(user);
   const [queueOpen, setQueueOpen] = useState(false);
   const [fullOpen, setFullOpen] = useState(false);
+  const [dragY, setDragY] = useState(0);
+  const drag = useRef({ active: false, startY: 0, moved: false });
+
+  const onTouchStart = (e) => {
+    const touch = e.touches[0];
+    drag.current = { active: true, startY: touch.clientY, moved: false };
+  };
+  const onTouchMove = (e) => {
+    if (!drag.current.active) return;
+    const touch = e.touches[0];
+    const dy = touch.clientY - drag.current.startY;
+    if (dy > 8) {
+      drag.current.moved = true;
+      setDragY(dy);
+      e.preventDefault();
+    }
+  };
+  const onTouchEnd = () => {
+    if (!drag.current.active) return;
+    drag.current.active = false;
+    if (dragY > 90) {
+      p.clearQueue();
+    }
+    setDragY(0);
+  };
+
   if (!p.currentTrack) return null;
   const t = p.currentTrack;
   const liked = likes.likedIds.has(t.id);
@@ -35,7 +61,16 @@ export default function PlayerBar() {
 
   return (
     <>
-      <div className="fixed left-0 right-0 md:left-64 z-30 bg-background/90 backdrop-blur-xl border-t border-border player-bar-mobile-bottom">
+      <div
+        onTouchStart={onTouchStart}
+        onTouchMove={onTouchMove}
+        onTouchEnd={onTouchEnd}
+        style={{
+          transform: `translateY(${dragY}px)`,
+          opacity: 1 - Math.min(dragY / 200, 0.6),
+          transition: drag.current.active ? "none" : "transform .25s ease, opacity .25s ease"
+        }}
+        className="fixed left-0 right-0 md:left-64 z-30 bg-background/90 backdrop-blur-xl border-t border-border player-bar-mobile-bottom touch-none">
         {/* progress (mobile - thin top accent) */}
         <div className="h-[3px] w-full bg-foreground/[0.06] relative overflow-hidden">
           <div
