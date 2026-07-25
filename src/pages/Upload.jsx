@@ -29,6 +29,7 @@ import {
 "lucide-react";
 import { getAudioDuration, deriveDefaultTitle, AUDIO_ACCEPT } from "@/lib/audio-utils";
 import { findDuplicateTracks } from "@/lib/duplicateCheck";
+import { useStableAudioSrc } from "@/hooks/useStableAudioSrc";
 import GenrePicker from "@/components/GenrePicker";
 import { useToast } from "@/components/ui/use-toast";
 
@@ -63,7 +64,8 @@ function UploadButton({ icon: Icon, title, sub, onClick, hint }) {
 function PreviewButton({ item }) {
   const [playing, setPlaying] = useState(false);
   const ref = useRef(null);
-  if (!item.audio_url && !item.file) return null;
+  const src = useStableAudioSrc(item);
+  if (!src) return null;
   return (
     <button
       type="button"
@@ -84,7 +86,9 @@ function PreviewButton({ item }) {
       {playing ? <Pause size={14} /> : <Play size={14} />}
       <audio
         ref={ref}
-        src={item.audio_url || (item.file ? URL.createObjectURL(item.file) : "")}
+        src={src}
+        onPlay={() => setPlaying(true)}
+        onPause={() => setPlaying(false)}
         onEnded={() => setPlaying(false)}
         className="hidden" />
         
@@ -96,7 +100,7 @@ function PreviewButton({ item }) {
         const [pos, setPos] = useState(0);
         const [dur, setDur] = useState(item.duration || 0);
         const ref = useRef(null);
-        const src = item.audio_url || (item.file ? URL.createObjectURL(item.file) : "");
+        const src = useStableAudioSrc(item);
         if (!src) return null;
         const toggle = () => {
         const a = ref.current;
