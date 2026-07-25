@@ -359,28 +359,28 @@ export default function FullScreenPlayer({ onClose, onOpenQueue }) {
       }
 
       {/* mobile bottom toggle bar */}
-      <div className="xl:hidden flex items-center justify-center gap-10 py-3 pb-7 border-t border-white/10 shrink-0 relative hidden">
-        <button
-          onClick={() => setLyricsMode(false)}
-          className={`flex flex-col items-center text-[10px] uppercase tracking-wider active:scale-95 transition ${
-          !lyricsMode ? "opacity-100" : "opacity-45"}`
-          }
-          aria-label="Show cover">
-          
-          <Disc3 size={20} />
-          <span className="mt-1">Artwork</span>
-        </button>
-        <button
-          onClick={() => setLyricsMode(true)}
-          className={`flex flex-col items-center text-[10px] uppercase tracking-wider active:scale-95 transition ${
-          lyricsMode ? "opacity-100" : "opacity-45"}`
-          }
-          aria-label="Show lyrics">
-          
-          <Mic2 size={20} />
-          <span className="mt-1">Lyrics</span>
-        </button>
-      </div>
+      
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      
     </div>);
 
 }
