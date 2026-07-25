@@ -57,25 +57,28 @@ export default function TrackDetail() {
         catch(() => null);
         setUploader(u);
       }
+      let al = null;
       if (t?.album_id) {
-        base44.entities.Album.
-        get(t.album_id).
-        then(setAlbum).
-        catch(() => setAlbum(null));
+        al = await base44.entities.Album.get(t.album_id).catch(() => null);
+        setAlbum(al);
       } else {
         setAlbum(null);
       }
-      if (t?.artist) {
+      const artistName = t?.artist || al?.artisan;
+      if (artistName) {
         const all = await base44.entities.Track.list("-play_count", 50).catch(
           () => []
         );
-        const lc = t.artist.toLowerCase();
+        const lc = artistName.toLowerCase();
         setMoreTracks(
           all.
           filter(
             (x) =>
             x.id !== t.id &&
-            (x.artist || "").toLowerCase() === lc &&
+            (
+            (x.artist || "").toLowerCase() === lc ||
+            (!x.artist && (x.uploader_name || "").toLowerCase() === lc)
+            ) &&
             x.is_published !== false
           ).
           slice(0, 6)
@@ -284,37 +287,52 @@ export default function TrackDetail() {
             {(() => {
               const artistName = track.artist || album?.artisan;
               if (!artistName && !uploader) return null;
+              if (!artistName && uploader) {
+                return (
+                  <div className="text-sm text-foreground/60 mb-2 flex flex-wrap items-center gap-1.5">
+                    <span className="text-foreground/40">Uploaded by</span>
+                    <Link
+                      to={`/profile/${uploader.id}`}
+                      className="hover:underline inline-flex items-center gap-1.5 font-semibold text-foreground/80">
+                      {uploader.avatar_url ?
+                        <img
+                          src={uploader.avatar_url}
+                          alt=""
+                          className="w-5 h-5 rounded-full object-cover" />
+                        :
+                        <div className="w-5 h-5 rounded-full bg-foreground/10 grid place-items-center text-[9px] font-semibold">
+                          {(uploader.display_name || uploader.email || "?").charAt(0)}
+                        </div>}
+                      {uploader.display_name || uploader.full_name || "Unknown"}
+                    </Link>
+                  </div>
+                );
+              }
               return (
                 <div className="text-sm text-foreground/60 mb-2 flex flex-wrap items-center gap-x-1.5 gap-y-0.5">
-                {artistName &&
-              <span className="font-semibold text-foreground/80 px-1">
+                  <span className="font-semibold text-foreground/80 px-1">
                     {artistName}
                   </span>
-              }
-                {artistName && uploader &&
-              <span className="text-foreground/40">· uploaded by</span>
-              }
-                {uploader &&
-              <Link
-                to={`/profile/${uploader.id}`}
-                className="hover:underline inline-flex items-center gap-1.5">
-                
-                    {uploader.avatar_url ?
-                <img
-                  src={uploader.avatar_url}
-                  alt=""
-                  className="w-5 h-5 rounded-full object-cover" /> :
-
-
-                <div className="w-5 h-5 rounded-full bg-foreground/10 grid place-items-center text-[9px] font-semibold">
-                        {(uploader.display_name || uploader.email || "?").charAt(0)}
-                      </div>
-                }
-                    {uploader.display_name || uploader.full_name || "Unknown"}
-                  </Link>
-              }
-              </div>
-            );
+                  {uploader &&
+                    <>
+                      <span className="text-foreground/40">· uploaded by</span>
+                      <Link
+                        to={`/profile/${uploader.id}`}
+                        className="hover:underline inline-flex items-center gap-1.5">
+                        {uploader.avatar_url ?
+                          <img
+                            src={uploader.avatar_url}
+                            alt=""
+                            className="w-5 h-5 rounded-full object-cover" />
+                          :
+                          <div className="w-5 h-5 rounded-full bg-foreground/10 grid place-items-center text-[9px] font-semibold">
+                            {(uploader.display_name || uploader.email || "?").charAt(0)}
+                          </div>}
+                        {uploader.display_name || uploader.full_name || "Unknown"}
+                      </Link>
+                    </>}
+                </div>
+              );
             })()}
             <div className="text-xs text-foreground/40 mb-3">
               {track.play_count || 0} plays · {track.like_count || 0} likes
@@ -435,7 +453,7 @@ export default function TrackDetail() {
       {moreTracks.length > 0 &&
       <div className="mb-6">
           <h2 className="text-lg font-extrabold tracking-tight mb-3 flex items-center gap-2">
-            <Music size={18} /> More from {track.artist}
+            <Music size={18} /> More from {track.artist || album?.artisan || track.uploader_name || "this artist"}
           </h2>
           <div className="space-y-0.5">
             {moreTracks.map((t, i) =>
