@@ -495,7 +495,7 @@ export default function Upload() {
         setProgress(100);
         setDone({ id: albumRec.id, kind: "album", title: album.title, count: items.length });
         toast({ title: "Album published", description: `${items.length} tracks grouped as one album` });
-        setTimeout(() => nav(`/playlist/album-${albumRec.id}`), 700);
+        setTimeout(() => nav(`/album/${albumRec.id}`), 700);
       } else {
         const built = [];
         for (let i = 0; i < items.length; i++) {
