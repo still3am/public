@@ -78,6 +78,12 @@ export function deriveDefaultTitle(fileOrName) {
   );
 }
 
+export function deriveDefaultArtist(fileOrName) {
+  const name = typeof fileOrName === "string" ? fileOrName : fileOrName?.name;
+  if (!name) return "";
+  return name.replace(/\.[^.]+$/, "").trim() || "";
+}
+
 export function displayArtist(track) {
   if (!track) return "Unknown";
   return (

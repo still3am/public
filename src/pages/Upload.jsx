@@ -27,7 +27,7 @@ import {
   Music2,
   AlertTriangle } from
 "lucide-react";
-import { getAudioDuration, deriveDefaultTitle, AUDIO_ACCEPT } from "@/lib/audio-utils";
+import { getAudioDuration, deriveDefaultTitle, deriveDefaultArtist, AUDIO_ACCEPT } from "@/lib/audio-utils";
 import { findDuplicateTracks } from "@/lib/duplicateCheck";
 import { useStableAudioSrc } from "@/hooks/useStableAudioSrc";
 import GenrePicker from "@/components/GenrePicker";
@@ -291,7 +291,7 @@ export default function Upload() {
           file_name: f.name,
           size: f.size,
           title: deriveDefaultTitle(f),
-          artist: albumUploaderName,
+          artist: deriveDefaultArtist(f),
           duration: dur
         });
       })
@@ -318,7 +318,7 @@ export default function Upload() {
       file_name,
       size,
       title: deriveDefaultTitle({ name: file_name }),
-      artist: albumUploaderName
+      artist: deriveDefaultArtist({ name: file_name })
     });
     setItems((prev) => [...prev, item]);
   }
@@ -702,7 +702,7 @@ export default function Upload() {
                 file_name: urlItem.file_name,
                 size: urlItem.size,
                 title: deriveDefaultTitle({ name: urlItem.file_name }),
-                artist: albumUploaderName
+                artist: deriveDefaultArtist({ name: urlItem.file_name })
               })]);
               setMode("single");
             }} />
