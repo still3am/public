@@ -20,17 +20,45 @@ Deno.serve(async (req) => {
     if (!/^https?:$/.test(parsed.protocol))
       return Response.json({ error: 'Only http(s) URLs are supported' }, { status: 400 });
 
-    const hostname = parsed.hostname.toLowerCase();
-    if (hostname === 'localhost' || hostname.endsWith('.localhost') ||
-        hostname === 'metadata.google.internal' ||
-        /^(169\.254\.|127\.|10\.|192\.168\.|172\.(1[6-9]|2\d|3[01])\.|0\.|::1|fe80:|fc00:|fd)/.test(hostname))
-      return Response.json({ error: 'Requests to private or internal addresses are not allowed' }, { status: 400 });
+    const isPrivateHost = (h) =>
+      h === 'localhost' || h.endsWith('.localhost') ||
+      h === 'metadata.google.internal' ||
+      /^(169\.254\.|127\.|10\.|192\.168\.|172\.(1[6-9]|2\d|3[01])\.|0\.|::1|fe80:|fc00:|fd)/.test(h);
 
-    const fetchInit = { method: 'GET', redirect: 'follow' };
+    function assertSafeUrl(u) {
+      let p;
+      try { p = new URL(u); } catch { throw new Error('Invalid redirect URL'); }
+      if (!/^https?:$/.test(p.protocol)) throw new Error('Only http(s) URLs are supported');
+      if (isPrivateHost(p.hostname.toLowerCase())) throw new Error('Private addresses are not allowed');
+      return p;
+    }
+
+    assertSafeUrl(parsed);
+
+    const fetchInit = { method: 'GET', redirect: 'manual' };
 
     let upstream;
+    let current = parsed;
+    const MAX_REDIRECTS = 5;
     try {
-      upstream = await fetch(parsed.toString(), fetchInit);
+      for (let i = 0; i <= MAX_REDIRECTS; i++) {
+        upstream = await fetch(current.toString(), fetchInit);
+        if (upstream.status >= 300 && upstream.status < 400) {
+          const loc = upstream.headers.get('location');
+          if (!loc || i === MAX_REDIRECTS) {
+            return Response.json({ error: 'Too many redirects or missing redirect target' }, { status: 502 });
+          }
+          let next;
+          try {
+            next = assertSafeUrl(new URL(loc, current));
+          } catch (e) {
+            return Response.json({ error: e.message }, { status: 400 });
+          }
+          current = next;
+          continue;
+        }
+        break;
+      }
     } catch (_e) {
       return Response.json({ error: 'Could not reach the URL. It may block cross-origin requests or require authentication.' }, { status: 502 });
     }
