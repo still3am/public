@@ -1,6 +1,7 @@
 import { Play, Pause, Flame } from "lucide-react";
 import { Link } from "react-router-dom";
 import { usePlayer } from "@/context/PlayerContext";
+import { displayArtist } from "@/lib/albumEnrich";
 
 export default function TrackCard({ track, albumArtist, albumCover }) {
   const p = usePlayer();
@@ -58,7 +59,7 @@ export default function TrackCard({ track, albumArtist, albumCover }) {
           }
         </div>
         <div className="text-xs text-foreground/50 truncate flex items-center gap-1.5">
-          <span className="truncate">{track.artist || albumArtist || track.uploader_name || "Unknown"}</span>
+          <span className="truncate">{displayArtist(track, albumArtist)}</span>
           
 
 

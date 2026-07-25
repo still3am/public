@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
+import { displayArtist } from "@/lib/albumEnrich";
 import { useAuth } from "@/lib/AuthContext";
 import { useLikes } from "@/hooks/useLikes";
 import { useAddToPlaylist } from "@/hooks/useAddToPlaylist";
@@ -282,7 +283,7 @@ export default function TrackDetail() {
               }
             </div>
             {(() => {
-              const artistName = track.artist || album?.artisan;
+              const artistName = displayArtist(track, album?.artisan);
               if (!artistName && !uploader) return null;
               return (
                 <div className="text-sm text-foreground/60 mb-2 flex flex-wrap items-center gap-x-1.5 gap-y-0.5">

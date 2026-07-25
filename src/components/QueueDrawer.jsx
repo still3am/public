@@ -13,7 +13,7 @@ import { formatTime } from "@/lib/audio-utils";
 import { base44 } from "@/api/base44Client";
 import { useAuth } from "@/lib/AuthContext";
 import { useLikes } from "@/hooks/useLikes";
-import { getAlbumsMapForTracks } from "@/lib/albumEnrich";
+import { getAlbumsMapForTracks, displayArtist } from "@/lib/albumEnrich";
 
 export default function QueueDrawer({ p, onClose }) {
   const { user } = useAuth();
@@ -147,7 +147,7 @@ export default function QueueDrawer({ p, onClose }) {
                   const added = justAdded.has(t.id);
                   const al = albumsMap[t.album_id];
                   const cover = t.cover_art_url || al?.cover_art_url;
-                  const artist = t.artist || al?.artisan || t.uploader_name || "Unknown";
+                  const artist = displayArtist(t, al?.artisan);
                   return (
                     <button
                       key={t.id}
@@ -208,7 +208,7 @@ export default function QueueDrawer({ p, onClose }) {
                     {(() => {
                       const al = albumsMap[p.currentTrack.album_id];
                       const cover = p.currentTrack.cover_art_url || al?.cover_art_url;
-                      const artist = p.currentTrack.artist || al?.artisan || p.currentTrack.uploader_name || "Unknown";
+                      const artist = displayArtist(p.currentTrack, al?.artisan);
                       return (
                         <>
                     <div className="w-10 h-10 rounded overflow-hidden bg-foreground/10 shrink-0">
@@ -271,7 +271,7 @@ export default function QueueDrawer({ p, onClose }) {
                   const idx = p.currentIndex + 1 + i;
                   const al = albumsMap[t.album_id];
                   const cover = t.cover_art_url || al?.cover_art_url;
-                  const artist = t.artist || al?.artisan || t.uploader_name || "Unknown";
+                  const artist = displayArtist(t, al?.artisan);
                   return (
                     <div
                       key={t.id}

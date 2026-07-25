@@ -16,6 +16,7 @@ import { formatTime, timeAgo } from "@/lib/audio-utils";
 import { Link } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import { useAuth } from "@/lib/AuthContext";
+import { displayArtist } from "@/lib/albumEnrich";
 
 function MenuBtn({ icon: Icon, label, onClick, danger }) {
   return (
@@ -103,15 +104,15 @@ export default function TrackRow({
           {track.title}
         </Link>
         {(() => {
-          const artist = track.artist || albumArtist;
-          if (artist) {
+          const artist = displayArtist(track, albumArtist);
+          if (artist && artist !== track.uploader_name) {
             return <span className="text-xs text-foreground/50 truncate">{artist}</span>;
           }
           return (
             <Link
               to={`/profile/${track.uploader_id}`}
               className="text-xs text-foreground/50 truncate hover:underline">
-              {track.uploader_name || "Unknown"}
+              {artist || "Unknown"}
             </Link>
           );
         })()}
