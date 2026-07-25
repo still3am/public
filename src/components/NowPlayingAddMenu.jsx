@@ -101,23 +101,21 @@ export default function NowPlayingAddMenu({
     <div ref={wrapRef} className="relative flex items-center shrink-0">
       {open && (
         <>
-          {/* dim backdrop for mobile */}
           <div
-            className="md:hidden fixed inset-0 z-40 bg-black/40 backdrop-blur-[2px] animate-[fadeIn_.15s_ease-out]"
+            className="md:hidden fixed inset-0 z-40"
             onClick={() => setOpen(false)}
           />
-          <div className="absolute right-0 bottom-full mb-2 z-50 flex flex-col gap-1.5 w-52 animate-[fadeIn_.18s_ease-out]">
+          <div className="absolute right-0 top-full mt-2 z-50 w-52 rounded-2xl bg-black/70 backdrop-blur-xl border border-white/10 shadow-2xl py-1.5 animate-[fadeIn_.15s_ease-out]">
             {options.map((opt, i) => {
               const Icon = opt.icon;
               return (
                 <button
                   key={i}
                   onClick={() => opt.onClick(() => setOpen(false))}
-                  style={{ animationDelay: `${i * 30}ms` }}
-                  className="flex items-center gap-3 px-4 py-3 rounded-2xl bg-white/10 backdrop-blur-xl border border-white/10 text-sm font-medium text-left active:scale-[0.97] hover:bg-white/20 transition animate-[fadeIn_.2s_ease-out_both]"
+                  className="w-full flex items-center gap-3 px-3.5 py-2.5 text-sm font-medium text-left hover:bg-white/10 active:scale-[0.98] transition"
                 >
-                  <Icon size={18} className={opt.accent || ""} />
-                  <span className="flex-1">{opt.label}</span>
+                  <Icon size={16} className={opt.accent || "opacity-80"} />
+                  <span className="flex-1 truncate">{opt.label}</span>
                 </button>
               );
             })}
@@ -127,11 +125,11 @@ export default function NowPlayingAddMenu({
       <button
         onClick={() => setOpen((v) => !v)}
         aria-label={open ? "Close menu" : "Open menu"}
-        className={`w-10 h-10 rounded-full grid place-items-center active:scale-90 transition shadow-lg ${
-          open ? "bg-white/20" : "bg-white text-black"
+        className={`w-9 h-9 rounded-full grid place-items-center active:scale-90 transition ${
+          open ? "bg-white/15" : "bg-white/10 hover:bg-white/20"
         }`}
       >
-        {open ? <X size={22} /> : <Plus size={24} className={open ? "rotate-45" : ""} />}
+        {open ? <X size={20} /> : <Plus size={20} />}
       </button>
     </div>
   );
