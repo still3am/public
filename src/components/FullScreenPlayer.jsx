@@ -55,6 +55,7 @@ export default function FullScreenPlayer({ onClose, onOpenQueue }) {
   const t = p.currentTrack;
   const volDrag = useRef({ startY: 0, start: 0, active: false });
   const hintTimer = useRef(null);
+  const dismissDrag = useRef({ startY: 0, active: false, moved: false });
 
   // keyboard shortcuts
   useEffect(() => {
@@ -157,7 +158,22 @@ export default function FullScreenPlayer({ onClose, onOpenQueue }) {
       
 
       {/* top bar */}
-      <div className="relative flex items-center justify-between px-4 md:px-8 pt-8 pb-2 shrink-0">
+      <div
+        onTouchStart={(e) => {
+          const tch = e.touches[0];
+          dismissDrag.current = { startY: tch.clientY, active: true, moved: false };
+        }}
+        onTouchMove={(e) => {
+          if (!dismissDrag.current.active) return;
+          const dy = e.touches[0].clientY - dismissDrag.current.startY;
+          if (dy > 80) {
+            dismissDrag.current.moved = true;
+            onClose();
+            dismissDrag.current.active = false;
+          }
+        }}
+        onTouchEnd={() => { dismissDrag.current.active = false; }}
+        className="relative flex items-center justify-between px-4 md:px-8 pt-8 pb-2 shrink-0">
         <button onClick={onClose} className="p-2 -ml-2 active:scale-90 hover:bg-white/10 rounded-full transition" aria-label="Close">
           <ChevronDown size={26} />
         </button>
