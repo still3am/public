@@ -14,7 +14,6 @@ import {
 import TrackCard from "@/components/TrackCard";
 import EmptyState from "@/components/EmptyState";
 import { getRecentPlays } from "@/lib/recentPlays";
-import { getAlbumsMapForTracks } from "@/lib/albumEnrich";
 import PullToRefresh from "@/components/PullToRefresh";
 
 function Section({ title, icon: Icon, children }) {
@@ -109,7 +108,7 @@ export default function Home() {
       filter({ follower_id: user.id }, "-created_date", 200).
       catch(() => []) :
       Promise.resolve([]),
-      base44.entities.Album.list("-created_date", 20).catch(() => [])]
+      base44.entities.Album.list("-created_date", 200).catch(() => [])]
       );
       const followed = new Set(
         (Array.isArray(fols) ? fols : []).map((f) => f.following_id)
@@ -122,23 +121,21 @@ export default function Home() {
       );
       const genres = ["Electronic", "Hip-Hop", "Ambient"];
       const perGenre = await Promise.all(
-        genres.map(async (g) => ({
-          genre: g,
-          tracks: await base44.entities.Track.filter(
-            { is_published: true, genre: g },
-            "-play_count",
-            8
-          )
-        }))
+        genres.map((g) =>
+          base44.entities.Track
+            .filter({ is_published: true, genre: g }, "-play_count", 8)
+            .catch(() => [])
+            .then((tracks) => ({ genre: g, tracks }))
+        )
       );
       setByGenre(perGenre);
-      setAlbumsMap(
-        await getAlbumsMapForTracks([
-          ...t,
-          ...n,
-          ...perGenre.flatMap((g) => g.tracks),
-        ])
-      );
+      // Build the album lookup from the single batch we already fetched,
+      // instead of issuing one Album.get() per track (rate-limit fix).
+      const map = {};
+      (Array.isArray(al) ? al : []).forEach((a) => {
+        if (a?.id) map[a.id] = a;
+      });
+      setAlbumsMap(map);
     } finally {
       setLoading(false);
     }
