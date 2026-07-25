@@ -316,7 +316,7 @@ export default function FullScreenPlayer({ onClose, onOpenQueue }) {
             className="xl:hidden flex items-center justify-center gap-2 mx-auto mt-1 mb-3 px-4 py-2 rounded-full bg-white/10 active:scale-95 transition text-xs font-semibold shrink-0"
             aria-label="Lyrics">
             
-            <Mic2 size={16} /> Lyrics
+            <Mic2 size={16} className="hidden" /> Lyrics
           </button>
         </div>
 
