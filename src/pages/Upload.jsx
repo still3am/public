@@ -443,10 +443,10 @@ export default function Upload() {
       setProgress(33);
       const audio_url = await uploadAudio(item);
       setProgress(60);
-      const cover_url = item.cover ? await uploadCover(item) : "";
+      const cover_url = await uploadCover(item);
       setProgress(85);
       const t = await base44.entities.Track.create(
-        trackPayload(item, { audio_url, cover_url: cover_url || item.cover_url || "" })
+        trackPayload(item, { audio_url, cover_art_url: cover_url })
       );
       setProgress(100);
       setDone({ id: t.id, kind: "single", title: item.title });
@@ -507,7 +507,8 @@ export default function Upload() {
         const built = [];
         for (let i = 0; i < items.length; i++) {
           const audio_url = await uploadAudio(items[i]);
-          built.push(trackPayload(items[i], { audio_url }));
+          const cover_url = await uploadCover(items[i]);
+          built.push(trackPayload(items[i], { audio_url, cover_art_url: cover_url }));
           setProgress(Math.round((i + 1) / items.length * 100));
         }
         await base44.entities.Track.bulkCreate(built);
