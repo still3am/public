@@ -207,7 +207,7 @@ export default function Library() {
                 </Link>
                 <button
                   onClick={() => setPendingDelete(pl)}
-                  className="absolute top-2 right-2 p-1.5 rounded-full bg-foreground/80 text-background opacity-0 group-hover:opacity-100 transition"
+                  className="absolute top-2 right-2 p-1.5 rounded-full bg-foreground/80 text-background opacity-100 md:opacity-0 md:group-hover:opacity-100 transition"
                   aria-label="Delete playlist"
                 >
                   <Trash2 size={14} />
@@ -269,10 +269,7 @@ export default function Library() {
                     {u.display_name || u.full_name || "Unnamed"}
                   </div>
                   <div className="text-xs text-foreground/50 truncate">
-                    {`${
-                      (u.following_count || 0) +
-                      (u.following_count ? " following" : "")
-                    }`}
+                    {u.location || "PUBLIC member"}
                   </div>
                 </div>
               </Link>

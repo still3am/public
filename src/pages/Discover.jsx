@@ -92,10 +92,16 @@ export default function Discover() {
           description="Try another genre or upload the first track in this genre."
         />
       ) : (
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2">
-          {tracks.map((t) => (
-            <TrackCard key={t.id} track={t} />
-          ))}
+        <div>
+          <p className="text-xs text-foreground/45 mb-3">
+            {tracks.length} track{tracks.length === 1 ? "" : "s"}
+            {genre ? ` in ${genre}` : ""}
+          </p>
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2">
+            {tracks.map((t) => (
+              <TrackCard key={t.id} track={t} />
+            ))}
+          </div>
         </div>
       )}
     </div>
