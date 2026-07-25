@@ -157,7 +157,7 @@ export default function FullScreenPlayer({ onClose, onOpenQueue }) {
                 step="0.01"
                 value={p.muted ? 0 : p.volume}
                 onChange={(e) => p.setVolume(Number(e.target.value))}
-                className="absolute inset-0 w-full opacity-0 cursor-pointer"
+                className="absolute left-0 right-0 top-1/2 -translate-y-1/2 w-full h-9 opacity-0 cursor-pointer touch-pan-x"
                 aria-label="Volume" />
               
               </div>
