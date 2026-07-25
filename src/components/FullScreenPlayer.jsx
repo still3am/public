@@ -4,7 +4,6 @@ import { useColorExtraction } from "@/hooks/useColorExtraction";
 import { useLikes } from "@/hooks/useLikes";
 import { useAuth } from "@/lib/AuthContext";
 import { formatTime } from "@/lib/audio-utils";
-import { displayArtist } from "@/lib/albumEnrich";
 import SyncedLyrics from "@/components/SyncedLyrics";
 import { Link } from "react-router-dom";
 import {
@@ -36,7 +35,7 @@ export default function FullScreenPlayer({ onClose, onOpenQueue }) {
   const t = t0;
 
   if (!t) return null;
-  const artist = displayArtist(t, al?.artisan);
+  const artist = t.artist || al?.artisan || t.uploader_name || "Unknown";
   const liked = likes.likedIds.has(t.id);
   const progress = p.duration ? p.position / p.duration * 100 : 0;
   const remaining = Math.max(0, (p.duration || 0) - (p.position || 0));

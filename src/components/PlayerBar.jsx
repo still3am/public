@@ -17,7 +17,6 @@ import { useLikes } from "@/hooks/useLikes";
 import { useAuth } from "@/lib/AuthContext";
 import { Link } from "react-router-dom";
 import { formatTime } from "@/lib/audio-utils";
-import { displayArtist } from "@/lib/albumEnrich";
 import QueueDrawer from "@/components/QueueDrawer";
 import FullScreenPlayer from "@/components/FullScreenPlayer";
 
@@ -31,7 +30,7 @@ export default function PlayerBar() {
   const t = p.currentTrack;
   const al = p.currentAlbum;
   const cover = t.cover_art_url || al?.cover_art_url;
-  const artist = displayArtist(t, al?.artisan);
+  const artist = t.artist || al?.artisan || t.uploader_name || "Unknown";
   const liked = likes.likedIds.has(t.id);
   const pct = p.duration ? (p.position / p.duration) * 100 : 0;
   const remaining = Math.max(0, (p.duration || 0) - (p.position || 0));

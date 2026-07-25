@@ -23,14 +23,3 @@ export async function getAlbumsMapForTracks(tracks) {
   });
   return map;
 }
-
-// Resolves the artist name to display for a track.
-// For tracks that belong to an album, the album's artist is preferred when
-// the track's own artist is missing or was auto-filled with the uploader's
-// name (the upload flow's default). Falls back to the uploader's name.
-export function displayArtist(track, albumArtist) {
-  const a = (track?.artist || "").trim();
-  const al = (albumArtist || "").trim();
-  if (al && (!a || a === track?.uploader_name)) return al;
-  return a || al || track?.uploader_name || "Unknown";
-}
