@@ -185,7 +185,7 @@ export default function FullScreenPlayer({ onClose, onOpenQueue }) {
           {/* artwork / mobile lyrics */}
           <div className="relative flex-1 flex items-center justify-center min-h-0 py-3">
             {lyricsMode && (
-              <div className="xl:hidden w-full h-full rounded-3xl bg-white/[0.06] overflow-hidden">
+              <div className="xl:hidden w-full h-full rounded-3xl bg-white/[0.06] overflow-hidden flex flex-col min-h-0">
                 <SyncedLyrics trackId={t.id} position={p.position} fallbackText={t.lyrics_text} onSeek={p.seek} />
               </div>
             )}

@@ -7,6 +7,7 @@ export default function SyncedLyrics({ trackId, position, fallbackText = "", onS
   const [loading, setLoading] = useState(true);
   const lineRefs = useRef([]);
   const scrollRef = useRef(null);
+  const userScrollUntil = useRef(0);
 
   useEffect(() => {
     let alive = true;
@@ -39,6 +40,7 @@ export default function SyncedLyrics({ trackId, position, fallbackText = "", onS
 
   useEffect(() => {
     if (activeIdx < 0) return;
+    if (Date.now() < userScrollUntil.current) return;
     const el = lineRefs.current[activeIdx];
     const container = scrollRef.current;
     if (el && container) {
@@ -46,6 +48,10 @@ export default function SyncedLyrics({ trackId, position, fallbackText = "", onS
       container.scrollTo({ top, behavior: "smooth" });
     }
   }, [activeIdx]);
+
+  const markUserScroll = () => {
+    userScrollUntil.current = Date.now() + 4000;
+  };
 
   if (loading) {
     return (
@@ -59,7 +65,10 @@ export default function SyncedLyrics({ trackId, position, fallbackText = "", onS
     return (
       <div
         ref={scrollRef}
-        className="flex-1 overflow-y-auto no-scrollbar px-4 py-10 leading-snug"
+        onWheel={markUserScroll}
+        onTouchStart={markUserScroll}
+        onTouchMove={markUserScroll}
+        className="flex-1 min-h-0 overflow-y-auto no-scrollbar px-4 py-10 leading-snug"
       >
         {lines.map((l, i) => {
           const isActive = i === activeIdx;
@@ -97,7 +106,7 @@ export default function SyncedLyrics({ trackId, position, fallbackText = "", onS
     );
   }
   return (
-    <div className="flex-1 overflow-y-auto no-scrollbar px-4 py-10 text-white/85 text-xl font-extrabold leading-relaxed whitespace-pre-line">
+    <div className="flex-1 min-h-0 overflow-y-auto no-scrollbar px-4 py-10 text-white/85 text-xl font-extrabold leading-relaxed whitespace-pre-line">
       {text}
       <div className="h-24" />
     </div>
