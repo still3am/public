@@ -281,14 +281,17 @@ export default function TrackDetail() {
                 </span>
               }
             </div>
-            {(track.artist || uploader) &&
-            <div className="text-sm text-foreground/60 mb-2 flex flex-wrap items-center gap-x-1.5 gap-y-0.5">
-                {track.artist &&
+            {(() => {
+              const artistName = track.artist || album?.artisan;
+              if (!artistName && !uploader) return null;
+              return (
+                <div className="text-sm text-foreground/60 mb-2 flex flex-wrap items-center gap-x-1.5 gap-y-0.5">
+                {artistName &&
               <span className="font-semibold text-foreground/80 px-1">
-                    {track.artist}
+                    {artistName}
                   </span>
               }
-                {track.artist && uploader &&
+                {artistName && uploader &&
               <span className="text-foreground/40">· uploaded by</span>
               }
                 {uploader &&
@@ -311,7 +314,8 @@ export default function TrackDetail() {
                   </Link>
               }
               </div>
-            }
+            );
+            })()}
             <div className="text-xs text-foreground/40 mb-3">
               {track.play_count || 0} plays · {track.like_count || 0} likes
             </div>
@@ -420,6 +424,10 @@ export default function TrackDetail() {
               Part of album
             </div>
             <div className="text-sm font-semibold truncate">{album.title}</div>
+            {album.artisan &&
+            <div className="text-xs text-foreground/50 truncate">
+              {album.artisan}
+            </div>}
           </div>
         </Link>
       }
