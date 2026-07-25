@@ -182,7 +182,7 @@ export default function Home() {
             <p className="text-foreground/60 max-w-lg text-sm md:text-base mb-5">
               {user?.display_name ? `Welcome back, ${user.display_name}.` : "Welcome."} Listen, upload and share — PUBLIC is yours.
             </p>
-            <div className="flex items-center gap-2 flex-wrap">
+            <div className="flex items-center justify-center gap-2 flex-wrap">
               <Link
                 to="/upload"
                 className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-foreground text-background text-sm font-semibold hover:scale-[1.02] active:scale-95 transition">
