@@ -9,8 +9,8 @@ import {
   deriveDefaultArtist,
   AUDIO_ACCEPT,
   extractEmbeddedCover,
-  extractEmbeddedArtist
-} from "@/lib/audio-utils";
+  extractEmbeddedArtist } from
+"@/lib/audio-utils";
 import { findDuplicateTracks } from "@/lib/duplicateCheck";
 import ChooseMode from "@/components/upload/ChooseMode";
 import SingleEditor from "@/components/upload/SingleEditor";
@@ -19,7 +19,7 @@ import DuplicateConfirmModal from "@/components/upload/DuplicateConfirmModal";
 import { X, Plus, CheckCircle2, Loader2 } from "lucide-react";
 
 const audioFilter = (f) =>
-  (f.type || "").startsWith("audio/") || /\.(mp3|wav|m4a|flac|ogg|aac|webm)$/i.test(f.name || "");
+(f.type || "").startsWith("audio/") || /\.(mp3|wav|m4a|flac|ogg|aac|webm)$/i.test(f.name || "");
 
 const FACTORY = (overrides = {}) => ({
   id: typeof crypto !== "undefined" && crypto.randomUUID?.() || String(Math.random()),
@@ -81,10 +81,10 @@ export default function Upload() {
     return Promise.all(
       arr.map(async (f) => {
         const [dur, cover, artist] = await Promise.all([
-          getAudioDuration(f).catch(() => 0),
-          extractEmbeddedCover(f),
-          extractEmbeddedArtist(f)
-        ]);
+        getAudioDuration(f).catch(() => 0),
+        extractEmbeddedCover(f),
+        extractEmbeddedArtist(f)]
+        );
         return FACTORY({
           file: f,
           file_name: f.name,
@@ -116,7 +116,7 @@ export default function Upload() {
   async function addMoreFiles(files) {
     const built = await filesToItems(files);
     if (!built.length) return;
-    setItems((prev) => (prev.length ? [...prev, ...built] : built));
+    setItems((prev) => prev.length ? [...prev, ...built] : built);
   }
 
   async function appendFromUrl({ url, file_name, size }) {
@@ -132,20 +132,20 @@ export default function Upload() {
 
   function addUrlSingle(urlItem) {
     setItems([
-      FACTORY({
-        audio_url: urlItem.url,
-        file_name: urlItem.file_name,
-        size: urlItem.size,
-        title: deriveDefaultTitle({ name: urlItem.file_name }),
-        artist: deriveDefaultArtist({ name: urlItem.file_name })
-      })
-    ]);
+    FACTORY({
+      audio_url: urlItem.url,
+      file_name: urlItem.file_name,
+      size: urlItem.size,
+      title: deriveDefaultTitle({ name: urlItem.file_name }),
+      artist: deriveDefaultArtist({ name: urlItem.file_name })
+    })]
+    );
     setMode("single");
     setQueueIndex(0);
   }
 
   function updateItem(i, patch) {
-    setItems((prev) => prev.map((it, idx) => (idx === i ? { ...it, ...patch } : it)));
+    setItems((prev) => prev.map((it, idx) => idx === i ? { ...it, ...patch } : it));
   }
 
   function removeItem(i) {
@@ -221,9 +221,9 @@ export default function Upload() {
       toast({ title: "Duplicate deleted" });
       // When the last copy is removed, the upload proceeds automatically — no re-click, no stale list.
       if (remaining === 0 && kind) {
-        if (kind === "single") doPublishSingle();
-        else if (kind === "queue") publishQueue();
-        else doPublishBulk();
+        if (kind === "single") doPublishSingle();else
+        if (kind === "queue") publishQueue();else
+        doPublishBulk();
       }
     } catch (e) {
       toast({ title: "Delete failed", description: e?.message || "Try again", variant: "destructive" });
@@ -346,7 +346,7 @@ export default function Upload() {
             genre: resolvedGenre
           })
         );
-        setProgress(30 + Math.round(((i + 1) / items.length) * 65));
+        setProgress(30 + Math.round((i + 1) / items.length * 65));
       }
       await base44.entities.Track.bulkCreate(built);
       setProgress(100);
@@ -375,7 +375,7 @@ export default function Upload() {
         await base44.entities.Track.create(
           trackPayload(item, { audio_url, cover_art_url: cover_url })
         );
-        setProgress(Math.round(((i + 1) / total) * 100));
+        setProgress(Math.round((i + 1) / total * 100));
       }
       setDone({ kind: "separate", count: total });
       setItems([]);
@@ -440,164 +440,164 @@ export default function Upload() {
             Go to profile
           </button>
         </div>
-      </div>
-    );
+      </div>);
+
   }
 
   const totalDuration = items.reduce((s, it) => s + (it.duration || 0), 0);
 
-  const hiddenInputs = (
-    <>
+  const hiddenInputs =
+  <>
       <input
-        ref={singleInputRef}
-        type="file"
-        accept={AUDIO_ACCEPT}
-        className="hidden"
-        onChange={async (e) => {
-          await onFilesSelected(e.target.files, false);
-          if (singleInputRef.current) singleInputRef.current.value = "";
-        }}
-      />
+      ref={singleInputRef}
+      type="file"
+      accept={AUDIO_ACCEPT}
+      className="hidden"
+      onChange={async (e) => {
+        await onFilesSelected(e.target.files, false);
+        if (singleInputRef.current) singleInputRef.current.value = "";
+      }} />
+    
       <input
-        ref={bulkInputRef}
-        type="file"
-        accept={AUDIO_ACCEPT}
-        multiple
-        className="hidden"
-        onChange={async (e) => {
-          await onFilesSelected(e.target.files, true);
-          if (bulkInputRef.current) bulkInputRef.current.value = "";
-        }}
-      />
+      ref={bulkInputRef}
+      type="file"
+      accept={AUDIO_ACCEPT}
+      multiple
+      className="hidden"
+      onChange={async (e) => {
+        await onFilesSelected(e.target.files, true);
+        if (bulkInputRef.current) bulkInputRef.current.value = "";
+      }} />
+    
       <input
-        ref={addTrackInputRef}
-        type="file"
-        accept={AUDIO_ACCEPT}
-        multiple
-        className="hidden"
-        onChange={async (e) => {
-          await appendFiles(e.target.files);
-          if (addTrackInputRef.current) addTrackInputRef.current.value = "";
-        }}
-      />
+      ref={addTrackInputRef}
+      type="file"
+      accept={AUDIO_ACCEPT}
+      multiple
+      className="hidden"
+      onChange={async (e) => {
+        await appendFiles(e.target.files);
+        if (addTrackInputRef.current) addTrackInputRef.current.value = "";
+      }} />
+    
       <input
-        ref={moreInputRef}
-        type="file"
-        accept={AUDIO_ACCEPT}
-        multiple
-        className="hidden"
-        onChange={async (e) => {
-          await addMoreFiles(e.target.files);
-          if (moreInputRef.current) moreInputRef.current.value = "";
-        }}
-      />
+      ref={moreInputRef}
+      type="file"
+      accept={AUDIO_ACCEPT}
+      multiple
+      className="hidden"
+      onChange={async (e) => {
+        await addMoreFiles(e.target.files);
+        if (moreInputRef.current) moreInputRef.current.value = "";
+      }} />
+    
       <input
-        ref={replaceInputRef}
-        type="file"
-        accept={AUDIO_ACCEPT}
-        className="hidden"
-        onChange={async (e) => {
-          const f = e.target.files?.[0];
-          if (f) {
-            const built = (await filesToItems([f]))[0];
-            if (built)
-              setItems((prev) =>
-                prev.map((it, idx) =>
-                  idx === queueIndex
-                    ? { ...it, file: built.file, file_name: built.file_name, size: built.size, duration: built.duration, audio_url: "" }
-                    : it
-                )
-              );
-          }
-          if (replaceInputRef.current) replaceInputRef.current.value = "";
-        }}
-      />
-    </>
-  );
+      ref={replaceInputRef}
+      type="file"
+      accept={AUDIO_ACCEPT}
+      className="hidden"
+      onChange={async (e) => {
+        const f = e.target.files?.[0];
+        if (f) {
+          const built = (await filesToItems([f]))[0];
+          if (built)
+          setItems((prev) =>
+          prev.map((it, idx) =>
+          idx === queueIndex ?
+          { ...it, file: built.file, file_name: built.file_name, size: built.size, duration: built.duration, audio_url: "" } :
+          it
+          )
+          );
+        }
+        if (replaceInputRef.current) replaceInputRef.current.value = "";
+      }} />
+    
+    </>;
+
 
   return (
     <>
       {hiddenInputs}
-      {dupWarning && (
-        <DuplicateConfirmModal
-          matches={dupWarning.matches}
-          onCancel={() => setDupWarning(null)}
-          onDelete={deleteDuplicate}
-          onContinue={() => {
-            const k = dupWarning.kind;
-            setDupWarning(null);
-            if (k === "single") doPublishSingle();
-            else if (k === "queue") publishQueue();
-            else doPublishBulk();
-          }}
-        />
-      )}
+      {dupWarning &&
+      <DuplicateConfirmModal
+        matches={dupWarning.matches}
+        onCancel={() => setDupWarning(null)}
+        onDelete={deleteDuplicate}
+        onContinue={() => {
+          const k = dupWarning.kind;
+          setDupWarning(null);
+          if (k === "single") doPublishSingle();else
+          if (k === "queue") publishQueue();else
+          doPublishBulk();
+        }} />
+
+      }
 
       <div className="max-w-3xl mx-auto">
         <div className="flex items-center justify-between mb-6 flex-wrap gap-3">
-          <h1 className="text-2xl font-extrabold tracking-tight">Upload</h1>
-          {mode !== "choose" && (
-            <button
-              onClick={reset}
-              className="text-sm text-foreground/50 hover:text-foreground flex items-center gap-1">
+          <h1 className="text-2xl font-extrabold tracking-tight hidden">Upload</h1>
+          {mode !== "choose" &&
+          <button
+            onClick={reset}
+            className="text-sm text-foreground/50 hover:text-foreground flex items-center gap-1">
               <X size={14} /> Reset
             </button>
-          )}
+          }
         </div>
 
-        {mode === "choose" && (
-          <ChooseMode
-            onPickSingle={() => singleInputRef.current?.click()}
-            onPickAlbum={() => bulkInputRef.current?.click()}
-            onAddUrl={addUrlSingle}
-          />
-        )}
+        {mode === "choose" &&
+        <ChooseMode
+          onPickSingle={() => singleInputRef.current?.click()}
+          onPickAlbum={() => bulkInputRef.current?.click()}
+          onAddUrl={addUrlSingle} />
 
-        {mode === "single" && (
-          <SingleEditor
-            item={items[queueIndex]}
-            index={queueIndex}
-            count={items.length}
-            onPrev={() => setQueueIndex(Math.max(0, queueIndex - 1))}
-            onNext={() => setQueueIndex(Math.min(items.length - 1, queueIndex + 1))}
-            update={(p) => updateItem(queueIndex, p)}
-            rights={rights}
-            setRights={setRights}
-            publishing={publishing}
-            onPublish={publishSingle}
-            canPublish={validSingle()}
-            progress={progress}
-            onPickFile={() => replaceInputRef.current?.click()}
-            onAddUrl={appendFromUrl}
-            onClear={removeCurrent}
-            onPublishAll={publishQueue}
-            onAddMore={() => moreInputRef.current?.click()}
-          />
-        )}
+        }
 
-        {mode === "bulk" && (
-          <BulkEditor
-            album={album}
-            setAlbum={setAlbum}
-            items={items}
-            updateItem={updateItem}
-            removeItem={removeItem}
-            onDragEnd={onDragEnd}
-            rights={rights}
-            setRights={setRights}
-            publishing={publishing}
-            progress={progress}
-            onPublish={publishBulk}
-            canPublish={validBulk()}
-            onAddFiles={() => addTrackInputRef.current?.click()}
-            onAddUrl={appendFromUrl}
-            onClear={resetItems}
-            showAdvanced={showAdvanced}
-            setShowAdvanced={setShowAdvanced}
-            totalDuration={totalDuration}
-          />
-        )}
+        {mode === "single" &&
+        <SingleEditor
+          item={items[queueIndex]}
+          index={queueIndex}
+          count={items.length}
+          onPrev={() => setQueueIndex(Math.max(0, queueIndex - 1))}
+          onNext={() => setQueueIndex(Math.min(items.length - 1, queueIndex + 1))}
+          update={(p) => updateItem(queueIndex, p)}
+          rights={rights}
+          setRights={setRights}
+          publishing={publishing}
+          onPublish={publishSingle}
+          canPublish={validSingle()}
+          progress={progress}
+          onPickFile={() => replaceInputRef.current?.click()}
+          onAddUrl={appendFromUrl}
+          onClear={removeCurrent}
+          onPublishAll={publishQueue}
+          onAddMore={() => moreInputRef.current?.click()} />
+
+        }
+
+        {mode === "bulk" &&
+        <BulkEditor
+          album={album}
+          setAlbum={setAlbum}
+          items={items}
+          updateItem={updateItem}
+          removeItem={removeItem}
+          onDragEnd={onDragEnd}
+          rights={rights}
+          setRights={setRights}
+          publishing={publishing}
+          progress={progress}
+          onPublish={publishBulk}
+          canPublish={validBulk()}
+          onAddFiles={() => addTrackInputRef.current?.click()}
+          onAddUrl={appendFromUrl}
+          onClear={resetItems}
+          showAdvanced={showAdvanced}
+          setShowAdvanced={setShowAdvanced}
+          totalDuration={totalDuration} />
+
+        }
       </div>
-    </>
-  );
+    </>);
+
 }
