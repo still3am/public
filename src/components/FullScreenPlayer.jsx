@@ -188,7 +188,7 @@ export default function FullScreenPlayer({ onClose, onOpenQueue }) {
             setDragY(0);
           }
         }}
-        className="relative flex items-center justify-between px-4 md:px-8 pt-8 pb-2 shrink-0">
+        className="relative flex items-center justify-between px-5 md:px-10 pt-8 pb-3 shrink-0">
         <button onClick={onClose} className="p-2 -ml-2 active:scale-90 hover:bg-white/10 rounded-full transition" aria-label="Close">
           <ChevronDown size={26} />
         </button>
@@ -210,11 +210,11 @@ export default function FullScreenPlayer({ onClose, onOpenQueue }) {
       </div>
 
       {/* body */}
-      <div className="relative flex-1 flex flex-col xl:flex-row min-h-0 gap-2 xl:gap-10 xl:px-10 xl:pb-3">
+      <div className="relative flex-1 flex flex-col xl:flex-row min-h-0 gap-4 xl:gap-12 xl:px-12 xl:pb-6">
         {/* LEFT: artwork + controls */}
-        <div className="flex-1 flex flex-col px-5 md:px-10 xl:px-2 min-h-0">
+        <div className="flex-1 flex flex-col px-6 md:px-10 xl:px-4 min-h-0">
           {/* artwork / mobile lyrics */}
-          <div className="relative flex-1 flex items-center justify-center min-h-0 py-3">
+          <div className="relative flex-1 flex items-center justify-center min-h-0 py-4">
             {lyricsMode &&
             <div className="xl:hidden w-full h-full rounded-3xl bg-white/[0.06] overflow-hidden flex flex-col min-h-0">
                 <SyncedLyrics trackId={t.id} position={p.position} fallbackText={t.lyrics_text} onSeek={p.seek} />
@@ -251,7 +251,7 @@ export default function FullScreenPlayer({ onClose, onOpenQueue }) {
           </div>
 
           {/* metadata */}
-          <div className="flex items-start justify-between gap-3 mb-3 shrink-0">
+          <div className="flex items-start justify-between gap-3 mt-1 mb-4 shrink-0">
             <div className="min-w-0">
               <h2 className="text-xl md:text-2xl xl:text-3xl font-extrabold tracking-tight truncate">{t.title}</h2>
               <Link
@@ -290,14 +290,14 @@ export default function FullScreenPlayer({ onClose, onOpenQueue }) {
                 aria-label="Seek" />
               
             </div>
-            <div className="flex justify-between text-[11px] opacity-70 mt-1.5 tabular-nums">
+            <div className="flex justify-between text-[11px] opacity-70 mt-2 tabular-nums">
               <span>{formatTime(p.position)}</span>
               <span>-{formatTime(remaining)}</span>
             </div>
           </div>
 
           {/* controls */}
-          <div className="flex items-center justify-between gap-2 my-3 shrink-0">
+          <div className="flex items-center justify-between gap-2 my-4 shrink-0">
             <IconButton icon={Shuffle} onClick={() => p.setShuffle(!p.shuffle)} active={p.shuffle} label="Shuffle" size={20} />
             <button onClick={() => p.prev()} className="p-2 active:scale-90 transition" aria-label="Previous">
               <SkipBack size={30} fill="white" strokeWidth={1.5} />
@@ -322,7 +322,7 @@ export default function FullScreenPlayer({ onClose, onOpenQueue }) {
           </div>
 
           {/* volume (desktop inline) */}
-          <div className="hidden xl:flex items-center gap-2 shrink-0 mb-2 opacity-90">
+          <div className="hidden xl:flex items-center gap-2 shrink-0 mt-1 mb-3 opacity-90">
             <button onClick={() => p.setMuted(!p.muted)} aria-label="Mute" className="active:scale-90 transition shrink-0">
               <VolIcon size={18} />
             </button>
@@ -347,7 +347,7 @@ export default function FullScreenPlayer({ onClose, onOpenQueue }) {
           </div>
 
           {/* mobile artwork / lyrics toggle */}
-          <div className="xl:hidden flex items-center gap-1 mx-auto mt-1 mb-3 p-1 rounded-full bg-white/10 shrink-0">
+          <div className="xl:hidden flex items-center gap-1 mx-auto mt-2 mb-5 p-1 rounded-full bg-white/10 shrink-0">
             <button
               onClick={() => setLyricsMode(false)}
               className={`flex items-center justify-center gap-1.5 px-4 py-1.5 rounded-full transition text-xs font-semibold ${
@@ -367,7 +367,7 @@ export default function FullScreenPlayer({ onClose, onOpenQueue }) {
 
         {/* RIGHT (desktop): lyrics panel */}
         <div className="hidden xl:flex flex-col min-h-0 w-[400px] shrink-0 bg-white/[0.06] rounded-3xl overflow-hidden">
-          <div className="flex items-center justify-center gap-6 px-5 pt-4 pb-2 shrink-0">
+          <div className="flex items-center justify-center gap-6 px-5 pt-5 pb-3 shrink-0">
             <button
               onClick={() => setLyricsMode(false)}
               className={`text-xs uppercase tracking-widest font-semibold transition ${
