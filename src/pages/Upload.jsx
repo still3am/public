@@ -403,6 +403,20 @@ export default function Upload() {
     return false;
   }
 
+  async function deleteDuplicate(id) {
+    try {
+      await base44.entities.Track.delete(id);
+      setDupWarning((d) => {
+        if (!d) return d;
+        const next = d.matches.filter((m) => m.existing.id !== id);
+        return next.length ? { ...d, matches: next } : null;
+      });
+      toast({ title: "Duplicate deleted" });
+    } catch (e) {
+      toast({ title: "Delete failed", description: e?.message || "Try again", variant: "destructive" });
+    }
+  }
+
   function trackPayload(item, extra) {
     return {
       title: item.title || item.file_name || "Untitled",
@@ -548,6 +562,7 @@ export default function Upload() {
 
   async function publishQueue() {
     if (!items.length || !rights) return;
+    if (await dupCheck(items, "queue")) return;
     setPublishing(true);
     setProgress(0);
     try {
@@ -743,10 +758,12 @@ export default function Upload() {
         <DuplicateConfirmModal
           matches={dupWarning.matches}
           onCancel={() => setDupWarning(null)}
+          onDelete={deleteDuplicate}
           onContinue={() => {
             const k = dupWarning.kind;
             setDupWarning(null);
             if (k === "single") doPublishSingle();
+            else if (k === "queue") publishQueue();
             else doPublishBulk();
           }}
         />
@@ -1206,7 +1223,7 @@ function PublishBar({
 
 }
 
-function DuplicateConfirmModal({ matches, onContinue, onCancel }) {
+function DuplicateConfirmModal({ matches, onContinue, onCancel, onDelete }) {
   return (
     <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm grid place-items-center p-4">
       <div className="bg-card rounded-2xl w-full max-w-md p-5 shadow-2xl">
@@ -1218,31 +1235,49 @@ function DuplicateConfirmModal({ matches, onContinue, onCancel }) {
           We found a track on your profile that looks very similar. Upload it
           anyway, or review the existing one first.
         </p>
-        <div className="space-y-2 mb-4 max-h-52 overflow-y-auto no-scrollbar">
+        <div className="space-y-2 mb-3 max-h-52 overflow-y-auto no-scrollbar">
           {matches.map((m, i) => (
-            <Link
+            <div
               key={i}
-              to={`/track/${m.existing.id}`}
-              onClick={onCancel}
-              className="flex items-center gap-3 p-2 rounded-xl border border-border hover:bg-foreground/[0.03] transition"
-            >
-              <div className="w-10 h-10 rounded bg-foreground/10 overflow-hidden shrink-0">
-                {m.existing.cover_art_url ? (
-                  <img src={m.existing.cover_art_url} alt="" className="w-full h-full object-cover" />
-                ) : (
-                  <div className="w-full h-full grid place-items-center text-foreground/40">
-                    <Music size={14} />
-                  </div>
-                )}
-              </div>
-              <div className="min-w-0 flex-1">
-                <div className="text-sm font-semibold truncate">{m.existing.title}</div>
-                <div className="text-xs text-foreground/50 truncate">{m.existing.artist || "you"}</div>
-              </div>
-              <span className="text-xs text-foreground/40 shrink-0">View &rarr;</span>
-            </Link>
+              className="flex items-center gap-2 p-2 rounded-xl border border-border hover:bg-foreground/[0.03] transition">
+              <Link
+                to={`/track/${m.existing.id}`}
+                onClick={onCancel}
+                className="flex items-center gap-3 min-w-0 flex-1">
+                <div className="w-10 h-10 rounded bg-foreground/10 overflow-hidden shrink-0">
+                  {m.existing.cover_art_url ? (
+                    <img src={m.existing.cover_art_url} alt="" className="w-full h-full object-cover" />
+                  ) : (
+                    <div className="w-full h-full grid place-items-center text-foreground/40">
+                      <Music size={14} />
+                    </div>
+                  )}
+                </div>
+                <div className="min-w-0 flex-1">
+                  <div className="text-sm font-semibold truncate">{m.existing.title}</div>
+                  <div className="text-xs text-foreground/50 truncate">{m.existing.artist || "you"}</div>
+                </div>
+                <span className="text-xs text-foreground/40 shrink-0">View &rarr;</span>
+              </Link>
+              {onDelete && (
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    onDelete(m.existing.id);
+                  }}
+                  className="p-2 rounded-full border border-border hover:bg-red-500/10 hover:text-red-600 transition shrink-0"
+                  aria-label="Delete duplicate"
+                  title="Delete duplicate">
+                  <Trash2 size={14} />
+                </button>
+              )}
+            </div>
           ))}
         </div>
+        <p className="text-xs text-foreground/45 mb-4">
+          Delete the existing copy first, then upload anyway — or go back.
+        </p>
         <div className="flex justify-end gap-2">
           <button
             onClick={onCancel}
