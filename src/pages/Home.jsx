@@ -12,7 +12,6 @@ import {
   ChevronRight } from
 "lucide-react";
 import TrackCard from "@/components/TrackCard";
-import ScoreboardTrackCount from "@/components/ScoreboardTrackCount";
 import EmptyState from "@/components/EmptyState";
 import { getRecentPlays } from "@/lib/recentPlays";
 import PullToRefresh from "@/components/PullToRefresh";
@@ -202,8 +201,10 @@ export default function Home() {
             <p className="text-foreground/55 max-w-md text-sm md:text-base mb-5 mx-auto">
               Listen, upload, and share — a space for sound, made by the people, for the people.
             </p>
-            <div className="flex justify-center mb-6">
-              <ScoreboardTrackCount count={totalTracks} />
+            <div className="inline-flex items-center gap-1.5 mb-7">
+              <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-foreground/[0.05] border border-foreground/10 text-xs font-semibold text-foreground/70">
+                <Music size={13} /> {totalTracks.toLocaleString()} {totalTracks === 1 ? "track" : "tracks"} in the network
+              </span>
             </div>
             <div className="flex items-center justify-center gap-2.5 flex-wrap">
               <Link
