@@ -9,7 +9,8 @@ import {
   deriveDefaultArtist,
   AUDIO_ACCEPT,
   extractEmbeddedCover,
-  extractEmbeddedArtist } from
+  extractEmbeddedArtist,
+  extractEmbeddedTitle } from
 "@/lib/audio-utils";
 import { findDuplicateTracks } from "@/lib/duplicateCheck";
 import ChooseMode from "@/components/upload/ChooseMode";
@@ -81,16 +82,17 @@ export default function Upload() {
     if (!arr.length) return [];
     return Promise.all(
       arr.map(async (f) => {
-        const [dur, cover, artist] = await Promise.all([
+        const [dur, cover, title, artist] = await Promise.all([
         getAudioDuration(f).catch(() => 0),
         extractEmbeddedCover(f),
+        extractEmbeddedTitle(f),
         extractEmbeddedArtist(f)]
         );
         return FACTORY({
           file: f,
           file_name: f.name,
           size: f.size,
-          title: deriveDefaultTitle(f),
+          title: title || deriveDefaultTitle(f),
           artist: artist || deriveDefaultArtist(f),
           duration: dur,
           cover
@@ -105,6 +107,9 @@ export default function Upload() {
     setMode(isBulk ? "bulk" : "single");
     setItems(built);
     setQueueIndex(0);
+    if (isBulk && built[0]?.cover && !album.coverFile && !album.cover_url) {
+      setAlbum((a) => ({ ...a, coverFile: built[0].cover }));
+    }
   }
 
   async function appendFiles(files) {
