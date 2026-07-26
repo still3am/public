@@ -132,9 +132,9 @@ export default function PlaylistDetail() {
   return (
     <div>
       <BackHeader title="Playlist" />
-      <div className="flex flex-col md:flex-row md:items-end gap-6 mb-8">
+      <div className="flex flex-col md:flex-row md:items-end gap-5 mb-8">
         <div className="relative">
-          <div className="w-40 h-40 md:w-48 md:h-48 rounded-2xl overflow-hidden bg-foreground/10 grid place-items-center text-foreground/40 shadow-lg">
+          <div className="w-36 h-36 md:w-44 md:h-44 rounded-2xl overflow-hidden bg-foreground/10 grid place-items-center text-foreground/40">
             {form.cover_art_url || playlist.cover_art_url ? (
               <img
                 src={form.cover_art_url || playlist.cover_art_url}
@@ -164,7 +164,7 @@ export default function PlaylistDetail() {
               value={form.cover_art_url}
               onChange={(e) => setForm((f) => ({ ...f, cover_art_url: e.target.value }))}
               placeholder="…or paste cover URL"
-              className="block mt-2 w-40 md:w-48 text-xs px-2 py-1.5 rounded-lg border border-border bg-white"
+              className="block mt-2 w-36 md:w-44 text-xs px-2 py-1.5 rounded-lg border border-border bg-white"
             />
           )}
         </div>

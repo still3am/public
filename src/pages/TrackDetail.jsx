@@ -243,7 +243,7 @@ export default function TrackDetail() {
       <BackHeader title="Track" />
 
       {/* Hero */}
-      <div className="relative rounded-3xl overflow-hidden border border-border mb-6 md:mb-8">
+      <div className="relative rounded-3xl overflow-hidden border border-border mb-6">
         {(track.cover_art_url || album?.cover_art_url) &&
         <div className="absolute inset-0">
             <img
@@ -254,24 +254,26 @@ export default function TrackDetail() {
             <div className="absolute inset-0 bg-background/70" />
           </div>
         }
-        <div className="relative p-6 md:p-10 flex flex-col md:flex-row gap-5 md:gap-8">
-          <div className="w-40 h-40 md:w-52 md:h-52 rounded-2xl overflow-hidden bg-foreground/10 shrink-0 shadow-lg ring-1 ring-foreground/10">
+        <div className="relative p-5 md:p-8 flex flex-col md:flex-row gap-5 md:gap-7">
+          <div className="w-40 h-40 md:w-48 md:h-48 rounded-2xl overflow-hidden bg-foreground/10 shrink-0 shadow-lg ring-1 ring-foreground/10">
             {(track.cover_art_url || album?.cover_art_url) &&
             <img
               src={track.cover_art_url || album.cover_art_url}
               alt=""
               className="w-full h-full object-cover" />
+
             }
           </div>
           <div className="flex-1 min-w-0 flex flex-col justify-center">
             <Link
               to="/discover"
               state={{ initialGenre: track.genre }}
-              className="self-start text-[10px] uppercase tracking-[0.2em] text-foreground/50 font-semibold mb-2.5 hover:text-foreground border border-border rounded-full px-3 py-1">
+              className="self-start text-[10px] uppercase tracking-[0.2em] text-foreground/50 font-semibold mb-2 hover:text-foreground border border-border rounded-full px-3 py-1">
+              
               {track.genre}
             </Link>
-            <div className="flex items-center gap-2 flex-wrap mb-1.5">
-              <h1 className="text-3xl md:text-4xl font-extrabold tracking-tighter leading-[1.05]">
+            <div className="flex items-center gap-2 flex-wrap mb-1">
+              <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight leading-tight">
                 {track.title}
               </h1>
               {track.explicit &&
