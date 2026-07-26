@@ -526,7 +526,7 @@ export default function Profile() {
                     onClick={shareProfile}
                     title={copied ? "Copied!" : "Share"}
                     aria-label="Share profile"
-                    className="w-10 h-10 rounded-full border border-border grid place-items-center hidden">
+                    className="w-10 h-10 rounded-full border border-border grid place-items-center">
                     <Share2 size={16} />
                   </button>
                   }

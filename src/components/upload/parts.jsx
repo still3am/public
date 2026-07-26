@@ -57,7 +57,27 @@ export function UrlAddRow({ onAdded, disabled }) {
     }
   }
 
-  return null;
+  return (
+    <form onSubmit={submit} className="flex flex-col gap-2">
+      <div className="flex gap-2">
+        <input
+          value={url}
+          onChange={(e) => setUrl(e.target.value)}
+          placeholder="Paste an audio URL to import"
+          className="flex-1 px-3 py-2.5 rounded-xl border border-border bg-white text-sm"
+        />
+        <button
+          type="submit"
+          disabled={loading || !url.trim() || disabled}
+          className="px-4 py-2.5 rounded-xl bg-foreground text-background text-sm font-semibold flex items-center gap-1.5 disabled:opacity-40 shrink-0"
+        >
+          {loading ? <Loader2 size={14} className="animate-spin" /> : <Link2 size={14} />}
+          {loading ? "Importing" : "Import"}
+        </button>
+      </div>
+      {err && <div className="text-xs text-red-600">{err}</div>}
+    </form>
+  );
 
 
 

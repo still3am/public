@@ -9,6 +9,7 @@ import {
   ListMusic,
   Flag,
   Link2,
+  Download,
   Flame } from
 "lucide-react";
 import { usePlayer } from "@/context/PlayerContext";
@@ -215,7 +216,7 @@ export default function TrackRow({
             
               {track.is_downloadable &&
             <MenuBtn
-              icon={ListPlus}
+              icon={Download}
               label="Download"
               onClick={() => {
                 window.open(track.audio_url, "_blank");

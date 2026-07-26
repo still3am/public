@@ -94,7 +94,7 @@ export default function TrackCard({ track }) {
 
           
           {!isTrending && isRecent &&
-          <span className="shrink-0 inline-flex text-[9px] font-extrabold px-1.5 py-0.5 rounded bg-emerald-400/20 text-emerald-700 hidden">NEW</span>
+          <span className="shrink-0 inline-flex text-[9px] font-extrabold px-1.5 py-0.5 rounded bg-emerald-400/20 text-emerald-700">NEW</span>
           }
         </div>
       </Link>
