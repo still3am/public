@@ -322,29 +322,29 @@ export default function FullScreenPlayer({ onClose, onOpenQueue }) {
           </div>
 
           {/* volume (desktop inline) */}
-          <div className="hidden xl:flex items-center gap-2 shrink-0 mt-1 mb-3 opacity-90">
-            <button onClick={() => p.setMuted(!p.muted)} aria-label="Mute" className="active:scale-90 transition shrink-0">
-              <VolIcon size={18} />
-            </button>
-            <div className="relative flex-1 max-w-sm h-1.5 bg-white/20 rounded-full group">
-              <div className="absolute left-0 top-0 h-1.5 bg-white rounded-full" style={{ width: `${volPct}%` }} />
-              <div
-                className="absolute top-1/2 -translate-y-1/2 w-3 h-3 bg-white rounded-full opacity-0 group-hover:opacity-100 transition"
-                style={{ left: `calc(${volPct}% - 6px)` }} />
-              
-              <input
-                type="range"
-                min={0}
-                max={1}
-                step="0.01"
-                value={p.muted ? 0 : p.volume}
-                onChange={(e) => p.setVolume(Number(e.target.value))}
-                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                aria-label="Volume" />
-              
-            </div>
-            <span className="text-[11px] tabular-nums opacity-60 w-9 text-right">{Math.round(volPct)}%</span>
-          </div>
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+          
 
           {/* mobile artwork / lyrics toggle */}
           <div className="xl:hidden flex items-center gap-1 mx-auto mt-2 mb-5 p-1 rounded-full bg-white/10 shrink-0">
