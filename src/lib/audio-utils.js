@@ -67,21 +67,44 @@ export function getAudioDuration(file) {
   });
 }
 
-export function deriveDefaultTitle(fileOrName) {
+function baseName(fileOrName) {
   const name = typeof fileOrName === "string" ? fileOrName : fileOrName?.name;
-  if (!name) return "Untitled";
-  return (
-    name
-      .replace(/\.[^.]+$/, "")
-      .replace(/[_-]+/g, " ")
-      .trim() || "Untitled"
-  );
+  if (!name) return "";
+  return name.replace(/\.[^.]+$/, "").trim();
+}
+
+// Splits a filename on " - " / " – " / " — ". Recognised forms:
+//   "Artist - Title"      → artist "Artist", title "Title"
+//   "01 - Title"           → no artist, title "Title" (track-number prefix)
+//   "Title"               → no artist, title "Title"
+export function splitArtistTitle(fileOrName) {
+  const base = baseName(fileOrName);
+  if (!base) return { artist: "", title: "Untitled" };
+  const parts = base.split(/\s[-–—]\s/);
+  let artist = "";
+  let title = base;
+  if (parts.length > 1) {
+    const first = parts[0].trim();
+    if (!/^\d{1,3}$/.test(first)) {
+      artist = parts.slice(0, parts.length - 1).join(" - ");
+    }
+    title = parts[parts.length - 1];
+  }
+  artist = artist.replace(/[_]+/g, " ").replace(/\s+/g, " ").trim();
+  title = title
+    .replace(/[_]+/g, " ")
+    .replace(/^\d{1,3}[-.\s]+/, "")
+    .replace(/\s+/g, " ")
+    .trim();
+  return { artist, title: title || "Untitled" };
+}
+
+export function deriveDefaultTitle(fileOrName) {
+  return splitArtistTitle(fileOrName).title;
 }
 
 export function deriveDefaultArtist(fileOrName) {
-  const name = typeof fileOrName === "string" ? fileOrName : fileOrName?.name;
-  if (!name) return "";
-  return name.replace(/\.[^.]+$/, "").trim() || "";
+  return splitArtistTitle(fileOrName).artist;
 }
 
 export function displayArtist(track) {
