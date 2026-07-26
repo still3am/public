@@ -546,6 +546,34 @@ export default function Upload() {
     }
   }
 
+  async function publishQueue() {
+    if (!items.length || !rights) return;
+    setPublishing(true);
+    setProgress(0);
+    try {
+      const total = items.length;
+      for (let i = 0; i < total; i++) {
+        const item = items[i];
+        if (!item.title?.trim() && !item.file_name?.trim()) continue;
+        if (!item.audio_url && !item.file) continue;
+        const audio_url = await uploadAudio(item);
+        const cover_url = await uploadCover(item);
+        await base44.entities.Track.create(
+          trackPayload(item, { audio_url, cover_art_url: cover_url })
+        );
+        setProgress(Math.round(((i + 1) / total) * 100));
+      }
+      setDone({ kind: "separate", count: total });
+      setItems([]);
+      setQueueIndex(0);
+      toast({ title: "Tracks published", description: `${total} separate tracks` });
+      setTimeout(() => nav(`/profile`), 700);
+    } catch (e) {
+      toast({ title: "Publish failed", description: e?.message || "Try again", variant: "destructive" });
+      setPublishing(false);
+    }
+  }
+
   function reset() {
     setMode("choose");
     setBulkKind(null);
@@ -792,6 +820,7 @@ export default function Upload() {
           onPickFile={() => replaceInputRef.current?.click()}
           onAddUrl={appendFromUrl}
           onClear={removeCurrent}
+          onPublishAll={publishQueue}
           onAddMore={() => moreInputRef.current?.click()} />
 
         }
@@ -1233,7 +1262,7 @@ function DuplicateConfirmModal({ matches, onContinue, onCancel }) {
   );
 }
 
-function SingleEditor({ item, index, count, onPrev, onNext, update, rights, setRights, publishing, onPublish, canPublish, progress, onPickFile, onAddUrl, onClear, onAddMore }) {
+function SingleEditor({ item, index, count, onPrev, onNext, update, rights, setRights, publishing, onPublish, onPublishAll, canPublish, progress, onPickFile, onAddUrl, onClear, onAddMore }) {
   if (!item)
   return (
     <div>
@@ -1270,12 +1299,14 @@ function SingleEditor({ item, index, count, onPrev, onNext, update, rights, setR
         onPublish={onPublish}
         canPublish={canPublish}
         progress={progress}
+        count={count}
+        onPublishAll={onPublishAll}
         onPickFile={onPickFile}
         onAddUrl={onAddUrl}
         onClear={onClear}
         onAddMore={onAddMore} />
-      
-    </div>);
+
+        </div>);
 
 }
 
@@ -1311,7 +1342,7 @@ function DropZoneHelper({ onPickFile, onAddUrl }) {
 
 }
 
-function SingleForm({ item, update, rights, setRights, publishing, onPublish, canPublish, progress, onPickFile, onAddUrl, onClear, onAddMore }) {
+function SingleForm({ item, update, rights, setRights, publishing, onPublish, onPublishAll, canPublish, progress, count, onPickFile, onAddUrl, onClear, onAddMore }) {
   const [showAdvanced, setShowAdvanced] = useState(false);
   return (
     <div className="space-y-3">
@@ -1441,6 +1472,14 @@ function SingleForm({ item, update, rights, setRights, publishing, onPublish, ca
           {publishing ? <Loader2 size={16} className="animate-spin" /> : <UploadCloud size={16} />}
           {publishing ? `Uploading ${progress}%` : "Publish track"}
         </button>
+        {count > 1 && onPublishAll &&
+        <button
+          onClick={onPublishAll}
+          disabled={!canPublish || publishing}
+          className="px-5 py-2.5 rounded-full bg-foreground text-background text-sm font-semibold flex items-center gap-2 justify-center disabled:opacity-40">
+          {publishing ? <Loader2 size={16} className="animate-spin" /> : <ListMusic size={16} />}
+          {publishing ? "Publishing queue" : "Publish tracks"}
+        </button>}
         {onAddMore &&
         <button
           type="button"
