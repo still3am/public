@@ -105,8 +105,16 @@ export default function TrackRow({
         </Link>
         {(() => {
           const artist = albumArtist || track.artist;
+          const shorten = (str) => {
+            const parts = str
+              .split(/\s*(?:,|&| feat\.| ft\.| x |;)\s*/i)
+              .map((p) => p.trim())
+              .filter(Boolean);
+            if (parts.length <= 2) return str;
+            return `${parts[0]}, ${parts[1]} +${parts.length - 2}`;
+          };
           if (artist) {
-            return <span className="text-xs text-foreground/50 truncate">{artist}</span>;
+            return <span className="text-xs text-foreground/50 truncate">{shorten(artist)}</span>;
           }
           return (
             <Link
