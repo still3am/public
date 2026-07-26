@@ -6,6 +6,7 @@ import TrackCard from "@/components/TrackCard";
 import EmptyState from "@/components/EmptyState";
 import { Music, Loader2, Plus } from "lucide-react";
 import PullToRefresh from "@/components/PullToRefresh";
+import PageHeader from "@/components/PageHeader";
 
 export default function Discover() {
   const loc = useLocation();
@@ -35,9 +36,7 @@ export default function Discover() {
   return (
     <PullToRefresh onRefresh={load}>
     <div>
-      <div className="text-[11px] uppercase tracking-[0.2em] text-foreground/40 font-semibold mb-1.5">Browse</div>
-      <h1 className="text-2xl font-extrabold tracking-tight mb-1">Discover</h1>
-      <p className="text-sm text-foreground/50 mb-5">Browse PUBLIC by genre.</p>
+      <PageHeader eyebrow="Browse" title="Discover" subtitle="Browse PUBLIC by genre." />
       <div className="flex items-center gap-2 mb-6 flex-wrap">
         <button
           onClick={() => setGenre(null)}

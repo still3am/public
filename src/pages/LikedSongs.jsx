@@ -8,6 +8,7 @@ import TrackRow from "@/components/TrackRow";
 import { Heart, Loader2, Play } from "lucide-react";
 import { usePlayer } from "@/context/PlayerContext";
 import PullToRefresh from "@/components/PullToRefresh";
+import PageHeader from "@/components/PageHeader";
 
 export default function LikedSongs() {
   const { user } = useAuth();
@@ -37,31 +38,19 @@ export default function LikedSongs() {
   return (
     <PullToRefresh onRefresh={load}>
     <div>
-      <div className="flex items-center gap-4 mb-8">
-        
-
-          
-        <div>
-          <div className="text-xs uppercase tracking-wider text-foreground/50 font-semibold">
-            Playlist
-          </div>
-          <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight">
-            Liked Songs
-          </h1>
-          <p className="text-sm text-foreground/50 mt-1">
-            {tracks.length} track{tracks.length === 1 ? "" : "s"}
-          </p>
-        </div>
-      </div>
-
-      {tracks.length > 0 &&
-        <button
-          onClick={() => p.playTrackAt(tracks)}
-          className="mb-5 inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-foreground text-background text-sm font-semibold hover:scale-[1.02] transition">
-          
-          <Play size={16} /> Play
-        </button>
-        }
+      <PageHeader
+        eyebrow="Playlist"
+        title="Liked Songs"
+        subtitle={`${tracks.length} track${tracks.length === 1 ? "" : "s"}`}
+      >
+        {tracks.length > 0 && (
+          <button
+            onClick={() => p.playTrackAt(tracks)}
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-foreground text-background text-sm font-semibold hover:scale-[1.02] transition">
+            <Play size={16} /> Play
+          </button>
+        )}
+      </PageHeader>
 
       {!likes.ready || loading && !tracks.length ?
         <div className="py-20 grid place-items-center">
