@@ -78,11 +78,10 @@ export function deriveDefaultTitle(fileOrName) {
   );
 }
 
-// No filename-based fallback: uploads without an embedded artist tag should
-// fall back to the uploader's display name (handled in the upload trackPayload),
-// not the raw file name.
 export function deriveDefaultArtist(fileOrName) {
-  return "";
+  const name = typeof fileOrName === "string" ? fileOrName : fileOrName?.name;
+  if (!name) return "";
+  return name.replace(/\.[^.]+$/, "").replace(/[_-]+/g, " ").trim() || "";
 }
 
 export function displayArtist(track) {

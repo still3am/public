@@ -4,6 +4,7 @@ import {
   UploadButton, UrlAddRow, PreviewButton, AdvancedFields, PublishBar, DropZone,
   fmtBytes, fmtDur
 } from "@/components/upload/parts";
+import TrackCoverThumb from "@/components/upload/TrackCoverThumb";
 import { UploadCloud, Plus, RotateCcw, GripVertical, Trash2, ChevronDown, ChevronUp, Disc, Tag } from "lucide-react";
 
 export default function BulkEditor({
@@ -61,14 +62,21 @@ export default function BulkEditor({
                             <span className="w-6 h-6 grid place-items-center rounded-full bg-foreground/10 text-[10px] font-bold shrink-0">
                               {i + 1}
                             </span>
+                            <TrackCoverThumb item={it} size={44} />
                             <div className="min-w-0 flex-1">
                               <input
                                 value={it.title}
                                 onChange={(e) => updateItem(i, { title: e.target.value })}
                                 placeholder="Track title"
                                 className="w-full bg-transparent text-sm font-semibold focus:outline-none"
-                              />
-                              <div className="text-xs text-foreground/40 truncate">
+                                />
+                                <input
+                                value={it.artist}
+                                onChange={(e) => updateItem(i, { artist: e.target.value })}
+                                placeholder="Artist (optional)"
+                                className="w-full bg-transparent text-xs text-foreground/70 focus:outline-none mt-0.5"
+                                />
+                                <div className="text-xs text-foreground/40 truncate">
                                 {it.file_name} {it.size ? `· ${fmtBytes(it.size)}` : ""}
                                 {it.duration ? ` · ${fmtDur(it.duration)}` : ""}
                               </div>

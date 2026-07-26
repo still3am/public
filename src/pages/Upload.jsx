@@ -384,14 +384,16 @@ export default function Upload() {
       for (let i = 0; i < list.length; i++) {
         const src = list[i];
         const audio_url = await uploadAudio(src);
+        const trackCover = await uploadCover(src);
         const resolvedGenre = src.genre && src.genre !== "Other" ? src.genre : album.genre;
+        const resolvedArtist = (src.artist || "").trim() || albumRec.artisan || albumUploaderName;
         built.push(
           trackPayload(src, {
             audio_url,
-            cover_art_url: cover_url,
+            cover_art_url: trackCover || cover_url,
             album_id: albumRec.id,
             track_number: i + 1,
-            artist: albumRec.artisan,
+            artist: resolvedArtist,
             is_published: !!album.is_published,
             explicit: !!(src.explicit ?? album.explicit),
             genre: resolvedGenre
