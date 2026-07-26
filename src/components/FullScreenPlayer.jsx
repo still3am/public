@@ -193,7 +193,7 @@ export default function FullScreenPlayer({ onClose, onOpenQueue }) {
           <ChevronDown size={26} />
         </button>
         <div className="text-center px-4 min-w-0">
-          
+          <div className="text-[10px] uppercase tracking-[0.3em] opacity-50 hidden">Now Playing</div>
           
 
           
@@ -212,9 +212,9 @@ export default function FullScreenPlayer({ onClose, onOpenQueue }) {
       {/* body */}
       <div className="relative flex-1 flex flex-col xl:flex-row min-h-0 gap-4 xl:gap-16 xl:px-16 2xl:px-24 xl:pb-8">
         {/* LEFT: artwork + controls */}
-        <div className="flex-1 flex flex-col px-6 md:px-10 xl:px-10 xl:max-w-[580px] xl:mx-auto min-h-0">
+        <div className="flex-1 flex flex-col px-6 md:px-10 xl:px-10 xl:max-w-[580px] xl:mx-auto xl:justify-center min-h-0">
           {/* artwork / mobile lyrics */}
-          <div className="relative flex-1 flex items-center justify-center min-h-0 py-4">
+          <div className="relative flex-1 xl:flex-none flex items-center justify-center min-h-0 py-4">
             {lyricsMode &&
             <div className="xl:hidden w-full h-full rounded-3xl bg-white/[0.06] overflow-hidden flex flex-col min-h-0">
                 <SyncedLyrics trackId={t.id} position={p.position} fallbackText={t.lyrics_text} onSeek={p.seek} />
