@@ -193,7 +193,7 @@ export default function FullScreenPlayer({ onClose, onOpenQueue }) {
           <ChevronDown size={26} />
         </button>
         <div className="text-center px-4 min-w-0">
-          <div className="text-[10px] uppercase tracking-[0.3em] opacity-50 hidden">Now Playing</div>
+          
           
 
           
