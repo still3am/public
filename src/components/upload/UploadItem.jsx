@@ -1,3 +1,4 @@
+import { useRef } from "react";
 import {
   Check,
   X,
@@ -5,6 +6,7 @@ import {
   Loader2,
   AlertCircle,
   Music2,
+  ImagePlus,
 } from "lucide-react";
 import GenrePicker from "@/components/GenrePicker";
 import { formatTime } from "@/lib/audio-utils";
@@ -21,25 +23,56 @@ export default function UploadItem({
 }) {
   const uploading = item.status === "uploading";
   const done = item.status === "done";
+  const imgInputRef = useRef(null);
+
+  function pickCover(file) {
+    if (!file) return;
+    onChange({ coverFile: file, coverPreviewUrl: URL.createObjectURL(file) });
+  }
 
   return (
     <div className="rounded-2xl border border-border bg-card p-3 md:p-4">
       <div className="flex gap-3">
-        <div className="relative w-20 h-20 shrink-0 rounded-lg overflow-hidden bg-foreground/10 grid place-items-center">
-          {item.coverPreviewUrl ? (
-            <img
-              src={item.coverPreviewUrl}
-              alt=""
-              className="w-full h-full object-cover"
-            />
-          ) : (
-            <Music2 size={22} className="text-foreground/30" />
-          )}
-          {done && (
-            <div className="absolute inset-0 bg-foreground/60 grid place-items-center">
-              <Check size={22} className="text-background" />
-            </div>
-          )}
+        <div className="relative w-20 h-20 shrink-0">
+          <button
+            type="button"
+            onClick={() =>
+              !uploading && !done && imgInputRef.current?.click()
+            }
+            disabled={uploading || done}
+            className="relative w-full h-full rounded-lg overflow-hidden bg-foreground/10 grid place-items-center group"
+            aria-label="Add cover image"
+          >
+            {item.coverPreviewUrl ? (
+              <img
+                src={item.coverPreviewUrl}
+                alt=""
+                className="w-full h-full object-cover"
+              />
+            ) : (
+              <Music2 size={22} className="text-foreground/30" />
+            )}
+            {!done && (
+              <div className="absolute inset-0 grid place-items-center bg-foreground/0 group-hover:bg-foreground/30 transition opacity-0 group-hover:opacity-100">
+                <ImagePlus size={18} className="text-background" />
+              </div>
+            )}
+            {done && (
+              <div className="absolute inset-0 bg-foreground/60 grid place-items-center">
+                <Check size={22} className="text-background" />
+              </div>
+            )}
+          </button>
+          <input
+            ref={imgInputRef}
+            type="file"
+            accept="image/*"
+            className="hidden"
+            onChange={(e) => {
+              if (e.target.files?.[0]) pickCover(e.target.files[0]);
+              e.target.value = "";
+            }}
+          />
         </div>
 
         <div className="flex-1 min-w-0 space-y-2">
