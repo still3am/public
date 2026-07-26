@@ -89,7 +89,23 @@ export default function Home() {
   const [fromFollowing, setFromFollowing] = useState([]);
   const [recentlyPlayed, setRecentlyPlayed] = useState([]);
   const [albums, setAlbums] = useState([]);
+  const [totalTracks, setTotalTracks] = useState(0);
   const greeting = greetingByHour();
+
+  useEffect(() => {
+    const unsub = base44.entities.Track.subscribe((event) => {
+      setTotalTracks((c) => {
+        if (event.type === "create" && event.data?.is_published !== false) return c + 1;
+        if (event.type === "delete") return Math.max(0, c - 1);
+        if (event.type === "update") {
+          if (event.data?.is_published === false) return Math.max(0, c - 1);
+          if (event.data?.is_published === true) return c + 1;
+        }
+        return c;
+      });
+    });
+    return unsub;
+  }, []);
 
   useEffect(() => {
     const handler = () => setRecentlyPlayed(getRecentPlays());
@@ -118,6 +134,8 @@ export default function Home() {
       setNewReleases(n.slice(0, 12));
       setAlbums(Array.isArray(al) ? al : []);
       setFromFollowing(n.filter((tk) => followed.has(tk.uploader_id)).slice(0, 12));
+      const counted = await base44.entities.Track.filter({ is_published: true }, "-created_date", 1000).catch(() => []);
+      setTotalTracks(Array.isArray(counted) ? counted.length : 0);
       const genres = ["Electronic", "Hip-Hop", "Ambient"];
       const perGenre = await Promise.all(
         genres.map(async (g) => ({
@@ -180,9 +198,14 @@ export default function Home() {
             <h1 className="text-4xl md:text-6xl font-extrabold tracking-tighter mb-3 max-w-2xl leading-[1.02]">
               {user?.display_name ? `Hey, ${user.display_name}.` : "Welcome to PUBLIC."}
             </h1>
-            <p className="text-foreground/55 max-w-md text-sm md:text-base mb-7 mx-auto">
+            <p className="text-foreground/55 max-w-md text-sm md:text-base mb-5 mx-auto">
               Listen, upload, and share — a space for sound, made by the people, for the people.
             </p>
+            <div className="inline-flex items-center gap-1.5 mb-7">
+              <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-foreground/[0.05] border border-foreground/10 text-xs font-semibold text-foreground/70">
+                <Music size={13} /> {totalTracks.toLocaleString()} {totalTracks === 1 ? "track" : "tracks"} in the network
+              </span>
+            </div>
             <div className="flex items-center justify-center gap-2.5 flex-wrap">
               <Link
                 to="/upload"
