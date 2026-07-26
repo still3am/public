@@ -102,7 +102,6 @@ export default function Upload() {
   async function onFilesSelected(files, isBulk) {
     let built = await filesToItems(files);
     if (!built.length) return;
-    if (!isBulk) built = built.slice(0, 1);
     setMode(isBulk ? "bulk" : "single");
     setItems(built);
     setQueueIndex(0);
@@ -500,6 +499,7 @@ export default function Upload() {
       ref={singleInputRef}
       type="file"
       accept={AUDIO_ACCEPT}
+      multiple
       className="hidden"
       onChange={async (e) => {
         await onFilesSelected(e.target.files, false);

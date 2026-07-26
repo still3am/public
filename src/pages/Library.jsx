@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 import Avatar from "@/components/Avatar";
 import PullToRefresh from "@/components/PullToRefresh";
+import PageHeader from "@/components/PageHeader";
 import BottomSheetSelect from "@/components/BottomSheetSelect";
 
 export default function Library() {
@@ -121,10 +122,7 @@ export default function Library() {
   return (
     <PullToRefresh onRefresh={load}>
     <div className="space-y-10">
-      <div className="mb-2">
-        <div className="text-[11px] uppercase tracking-[0.2em] text-foreground/40 font-semibold mb-1.5">Your Collection</div>
-        <h1 className="text-2xl font-extrabold tracking-tight">Library</h1>
-      </div>
+      <PageHeader eyebrow="Your Collection" title="Library" />
       <div>
         <div className="flex items-center justify-between mb-4 gap-2">
           <h2 className="text-xl font-extrabold tracking-tight">Your Playlists</h2>
@@ -181,7 +179,7 @@ export default function Library() {
             }
           />
         ) : (
-          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-2">
+          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-3 md:gap-4">
             {sortedPlaylists.map((pl) => (
               <div key={pl.id} className="relative group">
                 <Link
@@ -223,7 +221,7 @@ export default function Library() {
           <h2 className="text-xl font-extrabold tracking-tight mb-4 flex items-center gap-2">
             <Disc size={20} /> Your Albums
           </h2>
-          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-2">
+          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-3 md:gap-4">
             {albums.map((a) => (
               <Link
                 key={a.id}

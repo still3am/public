@@ -4,6 +4,7 @@ import { useAuth } from "@/lib/AuthContext";
 import EmptyState from "@/components/EmptyState";
 import SuggestionCard from "@/components/SuggestionCard";
 import PullToRefresh from "@/components/PullToRefresh";
+import PageHeader from "@/components/PageHeader";
 import {
   Lightbulb,
   Loader2,
@@ -99,17 +100,15 @@ export default function Suggestions() {
   return (
     <PullToRefresh onRefresh={load}>
       <div>
-        <div className="text-[11px] uppercase tracking-[0.2em] text-foreground/40 font-semibold mb-1.5">
-          Community Voice
-        </div>
-        <h1 className="text-2xl font-extrabold tracking-tight mb-1 flex items-center gap-2">
-          <Lightbulb size={20} /> Suggestions
-        </h1>
-        <p className="text-sm text-foreground/50 mb-6 max-w-xl leading-relaxed">
-          PUBLIC is made by the people, for the people. Tell us what feature
-          you'd love, the music you want to hear, or how this platform can be
-          even better. Vote on ideas you care about.
-        </p>
+        <PageHeader
+          eyebrow="Community Voice"
+          title={
+            <span className="flex items-center gap-2">
+              <Lightbulb size={22} /> Suggestions
+            </span>
+          }
+          subtitle="PUBLIC is made by the people, for the people. Tell us what feature you'd love, the music you want to hear, or how this platform can be even better. Vote on ideas you care about."
+        />
 
         <form
           onSubmit={submit}

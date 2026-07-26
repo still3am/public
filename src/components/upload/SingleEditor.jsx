@@ -1,6 +1,5 @@
 import { useState, useRef } from "react";
 import { AUDIO_ACCEPT } from "@/lib/audio-utils";
-import { useObjectUrl } from "@/hooks/useObjectUrl";
 import GenrePicker from "@/components/GenrePicker";
 import { UrlAddRow, AudioVerify, fmtBytes, fmtDur } from "@/components/upload/parts";
 import { UploadCloud, ChevronLeft, ChevronRight, Download, Eye, EyeOff, Loader2, X, Plus, ListMusic, ChevronUp, ChevronDown } from "lucide-react";
@@ -83,7 +82,6 @@ function ToggleChip({ active, onClick, icon: Icon, children }) {
 
 function SingleForm({ item, update, rights, setRights, publishing, onPublish, onPublishAll, canPublish, progress, count, onPickFile, onClear, onAddMore, index, onPrev, onNext }) {
   const [showAdvanced, setShowAdvanced] = useState(false);
-  const coverUrl = useObjectUrl(item?.cover);
   return (
     <div className="space-y-3">
       {count > 1 && (
@@ -110,8 +108,8 @@ function SingleForm({ item, update, rights, setRights, publishing, onPublish, on
         <label className="w-full sm:w-28 h-28 rounded-2xl overflow-hidden bg-foreground/10 grid place-items-center text-xs text-foreground/40 cursor-pointer shrink-0">
           {item.cover_url ? (
             <img src={item.cover_url} alt="" className="w-full h-full object-cover" />
-          ) : coverUrl ? (
-            <img src={coverUrl} alt="" className="w-full h-full object-cover" />
+          ) : item.cover ? (
+            <img src={URL.createObjectURL(item.cover)} alt="" className="w-full h-full object-cover" />
           ) : (
             <span className="inline-flex flex-col items-center gap-1">
               <UploadCloud size={20} /> Cover
@@ -203,24 +201,13 @@ function SingleForm({ item, update, rights, setRights, publishing, onPublish, on
         </div>
       )}
 
-      <div className="flex flex-col sm:flex-row gap-2">
-        <button
-          onClick={onPublish}
-          disabled={!canPublish || publishing}
-          className="flex-1 px-5 py-3 rounded-full bg-foreground text-background text-sm font-semibold flex items-center gap-2 justify-center disabled:opacity-40 active:scale-[0.98] transition">
-          {publishing ? <Loader2 size={16} className="animate-spin" /> : <UploadCloud size={16} />}
-          {publishing ? `Uploading ${progress}%` : "Publish track"}
-        </button>
-        {count > 1 && onPublishAll && (
-          <button
-            onClick={onPublishAll}
-            disabled={!canPublish || publishing}
-            className="flex-1 px-5 py-3 rounded-full bg-foreground text-background text-sm font-semibold flex items-center gap-2 justify-center disabled:opacity-40 active:scale-[0.98] transition">
-            {publishing ? <Loader2 size={16} className="animate-spin" /> : <ListMusic size={16} />}
-            {publishing ? "Publishing queue" : "Publish tracks"}
-          </button>
-        )}
-      </div>
+      <button
+        onClick={count > 1 && onPublishAll ? onPublishAll : onPublish}
+        disabled={!canPublish || publishing}
+        className="w-full px-5 py-3 rounded-full bg-foreground text-background text-sm font-semibold flex items-center gap-2 justify-center disabled:opacity-40 active:scale-[0.98] transition">
+        {publishing ? <Loader2 size={16} className="animate-spin" /> : (count > 1 && onPublishAll ? <ListMusic size={16} /> : <UploadCloud size={16} />)}
+        {publishing ? `Uploading ${progress}%` : (count > 1 && onPublishAll ? "Publish all tracks" : "Publish track")}
+      </button>
 
       <div className="flex items-center gap-2">
         {onAddMore && (

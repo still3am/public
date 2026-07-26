@@ -588,7 +588,7 @@ export default function Profile() {
           <h2 className="text-lg font-extrabold tracking-tight mb-3 flex items-center gap-2">
             <Disc size={18} /> Albums
           </h2>
-          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-2 mb-10">
+          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-3 md:gap-4 mb-10">
             {albums.map((a) =>
             <Link
               key={a.id}
@@ -655,7 +655,7 @@ export default function Profile() {
           <h2 className="text-lg font-extrabold tracking-tight mb-3 flex items-center gap-2">
             <ListMusic size={18} /> Playlists
           </h2>
-          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-2">
+          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-3 md:gap-4">
             {playlists.map((pl) =>
             <Link
               key={pl.id}

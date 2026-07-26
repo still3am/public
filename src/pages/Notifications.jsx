@@ -4,6 +4,7 @@ import { base44 } from "@/api/base44Client";
 import { useAuth } from "@/lib/AuthContext";
 import EmptyState from "@/components/EmptyState";
 import PullToRefresh from "@/components/PullToRefresh";
+import PageHeader from "@/components/PageHeader";
 import { timeAgo } from "@/lib/audio-utils";
 import { Bell, Heart, UserPlus, Music, Loader2 } from "lucide-react";
 
@@ -90,8 +91,7 @@ export default function Notifications() {
   return (
     <PullToRefresh onRefresh={load}>
     <div>
-      <div className="text-[11px] uppercase tracking-[0.2em] text-foreground/40 font-semibold mb-1.5">Activity</div>
-      <h1 className="text-2xl font-extrabold tracking-tight mb-6">Notifications</h1>
+      <PageHeader eyebrow="Activity" title="Notifications" />
       <div className="space-y-1">
         {items.map((n) => {
           const actor = actors[n.actor_id];
@@ -99,9 +99,9 @@ export default function Notifications() {
             <Link
               key={n.id}
               to={actor ? `/profile/${actor.id}` : "/"}
-              className="flex items-center gap-3 p-3 rounded-lg hover:bg-foreground/[0.03]"
+              className="flex items-center gap-3 p-3 rounded-xl hover:bg-foreground/[0.03] transition"
             >
-              <div className="w-10 h-10 rounded-full bg-foreground/10 grid place-items-center shrink-0">
+              <div className="w-11 h-11 rounded-full bg-foreground/10 grid place-items-center shrink-0">
                 {iconFor(n.type)}
               </div>
               <div className="min-w-0 flex-1">

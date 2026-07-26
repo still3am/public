@@ -7,6 +7,7 @@ import TrackRow from "@/components/TrackRow";
 import EmptyState from "@/components/EmptyState";
 import { Music, Loader2 } from "lucide-react";
 import PullToRefresh from "@/components/PullToRefresh";
+import PageHeader from "@/components/PageHeader";
 
 export default function TopCharts() {
   const { user } = useAuth();
@@ -46,11 +47,7 @@ export default function TopCharts() {
   return (
     <PullToRefresh onRefresh={load}>
     <div>
-      <div className="text-[11px] uppercase tracking-[0.2em] text-foreground/40 font-semibold mb-1.5">Charts</div>
-      <h1 className="text-2xl font-extrabold tracking-tight mb-1">Top Charts</h1>
-      <p className="text-sm text-foreground/50 mb-5">
-        The 100 most-played tracks on PUBLIC right now.
-      </p>
+      <PageHeader eyebrow="Charts" title="Top Charts" subtitle="The most-played tracks on PUBLIC right now." />
       <div className="space-y-0.5">
         {tracks.map((t, i) => (
           <TrackRow
