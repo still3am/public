@@ -21,16 +21,16 @@ export default function TrackCard({ track }) {
       return;
     }
     let alive = true;
-    base44.entities.Album
-      .get(track.album_id)
-      .then((al) => {
-        if (!alive) return;
-        const url = al?.cover_art_url || "";
-        albumCoverCache.set(track.album_id, url);
-        setAlbumCover(url);
-      })
-      .catch(() => {});
-    return () => { alive = false; };
+    base44.entities.Album.
+    get(track.album_id).
+    then((al) => {
+      if (!alive) return;
+      const url = al?.cover_art_url || "";
+      albumCoverCache.set(track.album_id, url);
+      setAlbumCover(url);
+    }).
+    catch(() => {});
+    return () => {alive = false;};
   }, [track.album_id, track.cover_art_url]);
 
   const coverUrl = track.cover_art_url || albumCover;
@@ -94,7 +94,7 @@ export default function TrackCard({ track }) {
 
           
           {!isTrending && isRecent &&
-          <span className="shrink-0 inline-flex text-[9px] font-extrabold px-1.5 py-0.5 rounded bg-emerald-400/20 text-emerald-700">NEW</span>
+          <span className="shrink-0 inline-flex text-[9px] font-extrabold px-1.5 py-0.5 rounded bg-emerald-400/20 text-emerald-700 hidden">NEW</span>
           }
         </div>
       </Link>
