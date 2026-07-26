@@ -161,34 +161,37 @@ export default function Home() {
     <PullToRefresh onRefresh={load}>
       <div className="space-y-3">
         {/* Hero */}
-        <div className="relative rounded-3xl overflow-hidden border border-foreground/[0.06] bg-foreground/[0.02] p-6 md:p-10 mb-8 text-center flex flex-col items-center">
+        <div className="relative rounded-3xl overflow-hidden border border-foreground/[0.06] p-8 md:p-14 mb-8 text-center flex flex-col items-center">
           <div
-            className="absolute inset-0 opacity-[0.06] pointer-events-none"
+            className="absolute inset-0 opacity-[0.04] pointer-events-none"
             style={{
               backgroundImage:
-              "radial-gradient(circle at 15% 20%, hsl(var(--foreground)) 0, transparent 40%), radial-gradient(circle at 85% 85%, hsl(var(--foreground)) 0, transparent 35%)"
+              "radial-gradient(circle at 15% 15%, hsl(var(--foreground)) 0, transparent 40%), radial-gradient(circle at 85% 85%, hsl(var(--foreground)) 0, transparent 38%)"
             }} />
-          
-          <div className="absolute -right-16 -top-16 w-56 h-56 rounded-full bg-violet-500/10 blur-3xl pointer-events-none" />
-          <div className="absolute -left-10 -bottom-16 w-52 h-52 rounded-full bg-amber-400/10 blur-3xl pointer-events-none" />
+          <div className="absolute inset-0 bg-gradient-to-br from-violet-500/8 via-transparent to-amber-400/8 pointer-events-none" />
+          <div className="absolute -right-20 -top-20 w-72 h-72 rounded-full bg-violet-500/12 blur-3xl pointer-events-none" />
+          <div className="absolute -left-12 -bottom-20 w-64 h-64 rounded-full bg-amber-400/12 blur-3xl pointer-events-none" />
 
           <div className="relative">
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-foreground/[0.05] border border-foreground/[0.06] text-[11px] font-semibold uppercase tracking-wider text-foreground/60 mb-5">
-              <Sparkles size={12} className="hidden" /> {greeting}
+            <span className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-foreground/[0.05] border border-foreground/10 text-[11px] font-semibold uppercase tracking-[0.18em] text-foreground/60 mb-6">
+              <Sparkles size={12} /> {greeting}
             </span>
-            <p className="text-foreground/60 max-w-lg text-sm md:text-base mb-5">
-              {user?.display_name ? `Welcome back, ${user.display_name}.` : "Welcome."} Listen, upload and share — PUBLIC is yours.
+            <h1 className="text-4xl md:text-6xl font-extrabold tracking-tighter mb-3 max-w-2xl leading-[1.02]">
+              {user?.display_name ? `Hey, ${user.display_name}.` : "Welcome to PUBLIC."}
+            </h1>
+            <p className="text-foreground/55 max-w-md text-sm md:text-base mb-7 mx-auto">
+              Listen, upload, and share — a space for sound, made by the people, for the people.
             </p>
-            <div className="flex items-center justify-center gap-2 flex-wrap">
+            <div className="flex items-center justify-center gap-2.5 flex-wrap">
               <Link
                 to="/upload"
-                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-foreground text-background text-sm font-semibold hover:scale-[1.02] active:scale-95 transition">
-                <Upload size={14} /> Upload music
+                className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-foreground text-background text-sm font-semibold hover:scale-[1.03] active:scale-95 transition shadow-sm">
+                <Upload size={15} /> Upload music
               </Link>
               <Link
                 to="/discover"
-                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full border border-foreground/15 text-sm font-semibold hover:bg-foreground/5 active:scale-95 transition">
-                <Disc size={14} /> Explore genres
+                className="inline-flex items-center gap-2 px-6 py-3 rounded-full border border-foreground/15 text-sm font-semibold hover:bg-foreground/5 active:scale-95 transition">
+                <Disc size={15} /> Explore genres
               </Link>
             </div>
           </div>
