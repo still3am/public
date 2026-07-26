@@ -194,9 +194,9 @@ export default function FullScreenPlayer({ onClose, onOpenQueue }) {
         </button>
         <div className="text-center px-4 min-w-0">
           <div className="text-[10px] uppercase tracking-[0.3em] opacity-50">Now Playing</div>
-          <div className="text-xs font-semibold opacity-80 truncate max-w-[60vw] md:max-w-md hidden">
-            {t.artist || t.uploader_name || "Unknown"}
-          </div>
+          
+
+          
         </div>
         <NowPlayingAddMenu
           onAddToPlaylist={() => ap.addToPlaylist(t.id)}
