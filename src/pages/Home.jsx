@@ -25,12 +25,12 @@ const greetingByHour = () => {
 
 function Section({ title, icon: Icon, children, seeAllTo }) {
   return (
-    <section className="mb-9">
-      <div className="flex items-end justify-between mb-3 px-3">
-        <h2 className="text-lg md:text-xl font-extrabold tracking-tight flex items-center gap-2.5">
+    <section className="mb-10 md:mb-12">
+      <div className="flex items-end justify-between mb-3.5 px-3 md:px-0">
+        <h2 className="text-lg md:text-2xl font-extrabold tracking-tight flex items-center gap-2.5">
           {Icon &&
-          <span className="grid place-items-center w-7 h-7 rounded-lg bg-foreground/[0.06] text-foreground/70 hidden">
-              <Icon size={15} />
+          <span className="grid place-items-center w-8 h-8 rounded-lg bg-foreground/[0.06] text-foreground/70">
+              <Icon size={16} />
             </span>
           }
           {title}
@@ -49,9 +49,9 @@ function Section({ title, icon: Icon, children, seeAllTo }) {
 function CardRow({ tracks }) {
   if (!tracks?.length) return null;
   return (
-    <div className="flex gap-2 overflow-x-auto no-scrollbar pb-1 -mx-3 px-3 snap-x snap-mandatory md:grid md:grid-cols-4 lg:grid-cols-5 md:overflow-visible md:mx-0 md:px-0">
+    <div className="flex gap-3 overflow-x-auto no-scrollbar pb-2 -mx-3 px-3 snap-x snap-mandatory md:grid md:grid-cols-4 lg:grid-cols-5 md:overflow-visible md:mx-0 md:px-0 md:gap-4">
       {tracks.map((t) =>
-      <div key={t.id} className="snap-start shrink-0 w-[44vw] max-w-[200px] sm:w-[180px] md:w-auto">
+      <div key={t.id} className="snap-start shrink-0 w-[60vw] max-w-[210px] sm:w-[200px] md:w-auto">
           <TrackCard track={t} />
         </div>
       )}
@@ -61,16 +61,16 @@ function CardRow({ tracks }) {
 
 function Skeleton() {
   return (
-    <div className="space-y-8">
-      <div className="h-48 rounded-3xl bg-foreground/[0.03] animate-pulse" />
+    <div className="space-y-10">
+      <div className="h-52 rounded-3xl bg-foreground/[0.03] animate-pulse" />
       {[0, 1, 2].map((i) =>
       <div key={i}>
-          <div className="h-6 w-32 bg-foreground/[0.05] rounded mb-4" />
-          <div className="flex gap-2 overflow-hidden">
+          <div className="h-7 w-32 bg-foreground/[0.05] rounded mb-4" />
+          <div className="flex gap-4 overflow-hidden">
             {Array.from({ length: 6 }).map((_, j) =>
           <div
             key={j}
-            className="aspect-square w-[180px] rounded-xl bg-foreground/[0.04] animate-pulse shrink-0" />
+            className="aspect-square w-[180px] md:w-[calc(20%-1rem)] rounded-xl bg-foreground/[0.04] animate-pulse shrink-0" />
 
           )}
           </div>
@@ -161,7 +161,7 @@ export default function Home() {
     <PullToRefresh onRefresh={load}>
       <div className="space-y-3">
         {/* Hero */}
-        <div className="relative rounded-3xl overflow-hidden border border-foreground/[0.06] p-8 md:p-14 mb-8 text-center flex flex-col items-center">
+        <div className="relative rounded-3xl overflow-hidden border border-foreground/[0.06] p-7 md:p-14 mb-8 md:mb-10 text-center flex flex-col items-center">
           <div
             className="absolute inset-0 opacity-[0.04] pointer-events-none"
             style={{
@@ -200,9 +200,9 @@ export default function Home() {
         {/* Suggestions banner */}
         <Link
           to="/suggestions"
-          className="group block mb-10 rounded-2xl border border-foreground/[0.06] bg-foreground/[0.02] hover:bg-foreground/[0.04] transition p-4 md:p-5">
+          className="group block mb-10 md:mb-12 mx-3 md:mx-0 rounded-2xl border border-foreground/[0.06] bg-foreground/[0.02] hover:bg-foreground/[0.04] transition p-4 md:p-5">
           <div className="flex items-center gap-4">
-            <span className="grid place-items-center w-11 h-11 rounded-xl bg-amber-400/15 text-amber-600 dark:text-amber-400 shrink-0 hidden">
+            <span className="grid place-items-center w-11 h-11 rounded-xl bg-amber-400/15 text-amber-600 dark:text-amber-400 shrink-0">
               <Lightbulb size={20} />
             </span>
             <div className="flex-1 min-w-0">
@@ -226,15 +226,15 @@ export default function Home() {
 
         {albums.length > 0 &&
         <Section title="Albums" icon={Disc}>
-            <div className="flex gap-2 overflow-x-auto no-scrollbar pb-1 -mx-3 px-3 snap-x snap-mandatory md:grid md:grid-cols-4 lg:grid-cols-5 md:overflow-visible md:mx-0 md:px-0">
+            <div className="flex gap-3 overflow-x-auto no-scrollbar pb-2 -mx-3 px-3 snap-x snap-mandatory md:grid md:grid-cols-4 lg:grid-cols-5 md:overflow-visible md:mx-0 md:px-0 md:gap-4">
               {albums.map((a) =>
             <Link
               key={a.id}
               to={`/album/${a.id}`}
-              className="snap-start shrink-0 w-[44vw] max-w-[200px] sm:w-[180px] md:w-auto rounded-xl p-3 hover:bg-foreground/[0.03] transition">
-                  <div className="aspect-square rounded-lg overflow-hidden bg-foreground/10 mb-3 grid place-items-center text-foreground/40">
+              className="group snap-start shrink-0 w-[60vw] max-w-[210px] sm:w-[200px] md:w-auto rounded-xl p-3 hover:bg-foreground/[0.03] transition">
+                  <div className="relative aspect-square rounded-lg overflow-hidden bg-foreground/10 mb-3 grid place-items-center text-foreground/40">
                     {a.cover_art_url ?
-                <img src={a.cover_art_url} alt="" className="w-full h-full object-cover" /> :
+                <img src={a.cover_art_url} alt="" className="w-full h-full object-cover group-hover:scale-[1.03] transition" /> :
 
                 <Disc size={28} />
                 }
