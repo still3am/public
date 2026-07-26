@@ -57,29 +57,29 @@ export function UrlAddRow({ onAdded, disabled }) {
     }
   }
 
-  return (
-    <form onSubmit={submit} className="rounded-2xl border border-border p-3 bg-foreground/[0.02] space-y-2 hidden">
-      <div className="flex items-center gap-1 text-xs font-semibold text-foreground/60">
-        <Link2 size={12} /> Paste a direct audio URL
-      </div>
-      <div className="flex flex-col sm:flex-row gap-2">
-        <input
-          type="url"
-          value={url}
-          onChange={(e) => setUrl(e.target.value)}
-          placeholder="https://example.com/track.mp3"
-          className="flex-1 px-3 py-2 rounded-xl border border-border bg-white text-sm"
-          disabled={loading} />
-        
-        <button
-          type="submit"
-          disabled={loading || !url.trim()}
-          className="px-4 py-2 rounded-xl bg-foreground text-background text-xs font-semibold flex items-center gap-1 justify-center disabled:opacity-40">
-          {loading ? <Loader2 size={14} className="animate-spin" /> : <Plus size={14} />} Add
-        </button>
-      </div>
-      {err && <div className="text-xs text-red-600">{err}</div>}
-    </form>);
+  return null;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 }
 
