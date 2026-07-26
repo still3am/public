@@ -13,7 +13,7 @@ import {
 import BackHeader from "@/components/BackHeader";
 import FileDropZone from "@/components/upload/FileDropZone";
 import UploadItem from "@/components/upload/UploadItem";
-import { UploadCloud, Loader2 } from "lucide-react";
+import { UploadCloud, Loader2, Plus, CheckCheck } from "lucide-react";
 
 let idc = 0;
 
@@ -22,6 +22,7 @@ export default function Upload() {
   const { toast } = useToast();
   const [items, setItems] = useState([]);
   const [busy, setBusy] = useState(false);
+  const [progress, setProgress] = useState({ done: 0, total: 0 });
   const inputRef = useRef(null);
 
   const addFiles = useCallback(async (files) => {
@@ -135,18 +136,25 @@ export default function Upload() {
     );
     if (!pending.length) return;
     setBusy(true);
+    setProgress({ done: 0, total: pending.length });
     let ok = 0;
-    for (const it of pending) {
-      const success = await uploadOne(it);
+    for (let i = 0; i < pending.length; i++) {
+      const success = await uploadOne(pending[i]);
       if (success) ok++;
+      setProgress({ done: i + 1, total: pending.length });
     }
     setBusy(false);
     if (ok) toast({ title: `${ok} track${ok !== 1 ? "s" : ""} uploaded` });
   }
 
+  function clearDone() {
+    setItems((prev) => prev.filter((it) => it.status !== "done"));
+  }
+
   const anyPending = items.some(
     (it) => it.status === "editing" || it.status === "error"
   );
+  const doneCount = items.filter((it) => it.status === "done").length;
 
   return (
     <div className="max-w-3xl mx-auto px-3 md:px-0 pb-24">
@@ -166,22 +174,47 @@ export default function Upload() {
 
       {items.length > 0 && (
         <div className="mt-6 space-y-3">
-          <div className="flex items-center justify-between px-1">
-            <span className="text-sm font-semibold text-foreground/60">
+          <div className="flex items-center justify-between gap-2 px-1 flex-wrap">
+            <div className="text-sm font-semibold text-foreground/60">
               {items.length} file{items.length !== 1 ? "s" : ""}
-            </span>
-            <button
-              onClick={uploadAll}
-              disabled={!anyPending || busy}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-foreground text-background text-sm font-semibold disabled:opacity-40 active:scale-95 transition"
-            >
-              {busy ? (
-                <Loader2 size={15} className="animate-spin" />
-              ) : (
-                <UploadCloud size={15} />
+              {doneCount > 0 && (
+                <span className="text-foreground/40 font-normal">
+                  {" "}
+                  · {doneCount} published
+                </span>
               )}
-              Upload all
-            </button>
+            </div>
+            <div className="flex items-center gap-2">
+              {doneCount > 0 && (
+                <button
+                  onClick={clearDone}
+                  className="text-xs font-medium text-foreground/50 hover:text-foreground px-2 py-1.5 rounded-full hover:bg-foreground/5 transition"
+                >
+                  Clear published
+                </button>
+              )}
+              <button
+                onClick={() => inputRef.current?.click()}
+                disabled={busy}
+                className="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-full border border-border hover:bg-foreground/5 transition disabled:opacity-40"
+              >
+                <Plus size={14} /> Add more
+              </button>
+              <button
+                onClick={uploadAll}
+                disabled={!anyPending || busy}
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-foreground text-background text-sm font-semibold disabled:opacity-40 active:scale-95 transition"
+              >
+                {busy ? (
+                  <Loader2 size={15} className="animate-spin" />
+                ) : (
+                  <UploadCloud size={15} />
+                )}
+                {busy
+                  ? `Uploading ${progress.done}/${progress.total}`
+                  : "Upload all"}
+              </button>
+            </div>
           </div>
           {items.map((it) => (
             <UploadItem

@@ -1,6 +1,7 @@
 import { useRef } from "react";
 import {
   Check,
+  CheckCheck,
   X,
   UploadCloud,
   Loader2,
@@ -31,7 +32,13 @@ export default function UploadItem({
   }
 
   return (
-    <div className="rounded-2xl border border-border bg-card p-3 md:p-4">
+    <div
+      className={`rounded-2xl border bg-card p-3 md:p-4 transition ${
+        done
+          ? "border-emerald-300/70 bg-emerald-50/40 dark:bg-emerald-900/10"
+          : "border-border"
+      }`}
+    >
       <div className="flex gap-3">
         <div className="relative w-20 h-20 shrink-0">
           <button
@@ -53,9 +60,9 @@ export default function UploadItem({
               <Music2 size={22} className="text-foreground/30" />
             )}
             {!done && (
-              <div className="absolute inset-0 grid place-items-center bg-foreground/0 group-hover:bg-foreground/30 transition opacity-0 group-hover:opacity-100">
-                <ImagePlus size={18} className="text-background" />
-              </div>
+              <span className="absolute bottom-1 right-1 w-5 h-5 rounded-full bg-foreground/75 text-background grid place-items-center shadow ring-2 ring-card">
+                <ImagePlus size={11} />
+              </span>
             )}
             {done && (
               <div className="absolute inset-0 bg-foreground/60 grid place-items-center">
@@ -151,6 +158,11 @@ export default function UploadItem({
             </div>
           )}
 
+          {done && (
+            <div className="flex items-center justify-center gap-2 text-xs font-semibold text-emerald-600 dark:text-emerald-400 py-1">
+              <CheckCheck size={14} /> Published to PUBLIC
+            </div>
+          )}
           {!done && (
             <button
               onClick={onUpload}
