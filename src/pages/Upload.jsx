@@ -535,7 +535,7 @@ export default function Upload() {
 
       <div className="max-w-3xl mx-auto">
         <div className="flex items-center justify-between mb-6 flex-wrap gap-3">
-          <h1 className="text-2xl font-extrabold tracking-tight hidden">Upload</h1>
+          
           {mode !== "choose" &&
           <button
             onClick={reset}
