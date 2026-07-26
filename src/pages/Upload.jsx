@@ -77,8 +77,8 @@ export default function Upload() {
         "-created_date",
         200
       );
-      const entries = [];
-      const seenExisting = new Set();
+      const found = [];
+      const seen = new Set();
       for (const c of newItems) {
         const dups = findDuplicateTracks(existing, {
           title: c.title,
@@ -86,12 +86,14 @@ export default function Upload() {
           duration: c.duration,
           file_name: c.file.name,
         });
-        if (dups.length) {
-          entries.push({ id: c.id, item: c, existing: dups[0] });
-          for (const d of dups) seenExisting.add(d.id);
+        for (const d of dups) {
+          if (!seen.has(d.id)) {
+            seen.add(d.id);
+            found.push(d);
+          }
         }
       }
-      if (entries.length) setDupes(entries);
+      if (found.length) setDupes(found);
     } catch {}
   }, [user]);
 
@@ -264,17 +266,11 @@ export default function Upload() {
 
       {dupes && (
         <DuplicateModal
-          entries={dupes}
+          tracks={dupes}
           onClose={() => setDupes(null)}
-          onRemoveQueue={(qid) => {
-            removeItem(qid);
+          onDeleted={(id) =>
             setDupes((prev) =>
-              prev ? prev.filter((e) => e.id !== qid) : prev
-            );
-          }}
-          onExistingDeleted={(exId) =>
-            setDupes((prev) =>
-              prev ? prev.filter((e) => e.existing.id !== exId) : prev
+              prev ? prev.filter((t) => t.id !== id) : prev
             )
           }
         />
