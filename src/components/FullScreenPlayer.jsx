@@ -156,7 +156,7 @@ export default function FullScreenPlayer({ onClose, onOpenQueue }) {
         background: `linear-gradient(170deg, ${bg} 0%, #0d0d0f 55%, #000 100%)`,
         transform: `translateY(${dragY}px)`,
         opacity: dragging ? 1 - Math.min(dragY / (window.innerHeight || 800), 0.45) : 1,
-        transition: dragging ? "none" : "transform .32s cubic-bezier(.22,1,.36,1), opacity .28s ease-out",
+        transition: dragging ? "none" : "transform .32s cubic-bezier(.22,1,.36,1), opacity .28s ease-out"
       }}>
       
       {/* ambient glow */}
@@ -194,7 +194,7 @@ export default function FullScreenPlayer({ onClose, onOpenQueue }) {
         </button>
         <div className="text-center px-4 min-w-0">
           <div className="text-[10px] uppercase tracking-[0.3em] opacity-50">Now Playing</div>
-          <div className="text-xs font-semibold opacity-80 truncate max-w-[60vw] md:max-w-md">
+          <div className="text-xs font-semibold opacity-80 truncate max-w-[60vw] md:max-w-md hidden">
             {t.artist || t.uploader_name || "Unknown"}
           </div>
         </div>
@@ -215,31 +215,31 @@ export default function FullScreenPlayer({ onClose, onOpenQueue }) {
         <div className="flex-1 flex flex-col px-5 md:px-10 xl:px-2 min-h-0">
           {/* artwork / mobile lyrics */}
           <div className="relative flex-1 flex items-center justify-center min-h-0 py-3">
-            {lyricsMode && (
-              <div className="xl:hidden w-full h-full rounded-3xl bg-white/[0.06] overflow-hidden flex flex-col min-h-0">
+            {lyricsMode &&
+            <div className="xl:hidden w-full h-full rounded-3xl bg-white/[0.06] overflow-hidden flex flex-col min-h-0">
                 <SyncedLyrics trackId={t.id} position={p.position} fallbackText={t.lyrics_text} onSeek={p.seek} />
               </div>
-            )}
+            }
               <div
-                onTouchStart={onVolTouchStart}
-                onTouchMove={onVolTouchMove}
-                onTouchEnd={onVolTouchEnd}
-                className={`relative aspect-square w-full max-w-[min(46vh,86vw)] xl:max-w-[520px] rounded-3xl overflow-hidden shadow-2xl bg-white/10 shrink-0 touch-none transition-transform duration-500 ${
-                p.isPlaying ? "scale-100" : "scale-[0.97]"} ${
-                lyricsMode ? "hidden xl:flex" : "flex"}`}>
+              onTouchStart={onVolTouchStart}
+              onTouchMove={onVolTouchMove}
+              onTouchEnd={onVolTouchEnd}
+              className={`relative aspect-square w-full max-w-[min(46vh,86vw)] xl:max-w-[520px] rounded-3xl overflow-hidden shadow-2xl bg-white/10 shrink-0 touch-none transition-transform duration-500 ${
+              p.isPlaying ? "scale-100" : "scale-[0.97]"} ${
+              lyricsMode ? "hidden xl:flex" : "flex"}`}>
                 
                 {t.cover_art_url ?
-                <img src={t.cover_art_url} alt="" className="w-full h-full object-cover" /> :
+              <img src={t.cover_art_url} alt="" className="w-full h-full object-cover" /> :
 
-                <div className="w-full h-full grid place-items-center opacity-40">
+              <div className="w-full h-full grid place-items-center opacity-40">
                     <Disc3 size={64} />
                   </div>
-                }
+              }
                 {/* volume hint */}
                 <div
-                  className={`absolute inset-0 grid place-items-center bg-black/30 backdrop-blur-sm transition-opacity duration-200 ${
-                  showVolHint ? "opacity-100" : "opacity-0 pointer-events-none"}`
-                  }>
+                className={`absolute inset-0 grid place-items-center bg-black/30 backdrop-blur-sm transition-opacity duration-200 ${
+                showVolHint ? "opacity-100" : "opacity-0 pointer-events-none"}`
+                }>
                   
                   <div className="flex flex-col items-center gap-2">
                     <VolIcon size={40} />
@@ -351,14 +351,14 @@ export default function FullScreenPlayer({ onClose, onOpenQueue }) {
             <button
               onClick={() => setLyricsMode(false)}
               className={`flex items-center justify-center gap-1.5 px-4 py-1.5 rounded-full transition text-xs font-semibold ${
-                !lyricsMode ? "bg-white text-black" : "opacity-70"}`}
+              !lyricsMode ? "bg-white text-black" : "opacity-70"}`}
               aria-label="Artwork">
               <Disc3 size={14} /> Artwork
             </button>
             <button
               onClick={() => setLyricsMode(true)}
               className={`flex items-center justify-center gap-1.5 px-4 py-1.5 rounded-full transition text-xs font-semibold ${
-                lyricsMode ? "bg-white text-black" : "opacity-70"}`}
+              lyricsMode ? "bg-white text-black" : "opacity-70"}`}
               aria-label="Lyrics">
               <Mic2 size={14} /> Lyrics
             </button>
