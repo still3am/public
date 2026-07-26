@@ -129,7 +129,7 @@ export async function extractEmbeddedCover(file) {
       const major = head[3];
       const tagSize = readSynchsafe(head, 6);
       const total = 10 + tagSize;
-      const buf = new Uint8Array(await file.slice(0, Math.min(total, 2 * 1024 * 1024)).arrayBuffer());
+      const buf = new Uint8Array(await file.slice(0, Math.min(total, 10 * 1024 * 1024)).arrayBuffer());
       let off = 10;
       const frameIdLen = major === 2 ? 3 : 4;
       const sizeLen = major === 2 ? 3 : 4;
@@ -210,7 +210,45 @@ export async function extractEmbeddedCover(file) {
         p += len;
       }
     }
+
+    // MP4 / M4A (cover art in a covr atom; moov sits at the start for
+    // fast-start files and at the end otherwise, so scan head + tail).
+    if (head[4] === 0x66 && head[5] === 0x74 && head[6] === 0x79 && head[7] === 0x70) { // "ftyp"
+      const covr = await findMp4Cover(file);
+      if (covr) return covr;
+    }
   } catch {}
+  return null;
+}
+
+// Scans an MP4/M4A file for the covr atom (embedded artwork). Reads the head
+// and (if the file is large) the tail, then scans each chunk for the "covr"
+// atom signature followed by a "data" atom.
+async function findMp4Cover(file) {
+  const scan = (buf) => {
+    for (let q = 0; q + 20 < buf.length; q++) {
+      if (buf[q] === 0x63 && buf[q + 1] === 0x6f && buf[q + 2] === 0x76 && buf[q + 3] === 0x72) { // "covr"
+        if (buf[q + 8] === 0x64 && buf[q + 9] === 0x61 && buf[q + 10] === 0x74 && buf[q + 11] === 0x61) { // "data"
+          const dataSize = readUInt32BE(buf, q + 4);
+          const payloadLen = dataSize - 16;
+          if (payloadLen > 0 && q + 20 + payloadLen <= buf.length) {
+            const img = buf.slice(q + 20, q + 20 + payloadLen);
+            let mime = "image/jpeg";
+            if (img[0] === 0x89 && img[1] === 0x50) mime = "image/png";
+            return new File([img], "cover", { type: mime });
+          }
+        }
+      }
+    }
+    return null;
+  };
+  const head = new Uint8Array(await file.slice(0, Math.min(file.size, 4 * 1024 * 1024)).arrayBuffer());
+  const found = scan(head);
+  if (found) return found;
+  if (file.size > 4 * 1024 * 1024) {
+    const tail = new Uint8Array(await file.slice(file.size - 4 * 1024 * 1024, file.size).arrayBuffer());
+    return scan(tail);
+  }
   return null;
 }
 
@@ -241,7 +279,7 @@ export async function extractEmbeddedTitle(file) {
       const major = head[3];
       const tagSize = readSynchsafe(head, 6);
       const total = 10 + tagSize;
-      const buf = new Uint8Array(await file.slice(0, Math.min(total, 2 * 1024 * 1024)).arrayBuffer());
+      const buf = new Uint8Array(await file.slice(0, Math.min(total, 10 * 1024 * 1024)).arrayBuffer());
       let off = 10;
       const frameIdLen = major === 2 ? 3 : 4;
       const sizeLen = major === 2 ? 3 : 4;
@@ -313,7 +351,7 @@ export async function extractEmbeddedArtist(file) {
       const major = head[3];
       const tagSize = readSynchsafe(head, 6);
       const total = 10 + tagSize;
-      const buf = new Uint8Array(await file.slice(0, Math.min(total, 2 * 1024 * 1024)).arrayBuffer());
+      const buf = new Uint8Array(await file.slice(0, Math.min(total, 10 * 1024 * 1024)).arrayBuffer());
       let off = 10;
       const frameIdLen = major === 2 ? 3 : 4;
       const sizeLen = major === 2 ? 3 : 4;
