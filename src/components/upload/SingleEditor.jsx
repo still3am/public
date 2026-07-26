@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useMemo } from "react";
 import { AUDIO_ACCEPT } from "@/lib/audio-utils";
 import GenrePicker from "@/components/GenrePicker";
 import { UrlAddRow, AudioVerify, fmtBytes, fmtDur } from "@/components/upload/parts";
@@ -82,6 +82,11 @@ function ToggleChip({ active, onClick, icon: Icon, children }) {
 
 function SingleForm({ item, update, rights, setRights, publishing, onPublish, onPublishAll, canPublish, progress, count, onPickFile, onClear, onAddMore, index, onPrev, onNext }) {
   const [showAdvanced, setShowAdvanced] = useState(false);
+  const coverPreview = useMemo(() => {
+    if (item.cover_url) return item.cover_url;
+    if (item.cover) return URL.createObjectURL(item.cover);
+    return "";
+  }, [item.cover_url, item.cover]);
   return (
     <div className="space-y-3">
       {count > 1 && (
@@ -106,10 +111,8 @@ function SingleForm({ item, update, rights, setRights, publishing, onPublish, on
 
       <div className="flex flex-col sm:flex-row gap-4">
         <label className="w-full sm:w-28 h-28 rounded-2xl overflow-hidden bg-foreground/10 grid place-items-center text-xs text-foreground/40 cursor-pointer shrink-0">
-          {item.cover_url ? (
-            <img src={item.cover_url} alt="" className="w-full h-full object-cover" />
-          ) : item.cover ? (
-            <img src={URL.createObjectURL(item.cover)} alt="" className="w-full h-full object-cover" />
+          {coverPreview ? (
+            <img src={coverPreview} alt="" className="w-full h-full object-cover" />
           ) : (
             <span className="inline-flex flex-col items-center gap-1">
               <UploadCloud size={20} /> Cover

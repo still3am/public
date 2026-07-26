@@ -145,7 +145,7 @@ export async function extractEmbeddedCover(file) {
         } else {
           fsize = readUInt32BE(buf, off + 4);
         }
-        const headerLen = frameIdLen + sizeLen + 2;
+        const headerLen = major === 2 ? frameIdLen + sizeLen : frameIdLen + sizeLen + 2;
         const dataStart = off + headerLen;
         if (id === "APIC" || id === "PIC") {
           let p = dataStart;
@@ -258,7 +258,7 @@ export async function extractEmbeddedTitle(file) {
         } else {
           fsize = readUInt32BE(buf, off + 4);
         }
-        const headerLen = frameIdLen + sizeLen + 2;
+        const headerLen = major === 2 ? frameIdLen + sizeLen : frameIdLen + sizeLen + 2;
         const dataStart = off + headerLen;
         if (target.includes(id) && fsize > 0) {
           const enc = buf[dataStart];
@@ -330,7 +330,7 @@ export async function extractEmbeddedArtist(file) {
         } else {
           fsize = readUInt32BE(buf, off + 4);
         }
-        const headerLen = frameIdLen + sizeLen + 2;
+        const headerLen = major === 2 ? frameIdLen + sizeLen : frameIdLen + sizeLen + 2;
         const dataStart = off + headerLen;
         if (target.includes(id) && fsize > 0) {
           const enc = buf[dataStart];

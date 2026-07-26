@@ -82,21 +82,31 @@ export default function Upload() {
     if (!arr.length) return [];
     return Promise.all(
       arr.map(async (f) => {
-        const [dur, cover, title, artist] = await Promise.all([
-        getAudioDuration(f).catch(() => 0),
-        extractEmbeddedCover(f),
-        extractEmbeddedTitle(f),
-        extractEmbeddedArtist(f)]
-        );
-        return FACTORY({
-          file: f,
-          file_name: f.name,
-          size: f.size,
-          title: title || deriveDefaultTitle(f),
-          artist: artist || deriveDefaultArtist(f),
-          duration: dur,
-          cover
-        });
+        try {
+          const [dur, cover, title, artist] = await Promise.all([
+          getAudioDuration(f).catch(() => 0),
+          extractEmbeddedCover(f).catch(() => null),
+          extractEmbeddedTitle(f).catch(() => ""),
+          extractEmbeddedArtist(f).catch(() => "")]
+          );
+          return FACTORY({
+            file: f,
+            file_name: f.name,
+            size: f.size,
+            title: title || deriveDefaultTitle(f),
+            artist: artist || deriveDefaultArtist(f),
+            duration: dur,
+            cover
+          });
+        } catch {
+          return FACTORY({
+            file: f,
+            file_name: f.name,
+            size: f.size,
+            title: deriveDefaultTitle(f),
+            artist: deriveDefaultArtist(f)
+          });
+        }
       })
     );
   }
