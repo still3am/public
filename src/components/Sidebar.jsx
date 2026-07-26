@@ -60,7 +60,7 @@ export default function Sidebar() {
         <NavLink to="/recent" className={navLinkCls}>
           <Clock size={18} /> Recently Added
         </NavLink>
-        <div className="my-2 border-t border-border/60 hidden" />
+        
         <NavLink to="/liked" className={navLinkCls}>
           <Heart size={18} /> Liked Songs
         </NavLink>
