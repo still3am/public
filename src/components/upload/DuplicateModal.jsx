@@ -1,23 +1,30 @@
 import { useState } from "react";
-import { Music2, Trash2, Loader2, X, AlertTriangle } from "lucide-react";
+import { Music2, Trash2, Loader2, X, AlertTriangle, XCircle } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 import { useToast } from "@/components/ui/use-toast";
 import { formatTime } from "@/lib/audio-utils";
 
-export default function DuplicateModal({ tracks, onClose, onDeleted }) {
+export default function DuplicateModal({
+  entries,
+  onClose,
+  onRemoveQueue,
+  onExistingDeleted,
+}) {
   const { toast } = useToast();
   const [deleting, setDeleting] = useState({});
-  const [list, setList] = useState(tracks);
 
-  async function del(id) {
+  async function delExisting(id) {
     setDeleting((s) => ({ ...s, [id]: true }));
     try {
       await base44.entities.Track.delete(id);
-      setList((prev) => prev.filter((t) => t.id !== id));
-      onDeleted?.(id);
-      toast({ title: "Track deleted" });
+      onExistingDeleted?.(id);
+      toast({ title: "Existing track deleted" });
     } catch (e) {
-      toast({ title: "Could not delete", description: e?.message, variant: "destructive" });
+      toast({
+        title: "Could not delete",
+        description: e?.message,
+        variant: "destructive",
+      });
     } finally {
       setDeleting((s) => ({ ...s, [id]: false }));
     }
@@ -35,8 +42,13 @@ export default function DuplicateModal({ tracks, onClose, onDeleted }) {
               Possible duplicates
             </h3>
             <p className="text-xs text-foreground/60 mt-0.5">
-              These tracks already exist in your library. Delete any you want to
-              replace.
+              Some uploads already exist in your library.{" "}
+              <span className="inline-flex items-center align-middle text-foreground/70">
+                <XCircle size={12} className="mr-1" />
+              </span>
+              skip the upload, or
+              <span className="text-destructive font-medium"> delete </span>
+              the existing track to replace it.
             </p>
           </div>
           <button
@@ -49,20 +61,20 @@ export default function DuplicateModal({ tracks, onClose, onDeleted }) {
         </div>
 
         <div className="flex-1 overflow-y-auto p-3 space-y-1">
-          {list.length === 0 ? (
+          {entries.length === 0 ? (
             <div className="text-center text-sm text-foreground/50 py-10">
               No duplicates left.
             </div>
           ) : (
-            list.map((t) => (
+            entries.map((e) => (
               <div
-                key={t.id}
+                key={e.id}
                 className="flex items-center gap-3 p-2 rounded-xl hover:bg-foreground/[0.03]"
               >
                 <div className="w-11 h-11 rounded-md overflow-hidden bg-foreground/10 grid place-items-center shrink-0">
-                  {t.cover_art_url ? (
+                  {e.item.coverPreviewUrl ? (
                     <img
-                      src={t.cover_art_url}
+                      src={e.item.coverPreviewUrl}
                       alt=""
                       className="w-full h-full object-cover"
                     />
@@ -71,18 +83,34 @@ export default function DuplicateModal({ tracks, onClose, onDeleted }) {
                   )}
                 </div>
                 <div className="flex-1 min-w-0">
-                  <div className="font-semibold text-sm truncate">{t.title}</div>
+                  <div className="font-semibold text-sm truncate">
+                    {e.item.title}
+                  </div>
                   <div className="text-xs text-foreground/50 truncate">
-                    {t.artist || "Unknown"} · {formatTime(t.duration_seconds)}
+                    Matches{" "}
+                    <span className="font-medium text-foreground/70">
+                      {e.existing.title}
+                    </span>
+                    {e.existing.artist ? ` · ${e.existing.artist}` : ""} ·{" "}
+                    {formatTime(e.existing.duration_seconds)}
                   </div>
                 </div>
                 <button
-                  onClick={() => del(t.id)}
-                  disabled={deleting[t.id]}
-                  className="p-2 rounded-full text-foreground/40 hover:text-destructive hover:bg-destructive/10 disabled:opacity-40"
-                  aria-label="Delete track"
+                  onClick={() => onRemoveQueue?.(e.id)}
+                  title="Skip this upload (remove from queue)"
+                  aria-label="Skip this upload"
+                  className="p-2 rounded-full text-foreground/40 hover:text-foreground hover:bg-foreground/10"
                 >
-                  {deleting[t.id] ? (
+                  <XCircle size={16} />
+                </button>
+                <button
+                  onClick={() => delExisting(e.existing.id)}
+                  disabled={deleting[e.existing.id]}
+                  title="Delete existing track from your library"
+                  aria-label="Delete existing track"
+                  className="p-2 rounded-full text-foreground/40 hover:text-destructive hover:bg-destructive/10 disabled:opacity-40"
+                >
+                  {deleting[e.existing.id] ? (
                     <Loader2 size={16} className="animate-spin" />
                   ) : (
                     <Trash2 size={16} />
