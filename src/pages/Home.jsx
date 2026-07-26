@@ -5,7 +5,6 @@ import { useAuth } from "@/lib/AuthContext";
 import {
   TrendingUp,
   Sparkles,
-  Upload,
   Music,
   Disc,
   Lightbulb,
@@ -146,13 +145,7 @@ export default function Home() {
         icon={Music}
         title="Nothing here yet"
         description="Be the first to upload audio to the PUBLIC network."
-        action={
-        <Link
-          to="/upload"
-          className="px-4 py-2 rounded-full bg-foreground text-background text-sm font-semibold flex items-center gap-2">
-            <Upload size={14} /> Upload now
-          </Link>
-        } />);
+        />);
 
 
   }
@@ -183,11 +176,6 @@ export default function Home() {
               Listen, upload, and share — a space for sound, made by the people, for the people.
             </p>
             <div className="flex items-center justify-center gap-2.5 flex-wrap">
-              <Link
-                to="/upload"
-                className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-foreground text-background text-sm font-semibold hover:scale-[1.03] active:scale-95 transition shadow-sm">
-                <Upload size={15} /> Upload music
-              </Link>
               <Link
                 to="/discover"
                 className="inline-flex items-center gap-2 px-6 py-3 rounded-full border border-foreground/15 text-sm font-semibold hover:bg-foreground/5 active:scale-95 transition">

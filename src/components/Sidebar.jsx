@@ -4,7 +4,6 @@ import {
   Search,
   Library,
   Heart,
-  Upload,
   Shield,
   Compass,
   TrendingUp,
@@ -69,9 +68,6 @@ export default function Sidebar() {
         </NavLink>
         <NavLink to="/suggestions" className={navLinkCls}>
           <Lightbulb size={18} /> Suggestions
-        </NavLink>
-        <NavLink to="/upload" className={navLinkCls}>
-          <Upload size={18} /> Upload
         </NavLink>
         <NavLink to="/notifications" className={navLinkCls}>
           <Bell size={18} /> Notifications

@@ -548,15 +548,6 @@ export default function Profile() {
 
 
                   
-                {isOwn && !editMode &&
-                  <Link
-                    to="/upload"
-                    title="Upload a track"
-                    aria-label="Upload a track"
-                    className="w-10 h-10 rounded-full border border-border grid place-items-center">
-                    <Upload size={16} />
-                  </Link>
-                  }
               </div>
             </div>
           </div>
@@ -620,16 +611,7 @@ export default function Profile() {
           icon={Music}
           title={isOwn ? "You haven't uploaded anything" : "No uploads yet"}
           description={isOwn ? "Share your first track with the PUBLIC network." : ""}
-          action={
-          isOwn ?
-          <Link
-            to="/upload"
-            className="px-4 py-2 rounded-full bg-foreground text-background text-sm font-semibold flex items-center gap-2">
-          
-                <Upload size={14} /> Upload
-              </Link> :
-          null
-          } /> :
+          /> :
 
         standaloneTracks.length === 0 && albums.length > 0 ?
         <p className="text-sm text-foreground/50 mb-10">

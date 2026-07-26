@@ -6,7 +6,6 @@ import {
   Clock,
   Bell,
   Heart,
-  Upload,
   Lightbulb,
 } from "lucide-react";
 import ThemeToggle from "@/components/ThemeToggle";
@@ -18,7 +17,6 @@ const ITEMS = [
   { to: "/notifications", icon: Bell, label: "Notifications" },
   { to: "/liked", icon: Heart, label: "Liked Songs" },
   { to: "/suggestions", icon: Lightbulb, label: "Suggestions" },
-  { to: "/upload", icon: Upload, label: "Upload" },
 ];
 
 export default function MobileMoreSheet({ onClose }) {

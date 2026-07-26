@@ -19,7 +19,6 @@ import Discover from '@/pages/Discover';
 import TopCharts from '@/pages/TopCharts';
 import RecentlyAdded from '@/pages/RecentlyAdded';
 import Notifications from '@/pages/Notifications';
-import Upload from '@/pages/Upload';
 import Profile from '@/pages/Profile';
 import LikedSongs from '@/pages/LikedSongs';
 import Library from '@/pages/Library';
@@ -69,7 +68,6 @@ const AuthenticatedApp = () => {
           <Route path="/notifications" element={<Notifications />} />
           <Route path="/library" element={<Library />} />
           <Route path="/liked" element={<LikedSongs />} />
-          <Route path="/upload" element={<Upload />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/profile/:id" element={<Profile />} />
           <Route path="/track/:id" element={<TrackDetail />} />
