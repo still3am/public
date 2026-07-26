@@ -175,7 +175,7 @@ export default function Home() {
 
           <div className="relative">
             <span className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-foreground/[0.05] border border-foreground/10 text-[11px] font-semibold uppercase tracking-[0.18em] text-foreground/60 mb-6">
-              <Sparkles size={12} className="hidden" /> {greeting}
+               {greeting}
             </span>
             <h1 className="text-4xl md:text-6xl font-extrabold tracking-tighter mb-3 max-w-2xl leading-[1.02]">
               {user?.display_name ? `Hey, ${user.display_name}.` : "Welcome to PUBLIC."}
