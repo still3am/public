@@ -29,8 +29,8 @@ export function UploadButton({ icon: Icon, title, sub, onClick, hint }) {
         <div className="text-sm text-foreground/55 leading-snug mt-0.5 max-w-[20rem]">{sub}</div>
       </div>
       {hint && <div className="text-[10px] uppercase tracking-widest text-foreground/35">{hint}</div>}
-    </button>
-  );
+    </button>);
+
 }
 
 export function UrlAddRow({ onAdded, disabled }) {
@@ -58,7 +58,7 @@ export function UrlAddRow({ onAdded, disabled }) {
   }
 
   return (
-    <form onSubmit={submit} className="rounded-2xl border border-border p-3 bg-foreground/[0.02] space-y-2">
+    <form onSubmit={submit} className="rounded-2xl border border-border p-3 bg-foreground/[0.02] space-y-2 hidden">
       <div className="flex items-center gap-1 text-xs font-semibold text-foreground/60">
         <Link2 size={12} /> Paste a direct audio URL
       </div>
@@ -69,8 +69,8 @@ export function UrlAddRow({ onAdded, disabled }) {
           onChange={(e) => setUrl(e.target.value)}
           placeholder="https://example.com/track.mp3"
           className="flex-1 px-3 py-2 rounded-xl border border-border bg-white text-sm"
-          disabled={loading}
-        />
+          disabled={loading} />
+        
         <button
           type="submit"
           disabled={loading || !url.trim()}
@@ -79,8 +79,8 @@ export function UrlAddRow({ onAdded, disabled }) {
         </button>
       </div>
       {err && <div className="text-xs text-red-600">{err}</div>}
-    </form>
-  );
+    </form>);
+
 }
 
 export function PreviewButton({ item }) {
@@ -110,10 +110,10 @@ export function PreviewButton({ item }) {
         onPlay={() => setPlaying(true)}
         onPause={() => setPlaying(false)}
         onEnded={() => setPlaying(false)}
-        className="hidden"
-      />
-    </button>
-  );
+        className="hidden" />
+      
+    </button>);
+
 }
 
 export function AudioVerify({ item }) {
@@ -126,8 +126,8 @@ export function AudioVerify({ item }) {
   const toggle = () => {
     const a = ref.current;
     if (!a) return;
-    if (playing) a.pause();
-    else a.play().catch(() => {});
+    if (playing) a.pause();else
+    a.play().catch(() => {});
   };
   return (
     <div className="flex items-center gap-3 p-3 rounded-2xl border border-dashed border-foreground/25 bg-foreground/[0.02]">
@@ -141,7 +141,7 @@ export function AudioVerify({ item }) {
       <div className="flex-1 min-w-0">
         <div className="text-xs font-semibold text-foreground/70 mb-1.5">Play to verify this is the right audio</div>
         <div className="relative h-1.5 bg-foreground/15 rounded-full">
-          <div className="absolute left-0 top-0 h-1.5 bg-foreground/70 rounded-full" style={{ width: `${dur ? (pos / dur) * 100 : 0}%` }} />
+          <div className="absolute left-0 top-0 h-1.5 bg-foreground/70 rounded-full" style={{ width: `${dur ? pos / dur * 100 : 0}%` }} />
         </div>
         <div className="flex justify-between text-[10px] text-foreground/40 mt-1">
           <span>{fmtDur(pos)}</span>
@@ -159,10 +159,10 @@ export function AudioVerify({ item }) {
         }}
         onTimeUpdate={(e) => setPos(e.target.currentTime || 0)}
         onLoadedMetadata={(e) => setDur(e.target.duration || item?.duration || 0)}
-        className="hidden"
-      />
-    </div>
-  );
+        className="hidden" />
+      
+    </div>);
+
 }
 
 export function DropZone({ children, onPick, disabled }) {
@@ -183,51 +183,51 @@ export function DropZone({ children, onPick, disabled }) {
       }}
       onClick={() => !disabled && onPick?.()}
       className={`border-2 border-dashed rounded-3xl p-10 text-center cursor-pointer transition ${
-        over ? "border-foreground bg-foreground/[0.04]" : "border-border hover:bg-foreground/[0.02]"
-      } ${disabled ? "opacity-50 pointer-events-none" : ""}`}>
+      over ? "border-foreground bg-foreground/[0.04]" : "border-border hover:bg-foreground/[0.02]"} ${
+      disabled ? "opacity-50 pointer-events-none" : ""}`}>
       {children}
-    </div>
-  );
+    </div>);
+
 }
 
 export function AdvancedFields({ it, i, updateItem, separate }) {
   return (
     <div className="mt-3 pt-3 border-t border-border space-y-2">
       <div className="flex gap-2 flex-wrap">
-        {separate && (
-          <label className="text-xs px-2 py-1 rounded border border-border cursor-pointer flex items-center gap-1">
+        {separate &&
+        <label className="text-xs px-2 py-1 rounded border border-border cursor-pointer flex items-center gap-1">
             <Music2 size={12} /> {it.cover ? it.cover.name : "Cover art"}
             <input
-              type="file"
-              accept="image/*"
-              className="hidden"
-              onChange={(e) => {
-                const f = e.target.files?.[0];
-                if (f) updateItem(i, { cover: f });
-              }}
-            />
+            type="file"
+            accept="image/*"
+            className="hidden"
+            onChange={(e) => {
+              const f = e.target.files?.[0];
+              if (f) updateItem(i, { cover: f });
+            }} />
+          
           </label>
-        )}
+        }
         <input
           value={it.artist}
           onChange={(e) => updateItem(i, { artist: e.target.value })}
           placeholder="Artist (defaults to your name)"
-          className="flex-1 min-w-[10rem] px-2 py-1 rounded border border-border text-xs"
-        />
+          className="flex-1 min-w-[10rem] px-2 py-1 rounded border border-border text-xs" />
+        
       </div>
       <input
         value={it.description}
         onChange={(e) => updateItem(i, { description: e.target.value })}
         placeholder="Description (optional)"
-        className="w-full px-2 py-1 rounded border border-border text-xs"
-      />
+        className="w-full px-2 py-1 rounded border border-border text-xs" />
+      
       <textarea
         value={it.lyrics}
         onChange={(e) => updateItem(i, { lyrics: e.target.value })}
         placeholder="Lyrics (optional)"
         rows={3}
-        className="w-full px-2 py-1 rounded border border-border text-xs font-mono"
-      />
+        className="w-full px-2 py-1 rounded border border-border text-xs font-mono" />
+      
       <div className="flex items-center gap-4 flex-wrap text-xs">
         <label className="flex items-center gap-1.5 cursor-pointer">
           <input type="checkbox" checked={!!it.explicit} onChange={(e) => updateItem(i, { explicit: e.target.checked })} />
@@ -242,30 +242,30 @@ export function AdvancedFields({ it, i, updateItem, separate }) {
           {it.is_published ? <Eye size={12} /> : <EyeOff size={12} />} {it.is_published ? "Public" : "Draft"}
         </label>
       </div>
-    </div>
-  );
+    </div>);
+
 }
 
 export function PublishBar({ rights, setRights, onPublish, publishing, progress, label, canPublish, albumVisibility, setAlbumPublish }) {
   return (
     <div className="flex flex-col gap-3">
-      {albumVisibility !== null && (
-        <label className="flex items-center gap-2 text-sm">
+      {albumVisibility !== null &&
+      <label className="flex items-center gap-2 text-sm">
           {albumVisibility ? <Eye size={14} /> : <EyeOff size={14} />}
           <span className="text-foreground/60">Album visibility:</span>
           <input type="checkbox" checked={!!albumVisibility} onChange={(e) => setAlbumPublish(e.target.checked)} />
           <span className="text-foreground/60">{albumVisibility ? "Public" : "Draft (visible only to you)"}</span>
         </label>
-      )}
+      }
       <label className="flex items-center gap-2 text-sm">
         <input type="checkbox" checked={rights} onChange={(e) => setRights(e.target.checked)} />
         I confirm I have the rights to share this content on PUBLIC.
       </label>
-      {publishing && (
-        <div className="w-full h-2 rounded-full bg-foreground/10 overflow-hidden">
+      {publishing &&
+      <div className="w-full h-2 rounded-full bg-foreground/10 overflow-hidden">
           <div className="h-full bg-foreground transition-all" style={{ width: `${progress}%` }} />
         </div>
-      )}
+      }
       <button
         onClick={onPublish}
         disabled={!canPublish || publishing}
@@ -273,9 +273,9 @@ export function PublishBar({ rights, setRights, onPublish, publishing, progress,
         {publishing ? <Loader2 size={16} className="animate-spin" /> : <UploadCloud size={16} />}
         {publishing ? `Uploading ${progress}%` : label}
       </button>
-      {!canPublish && !publishing && (
-        <div className="text-xs text-foreground/40 text-center">Tip: every track needs a title and you must confirm your rights to publish.</div>
-      )}
-    </div>
-  );
+      {!canPublish && !publishing &&
+      <div className="text-xs text-foreground/40 text-center">Tip: every track needs a title and you must confirm your rights to publish.</div>
+      }
+    </div>);
+
 }
