@@ -16,13 +16,13 @@ function Digit({ value }) {
           animate={{ y: "0%", opacity: 1 }}
           exit={{ y: "-108%", opacity: 0.1 }}
           transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-          className="absolute inset-0 grid place-items-center text-2xl md:text-3xl font-extrabold leading-none font-mono text-foreground"
-        >
+          className="absolute inset-0 grid place-items-center text-2xl md:text-3xl font-extrabold leading-none font-mono text-foreground">
+          
           {display}
         </motion.span>
       </AnimatePresence>
-    </span>
-  );
+    </span>);
+
 }
 
 export default function ScoreboardTrackCount({ count = 0 }) {
@@ -38,14 +38,14 @@ export default function ScoreboardTrackCount({ count = 0 }) {
         <span className="relative w-2.5 h-2.5 rounded-full bg-emerald-500 shadow-[0_0_8px] shadow-emerald-500/70" />
       </span>
       <span className="flex gap-1 md:gap-1.5">
-        {digits.map((d, i) => (
-          <Digit key={i} value={d} />
-        ))}
+        {digits.map((d, i) =>
+        <Digit key={i} value={d} />
+        )}
       </span>
       <span className="flex items-center gap-1.5 text-sm md:text-base font-bold text-foreground/70 uppercase tracking-wide">
-        <Music size={15} className="hidden sm:block" />
+        
         <span>{count === 1 ? "track" : "tracks"}</span>
       </span>
-    </div>
-  );
+    </div>);
+
 }
