@@ -6,7 +6,6 @@ import {
   AUDIO_ACCEPT,
   getAudioDuration,
   deriveDefaultTitle,
-  deriveDefaultArtist,
   extractEmbeddedTitle,
   extractEmbeddedArtist,
   extractEmbeddedCover,
@@ -40,11 +39,21 @@ export default function Upload() {
           extractEmbeddedArtist(file),
           extractEmbeddedCover(file),
         ]);
+        // Fall back to "Artist - Title" filename pattern when tags are missing.
+        let fbTitle = deriveDefaultTitle(file);
+        let fbArtist = "";
+        const base = file.name.replace(/\.[^.]+$/, "");
+        const sep = base.indexOf(" - ");
+        if (sep > 0) {
+          fbArtist = base.slice(0, sep).replace(/[_-]+/g, " ").trim();
+          const t = base.slice(sep + 3).replace(/[_-]+/g, " ").trim();
+          if (t) fbTitle = t;
+        }
         return {
           id: ++idc,
           file,
-          title: title || deriveDefaultTitle(file),
-          artist: artist || deriveDefaultArtist(file),
+          title: title || fbTitle,
+          artist: artist || fbArtist,
           genre: "Other",
           duration: dur,
           coverFile: cover || null,
