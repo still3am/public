@@ -10,9 +10,11 @@ import {
   extractEmbeddedArtist,
   extractEmbeddedCover,
 } from "@/lib/audio-utils";
+import { findDuplicateTracks } from "@/lib/duplicateCheck";
 import BackHeader from "@/components/BackHeader";
 import FileDropZone from "@/components/upload/FileDropZone";
 import UploadItem from "@/components/upload/UploadItem";
+import DuplicateModal from "@/components/upload/DuplicateModal";
 import { UploadCloud, Loader2, Plus, CheckCheck } from "lucide-react";
 
 let idc = 0;
@@ -23,6 +25,7 @@ export default function Upload() {
   const [items, setItems] = useState([]);
   const [busy, setBusy] = useState(false);
   const [progress, setProgress] = useState({ done: 0, total: 0 });
+  const [dupes, setDupes] = useState(null);
   const inputRef = useRef(null);
 
   const addFiles = useCallback(async (files) => {
@@ -68,7 +71,31 @@ export default function Upload() {
       })
     );
     setItems((prev) => [...prev, ...newItems]);
-  }, []);
+    try {
+      const existing = await base44.entities.Track.filter(
+        { uploader_id: user.id },
+        "-created_date",
+        200
+      );
+      const found = [];
+      const seen = new Set();
+      for (const c of newItems) {
+        const dups = findDuplicateTracks(existing, {
+          title: c.title,
+          artist: c.artist,
+          duration: c.duration,
+          file_name: c.file.name,
+        });
+        for (const d of dups) {
+          if (!seen.has(d.id)) {
+            seen.add(d.id);
+            found.push(d);
+          }
+        }
+      }
+      if (found.length) setDupes(found);
+    } catch {}
+  }, [user]);
 
   function updateItem(id, patch) {
     setItems((prev) =>
@@ -78,6 +105,14 @@ export default function Upload() {
 
   function removeItem(id) {
     setItems((prev) => prev.filter((it) => it.id !== id));
+  }
+
+  function markDone(id) {
+    updateItem(id, { status: "done" });
+    setTimeout(
+      () => setItems((prev) => prev.filter((it) => it.id !== id)),
+      1200
+    );
   }
 
   async function uploadOne(item) {
@@ -119,7 +154,7 @@ export default function Upload() {
         rights_confirmed: true,
         is_published: item.is_published,
       });
-      updateItem(item.id, { status: "done" });
+      markDone(item.id);
       return true;
     } catch (err) {
       updateItem(item.id, {
@@ -227,6 +262,18 @@ export default function Upload() {
             />
           ))}
         </div>
+      )}
+
+      {dupes && (
+        <DuplicateModal
+          tracks={dupes}
+          onClose={() => setDupes(null)}
+          onDeleted={(id) =>
+            setDupes((prev) =>
+              prev ? prev.filter((t) => t.id !== id) : prev
+            )
+          }
+        />
       )}
     </div>
   );
