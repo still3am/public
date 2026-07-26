@@ -29,7 +29,7 @@ function Section({ title, icon: Icon, children, seeAllTo }) {
       <div className="flex items-end justify-between mb-3.5 px-3 md:px-0">
         <h2 className="text-lg md:text-2xl font-extrabold tracking-tight flex items-center gap-2.5">
           {Icon &&
-          <span className="grid place-items-center w-8 h-8 rounded-lg bg-foreground/[0.06] text-foreground/70">
+          <span className="grid place-items-center w-8 h-8 rounded-lg bg-foreground/[0.06] text-foreground/70 hidden">
               <Icon size={16} />
             </span>
           }
@@ -202,7 +202,7 @@ export default function Home() {
           to="/suggestions"
           className="group block mb-10 md:mb-12 mx-3 md:mx-0 rounded-2xl border border-foreground/[0.06] bg-foreground/[0.02] hover:bg-foreground/[0.04] transition p-4 md:p-5">
           <div className="flex items-center gap-4">
-            <span className="grid place-items-center w-11 h-11 rounded-xl bg-amber-400/15 text-amber-600 dark:text-amber-400 shrink-0">
+            <span className="grid place-items-center w-11 h-11 rounded-xl bg-amber-400/15 text-amber-600 dark:text-amber-400 shrink-0 hidden">
               <Lightbulb size={20} />
             </span>
             <div className="flex-1 min-w-0">
