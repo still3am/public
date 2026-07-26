@@ -71,6 +71,7 @@ export default function Upload() {
   const addTrackInputRef = useRef(null);
   const moreInputRef = useRef(null);
   const replaceInputRef = useRef(null);
+  const pendingBatchRef = useRef([]);
 
   const albumUploaderName = user?.display_name || user?.full_name || user?.email || "You";
 
@@ -207,6 +208,35 @@ export default function Upload() {
     return false;
   }
 
+  // Detect duplicates INSIDE the current upload batch (e.g. same file added twice
+  // to an album/queue). The cross-library check only sees already-saved tracks,
+  // so without this two identical files in one batch both get published.
+  function toTrackLike(it) {
+    return {
+      id: it.id,
+      title: it.title || it.file_name,
+      artist: it.artist,
+      duration_seconds: it.duration,
+      audio_url: it.audio_url,
+      cover_art_url: it.cover_url || ""
+    };
+  }
+
+  function dedupeBatch(list) {
+    const kept = [];
+    const pool = [];
+    let removed = 0;
+    for (const it of list) {
+      if (findDuplicateTracks(pool, it).length) {
+        removed++;
+        continue;
+      }
+      kept.push(it);
+      pool.push(toTrackLike(it));
+    }
+    return { kept, removed };
+  }
+
   async function deleteDuplicate(id) {
     const matches = dupWarning?.matches || [];
     const remaining = matches.filter((m) => m.existing.id !== id).length;
@@ -310,11 +340,18 @@ export default function Upload() {
 
   async function publishBulk() {
     if (!validBulk()) return;
-    if (await dupCheck(items, "bulk")) return;
-    await doPublishBulk();
+    const { kept, removed } = dedupeBatch(items);
+    if (removed) {
+      setItems(kept);
+      toast({ title: `Removed ${removed} duplicate${removed > 1 ? "s" : ""} from your upload`, description: "Kept one copy of each." });
+    }
+    const candidates = kept.length ? kept : items;
+    pendingBatchRef.current = candidates;
+    if (await dupCheck(candidates, "bulk")) return;
+    await doPublishBulk(candidates);
   }
 
-  async function doPublishBulk() {
+  async function doPublishBulk(list) {
     setPublishing(true);
     setProgress(0);
     try {
@@ -330,8 +367,8 @@ export default function Upload() {
       });
       setProgress(30);
       const built = [];
-      for (let i = 0; i < items.length; i++) {
-        const src = items[i];
+      for (let i = 0; i < list.length; i++) {
+        const src = list[i];
         const audio_url = await uploadAudio(src);
         const resolvedGenre = src.genre && src.genre !== "Other" ? src.genre : album.genre;
         built.push(
@@ -346,12 +383,12 @@ export default function Upload() {
             genre: resolvedGenre
           })
         );
-        setProgress(30 + Math.round((i + 1) / items.length * 65));
+        setProgress(30 + Math.round((i + 1) / list.length * 65));
       }
       await base44.entities.Track.bulkCreate(built);
       setProgress(100);
-      setDone({ id: albumRec.id, kind: "album", title: album.title, count: items.length });
-      toast({ title: "Album published", description: `${items.length} tracks grouped as one album` });
+      setDone({ id: albumRec.id, kind: "album", title: album.title, count: list.length });
+      toast({ title: "Album published", description: `${list.length} tracks grouped as one album` });
       setTimeout(() => nav(`/album/${albumRec.id}`), 700);
     } catch (e) {
       toast({ title: "Publish failed", description: e?.message || "Try again", variant: "destructive" });
@@ -361,13 +398,24 @@ export default function Upload() {
 
   async function publishQueue() {
     if (!items.length || !rights) return;
-    if (await dupCheck(items, "queue")) return;
+    const { kept, removed } = dedupeBatch(items);
+    if (removed) {
+      setItems(kept);
+      toast({ title: `Removed ${removed} duplicate${removed > 1 ? "s" : ""} from your queue`, description: "Kept one copy of each." });
+    }
+    const candidates = kept.length ? kept : items;
+    pendingBatchRef.current = candidates;
+    if (await dupCheck(candidates, "queue")) return;
+    await doPublishQueue(candidates);
+  }
+
+  async function doPublishQueue(list) {
     setPublishing(true);
     setProgress(0);
     try {
-      const total = items.length;
+      const total = list.length;
       for (let i = 0; i < total; i++) {
-        const item = items[i];
+        const item = list[i];
         if (!item.title?.trim() && !item.file_name?.trim()) continue;
         if (!item.audio_url && !item.file) continue;
         const audio_url = await uploadAudio(item);
@@ -524,11 +572,11 @@ export default function Upload() {
         onCancel={() => setDupWarning(null)}
         onDelete={deleteDuplicate}
         onContinue={() => {
-          const k = dupWarning.kind;
-          setDupWarning(null);
-          if (k === "single") doPublishSingle();else
-          if (k === "queue") publishQueue();else
-          doPublishBulk();
+        const k = dupWarning.kind;
+        setDupWarning(null);
+        if (k === "single") doPublishSingle();else
+        if (k === "queue") doPublishQueue(pendingBatchRef.current);else
+        doPublishBulk(pendingBatchRef.current);
         }} />
 
       }
