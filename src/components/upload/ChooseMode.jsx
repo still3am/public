@@ -15,7 +15,7 @@ export default function ChooseMode({ onPickSingle, onPickAlbum, onAddUrl }) {
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
-        <UploadButton onClick={onPickSingle} icon={Music} title="Tracks" sub="One or more audio files with title, cover art, and lyrics." hint="MP3 · WAV · M4A · FLAC" />
+        <UploadButton onClick={onPickSingle} icon={Music} title="Single Track" sub="One audio file with title, cover art, and lyrics." hint="MP3 · WAV · M4A · FLAC" />
         <UploadButton onClick={onPickAlbum} icon={Disc} title="Album" sub="Tracks grouped as one album with shared cover and track list." hint="Grouped collection" />
       </div>
 
