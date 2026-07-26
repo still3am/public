@@ -4,7 +4,6 @@ import {
   Search,
   Library,
   Heart,
-  Shield,
   Compass,
   TrendingUp,
   Clock,
@@ -27,7 +26,6 @@ const navLinkCls = ({ isActive }) =>
 
 export default function Sidebar() {
   const { user } = useAuth();
-  const isAdmin = user?.role === "admin";
   const [unread, setUnread] = useState(0);
 
   useEffect(() => {
@@ -77,11 +75,6 @@ export default function Sidebar() {
             </span>
           )}
         </NavLink>
-        {isAdmin && (
-          <NavLink to="/admin" className={navLinkCls}>
-            <Shield size={18} /> Admin
-          </NavLink>
-        )}
       </nav>
       <div className="p-3 border-t border-border space-y-2 pb-28">
         <ThemeToggle />
