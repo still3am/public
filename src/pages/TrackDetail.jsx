@@ -66,19 +66,24 @@ export default function TrackDetail() {
         setAlbum(null);
       }
       if (t?.artist) {
-        const all = await base44.entities.Track.list("-play_count", 50).catch(
+        const splitNames = (str) =>
+          (str || "")
+            .split(/\s*(?:,|&| feat\.| ft\.| x |;)\s*/i)
+            .map((s) => s.trim().toLowerCase())
+            .filter(Boolean);
+        const names = splitNames(t.artist);
+        const all = await base44.entities.Track.list("-play_count", 100).catch(
           () => []
         );
-        const lc = t.artist.toLowerCase();
         setMoreTracks(
-          all.
-          filter(
-            (x) =>
-            x.id !== t.id &&
-            (x.artist || "").toLowerCase() === lc &&
-            x.is_published !== false
-          ).
-          slice(0, 6)
+          all
+            .filter(
+              (x) =>
+                x.id !== t.id &&
+                x.is_published !== false &&
+                splitNames(x.artist).some((n) => names.includes(n))
+            )
+            .slice(0, 6)
         );
       } else {
         setMoreTracks([]);
