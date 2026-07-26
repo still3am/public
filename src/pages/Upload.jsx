@@ -276,7 +276,6 @@ export default function Upload() {
   const bulkInputRef = useRef(null);
   const addTrackInputRef = useRef(null);
   const pendingBulkKind = useRef(null);
-  const moreInputRef = useRef(null);
 
   const albumUploaderName = user?.display_name || user?.full_name || user?.email || "You";
 
@@ -316,14 +315,6 @@ export default function Upload() {
     const built = await filesToItems(files);
     if (!built.length) return;
     setItems((prev) => [...prev, ...built]);
-  }
-
-  async function addMoreFiles(files) {
-    const built = await filesToItems(files);
-    if (!built.length) return;
-    setItems((prev) => (prev.length ? [...prev, ...built] : built));
-    setMode("bulk");
-    setBulkKind("album");
   }
 
   async function appendFromUrl({ url, file_name, size }) {
@@ -623,17 +614,6 @@ export default function Upload() {
         if (addTrackInputRef.current) addTrackInputRef.current.value = "";
       }} />
     
-      <input
-      ref={moreInputRef}
-      type="file"
-      accept={AUDIO_ACCEPT}
-      multiple
-      className="hidden"
-      onChange={async (e) => {
-        await addMoreFiles(e.target.files);
-        if (moreInputRef.current) moreInputRef.current.value = "";
-      }} />
-    
     </>;
 
 
@@ -745,8 +725,7 @@ export default function Upload() {
             singleInputRef.current?.click();
           }}
           onAddUrl={appendFromUrl}
-          onClear={resetItems}
-          onAddMore={() => moreInputRef.current?.click()} />
+          onClear={resetItems} />
 
         }
 
@@ -1187,7 +1166,7 @@ function DuplicateConfirmModal({ matches, onContinue, onCancel }) {
   );
 }
 
-function SingleEditor({ item, update, rights, setRights, publishing, onPublish, canPublish, progress, onPickFile, onAddUrl, onClear, onAddMore }) {
+function SingleEditor({ item, update, rights, setRights, publishing, onPublish, canPublish, progress, onPickFile, onAddUrl, onClear }) {
   if (!item)
   return (
     <div>
@@ -1207,8 +1186,7 @@ function SingleEditor({ item, update, rights, setRights, publishing, onPublish, 
         progress={progress}
         onPickFile={onPickFile}
         onAddUrl={onAddUrl}
-        onClear={onClear}
-        onAddMore={onAddMore} />
+        onClear={onClear} />
       
     </div>);
 
@@ -1246,7 +1224,7 @@ function DropZoneHelper({ onPickFile, onAddUrl }) {
 
 }
 
-function SingleForm({ item, update, rights, setRights, publishing, onPublish, canPublish, progress, onPickFile, onAddUrl, onClear, onAddMore }) {
+function SingleForm({ item, update, rights, setRights, publishing, onPublish, canPublish, progress, onPickFile, onAddUrl, onClear }) {
   const [showAdvanced, setShowAdvanced] = useState(false);
   return (
     <div className="space-y-3">
@@ -1367,24 +1345,15 @@ function SingleForm({ item, update, rights, setRights, publishing, onPublish, ca
           <div className="h-full bg-foreground transition-all" style={{ width: `${progress}%` }} />
         </div>
       }
-      <div className="flex gap-2 flex-wrap">
+      <div className="flex gap-2">
         <button
           onClick={onPublish}
           disabled={!canPublish || publishing}
           className="px-5 py-2.5 rounded-full bg-foreground text-background text-sm font-semibold flex items-center gap-2 justify-center disabled:opacity-40">
-          
+
           {publishing ? <Loader2 size={16} className="animate-spin" /> : <UploadCloud size={16} />}
           {publishing ? `Uploading ${progress}%` : "Publish track"}
         </button>
-        {onAddMore &&
-        <button
-          type="button"
-          onClick={onAddMore}
-          className="px-4 py-2.5 rounded-full border border-border text-sm font-semibold flex items-center gap-1.5 hover:bg-foreground/[0.04]">
-          
-          <Plus size={14} /> Add more audio files
-        </button>
-        }
         {onClear &&
         <button
           onClick={onClear}
