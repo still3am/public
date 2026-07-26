@@ -252,6 +252,35 @@ async function findMp4Cover(file) {
   return null;
 }
 
+// Scans an MP4/M4A file for a metadata atom (e.g. ©ART, ©nam) whose body is a
+// UTF-8 "data" atom, and returns the trimmed text.
+async function findMp4Text(file, typeStr) {
+  const tb = [...typeStr].map((c) => c.charCodeAt(0));
+  const scan = (buf) => {
+    for (let q = 0; q + 20 < buf.length; q++) {
+      if (buf[q] === tb[0] && buf[q + 1] === tb[1] && buf[q + 2] === tb[2] && buf[q + 3] === tb[3]) {
+        if (buf[q + 8] === 0x64 && buf[q + 9] === 0x61 && buf[q + 10] === 0x74 && buf[q + 11] === 0x61) { // "data"
+          const dataSize = readUInt32BE(buf, q + 4);
+          const payloadLen = dataSize - 16;
+          if (payloadLen > 0 && q + 20 + payloadLen <= buf.length) {
+            const text = new TextDecoder("utf-8").decode(buf.slice(q + 20, q + 20 + payloadLen)).replace(/\x00+$/g, "").trim();
+            if (text) return text;
+          }
+        }
+      }
+    }
+    return "";
+  };
+  const head = new Uint8Array(await file.slice(0, Math.min(file.size, 4 * 1024 * 1024)).arrayBuffer());
+  const r = scan(head);
+  if (r) return r;
+  if (file.size > 4 * 1024 * 1024) {
+    const tail = new Uint8Array(await file.slice(file.size - 4 * 1024 * 1024, file.size).arrayBuffer());
+    return scan(tail);
+  }
+  return "";
+}
+
 function decodeID3Text(bytes, enc) {
   if (!bytes || bytes.length === 0) return "";
   let td;
@@ -336,6 +365,12 @@ export async function extractEmbeddedTitle(file) {
         p += len;
       }
     }
+
+    // MP4 / M4A (title in a ©nam atom)
+    if (head[4] === 0x66 && head[5] === 0x74 && head[6] === 0x79 && head[7] === 0x70) { // "ftyp"
+      const t = await findMp4Text(file, "©nam");
+      if (t) return t;
+    }
   } catch {}
   return "";
 }
@@ -407,6 +442,12 @@ export async function extractEmbeddedArtist(file) {
         if (last) break;
         p += len;
       }
+    }
+
+    // MP4 / M4A (artist in a ©ART atom)
+    if (head[4] === 0x66 && head[5] === 0x74 && head[6] === 0x79 && head[7] === 0x70) { // "ftyp"
+      const a = await findMp4Text(file, "©ART");
+      if (a) return a;
     }
   } catch {}
   return "";
