@@ -27,7 +27,7 @@ import {
   Music2,
   AlertTriangle } from
 "lucide-react";
-import { getAudioDuration, deriveDefaultTitle, deriveDefaultArtist, AUDIO_ACCEPT, extractEmbeddedCover } from "@/lib/audio-utils";
+import { getAudioDuration, deriveDefaultTitle, deriveDefaultArtist, AUDIO_ACCEPT, extractEmbeddedCover, extractEmbeddedArtist } from "@/lib/audio-utils";
 import { findDuplicateTracks } from "@/lib/duplicateCheck";
 import { useStableAudioSrc } from "@/hooks/useStableAudioSrc";
 import GenrePicker from "@/components/GenrePicker";
@@ -276,6 +276,7 @@ export default function Upload() {
   const bulkInputRef = useRef(null);
   const addTrackInputRef = useRef(null);
   const pendingBulkKind = useRef(null);
+  const moreInputRef = useRef(null);
 
   const albumUploaderName = user?.display_name || user?.full_name || user?.email || "You";
 
@@ -284,21 +285,22 @@ export default function Upload() {
     const arr = Array.from(files || []).filter(audioFilter);
     if (!arr.length) return [];
     return Promise.all(
-      arr.map(async (f) => {
-        const [dur, cover] = await Promise.all([
-          getAudioDuration(f).catch(() => 0),
-          extractEmbeddedCover(f)
-        ]);
-        return FACTORY({
-          file: f,
-          file_name: f.name,
-          size: f.size,
-          title: deriveDefaultTitle(f),
-          artist: deriveDefaultArtist(f),
-          duration: dur,
-          cover
-        });
-      })
+    arr.map(async (f) => {
+    const [dur, cover, artist] = await Promise.all([
+      getAudioDuration(f).catch(() => 0),
+      extractEmbeddedCover(f),
+      extractEmbeddedArtist(f)
+    ]);
+    return FACTORY({
+      file: f,
+      file_name: f.name,
+      size: f.size,
+      title: deriveDefaultTitle(f),
+      artist: artist || deriveDefaultArtist(f),
+      duration: dur,
+      cover
+    });
+    })
     );
   }
 
@@ -314,6 +316,14 @@ export default function Upload() {
     const built = await filesToItems(files);
     if (!built.length) return;
     setItems((prev) => [...prev, ...built]);
+  }
+
+  async function addMoreFiles(files) {
+    const built = await filesToItems(files);
+    if (!built.length) return;
+    setItems((prev) => (prev.length ? [...prev, ...built] : built));
+    setMode("bulk");
+    setBulkKind("album");
   }
 
   async function appendFromUrl({ url, file_name, size }) {
@@ -613,6 +623,17 @@ export default function Upload() {
         if (addTrackInputRef.current) addTrackInputRef.current.value = "";
       }} />
     
+      <input
+      ref={moreInputRef}
+      type="file"
+      accept={AUDIO_ACCEPT}
+      multiple
+      className="hidden"
+      onChange={async (e) => {
+        await addMoreFiles(e.target.files);
+        if (moreInputRef.current) moreInputRef.current.value = "";
+      }} />
+    
     </>;
 
 
@@ -724,7 +745,8 @@ export default function Upload() {
             singleInputRef.current?.click();
           }}
           onAddUrl={appendFromUrl}
-          onClear={resetItems} />
+          onClear={resetItems}
+          onAddMore={() => moreInputRef.current?.click()} />
 
         }
 
@@ -1165,7 +1187,7 @@ function DuplicateConfirmModal({ matches, onContinue, onCancel }) {
   );
 }
 
-function SingleEditor({ item, update, rights, setRights, publishing, onPublish, canPublish, progress, onPickFile, onAddUrl, onClear }) {
+function SingleEditor({ item, update, rights, setRights, publishing, onPublish, canPublish, progress, onPickFile, onAddUrl, onClear, onAddMore }) {
   if (!item)
   return (
     <div>
@@ -1185,7 +1207,8 @@ function SingleEditor({ item, update, rights, setRights, publishing, onPublish, 
         progress={progress}
         onPickFile={onPickFile}
         onAddUrl={onAddUrl}
-        onClear={onClear} />
+        onClear={onClear}
+        onAddMore={onAddMore} />
       
     </div>);
 
@@ -1223,7 +1246,7 @@ function DropZoneHelper({ onPickFile, onAddUrl }) {
 
 }
 
-function SingleForm({ item, update, rights, setRights, publishing, onPublish, canPublish, progress, onPickFile, onAddUrl, onClear }) {
+function SingleForm({ item, update, rights, setRights, publishing, onPublish, canPublish, progress, onPickFile, onAddUrl, onClear, onAddMore }) {
   const [showAdvanced, setShowAdvanced] = useState(false);
   return (
     <div className="space-y-3">
@@ -1344,7 +1367,7 @@ function SingleForm({ item, update, rights, setRights, publishing, onPublish, ca
           <div className="h-full bg-foreground transition-all" style={{ width: `${progress}%` }} />
         </div>
       }
-      <div className="flex gap-2">
+      <div className="flex gap-2 flex-wrap">
         <button
           onClick={onPublish}
           disabled={!canPublish || publishing}
@@ -1353,6 +1376,15 @@ function SingleForm({ item, update, rights, setRights, publishing, onPublish, ca
           {publishing ? <Loader2 size={16} className="animate-spin" /> : <UploadCloud size={16} />}
           {publishing ? `Uploading ${progress}%` : "Publish track"}
         </button>
+        {onAddMore &&
+        <button
+          type="button"
+          onClick={onAddMore}
+          className="px-4 py-2.5 rounded-full border border-border text-sm font-semibold flex items-center gap-1.5 hover:bg-foreground/[0.04]">
+          
+          <Plus size={14} /> Add more audio files
+        </button>
+        }
         {onClear &&
         <button
           onClick={onClear}

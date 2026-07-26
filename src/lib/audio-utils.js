@@ -213,3 +213,91 @@ export async function extractEmbeddedCover(file) {
   } catch {}
   return null;
 }
+
+function decodeID3Text(bytes, enc) {
+  if (!bytes || bytes.length === 0) return "";
+  let td;
+  try {
+    if (enc === 3) td = new TextDecoder("utf-8");
+    else if (enc === 2) td = new TextDecoder("utf-16be");
+    else if (enc === 1) td = new TextDecoder("utf-16");
+    else td = new TextDecoder("latin1");
+    return td.decode(bytes).replace(/\x00+$/g, "").trim();
+  } catch {
+    let s = "";
+    for (let i = 0; i < bytes.length; i++) s += String.fromCharCode(bytes[i]);
+    return s.replace(/\x00+$/g, "").trim();
+  }
+}
+
+// Extracts the embedded artist tag (ID3v2 TPE1/TP1 for mp3; FLAC ARTIST vorbis comment).
+// Returns a trimmed string, or "" if none found.
+export async function extractEmbeddedArtist(file) {
+  try {
+    const headBuf = await file.slice(0, 16).arrayBuffer();
+    const head = new Uint8Array(headBuf);
+
+    if (head[0] === 0x49 && head[1] === 0x44 && head[2] === 0x33) {
+      const major = head[3];
+      const tagSize = readSynchsafe(head, 6);
+      const total = 10 + tagSize;
+      const buf = new Uint8Array(await file.slice(0, Math.min(total, 2 * 1024 * 1024)).arrayBuffer());
+      let off = 10;
+      const frameIdLen = major === 2 ? 3 : 4;
+      const sizeLen = major === 2 ? 3 : 4;
+      const target = major === 2 ? ["TP1"] : ["TPE1", "TPE2"];
+      while (off + frameIdLen + sizeLen + 2 <= buf.length) {
+        let id = "";
+        for (let i = 0; i < frameIdLen; i++) id += String.fromCharCode(buf[off + i]);
+        if (!/^[A-Z0-9]+$/.test(id)) break;
+        let fsize;
+        if (major === 2) {
+          fsize = (buf[off + 3] << 16) | (buf[off + 4] << 8) | buf[off + 5];
+        } else if (major === 4) {
+          fsize = readSynchsafe(buf, off + 4);
+        } else {
+          fsize = readUInt32BE(buf, off + 4);
+        }
+        const headerLen = frameIdLen + sizeLen + 2;
+        const dataStart = off + headerLen;
+        if (target.includes(id) && fsize > 0) {
+          const enc = buf[dataStart];
+          const text = decodeID3Text(buf.slice(dataStart + 1, dataStart + fsize), enc);
+          if (text) return text;
+        }
+        off = dataStart + fsize;
+      }
+    }
+
+    if (head[0] === 0x66 && head[1] === 0x4c && head[2] === 0x61 && head[3] === 0x43) {
+      const buf = new Uint8Array(await file.slice(0, Math.min(file.size, 5 * 1024 * 1024)).arrayBuffer());
+      let p = 4;
+      while (p + 4 < buf.length) {
+        const blockType = buf[p] & 0x7f;
+        const last = (buf[p] & 0x80) !== 0;
+        const len = readUInt32BE(buf, p + 1);
+        p += 4;
+        if (blockType === 4) {
+          const vendorLen = readUInt32BE(buf, p);
+          let vp = p + 4 + vendorLen;
+          const count = readUInt32BE(buf, vp);
+          vp += 4;
+          for (let i = 0; i < count; i++) {
+            const clen = readUInt32BE(buf, vp);
+            vp += 4;
+            const comment = new TextDecoder("utf-8").decode(buf.slice(vp, vp + clen));
+            vp += clen;
+            const idx = comment.indexOf("=");
+            if (idx > 0 && comment.slice(0, idx).toUpperCase() === "ARTIST") {
+              const v = comment.slice(idx + 1).trim();
+              if (v) return v;
+            }
+          }
+        }
+        if (last) break;
+        p += len;
+      }
+    }
+  } catch {}
+  return "";
+}
