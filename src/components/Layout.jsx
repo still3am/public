@@ -14,7 +14,7 @@ export default function Layout() {
       <Sidebar />
       <div className="flex-1 flex flex-col min-w-0">
         <MobileTopBar />
-        <main className="flex-1 px-4 md:px-8 lg:px-12 py-6 md:py-8 w-full max-w-[1600px] mx-auto main-content">
+        <main className="flex-1 px-3 sm:px-4 md:px-8 lg:px-12 pt-3 pb-6 md:py-8 w-full max-w-[1600px] mx-auto main-content">
           <AnimatePresence mode="wait" initial={false}>
             <motion.div
               key={location.pathname}
