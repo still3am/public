@@ -210,9 +210,9 @@ export default function FullScreenPlayer({ onClose, onOpenQueue }) {
       </div>
 
       {/* body */}
-      <div className="relative flex-1 flex flex-col xl:flex-row min-h-0 gap-4 xl:gap-12 xl:px-12 xl:pb-6">
+      <div className="relative flex-1 flex flex-col xl:flex-row min-h-0 gap-4 xl:gap-16 xl:px-16 2xl:px-24 xl:pb-8">
         {/* LEFT: artwork + controls */}
-        <div className="flex-1 flex flex-col px-6 md:px-10 xl:px-4 min-h-0">
+        <div className="flex-1 flex flex-col px-6 md:px-10 xl:px-6 xl:max-w-[640px] xl:mx-auto min-h-0">
           {/* artwork / mobile lyrics */}
           <div className="relative flex-1 flex items-center justify-center min-h-0 py-4">
             {lyricsMode &&
@@ -224,7 +224,7 @@ export default function FullScreenPlayer({ onClose, onOpenQueue }) {
               onTouchStart={onVolTouchStart}
               onTouchMove={onVolTouchMove}
               onTouchEnd={onVolTouchEnd}
-              className={`relative aspect-square w-full max-w-[min(46vh,86vw)] xl:max-w-[520px] rounded-3xl overflow-hidden shadow-2xl bg-white/10 shrink-0 touch-none transition-transform duration-500 ${
+              className={`relative aspect-square w-full max-w-[min(46vh,86vw)] xl:max-w-[560px] 2xl:max-w-[620px] rounded-3xl overflow-hidden shadow-[0_24px_90px_rgba(0,0,0,0.55)] bg-white/10 shrink-0 touch-none transition-transform duration-500 ${
               p.isPlaying ? "scale-100" : "scale-[0.97]"} ${
               lyricsMode ? "hidden xl:flex" : "flex"}`}>
                 
@@ -253,7 +253,7 @@ export default function FullScreenPlayer({ onClose, onOpenQueue }) {
           {/* metadata */}
           <div className="flex items-start justify-between gap-3 mt-1 mb-4 shrink-0">
             <div className="min-w-0">
-              <h2 className="text-xl md:text-2xl xl:text-3xl font-extrabold tracking-tight truncate">{t.title}</h2>
+              <h2 className="text-xl md:text-2xl xl:text-4xl font-extrabold tracking-tight truncate">{t.title}</h2>
               <Link
                 to={`/track/${t.id}`}
                 onClick={onClose}
@@ -326,7 +326,7 @@ export default function FullScreenPlayer({ onClose, onOpenQueue }) {
             <button onClick={() => p.setMuted(!p.muted)} aria-label="Mute" className="active:scale-90 transition shrink-0">
               <VolIcon size={18} />
             </button>
-            <div className="relative flex-1 max-w-xs h-1.5 bg-white/20 rounded-full group">
+            <div className="relative flex-1 max-w-sm h-1.5 bg-white/20 rounded-full group">
               <div className="absolute left-0 top-0 h-1.5 bg-white rounded-full" style={{ width: `${volPct}%` }} />
               <div
                 className="absolute top-1/2 -translate-y-1/2 w-3 h-3 bg-white rounded-full opacity-0 group-hover:opacity-100 transition"
@@ -366,8 +366,8 @@ export default function FullScreenPlayer({ onClose, onOpenQueue }) {
         </div>
 
         {/* RIGHT (desktop): lyrics panel */}
-        <div className="hidden xl:flex flex-col min-h-0 w-[400px] shrink-0 bg-white/[0.06] rounded-3xl overflow-hidden">
-          <div className="flex items-center justify-center gap-6 px-5 pt-5 pb-3 shrink-0">
+        <div className="hidden xl:flex flex-col min-h-0 w-[440px] 2xl:w-[480px] shrink-0 bg-white/[0.06] ring-1 ring-white/10 rounded-[2rem] overflow-hidden">
+          <div className="flex items-center justify-center gap-8 px-6 pt-6 pb-3 shrink-0">
             <button
               onClick={() => setLyricsMode(false)}
               className={`text-xs uppercase tracking-widest font-semibold transition ${
