@@ -24,6 +24,8 @@ import {
   Tag,
   ChevronDown,
   ChevronUp,
+  ChevronLeft,
+  ChevronRight,
   Music2,
   AlertTriangle } from
 "lucide-react";
@@ -255,6 +257,7 @@ export default function Upload() {
   const [mode, setMode] = useState("choose");
   const [bulkKind, setBulkKind] = useState(null);
   const [items, setItems] = useState([]);
+  const [queueIndex, setQueueIndex] = useState(0);
   const [album, setAlbum] = useState({
     title: "",
     cover_url: "",
@@ -277,6 +280,7 @@ export default function Upload() {
   const addTrackInputRef = useRef(null);
   const pendingBulkKind = useRef(null);
   const moreInputRef = useRef(null);
+  const replaceInputRef = useRef(null);
 
   const albumUploaderName = user?.display_name || user?.full_name || user?.email || "You";
 
@@ -310,6 +314,7 @@ export default function Upload() {
     if (!isBulk) built = built.slice(0, 1);
     setMode(isBulk ? "bulk" : "single");
     setItems(built);
+    setQueueIndex(0);
   }
 
   async function appendFiles(files) {
@@ -322,8 +327,6 @@ export default function Upload() {
     const built = await filesToItems(files);
     if (!built.length) return;
     setItems((prev) => (prev.length ? [...prev, ...built] : built));
-    setMode("bulk");
-    setBulkKind("album");
   }
 
   async function appendFromUrl({ url, file_name, size }) {
@@ -423,7 +426,7 @@ export default function Upload() {
 
   function validSingle() {
     if (!items.length) return false;
-    const it = items[0];
+    const it = items[queueIndex];
     if (!it.title?.trim() && !it.file_name?.trim()) return false;
     if (!it.audio_url && !it.file) return false;
     return rights;
@@ -441,7 +444,7 @@ export default function Upload() {
 
   async function publishSingle() {
     if (!validSingle()) return;
-    if (await dupCheck([items[0]], "single")) return;
+    if (await dupCheck([items[queueIndex]], "single")) return;
     await doPublishSingle();
   }
 
@@ -449,7 +452,7 @@ export default function Upload() {
     setPublishing(true);
     setProgress(0);
     try {
-      const item = items[0];
+      const item = items[queueIndex];
       setProgress(33);
       const audio_url = await uploadAudio(item);
       setProgress(60);
@@ -459,9 +462,19 @@ export default function Upload() {
         trackPayload(item, { audio_url, cover_art_url: cover_url })
       );
       setProgress(100);
-      setDone({ id: t.id, kind: "single", title: item.title });
-      toast({ title: "Track published" });
-      setTimeout(() => nav(`/track/${t.id}`), 700);
+      const remaining = items.filter((_, idx) => idx !== queueIndex);
+      if (remaining.length) {
+        setItems(remaining);
+        setQueueIndex(Math.min(queueIndex, remaining.length - 1));
+        setPublishing(false);
+        setProgress(0);
+        toast({ title: "Track published", description: `${remaining.length} left in queue` });
+      } else {
+        setDone({ id: t.id, kind: "single", title: item.title });
+        setQueueIndex(0);
+        toast({ title: "Track published" });
+        setTimeout(() => nav(`/track/${t.id}`), 700);
+      }
     } catch (e) {
       toast({ title: "Publish failed", description: e?.message || "Try again", variant: "destructive" });
       setPublishing(false);
@@ -537,6 +550,7 @@ export default function Upload() {
     setMode("choose");
     setBulkKind(null);
     setItems([]);
+    setQueueIndex(0);
     setAlbum({ title: "", cover_url: "", coverFile: null, genre: "Electronic", description: "", artist: "", explicit: false, is_published: true });
     setRights(false);
     setPublishing(false);
@@ -546,6 +560,17 @@ export default function Upload() {
 
   function resetItems() {
     setItems([]);
+  }
+
+  function removeCurrent() {
+    const next = items.filter((_, idx) => idx !== queueIndex);
+    setItems(next);
+    if (!next.length) {
+      setMode("choose");
+      setQueueIndex(0);
+    } else {
+      setQueueIndex(Math.min(queueIndex, next.length - 1));
+    }
   }
 
   // ---------- done state ----------
@@ -632,6 +657,27 @@ export default function Upload() {
       onChange={async (e) => {
         await addMoreFiles(e.target.files);
         if (moreInputRef.current) moreInputRef.current.value = "";
+      }} />
+
+      <input
+      ref={replaceInputRef}
+      type="file"
+      accept={AUDIO_ACCEPT}
+      className="hidden"
+      onChange={async (e) => {
+        const f = e.target.files?.[0];
+        if (f) {
+          const built = (await filesToItems([f]))[0];
+          if (built)
+            setItems((prev) =>
+              prev.map((it, idx) =>
+                idx === queueIndex
+                  ? { ...it, file: built.file, file_name: built.file_name, size: built.size, duration: built.duration, audio_url: "" }
+                  : it
+              )
+            );
+        }
+        if (replaceInputRef.current) replaceInputRef.current.value = "";
       }} />
     </>;
 
@@ -731,20 +777,21 @@ export default function Upload() {
 
         {mode === "single" &&
         <SingleEditor
-          item={items[0]}
-          update={(p) => updateItem(0, p)}
+          item={items[queueIndex]}
+          index={queueIndex}
+          count={items.length}
+          onPrev={() => setQueueIndex(Math.max(0, queueIndex - 1))}
+          onNext={() => setQueueIndex(Math.min(items.length - 1, queueIndex + 1))}
+          update={(p) => updateItem(queueIndex, p)}
           rights={rights}
           setRights={setRights}
           publishing={publishing}
           onPublish={publishSingle}
           canPublish={validSingle()}
           progress={progress}
-          onPickFile={(files) => {
-            if (files && files.length) onFilesSelected(files, false);else
-            singleInputRef.current?.click();
-          }}
+          onPickFile={() => replaceInputRef.current?.click()}
           onAddUrl={appendFromUrl}
-          onClear={resetItems}
+          onClear={removeCurrent}
           onAddMore={() => moreInputRef.current?.click()} />
 
         }
@@ -1186,7 +1233,7 @@ function DuplicateConfirmModal({ matches, onContinue, onCancel }) {
   );
 }
 
-function SingleEditor({ item, update, rights, setRights, publishing, onPublish, canPublish, progress, onPickFile, onAddUrl, onClear, onAddMore }) {
+function SingleEditor({ item, index, count, onPrev, onNext, update, rights, setRights, publishing, onPublish, canPublish, progress, onPickFile, onAddUrl, onClear, onAddMore }) {
   if (!item)
   return (
     <div>
@@ -1195,6 +1242,25 @@ function SingleEditor({ item, update, rights, setRights, publishing, onPublish, 
 
   return (
     <div>
+      {count > 1 && (
+        <div className="flex items-center justify-center gap-3 mb-3 text-xs text-foreground/50">
+          <button
+            type="button"
+            onClick={onPrev}
+            disabled={index === 0}
+            className="p-1.5 rounded-full border border-border disabled:opacity-30 hover:bg-foreground/[0.04] flex items-center">
+            <ChevronLeft size={14} />
+          </button>
+          <span className="font-semibold">Track {index + 1} of {count}</span>
+          <button
+            type="button"
+            onClick={onNext}
+            disabled={index === count - 1}
+            className="p-1.5 rounded-full border border-border disabled:opacity-30 hover:bg-foreground/[0.04] flex items-center">
+            <ChevronRight size={14} />
+          </button>
+        </div>
+      )}
       <SingleForm
         item={item}
         update={update}
