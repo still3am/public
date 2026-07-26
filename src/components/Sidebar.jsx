@@ -3,7 +3,6 @@ import {
   Home,
   Upload,
   Search,
-  Library,
   Heart,
   Compass,
   TrendingUp,
@@ -62,9 +61,6 @@ export default function Sidebar() {
           <Clock size={18} /> Recently Added
         </NavLink>
         <div className="my-2 border-t border-border/60" />
-        <NavLink to="/library" className={navLinkCls}>
-          <Library size={18} /> Library
-        </NavLink>
         <NavLink to="/liked" className={navLinkCls}>
           <Heart size={18} /> Liked Songs
         </NavLink>

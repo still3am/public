@@ -1,12 +1,11 @@
 import { useState } from "react";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
-import { Home, Search, Library, User, Plus } from "lucide-react";
+import { Home, Search, User, Plus } from "lucide-react";
 import MobileMoreSheet from "@/components/MobileMoreSheet";
 
 const TABS = [
   { to: "/", label: "Home", Icon: Home, end: true },
   { to: "/search", label: "Search", Icon: Search },
-  { to: "/library", label: "Library", Icon: Library },
   { to: "/profile", label: "Me", Icon: User },
 ];
 
@@ -35,7 +34,7 @@ export default function MobileTabBar() {
   return (
     <>
       <nav className="md:hidden fixed bottom-0 inset-x-0 z-20 bg-background/85 backdrop-blur-xl border-t border-border tab-bar-safe">
-        <div className="grid grid-cols-5 h-16 items-center">
+        <div className="grid grid-cols-4 h-16 items-center">
           {left.map(({ to, label, Icon, end }) => (
             <NavLink
               key={to}

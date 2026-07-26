@@ -21,7 +21,6 @@ import RecentlyAdded from '@/pages/RecentlyAdded';
 import Notifications from '@/pages/Notifications';
 import Profile from '@/pages/Profile';
 import LikedSongs from '@/pages/LikedSongs';
-import Library from '@/pages/Library';
 import PlaylistDetail from '@/pages/PlaylistDetail';
 import TrackDetail from '@/pages/TrackDetail';
 import AlbumDetail from '@/pages/AlbumDetail';
@@ -66,7 +65,6 @@ const AuthenticatedApp = () => {
           <Route path="/top" element={<TopCharts />} />
           <Route path="/recent" element={<RecentlyAdded />} />
           <Route path="/notifications" element={<Notifications />} />
-          <Route path="/library" element={<Library />} />
           <Route path="/liked" element={<LikedSongs />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/profile/:id" element={<Profile />} />
