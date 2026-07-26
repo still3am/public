@@ -1,6 +1,7 @@
 import { NavLink } from "react-router-dom";
 import {
   Home,
+  Upload,
   Search,
   Library,
   Heart,
@@ -44,6 +45,9 @@ export default function Sidebar() {
       <nav className="px-3 flex-1 flex flex-col gap-1 overflow-y-auto pb-2">
         <NavLink to="/" className={navLinkCls} end>
           <Home size={18} /> Home
+        </NavLink>
+        <NavLink to="/upload" className={navLinkCls}>
+          <Upload size={18} /> Upload
         </NavLink>
         <NavLink to="/search" className={navLinkCls}>
           <Search size={18} /> Search

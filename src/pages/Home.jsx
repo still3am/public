@@ -7,6 +7,7 @@ import {
   Sparkles,
   Music,
   Disc,
+  Upload,
   Lightbulb,
   ChevronRight } from
 "lucide-react";
@@ -145,6 +146,13 @@ export default function Home() {
         icon={Music}
         title="Nothing here yet"
         description="Be the first to upload audio to the PUBLIC network."
+        action={
+          <Link
+            to="/upload"
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-foreground text-background text-sm font-semibold active:scale-95 transition">
+            <Upload size={15} /> Upload music
+          </Link>
+        }
         />);
 
 
@@ -176,6 +184,11 @@ export default function Home() {
               Listen, upload, and share — a space for sound, made by the people, for the people.
             </p>
             <div className="flex items-center justify-center gap-2.5 flex-wrap">
+              <Link
+                to="/upload"
+                className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-foreground text-background text-sm font-semibold hover:opacity-90 active:scale-95 transition">
+                <Upload size={15} /> Upload music
+              </Link>
               <Link
                 to="/discover"
                 className="inline-flex items-center gap-2 px-6 py-3 rounded-full border border-foreground/15 text-sm font-semibold hover:bg-foreground/5 active:scale-95 transition">

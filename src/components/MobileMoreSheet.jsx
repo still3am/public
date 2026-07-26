@@ -1,6 +1,7 @@
 import { useNavigate, useLocation } from "react-router-dom";
 import {
   X,
+  Upload,
   Compass,
   BarChart3,
   Clock,
@@ -11,6 +12,7 @@ import {
 import ThemeToggle from "@/components/ThemeToggle";
 
 const ITEMS = [
+  { to: "/upload", icon: Upload, label: "Upload" },
   { to: "/discover", icon: Compass, label: "Discover" },
   { to: "/top", icon: BarChart3, label: "Top Charts" },
   { to: "/recent", icon: Clock, label: "Recently Added" },
