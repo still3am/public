@@ -176,9 +176,6 @@ export default function Home() {
             <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-foreground/[0.05] border border-foreground/[0.06] text-[11px] font-semibold uppercase tracking-wider text-foreground/60 mb-5">
               <Sparkles size={12} className="hidden" /> {greeting}
             </span>
-            <h1 className="text-3xl md:text-5xl font-extrabold tracking-tighter mb-3 max-w-2xl leading-[1.05]">
-              Made by the people,<br />for the people.
-            </h1>
             <p className="text-foreground/60 max-w-lg text-sm md:text-base mb-5">
               {user?.display_name ? `Welcome back, ${user.display_name}.` : "Welcome."} Listen, upload and share — PUBLIC is yours.
             </p>
