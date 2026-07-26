@@ -672,7 +672,7 @@ export default function Upload() {
 
         {mode === "choose" &&
         <>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-4">
               <UploadButton
               onClick={() => singleInputRef.current?.click()}
               icon={Music}
@@ -689,17 +689,6 @@ export default function Upload() {
               title="Album"
               sub="Tracks grouped as one album with shared cover and track list."
               hint="Grouped collection" />
-            
-              <UploadButton
-              onClick={() => {
-                pendingBulkKind.current = "separate";
-                bulkInputRef.current?.click();
-              }}
-              icon={ListMusic}
-              title="Separate Tracks"
-              sub="Many tracks at once, each with its own details and cover."
-              hint="Batch upload" />
-            
             </div>
             <UrlAddRow
             onAdded={(urlItem) => {
@@ -754,19 +743,12 @@ export default function Upload() {
             </div>
 
             {bulkKind === null ?
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 gap-3">
                 <UploadButton
               onClick={() => setBulkKind("album")}
               icon={Disc}
               title="Group as Album"
               sub="One cover, one title, auto-numbered track list you can reorder." />
-            
-                <UploadButton
-              onClick={() => setBulkKind("separate")}
-              icon={ListMusic}
-              title="Upload as Separate Tracks"
-              sub="Independent metadata and cover per track." />
-            
               </div> :
 
           <div>
