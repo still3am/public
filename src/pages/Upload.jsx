@@ -78,7 +78,7 @@ export default function Upload() {
         200
       );
       const found = [];
-      const seen = new Set();
+      const seenItem = new Set();
       for (const c of newItems) {
         const dups = findDuplicateTracks(existing, {
           title: c.title,
@@ -86,11 +86,9 @@ export default function Upload() {
           duration: c.duration,
           file_name: c.file.name,
         });
-        for (const d of dups) {
-          if (!seen.has(d.id)) {
-            seen.add(d.id);
-            found.push(d);
-          }
+        if (dups.length && !seenItem.has(c.id)) {
+          seenItem.add(c.id);
+          found.push(c);
         }
       }
       if (found.length) setDupes(found);
@@ -264,11 +262,7 @@ export default function Upload() {
         <DuplicateModal
           tracks={dupes}
           onClose={() => setDupes(null)}
-          onDeleted={(id) =>
-            setDupes((prev) =>
-              prev ? prev.filter((t) => t.id !== id) : prev
-            )
-          }
+          onRemove={(id) => removeItem(id)}
         />
       )}
     </div>

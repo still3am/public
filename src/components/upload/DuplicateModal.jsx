@@ -1,25 +1,21 @@
 import { useState } from "react";
-import { Music2, Trash2, Loader2, X, AlertTriangle } from "lucide-react";
-import { base44 } from "@/api/base44Client";
+import { Music2, Loader2, X, AlertTriangle, Trash2 } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 import { formatTime } from "@/lib/audio-utils";
 
-export default function DuplicateModal({ tracks, onClose, onDeleted }) {
+export default function DuplicateModal({ tracks, onClose, onRemove }) {
   const { toast } = useToast();
-  const [deleting, setDeleting] = useState({});
+  const [removing, setRemoving] = useState({});
   const [list, setList] = useState(tracks);
 
-  async function del(id) {
-    setDeleting((s) => ({ ...s, [id]: true }));
+  async function remove(id) {
+    setRemoving((s) => ({ ...s, [id]: true }));
     try {
-      await base44.entities.Track.delete(id);
+      onRemove?.(id);
       setList((prev) => prev.filter((t) => t.id !== id));
-      onDeleted?.(id);
-      toast({ title: "Track deleted" });
-    } catch (e) {
-      toast({ title: "Could not delete", description: e?.message, variant: "destructive" });
+      toast({ title: "Removed from upload" });
     } finally {
-      setDeleting((s) => ({ ...s, [id]: false }));
+      setRemoving((s) => ({ ...s, [id]: false }));
     }
   }
 
@@ -35,8 +31,8 @@ export default function DuplicateModal({ tracks, onClose, onDeleted }) {
               Possible duplicates
             </h3>
             <p className="text-xs text-foreground/60 mt-0.5">
-              These tracks already exist in your library. Delete any you want to
-              replace.
+              These tracks you're uploading already exist in your library.
+              Remove any you don't want to upload.
             </p>
           </div>
           <button
@@ -60,9 +56,9 @@ export default function DuplicateModal({ tracks, onClose, onDeleted }) {
                 className="flex items-center gap-3 p-2 rounded-xl hover:bg-foreground/[0.03]"
               >
                 <div className="w-11 h-11 rounded-md overflow-hidden bg-foreground/10 grid place-items-center shrink-0">
-                  {t.cover_art_url ? (
+                  {t.coverPreviewUrl ? (
                     <img
-                      src={t.cover_art_url}
+                      src={t.coverPreviewUrl}
                       alt=""
                       className="w-full h-full object-cover"
                     />
@@ -73,16 +69,16 @@ export default function DuplicateModal({ tracks, onClose, onDeleted }) {
                 <div className="flex-1 min-w-0">
                   <div className="font-semibold text-sm truncate">{t.title}</div>
                   <div className="text-xs text-foreground/50 truncate">
-                    {t.artist || "Unknown"} · {formatTime(t.duration_seconds)}
+                    {t.artist || "Unknown"} · {formatTime(t.duration)}
                   </div>
                 </div>
                 <button
-                  onClick={() => del(t.id)}
-                  disabled={deleting[t.id]}
+                  onClick={() => remove(t.id)}
+                  disabled={removing[t.id]}
                   className="p-2 rounded-full text-foreground/40 hover:text-destructive hover:bg-destructive/10 disabled:opacity-40"
-                  aria-label="Delete track"
+                  aria-label="Remove from upload"
                 >
-                  {deleting[t.id] ? (
+                  {removing[t.id] ? (
                     <Loader2 size={16} className="animate-spin" />
                   ) : (
                     <Trash2 size={16} />
