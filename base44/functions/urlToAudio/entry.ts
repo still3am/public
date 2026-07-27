@@ -20,20 +20,95 @@ Deno.serve(async (req) => {
     if (!/^https?:$/.test(parsed.protocol))
       return Response.json({ error: 'Only http(s) URLs are supported' }, { status: 400 });
 
-    const isPrivateHost = (h) =>
-      h === 'localhost' || h.endsWith('.localhost') ||
-      h === 'metadata.google.internal' ||
-      /^(169\.254\.|127\.|10\.|192\.168\.|172\.(1[6-9]|2\d|3[01])\.|0\.|::1|fe80:|fc00:|fd)/.test(h);
+    // ---- SSRF protection: validate hostname by RESOLVING it to an IP and ----
+    // checking the resolved address, not just the hostname string. This blocks
+    // decimal/hex/octal IP tricks and DNS names that resolve to private ranges.
+    function isPrivateIPv4(ip) {
+      const m = ip.match(/^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})$/);
+      if (!m) return true; // reject malformed
+      const [a, b] = [Number(m[1]), Number(m[2])];
+      if ([m[1], m[2], m[3], m[4]].some((o) => Number(o) > 255)) return true;
+      if (a === 0) return true;                  // 0.0.0.0/8
+      if (a === 10) return true;                  // 10.0.0.0/8
+      if (a === 127) return true;                 // 127.0.0.0/8
+      if (a === 169 && b === 254) return true;    // 169.254.0.0/16 (link-local / metadata)
+      if (a === 172 && b >= 16 && b <= 31) return true; // 172.16.0.0/12
+      if (a === 192 && b === 168) return true;    // 192.168.0.0/16
+      if (a === 100 && b >= 64 && b <= 127) return true; // 100.64.0.0/10 CGNAT
+      if (a >= 224) return true;                  // multicast / reserved
+      return false;
+    }
 
-    function assertSafeUrl(u) {
+    function isPrivateIPv6(ip) {
+      const h = ip.toLowerCase();
+      if (h === '::1' || h === '::') return true;            // loopback / unspecified
+      if (h.startsWith('fe8') || h.startsWith('fe9') || h.startsWith('fea') || h.startsWith('feb')) return true; // fe80::/10
+      if (h.startsWith('fc') || h.startsWith('fd')) return true; // fc00::/7 ULA
+      const mapped = h.match(/:(?:ffff:)?(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})$/);
+      if (mapped && isPrivateIPv4(mapped[1])) return true;
+      return false;
+    }
+
+    function isAmbiguousLiteral(host) {
+      // Reject encoded IPv4 forms: pure decimal (e.g. 2130706433), hex (0x7f000001),
+      // octal (0177.0.0.1), or any part with non-dotted ambiguous notation.
+      if (/^0x[0-9a-f]+$/i.test(host)) return true;
+      if (/^[0-9]+$/.test(host) && !host.includes('.')) return true;
+      if (/^[0-9.]+$/.test(host)) {
+        const parts = host.split('.');
+        if (parts.some((p) => /^0[0-9]+$/.test(p))) return true; // octal segment
+        if (parts.some((p) => /^0x[0-9a-f]+$/i.test(p))) return true; // hex segment
+      }
+      return false;
+    }
+
+    async function assertSafeHost(host) {
+      const h = host.replace(/^\[|\]$/g, '').toLowerCase();
+      if (!h) throw new Error('Invalid hostname');
+      if (h.endsWith('.localhost') || h === 'localhost') throw new Error('Private addresses are not allowed');
+
+      if (h.includes(':')) {
+        // IPv6 literal — only accept standard colon form, reject odd encodings.
+        if (isPrivateIPv6(h)) throw new Error('Private addresses are not allowed');
+        return;
+      }
+
+      if (/^\d{1,3}(\.\d{1,3}){3}$/.test(h)) {
+        if (isPrivateIPv4(h)) throw new Error('Private addresses are not allowed');
+        return;
+      }
+
+      if (isAmbiguousLiteral(h)) throw new Error('Private addresses are not allowed');
+
+      // Domain name — resolve via DNS and reject if any record is private.
+      let records = [];
+      try {
+        const a = await Deno.resolveDns(h, 'A');
+        if (Array.isArray(a)) records = records.concat(a);
+      } catch { /* try AAAA next */ }
+      try {
+        const aaaa = await Deno.resolveDns(h, 'AAAA');
+        if (Array.isArray(aaaa)) records = records.concat(aaaa);
+      } catch { /* ignore */ }
+      if (!records.length) throw new Error('Could not resolve host');
+      for (const r of records) {
+        if (r.includes(':')) {
+          if (isPrivateIPv6(r)) throw new Error('Private addresses are not allowed');
+        } else if (isPrivateIPv4(r)) {
+          throw new Error('Private addresses are not allowed');
+        }
+      }
+    }
+
+    async function assertSafeUrl(u) {
       let p;
       try { p = new URL(u); } catch { throw new Error('Invalid redirect URL'); }
       if (!/^https?:$/.test(p.protocol)) throw new Error('Only http(s) URLs are supported');
-      if (isPrivateHost(p.hostname.toLowerCase())) throw new Error('Private addresses are not allowed');
+      await assertSafeHost(p.hostname);
       return p;
     }
 
-    assertSafeUrl(parsed);
+    await assertSafeUrl(parsed);
 
     const fetchInit = { method: 'GET', redirect: 'manual' };
 
@@ -50,7 +125,7 @@ Deno.serve(async (req) => {
           }
           let next;
           try {
-            next = assertSafeUrl(new URL(loc, current));
+            next = await assertSafeUrl(new URL(loc, current));
           } catch (e) {
             return Response.json({ error: e.message }, { status: 400 });
           }
