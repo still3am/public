@@ -405,25 +405,6 @@ export default function Profile() {
                 </div>
                 }
 
-              <div className="flex items-center justify-center md:justify-start divide-x divide-foreground/10 mt-3 text-sm overflow-x-auto no-scrollbar">
-                <div className="pr-4 sm:pr-5 shrink-0">
-                  <span className="font-bold text-base">{formatNumber(stats.followers)}</span>{" "}
-                  <span className="text-foreground/50">followers</span>
-                </div>
-                
-
-
-                  
-                <div className="px-4 sm:px-5 shrink-0">
-                  <span className="font-bold text-base">{formatNumber(stats.plays)}</span>{" "}
-                  <span className="text-foreground/50">plays</span>
-                </div>
-                <div className="pl-4 sm:pl-5 shrink-0">
-                  <span className="font-bold text-base">{formatNumber(stats.likes)}</span>{" "}
-                  <span className="text-foreground/50">likes</span>
-                </div>
-              </div>
-
               {editMode ?
                 <textarea
                   value={form.bio}
