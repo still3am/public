@@ -24,9 +24,12 @@ import {
   Plus,
   ListPlus,
   ListMusic,
-  Link2 } from
+  Link2,
+  Trash2 } from
 "lucide-react";
 import TrackRow from "@/components/TrackRow";
+import { useOfflineCache } from "@/hooks/useOfflineCache";
+import { useToast } from "@/components/ui/use-toast";
 
 export default function TrackDetail() {
   const { id } = useParams();
@@ -45,6 +48,8 @@ export default function TrackDetail() {
   const [moreTracks, setMoreTracks] = useState([]);
   const [copied, setCopied] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const cache = useOfflineCache();
+  const { toast } = useToast();
 
   async function load() {
     setLoading(true);
@@ -211,6 +216,28 @@ export default function TrackDetail() {
     }
   });
   menuItems.push({
+    icon: cache.downloading[track.id] ? Loader2 : cache.isCached(track.id) ? Trash2 : Download,
+    label: cache.downloading[track.id]
+      ? "Saving…"
+      : cache.isCached(track.id)
+      ? "Remove offline"
+      : "Save offline",
+    onClick: async () => {
+      setMenuOpen(false);
+      if (cache.isCached(track.id)) {
+        await cache.removeTrack(track.id);
+        toast({ title: "Removed from downloads" });
+      } else {
+        const ok = await cache.downloadTrack(track);
+        toast(
+          ok
+            ? { title: "Saved for offline" }
+            : { title: "Couldn't save offline", variant: "destructive" }
+        );
+      }
+    }
+  });
+  menuItems.push({
     icon: Link2,
     label: copied ? "Link copied" : "Copy link",
     onClick: shareLink
@@ -269,12 +296,9 @@ export default function TrackDetail() {
             }
           </div>
           <div className="flex-1 min-w-0 flex flex-col justify-center">
-            <Link
-              to="/discover"
-              state={{ initialGenre: track.genre }}
-              className="self-start text-[10px] uppercase tracking-[0.2em] text-foreground/50 font-semibold mb-2.5 hover:text-foreground border border-border rounded-full px-3 py-1">
+            <span className="self-start text-[10px] uppercase tracking-[0.2em] text-foreground/50 font-semibold mb-2.5 border border-border rounded-full px-3 py-1">
               {track.genre}
-            </Link>
+            </span>
             <div className="flex items-center gap-2 flex-wrap mb-1.5">
               <h1 className="text-3xl md:text-4xl font-extrabold tracking-tighter leading-[1.05]">
                 {track.title}
