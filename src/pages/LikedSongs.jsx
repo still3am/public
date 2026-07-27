@@ -20,12 +20,17 @@ export default function LikedSongs() {
 
   async function load() {
     try {
-      const all = await base44.entities.Track.list("-created_date", 200);
-      setTracks(
-        all.filter(
-          (t) => likes.likedIds.has(t.id) && t.is_published !== false
-        )
+      const ids = [...likes.likedIds];
+      if (!ids.length) {
+        setTracks([]);
+        return;
+      }
+      const liked = await base44.entities.Track.filter(
+        { id: { $in: ids } },
+        "-created_date",
+        1000
       );
+      setTracks(liked.filter((t) => t.is_published !== false));
     } finally {
       setLoading(false);
     }
