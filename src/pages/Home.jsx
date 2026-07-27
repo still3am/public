@@ -212,9 +212,9 @@ export default function Home() {
                 <Upload size={15} /> Upload music
               </Link>
               <Link
-                to="/discover"
+                to="/top"
                 className="inline-flex items-center gap-2 px-6 py-3 rounded-full border border-foreground/15 text-sm font-semibold hover:bg-foreground/5 active:scale-95 transition">
-                <Disc size={15} /> Explore genres
+                <Disc size={15} /> Top charts
               </Link>
             </div>
           </div>
@@ -283,7 +283,7 @@ export default function Home() {
         {byGenre.
         filter((sg) => sg.tracks.length > 0).
         map((sg) =>
-        <Section key={sg.genre} title={sg.genre} seeAllTo="/discover">
+        <Section key={sg.genre} title={sg.genre} seeAllTo="/top">
               <CardRow tracks={sg.tracks} />
             </Section>
         )}

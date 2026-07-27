@@ -10,6 +10,7 @@ import {
   Clock,
   Bell,
   Lightbulb,
+  Download,
 } from "lucide-react";
 import Avatar from "@/components/Avatar";
 import Logo from "@/components/Logo";
@@ -56,6 +57,9 @@ export default function Sidebar() {
         </NavLink>
         <NavLink to="/recent" className={navLinkCls}>
           <Clock size={18} /> Recently Added
+        </NavLink>
+        <NavLink to="/downloads" className={navLinkCls}>
+          <Download size={18} /> Downloads
         </NavLink>
         
         <NavLink to="/liked" className={navLinkCls}>

@@ -7,6 +7,7 @@ import {
   Bell,
   Heart,
   Lightbulb,
+  Download,
 } from "lucide-react";
 import ThemeToggle from "@/components/ThemeToggle";
 
@@ -14,6 +15,7 @@ const ITEMS = [
   { to: "/upload", icon: Upload, label: "Upload" },
   { to: "/top", icon: BarChart3, label: "Top Charts" },
   { to: "/recent", icon: Clock, label: "Recently Added" },
+  { to: "/downloads", icon: Download, label: "Downloads" },
   { to: "/notifications", icon: Bell, label: "Notifications" },
   { to: "/suggestions", icon: Lightbulb, label: "Suggestions" },
 ];

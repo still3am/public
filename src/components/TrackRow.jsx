@@ -10,13 +10,17 @@ import {
   Flag,
   Link2,
   Download,
-  Flame } from
+  Flame,
+  Loader2,
+  Trash2 } from
 "lucide-react";
 import { usePlayer } from "@/context/PlayerContext";
 import { formatTime, timeAgo } from "@/lib/audio-utils";
 import { Link } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import { useAuth } from "@/lib/AuthContext";
+import { useOfflineCache } from "@/hooks/useOfflineCache";
+import { useToast } from "@/components/ui/use-toast";
 
 function MenuBtn({ icon: Icon, label, onClick, danger }) {
   return (
@@ -44,9 +48,13 @@ export default function TrackRow({
 }) {
   const p = usePlayer();
   const { user } = useAuth();
+  const { toast } = useToast();
+  const cache = useOfflineCache();
   const [menuOpen, setMenuOpen] = useState(false);
   const isCurrent = p.currentTrack?.id === track.id;
   const isPlayingHere = isCurrent && p.isPlaying;
+  const savedOffline = cache.isCached(track.id);
+  const savingOffline = !!cache.downloading[track.id];
   const isRecent =
   track.created_date &&
   Date.now() - new Date(track.created_date).getTime() < 7 * 86400 * 1000;
@@ -139,13 +147,9 @@ export default function TrackRow({
 
       
       {track.genre &&
-      <Link
-        to="/discover"
-        state={{ initialGenre: track.genre }}
-        className="hidden md:block text-xs text-foreground/40 px-2 py-0.5 rounded-full bg-foreground/[0.04] hover:bg-foreground/10 hover:text-foreground/70 transition">
-        
+      <span className="hidden md:block text-xs text-foreground/40 px-2 py-0.5 rounded-full bg-foreground/[0.04] cursor-default">
           {track.genre}
-        </Link>
+        </span>
       }
       <button
         onClick={() => onLikeToggle?.(track)}
@@ -221,7 +225,25 @@ export default function TrackRow({
                 onLikeToggle?.(track);
                 setMenuOpen(false);
               }} />
-            
+
+              <MenuBtn
+              icon={savingOffline ? Loader2 : savedOffline ? Trash2 : Download}
+              label={savingOffline ? "Saving…" : savedOffline ? "Remove offline" : "Save offline"}
+              onClick={async () => {
+                setMenuOpen(false);
+                if (savedOffline) {
+                  await cache.removeTrack(track.id);
+                  toast.toast({ title: "Removed from downloads" });
+                } else {
+                  const ok = await cache.downloadTrack(track);
+                  toast.toast(
+                    ok
+                      ? { title: "Saved for offline" }
+                      : { title: "Couldn't save offline", variant: "destructive" }
+                  );
+                }
+              }} />
+
               {track.is_downloadable &&
             <MenuBtn
               icon={Download}

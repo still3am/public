@@ -24,8 +24,10 @@ import {
   Repeat1,
   Shuffle,
   Disc3,
-  Share2 } from
+  Share2,
+  Activity } from
 "lucide-react";
+import AudioVisualizer from "@/components/AudioVisualizer";
 
 const clampVol = (v) => Math.max(0, Math.min(1, v));
 
@@ -50,6 +52,7 @@ export default function FullScreenPlayer({ onClose, onOpenQueue }) {
   const ap = useAddToPlaylist();
   const bg = useColorExtraction(p.currentTrack?.cover_art_url);
   const [lyricsMode, setLyricsMode] = useState(false);
+  const [showVisualizer, setShowVisualizer] = useState(false);
   const [showVolHint, setShowVolHint] = useState(false);
   const [copied, setCopied] = useState(false);
   const t = p.currentTrack;
@@ -163,6 +166,13 @@ export default function FullScreenPlayer({ onClose, onOpenQueue }) {
       <div
         className="pointer-events-none absolute -top-1/3 left-0 right-0 h-2/3 opacity-40 blur-3xl"
         style={{ background: `radial-gradient(ellipse at center, ${bg} 0%, transparent 70%)` }} />
+
+      {/* reactive visualizer */}
+      {showVisualizer &&
+      <div className="pointer-events-none absolute inset-0 z-0 opacity-70">
+        <AudioVisualizer className="w-full h-full" color="#ffffff" bars={56} mirror />
+      </div>
+      }
       
 
       {/* top bar */}
@@ -206,7 +216,18 @@ export default function FullScreenPlayer({ onClose, onOpenQueue }) {
           onOpenQueue={onOpenQueue}
           onLike={() => likes.toggleLike(t)}
           liked={likes.likedIds.has(t.id)} />
-        
+        <button
+          onClick={() => {
+            setShowVisualizer((v) => !v);
+            if (!showVisualizer) p.enableAnalyser?.();
+          }}
+          aria-label="Visualizer"
+          className={`p-2 -mr-2 rounded-full hover:bg-white/10 transition active:scale-90 ${
+            showVisualizer ? "opacity-100" : "opacity-50"
+          }`}>
+          <Activity size={22} />
+        </button>
+
       </div>
 
       {/* body */}

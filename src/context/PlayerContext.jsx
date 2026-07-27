@@ -7,6 +7,7 @@ import React, {
   useCallback,
 } from "react";
 import { base44 } from "@/api/base44Client";
+import { getRecord } from "@/lib/offlineCache";
 
 const PlayerContext = createContext(null);
 export const usePlayer = () => useContext(PlayerContext);
@@ -15,7 +16,17 @@ export function PlayerProvider({ children }) {
   const audioRef = useRef(null);
   if (!audioRef.current && typeof Audio !== "undefined") {
     audioRef.current = new Audio();
+    try {
+      audioRef.current.crossOrigin = "anonymous";
+    } catch {}
   }
+  // Offline audio blob URL currently in use (revoked when swapped out)
+  const activeBlobUrlRef = useRef(null);
+  // Web Audio analyser graph (created once, on first user gesture)
+  const audioCtxRef = useRef(null);
+  const analyserRef = useRef(null);
+  const sourceRef = useRef(null);
+
   const countedRef = useRef(new Set());
   const [queue, setQueue] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(-1);
@@ -33,6 +44,38 @@ export function PlayerProvider({ children }) {
   const currentTrack =
     currentIndex >= 0 && currentIndex < queue.length ? queue[currentIndex] : null;
 
+  // Lazily create the Web Audio graph (AudioContext + MediaElementSource +
+  // AnalyserNode) the first time we need it. Safe to call repeatedly.
+  const ensureGraph = useCallback(() => {
+    const a = audioRef.current;
+    if (!a || audioCtxRef.current) return audioCtxRef.current;
+    try {
+      const AC = window.AudioContext || window.webkitAudioContext;
+      if (!AC) return null;
+      const ctx = new AC();
+      const src = ctx.createMediaElementSource(a);
+      const analyser = ctx.createAnalyser();
+      analyser.fftSize = 256;
+      analyser.smoothingTimeConstant = 0.82;
+      src.connect(analyser);
+      analyser.connect(ctx.destination);
+      audioCtxRef.current = ctx;
+      sourceRef.current = src;
+      analyserRef.current = analyser;
+      return ctx;
+    } catch {
+      return null;
+    }
+  }, []);
+
+  const getAnalyser = useCallback(() => analyserRef.current, []);
+
+  const enableAnalyser = useCallback(() => {
+    const ctx = ensureGraph();
+    if (ctx && ctx.state === "suspended") ctx.resume().catch(() => {});
+    return !!analyserRef.current;
+  }, [ensureGraph]);
+
   // volume / mute sync
   useEffect(() => {
     const a = audioRef.current;
@@ -48,24 +91,47 @@ export function PlayerProvider({ children }) {
     if (a) a.playbackRate = playbackRate;
   }, [playbackRate]);
 
-  // swap src when track changes
+  // swap src when track changes — prefer the offline-cached blob if present
   useEffect(() => {
     const a = audioRef.current;
     if (!a) return;
-    if (!currentTrack) {
-      a.pause();
-      a.removeAttribute("src");
+    let cancelled = false;
+    (async () => {
+      if (!currentTrack) {
+        a.pause();
+        a.removeAttribute("src");
+        a.load();
+        setPosition(0);
+        setDuration(0);
+        setIsPlaying(false);
+        if (activeBlobUrlRef.current) {
+          URL.revokeObjectURL(activeBlobUrlRef.current);
+          activeBlobUrlRef.current = null;
+        }
+        return;
+      }
+      let url = currentTrack.audio_url;
+      try {
+        const rec = await getRecord(currentTrack.id);
+        if (!cancelled && rec && rec._blob) {
+          const blobUrl = URL.createObjectURL(rec._blob);
+          if (activeBlobUrlRef.current && activeBlobUrlRef.current !== blobUrl) {
+            URL.revokeObjectURL(activeBlobUrlRef.current);
+          }
+          activeBlobUrlRef.current = blobUrl;
+          url = blobUrl;
+        }
+      } catch {}
+      if (cancelled) return;
+      a.src = url;
       a.load();
-      setPosition(0);
-      setDuration(0);
-      setIsPlaying(false);
-      return;
-    }
-    a.src = currentTrack.audio_url;
-    a.load();
-    a.play()
-      .then(() => setIsPlaying(true))
-      .catch(() => setIsPlaying(false));
+      a.play()
+        .then(() => setIsPlaying(true))
+        .catch(() => setIsPlaying(false));
+    })();
+    return () => {
+      cancelled = true;
+    };
   }, [currentTrack?.id]);
 
   // listeners
@@ -331,6 +397,8 @@ export function PlayerProvider({ children }) {
     clearQueue,
     sleepTimerEndsAt,
     setSleepTimer,
+    getAnalyser,
+    enableAnalyser,
   };
 
   return (
