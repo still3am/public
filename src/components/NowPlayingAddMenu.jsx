@@ -2,7 +2,6 @@ import { useState, useRef, useEffect } from "react";
 import {
   Plus,
   ListPlus,
-  ListMusic,
   Share2,
   Link2,
   X,
@@ -11,10 +10,7 @@ import {
 
 export default function NowPlayingAddMenu({
   onAddToPlaylist,
-  onPlayNext,
-  onAddToQueue,
   onShare,
-  onOpenQueue,
   showVisualizer,
   onToggleVisualizer,
 }) {
@@ -44,22 +40,6 @@ export default function NowPlayingAddMenu({
         close();
       },
     },
-    onPlayNext && {
-      icon: ListPlus,
-      label: "Play next",
-      onClick: (close) => {
-        onPlayNext();
-        close();
-      },
-    },
-    onAddToQueue && {
-      icon: ListMusic,
-      label: "Add to queue",
-      onClick: (close) => {
-        onAddToQueue();
-        close();
-      },
-    },
     {
       icon: Link2,
       label: copied ? "Link copied" : "Copy link",
@@ -75,14 +55,6 @@ export default function NowPlayingAddMenu({
       label: "Share",
       onClick: (close) => {
         onShare();
-        close();
-      },
-    },
-    onOpenQueue && {
-      icon: ListMusic,
-      label: "View queue",
-      onClick: (close) => {
-        onOpenQueue();
         close();
       },
     },

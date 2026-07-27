@@ -235,41 +235,6 @@ export function PlayerProvider({ children }) {
     setCurrentIndex(index);
   }, []);
 
-  const addToQueue = useCallback((track) => {
-    setQueue((q) => {
-      if (q.some((t) => t.id === track.id)) return q;
-      return [...q, track];
-    });
-  }, []);
-
-  const playNext = useCallback(
-    (track) => {
-      if (!track) return;
-      if (queue.some((t) => t.id === track.id)) return;
-      const nq = [...queue];
-      const at = Math.max(0, Math.min(currentIndex + 1, nq.length));
-      nq.splice(at, 0, track);
-      setQueue(nq);
-      if (currentIndex < 0) setCurrentIndex(0);
-      else if (currentIndex >= at) setCurrentIndex(currentIndex + 1);
-    },
-    [queue, currentIndex]
-  );
-
-  const removeFromQueue = useCallback((trackId) => {
-    setQueue((q) => {
-      const i = q.findIndex((t) => t.id === trackId);
-      if (i === -1) return q;
-      const nq = q.filter((t) => t.id !== trackId);
-      setCurrentIndex((ci) => {
-        if (i < ci) return ci - 1;
-        if (i === ci) return Math.min(ci, nq.length - 1);
-        return ci;
-      });
-      return nq;
-    });
-  }, []);
-
   const togglePlay = useCallback(() => {
     const a = audioRef.current;
     if (!a || !currentTrack) return;
@@ -382,9 +347,6 @@ export function PlayerProvider({ children }) {
     next,
     prev,
     playTrackAt,
-    addToQueue,
-    playNext,
-    removeFromQueue,
     setRepeat,
     setShuffle,
     getBars,

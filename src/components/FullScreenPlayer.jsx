@@ -13,7 +13,6 @@ import {
   SkipBack,
   SkipForward,
   ChevronDown,
-  ListMusic,
   Mic2,
   Volume2,
   VolumeX,
@@ -43,7 +42,7 @@ function IconButton({ icon: Icon, onClick, active, size = 22, label, className =
 
 }
 
-export default function FullScreenPlayer({ onClose, onOpenQueue }) {
+export default function FullScreenPlayer({ onClose }) {
   const p = usePlayer();
   const { user } = useAuth();
   const ap = useAddToPlaylist();
@@ -206,10 +205,7 @@ export default function FullScreenPlayer({ onClose, onOpenQueue }) {
         </div>
         <NowPlayingAddMenu
           onAddToPlaylist={() => ap.addToPlaylist(t.id)}
-          onPlayNext={() => p.playNext?.(t)}
-          onAddToQueue={() => p.addToQueue?.(t)}
           onShare={shareNow}
-          onOpenQueue={onOpenQueue}
           showVisualizer={showVisualizer}
           onToggleVisualizer={() => {
             setShowVisualizer((v) => !v);

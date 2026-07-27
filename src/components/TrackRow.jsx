@@ -5,7 +5,6 @@ import {
   MoreHorizontal,
   Plus,
   ListPlus,
-  ListMusic,
   Flag,
   Link2,
   Download,
@@ -192,21 +191,6 @@ export default function TrackRow({
               }} />
 
             }
-              <MenuBtn
-              icon={ListPlus}
-              label="Play next"
-              onClick={() => {
-                p.playNext?.(track);
-                setMenuOpen(false);
-              }} />
-
-              <MenuBtn
-              icon={ListMusic}
-              label="Add to queue"
-              onClick={() => {
-                p.addToQueue?.(track);
-                setMenuOpen(false);
-              }} />
               <MenuBtn
               icon={savingOffline ? Loader2 : savedOffline ? Trash2 : Download}
               label={savingOffline ? "Saving…" : savedOffline ? "Remove offline" : "Save offline"}

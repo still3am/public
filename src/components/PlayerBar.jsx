@@ -14,12 +14,10 @@ import {
 import { usePlayer } from "@/context/PlayerContext";
 import { Link } from "react-router-dom";
 import { formatTime } from "@/lib/audio-utils";
-import QueueDrawer from "@/components/QueueDrawer";
 import FullScreenPlayer from "@/components/FullScreenPlayer";
 
 export default function PlayerBar() {
   const p = usePlayer();
-  const [queueOpen, setQueueOpen] = useState(false);
   const [fullOpen, setFullOpen] = useState(false);
   const [dragY, setDragY] = useState(0);
   const drag = useRef({ active: false, startY: 0, moved: false });
@@ -163,9 +161,6 @@ export default function PlayerBar() {
                 aria-label="Volume"
               />
             </div>
-            <button onClick={() => setQueueOpen(true)} className="p-2 rounded-full hover:bg-foreground/5 active:scale-90 transition" aria-label="Queue">
-              <ListMusic size={18} />
-            </button>
           </div>
         </div>
       </div>
@@ -173,13 +168,8 @@ export default function PlayerBar() {
       {fullOpen && (
         <FullScreenPlayer
           onClose={() => setFullOpen(false)}
-          onOpenQueue={() => {
-            setFullOpen(false);
-            setQueueOpen(true);
-          }}
         />
       )}
-      {queueOpen && <QueueDrawer p={p} onClose={() => setQueueOpen(false)} />}
     </>
   );
 }

@@ -21,7 +21,6 @@ import {
   Music,
   Plus,
   ListPlus,
-  ListMusic,
   Link2,
   Trash2 } from
 "lucide-react";
@@ -158,22 +157,6 @@ export default function TrackDetail() {
   const displayArtist = album?.artisan || track.artist || "";
 
   const menuItems = [
-  {
-    icon: ListPlus,
-    label: "Play next",
-    onClick: () => {
-      p.playNext?.(track);
-      setMenuOpen(false);
-    }
-  },
-  {
-    icon: ListMusic,
-    label: "Add to queue",
-    onClick: () => {
-      p.addToQueue?.(track);
-      setMenuOpen(false);
-    }
-  },
   {
     icon: ListPlus,
     label: "Add to playlist",
