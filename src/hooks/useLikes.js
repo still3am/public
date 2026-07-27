@@ -30,33 +30,16 @@ export function useLikes(user) {
         return s;
       });
       try {
-        if (wasLiked) {
-          await base44.entities.Like.deleteMany({
-            user_id: user.id,
-            track_id: track.id,
-          });
-          await base44.entities.Track.updateMany(
-            { id: track.id },
-            { $inc: { like_count: -1 } }
-          );
-        } else {
-          await base44.entities.Like.create({
-            user_id: user.id,
-            track_id: track.id,
-          });
-          await base44.entities.Track.updateMany(
-            { id: track.id },
-            { $inc: { like_count: 1 } }
-          );
-          try {
-            await base44.entities.Notification.create({
-              user_id: track.uploader_id,
-              type: "track_liked",
-              actor_id: user.id,
-              track_id: track.id,
-            });
-          } catch {}
-        }
+        const res = await base44.functions.invoke("toggleLike", {
+          track_id: track.id,
+        });
+        const liked = res?.data?.liked;
+        setLikedIds((prev) => {
+          const s = new Set(prev);
+          if (liked) s.add(track.id);
+          else s.delete(track.id);
+          return s;
+        });
       } catch {
         setLikedIds((prev) => {
           const s = new Set(prev);

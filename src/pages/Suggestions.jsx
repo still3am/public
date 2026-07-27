@@ -81,7 +81,16 @@ export default function Suggestions() {
       prev.map((x) => (x.id === s.id ? { ...x, voter_ids: next } : x))
     );
     try {
-      await base44.entities.Suggestion.update(s.id, { voter_ids: next });
+      const res = await base44.functions.invoke("voteSuggestion", {
+        suggestion_id: s.id,
+      });
+      if (res?.data?.voter_ids) {
+        setItems((prev) =>
+          prev.map((x) =>
+            x.id === s.id ? { ...x, voter_ids: res.data.voter_ids } : x
+          )
+        );
+      }
     } catch {
       setItems(prevItems);
     }

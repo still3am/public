@@ -159,10 +159,7 @@ export function PlayerProvider({ children }) {
   const countPlay = useCallback((track) => {
     if (!track || countedRef.current.has(track.id)) return;
     countedRef.current.add(track.id);
-    base44.entities.Track.updateMany(
-      { id: track.id },
-      { $inc: { play_count: 1 } }
-    ).catch(() => {});
+    base44.functions.invoke("registerPlay", { track_id: track.id }).catch(() => {});
     try {
       const KEY = "public:recently_played";
       const v = JSON.parse(localStorage.getItem(KEY) || "[]");
