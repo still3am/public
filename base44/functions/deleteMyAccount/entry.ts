@@ -15,7 +15,6 @@ Deno.serve(async (req) => {
       svc.entities.Track
         .updateMany({ uploader_id: userId }, { $set: { is_published: false } })
         .catch(() => {}),
-      svc.entities.Like.deleteMany({ user_id: userId }).catch(() => {}),
       svc.entities.Follow.deleteMany({ follower_id: userId }).catch(() => {}),
       svc.entities.Follow.deleteMany({ following_id: userId }).catch(() => {}),
       svc.entities.Playlist.deleteMany({ creator_id: userId }).catch(() => {}),

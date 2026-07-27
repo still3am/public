@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import { useAuth } from "@/lib/AuthContext";
-import { useLikes } from "@/hooks/useLikes";
 import { useAddToPlaylist } from "@/hooks/useAddToPlaylist";
 import { usePlayer } from "@/context/PlayerContext";
 import EmptyState from "@/components/EmptyState";
@@ -50,7 +49,6 @@ export default function Profile() {
   const { id } = useParams();
   const nav = useNavigate();
   const { user: me } = useAuth();
-  const likes = useLikes(me);
   const ap = useAddToPlaylist();
   const p = usePlayer();
   const isOwn = !id || id === me?.id;
@@ -567,8 +565,6 @@ export default function Profile() {
               key={t.id}
               track={t}
               index={i}
-              liked={likes.likedIds.has(t.id)}
-              onLikeToggle={likes.toggleLike}
               onAddToPlaylist={(tk) => ap.addToPlaylist(tk.id)} />
 
             )}
@@ -626,8 +622,6 @@ export default function Profile() {
             key={t.id}
             track={t}
             index={i}
-            liked={likes.likedIds.has(t.id)}
-            onLikeToggle={likes.toggleLike}
             onAddToPlaylist={(tk) => ap.addToPlaylist(tk.id)} />
 
           )}

@@ -1,7 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { usePlayer } from "@/context/PlayerContext";
 import { useColorExtraction } from "@/hooks/useColorExtraction";
-import { useLikes } from "@/hooks/useLikes";
 import { useAuth } from "@/lib/AuthContext";
 import { formatTime } from "@/lib/audio-utils";
 import SyncedLyrics from "@/components/SyncedLyrics";
@@ -14,7 +13,6 @@ import {
   SkipBack,
   SkipForward,
   ChevronDown,
-  Heart,
   ListMusic,
   Mic2,
   Volume2,
@@ -48,7 +46,6 @@ function IconButton({ icon: Icon, onClick, active, size = 22, label, className =
 export default function FullScreenPlayer({ onClose, onOpenQueue }) {
   const p = usePlayer();
   const { user } = useAuth();
-  const likes = useLikes(user);
   const ap = useAddToPlaylist();
   const bg = useColorExtraction(p.currentTrack?.cover_art_url);
   const [lyricsMode, setLyricsMode] = useState(false);
@@ -144,7 +141,6 @@ export default function FullScreenPlayer({ onClose, onOpenQueue }) {
   }
 
   if (!t) return null;
-  const liked = likes.likedIds.has(t.id);
   const progress = p.duration ? p.position / p.duration * 100 : 0;
   const remaining = Math.max(0, (p.duration || 0) - (p.position || 0));
   const volPct = (p.muted ? 0 : p.volume) * 100;
@@ -214,8 +210,6 @@ export default function FullScreenPlayer({ onClose, onOpenQueue }) {
           onAddToQueue={() => p.addToQueue?.(t)}
           onShare={shareNow}
           onOpenQueue={onOpenQueue}
-          onLike={() => likes.toggleLike(t)}
-          liked={likes.likedIds.has(t.id)}
           showVisualizer={showVisualizer}
           onToggleVisualizer={() => {
             setShowVisualizer((v) => !v);
@@ -276,13 +270,6 @@ export default function FullScreenPlayer({ onClose, onOpenQueue }) {
                 {t.artist || t.uploader_name || "Unknown"}
               </Link>
             </div>
-            <button
-              onClick={() => likes.toggleLike(t)}
-              className="p-2 shrink-0 active:scale-90 hover:bg-white/10 rounded-full transition"
-              aria-label="Like">
-              
-              <Heart size={26} className={liked ? "fill-red-500 text-red-500" : ""} />
-            </button>
           </div>
 
           {/* scrubber */}

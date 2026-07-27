@@ -5,7 +5,6 @@ import {
   ListMusic,
   Share2,
   Link2,
-  Heart,
   X,
   Activity,
 } from "lucide-react";
@@ -16,8 +15,6 @@ export default function NowPlayingAddMenu({
   onAddToQueue,
   onShare,
   onOpenQueue,
-  onLike,
-  liked,
   showVisualizer,
   onToggleVisualizer,
 }) {
@@ -62,15 +59,6 @@ export default function NowPlayingAddMenu({
         onAddToQueue();
         close();
       },
-    },
-    onLike && {
-      icon: Heart,
-      label: liked ? "Unlike" : "Like",
-      onClick: (close) => {
-        onLike();
-        close();
-      },
-      accent: liked ? "text-red-400" : "",
     },
     {
       icon: Link2,

@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import { useAuth } from "@/lib/AuthContext";
-import { useLikes } from "@/hooks/useLikes";
 import { useAddToPlaylist } from "@/hooks/useAddToPlaylist";
 import { usePlayer } from "@/context/PlayerContext";
 import EmptyState from "@/components/EmptyState";
@@ -22,7 +21,6 @@ import {
 export default function PlaylistDetail() {
   const { id } = useParams();
   const { user } = useAuth();
-  const likes = useLikes(user);
   const ap = useAddToPlaylist();
   const p = usePlayer();
   const [playlist, setPlaylist] = useState(null);
@@ -271,8 +269,6 @@ export default function PlaylistDetail() {
               <TrackRow
                 track={t}
                 index={i}
-                liked={likes.likedIds.has(t.id)}
-                onLikeToggle={likes.toggleLike}
                 onAddToPlaylist={(tk) => ap.addToPlaylist(tk.id)}
               />
               {isOwner && (

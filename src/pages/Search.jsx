@@ -10,8 +10,6 @@ import {
   X } from
 "lucide-react";
 import { base44 } from "@/api/base44Client";
-import { useAuth } from "@/lib/AuthContext";
-import { useLikes } from "@/hooks/useLikes";
 import { useAddToPlaylist } from "@/hooks/useAddToPlaylist";
 import TrackRow from "@/components/TrackRow";
 import PullToRefresh from "@/components/PullToRefresh";
@@ -25,8 +23,6 @@ const TABS = [
 
 
 export default function Search() {
-  const { user } = useAuth();
-  const likes = useLikes(user);
   const ap = useAddToPlaylist();
   const tabs = [...TABS, { id: "people", label: "People", icon: Shield }];
   const [q, setQ] = useState("");
@@ -151,8 +147,6 @@ export default function Search() {
                   key={t.id}
                   track={t}
                   index={i}
-                  liked={likes.likedIds.has(t.id)}
-                  onLikeToggle={likes.toggleLike}
                   onAddToPlaylist={(tk) => ap.addToPlaylist(tk.id)} />
               )}
             </div> :

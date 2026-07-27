@@ -5,7 +5,6 @@ import {
   Home,
   Upload,
   Search,
-  Heart,
   TrendingUp,
   Clock,
   Bell,
@@ -62,9 +61,6 @@ export default function Sidebar() {
           <Download size={18} /> Downloads
         </NavLink>
         
-        <NavLink to="/liked" className={navLinkCls}>
-          <Heart size={18} /> Liked Songs
-        </NavLink>
         <NavLink to="/suggestions" className={navLinkCls}>
           <Lightbulb size={18} /> Suggestions
         </NavLink>

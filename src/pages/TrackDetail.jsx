@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import { useAuth } from "@/lib/AuthContext";
-import { useLikes } from "@/hooks/useLikes";
 import { useAddToPlaylist } from "@/hooks/useAddToPlaylist";
 import { usePlayer } from "@/context/PlayerContext";
 import EmptyState from "@/components/EmptyState";
@@ -13,7 +12,6 @@ import {
   Loader2,
   Play,
   Pause,
-  Heart,
   Download,
   Flag,
   Pencil,
@@ -35,7 +33,6 @@ export default function TrackDetail() {
   const { id } = useParams();
   const nav = useNavigate();
   const { user } = useAuth();
-  const likes = useLikes(user);
   const ap = useAddToPlaylist();
   const p = usePlayer();
   const [track, setTrack] = useState(null);
@@ -155,7 +152,6 @@ export default function TrackDetail() {
   }
   if (!track) return <EmptyState title="Track not found" />;
 
-  const liked = likes.likedIds.has(track.id);
   const isCurrent = p.currentTrack?.id === track.id;
   const isOwner = track.uploader_id === user?.id;
   const isPlaying = isCurrent && p.isPlaying;
@@ -348,7 +344,7 @@ export default function TrackDetail() {
               </div>
             }
             <div className="text-xs text-foreground/40 mb-3">
-              {track.play_count || 0} plays · {track.like_count || 0} likes
+              {track.play_count || 0} plays
             </div>
             {track.description &&
             <p className="text-sm text-foreground/70 leading-relaxed mb-3">
@@ -367,16 +363,6 @@ export default function TrackDetail() {
           
           {isPlaying ? <Pause size={16} /> : <Play size={16} />}
           {isPlaying ? "Pause" : "Play"}
-        </button>
-        <button
-          onClick={() => likes.toggleLike(track)}
-          className="p-2.5 rounded-full border border-border"
-          aria-label="Like">
-          
-          <Heart
-            size={18}
-            className={liked ? "fill-red-500 text-red-500" : ""} />
-          
         </button>
         
 
@@ -473,8 +459,6 @@ export default function TrackDetail() {
             key={t.id}
             track={t}
             index={i}
-            liked={likes.likedIds.has(t.id)}
-            onLikeToggle={likes.toggleLike}
             onAddToPlaylist={(tk) => ap.addToPlaylist(tk.id)}
             albumArtist={album?.artisan || track.artist}
             albumCover={album?.cover_art_url || track.cover_art_url} />

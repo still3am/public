@@ -10,11 +10,8 @@ import {
   Repeat1,
   Shuffle,
   ListMusic,
-  Heart,
 } from "lucide-react";
 import { usePlayer } from "@/context/PlayerContext";
-import { useLikes } from "@/hooks/useLikes";
-import { useAuth } from "@/lib/AuthContext";
 import { Link } from "react-router-dom";
 import { formatTime } from "@/lib/audio-utils";
 import QueueDrawer from "@/components/QueueDrawer";
@@ -22,8 +19,6 @@ import FullScreenPlayer from "@/components/FullScreenPlayer";
 
 export default function PlayerBar() {
   const p = usePlayer();
-  const { user } = useAuth();
-  const likes = useLikes(user);
   const [queueOpen, setQueueOpen] = useState(false);
   const [fullOpen, setFullOpen] = useState(false);
   const [dragY, setDragY] = useState(0);
@@ -54,7 +49,6 @@ export default function PlayerBar() {
 
   if (!p.currentTrack) return null;
   const t = p.currentTrack;
-  const liked = likes.likedIds.has(t.id);
   const pct = p.duration ? (p.position / p.duration) * 100 : 0;
   const remaining = Math.max(0, (p.duration || 0) - (p.position || 0));
   const RepeatIcon = p.repeat === "one" ? Repeat1 : Repeat;
@@ -110,9 +104,6 @@ export default function PlayerBar() {
 
           {/* mobile controls */}
           <div className="flex items-center gap-1 shrink-0 md:hidden">
-            <button onClick={() => likes.toggleLike(t)} className="p-2.5 rounded-full hover:bg-foreground/5 active:scale-90 transition" aria-label="Like">
-              <Heart size={18} className={liked ? "fill-red-500 text-red-500" : "text-foreground/60"} />
-            </button>
             <button onClick={p.prev} className="p-2 rounded-full hover:bg-foreground/5 active:scale-90 transition" aria-label="Previous">
               <SkipBack size={18} />
             </button>

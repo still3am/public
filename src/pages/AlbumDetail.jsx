@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import { useAuth } from "@/lib/AuthContext";
-import { useLikes } from "@/hooks/useLikes";
 import { useAddToPlaylist } from "@/hooks/useAddToPlaylist";
 import { usePlayer } from "@/context/PlayerContext";
 import EmptyState from "@/components/EmptyState";
@@ -27,7 +26,6 @@ export default function AlbumDetail() {
   const { id } = useParams();
   const nav = useNavigate();
   const { user } = useAuth();
-  const likes = useLikes(user);
   const ap = useAddToPlaylist();
   const p = usePlayer();
   const [album, setAlbum] = useState(null);
@@ -319,8 +317,6 @@ export default function AlbumDetail() {
                 key={t.id}
                 track={t}
                 index={i}
-                liked={likes.likedIds.has(t.id)}
-                onLikeToggle={likes.toggleLike}
                 onAddToPlaylist={(tk) => ap.addToPlaylist(tk.id)}
                 albumArtist={album?.artisan}
                 albumCover={album?.cover_art_url}

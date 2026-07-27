@@ -2,7 +2,6 @@ import { useState } from "react";
 import {
   Play,
   Pause,
-  Heart,
   MoreHorizontal,
   Plus,
   ListPlus,
@@ -151,16 +150,6 @@ export default function TrackRow({
           {track.genre}
         </span>
       }
-      <button
-        onClick={() => onLikeToggle?.(track)}
-        className="p-2 rounded-full hover:bg-foreground/5"
-        aria-label="Like">
-        
-        <Heart
-          size={16}
-          className={liked ? "fill-red-500 text-red-500" : "text-foreground/50"} />
-        
-      </button>
       {track.created_date &&
       <div className="hidden lg:block text-[11px] text-foreground/40 w-14 text-right">
           {timeAgo(track.created_date)}
@@ -218,14 +207,6 @@ export default function TrackRow({
                 p.addToQueue?.(track);
                 setMenuOpen(false);
               }} />
-              <MenuBtn
-              icon={Heart}
-              label={liked ? "Remove from liked" : "Like"}
-              onClick={() => {
-                onLikeToggle?.(track);
-                setMenuOpen(false);
-              }} />
-
               <MenuBtn
               icon={savingOffline ? Loader2 : savedOffline ? Trash2 : Download}
               label={savingOffline ? "Saving…" : savedOffline ? "Remove offline" : "Save offline"}

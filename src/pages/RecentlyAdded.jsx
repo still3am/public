@@ -1,7 +1,5 @@
 import { useEffect, useState } from "react";
 import { base44 } from "@/api/base44Client";
-import { useAuth } from "@/lib/AuthContext";
-import { useLikes } from "@/hooks/useLikes";
 import { useAddToPlaylist } from "@/hooks/useAddToPlaylist";
 import TrackRow from "@/components/TrackRow";
 import EmptyState from "@/components/EmptyState";
@@ -10,8 +8,6 @@ import PullToRefresh from "@/components/PullToRefresh";
 import PageHeader from "@/components/PageHeader";
 
 export default function RecentlyAdded() {
-  const { user } = useAuth();
-  const likes = useLikes(user);
   const ap = useAddToPlaylist();
   const [tracks, setTracks] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -54,8 +50,6 @@ export default function RecentlyAdded() {
             key={t.id}
             track={t}
             index={i}
-            liked={likes.likedIds.has(t.id)}
-            onLikeToggle={likes.toggleLike}
             onAddToPlaylist={(tk) => ap.addToPlaylist(tk.id)}
           />
         ))}
