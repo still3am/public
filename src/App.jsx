@@ -15,7 +15,6 @@ import ForgotPassword from '@/pages/ForgotPassword';
 import ResetPassword from '@/pages/ResetPassword';
 import Home from '@/pages/Home';
 import Search from '@/pages/Search';
-import Discover from '@/pages/Discover';
 import TopCharts from '@/pages/TopCharts';
 import RecentlyAdded from '@/pages/RecentlyAdded';
 import Notifications from '@/pages/Notifications';
@@ -61,7 +60,6 @@ const AuthenticatedApp = () => {
         <Route element={<Layout />}>
           <Route path="/" element={<Home />} />
           <Route path="/search" element={<Search />} />
-          <Route path="/discover" element={<Discover />} />
           <Route path="/top" element={<TopCharts />} />
           <Route path="/recent" element={<RecentlyAdded />} />
           <Route path="/notifications" element={<Notifications />} />

@@ -1,16 +1,16 @@
 import { NavLink } from "react-router-dom";
+
+import { useEffect, useState } from "react";
 import {
   Home,
   Upload,
   Search,
   Heart,
-  Compass,
   TrendingUp,
   Clock,
   Bell,
-  Lightbulb } from
-"lucide-react";
-import { useEffect, useState } from "react";
+  Lightbulb,
+} from "lucide-react";
 import Avatar from "@/components/Avatar";
 import Logo from "@/components/Logo";
 import ThemeToggle from "@/components/ThemeToggle";
@@ -50,9 +50,6 @@ export default function Sidebar() {
         </NavLink>
         <NavLink to="/search" className={navLinkCls}>
           <Search size={18} /> Search
-        </NavLink>
-        <NavLink to="/discover" className={navLinkCls}>
-          <Compass size={18} /> Discover
         </NavLink>
         <NavLink to="/top" className={navLinkCls}>
           <TrendingUp size={18} /> Top Charts
