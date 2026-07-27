@@ -10,7 +10,16 @@ Deno.serve(async (req) => {
     const Q = (body?.q || '').trim().toLowerCase();
     if (!Q) return Response.json({ results: [] });
 
-    const users = await base44.asServiceRole.entities.User.list('-created_date', 500);
+    // Honor built-in User RLS: regular (non-admin) users are not permitted to
+    // list other users. Using the user-scoped client (instead of the service
+    // role) lets the platform enforce that — admins get results, non-admins
+    // get an empty list rather than a full user dump.
+    let users = [];
+    try {
+      users = await base44.entities.User.list('-created_date', 500);
+    } catch {
+      users = [];
+    }
 
     const results = users
       .filter((u) => {
