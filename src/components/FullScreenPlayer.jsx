@@ -215,19 +215,12 @@ export default function FullScreenPlayer({ onClose, onOpenQueue }) {
           onShare={shareNow}
           onOpenQueue={onOpenQueue}
           onLike={() => likes.toggleLike(t)}
-          liked={likes.likedIds.has(t.id)} />
-        <button
-          onClick={() => {
+          liked={likes.likedIds.has(t.id)}
+          showVisualizer={showVisualizer}
+          onToggleVisualizer={() => {
             setShowVisualizer((v) => !v);
             if (!showVisualizer) p.enableAnalyser?.();
-          }}
-          aria-label="Visualizer"
-          className={`p-2 -mr-2 rounded-full hover:bg-white/10 transition active:scale-90 ${
-            showVisualizer ? "opacity-100" : "opacity-50"
-          }`}>
-          <Activity size={22} />
-        </button>
-
+          }} />
       </div>
 
       {/* body */}

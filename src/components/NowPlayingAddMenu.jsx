@@ -7,6 +7,7 @@ import {
   Link2,
   Heart,
   X,
+  Activity,
 } from "lucide-react";
 
 export default function NowPlayingAddMenu({
@@ -17,6 +18,8 @@ export default function NowPlayingAddMenu({
   onOpenQueue,
   onLike,
   liked,
+  showVisualizer,
+  onToggleVisualizer,
 }) {
   const [open, setOpen] = useState(false);
   const [copied, setCopied] = useState(false);
@@ -94,6 +97,15 @@ export default function NowPlayingAddMenu({
         onOpenQueue();
         close();
       },
+    },
+    onToggleVisualizer && {
+      icon: Activity,
+      label: showVisualizer ? "Hide visualizer" : "Show visualizer",
+      onClick: (close) => {
+        onToggleVisualizer();
+        close();
+      },
+      accent: showVisualizer ? "text-white" : "",
     },
   ].filter(Boolean);
 
