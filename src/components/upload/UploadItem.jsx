@@ -141,17 +141,6 @@ export default function UploadItem({
             </label>
           </div>
 
-          <label className="flex items-start gap-2 text-xs text-foreground/60">
-            <Checkbox
-              checked={item.rights_confirmed}
-              onCheckedChange={(v) => onChange({ rights_confirmed: !!v })}
-              disabled={uploading || done}
-            />
-            <span>
-              I own/have rights to this audio and it doesn't violate others' rights.
-            </span>
-          </label>
-
           {item.error && (
             <div className="flex items-center gap-1.5 text-xs text-destructive">
               <AlertCircle size={13} /> {item.error}

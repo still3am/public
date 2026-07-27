@@ -124,10 +124,6 @@ export default function Upload() {
       updateItem(item.id, { error: "Pick a genre" });
       return false;
     }
-    if (!item.rights_confirmed) {
-      updateItem(item.id, { error: "Confirm you own the rights" });
-      return false;
-    }
     updateItem(item.id, { status: "uploading", error: "" });
     try {
       const audioRes = await base44.integrations.Core.UploadFile({
