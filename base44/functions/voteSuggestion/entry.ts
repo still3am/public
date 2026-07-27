@@ -16,9 +16,14 @@ export default async function(req) {
 
     const voterIds = Array.isArray(item.voter_ids) ? item.voter_ids : [];
     const has = voterIds.includes(user.id);
-    const next = has ? voterIds.filter((x) => x !== user.id) : [...voterIds, user.id];
-    await admin.entities.Suggestion.update(suggestionId, { voter_ids: next });
-    return Response.json({ voted: !has, voter_ids: next });
+    // Update the array atomically to avoid a read-modify-write race where two
+    // simultaneous votes clobber each other and drop one.
+    if (has) {
+      await admin.entities.Suggestion.updateMany({ id: suggestionId }, { $pull: { voter_ids: user.id } });
+    } else {
+      await admin.entities.Suggestion.updateMany({ id: suggestionId }, { $addToSet: { voter_ids: user.id } });
+    }
+    return Response.json({ voted: !has, voter_ids: has ? voterIds.filter(x => x !== user.id) : [...voterIds, user.id] });
   } catch (error) {
     return Response.json({ error: error.message }, { status: 500 });
   }

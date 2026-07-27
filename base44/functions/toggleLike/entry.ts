@@ -18,6 +18,9 @@ export default async function(req) {
     if (alreadyLiked) {
       await admin.entities.Like.deleteMany({ user_id: user.id, track_id: trackId });
       await admin.entities.Track.updateMany({ id: trackId }, { $inc: { like_count: -1 } });
+      // Guard against the denormalized counter drifting negative if it ever
+      // fell out of sync (e.g. likes removed without updating the count).
+      await admin.entities.Track.updateMany({ id: trackId }, { $max: { like_count: 0 } });
       return Response.json({ liked: false });
     }
 
