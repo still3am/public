@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import { useAuth } from "@/lib/AuthContext";
-import { useAddToPlaylist } from "@/hooks/useAddToPlaylist";
 import { usePlayer } from "@/context/PlayerContext";
 import EmptyState from "@/components/EmptyState";
 import BackHeader from "@/components/BackHeader";
@@ -26,7 +25,6 @@ export default function AlbumDetail() {
   const { id } = useParams();
   const nav = useNavigate();
   const { user } = useAuth();
-  const ap = useAddToPlaylist();
   const p = usePlayer();
   const [album, setAlbum] = useState(null);
   const [tracks, setTracks] = useState([]);
@@ -317,7 +315,6 @@ export default function AlbumDetail() {
                 key={t.id}
                 track={t}
                 index={i}
-                onAddToPlaylist={(tk) => ap.addToPlaylist(tk.id)}
                 albumArtist={album?.artisan}
                 albumCover={album?.cover_art_url}
               />
@@ -364,7 +361,6 @@ export default function AlbumDetail() {
           onAdded={load}
         />
       )}
-      {ap.modal}
     </div>
   );
 }

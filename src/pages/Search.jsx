@@ -3,49 +3,43 @@ import { Link } from "react-router-dom";
 import {
   Search as SearchIcon,
   Loader2,
-  ListMusic,
   Disc,
   Music,
   Shield,
   X } from
 "lucide-react";
 import { base44 } from "@/api/base44Client";
-import { useAddToPlaylist } from "@/hooks/useAddToPlaylist";
 import TrackRow from "@/components/TrackRow";
 import PullToRefresh from "@/components/PullToRefresh";
 import PageHeader from "@/components/PageHeader";
 
 const TABS = [
   { id: "tracks", label: "Tracks", icon: Music },
-  { id: "albums", label: "Albums", icon: Disc },
-  { id: "playlists", label: "Playlists", icon: ListMusic }
+  { id: "albums", label: "Albums", icon: Disc }
 ];
 
 
 export default function Search() {
-  const ap = useAddToPlaylist();
   const tabs = [...TABS, { id: "people", label: "People", icon: Shield }];
   const [q, setQ] = useState("");
   const [tab, setTab] = useState("tracks");
   const [data, setData] = useState({
     tracks: [],
     albums: [],
-    playlists: [],
     people: []
   });
   const [loading, setLoading] = useState(false);
 
   async function runSearch(query) {
     if (!query.trim()) {
-      setData({ tracks: [], albums: [], playlists: [], people: [] });
+      setData({ tracks: [], albums: [], people: [] });
       return;
     }
     setLoading(true);
     try {
-      const [tracks, albums, playlists] = await Promise.all([
+      const [tracks, albums] = await Promise.all([
         base44.entities.Track.list("-created_date", 200),
-        base44.entities.Album.list("-created_date", 200),
-        base44.entities.Playlist.list("-created_date", 200)
+        base44.entities.Album.list("-created_date", 200)
       ]);
       const Q = query.trim().toLowerCase();
       const filtered = {
@@ -60,9 +54,6 @@ export default function Search() {
           (a) =>
             a.title?.toLowerCase().includes(Q) ||
             a.artisan?.toLowerCase().includes(Q)
-        ),
-        playlists: playlists.filter(
-          (p) => p.is_public !== false && p.name?.toLowerCase().includes(Q)
         ),
         people: []
       };
@@ -86,7 +77,7 @@ export default function Search() {
   return (
     <PullToRefresh onRefresh={() => runSearch(q)}>
     <div>
-      <PageHeader eyebrow="Find" title="Search" subtitle="Find tracks, albums, playlists, and people across the PUBLIC network." />
+      <PageHeader eyebrow="Find" title="Search" subtitle="Find tracks, albums, and people across the PUBLIC network." />
       <div className="relative mb-6">
         <SearchIcon
           size={18}
@@ -95,7 +86,7 @@ export default function Search() {
           autoFocus
           value={q}
           onChange={(e) => setQ(e.target.value)}
-          placeholder="Search tracks, albums, playlists…"
+          placeholder="Search tracks, albums…"
           className="w-full pl-11 pr-11 py-3.5 rounded-full border border-border bg-background text-sm font-medium focus:outline-none focus:ring-2 focus:ring-foreground/10" />
         {q.trim() && (
           <button
@@ -134,7 +125,7 @@ export default function Search() {
         <p className="text-sm text-foreground/50 text-center py-16">
           Start typing to search across the PUBLIC network.
         </p> :
-        loading && !data.tracks.length && !data.albums.length && !data.playlists.length && !data.people.length ?
+        loading && !data.tracks.length && !data.albums.length && !data.people.length ?
         <div className="py-16 text-center">
           <Loader2 className="animate-spin inline" />
         </div> :
@@ -146,8 +137,7 @@ export default function Search() {
                 <TrackRow
                   key={t.id}
                   track={t}
-                  index={i}
-                  onAddToPlaylist={(tk) => ap.addToPlaylist(tk.id)} />
+                  index={i} />
               )}
             </div> :
             <p className="text-sm text-foreground/50 text-center py-12">
@@ -177,34 +167,6 @@ export default function Search() {
             </div> :
             <p className="text-sm text-foreground/50 text-center py-12">
               No albums found.
-            </p>)
-          }
-          {tab === "playlists" && (
-            data.playlists.length ?
-            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-3 md:gap-4">
-              {data.playlists.map((pl) =>
-                <Link
-                  key={pl.id}
-                  to={`/playlist/${pl.id}`}
-                  className="group rounded-xl p-3 hover:bg-foreground/[0.03] transition">
-                  <div className="aspect-square rounded-lg overflow-hidden bg-foreground/10 mb-3 grid place-items-center text-foreground/40">
-                    {pl.cover_art_url ?
-                      <img
-                        src={pl.cover_art_url}
-                        alt=""
-                        className="w-full h-full object-cover group-hover:scale-[1.03] transition" /> :
-                      <ListMusic size={28} />
-                    }
-                  </div>
-                  <div className="font-semibold truncate text-sm">{pl.name}</div>
-                  <div className="text-xs text-foreground/50 truncate">
-                    {pl.track_ids?.length || 0} track{(pl.track_ids?.length || 0) === 1 ? "" : "s"}
-                  </div>
-                </Link>
-              )}
-            </div> :
-            <p className="text-sm text-foreground/50 text-center py-12">
-              No playlists found.
             </p>)
           }
           {tab === "people" &&
@@ -246,7 +208,6 @@ export default function Search() {
           }
         </div>
       }
-      {ap.modal}
     </div>
     </PullToRefresh>);
 

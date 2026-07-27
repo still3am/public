@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { base44 } from "@/api/base44Client";
-import { useAddToPlaylist } from "@/hooks/useAddToPlaylist";
 import TrackRow from "@/components/TrackRow";
 import EmptyState from "@/components/EmptyState";
 import { Music, Loader2 } from "lucide-react";
@@ -8,7 +7,6 @@ import PullToRefresh from "@/components/PullToRefresh";
 import PageHeader from "@/components/PageHeader";
 
 export default function RecentlyAdded() {
-  const ap = useAddToPlaylist();
   const [tracks, setTracks] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -50,7 +48,6 @@ export default function RecentlyAdded() {
             key={t.id}
             track={t}
             index={i}
-            onAddToPlaylist={(tk) => ap.addToPlaylist(tk.id)}
           />
         ))}
       </div>

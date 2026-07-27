@@ -1,21 +1,17 @@
 import { useState, useRef, useEffect } from "react";
 import {
   Plus,
-  ListPlus,
   Share2,
-  Link2,
   X,
   Activity,
 } from "lucide-react";
 
 export default function NowPlayingAddMenu({
-  onAddToPlaylist,
   onShare,
   showVisualizer,
   onToggleVisualizer,
 }) {
   const [open, setOpen] = useState(false);
-  const [copied, setCopied] = useState(false);
   const wrapRef = useRef(null);
 
   useEffect(() => {
@@ -32,24 +28,6 @@ export default function NowPlayingAddMenu({
   }, [open]);
 
   const options = [
-    onAddToPlaylist && {
-      icon: ListPlus,
-      label: "Add to playlist",
-      onClick: (close) => {
-        onAddToPlaylist();
-        close();
-      },
-    },
-    {
-      icon: Link2,
-      label: copied ? "Link copied" : "Copy link",
-      onClick: async (close) => {
-        await onShare?.(true);
-        setCopied(true);
-        setTimeout(() => setCopied(false), 1500);
-        close();
-      },
-    },
     onShare && {
       icon: Share2,
       label: "Share",

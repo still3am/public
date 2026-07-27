@@ -5,7 +5,6 @@ import { useAuth } from "@/lib/AuthContext";
 import { formatTime } from "@/lib/audio-utils";
 import SyncedLyrics from "@/components/SyncedLyrics";
 import NowPlayingAddMenu from "@/components/NowPlayingAddMenu";
-import { useAddToPlaylist } from "@/hooks/useAddToPlaylist";
 import { Link } from "react-router-dom";
 import {
   Play,
@@ -45,7 +44,6 @@ function IconButton({ icon: Icon, onClick, active, size = 22, label, className =
 export default function FullScreenPlayer({ onClose }) {
   const p = usePlayer();
   const { user } = useAuth();
-  const ap = useAddToPlaylist();
   const bg = useColorExtraction(p.currentTrack?.cover_art_url);
   const [lyricsMode, setLyricsMode] = useState(false);
   const [showVisualizer, setShowVisualizer] = useState(false);
@@ -204,7 +202,6 @@ export default function FullScreenPlayer({ onClose }) {
           
         </div>
         <NowPlayingAddMenu
-          onAddToPlaylist={() => ap.addToPlaylist(t.id)}
           onShare={shareNow}
           showVisualizer={showVisualizer}
           onToggleVisualizer={() => {
@@ -423,7 +420,6 @@ export default function FullScreenPlayer({ onClose }) {
 
       
 
-      {ap.modal}
     </div>);
 
 }

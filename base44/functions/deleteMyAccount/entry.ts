@@ -17,7 +17,6 @@ Deno.serve(async (req) => {
         .catch(() => {}),
       svc.entities.Follow.deleteMany({ follower_id: userId }).catch(() => {}),
       svc.entities.Follow.deleteMany({ following_id: userId }).catch(() => {}),
-      svc.entities.Playlist.deleteMany({ creator_id: userId }).catch(() => {}),
       svc.entities.Album.deleteMany({ creator_id: userId }).catch(() => {}),
       svc.entities.Notification.deleteMany({ user_id: userId }).catch(() => {}),
       svc.entities.Notification.deleteMany({ actor_id: userId }).catch(() => {}),

@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import { useAuth } from "@/lib/AuthContext";
-import { useAddToPlaylist } from "@/hooks/useAddToPlaylist";
 import { usePlayer } from "@/context/PlayerContext";
 import EmptyState from "@/components/EmptyState";
 import TrackRow from "@/components/TrackRow";
@@ -19,7 +18,6 @@ import {
   Pencil,
   Save,
   Music,
-  ListMusic,
   Shield,
   Upload,
   X,
@@ -49,7 +47,6 @@ export default function Profile() {
   const { id } = useParams();
   const nav = useNavigate();
   const { user: me } = useAuth();
-  const ap = useAddToPlaylist();
   const p = usePlayer();
   const isOwn = !id || id === me?.id;
   const targetId = isOwn ? me?.id : id;
@@ -58,7 +55,6 @@ export default function Profile() {
   const [loading, setLoading] = useState(true);
   const [tracks, setTracks] = useState([]);
   const [topTracks, setTopTracks] = useState([]);
-  const [playlists, setPlaylists] = useState([]);
   const [albums, setAlbums] = useState([]);
   const [following, setFollowing] = useState(false);
   const [stats, setStats] = useState({ followers: 0, following: 0, plays: 0, likes: 0 });
@@ -108,13 +104,8 @@ export default function Profile() {
         soundcloud: prof.soundcloud || ""
       });
       const trackFilter = { uploader_id: targetId, is_published: true };
-      const [t, pl, al, followsToMe, followsFromMe, relToUser] = await Promise.all([
+      const [t, al, followsToMe, followsFromMe, relToUser] = await Promise.all([
       base44.entities.Track.filter(trackFilter, "-created_date", 100),
-      base44.entities.Playlist.filter(
-        { creator_id: targetId, is_public: true },
-        "-created_date",
-        50
-      ),
       base44.entities.Album.filter({ creator_id: targetId }, "-created_date", 50),
       base44.entities.Follow.filter({ following_id: targetId }, "-created_date", 1000),
       base44.entities.Follow.filter({ follower_id: targetId }, "-created_date", 1000),
@@ -130,7 +121,6 @@ export default function Profile() {
       setTopTracks(
         [...t].sort((a, b) => (b.play_count || 0) - (a.play_count || 0)).slice(0, 5)
       );
-      setPlaylists(pl);
       setAlbums(al);
       setStats({
         followers: followsToMe.length,
@@ -564,8 +554,7 @@ export default function Profile() {
             <TrackRow
               key={t.id}
               track={t}
-              index={i}
-              onAddToPlaylist={(tk) => ap.addToPlaylist(tk.id)} />
+              index={i} />
 
             )}
           </div>
@@ -621,41 +610,12 @@ export default function Profile() {
           <TrackRow
             key={t.id}
             track={t}
-            index={i}
-            onAddToPlaylist={(tk) => ap.addToPlaylist(tk.id)} />
+            index={i} />
 
           )}
         </div>
         }
 
-      {playlists.length > 0 &&
-        <>
-          <h2 className="text-lg font-extrabold tracking-tight mb-3 flex items-center gap-2">
-            <ListMusic size={18} /> Playlists
-          </h2>
-          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-3 md:gap-4">
-            {playlists.map((pl) =>
-            <Link
-              key={pl.id}
-              to={`/playlist/${pl.id}`}
-              className="rounded-xl p-3 hover:bg-foreground/[0.03] transition">
-            
-                <div className="aspect-square rounded-lg overflow-hidden bg-foreground/10 mb-3 grid place-items-center text-foreground/40">
-                  {pl.cover_art_url ?
-                <img src={pl.cover_art_url} alt="" className="w-full h-full object-cover" /> :
-
-                <ListMusic size={28} />
-                }
-                </div>
-                <div className="font-semibold truncate text-sm">{pl.name}</div>
-                <div className="text-xs text-foreground/50 truncate">
-                  {pl.track_ids?.length || 0} track{(pl.track_ids?.length || 0) === 1 ? "" : "s"}
-                </div>
-              </Link>
-            )}
-          </div>
-        </>
-        }
       {isOwn && !editMode &&
         <div className="mt-10 p-5 rounded-2xl border border-border bg-foreground/[0.02]">
           <h2 className="text-base font-extrabold tracking-tight mb-1 text-foreground">
@@ -690,8 +650,7 @@ export default function Profile() {
           <div className="bg-card rounded-2xl w-full max-w-md p-5 shadow-2xl">
             <h3 className="text-lg font-extrabold mb-1">Delete your account</h3>
             <p className="text-sm text-foreground/60 mb-4">
-              This will permanently remove your profile, uploads, likes,
-              follows, and playlists. To confirm, type{" "}
+              This will permanently remove your profile and uploads. To confirm, type{" "}
               <strong>DELETE</strong> below.
             </p>
             <input
@@ -732,7 +691,6 @@ export default function Profile() {
           onClose={() => setShowQR(false)} />
 
         }
-      {ap.modal}
     </div>
     </PullToRefresh>);
 

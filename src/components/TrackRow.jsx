@@ -3,10 +3,7 @@ import {
   Play,
   Pause,
   MoreHorizontal,
-  Plus,
-  ListPlus,
   Flag,
-  Link2,
   Download,
   Flame,
   Loader2,
@@ -172,25 +169,6 @@ export default function TrackRow({
             onClick={() => setMenuOpen(false)} />
           
             <div className="absolute right-0 top-full z-20 mt-1 bg-popover border border-border rounded-lg shadow-xl py-1 min-w-[200px]">
-              <MenuBtn
-              icon={Link2}
-              label="Copy link"
-              onClick={() => {
-                const url = `${window.location.origin}/track/${track.id}`;
-                navigator.clipboard?.writeText(url);
-                setMenuOpen(false);
-              }} />
-            
-              {onAddToPlaylist &&
-            <MenuBtn
-              icon={Plus}
-              label="Add to playlist"
-              onClick={() => {
-                onAddToPlaylist(track);
-                setMenuOpen(false);
-              }} />
-
-            }
               <MenuBtn
               icon={savingOffline ? Loader2 : savedOffline ? Trash2 : Download}
               label={savingOffline ? "Saving…" : savedOffline ? "Remove offline" : "Save offline"}

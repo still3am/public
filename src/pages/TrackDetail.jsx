@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import { useAuth } from "@/lib/AuthContext";
-import { useAddToPlaylist } from "@/hooks/useAddToPlaylist";
 import { usePlayer } from "@/context/PlayerContext";
 import EmptyState from "@/components/EmptyState";
 import EditTrackModal from "@/components/EditTrackModal";
@@ -20,8 +19,6 @@ import {
   Disc,
   Music,
   Plus,
-  ListPlus,
-  Link2,
   Trash2 } from
 "lucide-react";
 import TrackRow from "@/components/TrackRow";
@@ -32,7 +29,6 @@ export default function TrackDetail() {
   const { id } = useParams();
   const nav = useNavigate();
   const { user } = useAuth();
-  const ap = useAddToPlaylist();
   const p = usePlayer();
   const [track, setTrack] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -156,15 +152,7 @@ export default function TrackDetail() {
   const isPlaying = isCurrent && p.isPlaying;
   const displayArtist = album?.artisan || track.artist || "";
 
-  const menuItems = [
-  {
-    icon: ListPlus,
-    label: "Add to playlist",
-    onClick: () => {
-      ap.addToPlaylist(track.id);
-      setMenuOpen(false);
-    }
-  }];
+  const menuItems = [];
 
   if (isOwner)
   menuItems.push({
@@ -215,11 +203,6 @@ export default function TrackDetail() {
         );
       }
     }
-  });
-  menuItems.push({
-    icon: Link2,
-    label: copied ? "Link copied" : "Copy link",
-    onClick: shareLink
   });
   if (navigator.share)
   menuItems.push({ icon: Share2, label: "Share", onClick: nativeShare });
@@ -442,7 +425,6 @@ export default function TrackDetail() {
             key={t.id}
             track={t}
             index={i}
-            onAddToPlaylist={(tk) => ap.addToPlaylist(tk.id)}
             albumArtist={album?.artisan || track.artist}
             albumCover={album?.cover_art_url || track.cover_art_url} />
 
@@ -475,7 +457,6 @@ export default function TrackDetail() {
         }} />
 
       }
-      {ap.modal}
     </div>);
 
 }

@@ -2,7 +2,7 @@ import { useEffect, useLayoutEffect } from "react";
 import { useLocation } from "react-router-dom";
 
 const cache = {};
-const EXEMPT = ["/track/", "/album/", "/playlist/"];
+const EXEMPT = ["/track/", "/album/"];
 
 export function useScrollRestore() {
   const loc = useLocation();
