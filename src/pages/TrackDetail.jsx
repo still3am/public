@@ -57,23 +57,23 @@ export default function TrackDetail() {
       }
       if (t?.artist) {
         const splitNames = (str) =>
-          (str || "")
-            .split(/\s*(?:,|&| feat\.| ft\.| x |;)\s*/i)
-            .map((s) => s.trim().toLowerCase())
-            .filter(Boolean);
+        (str || "").
+        split(/\s*(?:,|&| feat\.| ft\.| x |;)\s*/i).
+        map((s) => s.trim().toLowerCase()).
+        filter(Boolean);
         const names = splitNames(t.artist);
         const all = await base44.entities.Track.list("-play_count", 100).catch(
           () => []
         );
         setMoreTracks(
-          all
-            .filter(
-              (x) =>
-                x.id !== t.id &&
-                x.is_published !== false &&
-                splitNames(x.artist).some((n) => names.includes(n))
-            )
-            .slice(0, 6)
+          all.
+          filter(
+            (x) =>
+            x.id !== t.id &&
+            x.is_published !== false &&
+            splitNames(x.artist).some((n) => names.includes(n))
+          ).
+          slice(0, 6)
         );
       } else {
         setMoreTracks([]);
@@ -169,11 +169,11 @@ export default function TrackDetail() {
 
   menuItems.push({
     icon: cache.downloading[track.id] ? Loader2 : cache.isCached(track.id) ? Trash2 : Download,
-    label: cache.downloading[track.id]
-      ? "Saving…"
-      : cache.isCached(track.id)
-      ? "Remove offline"
-      : "Save offline",
+    label: cache.downloading[track.id] ?
+    "Saving…" :
+    cache.isCached(track.id) ?
+    "Remove offline" :
+    "Save offline",
     onClick: async () => {
       setMenuOpen(false);
       if (cache.isCached(track.id)) {
@@ -182,9 +182,9 @@ export default function TrackDetail() {
       } else {
         const ok = await cache.downloadTrack(track);
         toast(
-          ok
-            ? { title: "Saved for offline" }
-            : { title: "Couldn't save offline", variant: "destructive" }
+          ok ?
+          { title: "Saved for offline" } :
+          { title: "Couldn't save offline", variant: "destructive" }
         );
       }
     }
@@ -278,13 +278,13 @@ export default function TrackDetail() {
                 to={`/artist?name=${encodeURIComponent(displayArtist)}`}
                 className="font-semibold text-foreground/80 px-1 hover:underline">
                     {(() => {
-                      const parts = String(displayArtist)
-                        .split(/\s*(?:,|&| feat\.| ft\.| x |;)\s*/i)
-                        .map((p) => p.trim())
-                        .filter(Boolean);
-                      if (parts.length <= 2) return displayArtist;
-                      return `${parts[0]}, ${parts[1]} +${parts.length - 2}`;
-                    })()}
+                  const parts = String(displayArtist).
+                  split(/\s*(?:,|&| feat\.| ft\.| x |;)\s*/i).
+                  map((p) => p.trim()).
+                  filter(Boolean);
+                  if (parts.length <= 2) return displayArtist;
+                  return `${parts[0]}, ${parts[1]} +${parts.length - 2}`;
+                })()}
                   </Link>
               }
                 {displayArtist && uploader &&
@@ -311,7 +311,7 @@ export default function TrackDetail() {
               }
               </div>
             }
-            <div className="text-xs text-foreground/40 mb-3 w-full">
+            <div className="text-xs text-foreground/40 mb-3 w-full hidden">
               {track.play_count || 0} plays
             </div>
             {track.description &&
@@ -390,9 +390,9 @@ export default function TrackDetail() {
             {track.lyrics_text}
           </div>
           {isOwner && track.audio_url &&
-          <button
-            onClick={() => setGenerating(true)}
-            className="mt-3 inline-flex items-center gap-2 text-xs font-semibold text-foreground/60 hover:text-foreground">
+        <button
+          onClick={() => setGenerating(true)}
+          className="mt-3 inline-flex items-center gap-2 text-xs font-semibold text-foreground/60 hover:text-foreground">
             <Sparkles size={13} /> Regenerate with AI
           </button>}
         </div>
@@ -403,8 +403,8 @@ export default function TrackDetail() {
           <Sparkles size={20} className="mx-auto text-foreground/40 mb-2" />
           <p className="text-sm text-foreground/60 mb-3">No lyrics yet. Let AI transcribe them from this track's audio.</p>
           <button
-            onClick={() => setGenerating(true)}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-foreground text-background text-sm font-semibold">
+          onClick={() => setGenerating(true)}
+          className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-foreground text-background text-sm font-semibold">
             <Sparkles size={14} /> Generate lyrics
           </button>
         </div>
