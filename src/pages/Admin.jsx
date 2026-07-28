@@ -12,6 +12,7 @@ export default function Admin() {
   const { user } = useAuth();
   const [stats, setStats] = useState({});
   const [loading, setLoading] = useState(true);
+  const [lastUpdated, setLastUpdated] = useState("");
 
   const loadStats = useCallback(async () => {
     if (user?.role !== "admin") { setLoading(false); return; }
@@ -33,6 +34,7 @@ export default function Admin() {
         playlists: playlists.length,
         unclassified: unclassified.length,
       });
+      setLastUpdated(new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }));
     } finally {
       setLoading(false);
     }
@@ -45,7 +47,7 @@ export default function Admin() {
   return (
     <div className="max-w-3xl mx-auto px-3 md:px-0 pb-24">
       <BackHeader title="Admin" />
-      <AdminStats stats={stats} loading={loading} />
+      <AdminStats stats={stats} loading={loading} onRefresh={loadStats} lastUpdated={lastUpdated} />
       <div className="mt-4 space-y-4">
         <GenreTool onChanged={loadStats} />
         <ReportsManager onChanged={loadStats} />
