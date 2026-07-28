@@ -25,8 +25,9 @@ const splitNames = (str) =>
     .map((s) => s.trim().toLowerCase())
     .filter(Boolean);
 
-export default function PublicRecords() {
-  const { id } = useParams();
+export default function PublicRecords({ id: propId }) {
+  const { id: paramId } = useParams();
+  const id = propId || paramId;
   const { toast } = useToast();
   const [artist, setArtist] = useState(null);
   const [tracks, setTracks] = useState([]);

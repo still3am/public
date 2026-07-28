@@ -118,7 +118,13 @@ export default function TrackRow({
             return `${parts[0]}, ${parts[1]} +${parts.length - 2}`;
           };
           if (artist) {
-            return <span className="text-xs text-foreground/50 truncate">{shorten(artist)}</span>;
+            return (
+              <Link
+                to={`/artist?name=${encodeURIComponent(artist)}`}
+                className="text-xs text-foreground/50 truncate hover:underline">
+                {shorten(artist)}
+              </Link>
+            );
           }
           return (
             <Link

@@ -274,7 +274,9 @@ export default function TrackDetail() {
             {(displayArtist || uploader) &&
             <div className="text-sm text-foreground/60 mb-2 flex flex-wrap items-center gap-x-1.5 gap-y-0.5">
                 {displayArtist &&
-              <span className="font-semibold text-foreground/80 px-1">
+              <Link
+                to={`/artist?name=${encodeURIComponent(displayArtist)}`}
+                className="font-semibold text-foreground/80 px-1 hover:underline">
                     {(() => {
                       const parts = String(displayArtist)
                         .split(/\s*(?:,|&| feat\.| ft\.| x |;)\s*/i)
@@ -283,7 +285,7 @@ export default function TrackDetail() {
                       if (parts.length <= 2) return displayArtist;
                       return `${parts[0]}, ${parts[1]} +${parts.length - 2}`;
                     })()}
-                  </span>
+                  </Link>
               }
                 {displayArtist && uploader &&
               <span className="text-foreground/40">· uploaded by</span>
