@@ -28,6 +28,23 @@ split(/\s*(?:,|&| feat\.| ft\.| x |;)\s*/i).
 map((s) => s.trim().toLowerCase()).
 filter(Boolean);
 
+function safeUrl(u) {
+  if (!u) return undefined;
+  try {
+    const parsed = new URL(u);
+    return parsed.protocol === "http:" || parsed.protocol === "https:"
+      ? parsed.href
+      : undefined;
+  } catch {
+    return undefined;
+  }
+}
+
+const mkSocial = (url, icon, label) => {
+  const href = safeUrl(url);
+  return href ? { href, icon, label } : null;
+};
+
 function Pill({ icon: Icon, children }) {
   return (
     <span className="inline-flex items-center gap-1.5 text-[11px] font-semibold text-foreground/55 bg-foreground/[0.05] rounded-full px-2.5 py-1">
@@ -143,9 +160,9 @@ export default function PublicRecords({ id: propId }) {
   }
 
   const socials = [
-  artist.website && { href: artist.website, icon: Globe, label: "Website" },
-  artist.spotify_url && { href: artist.spotify_url, icon: Disc3, label: "Spotify" },
-  artist.soundcloud_url && { href: artist.soundcloud_url, icon: Headphones, label: "SoundCloud" },
+  mkSocial(artist.website, Globe, "Website"),
+  mkSocial(artist.spotify_url, Disc3, "Spotify"),
+  mkSocial(artist.soundcloud_url, Headphones, "SoundCloud"),
   artist.instagram && {
     href: `https://instagram.com/${artist.instagram.replace(/^@/, "")}`,
     icon: Globe,
