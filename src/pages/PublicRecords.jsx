@@ -1,11 +1,11 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import BackHeader from "@/components/BackHeader";
-import EmptyState from "@/components/EmptyState";
 import TrackRow from "@/components/TrackRow";
 import PullToRefresh from "@/components/PullToRefresh";
 import { Image } from "@/components/ui/image";
+import { usePlayer } from "@/context/PlayerContext";
 import { useToast } from "@/components/ui/use-toast";
 import {
   Loader2,
@@ -17,6 +17,10 @@ import {
   Users,
   MapPin,
   BarChart2,
+  Disc3,
+  Headphones,
+  Play,
+  ExternalLink,
 } from "lucide-react";
 
 const splitNames = (str) =>
@@ -25,10 +29,60 @@ const splitNames = (str) =>
     .map((s) => s.trim().toLowerCase())
     .filter(Boolean);
 
+function Pill({ icon: Icon, children }) {
+  return (
+    <span className="inline-flex items-center gap-1.5 text-[11px] font-semibold text-foreground/55 bg-foreground/[0.05] rounded-full px-2.5 py-1">
+      {Icon && <Icon size={12} />}
+      <span className="truncate max-w-[160px]">{children}</span>
+    </span>
+  );
+}
+
+function SocialChip({ href, icon: Icon, label }) {
+  return (
+    <a
+      href={href}
+      target="_blank"
+      rel="noreferrer"
+      className="inline-flex items-center gap-1.5 text-xs font-semibold text-foreground/70 hover:text-foreground bg-foreground/[0.05] hover:bg-foreground/[0.09] rounded-full px-3 py-1.5 transition active:scale-95"
+    >
+      <Icon size={13} /> {label}
+      <ExternalLink size={10} className="text-foreground/35" />
+    </a>
+  );
+}
+
+function StatCard({ icon: Icon, value, label }) {
+  return (
+    <div className="rounded-2xl border border-border bg-card/70 backdrop-blur-sm p-4 flex flex-col items-center justify-center text-center">
+      <Icon size={15} className="text-foreground/40 mb-1.5" />
+      <div className="text-xl font-extrabold tracking-tight tabular-nums leading-none truncate w-full">
+        {value}
+      </div>
+      <div className="text-[10px] uppercase tracking-[0.15em] text-foreground/40 mt-1.5">
+        {label}
+      </div>
+    </div>
+  );
+}
+
+function SectionTitle({ icon: Icon, children, right }) {
+  return (
+    <div className="flex items-center justify-between gap-3 mb-3">
+      <h2 className="text-base md:text-lg font-extrabold tracking-tight flex items-center gap-2">
+        <Icon size={17} className="text-foreground/60" />
+        {children}
+      </h2>
+      {right}
+    </div>
+  );
+}
+
 export default function PublicRecords({ id: propId }) {
   const { id: paramId } = useParams();
   const id = propId || paramId;
   const { toast } = useToast();
+  const p = usePlayer();
   const [artist, setArtist] = useState(null);
   const [tracks, setTracks] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -82,146 +136,197 @@ export default function PublicRecords({ id: propId }) {
     }
   }
 
+  const totalPlays = useMemo(
+    () => tracks.reduce((s, t) => s + (t.play_count || 0), 0),
+    [tracks]
+  );
+
   if (loading) {
     return (
-      <div className="py-20 grid place-items-center">
-        <Loader2 className="animate-spin" />
+      <div className="py-24 grid place-items-center">
+        <Loader2 className="animate-spin text-foreground/40" />
       </div>
     );
   }
-  if (!artist) return <EmptyState title="Artist not found" icon={Mic2} />;
 
-  const totalPlays = tracks.reduce((s, t) => s + (t.play_count || 0), 0);
+  if (!artist) {
+    return (
+      <div className="max-w-md mx-auto py-24 px-6 text-center">
+        <div className="w-16 h-16 rounded-2xl bg-foreground/[0.06] grid place-items-center mx-auto mb-4">
+          <Mic2 size={28} className="text-foreground/40" />
+        </div>
+        <h2 className="text-xl font-extrabold tracking-tight mb-1">Artist not found</h2>
+        <p className="text-sm text-foreground/50">This Public Record doesn’t exist or was removed.</p>
+      </div>
+    );
+  }
+
+  const socials = [
+    artist.website && { href: artist.website, icon: Globe, label: "Website" },
+    artist.spotify_url && { href: artist.spotify_url, icon: Disc3, label: "Spotify" },
+    artist.soundcloud_url && { href: artist.soundcloud_url, icon: Headphones, label: "SoundCloud" },
+    artist.instagram && {
+      href: `https://instagram.com/${artist.instagram.replace(/^@/, "")}`,
+      icon: Globe,
+      label: artist.instagram,
+    },
+  ].filter(Boolean);
+
+  const meta = [
+    artist.location && { icon: MapPin, label: artist.location },
+    artist.formed_year && { icon: Calendar, label: artist.formed_year },
+    artist.members && { icon: Users, label: artist.members },
+  ].filter(Boolean);
+
+  const playAll = () => p.playTrackAt(tracks);
 
   return (
     <PullToRefresh onRefresh={load}>
-      <div className="max-w-4xl mx-auto">
+      <div className="max-w-4xl mx-auto pb-16">
         <BackHeader title="Public Records" />
 
         {/* Hero */}
-        <div className="relative rounded-3xl overflow-hidden border border-border mb-8 bg-card">
-          {artist.cover_art_url && (
-            <div className="absolute inset-0">
-              <img src={artist.cover_art_url} alt="" className="w-full h-full object-cover blur-2xl scale-125 opacity-30" />
-              <div className="absolute inset-0 bg-background/70" />
-            </div>
-          )}
-          <div className="relative p-6 md:p-10 flex flex-col md:flex-row gap-5 md:gap-8 items-center md:items-end text-center md:text-left">
-            <div className="w-32 h-32 md:w-44 md:h-44 rounded-2xl overflow-hidden bg-foreground/10 shrink-0 ring-1 ring-foreground/10 grid place-items-center">
+        <section className="relative rounded-3xl overflow-hidden border border-border bg-card mb-6">
+          <div className="relative h-36 md:h-52">
+            {artist.cover_art_url ? (
+              <img
+                src={artist.cover_art_url}
+                alt=""
+                className="absolute inset-0 w-full h-full object-cover scale-110 blur-2xl opacity-60"
+              />
+            ) : (
+              <div className="absolute inset-0 bg-gradient-to-br from-foreground/20 via-foreground/[0.07] to-transparent" />
+            )}
+            <div className="absolute inset-0 bg-gradient-to-b from-background/30 via-background/55 to-background" />
+          </div>
+
+          <div className="relative px-5 md:px-10 pb-6 md:pb-8 flex flex-col md:flex-row gap-4 md:gap-6 items-center md:items-end text-center md:text-left -mt-16 md:-mt-20">
+            <div className="w-32 h-32 md:w-40 md:h-40 rounded-2xl overflow-hidden bg-card ring-4 ring-background shadow-xl grid place-items-center shrink-0">
               {artist.avatar_url ? (
                 <Image src={artist.avatar_url} alt="" fittingType="fill" className="w-full h-full" />
               ) : (
-                <Mic2 size={40} className="text-foreground/40" />
+                <Mic2 size={36} className="text-foreground/35" />
               )}
             </div>
+
             <div className="flex-1 min-w-0">
-              <span className="inline-block text-[10px] uppercase tracking-[0.2em] text-foreground/50 font-semibold mb-2 border border-border rounded-full px-3 py-1">
-                Public Records
+              <span className="inline-flex items-center gap-1.5 text-[10px] uppercase tracking-[0.22em] text-foreground/55 font-bold mb-2 bg-foreground/[0.06] rounded-full px-2.5 py-1">
+                <Sparkles size={11} /> Public Records
               </span>
-              <h1 className="text-3xl md:text-4xl font-extrabold tracking-tighter leading-tight">
+              <h1 className="text-3xl md:text-5xl font-extrabold tracking-tighter leading-[1.02] break-words">
                 {artist.name}
               </h1>
-              <div className="flex flex-wrap items-center justify-center md:justify-start gap-x-4 gap-y-1 text-xs text-foreground/50 mt-2">
-                {artist.location && (
-                  <span className="inline-flex items-center gap-1"><MapPin size={12} /> {artist.location}</span>
+              {meta.length > 0 && (
+                <div className="flex flex-wrap items-center justify-center md:justify-start gap-1.5 mt-3">
+                  {meta.map((m, i) => (
+                    <Pill key={i} icon={m.icon}>{m.label}</Pill>
+                  ))}
+                </div>
+              )}
+              <div className="flex flex-wrap items-center justify-center md:justify-start gap-3 mt-4">
+                {tracks.length > 0 && (
+                  <button
+                    onClick={playAll}
+                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-foreground text-background text-xs font-bold active:scale-95 transition shadow-sm"
+                  >
+                    <Play size={13} className="fill-current" /> Play all
+                  </button>
                 )}
-                {artist.formed_year && (
-                  <span className="inline-flex items-center gap-1"><Calendar size={12} /> {artist.formed_year}</span>
-                )}
-                {artist.members && (
-                  <span className="inline-flex items-center gap-1"><Users size={12} /> {artist.members}</span>
+                {generating ? (
+                  <span className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full bg-foreground/[0.06] text-foreground/60 text-xs font-semibold">
+                    <Loader2 size={13} className="animate-spin" /> Generating…
+                  </span>
+                ) : (
+                  <button
+                    onClick={generateHistory}
+                    className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full bg-foreground/[0.06] hover:bg-foreground/[0.1] text-foreground/70 text-xs font-semibold active:scale-95 transition"
+                  >
+                    <Sparkles size={13} /> {artist.history_text ? "Regenerate history" : "Generate history"}
+                  </button>
                 )}
               </div>
+            </div>
+          </div>
+
+          {(artist.bio || socials.length > 0) && (
+            <div className="px-5 md:px-10 pb-6 md:pb-8 border-t border-border/60 pt-5 flex flex-col md:flex-row gap-4 md:items-center">
               {artist.bio && (
-                <p className="text-sm text-foreground/70 mt-3 leading-relaxed max-w-2xl mx-auto md:mx-0">
+                <p className="text-sm text-foreground/70 leading-relaxed flex-1 min-w-0">
                   {artist.bio}
                 </p>
               )}
-              <div className="flex flex-wrap gap-2 mt-3 justify-center md:justify-start">
-                {artist.website && (
-                  <a href={artist.website} target="_blank" rel="noreferrer" className="chip"><Globe size={12} /> Website</a>
-                )}
-                {artist.spotify_url && (
-                  <a href={artist.spotify_url} target="_blank" rel="noreferrer" className="chip">Spotify</a>
-                )}
-                {artist.soundcloud_url && (
-                  <a href={artist.soundcloud_url} target="_blank" rel="noreferrer" className="chip">SoundCloud</a>
-                )}
-                {artist.instagram && (
-                  <a href={`https://instagram.com/${artist.instagram.replace(/^@/, "")}`} target="_blank" rel="noreferrer" className="chip">
-                    {artist.instagram}
-                  </a>
-                )}
-              </div>
+              {socials.length > 0 && (
+                <div className="flex flex-wrap gap-2 justify-center md:justify-end">
+                  {socials.map((s, i) => (
+                    <SocialChip key={i} href={s.href} icon={s.icon} label={s.label} />
+                  ))}
+                </div>
+              )}
             </div>
-          </div>
-        </div>
+          )}
+        </section>
 
         {/* Stats */}
         <div className="grid grid-cols-3 gap-3 mb-8">
-          {[
-            { label: "Tracks", value: tracks.length, icon: Music },
-            { label: "Plays", value: totalPlays, icon: BarChart2 },
-            { label: "Members", value: artist.members || "—", icon: Users },
-          ].map((s) => (
-            <div key={s.label} className="rounded-2xl border border-border bg-card p-4 text-center">
-              <s.icon size={16} className="mx-auto text-foreground/40 mb-1" />
-              <div className="text-lg font-extrabold tracking-tight truncate">{s.value}</div>
-              <div className="text-[11px] uppercase tracking-wide text-foreground/40">{s.label}</div>
-            </div>
-          ))}
+          <StatCard icon={Music} value={tracks.length} label="Tracks" />
+          <StatCard icon={BarChart2} value={totalPlays} label="Plays" />
+          <StatCard icon={Users} value={artist.members || "—"} label="Members" />
         </div>
 
         {/* History (AI) */}
-        <div className="mb-8 rounded-2xl border border-border bg-foreground/[0.02] p-5 md:p-6">
-          <div className="flex items-center justify-between gap-3 mb-3 flex-wrap">
-            <h2 className="text-lg font-extrabold tracking-tight flex items-center gap-2">
-              <Sparkles size={18} /> History
-            </h2>
-            <button
-              onClick={generateHistory}
-              disabled={generating}
-              className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full bg-foreground text-background text-xs font-semibold disabled:opacity-50 active:scale-95 transition"
-            >
-              {generating ? <Loader2 size={14} className="animate-spin" /> : <Sparkles size={14} />}
-              {generating
-                ? "Generating…"
-                : artist.history_text
-                ? "Regenerate history"
-                : "Generate history"}
-            </button>
+        <section className="mb-8">
+          <SectionTitle icon={Sparkles}>
+            History
+            <span className="text-[10px] font-bold uppercase tracking-wider text-foreground/40 bg-foreground/[0.05] rounded-full px-2 py-0.5 ml-1">
+              AI
+            </span>
+          </SectionTitle>
+          <div className="rounded-2xl border border-border bg-gradient-to-br from-foreground/[0.04] to-transparent p-5 md:p-6">
+            {artist.history_text ? (
+              <p className="text-sm text-foreground/80 leading-relaxed whitespace-pre-line">
+                {artist.history_text}
+              </p>
+            ) : (
+              <div className="text-center py-4">
+                <div className="w-11 h-11 rounded-full bg-foreground/[0.06] grid place-items-center mx-auto mb-3">
+                  <Sparkles size={18} className="text-foreground/40" />
+                </div>
+                <p className="text-sm text-foreground/55 max-w-sm mx-auto leading-relaxed">
+                  No history yet. Tap “Generate history” and PUBLIC’s AI will research this
+                  artist and write an encyclopedia-style summary.
+                </p>
+              </div>
+            )}
           </div>
-          {artist.history_text ? (
-            <p className="text-sm text-foreground/75 leading-relaxed whitespace-pre-line">
-              {artist.history_text}
-            </p>
-          ) : (
-            <p className="text-sm text-foreground/50 leading-relaxed">
-              No history yet. Tap “Generate history” and PUBLIC’s AI will research this
-              artist and write an encyclopedia-style summary.
-            </p>
-          )}
-        </div>
+        </section>
 
         {/* Discography */}
-        <div className="mb-12">
-          <h2 className="text-lg font-extrabold tracking-tight mb-3 flex items-center gap-2">
-            <Music size={18} /> Discography
-          </h2>
+        <section className="mb-12">
+          <SectionTitle icon={Disc3} right={
+            <span className="text-xs font-semibold text-foreground/40 bg-foreground/[0.05] rounded-full px-2.5 py-1">
+              {tracks.length}
+            </span>
+          }>
+            Discography
+          </SectionTitle>
           {tracks.length === 0 ? (
-            <EmptyState
-              icon={Music}
-              title="No tracks yet"
-              description="No published tracks are linked to this artist."
-            />
+            <div className="rounded-2xl border border-dashed border-border py-10 text-center px-6">
+              <Music size={22} className="text-foreground/35 mx-auto mb-2" />
+              <p className="text-sm text-foreground/50">No published tracks linked to this artist yet.</p>
+            </div>
           ) : (
-            <div className="space-y-0.5">
+            <div className="rounded-2xl border border-border bg-card/50 overflow-hidden">
               {tracks.map((t, i) => (
-                <TrackRow key={t.id} track={t} index={i} />
+                <TrackRow
+                  key={t.id}
+                  track={t}
+                  index={i}
+                  className={i !== tracks.length - 1 ? "border-b border-border/50" : ""}
+                />
               ))}
             </div>
           )}
-        </div>
+        </section>
       </div>
     </PullToRefresh>
   );
