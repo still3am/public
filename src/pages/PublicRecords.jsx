@@ -107,17 +107,17 @@ export default function PublicRecords({ id: propId }) {
             </div>
           }
           <div className="relative p-6 md:p-10 flex flex-col md:flex-row gap-5 md:gap-8 items-center md:items-end text-center md:text-left">
-            <div className="w-32 h-32 md:w-44 md:h-44 rounded-2xl overflow-hidden bg-foreground/10 shrink-0 ring-1 ring-foreground/10 grid place-items-center hidden">
-              {artist.avatar_url ?
-              <Image src={artist.avatar_url} alt="" fittingType="fill" className="w-full h-full" /> :
+            
 
-              <Mic2 size={40} className="text-foreground/40" />
-              }
-            </div>
+
+
+
+
+            
             <div className="flex-1 min-w-0">
-              <span className="inline-block text-[10px] uppercase tracking-[0.2em] text-foreground/50 font-semibold mb-2 border border-border rounded-full px-3 py-1 hidden">
-                Public Records
-              </span>
+              
+
+              
               <h1 className="text-3xl md:text-4xl font-extrabold tracking-tighter leading-tight">
                 {artist.name}
               </h1>
@@ -158,19 +158,19 @@ export default function PublicRecords({ id: propId }) {
         </div>
 
         {/* Stats */}
-        <div className="grid grid-cols-3 gap-3 mb-8 hidden">
-          {[
-          { label: "Tracks", value: tracks.length, icon: Music },
-          { label: "Plays", value: totalPlays, icon: BarChart2 },
-          { label: "Members", value: artist.members || "—", icon: Users }].
-          map((s) =>
-          <div key={s.label} className="rounded-2xl border border-border bg-card p-4 text-center">
-              <s.icon size={16} className="mx-auto text-foreground/40 mb-1" />
-              <div className="text-lg font-extrabold tracking-tight truncate">{s.value}</div>
-              <div className="text-[11px] uppercase tracking-wide text-foreground/40">{s.label}</div>
-            </div>
-          )}
-        </div>
+        
+
+
+
+
+
+
+
+
+
+
+
+        
 
         {/* History (AI) */}
         <div className="mb-8 rounded-2xl border border-border bg-foreground/[0.02] p-5 md:p-6">
