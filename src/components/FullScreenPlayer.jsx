@@ -34,7 +34,7 @@ function IconButton({ icon: Icon, onClick, active, size = 22, label, className =
     <button
       onClick={onClick}
       aria-label={label}
-      className={`p-2.5 rounded-full active:scale-90 hover:bg-foreground/10 transition ${
+      className={`p-2.5 rounded-full active:scale-90 hover:bg-white/10 transition ${
       active ? "opacity-100" : "opacity-50"} ${
       className}`}>
       
@@ -151,9 +151,9 @@ export default function FullScreenPlayer({ onClose }) {
 
   return (
     <div
-      className="fixed inset-0 z-50 text-foreground animate-[fadeIn_.25s_ease-out] flex flex-col overflow-hidden"
+      className="fixed inset-0 z-50 text-white animate-[fadeIn_.25s_ease-out] flex flex-col overflow-hidden"
       style={{
-        background: `linear-gradient(170deg, ${bg} 0%, hsl(var(--background)) 55%, hsl(var(--background)) 100%)`,
+        background: `linear-gradient(170deg, ${bg} 0%, #0d0d0f 55%, #000 100%)`,
         transform: `translateY(${dragY}px)`,
         opacity: dragging ? 1 - Math.min(dragY / (window.innerHeight || 800), 0.45) : 1,
         transition: dragging ? "none" : "transform .32s cubic-bezier(.22,1,.36,1), opacity .28s ease-out"
@@ -196,7 +196,7 @@ export default function FullScreenPlayer({ onClose }) {
           }
         }}
         className="relative flex items-center justify-between px-5 md:px-10 pt-8 pb-3 shrink-0">
-        <button onClick={onClose} className="p-2 -ml-2 active:scale-90 hover:bg-foreground/10 rounded-full transition" aria-label="Close">
+        <button onClick={onClose} className="p-2 -ml-2 active:scale-90 hover:bg-white/10 rounded-full transition" aria-label="Close">
           <ChevronDown size={26} />
         </button>
         <div className="text-center px-4 min-w-0">
@@ -225,7 +225,7 @@ export default function FullScreenPlayer({ onClose }) {
           {/* artwork / mobile lyrics */}
           <div className="relative flex-1 xl:flex-none flex items-center justify-center min-h-0 py-4">
             {lyricsMode &&
-            <div className="xl:hidden w-full h-full rounded-3xl bg-foreground/[0.06] overflow-hidden flex flex-col min-h-0">
+            <div className="xl:hidden w-full h-full rounded-3xl bg-white/[0.06] overflow-hidden flex flex-col min-h-0">
                 <SyncedLyrics trackId={t.id} position={p.position} fallbackText={t.lyrics_text} onSeek={p.seek} />
               </div>
             }
@@ -233,7 +233,7 @@ export default function FullScreenPlayer({ onClose }) {
               onTouchStart={onVolTouchStart}
               onTouchMove={onVolTouchMove}
               onTouchEnd={onVolTouchEnd}
-              className={`relative aspect-square w-full max-w-[min(46vh,86vw)] xl:max-w-[440px] 2xl:max-w-[480px] xl:max-h-[46vh] 2xl:max-h-[52vh] rounded-3xl overflow-hidden shadow-[0_24px_90px_rgba(0,0,0,0.55)] bg-foreground/10 shrink-0 touch-none transition-transform duration-500 ${
+              className={`relative aspect-square w-full max-w-[min(46vh,86vw)] xl:max-w-[440px] 2xl:max-w-[480px] xl:max-h-[46vh] 2xl:max-h-[52vh] rounded-3xl overflow-hidden shadow-[0_24px_90px_rgba(0,0,0,0.55)] bg-white/10 shrink-0 touch-none transition-transform duration-500 ${
               p.isPlaying ? "scale-100" : "scale-[0.97]"} ${
               lyricsMode ? "hidden xl:flex" : "flex"}`}>
                 
@@ -246,11 +246,11 @@ export default function FullScreenPlayer({ onClose }) {
               }
                 {/* volume hint */}
                 <div
-                className={`absolute inset-0 grid place-items-center bg-foreground/30 backdrop-blur-sm transition-opacity duration-200 ${
+                className={`absolute inset-0 grid place-items-center bg-black/30 backdrop-blur-sm transition-opacity duration-200 ${
                 showVolHint ? "opacity-100" : "opacity-0 pointer-events-none"}`
                 }>
                   
-                  <div className="flex flex-col items-center gap-2 text-background">
+                  <div className="flex flex-col items-center gap-2">
                     <VolIcon size={40} />
                     <span className="text-4xl font-extrabold tabular-nums">{Math.round(volPct)}%</span>
                     <span className="text-[10px] uppercase tracking-widest opacity-70">Swipe to adjust</span>
@@ -275,10 +275,10 @@ export default function FullScreenPlayer({ onClose }) {
 
           {/* scrubber */}
           <div className="mb-1.5 shrink-0">
-            <div className="relative h-1.5 bg-foreground/20 rounded-full group">
-              <div className="absolute left-0 top-0 h-1.5 bg-foreground rounded-full" style={{ width: `${progress}%` }} />
+            <div className="relative h-1.5 bg-white/20 rounded-full group">
+              <div className="absolute left-0 top-0 h-1.5 bg-white rounded-full" style={{ width: `${progress}%` }} />
               <div
-                className="absolute top-1/2 -translate-y-1/2 w-3 h-3 bg-foreground rounded-full shadow-md opacity-0 group-hover:opacity-100 transition"
+                className="absolute top-1/2 -translate-y-1/2 w-3 h-3 bg-white rounded-full shadow-md opacity-0 group-hover:opacity-100 transition"
                 style={{ left: `calc(${progress}% - 6px)` }} />
               
               <input
@@ -302,17 +302,17 @@ export default function FullScreenPlayer({ onClose }) {
           <div className="flex items-center justify-between gap-2 my-4 shrink-0">
             <IconButton icon={Shuffle} onClick={() => p.setShuffle(!p.shuffle)} active={p.shuffle} label="Shuffle" size={20} />
             <button onClick={() => p.prev()} className="p-2 active:scale-90 transition" aria-label="Previous">
-              <SkipBack size={30} fill="currentColor" strokeWidth={1.5} />
+              <SkipBack size={30} fill="white" strokeWidth={1.5} />
             </button>
             <button
               onClick={() => p.togglePlay()}
-              className="w-16 h-16 xl:w-20 xl:h-20 rounded-full bg-foreground text-background grid place-items-center hover:scale-105 active:scale-95 transition shadow-xl"
+              className="w-16 h-16 xl:w-20 xl:h-20 rounded-full bg-white text-black grid place-items-center hover:scale-105 active:scale-95 transition shadow-xl"
               aria-label={p.isPlaying ? "Pause" : "Play"}>
               
-              {p.isPlaying ? <Pause size={28} fill="currentColor" /> : <Play size={28} fill="currentColor" className="ml-1" />}
+              {p.isPlaying ? <Pause size={28} fill="black" /> : <Play size={28} fill="black" className="ml-1" />}
             </button>
             <button onClick={() => p.next()} className="p-2 active:scale-90 transition" aria-label="Next">
-              <SkipForward size={30} fill="currentColor" strokeWidth={1.5} />
+              <SkipForward size={30} fill="white" strokeWidth={1.5} />
             </button>
             <IconButton
               icon={repeatOff ? Repeat : Repeat1}
@@ -349,18 +349,18 @@ export default function FullScreenPlayer({ onClose }) {
           
 
           {/* mobile artwork / lyrics toggle */}
-          <div className="xl:hidden flex items-center gap-1 mx-auto mt-2 mb-5 p-1 rounded-full bg-foreground/10 shrink-0">
+          <div className="xl:hidden flex items-center gap-1 mx-auto mt-2 mb-5 p-1 rounded-full bg-white/10 shrink-0">
             <button
               onClick={() => setLyricsMode(false)}
               className={`flex items-center justify-center gap-1.5 px-4 py-1.5 rounded-full transition text-xs font-semibold ${
-              !lyricsMode ? "bg-foreground text-background" : "opacity-70"}`}
+              !lyricsMode ? "bg-white text-black" : "opacity-70"}`}
               aria-label="Artwork">
               <Disc3 size={14} /> Artwork
             </button>
             <button
               onClick={() => setLyricsMode(true)}
               className={`flex items-center justify-center gap-1.5 px-4 py-1.5 rounded-full transition text-xs font-semibold ${
-              lyricsMode ? "bg-foreground text-background" : "opacity-70"}`}
+              lyricsMode ? "bg-white text-black" : "opacity-70"}`}
               aria-label="Lyrics">
               <Mic2 size={14} /> Lyrics
             </button>
@@ -368,7 +368,7 @@ export default function FullScreenPlayer({ onClose }) {
         </div>
 
         {/* RIGHT (desktop): lyrics panel */}
-        <div className="hidden xl:flex flex-col min-h-0 w-[440px] 2xl:w-[480px] shrink-0 bg-foreground/[0.06] ring-1 ring-foreground/10 rounded-[2rem] overflow-hidden">
+        <div className="hidden xl:flex flex-col min-h-0 w-[440px] 2xl:w-[480px] shrink-0 bg-white/[0.06] ring-1 ring-white/10 rounded-[2rem] overflow-hidden">
           <div className="flex items-center justify-center gap-8 px-6 pt-6 pb-3 shrink-0">
             <button
               onClick={() => setLyricsMode(true)}
@@ -402,7 +402,7 @@ export default function FullScreenPlayer({ onClose }) {
 
       {/* copied toast */}
       {copied &&
-      <div className="absolute bottom-24 left-1/2 -translate-x-1/2 px-4 py-2 rounded-full bg-foreground text-background text-xs font-semibold shadow-xl">
+      <div className="absolute bottom-24 left-1/2 -translate-x-1/2 px-4 py-2 rounded-full bg-white text-black text-xs font-semibold shadow-xl">
           Link copied
         </div>
       }
