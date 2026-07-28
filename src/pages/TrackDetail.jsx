@@ -18,7 +18,8 @@ import {
   Music,
   Plus,
   Trash2,
-  Sparkles } from
+  Sparkles,
+  Wand2 } from
 "lucide-react";
 import TrackRow from "@/components/TrackRow";
 import GenerateLyricsModal from "@/components/GenerateLyricsModal";
@@ -36,6 +37,7 @@ export default function TrackDetail() {
   const [reporting, setReporting] = useState(false);
   const [editing, setEditing] = useState(false);
   const [generating, setGenerating] = useState(false);
+  const [detecting, setDetecting] = useState(false);
   const [moreTracks, setMoreTracks] = useState([]);
   const [copied, setCopied] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -129,6 +131,26 @@ export default function TrackDetail() {
     }
   }
 
+  async function detectGenre() {
+    if (!track) return;
+    setMenuOpen(false);
+    setDetecting(true);
+    try {
+      const res = await base44.functions.invoke("detectGenre", { track_id: track.id });
+      const genre = res?.data?.genre;
+      if (genre) {
+        setTrack((prev) => ({ ...prev, genre }));
+        toast({ title: `Genre set to ${genre}` });
+      } else {
+        toast({ title: "Couldn't detect genre", variant: "destructive" });
+      }
+    } catch (e) {
+      toast({ title: e?.response?.data?.error || "Couldn't detect genre", variant: "destructive" });
+    } finally {
+      setDetecting(false);
+    }
+  }
+
   if (loading) {
     return (
       <div className="py-20 grid place-items-center">
@@ -186,6 +208,12 @@ export default function TrackDetail() {
       setEditing(true);
       setMenuOpen(false);
     }
+  });
+  if (isOwner)
+  menuItems.push({
+    icon: detecting ? Loader2 : Wand2,
+    label: detecting ? "Detecting genre…" : "Detect genre (AI)",
+    onClick: detectGenre
   });
   if (isOwner && track.audio_url)
   menuItems.push({
