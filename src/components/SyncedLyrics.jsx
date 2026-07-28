@@ -4,6 +4,7 @@ import { Loader2 } from "lucide-react";
 
 export default function SyncedLyrics({ trackId, position, fallbackText = "", onSeek }) {
   const [lyrics, setLyrics] = useState(null);
+  const [trackLyrics, setTrackLyrics] = useState("");
   const [loading, setLoading] = useState(true);
   const lineRefs = useRef([]);
   const scrollRef = useRef(null);
@@ -13,15 +14,18 @@ export default function SyncedLyrics({ trackId, position, fallbackText = "", onS
     let alive = true;
     setLoading(true);
     setLyrics(null);
-    base44.entities.Lyrics
-      .filter({ track_id: trackId, status: "approved" }, "-created_date", 5)
-      .then((res) => {
-        if (!alive) return;
-        const found = Array.isArray(res) && res.length ? res[0] : null;
-        setLyrics(found || null);
-      })
-      .catch(() => alive && setLyrics(null))
-      .finally(() => alive && setLoading(false));
+    setTrackLyrics("");
+    Promise.all([
+      base44.entities.Lyrics
+        .filter({ track_id: trackId, status: "approved" }, "-created_date", 5)
+        .catch(() => []),
+      base44.entities.Track.get(trackId).catch(() => null),
+    ]).then(([lyricsRes, track]) => {
+      if (!alive) return;
+      const found = Array.isArray(lyricsRes) && lyricsRes.length ? lyricsRes[0] : null;
+      setLyrics(found || null);
+      setTrackLyrics(track?.lyrics_text || "");
+    }).finally(() => alive && setLoading(false));
     return () => { alive = false; };
   }, [trackId]);
 
@@ -97,7 +101,7 @@ export default function SyncedLyrics({ trackId, position, fallbackText = "", onS
     );
   }
 
-  const text = lyrics?.text?.trim() || fallbackText.trim();
+  const text = trackLyrics.trim() || fallbackText.trim();
   if (!text) {
     return (
       <div className="flex-1 flex items-center justify-center text-white/40 italic text-center px-6">
