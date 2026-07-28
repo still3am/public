@@ -217,6 +217,32 @@ export function PlayerProvider({ children }) {
     return repeat === "all" ? 0 : -1;
   }, [queue, currentIndex, shuffle, repeat]);
 
+  // Genre radio: when the queue would otherwise stop, append more published
+  // tracks in the same genre (newest first, excluding anything already queued)
+  // and jump to the first one so listening keeps going automatically.
+  const extendWithGenreRadio = useCallback(async (track) => {
+    if (!track?.genre || !track?.id || autoQueueLoadingRef.current) return false;
+    autoQueueLoadingRef.current = true;
+    try {
+      const tracks = await base44.entities.Track.filter(
+        { is_published: true, genre: track.genre },
+        "-created_date",
+        30
+      ).catch(() => []);
+      if (!tracks || !tracks.length) return false;
+      const existing = new Set(queueRef.current.map((t) => t.id));
+      existing.add(track.id);
+      const picks = tracks.filter((t) => !existing.has(t.id)).slice(0, 15);
+      if (!picks.length) return false;
+      const start = queueRef.current.length;
+      setQueue((prev) => [...prev, ...picks]);
+      setCurrentIndex(start);
+      return true;
+    } finally {
+      autoQueueLoadingRef.current = false;
+    }
+  }, []);
+
   useEffect(() => {
     handleEndedRef.current = async () => {
       if (repeat === "one") {
@@ -321,32 +347,6 @@ export function PlayerProvider({ children }) {
 
   const addManyToQueue = useCallback((tracks) => {
     setQueue((prev) => [...prev, ...tracks]);
-  }, []);
-
-  // Genre radio: when the queue would otherwise stop, append more published
-  // tracks in the same genre (newest first, excluding anything already queued)
-  // and jump to the first one so listening keeps going automatically.
-  const extendWithGenreRadio = useCallback(async (track) => {
-    if (!track?.genre || !track?.id || autoQueueLoadingRef.current) return false;
-    autoQueueLoadingRef.current = true;
-    try {
-      const tracks = await base44.entities.Track.filter(
-        { is_published: true, genre: track.genre },
-        "-created_date",
-        30
-      ).catch(() => []);
-      if (!tracks || !tracks.length) return false;
-      const existing = new Set(queueRef.current.map((t) => t.id));
-      existing.add(track.id);
-      const picks = tracks.filter((t) => !existing.has(t.id)).slice(0, 15);
-      if (!picks.length) return false;
-      const start = queueRef.current.length;
-      setQueue((prev) => [...prev, ...picks]);
-      setCurrentIndex(start);
-      return true;
-    } finally {
-      autoQueueLoadingRef.current = false;
-    }
   }, []);
 
   const removeFromQueue = useCallback((index) => {
