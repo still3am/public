@@ -67,6 +67,8 @@ export default function Upload() {
           rights_confirmed: false,
           status: "editing",
           error: "",
+          aiGenre: false,
+          aiLyrics: false,
         };
       })
     );
@@ -134,7 +136,7 @@ export default function Upload() {
         });
         coverUrl = coverRes.file_url;
       }
-      await base44.entities.Track.create({
+      const created = await base44.entities.Track.create({
         title: item.title.trim(),
         audio_url: audioRes.file_url,
         cover_art_url: coverUrl,
@@ -148,6 +150,22 @@ export default function Upload() {
         rights_confirmed: true,
         is_published: item.is_published,
       });
+
+      if (item.aiGenre || item.aiLyrics) {
+        updateItem(item.id, { status: "enhancing" });
+        if (item.aiGenre) {
+          try { await base44.functions.invoke("detectGenre", { track_id: created.id }); }
+          catch {}
+        }
+        if (item.aiLyrics) {
+          try {
+            const lr = await base44.functions.invoke("generateLyrics", { track_id: created.id });
+            const text = lr?.data?.lyrics;
+            if (text) await base44.entities.Track.update(created.id, { lyrics_text: text.trim() });
+          } catch {}
+        }
+      }
+
       markDone(item.id);
       return true;
     } catch (err) {

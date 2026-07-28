@@ -8,6 +8,8 @@ import {
   AlertCircle,
   Music2,
   ImagePlus,
+  Sparkles,
+  Wand2,
 } from "lucide-react";
 import GenrePicker from "@/components/GenrePicker";
 import { formatTime } from "@/lib/audio-utils";
@@ -23,6 +25,7 @@ export default function UploadItem({
   disabled,
 }) {
   const uploading = item.status === "uploading";
+  const enhancing = item.status === "enhancing";
   const done = item.status === "done";
   const imgInputRef = useRef(null);
 
@@ -44,7 +47,7 @@ export default function UploadItem({
           <button
             type="button"
             onClick={() =>
-              !uploading && !done && imgInputRef.current?.click()
+              !uploading && !enhancing && !done && imgInputRef.current?.click()
             }
             disabled={uploading || done}
             className="relative w-full h-full rounded-lg overflow-hidden bg-foreground/10 grid place-items-center group"
@@ -139,6 +142,22 @@ export default function UploadItem({
               />
               Public
             </label>
+            <label className="flex items-center gap-2 text-xs font-medium text-foreground/70">
+              <Checkbox
+                checked={item.aiGenre}
+                onCheckedChange={(v) => onChange({ aiGenre: !!v })}
+                disabled={uploading || done}
+              />
+              <Wand2 size={12} /> Auto-detect genre
+            </label>
+            <label className="flex items-center gap-2 text-xs font-medium text-foreground/70">
+              <Checkbox
+                checked={item.aiLyrics}
+                onCheckedChange={(v) => onChange({ aiLyrics: !!v })}
+                disabled={uploading || done}
+              />
+              <Sparkles size={12} /> Generate lyrics
+            </label>
           </div>
 
           {item.error && (
@@ -155,15 +174,15 @@ export default function UploadItem({
           {!done && (
             <button
               onClick={onUpload}
-              disabled={uploading || disabled}
+              disabled={uploading || enhancing || disabled}
               className="w-full inline-flex items-center justify-center gap-2 px-3 py-2 rounded-lg bg-foreground text-background text-sm font-semibold disabled:opacity-50 active:scale-95 transition"
             >
-              {uploading ? (
+              {uploading || enhancing ? (
                 <Loader2 size={15} className="animate-spin" />
               ) : (
                 <UploadCloud size={15} />
               )}
-              {uploading ? "Uploading…" : "Upload track"}
+              {enhancing ? "Enhancing with AI…" : uploading ? "Uploading…" : "Upload track"}
             </button>
           )}
         </div>
