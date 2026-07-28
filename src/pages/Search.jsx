@@ -8,8 +8,7 @@ import {
   Mic2,
   Disc3,
   X,
-  Shield,
-  Sparkles } from
+  Shield } from
 "lucide-react";
 import { base44 } from "@/api/base44Client";
 import TrackRow from "@/components/TrackRow";
@@ -17,8 +16,7 @@ import Avatar from "@/components/Avatar";
 import PullToRefresh from "@/components/PullToRefresh";
 import PageHeader from "@/components/PageHeader";
 import EmptyState from "@/components/EmptyState";
-
-const QUICK_GENRES = ["Hip-Hop", "Electronic", "Ambient", "Lo-Fi", "R&B", "Pop", "House", "Afrobeats"];
+import GenreGrid from "@/components/GenreGrid";
 
 function ArtistRow({ artist, trackCount, onPick }) {
   return (
@@ -154,30 +152,12 @@ export default function Search() {
           }
         </div>
 
-        {/* Quick genre chips (no query) */}
-        {!hasQuery &&
-        <div className="flex items-center gap-2 flex-wrap mb-2 hidden">
-            {QUICK_GENRES.map((g) =>
-          <button
-            key={g}
-            onClick={() => setQ(g)}
-            className="chip active:scale-95">
-                {g}
-              </button>
-          )}
-          </div>
-        }
+        {/* Genre grid (no query) */}
+        {!hasQuery && <GenreGrid />}
 
         {/* Body */}
         {!hasQuery ?
-        loadingAll ?
-        <div className="py-16 text-center">
-              <Loader2 className="animate-spin inline text-foreground/40" size={22} />
-            </div> :
-        <EmptyState
-          icon={Sparkles}
-          title="Search PUBLIC"
-          description="Type a name, genre, or username to discover tracks, artists, and people. Try a quick genre above." /> :
+        null :
 
         loading ?
         <div className="py-16 text-center">
