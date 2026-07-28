@@ -30,7 +30,7 @@ export default function GenreTool() {
   }
 
   return (
-    <div className="rounded-2xl border border-border bg-card p-4">
+    <div className="rounded-2xl border border-border bg-card p-4 hidden">
       <div className="flex items-center justify-between gap-3 flex-wrap">
         <div>
           <div className="text-sm font-semibold flex items-center gap-2">
@@ -44,29 +44,29 @@ export default function GenreTool() {
           <button
             onClick={() => run(true)}
             disabled={busy}
-            className="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-2 rounded-full border border-border hover:bg-foreground/5 disabled:opacity-50 transition"
-          >
+            className="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-2 rounded-full border border-border hover:bg-foreground/5 disabled:opacity-50 transition">
+            
             Re-classify all
           </button>
           <button
             onClick={() => run(false)}
             disabled={busy}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-foreground text-background text-sm font-semibold disabled:opacity-50 active:scale-95 transition"
-          >
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-foreground text-background text-sm font-semibold disabled:opacity-50 active:scale-95 transition">
+            
             {busy ? <Loader2 size={15} className="animate-spin" /> : <Wand2 size={15} />}
             {busy ? "Classifying…" : "Classify pending"}
           </button>
         </div>
       </div>
-      {info && (
-        <div className="text-xs text-foreground/50 mt-2">
-          {busy
-            ? `Classified ${info.total} so far…`
-            : info.total
-              ? `Done — ${info.total} track${info.total !== 1 ? "s" : ""} updated.`
-              : "Nothing to do — all tracks already have a genre."}
+      {info &&
+      <div className="text-xs text-foreground/50 mt-2">
+          {busy ?
+        `Classified ${info.total} so far…` :
+        info.total ?
+        `Done — ${info.total} track${info.total !== 1 ? "s" : ""} updated.` :
+        "Nothing to do — all tracks already have a genre."}
         </div>
-      )}
-    </div>
-  );
+      }
+    </div>);
+
 }

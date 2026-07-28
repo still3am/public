@@ -12,8 +12,8 @@ export default function Admin() {
   if (user?.role !== "admin") return <Navigate to="/" replace />;
 
   const handleBack = () => {
-    if (window.history.length > 1) nav(-1);
-    else nav("/");
+    if (window.history.length > 1) nav(-1);else
+    nav("/");
   };
 
   return (
@@ -22,11 +22,11 @@ export default function Admin() {
         <button
           onClick={handleBack}
           className="tap-target rounded-full hover:bg-foreground/[0.06]"
-          aria-label="Go back"
-        >
+          aria-label="Go back">
+          
           <ArrowLeft size={22} />
         </button>
-        <div className="w-9 h-9 rounded-xl bg-foreground text-background flex items-center justify-center shrink-0">
+        <div className="w-9 h-9 rounded-xl bg-foreground text-background flex items-center justify-center shrink-0 hidden">
           <Shield size={18} />
         </div>
         <div className="min-w-0">
@@ -40,6 +40,6 @@ export default function Admin() {
         <ReportsManager />
         <SuggestionsManager />
       </div>
-    </div>
-  );
+    </div>);
+
 }
