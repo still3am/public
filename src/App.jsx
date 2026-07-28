@@ -22,7 +22,6 @@ import Profile from '@/pages/Profile';
 import TrackDetail from '@/pages/TrackDetail';
 import Suggestions from '@/pages/Suggestions';
 import Upload from '@/pages/Upload';
-import Downloads from '@/pages/Downloads';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -66,8 +65,6 @@ const AuthenticatedApp = () => {
           <Route path="/track/:id" element={<TrackDetail />} />
           <Route path="/suggestions" element={<Suggestions />} />
           <Route path="/upload" element={<Upload />} />
-          <Route path="/downloads" element={<Downloads />} />
-
         </Route>
       </Route>
       <Route path="*" element={<PageNotFound />} />
