@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import { useAuth } from "@/lib/AuthContext";
@@ -90,15 +90,17 @@ export default function Home() {
   const [fromFollowing, setFromFollowing] = useState([]);
   const [recentlyPlayed, setRecentlyPlayed] = useState([]);
   const [totalTracks, setTotalTracks] = useState(0);
+  const loadedRef = useRef(false);
   const greeting = greetingByHour();
 
   useEffect(() => {
     const unsub = base44.entities.Track.subscribe((event) => {
+      if (!loadedRef.current) return;
       setTotalTracks((c) => {
         if (event.type === "create" && event.data?.is_published !== false) return c + 1;
         if (event.type === "delete") return Math.max(0, c - 1);
         if (event.type === "update") {
-          if (event.data?.is_published === false) return Math.max(0, c - 1);
+          if (event.data?.is_published === false && c > 0) return c - 1;
           if (event.data?.is_published === true) return c + 1;
         }
         return c;
@@ -132,8 +134,9 @@ export default function Home() {
       setTrending(t);
       setNewReleases(n.slice(0, 12));
       setFromFollowing(n.filter((tk) => followed.has(tk.uploader_id)).slice(0, 12));
-      const counted = await base44.entities.Track.filter({ is_published: true }, "-created_date", 1000).catch(() => []);
+      const counted = await base44.entities.Track.filter({ is_published: true }, "-created_date", 10000).catch(() => []);
       setTotalTracks(Array.isArray(counted) ? counted.length : 0);
+      loadedRef.current = true;
       const genres = ["Electronic", "Hip-Hop", "Ambient"];
       const perGenre = await Promise.all(
         genres.map(async (g) => ({
