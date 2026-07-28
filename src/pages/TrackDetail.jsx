@@ -17,9 +17,11 @@ import {
   Share2,
   Music,
   Plus,
-  Trash2 } from
+  Trash2,
+  Sparkles } from
 "lucide-react";
 import TrackRow from "@/components/TrackRow";
+import GenerateLyricsModal from "@/components/GenerateLyricsModal";
 import { useOfflineCache } from "@/hooks/useOfflineCache";
 import { useToast } from "@/components/ui/use-toast";
 
@@ -33,6 +35,7 @@ export default function TrackDetail() {
   const [uploader, setUploader] = useState(null);
   const [reporting, setReporting] = useState(false);
   const [editing, setEditing] = useState(false);
+  const [generating, setGenerating] = useState(false);
   const [moreTracks, setMoreTracks] = useState([]);
   const [copied, setCopied] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -181,6 +184,15 @@ export default function TrackDetail() {
     label: "Edit track",
     onClick: () => {
       setEditing(true);
+      setMenuOpen(false);
+    }
+  });
+  if (isOwner && track.audio_url)
+  menuItems.push({
+    icon: Sparkles,
+    label: track.lyrics_text?.trim() ? "Regenerate lyrics" : "Generate lyrics",
+    onClick: () => {
+      setGenerating(true);
       setMenuOpen(false);
     }
   });
@@ -347,6 +359,24 @@ export default function TrackDetail() {
           <div className="whitespace-pre-line text-sm text-foreground/70 leading-relaxed max-h-96 overflow-y-auto px-1">
             {track.lyrics_text}
           </div>
+          {isOwner && track.audio_url &&
+          <button
+            onClick={() => setGenerating(true)}
+            className="mt-3 inline-flex items-center gap-2 text-xs font-semibold text-foreground/60 hover:text-foreground">
+            <Sparkles size={13} /> Regenerate with AI
+          </button>}
+        </div>
+      }
+
+      {isOwner && !track.lyrics_text?.trim() && track.audio_url &&
+      <div className="mb-6 rounded-2xl border border-dashed border-border p-5 text-center">
+          <Sparkles size={20} className="mx-auto text-foreground/40 mb-2" />
+          <p className="text-sm text-foreground/60 mb-3">No lyrics yet. Let AI transcribe them from this track's audio.</p>
+          <button
+            onClick={() => setGenerating(true)}
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-foreground text-background text-sm font-semibold">
+            <Sparkles size={14} /> Generate lyrics
+          </button>
         </div>
       }
 
@@ -373,6 +403,17 @@ export default function TrackDetail() {
         onClose={() => setEditing(false)}
         onSaved={(updated) => setTrack((prev) => ({ ...prev, ...updated }))}
         onDeleted={() => nav("/profile", { replace: true })} />
+
+      }
+
+      {generating &&
+      <GenerateLyricsModal
+        track={track}
+        onClose={() => setGenerating(false)}
+        onSaved={(updated) => {
+          setTrack((prev) => ({ ...prev, ...updated }));
+          setGenerating(false);
+        }} />
 
       }
     </div>);
