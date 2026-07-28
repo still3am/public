@@ -1,51 +1,41 @@
-import { useEffect, useState } from "react";
 import { useAuth } from "@/lib/AuthContext";
-import { Navigate } from "react-router-dom";
-import { base44 } from "@/api/base44Client";
-import BackHeader from "@/components/BackHeader";
-import AdminStats from "@/components/admin/AdminStats";
+import { Navigate, useNavigate } from "react-router-dom";
+import { Shield, ArrowLeft } from "lucide-react";
 import GenreTool from "@/components/admin/GenreTool";
 import ReportsManager from "@/components/admin/ReportsManager";
 import SuggestionsManager from "@/components/admin/SuggestionsManager";
 
 export default function Admin() {
   const { user } = useAuth();
-  const [stats, setStats] = useState({});
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    if (user?.role !== "admin") { setLoading(false); return; }
-    (async () => {
-      try {
-        const [tracks, users, reports, suggestions, playlists, unclassified] = await Promise.all([
-          base44.entities.Track.filter({}, "-created_date", 500).catch(() => []),
-          base44.entities.User.list("-created_date", 500).catch(() => []),
-          base44.entities.Report.filter({ status: "pending" }, "-created_date", 200).catch(() => []),
-          base44.entities.Suggestion.filter({ status: "open" }, "-created_date", 200).catch(() => []),
-          base44.entities.Playlist.filter({}, "-created_date", 200).catch(() => []),
-          base44.entities.Track.filter({ genre: "Other" }, "-created_date", 500).catch(() => []),
-        ]);
-        setStats({
-          tracks: tracks.length,
-          users: users.length,
-          pendingReports: reports.length,
-          openSuggestions: suggestions.length,
-          playlists: playlists.length,
-          unclassified: unclassified.length,
-        });
-      } finally {
-        setLoading(false);
-      }
-    })();
-  }, [user?.id]);
+  const nav = useNavigate();
 
   if (user?.role !== "admin") return <Navigate to="/" replace />;
 
+  const handleBack = () => {
+    if (window.history.length > 1) nav(-1);
+    else nav("/");
+  };
+
   return (
     <div className="max-w-3xl mx-auto px-3 md:px-0 pb-24">
-      <BackHeader title="Admin" />
-      <AdminStats stats={stats} loading={loading} />
-      <div className="mt-4 space-y-4">
+      <div className="flex items-center gap-3 min-h-[3.5rem] py-3 mb-5 top-bar-safe">
+        <button
+          onClick={handleBack}
+          className="tap-target rounded-full hover:bg-foreground/[0.06]"
+          aria-label="Go back"
+        >
+          <ArrowLeft size={22} />
+        </button>
+        <div className="w-9 h-9 rounded-xl bg-foreground text-background flex items-center justify-center shrink-0">
+          <Shield size={18} />
+        </div>
+        <div className="min-w-0">
+          <h1 className="text-lg font-extrabold tracking-tight leading-tight">Admin Console</h1>
+          <p className="text-xs text-foreground/50 truncate">Reports, suggestions & library tools</p>
+        </div>
+      </div>
+
+      <div className="space-y-4">
         <GenreTool />
         <ReportsManager />
         <SuggestionsManager />
