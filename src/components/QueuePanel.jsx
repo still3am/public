@@ -25,7 +25,7 @@ export default function QueuePanel({ open, onClose }) {
         <div className="flex items-center gap-1">
           <button
             onClick={() => setShowPicker(true)}
-            className="inline-flex items-center gap-1.5 rounded-full bg-white/10 hover:bg-white/20 active:scale-90 transition text-xs font-semibold pr-3 pl-5"
+            className="inline-flex items-center gap-1.5 rounded-full bg-white/10 hover:bg-white/20 active:scale-90 transition text-xs font-semibold pl-1"
             aria-label="Add from library">
             
             <Plus size={16} /> Add
