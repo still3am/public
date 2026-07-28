@@ -267,11 +267,11 @@ export default function PublicRecords({ id: propId }) {
         </section>
 
         {/* Stats */}
-        <div className="grid grid-cols-3 gap-3 mb-8 hidden">
-          <StatCard icon={Music} value={tracks.length} label="Tracks" />
-          <StatCard icon={BarChart2} value={totalPlays} label="Plays" />
-          <StatCard icon={Users} value={artist.members || "—"} label="Members" />
-        </div>
+        
+
+
+
+        
 
         {/* History (AI) */}
         <section className="mb-8">
