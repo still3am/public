@@ -70,54 +70,67 @@ Deno.serve(async (req) => {
       if (h.includes(':')) {
         // IPv6 literal — only accept standard colon form, reject odd encodings.
         if (isPrivateIPv6(h)) throw new Error('Private addresses are not allowed');
-        return;
+        return { ip: h, isV6: true };
       }
 
       if (/^\d{1,3}(\.\d{1,3}){3}$/.test(h)) {
         if (isPrivateIPv4(h)) throw new Error('Private addresses are not allowed');
-        return;
+        return { ip: h, isV6: false };
       }
 
       if (isAmbiguousLiteral(h)) throw new Error('Private addresses are not allowed');
 
       // Domain name — resolve via DNS and reject if any record is private.
+      // We pin a validated address so the subsequent fetch() connects to this
+      // exact IP instead of re-resolving the hostname, defeating DNS rebinding.
       let records = [];
       try {
         const a = await Deno.resolveDns(h, 'A');
-        if (Array.isArray(a)) records = records.concat(a);
+        if (Array.isArray(a)) records = records.concat(a.map((ip) => ({ ip, isV6: false })));
       } catch { /* try AAAA next */ }
       try {
         const aaaa = await Deno.resolveDns(h, 'AAAA');
-        if (Array.isArray(aaaa)) records = records.concat(aaaa);
+        if (Array.isArray(aaaa)) records = records.concat(aaaa.map((ip) => ({ ip, isV6: true })));
       } catch { /* ignore */ }
       if (!records.length) throw new Error('Could not resolve host');
       for (const r of records) {
-        if (r.includes(':')) {
-          if (isPrivateIPv6(r)) throw new Error('Private addresses are not allowed');
-        } else if (isPrivateIPv4(r)) {
+        if (r.isV6 ? isPrivateIPv6(r.ip) : isPrivateIPv4(r.ip)) {
           throw new Error('Private addresses are not allowed');
         }
       }
+      return records[0];
+    }
+
+    function pinnedFetchUrl(url, pin) {
+      const u = new URL(url);
+      const port = u.port ? `:${u.port}` : '';
+      u.host = (pin.isV6 ? `[${pin.ip}]` : pin.ip) + port;
+      return u;
     }
 
     async function assertSafeUrl(u) {
       let p;
       try { p = new URL(u); } catch { throw new Error('Invalid redirect URL'); }
       if (!/^https?:$/.test(p.protocol)) throw new Error('Only http(s) URLs are supported');
-      await assertSafeHost(p.hostname);
-      return p;
+      const pin = await assertSafeHost(p.hostname);
+      return { url: p, pin };
     }
 
-    await assertSafeUrl(parsed);
+    const startSafe = await assertSafeUrl(parsed);
+    let current = startSafe.url;
+    let pin = startSafe.pin;
 
-    const fetchInit = { method: 'GET', redirect: 'manual' };
-
-    let upstream;
-    let current = parsed;
     const MAX_REDIRECTS = 5;
+    let upstream;
     try {
       for (let i = 0; i <= MAX_REDIRECTS; i++) {
-        upstream = await fetch(current.toString(), fetchInit);
+        // Connect directly to the validated IP (pinned) so fetch cannot be
+        // rebinding'd to a private/internal address on a second DNS lookup.
+        upstream = await fetch(pinnedFetchUrl(current, pin).toString(), {
+          method: 'GET',
+          redirect: 'manual',
+          headers: { Host: current.host },
+        });
         if (upstream.status >= 300 && upstream.status < 400) {
           const loc = upstream.headers.get('location');
           if (!loc || i === MAX_REDIRECTS) {
@@ -129,7 +142,8 @@ Deno.serve(async (req) => {
           } catch (e) {
             return Response.json({ error: e.message }, { status: 400 });
           }
-          current = next;
+          current = next.url;
+          pin = next.pin;
           continue;
         }
         break;
