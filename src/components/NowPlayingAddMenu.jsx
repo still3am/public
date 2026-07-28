@@ -4,12 +4,16 @@ import {
   Share2,
   X,
   Activity,
+  ListMusic,
 } from "lucide-react";
 
 export default function NowPlayingAddMenu({
   onShare,
   showVisualizer,
   onToggleVisualizer,
+  onAddFromLibrary,
+  onViewQueue,
+  queueCount = 0,
 }) {
   const [open, setOpen] = useState(false);
   const wrapRef = useRef(null);
@@ -33,6 +37,22 @@ export default function NowPlayingAddMenu({
       label: "Share",
       onClick: (close) => {
         onShare();
+        close();
+      },
+    },
+    onAddFromLibrary && {
+      icon: Plus,
+      label: "Add from library",
+      onClick: (close) => {
+        onAddFromLibrary();
+        close();
+      },
+    },
+    onViewQueue && {
+      icon: ListMusic,
+      label: `Queue${queueCount ? ` · ${queueCount}` : ""}`,
+      onClick: (close) => {
+        onViewQueue();
         close();
       },
     },

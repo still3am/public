@@ -15,10 +15,12 @@ import { usePlayer } from "@/context/PlayerContext";
 import { Link } from "react-router-dom";
 import { formatTime } from "@/lib/audio-utils";
 import FullScreenPlayer from "@/components/FullScreenPlayer";
+import QueuePanel from "@/components/QueuePanel";
 
 export default function PlayerBar() {
   const p = usePlayer();
   const [fullOpen, setFullOpen] = useState(false);
+  const [queueOpen, setQueueOpen] = useState(false);
   const [dragY, setDragY] = useState(0);
   const drag = useRef({ active: false, startY: 0, moved: false });
 
@@ -146,6 +148,20 @@ export default function PlayerBar() {
             <button onClick={p.next} className="p-2 rounded-full hover:bg-foreground/5 active:scale-90 transition" aria-label="Next">
               <SkipForward size={20} />
             </button>
+            <button
+              onClick={() => setQueueOpen(true)}
+              className={`relative p-2 rounded-full hover:bg-foreground/5 active:scale-90 transition ${
+                p.queue.length - p.currentIndex - 1 > 0 ? "text-foreground" : "text-foreground/40"
+              }`}
+              aria-label="Queue"
+            >
+              <ListMusic size={18} />
+              {p.queue.length - p.currentIndex - 1 > 0 && (
+                <span className="absolute -top-0.5 -right-0.5 min-w-[16px] h-4 px-1 rounded-full bg-foreground text-background text-[10px] font-bold grid place-items-center">
+                  {p.queue.length - p.currentIndex - 1}
+                </span>
+              )}
+            </button>
             <div className="flex items-center gap-2 pl-1">
               <button onClick={() => p.setMuted(!p.muted)} className="p-1 active:scale-90 transition" aria-label="Mute">
                 {p.muted || p.volume === 0 ? <VolumeX size={18} /> : <Volume2 size={18} />}
@@ -169,6 +185,11 @@ export default function PlayerBar() {
         <FullScreenPlayer
           onClose={() => setFullOpen(false)}
         />
+      )}
+      {queueOpen && p.currentTrack && (
+        <div className="fixed inset-0 z-50">
+          <QueuePanel open={queueOpen} onClose={() => setQueueOpen(false)} />
+        </div>
       )}
     </>
   );

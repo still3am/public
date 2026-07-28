@@ -302,6 +302,34 @@ export function PlayerProvider({ children }) {
     setPosition(t);
   }, []);
 
+  const addToQueue = useCallback((track) => {
+    setQueue((prev) => [...prev, track]);
+  }, []);
+
+  const addManyToQueue = useCallback((tracks) => {
+    setQueue((prev) => [...prev, ...tracks]);
+  }, []);
+
+  const removeFromQueue = useCallback((index) => {
+    setCurrentIndex((ci) => {
+      setQueue((prev) => {
+        if (index < 0 || index >= prev.length) return prev;
+        const next = prev.filter((_, i) => i !== index);
+        return next;
+      });
+      if (index < ci) return ci - 1;
+      if (index === ci) return -1;
+      return ci;
+    });
+  }, []);
+
+  const playQueueItem = useCallback((index) => {
+    if (index >= 0 && index < queue.length) {
+      setCurrentIndex(index);
+      countedRef.current = new Set();
+    }
+  }, [queue.length]);
+
   const clearQueue = useCallback(() => {
     setQueue([]);
     setCurrentIndex(-1);
@@ -353,6 +381,10 @@ export function PlayerProvider({ children }) {
     playbackRate,
     setPlaybackRate,
     skipBy,
+    addToQueue,
+    addManyToQueue,
+    removeFromQueue,
+    playQueueItem,
     clearQueue,
     sleepTimerEndsAt,
     setSleepTimer,
