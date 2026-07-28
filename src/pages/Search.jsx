@@ -18,19 +18,7 @@ import PullToRefresh from "@/components/PullToRefresh";
 import PageHeader from "@/components/PageHeader";
 import EmptyState from "@/components/EmptyState";
 
-const TABS = [
-{ id: "tracks", label: "Tracks", icon: Music },
-{ id: "artists", label: "Artists", icon: Mic2 },
-{ id: "people", label: "People", icon: Users }];
-
-
 const QUICK_GENRES = ["Hip-Hop", "Electronic", "Ambient", "Lo-Fi", "R&B", "Pop", "House", "Afrobeats"];
-
-function countLabel(n) {
-  if (n === 0) return "0";
-  if (n > 999) return "999+";
-  return String(n);
-}
 
 function ArtistRow({ artist, trackCount, onPick }) {
   return (
@@ -61,29 +49,8 @@ function ArtistRow({ artist, trackCount, onPick }) {
 
 }
 
-function ResultChip({ icon: Icon, label, count, active, onClick }) {
-  return (
-    <button
-      onClick={onClick}
-      className={`inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-semibold whitespace-nowrap transition ${
-      active ?
-      "bg-foreground text-background" :
-      "border border-border text-foreground/60 hover:bg-foreground/5"}`
-      }>
-      <Icon size={14} /> {label}
-      <span
-        className={`text-[10px] font-bold px-1.5 py-0.5 rounded-full tabular-nums ${
-        active ? "bg-background/20 text-background" : "bg-foreground/10 text-foreground/50"}`
-        }>
-        {countLabel(count)}
-      </span>
-    </button>);
-
-}
-
 export default function Search() {
   const [q, setQ] = useState("");
-  const [tab, setTab] = useState("tracks");
   const [allTracks, setAllTracks] = useState([]);
   const [allArtists, setAllArtists] = useState([]);
   const [people, setPeople] = useState([]);
@@ -161,7 +128,6 @@ export default function Search() {
 
   function searchArtist(name) {
     setQ(name);
-    setTab("tracks");
   }
 
   return (
@@ -194,20 +160,11 @@ export default function Search() {
             {QUICK_GENRES.map((g) =>
           <button
             key={g}
-            onClick={() => {setQ(g);setTab("tracks");}}
+            onClick={() => setQ(g)}
             className="chip active:scale-95">
                 {g}
               </button>
           )}
-          </div>
-        }
-
-        {/* Tabs with counts */}
-        {hasQuery &&
-        <div className="tab-strip flex items-center gap-2 mb-5 overflow-x-auto no-scrollbar">
-            <ResultChip icon={Music} label="Tracks" count={trackResults.length} active={tab === "tracks"} onClick={() => setTab("tracks")} />
-            <ResultChip icon={Mic2} label="Artists" count={artistResults.length} active={tab === "artists"} onClick={() => setTab("artists")} />
-            <ResultChip icon={Users} label="People" count={people.length} active={tab === "people"} onClick={() => setTab("people")} />
           </div>
         }
 
@@ -230,61 +187,70 @@ export default function Search() {
         <EmptyState
           icon={SearchIcon}
           title={`No results for "${q}"`}
-          description="Try a different spelling, or switch tabs to search tracks, artists, or people." /> :
+          description="Try a different spelling or search term." /> :
 
-        <div>
-            {tab === "tracks" && (
-          trackResults.length ?
-          <div className="space-y-0.5">
-                  {trackResults.map((t, i) =>
-            <TrackRow key={t.id} track={t} index={i} />
+        <div className="space-y-8">
+            {trackResults.length > 0 && (
+              <div>
+                <h3 className="flex items-center gap-2 text-sm font-bold uppercase tracking-wide text-foreground/60 mb-2 px-1">
+                  <Music size={14} /> Tracks
+                  <span className="text-xs font-semibold text-foreground/40">{trackResults.length}</span>
+                </h3>
+                <div className="space-y-0.5">
+                  {trackResults.slice(0, 40).map((t, i) => (
+                    <TrackRow key={t.id} track={t} index={i} />
+                  ))}
+                </div>
+              </div>
             )}
-                </div> :
-          <p className="text-sm text-foreground/50 text-center py-12">No tracks found.</p>)
-          }
 
-            {tab === "artists" && (
-          artistResults.length ?
-          <div className="space-y-1">
-                  {artistResults.map((a) => {
-              const tc = allTracks.filter((t) => t.artist?.toLowerCase() === a.name.toLowerCase()).length;
-              return (
-                <ArtistRow
-                  key={a.id}
-                  artist={a}
-                  trackCount={tc}
-                  onPick={() => searchArtist(a.name)} />);
+            {artistResults.length > 0 && (
+              <div>
+                <h3 className="flex items-center gap-2 text-sm font-bold uppercase tracking-wide text-foreground/60 mb-2 px-1">
+                  <Mic2 size={14} /> Artists
+                  <span className="text-xs font-semibold text-foreground/40">{artistResults.length}</span>
+                </h3>
+                <div className="space-y-1">
+                  {artistResults.map((a) => (
+                    <ArtistRow
+                      key={a.id}
+                      artist={a}
+                      trackCount={allTracks.filter((t) => t.artist?.toLowerCase() === a.name.toLowerCase()).length}
+                      onPick={() => searchArtist(a.name)} />
+                  ))}
+                </div>
+              </div>
+            )}
 
-            })}
-                </div> :
-          <p className="text-sm text-foreground/50 text-center py-12">No artists found.</p>)
-          }
-
-            {tab === "people" && (
-          people.length ?
-          <div className="space-y-1">
-                  {people.map((u) =>
-            <Link
-              key={u.id}
-              to={`/profile/${u.id}`}
-              className="flex items-center gap-3 p-2.5 rounded-xl hover:bg-foreground/[0.03] transition group">
+            {people.length > 0 && (
+              <div>
+                <h3 className="flex items-center gap-2 text-sm font-bold uppercase tracking-wide text-foreground/60 mb-2 px-1">
+                  <Users size={14} /> People
+                  <span className="text-xs font-semibold text-foreground/40">{people.length}</span>
+                </h3>
+                <div className="space-y-1">
+                  {people.map((u) => (
+                    <Link
+                      key={u.id}
+                      to={`/profile/${u.id}`}
+                      className="flex items-center gap-3 p-2.5 rounded-xl hover:bg-foreground/[0.03] transition">
                       <Avatar user={u} size={48} />
                       <div className="min-w-0 flex-1">
                         <div className="text-sm font-semibold truncate flex items-center gap-1">
                           {u.display_name || u.full_name || "Unnamed"}
                           {u.is_verified && <Shield size={12} className="text-foreground/40" />}
                           {u.can_upload &&
-                  <span className="text-[10px] px-1.5 py-0.5 rounded bg-foreground/10 text-foreground/60">
+                            <span className="text-[10px] px-1.5 py-0.5 rounded bg-foreground/10 text-foreground/60">
                               uploader
                             </span>}
                         </div>
                         <div className="text-xs text-foreground/50 truncate">{u.email}</div>
                       </div>
                     </Link>
+                  ))}
+                </div>
+              </div>
             )}
-                </div> :
-          <p className="text-sm text-foreground/50 text-center py-12">No people found.</p>)
-          }
           </div>
         }
       </div>
