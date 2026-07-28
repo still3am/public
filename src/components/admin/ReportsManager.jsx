@@ -3,7 +3,7 @@ import { base44 } from "@/api/base44Client";
 import { Link } from "react-router-dom";
 import { Check, X, Loader2, Flag } from "lucide-react";
 
-export default function ReportsManager() {
+export default function ReportsManager({ onChanged }) {
   const [reports, setReports] = useState(null);
   const [tracks, setTracks] = useState({});
   const [busy, setBusy] = useState("");
@@ -31,6 +31,7 @@ export default function ReportsManager() {
     try {
       await base44.entities.Report.update(id, { status });
       setReports((prev) => (prev || []).filter((r) => r.id !== id));
+      if (onChanged) onChanged();
     } catch {} finally {
       setBusy("");
     }

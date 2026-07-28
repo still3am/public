@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useAuth } from "@/lib/AuthContext";
 import { Navigate } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
@@ -13,31 +13,32 @@ export default function Admin() {
   const [stats, setStats] = useState({});
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
+  const loadStats = useCallback(async () => {
     if (user?.role !== "admin") { setLoading(false); return; }
-    (async () => {
-      try {
-        const [tracks, users, reports, suggestions, playlists, unclassified] = await Promise.all([
-          base44.entities.Track.filter({}, "-created_date", 500).catch(() => []),
-          base44.entities.User.list("-created_date", 500).catch(() => []),
-          base44.entities.Report.filter({ status: "pending" }, "-created_date", 200).catch(() => []),
-          base44.entities.Suggestion.filter({ status: "open" }, "-created_date", 200).catch(() => []),
-          base44.entities.Playlist.filter({}, "-created_date", 200).catch(() => []),
-          base44.entities.Track.filter({ genre: "Other" }, "-created_date", 500).catch(() => []),
-        ]);
-        setStats({
-          tracks: tracks.length,
-          users: users.length,
-          pendingReports: reports.length,
-          openSuggestions: suggestions.length,
-          playlists: playlists.length,
-          unclassified: unclassified.length,
-        });
-      } finally {
-        setLoading(false);
-      }
-    })();
-  }, [user?.id]);
+    setLoading(true);
+    try {
+      const [tracks, users, reports, suggestions, playlists, unclassified] = await Promise.all([
+        base44.entities.Track.filter({}, "-created_date", 500).catch(() => []),
+        base44.entities.User.list("-created_date", 500).catch(() => []),
+        base44.entities.Report.filter({ status: "pending" }, "-created_date", 200).catch(() => []),
+        base44.entities.Suggestion.filter({ status: "open" }, "-created_date", 200).catch(() => []),
+        base44.entities.Playlist.filter({}, "-created_date", 200).catch(() => []),
+        base44.entities.Track.filter({ genre: "Other" }, "-created_date", 500).catch(() => []),
+      ]);
+      setStats({
+        tracks: tracks.length,
+        users: users.length,
+        pendingReports: reports.length,
+        openSuggestions: suggestions.length,
+        playlists: playlists.length,
+        unclassified: unclassified.length,
+      });
+    } finally {
+      setLoading(false);
+    }
+  }, [user?.id, user?.role]);
+
+  useEffect(() => { loadStats(); }, [loadStats]);
 
   if (user?.role !== "admin") return <Navigate to="/" replace />;
 
@@ -46,9 +47,9 @@ export default function Admin() {
       <BackHeader title="Admin" />
       <AdminStats stats={stats} loading={loading} />
       <div className="mt-4 space-y-4">
-        <GenreTool />
-        <ReportsManager />
-        <SuggestionsManager />
+        <GenreTool onChanged={loadStats} />
+        <ReportsManager onChanged={loadStats} />
+        <SuggestionsManager onChanged={loadStats} />
       </div>
     </div>
   );
