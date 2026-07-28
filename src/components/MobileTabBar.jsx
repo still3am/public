@@ -1,11 +1,12 @@
 import { useState } from "react";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
-import { Home, Search, User, Plus } from "lucide-react";
+import { Home, Search, User, Plus, Library as LibraryIcon } from "lucide-react";
 import MobileMoreSheet from "@/components/MobileMoreSheet";
 
 const TABS = [
   { to: "/", label: "Home", Icon: Home, end: true },
   { to: "/search", label: "Search", Icon: Search },
+  { to: "/library", label: "Library", Icon: LibraryIcon },
   { to: "/profile", label: "Me", Icon: User },
 ];
 

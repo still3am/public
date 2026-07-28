@@ -1,6 +1,7 @@
 import { Play, Pause, Flame } from "lucide-react";
 import { Link } from "react-router-dom";
 import { usePlayer } from "@/context/PlayerContext";
+import LibraryButton from "@/components/LibraryButton";
 
 export default function TrackCard({ track }) {
   const p = usePlayer();
@@ -45,6 +46,12 @@ export default function TrackCard({ track }) {
           <Play size={18} />
           }
         </button>
+        <div className="absolute top-2 right-2">
+          <LibraryButton
+            track={track}
+            className="w-9 h-9 rounded-full bg-background/70 backdrop-blur-md border border-foreground/10 text-foreground grid place-items-center shadow-sm hover:scale-105 active:scale-95 transition opacity-0 group-hover:opacity-100 transition-opacity"
+          />
+        </div>
       </div>
       <Link
         to={`/track/${track.id}`}

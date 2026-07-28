@@ -14,6 +14,7 @@ import { formatTime, timeAgo } from "@/lib/audio-utils";
 import { Link } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import { useAuth } from "@/lib/AuthContext";
+import LibraryButton from "@/components/LibraryButton";
 import { useOfflineCache } from "@/hooks/useOfflineCache";
 import { useToast } from "@/components/ui/use-toast";
 
@@ -153,6 +154,12 @@ export default function TrackRow({
       }
       <div className="hidden md:block text-xs text-foreground/40 w-10 text-right">
         {formatTime(track.duration_seconds)}
+      </div>
+      <div className="shrink-0">
+        <LibraryButton
+          track={track}
+          className="p-2 rounded-full text-foreground/55 hover:text-foreground hover:bg-foreground/[0.05] transition"
+        />
       </div>
       <div className="relative shrink-0">
         <button

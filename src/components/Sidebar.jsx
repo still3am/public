@@ -8,6 +8,7 @@ import {
   TrendingUp,
   Clock,
   Bell,
+  Library as LibraryIcon,
 } from "lucide-react";
 import Avatar from "@/components/Avatar";
 import Logo from "@/components/Logo";
@@ -55,7 +56,10 @@ export default function Sidebar() {
         <NavLink to="/recent" className={navLinkCls}>
           <Clock size={18} /> Recently Added
         </NavLink>
-<NavLink to="/notifications" className={navLinkCls}>
+        <NavLink to="/library" className={navLinkCls}>
+          <LibraryIcon size={18} /> Library
+        </NavLink>
+        <NavLink to="/notifications" className={navLinkCls}>
           <Bell size={18} /> Notifications
           {unread > 0 &&
           <span className="ml-auto bg-foreground text-background text-[10px] font-bold px-1.5 py-0.5 rounded-full min-w-[18px] text-center">

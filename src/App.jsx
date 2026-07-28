@@ -8,6 +8,7 @@ import UserNotRegisteredError from '@/components/UserNotRegisteredError';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import { Navigate } from 'react-router-dom';
 import { PlayerProvider } from '@/context/PlayerContext';
+import { LibraryProvider } from '@/context/LibraryContext';
 import Layout from '@/components/Layout';
 import Login from '@/pages/Login';
 import Register from '@/pages/Register';
@@ -22,6 +23,7 @@ import Profile from '@/pages/Profile';
 import TrackDetail from '@/pages/TrackDetail';
 import Suggestions from '@/pages/Suggestions';
 import Upload from '@/pages/Upload';
+import Library from '@/pages/Library';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -65,6 +67,7 @@ const AuthenticatedApp = () => {
           <Route path="/track/:id" element={<TrackDetail />} />
           <Route path="/suggestions" element={<Suggestions />} />
           <Route path="/upload" element={<Upload />} />
+          <Route path="/library" element={<Library />} />
         </Route>
       </Route>
       <Route path="*" element={<PageNotFound />} />
@@ -80,7 +83,9 @@ function App() {
       <QueryClientProvider client={queryClientInstance}>
         <Router>
           <PlayerProvider>
-            <AuthenticatedApp />
+            <LibraryProvider>
+              <AuthenticatedApp />
+            </LibraryProvider>
           </PlayerProvider>
         </Router>
         <Toaster />
