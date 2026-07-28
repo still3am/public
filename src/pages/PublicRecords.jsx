@@ -55,7 +55,7 @@ function SectionTitle({ icon: Icon, children, right }) {
   return (
     <div className="flex items-center justify-between gap-3 mb-3">
       <h2 className="text-base md:text-lg font-extrabold tracking-tight flex items-center gap-2">
-        <Icon size={17} className="text-foreground/60 hidden" />
+        
         {children}
       </h2>
       {right}
