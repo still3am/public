@@ -11,7 +11,6 @@ export default function NowPlayingAddMenu({
   onShare,
   showVisualizer,
   onToggleVisualizer,
-  onAddFromLibrary,
   onViewQueue,
   queueCount = 0,
 }) {
@@ -37,14 +36,6 @@ export default function NowPlayingAddMenu({
       label: "Share",
       onClick: (close) => {
         onShare();
-        close();
-      },
-    },
-    onAddFromLibrary && {
-      icon: Plus,
-      label: "Add from library",
-      onClick: (close) => {
-        onAddFromLibrary();
         close();
       },
     },

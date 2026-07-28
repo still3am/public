@@ -1,9 +1,12 @@
-import { X, Trash2, Play, Pause, ListMusic } from "lucide-react";
+import { X, Trash2, Play, Pause, ListMusic, Plus } from "lucide-react";
 import { usePlayer } from "@/context/PlayerContext";
 import { formatTime } from "@/lib/audio-utils";
+import QueueLibraryPicker from "@/components/QueueLibraryPicker";
+import { useState } from "react";
 
 export default function QueuePanel({ open, onClose }) {
   const p = usePlayer();
+  const [showPicker, setShowPicker] = useState(false);
   if (!open) return null;
 
   const upcoming = p.queue
@@ -20,6 +23,13 @@ export default function QueuePanel({ open, onClose }) {
           </h2>
         </div>
         <div className="flex items-center gap-1">
+          <button
+            onClick={() => setShowPicker(true)}
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/10 hover:bg-white/20 active:scale-90 transition text-xs font-semibold"
+            aria-label="Add from library"
+          >
+            <Plus size={16} /> Add
+          </button>
           {upcoming.length > 0 && (
             <button
               onClick={() => {
@@ -89,13 +99,13 @@ export default function QueuePanel({ open, onClose }) {
           {upcoming.length ? "Next up" : ""}
         </div>
         {!upcoming.length ? (
-          <div className="text-center py-16 px-6">
-            <ListMusic size={40} className="mx-auto opacity-30 mb-3" />
-            <p className="text-sm text-white/50 mb-4">Your queue is empty.</p>
-            <p className="text-xs text-white/40">
-              Use the + menu to add songs from your library.
-            </p>
-          </div>
+        <div className="text-center py-16 px-6">
+          <ListMusic size={40} className="mx-auto opacity-30 mb-3" />
+          <p className="text-sm text-white/50 mb-4">Your queue is empty.</p>
+          <p className="text-xs text-white/40">
+            Tap "Add" above to queue songs from your library.
+          </p>
+        </div>
         ) : (
           <div className="space-y-0.5">
             {upcoming.map(({ t, i }) => (
@@ -143,6 +153,8 @@ export default function QueuePanel({ open, onClose }) {
           </div>
         )}
       </div>
+
+      <QueueLibraryPicker open={showPicker} onClose={() => setShowPicker(false)} />
     </div>
   );
 }

@@ -24,7 +24,6 @@ import {
   Activity } from
 "lucide-react";
 import AudioVisualizer from "@/components/AudioVisualizer";
-import QueueLibraryPicker from "@/components/QueueLibraryPicker";
 import QueuePanel from "@/components/QueuePanel";
 
 const clampVol = (v) => Math.max(0, Math.min(1, v));
@@ -51,7 +50,6 @@ export default function FullScreenPlayer({ onClose }) {
   const [showVisualizer, setShowVisualizer] = useState(false);
   const [showVolHint, setShowVolHint] = useState(false);
   const [copied, setCopied] = useState(false);
-  const [showPicker, setShowPicker] = useState(false);
   const [showQueue, setShowQueue] = useState(false);
   const t = p.currentTrack;
   const volDrag = useRef({ startY: 0, start: 0, active: false });
@@ -212,7 +210,6 @@ export default function FullScreenPlayer({ onClose }) {
             setShowVisualizer((v) => !v);
             if (!showVisualizer) p.enableAnalyser?.();
           }}
-          onAddFromLibrary={() => setShowPicker(true)}
           onViewQueue={() => setShowQueue(true)}
           queueCount={p.queue.length - p.currentIndex - 1 > 0 ? p.queue.length - p.currentIndex - 1 : 0}
         />
@@ -397,7 +394,6 @@ export default function FullScreenPlayer({ onClose }) {
         </div>
       </div>
 
-      <QueueLibraryPicker open={showPicker} onClose={() => setShowPicker(false)} />
       <QueuePanel open={showQueue} onClose={() => setShowQueue(false)} />
 
       {/* copied toast */}
