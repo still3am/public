@@ -13,6 +13,13 @@ export default async function(req) {
     const artist = await base44.entities.Artist.get(artistId).catch(() => null);
     if (!artist) return Response.json({ error: 'Artist not found' }, { status: 404 });
 
+    // Authorization: only the artist's creator or an admin may overwrite its history.
+    const isOwner = artist.created_by_id === user.id;
+    const isAdmin = user.role === 'admin';
+    if (!isOwner && !isAdmin) {
+      return Response.json({ error: 'Forbidden' }, { status: 403 });
+    }
+
     const hints = [];
     if (artist.name) hints.push(`Artist name: ${artist.name}`);
     if (artist.location) hints.push(`Location: ${artist.location}`);
