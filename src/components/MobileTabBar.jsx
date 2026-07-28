@@ -9,6 +9,49 @@ const TABS = [
   { to: "/profile", label: "Me", Icon: User },
 ];
 
+function TabButton({ to, label, Icon, end, onClick }) {
+  return (
+    <NavLink
+      to={to}
+      end={end}
+      onClick={onClick}
+      className={({ isActive }) =>
+        `relative flex flex-col items-center justify-center gap-1 flex-1 h-full px-1.5 rounded-xl transition ${
+          isActive ? "text-foreground" : "text-foreground/45 hover:text-foreground/70"
+        }`
+      }
+    >
+      {({ isActive }) => (
+        <>
+          <span
+            className={`absolute top-1.5 h-1 rounded-full bg-foreground transition-all duration-200 ${
+              isActive ? "w-6 opacity-100" : "w-0 opacity-0"
+            }`}
+          />
+          <span
+            className={`grid place-items-center w-9 h-9 rounded-full transition ${
+              isActive ? "bg-foreground/[0.08]" : ""
+            }`}
+          >
+            <Icon
+              size={21}
+              strokeWidth={isActive ? 2.4 : 2}
+              className="transition"
+            />
+          </span>
+          <span
+            className={`text-[10px] font-medium tracking-tight transition ${
+              isActive ? "opacity-100" : "opacity-80"
+            }`}
+          >
+            {label}
+          </span>
+        </>
+      )}
+    </NavLink>
+  );
+}
+
 export default function MobileTabBar() {
   const [moreOpen, setMoreOpen] = useState(false);
   const loc = useLocation();
@@ -16,13 +59,11 @@ export default function MobileTabBar() {
 
   function handleTab(to, e) {
     if (loc.pathname === to) {
-      // already at root of that section — just scroll to top
       e.preventDefault();
       window.scrollTo({ top: 0, behavior: "smooth" });
       return;
     }
     if (to !== "/" && loc.pathname.startsWith(to + "/")) {
-      // already on a sub-route of this section — go back to its root
       e.preventDefault();
       nav(to);
     }
@@ -34,48 +75,37 @@ export default function MobileTabBar() {
   return (
     <>
       <nav className="md:hidden fixed bottom-0 inset-x-0 z-20 bg-background/85 backdrop-blur-xl border-t border-border tab-bar-safe">
-        <div className="grid grid-cols-5 h-16 items-center">
+        <div className="flex items-stretch h-16">
           {left.map(({ to, label, Icon, end }) => (
-            <NavLink
+            <TabButton
               key={to}
               to={to}
+              label={label}
+              Icon={Icon}
               end={end}
               onClick={(e) => handleTab(to, e)}
-              className={({ isActive }) =>
-                `flex flex-col items-center justify-center gap-1 text-[10px] font-medium px-1.5 py-1 rounded-xl transition ${
-                  isActive ? "text-foreground bg-foreground/[0.06]" : "text-foreground/40 hover:text-foreground/70"
-                }`
-              }
-            >
-              <Icon size={20} />
-              {label}
-            </NavLink>
+            />
           ))}
 
-          <div className="flex items-center justify-center">
+          <div className="flex items-center justify-center flex-1">
             <button
               onClick={() => setMoreOpen(true)}
-              className="w-11 h-11 rounded-full bg-foreground text-background grid place-items-center shadow-lg active:scale-95 transition"
+              className="w-12 h-12 rounded-full bg-foreground text-background grid place-items-center shadow-lg shadow-foreground/20 -translate-y-1 active:scale-95 transition"
               aria-label="More pages"
             >
-              <Plus size={22} />
+              <Plus size={24} strokeWidth={2.5} />
             </button>
           </div>
 
-          {right.map(({ to, label, Icon }) => (
-            <NavLink
+          {right.map(({ to, label, Icon, end }) => (
+            <TabButton
               key={to}
               to={to}
+              label={label}
+              Icon={Icon}
+              end={end}
               onClick={(e) => handleTab(to, e)}
-              className={({ isActive }) =>
-                `flex flex-col items-center justify-center gap-1 text-[10px] font-medium px-1.5 py-1 rounded-xl transition ${
-                  isActive ? "text-foreground bg-foreground/[0.06]" : "text-foreground/40 hover:text-foreground/70"
-                }`
-              }
-            >
-              <Icon size={20} />
-              {label}
-            </NavLink>
+            />
           ))}
         </div>
       </nav>
