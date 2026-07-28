@@ -9,16 +9,15 @@ import {
   Disc3,
   X,
   Shield,
-  Sparkles } from
-"lucide-react";
+  ArrowLeft,
+} from "lucide-react";
 import { base44 } from "@/api/base44Client";
 import TrackRow from "@/components/TrackRow";
+import GenreGrid from "@/components/search/GenreGrid";
 import Avatar from "@/components/Avatar";
 import PullToRefresh from "@/components/PullToRefresh";
 import PageHeader from "@/components/PageHeader";
 import EmptyState from "@/components/EmptyState";
-
-const QUICK_GENRES = ["Hip-Hop", "Electronic", "Ambient", "Lo-Fi", "R&B", "Pop", "House", "Afrobeats"];
 
 function ArtistRow({ artist, trackCount, onPick }) {
   return (
@@ -45,12 +44,13 @@ function ArtistRow({ artist, trackCount, onPick }) {
       <span className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full bg-foreground/[0.05] text-foreground/60 text-xs font-semibold shrink-0 group-hover:bg-foreground group-hover:text-background transition-all">
         Browse <Disc3 size={13} />
       </span>
-    </Link>);
-
+    </Link>
+  );
 }
 
 export default function Search() {
   const [q, setQ] = useState("");
+  const [genre, setGenre] = useState(null);
   const [allTracks, setAllTracks] = useState([]);
   const [allArtists, setAllArtists] = useState([]);
   const [people, setPeople] = useState([]);
@@ -58,14 +58,13 @@ export default function Search() {
   const [loadingPeople, setLoadingPeople] = useState(false);
   const peopleReqId = useRef(0);
 
-  // One-time load of full catalogue for instant local search.
   async function loadCatalogue() {
     setLoadingAll(true);
     try {
       const [tracks, artists] = await Promise.all([
-      base44.entities.Track.filter({ is_published: true }, "-created_date", 10000).catch(() => []),
-      base44.entities.Artist.list("-updated_date", 1000).catch(() => [])]
-      );
+        base44.entities.Track.filter({ is_published: true }, "-created_date", 10000).catch(() => []),
+        base44.entities.Artist.list("-updated_date", 1000).catch(() => [])
+      ]);
       setAllTracks(Array.isArray(tracks) ? tracks : []);
       setAllArtists(Array.isArray(artists) ? artists : []);
     } finally {
@@ -84,23 +83,40 @@ export default function Search() {
     if (!hasQuery) return [];
     return allTracks.filter(
       (t) =>
-      t.title?.toLowerCase().includes(Q) ||
-      t.artist?.toLowerCase().includes(Q) ||
-      t.uploader_name?.toLowerCase().includes(Q)
+        t.title?.toLowerCase().includes(Q) ||
+        t.artist?.toLowerCase().includes(Q) ||
+        t.uploader_name?.toLowerCase().includes(Q)
     );
   }, [hasQuery, Q, allTracks]);
 
   const artistResults = useMemo(() => {
     if (!hasQuery) return [];
     return allArtists.
-    filter(
-      (a) =>
-      a.name?.toLowerCase().includes(Q) ||
-      a.bio?.toLowerCase().includes(Q) ||
-      a.location?.toLowerCase().includes(Q)
-    ).
-    slice(0, 50);
+      filter(
+        (a) =>
+          a.name?.toLowerCase().includes(Q) ||
+          a.bio?.toLowerCase().includes(Q) ||
+          a.location?.toLowerCase().includes(Q)
+      ).
+      slice(0, 50);
   }, [hasQuery, Q, allArtists]);
+
+  const genreList = useMemo(() => {
+    const counts = {};
+    for (const t of allTracks) {
+      const g = t.genre;
+      if (!g) continue;
+      counts[g] = (counts[g] || 0) + 1;
+    }
+    return Object.entries(counts)
+      .map(([g, count]) => ({ genre: g, count }))
+      .sort((a, b) => b.count - a.count || a.genre.localeCompare(b.genre));
+  }, [allTracks]);
+
+  const genreTracks = useMemo(() => {
+    if (!genre) return [];
+    return allTracks.filter((t) => t.genre === genre);
+  }, [genre, allTracks]);
 
   // People search is a remote function — debounce it.
   useEffect(() => {
@@ -124,11 +140,17 @@ export default function Search() {
   }, [hasQuery, Q]);
 
   const anyResults = trackResults.length || artistResults.length || people.length;
-  const loading = loadingAll || hasQuery && loadingPeople && !people.length;
+  const loading = loadingAll || (hasQuery && loadingPeople && !people.length);
 
   function searchArtist(name) {
     setQ(name);
   }
+
+  const loader = (
+    <div className="py-16 text-center">
+      <Loader2 className="animate-spin inline text-foreground/40" size={22} />
+    </div>
+  );
 
   return (
     <PullToRefresh onRefresh={loadCatalogue}>
@@ -140,56 +162,29 @@ export default function Search() {
           <SearchIcon size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-foreground/40 pointer-events-none" />
           <input
             value={q}
-            onChange={(e) => setQ(e.target.value)}
+            onChange={(e) => { setQ(e.target.value); setGenre(null); }}
             placeholder="Search tracks, artists, people…"
             className="w-full pl-11 pr-11 py-3.5 rounded-full border border-border bg-background text-sm font-medium focus:outline-none focus:ring-2 focus:ring-foreground/10 transition shadow-sm" />
-          
+
           {q.trim() &&
           <button
             onClick={() => setQ("")}
             className="absolute right-3 top-1/2 -translate-y-1/2 p-1.5 rounded-full hover:bg-foreground/5 text-foreground/40"
             aria-label="Clear search">
-              <X size={16} />
-            </button>
+            <X size={16} />
+          </button>
           }
         </div>
 
-        {/* Quick genre chips (no query) */}
-        {!hasQuery &&
-        <div className="flex items-center gap-2 flex-wrap mb-2 hidden">
-            {QUICK_GENRES.map((g) =>
-          <button
-            key={g}
-            onClick={() => setQ(g)}
-            className="chip active:scale-95">
-                {g}
-              </button>
-          )}
-          </div>
-        }
-
         {/* Body */}
-        {!hasQuery ?
-        loadingAll ?
-        <div className="py-16 text-center">
-              <Loader2 className="animate-spin inline text-foreground/40" size={22} />
-            </div> :
-        <EmptyState
-          icon={Sparkles}
-          title="Search PUBLIC"
-          description="Type a name, genre, or username to discover tracks, artists, and people. Try a quick genre above." /> :
-
-        loading ?
-        <div className="py-16 text-center">
-              <Loader2 className="animate-spin inline text-foreground/40" size={22} />
-            </div> :
-        anyResults === 0 ?
-        <EmptyState
-          icon={SearchIcon}
-          title={`No results for "${q}"`}
-          description="Try a different spelling or search term." /> :
-
-        <div className="space-y-8">
+        {hasQuery ? (
+          loading ? loader :
+          anyResults === 0 ?
+          <EmptyState
+            icon={SearchIcon}
+            title={`No results for "${q}"`}
+            description="Try a different spelling or search term." /> :
+          <div className="space-y-8">
             {trackResults.length > 0 && (
               <div>
                 <h3 className="flex items-center gap-2 text-sm font-bold uppercase tracking-wide text-foreground/60 mb-2 px-1">
@@ -252,8 +247,38 @@ export default function Search() {
               </div>
             )}
           </div>
-        }
+        ) : genre ? (
+          <div>
+            <div className="flex items-center gap-3 mb-3">
+              <button
+                onClick={() => setGenre(null)}
+                className="tap-target rounded-full hover:bg-foreground/[0.06]"
+                aria-label="Back to genres">
+                <ArrowLeft size={20} />
+              </button>
+              <div className="min-w-0 flex-1">
+                <h2 className="text-lg font-extrabold tracking-tight truncate">{genre}</h2>
+                <p className="text-xs text-foreground/50">
+                  {genreTracks.length} new {genreTracks.length === 1 ? "track" : "tracks"}
+                </p>
+              </div>
+            </div>
+            {genreTracks.length ? (
+              <div className="space-y-0.5">
+                {genreTracks.map((t, i) => (
+                  <TrackRow key={t.id} track={t} index={i} />
+                ))}
+              </div>
+            ) : (
+              <EmptyState
+                title="Nothing here yet"
+                description="No published tracks in this genre." />
+            )}
+          </div>
+        ) : loadingAll ? loader : (
+          <GenreGrid genres={genreList} onPick={(g) => setGenre(g)} />
+        )}
       </div>
-    </PullToRefresh>);
-
+    </PullToRefresh>
+  );
 }
