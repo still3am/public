@@ -5,6 +5,7 @@ import BackHeader from "@/components/BackHeader";
 import TrackRow from "@/components/TrackRow";
 import PullToRefresh from "@/components/PullToRefresh";
 import { usePlayer } from "@/context/PlayerContext";
+import { useAuth } from "@/lib/AuthContext";
 import { useToast } from "@/components/ui/use-toast";
 import {
   Loader2,
@@ -67,6 +68,7 @@ export default function PublicRecords({ id: propId }) {
   const id = propId || paramId;
   const { toast } = useToast();
   const p = usePlayer();
+  const { user } = useAuth();
   const [artist, setArtist] = useState(null);
   const [tracks, setTracks] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -157,6 +159,7 @@ export default function PublicRecords({ id: propId }) {
     artist.members && { icon: Users, label: artist.members },
   ].filter(Boolean);
 
+  const isCreator = !!user && artist.created_by_id === user.id;
   const playAll = () => p.playTrackAt(tracks);
 
   return (
@@ -179,22 +182,19 @@ export default function PublicRecords({ id: propId }) {
             <div className="absolute inset-0 bg-gradient-to-b from-background/30 via-background/55 to-background" />
           </div>
 
-          <div className="relative px-5 md:px-10 pb-6 md:pb-8 flex flex-col md:flex-row gap-4 md:gap-6 items-center md:items-end text-center md:text-left -mt-16 md:-mt-20">
+          <div className="relative px-5 md:px-10 pb-6 md:pb-8 flex flex-col items-center text-center -mt-16 md:-mt-20">
             <div className="flex-1 min-w-0">
-              <span className="inline-flex items-center gap-1.5 text-[10px] uppercase tracking-[0.22em] text-foreground/55 font-bold mb-2 bg-foreground/[0.06] rounded-full px-2.5 py-1">
-                <Sparkles size={11} /> Public Records
-              </span>
               <h1 className="text-3xl md:text-5xl font-extrabold tracking-tighter leading-[1.02] break-words">
                 {artist.name}
               </h1>
               {meta.length > 0 && (
-                <div className="flex flex-wrap items-center justify-center md:justify-start gap-1.5 mt-3">
+                <div className="flex flex-wrap items-center justify-center gap-1.5 mt-3">
                   {meta.map((m, i) => (
                     <Pill key={i} icon={m.icon}>{m.label}</Pill>
                   ))}
                 </div>
               )}
-              <div className="flex flex-wrap items-center justify-center md:justify-start gap-3 mt-4">
+              <div className="flex flex-wrap items-center justify-center gap-3 mt-4">
                 {tracks.length > 0 && (
                   <button
                     onClick={playAll}
@@ -203,7 +203,7 @@ export default function PublicRecords({ id: propId }) {
                     <Play size={13} className="fill-current" /> Play all
                   </button>
                 )}
-                {generating ? (
+                {isCreator && (generating ? (
                   <span className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full bg-foreground/[0.06] text-foreground/60 text-xs font-semibold">
                     <Loader2 size={13} className="animate-spin" /> Generating…
                   </span>
@@ -214,7 +214,7 @@ export default function PublicRecords({ id: propId }) {
                   >
                     <Sparkles size={13} /> {artist.history_text ? "Regenerate history" : "Generate history"}
                   </button>
-                )}
+                ))}
               </div>
             </div>
           </div>
