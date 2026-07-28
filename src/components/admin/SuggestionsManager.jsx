@@ -5,7 +5,7 @@ import { Lightbulb, Loader2 } from "lucide-react";
 
 const STATUSES = ["open", "reviewing", "planned", "done"];
 
-export default function SuggestionsManager({ onChanged }) {
+export default function SuggestionsManager() {
   const { toast } = useToast();
   const [items, setItems] = useState(null);
   const [busy, setBusy] = useState("");
@@ -28,7 +28,6 @@ export default function SuggestionsManager({ onChanged }) {
       await base44.entities.Suggestion.update(id, { status });
       setItems((prev) => (prev || []).map((s) => (s.id === id ? { ...s, status } : s)));
       toast({ title: "Status updated" });
-      if (onChanged) onChanged();
     } catch {} finally {
       setBusy("");
     }

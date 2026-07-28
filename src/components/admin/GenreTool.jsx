@@ -3,7 +3,7 @@ import { base44 } from "@/api/base44Client";
 import { useToast } from "@/components/ui/use-toast";
 import { Wand2, Loader2 } from "lucide-react";
 
-export default function GenreTool({ onChanged }) {
+export default function GenreTool() {
   const { toast } = useToast();
   const [busy, setBusy] = useState(false);
   const [info, setInfo] = useState(null);
@@ -22,7 +22,6 @@ export default function GenreTool({ onChanged }) {
         if (!d.has_more) break;
       }
       toast({ title: `Classified ${total} track${total !== 1 ? "s" : ""}` });
-      if (onChanged) onChanged();
     } catch {
       toast({ title: "Classification failed", variant: "destructive" });
     } finally {
