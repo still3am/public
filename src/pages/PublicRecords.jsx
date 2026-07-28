@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import BackHeader from "@/components/BackHeader";
@@ -16,7 +16,6 @@ import {
   Calendar,
   Users,
   MapPin,
-  BarChart2,
   Disc3,
   Headphones,
   Play,
@@ -49,20 +48,6 @@ function SocialChip({ href, icon: Icon, label }) {
       <Icon size={13} /> {label}
       <ExternalLink size={10} className="text-foreground/35" />
     </a>
-  );
-}
-
-function StatCard({ icon: Icon, value, label }) {
-  return (
-    <div className="rounded-2xl border border-border bg-card/70 backdrop-blur-sm p-4 flex flex-col items-center justify-center text-center">
-      <Icon size={15} className="text-foreground/40 mb-1.5" />
-      <div className="text-xl font-extrabold tracking-tight tabular-nums leading-none truncate w-full">
-        {value}
-      </div>
-      <div className="text-[10px] uppercase tracking-[0.15em] text-foreground/40 mt-1.5">
-        {label}
-      </div>
-    </div>
   );
 }
 
@@ -135,11 +120,6 @@ export default function PublicRecords({ id: propId }) {
       setGenerating(false);
     }
   }
-
-  const totalPlays = useMemo(
-    () => tracks.reduce((s, t) => s + (t.play_count || 0), 0),
-    [tracks]
-  );
 
   if (loading) {
     return (
@@ -265,13 +245,6 @@ export default function PublicRecords({ id: propId }) {
             </div>
           )}
         </section>
-
-        {/* Stats */}
-        <div className="grid grid-cols-3 gap-3 mb-8">
-          <StatCard icon={Music} value={tracks.length} label="Tracks" />
-          <StatCard icon={BarChart2} value={totalPlays} label="Plays" />
-          <StatCard icon={Users} value={artist.members || "—"} label="Members" />
-        </div>
 
         {/* History (AI) */}
         <section className="mb-8">
