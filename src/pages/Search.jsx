@@ -9,7 +9,7 @@ import {
   Disc3,
   X,
   Shield,
-} from
+  Sparkles } from
 "lucide-react";
 import { base44 } from "@/api/base44Client";
 import TrackRow from "@/components/TrackRow";
@@ -17,9 +17,8 @@ import Avatar from "@/components/Avatar";
 import PullToRefresh from "@/components/PullToRefresh";
 import PageHeader from "@/components/PageHeader";
 import EmptyState from "@/components/EmptyState";
-import GenreCard from "@/components/search/GenreCard";
-import GenreBrowse from "@/components/search/GenreBrowse";
-import { CURATED_ORDER } from "@/lib/genreGradients";
+
+const QUICK_GENRES = ["Hip-Hop", "Electronic", "Ambient", "Lo-Fi", "R&B", "Pop", "House", "Afrobeats"];
 
 function ArtistRow({ artist, trackCount, onPick }) {
   return (
@@ -57,7 +56,6 @@ export default function Search() {
   const [people, setPeople] = useState([]);
   const [loadingAll, setLoadingAll] = useState(true);
   const [loadingPeople, setLoadingPeople] = useState(false);
-  const [genreView, setGenreView] = useState(null);
   const peopleReqId = useRef(0);
 
   // One-time load of full catalogue for instant local search.
@@ -125,40 +123,11 @@ export default function Search() {
     return () => clearTimeout(t);
   }, [hasQuery, Q]);
 
-  const genreCounts = useMemo(() => {
-    const m = new Map();
-    for (const t of allTracks) if (t.genre) m.set(t.genre, (m.get(t.genre) || 0) + 1);
-    return m;
-  }, [allTracks]);
-
-  const genreList = useMemo(() => {
-    const seen = new Set();
-    const first = CURATED_ORDER.filter((g) => genreCounts.has(g));
-    first.forEach((g) => seen.add(g));
-    const rest = [...genreCounts.keys()].
-      filter((g) => !seen.has(g)).
-      sort((a, b) => genreCounts.get(b) - genreCounts.get(a));
-    return [...first, ...rest];
-  }, [genreCounts]);
-
-  const genreTracks = useMemo(() => {
-    if (!genreView) return [];
-    return [...allTracks].
-      filter((t) => t.genre === genreView).
-      sort((a, b) => (b.play_count || 0) - (a.play_count || 0));
-  }, [genreView, allTracks]);
-
   const anyResults = trackResults.length || artistResults.length || people.length;
   const loading = loadingAll || hasQuery && loadingPeople && !people.length;
 
   function searchArtist(name) {
     setQ(name);
-    setGenreView(null);
-  }
-
-  function pickGenre(g) {
-    setQ("");
-    setGenreView(g);
   }
 
   return (
@@ -171,10 +140,10 @@ export default function Search() {
           <SearchIcon size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-foreground/40 pointer-events-none" />
           <input
             value={q}
-            onChange={(e) => { setQ(e.target.value); setGenreView(null); }}
+            onChange={(e) => setQ(e.target.value)}
             placeholder="Search tracks, artists, people…"
             className="w-full pl-11 pr-11 py-3.5 rounded-full border border-border bg-background text-sm font-medium focus:outline-none focus:ring-2 focus:ring-foreground/10 transition shadow-sm" />
-
+          
           {q.trim() &&
           <button
             onClick={() => setQ("")}
@@ -185,8 +154,31 @@ export default function Search() {
           }
         </div>
 
+        {/* Quick genre chips (no query) */}
+        {!hasQuery &&
+        <div className="flex items-center gap-2 flex-wrap mb-2 hidden">
+            {QUICK_GENRES.map((g) =>
+          <button
+            key={g}
+            onClick={() => setQ(g)}
+            className="chip active:scale-95">
+                {g}
+              </button>
+          )}
+          </div>
+        }
+
         {/* Body */}
-        {hasQuery ?
+        {!hasQuery ?
+        loadingAll ?
+        <div className="py-16 text-center">
+              <Loader2 className="animate-spin inline text-foreground/40" size={22} />
+            </div> :
+        <EmptyState
+          icon={Sparkles}
+          title="Search PUBLIC"
+          description="Type a name, genre, or username to discover tracks, artists, and people. Try a quick genre above." /> :
+
         loading ?
         <div className="py-16 text-center">
               <Loader2 className="animate-spin inline text-foreground/40" size={22} />
@@ -259,38 +251,8 @@ export default function Search() {
                 </div>
               </div>
             )}
-          </div> :
-
-        genreView ?
-        <GenreBrowse
-          genre={genreView}
-          tracks={genreTracks}
-          onBack={() => setGenreView(null)} /> :
-
-        loadingAll ?
-        <div className="py-16 text-center">
-              <Loader2 className="animate-spin inline text-foreground/40" size={22} />
-            </div> :
-        genreList.length === 0 ?
-        <EmptyState
-          icon={SearchIcon}
-          title="No music yet"
-          description="Once tracks are uploaded, browse them here by genre." /> :
-
-        <div>
-          <h3 className="flex items-center gap-2 text-sm font-bold uppercase tracking-wide text-foreground/60 mb-3 px-1">
-            <Music size={14} /> Browse Genres
-          </h3>
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
-            {genreList.map((g) => (
-              <GenreCard
-                key={g}
-                genre={g}
-                count={genreCounts.get(g)}
-                onClick={() => pickGenre(g)} />
-            ))}
           </div>
-        </div>}
+        }
       </div>
     </PullToRefresh>);
 
