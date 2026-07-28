@@ -26,15 +26,6 @@ import GenerateLyricsModal from "@/components/GenerateLyricsModal";
 import { useOfflineCache } from "@/hooks/useOfflineCache";
 import { useToast } from "@/components/ui/use-toast";
 
-function shortArtistName(str) {
-  const parts = String(str || "")
-    .split(/\s*(?:,|&| feat\.| ft\.| x |;)\s*/i)
-    .map((p) => p.trim())
-    .filter(Boolean);
-  if (parts.length <= 2) return str;
-  return `${parts[0]}, ${parts[1]} +${parts.length - 2}`;
-}
-
 export default function TrackDetail() {
   const { id } = useParams();
   const nav = useNavigate();
@@ -245,10 +236,20 @@ export default function TrackDetail() {
     <div className="max-w-3xl mx-auto">
       <BackHeader title="Track" />
 
-      {/* Hero — clean, no blurred backdrop */}
-      <div className="rounded-3xl border border-border bg-card mb-6 overflow-hidden">
-        <div className="p-6 md:p-10 flex flex-col md:flex-row gap-6 md:gap-8 items-center md:items-start text-center md:text-left">
-          <div className="w-44 h-44 md:w-52 md:h-52 rounded-2xl overflow-hidden bg-foreground/10 shrink-0 shadow-2xl ring-1 ring-black/5">
+      {/* Hero */}
+      <div className="relative rounded-3xl overflow-hidden border border-border mb-6 md:mb-8">
+        {track.cover_art_url &&
+        <div className="absolute inset-0">
+            <img
+            src={track.cover_art_url}
+            alt=""
+            className="w-full h-full object-cover blur-2xl scale-125 opacity-30" />
+          
+            <div className="absolute inset-0 bg-background/70" />
+          </div>
+        }
+        <div className="relative p-6 md:p-10 flex flex-col md:flex-row gap-5 md:gap-8">
+          <div className="w-40 h-40 md:w-52 md:h-52 rounded-2xl overflow-hidden bg-foreground/10 shrink-0 shadow-lg ring-1 ring-foreground/10">
             {track.cover_art_url &&
             <img
               src={track.cover_art_url}
@@ -256,14 +257,12 @@ export default function TrackDetail() {
               className="w-full h-full object-cover" />
             }
           </div>
-          <div className="flex-1 min-w-0 flex flex-col w-full">
-            {track.genre &&
-            <span className="self-center md:self-start text-[11px] uppercase tracking-[0.18em] font-bold text-foreground/45 mb-3">
-                {track.genre}
-              </span>
-            }
-            <div className="flex items-center gap-2 flex-wrap mb-2 justify-center md:justify-start">
-              <h1 className="text-3xl md:text-5xl font-bold tracking-tight leading-[1.05]">
+          <div className="flex-1 min-w-0 flex flex-col justify-center">
+            <span className="self-start text-[10px] uppercase tracking-[0.2em] text-foreground/50 font-semibold mb-2.5 border border-border rounded-full px-3 py-1">
+              {track.genre}
+            </span>
+            <div className="flex items-center gap-2 flex-wrap mb-1.5">
+              <h1 className="text-3xl md:text-4xl font-extrabold tracking-tighter leading-[1.05]">
                 {track.title}
               </h1>
               {track.explicit &&
@@ -273,19 +272,29 @@ export default function TrackDetail() {
               }
             </div>
             {(displayArtist || uploader) &&
-            <div className="flex flex-col items-center md:items-start gap-1 mb-3">
+            <div className="text-sm text-foreground/60 mb-2 flex flex-wrap items-center gap-x-1.5 gap-y-0.5">
                 {displayArtist &&
               <Link
                 to={`/artist?name=${encodeURIComponent(displayArtist)}`}
-                className="text-lg font-semibold text-foreground/85 hover:underline">
-                  {shortArtistName(displayArtist)}
-                </Link>
+                className="font-semibold text-foreground/80 px-1 hover:underline">
+                    {(() => {
+                      const parts = String(displayArtist)
+                        .split(/\s*(?:,|&| feat\.| ft\.| x |;)\s*/i)
+                        .map((p) => p.trim())
+                        .filter(Boolean);
+                      if (parts.length <= 2) return displayArtist;
+                      return `${parts[0]}, ${parts[1]} +${parts.length - 2}`;
+                    })()}
+                  </Link>
+              }
+                {displayArtist && uploader &&
+              <span className="text-foreground/40">· uploaded by</span>
               }
                 {uploader &&
               <Link
                 to={`/profile/${uploader.id}`}
-                className="inline-flex items-center gap-1.5 text-sm text-foreground/45 hover:text-foreground/75 transition">
-                  
+                className="hover:underline inline-flex items-center gap-1.5">
+                
                     {uploader.avatar_url ?
                 <img
                   src={uploader.avatar_url}
@@ -297,16 +306,16 @@ export default function TrackDetail() {
                         {(uploader.display_name || uploader.email || "?").charAt(0)}
                       </div>
                 }
-                    <span>uploaded by {uploader.display_name || uploader.full_name || "Unknown"}</span>
+                    {uploader.display_name || uploader.full_name || "Unknown"}
                   </Link>
               }
               </div>
             }
-            <div className="text-xs text-foreground/40 mb-4 text-center md:text-left">
+            <div className="text-xs text-foreground/40 mb-3">
               {track.play_count || 0} plays
             </div>
             {track.description &&
-            <p className="text-sm text-foreground/60 leading-relaxed max-w-prose mx-auto md:mx-0">
+            <p className="text-sm text-foreground/70 leading-relaxed mb-3">
                 {track.description}
               </p>
             }
@@ -315,49 +324,59 @@ export default function TrackDetail() {
       </div>
 
       {/* Action row */}
-      <div className="flex items-center gap-3 mb-8">
+      <div className="flex items-center gap-2 mb-8">
         <button
           onClick={() => isCurrent ? p.togglePlay() : p.playTrackAt([track])}
-          className="px-6 py-3 rounded-full bg-foreground text-background text-sm font-bold flex items-center gap-2 active:scale-95 transition shadow-sm">
+          className="px-5 py-2.5 rounded-full bg-foreground text-background text-sm font-semibold flex items-center gap-2 hover:scale-[1.02] transition">
           
-          {isPlaying ? <Pause size={16} /> : <Play size={16} className="fill-current" />}
+          {isPlaying ? <Pause size={16} /> : <Play size={16} />}
           {isPlaying ? "Pause" : "Play"}
         </button>
+        
 
+
+
+
+
+
+
+
+
+        
         <div className="relative shrink-0 ml-auto">
           <button
             onClick={() => setMenuOpen((v) => !v)}
-            className="w-11 h-11 rounded-full border border-border bg-card grid place-items-center hover:bg-foreground/[0.05] transition"
+            className="w-10 h-10 rounded-full bg-foreground text-background grid place-items-center hover:scale-105 transition"
             aria-label="More actions">
             
             <Plus
-            size={20}
-            className={menuOpen ? "rotate-45 transition-transform" : "transition-transform"} />
+              size={18}
+              className={menuOpen ? "rotate-45 transition-transform" : "transition-transform"} />
             
           </button>
           {menuOpen &&
           <>
-            <div
-            className="fixed inset-0 z-10"
-            onClick={() => setMenuOpen(false)} />
-          
-            <div className="absolute right-0 top-full z-20 mt-1 bg-popover border border-border rounded-xl shadow-2xl py-1 min-w-[210px]">
-              {menuItems.map((m, i) => {
-              const Icon = m.icon;
-              return (
-                <button
-                key={i}
-                onClick={m.onClick}
-                className={`w-full flex items-center gap-2.5 px-3 py-2 text-sm hover:bg-foreground/[0.04] text-left ${
-                m.danger ? "text-red-600" : ""}`
-                }>
-                  
-                  <Icon size={15} /> {m.label}
-                </button>);
+              <div
+              className="fixed inset-0 z-10"
+              onClick={() => setMenuOpen(false)} />
+            
+              <div className="absolute right-0 top-full z-20 mt-1 bg-popover border border-border rounded-xl shadow-2xl py-1 min-w-[210px]">
+                {menuItems.map((m, i) => {
+                const Icon = m.icon;
+                return (
+                  <button
+                    key={i}
+                    onClick={m.onClick}
+                    className={`w-full flex items-center gap-2.5 px-3 py-2 text-sm hover:bg-foreground/[0.04] text-left ${
+                    m.danger ? "text-red-600" : ""}`
+                    }>
+                    
+                      <Icon size={15} /> {m.label}
+                    </button>);
 
-            })}
-            </div>
-          </>
+              })}
+              </div>
+            </>
           }
         </div>
       </div>
