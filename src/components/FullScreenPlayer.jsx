@@ -25,6 +25,7 @@ import {
 "lucide-react";
 import AudioVisualizer from "@/components/AudioVisualizer";
 import QueuePanel from "@/components/QueuePanel";
+import { useLibrary } from "@/context/LibraryContext";
 
 const clampVol = (v) => Math.max(0, Math.min(1, v));
 
@@ -45,6 +46,7 @@ function IconButton({ icon: Icon, onClick, active, size = 22, label, className =
 export default function FullScreenPlayer({ onClose }) {
   const p = usePlayer();
   const { user } = useAuth();
+  const { isInLibrary, toggle: toggleLibrary } = useLibrary();
   const bg = useColorExtraction(p.currentTrack?.cover_art_url);
   const [lyricsMode, setLyricsMode] = useState(false);
   const [showVisualizer, setShowVisualizer] = useState(false);
@@ -210,6 +212,8 @@ export default function FullScreenPlayer({ onClose }) {
             setShowVisualizer((v) => !v);
             if (!showVisualizer) p.enableAnalyser?.();
           }}
+          onToggleLibrary={() => toggleLibrary(t)}
+          inLibrary={isInLibrary(t.id)}
           onViewQueue={() => setShowQueue(true)}
           queueCount={p.queue.length - p.currentIndex - 1 > 0 ? p.queue.length - p.currentIndex - 1 : 0}
         />
