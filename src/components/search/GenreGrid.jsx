@@ -1,22 +1,22 @@
 import GenreCard from "./GenreCard";
 
 const GRADIENTS = [
-  "from-fuchsia-600 to-purple-700",
-  "from-rose-500 to-pink-600",
-  "from-orange-400 to-rose-600",
-  "from-amber-400 to-orange-600",
-  "from-lime-500 to-emerald-600",
-  "from-emerald-400 to-teal-600",
-  "from-cyan-400 to-blue-600",
-  "from-blue-500 to-indigo-700",
-  "from-indigo-500 to-purple-700",
-  "from-violet-500 to-fuchsia-700",
-  "from-pink-500 to-rose-700",
-  "from-red-500 to-orange-600",
-  "from-teal-400 to-cyan-600",
-  "from-sky-400 to-blue-700",
-  "from-purple-500 to-indigo-800",
-  "from-fuchsia-500 to-pink-700",
+  "from-fuchsia-700 to-purple-900",
+  "from-rose-700 to-red-950",
+  "from-orange-600 to-rose-950",
+  "from-amber-600 to-orange-900",
+  "from-lime-700 to-emerald-950",
+  "from-emerald-700 to-teal-950",
+  "from-cyan-700 to-blue-950",
+  "from-blue-700 to-indigo-950",
+  "from-indigo-700 to-purple-950",
+  "from-violet-700 to-fuchsia-950",
+  "from-pink-700 to-rose-950",
+  "from-red-700 to-orange-950",
+  "from-teal-700 to-cyan-950",
+  "from-sky-700 to-blue-950",
+  "from-purple-700 to-indigo-950",
+  "from-fuchsia-700 to-pink-950",
 ];
 
 function gradientFor(name) {
@@ -32,7 +32,7 @@ export default function GenreGrid({ genres, onPick }) {
       <h3 className="text-sm font-bold uppercase tracking-wide text-foreground/60 mb-3 px-1">
         Browse Genres
       </h3>
-      <div className="grid grid-cols-2 md:grid-cols-3 gap-2.5">
+      <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
         {genres.map((g) => (
           <GenreCard
             key={g.genre}
