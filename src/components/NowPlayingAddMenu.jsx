@@ -1,7 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import {
   Plus,
-  Check,
   Share2,
   X,
   Activity,
@@ -42,14 +41,13 @@ export default function NowPlayingAddMenu({
         close();
       },
     },
-    onToggleLibrary && {
-      icon: inLibrary ? Check : Plus,
-      label: inLibrary ? "In your library" : "Add to library",
+    onToggleLibrary && !inLibrary && {
+      icon: Plus,
+      label: "Add to library",
       onClick: (close) => {
         onToggleLibrary();
         close();
       },
-      accent: inLibrary ? "text-green-400" : "",
     },
     onViewQueue && {
       icon: ListMusic,
