@@ -15,7 +15,7 @@ import BackHeader from "@/components/BackHeader";
 import FileDropZone from "@/components/upload/FileDropZone";
 import UploadItem from "@/components/upload/UploadItem";
 import DuplicateModal from "@/components/upload/DuplicateModal";
-import { UploadCloud, Loader2, Plus, CheckCheck } from "lucide-react";
+import { UploadCloud, Loader2, Plus, CheckCheck, Wand2 } from "lucide-react";
 
 let idc = 0;
 
@@ -27,6 +27,29 @@ export default function Upload() {
   const [progress, setProgress] = useState({ done: 0, total: 0 });
   const [dupes, setDupes] = useState(null);
   const inputRef = useRef(null);
+  const [classifyBusy, setClassifyBusy] = useState(false);
+  const [classifyInfo, setClassifyInfo] = useState(null);
+
+  async function classifyAll() {
+    if (classifyBusy) return;
+    setClassifyBusy(true);
+    setClassifyInfo(null);
+    let total = 0;
+    try {
+      while (true) {
+        const res = await base44.functions.invoke("classifyGenres", {});
+        const d = res?.data || {};
+        total += d.processed || 0;
+        setClassifyInfo({ total, done: !d.has_more });
+        if (!d.has_more) break;
+      }
+      toast({ title: `Classified ${total} track${total !== 1 ? "s" : ""}` });
+    } catch (err) {
+      toast({ title: "Classification failed", variant: "destructive" });
+    } finally {
+      setClassifyBusy(false);
+    }
+  }
 
   const addFiles = useCallback(async (files) => {
     const list = Array.from(files).filter(
@@ -67,7 +90,7 @@ export default function Upload() {
           rights_confirmed: false,
           status: "editing",
           error: "",
-          aiGenre: false,
+          aiGenre: true,
           aiLyrics: false,
         };
       })
@@ -273,6 +296,38 @@ export default function Upload() {
               disabled={busy}
             />
           ))}
+        </div>
+      )}
+
+      {user?.role === "admin" && (
+        <div className="mt-6 rounded-2xl border border-border bg-card p-4">
+          <div className="flex items-center justify-between gap-3 flex-wrap">
+            <div>
+              <div className="text-sm font-semibold flex items-center gap-2">
+                <Wand2 size={15} /> Auto-classify genres
+              </div>
+              <div className="text-xs text-foreground/50 mt-0.5">
+                Runs AI genre detection on existing tracks that still need one.
+              </div>
+            </div>
+            <button
+              onClick={classifyAll}
+              disabled={classifyBusy}
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-foreground text-background text-sm font-semibold disabled:opacity-50 active:scale-95 transition"
+            >
+              {classifyBusy ? <Loader2 size={15} className="animate-spin" /> : <Wand2 size={15} />}
+              {classifyBusy ? "Classifying…" : "Classify all"}
+            </button>
+          </div>
+          {classifyInfo && (
+            <div className="text-xs text-foreground/50 mt-2">
+              {classifyBusy
+                ? `Classified ${classifyInfo.total} so far…`
+                : classifyInfo.total
+                  ? `Done — ${classifyInfo.total} track${classifyInfo.total !== 1 ? "s" : ""} updated.`
+                  : "Nothing to do — all tracks already have a genre."}
+            </div>
+          )}
         </div>
       )}
 
