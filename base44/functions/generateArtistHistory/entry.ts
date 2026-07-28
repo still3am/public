@@ -53,7 +53,8 @@ export default async function(req) {
       return Response.json({ error: "Couldn't generate a history for this artist" }, { status: 422 });
     }
 
-    await base44.asServiceRole.entities.Artist.update(artistId, {
+    // Use the user-scoped client so Artist RLS enforces ownership/admin rules.
+    await base44.entities.Artist.update(artistId, {
       history_text: history,
       last_updated_by_id: user.id,
     });
