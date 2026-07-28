@@ -311,9 +311,9 @@ export default function TrackDetail() {
               }
               </div>
             }
-            <div className="text-xs text-foreground/40 mb-3 w-full hidden">
-              {track.play_count || 0} plays
-            </div>
+            
+
+            
             {track.description &&
             <p className="text-sm text-foreground/70 leading-relaxed mb-3">
                 {track.description}
