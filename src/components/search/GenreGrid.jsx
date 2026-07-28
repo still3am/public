@@ -29,9 +29,9 @@ export default function GenreGrid({ genres, onPick }) {
   if (!genres.length) return null;
   return (
     <div>
-      <h3 className="text-sm font-bold uppercase tracking-wide text-foreground/60 mb-3 px-1 hidden">
-        Browse Genres
-      </h3>
+      
+
+      
       <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
         {genres.map((g) =>
         <GenreCard
