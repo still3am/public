@@ -55,7 +55,7 @@ function SectionTitle({ icon: Icon, children, right }) {
   return (
     <div className="flex items-center justify-between gap-3 mb-3">
       <h2 className="text-base md:text-lg font-extrabold tracking-tight flex items-center gap-2">
-        
+        <Icon size={17} className="text-foreground/60 hidden" />
         {children}
       </h2>
       {right}
@@ -241,9 +241,6 @@ export default function PublicRecords({ id: propId }) {
         <section className="mb-8">
           <SectionTitle icon={Sparkles}>
             History
-            <span className="text-[10px] font-bold uppercase tracking-wider text-foreground/40 bg-foreground/[0.05] rounded-full px-2 py-0.5 ml-1">
-              AI
-            </span>
           </SectionTitle>
           <div className="rounded-2xl border border-border bg-gradient-to-br from-foreground/[0.04] to-transparent p-5 md:p-6">
             {artist.history_text ?
