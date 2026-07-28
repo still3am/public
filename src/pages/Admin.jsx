@@ -26,9 +26,9 @@ export default function Admin() {
           
           <ArrowLeft size={22} />
         </button>
-        <div className="w-9 h-9 rounded-xl bg-foreground text-background flex items-center justify-center shrink-0 hidden">
-          <Shield size={18} />
-        </div>
+        
+
+        
         <div className="min-w-0">
           <h1 className="text-lg font-extrabold tracking-tight leading-tight">Admin Console</h1>
           <p className="text-xs text-foreground/50 truncate">Reports, suggestions & library tools</p>
