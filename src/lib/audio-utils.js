@@ -8,6 +8,29 @@ export const GENRES = [
   "Drum & Bass", "Trance", "Disco", "Synthwave", "Vaporwave",
   "Jersey Club", "Bossa Nova", "Gospel", "Chill", "Garage", "Hardcore",
   "Bedroom Pop", "Pop Punk", "Worship",
+  // Drill family
+  "Sexy Drill", "UK Drill", "Brooklyn Drill", "Chicago Drill", "NY Drill",
+  "Arabic Drill", "Afro Drill",
+  // African
+  "Gengetone", "Alté", "Gqom", "3-Step", "Singeli", "Bongo Flava",
+  "Maskandi", "Afrosoul",
+  // Latin
+  "Baile Funk", "Funk Carioca", "Cumbia", "Bachata", "Merengue", "Salsa",
+  "Sertanejo", "Forró", "Tango", "Bolero", "Mariachi", "Ranchera",
+  "Latin Pop", "Latin Trap", "Urbano",
+  // Asian
+  "City Pop", "C-Pop", "T-Pop", "Mandopop", "Pinoy Pop", "Punjabi",
+  "Tamil", "Bhangra", "Dangdut",
+  // Rock / alt
+  "Dream Pop", "Shoegaze", "Post-Punk", "Emo", "Ska", "Grunge",
+  "J-Rock", "K-Rock",
+  // Hip-Hop / R&B
+  "Neo-Soul", "Crunk", "Memphis Rap", "Cloud Rap", "Trap Metal",
+  "Slowed & Reverb", "Sped Up",
+  // Caribbean / diaspora
+  "Zouk", "Kompa", "Kizomba",
+  // Regional vocal
+  "Fado", "Arabic Pop", "Persian Pop", "Turkish Pop",
 ];
 
 export const AUDIO_ACCEPT =
