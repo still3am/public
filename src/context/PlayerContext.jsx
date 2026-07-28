@@ -41,6 +41,14 @@ export function PlayerProvider({ children }) {
   const sleepTimerRef = useRef(null);
   const [sleepTimerEndsAt, setSleepTimerEndsAt] = useState(null);
 
+  // Mirror of queue + a load guard, so the "ended" handler can extend the
+  // queue with more same-genre tracks without racing itself.
+  const queueRef = useRef([]);
+  useEffect(() => {
+    queueRef.current = queue;
+  }, [queue]);
+  const autoQueueLoadingRef = useRef(false);
+
   const currentTrack =
     currentIndex >= 0 && currentIndex < queue.length ? queue[currentIndex] : null;
 
@@ -210,7 +218,7 @@ export function PlayerProvider({ children }) {
   }, [queue, currentIndex, shuffle, repeat]);
 
   useEffect(() => {
-    handleEndedRef.current = () => {
+    handleEndedRef.current = async () => {
       if (repeat === "one") {
         const a = audioRef.current;
         if (a) {
@@ -220,13 +228,18 @@ export function PlayerProvider({ children }) {
         return;
       }
       const n = nextIndex();
-      if (n === -1) {
-        setIsPlaying(false);
+      if (n !== -1) {
+        setCurrentIndex(n);
         return;
       }
-      setCurrentIndex(n);
+      // Queue exhausted — keep the vibe going by queuing more of the same genre.
+      if (repeat === "off" && currentTrack?.genre) {
+        const ok = await extendWithGenreRadio(currentTrack);
+        if (ok) return;
+      }
+      setIsPlaying(false);
     };
-  }, [repeat, nextIndex]);
+  }, [repeat, nextIndex, currentTrack, extendWithGenreRadio]);
 
   const playTrackAt = useCallback((tracks, index = 0) => {
     if (!tracks || !tracks.length) return;
@@ -308,6 +321,32 @@ export function PlayerProvider({ children }) {
 
   const addManyToQueue = useCallback((tracks) => {
     setQueue((prev) => [...prev, ...tracks]);
+  }, []);
+
+  // Genre radio: when the queue would otherwise stop, append more published
+  // tracks in the same genre (newest first, excluding anything already queued)
+  // and jump to the first one so listening keeps going automatically.
+  const extendWithGenreRadio = useCallback(async (track) => {
+    if (!track?.genre || !track?.id || autoQueueLoadingRef.current) return false;
+    autoQueueLoadingRef.current = true;
+    try {
+      const tracks = await base44.entities.Track.filter(
+        { is_published: true, genre: track.genre },
+        "-created_date",
+        30
+      ).catch(() => []);
+      if (!tracks || !tracks.length) return false;
+      const existing = new Set(queueRef.current.map((t) => t.id));
+      existing.add(track.id);
+      const picks = tracks.filter((t) => !existing.has(t.id)).slice(0, 15);
+      if (!picks.length) return false;
+      const start = queueRef.current.length;
+      setQueue((prev) => [...prev, ...picks]);
+      setCurrentIndex(start);
+      return true;
+    } finally {
+      autoQueueLoadingRef.current = false;
+    }
   }, []);
 
   const removeFromQueue = useCallback((index) => {
