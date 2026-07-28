@@ -22,8 +22,8 @@ const QUICK_GENRES = ["Hip-Hop", "Electronic", "Ambient", "Lo-Fi", "R&B", "Pop",
 
 function ArtistRow({ artist, trackCount, onPick }) {
   return (
-    <button
-      onClick={onPick}
+    <Link
+      to={`/records/${artist.id}`}
       className="w-full flex items-center gap-4 p-2.5 rounded-xl hover:bg-foreground/[0.03] transition text-left group">
       <div className="w-12 h-12 rounded-full bg-foreground/[0.06] grid place-items-center overflow-hidden shrink-0 ring-1 ring-foreground/10">
         {artist.avatar_url ?
@@ -45,7 +45,7 @@ function ArtistRow({ artist, trackCount, onPick }) {
       <span className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full bg-foreground/[0.05] text-foreground/60 text-xs font-semibold shrink-0 group-hover:bg-foreground group-hover:text-background transition-all">
         Browse <Disc3 size={13} />
       </span>
-    </button>);
+    </Link>);
 
 }
 

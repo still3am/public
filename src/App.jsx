@@ -21,6 +21,7 @@ import RecentlyAdded from '@/pages/RecentlyAdded';
 import Notifications from '@/pages/Notifications';
 import Profile from '@/pages/Profile';
 import TrackDetail from '@/pages/TrackDetail';
+import PublicRecords from '@/pages/PublicRecords';
 import Suggestions from '@/pages/Suggestions';
 import Upload from '@/pages/Upload';
 import Library from '@/pages/Library';
@@ -65,6 +66,7 @@ const AuthenticatedApp = () => {
           <Route path="/profile" element={<Profile />} />
           <Route path="/profile/:id" element={<Profile />} />
           <Route path="/track/:id" element={<TrackDetail />} />
+          <Route path="/records/:id" element={<PublicRecords />} />
           <Route path="/suggestions" element={<Suggestions />} />
           <Route path="/upload" element={<Upload />} />
           <Route path="/library" element={<Library />} />

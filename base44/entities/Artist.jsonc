@@ -58,6 +58,11 @@
       "type": "string",
       "default": ""
     },
+    "history_text": {
+      "type": "string",
+      "default": "",
+      "description": "AI-generated encyclopedia-style history for the Public Records wiki page"
+    },
     "last_updated_by_id": {
       "type": "string",
       "default": ""
