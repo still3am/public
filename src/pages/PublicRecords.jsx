@@ -201,18 +201,18 @@ export default function PublicRecords({ id: propId }) {
           </div>
 
           <div className="relative px-5 md:px-10 pb-6 md:pb-8 flex flex-col md:flex-row gap-4 md:gap-6 items-center md:items-end text-center md:text-left -mt-16 md:-mt-20">
-            <div className="w-32 h-32 md:w-40 md:h-40 rounded-2xl overflow-hidden bg-card ring-4 ring-background shadow-xl grid place-items-center shrink-0 hidden">
-              {artist.avatar_url ?
-              <Image src={artist.avatar_url} alt="" fittingType="fill" className="w-full h-full" /> :
+            
 
-              <Mic2 size={36} className="text-foreground/35" />
-              }
-            </div>
+
+
+
+
+            
 
             <div className="flex-1 min-w-0">
-              <span className="inline-flex items-center gap-1.5 text-[10px] uppercase tracking-[0.22em] text-foreground/55 font-bold mb-2 bg-foreground/[0.06] rounded-full px-2.5 py-1 hidden">
-                <Sparkles size={11} /> Public Records
-              </span>
+              
+
+              
               <h1 className="text-3xl md:text-5xl font-extrabold tracking-tighter leading-[1.02] break-words">
                 {artist.name}
               </h1>
