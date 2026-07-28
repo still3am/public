@@ -5,7 +5,6 @@ import { useAuth } from "@/lib/AuthContext";
 import { usePlayer } from "@/context/PlayerContext";
 import EmptyState from "@/components/EmptyState";
 import EditTrackModal from "@/components/EditTrackModal";
-import AddToAlbumModal from "@/components/AddToAlbumModal";
 import BackHeader from "@/components/BackHeader";
 import {
   Loader2,
@@ -16,7 +15,6 @@ import {
   Pencil,
   Music2,
   Share2,
-  Disc,
   Music,
   Plus,
   Trash2 } from
@@ -35,8 +33,6 @@ export default function TrackDetail() {
   const [uploader, setUploader] = useState(null);
   const [reporting, setReporting] = useState(false);
   const [editing, setEditing] = useState(false);
-  const [addToAlbum, setAddToAlbum] = useState(false);
-  const [album, setAlbum] = useState(null);
   const [moreTracks, setMoreTracks] = useState([]);
   const [copied, setCopied] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -53,14 +49,6 @@ export default function TrackDetail() {
         get(t.uploader_id).
         catch(() => null);
         setUploader(u);
-      }
-      if (t?.album_id) {
-        base44.entities.Album.
-        get(t.album_id).
-        then(setAlbum).
-        catch(() => setAlbum(null));
-      } else {
-        setAlbum(null);
       }
       if (t?.artist) {
         const splitNames = (str) =>
@@ -150,38 +138,10 @@ export default function TrackDetail() {
   const isCurrent = p.currentTrack?.id === track.id;
   const isOwner = track.uploader_id === user?.id;
   const isPlaying = isCurrent && p.isPlaying;
-  const displayArtist = album?.artisan || track.artist || "";
+  const displayArtist = track.artist || "";
 
   const menuItems = [];
 
-  if (isOwner)
-  menuItems.push({
-    icon: Disc,
-    label: "Add to album",
-    onClick: () => {
-      setAddToAlbum(true);
-      setMenuOpen(false);
-    }
-  });
-  if (isOwner && track.album_id)
-  menuItems.push({
-    icon: Disc,
-    label: "Remove from album",
-    onClick: () => {
-      if (!confirm("Remove this track from its album?")) {
-        setMenuOpen(false);
-        return;
-      }
-      base44.entities.Track.
-      update(track.id, { album_id: "", track_number: 0 }).
-      then(() => {
-        setTrack((prev) => ({ ...prev, album_id: "" }));
-        setAlbum(null);
-        setMenuOpen(false);
-      }).
-      catch(() => alert("Could not update the track. Try again later."));
-    }
-  });
   menuItems.push({
     icon: cache.downloading[track.id] ? Loader2 : cache.isCached(track.id) ? Trash2 : Download,
     label: cache.downloading[track.id]
@@ -238,10 +198,10 @@ export default function TrackDetail() {
 
       {/* Hero */}
       <div className="relative rounded-3xl overflow-hidden border border-border mb-6 md:mb-8">
-        {(track.cover_art_url || album?.cover_art_url) &&
+        {track.cover_art_url &&
         <div className="absolute inset-0">
             <img
-            src={track.cover_art_url || album.cover_art_url}
+            src={track.cover_art_url}
             alt=""
             className="w-full h-full object-cover blur-2xl scale-125 opacity-30" />
           
@@ -250,9 +210,9 @@ export default function TrackDetail() {
         }
         <div className="relative p-6 md:p-10 flex flex-col md:flex-row gap-5 md:gap-8">
           <div className="w-40 h-40 md:w-52 md:h-52 rounded-2xl overflow-hidden bg-foreground/10 shrink-0 shadow-lg ring-1 ring-foreground/10">
-            {(track.cover_art_url || album?.cover_art_url) &&
+            {track.cover_art_url &&
             <img
-              src={track.cover_art_url || album.cover_art_url}
+              src={track.cover_art_url}
               alt=""
               className="w-full h-full object-cover" />
             }
@@ -390,30 +350,6 @@ export default function TrackDetail() {
         </div>
       }
 
-      {album &&
-      <Link
-        to={`/album/${album.id}`}
-        className="flex items-center gap-3 p-3 rounded-xl bg-foreground/[0.03] hover:bg-foreground/[0.06] transition mb-6">
-        
-          <div className="w-12 h-12 rounded-lg overflow-hidden bg-foreground/10 grid place-items-center text-foreground/40 shrink-0">
-            {album.cover_art_url ?
-          <img src={album.cover_art_url} alt="" className="w-full h-full object-cover" /> :
-
-          <Disc size={20} />
-          }
-          </div>
-          <div className="min-w-0">
-            <div className="text-xs uppercase tracking-wider text-foreground/50 font-semibold mb-0.5">
-              Part of album
-            </div>
-            <div className="text-sm font-semibold truncate">{album.title}</div>
-            {album.artisan &&
-              <div className="text-xs text-foreground/50 truncate">by {album.artisan}</div>
-            }
-          </div>
-        </Link>
-      }
-
       {moreTracks.length > 0 &&
       <div className="mb-6">
           <h2 className="text-lg font-extrabold tracking-tight mb-3 flex items-center gap-2">
@@ -424,9 +360,7 @@ export default function TrackDetail() {
           <TrackRow
             key={t.id}
             track={t}
-            index={i}
-            albumArtist={album?.artisan || track.artist}
-            albumCover={album?.cover_art_url || track.cover_art_url} />
+            index={i} />
 
           )}
           </div>
@@ -439,22 +373,6 @@ export default function TrackDetail() {
         onClose={() => setEditing(false)}
         onSaved={(updated) => setTrack((prev) => ({ ...prev, ...updated }))}
         onDeleted={() => nav("/profile", { replace: true })} />
-
-      }
-      {addToAlbum &&
-      <AddToAlbumModal
-        trackId={track.id}
-        currentAlbumId={track.album_id}
-        onClose={() => setAddToAlbum(false)}
-        onAdded={(alb) => {
-          setAlbum(alb);
-          setTrack((prev) => prev ? {
-            ...prev,
-            album_id: alb.id,
-            artist: prev.artist || alb.artisan || "",
-            cover_art_url: prev.cover_art_url || alb.cover_art_url || ""
-          } : prev);
-        }} />
 
       }
     </div>);

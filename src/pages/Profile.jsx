@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link, useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import { useAuth } from "@/lib/AuthContext";
 import { usePlayer } from "@/context/PlayerContext";
@@ -29,8 +29,7 @@ import {
   QrCode,
   Play,
   BarChart2,
-  Trash2,
-  Disc } from
+  Trash2 } from
 "lucide-react";
 
 function safeUrl(u) {
@@ -55,7 +54,6 @@ export default function Profile() {
   const [loading, setLoading] = useState(true);
   const [tracks, setTracks] = useState([]);
   const [topTracks, setTopTracks] = useState([]);
-  const [albums, setAlbums] = useState([]);
   const [following, setFollowing] = useState(false);
   const [stats, setStats] = useState({ followers: 0, following: 0, plays: 0, likes: 0 });
   const [editMode, setEditMode] = useState(false);
@@ -104,9 +102,8 @@ export default function Profile() {
         soundcloud: prof.soundcloud || ""
       });
       const trackFilter = { uploader_id: targetId, is_published: true };
-      const [t, al, followsToMe, followsFromMe, relToUser] = await Promise.all([
+      const [t, followsToMe, followsFromMe, relToUser] = await Promise.all([
       base44.entities.Track.filter(trackFilter, "-created_date", 100),
-      base44.entities.Album.filter({ creator_id: targetId }, "-created_date", 50),
       base44.entities.Follow.filter({ following_id: targetId }, "-created_date", 1000),
       base44.entities.Follow.filter({ follower_id: targetId }, "-created_date", 1000),
       !isOwn ?
@@ -121,7 +118,6 @@ export default function Profile() {
       setTopTracks(
         [...t].sort((a, b) => (b.play_count || 0) - (a.play_count || 0)).slice(0, 5)
       );
-      setAlbums(al);
       setStats({
         followers: followsToMe.length,
         following: followsFromMe.length,
@@ -284,7 +280,7 @@ export default function Profile() {
   const displayName = profile.display_name || profile.full_name || "Unnamed";
   const banner = editMode ? form.banner_url : profile.banner_url;
   const avatarUrl = editMode ? form.avatar_url : profile.avatar_url;
-  const standaloneTracks = tracks.filter((t) => !t.album_id);
+  const standaloneTracks = tracks;
 
   return (
     <PullToRefresh onRefresh={load}>
@@ -561,50 +557,17 @@ export default function Profile() {
         </div>
         }
 
-      {albums.length > 0 &&
-        <>
-          <h2 className="text-lg font-extrabold tracking-tight mb-3 flex items-center gap-2">
-            <Disc size={18} /> Albums
-          </h2>
-          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-3 md:gap-4 mb-10">
-            {albums.map((a) =>
-            <Link
-              key={a.id}
-              to={`/album/${a.id}`}
-              className="rounded-xl p-3 hover:bg-foreground/[0.03] transition">
-            
-                <div className="aspect-square rounded-lg overflow-hidden bg-foreground/10 mb-3 grid place-items-center text-foreground/40">
-                  {a.cover_art_url ?
-                <img src={a.cover_art_url} alt="" className="w-full h-full object-cover" /> :
 
-                <Disc size={28} />
-                }
-                </div>
-                <div className="font-semibold truncate text-sm">{a.title}</div>
-                <div className="text-xs text-foreground/50 truncate">
-                  {a.artisan || a.genre || "Album"}
-                </div>
-              </Link>
-            )}
-          </div>
-        </>
-        }
 
-      <h2 className="text-lg font-extrabold tracking-tight mb-3 flex items-center gap-2">
-        <Music size={18} /> Tracks
-      </h2>
-      {standaloneTracks.length === 0 && albums.length === 0 ?
+            <h2 className="text-lg font-extrabold tracking-tight mb-3 flex items-center gap-2">
+              <Music size={18} /> Tracks
+            </h2>
+      {standaloneTracks.length === 0 ?
         <EmptyState
           icon={Music}
           title={isOwn ? "You haven't uploaded anything" : "No uploads yet"}
           description={isOwn ? "Share your first track with the PUBLIC network." : ""}
           /> :
-
-        standaloneTracks.length === 0 && albums.length > 0 ?
-        <p className="text-sm text-foreground/50 mb-10">
-          All uploads are part of the albums above.
-        </p> :
-
         <div className="space-y-0.5 mb-10">
           {standaloneTracks.map((t, i) =>
           <TrackRow

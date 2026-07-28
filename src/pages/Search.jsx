@@ -3,7 +3,6 @@ import { Link } from "react-router-dom";
 import {
   Search as SearchIcon,
   Loader2,
-  Disc,
   Music,
   Shield,
   X } from
@@ -14,8 +13,7 @@ import PullToRefresh from "@/components/PullToRefresh";
 import PageHeader from "@/components/PageHeader";
 
 const TABS = [
-  { id: "tracks", label: "Tracks", icon: Music },
-  { id: "albums", label: "Albums", icon: Disc }
+  { id: "tracks", label: "Tracks", icon: Music }
 ];
 
 
@@ -25,22 +23,18 @@ export default function Search() {
   const [tab, setTab] = useState("tracks");
   const [data, setData] = useState({
     tracks: [],
-    albums: [],
     people: []
   });
   const [loading, setLoading] = useState(false);
 
   async function runSearch(query) {
     if (!query.trim()) {
-      setData({ tracks: [], albums: [], people: [] });
+      setData({ tracks: [], people: [] });
       return;
     }
     setLoading(true);
     try {
-      const [tracks, albums] = await Promise.all([
-        base44.entities.Track.list("-created_date", 200),
-        base44.entities.Album.list("-created_date", 200)
-      ]);
+      const tracks = await base44.entities.Track.list("-created_date", 200);
       const Q = query.trim().toLowerCase();
       const filtered = {
         tracks: tracks.filter(
@@ -49,11 +43,6 @@ export default function Search() {
               t.title?.toLowerCase().includes(Q) ||
               t.artist?.toLowerCase().includes(Q) ||
               t.uploader_name?.toLowerCase().includes(Q))
-        ),
-        albums: albums.filter(
-          (a) =>
-            a.title?.toLowerCase().includes(Q) ||
-            a.artisan?.toLowerCase().includes(Q)
         ),
         people: []
       };
@@ -77,7 +66,7 @@ export default function Search() {
   return (
     <PullToRefresh onRefresh={() => runSearch(q)}>
     <div>
-      <PageHeader eyebrow="Find" title="Search" subtitle="Find tracks, albums, and people across the PUBLIC network." />
+      <PageHeader eyebrow="Find" title="Search" subtitle="Find tracks and people across the PUBLIC network." />
       <div className="relative mb-6">
         <SearchIcon
           size={18}
@@ -86,7 +75,7 @@ export default function Search() {
           autoFocus
           value={q}
           onChange={(e) => setQ(e.target.value)}
-          placeholder="Search tracks, albums…"
+          placeholder="Search tracks…"
           className="w-full pl-11 pr-11 py-3.5 rounded-full border border-border bg-background text-sm font-medium focus:outline-none focus:ring-2 focus:ring-foreground/10" />
         {q.trim() && (
           <button
@@ -125,7 +114,7 @@ export default function Search() {
         <p className="text-sm text-foreground/50 text-center py-16">
           Start typing to search across the PUBLIC network.
         </p> :
-        loading && !data.tracks.length && !data.albums.length && !data.people.length ?
+        loading && !data.tracks.length && !data.people.length ?
         <div className="py-16 text-center">
           <Loader2 className="animate-spin inline" />
         </div> :
@@ -142,31 +131,6 @@ export default function Search() {
             </div> :
             <p className="text-sm text-foreground/50 text-center py-12">
               No tracks found.
-            </p>)
-          }
-          {tab === "albums" && (
-            data.albums.length ?
-            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-3 md:gap-4">
-              {data.albums.map((a) =>
-                <Link
-                  key={a.id}
-                  to={`/album/${a.id}`}
-                  className="group rounded-xl p-3 hover:bg-foreground/[0.03] transition">
-                  <div className="aspect-square rounded-lg overflow-hidden bg-foreground/10 mb-3">
-                    {a.cover_art_url &&
-                      <img
-                        src={a.cover_art_url}
-                        alt=""
-                        className="w-full h-full object-cover group-hover:scale-[1.03] transition" />
-                    }
-                  </div>
-                  <div className="font-semibold truncate text-sm">{a.title}</div>
-                  <div className="text-xs text-foreground/50 truncate">Album</div>
-                </Link>
-              )}
-            </div> :
-            <p className="text-sm text-foreground/50 text-center py-12">
-              No albums found.
             </p>)
           }
           {tab === "people" &&

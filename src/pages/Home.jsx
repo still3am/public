@@ -89,7 +89,6 @@ export default function Home() {
   const [byGenre, setByGenre] = useState([]);
   const [fromFollowing, setFromFollowing] = useState([]);
   const [recentlyPlayed, setRecentlyPlayed] = useState([]);
-  const [albums, setAlbums] = useState([]);
   const [totalTracks, setTotalTracks] = useState(0);
   const greeting = greetingByHour();
 
@@ -122,18 +121,16 @@ export default function Home() {
   async function load() {
     setLoading(true);
     try {
-      const [t, n, fols, al] = await Promise.all([
+      const [t, n, fols] = await Promise.all([
       base44.entities.Track.filter({ is_published: true }, "-play_count", 12),
       base44.entities.Track.filter({ is_published: true }, "-created_date", 50),
       user?.id ?
       base44.entities.Follow.filter({ follower_id: user.id }, "-created_date", 200).catch(() => []) :
-      Promise.resolve([]),
-      base44.entities.Album.list("-created_date", 20).catch(() => [])]
+      Promise.resolve([])]
       );
       const followed = new Set((Array.isArray(fols) ? fols : []).map((f) => f.following_id));
       setTrending(t);
       setNewReleases(n.slice(0, 12));
-      setAlbums(Array.isArray(al) ? al : []);
       setFromFollowing(n.filter((tk) => followed.has(tk.uploader_id)).slice(0, 12));
       const counted = await base44.entities.Track.filter({ is_published: true }, "-created_date", 1000).catch(() => []);
       setTotalTracks(Array.isArray(counted) ? counted.length : 0);
@@ -246,29 +243,6 @@ export default function Home() {
         <Section title="New Releases" seeAllTo="/recent">
           <CardRow tracks={newReleases} />
         </Section>
-
-        {albums.length > 0 &&
-        <Section title="Albums" icon={Disc}>
-            <div className="flex gap-3 overflow-x-auto no-scrollbar pb-2 -mx-3 px-3 snap-x snap-mandatory md:grid md:grid-cols-4 lg:grid-cols-5 md:overflow-visible md:mx-0 md:px-0 md:gap-4">
-              {albums.map((a) =>
-            <Link
-              key={a.id}
-              to={`/album/${a.id}`}
-              className="group snap-start shrink-0 w-[60vw] max-w-[210px] sm:w-[200px] md:w-auto rounded-xl p-3 hover:bg-foreground/[0.03] transition">
-                  <div className="relative aspect-square rounded-lg overflow-hidden bg-foreground/10 mb-3 grid place-items-center text-foreground/40">
-                    {a.cover_art_url ?
-                <img src={a.cover_art_url} alt="" className="w-full h-full object-cover group-hover:scale-[1.03] transition" /> :
-
-                <Disc size={28} />
-                }
-                  </div>
-                  <div className="font-semibold truncate text-sm">{a.title}</div>
-                  <div className="text-xs text-foreground/50 truncate">{a.artisan || a.genre || "Album"}</div>
-                </Link>
-            )}
-            </div>
-          </Section>
-        }
 
         {recentlyPlayed.length > 0 &&
         <Section title="Recently Played">
