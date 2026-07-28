@@ -27,7 +27,6 @@ import Suggestions from '@/pages/Suggestions';
 import Upload from '@/pages/Upload';
 import Library from '@/pages/Library';
 import Admin from '@/pages/Admin';
-import GenreBrowse from '@/pages/GenreBrowse';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -75,7 +74,6 @@ const AuthenticatedApp = () => {
           <Route path="/upload" element={<Upload />} />
           <Route path="/library" element={<Library />} />
           <Route path="/admin" element={<Admin />} />
-          <Route path="/genre/:genre" element={<GenreBrowse />} />
         </Route>
       </Route>
       <Route path="*" element={<PageNotFound />} />

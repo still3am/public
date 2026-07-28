@@ -29,44 +29,44 @@ export default function GenreTool() {
     }
   }
 
-  return null;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+  return (
+    <div className="rounded-2xl border border-border bg-card p-4">
+      <div className="flex items-center justify-between gap-3 flex-wrap">
+        <div>
+          <div className="text-sm font-semibold flex items-center gap-2">
+            <Wand2 size={15} /> Auto-classify genres
+          </div>
+          <div className="text-xs text-foreground/50 mt-0.5">
+            Runs AI genre detection on tracks still lacking a genre.
+          </div>
+        </div>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => run(true)}
+            disabled={busy}
+            className="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-2 rounded-full border border-border hover:bg-foreground/5 disabled:opacity-50 transition"
+          >
+            Re-classify all
+          </button>
+          <button
+            onClick={() => run(false)}
+            disabled={busy}
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-foreground text-background text-sm font-semibold disabled:opacity-50 active:scale-95 transition"
+          >
+            {busy ? <Loader2 size={15} className="animate-spin" /> : <Wand2 size={15} />}
+            {busy ? "Classifying…" : "Classify pending"}
+          </button>
+        </div>
+      </div>
+      {info && (
+        <div className="text-xs text-foreground/50 mt-2">
+          {busy
+            ? `Classified ${info.total} so far…`
+            : info.total
+              ? `Done — ${info.total} track${info.total !== 1 ? "s" : ""} updated.`
+              : "Nothing to do — all tracks already have a genre."}
+        </div>
+      )}
+    </div>
+  );
 }
