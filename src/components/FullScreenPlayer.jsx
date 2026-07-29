@@ -215,8 +215,8 @@ export default function FullScreenPlayer({ onClose }) {
           onToggleLibrary={() => toggleLibrary(t)}
           inLibrary={isInLibrary(t.id)}
           onViewQueue={() => setShowQueue(true)}
-          queueCount={p.queue.length - p.currentIndex - 1 > 0 ? p.queue.length - p.currentIndex - 1 : 0}
-        />
+          queueCount={p.queue.length - p.currentIndex - 1 > 0 ? p.queue.length - p.currentIndex - 1 : 0} />
+        
       </div>
 
       {/* body */}
@@ -370,7 +370,7 @@ export default function FullScreenPlayer({ onClose }) {
 
         {/* RIGHT (desktop): lyrics panel */}
         <div className="hidden xl:flex flex-col min-h-0 w-[440px] 2xl:w-[480px] shrink-0 bg-white/[0.06] ring-1 ring-white/10 rounded-[2rem] overflow-hidden">
-          <div className="flex items-center justify-center gap-8 px-6 pt-6 pb-3 shrink-0">
+          <div className="flex items-center justify-center gap-8 px-6 pt-6 pb-3 shrink-0 hidden">
             <button
               onClick={() => setLyricsMode(true)}
               className={`text-xs uppercase tracking-widest font-semibold transition ${
