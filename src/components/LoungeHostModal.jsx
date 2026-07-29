@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
-import { Users, Check, X, Loader2, Speaker, Power, Copy } from "lucide-react";
+import { Users, Check, X, Loader2, Speaker, Power, Copy, ScanLine } from "lucide-react";
 import { loungeUrl, qrImageUrl } from "@/lib/lounge";
+import QRScannerModal from "@/components/QRScannerModal";
 
 export default function LoungeHostModal({ lounge, onClose }) {
   const { session, members, loading, ensureSession, approve, reject, endSession } = lounge;
   const [copied, setCopied] = useState(false);
+  const [scanning, setScanning] = useState(false);
 
   useEffect(() => {
     ensureSession();
@@ -136,6 +138,13 @@ export default function LoungeHostModal({ lounge, onClose }) {
         )}
 
         <button
+          onClick={() => setScanning(true)}
+          className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-2xl border border-border text-sm font-semibold mb-3"
+        >
+          <ScanLine size={15} /> Scan to join a lounge
+        </button>
+
+        <button
           onClick={async () => {
             await endSession();
             onClose();
@@ -145,6 +154,7 @@ export default function LoungeHostModal({ lounge, onClose }) {
           <Power size={15} /> End lounge
         </button>
       </div>
+      {scanning && <QRScannerModal onClose={() => setScanning(false)} />}
     </div>
   );
 }
