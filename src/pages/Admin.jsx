@@ -4,6 +4,7 @@ import { Shield, ArrowLeft } from "lucide-react";
 import GenreTool from "@/components/admin/GenreTool";
 import ReportsManager from "@/components/admin/ReportsManager";
 import SuggestionsManager from "@/components/admin/SuggestionsManager";
+import ApprovalsManager from "@/components/admin/ApprovalsManager";
 
 export default function Admin() {
   const { user } = useAuth();
@@ -36,6 +37,7 @@ export default function Admin() {
       </div>
 
       <div className="space-y-4">
+        <ApprovalsManager />
         <GenreTool />
         <ReportsManager />
         <SuggestionsManager />

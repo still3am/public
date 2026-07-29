@@ -15,6 +15,7 @@ import BackHeader from "@/components/BackHeader";
 import FileDropZone from "@/components/upload/FileDropZone";
 import UploadItem from "@/components/upload/UploadItem";
 import DuplicateModal from "@/components/upload/DuplicateModal";
+import { useLibrary } from "@/context/LibraryContext";
 import { UploadCloud, Loader2, Plus, CheckCheck, Wand2 } from "lucide-react";
 
 let idc = 0;
@@ -22,6 +23,7 @@ let idc = 0;
 export default function Upload() {
   const { user } = useAuth();
   const { toast } = useToast();
+  const { refresh: refreshLibrary } = useLibrary();
   const [items, setItems] = useState([]);
   const [busy, setBusy] = useState(false);
   const [progress, setProgress] = useState({ done: 0, total: 0 });
@@ -86,7 +88,7 @@ export default function Upload() {
           coverFile: cover || null,
           coverPreviewUrl: cover ? URL.createObjectURL(cover) : "",
           explicit: false,
-          is_published: true,
+          is_published: false,
           rights_confirmed: false,
           status: "editing",
           error: "",
@@ -147,6 +149,12 @@ export default function Upload() {
       updateItem(item.id, { error: "Pick a genre" });
       return false;
     }
+    // To be released on PUBLIC, a track must have a cover image, a genre, and an artist name.
+    // Anything missing is saved to the uploader's own library only (never public).
+    const meetsRules =
+      !!(item.coverFile || item.coverPreviewUrl) &&
+      !!item.artist.trim() &&
+      !!item.genre;
     updateItem(item.id, { status: "uploading", error: "" });
     try {
       const audioRes = await base44.integrations.Core.UploadFile({
@@ -171,8 +179,19 @@ export default function Upload() {
         duration_seconds: item.duration || 0,
         explicit: item.explicit,
         rights_confirmed: true,
-        is_published: item.is_published,
+        is_published: false,
+        approval_status: meetsRules ? "pending" : "private",
       });
+
+      // Always keep a copy in the uploader's library so they can find/play it
+      // while it awaits approval or as a private library-only track.
+      try {
+        await base44.entities.LibraryItem.create({
+          user_id: user.id,
+          track_id: created.id,
+        });
+        refreshLibrary();
+      } catch {}
 
       if (item.aiGenre || item.aiLyrics) {
         updateItem(item.id, { status: "enhancing" });
@@ -250,7 +269,7 @@ export default function Upload() {
               {doneCount > 0 && (
                 <span className="text-foreground/40 font-normal">
                   {" "}
-                  · {doneCount} published
+                  · {doneCount} uploaded
                 </span>
               )}
             </div>
@@ -260,7 +279,7 @@ export default function Upload() {
                   onClick={clearDone}
                   className="text-xs font-medium text-foreground/50 hover:text-foreground px-2 py-1.5 rounded-full hover:bg-foreground/5 transition"
                 >
-                  Clear published
+                  Clear uploaded
                 </button>
               )}
               <button

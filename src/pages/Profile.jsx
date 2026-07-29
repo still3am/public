@@ -101,7 +101,10 @@ export default function Profile() {
         twitter: prof.twitter || "",
         soundcloud: prof.soundcloud || ""
       });
-      const trackFilter = { uploader_id: targetId, is_published: true };
+      // Owners see all their own tracks (pending/private/approved); others only see approved ones.
+      const trackFilter = isOwn
+        ? { uploader_id: targetId }
+        : { uploader_id: targetId, is_published: true };
       const [t, followsToMe, followsFromMe, relToUser] = await Promise.all([
       base44.entities.Track.filter(trackFilter, "-created_date", 100),
       base44.entities.Follow.filter({ following_id: targetId }, "-created_date", 1000),

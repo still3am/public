@@ -184,9 +184,21 @@
       "type": "boolean",
       "default": false
     },
+    "approval_status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "approved",
+        "rejected",
+        "private"
+      ],
+      "default": "pending",
+      "description": "Approval gate: pending = awaiting admin review, approved = live on PUBLIC, rejected = declined, private = library-only (never public)"
+    },
     "is_published": {
       "type": "boolean",
-      "default": true
+      "default": false,
+      "description": "True only once an admin approves the track for public release"
     }
   },
   "required": [

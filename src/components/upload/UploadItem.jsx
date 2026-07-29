@@ -14,7 +14,6 @@ import {
 import GenrePicker from "@/components/GenrePicker";
 import { formatTime } from "@/lib/audio-utils";
 import { Input } from "@/components/ui/input";
-import { Switch } from "@/components/ui/switch";
 import { Checkbox } from "@/components/ui/checkbox";
 
 export default function UploadItem({
@@ -28,6 +27,11 @@ export default function UploadItem({
   const enhancing = item.status === "enhancing";
   const done = item.status === "done";
   const imgInputRef = useRef(null);
+
+  const hasCover = !!(item.coverFile || item.coverPreviewUrl);
+  const hasArtist = !!item.artist.trim();
+  const hasGenre = !!item.genre;
+  const meetsRules = hasCover && hasArtist && hasGenre;
 
   function pickCover(file) {
     if (!file) return;
@@ -135,14 +139,6 @@ export default function UploadItem({
               Explicit
             </label>
             <label className="flex items-center gap-2 text-xs font-medium text-foreground/70">
-              <Switch
-                checked={item.is_published}
-                onCheckedChange={(v) => onChange({ is_published: !!v })}
-                disabled={uploading || done}
-              />
-              Public
-            </label>
-            <label className="flex items-center gap-2 text-xs font-medium text-foreground/70">
               <Checkbox
                 checked={item.aiGenre}
                 onCheckedChange={(v) => onChange({ aiGenre: !!v })}
@@ -160,6 +156,32 @@ export default function UploadItem({
             </label>
           </div>
 
+          {/* Release rules: cover + genre + artist are required to go public. */}
+          <div className="rounded-lg bg-foreground/[0.03] border border-border/60 px-2.5 py-2 space-y-1.5">
+            <div className="flex flex-wrap gap-x-3 gap-y-1">
+              {[
+                { ok: hasCover, label: "Cover image" },
+                { ok: hasGenre, label: "Genre" },
+                { ok: hasArtist, label: "Artist name" },
+              ].map((r) => (
+                <span
+                  key={r.label}
+                  className={`inline-flex items-center gap-1 text-[11px] font-semibold ${
+                    r.ok ? "text-emerald-600 dark:text-emerald-400" : "text-foreground/50"
+                  }`}
+                >
+                  {r.ok ? <Check size={12} /> : <X size={12} />}
+                  {r.label}
+                </span>
+              ))}
+            </div>
+            <p className="text-[11px] text-foreground/55 leading-snug">
+              {meetsRules
+                ? "Eligible for public release — an admin will review before it goes live."
+                : "Saving to your library only. Add a cover image, genre, and artist name to release it on PUBLIC."}
+            </p>
+          </div>
+
           {item.error && (
             <div className="flex items-center gap-1.5 text-xs text-destructive">
               <AlertCircle size={13} /> {item.error}
@@ -168,7 +190,8 @@ export default function UploadItem({
 
           {done && (
             <div className="flex items-center justify-center gap-2 text-xs font-semibold text-emerald-600 dark:text-emerald-400 py-1">
-              <CheckCheck size={14} /> Published to PUBLIC
+              <CheckCheck size={14} />{" "}
+              {meetsRules ? "Submitted for approval" : "Saved to your library"}
             </div>
           )}
           {!done && (
@@ -182,7 +205,13 @@ export default function UploadItem({
               ) : (
                 <UploadCloud size={15} />
               )}
-              {enhancing ? "Enhancing with AI…" : uploading ? "Uploading…" : "Upload track"}
+              {enhancing
+                ? "Enhancing with AI…"
+                : uploading
+                ? "Uploading…"
+                : meetsRules
+                ? "Submit for approval"
+                : "Save to library"}
             </button>
           )}
         </div>
