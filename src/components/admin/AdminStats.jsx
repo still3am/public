@@ -20,19 +20,36 @@ export default function AdminStats() {
   const [s, setS] = useState(null);
 
   useEffect(() => {
-    (async () => {
+    let alive = true;
+
+    async function load() {
       const [users, tracks, pending] = await Promise.all([
         base44.entities.User.list("-created_date", 1000).catch(() => []),
         base44.entities.Track.list("-created_date", 1000).catch(() => []),
         base44.entities.Track.filter({ approval_status: "pending" }, "-created_date", 500).catch(() => []),
       ]);
+      if (!alive) return;
       setS({
         users: users.length,
         tracks: tracks.length,
         plays: tracks.reduce((a, t) => a + (t.play_count || 0), 0),
         pending: pending.length,
       });
-    })();
+    }
+
+    load();
+
+    // live updates: entity events + a slow poll as a safety net
+    const unsubs = [];
+    try { unsubs.push(base44.entities.Track.subscribe(() => load())); } catch {}
+    try { unsubs.push(base44.entities.User.subscribe(() => load())); } catch {}
+    const timer = setInterval(load, 15000);
+
+    return () => {
+      alive = false;
+      clearInterval(timer);
+      unsubs.forEach((u) => u && u());
+    };
   }, []);
 
   const loading = !s;
