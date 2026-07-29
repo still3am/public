@@ -13,7 +13,7 @@ import {
 } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 import TrackRow from "@/components/TrackRow";
-import VinylCrate from "@/components/search/VinylCrate";
+import GenreShelf from "@/components/search/GenreShelf";
 import Avatar from "@/components/Avatar";
 import PullToRefresh from "@/components/PullToRefresh";
 import PageHeader from "@/components/PageHeader";
@@ -284,7 +284,7 @@ export default function Search() {
             )}
           </div>
         ) : loadingAll ? loader : (
-          <VinylCrate genres={genreList} onPick={(g) => setGenre(g)} />
+          <GenreShelf genres={genreList} onPick={(g) => setGenre(g)} />
         )}
       </div>
     </PullToRefresh>
