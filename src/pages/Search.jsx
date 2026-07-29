@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState, useCallback } from "react";
 import { Link } from "react-router-dom";
 import {
   Search as SearchIcon,
@@ -18,6 +18,7 @@ import Avatar from "@/components/Avatar";
 import PullToRefresh from "@/components/PullToRefresh";
 import PageHeader from "@/components/PageHeader";
 import EmptyState from "@/components/EmptyState";
+import { useUnpublishedSync } from "@/hooks/useUnpublishedSync";
 
 function ArtistRow({ artist, trackCount, onPick }) {
   return (
@@ -57,6 +58,11 @@ export default function Search() {
   const [loadingAll, setLoadingAll] = useState(true);
   const [loadingPeople, setLoadingPeople] = useState(false);
   const peopleReqId = useRef(0);
+
+  const onUnpublished = useCallback((id) => {
+    setAllTracks((prev) => prev.filter((t) => t.id !== id));
+  }, []);
+  useUnpublishedSync(onUnpublished);
 
   async function loadCatalogue() {
     setLoadingAll(true);

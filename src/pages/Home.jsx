@@ -1,6 +1,7 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 import { Link } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
+import { useUnpublishedSync } from "@/hooks/useUnpublishedSync";
 import { useAuth } from "@/lib/AuthContext";
 import {
   TrendingUp,
@@ -92,6 +93,15 @@ export default function Home() {
   const [totalTracks, setTotalTracks] = useState(0);
   const loadedRef = useRef(false);
   const greeting = greetingByHour();
+
+  const onUnpublished = useCallback((id) => {
+    setTrending((p) => p.filter((t) => t.id !== id));
+    setNewReleases((p) => p.filter((t) => t.id !== id));
+    setFromFollowing((p) => p.filter((t) => t.id !== id));
+    setByGenre((p) => p.map((s) => ({ ...s, tracks: s.tracks.filter((t) => t.id !== id) })));
+    setTotalTracks((c) => Math.max(0, c - 1));
+  }, []);
+  useUnpublishedSync(onUnpublished);
 
   useEffect(() => {
     const unsub = base44.entities.Track.subscribe((event) => {

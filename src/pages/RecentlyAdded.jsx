@@ -1,6 +1,7 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { base44 } from "@/api/base44Client";
 import TrackRow from "@/components/TrackRow";
+import { useUnpublishedSync } from "@/hooks/useUnpublishedSync";
 import EmptyState from "@/components/EmptyState";
 import { Music, Loader2 } from "lucide-react";
 import PullToRefresh from "@/components/PullToRefresh";
@@ -9,6 +10,11 @@ import PageHeader from "@/components/PageHeader";
 export default function RecentlyAdded() {
   const [tracks, setTracks] = useState([]);
   const [loading, setLoading] = useState(true);
+
+  const onUnpublished = useCallback((id) => {
+    setTracks((prev) => prev.filter((t) => t.id !== id));
+  }, []);
+  useUnpublishedSync(onUnpublished);
 
   async function load() {
     setLoading(true);
