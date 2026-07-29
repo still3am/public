@@ -9,8 +9,8 @@ import {
   Repeat,
   Repeat1,
   Shuffle,
-  ListMusic,
-} from "lucide-react";
+  ListMusic } from
+"lucide-react";
 import { usePlayer } from "@/context/PlayerContext";
 import { Link } from "react-router-dom";
 import { formatTime } from "@/lib/audio-utils";
@@ -49,7 +49,7 @@ export default function PlayerBar() {
 
   if (!p.currentTrack) return null;
   const t = p.currentTrack;
-  const pct = p.duration ? (p.position / p.duration) * 100 : 0;
+  const pct = p.duration ? p.position / p.duration * 100 : 0;
   const remaining = Math.max(0, (p.duration || 0) - (p.position || 0));
   const RepeatIcon = p.repeat === "one" ? Repeat1 : Repeat;
 
@@ -69,28 +69,28 @@ export default function PlayerBar() {
         <div className="h-[3px] w-full bg-foreground/[0.06] relative overflow-hidden">
           <div
             className="absolute left-0 top-0 h-[3px] bg-foreground/80"
-            style={{ width: `${pct}%` }}
-          />
+            style={{ width: `${pct}%` }} />
+          
         </div>
 
         <div className="flex items-center gap-3 px-3 sm:px-4 py-2.5">
           {/* artwork + meta */}
           <button onClick={() => setFullOpen(true)} className="flex items-center gap-3 min-w-0 flex-1 text-left" aria-label="Open Now Playing">
             <div className="shrink-0 relative">
-              {t.cover_art_url ? (
-                <img src={t.cover_art_url} alt="" className="w-12 h-12 sm:w-14 sm:h-14 rounded-xl object-cover shadow-md" />
-              ) : (
-                <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-xl bg-foreground/10 grid place-items-center text-foreground/30">
+              {t.cover_art_url ?
+              <img src={t.cover_art_url} alt="" className="w-12 h-12 sm:w-14 sm:h-14 rounded-xl object-cover shadow-md" /> :
+
+              <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-xl bg-foreground/10 grid place-items-center text-foreground/30">
                   <ListMusic size={18} />
                 </div>
-              )}
+              }
             </div>
             <div className="min-w-0">
               <div className="text-sm font-semibold truncate flex items-center gap-1.5">
                 {t.title}
-                {t.explicit && (
-                  <span className="px-1 py-0.5 rounded bg-foreground/15 text-[9px] font-extrabold leading-none">E</span>
-                )}
+                {t.explicit &&
+                <span className="px-1 py-0.5 rounded bg-foreground/15 text-[9px] font-extrabold leading-none">E</span>
+                }
               </div>
               <div className="text-xs text-foreground/50 truncate">
                 {t.artist || t.uploader_name || "Unknown"}
@@ -110,8 +110,8 @@ export default function PlayerBar() {
             <button
               onClick={p.togglePlay}
               className="w-11 h-11 rounded-full bg-foreground text-background grid place-items-center hover:scale-105 active:scale-95 transition shadow-md"
-              aria-label={p.isPlaying ? "Pause" : "Play"}
-            >
+              aria-label={p.isPlaying ? "Pause" : "Play"}>
+              
               {p.isPlaying ? <Pause size={20} /> : <Play size={20} className="ml-0.5" />}
             </button>
             <button onClick={p.next} className="p-2 rounded-full hover:bg-foreground/5 active:scale-90 transition" aria-label="Next">
@@ -124,15 +124,15 @@ export default function PlayerBar() {
             <button
               onClick={() => p.setRepeat(p.repeat === "off" ? "all" : p.repeat === "all" ? "one" : "off")}
               className={`p-2 rounded-full hover:bg-foreground/5 active:scale-90 transition ${p.repeat !== "off" ? "text-foreground" : "text-foreground/40"}`}
-              aria-label="Repeat"
-            >
+              aria-label="Repeat">
+              
               <RepeatIcon size={18} />
             </button>
             <button
               onClick={() => p.setShuffle(!p.shuffle)}
               className={`p-2 rounded-full hover:bg-foreground/5 active:scale-90 transition ${p.shuffle ? "text-foreground" : "text-foreground/40"}`}
-              aria-label="Shuffle"
-            >
+              aria-label="Shuffle">
+              
               <Shuffle size={18} />
             </button>
             <button onClick={p.prev} className="p-2 rounded-full hover:bg-foreground/5 active:scale-90 transition" aria-label="Previous">
@@ -141,8 +141,8 @@ export default function PlayerBar() {
             <button
               onClick={p.togglePlay}
               className="w-11 h-11 rounded-full bg-foreground text-background grid place-items-center hover:scale-105 active:scale-95 transition shadow"
-              aria-label={p.isPlaying ? "Pause" : "Play"}
-            >
+              aria-label={p.isPlaying ? "Pause" : "Play"}>
+              
               {p.isPlaying ? <Pause size={20} /> : <Play size={20} className="ml-0.5" />}
             </button>
             <button onClick={p.next} className="p-2 rounded-full hover:bg-foreground/5 active:scale-90 transition" aria-label="Next">
@@ -151,16 +151,16 @@ export default function PlayerBar() {
             <button
               onClick={() => setQueueOpen(true)}
               className={`relative p-2 rounded-full hover:bg-foreground/5 active:scale-90 transition ${
-                p.queue.length - p.currentIndex - 1 > 0 ? "text-foreground" : "text-foreground/40"
-              }`}
-              aria-label="Queue"
-            >
+              p.queue.length - p.currentIndex - 1 > 0 ? "text-foreground" : "text-foreground/40"}`
+              }
+              aria-label="Queue">
+              
               <ListMusic size={18} />
-              {p.queue.length - p.currentIndex - 1 > 0 && (
-                <span className="absolute -top-0.5 -right-0.5 min-w-[16px] h-4 px-1 rounded-full bg-foreground text-background text-[10px] font-bold grid place-items-center">
+              {p.queue.length - p.currentIndex - 1 > 0 &&
+              <span className="absolute -top-0.5 -right-0.5 min-w-[16px] h-4 px-1 rounded-full bg-foreground text-background text-[10px] font-bold grid place-items-center hidden">
                   {p.queue.length - p.currentIndex - 1}
                 </span>
-              )}
+              }
             </button>
             <div className="flex items-center gap-2 pl-1">
               <button onClick={() => p.setMuted(!p.muted)} className="p-1 active:scale-90 transition" aria-label="Mute">
@@ -174,23 +174,23 @@ export default function PlayerBar() {
                 value={p.muted ? 0 : p.volume}
                 onChange={(e) => p.setVolume(Number(e.target.value))}
                 className="w-24 accent-foreground"
-                aria-label="Volume"
-              />
+                aria-label="Volume" />
+              
             </div>
           </div>
         </div>
       </div>
 
-      {fullOpen && (
-        <FullScreenPlayer
-          onClose={() => setFullOpen(false)}
-        />
-      )}
-      {queueOpen && p.currentTrack && (
-        <div className="fixed inset-0 z-50">
+      {fullOpen &&
+      <FullScreenPlayer
+        onClose={() => setFullOpen(false)} />
+
+      }
+      {queueOpen && p.currentTrack &&
+      <div className="fixed inset-0 z-50">
           <QueuePanel open={queueOpen} onClose={() => setQueueOpen(false)} />
         </div>
-      )}
-    </>
-  );
+      }
+    </>);
+
 }
