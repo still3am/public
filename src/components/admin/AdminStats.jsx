@@ -43,7 +43,7 @@ export default function AdminStats() {
     const unsubs = [];
     try { unsubs.push(base44.entities.Track.subscribe(() => load())); } catch {}
     try { unsubs.push(base44.entities.User.subscribe(() => load())); } catch {}
-    const timer = setInterval(load, 15000);
+    const timer = setInterval(load, 5000);
 
     return () => {
       alive = false;
