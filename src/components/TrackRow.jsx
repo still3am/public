@@ -7,7 +7,8 @@ import {
   Download,
   Flame,
   Loader2,
-  Trash2 } from
+  Trash2,
+  EyeOff } from
 "lucide-react";
 import { usePlayer } from "@/context/PlayerContext";
 import { formatTime, timeAgo } from "@/lib/audio-utils";
@@ -51,6 +52,7 @@ export default function TrackRow({
   const isPlayingHere = isCurrent && p.isPlaying;
   const savedOffline = cache.isCached(track.id);
   const savingOffline = !!cache.downloading[track.id];
+  const isAdmin = user?.role === "admin";
   const isRecent =
   track.created_date &&
   Date.now() - new Date(track.created_date).getTime() < 7 * 86400 * 1000;
@@ -218,6 +220,26 @@ export default function TrackRow({
               onClick={() => {
                 onReport(track);
                 setMenuOpen(false);
+              }} />
+
+            }
+              {isAdmin && track.is_published &&
+            <MenuBtn
+              icon={EyeOff}
+              label="Remove from PUBLIC"
+              danger
+              onClick={async () => {
+                if (!window.confirm("Remove this track from PUBLIC? It stays in the uploader's library and profile.")) return;
+                setMenuOpen(false);
+                try {
+                  await base44.entities.Track.update(track.id, {
+                    is_published: false,
+                    approval_status: "rejected",
+                  });
+                  toast.toast({ title: "Removed from PUBLIC" });
+                } catch {
+                  toast.toast({ title: "Couldn't remove track", variant: "destructive" });
+                }
               }} />
 
             }
