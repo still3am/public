@@ -9,7 +9,6 @@ import {
   Clock,
   Bell,
   Library as LibraryIcon,
-  Shield,
 } from "lucide-react";
 import Avatar from "@/components/Avatar";
 import Logo from "@/components/Logo";
@@ -68,11 +67,6 @@ export default function Sidebar() {
             </span>
           }
         </NavLink>
-        {user?.role === "admin" && (
-          <NavLink to="/admin" className={navLinkCls}>
-            <Shield size={18} /> Admin
-          </NavLink>
-        )}
       </nav>
       <div className="p-3 border-t border-border space-y-2 pb-28">
         <ThemeToggle />
