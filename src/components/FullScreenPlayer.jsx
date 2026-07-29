@@ -380,20 +380,8 @@ export default function FullScreenPlayer({ onClose }) {
               <Mic2 size={18} className="inline mr-1" /> Lyrics
             </button>
           </div>
-          <div className="flex-1 min-h-0">
-            {lyricsMode ?
-            <SyncedLyrics trackId={t.id} position={p.position} fallbackText={t.lyrics_text} onSeek={p.seek} /> :
-
-            <div className="h-full grid place-items-center p-8 text-center">
-                <div>
-                  <Disc3 size={48} className="mx-auto opacity-30 mb-3" />
-                  <p className="text-sm opacity-50 leading-relaxed">
-                    Switch to Lyrics to follow along,
-                    <br /> or swipe on the cover to change volume.
-                  </p>
-                </div>
-              </div>
-            }
+          <div className="flex-1 min-h-0 flex flex-col">
+            <SyncedLyrics trackId={t.id} position={p.position} fallbackText={t.lyrics_text} onSeek={p.seek} />
           </div>
         </div>
       </div>
