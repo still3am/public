@@ -298,12 +298,13 @@ export default function Upload() {
               )}
             </div>
             <div className="flex items-center gap-2">
-              {doneCount > 0 && (
+              {items.length > 0 && (
                 <button
-                  onClick={clearDone}
-                  className="text-xs font-medium text-foreground/50 hover:text-foreground px-2 py-1.5 rounded-full hover:bg-foreground/5 transition"
+                  onClick={() => setItems([])}
+                  disabled={busy}
+                  className="text-xs font-medium text-foreground/50 hover:text-foreground px-2 py-1.5 rounded-full hover:bg-foreground/5 transition disabled:opacity-40"
                 >
-                  Clear uploaded
+                  {items.every((it) => it.status === "done") ? "Clear all" : "Delete all"}
                 </button>
               )}
               <button
