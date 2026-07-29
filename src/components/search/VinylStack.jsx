@@ -1,22 +1,18 @@
 import { Disc3 } from "lucide-react";
 
 const EDGE_GRADIENTS = [
-  "from-fuchsia-600 to-purple-900",
-  "from-rose-600 to-red-950",
+  "from-fuchsia-500 to-purple-900",
+  "from-rose-500 to-red-950",
   "from-orange-500 to-rose-950",
   "from-amber-500 to-orange-900",
-  "from-lime-600 to-emerald-950",
-  "from-emerald-600 to-teal-950",
-  "from-cyan-600 to-blue-950",
-  "from-blue-600 to-indigo-950",
-  "from-indigo-600 to-purple-950",
-  "from-violet-600 to-fuchsia-950",
-  "from-pink-600 to-rose-950",
-  "from-red-600 to-orange-950",
-  "from-teal-600 to-cyan-950",
-  "from-sky-600 to-blue-950",
-  "from-purple-600 to-indigo-950",
-  "from-fuchsia-600 to-pink-950",
+  "from-lime-500 to-emerald-950",
+  "from-emerald-500 to-teal-950",
+  "from-cyan-500 to-blue-950",
+  "from-blue-500 to-indigo-950",
+  "from-indigo-500 to-purple-950",
+  "from-violet-500 to-fuchsia-950",
+  "from-pink-500 to-rose-950",
+  "from-teal-500 to-cyan-950",
 ];
 
 function edgeFor(name) {
@@ -27,81 +23,78 @@ function edgeFor(name) {
 
 export default function VinylStack({ genres, onPick }) {
   if (!genres?.length) return null;
-  const items = genres.slice(0, 9);
+  const items = genres.slice(0, 10);
 
   return (
-    <div className="relative">
-      <div className="relative" style={{ perspective: "1400px" }}>
+    <div className="w-full max-w-md mx-auto px-1">
+      <div
+        className="relative"
+        style={{ perspective: "900px", perspectiveOrigin: "50% 0%" }}
+      >
         {items.map((g, i) => {
           const edge = edgeFor(g.genre);
-          const tilt = (i % 2 === 0 ? -1 : 1) * (1.5 + i * 0.6);
+          const scale = 1 - i * 0.018;
           return (
             <button
               key={g.genre}
               onClick={() => onPick(g.genre)}
-              className="group relative block w-full text-left transition-transform duration-300 active:scale-[0.985]"
+              className="group relative block w-full text-left transition-transform duration-200 active:scale-[0.97] focus-visible:outline-none"
               style={{
-                marginTop: i === 0 ? 0 : "-58%",
-                transform: `rotateX(6deg) rotate(${tilt}deg)`,
-                transformOrigin: "center top",
+                height: "clamp(64px, 15vw, 92px)",
+                marginTop: i === 0 ? 0 : "clamp(-14px, -3vw, -8px)",
+                transform: `rotateX(14deg) scale(${scale})`,
+                transformOrigin: "50% 0%",
                 zIndex: items.length - i,
               }}
               aria-label={`Browse ${g.genre}`}
             >
-              {/* sleeve thickness / edge */}
+              {/* sleeve edge / thickness */}
               <div
-                className={`absolute inset-x-0 -bottom-2 h-4 rounded-b-2xl bg-gradient-to-b ${edge} opacity-80 blur-[1px]`}
+                className={`absolute inset-x-1 bottom-0 h-2.5 rounded-b-xl bg-gradient-to-b ${edge}`}
               />
-              <div className="absolute inset-x-2 -bottom-4 h-4 rounded-b-2xl bg-black/70" />
 
-              {/* card face */}
-              <div className="relative aspect-square rounded-2xl overflow-hidden border border-white/15 bg-neutral-900 shadow-2xl">
+              {/* sleeve face */}
+              <div className="absolute inset-x-0 top-0 bottom-1.5 rounded-xl overflow-hidden border border-white/15 bg-neutral-900 shadow-xl shadow-black/40">
                 {g.cover_url ? (
                   <img
                     src={g.cover_url}
                     alt=""
-                    className="absolute inset-0 w-full h-full object-cover opacity-90"
+                    className="absolute inset-0 w-full h-full object-cover"
                   />
                 ) : (
-                  <div className={`absolute inset-0 bg-gradient-to-br ${edge} opacity-85`} />
+                  <div className={`absolute inset-0 bg-gradient-to-br ${edge}`} />
                 )}
 
-                {/* lower-card darkening for depth */}
+                {/* depth darkening deeper in the stack */}
                 <div
-                  className="absolute inset-0 bg-black transition-opacity"
-                  style={{ opacity: 0.12 + i * 0.07 }}
+                  className="absolute inset-0 bg-black"
+                  style={{ opacity: 0.28 + i * 0.045 }}
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/10 to-black/30" />
+                <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/25 to-transparent" />
 
-                {/* top label strip */}
-                <div className="absolute top-0 inset-x-0 p-3.5">
-                  <div className="text-[10px] uppercase tracking-[0.2em] text-white/55 font-bold">
-                    Genre
+                <div className="relative h-full flex items-center gap-3 px-3 sm:px-4">
+                  <div className="min-w-0 flex-1">
+                    <div className="text-[15px] sm:text-base font-extrabold text-white truncate leading-tight">
+                      {g.genre}
+                    </div>
+                    <div className="text-[11px] text-white/65 truncate font-medium">
+                      {g.count} {g.count === 1 ? "track" : "tracks"}
+                    </div>
                   </div>
-                  <div className="text-xl font-extrabold text-white truncate leading-tight drop-shadow-sm">
-                    {g.genre}
-                  </div>
-                  <div className="text-xs text-white/70 truncate font-medium">
-                    {g.count} {g.count === 1 ? "track" : "tracks"}
+                  <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full border border-white/30 grid place-items-center bg-black/40 shrink-0 group-hover:bg-white group-hover:border-white transition">
+                    <Disc3
+                      size={16}
+                      className="text-white/85 group-hover:text-black transition"
+                    />
                   </div>
                 </div>
-
-                {/* vinyl record hint */}
-                <div className="absolute right-3.5 bottom-3.5 w-11 h-11 rounded-full border border-white/30 grid place-items-center bg-black/40 backdrop-blur-sm group-hover:bg-black/60 transition">
-                  <Disc3 size={20} className="text-white/85" />
-                </div>
-
-                {/* selection ring accent on front card */}
-                {i === 0 && (
-                  <div className="absolute inset-2 rounded-xl border-2 border-dashed border-white/40 pointer-events-none" />
-                )}
               </div>
             </button>
           );
         })}
       </div>
 
-      <p className="mt-6 text-center text-sm font-extrabold text-foreground/90 px-4 leading-snug">
+      <p className="mt-5 text-center text-sm font-extrabold text-foreground/85 leading-snug">
         Your music, reimagined as records.
         <br />
         Pick a genre to start.
