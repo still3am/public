@@ -8,8 +8,8 @@ import {
   deriveDefaultTitle,
   extractEmbeddedTitle,
   extractEmbeddedArtist,
-  extractEmbeddedCover,
-} from "@/lib/audio-utils";
+  extractEmbeddedCover } from
+"@/lib/audio-utils";
 import { findDuplicateTracks } from "@/lib/duplicateCheck";
 import BackHeader from "@/components/BackHeader";
 import FileDropZone from "@/components/upload/FileDropZone";
@@ -56,18 +56,18 @@ export default function Upload() {
   const addFiles = useCallback(async (files) => {
     const list = Array.from(files).filter(
       (f) =>
-        f.type.startsWith("audio") ||
-        /\.(mp3|wav|m4a|ogg|flac|aac|opus|aiff|webm)$/i.test(f.name)
+      f.type.startsWith("audio") ||
+      /\.(mp3|wav|m4a|ogg|flac|aac|opus|aiff|webm)$/i.test(f.name)
     );
     if (!list.length) return;
     const newItems = await Promise.all(
       list.map(async (file) => {
         const [dur, title, artist, cover] = await Promise.all([
-          getAudioDuration(file),
-          extractEmbeddedTitle(file),
-          extractEmbeddedArtist(file),
-          extractEmbeddedCover(file),
-        ]);
+        getAudioDuration(file),
+        extractEmbeddedTitle(file),
+        extractEmbeddedArtist(file),
+        extractEmbeddedCover(file)]
+        );
         // Fall back to "Artist - Title" filename pattern when tags are missing.
         let fbTitle = deriveDefaultTitle(file);
         let fbArtist = "";
@@ -93,7 +93,7 @@ export default function Upload() {
           status: "editing",
           error: "",
           aiGenre: true,
-          aiLyrics: false,
+          aiLyrics: false
         };
       })
     );
@@ -111,7 +111,7 @@ export default function Upload() {
           title: c.title,
           artist: c.artist,
           duration: c.duration,
-          file_name: c.file.name,
+          file_name: c.file.name
         });
         if (dups.length && !seenItem.has(c.id)) {
           seenItem.add(c.id);
@@ -124,7 +124,7 @@ export default function Upload() {
 
   function updateItem(id, patch) {
     setItems((prev) =>
-      prev.map((it) => (it.id === id ? { ...it, ...patch } : it))
+    prev.map((it) => it.id === id ? { ...it, ...patch } : it)
     );
   }
 
@@ -154,9 +154,9 @@ export default function Upload() {
     // To be released on PUBLIC, a track must have a cover image, a genre, and an artist name.
     // Anything missing is saved to the uploader's own library only (never public).
     const meetsRules =
-      !!(item.coverFile || item.coverPreviewUrl) &&
-      !!item.artist.trim() &&
-      !!item.genre;
+    !!(item.coverFile || item.coverPreviewUrl) &&
+    !!item.artist.trim() &&
+    !!item.genre;
     return { meetsRules };
   }
 
@@ -165,7 +165,7 @@ export default function Upload() {
   // from the list before the truth hits the server.
   async function runEnhancements(item, trackId) {
     if (item.aiGenre) {
-      try { await base44.functions.invoke("detectGenre", { track_id: trackId }); }
+      try {await base44.functions.invoke("detectGenre", { track_id: trackId });}
       catch {}
     }
     if (item.aiLyrics) {
@@ -185,11 +185,11 @@ export default function Upload() {
     try {
       // Upload audio + cover in parallel — they're independent files.
       const [audioRes, coverRes] = await Promise.all([
-        base44.integrations.Core.UploadFile({ file: item.file }),
-        item.coverFile
-          ? base44.integrations.Core.UploadFile({ file: item.coverFile })
-          : Promise.resolve(null),
-      ]);
+      base44.integrations.Core.UploadFile({ file: item.file }),
+      item.coverFile ?
+      base44.integrations.Core.UploadFile({ file: item.coverFile }) :
+      Promise.resolve(null)]
+      );
       // Admins bypass the approval queue — tracks that meet the public
       // release rules go live on PUBLIC the instant they finish uploading.
       const isAdmin = user?.role === "admin";
@@ -207,11 +207,11 @@ export default function Upload() {
         explicit: item.explicit,
         rights_confirmed: true,
         is_published: goLive,
-        approval_status: goLive
-          ? "approved"
-          : meetsRules
-            ? "pending"
-            : "private",
+        approval_status: goLive ?
+        "approved" :
+        meetsRules ?
+        "pending" :
+        "private"
       });
 
       // Always keep a copy in the uploader's library so they can find/play it
@@ -219,7 +219,7 @@ export default function Upload() {
       try {
         await base44.entities.LibraryItem.create({
           user_id: user.id,
-          track_id: created.id,
+          track_id: created.id
         });
         refreshLibrary();
       } catch {}
@@ -231,7 +231,7 @@ export default function Upload() {
     } catch (err) {
       updateItem(item.id, {
         status: "error",
-        error: err?.message || "Upload failed",
+        error: err?.message || "Upload failed"
       });
       return false;
     }
@@ -280,12 +280,12 @@ export default function Upload() {
   return (
     <div className="max-w-3xl mx-auto px-3 md:px-0 pb-24">
       <BackHeader title="Upload" />
-      {user?.role === "admin" && (
-        <div className="mb-3 rounded-xl border border-foreground/15 bg-foreground/[0.03] px-3.5 py-2.5 text-xs font-medium text-foreground/70 flex items-center gap-2">
+      {user?.role === "admin" &&
+      <div className="mb-3 rounded-xl border border-foreground/15 bg-foreground/[0.03] px-3.5 py-2.5 text-xs font-medium text-foreground/70 flex items-center gap-2">
           <CheckCheck size={14} className="shrink-0" />
           Admin uploads skip the approval queue — tracks that have a cover, genre, and artist go live on PUBLIC instantly.
         </div>
-      )}
+      }
       <FileDropZone onFiles={addFiles} inputRef={inputRef} />
       <input
         ref={inputRef}
@@ -296,70 +296,70 @@ export default function Upload() {
         onChange={(e) => {
           if (e.target.files?.length) addFiles(e.target.files);
           e.target.value = "";
-        }}
-      />
+        }} />
+      
 
-      {items.length > 0 && (
-        <div className="mt-6 space-y-3">
+      {items.length > 0 &&
+      <div className="mt-6 space-y-3">
           <div className="flex items-center justify-between gap-2 px-1 flex-wrap">
             <div className="text-sm font-semibold text-foreground/60">
               {items.length} file{items.length !== 1 ? "s" : ""}
-              {doneCount > 0 && (
-                <span className="text-foreground/40 font-normal">
+              {doneCount > 0 &&
+            <span className="text-foreground/40 font-normal">
                   {" "}
                   · {doneCount} uploaded
                 </span>
-              )}
+            }
             </div>
             <div className="flex items-center gap-2">
-              {items.length > 0 && (
-                <button
-                  onClick={() => setItems([])}
-                  disabled={busy}
-                  className="text-xs font-medium text-foreground/50 hover:text-foreground px-2 py-1.5 rounded-full hover:bg-foreground/5 transition disabled:opacity-40"
-                >
+              {items.length > 0 &&
+            <button
+              onClick={() => setItems([])}
+              disabled={busy}
+              className="text-xs font-medium text-foreground/50 hover:text-foreground px-2 py-1.5 rounded-full hover:bg-foreground/5 transition disabled:opacity-40">
+              
                   {items.every((it) => it.status === "done") ? "Clear all" : "Delete all"}
                 </button>
-              )}
+            }
               <button
-                onClick={() => inputRef.current?.click()}
-                disabled={busy}
-                className="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-full border border-border hover:bg-foreground/5 transition disabled:opacity-40"
-              >
+              onClick={() => inputRef.current?.click()}
+              disabled={busy}
+              className="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-full border border-border hover:bg-foreground/5 transition disabled:opacity-40">
+              
                 <Plus size={14} /> Add more
               </button>
               <button
-                onClick={uploadAll}
-                disabled={!anyPending || busy}
-                className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-foreground text-background text-sm font-semibold disabled:opacity-40 active:scale-95 transition"
-              >
-                {busy ? (
-                  <Loader2 size={15} className="animate-spin" />
-                ) : (
-                  <UploadCloud size={15} />
-                )}
-                {busy
-                  ? `Uploading ${progress.done}/${progress.total}`
-                  : "Upload all"}
+              onClick={uploadAll}
+              disabled={!anyPending || busy}
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-foreground text-background text-sm font-semibold disabled:opacity-40 active:scale-95 transition">
+              
+                {busy ?
+              <Loader2 size={15} className="animate-spin" /> :
+
+              <UploadCloud size={15} />
+              }
+                {busy ?
+              `Uploading ${progress.done}/${progress.total}` :
+              "Upload all"}
               </button>
             </div>
           </div>
-          {items.map((it) => (
-            <UploadItem
-              key={it.id}
-              item={it}
-              onChange={(patch) => updateItem(it.id, patch)}
-              onRemove={() => removeItem(it.id)}
-              onUpload={() => uploadOne(it)}
-              disabled={busy}
-              isAdmin={user?.role === "admin"}
-            />
-          ))}
-        </div>
-      )}
+          {items.map((it) =>
+        <UploadItem
+          key={it.id}
+          item={it}
+          onChange={(patch) => updateItem(it.id, patch)}
+          onRemove={() => removeItem(it.id)}
+          onUpload={() => uploadOne(it)}
+          disabled={busy}
+          isAdmin={user?.role === "admin"} />
 
-      {user?.role === "admin" && (
-        <div className="mt-6 rounded-2xl border border-border bg-card p-4">
+        )}
+        </div>
+      }
+
+      {user?.role === "admin" &&
+      <div className="mt-6 rounded-2xl border border-border bg-card p-4 hidden">
           <div className="flex items-center justify-between gap-3 flex-wrap">
             <div>
               <div className="text-sm font-semibold flex items-center gap-2">
@@ -370,33 +370,33 @@ export default function Upload() {
               </div>
             </div>
             <button
-              onClick={classifyAll}
-              disabled={classifyBusy}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-foreground text-background text-sm font-semibold disabled:opacity-50 active:scale-95 transition"
-            >
+            onClick={classifyAll}
+            disabled={classifyBusy}
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-foreground text-background text-sm font-semibold disabled:opacity-50 active:scale-95 transition">
+            
               {classifyBusy ? <Loader2 size={15} className="animate-spin" /> : <Wand2 size={15} />}
               {classifyBusy ? "Classifying…" : "Classify all"}
             </button>
           </div>
-          {classifyInfo && (
-            <div className="text-xs text-foreground/50 mt-2">
-              {classifyBusy
-                ? `Classified ${classifyInfo.total} so far…`
-                : classifyInfo.total
-                  ? `Done — ${classifyInfo.total} track${classifyInfo.total !== 1 ? "s" : ""} updated.`
-                  : "Nothing to do — all tracks already have a genre."}
+          {classifyInfo &&
+        <div className="text-xs text-foreground/50 mt-2">
+              {classifyBusy ?
+          `Classified ${classifyInfo.total} so far…` :
+          classifyInfo.total ?
+          `Done — ${classifyInfo.total} track${classifyInfo.total !== 1 ? "s" : ""} updated.` :
+          "Nothing to do — all tracks already have a genre."}
             </div>
-          )}
+        }
         </div>
-      )}
+      }
 
-      {dupes && (
-        <DuplicateModal
-          tracks={dupes}
-          onClose={() => setDupes(null)}
-          onRemove={(id) => removeItem(id)}
-        />
-      )}
-    </div>
-  );
+      {dupes &&
+      <DuplicateModal
+        tracks={dupes}
+        onClose={() => setDupes(null)}
+        onRemove={(id) => removeItem(id)} />
+
+      }
+    </div>);
+
 }
