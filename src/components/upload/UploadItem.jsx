@@ -22,6 +22,7 @@ export default function UploadItem({
   onRemove,
   onUpload,
   disabled,
+  isAdmin = false,
 }) {
   const uploading = item.status === "uploading";
   const enhancing = item.status === "enhancing";
@@ -177,7 +178,9 @@ export default function UploadItem({
             </div>
             <p className="text-[11px] text-foreground/55 leading-snug">
               {meetsRules
-                ? "Eligible for public release — an admin will review before it goes live."
+                ? isAdmin
+                  ? "Ready — goes live on PUBLIC instantly when you upload (admin)."
+                  : "Eligible for public release — an admin will review before it goes live."
                 : "Saving to your library only. Add a cover image, genre, and artist name to release it on PUBLIC."}
             </p>
           </div>
@@ -191,7 +194,11 @@ export default function UploadItem({
           {done && (
             <div className="flex items-center justify-center gap-2 text-xs font-semibold text-emerald-600 dark:text-emerald-400 py-1">
               <CheckCheck size={14} />{" "}
-              {meetsRules ? "Submitted for approval" : "Saved to your library"}
+              {isAdmin && meetsRules
+              ? "Published on PUBLIC"
+              : meetsRules
+                ? "Submitted for approval"
+                : "Saved to your library"}
             </div>
           )}
           {!done && (
@@ -210,7 +217,9 @@ export default function UploadItem({
                 : uploading
                 ? "Uploading…"
                 : meetsRules
-                ? "Submit for approval"
+                ? isAdmin
+                  ? "Publish on PUBLIC"
+                  : "Submit for approval"
                 : "Save to library"}
             </button>
           )}

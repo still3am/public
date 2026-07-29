@@ -190,6 +190,10 @@ export default function Upload() {
           ? base44.integrations.Core.UploadFile({ file: item.coverFile })
           : Promise.resolve(null),
       ]);
+      // Admins bypass the approval queue — tracks that meet the public
+      // release rules go live on PUBLIC the instant they finish uploading.
+      const isAdmin = user?.role === "admin";
+      const goLive = isAdmin && meetsRules;
       const created = await base44.entities.Track.create({
         title: item.title.trim(),
         audio_url: audioRes.file_url,
@@ -202,8 +206,12 @@ export default function Upload() {
         duration_seconds: item.duration || 0,
         explicit: item.explicit,
         rights_confirmed: true,
-        is_published: false,
-        approval_status: meetsRules ? "pending" : "private",
+        is_published: goLive,
+        approval_status: goLive
+          ? "approved"
+          : meetsRules
+            ? "pending"
+            : "private",
       });
 
       // Always keep a copy in the uploader's library so they can find/play it
@@ -239,7 +247,7 @@ export default function Upload() {
 
     // Upload several tracks at once instead of one-by-one. The integration
     // layer handles its own queue; this just keeps more files in flight.
-    const CONCURRENCY = 3;
+    const CONCURRENCY = 5;
     let done = 0;
     let ok = 0;
     let cursor = 0;
@@ -272,6 +280,12 @@ export default function Upload() {
   return (
     <div className="max-w-3xl mx-auto px-3 md:px-0 pb-24">
       <BackHeader title="Upload" />
+      {user?.role === "admin" && (
+        <div className="mb-3 rounded-xl border border-foreground/15 bg-foreground/[0.03] px-3.5 py-2.5 text-xs font-medium text-foreground/70 flex items-center gap-2">
+          <CheckCheck size={14} className="shrink-0" />
+          Admin uploads skip the approval queue — tracks that have a cover, genre, and artist go live on PUBLIC instantly.
+        </div>
+      )}
       <FileDropZone onFiles={addFiles} inputRef={inputRef} />
       <input
         ref={inputRef}
@@ -338,6 +352,7 @@ export default function Upload() {
               onRemove={() => removeItem(it.id)}
               onUpload={() => uploadOne(it)}
               disabled={busy}
+              isAdmin={user?.role === "admin"}
             />
           ))}
         </div>
