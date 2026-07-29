@@ -166,8 +166,8 @@ export default function FullScreenPlayer({ onClose }) {
 
       {/* reactive visualizer */}
       {showVisualizer &&
-      <div className="pointer-events-none absolute inset-0 z-0 opacity-70">
-        <AudioVisualizer className="w-full h-full" color="#ffffff" bars={56} mirror />
+      <div className="pointer-events-none absolute inset-0 z-0 opacity-80">
+        <AudioVisualizer className="w-full h-full" bars={56} mirror />
       </div>
       }
       

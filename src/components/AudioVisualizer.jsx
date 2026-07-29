@@ -1,12 +1,12 @@
 import { useEffect, useRef } from "react";
 import { usePlayer } from "@/context/PlayerContext";
+import { useColorPalette } from "@/hooks/useColorPalette";
 
 // Reactive audio visualizer driven by a Web Audio AnalyserNode connected to
-// the player's audio element. Falls back to a calm idle shimmer when the
-// analyser isn't ready (e.g. before playback starts).
+// the player's audio element. Bars are tinted with colors sampled from the
+// current track's album cover, with smoothing and a soft glow.
 export default function AudioVisualizer({
   className = "",
-  color = "#ffffff",
   bars = 56,
   mirror = true,
 }) {
@@ -14,6 +14,9 @@ export default function AudioVisualizer({
   const pRef = useRef(p);
   pRef.current = p;
   const canvasRef = useRef(null);
+  const palette = useColorPalette(p.currentTrack?.cover_art_url);
+  const paletteRef = useRef(palette);
+  paletteRef.current = palette;
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -22,6 +25,7 @@ export default function AudioVisualizer({
     let active = true;
     let raf = 0;
     let freqs = null;
+    const smooth = new Float32Array(bars);
 
     const resize = () => {
       const dpr = Math.min(window.devicePixelRatio || 1, 2);
@@ -37,6 +41,7 @@ export default function AudioVisualizer({
     const draw = () => {
       if (!active) return;
       const player = pRef.current;
+      const [c1, c2, c3] = paletteRef.current;
       const rect = canvas.getBoundingClientRect();
       const w = rect.width;
       const h = rect.height;
@@ -56,11 +61,14 @@ export default function AudioVisualizer({
       const n = bars;
       const gap = 3;
       const bw = Math.max(1, (w - gap * (n - 1)) / n);
+      const radius = Math.min(bw / 2, 3);
 
       for (let i = 0; i < n; i++) {
         let v;
         if (data) {
-          const idx = Math.floor((i / n) * data.length * 0.7);
+          // log-ish spread so lows don't dominate the whole width
+          const frac = Math.pow(i / n, 1.5);
+          const idx = Math.floor(frac * data.length * 0.75);
           v = data[idx] / 255;
         } else if (playing) {
           const t = Date.now() / 1000;
@@ -68,18 +76,31 @@ export default function AudioVisualizer({
         } else {
           v = 0.05 + 0.03 * Math.abs(Math.sin(Date.now() / 1600 + i * 0.5));
         }
-        const barH = Math.max(2, v * h * (mirror ? 0.46 : 0.92));
+        // temporal smoothing: fast attack, slow release
+        smooth[i] = v > smooth[i] ? v : smooth[i] * 0.86 + v * 0.14;
+        const sv = smooth[i];
+
+        const barH = Math.max(2, sv * h * (mirror ? 0.46 : 0.92));
         const x = i * (bw + gap);
         const baseY = mirror ? h / 2 : h;
+        const top = baseY - barH;
 
-        const grad = ctx.createLinearGradient(0, baseY - barH, 0, baseY + (mirror ? barH : 0));
-        grad.addColorStop(0, color);
-        grad.addColorStop(1, color);
+        const grad = ctx.createLinearGradient(0, top, 0, baseY + (mirror ? barH : 0));
+        grad.addColorStop(0, c3);
+        grad.addColorStop(0.5, c1);
+        grad.addColorStop(1, c2);
         ctx.fillStyle = grad;
-        ctx.globalAlpha = 0.35 + 0.55 * v;
-        ctx.fillRect(x, baseY - barH, bw, barH);
-        if (mirror) ctx.fillRect(x, baseY, bw, barH);
+        ctx.shadowColor = c1;
+        ctx.shadowBlur = 8 + 18 * sv;
+        ctx.globalAlpha = 0.4 + 0.6 * sv;
+
+        const totalH = mirror ? barH * 2 : barH;
+        ctx.beginPath();
+        if (ctx.roundRect) ctx.roundRect(x, top, bw, totalH, radius);
+        else ctx.rect(x, top, bw, totalH);
+        ctx.fill();
       }
+      ctx.shadowBlur = 0;
       ctx.globalAlpha = 1;
       raf = requestAnimationFrame(draw);
     };
@@ -90,7 +111,7 @@ export default function AudioVisualizer({
       cancelAnimationFrame(raf);
       ro.disconnect();
     };
-  }, [color, bars, mirror]);
+  }, [bars, mirror]);
 
   return (
     <canvas
