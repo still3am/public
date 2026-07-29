@@ -25,7 +25,6 @@ export function useLoungeHost() {
   const [session, setSession] = useState(null);
   const [members, setMembers] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [syncEnabled, setSyncEnabled] = useState(false);
 
   const addedRef = useRef(null);
   if (addedRef.current === null) addedRef.current = loadAddedSet();
@@ -132,7 +131,6 @@ export function useLoungeHost() {
     try {
       await base44.entities.LoungeSession.update(session.id, { is_active: false });
     } catch {}
-    setSyncEnabled(false);
     setSession(null);
     setMembers([]);
   }, [session?.id]);
@@ -187,8 +185,6 @@ export function useLoungeHost() {
     session,
     members,
     loading,
-    syncEnabled,
-    setSyncEnabled,
     ensureSession,
     approve,
     reject,

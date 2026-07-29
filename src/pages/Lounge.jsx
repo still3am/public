@@ -1,24 +1,21 @@
-import { useEffect, useRef, useState, useCallback, useMemo } from "react";
+import { useEffect, useState, useCallback, useMemo } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import { useAuth } from "@/lib/AuthContext";
 import { useToast } from "@/components/ui/use-toast";
 import BackHeader from "@/components/BackHeader";
 import { useLibrary } from "@/context/LibraryContext";
-import { fetchSessionByCode, parseTrack, loungeUrl } from "@/lib/lounge";
+import { fetchSessionByCode, loungeUrl } from "@/lib/lounge";
 import { getRecentPlays } from "@/lib/recentPlays";
 import {
   Loader2,
   Users,
   Speaker,
-  Play,
-  Pause,
   Plus,
   Check,
   X,
   ListMusic,
   Search,
-  Headphones,
   Clock,
 } from "lucide-react";
 
@@ -26,38 +23,13 @@ export default function Lounge() {
   const { code } = useParams();
   const { user } = useAuth();
   const { toast } = useToast();
-  const { ids } = useLibrary();
   const nav = useNavigate();
   const [session, setSession] = useState(null);
   const [member, setMember] = useState(null);
   const [members, setMembers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
-  const [currentTrack, setCurrentTrack] = useState(null);
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [position, setPosition] = useState(0);
   const [pickerOpen, setPickerOpen] = useState(false);
-
-  // Dedicated audio element for the lounge — separate from the global player
-  // so guests don't disturb their own PlayerContext queue.
-  const audioRef = useRef(null);
-  if (!audioRef.current && typeof Audio !== "undefined") {
-    audioRef.current = new Audio();
-    try {
-      audioRef.current.crossOrigin = "anonymous";
-    } catch {}
-  }
-  const trackIdRef = useRef("");
-
-  // Position ticker so the progress UI feels live between broadcasts.
-  const [displayPos, setDisplayPos] = useState(0);
-  useEffect(() => {
-    const a = audioRef.current;
-    if (!a) return;
-    const onTime = () => setDisplayPos(a.currentTime || 0);
-    a.addEventListener("timeupdate", onTime);
-    return () => a.removeEventListener("timeupdate", onTime);
-  }, []);
 
   // Resolve session + create-or-fetch my membership record.
   useEffect(() => {
@@ -136,94 +108,10 @@ export default function Lounge() {
     };
   }, [session?.id, refreshMember]);
 
-  // Apply a fresh session snapshot to our audio element (speaker sync).
-  const applyState = useCallback((s) => {
-    const a = audioRef.current;
-    if (!a || !s) return;
-    if (s.current_track_id) {
-      const t = parseTrack(s.current_track);
-      const same = trackIdRef.current === s.current_track_id;
-      trackIdRef.current = s.current_track_id;
-      setCurrentTrack(t);
-      if (!same && t?.audio_url) {
-        a.src = t.audio_url;
-        a.load();
-      }
-      const anchor = s.sync_anchor_at ? new Date(s.sync_anchor_at).getTime() : Date.now();
-      const elapsed = s.is_playing ? Math.max(0, (Date.now() - anchor) / 1000) : 0;
-      const target = Math.max(0, (s.position_seconds || 0) + elapsed);
-      if (!same) {
-        try {
-          a.currentTime = target;
-        } catch {}
-        setDisplayPos(target);
-      } else if (Math.abs((a.currentTime || 0) - target) > 1.8) {
-        try {
-          a.currentTime = target;
-        } catch {}
-        setDisplayPos(target);
-      }
-      if (s.is_playing) {
-        a.play().then(() => setIsPlaying(true)).catch(() => setIsPlaying(false));
-      } else {
-        a.pause();
-        setIsPlaying(false);
-      }
-      setPosition(s.position_seconds || 0);
-    } else {
-      a.pause();
-      a.removeAttribute("src");
-      a.load();
-      setIsPlaying(false);
-      setCurrentTrack(null);
-      trackIdRef.current = "";
-    }
-  }, []);
-
-  // Mirror the host's session broadcasts (only once we're approved in).
-  const canListen = member?.status === "approved";
-  useEffect(() => {
-    if (!session?.id || !canListen) return;
-    let unsub;
-    let poll;
-    (async () => {
-      try {
-        const s = await base44.entities.LoungeSession.get(session.id);
-        if (s) applyState(s);
-      } catch {}
-    })();
-    try {
-      unsub = base44.entities.LoungeSession.subscribe((ev) => {
-        if (!ev || ev.id !== session.id) return;
-        base44.entities.LoungeSession
-          .get(session.id)
-          .then(applyState)
-          .catch(() => {});
-      });
-    } catch {}
-    poll = setInterval(() => {
-      base44.entities.LoungeSession.get(session.id).then(applyState).catch(() => {});
-    }, 6000);
-    return () => {
-      if (unsub) unsub();
-      if (poll) clearInterval(poll);
-    };
-  }, [session?.id, applyState, canListen]);
-
   const approved = member?.status === "approved";
   const isHost = member?.role === "host";
   const rejected = member?.status === "rejected";
   const pending = member?.status === "pending";
-
-  function togglePlay() {
-    const a = audioRef.current;
-    if (!a) return;
-    if (a.paused) a.play().then(() => setIsPlaying(true)).catch(() => {});
-    else {
-      a.pause();
-      setIsPlaying(false);
-    }
-  }
 
   return (
     <div className="min-h-screen pb-10">
@@ -274,11 +162,10 @@ export default function Lounge() {
           </div>
         ) : (
           <>
-            {/* Now syncing */}
             <div className="rounded-3xl border border-border bg-foreground/[0.02] p-5 mb-4">
               <div className="flex items-center justify-between mb-4">
                 <div className="inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.25em] text-foreground/50">
-                  <Headphones size={12} /> {isHost ? "Hosting lounge" : "Synced to host"}
+                  <Speaker size={12} /> {isHost ? "Hosting lounge" : "In the lounge"}
                 </div>
                 <div className="inline-flex items-center gap-1.5 text-[11px] text-foreground/40">
                   <Users size={12} />
@@ -287,43 +174,16 @@ export default function Lounge() {
               </div>
 
               <div className="flex items-center gap-4">
-                <div className="w-24 h-24 rounded-2xl overflow-hidden bg-foreground/10 shrink-0">
-                  {currentTrack?.cover_art_url ? (
-                    <img src={currentTrack.cover_art_url} alt="" className="w-full h-full object-cover" />
-                  ) : (
-                    <div className="w-full h-full grid place-items-center text-foreground/30">
-                      <Speaker size={28} />
-                    </div>
-                  )}
+                <div className="w-24 h-24 rounded-2xl overflow-hidden bg-foreground/10 shrink-0 grid place-items-center">
+                  <ListMusic size={28} className="text-foreground/30" />
                 </div>
                 <div className="min-w-0 flex-1">
-                  <h3 className="font-extrabold truncate text-lg">{currentTrack?.title || "Waiting for the host…"}</h3>
-                  <p className="text-sm text-foreground/50 truncate">
-                    {currentTrack?.artist || currentTrack?.uploader_name || "—"}
+                  <h3 className="font-extrabold text-lg">Add songs to the queue</h3>
+                  <p className="text-sm text-foreground/50 mt-1">
+                    Tracks you add play on {isHost ? "your" : "the host's"} device. {isHost ? "" : "Ask the host to hit play."}
                   </p>
-                  <button
-                    onClick={togglePlay}
-                    disabled={!currentTrack}
-                    className="mt-2 inline-flex items-center gap-2 px-4 py-2 rounded-full bg-foreground text-background text-sm font-semibold disabled:opacity-40 transition active:scale-95"
-                  >
-                    {isPlaying ? <Pause size={15} fill="currentColor" /> : <Play size={15} fill="currentColor" />}
-                    {isPlaying ? "Pause" : "Play"}
-                  </button>
                 </div>
               </div>
-
-              {/* progress (mirrored) */}
-              <div className="mt-4 h-1 rounded-full bg-foreground/10 overflow-hidden">
-                <div
-                  className="h-1 bg-foreground rounded-full transition-[width] duration-500"
-                  style={{ width: `${currentTrack?.duration_seconds ? (displayPos / currentTrack.duration_seconds) * 100 : 0}%` }}
-                />
-              </div>
-              {!isHost && (
-                <p className="text-[11px] text-foreground/40 mt-3 flex items-center gap-1.5">
-                  <Speaker size={11} /> Approximate sync — for louder in-person listening, the host controls playback.
-                </p>
-              )}
             </div>
 
             {/* Add to the shared queue */}

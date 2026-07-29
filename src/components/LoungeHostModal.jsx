@@ -1,21 +1,31 @@
 import { useEffect, useState } from "react";
-import { Users, Check, X, Loader2, Speaker, Volume2, Power, Copy } from "lucide-react";
+import { Users, Check, X, Loader2, Speaker, Power, Copy } from "lucide-react";
 import { loungeUrl, qrImageUrl } from "@/lib/lounge";
 
 export default function LoungeHostModal({ lounge, onClose }) {
-  const { session, members, loading, syncEnabled, setSyncEnabled, ensureSession, approve, reject, endSession } = lounge;
+  const { session, members, loading, ensureSession, approve, reject, endSession } = lounge;
   const [copied, setCopied] = useState(false);
 
   useEffect(() => {
     ensureSession();
   }, [ensureSession]);
 
-  if (!session) {
+  if (loading && !session) {
     return (
       <div className="fixed inset-0 z-[60] bg-black/70 backdrop-blur-sm grid place-items-center p-4" onClick={onClose}>
         <div className="bg-card rounded-3xl w-full max-w-sm p-8 text-center" onClick={(e) => e.stopPropagation()}>
           <Loader2 className="animate-spin mx-auto mb-3" />
           <p className="text-sm text-foreground/60">Starting your lounge…</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!session) {
+    return (
+      <div className="fixed inset-0 z-[60] bg-black/70 backdrop-blur-sm grid place-items-center p-4" onClick={onClose}>
+        <div className="bg-card rounded-3xl w-full max-w-sm p-8 text-center" onClick={(e) => e.stopPropagation()}>
+          <p className="text-sm text-foreground/60">Couldn't start your lounge. Try again.</p>
         </div>
       </div>
     );
@@ -50,9 +60,9 @@ export default function LoungeHostModal({ lounge, onClose }) {
           <div className="inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.3em] text-foreground/50 mb-1">
             <Speaker size={12} /> Public Lounge
           </div>
-          <h2 className="text-xl font-extrabold tracking-tight">Sync speakers</h2>
+          <h2 className="text-xl font-extrabold tracking-tight">{session.host_name || "Your"} Lounge</h2>
           <p className="text-xs text-foreground/50 mt-1">
-            Friends scan this to join your lounge, add songs to your queue, and play in sync for louder sound.
+            Friends scan this to join and add songs straight to your play queue.
           </p>
         </div>
 
@@ -72,23 +82,6 @@ export default function LoungeHostModal({ lounge, onClose }) {
             </button>
           </div>
         </div>
-
-        {/* Sync toggle */}
-        <button
-          onClick={() => setSyncEnabled(!syncEnabled)}
-          className={`w-full flex items-center justify-between px-4 py-3 rounded-2xl border transition mb-4 ${
-            syncEnabled
-              ? "bg-foreground text-background border-foreground"
-              : "border-border hover:bg-foreground/[0.04]"
-          }`}
-        >
-          <span className="flex items-center gap-2 text-sm font-semibold">
-            <Volume2 size={16} /> Speaker sync
-          </span>
-          <span className={`flex items-center text-xs font-bold ${syncEnabled ? "text-background/70" : "text-foreground/40"}`}>
-            {syncEnabled ? "ON" : "OFF"}
-          </span>
-        </button>
 
         {/* Pending requests */}
         <div className="mb-3">
@@ -151,11 +144,6 @@ export default function LoungeHostModal({ lounge, onClose }) {
         >
           <Power size={15} /> End lounge
         </button>
-        {syncEnabled && (
-          <p className="text-[11px] text-foreground/40 text-center mt-3">
-            Syncing your playback to approved guests. Keep this screen open while you listen.
-          </p>
-        )}
       </div>
     </div>
   );
