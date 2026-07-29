@@ -27,9 +27,9 @@ export default function VinylSleeve({ genre, count, cover, index, active, onClic
           <span className="text-[13px] sm:text-sm font-extrabold text-white tracking-tight truncate">
             {genre}
           </span>
-          <span className="text-[10px] sm:text-[11px] font-semibold uppercase tracking-widest text-white/50 hidden">
-            {count} {count === 1 ? "record" : "records"}
-          </span>
+          
+
+          
         </div>
       </div>
     </button>);
