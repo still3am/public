@@ -1,5 +1,3 @@
-import { Disc3 } from "lucide-react";
-
 export default function VinylSleeve({ genre, count, cover, index, active, onClick }) {
   const tilt = 12 - Math.min(index, 8) * 0.8;
   return (
@@ -20,10 +18,7 @@ export default function VinylSleeve({ genre, count, cover, index, active, onClic
         }
         <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-black/70" />
         <div className="absolute inset-x-0 top-0 h-px bg-white/25" />
-        <div className="absolute right-3 top-1/2 -translate-y-1/2 translate-x-4 group-hover:translate-x-0 opacity-0 group-hover:opacity-100 transition-all duration-300">
-          <Disc3 size={26} className="text-white/80 animate-[spin_6s_linear_infinite]" />
-        </div>
-        <div className="relative h-full flex flex-col justify-center px-3.5 pr-12">
+        <div className="relative h-full flex flex-col justify-center px-3.5">
           <span className="text-[13px] sm:text-sm font-extrabold text-white tracking-tight truncate">
             {genre}
           </span>
