@@ -9,12 +9,10 @@ import {
   Disc3,
   X,
   Shield,
-  ArrowLeft,
 } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 import TrackRow from "@/components/TrackRow";
 import Avatar from "@/components/Avatar";
-import VinylStack from "@/components/search/VinylStack";
 import PullToRefresh from "@/components/PullToRefresh";
 import PageHeader from "@/components/PageHeader";
 import EmptyState from "@/components/EmptyState";
@@ -51,7 +49,6 @@ function ArtistRow({ artist, trackCount, onPick }) {
 
 export default function Search() {
   const [q, setQ] = useState("");
-  const [genre, setGenre] = useState(null);
   const [allTracks, setAllTracks] = useState([]);
   const [allArtists, setAllArtists] = useState([]);
   const [people, setPeople] = useState([]);
@@ -107,29 +104,6 @@ export default function Search() {
       slice(0, 50);
   }, [hasQuery, Q, allArtists]);
 
-  const genreList = useMemo(() => {
-    const map = {};
-    for (const t of allTracks) {
-      const g = t.genre;
-      if (!g) continue;
-      if (!map[g]) map[g] = { genre: g, count: 0, cover_url: "", play: -1 };
-      map[g].count++;
-      const pc = t.play_count || 0;
-      if (pc >= map[g].play && t.cover_art_url) {
-        map[g].play = pc;
-        map[g].cover_url = t.cover_art_url;
-      }
-    }
-    return Object.values(map).sort(
-      (a, b) => b.count - a.count || a.genre.localeCompare(b.genre)
-    );
-  }, [allTracks]);
-
-  const genreTracks = useMemo(() => {
-    if (!genre) return [];
-    return allTracks.filter((t) => t.genre === genre);
-  }, [genre, allTracks]);
-
   // People search is a remote function — debounce it.
   useEffect(() => {
     if (!hasQuery) {
@@ -174,7 +148,7 @@ export default function Search() {
           <SearchIcon size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-foreground/40 pointer-events-none" />
           <input
             value={q}
-            onChange={(e) => { setQ(e.target.value); setGenre(null); }}
+            onChange={(e) => setQ(e.target.value)}
             placeholder="Search tracks, artists, people…"
             className="w-full pl-11 pr-11 py-3.5 rounded-full border border-border bg-background text-sm font-medium focus:outline-none focus:ring-2 focus:ring-foreground/10 transition shadow-sm" />
 
@@ -259,36 +233,11 @@ export default function Search() {
               </div>
             )}
           </div>
-        ) : genre ? (
-          <div>
-            <div className="flex items-center gap-3 mb-3">
-              <button
-                onClick={() => setGenre(null)}
-                className="tap-target rounded-full hover:bg-foreground/[0.06]"
-                aria-label="Back to genres">
-                <ArrowLeft size={20} />
-              </button>
-              <div className="min-w-0 flex-1">
-                <h2 className="text-lg font-extrabold tracking-tight truncate">{genre}</h2>
-                <p className="text-xs text-foreground/50">
-                  {genreTracks.length} {genreTracks.length === 1 ? "track" : "tracks"}
-                </p>
-              </div>
-            </div>
-            {genreTracks.length ? (
-              <div className="space-y-0.5">
-                {genreTracks.map((t, i) => (
-                  <TrackRow key={t.id} track={t} index={i} />
-                ))}
-              </div>
-            ) : (
-              <EmptyState
-                title="Nothing here yet"
-                description="No published tracks in this genre." />
-            )}
-          </div>
         ) : loadingAll ? loader : (
-          <VinylStack genres={genreList} onPick={setGenre} />
+          <EmptyState
+            icon={SearchIcon}
+            title="Search PUBLIC"
+            description="Find tracks, artists, and people across the network." />
         )}
       </div>
     </PullToRefresh>
