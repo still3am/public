@@ -16,7 +16,6 @@ export default function VinylSleeve({ genre, count, cover, index, active, onClic
 
         <div className="absolute inset-0 bg-gradient-to-br from-neutral-700 via-neutral-900 to-black" />
         }
-        <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-black/70" />
         <div className="absolute inset-x-0 top-0 h-px bg-white/25" />
         <div className="relative h-full flex flex-col justify-center px-3.5">
           <span className="text-[13px] sm:text-sm font-extrabold text-white tracking-tight truncate">
