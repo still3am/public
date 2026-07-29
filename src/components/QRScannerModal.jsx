@@ -10,13 +10,19 @@ export default function QRScannerModal({ onClose }) {
 
   function handle(decoded) {
     if (!decoded) return;
-    const m = decoded.match(/\/profile\/([a-zA-Z0-9_-]+)/);
-    if (m) {
+    const prof = decoded.match(/\/profile\/([a-zA-Z0-9_-]+)/);
+    if (prof) {
       onClose();
-      nav(`/profile/${m[1]}`);
-    } else {
-      setErr("That QR code doesn't look like a PUBLIC profile link.");
+      nav(`/profile/${prof[1]}`);
+      return;
     }
+    const lounge = decoded.match(/\/lounge\/([A-Za-z0-9]+)/);
+    if (lounge) {
+      onClose();
+      nav(`/lounge/${lounge[1]}`);
+      return;
+    }
+    setErr("That QR code isn't a PUBLIC profile or lounge link.");
   }
 
   useEffect(() => {
@@ -70,7 +76,7 @@ export default function QRScannerModal({ onClose }) {
         </button>
         <h3 className="font-extrabold text-center mb-1">Scan a PUBLIC QR</h3>
         <p className="text-xs text-foreground/50 text-center mb-3">
-          Point your camera at a profile QR code.
+          Point your camera at a profile or lounge QR code.
         </p>
         <div className="relative rounded-2xl overflow-hidden bg-black aspect-square">
           <div id="qr-reader" className="w-full h-full [&_video]:object-cover [&_video]:w-full [&_video]:h-full" />
@@ -85,7 +91,7 @@ export default function QRScannerModal({ onClose }) {
         </div>
         {err && <p className="text-xs text-red-500 text-center mt-3">{err}</p>}
         <p className="text-[10px] text-foreground/40 text-center mt-3 flex items-center justify-center gap-1">
-          <ScanLine size={10} /> Only used to open PUBLIC profiles.
+          <ScanLine size={10} /> Opens PUBLIC profiles and lounges.
         </p>
       </div>
     </div>

@@ -70,8 +70,8 @@ export default function LoungeHostModal({ lounge, onClose }) {
 
         {/* QR */}
         <div className="flex flex-col items-center mb-4">
-          <div className="inline-block p-3 bg-white rounded-2xl shadow-sm">
-            <img src={qrImageUrl(url, 360)} alt="Lounge QR" width="220" height="220" className="rounded-xl" />
+          <div className="inline-block p-4 rounded-3xl shadow-sm" style={{ backgroundColor: "white" }}>
+            <img src={qrImageUrl(url, 480)} alt="Lounge QR" width="240" height="240" className="rounded-xl" />
           </div>
           <div className="mt-3 flex items-center gap-2">
             <span className="text-sm font-bold tracking-[0.2em]">{session.code}</span>
