@@ -8,8 +8,10 @@ import {
   Heart,
   Lightbulb,
   Library as LibraryIcon,
+  Shield,
 } from "lucide-react";
 import ThemeToggle from "@/components/ThemeToggle";
+import { useAuth } from "@/lib/AuthContext";
 
 const ITEMS = [
   { to: "/upload", icon: Upload, label: "Upload" },
@@ -23,7 +25,10 @@ const ITEMS = [
 export default function MobileMoreSheet({ onClose }) {
   const nav = useNavigate();
   const loc = useLocation();
-  const items = ITEMS;
+  const { user } = useAuth();
+  const items = user?.role === "admin"
+    ? [...ITEMS, { to: "/admin", icon: Shield, label: "Admin" }]
+    : ITEMS;
   function go(to) {
     nav(to);
     onClose();
