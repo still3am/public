@@ -6,7 +6,6 @@ import {
   Activity,
   ListMusic,
   Smartphone,
-  Speaker,
 } from "lucide-react";
 
 export default function NowPlayingAddMenu({
@@ -16,8 +15,6 @@ export default function NowPlayingAddMenu({
   onViewQueue,
   onToggleLibrary,
   onLounge,
-  syncEnabled = false,
-  onToggleSync,
   inLibrary = false,
   queueCount = 0,
 }) {
@@ -69,15 +66,6 @@ export default function NowPlayingAddMenu({
         onLounge();
         close();
       },
-    },
-    onToggleSync && {
-      icon: Speaker,
-      label: syncEnabled ? "Sync speakers · On" : "Sync speakers",
-      onClick: (close) => {
-        onToggleSync();
-        close();
-      },
-      accent: syncEnabled ? "text-white" : "",
     },
     onToggleVisualizer && {
       icon: Activity,

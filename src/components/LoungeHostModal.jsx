@@ -73,6 +73,23 @@ export default function LoungeHostModal({ lounge, onClose }) {
           </div>
         </div>
 
+        {/* Sync toggle */}
+        <button
+          onClick={() => setSyncEnabled(!syncEnabled)}
+          className={`w-full flex items-center justify-between px-4 py-3 rounded-2xl border transition mb-4 ${
+            syncEnabled
+              ? "bg-foreground text-background border-foreground"
+              : "border-border hover:bg-foreground/[0.04]"
+          }`}
+        >
+          <span className="flex items-center gap-2 text-sm font-semibold">
+            <Volume2 size={16} /> Speaker sync
+          </span>
+          <span className={`flex items-center text-xs font-bold ${syncEnabled ? "text-background/70" : "text-foreground/40"}`}>
+            {syncEnabled ? "ON" : "OFF"}
+          </span>
+        </button>
+
         {/* Pending requests */}
         <div className="mb-3">
           <div className="flex items-center gap-2 text-[11px] uppercase tracking-wider text-foreground/40 mb-2">
@@ -134,6 +151,11 @@ export default function LoungeHostModal({ lounge, onClose }) {
         >
           <Power size={15} /> End lounge
         </button>
+        {syncEnabled && (
+          <p className="text-[11px] text-foreground/40 text-center mt-3">
+            Syncing your playback to approved guests. Keep this screen open while you listen.
+          </p>
+        )}
       </div>
     </div>
   );
