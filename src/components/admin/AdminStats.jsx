@@ -4,7 +4,7 @@ import { Users, Music2, Play, Clock, Loader2 } from "lucide-react";
 
 function StatCard({ icon: Icon, label, value, loading }) {
   return (
-    <div className="rounded-2xl border border-border bg-card p-4">
+    <div className="rounded-2xl border border-border bg-card p-4 hidden">
       <div className="flex items-center gap-2 text-foreground/50 mb-2">
         <Icon size={14} />
         <span className="text-[11px] uppercase tracking-wider font-semibold">{label}</span>
@@ -12,8 +12,8 @@ function StatCard({ icon: Icon, label, value, loading }) {
       <div className="text-2xl font-extrabold tabular-nums">
         {loading ? <Loader2 size={20} className="animate-spin text-foreground/40" /> : value}
       </div>
-    </div>
-  );
+    </div>);
+
 }
 
 export default function AdminStats() {
@@ -55,7 +55,7 @@ export default function AdminStats() {
         let page;
         try {
           page = await base44.entities.Track.filter(query, "-created_date", 1000);
-        } catch { break; }
+        } catch {break;}
         if (!page || !page.length) break;
         for (const t of page) {
           total++;
@@ -71,15 +71,15 @@ export default function AdminStats() {
 
     async function load() {
       const [users, t] = await Promise.all([
-        countAll(base44.entities.User),
-        countTracks(),
-      ]);
+      countAll(base44.entities.User),
+      countTracks()]
+      );
       if (!alive) return;
       setS({
         users,
         tracks: t.total,
         plays: t.plays,
-        pending: t.pending,
+        pending: t.pending
       });
     }
 
@@ -87,8 +87,8 @@ export default function AdminStats() {
 
     // live updates: entity events + a poll as a safety net
     const unsubs = [];
-    try { unsubs.push(base44.entities.Track.subscribe(() => load())); } catch {}
-    try { unsubs.push(base44.entities.User.subscribe(() => load())); } catch {}
+    try {unsubs.push(base44.entities.Track.subscribe(() => load()));} catch {}
+    try {unsubs.push(base44.entities.User.subscribe(() => load()));} catch {}
     const timer = setInterval(load, 10000);
 
     return () => {
@@ -105,6 +105,6 @@ export default function AdminStats() {
       <StatCard icon={Music2} label="Tracks" value={s?.tracks} loading={loading} />
       <StatCard icon={Play} label="Total plays" value={s?.plays} loading={loading} />
       <StatCard icon={Clock} label="Awaiting review" value={s?.pending} loading={loading} />
-    </div>
-  );
+    </div>);
+
 }
