@@ -3,16 +3,16 @@ import { base44 } from "@/api/base44Client";
 import { Users, Music2, Play, Clock, Loader2 } from "lucide-react";
 
 function StatCard({ icon: Icon, label, value, loading }) {
-  return (
-    <div className="rounded-2xl border border-border bg-card p-4 hidden">
-      <div className="flex items-center gap-2 text-foreground/50 mb-2">
-        <Icon size={14} />
-        <span className="text-[11px] uppercase tracking-wider font-semibold">{label}</span>
-      </div>
-      <div className="text-2xl font-extrabold tabular-nums">
-        {loading ? <Loader2 size={20} className="animate-spin text-foreground/40" /> : value}
-      </div>
-    </div>);
+  return null;
+
+
+
+
+
+
+
+
+
 
 }
 
