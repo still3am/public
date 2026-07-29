@@ -8,6 +8,7 @@ import React, {
 } from "react";
 import { base44 } from "@/api/base44Client";
 import { getRecord } from "@/lib/offlineCache";
+import { buildAutoQueue } from "@/lib/autoQueue";
 
 const PlayerContext = createContext(null);
 export const usePlayer = () => useContext(PlayerContext);
@@ -217,22 +218,17 @@ export function PlayerProvider({ children }) {
     return repeat === "all" ? 0 : -1;
   }, [queue, currentIndex, shuffle, repeat]);
 
-  // Genre radio: when the queue would otherwise stop, append more published
-  // tracks in the same genre (newest first, excluding anything already queued)
-  // and jump to the first one so listening keeps going automatically.
+  // Auto radio: when the queue would otherwise stop, append a mix of the same
+  // artist, the same genre, and fresh/popular discoveries, then jump into it.
   const extendWithGenreRadio = useCallback(async (track) => {
-    if (!track?.genre || !track?.id || autoQueueLoadingRef.current) return false;
+    if (!track?.id || autoQueueLoadingRef.current) return false;
     autoQueueLoadingRef.current = true;
     try {
-      const tracks = await base44.entities.Track.filter(
-        { is_published: true, genre: track.genre },
-        "-created_date",
-        30
-      ).catch(() => []);
-      if (!tracks || !tracks.length) return false;
-      const existing = new Set(queueRef.current.map((t) => t.id));
-      existing.add(track.id);
-      const picks = tracks.filter((t) => !existing.has(t.id)).slice(0, 15);
+      const picks = await buildAutoQueue(
+        track,
+        queueRef.current.map((t) => t.id),
+        15
+      );
       if (!picks.length) return false;
       const start = queueRef.current.length;
       setQueue((prev) => [...prev, ...picks]);
@@ -259,7 +255,7 @@ export function PlayerProvider({ children }) {
         return;
       }
       // Queue exhausted — keep the vibe going by queuing more of the same genre.
-      if (repeat === "off" && currentTrack?.genre) {
+      if (repeat === "off" && currentTrack) {
         const ok = await extendWithGenreRadio(currentTrack);
         if (ok) return;
       }
