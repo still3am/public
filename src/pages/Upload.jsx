@@ -140,14 +140,16 @@ export default function Upload() {
     );
   }
 
-  async function uploadOne(item) {
+  // Burns down title/artist fixes while the file is still uploading.
+  // Validation runs before we ever hit the network.
+  function validate(item) {
     if (!item.title.trim()) {
       updateItem(item.id, { error: "Title is required" });
-      return false;
+      return null;
     }
     if (!item.genre) {
       updateItem(item.id, { error: "Pick a genre" });
-      return false;
+      return null;
     }
     // To be released on PUBLIC, a track must have a cover image, a genre, and an artist name.
     // Anything missing is saved to the uploader's own library only (never public).
@@ -155,22 +157,43 @@ export default function Upload() {
       !!(item.coverFile || item.coverPreviewUrl) &&
       !!item.artist.trim() &&
       !!item.genre;
+    return { meetsRules };
+  }
+
+  // Auntie AI jobs run in the background so they never stall the next upload.
+  // Lock the track while enhancements are in flight so it doesn't get removed
+  // from the list before the truth hits the server.
+  async function runEnhancements(item, trackId) {
+    if (item.aiGenre) {
+      try { await base44.functions.invoke("detectGenre", { track_id: trackId }); }
+      catch {}
+    }
+    if (item.aiLyrics) {
+      try {
+        const lr = await base44.functions.invoke("generateLyrics", { track_id: trackId });
+        const text = lr?.data?.lyrics;
+        if (text) await base44.entities.Track.update(trackId, { lyrics_text: text.trim() });
+      } catch {}
+    }
+  }
+
+  async function uploadOne(item) {
+    const v = validate(item);
+    if (!v) return false;
+    const { meetsRules } = v;
     updateItem(item.id, { status: "uploading", error: "" });
     try {
-      const audioRes = await base44.integrations.Core.UploadFile({
-        file: item.file,
-      });
-      let coverUrl = "";
-      if (item.coverFile) {
-        const coverRes = await base44.integrations.Core.UploadFile({
-          file: item.coverFile,
-        });
-        coverUrl = coverRes.file_url;
-      }
+      // Upload audio + cover in parallel — they're independent files.
+      const [audioRes, coverRes] = await Promise.all([
+        base44.integrations.Core.UploadFile({ file: item.file }),
+        item.coverFile
+          ? base44.integrations.Core.UploadFile({ file: item.coverFile })
+          : Promise.resolve(null),
+      ]);
       const created = await base44.entities.Track.create({
         title: item.title.trim(),
         audio_url: audioRes.file_url,
-        cover_art_url: coverUrl,
+        cover_art_url: coverRes?.file_url || "",
         uploader_id: user.id,
         uploader_name: user.display_name || user.full_name || "",
         uploader_avatar_url: user.avatar_url || "",
@@ -193,22 +216,9 @@ export default function Upload() {
         refreshLibrary();
       } catch {}
 
-      if (item.aiGenre || item.aiLyrics) {
-        updateItem(item.id, { status: "enhancing" });
-        if (item.aiGenre) {
-          try { await base44.functions.invoke("detectGenre", { track_id: created.id }); }
-          catch {}
-        }
-        if (item.aiLyrics) {
-          try {
-            const lr = await base44.functions.invoke("generateLyrics", { track_id: created.id });
-            const text = lr?.data?.lyrics;
-            if (text) await base44.entities.Track.update(created.id, { lyrics_text: text.trim() });
-          } catch {}
-        }
-      }
-
+      // Track is fully uploaded — mark done now; AI runs in the background.
       markDone(item.id);
+      if (item.aiGenre || item.aiLyrics) runEnhancements(item, created.id);
       return true;
     } catch (err) {
       updateItem(item.id, {
@@ -226,12 +236,26 @@ export default function Upload() {
     if (!pending.length) return;
     setBusy(true);
     setProgress({ done: 0, total: pending.length });
+
+    // Upload several tracks at once instead of one-by-one. The integration
+    // layer handles its own queue; this just keeps more files in flight.
+    const CONCURRENCY = 3;
+    let done = 0;
     let ok = 0;
-    for (let i = 0; i < pending.length; i++) {
-      const success = await uploadOne(pending[i]);
-      if (success) ok++;
-      setProgress({ done: i + 1, total: pending.length });
+    let cursor = 0;
+    async function worker() {
+      while (cursor < pending.length) {
+        const item = pending[cursor++];
+        const success = await uploadOne(item);
+        if (success) ok++;
+        done++;
+        setProgress({ done, total: pending.length });
+      }
     }
+    await Promise.all(
+      Array.from({ length: Math.min(CONCURRENCY, pending.length) }, worker)
+    );
+
     setBusy(false);
     if (ok) toast({ title: `${ok} track${ok !== 1 ? "s" : ""} uploaded` });
   }
