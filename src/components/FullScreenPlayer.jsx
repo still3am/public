@@ -278,7 +278,7 @@ export default function FullScreenPlayer({ onClose }) {
             <button
               onClick={() => setShowLyricsPanel(true)}
               className="hidden xl:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full ring-1 ring-white/20 hover:bg-white/10 text-xs font-semibold shrink-0 transition">
-              <Mic2 size={14} className="hidden" /> Lyrics
+               Lyrics
             </button>
             }
           </div>
