@@ -1,7 +1,4 @@
-import { useMemo } from "react";
 import BookSpine from "./BookSpine";
-
-const SHELVES = 4;
 
 function hue(str) {
   let h = 0;
@@ -10,43 +7,21 @@ function hue(str) {
 }
 
 export default function BookShelf({ genres, onPick }) {
-  const shelves = useMemo(() => {
-    if (!genres?.length) return [];
-    // arrange by hue so the shelf reads as a rainbow gradient
-    const sorted = [...genres].sort((a, b) => hue(a.genre) - hue(b.genre));
-    const per = Math.ceil(sorted.length / SHELVES);
-    const rows = [];
-    for (let i = 0; i < sorted.length; i += per) rows.push(sorted.slice(i, i + per));
-    return rows;
-  }, [genres]);
-
-  if (!shelves.length) return null;
+  if (!genres?.length) return null;
+  const sorted = [...genres].sort((a, b) => hue(a.genre) - hue(b.genre));
 
   return (
-    <div className="rounded-2xl overflow-hidden border border-border">
-      {shelves.map((row, i) => (
-        <div key={i}>
-          {/* books */}
-          <div className="flex items-end gap-[2px] px-2.5 sm:px-4 h-28 sm:h-40 bg-gradient-to-b from-[#271911] to-[#150d08]">
-            {row.map((g, idx) => (
-              <BookSpine
-                key={g.genre}
-                genre={g.genre}
-                count={g.count}
-                hue={hue(g.genre)}
-                index={idx}
-                onClick={() => onPick(g.genre)} />
-            ))}
-          </div>
+    <div
+      className="flex items-end gap-[3px] overflow-x-auto no-scrollbar py-6 pl-1 pr-6 h-40 sm:h-52 bg-gradient-to-b from-[#1b1310] to-[#0f0a07] rounded-2xl border border-border">
 
-          {/* wooden plank */}
-          <div
-            className="h-2.5 sm:h-3"
-            style={{
-              background: "linear-gradient(#3a261a, #28180e 55%, #1c1008)",
-              boxShadow: "0 -1px 0 rgba(255,220,180,0.12) inset, 0 5px 10px rgba(0,0,0,0.5)",
-            }} />
-        </div>
+      {sorted.map((g, idx) => (
+        <BookSpine
+          key={g.genre}
+          genre={g.genre}
+          count={g.count}
+          hue={hue(g.genre)}
+          index={idx}
+          onClick={() => onPick(g.genre)} />
       ))}
     </div>
   );
