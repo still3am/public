@@ -230,6 +230,11 @@ export default function FullScreenPlayer({ onClose }) {
           inLibrary={isInLibrary(t.id)}
           onViewQueue={() => setShowQueue(true)}
           onLounge={() => setLoungeOpen(true)}
+          syncEnabled={lounge.syncEnabled}
+          onToggleSync={async () => {
+            if (!lounge.session) await lounge.ensureSession();
+            lounge.setSyncEnabled(!lounge.syncEnabled);
+          }}
           queueCount={p.queue.length - p.currentIndex - 1 > 0 ? p.queue.length - p.currentIndex - 1 : 0} />
         
       </div>
