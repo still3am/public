@@ -1,0 +1,488 @@
+import { useEffect, useRef, useState, useCallback, useMemo } from "react";
+import { useParams, Link, useNavigate } from "react-router-dom";
+import { base44 } from "@/api/base44Client";
+import { useAuth } from "@/lib/AuthContext";
+import { useToast } from "@/components/ui/use-toast";
+import BackHeader from "@/components/BackHeader";
+import { useLibrary } from "@/context/LibraryContext";
+import { fetchSessionByCode, parseTrack, loungeUrl } from "@/lib/lounge";
+import { getRecentPlays } from "@/lib/recentPlays";
+import {
+  Loader2,
+  Users,
+  Speaker,
+  Play,
+  Pause,
+  Plus,
+  Check,
+  X,
+  ListMusic,
+  Search,
+  Headphones,
+  Clock,
+} from "lucide-react";
+
+export default function Lounge() {
+  const { code } = useParams();
+  const { user } = useAuth();
+  const { toast } = useToast();
+  const { ids } = useLibrary();
+  const nav = useNavigate();
+  const [session, setSession] = useState(null);
+  const [member, setMember] = useState(null);
+  const [members, setMembers] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [notFound, setNotFound] = useState(false);
+  const [currentTrack, setCurrentTrack] = useState(null);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [position, setPosition] = useState(0);
+  const [pickerOpen, setPickerOpen] = useState(false);
+
+  // Dedicated audio element for the lounge — separate from the global player
+  // so guests don't disturb their own PlayerContext queue.
+  const audioRef = useRef(null);
+  if (!audioRef.current && typeof Audio !== "undefined") {
+    audioRef.current = new Audio();
+    try {
+      audioRef.current.crossOrigin = "anonymous";
+    } catch {}
+  }
+  const trackIdRef = useRef("");
+
+  // Position ticker so the progress UI feels live between broadcasts.
+  const [displayPos, setDisplayPos] = useState(0);
+  useEffect(() => {
+    const a = audioRef.current;
+    if (!a) return;
+    const onTime = () => setDisplayPos(a.currentTime || 0);
+    a.addEventListener("timeupdate", onTime);
+    return () => a.removeEventListener("timeupdate", onTime);
+  }, []);
+
+  // Resolve session + create-or-fetch my membership record.
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      if (!code || !user?.id) return;
+      setLoading(true);
+      try {
+        const s = await fetchSessionByCode(code);
+        if (cancelled) return;
+        if (!s) {
+          setNotFound(true);
+          setLoading(false);
+          return;
+        }
+        setSession(s);
+        const mine = await base44.entities.LoungeMember.filter(
+          { session_id: s.id, user_id: user.id },
+          "created_date",
+          50
+        );
+        if (cancelled) return;
+        if (mine.length) {
+          setMember(mine[0]);
+        } else if (s.host_id === user.id) {
+          const m = await base44.entities.LoungeMember.create({
+            session_id: s.id,
+            user_id: user.id,
+            name: user.full_name || "",
+            role: "host",
+            status: "approved",
+          });
+          if (!cancelled) setMember(m);
+        } else {
+          const m = await base44.entities.LoungeMember.create({
+            session_id: s.id,
+            user_id: user.id,
+            name: user.full_name || "",
+            role: "guest",
+            status: "pending",
+          });
+          if (!cancelled) setMember(m);
+        }
+      } catch {
+        if (!cancelled) setNotFound(true);
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [code, user?.id]);
+
+  const refreshMember = useCallback(async (sid) => {
+    try {
+      const all = await base44.entities.LoungeMember.filter({ session_id: sid }, "created_date", 200);
+      setMembers(all || []);
+      const me = (all || []).find((m) => m.user_id === user?.id);
+      if (me) setMember(me);
+    } catch {}
+  }, [user?.id]);
+
+  // Live member / approval status updates.
+  useEffect(() => {
+    if (!session?.id) return;
+    refreshMember(session.id);
+    let unsub;
+    try {
+      unsub = base44.entities.LoungeMember.subscribe(() => refreshMember(session.id));
+    } catch {}
+    const poll = setInterval(() => refreshMember(session.id), 5000);
+    return () => {
+      if (unsub) unsub();
+      clearInterval(poll);
+    };
+  }, [session?.id, refreshMember]);
+
+  // Apply a fresh session snapshot to our audio element (speaker sync).
+  const applyState = useCallback((s) => {
+    const a = audioRef.current;
+    if (!a || !s) return;
+    if (s.current_track_id) {
+      const t = parseTrack(s.current_track);
+      const same = trackIdRef.current === s.current_track_id;
+      trackIdRef.current = s.current_track_id;
+      setCurrentTrack(t);
+      if (!same && t?.audio_url) {
+        a.src = t.audio_url;
+        a.load();
+      }
+      const anchor = s.sync_anchor_at ? new Date(s.sync_anchor_at).getTime() : Date.now();
+      const elapsed = s.is_playing ? Math.max(0, (Date.now() - anchor) / 1000) : 0;
+      const target = Math.max(0, (s.position_seconds || 0) + elapsed);
+      if (!same) {
+        try {
+          a.currentTime = target;
+        } catch {}
+        setDisplayPos(target);
+      } else if (Math.abs((a.currentTime || 0) - target) > 1.8) {
+        try {
+          a.currentTime = target;
+        } catch {}
+        setDisplayPos(target);
+      }
+      if (s.is_playing) {
+        a.play().then(() => setIsPlaying(true)).catch(() => setIsPlaying(false));
+      } else {
+        a.pause();
+        setIsPlaying(false);
+      }
+      setPosition(s.position_seconds || 0);
+    } else {
+      a.pause();
+      a.removeAttribute("src");
+      a.load();
+      setIsPlaying(false);
+      setCurrentTrack(null);
+      trackIdRef.current = "";
+    }
+  }, []);
+
+  // Mirror the host's session broadcasts (only once we're approved in).
+  const canListen = member?.status === "approved";
+  useEffect(() => {
+    if (!session?.id || !canListen) return;
+    let unsub;
+    let poll;
+    (async () => {
+      try {
+        const s = await base44.entities.LoungeSession.get(session.id);
+        if (s) applyState(s);
+      } catch {}
+    })();
+    try {
+      unsub = base44.entities.LoungeSession.subscribe((ev) => {
+        if (!ev || ev.id !== session.id) return;
+        base44.entities.LoungeSession
+          .get(session.id)
+          .then(applyState)
+          .catch(() => {});
+      });
+    } catch {}
+    poll = setInterval(() => {
+      base44.entities.LoungeSession.get(session.id).then(applyState).catch(() => {});
+    }, 6000);
+    return () => {
+      if (unsub) unsub();
+      if (poll) clearInterval(poll);
+    };
+  }, [session?.id, applyState, canListen]);
+
+  const approved = member?.status === "approved";
+  const isHost = member?.role === "host";
+  const rejected = member?.status === "rejected";
+  const pending = member?.status === "pending";
+
+  function togglePlay() {
+    const a = audioRef.current;
+    if (!a) return;
+    if (a.paused) a.play().then(() => setIsPlaying(true)).catch(() => {});
+    else {
+      a.pause();
+      setIsPlaying(false);
+    }
+  }
+
+  return (
+    <div className="min-h-screen pb-10">
+      <BackHeader title="Lounge" />
+      <div className="max-w-xl mx-auto px-4">
+        {loading ? (
+          <div className="flex justify-center py-24">
+            <Loader2 className="animate-spin text-foreground/50" />
+          </div>
+        ) : notFound ? (
+          <div className="text-center py-24">
+            <Speaker size={36} className="mx-auto text-foreground/30 mb-3" />
+            <h2 className="text-lg font-extrabold">Lounge not found</h2>
+            <p className="text-sm text-foreground/50 mt-1 mb-4">
+              The host may have ended the lounge, or the code is wrong.
+            </p>
+            <Link to="/" className="text-sm font-semibold underline">
+              Back home
+            </Link>
+          </div>
+        ) : !approved ? (
+          <div className="text-center py-16">
+            <div className="w-16 h-16 rounded-full bg-foreground/5 grid place-items-center mx-auto mb-4">
+              {pending ? <Clock size={28} className="text-foreground/50" /> : <X size={28} className="text-red-500" />}
+            </div>
+            {pending ? (
+              <>
+                <h2 className="text-lg font-extrabold">Waiting for approval</h2>
+                <p className="text-sm text-foreground/50 mt-1 max-w-xs mx-auto">
+                  The host ({session?.host_name || "Host"}) needs to let you in. This page updates automatically.
+                </p>
+                <div className="inline-flex items-center gap-2 mt-4 text-xs text-foreground/40">
+                  <Loader2 size={13} className="animate-spin" /> Listening for the host's decision…
+                </div>
+              </>
+            ) : (
+              <>
+                <h2 className="text-lg font-extrabold">Declined by host</h2>
+                <p className="text-sm text-foreground/50 mt-1">You weren't let into this lounge.</p>
+                <button
+                  onClick={() => nav("/")}
+                  className="mt-4 px-4 py-2 rounded-full bg-foreground text-background text-sm font-semibold"
+                >
+                  Back home
+                </button>
+              </>
+            )}
+          </div>
+        ) : (
+          <>
+            {/* Now syncing */}
+            <div className="rounded-3xl border border-border bg-foreground/[0.02] p-5 mb-4">
+              <div className="flex items-center justify-between mb-4">
+                <div className="inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.25em] text-foreground/50">
+                  <Headphones size={12} /> {isHost ? "Hosting lounge" : "Synced to host"}
+                </div>
+                <div className="inline-flex items-center gap-1.5 text-[11px] text-foreground/40">
+                  <Users size={12} />
+                  {members.filter((m) => m.status === "approved").length} live
+                </div>
+              </div>
+
+              <div className="flex items-center gap-4">
+                <div className="w-24 h-24 rounded-2xl overflow-hidden bg-foreground/10 shrink-0">
+                  {currentTrack?.cover_art_url ? (
+                    <img src={currentTrack.cover_art_url} alt="" className="w-full h-full object-cover" />
+                  ) : (
+                    <div className="w-full h-full grid place-items-center text-foreground/30">
+                      <Speaker size={28} />
+                    </div>
+                  )}
+                </div>
+                <div className="min-w-0 flex-1">
+                  <h3 className="font-extrabold truncate text-lg">{currentTrack?.title || "Waiting for the host…"}</h3>
+                  <p className="text-sm text-foreground/50 truncate">
+                    {currentTrack?.artist || currentTrack?.uploader_name || "—"}
+                  </p>
+                  <button
+                    onClick={togglePlay}
+                    disabled={!currentTrack}
+                    className="mt-2 inline-flex items-center gap-2 px-4 py-2 rounded-full bg-foreground text-background text-sm font-semibold disabled:opacity-40 transition active:scale-95"
+                  >
+                    {isPlaying ? <Pause size={15} fill="currentColor" /> : <Play size={15} fill="currentColor" />}
+                    {isPlaying ? "Pause" : "Play"}
+                  </button>
+                </div>
+              </div>
+
+              {/* progress (mirrored) */}
+              <div className="mt-4 h-1 rounded-full bg-foreground/10 overflow-hidden">
+                <div
+                  className="h-1 bg-foreground rounded-full transition-[width] duration-500"
+                  style={{ width: `${currentTrack?.duration_seconds ? (displayPos / currentTrack.duration_seconds) * 100 : 0}%` }}
+                />
+              </div>
+              {!isHost && (
+                <p className="text-[11px] text-foreground/40 mt-3 flex items-center gap-1.5">
+                  <Speaker size={11} /> Approximate sync — for louder in-person listening, the host controls playback.
+                </p>
+              )}
+            </div>
+
+            {/* Add to the shared queue */}
+            <button
+              onClick={() => setPickerOpen(true)}
+              className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-2xl border border-border hover:bg-foreground/[0.04] text-sm font-semibold transition mb-3"
+            >
+              <Plus size={16} /> Add music to the queue
+            </button>
+
+            <div className="text-[11px] text-foreground/40 text-center">
+              Lounge code <span className="font-bold tracking-widest">{session?.code}</span>
+              {!isHost && ` · hosted by ${session?.host_name || "Host"}`}
+            </div>
+          </>
+        )}
+      </div>
+
+      {pickerOpen && session?.id && user?.id && (
+        <GuestQueuePicker
+          sessionId={session.id}
+          user={user}
+          onClose={() => setPickerOpen(false)}
+          onAdded={() => toast({ title: "Added to the lounge queue" })}
+        />
+      )}
+    </div>
+  );
+}
+
+// ---------------- Guest add-to-queue picker ----------------
+function GuestQueuePicker({ sessionId, user, onClose, onAdded }) {
+  const { ids } = useLibrary();
+  const libraryIds = ids || [];
+  const [tracks, setTracks] = useState(null);
+  const [query, setQuery] = useState("");
+  const [justAdded, setJustAdded] = useState(new Set());
+
+  const load = useCallback(async () => {
+    const recent = getRecentPlays().slice(0, 30);
+    let libTracks = [];
+    try {
+      if (libraryIds.length) {
+        libTracks = await base44.entities.Track.filter(
+          { id: { $in: libraryIds.slice(0, 200) } },
+          "-created_date",
+          300
+        );
+      }
+    } catch {}
+    const byId = new Map();
+    [...(libTracks || []), ...recent].forEach((t) => t && byId.set(t.id, t));
+    setTracks([...byId.values()]);
+  }, [libraryIds.join(",")]);
+
+  useEffect(() => {
+    load();
+  }, [load]);
+
+  const filtered = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    const list = tracks || [];
+    if (!q) return list;
+    return list.filter(
+      (t) =>
+        t.title?.toLowerCase().includes(q) ||
+        t.artist?.toLowerCase().includes(q) ||
+        t.uploader_name?.toLowerCase().includes(q)
+    );
+  }, [tracks, query]);
+
+  const add = async (t) => {
+    const slim = {
+      id: t.id,
+      title: t.title,
+      artist: t.artist || t.uploader_name || "",
+      uploader_id: t.uploader_id,
+      uploader_name: t.uploader_name || "",
+      cover_art_url: t.cover_art_url || "",
+      audio_url: t.audio_url,
+      duration_seconds: t.duration_seconds || 0,
+      genre: t.genre || "Other",
+      explicit: !!t.explicit,
+    };
+    try {
+      await base44.entities.LoungeQueueItem.create({
+        session_id: sessionId,
+        track_id: t.id,
+        track: JSON.stringify(slim),
+        added_by_id: user?.id,
+        added_by_name: user?.full_name || "",
+      });
+      setJustAdded((prev) => new Set(prev).add(t.id));
+      onAdded?.();
+    } catch (e) {
+      onAdded?.();
+    }
+  };
+
+  return (
+    <div className="fixed inset-0 z-[70] bg-black/85 backdrop-blur-xl flex flex-col animate-[fadeIn_.2s_ease-out]">
+      <div className="flex items-center justify-between px-5 pt-8 pb-3 shrink-0 text-white">
+        <div className="flex items-center gap-2 min-w-0">
+          <ListMusic size={20} className="opacity-80 shrink-0" />
+          <h2 className="text-lg font-bold truncate">Add to the lounge queue</h2>
+        </div>
+        <button onClick={onClose} className="p-2 -mr-2 rounded-full hover:bg-white/10 active:scale-90 transition" aria-label="Close">
+          <X size={22} />
+        </button>
+      </div>
+      <div className="px-5 pb-3 shrink-0">
+        <div className="relative">
+          <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 opacity-50" />
+          <input
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="Search your library & recently played"
+            className="w-full pl-10 pr-3 py-2.5 rounded-full bg-white/10 border border-white/10 text-sm placeholder:text-white/40 focus:outline-none focus:bg-white/15 transition text-white"
+          />
+        </div>
+      </div>
+      <div className="flex-1 min-h-0 overflow-y-auto px-3 pb-10 text-white">
+        {!tracks ? (
+          <div className="flex justify-center py-16">
+            <Loader2 className="animate-spin text-white/50" />
+          </div>
+        ) : !filtered.length ? (
+          <div className="text-center py-16">
+            <p className="text-sm text-white/50">{query ? "No matches." : "Add tracks to your library first."}</p>
+          </div>
+        ) : (
+          <div className="space-y-0.5">
+            {filtered.map((t) => {
+              const added = justAdded.has(t.id);
+              return (
+                <div key={t.id} className="flex items-center gap-3 px-2 py-2 rounded-lg hover:bg-white/5 transition">
+                  <div className="w-10 h-10 rounded overflow-hidden bg-white/10 shrink-0">
+                    {t.cover_art_url && <img src={t.cover_art_url} alt="" className="w-full h-full object-cover" />}
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <div className="text-sm font-medium truncate">{t.title}</div>
+                    <div className="text-xs text-white/50 truncate">{t.artist || t.uploader_name || "Unknown"}</div>
+                  </div>
+                  <button
+                    onClick={() => add(t)}
+                    disabled={added}
+                    className={`shrink-0 w-9 h-9 rounded-full grid place-items-center active:scale-90 transition ${
+                      added ? "bg-green-500/30 text-green-300" : "bg-white/10 hover:bg-white/20"
+                    }`}
+                    aria-label={added ? "Added" : "Add"}
+                  >
+                    {added ? <Check size={16} /> : <Plus size={16} />}
+                  </button>
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}

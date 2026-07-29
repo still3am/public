@@ -26,6 +26,9 @@ import {
 "lucide-react";
 import AudioVisualizer from "@/components/AudioVisualizer";
 import QueuePanel from "@/components/QueuePanel";
+import LoungeHostModal from "@/components/LoungeHostModal";
+import { useLoungeHost } from "@/hooks/useLoungeHost";
+import { useLoungeBroadcast } from "@/hooks/useLoungeBroadcast";
 import { useLibrary } from "@/context/LibraryContext";
 
 const clampVol = (v) => Math.max(0, Math.min(1, v));
@@ -56,6 +59,15 @@ export default function FullScreenPlayer({ onClose }) {
   const [showQueue, setShowQueue] = useState(false);
   const [showLyricsPanel, setShowLyricsPanel] = useState(true);
   const t = p.currentTrack;
+  const lounge = useLoungeHost();
+  const [loungeOpen, setLoungeOpen] = useState(false);
+  useLoungeBroadcast({
+    session: lounge.session,
+    enabled: lounge.syncEnabled,
+    currentTrack: t,
+    position: p.position,
+    isPlaying: p.isPlaying,
+  });
   const volDrag = useRef({ startY: 0, start: 0, active: false });
   const hintTimer = useRef(null);
   const dismissDrag = useRef({ startY: 0, active: false, moved: false });
@@ -217,6 +229,7 @@ export default function FullScreenPlayer({ onClose }) {
           onToggleLibrary={() => toggleLibrary(t)}
           inLibrary={isInLibrary(t.id)}
           onViewQueue={() => setShowQueue(true)}
+          onLounge={() => setLoungeOpen(true)}
           queueCount={p.queue.length - p.currentIndex - 1 > 0 ? p.queue.length - p.currentIndex - 1 : 0} />
         
       </div>
@@ -407,6 +420,9 @@ export default function FullScreenPlayer({ onClose }) {
       </div>
 
       <QueuePanel open={showQueue} onClose={() => setShowQueue(false)} />
+      {loungeOpen && (
+        <LoungeHostModal lounge={lounge} onClose={() => setLoungeOpen(false)} />
+      )}
 
       {/* copied toast */}
       {copied &&

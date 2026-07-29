@@ -5,6 +5,7 @@ import {
   X,
   Activity,
   ListMusic,
+  Smartphone,
 } from "lucide-react";
 
 export default function NowPlayingAddMenu({
@@ -13,6 +14,7 @@ export default function NowPlayingAddMenu({
   onToggleVisualizer,
   onViewQueue,
   onToggleLibrary,
+  onLounge,
   inLibrary = false,
   queueCount = 0,
 }) {
@@ -54,6 +56,14 @@ export default function NowPlayingAddMenu({
       label: `Queue${queueCount ? ` · ${queueCount}` : ""}`,
       onClick: (close) => {
         onViewQueue();
+        close();
+      },
+    },
+    onLounge && {
+      icon: Smartphone,
+      label: "Lounge",
+      onClick: (close) => {
+        onLounge();
         close();
       },
     },

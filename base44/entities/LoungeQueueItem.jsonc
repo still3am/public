@@ -1,0 +1,59 @@
+{
+  "name": "LoungeQueueItem",
+  "type": "object",
+  "properties": {
+    "session_id": {
+      "type": "string"
+    },
+    "track_id": {
+      "type": "string"
+    },
+    "track": {
+      "type": "string",
+      "default": "",
+      "description": "JSON-serialized minimal track object"
+    },
+    "added_by_id": {
+      "type": "string"
+    },
+    "added_by_name": {
+      "type": "string",
+      "default": ""
+    }
+  },
+  "required": [
+    "session_id",
+    "track_id",
+    "added_by_id"
+  ],
+  "rls": {
+    "create": {
+      "data.added_by_id": "{{user.id}}"
+    },
+    "read": null,
+    "update": {
+      "$or": [
+        {
+          "data.added_by_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "$or": [
+        {
+          "data.added_by_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    }
+  }
+}
