@@ -2,6 +2,7 @@ import { useState, useRef, useCallback } from "react";
 import { useAuth } from "@/lib/AuthContext";
 import { useToast } from "@/components/ui/use-toast";
 import { base44 } from "@/api/base44Client";
+import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
 import {
   AUDIO_ACCEPT,
   getAudioDuration,
@@ -16,7 +17,15 @@ import FileDropZone from "@/components/upload/FileDropZone";
 import UploadItem from "@/components/upload/UploadItem";
 import DuplicateModal from "@/components/upload/DuplicateModal";
 import { useLibrary } from "@/context/LibraryContext";
-import { UploadCloud, Loader2, Plus, CheckCheck, Wand2 } from "lucide-react";
+import {
+  UploadCloud,
+  Loader2,
+  Plus,
+  CheckCheck,
+  Wand2,
+  ListOrdered,
+  Trash2,
+} from "lucide-react";
 
 let idc = 0;
 
@@ -264,10 +273,29 @@ export default function Upload() {
     setItems((prev) => prev.filter((it) => it.status !== "done"));
   }
 
+  function clearAll() {
+    if (busy) return;
+    setItems([]);
+  }
+
+  function onDragEnd(result) {
+    if (!result.destination || result.destination.index === result.source.index)
+      return;
+    setItems((prev) => {
+      const next = [...prev];
+      const [moved] = next.splice(result.source.index, 1);
+      next.splice(result.destination.index, 0, moved);
+      return next;
+    });
+  }
+
   const anyPending = items.some(
     (it) => it.status === "editing" || it.status === "error"
   );
   const doneCount = items.filter((it) => it.status === "done").length;
+  const progressPct = progress.total
+    ? Math.round((progress.done / progress.total) * 100)
+    : 0;
 
   return (
     <div className="max-w-3xl mx-auto px-3 md:px-0 pb-24">
@@ -286,59 +314,116 @@ export default function Upload() {
       />
 
       {items.length > 0 && (
-        <div className="mt-6 space-y-3">
-          <div className="flex items-center justify-between gap-2 px-1 flex-wrap">
-            <div className="text-sm font-semibold text-foreground/60">
-              {items.length} file{items.length !== 1 ? "s" : ""}
-              {doneCount > 0 && (
-                <span className="text-foreground/40 font-normal">
-                  {" "}
-                  · {doneCount} uploaded
+        <div className="mt-6">
+          <div className="rounded-2xl border border-border bg-card overflow-hidden">
+            {/* Queue header */}
+            <div className="flex items-center justify-between gap-2 px-3 py-2.5 border-b border-border bg-foreground/[0.02]">
+              <div className="text-sm font-semibold flex items-center gap-2 min-w-0">
+                <ListOrdered size={16} className="shrink-0" />
+                Queue
+                <span className="text-foreground/45 font-normal">
+                  {items.length} item{items.length !== 1 ? "s" : ""}
+                  {doneCount > 0 && (
+                    <span className="text-emerald-600 dark:text-emerald-400">
+                      {" "}· {doneCount} done
+                    </span>
+                  )}
                 </span>
-              )}
-            </div>
-            <div className="flex items-center gap-2">
-              {doneCount > 0 && (
+              </div>
+              <div className="flex items-center gap-2">
+                {doneCount > 0 && (
+                  <button
+                    onClick={clearDone}
+                    className="text-xs font-medium text-foreground/50 hover:text-foreground px-2.5 py-1.5 rounded-full hover:bg-foreground/5 transition"
+                  >
+                    Clear uploaded
+                  </button>
+                )}
                 <button
-                  onClick={clearDone}
-                  className="text-xs font-medium text-foreground/50 hover:text-foreground px-2 py-1.5 rounded-full hover:bg-foreground/5 transition"
+                  onClick={clearAll}
+                  disabled={busy}
+                  className="inline-flex items-center gap-1.5 text-xs font-semibold text-foreground/60 hover:text-destructive px-2.5 py-1.5 rounded-full hover:bg-destructive/10 transition disabled:opacity-40"
                 >
-                  Clear uploaded
+                  <Trash2 size={13} /> Clear all
                 </button>
-              )}
-              <button
-                onClick={() => inputRef.current?.click()}
-                disabled={busy}
-                className="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-full border border-border hover:bg-foreground/5 transition disabled:opacity-40"
-              >
-                <Plus size={14} /> Add more
-              </button>
+                <button
+                  onClick={() => inputRef.current?.click()}
+                  disabled={busy}
+                  className="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-full border border-border hover:bg-foreground/5 transition disabled:opacity-40"
+                >
+                  <Plus size={14} /> Add
+                </button>
+              </div>
+            </div>
+
+            {/* Overall queue progress */}
+            {(busy || doneCount > 0) && (
+              <div className="h-1 bg-foreground/[0.06]">
+                <div
+                  className="h-full bg-foreground transition-[width] duration-300 ease-out"
+                  style={{ width: `${busy ? progressPct : doneCount ? 100 : 0}%` }}
+                />
+              </div>
+            )}
+
+            {/* Queue body */}
+            <DragDropContext onDragEnd={onDragEnd}>
+              <Droppable droppableId="upload-queue">
+                {(provided) => (
+                  <div
+                    ref={provided.innerRef}
+                    {...provided.droppableProps}
+                    className="divide-y divide-border"
+                  >
+                    {items.map((it, i) => (
+                      <Draggable
+                        key={it.id}
+                        draggableId={String(it.id)}
+                        index={i}
+                        isDragDisabled={busy}
+                      >
+                        {(p) => (
+                          <div
+                            ref={p.innerRef}
+                            {...p.draggableProps}
+                          >
+                            <UploadItem
+                              item={it}
+                              index={i}
+                              dragHandleProps={p.dragHandleProps}
+                              onChange={(patch) => updateItem(it.id, patch)}
+                              onRemove={() => removeItem(it.id)}
+                              onUpload={() => uploadOne(it)}
+                              disabled={busy}
+                            />
+                          </div>
+                        )}
+                      </Draggable>
+                    ))}
+                    {provided.placeholder}
+                  </div>
+                )}
+              </Droppable>
+            </DragDropContext>
+
+            {/* Footer action */}
+            <div className="px-3 py-3 border-t border-border bg-foreground/[0.02]">
               <button
                 onClick={uploadAll}
                 disabled={!anyPending || busy}
-                className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-foreground text-background text-sm font-semibold disabled:opacity-40 active:scale-95 transition"
+                className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-full bg-foreground text-background text-sm font-semibold disabled:opacity-40 active:scale-[0.98] transition"
               >
                 {busy ? (
-                  <Loader2 size={15} className="animate-spin" />
+                  <Loader2 size={16} className="animate-spin" />
                 ) : (
-                  <UploadCloud size={15} />
+                  <UploadCloud size={16} />
                 )}
                 {busy
                   ? `Uploading ${progress.done}/${progress.total}`
-                  : "Upload all"}
+                  : `Upload ${items.length} track${items.length !== 1 ? "s" : ""}`}
               </button>
             </div>
           </div>
-          {items.map((it) => (
-            <UploadItem
-              key={it.id}
-              item={it}
-              onChange={(patch) => updateItem(it.id, patch)}
-              onRemove={() => removeItem(it.id)}
-              onUpload={() => uploadOne(it)}
-              disabled={busy}
-            />
-          ))}
         </div>
       )}
 
