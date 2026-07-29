@@ -22,28 +22,74 @@ export default function AdminStats() {
   useEffect(() => {
     let alive = true;
 
+    // Paginate past the 1000-row server cap using a created_date cursor so the
+    // counts stay accurate on large catalogs.
+    async function countAll(entity, sort = "-created_date", pageSize = 1000) {
+      let total = 0;
+      let cursor = null;
+      while (true) {
+        const query = cursor ? { created_date: { $lt: cursor } } : {};
+        let page;
+        try {
+          page = await entity.filter(query, sort, pageSize);
+        } catch {
+          break;
+        }
+        if (!page || !page.length) break;
+        total += page.length;
+        if (page.length < pageSize) break;
+        const last = page[page.length - 1];
+        cursor = last?.created_date;
+        if (!cursor) break;
+      }
+      return total;
+    }
+
+    async function countTracks() {
+      let total = 0;
+      let plays = 0;
+      let pending = 0;
+      let cursor = null;
+      while (true) {
+        const query = cursor ? { created_date: { $lt: cursor } } : {};
+        let page;
+        try {
+          page = await base44.entities.Track.filter(query, "-created_date", 1000);
+        } catch { break; }
+        if (!page || !page.length) break;
+        for (const t of page) {
+          total++;
+          plays += t.play_count || 0;
+          if (t.approval_status === "pending") pending++;
+        }
+        if (page.length < 1000) break;
+        cursor = page[page.length - 1]?.created_date;
+        if (!cursor) break;
+      }
+      return { total, plays, pending };
+    }
+
     async function load() {
-      const [users, tracks, pending] = await Promise.all([
-        base44.entities.User.list("-created_date", 1000).catch(() => []),
-        base44.entities.Track.list("-created_date", 1000).catch(() => []),
-        base44.entities.Track.filter({ approval_status: "pending" }, "-created_date", 500).catch(() => []),
+      const [users, t] = await Promise.all([
+        countAll(base44.entities.User),
+        countTracks(),
       ]);
       if (!alive) return;
       setS({
-        users: users.length,
-        tracks: tracks.length,
-        plays: tracks.reduce((a, t) => a + (t.play_count || 0), 0),
-        pending: pending.length,
+        users,
+        tracks: t.total,
+        plays: t.plays,
+        pending: t.pending,
       });
     }
 
     load();
 
-    // live updates: entity events + a slow poll as a safety net
+    // live updates: entity events + a poll as a safety net
     const unsubs = [];
     try { unsubs.push(base44.entities.Track.subscribe(() => load())); } catch {}
     try { unsubs.push(base44.entities.User.subscribe(() => load())); } catch {}
-    const timer = setInterval(load, 5000);
+    const timer = setInterval(load, 10000);
 
     return () => {
       alive = false;
