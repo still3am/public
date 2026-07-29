@@ -21,6 +21,7 @@ import {
   Shuffle,
   Disc3,
   Share2,
+  X,
   Activity } from
 "lucide-react";
 import AudioVisualizer from "@/components/AudioVisualizer";
@@ -53,6 +54,7 @@ export default function FullScreenPlayer({ onClose }) {
   const [showVolHint, setShowVolHint] = useState(false);
   const [copied, setCopied] = useState(false);
   const [showQueue, setShowQueue] = useState(false);
+  const [showLyricsPanel, setShowLyricsPanel] = useState(true);
   const t = p.currentTrack;
   const volDrag = useRef({ startY: 0, start: 0, active: false });
   const hintTimer = useRef(null);
@@ -272,6 +274,13 @@ export default function FullScreenPlayer({ onClose }) {
                 {t.artist || t.uploader_name || "Unknown"}
               </Link>
             </div>
+            {!showLyricsPanel &&
+            <button
+              onClick={() => setShowLyricsPanel(true)}
+              className="hidden xl:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full ring-1 ring-white/20 hover:bg-white/10 text-xs font-semibold shrink-0 transition">
+              <Mic2 size={14} /> Lyrics
+            </button>
+            }
           </div>
 
           {/* scrubber */}
@@ -369,7 +378,18 @@ export default function FullScreenPlayer({ onClose }) {
         </div>
 
         {/* RIGHT (desktop): lyrics panel */}
-        <div className="hidden xl:flex flex-col min-h-0 w-[440px] 2xl:w-[480px] shrink-0 bg-white/[0.06] ring-1 ring-white/10 rounded-[2rem] overflow-hidden">
+        <div className={`${showLyricsPanel ? "hidden xl:flex" : "hidden"} flex-col min-h-0 w-[440px] 2xl:w-[480px] shrink-0 bg-white/[0.06] ring-1 ring-white/10 rounded-[2rem] overflow-hidden`}>
+          <div className="flex items-center justify-between px-5 pt-4 pb-1 shrink-0">
+            <span className="text-[10px] uppercase tracking-[0.25em] opacity-50 flex items-center gap-2">
+              <Mic2 size={13} /> Lyrics
+            </span>
+            <button
+              onClick={() => setShowLyricsPanel(false)}
+              className="p-2 rounded-full hover:bg-white/10 opacity-60 hover:opacity-100 transition"
+              aria-label="Hide lyrics">
+              <X size={18} />
+            </button>
+          </div>
           
 
 
