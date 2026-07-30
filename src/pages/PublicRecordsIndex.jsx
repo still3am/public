@@ -288,17 +288,17 @@ export default function PublicRecordsIndex() {
           onPointerMove={moveDrag}
           onPointerUp={endDrag}
           onPointerCancel={endDrag}
-          className="md:hidden fixed right-0.5 top-1/2 -translate-y-1/2 z-30 touch-none select-none px-0.5 py-1 rounded-full bg-foreground/[0.05] backdrop-blur-md border border-foreground/[0.06] flex flex-col items-center max-h-[78vh] overflow-hidden">
-          
-            {allLetters.map((L) => {
-            const has = letters.includes(L);
-            const isActive = activeKey === L;
-            return (
-              <span
-                key={L}
-                className={`text-[8px] font-semibold leading-none w-3 h-3 grid place-items-center transition-colors duration-150 ${
-                has ? "text-foreground/55" : "text-foreground/20"} ${
-                isActive || dragLetter === L ? "text-foreground" : ""}`}>
+          className="fixed right-1 md:right-2 top-1/2 -translate-y-1/2 z-30 touch-none select-none px-0.5 md:px-1 py-1 md:py-1.5 rounded-full bg-foreground/[0.05] backdrop-blur-md border border-foreground/[0.06] flex flex-col items-center max-h-[78vh] overflow-hidden">
+
+          {allLetters.map((L) => {
+          const has = letters.includes(L);
+          const isActive = activeKey === L;
+          return (
+            <span
+              key={L}
+              className={`font-semibold leading-none w-3 h-3 md:w-4 md:h-4 grid place-items-center transition-colors duration-150 text-[8px] md:text-[10px] ${
+              has ? "text-foreground/55" : "text-foreground/20"} ${
+              isActive || dragLetter === L ? "text-foreground" : ""}`}>
                 
                   {L}
                 </span>);
@@ -309,7 +309,7 @@ export default function PublicRecordsIndex() {
           {/* Floating drag indicator bubble */}
           {dragging && dragLetter &&
         <div
-          className="md:hidden fixed right-7 z-40 pointer-events-none"
+          className="fixed right-7 md:right-10 z-40 pointer-events-none"
           style={{ top: Math.max(36, Math.min(window.innerHeight - 36, dragY)) }}>
           
               <div className="-translate-y-1/2 w-11 h-11 rounded-full bg-foreground text-background grid place-items-center text-base font-extrabold shadow-lg">
