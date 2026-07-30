@@ -4,7 +4,7 @@ import { base44 } from "@/api/base44Client";
 import { useAuth } from "@/lib/AuthContext";
 import { usePlayer } from "@/context/PlayerContext";
 import EmptyState from "@/components/EmptyState";
-import TrackRow from "@/components/TrackRow";
+import TrackCard from "@/components/TrackCard";
 import Avatar from "@/components/Avatar";
 import PullToRefresh from "@/components/PullToRefresh";
 import BackHeader from "@/components/BackHeader";
@@ -543,6 +543,18 @@ export default function Profile() {
         </div>
       </div>
 
+      {!editMode && topTracks.length > 0 &&
+        <div className="mb-8">
+          <h2 className="text-lg font-extrabold tracking-tight mb-3 flex items-center gap-2">
+            <BarChart2 size={18} /> Top Tracks
+          </h2>
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
+            {topTracks.map((t) => (
+              <TrackCard key={t.id} track={t} />
+            ))}
+          </div>
+        </div>
+        }
 
       {isOwn && !editMode &&
         <div className="mt-10 p-5 rounded-2xl border border-border bg-foreground/[0.02]">
