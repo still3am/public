@@ -1,5 +1,6 @@
 import { useRef } from "react";
-import { UploadCloud, Loader2, CheckCheck } from "lucide-react";
+import { UploadCloud, Loader2, CheckCheck, Ban } from "lucide-react";
+import { useUploadsEnabled } from "@/hooks/useUploadsEnabled";
 import { useAuth } from "@/lib/AuthContext";
 import BackHeader from "@/components/BackHeader";
 import FileDropZone from "@/components/upload/FileDropZone";
@@ -13,6 +14,22 @@ export default function Upload() {
   const isAdmin = user?.role === "admin";
   const inputRef = useRef(null);
   const q = useUploadQueue({ user: user || {}, isAdmin });
+  const { loading: loadingSwitch, enabled: uploadsEnabled } = useUploadsEnabled();
+
+  if (!loadingSwitch && !uploadsEnabled && !isAdmin) {
+    return (
+      <div className="max-w-3xl mx-auto px-4 md:px-6 main-content">
+        <BackHeader title="Upload" />
+        <div className="mt-20 text-center">
+          <Ban size={32} className="mx-auto mb-3 text-foreground/30" />
+          <h1 className="text-xl font-extrabold tracking-tight">Uploads are paused</h1>
+          <p className="text-sm text-foreground/50 mt-1.5">
+            New uploads are temporarily closed. Check back soon.
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   const readyCount = q.items.filter((it) => it.status === "ready").length;
   const doneCount = q.uploadedCount;

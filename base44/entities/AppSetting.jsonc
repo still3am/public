@@ -1,0 +1,29 @@
+{
+  "name": "AppSetting",
+  "type": "object",
+  "properties": {
+    "uploads_enabled": {
+      "type": "boolean",
+      "default": true,
+      "description": "Global kill switch \u2014 when false, non-admin users cannot upload tracks"
+    }
+  },
+  "rls": {
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "read": null,
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}
