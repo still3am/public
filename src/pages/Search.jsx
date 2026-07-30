@@ -9,8 +9,8 @@ import {
   Disc3,
   X,
   Shield,
-  ArrowLeft,
-} from "lucide-react";
+  ArrowLeft } from
+"lucide-react";
 import { base44 } from "@/api/base44Client";
 import TrackCard from "@/components/TrackCard";
 import VinylCrate from "@/components/search/VinylCrate";
@@ -42,11 +42,11 @@ function ArtistRow({ artist, trackCount, onPick }) {
           {!artist.location && trackCount === 0 && <span>Artist on PUBLIC</span>}
         </div>
       </div>
-      <span className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full bg-foreground/[0.05] text-foreground/60 text-xs font-semibold shrink-0 group-hover:bg-foreground group-hover:text-background transition-all">
+      <span className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full bg-foreground/[0.05] text-foreground/60 text-xs font-semibold shrink-0 group-hover:bg-foreground group-hover:text-background transition-all hidden">
         Browse <Disc3 size={13} />
       </span>
-    </Link>
-  );
+    </Link>);
+
 }
 
 export default function Search() {
@@ -68,9 +68,9 @@ export default function Search() {
     setLoadingAll(true);
     try {
       const [tracks, artists] = await Promise.all([
-        base44.entities.Track.filter({ is_published: true }, "-created_date", 10000).catch(() => []),
-        base44.entities.Artist.list("-updated_date", 1000).catch(() => [])
-      ]);
+      base44.entities.Track.filter({ is_published: true }, "-created_date", 10000).catch(() => []),
+      base44.entities.Artist.list("-updated_date", 1000).catch(() => [])]
+      );
       setAllTracks(Array.isArray(tracks) ? tracks : []);
       setAllArtists(Array.isArray(artists) ? artists : []);
     } finally {
@@ -89,22 +89,22 @@ export default function Search() {
     if (!hasQuery) return [];
     return allTracks.filter(
       (t) =>
-        t.title?.toLowerCase().includes(Q) ||
-        t.artist?.toLowerCase().includes(Q) ||
-        t.uploader_name?.toLowerCase().includes(Q)
+      t.title?.toLowerCase().includes(Q) ||
+      t.artist?.toLowerCase().includes(Q) ||
+      t.uploader_name?.toLowerCase().includes(Q)
     );
   }, [hasQuery, Q, allTracks]);
 
   const artistResults = useMemo(() => {
     if (!hasQuery) return [];
     return allArtists.
-      filter(
-        (a) =>
-          a.name?.toLowerCase().includes(Q) ||
-          a.bio?.toLowerCase().includes(Q) ||
-          a.location?.toLowerCase().includes(Q)
-      ).
-      slice(0, 50);
+    filter(
+      (a) =>
+      a.name?.toLowerCase().includes(Q) ||
+      a.bio?.toLowerCase().includes(Q) ||
+      a.location?.toLowerCase().includes(Q)
+    ).
+    slice(0, 50);
   }, [hasQuery, Q, allArtists]);
 
   const genreList = useMemo(() => {
@@ -148,17 +148,17 @@ export default function Search() {
   }, [hasQuery, Q]);
 
   const anyResults = trackResults.length || artistResults.length || people.length;
-  const loading = loadingAll || (hasQuery && loadingPeople && !people.length);
+  const loading = loadingAll || hasQuery && loadingPeople && !people.length;
 
   function searchArtist(name) {
     setQ(name);
   }
 
-  const loader = (
-    <div className="py-16 text-center">
+  const loader =
+  <div className="py-16 text-center">
       <Loader2 className="animate-spin inline text-foreground/40" size={22} />
-    </div>
-  );
+    </div>;
+
 
   return (
     <PullToRefresh onRefresh={loadCatalogue}>
@@ -170,7 +170,7 @@ export default function Search() {
           <SearchIcon size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-foreground/40 pointer-events-none" />
           <input
             value={q}
-            onChange={(e) => { setQ(e.target.value); setGenre(null); }}
+            onChange={(e) => {setQ(e.target.value);setGenre(null);}}
             placeholder="Search tracks, artists, people…"
             className="w-full pl-11 pr-11 py-3.5 rounded-full border border-border bg-background text-sm font-medium focus:outline-none focus:ring-2 focus:ring-foreground/10 transition shadow-sm" />
 
@@ -185,83 +185,83 @@ export default function Search() {
         </div>
 
         {/* Body */}
-        {hasQuery ? (
-          loading ? loader :
-          anyResults === 0 ?
-          <EmptyState
-            icon={SearchIcon}
-            title={`No results for "${q}"`}
-            description="Try a different spelling or search term." /> :
-          <div className="space-y-8">
-            {trackResults.length > 0 && (
-              <div>
+        {hasQuery ?
+        loading ? loader :
+        anyResults === 0 ?
+        <EmptyState
+          icon={SearchIcon}
+          title={`No results for "${q}"`}
+          description="Try a different spelling or search term." /> :
+        <div className="space-y-8">
+            {trackResults.length > 0 &&
+          <div>
                 <h3 className="flex items-center gap-2 text-sm font-bold uppercase tracking-wide text-foreground/60 mb-2 px-1">
                   <Music size={14} /> Tracks
                   <span className="text-xs font-semibold text-foreground/40">{trackResults.length}</span>
                 </h3>
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-1">
-                  {trackResults.slice(0, 40).map((t) => (
-                    <TrackCard key={t.id} track={t} />
-                  ))}
+                  {trackResults.slice(0, 40).map((t) =>
+              <TrackCard key={t.id} track={t} />
+              )}
                 </div>
               </div>
-            )}
+          }
 
-            {artistResults.length > 0 && (
-              <div>
+            {artistResults.length > 0 &&
+          <div>
                 <h3 className="flex items-center gap-2 text-sm font-bold uppercase tracking-wide text-foreground/60 mb-2 px-1">
                   <Mic2 size={14} /> Artists
                   <span className="text-xs font-semibold text-foreground/40">{artistResults.length}</span>
                 </h3>
                 <div className="space-y-1">
-                  {artistResults.map((a) => (
-                    <ArtistRow
-                      key={a.id}
-                      artist={a}
-                      trackCount={allTracks.filter((t) => t.artist?.toLowerCase() === a.name.toLowerCase()).length}
-                      onPick={() => searchArtist(a.name)} />
-                  ))}
+                  {artistResults.map((a) =>
+              <ArtistRow
+                key={a.id}
+                artist={a}
+                trackCount={allTracks.filter((t) => t.artist?.toLowerCase() === a.name.toLowerCase()).length}
+                onPick={() => searchArtist(a.name)} />
+              )}
                 </div>
               </div>
-            )}
+          }
 
-            {people.length > 0 && (
-              <div>
+            {people.length > 0 &&
+          <div>
                 <h3 className="flex items-center gap-2 text-sm font-bold uppercase tracking-wide text-foreground/60 mb-2 px-1">
                   <Users size={14} /> People
                   <span className="text-xs font-semibold text-foreground/40">{people.length}</span>
                 </h3>
                 <div className="space-y-1">
-                  {people.map((u) => (
-                    <Link
-                      key={u.id}
-                      to={`/profile/${u.id}`}
-                      className="flex items-center gap-3 p-2.5 rounded-xl hover:bg-foreground/[0.03] transition">
+                  {people.map((u) =>
+              <Link
+                key={u.id}
+                to={`/profile/${u.id}`}
+                className="flex items-center gap-3 p-2.5 rounded-xl hover:bg-foreground/[0.03] transition">
                       <Avatar user={u} size={48} />
                       <div className="min-w-0 flex-1">
                         <div className="text-sm font-semibold truncate flex items-center gap-1">
                           {u.display_name || u.full_name || "Unnamed"}
                           {u.is_verified && <Shield size={12} className="text-foreground/40" />}
                           {u.can_upload &&
-                            <span className="text-[10px] px-1.5 py-0.5 rounded bg-foreground/10 text-foreground/60">
+                    <span className="text-[10px] px-1.5 py-0.5 rounded bg-foreground/10 text-foreground/60">
                               uploader
                             </span>}
                         </div>
                         <div className="text-xs text-foreground/50 truncate">{u.email}</div>
                       </div>
                     </Link>
-                  ))}
+              )}
                 </div>
               </div>
-            )}
-          </div>
-        ) : genre ? (
-          <div>
+          }
+          </div> :
+        genre ?
+        <div>
             <div className="flex items-center gap-3 mb-3">
               <button
-                onClick={() => setGenre(null)}
-                className="tap-target rounded-full hover:bg-foreground/[0.06]"
-                aria-label="Back to genres">
+              onClick={() => setGenre(null)}
+              className="tap-target rounded-full hover:bg-foreground/[0.06]"
+              aria-label="Back to genres">
                 <ArrowLeft size={20} />
               </button>
               <div className="min-w-0 flex-1">
@@ -271,22 +271,22 @@ export default function Search() {
                 </p>
               </div>
             </div>
-            {genreTracks.length ? (
-              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-1">
-                {genreTracks.map((t) => (
-                  <TrackCard key={t.id} track={t} />
-                ))}
-              </div>
-            ) : (
-              <EmptyState
-                title="Nothing here yet"
-                description="No published tracks in this genre." />
+            {genreTracks.length ?
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-1">
+                {genreTracks.map((t) =>
+            <TrackCard key={t.id} track={t} />
             )}
-          </div>
-        ) : loadingAll ? loader : (
-          <VinylCrate genres={genreList} onPick={(g) => setGenre(g)} />
-        )}
+              </div> :
+
+          <EmptyState
+            title="Nothing here yet"
+            description="No published tracks in this genre." />
+          }
+          </div> :
+        loadingAll ? loader :
+        <VinylCrate genres={genreList} onPick={(g) => setGenre(g)} />
+        }
       </div>
-    </PullToRefresh>
-  );
+    </PullToRefresh>);
+
 }
