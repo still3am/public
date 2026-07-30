@@ -212,9 +212,9 @@ export default function PublicRecordsIndex() {
                               </span>
                         }
                           </div>
-                          <Disc3
-                        size={13}
-                        className="text-foreground/25 group-hover:text-foreground/60 shrink-0 transition hidden" />
+                          
+
+                      
                       
                         </Link>);
 
