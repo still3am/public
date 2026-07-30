@@ -9,10 +9,10 @@ import { Loader2, Mic2, Disc3 } from "lucide-react";
 // casing. A track credited "Drake feat. Future" counts toward both Drake and
 // Future as separate Public Records.
 const splitNames = (str) =>
-  (str || "")
-    .split(/\s*(?:,|&| feat\.| ft\.| x |;|\/)\s*/i)
-    .map((s) => s.trim())
-    .filter(Boolean);
+(str || "").
+split(/\s*(?:,|&| feat\.| ft\.| x |;|\/)\s*/i).
+map((s) => s.trim()).
+filter(Boolean);
 
 const norm = (s) => s.trim().toLowerCase();
 
@@ -29,9 +29,9 @@ export default function PublicRecordsIndex() {
     setArtists(null);
     try {
       const [records, tracks] = await Promise.all([
-        base44.entities.Artist.list("-updated_date", 1000).catch(() => []),
-        base44.entities.Track.filter({ is_published: true }, "-created_date", 10000).catch(() => []),
-      ]);
+      base44.entities.Artist.list("-updated_date", 1000).catch(() => []),
+      base44.entities.Track.filter({ is_published: true }, "-created_date", 10000).catch(() => [])]
+      );
       const recordByName = new Map();
       (Array.isArray(records) ? records : []).forEach((a) => {
         const k = norm(a.name);
@@ -51,7 +51,7 @@ export default function PublicRecordsIndex() {
           map.set(key, {
             display: record ? record.name : display,
             record: record || null,
-            count: 1,
+            count: 1
           });
         }
       };
@@ -74,7 +74,7 @@ export default function PublicRecordsIndex() {
       });
 
       const list = [...map.values()].sort((a, b) =>
-        norm(a.display).localeCompare(norm(b.display))
+      norm(a.display).localeCompare(norm(b.display))
       );
       setArtists(list);
     } finally {
@@ -92,9 +92,9 @@ export default function PublicRecordsIndex() {
       if (!map[key]) map[key] = [];
       map[key].push(a);
     });
-    return Object.keys(map)
-      .sort((x, y) => (x === "#" ? 1 : y === "#" ? -1 : x.localeCompare(y)))
-      .map((key) => ({ key, items: map[key] }));
+    return Object.keys(map).
+    sort((x, y) => x === "#" ? 1 : y === "#" ? -1 : x.localeCompare(y)).
+    map((key) => ({ key, items: map[key] }));
   }, [artists]);
 
   return (
@@ -105,12 +105,12 @@ export default function PublicRecordsIndex() {
       </p>
 
       <PullToRefresh onRefresh={load}>
-        {artists === null ? (
-          <div className="flex justify-center py-20">
+        {artists === null ?
+        <div className="flex justify-center py-20">
             <Loader2 className="animate-spin text-foreground/40" />
-          </div>
-        ) : artists.length === 0 ? (
-          <div className="text-center py-20">
+          </div> :
+        artists.length === 0 ?
+        <div className="text-center py-20">
             <div className="w-16 h-16 rounded-full bg-foreground/[0.05] grid place-items-center mx-auto mb-4">
               <Mic2 size={28} className="text-foreground/40" />
             </div>
@@ -118,11 +118,11 @@ export default function PublicRecordsIndex() {
             <p className="text-sm text-foreground/50 max-w-xs mx-auto">
               Artists show up here once a track names them in its credits.
             </p>
-          </div>
-        ) : (
-          <div className="space-y-6">
-            {groups.map((g) => (
-              <div key={g.key}>
+          </div> :
+
+        <div className="space-y-6">
+            {groups.map((g) =>
+          <div key={g.key}>
                 <div className="sticky top-[3.5rem] z-10 -mx-1 px-1 py-1 bg-background/90 backdrop-blur-sm">
                   <span className="text-xs font-extrabold tracking-[0.2em] text-foreground/40">
                     {g.key}
@@ -130,40 +130,40 @@ export default function PublicRecordsIndex() {
                 </div>
                 <div className="mt-1 space-y-0.5">
                   {g.items.map((a) => {
-                    const href = a.record ? `/records/${a.record.id}` : `/artist?name=${encodeURIComponent(a.display)}`;
-                    return (
-                      <Link
-                        key={norm(a.display)}
-                        to={href}
-                        className="flex items-center gap-3 p-2.5 rounded-xl hover:bg-foreground/[0.03] transition group"
-                      >
+                const href = a.record ? `/records/${a.record.id}` : `/artist?name=${encodeURIComponent(a.display)}`;
+                return (
+                  <Link
+                    key={norm(a.display)}
+                    to={href}
+                    className="flex items-center gap-3 p-2.5 rounded-xl hover:bg-foreground/[0.03] transition group">
+                    
                         <div className="w-11 h-11 rounded-full bg-foreground/[0.06] grid place-items-center overflow-hidden shrink-0 ring-1 ring-foreground/10">
-                          {a.record?.avatar_url ? (
-                            <img src={a.record.avatar_url} alt="" className="w-full h-full object-cover" />
-                          ) : (
-                            <Mic2 size={18} className="text-foreground/45" />
-                          )}
+                          {a.record?.avatar_url ?
+                      <img src={a.record.avatar_url} alt="" className="w-full h-full object-cover" /> :
+
+                      <Mic2 size={18} className="text-foreground/45" />
+                      }
                         </div>
                         <div className="min-w-0 flex-1">
                           <div className="text-sm font-semibold truncate">{a.display}</div>
-                          {a.count > 0 && (
-                            <div className="text-xs text-foreground/45 truncate">
+                          {a.count > 0 &&
+                      <div className="text-xs text-foreground/45 truncate">
                               {a.count} {a.count === 1 ? "track" : "tracks"}
                             </div>
-                          )}
+                      }
                         </div>
-                        <span className="inline-flex items-center gap-1 text-xs font-semibold text-foreground/55 group-hover:text-foreground transition shrink-0">
+                        <span className="inline-flex items-center gap-1 text-xs font-semibold text-foreground/55 group-hover:text-foreground transition shrink-0 hidden">
                           Open <Disc3 size={13} className="opacity-70" />
                         </span>
-                      </Link>
-                    );
-                  })}
+                      </Link>);
+
+              })}
                 </div>
               </div>
-            ))}
+          )}
           </div>
-        )}
+        }
       </PullToRefresh>
-    </div>
-  );
+    </div>);
+
 }
