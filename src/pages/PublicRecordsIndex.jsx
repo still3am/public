@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import BackHeader from "@/components/BackHeader";
@@ -24,6 +24,8 @@ const letterOf = (name) => {
 
 export default function PublicRecordsIndex() {
   const [artists, setArtists] = useState(null); // null = loading
+  const [activeKey, setActiveKey] = useState("");
+  const groupRefs = useRef({});
 
   const load = async () => {
     setArtists(null);
@@ -97,6 +99,34 @@ export default function PublicRecordsIndex() {
     map((key) => ({ key, items: map[key] }));
   }, [artists]);
 
+  const letters = groups.map((g) => g.key);
+
+  // Track which letter section is nearest the top of the viewport.
+  useEffect(() => {
+    if (!groups.length) return;
+    const obs = new IntersectionObserver(
+      (entries) => {
+        const visible = entries
+          .filter((e) => e.isIntersecting)
+          .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
+        if (visible[0]) setActiveKey(visible[0].target.dataset.key);
+      },
+      { rootMargin: "-20% 0px -70% 0px", threshold: 0 }
+    );
+    groups.forEach((g) => {
+      const el = groupRefs.current[g.key];
+      if (el) obs.observe(el);
+    });
+    return () => obs.disconnect();
+  }, [groups]);
+
+  const scrollToLetter = (key) => {
+    const el = groupRefs.current[key];
+    if (!el) return;
+    el.scrollIntoView({ behavior: "smooth", block: "start" });
+    setActiveKey(key);
+  };
+
   return (
     <div className="max-w-3xl mx-auto px-4 pb-10">
       <BackHeader title="Public Records" />
@@ -120,9 +150,12 @@ export default function PublicRecordsIndex() {
             </p>
           </div> :
 
-        <div className="space-y-6">
+        <div className="space-y-6 pr-5 md:pr-0">
             {groups.map((g) =>
-          <div key={g.key}>
+          <div
+              key={g.key}
+              data-key={g.key}
+              ref={(el) => (groupRefs.current[g.key] = el)}>
                 <div className="sticky top-[3.5rem] z-10 -mx-1 px-1 py-1 bg-background/90 backdrop-blur-sm">
                   <span className="text-xs font-extrabold tracking-[0.2em] text-foreground/40">
                     {g.key}
@@ -164,6 +197,27 @@ export default function PublicRecordsIndex() {
           </div>
         }
       </PullToRefresh>
-    </div>);
 
+      {/* A–Z quick-jump rail */}
+      {artists && artists.length > 0 && (
+        <div className="fixed right-1 top-1/2 -translate-y-1/2 z-20 flex flex-col items-center gap-0.5 max-h-[72vh] overflow-y-auto no-scrollbar">
+          {"ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("").concat(letters.includes("#") ? ["#"] : []).map((L) => {
+            const has = letters.includes(L);
+            const isActive = activeKey === L;
+            return (
+              <button
+                key={L}
+                onClick={() => has && scrollToLetter(L)}
+                disabled={!has}
+                className={`text-[10px] font-bold leading-none w-5 h-5 grid place-items-center rounded transition ${
+                  has ? "cursor-pointer" : "cursor-default text-foreground/20"
+                } ${isActive ? "bg-foreground text-background" : has ? "text-foreground/55 hover:text-foreground" : ""}`}
+              >
+                {L}
+              </button>
+            );
+          })}
+        </div>
+      )}
+    </div>);
 }
