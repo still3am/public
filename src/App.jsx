@@ -21,6 +21,7 @@ import RecentlyAdded from '@/pages/RecentlyAdded';
 import Profile from '@/pages/Profile';
 import TrackDetail from '@/pages/TrackDetail';
 import PublicRecords from '@/pages/PublicRecords';
+import PublicRecordsIndex from '@/pages/PublicRecordsIndex';
 import ArtistByName from '@/pages/ArtistByName';
 import Suggestions from '@/pages/Suggestions';
 import Upload from '@/pages/Upload';
@@ -69,6 +70,7 @@ const AuthenticatedApp = () => {
           <Route path="/profile/:id" element={<Profile />} />
           <Route path="/track/:id" element={<TrackDetail />} />
           <Route path="/records/:id" element={<PublicRecords />} />
+          <Route path="/records" element={<PublicRecordsIndex />} />
           <Route path="/artist" element={<ArtistByName />} />
           <Route path="/suggestions" element={<Suggestions />} />
           <Route path="/upload" element={<Upload />} />
