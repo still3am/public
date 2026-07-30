@@ -1,13 +1,9 @@
-import { useRef } from "react";
 import {
-  Check,
   CheckCheck,
   X,
   UploadCloud,
   Loader2,
   AlertCircle,
-  Music2,
-  ImagePlus,
   Sparkles,
   Clock,
 } from "lucide-react";
@@ -28,18 +24,12 @@ export default function UploadItem({
   const uploading = item.status === "uploading";
   const enhancing = item.status === "enhancing";
   const done = item.status === "done";
-  const imgInputRef = useRef(null);
 
   const hasCover = !!(item.coverFile || item.coverPreviewUrl);
   const hasArtist = !!item.artist.trim();
   const hasGenre = !!item.genre;
   const meetsRules = hasCover && hasArtist && hasGenre;
   const locked = uploading || done;
-
-  function pickCover(file) {
-    if (!file) return;
-    onChange({ coverFile: file, coverPreviewUrl: URL.createObjectURL(file) });
-  }
 
   const toggles = [
     { key: "explicit", label: "Explicit", icon: null },
@@ -53,46 +43,6 @@ export default function UploadItem({
       }`}
     >
       <div className="p-3 md:p-4 flex gap-3 md:gap-4">
-        {/* Artwork */}
-        <div className="relative w-24 h-24 md:w-28 md:h-28 shrink-0">
-          <button
-            type="button"
-            onClick={() => !locked && !enhancing && imgInputRef.current?.click()}
-            disabled={locked}
-            className="relative w-full h-full rounded-xl overflow-hidden bg-foreground/[0.06] grid place-items-center ring-1 ring-inset ring-border"
-            aria-label="Add cover image"
-          >
-            {item.coverPreviewUrl ? (
-              <img src={item.coverPreviewUrl} alt="" className="w-full h-full object-cover" />
-            ) : (
-              <Music2 size={24} className="text-foreground/25" />
-            )}
-            {!done && (
-              <span className="absolute bottom-1.5 right-1.5 w-6 h-6 rounded-full bg-foreground text-background grid place-items-center shadow-lg ring-2 ring-card">
-                <ImagePlus size={12} />
-              </span>
-            )}
-            {done && (
-              <div className="absolute inset-0 bg-emerald-600/70 grid place-items-center">
-                <Check size={26} className="text-white" />
-              </div>
-            )}
-          </button>
-          <input
-            ref={imgInputRef}
-            type="file"
-            accept="image/*"
-            className="hidden"
-            onChange={(e) => {
-              if (e.target.files?.[0]) pickCover(e.target.files[0]);
-              e.target.value = "";
-            }}
-          />
-          <div className="mt-1.5 flex items-center justify-center gap-1 text-[11px] font-semibold text-foreground/45">
-            <Clock size={11} /> {formatTime(item.duration)}
-          </div>
-        </div>
-
         {/* Fields */}
         <div className="flex-1 min-w-0 space-y-2.5">
           <div className="flex items-start gap-2">
@@ -122,8 +72,13 @@ export default function UploadItem({
             </button>
           </div>
 
-          <div className="max-w-[16rem]">
-            <GenrePicker value={item.genre} onChange={(g) => onChange({ genre: g })} />
+          <div className="flex items-center gap-3">
+            <div className="max-w-[16rem] flex-1">
+              <GenrePicker value={item.genre} onChange={(g) => onChange({ genre: g })} />
+            </div>
+            <div className="flex items-center gap-1 text-[11px] font-semibold text-foreground/45 shrink-0">
+              <Clock size={11} /> {formatTime(item.duration)}
+            </div>
           </div>
 
           <div className="flex flex-wrap gap-1.5">
