@@ -161,6 +161,24 @@
   50% { height: 100%; }
 }
 
+@keyframes cloud-drift {
+  from { transform: translateX(-30%); }
+  to { transform: translateX(130%); }
+}
+.animate-cloud-drift {
+  animation-name: cloud-drift;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+}
+
+@keyframes sun-pulse {
+  0%, 100% { opacity: 0.55; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.08); }
+}
+.animate-sun-pulse {
+  animation: sun-pulse 7s ease-in-out infinite;
+}
+
 @keyframes marquee {
   from { transform: translateX(0); }
   to { transform: translateX(-50%); }

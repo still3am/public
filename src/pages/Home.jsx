@@ -13,6 +13,7 @@ import {
   ChevronRight } from
 "lucide-react";
 import TrackCard from "@/components/TrackCard";
+import WeatherFX from "@/components/weather/WeatherFX";
 import ScoreboardTrackCount from "@/components/ScoreboardTrackCount";
 import EmptyState from "@/components/EmptyState";
 import { getRecentPlays } from "@/lib/recentPlays";
@@ -201,6 +202,7 @@ export default function Home() {
           <div className="absolute inset-0 bg-gradient-to-br from-violet-500/8 via-transparent to-amber-400/8 pointer-events-none" />
           <div className="absolute -right-20 -top-20 w-72 h-72 rounded-full bg-violet-500/12 blur-3xl pointer-events-none" />
           <div className="absolute -left-12 -bottom-20 w-64 h-64 rounded-full bg-amber-400/12 blur-3xl pointer-events-none" />
+          <WeatherFX />
 
           <div className="relative">
             <span className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-foreground/[0.05] border border-foreground/10 text-[11px] font-semibold uppercase tracking-[0.18em] text-foreground/60 mb-6">
