@@ -3,7 +3,6 @@ import {
   X,
   BarChart3,
   Clock,
-  Bell,
   Heart,
   Lightbulb,
   Library as LibraryIcon,
@@ -16,7 +15,7 @@ const ITEMS = [
   { to: "/top", icon: BarChart3, label: "Top Charts" },
   { to: "/recent", icon: Clock, label: "Recently Added" },
   { to: "/library", icon: LibraryIcon, label: "Library" },
-  { to: "/notifications", icon: Bell, label: "Notifications" },
+
   { to: "/suggestions", icon: Lightbulb, label: "Suggestions" },
 ];
 

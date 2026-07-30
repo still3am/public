@@ -18,7 +18,6 @@ import Home from '@/pages/Home';
 import Search from '@/pages/Search';
 import TopCharts from '@/pages/TopCharts';
 import RecentlyAdded from '@/pages/RecentlyAdded';
-import Notifications from '@/pages/Notifications';
 import Profile from '@/pages/Profile';
 import TrackDetail from '@/pages/TrackDetail';
 import PublicRecords from '@/pages/PublicRecords';
@@ -64,7 +63,6 @@ const AuthenticatedApp = () => {
           <Route path="/search" element={<Search />} />
           <Route path="/top" element={<TopCharts />} />
           <Route path="/recent" element={<RecentlyAdded />} />
-          <Route path="/notifications" element={<Notifications />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/profile/:id" element={<Profile />} />
           <Route path="/track/:id" element={<TrackDetail />} />
