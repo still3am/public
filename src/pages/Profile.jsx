@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, Link } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import { useAuth } from "@/lib/AuthContext";
 import { usePlayer } from "@/context/PlayerContext";
@@ -29,7 +29,8 @@ import {
   QrCode,
   Play,
   BarChart2,
-  Trash2 } from
+  Trash2,
+  GitMerge } from
 "lucide-react";
 
 function safeUrl(u) {
@@ -557,7 +558,25 @@ export default function Profile() {
         }
 
       {isOwn && !editMode &&
-        <div className="mt-10 p-5 rounded-2xl border border-border bg-foreground/[0.02]">
+        <Link
+          to="/settings/transitions"
+          className="mt-10 flex items-center gap-3 p-4 rounded-2xl border border-border bg-foreground/[0.02] hover:bg-foreground/[0.04] transition active:scale-[0.99]">
+          <div className="w-10 h-10 rounded-xl bg-foreground/[0.06] grid place-items-center shrink-0">
+            <GitMerge size={18} className="text-foreground/70" />
+          </div>
+          <div className="flex-1 min-w-0">
+            <h2 className="text-base font-extrabold tracking-tight text-foreground">
+              Song Transitions
+            </h2>
+            <p className="text-sm text-foreground/55 leading-snug">
+              Blend songs together seamlessly with Crossfade or AutoMix.
+            </p>
+          </div>
+          <span className="text-foreground/30 text-lg shrink-0">›</span>
+        </Link>
+        }
+      {isOwn && !editMode &&
+        <div className="mt-4 p-5 rounded-2xl border border-border bg-foreground/[0.02]">
           <h2 className="text-base font-extrabold tracking-tight mb-1 text-foreground">
             Appearance
           </h2>

@@ -9,6 +9,11 @@ import React, {
 import { base44 } from "@/api/base44Client";
 import { getRecord } from "@/lib/offlineCache";
 import { buildAutoQueue } from "@/lib/autoQueue";
+import {
+  getTransitionSettings,
+  isTransitionActive,
+  TRANSITION_MODES,
+} from "@/lib/transitions";
 
 const PlayerContext = createContext(null);
 export const usePlayer = () => useContext(PlayerContext);
@@ -27,6 +32,7 @@ export function PlayerProvider({ children }) {
   const audioCtxRef = useRef(null);
   const analyserRef = useRef(null);
   const sourceRef = useRef(null);
+  const masterGainRef = useRef(null);
 
   const countedRef = useRef(new Set());
   const [queue, setQueue] = useState([]);
@@ -48,6 +54,14 @@ export function PlayerProvider({ children }) {
   useEffect(() => {
     queueRef.current = queue;
   }, [queue]);
+  const currentIndexRef = useRef(currentIndex);
+  useEffect(() => {
+    currentIndexRef.current = currentIndex;
+  }, [currentIndex]);
+  const repeatRef = useRef(repeat);
+  useEffect(() => {
+    repeatRef.current = repeat;
+  }, [repeat]);
   const autoQueueLoadingRef = useRef(false);
 
   const currentTrack =
@@ -66,11 +80,15 @@ export function PlayerProvider({ children }) {
       const analyser = ctx.createAnalyser();
       analyser.fftSize = 256;
       analyser.smoothingTimeConstant = 0.82;
+      const gain = ctx.createGain();
+      gain.gain.value = 1;
       src.connect(analyser);
-      analyser.connect(ctx.destination);
+      analyser.connect(gain);
+      gain.connect(ctx.destination);
       audioCtxRef.current = ctx;
       sourceRef.current = src;
       analyserRef.current = analyser;
+      masterGainRef.current = gain;
       return ctx;
     } catch {
       return null;
@@ -99,6 +117,52 @@ export function PlayerProvider({ children }) {
     const a = audioRef.current;
     if (a) a.playbackRate = playbackRate;
   }, [playbackRate]);
+
+  // Crossfade: fade the master gain in over the configured duration when a
+  // new track starts (only when a transition mode is active).
+  const fadeGainIn = useCallback(() => {
+    const ctx = audioCtxRef.current;
+    const gain = masterGainRef.current;
+    fadingOutRef.current = false;
+    if (!ctx || !gain) return;
+    const s = getTransitionSettings();
+    const dur = isTransitionActive(s) ? s.crossfadeSeconds : 0;
+    const t = ctx.currentTime;
+    if (dur <= 0) {
+      gain.gain.cancelScheduledValues(t);
+      gain.gain.setValueAtTime(1, t);
+      return;
+    }
+    gain.gain.cancelScheduledValues(t);
+    gain.gain.setValueAtTime(0, t);
+    gain.gain.linearRampToValueAtTime(1, t + dur);
+  }, []);
+
+  // Crossfade: ramp the gain down to silence over the final `remaining`
+  // seconds of the current track, so the tail dissolves into the next song.
+  const fadingOutRef = useRef(false);
+
+  // Snap the master gain back to full instantly — used when playback stops or
+  // loops without a track swap, so a user's next tap-to-play isn't silent.
+  const restoreGainNow = useCallback(() => {
+    const ctx = audioCtxRef.current;
+    const gain = masterGainRef.current;
+    fadingOutRef.current = false;
+    if (!ctx || !gain) return;
+    const t = ctx.currentTime;
+    gain.gain.cancelScheduledValues(t);
+    gain.gain.setValueAtTime(1, t);
+  }, []);
+  const fadeGainOut = useCallback((remaining) => {
+    const ctx = audioCtxRef.current;
+    const gain = masterGainRef.current;
+    if (!ctx || !gain || remaining <= 0 || fadingOutRef.current) return;
+    const t = ctx.currentTime;
+    gain.gain.cancelScheduledValues(t);
+    gain.gain.setValueAtTime(Math.max(0.0001, gain.gain.value), t);
+    gain.gain.linearRampToValueAtTime(0, t + remaining);
+    fadingOutRef.current = true;
+  }, []);
 
   // swap src when track changes — prefer the offline-cached blob if present
   useEffect(() => {
@@ -134,8 +198,14 @@ export function PlayerProvider({ children }) {
       if (cancelled) return;
       a.src = url;
       a.load();
+      // Need the audio graph before we can fade; created lazily on first
+      // play(). We call ensureGraph + fadeGainIn after play resolves.
       a.play()
-        .then(() => setIsPlaying(true))
+        .then(() => {
+          ensureGraph();
+          fadeGainIn();
+          setIsPlaying(true);
+        })
         .catch(() => setIsPlaying(false));
     })();
     return () => {
@@ -147,7 +217,30 @@ export function PlayerProvider({ children }) {
   useEffect(() => {
     const a = audioRef.current;
     if (!a) return;
-    const onTime = () => setPosition(a.currentTime || 0);
+    const onTime = () => {
+      const cur = a.currentTime || 0;
+      setPosition(cur);
+      // Crossfade out approaching the end of the track.
+      if (!fadingOutRef.current) {
+        const d = a.duration || 0;
+        if (d > 0) {
+          const s = getTransitionSettings();
+          if (isTransitionActive(s)) {
+            const remaining = d - cur;
+            if (remaining > 0 && remaining <= s.crossfadeSeconds) {
+              // Only fade when there's a next track queued (auto-queue handles this).
+              const qi = queueRef.current;
+              const ci = currentIndexRef.current;
+              const hasNext =
+                repeatRef.current === "all" ||
+                repeatRef.current === "one" ||
+                ci + 1 < qi.length;
+              if (hasNext) fadeGainOut(remaining);
+            }
+          }
+        }
+      }
+    };
     const onDur = () => setDuration(a.duration || 0);
     const onPlay = () => setIsPlaying(true);
     const onPause = () => setIsPlaying(false);
@@ -247,6 +340,7 @@ export function PlayerProvider({ children }) {
           a.currentTime = 0;
           a.play().catch(() => {});
         }
+        restoreGainNow();
         return;
       }
       const n = nextIndex();
@@ -259,6 +353,7 @@ export function PlayerProvider({ children }) {
         const ok = await extendWithGenreRadio(currentTrack);
         if (ok) return;
       }
+      restoreGainNow();
       setIsPlaying(false);
     };
   }, [repeat, nextIndex, currentTrack, extendWithGenreRadio]);
