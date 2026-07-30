@@ -67,10 +67,10 @@ export default function TrackRow({
 
   return (
     <div
-      className="group flex items-center gap-3 px-2 py-2 rounded-lg hover:bg-foreground/[0.03] transition"
-      onDoubleClick={() => p.playTrackAt([track])}>
-      
-      <div className="w-6 text-center text-sm shrink-0">
+      className="group flex items-center gap-4 px-3 py-2.5 rounded-lg hover:bg-foreground/[0.04] transition"
+      onDoubleClick={() => p.playTrackAt([track])}
+    >
+      <div className="w-6 text-center text-sm font-medium text-foreground/40 shrink-0">
         {isCurrent && p.isPlaying ?
         <Pause
           size={14}
@@ -96,17 +96,17 @@ export default function TrackRow({
           </>
         }
       </div>
-      {showArt &&
-      <div className="w-10 h-10 rounded overflow-hidden bg-foreground/10 shrink-0">
-          {(track.cover_art_url || albumCover) &&
-        <img
-          src={track.cover_art_url || albumCover}
-          alt=""
-          className="w-full h-full object-cover" />
-
-        }
+      {showArt && (
+        <div className="w-10 h-10 rounded-md overflow-hidden bg-foreground/10 shrink-0">
+          {(track.cover_art_url || albumCover) && (
+            <img
+              src={track.cover_art_url || albumCover}
+              alt=""
+              className="w-full h-full object-cover"
+            />
+          )}
         </div>
-      }
+      )}
       <div className="min-w-0 flex-1">
         <Link
           to={`/track/${track.id}`}
@@ -134,11 +134,11 @@ export default function TrackRow({
           );
         })()}
       </div>
-      {track.explicit &&
-      <span className="text-[9px] font-extrabold px-1 py-0.5 rounded bg-foreground/15 text-foreground/70 shrink-0">
+      {track.explicit && (
+        <span className="text-[9px] font-extrabold px-1 py-0.5 rounded bg-foreground/15 text-foreground/70 shrink-0">
           E
         </span>
-      }
+      )}
       
 
 
@@ -147,17 +147,17 @@ export default function TrackRow({
       
 
       
-      {track.genre &&
-      <span className="hidden md:block text-xs text-foreground/40 px-2 py-0.5 rounded-full bg-foreground/[0.04] cursor-default">
+      {track.genre && (
+        <span className="hidden md:block text-xs text-foreground/45 px-2.5 py-1 rounded-full bg-foreground/[0.05] shrink-0">
           {track.genre}
         </span>
-      }
-      {track.created_date &&
-      <div className="hidden lg:block text-[11px] text-foreground/40 w-14 text-right">
+      )}
+      {track.created_date && (
+        <div className="hidden lg:block text-[11px] text-foreground/40 w-16 text-right shrink-0">
           {timeAgo(track.created_date)}
         </div>
-      }
-      <div className="hidden md:block text-xs text-foreground/40 w-10 text-right">
+      )}
+      <div className="hidden md:block text-xs text-foreground/40 w-12 text-right tabular-nums shrink-0">
         {formatTime(track.duration_seconds)}
       </div>
       <div className="hidden sm:block shrink-0">
