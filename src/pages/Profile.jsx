@@ -283,7 +283,7 @@ export default function Profile() {
   const displayName = profile.display_name || profile.full_name || "Unnamed";
   const banner = editMode ? form.banner_url : profile.banner_url;
   const avatarUrl = editMode ? form.avatar_url : profile.avatar_url;
-  const standaloneTracks = tracks;
+
 
   return (
     <PullToRefresh onRefresh={load}>
@@ -557,28 +557,6 @@ export default function Profile() {
 
             )}
           </div>
-        </div>
-        }
-
-
-
-            <h2 className="text-lg font-extrabold tracking-tight mb-3 flex items-center gap-2">
-              <Music size={18} /> Tracks
-            </h2>
-      {standaloneTracks.length === 0 ?
-        <EmptyState
-          icon={Music}
-          title={isOwn ? "You haven't uploaded anything" : "No uploads yet"}
-          description={isOwn ? "Share your first track with the PUBLIC network." : ""}
-          /> :
-        <div className="space-y-0.5 mb-10">
-          {standaloneTracks.map((t, i) =>
-          <TrackRow
-            key={t.id}
-            track={t}
-            index={i} />
-
-          )}
         </div>
         }
 
