@@ -54,9 +54,9 @@ export default function TrackCard({ track }) {
         <div className="font-semibold truncate text-sm flex items-center gap-1.5">
           <span className="truncate">{track.title}</span>
           {track.explicit &&
-          <span className="shrink-0 text-[9px] font-extrabold px-1 py-0.5 rounded bg-foreground/15 text-foreground/70">
-              E
-            </span>
+          <span className="shrink-0 text-[9px] font-extrabold rounded bg-foreground/15 text-foreground/70 px-2">E
+
+          </span>
           }
         </div>
         <div className="text-xs text-foreground/50 truncate flex items-center gap-1.5">
