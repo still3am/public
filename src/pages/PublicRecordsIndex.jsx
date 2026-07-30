@@ -216,9 +216,9 @@ export default function PublicRecordsIndex() {
   return (
     <div className="max-w-3xl mx-auto px-4 pb-10">
       <BackHeader title="Public Records" />
-      <p className="text-sm text-foreground/55 -mt-2 mb-4 px-1 hidden">
-        Every artist on the network, organized A to Z.
-      </p>
+      
+
+      
 
       <PullToRefresh onRefresh={load}>
         {artists === null ?
