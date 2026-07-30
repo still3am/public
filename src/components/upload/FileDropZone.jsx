@@ -55,7 +55,7 @@ export default function FileDropZone({ onFiles, inputRef }) {
             drag ? "bg-background/15 text-background" : "bg-foreground/[0.06] text-foreground/60"
           }`}
         >
-          <Sparkles size={12} /> Title, artist &amp; explicit auto-detected
+          <Sparkles size={12} /> Title, artist, genre &amp; artwork auto-detected
         </div>
 
         <div className="flex flex-wrap justify-center gap-1.5 mt-6">
