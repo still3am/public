@@ -23,6 +23,7 @@ import TrackDetail from '@/pages/TrackDetail';
 import PublicRecords from '@/pages/PublicRecords';
 import ArtistByName from '@/pages/ArtistByName';
 import Suggestions from '@/pages/Suggestions';
+import Upload from '@/pages/Upload';
 import Lounge from '@/pages/Lounge';
 import Library from '@/pages/Library';
 import Admin from '@/pages/Admin';
@@ -69,6 +70,7 @@ const AuthenticatedApp = () => {
           <Route path="/records/:id" element={<PublicRecords />} />
           <Route path="/artist" element={<ArtistByName />} />
           <Route path="/suggestions" element={<Suggestions />} />
+          <Route path="/upload" element={<Upload />} />
           <Route path="/lounge/:code" element={<Lounge />} />
           <Route path="/library" element={<Library />} />
           <Route path="/admin" element={<Admin />} />
