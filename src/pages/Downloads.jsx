@@ -97,7 +97,7 @@ export default function Downloads() {
       
 
       {/* Status card */}
-      <div className="mt-2 mb-6 grid grid-cols-3 gap-2.5">
+      <div className="mt-2 mb-6 grid grid-cols-3 gap-2.5 hidden">
         <Stat
           label="Saved tracks"
           value={String(cache.records.length)}
@@ -197,7 +197,7 @@ export default function Downloads() {
                             E
                           </span>
                       }
-                        <span className="shrink-0 inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 text-[9px] font-bold">
+                        <span className="shrink-0 inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 text-[9px] font-bold hidden">
                           <CloudOff size={9} /> Offline
                         </span>
                       </div>
@@ -257,11 +257,11 @@ export default function Downloads() {
 
 function Stat({ label, value, icon, tone }) {
   const toneClass =
-    tone === "ok"
-      ? "text-emerald-600 dark:text-emerald-400"
-      : tone === "warn"
-      ? "text-amber-600 dark:text-amber-400"
-      : "text-foreground/55";
+  tone === "ok" ?
+  "text-emerald-600 dark:text-emerald-400" :
+  tone === "warn" ?
+  "text-amber-600 dark:text-amber-400" :
+  "text-foreground/55";
   return (
     <div className="rounded-2xl bg-foreground/[0.03] ring-1 ring-inset ring-border px-3 py-3 flex flex-col gap-1.5">
       <div className={`flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wide ${toneClass}`}>
@@ -269,8 +269,8 @@ function Stat({ label, value, icon, tone }) {
         <span className="truncate">{label}</span>
       </div>
       <div className="text-lg font-extrabold tracking-tight truncate">{value}</div>
-    </div>
-  );
+    </div>);
+
 }
 
 function isPlaying(tracks, p) {
