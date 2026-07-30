@@ -4,11 +4,12 @@ import { base44 } from "@/api/base44Client";
 import PublicRecords from "@/pages/PublicRecords";
 import { Loader2, Mic2 } from "lucide-react";
 
-const splitNames = (str) =>
-  (str || "")
-    .split(/\s*(?:,|&| feat\.| ft\.| x |;)\s*/i)
-    .map((s) => s.trim().toLowerCase())
-    .filter(Boolean);
+// Normalize an artist name for exact comparison: trim + collapse internal
+// whitespace + lowercase. Using an EXACT match (not fuzzy split-name) is what
+// guarantees each distinct artist gets its own separate Public Record page —
+// e.g. "Adele" never lands on a combined "Adele & Beyoncé" record.
+const normalize = (str) =>
+  (str || "").trim().replace(/\s+/g, " ").toLowerCase();
 
 export default function ArtistByName() {
   const [params] = useSearchParams();
@@ -22,19 +23,23 @@ export default function ArtistByName() {
         if (active) setArtist(null);
         return;
       }
+      const target = normalize(name);
+      if (!target) {
+        if (active) setArtist(null);
+        return;
+      }
       const artists = await base44.entities.Artist.list("-updated_date", 1000).catch(() => []);
-      const names = splitNames(name);
-      const match = (Array.isArray(artists) ? artists : []).find((a) =>
-        splitNames(a.name).some((n) => names.includes(n))
+      const match = (Array.isArray(artists) ? artists : []).find(
+        (a) => normalize(a.name) === target
       );
       if (!active) return;
       if (match) {
         setArtist(match);
         return;
       }
-      // No record yet — seed one so the page has somewhere to live.
+      // No record for this exact artist yet — give them their own page.
       try {
-        const created = await base44.entities.Artist.create({ name });
+        const created = await base44.entities.Artist.create({ name: name.trim() });
         if (active) setArtist(created);
       } catch {
         if (active) setArtist(null);
