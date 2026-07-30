@@ -1,6 +1,7 @@
 import { useEffect, useState, useCallback } from "react";
 import { base44 } from "@/api/base44Client";
-import TrackRow from "@/components/TrackRow";
+import TrackCard from "@/components/TrackCard";
+import Podium from "@/components/Podium";
 import { useUnpublishedSync } from "@/hooks/useUnpublishedSync";
 import EmptyState from "@/components/EmptyState";
 import { Music, Loader2 } from "lucide-react";
@@ -44,20 +45,31 @@ export default function TopCharts() {
     );
   if (!tracks.length) return <EmptyState icon={Music} title="No tracks yet" />;
 
+  const top5 = tracks.slice(0, 5);
+  const rest = tracks.slice(5);
+
   return (
     <PullToRefresh onRefresh={load}>
-    <div>
-      <PageHeader eyebrow="Charts" title="Top Charts" subtitle="The most-played tracks on PUBLIC right now." />
-      <div className="space-y-0.5">
-        {tracks.map((t, i) => (
-          <TrackRow
-            key={t.id}
-            track={t}
-            index={i}
-          />
-        ))}
+      <div>
+        <PageHeader
+          eyebrow="Charts"
+          title="Top Charts"
+          subtitle="The most-played tracks on PUBLIC right now."
+        />
+        {top5.length >= 3 && <Podium tracks={top5} />}
+        {rest.length > 0 && (
+          <>
+            <h2 className="text-lg font-extrabold tracking-tight px-1 mb-3 mt-5">
+              More top tracks
+            </h2>
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-1">
+              {rest.map((t) => (
+                <TrackCard key={t.id} track={t} />
+              ))}
+            </div>
+          </>
+        )}
       </div>
-    </div>
     </PullToRefresh>
   );
 }
