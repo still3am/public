@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { Music } from "lucide-react";
+import { useUploadsEnabled } from "@/hooks/useUploadsEnabled";
 
 function Digit({ value }) {
   const [display, setDisplay] = useState(value);
@@ -27,15 +28,19 @@ function Digit({ value }) {
 
 export default function ScoreboardTrackCount({ count = 0 }) {
   const [padded, setPadded] = useState(() => String(count).padStart(4, "0"));
+  const { enabled } = useUploadsEnabled();
   useEffect(() => {
     setPadded(String(count).padStart(4, "0"));
   }, [count]);
   const digits = padded.split("");
+  const dotColor = enabled ? "bg-emerald-500" : "bg-red-500";
+  const glow = enabled ? "shadow-emerald-500/70" : "shadow-red-500/70";
+  const ringColor = enabled ? "bg-emerald-500/50" : "bg-red-500/50";
   return (
     <div className="inline-flex items-center gap-3 md:gap-4 px-5 py-3 md:py-3.5 rounded-2xl bg-foreground/[0.04] border border-foreground/10 tabular-nums shadow-md">
-      <span className="relative flex items-center justify-center w-3 h-3 shrink-0">
-        <span className="absolute inset-0 rounded-full bg-emerald-500/50 animate-ping" />
-        <span className="relative w-2.5 h-2.5 rounded-full bg-emerald-500 shadow-[0_0_8px] shadow-emerald-500/70" />
+      <span className="relative flex items-center justify-center w-3 h-3 shrink-0" title={enabled ? "Uploads open" : "Uploads paused by admin"}>
+        <span className={`absolute inset-0 rounded-full ${ringColor} animate-ping`} />
+        <span className={`relative w-2.5 h-2.5 rounded-full ${dotColor} shadow-[0_0_8px] ${glow}`} />
       </span>
       <span className="flex gap-1 md:gap-1.5">
         {digits.map((d, i) =>
