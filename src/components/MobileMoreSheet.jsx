@@ -1,9 +1,9 @@
 import { useNavigate, useLocation } from "react-router-dom";
 import {
   X,
-  Upload,
   BarChart3,
   Clock,
+  Bell,
   Heart,
   Lightbulb,
   Library as LibraryIcon,
@@ -13,11 +13,10 @@ import ThemeToggle from "@/components/ThemeToggle";
 import { useAuth } from "@/lib/AuthContext";
 
 const ITEMS = [
-  { to: "/upload", icon: Upload, label: "Upload" },
   { to: "/top", icon: BarChart3, label: "Top Charts" },
   { to: "/recent", icon: Clock, label: "Recently Added" },
   { to: "/library", icon: LibraryIcon, label: "Library" },
-
+  { to: "/notifications", icon: Bell, label: "Notifications" },
   { to: "/suggestions", icon: Lightbulb, label: "Suggestions" },
 ];
 

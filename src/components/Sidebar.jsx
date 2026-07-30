@@ -1,11 +1,12 @@
 import { NavLink } from "react-router-dom";
 
+import { useEffect, useState } from "react";
 import {
   Home,
-  Upload,
   Search,
   TrendingUp,
   Clock,
+  Bell,
   Library as LibraryIcon,
   Shield,
 } from "lucide-react";
@@ -13,6 +14,7 @@ import Avatar from "@/components/Avatar";
 import Logo from "@/components/Logo";
 import ThemeToggle from "@/components/ThemeToggle";
 import { useAuth } from "@/lib/AuthContext";
+import { base44 } from "@/api/base44Client";
 
 const navLinkCls = ({ isActive }) =>
 `flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition ${
@@ -23,6 +25,15 @@ isActive ?
 
 export default function Sidebar() {
   const { user } = useAuth();
+  const [unread, setUnread] = useState(0);
+
+  useEffect(() => {
+    if (!user?.id) return;
+    base44.entities.Notification.
+    filter({ user_id: user.id, read: false }, "-created_date", 50).
+    then((r) => setUnread(r.length)).
+    catch(() => {});
+  }, [user?.id]);
 
   return (
     <aside className="hidden md:flex flex-col w-64 shrink-0 border-r border-border bg-background h-screen sticky top-0">
@@ -32,9 +43,6 @@ export default function Sidebar() {
       <nav className="px-3 flex-1 flex flex-col gap-1 overflow-y-auto pb-2">
         <NavLink to="/" className={navLinkCls} end>
           <Home size={18} /> Home
-        </NavLink>
-        <NavLink to="/upload" className={navLinkCls}>
-          <Upload size={18} /> Upload
         </NavLink>
         <NavLink to="/search" className={navLinkCls}>
           <Search size={18} /> Search
@@ -47,6 +55,14 @@ export default function Sidebar() {
         </NavLink>
         <NavLink to="/library" className={navLinkCls}>
           <LibraryIcon size={18} /> Library
+        </NavLink>
+        <NavLink to="/notifications" className={navLinkCls}>
+          <Bell size={18} /> Notifications
+          {unread > 0 &&
+          <span className="ml-auto bg-foreground text-background text-[10px] font-bold px-1.5 py-0.5 rounded-full min-w-[18px] text-center">
+              {unread > 99 ? "99+" : unread}
+            </span>
+          }
         </NavLink>
         {user?.role === "admin" && (
           <NavLink to="/admin" className={navLinkCls}>

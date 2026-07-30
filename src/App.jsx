@@ -18,12 +18,12 @@ import Home from '@/pages/Home';
 import Search from '@/pages/Search';
 import TopCharts from '@/pages/TopCharts';
 import RecentlyAdded from '@/pages/RecentlyAdded';
+import Notifications from '@/pages/Notifications';
 import Profile from '@/pages/Profile';
 import TrackDetail from '@/pages/TrackDetail';
 import PublicRecords from '@/pages/PublicRecords';
 import ArtistByName from '@/pages/ArtistByName';
 import Suggestions from '@/pages/Suggestions';
-import Upload from '@/pages/Upload';
 import Lounge from '@/pages/Lounge';
 import Library from '@/pages/Library';
 import Admin from '@/pages/Admin';
@@ -64,13 +64,13 @@ const AuthenticatedApp = () => {
           <Route path="/search" element={<Search />} />
           <Route path="/top" element={<TopCharts />} />
           <Route path="/recent" element={<RecentlyAdded />} />
+          <Route path="/notifications" element={<Notifications />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/profile/:id" element={<Profile />} />
           <Route path="/track/:id" element={<TrackDetail />} />
           <Route path="/records/:id" element={<PublicRecords />} />
           <Route path="/artist" element={<ArtistByName />} />
           <Route path="/suggestions" element={<Suggestions />} />
-          <Route path="/upload" element={<Upload />} />
           <Route path="/lounge/:code" element={<Lounge />} />
           <Route path="/library" element={<Library />} />
           <Route path="/admin" element={<Admin />} />
