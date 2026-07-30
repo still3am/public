@@ -1,4 +1,4 @@
-import React, {
+import {
   createContext,
   useContext,
   useRef,
@@ -19,20 +19,44 @@ const PlayerContext = createContext(null);
 export const usePlayer = () => useContext(PlayerContext);
 
 export function PlayerProvider({ children }) {
-  const audioRef = useRef(null);
-  if (!audioRef.current && typeof Audio !== "undefined") {
-    audioRef.current = new Audio();
-    try {
-      audioRef.current.crossOrigin = "anonymous";
-    } catch {}
+  // Two audio elements enable a REAL overlapping crossfade: while one track
+  // fades out on the inactive element, the next track fades in on the other.
+  const audioRefs = [useRef(null), useRef(null)];
+  if (typeof Audio !== "undefined") {
+    audioRefs.forEach((r) => {
+      if (!r.current) {
+        const a = new Audio();
+        try {
+          a.crossOrigin = "anonymous";
+        } catch {}
+        a.preload = "auto";
+        r.current = a;
+      }
+    });
   }
-  // Offline audio blob URL currently in use (revoked when swapped out)
-  const activeBlobUrlRef = useRef(null);
-  // Web Audio analyser graph (created once, on first user gesture)
+  const els = () => [audioRefs[0].current, audioRefs[1].current];
+
+  // Shared Web Audio graph: each element -> its own gain -> analyser -> master -> out
   const audioCtxRef = useRef(null);
   const analyserRef = useRef(null);
-  const sourceRef = useRef(null);
   const masterGainRef = useRef(null);
+  const gainRefs = [useRef(null), useRef(null)];
+  const sourceRefs = [useRef(null), useRef(null)];
+
+  const activeIdxRef = useRef(0);
+  const blobUrlRefs = [useRef(null), useRef(null)];
+  const sideLoadedIdRef = [useRef(null), useRef(null)];
+
+  const crossfadingRef = useRef(false);
+  const crossfadeTimerRef = useRef(null);
+  const preloadedTargetRef = useRef(null);
+  const loadTokenRef = useRef(0);
+  const handleTimeRef = useRef(() => {});
+  const handleEndedRef = useRef(() => {});
+
+  const activeEl = () => els()[activeIdxRef.current];
+  const inactiveIdx = () => (activeIdxRef.current === 0 ? 1 : 0);
+  const inactiveEl = () => els()[inactiveIdx()];
 
   const countedRef = useRef(new Set());
   const [queue, setQueue] = useState([]);
@@ -48,8 +72,6 @@ export function PlayerProvider({ children }) {
   const sleepTimerRef = useRef(null);
   const [sleepTimerEndsAt, setSleepTimerEndsAt] = useState(null);
 
-  // Mirror of queue + a load guard, so the "ended" handler can extend the
-  // queue with more same-genre tracks without racing itself.
   const queueRef = useRef([]);
   useEffect(() => {
     queueRef.current = queue;
@@ -67,28 +89,33 @@ export function PlayerProvider({ children }) {
   const currentTrack =
     currentIndex >= 0 && currentIndex < queue.length ? queue[currentIndex] : null;
 
-  // Lazily create the Web Audio graph (AudioContext + MediaElementSource +
-  // AnalyserNode) the first time we need it. Safe to call repeatedly.
+  // --- Web Audio graph (created once, on first play) ---
   const ensureGraph = useCallback(() => {
-    const a = audioRef.current;
-    if (!a || audioCtxRef.current) return audioCtxRef.current;
+    if (audioCtxRef.current) return audioCtxRef.current;
     try {
       const AC = window.AudioContext || window.webkitAudioContext;
       if (!AC) return null;
       const ctx = new AC();
-      const src = ctx.createMediaElementSource(a);
       const analyser = ctx.createAnalyser();
       analyser.fftSize = 256;
       analyser.smoothingTimeConstant = 0.82;
-      const gain = ctx.createGain();
-      gain.gain.value = 1;
-      src.connect(analyser);
-      analyser.connect(gain);
-      gain.connect(ctx.destination);
+      const master = ctx.createGain();
+      master.gain.value = 1;
+      els().forEach((a, i) => {
+        if (!a) return;
+        const src = ctx.createMediaElementSource(a);
+        const g = ctx.createGain();
+        g.gain.value = i === activeIdxRef.current ? 1 : 0;
+        src.connect(g);
+        g.connect(analyser);
+        sourceRefs[i].current = src;
+        gainRefs[i].current = g;
+      });
+      analyser.connect(master);
+      master.connect(ctx.destination);
       audioCtxRef.current = ctx;
-      sourceRef.current = src;
       analyserRef.current = analyser;
-      masterGainRef.current = gain;
+      masterGainRef.current = master;
       return ctx;
     } catch {
       return null;
@@ -103,161 +130,252 @@ export function PlayerProvider({ children }) {
     return !!analyserRef.current;
   }, [ensureGraph]);
 
-  // volume / mute sync
-  useEffect(() => {
-    const a = audioRef.current;
-    if (a) a.volume = volume;
-  }, [volume]);
-  useEffect(() => {
-    const a = audioRef.current;
-    if (a) a.muted = muted;
-  }, [muted]);
-
-  useEffect(() => {
-    const a = audioRef.current;
-    if (a) a.playbackRate = playbackRate;
-  }, [playbackRate]);
-
-  // Crossfade: fade the master gain in over the configured duration when a
-  // new track starts (only when a transition mode is active).
-  const fadeGainIn = useCallback(() => {
+  // --- gain helpers ---
+  const setGainImmediate = useCallback((side, v) => {
     const ctx = audioCtxRef.current;
-    const gain = masterGainRef.current;
-    fadingOutRef.current = false;
-    if (!ctx || !gain) return;
-    const s = getTransitionSettings();
-    const dur = isTransitionActive(s) ? s.crossfadeSeconds : 0;
+    const g = gainRefs[side].current;
+    if (!ctx || !g) return;
     const t = ctx.currentTime;
-    if (dur <= 0) {
-      gain.gain.cancelScheduledValues(t);
-      gain.gain.setValueAtTime(1, t);
-      return;
+    g.gain.cancelScheduledValues(t);
+    g.gain.setValueAtTime(v, t);
+  }, []);
+
+  const rampGain = useCallback((side, to, dur) => {
+    const ctx = audioCtxRef.current;
+    const g = gainRefs[side].current;
+    if (!ctx || !g) return;
+    const t = ctx.currentTime;
+    g.gain.cancelScheduledValues(t);
+    g.gain.setValueAtTime(Math.max(0.0001, g.gain.value), t);
+    if (dur <= 0) g.gain.setValueAtTime(Math.max(0.0001, to), t);
+    else g.gain.linearRampToValueAtTime(Math.max(0.0001, to), t + dur);
+  }, []);
+
+  // --- offline-blob-aware url resolution for a given side ---
+  const resolveUrl = useCallback(async (track, side) => {
+    sideLoadedIdRef[side].current = track.id;
+    let url = track.audio_url;
+    let blobUrl = null;
+    try {
+      const rec = await getRecord(track.id);
+      if (rec && rec._blob) blobUrl = URL.createObjectURL(rec._blob);
+    } catch {}
+    if (blobUrlRefs[side].current && blobUrlRefs[side].current !== blobUrl) {
+      URL.revokeObjectURL(blobUrlRefs[side].current);
     }
-    gain.gain.cancelScheduledValues(t);
-    gain.gain.setValueAtTime(0, t);
-    gain.gain.linearRampToValueAtTime(1, t + dur);
+    blobUrlRefs[side].current = blobUrl || null;
+    return blobUrl || url;
   }, []);
 
-  // Crossfade: ramp the gain down to silence over the final `remaining`
-  // seconds of the current track, so the tail dissolves into the next song.
-  const fadingOutRef = useRef(false);
+  const mirrorPlayback = useCallback(
+    (el) => {
+      if (!el) return;
+      el.volume = volume;
+      el.muted = muted;
+      el.playbackRate = playbackRate;
+    },
+    [volume, muted, playbackRate]
+  );
 
-  // Snap the master gain back to full instantly — used when playback stops or
-  // loops without a track swap, so a user's next tap-to-play isn't silent.
-  const restoreGainNow = useCallback(() => {
-    const ctx = audioCtxRef.current;
-    const gain = masterGainRef.current;
-    fadingOutRef.current = false;
-    if (!ctx || !gain) return;
-    const t = ctx.currentTime;
-    gain.gain.cancelScheduledValues(t);
-    gain.gain.setValueAtTime(1, t);
-  }, []);
-  const fadeGainOut = useCallback((remaining) => {
-    const ctx = audioCtxRef.current;
-    const gain = masterGainRef.current;
-    if (!ctx || !gain || remaining <= 0 || fadingOutRef.current) return;
-    const t = ctx.currentTime;
-    gain.gain.cancelScheduledValues(t);
-    gain.gain.setValueAtTime(Math.max(0.0001, gain.gain.value), t);
-    gain.gain.linearRampToValueAtTime(0, t + remaining);
-    fadingOutRef.current = true;
-  }, []);
+  // Abort any crossfade in progress: silence the tail element, restore active.
+  const cancelCrossfade = useCallback(() => {
+    crossfadingRef.current = false;
+    preloadedTargetRef.current = null;
+    if (crossfadeTimerRef.current) {
+      clearTimeout(crossfadeTimerRef.current);
+      crossfadeTimerRef.current = null;
+    }
+    const is = inactiveIdx();
+    const ie = els()[is];
+    if (ie) {
+      try {
+        ie.pause();
+      } catch {}
+    }
+    setGainImmediate(is, 0);
+    setGainImmediate(activeIdxRef.current, 1);
+  }, [setGainImmediate]);
 
-  // swap src when track changes — prefer the offline-cached blob if present
+  // Manual load on the active element (used for playTrackAt / next / prev).
+  const loadOnActive = useCallback(
+    async (track) => {
+      const side = activeIdxRef.current;
+      const el = els()[side];
+      if (!el) return;
+      cancelCrossfade();
+      const token = ++loadTokenRef.current;
+      const url = await resolveUrl(track, side);
+      if (token !== loadTokenRef.current) return; // a newer load superseded us
+      mirrorPlayback(el);
+      el.src = url;
+      el.load();
+      setPosition(0);
+      setDuration(0);
+      ensureGraph();
+      const ctx = audioCtxRef.current;
+      if (ctx && ctx.state === "suspended") ctx.resume().catch(() => {});
+      setGainImmediate(side, 1);
+      el
+        .play()
+        .then(() => setIsPlaying(true))
+        .catch(() => setIsPlaying(false));
+    },
+    [resolveUrl, mirrorPlayback, ensureGraph, setGainImmediate, cancelCrossfade]
+  );
+
+  // Preload the next track onto the inactive element (no playback yet).
+  const preloadSide = useCallback(
+    async (targetIndex) => {
+      const side = inactiveIdx();
+      const el = els()[side];
+      const track = queueRef.current[targetIndex];
+      if (!el || !track) return;
+      sideLoadedIdRef[side].current = track.id;
+      const url = await resolveUrl(track, side);
+      // If the active side changed hands while we were resolving, bail.
+      if (side !== inactiveIdx()) return;
+      mirrorPlayback(el);
+      el.src = url;
+      el.load();
+    },
+    [resolveUrl, mirrorPlayback]
+  );
+
+  // Real crossfade: start the next track on the inactive element and ramp the
+  // two gains across one another, then promote the inactive element to active.
+  const beginCrossfade = useCallback(
+    (targetIndex, cf) => {
+      const side = inactiveIdx();
+      const el = els()[side];
+      const track = queueRef.current[targetIndex];
+      if (!el || !track) return;
+      crossfadingRef.current = true;
+      if (sideLoadedIdRef[side].current !== track.id) preloadSide(targetIndex);
+      setGainImmediate(side, 0);
+      mirrorPlayback(el);
+      const p = el.play();
+      Promise.resolve(p)
+        .then(() => {
+          rampGain(side, 1, cf);
+          rampGain(activeIdxRef.current, 0, cf);
+        })
+        .catch(() => {});
+      // The new track is now "current" — switch active side so UI follows it.
+      activeIdxRef.current = side;
+      preloadedTargetRef.current = null;
+      setCurrentIndex(targetIndex); // track-change effect sees it's loaded + crossfading -> skips reload
+      if (crossfadeTimerRef.current) clearTimeout(crossfadeTimerRef.current);
+      crossfadeTimerRef.current = setTimeout(() => {
+        const oldSide = 1 - side;
+        const oldEl = els()[oldSide];
+        if (oldEl) {
+          try {
+            oldEl.pause();
+          } catch {}
+        }
+        setGainImmediate(oldSide, 0);
+        crossfadingRef.current = false;
+      }, (cf + 0.4) * 1000);
+    },
+    [preloadSide, mirrorPlayback, setGainImmediate, rampGain]
+  );
+
+  // --- per-track load: crossfade engine handles natural advances, manual
+  // changes load on the active element. ---
   useEffect(() => {
-    const a = audioRef.current;
-    if (!a) return;
-    let cancelled = false;
-    (async () => {
-      if (!currentTrack) {
+    const track = currentTrack;
+    if (!track) {
+      cancelCrossfade();
+      const a = activeEl();
+      if (a) {
         a.pause();
         a.removeAttribute("src");
         a.load();
-        setPosition(0);
-        setDuration(0);
-        setIsPlaying(false);
-        if (activeBlobUrlRef.current) {
-          URL.revokeObjectURL(activeBlobUrlRef.current);
-          activeBlobUrlRef.current = null;
-        }
-        return;
       }
-      let url = currentTrack.audio_url;
-      try {
-        const rec = await getRecord(currentTrack.id);
-        if (!cancelled && rec && rec._blob) {
-          const blobUrl = URL.createObjectURL(rec._blob);
-          if (activeBlobUrlRef.current && activeBlobUrlRef.current !== blobUrl) {
-            URL.revokeObjectURL(activeBlobUrlRef.current);
-          }
-          activeBlobUrlRef.current = blobUrl;
-          url = blobUrl;
-        }
-      } catch {}
-      if (cancelled) return;
-      a.src = url;
-      a.load();
-      // Need the audio graph before we can fade; created lazily on first
-      // play(). We call ensureGraph + fadeGainIn after play resolves.
-      a.play()
-        .then(() => {
-          ensureGraph();
-          fadeGainIn();
-          setIsPlaying(true);
-        })
-        .catch(() => setIsPlaying(false));
-    })();
-    return () => {
-      cancelled = true;
-    };
-  }, [currentTrack?.id]);
+      setGainImmediate(activeIdxRef.current, 0);
+      sideLoadedIdRef[activeIdxRef.current].current = null;
+      setPosition(0);
+      setDuration(0);
+      setIsPlaying(false);
+      return;
+    }
+    // Crossfade already started this track on the active element — leave it.
+    if (
+      sideLoadedIdRef[activeIdxRef.current].current === track.id &&
+      crossfadingRef.current
+    ) {
+      return;
+    }
+    loadOnActive(track);
+  }, [currentTrack?.id]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // listeners
+  // --- listeners (attached once to both elements) ---
   useEffect(() => {
-    const a = audioRef.current;
-    if (!a) return;
-    const onTime = () => {
-      const cur = a.currentTime || 0;
-      setPosition(cur);
-      // Crossfade out approaching the end of the track.
-      if (!fadingOutRef.current) {
-        const d = a.duration || 0;
-        if (d > 0) {
-          const s = getTransitionSettings();
-          if (isTransitionActive(s)) {
-            const remaining = d - cur;
-            if (remaining > 0 && remaining <= s.crossfadeSeconds) {
-              // Only fade when there's a next track queued (auto-queue handles this).
-              const qi = queueRef.current;
-              const ci = currentIndexRef.current;
-              const hasNext =
-                repeatRef.current === "all" ||
-                repeatRef.current === "one" ||
-                ci + 1 < qi.length;
-              if (hasNext) fadeGainOut(remaining);
-            }
-          }
-        }
-      }
-    };
-    const onDur = () => setDuration(a.duration || 0);
-    const onPlay = () => setIsPlaying(true);
-    const onPause = () => setIsPlaying(false);
-    a.addEventListener("timeupdate", onTime);
-    a.addEventListener("durationchange", onDur);
-    a.addEventListener("loadedmetadata", onDur);
-    a.addEventListener("play", onPlay);
-    a.addEventListener("pause", onPause);
-    return () => {
-      a.removeEventListener("timeupdate", onTime);
-      a.removeEventListener("durationchange", onDur);
-      a.removeEventListener("loadedmetadata", onDur);
-      a.removeEventListener("play", onPlay);
-      a.removeEventListener("pause", onPause);
-    };
+    const cleanups = els().map((a) => {
+      if (!a) return () => {};
+      const onTime = () => {
+        if (a === activeEl()) handleTimeRef.current(a);
+      };
+      const onDur = () => {
+        if (a === activeEl()) setDuration(a.duration || 0);
+      };
+      const onPlay = () => {
+        if (a === activeEl()) setIsPlaying(true);
+      };
+      const onPause = () => {
+        if (a === activeEl()) setIsPlaying(false);
+      };
+      const onEnded = () => {
+        if (a === activeEl()) handleEndedRef.current();
+      };
+      a.addEventListener("timeupdate", onTime);
+      a.addEventListener("durationchange", onDur);
+      a.addEventListener("loadedmetadata", onDur);
+      a.addEventListener("play", onPlay);
+      a.addEventListener("pause", onPause);
+      a.addEventListener("ended", onEnded);
+      return () => {
+        a.removeEventListener("timeupdate", onTime);
+        a.removeEventListener("durationchange", onDur);
+        a.removeEventListener("loadedmetadata", onDur);
+        a.removeEventListener("play", onPlay);
+        a.removeEventListener("pause", onPause);
+        a.removeEventListener("ended", onEnded);
+      };
+    });
+    return () => cleanups.forEach((c) => c());
   }, []);
 
+  // timeupdate logic (reads latest via ref)
+  useEffect(() => {
+    handleTimeRef.current = (a) => {
+      const cur = a.currentTime || 0;
+      setPosition(cur);
+      const s = getTransitionSettings();
+      if (!isTransitionActive(s) || crossfadingRef.current) return;
+      const d = a.duration;
+      if (!d || !isFinite(d)) return;
+      const remaining = d - cur;
+      if (remaining <= 0) return;
+      const qi = queueRef.current;
+      const ci = currentIndexRef.current;
+      let n = -1;
+      if (repeatRef.current !== "one") {
+        if (ci + 1 < qi.length) n = ci + 1;
+        else if (repeatRef.current === "all" && qi.length) n = 0;
+      }
+      if (n === -1) return; // queue ends here — let the ended handler auto-radio
+      const cf = s.crossfadeSeconds;
+      // Preload a little early so the crossfade can start on time.
+      if (remaining <= cf + 3 && remaining > cf && preloadedTargetRef.current !== n) {
+        preloadedTargetRef.current = n;
+        preloadSide(n);
+      }
+      if (remaining <= cf && remaining > 0) beginCrossfade(n, cf);
+    };
+  }, [preloadSide, beginCrossfade]);
+
+  // continued play counting
   const countPlay = useCallback((track) => {
     if (!track || countedRef.current.has(track.id)) return;
     countedRef.current.add(track.id);
@@ -288,16 +406,6 @@ export function PlayerProvider({ children }) {
     if (isPlaying && currentTrack) countPlay(currentTrack);
   }, [isPlaying, currentTrack?.id]);
 
-  // ended handler reads latest via ref
-  const handleEndedRef = useRef(() => {});
-  useEffect(() => {
-    const a = audioRef.current;
-    if (!a) return;
-    const onEnd = () => handleEndedRef.current();
-    a.addEventListener("ended", onEnd);
-    return () => a.removeEventListener("ended", onEnd);
-  }, []);
-
   const nextIndex = useCallback(() => {
     if (!queue.length) return -1;
     if (shuffle && queue.length > 1) {
@@ -311,8 +419,6 @@ export function PlayerProvider({ children }) {
     return repeat === "all" ? 0 : -1;
   }, [queue, currentIndex, shuffle, repeat]);
 
-  // Auto radio: when the queue would otherwise stop, append a mix of the same
-  // artist, the same genre, and fresh/popular discoveries, then jump into it.
   const extendWithGenreRadio = useCallback(async (track) => {
     if (!track?.id || autoQueueLoadingRef.current) return false;
     autoQueueLoadingRef.current = true;
@@ -332,15 +438,16 @@ export function PlayerProvider({ children }) {
     }
   }, []);
 
+  // ended handler (only the active element, only when not crossfading)
   useEffect(() => {
     handleEndedRef.current = async () => {
+      if (crossfadingRef.current) return;
       if (repeat === "one") {
-        const a = audioRef.current;
+        const a = activeEl();
         if (a) {
           a.currentTime = 0;
           a.play().catch(() => {});
         }
-        restoreGainNow();
         return;
       }
       const n = nextIndex();
@@ -348,15 +455,24 @@ export function PlayerProvider({ children }) {
         setCurrentIndex(n);
         return;
       }
-      // Queue exhausted — keep the vibe going by queuing more of the same genre.
       if (repeat === "off" && currentTrack) {
         const ok = await extendWithGenreRadio(currentTrack);
         if (ok) return;
       }
-      restoreGainNow();
       setIsPlaying(false);
     };
   }, [repeat, nextIndex, currentTrack, extendWithGenreRadio]);
+
+  // volume / mute / rate apply to both elements
+  useEffect(() => {
+    els().forEach((a) => a && (a.volume = volume));
+  }, [volume]);
+  useEffect(() => {
+    els().forEach((a) => a && (a.muted = muted));
+  }, [muted]);
+  useEffect(() => {
+    els().forEach((a) => a && (a.playbackRate = playbackRate));
+  }, [playbackRate]);
 
   const playTrackAt = useCallback((tracks, index = 0) => {
     if (!tracks || !tracks.length) return;
@@ -366,9 +482,13 @@ export function PlayerProvider({ children }) {
   }, []);
 
   const togglePlay = useCallback(() => {
-    const a = audioRef.current;
+    const a = activeEl();
     if (!a || !currentTrack) return;
     if (a.paused) {
+      ensureGraph();
+      const ctx = audioCtxRef.current;
+      if (ctx && ctx.state === "suspended") ctx.resume().catch(() => {});
+      if (!crossfadingRef.current) setGainImmediate(activeIdxRef.current, 1);
       a.play()
         .then(() => setIsPlaying(true))
         .catch(() => {});
@@ -376,10 +496,10 @@ export function PlayerProvider({ children }) {
       a.pause();
       setIsPlaying(false);
     }
-  }, [currentTrack]);
+  }, [currentTrack, ensureGraph, setGainImmediate]);
 
   const seek = useCallback((time) => {
-    const a = audioRef.current;
+    const a = activeEl();
     if (!a) return;
     a.currentTime = time;
     setPosition(time);
@@ -387,7 +507,7 @@ export function PlayerProvider({ children }) {
 
   const setVolume = useCallback((v) => {
     setVolumeState(v);
-    if (audioRef.current) audioRef.current.volume = v;
+    els().forEach((a) => a && (a.volume = v));
     if (v > 0) setMuted(false);
   }, []);
 
@@ -397,7 +517,7 @@ export function PlayerProvider({ children }) {
   }, [nextIndex]);
 
   const prev = useCallback(() => {
-    const a = audioRef.current;
+    const a = activeEl();
     if (a && a.currentTime > 3) {
       a.currentTime = 0;
       setPosition(0);
@@ -421,11 +541,11 @@ export function PlayerProvider({ children }) {
 
   const setPlaybackRate = useCallback((r) => {
     setPlaybackRateState(r);
-    if (audioRef.current) audioRef.current.playbackRate = r;
+    els().forEach((a) => a && (a.playbackRate = r));
   }, []);
 
   const skipBy = useCallback((delta) => {
-    const a = audioRef.current;
+    const a = activeEl();
     if (!a) return;
     const t = Math.max(0, Math.min(a.duration || 0, (a.currentTime || 0) + delta));
     a.currentTime = t;
@@ -444,8 +564,7 @@ export function PlayerProvider({ children }) {
     setCurrentIndex((ci) => {
       setQueue((prev) => {
         if (index < 0 || index >= prev.length) return prev;
-        const next = prev.filter((_, i) => i !== index);
-        return next;
+        return prev.filter((_, i) => i !== index);
       });
       if (index < ci) return ci - 1;
       if (index === ci) return -1;
@@ -453,12 +572,15 @@ export function PlayerProvider({ children }) {
     });
   }, []);
 
-  const playQueueItem = useCallback((index) => {
-    if (index >= 0 && index < queue.length) {
-      setCurrentIndex(index);
-      countedRef.current = new Set();
-    }
-  }, [queue.length]);
+  const playQueueItem = useCallback(
+    (index) => {
+      if (index >= 0 && index < queue.length) {
+        setCurrentIndex(index);
+        countedRef.current = new Set();
+      }
+    },
+    [queue.length]
+  );
 
   const clearQueue = useCallback(() => {
     setQueue([]);
@@ -477,7 +599,7 @@ export function PlayerProvider({ children }) {
     const ends = Date.now() + minutes * 60 * 1000;
     setSleepTimerEndsAt(ends);
     sleepTimerRef.current = setTimeout(() => {
-      const a = audioRef.current;
+      const a = activeEl();
       if (a) a.pause();
       setIsPlaying(false);
       setSleepTimerEndsAt(null);
