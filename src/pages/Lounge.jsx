@@ -3,9 +3,10 @@ import { useParams, Link, useNavigate } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import { useAuth } from "@/lib/AuthContext";
 import { useToast } from "@/components/ui/use-toast";
+import { usePlayer } from "@/context/PlayerContext";
 import BackHeader from "@/components/BackHeader";
 import { useLibrary } from "@/context/LibraryContext";
-import { fetchSessionByCode, loungeUrl } from "@/lib/lounge";
+import { fetchSessionByCode, loungeUrl, parseTrack } from "@/lib/lounge";
 import { getRecentPlays } from "@/lib/recentPlays";
 import {
   Loader2,
@@ -115,7 +116,7 @@ export default function Lounge() {
 
   return (
     <div className="min-h-screen pb-10">
-      <BackHeader title="Lounge" />
+      <BackHeader title={session?.name || (session?.host_name ? `${session.host_name}'s Lounge` : "Lounge")} />
       <div className="max-w-xl mx-auto px-4">
         {loading ? (
           <div className="flex justify-center py-24">
@@ -186,6 +187,8 @@ export default function Lounge() {
               </div>
             </div>
 
+            <LoungeQueueList sessionId={session.id} isHost={isHost} />
+
             {/* Add to the shared queue */}
             <button
               onClick={() => setPickerOpen(true)}
@@ -207,7 +210,13 @@ export default function Lounge() {
           sessionId={session.id}
           user={user}
           onClose={() => setPickerOpen(false)}
-          onAdded={() => toast({ title: "Added to the lounge queue" })}
+          onAdded={(ok) =>
+            toast(
+              ok === false
+                ? { title: "Couldn't add track", variant: "destructive" }
+                : { title: "Added to the lounge queue" }
+            )
+          }
         />
       )}
     </div>
@@ -217,7 +226,7 @@ export default function Lounge() {
 // ---------------- Guest add-to-queue picker ----------------
 function GuestQueuePicker({ sessionId, user, onClose, onAdded }) {
   const { ids } = useLibrary();
-  const libraryIds = ids || [];
+  const libraryIds = Array.from(ids || []);
   const [tracks, setTracks] = useState(null);
   const [query, setQuery] = useState("");
   const [justAdded, setJustAdded] = useState(new Set());
@@ -277,9 +286,9 @@ function GuestQueuePicker({ sessionId, user, onClose, onAdded }) {
         added_by_name: user?.full_name || "",
       });
       setJustAdded((prev) => new Set(prev).add(t.id));
-      onAdded?.();
+      onAdded?.(true);
     } catch (e) {
-      onAdded?.();
+      onAdded?.(false);
     }
   };
 
@@ -343,6 +352,96 @@ function GuestQueuePicker({ sessionId, user, onClose, onAdded }) {
           </div>
         )}
       </div>
+    </div>
+  );
+}
+
+// ---------------- Live shared queue ----------------
+function LoungeQueueList({ sessionId, isHost }) {
+  const p = usePlayer();
+  const [items, setItems] = useState([]);
+  const [loadingQ, setLoadingQ] = useState(true);
+
+  const load = useCallback(async () => {
+    try {
+      const list = await base44.entities.LoungeQueueItem.filter(
+        { session_id: sessionId },
+        "created_date",
+        100
+      );
+      setItems(list || []);
+    } catch {
+      setItems([]);
+    } finally {
+      setLoadingQ(false);
+    }
+  }, [sessionId]);
+
+  useEffect(() => {
+    load();
+    let unsub;
+    try {
+      unsub = base44.entities.LoungeQueueItem.subscribe(() => load());
+    } catch {}
+    const poll = setInterval(load, 5000);
+    return () => {
+      if (unsub) unsub();
+      clearInterval(poll);
+    };
+  }, [load]);
+
+  const parsed = items
+    .map((it) => ({ ...parseTrack(it.track), _row: it }))
+    .filter((x) => x && x.id);
+
+  return (
+    <div className="rounded-2xl border border-border bg-foreground/[0.02] p-3 mb-3">
+      <div className="flex items-center gap-2 text-[11px] uppercase tracking-wider text-foreground/40 mb-2">
+        <ListMusic size={12} /> Up next {parsed.length ? `· ${parsed.length}` : ""}
+      </div>
+      {loadingQ ? (
+        <div className="flex justify-center py-3">
+          <Loader2 size={15} className="animate-spin text-foreground/40" />
+        </div>
+      ) : parsed.length === 0 ? (
+        <p className="text-xs text-foreground/40 px-1 py-1">
+          The queue is empty. Add a song and it shows up here for everyone.
+        </p>
+      ) : (
+        <div className="space-y-1 max-h-64 overflow-y-auto no-scrollbar">
+          {parsed.map((t, i) => {
+            const playing = p.currentTrack?.id === t.id;
+            return (
+              <div
+                key={t._row.id}
+                className="flex items-center gap-3 px-1.5 py-1.5 rounded-lg hover:bg-foreground/[0.04] transition"
+              >
+                <div className="w-7 text-center text-xs text-foreground/40 shrink-0">{i + 1}</div>
+                <div className="w-10 h-10 rounded overflow-hidden bg-foreground/10 shrink-0">
+                  {t.cover_art_url && <img src={t.cover_art_url} alt="" className="w-full h-full object-cover" />}
+                </div>
+                <div className="min-w-0 flex-1">
+                  <div className={`text-sm font-medium truncate ${playing ? "text-foreground" : ""}`}>
+                    {t.title}
+                  </div>
+                  <div className="text-xs text-foreground/45 truncate">
+                    {t.artist || "Unknown"}
+                    {t._row.added_by_name ? ` · added by ${t._row.added_by_name}` : ""}
+                  </div>
+                </div>
+                {isHost && (
+                  <button
+                    onClick={() => p.playTrackAt([t])}
+                    className="shrink-0 text-xs font-semibold px-3 py-1.5 rounded-full bg-foreground text-background active:scale-90 transition"
+                  >
+                    {playing ? "Now" : "Play"}
+                  </button>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 }

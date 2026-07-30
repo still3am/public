@@ -6,6 +6,11 @@
       "type": "string",
       "description": "Short shareable code used in the QR link"
     },
+    "name": {
+      "type": "string",
+      "default": "",
+      "description": "Display name for the lounge; falls back to \"{host_name} Lounge\" when empty"
+    },
     "host_id": {
       "type": "string"
     },

@@ -28,6 +28,10 @@ export function useLoungeHost() {
 
   const addedRef = useRef(null);
   if (addedRef.current === null) addedRef.current = loadAddedSet();
+  const pRef = useRef(p);
+  useEffect(() => {
+    pRef.current = p;
+  }, [p]);
 
   const persistAdded = () => {
     try {
@@ -67,6 +71,7 @@ export function useLoungeHost() {
         active = await base44.entities.LoungeSession.create({
           host_id: user.id,
           host_name: user.full_name || "",
+          name: "",
           code,
           is_active: true,
           is_playing: false,
@@ -135,6 +140,21 @@ export function useLoungeHost() {
     setMembers([]);
   }, [session?.id]);
 
+  const updateName = useCallback(
+    async (name) => {
+      if (!session?.id) return false;
+      const clean = (name || "").slice(0, 60);
+      try {
+        await base44.entities.LoungeSession.update(session.id, { name: clean });
+        setSession((prev) => (prev ? { ...prev, name: clean } : prev));
+        return true;
+      } catch {
+        return false;
+      }
+    },
+    [session?.id]
+  );
+
   // Live member updates so pending requests appear as guests scan the QR.
   useEffect(() => {
     if (!session?.id) return;
@@ -164,7 +184,13 @@ export function useLoungeHost() {
         try {
           t = typeof it.track === "string" ? JSON.parse(it.track) : it.track;
         } catch {}
-        if (t) p.addToQueue(t);
+        if (!t) return;
+        const player = pRef.current;
+        if (!player.currentTrack) {
+          player.playTrackAt([t]);
+        } else {
+          player.addToQueue(t);
+        }
       });
     } catch {}
     return () => {
@@ -189,5 +215,6 @@ export function useLoungeHost() {
     approve,
     reject,
     endSession,
+    updateName,
   };
 }

@@ -1,16 +1,42 @@
 import { useEffect, useState } from "react";
-import { Users, Check, X, Loader2, Speaker, Power, Copy, ScanLine } from "lucide-react";
+import { Users, Check, X, Loader2, Speaker, Power, Copy, ScanLine, Pencil } from "lucide-react";
 import { loungeUrl, qrImageUrl } from "@/lib/lounge";
 import QRScannerModal from "@/components/QRScannerModal";
+import { useToast } from "@/components/ui/use-toast";
 
 export default function LoungeHostModal({ lounge, onClose }) {
-  const { session, members, loading, ensureSession, approve, reject, endSession } = lounge;
+  const { session, members, loading, ensureSession, approve, reject, endSession, updateName } = lounge;
+  const { toast } = useToast();
   const [copied, setCopied] = useState(false);
   const [scanning, setScanning] = useState(false);
+  const [editingName, setEditingName] = useState(false);
+  const [nameDraft, setNameDraft] = useState("");
+  const [savingName, setSavingName] = useState(false);
 
   useEffect(() => {
     ensureSession();
   }, [ensureSession]);
+
+  useEffect(() => {
+    if (session?.id) setNameDraft(session.name || cacheName(session));
+  }, [session?.id, session?.name, session?.host_name]);
+
+  function cacheName(s) {
+    return s && s.host_name ? `${s.host_name}'s Lounge` : "My Lounge";
+  }
+
+  async function saveName() {
+    if (!updateName) return;
+    setSavingName(true);
+    const ok = await updateName(nameDraft);
+    setSavingName(false);
+    if (ok) {
+      setEditingName(false);
+      toast({ title: "Lounge name updated" });
+    } else {
+      toast({ title: "Couldn't update name", variant: "destructive" });
+    }
+  }
 
   if (loading && !session) {
     return (
@@ -62,7 +88,55 @@ export default function LoungeHostModal({ lounge, onClose }) {
           <div className="inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.3em] text-foreground/50 mb-1">
             <Speaker size={12} /> Public Lounge
           </div>
-          <h2 className="text-xl font-extrabold tracking-tight">{session.host_name || "Your"} Lounge</h2>
+          {editingName ? (
+            <div className="flex items-center gap-2 justify-center mt-1">
+              <input
+                value={nameDraft}
+                onChange={(e) => setNameDraft(e.target.value)}
+                maxLength={60}
+                autoFocus
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") saveName();
+                  if (e.key === "Escape") setEditingName(false);
+                }}
+                placeholder="Lounge name"
+                className="text-base font-extrabold tracking-tight text-center bg-transparent border-b border-border focus:outline-none focus:border-foreground px-1 py-0.5 max-w-[15rem]"
+              />
+              <button
+                onClick={saveName}
+                disabled={savingName}
+                className="p-1.5 rounded-full hover:bg-foreground/5 active:scale-90 transition"
+                aria-label="Save name"
+              >
+                {savingName ? <Loader2 size={15} className="animate-spin" /> : <Check size={15} />}
+              </button>
+              <button
+                onClick={() => setEditingName(false)}
+                className="p-1.5 rounded-full hover:bg-foreground/5 active:scale-90 transition"
+                aria-label="Cancel"
+              >
+                <X size={15} />
+              </button>
+            </div>
+          ) : (
+            <div className="flex items-center gap-2 justify-center mt-1">
+              <h2 className="text-xl font-extrabold tracking-tight truncate">
+                {session.name || cacheName(session)}
+              </h2>
+              {updateName && (
+                <button
+                  onClick={() => {
+                    setNameDraft(session.name || cacheName(session));
+                    setEditingName(true);
+                  }}
+                  className="p-1.5 rounded-full hover:bg-foreground/5 active:scale-90 transition shrink-0"
+                  aria-label="Rename lounge"
+                >
+                  <Pencil size={14} />
+                </button>
+              )}
+            </div>
+          )}
           <p className="text-xs text-foreground/50 mt-1">
             Friends scan this to join and add songs straight to your play queue.
           </p>
