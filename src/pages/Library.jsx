@@ -5,7 +5,7 @@ import { useAuth } from "@/lib/AuthContext";
 import { useLibrary } from "@/context/LibraryContext";
 import { useOfflineCache } from "@/hooks/useOfflineCache";
 import { Library as LibIcon, Loader2, CloudOff, ChevronRight } from "lucide-react";
-import TrackRow from "@/components/TrackRow";
+import TrackCard from "@/components/TrackCard";
 import EmptyState from "@/components/EmptyState";
 import PullToRefresh from "@/components/PullToRefresh";
 import PageHeader from "@/components/PageHeader";
@@ -98,10 +98,10 @@ export default function Library() {
           description="Tap the + on any track to save it here for quick access." /> :
 
 
-        <div className="space-y-0.5">
-            {tracks.map((t, i) =>
-          <TrackRow key={t.id} track={t} index={i} />
-          )}
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
+            {tracks.map((t) => (
+              <TrackCard key={t.id} track={t} />
+            ))}
           </div>
         }
       </PullToRefresh>
