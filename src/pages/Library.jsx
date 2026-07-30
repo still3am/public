@@ -90,7 +90,7 @@ export default function Library() {
         to="/records"
         className="block mb-5 rounded-2xl ring-1 ring-inset ring-border bg-gradient-to-br from-foreground/[0.06] to-foreground/[0.02] hover:from-foreground/[0.09] hover:to-foreground/[0.04] transition p-4 group">
         <div className="flex items-center gap-3.5">
-          <div className="w-10 h-10 rounded-full bg-foreground/[0.06] grid place-items-center text-foreground/55 shrink-0">
+          <div className="w-10 h-10 rounded-full bg-foreground/[0.06] grid place-items-center text-foreground/55 shrink-0 hidden">
             <Mic2 size={18} />
           </div>
           <div className="min-w-0 flex-1">
