@@ -97,24 +97,24 @@ export default function Downloads() {
       
 
       {/* Status card */}
-      <div className="mt-2 mb-6 grid grid-cols-3 gap-2.5 hidden">
-        <Stat
-          label="Saved tracks"
-          value={String(cache.records.length)}
-          icon={<HardDriveDownload size={15} />} />
-        
-        <Stat
-          label="Storage used"
-          value={bytesToReadable(totalBytes)}
-          icon={<HardDriveDownload size={15} />} />
-        
-        <Stat
-          label="Connection"
-          value={online ? "Online" : "Offline"}
-          tone={online ? "ok" : "warn"}
-          icon={online ? <CheckCircle2 size={15} /> : <WifiOff size={15} />} />
-        
-      </div>
+      
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      
 
       {!online &&
       <div className="mb-5 rounded-2xl bg-foreground/[0.05] px-4 py-3 flex items-center gap-2.5 text-sm text-foreground/70">
@@ -197,9 +197,9 @@ export default function Downloads() {
                             E
                           </span>
                       }
-                        <span className="shrink-0 inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 text-[9px] font-bold hidden">
-                          <CloudOff size={9} /> Offline
-                        </span>
+                        
+
+                      
                       </div>
                       <div className="text-xs text-foreground/50 truncate">
                         {t.artist || t.uploader_name || "Unknown"}
