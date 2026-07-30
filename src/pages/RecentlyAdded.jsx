@@ -1,6 +1,6 @@
 import { useEffect, useState, useCallback } from "react";
 import { base44 } from "@/api/base44Client";
-import TrackRow from "@/components/TrackRow";
+import TrackCard from "@/components/TrackCard";
 import { useUnpublishedSync } from "@/hooks/useUnpublishedSync";
 import EmptyState from "@/components/EmptyState";
 import { Music, Loader2 } from "lucide-react";
@@ -48,13 +48,9 @@ export default function RecentlyAdded() {
     <PullToRefresh onRefresh={load}>
     <div>
       <PageHeader eyebrow="Newest" title="Recently Added" subtitle="Fresh uploads from across the network." />
-      <div className="space-y-0.5">
-        {tracks.map((t, i) => (
-          <TrackRow
-            key={t.id}
-            track={t}
-            index={i}
-          />
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-1">
+        {tracks.map((t) => (
+          <TrackCard key={t.id} track={t} />
         ))}
       </div>
     </div>
