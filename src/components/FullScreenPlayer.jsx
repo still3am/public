@@ -29,6 +29,8 @@ import QueuePanel from "@/components/QueuePanel";
 import LoungeHostModal from "@/components/LoungeHostModal";
 import { useLoungeHost } from "@/hooks/useLoungeHost";
 import { useLibrary } from "@/context/LibraryContext";
+import { useOfflineCache } from "@/hooks/useOfflineCache";
+import { useToast } from "@/components/ui/use-toast";
 
 const clampVol = (v) => Math.max(0, Math.min(1, v));
 
@@ -59,6 +61,8 @@ export default function FullScreenPlayer({ onClose }) {
   const [showLyricsPanel, setShowLyricsPanel] = useState(true);
   const t = p.currentTrack;
   const lounge = useLoungeHost();
+  const cache = useOfflineCache();
+  const { toast } = useToast();
   const [loungeOpen, setLoungeOpen] = useState(false);
   const volDrag = useRef({ startY: 0, start: 0, active: false });
   const hintTimer = useRef(null);
@@ -128,6 +132,21 @@ export default function FullScreenPlayer({ onClose }) {
   const onVolTouchEnd = () => {
     volDrag.current.active = false;
   };
+
+  async function toggleOffline() {
+    if (!t) return;
+    if (cache.isCached(t.id)) {
+      await cache.removeTrack(t.id);
+      toast({ title: "Removed from downloads" });
+      return;
+    }
+    const ok = await cache.downloadTrack(t);
+    toast(
+      ok
+        ? { title: "Saved for offline" }
+        : { title: "Couldn't save offline", variant: "destructive" }
+    );
+  }
 
   async function shareNow(copyOnly = false) {
     if (!t) return;
@@ -222,6 +241,9 @@ export default function FullScreenPlayer({ onClose }) {
           inLibrary={isInLibrary(t.id)}
           onViewQueue={() => setShowQueue(true)}
           onLounge={() => setLoungeOpen(true)}
+          onToggleOffline={toggleOffline}
+          savedOffline={cache.isCached(t.id)}
+          savingOffline={!!cache.downloading[t.id]}
           queueCount={p.queue.length - p.currentIndex - 1 > 0 ? p.queue.length - p.currentIndex - 1 : 0} />
         
       </div>

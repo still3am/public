@@ -6,6 +6,9 @@ import {
   Activity,
   ListMusic,
   Smartphone,
+  Download,
+  Trash2,
+  Loader2,
 } from "lucide-react";
 
 export default function NowPlayingAddMenu({
@@ -15,6 +18,9 @@ export default function NowPlayingAddMenu({
   onViewQueue,
   onToggleLibrary,
   onLounge,
+  onToggleOffline,
+  savedOffline = false,
+  savingOffline = false,
   inLibrary = false,
   queueCount = 0,
 }) {
@@ -56,6 +62,18 @@ export default function NowPlayingAddMenu({
       label: `Queue${queueCount ? ` · ${queueCount}` : ""}`,
       onClick: (close) => {
         onViewQueue();
+        close();
+      },
+    },
+    onToggleOffline && {
+      icon: savingOffline ? Loader2 : savedOffline ? Trash2 : Download,
+      label: savingOffline
+        ? "Saving…"
+        : savedOffline
+        ? "Remove offline"
+        : "Save offline",
+      onClick: (close) => {
+        onToggleOffline();
         close();
       },
     },
