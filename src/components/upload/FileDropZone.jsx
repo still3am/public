@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { UploadCloud } from "lucide-react";
+import { UploadCloud, Sparkles } from "lucide-react";
 
 const FORMATS = ["MP3", "WAV", "M4A", "FLAC", "OGG", "AAC", "OPUS", "AIFF"];
 
@@ -18,32 +18,56 @@ export default function FileDropZone({ onFiles, inputRef }) {
         if (e.dataTransfer.files?.length) onFiles(e.dataTransfer.files);
       }}
       onClick={() => inputRef.current?.click()}
-      className={`relative cursor-pointer rounded-2xl border-2 border-dashed transition overflow-hidden ${
+      className={`group relative cursor-pointer rounded-3xl overflow-hidden transition-all duration-200 ${
         drag
-          ? "border-foreground bg-foreground/[0.06] scale-[1.005]"
-          : "border-border hover:border-foreground/40 hover:bg-foreground/[0.02]"
+          ? "bg-foreground text-background shadow-2xl scale-[1.01]"
+          : "bg-foreground/[0.035] hover:bg-foreground/[0.06] ring-1 ring-inset ring-border"
       }`}
     >
-      <div className="px-6 py-10 md:py-14 text-center">
+      <div
+        className={`pointer-events-none absolute inset-3 rounded-2xl border-2 border-dashed transition ${
+          drag ? "border-background/40" : "border-border group-hover:border-foreground/25"
+        }`}
+      />
+      <div className="relative px-6 py-12 md:py-16 text-center">
         <div
-          className={`w-16 h-16 rounded-2xl grid place-items-center mx-auto mb-4 transition ${
+          className={`w-20 h-20 rounded-full grid place-items-center mx-auto mb-5 transition-transform duration-200 ${
             drag
-              ? "bg-foreground text-background"
-              : "bg-foreground/[0.05] text-foreground/60"
+              ? "bg-background text-foreground scale-110"
+              : "bg-foreground text-background group-hover:scale-105"
           }`}
         >
-          <UploadCloud size={28} />
+          <UploadCloud size={30} />
         </div>
-        <div className="font-bold text-base md:text-lg mb-1">
-          {drag ? "Drop to upload" : "Drop audio files to upload"}
+        <div className="font-extrabold tracking-tight text-xl md:text-2xl mb-1.5">
+          {drag ? "Drop it" : "Drop your tracks here"}
         </div>
-        <div className="text-sm text-foreground/50 max-w-sm mx-auto">
-          Metadata and cover art are detected automatically. Any format, any
-          size — streamed from the network.
+        <div
+          className={`text-sm max-w-xs mx-auto ${
+            drag ? "text-background/70" : "text-foreground/50"
+          }`}
+        >
+          or <span className="underline underline-offset-2 font-semibold">browse files</span> — upload as many as you like, any size.
         </div>
-        <div className="flex flex-wrap justify-center gap-1.5 mt-4">
+
+        <div
+          className={`mt-5 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-bold ${
+            drag ? "bg-background/15 text-background" : "bg-foreground/[0.06] text-foreground/60"
+          }`}
+        >
+          <Sparkles size={12} /> Title, artist, artwork &amp; explicit auto-detected
+        </div>
+
+        <div className="flex flex-wrap justify-center gap-1.5 mt-6">
           {FORMATS.map((f) => (
-            <span key={f} className="chip">
+            <span
+              key={f}
+              className={`px-2.5 py-1 rounded-md text-[10px] font-bold tracking-wide ${
+                drag
+                  ? "bg-background/15 text-background/80"
+                  : "bg-foreground/[0.05] text-foreground/45"
+              }`}
+            >
               {f}
             </span>
           ))}
