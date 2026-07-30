@@ -68,8 +68,8 @@ export default function TrackRow({
   return (
     <div
       className="group flex items-center gap-4 px-3 py-2.5 rounded-lg hover:bg-foreground/[0.04] transition"
-      onDoubleClick={() => p.playTrackAt([track])}
-    >
+      onDoubleClick={() => p.playTrackAt([track])}>
+      
       <div className="w-6 text-center text-sm font-medium text-foreground/40 shrink-0">
         {isCurrent && p.isPlaying ?
         <Pause
@@ -96,17 +96,17 @@ export default function TrackRow({
           </>
         }
       </div>
-      {showArt && (
-        <div className="w-10 h-10 rounded-md overflow-hidden bg-foreground/10 shrink-0">
-          {(track.cover_art_url || albumCover) && (
-            <img
-              src={track.cover_art_url || albumCover}
-              alt=""
-              className="w-full h-full object-cover"
-            />
-          )}
+      {showArt &&
+      <div className="w-10 h-10 rounded-md overflow-hidden bg-foreground/10 shrink-0">
+          {(track.cover_art_url || albumCover) &&
+        <img
+          src={track.cover_art_url || albumCover}
+          alt=""
+          className="w-full h-full object-cover" />
+
+        }
         </div>
-      )}
+      }
       <div className="min-w-0 flex-1">
         <Link
           to={`/track/${track.id}`}
@@ -122,23 +122,23 @@ export default function TrackRow({
             return (
               <ArtistLinks
                 artist={artist}
-                linkClassName="text-foreground/50 hover:underline" />
-            );
+                linkClassName="text-foreground/50 hover:underline" />);
+
           }
           return (
             <Link
               to={`/profile/${track.uploader_id}`}
               className="text-xs text-foreground/50 truncate hover:underline">
               {track.uploader_name || "Unknown"}
-            </Link>
-          );
+            </Link>);
+
         })()}
       </div>
-      {track.explicit && (
-        <span className="text-[9px] font-extrabold px-1 py-0.5 rounded bg-foreground/15 text-foreground/70 shrink-0">
-          E
-        </span>
-      )}
+      {track.explicit &&
+      <span className="text-[9px] font-extrabold rounded bg-foreground/15 text-foreground/70 shrink-0 px-1">E
+
+      </span>
+      }
       
 
 
@@ -147,16 +147,16 @@ export default function TrackRow({
       
 
       
-      {track.genre && (
-        <span className="hidden md:block text-xs text-foreground/45 px-2.5 py-1 rounded-full bg-foreground/[0.05] shrink-0">
+      {track.genre &&
+      <span className="hidden md:block text-xs text-foreground/45 px-2.5 py-1 rounded-full bg-foreground/[0.05] shrink-0">
           {track.genre}
         </span>
-      )}
-      {track.created_date && (
-        <div className="hidden lg:block text-[11px] text-foreground/40 w-16 text-right shrink-0">
+      }
+      {track.created_date &&
+      <div className="hidden lg:block text-[11px] text-foreground/40 w-16 text-right shrink-0">
           {timeAgo(track.created_date)}
         </div>
-      )}
+      }
       <div className="hidden md:block text-xs text-foreground/40 w-12 text-right tabular-nums shrink-0">
         {formatTime(track.duration_seconds)}
       </div>
@@ -182,18 +182,18 @@ export default function TrackRow({
           
             <div className="absolute right-0 top-full z-20 mt-1 bg-popover border border-border rounded-lg shadow-xl py-1 min-w-[200px]">
               <MenuBtn
-                icon={libBusy ? Loader2 : inLib ? Check : Plus}
-                label={libBusy ? "Saving…" : inLib ? "Remove from library" : "Add to library"}
-                danger={!libBusy && inLib}
-                onClick={async () => {
-                  setMenuOpen(false);
-                  setLibBusy(true);
-                  try {
-                    await toggle(track);
-                  } finally {
-                    setLibBusy(false);
-                  }
-                }} />
+              icon={libBusy ? Loader2 : inLib ? Check : Plus}
+              label={libBusy ? "Saving…" : inLib ? "Remove from library" : "Add to library"}
+              danger={!libBusy && inLib}
+              onClick={async () => {
+                setMenuOpen(false);
+                setLibBusy(true);
+                try {
+                  await toggle(track);
+                } finally {
+                  setLibBusy(false);
+                }
+              }} />
 
               <MenuBtn
               icon={savingOffline ? Loader2 : savedOffline ? Trash2 : Download}
@@ -206,9 +206,9 @@ export default function TrackRow({
                 } else {
                   const ok = await cache.downloadTrack(track);
                   toast(
-                    ok
-                      ? { title: "Saved for offline" }
-                      : { title: "Couldn't save offline", variant: "destructive" }
+                    ok ?
+                    { title: "Saved for offline" } :
+                    { title: "Couldn't save offline", variant: "destructive" }
                   );
                 }
               }} />
@@ -245,7 +245,7 @@ export default function TrackRow({
                 try {
                   await base44.entities.Track.update(track.id, {
                     is_published: false,
-                    approval_status: "rejected",
+                    approval_status: "rejected"
                   });
                   toast({ title: "Removed from PUBLIC" });
                 } catch {
