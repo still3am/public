@@ -25,7 +25,7 @@ function ArtistRow({ artist, trackCount, onPick }) {
     <Link
       to={`/records/${artist.id}`}
       className="w-full flex items-center gap-4 p-2.5 rounded-xl hover:bg-foreground/[0.03] transition text-left group">
-      <div className="w-12 h-12 rounded-full bg-foreground/[0.06] grid place-items-center overflow-hidden shrink-0 ring-1 ring-foreground/10">
+      <div className="w-12 h-12 rounded-full bg-foreground/[0.06] grid place-items-center overflow-hidden shrink-0 ring-1 ring-foreground/10 hidden">
         {artist.avatar_url ?
         <img src={artist.avatar_url} alt="" className="w-full h-full object-cover" /> :
         <Mic2 size={20} className="text-foreground/50" />}
@@ -33,12 +33,12 @@ function ArtistRow({ artist, trackCount, onPick }) {
       <div className="min-w-0 flex-1">
         <div className="text-sm font-semibold truncate flex items-center gap-1.5">
           {artist.name}
-          <Shield size={12} className="text-foreground/40" />
+          <Shield size={12} className="text-foreground/40 hidden" />
         </div>
         <div className="text-xs text-foreground/50 truncate flex items-center gap-1.5">
           {artist.location && <span className="truncate">{artist.location}</span>}
           {artist.location && trackCount > 0 && <span>·</span>}
-          {trackCount > 0 && <span className="truncate">{trackCount} {trackCount === 1 ? "track" : "tracks"}</span>}
+          {trackCount > 0 && <span className="truncate hidden">{trackCount} {trackCount === 1 ? "track" : "tracks"}</span>}
           {!artist.location && trackCount === 0 && <span>Artist on PUBLIC</span>}
         </div>
       </div>
@@ -209,9 +209,9 @@ export default function Search() {
 
             {artistResults.length > 0 &&
           <div>
-                <h3 className="flex items-center gap-2 text-sm font-bold uppercase tracking-wide text-foreground/60 mb-2 px-1">
+                <h3 className="flex items-center gap-2 text-sm font-bold uppercase tracking-wide text-foreground/60 mb-2 px-1 hidden">
                   <Mic2 size={14} /> Artists
-                  <span className="text-xs font-semibold text-foreground/40">{artistResults.length}</span>
+                  <span className="text-xs font-semibold text-foreground/40 hidden">{artistResults.length}</span>
                 </h3>
                 <div className="space-y-1">
                   {artistResults.map((a) =>
