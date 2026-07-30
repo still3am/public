@@ -92,6 +92,9 @@ export default function Upload() {
         rights_confirmed: true
       });
 
+      // save to the uploader's own library so it's immediately playable
+      await base44.entities.LibraryItem.create({ user_id: user.id, track_id: track.id }).catch(() => {});
+
       // silent genre detection in background
       base44.functions.invoke("detectGenre", { track_id: track.id }).catch(() => {});
 
