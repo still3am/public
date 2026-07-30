@@ -9,6 +9,7 @@ import {
 "lucide-react";
 import GenrePicker from "@/components/GenrePicker";
 import ReleaseChecklist from "@/components/upload/ReleaseChecklist";
+import CoverPicker from "@/components/upload/CoverPicker";
 import { formatTime } from "@/lib/audio-utils";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -43,14 +44,13 @@ export default function UploadItem({
       }>
       
       <div className="p-3 md:p-4 flex gap-3 md:gap-4">
-        {/* Auto-detected cover */}
-        <div className="w-20 h-20 md:w-24 md:h-24 shrink-0 rounded-xl overflow-hidden bg-foreground/[0.06] grid place-items-center ring-1 ring-inset ring-border">
-          {item.coverPreviewUrl ?
-          <img src={item.coverPreviewUrl} alt="" className="w-full h-full object-cover" /> :
-
-          <Loader2 size={18} className="animate-spin text-foreground/25" />
-          }
-        </div>
+        {/* Cover — auto-detected, tap to replace with your own image */}
+        <CoverPicker
+          previewUrl={item.coverPreviewUrl}
+          disabled={locked}
+          onPick={(file) =>
+          onChange({ coverFile: file, coverPreviewUrl: URL.createObjectURL(file) })
+          } />
 
         {/* Fields */}
         <div className="flex-1 min-w-0 space-y-2.5">
