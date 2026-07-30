@@ -137,7 +137,7 @@ export default function PublicRecordsIndex() {
                     to={href}
                     className="flex items-center gap-3 p-2.5 rounded-xl hover:bg-foreground/[0.03] transition group">
                     
-                        <div className="w-11 h-11 rounded-full bg-foreground/[0.06] grid place-items-center overflow-hidden shrink-0 ring-1 ring-foreground/10">
+                        <div className="w-11 h-11 rounded-full bg-foreground/[0.06] grid place-items-center overflow-hidden shrink-0 ring-1 ring-foreground/10 hidden">
                           {a.record?.avatar_url ?
                       <img src={a.record.avatar_url} alt="" className="w-full h-full object-cover" /> :
 
