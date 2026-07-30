@@ -140,6 +140,75 @@ function readUInt32BE(buf, off) {
   return (buf[off] << 24) | (buf[off + 1] << 16) | (buf[off + 2] << 8) | buf[off + 3];
 }
 
+function readUInt32LE(buf, off) {
+  return (buf[off] | (buf[off + 1] << 8) | (buf[off + 2] << 16) | (buf[off + 3] << 24)) >>> 0;
+}
+
+// Parses ID3v1 tags from the last 128 bytes of a file. Many MP3s from older
+// encoders or minimal taggers only carry ID3v1, which is why title/artist
+// extraction was silently empty for those files.
+async function readId3v1(file) {
+  if (file.size < 128) return null;
+  try {
+    const tail = new Uint8Array(await file.slice(file.size - 128, file.size).arrayBuffer());
+    if (tail[0] !== 0x54 || tail[1] !== 0x41 || tail[2] !== 0x47) return null; // "TAG"
+    const decode = (start, len) => {
+      const slice = tail.slice(start, start + len);
+      let s = "";
+      try { s = new TextDecoder("latin1").decode(slice); }
+      catch { for (let i = 0; i < slice.length; i++) s += String.fromCharCode(slice[i]); }
+      return s.replace(/\x00+$/g, "").trim();
+    };
+    return {
+      title: decode(3, 30),
+      artist: decode(33, 30),
+      album: decode(63, 30),
+    };
+  } catch {}
+  return null;
+}
+
+// Parses Vorbis-style comments from OGG/Opus files by scanning for the
+// "\x03vorbis" or "OpusTags" marker near the start of the file.
+async function readOggComment(file) {
+  try {
+    const buf = new Uint8Array(await file.slice(0, Math.min(file.size, 1024 * 1024)).arrayBuffer());
+    const targets = [
+      [0x03, 0x76, 0x6f, 0x72, 0x62, 0x69, 0x73], // \x03vorbis (Vorbis)
+      [0x4f, 0x70, 0x75, 0x73, 0x54, 0x61, 0x67, 0x73], // OpusTags
+    ];
+    let p = -1;
+    for (const sig of targets) {
+      for (let i = 0; i + sig.length < buf.length; i++) {
+        let ok = true;
+        for (let j = 0; j < sig.length; j++) if (buf[i + j] !== sig[j]) { ok = false; break; }
+        if (ok) { p = i + sig.length; break; }
+      }
+      if (p >= 0) break;
+    }
+    if (p < 0 || p + 4 > buf.length) return {};
+    const vendorLen = readUInt32LE(buf, p); p += 4;
+    if (p + vendorLen + 4 > buf.length) return {};
+    p += vendorLen;
+    const count = readUInt32LE(buf, p); p += 4;
+    const out = {};
+    for (let i = 0; i < count && p + 4 <= buf.length; i++) {
+      const clen = readUInt32LE(buf, p); p += 4;
+      if (p + clen > buf.length) break;
+      const comment = new TextDecoder("utf-8").decode(buf.slice(p, p + clen));
+      p += clen;
+      const idx = comment.indexOf("=");
+      if (idx > 0) {
+        const k = comment.slice(0, idx).toUpperCase();
+        const v = comment.slice(idx + 1).trim();
+        if (v && !(k in out)) out[k] = v;
+      }
+    }
+    return out;
+  } catch {}
+  return {};
+}
+
 // Extracts embedded cover art (ID3v2 APIC for mp3; FLAC PICTURE block).
 // Returns a File ready for upload, or null.
 export async function extractEmbeddedCover(file) {
@@ -240,6 +309,36 @@ export async function extractEmbeddedCover(file) {
       const covr = await findMp4Cover(file);
       if (covr) return covr;
     }
+
+    // OGG / Opus cover from base64-encoded METADATA_BLOCK_PICTURE vorbis comment.
+    if (head[0] === 0x4f && head[1] === 0x67 && head[2] === 0x67 && head[3] === 0x53) { // "OggS"
+      try {
+        const c = await readOggComment(file);
+        const b64 = c && c.METADATA_BLOCK_PICTURE;
+        if (b64) {
+          const bin = Uint8Array.from(atob(b64), (ch) => ch.charCodeAt(0));
+          if (bin.length > 32) {
+            let p = 4; // skip picture type (4 bytes BE)
+            const mimeLen = (bin[p] << 16) | (bin[p + 1] << 8) | bin[p + 2]; // 3 bytes BE
+            p += 3;
+            let mime = "";
+            for (let i = 0; i < mimeLen && p + i < bin.length; i++) mime += String.fromCharCode(bin[p + i]);
+            p += mimeLen;
+            const descLen = (bin[p] << 16) | (bin[p + 1] << 8) | bin[p + 2];
+            p += 3 + descLen + 16; // skip desc + width/height/depth/nColors (4x4)
+            if (p + 4 <= bin.length) {
+              const dataLen = readUInt32BE(bin, p);
+              p += 4;
+              if (!mime) mime = "image/jpeg";
+              const img = bin.slice(p, p + dataLen);
+              if (img.length > 0) return new File([img], "cover", { type: mime });
+            }
+          }
+        }
+      } catch {}
+    }
+
+    // ID3v1 has no cover field; nothing to fall back to here.
   } catch {}
   return null;
 }
@@ -394,6 +493,16 @@ export async function extractEmbeddedTitle(file) {
       const t = await findMp4Text(file, "©nam");
       if (t) return t;
     }
+
+    // OGG / Opus (Vorbis TITLE comment)
+    if (head[0] === 0x4f && head[1] === 0x67 && head[2] === 0x67 && head[3] === 0x53) { // "OggS"
+      const c = await readOggComment(file);
+      if (c.TITLE) return c.TITLE;
+    }
+
+    // ID3v1 fallback (last 128 bytes) for MP3s with no ID3v2 tag.
+    const v1 = await readId3v1(file);
+    if (v1?.title) return v1.title;
   } catch {}
   return "";
 }
@@ -472,6 +581,16 @@ export async function extractEmbeddedArtist(file) {
       const a = await findMp4Text(file, "©ART");
       if (a) return a;
     }
+
+    // OGG / Opus (Vorbis ARTIST comment)
+    if (head[0] === 0x4f && head[1] === 0x67 && head[2] === 0x67 && head[3] === 0x53) { // "OggS"
+      const c = await readOggComment(file);
+      if (c.ARTIST) return c.ARTIST;
+    }
+
+    // ID3v1 fallback (last 128 bytes) for MP3s with no ID3v2 tag.
+    const v1 = await readId3v1(file);
+    if (v1?.artist) return v1.artist;
   } catch {}
   return "";
 }

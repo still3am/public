@@ -77,12 +77,24 @@ export default function Upload() {
           fbArtist = base.slice(0, sep).replace(/[_-]+/g, " ").trim();
           const t = base.slice(sep + 3).replace(/[_-]+/g, " ").trim();
           if (t) fbTitle = t;
+        } else {
+          // Try an "Artist-Title" hyphen (no spaces) fallback as well,
+          // since many downloads are named that way.
+          const h = base.indexOf("-");
+          if (h > 0) {
+            const a = base.slice(0, h).replace(/[_]+/g, " ").trim();
+            const t = base.slice(h + 1).replace(/[_]+/g, " ").trim();
+            if (a && t && a !== t) {
+              fbArtist = a;
+              fbTitle = t;
+            }
+          }
         }
         return {
           id: ++idc,
           file,
           title: title || fbTitle,
-          artist: artist || fbArtist,
+          artist: artist || fbArtist || user?.display_name || user?.full_name || "",
           genre: "Other",
           duration: dur,
           coverFile: cover || null,
