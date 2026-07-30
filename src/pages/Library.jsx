@@ -32,9 +32,9 @@ export default function Library() {
         "-created_date",
         1000
       );
-      const trackIds = (items || [])
-        .map((i) => i.track_id)
-        .filter(Boolean);
+      const trackIds = (items || []).
+      map((i) => i.track_id).
+      filter(Boolean);
       if (!trackIds.length) {
         setTracks([]);
         return;
@@ -45,9 +45,9 @@ export default function Library() {
         1000
       );
       const order = new Map(trackIds.map((id, i) => [id, i]));
-      const sorted = (list || [])
-        .slice()
-        .sort((a, b) => (order.get(a.id) ?? 0) - (order.get(b.id) ?? 0));
+      const sorted = (list || []).
+      slice().
+      sort((a, b) => (order.get(a.id) ?? 0) - (order.get(b.id) ?? 0));
       setTracks(sorted);
     } finally {
       setLoading(false);
@@ -72,11 +72,11 @@ export default function Library() {
           <div className="min-w-0 flex-1">
             <div className="flex items-center gap-2">
               <span className="text-sm font-extrabold tracking-tight">PUBLIC OFFLINE</span>
-              {offlineCount > 0 && (
-                <span className="px-1.5 py-0.5 rounded-full bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 text-[10px] font-bold">
+              {offlineCount > 0 &&
+              <span className="px-1.5 py-0.5 rounded-full bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 text-[10px] font-bold hidden">
                   {offlineCount} saved
                 </span>
-              )}
+              }
             </div>
             <p className="text-xs text-foreground/55 mt-0.5">
               Listen to your saved songs without Wi‑Fi or data.
@@ -86,25 +86,25 @@ export default function Library() {
         </div>
       </Link>
 
-      <PullToRefresh onRefresh={async () => { await refresh(); await load(); }}>
-        {loading && tracks === null ? (
-          <div className="flex justify-center py-20">
+      <PullToRefresh onRefresh={async () => {await refresh();await load();}}>
+        {loading && tracks === null ?
+        <div className="flex justify-center py-20">
             <Loader2 className="animate-spin text-foreground/40" />
+          </div> :
+        !tracks?.length ?
+        <EmptyState
+          icon={LibIcon}
+          title="Your library is empty"
+          description="Tap the + on any track to save it here for quick access." /> :
+
+
+        <div className="space-y-0.5">
+            {tracks.map((t, i) =>
+          <TrackRow key={t.id} track={t} index={i} />
+          )}
           </div>
-        ) : !tracks?.length ? (
-          <EmptyState
-            icon={LibIcon}
-            title="Your library is empty"
-            description="Tap the + on any track to save it here for quick access."
-          />
-        ) : (
-          <div className="space-y-0.5">
-            {tracks.map((t, i) => (
-              <TrackRow key={t.id} track={t} index={i} />
-            ))}
-          </div>
-        )}
+        }
       </PullToRefresh>
-    </div>
-  );
+    </div>);
+
 }
