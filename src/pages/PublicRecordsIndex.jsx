@@ -134,6 +134,14 @@ export default function PublicRecordsIndex() {
   }, [artists]);
 
   const letters = groups.map((g) => g.key);
+  const allLetters = useMemo(
+    () => "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("").concat(letters.includes("#") ? ["#"] : []),
+    [letters]
+  );
+  const railRef = useRef(null);
+  const [dragging, setDragging] = useState(false);
+  const [dragLetter, setDragLetter] = useState("");
+  const [dragY, setDragY] = useState(0);
 
   // Track which letter section is nearest the top of the viewport.
   useEffect(() => {
@@ -159,6 +167,50 @@ export default function PublicRecordsIndex() {
     if (!el) return;
     el.scrollIntoView({ behavior: "smooth", block: "start" });
     setActiveKey(key);
+  };
+
+  // iOS-style: snap a pointer position to the nearest existing letter.
+  const pickAt = (clientY) => {
+    const el = railRef.current;
+    if (!el) return null;
+    const r = el.getBoundingClientRect();
+    const i = Math.floor((clientY - r.top) / (r.height / allLetters.length));
+    if (i < 0 || i >= allLetters.length) return null;
+    const L = allLetters[i];
+    if (letters.includes(L)) return L;
+    for (let d = 1; d < allLetters.length; d++) {
+      if (i - d >= 0 && letters.includes(allLetters[i - d])) return allLetters[i - d];
+      if (i + d < allLetters.length && letters.includes(allLetters[i + d])) return allLetters[i + d];
+    }
+    return null;
+  };
+
+  const onPick = (clientY) => {
+    const L = pickAt(clientY);
+    if (L && L !== dragLetter) {
+      setDragLetter(L);
+      setDragY(clientY);
+      scrollToLetter(L);
+      if (navigator.vibrate) navigator.vibrate(8);
+    } else if (L) {
+      setDragY(clientY);
+    }
+  };
+
+  const startDrag = (e) => {
+    e.preventDefault();
+    setDragging(true);
+    try {
+      e.currentTarget.setPointerCapture(e.pointerId);
+    } catch (_) {}
+    onPick(e.clientY);
+  };
+  const moveDrag = (e) => {
+    if (dragging) onPick(e.clientY);
+  };
+  const endDrag = () => {
+    setDragging(false);
+    setDragLetter("");
   };
 
   return (
@@ -227,34 +279,45 @@ export default function PublicRecordsIndex() {
         )}
       </PullToRefresh>
 
-      {/* A–Z quick-jump rail */}
+      {/* iOS-style index — mobile only, tap & drag */}
       {artists && artists.length > 0 && (
-        <div className="fixed right-1.5 top-1/2 -translate-y-1/2 z-20 px-1 py-2 rounded-full bg-foreground/[0.04] backdrop-blur-md border border-foreground/[0.06] flex flex-col items-center gap-px max-h-[70vh] overflow-y-auto no-scrollbar">
-          {"ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("")
-            .concat(letters.includes("#") ? ["#"] : [])
-            .map((L) => {
+        <>
+          <div
+            ref={railRef}
+            onPointerDown={startDrag}
+            onPointerMove={moveDrag}
+            onPointerUp={endDrag}
+            onPointerCancel={endDrag}
+            className="md:hidden fixed right-0.5 top-1/2 -translate-y-1/2 z-30 touch-none select-none px-0.5 py-1 rounded-full bg-foreground/[0.05] backdrop-blur-md border border-foreground/[0.06] flex flex-col items-center max-h-[78vh] overflow-hidden"
+          >
+            {allLetters.map((L) => {
               const has = letters.includes(L);
               const isActive = activeKey === L;
               return (
-                <button
+                <span
                   key={L}
-                  onClick={() => has && scrollToLetter(L)}
-                  aria-label={`Jump to ${L}`}
-                  className={`text-[9px] font-bold leading-none w-4 h-4 grid place-items-center rounded-full transition-all duration-200 ${
-                    has ? "cursor-pointer" : "cursor-default text-foreground/20"
-                  } ${
-                    isActive
-                      ? "bg-foreground text-background scale-110"
-                      : has
-                      ? "text-foreground/55 hover:scale-125 hover:text-foreground"
-                      : ""
-                  }`}
+                  className={`text-[8px] font-semibold leading-none w-3 h-3 grid place-items-center transition-colors duration-150 ${
+                    has ? "text-foreground/55" : "text-foreground/20"
+                  } ${isActive || dragLetter === L ? "text-foreground" : ""}`}
                 >
                   {L}
-                </button>
+                </span>
               );
             })}
-        </div>
+          </div>
+
+          {/* Floating drag indicator bubble */}
+          {dragging && dragLetter && (
+            <div
+              className="md:hidden fixed right-7 z-40 pointer-events-none"
+              style={{ top: Math.max(36, Math.min(window.innerHeight - 36, dragY)) }}
+            >
+              <div className="-translate-y-1/2 w-11 h-11 rounded-full bg-foreground text-background grid place-items-center text-base font-extrabold shadow-lg">
+                {dragLetter}
+              </div>
+            </div>
+          )}
+        </>
       )}
     </div>
   );
