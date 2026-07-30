@@ -21,6 +21,7 @@ import { useLibrary } from "@/context/LibraryContext";
 import DownloadButton from "@/components/DownloadButton";
 import { useOfflineCache } from "@/hooks/useOfflineCache";
 import { useToast } from "@/components/ui/use-toast";
+import ArtistLinks from "@/components/ArtistLinks";
 
 function MenuBtn({ icon: Icon, label, onClick, danger }) {
   return (
@@ -117,21 +118,11 @@ export default function TrackRow({
         </Link>
         {(() => {
           const artist = albumArtist || track.artist;
-          const shorten = (str) => {
-            const parts = str
-              .split(/\s*(?:,|&| feat\.| ft\.| x |;)\s*/i)
-              .map((p) => p.trim())
-              .filter(Boolean);
-            if (parts.length <= 2) return str;
-            return `${parts[0]}, ${parts[1]} +${parts.length - 2}`;
-          };
           if (artist) {
             return (
-              <Link
-                to={`/artist?name=${encodeURIComponent(artist)}`}
-                className="text-xs text-foreground/50 truncate hover:underline">
-                {shorten(artist)}
-              </Link>
+              <ArtistLinks
+                artist={artist}
+                linkClassName="text-foreground/50 hover:underline" />
             );
           }
           return (

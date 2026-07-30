@@ -6,6 +6,7 @@ import { usePlayer } from "@/context/PlayerContext";
 import EmptyState from "@/components/EmptyState";
 import EditTrackModal from "@/components/EditTrackModal";
 import BackHeader from "@/components/BackHeader";
+import ArtistLinks from "@/components/ArtistLinks";
 import {
   Loader2,
   Play,
@@ -275,18 +276,9 @@ export default function TrackDetail() {
             {(displayArtist || uploader) &&
             <div className="text-sm text-foreground/60 mb-2 flex flex-wrap items-center gap-x-1.5 gap-y-0.5">
                 {displayArtist &&
-              <Link
-                to={`/artist?name=${encodeURIComponent(displayArtist)}`}
-                className="font-semibold text-foreground/80 px-1 hover:underline">
-                    {(() => {
-                  const parts = String(displayArtist).
-                  split(/\s*(?:,|&| feat\.| ft\.| x |;)\s*/i).
-                  map((p) => p.trim()).
-                  filter(Boolean);
-                  if (parts.length <= 2) return displayArtist;
-                  return `${parts[0]}, ${parts[1]} +${parts.length - 2}`;
-                })()}
-                  </Link>
+              <ArtistLinks
+                artist={displayArtist}
+                linkClassName="font-semibold text-foreground/80 px-1 hover:underline" />
               }
                 {displayArtist && uploader &&
               <span className="text-foreground/40">· uploaded by</span>
