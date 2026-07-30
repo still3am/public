@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import BackHeader from "@/components/BackHeader";
-import TrackRow from "@/components/TrackRow";
+import TrackCard from "@/components/TrackCard";
 import PullToRefresh from "@/components/PullToRefresh";
 import { usePlayer } from "@/context/PlayerContext";
 import { useAuth } from "@/lib/AuthContext";
@@ -293,15 +293,10 @@ export default function PublicRecords({ id: propId }) {
               <p className="text-sm text-foreground/50">No published tracks linked to this artist yet.</p>
             </div> :
 
-          <div className="rounded-2xl border border-border bg-card/50 overflow-hidden">
-              {tracks.map((t, i) =>
-            <TrackRow
-              key={t.id}
-              track={t}
-              index={i}
-              className={i !== tracks.length - 1 ? "border-b border-border/50" : ""} />
-
-            )}
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-1">
+              {tracks.map((t) => (
+                <TrackCard key={t.id} track={t} />
+              ))}
             </div>
           }
         </section>
