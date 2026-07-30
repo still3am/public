@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { ShieldCheck, Music2, Flag, Lightbulb, Wand2, Ban, CloudSun } from "lucide-react";
+import { ShieldCheck, Music2, Flag, Lightbulb, Wand2, Ban } from "lucide-react";
 import { useAuth } from "@/lib/AuthContext";
 import BackHeader from "@/components/BackHeader";
 import ApprovalsManager from "@/components/admin/ApprovalsManager";
@@ -7,7 +7,6 @@ import SuggestionsManager from "@/components/admin/SuggestionsManager";
 import ReportsManager from "@/components/admin/ReportsManager";
 import GenreTool from "@/components/admin/GenreTool";
 import UploadSwitch from "@/components/admin/UploadSwitch";
-import WeatherPreview from "@/components/admin/WeatherPreview";
 
 export default function Admin() {
   const { user } = useAuth();
@@ -25,8 +24,7 @@ export default function Admin() {
     { id: "reports", icon: Flag, label: "Reports" },
     { id: "suggestions", icon: Lightbulb, label: "Suggestions" },
     { id: "genre", icon: Wand2, label: "Genre Tool" },
-    { id: "uploads", icon: Ban, label: "Uploads" },
-    { id: "weather", icon: CloudSun, label: "Weather Preview" }
+    { id: "uploads", icon: Ban, label: "Uploads" }
   ];
 
   return (
@@ -63,14 +61,6 @@ export default function Admin() {
             {tab === "suggestions" && <SuggestionsManager />}
             {tab === "genre" && <GenreTool />}
             {tab === "uploads" && <UploadSwitch />}
-            {tab === "weather" && (
-              <div className="space-y-3">
-                <p className="text-sm text-foreground/55">
-                  Tap a condition to preview the live hero weather animations.
-                </p>
-                <WeatherPreview />
-              </div>
-            )}
           </div>
         </>
       )}
