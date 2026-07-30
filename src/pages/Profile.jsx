@@ -543,6 +543,22 @@ export default function Profile() {
         </div>
       </div>
 
+      {!editMode && topTracks.length > 0 &&
+        <div className="mb-8">
+          <h2 className="text-lg font-extrabold tracking-tight mb-3 flex items-center gap-2">
+            <BarChart2 size={18} /> Top Tracks
+          </h2>
+          <div className="space-y-0.5">
+            {topTracks.map((t, i) =>
+            <TrackRow
+              key={t.id}
+              track={t}
+              index={i} />
+
+            )}
+          </div>
+        </div>
+        }
 
       {isOwn && !editMode &&
         <div className="mt-10 p-5 rounded-2xl border border-border bg-foreground/[0.02]">
