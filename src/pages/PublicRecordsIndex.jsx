@@ -137,13 +137,13 @@ export default function PublicRecordsIndex() {
                     to={href}
                     className="flex items-center gap-3 p-2.5 rounded-xl hover:bg-foreground/[0.03] transition group">
                     
-                        <div className="w-11 h-11 rounded-full bg-foreground/[0.06] grid place-items-center overflow-hidden shrink-0 ring-1 ring-foreground/10 hidden">
-                          {a.record?.avatar_url ?
-                      <img src={a.record.avatar_url} alt="" className="w-full h-full object-cover" /> :
+                        
 
-                      <Mic2 size={18} className="text-foreground/45" />
-                      }
-                        </div>
+
+
+
+
+                    
                         <div className="min-w-0 flex-1">
                           <div className="text-sm font-semibold truncate">{a.display}</div>
                           {a.count > 0 &&
@@ -152,9 +152,9 @@ export default function PublicRecordsIndex() {
                             </div>
                       }
                         </div>
-                        <span className="inline-flex items-center gap-1 text-xs font-semibold text-foreground/55 group-hover:text-foreground transition shrink-0 hidden">
-                          Open <Disc3 size={13} className="opacity-70" />
-                        </span>
+                        
+
+                    
                       </Link>);
 
               })}
