@@ -66,9 +66,9 @@ export default function Library() {
         to="/downloads"
         className="block mb-5 rounded-2xl ring-1 ring-inset ring-border bg-gradient-to-br from-foreground/[0.06] to-foreground/[0.02] hover:from-foreground/[0.09] hover:to-foreground/[0.04] transition p-4 group">
         <div className="flex items-center gap-3.5">
-          <div className="w-11 h-11 rounded-full bg-foreground text-background grid place-items-center shrink-0 hidden">
-            <CloudOff size={20} />
-          </div>
+          
+
+          
           <div className="min-w-0 flex-1">
             <div className="flex items-center gap-2">
               <span className="text-sm font-extrabold tracking-tight">PUBLIC OFFLINE</span>
