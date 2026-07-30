@@ -62,7 +62,6 @@ export function useUploadQueue({ user, isAdmin }) {
       genre: "",
       duration: 0,
       explicit: false,
-      aiGenre: true,
       aiLyrics: false,
       coverFile: null,
       coverPreviewUrl: "",
@@ -156,10 +155,6 @@ export function useUploadQueue({ user, isAdmin }) {
         is_published: isAdmin && meetsRules,
       });
 
-      if (item.aiGenre && !item.genre) {
-        patch(item.id, { status: "enhancing" });
-        await base44.functions.invoke("detectGenre", { track_id: track.id }).catch(() => {});
-      }
       if (item.aiLyrics) {
         patch(item.id, { status: "enhancing" });
         const res = await base44.functions

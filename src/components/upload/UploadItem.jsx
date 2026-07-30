@@ -9,7 +9,6 @@ import {
   Music2,
   ImagePlus,
   Sparkles,
-  Wand2,
   Clock,
 } from "lucide-react";
 import GenrePicker from "@/components/GenrePicker";
@@ -44,7 +43,6 @@ export default function UploadItem({
 
   const toggles = [
     { key: "explicit", label: "Explicit", icon: null },
-    { key: "aiGenre", label: "Auto genre", icon: Wand2 },
     { key: "aiLyrics", label: "AI lyrics", icon: Sparkles },
   ];
 
