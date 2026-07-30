@@ -8,14 +8,16 @@ import {
   Flame,
   Loader2,
   Trash2,
-  EyeOff } from
+  EyeOff,
+  Plus,
+  Check } from
 "lucide-react";
 import { usePlayer } from "@/context/PlayerContext";
 import { formatTime, timeAgo } from "@/lib/audio-utils";
 import { Link } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import { useAuth } from "@/lib/AuthContext";
-import LibraryButton from "@/components/LibraryButton";
+import { useLibrary } from "@/context/LibraryContext";
 import DownloadButton from "@/components/DownloadButton";
 import { useOfflineCache } from "@/hooks/useOfflineCache";
 import { useToast } from "@/components/ui/use-toast";
@@ -47,8 +49,11 @@ export default function TrackRow({
   const p = usePlayer();
   const { user } = useAuth();
   const { toast } = useToast();
+  const { isInLibrary, toggle } = useLibrary();
   const cache = useOfflineCache();
   const [menuOpen, setMenuOpen] = useState(false);
+  const [libBusy, setLibBusy] = useState(false);
+  const inLib = isInLibrary(track.id);
   const isCurrent = p.currentTrack?.id === track.id;
   const isPlayingHere = isCurrent && p.isPlaying;
   const savedOffline = cache.isCached(track.id);
@@ -164,12 +169,6 @@ export default function TrackRow({
       <div className="hidden md:block text-xs text-foreground/40 w-10 text-right">
         {formatTime(track.duration_seconds)}
       </div>
-      <div className="shrink-0">
-        <LibraryButton
-          track={track}
-          className="p-2 rounded-full text-foreground/55 hover:text-foreground hover:bg-foreground/[0.05] transition"
-        />
-      </div>
       <div className="hidden sm:block shrink-0">
         <DownloadButton
           track={track}
@@ -191,6 +190,20 @@ export default function TrackRow({
             onClick={() => setMenuOpen(false)} />
           
             <div className="absolute right-0 top-full z-20 mt-1 bg-popover border border-border rounded-lg shadow-xl py-1 min-w-[200px]">
+              <MenuBtn
+                icon={libBusy ? Loader2 : inLib ? Check : Plus}
+                label={libBusy ? "Saving…" : inLib ? "Remove from library" : "Add to library"}
+                danger={!libBusy && inLib}
+                onClick={async () => {
+                  setMenuOpen(false);
+                  setLibBusy(true);
+                  try {
+                    await toggle(track);
+                  } finally {
+                    setLibBusy(false);
+                  }
+                }} />
+
               <MenuBtn
               icon={savingOffline ? Loader2 : savedOffline ? Trash2 : Download}
               label={savingOffline ? "Saving…" : savedOffline ? "Remove offline" : "Save offline"}
