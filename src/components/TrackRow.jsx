@@ -211,10 +211,10 @@ export default function TrackRow({
                 setMenuOpen(false);
                 if (savedOffline) {
                   await cache.removeTrack(track.id);
-                  toast.toast({ title: "Removed from downloads" });
+                  toast({ title: "Removed from downloads" });
                 } else {
                   const ok = await cache.downloadTrack(track);
-                  toast.toast(
+                  toast(
                     ok
                       ? { title: "Saved for offline" }
                       : { title: "Couldn't save offline", variant: "destructive" }
@@ -256,9 +256,9 @@ export default function TrackRow({
                     is_published: false,
                     approval_status: "rejected",
                   });
-                  toast.toast({ title: "Removed from PUBLIC" });
+                  toast({ title: "Removed from PUBLIC" });
                 } catch {
-                  toast.toast({ title: "Couldn't remove track", variant: "destructive" });
+                  toast({ title: "Couldn't remove track", variant: "destructive" });
                 }
               }} />
 
