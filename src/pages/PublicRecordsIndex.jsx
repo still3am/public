@@ -259,7 +259,7 @@ export default function PublicRecordsIndex() {
                           <div className="min-w-0 flex-1 flex items-baseline gap-2">
                             <span className="text-[13px] font-medium truncate">{a.display}</span>
                             {a.count > 0 &&
-                        <span className="text-[10px] text-foreground/40 tabular-nums shrink-0">
+                        <span className="text-[10px] text-foreground/40 tabular-nums shrink-0 hidden">
                                 {a.count}
                               </span>
                         }
