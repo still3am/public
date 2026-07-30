@@ -32,9 +32,9 @@ function safeUrl(u) {
   if (!u) return undefined;
   try {
     const parsed = new URL(u);
-    return parsed.protocol === "http:" || parsed.protocol === "https:"
-      ? parsed.href
-      : undefined;
+    return parsed.protocol === "http:" || parsed.protocol === "https:" ?
+    parsed.href :
+    undefined;
   } catch {
     return undefined;
   }
@@ -266,7 +266,7 @@ export default function PublicRecords({ id: propId }) {
               </p> :
 
             <div className="text-center py-4">
-                <div className="w-11 h-11 rounded-full bg-foreground/[0.06] grid place-items-center mx-auto mb-3">
+                <div className="w-11 h-11 rounded-full bg-foreground/[0.06] grid place-items-center mx-auto mb-3 hidden">
                   <Sparkles size={18} className="text-foreground/40" />
                 </div>
                 <p className="text-sm text-foreground/55 max-w-sm mx-auto leading-relaxed">
@@ -294,9 +294,9 @@ export default function PublicRecords({ id: propId }) {
             </div> :
 
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-1">
-              {tracks.map((t) => (
-                <TrackCard key={t.id} track={t} />
-              ))}
+              {tracks.map((t) =>
+            <TrackCard key={t.id} track={t} />
+            )}
             </div>
           }
         </section>
