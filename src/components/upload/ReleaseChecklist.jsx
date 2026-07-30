@@ -1,11 +1,12 @@
 import { Check, X } from "lucide-react";
 
-export default function ReleaseChecklist({ hasGenre, hasArtist, isAdmin }) {
+export default function ReleaseChecklist({ hasGenre, hasArtist, hasCover, isAdmin }) {
   const rules = [
     { ok: hasGenre, label: "Genre" },
     { ok: hasArtist, label: "Artist" },
+    { ok: hasCover, label: "Cover" },
   ];
-  const meets = hasGenre && hasArtist;
+  const meets = hasGenre && hasArtist && hasCover;
 
   return (
     <div
@@ -35,7 +36,7 @@ export default function ReleaseChecklist({ hasGenre, hasArtist, isAdmin }) {
           ? isAdmin
             ? "Ready — goes live on PUBLIC instantly when you upload."
             : "Eligible for public release — an admin reviews it before it goes live."
-          : "Saving to your library only. Add a genre and an artist name to release it on PUBLIC."}
+          : "Saving to your library only. A genre, an artist name and a cover image are required to release it on PUBLIC."}
       </p>
     </div>
   );

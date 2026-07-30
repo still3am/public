@@ -31,8 +31,8 @@ export default function DuplicateModal({ tracks, onClose, onRemove }) {
               Possible duplicates
             </h3>
             <p className="text-xs text-foreground/60 mt-0.5">
-              These tracks you're uploading already exist in your library.
-              Remove any you don't want to upload.
+              These tracks already exist on PUBLIC. Remove any you don't want
+              to upload again.
             </p>
           </div>
           <button
@@ -70,6 +70,11 @@ export default function DuplicateModal({ tracks, onClose, onRemove }) {
                   <div className="font-semibold text-sm truncate">{t.title}</div>
                   <div className="text-xs text-foreground/50 truncate">
                     {t.artist || "Unknown"} · {formatTime(t.duration)}
+                  </div>
+                  <div className="text-[11px] text-amber-600 dark:text-amber-400 truncate">
+                    {t.existingIsMine
+                      ? "Already in your uploads"
+                      : `Already on PUBLIC${t.existingBy ? ` — ${t.existingBy}` : ""}`}
                   </div>
                 </div>
                 <button

@@ -27,7 +27,8 @@ export default function UploadItem({
 
   const hasArtist = !!item.artist.trim();
   const hasGenre = !!item.genre;
-  const meetsRules = hasArtist && hasGenre;
+  const hasCover = !!item.coverFile;
+  const meetsRules = hasArtist && hasGenre && hasCover;
   const locked = uploading || done;
 
   const toggles = [
@@ -114,6 +115,7 @@ export default function UploadItem({
           <ReleaseChecklist
             hasGenre={hasGenre}
             hasArtist={hasArtist}
+            hasCover={hasCover}
             isAdmin={isAdmin} />
           
 

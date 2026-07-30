@@ -47,7 +47,8 @@ async function detectMeta(title, artist) {
 export function useUploadQueue({ user, isAdmin }) {
   const [items, setItems] = useState([]);
   const [dupes, setDupes] = useState(null);
-  const myTracksRef = useRef(null);
+  const [uploadedCount, setUploadedCount] = useState(0);
+  const allTracksRef = useRef(null);
 
   const patch = (id, data) =>
     setItems((prev) => prev.map((it) => (it.id === id ? { ...it, ...data } : it)));
@@ -114,23 +115,35 @@ export function useUploadQueue({ user, isAdmin }) {
         })
       );
 
-      // duplicate check against user's existing uploads
-      if (!myTracksRef.current) {
-        myTracksRef.current = await base44.entities.Track
-          .filter({ uploader_id: user.id }, "-created_date", 200)
+      // duplicate check against every track already on the app
+      if (!allTracksRef.current) {
+        allTracksRef.current = await base44.entities.Track
+          .list("-created_date", 2000)
           .catch(() => []);
       }
-      const hits = findDuplicateTracks(myTracksRef.current, {
+      const hits = findDuplicateTracks(allTracksRef.current, {
         title,
         artist,
         duration,
         file_name: item.file.name,
       });
       if (hits.length) {
+        const hit = hits[0];
         setDupes((prev) => {
           const cur = prev || [];
           if (cur.some((d) => d.id === item.id)) return cur;
-          return [...cur, { id: item.id, title, artist, duration, coverPreviewUrl: "" }];
+          return [
+            ...cur,
+            {
+              id: item.id,
+              title,
+              artist,
+              duration,
+              coverPreviewUrl: cover ? URL.createObjectURL(cover) : "",
+              existingBy: hit.uploader_name || hit.artist || "",
+              existingIsMine: hit.uploader_id === user.id,
+            },
+          ];
         });
       }
     });
@@ -147,7 +160,7 @@ export function useUploadQueue({ user, isAdmin }) {
         const r = await base44.integrations.Core.UploadFile({ file: item.coverFile }).catch(() => null);
         cover_art_url = r?.file_url || "";
       }
-      const meetsRules = !!(item.artist.trim() && item.genre);
+      const meetsRules = !!(item.artist.trim() && item.genre && cover_art_url);
       const track = await base44.entities.Track.create({
         title: item.title.trim() || "Untitled",
         audio_url: file_url,
@@ -173,6 +186,9 @@ export function useUploadQueue({ user, isAdmin }) {
         if (lyrics) await base44.entities.Track.update(track.id, { lyrics_text: lyrics }).catch(() => {});
       }
       patch(item.id, { status: "done" });
+      setUploadedCount((n) => n + 1);
+      // Clear finished uploads out of the queue automatically.
+      setTimeout(() => remove(item.id), 1200);
     } catch (e) {
       patch(item.id, {
         status: "ready",
@@ -181,10 +197,33 @@ export function useUploadQueue({ user, isAdmin }) {
     }
   }
 
+  // Uploads the whole queue with limited concurrency so big batches stay fast
+  // without hammering the network.
   async function uploadAll() {
     const pending = items.filter((it) => it.status === "ready");
-    for (const it of pending) await uploadOne(it);
+    if (!pending.length) return;
+    const CONCURRENCY = 3;
+    let cursor = 0;
+    const worker = async () => {
+      while (cursor < pending.length) {
+        const next = pending[cursor++];
+        await uploadOne(next);
+      }
+    };
+    await Promise.all(
+      Array.from({ length: Math.min(CONCURRENCY, pending.length) }, worker)
+    );
   }
 
-  return { items, addFiles, remove, uploadOne, uploadAll, patch, dupes, setDupes };
+  return {
+    items,
+    addFiles,
+    remove,
+    uploadOne,
+    uploadAll,
+    patch,
+    dupes,
+    setDupes,
+    uploadedCount,
+  };
 }

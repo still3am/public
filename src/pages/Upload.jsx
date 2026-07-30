@@ -15,7 +15,7 @@ export default function Upload() {
   const q = useUploadQueue({ user: user || {}, isAdmin });
 
   const readyCount = q.items.filter((it) => it.status === "ready").length;
-  const doneCount = q.items.filter((it) => it.status === "done").length;
+  const doneCount = q.uploadedCount;
   const busy = q.items.some((it) => ["uploading", "enhancing"].includes(it.status));
 
   return (
@@ -25,7 +25,7 @@ export default function Upload() {
       <div className="pt-3 pb-6">
         <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight">Upload music</h1>
         <p className="text-sm text-foreground/50 mt-1.5">
-          Share your sound with PUBLIC. Drop a whole folder of tracks at once.
+          Share your sound with PUBLIC. Drop a whole folder of tracks at once — they upload together and clear themselves once they're in.
         </p>
       </div>
 
@@ -55,7 +55,7 @@ export default function Upload() {
                 </div>
             }
             </div>
-            {readyCount > 1 &&
+            {readyCount > 0 &&
           <button
             onClick={q.uploadAll}
             disabled={busy}
