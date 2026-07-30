@@ -59,6 +59,19 @@ export default function Upload() {
       f.type.startsWith("audio") ||
       /\.(mp3|wav|m4a|ogg|flac|aac|opus|aiff|webm)$/i.test(f.name)
     );
+    // Also accept image files dropped alongside audio so we can auto-pair a
+    // cover by filename (e.g. "Track.mp3" + "Track.jpg" → cover attached).
+    const imageFiles = Array.from(files).filter(
+      (f) =>
+      f.type.startsWith("image") ||
+      /\.(png|jpe?g|gif|webp|bmp|tiff?)$/i.test(f.name)
+    );
+    const imageByBase = {};
+    imageFiles.forEach((img) => {
+      const b = img.name.replace(/\.[^.]+$/, "").toLowerCase();
+      if (!imageByBase[b]) imageByBase[b] = img;
+    });
+    if (!list.length && !imageFiles.length) return;
     if (!list.length) return;
     const newItems = await Promise.all(
       list.map(async (file) => {
@@ -90,6 +103,11 @@ export default function Upload() {
             }
           }
         }
+        // Pair a same-named image file from the drop as the cover when the
+        // audio file has no embedded artwork.
+        const baseLower = base.toLowerCase();
+        const pairFile = !cover ? (imageByBase[baseLower] || null) : null;
+        const coverFile = cover || pairFile || null;
         return {
           id: ++idc,
           file,
@@ -97,8 +115,8 @@ export default function Upload() {
           artist: artist || fbArtist || user?.display_name || user?.full_name || "",
           genre: "Other",
           duration: dur,
-          coverFile: cover || null,
-          coverPreviewUrl: cover ? URL.createObjectURL(cover) : "",
+          coverFile,
+          coverPreviewUrl: coverFile ? URL.createObjectURL(coverFile) : "",
           explicit: false,
           is_published: false,
           rights_confirmed: false,
