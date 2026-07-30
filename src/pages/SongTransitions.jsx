@@ -8,50 +8,36 @@ import {
   CROSSFADE_MAX,
 } from "@/lib/transitions";
 
-// iOS Apple-Music-style "Song Transitions" screen. Deliberately black on
-// white so customers recognise it instantly, regardless of app theme.
-
 function OptionTile({ active, onClick, locked, icon: Icon, title, subtitle }) {
   return (
     <button
       onClick={onClick}
       disabled={locked}
-      className="w-full flex items-center gap-3.5 px-4 py-3.5 text-left active:bg-white/5 disabled:opacity-50 transition">
-      <div className="shrink-0 w-9 h-9 rounded-[7px] bg-[#8E8E93]/15 grid place-items-center">
-        <Icon size={17} className="text-[#8E8E93]" />
+      className="w-full flex items-center gap-3.5 px-4 py-3.5 text-left hover:bg-foreground/[0.03] active:scale-[0.99] disabled:opacity-50 disabled:cursor-not-allowed transition">
+      <div className="shrink-0 w-9 h-9 rounded-[7px] bg-muted grid place-items-center">
+        <Icon size={17} className="text-muted-foreground" />
       </div>
       <div className="min-w-0 flex-1">
         <div className="flex items-center gap-2">
-          <span className="text-[15px] font-semibold text-white">{title}</span>
+          <span className="text-[15px] font-semibold text-foreground">{title}</span>
           {locked && (
-            <span className="text-[9px] font-bold tracking-wide uppercase text-black bg-white/80 rounded px-1 py-0.5">
+            <span className="text-[9px] font-bold tracking-wide uppercase text-muted-foreground bg-muted border border-border rounded px-1 py-0.5">
               Premium
             </span>
           )}
         </div>
-        <p className="text-[13px] text-[#A0A0A0] leading-snug mt-0.5">
+        <p className="text-[13px] text-muted-foreground leading-snug mt-0.5">
           {subtitle}
         </p>
       </div>
       <div className="shrink-0">
         {locked ? null : active ? (
-          <Check size={18} className="text-[#0A84FF]" strokeWidth={3} />
+          <Check size={18} className="text-primary" strokeWidth={3} />
         ) : (
-          <div className="w-[18px] h-[18px] rounded-full border border-white/15" />
+          <div className="w-[18px] h-[18px] rounded-full border border-border" />
         )}
       </div>
     </button>
-  );
-}
-
-function Track({ on }) {
-  return (
-    <div className="relative h-1 w-full rounded-full bg-[#2C2C2E]">
-      <div
-        className="absolute inset-y-0 left-0 rounded-full bg-[#0A84FF] transition-[width] duration-150"
-        style={{ width: `${on ? 42 : 4}%` }}
-      />
-    </div>
   );
 }
 
@@ -60,14 +46,14 @@ function CrossfadeSlider({ value, disabled, onChange }) {
     ((value - CROSSFADE_MIN) / (CROSSFADE_MAX - CROSSFADE_MIN)) * 100;
   return (
     <div className="px-4 py-4">
-      <div className="rounded-2xl bg-[#1C1C1E] px-4 py-5">
-        <div className="text-sm font-semibold text-white mb-4">
+      <div className="rounded-2xl bg-card border border-border px-4 py-5">
+        <div className="text-sm font-semibold text-foreground mb-4">
           {value} seconds
         </div>
         <div className="relative">
-          <div className="relative h-1.5 rounded-full bg-[#2C2C2E]">
+          <div className="relative h-1.5 rounded-full bg-muted">
             <div
-              className="absolute inset-y-0 left-0 rounded-full bg-[#0A84FF]"
+              className="absolute inset-y-0 left-0 rounded-full bg-primary transition-[width] duration-150"
               style={{ width: `${disabled ? 0 : pct}%` }}
             />
           </div>
@@ -82,11 +68,11 @@ function CrossfadeSlider({ value, disabled, onChange }) {
             className="absolute inset-0 w-full h-full opacity-0 cursor-pointer disabled:cursor-not-allowed"
           />
           <div
-            className="pointer-events-none absolute top-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-white shadow-md"
+            className="pointer-events-none absolute top-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-foreground shadow-md transition-colors"
             style={{ left: `calc(${disabled ? 0 : pct}% - 12px)` }}
           />
         </div>
-        <div className="flex justify-between mt-4 text-[11px] text-[#A0A0A0]">
+        <div className="flex justify-between mt-4 text-[11px] text-muted-foreground">
           <span>1s</span>
           <span>12s</span>
         </div>
@@ -118,12 +104,12 @@ export default function SongTransitions() {
   const selectCrossfade = () => t.setMode(TRANSITION_MODES.CROSSFADE);
 
   return (
-    <div className="fixed inset-0 bg-black z-[70] flex flex-col text-white">
+    <div className="fixed inset-0 bg-background z-[70] flex flex-col text-foreground">
       {/* Top bar */}
       <div className="top-bar-safe flex items-center px-3 pt-2 pb-3 shrink-0">
         <button
           onClick={back}
-          className="tap-target -ml-1 inline-flex items-center gap-1 text-[#0A84FF] font-medium"
+          className="tap-target -ml-1 inline-flex items-center gap-1 font-medium hover:opacity-70 transition"
           aria-label="Back">
           <ArrowLeft size={22} />
         </button>
@@ -136,7 +122,7 @@ export default function SongTransitions() {
       <div className="flex-1 min-h-0 overflow-y-auto px-4 pb-16 space-y-7">
         {/* Master toggle */}
         <section>
-          <div className="rounded-2xl bg-[#1C1C1E] px-4 py-3.5">
+          <div className="rounded-2xl bg-card border border-border px-4 py-3.5">
             <div className="flex items-center justify-between gap-3">
               <span className="text-[15px] font-semibold">Song Transitions</span>
               <button
@@ -144,16 +130,16 @@ export default function SongTransitions() {
                 role="switch"
                 aria-checked={masterOn}
                 className={`relative w-[51px] h-[31px] rounded-full transition-colors shrink-0 ${
-                  masterOn ? "bg-[#34C759]" : "bg-[#39393D]"
+                  masterOn ? "bg-primary" : "bg-muted"
                 }`}>
                 <span
-                  className={`absolute top-[2px] left-[2px] w-[27px] h-[27px] rounded-full bg-white shadow transition-transform ${
+                  className={`absolute top-[2px] left-[2px] w-[27px] h-[27px] rounded-full bg-background shadow transition-transform ${
                     masterOn ? "translate-x-[20px]" : "translate-x-0"
                   }`}
                 />
               </button>
             </div>
-            <p className="text-[13px] text-[#A0A0A0] leading-snug mt-2">
+            <p className="text-[13px] text-muted-foreground leading-snug mt-2">
               Beginnings and endings of songs blend together seamlessly. Albums
               and some genres will still play without transitions.
             </p>
@@ -162,10 +148,10 @@ export default function SongTransitions() {
 
         {/* Transition style */}
         <section>
-          <h2 className="text-[13px] font-medium text-[#A0A0A0] px-4 mb-2">
+          <h2 className="text-[13px] font-medium text-muted-foreground px-4 mb-2">
             Transition Style
           </h2>
-          <div className="rounded-2xl bg-[#1C1C1E] overflow-hidden divide-y divide-white/5">
+          <div className="rounded-2xl bg-card border border-border overflow-hidden divide-y divide-border">
             <OptionTile
               icon={Wand2}
               title="AutoMix"
@@ -182,21 +168,21 @@ export default function SongTransitions() {
               onClick={selectCrossfade}
             />
           </div>
-          <p className="text-[12px] text-[#A0A0A0] px-4 mt-2.5">
+          <p className="text-[12px] text-muted-foreground px-4 mt-2.5">
             {!isAdmin && (
               <>
                 AutoMix is a{" "}
-                <span className="text-[#0A84FF] font-medium">premium</span>{" "}
+                <span className="text-primary font-medium">premium</span>{" "}
                 feature, available to admins during testing.{" "}
               </>
             )}
-            <span className="text-[#0A84FF]">Learn More</span>
+            <span className="text-primary">Learn More</span>
           </p>
         </section>
 
         {/* Crossfade duration */}
         <section>
-          <h2 className="text-[13px] font-medium text-[#A0A0A0] px-4 mb-2">
+          <h2 className="text-[13px] font-medium text-muted-foreground px-4 mb-2">
             Crossfade Duration
           </h2>
           <CrossfadeSlider
