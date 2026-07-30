@@ -35,8 +35,10 @@ const LABELS = {
 };
 
 // Live, animated weather effects layered behind the hero content.
-export default function WeatherFX() {
-  const weather = useLiveWeather();
+// Pass `demo` to force a specific condition for previewing.
+export default function WeatherFX({ demo }) {
+  const live = useLiveWeather();
+  const weather = demo || live;
   if (!weather) return null;
 
   const { condition, cloudCover, wind, temperature, isDay } = weather;
