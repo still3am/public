@@ -98,7 +98,7 @@ export default function PublicRecords({ id: propId }) {
       setArtist(a);
       if (a?.name) {
         const all = await base44.entities.Track.
-        filter({ is_published: true }, "-play_count", 500).
+        filter({ is_published: true }, "-created_date", 10000).
         catch(() => []);
         const names = splitNames(a.name);
         const matched = (Array.isArray(all) ? all : []).filter((t) =>
