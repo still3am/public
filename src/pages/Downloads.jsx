@@ -83,18 +83,18 @@ export default function Downloads() {
     <div className="max-w-3xl mx-auto px-4 md:px-6 main-content">
       <BackHeader title="PUBLIC OFFLINE" />
 
-      <div className="pt-3 pb-6 hidden">
-        <div className="flex items-center gap-2.5 mb-1.5">
-          <WifiOff size={22} className="text-foreground/60" />
-          <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight">
-            PUBLIC OFFLINE
-          </h1>
-        </div>
-        <p className="text-sm text-foreground/55 max-w-md">
-          Your saved songs live right here on this device. Play them anywhere —
-          no Wi‑Fi, no cellular data, no signal needed.
-        </p>
-      </div>
+      
+
+
+
+
+
+
+
+
+
+
+      
 
       {/* Status card */}
       <div className="mt-2 mb-6 grid grid-cols-3 gap-2.5">
@@ -262,15 +262,15 @@ function Stat({ label, value, icon, tone }) {
   tone === "warn" ?
   "text-amber-600 dark:text-amber-400" :
   "text-foreground/55";
-  return (
-    <div className="rounded-2xl ring-1 ring-inset ring-border bg-card p-3 hidden">
-      <div className={`flex items-center gap-1.5 text-[11px] font-semibold ${ringTone}`}>
-        {icon} {label}
-      </div>
-      <div className="text-lg font-extrabold tracking-tight mt-1.5 truncate">
-        {value}
-      </div>
-    </div>);
+  return null;
+
+
+
+
+
+
+
+
 
 }
 
