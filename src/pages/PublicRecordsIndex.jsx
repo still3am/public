@@ -212,9 +212,9 @@ export default function PublicRecordsIndex() {
                               </span>
                         }
                           </div>
-                          
-
-                      
+                          <Disc3
+                        size={13}
+                        className="text-foreground/25 group-hover:text-foreground/60 shrink-0 transition hidden" />
                       
                         </Link>);
 
@@ -229,7 +229,7 @@ export default function PublicRecordsIndex() {
 
       {/* A–Z quick-jump rail */}
       {artists && artists.length > 0 &&
-      <div className="fixed right-1.5 top-1/2 -translate-y-1/2 z-20 px-1 py-2 rounded-full bg-foreground/[0.04] backdrop-blur-md border border-foreground/[0.06] flex flex-col items-center gap-px max-h-[70vh] overflow-y-auto no-scrollbar">
+      <div className="fixed right-0.5 top-1/2 -translate-y-1/2 z-20 py-0.5 rounded-full bg-foreground/[0.05] backdrop-blur-md flex flex-col items-center max-h-[76vh] overflow-y-auto no-scrollbar">
           {"ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("").
         concat(letters.includes("#") ? ["#"] : []).
         map((L) => {
@@ -240,18 +240,16 @@ export default function PublicRecordsIndex() {
               key={L}
               onClick={() => has && scrollToLetter(L)}
               aria-label={`Jump to ${L}`}
-              className={`text-[9px] font-bold leading-none w-4 h-4 grid place-items-center rounded-full transition-all duration-200 ${
-              has ? "cursor-pointer" : "cursor-default text-foreground/20"} ${
-
+              className={`text-[8px] font-bold leading-none w-3.5 h-3.5 grid place-items-center transition-all duration-150 ${
+              has ? "cursor-pointer" : "cursor-default text-foreground/15"} ${
               isActive ?
-              "bg-foreground text-background scale-110" :
+              "bg-foreground text-background rounded-full" :
               has ?
-              "text-foreground/55 hover:scale-125 hover:text-foreground" :
+              "text-foreground/50 hover:text-foreground" :
               ""}`
               }>
-              
-                  {L}
-                </button>);
+              {L}
+            </button>);
 
         })}
         </div>
