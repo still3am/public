@@ -3,7 +3,6 @@ import { base44 } from "@/api/base44Client";
 import {
   getAudioDuration,
   deriveDefaultTitle,
-  extractEmbeddedCover,
   extractEmbeddedTitle,
   extractEmbeddedArtist,
 } from "@/lib/audio-utils";
@@ -63,8 +62,6 @@ export function useUploadQueue({ user, isAdmin }) {
       duration: 0,
       explicit: false,
       aiLyrics: false,
-      coverFile: null,
-      coverPreviewUrl: "",
       status: "analyzing",
       detecting: true,
       error: "",
@@ -73,22 +70,14 @@ export function useUploadQueue({ user, isAdmin }) {
 
     // analyze each file in parallel
     newItems.forEach(async (item) => {
-      const [duration, tagTitle, tagArtist, cover] = await Promise.all([
+      const [duration, tagTitle, tagArtist] = await Promise.all([
         getAudioDuration(item.file),
         extractEmbeddedTitle(item.file),
         extractEmbeddedArtist(item.file),
-        extractEmbeddedCover(item.file),
       ]);
       let title = tagTitle || item.title;
       let artist = tagArtist || "";
-      patch(item.id, {
-        duration,
-        title,
-        artist,
-        coverFile: cover,
-        coverPreviewUrl: cover ? URL.createObjectURL(cover) : "",
-        status: "ready",
-      });
+      patch(item.id, { duration, title, artist, status: "ready" });
 
       // AI: explicit + name cleanup (non-blocking)
       const meta = await detectMeta(title, artist);
@@ -133,16 +122,10 @@ export function useUploadQueue({ user, isAdmin }) {
     patch(item.id, { status: "uploading", error: "" });
     try {
       const { file_url } = await base44.integrations.Core.UploadFile({ file: item.file });
-      let cover_art_url = "";
-      if (item.coverFile) {
-        const r = await base44.integrations.Core.UploadFile({ file: item.coverFile });
-        cover_art_url = r.file_url;
-      }
-      const meetsRules = !!(cover_art_url && item.artist.trim() && item.genre);
+      const meetsRules = !!(item.artist.trim() && item.genre);
       const track = await base44.entities.Track.create({
         title: item.title.trim() || "Untitled",
         audio_url: file_url,
-        cover_art_url,
         uploader_id: user.id,
         uploader_name: user.display_name || user.full_name || "",
         uploader_avatar_url: user.avatar_url || "",

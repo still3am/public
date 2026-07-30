@@ -25,10 +25,9 @@ export default function UploadItem({
   const enhancing = item.status === "enhancing";
   const done = item.status === "done";
 
-  const hasCover = !!(item.coverFile || item.coverPreviewUrl);
   const hasArtist = !!item.artist.trim();
   const hasGenre = !!item.genre;
-  const meetsRules = hasCover && hasArtist && hasGenre;
+  const meetsRules = hasArtist && hasGenre;
   const locked = uploading || done;
 
   const toggles = [
@@ -104,7 +103,6 @@ export default function UploadItem({
           </div>
 
           <ReleaseChecklist
-            hasCover={hasCover}
             hasGenre={hasGenre}
             hasArtist={hasArtist}
             isAdmin={isAdmin} />
