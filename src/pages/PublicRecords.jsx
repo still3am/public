@@ -176,7 +176,7 @@ export default function PublicRecords({ id: propId }) {
   artist.members && { icon: Users, label: artist.members }].
   filter(Boolean);
 
-  const isCreator = !!user && artist.created_by_id === user.id;
+  const isAdmin = !!user && user.role === "admin";
   const playAll = () => p.playTrackAt(tracks);
 
   return (
@@ -220,7 +220,7 @@ export default function PublicRecords({ id: propId }) {
                     <Play size={13} className="fill-current" /> Play all
                   </button>
                 }
-                {isCreator && (generating ?
+                {isAdmin && (generating ?
                 <span className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full bg-foreground/[0.06] text-foreground/60 text-xs font-semibold">
                     <Loader2 size={13} className="animate-spin" /> Generating…
                   </span> :
