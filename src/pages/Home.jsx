@@ -17,7 +17,6 @@ import ScoreboardTrackCount from "@/components/ScoreboardTrackCount";
 import EmptyState from "@/components/EmptyState";
 import { getRecentPlays } from "@/lib/recentPlays";
 import PullToRefresh from "@/components/PullToRefresh";
-import HeroPlayingTint from "@/components/HeroPlayingTint";
 
 const greetingByHour = () => {
   const h = new Date().getHours();
@@ -193,7 +192,6 @@ export default function Home() {
       <div className="space-y-3">
         {/* Hero */}
         <div className="relative rounded-3xl overflow-hidden border border-foreground/[0.06] p-7 md:p-14 mb-8 md:mb-10 text-center flex flex-col items-center">
-          <HeroPlayingTint />
           <div
             className="absolute inset-0 opacity-[0.04] pointer-events-none"
             style={{

@@ -161,11 +161,6 @@
   50% { height: 100%; }
 }
 
-@keyframes herotint {
-  0%, 100% { filter: hue-rotate(0deg) saturate(1); background-position: 0% 0%, 100% 0%, 50% 100%; }
-  50% { filter: hue-rotate(18deg) saturate(1.15); background-position: 12% 10%, 88% 14%, 62% 90%; }
-}
-
 @keyframes marquee {
   from { transform: translateX(0); }
   to { transform: translateX(-50%); }
