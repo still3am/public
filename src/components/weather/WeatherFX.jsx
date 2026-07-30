@@ -3,15 +3,17 @@ import { useLiveWeather } from "@/hooks/useLiveWeather";
 import CloudLayer from "@/components/weather/CloudLayer";
 import PrecipCanvas from "@/components/weather/PrecipCanvas";
 import LightningLayer from "@/components/weather/LightningLayer";
+import FogLayer from "@/components/weather/FogLayer";
 
+// Rich, layered color tints per condition for an Apple-Weather feel.
 const TINTS = {
-  clear: "from-sky-400/25 via-transparent to-amber-300/20",
-  partly: "from-sky-400/20 via-transparent to-slate-400/15",
-  cloudy: "from-slate-400/25 via-transparent to-slate-600/20",
-  fog: "from-slate-300/30 via-slate-400/15 to-slate-500/25",
-  rain: "from-sky-600/30 via-transparent to-indigo-700/25",
-  snow: "from-sky-200/30 via-transparent to-slate-300/25",
-  thunder: "from-indigo-800/35 via-transparent to-slate-900/30",
+  clear: "from-amber-300/30 via-sky-400/15 to-sky-200/20",
+  partly: "from-sky-400/25 via-sky-300/12 to-slate-300/15",
+  cloudy: "from-slate-400/30 via-slate-500/15 to-slate-600/20",
+  fog: "from-slate-300/35 via-slate-400/20 to-slate-500/25",
+  rain: "from-slate-600/30 via-slate-700/25 to-indigo-800/30",
+  snow: "from-slate-200/35 via-sky-200/20 to-slate-300/25",
+  thunder: "from-indigo-900/40 via-slate-900/30 to-slate-950/35",
 };
 
 const ICONS = {
@@ -51,11 +53,22 @@ export default function WeatherFX({ demo }) {
         className={`absolute inset-0 pointer-events-none bg-gradient-to-b ${TINTS[condition]}`}
       />
       {condition === "clear" && (
-        <div className="absolute -top-16 right-6 w-56 h-56 rounded-full bg-amber-300/25 blur-3xl animate-sun-pulse pointer-events-none" />
+        <div className="absolute -top-10 right-6 w-48 h-48 rounded-full bg-amber-300/40 blur-3xl animate-sun-pulse pointer-events-none" />
       )}
-      {condition !== "clear" && <CloudLayer density={density} />}
+      {(condition === "partly" || condition === "cloudy") && (
+        <CloudLayer density={density} />
+      )}
+      {condition === "fog" && (
+        <>
+          <CloudLayer density={0.5} />
+          <FogLayer />
+        </>
+      )}
+      {(condition === "rain" || condition === "thunder" || condition === "snow") && (
+        <CloudLayer density={Math.max(0.7, density)} />
+      )}
       {(condition === "rain" || condition === "thunder") && (
-        <PrecipCanvas type="rain" intensity={condition === "thunder" ? 1.3 : 1} wind={wind} />
+        <PrecipCanvas type="rain" intensity={condition === "thunder" ? 1.4 : 1} wind={wind} />
       )}
       {condition === "snow" && <PrecipCanvas type="snow" intensity={1} wind={wind} />}
       {condition === "thunder" && <LightningLayer />}
