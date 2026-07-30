@@ -12,7 +12,7 @@ import {
   ArrowLeft,
 } from "lucide-react";
 import { base44 } from "@/api/base44Client";
-import TrackRow from "@/components/TrackRow";
+import TrackCard from "@/components/TrackCard";
 import VinylCrate from "@/components/search/VinylCrate";
 import Avatar from "@/components/Avatar";
 import PullToRefresh from "@/components/PullToRefresh";
@@ -199,9 +199,9 @@ export default function Search() {
                   <Music size={14} /> Tracks
                   <span className="text-xs font-semibold text-foreground/40">{trackResults.length}</span>
                 </h3>
-                <div className="space-y-0.5">
-                  {trackResults.slice(0, 40).map((t, i) => (
-                    <TrackRow key={t.id} track={t} index={i} />
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-1">
+                  {trackResults.slice(0, 40).map((t) => (
+                    <TrackCard key={t.id} track={t} />
                   ))}
                 </div>
               </div>
@@ -272,9 +272,9 @@ export default function Search() {
               </div>
             </div>
             {genreTracks.length ? (
-              <div className="space-y-0.5">
-                {genreTracks.map((t, i) => (
-                  <TrackRow key={t.id} track={t} index={i} />
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-1">
+                {genreTracks.map((t) => (
+                  <TrackCard key={t.id} track={t} />
                 ))}
               </div>
             ) : (
