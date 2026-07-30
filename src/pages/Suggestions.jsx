@@ -113,7 +113,7 @@ export default function Suggestions() {
           eyebrow="Community Voice"
           title={
           <span className="flex items-center gap-2">
-              <Lightbulb size={22} className="hidden" /> Suggestions
+               Suggestions
             </span>
           }
           subtitle="PUBLIC is made by the people, for the people. Tell us what feature you'd love, the music you want to hear, or how this platform can be even better. Vote on ideas you care about." />
