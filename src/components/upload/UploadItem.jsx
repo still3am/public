@@ -75,9 +75,9 @@ export default function UploadItem({
             <div className="max-w-[16rem] flex-1">
               <GenrePicker value={item.genre} onChange={(g) => onChange({ genre: g })} />
             </div>
-            <div className="flex items-center gap-1 text-[11px] font-semibold text-foreground/45 shrink-0 hidden">
-              <Clock size={11} /> {formatTime(item.duration)}
-            </div>
+            
+
+            
           </div>
 
           <div className="flex flex-wrap gap-1.5">
