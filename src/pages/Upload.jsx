@@ -128,6 +128,12 @@ export default function Upload() {
       })
     );
     setItems((prev) => [...prev, ...newItems]);
+    // Auto-generate album art for any new track that arrived with no embedded
+    // or paired cover so the upload tile is never blank. Runs in the
+    // background; the tile re-renders automatically when the image lands.
+    for (const n of newItems) {
+      if (!n.coverFile) autoGenCover(n);
+    }
     try {
       const existing = await base44.entities.Track.filter(
         { uploader_id: user.id },
@@ -265,6 +271,28 @@ export default function Upload() {
       });
       return false;
     }
+  }
+
+  // Generates AI album art on the fly so uploads that arrive with no embedded
+  // or paired cover still get a visible thumbnail. Fire-and-forget per track.
+  async function autoGenCover(item) {
+    try {
+      const prompt =
+        `Square album cover art, single panel, no text, no titles, no logos. ` +
+        `Bold, evocative aesthetic for a ${item.genre || "music"} track titled ` +
+        `"${item.title || "Untitled"}"${item.artist ? ` by ${item.artist}` : ""}. ` +
+        `Moody, textured, modern.`;
+      const res = await base44.integrations.Core.GenerateImage({ prompt });
+      const url = res?.url;
+      if (!url) return;
+      const resp = await fetch(url);
+      const blob = await resp.blob();
+      const file = new File([blob], "cover.jpg", {
+        type: blob.type || "image/jpeg",
+      });
+      const preview = URL.createObjectURL(file);
+      updateItem(item.id, { coverFile: file, coverPreviewUrl: preview });
+    } catch {}
   }
 
   async function uploadAll() {
