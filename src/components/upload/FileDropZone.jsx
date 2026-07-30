@@ -1,61 +1,21 @@
-import { useState, useRef } from "react";
+import { useState } from "react";
 import { UploadCloud } from "lucide-react";
 
 const FORMATS = ["MP3", "WAV", "M4A", "FLAC", "OGG", "AAC", "OPUS", "AIFF"];
 
-// Cross-browser robust file extraction from a drop event. Some browsers
-// (notably Safari) expose dropped files only through dataTransfer.items
-// while leaving dataTransfer.files empty, which silently broke drops.
-function filesFromEvent(e) {
-  const dt = e.dataTransfer;
-  if (!dt) return [];
-  if (dt.files && dt.files.length) return Array.from(dt.files);
-  if (dt.items && dt.items.length) {
-    const out = [];
-    for (const it of dt.items) {
-      if (it.kind === "file") {
-        const f = it.getAsFile();
-        if (f) out.push(f);
-      }
-    }
-    if (out.length) return out;
-  }
-  return [];
-}
-
 export default function FileDropZone({ onFiles, inputRef }) {
   const [drag, setDrag] = useState(false);
-  const dragDepth = useRef(0);
-
   return (
     <div
-      onDragEnter={(e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        dragDepth.current += 1;
-        setDrag(true);
-      }}
       onDragOver={(e) => {
         e.preventDefault();
-        e.stopPropagation();
-        e.dataTransfer.dropEffect = "copy";
+        setDrag(true);
       }}
-      onDragLeave={(e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        dragDepth.current -= 1;
-        if (dragDepth.current <= 0) {
-          dragDepth.current = 0;
-          setDrag(false);
-        }
-      }}
+      onDragLeave={() => setDrag(false)}
       onDrop={(e) => {
         e.preventDefault();
-        e.stopPropagation();
-        dragDepth.current = 0;
         setDrag(false);
-        const files = filesFromEvent(e);
-        if (files.length) onFiles(files);
+        if (e.dataTransfer.files?.length) onFiles(e.dataTransfer.files);
       }}
       onClick={() => inputRef.current?.click()}
       className={`relative cursor-pointer rounded-2xl border-2 border-dashed transition overflow-hidden ${

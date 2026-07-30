@@ -59,19 +59,6 @@ export default function Upload() {
       f.type.startsWith("audio") ||
       /\.(mp3|wav|m4a|ogg|flac|aac|opus|aiff|webm)$/i.test(f.name)
     );
-    // Also accept image files dropped alongside audio so we can auto-pair a
-    // cover by filename (e.g. "Track.mp3" + "Track.jpg" → cover attached).
-    const imageFiles = Array.from(files).filter(
-      (f) =>
-      f.type.startsWith("image") ||
-      /\.(png|jpe?g|gif|webp|bmp|tiff?)$/i.test(f.name)
-    );
-    const imageByBase = {};
-    imageFiles.forEach((img) => {
-      const b = img.name.replace(/\.[^.]+$/, "").toLowerCase();
-      if (!imageByBase[b]) imageByBase[b] = img;
-    });
-    if (!list.length && !imageFiles.length) return;
     if (!list.length) return;
     const newItems = await Promise.all(
       list.map(async (file) => {
@@ -90,33 +77,16 @@ export default function Upload() {
           fbArtist = base.slice(0, sep).replace(/[_-]+/g, " ").trim();
           const t = base.slice(sep + 3).replace(/[_-]+/g, " ").trim();
           if (t) fbTitle = t;
-        } else {
-          // Try an "Artist-Title" hyphen (no spaces) fallback as well,
-          // since many downloads are named that way.
-          const h = base.indexOf("-");
-          if (h > 0) {
-            const a = base.slice(0, h).replace(/[_]+/g, " ").trim();
-            const t = base.slice(h + 1).replace(/[_]+/g, " ").trim();
-            if (a && t && a !== t) {
-              fbArtist = a;
-              fbTitle = t;
-            }
-          }
         }
-        // Pair a same-named image file from the drop as the cover when the
-        // audio file has no embedded artwork.
-        const baseLower = base.toLowerCase();
-        const pairFile = !cover ? (imageByBase[baseLower] || null) : null;
-        const coverFile = cover || pairFile || null;
         return {
           id: ++idc,
           file,
           title: title || fbTitle,
-          artist: artist || fbArtist || user?.display_name || user?.full_name || "",
+          artist: artist || fbArtist,
           genre: "Other",
           duration: dur,
-          coverFile,
-          coverPreviewUrl: coverFile ? URL.createObjectURL(coverFile) : "",
+          coverFile: cover || null,
+          coverPreviewUrl: cover ? URL.createObjectURL(cover) : "",
           explicit: false,
           is_published: false,
           rights_confirmed: false,
@@ -128,12 +98,6 @@ export default function Upload() {
       })
     );
     setItems((prev) => [...prev, ...newItems]);
-    // Auto-generate album art for any new track that arrived with no embedded
-    // or paired cover so the upload tile is never blank. Runs in the
-    // background; the tile re-renders automatically when the image lands.
-    for (const n of newItems) {
-      if (!n.coverFile) autoGenCover(n);
-    }
     try {
       const existing = await base44.entities.Track.filter(
         { uploader_id: user.id },
@@ -271,28 +235,6 @@ export default function Upload() {
       });
       return false;
     }
-  }
-
-  // Generates AI album art on the fly so uploads that arrive with no embedded
-  // or paired cover still get a visible thumbnail. Fire-and-forget per track.
-  async function autoGenCover(item) {
-    try {
-      const prompt =
-        `Square album cover art, single panel, no text, no titles, no logos. ` +
-        `Bold, evocative aesthetic for a ${item.genre || "music"} track titled ` +
-        `"${item.title || "Untitled"}"${item.artist ? ` by ${item.artist}` : ""}. ` +
-        `Moody, textured, modern.`;
-      const res = await base44.integrations.Core.GenerateImage({ prompt });
-      const url = res?.url;
-      if (!url) return;
-      const resp = await fetch(url);
-      const blob = await resp.blob();
-      const file = new File([blob], "cover.jpg", {
-        type: blob.type || "image/jpeg",
-      });
-      const preview = URL.createObjectURL(file);
-      updateItem(item.id, { coverFile: file, coverPreviewUrl: preview });
-    } catch {}
   }
 
   async function uploadAll() {
