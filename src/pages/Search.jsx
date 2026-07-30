@@ -24,14 +24,14 @@ function ArtistRow({ artist, trackCount, onPick }) {
   return (
     <Link
       to={`/records/${artist.id}`}
-      className="w-full flex items-center gap-4 p-2.5 rounded-xl hover:bg-foreground/[0.03] transition text-left group">
+      className="w-full flex items-center gap-4 p-2.5 rounded-xl hover:bg-foreground/[0.03] transition text-left group hidden">
       <div className="w-12 h-12 rounded-full bg-foreground/[0.06] grid place-items-center overflow-hidden shrink-0 ring-1 ring-foreground/10 hidden">
         {artist.avatar_url ?
         <img src={artist.avatar_url} alt="" className="w-full h-full object-cover" /> :
         <Mic2 size={20} className="text-foreground/50" />}
       </div>
       <div className="min-w-0 flex-1">
-        <div className="text-sm font-semibold truncate flex items-center gap-1.5">
+        <div className="text-sm font-semibold truncate flex items-center gap-1.5 hidden">
           {artist.name}
           <Shield size={12} className="text-foreground/40 hidden" />
         </div>
