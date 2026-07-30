@@ -16,6 +16,7 @@ import { Link } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import { useAuth } from "@/lib/AuthContext";
 import LibraryButton from "@/components/LibraryButton";
+import DownloadButton from "@/components/DownloadButton";
 import { useOfflineCache } from "@/hooks/useOfflineCache";
 import { useToast } from "@/components/ui/use-toast";
 
@@ -168,6 +169,12 @@ export default function TrackRow({
           track={track}
           className="p-2 rounded-full text-foreground/55 hover:text-foreground hover:bg-foreground/[0.05] transition"
         />
+      </div>
+      <div className="hidden sm:block shrink-0">
+        <DownloadButton
+          track={track}
+          size={17}
+          className="p-2 rounded-full hover:bg-foreground/[0.05] transition" />
       </div>
       <div className="relative shrink-0">
         <button

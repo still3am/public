@@ -127,6 +127,14 @@ export function isTrending(track, threshold = 30) {
   return (track?.play_count || 0) > threshold;
 }
 
+export function bytesToReadable(bytes) {
+  if (!bytes || bytes < 0) return "0 B";
+  const units = ["B", "KB", "MB", "GB", "TB"];
+  const i = Math.floor(Math.log(bytes) / Math.log(1024));
+  const v = bytes / Math.pow(1024, i);
+  return `${i >= 1 ? v.toFixed(v >= 100 ? 0 : v >= 10 ? 1 : 2) : Math.round(v)} ${units[i]}`;
+}
+
 function readSynchsafe(buf, off) {
   return (
     ((buf[off] & 0x7f) << 21) |

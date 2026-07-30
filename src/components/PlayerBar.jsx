@@ -16,6 +16,7 @@ import { Link } from "react-router-dom";
 import { formatTime } from "@/lib/audio-utils";
 import FullScreenPlayer from "@/components/FullScreenPlayer";
 import QueuePanel from "@/components/QueuePanel";
+import DownloadButton from "@/components/DownloadButton";
 
 export default function PlayerBar() {
   const p = usePlayer();
@@ -102,7 +103,10 @@ export default function PlayerBar() {
             </div>
           </button>
 
-          {/* mobile controls */}
+          {/* offline + mobile controls */}
+          <div className="shrink-0 md:hidden">
+            <DownloadButton track={t} size={19} className="p-2 rounded-full hover:bg-foreground/5 transition" />
+          </div>
           <div className="flex items-center gap-1 shrink-0 md:hidden">
             <button onClick={p.prev} className="p-2 rounded-full hover:bg-foreground/5 active:scale-90 transition" aria-label="Previous">
               <SkipBack size={18} />
@@ -121,6 +125,7 @@ export default function PlayerBar() {
 
           {/* desktop controls */}
           <div className="hidden md:flex items-center gap-3 shrink-0">
+            <DownloadButton track={t} size={18} className="p-2 rounded-full hover:bg-foreground/5 transition" />
             <button
               onClick={() => p.setRepeat(p.repeat === "off" ? "all" : p.repeat === "all" ? "one" : "off")}
               className={`p-2 rounded-full hover:bg-foreground/5 active:scale-90 transition ${p.repeat !== "off" ? "text-foreground" : "text-foreground/40"}`}
