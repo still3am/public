@@ -36,7 +36,11 @@ export function getTransitionSettings() {
 
 export function setTransitionSettings(next) {
   const merged = { ...getTransitionSettings(), ...next };
-  localStorage.setItem(KEY, JSON.stringify(merged));
+  try {
+    localStorage.setItem(KEY, JSON.stringify(merged));
+  } catch {
+    /* storage unavailable/quota — keep in-memory + event so the session still works */
+  }
   window.dispatchEvent(new CustomEvent("transitions:change", { detail: merged }));
   return merged;
 }

@@ -9,9 +9,19 @@ export function useTransitions() {
   const [settings, setSettings] = useState(getTransitionSettings);
 
   useEffect(() => {
+    const reread = () => setSettings(getTransitionSettings());
     const onChange = (e) => setSettings(e.detail || getTransitionSettings());
+    const onStorage = (e) => {
+      if (e.key === "public:transitions") reread();
+    };
     window.addEventListener("transitions:change", onChange);
-    return () => window.removeEventListener("transitions:change", onChange);
+    window.addEventListener("storage", onStorage);
+    window.addEventListener("pageshow", reread);
+    return () => {
+      window.removeEventListener("transitions:change", onChange);
+      window.removeEventListener("storage", onStorage);
+      window.removeEventListener("pageshow", reread);
+    };
   }, []);
 
   const update = (next) => {
