@@ -23,7 +23,9 @@ export function getTransitionSettings() {
     const v = JSON.parse(localStorage.getItem(KEY) || "null");
     if (!v || typeof v !== "object") return { ...DEFAULTS };
     return {
-      mode: v.mode in TRANSITION_MODES ? v.mode : DEFAULTS.mode,
+      mode: Object.values(TRANSITION_MODES).includes(v.mode)
+        ? v.mode
+        : DEFAULTS.mode,
       crossfadeSeconds: Math.min(
         CROSSFADE_MAX,
         Math.max(CROSSFADE_MIN, Number(v.crossfadeSeconds) || DEFAULTS.crossfadeSeconds)
