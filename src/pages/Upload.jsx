@@ -1,162 +1,123 @@
 import { useRef } from "react";
-import { useAuth } from "@/lib/AuthContext";
+import { UploadCloud, Loader2, CheckCheck, Ban } from "lucide-react";
 import { useUploadsEnabled } from "@/hooks/useUploadsEnabled";
-import { useUploadQueue } from "@/hooks/useUploadQueue";
+import { useAuth } from "@/lib/AuthContext";
+import BackHeader from "@/components/BackHeader";
 import FileDropZone from "@/components/upload/FileDropZone";
 import UploadItem from "@/components/upload/UploadItem";
 import DuplicateModal from "@/components/upload/DuplicateModal";
-import BackHeader from "@/components/BackHeader";
-import { Loader2, UploadCloud, Lock, CheckCircle2, Trash2 } from "lucide-react";
+import { useUploadQueue } from "@/hooks/useUploadQueue";
+import { AUDIO_ACCEPT } from "@/lib/audio-utils";
 
 export default function Upload() {
-  const { user, isAuthenticated } = useAuth();
+  const { user } = useAuth();
   const isAdmin = user?.role === "admin";
-  const { loading: settingsLoading, enabled } = useUploadsEnabled();
   const inputRef = useRef(null);
+  const q = useUploadQueue({ user: user || {}, isAdmin });
+  const { loading: loadingSwitch, enabled: uploadsEnabled } = useUploadsEnabled();
 
-  const {
-    items,
-    addFiles,
-    remove,
-    uploadOne,
-    uploadAll,
-    patch,
-    dupes,
-    setDupes,
-    clearCompleted,
-  } = useUploadQueue({ user, isAdmin });
-
-  if (settingsLoading || !isAuthenticated) {
+  if (!loadingSwitch && !uploadsEnabled && !isAdmin) {
     return (
-      <div className="fixed inset-0 grid place-items-center">
-        <Loader2 className="animate-spin text-foreground/30" size={28} />
+      <div className="max-w-3xl mx-auto px-4 md:px-6 main-content">
+        <BackHeader title="Upload" />
+        <div className="mt-20 text-center">
+          <Ban size={32} className="mx-auto mb-3 text-foreground/30" />
+          <h1 className="text-xl font-extrabold tracking-tight">Uploads are paused</h1>
+          <p className="text-sm text-foreground/50 mt-1.5">
+            New uploads are temporarily closed. Check back soon.
+          </p>
+        </div>
       </div>
     );
   }
 
-  const uploadsOff = !enabled && !isAdmin;
-  const pending = items.filter((it) => it.status === "ready");
-  const completed = items.filter((it) => it.status === "done");
-  const busy = items.some((it) => it.status === "uploading" || it.status === "enhancing");
-
-  function openPicker() {
-    inputRef.current?.click();
-  }
+  const readyCount = q.items.filter((it) => it.status === "ready").length;
+  const doneCount = q.uploadedCount;
+  const busy = q.items.some((it) => ["uploading", "enhancing"].includes(it.status));
 
   return (
-    <div className="min-h-screen max-w-3xl mx-auto px-4 pb-32">
+    <div className="max-w-3xl mx-auto px-4 md:px-6 main-content">
       <BackHeader title="Upload" />
 
-      {/* Hero */}
-      <div className="mt-2 mb-5">
-        <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight">
-          Share your sound
-        </h1>
-        <p className="text-sm text-foreground/55 mt-1">
-          Drop any audio file — artwork, artist, title and genre are pulled
-          automatically. Every upload gets its own page on PUBLIC.
+      <div className="pt-3 pb-6">
+        <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight">Upload music</h1>
+        <p className="text-sm text-foreground/50 mt-1.5">
+          Share your sound with PUBLIC. Drop a whole folder of tracks at once — they upload together and clear themselves once they're in.
         </p>
       </div>
 
-      {uploadsOff ? (
-        <div className="rounded-3xl ring-1 ring-inset ring-border bg-foreground/[0.03] p-8 text-center">
-          <div className="w-14 h-14 rounded-full bg-foreground/[0.06] grid place-items-center mx-auto mb-4">
-            <Lock size={22} className="text-foreground/40" />
-          </div>
-          <h2 className="font-extrabold text-lg">Uploads are paused</h2>
-          <p className="text-sm text-foreground/55 mt-1 max-w-sm mx-auto">
-            New uploads are turned off right now. Come back soon — your library
-            and everything already on PUBLIC stays available.
-          </p>
-        </div>
-      ) : (
-        <>
-          <FileDropZone onFiles={addFiles} inputRef={inputRef} />
-          <input
-            ref={inputRef}
-            type="file"
-            accept="audio/*,.mp3,.wav,.m4a,.flac,.ogg,.aac,.opus,.aiff"
-            multiple
-            className="hidden"
-            onChange={(e) => {
-              if (e.target.files?.length) addFiles(e.target.files);
-              e.target.value = "";
-            }}
-          />
+      <FileDropZone onFiles={q.addFiles} inputRef={inputRef} />
+      <input
+        ref={inputRef}
+        type="file"
+        accept={AUDIO_ACCEPT}
+        multiple
+        className="hidden"
+        onChange={(e) => {
+          if (e.target.files?.length) q.addFiles(e.target.files);
+          e.target.value = "";
+        }} />
+      
 
-          {completed.length > 0 && (
-            <div className="mt-5 flex items-center gap-2.5 rounded-2xl bg-emerald-500/[0.08] ring-1 ring-inset ring-emerald-500/25 px-4 py-3">
-              <CheckCircle2 size={18} className="text-emerald-500 shrink-0" />
-              <p className="text-sm font-medium text-emerald-700 dark:text-emerald-300">
-                {completed.length} {completed.length === 1 ? "track" : "tracks"} added — each has its
-                own page. Tap “View track” to open it.
-              </p>
-            </div>
-          )}
-
-          {items.length > 0 && (
-            <div className="sticky top-2 z-10 mt-5 rounded-2xl bg-card/90 backdrop-blur ring-1 ring-inset ring-border shadow-sm p-2.5 flex items-center gap-2">
-              <span className="px-2 text-xs font-semibold text-foreground/60">
-                {pending.length} ready
-              </span>
-              <div className="flex-1" />
-              {completed.length > 0 && (
-                <button
-                  onClick={clearCompleted}
-                  className="inline-flex items-center gap-1.5 px-3 py-2 rounded-full text-xs font-bold text-foreground/55 hover:text-foreground hover:bg-foreground/[0.05] transition"
-                >
-                  <Trash2 size={14} /> Clear done
-                </button>
-              )}
-              {pending.length > 1 && (
-                <button
-                  onClick={uploadAll}
-                  disabled={busy}
-                  className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-foreground text-background text-xs font-bold active:scale-95 transition disabled:opacity-50"
-                >
-                  <UploadCloud size={14} />
-                  {busy ? "Uploading…" : `Upload all ${pending.length}`}
-                </button>
-              )}
-            </div>
-          )}
-
-          <div className="mt-3 space-y-3">
-            {items.map((item) => (
-              <UploadItem
-                key={item.id}
-                item={item}
-                isAdmin={isAdmin}
-                disabled={busy}
-                onChange={(d) => patch(item.id, d)}
-                onRemove={() => remove(item.id)}
-                onUpload={() => uploadOne(item)}
-              />
-            ))}
-
-            {items.length === 0 && (
-              <div className="text-center text-sm text-foreground/45 pt-10">
-                No tracks queued yet. Drag files above or{" "}
-                <button
-                  onClick={openPicker}
-                  className="underline underline-offset-2 font-semibold text-foreground/70"
-                >
-                  browse
-                </button>{" "}
-                to begin.
+      {q.items.length > 0 &&
+      <>
+          <div className="sticky top-14 z-20 -mx-4 md:-mx-6 px-4 md:px-6 py-3 mt-6 bg-background/85 backdrop-blur-md border-y border-border flex items-center justify-between gap-3">
+            <div className="min-w-0">
+              <div className="text-sm font-extrabold tracking-tight">
+                {q.items.length} {q.items.length === 1 ? "track" : "tracks"} queued
               </div>
-            )}
+              {doneCount > 0 &&
+            <div className="text-[11px] font-semibold text-emerald-600 dark:text-emerald-400 flex items-center gap-1 mt-0.5">
+                  <CheckCheck size={11} /> {doneCount} uploaded
+                </div>
+            }
+            </div>
+            {readyCount > 0 &&
+          <button
+            onClick={q.uploadAll}
+            disabled={busy}
+            className="shrink-0 inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-foreground text-background text-sm font-bold disabled:opacity-50 active:scale-95 transition">
+            
+                {busy ?
+            <Loader2 size={14} className="animate-spin" /> :
+
+            <UploadCloud size={14} />
+            }
+                Upload all ({readyCount})
+              </button>
+          }
+          </div>
+
+          <div className="space-y-3 mt-4">
+            {q.items.map((item) =>
+          <div key={item.id} className="relative">
+                {(item.status === "analyzing" || item.detecting) && item.status !== "done" &&
+            <div className="absolute -top-2 left-4 z-10 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-foreground text-background text-[10px] font-bold shadow-lg hidden">
+                    <Loader2 size={10} className="animate-spin" />
+                    {item.status === "analyzing" ? "Reading file…" : "Auto-detecting details…"}
+                  </div>
+            }
+                <UploadItem
+              item={item}
+              isAdmin={isAdmin}
+              onChange={(data) => q.patch(item.id, data)}
+              onRemove={() => q.remove(item.id)}
+              onUpload={() => q.uploadOne(item)}
+              disabled={item.status === "analyzing"} />
+            
+              </div>
+          )}
           </div>
         </>
-      )}
+      }
 
-      {dupes?.length > 0 && (
-        <DuplicateModal
-          tracks={dupes}
-          onClose={() => setDupes(null)}
-          onRemove={remove}
-        />
-      )}
-    </div>
-  );
+      {q.dupes?.length > 0 &&
+      <DuplicateModal
+        tracks={q.dupes}
+        onClose={() => q.setDupes(null)}
+        onRemove={(id) => q.remove(id)} />
+
+      }
+    </div>);
+
 }

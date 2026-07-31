@@ -184,8 +184,10 @@ export function useUploadQueue({ user, isAdmin }) {
         const lyrics = res?.data?.lyrics;
         if (lyrics) await base44.entities.Track.update(track.id, { lyrics_text: lyrics }).catch(() => {});
       }
-      patch(item.id, { status: "done", trackId: track.id });
+      patch(item.id, { status: "done" });
       setUploadedCount((n) => n + 1);
+      // Clear finished uploads out of the queue automatically.
+      setTimeout(() => remove(item.id), 1200);
     } catch (e) {
       patch(item.id, {
         status: "ready",
@@ -212,9 +214,6 @@ export function useUploadQueue({ user, isAdmin }) {
     );
   }
 
-  const clearCompleted = () =>
-    setItems((prev) => prev.filter((it) => it.status !== "done"));
-
   return {
     items,
     addFiles,
@@ -225,6 +224,5 @@ export function useUploadQueue({ user, isAdmin }) {
     dupes,
     setDupes,
     uploadedCount,
-    clearCompleted,
   };
 }
