@@ -257,12 +257,18 @@ export function PlayerProvider({ children }) {
       const el = els()[side];
       const track = queueRef.current[targetIndex];
       if (!el || !track) return;
-      // Only overlap once the next track is actually buffered; otherwise we'd
-      // start the wrong/empty source and cut the current track. Retry next tick.
-      if (!sideReadyRef[side].current) {
-        if (sideLoadedIdRef[side].current !== track.id) preloadSide(targetIndex);
+      // Make sure the RIGHT track is loaded on the inactive element. If not,
+      // kick off the load and retry on the next tick.
+      if (sideLoadedIdRef[side].current !== track.id) {
+        preloadedTargetRef.current = targetIndex;
+        preloadSide(targetIndex);
         return;
       }
+      // Only overlap once the next track has at least current data buffered.
+      // readyState >= 2 is enough to start playback and buffer ahead during the
+      // fade; retry on the next tick if it's still empty.
+      if (!sideReadyRef[side].current && el.readyState < 2) return;
+      sideReadyRef[side].current = true;
       crossfadingRef.current = true;
       const oldSide = activeIdxRef.current; // capture BEFORE swapping below
       const fd = Math.min(cf, Math.max(0.5, remaining || cf));
@@ -322,6 +328,27 @@ export function PlayerProvider({ children }) {
       return;
     }
     loadOnActive(track);
+  }, [currentTrack?.id]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Preload the upcoming track on the inactive element as soon as the current
+  // track starts, so a crossfade has a buffered source ready WELL before the
+  // transition point (instead of only cf+3s before the end, which often misses).
+  useEffect(() => {
+    const ci = currentIndexRef.current;
+    const q = queueRef.current;
+    if (ci < 0 || !q.length) return;
+    let n = -1;
+    if (ci + 1 < q.length) n = ci + 1;
+    else if (repeatRef.current === "all" && q.length) n = 0;
+    if (n === -1 || !q[n]) return;
+    const side = inactiveIdx();
+    if (
+      sideLoadedIdRef[side].current === q[n].id &&
+      sideReadyRef[side].current
+    )
+      return;
+    preloadedTargetRef.current = n;
+    preloadSide(n);
   }, [currentTrack?.id]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // --- listeners (attached once to both elements) ---
@@ -526,10 +553,38 @@ export function PlayerProvider({ children }) {
     if (v > 0) setMuted(false);
   }, []);
 
+  // Crossfade-aware skip: if transitions are on AND the upcoming track is
+  // already preloaded+ready on the inactive element, blend into it; otherwise
+  // fall back to a hard cut via setCurrentIndex -> loadOnActive.
+  const transitionTo = useCallback(
+    (targetIndex) => {
+      if (targetIndex < 0 || targetIndex >= queueRef.current.length) return;
+      const s = getTransitionSettings();
+      const side = inactiveIdx();
+      const target = queueRef.current[targetIndex];
+      const ready =
+        !crossfadingRef.current &&
+        target &&
+        sideLoadedIdRef[side].current === target.id &&
+        sideReadyRef[side].current;
+      if (isTransitionActive(s) && ready) {
+        const a = activeEl();
+        const remaining =
+          a && a.duration && isFinite(a.duration)
+            ? a.duration - (a.currentTime || 0)
+            : s.crossfadeSeconds;
+        beginCrossfade(targetIndex, s.crossfadeSeconds, remaining);
+      } else {
+        setCurrentIndex(targetIndex);
+      }
+    },
+    [beginCrossfade]
+  );
+
   const next = useCallback(() => {
     const n = nextIndex();
-    if (n !== -1) setCurrentIndex(n);
-  }, [nextIndex]);
+    if (n !== -1) transitionTo(n);
+  }, [nextIndex, transitionTo]);
 
   const prev = useCallback(() => {
     const a = activeEl();
