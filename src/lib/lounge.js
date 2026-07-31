@@ -59,8 +59,6 @@ export function minimalTrack(t) {
     duration_seconds: t.duration_seconds || 0,
     genre: t.genre || "Other",
     explicit: !!t.explicit,
-    // ensure URL fields are sanitized to http(s) only
-    _safe: true,
   };
 }
 

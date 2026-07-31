@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Plus, Check, Loader2, Library as LibraryIcon } from "lucide-react";
+import { Plus, Check, Loader2 } from "lucide-react";
 import { useLibrary } from "@/context/LibraryContext";
 
 export default function LibraryButton({
