@@ -6,8 +6,12 @@ import {
   extractEmbeddedCover,
   extractEmbeddedTitle,
   extractEmbeddedArtist,
+  isAudioFile,
   GENRES,
 } from "@/lib/audio-utils";
+
+const IMAGE_EXT_RE =
+  /\.(jpe?g|jfif|png|gif|webp|avif|heic|heif|bmp|tiff?|svg|ico|apng)$/i;
 import { findDuplicateTracks } from "@/lib/duplicateCheck";
 
 let uid = 0;
@@ -48,14 +52,20 @@ export function useUploadQueue({ user, isAdmin }) {
   const [dupes, setDupes] = useState(null);
   const [uploadedCount, setUploadedCount] = useState(0);
   const allTracksRef = useRef(null);
+  const pendingCoverRef = useRef(null);
 
   const patch = (id, data) =>
     setItems((prev) => prev.map((it) => (it.id === id ? { ...it, ...data } : it)));
 
   async function addFiles(fileList) {
-    const files = Array.from(fileList).filter(
-      (f) => f.type.startsWith("audio/") || /\.(mp3|wav|m4a|ogg|flac|aac|opus|aiff|webm)$/i.test(f.name)
+    const all = Array.from(fileList);
+    const files = all.filter(isAudioFile);
+    // Any image dropped alongside the audio becomes artwork for the tracks
+    // that didn't carry their own embedded cover.
+    const droppedImage = all.find(
+      (f) => f.type.startsWith("image/") || IMAGE_EXT_RE.test(f.name || "")
     );
+    if (droppedImage) pendingCoverRef.current = droppedImage;
     if (!files.length) return;
 
     const newItems = files.map((file) => ({
@@ -85,8 +95,9 @@ export function useUploadQueue({ user, isAdmin }) {
       ]);
       let title = tagTitle || item.title;
       let artist = tagArtist || "";
-      // Use the file's embedded artwork only — no auto-generated cover.
-      const cover = embedded || null;
+      // The file's own embedded artwork wins; otherwise fall back to an image
+      // the user dropped in alongside it.
+      const cover = embedded || pendingCoverRef.current || null;
       patch(item.id, {
         duration,
         title,

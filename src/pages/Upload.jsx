@@ -7,7 +7,7 @@ import FileDropZone from "@/components/upload/FileDropZone";
 import UploadItem from "@/components/upload/UploadItem";
 import DuplicateModal from "@/components/upload/DuplicateModal";
 import { useUploadQueue } from "@/hooks/useUploadQueue";
-import { AUDIO_ACCEPT } from "@/lib/audio-utils";
+import { AUDIO_ACCEPT, IMAGE_ACCEPT } from "@/lib/audio-utils";
 
 export default function Upload() {
   const { user } = useAuth();
@@ -50,7 +50,7 @@ export default function Upload() {
       <input
         ref={inputRef}
         type="file"
-        accept={AUDIO_ACCEPT}
+        accept={`${AUDIO_ACCEPT},${IMAGE_ACCEPT}`}
         multiple
         className="hidden"
         onChange={(e) => {

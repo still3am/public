@@ -1,3 +1,5 @@
+import { pickBestEmbeddedImage, decodesToImage, imageMime as pickImageMime } from "@/lib/embeddedImage";
+
 export const GENRES = [
   "Pop", "Hip-Hop", "Electronic", "Rock", "R&B", "Jazz", "Classical",
   "Ambient", "Experimental", "Dance", "Indie", "Folk", "Country",
@@ -34,7 +36,30 @@ export const GENRES = [
 ];
 
 export const AUDIO_ACCEPT =
-  "audio/*,.mp3,.wav,.m4a,.ogg,.flac,.aac,.opus,.aiff,.webm";
+  "audio/*,video/mp4,video/webm,video/ogg,video/quicktime," +
+  ".mp3,.wav,.m4a,.m4b,.m4r,.mp4,.aac,.alac,.ogg,.oga,.opus,.flac,.aiff,.aif," +
+  ".aifc,.wma,.webm,.mka,.mid,.midi,.amr,.3gp,.3gpp,.caf,.dsf,.ape,.wv,.mp2," +
+  ".mpga,.au,.snd,.ra,.ram,.voc,.8svx";
+
+export const IMAGE_ACCEPT =
+  "image/*,.jpg,.jpeg,.jfif,.png,.gif,.webp,.avif,.heic,.heif,.bmp,.tif,.tiff," +
+  ".svg,.ico,.apng";
+
+const AUDIO_EXT_RE =
+  /\.(mp3|wav|m4a|m4b|m4r|mp4|aac|alac|ogg|oga|opus|flac|aiff|aif|aifc|wma|webm|mka|mid|midi|amr|3gp|3gpp|caf|dsf|ape|wv|mp2|mpga|au|snd|ra|ram|voc|8svx)$/i;
+
+// Accepts anything that plausibly holds audio: a real audio MIME type, a
+// container that commonly wraps audio (mp4/webm/ogg/quicktime), a known
+// extension, or a file the browser gave no MIME type for at all.
+export function isAudioFile(f) {
+  if (!f) return false;
+  const type = f.type || "";
+  if (type.startsWith("audio/")) return true;
+  if (AUDIO_EXT_RE.test(f.name || "")) return true;
+  if (type.startsWith("image/") || type.startsWith("text/")) return false;
+  if (/^(video\/(mp4|webm|ogg|quicktime|x-m4v))$/.test(type)) return true;
+  return !type;
+}
 
 export function formatTime(seconds) {
   if (!seconds || isNaN(seconds)) return "0:00";
@@ -261,14 +286,20 @@ async function extractStructuredCover(file) {
 // full-file byte-scan for any embedded image of any size. Whatever is found is
 // returned as-is — no decode validation — so every cover gets uploaded.
 export async function extractEmbeddedCover(file) {
+  let structured = null;
   try {
-    const best = await extractStructuredCover(file);
-    if (best) return best;
+    structured = await extractStructuredCover(file);
   } catch {}
+  // Prefer the structured cover when it really decodes.
+  if (structured && (await decodesToImage(structured))) return structured;
+  // Otherwise take the best decodable image found anywhere in the file.
   try {
-    return await scanFileForAnyImage(file);
+    const scanned = await pickBestEmbeddedImage(file);
+    if (scanned) return scanned;
   } catch {}
-  return null;
+  // Nothing decoded — still hand back whatever the parser found rather than
+  // dropping a cover entirely.
+  return structured;
 }
 
 // Scans an MP4/M4A file for the covr atom (embedded artwork). Reads the head
@@ -446,10 +477,7 @@ export function imageMime(buf) {
 }
 
 export async function scanFileForAnyImage(file) {
-  const buf = new Uint8Array(await file.arrayBuffer());
-  const found = scanAnyImage(buf);
-  if (!found || found.length < 8) return null;
-  return new File([found], "cover", { type: imageMime(found) });
+  return pickBestEmbeddedImage(file);
 }
 
 // Extracts the embedded title tag (ID3v2 TIT2/TT2 for mp3; FLAC TITLE vorbis comment).

@@ -1,5 +1,6 @@
 import { useRef } from "react";
 import { Loader2, ImagePlus } from "lucide-react";
+import { IMAGE_ACCEPT } from "@/lib/audio-utils";
 
 export default function CoverPicker({ previewUrl, onPick, disabled, loading }) {
   const inputRef = useRef(null);
@@ -33,7 +34,7 @@ export default function CoverPicker({ previewUrl, onPick, disabled, loading }) {
       <input
         ref={inputRef}
         type="file"
-        accept="image/*"
+        accept={IMAGE_ACCEPT}
         className="hidden"
         onChange={(e) => {
           const file = e.target.files?.[0];
