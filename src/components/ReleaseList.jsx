@@ -123,7 +123,7 @@ function ReleaseRow({ track, tracks, index }) {
         <div className="flex items-center gap-2 mt-0.5">
           <span className="text-[13px] text-muted-foreground truncate">{artistName}</span>
           <span className="text-foreground/20">·</span>
-          <span className="text-[11px] text-foreground/40 truncate shrink-0 hidden">{track.genre}</span>
+          
         </div>
       </div>
 
