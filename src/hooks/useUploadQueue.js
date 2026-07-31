@@ -125,15 +125,18 @@ export function useUploadQueue({ user, isAdmin }) {
         })
       );
 
-      // duplicate check against every track already on the app
+      // Duplicate check runs on the AI-cleaned metadata (raw tags/filenames are
+      // too noisy to match reliably) against every track already on the app.
+      const finalTitle = meta?.title?.trim() || title;
+      const finalArtist = artist || meta?.artist?.trim() || "";
       if (!allTracksRef.current) {
         allTracksRef.current = await base44.entities.Track
-          .list("-created_date", 2000)
+          .list("-created_date", 5000)
           .catch(() => []);
       }
       const hits = findDuplicateTracks(allTracksRef.current, {
-        title,
-        artist,
+        title: finalTitle,
+        artist: finalArtist,
         duration,
         file_name: item.file.name,
       });
@@ -146,8 +149,8 @@ export function useUploadQueue({ user, isAdmin }) {
             ...cur,
             {
               id: item.id,
-              title,
-              artist,
+              title: finalTitle,
+              artist: finalArtist,
               duration,
               coverPreviewUrl: cover ? URL.createObjectURL(cover) : "",
               existingBy: hit.uploader_name || hit.artist || "",
