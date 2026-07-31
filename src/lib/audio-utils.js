@@ -450,13 +450,10 @@ async function appearsToBeImage(file) {
 }
 
 export async function scanFileForAnyImage(file) {
-  const win = 10 * 1024 * 1024;
-  const head = new Uint8Array(await file.slice(0, Math.min(file.size, win)).arrayBuffer());
-  let found = scanAnyImage(head);
-  if (!found && file.size > win) {
-    const tail = new Uint8Array(await file.slice(file.size - win, file.size).arrayBuffer());
-    found = scanAnyImage(tail);
-  }
+  // Scan the entire file — no size window — so an embedded cover of any size
+  // sitting anywhere in a file (any container, any size) is found.
+  const buf = new Uint8Array(await file.arrayBuffer());
+  let found = scanAnyImage(buf);
   if (!found || found.length < 8) return null;
   const candidate = new File([found], "cover", { type: imageMime(found) });
   // Decode-validate: reject coincidental magic-byte matches (e.g. a stray
