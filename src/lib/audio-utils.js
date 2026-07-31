@@ -151,13 +151,6 @@ function readUInt32BE(buf, off) {
 // Extracts embedded cover art (ID3v2 APIC for mp3; FLAC PICTURE block).
 // Returns a File ready for upload, or null.
 export async function extractEmbeddedCover(file) {
-  // Primary: pull any embedded image straight from the file bytes — any
-  // container, any image format, any size ("take any image of the file").
-  try {
-    const scanned = await scanFileForAnyImage(file);
-    if (scanned) return scanned;
-  } catch {}
-
   try {
     const headBuf = await file.slice(0, 16).arrayBuffer();
     const head = new Uint8Array(headBuf);
@@ -255,6 +248,13 @@ export async function extractEmbeddedCover(file) {
       const covr = await findMp4Cover(file);
       if (covr) return covr;
     }
+  } catch {}
+
+  // Fallback: scan the raw file bytes for ANY embedded image the structured
+  // parsers missed — any container, any image format, any size.
+  try {
+    const scanned = await scanFileForAnyImage(file);
+    if (scanned) return scanned;
   } catch {}
   return null;
 }
@@ -433,6 +433,22 @@ export function imageMime(buf) {
   return "image/jpeg";
 }
 
+async function appearsToBeImage(file) {
+  try {
+    const url = URL.createObjectURL(file);
+    const ok = await new Promise((resolve) => {
+      const img = new Image();
+      img.onload = () => resolve(true);
+      img.onerror = () => resolve(false);
+      img.src = url;
+    });
+    URL.revokeObjectURL(url);
+    return ok;
+  } catch {
+    return false;
+  }
+}
+
 export async function scanFileForAnyImage(file) {
   const win = 10 * 1024 * 1024;
   const head = new Uint8Array(await file.slice(0, Math.min(file.size, win)).arrayBuffer());
@@ -441,8 +457,13 @@ export async function scanFileForAnyImage(file) {
     const tail = new Uint8Array(await file.slice(file.size - win, file.size).arrayBuffer());
     found = scanAnyImage(tail);
   }
-  if (!found || found.length < 4) return null;
-  return new File([found], "cover", { type: imageMime(found) });
+  if (!found || found.length < 8) return null;
+  const candidate = new File([found], "cover", { type: imageMime(found) });
+  // Decode-validate: reject coincidental magic-byte matches (e.g. a stray
+  // FFD8..FFD9 inside audio data) so a broken preview never surfaces, while
+  // still accepting real embedded covers of any size.
+  if (await appearsToBeImage(candidate)) return candidate;
+  return null;
 }
 
 // Extracts the embedded title tag (ID3v2 TIT2/TT2 for mp3; FLAC TITLE vorbis comment).
