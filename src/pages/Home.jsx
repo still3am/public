@@ -14,6 +14,7 @@ import {
 "lucide-react";
 import TrackCard from "@/components/TrackCard";
 import Podium from "@/components/Podium";
+import ReleaseList from "@/components/ReleaseList";
 import ScoreboardTrackCount from "@/components/ScoreboardTrackCount";
 import EmptyState from "@/components/EmptyState";
 import { getRecentPlays } from "@/lib/recentPlays";
@@ -50,11 +51,10 @@ function Section({ title, icon: Icon, children, seeAllTo }) {
 
 }
 
-function CardRow({ tracks, cols }) {
+function CardRow({ tracks }) {
   if (!tracks?.length) return null;
-  const gridCols = cols === 4 ? "md:grid-cols-4 lg:grid-cols-4" : "md:grid-cols-4 lg:grid-cols-5";
   return (
-    <div className={`flex gap-3 overflow-x-auto no-scrollbar pb-2 -mx-3 px-3 snap-x snap-mandatory md:grid ${gridCols} md:overflow-visible md:mx-0 md:px-0 md:gap-4`}>
+    <div className="flex gap-3 overflow-x-auto no-scrollbar pb-2 -mx-3 px-3 snap-x snap-mandatory md:grid md:grid-cols-4 lg:grid-cols-5 md:overflow-visible md:mx-0 md:px-0 md:gap-4">
       {tracks.map((t) =>
       <div key={t.id} className="snap-start shrink-0 w-[60vw] max-w-[210px] sm:w-[200px] md:w-auto">
           <TrackCard track={t} />
@@ -269,7 +269,7 @@ export default function Home() {
           )}
         </Section>
         <Section title="New Releases" seeAllTo="/recent">
-          <CardRow tracks={newReleases} cols={4} />
+          <ReleaseList tracks={newReleases} />
         </Section>
 
         {recentlyPlayed.length > 0 &&
