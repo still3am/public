@@ -1,10 +1,7 @@
-import { useState } from "react";
 import { ArrowLeft, Check, Wand2, GitMerge } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/lib/AuthContext";
 import { useTransitions } from "@/hooks/useTransitions";
-import { useToast } from "@/components/ui/use-toast";
-import { setTransitionSettings } from "@/lib/transitions";
 import {
   TRANSITION_MODES,
   CROSSFADE_MIN,
@@ -88,23 +85,10 @@ export default function SongTransitions() {
   const nav = useNavigate();
   const { user } = useAuth();
   const t = useTransitions();
-  const { toast } = useToast();
-  const [saving, setSaving] = useState(false);
   const isAdmin = !!user && user.role === "admin";
 
   const back = () =>
     window.history.length > 1 ? nav(-1) : nav("/profile");
-
-  const handleSave = () => {
-    setSaving(true);
-    setTransitionSettings({ mode: t.mode, crossfadeSeconds: t.crossfadeSeconds });
-    toast({
-      title: "Saved",
-      description: "Your transition preferences have been saved.",
-    });
-    setSaving(false);
-    back();
-  };
 
   const masterOn =
     t.mode !== TRANSITION_MODES.OFF && (t.isCrossfade || (t.isAutoMix && isAdmin));
@@ -207,16 +191,6 @@ export default function SongTransitions() {
             onChange={t.setCrossfadeSeconds}
           />
         </section>
-      </div>
-
-      {/* Save */}
-      <div className="shrink-0 px-4 pt-3 pb-6 tab-bar-safe border-t border-border bg-background">
-        <button
-          onClick={handleSave}
-          disabled={saving}
-          className="w-full h-12 rounded-2xl bg-primary text-primary-foreground text-[15px] font-semibold active:scale-[0.99] disabled:opacity-60 transition">
-          {saving ? "Saving…" : "Save"}
-        </button>
       </div>
     </div>
   );
