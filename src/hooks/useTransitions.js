@@ -15,10 +15,8 @@ export function useTransitions() {
   }, []);
 
   const update = (next) => {
-    setSettings((prev) => {
-      const merged = setTransitionSettings({ ...prev, ...next });
-      return merged;
-    });
+    const merged = setTransitionSettings(next);
+    setSettings(merged);
   };
 
   return {
