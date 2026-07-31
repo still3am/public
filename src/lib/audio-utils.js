@@ -150,7 +150,7 @@ function readUInt32BE(buf, off) {
 
 // Extracts embedded cover art (ID3v2 APIC for mp3; FLAC PICTURE block).
 // Returns a File ready for upload, or null.
-export async function extractEmbeddedCover(file) {
+async function extractStructuredCover(file) {
   try {
     const headBuf = await file.slice(0, 16).arrayBuffer();
     const head = new Uint8Array(headBuf);
@@ -250,8 +250,17 @@ export async function extractEmbeddedCover(file) {
     }
   } catch {}
 
-  // Fallback: scan the raw file bytes for ANY embedded image the structured
-  // parsers missed — any container, any image format, any size.
+  return null;
+}
+
+// Extracts embedded cover art. Tries the precise structured parsers first;
+// if their result doesn't decode into a viewable image (or is absent), falls
+// back to a raw full-file byte-scan for any embedded image of any size. Every
+// candidate is decode-validated so a broken preview never surfaces.
+export async function extractEmbeddedCover(file) {
+  let best = null;
+  try { best = await extractStructuredCover(file); } catch {}
+  if (best && (await appearsToBeImage(best))) return best;
   try {
     const scanned = await scanFileForAnyImage(file);
     if (scanned) return scanned;
