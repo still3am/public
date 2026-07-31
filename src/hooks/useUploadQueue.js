@@ -9,7 +9,6 @@ import {
   GENRES,
 } from "@/lib/audio-utils";
 import { findDuplicateTracks } from "@/lib/duplicateCheck";
-import { makeGradientCover } from "@/lib/gradientCover";
 
 let uid = 0;
 const nextId = () => `u${Date.now()}_${uid++}`;
@@ -86,8 +85,8 @@ export function useUploadQueue({ user, isAdmin }) {
       ]);
       let title = tagTitle || item.title;
       let artist = tagArtist || "";
-      // Use the file's embedded artwork; fall back to a generated gradient cover.
-      const cover = embedded || (await makeGradientCover(`${title}${artist}`).catch(() => null));
+      // Use the file's embedded artwork only — no auto-generated cover.
+      const cover = embedded || null;
       patch(item.id, {
         duration,
         title,
