@@ -372,7 +372,8 @@ export function scanAnyImage(buf) {
     }
   }
 
-  // JPEG: FFD8FF ... FFD9, parse segments to a precise end
+  // JPEG: FFD8FF ... FFD9, walking every segment. Handles baseline AND
+  // progressive JPEGs (which repeat SOS/DHT/DQT across multiple scans).
   for (let i = 0; i + 3 < n; i++) {
     if (buf[i] === 0xff && buf[i + 1] === 0xd8 && buf[i + 2] === 0xff) {
       let p = i + 2;
@@ -385,19 +386,18 @@ export function scanAnyImage(buf) {
         if (p + 4 > n) break;
         const segLen = (buf[p + 2] << 8) | buf[p + 3];
         if (m === 0xda) {
-          // entropy-coded scan: read raw until the next real marker
+          // entropy-coded scan: skip to the next real marker, then keep
+          // walking segments so progressive scans are captured whole.
           let q = p + 2 + segLen;
           while (q + 1 < n) {
             if (buf[q] === 0xff) {
               const mm = buf[q + 1];
-              if (mm !== 0x00 && !(mm >= 0xd0 && mm <= 0xd7)) {
-                if (mm === 0xd9) return buf.slice(i, q + 2);
-                break;
-              }
+              if (mm !== 0x00 && !(mm >= 0xd0 && mm <= 0xd7)) break;
             }
             q++;
           }
-          break;
+          p = q;
+          continue;
         }
         p += 2 + segLen;
       }
