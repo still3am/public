@@ -19,8 +19,7 @@ import {
   Disc3,
   Headphones,
   Play,
-  ExternalLink,
-  Layers } from
+  ExternalLink } from
 "lucide-react";
 
 const splitNames = (str) =>
@@ -91,7 +90,6 @@ export default function PublicRecords({ id: propId }) {
   const [tracks, setTracks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [generating, setGenerating] = useState(false);
-  const [grouping, setGrouping] = useState(false);
 
   async function load() {
     setLoading(true);
@@ -138,30 +136,6 @@ export default function PublicRecords({ id: propId }) {
       });
     } finally {
       setGenerating(false);
-    }
-  }
-
-  async function groupAlbums() {
-    setGrouping(true);
-    try {
-      const res = await base44.functions.invoke("groupArtistAlbums", { artist_id: id });
-      const d = res?.data;
-      if (d?.grouped != null) {
-        const msg = d.grouped > 0 || d.unmatched > 0
-          ? `Grouped ${d.grouped} track${d.grouped === 1 ? "" : "s"} into albums${d.unmatched ? ` · ${d.unmatched} unassigned` : ""}`
-          : "No tracks left to group";
-        toast({ title: msg });
-        await load();
-      } else {
-        toast({ title: d?.error || "Couldn't group albums", variant: "destructive" });
-      }
-    } catch (e) {
-      toast({
-        title: e?.response?.data?.error || "Couldn't group albums",
-        variant: "destructive"
-      });
-    } finally {
-      setGrouping(false);
     }
   }
 
@@ -258,16 +232,6 @@ export default function PublicRecords({ id: propId }) {
                     <Sparkles size={13} /> {artist.history_text ? "Regenerate history" : "Generate history"}
                   </button>)
                 }
-                {isAdmin && (grouping ?
-                <span className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full bg-foreground/[0.06] text-foreground/60 text-xs font-semibold">
-                    <Loader2 size={13} className="animate-spin" /> Grouping…
-                  </span> :
-                <button
-                  onClick={groupAlbums}
-                  className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full bg-foreground/[0.06] hover:bg-foreground/[0.1] text-foreground/70 text-xs font-semibold active:scale-95 transition">
-                    <Layers size={13} /> Auto-group albums
-                  </button>
-                )}
               </div>
             </div>
           </div>
