@@ -152,6 +152,24 @@ export function PlayerProvider({ children }) {
     else g.gain.linearRampToValueAtTime(Math.max(0.0001, to), t + dur);
   }, []);
 
+  // Equal-power crossfade curve: avoids the perceived loudness dip that a
+  // linear 1->0 / 0->1 ramp produces in the middle of a blend.
+  const rampGainEqualPower = useCallback((side, fadeIn, dur) => {
+    const ctx = audioCtxRef.current;
+    const g = gainRefs[side].current;
+    if (!ctx || !g || dur <= 0) return;
+    const steps = Math.max(2, Math.min(64, Math.round(dur * 24)));
+    const curve = new Float32Array(steps);
+    for (let i = 0; i < steps; i++) {
+      const f = i / (steps - 1);
+      const v = fadeIn ? Math.sin((f * Math.PI) / 2) : Math.cos((f * Math.PI) / 2);
+      curve[i] = Math.max(0.0001, v);
+    }
+    const t = ctx.currentTime;
+    g.gain.cancelScheduledValues(t);
+    g.gain.setValueCurveAtTime(curve, t, dur);
+  }, []);
+
   // --- offline-blob-aware url resolution for a given side ---
   const resolveUrl = useCallback(async (track, side) => {
     sideLoadedIdRef[side].current = track.id;
@@ -241,10 +259,10 @@ export function PlayerProvider({ children }) {
       el.src = url;
       el.load();
       const markReady = () => {
-        if (el.readyState >= 2) sideReadyRef[side].current = true;
+        sideReadyRef[side].current = true;
       };
       el.addEventListener("canplay", markReady, { once: true });
-      if (el.readyState >= 2) sideReadyRef[side].current = true;
+      if (el.readyState >= 4) sideReadyRef[side].current = true;
     },
     [resolveUrl, mirrorPlayback]
   );
@@ -264,21 +282,20 @@ export function PlayerProvider({ children }) {
         preloadSide(targetIndex);
         return;
       }
-      // Only overlap once the next track has at least current data buffered.
-      // readyState >= 2 is enough to start playback and buffer ahead during the
-      // fade; retry on the next tick if it's still empty.
-      if (!sideReadyRef[side].current && el.readyState < 2) return;
-      sideReadyRef[side].current = true;
+      // Wait until the upcoming track has enough buffered to start cleanly
+      // (canplay / readyState 4); starting sooner causes micro-stutters.
+      if (!sideReadyRef[side].current) return;
       crossfadingRef.current = true;
       const oldSide = activeIdxRef.current; // capture BEFORE swapping below
       const fd = Math.min(cf, Math.max(0.5, remaining || cf));
       setGainImmediate(side, 0);
       mirrorPlayback(el);
       const p = el.play();
+      // Equal-power blend: new track power rises (sin) as old track power falls (cos).
       Promise.resolve(p)
         .then(() => {
-          rampGain(side, 1, fd);
-          rampGain(oldSide, 0, fd);
+          rampGainEqualPower(side, true, fd);
+          rampGainEqualPower(oldSide, false, fd);
         })
         .catch(() => {});
       // The new track is now "current" — switch active side so UI follows it.
@@ -298,7 +315,7 @@ export function PlayerProvider({ children }) {
         crossfadingRef.current = false;
       }, (fd + 0.4) * 1000);
     },
-    [preloadSide, mirrorPlayback, setGainImmediate, rampGain]
+    [preloadSide, mirrorPlayback, setGainImmediate, rampGainEqualPower]
   );
 
   // --- per-track load: crossfade engine handles natural advances, manual
