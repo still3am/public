@@ -137,7 +137,7 @@ export default function Home() {
     setLoading(true);
     try {
       const [t, n, fols] = await Promise.all([
-      base44.entities.Track.filter({ is_published: true }, "-play_count", 12),
+      base44.entities.Track.filter({ is_published: true }, "-play_count", 10),
       base44.entities.Track.filter({ is_published: true }, "-created_date", 50),
       user?.id ?
       base44.entities.Follow.filter({ follower_id: user.id }, "-created_date", 200).catch(() => []) :
