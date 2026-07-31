@@ -29,8 +29,6 @@ import Lounge from '@/pages/Lounge';
 import Library from '@/pages/Library';
 import Downloads from '@/pages/Downloads';
 import Admin from '@/pages/Admin';
-import Messages from '@/pages/Messages';
-import Conversation from '@/pages/Conversation';
 import SongTransitions from '@/pages/SongTransitions';
 
 const AuthenticatedApp = () => {
@@ -80,8 +78,6 @@ const AuthenticatedApp = () => {
           <Route path="/lounge/:code" element={<Lounge />} />
           <Route path="/library" element={<Library />} />
           <Route path="/downloads" element={<Downloads />} />
-          <Route path="/messages" element={<Messages />} />
-          <Route path="/messages/:userId" element={<Conversation />} />
           <Route path="/admin" element={<Admin />} />
           <Route path="/settings/transitions" element={<SongTransitions />} />
         </Route>

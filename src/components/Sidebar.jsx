@@ -7,7 +7,6 @@ import {
   TrendingUp,
   Clock,
   Library as LibraryIcon,
-  MessageSquare,
   Shield,
 } from "lucide-react";
 import Avatar from "@/components/Avatar";
@@ -48,9 +47,6 @@ export default function Sidebar() {
         </NavLink>
         <NavLink to="/library" className={navLinkCls}>
           <LibraryIcon size={18} /> Library
-        </NavLink>
-        <NavLink to="/messages" className={navLinkCls}>
-          <MessageSquare size={18} /> Messages
         </NavLink>
         {user?.role === "admin" && (
           <NavLink to="/admin" className={navLinkCls}>

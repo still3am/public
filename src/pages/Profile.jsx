@@ -32,7 +32,6 @@ import {
   Trash2,
   GitMerge,
   Lightbulb,
-  MessageSquare,
   ChevronRight } from
 "lucide-react";
 
@@ -521,15 +520,6 @@ export default function Profile() {
                     aria-label="Share profile"
                     className="w-10 h-10 rounded-full border border-border grid place-items-center">
                     <Share2 size={16} />
-                  </button>
-                  }
-                {!isOwn && !editMode &&
-                  <button
-                    onClick={() => nav(`/messages/${targetId}`)}
-                    title="Send a message"
-                    aria-label="Send a message"
-                    className="w-10 h-10 rounded-full border border-border grid place-items-center">
-                    <MessageSquare size={16} />
                   </button>
                   }
                 {!editMode &&
