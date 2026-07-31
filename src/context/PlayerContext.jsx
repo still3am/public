@@ -47,6 +47,7 @@ export function PlayerProvider({ children }) {
   const blobUrlRefs = [useRef(null), useRef(null)];
   const sideLoadedIdRef = [useRef(null), useRef(null)];
   const sideReadyRef = [useRef(false), useRef(false)];
+  const readyListenerRef = [useRef(null), useRef(null)];
 
   const crossfadingRef = useRef(false);
   const crossfadeTimerRef = useRef(null);
@@ -210,6 +211,10 @@ export function PlayerProvider({ children }) {
       try {
         ie.pause();
       } catch {}
+      if (readyListenerRef[is].current) {
+        ie.removeEventListener("canplay", readyListenerRef[is].current);
+        readyListenerRef[is].current = null;
+      }
     }
     sideReadyRef[is].current = false;
     setGainImmediate(is, 0);
@@ -252,6 +257,12 @@ export function PlayerProvider({ children }) {
       if (!el || !track) return;
       sideReadyRef[side].current = false;
       sideLoadedIdRef[side].current = track.id;
+      // Drop any still-pending ready listener from a previous preload on this
+      // side so it can't fire for the wrong track and falsely mark us ready.
+      if (readyListenerRef[side].current) {
+        el.removeEventListener("canplay", readyListenerRef[side].current);
+        readyListenerRef[side].current = null;
+      }
       const url = await resolveUrl(track, side);
       // If the active side changed hands while we were resolving, bail.
       if (side !== inactiveIdx()) return;
@@ -260,9 +271,14 @@ export function PlayerProvider({ children }) {
       el.load();
       const markReady = () => {
         sideReadyRef[side].current = true;
+        readyListenerRef[side].current = null;
       };
+      readyListenerRef[side].current = markReady;
       el.addEventListener("canplay", markReady, { once: true });
-      if (el.readyState >= 4) sideReadyRef[side].current = true;
+      if (el.readyState >= 4) {
+        sideReadyRef[side].current = true;
+        readyListenerRef[side].current = null;
+      }
     },
     [resolveUrl, mirrorPlayback]
   );
