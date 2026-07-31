@@ -47,6 +47,7 @@ export default function UploadItem({
         {/* Cover — auto-detected, tap to replace with your own image */}
         <CoverPicker
           previewUrl={item.coverPreviewUrl}
+          loading={item.status === "analyzing"}
           disabled={locked}
           onPick={(file) =>
           onChange({ coverFile: file, coverPreviewUrl: URL.createObjectURL(file) })
