@@ -234,26 +234,6 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Suggestions banner */}
-        <Link
-          to="/suggestions"
-          className="group block mb-10 md:mb-12 mx-3 md:mx-0 rounded-2xl border border-foreground/[0.06] bg-foreground/[0.02] hover:bg-foreground/[0.04] transition p-4 md:p-5">
-          <div className="flex items-center gap-4">
-            
-
-            
-            <div className="flex-1 min-w-0">
-              <h3 className="text-sm md:text-base font-extrabold tracking-tight">Ideas & Suggestions</h3>
-              <p className="text-xs md:text-sm text-foreground/55 truncate">
-                Tell us what should come next on PUBLIC.
-              </p>
-            </div>
-            <span className="inline-flex items-center gap-1 px-3.5 py-2 rounded-full bg-foreground text-background text-xs font-semibold shrink-0 group-hover:gap-2 transition-all">
-              Share <ChevronRight size={14} />
-            </span>
-          </div>
-        </Link>
-
         <Section title="Trending" icon={TrendingUp} seeAllTo="/top">
           {trending.length >= 3 ? (
             <>

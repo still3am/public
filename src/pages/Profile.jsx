@@ -30,7 +30,9 @@ import {
   Play,
   BarChart2,
   Trash2,
-  GitMerge } from
+  GitMerge,
+  Lightbulb,
+  ChevronRight } from
 "lucide-react";
 
 function safeUrl(u) {
@@ -557,6 +559,26 @@ export default function Profile() {
         </div>
         }
 
+      {isOwn && !editMode &&
+        <Link
+          to="/suggestions"
+          className="mt-10 flex items-center gap-3 p-4 rounded-2xl border border-border bg-foreground/[0.02] hover:bg-foreground/[0.04] transition active:scale-[0.99]">
+          <div className="w-10 h-10 rounded-xl bg-foreground/[0.06] grid place-items-center shrink-0">
+            <Lightbulb size={18} className="text-foreground/70" />
+          </div>
+          <div className="flex-1 min-w-0">
+            <h2 className="text-base font-extrabold tracking-tight text-foreground">
+              Ideas & Suggestions
+            </h2>
+            <p className="text-sm text-foreground/55 truncate">
+              Tell us what should come next on PUBLIC.
+            </p>
+          </div>
+          <span className="inline-flex items-center gap-1 px-3.5 py-2 rounded-full bg-foreground text-background text-xs font-semibold shrink-0">
+            Share <ChevronRight size={14} />
+          </span>
+        </Link>
+        }
       {isOwn && !editMode &&
         <Link
           to="/settings/transitions"
