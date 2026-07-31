@@ -66,8 +66,21 @@ export function PlayerProvider({ children }) {
   const [isPlaying, setIsPlaying] = useState(false);
   const [position, setPosition] = useState(0);
   const [duration, setDuration] = useState(0);
-  const [volume, setVolumeState] = useState(1);
-  const [muted, setMuted] = useState(false);
+  const [volume, setVolumeState] = useState(() => {
+    try {
+      const v = parseFloat(localStorage.getItem("public:player_volume"));
+      return Number.isFinite(v) && v >= 0 && v <= 1 ? v : 1;
+    } catch {
+      return 1;
+    }
+  });
+  const [muted, setMutedState] = useState(() => {
+    try {
+      return localStorage.getItem("public:player_muted") === "true";
+    } catch {
+      return false;
+    }
+  });
   const [repeat, setRepeat] = useState("off"); // off | all | one
   const [shuffle, setShuffle] = useState(false);
   const [playbackRate, setPlaybackRateState] = useState(1);
@@ -593,11 +606,21 @@ export function PlayerProvider({ children }) {
     setPosition(time);
   }, []);
 
+  const setMuted = useCallback((m) => {
+    setMutedState(m);
+    try {
+      localStorage.setItem("public:player_muted", String(m));
+    } catch {}
+  }, []);
+
   const setVolume = useCallback((v) => {
     setVolumeState(v);
+    try {
+      localStorage.setItem("public:player_volume", String(v));
+    } catch {}
     els().forEach((a) => a && (a.volume = v));
     if (v > 0) setMuted(false);
-  }, []);
+  }, [setMuted]);
 
   // Crossfade-aware skip: if transitions are on AND the upcoming track is
   // already preloaded+ready on the inactive element, blend into it; otherwise
