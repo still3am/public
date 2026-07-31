@@ -14,6 +14,7 @@ import {
 "lucide-react";
 import TrackCard from "@/components/TrackCard";
 import Podium from "@/components/Podium";
+import ReleaseList from "@/components/ReleaseList";
 import ScoreboardTrackCount from "@/components/ScoreboardTrackCount";
 import EmptyState from "@/components/EmptyState";
 import { getRecentPlays } from "@/lib/recentPlays";
@@ -248,7 +249,7 @@ export default function Home() {
           )}
         </Section>
         <Section title="New Releases" seeAllTo="/recent">
-          <CardRow tracks={newReleases} />
+          <ReleaseList tracks={newReleases} />
         </Section>
 
         {recentlyPlayed.length > 0 &&
