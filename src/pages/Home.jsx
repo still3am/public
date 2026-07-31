@@ -145,7 +145,7 @@ export default function Home() {
       );
       const followed = new Set((Array.isArray(fols) ? fols : []).map((f) => f.following_id));
       setTrending(t);
-      setNewReleases(n.slice(0, 4));
+      setNewReleases(n.slice(0, 12));
       setFromFollowing(n.filter((tk) => followed.has(tk.uploader_id)).slice(0, 12));
       const counted = await base44.entities.Track.filter({ is_published: true }, "-created_date", 10000).catch(() => []);
       setTotalTracks(Array.isArray(counted) ? counted.length : 0);
