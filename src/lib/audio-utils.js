@@ -151,6 +151,13 @@ function readUInt32BE(buf, off) {
 // Extracts embedded cover art (ID3v2 APIC for mp3; FLAC PICTURE block).
 // Returns a File ready for upload, or null.
 export async function extractEmbeddedCover(file) {
+  // Primary: pull any embedded image straight from the file bytes — any
+  // container, any image format, any size ("take any image of the file").
+  try {
+    const scanned = await scanFileForAnyImage(file);
+    if (scanned) return scanned;
+  } catch {}
+
   try {
     const headBuf = await file.slice(0, 16).arrayBuffer();
     const head = new Uint8Array(headBuf);
@@ -248,11 +255,6 @@ export async function extractEmbeddedCover(file) {
       const covr = await findMp4Cover(file);
       if (covr) return covr;
     }
-
-    // Fallback: scan the raw file bytes for ANY embedded image (JPEG / PNG /
-    // WebP / GIF) regardless of container — "take any image of the file".
-    const scanned = await scanFileForAnyImage(file);
-    if (scanned) return scanned;
   } catch {}
   return null;
 }
@@ -376,8 +378,7 @@ export function scanAnyImage(buf) {
         if (m === 0xda) {
           // entropy-coded scan: read raw until the next real marker
           let q = p + 2 + segLen;
-          let guard = 0;
-          while (q + 1 < n && guard < 8 * 1024 * 1024) {
+          while (q + 1 < n) {
             if (buf[q] === 0xff) {
               const mm = buf[q + 1];
               if (mm !== 0x00 && !(mm >= 0xd0 && mm <= 0xd7)) {
@@ -385,7 +386,7 @@ export function scanAnyImage(buf) {
                 break;
               }
             }
-            q++; guard++;
+            q++;
           }
           break;
         }
@@ -440,7 +441,7 @@ export async function scanFileForAnyImage(file) {
     const tail = new Uint8Array(await file.slice(file.size - win, file.size).arrayBuffer());
     found = scanAnyImage(tail);
   }
-  if (!found || found.length < 64) return null;
+  if (!found || found.length < 4) return null;
   return new File([found], "cover", { type: imageMime(found) });
 }
 
