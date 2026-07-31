@@ -139,13 +139,9 @@ function ReleaseRow({ track, tracks, index }) {
 export default function ReleaseList({ tracks }) {
   if (!tracks?.length) return null;
   return (
-    <div className="flex gap-2 overflow-x-auto no-scrollbar snap-x snap-mandatory -mx-3 px-3 md:mx-0 md:px-0">
+    <div className="divide-y divide-foreground/[0.05]">
       {tracks.map((t, i) => (
-        <div
-          key={t.id}
-          className="snap-start shrink-0 w-[78vw] sm:w-[44vw] md:w-[calc(25%-0.5rem)] lg:w-[calc(25%-0.5rem)]">
-          <ReleaseRow track={t} tracks={tracks} index={i} />
-        </div>
+        <ReleaseRow key={t.id} track={t} tracks={tracks} index={i} />
       ))}
     </div>
   );
