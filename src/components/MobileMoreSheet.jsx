@@ -7,6 +7,7 @@ import {
   Heart,
   Lightbulb,
   Library as LibraryIcon,
+  MessageSquare,
   Shield,
 } from "lucide-react";
 import ThemeToggle from "@/components/ThemeToggle";
@@ -17,6 +18,7 @@ const ITEMS = [
   { to: "/top", icon: BarChart3, label: "Top Charts" },
   { to: "/recent", icon: Clock, label: "Recently Added" },
   { to: "/library", icon: LibraryIcon, label: "Library" },
+  { to: "/messages", icon: MessageSquare, label: "Messages" },
 
   { to: "/suggestions", icon: Lightbulb, label: "Suggestions" },
 ];
