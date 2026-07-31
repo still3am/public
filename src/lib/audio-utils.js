@@ -248,6 +248,11 @@ export async function extractEmbeddedCover(file) {
       const covr = await findMp4Cover(file);
       if (covr) return covr;
     }
+
+    // Fallback: scan the raw file bytes for ANY embedded image (JPEG / PNG /
+    // WebP / GIF) regardless of container — "take any image of the file".
+    const scanned = await scanFileForAnyImage(file);
+    if (scanned) return scanned;
   } catch {}
   return null;
 }
@@ -326,6 +331,117 @@ function decodeID3Text(bytes, enc) {
     for (let i = 0; i < bytes.length; i++) s += String.fromCharCode(bytes[i]);
     return s.replace(/\x00+$/g, "").trim();
   }
+}
+
+// --- Generic embedded-image scan ---
+// Finds the first complete image (JPEG / PNG / WebP / GIF) located anywhere in
+// the raw file bytes, independent of the audio container. Used as a fallback
+// when the structured parsers (ID3 APIC, FLAC PICTURE, MP4 covr) miss a cover
+// — e.g. non-standard headers or unusual containers.
+function readUInt32LE(buf, off) {
+  return buf[off] | (buf[off + 1] << 8) | (buf[off + 2] << 16) | (buf[off + 3] << 24);
+}
+
+export function scanAnyImage(buf) {
+  const n = buf.length;
+
+  // PNG: \x89PNG\r\n\x1a\n + chunks ... IEND
+  for (let i = 0; i + 8 <= n; i++) {
+    if (
+      buf[i] === 0x89 && buf[i + 1] === 0x50 && buf[i + 2] === 0x4e && buf[i + 3] === 0x47 &&
+      buf[i + 4] === 0x0d && buf[i + 5] === 0x0a && buf[i + 6] === 0x1a && buf[i + 7] === 0x0a
+    ) {
+      let p = i + 8;
+      while (p + 12 <= n) {
+        const len = readUInt32BE(buf, p);
+        const type = String.fromCharCode(buf[p + 4], buf[p + 5], buf[p + 6], buf[p + 7]);
+        p += 8 + len + 4;
+        if (type === "IEND") return buf.slice(i, Math.min(p, n));
+      }
+    }
+  }
+
+  // JPEG: FFD8FF ... FFD9, parse segments to a precise end
+  for (let i = 0; i + 3 < n; i++) {
+    if (buf[i] === 0xff && buf[i + 1] === 0xd8 && buf[i + 2] === 0xff) {
+      let p = i + 2;
+      while (p + 1 < n) {
+        if (buf[p] !== 0xff) { p++; continue; }
+        const m = buf[p + 1];
+        if (m === 0xff) { p++; continue; } // fill bytes
+        if (m === 0xd9) return buf.slice(i, p + 2); // EOI
+        if (m === 0xd8 || m === 0x01 || (m >= 0xd0 && m <= 0xd7)) { p += 2; continue; }
+        if (p + 4 > n) break;
+        const segLen = (buf[p + 2] << 8) | buf[p + 3];
+        if (m === 0xda) {
+          // entropy-coded scan: read raw until the next real marker
+          let q = p + 2 + segLen;
+          let guard = 0;
+          while (q + 1 < n && guard < 8 * 1024 * 1024) {
+            if (buf[q] === 0xff) {
+              const mm = buf[q + 1];
+              if (mm !== 0x00 && !(mm >= 0xd0 && mm <= 0xd7)) {
+                if (mm === 0xd9) return buf.slice(i, q + 2);
+                break;
+              }
+            }
+            q++; guard++;
+          }
+          break;
+        }
+        p += 2 + segLen;
+      }
+    }
+  }
+
+  // WebP: RIFF....WEBP
+  for (let i = 0; i + 12 <= n; i++) {
+    if (
+      buf[i] === 0x52 && buf[i + 1] === 0x49 && buf[i + 2] === 0x46 && buf[i + 3] === 0x46 &&
+      buf[i + 8] === 0x57 && buf[i + 9] === 0x45 && buf[i + 10] === 0x42 && buf[i + 11] === 0x50
+    ) {
+      const size = readUInt32LE(buf, i + 4);
+      const end = i + 8 + size;
+      if (end <= n && end >= i + 12) return buf.slice(i, end);
+    }
+  }
+
+  // GIF: GIF87a / GIF89a ... trailer 0x3B
+  for (let i = 0; i + 6 <= n; i++) {
+    if (
+      buf[i] === 0x47 && buf[i + 1] === 0x49 && buf[i + 2] === 0x46 && buf[i + 3] === 0x38 &&
+      (buf[i + 4] === 0x37 || buf[i + 4] === 0x39) && buf[i + 5] === 0x61
+    ) {
+      let q = i + 6;
+      while (q < n) {
+        if (buf[q] === 0x3b) return buf.slice(i, q + 1);
+        q++;
+      }
+    }
+  }
+
+  return null;
+}
+
+export function imageMime(buf) {
+  if (!buf || buf.length < 2) return "image/jpeg";
+  if (buf[0] === 0xff && buf[1] === 0xd8) return "image/jpeg";
+  if (buf[0] === 0x89 && buf[1] === 0x50) return "image/png";
+  if (buf[0] === 0x47 && buf[1] === 0x49) return "image/gif";
+  if (buf[0] === 0x52 && buf[1] === 0x49) return "image/webp";
+  return "image/jpeg";
+}
+
+export async function scanFileForAnyImage(file) {
+  const win = 10 * 1024 * 1024;
+  const head = new Uint8Array(await file.slice(0, Math.min(file.size, win)).arrayBuffer());
+  let found = scanAnyImage(head);
+  if (!found && file.size > win) {
+    const tail = new Uint8Array(await file.slice(file.size - win, file.size).arrayBuffer());
+    found = scanAnyImage(tail);
+  }
+  if (!found || found.length < 64) return null;
+  return new File([found], "cover", { type: imageMime(found) });
 }
 
 // Extracts the embedded title tag (ID3v2 TIT2/TT2 for mp3; FLAC TITLE vorbis comment).
