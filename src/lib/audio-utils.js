@@ -77,16 +77,19 @@ export function getAudioDuration(file) {
     const url = URL.createObjectURL(file);
     const audio = new Audio();
     audio.preload = "metadata";
-    audio.src = url;
-    audio.onloadedmetadata = () => {
-      const d = audio.duration;
+    let done = false;
+    const finish = (d) => {
+      if (done) return;
+      done = true;
       URL.revokeObjectURL(url);
       resolve(d && isFinite(d) ? Math.round(d) : 0);
     };
-    audio.onerror = () => {
-      URL.revokeObjectURL(url);
-      resolve(0);
-    };
+    audio.onloadedmetadata = () => finish(audio.duration);
+    audio.onerror = () => finish(0);
+    audio.src = url;
+    // Some formats never fire loadedmetadata or error — don't let that
+    // hang the whole analysis (and the cover extraction that runs with it).
+    setTimeout(() => finish(0), 5000);
   });
 }
 
