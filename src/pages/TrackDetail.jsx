@@ -25,7 +25,6 @@ import {
 import TrackRow from "@/components/TrackRow";
 import GenerateLyricsModal from "@/components/GenerateLyricsModal";
 import DownloadButton from "@/components/DownloadButton";
-import TrackAnnotations from "@/components/track/TrackAnnotations";
 import { useOfflineCache } from "@/hooks/useOfflineCache";
 import { useToast } from "@/components/ui/use-toast";
 
@@ -408,8 +407,6 @@ export default function TrackDetail() {
           </button>
         </div>
       }
-
-      <TrackAnnotations track={track} />
 
       {moreTracks.length > 0 &&
       <div className="mb-6">

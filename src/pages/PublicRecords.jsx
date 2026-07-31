@@ -4,7 +4,6 @@ import { base44 } from "@/api/base44Client";
 import BackHeader from "@/components/BackHeader";
 import TrackCard from "@/components/TrackCard";
 import PullToRefresh from "@/components/PullToRefresh";
-import SimilarArtists from "@/components/artist/SimilarArtists";
 import { usePlayer } from "@/context/PlayerContext";
 import { useAuth } from "@/lib/AuthContext";
 import { useToast } from "@/components/ui/use-toast";
@@ -277,12 +276,6 @@ export default function PublicRecords({ id: propId }) {
               </div>
             }
           </div>
-        </section>
-
-        {/* Similar artists map */}
-        <section className="mb-8">
-          <SectionTitle icon={Users}>Similar artists</SectionTitle>
-          <SimilarArtists artistName={artist.name} />
         </section>
 
         {/* Discography */}
