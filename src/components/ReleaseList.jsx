@@ -114,11 +114,11 @@ function ReleaseRow({ track, tracks, index }) {
               E
             </span>
           }
-          {ago &&
-          <span className="hidden sm:inline text-[10px] font-semibold uppercase tracking-wider text-foreground/35 shrink-0">
-              {ago}
-            </span>
-          }
+          
+
+
+
+          
         </Link>
         <div className="flex items-center gap-2 mt-0.5">
           <span className="text-[13px] text-muted-foreground truncate">{artistName}</span>
