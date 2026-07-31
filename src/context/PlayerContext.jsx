@@ -46,6 +46,7 @@ export function PlayerProvider({ children }) {
   const activeIdxRef = useRef(0);
   const blobUrlRefs = [useRef(null), useRef(null)];
   const sideLoadedIdRef = [useRef(null), useRef(null)];
+  const sideReadyRef = [useRef(false), useRef(false)];
 
   const crossfadingRef = useRef(false);
   const crossfadeTimerRef = useRef(null);
@@ -192,6 +193,7 @@ export function PlayerProvider({ children }) {
         ie.pause();
       } catch {}
     }
+    sideReadyRef[is].current = false;
     setGainImmediate(is, 0);
     setGainImmediate(activeIdxRef.current, 1);
   }, [setGainImmediate]);
@@ -230,6 +232,7 @@ export function PlayerProvider({ children }) {
       const el = els()[side];
       const track = queueRef.current[targetIndex];
       if (!el || !track) return;
+      sideReadyRef[side].current = false;
       sideLoadedIdRef[side].current = track.id;
       const url = await resolveUrl(track, side);
       // If the active side changed hands while we were resolving, bail.
@@ -237,6 +240,11 @@ export function PlayerProvider({ children }) {
       mirrorPlayback(el);
       el.src = url;
       el.load();
+      const markReady = () => {
+        if (el.readyState >= 2) sideReadyRef[side].current = true;
+      };
+      el.addEventListener("canplay", markReady, { once: true });
+      if (el.readyState >= 2) sideReadyRef[side].current = true;
     },
     [resolveUrl, mirrorPlayback]
   );
@@ -244,29 +252,36 @@ export function PlayerProvider({ children }) {
   // Real crossfade: start the next track on the inactive element and ramp the
   // two gains across one another, then promote the inactive element to active.
   const beginCrossfade = useCallback(
-    (targetIndex, cf) => {
+    (targetIndex, cf, remaining) => {
       const side = inactiveIdx();
       const el = els()[side];
       const track = queueRef.current[targetIndex];
       if (!el || !track) return;
+      // Only overlap once the next track is actually buffered; otherwise we'd
+      // start the wrong/empty source and cut the current track. Retry next tick.
+      if (!sideReadyRef[side].current) {
+        if (sideLoadedIdRef[side].current !== track.id) preloadSide(targetIndex);
+        return;
+      }
       crossfadingRef.current = true;
-      if (sideLoadedIdRef[side].current !== track.id) preloadSide(targetIndex);
+      const oldSide = activeIdxRef.current; // capture BEFORE swapping below
+      const fd = Math.min(cf, Math.max(0.5, remaining || cf));
       setGainImmediate(side, 0);
       mirrorPlayback(el);
       const p = el.play();
       Promise.resolve(p)
         .then(() => {
-          rampGain(side, 1, cf);
-          rampGain(activeIdxRef.current, 0, cf);
+          rampGain(side, 1, fd);
+          rampGain(oldSide, 0, fd);
         })
         .catch(() => {});
       // The new track is now "current" — switch active side so UI follows it.
       activeIdxRef.current = side;
+      sideReadyRef[side].current = false;
       preloadedTargetRef.current = null;
       setCurrentIndex(targetIndex); // track-change effect sees it's loaded + crossfading -> skips reload
       if (crossfadeTimerRef.current) clearTimeout(crossfadeTimerRef.current);
       crossfadeTimerRef.current = setTimeout(() => {
-        const oldSide = 1 - side;
         const oldEl = els()[oldSide];
         if (oldEl) {
           try {
@@ -275,7 +290,7 @@ export function PlayerProvider({ children }) {
         }
         setGainImmediate(oldSide, 0);
         crossfadingRef.current = false;
-      }, (cf + 0.4) * 1000);
+      }, (fd + 0.4) * 1000);
     },
     [preloadSide, mirrorPlayback, setGainImmediate, rampGain]
   );
@@ -371,7 +386,7 @@ export function PlayerProvider({ children }) {
         preloadedTargetRef.current = n;
         preloadSide(n);
       }
-      if (remaining <= cf && remaining > 0) beginCrossfade(n, cf);
+      if (remaining <= cf && remaining > 0) beginCrossfade(n, cf, remaining);
     };
   }, [preloadSide, beginCrossfade]);
 
