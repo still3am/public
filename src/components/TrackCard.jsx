@@ -94,8 +94,8 @@ export default function TrackCard({ track }) {
         <div className="absolute top-2 left-2 flex items-center gap-1">
           {isTrending &&
           <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full bg-foreground/85 backdrop-blur text-background text-[9px] font-bold tracking-wide">
-              <Flame size={9} fill="currentColor" /> HOT
-            </span>
+
+          </span>
           }
           {isRecent &&
           <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full bg-background/85 backdrop-blur text-foreground text-[9px] font-bold tracking-wide hidden">
