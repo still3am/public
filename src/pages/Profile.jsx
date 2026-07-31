@@ -562,21 +562,19 @@ export default function Profile() {
       {isOwn && !editMode &&
         <Link
           to="/suggestions"
-          className="group mt-10 relative overflow-hidden flex items-center gap-4 p-5 rounded-2xl border border-foreground/[0.08] bg-foreground/[0.02] hover:bg-foreground/[0.04] transition active:scale-[0.99]">
-          <div className="absolute -right-10 -top-10 w-32 h-32 rounded-full bg-amber-400/15 blur-2xl pointer-events-none" />
-          <div className="absolute -left-8 -bottom-10 w-28 h-28 rounded-full bg-violet-500/15 blur-2xl pointer-events-none" />
-          <div className="relative w-12 h-12 rounded-2xl bg-gradient-to-br from-amber-400/25 to-violet-500/25 ring-1 ring-inset ring-foreground/10 grid place-items-center shrink-0">
-            <Lightbulb size={20} className="text-foreground" />
+          className="mt-10 flex items-center gap-3 p-4 rounded-2xl border border-border bg-foreground/[0.02] hover:bg-foreground/[0.04] transition active:scale-[0.99]">
+          <div className="w-10 h-10 rounded-xl bg-foreground/[0.06] grid place-items-center shrink-0">
+            <Lightbulb size={18} className="text-foreground/70" />
           </div>
-          <div className="relative flex-1 min-w-0">
+          <div className="flex-1 min-w-0">
             <h2 className="text-base font-extrabold tracking-tight text-foreground">
               Ideas & Suggestions
             </h2>
-            <p className="text-sm text-foreground/55 leading-snug">
+            <p className="text-sm text-foreground/55 truncate">
               Tell us what should come next on PUBLIC.
             </p>
           </div>
-          <span className="relative inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-foreground text-background text-xs font-semibold shrink-0 group-hover:gap-2.5 transition-all">
+          <span className="inline-flex items-center gap-1 px-3.5 py-2 rounded-full bg-foreground text-background text-xs font-semibold shrink-0">
             Share <ChevronRight size={14} />
           </span>
         </Link>
