@@ -1,0 +1,63 @@
+{
+  "name": "TrackAnnotation",
+  "type": "object",
+  "properties": {
+    "track_id": {
+      "type": "string"
+    },
+    "author_id": {
+      "type": "string"
+    },
+    "author_name": {
+      "type": "string",
+      "default": ""
+    },
+    "author_avatar_url": {
+      "type": "string",
+      "default": ""
+    },
+    "timestamp_ms": {
+      "type": "integer",
+      "default": 0,
+      "description": "Playback position the note is pinned to"
+    },
+    "body": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "track_id",
+    "author_id",
+    "body"
+  ],
+  "rls": {
+    "create": {
+      "data.author_id": "{{user.id}}"
+    },
+    "read": null,
+    "update": {
+      "$or": [
+        {
+          "data.author_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "$or": [
+        {
+          "data.author_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    }
+  }
+}
