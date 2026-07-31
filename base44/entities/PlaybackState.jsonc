@@ -1,0 +1,58 @@
+{
+  "name": "PlaybackState",
+  "type": "object",
+  "properties": {
+    "user_id": {
+      "type": "string"
+    },
+    "device_id": {
+      "type": "string",
+      "description": "Stable per-browser id so a device never resumes from itself"
+    },
+    "device_label": {
+      "type": "string",
+      "default": "",
+      "description": "Human-readable device name, e.g. \"iPhone\" or \"Mac \u00b7 Chrome\""
+    },
+    "track_id": {
+      "type": "string",
+      "default": ""
+    },
+    "track": {
+      "type": "string",
+      "default": "",
+      "description": "JSON-serialized minimal track object so the other device can play it without a lookup"
+    },
+    "position_seconds": {
+      "type": "number",
+      "default": 0
+    },
+    "is_playing": {
+      "type": "boolean",
+      "default": false
+    },
+    "sampled_at": {
+      "type": "string",
+      "default": "",
+      "description": "ISO timestamp of when position_seconds was recorded"
+    }
+  },
+  "required": [
+    "user_id",
+    "device_id"
+  ],
+  "rls": {
+    "create": {
+      "data.user_id": "{{user.id}}"
+    },
+    "read": {
+      "data.user_id": "{{user.id}}"
+    },
+    "update": {
+      "data.user_id": "{{user.id}}"
+    },
+    "delete": {
+      "data.user_id": "{{user.id}}"
+    }
+  }
+}

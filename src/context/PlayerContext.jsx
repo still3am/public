@@ -12,6 +12,7 @@ import { buildAutoQueue } from "@/lib/autoQueue";
 import {
   getTransitionSettings,
   isTransitionActive,
+  isGapless,
   TRANSITION_MODES,
 } from "@/lib/transitions";
 
@@ -50,6 +51,7 @@ export function PlayerProvider({ children }) {
   const readyListenerRef = [useRef(null), useRef(null)];
 
   const crossfadingRef = useRef(false);
+  const pendingSeekRef = useRef(null);
   const crossfadeTimerRef = useRef(null);
   const preloadedTargetRef = useRef(null);
   const loadTokenRef = useRef(0);
@@ -370,6 +372,53 @@ export function PlayerProvider({ children }) {
     [preloadSide, mirrorPlayback, setGainImmediate, rampGainEqualPower, preloadNextTrack]
   );
 
+  // TRUE GAPLESS: no fade at all. The upcoming track is already decoded and
+  // buffered on the inactive element, so we butt-join it to the outgoing track
+  // — swap the gains in the same instant and hard-stop the old element. Fired a
+  // hair (~0.2s) before the reported end because `timeupdate` only ticks ~4x a
+  // second and the tail of that window is decay/silence.
+  const beginGapless = useCallback(
+    (targetIndex) => {
+      const side = inactiveIdx();
+      const el = els()[side];
+      const track = queueRef.current[targetIndex];
+      if (!el || !track) return;
+      if (sideLoadedIdRef[side].current !== track.id) {
+        preloadedTargetRef.current = targetIndex;
+        preloadSide(targetIndex);
+        return;
+      }
+      if (!sideReadyRef[side].current) return;
+
+      const oldSide = activeIdxRef.current;
+      crossfadingRef.current = true; // guards the reload + ended handlers
+      try {
+        el.currentTime = 0;
+      } catch {}
+      mirrorPlayback(el);
+      setGainImmediate(side, 1);
+      el.play().catch(() => {});
+      const oldEl = els()[oldSide];
+      if (oldEl) {
+        try {
+          oldEl.pause();
+        } catch {}
+      }
+      setGainImmediate(oldSide, 0);
+
+      activeIdxRef.current = side;
+      sideReadyRef[side].current = false;
+      preloadedTargetRef.current = null;
+      setCurrentIndex(targetIndex);
+      if (crossfadeTimerRef.current) clearTimeout(crossfadeTimerRef.current);
+      crossfadeTimerRef.current = setTimeout(() => {
+        crossfadingRef.current = false;
+        preloadNextTrack();
+      }, 300);
+    },
+    [preloadSide, mirrorPlayback, setGainImmediate, preloadNextTrack]
+  );
+
   // --- per-track load: crossfade engine handles natural advances, manual
   // changes load on the active element. ---
   useEffect(() => {
@@ -418,7 +467,18 @@ export function PlayerProvider({ children }) {
         if (a === activeEl()) handleTimeRef.current(a);
       };
       const onDur = () => {
-        if (a === activeEl()) setDuration(a.duration || 0);
+        if (a !== activeEl()) return;
+        setDuration(a.duration || 0);
+        // Resuming from another device: jump to the saved position as soon as
+        // the media is seekable.
+        const ps = pendingSeekRef.current;
+        if (ps && sideLoadedIdRef[activeIdxRef.current].current === ps.id) {
+          try {
+            a.currentTime = ps.at;
+            setPosition(ps.at);
+          } catch {}
+          pendingSeekRef.current = null;
+        }
       };
       const onPlay = () => {
         if (a === activeEl()) setIsPlaying(true);
@@ -453,7 +513,8 @@ export function PlayerProvider({ children }) {
       const cur = a.currentTime || 0;
       setPosition(cur);
       const s = getTransitionSettings();
-      if (!isTransitionActive(s) || crossfadingRef.current) return;
+      const gapless = isGapless(s);
+      if ((!isTransitionActive(s) && !gapless) || crossfadingRef.current) return;
       const d = a.duration;
       if (!d || !isFinite(d)) return;
       const remaining = d - cur;
@@ -466,6 +527,15 @@ export function PlayerProvider({ children }) {
         else if (repeatRef.current === "all" && qi.length) n = 0;
       }
       if (n === -1) return; // queue ends here — let the ended handler auto-radio
+      if (gapless) {
+        const side = inactiveIdx();
+        if (remaining <= 6 && sideLoadedIdRef[side].current !== qi[n].id) {
+          preloadedTargetRef.current = n;
+          preloadSide(n);
+        }
+        if (remaining <= 0.2) beginGapless(n);
+        return;
+      }
       const cf = s.crossfadeSeconds;
       // Preload a little early so the crossfade can start on time.
       if (remaining <= cf + 3 && remaining > cf && preloadedTargetRef.current !== n) {
@@ -474,7 +544,7 @@ export function PlayerProvider({ children }) {
       }
       if (remaining <= cf && remaining > 0) beginCrossfade(n, cf, remaining);
     };
-  }, [preloadSide, beginCrossfade]);
+  }, [preloadSide, beginCrossfade, beginGapless]);
 
   // continued play counting
   const countPlay = useCallback((track) => {
@@ -580,6 +650,16 @@ export function PlayerProvider({ children }) {
     countedRef.current = new Set();
     setQueue(tracks);
     setCurrentIndex(index);
+  }, []);
+
+  // Hand off playback from another device: load the track and seek to where
+  // that device left off, as soon as the media reports it's seekable.
+  const resumeTrack = useCallback((track, atSeconds = 0) => {
+    if (!track) return;
+    pendingSeekRef.current = { id: track.id, at: Math.max(0, atSeconds) };
+    countedRef.current = new Set();
+    setQueue([track]);
+    setCurrentIndex(0);
   }, []);
 
   const togglePlay = useCallback(() => {
@@ -766,6 +846,7 @@ export function PlayerProvider({ children }) {
     next,
     prev,
     playTrackAt,
+    resumeTrack,
     setRepeat,
     setShuffle,
     getBars,

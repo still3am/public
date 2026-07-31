@@ -8,6 +8,7 @@ export const TRANSITION_MODES = {
   OFF: "off",
   AUTOMIX: "automix",
   CROSSFADE: "crossfade",
+  GAPLESS: "gapless",
 };
 
 export const CROSSFADE_MIN = 1;
@@ -47,10 +48,16 @@ export function setTransitionSettings(next) {
   return merged;
 }
 
-// True when some transition mode is active (so the player should fade in/out).
+// True when a BLENDING mode is active (so the player should fade in/out).
+// Gapless is deliberately excluded — it's a hard butt-join, not a fade.
 export function isTransitionActive(settings = getTransitionSettings()) {
   return (
     settings.mode === TRANSITION_MODES.CROSSFADE ||
     settings.mode === TRANSITION_MODES.AUTOMIX
   );
+}
+
+// Gapless: no fade at all, the next track starts the instant this one ends.
+export function isGapless(settings = getTransitionSettings()) {
+  return settings.mode === TRANSITION_MODES.GAPLESS;
 }

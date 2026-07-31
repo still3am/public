@@ -1,4 +1,4 @@
-import { ArrowLeft, Check, Wand2, GitMerge } from "lucide-react";
+import { ArrowLeft, Check, Wand2, GitMerge, AlignHorizontalJustifyCenter } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/lib/AuthContext";
 import { useTransitions } from "@/hooks/useTransitions";
@@ -91,7 +91,8 @@ export default function SongTransitions() {
     window.history.length > 1 ? nav(-1) : nav("/profile");
 
   const masterOn =
-    t.mode !== TRANSITION_MODES.OFF && (t.isCrossfade || (t.isAutoMix && isAdmin));
+    t.mode !== TRANSITION_MODES.OFF &&
+    (t.isCrossfade || t.isGapless || (t.isAutoMix && isAdmin));
 
   const toggleMaster = () => {
     t.setMode(masterOn ? TRANSITION_MODES.OFF : TRANSITION_MODES.CROSSFADE);
@@ -102,6 +103,7 @@ export default function SongTransitions() {
     t.setMode(TRANSITION_MODES.AUTOMIX);
   };
   const selectCrossfade = () => t.setMode(TRANSITION_MODES.CROSSFADE);
+  const selectGapless = () => t.setMode(TRANSITION_MODES.GAPLESS);
 
   return (
     <div className="fixed inset-0 bg-background z-[70] flex flex-col text-foreground">
@@ -159,6 +161,13 @@ export default function SongTransitions() {
               active={t.isAutoMix && isAdmin}
               locked={!isAdmin}
               onClick={selectAutoMix}
+            />
+            <OptionTile
+              icon={AlignHorizontalJustifyCenter}
+              title="Gapless"
+              subtitle="No fade and no silence — the next song starts the exact instant the last one ends. Ideal for albums and live sets."
+              active={t.isGapless}
+              onClick={selectGapless}
             />
             <OptionTile
               icon={GitMerge}

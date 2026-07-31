@@ -36,5 +36,6 @@ export function useTransitions() {
     setCrossfadeSeconds: (crossfadeSeconds) => update({ crossfadeSeconds }),
     isAutoMix: settings.mode === TRANSITION_MODES.AUTOMIX,
     isCrossfade: settings.mode === TRANSITION_MODES.CROSSFADE,
+    isGapless: settings.mode === TRANSITION_MODES.GAPLESS,
   };
 }
