@@ -1,159 +1,148 @@
-import { useState, useRef, useEffect } from "react";
-import { Link } from "react-router-dom";
-import { Play, Pause, Plus, Check, Loader2 } from "lucide-react";
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import {
+  Play,
+  Pause,
+  MoreHorizontal,
+  Plus,
+  Check,
+  Loader2,
+  ChevronRight,
+} from "lucide-react";
 import { usePlayer } from "@/context/PlayerContext";
 import { useLibrary } from "@/context/LibraryContext";
 import { Image } from "@/components/ui/image";
 
-const BATCH = 4;
-
-function timeAgo(date) {
-  if (!date) return "";
-  const diff = Date.now() - new Date(date).getTime();
-  const m = Math.floor(diff / 60000);
-  if (m < 1) return "just now";
-  if (m < 60) return `${m}m ago`;
-  const h = Math.floor(m / 60);
-  if (h < 24) return `${h}h ago`;
-  const d = Math.floor(h / 24);
-  if (d < 7) return `${d}d ago`;
-  const w = Math.floor(d / 7);
-  if (w < 5) return `${w}w ago`;
-  const mo = Math.floor(d / 30);
-  return `${mo}mo ago`;
+function MenuBtn({ icon: Icon, label, onClick, danger }) {
+  return (
+    <button
+      onClick={onClick}
+      className={`w-full flex items-center gap-2 px-3 py-2 text-sm hover:bg-foreground/[0.04] text-left ${
+        danger ? "text-red-600" : ""
+      }`}>
+      <Icon size={14} /> {label}
+    </button>
+  );
 }
 
-function ReleaseCard({ track, tracks, index }) {
+function ReleaseRow({ track, tracks, index }) {
   const p = usePlayer();
+  const nav = useNavigate();
   const { isInLibrary, toggle } = useLibrary();
+  const [menuOpen, setMenuOpen] = useState(false);
   const [busy, setBusy] = useState(false);
   const inLib = isInLibrary(track.id);
   const isCurrent = p.currentTrack?.id === track.id;
   const isPlayingHere = isCurrent && p.isPlaying;
+
+  const playHere = () => p.playTrackAt(tracks.slice(index), 0);
+
   const artistName = track.artist || track.uploader_name || "Unknown";
-  const ago = timeAgo(track.created_date);
-
-  const onPlay = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    if (isCurrent) p.togglePlay();
-    else p.playTrackAt(tracks.slice(index), 0);
-  };
-
-  const onToggleLib = async (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    if (busy) return;
-    setBusy(true);
-    try {
-      await toggle(track);
-    } finally {
-      setBusy(false);
-    }
-  };
 
   return (
-    <div className="snap-start shrink-0 w-[68vw] max-w-[190px] sm:w-[185px] md:w-[208px]">
-      <div className="group relative rounded-2xl p-2 md:p-2.5 hover:bg-foreground/[0.035] active:scale-[0.99] transition">
-        <div className="relative aspect-square rounded-xl overflow-hidden bg-foreground/10 ring-1 ring-foreground/[0.06] mb-2.5">
+    <div className="group flex items-center gap-3 px-2 py-2.5 rounded-lg hover:bg-foreground/[0.04] active:scale-[0.99] transition">
+      <button onClick={playHere} className="relative shrink-0" aria-label="Play">
+        <div className="w-12 h-12 rounded-lg overflow-hidden bg-foreground/10">
           {track.cover_art_url ? (
-            <Image src={track.cover_art_url} fittingType="fill" className="w-full h-full" />
+            <Image
+              src={track.cover_art_url}
+              fittingType="fill"
+              className="w-full h-full"
+            />
           ) : (
-            <div className="w-full h-full grid place-items-center text-foreground/30 text-[10px] font-bold uppercase tracking-tight text-center px-1">
+            <div className="w-full h-full grid place-items-center text-foreground/30 text-[9px] font-bold text-center px-1">
               {track.genre}
             </div>
           )}
-          <span className="absolute top-2 left-2 text-[11px] font-extrabold tabular-nums bg-background/70 backdrop-blur-md px-1.5 py-0.5 rounded-md text-foreground/80">
-            {index + 1}
-          </span>
-          <button
-            onClick={onToggleLib}
-            className="absolute top-2 right-2 w-7 h-7 rounded-full bg-background/70 backdrop-blur-md grid place-items-center text-foreground/80 hover:bg-background active:scale-90 transition"
-            aria-label={inLib ? "Remove from library" : "Add to library"}>
-            {busy ? (
-              <Loader2 size={13} className="animate-spin" />
-            ) : inLib ? (
-              <Check size={14} />
-            ) : (
-              <Plus size={14} />
-            )}
-          </button>
-          <button
-            onClick={onPlay}
-            className="absolute bottom-2 right-2 w-10 h-10 rounded-full bg-foreground text-background grid place-items-center shadow-lg opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all hover:scale-105"
-            aria-label="Play track">
-            {isPlayingHere ? <Pause size={17} /> : <Play size={17} fill="currentColor" />}
-          </button>
         </div>
-        <Link to={`/track/${track.id}`} className="block">
-          <div className="flex items-center gap-1.5 mb-1 px-0.5">
-            {ago && (
-              <span className="text-[10px] font-bold uppercase tracking-wider text-foreground/45 shrink-0">
-                {ago}
-              </span>
-            )}
-            <span className="text-foreground/20">·</span>
-            <span className="text-[10px] text-foreground/40 truncate">{track.genre}</span>
-          </div>
-          <div className="font-semibold truncate text-[15px] leading-tight flex items-center gap-1.5 px-0.5">
-            <span
-              className={`truncate ${
-                isCurrent ? "text-foreground" : "text-foreground"
-              }`}>
-              {track.title}
+        <span className="absolute inset-0 grid place-items-center bg-black/35 opacity-0 group-hover:opacity-100 transition">
+          {isPlayingHere ? (
+            <Pause size={18} className="text-white" />
+          ) : (
+            <Play size={18} className="text-white" fill="currentColor" />
+          )}
+        </span>
+      </button>
+
+      <div className="min-w-0 flex-1">
+        <Link to={`/track/${track.id}`} className="flex items-center gap-1.5 min-w-0">
+          <span
+            className={`text-[15px] font-bold truncate ${
+              isCurrent ? "text-foreground" : "text-foreground"
+            }`}>
+            {track.title}
+          </span>
+          {track.explicit && (
+            <span className="text-[9px] font-extrabold rounded bg-foreground/15 text-foreground/70 leading-none px-1 py-0.5 shrink-0">
+              E
             </span>
-            {track.explicit && (
-              <span className="text-[9px] font-extrabold rounded bg-foreground/15 text-foreground/70 leading-none px-1 py-0.5 shrink-0">
-                E
-              </span>
-            )}
-          </div>
-          <div className="text-[13px] text-muted-foreground truncate px-0.5 mt-0.5">
-            {artistName}
-          </div>
+          )}
         </Link>
+        <div className="text-[13px] text-muted-foreground truncate mt-0.5">
+          {artistName}
+        </div>
+      </div>
+
+      <div className="relative shrink-0">
+        <button
+          onClick={() => setMenuOpen((v) => !v)}
+          className="p-2 rounded-full hover:bg-foreground/5"
+          aria-label="More">
+          <MoreHorizontal size={18} className="text-foreground" />
+        </button>
+        {menuOpen && (
+          <>
+            <div
+              className="fixed inset-0 z-10"
+              onClick={() => setMenuOpen(false)}
+            />
+            <div className="absolute right-0 top-full z-20 mt-1 bg-popover border border-border rounded-lg shadow-xl py-1 min-w-[200px]">
+              <MenuBtn
+                icon={isPlayingHere ? Pause : Play}
+                label={isPlayingHere ? "Pause" : "Play"}
+                onClick={() => {
+                  setMenuOpen(false);
+                  if (isCurrent) p.togglePlay();
+                  else playHere();
+                }}
+              />
+              <MenuBtn
+                icon={busy ? Loader2 : inLib ? Check : Plus}
+                label={busy ? "Saving…" : inLib ? "Remove from library" : "Add to library"}
+                danger={!busy && inLib}
+                onClick={async () => {
+                  setMenuOpen(false);
+                  setBusy(true);
+                  try {
+                    await toggle(track);
+                  } finally {
+                    setBusy(false);
+                  }
+                }}
+              />
+              <MenuBtn
+                icon={ChevronRight}
+                label="Go to track"
+                onClick={() => {
+                  setMenuOpen(false);
+                  nav(`/track/${track.id}`);
+                }}
+              />
+            </div>
+          </>
+        )}
       </div>
     </div>
   );
 }
 
 export default function ReleaseList({ tracks }) {
-  const [visible, setVisible] = useState(BATCH);
-  const scrollRef = useRef(null);
-  const sentinelRef = useRef(null);
-
-  useEffect(() => {
-    setVisible(BATCH);
-  }, [tracks]);
-
-  useEffect(() => {
-    const el = sentinelRef.current;
-    const root = scrollRef.current;
-    if (!el || !root || !tracks?.length) return;
-    const ob = new IntersectionObserver(
-      (entries) => {
-        if (entries[0].isIntersecting) {
-          setVisible((v) => Math.min(v + BATCH, tracks.length));
-        }
-      },
-      { root, rootMargin: "0px 160px 0px 0px", threshold: 0.01 }
-    );
-    ob.observe(el);
-    return () => ob.disconnect();
-  }, [tracks, visible]);
-
   if (!tracks?.length) return null;
-  const shown = tracks.slice(0, visible);
-  const hasMore = visible < tracks.length;
-
   return (
-    <div
-      ref={scrollRef}
-      className="flex gap-2 md:gap-3 overflow-x-auto no-scrollbar snap-x snap-mandatory -mx-3 px-3 md:mx-0 md:px-0 pb-2">
-      {shown.map((t, i) => (
-        <ReleaseCard key={t.id} track={t} tracks={tracks} index={i} />
+    <div className="divide-y divide-foreground/[0.05]">
+      {tracks.map((t, i) => (
+        <ReleaseRow key={t.id} track={t} tracks={tracks} index={i} />
       ))}
-      {hasMore && <div ref={sentinelRef} className="shrink-0 w-px" aria-hidden />}
     </div>
   );
 }
