@@ -261,12 +261,12 @@ async function extractStructuredCover(file) {
 // back to a raw full-file byte-scan for any embedded image of any size. Every
 // candidate is decode-validated so a broken preview never surfaces.
 export async function extractEmbeddedCover(file) {
-  let best = null;
-  try { best = await extractStructuredCover(file); } catch {}
-  if (best && (await appearsToBeImage(best))) return best;
   try {
-    const scanned = await scanFileForAnyImage(file);
-    if (scanned) return scanned;
+    const best = await extractStructuredCover(file);
+    if (best) return best;
+  } catch {}
+  try {
+    return await scanFileForAnyImage(file);
   } catch {}
   return null;
 }
@@ -445,34 +445,11 @@ export function imageMime(buf) {
   return "image/jpeg";
 }
 
-async function appearsToBeImage(file) {
-  try {
-    const url = URL.createObjectURL(file);
-    const ok = await new Promise((resolve) => {
-      const img = new Image();
-      img.onload = () => resolve(true);
-      img.onerror = () => resolve(false);
-      img.src = url;
-    });
-    URL.revokeObjectURL(url);
-    return ok;
-  } catch {
-    return false;
-  }
-}
-
 export async function scanFileForAnyImage(file) {
-  // Scan the entire file — no size window — so an embedded cover of any size
-  // sitting anywhere in a file (any container, any size) is found.
   const buf = new Uint8Array(await file.arrayBuffer());
-  let found = scanAnyImage(buf);
+  const found = scanAnyImage(buf);
   if (!found || found.length < 8) return null;
-  const candidate = new File([found], "cover", { type: imageMime(found) });
-  // Decode-validate: reject coincidental magic-byte matches (e.g. a stray
-  // FFD8..FFD9 inside audio data) so a broken preview never surfaces, while
-  // still accepting real embedded covers of any size.
-  if (await appearsToBeImage(candidate)) return candidate;
-  return null;
+  return new File([found], "cover", { type: imageMime(found) });
 }
 
 // Extracts the embedded title tag (ID3v2 TIT2/TT2 for mp3; FLAC TITLE vorbis comment).
