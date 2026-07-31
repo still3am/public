@@ -267,6 +267,27 @@ export function PlayerProvider({ children }) {
     [resolveUrl, mirrorPlayback]
   );
 
+  // Compute the upcoming track index and pre-buffer it on the inactive element
+  // (unless it's already loaded+ready). Used right after a track loads AND after
+  // a crossfade completes, so the next transition always has a ready source.
+  const preloadNextTrack = useCallback(() => {
+    const ci = currentIndexRef.current;
+    const q = queueRef.current;
+    if (ci < 0 || !q.length) return;
+    let n = -1;
+    if (ci + 1 < q.length) n = ci + 1;
+    else if (repeatRef.current === "all" && q.length) n = 0;
+    if (n === -1 || !q[n]) return;
+    const side = inactiveIdx();
+    if (
+      sideLoadedIdRef[side].current === q[n].id &&
+      sideReadyRef[side].current
+    )
+      return;
+    preloadedTargetRef.current = n;
+    preloadSide(n);
+  }, [preloadSide]);
+
   // Real crossfade: start the next track on the inactive element and ramp the
   // two gains across one another, then promote the inactive element to active.
   const beginCrossfade = useCallback(
@@ -313,9 +334,11 @@ export function PlayerProvider({ children }) {
         }
         setGainImmediate(oldSide, 0);
         crossfadingRef.current = false;
+        // The inactive element is now free — pre-buffer the upcoming track.
+        preloadNextTrack();
       }, (fd + 0.4) * 1000);
     },
-    [preloadSide, mirrorPlayback, setGainImmediate, rampGainEqualPower]
+    [preloadSide, mirrorPlayback, setGainImmediate, rampGainEqualPower, preloadNextTrack]
   );
 
   // --- per-track load: crossfade engine handles natural advances, manual
@@ -350,22 +373,12 @@ export function PlayerProvider({ children }) {
   // Preload the upcoming track on the inactive element as soon as the current
   // track starts, so a crossfade has a buffered source ready WELL before the
   // transition point (instead of only cf+3s before the end, which often misses).
+  // While a crossfade is in flight the inactive element is still playing the
+  // outgoing tail — don't overwrite its src (that would cut the fade short).
+  // The crossfade timer calls preloadNextTrack() once the blend completes.
   useEffect(() => {
-    const ci = currentIndexRef.current;
-    const q = queueRef.current;
-    if (ci < 0 || !q.length) return;
-    let n = -1;
-    if (ci + 1 < q.length) n = ci + 1;
-    else if (repeatRef.current === "all" && q.length) n = 0;
-    if (n === -1 || !q[n]) return;
-    const side = inactiveIdx();
-    if (
-      sideLoadedIdRef[side].current === q[n].id &&
-      sideReadyRef[side].current
-    )
-      return;
-    preloadedTargetRef.current = n;
-    preloadSide(n);
+    if (crossfadingRef.current) return;
+    preloadNextTrack();
   }, [currentTrack?.id]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // --- listeners (attached once to both elements) ---
