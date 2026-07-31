@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import {
   Play,
@@ -177,13 +177,44 @@ function ReleaseRow({ track, tracks, index }) {
 
 }
 
+const BATCH = 4;
+
 export default function ReleaseList({ tracks }) {
-  if (!tracks?.length) return null;
+  const all = tracks || [];
+  const [visibleCount, setVisibleCount] = useState(Math.min(BATCH, all.length));
+  const sentinelRef = useRef(null);
+
+  useEffect(() => {
+    setVisibleCount(Math.min(BATCH, all.length));
+  }, [tracks]);
+
+  useEffect(() => {
+    const el = sentinelRef.current;
+    if (!el) return;
+    const io = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) {
+          setVisibleCount((c) => Math.min(c + BATCH, all.length));
+        }
+      },
+      { rootMargin: "400px" }
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, [all.length]);
+
+  if (!all.length) return null;
+  const visible = all.slice(0, visibleCount);
+
   return (
-    <div className="divide-y divide-foreground/[0.04]">
-      {tracks.map((t, i) =>
-      <ReleaseRow key={t.id} track={t} tracks={tracks} index={i} />
-      )}
-    </div>);
+    <div>
+      <div className="divide-y divide-foreground/[0.04]">
+        {visible.map((t, i) =>
+        <ReleaseRow key={t.id} track={t} tracks={all} index={i} />
+        )}
+      </div>
+      {visibleCount < all.length && <div ref={sentinelRef} className="h-4" />}
+    </div>
+  );
 
 }
