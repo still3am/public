@@ -11,7 +11,7 @@ function PodiumCard({ track, rank, height, accent }) {
     else p.playTrackAt([track]);
   };
   return (
-    <div className="flex flex-col items-center gap-2 min-w-0 flex-1">
+    <div className="flex flex-col items-center gap-2 min-w-0 flex-1 w-full">
       <Link
         to={`/track/${track.id}`}
         onClick={(e) => e.stopPropagation()}
@@ -76,7 +76,7 @@ export default function Podium({ tracks }) {
           />
         )}
         {first && (
-          <div className="flex flex-col items-center flex-1 min-w-0 scale-[1.06] origin-bottom">
+          <div className="flex flex-col min-w-0 flex-[1.12]">
             <PodiumCard
               track={first}
               rank={1}
