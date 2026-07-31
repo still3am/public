@@ -256,10 +256,10 @@ async function extractStructuredCover(file) {
   return null;
 }
 
-// Extracts embedded cover art. Tries the precise structured parsers first;
-// if their result doesn't decode into a viewable image (or is absent), falls
-// back to a raw full-file byte-scan for any embedded image of any size. Every
-// candidate is decode-validated so a broken preview never surfaces.
+// Extracts embedded cover art. Tries the precise structured parsers first
+// (ID3 APIC, FLAC PICTURE, MP4 covr); if none match, falls back to a raw
+// full-file byte-scan for any embedded image of any size. Whatever is found is
+// returned as-is — no decode validation — so every cover gets uploaded.
 export async function extractEmbeddedCover(file) {
   try {
     const best = await extractStructuredCover(file);
