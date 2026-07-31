@@ -13,6 +13,7 @@ import {
   ChevronRight } from
 "lucide-react";
 import TrackCard from "@/components/TrackCard";
+import Podium from "@/components/Podium";
 import ScoreboardTrackCount from "@/components/ScoreboardTrackCount";
 import EmptyState from "@/components/EmptyState";
 import { getRecentPlays } from "@/lib/recentPlays";
@@ -253,7 +254,18 @@ export default function Home() {
         </Link>
 
         <Section title="Trending" icon={TrendingUp} seeAllTo="/top">
-          <CardRow tracks={trending} />
+          {trending.length >= 3 ? (
+            <>
+              <Podium tracks={trending.slice(0, 5)} />
+              {trending.length > 5 && (
+                <div className="mt-4">
+                  <CardRow tracks={trending.slice(5)} />
+                </div>
+              )}
+            </>
+          ) : (
+            <CardRow tracks={trending} />
+          )}
         </Section>
         <Section title="New Releases" seeAllTo="/recent">
           <CardRow tracks={newReleases} />
