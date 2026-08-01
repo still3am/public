@@ -72,7 +72,7 @@ export default function TrackCard({ track }) {
         )}
 
         {isPlayingNow && (
-          <div className="absolute top-2 right-2 h-7 px-1.5 rounded-full bg-background/85 backdrop-blur grid place-items-center text-foreground shadow-md">
+          <div className="absolute bottom-2.5 right-2.5 w-11 h-11 md:w-12 md:h-12 rounded-full bg-background/85 backdrop-blur grid place-items-center text-foreground shadow-xl">
             <EqualizerBars active={isPlayingNow} />
           </div>
         )}
