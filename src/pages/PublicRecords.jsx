@@ -289,7 +289,7 @@ export default function PublicRecords({ id: propId }) {
         {/* Discography */}
         <section className="mb-12">
           <SectionTitle icon={Disc3} right={
-          <span className="text-xs font-semibold text-foreground/40 bg-foreground/[0.05] rounded-full px-2.5 py-1">
+          <span className="text-xs font-semibold text-foreground/40 bg-foreground/[0.05] rounded-full px-2.5 py-1 hidden">
               {tracks.length}
             </span>
           }>
