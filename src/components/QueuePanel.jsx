@@ -54,7 +54,7 @@ export default function QueuePanel({ open, onClose }) {
           <ListMusic size={20} className="text-white/80 shrink-0" />
           <div className="leading-tight min-w-0">
             <h2 className="text-base font-bold truncate">Queue</h2>
-            <span className="text-[11px] text-white/45">
+            <span className="text-[11px] text-white/45 hidden">
               {upcoming.length > 0 ?
               `${upcoming.length} up next` :
               p.currentTrack ?
@@ -172,41 +172,41 @@ export default function QueuePanel({ open, onClose }) {
           }}>
           <Droppable droppableId="queue">
             {(dropProvided) =>
-          <div className="space-y-0.5" ref={dropProvided.innerRef} {...dropProvided.droppableProps}>
+            <div className="space-y-0.5" ref={dropProvided.innerRef} {...dropProvided.droppableProps}>
             {upcoming.map(({ trk: tt, i }, pos) =>
-          <Draggable key={tt.id + i} draggableId={tt.id + i} index={pos}>
+              <Draggable key={tt.id + i} draggableId={tt.id + i} index={pos}>
             {(dragProvided, snapshot) =>
-          <div
-            ref={dragProvided.innerRef}
-            {...dragProvided.draggableProps}
-            className={`group flex items-center gap-3 px-2 py-2 rounded-xl transition ${
-            snapshot.isDragging ? "bg-white/[0.12] ring-1 ring-white/15" : "hover:bg-white/[0.06]"}`}>
                 <div
-              {...dragProvided.dragHandleProps}
-              className="shrink-0 -ml-1 p-1 text-white/30 hover:text-white/70 cursor-grab active:cursor-grabbing touch-none"
-              aria-label="Reorder">
+                  ref={dragProvided.innerRef}
+                  {...dragProvided.draggableProps}
+                  className={`group flex items-center gap-3 px-2 py-2 rounded-xl transition ${
+                  snapshot.isDragging ? "bg-white/[0.12] ring-1 ring-white/15" : "hover:bg-white/[0.06]"}`}>
+                <div
+                    {...dragProvided.dragHandleProps}
+                    className="shrink-0 -ml-1 p-1 text-white/30 hover:text-white/70 cursor-grab active:cursor-grabbing touch-none"
+                    aria-label="Reorder">
                   <GripVertical size={16} />
                 </div>
 
             
                 <div className="relative w-10 h-10 rounded-lg overflow-hidden bg-white/10 shrink-0">
                   {tt.cover_art_url &&
-              <img
-                src={tt.cover_art_url}
-                alt=""
-                className="w-full h-full object-cover" />
+                    <img
+                      src={tt.cover_art_url}
+                      alt=""
+                      className="w-full h-full object-cover" />
 
-              }
+                    }
                   <button
-                onClick={() => p.playQueueItem(i)}
-                className="absolute inset-0 grid place-items-center bg-black/45 opacity-0 group-hover:opacity-100 transition"
-                aria-label="Play this track">
+                      onClick={() => p.playQueueItem(i)}
+                      className="absolute inset-0 grid place-items-center bg-black/45 opacity-0 group-hover:opacity-100 transition"
+                      aria-label="Play this track">
                     <Play size={15} fill="white" />
                   </button>
                 </div>
                 <button
-              onClick={() => p.playQueueItem(i)}
-              className="min-w-0 flex-1 text-left">
+                    onClick={() => p.playQueueItem(i)}
+                    className="min-w-0 flex-1 text-left">
                   <div className="text-sm font-medium truncate">{tt.title}</div>
                   <div className="text-xs text-white/50 truncate">
                     {tt.artist || tt.uploader_name || "Unknown"}
@@ -216,18 +216,18 @@ export default function QueuePanel({ open, onClose }) {
                   {formatTime(tt.duration_seconds)}
                 </span>
                 <button
-              onClick={() => p.removeFromQueue(i)}
-              className="shrink-0 w-8 h-8 rounded-full grid place-items-center text-white/45 hover:text-white hover:bg-white/10 active:scale-90 transition"
-              aria-label="Remove from queue">
+                    onClick={() => p.removeFromQueue(i)}
+                    className="shrink-0 w-8 h-8 rounded-full grid place-items-center text-white/45 hover:text-white hover:bg-white/10 active:scale-90 transition"
+                    aria-label="Remove from queue">
                   <Trash2 size={15} />
                 </button>
               </div>
-          }
+                }
           </Draggable>
-          )}
+              )}
             {dropProvided.placeholder}
           </div>
-          }
+            }
           </Droppable>
         </DragDropContext>
         }
