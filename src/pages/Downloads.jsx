@@ -176,7 +176,7 @@ export default function Downloads() {
             <DragDropContext onDragStart={() => setDragging(true)} onDragEnd={onDragEnd}>
               <Droppable droppableId="downloads">
                 {(dropProvided) => (
-                <div ref={dropProvided.innerRef} {...dropProvided.droppableProps} className="space-y-1 touch-none" style={{ touchAction: "none" }}>
+                <div ref={dropProvided.innerRef} {...dropProvided.droppableProps} className="space-y-1">
                   {tracks.map((t, i) => {
                   const here = isCurrent(t.id);
                   const playingHere = here && p.isPlaying;
@@ -187,8 +187,8 @@ export default function Downloads() {
                       ref={dragProvided.innerRef}
                       {...dragProvided.draggableProps}
                       onDoubleClick={() => playOne(i)}
-                      style={{ ...dragProvided.draggableProps.style, touchAction: "none", overscrollBehavior: "contain" }}
-                      className={`group flex items-center gap-2 px-2 py-2 rounded-lg transition touch-none ${
+                      style={{ ...dragProvided.draggableProps.style, overscrollBehavior: "contain" }}
+                      className={`group flex items-center gap-2 px-2 py-2 rounded-lg transition ${
                       snapshot.isDragging ? "bg-foreground/[0.06] ring-1 ring-border shadow-lg" : "hover:bg-foreground/[0.03]"}`}>
                       <div
                         {...dragProvided.dragHandleProps}
