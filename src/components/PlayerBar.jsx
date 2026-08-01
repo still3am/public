@@ -73,7 +73,7 @@ export default function PlayerBar() {
           
         </div>
 
-        <div className="flex items-center gap-3 px-3 sm:px-4 py-2.5">
+        <div className="relative flex items-center gap-3 px-3 sm:px-4 py-2.5">
           {/* artwork + meta */}
           <button onClick={() => setFullOpen(true)} className="flex items-center gap-3 min-w-0 flex-1 text-left" aria-label="Open Now Playing">
             <div className="shrink-0 relative">
@@ -120,7 +120,7 @@ export default function PlayerBar() {
           </div>
 
           {/* desktop controls */}
-          <div className="hidden md:flex items-center gap-3 shrink-0">
+          <div className="hidden md:flex items-center gap-3 shrink-0 md:absolute md:left-1/2 md:-translate-x-1/2">
             <button
               onClick={() => p.setRepeat(p.repeat === "off" ? "all" : p.repeat === "all" ? "one" : "off")}
               className={`p-2 rounded-full hover:bg-foreground/5 active:scale-90 transition ${p.repeat !== "off" ? "text-foreground" : "text-foreground/40"}`}
@@ -162,21 +162,22 @@ export default function PlayerBar() {
                 </span>
               }
             </button>
-            <div className="flex items-center gap-2 pl-1">
-              <button onClick={() => p.setMuted(!p.muted)} className="p-1 active:scale-90 transition" aria-label="Mute">
-                {p.muted || p.volume === 0 ? <VolumeX size={18} /> : <Volume2 size={18} />}
-              </button>
-              <input
-                type="range"
-                min="0"
-                max="1"
-                step="0.01"
-                value={p.muted ? 0 : p.volume}
-                onChange={(e) => p.setVolume(Number(e.target.value))}
-                className="w-24 accent-foreground"
-                aria-label="Volume" />
-              
-            </div>
+          </div>
+
+          {/* desktop volume (right aligned) */}
+          <div className="hidden md:flex items-center gap-2 shrink-0 ml-auto">
+            <button onClick={() => p.setMuted(!p.muted)} className="p-1 active:scale-90 transition" aria-label="Mute">
+              {p.muted || p.volume === 0 ? <VolumeX size={18} /> : <Volume2 size={18} />}
+            </button>
+            <input
+              type="range"
+              min="0"
+              max="1"
+              step="0.01"
+              value={p.muted ? 0 : p.volume}
+              onChange={(e) => p.setVolume(Number(e.target.value))}
+              className="w-24 accent-foreground"
+              aria-label="Volume" />
           </div>
         </div>
       </div>
