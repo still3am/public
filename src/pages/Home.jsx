@@ -147,9 +147,14 @@ export default function Home() {
       setTrending(t);
       setNewReleases(n.slice(0, 4));
       setFromFollowing(n.filter((tk) => followed.has(tk.uploader_id)).slice(0, 12));
-      const counted = await base44.entities.Track.filter({ is_published: true }, "-created_date", 10000).catch(() => []);
-      setTotalTracks(Array.isArray(counted) ? counted.length : 0);
-      loadedRef.current = true;
+      // Counted server-side — downloading every record just to measure the
+      // catalog was slow and got silently truncated by the query limit.
+      const counted = await base44.functions.invoke("trackCount", {}).catch(() => null);
+      const published = counted?.data?.published;
+      if (typeof published === "number") {
+        setTotalTracks(published);
+        loadedRef.current = true;
+      }
       const genres = ["Electronic", "Hip-Hop", "Ambient"];
       const perGenre = await Promise.all(
         genres.map(async (g) => ({
