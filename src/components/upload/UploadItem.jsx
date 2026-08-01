@@ -43,7 +43,7 @@ export default function UploadItem({
       done ? "ring-emerald-500/40" : "ring-border"}`
       }>
       
-      <div className="p-3 md:p-4 flex gap-3 md:gap-4">
+      <div className="p-3 md:p-4 flex flex-col items-center sm:flex-row sm:items-start gap-3 md:gap-4">
         {/* Cover — auto-detected, tap to replace with your own image */}
         <CoverPicker
           previewUrl={item.coverPreviewUrl}
@@ -54,7 +54,7 @@ export default function UploadItem({
           } />
 
         {/* Fields */}
-        <div className="flex-1 min-w-0 space-y-2.5">
+        <div className="w-full flex-1 min-w-0 space-y-2.5">
           <div className="flex items-start gap-2">
             <div className="flex-1 min-w-0 space-y-2">
               <Input
@@ -74,7 +74,7 @@ export default function UploadItem({
             </div>
             <button
               onClick={onRemove}
-              className="p-2 rounded-full hover:bg-destructive/10 hover:text-destructive text-foreground/35 transition"
+              className="shrink-0 tap-target rounded-full hover:bg-destructive/10 hover:text-destructive text-foreground/35 transition"
               disabled={uploading}
               aria-label="Remove">
               
@@ -83,7 +83,7 @@ export default function UploadItem({
           </div>
 
           <div className="flex items-center gap-3">
-            <div className="max-w-[16rem] flex-1">
+            <div className="w-full sm:max-w-[16rem] flex-1">
               <GenrePicker value={item.genre} onChange={(g) => onChange({ genre: g })} />
             </div>
             
