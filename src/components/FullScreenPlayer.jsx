@@ -33,6 +33,7 @@ import { useLibrary } from "@/context/LibraryContext";
 import { useOfflineCache } from "@/hooks/useOfflineCache";
 import { useOfflineCoverUrl } from "@/hooks/useOfflineCoverUrl";
 import { useToast } from "@/components/ui/use-toast";
+import { shareTrack } from "@/lib/shareTrack";
 import { base44 } from "@/api/base44Client";
 
 const clampVol = (v) => Math.max(0, Math.min(1, v));
@@ -190,17 +191,12 @@ export default function FullScreenPlayer({ onClose }) {
 
   async function shareNow(copyOnly = false) {
     if (!t) return;
-    const url = `${window.location.origin}/track/${t.id}`;
     if (copyOnly) {
-      navigator.clipboard?.writeText(url);
+      navigator.clipboard?.writeText(`${window.location.origin}/track/${t.id}`);
       return;
     }
-    if (navigator.share) {
-      try {
-        await navigator.share({ title: `${t.title} on PUBLIC.`, url });
-      } catch {}
-    } else {
-      navigator.clipboard?.writeText(url);
+    const res = await shareTrack(t);
+    if (res === "copied") {
       setCopied(true);
       setTimeout(() => setCopied(false), 1500);
     }

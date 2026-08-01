@@ -25,6 +25,7 @@ import {
 import TrackRow from "@/components/TrackRow";
 import GenerateLyricsModal from "@/components/GenerateLyricsModal";
 import { useOfflineCache } from "@/hooks/useOfflineCache";
+import { shareTrack } from "@/lib/shareTrack";
 import { useToast } from "@/components/ui/use-toast";
 
 export default function TrackDetail() {
@@ -101,16 +102,13 @@ export default function TrackDetail() {
   }
 
   async function nativeShare() {
-    if (!track) return;
-    const url = `${window.location.origin}/track/${track.id}`;
-    if (navigator.share) {
-      try {
-        await navigator.share({ title: `${track.title} on PUBLIC.`, url });
-      } catch {}
-    } else {
-      shareLink();
-    }
     setMenuOpen(false);
+    if (!track) return;
+    const res = await shareTrack(track);
+    if (res === "copied") {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1500);
+    }
   }
 
   async function report() {
