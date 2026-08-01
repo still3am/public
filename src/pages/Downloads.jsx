@@ -14,6 +14,7 @@ import { useOfflineCache } from "@/hooks/useOfflineCache";
 import { formatTime, bytesToReadable } from "@/lib/audio-utils";
 import PullToRefresh from "@/components/PullToRefresh";
 import BackHeader from "@/components/BackHeader";
+import DownloadCover from "@/components/DownloadCover";
 import { useToast } from "@/components/ui/use-toast";
 
 // PUBLIC OFFLINE — locally-cached tracks that play without Wi-Fi or data.
@@ -38,6 +39,7 @@ export default function Downloads() {
       duration_seconds: r.duration_seconds,
       genre: r.genre,
       explicit: r.explicit,
+      _coverBlob: r._coverBlob,
       _offline: true
     })),
     [cache.records]
@@ -172,15 +174,7 @@ export default function Downloads() {
                     onClick={() => playOne(i)}
                     className="w-10 h-10 rounded overflow-hidden shrink-0 relative bg-foreground/10 grid place-items-center"
                     aria-label="Play">
-                      {t.cover_art_url ?
-                    <img
-                      src={t.cover_art_url}
-                      alt=""
-                      className="w-full h-full object-cover" /> :
-
-
-                    <CloudOff size={16} className="text-foreground/40" />
-                    }
+                      <DownloadCover record={t} size={16} />
                       <span className="absolute inset-0 grid place-items-center bg-black/0 group-hover:bg-black/30 transition">
                         {playingHere ?
                       <Pause size={15} className="text-white" /> :

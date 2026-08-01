@@ -28,7 +28,7 @@ function tx(mode) {
   return openDB().then((db) => db.transaction(STORE, mode).objectStore(STORE));
 }
 
-export async function putTrack(track, blob) {
+export async function putTrack(track, blob, coverBlob) {
   const store = await tx("readwrite");
   const record = {
     id: track.id,
@@ -42,6 +42,7 @@ export async function putTrack(track, blob) {
     genre: track.genre || "",
     explicit: !!track.explicit,
     _blob: blob,
+    _coverBlob: coverBlob || null,
     _size: blob.size,
     _savedAt: Date.now(),
   };
@@ -49,6 +50,23 @@ export async function putTrack(track, blob) {
     const r = store.put(record);
     r.onsuccess = () => res();
     r.onerror = () => rej(r.error);
+  });
+}
+
+// Backfill cover art for a record that was saved before offline-cover caching.
+export async function putCoverArt(id, coverBlob) {
+  const store = await tx("readwrite");
+  return new Promise((res, rej) => {
+    const req = store.get(id);
+    req.onsuccess = () => {
+      const rec = req.result;
+      if (!rec) return res();
+      rec._coverBlob = coverBlob;
+      const pr = store.put(rec);
+      pr.onsuccess = () => res();
+      pr.onerror = () => rej(pr.error);
+    };
+    req.onerror = () => rej(req.error);
   });
 }
 
