@@ -850,6 +850,25 @@ export function PlayerProvider({ children }) {
     }, minutes * 60 * 1000);
   }, []);
 
+  // Dedicated resume / pause so the lock-screen "play" action always plays
+  // (toggling on a "play" event could accidentally pause if iOS double-fires).
+  const resumePlayback = useCallback(() => {
+    const a = activeEl();
+    if (!a || !currentTrack) return;
+    ensureGraph();
+    const ctx = audioCtxRef.current;
+    if (ctx && ctx.state === "suspended") ctx.resume().catch(() => {});
+    if (!crossfadingRef.current) setGainImmediate(activeIdxRef.current, 1);
+    a.play().then(() => setIsPlaying(true)).catch(() => {});
+  }, [currentTrack, ensureGraph, setGainImmediate]);
+
+  const pausePlayback = useCallback(() => {
+    const a = activeEl();
+    if (!a) return;
+    a.pause();
+    setIsPlaying(false);
+  }, []);
+
   // --- Media Session API: lock-screen / Control Center metadata + controls ---
   // Without this, iOS falls back to the app name + icon instead of the track's
   // title, artist, and cover art on the lock-screen / now-playing widget.
@@ -882,8 +901,8 @@ export function PlayerProvider({ children }) {
         navigator.mediaSession.setActionHandler(action, handler);
       } catch {}
     };
-    set("play", () => togglePlay());
-    set("pause", () => togglePlay());
+    set("play", () => resumePlayback());
+    set("pause", () => pausePlayback());
     set("previoustrack", () => prev());
     set("nexttrack", () => next());
     set("seekto", (d) => {
@@ -894,7 +913,7 @@ export function PlayerProvider({ children }) {
         set(a, null)
       );
     };
-  }, [togglePlay, prev, next, seek]);
+  }, [resumePlayback, pausePlayback, prev, next, seek]);
 
   const value = {
     queue,
