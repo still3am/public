@@ -204,14 +204,21 @@ export function PlayerProvider({ children }) {
   }, []);
 
   // --- offline-blob-aware url resolution for a given side ---
+  // While online we stream from the remote URL; while offline we fall back to
+  // the locally cached blob — so the player source automatically follows the
+  // connection.
   const resolveUrl = useCallback(async (track, side) => {
     sideLoadedIdRef[side].current = track.id;
-    let url = track.audio_url;
+    const url = track.audio_url;
+    const online =
+      typeof navigator === "undefined" ? true : navigator.onLine;
     let blobUrl = null;
-    try {
-      const rec = await getRecord(track.id);
-      if (rec && rec._blob) blobUrl = URL.createObjectURL(rec._blob);
-    } catch {}
+    if (!online) {
+      try {
+        const rec = await getRecord(track.id);
+        if (rec && rec._blob) blobUrl = URL.createObjectURL(rec._blob);
+      } catch {}
+    }
     if (blobUrlRefs[side].current && blobUrlRefs[side].current !== blobUrl) {
       URL.revokeObjectURL(blobUrlRefs[side].current);
     }
@@ -1019,6 +1026,46 @@ export function PlayerProvider({ children }) {
       document.removeEventListener("webkitvisibilitychange", onVis);
     };
   }, [setGainImmediate]);
+
+  // When the connection comes back, switch the currently-playing track from
+  // the offline cache blob back to streaming — preserving the playback
+  // position so the listener doesn't hear a jump.
+  useEffect(() => {
+    const handleOnline = () => {
+      if (crossfadingRef.current) return;
+      const side = activeIdxRef.current;
+      const a = els()[side];
+      const t = queueRef.current[currentIndexRef.current];
+      if (!a || !t || !t.audio_url) return;
+      if (!blobUrlRefs[side].current) return; // not currently on a cache blob
+      const wasPlaying = isPlayingRef.current;
+      const pos = a.currentTime || 0;
+      URL.revokeObjectURL(blobUrlRefs[side].current);
+      blobUrlRefs[side].current = null;
+      const token = ++loadTokenRef.current;
+      a.src = t.audio_url;
+      a.load();
+      const onReady = () => {
+        a.removeEventListener("loadedmetadata", onReady);
+        if (token !== loadTokenRef.current) return;
+        if (isFinite(pos)) {
+          try { a.currentTime = pos; } catch {}
+          setPosition(pos);
+        }
+        if (wasPlaying) {
+          const ctx = audioCtxRef.current;
+          const doPlay = () =>
+            a.play().then(() => setIsPlaying(true)).catch(() => {});
+          if (ctx && ctx.state === "suspended")
+            ctx.resume().then(doPlay).catch(() => {});
+          else doPlay();
+        }
+      };
+      a.addEventListener("loadedmetadata", onReady);
+    };
+    window.addEventListener("online", handleOnline);
+    return () => window.removeEventListener("online", handleOnline);
+  }, []);
 
   // Keep the screen awake while a track is actively playing so iOS doesn't
   // auto-lock and suspend the audio engine on the open page.
