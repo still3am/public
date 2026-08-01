@@ -64,12 +64,6 @@ export default function QueuePanel({ open, onClose }) {
           </div>
         </div>
         <div className="flex items-center gap-1.5">
-          <button
-            onClick={() => setShowPicker(true)}
-            className="inline-flex items-center gap-1.5 pl-2.5 pr-3 rounded-full bg-white/10 hover:bg-white/20 active:scale-95 transition text-xs font-semibold py-2"
-            aria-label="Add from library">
-            <Plus size={15} /> Add
-          </button>
           {upcoming.length > 0 &&
           <button
             onClick={() => {
@@ -157,8 +151,7 @@ export default function QueuePanel({ open, onClose }) {
             </div>
             <p className="text-sm text-white/55 mb-1">Your queue is empty.</p>
             <p className="text-xs text-white/35">
-              Tap “Add” above to queue songs from your library. Auto-queue keeps
-              the music going when you reach the end.
+Auto-queue keeps the music going when you reach the end.
             </p>
           </div> :
 
