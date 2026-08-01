@@ -2,6 +2,7 @@
 
 const DB_NAME = "public_offline";
 const STORE = "tracks";
+const META_STORE = "meta";
 let dbPromise = null;
 
 function openDB() {
@@ -11,17 +12,24 @@ function openDB() {
       reject(new Error("IndexedDB unavailable"));
       return;
     }
-    const req = indexedDB.open(DB_NAME, 1);
+    const req = indexedDB.open(DB_NAME, 2);
     req.onupgradeneeded = () => {
       const db = req.result;
       if (!db.objectStoreNames.contains(STORE)) {
         db.createObjectStore(STORE, { keyPath: "id" });
+      }
+      if (!db.objectStoreNames.contains(META_STORE)) {
+        db.createObjectStore(META_STORE, { keyPath: "key" });
       }
     };
     req.onsuccess = () => resolve(req.result);
     req.onerror = () => reject(req.error);
   });
   return dbPromise;
+}
+
+function txMeta(mode) {
+  return openDB().then((db) => db.transaction(META_STORE, mode).objectStore(META_STORE));
 }
 
 function tx(mode) {
@@ -108,4 +116,40 @@ export async function clearAll() {
     r.onsuccess = () => res();
     r.onerror = () => rej(r.error);
   });
+}
+
+// --- custom download ordering (persists across sessions) ---
+export async function getOrderIds() {
+  try {
+    const store = await txMeta("readonly");
+    return await new Promise((res, rej) => {
+      const r = store.get("order");
+      r.onsuccess = () => res(r.result?.ids || null);
+      r.onerror = () => rej(r.error);
+    });
+  } catch {
+    return null;
+  }
+}
+
+export async function setOrderIds(ids) {
+  const store = await txMeta("readwrite");
+  return new Promise((res, rej) => {
+    const r = store.put({ key: "order", ids });
+    r.onsuccess = () => res();
+    r.onerror = () => rej(r.error);
+  });
+}
+
+export async function clearMeta() {
+  try {
+    const store = await txMeta("readwrite");
+    return new Promise((res, rej) => {
+      const r = store.clear();
+      r.onsuccess = () => res();
+      r.onerror = () => rej(r.error);
+    });
+  } catch {
+    /* ignore */
+  }
 }
