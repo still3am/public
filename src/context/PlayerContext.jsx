@@ -464,6 +464,23 @@ export function PlayerProvider({ children }) {
     preloadNextTrack();
   }, [currentTrack?.id]); // eslint-disable-line react-hooks/exhaustive-deps
 
+  // Report playback position/duration to the OS Media Session. iOS uses this
+  // (together with the now-playing metadata + action handlers) to recognize a
+  // "controllable" media session — which is what lets a standalone (Home-Screen)
+  // PWA keep Web-Audio-routed audio alive in the background / on the lock screen.
+  const syncPositionState = useCallback((a) => {
+    if (!a || !("mediaSession" in navigator)) return;
+    const d = a.duration;
+    if (!d || !isFinite(d)) return;
+    try {
+      navigator.mediaSession.setPositionState({
+        duration: d,
+        position: Math.min(Math.max(0, a.currentTime || 0), d),
+        playbackRate: a.playbackRate || 1,
+      });
+    } catch {}
+  }, []);
+
   // --- listeners (attached once to both elements) ---
   useEffect(() => {
     const cleanups = els().map((a) => {
@@ -474,6 +491,7 @@ export function PlayerProvider({ children }) {
       const onDur = () => {
         if (a !== activeEl()) return;
         setDuration(a.duration || 0);
+        syncPositionState(a);
         // Resuming from another device: jump to the saved position as soon as
         // the media is seekable.
         const ps = pendingSeekRef.current;
@@ -486,10 +504,16 @@ export function PlayerProvider({ children }) {
         }
       };
       const onPlay = () => {
-        if (a === activeEl()) setIsPlaying(true);
+        if (a === activeEl()) {
+          setIsPlaying(true);
+          syncPositionState(a);
+        }
       };
       const onPause = () => {
-        if (a === activeEl()) setIsPlaying(false);
+        if (a === activeEl()) {
+          setIsPlaying(false);
+          syncPositionState(a);
+        }
       };
       const onEnded = () => {
         if (a === activeEl()) handleEndedRef.current();
@@ -517,6 +541,7 @@ export function PlayerProvider({ children }) {
     handleTimeRef.current = (a) => {
       const cur = a.currentTime || 0;
       setPosition(cur);
+      syncPositionState(a);
       const s = getTransitionSettings();
       const gapless = isGapless(s);
       if ((!isTransitionActive(s) && !gapless) || crossfadingRef.current) return;
@@ -689,7 +714,8 @@ export function PlayerProvider({ children }) {
     if (!a) return;
     a.currentTime = time;
     setPosition(time);
-  }, []);
+    syncPositionState(a);
+  }, [syncPositionState]);
 
   const setMuted = useCallback((m) => {
     setMutedState(m);
@@ -864,8 +890,11 @@ export function PlayerProvider({ children }) {
     const ctx = audioCtxRef.current;
     if (ctx && ctx.state === "suspended") ctx.resume().catch(() => {});
     if (!crossfadingRef.current) setGainImmediate(activeIdxRef.current, 1);
-    a.play().then(() => setIsPlaying(true)).catch(() => {});
-  }, [currentTrack, ensureGraph, setGainImmediate]);
+    a.play().then(() => {
+      setIsPlaying(true);
+      syncPositionState(a);
+    }).catch(() => {});
+  }, [currentTrack, ensureGraph, setGainImmediate, syncPositionState]);
 
   const pausePlayback = useCallback(() => {
     const a = activeEl();
@@ -933,15 +962,17 @@ export function PlayerProvider({ children }) {
     set("pause", () => pausePlayback());
     set("previoustrack", () => prev());
     set("nexttrack", () => next());
+    set("seekbackward", (d) => skipBy(-((d && d.seekOffset) || 15)));
+    set("seekforward", (d) => skipBy(((d && d.seekOffset) || 15)));
     set("seekto", (d) => {
       if (d && typeof d.seekTime === "number") seek(d.seekTime);
     });
     return () => {
-      ["play", "pause", "previoustrack", "nexttrack", "seekto"].forEach((a) =>
-        set(a, null)
+      ["play", "pause", "previoustrack", "nexttrack", "seekbackward", "seekforward", "seekto"].forEach(
+        (a) => set(a, null)
       );
     };
-  }, [resumePlayback, pausePlayback, prev, next, seek]);
+  }, [resumePlayback, pausePlayback, prev, next, seek, skipBy]);
 
   const value = {
     queue,
