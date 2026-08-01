@@ -732,8 +732,13 @@ export function PlayerProvider({ children }) {
 
   const next = useCallback(() => {
     const n = nextIndex();
-    if (n !== -1) transitionTo(n);
-  }, [nextIndex, transitionTo]);
+    if (n !== -1) {
+      transitionTo(n);
+      return;
+    }
+    // Nothing queued after this one — keep the music going with a similar track.
+    if (currentTrack) extendWithGenreRadio(currentTrack);
+  }, [nextIndex, transitionTo, currentTrack, extendWithGenreRadio]);
 
   const prev = useCallback(() => {
     const a = activeEl();
