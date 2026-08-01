@@ -704,22 +704,42 @@ export function PlayerProvider({ children }) {
     setCurrentIndex(0);
   }, []);
 
+  // Play the active element, resuming a suspended AudioContext FIRST. WebKit
+  // auto-suspends the AudioContext while audio is paused; if we call play()
+  // before the context resumes, the element advances but the routed graph is
+  // silent — the "volume disappears after pause" bug. await resume, then play.
+  const resumeAndPlay = useCallback(
+    (a) => {
+      const ctx = audioCtxRef.current;
+      const run = () => {
+        if (!crossfadingRef.current) setGainImmediate(activeIdxRef.current, 1);
+        return a
+          .play()
+          .then(() => {
+            setIsPlaying(true);
+            syncPositionState(a);
+          })
+          .catch(() => {});
+      };
+      if (ctx && ctx.state === "suspended") {
+        return ctx.resume().then(run).catch(() => {});
+      }
+      return run();
+    },
+    [setGainImmediate, syncPositionState]
+  );
+
   const togglePlay = useCallback(() => {
     const a = activeEl();
     if (!a || !currentTrack) return;
     if (a.paused) {
       if (graphNeeded()) ensureGraph();
-      const ctx = audioCtxRef.current;
-      if (ctx && ctx.state === "suspended") ctx.resume().catch(() => {});
-      if (!crossfadingRef.current) setGainImmediate(activeIdxRef.current, 1);
-      a.play()
-        .then(() => setIsPlaying(true))
-        .catch(() => {});
+      resumeAndPlay(a);
     } else {
       a.pause();
       setIsPlaying(false);
     }
-  }, [currentTrack, ensureGraph, setGainImmediate, graphNeeded]);
+  }, [currentTrack, ensureGraph, graphNeeded, resumeAndPlay]);
 
   const seek = useCallback((time) => {
     const a = activeEl();
@@ -905,25 +925,9 @@ export function PlayerProvider({ children }) {
       loadOnActive(currentTrack);
       return;
     }
-    const doPlay = () => {
-      if (!crossfadingRef.current) setGainImmediate(activeIdxRef.current, 1);
-      a.play().then(() => {
-        setIsPlaying(true);
-        syncPositionState(a);
-      }).catch(() => {});
-    };
-    if (graphNeeded()) {
-      const ctx = ensureGraph();
-      if (ctx && ctx.state === "suspended") {
-        ctx.resume().then(doPlay).catch(() => {});
-        return;
-      }
-    } else {
-      const ctx = audioCtxRef.current;
-      if (ctx && ctx.state === "suspended") ctx.resume().catch(() => {});
-    }
-    doPlay();
-  }, [currentTrack, ensureGraph, setGainImmediate, syncPositionState, graphNeeded, loadOnActive]);
+    if (graphNeeded()) ensureGraph();
+    resumeAndPlay(a);
+  }, [currentTrack, ensureGraph, graphNeeded, loadOnActive, resumeAndPlay]);
 
   const pausePlayback = useCallback(() => {
     const a = activeEl();
