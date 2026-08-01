@@ -103,7 +103,11 @@ export default function SyncedLyrics({ trackId, position, fallbackText = "", onS
 
   const text = trackLyrics.trim() || fallbackText.trim();
   if (!text) {
-    return null;
+    return (
+      <div className="flex-1 flex items-center justify-center text-white/40 italic text-center px-6">
+        No lyrics available for this track yet.
+      </div>
+    );
   }
   return (
     <div className="flex-1 min-h-0 overflow-y-auto no-scrollbar px-4 py-10 text-white/85 text-xl font-extrabold leading-relaxed whitespace-pre-line">
