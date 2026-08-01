@@ -16,9 +16,11 @@ import { Link } from "react-router-dom";
 import { formatTime } from "@/lib/audio-utils";
 import FullScreenPlayer from "@/components/FullScreenPlayer";
 import QueuePanel from "@/components/QueuePanel";
+import { useSidebarCollapsed } from "@/hooks/useSidebarCollapsed";
 
 export default function PlayerBar() {
   const p = usePlayer();
+  const { collapsed } = useSidebarCollapsed();
   const [fullOpen, setFullOpen] = useState(false);
   const [queueOpen, setQueueOpen] = useState(false);
   const [dragY, setDragY] = useState(0);
@@ -64,7 +66,9 @@ export default function PlayerBar() {
           opacity: 1 - Math.min(dragY / 200, 0.6),
           transition: drag.current.active ? "none" : "transform .25s ease, opacity .25s ease"
         }}
-        className="fixed left-0 right-0 md:left-64 z-30 bg-background/90 backdrop-blur-xl border-t border-border player-bar-mobile-bottom touch-none">
+        className={`fixed left-0 right-0 z-30 bg-background/90 backdrop-blur-xl border-t border-border player-bar-mobile-bottom touch-none transition-[left] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+        collapsed ? "md:left-16" : "md:left-64"}`
+        }>
         {/* progress (mobile - thin top accent) */}
         <div className="h-[3px] w-full bg-foreground/[0.06] relative overflow-hidden">
           <div

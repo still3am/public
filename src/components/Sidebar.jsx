@@ -1,5 +1,5 @@
-import { useState } from "react";
 import { NavLink } from "react-router-dom";
+import { useSidebarCollapsed } from "@/hooks/useSidebarCollapsed";
 
 import {
   Home,
@@ -28,16 +28,7 @@ const NAV = [
 
 export default function Sidebar() {
   const { user } = useAuth();
-  const [collapsed, setCollapsed] = useState(
-    () => localStorage.getItem("sidebar_collapsed") === "1"
-  );
-
-  const toggle = () => {
-    setCollapsed((c) => {
-      localStorage.setItem("sidebar_collapsed", c ? "0" : "1");
-      return !c;
-    });
-  };
+  const { collapsed, toggle } = useSidebarCollapsed();
 
   const links = [
     ...NAV,
