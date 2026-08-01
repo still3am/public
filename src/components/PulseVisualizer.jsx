@@ -46,21 +46,21 @@ export default function PulseVisualizer({ className = "" }) {
         const norm = Math.min(1, Math.max(0, (rawLow - floor) / span));
 
         // fast attack, slow release => thump then relax
-        bass += (norm - bass) * (norm > bass ? 0.6 : 0.075);
-        mids += (rawMid - mids) * 0.12;
+        bass += (norm - bass) * (norm > bass ? 0.16 : 0.045);
+        mids += (rawMid - mids) * 0.05;
       }
 
-      t += 0.006;
+      t += 0.0035;
       const drift = (a, b) => `${50 + Math.sin(t * a) * 14}% ${50 + Math.cos(t * b) * 14}%`;
       const glow = 0.26 + Math.min(0.6, bass * 0.85);
 
       if (layerA.current) {
-        layerA.current.style.transform = `scale(${1 + bass * 0.28})`;
+        layerA.current.style.transform = `scale(${1 + bass * 0.18})`;
         layerA.current.style.opacity = glow;
         layerA.current.style.backgroundPosition = `${drift(1, 0.8)}, ${drift(0.7, 1.2)}, ${drift(1.3, 0.6)}`;
       }
       if (layerB.current) {
-        layerB.current.style.transform = `scale(${1 + bass * 0.75})`;
+        layerB.current.style.transform = `scale(${1 + bass * 0.45})`;
         layerB.current.style.opacity = glow * 0.75;
       }
       if (layerC.current) {
