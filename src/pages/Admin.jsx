@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { ShieldCheck, Music2, Flag, Lightbulb, Wand2, Ban } from "lucide-react";
+import { ShieldCheck, Music2, Flag, Lightbulb, Wand2, Ban, Users } from "lucide-react";
 import { useAuth } from "@/lib/AuthContext";
 import BackHeader from "@/components/BackHeader";
 import ApprovalsManager from "@/components/admin/ApprovalsManager";
@@ -7,7 +7,7 @@ import SuggestionsManager from "@/components/admin/SuggestionsManager";
 import ReportsManager from "@/components/admin/ReportsManager";
 import GenreTool from "@/components/admin/GenreTool";
 import UploadSwitch from "@/components/admin/UploadSwitch";
-import UserCountStat from "@/components/admin/UserCountStat";
+import UsersManager from "@/components/admin/UsersManager";
 
 export default function Admin() {
   const { user } = useAuth();
@@ -22,6 +22,7 @@ export default function Admin() {
 
   const tabs = [
     { id: "approvals", icon: ShieldCheck, label: "Approvals" },
+    { id: "users", icon: Users, label: "Users" },
     { id: "reports", icon: Flag, label: "Reports" },
     { id: "suggestions", icon: Lightbulb, label: "Suggestions" },
     { id: "genre", icon: Wand2, label: "Genre Tool" },
@@ -57,8 +58,8 @@ export default function Admin() {
           </div>
 
           <div className="max-w-5xl mx-auto px-3 sm:px-5 pt-4">
-            <UserCountStat />
             {tab === "approvals" && <ApprovalsManager />}
+            {tab === "users" && <UsersManager />}
             {tab === "reports" && <ReportsManager />}
             {tab === "suggestions" && <SuggestionsManager />}
             {tab === "genre" && <GenreTool />}

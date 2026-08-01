@@ -2,79 +2,11 @@
   "name": "User",
   "type": "object",
   "properties": {
-    "display_name": {
-      "type": "string",
-      "default": ""
-    },
-    "avatar_url": {
-      "type": "string",
-      "default": ""
-    },
-    "bio": {
-      "type": "string",
-      "default": ""
-    },
-    "can_upload": {
+    "is_blocked": {
       "type": "boolean",
-      "default": false
-    },
-    "is_verified": {
-      "type": "boolean",
-      "default": false
-    },
-    "follower_count": {
-      "type": "integer",
-      "default": 0
-    },
-    "following_count": {
-      "type": "integer",
-      "default": 0
-    },
-    "listening_now_track_id": {
-      "type": "string",
-      "default": ""
-    },
-    "listening_now_opt_in": {
-      "type": "boolean",
-      "default": false
-    },
-    "location": {
-      "type": "string",
-      "default": ""
-    },
-    "pronouns": {
-      "type": "string",
-      "default": ""
-    },
-    "website": {
-      "type": "string",
-      "default": ""
-    },
-    "instagram": {
-      "type": "string",
-      "default": ""
-    },
-    "twitter": {
-      "type": "string",
-      "default": ""
-    },
-    "soundcloud": {
-      "type": "string",
-      "default": ""
-    },
-    "banner_url": {
-      "type": "string",
-      "default": ""
-    },
-    "favorite_genres": {
-      "type": "array",
-      "items": {
-        "type": "string"
-      },
-      "default": []
+      "default": false,
+      "description": "When true, the user is blocked from the platform"
     }
   },
-  "required": [
-    "display_name"
-  ]
+  "required": []
 }
