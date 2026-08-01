@@ -27,6 +27,7 @@ export default function Downloads() {
   const cache = useOfflineCache();
   const { toast } = useToast();
   const [confirming, setConfirming] = useState(false);
+  const [dragging, setDragging] = useState(false);
 
   const tracks = useMemo(
     () =>
@@ -84,6 +85,7 @@ export default function Downloads() {
   const loading = cache.loading;
 
   const onDragEnd = (res) => {
+    setDragging(false);
     if (!res.destination || res.source.index === res.destination.index) return;
     const ids = tracks.map((t) => t.id);
     const [moved] = ids.splice(res.source.index, 1);
@@ -135,7 +137,7 @@ export default function Downloads() {
         </div>
       }
 
-      <PullToRefresh onRefresh={async () => await cache.refresh()}>
+      <PullToRefresh disabled={dragging} onRefresh={async () => await cache.refresh()}>
         {loading ?
         <div className="flex justify-center py-16">
             <Loader2 className="animate-spin text-foreground/40" />
@@ -171,10 +173,10 @@ export default function Downloads() {
               </div>
           }
 
-            <DragDropContext onDragEnd={onDragEnd}>
+            <DragDropContext onDragStart={() => setDragging(true)} onDragEnd={onDragEnd}>
               <Droppable droppableId="downloads">
                 {(dropProvided) => (
-                <div className="space-y-1" ref={dropProvided.innerRef} {...dropProvided.droppableProps}>
+                <div ref={dropProvided.innerRef} {...dropProvided.droppableProps} className="space-y-1 touch-none" style={{ touchAction: "none" }}>
                   {tracks.map((t, i) => {
                   const here = isCurrent(t.id);
                   const playingHere = here && p.isPlaying;
@@ -185,7 +187,8 @@ export default function Downloads() {
                       ref={dragProvided.innerRef}
                       {...dragProvided.draggableProps}
                       onDoubleClick={() => playOne(i)}
-                      className={`group flex items-center gap-2 px-2 py-2 rounded-lg transition ${
+                      style={{ ...dragProvided.draggableProps.style, touchAction: "none", overscrollBehavior: "contain" }}
+                      className={`group flex items-center gap-2 px-2 py-2 rounded-lg transition touch-none ${
                       snapshot.isDragging ? "bg-foreground/[0.06] ring-1 ring-border shadow-lg" : "hover:bg-foreground/[0.03]"}`}>
                       <div
                         {...dragProvided.dragHandleProps}

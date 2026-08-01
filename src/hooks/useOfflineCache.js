@@ -16,7 +16,7 @@ export function useOfflineCache() {
   const [cachedIds, setCachedIds] = useState(null);
   const [records, setRecords] = useState([]);
   const [downloading, setDownloading] = useState({});
-  const coverBackfillDone = useRef(false);
+  const backfilled = useRef(new Set());
 
   const applyOrder = useCallback((all, orderIds) => {
     if (!orderIds || !orderIds.length) {
@@ -37,28 +37,29 @@ export function useOfflineCache() {
       const [all, orderIds] = await Promise.all([listRecords(), getOrderIds()]);
       setRecords(applyOrder(all, orderIds));
       setCachedIds(new Set(all.map((r) => r.id)));
-      // Backfill cover-art blobs for legacy saves (once per session, online only).
-      if (
-        !coverBackfillDone.current &&
-        typeof navigator !== "undefined" &&
-        navigator.onLine &&
-        all.some((r) => r.cover_art_url && !r._coverBlob)
-      ) {
-        coverBackfillDone.current = true;
-        (async () => {
-          let changed = false;
-          for (const r of all) {
-            if (!r.cover_art_url || r._coverBlob) continue;
-            try {
-              const res = await fetch(r.cover_art_url);
-              if (res.ok) {
-                await putCoverArt(r.id, await res.blob());
-                changed = true;
-              }
-            } catch {}
-          }
-          if (changed) window.dispatchEvent(new CustomEvent(EVT));
-        })();
+      // Backfill cover-art blobs for any saved track still missing one. Runs
+      // whenever we're online, retrying each record once per session so a
+      // dropped fetch doesn't permanently strand a cover offline.
+      if (typeof navigator !== "undefined" && navigator.onLine) {
+        const need = all.filter(
+          (r) => r.cover_art_url && !r._coverBlob && !backfilled.current.has(r.id)
+        );
+        if (need.length) {
+          need.forEach((r) => backfilled.current.add(r.id));
+          (async () => {
+            let changed = false;
+            for (const r of need) {
+              try {
+                const res = await fetch(r.cover_art_url);
+                if (res.ok) {
+                  await putCoverArt(r.id, await res.blob());
+                  changed = true;
+                }
+              } catch {}
+            }
+            if (changed) window.dispatchEvent(new CustomEvent(EVT));
+          })();
+        }
       }
     } catch {
       setCachedIds(new Set());
