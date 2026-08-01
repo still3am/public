@@ -18,7 +18,6 @@ import { Link } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import { useAuth } from "@/lib/AuthContext";
 import { useLibrary } from "@/context/LibraryContext";
-import DownloadButton from "@/components/DownloadButton";
 import { useOfflineCache } from "@/hooks/useOfflineCache";
 import { useToast } from "@/components/ui/use-toast";
 import ArtistLinks from "@/components/ArtistLinks";
@@ -159,12 +158,6 @@ export default function TrackRow({
       }
       <div className="hidden md:block text-xs text-foreground/40 w-12 text-right tabular-nums shrink-0">
         {formatTime(track.duration_seconds)}
-      </div>
-      <div className="hidden sm:block shrink-0">
-        <DownloadButton
-          track={track}
-          size={17}
-          className="p-2 rounded-full hover:bg-foreground/[0.05] transition" />
       </div>
       <div className="relative shrink-0">
         <button
