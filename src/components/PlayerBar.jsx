@@ -66,8 +66,8 @@ export default function PlayerBar() {
           opacity: 1 - Math.min(dragY / 200, 0.6),
           transition: drag.current.active ? "none" : "transform .25s ease, opacity .25s ease"
         }}
-        className={`fixed left-0 right-0 z-30 bg-background/90 backdrop-blur-xl border-t border-border player-bar-mobile-bottom touch-none will-change-[left] transition-[left] duration-[420ms] ease-[cubic-bezier(0.32,0.72,0,1)] ${
-        collapsed ? "md:left-16" : "md:left-64"}`
+        className={`fixed left-0 right-0 z-30 bg-background/90 backdrop-blur-xl border-t border-border player-bar-mobile-bottom touch-none transition-[left] duration-300 ease-out ${
+        collapsed ? "md:left-[68px]" : "md:left-64"}`
         }>
         {/* progress (mobile - thin top accent) */}
         <div className="h-[3px] w-full bg-foreground/[0.06] relative overflow-hidden">
