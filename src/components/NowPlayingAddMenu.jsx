@@ -3,7 +3,6 @@ import {
   Plus,
   Share2,
   X,
-  Activity,
   Heart,
   ListMusic,
   Smartphone,
@@ -14,8 +13,6 @@ import {
 
 export default function NowPlayingAddMenu({
   onShare,
-  showVisualizer,
-  onToggleVisualizer,
   showPulse,
   onTogglePulse,
   onViewQueue,
@@ -87,15 +84,6 @@ export default function NowPlayingAddMenu({
         onLounge();
         close();
       },
-    },
-    onToggleVisualizer && {
-      icon: Activity,
-      label: showVisualizer ? "Hide visualizer" : "Show visualizer",
-      onClick: (close) => {
-        onToggleVisualizer();
-        close();
-      },
-      accent: showVisualizer ? "text-white" : "",
     },
     onTogglePulse && {
       icon: Heart,

@@ -24,7 +24,6 @@ import {
   X,
   Activity } from
 "lucide-react";
-import AudioVisualizer from "@/components/AudioVisualizer";
 import PulseVisualizer from "@/components/PulseVisualizer";
 import PlayPauseButton from "@/components/PlayPauseButton";
 import QueuePanel from "@/components/QueuePanel";
@@ -56,7 +55,6 @@ export default function FullScreenPlayer({ onClose }) {
   const { isInLibrary, toggle: toggleLibrary } = useLibrary();
   const bg = useColorExtraction(p.currentTrack?.cover_art_url);
   const [lyricsMode, setLyricsMode] = useState(false);
-  const [showVisualizer, setShowVisualizer] = useState(false);
   const [showPulse, setShowPulse] = useState(false);
   const [showVolHint, setShowVolHint] = useState(false);
   const [copied, setCopied] = useState(false);
@@ -193,11 +191,6 @@ export default function FullScreenPlayer({ onClose }) {
         style={{ background: `radial-gradient(ellipse at center, ${bg} 0%, transparent 70%)` }} />
 
       {/* reactive visualizer */}
-      {showVisualizer &&
-      <div className="pointer-events-none absolute inset-0 z-0 opacity-80">
-        <AudioVisualizer className="w-full h-full" bars={56} mirror />
-      </div>
-      }
       {showPulse && <PulseVisualizer className="absolute inset-0 z-0" />}
       
 
@@ -236,16 +229,9 @@ export default function FullScreenPlayer({ onClose }) {
         </div>
         <NowPlayingAddMenu
           onShare={shareNow}
-          showVisualizer={showVisualizer}
-          onToggleVisualizer={() => {
-            setShowVisualizer((v) => !v);
-            setShowPulse(false);
-            if (!showVisualizer) p.enableAnalyser?.();
-          }}
           showPulse={showPulse}
           onTogglePulse={() => {
             setShowPulse((v) => !v);
-            setShowVisualizer(false);
             if (!showPulse) p.enableAnalyser?.();
           }}
           onToggleLibrary={() => toggleLibrary(t)}
