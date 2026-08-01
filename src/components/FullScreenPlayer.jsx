@@ -381,14 +381,14 @@ export default function FullScreenPlayer({ onClose }) {
             <button
               onClick={() => setLyricsMode(false)}
               className={`flex items-center justify-center gap-1.5 px-4 py-1.5 rounded-full transition text-xs font-semibold ${
-              !lyricsMode ? "bg-white text-black" : "opacity-70"}`}
+              !lyricsMode ? "bg-[#ffffff] text-[#000000]" : "opacity-70"}`}
               aria-label="Artwork">
               <Disc3 size={14} /> Artwork
             </button>
             <button
               onClick={() => setLyricsMode(true)}
               className={`flex items-center justify-center gap-1.5 px-4 py-1.5 rounded-full transition text-xs font-semibold ${
-              lyricsMode ? "bg-white text-black" : "opacity-70"}`}
+              lyricsMode ? "bg-[#ffffff] text-[#000000]" : "opacity-70"}`}
               aria-label="Lyrics">
               <Mic2 size={14} /> Lyrics
             </button>
