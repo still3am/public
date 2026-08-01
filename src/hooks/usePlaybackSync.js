@@ -82,12 +82,6 @@ export function usePlaybackSync() {
     return () => clearInterval(id);
   }, [isPlaying, publish]);
 
-  useEffect(() => {
-    const flush = () => publish();
-    window.addEventListener("pagehide", flush);
-    return () => window.removeEventListener("pagehide", flush);
-  }, [publish]);
-
   // Read the newest state belonging to a DIFFERENT device.
   const loadRemote = useCallback(async () => {
     if (!user?.id) return;
@@ -111,7 +105,21 @@ export function usePlaybackSync() {
       try {
         track = JSON.parse(other.track);
       } catch {}
-      setRemote(track ? { ...other, trackObj: track } : null);
+      if (!track) {
+        setRemote(null);
+        return;
+      }
+      // If the other device is still playing, its stored position is already
+      // out of date — advance it by the time elapsed since it was sampled so
+      // resuming here lands on the right spot instead of jumping backwards.
+      const sampledAt = new Date(other.sampled_at || other.updated_date).getTime();
+      let at = Math.max(0, other.position_seconds || 0);
+      if (other.is_playing && !isNaN(sampledAt)) {
+        at += Math.max(0, (Date.now() - sampledAt) / 1000);
+        const dur = track.duration_seconds || 0;
+        if (dur) at = Math.min(at, dur);
+      }
+      setRemote({ ...other, trackObj: track, resumeAt: Math.round(at) });
     } catch {
       setRemote(null);
     }
@@ -122,6 +130,23 @@ export function usePlaybackSync() {
     const unsub = base44.entities.PlaybackState.subscribe(() => loadRemote());
     return unsub;
   }, [loadRemote]);
+
+  // Mobile browsers often never fire pagehide/unload (the tab gets frozen or
+  // backgrounded instead), so flush on visibility change too — and re-read
+  // remote state when we come back into view, since realtime events don't
+  // arrive while the page is frozen.
+  useEffect(() => {
+    const onVisibility = () => {
+      if (document.visibilityState === "hidden") publish();
+      else loadRemote();
+    };
+    window.addEventListener("pagehide", publish);
+    document.addEventListener("visibilitychange", onVisibility);
+    return () => {
+      window.removeEventListener("pagehide", publish);
+      document.removeEventListener("visibilitychange", onVisibility);
+    };
+  }, [publish, loadRemote]);
 
   return { remote, refreshRemote: loadRemote };
 }

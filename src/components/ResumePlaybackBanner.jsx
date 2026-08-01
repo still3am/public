@@ -3,7 +3,7 @@ import { usePlayer } from "@/context/PlayerContext";
 import { usePlaybackSync } from "@/hooks/usePlaybackSync";
 import { formatTime, displayArtist } from "@/lib/audio-utils";
 import { Image } from "@/components/ui/image";
-import { Laptop, Play, X } from "lucide-react";
+import { Laptop, Play, Smartphone, X } from "lucide-react";
 
 // Offers a one-tap handoff when another of the user's devices was last playing
 // something different from what's playing here.
@@ -17,7 +17,7 @@ export default function ResumePlaybackBanner() {
   if (dismissed === `${remote.track_id}:${remote.device_id}`) return null;
 
   const t = remote.trackObj;
-  const at = Math.max(0, remote.position_seconds || 0);
+  const at = remote.resumeAt ?? Math.max(0, remote.position_seconds || 0);
 
   return (
     <div className="fixed left-1/2 -translate-x-1/2 bottom-[calc(9rem+env(safe-area-inset-bottom))] md:bottom-28 z-40 w-[min(94vw,26rem)]">
@@ -33,11 +33,19 @@ export default function ResumePlaybackBanner() {
         </div>
         <div className="min-w-0 flex-1">
           <div className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wide text-foreground/40">
-            <Laptop size={11} /> {remote.device_label || "Another device"}
+            {/^(iphone|ipad|android|phone|mobile|tablet)/i.test(
+              remote.device_label || ""
+            ) ? (
+              <Smartphone size={11} />
+            ) : (
+              <Laptop size={11} />
+            )}{" "}
+            {remote.device_label || "Another device"}
           </div>
           <div className="text-sm font-bold truncate mt-0.5">{t.title}</div>
           <div className="text-xs text-foreground/50 truncate">
-            {displayArtist(t)} · paused at {formatTime(at)}
+            {displayArtist(t)} · {remote.is_playing ? "playing" : "paused"} at{" "}
+            {formatTime(at)}
           </div>
         </div>
         <button
@@ -50,7 +58,7 @@ export default function ResumePlaybackBanner() {
         </button>
         <button
           onClick={() => setDismissed(`${remote.track_id}:${remote.device_id}`)}
-          className="shrink-0 w-7 h-7 rounded-full grid place-items-center text-foreground/40 hover:bg-foreground/[0.06]"
+          className="shrink-0 w-9 h-9 md:w-7 md:h-7 rounded-full grid place-items-center text-foreground/40 hover:bg-foreground/[0.06]"
           aria-label="Dismiss"
         >
           <X size={14} />
