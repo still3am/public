@@ -796,6 +796,25 @@ export function PlayerProvider({ children }) {
     });
   }, []);
 
+  // Reorder queued tracks. Only positions after the current track are ever
+  // moved, so currentIndex (and playback) stays untouched.
+  const moveInQueue = useCallback((from, to) => {
+    setQueue((prev) => {
+      if (
+        from === to ||
+        from < 0 ||
+        to < 0 ||
+        from >= prev.length ||
+        to >= prev.length
+      )
+        return prev;
+      const next = [...prev];
+      const [item] = next.splice(from, 1);
+      next.splice(to, 0, item);
+      return next;
+    });
+  }, []);
+
   const playQueueItem = useCallback(
     (index) => {
       if (index >= 0 && index < queue.length) {
@@ -861,6 +880,7 @@ export function PlayerProvider({ children }) {
     addToQueue,
     addManyToQueue,
     removeFromQueue,
+    moveInQueue,
     playQueueItem,
     clearQueue,
     sleepTimerEndsAt,

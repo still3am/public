@@ -7,8 +7,10 @@ import {
   ListMusic,
   Plus,
   Music2,
+  GripVertical,
   GitMerge } from
 "lucide-react";
+import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
 import { useNavigate } from "react-router-dom";
 import { usePlayer } from "@/context/PlayerContext";
 import { useAuth } from "@/lib/AuthContext";
@@ -160,12 +162,31 @@ export default function QueuePanel({ open, onClose }) {
             </p>
           </div> :
 
-        <div className="space-y-0.5">
+        <DragDropContext
+          onDragEnd={(res) => {
+            if (!res.destination) return;
+            const from = upcoming[res.source.index]?.i;
+            const to = upcoming[res.destination.index]?.i;
+            if (from == null || to == null) return;
+            p.moveInQueue(from, to);
+          }}>
+          <Droppable droppableId="queue">
+            {(dropProvided) =>
+          <div className="space-y-0.5" ref={dropProvided.innerRef} {...dropProvided.droppableProps}>
             {upcoming.map(({ trk: tt, i }, pos) =>
+          <Draggable key={tt.id + i} draggableId={tt.id + i} index={pos}>
+            {(dragProvided, snapshot) =>
           <div
-            key={tt.id + i}
-            className="group flex items-center gap-3 px-2 py-2 rounded-xl hover:bg-white/[0.06] transition">
-                
+            ref={dragProvided.innerRef}
+            {...dragProvided.draggableProps}
+            className={`group flex items-center gap-3 px-2 py-2 rounded-xl transition ${
+            snapshot.isDragging ? "bg-white/[0.12] ring-1 ring-white/15" : "hover:bg-white/[0.06]"}`}>
+                <div
+              {...dragProvided.dragHandleProps}
+              className="shrink-0 -ml-1 p-1 text-white/30 hover:text-white/70 cursor-grab active:cursor-grabbing touch-none"
+              aria-label="Reorder">
+                  <GripVertical size={16} />
+                </div>
 
             
                 <div className="relative w-10 h-10 rounded-lg overflow-hidden bg-white/10 shrink-0">
@@ -201,8 +222,14 @@ export default function QueuePanel({ open, onClose }) {
                   <Trash2 size={15} />
                 </button>
               </div>
+          }
+          </Draggable>
           )}
+            {dropProvided.placeholder}
           </div>
+          }
+          </Droppable>
+        </DragDropContext>
         }
       </div>
 
