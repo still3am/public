@@ -7,11 +7,20 @@ import UserCountStat from "@/components/admin/UserCountStat";
 
 export default function UsersManager() {
   const [users, setUsers] = useState(null);
+  const [uploadCounts, setUploadCounts] = useState({});
   const [q, setQ] = useState("");
   const [busyId, setBusyId] = useState(null);
 
   const load = async () => {
-    const list = await base44.entities.User.list("-created_date", 500);
+    const [list, tracks] = await Promise.all([
+      base44.entities.User.list("-created_date", 500),
+      base44.entities.Track.list("-created_date", 5000),
+    ]);
+    const counts = {};
+    (tracks || []).forEach((t) => {
+      if (t.uploader_id) counts[t.uploader_id] = (counts[t.uploader_id] || 0) + 1;
+    });
+    setUploadCounts(counts);
     setUsers(list || []);
   };
 
@@ -76,6 +85,7 @@ export default function UsersManager() {
             <UserRow
               key={u.id}
               u={u}
+              uploads={uploadCounts[u.id] || 0}
               busy={busyId === u.id}
               onToggleBlock={toggleBlock}
               onDelete={remove}
