@@ -7,6 +7,7 @@ import SuggestionsManager from "@/components/admin/SuggestionsManager";
 import ReportsManager from "@/components/admin/ReportsManager";
 import GenreTool from "@/components/admin/GenreTool";
 import UploadSwitch from "@/components/admin/UploadSwitch";
+import UserCountStat from "@/components/admin/UserCountStat";
 
 export default function Admin() {
   const { user } = useAuth();
@@ -56,6 +57,7 @@ export default function Admin() {
           </div>
 
           <div className="max-w-5xl mx-auto px-3 sm:px-5 pt-4">
+            <UserCountStat />
             {tab === "approvals" && <ApprovalsManager />}
             {tab === "reports" && <ReportsManager />}
             {tab === "suggestions" && <SuggestionsManager />}
