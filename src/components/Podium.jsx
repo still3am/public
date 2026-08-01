@@ -6,6 +6,7 @@ function PodiumCard({ track, rank, height, accent }) {
   const p = usePlayer();
   const isCurrent = p.currentTrack?.id === track.id;
   const play = (e) => {
+    e.preventDefault();
     e.stopPropagation();
     if (isCurrent) p.togglePlay();
     else p.playTrackAt([track]);
