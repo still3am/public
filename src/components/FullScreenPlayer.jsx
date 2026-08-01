@@ -310,9 +310,9 @@ export default function FullScreenPlayer({ onClose }) {
           {/* scrubber */}
           <div className="mb-1.5 shrink-0">
             <div className="relative h-1.5 bg-white/20 rounded-full group">
-              <div className="absolute left-0 top-0 h-1.5 bg-white rounded-full" style={{ width: `${progress}%` }} />
+              <div className="absolute left-0 top-0 h-1.5 bg-[#ffffff] rounded-full" style={{ width: `${progress}%` }} />
               <div
-                className="absolute top-1/2 -translate-y-1/2 w-3 h-3 bg-white rounded-full shadow-md opacity-0 group-hover:opacity-100 transition"
+                className="absolute top-1/2 -translate-y-1/2 w-3 h-3 bg-[#ffffff] rounded-full shadow-md opacity-0 group-hover:opacity-100 transition"
                 style={{ left: `calc(${progress}% - 6px)` }} />
               
               <input
