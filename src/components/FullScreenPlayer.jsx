@@ -26,6 +26,7 @@ import {
 "lucide-react";
 import AudioVisualizer from "@/components/AudioVisualizer";
 import PulseVisualizer from "@/components/PulseVisualizer";
+import PlayPauseButton from "@/components/PlayPauseButton";
 import QueuePanel from "@/components/QueuePanel";
 import LoungeHostModal from "@/components/LoungeHostModal";
 import { useLoungeHost } from "@/hooks/useLoungeHost";
@@ -351,13 +352,7 @@ export default function FullScreenPlayer({ onClose }) {
             <button onClick={() => p.prev()} className="p-2 active:scale-90 transition" aria-label="Previous">
               <SkipBack size={30} fill="white" strokeWidth={1.5} />
             </button>
-            <button
-              onClick={() => p.togglePlay()}
-              className="w-16 h-16 xl:w-20 xl:h-20 rounded-full bg-white text-black grid place-items-center hover:scale-105 active:scale-95 transition ring-2 ring-black/25 shadow-[0_10px_30px_rgba(0,0,0,0.55)]"
-              aria-label={p.isPlaying ? "Pause" : "Play"}>
-              
-              {p.isPlaying ? <Pause size={28} fill="black" /> : <Play size={28} fill="black" className="ml-1" />}
-            </button>
+            <PlayPauseButton isPlaying={p.isPlaying} onClick={() => p.togglePlay()} />
             <button onClick={() => p.next()} className="p-2 active:scale-90 transition" aria-label="Next">
               <SkipForward size={30} fill="white" strokeWidth={1.5} />
             </button>
