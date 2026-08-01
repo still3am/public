@@ -17,6 +17,7 @@ import { formatTime } from "@/lib/audio-utils";
 import FullScreenPlayer from "@/components/FullScreenPlayer";
 import QueuePanel from "@/components/QueuePanel";
 import { useSidebarCollapsed } from "@/hooks/useSidebarCollapsed";
+import { useOfflineCoverUrl } from "@/hooks/useOfflineCoverUrl";
 
 export default function PlayerBar() {
   const p = usePlayer();
@@ -49,6 +50,7 @@ export default function PlayerBar() {
     setDragY(0);
   };
 
+  const coverUrl = useOfflineCoverUrl(p.currentTrack?.id, p.currentTrack?.cover_art_url);
   if (!p.currentTrack) return null;
   const t = p.currentTrack;
   const pct = p.duration ? p.position / p.duration * 100 : 0;
@@ -81,8 +83,8 @@ export default function PlayerBar() {
           {/* artwork + meta */}
           <button onClick={() => setFullOpen(true)} className="flex items-center gap-3 min-w-0 flex-1 text-left" aria-label="Open Now Playing">
             <div className="shrink-0 relative">
-              {t.cover_art_url ?
-              <img src={t.cover_art_url} alt="" className="w-12 h-12 sm:w-14 sm:h-14 rounded-xl object-cover shadow-md" /> :
+              {coverUrl ?
+              <img src={coverUrl} alt="" className="w-12 h-12 sm:w-14 sm:h-14 rounded-xl object-cover shadow-md" /> :
 
               <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-xl bg-foreground/10 grid place-items-center text-foreground/30">
                   <ListMusic size={18} />

@@ -31,6 +31,7 @@ import LoungeHostModal from "@/components/LoungeHostModal";
 import { useLoungeHost } from "@/hooks/useLoungeHost";
 import { useLibrary } from "@/context/LibraryContext";
 import { useOfflineCache } from "@/hooks/useOfflineCache";
+import { useOfflineCoverUrl } from "@/hooks/useOfflineCoverUrl";
 import { useToast } from "@/components/ui/use-toast";
 import { base44 } from "@/api/base44Client";
 
@@ -54,7 +55,8 @@ export default function FullScreenPlayer({ onClose }) {
   const p = usePlayer();
   const { user } = useAuth();
   const { isInLibrary, toggle: toggleLibrary } = useLibrary();
-  const bg = useColorExtraction(p.currentTrack?.cover_art_url);
+  const coverUrl = useOfflineCoverUrl(p.currentTrack?.id, p.currentTrack?.cover_art_url);
+  const bg = useColorExtraction(coverUrl);
   const [lyricsMode, setLyricsMode] = useState(false);
   const [showPulse, setShowPulse] = useState(false);
   const [showVolHint, setShowVolHint] = useState(false);
@@ -302,8 +304,8 @@ export default function FullScreenPlayer({ onClose }) {
               p.isPlaying ? "scale-100" : "scale-[0.97]"} ${
               lyricsMode ? "hidden xl:flex" : "flex"}`}>
                 
-                {t.cover_art_url ?
-              <img src={t.cover_art_url} alt="" className="w-full h-full object-cover" /> :
+                {coverUrl ?
+              <img src={coverUrl} alt="" className="w-full h-full object-cover" /> :
 
               <div className="w-full h-full grid place-items-center opacity-40">
                     <Disc3 size={64} />
