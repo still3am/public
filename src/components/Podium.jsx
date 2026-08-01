@@ -99,21 +99,17 @@ export default function Podium({ tracks }) {
         )}
       </div>
       {fourth && fifth && (
-        <div className="flex items-center justify-center gap-2 sm:gap-4 px-2 sm:px-6 max-w-xl mx-auto">
-          <div className="w-1/2 max-w-[180px]">
-            <PodiumCard
-              track={fourth}
-              rank={4}
-              accent="rgba(120,120,120,0.8)"
-            />
-          </div>
-          <div className="w-1/2 max-w-[180px]">
-            <PodiumCard
-              track={fifth}
-              rank={5}
-              accent="rgba(120,120,120,0.8)"
-            />
-          </div>
+        <div className="flex items-center gap-2 sm:gap-4 px-2 sm:px-6">
+          <PodiumCard
+            track={fourth}
+            rank={4}
+            accent="rgba(120,120,120,0.8)"
+          />
+          <PodiumCard
+            track={fifth}
+            rank={5}
+            accent="rgba(120,120,120,0.8)"
+          />
         </div>
       )}
     </div>
