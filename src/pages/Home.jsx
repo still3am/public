@@ -54,7 +54,7 @@ function Section({ title, icon: Icon, children, seeAllTo }) {
 function CardRow({ tracks }) {
   if (!tracks?.length) return null;
   return (
-    <div className="flex gap-3 overflow-x-auto no-scrollbar pb-2 -mx-3 px-3 snap-x snap-mandatory md:grid md:grid-cols-4 lg:grid-cols-5 md:overflow-visible md:mx-0 md:px-0 md:gap-4">
+    <div className="flex gap-3 overflow-x-auto no-scrollbar pb-2 -mx-3 px-3 snap-x snap-mandatory md:grid md:grid-cols-4 lg:grid-cols-6 md:overflow-visible md:mx-0 md:px-0 md:gap-4">
       {tracks.map((t) =>
       <div key={t.id} className="snap-start shrink-0 w-[60vw] max-w-[210px] sm:w-[200px] md:w-auto">
           <TrackCard track={t} />
@@ -75,7 +75,7 @@ function Skeleton() {
             {Array.from({ length: 6 }).map((_, j) =>
           <div
             key={j}
-            className="aspect-square w-[180px] md:w-[calc(20%-1rem)] rounded-xl bg-foreground/[0.04] animate-pulse shrink-0" />
+            className="aspect-square w-[180px] md:w-[calc(16.66%-1rem)] rounded-xl bg-foreground/[0.04] animate-pulse shrink-0" />
 
           )}
           </div>
