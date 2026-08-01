@@ -8,19 +8,19 @@ export default function BackHeader({ title, onBack, right = null }) {
     if (window.history.length > 1) nav(-1);else
     nav("/");
   };
-  return (
-    <div className="sticky top-0 z-30 flex items-center gap-3 min-h-[3.5rem] py-3 mb-4 bg-background/85 backdrop-blur-md top-bar-safe hidden">
-      
+  return null;
 
 
 
 
 
-      
-      
 
-      
-      {right}
-    </div>);
+
+
+
+
+
+
+
 
 }
