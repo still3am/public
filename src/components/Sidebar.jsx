@@ -54,11 +54,11 @@ export default function Sidebar() {
     >
       <button
         onClick={toggle}
-        className="absolute top-3 right-2 z-10 w-7 h-7 grid place-items-center rounded-full border border-border bg-card shadow-sm text-foreground/70 hover:text-foreground hover:bg-foreground/[0.06] active:scale-95 transition"
+        className="absolute top-2 right-2 z-10 text-foreground/30 hover:text-foreground transition"
         aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
         title={collapsed ? "Expand sidebar" : "Collapse sidebar"}
       >
-        {collapsed ? <ChevronsRight size={16} /> : <ChevronsLeft size={16} />}
+        {collapsed ? <ChevronsRight size={15} /> : <ChevronsLeft size={15} />}
       </button>
       <div
         className={`flex items-center py-6 ${
