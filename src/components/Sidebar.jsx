@@ -9,8 +9,8 @@ import {
   Clock,
   Library as LibraryIcon,
   Shield,
-  PanelLeftClose,
-  PanelLeftOpen,
+  ChevronsLeft,
+  ChevronsRight,
 } from "lucide-react";
 import Avatar from "@/components/Avatar";
 import Logo from "@/components/Logo";
@@ -57,12 +57,20 @@ export default function Sidebar() {
 
   return (
     <aside
-      className={`hidden md:flex flex-col shrink-0 border-r border-border bg-background h-screen sticky top-0 transition-[width] duration-200 ${
+      className={`hidden md:flex flex-col shrink-0 relative border-r border-border bg-background h-screen sticky top-0 transition-[width] duration-200 ${
         collapsed ? "w-16" : "w-64"
       }`}
     >
+      <button
+        onClick={toggle}
+        className="absolute top-2 right-2 z-10 text-foreground/30 hover:text-foreground transition"
+        aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
+        title={collapsed ? "Expand sidebar" : "Collapse sidebar"}
+      >
+        {collapsed ? <ChevronsRight size={15} /> : <ChevronsLeft size={15} />}
+      </button>
       <div
-        className={`flex items-center gap-2 py-6 ${
+        className={`flex items-center py-6 ${
           collapsed ? "px-2 justify-center" : "px-6"
         }`}
       >
@@ -71,14 +79,6 @@ export default function Sidebar() {
             <Logo width="100%" />
           </div>
         )}
-        <button
-          onClick={toggle}
-          className="shrink-0 w-8 h-8 rounded-lg grid place-items-center text-foreground/50 hover:text-foreground hover:bg-foreground/[0.05] transition"
-          aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
-          title={collapsed ? "Expand sidebar" : "Collapse sidebar"}
-        >
-          {collapsed ? <PanelLeftOpen size={17} /> : <PanelLeftClose size={17} />}
-        </button>
       </div>
       <nav
         className={`flex-1 flex flex-col gap-1 overflow-y-auto pb-2 ${
