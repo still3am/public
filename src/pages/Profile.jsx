@@ -10,6 +10,7 @@ import PullToRefresh from "@/components/PullToRefresh";
 import BackHeader from "@/components/BackHeader";
 import ProfileQRModal from "@/components/ProfileQRModal";
 import ThemeToggle from "@/components/ThemeToggle";
+import MostListenedSection from "@/components/MostListenedSection";
 import { formatNumber } from "@/lib/audio-utils";
 import {
   Loader2,
@@ -546,7 +547,9 @@ export default function Profile() {
         </div>
       </div>
 
-      {!editMode && topTracks.length > 0 &&
+      {isOwn && !editMode && <MostListenedSection />}
+
+      {!isOwn && !editMode && topTracks.length > 0 &&
         <div className="mb-8">
           <h2 className="text-lg font-extrabold tracking-tight mb-3 flex items-center gap-2">
             <BarChart2 size={18} /> Top Tracks

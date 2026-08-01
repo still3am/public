@@ -30,11 +30,36 @@ export function getRecentPlays() {
   }
 }
 
+const COUNTS_KEY = "public:listen_counts";
+
+export function getTopListened(limit = 5) {
+  try {
+    const map = JSON.parse(localStorage.getItem(COUNTS_KEY) || "{}");
+    return Object.values(map).
+    filter((e) => e?.track?.id).
+    sort((a, b) => (b.count || 0) - (a.count || 0)).
+    slice(0, limit).
+    map((e) => ({ ...e.track, listen_count: e.count }));
+  } catch {
+    return [];
+  }
+}
+
+function bumpListenCount(s) {
+  try {
+    const map = JSON.parse(localStorage.getItem(COUNTS_KEY) || "{}");
+    const prev = map[s.id];
+    map[s.id] = { track: s, count: (prev?.count || 0) + 1 };
+    localStorage.setItem(COUNTS_KEY, JSON.stringify(map));
+  } catch {}
+}
+
 export function addRecentPlay(track) {
   try {
     const v = JSON.parse(localStorage.getItem(KEY) || "[]");
     const s = slim(track);
     if (!s) return v;
+    bumpListenCount(s);
     const next = [s, ...v.filter((t) => t.id !== s.id)].slice(0, MAX);
     localStorage.setItem(KEY, JSON.stringify(next));
     window.dispatchEvent(new CustomEvent("recentplays:change"));
