@@ -165,9 +165,9 @@ export default function QueuePanel({ open, onClose }) {
           <div
             key={tt.id + i}
             className="group flex items-center gap-3 px-2 py-2 rounded-xl hover:bg-white/[0.06] transition">
-                <span className="w-5 text-center text-[12px] font-medium text-white/35 tabular-nums shrink-0 hidden">
-                  {pos + 1}
-                </span>
+                
+
+            
                 <div className="relative w-10 h-10 rounded-lg overflow-hidden bg-white/10 shrink-0">
                   {tt.cover_art_url &&
               <img
