@@ -32,13 +32,16 @@ function PodiumCard({ track, rank, height, accent }) {
             </div>
           )}
           <span
-            className="absolute top-1.5 left-1.5 grid place-items-center font-extrabold rounded-full"
+            className="absolute top-1.5 left-1.5 grid place-items-center font-extrabold rounded-full tabular-nums tracking-tight ring-1 ring-black/10 ring-inset"
             style={{
               width: rank <= 3 ? 26 : 22,
               height: rank <= 3 ? 26 : 22,
               fontSize: rank <= 3 ? 13 : 11,
-              background: accent,
+              background: `linear-gradient(150deg, #ffffff55, ${accent} 45%, rgba(0,0,0,0.18))`,
+              backgroundColor: accent,
               color: "#000",
+              boxShadow: "0 2px 6px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.5)",
+              textShadow: "0 1px 0 rgba(255,255,255,0.35)",
             }}>
             {rank}
           </span>
