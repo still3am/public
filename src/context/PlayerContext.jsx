@@ -144,6 +144,18 @@ export function PlayerProvider({ children }) {
     }
   }, []);
 
+  // Web Audio is only needed for blending transitions (crossfade/AutoMix/
+  // gapless) or the Color Pulse visualizer. When it's NOT needed we leave the
+  // <audio> elements un-routed and play them natively — this is the workaround
+  // for iOS backgrounding: a routed (MediaElementSource) element goes silent a
+  // few seconds after the app is backgrounded because iOS suspends the
+  // AudioContext, while a plain media element keeps playing on an installed
+  // (Home-Screen) PWA. Transitions/visualizer opt back in via ensureGraph().
+  const graphNeeded = useCallback(() => {
+    const s = getTransitionSettings();
+    return isTransitionActive(s) || isGapless(s);
+  }, []);
+
   const getAnalyser = useCallback(() => analyserRef.current, []);
 
   const enableAnalyser = useCallback(() => {
@@ -256,7 +268,7 @@ export function PlayerProvider({ children }) {
       el.load();
       setPosition(0);
       setDuration(0);
-      ensureGraph();
+      if (graphNeeded()) ensureGraph();
       const ctx = audioCtxRef.current;
       if (ctx && ctx.state === "suspended") ctx.resume().catch(() => {});
       setGainImmediate(side, 1);
@@ -265,7 +277,7 @@ export function PlayerProvider({ children }) {
         .then(() => setIsPlaying(true))
         .catch(() => setIsPlaying(false));
     },
-    [resolveUrl, mirrorPlayback, ensureGraph, setGainImmediate, cancelCrossfade]
+    [resolveUrl, mirrorPlayback, ensureGraph, setGainImmediate, cancelCrossfade, graphNeeded]
   );
 
   // Preload the next track onto the inactive element (no playback yet).
@@ -696,7 +708,7 @@ export function PlayerProvider({ children }) {
     const a = activeEl();
     if (!a || !currentTrack) return;
     if (a.paused) {
-      ensureGraph();
+      if (graphNeeded()) ensureGraph();
       const ctx = audioCtxRef.current;
       if (ctx && ctx.state === "suspended") ctx.resume().catch(() => {});
       if (!crossfadingRef.current) setGainImmediate(activeIdxRef.current, 1);
@@ -707,7 +719,7 @@ export function PlayerProvider({ children }) {
       a.pause();
       setIsPlaying(false);
     }
-  }, [currentTrack, ensureGraph, setGainImmediate]);
+  }, [currentTrack, ensureGraph, setGainImmediate, graphNeeded]);
 
   const seek = useCallback((time) => {
     const a = activeEl();
@@ -886,7 +898,7 @@ export function PlayerProvider({ children }) {
   const resumePlayback = useCallback(() => {
     const a = activeEl();
     if (!a || !currentTrack) return;
-    ensureGraph();
+    if (graphNeeded()) ensureGraph();
     const ctx = audioCtxRef.current;
     if (ctx && ctx.state === "suspended") ctx.resume().catch(() => {});
     if (!crossfadingRef.current) setGainImmediate(activeIdxRef.current, 1);
@@ -894,7 +906,7 @@ export function PlayerProvider({ children }) {
       setIsPlaying(true);
       syncPositionState(a);
     }).catch(() => {});
-  }, [currentTrack, ensureGraph, setGainImmediate, syncPositionState]);
+  }, [currentTrack, ensureGraph, setGainImmediate, syncPositionState, graphNeeded]);
 
   const pausePlayback = useCallback(() => {
     const a = activeEl();
