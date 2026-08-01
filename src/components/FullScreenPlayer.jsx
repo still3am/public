@@ -112,6 +112,16 @@ export default function FullScreenPlayer({ onClose }) {
     return () => window.removeEventListener("keydown", onKey);
   }, [p, onClose]);
 
+  // Lock the background page while the full-screen player is open so the drag-
+  // to-dismiss gesture can't scroll / overscroll the Home feed behind it.
+  useEffect(() => {
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = prev;
+    };
+  }, []);
+
   function flashHint() {
     setShowVolHint(true);
     clearTimeout(hintTimer.current);
@@ -203,6 +213,7 @@ export default function FullScreenPlayer({ onClose }) {
         }}
         onTouchMove={(e) => {
           if (!dismissDrag.current.active) return;
+          e.preventDefault();
           const dy = e.touches[0].clientY - dismissDrag.current.startY;
           if (dy > 0) setDragY(dy);
           if (dy > 10) dismissDrag.current.moved = true;
@@ -217,7 +228,7 @@ export default function FullScreenPlayer({ onClose }) {
             setDragY(0);
           }
         }}
-        className="relative flex items-center justify-between px-5 md:px-10 pt-8 pb-3 shrink-0">
+        className="relative flex items-center justify-between px-5 md:px-10 pt-8 pb-3 shrink-0 touch-none">
         <button onClick={onClose} className="p-2 -ml-2 active:scale-90 hover:bg-white/10 rounded-full transition" aria-label="Close">
           <ChevronDown size={26} />
         </button>
