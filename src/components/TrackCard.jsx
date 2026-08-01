@@ -38,7 +38,7 @@ export default function TrackCard({ track }) {
   return (
     <div
       onClick={handlePlay}
-      className={`group relative rounded-2xl p-2.5 sm:p-3 text-center transition-all duration-300 cursor-pointer
+      className={`group relative rounded-2xl p-2.5 sm:p-3 transition-all duration-300 cursor-pointer
         hover:bg-foreground/[0.04] active:scale-[0.98]
         ${isCurrent ? "bg-foreground/[0.03]" : ""}`}
     >
@@ -83,7 +83,7 @@ export default function TrackCard({ track }) {
         onClick={(e) => e.stopPropagation()}
         className="block"
       >
-        <div className="flex items-center justify-center gap-1.5">
+        <div className="flex items-center gap-1.5">
           <span className={`truncate text-sm font-semibold ${isCurrent ? "text-foreground" : ""}`}>
             {track.title}
           </span>
