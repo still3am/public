@@ -9,6 +9,7 @@ import {
 import { base44 } from "@/api/base44Client";
 import { getRecord } from "@/lib/offlineCache";
 import { buildAutoQueue } from "@/lib/autoQueue";
+import { useWakeLock } from "@/hooks/useWakeLock";
 import {
   getTransitionSettings,
   isTransitionActive,
@@ -891,6 +892,10 @@ export function PlayerProvider({ children }) {
     document.addEventListener("visibilitychange", onVis);
     return () => document.removeEventListener("visibilitychange", onVis);
   }, [setGainImmediate]);
+
+  // Keep the screen awake while a track is actively playing so iOS doesn't
+  // auto-lock and suspend the audio engine on the open page.
+  useWakeLock(isPlaying && !!currentTrack);
 
   // --- Media Session API: lock-screen / Control Center metadata + controls ---
   // Without this, iOS falls back to the app name + icon instead of the track's
