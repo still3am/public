@@ -13,6 +13,7 @@ import {
 const IMAGE_EXT_RE =
   /\.(jpe?g|jfif|png|gif|webp|avif|heic|heif|bmp|tiff?|svg|ico|apng)$/i;
 import { findDuplicateTracks } from "@/lib/duplicateCheck";
+import { ensureHighResCover } from "@/lib/coverImage";
 
 let uid = 0;
 const nextId = () => `u${Date.now()}_${uid++}`;
@@ -96,8 +97,11 @@ export function useUploadQueue({ user, isAdmin }) {
       let title = tagTitle || item.title;
       let artist = tagArtist || "";
       // The file's own embedded artwork wins; otherwise fall back to an image
-      // the user dropped in alongside it.
-      const cover = embedded || pendingCoverRef.current || null;
+      // the user dropped in alongside it. Upscale small (tag-embedded) covers
+      // to a high resolution before upload so they don't look blocky on 4K /
+      // retina displays.
+      const rawCover = embedded || pendingCoverRef.current || null;
+      const cover = rawCover ? await ensureHighResCover(rawCover) : null;
       patch(item.id, {
         duration,
         title,

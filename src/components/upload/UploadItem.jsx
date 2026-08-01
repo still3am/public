@@ -10,6 +10,7 @@ import {
 import GenrePicker from "@/components/GenrePicker";
 import ReleaseChecklist from "@/components/upload/ReleaseChecklist";
 import CoverPicker from "@/components/upload/CoverPicker";
+import { ensureHighResCover } from "@/lib/coverImage";
 import { formatTime } from "@/lib/audio-utils";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -49,9 +50,10 @@ export default function UploadItem({
           previewUrl={item.coverPreviewUrl}
           loading={item.status === "analyzing"}
           disabled={locked}
-          onPick={(file) =>
-          onChange({ coverFile: file, coverPreviewUrl: URL.createObjectURL(file) })
-          } />
+          onPick={async (file) => {
+          const hi = await ensureHighResCover(file);
+          onChange({ coverFile: hi, coverPreviewUrl: URL.createObjectURL(hi) });
+          }} />
 
         {/* Fields */}
         <div className="w-full flex-1 min-w-0 space-y-2.5">
