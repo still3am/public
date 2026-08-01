@@ -343,7 +343,7 @@ export default function FullScreenPlayer({ onClose }) {
             </button>
             <button
               onClick={() => p.togglePlay()}
-              className="w-16 h-16 xl:w-20 xl:h-20 rounded-full bg-white text-black grid place-items-center hover:scale-105 active:scale-95 transition shadow-xl"
+              className="w-16 h-16 xl:w-20 xl:h-20 rounded-full bg-white text-black grid place-items-center hover:scale-105 active:scale-95 transition ring-2 ring-black/25 shadow-[0_10px_30px_rgba(0,0,0,0.55)]"
               aria-label={p.isPlaying ? "Pause" : "Play"}>
               
               {p.isPlaying ? <Pause size={28} fill="black" /> : <Play size={28} fill="black" className="ml-1" />}
