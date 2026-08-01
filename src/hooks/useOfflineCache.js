@@ -12,6 +12,29 @@ import {
 
 const EVT = "offlinecache:change";
 
+// PUBLIC files (covers) are served as a generic octet-stream; a blob: URL only
+// renders in an <img> when its MIME is image/*, so sniff the magic bytes and
+// re-type the stored blob accordingly.
+async function toImageBlob(res) {
+  const raw = await res.blob();
+  if (raw.type && raw.type.startsWith("image/")) return raw;
+  const buf = await raw.arrayBuffer();
+  const b = new Uint8Array(buf);
+  let type = "image/jpeg";
+  if (b.length >= 8 && b[0] === 0x89 && b[1] === 0x50 && b[2] === 0x4e && b[3] === 0x47) {
+    type = "image/png";
+  } else if (
+    b.length >= 12 &&
+    b[0] === 0x52 && b[1] === 0x49 && b[2] === 0x46 && b[3] === 0x46 &&
+    b[8] === 0x57 && b[9] === 0x42 && b[10] === 0x50 && b[11] === 0x50
+  ) {
+    type = "image/webp";
+  } else if (b.length >= 6 && b[0] === 0x47 && b[1] === 0x49 && b[2] === 0x46) {
+    type = "image/gif";
+  }
+  return new Blob([buf], { type });
+}
+
 export function useOfflineCache() {
   const [cachedIds, setCachedIds] = useState(null);
   const [records, setRecords] = useState([]);
@@ -42,7 +65,10 @@ export function useOfflineCache() {
       // dropped fetch doesn't permanently strand a cover offline.
       if (typeof navigator !== "undefined" && navigator.onLine) {
         const need = all.filter(
-          (r) => r.cover_art_url && !r._coverBlob && !backfilled.current.has(r.id)
+          (r) =>
+            r.cover_art_url &&
+            !backfilled.current.has(r.id) &&
+            (!r._coverBlob || !r._coverBlob.type || !r._coverBlob.type.startsWith("image/"))
         );
         if (need.length) {
           need.forEach((r) => backfilled.current.add(r.id));
@@ -52,7 +78,7 @@ export function useOfflineCache() {
               try {
                 const res = await fetch(r.cover_art_url);
                 if (res.ok) {
-                  await putCoverArt(r.id, await res.blob());
+                  await putCoverArt(r.id, await toImageBlob(res));
                   changed = true;
                 }
               } catch {}
@@ -88,8 +114,8 @@ export function useOfflineCache() {
       let coverBlob = null;
       try {
         if (track.cover_art_url) {
-          const cres = await fetch(track.cover_art_url);
-          if (cres.ok) coverBlob = await cres.blob();
+        const cres = await fetch(track.cover_art_url);
+        if (cres.ok) coverBlob = await toImageBlob(cres);
         }
       } catch {}
       await putTrack(track, blob, coverBlob);
