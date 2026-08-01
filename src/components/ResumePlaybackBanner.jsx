@@ -32,16 +32,16 @@ export default function ResumePlaybackBanner() {
           }
         </div>
         <div className="min-w-0 flex-1">
-          <div className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wide text-foreground/40 hidden">
-            {/^(iphone|ipad|android|phone|mobile|tablet)/i.test(
-              remote.device_label || ""
-            ) ?
-            <Smartphone size={11} /> :
+          
 
-            <Laptop size={11} />
-            }{" "}
-            {remote.device_label || "Another device"}
-          </div>
+
+
+
+
+
+
+
+          
           <div className="text-sm font-bold truncate mt-0.5">{t.title}</div>
           <div className="text-xs text-foreground/50 truncate">
             {displayArtist(t)} · {remote.is_playing ? "playing" : "paused"} at{" "}
