@@ -898,15 +898,32 @@ export function PlayerProvider({ children }) {
   const resumePlayback = useCallback(() => {
     const a = activeEl();
     if (!a || !currentTrack) return;
-    if (graphNeeded()) ensureGraph();
-    const ctx = audioCtxRef.current;
-    if (ctx && ctx.state === "suspended") ctx.resume().catch(() => {});
-    if (!crossfadingRef.current) setGainImmediate(activeIdxRef.current, 1);
-    a.play().then(() => {
-      setIsPlaying(true);
-      syncPositionState(a);
-    }).catch(() => {});
-  }, [currentTrack, ensureGraph, setGainImmediate, syncPositionState, graphNeeded]);
+    // The page may have been frozen by the OS while backgrounded, leaving the
+    // element with no source / nothing decoded. Reload the current track so
+    // the lock-screen play button always produces sound instead of no-op.
+    if (!a.src || a.readyState === 0) {
+      loadOnActive(currentTrack);
+      return;
+    }
+    const doPlay = () => {
+      if (!crossfadingRef.current) setGainImmediate(activeIdxRef.current, 1);
+      a.play().then(() => {
+        setIsPlaying(true);
+        syncPositionState(a);
+      }).catch(() => {});
+    };
+    if (graphNeeded()) {
+      const ctx = ensureGraph();
+      if (ctx && ctx.state === "suspended") {
+        ctx.resume().then(doPlay).catch(() => {});
+        return;
+      }
+    } else {
+      const ctx = audioCtxRef.current;
+      if (ctx && ctx.state === "suspended") ctx.resume().catch(() => {});
+    }
+    doPlay();
+  }, [currentTrack, ensureGraph, setGainImmediate, syncPositionState, graphNeeded, loadOnActive]);
 
   const pausePlayback = useCallback(() => {
     const a = activeEl();
