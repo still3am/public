@@ -151,11 +151,11 @@ export default function Downloads() {
                   {anyPlayingHere ? <Pause size={15} /> : <Play size={15} />}
                   {anyPlayingHere ? "Pause all" : "Play all"}
                 </button>
-                <button
-              onClick={() => setConfirming(true)}
-              className="inline-flex items-center gap-1.5 px-3 py-2 rounded-full text-sm font-semibold text-foreground/55 hover:text-destructive hover:bg-destructive/5 transition hidden">
-                  <Trash2 size={14} /> Clear all
-                </button>
+                
+
+
+
+            
               </div>
           }
 
