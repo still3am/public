@@ -24,7 +24,6 @@ import {
 "lucide-react";
 import TrackRow from "@/components/TrackRow";
 import GenerateLyricsModal from "@/components/GenerateLyricsModal";
-import DownloadButton from "@/components/DownloadButton";
 import { useOfflineCache } from "@/hooks/useOfflineCache";
 import { useToast } from "@/components/ui/use-toast";
 
@@ -326,10 +325,7 @@ export default function TrackDetail() {
           {isPlaying ? "Pause" : "Play"}
         </button>
 
-        <DownloadButton
-          track={track}
-          size={18}
-          className="w-10 h-10 rounded-full bg-foreground/[0.06] hover:bg-foreground/[0.1]" />
+
 
 
 
