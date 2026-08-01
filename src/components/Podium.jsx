@@ -18,7 +18,7 @@ function PodiumCard({ track, rank, height, accent }) {
         onClick={(e) => e.stopPropagation()}
         className="block w-full text-center min-w-0">
         <div
-          className="relative aspect-square w-full rounded-lg overflow-hidden bg-foreground/10"
+          className="group relative aspect-square w-full rounded-lg overflow-hidden bg-foreground/10"
           style={{ height }}>
           {track.cover_art_url ? (
             <img
@@ -44,7 +44,9 @@ function PodiumCard({ track, rank, height, accent }) {
           </span>
           <button
             onClick={play}
-            className="absolute bottom-2 right-2 w-10 h-10 rounded-full bg-foreground text-background grid place-items-center shadow-lg active:scale-95 transition"
+            className={`absolute bottom-2 right-2 w-10 h-10 rounded-full bg-foreground text-background grid place-items-center shadow-lg active:scale-95 transition-opacity duration-200 group-hover:opacity-100 focus:opacity-100 ${
+              isCurrent && p.isPlaying ? "opacity-100" : "opacity-0"
+            }`}
             aria-label="Play track">
             {isCurrent && p.isPlaying ? <Pause size={18} /> : <Play size={18} />}
           </button>
