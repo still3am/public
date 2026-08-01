@@ -17,6 +17,7 @@ import { formatTime } from "@/lib/audio-utils";
 import FullScreenPlayer from "@/components/FullScreenPlayer";
 import QueuePanel from "@/components/QueuePanel";
 import { useSidebarCollapsed } from "@/hooks/useSidebarCollapsed";
+import PulseVisualizer from "@/components/PulseVisualizer";
 
 export default function PlayerBar() {
   const p = usePlayer();
@@ -66,18 +67,22 @@ export default function PlayerBar() {
           opacity: 1 - Math.min(dragY / 200, 0.6),
           transition: drag.current.active ? "none" : "transform .25s ease, opacity .25s ease"
         }}
-        className={`fixed left-0 right-0 z-30 bg-background/90 backdrop-blur-xl border-t border-border player-bar-mobile-bottom touch-none transition-[left] duration-300 ease-out ${
+        className={`fixed left-0 right-0 z-30 overflow-hidden bg-background/90 backdrop-blur-xl border-t border-border player-bar-mobile-bottom touch-none transition-[left] duration-300 ease-out ${
         collapsed ? "md:left-[68px]" : "md:left-64"}`
         }>
+        {p.isPlaying && (
+          <PulseVisualizer className="absolute inset-0 z-0 opacity-50" />
+        )}
+
         {/* progress (mobile - thin top accent) */}
-        <div className="h-[3px] w-full bg-foreground/[0.06] relative overflow-hidden">
+        <div className="relative z-10 h-[3px] w-full bg-foreground/[0.06] overflow-hidden">
           <div
             className="absolute left-0 top-0 h-[3px] bg-foreground/80"
             style={{ width: `${pct}%` }} />
           
         </div>
 
-        <div className="flex items-center gap-3 px-3 sm:px-4 py-2.5">
+        <div className="relative z-10 flex items-center gap-3 px-3 sm:px-4 py-2.5">
           {/* artwork + meta */}
           <button onClick={() => setFullOpen(true)} className="flex items-center gap-3 min-w-0 flex-1 text-left" aria-label="Open Now Playing">
             <div className="shrink-0 relative">
