@@ -7,12 +7,12 @@ export default function VinylSleeve({ genre, count, cover, index, active, onClic
         transform: `perspective(900px) rotateX(${active ? 0 : tilt}deg) translateZ(0) scale(${active ? 1.02 : 1})`,
         zIndex: 100 - index
       }}
-      className="group relative block w-full text-left rounded-md overflow-hidden border border-white/10 bg-neutral-900 shadow-[0_10px_24px_-12px_rgba(0,0,0,0.9)] transition-transform duration-300 ease-out will-change-transform hover:z-[200] focus-visible:z-[200] active:scale-[0.99]"
+      className="group relative block w-full text-left rounded-md overflow-hidden border border-white/10 shadow-[0_10px_24px_-12px_rgba(0,0,0,0.9)] transition-transform duration-300 ease-out will-change-transform hover:z-[200] focus-visible:z-[200] active:scale-[0.99]"
       aria-label={`Browse ${genre}`}>
       
       <div className="relative h-16 sm:h-20 w-full overflow-hidden">
         {cover ?
-        <img src={cover} alt="" className="absolute inset-0 w-full h-full object-cover opacity-70 group-hover:opacity-90 transition-opacity duration-300" /> :
+        <img src={cover} alt="" className="absolute inset-0 w-full h-full object-cover opacity-100 transition-opacity duration-300" /> :
 
         <div className="absolute inset-0 bg-gradient-to-br from-neutral-700 via-neutral-900 to-black" />
         }
