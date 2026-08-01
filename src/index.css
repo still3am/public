@@ -170,6 +170,10 @@
   0%, 100% { opacity: 0.18; }
   50% { opacity: 0.34; }
 }
+@keyframes herobreathebright {
+  0%, 100% { opacity: 0.45; }
+  50% { opacity: 0.75; }
+}
 
 @keyframes marquee {
   from { transform: translateX(0); }
