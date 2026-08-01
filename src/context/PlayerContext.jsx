@@ -718,6 +718,16 @@ export function PlayerProvider({ children }) {
           .then(() => {
             setIsPlaying(true);
             syncPositionState(a);
+            // iOS WebKit leaves a MediaElementSource-routed element SILENT
+            // after a pause/resume even though it reports "playing" — the
+            // classic "volume disappears when I press play again" bug. A tiny
+            // seek nudge forces WebKit to re-arm the graph's audio output.
+            // Only when the graph is active (routed); native playback is fine.
+            if (audioCtxRef.current && isFinite(a.currentTime)) {
+              try {
+                a.currentTime = Math.max(0, a.currentTime - 0.05);
+              } catch {}
+            }
           })
           .catch(() => {});
       };
