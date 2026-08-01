@@ -59,7 +59,7 @@ export default function NowPlayingAddMenu({
     },
     onViewQueue && {
       icon: ListMusic,
-      label: `Queue${queueCount ? ` · ${queueCount}` : ""}`,
+      label: "Queue",
       onClick: (close) => {
         onViewQueue();
         close();
