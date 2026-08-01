@@ -1,4 +1,4 @@
-import { Play, Pause } from "lucide-react";
+import { Play } from "lucide-react";
 import { Link } from "react-router-dom";
 import { usePlayer } from "@/context/PlayerContext";
 import { Image } from "@/components/ui/image";
@@ -59,18 +59,17 @@ export default function TrackCard({ track }) {
 
         <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300" />
 
-        <button
-          onClick={handlePlay}
-          aria-label={isPlayingNow ? "Pause" : "Play"}
-          className={`absolute bottom-2.5 right-2.5 w-11 h-11 md:w-12 md:h-12 rounded-full grid place-items-center shadow-xl
-            transition-all duration-300 active:scale-90
-            ${isPlayingNow
-              ? "bg-foreground text-background opacity-100 translate-y-0"
-              : "bg-foreground text-background opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0"}
-            hover:scale-105`}
-        >
-          {isPlayingNow ? <Pause size={18} fill="currentColor" /> : <Play size={18} fill="currentColor" className="ml-0.5" />}
-        </button>
+        {!isPlayingNow && (
+          <button
+            onClick={handlePlay}
+            aria-label="Play"
+            className="absolute bottom-2.5 right-2.5 w-11 h-11 md:w-12 md:h-12 rounded-full grid place-items-center shadow-xl
+              transition-all duration-300 active:scale-90 bg-foreground text-background
+              opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 hover:scale-105"
+          >
+            <Play size={18} fill="currentColor" className="ml-0.5" />
+          </button>
+        )}
 
         {isPlayingNow && (
           <div className="absolute top-2 right-2 h-7 px-1.5 rounded-full bg-background/85 backdrop-blur grid place-items-center text-foreground shadow-md">
