@@ -97,6 +97,10 @@ export function PlayerProvider({ children }) {
   useEffect(() => {
     currentIndexRef.current = currentIndex;
   }, [currentIndex]);
+  const isPlayingRef = useRef(isPlaying);
+  useEffect(() => {
+    isPlayingRef.current = isPlaying;
+  }, [isPlaying]);
   const repeatRef = useRef(repeat);
   useEffect(() => {
     repeatRef.current = repeat;
@@ -868,6 +872,25 @@ export function PlayerProvider({ children }) {
     a.pause();
     setIsPlaying(false);
   }, []);
+
+  // iOS suspends the AudioContext when a standalone PWA is backgrounded /
+  // the screen locks, which silences Web-Audio-routed playback. On return to
+  // the foreground, re-arm the context and resume the track if it was playing.
+  useEffect(() => {
+    const onVis = () => {
+      if (document.visibilityState !== "visible") return;
+      const ctx = audioCtxRef.current;
+      if (ctx && ctx.state === "suspended") ctx.resume().catch(() => {});
+      if (!isPlayingRef.current) return;
+      const a = activeEl();
+      if (a && a.paused) {
+        if (!crossfadingRef.current) setGainImmediate(activeIdxRef.current, 1);
+        a.play().then(() => setIsPlaying(true)).catch(() => {});
+      }
+    };
+    document.addEventListener("visibilitychange", onVis);
+    return () => document.removeEventListener("visibilitychange", onVis);
+  }, [setGainImmediate]);
 
   // --- Media Session API: lock-screen / Control Center metadata + controls ---
   // Without this, iOS falls back to the app name + icon instead of the track's
