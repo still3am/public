@@ -5,6 +5,7 @@ import BackHeader from "@/components/BackHeader";
 import TrackCard from "@/components/TrackCard";
 import PullToRefresh from "@/components/PullToRefresh";
 import ArtistNameEditor from "@/components/ArtistNameEditor";
+import ArtistColorTint from "@/components/ArtistColorTint";
 import { usePlayer } from "@/context/PlayerContext";
 import { useAuth } from "@/lib/AuthContext";
 import { useToast } from "@/components/ui/use-toast";
@@ -177,6 +178,10 @@ export default function PublicRecords({ id: propId }) {
   artist.members && { icon: Users, label: artist.members }].
   filter(Boolean);
 
+  const topCover = [...tracks].
+  sort((a, b) => (b.play_count || 0) - (a.play_count || 0)).
+  find((t) => t.cover_art_url)?.cover_art_url;
+
   const isAdmin = !!user && user.role === "admin";
   const playAll = () => p.playTrackAt(tracks);
 
@@ -197,6 +202,7 @@ export default function PublicRecords({ id: propId }) {
 
             <div className="absolute inset-0 bg-gradient-to-br from-foreground/20 via-foreground/[0.07] to-transparent" />
             }
+            <ArtistColorTint coverUrl={topCover} />
             <div className="absolute inset-0 bg-gradient-to-b from-background/30 via-background/55 to-background" />
           </div>
 
