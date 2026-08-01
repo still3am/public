@@ -17,9 +17,9 @@ export default function BackHeader({ title, onBack, right = null }) {
 
 
       
-      <h1 className="text-lg font-extrabold tracking-tight truncate flex-1 min-w-0 hidden">
-        {title}
-      </h1>
+      
+
+      
       {right}
     </div>);
 
