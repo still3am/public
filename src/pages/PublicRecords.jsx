@@ -4,6 +4,7 @@ import { base44 } from "@/api/base44Client";
 import BackHeader from "@/components/BackHeader";
 import TrackCard from "@/components/TrackCard";
 import PullToRefresh from "@/components/PullToRefresh";
+import ArtistNameEditor from "@/components/ArtistNameEditor";
 import { usePlayer } from "@/context/PlayerContext";
 import { useAuth } from "@/lib/AuthContext";
 import { useToast } from "@/components/ui/use-toast";
@@ -201,9 +202,10 @@ export default function PublicRecords({ id: propId }) {
 
           <div className="relative px-5 md:px-10 pb-6 md:pb-8 flex flex-col items-center text-center -mt-16 md:-mt-20">
             <div className="flex-1 min-w-0">
-              <h1 className="text-3xl md:text-5xl font-extrabold tracking-tighter leading-[1.02] break-words">
-                {artist.name}
-              </h1>
+              <ArtistNameEditor
+                artist={artist}
+                canEdit={!!user}
+                onSaved={(name) => setArtist((prev) => prev ? { ...prev, name } : prev)} />
               {meta.length > 0 &&
               <div className="flex flex-wrap items-center justify-center gap-1.5 mt-3">
                   {meta.map((m, i) =>
