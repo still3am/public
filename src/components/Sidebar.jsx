@@ -38,7 +38,7 @@ export default function Sidebar() {
   ];
 
   const navLinkCls = ({ isActive }) =>
-    `flex items-center gap-3 rounded-lg text-sm font-medium whitespace-nowrap overflow-hidden transition-all duration-300 ${
+    `flex items-center gap-3 rounded-lg text-sm font-medium whitespace-nowrap overflow-hidden transition-all duration-[420ms] ease-[cubic-bezier(0.32,0.72,0,1)] ${
       collapsed ? "justify-center px-0 py-2.5" : "px-3 py-2"
     } ${
       isActive
@@ -48,7 +48,7 @@ export default function Sidebar() {
 
   return (
     <aside
-      className={`hidden md:flex flex-col shrink-0 relative border-r border-border bg-background h-screen sticky top-0 overflow-hidden transition-[width] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+      className={`hidden md:flex flex-col shrink-0 relative border-r border-border bg-background h-screen sticky top-0 overflow-hidden will-change-[width] transition-[width] duration-[420ms] ease-[cubic-bezier(0.32,0.72,0,1)] ${
         collapsed ? "w-16" : "w-64"
       }`}
     >
@@ -80,8 +80,10 @@ export default function Sidebar() {
           <NavLink key={to} to={to} className={navLinkCls} end={end} title={label}>
             <Icon size={18} className="shrink-0" />
             <span
-              className={`transition-opacity duration-300 ${
-                collapsed ? "opacity-0" : "opacity-100"
+              className={`transition-[opacity,transform] duration-[420ms] ease-[cubic-bezier(0.32,0.72,0,1)] ${
+                collapsed
+                  ? "opacity-0 -translate-x-1"
+                  : "opacity-100 translate-x-0"
               }`}
             >
               {label}
