@@ -4,6 +4,7 @@ import {
   Share2,
   X,
   Activity,
+  Heart,
   ListMusic,
   Smartphone,
   Download,
@@ -15,6 +16,8 @@ export default function NowPlayingAddMenu({
   onShare,
   showVisualizer,
   onToggleVisualizer,
+  showPulse,
+  onTogglePulse,
   onViewQueue,
   onToggleLibrary,
   onLounge,
@@ -93,6 +96,15 @@ export default function NowPlayingAddMenu({
         close();
       },
       accent: showVisualizer ? "text-white" : "",
+    },
+    onTogglePulse && {
+      icon: Heart,
+      label: showPulse ? "Hide color pulse" : "Color pulse",
+      onClick: (close) => {
+        onTogglePulse();
+        close();
+      },
+      accent: showPulse ? "text-white" : "",
     },
   ].filter(Boolean);
 
