@@ -30,6 +30,7 @@ import Library from '@/pages/Library';
 import Downloads from '@/pages/Downloads';
 import Admin from '@/pages/Admin';
 import SongTransitions from '@/pages/SongTransitions';
+import Mixer from '@/pages/Mixer';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -80,6 +81,7 @@ const AuthenticatedApp = () => {
           <Route path="/downloads" element={<Downloads />} />
           <Route path="/admin" element={<Admin />} />
           <Route path="/settings/transitions" element={<SongTransitions />} />
+          <Route path="/mixer" element={<Mixer />} />
         </Route>
       </Route>
       <Route path="*" element={<PageNotFound />} />
