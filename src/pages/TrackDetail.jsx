@@ -398,12 +398,12 @@ export default function TrackDetail() {
 
       {isOwner && !track.lyrics_text?.trim() && track.audio_url &&
       <div className="mb-6 rounded-2xl border border-dashed border-border p-5 text-center">
-          <Sparkles size={20} className="mx-auto text-foreground/40 mb-2" />
+          <Sparkles size={20} className="mx-auto text-foreground/40 mb-2 hidden" />
           <p className="text-sm text-foreground/60 mb-3">No lyrics yet. Let AI transcribe them from this track's audio.</p>
           <button
           onClick={() => setGenerating(true)}
           className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-foreground text-background text-sm font-semibold">
-            <Sparkles size={14} /> Generate lyrics
+            <Sparkles size={14} className="hidden" /> Generate lyrics
           </button>
         </div>
       }
