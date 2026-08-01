@@ -930,8 +930,13 @@ export function PlayerProvider({ children }) {
         a.play().then(() => setIsPlaying(true)).catch(() => {});
       }
     };
+    // Older Android WebViews fire the prefixed variant.
     document.addEventListener("visibilitychange", onVis);
-    return () => document.removeEventListener("visibilitychange", onVis);
+    document.addEventListener("webkitvisibilitychange", onVis);
+    return () => {
+      document.removeEventListener("visibilitychange", onVis);
+      document.removeEventListener("webkitvisibilitychange", onVis);
+    };
   }, [setGainImmediate]);
 
   // Keep the screen awake while a track is actively playing so iOS doesn't
@@ -949,8 +954,17 @@ export function PlayerProvider({ children }) {
       navigator.mediaSession.playbackState = "none";
       return;
     }
+    // Multiple sizes widen compatibility: iOS lock screen wants 512+,
+    // Android notifications often prefer a smaller bitmap.
     const artwork = t.cover_art_url
-      ? [{ src: t.cover_art_url, sizes: "512x512", type: "image/jpeg" }]
+      ? [
+          { src: t.cover_art_url, sizes: "96x96", type: "image/jpeg" },
+          { src: t.cover_art_url, sizes: "128x128", type: "image/jpeg" },
+          { src: t.cover_art_url, sizes: "192x192", type: "image/jpeg" },
+          { src: t.cover_art_url, sizes: "256x256", type: "image/jpeg" },
+          { src: t.cover_art_url, sizes: "384x384", type: "image/jpeg" },
+          { src: t.cover_art_url, sizes: "512x512", type: "image/jpeg" },
+        ]
       : [];
     try {
       navigator.mediaSession.metadata = new MediaMetadata({
