@@ -20,7 +20,7 @@ export default function ResumePlaybackBanner() {
   const at = remote.resumeAt ?? Math.max(0, remote.position_seconds || 0);
 
   return (
-    <div className="fixed left-1/2 -translate-x-1/2 bottom-[calc(9rem+env(safe-area-inset-bottom))] md:bottom-28 z-40 w-[min(94vw,26rem)]">
+    <div className="fixed left-1/2 -translate-x-1/2 player-bar-mobile-bottom mb-2 md:mb-3 z-40 w-[min(94vw,26rem)]">
       <div className="flex items-center gap-3 p-2.5 pr-3 rounded-2xl bg-card border border-border shadow-xl">
         <div className="w-11 h-11 rounded-lg overflow-hidden bg-foreground/[0.06] shrink-0">
           {t.cover_art_url &&
@@ -32,16 +32,16 @@ export default function ResumePlaybackBanner() {
           }
         </div>
         <div className="min-w-0 flex-1">
-          
+          <div className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wide text-foreground/40 hidden">
+            {/^(iphone|ipad|android|phone|mobile|tablet)/i.test(
+              remote.device_label || ""
+            ) ?
+            <Smartphone size={11} /> :
 
-
-
-
-
-
-
-
-          
+            <Laptop size={11} />
+            }{" "}
+            {remote.device_label || "Another device"}
+          </div>
           <div className="text-sm font-bold truncate mt-0.5">{t.title}</div>
           <div className="text-xs text-foreground/50 truncate">
             {displayArtist(t)} · {remote.is_playing ? "playing" : "paused"} at{" "}
