@@ -54,13 +54,13 @@ export default function QueuePanel({ open, onClose }) {
           <ListMusic size={20} className="text-white/80 shrink-0" />
           <div className="leading-tight min-w-0">
             <h2 className="text-base font-bold truncate">Queue</h2>
-            <span className="text-[11px] text-white/45 hidden">
-              {upcoming.length > 0 ?
-              `${upcoming.length} up next` :
-              p.currentTrack ?
-              "End of queue" :
-              "Empty"}
-            </span>
+            
+
+
+
+
+
+            
           </div>
         </div>
         <div className="flex items-center gap-1.5">
