@@ -28,7 +28,10 @@ export default function ResumePlaybackBanner() {
   const at = remote.resumeAt ?? Math.max(0, remote.position_seconds || 0);
 
   return (
-    <div className="fixed left-1/2 -translate-x-1/2 player-bar-mobile-bottom mb-2 md:mb-3 z-40 w-[min(94vw,26rem)]">
+    <div
+      className={`fixed left-1/2 -translate-x-1/2 player-bar-mobile-bottom z-40 w-[min(94vw,26rem)] ${
+        currentTrack ? "mb-[5.75rem]" : "mb-2 md:mb-3"
+      }`}>
       <div className="flex items-center gap-3 p-2.5 pr-3 rounded-2xl bg-card border border-border shadow-xl">
         <div className="w-11 h-11 rounded-lg overflow-hidden bg-foreground/[0.06] shrink-0">
           {t.cover_art_url &&
