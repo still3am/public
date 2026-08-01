@@ -82,9 +82,7 @@ export default function Sidebar() {
       </nav>
 
       <div className="border-t border-border space-y-2 pb-28 p-3">
-        <div className={`${EASE} ${fadeCls}`}>
-          <ThemeToggle />
-        </div>
+        <ThemeToggle labelClassName={`shrink-0 ${EASE} ${fadeCls}`} />
         <NavLink
           to="/profile"
           className="flex items-center gap-3 rounded-lg px-2 py-2 hover:bg-foreground/[0.03]"
