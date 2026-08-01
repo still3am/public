@@ -32,6 +32,7 @@ import { useLoungeHost } from "@/hooks/useLoungeHost";
 import { useLibrary } from "@/context/LibraryContext";
 import { useOfflineCache } from "@/hooks/useOfflineCache";
 import { useToast } from "@/components/ui/use-toast";
+import { base44 } from "@/api/base44Client";
 
 const clampVol = (v) => Math.max(0, Math.min(1, v));
 
@@ -71,6 +72,32 @@ export default function FullScreenPlayer({ onClose }) {
   const [dragY, setDragY] = useState(0);
   const [dragging, setDragging] = useState(false);
   const dismissThreshold = 110;
+  const [hasLyrics, setHasLyrics] = useState(false);
+
+  // Only show the Lyrics toggle when this track actually has lyrics available
+  // (approved timed lyrics, or plain-text lyrics_text on the track).
+  useEffect(() => {
+    let alive = true;
+    if (!t?.id) {
+      setHasLyrics(false);
+      return;
+    }
+    setHasLyrics(false);
+    Promise.all([
+      base44.entities.Lyrics
+        .filter({ track_id: t.id, status: "approved" }, "-created_date", 5)
+        .catch(() => []),
+      base44.entities.Track.get(t.id).catch(() => null),
+    ]).then(([lyricsRes, track]) => {
+      if (!alive) return;
+      const found = Array.isArray(lyricsRes) && lyricsRes.length ? lyricsRes[0] : null;
+      const lines = found?.lines || [];
+      const hasTimed = lines.length && lines.some((l) => l.start_time_ms || l.end_time_ms);
+      const text = (track?.lyrics_text || "").trim();
+      setHasLyrics(!!hasTimed || !!text);
+    });
+    return () => { alive = false; };
+  }, [t?.id]);
 
   // keyboard shortcuts
   useEffect(() => {
@@ -309,11 +336,11 @@ export default function FullScreenPlayer({ onClose }) {
                 {t.artist || t.uploader_name || "Unknown"}
               </Link>
             </div>
-            {!showLyricsPanel &&
+            {hasLyrics && !showLyricsPanel &&
             <button
               onClick={() => setShowLyricsPanel(true)}
               className="hidden xl:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full ring-1 ring-white/20 hover:bg-white/10 text-xs font-semibold shrink-0 transition">
-               Lyrics
+                Lyrics
             </button>
             }
           </div>
