@@ -974,17 +974,15 @@ export function PlayerProvider({ children }) {
     set("pause", () => pausePlayback());
     set("previoustrack", () => prev());
     set("nexttrack", () => next());
-    set("seekbackward", (d) => skipBy(-((d && d.seekOffset) || 15)));
-    set("seekforward", (d) => skipBy(((d && d.seekOffset) || 15)));
     set("seekto", (d) => {
       if (d && typeof d.seekTime === "number") seek(d.seekTime);
     });
     return () => {
-      ["play", "pause", "previoustrack", "nexttrack", "seekbackward", "seekforward", "seekto"].forEach(
-        (a) => set(a, null)
+      ["play", "pause", "previoustrack", "nexttrack", "seekto"].forEach((a) =>
+        set(a, null)
       );
     };
-  }, [resumePlayback, pausePlayback, prev, next, seek, skipBy]);
+  }, [resumePlayback, pausePlayback, prev, next, seek]);
 
   const value = {
     queue,
