@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { useToast } from "@/components/ui/use-toast";
-import { Lightbulb, Loader2 } from "lucide-react";
+import { Lightbulb, Loader2, Trash2 } from "lucide-react";
 
 const STATUSES = ["open", "reviewing", "planned", "done"];
 
@@ -28,6 +28,17 @@ export default function SuggestionsManager() {
       await base44.entities.Suggestion.update(id, { status });
       setItems((prev) => (prev || []).map((s) => (s.id === id ? { ...s, status } : s)));
       toast({ title: "Status updated" });
+    } catch {} finally {
+      setBusy("");
+    }
+  }
+
+  async function remove(id) {
+    setBusy(id);
+    try {
+      await base44.entities.Suggestion.delete(id);
+      setItems((prev) => (prev || []).filter((s) => s.id !== id));
+      toast({ title: "Suggestion deleted" });
     } catch {} finally {
       setBusy("");
     }
@@ -62,15 +73,26 @@ export default function SuggestionsManager() {
                 {busy === s.id ? (
                   <Loader2 size={15} className="animate-spin shrink-0" />
                 ) : (
-                  <select
-                    value={s.status}
-                    onChange={(e) => setStatus(s.id, e.target.value)}
-                    className="text-xs border border-border rounded-full px-2 py-1 bg-background shrink-0"
-                  >
-                    {STATUSES.map((st) => (
-                      <option key={st} value={st}>{st}</option>
-                    ))}
-                  </select>
+                  <div className="flex items-center gap-1.5 shrink-0">
+                    <select
+                      value={s.status}
+                      onChange={(e) => setStatus(s.id, e.target.value)}
+                      className="text-xs border border-border rounded-full px-2 py-1 bg-background"
+                    >
+                      {STATUSES.map((st) => (
+                        <option key={st} value={st}>{st}</option>
+                      ))}
+                    </select>
+                    {s.status === "done" && (
+                      <button
+                        onClick={() => remove(s.id)}
+                        className="w-7 h-7 rounded-full grid place-items-center text-destructive hover:bg-destructive/10 transition active:scale-95"
+                        aria-label="Delete suggestion"
+                      >
+                        <Trash2 size={14} />
+                      </button>
+                    )}
+                  </div>
                 )}
               </div>
             </div>
