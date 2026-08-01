@@ -203,7 +203,7 @@ export default function PublicRecords({ id: propId }) {
             <div className="absolute inset-0 bg-gradient-to-br from-foreground/20 via-foreground/[0.07] to-transparent" />
             }
             <ArtistColorTint coverUrl={topCover} />
-            <div className="absolute inset-0 bg-gradient-to-b from-background/30 via-background/55 to-background hidden" />
+            
           </div>
 
           <div className="relative px-5 md:px-10 pb-6 md:pb-8 flex flex-col items-center text-center -mt-16 md:-mt-20">
