@@ -7,7 +7,7 @@ import {
   useCallback,
 } from "react";
 import { base44 } from "@/api/base44Client";
-import { getRecord } from "@/lib/offlineCache";
+import { getRecord, listRecords } from "@/lib/offlineCache";
 import { buildAutoQueue } from "@/lib/autoQueue";
 import { useWakeLock } from "@/hooks/useWakeLock";
 import {
@@ -651,6 +651,46 @@ export function PlayerProvider({ children }) {
     }
   }, []);
 
+  // Build a playable queue entirely from the offline cache — used when the
+  // device drops its connection so the next track is always something the
+  // user can actually hear instead of a remote URL that would fail to load.
+  const getOfflineQueue = useCallback(async () => {
+    try {
+      const recs = await listRecords();
+      if (!recs.length) return null;
+      recs.sort((a, b) => (b._savedAt || 0) - (a._savedAt || 0));
+      return recs.map((r) => ({
+        id: r.id,
+        title: r.title,
+        artist: r.artist,
+        uploader_name: r.uploader_name,
+        uploader_id: r.uploader_id,
+        cover_art_url: r.cover_art_url,
+        audio_url: r.audio_url,
+        duration_seconds: r.duration_seconds,
+        genre: r.genre,
+        explicit: r.explicit,
+        is_published: true,
+      }));
+    } catch {
+      return null;
+    }
+  }, []);
+
+  const advanceOffline = useCallback(async () => {
+    const tracks = await getOfflineQueue();
+    if (!tracks || !tracks.length) {
+      setIsPlaying(false);
+      return;
+    }
+    const curId = currentTrack?.id;
+    const idx = tracks.findIndex((t) => t.id === curId);
+    const nextIdx = idx >= 0 && idx + 1 < tracks.length ? idx + 1 : 0;
+    countedRef.current = new Set();
+    setQueue(tracks);
+    setCurrentIndex(nextIdx);
+  }, [getOfflineQueue, currentTrack]);
+
   // ended handler (only the active element, only when not crossfading)
   useEffect(() => {
     handleEndedRef.current = async () => {
@@ -661,6 +701,11 @@ export function PlayerProvider({ children }) {
           a.currentTime = 0;
           a.play().catch(() => {});
         }
+        return;
+      }
+      // Lost connection? Fall back to offline tracks so listening never stops.
+      if (typeof navigator !== "undefined" && !navigator.onLine) {
+        advanceOffline();
         return;
       }
       const n = nextIndex();
@@ -674,7 +719,7 @@ export function PlayerProvider({ children }) {
       }
       setIsPlaying(false);
     };
-  }, [repeat, nextIndex, currentTrack, extendWithGenreRadio]);
+  }, [repeat, nextIndex, currentTrack, extendWithGenreRadio, advanceOffline]);
 
   // volume / mute / rate apply to both elements
   useEffect(() => {
@@ -804,6 +849,11 @@ export function PlayerProvider({ children }) {
   );
 
   const next = useCallback(() => {
+    // No connection? Skip ahead using the offline cache instead of a remote URL.
+    if (typeof navigator !== "undefined" && !navigator.onLine) {
+      advanceOffline();
+      return;
+    }
     const n = nextIndex();
     if (n !== -1) {
       transitionTo(n);
@@ -811,7 +861,7 @@ export function PlayerProvider({ children }) {
     }
     // Nothing queued after this one — keep the music going with a similar track.
     if (currentTrack) extendWithGenreRadio(currentTrack);
-  }, [nextIndex, transitionTo, currentTrack, extendWithGenreRadio]);
+  }, [nextIndex, transitionTo, currentTrack, extendWithGenreRadio, advanceOffline]);
 
   const prev = useCallback(() => {
     const a = activeEl();
