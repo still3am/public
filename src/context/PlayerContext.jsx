@@ -850,6 +850,52 @@ export function PlayerProvider({ children }) {
     }, minutes * 60 * 1000);
   }, []);
 
+  // --- Media Session API: lock-screen / Control Center metadata + controls ---
+  // Without this, iOS falls back to the app name + icon instead of the track's
+  // title, artist, and cover art on the lock-screen / now-playing widget.
+  useEffect(() => {
+    if (!("mediaSession" in navigator)) return;
+    const t = currentTrack;
+    if (!t) {
+      navigator.mediaSession.metadata = null;
+      navigator.mediaSession.playbackState = "none";
+      return;
+    }
+    const artwork = t.cover_art_url
+      ? [{ src: t.cover_art_url, sizes: "512x512", type: "image/jpeg" }]
+      : [];
+    try {
+      navigator.mediaSession.metadata = new MediaMetadata({
+        title: t.title || "PUBLIC.",
+        artist: t.artist || t.uploader_name || "Unknown",
+        album: "PUBLIC.",
+        artwork,
+      });
+      navigator.mediaSession.playbackState = isPlaying ? "playing" : "paused";
+    } catch {}
+  }, [currentTrack, isPlaying]);
+
+  useEffect(() => {
+    if (!("mediaSession" in navigator)) return;
+    const set = (action, handler) => {
+      try {
+        navigator.mediaSession.setActionHandler(action, handler);
+      } catch {}
+    };
+    set("play", () => togglePlay());
+    set("pause", () => togglePlay());
+    set("previoustrack", () => prev());
+    set("nexttrack", () => next());
+    set("seekto", (d) => {
+      if (d && typeof d.seekTime === "number") seek(d.seekTime);
+    });
+    return () => {
+      ["play", "pause", "previoustrack", "nexttrack", "seekto"].forEach((a) =>
+        set(a, null)
+      );
+    };
+  }, [togglePlay, prev, next, seek]);
+
   const value = {
     queue,
     setQueue,
