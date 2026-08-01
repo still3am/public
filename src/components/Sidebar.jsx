@@ -16,6 +16,8 @@ import Avatar from "@/components/Avatar";
 import Logo from "@/components/Logo";
 import ThemeToggle from "@/components/ThemeToggle";
 import { useAuth } from "@/lib/AuthContext";
+import { usePlayer } from "@/context/PlayerContext";
+import PulseVisualizer from "@/components/PulseVisualizer";
 
 const NAV = [
   { to: "/", label: "Home", icon: Home, end: true },
@@ -31,6 +33,7 @@ const EASE = "transition-all duration-300 ease-out";
 export default function Sidebar() {
   const { user } = useAuth();
   const { collapsed, toggle } = useSidebarCollapsed();
+  const { isPlaying } = usePlayer();
 
   const links = [
     ...NAV,
@@ -57,6 +60,10 @@ export default function Sidebar() {
         collapsed ? "w-[68px]" : "w-64"
       }`}
     >
+      {isPlaying && (
+        <PulseVisualizer className="absolute inset-0 z-0 opacity-50" />
+      )}
+
       <button
         onClick={toggle}
         className="absolute top-2 right-2 z-10 text-foreground/30 hover:text-foreground transition-colors"
@@ -66,13 +73,13 @@ export default function Sidebar() {
         {collapsed ? <ChevronsRight size={15} /> : <ChevronsLeft size={15} />}
       </button>
 
-      <div className="flex items-center py-6 px-3 h-[76px]">
+      <div className="relative z-10 flex items-center py-6 px-3 h-[76px]">
         <div className={`w-[184px] shrink-0 pl-3 ${EASE} ${fadeCls}`}>
           <Logo width="100%" />
         </div>
       </div>
 
-      <nav className="flex-1 flex flex-col gap-1 overflow-y-auto overflow-x-hidden pb-2 px-3">
+      <nav className="relative z-10 flex-1 flex flex-col gap-1 overflow-y-auto overflow-x-hidden pb-2 px-3">
         {links.map(({ to, label, icon: Icon, end }) => (
           <NavLink key={to} to={to} className={navLinkCls} end={end} title={label}>
             <Icon size={18} className="shrink-0" />
@@ -81,7 +88,7 @@ export default function Sidebar() {
         ))}
       </nav>
 
-      <div className="border-t border-border space-y-2 pb-28 p-3">
+      <div className="relative z-10 border-t border-border space-y-2 pb-28 p-3">
         <ThemeToggle labelClassName={`shrink-0 ${EASE} ${fadeCls}`} />
         <NavLink
           to="/profile"
