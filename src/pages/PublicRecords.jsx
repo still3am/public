@@ -207,7 +207,7 @@ export default function PublicRecords({ id: propId }) {
           </div>
 
           <div className="relative px-5 md:px-10 pb-6 md:pb-8 flex flex-col items-center text-center -mt-16 md:-mt-20">
-            <div className="flex-1 min-w-0">
+            <div className="flex-1 min-w-0 px-1">
               <ArtistNameEditor
                 artist={artist}
                 canEdit={!!user}
