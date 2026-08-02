@@ -29,11 +29,13 @@ import {
   QrCode,
   Play,
   BarChart2,
+  History,
   Trash2,
   GitMerge,
   Lightbulb,
   ChevronRight } from
 "lucide-react";
+import { getRecentPlays } from "@/lib/recentPlays";
 
 function safeUrl(u) {
   if (!u) return undefined;
@@ -57,6 +59,7 @@ export default function Profile() {
   const [loading, setLoading] = useState(true);
   const [tracks, setTracks] = useState([]);
   const [topTracks, setTopTracks] = useState([]);
+  const [recentlyPlayed, setRecentlyPlayed] = useState([]);
   const [following, setFollowing] = useState(false);
   const [stats, setStats] = useState({ followers: 0, following: 0, plays: 0, likes: 0 });
   const [editMode, setEditMode] = useState(false);
@@ -140,6 +143,19 @@ export default function Profile() {
     if (targetId) load();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [targetId]);
+
+  // Recently Played lives in localStorage (per-device listening history) and
+  // updates live within the tab via the "recentplays:change" custom event.
+  useEffect(() => {
+    const handler = () => setRecentlyPlayed(getRecentPlays());
+    handler();
+    window.addEventListener("recentplays:change", handler);
+    window.addEventListener("storage", handler);
+    return () => {
+      window.removeEventListener("recentplays:change", handler);
+      window.removeEventListener("storage", handler);
+    };
+  }, []);
 
   async function toggleFollow() {
     if (!profile) return;
@@ -546,7 +562,19 @@ export default function Profile() {
         </div>
       </div>
 
-      {!editMode && topTracks.length > 0 &&
+      {!editMode && isOwn && recentlyPlayed.length > 0 &&
+        <div className="mb-8">
+          <h2 className="text-lg font-extrabold tracking-tight mb-3 flex items-center gap-2">
+            <History size={18} /> Recently Played
+          </h2>
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
+            {recentlyPlayed.map((t) => (
+              <TrackCard key={t.id} track={t} />
+            ))}
+          </div>
+        </div>
+        }
+      {!editMode && !isOwn && topTracks.length > 0 &&
         <div className="mb-8">
           <h2 className="text-lg font-extrabold tracking-tight mb-3 flex items-center gap-2">
             <BarChart2 size={18} /> Top Tracks

@@ -92,7 +92,6 @@ export default function Home() {
   const [newReleases, setNewReleases] = useState([]);
   const [byGenre, setByGenre] = useState([]);
   const [fromFollowing, setFromFollowing] = useState([]);
-  const [recentlyPlayed, setRecentlyPlayed] = useState([]);
   const [discover, setDiscover] = useState([]);
   const [totalTracks, setTotalTracks] = useState(0);
   const loadedRef = useRef(false);
@@ -122,17 +121,6 @@ export default function Home() {
       });
     });
     return unsub;
-  }, []);
-
-  useEffect(() => {
-    const handler = () => setRecentlyPlayed(getRecentPlays());
-    handler();
-    window.addEventListener("recentplays:change", handler);
-    window.addEventListener("storage", handler);
-    return () => {
-      window.removeEventListener("recentplays:change", handler);
-      window.removeEventListener("storage", handler);
-    };
   }, []);
 
   async function load() {
@@ -306,11 +294,6 @@ export default function Home() {
           <ReleaseList tracks={newReleases} />
         </Section>
 
-        {recentlyPlayed.length > 0 &&
-        <Section title="Recently Played">
-            <CardRow tracks={recentlyPlayed} />
-          </Section>
-        }
         {discover.length > 0 &&
         <Section title="Discover" icon={Sparkles}>
             <CardRow tracks={discover} />
