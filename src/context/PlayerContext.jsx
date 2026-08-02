@@ -53,6 +53,7 @@ export function PlayerProvider({ children }) {
 
   const crossfadingRef = useRef(false);
   const pendingSeekRef = useRef(null);
+  const autoPlayOnLoadRef = useRef(true);
   const crossfadeTimerRef = useRef(null);
   const preloadedTargetRef = useRef(null);
   const loadTokenRef = useRef(0);
@@ -279,10 +280,16 @@ export function PlayerProvider({ children }) {
       const ctx = audioCtxRef.current;
       if (ctx && ctx.state === "suspended") ctx.resume().catch(() => {});
       setGainImmediate(side, 1);
-      el
-        .play()
-        .then(() => setIsPlaying(true))
-        .catch(() => setIsPlaying(false));
+      const shouldPlay = autoPlayOnLoadRef.current;
+      autoPlayOnLoadRef.current = true;
+      if (shouldPlay) {
+        el
+          .play()
+          .then(() => setIsPlaying(true))
+          .catch(() => setIsPlaying(false));
+      } else {
+        setIsPlaying(false);
+      }
     },
     [resolveUrl, mirrorPlayback, ensureGraph, setGainImmediate, cancelCrossfade, graphNeeded]
   );
@@ -748,9 +755,10 @@ export function PlayerProvider({ children }) {
 
   // Hand off playback from another device: load the track and seek to where
   // that device left off, as soon as the media reports it's seekable.
-  const resumeTrack = useCallback((track, atSeconds = 0) => {
+  const resumeTrack = useCallback((track, atSeconds = 0, autoplay = true) => {
     if (!track) return;
     pendingSeekRef.current = { id: track.id, at: Math.max(0, atSeconds) };
+    autoPlayOnLoadRef.current = autoplay;
     countedRef.current = new Set();
     setQueue([track]);
     setCurrentIndex(0);

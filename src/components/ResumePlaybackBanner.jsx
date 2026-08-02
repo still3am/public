@@ -22,7 +22,7 @@ export default function ResumePlaybackBanner() {
     resumedRef.current = remote.track_id;
     const t = remote.trackObj;
     const at = remote.resumeAt ?? Math.max(0, remote.position_seconds || 0);
-    resumeTrack(t, at);
+    resumeTrack(t, at, false);
   }, [remote?.track_id, remote?.trackObj, currentTrack, resumeTrack]);
 
   return null;
