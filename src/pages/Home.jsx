@@ -93,6 +93,7 @@ export default function Home() {
   const [byGenre, setByGenre] = useState([]);
   const [fromFollowing, setFromFollowing] = useState([]);
   const [recentlyPlayed, setRecentlyPlayed] = useState([]);
+  const [discover, setDiscover] = useState([]);
   const [totalTracks, setTotalTracks] = useState(0);
   const loadedRef = useRef(false);
   const greeting = greetingByHour();
@@ -101,6 +102,7 @@ export default function Home() {
     setTrending((p) => p.filter((t) => t.id !== id));
     setNewReleases((p) => p.filter((t) => t.id !== id));
     setFromFollowing((p) => p.filter((t) => t.id !== id));
+    setDiscover((p) => p.filter((t) => t.id !== id));
     setByGenre((p) => p.map((s) => ({ ...s, tracks: s.tracks.filter((t) => t.id !== id) })));
     setTotalTracks((c) => Math.max(0, c - 1));
   }, []);
@@ -136,12 +138,13 @@ export default function Home() {
   async function load() {
     setLoading(true);
     try {
-      const [t, n, fols] = await Promise.all([
+      const [t, n, fols, topForGenres] = await Promise.all([
       base44.entities.Track.filter({ is_published: true }, "-play_count", 10),
       base44.entities.Track.filter({ is_published: true }, "-created_date", 50),
       user?.id ?
       base44.entities.Follow.filter({ follower_id: user.id }, "-created_date", 200).catch(() => []) :
-      Promise.resolve([])]
+      Promise.resolve([]),
+      base44.entities.Track.filter({ is_published: true }, "-play_count", 200).catch(() => [])]
       );
       const followed = new Set((Array.isArray(fols) ? fols : []).map((f) => f.following_id));
       setTrending(t);
@@ -155,14 +158,60 @@ export default function Home() {
         setTotalTracks(published);
         loadedRef.current = true;
       }
-      const genres = ["Electronic", "Hip-Hop", "Ambient"];
+      // Top genres = the ones users actually listen to most, measured by
+      // aggregated play_count across the most-played tracks on the platform.
+      const genrePlays = {};
+      for (const tr of topForGenres) {
+        if (!tr?.genre) continue;
+        genrePlays[tr.genre] = (genrePlays[tr.genre] || 0) + (tr.play_count || 0);
+      }
+      const genres = Object.entries(genrePlays)
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, 3)
+        .map(([g]) => g)
+        .filter(Boolean);
+      const fallback = ["Electronic", "Hip-Hop", "Ambient"];
+      const finalGenres = genres.length ? genres : fallback;
       const perGenre = await Promise.all(
-        genres.map(async (g) => ({
+        finalGenres.map(async (g) => ({
           genre: g,
           tracks: await base44.entities.Track.filter({ is_published: true, genre: g }, "-play_count", 8)
         }))
       );
       setByGenre(perGenre);
+
+      // Discover: new tracks in the genres this user actually plays, excluding
+      // what they've already heard. Falls back to fresh uploads when there's
+      // no listening history yet.
+      const played = getRecentPlays();
+      const playedIds = new Set(played.map((p) => p.id));
+      const genreFreq = {};
+      for (const p of played) {
+        if (!p?.genre) continue;
+        genreFreq[p.genre] = (genreFreq[p.genre] || 0) + 1;
+      }
+      const userGenres = Object.entries(genreFreq)
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, 3)
+        .map(([g]) => g);
+      let discoverPicks = [];
+      if (userGenres.length) {
+        const perUserGenre = await Promise.all(
+          userGenres.map((g) =>
+            base44.entities.Track.filter({ is_published: true, genre: g }, "-created_date", 30).catch(() => [])
+          )
+        );
+        const pool = perUserGenre.flat().filter((tr) => tr && !playedIds.has(tr.id));
+        // Shuffle so the row isn't grouped by genre, then take the freshest.
+        for (let i = pool.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [pool[i], pool[j]] = [pool[j], pool[i]];
+        }
+        discoverPicks = pool.slice(0, 12);
+      } else {
+        discoverPicks = n.filter((tr) => tr && !playedIds.has(tr.id)).slice(0, 12);
+      }
+      setDiscover(discoverPicks);
     } finally {
       setLoading(false);
     }
@@ -260,6 +309,11 @@ export default function Home() {
         {recentlyPlayed.length > 0 &&
         <Section title="Recently Played">
             <CardRow tracks={recentlyPlayed} />
+          </Section>
+        }
+        {discover.length > 0 &&
+        <Section title="Discover" icon={Sparkles}>
+            <CardRow tracks={discover} />
           </Section>
         }
         {fromFollowing.length > 0 &&
