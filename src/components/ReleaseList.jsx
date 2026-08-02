@@ -138,10 +138,20 @@ function ReleaseRow({ track, tracks, index }) {
 
 export default function ReleaseList({ tracks }) {
   if (!tracks?.length) return null;
+  const chunks = [];
+  for (let i = 0; i < tracks.length; i += 4) {
+    chunks.push(tracks.slice(i, i + 4));
+  }
   return (
-    <div className="divide-y divide-foreground/[0.05]">
-      {tracks.map((t, i) => (
-        <ReleaseRow key={t.id} track={t} tracks={tracks} index={i} />
+    <div className="flex gap-3 overflow-x-auto no-scrollbar snap-x snap-mandatory -mx-3 px-3 md:mx-0 md:px-0">
+      {chunks.map((group, gi) => (
+        <div
+          key={gi}
+          className="snap-start shrink-0 w-[88%] sm:w-[calc(50%-0.375rem)] md:w-full divide-y divide-foreground/[0.05]">
+          {group.map((t, i) => (
+            <ReleaseRow key={t.id} track={t} tracks={tracks} index={gi * 4 + i} />
+          ))}
+        </div>
       ))}
     </div>
   );

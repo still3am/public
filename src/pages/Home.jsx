@@ -136,7 +136,7 @@ export default function Home() {
       );
       const followed = new Set((Array.isArray(fols) ? fols : []).map((f) => f.following_id));
       setTrending(t);
-      setNewReleases(n.slice(0, 4));
+      setNewReleases(n.slice(0, 20));
       setFromFollowing(n.filter((tk) => followed.has(tk.uploader_id)).slice(0, 12));
       // Counted server-side — downloading every record just to measure the
       // catalog was slow and got silently truncated by the query limit.
