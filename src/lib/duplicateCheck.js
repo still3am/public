@@ -121,8 +121,9 @@ function scorePair(cand, existing, cDur, tDur) {
   if (durDelta <= 2 && titleSim >= 0.6) return 0.9;
   // Same artist and same runtime — retitled re-upload of the same audio.
   if (sameArtist && durDelta <= 2) return 0.85;
-  // Very similar title on its own (typos, spacing, truncation).
-  if (titleSim >= 0.88 && ct.length > 5) return 0.7;
+  // Very similar title on its own — flags the same song name anywhere on
+  // PUBLIC, regardless of artist or uploader (covers, re-uploads, retags).
+  if (titleSim >= 0.8 && ct.length > 3) return 0.7;
   // Same runtime and the artist name appears inside the other's title.
   if (durDelta <= 1 && (containsEither(ct, compact(existing.a)) || containsEither(et, compact(cand.a))))
     return 0.6;

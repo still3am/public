@@ -6,6 +6,7 @@ import { formatTime } from "@/lib/audio-utils";
 export default function DuplicateModal({ tracks, onClose, onRemove }) {
   const { toast } = useToast();
   const [removing, setRemoving] = useState({});
+  const [removingAll, setRemovingAll] = useState(false);
   const [list, setList] = useState(tracks);
 
   async function remove(id) {
@@ -16,6 +17,18 @@ export default function DuplicateModal({ tracks, onClose, onRemove }) {
       toast({ title: "Removed from upload" });
     } finally {
       setRemoving((s) => ({ ...s, [id]: false }));
+    }
+  }
+
+  async function removeAll() {
+    if (!list.length) return;
+    setRemovingAll(true);
+    try {
+      list.forEach((t) => onRemove?.(t.id));
+      setList([]);
+      toast({ title: "Removed all duplicates" });
+    } finally {
+      setRemovingAll(false);
     }
   }
 
@@ -94,7 +107,15 @@ export default function DuplicateModal({ tracks, onClose, onRemove }) {
           )}
         </div>
 
-        <div className="p-4 border-t border-border flex justify-end">
+        <div className="p-4 border-t border-border flex items-center justify-between gap-2">
+          <button
+            onClick={removeAll}
+            disabled={list.length === 0 || removingAll}
+            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-semibold text-destructive hover:bg-destructive/10 disabled:opacity-40 active:scale-95 transition"
+          >
+            {removingAll ? <Loader2 size={14} className="animate-spin" /> : <Trash2 size={14} />}
+            Remove all
+          </button>
           <button
             onClick={onClose}
             className="px-4 py-2 rounded-full bg-foreground text-background text-sm font-semibold active:scale-95 transition"
