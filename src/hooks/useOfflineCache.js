@@ -9,8 +9,19 @@ import {
   setOrderIds,
   clearMeta,
 } from "@/lib/offlineCache";
+import { base44 } from "@/api/base44Client";
+import { useAuth } from "@/lib/AuthContext";
+import {
+  getCloudList,
+  setCloudList,
+  addCloudTrack,
+  removeCloudTrack,
+} from "@/lib/offlineSync";
 
 const EVT = "offlinecache:change";
+// Module-level guard so multiple hook instances don't auto-download the same
+// cloud track twice in one session.
+const autoQueued = new Set();
 
 // PUBLIC files (covers) are served as a generic octet-stream; a blob: URL only
 // renders in an <img> when its MIME is image/*, so sniff the magic bytes and
@@ -40,6 +51,7 @@ export function useOfflineCache() {
   const [records, setRecords] = useState([]);
   const [downloading, setDownloading] = useState({});
   const backfilled = useRef(new Set());
+  const { user } = useAuth();
 
   const applyOrder = useCallback((all, orderIds) => {
     if (!orderIds || !orderIds.length) {
@@ -123,6 +135,9 @@ export function useOfflineCache() {
       // the top so it's easy to find (matching the previous newest-first view).
       const order = (await getOrderIds()) || [];
       await setOrderIds([track.id, ...order.filter((id) => id !== track.id)]);
+      // Mirror this save into the user's cloud offline list so other devices
+      // auto-download it too.
+      if (user?.id) addCloudTrack(user.id, track).catch(() => {});
       window.dispatchEvent(new CustomEvent(EVT));
       return true;
     } catch {
@@ -132,12 +147,37 @@ export function useOfflineCache() {
     }
   }, []);
 
+  // Pull the user's cloud-synced offline list and download any tracks that
+  // aren't on this device yet, so the same songs are available offline everywhere.
+  const syncFromCloud = useCallback(async () => {
+    if (!user?.id || !cachedIds) return;
+    if (typeof navigator !== "undefined" && !navigator.onLine) return;
+    const cloud = await getCloudList(user.id);
+    for (const t of cloud) {
+      if (cachedIds.has(t.id) || autoQueued.has(t.id)) continue;
+      autoQueued.add(t.id);
+      downloadTrack(t).catch(() => {});
+    }
+  }, [user?.id, cachedIds, downloadTrack]);
+
+  useEffect(() => {
+    syncFromCloud();
+  }, [syncFromCloud]);
+
+  // When another device updates the cloud offline list, re-read it here.
+  useEffect(() => {
+    if (!user?.id) return;
+    const unsub = base44.entities.OfflineSync.subscribe(() => syncFromCloud());
+    return unsub;
+  }, [user?.id, syncFromCloud]);
+
   const removeTrack = useCallback(async (id) => {
     await deleteRecord(id);
     const order = await getOrderIds();
     if (order) await setOrderIds(order.filter((x) => x !== id));
+    if (user?.id) removeCloudTrack(user.id, id).catch(() => {});
     window.dispatchEvent(new CustomEvent(EVT));
-  }, []);
+  }, [user?.id]);
 
   const reorder = useCallback(async (orderedIds) => {
     // Optimistic local re-order so the drag feels instant, then persist.
@@ -154,8 +194,10 @@ export function useOfflineCache() {
   const clearAllCache = useCallback(async () => {
     await clearAll();
     await clearMeta();
+    autoQueued.clear();
+    if (user?.id) setCloudList(user.id, []).catch(() => {});
     window.dispatchEvent(new CustomEvent(EVT));
-  }, []);
+  }, [user?.id]);
 
   return {
     cachedIds: cachedIds || new Set(),

@@ -1,0 +1,31 @@
+{
+  "name": "OfflineSync",
+  "type": "object",
+  "properties": {
+    "user_id": {
+      "type": "string"
+    },
+    "tracks": {
+      "type": "string",
+      "default": "",
+      "description": "JSON-serialized array of minimal track objects the user has saved for offline, synced across their devices so each device can auto-download the same songs"
+    }
+  },
+  "required": [
+    "user_id"
+  ],
+  "rls": {
+    "create": {
+      "data.user_id": "{{user.id}}"
+    },
+    "read": {
+      "data.user_id": "{{user.id}}"
+    },
+    "update": {
+      "data.user_id": "{{user.id}}"
+    },
+    "delete": {
+      "data.user_id": "{{user.id}}"
+    }
+  }
+}
