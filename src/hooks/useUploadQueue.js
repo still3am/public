@@ -86,6 +86,13 @@ export function useUploadQueue({ user, isAdmin }) {
     }));
     setItems((prev) => [...prev, ...newItems]);
 
+    // Refresh the platform track list for each new batch so tracks that were
+    // deleted since the last upload don't linger in the cache and cause false
+    // duplicate hits.
+    allTracksRef.current = await base44.entities.Track
+      .list("-created_date", 5000)
+      .catch(() => []);
+
     // analyze each file in parallel
     newItems.forEach(async (item) => {
       const [duration, tagTitle, tagArtist, embedded] = await Promise.all([
@@ -133,12 +140,7 @@ export function useUploadQueue({ user, isAdmin }) {
       // too noisy to match reliably) against every track already on the app.
       const finalTitle = meta?.title?.trim() || title;
       const finalArtist = artist || meta?.artist?.trim() || "";
-      if (!allTracksRef.current) {
-        allTracksRef.current = await base44.entities.Track
-          .list("-created_date", 5000)
-          .catch(() => []);
-      }
-      const hits = findDuplicateTracks(allTracksRef.current, {
+      const hits = findDuplicateTracks(allTracksRef.current || [], {
         title: finalTitle,
         artist: finalArtist,
         duration,
