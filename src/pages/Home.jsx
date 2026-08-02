@@ -253,7 +253,7 @@ export default function Home() {
             <CardRow tracks={trending} />
           )}
         </Section>
-        <Section title="New Releases" seeAllTo="/recent">
+        <Section title="New on PUBLIC" seeAllTo="/recent">
           <ReleaseList tracks={newReleases} />
         </Section>
 
