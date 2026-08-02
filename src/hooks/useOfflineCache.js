@@ -151,36 +151,14 @@ export function useOfflineCache() {
   // aren't on this device yet, so the same songs are available offline everywhere.
   const syncFromCloud = useCallback(async () => {
     if (!user?.id || !cachedIds) return;
-    const cloud = await getCloudList(user.id);
-    const cloudIds = new Set(cloud.map((t) => t.id));
-    // Backfill: push any local saves that aren't in the cloud list yet (e.g.
-    // tracks saved before cloud sync existed) so other devices learn about them.
-    const localMissing = records.filter((r) => !cloudIds.has(r.id));
-    if (localMissing.length) {
-      const merged = [
-        ...cloud,
-        ...localMissing.map((r) => ({
-          id: r.id,
-          title: r.title,
-          artist: r.artist,
-          uploader_id: r.uploader_id,
-          uploader_name: r.uploader_name,
-          cover_art_url: r.cover_art_url,
-          audio_url: r.audio_url,
-          duration_seconds: r.duration_seconds,
-          genre: r.genre,
-          explicit: !!r.explicit,
-        })),
-      ];
-      await setCloudList(user.id, merged);
-    }
     if (typeof navigator !== "undefined" && !navigator.onLine) return;
+    const cloud = await getCloudList(user.id);
     for (const t of cloud) {
       if (cachedIds.has(t.id) || autoQueued.has(t.id)) continue;
       autoQueued.add(t.id);
       downloadTrack(t).catch(() => {});
     }
-  }, [user?.id, cachedIds, records, downloadTrack]);
+  }, [user?.id, cachedIds, downloadTrack]);
 
   useEffect(() => {
     syncFromCloud();
