@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import {
   Play,
   Pause,
@@ -52,8 +52,25 @@ export default function TrackRow({
   const { isInLibrary, toggle } = useLibrary();
   const cache = useOfflineCache();
   const [menuOpen, setMenuOpen] = useState(false);
+  const [menuPos, setMenuPos] = useState({ top: 0, right: 0 });
+  const moreBtnRef = useRef(null);
   const [libBusy, setLibBusy] = useState(false);
   const inLib = isInLibrary(track.id);
+
+  const openMenu = () => {
+    if (moreBtnRef.current) {
+      const r = moreBtnRef.current.getBoundingClientRect();
+      setMenuPos({ top: r.bottom + 4, right: window.innerWidth - r.right });
+    }
+    setMenuOpen(true);
+  };
+
+  useEffect(() => {
+    if (!menuOpen) return;
+    const close = () => setMenuOpen(false);
+    window.addEventListener("scroll", close, true);
+    return () => window.removeEventListener("scroll", close, true);
+  }, [menuOpen]);
   const isCurrent = p.currentTrack?.id === track.id;
   const isPlayingHere = isCurrent && p.isPlaying;
   const savedOffline = cache.isCached(track.id);
@@ -161,7 +178,8 @@ export default function TrackRow({
       </div>
       <div className="relative shrink-0">
         <button
-          onClick={() => setMenuOpen((v) => !v)}
+          ref={moreBtnRef}
+          onClick={() => (menuOpen ? setMenuOpen(false) : openMenu())}
           className="p-2 rounded-full hover:bg-foreground/5"
           aria-label="More">
           
@@ -170,10 +188,12 @@ export default function TrackRow({
         {menuOpen &&
         <>
             <div
-            className="fixed inset-0 z-10"
+            className="fixed inset-0 z-40"
             onClick={() => setMenuOpen(false)} />
           
-            <div className="absolute right-0 top-full z-20 mt-1 bg-popover border border-border rounded-lg shadow-xl py-1 min-w-[200px]">
+            <div
+              className="fixed z-50 bg-popover border border-border rounded-lg shadow-xl py-1 min-w-[200px]"
+              style={{ top: menuPos.top, right: menuPos.right }}>
               <MenuBtn
               icon={libBusy ? Loader2 : inLib ? Check : Plus}
               label={libBusy ? "Saving…" : inLib ? "Remove from library" : "Add to library"}

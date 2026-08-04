@@ -42,6 +42,8 @@ export default function QueuePanel({ open, onClose }) {
   null :
   t.isAutoMix && isAdmin ?
   "AutoMix" :
+  t.isGapless ?
+  "Gapless" :
   t.isCrossfade ?
   `Crossfade ${t.crossfadeSeconds}s` :
   null;
