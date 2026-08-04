@@ -313,27 +313,28 @@ export default function Profile() {
         <div className="absolute inset-x-0 top-0 h-40 sm:h-48 md:h-60 bg-gradient-to-br from-violet-500/[0.15] via-foreground/[0.05] to-amber-400/[0.15]">
           {banner && <img src={banner} alt="" className="w-full h-full object-cover" />}
           <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-background" />
-          {editMode &&
-            <label className="absolute inset-0 grid place-items-center cursor-pointer bg-foreground/40 text-white text-sm font-semibold z-10">
-              {uploadingBanner ?
-              <Loader2 size={16} className="animate-spin" /> :
-
-              <span className="inline-flex items-center gap-1.5">
-                  <Upload size={14} /> Change banner
-                </span>
-              }
-              <input
-                type="file"
-                accept="image/*"
-                className="hidden"
-                onChange={(e) => {
-                  const f = e.target.files?.[0];
-                  if (f) uploadBanner(f);
-                }} />
-
-            </label>
-            }
         </div>
+        {editMode &&
+          <label className="absolute inset-x-0 top-0 h-40 sm:h-48 md:h-60 z-30 pointer-events-none">
+            <span className="absolute top-3 right-3 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-foreground/70 text-white text-xs font-semibold pointer-events-auto cursor-pointer active:scale-95 transition">
+              {uploadingBanner ?
+              <Loader2 size={12} className="animate-spin" /> :
+              <>
+                <Upload size={12} /> Change banner
+              </>
+              }
+            </span>
+            <input
+              type="file"
+              accept="image/*"
+              className="hidden"
+              onChange={(e) => {
+                const f = e.target.files?.[0];
+                if (f) uploadBanner(f);
+              }} />
+
+          </label>
+          }
 
         {/* Identity, stats, actions */}
         <div className="relative z-10 px-4 md:px-8 pb-6 md:pb-8 pt-20 sm:pt-24 md:pt-28">
