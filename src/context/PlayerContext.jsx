@@ -32,6 +32,12 @@ export function PlayerProvider({ children }) {
           a.crossOrigin = "anonymous";
         } catch {}
         a.preload = "auto";
+        // Explicitly preserve pitch so playback never sounds altered (sped up,
+        // slowed, or chipmunked) even if playbackRate changes or a browser
+        // defaults preservesPitch to false.
+        try { a.preservesPitch = true; } catch {}
+        try { a.mozPreservesPitch = true; } catch {}
+        try { a.webkitPreservesPitch = true; } catch {}
         r.current = a;
       }
     });
