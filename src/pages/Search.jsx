@@ -51,7 +51,10 @@ function ArtistRow({ artist, trackCount, onPick }) {
 
 export default function Search() {
   const [q, setQ] = useState("");
-  const [genre, setGenre] = useState(null);
+  const [genre, setGenre] = useState(() => {
+    const params = new URLSearchParams(window.location.search);
+    return params.get("genre") || null;
+  });
   const [allTracks, setAllTracks] = useState([]);
   const [allArtists, setAllArtists] = useState([]);
   const [people, setPeople] = useState([]);

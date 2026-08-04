@@ -307,7 +307,7 @@ export default function Home() {
         {byGenre.
         filter((sg) => sg.tracks.length > 0).
         map((sg) =>
-        <Section key={sg.genre} title={sg.genre} seeAllTo="/top">
+        <Section key={sg.genre} title={sg.genre} seeAllTo={`/search?genre=${encodeURIComponent(sg.genre)}`}>
               <CardRow tracks={sg.tracks} />
             </Section>
         )}
