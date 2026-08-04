@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import {
   Play,
@@ -31,9 +31,26 @@ function ReleaseRow({ track, tracks, index }) {
   const { isInLibrary, toggle } = useLibrary();
   const [menuOpen, setMenuOpen] = useState(false);
   const [busy, setBusy] = useState(false);
+  const [menuPos, setMenuPos] = useState({ top: 0, right: 0 });
+  const moreBtnRef = useRef(null);
   const inLib = isInLibrary(track.id);
   const isCurrent = p.currentTrack?.id === track.id;
   const isPlayingHere = isCurrent && p.isPlaying;
+
+  const openMenu = () => {
+    if (moreBtnRef.current) {
+      const r = moreBtnRef.current.getBoundingClientRect();
+      setMenuPos({ top: r.bottom + 4, right: window.innerWidth - r.right });
+    }
+    setMenuOpen(true);
+  };
+
+  useEffect(() => {
+    if (!menuOpen) return;
+    const close = () => setMenuOpen(false);
+    window.addEventListener("scroll", close, true);
+    return () => window.removeEventListener("scroll", close, true);
+  }, [menuOpen]);
 
   const playHere = () => p.playTrackAt(tracks.slice(index), 0);
 
@@ -85,7 +102,8 @@ function ReleaseRow({ track, tracks, index }) {
 
       <div className="relative shrink-0">
         <button
-          onClick={() => setMenuOpen((v) => !v)}
+          ref={moreBtnRef}
+          onClick={() => (menuOpen ? setMenuOpen(false) : openMenu())}
           className="p-2 rounded-full hover:bg-foreground/5"
           aria-label="More">
           <MoreHorizontal size={18} className="text-foreground" />
@@ -93,10 +111,12 @@ function ReleaseRow({ track, tracks, index }) {
         {menuOpen && (
           <>
             <div
-              className="fixed inset-0 z-10"
+              className="fixed inset-0 z-40"
               onClick={() => setMenuOpen(false)}
             />
-            <div className="absolute right-0 top-full z-20 mt-1 bg-popover border border-border rounded-lg shadow-xl py-1 min-w-[200px]">
+            <div
+              className="fixed z-50 bg-popover border border-border rounded-lg shadow-xl py-1 min-w-[200px]"
+              style={{ top: menuPos.top, right: menuPos.right }}>
               <MenuBtn
                 icon={isPlayingHere ? Pause : Play}
                 label={isPlayingHere ? "Pause" : "Play"}
