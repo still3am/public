@@ -598,7 +598,10 @@ export function PlayerProvider({ children }) {
         if (remaining <= 0.2) beginGapless(n);
         return;
       }
-      const cf = s.crossfadeSeconds;
+      // AutoMix: short, snappy mix (1.5s) so the song plays almost fully before
+      // transitioning — the long user crossfade duration drags songs out.
+      const isAutoMix = s.mode === TRANSITION_MODES.AUTOMIX;
+      const cf = isAutoMix ? 1.5 : s.crossfadeSeconds;
       // Preload a little early so the crossfade can start on time.
       if (remaining <= cf + 3 && remaining > cf && preloadedTargetRef.current !== n) {
         preloadedTargetRef.current = n;
