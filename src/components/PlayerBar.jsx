@@ -9,7 +9,8 @@ import {
   Repeat,
   Repeat1,
   Shuffle,
-  ListMusic } from
+  ListMusic,
+  X } from
 "lucide-react";
 import { usePlayer } from "@/context/PlayerContext";
 import { Link } from "react-router-dom";
@@ -184,7 +185,12 @@ export default function PlayerBar() {
                 onChange={(e) => p.setVolume(Number(e.target.value))}
                 className="w-24 accent-foreground"
                 aria-label="Volume" />
-              
+              <button
+                onClick={p.clearQueue}
+                className="p-1.5 rounded-full hover:bg-foreground/10 active:scale-90 transition text-foreground/40 hover:text-foreground"
+                aria-label="Close player">
+                <X size={15} />
+              </button>
             </div>
           </div>
         </div>
