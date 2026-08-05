@@ -17,6 +17,7 @@ const ITEMS = [
   { to: "/top", icon: BarChart3, label: "Top Charts" },
   { to: "/recent", icon: Clock, label: "Recently Added" },
   { to: "/library", icon: LibraryIcon, label: "Library" },
+  { to: "/my-uploads", icon: Upload, label: "Your Uploads" },
 
   { to: "/suggestions", icon: Lightbulb, label: "Suggestions" },
 ];
