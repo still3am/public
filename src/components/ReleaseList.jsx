@@ -16,11 +16,11 @@ import { Image } from "@/components/ui/image";
 function MenuBtn({ icon: Icon, label, onClick, danger }) {
   return (
     <button
-      onClick={onClick}
-      className={`w-full flex items-center gap-2 px-3 py-2 text-sm hover:bg-foreground/[0.04] text-left ${
-        danger ? "text-red-600" : ""
-      }`}>
-      <Icon size={14} /> {label}
+    onClick={onClick}
+    className={`w-full flex items-center gap-2.5 px-3.5 py-2.5 text-sm hover:bg-foreground/[0.04] active:bg-foreground/[0.08] text-left ${
+      danger ? "text-red-600" : ""
+    }`}>
+    <Icon size={15} /> {label}
     </button>
   );
 }
@@ -30,7 +30,7 @@ function ReleaseRow({ track, tracks, index, openMenuId, setOpenMenuId }) {
   const nav = useNavigate();
   const { isInLibrary, toggle } = useLibrary();
   const [busy, setBusy] = useState(false);
-  const [menuPos, setMenuPos] = useState({ top: 0, right: 0 });
+  const [menuPos, setMenuPos] = useState({ top: 0, left: 0 });
   const moreBtnRef = useRef(null);
   const inLib = isInLibrary(track.id);
   const isCurrent = p.currentTrack?.id === track.id;
@@ -42,7 +42,19 @@ function ReleaseRow({ track, tracks, index, openMenuId, setOpenMenuId }) {
   const openMenu = () => {
     if (moreBtnRef.current) {
       const r = moreBtnRef.current.getBoundingClientRect();
-      setMenuPos({ top: r.bottom + 4, right: window.innerWidth - r.right });
+      const menuW = 220;
+      const menuH = 150;
+      const gap = 4;
+      const vw = window.innerWidth;
+      const vh = window.innerHeight;
+      // Prefer opening below the button; flip above if it would overflow the bottom.
+      const top = r.bottom + gap + menuH > vh
+        ? Math.max(8, r.top - gap - menuH)
+        : r.bottom + gap;
+      // Keep the menu fully on-screen horizontally.
+      let left = r.right - menuW;
+      left = Math.max(8, Math.min(left, vw - menuW - 8));
+      setMenuPos({ top, left });
     }
     setOpenMenuId(track.id);
   };
@@ -106,7 +118,7 @@ function ReleaseRow({ track, tracks, index, openMenuId, setOpenMenuId }) {
         <button
           ref={moreBtnRef}
           onClick={() => (menuOpen ? setMenuOpen(false) : openMenu())}
-          className="p-2 rounded-full hover:bg-foreground/5"
+          className="p-2.5 rounded-full hover:bg-foreground/5 active:bg-foreground/10 tap-target"
           aria-label="More">
           <MoreHorizontal size={18} className="text-foreground" />
         </button>
@@ -117,8 +129,8 @@ function ReleaseRow({ track, tracks, index, openMenuId, setOpenMenuId }) {
               onClick={() => setMenuOpen(false)}
             />
             <div
-              className="fixed z-50 bg-popover border border-border rounded-lg shadow-xl py-1 min-w-[200px]"
-              style={{ top: menuPos.top, right: menuPos.right }}>
+              className="fixed z-50 bg-popover border border-border rounded-xl shadow-xl py-1 w-[220px] max-w-[calc(100vw-1rem)]"
+              style={{ top: menuPos.top, left: menuPos.left }}>
               <MenuBtn
                 icon={isPlayingHere ? Pause : Play}
                 label={isPlayingHere ? "Pause" : "Play"}
