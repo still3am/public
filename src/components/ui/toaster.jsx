@@ -12,7 +12,7 @@ export function Toaster() {
   const { toasts } = useToast();
 
   return (
-    <ToastProvider>
+    <ToastProvider className="hidden">
       {toasts.map(function ({ id, title, description, action, ...props }) {
         return null;
 
@@ -27,7 +27,7 @@ export function Toaster() {
 
 
       })}
-      <ToastViewport />
+      <ToastViewport className="hidden" />
     </ToastProvider>);
 
 }
