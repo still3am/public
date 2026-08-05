@@ -25,32 +25,34 @@ function MenuBtn({ icon: Icon, label, onClick, danger }) {
   );
 }
 
-function ReleaseRow({ track, tracks, index }) {
+function ReleaseRow({ track, tracks, index, openMenuId, setOpenMenuId }) {
   const p = usePlayer();
   const nav = useNavigate();
   const { isInLibrary, toggle } = useLibrary();
-  const [menuOpen, setMenuOpen] = useState(false);
   const [busy, setBusy] = useState(false);
   const [menuPos, setMenuPos] = useState({ top: 0, right: 0 });
   const moreBtnRef = useRef(null);
   const inLib = isInLibrary(track.id);
   const isCurrent = p.currentTrack?.id === track.id;
   const isPlayingHere = isCurrent && p.isPlaying;
+  const menuOpen = openMenuId === track.id;
+
+  const setMenuOpen = (v) => setOpenMenuId(v ? track.id : null);
 
   const openMenu = () => {
     if (moreBtnRef.current) {
       const r = moreBtnRef.current.getBoundingClientRect();
       setMenuPos({ top: r.bottom + 4, right: window.innerWidth - r.right });
     }
-    setMenuOpen(true);
+    setOpenMenuId(track.id);
   };
 
   useEffect(() => {
     if (!menuOpen) return;
-    const close = () => setMenuOpen(false);
+    const close = () => setOpenMenuId(null);
     window.addEventListener("scroll", close, true);
     return () => window.removeEventListener("scroll", close, true);
-  }, [menuOpen]);
+  }, [menuOpen, setOpenMenuId]);
 
   const playHere = () => p.playTrackAt(tracks.slice(index), 0);
 
@@ -157,6 +159,7 @@ function ReleaseRow({ track, tracks, index }) {
 }
 
 export default function ReleaseList({ tracks }) {
+  const [openMenuId, setOpenMenuId] = useState(null);
   if (!tracks?.length) return null;
   const chunks = [];
   for (let i = 0; i < tracks.length; i += 4) {
@@ -169,7 +172,14 @@ export default function ReleaseList({ tracks }) {
           key={gi}
           className="snap-start shrink-0 w-[88%] sm:w-[calc(50%-0.375rem)] md:w-full divide-y divide-foreground/[0.05]">
           {group.map((t, i) => (
-            <ReleaseRow key={t.id} track={t} tracks={tracks} index={gi * 4 + i} />
+            <ReleaseRow
+              key={t.id}
+              track={t}
+              tracks={tracks}
+              index={gi * 4 + i}
+              openMenuId={openMenuId}
+              setOpenMenuId={setOpenMenuId}
+            />
           ))}
         </div>
       ))}
