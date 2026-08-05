@@ -71,9 +71,9 @@ function ReleaseRow({ track, tracks, index, openMenuId, setOpenMenuId }) {
   const artistName = track.artist || track.uploader_name || "Unknown";
 
   return (
-    <div className="group flex items-center gap-3 px-2 py-2.5 rounded-lg hover:bg-foreground/[0.04] active:scale-[0.99] transition">
+    <div className="group flex items-center gap-2 md:gap-3 px-2 py-1.5 md:py-2.5 rounded-lg hover:bg-foreground/[0.04] active:scale-[0.99] transition">
       <button onClick={playHere} className="relative shrink-0" aria-label="Play">
-        <div className="w-12 h-12 rounded-lg overflow-hidden bg-foreground/10">
+        <div className="w-10 h-10 md:w-12 md:h-12 rounded-lg overflow-hidden bg-foreground/10">
           {track.cover_art_url ? (
             <Image
               src={track.cover_art_url}
@@ -98,18 +98,18 @@ function ReleaseRow({ track, tracks, index, openMenuId, setOpenMenuId }) {
       <div className="min-w-0 flex-1">
         <Link to={`/track/${track.id}`} className="flex items-center gap-1.5 min-w-0">
           <span
-            className={`text-[15px] font-bold truncate ${
+            className={`text-[13px] md:text-[15px] font-bold truncate ${
               isCurrent ? "text-foreground" : "text-foreground"
             }`}>
             {track.title}
           </span>
           {track.explicit && (
-            <span className="text-[9px] font-extrabold rounded bg-foreground/15 text-foreground/70 leading-none px-1 py-0.5 shrink-0">
+            <span className="text-[8px] md:text-[9px] font-extrabold rounded bg-foreground/15 text-foreground/70 leading-none px-1 py-0.5 shrink-0">
               E
             </span>
           )}
         </Link>
-        <div className="text-[13px] text-muted-foreground truncate mt-0.5">
+        <div className="text-[11px] md:text-[13px] text-muted-foreground truncate mt-0.5">
           {artistName}
         </div>
       </div>
@@ -118,9 +118,9 @@ function ReleaseRow({ track, tracks, index, openMenuId, setOpenMenuId }) {
         <button
           ref={moreBtnRef}
           onClick={() => (menuOpen ? setMenuOpen(false) : openMenu())}
-          className="p-2.5 rounded-full hover:bg-foreground/5 active:bg-foreground/10 tap-target"
+          className="p-1.5 md:p-2.5 rounded-full hover:bg-foreground/5 active:bg-foreground/10"
           aria-label="More">
-          <MoreHorizontal size={18} className="text-foreground" />
+          <MoreHorizontal size={16} className="text-foreground" />
         </button>
         {menuOpen && (
           <>
