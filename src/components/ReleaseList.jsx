@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from "react";
+import { createPortal } from "react-dom";
 import { Link, useNavigate } from "react-router-dom";
 import {
   Play,
@@ -42,7 +43,7 @@ function ReleaseRow({ track, tracks, index, openMenuId, setOpenMenuId }) {
   const openMenu = () => {
     if (moreBtnRef.current) {
       const r = moreBtnRef.current.getBoundingClientRect();
-      const menuW = 220;
+      const menuW = window.innerWidth < 640 ? 180 : 200;
       const menuH = 150;
       const gap = 4;
       const vw = window.innerWidth;
@@ -122,49 +123,51 @@ function ReleaseRow({ track, tracks, index, openMenuId, setOpenMenuId }) {
           aria-label="More">
           <MoreHorizontal size={16} className="text-foreground" />
         </button>
-        {menuOpen && (
-          <>
-            <div
-              className="fixed inset-0 z-40"
-              onClick={() => setMenuOpen(false)}
-            />
-            <div
-              className="fixed z-50 bg-popover border border-border rounded-xl shadow-xl py-1 w-[220px] max-w-[calc(100vw-1rem)]"
-              style={{ top: menuPos.top, left: menuPos.left }}>
-              <MenuBtn
-                icon={isPlayingHere ? Pause : Play}
-                label={isPlayingHere ? "Pause" : "Play"}
-                onClick={() => {
-                  setMenuOpen(false);
-                  if (isCurrent) p.togglePlay();
-                  else playHere();
-                }}
+        {menuOpen &&
+          createPortal(
+            <>
+              <div
+                className="fixed inset-0 z-[60]"
+                onClick={() => setMenuOpen(false)}
               />
-              <MenuBtn
-                icon={busy ? Loader2 : inLib ? Check : Plus}
-                label={busy ? "Saving…" : inLib ? "Remove from library" : "Add to library"}
-                danger={!busy && inLib}
-                onClick={async () => {
-                  setMenuOpen(false);
-                  setBusy(true);
-                  try {
-                    await toggle(track);
-                  } finally {
-                    setBusy(false);
-                  }
-                }}
-              />
-              <MenuBtn
-                icon={ChevronRight}
-                label="Go to track"
-                onClick={() => {
-                  setMenuOpen(false);
-                  nav(`/track/${track.id}`);
-                }}
-              />
-            </div>
-          </>
-        )}
+              <div
+                className="fixed z-[70] bg-popover border border-border rounded-xl shadow-xl py-1 w-[180px] sm:w-[200px] max-w-[calc(100vw-1rem)]"
+                style={{ top: menuPos.top, left: menuPos.left }}>
+                <MenuBtn
+                  icon={isPlayingHere ? Pause : Play}
+                  label={isPlayingHere ? "Pause" : "Play"}
+                  onClick={() => {
+                    setMenuOpen(false);
+                    if (isCurrent) p.togglePlay();
+                    else playHere();
+                  }}
+                />
+                <MenuBtn
+                  icon={busy ? Loader2 : inLib ? Check : Plus}
+                  label={busy ? "Saving…" : inLib ? "Remove from library" : "Add to library"}
+                  danger={!busy && inLib}
+                  onClick={async () => {
+                    setMenuOpen(false);
+                    setBusy(true);
+                    try {
+                      await toggle(track);
+                    } finally {
+                      setBusy(false);
+                    }
+                  }}
+                />
+                <MenuBtn
+                  icon={ChevronRight}
+                  label="Go to track"
+                  onClick={() => {
+                    setMenuOpen(false);
+                    nav(`/track/${track.id}`);
+                  }}
+                />
+              </div>
+            </>,
+            document.body
+          )}
       </div>
     </div>
   );
