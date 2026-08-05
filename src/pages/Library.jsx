@@ -15,6 +15,7 @@ export default function Library() {
   const { ids, refresh } = useLibrary();
   const cache = useOfflineCache();
   const [tracks, setTracks] = useState(null);
+  const [uploads, setUploads] = useState(null);
   const [loading, setLoading] = useState(true);
 
   const offlineCount = cache.records.length;
@@ -22,33 +23,42 @@ export default function Library() {
   const load = useCallback(async () => {
     if (!user?.id) {
       setTracks([]);
+      setUploads([]);
       setLoading(false);
       return;
     }
     setLoading(true);
     try {
-      const items = await base44.entities.LibraryItem.filter(
-        { user_id: user.id },
-        "-created_date",
-        1000
-      );
+      const [items, uploaded] = await Promise.all([
+        base44.entities.LibraryItem.filter(
+          { user_id: user.id },
+          "-created_date",
+          1000
+        ),
+        base44.entities.Track.filter(
+          { uploader_id: user.id },
+          "-created_date",
+          1000
+        ),
+      ]);
       const trackIds = (items || []).
       map((i) => i.track_id).
       filter(Boolean);
-      if (!trackIds.length) {
-        setTracks([]);
-        return;
-      }
-      const list = await base44.entities.Track.filter(
-        { id: { $in: trackIds } },
-        "-created_date",
-        1000
-      );
+      const uploadedIds = new Set((uploaded || []).map((t) => t.id));
+      const list = trackIds.length
+        ? await base44.entities.Track.filter(
+            { id: { $in: trackIds } },
+            "-created_date",
+            1000
+          )
+        : [];
       const order = new Map(trackIds.map((id, i) => [id, i]));
       const sorted = (list || []).
       slice().
-      sort((a, b) => (order.get(a.id) ?? 0) - (order.get(b.id) ?? 0));
+      sort((a, b) => (order.get(a.id) ?? 0) - (order.get(b.id) ?? 0)).
+      filter((t) => !uploadedIds.has(t.id));
       setTracks(sorted);
+      setUploads(uploaded || []);
     } finally {
       setLoading(false);
     }
@@ -91,18 +101,35 @@ export default function Library() {
         <div className="flex justify-center py-20">
             <Loader2 className="animate-spin text-foreground/40" />
           </div> :
-        !tracks?.length ?
-        <EmptyState
-          icon={LibIcon}
-          title="Your library is empty"
-          description="Tap the + on any track to save it here for quick access." /> :
+        <>
+          {uploads?.length > 0 &&
+          <section className="mb-7">
+            <h2 className="text-sm font-bold text-foreground/70 uppercase tracking-wider mb-3">Your Uploads</h2>
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
+              {uploads.map((t) =>
+              <TrackCard key={t.id} track={t} />
+              )}
+            </div>
+          </section>
+          }
+
+          <section>
+            <h2 className="text-sm font-bold text-foreground/70 uppercase tracking-wider mb-3">Saved</h2>
+            {!tracks?.length ?
+            <EmptyState
+              icon={LibIcon}
+              title="Your library is empty"
+              description="Tap the + on any track to save it here for quick access." /> :
 
 
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
-            {tracks.map((t) =>
-          <TrackCard key={t.id} track={t} />
-          )}
-          </div>
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
+                {tracks.map((t) =>
+              <TrackCard key={t.id} track={t} />
+              )}
+              </div>
+            }
+          </section>
+        </>
         }
       </PullToRefresh>
     </div>);

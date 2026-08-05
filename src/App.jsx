@@ -28,7 +28,6 @@ import Upload from '@/pages/Upload';
 import Lounge from '@/pages/Lounge';
 import Library from '@/pages/Library';
 import Downloads from '@/pages/Downloads';
-import MyUploads from '@/pages/MyUploads';
 import Admin from '@/pages/Admin';
 import SongTransitions from '@/pages/SongTransitions';
 
@@ -79,7 +78,6 @@ const AuthenticatedApp = () => {
           <Route path="/lounge/:code" element={<Lounge />} />
           <Route path="/library" element={<Library />} />
           <Route path="/downloads" element={<Downloads />} />
-          <Route path="/my-uploads" element={<MyUploads />} />
           <Route path="/admin" element={<Admin />} />
           <Route path="/settings/transitions" element={<SongTransitions />} />
         </Route>

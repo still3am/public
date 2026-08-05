@@ -24,7 +24,6 @@ const NAV = [
   { to: "/top", label: "Top Charts", icon: TrendingUp },
   { to: "/recent", label: "Recently Added", icon: Clock },
   { to: "/library", label: "Library", icon: LibraryIcon },
-  { to: "/my-uploads", label: "Your Uploads", icon: Upload },
 ];
 
 const EASE = "transition-all duration-300 ease-out";
