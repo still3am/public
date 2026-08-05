@@ -25,11 +25,11 @@ export default function PlayerBar() {
   const [fullOpen, setFullOpen] = useState(false);
   const [queueOpen, setQueueOpen] = useState(false);
   const [dragY, setDragY] = useState(0);
-  const drag = useRef({ active: false, startY: 0, moved: false });
+  const drag = useRef({ active: false, startY: 0, moved: false, dy: 0 });
 
   const onTouchStart = (e) => {
     const touch = e.touches[0];
-    drag.current = { active: true, startY: touch.clientY, moved: false };
+    drag.current = { active: true, startY: touch.clientY, moved: false, dy: 0 };
   };
   const onTouchMove = (e) => {
     if (!drag.current.active) return;
@@ -37,14 +37,17 @@ export default function PlayerBar() {
     const dy = touch.clientY - drag.current.startY;
     if (dy > 8) {
       drag.current.moved = true;
+      drag.current.dy = dy;
       setDragY(dy);
       e.preventDefault();
     }
   };
   const onTouchEnd = () => {
     if (!drag.current.active) return;
+    const shouldClear = drag.current.dy > 90;
     drag.current.active = false;
-    if (dragY > 90) {
+    drag.current.dy = 0;
+    if (shouldClear) {
       p.clearQueue();
     }
     setDragY(0);
