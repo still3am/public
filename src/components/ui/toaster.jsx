@@ -11,10 +11,7 @@ import {
 export function Toaster() {
   const { toasts } = useToast();
 
-  return (
-    <ToastProvider className="hidden">
-      {toasts.map(function ({ id, title, description, action, ...props }) {
-        return null;
+  return null;
 
 
 
@@ -26,8 +23,11 @@ export function Toaster() {
 
 
 
-      })}
-      <ToastViewport className="hidden" />
-    </ToastProvider>);
+
+
+
+
+
+
 
 }
