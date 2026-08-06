@@ -48,7 +48,7 @@ export default function Register() {
       if (result?.access_token) {
         base44.auth.setToken(result.access_token);
       }
-      window.location.href = "/onboarding";
+      window.location.href = "/";
     } catch (err) {
       setError(err.message || "Invalid verification code");
     } finally {
@@ -70,19 +70,19 @@ export default function Register() {
   };
 
   const handleGoogle = () => {
-    base44.auth.loginWithProvider("google", "/onboarding");
+    base44.auth.loginWithProvider("google", "/");
   };
 
   const handleApple = () => {
-    base44.auth.loginWithProvider("apple", "/onboarding");
+    base44.auth.loginWithProvider("apple", "/");
   };
 
   const handleFacebook = () => {
-    base44.auth.loginWithProvider("facebook", "/onboarding");
+    base44.auth.loginWithProvider("facebook", "/");
   };
 
   const handleMicrosoft = () => {
-    base44.auth.loginWithProvider("microsoft", "/onboarding");
+    base44.auth.loginWithProvider("microsoft", "/");
   };
 
   if (showOtp) {
