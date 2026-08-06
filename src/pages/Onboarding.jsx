@@ -82,14 +82,14 @@ export default function Onboarding() {
             <Loader2 className="animate-spin inline text-foreground/40" size={22} />
           </div> :
 
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
+        <div className="flex gap-3 overflow-x-auto no-scrollbar snap-x snap-mandatory pb-2 sm:pb-0 sm:grid sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
             {genres.map((g) => {
             const active = selected.has(g.genre);
             return (
               <button
                 key={g.genre}
                 onClick={() => toggle(g.genre)}
-                className={`group relative rounded-2xl p-2.5 sm:p-3 transition-all duration-300 text-center hover:bg-foreground/[0.04] active:scale-[0.98] ${
+                className={`group relative rounded-2xl p-2.5 sm:p-3 transition-all duration-300 text-center hover:bg-foreground/[0.04] active:scale-[0.98] snap-start shrink-0 w-[44vw] max-w-[170px] sm:w-auto sm:max-w-none sm:shrink ${
                 active ? "bg-foreground/[0.04]" : ""}`
                 }>
                 
