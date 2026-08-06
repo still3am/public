@@ -1,4 +1,4 @@
-import { NavLink } from "react-router-dom";
+import { NavLink, useLocation } from "react-router-dom";
 import { useSidebarCollapsed } from "@/hooks/useSidebarCollapsed";
 
 import {
@@ -31,6 +31,8 @@ const EASE = "transition-all duration-300 ease-out";
 export default function Sidebar() {
   const { user } = useAuth();
   const { collapsed, toggle } = useSidebarCollapsed();
+  const location = useLocation();
+  if (location.pathname === "/onboarding") return null;
 
   const links = [
     ...NAV,
