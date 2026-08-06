@@ -123,25 +123,47 @@ export default function Onboarding() {
       </div>
 
       <div className="sticky bottom-4 z-20 mt-8">
-        <div className="max-w-5xl mx-auto rounded-2xl border border-border bg-background/80 backdrop-blur px-4 py-3 flex items-center justify-between gap-4 shadow-sm">
-          
-
-
-
-
-          
-          <Button onClick={done} disabled={selected.size < MIN || saving} className="h-11 px-8">
-            {saving ?
-            <>
-                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                Saving…
-              </> :
-
-            "Done"
-            }
-          </Button>
+        <div className="max-w-5xl mx-auto rounded-2xl border border-border bg-background/80 backdrop-blur px-4 py-3.5 flex items-center justify-between gap-4 shadow-lg shadow-foreground/5">
+          <div className="flex items-center gap-3 min-w-0">
+            <div className="grid place-items-center w-9 h-9 rounded-full bg-foreground/[0.06] text-sm font-bold shrink-0">
+              {selected.size}
+            </div>
+            <div className="min-w-0">
+              <div className="text-sm font-semibold leading-tight">
+                {selected.size < MIN
+                  ? `Pick ${MIN - selected.size} more`
+                  : selected.size === MAX
+                  ? "Max reached"
+                  : "Looks good"}
+              </div>
+              <div className="text-xs text-muted-foreground leading-tight truncate">
+                {selected.size} of {MIN}–{MAX} selected
+              </div>
+            </div>
+          </div>
+          <div className="flex items-center gap-2 shrink-0">
+            {selected.size > 0 && (
+              <button
+                onClick={() => setSelected(new Set())}
+                disabled={saving}
+                className="h-11 px-4 rounded-xl text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-foreground/[0.05] transition disabled:opacity-40"
+              >
+                Clear all
+              </button>
+            )}
+            <Button onClick={done} disabled={selected.size < MIN || saving} className="h-11 px-8">
+              {saving ? (
+                <>
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  Saving…
+                </>
+              ) : (
+                "Done"
+              )}
+            </Button>
+          </div>
         </div>
       </div>
-    </div>);
+      </div>);
 
 }
