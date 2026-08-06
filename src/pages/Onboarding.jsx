@@ -134,7 +134,7 @@ export default function Onboarding() {
         })}
       </div>
 
-      <div className="mt-6 pb-2">
+      <div className="sticky bottom-0 pt-4 pb-2 -mx-5 px-5 bg-background/80 backdrop-blur z-10">
         <button
           onClick={finish}
           disabled={selected.size === 0 || saving}
