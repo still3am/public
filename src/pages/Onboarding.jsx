@@ -46,8 +46,8 @@ export default function Onboarding() {
   function toggle(g) {
     setSelected((prev) => {
       const next = new Set(prev);
-      if (next.has(g)) next.delete(g);
-      else if (next.size < MAX) next.add(g);
+      if (next.has(g)) next.delete(g);else
+      if (next.size < MAX) next.add(g);
       return next;
     });
   }
@@ -75,73 +75,73 @@ export default function Onboarding() {
           </p>
         </div>
 
-        {loading ? (
-          <div className="py-16 text-center">
+        {loading ?
+        <div className="py-16 text-center">
             <Loader2 className="animate-spin inline text-foreground/40" size={22} />
-          </div>
-        ) : (
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
+          </div> :
+
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
             {genres.map((g) => {
-              const active = selected.has(g.genre);
-              return (
-                <button
-                  key={g.genre}
-                  onClick={() => toggle(g.genre)}
-                  className={`group relative rounded-2xl p-2.5 sm:p-3 transition-all duration-300 text-center hover:bg-foreground/[0.04] active:scale-[0.98] ${
-                    active ? "bg-foreground/[0.04]" : ""
-                  }`}
-                >
+            const active = selected.has(g.genre);
+            return (
+              <button
+                key={g.genre}
+                onClick={() => toggle(g.genre)}
+                className={`group relative rounded-2xl p-2.5 sm:p-3 transition-all duration-300 text-center hover:bg-foreground/[0.04] active:scale-[0.98] ${
+                active ? "bg-foreground/[0.04]" : ""}`
+                }>
+                
                   <div
-                    className={`relative aspect-square rounded-xl overflow-hidden bg-foreground/[0.06] mb-2.5 shadow-sm ring-2 transition ${
-                      active ? "ring-foreground" : "ring-transparent"
-                    }`}
-                  >
-                    {g.cover ? (
-                      <Image
-                        src={g.cover}
-                        fittingType="fill"
-                        alt=""
-                        className="w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-[1.06]"
-                      />
-                    ) : (
-                      <div className="w-full h-full grid place-items-center text-foreground/25 text-[10px] font-semibold uppercase tracking-wider px-2 text-center">
+                  className={`relative aspect-square rounded-xl overflow-hidden bg-foreground/[0.06] mb-2.5 shadow-sm ring-2 transition ${
+                  active ? "ring-foreground" : "ring-transparent"}`
+                  }>
+                  
+                    {g.cover ?
+                  <Image
+                    src={g.cover}
+                    fittingType="fill"
+                    alt=""
+                    className="w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-[1.06]" /> :
+
+
+                  <div className="w-full h-full grid place-items-center text-foreground/25 text-[10px] font-semibold uppercase tracking-wider px-2 text-center">
                         {g.genre}
                       </div>
-                    )}
-                    {active && (
-                      <div className="absolute top-2 right-2 w-6 h-6 rounded-full bg-foreground text-background grid place-items-center shadow">
+                  }
+                    {active &&
+                  <div className="absolute top-2 right-2 w-6 h-6 rounded-full bg-foreground text-background grid place-items-center shadow">
                         <Check size={14} strokeWidth={3} />
                       </div>
-                    )}
+                  }
                   </div>
                   <div className="truncate text-sm font-semibold text-center">{g.genre}</div>
-                </button>
-              );
-            })}
+                </button>);
+
+          })}
           </div>
-        )}
+        }
       </div>
 
       <div className="sticky bottom-4 z-20 mt-8">
         <div className="max-w-5xl mx-auto rounded-2xl border border-border bg-background/80 backdrop-blur px-4 py-3 flex items-center justify-between gap-4 shadow-sm">
-          <span className="text-sm font-medium text-muted-foreground">
+          <span className="text-sm font-medium text-muted-foreground hidden">
             {selected.size} of {MAX} selected
-            {selected.size < MIN && (
-              <span className="text-foreground/50"> · pick {MIN - selected.size} more</span>
-            )}
+            {selected.size < MIN &&
+            <span className="text-foreground/50"> · pick {MIN - selected.size} more</span>
+            }
           </span>
           <Button onClick={done} disabled={selected.size < MIN || saving} className="h-11 px-8">
-            {saving ? (
-              <>
+            {saving ?
+            <>
                 <Loader2 className="w-4 h-4 mr-2 animate-spin" />
                 Saving…
-              </>
-            ) : (
-              "Done"
-            )}
+              </> :
+
+            "Done"
+            }
           </Button>
         </div>
       </div>
-    </div>
-  );
+    </div>);
+
 }
