@@ -122,7 +122,7 @@ export default function Onboarding() {
         }
       </div>
 
-      <div className="sticky bottom-4 z-20 mt-8">
+      <div className="mt-10">
         <div className="max-w-5xl mx-auto flex items-center justify-center gap-2 py-1">
           <div className="flex items-center gap-2 shrink-0">
             {selected.size > 0 && (
