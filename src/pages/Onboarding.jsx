@@ -62,7 +62,7 @@ export default function Onboarding() {
   return (
     <div className="min-h-screen flex flex-col px-5 py-10 max-w-2xl mx-auto">
       <div className="flex flex-col items-center text-center mb-8">
-        <Logo size={48} className="mb-4 mx-auto" />
+        <Logo size={72} className="mb-4 mx-auto" />
         <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight mb-2">
           Pick your sound
         </h1>
