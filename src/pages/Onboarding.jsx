@@ -80,23 +80,37 @@ export default function Onboarding() {
         )}
       </div>
 
-      <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 flex-1">
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 flex-1">
         {GENRES.map((g) => {
           const on = selected.has(g);
           return (
             <button
               key={g}
               onClick={() => toggle(g)}
-              className={`relative px-3 py-3 rounded-xl text-sm font-semibold border transition active:scale-[0.98] text-left ${
-                on
-                  ? "bg-foreground text-background border-foreground"
-                  : "border-border text-foreground/70 hover:bg-foreground/[0.04]"
-              }`}
+              className={`group relative rounded-2xl p-2.5 sm:p-3 transition-all duration-300 text-center cursor-pointer
+                hover:bg-foreground/[0.04] active:scale-[0.98]`}
             >
-              {on && (
-                <Check size={14} className="absolute top-2 right-2" />
-              )}
-              {g}
+              <div
+                className={`relative aspect-square rounded-xl overflow-hidden mb-2.5 shadow-sm transition-all duration-300
+                  ${on ? "ring-2 ring-foreground" : "bg-foreground/[0.06] group-hover:scale-[1.03]"}`}
+              >
+                <div className="w-full h-full grid place-items-center text-foreground/25 text-[10px] font-semibold uppercase tracking-wider px-2 text-center">
+                  {g}
+                </div>
+                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300" />
+                {on && (
+                  <div className="absolute bottom-2 right-2 w-7 h-7 rounded-full grid place-items-center bg-foreground text-background shadow-lg">
+                    <Check size={15} strokeWidth={3} />
+                  </div>
+                )}
+              </div>
+              <div
+                className={`truncate text-sm font-semibold ${
+                  on ? "text-foreground" : "text-foreground/70"
+                }`}
+              >
+                {g}
+              </div>
             </button>
           );
         })}
