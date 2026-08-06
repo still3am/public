@@ -70,8 +70,8 @@ export default function Onboarding() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col px-5 py-10 max-w-2xl mx-auto">
-      <div className="flex flex-col items-center text-center mb-8">
+    <div className="flex flex-col px-5 py-6 max-w-2xl mx-auto">
+      <div className="flex flex-col items-center text-center mb-6">
         <Logo width="70%" className="mb-5 max-w-[420px]" />
         <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight mb-2">
           Pick your sound
@@ -89,7 +89,7 @@ export default function Onboarding() {
         )}
       </div>
 
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 flex-1">
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 pb-4">
         {GENRES.map((g) => {
           const on = selected.has(g);
           return (
@@ -134,7 +134,7 @@ export default function Onboarding() {
         })}
       </div>
 
-      <div className="sticky bottom-0 pt-4 pb-2 bg-background/80 backdrop-blur">
+      <div className="sticky bottom-0 pt-4 pb-2 -mx-5 px-5 bg-background/80 backdrop-blur z-10">
         <button
           onClick={finish}
           disabled={selected.size === 0 || saving}
