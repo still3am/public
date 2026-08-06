@@ -4,7 +4,8 @@ import { base44 } from "@/api/base44Client";
 import { useAuth } from "@/lib/AuthContext";
 import { GENRES } from "@/lib/audio-utils";
 import { clearUserGenresCache } from "@/lib/userGenres";
-import { Check, Loader2, Music, RotateCcw } from "lucide-react";
+import { Check, Loader2, RotateCcw } from "lucide-react";
+import Logo from "@/components/Logo";
 
 export default function Onboarding() {
   const { user } = useAuth();
@@ -61,9 +62,7 @@ export default function Onboarding() {
   return (
     <div className="min-h-screen flex flex-col px-5 py-10 max-w-2xl mx-auto">
       <div className="flex flex-col items-center text-center mb-8">
-        <div className="w-14 h-14 rounded-2xl grid place-items-center bg-foreground/[0.05] text-foreground/60 mb-4">
-          <Music size={26} />
-        </div>
+        <Logo size={48} className="mb-4 mx-auto" />
         <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight mb-2">
           Pick your sound
         </h1>
