@@ -9,7 +9,6 @@ import { Loader2, Check } from "lucide-react";
 import { saveUserGenres, clearUserGenresCache } from "@/lib/userGenres";
 
 const MIN = 3;
-const MAX = 5;
 
 export default function Onboarding() {
   const { user } = useAuth();
@@ -46,10 +45,13 @@ export default function Onboarding() {
   function toggle(g) {
     setSelected((prev) => {
       const next = new Set(prev);
-      if (next.has(g)) next.delete(g);else
-      if (next.size < MAX) next.add(g);
+      if (next.has(g)) next.delete(g);else next.add(g);
       return next;
     });
+  }
+
+  function addAll() {
+    setSelected(new Set(genres.map((g) => g.genre)));
   }
 
   async function done() {
@@ -71,7 +73,7 @@ export default function Onboarding() {
           <Logo width="184px" className="max-w-[60%] mb-5" />
           <h1 className="text-3xl font-extrabold tracking-tight">Choose your sound</h1>
           <p className="text-muted-foreground mt-2 max-w-md">
-            Pick {MIN}–{MAX} genres to shape your queue and Discover feed.
+            Pick at least {MIN} genres to shape your queue and Discover feed — we suggest {MIN}–5, but add as many as you like.
           </p>
         </div>
 
@@ -132,6 +134,15 @@ export default function Onboarding() {
                 className="h-11 px-4 rounded-xl text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-foreground/[0.05] transition disabled:opacity-40"
               >
                 Clear all
+              </button>
+            )}
+            {selected.size < genres.length && (
+              <button
+                onClick={addAll}
+                disabled={saving}
+                className="h-11 px-4 rounded-xl text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-foreground/[0.05] transition disabled:opacity-40"
+              >
+                Add all
               </button>
             )}
             <Button onClick={done} disabled={selected.size < MIN || saving} className="h-11 px-8">
