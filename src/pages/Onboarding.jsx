@@ -7,6 +7,14 @@ import { clearUserGenresCache } from "@/lib/userGenres";
 import { Check, Loader2, RotateCcw } from "lucide-react";
 import Logo from "@/components/Logo";
 
+const GENRE_COLORS = [
+  "#ff5e7e", "#ff8a3d", "#ffd23d", "#a3e635", "#34d399", "#22d3ee",
+  "#38bdf8", "#818cf8", "#c084fc", "#f472b6", "#fb7185", "#fbbf24",
+  "#4ade80", "#2dd4bf", "#60a5fa", "#a78bfa", "#f59e0b", "#ef4444",
+  "#10b981", "#06b6d4", "#6366f1", "#ec4899", "#84cc16", "#f97316",
+];
+const colorFor = (g) => GENRE_COLORS[Math.abs([...g].reduce((a, c) => a + c.charCodeAt(0), 0)) % GENRE_COLORS.length];
+
 export default function Onboarding() {
   const { user } = useAuth();
   const nav = useNavigate();
@@ -80,8 +88,9 @@ export default function Onboarding() {
       </div>
 
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 flex-1">
-        {GENRES.map((g) => {
+        {GENRES.map((g, gi) => {
           const on = selected.has(g);
+          const color = colorFor(g);
           return (
             <button
               key={g}
@@ -91,9 +100,10 @@ export default function Onboarding() {
             >
               <div
                 className={`relative aspect-square rounded-xl overflow-hidden mb-2.5 shadow-sm transition-all duration-300
-                  ${on ? "ring-2 ring-foreground" : "bg-foreground/[0.06] group-hover:scale-[1.03]"}`}
+                  ${on ? "ring-2 ring-foreground" : "group-hover:scale-[1.03]"}`}
+                style={{ background: `linear-gradient(135deg, ${color} 0%, rgba(255,255,255,0.55) 100%)` }}
               >
-                <div className="w-full h-full grid place-items-center text-foreground/25 text-[10px] font-semibold uppercase tracking-wider px-2 text-center">
+                <div className="w-full h-full grid place-items-center text-white/90 text-[10px] font-extrabold uppercase tracking-wider px-2 text-center drop-shadow">
                   {g}
                 </div>
                 <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300" />
