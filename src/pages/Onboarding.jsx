@@ -123,8 +123,8 @@ export default function Onboarding() {
       </div>
 
       <div className="sticky bottom-4 z-20 mt-8">
-        <div className="max-w-5xl mx-auto rounded-2xl border border-border bg-background/80 backdrop-blur px-4 py-3.5 flex items-center justify-between gap-4 shadow-lg shadow-foreground/5">
-          <div className="flex items-center gap-2 shrink-0 ml-auto">
+        <div className="max-w-5xl mx-auto flex items-center justify-center gap-2 py-1">
+          <div className="flex items-center gap-2 shrink-0">
             {selected.size > 0 && (
               <button
                 onClick={() => setSelected(new Set())}
