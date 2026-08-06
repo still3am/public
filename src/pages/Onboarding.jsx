@@ -80,10 +80,8 @@ export default function Onboarding() {
       </div>
 
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 flex-1">
-        {GENRES.map((g, i) => {
+        {GENRES.map((g) => {
           const on = selected.has(g);
-          const hue = Math.round((i / GENRES.length) * 360);
-          const color = `hsl(${hue} 68% 56%)`;
           return (
             <button
               key={g}
@@ -92,15 +90,10 @@ export default function Onboarding() {
                 hover:bg-foreground/[0.04] active:scale-[0.98]`}
             >
               <div
-                style={{ background: color }}
                 className={`relative aspect-square rounded-xl overflow-hidden mb-2.5 shadow-sm transition-all duration-300
-                  ${on ? "ring-2 ring-foreground" : "group-hover:scale-[1.03]"}`}
+                  ${on ? "ring-2 ring-foreground" : "bg-foreground/[0.06] group-hover:scale-[1.03]"}`}
               >
-                <div
-                  className="absolute inset-0"
-                  style={{ background: "linear-gradient(150deg, rgba(255,255,255,0.4), rgba(255,255,255,0))" }}
-                />
-                <div className="relative w-full h-full grid place-items-center text-white/90 text-[10px] font-bold uppercase tracking-wider px-2 text-center drop-shadow">
+                <div className="w-full h-full grid place-items-center text-foreground/25 text-[10px] font-semibold uppercase tracking-wider px-2 text-center">
                   {g}
                 </div>
                 <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300" />
