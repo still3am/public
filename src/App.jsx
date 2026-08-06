@@ -62,19 +62,23 @@ const AuthenticatedApp = () => {
       <Route path="/register" element={<Register />} />
       <Route path="/forgot-password" element={<ForgotPassword />} />
       <Route path="/reset-password" element={<ResetPassword />} />
+      {/* Public browsing — no login required */}
+      <Route element={<Layout />}>
+        <Route path="/" element={<Home />} />
+        <Route path="/search" element={<Search />} />
+        <Route path="/top" element={<TopCharts />} />
+        <Route path="/recent" element={<RecentlyAdded />} />
+        <Route path="/track/:id" element={<TrackDetail />} />
+        <Route path="/records/:id" element={<PublicRecords />} />
+        <Route path="/records" element={<PublicRecordsIndex />} />
+        <Route path="/artist" element={<ArtistByName />} />
+        <Route path="/suggestions" element={<Suggestions />} />
+      </Route>
+      {/* Personal features — login required */}
       <Route element={<ProtectedRoute unauthenticatedElement={<Navigate to="/login" replace />} />}>
         <Route element={<Layout />}>
-          <Route path="/" element={<Home />} />
-          <Route path="/search" element={<Search />} />
-          <Route path="/top" element={<TopCharts />} />
-          <Route path="/recent" element={<RecentlyAdded />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/profile/:id" element={<Profile />} />
-          <Route path="/track/:id" element={<TrackDetail />} />
-          <Route path="/records/:id" element={<PublicRecords />} />
-          <Route path="/records" element={<PublicRecordsIndex />} />
-          <Route path="/artist" element={<ArtistByName />} />
-          <Route path="/suggestions" element={<Suggestions />} />
           <Route path="/upload" element={<Upload />} />
           <Route path="/lounge/:code" element={<Lounge />} />
           <Route path="/library" element={<Library />} />
