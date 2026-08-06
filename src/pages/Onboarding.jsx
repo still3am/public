@@ -6,6 +6,7 @@ import { GENRES } from "@/lib/audio-utils";
 import { clearUserGenresCache } from "@/lib/userGenres";
 import { Check, Loader2, RotateCcw } from "lucide-react";
 import Logo from "@/components/Logo";
+import { Image } from "@/components/ui/image";
 
 export default function Onboarding() {
   const { user } = useAuth();
@@ -13,6 +14,7 @@ export default function Onboarding() {
   const [selected, setSelected] = useState(new Set());
   const [saving, setSaving] = useState(false);
   const [checking, setChecking] = useState(true);
+  const [genreCovers, setGenreCovers] = useState({});
 
   useEffect(() => {
     (async () => {
@@ -22,6 +24,14 @@ export default function Onboarding() {
           nav("/", { replace: true });
           return;
         }
+      } catch {}
+      try {
+        const tracks = await base44.entities.Track.filter({ is_published: true }, "-created_date", 1000);
+        const map = {};
+        for (const t of tracks || []) {
+          if (t.genre && t.cover_art_url && !map[t.genre]) map[t.genre] = t.cover_art_url;
+        }
+        setGenreCovers(map);
       } catch {}
       setChecking(false);
     })();
@@ -93,9 +103,18 @@ export default function Onboarding() {
                 className={`relative aspect-square rounded-xl overflow-hidden mb-2.5 shadow-sm transition-all duration-300
                   ${on ? "ring-2 ring-foreground" : "bg-foreground/[0.06] group-hover:scale-[1.03]"}`}
               >
-                <div className="w-full h-full grid place-items-center text-foreground/25 text-[10px] font-semibold uppercase tracking-wider px-2 text-center">
-                  {g}
-                </div>
+                {genreCovers[g] ? (
+                  <Image
+                    src={genreCovers[g]}
+                    fittingType="fill"
+                    alt=""
+                    className="w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-[1.06]"
+                  />
+                ) : (
+                  <div className="w-full h-full grid place-items-center text-foreground/25 text-[10px] font-semibold uppercase tracking-wider px-2 text-center">
+                    {g}
+                  </div>
+                )}
                 <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300" />
                 {on && (
                   <div className="absolute bottom-2 right-2 w-7 h-7 rounded-full grid place-items-center bg-foreground text-background shadow-lg">
