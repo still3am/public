@@ -13,7 +13,7 @@ import {
   X } from
 "lucide-react";
 import { usePlayer } from "@/context/PlayerContext";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { formatTime } from "@/lib/audio-utils";
 import FullScreenPlayer from "@/components/FullScreenPlayer";
 import QueuePanel from "@/components/QueuePanel";
@@ -23,6 +23,7 @@ import { useOfflineCoverUrl } from "@/hooks/useOfflineCoverUrl";
 export default function PlayerBar() {
   const p = usePlayer();
   const { collapsed } = useSidebarCollapsed();
+  const location = useLocation();
   const [fullOpen, setFullOpen] = useState(false);
   const [queueOpen, setQueueOpen] = useState(false);
   const [dragY, setDragY] = useState(0);
@@ -55,7 +56,7 @@ export default function PlayerBar() {
   };
 
   const coverUrl = useOfflineCoverUrl(p.currentTrack?.id, p.currentTrack?.cover_art_url);
-  if (!p.currentTrack) return null;
+  if (location.pathname === "/onboarding" || !p.currentTrack) return null;
   const t = p.currentTrack;
   const pct = p.duration ? p.position / p.duration * 100 : 0;
   const remaining = Math.max(0, (p.duration || 0) - (p.position || 0));
