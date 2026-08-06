@@ -18,6 +18,7 @@ import ReleaseList from "@/components/ReleaseList";
 import ScoreboardTrackCount from "@/components/ScoreboardTrackCount";
 import EmptyState from "@/components/EmptyState";
 import { getRecentPlays } from "@/lib/recentPlays";
+import { getUserGenres } from "@/lib/userGenres";
 import PullToRefresh from "@/components/PullToRefresh";
 import HeroPlayingTint from "@/components/HeroPlayingTint";
 
@@ -178,14 +179,19 @@ export default function Home() {
         if (!p?.genre) continue;
         genreFreq[p.genre] = (genreFreq[p.genre] || 0) + 1;
       }
+      // Merge onboarding picks with listening history — onboarding genres
+      // seed personalization from day one, recent plays refine it over time.
+      const onboardGenres = await getUserGenres();
+      const genreSet = new Set(onboardGenres);
       const userGenres = Object.entries(genreFreq)
         .sort((a, b) => b[1] - a[1])
-        .slice(0, 3)
-        .map(([g]) => g);
+        .map(([g]) => g)
+        .filter((g) => !genreSet.has(g));
+      const allUserGenres = [...onboardGenres, ...userGenres].slice(0, 5);
       let discoverPicks = [];
-      if (userGenres.length) {
+      if (allUserGenres.length) {
         const perUserGenre = await Promise.all(
-          userGenres.map((g) =>
+          allUserGenres.map((g) =>
             base44.entities.Track.filter({ is_published: true, genre: g }, "-created_date", 30).catch(() => [])
           )
         );
