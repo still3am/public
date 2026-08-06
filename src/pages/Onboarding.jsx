@@ -89,7 +89,7 @@ export default function Onboarding() {
               <button
                 key={g.genre}
                 onClick={() => toggle(g.genre)}
-                className={`group relative rounded-2xl p-2.5 sm:p-3 transition-all duration-300 text-center hover:bg-foreground/[0.04] active:scale-[0.98] snap-start shrink-0 w-[44vw] max-w-[170px] sm:w-auto sm:max-w-none sm:shrink ${
+                className={`group relative rounded-2xl p-2.5 sm:p-3 transition-all duration-300 text-center hover:bg-foreground/[0.04] active:scale-[0.98] snap-start shrink-0 w-[58vw] max-w-[220px] sm:w-auto sm:max-w-none sm:shrink ${
                 active ? "bg-foreground/[0.04]" : ""}`
                 }>
                 
