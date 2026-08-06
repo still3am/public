@@ -4,7 +4,7 @@ import { base44 } from "@/api/base44Client";
 import { useAuth } from "@/lib/AuthContext";
 import { GENRES } from "@/lib/audio-utils";
 import { clearUserGenresCache } from "@/lib/userGenres";
-import { Check, Loader2, Music } from "lucide-react";
+import { Check, Loader2, Music, RotateCcw } from "lucide-react";
 
 export default function Onboarding() {
   const { user } = useAuth();
@@ -70,6 +70,14 @@ export default function Onboarding() {
         <p className="text-sm text-foreground/55 max-w-sm">
           Choose the genres you love. We'll tune your feed and queue to match.
         </p>
+        {selected.size > 0 && (
+          <button
+            onClick={() => setSelected(new Set())}
+            className="mt-4 inline-flex items-center gap-1.5 text-xs font-semibold text-foreground/55 hover:text-foreground active:scale-95 transition"
+          >
+            <RotateCcw size={13} /> Reset
+          </button>
+        )}
       </div>
 
       <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 flex-1">
