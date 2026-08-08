@@ -128,7 +128,7 @@ export default function StemMixer({ onClose }) {
         </div>
 
         {/* presets */}
-        <div className="flex gap-2 mb-5 overflow-x-auto no-scrollbar">
+        <div className="flex gap-2 mb-5 overflow-x-auto no-scrollbar justify-center">
           {PRESETS.map((preset) => (
             <button
               key={preset.label}
