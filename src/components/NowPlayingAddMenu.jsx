@@ -9,6 +9,7 @@ import {
   Download,
   Trash2,
   Loader2,
+  SlidersHorizontal,
 } from "lucide-react";
 
 export default function NowPlayingAddMenu({
@@ -23,6 +24,8 @@ export default function NowPlayingAddMenu({
   savingOffline = false,
   inLibrary = false,
   queueCount = 0,
+  onMix,
+  mixerActive = false,
 }) {
   const [open, setOpen] = useState(false);
   const wrapRef = useRef(null);
@@ -41,6 +44,15 @@ export default function NowPlayingAddMenu({
   }, [open]);
 
   const options = [
+    onMix && {
+      icon: SlidersHorizontal,
+      label: "Mix",
+      onClick: (close) => {
+        onMix();
+        close();
+      },
+      accent: mixerActive ? "text-white" : "",
+    },
     onShare && {
       icon: Share2,
       label: "Share",

@@ -28,6 +28,7 @@ import PulseVisualizer from "@/components/PulseVisualizer";
 import PlayPauseButton from "@/components/PlayPauseButton";
 import QueuePanel from "@/components/QueuePanel";
 import LoungeHostModal from "@/components/LoungeHostModal";
+import StemMixer from "@/components/StemMixer";
 import { useLoungeHost } from "@/hooks/useLoungeHost";
 import { useLibrary } from "@/context/LibraryContext";
 import { useOfflineCache } from "@/hooks/useOfflineCache";
@@ -70,6 +71,7 @@ export default function FullScreenPlayer({ onClose }) {
   const cache = useOfflineCache();
   const { toast } = useToast();
   const [loungeOpen, setLoungeOpen] = useState(false);
+  const [showMixer, setShowMixer] = useState(false);
   const volDrag = useRef({ startY: 0, start: 0, active: false });
   const hintTimer = useRef(null);
   const dismissDrag = useRef({ startY: 0, active: false, moved: false });
@@ -287,7 +289,9 @@ export default function FullScreenPlayer({ onClose }) {
           onToggleOffline={toggleOffline}
           savedOffline={cache.isCached(t.id)}
           savingOffline={!!cache.downloading[t.id]}
-          queueCount={p.queue.length - p.currentIndex - 1 > 0 ? p.queue.length - p.currentIndex - 1 : 0} />
+          queueCount={p.queue.length - p.currentIndex - 1 > 0 ? p.queue.length - p.currentIndex - 1 : 0}
+          onMix={() => setShowMixer(true)}
+          mixerActive={p.mixer.bass !== 0 || p.mixer.vocals !== 0 || p.mixer.treble !== 0 || p.mixer.vocalCut} />
         
       </div>
 
@@ -475,6 +479,9 @@ export default function FullScreenPlayer({ onClose }) {
       <QueuePanel open={showQueue} onClose={() => setShowQueue(false)} />
       {loungeOpen && (
         <LoungeHostModal lounge={lounge} onClose={() => setLoungeOpen(false)} />
+      )}
+      {showMixer && (
+        <StemMixer onClose={() => setShowMixer(false)} />
       )}
 
       {/* copied toast */}

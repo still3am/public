@@ -67,6 +67,33 @@ export function PlayerProvider({ children }) {
   const handleTimeRef = useRef(() => {});
   const handleEndedRef = useRef(() => {});
 
+  // --- Stem mixer (EQ-based mixing via Web Audio BiquadFilters) ---
+  const filterRefs = {
+    bass: useRef(null),
+    vocals: useRef(null),
+    treble: useRef(null),
+    vocalCut: useRef(null),
+  };
+  const [mixer, setMixerState] = useState(() => {
+    try {
+      const saved = JSON.parse(localStorage.getItem("public:player_mixer"));
+      if (saved && typeof saved === "object") {
+        return {
+          bass: saved.bass || 0,
+          vocals: saved.vocals || 0,
+          treble: saved.treble || 0,
+          vocalCut: !!saved.vocalCut,
+        };
+      }
+    } catch {}
+    return { bass: 0, vocals: 0, treble: 0, vocalCut: false };
+  });
+  const mixerRef = useRef(mixer);
+  useEffect(() => {
+    mixerRef.current = mixer;
+    try { localStorage.setItem("public:player_mixer", JSON.stringify(mixer)); } catch {}
+  }, [mixer]);
+
   const activeEl = () => els()[activeIdxRef.current];
   const inactiveIdx = () => (activeIdxRef.current === 0 ? 1 : 0);
   const inactiveEl = () => els()[inactiveIdx()];
@@ -119,6 +146,24 @@ export function PlayerProvider({ children }) {
   const currentTrack =
     currentIndex >= 0 && currentIndex < queue.length ? queue[currentIndex] : null;
 
+  // Apply mixer settings to the filter nodes in the Web Audio graph.
+  // Called after creating the graph and whenever a slider moves.
+  const applyMixerToGraph = useCallback((m) => {
+    const ctx = audioCtxRef.current;
+    if (!ctx) return;
+    const set = (ref, val) => {
+      if (ref.current) {
+        const t = ctx.currentTime;
+        ref.current.gain.cancelScheduledValues(t);
+        ref.current.gain.setValueAtTime(val, t);
+      }
+    };
+    set(filterRefs.bass, m.bass);
+    set(filterRefs.vocals, m.vocalCut ? 0 : m.vocals);
+    set(filterRefs.treble, m.treble);
+    set(filterRefs.vocalCut, m.vocalCut ? -36 : 0);
+  }, []);
+
   // --- Web Audio graph (created once, on first play) ---
   const ensureGraph = useCallback(() => {
     if (audioCtxRef.current) return audioCtxRef.current;
@@ -141,8 +186,33 @@ export function PlayerProvider({ children }) {
         sourceRefs[i].current = src;
         gainRefs[i].current = g;
       });
-      analyser.connect(master);
+      // Stem mixer filter chain: analyser -> bass -> vocals -> treble -> vocalCut -> master -> destination
+      const bassF = ctx.createBiquadFilter();
+      bassF.type = "lowshelf";
+      bassF.frequency.value = 200;
+      const vocalsF = ctx.createBiquadFilter();
+      vocalsF.type = "peaking";
+      vocalsF.frequency.value = 2500;
+      vocalsF.Q.value = 1.0;
+      const trebleF = ctx.createBiquadFilter();
+      trebleF.type = "highshelf";
+      trebleF.frequency.value = 4000;
+      const vocalCutF = ctx.createBiquadFilter();
+      vocalCutF.type = "peaking";
+      vocalCutF.frequency.value = 2000;
+      vocalCutF.Q.value = 0.5;
+      analyser.connect(bassF);
+      bassF.connect(vocalsF);
+      vocalsF.connect(trebleF);
+      trebleF.connect(vocalCutF);
+      vocalCutF.connect(master);
+      filterRefs.bass.current = bassF;
+      filterRefs.vocals.current = vocalsF;
+      filterRefs.treble.current = trebleF;
+      filterRefs.vocalCut.current = vocalCutF;
       master.connect(ctx.destination);
+      // Apply any mixer settings the user already chose to the new filters
+      applyMixerToGraph(mixerRef.current);
       audioCtxRef.current = ctx;
       analyserRef.current = analyser;
       masterGainRef.current = master;
@@ -150,7 +220,7 @@ export function PlayerProvider({ children }) {
     } catch {
       return null;
     }
-  }, []);
+  }, [applyMixerToGraph]);
 
   // Web Audio is only needed for blending transitions (crossfade/AutoMix/
   // gapless) or the Color Pulse visualizer. When it's NOT needed we leave the
@@ -161,7 +231,10 @@ export function PlayerProvider({ children }) {
   // (Home-Screen) PWA. Transitions/visualizer opt back in via ensureGraph().
   const graphNeeded = useCallback(() => {
     const s = getTransitionSettings();
-    return isTransitionActive(s) || isGapless(s);
+    if (isTransitionActive(s) || isGapless(s)) return true;
+    // Mixer active (non-neutral) also needs the Web Audio graph
+    const m = mixerRef.current;
+    return m.bass !== 0 || m.vocals !== 0 || m.treble !== 0 || m.vocalCut;
   }, []);
 
   const getAnalyser = useCallback(() => analyserRef.current, []);
@@ -171,6 +244,28 @@ export function PlayerProvider({ children }) {
     if (ctx && ctx.state === "suspended") ctx.resume().catch(() => {});
     return !!analyserRef.current;
   }, [ensureGraph]);
+
+  // Force the Web Audio graph so the mixer filters exist and audio is routed
+  // through them. Called when the mixer panel opens.
+  const enableMixer = useCallback(() => {
+    const ctx = ensureGraph();
+    if (ctx && ctx.state === "suspended") ctx.resume().catch(() => {});
+    return !!filterRefs.bass.current;
+  }, [ensureGraph]);
+
+  const setMixerValue = useCallback((key, value) => {
+    setMixerState((prev) => {
+      const next = { ...prev, [key]: value };
+      applyMixerToGraph(next);
+      return next;
+    });
+  }, [applyMixerToGraph]);
+
+  const resetMixer = useCallback(() => {
+    const neutral = { bass: 0, vocals: 0, treble: 0, vocalCut: false };
+    setMixerState(neutral);
+    applyMixerToGraph(neutral);
+  }, [applyMixerToGraph]);
 
   // --- gain helpers ---
   const setGainImmediate = useCallback((side, v) => {
@@ -1183,6 +1278,10 @@ export function PlayerProvider({ children }) {
     setSleepTimer,
     getAnalyser,
     enableAnalyser,
+    mixer,
+    setMixerValue,
+    resetMixer,
+    enableMixer,
   };
 
   return (

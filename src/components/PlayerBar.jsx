@@ -10,7 +10,8 @@ import {
   Repeat1,
   Shuffle,
   ListMusic,
-  X } from
+  X,
+  SlidersHorizontal } from
 "lucide-react";
 import { usePlayer } from "@/context/PlayerContext";
 import { Link, useLocation } from "react-router-dom";
@@ -20,6 +21,7 @@ import QueuePanel from "@/components/QueuePanel";
 import { useSidebarCollapsed } from "@/hooks/useSidebarCollapsed";
 import { useOfflineCoverUrl } from "@/hooks/useOfflineCoverUrl";
 import { useCoverUrl } from "@/hooks/useCoverUrl";
+import StemMixer from "@/components/StemMixer";
 
 export default function PlayerBar() {
   const p = usePlayer();
@@ -27,6 +29,7 @@ export default function PlayerBar() {
   const location = useLocation();
   const [fullOpen, setFullOpen] = useState(false);
   const [queueOpen, setQueueOpen] = useState(false);
+  const [mixerOpen, setMixerOpen] = useState(false);
   const [dragY, setDragY] = useState(0);
   const [coverFailed, setCoverFailed] = useState(false);
   const drag = useRef({ active: false, startY: 0, moved: false, dy: 0 });
@@ -164,6 +167,13 @@ export default function PlayerBar() {
               <SkipForward size={20} />
             </button>
             <button
+              onClick={() => setMixerOpen(true)}
+              className={`p-2 rounded-full hover:bg-foreground/5 active:scale-90 transition ${
+                p.mixer.bass !== 0 || p.mixer.vocals !== 0 || p.mixer.treble !== 0 || p.mixer.vocalCut ? "text-foreground" : "text-foreground/40"}`}
+              aria-label="Mix">
+              <SlidersHorizontal size={18} />
+            </button>
+            <button
               onClick={() => setQueueOpen(true)}
               className={`relative p-2 rounded-full hover:bg-foreground/5 active:scale-90 transition ${
               p.queue.length - p.currentIndex - 1 > 0 ? "text-foreground" : "text-foreground/40"}`
@@ -210,6 +220,9 @@ export default function PlayerBar() {
       <div className="fixed inset-0 z-50">
           <QueuePanel open={queueOpen} onClose={() => setQueueOpen(false)} />
         </div>
+      }
+      {mixerOpen && p.currentTrack &&
+        <StemMixer onClose={() => setMixerOpen(false)} />
       }
     </>);
 
