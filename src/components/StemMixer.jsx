@@ -182,7 +182,7 @@ export default function StemMixer({ onClose }) {
             label="Vocals"
             range="1k–4kHz"
             value={mixer.vocals}
-            min={-24}
+            min={-48}
             max={12}
             onChange={(v) => p.setMixerValue("vocals", v)}
           />
