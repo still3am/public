@@ -3,14 +3,14 @@ import { usePlayer } from "@/context/PlayerContext";
 import { X, RotateCcw, Mic2, SlidersHorizontal } from "lucide-react";
 
 const PRESETS = [
-  { label: "Bass+", values: { bass: 8, vocals: 0, treble: 0 } },
-  { label: "Vocal+", values: { bass: -2, vocals: 8, treble: 2 } },
-  { label: "Bright", values: { bass: -2, vocals: 0, treble: 6 } },
-  { label: "Warm", values: { bass: 4, vocals: 2, treble: -4 } },
-];
+{ label: "Bass+", values: { bass: 8, vocals: 0, treble: 0 } },
+{ label: "Vocal+", values: { bass: -2, vocals: 8, treble: 2 } },
+{ label: "Bright", values: { bass: -2, vocals: 0, treble: 6 } },
+{ label: "Warm", values: { bass: 4, vocals: 2, treble: -4 } }];
+
 
 function MixerSlider({ label, range, value, min, max, onChange, disabled }) {
-  const pct = ((value - min) / (max - min)) * 100;
+  const pct = (value - min) / (max - min) * 100;
   const isNeutral = value === 0;
   return (
     <div className={disabled ? "opacity-30 pointer-events-none" : ""}>
@@ -21,9 +21,9 @@ function MixerSlider({ label, range, value, min, max, onChange, disabled }) {
         </div>
         <span
           className={`text-xs font-mono tabular-nums ${
-            isNeutral ? "opacity-50" : "text-white font-bold"
-          }`}
-        >
+          isNeutral ? "opacity-50" : "text-white font-bold"}`
+          }>
+          
           {value > 0 ? "+" : ""}
           {value} dB
         </span>
@@ -35,15 +35,15 @@ function MixerSlider({ label, range, value, min, max, onChange, disabled }) {
           className="absolute top-1/2 -translate-y-1/2 h-[4px] bg-white rounded-full pointer-events-none"
           style={{
             left: value >= 0 ? "50%" : `${pct}%`,
-            right: value >= 0 ? `${100 - pct}%` : "50%",
-          }}
-        />
+            right: value >= 0 ? `${100 - pct}%` : "50%"
+          }} />
+        
         <div
           className={`absolute w-5 h-5 rounded-full shadow-lg pointer-events-none -translate-x-1/2 border-2 ${
-            isNeutral ? "bg-white/80 border-white/30" : "bg-white border-white"
-          }`}
-          style={{ left: `${pct}%` }}
-        />
+          isNeutral ? "bg-white/80 border-white/30" : "bg-white border-white"}`
+          }
+          style={{ left: `${pct}%` }} />
+        
         <input
           type="range"
           min={min}
@@ -53,11 +53,11 @@ function MixerSlider({ label, range, value, min, max, onChange, disabled }) {
           onChange={(e) => onChange(Number(e.target.value))}
           className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
           style={{ touchAction: "none" }}
-          aria-label={label}
-        />
+          aria-label={label} />
+        
       </div>
-    </div>
-  );
+    </div>);
+
 }
 
 export default function StemMixer({ onClose }) {
@@ -72,7 +72,7 @@ export default function StemMixer({ onClose }) {
 
   const { mixer } = p;
   const isModified =
-    mixer.bass !== 0 || mixer.vocals !== 0 || mixer.treble !== 0 || mixer.vocalCut;
+  mixer.bass !== 0 || mixer.vocals !== 0 || mixer.treble !== 0 || mixer.vocalCut;
 
   function handleClose() {
     setVisible(false);
@@ -90,38 +90,38 @@ export default function StemMixer({ onClose }) {
     <div className="fixed inset-0 z-[60] flex items-end md:items-center justify-center">
       <div
         className={`absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity duration-250 ${
-          visible ? "opacity-100" : "opacity-0"
-        }`}
-        onClick={handleClose}
-      />
+        visible ? "opacity-100" : "opacity-0"}`
+        }
+        onClick={handleClose} />
+      
       <div
         className={`relative w-full md:max-w-md bg-[#1a1a1c] border rounded-t-3xl md:rounded-3xl p-5 pb-[calc(1.25rem+env(safe-area-inset-bottom))] transition-transform duration-300 ease-out ${
-          isModified ? "border-white/20" : "border-white/10"
-        } ${visible ? "translate-y-0" : "translate-y-full md:translate-y-8"}`}
-      >
+        isModified ? "border-white/20" : "border-white/10"} ${
+        visible ? "translate-y-0" : "translate-y-full md:translate-y-8"}`}>
+        
         <div className="md:hidden w-10 h-1 bg-white/20 rounded-full mx-auto mb-4" />
 
         {/* header */}
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2">
             <SlidersHorizontal size={18} className="opacity-80" />
-            <h3 className="text-base font-bold">Mix</h3>
-            {isModified && <span className="w-2 h-2 rounded-full bg-white animate-pulse" />}
+            <h3 className="text-base font-bold hidden">Mix</h3>
+            {isModified && <span className="w-2 h-2 rounded-full bg-white animate-pulse hidden" />}
           </div>
           <div className="flex items-center gap-1">
-            {isModified && (
-              <button
-                onClick={() => p.resetMixer()}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium opacity-70 hover:opacity-100 hover:bg-white/10 transition"
-              >
+            {isModified &&
+            <button
+              onClick={() => p.resetMixer()}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium opacity-70 hover:opacity-100 hover:bg-white/10 transition">
+              
                 <RotateCcw size={13} /> Reset
               </button>
-            )}
+            }
             <button
               onClick={handleClose}
               className="p-2 rounded-full hover:bg-white/10 transition"
-              aria-label="Close mixer"
-            >
+              aria-label="Close mixer">
+              
               <X size={18} />
             </button>
           </div>
@@ -129,15 +129,15 @@ export default function StemMixer({ onClose }) {
 
         {/* presets */}
         <div className="flex gap-2 mb-5 overflow-x-auto no-scrollbar justify-center">
-          {PRESETS.map((preset) => (
-            <button
-              key={preset.label}
-              onClick={() => applyPreset(preset.values)}
-              className="shrink-0 px-3 py-1.5 rounded-full text-xs font-medium bg-white/10 hover:bg-white/20 ring-1 ring-white/10 transition"
-            >
+          {PRESETS.map((preset) =>
+          <button
+            key={preset.label}
+            onClick={() => applyPreset(preset.values)}
+            className="shrink-0 px-3 py-1.5 rounded-full text-xs font-medium bg-white/10 hover:bg-white/20 ring-1 ring-white/10 transition">
+            
               {preset.label}
             </button>
-          ))}
+          )}
         </div>
 
         {/* sliders */}
@@ -148,8 +148,8 @@ export default function StemMixer({ onClose }) {
             value={mixer.bass}
             min={-12}
             max={12}
-            onChange={(v) => p.setMixerValue("bass", v)}
-          />
+            onChange={(v) => p.setMixerValue("bass", v)} />
+          
           <MixerSlider
             label="Vocals"
             range="1k–4kHz"
@@ -157,28 +157,28 @@ export default function StemMixer({ onClose }) {
             min={-24}
             max={12}
             onChange={(v) => p.setMixerValue("vocals", v)}
-            disabled={mixer.vocalCut}
-          />
+            disabled={mixer.vocalCut} />
+          
           <MixerSlider
             label="Treble"
             range="4k–20kHz"
             value={mixer.treble}
             min={-12}
             max={12}
-            onChange={(v) => p.setMixerValue("treble", v)}
-          />
+            onChange={(v) => p.setMixerValue("treble", v)} />
+          
         </div>
 
         {/* vocal removal toggle */}
         <button
           onClick={() => p.setMixerValue("vocalCut", !mixer.vocalCut)}
           className={`mt-5 w-full flex items-center justify-center gap-2 py-3.5 rounded-2xl text-sm font-semibold transition ${
-            mixer.vocalCut
-              ? "bg-white text-black"
-              : "bg-white/10 text-white hover:bg-white/20"
-          }`}
-        >
-          <Mic2 size={16} />
+          mixer.vocalCut ?
+          "bg-white text-black" :
+          "bg-white/10 text-white hover:bg-white/20"}`
+          }>
+          
+          <Mic2 size={16} className="hidden" />
           {mixer.vocalCut ? "Vocals Removed" : "Remove Vocals"}
         </button>
 
@@ -186,6 +186,6 @@ export default function StemMixer({ onClose }) {
           Adjust how you hear the music — mixes in real time.
         </p>
       </div>
-    </div>
-  );
+    </div>);
+
 }
