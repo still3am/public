@@ -181,6 +181,11 @@ export default function PlayerBar() {
               aria-label="Queue">
               
               <ListMusic size={18} />
+              {p.queue.length - p.currentIndex - 1 > 0 &&
+              <span className="absolute -top-0.5 -right-0.5 min-w-[16px] h-4 px-1 rounded-full bg-foreground text-background text-[10px] font-bold grid place-items-center hidden">
+                  {p.queue.length - p.currentIndex - 1}
+                </span>
+              }
             </button>
             <div className="flex items-center gap-2 pl-1">
               <button onClick={() => p.setMuted(!p.muted)} className="p-1 active:scale-90 transition" aria-label="Mute">
