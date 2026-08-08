@@ -8,11 +8,12 @@ import { usePlaybackSync } from "@/hooks/usePlaybackSync";
 // It never hijacks a device that's already playing, and each remote track is
 // handed off at most once so advancing position updates don't keep reloading it.
 export default function ResumePlaybackBanner() {
-  const { currentTrack, resumeTrack } = usePlayer();
+  const { currentTrack, resumeTrack, dismissed } = usePlayer();
   const { remote } = usePlaybackSync();
   const resumedRef = useRef(null);
 
   useEffect(() => {
+    if (dismissed) return; // user explicitly cleared the player — don't auto-resume
     if (!remote?.trackObj) return;
     // Only hand off when this device is idle — never interrupt active listening.
     if (currentTrack) return;
@@ -23,7 +24,7 @@ export default function ResumePlaybackBanner() {
     const t = remote.trackObj;
     const at = remote.resumeAt ?? Math.max(0, remote.position_seconds || 0);
     resumeTrack(t, at, false);
-  }, [remote?.track_id, remote?.trackObj, currentTrack, resumeTrack]);
+  }, [remote?.track_id, remote?.trackObj, currentTrack, resumeTrack, dismissed]);
 
   return null;
 }

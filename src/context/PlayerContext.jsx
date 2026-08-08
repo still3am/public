@@ -122,6 +122,10 @@ export function PlayerProvider({ children }) {
   });
   const [repeat, setRepeat] = useState("off"); // off | all | one
   const [shuffle, setShuffle] = useState(false);
+  // True when the user explicitly dismissed the player (clearQueue / drag-down).
+  // Prevents ResumePlaybackBanner from auto-resuming a remote track right after
+  // the user cleared the queue — "I don't want to listen" ≠ "I'm idle".
+  const [dismissed, setDismissed] = useState(false);
   const [playbackRate, setPlaybackRateState] = useState(1);
   const sleepTimerRef = useRef(null);
   const [sleepTimerEndsAt, setSleepTimerEndsAt] = useState(null);
@@ -904,6 +908,7 @@ export function PlayerProvider({ children }) {
   const playTrackAt = useCallback((tracks, index = 0) => {
     if (!tracks || !tracks.length) return;
     countedRef.current = new Set();
+    setDismissed(false);
     setQueue(tracks);
     setCurrentIndex(index);
   }, []);
@@ -915,6 +920,7 @@ export function PlayerProvider({ children }) {
     pendingSeekRef.current = { id: track.id, at: Math.max(0, atSeconds) };
     autoPlayOnLoadRef.current = autoplay;
     countedRef.current = new Set();
+    setDismissed(false);
     setQueue([track]);
     setCurrentIndex(0);
   }, []);
@@ -1070,10 +1076,12 @@ export function PlayerProvider({ children }) {
   }, []);
 
   const addToQueue = useCallback((track) => {
+    setDismissed(false);
     setQueue((prev) => [...prev, track]);
   }, []);
 
   const addManyToQueue = useCallback((tracks) => {
+    setDismissed(false);
     setQueue((prev) => [...prev, ...tracks]);
   }, []);
 
@@ -1111,6 +1119,7 @@ export function PlayerProvider({ children }) {
   const playQueueItem = useCallback(
     (index) => {
       if (index >= 0 && index < queue.length) {
+        setDismissed(false);
         setCurrentIndex(index);
         countedRef.current = new Set();
       }
@@ -1121,6 +1130,7 @@ export function PlayerProvider({ children }) {
   const clearQueue = useCallback(() => {
     setQueue([]);
     setCurrentIndex(-1);
+    setDismissed(true);
   }, []);
 
   const setSleepTimer = useCallback((minutes) => {
@@ -1330,6 +1340,7 @@ export function PlayerProvider({ children }) {
     setMixerValue,
     resetMixer,
     enableMixer,
+    dismissed,
   };
 
   return (
