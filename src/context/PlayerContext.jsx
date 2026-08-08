@@ -70,7 +70,7 @@ export function PlayerProvider({ children }) {
   // --- Stem mixer (EQ-based mixing via Web Audio BiquadFilters) ---
   const filterRefs = {
     bass: useRef(null),
-    vocals: useRef(null),
+    vocals: [useRef(null), useRef(null), useRef(null)],
     treble: useRef(null),
   };
   const [mixer, setMixerState] = useState(() => {
@@ -158,7 +158,7 @@ export function PlayerProvider({ children }) {
       }
     };
     set(filterRefs.bass, m.bass);
-    set(filterRefs.vocals, m.vocals);
+    filterRefs.vocals.forEach((ref) => set(ref, m.vocals));
     set(filterRefs.treble, m.treble);
     // Volume boost: master gain can exceed 1.0 for louder-than-max playback
     if (masterGainRef.current) {
@@ -194,19 +194,35 @@ export function PlayerProvider({ children }) {
       const bassF = ctx.createBiquadFilter();
       bassF.type = "lowshelf";
       bassF.frequency.value = 200;
-      const vocalsF = ctx.createBiquadFilter();
-      vocalsF.type = "peaking";
-      vocalsF.frequency.value = 2500;
-      vocalsF.Q.value = 1.0;
+      // Multi-band vocal cut: three peaking filters cover the full vocal
+      // range (low fundamentals ~500Hz, body ~1500Hz, presence ~3500Hz) so
+      // that pulling the slider all the way down removes vocals completely
+      // instead of just notching a single narrow band.
+      const vocalsF1 = ctx.createBiquadFilter();
+      vocalsF1.type = "peaking";
+      vocalsF1.frequency.value = 500;
+      vocalsF1.Q.value = 0.8;
+      const vocalsF2 = ctx.createBiquadFilter();
+      vocalsF2.type = "peaking";
+      vocalsF2.frequency.value = 1500;
+      vocalsF2.Q.value = 0.7;
+      const vocalsF3 = ctx.createBiquadFilter();
+      vocalsF3.type = "peaking";
+      vocalsF3.frequency.value = 3500;
+      vocalsF3.Q.value = 0.8;
       const trebleF = ctx.createBiquadFilter();
       trebleF.type = "highshelf";
       trebleF.frequency.value = 4000;
       analyser.connect(bassF);
-      bassF.connect(vocalsF);
-      vocalsF.connect(trebleF);
+      bassF.connect(vocalsF1);
+      vocalsF1.connect(vocalsF2);
+      vocalsF2.connect(vocalsF3);
+      vocalsF3.connect(trebleF);
       trebleF.connect(master);
       filterRefs.bass.current = bassF;
-      filterRefs.vocals.current = vocalsF;
+      filterRefs.vocals[0].current = vocalsF1;
+      filterRefs.vocals[1].current = vocalsF2;
+      filterRefs.vocals[2].current = vocalsF3;
       filterRefs.treble.current = trebleF;
       master.connect(ctx.destination);
       // Apply any mixer settings the user already chose to the new filters
