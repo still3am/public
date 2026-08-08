@@ -211,7 +211,7 @@ export default function StemMixer({ onClose }) {
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2">
             <SlidersHorizontal size={18} className="opacity-80" />
-            <h3 className="text-base font-bold hidden">Mix</h3>
+            
           </div>
           <div className="flex items-center gap-1">
             {isModified &&
