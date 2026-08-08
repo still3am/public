@@ -143,13 +143,23 @@ export default function StemMixer({ onClose }) {
         {/* header */}
         <div className="flex items-center justify-between mb-4">
           <span className="text-xs font-semibold uppercase tracking-wider opacity-60">Mixer</span>
-          <button
-            onClick={handleClose}
-            className="p-2 rounded-full hover:bg-white/10 transition"
-            aria-label="Close mixer"
-          >
-            <X size={18} />
-          </button>
+          <div className="flex items-center gap-1">
+            {isModified && (
+              <button
+                onClick={() => p.resetMixer()}
+                className="px-2.5 py-1 rounded-full text-[11px] font-medium bg-white/10 hover:bg-white/20 ring-1 ring-white/10 transition"
+              >
+                Reset
+              </button>
+            )}
+            <button
+              onClick={handleClose}
+              className="p-2 rounded-full hover:bg-white/10 transition"
+              aria-label="Close mixer"
+            >
+              <X size={18} />
+            </button>
+          </div>
         </div>
 
         {/* visualizer */}
