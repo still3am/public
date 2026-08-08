@@ -200,16 +200,26 @@ export function PlayerProvider({ children }) {
         normalPath.gain.value = 1;
         normalMerger.connect(normalPath);
         normalPath.connect(analyser);
-        // Vocal cut path: L − R cancels centered content (vocals)
+        // Vocal cut path: L − R cancels centered content (vocals).
+        // Force mono channel count on each stage so the browser doesn't
+        // upmix/downmix and ruin the phase cancellation math.
         const cutL = ctx.createGain();
         cutL.gain.value = 1;
+        cutL.channelCount = 1;
+        cutL.channelCountMode = "explicit";
         const cutR = ctx.createGain();
         cutR.gain.value = -1;
+        cutR.channelCount = 1;
+        cutR.channelCountMode = "explicit";
         splitter.connect(cutL, 0);
         splitter.connect(cutR, 1);
         const cutSum = ctx.createGain();
+        cutSum.gain.value = 1;
+        cutSum.channelCount = 1;
+        cutSum.channelCountMode = "explicit";
         cutL.connect(cutSum);
         cutR.connect(cutSum);
+        // Duplicate mono L−R to both stereo channels
         const cutMerger = ctx.createChannelMerger(2);
         cutSum.connect(cutMerger, 0, 0);
         cutSum.connect(cutMerger, 0, 1);
@@ -222,7 +232,7 @@ export function PlayerProvider({ children }) {
         normalPathGainRefs[i].current = normalPath;
         cutPathGainRefs[i].current = cutPath;
       });
-      // Stem mixer filter chain: analyser -> bass -> vocals -> treble -> vocalCut -> master -> destination
+      // Stem mixer filter chain: analyser -> bass -> vocals -> treble -> master -> destination
       const bassF = ctx.createBiquadFilter();
       bassF.type = "lowshelf";
       bassF.frequency.value = 200;
@@ -286,10 +296,16 @@ export function PlayerProvider({ children }) {
   const setMixerValue = useCallback((key, value) => {
     setMixerState((prev) => {
       const next = { ...prev, [key]: value };
+      // Ensure the Web Audio graph exists so mixer settings actually take
+      // effect — the graph may not have been created yet if the user hasn't
+      // opened the mixer panel or enabled transitions.
+      if (!audioCtxRef.current) ensureGraph();
+      const ctx = audioCtxRef.current;
+      if (ctx && ctx.state === "suspended") ctx.resume().catch(() => {});
       applyMixerToGraph(next);
       return next;
     });
-  }, [applyMixerToGraph]);
+  }, [applyMixerToGraph, ensureGraph]);
 
   const resetMixer = useCallback(() => {
     const neutral = { bass: 0, vocals: 0, treble: 0, vocalCut: false };
