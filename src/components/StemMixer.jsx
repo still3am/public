@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { usePlayer } from "@/context/PlayerContext";
-import { X, RotateCcw, Mic2, SlidersHorizontal } from "lucide-react";
+import { X, RotateCcw, Mic2 } from "lucide-react";
 
 const PRESETS = [
 { label: "Bass+", values: { bass: 8, vocals: 0, treble: 0 } },
@@ -102,29 +102,22 @@ export default function StemMixer({ onClose }) {
         <div className="md:hidden w-10 h-1 bg-white/20 rounded-full mx-auto mb-4" />
 
         {/* header */}
-        <div className="flex items-center justify-between mb-4">
-          <div className="flex items-center gap-2">
-            <SlidersHorizontal size={18} className="opacity-80" />
-            
-            
-          </div>
-          <div className="flex items-center gap-1">
-            {isModified &&
+        <div className="flex items-center justify-end mb-4">
+          {isModified && (
             <button
               onClick={() => p.resetMixer()}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium opacity-70 hover:opacity-100 hover:bg-white/10 transition">
-              
-                <RotateCcw size={13} /> Reset
-              </button>
-            }
-            <button
-              onClick={handleClose}
-              className="p-2 rounded-full hover:bg-white/10 transition"
-              aria-label="Close mixer">
-              
-              <X size={18} />
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium opacity-70 hover:opacity-100 hover:bg-white/10 transition"
+            >
+              <RotateCcw size={13} /> Reset
             </button>
-          </div>
+          )}
+          <button
+            onClick={handleClose}
+            className="p-2 rounded-full hover:bg-white/10 transition ml-1"
+            aria-label="Close mixer"
+          >
+            <X size={18} />
+          </button>
         </div>
 
         {/* presets */}
