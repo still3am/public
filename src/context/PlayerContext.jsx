@@ -72,8 +72,11 @@ export function PlayerProvider({ children }) {
     bass: useRef(null),
     vocals: useRef(null),
     treble: useRef(null),
-    vocalCut: useRef(null),
   };
+  // Per-side path gains for vocal removal via phase cancellation:
+  // normal path = stereo passthrough, cut path = L−R mono (centered vocals cancel)
+  const normalPathGainRefs = [useRef(null), useRef(null)];
+  const cutPathGainRefs = [useRef(null), useRef(null)];
   const [mixer, setMixerState] = useState(() => {
     try {
       const saved = JSON.parse(localStorage.getItem("public:player_mixer"));
@@ -161,7 +164,11 @@ export function PlayerProvider({ children }) {
     set(filterRefs.bass, m.bass);
     set(filterRefs.vocals, m.vocalCut ? 0 : m.vocals);
     set(filterRefs.treble, m.treble);
-    set(filterRefs.vocalCut, m.vocalCut ? -36 : 0);
+    // Toggle between normal stereo path and vocal-removal (L−R) path
+    [0, 1].forEach((i) => {
+      set(normalPathGainRefs[i], m.vocalCut ? 0 : 1);
+      set(cutPathGainRefs[i], m.vocalCut ? 1 : 0);
+    });
   }, []);
 
   // --- Web Audio graph (created once, on first play) ---
@@ -182,9 +189,38 @@ export function PlayerProvider({ children }) {
         const g = ctx.createGain();
         g.gain.value = i === activeIdxRef.current ? 1 : 0;
         src.connect(g);
-        g.connect(analyser);
+        // Split stereo to enable vocal removal via phase cancellation
+        const splitter = ctx.createChannelSplitter(2);
+        g.connect(splitter);
+        // Normal path: stereo passthrough
+        const normalMerger = ctx.createChannelMerger(2);
+        splitter.connect(normalMerger, 0, 0);
+        splitter.connect(normalMerger, 1, 1);
+        const normalPath = ctx.createGain();
+        normalPath.gain.value = 1;
+        normalMerger.connect(normalPath);
+        normalPath.connect(analyser);
+        // Vocal cut path: L − R cancels centered content (vocals)
+        const cutL = ctx.createGain();
+        cutL.gain.value = 1;
+        const cutR = ctx.createGain();
+        cutR.gain.value = -1;
+        splitter.connect(cutL, 0);
+        splitter.connect(cutR, 1);
+        const cutSum = ctx.createGain();
+        cutL.connect(cutSum);
+        cutR.connect(cutSum);
+        const cutMerger = ctx.createChannelMerger(2);
+        cutSum.connect(cutMerger, 0, 0);
+        cutSum.connect(cutMerger, 0, 1);
+        const cutPath = ctx.createGain();
+        cutPath.gain.value = 0;
+        cutMerger.connect(cutPath);
+        cutPath.connect(analyser);
         sourceRefs[i].current = src;
         gainRefs[i].current = g;
+        normalPathGainRefs[i].current = normalPath;
+        cutPathGainRefs[i].current = cutPath;
       });
       // Stem mixer filter chain: analyser -> bass -> vocals -> treble -> vocalCut -> master -> destination
       const bassF = ctx.createBiquadFilter();
@@ -197,19 +233,13 @@ export function PlayerProvider({ children }) {
       const trebleF = ctx.createBiquadFilter();
       trebleF.type = "highshelf";
       trebleF.frequency.value = 4000;
-      const vocalCutF = ctx.createBiquadFilter();
-      vocalCutF.type = "peaking";
-      vocalCutF.frequency.value = 2000;
-      vocalCutF.Q.value = 0.5;
       analyser.connect(bassF);
       bassF.connect(vocalsF);
       vocalsF.connect(trebleF);
-      trebleF.connect(vocalCutF);
-      vocalCutF.connect(master);
+      trebleF.connect(master);
       filterRefs.bass.current = bassF;
       filterRefs.vocals.current = vocalsF;
       filterRefs.treble.current = trebleF;
-      filterRefs.vocalCut.current = vocalCutF;
       master.connect(ctx.destination);
       // Apply any mixer settings the user already chose to the new filters
       applyMixerToGraph(mixerRef.current);
