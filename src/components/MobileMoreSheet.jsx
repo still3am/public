@@ -8,6 +8,7 @@ import {
   Lightbulb,
   Library as LibraryIcon,
   Shield,
+  Headphones,
 } from "lucide-react";
 import ThemeToggle from "@/components/ThemeToggle";
 import { useAuth } from "@/lib/AuthContext";
@@ -18,6 +19,7 @@ const ITEMS = [
   { to: "/recent", icon: Clock, label: "Recently Added" },
   { to: "/library", icon: LibraryIcon, label: "Library" },
 
+  { to: "/mix", icon: Headphones, label: "Mix Table" },
   { to: "/suggestions", icon: Lightbulb, label: "Suggestions" },
 ];
 

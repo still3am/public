@@ -9,6 +9,7 @@ import {
   Clock,
   Library as LibraryIcon,
   Shield,
+  Headphones,
   ChevronsLeft,
   ChevronsRight,
 } from "lucide-react";
@@ -24,6 +25,7 @@ const NAV = [
   { to: "/top", label: "Top Charts", icon: TrendingUp },
   { to: "/recent", label: "Recently Added", icon: Clock },
   { to: "/library", label: "Library", icon: LibraryIcon },
+  { to: "/mix", label: "Mix Table", icon: Headphones },
 ];
 
 const EASE = "transition-all duration-300 ease-out";
