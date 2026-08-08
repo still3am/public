@@ -67,45 +67,36 @@ export default function SyncedLyrics({ trackId, position, fallbackText = "", onS
 
   if (hasTimed) {
     return (
-      <div className="relative flex-1 min-h-0">
-        <div
-          ref={scrollRef}
-          onWheel={markUserScroll}
-          onTouchStart={markUserScroll}
-          onTouchMove={markUserScroll}
-          className="h-full overflow-y-auto no-scrollbar px-4 py-[40%] leading-tight"
-        >
-          {lines.map((l, i) => {
-            const isActive = i === activeIdx;
-            const dist = Math.abs(i - activeIdx);
-            const opacity = isActive ? 1 : dist === 1 ? 0.45 : dist === 2 ? 0.25 : dist === 3 ? 0.16 : 0.1;
-            const blur = isActive ? 0 : dist === 1 ? 2 : dist === 2 ? 4 : dist === 3 ? 6 : 8;
-            return (
-              <button
-                key={i}
-                ref={(el) => (lineRefs.current[i] = el)}
-                onClick={() => onSeek?.((l.start_time_ms || 0) / 1000)}
-                className={`block text-left w-full mb-4 transition-all duration-700 ease-out ${
-                  isActive ? "text-3xl font-extrabold" : "text-xl font-bold"
-                }`}
-                style={{
-                  opacity,
-                  transform: isActive ? "scale(1.03)" : "scale(1)",
-                  transformOrigin: "left center",
-                  filter: `blur(${blur}px)`,
-                  color: isActive ? "#ffffff" : undefined,
-                  textShadow: isActive ? "0 0 40px rgba(255,255,255,0.25)" : "none",
-                  letterSpacing: isActive ? "0.01em" : "0",
-                }}
-              >
-                {l.text && l.text.trim() ? l.text : "♪"}
-              </button>
-            );
-          })}
-          <div className="h-32" />
-        </div>
-        <div className="pointer-events-none absolute inset-x-0 top-0 h-20 bg-gradient-to-b from-black/60 to-transparent" />
-        <div className="pointer-events-none absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-black/60 to-transparent" />
+      <div
+        ref={scrollRef}
+        onWheel={markUserScroll}
+        onTouchStart={markUserScroll}
+        onTouchMove={markUserScroll}
+        className="flex-1 min-h-0 overflow-y-auto no-scrollbar px-4 py-10 leading-snug"
+      >
+        {lines.map((l, i) => {
+          const isActive = i === activeIdx;
+          const dist = Math.abs(i - activeIdx);
+          const opacity = isActive ? 1 : dist === 1 ? 0.5 : dist === 2 ? 0.28 : 0.18;
+          return (
+            <button
+              key={i}
+              ref={(el) => (lineRefs.current[i] = el)}
+              onClick={() => onSeek?.((l.start_time_ms || 0) / 1000)}
+              className={`block text-left w-full mb-3 transition-all duration-500 ${
+                isActive ? "text-2xl font-extrabold" : "text-lg font-bold"
+              }`}
+              style={{
+                opacity,
+                transform: isActive ? "translateX(10px) scale(1.0)" : "translateX(0) scale(1)",
+                filter: isActive ? "none" : "blur(0.3px)",
+              }}
+            >
+              {l.text && l.text.trim() ? l.text : "♪"}
+            </button>
+          );
+        })}
+        <div className="h-24" />
       </div>
     );
   }
