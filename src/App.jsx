@@ -31,7 +31,6 @@ import Downloads from '@/pages/Downloads';
 import Admin from '@/pages/Admin';
 import SongTransitions from '@/pages/SongTransitions';
 import Onboarding from '@/pages/Onboarding';
-import MixTable from '@/pages/MixTable';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -87,7 +86,6 @@ const AuthenticatedApp = () => {
           <Route path="/admin" element={<Admin />} />
           <Route path="/settings/transitions" element={<SongTransitions />} />
           <Route path="/onboarding" element={<Onboarding />} />
-          <Route path="/mix" element={<MixTable />} />
         </Route>
       </Route>
       <Route path="*" element={<PageNotFound />} />
