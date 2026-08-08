@@ -125,26 +125,6 @@ export default function StemMixer({ onClose }) {
           )}
         </div>
 
-        {/* volume boost */}
-        <div className="mb-5">
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-xs font-semibold uppercase tracking-wider opacity-70">Loudness Boost</span>
-            <span className={`text-xs font-mono tabular-nums ${p.volume > 1 ? "text-white font-bold" : "opacity-50"}`}>
-              {Math.round(p.volume * 100)}%
-            </span>
-          </div>
-          <input
-            type="range"
-            min={0}
-            max={2}
-            step={0.05}
-            value={p.muted ? 0 : p.volume}
-            onChange={(e) => p.setVolume(Number(e.target.value))}
-            className="w-full accent-white"
-            style={{ touchAction: "none" }}
-            aria-label="Loudness boost" />
-        </div>
-
         {/* sliders */}
         <div className="space-y-4">
           <MixerSlider

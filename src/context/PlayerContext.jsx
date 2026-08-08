@@ -110,7 +110,7 @@ export function PlayerProvider({ children }) {
   const [volume, setVolumeState] = useState(() => {
     try {
       const v = parseFloat(localStorage.getItem("public:player_volume"));
-      return Number.isFinite(v) && v >= 0 && v <= 2 ? v : 1;
+      return Number.isFinite(v) && v >= 0 && v <= 1 ? v : 1;
     } catch {
       return 1;
     }
@@ -122,10 +122,6 @@ export function PlayerProvider({ children }) {
       return false;
     }
   });
-  const volumeRef = useRef(volume);
-  useEffect(() => {
-    volumeRef.current = volume;
-  }, [volume]);
   const [repeat, setRepeat] = useState("off"); // off | all | one
   const [shuffle, setShuffle] = useState(false);
   const [playbackRate, setPlaybackRateState] = useState(1);
@@ -193,7 +189,7 @@ export function PlayerProvider({ children }) {
         const g = ctx.createGain();
         g.gain.value = i === activeIdxRef.current ? 1 : 0;
         src.connect(g);
-        // Split stereo to enable vocal removal via mid-side processing
+        // Split stereo to enable vocal removal via phase cancellation
         const splitter = ctx.createChannelSplitter(2);
         g.connect(splitter);
         // Normal path: stereo passthrough
@@ -204,61 +200,33 @@ export function PlayerProvider({ children }) {
         normalPath.gain.value = 1;
         normalMerger.connect(normalPath);
         normalPath.connect(analyser);
-
-        // Vocal removal path (AI-optimized mid-side technique):
-        // 1. Compute Mid = (L+R)/2 — centered content (vocals live here)
-        // 2. Bandpass-filter Mid to vocal formant range (200–5000 Hz)
-        // 3. Subtract filtered Mid from both L and R channels
-        // This preserves stereo width and bass while removing centered vocals
-        // far more effectively than simple L−R phase cancellation.
-        const mkMono = () => {
-          const n = ctx.createGain();
-          n.channelCount = 1;
-          n.channelCountMode = "explicit";
-          return n;
-        };
-        // Step 1: Mid = (L+R)/2
-        const midL = mkMono(); midL.gain.value = 0.5;
-        const midR = mkMono(); midR.gain.value = 0.5;
-        splitter.connect(midL, 0);
-        splitter.connect(midR, 1);
-        const midSum = mkMono();
-        midL.connect(midSum);
-        midR.connect(midSum);
-        // Step 2: Filter Mid to vocal frequencies
-        const hp = ctx.createBiquadFilter();
-        hp.type = "highpass"; hp.frequency.value = 200; hp.Q.value = 1;
-        hp.channelCount = 1; hp.channelCountMode = "explicit";
-        const bp = ctx.createBiquadFilter();
-        bp.type = "bandpass"; bp.frequency.value = 1500; bp.Q.value = 0.7;
-        bp.channelCount = 1; bp.channelCountMode = "explicit";
-        const lp = ctx.createBiquadFilter();
-        lp.type = "lowpass"; lp.frequency.value = 5000; lp.Q.value = 0.5;
-        lp.channelCount = 1; lp.channelCountMode = "explicit";
-        midSum.connect(hp); hp.connect(bp); bp.connect(lp);
-        // Invert filtered Mid for subtraction
-        const invMid = mkMono(); invMid.gain.value = -1;
-        lp.connect(invMid);
-        // Step 3: L − filteredMid, R − filteredMid
-        const subL = mkMono(); subL.gain.value = 1;
-        splitter.connect(subL, 0);
-        const resultL = mkMono();
-        subL.connect(resultL);
-        invMid.connect(resultL);
-        const subR = mkMono(); subR.gain.value = 1;
-        splitter.connect(subR, 1);
-        const resultR = mkMono();
-        subR.connect(resultR);
-        invMid.connect(resultR);
-        // Merge back to stereo
+        // Vocal cut path: L − R cancels centered content (vocals).
+        // Force mono channel count on each stage so the browser doesn't
+        // upmix/downmix and ruin the phase cancellation math.
+        const cutL = ctx.createGain();
+        cutL.gain.value = 1;
+        cutL.channelCount = 1;
+        cutL.channelCountMode = "explicit";
+        const cutR = ctx.createGain();
+        cutR.gain.value = -1;
+        cutR.channelCount = 1;
+        cutR.channelCountMode = "explicit";
+        splitter.connect(cutL, 0);
+        splitter.connect(cutR, 1);
+        const cutSum = ctx.createGain();
+        cutSum.gain.value = 1;
+        cutSum.channelCount = 1;
+        cutSum.channelCountMode = "explicit";
+        cutL.connect(cutSum);
+        cutR.connect(cutSum);
+        // Duplicate mono L−R to both stereo channels
         const cutMerger = ctx.createChannelMerger(2);
-        resultL.connect(cutMerger, 0, 0);
-        resultR.connect(cutMerger, 0, 1);
+        cutSum.connect(cutMerger, 0, 0);
+        cutSum.connect(cutMerger, 0, 1);
         const cutPath = ctx.createGain();
         cutPath.gain.value = 0;
         cutMerger.connect(cutPath);
         cutPath.connect(analyser);
-
         sourceRefs[i].current = src;
         gainRefs[i].current = g;
         normalPathGainRefs[i].current = normalPath;
@@ -306,9 +274,7 @@ export function PlayerProvider({ children }) {
     if (isTransitionActive(s) || isGapless(s)) return true;
     // Mixer active (non-neutral) also needs the Web Audio graph
     const m = mixerRef.current;
-    if (m.bass !== 0 || m.vocals !== 0 || m.treble !== 0 || m.vocalCut) return true;
-    // Volume boost above 100% needs the master gain node
-    return volumeRef.current > 1;
+    return m.bass !== 0 || m.vocals !== 0 || m.treble !== 0 || m.vocalCut;
   }, []);
 
   const getAnalyser = useCallback(() => analyserRef.current, []);
@@ -412,7 +378,7 @@ export function PlayerProvider({ children }) {
   const mirrorPlayback = useCallback(
     (el) => {
       if (!el) return;
-      el.volume = Math.min(volume, 1);
+      el.volume = volume;
       el.muted = muted;
       el.playbackRate = playbackRate;
     },
@@ -923,19 +889,9 @@ export function PlayerProvider({ children }) {
   }, [repeat, nextIndex, currentTrack, extendWithGenreRadio, advanceOffline]);
 
   // volume / mute / rate apply to both elements
-  // Volume boost above 100% uses the Web Audio master gain (element caps at 1.0)
   useEffect(() => {
-    const elVol = Math.min(volume, 1);
-    els().forEach((a) => a && (a.volume = elVol));
-    if (volume > 1) {
-      ensureGraph();
-      const ctx = audioCtxRef.current;
-      if (ctx && ctx.state === "suspended") ctx.resume().catch(() => {});
-    }
-    if (masterGainRef.current) {
-      masterGainRef.current.gain.value = volume > 1 ? volume : 1;
-    }
-  }, [volume, ensureGraph]);
+    els().forEach((a) => a && (a.volume = volume));
+  }, [volume]);
   useEffect(() => {
     els().forEach((a) => a && (a.muted = muted));
   }, [muted]);
@@ -1028,19 +984,9 @@ export function PlayerProvider({ children }) {
     try {
       localStorage.setItem("public:player_volume", String(v));
     } catch {}
-    // Element volume caps at 1.0; boost beyond 100% goes through master gain
-    const elVol = Math.min(v, 1);
-    els().forEach((a) => a && (a.volume = elVol));
-    if (v > 1) {
-      ensureGraph();
-      const ctx = audioCtxRef.current;
-      if (ctx && ctx.state === "suspended") ctx.resume().catch(() => {});
-    }
-    if (masterGainRef.current) {
-      masterGainRef.current.gain.value = v > 1 ? v : 1;
-    }
+    els().forEach((a) => a && (a.volume = v));
     if (v > 0) setMuted(false);
-  }, [setMuted, ensureGraph]);
+  }, [setMuted]);
 
   // Crossfade-aware skip: if transitions are on AND the upcoming track is
   // already preloaded+ready on the inactive element, blend into it; otherwise

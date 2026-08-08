@@ -37,7 +37,7 @@ import { useCoverUrl } from "@/hooks/useCoverUrl";
 import { useToast } from "@/components/ui/use-toast";
 import { base44 } from "@/api/base44Client";
 
-const clampVol = (v) => Math.max(0, Math.min(2, v));
+const clampVol = (v) => Math.max(0, Math.min(1, v));
 
 function IconButton({ icon: Icon, onClick, active, size = 22, label, className = "" }) {
   return (

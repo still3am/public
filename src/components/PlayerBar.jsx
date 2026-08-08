@@ -194,7 +194,7 @@ export default function PlayerBar() {
               <input
                 type="range"
                 min="0"
-                max={2}
+                max="1"
                 step="0.01"
                 value={p.muted ? 0 : p.volume}
                 onChange={(e) => p.setVolume(Number(e.target.value))}
