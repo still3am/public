@@ -32,6 +32,7 @@ import { useLoungeHost } from "@/hooks/useLoungeHost";
 import { useLibrary } from "@/context/LibraryContext";
 import { useOfflineCache } from "@/hooks/useOfflineCache";
 import { useOfflineCoverUrl } from "@/hooks/useOfflineCoverUrl";
+import { useCoverUrl } from "@/hooks/useCoverUrl";
 import { useToast } from "@/components/ui/use-toast";
 import { base44 } from "@/api/base44Client";
 
@@ -55,7 +56,8 @@ export default function FullScreenPlayer({ onClose }) {
   const p = usePlayer();
   const { user } = useAuth();
   const { isInLibrary, toggle: toggleLibrary } = useLibrary();
-  const coverUrl = useOfflineCoverUrl(p.currentTrack?.id, p.currentTrack?.cover_art_url);
+  const offlineCover = useOfflineCoverUrl(p.currentTrack?.id, p.currentTrack?.cover_art_url);
+  const coverUrl = useCoverUrl(offlineCover);
   const bg = useColorExtraction(coverUrl);
   const [lyricsMode, setLyricsMode] = useState(false);
   const [showPulse, setShowPulse] = useState(false);

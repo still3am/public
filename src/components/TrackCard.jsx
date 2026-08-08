@@ -2,6 +2,7 @@ import { Play } from "lucide-react";
 import { Link } from "react-router-dom";
 import { usePlayer } from "@/context/PlayerContext";
 import { Image } from "@/components/ui/image";
+import { useCoverUrl } from "@/hooks/useCoverUrl";
 
 function EqualizerBars({ active }) {
   if (!active) return null;
@@ -27,7 +28,7 @@ export default function TrackCard({ track }) {
   const isCurrent = p.currentTrack?.id === track.id;
   const isPlayingNow = isCurrent && p.isPlaying;
 
-  const coverUrl = track.cover_art_url;
+  const coverUrl = useCoverUrl(track.cover_art_url);
 
   const handlePlay = (e) => {
     e.stopPropagation();

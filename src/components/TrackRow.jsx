@@ -21,6 +21,7 @@ import { useLibrary } from "@/context/LibraryContext";
 import { useOfflineCache } from "@/hooks/useOfflineCache";
 import { useToast } from "@/components/ui/use-toast";
 import ArtistLinks from "@/components/ArtistLinks";
+import { useCoverUrl } from "@/hooks/useCoverUrl";
 
 function MenuBtn({ icon: Icon, label, onClick, danger }) {
   return (
@@ -80,6 +81,7 @@ export default function TrackRow({
   track.created_date &&
   Date.now() - new Date(track.created_date).getTime() < 7 * 86400 * 1000;
   const isTrending = (track.play_count || 0) > 30;
+  const coverUrl = useCoverUrl(track.cover_art_url || albumCover);
 
   return (
     <div
@@ -116,7 +118,7 @@ export default function TrackRow({
       <div className="w-10 h-10 rounded-md overflow-hidden bg-foreground/10 shrink-0">
           {(track.cover_art_url || albumCover) &&
         <img
-          src={track.cover_art_url || albumCover}
+          src={coverUrl}
           alt=""
           className="w-full h-full object-cover" />
 

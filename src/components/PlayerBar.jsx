@@ -19,6 +19,7 @@ import FullScreenPlayer from "@/components/FullScreenPlayer";
 import QueuePanel from "@/components/QueuePanel";
 import { useSidebarCollapsed } from "@/hooks/useSidebarCollapsed";
 import { useOfflineCoverUrl } from "@/hooks/useOfflineCoverUrl";
+import { useCoverUrl } from "@/hooks/useCoverUrl";
 
 export default function PlayerBar() {
   const p = usePlayer();
@@ -56,7 +57,8 @@ export default function PlayerBar() {
     setDragY(0);
   };
 
-  const coverUrl = useOfflineCoverUrl(p.currentTrack?.id, p.currentTrack?.cover_art_url);
+  const offlineCover = useOfflineCoverUrl(p.currentTrack?.id, p.currentTrack?.cover_art_url);
+  const coverUrl = useCoverUrl(offlineCover);
   useEffect(() => { setCoverFailed(false); }, [coverUrl]);
   if (location.pathname === "/onboarding" || !p.currentTrack) return null;
   const t = p.currentTrack;
