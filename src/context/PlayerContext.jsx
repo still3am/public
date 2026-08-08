@@ -73,10 +73,6 @@ export function PlayerProvider({ children }) {
     vocals: useRef(null),
     treble: useRef(null),
   };
-  // Per-side path gains for vocal removal via phase cancellation:
-  // normal path = stereo passthrough, cut path = L−R mono (centered vocals cancel)
-  const normalPathGainRefs = [useRef(null), useRef(null)];
-  const cutPathGainRefs = [useRef(null), useRef(null)];
   const [mixer, setMixerState] = useState(() => {
     try {
       const saved = JSON.parse(localStorage.getItem("public:player_mixer"));
@@ -85,11 +81,11 @@ export function PlayerProvider({ children }) {
           bass: saved.bass || 0,
           vocals: saved.vocals || 0,
           treble: saved.treble || 0,
-          vocalCut: !!saved.vocalCut,
+          boost: Number.isFinite(saved.boost) ? saved.boost : 1,
         };
       }
     } catch {}
-    return { bass: 0, vocals: 0, treble: 0, vocalCut: false };
+    return { bass: 0, vocals: 0, treble: 0, boost: 1 };
   });
   const mixerRef = useRef(mixer);
   useEffect(() => {
@@ -162,13 +158,14 @@ export function PlayerProvider({ children }) {
       }
     };
     set(filterRefs.bass, m.bass);
-    set(filterRefs.vocals, m.vocalCut ? 0 : m.vocals);
+    set(filterRefs.vocals, m.vocals);
     set(filterRefs.treble, m.treble);
-    // Toggle between normal stereo path and vocal-removal (L−R) path
-    [0, 1].forEach((i) => {
-      set(normalPathGainRefs[i], m.vocalCut ? 0 : 1);
-      set(cutPathGainRefs[i], m.vocalCut ? 1 : 0);
-    });
+    // Volume boost: master gain can exceed 1.0 for louder-than-max playback
+    if (masterGainRef.current) {
+      const t = ctx.currentTime;
+      masterGainRef.current.gain.cancelScheduledValues(t);
+      masterGainRef.current.gain.setValueAtTime(m.boost, t);
+    }
   }, []);
 
   // --- Web Audio graph (created once, on first play) ---
@@ -189,48 +186,9 @@ export function PlayerProvider({ children }) {
         const g = ctx.createGain();
         g.gain.value = i === activeIdxRef.current ? 1 : 0;
         src.connect(g);
-        // Split stereo to enable vocal removal via phase cancellation
-        const splitter = ctx.createChannelSplitter(2);
-        g.connect(splitter);
-        // Normal path: stereo passthrough
-        const normalMerger = ctx.createChannelMerger(2);
-        splitter.connect(normalMerger, 0, 0);
-        splitter.connect(normalMerger, 1, 1);
-        const normalPath = ctx.createGain();
-        normalPath.gain.value = 1;
-        normalMerger.connect(normalPath);
-        normalPath.connect(analyser);
-        // Vocal cut path: L − R cancels centered content (vocals).
-        // Force mono channel count on each stage so the browser doesn't
-        // upmix/downmix and ruin the phase cancellation math.
-        const cutL = ctx.createGain();
-        cutL.gain.value = 1;
-        cutL.channelCount = 1;
-        cutL.channelCountMode = "explicit";
-        const cutR = ctx.createGain();
-        cutR.gain.value = -1;
-        cutR.channelCount = 1;
-        cutR.channelCountMode = "explicit";
-        splitter.connect(cutL, 0);
-        splitter.connect(cutR, 1);
-        const cutSum = ctx.createGain();
-        cutSum.gain.value = 1;
-        cutSum.channelCount = 1;
-        cutSum.channelCountMode = "explicit";
-        cutL.connect(cutSum);
-        cutR.connect(cutSum);
-        // Duplicate mono L−R to both stereo channels
-        const cutMerger = ctx.createChannelMerger(2);
-        cutSum.connect(cutMerger, 0, 0);
-        cutSum.connect(cutMerger, 0, 1);
-        const cutPath = ctx.createGain();
-        cutPath.gain.value = 0;
-        cutMerger.connect(cutPath);
-        cutPath.connect(analyser);
+        g.connect(analyser);
         sourceRefs[i].current = src;
         gainRefs[i].current = g;
-        normalPathGainRefs[i].current = normalPath;
-        cutPathGainRefs[i].current = cutPath;
       });
       // Stem mixer filter chain: analyser -> bass -> vocals -> treble -> master -> destination
       const bassF = ctx.createBiquadFilter();
@@ -274,7 +232,7 @@ export function PlayerProvider({ children }) {
     if (isTransitionActive(s) || isGapless(s)) return true;
     // Mixer active (non-neutral) also needs the Web Audio graph
     const m = mixerRef.current;
-    return m.bass !== 0 || m.vocals !== 0 || m.treble !== 0 || m.vocalCut;
+    return m.bass !== 0 || m.vocals !== 0 || m.treble !== 0 || m.boost !== 1;
   }, []);
 
   const getAnalyser = useCallback(() => analyserRef.current, []);
@@ -308,7 +266,7 @@ export function PlayerProvider({ children }) {
   }, [applyMixerToGraph, ensureGraph]);
 
   const resetMixer = useCallback(() => {
-    const neutral = { bass: 0, vocals: 0, treble: 0, vocalCut: false };
+    const neutral = { bass: 0, vocals: 0, treble: 0, boost: 1 };
     setMixerState(neutral);
     applyMixerToGraph(neutral);
   }, [applyMixerToGraph]);

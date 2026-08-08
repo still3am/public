@@ -291,7 +291,7 @@ export default function FullScreenPlayer({ onClose }) {
           savingOffline={!!cache.downloading[t.id]}
           queueCount={p.queue.length - p.currentIndex - 1 > 0 ? p.queue.length - p.currentIndex - 1 : 0}
           onMix={() => setShowMixer(true)}
-          mixerActive={p.mixer.bass !== 0 || p.mixer.vocals !== 0 || p.mixer.treble !== 0 || p.mixer.vocalCut} />
+          mixerActive={p.mixer.bass !== 0 || p.mixer.vocals !== 0 || p.mixer.treble !== 0 || p.mixer.boost !== 1} />
         
       </div>
 

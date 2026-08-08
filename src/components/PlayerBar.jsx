@@ -169,7 +169,7 @@ export default function PlayerBar() {
             <button
               onClick={() => setMixerOpen(true)}
               className={`p-2 rounded-full hover:bg-foreground/5 active:scale-90 transition ${
-                p.mixer.bass !== 0 || p.mixer.vocals !== 0 || p.mixer.treble !== 0 || p.mixer.vocalCut ? "text-foreground" : "text-foreground/40"}`}
+                p.mixer.bass !== 0 || p.mixer.vocals !== 0 || p.mixer.treble !== 0 || p.mixer.boost !== 1 ? "text-foreground" : "text-foreground/40"}`}
               aria-label="Mix">
               <SlidersHorizontal size={18} />
             </button>
