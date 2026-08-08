@@ -186,7 +186,7 @@ export default function StemMixer({ onClose }) {
             label="Bass"
             range="20–250Hz"
             value={mixer.bass}
-            min={-12}
+            min={-48}
             max={12}
             onChange={(v) => p.setMixerValue("bass", v)}
           />
