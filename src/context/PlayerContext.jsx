@@ -267,6 +267,14 @@ export function PlayerProvider({ children }) {
     applyMixerToGraph(neutral);
   }, [applyMixerToGraph]);
 
+  const setMixer = useCallback((values) => {
+    setMixerState((prev) => {
+      const next = { ...prev, ...values };
+      applyMixerToGraph(next);
+      return next;
+    });
+  }, [applyMixerToGraph]);
+
   // --- gain helpers ---
   const setGainImmediate = useCallback((side, v) => {
     const ctx = audioCtxRef.current;
@@ -1280,6 +1288,7 @@ export function PlayerProvider({ children }) {
     enableAnalyser,
     mixer,
     setMixerValue,
+    setMixer,
     resetMixer,
     enableMixer,
   };
