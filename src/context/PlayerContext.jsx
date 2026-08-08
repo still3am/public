@@ -197,21 +197,22 @@ export function PlayerProvider({ children }) {
       const bassF = ctx.createBiquadFilter();
       bassF.type = "lowshelf";
       bassF.frequency.value = 200;
-      // Beat isolation: three peaking filters target the characteristic drum
-      // frequencies — kick fundamental (~80Hz), snare body (~200Hz), and snare
-      // crack/attack (~3kHz) — so the beat can be boosted or cut independently.
+      // Beat isolation: three peaking filters with WIDE Q cover the full drum
+      // spectrum — sub-kick + kick fundamental (~50Hz), kick punch + snare body
+      // (~150Hz), and snare crack + hi-hats (~2.5kHz). Wide Q (0.3–0.4) ensures
+      // the boost is clearly audible instead of a narrow inaudible notch.
       const beatF1 = ctx.createBiquadFilter();
       beatF1.type = "peaking";
-      beatF1.frequency.value = 80;
-      beatF1.Q.value = 0.6;
+      beatF1.frequency.value = 50;
+      beatF1.Q.value = 0.3;
       const beatF2 = ctx.createBiquadFilter();
       beatF2.type = "peaking";
-      beatF2.frequency.value = 200;
-      beatF2.Q.value = 0.8;
+      beatF2.frequency.value = 150;
+      beatF2.Q.value = 0.4;
       const beatF3 = ctx.createBiquadFilter();
       beatF3.type = "peaking";
-      beatF3.frequency.value = 3000;
-      beatF3.Q.value = 0.7;
+      beatF3.frequency.value = 2500;
+      beatF3.Q.value = 0.4;
       // Multi-band vocal cut: three peaking filters cover the full vocal
       // range (low fundamentals ~500Hz, body ~1500Hz, presence ~3500Hz) so
       // that pulling the slider all the way down removes vocals completely
@@ -292,24 +293,27 @@ export function PlayerProvider({ children }) {
   }, [ensureGraph]);
 
   const setMixerValue = useCallback((key, value) => {
+    // Ensure the Web Audio graph exists BEFORE the state updater so the
+    // filter nodes are ready. Side effects must not live inside a state
+    // updater (React StrictMode double-invokes updaters).
+    if (!audioCtxRef.current) ensureGraph();
+    const ctx = audioCtxRef.current;
+    if (ctx && ctx.state === "suspended") ctx.resume().catch(() => {});
     setMixerState((prev) => {
       const next = { ...prev, [key]: value };
-      // Ensure the Web Audio graph exists so mixer settings actually take
-      // effect — the graph may not have been created yet if the user hasn't
-      // opened the mixer panel or enabled transitions.
-      if (!audioCtxRef.current) ensureGraph();
-      const ctx = audioCtxRef.current;
-      if (ctx && ctx.state === "suspended") ctx.resume().catch(() => {});
       applyMixerToGraph(next);
       return next;
     });
   }, [applyMixerToGraph, ensureGraph]);
 
   const resetMixer = useCallback(() => {
+    if (!audioCtxRef.current) ensureGraph();
+    const ctx = audioCtxRef.current;
+    if (ctx && ctx.state === "suspended") ctx.resume().catch(() => {});
     const neutral = { bass: 0, beat: 0, vocals: 0, treble: 0, boost: 1 };
     setMixerState(neutral);
     applyMixerToGraph(neutral);
-  }, [applyMixerToGraph]);
+  }, [applyMixerToGraph, ensureGraph]);
 
   // --- gain helpers ---
   const setGainImmediate = useCallback((side, v) => {

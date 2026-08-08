@@ -4,7 +4,7 @@ import { X } from "lucide-react";
 import MixerVisualizer from "@/components/MixerVisualizer";
 
 const PRESETS = [
-  { label: "Beat+", values: { bass: 2, beat: 8, vocals: 0, treble: 0 } },
+  { label: "Beat+", values: { bass: 2, beat: 12, vocals: 0, treble: 0 } },
   { label: "Vocal-", values: { bass: 0, beat: 0, vocals: -48, treble: 0 } },
   { label: "Vocal+", values: { bass: -2, beat: 0, vocals: 8, treble: 2 } },
   { label: "Bright", values: { bass: -2, beat: 0, vocals: 0, treble: 6 } },
@@ -192,10 +192,10 @@ export default function StemMixer({ onClose }) {
           />
           <MixerSlider
             label="Beat"
-            range="80Hz–3kHz"
+            range="50Hz–5kHz"
             value={mixer.beat}
             min={-48}
-            max={12}
+            max={18}
             onChange={(v) => p.setMixerValue("beat", v)}
           />
           <MixerSlider

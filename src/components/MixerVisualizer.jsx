@@ -8,6 +8,9 @@ export default function MixerVisualizer() {
   const canvasRef = useRef(null);
   const rafRef = useRef(null);
   const barsRef = useRef(new Array(BAR_COUNT).fill(0));
+  // getAnalyser is a stable callback (useCallback []), so this effect runs once.
+  // Depending on [p] would re-run on every position/timeupdate and thrash the RAF.
+  const getAnalyser = p.getAnalyser;
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -31,7 +34,7 @@ export default function MixerVisualizer() {
       const h = canvas.offsetHeight;
       ctx.clearRect(0, 0, w, h);
 
-      const analyser = p.getAnalyser?.();
+      const analyser = getAnalyser?.();
       const bars = barsRef.current;
       const gap = 3;
       const barW = (w - gap * (BAR_COUNT - 1)) / BAR_COUNT;
@@ -81,7 +84,7 @@ export default function MixerVisualizer() {
       cancelAnimationFrame(rafRef.current);
       window.removeEventListener("resize", resize);
     };
-  }, [p]);
+  }, [getAnalyser]);
 
   return <canvas ref={canvasRef} className="w-full h-16" />;
 }
