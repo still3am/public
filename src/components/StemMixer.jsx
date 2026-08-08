@@ -238,21 +238,21 @@ export default function StemMixer({ onClose }) {
         </div>
 
         {/* presets */}
-        <div className="flex gap-2 overflow-x-auto no-scrollbar pb-1 mb-5 hidden">
-          {PRESETS.map((preset) =>
-          <button
-            key={preset.label}
-            onClick={() => p.setMixer(preset.values)}
-            className={`shrink-0 px-3 py-1.5 rounded-full text-xs font-semibold transition ${
-            matchesPreset(preset) ?
-            "bg-white text-black" :
-            "bg-white/10 text-white hover:bg-white/15"}`
-            }>
-            
-              {preset.label}
-            </button>
-          )}
-        </div>
+        
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
 
         {/* sliders */}
         <div className="space-y-5">
@@ -289,7 +289,7 @@ export default function StemMixer({ onClose }) {
           "bg-white/10 text-white hover:bg-white/15"}`
           }>
           
-          <Mic2 size={16} className="hidden" />
+          
           {mixer.vocalCut ? "Vocals Removed" : "Remove Vocals (Karaoke)"}
         </button>
 
