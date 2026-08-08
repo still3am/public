@@ -70,6 +70,7 @@ export function PlayerProvider({ children }) {
   // --- Stem mixer (EQ-based mixing via Web Audio BiquadFilters) ---
   const filterRefs = {
     bass: useRef(null),
+    beat: [useRef(null), useRef(null), useRef(null)],
     vocals: [useRef(null), useRef(null), useRef(null)],
     treble: useRef(null),
   };
@@ -79,13 +80,14 @@ export function PlayerProvider({ children }) {
       if (saved && typeof saved === "object") {
         return {
           bass: saved.bass || 0,
+          beat: saved.beat || 0,
           vocals: saved.vocals || 0,
           treble: saved.treble || 0,
           boost: Number.isFinite(saved.boost) ? saved.boost : 1,
         };
       }
     } catch {}
-    return { bass: 0, vocals: 0, treble: 0, boost: 1 };
+    return { bass: 0, beat: 0, vocals: 0, treble: 0, boost: 1 };
   });
   const mixerRef = useRef(mixer);
   useEffect(() => {
@@ -158,6 +160,7 @@ export function PlayerProvider({ children }) {
       }
     };
     set(filterRefs.bass, m.bass);
+    filterRefs.beat.forEach((ref) => set(ref, m.beat));
     filterRefs.vocals.forEach((ref) => set(ref, m.vocals));
     set(filterRefs.treble, m.treble);
     // Volume boost: master gain can exceed 1.0 for louder-than-max playback
@@ -194,6 +197,21 @@ export function PlayerProvider({ children }) {
       const bassF = ctx.createBiquadFilter();
       bassF.type = "lowshelf";
       bassF.frequency.value = 200;
+      // Beat isolation: three peaking filters target the characteristic drum
+      // frequencies — kick fundamental (~80Hz), snare body (~200Hz), and snare
+      // crack/attack (~3kHz) — so the beat can be boosted or cut independently.
+      const beatF1 = ctx.createBiquadFilter();
+      beatF1.type = "peaking";
+      beatF1.frequency.value = 80;
+      beatF1.Q.value = 0.6;
+      const beatF2 = ctx.createBiquadFilter();
+      beatF2.type = "peaking";
+      beatF2.frequency.value = 200;
+      beatF2.Q.value = 0.8;
+      const beatF3 = ctx.createBiquadFilter();
+      beatF3.type = "peaking";
+      beatF3.frequency.value = 3000;
+      beatF3.Q.value = 0.7;
       // Multi-band vocal cut: three peaking filters cover the full vocal
       // range (low fundamentals ~500Hz, body ~1500Hz, presence ~3500Hz) so
       // that pulling the slider all the way down removes vocals completely
@@ -214,12 +232,18 @@ export function PlayerProvider({ children }) {
       trebleF.type = "highshelf";
       trebleF.frequency.value = 4000;
       analyser.connect(bassF);
-      bassF.connect(vocalsF1);
+      bassF.connect(beatF1);
+      beatF1.connect(beatF2);
+      beatF2.connect(beatF3);
+      beatF3.connect(vocalsF1);
       vocalsF1.connect(vocalsF2);
       vocalsF2.connect(vocalsF3);
       vocalsF3.connect(trebleF);
       trebleF.connect(master);
       filterRefs.bass.current = bassF;
+      filterRefs.beat[0].current = beatF1;
+      filterRefs.beat[1].current = beatF2;
+      filterRefs.beat[2].current = beatF3;
       filterRefs.vocals[0].current = vocalsF1;
       filterRefs.vocals[1].current = vocalsF2;
       filterRefs.vocals[2].current = vocalsF3;
@@ -248,7 +272,7 @@ export function PlayerProvider({ children }) {
     if (isTransitionActive(s) || isGapless(s)) return true;
     // Mixer active (non-neutral) also needs the Web Audio graph
     const m = mixerRef.current;
-    return m.bass !== 0 || m.vocals !== 0 || m.treble !== 0 || m.boost !== 1;
+    return m.bass !== 0 || m.beat !== 0 || m.vocals !== 0 || m.treble !== 0 || m.boost !== 1;
   }, []);
 
   const getAnalyser = useCallback(() => analyserRef.current, []);
@@ -282,7 +306,7 @@ export function PlayerProvider({ children }) {
   }, [applyMixerToGraph, ensureGraph]);
 
   const resetMixer = useCallback(() => {
-    const neutral = { bass: 0, vocals: 0, treble: 0, boost: 1 };
+    const neutral = { bass: 0, beat: 0, vocals: 0, treble: 0, boost: 1 };
     setMixerState(neutral);
     applyMixerToGraph(neutral);
   }, [applyMixerToGraph]);

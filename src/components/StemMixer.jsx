@@ -4,10 +4,11 @@ import { X } from "lucide-react";
 import MixerVisualizer from "@/components/MixerVisualizer";
 
 const PRESETS = [
-  { label: "Bass+", values: { bass: 8, vocals: 0, treble: 0 } },
-  { label: "Vocal+", values: { bass: -2, vocals: 8, treble: 2 } },
-  { label: "Bright", values: { bass: -2, vocals: 0, treble: 6 } },
-  { label: "Warm", values: { bass: 4, vocals: 2, treble: -4 } },
+  { label: "Beat+", values: { bass: 2, beat: 8, vocals: 0, treble: 0 } },
+  { label: "Vocal-", values: { bass: 0, beat: 0, vocals: -48, treble: 0 } },
+  { label: "Vocal+", values: { bass: -2, beat: 0, vocals: 8, treble: 2 } },
+  { label: "Bright", values: { bass: -2, beat: 0, vocals: 0, treble: 6 } },
+  { label: "Warm", values: { bass: 4, beat: 0, vocals: 2, treble: -4 } },
 ];
 
 function MixerSlider({ label, range, value, min, max, onChange }) {
@@ -111,7 +112,7 @@ export default function StemMixer({ onClose }) {
 
   const { mixer } = p;
   const isModified =
-    mixer.bass !== 0 || mixer.vocals !== 0 || mixer.treble !== 0 || mixer.boost !== 1;
+    mixer.bass !== 0 || mixer.beat !== 0 || mixer.vocals !== 0 || mixer.treble !== 0 || mixer.boost !== 1;
 
   function handleClose() {
     setVisible(false);
@@ -120,6 +121,7 @@ export default function StemMixer({ onClose }) {
 
   function applyPreset(values) {
     p.setMixerValue("bass", values.bass);
+    p.setMixerValue("beat", values.beat);
     p.setMixerValue("vocals", values.vocals);
     p.setMixerValue("treble", values.treble);
   }
@@ -177,6 +179,14 @@ export default function StemMixer({ onClose }) {
             min={-12}
             max={12}
             onChange={(v) => p.setMixerValue("bass", v)}
+          />
+          <MixerSlider
+            label="Beat"
+            range="80Hz–3kHz"
+            value={mixer.beat}
+            min={-48}
+            max={12}
+            onChange={(v) => p.setMixerValue("beat", v)}
           />
           <MixerSlider
             label="Vocals"
