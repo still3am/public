@@ -75,6 +75,10 @@ export default function FullScreenPlayer({ onClose }) {
   const [dragging, setDragging] = useState(false);
   const dismissThreshold = 110;
   const [hasLyrics, setHasLyrics] = useState(false);
+  const [coverFailed, setCoverFailed] = useState(false);
+
+  // Reset the broken-cover flag whenever the track (and thus its cover URL) changes.
+  useEffect(() => { setCoverFailed(false); }, [coverUrl]);
 
   // Only show the Lyrics toggle when this track actually has lyrics available
   // (approved timed lyrics, or plain-text lyrics_text on the track).
@@ -304,8 +308,8 @@ export default function FullScreenPlayer({ onClose }) {
               p.isPlaying ? "scale-100" : "scale-[0.97]"} ${
               lyricsMode ? "hidden xl:flex" : "flex"}`}>
                 
-                {coverUrl ?
-              <img src={coverUrl} alt="" className="w-full h-full object-cover" /> :
+                {coverUrl && !coverFailed ?
+              <img src={coverUrl} alt="" onError={() => setCoverFailed(true)} className="w-full h-full object-cover" /> :
 
               <div className="w-full h-full grid place-items-center opacity-40">
                     <Disc3 size={64} />
