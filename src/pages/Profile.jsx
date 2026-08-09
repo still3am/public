@@ -9,7 +9,6 @@ import Avatar from "@/components/Avatar";
 import PullToRefresh from "@/components/PullToRefresh";
 import BackHeader from "@/components/BackHeader";
 import ProfileQRModal from "@/components/ProfileQRModal";
-import ThemeToggle from "@/components/ThemeToggle";
 import { formatNumber } from "@/lib/audio-utils";
 import {
   Loader2,
@@ -29,13 +28,9 @@ import {
   QrCode,
   Play,
   BarChart2,
-  History,
-  Trash2,
-  GitMerge,
-  Lightbulb,
-  ChevronRight } from
+  Settings } from
 "lucide-react";
-import { getRecentPlays } from "@/lib/recentPlays";
+import SettingsSheet from "@/components/profile/SettingsSheet";
 import StatusMessage from "@/components/profile/StatusMessage";
 import ProfileSong from "@/components/profile/ProfileSong";
 import TopTracks from "@/components/profile/TopTracks";
@@ -64,13 +59,13 @@ export default function Profile() {
   const [loading, setLoading] = useState(true);
   const [tracks, setTracks] = useState([]);
   const [topTracks, setTopTracks] = useState([]);
-  const [recentlyPlayed, setRecentlyPlayed] = useState([]);
   const [following, setFollowing] = useState(false);
   const [stats, setStats] = useState({ followers: 0, following: 0, plays: 0, likes: 0 });
   const [editMode, setEditMode] = useState(false);
   const [copied, setCopied] = useState(false);
   const [showQR, setShowQR] = useState(false);
   const [showDelete, setShowDelete] = useState(false);
+  const [showSettings, setShowSettings] = useState(false);
   const [deleteConfirm, setDeleteConfirm] = useState("");
   const [deleting, setDeleting] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -154,19 +149,6 @@ export default function Profile() {
     if (targetId) load();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [targetId]);
-
-  // Recently Played lives in localStorage (per-device listening history) and
-  // updates live within the tab via the "recentplays:change" custom event.
-  useEffect(() => {
-    const handler = () => setRecentlyPlayed(getRecentPlays());
-    handler();
-    window.addEventListener("recentplays:change", handler);
-    window.addEventListener("storage", handler);
-    return () => {
-      window.removeEventListener("recentplays:change", handler);
-      window.removeEventListener("storage", handler);
-    };
-  }, []);
 
   async function toggleFollow() {
     if (!profile) return;
@@ -568,6 +550,15 @@ export default function Profile() {
                     <QrCode size={16} />
                   </button>
                   }
+                  {isOwn && !editMode &&
+                  <button
+                    onClick={() => setShowSettings(true)}
+                    title="Settings"
+                    aria-label="Settings"
+                    className="w-10 h-10 rounded-full border border-border grid place-items-center">
+                    <Settings size={16} />
+                  </button>
+                  }
                 
 
 
@@ -599,18 +590,6 @@ export default function Profile() {
         onChange={(ids) => setForm((f) => ({ ...f, top_track_ids: ids }))}
       />
 
-      {!editMode && isOwn && recentlyPlayed.length > 0 &&
-        <div className="mb-8">
-          <h2 className="text-lg font-extrabold tracking-tight mb-3 flex items-center gap-2">
-            <History size={18} /> Recently Played
-          </h2>
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
-            {recentlyPlayed.map((t) => (
-              <TrackCard key={t.id} track={t} />
-            ))}
-          </div>
-        </div>
-        }
       {!editMode && !isOwn && topTracks.length > 0 &&
         <div className="mb-8">
           <h2 className="text-lg font-extrabold tracking-tight mb-3 flex items-center gap-2">
@@ -626,71 +605,11 @@ export default function Profile() {
 
       <ProfileComments profileId={targetId} isOwn={isOwn} />
 
-      {isOwn && !editMode &&
-        <Link
-          to="/suggestions"
-          className="mt-10 flex items-center gap-3 p-4 rounded-2xl border border-border bg-foreground/[0.02] hover:bg-foreground/[0.04] transition active:scale-[0.99]">
-          <div className="w-10 h-10 rounded-xl bg-foreground/[0.06] grid place-items-center shrink-0">
-            <Lightbulb size={18} className="text-foreground/70" />
-          </div>
-          <div className="flex-1 min-w-0">
-            <h2 className="text-base font-extrabold tracking-tight text-foreground">
-              Ideas & Suggestions
-            </h2>
-            <p className="text-sm text-foreground/55 truncate">
-              Tell us what should come next on PUBLIC.
-            </p>
-          </div>
-          <span className="inline-flex items-center gap-1 px-3.5 py-2 rounded-full bg-foreground text-background text-xs font-semibold shrink-0">
-            Share <ChevronRight size={14} />
-          </span>
-        </Link>
-        }
-      {isOwn && !editMode &&
-        <Link
-          to="/settings/transitions"
-          className="mt-10 flex items-center gap-3 p-4 rounded-2xl border border-border bg-foreground/[0.02] hover:bg-foreground/[0.04] transition active:scale-[0.99]">
-          <div className="w-10 h-10 rounded-xl bg-foreground/[0.06] grid place-items-center shrink-0">
-            <GitMerge size={18} className="text-foreground/70" />
-          </div>
-          <div className="flex-1 min-w-0">
-            <h2 className="text-base font-extrabold tracking-tight text-foreground">
-              Song Transitions
-            </h2>
-            <p className="text-sm text-foreground/55 leading-snug">
-              Blend songs together seamlessly with Crossfade or AutoMix.
-            </p>
-          </div>
-          <span className="text-foreground/30 text-lg shrink-0">›</span>
-        </Link>
-        }
-      {isOwn && !editMode &&
-        <div className="mt-4 p-5 rounded-2xl border border-border bg-foreground/[0.02]">
-          <h2 className="text-base font-extrabold tracking-tight mb-1 text-foreground">
-            Appearance
-          </h2>
-          <p className="text-sm text-foreground/60 mb-4">
-            Choose how PUBLIC looks for you. Dark mode applies across every page.
-          </p>
-          <ThemeToggle />
-        </div>
-        }
-      {isOwn && !editMode &&
-        <div className="mt-10 p-5 rounded-2xl border border-red-200 bg-red-50/30">
-          <h2 className="text-base font-extrabold tracking-tight mb-1 text-red-700">
-            Danger Zone
-          </h2>
-          <p className="text-sm text-foreground/60 mb-4">
-            Permanently delete your account and all data you've contributed to
-            PUBLIC. This action cannot be undone.
-          </p>
-          <button
-            onClick={() => setShowDelete(true)}
-            className="px-4 py-2 rounded-full bg-red-600 text-white text-sm font-semibold flex items-center gap-2">
-          
-            <Trash2 size={14} /> Delete account
-          </button>
-        </div>
+      {showSettings && isOwn &&
+        <SettingsSheet
+          onClose={() => setShowSettings(false)}
+          onDeleteAccount={() => setShowDelete(true)}
+        />
         }
 
       {showDelete &&

@@ -4,11 +4,12 @@ import { base44 } from "@/api/base44Client";
 import { useAuth } from "@/lib/AuthContext";
 import { useLibrary } from "@/context/LibraryContext";
 import { useOfflineCache } from "@/hooks/useOfflineCache";
-import { Library as LibIcon, Loader2, CloudOff, ChevronRight } from "lucide-react";
+import { Library as LibIcon, Loader2, CloudOff, ChevronRight, History } from "lucide-react";
 import TrackCard from "@/components/TrackCard";
 import EmptyState from "@/components/EmptyState";
 import PullToRefresh from "@/components/PullToRefresh";
 import PageHeader from "@/components/PageHeader";
+import { getRecentPlays } from "@/lib/recentPlays";
 
 export default function Library() {
   const { user } = useAuth();
@@ -16,6 +17,7 @@ export default function Library() {
   const cache = useOfflineCache();
   const [tracks, setTracks] = useState(null);
   const [uploads, setUploads] = useState(null);
+  const [recentlyPlayed, setRecentlyPlayed] = useState([]);
   const [loading, setLoading] = useState(true);
 
   const offlineCount = cache.records.length;
@@ -68,6 +70,17 @@ export default function Library() {
     load();
   }, [load, ids]);
 
+  useEffect(() => {
+    const handler = () => setRecentlyPlayed(getRecentPlays());
+    handler();
+    window.addEventListener("recentplays:change", handler);
+    window.addEventListener("storage", handler);
+    return () => {
+      window.removeEventListener("recentplays:change", handler);
+      window.removeEventListener("storage", handler);
+    };
+  }, []);
+
   return (
     <div className="max-w-5xl mx-auto px-3 md:px-0 pb-10">
       <PageHeader title="Your Library" subtitle="Everything you've saved, in one place." />
@@ -109,6 +122,17 @@ export default function Library() {
               {uploads.map((t) =>
               <TrackCard key={t.id} track={t} />
               )}
+            </div>
+          </section>
+          }
+
+          {recentlyPlayed.length > 0 &&
+          <section className="mb-7">
+            <h2 className="text-sm font-bold text-foreground/70 uppercase tracking-wider mb-3">Recently Played</h2>
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
+              {recentlyPlayed.map((t) => (
+                <TrackCard key={t.id} track={t} />
+              ))}
             </div>
           </section>
           }
