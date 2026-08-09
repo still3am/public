@@ -28,7 +28,6 @@ import {
   Settings } from
 "lucide-react";
 import SettingsSheet from "@/components/profile/SettingsSheet";
-import StatusMessage from "@/components/profile/StatusMessage";
 import ProfileSong from "@/components/profile/ProfileSong";
 import TopTracks from "@/components/profile/TopTracks";
 import ProfileComments from "@/components/profile/ProfileComments";
@@ -467,12 +466,6 @@ export default function Profile() {
                   </p>
 
                 }
-
-              <StatusMessage
-                value={editMode ? form.status_message : profile?.status_message}
-                editMode={editMode}
-                onChange={(v) => setForm((f) => ({ ...f, status_message: v }))}
-              />
 
               {editMode &&
                 <div className="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-2 max-w-2xl mx-auto md:mx-0">
