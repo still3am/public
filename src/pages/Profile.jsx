@@ -31,8 +31,6 @@ import ProfileSong from "@/components/profile/ProfileSong";
 import TopTracks from "@/components/profile/TopTracks";
 import ProfileComments from "@/components/profile/ProfileComments";
 import GenreTags from "@/components/profile/GenreTags";
-import { useColorPalette } from "@/hooks/useColorPalette";
-import { useCoverUrl } from "@/hooks/useCoverUrl";
 
 function safeUrl(u) {
   if (!u) return undefined;
@@ -81,20 +79,6 @@ export default function Profile() {
     featured_track_id: "",
     top_track_ids: []
   });
-
-  const [featuredCoverUrl, setFeaturedCoverUrl] = useState("");
-  useEffect(() => {
-    const tid = profile?.featured_track_id;
-    if (!tid) { setFeaturedCoverUrl(""); return; }
-    let cancelled = false;
-    base44.entities.Track.get(tid)
-      .then((t) => { if (!cancelled) setFeaturedCoverUrl(t?.cover_art_url || ""); })
-      .catch(() => { if (!cancelled) setFeaturedCoverUrl(""); });
-    return () => { cancelled = true; };
-  }, [profile?.featured_track_id]);
-
-  const coverUrl = useCoverUrl(featuredCoverUrl);
-  const [bgPrimary, bgSecondary, bgAccent] = useColorPalette(coverUrl);
 
   async function load() {
     setLoading(true);
@@ -311,32 +295,6 @@ export default function Profile() {
 
   return (
     <PullToRefresh onRefresh={load}>
-    {coverUrl && (
-      <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
-        <div
-          className="absolute inset-0 animate-[herobreathebright_9s_ease-in-out_infinite]"
-          style={{
-            backgroundImage:
-              `radial-gradient(circle at 25% 25%, ${bgPrimary} 0, transparent 52%),` +
-              `radial-gradient(circle at 75% 75%, ${bgSecondary} 0, transparent 52%),` +
-              `radial-gradient(circle at 50% 90%, ${bgAccent} 0, transparent 52%)`,
-            filter: "blur(38px) saturate(1.8) brightness(1.2)",
-            mixBlendMode: "multiply",
-          }}
-        />
-        <div
-          className="absolute -inset-5 animate-[herobreathebright_11s_ease-in-out_infinite] [animation-delay:-3s]"
-          style={{
-            backgroundImage:
-              `radial-gradient(circle at 35% 30%, ${bgPrimary} 0, transparent 48%),` +
-              `radial-gradient(circle at 70% 72%, ${bgSecondary} 0, transparent 48%),` +
-              `radial-gradient(circle at 50% 50%, ${bgAccent} 0, transparent 45%)`,
-            filter: "blur(44px) saturate(1.9) brightness(1.3)",
-            mixBlendMode: "screen",
-          }}
-        />
-      </div>
-    )}
     <div className="max-w-5xl mx-auto relative z-10">
       <div className="relative rounded-2xl overflow-hidden ring-1 ring-inset ring-foreground/10 mb-8 bg-card">
         {/* Banner as background */}
