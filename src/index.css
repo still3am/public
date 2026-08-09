@@ -175,6 +175,15 @@
   50% { opacity: 0.75; }
 }
 
+@keyframes profilebeat {
+  0%, 100% { opacity: 0.32; }
+  8%   { opacity: 0.55; }
+  18%  { opacity: 0.38; }
+  28%  { opacity: 0.58; }
+  42%  { opacity: 0.34; }
+  70%  { opacity: 0.32; }
+}
+
 @keyframes marquee {
   from { transform: translateX(0); }
   to { transform: translateX(-50%); }
