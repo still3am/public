@@ -160,17 +160,17 @@ export default function Downloads() {
             {tracks.length > 0 &&
           <div className="flex items-center justify-between mb-3 px-1">
                 <button
-                onClick={playAll}
-                className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-foreground text-background text-sm font-bold active:scale-95 transition">
+              onClick={playAll}
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-foreground text-background text-sm font-bold active:scale-95 transition">
                   {anyPlayingHere ? <Pause size={15} /> : <Play size={15} />}
                   {anyPlayingHere ? "Pause all" : "Play all"}
                 </button>
-                <button
-                onClick={() => setConfirming(true)}
-                className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-border text-sm font-bold text-foreground/70 hover:text-destructive hover:border-destructive/40 active:scale-95 transition">
-                  <Trash2 size={15} /> Clear all
-                </button>
-                </div>
+                
+
+
+
+            
+              </div>
           }
 
             <DragDropContext onDragStart={() => setDragging(true)} onDragEnd={onDragEnd}>
