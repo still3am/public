@@ -467,40 +467,7 @@ export default function Profile() {
 
                 }
 
-              {editMode &&
-                <div className="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-2 max-w-2xl mx-auto md:mx-0">
-                  <input
-                    value={form.location}
-                    onChange={(e) => setForm((f) => ({ ...f, location: e.target.value }))}
-                    placeholder="Location"
-                    className="px-3 py-2 rounded-lg border border-border bg-background text-sm" />
-                  
-                  <input
-                    value={form.website}
-                    onChange={(e) => setForm((f) => ({ ...f, website: e.target.value }))}
-                    placeholder="Website URL"
-                    className="px-3 py-2 rounded-lg border border-border bg-background text-sm" />
-                  
-                  <input
-                    value={form.instagram}
-                    onChange={(e) => setForm((f) => ({ ...f, instagram: e.target.value }))}
-                    placeholder="Instagram @handle"
-                    className="px-3 py-2 rounded-lg border border-border bg-background text-sm" />
-                  
-                  <input
-                    value={form.twitter}
-                    onChange={(e) => setForm((f) => ({ ...f, twitter: e.target.value }))}
-                    placeholder="X / Twitter @handle"
-                    className="px-3 py-2 rounded-lg border border-border bg-background text-sm" />
-                  
-                  <input
-                    value={form.soundcloud}
-                    onChange={(e) => setForm((f) => ({ ...f, soundcloud: e.target.value }))}
-                    placeholder="SoundCloud URL"
-                    className="px-3 py-2 rounded-lg border border-border bg-background text-sm" />
-                  
-                </div>
-                }
+
 
               {!editMode && (
                 profile.website || profile.instagram || profile.twitter || profile.soundcloud) &&
