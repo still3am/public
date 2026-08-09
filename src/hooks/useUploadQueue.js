@@ -31,6 +31,7 @@ async function detectMeta(title, artist) {
         `3. Give the artist name if identifiable, else keep the provided artist or empty string.\n` +
         `4. Choose the single most accurate genre from this exact list (use "Other" if unsure):\n${GENRES.join(", ")}`,
       add_context_from_internet: true,
+      model: "gemini_3_flash",
       response_json_schema: {
         type: "object",
         properties: {
