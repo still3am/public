@@ -185,7 +185,7 @@ export default function Messages() {
   const activeOther = activeConv ? getOtherUser(activeConv) : null;
 
   return (
-    <div className="h-[calc(100dvh-15rem)] md:h-[calc(100vh-10rem)] flex md:rounded-2xl md:overflow-hidden md:border md:border-border/50">
+    <div className="-mx-3 sm:-mx-4 md:mx-0 -mt-3 md:mt-0 -mb-[calc(11rem+env(safe-area-inset-bottom))] md:mb-0 h-[calc(100dvh-10rem)] md:h-[calc(100vh-10rem)] flex md:rounded-2xl md:overflow-hidden md:border md:border-border/50">
       {/* Conversation list */}
       <div className={`flex-1 md:flex-none md:w-80 md:border-r md:border-border/50 flex flex-col overflow-hidden bg-background ${activeConv ? "hidden md:flex" : "flex"}`}>
         <div className="flex items-center justify-between px-4 pt-1.5 pb-1">
