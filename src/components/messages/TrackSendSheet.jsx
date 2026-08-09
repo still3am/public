@@ -128,11 +128,8 @@ export default function TrackSendSheet({ onSend, onClose }) {
                       {t.artist || t.uploader_name || "Unknown artist"}
                     </div>
                   </div>
-                  <div
-                    className="w-8 h-8 rounded-full grid place-items-center shrink-0 transition opacity-0 group-hover:opacity-100"
-                    style={{ backgroundColor: "#007AFF" }}
-                  >
-                    <Send size={15} className="text-white" />
+                  <div className="w-8 h-8 rounded-full grid place-items-center shrink-0 transition opacity-0 group-hover:opacity-100 bg-foreground text-background">
+                    <Send size={15} />
                   </div>
                 </button>
               ))}

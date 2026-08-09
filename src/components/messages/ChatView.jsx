@@ -150,28 +150,28 @@ export default function ChatView({ conversation, otherUser, onBack }) {
   return (
     <div className="flex flex-col h-full bg-background">
       {/* Header */}
-      <div className="flex items-center gap-2 px-2 py-2 border-b border-border/50 bg-background/80 backdrop-blur-xl sticky top-0 z-10">
+      <div className="flex items-center gap-2.5 px-3 py-2.5 border-b border-border/40 bg-background/80 backdrop-blur-xl sticky top-0 z-10">
         <button
           onClick={onBack}
-          className="md:hidden p-1.5 -ml-0.5 rounded-full hover:bg-foreground/5"
+          className="md:hidden p-1.5 -ml-1 rounded-full hover:bg-foreground/5 transition"
           aria-label="Back"
         >
-          <ArrowLeft size={24} style={{ color: "#007AFF" }} />
+          <ArrowLeft size={22} className="text-foreground" />
         </button>
         {otherUser.avatar_url ? (
-          <img src={otherUser.avatar_url} alt="" className="w-8 h-8 rounded-full object-cover" />
+          <img src={otherUser.avatar_url} alt="" className="w-9 h-9 rounded-full object-cover" />
         ) : (
-          <div className="w-8 h-8 rounded-full bg-foreground/10 grid place-items-center text-xs font-bold text-foreground/50">
+          <div className="w-9 h-9 rounded-full bg-foreground/10 grid place-items-center text-sm font-bold text-foreground/50">
             {(otherUser.display_name || "?").charAt(0).toUpperCase()}
           </div>
         )}
-        <h2 className="text-[15px] font-semibold truncate" style={{ color: "#007AFF" }}>
+        <h2 className="text-[16px] font-semibold truncate text-foreground">
           {otherUser.display_name}
         </h2>
       </div>
 
       {/* Messages */}
-      <div ref={scrollRef} className="flex-1 overflow-y-auto px-3 py-2">
+      <div ref={scrollRef} className="flex-1 overflow-y-auto px-3 py-3">
         {loading ? (
           <div className="grid place-items-center py-20">
             <Loader2 className="animate-spin text-foreground/30" />
@@ -219,12 +219,11 @@ export default function ChatView({ conversation, otherUser, onBack }) {
       </div>
 
       {/* Composer */}
-      <div className="px-2.5 py-2 bg-background border-t border-border/30">
+      <div className="px-2.5 py-2.5 bg-background border-t border-border/30">
         <div className="flex items-end gap-2">
           <button
             onClick={() => setShowTrackSheet(true)}
-            className="w-8 h-8 rounded-full grid place-items-center shrink-0 transition"
-            style={{ color: "#007AFF" }}
+            className="w-9 h-9 rounded-full grid place-items-center shrink-0 transition hover:bg-foreground/5 text-foreground"
             aria-label="Send a song"
           >
             <Music2 size={22} />
@@ -238,20 +237,19 @@ export default function ChatView({ conversation, otherUser, onBack }) {
                 sendText();
               }
             }}
-            placeholder="iMessage"
+            placeholder="Message"
             rows={1}
-            className="flex-1 resize-none max-h-32 px-4 py-1.5 rounded-[20px] bg-[#E9E9EB] dark:bg-[#1C1C1E] text-[15px] leading-relaxed border-0 focus:outline-none placeholder:text-foreground/40"
-            style={{ minHeight: "36px" }}
+            className="flex-1 resize-none max-h-32 px-4 py-2 rounded-[20px] bg-foreground/[0.06] text-[15px] leading-relaxed border-0 focus:outline-none placeholder:text-foreground/40"
+            style={{ minHeight: "38px" }}
           />
           {hasText && (
             <button
               onClick={sendText}
               disabled={sending}
-              className="w-8 h-8 rounded-full grid place-items-center shrink-0 transition disabled:opacity-50"
-              style={{ backgroundColor: "#007AFF" }}
+              className="w-9 h-9 rounded-full grid place-items-center shrink-0 transition disabled:opacity-40 bg-foreground text-background"
               aria-label="Send"
             >
-              {sending ? <Loader2 size={16} className="animate-spin text-white" /> : <ArrowUp size={18} className="text-white" />}
+              {sending ? <Loader2 size={16} className="animate-spin" /> : <ArrowUp size={18} />}
             </button>
           )}
         </div>
