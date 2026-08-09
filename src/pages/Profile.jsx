@@ -316,13 +316,14 @@ export default function Profile() {
     {coverUrl && (
       <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
         <div
-          className="absolute inset-0 animate-[herobreathe_9s_ease-in-out_infinite]"
+          className="absolute inset-0 animate-[herobreathebright_9s_ease-in-out_infinite]"
           style={{
             backgroundImage:
-              `radial-gradient(circle at 25% 25%, ${bgPrimary} 0, transparent 48%),` +
-              `radial-gradient(circle at 75% 75%, ${bgSecondary} 0, transparent 48%),` +
-              `radial-gradient(circle at 50% 90%, ${bgAccent} 0, transparent 50%)`,
-            filter: "blur(40px) saturate(1.4)",
+              `radial-gradient(circle at 25% 25%, ${bgPrimary} 0, transparent 55%),` +
+              `radial-gradient(circle at 75% 75%, ${bgSecondary} 0, transparent 55%),` +
+              `radial-gradient(circle at 50% 90%, ${bgAccent} 0, transparent 55%)`,
+            filter: "blur(36px) saturate(1.8) brightness(1.25)",
+            mixBlendMode: "screen",
           }}
         />
       </div>
