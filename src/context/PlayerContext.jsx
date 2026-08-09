@@ -17,11 +17,13 @@ import {
   isGapless,
   TRANSITION_MODES,
 } from "@/lib/transitions";
+import { useAuth } from "@/lib/AuthContext";
 
 const PlayerContext = createContext(null);
 export const usePlayer = () => useContext(PlayerContext);
 
 export function PlayerProvider({ children }) {
+  const { user } = useAuth();
   // Two audio elements enable a REAL overlapping crossfade: while one track
   // fades out on the inactive element, the next track fades in on the other.
   const audioRefs = [useRef(null), useRef(null)];
@@ -1131,7 +1133,15 @@ export function PlayerProvider({ children }) {
     setQueue([]);
     setCurrentIndex(-1);
     setDismissed(true);
-  }, []);
+    // Clear playback state across ALL of the user's devices so the song
+    // doesn't auto-resume on another device after the user dismissed it here.
+    if (user?.id) {
+      base44.entities.PlaybackState.updateMany(
+        { user_id: user.id },
+        { $set: { track_id: "", track: "", is_playing: false, position_seconds: 0, sampled_at: new Date().toISOString() } }
+      ).catch(() => {});
+    }
+  }, [user?.id]);
 
   const setSleepTimer = useCallback((minutes) => {
     if (sleepTimerRef.current) {
