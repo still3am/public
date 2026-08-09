@@ -8,7 +8,6 @@ import {
   Lightbulb,
   Library as LibraryIcon,
   Shield,
-  MessageCircle,
 } from "lucide-react";
 import ThemeToggle from "@/components/ThemeToggle";
 import { useAuth } from "@/lib/AuthContext";
@@ -18,7 +17,6 @@ const ITEMS = [
   { to: "/top", icon: BarChart3, label: "Top Charts" },
   { to: "/recent", icon: Clock, label: "Recently Added" },
   { to: "/library", icon: LibraryIcon, label: "Library" },
-  { to: "/messages", icon: MessageCircle, label: "Public Network" },
   { to: "/suggestions", icon: Lightbulb, label: "Suggestions" },
 ];
 
