@@ -33,7 +33,6 @@ import ProfileSong from "@/components/profile/ProfileSong";
 import TopTracks from "@/components/profile/TopTracks";
 import ProfileComments from "@/components/profile/ProfileComments";
 import GenreTags from "@/components/profile/GenreTags";
-import ProfileSongTint from "@/components/profile/ProfileSongTint";
 
 function safeUrl(u) {
   if (!u) return undefined;
@@ -301,7 +300,6 @@ export default function Profile() {
     <div className="max-w-5xl mx-auto">
       {!isOwn && <BackHeader title={displayName} />}
       <div className="relative rounded-2xl overflow-hidden ring-1 ring-inset ring-foreground/10 mb-8 bg-card">
-        <ProfileSongTint trackId={profile?.featured_track_id} />
         {/* Banner as background */}
         <div className="absolute inset-x-0 top-0 h-40 sm:h-48 md:h-60 bg-gradient-to-br from-violet-500/[0.15] via-foreground/[0.05] to-amber-400/[0.15]">
           {banner && <img src={banner} alt="" className="w-full h-full object-cover" />}
