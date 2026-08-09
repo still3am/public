@@ -38,6 +38,26 @@
     "last_sender_id": {
       "type": "string",
       "default": ""
+    },
+    "is_pinned": {
+      "type": "boolean",
+      "default": false,
+      "description": "Pinned conversations sort to the top of the list"
+    },
+    "is_muted": {
+      "type": "boolean",
+      "default": false,
+      "description": "Muted conversations suppress notification indicators"
+    },
+    "typing_user_id": {
+      "type": "string",
+      "default": "",
+      "description": "User id of whoever is currently typing in this conversation"
+    },
+    "typing_at": {
+      "type": "string",
+      "default": "",
+      "description": "ISO timestamp of the last typing indicator update"
     }
   },
   "required": [

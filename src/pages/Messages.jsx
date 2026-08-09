@@ -3,20 +3,9 @@ import { base44 } from "@/api/base44Client";
 import { useAuth } from "@/lib/AuthContext";
 import ChatView from "@/components/messages/ChatView";
 import NewMessageSheet from "@/components/messages/NewMessageSheet";
+import ConversationActions from "@/components/messages/ConversationActions";
+import ConversationItem from "@/components/messages/ConversationItem";
 import { Loader2, SquarePen, Search, Plus } from "lucide-react";
-
-function timeLabel(dateStr) {
-  if (!dateStr) return "";
-  const d = new Date(dateStr);
-  const now = new Date();
-  const diff = now - d;
-  const day = 86400000;
-  if (diff < day && d.toDateString() === now.toDateString())
-    return d.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
-  if (diff < 2 * day) return "Yesterday";
-  if (diff < 7 * day) return d.toLocaleDateString([], { weekday: "short" });
-  return d.toLocaleDateString([], { month: "short", day: "numeric" });
-}
 
 export default function Messages() {
   const { user: me } = useAuth();
@@ -25,6 +14,8 @@ export default function Messages() {
   const [activeConv, setActiveConv] = useState(null);
   const [showNew, setShowNew] = useState(false);
   const [search, setSearch] = useState("");
+  const [unreadMap, setUnreadMap] = useState({});
+  const [actionsConv, setActionsConv] = useState(null);
 
   const loadConversations = useCallback(async () => {
     if (!me) return;
@@ -42,9 +33,26 @@ export default function Messages() {
     }
   }, [me]);
 
+  const refreshUnread = useCallback(async () => {
+    if (!me) return;
+    try {
+      const unread = await base44.entities.Message.filter(
+        { recipient_id: me.id, read: false },
+        "-created_date",
+        1000
+      );
+      const map = {};
+      (unread || []).forEach((m) => {
+        map[m.conversation_id] = (map[m.conversation_id] || 0) + 1;
+      });
+      setUnreadMap(map);
+    } catch {}
+  }, [me]);
+
   useEffect(() => {
     loadConversations();
-  }, [loadConversations]);
+    refreshUnread();
+  }, [loadConversations, refreshUnread]);
 
   useEffect(() => {
     const unsubConv = base44.entities.Conversation.subscribe((event) => {
@@ -60,7 +68,11 @@ export default function Messages() {
         const c = event.data;
         setConversations((prev) => {
           const updated = prev.map((x) => (x.id === c.id ? c : x));
-          return updated.sort((a, b) => new Date(b.last_message_at || 0) - new Date(a.last_message_at || 0));
+          return updated.sort((a, b) => {
+            if (a.is_pinned && !b.is_pinned) return -1;
+            if (!a.is_pinned && b.is_pinned) return 1;
+            return new Date(b.last_message_at || 0) - new Date(a.last_message_at || 0);
+          });
         });
       }
     });
@@ -68,6 +80,7 @@ export default function Messages() {
     const unsubMsg = base44.entities.Message.subscribe((event) => {
       if (event.type === "create" && event.data?.recipient_id === me?.id) {
         loadConversations();
+        refreshUnread();
       }
     });
 
@@ -113,12 +126,49 @@ export default function Messages() {
     }
   }
 
+  function openConversation(conv) {
+    setActiveConv(conv);
+    setUnreadMap((prev) => ({ ...prev, [conv.id]: 0 }));
+  }
+
+  function handleBack() {
+    setActiveConv(null);
+    refreshUnread();
+  }
+
+  async function handlePin(conv) {
+    try {
+      await base44.entities.Conversation.update(conv.id, { is_pinned: !conv.is_pinned });
+    } catch {}
+  }
+
+  async function handleMute(conv) {
+    try {
+      await base44.entities.Conversation.update(conv.id, { is_muted: !conv.is_muted });
+    } catch {}
+  }
+
+  async function handleDeleteConv(conv) {
+    try {
+      await base44.entities.Message.deleteMany({ conversation_id: conv.id });
+      await base44.entities.Conversation.delete(conv.id);
+      setConversations((prev) => prev.filter((c) => c.id !== conv.id));
+      if (activeConv?.id === conv.id) setActiveConv(null);
+    } catch {}
+  }
+
   const filtered = search.trim()
     ? conversations.filter((c) => {
         const other = getOtherUser(c);
         return other.display_name.toLowerCase().includes(search.toLowerCase());
       })
     : conversations;
+
+  const sorted = [...filtered].sort((a, b) => {
+    if (a.is_pinned && !b.is_pinned) return -1;
+    if (!a.is_pinned && b.is_pinned) return 1;
+    return new Date(b.last_message_at || 0) - new Date(a.last_message_at || 0);
+  });
 
   const activeOther = activeConv ? getOtherUser(activeConv) : null;
 
@@ -152,49 +202,31 @@ export default function Messages() {
             <div className="grid place-items-center py-20">
               <Loader2 className="animate-spin text-foreground/30" />
             </div>
-          ) : filtered.length === 0 ? (
+          ) : sorted.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-20 text-foreground/40 px-6 text-center">
               <SquarePen size={28} className="mb-3" />
               <p className="text-sm">
-                {search ? "No conversations match your search." : "No conversations yet. Tap the compose icon to start one."}
+                {search ? "No conversations match your search." : "No conversations yet. Tap the + to start one."}
               </p>
             </div>
           ) : (
-            filtered.map((conv) => {
+            sorted.map((conv) => {
               const other = getOtherUser(conv);
               const isActive = activeConv?.id === conv.id;
               const isUnread = conv.last_sender_id && conv.last_sender_id !== me.id;
+              const unreadCount = unreadMap[conv.id] || 0;
               return (
-                <button
+                <ConversationItem
                   key={conv.id}
-                  onClick={() => setActiveConv(conv)}
-                  className={`w-full flex items-center gap-3 px-4 py-2 text-left transition ${
-                    isActive ? "bg-foreground/[0.06]" : "hover:bg-foreground/[0.03]"
-                  }`}
-                >
-                  {other.avatar_url ? (
-                    <img src={other.avatar_url} alt="" className="w-[49px] h-[49px] rounded-full object-cover shrink-0" />
-                  ) : (
-                    <div className="w-[49px] h-[49px] rounded-full bg-foreground/10 grid place-items-center text-lg font-bold text-foreground/50 shrink-0">
-                      {(other.display_name || "?").charAt(0).toUpperCase()}
-                    </div>
-                  )}
-                  <div className="flex-1 min-w-0 py-1 border-b border-border/30">
-                    <div className="flex items-center justify-between gap-2">
-                      <span className={`text-[15px] truncate ${isUnread ? "font-semibold" : "font-medium"}`}>
-                        {other.display_name}
-                      </span>
-                      {conv.last_message_at && (
-                        <span className="text-[11px] text-foreground/40 shrink-0">
-                          {timeLabel(conv.last_message_at)}
-                        </span>
-                      )}
-                    </div>
-                    <p className={`text-sm truncate mt-0.5 ${isUnread ? "text-foreground/70 font-medium" : "text-foreground/40"}`}>
-                      {conv.last_message_text || "No messages yet"}
-                    </p>
-                  </div>
-                </button>
+                  conv={conv}
+                  other={other}
+                  me={me}
+                  isActive={isActive}
+                  unreadCount={unreadCount}
+                  isUnread={isUnread}
+                  onOpen={openConversation}
+                  onLongPress={(c) => setActionsConv(c)}
+                />
               );
             })
           )}
@@ -207,7 +239,8 @@ export default function Messages() {
           <ChatView
             conversation={activeConv}
             otherUser={activeOther}
-            onBack={() => setActiveConv(null)}
+            onBack={handleBack}
+            onMessagesRead={refreshUnread}
           />
         ) : (
           <div className="hidden md:flex flex-1 flex-col items-center justify-center text-foreground/30">
@@ -219,6 +252,16 @@ export default function Messages() {
 
       {showNew && (
         <NewMessageSheet onPick={startConversationWith} onClose={() => setShowNew(false)} />
+      )}
+
+      {actionsConv && (
+        <ConversationActions
+          conversation={actionsConv}
+          onPin={() => handlePin(actionsConv)}
+          onMute={() => handleMute(actionsConv)}
+          onDelete={() => handleDeleteConv(actionsConv)}
+          onClose={() => setActionsConv(null)}
+        />
       )}
     </div>
   );

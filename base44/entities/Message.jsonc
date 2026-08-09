@@ -33,6 +33,35 @@
       "default": "",
       "description": "JSON-serialized minimal track object so the recipient can play it without a lookup"
     },
+    "media_url": {
+      "type": "string",
+      "default": "",
+      "description": "Uploaded image or video URL"
+    },
+    "media_type": {
+      "type": "string",
+      "enum": [
+        "",
+        "image",
+        "video"
+      ],
+      "default": ""
+    },
+    "reply_to_id": {
+      "type": "string",
+      "default": "",
+      "description": "ID of the message this is replying to (quote reply)"
+    },
+    "reply_preview": {
+      "type": "string",
+      "default": "",
+      "description": "JSON of {sender_name, text, media_type} for the quoted message"
+    },
+    "reactions": {
+      "type": "string",
+      "default": "",
+      "description": "JSON of {emoji: [user_ids]}"
+    },
     "read": {
       "type": "boolean",
       "default": false
