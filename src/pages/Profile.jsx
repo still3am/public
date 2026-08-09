@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react";
-import { useParams, useNavigate, Link } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import { useAuth } from "@/lib/AuthContext";
-import { usePlayer } from "@/context/PlayerContext";
 import EmptyState from "@/components/EmptyState";
 import TrackCard from "@/components/TrackCard";
 import Avatar from "@/components/Avatar";
@@ -17,7 +16,6 @@ import {
   Pencil,
   Save,
   Music,
-  Shield,
   Upload,
   X,
   MapPin,
@@ -26,7 +24,6 @@ import {
   Calendar,
   Share2,
   QrCode,
-  Play,
   BarChart2,
   Settings } from
 "lucide-react";
@@ -49,9 +46,7 @@ function safeUrl(u) {
 
 export default function Profile() {
   const { id } = useParams();
-  const nav = useNavigate();
   const { user: me } = useAuth();
-  const p = usePlayer();
   const isOwn = !id || id === me?.id;
   const targetId = isOwn ? me?.id : id;
 
@@ -408,6 +403,13 @@ export default function Profile() {
                 </div>
                 }
 
+              <div className="flex flex-wrap items-center justify-center md:justify-start gap-x-5 gap-y-1 mt-3 text-sm">
+                <span><span className="font-bold">{formatNumber(stats.followers)}</span> <span className="text-foreground/50">followers</span></span>
+                <span><span className="font-bold">{formatNumber(stats.following)}</span> <span className="text-foreground/50">following</span></span>
+                {stats.plays > 0 && <span><span className="font-bold">{formatNumber(stats.plays)}</span> <span className="text-foreground/50">plays</span></span>}
+                {stats.likes > 0 && <span><span className="font-bold">{formatNumber(stats.likes)}</span> <span className="text-foreground/50">likes</span></span>}
+              </div>
+
               {editMode ?
                 <textarea
                   value={form.bio}
@@ -454,6 +456,12 @@ export default function Profile() {
                     value={form.twitter}
                     onChange={(e) => setForm((f) => ({ ...f, twitter: e.target.value }))}
                     placeholder="X / Twitter @handle"
+                    className="px-3 py-2 rounded-lg border border-border bg-background text-sm" />
+                  
+                  <input
+                    value={form.soundcloud}
+                    onChange={(e) => setForm((f) => ({ ...f, soundcloud: e.target.value }))}
+                    placeholder="SoundCloud URL"
                     className="px-3 py-2 rounded-lg border border-border bg-background text-sm" />
                   
                 </div>
@@ -559,15 +567,6 @@ export default function Profile() {
                     <Settings size={16} />
                   </button>
                   }
-                
-
-
-
-
-
-
-
-                  
               </div>
             </div>
           </div>
@@ -590,7 +589,7 @@ export default function Profile() {
         onChange={(ids) => setForm((f) => ({ ...f, top_track_ids: ids }))}
       />
 
-      {!editMode && !isOwn && topTracks.length > 0 &&
+      {!editMode && !isOwn && topTracks.length > 0 && !(profile?.top_track_ids?.length > 0) &&
         <div className="mb-8">
           <h2 className="text-lg font-extrabold tracking-tight mb-3 flex items-center gap-2">
             <BarChart2 size={18} /> Top Tracks
