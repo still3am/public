@@ -15,7 +15,7 @@ export default function TrackPickerSheet({ title, selectedIds, max, tracks, onTo
         const published = await base44.entities.Track.filter(
           { is_published: true },
           "-created_date",
-          500
+          10000
         );
         if (cancelled) return;
         // Merge in any passed tracks (e.g. user's own non-public tracks) without duplicates
