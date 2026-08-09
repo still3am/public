@@ -181,6 +181,7 @@ export default function QueuePanel({ open, onClose }) {
                 <div
                   ref={dragProvided.innerRef}
                   {...dragProvided.draggableProps}
+                  style={{ ...dragProvided.draggableProps.style, touchAction: snapshot.isDragging ? "none" : "pan-y" }}
                   className={`group flex items-center gap-3 px-2 py-2 rounded-xl transition ${
                   snapshot.isDragging ? "bg-white/[0.12] ring-1 ring-white/15" : "hover:bg-white/[0.06]"}`}>
                 <div
