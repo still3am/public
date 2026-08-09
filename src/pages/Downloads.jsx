@@ -187,7 +187,7 @@ export default function Downloads() {
                       ref={dragProvided.innerRef}
                       {...dragProvided.draggableProps}
                       onDoubleClick={() => playOne(i)}
-                      style={{ ...dragProvided.draggableProps.style, overscrollBehavior: "contain" }}
+                      style={{ ...dragProvided.draggableProps.style, overscrollBehavior: "contain", touchAction: snapshot.isDragging ? "none" : "pan-y" }}
                       className={`group flex items-center gap-2 px-2 py-2 rounded-lg transition ${
                       snapshot.isDragging ? "bg-foreground/[0.06] ring-1 ring-border shadow-lg" : "hover:bg-foreground/[0.03]"}`}>
                       <div
