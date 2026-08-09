@@ -76,7 +76,18 @@
       "created_by_id": "{{user.id}}"
     },
     "read": null,
-    "update": {},
+    "update": {
+      "$or": [
+        {
+          "created_by_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
     "delete": {
       "$or": [
         {
