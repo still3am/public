@@ -323,16 +323,17 @@ async function saveProfile() {
       </div>
     )}
     <div className="max-w-5xl mx-auto relative z-10">
-      <div className="relative rounded-2xl overflow-hidden ring-1 ring-inset ring-foreground/10 mb-8 bg-card">
+      <div className="flex flex-col md:flex-row gap-4 md:gap-6 mb-8">
+      <div className="relative rounded-2xl overflow-hidden ring-1 ring-inset ring-foreground/10 bg-card flex-1 min-w-0">
         {/* Identity, stats, actions */}
-        <div className="relative z-10 px-4 md:px-8 pb-6 md:pb-8 pt-6 md:pt-8">
-          <div className="flex flex-col items-center md:flex-row md:items-end gap-4 md:gap-6">
+        <div className="relative z-10 px-4 md:px-6 pb-4 md:pb-5 pt-4 md:pt-5">
+          <div className="flex flex-col items-center md:flex-row md:items-end gap-3 md:gap-4">
             <div className="relative shrink-0">
-              <div className="rounded-full bg-background p-1.5 inline-block ring-1 ring-foreground/10 shadow-sm">
+              <div className="rounded-full bg-background p-1 inline-block ring-1 ring-foreground/10 shadow-sm">
                 <Avatar
                     user={{ ...profile, avatar_url: avatarUrl }}
-                    size={150} />
-                  
+                    size={96} />
+
               </div>
               {editMode &&
                 <label className="absolute bottom-1 right-1 p-2 rounded-full bg-foreground text-background cursor-pointer shadow-lg">
@@ -364,7 +365,7 @@ async function saveProfile() {
                     placeholder="Display name" /> :
 
 
-                  <h1 className="text-2xl md:text-4xl font-extrabold tracking-tight">
+                  <h1 className="text-xl md:text-3xl font-extrabold tracking-tight">
                     {displayName}
                   </h1>
                   }
@@ -523,13 +524,18 @@ async function saveProfile() {
           </div>
         </div>
       </div>
-
-      <ProfileSong
-        trackId={editMode ? form.featured_track_id : profile?.featured_track_id}
-        editMode={editMode}
-        userTracks={tracks}
-        onChange={(id) => setForm((f) => ({ ...f, featured_track_id: id }))}
-      />
+      {(editMode || profile?.featured_track_id) && (
+        <div className="md:w-72 lg:w-80 shrink-0">
+          <ProfileSong
+            trackId={editMode ? form.featured_track_id : profile?.featured_track_id}
+            editMode={editMode}
+            userTracks={tracks}
+            onChange={(id) => setForm((f) => ({ ...f, featured_track_id: id }))}
+            fillHeight
+          />
+        </div>
+      )}
+      </div>
 
       {isOwn && !editMode && <GenreTags />}
 
