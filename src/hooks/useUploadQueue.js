@@ -148,6 +148,15 @@ export function useUploadQueue({ user, isAdmin }) {
       });
       if (hits.length) {
         const hit = hits[0];
+        // Mark the item itself as a duplicate so the upload button is blocked
+        // until the user explicitly overrides or removes it.
+        patch(item.id, {
+          dupeOf: {
+            title: hit.title,
+            artist: hit.artist || hit.uploader_name || "",
+            matchScore: hit._match_score,
+          },
+        });
         setDupes((prev) => {
           const cur = prev || [];
           if (cur.some((d) => d.id === item.id)) return cur;
@@ -164,6 +173,8 @@ export function useUploadQueue({ user, isAdmin }) {
             },
           ];
         });
+      } else {
+        patch(item.id, { dupeOf: null, dupeOverride: false });
       }
     });
   }
@@ -171,6 +182,12 @@ export function useUploadQueue({ user, isAdmin }) {
   const remove = (id) => setItems((prev) => prev.filter((it) => it.id !== id));
 
   async function uploadOne(item) {
+    if (item.dupeOf && !item.dupeOverride) {
+      patch(item.id, {
+        error: "Duplicate detected — remove it or tap 'Upload anyway' to override.",
+      });
+      return;
+    }
     patch(item.id, { status: "uploading", error: "" });
     try {
       const { file_url } = await base44.integrations.Core.UploadFile({ file: item.file });
@@ -219,7 +236,9 @@ export function useUploadQueue({ user, isAdmin }) {
   // Uploads the whole queue with limited concurrency so big batches stay fast
   // without hammering the network.
   async function uploadAll() {
-    const pending = items.filter((it) => it.status === "ready");
+    const pending = items.filter(
+      (it) => it.status === "ready" && !(it.dupeOf && !it.dupeOverride)
+    );
     if (!pending.length) return;
     const CONCURRENCY = 3;
     let cursor = 0;

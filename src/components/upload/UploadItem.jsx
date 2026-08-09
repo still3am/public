@@ -4,6 +4,7 @@ import {
   UploadCloud,
   Loader2,
   AlertCircle,
+  AlertTriangle,
   Sparkles,
   Clock } from
 "lucide-react";
@@ -120,6 +121,22 @@ export default function UploadItem({
             hasArtist={hasArtist}
             hasCover={hasCover}
             isAdmin={isAdmin} />
+
+          {item.dupeOf && !item.dupeOverride &&
+          <div className="flex items-center gap-2 px-3 py-2.5 rounded-xl bg-amber-500/10 ring-1 ring-inset ring-amber-500/25">
+            <AlertTriangle size={14} className="shrink-0 text-amber-600 dark:text-amber-400" />
+            <div className="flex-1 min-w-0 text-xs font-medium text-amber-700 dark:text-amber-400">
+              Duplicate of <span className="font-bold">"{item.dupeOf.title}"</span>
+              {item.dupeOf.artist ? ` by ${item.dupeOf.artist}` : ""} — already on PUBLIC.
+            </div>
+            <button
+              onClick={() => onChange({ dupeOverride: true })}
+              className="shrink-0 text-[11px] font-bold text-amber-700 dark:text-amber-400 underline underline-offset-2 hover:opacity-70 transition">
+              Upload anyway
+            </button>
+          </div>
+          }
+
           
 
           {item.error &&
@@ -143,15 +160,25 @@ export default function UploadItem({
 
       <button
         onClick={onUpload}
-        disabled={uploading || enhancing || disabled}
-        className="w-full inline-flex items-center justify-center gap-2 py-3 bg-foreground text-background text-sm font-bold disabled:opacity-50 active:opacity-80 transition">
+        disabled={uploading || enhancing || disabled || item.detecting || (!!item.dupeOf && !item.dupeOverride)}
+        className={`w-full inline-flex items-center justify-center gap-2 py-3 text-sm font-bold disabled:opacity-50 active:opacity-80 transition ${
+          item.dupeOf && !item.dupeOverride
+            ? "bg-amber-500/15 text-amber-700 dark:text-amber-400"
+            : "bg-foreground text-background"}`}>
         
-          {uploading || enhancing ?
+          {item.detecting ?
+        <><Loader2 size={15} className="animate-spin" /> Analyzing…</> :
+        item.dupeOf && !item.dupeOverride ?
+        <><AlertTriangle size={15} /> Duplicate detected</> :
+        uploading || enhancing ?
         <Loader2 size={15} className="animate-spin" /> :
-
         <UploadCloud size={15} />
         }
-          {enhancing ?
+          {item.detecting ?
+        "" :
+        item.dupeOf && !item.dupeOverride ?
+        "" :
+        enhancing ?
         "Enhancing with AI…" :
         uploading ?
         "Uploading…" :

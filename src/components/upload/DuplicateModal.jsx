@@ -44,8 +44,8 @@ export default function DuplicateModal({ tracks, onClose, onRemove }) {
               Possible duplicates
             </h3>
             <p className="text-xs text-foreground/60 mt-0.5">
-              These tracks already exist on PUBLIC. Remove any you don't want
-              to upload again.
+              These tracks already exist on PUBLIC. They're blocked from upload
+              until you remove them or tap "Upload anyway" on the track.
             </p>
           </div>
           <button
