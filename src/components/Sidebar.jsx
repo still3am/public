@@ -87,7 +87,7 @@ export default function Sidebar() {
         <ThemeToggle labelClassName={`shrink-0 ${EASE} ${fadeCls}`} />
         <NavLink
           to="/profile"
-          className="flex items-center gap-3 rounded-lg px-2 py-2 hover:bg-foreground/[0.03]"
+          className="flex items-center gap-3 rounded-full px-2 py-2 hover:bg-foreground/[0.03]"
           title={user?.display_name || user?.full_name || "You"}
         >
           <Avatar user={user} size={32} />
