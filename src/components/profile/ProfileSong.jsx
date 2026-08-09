@@ -40,7 +40,7 @@ export default function ProfileSong({
       <div className="h-full flex flex-col rounded-2xl ring-1 ring-inset ring-foreground/10 bg-card overflow-hidden">
         <div className="px-4 pt-4 pb-2">
           <span className="text-xs font-bold uppercase tracking-wider text-foreground/40 flex items-center gap-1.5">
-            <Music size={14} className="hidden" /> Profile Song
+             Profile Song
           </span>
         </div>
         {editMode ?
