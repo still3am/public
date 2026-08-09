@@ -36,12 +36,16 @@ export default function TrackPickerSheet({ title, selectedIds, max, tracks, onTo
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const filtered = allTracks.filter(
-    (t) =>
-      !query ||
-      t.title?.toLowerCase().includes(query.toLowerCase()) ||
-      (t.artist || t.uploader_name || "").toLowerCase().includes(query.toLowerCase())
-  );
+  const q = query.toLowerCase().trim();
+  const filtered = q
+    ? allTracks.filter(
+        (t) =>
+          t.title?.toLowerCase().includes(q) ||
+          (t.artist || "").toLowerCase().includes(q) ||
+          (t.uploader_name || "").toLowerCase().includes(q) ||
+          (t.genre || "").toLowerCase().includes(q)
+      )
+    : allTracks;
 
   return (
     <div className="fixed inset-0 z-[70] flex items-end md:items-center justify-center">
