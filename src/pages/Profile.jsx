@@ -316,14 +316,13 @@ export default function Profile() {
     {coverUrl && (
       <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
         <div
-          className="absolute inset-0"
+          className="absolute inset-0 animate-[herobreathe_9s_ease-in-out_infinite]"
           style={{
             backgroundImage:
               `radial-gradient(circle at 25% 25%, ${bgPrimary} 0, transparent 48%),` +
               `radial-gradient(circle at 75% 75%, ${bgSecondary} 0, transparent 48%),` +
               `radial-gradient(circle at 50% 90%, ${bgAccent} 0, transparent 50%)`,
             filter: "blur(40px) saturate(1.4)",
-            animation: "profilebeat 14s ease-in-out infinite, herotint 28s ease-in-out infinite",
           }}
         />
       </div>
