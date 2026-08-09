@@ -9,7 +9,7 @@ import MediaViewer from "@/components/messages/MediaViewer";
 import EmojiPicker from "@/components/messages/EmojiPicker";
 import ForwardSheet from "@/components/messages/ForwardSheet";
 import { useVoiceRecorder } from "@/hooks/useVoiceRecorder";
-import { ArrowLeft, ArrowUp, Music2, Users, Loader2, ImageIcon, X, Reply, Mic, Smile, Pencil, Phone, Video, Plus } from "lucide-react";
+import { ArrowLeft, ArrowUp, Music2, Users, Loader2, ImageIcon, X, Reply, Mic, Smile, Pencil, MoreHorizontal, Plus } from "lucide-react";
 
 function groupTimestamp(dateStr) {
   const d = new Date(dateStr);
@@ -24,7 +24,7 @@ function groupTimestamp(dateStr) {
   return `${d.toLocaleDateString([], { month: "short", day: "numeric" })} ${time}`;
 }
 
-export default function ChatView({ conversation, otherUser, conversations, onBack, onMessagesRead }) {
+export default function ChatView({ conversation, otherUser, conversations, onBack, onMessagesRead, onShowActions }) {
   const { user: me } = useAuth();
   const { toast } = useToast();
   const [messages, setMessages] = useState([]);
@@ -449,25 +449,34 @@ export default function ChatView({ conversation, otherUser, conversations, onBac
   return (
     <div className="flex flex-col flex-1 min-h-0 bg-background">
       {/* Header */}
-      <div className="relative flex items-center justify-center px-3 py-2 border-b border-border/40 bg-background/80 backdrop-blur-xl sticky top-0 z-10">
+      <div className="flex items-center gap-2.5 px-3 py-2 border-b border-border/40 bg-background/80 backdrop-blur-xl shrink-0">
         <button
           onClick={onBack}
-          className="md:hidden p-1.5 absolute left-1 rounded-full hover:bg-foreground/5 transition"
-          aria-label="Back">
-          
+          className="md:hidden p-1.5 -ml-1 rounded-full hover:bg-foreground/5 transition"
+          aria-label="Back"
+        >
           <ArrowLeft size={22} className="text-foreground" />
         </button>
-        <div className="flex flex-col items-center gap-0.5">
-          {otherUser.avatar_url ?
-          <img src={otherUser.avatar_url} alt="" className="w-10 h-10 rounded-full object-cover" /> :
-
-          <div className="w-10 h-10 rounded-full bg-foreground/10 grid place-items-center text-sm font-bold text-foreground/50">
+        <div className="relative shrink-0">
+          {otherUser.avatar_url ? (
+            <img src={otherUser.avatar_url} alt="" className="w-10 h-10 rounded-full object-cover" />
+          ) : (
+            <div className="w-10 h-10 rounded-full bg-foreground/10 grid place-items-center text-sm font-bold text-foreground/50">
               {(otherUser.display_name || "?").charAt(0).toUpperCase()}
             </div>
-          }
-          <h2 className="text-[13px] font-medium leading-none truncate text-foreground text-center max-w-[160px]">{otherUser.display_name}</h2>
-          {isOtherTyping && <p className="text-[11px] text-foreground/50 truncate text-center">typing…</p>}
+          )}
         </div>
+        <div className="flex-1 min-w-0">
+          <h2 className="text-[16px] font-semibold truncate text-foreground leading-tight">{otherUser.display_name}</h2>
+          {isOtherTyping && <p className="text-[12px] text-foreground/50 truncate leading-tight">typing…</p>}
+        </div>
+        <button
+          onClick={() => onShowActions?.(conversation)}
+          className="p-2 rounded-full hover:bg-foreground/5 transition shrink-0"
+          aria-label="More"
+        >
+          <MoreHorizontal size={20} className="text-foreground" />
+        </button>
         
 
 

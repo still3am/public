@@ -14,7 +14,7 @@ export default function MobileTabBar() {
   const [moreOpen, setMoreOpen] = useState(false);
   const loc = useLocation();
   const nav = useNavigate();
-  if (loc.pathname === "/onboarding") return null;
+  if (loc.pathname === "/onboarding" || loc.pathname === "/messages") return null;
 
   function handleTab(to, e) {
     if (loc.pathname === to) {
