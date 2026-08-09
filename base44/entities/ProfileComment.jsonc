@@ -1,0 +1,62 @@
+{
+  "name": "ProfileComment",
+  "type": "object",
+  "properties": {
+    "profile_id": {
+      "type": "string",
+      "description": "User id of the profile receiving the comment"
+    },
+    "author_id": {
+      "type": "string"
+    },
+    "author_name": {
+      "type": "string",
+      "default": ""
+    },
+    "author_avatar_url": {
+      "type": "string",
+      "default": ""
+    },
+    "message": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "profile_id",
+    "author_id",
+    "message"
+  ],
+  "rls": {
+    "create": {
+      "data.author_id": "{{user.id}}"
+    },
+    "read": null,
+    "update": {
+      "$or": [
+        {
+          "data.author_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "$or": [
+        {
+          "data.author_id": "{{user.id}}"
+        },
+        {
+          "data.profile_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    }
+  }
+}

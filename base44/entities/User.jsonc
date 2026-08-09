@@ -6,6 +6,24 @@
       "type": "boolean",
       "default": false,
       "description": "When true, the user is blocked from the platform"
+    },
+    "status_message": {
+      "type": "string",
+      "default": "",
+      "description": "Short status / mood message displayed on the profile"
+    },
+    "featured_track_id": {
+      "type": "string",
+      "default": "",
+      "description": "Track id pinned as the profile song visitors can play"
+    },
+    "top_track_ids": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "default": [],
+      "description": "Up to 8 track ids pinned to the profile as the user's Top 8"
     }
   },
   "required": []

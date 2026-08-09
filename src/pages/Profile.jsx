@@ -36,6 +36,11 @@ import {
   ChevronRight } from
 "lucide-react";
 import { getRecentPlays } from "@/lib/recentPlays";
+import StatusMessage from "@/components/profile/StatusMessage";
+import ProfileSong from "@/components/profile/ProfileSong";
+import TopTracks from "@/components/profile/TopTracks";
+import ProfileComments from "@/components/profile/ProfileComments";
+import GenreTags from "@/components/profile/GenreTags";
 
 function safeUrl(u) {
   if (!u) return undefined;
@@ -81,7 +86,10 @@ export default function Profile() {
     website: "",
     instagram: "",
     twitter: "",
-    soundcloud: ""
+    soundcloud: "",
+    status_message: "",
+    featured_track_id: "",
+    top_track_ids: []
   });
 
   async function load() {
@@ -105,7 +113,10 @@ export default function Profile() {
         website: prof.website || "",
         instagram: prof.instagram || "",
         twitter: prof.twitter || "",
-        soundcloud: prof.soundcloud || ""
+        soundcloud: prof.soundcloud || "",
+        status_message: prof.status_message || "",
+        featured_track_id: prof.featured_track_id || "",
+        top_track_ids: prof.top_track_ids || []
       });
       // Owners see all their own tracks (pending/private/approved); others only see approved ones.
       const trackFilter = isOwn
@@ -234,7 +245,10 @@ export default function Profile() {
         website: form.website,
         instagram: form.instagram,
         twitter: form.twitter,
-        soundcloud: form.soundcloud
+        soundcloud: form.soundcloud,
+        status_message: form.status_message,
+        featured_track_id: form.featured_track_id,
+        top_track_ids: form.top_track_ids
       });
       setEditMode(false);
       setProfile((prev) => ({
@@ -428,6 +442,12 @@ export default function Profile() {
 
                 }
 
+              <StatusMessage
+                value={editMode ? form.status_message : profile?.status_message}
+                editMode={editMode}
+                onChange={(v) => setForm((f) => ({ ...f, status_message: v }))}
+              />
+
               {editMode &&
                 <div className="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-2 max-w-2xl mx-auto md:mx-0">
                   <input
@@ -563,6 +583,22 @@ export default function Profile() {
         </div>
       </div>
 
+      <ProfileSong
+        trackId={editMode ? form.featured_track_id : profile?.featured_track_id}
+        editMode={editMode}
+        userTracks={tracks}
+        onChange={(id) => setForm((f) => ({ ...f, featured_track_id: id }))}
+      />
+
+      {isOwn && !editMode && <GenreTags />}
+
+      <TopTracks
+        trackIds={editMode ? form.top_track_ids : profile?.top_track_ids || []}
+        editMode={editMode}
+        userTracks={tracks}
+        onChange={(ids) => setForm((f) => ({ ...f, top_track_ids: ids }))}
+      />
+
       {!editMode && isOwn && recentlyPlayed.length > 0 &&
         <div className="mb-8">
           <h2 className="text-lg font-extrabold tracking-tight mb-3 flex items-center gap-2">
@@ -587,6 +623,8 @@ export default function Profile() {
           </div>
         </div>
         }
+
+      <ProfileComments profileId={targetId} isOwn={isOwn} />
 
       {isOwn && !editMode &&
         <Link
