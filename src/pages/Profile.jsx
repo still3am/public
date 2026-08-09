@@ -9,9 +9,25 @@ import PullToRefresh from "@/components/PullToRefresh";
 import BackHeader from "@/components/BackHeader";
 import ProfileQRModal from "@/components/ProfileQRModal";
 import { formatNumber } from "@/lib/audio-utils";
-import { Loader2, BarChart2 } from "lucide-react";
+import {
+  Loader2,
+  UserPlus,
+  UserCheck,
+  Pencil,
+  Save,
+  Music,
+  Upload,
+  X,
+  MapPin,
+  Globe,
+  AtSign,
+  Calendar,
+  Share2,
+  QrCode,
+  BarChart2,
+  Settings } from
+"lucide-react";
 import SettingsSheet from "@/components/profile/SettingsSheet";
-import ProfileHeader from "@/components/profile/ProfileHeader";
 import ProfileSong from "@/components/profile/ProfileSong";
 import TopTracks from "@/components/profile/TopTracks";
 import ProfileComments from "@/components/profile/ProfileComments";
@@ -324,30 +340,233 @@ export default function Profile() {
     )}
     <div className="max-w-5xl mx-auto relative z-10">
       {!isOwn && <BackHeader title={displayName} />}
-      <ProfileHeader
-        profile={profile}
-        form={form}
-        setForm={setForm}
-        editMode={editMode}
-        setEditMode={setEditMode}
-        avatarUrl={avatarUrl}
-        banner={banner}
-        displayName={displayName}
-        stats={stats}
-        isOwn={isOwn}
-        following={following}
-        toggleFollow={toggleFollow}
-        saving={saving}
-        saveProfile={saveProfile}
-        uploadingAvatar={uploadingAvatar}
-        uploadAvatar={uploadAvatar}
-        uploadingBanner={uploadingBanner}
-        uploadBanner={uploadBanner}
-        shareProfile={shareProfile}
-        copied={copied}
-        setShowQR={setShowQR}
-        setShowSettings={setShowSettings}
-      />
+      <div className="relative rounded-2xl overflow-hidden ring-1 ring-inset ring-foreground/10 mb-8 bg-card">
+        {/* Banner as background */}
+        <div className="absolute inset-x-0 top-0 h-40 sm:h-48 md:h-60 bg-gradient-to-br from-violet-500/[0.15] via-foreground/[0.05] to-amber-400/[0.15]">
+          {banner && <img src={banner} alt="" className="w-full h-full object-cover" />}
+          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-background" />
+        </div>
+        {editMode &&
+          <label className="absolute inset-x-0 top-0 h-40 sm:h-48 md:h-60 z-30 pointer-events-none">
+            <span className="absolute top-3 right-3 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-foreground/70 text-white text-xs font-semibold pointer-events-auto cursor-pointer active:scale-95 transition">
+              {uploadingBanner ?
+              <Loader2 size={12} className="animate-spin" /> :
+              <>
+                <Upload size={12} /> Change banner
+              </>
+              }
+            </span>
+            <input
+              type="file"
+              accept="image/*"
+              className="hidden"
+              onChange={(e) => {
+                const f = e.target.files?.[0];
+                if (f) uploadBanner(f);
+              }} />
+
+          </label>
+          }
+
+        {/* Identity, stats, actions */}
+        <div className="relative z-10 px-4 md:px-8 pb-6 md:pb-8 pt-20 sm:pt-24 md:pt-28">
+          <div className="flex flex-col items-center md:flex-row md:items-end gap-4 md:gap-6">
+            <div className="relative shrink-0">
+              <div className="rounded-full bg-background p-1.5 inline-block ring-1 ring-foreground/10 shadow-sm">
+                <Avatar
+                    user={{ ...profile, avatar_url: avatarUrl }}
+                    size={150} />
+                  
+              </div>
+              {editMode &&
+                <label className="absolute bottom-1 right-1 p-2 rounded-full bg-foreground text-background cursor-pointer shadow-lg">
+                  {uploadingAvatar ?
+                  <Loader2 size={14} className="animate-spin" /> :
+
+                  <Pencil size={14} />
+                  }
+                  <input
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    onChange={(e) => {
+                      const f = e.target.files?.[0];
+                      if (f) uploadAvatar(f);
+                    }} />
+                  
+                </label>
+                }
+            </div>
+
+            <div className="flex-1 min-w-0 w-full md:w-auto text-center md:text-left my-3">
+              <div className="flex items-baseline gap-2 flex-wrap justify-center md:justify-start">
+                {editMode ?
+                  <input
+                    value={form.display_name}
+                    onChange={(e) => setForm((f) => ({ ...f, display_name: e.target.value }))}
+                    className="text-2xl md:text-4xl font-extrabold tracking-tight w-full max-w-2xl bg-transparent border-b border-border focus:outline-none pb-1"
+                    placeholder="Display name" /> :
+
+
+                  <h1 className="text-2xl md:text-4xl font-extrabold tracking-tight">
+                    {displayName}
+                  </h1>
+                  }
+                {!editMode && profile.pronouns &&
+                  <span className="text-sm text-foreground/40">{profile.pronouns}</span>
+                  }
+
+              </div>
+
+              {!editMode &&
+                <div className="flex flex-wrap items-center justify-center md:justify-start gap-x-3 gap-y-1 text-xs text-foreground/40 mt-1.5">
+                  {profile.location &&
+                  <span className="inline-flex items-center gap-1">
+                      <MapPin size={12} /> {profile.location}
+                    </span>
+                  }
+                  {profile.created_date &&
+                  <span className="inline-flex items-center gap-1">
+                      <Calendar size={12} /> Joined{" "}
+                      {new Date(profile.created_date).toLocaleDateString(undefined, {
+                      month: "short",
+                      year: "numeric"
+                    })}
+                    </span>
+                  }
+                </div>
+                }
+
+              <div className="flex flex-wrap items-center justify-center md:justify-start gap-x-5 gap-y-1 mt-3 text-sm">
+                <span><span className="font-bold">{formatNumber(stats.followers)}</span> <span className="text-foreground/50">followers</span></span>
+                <span><span className="font-bold">{formatNumber(stats.following)}</span> <span className="text-foreground/50">following</span></span>
+                {stats.plays > 0 && <span><span className="font-bold">{formatNumber(stats.plays)}</span> <span className="text-foreground/50">plays</span></span>}
+                {stats.likes > 0 && <span><span className="font-bold">{formatNumber(stats.likes)}</span> <span className="text-foreground/50">likes</span></span>}
+              </div>
+
+              {editMode ?
+                <textarea
+                  value={form.bio}
+                  onChange={(e) => setForm((f) => ({ ...f, bio: e.target.value }))}
+                  placeholder="Add a bio"
+                  className="mt-3 w-full max-w-2xl px-3 py-2 rounded-lg border border-border bg-background text-sm"
+                  rows={2} /> :
+
+
+                profile.bio &&
+                <p className="text-sm text-foreground/70 max-w-2xl mt-3 leading-relaxed mx-auto md:mx-0">
+                    {profile.bio}
+                  </p>
+
+                }
+
+
+
+              {!editMode && (
+                profile.website || profile.instagram || profile.twitter || profile.soundcloud) &&
+
+                <div className="flex flex-wrap gap-2 mt-3 justify-center md:justify-start">
+                  {profile.website &&
+                  <a href={safeUrl(profile.website)} target="_blank" rel="noreferrer" className="chip">
+                      <Globe size={12} /> Website
+                    </a>
+                  }
+                  {profile.instagram &&
+                  <a
+                    href={`https://instagram.com/${profile.instagram.replace(/^@/, "")}`}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="chip">
+                    
+                      <AtSign size={12} /> {profile.instagram}
+                    </a>
+                  }
+                  {profile.twitter &&
+                  <a
+                    href={`https://twitter.com/${profile.twitter.replace(/^@/, "")}`}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="chip">
+                    
+                      <AtSign size={12} /> {profile.twitter}
+                    </a>
+                  }
+                  {profile.soundcloud &&
+                  <a href={safeUrl(profile.soundcloud)} target="_blank" rel="noreferrer" className="chip">
+                      <Music size={12} /> SoundCloud
+                    </a>
+                  }
+                </div>
+                }
+
+              <div className="flex items-center gap-2 mt-4 flex-wrap justify-center md:justify-start">
+                {isOwn ?
+                  editMode ?
+                  <>
+                      <button
+                      onClick={saveProfile}
+                      disabled={saving}
+                      title="Save"
+                      aria-label="Save changes"
+                      className="w-10 h-10 rounded-full bg-foreground text-background grid place-items-center disabled:opacity-40">
+                        {saving ? <Loader2 size={16} className="animate-spin" /> : <Save size={16} />}
+                      </button>
+                      <button
+                      onClick={() => setEditMode(false)}
+                      title="Cancel"
+                      aria-label="Cancel editing"
+                      className="w-10 h-10 rounded-full border border-border grid place-items-center">
+                        <X size={16} />
+                      </button>
+                    </> :
+                  <button
+                    onClick={() => setEditMode(true)}
+                    title="Edit profile"
+                    aria-label="Edit profile"
+                    className="w-10 h-10 rounded-full border border-border grid place-items-center">
+                    <Pencil size={16} />
+                  </button> :
+                  <button
+                    onClick={toggleFollow}
+                    title={following ? "Following (click to unfollow)" : "Follow"}
+                    aria-label={following ? "Unfollow" : "Follow"}
+                    className={`w-10 h-10 rounded-full grid place-items-center transition ${
+                    following ? "border border-border" : "bg-foreground text-background"}`}>
+                    {following ? <UserCheck size={16} /> : <UserPlus size={16} />}
+                  </button>
+                  }
+                {!editMode &&
+                  <button
+                    onClick={shareProfile}
+                    title={copied ? "Copied!" : "Share"}
+                    aria-label="Share profile"
+                    className="w-10 h-10 rounded-full border border-border grid place-items-center">
+                    <Share2 size={16} />
+                  </button>
+                  }
+                {!editMode &&
+                  <button
+                    onClick={() => setShowQR(true)}
+                    title="QR code"
+                    aria-label="Show QR code"
+                    className="w-10 h-10 rounded-full border border-border grid place-items-center">
+                    <QrCode size={16} />
+                  </button>
+                  }
+                  {isOwn && !editMode &&
+                  <button
+                    onClick={() => setShowSettings(true)}
+                    title="Settings"
+                    aria-label="Settings"
+                    className="w-10 h-10 rounded-full border border-border grid place-items-center">
+                    <Settings size={16} />
+                  </button>
+                  }
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
 
       <ProfileSong
         trackId={editMode ? form.featured_track_id : profile?.featured_track_id}
