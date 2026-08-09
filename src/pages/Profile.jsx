@@ -332,7 +332,7 @@ async function saveProfile() {
               <div className="rounded-full bg-background p-1 inline-block ring-1 ring-foreground/10 shadow-sm">
                 <Avatar
                     user={{ ...profile, avatar_url: avatarUrl }}
-                    size={96} />
+                    size={128} />
 
               </div>
               {editMode &&
