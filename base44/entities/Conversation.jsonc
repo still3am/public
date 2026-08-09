@@ -1,0 +1,60 @@
+{
+  "name": "Conversation",
+  "type": "object",
+  "properties": {
+    "participant_ids": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "default": [],
+      "description": "The two user ids in this DM"
+    },
+    "participant_names": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "default": [],
+      "description": "Display names indexed to match participant_ids for quick rendering"
+    },
+    "participant_avatars": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "default": [],
+      "description": "Avatar URLs indexed to match participant_ids"
+    },
+    "last_message_text": {
+      "type": "string",
+      "default": ""
+    },
+    "last_message_at": {
+      "type": "string",
+      "default": "",
+      "description": "ISO timestamp of the most recent message, for sorting the list"
+    },
+    "last_sender_id": {
+      "type": "string",
+      "default": ""
+    }
+  },
+  "required": [
+    "participant_ids"
+  ],
+  "rls": {
+    "create": {
+      "data.participant_ids": "{{user.id}}"
+    },
+    "read": {
+      "data.participant_ids": "{{user.id}}"
+    },
+    "update": {
+      "data.participant_ids": "{{user.id}}"
+    },
+    "delete": {
+      "data.participant_ids": "{{user.id}}"
+    }
+  }
+}

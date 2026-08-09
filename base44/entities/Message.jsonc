@@ -1,0 +1,81 @@
+{
+  "name": "Message",
+  "type": "object",
+  "properties": {
+    "conversation_id": {
+      "type": "string"
+    },
+    "sender_id": {
+      "type": "string"
+    },
+    "recipient_id": {
+      "type": "string",
+      "description": "The other participant \u2014 enables direct RLS without a join"
+    },
+    "sender_name": {
+      "type": "string",
+      "default": ""
+    },
+    "sender_avatar_url": {
+      "type": "string",
+      "default": ""
+    },
+    "text": {
+      "type": "string",
+      "default": ""
+    },
+    "track_id": {
+      "type": "string",
+      "default": ""
+    },
+    "track": {
+      "type": "string",
+      "default": "",
+      "description": "JSON-serialized minimal track object so the recipient can play it without a lookup"
+    },
+    "read": {
+      "type": "boolean",
+      "default": false
+    }
+  },
+  "required": [
+    "conversation_id",
+    "sender_id",
+    "recipient_id"
+  ],
+  "rls": {
+    "create": {
+      "data.sender_id": "{{user.id}}"
+    },
+    "read": {
+      "$or": [
+        {
+          "data.sender_id": "{{user.id}}"
+        },
+        {
+          "data.recipient_id": "{{user.id}}"
+        }
+      ]
+    },
+    "update": {
+      "$or": [
+        {
+          "data.sender_id": "{{user.id}}"
+        },
+        {
+          "data.recipient_id": "{{user.id}}"
+        }
+      ]
+    },
+    "delete": {
+      "$or": [
+        {
+          "data.sender_id": "{{user.id}}"
+        },
+        {
+          "data.recipient_id": "{{user.id}}"
+        }
+      ]
+    }
+  }
+}
