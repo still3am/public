@@ -319,10 +319,21 @@ export default function Profile() {
           className="absolute inset-0 animate-[herobreathebright_9s_ease-in-out_infinite]"
           style={{
             backgroundImage:
-              `radial-gradient(circle at 25% 25%, ${bgPrimary} 0, transparent 55%),` +
-              `radial-gradient(circle at 75% 75%, ${bgSecondary} 0, transparent 55%),` +
-              `radial-gradient(circle at 50% 90%, ${bgAccent} 0, transparent 55%)`,
-            filter: "blur(36px) saturate(1.8) brightness(1.25)",
+              `radial-gradient(circle at 25% 25%, ${bgPrimary} 0, transparent 52%),` +
+              `radial-gradient(circle at 75% 75%, ${bgSecondary} 0, transparent 52%),` +
+              `radial-gradient(circle at 50% 90%, ${bgAccent} 0, transparent 52%)`,
+            filter: "blur(38px) saturate(1.8) brightness(1.2)",
+            mixBlendMode: "multiply",
+          }}
+        />
+        <div
+          className="absolute -inset-5 animate-[herobreathebright_11s_ease-in-out_infinite] [animation-delay:-3s]"
+          style={{
+            backgroundImage:
+              `radial-gradient(circle at 35% 30%, ${bgPrimary} 0, transparent 48%),` +
+              `radial-gradient(circle at 70% 72%, ${bgSecondary} 0, transparent 48%),` +
+              `radial-gradient(circle at 50% 50%, ${bgAccent} 0, transparent 45%)`,
+            filter: "blur(44px) saturate(1.9) brightness(1.3)",
             mixBlendMode: "screen",
           }}
         />
