@@ -31,7 +31,6 @@ import ProfileSong from "@/components/profile/ProfileSong";
 import TopTracks from "@/components/profile/TopTracks";
 import ProfileComments from "@/components/profile/ProfileComments";
 import GenreTags from "@/components/profile/GenreTags";
-import HoloFoil, { useHoloTilt } from "@/components/profile/HoloFoil";
 import { useColorPalette } from "@/hooks/useColorPalette";
 import { useCoverUrl } from "@/hooks/useCoverUrl";
 
@@ -96,7 +95,6 @@ export default function Profile() {
 
   const coverUrl = useCoverUrl(featuredCoverUrl);
   const [bgPrimary, bgSecondary, bgAccent] = useColorPalette(coverUrl);
-  const holoRef = useHoloTilt({ foilKey: "holo", maxTilt: 7 });
 
   async function load() {
     setLoading(true);
@@ -326,8 +324,7 @@ async function saveProfile() {
     )}
     <div className="max-w-6xl mx-auto relative z-10">
       <div className="flex flex-col md:flex-row gap-4 md:gap-6 mb-8">
-      <div ref={holoRef} className="relative rounded-2xl overflow-hidden ring-1 ring-inset ring-foreground/10 bg-card flex-1 min-w-0 holo-card">
-        <HoloFoil />
+      <div className="relative rounded-2xl overflow-hidden ring-1 ring-inset ring-foreground/10 bg-card flex-1 min-w-0">
         {/* Identity, stats, actions */}
         <div className="relative z-10 px-5 md:px-10 pb-5 md:pb-8 pt-5 md:pt-8">
           <div className="flex flex-col items-center md:flex-row md:items-center md:justify-center gap-4 md:gap-8">
