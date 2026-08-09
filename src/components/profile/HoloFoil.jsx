@@ -39,8 +39,8 @@ export function useHoloTilt({ foilKey = "holo", maxTilt = 7 } = {}) {
     const t0 = performance.now();
 
     let raf = 0;
-    let running = false;
-    let onScreen = false;
+    let running = true;
+    let onScreen = true;
     let idle = 0;
     let touched = false;
     let release = 1;
@@ -48,6 +48,10 @@ export function useHoloTilt({ foilKey = "holo", maxTilt = 7 } = {}) {
     let grab = 1;
     let grabFrom = { x: 0, y: 0 };
     let aim = { x: 0, y: 0 };
+
+    // Paint the initial frame so the foil is visible at rest, before the rAF
+    // loop has a chance to run.
+    applyFrame(host, { x: 0, y: 0 }, { x: 0, y: 0 }, foil, foil, { time: 0 }, maxTilt);
 
     const frame = () => {
       raf = 0;
@@ -142,6 +146,9 @@ export function useHoloTilt({ foilKey = "holo", maxTilt = 7 } = {}) {
     host.addEventListener("pointermove", onPointer);
     host.addEventListener("pointerleave", onLeave);
     window.addEventListener("deviceorientation", onOrient);
+
+    // Start the loop immediately — don't wait for the IntersectionObserver.
+    wake();
 
     return () => {
       running = false;
