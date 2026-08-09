@@ -140,7 +140,25 @@ export function useUploadQueue({ user, isAdmin }) {
       // too noisy to match reliably) against every track already on the app.
       const finalTitle = meta?.title?.trim() || title;
       const finalArtist = artist || meta?.artist?.trim() || "";
-      const hits = findDuplicateTracks(allTracksRef.current || [], {
+
+      // The bulk list is capped at 5000 newest tracks, so older duplicates
+      // would be missed. Do a targeted exact-title lookup to catch matches
+      // anywhere on the platform — not just the first 5000.
+      let platformTracks = allTracksRef.current || [];
+      if (finalTitle) {
+        const exactHits = await base44.entities.Track
+          .filter({ title: finalTitle })
+          .catch(() => []);
+        if (exactHits?.length) {
+          const seen = new Set(platformTracks.map((t) => t.id));
+          platformTracks = [
+            ...platformTracks,
+            ...exactHits.filter((t) => !seen.has(t.id)),
+          ];
+        }
+      }
+
+      const hits = findDuplicateTracks(platformTracks, {
         title: finalTitle,
         artist: finalArtist,
         duration,
