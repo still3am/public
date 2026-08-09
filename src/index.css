@@ -175,6 +175,15 @@
   50% { opacity: 0.75; }
 }
 
+@keyframes heartbeat {
+  0%   { opacity: 0.30; }
+  8%   { opacity: 0.60; }
+  18%  { opacity: 0.40; }
+  28%  { opacity: 0.55; }
+  40%  { opacity: 0.30; }
+  100% { opacity: 0.30; }
+}
+
 @keyframes marquee {
   from { transform: translateX(0); }
   to { transform: translateX(-50%); }
