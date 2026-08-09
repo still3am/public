@@ -70,7 +70,7 @@ export default function Messages() {
       } else if (event.type === "update") {
         const c = event.data;
         setConversations((prev) => {
-          const updated = prev.map((x) => (x.id === c.id ? c : x));
+          const updated = prev.map((x) => x.id === c.id ? c : x);
           return updated.sort((a, b) => {
             if (a.is_pinned && !b.is_pinned) return -1;
             if (!a.is_pinned && b.is_pinned) return 1;
@@ -100,7 +100,7 @@ export default function Messages() {
     return {
       id: conv.participant_ids[otherIdx],
       display_name: conv.participant_names[otherIdx] || "Unknown",
-      avatar_url: conv.participant_avatars[otherIdx] || "",
+      avatar_url: conv.participant_avatars[otherIdx] || ""
     };
   }
 
@@ -120,14 +120,14 @@ export default function Messages() {
         participant_avatars: [me.avatar_url || "", user.avatar_url || ""],
         last_message_text: "",
         last_message_at: new Date().toISOString(),
-        last_sender_id: "",
+        last_sender_id: ""
       });
       setConversations((prev) => [conv, ...prev]);
       setActiveConv(conv);
     } catch {
+
       // Could not create conversation
-    }
-  }
+    }}
 
   function openConversation(conv) {
     setActiveConv(conv);
@@ -157,7 +157,7 @@ export default function Messages() {
       await base44.entities.Conversation.update(conv.id, {
         last_message_text: "",
         last_message_at: "",
-        last_sender_id: "",
+        last_sender_id: ""
       });
       setConversations((prev) => prev.map((c) => c.id === conv.id ? { ...c, last_message_text: "", last_message_at: "", last_sender_id: "" } : c));
     } catch {}
@@ -176,10 +176,10 @@ export default function Messages() {
     const other = getOtherUser(c);
     const matchesSearch = !search.trim() || other.display_name.toLowerCase().includes(search.toLowerCase());
     const matchesFilter =
-      filter === "all" ? true :
-      filter === "unread" ? (unreadMap[c.id] > 0 || (c.last_sender_id && c.last_sender_id !== me.id)) :
-      filter === "pinned" ? c.is_pinned :
-      true;
+    filter === "all" ? true :
+    filter === "unread" ? unreadMap[c.id] > 0 || c.last_sender_id && c.last_sender_id !== me.id :
+    filter === "pinned" ? c.is_pinned :
+    true;
     return matchesSearch && matchesFilter;
   });
 
@@ -198,7 +198,7 @@ export default function Messages() {
         {/* Header */}
         <div className="px-4 pt-3 pb-2">
           <div className="flex items-center justify-between">
-            <h1 className="text-[28px] font-bold tracking-tight">Public Network</h1>
+            <h1 className="text-[28px] font-bold tracking-tight hidden">Public Network</h1>
             <div className="flex items-center gap-1">
               <button
                 onClick={() => {
@@ -206,69 +206,69 @@ export default function Messages() {
                   if (searchOpen) setSearch("");
                 }}
                 className={`w-9 h-9 rounded-full grid place-items-center transition ${searchOpen ? "bg-foreground/[0.06]" : "hover:bg-foreground/5"}`}
-                aria-label="Search"
-              >
+                aria-label="Search">
+                
                 {searchOpen ? <X size={20} /> : <Search size={20} />}
               </button>
               <button
                 onClick={() => setShowNew(true)}
                 className="w-9 h-9 rounded-full bg-foreground text-background grid place-items-center active:scale-95 transition"
-                aria-label="New message"
-              >
+                aria-label="New message">
+                
                 <Plus size={20} />
               </button>
             </div>
           </div>
-          {searchOpen && (
-            <div className="relative mt-2.5">
+          {searchOpen &&
+          <div className="relative mt-2.5">
               <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-foreground/30 pointer-events-none" />
               <input
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                placeholder="Search conversations"
-                className="w-full pl-8 pr-3 py-2 rounded-full bg-foreground/[0.06] text-sm border-0 focus:outline-none focus:bg-foreground/[0.09] placeholder:text-foreground/40 transition-colors"
-                autoFocus
-              />
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder="Search conversations"
+              className="w-full pl-8 pr-3 py-2 rounded-full bg-foreground/[0.06] text-sm border-0 focus:outline-none focus:bg-foreground/[0.09] placeholder:text-foreground/40 transition-colors"
+              autoFocus />
+            
             </div>
-          )}
+          }
         </div>
 
         {/* Active row */}
-        {!searchOpen && !loading && conversations.length > 0 && (
-          <ActiveRow conversations={conversations} me={me} onPick={openConversation} onNew={() => setShowNew(true)} />
-        )}
+        {!searchOpen && !loading && conversations.length > 0 &&
+        <ActiveRow conversations={conversations} me={me} onPick={openConversation} onNew={() => setShowNew(true)} />
+        }
 
         {/* Filter pills */}
-        {!searchOpen && (
-          <div className="flex gap-2 px-4 pb-2 pt-1">
+        {!searchOpen &&
+        <div className="flex gap-2 px-4 pb-2 pt-1">
             {[
-              { key: "all", label: "All" },
-              { key: "unread", label: "Unread" },
-              { key: "pinned", label: "Pinned" },
-            ].map((f) => (
-              <button
-                key={f.key}
-                onClick={() => setFilter(f.key)}
-                className={`px-3.5 py-1.5 rounded-full text-[13px] font-medium transition ${
-                  filter === f.key
-                    ? "bg-foreground text-background"
-                    : "bg-foreground/[0.06] text-foreground/60 hover:bg-foreground/[0.1]"
-                }`}
-              >
+          { key: "all", label: "All" },
+          { key: "unread", label: "Unread" },
+          { key: "pinned", label: "Pinned" }].
+          map((f) =>
+          <button
+            key={f.key}
+            onClick={() => setFilter(f.key)}
+            className={`px-3.5 py-1.5 rounded-full text-[13px] font-medium transition ${
+            filter === f.key ?
+            "bg-foreground text-background" :
+            "bg-foreground/[0.06] text-foreground/60 hover:bg-foreground/[0.1]"}`
+            }>
+            
                 {f.label}
               </button>
-            ))}
+          )}
           </div>
-        )}
+        }
 
         {/* List */}
         <div className="flex-1 overflow-y-auto">
-          {loading ? (
-            <div className="grid place-items-center py-20">
+          {loading ?
+          <div className="grid place-items-center py-20">
               <Loader2 className="animate-spin text-foreground/30" />
-            </div>
-          ) : sorted.length === 0 ? (
-            <div className="flex flex-col items-center justify-center min-h-full text-center px-6">
+            </div> :
+          sorted.length === 0 ?
+          <div className="flex flex-col items-center justify-center min-h-full text-center px-6">
               <div className="w-14 h-14 rounded-2xl bg-foreground/[0.05] grid place-items-center mb-4">
                 <MessageCircle size={26} className="text-foreground/30" />
               </div>
@@ -278,52 +278,52 @@ export default function Messages() {
               <p className="text-[13px] text-foreground/40 mb-4 max-w-[200px]">
                 {search ? "Try searching by a different name." : "Connect with people in your community to start chatting."}
               </p>
-              {!search && (
-                <button
-                  onClick={() => setShowNew(true)}
-                  className="px-4 py-2 rounded-full bg-foreground text-background text-sm font-medium active:scale-95 transition"
-                >
+              {!search &&
+            <button
+              onClick={() => setShowNew(true)}
+              className="px-4 py-2 rounded-full bg-foreground text-background text-sm font-medium active:scale-95 transition">
+              
                   Start a conversation
                 </button>
-              )}
-            </div>
-          ) : (
-            sorted.map((conv) => {
-              const other = getOtherUser(conv);
-              const isActive = activeConv?.id === conv.id;
-              const isUnread = conv.last_sender_id && conv.last_sender_id !== me.id;
-              const unreadCount = unreadMap[conv.id] || 0;
-              return (
-                <ConversationItem
-                  key={conv.id}
-                  conv={conv}
-                  other={other}
-                  me={me}
-                  isActive={isActive}
-                  unreadCount={unreadCount}
-                  isUnread={isUnread}
-                  onOpen={openConversation}
-                  onLongPress={(c) => setActionsConv(c)}
-                />
-              );
-            })
-          )}
+            }
+            </div> :
+
+          sorted.map((conv) => {
+            const other = getOtherUser(conv);
+            const isActive = activeConv?.id === conv.id;
+            const isUnread = conv.last_sender_id && conv.last_sender_id !== me.id;
+            const unreadCount = unreadMap[conv.id] || 0;
+            return (
+              <ConversationItem
+                key={conv.id}
+                conv={conv}
+                other={other}
+                me={me}
+                isActive={isActive}
+                unreadCount={unreadCount}
+                isUnread={isUnread}
+                onOpen={openConversation}
+                onLongPress={(c) => setActionsConv(c)} />);
+
+
+          })
+          }
         </div>
       </div>
 
       {/* Chat view */}
       <div className={`flex-1 bg-background overflow-hidden ${activeConv ? "flex flex-col" : "hidden md:flex md:flex-col"}`}>
-        {activeConv && activeOther ? (
-          <ChatView
-            conversation={activeConv}
-            otherUser={activeOther}
-            conversations={conversations}
-            onBack={handleBack}
-            onMessagesRead={refreshUnread}
-            onShowActions={(c) => setActionsConv(c)}
-          />
-        ) : (
-          <div className="hidden md:flex flex-1 flex-col items-center justify-center text-center px-6">
+        {activeConv && activeOther ?
+        <ChatView
+          conversation={activeConv}
+          otherUser={activeOther}
+          conversations={conversations}
+          onBack={handleBack}
+          onMessagesRead={refreshUnread}
+          onShowActions={(c) => setActionsConv(c)} /> :
+
+
+        <div className="hidden md:flex flex-1 flex-col items-center justify-center text-center px-6">
             <div className="w-16 h-16 rounded-2xl bg-foreground/[0.04] grid place-items-center mb-4">
               <MessageCircle size={30} className="text-foreground/25" />
             </div>
@@ -332,23 +332,23 @@ export default function Messages() {
               Select a conversation from the list to start chatting with your community
             </p>
           </div>
-        )}
+        }
       </div>
 
-      {showNew && (
-        <NewMessageSheet onPick={startConversationWith} onClose={() => setShowNew(false)} />
-      )}
+      {showNew &&
+      <NewMessageSheet onPick={startConversationWith} onClose={() => setShowNew(false)} />
+      }
 
-      {actionsConv && (
-        <ConversationActions
-          conversation={actionsConv}
-          onPin={() => handlePin(actionsConv)}
-          onMute={() => handleMute(actionsConv)}
-          onClear={() => handleClearConv(actionsConv)}
-          onDelete={() => handleDeleteConv(actionsConv)}
-          onClose={() => setActionsConv(null)}
-        />
-      )}
-    </div>
-  );
+      {actionsConv &&
+      <ConversationActions
+        conversation={actionsConv}
+        onPin={() => handlePin(actionsConv)}
+        onMute={() => handleMute(actionsConv)}
+        onClear={() => handleClearConv(actionsConv)}
+        onDelete={() => handleDeleteConv(actionsConv)}
+        onClose={() => setActionsConv(null)} />
+
+      }
+    </div>);
+
 }
