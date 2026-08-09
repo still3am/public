@@ -5,7 +5,7 @@ import ChatView from "@/components/messages/ChatView";
 import NewMessageSheet from "@/components/messages/NewMessageSheet";
 import ConversationActions from "@/components/messages/ConversationActions";
 import ConversationItem from "@/components/messages/ConversationItem";
-import { Loader2, SquarePen, Search, Plus } from "lucide-react";
+import { Loader2, Search, Plus, Users, MessageCircle } from "lucide-react";
 
 export default function Messages() {
   const { user: me } = useAuth();
@@ -185,41 +185,67 @@ export default function Messages() {
   const activeOther = activeConv ? getOtherUser(activeConv) : null;
 
   return (
-    <div className="h-[calc(100dvh-15rem)] md:h-[calc(100vh-10rem)] flex md:rounded-2xl md:overflow-hidden md:border md:border-border/50">
+    <div className="h-[calc(100dvh-15rem)] md:h-[calc(100vh-10rem)] flex md:rounded-2xl md:overflow-hidden md:border md:border-border/50 md:shadow-sm">
       {/* Conversation list */}
       <div className={`flex-1 md:flex-none md:w-80 md:border-r md:border-border/50 flex flex-col overflow-hidden bg-background ${activeConv ? "hidden md:flex" : "flex"}`}>
-        <div className="flex items-center justify-between px-4 pt-1.5 pb-1">
-          <h1 className="text-[22px] font-bold tracking-tight">Public Network</h1>
-          <button
-            onClick={() => setShowNew(true)}
-            className="w-9 h-9 rounded-full bg-foreground text-background grid place-items-center shadow-sm active:scale-95 transition"
-            aria-label="New message"
-          >
-            <Plus size={20} />
-          </button>
+        {/* Header */}
+        <div className="px-4 pt-3 pb-2.5 border-b border-border/30">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2.5">
+              <div className="w-9 h-9 rounded-xl bg-foreground/[0.06] grid place-items-center shrink-0">
+                <Users size={18} className="text-foreground" />
+              </div>
+              <div>
+                <h1 className="text-[19px] font-bold tracking-tight leading-none">Public Network</h1>
+                <p className="text-[11px] text-foreground/40 mt-1">Your community connections</p>
+              </div>
+            </div>
+            <button
+              onClick={() => setShowNew(true)}
+              className="w-9 h-9 rounded-full bg-foreground text-background grid place-items-center shadow-sm active:scale-95 transition"
+              aria-label="New message"
+            >
+              <Plus size={20} />
+            </button>
+          </div>
         </div>
 
-        <div className="relative px-3 pb-2">
+        {/* Search */}
+        <div className="relative px-3 py-2">
           <Search size={15} className="absolute left-5 top-1/2 -translate-y-1/2 text-foreground/30 pointer-events-none" />
           <input
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search"
-            className="w-full pl-8 pr-3 py-1.5 rounded-full bg-foreground/[0.07] text-sm border-0 focus:outline-none placeholder:text-foreground/40"
+            placeholder="Search conversations"
+            className="w-full pl-8 pr-3 py-2 rounded-full bg-foreground/[0.06] text-sm border-0 focus:outline-none focus:bg-foreground/[0.09] placeholder:text-foreground/40 transition-colors"
           />
         </div>
 
+        {/* List */}
         <div className="flex-1 overflow-y-auto">
           {loading ? (
             <div className="grid place-items-center py-20">
               <Loader2 className="animate-spin text-foreground/30" />
             </div>
           ) : sorted.length === 0 ? (
-            <div className="flex flex-col items-center justify-center min-h-full text-foreground/40 px-6 text-center">
-              <SquarePen size={28} className="mb-3" />
-              <p className="text-sm">
-                {search ? "No conversations match your search." : "No conversations yet. Tap the + to start one."}
+            <div className="flex flex-col items-center justify-center min-h-full text-center px-6">
+              <div className="w-14 h-14 rounded-2xl bg-foreground/[0.05] grid place-items-center mb-4">
+                <MessageCircle size={26} className="text-foreground/30" />
+              </div>
+              <p className="text-[15px] font-medium text-foreground/60 mb-1">
+                {search ? "No results found" : "No conversations yet"}
               </p>
+              <p className="text-[13px] text-foreground/40 mb-4 max-w-[200px]">
+                {search ? "Try searching by a different name." : "Connect with people in your community to start chatting."}
+              </p>
+              {!search && (
+                <button
+                  onClick={() => setShowNew(true)}
+                  className="px-4 py-2 rounded-full bg-foreground text-background text-sm font-medium active:scale-95 transition"
+                >
+                  Start a conversation
+                </button>
+              )}
             </div>
           ) : (
             sorted.map((conv) => {
@@ -256,9 +282,14 @@ export default function Messages() {
             onMessagesRead={refreshUnread}
           />
         ) : (
-          <div className="hidden md:flex flex-1 flex-col items-center justify-center text-foreground/30">
-            <SquarePen size={36} className="mb-3" />
-            <p className="text-sm">Select a conversation</p>
+          <div className="hidden md:flex flex-1 flex-col items-center justify-center text-center px-6">
+            <div className="w-16 h-16 rounded-2xl bg-foreground/[0.04] grid place-items-center mb-4">
+              <MessageCircle size={30} className="text-foreground/25" />
+            </div>
+            <p className="text-[15px] font-medium text-foreground/50 mb-1">Your messages</p>
+            <p className="text-[13px] text-foreground/40 max-w-[220px]">
+              Select a conversation from the list to start chatting with your community
+            </p>
           </div>
         )}
       </div>
