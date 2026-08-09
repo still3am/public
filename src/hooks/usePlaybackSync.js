@@ -26,13 +26,12 @@ export function usePlaybackSync() {
   const publish = useCallback(async () => {
     if (!user?.id) return;
     const { currentTrack: t, position: pos, isPlaying: playing } = latestRef.current;
-    if (!t) return;
     const payload = {
       user_id: user.id,
       device_id: deviceId,
       device_label: getDeviceLabel(),
-      track_id: t.id,
-      track: JSON.stringify({
+      track_id: t?.id || "",
+      track: t ? JSON.stringify({
         id: t.id,
         title: t.title,
         artist: t.artist,
@@ -44,9 +43,9 @@ export function usePlaybackSync() {
         genre: t.genre,
         explicit: t.explicit,
         is_published: true,
-      }),
+      }) : "",
       position_seconds: Math.round(pos || 0),
-      is_playing: !!playing,
+      is_playing: !!playing && !!t,
       sampled_at: new Date().toISOString(),
     };
     lastPushRef.current = Date.now();
@@ -70,9 +69,11 @@ export function usePlaybackSync() {
     }
   }, [user?.id, deviceId]);
 
-  // Push on every meaningful change, then on a slow heartbeat while playing.
+  // Push on every meaningful change (including clearing the queue, so the
+  // server doesn't keep a stale "playing" record that triggers auto-resume),
+  // then on a slow heartbeat while playing.
   useEffect(() => {
-    if (currentTrack) publish();
+    publish();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentTrack?.id, isPlaying]);
 
