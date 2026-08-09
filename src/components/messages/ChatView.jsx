@@ -6,7 +6,10 @@ import MessageBubble from "@/components/messages/MessageBubble";
 import TrackSendSheet from "@/components/messages/TrackSendSheet";
 import MessageContextMenu from "@/components/messages/MessageContextMenu";
 import MediaViewer from "@/components/messages/MediaViewer";
-import { ArrowLeft, ArrowUp, Music2, Users, Loader2, ImageIcon, X, Reply } from "lucide-react";
+import EmojiPicker from "@/components/messages/EmojiPicker";
+import ForwardSheet from "@/components/messages/ForwardSheet";
+import { useVoiceRecorder } from "@/hooks/useVoiceRecorder";
+import { ArrowLeft, ArrowUp, Music2, Users, Loader2, ImageIcon, X, Reply, Mic, Smile, Pencil } from "lucide-react";
 
 function groupTimestamp(dateStr) {
   const d = new Date(dateStr);
@@ -21,7 +24,7 @@ function groupTimestamp(dateStr) {
   return `${d.toLocaleDateString([], { month: "short", day: "numeric" })} ${time}`;
 }
 
-export default function ChatView({ conversation, otherUser, onBack, onMessagesRead }) {
+export default function ChatView({ conversation, otherUser, conversations, onBack, onMessagesRead }) {
   const { user: me } = useAuth();
   const { toast } = useToast();
   const [messages, setMessages] = useState([]);
@@ -30,9 +33,12 @@ export default function ChatView({ conversation, otherUser, onBack, onMessagesRe
   const [sending, setSending] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [showTrackSheet, setShowTrackSheet] = useState(false);
+  const [showEmoji, setShowEmoji] = useState(false);
   const [contextMessage, setContextMessage] = useState(null);
   const [viewerMedia, setViewerMedia] = useState(null);
   const [replyTo, setReplyTo] = useState(null);
+  const [editingMessage, setEditingMessage] = useState(null);
+  const [forwardMessage, setForwardMessage] = useState(null);
   const [typingUser, setTypingUser] = useState("");
   const [typingAt, setTypingAt] = useState("");
   const [, setTick] = useState(0);
@@ -40,8 +46,11 @@ export default function ChatView({ conversation, otherUser, onBack, onMessagesRe
   const scrollRef = useRef(null);
   const bottomRef = useRef(null);
   const fileInputRef = useRef(null);
+  const textAreaRef = useRef(null);
   const lastTypingRef = useRef(0);
   const typingTimerRef = useRef(null);
+
+  const { recording, duration: recDuration, start: startRecording, stopAndSend, cancel: cancelRecording } = useVoiceRecorder(handleVoiceSend);
 
   async function loadMessages() {
     try {
@@ -62,11 +71,12 @@ export default function ChatView({ conversation, otherUser, onBack, onMessagesRe
     setLoading(true);
     setMessages([]);
     setReplyTo(null);
+    setEditingMessage(null);
+    setText("");
     loadMessages();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [conversation.id]);
 
-  // Subscribe to message changes
   useEffect(() => {
     const unsubscribe = base44.entities.Message.subscribe((event) => {
       if (event.data?.conversation_id !== conversation.id) return;
@@ -85,7 +95,6 @@ export default function ChatView({ conversation, otherUser, onBack, onMessagesRe
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [conversation.id]);
 
-  // Subscribe to conversation updates for typing indicator
   useEffect(() => {
     const unsubscribe = base44.entities.Conversation.subscribe((event) => {
       if (event.data?.id !== conversation.id) return;
@@ -98,14 +107,12 @@ export default function ChatView({ conversation, otherUser, onBack, onMessagesRe
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [conversation.id]);
 
-  // Re-render every second to re-evaluate typing indicator freshness
   useEffect(() => {
     if (!typingUser || typingUser === me.id) return;
     const interval = setInterval(() => setTick((t) => t + 1), 1000);
     return () => clearInterval(interval);
   }, [typingUser, me.id]);
 
-  // Cleanup typing on unmount
   useEffect(() => {
     return () => {
       if (typingTimerRef.current) clearTimeout(typingTimerRef.current);
@@ -117,12 +124,10 @@ export default function ChatView({ conversation, otherUser, onBack, onMessagesRe
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Auto-scroll
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  // Mark messages as read
   useEffect(() => {
     const unread = messages.filter((m) => m.recipient_id === me.id && !m.read);
     if (unread.length === 0) return;
@@ -179,8 +184,12 @@ export default function ChatView({ conversation, otherUser, onBack, onMessagesRe
   async function sendText() {
     const trimmed = text.trim();
     if (!trimmed || sending) return;
+    if (editingMessage) {
+      return handleSaveEdit(trimmed);
+    }
     setSending(true);
     setText("");
+    setShowEmoji(false);
     clearTyping();
     try {
       const msg = await base44.entities.Message.create({
@@ -203,6 +212,26 @@ export default function ChatView({ conversation, otherUser, onBack, onMessagesRe
       }).catch(() => {});
     } catch {
       setText(trimmed);
+    } finally {
+      setSending(false);
+    }
+  }
+
+  async function handleSaveEdit(newText) {
+    if (!editingMessage || sending) return;
+    setSending(true);
+    const oldText = text;
+    setText("");
+    setShowEmoji(false);
+    try {
+      await base44.entities.Message.update(editingMessage.id, {
+        text: newText,
+        edited: true,
+      });
+      setMessages((prev) => prev.map((m) => m.id === editingMessage.id ? { ...m, text: newText, edited: true } : m));
+      setEditingMessage(null);
+    } catch {
+      setText(oldText);
     } finally {
       setSending(false);
     }
@@ -254,7 +283,6 @@ export default function ChatView({ conversation, otherUser, onBack, onMessagesRe
     const file = e.target.files?.[0];
     if (!file) return;
     e.target.value = "";
-
     const isImage = file.type.startsWith("image/");
     const isVideo = file.type.startsWith("video/");
     if (!isImage && !isVideo) {
@@ -265,13 +293,24 @@ export default function ChatView({ conversation, otherUser, onBack, onMessagesRe
       toast({ title: "File too large. Max 50MB." });
       return;
     }
-
     setUploading(true);
     try {
       const { file_url } = await base44.integrations.Core.UploadFile({ file });
       await sendMedia(file_url, isVideo ? "video" : "image");
     } catch {
       toast({ title: "Upload failed. Please try again." });
+    } finally {
+      setUploading(false);
+    }
+  }
+
+  async function handleVoiceSend(blob, dur) {
+    setUploading(true);
+    try {
+      const { file_url } = await base44.integrations.Core.UploadFile({ file: blob });
+      await sendMedia(file_url, "audio");
+    } catch {
+      toast({ title: "Voice message failed to send." });
     } finally {
       setUploading(false);
     }
@@ -296,8 +335,9 @@ export default function ChatView({ conversation, otherUser, onBack, onMessagesRe
       });
       setMessages((prev) => [...prev, msg]);
       setReplyTo(null);
+      const lastText = type === "image" ? "📷 Photo" : type === "video" ? "🎥 Video" : "🎤 Voice message";
       await base44.entities.Conversation.update(conversation.id, {
-        last_message_text: type === "image" ? "📷 Photo" : "🎥 Video",
+        last_message_text: lastText,
         last_message_at: new Date().toISOString(),
         last_sender_id: me.id,
       }).catch(() => {});
@@ -344,7 +384,66 @@ export default function ChatView({ conversation, otherUser, onBack, onMessagesRe
     setReplyTo(contextMessage);
   }
 
+  function handleEdit() {
+    if (!contextMessage) return;
+    setEditingMessage(contextMessage);
+    setText(contextMessage.text || "");
+    setReplyTo(null);
+    setShowEmoji(false);
+    setTimeout(() => textAreaRef.current?.focus(), 100);
+  }
+
+  function handleForward() {
+    if (!contextMessage) return;
+    setForwardMessage(contextMessage);
+  }
+
+  async function handleForwardPick(targetConv) {
+    if (!forwardMessage) return;
+    setForwardMessage(null);
+    const otherIdx = targetConv.participant_ids.indexOf(me.id) === 0 ? 1 : 0;
+    const recipientId = targetConv.participant_ids[otherIdx];
+    try {
+      const msgData = {
+        conversation_id: targetConv.id,
+        sender_id: me.id,
+        recipient_id: recipientId,
+        sender_name: me.display_name || me.full_name || "",
+        sender_avatar_url: me.avatar_url || "",
+        read: false,
+      };
+      if (forwardMessage.text) msgData.text = forwardMessage.text;
+      if (forwardMessage.track_id) {
+        msgData.track_id = forwardMessage.track_id;
+        msgData.track = forwardMessage.track;
+      }
+      if (forwardMessage.media_url) {
+        msgData.media_url = forwardMessage.media_url;
+        msgData.media_type = forwardMessage.media_type;
+      }
+      await base44.entities.Message.create(msgData);
+      const lastText = forwardMessage.text || (forwardMessage.media_type === "image" ? "📷 Photo"
+        : forwardMessage.media_type === "video" ? "🎥 Video"
+        : forwardMessage.media_type === "audio" ? "🎤 Voice message"
+        : forwardMessage.track_id ? "🎵 Song" : "");
+      await base44.entities.Conversation.update(targetConv.id, {
+        last_message_text: lastText,
+        last_message_at: new Date().toISOString(),
+        last_sender_id: me.id,
+      }).catch(() => {});
+      toast({ title: "Message forwarded." });
+    } catch {
+      toast({ title: "Failed to forward." });
+    }
+  }
+
+  function handleEmojiSelect(emoji) {
+    setText((prev) => prev + emoji);
+    textAreaRef.current?.focus();
+  }
+
   const hasText = text.trim().length > 0;
+  const isEditing = !!editingMessage;
 
   return (
     <div className="flex flex-col h-full bg-background">
@@ -366,9 +465,7 @@ export default function ChatView({ conversation, otherUser, onBack, onMessagesRe
         )}
         <div className="flex-1 min-w-0">
           <h2 className="text-[16px] font-semibold truncate text-foreground">{otherUser.display_name}</h2>
-          {isOtherTyping && (
-            <p className="text-[12px] text-foreground/50 truncate">typing…</p>
-          )}
+          {isOtherTyping && <p className="text-[12px] text-foreground/50 truncate">typing…</p>}
         </div>
       </div>
 
@@ -381,7 +478,7 @@ export default function ChatView({ conversation, otherUser, onBack, onMessagesRe
         ) : messages.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-20 text-foreground/40">
             <Users size={28} className="mb-3" />
-            <p className="text-sm text-center max-w-xs">No messages yet. Say hi, send a song, or share a photo.</p>
+            <p className="text-sm text-center max-w-xs">No messages yet. Say hi, send a song, share a photo, or record a voice message.</p>
           </div>
         ) : (
           <div className="space-y-0.5">
@@ -394,7 +491,6 @@ export default function ChatView({ conversation, otherUser, onBack, onMessagesRe
               const showTimestamp = !prev || senderChanged || timeGap > 5 * 60 * 1000;
               const isFirstInGroup = !prev || prev.sender_id !== m.sender_id || timeGap > 60 * 1000;
               const isLastFromMe = isMine && (!next || next.sender_id !== me.id);
-
               return (
                 <div key={m.id}>
                   {showTimestamp && (
@@ -422,7 +518,7 @@ export default function ChatView({ conversation, otherUser, onBack, onMessagesRe
       </div>
 
       {/* Reply preview bar */}
-      {replyTo && (
+      {replyTo && !isEditing && (
         <div className="px-3 py-2 bg-foreground/[0.04] border-t border-border/30 flex items-center gap-2">
           <Reply size={16} className="text-foreground/40 shrink-0" />
           <div className="flex-1 min-w-0 border-l-2 border-foreground/30 pl-2">
@@ -430,7 +526,7 @@ export default function ChatView({ conversation, otherUser, onBack, onMessagesRe
               {replyTo.sender_id === me.id ? "You" : (replyTo.sender_name || otherUser.display_name)}
             </div>
             <div className="text-[12px] text-foreground/50 truncate">
-              {replyTo.text || (replyTo.media_type === "image" ? "📷 Photo" : replyTo.media_type === "video" ? "🎥 Video" : replyTo.track_id ? "🎵 Song" : "")}
+              {replyTo.text || (replyTo.media_type === "image" ? "📷 Photo" : replyTo.media_type === "video" ? "🎥 Video" : replyTo.media_type === "audio" ? "🎤 Voice message" : replyTo.track_id ? "🎵 Song" : "")}
             </div>
           </div>
           <button onClick={() => setReplyTo(null)} className="p-1 rounded-full hover:bg-foreground/10" aria-label="Cancel reply">
@@ -439,57 +535,114 @@ export default function ChatView({ conversation, otherUser, onBack, onMessagesRe
         </div>
       )}
 
-      {/* Composer */}
-      <div className="px-2.5 py-2.5 bg-background border-t border-border/30">
-        <div className="flex items-end gap-2">
-          <input
-            ref={fileInputRef}
-            type="file"
-            accept="image/*,video/*"
-            onChange={handleMediaSelect}
-            className="hidden"
-          />
-          <button
-            onClick={() => fileInputRef.current?.click()}
-            disabled={uploading}
-            className="w-9 h-9 rounded-full grid place-items-center shrink-0 transition hover:bg-foreground/5 text-foreground disabled:opacity-40"
-            aria-label="Send photo or video"
-          >
-            {uploading ? <Loader2 size={20} className="animate-spin" /> : <ImageIcon size={20} />}
+      {/* Edit bar */}
+      {isEditing && (
+        <div className="px-3 py-2 bg-foreground/[0.04] border-t border-border/30 flex items-center gap-2">
+          <Pencil size={16} className="text-foreground/40 shrink-0" />
+          <div className="flex-1 min-w-0 border-l-2 border-foreground/30 pl-2">
+            <div className="text-[11px] font-semibold text-foreground/60 truncate">Editing message</div>
+            <div className="text-[12px] text-foreground/50 truncate">{editingMessage.text || ""}</div>
+          </div>
+          <button onClick={() => { setEditingMessage(null); setText(""); }} className="p-1 rounded-full hover:bg-foreground/10" aria-label="Cancel edit">
+            <X size={16} className="text-foreground/50" />
           </button>
-          <button
-            onClick={() => setShowTrackSheet(true)}
-            disabled={sending}
-            className="w-9 h-9 rounded-full grid place-items-center shrink-0 transition hover:bg-foreground/5 text-foreground disabled:opacity-40"
-            aria-label="Send a song"
-          >
-            <Music2 size={20} />
-          </button>
-          <textarea
-            value={text}
-            onChange={(e) => { setText(e.target.value); updateTyping(); }}
-            onKeyDown={(e) => {
-              if (e.key === "Enter" && !e.shiftKey) {
-                e.preventDefault();
-                sendText();
-              }
-            }}
-            placeholder="Message"
-            rows={1}
-            className="flex-1 resize-none max-h-32 px-4 py-2 rounded-[20px] bg-foreground/[0.06] text-[15px] leading-relaxed border-0 focus:outline-none placeholder:text-foreground/40"
-            style={{ minHeight: "38px" }}
-          />
-          {hasText && (
-            <button
-              onClick={sendText}
-              disabled={sending}
-              className="w-9 h-9 rounded-full grid place-items-center shrink-0 transition disabled:opacity-40 bg-foreground text-background"
-              aria-label="Send"
-            >
-              {sending ? <Loader2 size={16} className="animate-spin" /> : <ArrowUp size={18} />}
-            </button>
-          )}
         </div>
+      )}
+
+      {/* Composer */}
+      <div className="bg-background border-t border-border/30">
+        {recording ? (
+          <div className="px-2.5 py-2.5 flex items-center gap-2">
+            <button
+              onClick={cancelRecording}
+              className="w-9 h-9 rounded-full grid place-items-center shrink-0 hover:bg-foreground/5 text-foreground"
+              aria-label="Cancel recording"
+            >
+              <X size={20} />
+            </button>
+            <div className="flex-1 flex items-center gap-2 px-4 py-2 rounded-[20px] bg-foreground/[0.06]">
+              <span className="w-2.5 h-2.5 rounded-full bg-red-500 animate-pulse shrink-0" />
+              <span className="text-[15px] text-foreground/60 tabular-nums">
+                {Math.floor(recDuration / 60)}:{(recDuration % 60).toString().padStart(2, "0")}
+              </span>
+              <span className="text-[13px] text-foreground/40">Recording…</span>
+            </div>
+            <button
+              onClick={stopAndSend}
+              disabled={uploading}
+              className="w-9 h-9 rounded-full grid place-items-center shrink-0 transition disabled:opacity-40 bg-foreground text-background"
+              aria-label="Send voice message"
+            >
+              {uploading ? <Loader2 size={16} className="animate-spin" /> : <ArrowUp size={18} />}
+            </button>
+          </div>
+        ) : (
+          <div className="px-2.5 py-2.5">
+            <div className="flex items-end gap-1.5">
+              <input ref={fileInputRef} type="file" accept="image/*,video/*" onChange={handleMediaSelect} className="hidden" />
+              <button
+                onClick={() => fileInputRef.current?.click()}
+                disabled={uploading || isEditing}
+                className="w-9 h-9 rounded-full grid place-items-center shrink-0 transition hover:bg-foreground/5 text-foreground disabled:opacity-40"
+                aria-label="Send photo or video"
+              >
+                {uploading ? <Loader2 size={20} className="animate-spin" /> : <ImageIcon size={20} />}
+              </button>
+              <button
+                onClick={() => setShowTrackSheet(true)}
+                disabled={sending || isEditing}
+                className="w-9 h-9 rounded-full grid place-items-center shrink-0 transition hover:bg-foreground/5 text-foreground disabled:opacity-40"
+                aria-label="Send a song"
+              >
+                <Music2 size={20} />
+              </button>
+              <button
+                onClick={() => setShowEmoji((v) => !v)}
+                className={`w-9 h-9 rounded-full grid place-items-center shrink-0 transition hover:bg-foreground/5 ${showEmoji ? "text-foreground bg-foreground/5" : "text-foreground/60"}`}
+                aria-label="Emoji"
+              >
+                <Smile size={20} />
+              </button>
+              <textarea
+                ref={textAreaRef}
+                value={text}
+                onChange={(e) => { setText(e.target.value); if (!isEditing) updateTyping(); }}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" && !e.shiftKey) {
+                    e.preventDefault();
+                    sendText();
+                  }
+                }}
+                placeholder={isEditing ? "Edit message…" : "Message"}
+                rows={1}
+                className="flex-1 resize-none max-h-32 px-4 py-2 rounded-[20px] bg-foreground/[0.06] text-[15px] leading-relaxed border-0 focus:outline-none placeholder:text-foreground/40"
+                style={{ minHeight: "38px" }}
+              />
+              {hasText ? (
+                <button
+                  onClick={sendText}
+                  disabled={sending}
+                  className="w-9 h-9 rounded-full grid place-items-center shrink-0 transition disabled:opacity-40 bg-foreground text-background"
+                  aria-label={isEditing ? "Save edit" : "Send"}
+                >
+                  {sending ? <Loader2 size={16} className="animate-spin" /> : <ArrowUp size={18} />}
+                </button>
+              ) : (
+                <button
+                  onClick={startRecording}
+                  disabled={sending || uploading}
+                  className="w-9 h-9 rounded-full grid place-items-center shrink-0 transition hover:bg-foreground/5 text-foreground disabled:opacity-40"
+                  aria-label="Record voice message"
+                >
+                  <Mic size={20} />
+                </button>
+              )}
+            </div>
+          </div>
+        )}
+        {showEmoji && !recording && (
+          <EmojiPicker onSelect={handleEmojiSelect} />
+        )}
       </div>
 
       {contextMessage && (
@@ -501,20 +654,27 @@ export default function ChatView({ conversation, otherUser, onBack, onMessagesRe
           onReply={handleReply}
           onCopy={handleCopy}
           onDelete={handleDelete}
+          onEdit={handleEdit}
+          onForward={handleForward}
           onClose={() => setContextMessage(null)}
         />
       )}
 
       {viewerMedia && (
-        <MediaViewer
-          url={viewerMedia.url}
-          type={viewerMedia.type}
-          onClose={() => setViewerMedia(null)}
-        />
+        <MediaViewer url={viewerMedia.url} type={viewerMedia.type} onClose={() => setViewerMedia(null)} />
       )}
 
       {showTrackSheet && (
         <TrackSendSheet onSend={sendTrack} onClose={() => setShowTrackSheet(false)} />
+      )}
+
+      {forwardMessage && (
+        <ForwardSheet
+          conversations={conversations || []}
+          me={me}
+          onPick={handleForwardPick}
+          onClose={() => setForwardMessage(null)}
+        />
       )}
     </div>
   );

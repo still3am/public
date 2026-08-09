@@ -1,6 +1,6 @@
-import { Pin, BellOff, Bell, Trash2, X } from "lucide-react";
+import { Pin, BellOff, Bell, Trash2, X, Eraser } from "lucide-react";
 
-export default function ConversationActions({ conversation, onPin, onMute, onDelete, onClose }) {
+export default function ConversationActions({ conversation, onPin, onMute, onClear, onDelete, onClose }) {
   return (
     <div className="fixed inset-0 z-[75] flex items-end md:items-center justify-center" onClick={onClose}>
       <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" />
@@ -24,6 +24,14 @@ export default function ConversationActions({ conversation, onPin, onMute, onDel
         >
           {conversation.is_muted ? <Bell size={20} className="text-foreground/60" /> : <BellOff size={20} className="text-foreground/60" />}
           <span className="text-[15px]">{conversation.is_muted ? "Unmute" : "Mute"}</span>
+        </button>
+
+        <button
+          onClick={() => { onClear(); onClose(); }}
+          className="w-full flex items-center gap-3.5 px-5 py-3.5 text-left hover:bg-foreground/5 transition"
+        >
+          <Eraser size={20} className="text-foreground/60" />
+          <span className="text-[15px]">Clear Conversation</span>
         </button>
 
         <button

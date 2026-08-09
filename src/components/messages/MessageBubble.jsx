@@ -1,7 +1,8 @@
 import { Image } from "@/components/ui/image";
-import { Play, Pause, Music2 } from "lucide-react";
+import { Play, Pause, Music2, Check, CheckCheck } from "lucide-react";
 import { usePlayer } from "@/context/PlayerContext";
 import { useLongPress } from "@/hooks/useLongPress";
+import VoiceMessage from "@/components/messages/VoiceMessage";
 
 export default function MessageBubble({ message, isMine, myId, isFirstInGroup, showReadReceipt, onLongPress, onMediaClick }) {
   const { currentTrack, togglePlay, playTrackAt } = usePlayer();
@@ -13,6 +14,8 @@ export default function MessageBubble({ message, isMine, myId, isFirstInGroup, s
 
   const isPlayingThis = trackData && currentTrack?.id === trackData.id;
   const hasMedia = !!message.media_url && !!message.media_type;
+  const isAudio = hasMedia && message.media_type === "audio";
+  const isVisualMedia = hasMedia && (message.media_type === "image" || message.media_type === "video");
 
   let replyData = null;
   if (message.reply_preview) {
@@ -53,6 +56,7 @@ export default function MessageBubble({ message, isMine, myId, isFirstInGroup, s
   const replyText = replyData?.text
     || (replyData?.media_type === "image" ? "📷 Photo"
       : replyData?.media_type === "video" ? "🎥 Video"
+      : replyData?.media_type === "audio" ? "🎤 Voice message"
       : replyData?.media_type ? "🎵 Song" : "");
 
   return (
@@ -90,8 +94,8 @@ export default function MessageBubble({ message, isMine, myId, isFirstInGroup, s
         </button>
       ) : null}
 
-      {/* Media */}
-      {hasMedia ? (
+      {/* Visual media (image/video) */}
+      {isVisualMedia ? (
         <div
           onClick={() => handleClick(() => onMediaClick?.(message.media_url, message.media_type))}
           className={`rounded-[18px] ${tailClass} overflow-hidden max-w-[240px] sm:max-w-[300px] cursor-pointer relative bg-foreground/[0.05]`}
@@ -111,9 +115,17 @@ export default function MessageBubble({ message, isMine, myId, isFirstInGroup, s
         </div>
       ) : null}
 
+      {/* Voice message */}
+      {isAudio ? (
+        <VoiceMessage url={message.media_url} isMine={isMine} />
+      ) : null}
+
       {/* Text */}
       {message.text ? (
-        <div className={isMine ? sentBubble : recvBubble}>{message.text}</div>
+        <div className={isMine ? sentBubble : recvBubble}>
+          {message.text}
+          {message.edited && <span className={`ml-1.5 text-[10px] ${isMine ? "text-background/40" : "text-foreground/30"}`}>edited</span>}
+        </div>
       ) : null}
 
       {/* Reactions */}
@@ -135,9 +147,11 @@ export default function MessageBubble({ message, isMine, myId, isFirstInGroup, s
         </div>
       )}
 
-      {/* Read receipt */}
+      {/* Delivery status */}
       {showReadReceipt && (
-        <span className="text-[11px] text-foreground/40 mt-0.5 pr-1">{message.read ? "Read" : "Delivered"}</span>
+        <span className="flex items-center gap-0.5 mt-0.5 pr-1 text-foreground/40">
+          {message.read ? <CheckCheck size={14} /> : <Check size={14} />}
+        </span>
       )}
     </div>
   );

@@ -36,14 +36,15 @@
     "media_url": {
       "type": "string",
       "default": "",
-      "description": "Uploaded image or video URL"
+      "description": "Uploaded image, video, or audio URL"
     },
     "media_type": {
       "type": "string",
       "enum": [
         "",
         "image",
-        "video"
+        "video",
+        "audio"
       ],
       "default": ""
     },
@@ -61,6 +62,11 @@
       "type": "string",
       "default": "",
       "description": "JSON of {emoji: [user_ids]}"
+    },
+    "edited": {
+      "type": "boolean",
+      "default": false,
+      "description": "True if the sender edited the text after originally sending"
     },
     "read": {
       "type": "boolean",

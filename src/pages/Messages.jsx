@@ -148,6 +148,18 @@ export default function Messages() {
     } catch {}
   }
 
+  async function handleClearConv(conv) {
+    try {
+      await base44.entities.Message.deleteMany({ conversation_id: conv.id });
+      await base44.entities.Conversation.update(conv.id, {
+        last_message_text: "",
+        last_message_at: "",
+        last_sender_id: "",
+      });
+      setConversations((prev) => prev.map((c) => c.id === conv.id ? { ...c, last_message_text: "", last_message_at: "", last_sender_id: "" } : c));
+    } catch {}
+  }
+
   async function handleDeleteConv(conv) {
     try {
       await base44.entities.Message.deleteMany({ conversation_id: conv.id });
@@ -239,6 +251,7 @@ export default function Messages() {
           <ChatView
             conversation={activeConv}
             otherUser={activeOther}
+            conversations={conversations}
             onBack={handleBack}
             onMessagesRead={refreshUnread}
           />
@@ -259,6 +272,7 @@ export default function Messages() {
           conversation={actionsConv}
           onPin={() => handlePin(actionsConv)}
           onMute={() => handleMute(actionsConv)}
+          onClear={() => handleClearConv(actionsConv)}
           onDelete={() => handleDeleteConv(actionsConv)}
           onClose={() => setActionsConv(null)}
         />

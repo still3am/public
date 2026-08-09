@@ -1,8 +1,8 @@
-import { Reply, Copy, Trash2, X } from "lucide-react";
+import { Reply, Copy, Trash2, X, Pencil, Forward } from "lucide-react";
 
 const QUICK_EMOJIS = ["❤️", "🔥", "😂", "👍", "😮", "😢"];
 
-export default function MessageContextMenu({ message, isMine, myId, onReact, onReply, onCopy, onDelete, onClose }) {
+export default function MessageContextMenu({ message, isMine, myId, onReact, onReply, onCopy, onDelete, onEdit, onForward, onClose }) {
   const hasText = !!message.text;
   return (
     <div className="fixed inset-0 z-[75] flex items-end md:items-center justify-center" onClick={onClose}>
@@ -43,6 +43,24 @@ export default function MessageContextMenu({ message, isMine, myId, onReact, onR
           <Reply size={20} className="text-foreground/60" />
           <span className="text-[15px]">Reply</span>
         </button>
+
+        <button
+          onClick={() => { onForward(); onClose(); }}
+          className="w-full flex items-center gap-3.5 px-5 py-3.5 text-left hover:bg-foreground/5 transition"
+        >
+          <Forward size={20} className="text-foreground/60" />
+          <span className="text-[15px]">Forward</span>
+        </button>
+
+        {isMine && hasText && (
+          <button
+            onClick={() => { onEdit(); onClose(); }}
+            className="w-full flex items-center gap-3.5 px-5 py-3.5 text-left hover:bg-foreground/5 transition"
+          >
+            <Pencil size={20} className="text-foreground/60" />
+            <span className="text-[15px]">Edit</span>
+          </button>
+        )}
 
         {hasText && (
           <button
