@@ -3,7 +3,7 @@ import { base44 } from "@/api/base44Client";
 import { useAuth } from "@/lib/AuthContext";
 import ChatView from "@/components/messages/ChatView";
 import NewMessageSheet from "@/components/messages/NewMessageSheet";
-import { Loader2, SquarePen, Search } from "lucide-react";
+import { Loader2, SquarePen, Search, Plus } from "lucide-react";
 
 function timeLabel(dateStr) {
   if (!dateStr) return "";
@@ -130,11 +130,10 @@ export default function Messages() {
           <h1 className="text-[28px] font-bold tracking-tight">Messages</h1>
           <button
             onClick={() => setShowNew(true)}
-            className="p-1.5 -mr-1 rounded-full hover:bg-foreground/5 transition"
-            style={{ color: "#007AFF" }}
+            className="w-9 h-9 rounded-full bg-foreground text-background grid place-items-center shadow-sm active:scale-95 transition"
             aria-label="New message"
           >
-            <SquarePen size={22} />
+            <Plus size={20} />
           </button>
         </div>
 
