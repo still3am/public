@@ -102,9 +102,9 @@ export default function TopTracks({ trackIds, editMode, userTracks, onChange }) 
 
   return (
     <div className="mb-8">
-      <h2 className="text-lg font-extrabold tracking-tight mb-3 flex items-center gap-2 hidden">
-        <Star size={18} className="hidden" /> Top 8
-      </h2>
+      
+
+      
       {pinnedTracks.length > 0 ?
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
           {pinnedTracks.map((t) =>
