@@ -23,7 +23,7 @@ export default function ConversationItem({ conv, other, me, isActive, unreadCoun
         if (triggered.current) { triggered.current = false; return; }
         onOpen(conv);
       }}
-      className={`w-full flex items-center gap-3 px-4 py-2 cursor-pointer transition select-none ${
+      className={`w-full flex items-center gap-3 px-4 py-1.5 cursor-pointer transition select-none ${
         isActive ? "bg-foreground/[0.06]" : "hover:bg-foreground/[0.03]"
       }`}
       {...bind}
@@ -42,7 +42,7 @@ export default function ConversationItem({ conv, other, me, isActive, unreadCoun
           </span>
         )}
       </div>
-      <div className="flex-1 min-w-0 py-1 border-b border-border/30">
+      <div className="flex-1 min-w-0 py-0.5 border-b border-border/30">
         <div className="flex items-center justify-between gap-2">
           <div className="flex items-center gap-1.5 min-w-0">
             {conv.is_pinned && <Pin size={12} className="text-foreground/40 shrink-0" />}

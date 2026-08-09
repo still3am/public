@@ -185,11 +185,11 @@ export default function Messages() {
   const activeOther = activeConv ? getOtherUser(activeConv) : null;
 
   return (
-    <div className="md:flex md:h-[calc(100vh-10rem)] md:rounded-2xl md:overflow-hidden md:border md:border-border/50">
+    <div className="h-[calc(100dvh-15rem)] md:h-[calc(100vh-10rem)] flex md:rounded-2xl md:overflow-hidden md:border md:border-border/50">
       {/* Conversation list */}
-      <div className={`md:w-80 md:border-r md:border-border/50 md:flex md:flex-col bg-background ${activeConv ? "hidden md:flex" : "flex flex-col"}`}>
-        <div className="flex items-center justify-between px-4 pt-3 pb-1">
-          <h1 className="text-[28px] font-bold tracking-tight">Messages</h1>
+      <div className={`flex-1 md:flex-none md:w-80 md:border-r md:border-border/50 flex flex-col overflow-hidden bg-background ${activeConv ? "hidden md:flex" : "flex"}`}>
+        <div className="flex items-center justify-between px-4 pt-1.5 pb-1">
+          <h1 className="text-[22px] font-bold tracking-tight">Public Network</h1>
           <button
             onClick={() => setShowNew(true)}
             className="w-9 h-9 rounded-full bg-foreground text-background grid place-items-center shadow-sm active:scale-95 transition"
@@ -209,13 +209,13 @@ export default function Messages() {
           />
         </div>
 
-        <div className="flex-1 overflow-y-auto pb-4">
+        <div className="flex-1 overflow-y-auto">
           {loading ? (
             <div className="grid place-items-center py-20">
               <Loader2 className="animate-spin text-foreground/30" />
             </div>
           ) : sorted.length === 0 ? (
-            <div className="flex flex-col items-center justify-center py-20 text-foreground/40 px-6 text-center">
+            <div className="flex flex-col items-center justify-center min-h-full text-foreground/40 px-6 text-center">
               <SquarePen size={28} className="mb-3" />
               <p className="text-sm">
                 {search ? "No conversations match your search." : "No conversations yet. Tap the + to start one."}
@@ -246,7 +246,7 @@ export default function Messages() {
       </div>
 
       {/* Chat view */}
-      <div className={`flex-1 bg-background ${activeConv ? "flex flex-col h-[calc(100vh-15rem)] md:h-auto" : "hidden md:flex md:flex-col"}`}>
+      <div className={`flex-1 bg-background overflow-hidden ${activeConv ? "flex flex-col" : "hidden md:flex md:flex-col"}`}>
         {activeConv && activeOther ? (
           <ChatView
             conversation={activeConv}
