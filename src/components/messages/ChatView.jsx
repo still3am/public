@@ -87,7 +87,7 @@ export default function ChatView({ conversation, otherUser, conversations, onBac
           return [...prev, event.data];
         });
       } else if (event.type === "update") {
-        setMessages((prev) => prev.map((m) => (m.id === event.data.id ? event.data : m)));
+        setMessages((prev) => prev.map((m) => m.id === event.data.id ? event.data : m));
       } else if (event.type === "delete") {
         setMessages((prev) => prev.filter((m) => m.id !== event.data.id));
       }
@@ -119,7 +119,7 @@ export default function ChatView({ conversation, otherUser, conversations, onBac
       if (typingTimerRef.current) clearTimeout(typingTimerRef.current);
       base44.entities.Conversation.update(conversation.id, {
         typing_user_id: "",
-        typing_at: "",
+        typing_at: ""
       }).catch(() => {});
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -140,7 +140,7 @@ export default function ChatView({ conversation, otherUser, conversations, onBac
   }, [messages.length]);
 
   const isOtherTyping = typingUser && typingUser !== me.id && typingAt &&
-    Date.now() - new Date(typingAt).getTime() < 5000;
+  Date.now() - new Date(typingAt).getTime() < 5000;
 
   function updateTyping() {
     const now = Date.now();
@@ -148,14 +148,14 @@ export default function ChatView({ conversation, otherUser, conversations, onBac
       lastTypingRef.current = now;
       base44.entities.Conversation.update(conversation.id, {
         typing_user_id: me.id,
-        typing_at: new Date().toISOString(),
+        typing_at: new Date().toISOString()
       }).catch(() => {});
     }
     if (typingTimerRef.current) clearTimeout(typingTimerRef.current);
     typingTimerRef.current = setTimeout(() => {
       base44.entities.Conversation.update(conversation.id, {
         typing_user_id: "",
-        typing_at: "",
+        typing_at: ""
       }).catch(() => {});
       lastTypingRef.current = 0;
     }, 4000);
@@ -166,19 +166,19 @@ export default function ChatView({ conversation, otherUser, conversations, onBac
     lastTypingRef.current = 0;
     base44.entities.Conversation.update(conversation.id, {
       typing_user_id: "",
-      typing_at: "",
+      typing_at: ""
     }).catch(() => {});
   }
 
   function buildReplyPreview() {
     if (!replyTo) return "";
-    const senderName = replyTo.sender_id === me.id
-      ? "You"
-      : (replyTo.sender_name || otherUser.display_name);
+    const senderName = replyTo.sender_id === me.id ?
+    "You" :
+    replyTo.sender_name || otherUser.display_name;
     return JSON.stringify({
       sender_name: senderName,
       text: replyTo.text || "",
-      media_type: replyTo.media_type || "",
+      media_type: replyTo.media_type || ""
     });
   }
 
@@ -202,14 +202,14 @@ export default function ChatView({ conversation, otherUser, conversations, onBac
         text: trimmed,
         reply_to_id: replyTo?.id || "",
         reply_preview: buildReplyPreview(),
-        read: false,
+        read: false
       });
       setMessages((prev) => [...prev, msg]);
       setReplyTo(null);
       await base44.entities.Conversation.update(conversation.id, {
         last_message_text: trimmed,
         last_message_at: new Date().toISOString(),
-        last_sender_id: me.id,
+        last_sender_id: me.id
       }).catch(() => {});
     } catch {
       setText(trimmed);
@@ -227,7 +227,7 @@ export default function ChatView({ conversation, otherUser, conversations, onBac
     try {
       await base44.entities.Message.update(editingMessage.id, {
         text: newText,
-        edited: true,
+        edited: true
       });
       setMessages((prev) => prev.map((m) => m.id === editingMessage.id ? { ...m, text: newText, edited: true } : m));
       setEditingMessage(null);
@@ -254,7 +254,7 @@ export default function ChatView({ conversation, otherUser, conversations, onBac
         audio_url: track.audio_url,
         duration_seconds: track.duration_seconds || 0,
         genre: track.genre || "Other",
-        explicit: track.explicit || false,
+        explicit: track.explicit || false
       };
       const msg = await base44.entities.Message.create({
         conversation_id: conversation.id,
@@ -266,14 +266,14 @@ export default function ChatView({ conversation, otherUser, conversations, onBac
         track: JSON.stringify(minimalTrack),
         reply_to_id: replyTo?.id || "",
         reply_preview: buildReplyPreview(),
-        read: false,
+        read: false
       });
       setMessages((prev) => [...prev, msg]);
       setReplyTo(null);
       await base44.entities.Conversation.update(conversation.id, {
         last_message_text: `🎵 ${track.title}`,
         last_message_at: new Date().toISOString(),
-        last_sender_id: me.id,
+        last_sender_id: me.id
       }).catch(() => {});
     } finally {
       setSending(false);
@@ -332,7 +332,7 @@ export default function ChatView({ conversation, otherUser, conversations, onBac
         media_type: type,
         reply_to_id: replyTo?.id || "",
         reply_preview: buildReplyPreview(),
-        read: false,
+        read: false
       });
       setMessages((prev) => [...prev, msg]);
       setReplyTo(null);
@@ -340,7 +340,7 @@ export default function ChatView({ conversation, otherUser, conversations, onBac
       await base44.entities.Conversation.update(conversation.id, {
         last_message_text: lastText,
         last_message_at: new Date().toISOString(),
-        last_sender_id: me.id,
+        last_sender_id: me.id
       }).catch(() => {});
     } finally {
       setSending(false);
@@ -350,19 +350,19 @@ export default function ChatView({ conversation, otherUser, conversations, onBac
   async function handleReact(emoji) {
     if (!contextMessage) return;
     let reactions = {};
-    try { reactions = JSON.parse(contextMessage.reactions || "{}"); } catch {}
+    try {reactions = JSON.parse(contextMessage.reactions || "{}");} catch {}
     const ids = reactions[emoji] || [];
     const idx = ids.indexOf(me.id);
     if (idx >= 0) {
       ids.splice(idx, 1);
-      if (ids.length === 0) delete reactions[emoji];
-      else reactions[emoji] = ids;
+      if (ids.length === 0) delete reactions[emoji];else
+      reactions[emoji] = ids;
     } else {
       reactions[emoji] = [...ids, me.id];
     }
     try {
       await base44.entities.Message.update(contextMessage.id, {
-        reactions: JSON.stringify(reactions),
+        reactions: JSON.stringify(reactions)
       });
     } catch {}
   }
@@ -411,7 +411,7 @@ export default function ChatView({ conversation, otherUser, conversations, onBac
         recipient_id: recipientId,
         sender_name: me.display_name || me.full_name || "",
         sender_avatar_url: me.avatar_url || "",
-        read: false,
+        read: false
       };
       if (forwardMessage.text) msgData.text = forwardMessage.text;
       if (forwardMessage.track_id) {
@@ -423,14 +423,14 @@ export default function ChatView({ conversation, otherUser, conversations, onBac
         msgData.media_type = forwardMessage.media_type;
       }
       await base44.entities.Message.create(msgData);
-      const lastText = forwardMessage.text || (forwardMessage.media_type === "image" ? "📷 Photo"
-        : forwardMessage.media_type === "video" ? "🎥 Video"
-        : forwardMessage.media_type === "audio" ? "🎤 Voice message"
-        : forwardMessage.track_id ? "🎵 Song" : "");
+      const lastText = forwardMessage.text || (forwardMessage.media_type === "image" ? "📷 Photo" :
+      forwardMessage.media_type === "video" ? "🎥 Video" :
+      forwardMessage.media_type === "audio" ? "🎤 Voice message" :
+      forwardMessage.track_id ? "🎵 Song" : "");
       await base44.entities.Conversation.update(targetConv.id, {
         last_message_text: lastText,
         last_message_at: new Date().toISOString(),
-        last_sender_id: me.id,
+        last_sender_id: me.id
       }).catch(() => {});
       toast({ title: "Message forwarded." });
     } catch {
@@ -453,34 +453,34 @@ export default function ChatView({ conversation, otherUser, conversations, onBac
         <button
           onClick={onBack}
           className="md:hidden p-1.5 absolute left-1 rounded-full hover:bg-foreground/5 transition"
-          aria-label="Back"
-        >
+          aria-label="Back">
+          
           <ArrowLeft size={22} className="text-foreground" />
         </button>
         <div className="flex flex-col items-center gap-0.5">
-          {otherUser.avatar_url ? (
-            <img src={otherUser.avatar_url} alt="" className="w-10 h-10 rounded-full object-cover" />
-          ) : (
-            <div className="w-10 h-10 rounded-full bg-foreground/10 grid place-items-center text-sm font-bold text-foreground/50">
+          {otherUser.avatar_url ?
+          <img src={otherUser.avatar_url} alt="" className="w-10 h-10 rounded-full object-cover" /> :
+
+          <div className="w-10 h-10 rounded-full bg-foreground/10 grid place-items-center text-sm font-bold text-foreground/50">
               {(otherUser.display_name || "?").charAt(0).toUpperCase()}
             </div>
-          )}
+          }
           <h2 className="text-[13px] font-medium leading-none truncate text-foreground text-center max-w-[160px]">{otherUser.display_name}</h2>
           {isOtherTyping && <p className="text-[11px] text-foreground/50 truncate text-center">typing…</p>}
         </div>
-        <div className="absolute right-2 flex items-center gap-1">
+        <div className="absolute right-2 flex items-center gap-1 hidden">
           <button
             onClick={() => toast({ title: "Calling coming soon" })}
             className="w-8 h-8 rounded-full grid place-items-center hover:bg-foreground/5 transition text-foreground/70"
-            aria-label="Audio call"
-          >
+            aria-label="Audio call">
+            
             <Phone size={18} />
           </button>
           <button
             onClick={() => toast({ title: "Video calling coming soon" })}
             className="w-8 h-8 rounded-full grid place-items-center hover:bg-foreground/5 transition text-foreground/70"
-            aria-label="Video call"
-          >
+            aria-label="Video call">
+            
             <Video size={18} />
           </button>
         </div>
@@ -488,58 +488,58 @@ export default function ChatView({ conversation, otherUser, conversations, onBac
 
       {/* Messages */}
       <div ref={scrollRef} className="flex-1 overflow-y-auto px-3 py-3">
-        {loading ? (
-          <div className="grid place-items-center py-20">
+        {loading ?
+        <div className="grid place-items-center py-20">
             <Loader2 className="animate-spin text-foreground/30" />
-          </div>
-        ) : messages.length === 0 ? (
-          <div className="flex flex-col items-center justify-center min-h-full text-foreground/40">
+          </div> :
+        messages.length === 0 ?
+        <div className="flex flex-col items-center justify-center min-h-full text-foreground/40">
             <p className="text-[15px] text-center">No messages yet. Say hello.</p>
-          </div>
-        ) : (
-          <div className="space-y-0.5">
+          </div> :
+
+        <div className="space-y-0.5">
             {messages.map((m, i) => {
-              const isMine = m.sender_id === me.id;
-              const prev = i > 0 ? messages[i - 1] : null;
-              const next = i < messages.length - 1 ? messages[i + 1] : null;
-              const timeGap = prev ? new Date(m.created_date) - new Date(prev.created_date) : Infinity;
-              const senderChanged = !prev || prev.sender_id !== m.sender_id;
-              const showTimestamp = !prev || senderChanged || timeGap > 5 * 60 * 1000;
-              const isFirstInGroup = !prev || prev.sender_id !== m.sender_id || timeGap > 60 * 1000;
-              const isLastFromMe = isMine && (!next || next.sender_id !== me.id);
-              return (
-                <div key={m.id}>
-                  {showTimestamp && (
-                    <div className="text-center text-[11px] text-foreground/40 my-3 font-medium">
+            const isMine = m.sender_id === me.id;
+            const prev = i > 0 ? messages[i - 1] : null;
+            const next = i < messages.length - 1 ? messages[i + 1] : null;
+            const timeGap = prev ? new Date(m.created_date) - new Date(prev.created_date) : Infinity;
+            const senderChanged = !prev || prev.sender_id !== m.sender_id;
+            const showTimestamp = !prev || senderChanged || timeGap > 5 * 60 * 1000;
+            const isFirstInGroup = !prev || prev.sender_id !== m.sender_id || timeGap > 60 * 1000;
+            const isLastFromMe = isMine && (!next || next.sender_id !== me.id);
+            return (
+              <div key={m.id}>
+                  {showTimestamp &&
+                <div className="text-center text-[11px] text-foreground/40 my-3 font-medium">
                       {groupTimestamp(m.created_date)}
                     </div>
-                  )}
+                }
                   <div className={isFirstInGroup ? "mt-1.5" : ""}>
                     <MessageBubble
-                      message={m}
-                      isMine={isMine}
-                      myId={me.id}
-                      isFirstInGroup={isFirstInGroup}
-                      showReadReceipt={isLastFromMe}
-                      onLongPress={(msg) => setContextMessage(msg)}
-                      onMediaClick={(url, type) => setViewerMedia({ url, type })}
-                    />
+                    message={m}
+                    isMine={isMine}
+                    myId={me.id}
+                    isFirstInGroup={isFirstInGroup}
+                    showReadReceipt={isLastFromMe}
+                    onLongPress={(msg) => setContextMessage(msg)}
+                    onMediaClick={(url, type) => setViewerMedia({ url, type })} />
+                  
                   </div>
-                </div>
-              );
-            })}
+                </div>);
+
+          })}
             <div ref={bottomRef} />
           </div>
-        )}
+        }
       </div>
 
       {/* Reply preview bar */}
-      {replyTo && !isEditing && (
-        <div className="px-3 py-2 bg-foreground/[0.04] border-t border-border/30 flex items-center gap-2">
+      {replyTo && !isEditing &&
+      <div className="px-3 py-2 bg-foreground/[0.04] border-t border-border/30 flex items-center gap-2">
           <Reply size={16} className="text-foreground/40 shrink-0" />
           <div className="flex-1 min-w-0 border-l-2 border-foreground/30 pl-2">
             <div className="text-[11px] font-semibold text-foreground/60 truncate">
-              {replyTo.sender_id === me.id ? "You" : (replyTo.sender_name || otherUser.display_name)}
+              {replyTo.sender_id === me.id ? "You" : replyTo.sender_name || otherUser.display_name}
             </div>
             <div className="text-[12px] text-foreground/50 truncate">
               {replyTo.text || (replyTo.media_type === "image" ? "📷 Photo" : replyTo.media_type === "video" ? "🎥 Video" : replyTo.media_type === "audio" ? "🎤 Voice message" : replyTo.track_id ? "🎵 Song" : "")}
@@ -549,31 +549,31 @@ export default function ChatView({ conversation, otherUser, conversations, onBac
             <X size={16} className="text-foreground/50" />
           </button>
         </div>
-      )}
+      }
 
       {/* Edit bar */}
-      {isEditing && (
-        <div className="px-3 py-2 bg-foreground/[0.04] border-t border-border/30 flex items-center gap-2">
+      {isEditing &&
+      <div className="px-3 py-2 bg-foreground/[0.04] border-t border-border/30 flex items-center gap-2">
           <Pencil size={16} className="text-foreground/40 shrink-0" />
           <div className="flex-1 min-w-0 border-l-2 border-foreground/30 pl-2">
             <div className="text-[11px] font-semibold text-foreground/60 truncate">Editing message</div>
             <div className="text-[12px] text-foreground/50 truncate">{editingMessage.text || ""}</div>
           </div>
-          <button onClick={() => { setEditingMessage(null); setText(""); }} className="p-1 rounded-full hover:bg-foreground/10" aria-label="Cancel edit">
+          <button onClick={() => {setEditingMessage(null);setText("");}} className="p-1 rounded-full hover:bg-foreground/10" aria-label="Cancel edit">
             <X size={16} className="text-foreground/50" />
           </button>
         </div>
-      )}
+      }
 
       {/* Composer */}
       <div className="bg-background border-t border-border/30">
-        {recording ? (
-          <div className="px-2.5 py-2.5 flex items-center gap-2">
+        {recording ?
+        <div className="px-2.5 py-2.5 flex items-center gap-2">
             <button
-              onClick={cancelRecording}
-              className="w-9 h-9 rounded-full grid place-items-center shrink-0 hover:bg-foreground/5 text-foreground"
-              aria-label="Cancel recording"
-            >
+            onClick={cancelRecording}
+            className="w-9 h-9 rounded-full grid place-items-center shrink-0 hover:bg-foreground/5 text-foreground"
+            aria-label="Cancel recording">
+            
               <X size={20} />
             </button>
             <div className="flex-1 flex items-center gap-2 px-4 py-2 rounded-[20px] bg-foreground/[0.06]">
@@ -584,121 +584,121 @@ export default function ChatView({ conversation, otherUser, conversations, onBac
               <span className="text-[13px] text-foreground/40">Recording…</span>
             </div>
             <button
-              onClick={stopAndSend}
-              disabled={uploading}
-              className="w-9 h-9 rounded-full grid place-items-center shrink-0 transition disabled:opacity-40 bg-foreground text-background"
-              aria-label="Send voice message"
-            >
+            onClick={stopAndSend}
+            disabled={uploading}
+            className="w-9 h-9 rounded-full grid place-items-center shrink-0 transition disabled:opacity-40 bg-foreground text-background"
+            aria-label="Send voice message">
+            
               {uploading ? <Loader2 size={16} className="animate-spin" /> : <ArrowUp size={18} />}
             </button>
-          </div>
-        ) : (
-          <div className="px-2.5 py-2.5">
+          </div> :
+
+        <div className="px-2.5 py-2.5">
             <div className="flex items-end gap-1.5">
               <input ref={fileInputRef} type="file" accept="image/*,video/*" onChange={handleMediaSelect} className="hidden" />
               <button
-                onClick={() => { setShowAttachMenu((v) => !v); setShowEmoji(false); }}
-                disabled={uploading || isEditing}
-                className={`w-9 h-9 rounded-full grid place-items-center shrink-0 transition bg-foreground/[0.06] hover:bg-foreground/10 text-foreground/70 disabled:opacity-40 ${showAttachMenu ? "ring-2 ring-foreground/15" : ""}`}
-                aria-label="Attachments"
-              >
+              onClick={() => {setShowAttachMenu((v) => !v);setShowEmoji(false);}}
+              disabled={uploading || isEditing}
+              className={`w-9 h-9 rounded-full grid place-items-center shrink-0 transition bg-foreground/[0.06] hover:bg-foreground/10 text-foreground/70 disabled:opacity-40 ${showAttachMenu ? "ring-2 ring-foreground/15" : ""}`}
+              aria-label="Attachments">
+              
                 {uploading ? <Loader2 size={20} className="animate-spin" /> : <Plus size={20} />}
               </button>
               <textarea
-                ref={textAreaRef}
-                value={text}
-                onChange={(e) => { setText(e.target.value); if (!isEditing) updateTyping(); }}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter" && !e.shiftKey) {
-                    e.preventDefault();
-                    sendText();
-                  }
-                }}
-                placeholder={isEditing ? "Edit message…" : "Message"}
-                rows={1}
-                className="flex-1 resize-none max-h-32 px-4 py-2 rounded-[20px] bg-foreground/[0.06] text-[15px] leading-relaxed border-0 focus:outline-none placeholder:text-foreground/40"
-                style={{ minHeight: "38px" }}
-              />
-              {hasText ? (
-                <button
-                  onClick={sendText}
-                  disabled={sending}
-                  className="w-9 h-9 rounded-full grid place-items-center shrink-0 transition disabled:opacity-40 bg-foreground text-background"
-                  aria-label={isEditing ? "Save edit" : "Send"}
-                >
+              ref={textAreaRef}
+              value={text}
+              onChange={(e) => {setText(e.target.value);if (!isEditing) updateTyping();}}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" && !e.shiftKey) {
+                  e.preventDefault();
+                  sendText();
+                }
+              }}
+              placeholder={isEditing ? "Edit message…" : "Message"}
+              rows={1}
+              className="flex-1 resize-none max-h-32 px-4 py-2 rounded-[20px] bg-foreground/[0.06] text-[15px] leading-relaxed border-0 focus:outline-none placeholder:text-foreground/40"
+              style={{ minHeight: "38px" }} />
+            
+              {hasText ?
+            <button
+              onClick={sendText}
+              disabled={sending}
+              className="w-9 h-9 rounded-full grid place-items-center shrink-0 transition disabled:opacity-40 bg-foreground text-background"
+              aria-label={isEditing ? "Save edit" : "Send"}>
+              
                   {sending ? <Loader2 size={16} className="animate-spin" /> : <ArrowUp size={18} />}
-                </button>
-              ) : (
-                <button
-                  onClick={startRecording}
-                  disabled={sending || uploading}
-                  className="w-9 h-9 rounded-full grid place-items-center shrink-0 transition hover:bg-foreground/5 text-foreground disabled:opacity-40"
-                  aria-label="Record voice message"
-                >
+                </button> :
+
+            <button
+              onClick={startRecording}
+              disabled={sending || uploading}
+              className="w-9 h-9 rounded-full grid place-items-center shrink-0 transition hover:bg-foreground/5 text-foreground disabled:opacity-40"
+              aria-label="Record voice message">
+              
                   <Mic size={20} />
                 </button>
-              )}
+            }
             </div>
           </div>
-        )}
-        {showAttachMenu && !recording && (
-          <div className="px-3 pb-2 flex flex-wrap gap-2">
+        }
+        {showAttachMenu && !recording &&
+        <div className="px-3 pb-2 flex flex-wrap gap-2">
             <button
-              onClick={() => { fileInputRef.current?.click(); setShowAttachMenu(false); }}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-foreground/[0.06] hover:bg-foreground/10 transition text-sm text-foreground/70"
-            >
+            onClick={() => {fileInputRef.current?.click();setShowAttachMenu(false);}}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-foreground/[0.06] hover:bg-foreground/10 transition text-sm text-foreground/70">
+            
               <ImageIcon size={16} /> Photo
             </button>
             <button
-              onClick={() => { setShowTrackSheet(true); setShowAttachMenu(false); }}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-foreground/[0.06] hover:bg-foreground/10 transition text-sm text-foreground/70"
-            >
+            onClick={() => {setShowTrackSheet(true);setShowAttachMenu(false);}}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-foreground/[0.06] hover:bg-foreground/10 transition text-sm text-foreground/70">
+            
               <Music2 size={16} /> Song
             </button>
             <button
-              onClick={() => { setShowEmoji(true); setShowAttachMenu(false); }}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-foreground/[0.06] hover:bg-foreground/10 transition text-sm text-foreground/70"
-            >
+            onClick={() => {setShowEmoji(true);setShowAttachMenu(false);}}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-foreground/[0.06] hover:bg-foreground/10 transition text-sm text-foreground/70">
+            
               <Smile size={16} /> Emoji
             </button>
           </div>
-        )}
-        {showEmoji && !recording && (
-          <EmojiPicker onSelect={handleEmojiSelect} />
-        )}
+        }
+        {showEmoji && !recording &&
+        <EmojiPicker onSelect={handleEmojiSelect} />
+        }
       </div>
 
-      {contextMessage && (
-        <MessageContextMenu
-          message={contextMessage}
-          isMine={contextMessage.sender_id === me.id}
-          myId={me.id}
-          onReact={handleReact}
-          onReply={handleReply}
-          onCopy={handleCopy}
-          onDelete={handleDelete}
-          onEdit={handleEdit}
-          onForward={handleForward}
-          onClose={() => setContextMessage(null)}
-        />
-      )}
+      {contextMessage &&
+      <MessageContextMenu
+        message={contextMessage}
+        isMine={contextMessage.sender_id === me.id}
+        myId={me.id}
+        onReact={handleReact}
+        onReply={handleReply}
+        onCopy={handleCopy}
+        onDelete={handleDelete}
+        onEdit={handleEdit}
+        onForward={handleForward}
+        onClose={() => setContextMessage(null)} />
 
-      {viewerMedia && (
-        <MediaViewer url={viewerMedia.url} type={viewerMedia.type} onClose={() => setViewerMedia(null)} />
-      )}
+      }
 
-      {showTrackSheet && (
-        <TrackSendSheet onSend={sendTrack} onClose={() => setShowTrackSheet(false)} />
-      )}
+      {viewerMedia &&
+      <MediaViewer url={viewerMedia.url} type={viewerMedia.type} onClose={() => setViewerMedia(null)} />
+      }
 
-      {forwardMessage && (
-        <ForwardSheet
-          conversations={conversations || []}
-          me={me}
-          onPick={handleForwardPick}
-          onClose={() => setForwardMessage(null)}
-        />
-      )}
-    </div>
-  );
+      {showTrackSheet &&
+      <TrackSendSheet onSend={sendTrack} onClose={() => setShowTrackSheet(false)} />
+      }
+
+      {forwardMessage &&
+      <ForwardSheet
+        conversations={conversations || []}
+        me={me}
+        onPick={handleForwardPick}
+        onClose={() => setForwardMessage(null)} />
+
+      }
+    </div>);
+
 }
