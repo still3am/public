@@ -327,7 +327,7 @@ async function saveProfile() {
       <div className="relative rounded-2xl overflow-hidden ring-1 ring-inset ring-foreground/10 bg-card flex-1 min-w-0">
         {/* Identity, stats, actions */}
         <div className="relative z-10 px-5 md:px-10 pb-5 md:pb-8 pt-5 md:pt-8">
-          <div className="flex flex-col items-center md:flex-row md:items-center gap-4 md:gap-8">
+          <div className="flex flex-col items-center md:flex-row md:items-center md:justify-center gap-4 md:gap-8">
             <div className="relative shrink-0">
               <div className="rounded-full bg-background p-1 inline-block ring-1 ring-foreground/10 shadow-sm">
                 <Avatar
