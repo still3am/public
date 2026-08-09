@@ -468,22 +468,22 @@ export default function ChatView({ conversation, otherUser, conversations, onBac
           <h2 className="text-[13px] font-medium leading-none truncate text-foreground text-center max-w-[160px]">{otherUser.display_name}</h2>
           {isOtherTyping && <p className="text-[11px] text-foreground/50 truncate text-center">typing…</p>}
         </div>
-        <div className="absolute right-2 flex items-center gap-1 hidden">
-          <button
-            onClick={() => toast({ title: "Calling coming soon" })}
-            className="w-8 h-8 rounded-full grid place-items-center hover:bg-foreground/5 transition text-foreground/70"
-            aria-label="Audio call">
-            
-            <Phone size={18} />
-          </button>
-          <button
-            onClick={() => toast({ title: "Video calling coming soon" })}
-            className="w-8 h-8 rounded-full grid place-items-center hover:bg-foreground/5 transition text-foreground/70"
-            aria-label="Video call">
-            
-            <Video size={18} />
-          </button>
-        </div>
+        
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
       </div>
 
       {/* Messages */}
