@@ -322,18 +322,17 @@ async function saveProfile() {
         />
       </div>
     )}
-    <div className="max-w-6xl mx-auto relative z-10">
+    <div className="max-w-5xl mx-auto relative z-10">
       <div className="flex flex-col md:flex-row gap-4 md:gap-6 mb-8">
       <div className="relative rounded-2xl overflow-hidden ring-1 ring-inset ring-foreground/10 bg-card flex-1 min-w-0">
         {/* Identity, stats, actions */}
-        <div className="relative z-10 px-5 md:px-10 pb-5 md:pb-8 pt-5 md:pt-8">
-          <div className="flex flex-col items-center md:flex-row md:items-center gap-4 md:gap-8">
+        <div className="relative z-10 px-4 md:px-6 pb-4 md:pb-5 pt-4 md:pt-5">
+          <div className="flex flex-col items-center md:flex-row md:items-end gap-3 md:gap-4">
             <div className="relative shrink-0">
               <div className="rounded-full bg-background p-1 inline-block ring-1 ring-foreground/10 shadow-sm">
                 <Avatar
                     user={{ ...profile, avatar_url: avatarUrl }}
-                    size={128}
-                    className="md:!w-40 md:!h-40 lg:!w-48 lg:!h-48" />
+                    size={128} />
 
               </div>
               {editMode &&
@@ -366,7 +365,7 @@ async function saveProfile() {
                     placeholder="Display name" /> :
 
 
-                  <h1 className="text-xl md:text-3xl lg:text-4xl font-extrabold tracking-tight">
+                  <h1 className="text-xl md:text-3xl font-extrabold tracking-tight">
                     {displayName}
                   </h1>
                   }
@@ -395,7 +394,7 @@ async function saveProfile() {
                 </div>
                 }
 
-              <div className="flex flex-wrap items-center justify-center md:justify-start gap-x-4 gap-y-1 mt-2.5 text-sm md:text-base">
+              <div className="flex flex-wrap items-center justify-center md:justify-start gap-x-4 gap-y-1 mt-2.5 text-sm">
                 <span><span className="font-bold">{formatNumber(stats.followers)}</span> <span className="text-foreground/50">followers</span></span>
                 <span><span className="font-bold">{formatNumber(stats.following)}</span> <span className="text-foreground/50">following</span></span>
                 {stats.plays > 0 && <span><span className="font-bold">{formatNumber(stats.plays)}</span> <span className="text-foreground/50">plays</span></span>}
@@ -412,7 +411,7 @@ async function saveProfile() {
 
 
                 profile.bio &&
-                <p className="text-sm md:text-base text-foreground/70 max-w-2xl mt-2.5 leading-relaxed mx-auto md:mx-0">
+                <p className="text-sm text-foreground/70 max-w-2xl mt-2.5 leading-relaxed mx-auto md:mx-0">
                     {profile.bio}
                   </p>
 
@@ -457,7 +456,7 @@ async function saveProfile() {
                 </div>
                 }
 
-              <div className="flex items-center gap-2 md:gap-3 mt-3 flex-wrap justify-center md:justify-start">
+              <div className="flex items-center gap-2 mt-3 flex-wrap justify-center md:justify-start">
                 {isOwn ?
                   editMode ?
                   <>
@@ -466,14 +465,14 @@ async function saveProfile() {
                       disabled={saving}
                       title="Save"
                       aria-label="Save changes"
-                      className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-foreground text-background grid place-items-center disabled:opacity-40">
+                      className="w-10 h-10 rounded-full bg-foreground text-background grid place-items-center disabled:opacity-40">
                         {saving ? <Loader2 size={16} className="animate-spin" /> : <Save size={16} />}
                       </button>
                       <button
                       onClick={() => setEditMode(false)}
                       title="Cancel"
                       aria-label="Cancel editing"
-                      className="w-10 h-10 md:w-12 md:h-12 rounded-full border border-border grid place-items-center">
+                      className="w-10 h-10 rounded-full border border-border grid place-items-center">
                         <X size={16} />
                       </button>
                     </> :
@@ -481,14 +480,14 @@ async function saveProfile() {
                     onClick={() => setEditMode(true)}
                     title="Edit profile"
                     aria-label="Edit profile"
-                    className="w-10 h-10 md:w-12 md:h-12 rounded-full border border-border grid place-items-center">
+                    className="w-10 h-10 rounded-full border border-border grid place-items-center">
                     <Pencil size={16} />
                   </button> :
                   <button
                     onClick={toggleFollow}
                     title={following ? "Following (click to unfollow)" : "Follow"}
                     aria-label={following ? "Unfollow" : "Follow"}
-                    className={`w-10 h-10 md:w-12 md:h-12 rounded-full grid place-items-center transition ${
+                    className={`w-10 h-10 rounded-full grid place-items-center transition ${
                     following ? "border border-border" : "bg-foreground text-background"}`}>
                     {following ? <UserCheck size={16} /> : <UserPlus size={16} />}
                   </button>
@@ -498,7 +497,7 @@ async function saveProfile() {
                     onClick={shareProfile}
                     title={copied ? "Copied!" : "Share"}
                     aria-label="Share profile"
-                    className="w-10 h-10 md:w-12 md:h-12 rounded-full border border-border grid place-items-center">
+                    className="w-10 h-10 rounded-full border border-border grid place-items-center">
                     <Share2 size={16} />
                   </button>
                   }
@@ -507,7 +506,7 @@ async function saveProfile() {
                     onClick={() => setShowQR(true)}
                     title="QR code"
                     aria-label="Show QR code"
-                    className="w-10 h-10 md:w-12 md:h-12 rounded-full border border-border grid place-items-center">
+                    className="w-10 h-10 rounded-full border border-border grid place-items-center">
                     <QrCode size={16} />
                   </button>
                   }
@@ -516,7 +515,7 @@ async function saveProfile() {
                     onClick={() => setShowSettings(true)}
                     title="Settings"
                     aria-label="Settings"
-                    className="w-10 h-10 md:w-12 md:h-12 rounded-full border border-border grid place-items-center">
+                    className="w-10 h-10 rounded-full border border-border grid place-items-center">
                     <Settings size={16} />
                   </button>
                   }
@@ -526,7 +525,7 @@ async function saveProfile() {
         </div>
       </div>
       {(editMode || profile?.featured_track_id) && (
-        <div className="md:w-80 lg:w-96 shrink-0">
+        <div className="md:w-72 lg:w-80 shrink-0">
           <ProfileSong
             trackId={editMode ? form.featured_track_id : profile?.featured_track_id}
             editMode={editMode}
