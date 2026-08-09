@@ -1,10 +1,42 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { base44 } from "@/api/base44Client";
 import { Image } from "@/components/ui/image";
-import { Check, X, Search } from "lucide-react";
+import { Check, X, Search, Loader2 } from "lucide-react";
 
 export default function TrackPickerSheet({ title, selectedIds, max, tracks, onToggle, onClose }) {
   const [query, setQuery] = useState("");
-  const filtered = (tracks || []).filter(
+  const [allTracks, setAllTracks] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const published = await base44.entities.Track.filter(
+          { is_published: true },
+          "-created_date",
+          500
+        );
+        if (cancelled) return;
+        // Merge in any passed tracks (e.g. user's own non-public tracks) without duplicates
+        const seen = new Set();
+        const merged = [...(tracks || []), ...published].filter((t) => {
+          if (seen.has(t.id)) return false;
+          seen.add(t.id);
+          return true;
+        });
+        setAllTracks(merged);
+      } catch {
+        if (!cancelled) setAllTracks(tracks || []);
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    })();
+    return () => { cancelled = true; };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const filtered = allTracks.filter(
     (t) =>
       !query ||
       t.title?.toLowerCase().includes(query.toLowerCase()) ||
@@ -32,9 +64,13 @@ export default function TrackPickerSheet({ title, selectedIds, max, tracks, onTo
           />
         </div>
         <div className="flex-1 overflow-y-auto space-y-1.5 -mx-1 px-1">
-          {filtered.length === 0 ? (
+          {loading ? (
+            <div className="grid place-items-center py-10">
+              <Loader2 size={22} className="animate-spin text-foreground/40" />
+            </div>
+          ) : filtered.length === 0 ? (
             <p className="text-center text-sm text-foreground/40 py-8">
-              {tracks?.length === 0 ? "No tracks available. Upload music to pin tracks." : "No tracks found"}
+              {allTracks.length === 0 ? "No tracks available." : "No tracks found"}
             </p>
           ) : (
             filtered.map((t) => {
