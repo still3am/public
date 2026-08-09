@@ -9,7 +9,7 @@ import MediaViewer from "@/components/messages/MediaViewer";
 import EmojiPicker from "@/components/messages/EmojiPicker";
 import ForwardSheet from "@/components/messages/ForwardSheet";
 import { useVoiceRecorder } from "@/hooks/useVoiceRecorder";
-import { ArrowLeft, ArrowUp, Music2, Users, Loader2, ImageIcon, X, Reply, Mic, Smile, Pencil } from "lucide-react";
+import { ArrowLeft, ArrowUp, Music2, Users, Loader2, ImageIcon, X, Reply, Mic, Smile, Pencil, Phone, Video, Plus } from "lucide-react";
 
 function groupTimestamp(dateStr) {
   const d = new Date(dateStr);
@@ -34,6 +34,7 @@ export default function ChatView({ conversation, otherUser, conversations, onBac
   const [uploading, setUploading] = useState(false);
   const [showTrackSheet, setShowTrackSheet] = useState(false);
   const [showEmoji, setShowEmoji] = useState(false);
+  const [showAttachMenu, setShowAttachMenu] = useState(false);
   const [contextMessage, setContextMessage] = useState(null);
   const [viewerMedia, setViewerMedia] = useState(null);
   const [replyTo, setReplyTo] = useState(null);
@@ -448,7 +449,7 @@ export default function ChatView({ conversation, otherUser, conversations, onBac
   return (
     <div className="flex flex-col h-full bg-background">
       {/* Header */}
-      <div className="relative flex items-center justify-center gap-2.5 px-3 py-2.5 border-b border-border/40 bg-background/80 backdrop-blur-xl sticky top-0 z-10">
+      <div className="relative flex items-center justify-center px-3 py-2 border-b border-border/40 bg-background/80 backdrop-blur-xl sticky top-0 z-10">
         <button
           onClick={onBack}
           className="md:hidden p-1.5 absolute left-1 rounded-full hover:bg-foreground/5 transition"
@@ -456,16 +457,32 @@ export default function ChatView({ conversation, otherUser, conversations, onBac
         >
           <ArrowLeft size={22} className="text-foreground" />
         </button>
-        {otherUser.avatar_url ? (
-          <img src={otherUser.avatar_url} alt="" className="w-9 h-9 rounded-full object-cover" />
-        ) : (
-          <div className="w-9 h-9 rounded-full bg-foreground/10 grid place-items-center text-sm font-bold text-foreground/50">
-            {(otherUser.display_name || "?").charAt(0).toUpperCase()}
-          </div>
-        )}
-        <div className="min-w-0">
-          <h2 className="text-[16px] font-semibold truncate text-foreground text-center">{otherUser.display_name}</h2>
-          {isOtherTyping && <p className="text-[12px] text-foreground/50 truncate text-center">typing…</p>}
+        <div className="flex flex-col items-center gap-0.5">
+          {otherUser.avatar_url ? (
+            <img src={otherUser.avatar_url} alt="" className="w-10 h-10 rounded-full object-cover" />
+          ) : (
+            <div className="w-10 h-10 rounded-full bg-foreground/10 grid place-items-center text-sm font-bold text-foreground/50">
+              {(otherUser.display_name || "?").charAt(0).toUpperCase()}
+            </div>
+          )}
+          <h2 className="text-[13px] font-medium leading-none truncate text-foreground text-center max-w-[160px]">{otherUser.display_name}</h2>
+          {isOtherTyping && <p className="text-[11px] text-foreground/50 truncate text-center">typing…</p>}
+        </div>
+        <div className="absolute right-2 flex items-center gap-1">
+          <button
+            onClick={() => toast({ title: "Calling coming soon" })}
+            className="w-8 h-8 rounded-full grid place-items-center hover:bg-foreground/5 transition text-foreground/70"
+            aria-label="Audio call"
+          >
+            <Phone size={18} />
+          </button>
+          <button
+            onClick={() => toast({ title: "Video calling coming soon" })}
+            className="w-8 h-8 rounded-full grid place-items-center hover:bg-foreground/5 transition text-foreground/70"
+            aria-label="Video call"
+          >
+            <Video size={18} />
+          </button>
         </div>
       </div>
 
@@ -476,9 +493,8 @@ export default function ChatView({ conversation, otherUser, conversations, onBac
             <Loader2 className="animate-spin text-foreground/30" />
           </div>
         ) : messages.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-20 text-foreground/40">
-            <Users size={28} className="mb-3" />
-            <p className="text-sm text-center max-w-xs">No messages yet. Say hi, send a song, share a photo, or record a voice message.</p>
+          <div className="flex flex-col items-center justify-center min-h-full text-foreground/40">
+            <p className="text-[15px] text-center">No messages yet. Say hello.</p>
           </div>
         ) : (
           <div className="space-y-0.5">
@@ -581,27 +597,12 @@ export default function ChatView({ conversation, otherUser, conversations, onBac
             <div className="flex items-end gap-1.5">
               <input ref={fileInputRef} type="file" accept="image/*,video/*" onChange={handleMediaSelect} className="hidden" />
               <button
-                onClick={() => fileInputRef.current?.click()}
+                onClick={() => { setShowAttachMenu((v) => !v); setShowEmoji(false); }}
                 disabled={uploading || isEditing}
-                className="w-9 h-9 rounded-full grid place-items-center shrink-0 transition hover:bg-foreground/5 text-foreground disabled:opacity-40"
-                aria-label="Send photo or video"
+                className={`w-9 h-9 rounded-full grid place-items-center shrink-0 transition bg-foreground/[0.06] hover:bg-foreground/10 text-foreground/70 disabled:opacity-40 ${showAttachMenu ? "ring-2 ring-foreground/15" : ""}`}
+                aria-label="Attachments"
               >
-                {uploading ? <Loader2 size={20} className="animate-spin" /> : <ImageIcon size={20} />}
-              </button>
-              <button
-                onClick={() => setShowTrackSheet(true)}
-                disabled={sending || isEditing}
-                className="w-9 h-9 rounded-full grid place-items-center shrink-0 transition hover:bg-foreground/5 text-foreground disabled:opacity-40"
-                aria-label="Send a song"
-              >
-                <Music2 size={20} />
-              </button>
-              <button
-                onClick={() => setShowEmoji((v) => !v)}
-                className={`w-9 h-9 rounded-full grid place-items-center shrink-0 transition hover:bg-foreground/5 ${showEmoji ? "text-foreground bg-foreground/5" : "text-foreground/60"}`}
-                aria-label="Emoji"
-              >
-                <Smile size={20} />
+                {uploading ? <Loader2 size={20} className="animate-spin" /> : <Plus size={20} />}
               </button>
               <textarea
                 ref={textAreaRef}
@@ -638,6 +639,28 @@ export default function ChatView({ conversation, otherUser, conversations, onBac
                 </button>
               )}
             </div>
+          </div>
+        )}
+        {showAttachMenu && !recording && (
+          <div className="px-3 pb-2 flex flex-wrap gap-2">
+            <button
+              onClick={() => { fileInputRef.current?.click(); setShowAttachMenu(false); }}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-foreground/[0.06] hover:bg-foreground/10 transition text-sm text-foreground/70"
+            >
+              <ImageIcon size={16} /> Photo
+            </button>
+            <button
+              onClick={() => { setShowTrackSheet(true); setShowAttachMenu(false); }}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-foreground/[0.06] hover:bg-foreground/10 transition text-sm text-foreground/70"
+            >
+              <Music2 size={16} /> Song
+            </button>
+            <button
+              onClick={() => { setShowEmoji(true); setShowAttachMenu(false); }}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-foreground/[0.06] hover:bg-foreground/10 transition text-sm text-foreground/70"
+            >
+              <Smile size={16} /> Emoji
+            </button>
           </div>
         )}
         {showEmoji && !recording && (
