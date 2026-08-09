@@ -33,6 +33,7 @@ import ProfileSong from "@/components/profile/ProfileSong";
 import TopTracks from "@/components/profile/TopTracks";
 import ProfileComments from "@/components/profile/ProfileComments";
 import GenreTags from "@/components/profile/GenreTags";
+import ProfileSongTint from "@/components/profile/ProfileSongTint";
 
 function safeUrl(u) {
   if (!u) return undefined;
@@ -326,6 +327,8 @@ export default function Profile() {
 
           </label>
           }
+
+        <ProfileSongTint trackId={editMode ? form.featured_track_id : profile?.featured_track_id} />
 
         {/* Identity, stats, actions */}
         <div className="relative z-10 px-4 md:px-8 pb-6 md:pb-8 pt-20 sm:pt-24 md:pt-28">
