@@ -11,7 +11,6 @@ import {
   Shield,
   ChevronsLeft,
   ChevronsRight,
-  MessageCircle,
 } from "lucide-react";
 import Avatar from "@/components/Avatar";
 import Logo from "@/components/Logo";
@@ -25,7 +24,6 @@ const NAV = [
   { to: "/top", label: "Top Charts", icon: TrendingUp },
   { to: "/recent", label: "Recently Added", icon: Clock },
   { to: "/library", label: "Library", icon: LibraryIcon },
-  { to: "/messages", label: "Public Network", icon: MessageCircle },
 ];
 
 const EASE = "transition-all duration-300 ease-out";
