@@ -46,7 +46,7 @@ function safeUrl(u) {
 
 export default function Profile() {
   const { id } = useParams();
-  const { user: me } = useAuth();
+  const { user: me, checkUserAuth } = useAuth();
   const isOwn = !id || id === me?.id;
   const targetId = isOwn ? me?.id : id;
 
@@ -100,7 +100,7 @@ export default function Profile() {
     setLoading(true);
     try {
       let prof = isOwn ?
-      me :
+      await base44.auth.me().catch(() => me) :
       await base44.entities.User.get(targetId).catch(() => null);
       if (!prof) {
         setProfile(null);
@@ -233,6 +233,7 @@ async function saveProfile() {
         ...form,
         full_name: form.display_name || prev?.full_name
       }));
+      checkUserAuth();
     } finally {
       setSaving(false);
     }
