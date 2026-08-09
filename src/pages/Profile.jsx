@@ -415,14 +415,7 @@ export default function Profile() {
                 {!editMode && profile.pronouns &&
                   <span className="text-sm text-foreground/40">{profile.pronouns}</span>
                   }
-                {editMode &&
-                  <input
-                    value={form.pronouns}
-                    onChange={(e) => setForm((f) => ({ ...f, pronouns: e.target.value }))}
-                    placeholder="Pronouns"
-                    className="text-sm text-foreground/40 bg-transparent border-b border-border focus:outline-none w-32 px-1 pb-0.5" />
 
-                  }
               </div>
 
               {!editMode &&
