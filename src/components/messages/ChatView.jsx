@@ -448,10 +448,10 @@ export default function ChatView({ conversation, otherUser, conversations, onBac
   return (
     <div className="flex flex-col h-full bg-background">
       {/* Header */}
-      <div className="flex items-center gap-2.5 px-3 py-2.5 border-b border-border/40 bg-background/80 backdrop-blur-xl sticky top-0 z-10">
+      <div className="relative flex items-center justify-center gap-2.5 px-3 py-2.5 border-b border-border/40 bg-background/80 backdrop-blur-xl sticky top-0 z-10">
         <button
           onClick={onBack}
-          className="md:hidden p-1.5 -ml-1 rounded-full hover:bg-foreground/5 transition"
+          className="md:hidden p-1.5 absolute left-1 rounded-full hover:bg-foreground/5 transition"
           aria-label="Back"
         >
           <ArrowLeft size={22} className="text-foreground" />
@@ -463,9 +463,9 @@ export default function ChatView({ conversation, otherUser, conversations, onBac
             {(otherUser.display_name || "?").charAt(0).toUpperCase()}
           </div>
         )}
-        <div className="flex-1 min-w-0">
-          <h2 className="text-[16px] font-semibold truncate text-foreground">{otherUser.display_name}</h2>
-          {isOtherTyping && <p className="text-[12px] text-foreground/50 truncate">typing…</p>}
+        <div className="min-w-0">
+          <h2 className="text-[16px] font-semibold truncate text-foreground text-center">{otherUser.display_name}</h2>
+          {isOtherTyping && <p className="text-[12px] text-foreground/50 truncate text-center">typing…</p>}
         </div>
       </div>
 
