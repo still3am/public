@@ -31,9 +31,7 @@ export default function Upload() {
     );
   }
 
-  const readyCount = q.items.filter(
-    (it) => it.status === "ready" && !it.detecting && !(it.dupeOf && !it.dupeOverride)
-  ).length;
+  const readyCount = q.items.filter((it) => it.status === "ready").length;
   const doneCount = q.uploadedCount;
   const busy = q.items.some((it) => ["uploading", "enhancing"].includes(it.status));
 

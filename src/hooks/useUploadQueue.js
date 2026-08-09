@@ -140,25 +140,7 @@ export function useUploadQueue({ user, isAdmin }) {
       // too noisy to match reliably) against every track already on the app.
       const finalTitle = meta?.title?.trim() || title;
       const finalArtist = artist || meta?.artist?.trim() || "";
-
-      // The bulk list is capped at 5000 newest tracks, so older duplicates
-      // would be missed. Do a targeted exact-title lookup to catch matches
-      // anywhere on the platform — not just the first 5000.
-      let platformTracks = allTracksRef.current || [];
-      if (finalTitle) {
-        const exactHits = await base44.entities.Track
-          .filter({ title: finalTitle })
-          .catch(() => []);
-        if (exactHits?.length) {
-          const seen = new Set(platformTracks.map((t) => t.id));
-          platformTracks = [
-            ...platformTracks,
-            ...exactHits.filter((t) => !seen.has(t.id)),
-          ];
-        }
-      }
-
-      const hits = findDuplicateTracks(platformTracks, {
+      const hits = findDuplicateTracks(allTracksRef.current || [], {
         title: finalTitle,
         artist: finalArtist,
         duration,
@@ -166,15 +148,6 @@ export function useUploadQueue({ user, isAdmin }) {
       });
       if (hits.length) {
         const hit = hits[0];
-        // Mark the item itself as a duplicate so the upload button is blocked
-        // until the user explicitly overrides or removes it.
-        patch(item.id, {
-          dupeOf: {
-            title: hit.title,
-            artist: hit.artist || hit.uploader_name || "",
-            matchScore: hit._match_score,
-          },
-        });
         setDupes((prev) => {
           const cur = prev || [];
           if (cur.some((d) => d.id === item.id)) return cur;
@@ -191,8 +164,6 @@ export function useUploadQueue({ user, isAdmin }) {
             },
           ];
         });
-      } else {
-        patch(item.id, { dupeOf: null, dupeOverride: false });
       }
     });
   }
@@ -200,12 +171,6 @@ export function useUploadQueue({ user, isAdmin }) {
   const remove = (id) => setItems((prev) => prev.filter((it) => it.id !== id));
 
   async function uploadOne(item) {
-    if (item.dupeOf && !item.dupeOverride) {
-      patch(item.id, {
-        error: "Duplicate detected — remove it or tap 'Upload anyway' to override.",
-      });
-      return;
-    }
     patch(item.id, { status: "uploading", error: "" });
     try {
       const { file_url } = await base44.integrations.Core.UploadFile({ file: item.file });
@@ -254,9 +219,7 @@ export function useUploadQueue({ user, isAdmin }) {
   // Uploads the whole queue with limited concurrency so big batches stay fast
   // without hammering the network.
   async function uploadAll() {
-    const pending = items.filter(
-      (it) => it.status === "ready" && !(it.dupeOf && !it.dupeOverride)
-    );
+    const pending = items.filter((it) => it.status === "ready");
     if (!pending.length) return;
     const CONCURRENCY = 3;
     let cursor = 0;
