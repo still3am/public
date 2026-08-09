@@ -3,15 +3,19 @@ import { base44 } from "@/api/base44Client";
 import { useAuth } from "@/lib/AuthContext";
 import MessageBubble from "@/components/messages/MessageBubble";
 import TrackSendSheet from "@/components/messages/TrackSendSheet";
-import { ArrowLeft, Send, Music2, Users, Loader2 } from "lucide-react";
+import { ArrowLeft, ArrowUp, Music2, Users, Loader2 } from "lucide-react";
 
-function timeLabel(dateStr) {
-  if (!dateStr) return "";
+function groupTimestamp(dateStr) {
   const d = new Date(dateStr);
   const now = new Date();
   const isToday = d.toDateString() === now.toDateString();
-  if (isToday) return d.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
-  return d.toLocaleDateString([], { month: "short", day: "numeric" });
+  const yesterday = new Date(now);
+  yesterday.setDate(yesterday.getDate() - 1);
+  const isYesterday = d.toDateString() === yesterday.toDateString();
+  const time = d.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
+  if (isToday) return `Today ${time}`;
+  if (isYesterday) return `Yesterday ${time}`;
+  return `${d.toLocaleDateString([], { month: "short", day: "numeric" })} ${time}`;
 }
 
 export default function ChatView({ conversation, otherUser, onBack }) {
@@ -44,7 +48,6 @@ export default function ChatView({ conversation, otherUser, onBack }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [conversation.id]);
 
-  // Real-time: subscribe to new messages in this conversation
   useEffect(() => {
     const unsubscribe = base44.entities.Message.subscribe((event) => {
       if (event.data?.conversation_id !== conversation.id) return;
@@ -63,12 +66,10 @@ export default function ChatView({ conversation, otherUser, onBack }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [conversation.id]);
 
-  // Scroll to bottom on new messages
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  // Mark received messages as read
   useEffect(() => {
     const unread = messages.filter((m) => m.recipient_id === me.id && !m.read);
     if (unread.length === 0) return;
@@ -94,7 +95,6 @@ export default function ChatView({ conversation, otherUser, onBack }) {
         read: false,
       });
       setMessages((prev) => [...prev, msg]);
-      // Update conversation's last message preview
       await base44.entities.Conversation.update(conversation.id, {
         last_message_text: trimmed,
         last_message_at: new Date().toISOString(),
@@ -145,73 +145,89 @@ export default function ChatView({ conversation, otherUser, onBack }) {
     }
   }
 
-  // Group messages by sender for avatar display
-  let prevSenderId = null;
+  const hasText = text.trim().length > 0;
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col h-full bg-background">
       {/* Header */}
-      <div className="flex items-center gap-3 px-3 py-3 border-b border-border bg-background/80 backdrop-blur-xl sticky top-0 z-10">
+      <div className="flex items-center gap-2 px-2 py-2 border-b border-border/50 bg-background/80 backdrop-blur-xl sticky top-0 z-10">
         <button
           onClick={onBack}
-          className="md:hidden p-2 -ml-1 rounded-full hover:bg-foreground/5"
+          className="md:hidden p-1.5 -ml-0.5 rounded-full hover:bg-foreground/5"
           aria-label="Back"
         >
-          <ArrowLeft size={20} />
+          <ArrowLeft size={24} style={{ color: "#007AFF" }} />
         </button>
         {otherUser.avatar_url ? (
-          <img src={otherUser.avatar_url} alt="" className="w-9 h-9 rounded-full object-cover" />
+          <img src={otherUser.avatar_url} alt="" className="w-8 h-8 rounded-full object-cover" />
         ) : (
-          <div className="w-9 h-9 rounded-full bg-foreground/10 grid place-items-center text-sm font-bold text-foreground/50">
+          <div className="w-8 h-8 rounded-full bg-foreground/10 grid place-items-center text-xs font-bold text-foreground/50">
             {(otherUser.display_name || "?").charAt(0).toUpperCase()}
           </div>
         )}
-        <div className="flex-1 min-w-0">
-          <h2 className="text-sm font-bold truncate">{otherUser.display_name}</h2>
-        </div>
+        <h2 className="text-[15px] font-semibold truncate" style={{ color: "#007AFF" }}>
+          {otherUser.display_name}
+        </h2>
       </div>
 
       {/* Messages */}
-      <div ref={scrollRef} className="flex-1 overflow-y-auto px-3 py-4 space-y-1.5">
+      <div ref={scrollRef} className="flex-1 overflow-y-auto px-3 py-2">
         {loading ? (
           <div className="grid place-items-center py-20">
-            <Loader2 className="animate-spin text-foreground/40" />
+            <Loader2 className="animate-spin text-foreground/30" />
           </div>
         ) : messages.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-20 text-foreground/40">
-            <Users size={32} className="mb-3" />
+            <Users size={28} className="mb-3" />
             <p className="text-sm text-center max-w-xs">
-              No messages yet. Say hi or send a song to start the conversation.
+              No messages yet. Say hi or send a song.
             </p>
           </div>
         ) : (
-          messages.map((m, i) => {
-            const isMine = m.sender_id === me.id;
-            const showAvatar = m.sender_id !== prevSenderId;
-            prevSenderId = m.sender_id;
-            return (
-              <MessageBubble
-                key={m.id}
-                message={m}
-                isMine={isMine}
-                showAvatar={showAvatar}
-                senderAvatar={m.sender_avatar_url}
-              />
-            );
-          })
+          <div className="space-y-0.5">
+            {messages.map((m, i) => {
+              const isMine = m.sender_id === me.id;
+              const prev = i > 0 ? messages[i - 1] : null;
+              const next = i < messages.length - 1 ? messages[i + 1] : null;
+              const timeGap = prev ? new Date(m.created_date) - new Date(prev.created_date) : Infinity;
+              const senderChanged = !prev || prev.sender_id !== m.sender_id;
+              const showTimestamp = !prev || senderChanged || timeGap > 5 * 60 * 1000;
+              const isFirstInGroup = !prev || prev.sender_id !== m.sender_id || timeGap > 60 * 1000;
+              const isLastFromMe = isMine && (!next || next.sender_id !== me.id);
+
+              return (
+                <div key={m.id}>
+                  {showTimestamp && (
+                    <div className="text-center text-[11px] text-foreground/40 my-3 font-medium">
+                      {groupTimestamp(m.created_date)}
+                    </div>
+                  )}
+                  <div className={isFirstInGroup ? "mt-1.5" : ""}>
+                    <MessageBubble
+                      message={m}
+                      isMine={isMine}
+                      isFirstInGroup={isFirstInGroup}
+                      showReadReceipt={isLastFromMe}
+                    />
+                  </div>
+                </div>
+              );
+            })}
+            <div ref={bottomRef} />
+          </div>
         )}
-        <div ref={bottomRef} />
       </div>
 
       {/* Composer */}
-      <div className="px-3 py-3 border-t border-border bg-background/80 backdrop-blur-xl">
+      <div className="px-2.5 py-2 bg-background border-t border-border/30">
         <div className="flex items-end gap-2">
           <button
             onClick={() => setShowTrackSheet(true)}
-            className="w-10 h-10 rounded-full grid place-items-center bg-foreground/5 hover:bg-foreground/10 transition shrink-0"
+            className="w-8 h-8 rounded-full grid place-items-center shrink-0 transition"
+            style={{ color: "#007AFF" }}
             aria-label="Send a song"
           >
-            <Music2 size={18} />
+            <Music2 size={22} />
           </button>
           <textarea
             value={text}
@@ -222,18 +238,22 @@ export default function ChatView({ conversation, otherUser, onBack }) {
                 sendText();
               }
             }}
-            placeholder="Message..."
+            placeholder="iMessage"
             rows={1}
-            className="flex-1 resize-none max-h-32 px-4 py-2.5 rounded-2xl border border-border bg-card text-[15px] leading-relaxed focus:outline-none focus:ring-1 focus:ring-foreground/20"
+            className="flex-1 resize-none max-h-32 px-4 py-1.5 rounded-[20px] bg-[#E9E9EB] dark:bg-[#1C1C1E] text-[15px] leading-relaxed border-0 focus:outline-none placeholder:text-foreground/40"
+            style={{ minHeight: "36px" }}
           />
-          <button
-            onClick={sendText}
-            disabled={!text.trim() || sending}
-            className="w-10 h-10 rounded-full grid place-items-center bg-foreground text-background disabled:opacity-30 transition shrink-0"
-            aria-label="Send"
-          >
-            {sending ? <Loader2 size={18} className="animate-spin" /> : <Send size={18} />}
-          </button>
+          {hasText && (
+            <button
+              onClick={sendText}
+              disabled={sending}
+              className="w-8 h-8 rounded-full grid place-items-center shrink-0 transition disabled:opacity-50"
+              style={{ backgroundColor: "#007AFF" }}
+              aria-label="Send"
+            >
+              {sending ? <Loader2 size={16} className="animate-spin text-white" /> : <ArrowUp size={18} className="text-white" />}
+            </button>
+          )}
         </div>
       </div>
 
