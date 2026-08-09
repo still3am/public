@@ -85,12 +85,12 @@ export default function Profile() {
   const [featuredCoverUrl, setFeaturedCoverUrl] = useState("");
   useEffect(() => {
     const tid = profile?.featured_track_id;
-    if (!tid) {setFeaturedCoverUrl("");return;}
+    if (!tid) { setFeaturedCoverUrl(""); return; }
     let cancelled = false;
-    base44.entities.Track.get(tid).
-    then((t) => {if (!cancelled) setFeaturedCoverUrl(t?.cover_art_url || "");}).
-    catch(() => {if (!cancelled) setFeaturedCoverUrl("");});
-    return () => {cancelled = true;};
+    base44.entities.Track.get(tid)
+      .then((t) => { if (!cancelled) setFeaturedCoverUrl(t?.cover_art_url || ""); })
+      .catch(() => { if (!cancelled) setFeaturedCoverUrl(""); });
+    return () => { cancelled = true; };
   }, [profile?.featured_track_id]);
 
   const coverUrl = useCoverUrl(featuredCoverUrl);
@@ -123,9 +123,9 @@ export default function Profile() {
         top_track_ids: prof.top_track_ids || []
       });
       // Owners see all their own tracks (pending/private/approved); others only see approved ones.
-      const trackFilter = isOwn ?
-      { uploader_id: targetId } :
-      { uploader_id: targetId, is_published: true };
+      const trackFilter = isOwn
+        ? { uploader_id: targetId }
+        : { uploader_id: targetId, is_published: true };
       const [t, followsToMe, followsFromMe, relToUser] = await Promise.all([
       base44.entities.Track.filter(trackFilter, "-created_date", 100),
       base44.entities.Follow.filter({ following_id: targetId }, "-created_date", 1000),
@@ -209,7 +209,7 @@ export default function Profile() {
     }
   }
 
-  async function saveProfile() {
+async function saveProfile() {
     setSaving(true);
     try {
       await base44.auth.updateMe({
@@ -296,32 +296,32 @@ export default function Profile() {
 
   return (
     <PullToRefresh onRefresh={load}>
-    {coverUrl &&
+    {coverUrl && (
       <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
         <div
           className="absolute inset-0 animate-[herobreathebright_9s_ease-in-out_infinite]"
           style={{
             backgroundImage:
-            `radial-gradient(circle at 25% 25%, ${bgPrimary} 0, transparent 52%),` +
-            `radial-gradient(circle at 75% 75%, ${bgSecondary} 0, transparent 52%),` +
-            `radial-gradient(circle at 50% 90%, ${bgAccent} 0, transparent 52%)`,
+              `radial-gradient(circle at 25% 25%, ${bgPrimary} 0, transparent 52%),` +
+              `radial-gradient(circle at 75% 75%, ${bgSecondary} 0, transparent 52%),` +
+              `radial-gradient(circle at 50% 90%, ${bgAccent} 0, transparent 52%)`,
             filter: "blur(38px) saturate(1.8) brightness(1.2)",
-            mixBlendMode: "multiply"
-          }} />
-        
+            mixBlendMode: "multiply",
+          }}
+        />
         <div
           className="absolute -inset-5 animate-[herobreathebright_11s_ease-in-out_infinite] [animation-delay:-3s]"
           style={{
             backgroundImage:
-            `radial-gradient(circle at 35% 30%, ${bgPrimary} 0, transparent 48%),` +
-            `radial-gradient(circle at 70% 72%, ${bgSecondary} 0, transparent 48%),` +
-            `radial-gradient(circle at 50% 50%, ${bgAccent} 0, transparent 45%)`,
+              `radial-gradient(circle at 35% 30%, ${bgPrimary} 0, transparent 48%),` +
+              `radial-gradient(circle at 70% 72%, ${bgSecondary} 0, transparent 48%),` +
+              `radial-gradient(circle at 50% 50%, ${bgAccent} 0, transparent 45%)`,
             filter: "blur(44px) saturate(1.9) brightness(1.3)",
-            mixBlendMode: "screen"
-          }} />
-        
+            mixBlendMode: "screen",
+          }}
+        />
       </div>
-      }
+    )}
     <div className="max-w-6xl mx-auto relative z-10">
       <div className="flex flex-col md:flex-row gap-4 md:gap-6 mb-8">
       <div className="relative rounded-2xl overflow-hidden ring-1 ring-inset ring-foreground/10 bg-card flex-1 min-w-0">
@@ -331,221 +331,221 @@ export default function Profile() {
             <div className="relative shrink-0">
               <div className="rounded-full bg-background p-1 inline-block ring-1 ring-foreground/10 shadow-sm">
                 <Avatar
-                      user={{ ...profile, avatar_url: avatarUrl }}
-                      size={128}
-                      className="md:!w-40 md:!h-40 lg:!w-48 lg:!h-48" />
+                    user={{ ...profile, avatar_url: avatarUrl }}
+                    size={128}
+                    className="md:!w-40 md:!h-40 lg:!w-48 lg:!h-48" />
 
               </div>
               {editMode &&
-                  <label className="absolute bottom-1 right-1 p-2 rounded-full bg-foreground text-background cursor-pointer shadow-lg">
+                <label className="absolute bottom-1 right-1 p-2 rounded-full bg-foreground text-background cursor-pointer shadow-lg">
                   {uploadingAvatar ?
-                    <Loader2 size={14} className="animate-spin" /> :
+                  <Loader2 size={14} className="animate-spin" /> :
 
-                    <Pencil size={14} />
-                    }
+                  <Pencil size={14} />
+                  }
                   <input
-                      type="file"
-                      accept="image/*"
-                      className="hidden"
-                      onChange={(e) => {
-                        const f = e.target.files?.[0];
-                        if (f) uploadAvatar(f);
-                      }} />
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    onChange={(e) => {
+                      const f = e.target.files?.[0];
+                      if (f) uploadAvatar(f);
+                    }} />
                   
                 </label>
-                  }
+                }
             </div>
 
-            <div className="flex-1 min-w-0 w-full md:w-auto text-center">
+            <div className="flex-1 min-w-0 w-full md:w-auto text-center md:text-left">
               <div className="flex items-baseline gap-2 flex-wrap justify-center md:justify-start">
                 {editMode ?
-                    <input
-                      value={form.display_name}
-                      onChange={(e) => setForm((f) => ({ ...f, display_name: e.target.value }))}
-                      className="text-2xl md:text-4xl font-extrabold tracking-tight w-full max-w-2xl bg-transparent border-b border-border focus:outline-none pb-1"
-                      placeholder="Display name" /> :
+                  <input
+                    value={form.display_name}
+                    onChange={(e) => setForm((f) => ({ ...f, display_name: e.target.value }))}
+                    className="text-2xl md:text-4xl font-extrabold tracking-tight w-full max-w-2xl bg-transparent border-b border-border focus:outline-none pb-1"
+                    placeholder="Display name" /> :
 
 
-                    <h1 className="text-xl md:text-3xl lg:text-4xl font-extrabold tracking-tight">
+                  <h1 className="text-xl md:text-3xl lg:text-4xl font-extrabold tracking-tight">
                     {displayName}
                   </h1>
-                    }
+                  }
                 {!editMode && profile.pronouns &&
-                    <span className="text-sm text-foreground/40">{profile.pronouns}</span>
-                    }
+                  <span className="text-sm text-foreground/40">{profile.pronouns}</span>
+                  }
 
               </div>
 
               {!editMode &&
-                  <div className="flex flex-wrap items-center justify-center md:justify-start gap-x-3 gap-y-1 text-xs text-foreground/40 mt-1.5">
+                <div className="flex flex-wrap items-center justify-center md:justify-start gap-x-3 gap-y-1 text-xs text-foreground/40 mt-1.5">
                   {profile.location &&
-                    <span className="inline-flex items-center gap-1">
+                  <span className="inline-flex items-center gap-1">
                       <MapPin size={12} /> {profile.location}
                     </span>
-                    }
+                  }
                   {profile.created_date &&
-                    <span className="inline-flex items-center gap-1">
+                  <span className="inline-flex items-center gap-1">
                       <Calendar size={12} /> Joined{" "}
                       {new Date(profile.created_date).toLocaleDateString(undefined, {
-                        month: "short",
-                        year: "numeric"
-                      })}
+                      month: "short",
+                      year: "numeric"
+                    })}
                     </span>
-                    }
-                </div>
                   }
+                </div>
+                }
 
               <div className="flex flex-wrap items-center justify-center md:justify-start gap-x-4 gap-y-1 mt-2.5 text-sm md:text-base">
                 <span><span className="font-bold">{formatNumber(stats.followers)}</span> <span className="text-foreground/50">followers</span></span>
                 <span><span className="font-bold">{formatNumber(stats.following)}</span> <span className="text-foreground/50">following</span></span>
-                
+                {stats.plays > 0 && <span><span className="font-bold">{formatNumber(stats.plays)}</span> <span className="text-foreground/50">plays</span></span>}
                 {stats.likes > 0 && <span><span className="font-bold">{formatNumber(stats.likes)}</span> <span className="text-foreground/50">likes</span></span>}
               </div>
 
               {editMode ?
-                  <textarea
-                    value={form.bio}
-                    onChange={(e) => setForm((f) => ({ ...f, bio: e.target.value }))}
-                    placeholder="Add a bio"
-                    className="mt-3 w-full max-w-2xl px-3 py-2 rounded-lg border border-border bg-background text-sm"
-                    rows={2} /> :
+                <textarea
+                  value={form.bio}
+                  onChange={(e) => setForm((f) => ({ ...f, bio: e.target.value }))}
+                  placeholder="Add a bio"
+                  className="mt-3 w-full max-w-2xl px-3 py-2 rounded-lg border border-border bg-background text-sm"
+                  rows={2} /> :
 
 
-                  profile.bio &&
-                  <p className="text-sm md:text-base text-foreground/70 max-w-2xl mt-2.5 leading-relaxed mx-auto md:mx-0">
+                profile.bio &&
+                <p className="text-sm md:text-base text-foreground/70 max-w-2xl mt-2.5 leading-relaxed mx-auto md:mx-0">
                     {profile.bio}
                   </p>
 
-                  }
+                }
 
 
 
               {!editMode && (
-                  profile.website || profile.instagram || profile.twitter || profile.soundcloud) &&
+                profile.website || profile.instagram || profile.twitter || profile.soundcloud) &&
 
-                  <div className="flex flex-wrap gap-2 mt-2.5 justify-center md:justify-start">
+                <div className="flex flex-wrap gap-2 mt-2.5 justify-center md:justify-start">
                   {profile.website &&
-                    <a href={safeUrl(profile.website)} target="_blank" rel="noreferrer" className="chip">
+                  <a href={safeUrl(profile.website)} target="_blank" rel="noreferrer" className="chip">
                       <Globe size={12} /> Website
                     </a>
-                    }
+                  }
                   {profile.instagram &&
-                    <a
-                      href={`https://instagram.com/${profile.instagram.replace(/^@/, "")}`}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="chip">
+                  <a
+                    href={`https://instagram.com/${profile.instagram.replace(/^@/, "")}`}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="chip">
                     
                       <AtSign size={12} /> {profile.instagram}
                     </a>
-                    }
+                  }
                   {profile.twitter &&
-                    <a
-                      href={`https://twitter.com/${profile.twitter.replace(/^@/, "")}`}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="chip">
+                  <a
+                    href={`https://twitter.com/${profile.twitter.replace(/^@/, "")}`}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="chip">
                     
                       <AtSign size={12} /> {profile.twitter}
                     </a>
-                    }
+                  }
                   {profile.soundcloud &&
-                    <a href={safeUrl(profile.soundcloud)} target="_blank" rel="noreferrer" className="chip">
+                  <a href={safeUrl(profile.soundcloud)} target="_blank" rel="noreferrer" className="chip">
                       <Music size={12} /> SoundCloud
                     </a>
-                    }
-                </div>
                   }
+                </div>
+                }
 
               <div className="flex items-center gap-2 md:gap-3 mt-3 flex-wrap justify-center md:justify-start">
                 {isOwn ?
-                    editMode ?
-                    <>
+                  editMode ?
+                  <>
                       <button
-                        onClick={saveProfile}
-                        disabled={saving}
-                        title="Save"
-                        aria-label="Save changes"
-                        className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-foreground text-background grid place-items-center disabled:opacity-40">
+                      onClick={saveProfile}
+                      disabled={saving}
+                      title="Save"
+                      aria-label="Save changes"
+                      className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-foreground text-background grid place-items-center disabled:opacity-40">
                         {saving ? <Loader2 size={16} className="animate-spin" /> : <Save size={16} />}
                       </button>
                       <button
-                        onClick={() => setEditMode(false)}
-                        title="Cancel"
-                        aria-label="Cancel editing"
-                        className="w-10 h-10 md:w-12 md:h-12 rounded-full border border-border grid place-items-center">
+                      onClick={() => setEditMode(false)}
+                      title="Cancel"
+                      aria-label="Cancel editing"
+                      className="w-10 h-10 md:w-12 md:h-12 rounded-full border border-border grid place-items-center">
                         <X size={16} />
                       </button>
                     </> :
-                    <button
-                      onClick={() => setEditMode(true)}
-                      title="Edit profile"
-                      aria-label="Edit profile"
-                      className="w-10 h-10 md:w-12 md:h-12 rounded-full border border-border grid place-items-center">
+                  <button
+                    onClick={() => setEditMode(true)}
+                    title="Edit profile"
+                    aria-label="Edit profile"
+                    className="w-10 h-10 md:w-12 md:h-12 rounded-full border border-border grid place-items-center">
                     <Pencil size={16} />
                   </button> :
-                    <button
-                      onClick={toggleFollow}
-                      title={following ? "Following (click to unfollow)" : "Follow"}
-                      aria-label={following ? "Unfollow" : "Follow"}
-                      className={`w-10 h-10 md:w-12 md:h-12 rounded-full grid place-items-center transition ${
-                      following ? "border border-border" : "bg-foreground text-background"}`}>
+                  <button
+                    onClick={toggleFollow}
+                    title={following ? "Following (click to unfollow)" : "Follow"}
+                    aria-label={following ? "Unfollow" : "Follow"}
+                    className={`w-10 h-10 md:w-12 md:h-12 rounded-full grid place-items-center transition ${
+                    following ? "border border-border" : "bg-foreground text-background"}`}>
                     {following ? <UserCheck size={16} /> : <UserPlus size={16} />}
                   </button>
-                    }
+                  }
                 {!editMode &&
-                    <button
-                      onClick={shareProfile}
-                      title={copied ? "Copied!" : "Share"}
-                      aria-label="Share profile"
-                      className="w-10 h-10 md:w-12 md:h-12 rounded-full border border-border grid place-items-center">
+                  <button
+                    onClick={shareProfile}
+                    title={copied ? "Copied!" : "Share"}
+                    aria-label="Share profile"
+                    className="w-10 h-10 md:w-12 md:h-12 rounded-full border border-border grid place-items-center">
                     <Share2 size={16} />
                   </button>
-                    }
+                  }
                 {!editMode &&
-                    <button
-                      onClick={() => setShowQR(true)}
-                      title="QR code"
-                      aria-label="Show QR code"
-                      className="w-10 h-10 md:w-12 md:h-12 rounded-full border border-border grid place-items-center">
+                  <button
+                    onClick={() => setShowQR(true)}
+                    title="QR code"
+                    aria-label="Show QR code"
+                    className="w-10 h-10 md:w-12 md:h-12 rounded-full border border-border grid place-items-center">
                     <QrCode size={16} />
                   </button>
-                    }
+                  }
                   {isOwn && !editMode &&
-                    <button
-                      onClick={() => setShowSettings(true)}
-                      title="Settings"
-                      aria-label="Settings"
-                      className="w-10 h-10 md:w-12 md:h-12 rounded-full border border-border grid place-items-center">
+                  <button
+                    onClick={() => setShowSettings(true)}
+                    title="Settings"
+                    aria-label="Settings"
+                    className="w-10 h-10 md:w-12 md:h-12 rounded-full border border-border grid place-items-center">
                     <Settings size={16} />
                   </button>
-                    }
+                  }
               </div>
             </div>
           </div>
         </div>
       </div>
-      {(editMode || profile?.featured_track_id) &&
-          <div className="md:w-80 lg:w-96 shrink-0">
+      {(editMode || profile?.featured_track_id) && (
+        <div className="md:w-80 lg:w-96 shrink-0">
           <ProfileSong
-              trackId={editMode ? form.featured_track_id : profile?.featured_track_id}
-              editMode={editMode}
-              userTracks={tracks}
-              onChange={(id) => setForm((f) => ({ ...f, featured_track_id: id }))}
-              fillHeight />
-            
+            trackId={editMode ? form.featured_track_id : profile?.featured_track_id}
+            editMode={editMode}
+            userTracks={tracks}
+            onChange={(id) => setForm((f) => ({ ...f, featured_track_id: id }))}
+            fillHeight
+          />
         </div>
-          }
+      )}
       </div>
 
       {isOwn && !editMode && <GenreTags />}
 
       <TopTracks
-          trackIds={editMode ? form.top_track_ids : profile?.top_track_ids || []}
-          editMode={editMode}
-          userTracks={tracks}
-          onChange={(ids) => setForm((f) => ({ ...f, top_track_ids: ids }))} />
-        
+        trackIds={editMode ? form.top_track_ids : profile?.top_track_ids || []}
+        editMode={editMode}
+        userTracks={tracks}
+        onChange={(ids) => setForm((f) => ({ ...f, top_track_ids: ids }))}
+      />
 
       {!editMode && !isOwn && topTracks.length > 0 && !(profile?.top_track_ids?.length > 0) &&
         <div className="mb-8">
@@ -553,9 +553,9 @@ export default function Profile() {
             <BarChart2 size={18} /> Top Tracks
           </h2>
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
-            {topTracks.map((t) =>
-            <TrackCard key={t.id} track={t} />
-            )}
+            {topTracks.map((t) => (
+              <TrackCard key={t.id} track={t} />
+            ))}
           </div>
         </div>
         }
@@ -565,8 +565,8 @@ export default function Profile() {
       {showSettings && isOwn &&
         <SettingsSheet
           onClose={() => setShowSettings(false)}
-          onDeleteAccount={() => setShowDelete(true)} />
-
+          onDeleteAccount={() => setShowDelete(true)}
+        />
         }
 
       {showDelete &&
