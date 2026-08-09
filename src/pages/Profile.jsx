@@ -33,6 +33,8 @@ import ProfileSong from "@/components/profile/ProfileSong";
 import TopTracks from "@/components/profile/TopTracks";
 import ProfileComments from "@/components/profile/ProfileComments";
 import GenreTags from "@/components/profile/GenreTags";
+import { useColorPalette } from "@/hooks/useColorPalette";
+import { useCoverUrl } from "@/hooks/useCoverUrl";
 
 function safeUrl(u) {
   if (!u) return undefined;
@@ -81,6 +83,20 @@ export default function Profile() {
     featured_track_id: "",
     top_track_ids: []
   });
+
+  const [featuredCoverUrl, setFeaturedCoverUrl] = useState("");
+  useEffect(() => {
+    const tid = profile?.featured_track_id;
+    if (!tid) { setFeaturedCoverUrl(""); return; }
+    let cancelled = false;
+    base44.entities.Track.get(tid)
+      .then((t) => { if (!cancelled) setFeaturedCoverUrl(t?.cover_art_url || ""); })
+      .catch(() => { if (!cancelled) setFeaturedCoverUrl(""); });
+    return () => { cancelled = true; };
+  }, [profile?.featured_track_id]);
+
+  const coverUrl = useCoverUrl(featuredCoverUrl);
+  const [bgPrimary, bgSecondary, bgAccent] = useColorPalette(coverUrl);
 
   async function load() {
     setLoading(true);
@@ -297,7 +313,21 @@ export default function Profile() {
 
   return (
     <PullToRefresh onRefresh={load}>
-    <div className="max-w-5xl mx-auto">
+    {coverUrl && (
+      <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
+        <div
+          className="absolute inset-0 animate-[herobreathe_9s_ease-in-out_infinite]"
+          style={{
+            backgroundImage:
+              `radial-gradient(circle at 25% 25%, ${bgPrimary} 0, transparent 48%),` +
+              `radial-gradient(circle at 75% 75%, ${bgSecondary} 0, transparent 48%),` +
+              `radial-gradient(circle at 50% 90%, ${bgAccent} 0, transparent 50%)`,
+            filter: "blur(40px) saturate(1.4)",
+          }}
+        />
+      </div>
+    )}
+    <div className="max-w-5xl mx-auto relative z-10">
       {!isOwn && <BackHeader title={displayName} />}
       <div className="relative rounded-2xl overflow-hidden ring-1 ring-inset ring-foreground/10 mb-8 bg-card">
         {/* Banner as background */}
