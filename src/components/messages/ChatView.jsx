@@ -447,7 +447,7 @@ export default function ChatView({ conversation, otherUser, conversations, onBac
   const isEditing = !!editingMessage;
 
   return (
-    <div className="flex flex-col h-full bg-background">
+    <div className="flex flex-col flex-1 min-h-0 bg-background">
       {/* Header */}
       <div className="relative flex items-center justify-center px-3 py-2 border-b border-border/40 bg-background/80 backdrop-blur-xl sticky top-0 z-10">
         <button
