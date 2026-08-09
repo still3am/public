@@ -65,7 +65,7 @@ export default function Profile() {
   const [deleting, setDeleting] = useState(false);
   const [saving, setSaving] = useState(false);
   const [uploadingAvatar, setUploadingAvatar] = useState(false);
-  const [uploadingBanner, setUploadingBanner] = useState(false);
+
   const [form, setForm] = useState({
     display_name: "",
     bio: "",
@@ -209,21 +209,7 @@ export default function Profile() {
     }
   }
 
-  async function uploadBanner(file) {
-    setUploadingBanner(true);
-    try {
-      const { file_url } = await base44.integrations.Core.UploadFile({ file });
-      setForm((f) => ({ ...f, banner_url: file_url }));
-    } catch {
-      alert(
-        "Profile image uploads are temporarily unavailable. Please try again later."
-      );
-    } finally {
-      setUploadingBanner(false);
-    }
-  }
-
-  async function saveProfile() {
+async function saveProfile() {
     setSaving(true);
     try {
       await base44.auth.updateMe({
@@ -305,7 +291,6 @@ export default function Profile() {
   if (!profile) return <EmptyState title="User not found" />;
 
   const displayName = profile.display_name || profile.full_name || "Unnamed";
-  const banner = editMode ? form.banner_url : profile.banner_url;
   const avatarUrl = editMode ? form.avatar_url : profile.avatar_url;
 
 
@@ -339,35 +324,8 @@ export default function Profile() {
     )}
     <div className="max-w-5xl mx-auto relative z-10">
       <div className="relative rounded-2xl overflow-hidden ring-1 ring-inset ring-foreground/10 mb-8 bg-card">
-        {/* Banner as background */}
-        <div className="absolute inset-x-0 top-0 h-40 sm:h-48 md:h-60 bg-gradient-to-br from-violet-500/[0.15] via-foreground/[0.05] to-amber-400/[0.15]">
-          {banner && <img src={banner} alt="" className="w-full h-full object-cover" />}
-          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-background" />
-        </div>
-        {editMode &&
-          <label className="absolute inset-x-0 top-0 h-40 sm:h-48 md:h-60 z-30 pointer-events-none">
-            <span className="absolute top-3 right-3 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-foreground/70 text-white text-xs font-semibold pointer-events-auto cursor-pointer active:scale-95 transition">
-              {uploadingBanner ?
-              <Loader2 size={12} className="animate-spin" /> :
-              <>
-                <Upload size={12} /> Change banner
-              </>
-              }
-            </span>
-            <input
-              type="file"
-              accept="image/*"
-              className="hidden"
-              onChange={(e) => {
-                const f = e.target.files?.[0];
-                if (f) uploadBanner(f);
-              }} />
-
-          </label>
-          }
-
         {/* Identity, stats, actions */}
-        <div className="relative z-10 px-4 md:px-8 pb-6 md:pb-8 pt-20 sm:pt-24 md:pt-28">
+        <div className="relative z-10 px-4 md:px-8 pb-6 md:pb-8 pt-6 md:pt-8">
           <div className="flex flex-col items-center md:flex-row md:items-end gap-4 md:gap-6">
             <div className="relative shrink-0">
               <div className="rounded-full bg-background p-1.5 inline-block ring-1 ring-foreground/10 shadow-sm">
