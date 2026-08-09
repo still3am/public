@@ -126,9 +126,9 @@ export default function Messages() {
       setActiveConv(conv);
     } catch {
 
+
       // Could not create conversation
     }}
-
   function openConversation(conv) {
     setActiveConv(conv);
     setUnreadMap((prev) => ({ ...prev, [conv.id]: 0 }));
@@ -198,7 +198,7 @@ export default function Messages() {
         {/* Header */}
         <div className="px-4 pt-3 pb-2">
           <div className="flex items-center justify-between">
-            <h1 className="text-[28px] font-bold tracking-tight hidden">Public Network</h1>
+            
             <div className="flex items-center gap-1">
               <button
                 onClick={() => {
