@@ -355,7 +355,7 @@ async function saveProfile() {
                 }
             </div>
 
-            <div className="flex-1 min-w-0 w-full md:w-auto text-center md:text-left my-3">
+            <div className="flex-1 min-w-0 w-full md:w-auto text-center md:text-left">
               <div className="flex items-baseline gap-2 flex-wrap justify-center md:justify-start">
                 {editMode ?
                   <input
@@ -394,7 +394,7 @@ async function saveProfile() {
                 </div>
                 }
 
-              <div className="flex flex-wrap items-center justify-center md:justify-start gap-x-5 gap-y-1 mt-3 text-sm">
+              <div className="flex flex-wrap items-center justify-center md:justify-start gap-x-4 gap-y-1 mt-2.5 text-sm">
                 <span><span className="font-bold">{formatNumber(stats.followers)}</span> <span className="text-foreground/50">followers</span></span>
                 <span><span className="font-bold">{formatNumber(stats.following)}</span> <span className="text-foreground/50">following</span></span>
                 {stats.plays > 0 && <span><span className="font-bold">{formatNumber(stats.plays)}</span> <span className="text-foreground/50">plays</span></span>}
@@ -411,7 +411,7 @@ async function saveProfile() {
 
 
                 profile.bio &&
-                <p className="text-sm text-foreground/70 max-w-2xl mt-3 leading-relaxed mx-auto md:mx-0">
+                <p className="text-sm text-foreground/70 max-w-2xl mt-2.5 leading-relaxed mx-auto md:mx-0">
                     {profile.bio}
                   </p>
 
@@ -422,7 +422,7 @@ async function saveProfile() {
               {!editMode && (
                 profile.website || profile.instagram || profile.twitter || profile.soundcloud) &&
 
-                <div className="flex flex-wrap gap-2 mt-3 justify-center md:justify-start">
+                <div className="flex flex-wrap gap-2 mt-2.5 justify-center md:justify-start">
                   {profile.website &&
                   <a href={safeUrl(profile.website)} target="_blank" rel="noreferrer" className="chip">
                       <Globe size={12} /> Website
@@ -456,7 +456,7 @@ async function saveProfile() {
                 </div>
                 }
 
-              <div className="flex items-center gap-2 mt-4 flex-wrap justify-center md:justify-start">
+              <div className="flex items-center gap-2 mt-3 flex-wrap justify-center md:justify-start">
                 {isOwn ?
                   editMode ?
                   <>
