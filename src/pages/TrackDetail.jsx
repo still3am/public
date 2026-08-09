@@ -197,7 +197,7 @@ export default function TrackDetail() {
     icon: Download,
     label: "Download",
     onClick: () => {
-      if (track.audio_url) window.open(track.audio_url, "_blank");
+      if (track.audio_url && /^https?:\/\//i.test(track.audio_url)) window.open(track.audio_url, "_blank");
       setMenuOpen(false);
     }
   });
