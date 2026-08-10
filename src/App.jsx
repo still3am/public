@@ -9,6 +9,7 @@ import ProtectedRoute from '@/components/ProtectedRoute';
 import { Navigate } from 'react-router-dom';
 import { PlayerProvider } from '@/context/PlayerContext';
 import { LibraryProvider } from '@/context/LibraryContext';
+import { UploadProvider } from '@/context/UploadContext';
 import Layout from '@/components/Layout';
 import Login from '@/pages/Login';
 import Register from '@/pages/Register';
@@ -102,7 +103,9 @@ function App() {
         <Router>
           <PlayerProvider>
             <LibraryProvider>
-              <AuthenticatedApp />
+              <UploadProvider>
+                <AuthenticatedApp />
+              </UploadProvider>
             </LibraryProvider>
           </PlayerProvider>
         </Router>

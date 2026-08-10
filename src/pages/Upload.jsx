@@ -6,14 +6,14 @@ import BackHeader from "@/components/BackHeader";
 import FileDropZone from "@/components/upload/FileDropZone";
 import UploadItem from "@/components/upload/UploadItem";
 import DuplicateModal from "@/components/upload/DuplicateModal";
-import { useUploadQueue } from "@/hooks/useUploadQueue";
+import { useUpload } from "@/context/UploadContext";
 import { AUDIO_ACCEPT, IMAGE_ACCEPT } from "@/lib/audio-utils";
 
 export default function Upload() {
   const { user } = useAuth();
   const isAdmin = user?.role === "admin";
   const inputRef = useRef(null);
-  const q = useUploadQueue({ user: user || {}, isAdmin });
+  const q = useUpload();
   const { loading: loadingSwitch, enabled: uploadsEnabled } = useUploadsEnabled();
 
   if (!loadingSwitch && !uploadsEnabled && !isAdmin) {
