@@ -110,12 +110,13 @@ export function useUploadQueue({ user, isAdmin }) {
       // retina displays.
       const rawCover = embedded || pendingCoverRef.current || null;
       const cover = rawCover ? await ensureHighResCover(rawCover) : null;
+      const coverPreviewUrl = cover ? URL.createObjectURL(cover) : "";
       patch(item.id, {
         duration,
         title,
         artist,
         coverFile: cover,
-        coverPreviewUrl: cover ? URL.createObjectURL(cover) : "",
+        coverPreviewUrl,
         status: "ready",
       });
 
@@ -159,7 +160,7 @@ export function useUploadQueue({ user, isAdmin }) {
               title: finalTitle,
               artist: finalArtist,
               duration,
-              coverPreviewUrl: cover ? URL.createObjectURL(cover) : "",
+              coverPreviewUrl,
               existingBy: hit.uploader_name || hit.artist || "",
               existingIsMine: hit.uploader_id === user.id,
             },
@@ -169,7 +170,14 @@ export function useUploadQueue({ user, isAdmin }) {
     });
   }
 
-  const remove = (id) => setItems((prev) => prev.filter((it) => it.id !== id));
+  const remove = (id) =>
+    setItems((prev) => {
+      const item = prev.find((it) => it.id === id);
+      if (item?.coverPreviewUrl) {
+        try { URL.revokeObjectURL(item.coverPreviewUrl); } catch {}
+      }
+      return prev.filter((it) => it.id !== id);
+    });
 
   async function uploadOne(item) {
     patch(item.id, { status: "uploading", error: "" });

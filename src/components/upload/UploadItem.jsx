@@ -52,6 +52,7 @@ export default function UploadItem({
           disabled={locked}
           onPick={async (file) => {
           const hi = await ensureHighResCover(file);
+          if (item.coverPreviewUrl) { try { URL.revokeObjectURL(item.coverPreviewUrl); } catch {} }
           onChange({ coverFile: hi, coverPreviewUrl: URL.createObjectURL(hi) });
           }} />
 
