@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { GENRES } from "@/lib/audio-utils";
 import { Loader2, X, Save, Trash2 } from "lucide-react";
@@ -19,12 +19,25 @@ export default function EditTrackModal({ track, onClose, onSaved, onDeleted }) {
   const [saving, setSaving] = useState(false);
   const [deleting, setDeleting] = useState(false);
 
+  // Revoke any blob: preview URL when the modal closes so picking a new cover
+  // repeatedly doesn't leak object URLs.
+  useEffect(() => {
+    return () => {
+      if (coverPreview?.startsWith("blob:")) {
+        try { URL.revokeObjectURL(coverPreview); } catch {}
+      }
+    };
+  }, [coverPreview]);
+
   function patch(p) {
     setForm((f) => ({ ...f, ...p }));
   }
 
   function pickCover(file) {
     setCover(file);
+    if (coverPreview?.startsWith("blob:")) {
+      try { URL.revokeObjectURL(coverPreview); } catch {}
+    }
     if (file) setCoverPreview(URL.createObjectURL(file));
   }
 
