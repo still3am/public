@@ -295,7 +295,7 @@ export default function TrackDetail() {
 
 
                 <div className="w-5 h-5 rounded-full bg-foreground/10 grid place-items-center text-[9px] font-semibold">
-                        {(uploader.display_name || uploader.email || "?").charAt(0)}
+                        {(uploader.display_name || uploader.full_name || uploader.email || "?").charAt(0)}
                       </div>
                 }
                     {uploader.display_name || uploader.full_name || "Unknown"}
