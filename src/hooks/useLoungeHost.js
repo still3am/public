@@ -70,7 +70,7 @@ export function useLoungeHost() {
         const code = generateLoungeCode();
         active = await base44.entities.LoungeSession.create({
           host_id: user.id,
-          host_name: user.full_name || "",
+          host_name: user.display_name || user.full_name || "",
           name: "",
           code,
           is_active: true,
@@ -85,7 +85,7 @@ export function useLoungeHost() {
           await base44.entities.LoungeMember.create({
             session_id: active.id,
             user_id: user.id,
-            name: user.full_name || "",
+            name: user.display_name || user.full_name || "",
             role: "host",
             status: "approved",
           });

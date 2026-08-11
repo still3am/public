@@ -59,7 +59,7 @@ export default function Lounge() {
           const m = await base44.entities.LoungeMember.create({
             session_id: s.id,
             user_id: user.id,
-            name: user.full_name || "",
+            name: user.display_name || user.full_name || "",
             role: "host",
             status: "approved",
           });
@@ -68,7 +68,7 @@ export default function Lounge() {
           const m = await base44.entities.LoungeMember.create({
             session_id: s.id,
             user_id: user.id,
-            name: user.full_name || "",
+            name: user.display_name || user.full_name || "",
             role: "guest",
             status: "pending",
           });
@@ -283,7 +283,7 @@ function GuestQueuePicker({ sessionId, user, onClose, onAdded }) {
         track_id: t.id,
         track: JSON.stringify(slim),
         added_by_id: user?.id,
-        added_by_name: user?.full_name || "",
+        added_by_name: user?.display_name || user?.full_name || "",
       });
       setJustAdded((prev) => new Set(prev).add(t.id));
       onAdded?.(true);
