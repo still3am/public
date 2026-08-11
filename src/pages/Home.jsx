@@ -259,7 +259,7 @@ export default function Home() {
                {greeting}
             </span>
             <h1 className="text-4xl md:text-6xl font-extrabold tracking-tighter mb-3 max-w-2xl leading-[1.02]">
-              {user?.display_name ? `Hey, ${user.display_name}.` : "Welcome to PUBLIC."}
+              {(user?.display_name || user?.full_name) ? `Hey, ${user.display_name || user.full_name}.` : "Welcome to PUBLIC."}
             </h1>
             <p className="text-foreground/55 max-w-md text-sm md:text-base mb-5 mx-auto">
               Listen, upload, and share — a space for sound, made by the people, for the people.

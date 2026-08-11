@@ -7,6 +7,56 @@
       "default": false,
       "description": "When true, the user is blocked from the platform"
     },
+    "display_name": {
+      "type": "string",
+      "default": "",
+      "description": "User-chosen display name shown across the app; falls back to full_name when empty"
+    },
+    "bio": {
+      "type": "string",
+      "default": "",
+      "description": "Profile bio text"
+    },
+    "avatar_url": {
+      "type": "string",
+      "default": "",
+      "description": "Profile avatar image URL"
+    },
+    "banner_url": {
+      "type": "string",
+      "default": "",
+      "description": "Profile banner image URL"
+    },
+    "location": {
+      "type": "string",
+      "default": "",
+      "description": "User location"
+    },
+    "pronouns": {
+      "type": "string",
+      "default": "",
+      "description": "User pronouns"
+    },
+    "website": {
+      "type": "string",
+      "default": "",
+      "description": "User personal website URL"
+    },
+    "instagram": {
+      "type": "string",
+      "default": "",
+      "description": "Instagram handle or URL"
+    },
+    "twitter": {
+      "type": "string",
+      "default": "",
+      "description": "Twitter / X handle or URL"
+    },
+    "soundcloud": {
+      "type": "string",
+      "default": "",
+      "description": "SoundCloud handle or URL"
+    },
     "status_message": {
       "type": "string",
       "default": "",
