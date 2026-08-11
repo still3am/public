@@ -359,8 +359,10 @@ function GuestQueuePicker({ sessionId, user, onClose, onAdded }) {
 // ---------------- Live shared queue ----------------
 function LoungeQueueList({ sessionId, isHost }) {
   const p = usePlayer();
+  const { toast } = useToast();
   const [items, setItems] = useState([]);
   const [loadingQ, setLoadingQ] = useState(true);
+  const [removingId, setRemovingId] = useState("");
 
   const load = useCallback(async () => {
     try {
@@ -393,6 +395,19 @@ function LoungeQueueList({ sessionId, isHost }) {
   const parsed = items
     .map((it) => ({ ...parseTrack(it.track), _row: it }))
     .filter((x) => x && x.id);
+
+  const removeItem = async (rowId) => {
+    setRemovingId(rowId);
+    try {
+      await base44.functions.invoke("loungeRemoveQueueItem", { queue_item_id: rowId });
+      // The subscription will refresh the list across all devices — no local
+      // optimisation needed.
+    } catch {
+      toast({ title: "Couldn't remove track", variant: "destructive" });
+    } finally {
+      setRemovingId("");
+    }
+  };
 
   return (
     <div className="rounded-2xl border border-border bg-foreground/[0.02] p-3 mb-3">
@@ -429,14 +444,28 @@ function LoungeQueueList({ sessionId, isHost }) {
                     {t._row.added_by_name ? ` · added by ${t._row.added_by_name}` : ""}
                   </div>
                 </div>
-                {isHost && (
+                <div className="flex items-center gap-1 shrink-0">
+                  {isHost && (
+                    <button
+                      onClick={() => p.playTrackAt([t])}
+                      className="shrink-0 text-xs font-semibold px-3 py-1.5 rounded-full bg-foreground text-background active:scale-90 transition"
+                    >
+                      {playing ? "Now" : "Play"}
+                    </button>
+                  )}
                   <button
-                    onClick={() => p.playTrackAt([t])}
-                    className="shrink-0 text-xs font-semibold px-3 py-1.5 rounded-full bg-foreground text-background active:scale-90 transition"
+                    onClick={() => removeItem(t._row.id)}
+                    disabled={removingId === t._row.id}
+                    className="shrink-0 w-7 h-7 rounded-full grid place-items-center text-foreground/40 hover:text-destructive hover:bg-destructive/10 active:scale-90 transition disabled:opacity-40"
+                    aria-label="Remove from queue"
                   >
-                    {playing ? "Now" : "Play"}
+                    {removingId === t._row.id ? (
+                      <Loader2 size={13} className="animate-spin" />
+                    ) : (
+                      <X size={14} />
+                    )}
                   </button>
-                )}
+                </div>
               </div>
             );
           })}
