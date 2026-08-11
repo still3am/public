@@ -51,8 +51,9 @@ Deno.serve(async (req) => {
                 instagram: '',
                 twitter: '',
                 soundcloud: '',
-                favorite_genres: [],
-                is_verified: false,
+                status_message: '',
+                featured_track_id: '',
+                top_track_ids: [],
               },
             }
           )

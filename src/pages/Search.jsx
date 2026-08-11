@@ -8,7 +8,6 @@ import {
   Mic2,
   Disc3,
   X,
-  Shield,
   ArrowLeft } from
 "lucide-react";
 import { base44 } from "@/api/base44Client";
@@ -244,11 +243,6 @@ function ArtistRow({ artist, trackCount, onPick }) {
                       <div className="min-w-0 flex-1">
                         <div className="text-sm font-semibold truncate flex items-center gap-1">
                           {u.display_name || u.full_name || "Unnamed"}
-                          {u.is_verified && <Shield size={12} className="text-foreground/40" />}
-                          {u.can_upload &&
-                    <span className="text-[10px] px-1.5 py-0.5 rounded bg-foreground/10 text-foreground/60">
-                              uploader
-                            </span>}
                         </div>
                         <div className="text-xs text-foreground/50 truncate">{u.email}</div>
                       </div>
