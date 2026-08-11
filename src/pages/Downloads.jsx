@@ -176,7 +176,7 @@ export default function Downloads() {
             <DragDropContext onDragStart={() => setDragging(true)} onDragEnd={onDragEnd}>
               <Droppable droppableId="downloads">
                 {(dropProvided) => (
-                <div ref={dropProvided.innerRef} {...dropProvided.droppableProps} className="space-y-1">
+                <div ref={dropProvided.innerRef} {...dropProvided.droppableProps} className="space-y-1 touch-pan-y">
                   {tracks.map((t, i) => {
                   const here = isCurrent(t.id);
                   const playingHere = here && p.isPlaying;
