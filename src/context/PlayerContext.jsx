@@ -945,8 +945,13 @@ export function PlayerProvider({ children }) {
             // after a pause/resume even though it reports "playing" — the
             // classic "volume disappears when I press play again" bug. A tiny
             // seek nudge forces WebKit to re-arm the graph's audio output.
-            // Only when the graph is active (routed); native playback is fine.
-            if (audioCtxRef.current && isFinite(a.currentTime)) {
+            // Only on iOS (the bug is WebKit-specific); on other browsers the
+            // nudge is an audible backward skip that sounds like a stutter.
+            const isIOS =
+              typeof navigator !== "undefined" &&
+              (/iPad|iPhone|iPod/.test(navigator.userAgent) ||
+                (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1));
+            if (isIOS && audioCtxRef.current && isFinite(a.currentTime)) {
               try {
                 a.currentTime = Math.max(0, a.currentTime - 0.05);
               } catch {}
