@@ -80,7 +80,7 @@ export default function PlayerBar() {
           opacity: 1 - Math.min(dragY / 200, 0.6),
           transition: drag.current.active ? "none" : "transform .25s ease, opacity .25s ease, left .3s ease-out"
         }}
-        className={`fixed left-0 right-0 z-30 bg-background/90 backdrop-blur-xl border-t border-border player-bar-mobile-bottom touch-none transition-[left] duration-300 ease-out ${
+        className={`fixed left-0 right-0 z-30 bg-background/90 backdrop-blur-xl border-t border-border player-bar-mobile-bottom touch-none transition-[left] duration-300 ease-out [will-change:left] ${
         collapsed ? "md:left-[68px]" : "md:left-64"}`
         }>
         {/* progress (mobile - thin top accent) */}

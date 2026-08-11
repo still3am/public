@@ -55,7 +55,7 @@ export default function Sidebar() {
 
   return (
     <aside
-      className={`hidden md:flex flex-col shrink-0 relative isolate z-10 border-r border-border bg-background h-screen sticky top-0 overflow-hidden transition-[width] duration-300 ease-out ${
+      className={`hidden md:flex flex-col shrink-0 relative isolate z-10 border-r border-border bg-background h-screen sticky top-0 overflow-hidden transition-[width] duration-300 ease-out [will-change:width] ${
         collapsed ? "w-[68px]" : "w-64"
       }`}
     >
