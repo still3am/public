@@ -9,6 +9,7 @@ import { useEffect, useState } from "react";
 // Results are cached so scrolling doesn't re-fetch the same cover twice.
 
 const IMAGE_EXT_RE = /\.(jpe?g|png|gif|webp|avif|bmp|tiff?|svg)$/i;
+const WIX_MEDIA_HOSTS = ["media.base44.com", "static.wixstatic.com"];
 const blobCache = new Map();
 
 function needsFix(url) {
@@ -18,9 +19,31 @@ function needsFix(url) {
   return true;
 }
 
+// Normalize Wix Media URLs that lack a file extension (e.g. trailing-dot
+// URLs from the old file host) by stripping the trailing dot and appending
+// .webp. This lets the Image component's transform pipeline resize and
+// serve them via CDN instead of falling through to the slow blob-fetch.
+function fixWixMediaUrl(url) {
+  try {
+    const u = new URL(url);
+    if (!WIX_MEDIA_HOSTS.includes(u.hostname)) return null;
+    const segments = u.pathname.split("/");
+    const last = segments[segments.length - 1];
+    if (!last) return null;
+    const cleaned = last.replace(/\.+$/, "");
+    if (IMAGE_EXT_RE.test(cleaned)) return null;
+    segments[segments.length - 1] = cleaned + ".webp";
+    return `${u.origin}${segments.join("/")}${u.search}${u.hash}`;
+  } catch {
+    return null;
+  }
+}
+
 export function useCoverUrl(url) {
   const [fixed, setFixed] = useState(() => {
     if (!url) return "";
+    const wixFixed = fixWixMediaUrl(url);
+    if (wixFixed) return wixFixed;
     if (!needsFix(url)) return url;
     return blobCache.get(url) || "";
   });
@@ -28,6 +51,11 @@ export function useCoverUrl(url) {
   useEffect(() => {
     if (!url) {
       setFixed("");
+      return;
+    }
+    const wixFixed = fixWixMediaUrl(url);
+    if (wixFixed) {
+      setFixed(wixFixed);
       return;
     }
     if (!needsFix(url)) {
