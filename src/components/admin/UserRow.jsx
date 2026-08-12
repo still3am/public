@@ -7,7 +7,7 @@ export default function UserRow({ u, uploads = 0, busy, onToggleBlock, onDelete 
       <Avatar user={u} size={36} />
       <div className="min-w-0 flex-1">
         <div className="text-sm font-semibold truncate flex items-center gap-1.5">
-          {u.full_name || u.email}
+          {u.display_name || u.full_name || u.email}
           {u.role === "admin" && (
             <span className="chip !py-0.5 !px-2 !text-[10px]">admin</span>
           )}

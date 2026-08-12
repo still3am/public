@@ -38,7 +38,7 @@ export default function UsersManager() {
   };
 
   const remove = async (u) => {
-    if (!window.confirm(`Delete ${u.full_name || u.email}? This cannot be undone.`)) return;
+    if (!window.confirm(`Delete ${u.display_name || u.full_name || u.email}? This cannot be undone.`)) return;
     setBusyId(u.id);
     await base44.entities.User.delete(u.id);
     setUsers((prev) => prev.filter((x) => x.id !== u.id));
@@ -50,6 +50,7 @@ export default function UsersManager() {
     (u) =>
       !term ||
       (u.full_name || "").toLowerCase().includes(term) ||
+      (u.display_name || "").toLowerCase().includes(term) ||
       (u.email || "").toLowerCase().includes(term)
   );
 
