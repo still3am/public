@@ -4,7 +4,6 @@ import { base44 } from "@/api/base44Client";
 import { useAuth } from "@/lib/AuthContext";
 import { useToast } from "@/components/ui/use-toast";
 import { usePlayer } from "@/context/PlayerContext";
-import BackHeader from "@/components/BackHeader";
 import { useLibrary } from "@/context/LibraryContext";
 import { fetchSessionByCode, loungeUrl, parseTrack } from "@/lib/lounge";
 import { getRecentPlays } from "@/lib/recentPlays";
@@ -116,7 +115,6 @@ export default function Lounge() {
 
   return (
     <div className="min-h-screen pb-10">
-      <BackHeader title={session?.name || (session?.host_name ? `${session.host_name}'s Lounge` : "Lounge")} />
       <div className="max-w-xl mx-auto px-4">
         {loading ? (
           <div className="flex justify-center py-24">

@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
-import BackHeader from "@/components/BackHeader";
 import TrackCard from "@/components/TrackCard";
 import PullToRefresh from "@/components/PullToRefresh";
 import ArtistNameEditor from "@/components/ArtistNameEditor";
@@ -188,8 +187,6 @@ export default function PublicRecords({ id: propId }) {
   return (
     <PullToRefresh onRefresh={load}>
       <div className="max-w-4xl mx-auto pb-16">
-        <BackHeader title="Public Records" />
-
         {/* Hero */}
         <section className="relative rounded-3xl overflow-hidden border border-border bg-card mb-6">
           <div className="relative h-36 md:h-52">

@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
-import BackHeader from "@/components/BackHeader";
 import PullToRefresh from "@/components/PullToRefresh";
 import { Loader2, Mic2, Disc3 } from "lucide-react";
 
@@ -215,7 +214,6 @@ export default function PublicRecordsIndex() {
 
   return (
     <div className="max-w-3xl mx-auto px-4 pb-10">
-      <BackHeader title="Public Records" />
       
 
       

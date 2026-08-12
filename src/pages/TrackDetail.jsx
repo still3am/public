@@ -5,7 +5,6 @@ import { useAuth } from "@/lib/AuthContext";
 import { usePlayer } from "@/context/PlayerContext";
 import EmptyState from "@/components/EmptyState";
 import EditTrackModal from "@/components/EditTrackModal";
-import BackHeader from "@/components/BackHeader";
 import ArtistLinks from "@/components/ArtistLinks";
 import {
   Loader2,
@@ -235,8 +234,6 @@ export default function TrackDetail() {
 
   return (
     <div className="max-w-3xl mx-auto">
-      <BackHeader title="Track" />
-
       {/* Hero */}
       <div className="relative rounded-3xl overflow-hidden border border-border mb-6 md:mb-8">
         {track.cover_art_url &&

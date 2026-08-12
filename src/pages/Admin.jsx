@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { ShieldCheck, Music2, Flag, Lightbulb, Wand2, Ban, Users } from "lucide-react";
 import { useAuth } from "@/lib/AuthContext";
-import BackHeader from "@/components/BackHeader";
 import ApprovalsManager from "@/components/admin/ApprovalsManager";
 import SuggestionsManager from "@/components/admin/SuggestionsManager";
 import ReportsManager from "@/components/admin/ReportsManager";
@@ -31,8 +30,6 @@ export default function Admin() {
 
   return (
     <div className="min-h-dvh pb-24 md:pb-12">
-      <BackHeader title="Admin" />
-
       {denied ? (
         <div className="max-w-3xl mx-auto px-5 mt-20 text-center text-muted-foreground">
           <Music2 size={32} className="mx-auto mb-3 opacity-40" />

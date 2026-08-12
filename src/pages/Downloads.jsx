@@ -15,7 +15,6 @@ import { usePlayer } from "@/context/PlayerContext";
 import { useOfflineCache } from "@/hooks/useOfflineCache";
 import { formatTime, bytesToReadable } from "@/lib/audio-utils";
 import PullToRefresh from "@/components/PullToRefresh";
-import BackHeader from "@/components/BackHeader";
 import DownloadCover from "@/components/DownloadCover";
 import { useToast } from "@/components/ui/use-toast";
 
@@ -95,7 +94,6 @@ export default function Downloads() {
 
   return (
     <div className="max-w-3xl mx-auto px-4 md:px-6 main-content">
-      <BackHeader title="PUBLIC OFFLINE" />
 
       
 
