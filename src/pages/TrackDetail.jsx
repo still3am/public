@@ -70,7 +70,7 @@ export default function TrackDetail() {
           filter(
             (x) =>
             x.id !== t.id &&
-            x.is_published !== false &&
+            x.is_published === true &&
             splitNames(x.artist).some((n) => names.includes(n))
           ).
           slice(0, 6)

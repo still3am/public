@@ -48,7 +48,7 @@ export default function ScoreboardTrackCount({ count = 0 }) {
         )}
       </span>
       <span className="flex items-center gap-1.5 text-sm md:text-base font-bold text-foreground/70 uppercase tracking-wide">
-        
+        <Music size={14} className="text-foreground/40" />
         <span>{count === 1 ? "track" : "tracks"}</span>
       </span>
     </div>);
