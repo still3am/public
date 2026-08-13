@@ -1,15 +1,13 @@
-import { Star } from "lucide-react";
-
 const MESSAGES = [
   "Made by the people, for the people.",
   "New Music Weekly",
 ];
 
-function MarqueeItem({ text, icon }) {
+function MarqueeItem({ text }) {
   return (
-    <span className="inline-flex items-center gap-3 px-6 text-[11px] font-semibold uppercase tracking-[0.25em]">
+    <span className="px-6 text-[11px] font-semibold uppercase tracking-[0.25em]">
       {text}
-      {icon}
+      <span className="px-6 text-background/30">·</span>
     </span>
   );
 }
@@ -18,19 +16,7 @@ export default function ScrollingBanner() {
   const items = [];
   for (let i = 0; i < 8; i++) {
     const msg = MESSAGES[i % MESSAGES.length];
-    items.push(
-      <MarqueeItem
-        key={i}
-        text={msg}
-        icon={
-          <Star
-            size={9}
-            className="fill-background/60 text-background/60 shrink-0"
-            strokeWidth={0}
-          />
-        }
-      />
-    );
+    items.push(<MarqueeItem key={i} text={msg} />);
   }
 
   return (
