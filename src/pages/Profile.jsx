@@ -31,6 +31,7 @@ import ProfileSong from "@/components/profile/ProfileSong";
 import TopTracks from "@/components/profile/TopTracks";
 import ProfileComments from "@/components/profile/ProfileComments";
 import GenreTags from "@/components/profile/GenreTags";
+import FollowListModal from "@/components/profile/FollowListModal";
 import { useColorPalette } from "@/hooks/useColorPalette";
 import { useCoverUrl } from "@/hooks/useCoverUrl";
 
@@ -65,6 +66,7 @@ export default function Profile() {
   const [deleting, setDeleting] = useState(false);
   const [saving, setSaving] = useState(false);
   const [uploadingAvatar, setUploadingAvatar] = useState(false);
+  const [followList, setFollowList] = useState(null);
 
   const [form, setForm] = useState({
     display_name: "",
@@ -396,8 +398,12 @@ async function saveProfile() {
                 }
 
               <div className="flex flex-wrap items-center justify-center md:justify-start gap-x-4 gap-y-1 mt-2.5 text-sm md:text-base">
-                <span><span className="font-bold">{formatNumber(stats.followers)}</span> <span className="text-foreground/50">followers</span></span>
-                <span><span className="font-bold">{formatNumber(stats.following)}</span> <span className="text-foreground/50">following</span></span>
+                <button onClick={() => setFollowList("followers")} className="hover:underline transition">
+                  <span className="font-bold">{formatNumber(stats.followers)}</span> <span className="text-foreground/50">followers</span>
+                </button>
+                <button onClick={() => setFollowList("following")} className="hover:underline transition">
+                  <span className="font-bold">{formatNumber(stats.following)}</span> <span className="text-foreground/50">following</span>
+                </button>
                 {stats.plays > 0 && <span><span className="font-bold">{formatNumber(stats.plays)}</span> <span className="text-foreground/50">plays</span></span>}
                 {stats.likes > 0 && <span><span className="font-bold">{formatNumber(stats.likes)}</span> <span className="text-foreground/50">likes</span></span>}
               </div>
@@ -614,6 +620,13 @@ async function saveProfile() {
           avatar={profile.avatar_url}
           onClose={() => setShowQR(false)} />
 
+        }
+
+      {followList &&
+        <FollowListModal
+          userId={targetId}
+          type={followList}
+          onClose={() => setFollowList(null)} />
         }
     </div>
     </PullToRefresh>);
