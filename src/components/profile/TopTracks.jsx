@@ -131,7 +131,7 @@ export default function TopTracks({ trackIds, editMode, userTracks, onChange }) 
       {editMode && pinnedTracks.length > 0 && pinnedTracks.length < 8 &&
       <button
         onClick={() => setPickerOpen(true)}
-        className="mt-3 px-4 py-2 rounded-full border border-border text-sm font-semibold hover:bg-foreground/5 transition">
+        className="mt-3 px-4 py-2 rounded-full border border-border text-sm font-semibold hover:bg-foreground/5 transition hidden">
         
           Add more
         </button>
