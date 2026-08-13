@@ -128,14 +128,14 @@ export default function TopTracks({ trackIds, editMode, userTracks, onChange }) 
           + Pin your top 8 tracks
         </button> :
       null}
-      {editMode && pinnedTracks.length > 0 && pinnedTracks.length < 8 &&
-      <button
-        onClick={() => setPickerOpen(true)}
-        className="mt-3 px-4 py-2 rounded-full border border-border text-sm font-semibold hover:bg-foreground/5 transition hidden">
-        
-          Add more
-        </button>
-      }
+      
+
+
+
+
+
+
+      
       {pickerOpen &&
       <TrackPickerSheet
         title="Choose your Top 8"
