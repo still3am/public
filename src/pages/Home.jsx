@@ -34,7 +34,7 @@ function Section({ title, icon: Icon, children, seeAllTo }) {
     <section className="mb-10 md:mb-12">
       <div className="flex items-end justify-between mb-3.5 px-3 md:px-0">
         <h2 className="text-lg md:text-2xl font-extrabold tracking-tight flex items-center gap-2.5">
-          {Icon && <Icon size={18} className="text-foreground/50 shrink-0" />}
+          {Icon && <Icon size={18} className="text-foreground/50 shrink-0 hidden" />}
           {title}
         </h2>
         {seeAllTo &&
@@ -150,11 +150,11 @@ export default function Home() {
         if (!tr?.genre) continue;
         genrePlays[tr.genre] = (genrePlays[tr.genre] || 0) + (tr.play_count || 0);
       }
-      const genres = Object.entries(genrePlays)
-        .sort((a, b) => b[1] - a[1])
-        .slice(0, 3)
-        .map(([g]) => g)
-        .filter(Boolean);
+      const genres = Object.entries(genrePlays).
+      sort((a, b) => b[1] - a[1]).
+      slice(0, 3).
+      map(([g]) => g).
+      filter(Boolean);
       const fallback = ["Electronic", "Hip-Hop", "Ambient"];
       const finalGenres = genres.length ? genres : fallback;
       const perGenre = await Promise.all(
@@ -179,16 +179,16 @@ export default function Home() {
       // seed personalization from day one, recent plays refine it over time.
       const onboardGenres = await getUserGenres();
       const genreSet = new Set(onboardGenres);
-      const userGenres = Object.entries(genreFreq)
-        .sort((a, b) => b[1] - a[1])
-        .map(([g]) => g)
-        .filter((g) => !genreSet.has(g));
+      const userGenres = Object.entries(genreFreq).
+      sort((a, b) => b[1] - a[1]).
+      map(([g]) => g).
+      filter((g) => !genreSet.has(g));
       const allUserGenres = [...onboardGenres, ...userGenres].slice(0, 5);
       let discoverPicks = [];
       if (allUserGenres.length) {
         const perUserGenre = await Promise.all(
           allUserGenres.map((g) =>
-            base44.entities.Track.filter({ is_published: true, genre: g }, "-created_date", 30).catch(() => [])
+          base44.entities.Track.filter({ is_published: true, genre: g }, "-created_date", 30).catch(() => [])
           )
         );
         const pool = perUserGenre.flat().filter((tr) => tr && !playedIds.has(tr.id));
@@ -255,7 +255,7 @@ export default function Home() {
                {greeting}
             </span>
             <h1 className="text-4xl md:text-6xl font-extrabold tracking-tighter mb-3 max-w-2xl leading-[1.02]">
-              {(user?.display_name || user?.full_name) ? `Hey, ${user.display_name || user.full_name}.` : "Welcome to PUBLIC."}
+              {user?.display_name || user?.full_name ? `Hey, ${user.display_name || user.full_name}.` : "Welcome to PUBLIC."}
             </h1>
             <p className="text-foreground/55 max-w-md text-sm md:text-base mb-5 mx-auto">
               Listen, upload, and share — a space for sound, made by the people, for the people.
@@ -279,18 +279,18 @@ export default function Home() {
         </div>
 
         <Section title="Trending" icon={TrendingUp} seeAllTo="/top">
-          {trending.length >= 3 ? (
-            <>
+          {trending.length >= 3 ?
+          <>
               <Podium tracks={trending.slice(0, 5)} />
-              {trending.length > 5 && (
-                <div className="mt-4">
+              {trending.length > 5 &&
+            <div className="mt-4">
                   <CardRow tracks={trending.slice(5)} />
                 </div>
-              )}
-            </>
-          ) : (
-            <CardRow tracks={trending} />
-          )}
+            }
+            </> :
+
+          <CardRow tracks={trending} />
+          }
         </Section>
         <Section title="New on PUBLIC" seeAllTo="/recent">
           <ReleaseList tracks={newReleases} />
