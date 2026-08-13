@@ -114,7 +114,7 @@ export default function ArtistDashboard() {
           <ArrowLeft size={18} />
         </Link>
         <h1 className="text-2xl font-extrabold tracking-tight flex items-center gap-2">
-          <TrendingUp size={22} className="hidden" /> Artist Dashboard
+           Artist Dashboard
         </h1>
       </div>
 
