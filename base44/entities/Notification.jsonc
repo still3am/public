@@ -10,7 +10,8 @@
       "enum": [
         "new_follower",
         "new_upload_from_followed",
-        "track_liked"
+        "track_liked",
+        "profile_comment"
       ],
       "default": "track_liked"
     },

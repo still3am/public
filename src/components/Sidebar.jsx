@@ -9,6 +9,7 @@ import {
   Clock,
   Library as LibraryIcon,
   Shield,
+  Bell,
   ChevronsLeft,
   ChevronsRight,
 } from "lucide-react";
@@ -16,6 +17,7 @@ import Avatar from "@/components/Avatar";
 import Logo from "@/components/Logo";
 import ThemeToggle from "@/components/ThemeToggle";
 import { useAuth } from "@/lib/AuthContext";
+import { useUnreadCount } from "@/hooks/useNotifications";
 
 const NAV = [
   { to: "/", label: "Home", icon: Home, end: true },
@@ -24,6 +26,7 @@ const NAV = [
   { to: "/top", label: "Top Charts", icon: TrendingUp },
   { to: "/recent", label: "Recently Added", icon: Clock },
   { to: "/library", label: "Library", icon: LibraryIcon },
+  { to: "/notifications", label: "Notifications", icon: Bell },
 ];
 
 const EASE = "transition-all duration-300 ease-out";
@@ -32,6 +35,7 @@ export default function Sidebar() {
   const { user } = useAuth();
   const { collapsed, toggle } = useSidebarCollapsed();
   const location = useLocation();
+  const unread = useUnreadCount();
   if (location.pathname === "/onboarding") return null;
 
   const links = [
@@ -77,7 +81,14 @@ export default function Sidebar() {
       <nav className="flex-1 flex flex-col gap-1 overflow-y-auto overflow-x-hidden pb-2 px-3">
         {links.map(({ to, label, icon: Icon, end }) => (
           <NavLink key={to} to={to} className={navLinkCls} end={end} title={label}>
-            <Icon size={18} className="shrink-0" />
+            <div className="relative shrink-0">
+              <Icon size={18} />
+              {to === "/notifications" && unread > 0 && (
+                <span className="absolute -top-1.5 -right-1.5 min-w-[14px] h-[14px] px-1 rounded-full bg-blue-500 text-white text-[9px] font-bold grid place-items-center" style={{ minWidth: "14px" }}>
+                  {unread > 99 ? "99+" : unread}
+                </span>
+              )}
+            </div>
             <span className={`shrink-0 ${EASE} ${fadeCls}`}>{label}</span>
           </NavLink>
         ))}

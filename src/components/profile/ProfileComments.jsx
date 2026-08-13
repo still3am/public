@@ -46,6 +46,15 @@ export default function ProfileComments({ profileId, isOwn }) {
         message: text,
       });
       setMessage("");
+      if (profileId !== user.id) {
+        try {
+          await base44.entities.Notification.create({
+            user_id: profileId,
+            type: "profile_comment",
+            actor_id: user.id,
+          });
+        } catch {}
+      }
     } catch {
       // ignore — subscribe will not fire
     } finally {
