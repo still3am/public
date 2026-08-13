@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { ShieldCheck, Music2, Flag, Lightbulb, Wand2, Ban, Users } from "lucide-react";
+import { ShieldCheck, Music2, Flag, Lightbulb, Wand2, Ban, Users, Megaphone } from "lucide-react";
 import { useAuth } from "@/lib/AuthContext";
 import ApprovalsManager from "@/components/admin/ApprovalsManager";
 import SuggestionsManager from "@/components/admin/SuggestionsManager";
@@ -7,6 +7,7 @@ import ReportsManager from "@/components/admin/ReportsManager";
 import GenreTool from "@/components/admin/GenreTool";
 import UploadSwitch from "@/components/admin/UploadSwitch";
 import UsersManager from "@/components/admin/UsersManager";
+import BannerEditor from "@/components/admin/BannerEditor";
 
 export default function Admin() {
   const { user } = useAuth();
@@ -25,7 +26,8 @@ export default function Admin() {
     { id: "reports", icon: Flag, label: "Reports" },
     { id: "suggestions", icon: Lightbulb, label: "Suggestions" },
     { id: "genre", icon: Wand2, label: "Genre Tool" },
-    { id: "uploads", icon: Ban, label: "Uploads" }
+    { id: "uploads", icon: Ban, label: "Uploads" },
+    { id: "banner", icon: Megaphone, label: "Banner" }
   ];
 
   return (
@@ -61,6 +63,7 @@ export default function Admin() {
             {tab === "suggestions" && <SuggestionsManager />}
             {tab === "genre" && <GenreTool />}
             {tab === "uploads" && <UploadSwitch />}
+            {tab === "banner" && <BannerEditor />}
           </div>
         </>
       )}

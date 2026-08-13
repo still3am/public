@@ -6,6 +6,14 @@
       "type": "boolean",
       "default": true,
       "description": "Global kill switch \u2014 when false, non-admin users cannot upload tracks"
+    },
+    "banner_messages": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "default": [],
+      "description": "Custom scrolling banner messages; empty array falls back to defaults"
     }
   },
   "rls": {
