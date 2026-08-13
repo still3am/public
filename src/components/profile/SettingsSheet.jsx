@@ -1,8 +1,27 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
-import { X, Lightbulb, GitMerge, Palette, Trash2, ChevronRight } from "lucide-react";
+import { X, Lightbulb, GitMerge, Palette, Trash2, ChevronRight, Sparkles, BarChart3, Loader2 } from "lucide-react";
 import ThemeToggle from "@/components/ThemeToggle";
+import { Switch } from "@/components/ui/switch";
+import { useAuth } from "@/lib/AuthContext";
+import { base44 } from "@/api/base44Client";
 
 export default function SettingsSheet({ onClose, onDeleteAccount }) {
+  const { user, checkUserAuth } = useAuth();
+  const [toggling, setToggling] = useState(false);
+  const isArtist = user?.is_artist === true;
+
+  async function toggleArtist(checked) {
+    setToggling(true);
+    try {
+      await base44.auth.updateMe({ is_artist: checked });
+      await checkUserAuth();
+    } catch {
+    } finally {
+      setToggling(false);
+    }
+  }
+
   return (
     <div className="fixed inset-0 z-[60] flex items-end md:items-center justify-center">
       <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={onClose} />
@@ -16,6 +35,40 @@ export default function SettingsSheet({ onClose, onDeleteAccount }) {
         </div>
 
         <div className="space-y-2">
+          {/* Artist Mode */}
+          <div className="p-3.5 rounded-2xl bg-foreground/[0.02]">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-foreground/[0.06] grid place-items-center shrink-0">
+                {toggling ? <Loader2 size={18} className="animate-spin text-foreground/70" /> : <Sparkles size={18} className="text-foreground/70" />}
+              </div>
+              <div className="flex-1 min-w-0">
+                <div className="text-sm font-bold">Artist Mode</div>
+                <div className="text-xs text-foreground/50">Show an artist badge and unlock analytics tools</div>
+              </div>
+              <Switch
+                checked={isArtist}
+                onCheckedChange={toggleArtist}
+                disabled={toggling}
+              />
+            </div>
+            {isArtist && (
+              <Link
+                to="/artist-dashboard"
+                onClick={onClose}
+                className="mt-3 flex items-center gap-3 p-3 rounded-xl bg-foreground/[0.04] hover:bg-foreground/[0.07] transition active:scale-[0.99]"
+              >
+                <div className="w-9 h-9 rounded-lg bg-foreground/[0.06] grid place-items-center shrink-0">
+                  <BarChart3 size={16} className="text-foreground/70" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="text-sm font-bold">Artist Dashboard</div>
+                  <div className="text-xs text-foreground/50 truncate">Plays, likes, followers & more</div>
+                </div>
+                <ChevronRight size={16} className="text-foreground/30 shrink-0" />
+              </Link>
+            )}
+          </div>
+
           <Link
             to="/suggestions"
             onClick={onClose}

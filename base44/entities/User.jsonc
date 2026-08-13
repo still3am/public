@@ -74,6 +74,11 @@
       },
       "default": [],
       "description": "Up to 8 track ids pinned to the profile as the user's Top 8"
+    },
+    "is_artist": {
+      "type": "boolean",
+      "default": false,
+      "description": "When true, the user is marked as an artist and gets access to artist tools and an artist badge on their profile"
     }
   },
   "required": []

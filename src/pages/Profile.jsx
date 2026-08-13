@@ -24,6 +24,7 @@ import {
   Share2,
   QrCode,
   BarChart2,
+  Sparkles,
   Settings } from
 "lucide-react";
 import SettingsSheet from "@/components/profile/SettingsSheet";
@@ -375,6 +376,11 @@ async function saveProfile() {
                 {!editMode && profile.pronouns &&
                   <span className="text-sm text-foreground/40">{profile.pronouns}</span>
                   }
+                {!editMode && profile.is_artist &&
+                  <span className="inline-flex items-center gap-1 text-xs font-bold uppercase tracking-wide text-foreground/60 bg-foreground/[0.06] px-2 py-0.5 rounded-full">
+                    <Sparkles size={11} /> Artist
+                  </span>
+                  }
 
               </div>
 
@@ -525,6 +531,15 @@ async function saveProfile() {
                     className="w-10 h-10 md:w-12 md:h-12 rounded-full border border-border grid place-items-center">
                     <Settings size={16} />
                   </button>
+                  }
+                  {isOwn && !editMode && profile.is_artist &&
+                  <Link
+                    to="/artist-dashboard"
+                    title="Artist Dashboard"
+                    aria-label="Artist Dashboard"
+                    className="w-10 h-10 md:w-12 md:h-12 rounded-full border border-border grid place-items-center">
+                    <BarChart2 size={16} />
+                  </Link>
                   }
               </div>
             </div>

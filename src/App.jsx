@@ -33,6 +33,7 @@ import Admin from '@/pages/Admin';
 import SongTransitions from '@/pages/SongTransitions';
 import Onboarding from '@/pages/Onboarding';
 import Notifications from '@/pages/Notifications';
+import ArtistDashboard from '@/pages/ArtistDashboard';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -89,6 +90,7 @@ const AuthenticatedApp = () => {
           <Route path="/settings/transitions" element={<SongTransitions />} />
           <Route path="/onboarding" element={<Onboarding />} />
           <Route path="/notifications" element={<Notifications />} />
+          <Route path="/artist-dashboard" element={<ArtistDashboard />} />
         </Route>
       </Route>
       <Route path="*" element={<PageNotFound />} />
