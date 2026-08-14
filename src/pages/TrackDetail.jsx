@@ -359,7 +359,7 @@ export default function TrackDetail() {
                     key={i}
                     onClick={m.onClick}
                     className={`w-full flex items-center gap-2.5 px-3 py-2 text-sm hover:bg-foreground/[0.04] text-left ${
-                    m.danger ? "text-red-600" : ""}`
+                    m.danger ? "text-destructive" : ""}`
                     }>
                     
                       <Icon size={15} /> {m.label}

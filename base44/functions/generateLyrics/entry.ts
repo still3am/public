@@ -1,6 +1,6 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.40';
 
-Deno.serve(async (req) => {
+export default async function(req) {
   try {
     const base44 = createClientFromRequest(req);
     const user = await base44.auth.me();
@@ -31,4 +31,4 @@ Deno.serve(async (req) => {
   } catch (error) {
     return Response.json({ error: error?.message || 'Failed to generate lyrics' }, { status: 500 });
   }
-});
+}

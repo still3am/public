@@ -116,11 +116,11 @@ export default function SettingsSheet({ onClose, onDeleteAccount }) {
             onClick={() => { onDeleteAccount(); onClose(); }}
             className="w-full flex items-center gap-3 p-3.5 rounded-2xl bg-foreground/[0.02] hover:bg-foreground/[0.05] transition active:scale-[0.99] text-left"
           >
-            <div className="w-10 h-10 rounded-xl bg-red-500/10 grid place-items-center shrink-0">
-              <Trash2 size={18} className="text-red-600" />
+            <div className="w-10 h-10 rounded-xl bg-destructive/10 grid place-items-center shrink-0">
+              <Trash2 size={18} className="text-destructive" />
             </div>
             <div className="flex-1 min-w-0">
-              <div className="text-sm font-bold text-red-600">Delete Account</div>
+              <div className="text-sm font-bold text-destructive">Delete Account</div>
               <div className="text-xs text-foreground/50">Permanently remove your data</div>
             </div>
           </button>

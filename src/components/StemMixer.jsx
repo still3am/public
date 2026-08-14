@@ -134,7 +134,7 @@ export default function StemMixer({ onClose }) {
         onClick={handleClose}
       />
       <div
-        className={`relative w-full md:max-w-md bg-card border rounded-t-3xl md:rounded-3xl p-5 pb-[calc(1.25rem+env(safe-area-inset-bottom))] transition-transform duration-300 ease-out ${
+        className={`relative w-full md:max-w-md bg-zinc-900 border rounded-t-3xl md:rounded-3xl p-5 pb-[calc(1.25rem+env(safe-area-inset-bottom))] transition-transform duration-300 ease-out ${
           isModified ? "border-white/20" : "border-white/10"} ${
           visible ? "translate-y-0" : "translate-y-full md:translate-y-8"}`}
       >
