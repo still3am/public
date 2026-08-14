@@ -1,28 +1,13 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.40';
 
 const GENRES = [
-  "Pop", "Hip-Hop", "Electronic", "Rock", "R&B", "Jazz", "Classical", "Ambient",
-  "Experimental", "Dance", "Indie", "Folk", "Country", "Metal", "Punk", "Lo-Fi",
-  "Soul", "Funk", "Techno", "House", "Trap", "Latin", "Reggae", "World", "Other",
-  "Afro-Pop", "Amapiano", "Afrobeats", "K-Pop", "J-Pop", "Bollywood", "Reggaeton",
-  "Dancehall", "Drill", "Phonk", "Hyperpop", "Drum & Bass", "Trance", "Disco",
-  "Synthwave", "Vaporwave", "Jersey Club", "Bossa Nova", "Gospel", "Chill",
-  "Garage", "Hardcore", "Bedroom Pop", "Pop Punk", "Worship",
-  "Sexy Drill", "UK Drill", "Brooklyn Drill", "Chicago Drill", "NY Drill",
-  "Arabic Drill", "Afro Drill",
-  "Gengetone", "Alté", "Gqom", "3-Step", "Singeli", "Bongo Flava",
-  "Maskandi", "Afrosoul",
-  "Baile Funk", "Funk Carioca", "Cumbia", "Bachata", "Merengue", "Salsa",
-  "Sertanejo", "Forró", "Tango", "Bolero", "Mariachi", "Ranchera",
-  "Latin Pop", "Latin Trap", "Urbano",
-  "City Pop", "C-Pop", "T-Pop", "Mandopop", "Pinoy Pop", "Punjabi",
-  "Tamil", "Bhangra", "Dangdut",
-  "Dream Pop", "Shoegaze", "Post-Punk", "Emo", "Ska", "Grunge",
-  "J-Rock", "K-Rock",
-  "Neo-Soul", "Crunk", "Memphis Rap", "Cloud Rap", "Trap Metal",
-  "Slowed & Reverb", "Sped Up",
-  "Zouk", "Kompa", "Kizomba",
-  "Fado", "Arabic Pop", "Persian Pop", "Turkish Pop",
+  "Pop", "Hip-Hop", "R&B", "Soul", "Funk", "Dance", "Electronic",
+  "Techno", "House", "Trap", "Disco", "Rock", "Alternative", "Indie",
+  "Punk", "Metal", "Country", "Folk", "Blues", "Jazz", "Classical",
+  "Ambient", "Reggae", "Latin", "World", "K-Pop", "J-Pop",
+  "Singer/Songwriter", "Soundtrack", "Easy Listening", "Holiday",
+  "Christian & Gospel", "Children's Music", "Comedy", "Spoken Word",
+  "Fitness & Workout", "Other",
 ];
 
 const BATCH = 12;

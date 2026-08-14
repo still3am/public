@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { X, Download, Copy, Share2, ScanLine } from "lucide-react";
+import { X, Share2, ScanLine } from "lucide-react";
 import QRScannerModal from "@/components/QRScannerModal";
 
 export default function ProfileQRModal({ url, name, avatar, onClose }) {

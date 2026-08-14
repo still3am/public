@@ -9,7 +9,6 @@ import {
   Music,
   Disc,
   Upload,
-  Lightbulb,
   ChevronRight } from
 "lucide-react";
 import TrackCard from "@/components/TrackCard";
