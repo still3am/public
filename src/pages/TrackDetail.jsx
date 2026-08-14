@@ -19,10 +19,13 @@ import {
   Plus,
   Trash2,
   Sparkles,
-  Wand2 } from
+  Wand2,
+  Send } from
 "lucide-react";
 import TrackRow from "@/components/TrackRow";
 import GenerateLyricsModal from "@/components/GenerateLyricsModal";
+import SendTrackModal from "@/components/SendTrackModal";
+import TrackComments from "@/components/TrackComments";
 import { useOfflineCache } from "@/hooks/useOfflineCache";
 import { useToast } from "@/components/ui/use-toast";
 
@@ -41,6 +44,7 @@ export default function TrackDetail() {
   const [moreTracks, setMoreTracks] = useState([]);
   const [copied, setCopied] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [showSend, setShowSend] = useState(false);
   const cache = useOfflineCache();
   const { toast } = useToast();
 
@@ -191,6 +195,7 @@ export default function TrackDetail() {
   });
   if (navigator.share)
   menuItems.push({ icon: Share2, label: "Share", onClick: nativeShare });
+  menuItems.push({ icon: Send, label: "Send to friend", onClick: () => { setShowSend(true); setMenuOpen(false); } });
   if (track.is_downloadable)
   menuItems.push({
     icon: Download,
@@ -418,6 +423,8 @@ export default function TrackDetail() {
         </div>
       }
 
+      <TrackComments trackId={track.id} />
+
       {editing &&
       <EditTrackModal
         track={track}
@@ -436,6 +443,12 @@ export default function TrackDetail() {
           setGenerating(false);
         }} />
 
+      }
+
+      {showSend &&
+      <SendTrackModal
+        track={track}
+        onClose={() => setShowSend(false)} />
       }
     </div>);
 

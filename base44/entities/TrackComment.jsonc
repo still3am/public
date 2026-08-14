@@ -1,0 +1,59 @@
+{
+  "name": "TrackComment",
+  "type": "object",
+  "properties": {
+    "track_id": {
+      "type": "string",
+      "description": "ID of the track receiving the comment"
+    },
+    "author_id": {
+      "type": "string"
+    },
+    "author_name": {
+      "type": "string",
+      "default": ""
+    },
+    "author_avatar_url": {
+      "type": "string",
+      "default": ""
+    },
+    "message": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "track_id",
+    "author_id",
+    "message"
+  ],
+  "rls": {
+    "create": {
+      "data.author_id": "{{user.id}}"
+    },
+    "read": null,
+    "update": {
+      "$or": [
+        {
+          "data.author_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "$or": [
+        {
+          "data.author_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    }
+  }
+}

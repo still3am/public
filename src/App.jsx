@@ -21,9 +21,7 @@ import TopCharts from '@/pages/TopCharts';
 import RecentlyAdded from '@/pages/RecentlyAdded';
 import Profile from '@/pages/Profile';
 import TrackDetail from '@/pages/TrackDetail';
-import PublicRecords from '@/pages/PublicRecords';
-import PublicRecordsIndex from '@/pages/PublicRecordsIndex';
-import ArtistByName from '@/pages/ArtistByName';
+import Messages from '@/pages/Messages';
 import Suggestions from '@/pages/Suggestions';
 import Upload from '@/pages/Upload';
 import Lounge from '@/pages/Lounge';
@@ -72,9 +70,6 @@ const AuthenticatedApp = () => {
         <Route path="/top" element={<TopCharts />} />
         <Route path="/recent" element={<RecentlyAdded />} />
         <Route path="/track/:id" element={<TrackDetail />} />
-        <Route path="/records/:id" element={<PublicRecords />} />
-        <Route path="/records" element={<PublicRecordsIndex />} />
-        <Route path="/artist" element={<ArtistByName />} />
         <Route path="/suggestions" element={<Suggestions />} />
       </Route>
       {/* Personal features — login required */}
@@ -91,6 +86,7 @@ const AuthenticatedApp = () => {
           <Route path="/onboarding" element={<Onboarding />} />
           <Route path="/notifications" element={<Notifications />} />
           <Route path="/artist-dashboard" element={<ArtistDashboard />} />
+          <Route path="/messages" element={<Messages />} />
         </Route>
       </Route>
       <Route path="*" element={<PageNotFound />} />

@@ -9,6 +9,7 @@ import {
   Library as LibraryIcon,
   Shield,
   Bell,
+  MessageCircle,
 } from "lucide-react";
 import ThemeToggle from "@/components/ThemeToggle";
 import { useAuth } from "@/lib/AuthContext";
@@ -21,6 +22,7 @@ const ITEMS = [
   { to: "/library", icon: LibraryIcon, label: "Library" },
   { to: "/notifications", icon: Bell, label: "Notifications" },
   { to: "/suggestions", icon: Lightbulb, label: "Suggestions" },
+  { to: "/messages", icon: MessageCircle, label: "Messages" },
 ];
 
 export default function MobileMoreSheet({ onClose }) {
