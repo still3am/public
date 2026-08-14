@@ -16,7 +16,7 @@ export default async function(req) {
     // get an empty list rather than a full user dump.
     let users = [];
     try {
-      users = await base44.asServiceRole.entities.User.list('-created_date', 500);
+      users = await base44.entities.User.list('-created_date', 500);
     } catch {
       users = [];
     }

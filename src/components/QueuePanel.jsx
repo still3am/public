@@ -1,4 +1,4 @@
-import { useMemo, useEffect } from "react";
+import { useMemo } from "react";
 import {
   X,
   Trash2,
@@ -14,7 +14,6 @@ import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
 import { useNavigate } from "react-router-dom";
 import { usePlayer } from "@/context/PlayerContext";
 import { useAuth } from "@/lib/AuthContext";
-import { getRecentPlays } from "@/lib/recentPlays";
 import { formatTime } from "@/lib/audio-utils";
 import QueueLibraryPicker from "@/components/QueueLibraryPicker";
 import { useState } from "react";
@@ -29,11 +28,6 @@ export default function QueuePanel({ open, onClose }) {
   const t = useTransitions();
   const nav = useNavigate();
   const [showPicker, setShowPicker] = useState(false);
-  const [recentHistory, setRecentHistory] = useState([]);
-
-  useEffect(() => {
-    if (open) setRecentHistory(getRecentPlays());
-  }, [open]);
 
   const upcoming = useMemo(
     () => p.queue.map((trk, i) => ({ trk, i })).filter(({ i }) => i > p.currentIndex),
@@ -240,36 +234,6 @@ export default function QueuePanel({ open, onClose }) {
           </Droppable>
         </DragDropContext>
         }
-
-        {/* Recently played history */}
-        {recentHistory.length > 0 && (
-          <div className="mt-4">
-            <div className="text-[10px] uppercase tracking-[0.2em] text-white/40 px-2 mb-1">
-              Recently played
-            </div>
-            <div className="space-y-0.5">
-              {recentHistory.map((tt) => (
-                <button
-                  key={tt.id}
-                  onClick={() => p.playTrackAt([tt])}
-                  className="w-full flex items-center gap-3 px-2 py-2 rounded-xl hover:bg-white/[0.06] transition text-left"
-                >
-                  <div className="relative w-10 h-10 rounded-lg overflow-hidden bg-white/10 shrink-0">
-                    {tt.cover_art_url && (
-                      <img src={tt.cover_art_url} alt="" className="w-full h-full object-cover" />
-                    )}
-                  </div>
-                  <div className="min-w-0 flex-1">
-                    <div className="text-sm font-medium truncate">{tt.title}</div>
-                    <div className="text-xs text-white/50 truncate">
-                      {tt.artist || tt.uploader_name || "Unknown"}
-                    </div>
-                  </div>
-                </button>
-              ))}
-            </div>
-          </div>
-        )}
       </div>
 
       <QueueLibraryPicker open={showPicker} onClose={() => setShowPicker(false)} />

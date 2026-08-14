@@ -27,7 +27,7 @@ export default function LiveTrackRow({ track, busy, onTakedown }) {
       <button
         onClick={onTakedown}
         disabled={busy}
-        className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-full border border-destructive/40 text-destructive text-xs font-semibold disabled:opacity-50 active:scale-95 transition"
+        className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-full border border-red-200 text-red-600 text-xs font-semibold disabled:opacity-50 active:scale-95 transition"
       >
         {busy ? <Loader2 size={13} className="animate-spin" /> : <EyeOff size={13} />} Remove
       </button>

@@ -1,6 +1,5 @@
 import { useRef } from "react";
-import { Link } from "react-router-dom";
-import { UploadCloud, Loader2, CheckCheck, Ban, BarChart2 } from "lucide-react";
+import { UploadCloud, Loader2, CheckCheck, Ban } from "lucide-react";
 import { useUploadsEnabled } from "@/hooks/useUploadsEnabled";
 import { useAuth } from "@/lib/AuthContext";
 import FileDropZone from "@/components/upload/FileDropZone";
@@ -41,12 +40,6 @@ export default function Upload() {
         <p className="text-sm text-foreground/50 mt-1.5">
           Share your sound with PUBLIC. Drop a whole folder of tracks at once — they upload together and clear themselves once they're in.
         </p>
-        <Link
-          to="/artist-dashboard"
-          className="inline-flex items-center gap-2 mt-3 text-sm font-semibold text-foreground/70 hover:text-foreground transition"
-        >
-          <BarChart2 size={15} /> View your artist music
-        </Link>
       </div>
 
       <FileDropZone onFiles={q.addFiles} inputRef={inputRef} />

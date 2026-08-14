@@ -1,8 +1,10 @@
+import { Link } from "react-router-dom";
+
 // Splits a combined artist string (e.g. "Adele & Beyoncé feat. Jay-Z") into
-// individual names, rendering EACH as its own styled span.  Original
-// separators between names are preserved as plain text.  When there are
-// more than `maxShown` artists, only the first `maxShown` are shown and a
-// "+N" remainder is appended.
+// individual names, rendering EACH as its own link to that artist's separate
+// Public Record page. Original separators between names are preserved as
+// plain text. When there are more than `maxShown` artists, only the first
+// `maxShown` are linked and a "+N" remainder is shown as plain text.
 export default function ArtistLinks({
   artist,
   className = "",
@@ -11,11 +13,13 @@ export default function ArtistLinks({
 }) {
   if (!artist) return null;
 
+  // Split keeping the separators so the display reads naturally between links.
   const tokens = String(artist)
     .split(/(\s*(?:,|&| feat\.| ft\.| x |;)\s*)/i)
     .map((t) => t.trim())
     .filter(Boolean);
 
+  // tokens alternate: name, separator, name, separator, ...
   const parts = [];
   const seps = [];
   tokens.forEach((t, i) => {
@@ -32,9 +36,13 @@ export default function ArtistLinks({
   shown.forEach((name, i) => {
     if (i > 0) out.push(<span key={`sep-${i}`}>{seps[i - 1] || ", "}</span>);
     out.push(
-      <span key={`name-${i}`} className={linkClassName || className}>
+      <Link
+        key={`name-${i}`}
+        to={`/artist?name=${encodeURIComponent(name)}`}
+        className={linkClassName || className}
+      >
         {name}
-      </span>
+      </Link>
     );
   });
 

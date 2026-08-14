@@ -10,7 +10,6 @@ import {
   Library as LibraryIcon,
   Shield,
   Bell,
-  MessageCircle,
   ChevronsLeft,
   ChevronsRight,
 } from "lucide-react";
@@ -28,7 +27,6 @@ const NAV = [
   { to: "/recent", label: "Recently Added", icon: Clock },
   { to: "/library", label: "Library", icon: LibraryIcon },
   { to: "/notifications", label: "Notifications", icon: Bell },
-  { to: "/messages", label: "Messages", icon: MessageCircle },
 ];
 
 const EASE = "transition-all duration-300 ease-out";

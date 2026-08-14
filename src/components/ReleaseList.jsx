@@ -19,7 +19,7 @@ function MenuBtn({ icon: Icon, label, onClick, danger }) {
     <button
     onClick={onClick}
     className={`w-full flex items-center gap-2.5 px-3.5 py-2.5 text-sm hover:bg-foreground/[0.04] active:bg-foreground/[0.08] text-left ${
-      danger ? "text-destructive" : ""
+      danger ? "text-red-600" : ""
     }`}>
     <Icon size={15} /> {label}
     </button>

@@ -89,7 +89,6 @@ export default function Home() {
   const [byGenre, setByGenre] = useState([]);
   const [fromFollowing, setFromFollowing] = useState([]);
   const [discover, setDiscover] = useState([]);
-  const [dailyMix, setDailyMix] = useState([]);
   const [totalTracks, setTotalTracks] = useState(0);
   const loadedRef = useRef(false);
   const greeting = greetingByHour();
@@ -202,19 +201,6 @@ export default function Home() {
         discoverPicks = n.filter((tr) => tr && !playedIds.has(tr.id)).slice(0, 12);
       }
       setDiscover(discoverPicks);
-      // Daily Mix: deterministic per day per user — a fresh blend from
-      // trending + new releases + discover picks, shuffled with a date seed.
-      const dayKey = new Date().toISOString().slice(0, 10) + (user?.id || "");
-      let seed = 0;
-      for (const c of dayKey) seed = (seed * 31 + c.charCodeAt(0)) | 0;
-      const mixPool = [...new Map([...t, ...n, ...discoverPicks].map((tr) => [tr.id, tr])).values()];
-      const shuffled = [...mixPool];
-      for (let i = shuffled.length - 1; i > 0; i--) {
-        seed = (seed * 1103515245 + 12345) & 0x7fffffff;
-        const j = seed % (i + 1);
-        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-      }
-      setDailyMix(shuffled.slice(0, 10));
     } finally {
       setLoading(false);
     }
@@ -309,11 +295,6 @@ export default function Home() {
           <ReleaseList tracks={newReleases} />
         </Section>
 
-        {dailyMix.length > 0 &&
-        <Section title="Daily Mix" icon={Sparkles}>
-            <CardRow tracks={dailyMix} />
-          </Section>
-        }
         {discover.length > 0 &&
         <Section title="Discover" icon={Sparkles}>
             <CardRow tracks={discover} />

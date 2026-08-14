@@ -20,8 +20,6 @@ import {
   Repeat1,
   Shuffle,
   Disc3,
-  Timer,
-  Gauge,
   X } from
 "lucide-react";
 import PulseVisualizer from "@/components/PulseVisualizer";
@@ -80,8 +78,6 @@ export default function FullScreenPlayer({ onClose }) {
   const dismissThreshold = 110;
   const [hasLyrics, setHasLyrics] = useState(false);
   const [coverFailed, setCoverFailed] = useState(false);
-  const [showSleepMenu, setShowSleepMenu] = useState(false);
-  const [showSpeedMenu, setShowSpeedMenu] = useState(false);
 
   // Reset the broken-cover flag whenever the track (and thus its cover URL) changes.
   useEffect(() => { setCoverFailed(false); }, [coverUrl]);
@@ -401,70 +397,6 @@ export default function FullScreenPlayer({ onClose }) {
               label="Repeat"
               size={20} />
             
-          </div>
-
-          {/* sleep timer + playback speed */}
-          <div className="flex items-center justify-center gap-3 mt-1 mb-2 shrink-0 text-xs">
-            <div className="relative">
-              <button
-                onClick={() => { setShowSleepMenu(v => !v); setShowSpeedMenu(false); }}
-                className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full ring-1 ring-white/20 hover:bg-white/10 transition ${p.sleepTimerEndsAt ? "bg-white/20" : ""}`}
-              >
-                <Timer size={13} />
-                {p.sleepTimerEndsAt ? (
-                  <span className="tabular-nums">{Math.max(0, Math.ceil((p.sleepTimerEndsAt - Date.now()) / 60000))}m</span>
-                ) : "Sleep"}
-              </button>
-              {showSleepMenu && (
-                <>
-                  <div className="fixed inset-0 z-10" onClick={() => setShowSleepMenu(false)} />
-                  <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 bg-black/90 backdrop-blur-xl rounded-xl ring-1 ring-white/15 py-1 z-20 min-w-[120px]">
-                    {[5, 10, 15, 30, 60].map((m) => (
-                      <button
-                        key={m}
-                        onClick={() => { p.setSleepTimer(m); setShowSleepMenu(false); }}
-                        className="w-full px-4 py-2 text-left hover:bg-white/10 transition"
-                      >
-                        {m} min
-                      </button>
-                    ))}
-                    {p.sleepTimerEndsAt && (
-                      <button
-                        onClick={() => { p.setSleepTimer(0); setShowSleepMenu(false); }}
-                        className="w-full px-4 py-2 text-left hover:bg-white/10 transition border-t border-white/10"
-                      >
-                        Cancel
-                      </button>
-                    )}
-                  </div>
-                </>
-              )}
-            </div>
-            <div className="relative">
-              <button
-                onClick={() => { setShowSpeedMenu(v => !v); setShowSleepMenu(false); }}
-                className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full ring-1 ring-white/20 hover:bg-white/10 transition ${p.playbackRate !== 1 ? "bg-white/20" : ""}`}
-              >
-                <Gauge size={13} />
-                {p.playbackRate}×
-              </button>
-              {showSpeedMenu && (
-                <>
-                  <div className="fixed inset-0 z-10" onClick={() => setShowSpeedMenu(false)} />
-                  <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 bg-black/90 backdrop-blur-xl rounded-xl ring-1 ring-white/15 py-1 z-20 min-w-[120px]">
-                    {[0.5, 0.75, 1, 1.25, 1.5, 2].map((r) => (
-                      <button
-                        key={r}
-                        onClick={() => { p.setPlaybackRate(r); setShowSpeedMenu(false); }}
-                        className={`w-full px-4 py-2 text-left hover:bg-white/10 transition ${p.playbackRate === r ? "font-bold" : ""}`}
-                      >
-                        {r}× {r === 1 ? "(Normal)" : ""}
-                      </button>
-                    ))}
-                  </div>
-                </>
-              )}
-            </div>
           </div>
 
           {/* volume (desktop inline) */}

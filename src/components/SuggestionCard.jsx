@@ -1,9 +1,9 @@
 import { Music, Sparkles, Wrench, MessageSquare, ArrowBigUp } from "lucide-react";
 
 const CATEGORY_META = {
-  feature: { label: "Feature", icon: Sparkles, color: "text-violet-600 dark:text-violet-400" },
-  music: { label: "Music", icon: Music, color: "text-amber-600 dark:text-amber-400" },
-  improvement: { label: "Improvement", icon: Wrench, color: "text-blue-600 dark:text-blue-400" },
+  feature: { label: "Feature", icon: Sparkles, color: "text-violet-600" },
+  music: { label: "Music", icon: Music, color: "text-amber-600" },
+  improvement: { label: "Improvement", icon: Wrench, color: "text-blue-600" },
   other: { label: "Other", icon: MessageSquare, color: "text-foreground/60" },
 };
 

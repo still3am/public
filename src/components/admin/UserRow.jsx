@@ -1,5 +1,4 @@
-import { Ban, ShieldCheck, Trash2, Loader2, Eye } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Ban, ShieldCheck, Trash2, Loader2 } from "lucide-react";
 import Avatar from "@/components/Avatar";
 
 export default function UserRow({ u, uploads = 0, busy, onToggleBlock, onDelete }) {
@@ -28,12 +27,6 @@ export default function UserRow({ u, uploads = 0, busy, onToggleBlock, onDelete 
         <Loader2 size={16} className="animate-spin text-foreground/40 shrink-0" />
       ) : (
         <div className="flex items-center gap-1 shrink-0">
-          <Link
-            to={`/profile/${u.id}`}
-            className="p-2 rounded-full hover:bg-foreground/5 text-foreground/60 hover:text-foreground transition"
-            title="View as user">
-            <Eye size={16} />
-          </Link>
           <button
             onClick={() => onToggleBlock(u)}
             className="p-2 rounded-full hover:bg-foreground/5 text-foreground/60 hover:text-foreground transition"

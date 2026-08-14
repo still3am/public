@@ -616,7 +616,7 @@ export default function Profile() {
               <button
                 onClick={confirmDelete}
                 disabled={deleting || deleteConfirm.trim().toUpperCase() !== "DELETE"}
-                className="px-4 py-2 rounded-full bg-destructive text-destructive-foreground text-sm font-semibold disabled:opacity-40 flex items-center gap-2">
+                className="px-4 py-2 rounded-full bg-red-600 text-white text-sm font-semibold disabled:opacity-40 flex items-center gap-2">
               
                 {deleting && <Loader2 size={14} className="animate-spin" />}
                 {deleting ? "Deleting…" : "Permanently delete"}
