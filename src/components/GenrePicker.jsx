@@ -28,7 +28,7 @@ export default function GenrePicker({
       <DialogTrigger asChild>
         <button
           type="button"
-          className={`w-full inline-flex items-center justify-between gap-2 px-3 py-2 rounded-lg border border-border bg-white text-sm hover:bg-foreground/[0.02] transition ${className}`}
+          className={`w-full inline-flex items-center justify-between gap-2 px-3 py-2 rounded-lg border border-border bg-background text-sm hover:bg-foreground/[0.02] transition ${className}`}
         >
           <span className="inline-flex items-center gap-1.5 min-w-0">
             <Music2 size={14} className="text-foreground/40 shrink-0" />
@@ -53,7 +53,7 @@ export default function GenrePicker({
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder="Search genres…"
-          className="w-full px-3 py-2 rounded-lg border border-border bg-white text-sm mb-3"
+          className="w-full px-3 py-2 rounded-lg border border-border bg-background text-sm mb-3"
           autoFocus
         />
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-1.5 max-h-72 overflow-y-auto pr-1">

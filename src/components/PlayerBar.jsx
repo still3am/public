@@ -182,7 +182,7 @@ export default function PlayerBar() {
               
               <ListMusic size={18} />
               {p.queue.length - p.currentIndex - 1 > 0 &&
-              <span className="absolute -top-0.5 -right-0.5 min-w-[16px] h-4 px-1 rounded-full bg-foreground text-background text-[10px] font-bold grid place-items-center hidden">
+              <span className="absolute -top-0.5 -right-0.5 min-w-[16px] h-4 px-1 rounded-full bg-foreground text-background text-[10px] font-bold grid place-items-center">
                   {p.queue.length - p.currentIndex - 1}
                 </span>
               }

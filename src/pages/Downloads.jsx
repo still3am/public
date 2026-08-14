@@ -5,9 +5,6 @@ import {
   Pause,
   Trash2,
   Loader2,
-  WifiOff,
-  HardDriveDownload,
-  CheckCircle2,
   GripVertical } from
 "lucide-react";
 import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
@@ -277,24 +274,6 @@ export default function Downloads() {
           </div>
         </div>
       }
-    </div>);
-
-}
-
-function Stat({ label, value, icon, tone }) {
-  const toneClass =
-  tone === "ok" ?
-  "text-emerald-600 dark:text-emerald-400" :
-  tone === "warn" ?
-  "text-amber-600 dark:text-amber-400" :
-  "text-foreground/55";
-  return (
-    <div className="rounded-2xl bg-foreground/[0.03] ring-1 ring-inset ring-border px-3 py-3 flex flex-col gap-1.5">
-      <div className={`flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wide ${toneClass}`}>
-        {icon}
-        <span className="truncate">{label}</span>
-      </div>
-      <div className="text-lg font-extrabold tracking-tight truncate">{value}</div>
     </div>);
 
 }

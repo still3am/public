@@ -15,7 +15,6 @@ import {
   Pencil,
   Save,
   Music,
-  Upload,
   X,
   MapPin,
   Globe,
@@ -24,7 +23,6 @@ import {
   Share2,
   QrCode,
   BarChart2,
-  Sparkles,
   Settings } from
 "lucide-react";
 import SettingsSheet from "@/components/profile/SettingsSheet";

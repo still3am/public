@@ -88,7 +88,7 @@ export default function Upload() {
             {q.items.map((item) =>
           <div key={item.id} className="relative">
                 {(item.status === "analyzing" || item.detecting) && item.status !== "done" &&
-            <div className="absolute -top-2 left-4 z-10 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-foreground text-background text-[10px] font-bold shadow-lg hidden">
+            <div className="absolute -top-2 left-4 z-10 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-foreground text-background text-[10px] font-bold shadow-lg">
                     <Loader2 size={10} className="animate-spin" />
                     {item.status === "analyzing" ? "Reading file…" : "Auto-detecting details…"}
                   </div>

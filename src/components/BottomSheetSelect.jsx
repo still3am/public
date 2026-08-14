@@ -16,7 +16,7 @@ export default function BottomSheetSelect({
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className={`tap-target inline-flex items-center justify-between gap-2 rounded-lg border border-border bg-white hover:bg-foreground/[0.02] px-3 text-sm ${className}`}>
+        className={`tap-target inline-flex items-center justify-between gap-2 rounded-lg border border-border bg-background hover:bg-foreground/[0.02] px-3 text-sm ${className}`}>
         
         <span className={current ? "text-foreground font-medium" : "text-foreground/40"}>
           {label}

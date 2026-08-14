@@ -65,7 +65,7 @@ export default function MobileMoreSheet({ onClose }) {
             >
               <Icon size={22} />
               {to === "/notifications" && unread > 0 && (
-                <span className="absolute top-1.5 right-2 min-w-[16px] h-4 px-1 rounded-full bg-blue-500 text-white text-[9px] font-bold grid place-items-center">
+                <span className="absolute top-1.5 right-2 min-w-[16px] h-4 px-1 rounded-full bg-foreground text-background text-[9px] font-bold grid place-items-center">
                   {unread > 99 ? "99+" : unread}
                 </span>
               )}

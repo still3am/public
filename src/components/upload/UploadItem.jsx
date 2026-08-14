@@ -98,7 +98,7 @@ export default function UploadItem({
             {toggles.map(({ key, label, icon: Icon }) =>
             <label
               key={key}
-              className={`inline-flex items-center gap-1.5 pl-2 pr-2.5 py-1.5 rounded-full text-[11px] font-bold cursor-pointer transition ring-1 ring-inset hidden ${
+              className={`inline-flex items-center gap-1.5 pl-2 pr-2.5 py-1.5 rounded-full text-[11px] font-bold cursor-pointer transition ring-1 ring-inset ${
               item[key] ?
               "bg-foreground text-background ring-foreground" :
               "bg-transparent text-foreground/55 ring-border hover:bg-foreground/[0.04]"} ${

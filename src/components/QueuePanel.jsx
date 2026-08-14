@@ -141,7 +141,7 @@ export default function QueuePanel({ open, onClose }) {
             onClose();
             nav("/settings/transitions");
           }}
-          className="w-full mb-3 flex items-center gap-2 px-3 py-2 rounded-xl bg-[#0A84FF]/15 text-[#3DA0FF] text-[11px] font-semibold active:scale-[0.99] transition">
+          className="w-full mb-3 flex items-center gap-2 px-3 py-2 rounded-xl bg-foreground/[0.06] text-foreground/70 text-[11px] font-semibold active:scale-[0.99] transition">
             <GitMerge size={13} />
             <span className="flex-1 text-left">{transitionLabel} active</span>
             <span className="text-white/50 text-[10px]">Edit</span>

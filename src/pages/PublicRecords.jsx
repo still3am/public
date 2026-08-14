@@ -73,7 +73,7 @@ function SectionTitle({ icon: Icon, children, right }) {
   return (
     <div className="flex items-center justify-between gap-3 mb-3">
       <h2 className="text-base md:text-lg font-extrabold tracking-tight flex items-center gap-2">
-        <Icon size={17} className="text-foreground/60 hidden" />
+        <Icon size={17} className="text-foreground/60" />
         {children}
       </h2>
       {right}
@@ -271,7 +271,7 @@ export default function PublicRecords({ id: propId }) {
               </p> :
 
             <div className="text-center py-4">
-                <div className="w-11 h-11 rounded-full bg-foreground/[0.06] grid place-items-center mx-auto mb-3 hidden">
+                <div className="w-11 h-11 rounded-full bg-foreground/[0.06] grid place-items-center mx-auto mb-3">
                   <Sparkles size={18} className="text-foreground/40" />
                 </div>
                 <p className="text-sm text-foreground/55 max-w-sm mx-auto leading-relaxed">

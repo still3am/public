@@ -28,7 +28,7 @@ export default function VinylCrate({ genres, onPick }) {
             <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300" />
           </div>
           <div className="truncate text-sm font-semibold text-center">{g.genre}</div>
-          <div className="text-xs text-foreground/55 truncate mt-0.5 hidden">
+          <div className="text-xs text-foreground/55 truncate mt-0.5">
             {g.count} {g.count === 1 ? "track" : "tracks"}
           </div>
         </button>

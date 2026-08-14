@@ -84,7 +84,7 @@ export default function EditTrackModal({ track, onClose, onSaved, onDeleted }) {
 
   return (
     <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm grid place-items-center p-4 overflow-y-auto">
-      <div className="bg-white rounded-2xl w-full max-w-lg p-5 my-auto shadow-2xl">
+      <div className="bg-card rounded-2xl w-full max-w-lg p-5 my-auto shadow-2xl">
         <div className="flex items-center justify-between mb-5">
           <h2 className="text-lg font-extrabold tracking-tight">Edit track</h2>
           <button
@@ -123,13 +123,13 @@ export default function EditTrackModal({ track, onClose, onSaved, onDeleted }) {
                 value={form.title}
                 onChange={(e) => patch({ title: e.target.value })}
                 placeholder="Track title"
-                className="w-full px-3 py-2 rounded-lg border border-border bg-white text-sm font-semibold focus:outline-none"
+                className="w-full px-3 py-2 rounded-lg border border-border bg-background text-sm font-semibold focus:outline-none"
               />
               <input
                 value={form.artist}
                 onChange={(e) => patch({ artist: e.target.value })}
                 placeholder="Artist (defaults to your name)"
-                className="w-full px-3 py-2 rounded-lg border border-border bg-white text-sm focus:outline-none"
+                className="w-full px-3 py-2 rounded-lg border border-border bg-background text-sm focus:outline-none"
               />
             </div>
           </div>
@@ -146,7 +146,7 @@ export default function EditTrackModal({ track, onClose, onSaved, onDeleted }) {
             onChange={(e) => patch({ description: e.target.value })}
             placeholder="Description (optional)"
             rows={2}
-            className="w-full px-3 py-2 rounded-lg border border-border bg-white text-sm focus:outline-none"
+            className="w-full px-3 py-2 rounded-lg border border-border bg-background text-sm focus:outline-none"
           />
 
           <div className="flex flex-wrap gap-4">
@@ -177,7 +177,7 @@ export default function EditTrackModal({ track, onClose, onSaved, onDeleted }) {
               onChange={(e) => patch({ lyrics_text: e.target.value })}
               placeholder="Paste full lyrics here (one line per lyric line)"
               rows={6}
-              className="w-full px-3 py-2 rounded-lg border border-border bg-white text-sm focus:outline-none font-mono"
+              className="w-full px-3 py-2 rounded-lg border border-border bg-background text-sm focus:outline-none font-mono"
             />
           </div>
 

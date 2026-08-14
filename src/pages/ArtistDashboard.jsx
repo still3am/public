@@ -16,7 +16,6 @@ import {
   Users,
   Music,
   Loader2,
-  TrendingUp,
   ArrowLeft,
   Sparkles } from
 "lucide-react";

@@ -84,7 +84,7 @@ export default function Sidebar() {
             <div className="relative shrink-0">
               <Icon size={18} />
               {to === "/notifications" && unread > 0 && (
-                <span className="absolute -top-1.5 -right-1.5 min-w-[14px] h-[14px] px-1 rounded-full bg-blue-500 text-white text-[9px] font-bold grid place-items-center" style={{ minWidth: "14px" }}>
+                <span className="absolute -top-1.5 -right-1.5 min-w-[14px] h-[14px] px-1 rounded-full bg-foreground text-background text-[9px] font-bold grid place-items-center" style={{ minWidth: "14px" }}>
                   {unread > 99 ? "99+" : unread}
                 </span>
               )}

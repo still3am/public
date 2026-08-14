@@ -96,10 +96,10 @@ export default function Library() {
             <div className="flex items-center gap-2">
               <span className="text-sm font-extrabold tracking-tight">PUBLIC OFFLINE</span>
               {offlineCount > 0 &&
-              <span className="px-1.5 py-0.5 rounded-full bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 text-[10px] font-bold hidden">
-                  {offlineCount} saved
-                </span>
-              }
+              <span className="px-1.5 py-0.5 rounded-full bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 text-[10px] font-bold">
+                   {offlineCount} saved
+                 </span>
+               }
             </div>
             <p className="text-xs text-foreground/55 mt-0.5">
               Listen to your saved songs without Wi‑Fi or data.
