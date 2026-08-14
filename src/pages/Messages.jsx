@@ -5,7 +5,6 @@ import { Loader2, MessageCircle, PenLine, Search } from "lucide-react";
 import EmptyState from "@/components/EmptyState";
 import ConversationList from "@/components/messages/ConversationList";
 import ChatView from "@/components/messages/ChatView";
-import SendTrackModal from "@/components/SendTrackModal";
 import { useToast } from "@/components/ui/use-toast";
 
 export default function Messages() {

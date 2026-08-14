@@ -185,7 +185,7 @@ export default function EditTrackModal({ track, onClose, onSaved, onDeleted }) {
             <button
               onClick={del}
               disabled={deleting}
-              className="px-4 py-2 rounded-full text-sm font-semibold text-red-600 border border-red-200 flex items-center gap-2 disabled:opacity-40"
+              className="px-4 py-2 rounded-full text-sm font-semibold text-destructive border border-destructive/40 flex items-center gap-2 disabled:opacity-40"
             >
               {deleting ? (
                 <Loader2 size={14} className="animate-spin" />

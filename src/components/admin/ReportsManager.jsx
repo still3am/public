@@ -77,7 +77,7 @@ export default function ReportsManager() {
                   <button
                     onClick={() => setStatus(r.id, "reviewed")}
                     disabled={busy === r.id}
-                    className="p-2 rounded-full hover:bg-foreground/5 text-green-600"
+                    className="p-2 rounded-full hover:bg-foreground/5 text-emerald-600 dark:text-emerald-400"
                     aria-label="Mark reviewed"
                   >
                     <Check size={15} />
