@@ -378,7 +378,7 @@ export default function Profile() {
                     }
                 {!editMode && profile.is_artist &&
                     <span className="inline-flex items-center gap-1 text-xs font-bold uppercase tracking-wide text-foreground/60 bg-foreground/[0.06] px-2 py-0.5 rounded-full">
-                    <Sparkles size={11} /> Artist
+                     Artist
                   </span>
                     }
 
