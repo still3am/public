@@ -34,7 +34,7 @@ function Section({ title, icon: Icon, children, seeAllTo }) {
     <section className="mb-10 md:mb-12">
       <div className="flex items-end justify-between mb-3.5 px-3 md:px-0">
         <h2 className="text-lg md:text-2xl font-extrabold tracking-tight flex items-center gap-2.5">
-          
+          {Icon && <Icon size={20} className="text-foreground/70" />}
           {title}
         </h2>
         {seeAllTo &&
