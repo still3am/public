@@ -32,28 +32,28 @@ export default function Library() {
     setLoading(true);
     try {
       const [items, uploaded] = await Promise.all([
-      base44.entities.LibraryItem.filter(
-        { user_id: user.id },
-        "-created_date",
-        1000
-      ),
-      base44.entities.Track.filter(
-        { uploader_id: user.id },
-        "-created_date",
-        1000
-      )]
-      );
+        base44.entities.LibraryItem.filter(
+          { user_id: user.id },
+          "-created_date",
+          1000
+        ),
+        base44.entities.Track.filter(
+          { uploader_id: user.id },
+          "-created_date",
+          1000
+        ),
+      ]);
       const trackIds = (items || []).
       map((i) => i.track_id).
       filter(Boolean);
       const uploadedIds = new Set((uploaded || []).map((t) => t.id));
-      const list = trackIds.length ?
-      await base44.entities.Track.filter(
-        { id: { $in: trackIds } },
-        "-created_date",
-        1000
-      ) :
-      [];
+      const list = trackIds.length
+        ? await base44.entities.Track.filter(
+            { id: { $in: trackIds } },
+            "-created_date",
+            1000
+          )
+        : [];
       const order = new Map(trackIds.map((id, i) => [id, i]));
       const sorted = (list || []).
       slice().
@@ -95,11 +95,11 @@ export default function Library() {
           <div className="min-w-0 flex-1">
             <div className="flex items-center gap-2">
               <span className="text-sm font-extrabold tracking-tight">PUBLIC OFFLINE</span>
-              
-
-
-
-              
+              {offlineCount > 0 &&
+              <span className="px-1.5 py-0.5 rounded-full bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 text-[10px] font-bold">
+                   {offlineCount} saved
+                 </span>
+               }
             </div>
             <p className="text-xs text-foreground/55 mt-0.5">
               Listen to your saved songs without Wi‑Fi or data.
@@ -130,9 +130,9 @@ export default function Library() {
           <section className="mb-7">
             <h2 className="text-sm font-bold text-foreground/70 uppercase tracking-wider mb-3">Recently Played</h2>
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
-              {recentlyPlayed.map((t) =>
-              <TrackCard key={t.id} track={t} />
-              )}
+              {recentlyPlayed.map((t) => (
+                <TrackCard key={t.id} track={t} />
+              ))}
             </div>
           </section>
           }
