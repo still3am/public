@@ -85,9 +85,9 @@ export default function LoungeHostModal({ lounge, onClose }) {
         </button>
 
         <div className="text-center mb-5">
-          <div className="inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.3em] text-foreground/50 mb-1 hidden">
-            <Speaker size={12} /> Public Lounge
-          </div>
+          
+
+          
           {editingName ?
           <div className="flex items-center gap-2 justify-center mt-1">
               <input
