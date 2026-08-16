@@ -55,7 +55,7 @@ export default function QueuePanel({ open, onClose }) {
         <div className="flex items-center gap-2 min-w-0">
           <ListMusic size={20} className="text-white/80 shrink-0" />
           <div className="leading-tight min-w-0">
-            <h2 className="text-base font-bold truncate">Queue</h2>
+            <h2 className="text-base font-bold truncate hidden">Queue</h2>
             
 
 
