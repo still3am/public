@@ -160,6 +160,16 @@ export default function Profile() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [targetId]);
 
+  // Hide the mobile tab bar when any modal/sheet is open so it doesn't overlap
+  // the bottom of the sheet content (z-index alone can't fix this because the
+  // framer-motion opacity wrapper creates a stacking context that traps the
+  // modal's z-index inside it).
+  useEffect(() => {
+    const anyModal = showSettings || showDelete || showQR || !!followList;
+    if (anyModal) document.documentElement.classList.add("modal-open");
+    return () => document.documentElement.classList.remove("modal-open");
+  }, [showSettings, showDelete, showQR, followList]);
+
   async function toggleFollow() {
     if (!profile) return;
     const wasFollowing = following;
@@ -408,7 +418,7 @@ export default function Profile() {
                 <button onClick={() => setFollowList("following")} className="hover:underline transition">
                   <span className="font-bold">{formatNumber(stats.following)}</span> <span className="text-foreground/50">following</span>
                 </button>
-                {stats.plays > 0 && <span><span className="font-bold">{formatNumber(stats.plays)}</span> <span className="text-foreground/50">plays</span></span>}
+                {(profile.is_artist || stats.plays > 0) && <span><span className="font-bold">{formatNumber(stats.plays)}</span> <span className="text-foreground/50">plays</span></span>}
                 {stats.likes > 0 && <span><span className="font-bold">{formatNumber(stats.likes)}</span> <span className="text-foreground/50">likes</span></span>}
               </div>
 

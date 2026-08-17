@@ -191,3 +191,5 @@ html.dark img[alt="PUBLIC."] {
 html.dark .bg-white {
   background-color: hsl(var(--card)) !important;
 }
+
+html.modal-open .mobile-tab-bar { display: none !important; }

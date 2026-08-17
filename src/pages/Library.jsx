@@ -4,11 +4,13 @@ import { base44 } from "@/api/base44Client";
 import { useAuth } from "@/lib/AuthContext";
 import { useLibrary } from "@/context/LibraryContext";
 import { useOfflineCache } from "@/hooks/useOfflineCache";
-import { Library as LibIcon, Loader2, CloudOff, ChevronRight, History } from "lucide-react";
+import { Library as LibIcon, Loader2, CloudOff, ChevronRight, History, Plus, ListMusic } from "lucide-react";
 import TrackCard from "@/components/TrackCard";
 import EmptyState from "@/components/EmptyState";
 import PullToRefresh from "@/components/PullToRefresh";
 import PageHeader from "@/components/PageHeader";
+import PlaylistCard from "@/components/playlist/PlaylistCard";
+import CreatePlaylistModal from "@/components/playlist/CreatePlaylistModal";
 import { getRecentPlays } from "@/lib/recentPlays";
 
 export default function Library() {
@@ -19,8 +21,20 @@ export default function Library() {
   const [uploads, setUploads] = useState(null);
   const [recentlyPlayed, setRecentlyPlayed] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [playlists, setPlaylists] = useState(null);
+  const [showCreate, setShowCreate] = useState(false);
 
   const offlineCount = cache.records.length;
+
+  const loadPlaylists = useCallback(async () => {
+    if (!user?.id) return;
+    try {
+      const rows = await base44.entities.Playlist.filter({ creator_id: user.id }, "-created_date", 200);
+      setPlaylists(rows || []);
+    } catch {
+      setPlaylists([]);
+    }
+  }, [user?.id]);
 
   const load = useCallback(async () => {
     if (!user?.id) {
@@ -68,7 +82,8 @@ export default function Library() {
 
   useEffect(() => {
     load();
-  }, [load, ids]);
+    loadPlaylists();
+  }, [load, loadPlaylists, ids]);
 
   useEffect(() => {
     const handler = () => setRecentlyPlayed(getRecentPlays());
@@ -109,7 +124,7 @@ export default function Library() {
         </div>
       </Link>
 
-      <PullToRefresh onRefresh={async () => {await refresh();await load();}}>
+      <PullToRefresh onRefresh={async () => {await refresh();await load();await loadPlaylists();}}>
         {loading && tracks === null ?
         <div className="flex justify-center py-20">
             <Loader2 className="animate-spin text-foreground/40" />
@@ -137,6 +152,38 @@ export default function Library() {
           </section>
           }
 
+          <section className="mb-7">
+            <div className="flex items-center justify-between mb-3">
+              <h2 className="text-sm font-bold text-foreground/70 uppercase tracking-wider">Playlists</h2>
+              <button
+                onClick={() => setShowCreate(true)}
+                className="inline-flex items-center gap-1 text-xs font-bold text-foreground/70 hover:text-foreground transition"
+              >
+                <Plus size={14} /> New
+              </button>
+            </div>
+            {!playlists ? (
+              <div className="flex justify-center py-8">
+                <Loader2 className="animate-spin text-foreground/30" size={18} />
+              </div>
+            ) : !playlists.length ? (
+              <button
+                onClick={() => setShowCreate(true)}
+                className="w-full rounded-2xl border-2 border-dashed border-border p-6 text-center hover:bg-foreground/[0.02] transition"
+              >
+                <ListMusic size={24} className="mx-auto text-foreground/30 mb-2" />
+                <div className="text-sm font-semibold">Create your first playlist</div>
+                <div className="text-xs text-foreground/50 mt-0.5">Group songs into custom rooms</div>
+              </button>
+            ) : (
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
+                {playlists.map((pl) => (
+                  <PlaylistCard key={pl.id} playlist={pl} />
+                ))}
+              </div>
+            )}
+          </section>
+
           <section>
             <h2 className="text-sm font-bold text-foreground/70 uppercase tracking-wider mb-3">Saved</h2>
             {!tracks?.length ?
@@ -156,6 +203,13 @@ export default function Library() {
         </>
         }
       </PullToRefresh>
+
+      {showCreate && (
+        <CreatePlaylistModal
+          onClose={() => setShowCreate(false)}
+          onCreated={() => loadPlaylists()}
+        />
+      )}
     </div>);
 
 }

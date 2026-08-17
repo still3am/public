@@ -7,6 +7,7 @@ import Logo from "@/components/Logo";
 import { Button } from "@/components/ui/button";
 import { Loader2, Check } from "lucide-react";
 import { saveUserGenres, clearUserGenresCache } from "@/lib/userGenres";
+import { GENRES } from "@/lib/audio-utils";
 
 const MIN = 3;
 
@@ -38,6 +39,11 @@ export default function Onboarding() {
       if (!g) continue;
       if (!map[g]) map[g] = { genre: g, cover: "" };
       if (!map[g].cover && t.cover_art_url) map[g].cover = t.cover_art_url;
+    }
+    // Ensure ALL genres are shown even when there are no published tracks yet,
+    // so new users on a fresh app can still pick their taste and proceed.
+    for (const g of GENRES) {
+      if (!map[g]) map[g] = { genre: g, cover: "" };
     }
     return Object.values(map).sort((a, b) => a.genre.localeCompare(b.genre));
   }, [tracks]);

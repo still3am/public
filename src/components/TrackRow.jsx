@@ -9,7 +9,8 @@ import {
   Trash2,
   EyeOff,
   Plus,
-  Check } from
+  Check,
+  ListMusic } from
 "lucide-react";
 import { usePlayer } from "@/context/PlayerContext";
 import { formatTime, timeAgo } from "@/lib/audio-utils";
@@ -21,6 +22,7 @@ import { useOfflineCache } from "@/hooks/useOfflineCache";
 import { useToast } from "@/components/ui/use-toast";
 import ArtistLinks from "@/components/ArtistLinks";
 import { useCoverUrl } from "@/hooks/useCoverUrl";
+import PlaylistPickerModal from "@/components/playlist/PlaylistPickerModal";
 
 function MenuBtn({ icon: Icon, label, onClick, danger }) {
   return (
@@ -55,6 +57,7 @@ export default function TrackRow({
   const [menuPos, setMenuPos] = useState({ top: 0, right: 0 });
   const moreBtnRef = useRef(null);
   const [libBusy, setLibBusy] = useState(false);
+  const [showPlaylistPicker, setShowPlaylistPicker] = useState(false);
   const inLib = isInLibrary(track.id);
 
   const openMenu = () => {
@@ -210,6 +213,14 @@ export default function TrackRow({
               }} />
 
               <MenuBtn
+              icon={ListMusic}
+              label="Add to playlist"
+              onClick={() => {
+                setMenuOpen(false);
+                setShowPlaylistPicker(true);
+              }} />
+
+              <MenuBtn
               icon={savingOffline ? Loader2 : savedOffline ? Trash2 : Download}
               label={savingOffline ? "Saving…" : savedOffline ? "Remove offline" : "Save offline"}
               onClick={async () => {
@@ -269,9 +280,11 @@ export default function TrackRow({
 
             }
             </div>
-          </>
-        }
-      </div>
-    </div>);
-
-}
+            </>
+            }
+            </div>
+            {showPlaylistPicker && (
+            <PlaylistPickerModal track={track} onClose={() => setShowPlaylistPicker(false)} />
+            )}
+            </div>);
+            }

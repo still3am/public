@@ -34,6 +34,11 @@ export default function QueuePanel({ open, onClose }) {
     [p.queue, p.currentIndex]
   );
 
+  const history = useMemo(
+    () => p.queue.map((trk, i) => ({ trk, i })).filter(({ i }) => i < p.currentIndex),
+    [p.queue, p.currentIndex]
+  );
+
   if (!open) return null;
 
   const isAdmin = !!user && user.role === "admin";
@@ -234,6 +239,42 @@ export default function QueuePanel({ open, onClose }) {
           </Droppable>
         </DragDropContext>
         }
+
+        {/* History */}
+        {history.length > 0 && (
+          <div className="border-t border-white/5 mt-4 pt-3">
+            <div className="text-[10px] uppercase tracking-[0.2em] text-white/40 px-2 mb-1">
+              History
+            </div>
+            <div className="space-y-0.5">
+              {history.map(({ trk: tt, i }) => (
+                <button
+                  key={tt.id + i}
+                  onClick={() => p.playQueueItem(i)}
+                  className="group flex items-center gap-3 px-2 py-2 rounded-xl hover:bg-white/[0.06] transition w-full text-left"
+                >
+                  <div className="relative w-10 h-10 rounded-lg overflow-hidden bg-white/10 shrink-0 opacity-60">
+                    {tt.cover_art_url && (
+                      <img src={tt.cover_art_url} alt="" className="w-full h-full object-cover" />
+                    )}
+                    <div className="absolute inset-0 grid place-items-center bg-black/30 opacity-0 group-hover:opacity-100 transition">
+                      <Play size={14} fill="white" />
+                    </div>
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <div className="text-sm font-medium truncate text-white/70">{tt.title}</div>
+                    <div className="text-xs text-white/40 truncate">
+                      {tt.artist || tt.uploader_name || "Unknown"}
+                    </div>
+                  </div>
+                  <span className="hidden sm:block text-[11px] text-white/30 tabular-nums">
+                    {formatTime(tt.duration_seconds)}
+                  </span>
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
 
       <QueueLibraryPicker open={showPicker} onClose={() => setShowPicker(false)} />

@@ -45,8 +45,10 @@ export default function Register() {
     setLoading(true);
     try {
       const result = await base44.auth.verifyOtp({ email, otpCode });
-      if (result?.access_token) {
-        base44.auth.setToken(result.access_token);
+      // Handle both possible return shapes: { access_token: "..." } or the token string directly
+      const token = result?.access_token || (typeof result === "string" ? result : null);
+      if (token) {
+        base44.auth.setToken(token);
       }
       window.location.href = "/onboarding";
     } catch (err) {
