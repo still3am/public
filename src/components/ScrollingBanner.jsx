@@ -4,7 +4,7 @@ function MarqueeItem({ text }) {
   return (
     <span className="px-6 text-[11px] font-semibold uppercase tracking-[0.25em]">
       {text}
-      <span className="px-6 text-background/30 hidden">·</span>
+      
     </span>);
 
 }
