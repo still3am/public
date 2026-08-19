@@ -23,28 +23,28 @@ function ArtistRow({ artist, trackCount, onPick }) {
   return (
     <button
       onClick={onPick}
-      className="w-full flex items-center gap-3 p-2.5 rounded-xl hover:bg-foreground/[0.03] transition text-left"
-    >
+      className="w-full flex items-center gap-3 p-2.5 rounded-xl hover:bg-foreground/[0.03] transition text-left">
+      
       <div className="w-12 h-12 rounded-full overflow-hidden bg-foreground/10 shrink-0 grid place-items-center">
-        {artist.avatar_url ? (
-          <img src={artist.avatar_url} alt="" className="w-full h-full object-cover" />
-        ) : (
-          <Disc3 size={20} className="text-foreground/40" />
-        )}
+        {artist.avatar_url ?
+        <img src={artist.avatar_url} alt="" className="w-full h-full object-cover" /> :
+
+        <Disc3 size={20} className="text-foreground/40" />
+        }
       </div>
       <div className="min-w-0 flex-1">
         <div className="text-sm font-semibold truncate">{artist.name}</div>
-        <div className="text-xs text-foreground/50 truncate">
+        <div className="text-xs text-foreground/50 truncate hidden">
           {artist.location ? `${artist.location} · ` : ""}
           {trackCount} {trackCount === 1 ? "track" : "tracks"}
         </div>
       </div>
-      <Mic2 size={16} className="text-foreground/30 shrink-0" />
-    </button>
-  );
-  }
+      <Mic2 size={16} className="text-foreground/30 shrink-0 hidden" />
+    </button>);
 
-  export default function Search() {
+}
+
+export default function Search() {
   const [q, setQ] = useState("");
   const [genre, setGenre] = useState(() => {
     const params = new URLSearchParams(window.location.search);
@@ -194,7 +194,7 @@ function ArtistRow({ artist, trackCount, onPick }) {
             {trackResults.length > 0 &&
           <div>
                 <h3 className="flex items-center gap-2 text-sm font-bold uppercase tracking-wide text-foreground/60 mb-2 px-1">
-                  <Music size={14} /> Tracks
+                  <Music size={14} className="hidden" /> Tracks
                   
                 </h3>
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-1">
@@ -212,7 +212,7 @@ function ArtistRow({ artist, trackCount, onPick }) {
 
             
                 <h3 className="flex items-center gap-2 text-sm font-bold uppercase tracking-wide text-foreground/60 mb-2 px-1">
-                  <Mic2 size={14} /> Artists
+                  <Mic2 size={14} className="hidden" /> Artists
                   <span className="text-xs font-semibold text-foreground/40">{artistResults.length}</span>
                 </h3>
                 <div className="space-y-1">
