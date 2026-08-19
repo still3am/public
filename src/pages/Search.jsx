@@ -34,12 +34,12 @@ function ArtistRow({ artist, trackCount, onPick }) {
       </div>
       <div className="min-w-0 flex-1">
         <div className="text-sm font-semibold truncate">{artist.name}</div>
-        <div className="text-xs text-foreground/50 truncate hidden">
-          {artist.location ? `${artist.location} · ` : ""}
-          {trackCount} {trackCount === 1 ? "track" : "tracks"}
-        </div>
+        
+
+
+        
       </div>
-      <Mic2 size={16} className="text-foreground/30 shrink-0 hidden" />
+      
     </button>);
 
 }
@@ -194,7 +194,7 @@ export default function Search() {
             {trackResults.length > 0 &&
           <div>
                 <h3 className="flex items-center gap-2 text-sm font-bold uppercase tracking-wide text-foreground/60 mb-2 px-1">
-                  <Music size={14} className="hidden" /> Tracks
+                   Tracks
                   
                 </h3>
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-1">
@@ -212,7 +212,7 @@ export default function Search() {
 
             
                 <h3 className="flex items-center gap-2 text-sm font-bold uppercase tracking-wide text-foreground/60 mb-2 px-1">
-                  <Mic2 size={14} className="hidden" /> Artists
+                   Artists
                   <span className="text-xs font-semibold text-foreground/40">{artistResults.length}</span>
                 </h3>
                 <div className="space-y-1">
