@@ -404,7 +404,7 @@ export default function TrackDetail() {
       {moreTracks.length > 0 &&
       <div className="mb-6">
           <h2 className="text-lg font-extrabold tracking-tight mb-3 flex items-center gap-2">
-            <Music size={18} className="hidden" /> More from {track.artist}
+             More from {track.artist}
           </h2>
           <div className="space-y-0.5">
             {moreTracks.map((t, i) =>
