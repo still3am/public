@@ -39,14 +39,14 @@ export default function ArtistNameEditor({ artist, canEdit, onSaved }) {
             if (e.key === "Escape") setEditing(false);
           }}
           autoFocus
-          className="bg-transparent border-b-2 border-foreground/20 focus:border-foreground/60 outline-none text-3xl md:text-5xl font-extrabold tracking-tighter text-center min-w-0 w-full max-w-[80%]"
-        />
+          className="bg-transparent border-b-2 border-foreground/20 focus:border-foreground/60 outline-none text-3xl md:text-5xl font-extrabold tracking-tighter text-center min-w-0 w-full max-w-[80%]" />
+        
         <button
           onClick={save}
           disabled={saving}
           className="w-9 h-9 rounded-full bg-foreground text-background grid place-items-center shrink-0 active:scale-95"
-          aria-label="Save name"
-        >
+          aria-label="Save name">
+          
           {saving ? <Loader2 size={15} className="animate-spin" /> : <Check size={15} />}
         </button>
         <button
@@ -55,12 +55,12 @@ export default function ArtistNameEditor({ artist, canEdit, onSaved }) {
             setEditing(false);
           }}
           className="w-9 h-9 rounded-full bg-foreground/[0.06] grid place-items-center shrink-0 active:scale-95"
-          aria-label="Cancel"
-        >
+          aria-label="Cancel">
+          
           <X size={15} />
         </button>
-      </div>
-    );
+      </div>);
+
   }
 
   return (
@@ -68,18 +68,18 @@ export default function ArtistNameEditor({ artist, canEdit, onSaved }) {
       <h1 className="text-3xl md:text-5xl font-extrabold tracking-tighter leading-[1.02] break-words">
         {artist.name}
       </h1>
-      {canEdit && (
-        <button
-          onClick={() => {
-            setValue(artist.name || "");
-            setEditing(true);
-          }}
-          className="w-8 h-8 rounded-full bg-foreground/[0.06] hover:bg-foreground/[0.1] grid place-items-center shrink-0 text-foreground/60 active:scale-95 transition"
-          aria-label="Edit artist name"
-        >
+      {canEdit &&
+      <button
+        onClick={() => {
+          setValue(artist.name || "");
+          setEditing(true);
+        }}
+        className="w-8 h-8 rounded-full bg-foreground/[0.06] hover:bg-foreground/[0.1] grid place-items-center shrink-0 text-foreground/60 active:scale-95 transition hidden"
+        aria-label="Edit artist name">
+        
           <Pencil size={14} />
         </button>
-      )}
-    </div>
-  );
+      }
+    </div>);
+
 }
