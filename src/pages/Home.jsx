@@ -237,7 +237,7 @@ export default function Home() {
     <PullToRefresh onRefresh={load}>
       <div className="space-y-3">
         {/* Hero */}
-        <div className="relative rounded-3xl overflow-hidden border border-foreground/[0.06] md:p-14 md:mb-10 text-center flex flex-col items-center mb-8 px-1">
+        <div className="relative rounded-3xl overflow-hidden border border-foreground/[0.06] md:p-14 md:mb-10 text-center flex flex-col items-center mb-8">
           <HeroPlayingTint />
           <div
             className="absolute inset-0 opacity-[0.04] pointer-events-none"
