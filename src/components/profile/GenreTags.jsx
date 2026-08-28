@@ -104,7 +104,7 @@ export default function GenreTags() {
     <div className="mb-6">
       <div className="flex items-center justify-between mb-3">
         <h2 className="text-lg font-extrabold tracking-tight flex items-center gap-2">
-          <Music size={18} className="hidden" /> My Taste
+           My Taste
         </h2>
         <button
           onClick={startEdit}
