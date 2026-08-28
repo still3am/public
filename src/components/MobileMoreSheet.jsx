@@ -73,9 +73,9 @@ export default function MobileMoreSheet({ onClose }) {
             </button>
           )}
         </div>
-        <div className="px-3 pb-3 hidden">
-          <ThemeToggle />
-        </div>
+        
+
+        
       </div>
     </div>);
 
