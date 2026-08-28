@@ -384,7 +384,7 @@ export default function TrackDetail() {
         <button
           onClick={() => setGenerating(true)}
           className="mt-3 inline-flex items-center gap-2 text-xs font-semibold text-foreground/60 hover:text-foreground">
-            <Sparkles size={13} /> Regenerate with AI
+            <Sparkles size={13} className="hidden" /> Regenerate with AI
           </button>}
         </div>
       }
