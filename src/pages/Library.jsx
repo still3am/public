@@ -46,28 +46,28 @@ export default function Library() {
     setLoading(true);
     try {
       const [items, uploaded] = await Promise.all([
-        base44.entities.LibraryItem.filter(
-          { user_id: user.id },
-          "-created_date",
-          1000
-        ),
-        base44.entities.Track.filter(
-          { uploader_id: user.id },
-          "-created_date",
-          1000
-        ),
-      ]);
+      base44.entities.LibraryItem.filter(
+        { user_id: user.id },
+        "-created_date",
+        1000
+      ),
+      base44.entities.Track.filter(
+        { uploader_id: user.id },
+        "-created_date",
+        1000
+      )]
+      );
       const trackIds = (items || []).
       map((i) => i.track_id).
       filter(Boolean);
       const uploadedIds = new Set((uploaded || []).map((t) => t.id));
-      const list = trackIds.length
-        ? await base44.entities.Track.filter(
-            { id: { $in: trackIds } },
-            "-created_date",
-            1000
-          )
-        : [];
+      const list = trackIds.length ?
+      await base44.entities.Track.filter(
+        { id: { $in: trackIds } },
+        "-created_date",
+        1000
+      ) :
+      [];
       const order = new Map(trackIds.map((id, i) => [id, i]));
       const sorted = (list || []).
       slice().
@@ -111,10 +111,10 @@ export default function Library() {
             <div className="flex items-center gap-2">
               <span className="text-sm font-extrabold tracking-tight">PUBLIC OFFLINE</span>
               {offlineCount > 0 &&
-              <span className="px-1.5 py-0.5 rounded-full bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 text-[10px] font-bold">
+              <span className="px-1.5 py-0.5 rounded-full bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 text-[10px] font-bold hidden">
                    {offlineCount} saved
                  </span>
-               }
+              }
             </div>
             <p className="text-xs text-foreground/55 mt-0.5">
               Listen to your saved songs without Wi‑Fi or data.
@@ -145,9 +145,9 @@ export default function Library() {
           <section className="mb-7">
             <h2 className="text-sm font-bold text-foreground/70 uppercase tracking-wider mb-3">Recently Played</h2>
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
-              {recentlyPlayed.map((t) => (
-                <TrackCard key={t.id} track={t} />
-              ))}
+              {recentlyPlayed.map((t) =>
+              <TrackCard key={t.id} track={t} />
+              )}
             </div>
           </section>
           }
@@ -157,31 +157,31 @@ export default function Library() {
               <h2 className="text-sm font-bold text-foreground/70 uppercase tracking-wider">Playlists</h2>
               <button
                 onClick={() => setShowCreate(true)}
-                className="inline-flex items-center gap-1 text-xs font-bold text-foreground/70 hover:text-foreground transition"
-              >
+                className="inline-flex items-center gap-1 text-xs font-bold text-foreground/70 hover:text-foreground transition">
+                
                 <Plus size={14} /> New
               </button>
             </div>
-            {!playlists ? (
-              <div className="flex justify-center py-8">
+            {!playlists ?
+            <div className="flex justify-center py-8">
                 <Loader2 className="animate-spin text-foreground/30" size={18} />
-              </div>
-            ) : !playlists.length ? (
-              <button
-                onClick={() => setShowCreate(true)}
-                className="w-full rounded-2xl border-2 border-dashed border-border p-6 text-center hover:bg-foreground/[0.02] transition"
-              >
+              </div> :
+            !playlists.length ?
+            <button
+              onClick={() => setShowCreate(true)}
+              className="w-full rounded-2xl border-2 border-dashed border-border p-6 text-center hover:bg-foreground/[0.02] transition">
+              
                 <ListMusic size={24} className="mx-auto text-foreground/30 mb-2" />
                 <div className="text-sm font-semibold">Create your first playlist</div>
                 <div className="text-xs text-foreground/50 mt-0.5">Group songs into custom rooms</div>
-              </button>
-            ) : (
-              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
-                {playlists.map((pl) => (
-                  <PlaylistCard key={pl.id} playlist={pl} />
-                ))}
+              </button> :
+
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
+                {playlists.map((pl) =>
+              <PlaylistCard key={pl.id} playlist={pl} />
+              )}
               </div>
-            )}
+            }
           </section>
 
           <section>
@@ -204,12 +204,12 @@ export default function Library() {
         }
       </PullToRefresh>
 
-      {showCreate && (
-        <CreatePlaylistModal
-          onClose={() => setShowCreate(false)}
-          onCreated={() => loadPlaylists()}
-        />
-      )}
+      {showCreate &&
+      <CreatePlaylistModal
+        onClose={() => setShowCreate(false)}
+        onCreated={() => loadPlaylists()} />
+
+      }
     </div>);
 
 }
