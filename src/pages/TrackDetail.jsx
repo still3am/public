@@ -277,7 +277,7 @@ export default function TrackDetail() {
                 linkClassName="font-semibold text-foreground/80 px-1 hover:underline" />
               }
                 {displayArtist && uploader &&
-              <span className="text-foreground/40">· uploaded by</span>
+              <span className="text-foreground/40 hidden">· uploaded by</span>
               }
                 {uploader &&
               <Link
@@ -375,7 +375,7 @@ export default function TrackDetail() {
       {track.lyrics_text && track.lyrics_text.trim() &&
       <div className="mb-6">
           <h2 className="text-lg font-extrabold tracking-tight mb-3 flex items-center gap-2">
-            <Music2 size={18} className="hidden" /> Lyrics
+             Lyrics
           </h2>
           <div className="whitespace-pre-line text-sm text-foreground/70 leading-relaxed max-h-96 overflow-y-auto px-1">
             {track.lyrics_text}
