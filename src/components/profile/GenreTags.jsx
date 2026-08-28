@@ -13,14 +13,14 @@ export default function GenreTags() {
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
-    base44.entities.UserGenre
-      .filter({}, "-created_date", 1)
-      .then((records) => {
-        const g = Array.isArray(records) && records[0]?.genres ? records[0].genres : [];
-        setGenres(g);
-      })
-      .catch(() => setGenres([]))
-      .finally(() => setLoading(false));
+    base44.entities.UserGenre.
+    filter({}, "-created_date", 1).
+    then((records) => {
+      const g = Array.isArray(records) && records[0]?.genres ? records[0].genres : [];
+      setGenres(g);
+    }).
+    catch(() => setGenres([])).
+    finally(() => setLoading(false));
   }, []);
 
   function startEdit() {
@@ -31,8 +31,8 @@ export default function GenreTags() {
   function toggle(g) {
     setDraft((prev) => {
       const next = new Set(prev);
-      if (next.has(g)) next.delete(g);
-      else next.add(g);
+      if (next.has(g)) next.delete(g);else
+      next.add(g);
       return next;
     });
   }
@@ -67,15 +67,15 @@ export default function GenreTags() {
               onClick={save}
               disabled={saving}
               className="w-9 h-9 rounded-full bg-foreground text-background grid place-items-center disabled:opacity-40"
-              aria-label="Save"
-            >
+              aria-label="Save">
+              
               {saving ? <Loader2 size={15} className="animate-spin" /> : <Check size={15} />}
             </button>
             <button
               onClick={() => setEditing(false)}
               className="w-9 h-9 rounded-full border border-border grid place-items-center"
-              aria-label="Cancel"
-            >
+              aria-label="Cancel">
+              
               <X size={15} />
             </button>
           </div>
@@ -87,15 +87,15 @@ export default function GenreTags() {
               <button
                 key={g}
                 onClick={() => toggle(g)}
-                className={`chip ${active ? "active" : ""}`}
-              >
+                className={`chip ${active ? "active" : ""}`}>
+                
                 {active && <Check size={11} />} {g}
-              </button>
-            );
+              </button>);
+
           })}
         </div>
-      </div>
-    );
+      </div>);
+
   }
 
   if (!genres.length) return null;
@@ -104,23 +104,23 @@ export default function GenreTags() {
     <div className="mb-6">
       <div className="flex items-center justify-between mb-3">
         <h2 className="text-lg font-extrabold tracking-tight flex items-center gap-2">
-          <Music size={18} /> My Taste
+          <Music size={18} className="hidden" /> My Taste
         </h2>
         <button
           onClick={startEdit}
           className="w-9 h-9 rounded-full border border-border grid place-items-center hover:bg-foreground/[0.04] transition"
-          aria-label="Edit taste"
-        >
+          aria-label="Edit taste">
+          
           <Pencil size={15} />
         </button>
       </div>
       <div className="flex flex-wrap gap-2">
-        {genres.map((g) => (
-          <Link key={g} to={`/search?genre=${encodeURIComponent(g)}`} className="chip active">
+        {genres.map((g) =>
+        <Link key={g} to={`/search?genre=${encodeURIComponent(g)}`} className="chip active">
             {g}
           </Link>
-        ))}
+        )}
       </div>
-    </div>
-  );
+    </div>);
+
 }
