@@ -276,9 +276,9 @@ export default function TrackDetail() {
                 artist={displayArtist}
                 linkClassName="font-semibold text-foreground/80 px-1 hover:underline" />
               }
-                {displayArtist && uploader &&
-              <span className="text-foreground/40 hidden">· uploaded by</span>
-              }
+                
+
+              
                 {uploader &&
               <Link
                 to={`/profile/${uploader.id}`}
