@@ -164,7 +164,7 @@ export default function Lounge() {
             <div className="rounded-3xl border border-border bg-foreground/[0.02] p-5 mb-4">
               <div className="flex items-center justify-between mb-4">
                 <div className="inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.25em] text-foreground/50">
-                  <Speaker size={12} /> {isHost ? "Hosting lounge" : "In the lounge"}
+                  <Speaker size={12} className="hidden" /> {isHost ? "Hosting lounge" : "In the lounge"}
                 </div>
                 <div className="inline-flex items-center gap-1.5 text-[11px] text-foreground/40">
                   <Users size={12} />
@@ -176,7 +176,7 @@ export default function Lounge() {
                 <div className="w-24 h-24 rounded-2xl overflow-hidden bg-foreground/10 shrink-0 grid place-items-center hidden">
                   <ListMusic size={28} className="text-foreground/30" />
                 </div>
-                <div className="min-w-0 flex-1">
+                <div className="min-w-0 flex-1 hidden">
                   <h3 className="font-extrabold text-lg">Add songs to the queue</h3>
                   <p className="text-sm text-foreground/50 mt-1">
                     Tracks you add play on {isHost ? "your" : "the host's"} device. {isHost ? "" : "Ask the host to hit play."}
