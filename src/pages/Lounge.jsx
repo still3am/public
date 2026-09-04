@@ -161,7 +161,7 @@ export default function Lounge() {
           </div> :
 
         <>
-            <div className="rounded-3xl border border-border bg-foreground/[0.02] p-5 mb-4">
+            <div className="rounded-3xl border border-border bg-foreground/[0.02] p-5 mb-4 hidden">
               <div className="flex items-center justify-between mb-4">
                 <div className="inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.25em] text-foreground/50">
                    {isHost ? "Hosting lounge" : "In the lounge"}
