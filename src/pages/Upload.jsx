@@ -35,12 +35,12 @@ export default function Upload() {
 
   return (
     <div className="max-w-3xl mx-auto px-4 md:px-6 main-content">
-      <div className="pt-3 pb-6 hidden">
-        <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight">Upload music</h1>
-        <p className="text-sm text-foreground/50 mt-1.5">
-          Share your sound with PUBLIC. Drop a whole folder of tracks at once — they upload together and clear themselves once they're in.
-        </p>
-      </div>
+      
+
+
+
+
+      
 
       <FileDropZone onFiles={q.addFiles} inputRef={inputRef} />
       <input
