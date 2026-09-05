@@ -6,7 +6,7 @@ export default function PageHeader({ eyebrow, title, subtitle, children }) {
           {eyebrow}
         </div>
       }
-      <div className="flex items-end justify-between gap-4 flex-wrap">
+      <div className="flex items-end justify-between gap-4 flex-wrap hidden">
         <div className="min-w-0">
           <h1 className="text-3xl md:text-4xl font-extrabold tracking-tighter leading-[1.05]">
             {title}
