@@ -116,7 +116,7 @@ export default function Library() {
 
               
             </div>
-            <p className="text-xs text-foreground/55 mt-0.5">
+            <p className="text-xs text-foreground/55 mt-0.5 hidden">
               Listen to your saved songs without Wi‑Fi or data.
             </p>
           </div>
