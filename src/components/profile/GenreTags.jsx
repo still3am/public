@@ -100,27 +100,27 @@ export default function GenreTags() {
 
   if (!genres.length) return null;
 
-  return (
-    <div className="mb-6 hidden">
-      <div className="flex items-center justify-between mb-3">
-        <h2 className="text-lg font-extrabold tracking-tight flex items-center gap-2">
-           My Taste
-        </h2>
-        <button
-          onClick={startEdit}
-          className="w-9 h-9 rounded-full border border-border grid place-items-center hover:bg-foreground/[0.04] transition"
-          aria-label="Edit taste">
-          
-          <Pencil size={15} />
-        </button>
-      </div>
-      <div className="flex flex-wrap gap-2">
-        {genres.map((g) =>
-        <Link key={g} to={`/search?genre=${encodeURIComponent(g)}`} className="chip active">
-            {g}
-          </Link>
-        )}
-      </div>
-    </div>);
+  return null;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 }
