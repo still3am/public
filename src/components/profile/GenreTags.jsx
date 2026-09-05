@@ -101,7 +101,7 @@ export default function GenreTags() {
   if (!genres.length) return null;
 
   return (
-    <div className="mb-6">
+    <div className="mb-6 hidden">
       <div className="flex items-center justify-between mb-3">
         <h2 className="text-lg font-extrabold tracking-tight flex items-center gap-2">
            My Taste
