@@ -250,9 +250,9 @@ export default function Home() {
           <div className="absolute -left-12 -bottom-20 w-64 h-64 rounded-full bg-amber-400/12 blur-3xl pointer-events-none" />
 
           <div className="relative">
-            <span className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-foreground/[0.05] border border-foreground/10 text-[11px] font-semibold uppercase tracking-[0.18em] text-foreground/60 mb-6 hidden">
-               {greeting}
-            </span>
+            
+
+            
             <h1 className="text-4xl md:text-6xl font-extrabold tracking-tighter mb-3 max-w-2xl leading-[1.02]">
               {user?.display_name || user?.full_name ? `Hey, ${user.display_name || user.full_name}.` : "Welcome to PUBLIC."}
             </h1>
@@ -262,18 +262,18 @@ export default function Home() {
             <div className="mb-7">
               <ScoreboardTrackCount count={totalTracks} />
             </div>
-            <div className="flex items-center justify-center gap-2.5 flex-wrap hidden">
-              <Link
-                to="/upload"
-                className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-foreground text-background text-sm font-semibold hover:opacity-90 active:scale-95 transition">
-                <Upload size={15} /> Upload music
-              </Link>
-              <Link
-                to="/top"
-                className="inline-flex items-center gap-2 px-6 py-3 rounded-full border border-foreground/15 text-sm font-semibold hover:bg-foreground/5 active:scale-95 transition">
-                <Disc size={15} /> Top charts
-              </Link>
-            </div>
+            
+
+
+
+
+
+
+
+
+
+
+            
           </div>
         </div>
 

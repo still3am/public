@@ -58,14 +58,14 @@ export default function Notifications() {
   return (
     <div className="max-w-2xl mx-auto px-4 sm:px-5 pt-4 pb-24 md:pb-12">
       <div className="flex items-center justify-between mb-5">
-        <h1 className="text-2xl font-extrabold tracking-tight flex items-center gap-2 hidden">
-          <Bell size={22} /> Notifications
-          {unreadCount > 0 &&
-          <span className="text-xs font-bold bg-foreground text-background rounded-full px-2 py-0.5">
-              {unreadCount}
-            </span>
-          }
-        </h1>
+        
+
+
+
+
+
+
+        
         {unreadCount > 0 &&
         <button
           onClick={markAllAsRead}
