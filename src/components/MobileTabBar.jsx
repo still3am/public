@@ -36,7 +36,7 @@ export default function MobileTabBar() {
   return (
     <>
       <nav className="mobile-tab-bar md:hidden fixed bottom-0 inset-x-0 z-20 bg-background/85 backdrop-blur-xl border-t border-border tab-bar-safe">
-        <div className="grid grid-cols-5 items-center opacity-100 h-13">
+        <div className="grid grid-cols-5 items-center opacity-100 h-11">
           {left.map(({ to, label, Icon, end }) =>
           <NavLink
             key={to}
