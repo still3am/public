@@ -63,7 +63,7 @@ export default function MobileTopBar() {
   const showBack = !ROOTS.has(pathname);
 
   return (
-    <header className="md:hidden sticky top-0 z-30 backdrop-blur-md border-b border-border/60 top-bar-safe opacity-100">
+    <header className="md:hidden sticky top-0 z-30 backdrop-blur-md border-b border-border/60 top-bar-safe opacity-0">
       <div className="flex items-center gap-1 px-2 h-12">
         {showBack ?
         <button
