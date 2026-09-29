@@ -13,7 +13,7 @@ export default function ScrollingBanner() {
   const { messages } = useBannerMessages();
 
   return (
-    <div className="w-full overflow-hidden bg-foreground text-background border-b border-border/40 select-none isolate relative z-10 md:pt-[env(safe-area-inset-top)]">
+    <div className="w-full overflow-hidden bg-foreground text-background border-b border-border/40 select-none isolate relative z-10 md:pt-[env(safe-area-inset-top)] my-1">
       <div className="flex whitespace-nowrap animate-marquee py-2 will-change-transform">
         {Array.from({ length: 8 }).map((_, i) =>
         <MarqueeItem key={i} text={messages[i % messages.length]} />
