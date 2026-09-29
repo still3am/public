@@ -76,7 +76,7 @@ export default function MobileTopBar() {
 
         <span className="w-2 shrink-0" />
         }
-        <h1 className="text-base font-extrabold tracking-tight truncate text-center capitalize">{title}</h1>
+        <h1 className="text-base font-extrabold tracking-tight truncate text-center uppercase not-italic">{title}</h1>
       </div>
     </header>);
 
