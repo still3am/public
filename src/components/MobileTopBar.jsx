@@ -64,7 +64,7 @@ export default function MobileTopBar() {
 
   return (
     <header className="md:hidden sticky top-0 z-30 backdrop-blur-md border-b border-border/60 top-bar-safe opacity-0">
-      <div className="flex items-center gap-1 px-2 h-12">
+      <div className="flex items-center gap-1 h-12">
         {showBack ?
         <button
           onClick={() => nav(-1)}
