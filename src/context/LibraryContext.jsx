@@ -1,7 +1,6 @@
 import { createContext, useCallback, useContext, useEffect, useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { useAuth } from "@/lib/AuthContext";
-import { coalesce } from "@/lib/coalesce";
 
 const LibraryContext = createContext(null);
 
@@ -32,12 +31,8 @@ export function LibraryProvider({ children }) {
 
   useEffect(() => {
     if (!user?.id) return;
-    const reload = coalesce(refresh, 1200);
-    const unsub = base44.entities.LibraryItem.subscribe(() => reload());
-    return () => {
-      reload.cancel();
-      unsub();
-    };
+    const unsub = base44.entities.LibraryItem.subscribe(() => refresh());
+    return unsub;
   }, [user?.id, refresh]);
 
   const toggle = useCallback(

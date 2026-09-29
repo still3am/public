@@ -4,7 +4,7 @@ import { useAuth } from "@/lib/AuthContext";
 import { usePlayer } from "@/context/PlayerContext";
 import { getDeviceId, getDeviceLabel } from "@/lib/deviceId";
 
-const PUBLISH_EVERY_MS = 30000;
+const PUBLISH_EVERY_MS = 10000;
 const STALE_AFTER_MS = 24 * 60 * 60 * 1000;
 
 // Keeps this device's playback position on the server and surfaces what the
@@ -128,15 +128,9 @@ export function usePlaybackSync() {
 
   useEffect(() => {
     loadRemote();
-    // Every listening device writes this row on a heartbeat, so our own writes
-    // would otherwise trigger a pointless re-read of the collection. Only a
-    // change from ANOTHER device is worth refreshing.
-    const unsub = base44.entities.PlaybackState.subscribe((event) => {
-      if (event?.data?.device_id === deviceId) return;
-      loadRemote();
-    });
+    const unsub = base44.entities.PlaybackState.subscribe(() => loadRemote());
     return unsub;
-  }, [loadRemote, deviceId]);
+  }, [loadRemote]);
 
   // Mobile browsers often never fire pagehide/unload (the tab gets frozen or
   // backgrounded instead), so flush on visibility change too — and re-read

@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
-import { getUsersByIds } from "@/lib/userLookup";
 import { X, Loader2 } from "lucide-react";
 import Avatar from "@/components/Avatar";
 
@@ -31,8 +30,10 @@ export default function FollowListModal({ userId, type, onClose }) {
           if (!cancelled) setUsers([]);
           return;
         }
-        const details = await getUsersByIds(ids);
-        if (!cancelled) setUsers(details);
+        const details = await Promise.all(
+          ids.map((id) => base44.entities.User.get(id).catch(() => null))
+        );
+        if (!cancelled) setUsers(details.filter(Boolean));
       } finally {
         if (!cancelled) setLoading(false);
       }
