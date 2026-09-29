@@ -101,7 +101,7 @@ export default function Lounge() {
     try {
       unsub = base44.entities.LoungeMember.subscribe(() => refreshMember(session.id));
     } catch {}
-    const poll = setInterval(() => refreshMember(session.id), 5000);
+    const poll = setInterval(() => refreshMember(session.id), 30000);
     return () => {
       if (unsub) unsub();
       clearInterval(poll);
@@ -383,7 +383,7 @@ function LoungeQueueList({ sessionId, isHost }) {
     try {
       unsub = base44.entities.LoungeQueueItem.subscribe(() => load());
     } catch {}
-    const poll = setInterval(load, 5000);
+    const poll = setInterval(load, 30000);
     return () => {
       if (unsub) unsub();
       clearInterval(poll);

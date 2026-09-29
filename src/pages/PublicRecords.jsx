@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
+import { getPublishedTracks } from "@/lib/catalogCache";
 import TrackCard from "@/components/TrackCard";
 import PullToRefresh from "@/components/PullToRefresh";
 import ArtistNameEditor from "@/components/ArtistNameEditor";
@@ -100,9 +101,7 @@ export default function PublicRecords({ id: propId }) {
       const a = await base44.entities.Artist.get(id).catch(() => null);
       setArtist(a);
       if (a?.name) {
-        const all = await base44.entities.Track.
-        filter({ is_published: true }, "-created_date", 10000).
-        catch(() => []);
+        const all = await getPublishedTracks();
         const names = splitNames(a.name);
         const matched = (Array.isArray(all) ? all : []).filter((t) =>
         splitNames(t.artist).some((n) => names.includes(n))

@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState, useCallback } from "react";
 import { Link } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
+import { getCatalogCount } from "@/lib/catalogCache";
 import { useUnpublishedSync } from "@/hooks/useUnpublishedSync";
 import { useAuth } from "@/lib/AuthContext";
 import {
@@ -136,8 +137,7 @@ export default function Home() {
       setFromFollowing(n.filter((tk) => followed.has(tk.uploader_id)).slice(0, 12));
       // Counted server-side — downloading every record just to measure the
       // catalog was slow and got silently truncated by the query limit.
-      const counted = await base44.functions.invoke("trackCount", {}).catch(() => null);
-      const published = counted?.data?.published;
+      const published = await getCatalogCount();
       if (typeof published === "number") {
         setTotalTracks(published);
         loadedRef.current = true;

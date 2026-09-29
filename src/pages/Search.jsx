@@ -11,6 +11,7 @@ import {
   ArrowLeft } from
 "lucide-react";
 import { base44 } from "@/api/base44Client";
+import { getPublishedTracks, getArtists } from "@/lib/catalogCache";
 import TrackCard from "@/components/TrackCard";
 import VinylCrate from "@/components/search/VinylCrate";
 import Avatar from "@/components/Avatar";
@@ -66,8 +67,8 @@ export default function Search() {
     setLoadingAll(true);
     try {
       const [tracks, artists] = await Promise.all([
-      base44.entities.Track.filter({ is_published: true }, "-created_date", 10000).catch(() => []),
-      base44.entities.Artist.list("-updated_date", 1000).catch(() => [])]
+      getPublishedTracks(),
+      getArtists()]
       );
       setAllTracks(Array.isArray(tracks) ? tracks : []);
       setAllArtists(Array.isArray(artists) ? artists : []);

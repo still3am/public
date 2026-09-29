@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useSearchParams, Link } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
+import { getArtists } from "@/lib/catalogCache";
 import PublicRecords from "@/pages/PublicRecords";
 import { Loader2, Mic2 } from "lucide-react";
 
@@ -28,7 +29,7 @@ export default function ArtistByName() {
         if (active) setArtist(null);
         return;
       }
-      const artists = await base44.entities.Artist.list("-updated_date", 1000).catch(() => []);
+      const artists = await getArtists();
       const match = (Array.isArray(artists) ? artists : []).find(
         (a) => normalize(a.name) === target
       );

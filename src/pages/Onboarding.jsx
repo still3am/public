@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { base44 } from "@/api/base44Client";
+import { getPublishedTracks } from "@/lib/catalogCache";
 import { useAuth } from "@/lib/AuthContext";
 import { Image } from "@/components/ui/image";
 import Logo from "@/components/Logo";
@@ -22,7 +22,7 @@ export default function Onboarding() {
   useEffect(() => {
     (async () => {
       try {
-        const t = await base44.entities.Track.filter({ is_published: true }, "-created_date", 10000).catch(() => []);
+        const t = await getPublishedTracks();
         setTracks(Array.isArray(t) ? t : []);
       } finally {
         setLoading(false);

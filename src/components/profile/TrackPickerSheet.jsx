@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { base44 } from "@/api/base44Client";
+import { getPublishedTracks } from "@/lib/catalogCache";
 import { Image } from "@/components/ui/image";
 import { Check, X, Search, Loader2 } from "lucide-react";
 
@@ -12,11 +12,7 @@ export default function TrackPickerSheet({ title, selectedIds, max, tracks, onTo
     let cancelled = false;
     (async () => {
       try {
-        const published = await base44.entities.Track.filter(
-          { is_published: true },
-          "-created_date",
-          10000
-        );
+        const published = await getPublishedTracks();
         if (cancelled) return;
         // Merge in any passed tracks (e.g. user's own non-public tracks) without duplicates
         const seen = new Set();

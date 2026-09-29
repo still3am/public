@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "react-router-dom";
-import { base44 } from "@/api/base44Client";
+import { getPublishedTracks, getArtists } from "@/lib/catalogCache";
 import PullToRefresh from "@/components/PullToRefresh";
 import { Loader2, Mic2, Disc3 } from "lucide-react";
 
@@ -64,8 +64,8 @@ export default function PublicRecordsIndex() {
     setArtists(null);
     try {
       const [records, tracks] = await Promise.all([
-      base44.entities.Artist.list("-updated_date", 1000).catch(() => []),
-      base44.entities.Track.filter({ is_published: true }, "-created_date", 10000).catch(() => [])]
+      getArtists(),
+      getPublishedTracks()]
       );
       const recordByName = new Map();
       (Array.isArray(records) ? records : []).forEach((a) => {
