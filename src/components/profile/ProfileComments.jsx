@@ -1,6 +1,7 @@
 import { useEffect, useState, useCallback } from "react";
 import { base44 } from "@/api/base44Client";
 import { useAuth } from "@/lib/AuthContext";
+import { coalesce } from "@/lib/coalesce";
 import Avatar from "@/components/Avatar";
 import { Loader2, Send, Trash2, MessageCircle } from "lucide-react";
 
@@ -28,8 +29,12 @@ export default function ProfileComments({ profileId, isOwn }) {
 
   useEffect(() => {
     load();
-    const unsub = base44.entities.ProfileComment.subscribe(() => load());
-    return unsub;
+    const reload = coalesce(load, 1200);
+    const unsub = base44.entities.ProfileComment.subscribe(() => reload());
+    return () => {
+      reload.cancel();
+      unsub();
+    };
   }, [load]);
 
   async function postComment(e) {

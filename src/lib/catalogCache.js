@@ -41,9 +41,10 @@ export const getArtists = makeCache(() =>
 );
 
 // The catalog size is counted server-side, but that count pages through every
-// track — so ask for it sparingly instead of on every visit.
+// track record — the single most expensive call the app makes — so ask for it
+// rarely and reuse the answer for a long window.
 export const getCatalogCount = makeCache(async () => {
   const res = await base44.functions.invoke("trackCount", {}).catch(() => null);
   const published = res?.data?.published;
   return typeof published === "number" ? published : null;
-});
+}, 15 * 60 * 1000);
