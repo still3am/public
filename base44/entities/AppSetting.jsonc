@@ -14,6 +14,16 @@
       },
       "default": [],
       "description": "Custom scrolling banner messages; empty array falls back to defaults"
+    },
+    "catalog_count": {
+      "type": "integer",
+      "default": 0,
+      "description": "Last measured number of published tracks, shared by every user so the catalog is only re-counted hourly"
+    },
+    "catalog_counted_at": {
+      "type": "string",
+      "default": "",
+      "description": "ISO timestamp of when catalog_count was measured"
     }
   },
   "rls": {
@@ -33,5 +43,6 @@
         "role": "admin"
       }
     }
-  }
+  },
+  "required": []
 }

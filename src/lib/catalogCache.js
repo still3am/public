@@ -5,23 +5,31 @@ import { base44 } from "@/api/base44Client";
 // app's heaviest source of entity read traffic, so these helpers read it once and
 // share the result for a short window — and collapse simultaneous calls into a
 // single request.
-const TTL = 5 * 60 * 1000;
+const TTL = 10 * 60 * 1000;
+const RETRY_AFTER_ERROR = 30 * 1000;
 const MAX = 5000; // platform cap per request
 
 function makeCache(fetcher, ttl = TTL) {
-  let at = 0;
-  let has = false;
+  let hasValue = false;
   let value = null;
+  let expiresAt = 0;
   let inflight = null;
   return async () => {
-    if (has && Date.now() - at < ttl) return value;
+    if (hasValue && Date.now() < expiresAt) return value;
     if (inflight) return inflight;
     inflight = fetcher()
       .then((v) => {
         value = v;
-        has = true;
-        at = Date.now();
+        hasValue = true;
+        expiresAt = Date.now() + ttl;
         return v;
+      })
+      .catch(() => {
+        // A failed read (rate limit, offline) must never be cached as the new
+        // truth — that would blank the catalog for the whole window. Keep
+        // serving the last good value and allow a retry shortly after.
+        expiresAt = Date.now() + RETRY_AFTER_ERROR;
+        return hasValue ? value : [];
       })
       .finally(() => {
         inflight = null;
@@ -31,20 +39,17 @@ function makeCache(fetcher, ttl = TTL) {
 }
 
 export const getPublishedTracks = makeCache(() =>
-  base44.entities.Track
-    .filter({ is_published: true }, "-created_date", MAX)
-    .catch(() => [])
+  base44.entities.Track.filter({ is_published: true }, "-created_date", MAX)
 );
 
 export const getArtists = makeCache(() =>
-  base44.entities.Artist.list("-updated_date", MAX).catch(() => [])
+  base44.entities.Artist.list("-updated_date", MAX)
 );
 
-// The catalog size is counted server-side, but that count pages through every
-// track record — the single most expensive call the app makes — so ask for it
-// rarely and reuse the answer for a long window.
+// The catalog size is counted server-side (and shared app-wide for an hour), but
+// still reuse the answer here for a while so navigating back and forth is free.
 export const getCatalogCount = makeCache(async () => {
-  const res = await base44.functions.invoke("trackCount", {}).catch(() => null);
+  const res = await base44.functions.invoke("trackCount", {});
   const published = res?.data?.published;
   return typeof published === "number" ? published : null;
 }, 15 * 60 * 1000);

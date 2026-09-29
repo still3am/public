@@ -2,23 +2,21 @@ import { base44 } from "@/api/base44Client";
 
 // Surfaces like the follower list and the notifications feed need details for
 // many users at once. Firing one request per id burst the API and tripped the
-// platform rate limit, so results are cached for the session, identical ids
-// share a single in-flight request, and requests go out a few at a time.
+// platform rate limit, so ids are resolved in a single batched request, cached
+// for the session, and identical batches share one in-flight request.
 const cache = new Map();
 const inflight = new Map();
-const CONCURRENCY = 3;
+const CHUNK = 100;
 
-function fetchOne(id) {
-  if (cache.has(id)) return Promise.resolve(cache.get(id));
-  if (inflight.has(id)) return inflight.get(id);
-  const req = base44.entities.User.get(id)
-    .then((user) => {
-      if (user) cache.set(id, user);
-      return user || null;
-    })
-    .catch(() => null)
-    .finally(() => inflight.delete(id));
-  inflight.set(id, req);
+function fetchChunk(ids) {
+  const key = ids.join(",");
+  if (inflight.has(key)) return inflight.get(key);
+  const req = base44.functions
+    .invoke("usersByIds", { ids })
+    .then((res) => res?.data?.users || [])
+    .catch(() => [])
+    .finally(() => inflight.delete(key));
+  inflight.set(key, req);
   return req;
 }
 
@@ -28,15 +26,14 @@ function fetchOne(id) {
  */
 export async function getUsersByIds(ids = []) {
   const unique = [...new Set((ids || []).filter(Boolean))];
-  const users = [];
-  for (let i = 0; i < unique.length; i += CONCURRENCY) {
-    const batch = unique.slice(i, i + CONCURRENCY);
-    const found = await Promise.all(batch.map(fetchOne));
-    found.forEach((u) => {
-      if (u) users.push(u);
+  const missing = unique.filter((id) => !cache.has(id));
+  for (let i = 0; i < missing.length; i += CHUNK) {
+    const users = await fetchChunk(missing.slice(i, i + CHUNK));
+    users.forEach((u) => {
+      if (u?.id) cache.set(u.id, u);
     });
   }
-  return users;
+  return unique.map((id) => cache.get(id)).filter(Boolean);
 }
 
 export function getCachedUser(id) {
