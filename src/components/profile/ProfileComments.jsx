@@ -112,7 +112,7 @@ export default function ProfileComments({ profileId, isOwn }) {
                     {new Date(c.created_date).toLocaleDateString(undefined, { month: "short", day: "numeric" })}
                   </span>
                 </div>
-                <p className="text-sm text-foreground/70 mt-1 break-words">{c.message}</p>
+                <p className="selectable-content text-sm text-foreground/70 mt-1 break-words">{c.message}</p>
               </div>
               {(c.author_id === user?.id || isOwn) && (
                 <button

@@ -57,7 +57,7 @@ export default function Upload() {
 
       {q.items.length > 0 &&
       <>
-          <div className="sticky top-14 z-20 -mx-4 md:-mx-6 px-4 md:px-6 py-3 mt-6 bg-background/85 backdrop-blur-md border-y border-border flex items-center justify-between gap-3">
+          <div className="sticky top-[calc(3.5rem_+_env(safe-area-inset-top))] z-20 -mx-4 md:-mx-6 px-4 md:px-6 py-3 mt-6 bg-background/85 backdrop-blur-md border-y border-border flex items-center justify-between gap-3">
             <div className="min-w-0">
               <div className="text-sm font-extrabold tracking-tight">
                 {q.items.length} {q.items.length === 1 ? "track" : "tracks"} queued

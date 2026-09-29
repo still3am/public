@@ -17,8 +17,11 @@
     <script>
       (function () {
         try {
-          if (localStorage.getItem("public-theme") === "dark")
-            document.documentElement.classList.add("dark");
+          var pref = localStorage.getItem("public-theme");
+          if (pref !== "dark" && pref !== "light") {
+            pref = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+          }
+          if (pref === "dark") document.documentElement.classList.add("dark");
         } catch (e) {}
       })();
     </script>

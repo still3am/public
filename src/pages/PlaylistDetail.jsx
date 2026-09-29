@@ -4,6 +4,7 @@ import { base44 } from "@/api/base44Client";
 import { useAuth } from "@/lib/AuthContext";
 import { usePlayer } from "@/context/PlayerContext";
 import {
+  ChevronLeft,
   Loader2,
   Play,
   Pencil,
@@ -128,6 +129,13 @@ export default function PlaylistDetail() {
 
   return (
     <div className="max-w-5xl mx-auto px-3 md:px-0 pb-10">
+      <button
+        onClick={() => nav(-1)}
+        className="hidden md:inline-flex items-center gap-1.5 mb-4 text-sm font-semibold text-foreground/60 hover:text-foreground transition"
+      >
+        <ChevronLeft size={18} /> Back
+      </button>
+
       {/* Header */}
       <div className="flex flex-col md:flex-row gap-5 md:gap-6 mb-8">
         <div className="relative w-40 h-40 md:w-52 md:h-52 shrink-0 mx-auto md:mx-0">
@@ -173,7 +181,7 @@ export default function PlaylistDetail() {
             />
           ) : (
             playlist.description && (
-              <p className="text-sm text-foreground/60 max-w-xl mb-3">{playlist.description}</p>
+              <p className="selectable-content text-sm text-foreground/60 max-w-xl mb-3">{playlist.description}</p>
             )
           )}
 

@@ -130,6 +130,11 @@
   }
 
   @layer utilities {
+  .selectable-content {
+    -webkit-user-select: text;
+    user-select: text;
+    -webkit-touch-callout: default;
+  }
   .tap-target { min-width: 44px; min-height: 44px; display: inline-flex; align-items: center; justify-content: center; }
   .no-scrollbar { scrollbar-width: none; -ms-overflow-style: none; }
   .no-scrollbar::-webkit-scrollbar { display: none; }

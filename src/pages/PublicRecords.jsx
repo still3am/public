@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import TrackCard from "@/components/TrackCard";
 import PullToRefresh from "@/components/PullToRefresh";
@@ -9,6 +9,7 @@ import { usePlayer } from "@/context/PlayerContext";
 import { useAuth } from "@/lib/AuthContext";
 import { useToast } from "@/components/ui/use-toast";
 import {
+  ChevronLeft,
   Loader2,
   Music,
   Mic2,
@@ -84,6 +85,7 @@ function SectionTitle({ icon: Icon, children, right }) {
 export default function PublicRecords({ id: propId }) {
   const { id: paramId } = useParams();
   const id = propId || paramId;
+  const nav = useNavigate();
   const { toast } = useToast();
   const p = usePlayer();
   const { user } = useAuth();
@@ -187,6 +189,13 @@ export default function PublicRecords({ id: propId }) {
   return (
     <PullToRefresh onRefresh={load}>
       <div className="max-w-4xl mx-auto pb-16">
+        <button
+          onClick={() => nav(-1)}
+          className="hidden md:inline-flex items-center gap-1.5 mb-4 text-sm font-semibold text-foreground/60 hover:text-foreground transition"
+        >
+          <ChevronLeft size={18} /> Back
+        </button>
+
         {/* Hero */}
         <section className="relative rounded-3xl overflow-hidden border border-border bg-card mb-6">
           <div className="relative h-36 md:h-52">
@@ -244,7 +253,7 @@ export default function PublicRecords({ id: propId }) {
           {(artist.bio || socials.length > 0) &&
           <div className="px-5 md:px-10 pb-6 md:pb-8 border-t border-border/60 pt-5 flex flex-col md:flex-row gap-4 md:items-center">
               {artist.bio &&
-            <p className="text-sm text-foreground/70 leading-relaxed flex-1 min-w-0">
+            <p className="selectable-content text-sm text-foreground/70 leading-relaxed flex-1 min-w-0">
                   {artist.bio}
                 </p>
             }
@@ -266,7 +275,7 @@ export default function PublicRecords({ id: propId }) {
           </SectionTitle>
           <div className="rounded-2xl border border-border bg-gradient-to-br from-foreground/[0.04] to-transparent p-5 md:p-6">
             {artist.history_text ?
-            <p className="text-sm text-foreground/80 leading-relaxed whitespace-pre-line">
+            <p className="selectable-content text-sm text-foreground/80 leading-relaxed whitespace-pre-line">
                 {artist.history_text}
               </p> :
 

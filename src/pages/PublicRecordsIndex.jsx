@@ -238,7 +238,7 @@ export default function PublicRecordsIndex() {
             {groups.map((g) =>
           <AzReveal key={g.key}>
                 <div data-key={g.key} ref={(el) => groupRefs.current[g.key] = el}>
-                  <div className="sticky top-[3.25rem] z-10 -mx-1 px-1 py-1 bg-background/90 backdrop-blur-sm">
+                  <div className="sticky top-[calc(3.25rem_+_env(safe-area-inset-top))] z-10 -mx-1 px-1 py-1 bg-background/90 backdrop-blur-sm">
                     <span className="text-[11px] font-extrabold tracking-[0.18em] text-foreground/40">
                       {g.key}
                     </span>

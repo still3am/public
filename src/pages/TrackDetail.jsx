@@ -7,6 +7,7 @@ import EmptyState from "@/components/EmptyState";
 import EditTrackModal from "@/components/EditTrackModal";
 import ArtistLinks from "@/components/ArtistLinks";
 import {
+  ChevronLeft,
   Loader2,
   Play,
   Pause,
@@ -234,6 +235,13 @@ export default function TrackDetail() {
 
   return (
     <div className="max-w-3xl mx-auto">
+      <button
+        onClick={() => nav(-1)}
+        className="hidden md:inline-flex items-center gap-1.5 mb-4 text-sm font-semibold text-foreground/60 hover:text-foreground transition"
+      >
+        <ChevronLeft size={18} /> Back
+      </button>
+
       {/* Hero */}
       <div className="relative rounded-3xl overflow-hidden border border-border mb-6 md:mb-8">
         {track.cover_art_url &&
@@ -304,7 +312,7 @@ export default function TrackDetail() {
 
             
             {track.description &&
-            <p className="text-sm text-foreground/70 leading-relaxed mb-3">
+            <p className="selectable-content text-sm text-foreground/70 leading-relaxed mb-3">
                 {track.description}
               </p>
             }
@@ -377,7 +385,7 @@ export default function TrackDetail() {
           <h2 className="text-lg font-extrabold tracking-tight mb-3 flex items-center gap-2">
              Lyrics
           </h2>
-          <div className="whitespace-pre-line text-sm text-foreground/70 leading-relaxed max-h-96 overflow-y-auto px-1">
+          <div className="selectable-content whitespace-pre-line text-sm text-foreground/70 leading-relaxed max-h-96 overflow-y-auto px-1">
             {track.lyrics_text}
           </div>
           {isOwner && track.audio_url &&

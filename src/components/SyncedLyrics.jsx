@@ -83,7 +83,7 @@ export default function SyncedLyrics({ trackId, position, fallbackText = "", onS
               key={i}
               ref={(el) => (lineRefs.current[i] = el)}
               onClick={() => onSeek?.((l.start_time_ms || 0) / 1000)}
-              className={`block text-left w-full mb-3 transition-all duration-500 ${
+              className={`selectable-content block text-left w-full mb-3 transition-all duration-500 ${
                 isActive ? "text-2xl font-extrabold" : "text-lg font-bold"
               }`}
               style={{
@@ -110,7 +110,7 @@ export default function SyncedLyrics({ trackId, position, fallbackText = "", onS
     );
   }
   return (
-    <div className="flex-1 min-h-0 overflow-y-auto no-scrollbar px-4 py-10 text-white/85 text-xl font-extrabold leading-relaxed whitespace-pre-line">
+    <div className="selectable-content flex-1 min-h-0 overflow-y-auto no-scrollbar px-4 py-10 text-white/85 text-xl font-extrabold leading-relaxed whitespace-pre-line">
       {text}
       <div className="h-24" />
     </div>

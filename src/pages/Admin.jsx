@@ -39,7 +39,7 @@ export default function Admin() {
         </div>
       ) : (
         <>
-          <div className="sticky top-14 z-30 -mx-2 px-2 pt-2 pb-2 bg-background/80 backdrop-blur border-b border-border tab-strip flex gap-1.5 overflow-x-auto no-scrollbar">
+          <div className="sticky top-[calc(3.5rem_+_env(safe-area-inset-top))] z-30 -mx-2 px-2 pt-2 pb-2 bg-background/80 backdrop-blur border-b border-border tab-strip flex gap-1.5 overflow-x-auto no-scrollbar">
             {tabs.map(t => {
               const Icon = t.icon;
               const on = tab === t.id;

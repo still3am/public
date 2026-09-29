@@ -432,7 +432,7 @@ export default function Profile() {
 
 
                   profile.bio &&
-                  <p className="text-sm md:text-base text-foreground/70 max-w-2xl mt-2.5 leading-relaxed mx-auto md:mx-0">
+                  <p className="selectable-content text-sm md:text-base text-foreground/70 max-w-2xl mt-2.5 leading-relaxed mx-auto md:mx-0">
                     {profile.bio}
                   </p>
 
