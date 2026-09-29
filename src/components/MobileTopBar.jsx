@@ -63,7 +63,7 @@ export default function MobileTopBar() {
   const showBack = !ROOTS.has(pathname);
 
   return (
-    <header className="md:hidden sticky top-0 z-30 bg-background/85 backdrop-blur-md border-b border-border/60 top-bar-safe">
+    <header className="md:hidden sticky top-0 z-30 bg-background/85 backdrop-blur-md border-b border-border/60 top-bar-safe pb-1">
       
 
 
