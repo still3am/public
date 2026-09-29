@@ -1,6 +1,8 @@
 import { useCallback, useEffect, useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { useAuth } from "@/lib/AuthContext";
+import { getUsersByIds } from "@/lib/userLookup";
+import { coalesce } from "@/lib/coalesce";
 
 // Lightweight unread-count badge for nav surfaces.
 export function useUnreadCount() {
@@ -23,9 +25,12 @@ export function useUnreadCount() {
       }
     }
     load();
-    const unsub = base44.entities.Notification.subscribe(() => load());
+    // A burst of likes/follows arrives as several events — collapse them.
+    const reload = coalesce(load, 1500);
+    const unsub = base44.entities.Notification.subscribe(() => reload());
     return () => {
       cancelled = true;
+      reload.cancel();
       unsub();
     };
   }, [user]);
@@ -48,9 +53,7 @@ export function useNotifications() {
         50
       );
       const actorIds = [...new Set(items.map((n) => n.actor_id).filter(Boolean))];
-      const actors = await Promise.all(
-        actorIds.map((id) => base44.entities.User.get(id).catch(() => null))
-      );
+      const actors = await getUsersByIds(actorIds);
       const actorMap = {};
       actors.forEach((a) => {
         if (a) actorMap[a.id] = a;
@@ -65,8 +68,12 @@ export function useNotifications() {
 
   useEffect(() => {
     load();
-    const unsub = base44.entities.Notification.subscribe(() => load());
-    return unsub;
+    const reload = coalesce(load, 1500);
+    const unsub = base44.entities.Notification.subscribe(() => reload());
+    return () => {
+      reload.cancel();
+      unsub();
+    };
   }, [load]);
 
   async function markAllAsRead() {
