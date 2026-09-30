@@ -18,8 +18,8 @@ import {
   Flag,
   Loader2,
   MoreHorizontal,
-  X,
-} from "lucide-react";
+  X } from
+"lucide-react";
 import { useAuth } from "@/lib/AuthContext";
 import { useTrackActions } from "@/hooks/useTrackActions";
 import PlaylistPickerModal from "@/components/playlist/PlaylistPickerModal";
@@ -33,17 +33,17 @@ function MenuItem({ icon: Icon, label, onClick, danger, active, spinner }) {
       type="button"
       onClick={onClick}
       className={`w-full flex items-center gap-2.5 px-3.5 py-2.5 text-sm font-medium text-left transition-colors hover:bg-accent hover:text-accent-foreground ${
-        danger ? "text-destructive" : "text-popover-foreground"
-      }`}
-    >
-      {spinner ? (
-        <Loader2 size={15} className="animate-spin opacity-80" />
-      ) : (
-        <Icon size={15} className={active ? "opacity-100" : "opacity-75"} />
-      )}
+      danger ? "text-destructive" : "text-popover-foreground"}`
+      }>
+      
+      {spinner ?
+      <Loader2 size={15} className="animate-spin opacity-80" /> :
+
+      <Icon size={15} className={active ? "opacity-100" : "opacity-75"} />
+      }
       <span className="flex-1 truncate">{label}</span>
-    </button>
-  );
+    </button>);
+
 }
 
 /**
@@ -58,7 +58,7 @@ export default function TrackOptionsMenu({
   className = "",
   extraActions = [],
   hideActions = [],
-  align = "right",
+  align = "right"
 }) {
   const { user } = useAuth();
   const a = useTrackActions(track);
@@ -77,7 +77,7 @@ export default function TrackOptionsMenu({
         key: "play",
         icon: a.isPlaying ? Pause : Play,
         label: a.isPlaying ? "Pause" : "Play",
-        onClick: a.play,
+        onClick: a.play
       });
     }
     if (!hide("library")) {
@@ -86,7 +86,7 @@ export default function TrackOptionsMenu({
         icon: a.busy === "library" ? Loader2 : a.inLibrary ? CheckCheck : Plus,
         spinner: a.busy === "library",
         label: a.inLibrary ? "Remove from Library" : "Add to Library",
-        onClick: a.toggleLibrary,
+        onClick: a.toggleLibrary
       });
     }
     if (user && !hide("like")) {
@@ -96,7 +96,7 @@ export default function TrackOptionsMenu({
         label: a.liked ? "Unlike" : "Like",
         active: a.liked,
         onClick: a.toggleLike,
-        spinner: a.busy === "like",
+        spinner: a.busy === "like"
       });
     }
     if (!hide("queue")) {
@@ -104,7 +104,7 @@ export default function TrackOptionsMenu({
         key: "queue",
         icon: ListPlus,
         label: "Add to Queue",
-        onClick: a.addToQueue,
+        onClick: a.addToQueue
       });
     }
     if (!hide("playlist")) {
@@ -112,7 +112,7 @@ export default function TrackOptionsMenu({
         key: "playlist",
         icon: ListMusic,
         label: "Add to Playlist",
-        onClick: () => setShowPlaylists(true),
+        onClick: () => setShowPlaylists(true)
       });
     }
     if (!hide("track")) {
@@ -134,7 +134,7 @@ export default function TrackOptionsMenu({
         spinner: a.busy === "offline" || a.savingOffline,
         label: a.savedOffline ? "Remove Offline" : "Download",
         onClick: a.toggleOffline,
-        active: a.savedOffline,
+        active: a.savedOffline
       });
     }
     if (!hide("share")) {
@@ -146,7 +146,7 @@ export default function TrackOptionsMenu({
         icon: Flag,
         label: "Report",
         danger: true,
-        onClick: () => setShowReport(true),
+        onClick: () => setShowReport(true)
       });
     }
 
@@ -175,21 +175,21 @@ export default function TrackOptionsMenu({
     const height = Math.min(items.length * 41 + 12, window.innerHeight * 0.7);
     const up = r.bottom + height + 8 > window.innerHeight && r.top - height - 8 > 0;
     const left =
-      align === "left"
-        ? Math.max(8, r.left)
-        : Math.max(8, Math.min(r.right - MENU_WIDTH, window.innerWidth - MENU_WIDTH - 8));
+    align === "left" ?
+    Math.max(8, r.left) :
+    Math.max(8, Math.min(r.right - MENU_WIDTH, window.innerWidth - MENU_WIDTH - 8));
     setPos({ top: up ? r.top - height - 6 : r.bottom + 6, left, height });
   }
 
   if (!track) return null;
   const triggerCls =
-    variant === "plus"
-      ? `w-9 h-9 rounded-full grid place-items-center transition active:scale-90 ${
-          pos ? "bg-foreground/15" : "bg-foreground/10 hover:bg-foreground/20"
-        }`
-      : `p-2 rounded-full text-foreground/70 hover:text-foreground hover:bg-foreground/10 active:scale-90 transition ${
-          pos ? "bg-foreground/10 text-foreground" : ""
-        }`;
+  variant === "plus" ?
+  `w-9 h-9 rounded-full grid place-items-center transition active:scale-90 ${
+  pos ? "bg-foreground/15" : "bg-foreground/10 hover:bg-foreground/20"}` :
+
+  `p-2 rounded-full text-foreground/70 hover:text-foreground hover:bg-foreground/10 active:scale-90 transition ${
+  pos ? "bg-foreground/10 text-foreground" : ""}`;
+
 
   return (
     <div className={`relative shrink-0 ${className}`}>
@@ -203,42 +203,42 @@ export default function TrackOptionsMenu({
         }}
         className={triggerCls}
         aria-label="Track options"
-        aria-haspopup="menu"
-      >
+        aria-haspopup="menu">
+        
         {variant === "plus" ? pos ? <X size={19} /> : <Plus size={19} /> : <MoreHorizontal size={17} />}
       </button>
 
-      {pos && (
-        <>
-          <div className="fixed inset-0 z-40" onClick={() => setPos(null)} />
+      {pos &&
+      <>
+          <div className="fixed inset-0 z-40 hidden" onClick={() => setPos(null)} />
           <div
-            role="menu"
-            className="fixed z-50 overflow-y-auto rounded-2xl border border-border bg-popover text-popover-foreground shadow-2xl py-1.5 backdrop-blur-xl"
-            style={{ top: pos.top, left: pos.left, width: MENU_WIDTH, maxHeight: pos.height }}
-          >
-            {items.map((item, i) => (
-              <MenuItem
-                key={item.key || i}
-                icon={item.icon}
-                label={item.label}
-                danger={item.danger}
-                active={item.active}
-                spinner={item.spinner}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setPos(null);
-                  item.onClick?.();
-                }}
-              />
-            ))}
+          role="menu"
+          className="fixed z-50 overflow-y-auto rounded-2xl border border-border bg-popover text-popover-foreground shadow-2xl py-1.5 backdrop-blur-xl"
+          style={{ top: pos.top, left: pos.left, width: MENU_WIDTH, maxHeight: pos.height }}>
+          
+            {items.map((item, i) =>
+          <MenuItem
+            key={item.key || i}
+            icon={item.icon}
+            label={item.label}
+            danger={item.danger}
+            active={item.active}
+            spinner={item.spinner}
+            onClick={(e) => {
+              e.stopPropagation();
+              setPos(null);
+              item.onClick?.();
+            }} />
+
+          )}
           </div>
         </>
-      )}
+      }
 
-      {showPlaylists && (
-        <PlaylistPickerModal track={track} onClose={() => setShowPlaylists(false)} />
-      )}
+      {showPlaylists &&
+      <PlaylistPickerModal track={track} onClose={() => setShowPlaylists(false)} />
+      }
       {showReport && <ReportModal track={track} onClose={() => setShowReport(false)} />}
-    </div>
-  );
+    </div>);
+
 }
