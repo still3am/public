@@ -27,6 +27,27 @@
           "end_time_ms": {
             "type": "integer",
             "default": 0
+          },
+          "words": {
+            "type": "array",
+            "default": [],
+            "description": "Optional word-level timings for karaoke highlighting; empty means line-level timing only",
+            "items": {
+              "type": "object",
+              "properties": {
+                "text": {
+                  "type": "string"
+                },
+                "start_time_ms": {
+                  "type": "integer",
+                  "default": 0
+                },
+                "end_time_ms": {
+                  "type": "integer",
+                  "default": 0
+                }
+              }
+            }
           }
         }
       },

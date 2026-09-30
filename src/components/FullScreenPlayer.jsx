@@ -4,7 +4,8 @@ import { useColorExtraction } from "@/hooks/useColorExtraction";
 import { useAuth } from "@/lib/AuthContext";
 import { formatTime } from "@/lib/audio-utils";
 import SyncedLyrics from "@/components/SyncedLyrics";
-import NowPlayingAddMenu from "@/components/NowPlayingAddMenu";
+import TrackOptionsMenu from "@/components/track/TrackOptionsMenu";
+import { onOpenFullPlayer, consumePlayerPanelRequest } from "@/lib/playerUi";
 import { Link } from "react-router-dom";
 import {
   Play,
@@ -20,6 +21,7 @@ import {
   Repeat1,
   Shuffle,
   Disc3,
+  ListMusic,
   X } from
 "lucide-react";
 import PulseVisualizer from "@/components/PulseVisualizer";
@@ -59,7 +61,6 @@ export default function FullScreenPlayer({ onClose }) {
   const coverUrl = useCoverUrl(offlineCover);
   const bg = useColorExtraction(coverUrl);
   const [lyricsMode, setLyricsMode] = useState(false);
-  const [showPulse, setShowPulse] = useState(false);
   const [showVolHint, setShowVolHint] = useState(false);
   const [copied, setCopied] = useState(false);
   const [showQueue, setShowQueue] = useState(false);
@@ -106,6 +107,24 @@ export default function FullScreenPlayer({ onClose }) {
     });
     return () => { alive = false; };
   }, [t?.id]);
+
+  // Panels requested from a track menu anywhere in the app (Mix / Queue /
+  // Lounge) land here whenever the full-screen player is the visible layer.
+  useEffect(() => {
+    const handle = (detail = {}) => {
+      consumePlayerPanelRequest();
+      if (detail.mixer) setShowMixer(true);
+      else if (detail.queue) setShowQueue(true);
+      else if (detail.lounge) {
+        Promise.resolve(lounge.ensureSession?.()).catch(() => {});
+        setLoungeOpen(true);
+      }
+    };
+    const pending = consumePlayerPanelRequest();
+    if (pending) handle(pending);
+    return onOpenFullPlayer(handle);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [lounge.ensureSession]);
 
   // keyboard shortcuts
   useEffect(() => {
@@ -235,8 +254,8 @@ export default function FullScreenPlayer({ onClose }) {
         className="pointer-events-none absolute -top-1/3 left-0 right-0 h-2/3 opacity-40 blur-3xl"
         style={{ background: `radial-gradient(ellipse at center, ${bg} 0%, transparent 70%)` }} />
 
-      {/* reactive visualizer */}
-      {showPulse && <PulseVisualizer className="absolute inset-0 z-0" />}
+      {/* Color pulse — always on while a track is playing */}
+      <PulseVisualizer className="absolute inset-0 z-0" />
       
 
       {/* top bar */}
@@ -273,23 +292,21 @@ export default function FullScreenPlayer({ onClose }) {
 
           
         </div>
-        <NowPlayingAddMenu
-          onShare={shareNow}
-          showPulse={showPulse}
-          onTogglePulse={() => {
-            setShowPulse((v) => !v);
-            if (!showPulse) p.enableAnalyser?.();
-          }}
-          onToggleLibrary={() => toggleLibrary(t)}
-          inLibrary={isInLibrary(t.id)}
-          onViewQueue={() => setShowQueue(true)}
-          onLounge={() => setLoungeOpen(true)}
-          onToggleOffline={toggleOffline}
-          savedOffline={cache.isCached(t.id)}
-          savingOffline={!!cache.downloading[t.id]}
-          queueCount={p.queue.length - p.currentIndex - 1 > 0 ? p.queue.length - p.currentIndex - 1 : 0}
-          onMix={() => setShowMixer(true)}
-          mixerActive={p.mixer.bass !== 0 || p.mixer.beat !== 0 || p.mixer.vocals !== 0 || p.mixer.treble !== 0 || p.mixer.boost !== 1} />
+        <TrackOptionsMenu
+          track={t}
+          variant="plus"
+          className="text-white"
+          extraActions={[
+            {
+              key: "view-queue",
+              icon: ListMusic,
+              label:
+                p.queue.length - p.currentIndex - 1 > 0
+                  ? `Queue (${p.queue.length - p.currentIndex - 1})`
+                  : "Queue",
+              onClick: () => setShowQueue(true),
+            },
+          ]} />
         
       </div>
 

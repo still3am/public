@@ -18,7 +18,6 @@ import ReleaseList from "@/components/ReleaseList";
 import ScoreboardTrackCount from "@/components/ScoreboardTrackCount";
 import EmptyState from "@/components/EmptyState";
 import { getRecentPlays } from "@/lib/recentPlays";
-import { getUserGenres } from "@/lib/userGenres";
 import PullToRefresh from "@/components/PullToRefresh";
 import HeroPlayingTint from "@/components/HeroPlayingTint";
 
@@ -174,15 +173,14 @@ export default function Home() {
         if (!p?.genre) continue;
         genreFreq[p.genre] = (genreFreq[p.genre] || 0) + 1;
       }
-      // Merge onboarding picks with listening history — onboarding genres
-      // seed personalization from day one, recent plays refine it over time.
-      const onboardGenres = await getUserGenres();
-      const genreSet = new Set(onboardGenres);
-      const userGenres = Object.entries(genreFreq).
+      // Personalization comes from what this user actually plays — the most
+      // played genres lead, and new listeners fall back to fresh uploads.
+      // Personalization comes from what this user actually plays — the genres
+      // they listen to most lead, and new listeners fall back to fresh uploads.
+      const allUserGenres = Object.entries(genreFreq).
       sort((a, b) => b[1] - a[1]).
       map(([g]) => g).
-      filter((g) => !genreSet.has(g));
-      const allUserGenres = [...onboardGenres, ...userGenres].slice(0, 5);
+      slice(0, 5);
       let discoverPicks = [];
       if (allUserGenres.length) {
         const perUserGenre = await Promise.all(

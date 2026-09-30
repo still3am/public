@@ -17,6 +17,7 @@ import { usePlayer } from "@/context/PlayerContext";
 import { Link, useLocation } from "react-router-dom";
 import { formatTime } from "@/lib/audio-utils";
 import FullScreenPlayer from "@/components/FullScreenPlayer";
+import { onOpenFullPlayer } from "@/lib/playerUi";
 import QueuePanel from "@/components/QueuePanel";
 import { useSidebarCollapsed } from "@/hooks/useSidebarCollapsed";
 import { useOfflineCoverUrl } from "@/hooks/useOfflineCoverUrl";
@@ -63,7 +64,26 @@ export default function PlayerBar() {
   const offlineCover = useOfflineCoverUrl(p.currentTrack?.id, p.currentTrack?.cover_art_url);
   const coverUrl = useCoverUrl(offlineCover);
   useEffect(() => { setCoverFailed(false); }, [coverUrl]);
-  if (location.pathname === "/onboarding" || !p.currentTrack) return null;
+
+  // Panels opened from a track menu: show them straight away when the
+  // full-screen player is closed, otherwise let the player host them.
+  useEffect(
+    () =>
+      onOpenFullPlayer((detail = {}) => {
+        if (detail.mixer && !fullOpen) {
+          setMixerOpen(true);
+          return;
+        }
+        if (detail.queue && !fullOpen) {
+          setQueueOpen(true);
+          return;
+        }
+        setFullOpen(true);
+      }),
+    [fullOpen]
+  );
+
+  if (!p.currentTrack) return null;
   const t = p.currentTrack;
   const pct = p.duration ? p.position / p.duration * 100 : 0;
   const remaining = Math.max(0, (p.duration || 0) - (p.position || 0));
