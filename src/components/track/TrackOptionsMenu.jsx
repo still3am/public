@@ -210,7 +210,7 @@ export default function TrackOptionsMenu({
 
       {pos &&
       <>
-          <div className="fixed inset-0 z-40 hidden" onClick={() => setPos(null)} />
+          
           <div
           role="menu"
           className="fixed z-50 overflow-y-auto rounded-2xl border border-border bg-popover text-popover-foreground shadow-2xl py-1.5 backdrop-blur-xl"
