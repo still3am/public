@@ -7,14 +7,6 @@
     },
     "track_id": {
       "type": "string"
-    },
-    "tags": {
-      "type": "array",
-      "items": {
-        "type": "string"
-      },
-      "default": [],
-      "description": "User-applied tags for organizing this saved track"
     }
   },
   "required": [

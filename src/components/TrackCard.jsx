@@ -1,9 +1,8 @@
-import { Play, Check } from "lucide-react";
+import { Play } from "lucide-react";
 import { Link } from "react-router-dom";
 import { usePlayer } from "@/context/PlayerContext";
 import { Image } from "@/components/ui/image";
 import { useCoverUrl } from "@/hooks/useCoverUrl";
-import TrackOptionsMenu from "@/components/track/TrackOptionsMenu";
 
 function EqualizerBars({ active }) {
   if (!active) return null;
@@ -24,14 +23,7 @@ function EqualizerBars({ active }) {
   );
 }
 
-export default function TrackCard({
-  track,
-  selectable = false,
-  selected = false,
-  onToggleSelect,
-  tags = [],
-  hideOptions = false,
-}) {
+export default function TrackCard({ track }) {
   const p = usePlayer();
   const isCurrent = p.currentTrack?.id === track.id;
   const isPlayingNow = isCurrent && p.isPlaying;
@@ -39,11 +31,7 @@ export default function TrackCard({
   const coverUrl = useCoverUrl(track.cover_art_url);
 
   const handlePlay = (e) => {
-    e?.stopPropagation();
-    if (selectable) {
-      onToggleSelect?.(track);
-      return;
-    }
+    e.stopPropagation();
     if (isCurrent) p.togglePlay();
     else p.playTrackAt([track]);
   };
@@ -53,7 +41,7 @@ export default function TrackCard({
       onClick={handlePlay}
       className={`group relative rounded-2xl p-2.5 sm:p-3 transition-all duration-300 cursor-pointer
         hover:bg-foreground/[0.04] active:scale-[0.98]
-        ${selected ? "bg-foreground/[0.07] ring-1 ring-foreground/20" : isCurrent ? "bg-foreground/[0.03]" : ""}`}
+        ${isCurrent ? "bg-foreground/[0.03]" : ""}`}
     >
       <div className="relative aspect-square rounded-xl overflow-hidden bg-foreground/[0.06] mb-2.5 shadow-sm">
         {coverUrl ? (
@@ -61,9 +49,8 @@ export default function TrackCard({
             src={coverUrl}
             fittingType="fill"
             alt=""
-            className={`w-full h-full object-cover transition-transform duration-500 ease-out ${
-              isCurrent ? "" : "group-hover:scale-[1.06]"
-            }`}
+            className={`w-full h-full object-cover transition-transform duration-500 ease-out
+              ${isCurrent ? "" : "group-hover:scale-[1.06]"}`}
           />
         ) : (
           <div className="w-full h-full grid place-items-center text-foreground/25 text-[10px] font-semibold uppercase tracking-wider px-2 text-center">
@@ -73,37 +60,7 @@ export default function TrackCard({
 
         <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300" />
 
-        {selectable && (
-          <button
-            type="button"
-            aria-label={selected ? "Deselect track" : "Select track"}
-            onClick={(e) => {
-              e.stopPropagation();
-              onToggleSelect?.(track);
-            }}
-            className={`absolute top-2 left-2 w-7 h-7 rounded-full border grid place-items-center backdrop-blur transition ${
-              selected
-                ? "bg-foreground border-foreground text-background"
-                : "border-background/70 bg-background/40 text-transparent"
-            }`}
-          >
-            <Check size={14} strokeWidth={3} />
-          </button>
-        )}
-
-        {!hideOptions && (
-          <div
-            className={`absolute top-1.5 right-1.5 rounded-full bg-background/70 backdrop-blur text-foreground transition-opacity duration-200 ${
-              selectable
-                ? "hidden"
-                : "opacity-100 md:opacity-0 md:group-hover:opacity-100 md:group-focus-within:opacity-100"
-            }`}
-          >
-            <TrackOptionsMenu track={track} />
-          </div>
-        )}
-
-        {!isPlayingNow && !selectable && (
+        {!isPlayingNow && (
           <button
             onClick={handlePlay}
             aria-label="Play"
@@ -122,7 +79,11 @@ export default function TrackCard({
         )}
       </div>
 
-      <Link to={`/track/${track.id}`} onClick={(e) => e.stopPropagation()} className="block">
+      <Link
+        to={`/track/${track.id}`}
+        onClick={(e) => e.stopPropagation()}
+        className="block"
+      >
         <div className="flex items-center gap-1.5">
           <span className={`truncate text-sm font-semibold ${isCurrent ? "text-foreground" : ""}`}>
             {track.title}
@@ -136,18 +97,6 @@ export default function TrackCard({
         <div className="text-xs text-foreground/55 truncate mt-0.5">
           {track.artist || track.uploader_name || "Unknown"}
         </div>
-        {tags?.length > 0 && (
-          <div className="flex flex-wrap gap-1 mt-1.5">
-            {tags.slice(0, 3).map((tag) => (
-              <span
-                key={tag}
-                className="text-[10px] font-semibold px-1.5 py-0.5 rounded-full bg-foreground/[0.07] text-foreground/60"
-              >
-                {tag}
-              </span>
-            ))}
-          </div>
-        )}
       </Link>
     </div>
   );

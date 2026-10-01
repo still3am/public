@@ -2,14 +2,6 @@ import { useEffect, useRef, useState, useCallback } from "react";
 import { Link } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import { getCatalogCount } from "@/lib/catalogCache";
-import {
-  getTrendingTracks,
-  getNewReleases,
-  getMostPlayed,
-  getFollowedIds,
-  getGenreTopTracks,
-  getGenreFreshTracks,
-} from "@/lib/discoveryData";
 import { useUnpublishedSync } from "@/hooks/useUnpublishedSync";
 import { useAuth } from "@/lib/AuthContext";
 import {
@@ -26,6 +18,7 @@ import ReleaseList from "@/components/ReleaseList";
 import ScoreboardTrackCount from "@/components/ScoreboardTrackCount";
 import EmptyState from "@/components/EmptyState";
 import { getRecentPlays } from "@/lib/recentPlays";
+import { getUserGenres } from "@/lib/userGenres";
 import PullToRefresh from "@/components/PullToRefresh";
 import HeroPlayingTint from "@/components/HeroPlayingTint";
 
@@ -127,17 +120,16 @@ export default function Home() {
     return unsub;
   }, []);
 
-  async function load(force = false) {
+  async function load() {
     setLoading(true);
-    const read = (fn, ...args) => (force ? fn.refresh(...args) : fn(...args)).catch(() => []);
     try {
       const [t, n, fols, topForGenres] = await Promise.all([
-      read(getTrendingTracks),
-      read(getNewReleases),
+      base44.entities.Track.filter({ is_published: true }, "-play_count", 10),
+      base44.entities.Track.filter({ is_published: true }, "-created_date", 50),
       user?.id ?
-      read(getFollowedIds, user.id) :
+      base44.entities.Follow.filter({ follower_id: user.id }, "-created_date", 200).catch(() => []) :
       Promise.resolve([]),
-      read(getMostPlayed)]
+      base44.entities.Track.filter({ is_published: true }, "-play_count", 200).catch(() => [])]
       );
       const followed = new Set((Array.isArray(fols) ? fols : []).map((f) => f.following_id));
       setTrending(t);
@@ -145,7 +137,7 @@ export default function Home() {
       setFromFollowing(n.filter((tk) => followed.has(tk.uploader_id)).slice(0, 12));
       // Counted server-side — downloading every record just to measure the
       // catalog was slow and got silently truncated by the query limit.
-      const published = force ? await getCatalogCount.refresh() : await getCatalogCount();
+      const published = await getCatalogCount();
       if (typeof published === "number") {
         setTotalTracks(published);
         loadedRef.current = true;
@@ -167,7 +159,7 @@ export default function Home() {
       const perGenre = await Promise.all(
         finalGenres.map(async (g) => ({
           genre: g,
-          tracks: await read(getGenreTopTracks, g)
+          tracks: await base44.entities.Track.filter({ is_published: true, genre: g }, "-play_count", 8)
         }))
       );
       setByGenre(perGenre);
@@ -182,19 +174,20 @@ export default function Home() {
         if (!p?.genre) continue;
         genreFreq[p.genre] = (genreFreq[p.genre] || 0) + 1;
       }
-      // Personalization comes from what this user actually plays — the most
-      // played genres lead, and new listeners fall back to fresh uploads.
-      // Personalization comes from what this user actually plays — the genres
-      // they listen to most lead, and new listeners fall back to fresh uploads.
-      const allUserGenres = Object.entries(genreFreq).
+      // Merge onboarding picks with listening history — onboarding genres
+      // seed personalization from day one, recent plays refine it over time.
+      const onboardGenres = await getUserGenres();
+      const genreSet = new Set(onboardGenres);
+      const userGenres = Object.entries(genreFreq).
       sort((a, b) => b[1] - a[1]).
       map(([g]) => g).
-      slice(0, 5);
+      filter((g) => !genreSet.has(g));
+      const allUserGenres = [...onboardGenres, ...userGenres].slice(0, 5);
       let discoverPicks = [];
       if (allUserGenres.length) {
         const perUserGenre = await Promise.all(
           allUserGenres.map((g) =>
-          read(getGenreFreshTracks, g)
+          base44.entities.Track.filter({ is_published: true, genre: g }, "-created_date", 30).catch(() => [])
           )
         );
         const pool = perUserGenre.flat().filter((tr) => tr && !playedIds.has(tr.id));
@@ -241,7 +234,7 @@ export default function Home() {
   }
 
   return (
-    <PullToRefresh onRefresh={() => load(true)}>
+    <PullToRefresh onRefresh={load}>
       <div className="space-y-3">
         {/* Hero */}
         <div className="relative rounded-3xl overflow-hidden border border-foreground/[0.06] p-7 md:p-14 mb-8 md:mb-10 text-center flex flex-col items-center">

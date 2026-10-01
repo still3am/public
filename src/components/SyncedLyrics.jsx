@@ -57,22 +57,6 @@ export default function SyncedLyrics({ trackId, position, fallbackText = "", onS
     userScrollUntil.current = Date.now() + 4000;
   };
 
-  // Karaoke: when the active line carries word-level timings, each word lights
-  // up as it is sung; otherwise the line renders as plain text.
-  const renderLine = (line, isActive) => {
-    if (!line.text || !line.text.trim()) return "♪";
-    if (!isActive || !line.words?.length) return line.text;
-    return line.words.map((w, i) => (
-      <span
-        key={i}
-        className={ms >= (w.start_time_ms || 0) ? "text-white" : "text-white/40"}
-      >
-        {w.text}
-        {i < line.words.length - 1 ? " " : ""}
-      </span>
-    ));
-  };
-
   if (loading) {
     return (
       <div className="flex-1 grid place-items-center text-white/50">
@@ -108,7 +92,7 @@ export default function SyncedLyrics({ trackId, position, fallbackText = "", onS
                 filter: isActive ? "none" : "blur(0.3px)",
               }}
             >
-              {renderLine(l, isActive)}
+              {l.text && l.text.trim() ? l.text : "♪"}
             </button>
           );
         })}

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import { useAuth } from "@/lib/AuthContext";
@@ -11,22 +11,11 @@ import PullToRefresh from "@/components/PullToRefresh";
 import PageHeader from "@/components/PageHeader";
 import PlaylistCard from "@/components/playlist/PlaylistCard";
 import CreatePlaylistModal from "@/components/playlist/CreatePlaylistModal";
-import LibrarySelectionBar from "@/components/library/LibrarySelectionBar";
-import BulkPlaylistPicker from "@/components/library/BulkPlaylistPicker";
-import BulkTagModal from "@/components/library/BulkTagModal";
-import { useToast } from "@/components/ui/use-toast";
 import { getRecentPlays } from "@/lib/recentPlays";
-import {
-  getLibraryItems,
-  getMyPlaylists,
-  getMyUploads,
-  invalidateMyUploads,
-  invalidateMyPlaylists,
-} from "@/lib/libraryData";
 
 export default function Library() {
   const { user } = useAuth();
-  const { items: libItems, loading: libLoading, refresh } = useLibrary();
+  const { ids, refresh } = useLibrary();
   const cache = useOfflineCache();
   const [tracks, setTracks] = useState(null);
   const [uploads, setUploads] = useState(null);
@@ -34,45 +23,20 @@ export default function Library() {
   const [loading, setLoading] = useState(true);
   const [playlists, setPlaylists] = useState(null);
   const [showCreate, setShowCreate] = useState(false);
-  const [selectMode, setSelectMode] = useState(false);
-  const [selected, setSelected] = useState(() => new Set());
-  const [showBulkPlaylist, setShowBulkPlaylist] = useState(false);
-  const [showBulkTag, setShowBulkTag] = useState(false);
-  const { toast } = useToast();
-
-  const tagsByTrack = useMemo(() => {
-    const map = {};
-    for (const it of libItems) {
-      if (it.track_id && it.tags?.length) map[it.track_id] = it.tags;
-    }
-    return map;
-  }, [libItems]);
-
-  const allTags = useMemo(
-    () => [...new Set(libItems.flatMap((i) => i.tags || []))],
-    [libItems]
-  );
-
-  const selectedTracks = useMemo(
-    () => (tracks || []).filter((t) => selected.has(t.id)),
-    [tracks, selected]
-  );
 
   const offlineCount = cache.records.length;
 
-  const loadPlaylists = useCallback(async ({ force = false } = {}) => {
-    if (!user?.id) {
+  const loadPlaylists = useCallback(async () => {
+    if (!user?.id) return;
+    try {
+      const rows = await base44.entities.Playlist.filter({ creator_id: user.id }, "-created_date", 200);
+      setPlaylists(rows || []);
+    } catch {
       setPlaylists([]);
-      return;
     }
-    if (force) invalidateMyPlaylists();
-    setPlaylists(await getMyPlaylists(user.id));
   }, [user?.id]);
 
-  // Saved tracks are re-read only when the set of saved ids actually changes —
-  // uploads come from the shared cache, so a library change no longer costs
-  // three collection reads.
-  const loadSaved = useCallback(async (trackIds) => {
+  const load = useCallback(async () => {
     if (!user?.id) {
       setTracks([]);
       setUploads([]);
@@ -81,17 +45,29 @@ export default function Library() {
     }
     setLoading(true);
     try {
-      const [list, uploaded] = await Promise.all([
-        trackIds.length ?
-        base44.entities.Track.filter(
-          { id: { $in: trackIds } },
-          "-created_date",
-          trackIds.length
-        ) :
-        [],
-        getMyUploads(user.id)]
+      const [items, uploaded] = await Promise.all([
+      base44.entities.LibraryItem.filter(
+        { user_id: user.id },
+        "-created_date",
+        1000
+      ),
+      base44.entities.Track.filter(
+        { uploader_id: user.id },
+        "-created_date",
+        1000
+      )]
       );
+      const trackIds = (items || []).
+      map((i) => i.track_id).
+      filter(Boolean);
       const uploadedIds = new Set((uploaded || []).map((t) => t.id));
+      const list = trackIds.length ?
+      await base44.entities.Track.filter(
+        { id: { $in: trackIds } },
+        "-created_date",
+        1000
+      ) :
+      [];
       const order = new Map(trackIds.map((id, i) => [id, i]));
       const sorted = (list || []).
       slice().
@@ -104,26 +80,10 @@ export default function Library() {
     }
   }, [user?.id]);
 
-  const savedKey = useMemo(
-    () => libItems.map((i) => i.track_id).filter(Boolean).join(","),
-    [libItems]
-  );
-
   useEffect(() => {
-    if (libLoading) return;
-    loadSaved(savedKey ? savedKey.split(",") : []);
-  }, [loadSaved, savedKey, libLoading]);
-
-  useEffect(() => {
+    load();
     loadPlaylists();
-  }, [loadPlaylists]);
-
-  const refreshAll = async () => {
-    invalidateMyUploads();
-    await Promise.all([refresh({ force: true }), loadPlaylists({ force: true })]);
-    const rows = await getLibraryItems(user.id);
-    await loadSaved(rows.map((r) => r.track_id).filter(Boolean));
-  };
+  }, [load, loadPlaylists, ids]);
 
   useEffect(() => {
     const handler = () => setRecentlyPlayed(getRecentPlays());
@@ -136,87 +96,9 @@ export default function Library() {
     };
   }, []);
 
-  const toggleSelect = (track) => {
-    setSelected((prev) => {
-      const next = new Set(prev);
-      if (next.has(track.id)) next.delete(track.id);
-      else next.add(track.id);
-      return next;
-    });
-  };
-
-  const exitSelect = () => {
-    setSelectMode(false);
-    setSelected(new Set());
-  };
-
-  async function bulkAddToPlaylist(playlistId) {
-    const ids = [...selected];
-    const pl = (playlists || []).find((p) => p.id === playlistId);
-    setShowBulkPlaylist(false);
-    if (!pl || !ids.length) return exitSelect();
-    const current = pl.track_ids || [];
-    const toAdd = ids.filter((id) => !current.includes(id));
-    if (toAdd.length) {
-      await base44.entities.Playlist.update(pl.id, {
-        track_ids: [...current, ...toAdd],
-      });
-      await loadPlaylists({ force: true });
-      toast({
-        title: `Added ${toAdd.length} ${toAdd.length === 1 ? "song" : "songs"} to ${pl.name}`,
-      });
-    }
-    exitSelect();
-  }
-
-  async function bulkTag(tags) {
-    const ids = [...selected];
-    setShowBulkTag(false);
-    if (!tags.length || !ids.length) return exitSelect();
-    const rows = libItems.filter((i) => ids.includes(i.track_id));
-    await base44.entities.LibraryItem.bulkUpdate(
-      rows.map((r) => ({
-        id: r.id,
-        tags: [...new Set([...(r.tags || []), ...tags])],
-      }))
-    );
-    await refresh({ force: true });
-    toast({ title: `Tagged ${ids.length} ${ids.length === 1 ? "track" : "tracks"}` });
-    exitSelect();
-  }
-
-  async function bulkOffline() {
-    const list = selectedTracks;
-    await Promise.all(list.map((t) => cache.downloadTrack(t)));
-    toast({ title: `Saved ${list.length} offline` });
-    exitSelect();
-  }
-
-  async function bulkRemove() {
-    const ids = [...selected];
-    await base44.entities.LibraryItem.deleteMany({
-      user_id: user.id,
-      track_id: { $in: ids },
-    });
-    await refresh({ force: true });
-    toast({ title: `Removed ${ids.length} from your library` });
-    exitSelect();
-  }
-
   return (
     <div className="max-w-5xl mx-auto px-3 md:px-0 pb-10">
-      {selectMode ? (
-        <LibrarySelectionBar
-          count={selected.size}
-          onDone={exitSelect}
-          onPlaylist={() => setShowBulkPlaylist(true)}
-          onTag={() => setShowBulkTag(true)}
-          onOffline={bulkOffline}
-          onRemove={bulkRemove}
-        />
-      ) : (
-        <PageHeader title="Your Library" subtitle="Everything you've saved, in one place." />
-      )}
+      <PageHeader title="Your Library" subtitle="Everything you've saved, in one place." />
 
       <Link
         to="/downloads"
@@ -242,8 +124,8 @@ export default function Library() {
         </div>
       </Link>
 
-      <PullToRefresh onRefresh={refreshAll}>
-        {libLoading || loading && tracks === null ?
+      <PullToRefresh onRefresh={async () => {await refresh();await load();await loadPlaylists();}}>
+        {loading && tracks === null ?
         <div className="flex justify-center py-20">
             <Loader2 className="animate-spin text-foreground/40" />
           </div> :
@@ -303,16 +185,7 @@ export default function Library() {
           </section>
 
           <section>
-            <div className="flex items-center justify-between mb-3">
-              <h2 className="text-sm font-bold text-foreground/70 uppercase tracking-wider">Saved</h2>
-              {tracks?.length > 0 && !selectMode &&
-              <button
-                onClick={() => setSelectMode(true)}
-                className="text-xs font-bold text-foreground/70 hover:text-foreground transition">
-                  Select
-                </button>
-              }
-            </div>
+            <h2 className="text-sm font-bold text-foreground/70 uppercase tracking-wider mb-3">Saved</h2>
             {!tracks?.length ?
             <EmptyState
               icon={LibIcon}
@@ -322,13 +195,7 @@ export default function Library() {
 
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
                 {tracks.map((t) =>
-              <TrackCard
-                key={t.id}
-                track={t}
-                tags={tagsByTrack[t.id] || []}
-                selectable={selectMode}
-                selected={selected.has(t.id)}
-                onToggleSelect={toggleSelect} />
+              <TrackCard key={t.id} track={t} />
               )}
               </div>
             }
@@ -340,24 +207,8 @@ export default function Library() {
       {showCreate &&
       <CreatePlaylistModal
         onClose={() => setShowCreate(false)}
-        onCreated={() => loadPlaylists({ force: true })} />
+        onCreated={() => loadPlaylists()} />
 
-      }
-
-      {showBulkPlaylist &&
-      <BulkPlaylistPicker
-        playlists={playlists || []}
-        count={selected.size}
-        onPick={bulkAddToPlaylist}
-        onClose={() => setShowBulkPlaylist(false)} />
-      }
-
-      {showBulkTag &&
-      <BulkTagModal
-        allTags={allTags}
-        count={selected.size}
-        onApply={bulkTag}
-        onClose={() => setShowBulkTag(false)} />
       }
     </div>);
 

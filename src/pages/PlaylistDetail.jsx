@@ -3,7 +3,6 @@ import { useParams, useNavigate, Link } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import { useAuth } from "@/lib/AuthContext";
 import { usePlayer } from "@/context/PlayerContext";
-import { invalidateMyPlaylists } from "@/lib/libraryData";
 import {
   ChevronLeft,
   Loader2,
@@ -87,7 +86,6 @@ export default function PlaylistDetail() {
         description: form.description.trim(),
         is_public: form.is_public,
       });
-      invalidateMyPlaylists();
       setPlaylist(updated);
       setEditing(false);
     } catch {
@@ -101,7 +99,6 @@ export default function PlaylistDetail() {
     if (!confirm("Delete this playlist? This can't be undone.")) return;
     try {
       await base44.entities.Playlist.delete(playlist.id);
-      invalidateMyPlaylists();
       toast({ title: "Playlist deleted" });
       nav("/library");
     } catch {
@@ -112,7 +109,6 @@ export default function PlaylistDetail() {
   async function removeTrack(trackId) {
     const newIds = (playlist.track_ids || []).filter((tid) => tid !== trackId);
     const updated = await base44.entities.Playlist.update(playlist.id, { track_ids: newIds });
-    invalidateMyPlaylists();
     setPlaylist(updated);
     setTracks((prev) => prev.filter((t) => t.id !== trackId));
   }

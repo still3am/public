@@ -12,7 +12,6 @@ import AppleIcon from "@/components/AppleIcon";
 import FacebookIcon from "@/components/FacebookIcon";
 import MicrosoftIcon from "@/components/MicrosoftIcon";
 import { toast } from "@/components/ui/use-toast";
-import { safeReturnTo } from "@/lib/authReturnTo";
 
 export default function Register() {
   const [email, setEmail] = useState("");
@@ -51,7 +50,7 @@ export default function Register() {
       if (token) {
         base44.auth.setToken(token);
       }
-      window.location.href = safeReturnTo();
+      window.location.href = "/onboarding";
     } catch (err) {
       setError(err.message || "Invalid verification code");
     } finally {
@@ -73,19 +72,19 @@ export default function Register() {
   };
 
   const handleGoogle = () => {
-    base44.auth.loginWithProvider("google", safeReturnTo());
+    base44.auth.loginWithProvider("google", "/onboarding");
   };
 
   const handleApple = () => {
-    base44.auth.loginWithProvider("apple", safeReturnTo());
+    base44.auth.loginWithProvider("apple", "/onboarding");
   };
 
   const handleFacebook = () => {
-    base44.auth.loginWithProvider("facebook", safeReturnTo());
+    base44.auth.loginWithProvider("facebook", "/onboarding");
   };
 
   const handleMicrosoft = () => {
-    base44.auth.loginWithProvider("microsoft", safeReturnTo());
+    base44.auth.loginWithProvider("microsoft", "/onboarding");
   };
 
   if (showOtp) {
