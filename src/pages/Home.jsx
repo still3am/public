@@ -174,15 +174,15 @@ export default function Home() {
         if (!p?.genre) continue;
         genreFreq[p.genre] = (genreFreq[p.genre] || 0) + 1;
       }
-      // Merge onboarding picks with listening history — onboarding genres
-      // seed personalization from day one, recent plays refine it over time.
-      const onboardGenres = await getUserGenres();
-      const genreSet = new Set(onboardGenres);
+      // Merge saved genre picks with listening history — saved genres seed
+      // personalization, recent plays refine it over time.
+      const savedGenres = await getUserGenres();
+      const genreSet = new Set(savedGenres);
       const userGenres = Object.entries(genreFreq).
       sort((a, b) => b[1] - a[1]).
       map(([g]) => g).
       filter((g) => !genreSet.has(g));
-      const allUserGenres = [...onboardGenres, ...userGenres].slice(0, 5);
+      const allUserGenres = [...savedGenres, ...userGenres].slice(0, 5);
       let discoverPicks = [];
       if (allUserGenres.length) {
         const perUserGenre = await Promise.all(

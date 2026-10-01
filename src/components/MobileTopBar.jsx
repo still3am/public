@@ -18,7 +18,6 @@ const TITLES = {
   "/suggestions": "Suggestions",
   "/records": "Public Records",
   "/artist": "Artists",
-  "/onboarding": "Choose your sound",
   "/settings/transitions": "Transitions",
   "/artist-dashboard": "Artist",
 };
@@ -40,7 +39,6 @@ const ROOTS = new Set([
   "/suggestions",
   "/records",
   "/artist",
-  "/onboarding",
 ]);
 
 // Child routes with a dynamic id segment.

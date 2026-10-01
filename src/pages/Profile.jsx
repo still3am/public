@@ -29,7 +29,6 @@ import SettingsSheet from "@/components/profile/SettingsSheet";
 import ProfileSong from "@/components/profile/ProfileSong";
 import TopTracks from "@/components/profile/TopTracks";
 import ProfileComments from "@/components/profile/ProfileComments";
-import GenreTags from "@/components/profile/GenreTags";
 import FollowListModal from "@/components/profile/FollowListModal";
 import { useColorPalette } from "@/hooks/useColorPalette";
 import { useCoverUrl } from "@/hooks/useCoverUrl";
@@ -566,8 +565,6 @@ export default function Profile() {
         </div>
           }
       </div>
-
-      {isOwn && !editMode && <GenreTags />}
 
       <TopTracks
           trackIds={editMode ? form.top_track_ids : profile?.top_track_ids || []}
