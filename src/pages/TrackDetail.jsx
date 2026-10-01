@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
+import { getPublishedTracks } from "@/lib/catalogCache";
+import { moreFromArtist } from "@/lib/artistRelations";
 import { useAuth } from "@/lib/AuthContext";
 import { usePlayer } from "@/context/PlayerContext";
 import EmptyState from "@/components/EmptyState";
@@ -49,29 +51,10 @@ export default function TrackDetail() {
         catch(() => null);
         setUploader(u);
       }
-      if (t?.artist) {
-        const splitNames = (str) =>
-        (str || "").
-        split(/\s*(?:,|&| feat\.| ft\.| x |;)\s*/i).
-        map((s) => s.trim().toLowerCase()).
-        filter(Boolean);
-        const names = splitNames(t.artist);
-        const all = await base44.entities.Track.list("-play_count", 100).catch(
-          () => []
-        );
-        setMoreTracks(
-          all.
-          filter(
-            (x) =>
-            x.id !== t.id &&
-            x.is_published === true &&
-            splitNames(x.artist).some((n) => names.includes(n))
-          ).
-          slice(0, 6)
-        );
-      } else {
-        setMoreTracks([]);
-      }
+      // Same relationship data the artist pages use, over the whole published
+      // catalogue rather than only the most-played tracks.
+      const all = await getPublishedTracks();
+      setMoreTracks(t ? moreFromArtist(all, t, 6) : []);
     } finally {
       setLoading(false);
     }

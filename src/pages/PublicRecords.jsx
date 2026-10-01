@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import { getPublishedTracks } from "@/lib/catalogCache";
+import { tracksForArtist } from "@/lib/artistRelations";
 import TrackCard from "@/components/TrackCard";
 import PullToRefresh from "@/components/PullToRefresh";
 import ArtistNameEditor from "@/components/ArtistNameEditor";
@@ -24,12 +25,6 @@ import {
   Play,
   ExternalLink } from
 "lucide-react";
-
-const splitNames = (str) =>
-(str || "").
-split(/\s*(?:,|&| feat\.| ft\.| x |;)\s*/i).
-map((s) => s.trim().toLowerCase()).
-filter(Boolean);
 
 function safeUrl(u) {
   if (!u) return undefined;
@@ -101,12 +96,10 @@ export default function PublicRecords({ id: propId }) {
       const a = await base44.entities.Artist.get(id).catch(() => null);
       setArtist(a);
       if (a?.name) {
+        // Primary, featured and collaboration credits all count, matched
+        // through the shared artist relationship module.
         const all = await getPublishedTracks();
-        const names = splitNames(a.name);
-        const matched = (Array.isArray(all) ? all : []).filter((t) =>
-        splitNames(t.artist).some((n) => names.includes(n))
-        );
-        setTracks(matched);
+        setTracks(tracksForArtist(all, a));
       } else {
         setTracks([]);
       }
