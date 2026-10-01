@@ -31,6 +31,8 @@ import Lounge from '@/pages/Lounge';
 import Library from '@/pages/Library';
 import Downloads from '@/pages/Downloads';
 import LikedSongs from '@/pages/LikedSongs';
+import Messages from '@/pages/Messages';
+import Conversation from '@/pages/Conversation';
 import Admin from '@/pages/Admin';
 import SongTransitions from '@/pages/SongTransitions';
 import Notifications from '@/pages/Notifications';
@@ -89,6 +91,8 @@ const AuthenticatedApp = () => {
           <Route path="/library" element={<Library />} />
           <Route path="/downloads" element={<Downloads />} />
           <Route path="/liked" element={<LikedSongs />} />
+          <Route path="/messages" element={<Messages />} />
+          <Route path="/messages/:id" element={<Conversation />} />
           <Route path="/admin" element={<Admin />} />
           <Route path="/settings/transitions" element={<SongTransitions />} />
           <Route path="/notifications" element={<Notifications />} />
