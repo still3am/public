@@ -1,4 +1,4 @@
-import { Play } from "lucide-react";
+import { Play, Check } from "lucide-react";
 import { Link } from "react-router-dom";
 import { usePlayer } from "@/context/PlayerContext";
 import { Image } from "@/components/ui/image";
@@ -23,7 +23,7 @@ function EqualizerBars({ active }) {
   );
 }
 
-export default function TrackCard({ track }) {
+export default function TrackCard({ track, selectable = false, selected = false, onToggleSelect }) {
   const p = usePlayer();
   const isCurrent = p.currentTrack?.id === track.id;
   const isPlayingNow = isCurrent && p.isPlaying;
@@ -38,9 +38,10 @@ export default function TrackCard({ track }) {
 
   return (
     <div
-      onClick={handlePlay}
+      onClick={selectable ? () => onToggleSelect?.(track) : handlePlay}
       className={`group relative rounded-2xl p-2.5 sm:p-3 transition-all duration-300 cursor-pointer
         hover:bg-foreground/[0.04] active:scale-[0.98]
+        ${selectable && selected ? "bg-accent ring-1 ring-foreground/40" : ""}
         ${isCurrent ? "bg-foreground/[0.03]" : ""}`}
     >
       <div className="relative aspect-square rounded-xl overflow-hidden bg-foreground/[0.06] mb-2.5 shadow-sm">
@@ -60,7 +61,17 @@ export default function TrackCard({ track }) {
 
         <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300" />
 
-        {!isPlayingNow && (
+        {selectable &&
+        <div
+          className={`absolute top-2 left-2 w-6 h-6 rounded-full grid place-items-center border transition ${
+          selected ? "bg-foreground text-background border-foreground" : "bg-black/35 border-white/70 text-transparent"}`
+          }>
+          
+            <Check size={13} />
+          </div>
+        }
+
+        {!selectable && !isPlayingNow && (
           <button
             onClick={handlePlay}
             aria-label="Play"
@@ -72,7 +83,7 @@ export default function TrackCard({ track }) {
           </button>
         )}
 
-        {isPlayingNow && (
+        {!selectable && isPlayingNow && (
           <div className="absolute bottom-2.5 right-2.5 w-11 h-11 md:w-12 md:h-12 rounded-full bg-background/85 backdrop-blur grid place-items-center text-foreground shadow-xl">
             <EqualizerBars active={isPlayingNow} />
           </div>
