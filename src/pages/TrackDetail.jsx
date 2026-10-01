@@ -13,10 +13,12 @@ import {
   Pause,
   Pencil,
   Sparkles,
+  Timer,
   Wand2 } from
 "lucide-react";
 import TrackRow from "@/components/TrackRow";
 import TrackOptionsMenu from "@/components/track/TrackOptionsMenu";
+import SyncLyricsModal from "@/components/SyncLyricsModal";
 import GenerateLyricsModal from "@/components/GenerateLyricsModal";
 import { useToast } from "@/components/ui/use-toast";
 
@@ -31,6 +33,7 @@ export default function TrackDetail() {
   const [editing, setEditing] = useState(false);
   const [generating, setGenerating] = useState(false);
   const [detecting, setDetecting] = useState(false);
+  const [syncing, setSyncing] = useState(false);
   const [moreTracks, setMoreTracks] = useState([]);
   const { toast } = useToast();
 
@@ -129,6 +132,11 @@ export default function TrackDetail() {
     icon: Sparkles,
     label: track.lyrics_text?.trim() ? "Regenerate lyrics" : "Generate lyrics",
     onClick: () => setGenerating(true)
+  },
+  {
+    icon: Timer,
+    label: "Sync lyrics",
+    onClick: () => setSyncing(true)
   }] :
   [])] :
   [];
@@ -315,6 +323,14 @@ export default function TrackDetail() {
           setTrack((prev) => ({ ...prev, ...updated }));
           setGenerating(false);
         }} />
+
+      }
+
+      {syncing &&
+      <SyncLyricsModal
+        track={track}
+        onClose={() => setSyncing(false)}
+        onSaved={() => setSyncing(false)} />
 
       }
     </div>);
