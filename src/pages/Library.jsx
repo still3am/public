@@ -6,6 +6,8 @@ import { useLibrary } from "@/context/LibraryContext";
 import { useOfflineCache } from "@/hooks/useOfflineCache";
 import { Library as LibIcon, Loader2, ChevronRight, Plus, ListMusic, Mic2 } from "lucide-react";
 import TrackCard from "@/components/TrackCard";
+import SelectableTrackCard from "@/components/library/SelectableTrackCard";
+import LibrarySelectionBar from "@/components/library/LibrarySelectionBar";
 import EmptyState from "@/components/EmptyState";
 import PullToRefresh from "@/components/PullToRefresh";
 import PageHeader from "@/components/PageHeader";
@@ -23,6 +25,21 @@ export default function Library() {
   const [loading, setLoading] = useState(true);
   const [playlists, setPlaylists] = useState(null);
   const [showCreate, setShowCreate] = useState(false);
+  const [selecting, setSelecting] = useState(false);
+  const [selectedIds, setSelectedIds] = useState(new Set());
+
+  const stopSelecting = () => {
+    setSelecting(false);
+    setSelectedIds(new Set());
+  };
+
+  const toggleSelected = (id) =>
+  setSelectedIds((prev) => {
+    const next = new Set(prev);
+    if (next.has(id)) next.delete(id);
+    else next.add(id);
+    return next;
+  });
 
   const offlineCount = cache.records.length;
 
@@ -202,7 +219,26 @@ export default function Library() {
           </section>
 
           <section>
-            <h2 className="text-sm font-bold text-foreground/70 uppercase tracking-wider mb-3">Saved</h2>
+            {selecting ?
+            <LibrarySelectionBar
+              tracks={tracks || []}
+              selectedIds={selectedIds}
+              onSelectionChange={setSelectedIds}
+              onExit={stopSelecting}
+              onRemoved={stopSelecting} /> :
+
+
+            <div className="flex items-center justify-between mb-3">
+                <h2 className="text-sm font-bold text-foreground/70 uppercase tracking-wider">Saved</h2>
+                {tracks?.length > 0 &&
+              <button
+                onClick={() => setSelecting(true)}
+                className="text-xs font-bold text-foreground/70 hover:text-foreground transition">
+                  Select
+                </button>
+              }
+              </div>
+            }
             {!tracks?.length ?
             <EmptyState
               icon={LibIcon}
@@ -212,7 +248,13 @@ export default function Library() {
 
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
                 {tracks.map((t) =>
-              <TrackCard key={t.id} track={t} />
+              <SelectableTrackCard
+                key={t.id}
+                track={t}
+                selecting={selecting}
+                selected={selectedIds.has(t.id)}
+                onToggle={toggleSelected} />
+
               )}
               </div>
             }

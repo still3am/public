@@ -74,9 +74,40 @@ export function LibraryProvider({ children }) {
     [user?.id, ids]
   );
 
+  // Bulk removal for the library's multi-select tools — one pass over the
+  // records instead of a delete per song, keeping the local id set in sync.
+  const removeMany = useCallback(
+    async (trackIds) => {
+      const list = [...new Set((trackIds || []).filter(Boolean))];
+      if (!user?.id || !list.length) return 0;
+      try {
+        await base44.entities.LibraryItem.deleteMany({
+          user_id: user.id,
+          track_id: { $in: list },
+        });
+        setIds((prev) => {
+          const next = new Set(prev);
+          list.forEach((id) => next.delete(id));
+          return next;
+        });
+        return list.length;
+      } catch {
+        return 0;
+      }
+    },
+    [user?.id]
+  );
+
   return (
     <LibraryContext.Provider
-      value={{ ids, isInLibrary: (id) => ids.has(id), toggle, refresh, count: ids.size }}
+      value={{
+        ids,
+        isInLibrary: (id) => ids.has(id),
+        toggle,
+        removeMany,
+        refresh,
+        count: ids.size,
+      }}
     >
       {children}
     </LibraryContext.Provider>
@@ -90,6 +121,7 @@ export function useLibrary() {
       ids: new Set(),
       isInLibrary: () => false,
       toggle: async () => false,
+      removeMany: async () => 0,
       refresh: async () => {},
       count: 0,
     };

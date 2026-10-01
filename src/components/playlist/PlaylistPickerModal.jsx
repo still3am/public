@@ -1,10 +1,16 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { base44 } from "@/api/base44Client";
 import { useAuth } from "@/lib/AuthContext";
 import { X, ListMusic, Plus, Check, Loader2 } from "lucide-react";
 import CreatePlaylistModal from "@/components/playlist/CreatePlaylistModal";
 
-export default function PlaylistPickerModal({ track, onClose }) {
+// Takes either a single `track` or a `tracks` array, so one picker backs both
+// the per-track menu and the library's bulk selection toolbar.
+export default function PlaylistPickerModal({ track, tracks, onClose, onAdded }) {
+  const list = useMemo(
+    () => (Array.isArray(tracks) && tracks.length ? tracks : track ? [track] : []),
+    [tracks, track]
+  );
   const { user } = useAuth();
   const [playlists, setPlaylists] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -21,20 +27,20 @@ export default function PlaylistPickerModal({ track, onClose }) {
       .finally(() => setLoading(false));
   }, [user?.id]);
 
-  if (!track) return null;
+  if (!list.length) return null;
 
   async function addToPlaylist(pl) {
     setAdding(pl.id);
     try {
       const ids = pl.track_ids || [];
-      if (ids.includes(track.id)) {
-        setAddedTo(pl.id);
-        return;
+      const toAdd = list.map((t) => t.id).filter((id) => !ids.includes(id));
+      if (toAdd.length) {
+        await base44.entities.Playlist.update(pl.id, {
+          track_ids: [...ids, ...toAdd],
+        });
       }
-      await base44.entities.Playlist.update(pl.id, {
-        track_ids: [...ids, track.id],
-      });
       setAddedTo(pl.id);
+      onAdded?.(pl, toAdd.length);
     } catch {
       alert("Could not add to playlist. Try again.");
     } finally {
@@ -50,7 +56,9 @@ export default function PlaylistPickerModal({ track, onClose }) {
         <div className="flex items-center justify-between mb-4">
           <div className="min-w-0">
             <h2 className="text-lg font-extrabold tracking-tight">Add to playlist</h2>
-            <p className="text-xs text-foreground/50 truncate mt-0.5">{track.title}</p>
+            <p className="text-xs text-foreground/50 truncate mt-0.5">
+              {list.length === 1 ? list[0].title : `${list.length} songs`}
+            </p>
           </div>
           <button onClick={onClose} className="p-2 rounded-full hover:bg-foreground/10 shrink-0" aria-label="Close">
             <X size={18} />
