@@ -26,6 +26,7 @@ import PulseVisualizer from "@/components/PulseVisualizer";
 import PlayPauseButton from "@/components/PlayPauseButton";
 import QueuePanel from "@/components/QueuePanel";
 import SleepTimerMenu from "@/components/SleepTimerMenu";
+import PlaybackSpeedMenu from "@/components/PlaybackSpeedMenu";
 import LoungeHostModal from "@/components/LoungeHostModal";
 import StemMixer from "@/components/StemMixer";
 import { useLoungeHost } from "@/hooks/useLoungeHost";
@@ -279,6 +280,7 @@ export default function FullScreenPlayer({ onClose }) {
         </div>
         <div className="flex items-center gap-1 shrink-0">
         <SleepTimerMenu />
+        <PlaybackSpeedMenu />
         <NowPlayingAddMenu
           onShare={shareNow}
           showPulse={showPulse}
