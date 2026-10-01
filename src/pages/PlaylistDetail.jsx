@@ -19,8 +19,6 @@ import {
 import TrackRow from "@/components/TrackRow";
 import EmptyState from "@/components/EmptyState";
 import AddToPlaylistPicker from "@/components/playlist/AddToPlaylistPicker";
-import PlaylistCollaborators from "@/components/playlist/PlaylistCollaborators";
-import CollaboratorsPanel from "@/components/playlist/CollaboratorsPanel";
 import { useToast } from "@/components/ui/use-toast";
 import { Image } from "@/components/ui/image";
 
@@ -37,7 +35,6 @@ export default function PlaylistDetail() {
   const [editing, setEditing] = useState(false);
   const [form, setForm] = useState({ name: "", description: "", is_public: true });
   const [saving, setSaving] = useState(false);
-  const [showCollaborators, setShowCollaborators] = useState(false);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -73,10 +70,7 @@ export default function PlaylistDetail() {
     load();
   }, [load]);
 
-  const isOwn = playlist?.creator_id === user?.id || playlist?.created_by_id === user?.id;
-  // Collaborators may add and remove songs; renaming, visibility and deleting
-  // stay with the owner.
-  const canEdit = isOwn || (playlist?.collaborator_ids || []).includes(user?.id);
+  const isOwn = playlist?.creator_id === user?.id;
 
   const coverUrl = useMemo(() => {
     if (playlist?.cover_art_url) return playlist.cover_art_url;
@@ -191,14 +185,9 @@ export default function PlaylistDetail() {
             )
           )}
 
-          <div className="text-sm text-foreground/50 mb-1.5">
+          <div className="text-sm text-foreground/50 mb-4">
             {tracks.length} {tracks.length === 1 ? "song" : "songs"}
           </div>
-
-          <PlaylistCollaborators
-            playlist={playlist}
-            isOwner={isOwn}
-            onManage={() => setShowCollaborators(true)} />
 
           <div className="flex items-center gap-2 flex-wrap justify-center md:justify-start">
             {tracks.length > 0 && (
@@ -209,7 +198,7 @@ export default function PlaylistDetail() {
                 <Play size={16} fill="currentColor" /> Play
               </button>
             )}
-            {canEdit && !editing && (
+            {isOwn && !editing && (
               <button
                 onClick={() => setShowAdd(true)}
                 className="h-11 px-5 rounded-full border border-border text-sm font-semibold flex items-center gap-2 hover:bg-foreground/[0.04] transition"
@@ -265,9 +254,9 @@ export default function PlaylistDetail() {
       {!tracks.length ? (
         <EmptyState
           icon={ListMusic}
-          title={canEdit ? "No songs yet" : "This playlist is empty"}
-          description={canEdit ? "Tap \"Add songs\" to fill it with music." : undefined}
-          action={canEdit && !editing ? (
+          title={isOwn ? "No songs yet" : "This playlist is empty"}
+          description={isOwn ? "Tap \"Add songs\" to fill it with music." : undefined}
+          action={isOwn && !editing ? (
             <button
               onClick={() => setShowAdd(true)}
               className="h-11 px-6 rounded-full bg-foreground text-background text-sm font-bold flex items-center gap-2"
@@ -281,7 +270,7 @@ export default function PlaylistDetail() {
           {tracks.map((t, i) => (
             <div key={t.id} className="relative group">
               <TrackRow track={t} index={i} showArt />
-              {canEdit && !editing && (
+              {isOwn && !editing && (
                 <button
                   onClick={() => removeTrack(t.id)}
                   className="absolute right-0 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full grid place-items-center text-foreground/40 hover:text-destructive hover:bg-destructive/10 opacity-0 group-hover:opacity-100 transition"
@@ -295,11 +284,13 @@ export default function PlaylistDetail() {
         </div>
       )}
 
-      {showCollaborators && (
-        <CollaboratorsPanel
+      {showAdd && (
+        <AddToPlaylistPicker
           playlist={playlist}
-          onClose={() => setShowCollaborators(false)}
-          onChanged={(updated) => setPlaylist((prev) => ({ ...prev, ...updated }))}
+          onClose={() => {
+            setShowAdd(false);
+            load();
+          }}
         />
       )}
     </div>

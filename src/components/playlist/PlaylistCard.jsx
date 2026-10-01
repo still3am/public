@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { ListMusic, Users } from "lucide-react";
+import { ListMusic } from "lucide-react";
 import { Image } from "@/components/ui/image";
 
 export default function PlaylistCard({ playlist }) {
@@ -26,11 +26,6 @@ export default function PlaylistCard({ playlist }) {
       <div className="truncate text-sm font-semibold">{playlist.name}</div>
       <div className="text-xs text-foreground/50 truncate mt-0.5">
         {count} {count === 1 ? "song" : "songs"}
-        {(playlist.collaborator_ids?.length || 0) > 0 && (
-          <span className="inline-flex items-center gap-1 ml-1.5">
-            <Users size={11} /> {playlist.collaborator_ids.length + 1}
-          </span>
-        )}
       </div>
     </Link>
   );

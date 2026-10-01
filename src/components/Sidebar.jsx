@@ -18,7 +18,6 @@ import Logo from "@/components/Logo";
 import ThemeToggle from "@/components/ThemeToggle";
 import { useAuth } from "@/lib/AuthContext";
 import { useUnreadCount } from "@/hooks/useNotifications";
-import { openGlobalSearch } from "@/lib/searchBus";
 
 const NAV = [
 { to: "/", label: "Home", icon: Home, end: true },
@@ -37,6 +36,7 @@ export default function Sidebar() {
   const { collapsed, toggle } = useSidebarCollapsed();
   const location = useLocation();
   const unread = useUnreadCount();
+  if (location.pathname === "/onboarding") return null;
 
   const links = [
   ...NAV,
@@ -76,22 +76,6 @@ export default function Sidebar() {
         <div className={`w-[184px] shrink-0 pl-3 ${EASE} ${fadeCls}`}>
           <Logo width="100%" />
         </div>
-      </div>
-
-      <div className="px-3 pb-2">
-        <button
-          onClick={openGlobalSearch}
-          title="Quick search (⌘K)"
-          className="w-full flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-foreground/60 hover:text-foreground hover:bg-foreground/[0.03] transition overflow-hidden">
-          
-          <Search size={18} className="shrink-0" />
-          <span className={`shrink-0 ${EASE} ${fadeCls}`}>Quick search</span>
-          <kbd
-            className={`ml-auto shrink-0 text-[10px] font-bold text-foreground/35 border border-border rounded px-1.5 py-0.5 ${EASE} ${fadeCls}`}>
-            
-            ⌘K
-          </kbd>
-        </button>
       </div>
 
       <nav className="flex-1 flex flex-col gap-1 overflow-y-auto overflow-x-hidden pb-2 px-3">

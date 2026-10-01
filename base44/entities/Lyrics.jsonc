@@ -27,27 +27,6 @@
           "end_time_ms": {
             "type": "integer",
             "default": 0
-          },
-          "words": {
-            "type": "array",
-            "default": [],
-            "description": "Optional per-word timings; when present the player highlights word by word from these instead of estimating",
-            "items": {
-              "type": "object",
-              "properties": {
-                "text": {
-                  "type": "string"
-                },
-                "start_time_ms": {
-                  "type": "integer",
-                  "default": 0
-                },
-                "end_time_ms": {
-                  "type": "integer",
-                  "default": 0
-                }
-              }
-            }
           }
         }
       },

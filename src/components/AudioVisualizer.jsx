@@ -18,13 +18,6 @@ export default function AudioVisualizer({
   const paletteRef = useRef(palette);
   paletteRef.current = palette;
 
-  // The shared Web Audio graph is built on demand. Without asking for it the
-  // analyser is null and the bars would only ever draw the decorative fallback
-  // instead of following the music.
-  useEffect(() => {
-    if (p.isPlaying) p.enableAnalyser?.();
-  }, [p.isPlaying, p.enableAnalyser]);
-
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;

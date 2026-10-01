@@ -26,14 +26,6 @@
     "is_public": {
       "type": "boolean",
       "default": true
-    },
-    "collaborator_ids": {
-      "type": "array",
-      "items": {
-        "type": "string"
-      },
-      "default": [],
-      "description": "User ids the owner has invited to add and remove songs in this playlist"
     }
   },
   "required": [
@@ -53,9 +45,6 @@
           "data.creator_id": "{{user.id}}"
         },
         {
-          "data.collaborator_ids": "{{user.id}}"
-        },
-        {
           "user_condition": {
             "role": "admin"
           }
@@ -65,14 +54,7 @@
     "update": {
       "$or": [
         {
-          "created_by_id": "{{user.id}}"
-        },
-        {
-          "data.collaborator_ids": {
-            "$in": [
-              "{{user.id}}"
-            ]
-          }
+          "data.creator_id": "{{user.id}}"
         },
         {
           "user_condition": {
@@ -84,7 +66,7 @@
     "delete": {
       "$or": [
         {
-          "created_by_id": "{{user.id}}"
+          "data.creator_id": "{{user.id}}"
         },
         {
           "user_condition": {

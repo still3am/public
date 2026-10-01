@@ -3,18 +3,11 @@ import { base44 } from "@/api/base44Client";
 import { GENRES } from "@/lib/audio-utils";
 import { Loader2, X, Save, Trash2 } from "lucide-react";
 import BottomSheetSelect from "@/components/BottomSheetSelect";
-import { useAuth } from "@/lib/AuthContext";
-import { saveTimedLyrics } from "@/lib/lyricsTiming";
-import { ensureAlbum } from "@/lib/albums";
-import { getAlbums } from "@/lib/catalogCache";
 
 export default function EditTrackModal({ track, onClose, onSaved, onDeleted }) {
-  const { user } = useAuth();
   const [form, setForm] = useState({
     title: track.title || "",
     artist: track.artist || "",
-    album_title: "",
-    track_number: track.track_number || 0,
     genre: track.genre || "Other",
     description: track.description || "",
     lyrics_text: track.lyrics_text || "",
@@ -35,17 +28,6 @@ export default function EditTrackModal({ track, onClose, onSaved, onDeleted }) {
       }
     };
   }, [coverPreview]);
-
-  // Show the release this track is already filed under.
-  useEffect(() => {
-    if (!track.album_id) return;
-    getAlbums()
-      .then((rows) => {
-        const match = (Array.isArray(rows) ? rows : []).find((a) => a.id === track.album_id);
-        if (match) setForm((f) => ({ ...f, album_title: match.title }));
-      })
-      .catch(() => {});
-  }, [track.album_id]);
 
   function patch(p) {
     setForm((f) => ({ ...f, ...p }));
@@ -70,44 +52,13 @@ export default function EditTrackModal({ track, onClose, onSaved, onDeleted }) {
         });
         cover_art_url = file_url;
       }
-      const artistName = (form.artist || "").trim();
-      const albumTitle = (form.album_title || "").trim();
-      // Changing (or clearing) the album refiles the track against a real
-      // release record instead of leaving a dangling id.
-      let album_id = "";
-      if (albumTitle) {
-        const release = await ensureAlbum({
-          title: albumTitle,
-          artistName,
-          coverArtUrl: cover_art_url,
-          genre: form.genre,
-          userId: user?.id,
-        }).catch(() => null);
-        album_id = release?.id || track.album_id || "";
-      }
-      const { album_title, ...rest } = form;
       const payload = {
-        ...rest,
+        ...form,
         title: form.title.trim(),
-        artist: artistName,
+        artist: (form.artist || "").trim(),
         cover_art_url,
-        album_id,
-        track_number: Number(form.track_number) || 0,
       };
       await base44.entities.Track.update(track.id, payload);
-
-      // Edited lyrics get a fresh timecoded copy so the player never follows
-      // the previous version.
-      if ((payload.lyrics_text || "").trim() !== (track.lyrics_text || "").trim()) {
-        saveTimedLyrics({
-          trackId: track.id,
-          uploaderId: user?.id,
-          text: payload.lyrics_text,
-          durationSeconds: track.duration_seconds,
-          audioUrl: track.audio_url,
-        }).catch(() => {});
-      }
-
       onSaved?.({ ...track, ...payload });
       onClose();
     } catch (e) {
@@ -181,23 +132,6 @@ export default function EditTrackModal({ track, onClose, onSaved, onDeleted }) {
                 className="w-full px-3 py-2 rounded-lg border border-border bg-background text-sm focus:outline-none"
               />
             </div>
-          </div>
-
-          <div className="flex gap-2">
-            <input
-              value={form.album_title}
-              onChange={(e) => patch({ album_title: e.target.value })}
-              placeholder="Album (optional)"
-              className="flex-1 min-w-0 px-3 py-2 rounded-lg border border-border bg-background text-sm focus:outline-none"
-            />
-            <input
-              type="number"
-              min="0"
-              value={form.track_number || ""}
-              onChange={(e) => patch({ track_number: e.target.value })}
-              placeholder="Track #"
-              className="w-24 px-3 py-2 rounded-lg border border-border bg-background text-sm focus:outline-none"
-            />
           </div>
 
           <BottomSheetSelect

@@ -1,9 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
-import { getPublishedTracks, getAlbums } from "@/lib/catalogCache";
-import { albumsForArtist } from "@/lib/albums";
-import AlbumCard from "@/components/AlbumCard";
+import { getPublishedTracks } from "@/lib/catalogCache";
 import TrackCard from "@/components/TrackCard";
 import PullToRefresh from "@/components/PullToRefresh";
 import ArtistNameEditor from "@/components/ArtistNameEditor";
@@ -94,7 +92,6 @@ export default function PublicRecords({ id: propId }) {
   const { user } = useAuth();
   const [artist, setArtist] = useState(null);
   const [tracks, setTracks] = useState([]);
-  const [albums, setAlbums] = useState([]);
   const [loading, setLoading] = useState(true);
   const [generating, setGenerating] = useState(false);
 
@@ -110,13 +107,8 @@ export default function PublicRecords({ id: propId }) {
         splitNames(t.artist).some((n) => names.includes(n))
         );
         setTracks(matched);
-        // Releases credited to this artist — linked by record when possible,
-        // otherwise by credit name.
-        const releaseRows = await getAlbums();
-        setAlbums(albumsForArtist(releaseRows, a));
       } else {
         setTracks([]);
-        setAlbums([]);
       }
     } finally {
       setLoading(false);
@@ -298,20 +290,6 @@ export default function PublicRecords({ id: propId }) {
             }
           </div>
         </section>
-
-        {/* Albums */}
-        {albums.length > 0 &&
-        <section className="mb-8">
-            <SectionTitle icon={Disc3}>
-              Albums
-            </SectionTitle>
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
-              {albums.map((al) =>
-            <AlbumCard key={al.id} album={al} />
-            )}
-            </div>
-          </section>
-        }
 
         {/* Discography */}
         <section className="mb-12">

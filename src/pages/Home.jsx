@@ -7,7 +7,6 @@ import { useAuth } from "@/lib/AuthContext";
 import {
   TrendingUp,
   Sparkles,
-  Repeat,
   Music,
   Disc,
   Upload,
@@ -18,8 +17,8 @@ import Podium from "@/components/Podium";
 import ReleaseList from "@/components/ReleaseList";
 import ScoreboardTrackCount from "@/components/ScoreboardTrackCount";
 import EmptyState from "@/components/EmptyState";
-import { getRecentPlays, getOnRepeat } from "@/lib/recentPlays";
-import { fetchForYou } from "@/lib/recommendations";
+import { getRecentPlays } from "@/lib/recentPlays";
+import { getUserGenres } from "@/lib/userGenres";
 import PullToRefresh from "@/components/PullToRefresh";
 import HeroPlayingTint from "@/components/HeroPlayingTint";
 
@@ -91,8 +90,6 @@ export default function Home() {
   const [byGenre, setByGenre] = useState([]);
   const [fromFollowing, setFromFollowing] = useState([]);
   const [discover, setDiscover] = useState([]);
-  const [forYou, setForYou] = useState([]);
-  const [onRepeat, setOnRepeat] = useState([]);
   const [totalTracks, setTotalTracks] = useState(0);
   const loadedRef = useRef(false);
   const greeting = greetingByHour();
@@ -102,8 +99,6 @@ export default function Home() {
     setNewReleases((p) => p.filter((t) => t.id !== id));
     setFromFollowing((p) => p.filter((t) => t.id !== id));
     setDiscover((p) => p.filter((t) => t.id !== id));
-    setForYou((p) => p.filter((t) => t.id !== id));
-    setOnRepeat((p) => p.filter((t) => t.id !== id));
     setByGenre((p) => p.map((s) => ({ ...s, tracks: s.tracks.filter((t) => t.id !== id) })));
     setTotalTracks((c) => Math.max(0, c - 1));
   }, []);
@@ -179,11 +174,15 @@ export default function Home() {
         if (!p?.genre) continue;
         genreFreq[p.genre] = (genreFreq[p.genre] || 0) + 1;
       }
-      // Discover is driven purely by what this user actually plays.
-      const allUserGenres = Object.entries(genreFreq).
+      // Merge onboarding picks with listening history — onboarding genres
+      // seed personalization from day one, recent plays refine it over time.
+      const onboardGenres = await getUserGenres();
+      const genreSet = new Set(onboardGenres);
+      const userGenres = Object.entries(genreFreq).
       sort((a, b) => b[1] - a[1]).
       map(([g]) => g).
-      slice(0, 5);
+      filter((g) => !genreSet.has(g));
+      const allUserGenres = [...onboardGenres, ...userGenres].slice(0, 5);
       let discoverPicks = [];
       if (allUserGenres.length) {
         const perUserGenre = await Promise.all(
@@ -202,23 +201,6 @@ export default function Home() {
         discoverPicks = n.filter((tr) => tr && !playedIds.has(tr.id)).slice(0, 12);
       }
       setDiscover(discoverPicks);
-
-      // On Repeat — read straight from local play counts, so it's personal and
-      // instant. Stays hidden until the listener has replayed something.
-      setOnRepeat(getOnRepeat(2, 12));
-
-      // For You — ranked against likes, saves, repeats and follows, skipping
-      // everything the other rows already show.
-      const forYouPicks = await fetchForYou({
-        userId: user?.id,
-        excludeIds: [
-        ...playedIds,
-        ...t.map((tr) => tr.id),
-        ...n.slice(0, 36).map((tr) => tr.id),
-        ...discoverPicks.map((tr) => tr.id)]
-
-      }).catch(() => []);
-      setForYou(forYouPicks);
     } finally {
       setLoading(false);
     }
@@ -295,16 +277,6 @@ export default function Home() {
           </div>
         </div>
 
-        {forYou.length > 0 &&
-        <Section title="For You" icon={Sparkles}>
-            <CardRow tracks={forYou} />
-          </Section>
-        }
-        {onRepeat.length > 0 &&
-        <Section title="On Repeat" icon={Repeat}>
-            <CardRow tracks={onRepeat} />
-          </Section>
-        }
         <Section title="Trending" icon={TrendingUp} seeAllTo="/top">
           {trending.length >= 3 ?
           <>

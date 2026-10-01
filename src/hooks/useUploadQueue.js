@@ -13,7 +13,6 @@ import {
 const IMAGE_EXT_RE =
   /\.(jpe?g|jfif|png|gif|webp|avif|heic|heif|bmp|tiff?|svg|ico|apng)$/i;
 import { findDuplicateTracks } from "@/lib/duplicateCheck";
-import { ensureAlbum } from "@/lib/albums";
 import { ensureHighResCover } from "@/lib/coverImage";
 
 let uid = 0;
@@ -76,7 +75,6 @@ export function useUploadQueue({ user, isAdmin }) {
       file,
       title: deriveDefaultTitle(file),
       artist: "",
-      album: "",
       genre: "",
       duration: 0,
       explicit: false,
@@ -191,15 +189,6 @@ export function useUploadQueue({ user, isAdmin }) {
         cover_art_url = r?.file_url || "";
       }
       const meetsRules = !!(item.artist.trim() && item.genre && cover_art_url);
-      // Filing a track under an album creates (or links) the release record, so
-      // the album page and the artist's release list have something to show.
-      const release = await ensureAlbum({
-        title: item.album || "",
-        artistName: item.artist.trim(),
-        coverArtUrl: cover_art_url,
-        genre: item.genre,
-        userId: user.id,
-      }).catch(() => null);
       const track = await base44.entities.Track.create({
         title: item.title.trim() || "Untitled",
         audio_url: file_url,
@@ -208,7 +197,6 @@ export function useUploadQueue({ user, isAdmin }) {
         uploader_name: user.display_name || user.full_name || "",
         uploader_avatar_url: user.avatar_url || "",
         artist: item.artist.trim(),
-        album_id: release?.id || "",
         genre: item.genre || "Other",
         duration_seconds: item.duration,
         explicit: item.explicit,

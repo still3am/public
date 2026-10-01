@@ -3,7 +3,6 @@ import { Link } from "react-router-dom";
 import { usePlayer } from "@/context/PlayerContext";
 import { Image } from "@/components/ui/image";
 import { useCoverUrl } from "@/hooks/useCoverUrl";
-import TrackOptionsMenu from "@/components/track/TrackOptionsMenu";
 
 function EqualizerBars({ active }) {
   if (!active) return null;
@@ -60,15 +59,6 @@ export default function TrackCard({ track }) {
         )}
 
         <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300" />
-
-        {/* Same options menu as every other track surface — always reachable on
-            touch, revealed on hover on desktop. */}
-        <div className="absolute top-2 left-2 z-10 opacity-100 md:opacity-0 md:group-hover:opacity-100 md:focus-within:opacity-100 transition-opacity">
-          <TrackOptionsMenu
-            track={track}
-            triggerClassName="w-8 h-8 rounded-full grid place-items-center bg-background/85 backdrop-blur text-foreground shadow hover:bg-background active:scale-90 transition" />
-          
-        </div>
 
         {!isPlayingNow && (
           <button

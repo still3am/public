@@ -9,7 +9,6 @@ import ProtectedRoute from '@/components/ProtectedRoute';
 import { Navigate } from 'react-router-dom';
 import { PlayerProvider } from '@/context/PlayerContext';
 import { LibraryProvider } from '@/context/LibraryContext';
-import { LikesProvider } from '@/context/LikesContext';
 import { UploadProvider } from '@/context/UploadContext';
 import Layout from '@/components/Layout';
 import Login from '@/pages/Login';
@@ -25,7 +24,6 @@ import TrackDetail from '@/pages/TrackDetail';
 import PublicRecords from '@/pages/PublicRecords';
 import PublicRecordsIndex from '@/pages/PublicRecordsIndex';
 import ArtistByName from '@/pages/ArtistByName';
-import AlbumDetail from '@/pages/AlbumDetail';
 import Suggestions from '@/pages/Suggestions';
 import Upload from '@/pages/Upload';
 import Lounge from '@/pages/Lounge';
@@ -33,6 +31,7 @@ import Library from '@/pages/Library';
 import Downloads from '@/pages/Downloads';
 import Admin from '@/pages/Admin';
 import SongTransitions from '@/pages/SongTransitions';
+import Onboarding from '@/pages/Onboarding';
 import Notifications from '@/pages/Notifications';
 import ArtistDashboard from '@/pages/ArtistDashboard';
 import PlaylistDetail from '@/pages/PlaylistDetail';
@@ -77,7 +76,6 @@ const AuthenticatedApp = () => {
         <Route path="/records/:id" element={<PublicRecords />} />
         <Route path="/records" element={<PublicRecordsIndex />} />
         <Route path="/artist" element={<ArtistByName />} />
-        <Route path="/album/:id" element={<AlbumDetail />} />
         <Route path="/suggestions" element={<Suggestions />} />
       </Route>
       {/* Personal features — login required */}
@@ -91,7 +89,7 @@ const AuthenticatedApp = () => {
           <Route path="/downloads" element={<Downloads />} />
           <Route path="/admin" element={<Admin />} />
           <Route path="/settings/transitions" element={<SongTransitions />} />
-          <Route path="/onboarding" element={<Navigate to="/" replace />} />
+          <Route path="/onboarding" element={<Onboarding />} />
           <Route path="/notifications" element={<Notifications />} />
           <Route path="/artist-dashboard" element={<ArtistDashboard />} />
           <Route path="/playlist/:id" element={<PlaylistDetail />} />
@@ -111,11 +109,9 @@ function App() {
         <Router>
           <PlayerProvider>
             <LibraryProvider>
-              <LikesProvider>
-                <UploadProvider>
-                  <AuthenticatedApp />
-                </UploadProvider>
-              </LikesProvider>
+              <UploadProvider>
+                <AuthenticatedApp />
+              </UploadProvider>
             </LibraryProvider>
           </PlayerProvider>
         </Router>

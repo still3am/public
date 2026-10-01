@@ -1,12 +1,10 @@
-import { useMemo, useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { useAuth } from "@/lib/AuthContext";
 import { X, ListMusic, Plus, Check, Loader2 } from "lucide-react";
 import CreatePlaylistModal from "@/components/playlist/CreatePlaylistModal";
 
-// Adds one track (track) or a whole selection (tracks) to a playlist, so the
-// library's bulk actions reuse the exact same picker as the track menu.
-export default function PlaylistPickerModal({ track, tracks, onClose }) {
+export default function PlaylistPickerModal({ track, onClose }) {
   const { user } = useAuth();
   const [playlists, setPlaylists] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -14,39 +12,28 @@ export default function PlaylistPickerModal({ track, tracks, onClose }) {
   const [showCreate, setShowCreate] = useState(false);
   const [addedTo, setAddedTo] = useState(null);
 
-  const items = useMemo(() => {
-    if (tracks?.length) return tracks;
-    return track ? [track] : [];
-  }, [tracks, track]);
-
   useEffect(() => {
     if (!user?.id) return;
-    // Own playlists plus any the user collaborates on — both are editable.
-    Promise.all([
-    base44.entities.Playlist.filter({ creator_id: user.id }, "-created_date", 200).catch(() => []),
-    base44.entities.Playlist.filter({ collaborator_ids: user.id }, "-created_date", 200).catch(() => [])]).
-    then(([owned, shared]) => {
-      const seen = new Set((owned || []).map((pl) => pl.id));
-      setPlaylists([...(owned || []), ...(shared || []).filter((pl) => !seen.has(pl.id))]);
-    }).
-    catch(() => setPlaylists([])).
-    finally(() => setLoading(false));
+    base44.entities.Playlist
+      .filter({ creator_id: user.id }, "-created_date", 200)
+      .then((rows) => setPlaylists(rows || []))
+      .catch(() => setPlaylists([]))
+      .finally(() => setLoading(false));
   }, [user?.id]);
 
-  if (!items.length) return null;
-
-  const heading = items.length === 1 ? items[0].title : `${items.length} songs`;
+  if (!track) return null;
 
   async function addToPlaylist(pl) {
     setAdding(pl.id);
     try {
       const ids = pl.track_ids || [];
-      const missing = items.map((t) => t.id).filter((id) => id && !ids.includes(id));
-      if (!missing.length) {
+      if (ids.includes(track.id)) {
         setAddedTo(pl.id);
         return;
       }
-      await base44.entities.Playlist.update(pl.id, { track_ids: [...ids, ...missing] });
+      await base44.entities.Playlist.update(pl.id, {
+        track_ids: [...ids, track.id],
+      });
       setAddedTo(pl.id);
     } catch {
       alert("Could not add to playlist. Try again.");
@@ -63,7 +50,7 @@ export default function PlaylistPickerModal({ track, tracks, onClose }) {
         <div className="flex items-center justify-between mb-4">
           <div className="min-w-0">
             <h2 className="text-lg font-extrabold tracking-tight">Add to playlist</h2>
-            <p className="text-xs text-foreground/50 truncate mt-0.5">{heading}</p>
+            <p className="text-xs text-foreground/50 truncate mt-0.5">{track.title}</p>
           </div>
           <button onClick={onClose} className="p-2 rounded-full hover:bg-foreground/10 shrink-0" aria-label="Close">
             <X size={18} />

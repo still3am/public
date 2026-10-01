@@ -3,7 +3,6 @@ import { Link, useParams, useNavigate } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import { useAuth } from "@/lib/AuthContext";
 import { usePlayer } from "@/context/PlayerContext";
-import { getAlbums } from "@/lib/catalogCache";
 import EmptyState from "@/components/EmptyState";
 import EditTrackModal from "@/components/EditTrackModal";
 import ArtistLinks from "@/components/ArtistLinks";
@@ -12,13 +11,20 @@ import {
   Loader2,
   Play,
   Pause,
+  Download,
+  Flag,
   Pencil,
+  Music2,
+  Share2,
+  Music,
+  Plus,
+  Trash2,
   Sparkles,
   Wand2 } from
 "lucide-react";
 import TrackRow from "@/components/TrackRow";
 import GenerateLyricsModal from "@/components/GenerateLyricsModal";
-import TrackOptionsMenu from "@/components/track/TrackOptionsMenu";
+import { useOfflineCache } from "@/hooks/useOfflineCache";
 import { useToast } from "@/components/ui/use-toast";
 
 export default function TrackDetail() {
@@ -29,12 +35,14 @@ export default function TrackDetail() {
   const [track, setTrack] = useState(null);
   const [loading, setLoading] = useState(true);
   const [uploader, setUploader] = useState(null);
+  const [reporting, setReporting] = useState(false);
   const [editing, setEditing] = useState(false);
   const [generating, setGenerating] = useState(false);
   const [detecting, setDetecting] = useState(false);
   const [moreTracks, setMoreTracks] = useState([]);
-  const [album, setAlbum] = useState(null);
   const [copied, setCopied] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const cache = useOfflineCache();
   const { toast } = useToast();
 
   async function load() {
@@ -42,16 +50,6 @@ export default function TrackDetail() {
     try {
       const t = await base44.entities.Track.get(id).catch(() => null);
       setTrack(t);
-      // Resolve the release this track belongs to, so the track page links back
-      // to its album record.
-      if (t?.album_id) {
-        const releases = await getAlbums();
-        setAlbum(
-          (Array.isArray(releases) ? releases : []).find((a) => a.id === t.album_id) || null
-        );
-      } else {
-        setAlbum(null);
-      }
       if (t?.uploader_id) {
         const u = await base44.entities.User.
         get(t.uploader_id).
@@ -98,6 +96,7 @@ export default function TrackDetail() {
     then(() => {
       setCopied(true);
       setTimeout(() => setCopied(false), 1500);
+      setMenuOpen(false);
     });
   }
 
@@ -111,10 +110,31 @@ export default function TrackDetail() {
     } else {
       shareLink();
     }
+    setMenuOpen(false);
+  }
+
+  async function report() {
+    const reason = window.prompt("What's wrong with this track?");
+    if (!reason || !track) return;
+    setReporting(true);
+    try {
+      await base44.entities.Report.create({
+        reporter_id: user.id,
+        track_id: track.id,
+        reason
+      });
+      alert("Thanks — a report was sent to the PUBLIC admin team.");
+    } catch {
+      alert("Could not submit report. Try again later.");
+    } finally {
+      setReporting(false);
+      setMenuOpen(false);
+    }
   }
 
   async function detectGenre() {
     if (!track) return;
+    setMenuOpen(false);
     setDetecting(true);
     try {
       const res = await base44.functions.invoke("detectGenre", { track_id: track.id });
@@ -146,29 +166,71 @@ export default function TrackDetail() {
   const isPlaying = isCurrent && p.isPlaying;
   const displayArtist = track.artist || "";
 
-  // Owner-only tools ride along in the standard menu rather than a second,
-  // track-page-only menu.
-  const ownerActions = [];
-  if (isOwner)
-  ownerActions.push({
-    key: "edit",
-    icon: Pencil,
-    label: "Edit track",
-    onClick: () => setEditing(true)
+  const menuItems = [];
+
+  menuItems.push({
+    icon: cache.downloading[track.id] ? Loader2 : cache.isCached(track.id) ? Trash2 : Download,
+    label: cache.downloading[track.id] ?
+    "Saving…" :
+    cache.isCached(track.id) ?
+    "Remove offline" :
+    "Save offline",
+    onClick: async () => {
+      setMenuOpen(false);
+      if (cache.isCached(track.id)) {
+        await cache.removeTrack(track.id);
+        toast({ title: "Removed from downloads" });
+      } else {
+        const ok = await cache.downloadTrack(track);
+        toast(
+          ok ?
+          { title: "Saved for offline" } :
+          { title: "Couldn't save offline", variant: "destructive" }
+        );
+      }
+    }
+  });
+  if (navigator.share)
+  menuItems.push({ icon: Share2, label: "Share", onClick: nativeShare });
+  if (track.is_downloadable)
+  menuItems.push({
+    icon: Download,
+    label: "Download",
+    onClick: () => {
+      if (track.audio_url && /^https?:\/\//i.test(track.audio_url)) window.open(track.audio_url, "_blank");
+      setMenuOpen(false);
+    }
   });
   if (isOwner)
-  ownerActions.push({
-    key: "genre",
+  menuItems.push({
+    icon: Pencil,
+    label: "Edit track",
+    onClick: () => {
+      setEditing(true);
+      setMenuOpen(false);
+    }
+  });
+  if (isOwner)
+  menuItems.push({
     icon: detecting ? Loader2 : Wand2,
     label: detecting ? "Detecting genre…" : "Detect genre (AI)",
     onClick: detectGenre
   });
   if (isOwner && track.audio_url)
-  ownerActions.push({
-    key: "lyrics",
+  menuItems.push({
     icon: Sparkles,
     label: track.lyrics_text?.trim() ? "Regenerate lyrics" : "Generate lyrics",
-    onClick: () => setGenerating(true)
+    onClick: () => {
+      setGenerating(true);
+      setMenuOpen(false);
+    }
+  });
+  if (!isOwner)
+  menuItems.push({
+    icon: Flag,
+    label: "Report",
+    danger: true,
+    onClick: report
   });
 
   return (
@@ -202,19 +264,9 @@ export default function TrackDetail() {
             }
           </div>
           <div className="flex-1 min-w-0 flex flex-col items-center w-full">
-            <div className="flex items-center justify-center flex-wrap gap-1.5 mb-2.5">
-              <span className="text-[10px] uppercase tracking-[0.2em] text-foreground/50 font-semibold border border-border rounded-full px-3 py-1">
-                {track.genre}
-              </span>
-              {album &&
-              <Link
-                to={`/album/${album.id}`}
-                className="text-[10px] uppercase tracking-[0.2em] text-foreground/60 font-semibold border border-border rounded-full px-3 py-1 hover:text-foreground hover:border-foreground/30 transition">
-                
-                  {album.title}
-                </Link>
-              }
-            </div>
+            <span className="self-center text-[10px] uppercase tracking-[0.2em] text-foreground/50 font-semibold mb-2.5 border border-border rounded-full px-3 py-1">
+              {track.genre}
+            </span>
             <div className="flex items-center gap-2 flex-wrap mb-1.5 justify-center">
               <h1 className="text-3xl md:text-4xl font-extrabold tracking-tighter leading-[1.05]">
                 {track.title}
@@ -290,12 +342,41 @@ export default function TrackDetail() {
 
 
         
-        <div className="shrink-0 ml-auto">
-          <TrackOptionsMenu
-            track={track}
-            onShare={nativeShare}
-            extraActions={ownerActions}
-            triggerClassName="w-10 h-10 rounded-full grid place-items-center bg-foreground text-background hover:scale-105 active:scale-95 transition" />
+        <div className="relative shrink-0 ml-auto">
+          <button
+            onClick={() => setMenuOpen((v) => !v)}
+            className="w-10 h-10 rounded-full bg-foreground text-background grid place-items-center hover:scale-105 transition"
+            aria-label="More actions">
+            
+            <Plus
+              size={18}
+              className={menuOpen ? "rotate-45 transition-transform" : "transition-transform"} />
+            
+          </button>
+          {menuOpen &&
+          <>
+              <div
+              className="fixed inset-0 z-10"
+              onClick={() => setMenuOpen(false)} />
+            
+              <div className="absolute right-0 top-full z-20 mt-1 bg-popover border border-border rounded-xl shadow-2xl py-1 min-w-[210px]">
+                {menuItems.map((m, i) => {
+                const Icon = m.icon;
+                return (
+                  <button
+                    key={i}
+                    onClick={m.onClick}
+                    className={`w-full flex items-center gap-2.5 px-3 py-2 text-sm hover:bg-foreground/[0.04] text-left ${
+                    m.danger ? "text-destructive" : ""}`
+                    }>
+                    
+                      <Icon size={15} /> {m.label}
+                    </button>);
+
+              })}
+              </div>
+            </>
+          }
         </div>
       </div>
 

@@ -16,7 +16,6 @@ import { usePlayer } from "@/context/PlayerContext";
 import { useAuth } from "@/lib/AuthContext";
 import { formatTime } from "@/lib/audio-utils";
 import QueueLibraryPicker from "@/components/QueueLibraryPicker";
-import TrackOptionsMenu from "@/components/track/TrackOptionsMenu";
 import { useState } from "react";
 import {
   useTransitions } from
@@ -224,10 +223,6 @@ export default function QueuePanel({ open, onClose }) {
                 <span className="hidden sm:block text-[11px] text-white/40 tabular-nums">
                   {formatTime(tt.duration_seconds)}
                 </span>
-                <TrackOptionsMenu
-                    track={tt}
-                    triggerClassName="shrink-0 w-8 h-8 rounded-full grid place-items-center text-white/45 hover:text-white hover:bg-white/10 active:scale-90 transition" />
-                
                 <button
                     onClick={() => p.removeFromQueue(i)}
                     className="shrink-0 w-8 h-8 rounded-full grid place-items-center text-white/45 hover:text-white hover:bg-white/10 active:scale-90 transition"

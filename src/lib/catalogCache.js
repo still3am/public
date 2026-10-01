@@ -1,7 +1,7 @@
 import { base44 } from "@/api/base44Client";
 
 // The public catalog is downloaded by several discovery screens (Home, Search,
-// Public Records). Reading the whole collection on each visit is the
+// Onboarding, Public Records). Reading the whole collection on each visit is the
 // app's heaviest source of entity read traffic, so these helpers read it once and
 // share the result for a short window — and collapse simultaneous calls into a
 // single request.
@@ -14,7 +14,7 @@ function makeCache(fetcher, ttl = TTL) {
   let value = null;
   let expiresAt = 0;
   let inflight = null;
-  const read = async () => {
+  return async () => {
     if (hasValue && Date.now() < expiresAt) return value;
     if (inflight) return inflight;
     inflight = fetcher()
@@ -36,15 +36,8 @@ function makeCache(fetcher, ttl = TTL) {
       });
     return inflight;
   };
-  // A record just created by the app can be pushed into the cached list so
-  // surfaces reading it (artist releases, album grids) reflect it immediately
-  // instead of waiting out the cache window.
-  read.prime = (item) => {
-    if (!item?.id || !hasValue || !Array.isArray(value)) return;
-    value = [item, ...value.filter((v) => v?.id !== item.id)];
-  };
-  return read;
 }
+
 export const getPublishedTracks = makeCache(() =>
   base44.entities.Track.filter({ is_published: true }, "-created_date", MAX)
 );
@@ -52,12 +45,6 @@ export const getPublishedTracks = makeCache(() =>
 export const getArtists = makeCache(() =>
   base44.entities.Artist.list("-updated_date", MAX)
 );
-
-export const getAlbums = makeCache(() =>
-  base44.entities.Album.list("-updated_date", MAX)
-);
-
-export const primeAlbum = (album) => getAlbums.prime(album);
 
 // The catalog size is counted server-side (and shared app-wide for an hour), but
 // still reuse the answer here for a while so navigating back and forth is free.

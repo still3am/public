@@ -1,10 +1,9 @@
 import { useEffect, useState } from "react";
-import { ShieldCheck, Music2, Flag, Lightbulb, Wand2, Ban, Users, Megaphone, Bug } from "lucide-react";
+import { ShieldCheck, Music2, Flag, Lightbulb, Wand2, Ban, Users, Megaphone } from "lucide-react";
 import { useAuth } from "@/lib/AuthContext";
 import ApprovalsManager from "@/components/admin/ApprovalsManager";
 import SuggestionsManager from "@/components/admin/SuggestionsManager";
 import ReportsManager from "@/components/admin/ReportsManager";
-import ErrorReportsManager from "@/components/admin/ErrorReportsManager";
 import GenreTool from "@/components/admin/GenreTool";
 import UploadSwitch from "@/components/admin/UploadSwitch";
 import UsersManager from "@/components/admin/UsersManager";
@@ -26,7 +25,6 @@ export default function Admin() {
     { id: "users", icon: Users, label: "Users" },
     { id: "reports", icon: Flag, label: "Reports" },
     { id: "suggestions", icon: Lightbulb, label: "Suggestions" },
-    { id: "errors", icon: Bug, label: "Errors" },
     { id: "genre", icon: Wand2, label: "Genre Tool" },
     { id: "uploads", icon: Ban, label: "Uploads" },
     { id: "banner", icon: Megaphone, label: "Banner" }
@@ -63,7 +61,6 @@ export default function Admin() {
             {tab === "users" && <UsersManager />}
             {tab === "reports" && <ReportsManager />}
             {tab === "suggestions" && <SuggestionsManager />}
-            {tab === "errors" && <ErrorReportsManager />}
             {tab === "genre" && <GenreTool />}
             {tab === "uploads" && <UploadSwitch />}
             {tab === "banner" && <BannerEditor />}

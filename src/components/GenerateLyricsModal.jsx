@@ -1,12 +1,9 @@
 import { useEffect, useState } from "react";
 import { Loader2, X, Sparkles, Save, RotateCcw } from "lucide-react";
 import { base44 } from "@/api/base44Client";
-import { useAuth } from "@/lib/AuthContext";
-import { saveTimedLyrics } from "@/lib/lyricsTiming";
 import { useToast } from "@/components/ui/use-toast";
 
 export default function GenerateLyricsModal({ track, onClose, onSaved }) {
-  const { user } = useAuth();
   const [loading, setLoading] = useState(true);
   const [lyrics, setLyrics] = useState("");
   const [saving, setSaving] = useState(false);
@@ -35,27 +32,11 @@ export default function GenerateLyricsModal({ track, onClose, onSaved }) {
   }, []);
 
   async function save() {
-    const text = lyrics.trim();
-    if (!text) return;
     setSaving(true);
     try {
-      const stored = Number(track.duration_seconds) || 0;
-      // Stores the timecoded copy the player follows, line by line and word by
-      // word, and reports the real audio length so it only has to be read once.
-      const timed = await saveTimedLyrics({
-        trackId: track.id,
-        uploaderId: user.id,
-        text,
-        durationSeconds: stored,
-        audioUrl: track.audio_url,
-      });
-      await base44.entities.Track.update(track.id, {
-        lyrics_text: text,
-        ...(stored > 0 || !timed?.duration ? {} : { duration_seconds: Math.round(timed.duration) }),
-      });
-
-      toast({ title: timed?.saved ? "Lyrics saved — synced in the player" : "Lyrics saved" });
-      onSaved({ lyrics_text: text });
+      await base44.entities.Track.update(track.id, { lyrics_text: lyrics.trim() });
+      toast({ title: "Lyrics saved" });
+      onSaved({ lyrics_text: lyrics.trim() });
     } catch {
       toast({ title: "Could not save lyrics", variant: "destructive" });
     } finally {
@@ -97,7 +78,7 @@ export default function GenerateLyricsModal({ track, onClose, onSaved }) {
           ) : (
             <>
               <p className="text-xs text-foreground/50 mb-2 px-1">
-                AI transcribed the lyrics from the audio. Review and edit before saving — machines aren't perfect. Saving also creates a timecoded version so the player follows the words as they're sung.
+                AI transcribed the lyrics from the audio. Review and edit before saving — machines aren't perfect.
               </p>
               <textarea
                 value={lyrics}

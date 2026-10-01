@@ -35,9 +35,7 @@ export default function PulseVisualizer({ className = "" }) {
     };
     raf.current = requestAnimationFrame(loop);
     return () => raf.current && cancelAnimationFrame(raf.current);
-    // Only the two stable player callbacks are needed — depending on the whole
-    // player context restarted this animation loop on every unrelated change.
-  }, [p.enableAnalyser, p.getAnalyser]);
+  }, [p]);
 
   const scale = 1 + beat * 0.35;
   const opacity = 0.3 + Math.min(0.65, beat * 0.9);

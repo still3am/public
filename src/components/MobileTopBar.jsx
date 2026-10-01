@@ -1,6 +1,5 @@
 import { useLocation, useNavigate } from "react-router-dom";
-import { ChevronLeft, Search as SearchIcon } from "lucide-react";
-import { openGlobalSearch } from "@/lib/searchBus";
+import { ChevronLeft } from "lucide-react";
 
 // Static titles for top-level routes.
 const TITLES = {
@@ -19,6 +18,7 @@ const TITLES = {
   "/suggestions": "Suggestions",
   "/records": "Public Records",
   "/artist": "Artists",
+  "/onboarding": "Choose your sound",
   "/settings/transitions": "Transitions",
   "/artist-dashboard": "Artist",
 };
@@ -40,6 +40,7 @@ const ROOTS = new Set([
   "/suggestions",
   "/records",
   "/artist",
+  "/onboarding",
 ]);
 
 // Child routes with a dynamic id segment.
@@ -52,49 +53,31 @@ function childTitle(pathname) {
   return null;
 }
 
-// Fall back to the last path segment so the header is never blank on a route
-// that isn't explicitly listed above — a missing title used to hide the whole
-// bar, which left mobile users without any header or back navigation.
-function titleFor(pathname) {
-  const known = TITLES[pathname] || childTitle(pathname);
-  if (known) return known;
-  const seg = pathname.split("/").filter(Boolean).pop();
-  if (!seg) return "PUBLIC.";
-  return seg.
-  replace(/-/g, " ").
-  replace(/\b\w/g, (c) => c.toUpperCase());
-}
-
 export default function MobileTopBar() {
   const { pathname } = useLocation();
   const nav = useNavigate();
 
-  const title = titleFor(pathname);
+  const title = TITLES[pathname] || childTitle(pathname);
+  if (!title) return null;
+
   const showBack = !ROOTS.has(pathname);
 
   return (
     <header className="md:hidden sticky top-0 z-30 bg-background/85 backdrop-blur-md border-b border-border/60 top-bar-safe">
       <div className="flex items-center gap-1 px-2 h-12">
-        {showBack ?
-        <button
-          onClick={() => nav(-1)}
-          className="w-10 h-10 grid place-items-center rounded-full hover:bg-foreground/[0.06] active:scale-95 transition shrink-0"
-          aria-label="Go back">
-          
+        {showBack ? (
+          <button
+            onClick={() => nav(-1)}
+            className="w-10 h-10 grid place-items-center rounded-full hover:bg-foreground/[0.06] active:scale-95 transition shrink-0"
+            aria-label="Go back"
+          >
             <ChevronLeft size={22} />
-          </button> :
-
-        <span className="w-2 shrink-0" />
-        }
+          </button>
+        ) : (
+          <span className="w-2 shrink-0" />
+        )}
         <h1 className="text-base font-extrabold tracking-tight truncate">{title}</h1>
-        <button
-          onClick={openGlobalSearch}
-          className="ml-auto w-10 h-10 grid place-items-center rounded-full hover:bg-foreground/[0.06] active:scale-95 transition shrink-0"
-          aria-label="Search">
-          
-          <SearchIcon size={20} />
-        </button>
       </div>
-    </header>);
-
+    </header>
+  );
 }

@@ -7,9 +7,9 @@ import {
   useCallback,
 } from "react";
 import { base44 } from "@/api/base44Client";
-import { addRecentPlay } from "@/lib/recentPlays";
 import { getRecord, listRecords } from "@/lib/offlineCache";
 import { buildAutoQueue } from "@/lib/autoQueue";
+import { getUserGenres } from "@/lib/userGenres";
 import { useWakeLock } from "@/hooks/useWakeLock";
 import {
   getTransitionSettings,
@@ -766,7 +766,26 @@ export function PlayerProvider({ children }) {
     if (!track || countedRef.current.has(track.id)) return;
     countedRef.current.add(track.id);
     base44.functions.invoke("registerPlay", { track_id: track.id }).catch(() => {});
-    addRecentPlay(track);
+    try {
+      const KEY = "public:recently_played";
+      const v = JSON.parse(localStorage.getItem(KEY) || "[]");
+      const s = {
+        id: track.id,
+        title: track.title,
+        artist: track.artist,
+        uploader_name: track.uploader_name,
+        uploader_id: track.uploader_id,
+        cover_art_url: track.cover_art_url,
+        audio_url: track.audio_url,
+        duration_seconds: track.duration_seconds,
+        genre: track.genre,
+        explicit: track.explicit,
+        is_published: true,
+      };
+      const next = [s, ...v.filter((t) => t.id !== s.id)].slice(0, 20);
+      localStorage.setItem(KEY, JSON.stringify(next));
+      window.dispatchEvent(new CustomEvent("recentplays:change"));
+    } catch {}
   }, []);
 
   useEffect(() => {
@@ -790,10 +809,12 @@ export function PlayerProvider({ children }) {
     if (!track?.id || autoQueueLoadingRef.current) return false;
     autoQueueLoadingRef.current = true;
     try {
+      const userGenres = await getUserGenres();
       const picks = await buildAutoQueue(
         track,
         queueRef.current.map((t) => t.id),
-        15
+        15,
+        userGenres
       );
       if (!picks.length) return false;
       const start = queueRef.current.length;

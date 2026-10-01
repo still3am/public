@@ -4,7 +4,7 @@ import { useColorExtraction } from "@/hooks/useColorExtraction";
 import { useAuth } from "@/lib/AuthContext";
 import { formatTime } from "@/lib/audio-utils";
 import SyncedLyrics from "@/components/SyncedLyrics";
-import TrackOptionsMenu from "@/components/track/TrackOptionsMenu";
+import NowPlayingAddMenu from "@/components/NowPlayingAddMenu";
 import { Link } from "react-router-dom";
 import {
   Play,
@@ -20,13 +20,9 @@ import {
   Repeat1,
   Shuffle,
   Disc3,
-  SlidersHorizontal,
-  ListMusic,
-  Smartphone,
   X } from
 "lucide-react";
 import PulseVisualizer from "@/components/PulseVisualizer";
-import AudioVisualizer from "@/components/AudioVisualizer";
 import PlayPauseButton from "@/components/PlayPauseButton";
 import QueuePanel from "@/components/QueuePanel";
 import LoungeHostModal from "@/components/LoungeHostModal";
@@ -63,10 +59,7 @@ export default function FullScreenPlayer({ onClose }) {
   const coverUrl = useCoverUrl(offlineCover);
   const bg = useColorExtraction(coverUrl);
   const [lyricsMode, setLyricsMode] = useState(false);
-  // Color Pulse is part of the player rather than a setting: it turns itself on
-  // with playback. It only runs while this screen is open and visible, so the
-  // audio analyser isn't left running behind the scenes.
-  const [pulseOn, setPulseOn] = useState(false);
+  const [showPulse, setShowPulse] = useState(false);
   const [showVolHint, setShowVolHint] = useState(false);
   const [copied, setCopied] = useState(false);
   const [showQueue, setShowQueue] = useState(false);
@@ -164,14 +157,6 @@ export default function FullScreenPlayer({ onClose }) {
     };
   }, []);
 
-  useEffect(() => {
-    const update = () =>
-    setPulseOn(!!p.isPlaying && document.visibilityState === "visible");
-    update();
-    document.addEventListener("visibilitychange", update);
-    return () => document.removeEventListener("visibilitychange", update);
-  }, [p.isPlaying]);
-
   function flashHint() {
     setShowVolHint(true);
     clearTimeout(hintTimer.current);
@@ -251,7 +236,7 @@ export default function FullScreenPlayer({ onClose }) {
         style={{ background: `radial-gradient(ellipse at center, ${bg} 0%, transparent 70%)` }} />
 
       {/* reactive visualizer */}
-      {pulseOn && <PulseVisualizer className="absolute inset-0 z-0" />}
+      {showPulse && <PulseVisualizer className="absolute inset-0 z-0" />}
       
 
       {/* top bar */}
@@ -288,26 +273,23 @@ export default function FullScreenPlayer({ onClose }) {
 
           
         </div>
-        <TrackOptionsMenu
-          track={t}
+        <NowPlayingAddMenu
           onShare={shareNow}
-          extraActions={[
-          {
-            key: "mix",
-            icon: SlidersHorizontal,
-            label: "Mix",
-            accent: p.mixer.bass !== 0 || p.mixer.beat !== 0 || p.mixer.vocals !== 0 || p.mixer.treble !== 0 || p.mixer.boost !== 1,
-            onClick: () => setShowMixer(true)
-          },
-          {
-            key: "queue",
-            icon: ListMusic,
-            label: p.queue.length - p.currentIndex - 1 > 0 ? `Queue (${p.queue.length - p.currentIndex - 1})` : "Queue",
-            onClick: () => setShowQueue(true)
-          },
-          { key: "lounge", icon: Smartphone, label: "Lounge", onClick: () => setLoungeOpen(true) }]
-          }
-          triggerClassName="w-9 h-9 rounded-full grid place-items-center bg-white/10 hover:bg-white/20 active:scale-90 transition text-white" />
+          showPulse={showPulse}
+          onTogglePulse={() => {
+            setShowPulse((v) => !v);
+            if (!showPulse) p.enableAnalyser?.();
+          }}
+          onToggleLibrary={() => toggleLibrary(t)}
+          inLibrary={isInLibrary(t.id)}
+          onViewQueue={() => setShowQueue(true)}
+          onLounge={() => setLoungeOpen(true)}
+          onToggleOffline={toggleOffline}
+          savedOffline={cache.isCached(t.id)}
+          savingOffline={!!cache.downloading[t.id]}
+          queueCount={p.queue.length - p.currentIndex - 1 > 0 ? p.queue.length - p.currentIndex - 1 : 0}
+          onMix={() => setShowMixer(true)}
+          mixerActive={p.mixer.bass !== 0 || p.mixer.beat !== 0 || p.mixer.vocals !== 0 || p.mixer.treble !== 0 || p.mixer.boost !== 1} />
         
       </div>
 
@@ -337,14 +319,6 @@ export default function FullScreenPlayer({ onClose }) {
                     <Disc3 size={64} />
                   </div>
               }
-                {/* audio-reactive bars along the bottom of the artwork */}
-                <div className="absolute inset-x-0 bottom-0 h-16 md:h-20 pointer-events-none">
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-black/15 to-transparent" />
-                  <div className="absolute inset-x-0 bottom-0 top-4">
-                    <AudioVisualizer bars={48} mirror={false} />
-                  </div>
-                </div>
-
                 {/* volume hint */}
                 <div
                 className={`absolute inset-0 grid place-items-center bg-black/30 backdrop-blur-sm transition-opacity duration-200 ${
