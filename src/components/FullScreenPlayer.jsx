@@ -26,6 +26,7 @@ import {
   X } from
 "lucide-react";
 import PulseVisualizer from "@/components/PulseVisualizer";
+import AudioVisualizer from "@/components/AudioVisualizer";
 import PlayPauseButton from "@/components/PlayPauseButton";
 import QueuePanel from "@/components/QueuePanel";
 import LoungeHostModal from "@/components/LoungeHostModal";
@@ -336,6 +337,14 @@ export default function FullScreenPlayer({ onClose }) {
                     <Disc3 size={64} />
                   </div>
               }
+                {/* audio-reactive bars along the bottom of the artwork */}
+                <div className="absolute inset-x-0 bottom-0 h-16 md:h-20 pointer-events-none">
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-black/15 to-transparent" />
+                  <div className="absolute inset-x-0 bottom-0 top-4">
+                    <AudioVisualizer bars={48} mirror={false} />
+                  </div>
+                </div>
+
                 {/* volume hint */}
                 <div
                 className={`absolute inset-0 grid place-items-center bg-black/30 backdrop-blur-sm transition-opacity duration-200 ${
