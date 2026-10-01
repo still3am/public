@@ -90,9 +90,9 @@ export default function Sidebar({ onOpenSearch }) {
           
           <Search size={18} className="shrink-0" />
           <span className={`shrink-0 ${EASE} ${fadeCls}`}>Quick search</span>
-          <span className={`ml-auto shrink-0 text-[10px] font-bold border border-border rounded px-1.5 py-0.5 text-foreground/45 hidden ${EASE} ${fadeCls}`}>
-            ⌘K
-          </span>
+          
+
+          
         </button>
       </div>
 
@@ -126,13 +126,13 @@ export default function Sidebar({ onOpenSearch }) {
             </div>
           </div>
         </NavLink>
-        <button
-          onClick={signOut}
-          title="Sign out"
-          className="w-full flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-foreground/60 hover:text-foreground hover:bg-foreground/[0.03] transition-colors overflow-hidden hidden">
-          <LogOut size={18} className="shrink-0" />
-          <span className={`shrink-0 ${EASE} ${fadeCls}`}>Sign out</span>
-        </button>
+        
+
+
+
+
+
+        
       </div>
     </aside>);
 
