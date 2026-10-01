@@ -90,7 +90,7 @@ export default function Sidebar({ onOpenSearch }) {
           
           <Search size={18} className="shrink-0" />
           <span className={`shrink-0 ${EASE} ${fadeCls}`}>Quick search</span>
-          <span className={`ml-auto shrink-0 text-[10px] font-bold border border-border rounded px-1.5 py-0.5 text-foreground/45 ${EASE} ${fadeCls}`}>
+          <span className={`ml-auto shrink-0 text-[10px] font-bold border border-border rounded px-1.5 py-0.5 text-foreground/45 hidden ${EASE} ${fadeCls}`}>
             ⌘K
           </span>
         </button>
