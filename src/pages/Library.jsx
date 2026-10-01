@@ -4,27 +4,57 @@ import { base44 } from "@/api/base44Client";
 import { useAuth } from "@/lib/AuthContext";
 import { useLibrary } from "@/context/LibraryContext";
 import { useOfflineCache } from "@/hooks/useOfflineCache";
-import { Library as LibIcon, Loader2, CloudOff, ChevronRight, History, Plus, ListMusic, Mic2 } from "lucide-react";
+import { Library as LibIcon, Loader2, CloudOff, ChevronRight, History, Plus, ListMusic, Mic2, Check, X } from "lucide-react";
 import TrackCard from "@/components/TrackCard";
 import EmptyState from "@/components/EmptyState";
 import PullToRefresh from "@/components/PullToRefresh";
 import PageHeader from "@/components/PageHeader";
 import PlaylistCard from "@/components/playlist/PlaylistCard";
 import CreatePlaylistModal from "@/components/playlist/CreatePlaylistModal";
+import PlaylistPickerModal from "@/components/playlist/PlaylistPickerModal";
+import SelectableTrackCard from "@/components/library/SelectableTrackCard";
+import BulkSelectionBar from "@/components/library/BulkSelectionBar";
+import { useToast } from "@/components/ui/use-toast";
 import { getRecentPlays } from "@/lib/recentPlays";
 
 export default function Library() {
   const { user } = useAuth();
-  const { ids, refresh } = useLibrary();
+  const { ids, refresh, removeMany } = useLibrary();
   const cache = useOfflineCache();
+  const { toast } = useToast();
   const [tracks, setTracks] = useState(null);
   const [uploads, setUploads] = useState(null);
   const [recentlyPlayed, setRecentlyPlayed] = useState([]);
   const [loading, setLoading] = useState(true);
   const [playlists, setPlaylists] = useState(null);
   const [showCreate, setShowCreate] = useState(false);
+  const [selectMode, setSelectMode] = useState(false);
+  const [selected, setSelected] = useState(new Set());
+  const [bulkBusy, setBulkBusy] = useState("");
+  const [showBulkPlaylist, setShowBulkPlaylist] = useState(false);
 
   const offlineCount = cache.records.length;
+  const selectedTracks = (tracks || []).filter((t) => selected.has(t.id));
+  const allSelected = !!tracks?.length && selected.size === tracks.length;
+
+  function exitSelect() {
+    setSelectMode(false);
+    setSelected(new Set());
+    setBulkBusy("");
+  }
+
+  function toggleOne(id) {
+    setSelected((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);else next.add(id);
+      return next;
+    });
+  }
+
+  function toggleAll() {
+    if (allSelected) setSelected(new Set());else
+    setSelected(new Set((tracks || []).map((t) => t.id)));
+  }
 
   const loadPlaylists = useCallback(async () => {
     if (!user?.id) return;
@@ -95,6 +125,38 @@ export default function Library() {
       window.removeEventListener("storage", handler);
     };
   }, []);
+
+  async function bulkRemove() {
+    const list = [...selected];
+    if (!list.length) return;
+    setBulkBusy("Removing…");
+    const ok = await removeMany(list);
+    setBulkBusy("");
+    toast(
+      ok ?
+      { title: `Removed ${list.length} ${list.length === 1 ? "track" : "tracks"}` } :
+      { title: "Couldn't remove those tracks", variant: "destructive" }
+    );
+    if (ok) exitSelect();
+  }
+
+  async function bulkDownload() {
+    const list = selectedTracks;
+    if (!list.length) return;
+    let done = 0;
+    for (const t of list) {
+      setBulkBusy(`Saving ${done + 1}/${list.length}…`);
+      const ok = await cache.downloadTrack(t);
+      if (ok) done += 1;
+    }
+    setBulkBusy("");
+    toast(
+      done ?
+      { title: `Saved ${done} ${done === 1 ? "track" : "tracks"} for offline` } :
+      { title: "Couldn't save those tracks", variant: "destructive" }
+    );
+    exitSelect();
+  }
 
   return (
     <div className="max-w-5xl mx-auto px-3 md:px-0 pb-10">
@@ -202,7 +264,18 @@ export default function Library() {
           </section>
 
           <section>
-            <h2 className="text-sm font-bold text-foreground/70 uppercase tracking-wider mb-3">Saved</h2>
+            <div className="flex items-center justify-between mb-3">
+              <h2 className="text-sm font-bold text-foreground/70 uppercase tracking-wider">Saved</h2>
+              {tracks?.length > 0 &&
+              <button
+                onClick={() => selectMode ? exitSelect() : setSelectMode(true)}
+                className="inline-flex items-center gap-1.5 text-xs font-bold text-foreground/70 hover:text-foreground transition">
+                
+                  {selectMode ? <X size={14} /> : <Check size={14} />}
+                  {selectMode ? "Done" : "Select"}
+                </button>
+              }
+            </div>
             {!tracks?.length ?
             <EmptyState
               icon={LibIcon}
@@ -212,7 +285,13 @@ export default function Library() {
 
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
                 {tracks.map((t) =>
-              <TrackCard key={t.id} track={t} />
+              <SelectableTrackCard
+                key={t.id}
+                track={t}
+                selectMode={selectMode}
+                selected={selected.has(t.id)}
+                onToggle={toggleOne} />
+
               )}
               </div>
             }
@@ -220,6 +299,29 @@ export default function Library() {
         </>
         }
       </PullToRefresh>
+
+      {selectMode &&
+      <BulkSelectionBar
+        count={selected.size}
+        allSelected={allSelected}
+        busyLabel={bulkBusy}
+        onToggleAll={toggleAll}
+        onAddToPlaylist={() => setShowBulkPlaylist(true)}
+        onDownload={bulkDownload}
+        onRemove={bulkRemove}
+        onCancel={exitSelect} />
+
+      }
+
+      {showBulkPlaylist && selectedTracks.length > 0 &&
+      <PlaylistPickerModal
+        tracks={selectedTracks}
+        onClose={() => {
+          setShowBulkPlaylist(false);
+          exitSelect();
+        }} />
+
+      }
 
       {showCreate &&
       <CreatePlaylistModal

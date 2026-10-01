@@ -153,11 +153,13 @@
   .tab-bar-safe { padding-bottom: env(safe-area-inset-bottom); }
   .top-bar-safe { padding-top: env(safe-area-inset-top); min-height: calc(3.5rem + env(safe-area-inset-top)); }
   .player-bar-mobile-bottom { bottom: calc(4rem + env(safe-area-inset-bottom)); }
+  .selection-bar-bottom { bottom: calc(8.5rem + env(safe-area-inset-bottom)); }
   .main-content { padding-bottom: calc(11rem + env(safe-area-inset-bottom)); }
   }
 
 @media (min-width: 768px) {
   .player-bar-mobile-bottom { bottom: 0; }
+  .selection-bar-bottom { bottom: 5.5rem; }
   .main-content { padding-bottom: 8rem; }
 }
 
