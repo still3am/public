@@ -11,6 +11,9 @@ import PageHeader from "@/components/PageHeader";
 import LibraryEntryRow from "@/components/LibraryEntryRow";
 import PlaylistCard from "@/components/playlist/PlaylistCard";
 import CreatePlaylistModal from "@/components/playlist/CreatePlaylistModal";
+import LibraryBulkBar from "@/components/library/LibraryBulkBar";
+import BulkAddToPlaylistSheet from "@/components/library/BulkAddToPlaylistSheet";
+import { useToast } from "@/components/ui/use-toast";
 import { getRecentPlays } from "@/lib/recentPlays";
 
 export default function Library() {
@@ -23,6 +26,11 @@ export default function Library() {
   const [loading, setLoading] = useState(true);
   const [playlists, setPlaylists] = useState(null);
   const [showCreate, setShowCreate] = useState(false);
+  const [editMode, setEditMode] = useState(false);
+  const [selected, setSelected] = useState(() => new Set());
+  const [showBulkPlaylist, setShowBulkPlaylist] = useState(false);
+  const [bulkBusy, setBulkBusy] = useState(false);
+  const { toast } = useToast();
 
   const offlineCount = cache.records.length;
 
@@ -96,6 +104,61 @@ export default function Library() {
     };
   }, []);
 
+  const selectedIds = [...selected];
+  const uploadIds = new Set((uploads || []).map((t) => t.id));
+  const removableIds = selectedIds.filter((id) => ids.has(id));
+  const deletableIds = selectedIds.filter((id) => uploadIds.has(id));
+
+  const toggleSelect = (track) => {
+    setSelected((prev) => {
+      const next = new Set(prev);
+      if (next.has(track.id)) next.delete(track.id);
+      else next.add(track.id);
+      return next;
+    });
+  };
+
+  const exitEditMode = () => {
+    setEditMode(false);
+    setSelected(new Set());
+  };
+
+  const removeFromLibrary = async () => {
+    if (!removableIds.length) return;
+    setBulkBusy(true);
+    try {
+      await base44.entities.LibraryItem.deleteMany({
+        user_id: user.id,
+        track_id: { $in: removableIds }
+      });
+      await refresh();
+      await load();
+      toast({ title: `Removed ${removableIds.length} from your library` });
+      exitEditMode();
+    } catch {
+      toast({ title: "Couldn't remove those songs", variant: "destructive" });
+    } finally {
+      setBulkBusy(false);
+    }
+  };
+
+  const deleteUploads = async () => {
+    if (!deletableIds.length) return;
+    setBulkBusy(true);
+    try {
+      await base44.entities.Track.deleteMany({ id: { $in: deletableIds } });
+      await load();
+      toast({
+        title: `Deleted ${deletableIds.length} ${deletableIds.length === 1 ? "upload" : "uploads"}`
+      });
+      exitEditMode();
+    } catch {
+      toast({ title: "Couldn't delete those uploads", variant: "destructive" });
+    } finally {
+      setBulkBusy(false);
+    }
+  };
+
   return (
     <div className="max-w-5xl mx-auto px-3 md:px-0 pb-10">
       <PageHeader title="Your Library" subtitle="Everything you've saved, in one place." />
@@ -108,6 +171,19 @@ export default function Library() {
 
       <LibraryEntryRow to="/downloads" label="PUBLIC OFFLINE" />
 
+      <LibraryBulkBar
+        visible={!!(uploads?.length || tracks?.length)}
+        active={editMode}
+        count={selected.size}
+        canRemove={removableIds.length > 0}
+        canDelete={deletableIds.length > 0}
+        busy={bulkBusy}
+        onStart={() => setEditMode(true)}
+        onExit={exitEditMode}
+        onAddToPlaylist={() => setShowBulkPlaylist(true)}
+        onRemove={removeFromLibrary}
+        onDelete={deleteUploads} />
+
       <PullToRefresh onRefresh={async () => {await refresh();await load();await loadPlaylists();}}>
         {loading && tracks === null ?
         <div className="flex justify-center py-20">
@@ -119,7 +195,13 @@ export default function Library() {
             <h2 className="text-sm font-bold text-foreground/70 uppercase tracking-wider mb-3">Your Uploads</h2>
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
               {uploads.map((t) =>
-              <TrackCard key={t.id} track={t} />
+              <TrackCard
+                key={t.id}
+                track={t}
+                selectable={editMode}
+                selected={selected.has(t.id)}
+                onToggleSelect={toggleSelect} />
+
               )}
             </div>
           </section>
@@ -179,7 +261,13 @@ export default function Library() {
 
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
                 {tracks.map((t) =>
-              <TrackCard key={t.id} track={t} />
+              <TrackCard
+                key={t.id}
+                track={t}
+                selectable={editMode}
+                selected={selected.has(t.id)}
+                onToggleSelect={toggleSelect} />
+
               )}
               </div>
             }
@@ -192,6 +280,18 @@ export default function Library() {
       <CreatePlaylistModal
         onClose={() => setShowCreate(false)}
         onCreated={() => loadPlaylists()} />
+
+      }
+
+      {showBulkPlaylist &&
+      <BulkAddToPlaylistSheet
+        trackIds={selectedIds}
+        playlists={playlists}
+        onClose={() => setShowBulkPlaylist(false)}
+        onDone={() => {
+          setShowBulkPlaylist(false);
+          exitEditMode();
+        }} />
 
       }
     </div>);

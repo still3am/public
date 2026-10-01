@@ -44,7 +44,7 @@ export default function BulkAddToPlaylistSheet({ trackIds = [], playlists, onClo
         <div className="flex items-center justify-between p-4 border-b border-border shrink-0">
           <div className="min-w-0">
             <h3 className="font-bold flex items-center gap-2">
-              <ListPlusHeader /> Add to playlist
+              <ListMusic size={16} /> Add to playlist
             </h3>
             <p className="text-xs text-foreground/50 mt-0.5">
               {trackIds.length} {trackIds.length === 1 ? "song" : "songs"} selected
@@ -93,8 +93,4 @@ export default function BulkAddToPlaylistSheet({ trackIds = [], playlists, onClo
       </div>
     </div>
   );
-}
-
-function ListPlusHeader() {
-  return <ListMusic size={16} />;
 }

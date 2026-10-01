@@ -90,25 +90,39 @@ export default function TrackCard({ track, selectable = false, selected = false,
         )}
       </div>
 
-      <Link
-        to={`/track/${track.id}`}
-        onClick={(e) => e.stopPropagation()}
-        className="block"
-      >
-        <div className="flex items-center gap-1.5">
-          <span className={`truncate text-sm font-semibold ${isCurrent ? "text-foreground" : ""}`}>
-            {track.title}
-          </span>
-          {track.explicit && (
-            <span className="shrink-0 text-[8px] font-extrabold rounded bg-foreground/15 text-foreground/60 px-1 leading-none py-[1px]">
-              E
-            </span>
-          )}
+      {selectable ? (
+        <div className="block">
+          <TrackCardMeta track={track} isCurrent={isCurrent} />
         </div>
-        <div className="text-xs text-foreground/55 truncate mt-0.5">
-          {track.artist || track.uploader_name || "Unknown"}
-        </div>
-      </Link>
+      ) : (
+        <Link
+          to={`/track/${track.id}`}
+          onClick={(e) => e.stopPropagation()}
+          className="block"
+        >
+          <TrackCardMeta track={track} isCurrent={isCurrent} />
+        </Link>
+      )}
     </div>
+  );
+}
+
+function TrackCardMeta({ track, isCurrent }) {
+  return (
+    <>
+      <div className="flex items-center gap-1.5">
+        <span className={`truncate text-sm font-semibold ${isCurrent ? "text-foreground" : ""}`}>
+          {track.title}
+        </span>
+        {track.explicit && (
+          <span className="shrink-0 text-[8px] font-extrabold rounded bg-foreground/15 text-foreground/60 px-1 leading-none py-[1px]">
+            E
+          </span>
+        )}
+      </div>
+      <div className="text-xs text-foreground/55 truncate mt-0.5">
+        {track.artist || track.uploader_name || "Unknown"}
+      </div>
+    </>
   );
 }
