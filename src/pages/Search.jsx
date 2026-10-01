@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState, useCallback } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import {
   Search as SearchIcon,
   Loader2,
@@ -20,7 +20,7 @@ import PageHeader from "@/components/PageHeader";
 import EmptyState from "@/components/EmptyState";
 import { useUnpublishedSync } from "@/hooks/useUnpublishedSync";
 
-function ArtistRow({ artist, trackCount, onPick }) {
+function ArtistRow({ artist, count = 0, onPick }) {
   return (
     <button
       onClick={onPick}
@@ -35,6 +35,10 @@ function ArtistRow({ artist, trackCount, onPick }) {
       </div>
       <div className="min-w-0 flex-1">
         <div className="text-sm font-semibold truncate">{artist.name}</div>
+        <div className="text-xs text-foreground/50 truncate">
+          {count > 0 ? `${count} ${count === 1 ? "track" : "tracks"}` : "No published tracks yet"}
+          {artist.location ? ` · ${artist.location}` : ""}
+        </div>
         
 
 
@@ -46,7 +50,8 @@ function ArtistRow({ artist, trackCount, onPick }) {
 }
 
 export default function Search() {
-  const [q, setQ] = useState("");
+  const location = useLocation();
+  const [q, setQ] = useState(() => new URLSearchParams(window.location.search).get("q") || "");
   const [genre, setGenre] = useState(() => {
     const params = new URLSearchParams(window.location.search);
     return params.get("genre") || null;
@@ -81,6 +86,16 @@ export default function Search() {
     loadCatalogue();
   }, []);
 
+  // A search handed over from the global overlay (or a shared link) opens the
+  // page already filtered.
+  useEffect(() => {
+    const urlQ = new URLSearchParams(location.search).get("q");
+    if (urlQ) {
+      setQ(urlQ);
+      setGenre(null);
+    }
+  }, [location.search]);
+
   const Q = useMemo(() => q.trim().toLowerCase(), [q]);
   const hasQuery = Q.length > 0;
 
@@ -105,6 +120,18 @@ export default function Search() {
     ).
     slice(0, 50);
   }, [hasQuery, Q, allArtists]);
+
+  // Track counts per artist, computed once instead of re-scanning the catalog
+  // for every row.
+  const artistCounts = useMemo(() => {
+    const map = new Map();
+    for (const t of allTracks) {
+      const key = (t.artist || "").toLowerCase().trim();
+      if (!key) continue;
+      map.set(key, (map.get(key) || 0) + 1);
+    }
+    return map;
+  }, [allTracks]);
 
   const genreList = useMemo(() => {
     const map = {};
@@ -221,7 +248,7 @@ export default function Search() {
               <ArtistRow
                 key={a.id}
                 artist={a}
-                trackCount={allTracks.filter((t) => t.artist?.toLowerCase() === a.name.toLowerCase()).length}
+                count={artistCounts.get((a.name || "").toLowerCase()) || 0}
                 onPick={() => searchArtist(a.name)} />
               )}
                 </div>
@@ -245,7 +272,9 @@ export default function Search() {
                         <div className="text-sm font-semibold truncate flex items-center gap-1">
                           {u.display_name || u.full_name || "Unnamed"}
                         </div>
-                        <div className="text-xs text-foreground/50 truncate">{u.email}</div>
+                        <div className="text-xs text-foreground/50 truncate">
+                          {u.bio || u.location || u.pronouns || "PUBLIC listener"}
+                        </div>
                       </div>
                     </Link>
               )}

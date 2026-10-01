@@ -1,5 +1,6 @@
 import { useLocation, useNavigate } from "react-router-dom";
-import { ChevronLeft } from "lucide-react";
+import { ChevronLeft, Search as SearchIcon } from "lucide-react";
+import { openGlobalSearch } from "@/lib/searchBus";
 
 // Static titles for top-level routes.
 const TITLES = {
@@ -86,6 +87,13 @@ export default function MobileTopBar() {
         <span className="w-2 shrink-0" />
         }
         <h1 className="text-base font-extrabold tracking-tight truncate">{title}</h1>
+        <button
+          onClick={openGlobalSearch}
+          className="ml-auto w-10 h-10 grid place-items-center rounded-full hover:bg-foreground/[0.06] active:scale-95 transition shrink-0"
+          aria-label="Search">
+          
+          <SearchIcon size={20} />
+        </button>
       </div>
     </header>);
 

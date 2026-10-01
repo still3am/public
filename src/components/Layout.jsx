@@ -6,6 +6,7 @@ import MobileTopBar from "@/components/MobileTopBar";
 import ScrollingBanner from "@/components/ScrollingBanner";
 import PlayerBar from "@/components/PlayerBar";
 import ResumePlaybackBanner from "@/components/ResumePlaybackBanner";
+import GlobalSearch from "@/components/search/GlobalSearch";
 import { useScrollRestore } from "@/hooks/useScrollRestore";
 
 export default function Layout() {
@@ -34,6 +35,7 @@ export default function Layout() {
       <ResumePlaybackBanner />
       <PlayerBar />
       <MobileTabBar />
+      <GlobalSearch />
     </div>
   );
 }
