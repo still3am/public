@@ -2,8 +2,9 @@ import { useCallback, useEffect, useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { useAuth } from "@/lib/AuthContext";
 import { useLibrary } from "@/context/LibraryContext";
+import { useLikes } from "@/context/LikeContext";
 import { useOfflineCache } from "@/hooks/useOfflineCache";
-import { Library as LibIcon, Loader2, CloudOff, History, Plus, ListMusic, Disc3 } from "lucide-react";
+import { Library as LibIcon, Loader2, CloudOff, History, Plus, ListMusic, Disc3, Heart } from "lucide-react";
 import TrackCard from "@/components/TrackCard";
 import EmptyState from "@/components/EmptyState";
 import PullToRefresh from "@/components/PullToRefresh";
@@ -19,6 +20,7 @@ import { getRecentPlays } from "@/lib/recentPlays";
 export default function Library() {
   const { user } = useAuth();
   const { ids, refresh } = useLibrary();
+  const { count: likedCount } = useLikes();
   const cache = useOfflineCache();
   const [tracks, setTracks] = useState(null);
   const [uploads, setUploads] = useState(null);
@@ -168,6 +170,12 @@ export default function Library() {
         icon={Disc3}
         label="Public Record"
         subtitle="A–Z artist directory" />
+
+      <LibraryEntryRow
+        to="/liked"
+        icon={Heart}
+        label="Liked Songs"
+        subtitle={likedCount ? `${likedCount} ${likedCount === 1 ? "track" : "tracks"} you've liked` : "Tracks you've liked"} />
 
       <LibraryEntryRow to="/downloads" label="PUBLIC OFFLINE" />
 

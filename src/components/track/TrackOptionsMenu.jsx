@@ -4,6 +4,7 @@ import {
   Download,
   EyeOff,
   Flag,
+  Heart,
   ListMusic,
   Loader2,
   MoreHorizontal,
@@ -14,6 +15,7 @@ import {
 import { base44 } from "@/api/base44Client";
 import { useAuth } from "@/lib/AuthContext";
 import { useLibrary } from "@/context/LibraryContext";
+import { useLikes } from "@/context/LikeContext";
 import { useOfflineCache } from "@/hooks/useOfflineCache";
 import { useToast } from "@/components/ui/use-toast";
 import PlaylistPickerModal from "@/components/playlist/PlaylistPickerModal";
@@ -41,6 +43,7 @@ export default function TrackOptionsMenu({
   const { user } = useAuth();
   const { toast } = useToast();
   const { isInLibrary, toggle } = useLibrary();
+  const { isLiked, toggle: toggleLike } = useLikes();
   const cache = useOfflineCache();
   const [open, setOpen] = useState(false);
   const [pos, setPos] = useState(null);
@@ -107,6 +110,15 @@ export default function TrackOptionsMenu({
         } finally {
           setBusy(false);
         }
+      },
+    },
+    {
+      icon: Heart,
+      label: isLiked(track.id) ? "Remove from likes" : "Like this track",
+      onClick: () => {
+        toggleLike(track).catch(() =>
+          toast({ title: "Couldn't update your like", variant: "destructive" })
+        );
       },
     },
     {

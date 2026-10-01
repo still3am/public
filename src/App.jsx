@@ -9,6 +9,7 @@ import ProtectedRoute from '@/components/ProtectedRoute';
 import { Navigate } from 'react-router-dom';
 import { PlayerProvider } from '@/context/PlayerContext';
 import { LibraryProvider } from '@/context/LibraryContext';
+import { LikeProvider } from '@/context/LikeContext';
 import { UploadProvider } from '@/context/UploadContext';
 import Layout from '@/components/Layout';
 import Login from '@/pages/Login';
@@ -29,6 +30,7 @@ import Upload from '@/pages/Upload';
 import Lounge from '@/pages/Lounge';
 import Library from '@/pages/Library';
 import Downloads from '@/pages/Downloads';
+import LikedSongs from '@/pages/LikedSongs';
 import Admin from '@/pages/Admin';
 import SongTransitions from '@/pages/SongTransitions';
 import Notifications from '@/pages/Notifications';
@@ -86,6 +88,7 @@ const AuthenticatedApp = () => {
           <Route path="/lounge/:code" element={<Lounge />} />
           <Route path="/library" element={<Library />} />
           <Route path="/downloads" element={<Downloads />} />
+          <Route path="/liked" element={<LikedSongs />} />
           <Route path="/admin" element={<Admin />} />
           <Route path="/settings/transitions" element={<SongTransitions />} />
           <Route path="/notifications" element={<Notifications />} />
@@ -107,9 +110,11 @@ function App() {
         <Router>
           <PlayerProvider>
             <LibraryProvider>
-              <UploadProvider>
-                <AuthenticatedApp />
-              </UploadProvider>
+              <LikeProvider>
+                <UploadProvider>
+                  <AuthenticatedApp />
+                </UploadProvider>
+              </LikeProvider>
             </LibraryProvider>
           </PlayerProvider>
         </Router>

@@ -26,6 +26,8 @@ export default function NowPlayingAddMenu({
   queueCount = 0,
   onMix,
   mixerActive = false,
+  onToggleLike,
+  liked = false,
 }) {
   const [open, setOpen] = useState(false);
   const wrapRef = useRef(null);
@@ -44,6 +46,15 @@ export default function NowPlayingAddMenu({
   }, [open]);
 
   const options = [
+    onToggleLike && {
+      icon: Heart,
+      label: liked ? "Remove from likes" : "Add to likes",
+      onClick: (close) => {
+        onToggleLike();
+        close();
+      },
+      accent: liked ? "text-white" : "",
+    },
     onMix && {
       icon: SlidersHorizontal,
       label: "Mix",

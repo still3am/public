@@ -18,6 +18,7 @@ import {
 "lucide-react";
 import TrackRow from "@/components/TrackRow";
 import TrackOptionsMenu from "@/components/track/TrackOptionsMenu";
+import LikeButton from "@/components/LikeButton";
 import SyncLyricsModal from "@/components/SyncLyricsModal";
 import GenerateLyricsModal from "@/components/GenerateLyricsModal";
 import { useToast } from "@/components/ui/use-toast";
@@ -250,6 +251,13 @@ export default function TrackDetail() {
 
 
         
+        <LikeButton
+          track={track}
+          size={18}
+          showCount
+          className="px-4 py-2.5 rounded-full ring-1 ring-inset ring-border text-sm font-semibold hover:bg-accent transition" />
+        
+
         <TrackOptionsMenu
           track={track}
           variant="plus"
