@@ -211,18 +211,18 @@ html.modal-open .mobile-tab-bar { display: none !important; }
       effectively invisible in light mode, so those interactive states resolve
       to the accent surface.
 --------------------------------------------------------------------------- */
-.text-foreground\/20,
-.text-foreground\/25,
-.text-foreground\/30,
-.text-foreground\/35,
-.text-foreground\/40,
-.text-foreground\/45 {
+html .text-foreground\/20,
+html .text-foreground\/25,
+html .text-foreground\/30,
+html .text-foreground\/35,
+html .text-foreground\/40,
+html .text-foreground\/45 {
   color: hsl(var(--muted-foreground));
 }
 
-.hover\:bg-foreground\/\[0\.01\]:hover,
-.hover\:bg-foreground\/\[0\.02\]:hover,
-.hover\:bg-foreground\/\[0\.03\]:hover,
-.hover\:bg-foreground\/\[0\.04\]:hover {
+html .hover\:bg-foreground\/\[0\.01\]:hover,
+html .hover\:bg-foreground\/\[0\.02\]:hover,
+html .hover\:bg-foreground\/\[0\.03\]:hover,
+html .hover\:bg-foreground\/\[0\.04\]:hover {
   background-color: hsl(var(--accent));
 }
