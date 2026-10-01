@@ -1,9 +1,11 @@
-// Persists the user's most recently played tracks in localStorage.
-// PlayerContext writes here; Home reads via the "recentplays:change" custom
-// event so the "Recently Played" row updates live within the same tab.
+// Persists the user's most recently played tracks in localStorage, counting how
+// many times each one has been played so the "On Repeat" row knows what the
+// listener actually keeps coming back to.
+// PlayerContext writes here via addRecentPlay(); Home and Library read the list,
+// re-reading on the "recentplays:change" event so the rows stay live.
 
 const KEY = "public:recently_played";
-const MAX = 20;
+const MAX = 50;
 
 function slim(track) {
   if (!track) return null;
@@ -32,10 +34,14 @@ export function getRecentPlays() {
 
 export function addRecentPlay(track) {
   try {
-    const v = JSON.parse(localStorage.getItem(KEY) || "[]");
+    const v = getRecentPlays();
     const s = slim(track);
     if (!s) return v;
-    const next = [s, ...v.filter((t) => t.id !== s.id)].slice(0, MAX);
+    const previous = v.find((t) => t.id === s.id);
+    const next = [
+      { ...s, plays: (previous?.plays || 0) + 1, last_played_at: Date.now() },
+      ...v.filter((t) => t.id !== s.id),
+    ].slice(0, MAX);
     localStorage.setItem(KEY, JSON.stringify(next));
     window.dispatchEvent(new CustomEvent("recentplays:change"));
     return next;
@@ -49,4 +55,12 @@ export function clearRecentPlays() {
     localStorage.removeItem(KEY);
     window.dispatchEvent(new CustomEvent("recentplays:change"));
   } catch {}
+}
+
+// The tracks this listener has deliberately come back to, heaviest first.
+export function getOnRepeat(minPlays = 2, limit = 12) {
+  return getRecentPlays()
+    .filter((t) => (t.plays || 0) >= minPlays)
+    .sort((a, b) => (b.plays || 0) - (a.plays || 0))
+    .slice(0, limit);
 }

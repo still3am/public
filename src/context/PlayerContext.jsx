@@ -7,6 +7,7 @@ import {
   useCallback,
 } from "react";
 import { base44 } from "@/api/base44Client";
+import { addRecentPlay } from "@/lib/recentPlays";
 import { getRecord, listRecords } from "@/lib/offlineCache";
 import { buildAutoQueue } from "@/lib/autoQueue";
 import { useWakeLock } from "@/hooks/useWakeLock";
@@ -765,26 +766,7 @@ export function PlayerProvider({ children }) {
     if (!track || countedRef.current.has(track.id)) return;
     countedRef.current.add(track.id);
     base44.functions.invoke("registerPlay", { track_id: track.id }).catch(() => {});
-    try {
-      const KEY = "public:recently_played";
-      const v = JSON.parse(localStorage.getItem(KEY) || "[]");
-      const s = {
-        id: track.id,
-        title: track.title,
-        artist: track.artist,
-        uploader_name: track.uploader_name,
-        uploader_id: track.uploader_id,
-        cover_art_url: track.cover_art_url,
-        audio_url: track.audio_url,
-        duration_seconds: track.duration_seconds,
-        genre: track.genre,
-        explicit: track.explicit,
-        is_published: true,
-      };
-      const next = [s, ...v.filter((t) => t.id !== s.id)].slice(0, 20);
-      localStorage.setItem(KEY, JSON.stringify(next));
-      window.dispatchEvent(new CustomEvent("recentplays:change"));
-    } catch {}
+    addRecentPlay(track);
   }, []);
 
   useEffect(() => {
