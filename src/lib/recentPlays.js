@@ -5,7 +5,7 @@
 const KEY = "public:recently_played";
 const MAX = 20;
 
-function slim(track) {
+export function slimTrack(track) {
   if (!track) return null;
   return {
     id: track.id,
@@ -33,7 +33,7 @@ export function getRecentPlays() {
 export function addRecentPlay(track) {
   try {
     const v = JSON.parse(localStorage.getItem(KEY) || "[]");
-    const s = slim(track);
+    const s = slimTrack(track);
     if (!s) return v;
     const next = [s, ...v.filter((t) => t.id !== s.id)].slice(0, MAX);
     localStorage.setItem(KEY, JSON.stringify(next));

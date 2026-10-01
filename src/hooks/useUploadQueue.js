@@ -13,6 +13,7 @@ import {
 const IMAGE_EXT_RE =
   /\.(jpe?g|jfif|png|gif|webp|avif|heic|heif|bmp|tiff?|svg|ico|apng)$/i;
 import { findDuplicateTracks } from "@/lib/duplicateCheck";
+import { findOrCreateAlbum } from "@/lib/albums";
 import { ensureHighResCover } from "@/lib/coverImage";
 
 let uid = 0;
@@ -81,6 +82,8 @@ export function useUploadQueue({ user, isAdmin }) {
       aiLyrics: false,
       coverFile: null,
       coverPreviewUrl: "",
+      album_title: "",
+      album_track: "",
       status: "analyzing",
       detecting: true,
       error: "",
@@ -189,10 +192,24 @@ export function useUploadQueue({ user, isAdmin }) {
         cover_art_url = r?.file_url || "";
       }
       const meetsRules = !!(item.artist.trim() && item.genre && cover_art_url);
+      // An "Album or EP" name turns this upload into part of a release. The
+      // same record is reused for every track in the batch sharing the name.
+      const albumTitle = (item.album_title || "").trim();
+      const album = albumTitle
+        ? await findOrCreateAlbum({
+            title: albumTitle,
+            artist: item.artist.trim(),
+            genre: item.genre,
+            coverUrl: cover_art_url,
+            userId: user.id,
+          }).catch(() => null)
+        : null;
       const track = await base44.entities.Track.create({
         title: item.title.trim() || "Untitled",
         audio_url: file_url,
         cover_art_url,
+        album_id: album?.id || "",
+        track_number: album ? Number(item.album_track) || 0 : 0,
         uploader_id: user.id,
         uploader_name: user.display_name || user.full_name || "",
         uploader_avatar_url: user.avatar_url || "",

@@ -141,7 +141,7 @@
     -webkit-touch-callout: default;
   }
   .tap-target { min-width: 44px; min-height: 44px; display: inline-flex; align-items: center; justify-content: center; }
-  .no-scrollbar { scrollbar-width: none; -ms-overflow-style: none; }
+  .no-scrollbar { scrollbar-width: none; -ms-overflow-style: none; -webkit-overflow-scrolling: touch; }
   .no-scrollbar::-webkit-scrollbar { display: none; }
   *::-webkit-scrollbar { width: 0 !important; height: 0 !important; display: none !important; }
   * { scrollbar-width: none !important; -ms-overflow-style: none !important; }
@@ -155,10 +155,29 @@
   }
   .chip:hover { background: hsl(var(--accent)); color: hsl(var(--accent-foreground)); }
   .chip.active { background: hsl(var(--foreground)); color: hsl(var(--background)); border-color: hsl(var(--foreground)); }
-  .tab-bar-safe { padding-bottom: env(safe-area-inset-bottom); }
-  .top-bar-safe { padding-top: env(safe-area-inset-top); min-height: calc(3.5rem + env(safe-area-inset-top)); }
+  /* iOS safe areas — the notch clips anything painted at the very top of a
+     fixed bar, and the rounded corners clip the sides in landscape. */
+  .tab-bar-safe {
+    padding-bottom: env(safe-area-inset-bottom);
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+  }
+  .top-bar-safe {
+    padding-top: env(safe-area-inset-top);
+    min-height: calc(3.5rem + env(safe-area-inset-top));
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+  }
   .player-bar-mobile-bottom { bottom: calc(4rem + env(safe-area-inset-bottom)); }
-  .main-content { padding-bottom: calc(11rem + env(safe-area-inset-bottom)); }
+  .main-content {
+    padding-bottom: calc(11rem + env(safe-area-inset-bottom));
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+  }
+  /* iOS Safari's 100vh counts the dynamic toolbars, so a full-height screen
+     renders taller than what the user can actually see until they collapse. */
+  .h-screen-safe { height: 100vh; height: 100dvh; }
+  .min-h-screen-safe { min-height: 100vh; min-height: 100dvh; }
   }
 
 @media (min-width: 768px) {

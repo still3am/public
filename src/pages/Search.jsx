@@ -3,9 +3,7 @@ import { Link } from "react-router-dom";
 import {
   Search as SearchIcon,
   Loader2,
-  Music,
   Users,
-  Mic2,
   Disc3,
   X,
   ArrowLeft } from
@@ -22,7 +20,7 @@ import PageHeader from "@/components/PageHeader";
 import EmptyState from "@/components/EmptyState";
 import { useUnpublishedSync } from "@/hooks/useUnpublishedSync";
 
-function ArtistRow({ artist, trackCount, onPick }) {
+function ArtistRow({ artist, onPick }) {
   return (
     <button
       onClick={onPick}

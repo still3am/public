@@ -5,8 +5,29 @@
     "reporter_id": {
       "type": "string"
     },
+    "reporter_name": {
+      "type": "string",
+      "default": "",
+      "description": "Display name kept alongside the report so the admin queue reads without extra lookups"
+    },
+    "kind": {
+      "type": "string",
+      "enum": [
+        "track",
+        "bug"
+      ],
+      "default": "track",
+      "description": "track = something wrong with a song; bug = a problem with the app itself"
+    },
     "track_id": {
-      "type": "string"
+      "type": "string",
+      "default": "",
+      "description": "Empty for a bug report \u2014 only track reports point at a song"
+    },
+    "page": {
+      "type": "string",
+      "default": "",
+      "description": "Route the reporter was on when the bug happened"
     },
     "reason": {
       "type": "string",
@@ -24,7 +45,6 @@
   },
   "required": [
     "reporter_id",
-    "track_id",
     "reason"
   ],
   "rls": {

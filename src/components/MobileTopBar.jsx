@@ -44,6 +44,7 @@ const ROOTS = new Set([
 // Child routes with a dynamic id segment.
 function childTitle(pathname) {
   if (pathname.startsWith("/track/")) return "Track";
+  if (pathname.startsWith("/album/")) return "Album";
   if (pathname.startsWith("/playlist/")) return "Playlist";
   if (pathname.startsWith("/records/")) return "Artist";
   if (pathname.startsWith("/profile/")) return "Profile";

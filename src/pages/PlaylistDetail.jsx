@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useMemo } from "react";
-import { useParams, useNavigate, Link } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import { useAuth } from "@/lib/AuthContext";
 import { usePlayer } from "@/context/PlayerContext";
@@ -12,13 +12,14 @@ import {
   Plus,
   X,
   ListMusic,
-  MoreHorizontal,
   Globe,
   Lock,
+  Users,
 } from "lucide-react";
 import TrackRow from "@/components/TrackRow";
 import EmptyState from "@/components/EmptyState";
 import AddToPlaylistPicker from "@/components/playlist/AddToPlaylistPicker";
+import CollaboratorsSheet from "@/components/playlist/CollaboratorsSheet";
 import { useToast } from "@/components/ui/use-toast";
 import { Image } from "@/components/ui/image";
 
@@ -35,6 +36,7 @@ export default function PlaylistDetail() {
   const [editing, setEditing] = useState(false);
   const [form, setForm] = useState({ name: "", description: "", is_public: true });
   const [saving, setSaving] = useState(false);
+  const [showCollaborators, setShowCollaborators] = useState(false);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -71,6 +73,11 @@ export default function PlaylistDetail() {
   }, [load]);
 
   const isOwn = playlist?.creator_id === user?.id;
+  const collaborators = playlist?.collaborator_ids || [];
+  const isCollaborator = !!user?.id && collaborators.includes(user.id);
+  // A collaborator shares the editing: songs in and out, and the details.
+  // Only the creator can delete the playlist.
+  const canEdit = isOwn || isCollaborator;
 
   const coverUrl = useMemo(() => {
     if (playlist?.cover_art_url) return playlist.cover_art_url;
@@ -158,6 +165,11 @@ export default function PlaylistDetail() {
             ) : (
               <Lock size={12} className="text-foreground/40" />
             )}
+            {collaborators.length > 0 &&
+            <span className="inline-flex items-center gap-1 text-xs font-semibold text-foreground/50">
+                <Users size={12} /> {collaborators.length + 1} editing
+              </span>
+            }
           </div>
 
           {editing ? (
@@ -198,7 +210,7 @@ export default function PlaylistDetail() {
                 <Play size={16} fill="currentColor" /> Play
               </button>
             )}
-            {isOwn && !editing && (
+            {canEdit && !editing && (
               <button
                 onClick={() => setShowAdd(true)}
                 className="h-11 px-5 rounded-full border border-border text-sm font-semibold flex items-center gap-2 hover:bg-foreground/[0.04] transition"
@@ -206,13 +218,22 @@ export default function PlaylistDetail() {
                 <Plus size={16} /> Add songs
               </button>
             )}
-            {isOwn && !editing && (
+            {canEdit && !editing && (
               <button
                 onClick={() => setEditing(true)}
                 className="w-11 h-11 rounded-full border border-border grid place-items-center hover:bg-foreground/[0.04] transition"
                 aria-label="Edit playlist"
               >
                 <Pencil size={16} />
+              </button>
+            )}
+            {isOwn && !editing && (
+              <button
+                onClick={() => setShowCollaborators(true)}
+                className="h-11 px-5 rounded-full border border-border text-sm font-semibold flex items-center gap-2 hover:bg-foreground/[0.04] transition"
+                aria-label="Collaborators"
+              >
+                <Users size={16} /> Collaborators
               </button>
             )}
             {isOwn && editing && (
@@ -254,9 +275,9 @@ export default function PlaylistDetail() {
       {!tracks.length ? (
         <EmptyState
           icon={ListMusic}
-          title={isOwn ? "No songs yet" : "This playlist is empty"}
-          description={isOwn ? "Tap \"Add songs\" to fill it with music." : undefined}
-          action={isOwn && !editing ? (
+          title={canEdit ? "No songs yet" : "This playlist is empty"}
+          description={canEdit ? "Tap \"Add songs\" to fill it with music." : undefined}
+          action={canEdit && !editing ? (
             <button
               onClick={() => setShowAdd(true)}
               className="h-11 px-6 rounded-full bg-foreground text-background text-sm font-bold flex items-center gap-2"
@@ -270,7 +291,7 @@ export default function PlaylistDetail() {
           {tracks.map((t, i) => (
             <div key={t.id} className="relative group">
               <TrackRow track={t} index={i} showArt />
-              {isOwn && !editing && (
+              {canEdit && !editing && (
                 <button
                   onClick={() => removeTrack(t.id)}
                   className="absolute right-0 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full grid place-items-center text-foreground/40 hover:text-destructive hover:bg-destructive/10 opacity-0 group-hover:opacity-100 transition"
@@ -282,6 +303,14 @@ export default function PlaylistDetail() {
             </div>
           ))}
         </div>
+      )}
+
+      {showCollaborators && (
+        <CollaboratorsSheet
+          playlist={playlist}
+          onChanged={(updated) => setPlaylist((prev) => ({ ...prev, ...updated }))}
+          onClose={() => setShowCollaborators(false)}
+        />
       )}
 
       {showAdd && (

@@ -26,7 +26,6 @@ export function useScrollRestore() {
       }
     }
     window.scrollTo(0, cache[loc.pathname] ?? 0);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loc.pathname, loc.hash, isExempt]);
 
   // Continuously record scroll for the active path so returning restores it.

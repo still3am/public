@@ -9,6 +9,8 @@ import ArtistColorTint from "@/components/ArtistColorTint";
 import FollowButton from "@/components/FollowButton";
 import { useFollow } from "@/context/FollowContext";
 import { tracksForArtist } from "@/lib/artistTracks";
+import { groupTracksByRelease, loadAlbumsForTracks } from "@/lib/albums";
+import ReleaseCard from "@/components/artist/ReleaseCard";
 import { usePlayer } from "@/context/PlayerContext";
 import { useAuth } from "@/lib/AuthContext";
 import { useToast } from "@/components/ui/use-toast";
@@ -93,6 +95,7 @@ export default function PublicRecords({ id: propId }) {
   const [artist, setArtist] = useState(null);
   const [tracks, setTracks] = useState([]);
   const [followerBase, setFollowerBase] = useState(0);
+  const [releases, setReleases] = useState([]);
   const [loading, setLoading] = useState(true);
   const [generating, setGenerating] = useState(false);
 
@@ -108,11 +111,16 @@ export default function PublicRecords({ id: propId }) {
         getPublishedTracks(),
         base44.entities.Follow.filter({ following_id: a.id }, "-created_date", 1000)]
         );
-        setTracks(tracksForArtist(all, a));
+        const artistTracks = tracksForArtist(all, a);
+        setTracks(artistTracks);
+        // Those same tracks, grouped into the releases they belong to.
+        const albums = await loadAlbumsForTracks(artistTracks);
+        setReleases(groupTracksByRelease(artistTracks, albums).releases);
         // My own row is left out so a follow made anywhere is added back live.
         setFollowerBase((follows || []).filter((f) => f.follower_id !== user?.id).length);
       } else {
         setTracks([]);
+        setReleases([]);
         setFollowerBase(0);
       }
     } finally {
@@ -122,7 +130,6 @@ export default function PublicRecords({ id: propId }) {
 
   useEffect(() => {
     load();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 
   async function generateHistory() {
@@ -302,6 +309,24 @@ export default function PublicRecords({ id: propId }) {
             }
           </div>
         </section>
+
+        {/* Albums / EPs — the releases this artist's tracks belong to */}
+        {releases.length > 0 &&
+        <section className="mb-12">
+            <SectionTitle icon={Disc3} right={
+          <span className="text-xs font-semibold text-foreground/40 bg-foreground/[0.05] rounded-full px-2.5 py-1">
+                {releases.length}
+              </span>
+          }>
+              Albums & EPs
+            </SectionTitle>
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-1">
+              {releases.map((r) =>
+            <ReleaseCard key={r.album.id} release={r} />
+            )}
+            </div>
+          </section>
+        }
 
         {/* Discography */}
         <section className="mb-12">

@@ -3,13 +3,14 @@ import { base44 } from "@/api/base44Client";
 import { useAuth } from "@/lib/AuthContext";
 import { useLibrary } from "@/context/LibraryContext";
 import { useOfflineCache } from "@/hooks/useOfflineCache";
-import { Library as LibIcon, Loader2, CloudOff, History, Plus, ListMusic, Disc3 } from "lucide-react";
+import { Library as LibIcon, Loader2, Plus, ListMusic, Disc3 } from "lucide-react";
 import TrackCard from "@/components/TrackCard";
 import EmptyState from "@/components/EmptyState";
 import PullToRefresh from "@/components/PullToRefresh";
 import PageHeader from "@/components/PageHeader";
 import LibraryEntryRow from "@/components/LibraryEntryRow";
 import PlaylistCard from "@/components/playlist/PlaylistCard";
+import { loadMyPlaylists } from "@/lib/playlists";
 import CreatePlaylistModal from "@/components/playlist/CreatePlaylistModal";
 import LibraryBulkBar from "@/components/library/LibraryBulkBar";
 import BulkAddToPlaylistSheet from "@/components/library/BulkAddToPlaylistSheet";
@@ -37,7 +38,8 @@ export default function Library() {
   const loadPlaylists = useCallback(async () => {
     if (!user?.id) return;
     try {
-      const rows = await base44.entities.Playlist.filter({ creator_id: user.id }, "-created_date", 200);
+      // Own playlists plus any this user collaborates on.
+      const rows = await loadMyPlaylists(user.id);
       setPlaylists(rows || []);
     } catch {
       setPlaylists([]);

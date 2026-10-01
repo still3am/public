@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { getPublishedTracks, getArtists } from "@/lib/catalogCache";
 import PullToRefresh from "@/components/PullToRefresh";
-import { Loader2, Mic2, Disc3 } from "lucide-react";
+import { Loader2, Mic2 } from "lucide-react";
 import {
   artistKeys,
   normalizeArtistName,
@@ -200,7 +200,7 @@ export default function PublicRecordsIndex() {
     setDragging(true);
     try {
       e.currentTarget.setPointerCapture(e.pointerId);
-    } catch (_) {}
+    } catch {}
     onPick(e.clientY);
   };
   const moveDrag = (e) => {

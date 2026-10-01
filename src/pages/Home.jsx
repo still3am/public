@@ -5,10 +5,7 @@ import { getCatalogCount } from "@/lib/catalogCache";
 import { useUnpublishedSync } from "@/hooks/useUnpublishedSync";
 import { useAuth } from "@/lib/AuthContext";
 import {
-  TrendingUp,
-  Sparkles,
   Music,
-  Disc,
   Upload,
   ChevronRight } from
 "lucide-react";
@@ -19,17 +16,13 @@ import ScoreboardTrackCount from "@/components/ScoreboardTrackCount";
 import EmptyState from "@/components/EmptyState";
 import { getRecentPlays } from "@/lib/recentPlays";
 import { getUserGenres } from "@/lib/userGenres";
+import { buildForYouMix } from "@/lib/forYou";
+import { getOnRepeat } from "@/lib/playCounts";
+import ForYouMix from "@/components/home/ForYouMix";
 import PullToRefresh from "@/components/PullToRefresh";
 import HeroPlayingTint from "@/components/HeroPlayingTint";
 
-const greetingByHour = () => {
-  const h = new Date().getHours();
-  if (h < 12) return "Good morning";
-  if (h < 18) return "Good afternoon";
-  return "Good evening";
-};
-
-function Section({ title, icon: Icon, children, seeAllTo }) {
+function Section({ title, children, seeAllTo }) {
   return (
     <section className="mb-10 md:mb-12">
       <div className="flex items-end justify-between mb-3.5 px-3 md:px-0">
@@ -90,9 +83,10 @@ export default function Home() {
   const [byGenre, setByGenre] = useState([]);
   const [fromFollowing, setFromFollowing] = useState([]);
   const [discover, setDiscover] = useState([]);
+  const [forYou, setForYou] = useState([]);
+  const [onRepeat, setOnRepeat] = useState([]);
   const [totalTracks, setTotalTracks] = useState(0);
   const loadedRef = useRef(false);
-  const greeting = greetingByHour();
 
   const onUnpublished = useCallback((id) => {
     setTrending((p) => p.filter((t) => t.id !== id));
@@ -100,6 +94,8 @@ export default function Home() {
     setFromFollowing((p) => p.filter((t) => t.id !== id));
     setDiscover((p) => p.filter((t) => t.id !== id));
     setByGenre((p) => p.map((s) => ({ ...s, tracks: s.tracks.filter((t) => t.id !== id) })));
+    setForYou((p) => p.filter((t) => t.id !== id));
+    setOnRepeat((p) => p.filter((t) => t.id !== id));
     setTotalTracks((c) => Math.max(0, c - 1));
   }, []);
   useUnpublishedSync(onUnpublished);
@@ -201,6 +197,12 @@ export default function Home() {
         discoverPicks = n.filter((tr) => tr && !playedIds.has(tr.id)).slice(0, 12);
       }
       setDiscover(discoverPicks);
+
+      // The personalized mix, plus the shelf of songs this device has actually
+      // repeated — both read from local state, so they cost no extra queries.
+      setOnRepeat(getOnRepeat(12));
+      const mix = await buildForYouMix(user, 14).catch(() => []);
+      setForYou(mix);
     } finally {
       setLoading(false);
     }
@@ -277,7 +279,9 @@ export default function Home() {
           </div>
         </div>
 
-        <Section title="Trending" icon={TrendingUp} seeAllTo="/top">
+        <ForYouMix tracks={forYou} />
+
+        <Section title="Trending" seeAllTo="/top">
           {trending.length >= 3 ?
           <>
               <Podium tracks={trending.slice(0, 5)} />
@@ -296,13 +300,18 @@ export default function Home() {
         </Section>
 
         {discover.length > 0 &&
-        <Section title="Discover" icon={Sparkles}>
+        <Section title="Discover">
             <CardRow tracks={discover} />
           </Section>
         }
         {fromFollowing.length > 0 &&
         <Section title="From People You Follow">
             <CardRow tracks={fromFollowing} />
+          </Section>
+        }
+        {onRepeat.length > 0 &&
+        <Section title="On Repeat">
+            <CardRow tracks={onRepeat} />
           </Section>
         }
         {byGenre.

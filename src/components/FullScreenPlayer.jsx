@@ -7,8 +7,6 @@ import SyncedLyrics from "@/components/SyncedLyrics";
 import NowPlayingAddMenu from "@/components/NowPlayingAddMenu";
 import { Link } from "react-router-dom";
 import {
-  Play,
-  Pause,
   SkipBack,
   SkipForward,
   ChevronDown,
@@ -20,9 +18,11 @@ import {
   Repeat1,
   Shuffle,
   Disc3,
+  AudioLines,
   X } from
 "lucide-react";
 import PulseVisualizer from "@/components/PulseVisualizer";
+import AudioVisualizer from "@/components/AudioVisualizer";
 import PlayPauseButton from "@/components/PlayPauseButton";
 import QueuePanel from "@/components/QueuePanel";
 import SleepTimerMenu from "@/components/SleepTimerMenu";
@@ -65,6 +65,8 @@ export default function FullScreenPlayer({ onClose }) {
   // own, so it no longer waits for the user to switch it on. The menu toggle
   // stays available for anyone who wants a calmer screen.
   const [showPulse, setShowPulse] = useState(true);
+  // The bars visualizer is off by default — it's the loud one.
+  const [showVisualizer, setShowVisualizer] = useState(false);
   const [showVolHint, setShowVolHint] = useState(false);
   const [copied, setCopied] = useState(false);
   const [showQueue, setShowQueue] = useState(false);
@@ -227,7 +229,7 @@ export default function FullScreenPlayer({ onClose }) {
 
   return (
     <div
-      className="fixed inset-0 z-50 text-white animate-[fadeIn_.25s_ease-out] flex flex-col overflow-hidden"
+      className="fixed inset-x-0 top-0 z-50 h-screen-safe text-white animate-[fadeIn_.25s_ease-out] flex flex-col overflow-hidden"
       style={{
         background: `linear-gradient(170deg, ${bg} 0%, #0d0d0f 55%, #000 100%)`,
         transform: `translateY(${dragY}px)`,
@@ -242,6 +244,8 @@ export default function FullScreenPlayer({ onClose }) {
 
       {/* reactive visualizer */}
       {showPulse && <PulseVisualizer className="absolute inset-0 z-0" />}
+      {/* audio-synced bars, drawn live from the player's analyser */}
+      {showVisualizer && <AudioVisualizer className="absolute inset-0 z-0 opacity-70" bars={72} />}
       
 
       {/* top bar */}
@@ -268,7 +272,7 @@ export default function FullScreenPlayer({ onClose }) {
             setDragY(0);
           }
         }}
-        className="relative flex items-center justify-between px-5 md:px-10 pt-8 pb-3 shrink-0 touch-none">
+        className="relative flex items-center justify-between px-5 md:px-10 pt-[calc(2rem+env(safe-area-inset-top))] pb-3 shrink-0 touch-none">
         <button onClick={onClose} className="p-2 -ml-2 active:scale-90 hover:bg-white/10 rounded-full transition" aria-label="Close">
           <ChevronDown size={26} />
         </button>
@@ -279,6 +283,12 @@ export default function FullScreenPlayer({ onClose }) {
           
         </div>
         <div className="flex items-center gap-1 shrink-0">
+        <IconButton
+          icon={AudioLines}
+          onClick={() => setShowVisualizer((v) => !v)}
+          active={showVisualizer}
+          label="Visualizer"
+          size={20} />
         <SleepTimerMenu />
         <PlaybackSpeedMenu />
         <NowPlayingAddMenu

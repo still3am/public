@@ -5,11 +5,10 @@ import { useAuth } from "@/lib/AuthContext";
 import { useToast } from "@/components/ui/use-toast";
 import { usePlayer } from "@/context/PlayerContext";
 import { useLibrary } from "@/context/LibraryContext";
-import { fetchSessionByCode, loungeUrl, parseTrack } from "@/lib/lounge";
+import { fetchSessionByCode, parseTrack } from "@/lib/lounge";
 import { getRecentPlays } from "@/lib/recentPlays";
 import {
   Loader2,
-  Users,
   Speaker,
   Plus,
   Check,
