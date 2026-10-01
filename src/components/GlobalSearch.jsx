@@ -218,12 +218,12 @@ export default function GlobalSearch({ open, onClose }) {
             className="flex-1 bg-transparent text-sm font-medium focus:outline-none" />
           
           {loading && <Loader2 size={15} className="animate-spin text-foreground/40 shrink-0" />}
-          <button
-            onClick={onClose}
-            className="shrink-0 text-[10px] font-bold uppercase tracking-wider text-foreground/45 border border-border rounded px-1.5 py-1 hidden">
-            
-            Esc
-          </button>
+          
+
+
+
+
+          
         </div>
 
         <div className="flex-1 overflow-y-auto p-2">
@@ -252,10 +252,10 @@ export default function GlobalSearch({ open, onClose }) {
         </div>
 
         <div className="flex items-center justify-between px-4 py-2.5 border-t border-border text-xs text-foreground/50">
-          <span className="flex items-center gap-1.5 hidden">
-            <CornerDownLeft size={13} /> Open
-          </span>
-          <span className="hidden">↑↓ navigate · Esc close</span>
+          
+
+          
+          
         </div>
       </div>
     </div>);
