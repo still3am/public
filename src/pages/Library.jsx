@@ -4,7 +4,7 @@ import { base44 } from "@/api/base44Client";
 import { useAuth } from "@/lib/AuthContext";
 import { useLibrary } from "@/context/LibraryContext";
 import { useOfflineCache } from "@/hooks/useOfflineCache";
-import { Library as LibIcon, Loader2, CloudOff, ChevronRight, History, Plus, ListMusic } from "lucide-react";
+import { Library as LibIcon, Loader2, ChevronRight, Plus, ListMusic, Mic2 } from "lucide-react";
 import TrackCard from "@/components/TrackCard";
 import EmptyState from "@/components/EmptyState";
 import PullToRefresh from "@/components/PullToRefresh";
@@ -119,6 +119,23 @@ export default function Library() {
             
 
             
+          </div>
+          <ChevronRight size={18} className="text-foreground/40 group-hover:translate-x-0.5 transition shrink-0" />
+        </div>
+      </Link>
+
+      <Link
+        to="/records"
+        className="block mb-5 rounded-2xl ring-1 ring-inset ring-border bg-gradient-to-br from-foreground/[0.06] to-foreground/[0.02] hover:from-foreground/[0.09] hover:to-foreground/[0.04] transition p-4 group">
+        <div className="flex items-center gap-3.5">
+          <div className="w-11 h-11 rounded-xl grid place-items-center bg-foreground/[0.06] text-foreground/70 shrink-0">
+            <Mic2 size={20} />
+          </div>
+          <div className="min-w-0 flex-1">
+            <div className="text-sm font-extrabold tracking-tight">PUBLIC RECORD</div>
+            <div className="text-xs text-foreground/55 mt-0.5 truncate">
+              Every artist on PUBLIC, A to Z
+            </div>
           </div>
           <ChevronRight size={18} className="text-foreground/40 group-hover:translate-x-0.5 transition shrink-0" />
         </div>
