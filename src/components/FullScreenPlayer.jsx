@@ -27,7 +27,6 @@ import PlayPauseButton from "@/components/PlayPauseButton";
 import QueuePanel from "@/components/QueuePanel";
 import SleepTimerMenu from "@/components/SleepTimerMenu";
 import PlaybackSpeedMenu from "@/components/PlaybackSpeedMenu";
-import { useLikes } from "@/context/LikeContext";
 import LoungeHostModal from "@/components/LoungeHostModal";
 import StemMixer from "@/components/StemMixer";
 import { useLoungeHost } from "@/hooks/useLoungeHost";
@@ -56,7 +55,6 @@ function IconButton({ icon: Icon, onClick, active, size = 22, label, className =
 
 export default function FullScreenPlayer({ onClose }) {
   const p = usePlayer();
-  const likes = useLikes();
   const { user } = useAuth();
   const { isInLibrary, toggle: toggleLibrary } = useLibrary();
   const offlineCover = useOfflineCoverUrl(p.currentTrack?.id, p.currentTrack?.cover_art_url);
@@ -295,8 +293,6 @@ export default function FullScreenPlayer({ onClose }) {
           savedOffline={cache.isCached(t.id)}
           savingOffline={!!cache.downloading[t.id]}
           queueCount={p.queue.length - p.currentIndex - 1 > 0 ? p.queue.length - p.currentIndex - 1 : 0}
-          onToggleLike={() => likes.toggle(t)}
-          liked={likes.isLiked(t.id)}
           onMix={() => setShowMixer(true)}
           mixerActive={p.mixer.bass !== 0 || p.mixer.beat !== 0 || p.mixer.vocals !== 0 || p.mixer.treble !== 0 || p.mixer.boost !== 1} />
         </div>

@@ -1,6 +1,4 @@
 import { base44 } from "@/api/base44Client";
-import { getPublishedTracks } from "@/lib/catalogCache";
-import { moreFromArtist } from "@/lib/artistRelations";
 
 function shuffle(arr) {
   const a = [...arr];
@@ -23,13 +21,12 @@ export async function buildAutoQueue(seed, excludeIds = [], limit = 15, userGenr
   const genreQueries = (userGenres?.length ? userGenres : seed?.genre ? [seed.genre] : []).slice(0, 4);
 
   const [sameArtist, sameGenre, popular, fresh, userGenreLists] = await Promise.all([
-    // Same artist relationship as the artist pages, so features and
-    // collaborations count too — served from the shared catalogue cache
-    // instead of a single exact artist-string query.
-    seed?.id
-      ? getPublishedTracks().
-        then((all) => moreFromArtist(all, seed, 30)).
-        catch(() => [])
+    seed?.artist
+      ? base44.entities.Track.filter(
+          { is_published: true, artist: seed.artist },
+          "-created_date",
+          30
+        ).catch(() => [])
       : Promise.resolve([]),
     seed?.genre
       ? base44.entities.Track.filter(

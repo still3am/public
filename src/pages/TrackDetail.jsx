@@ -1,8 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
-import { getPublishedTracks } from "@/lib/catalogCache";
-import { moreFromArtist } from "@/lib/artistRelations";
 import { useAuth } from "@/lib/AuthContext";
 import { usePlayer } from "@/context/PlayerContext";
 import EmptyState from "@/components/EmptyState";
@@ -20,7 +18,6 @@ import {
 "lucide-react";
 import TrackRow from "@/components/TrackRow";
 import TrackOptionsMenu from "@/components/track/TrackOptionsMenu";
-import LikeButton from "@/components/LikeButton";
 import SyncLyricsModal from "@/components/SyncLyricsModal";
 import GenerateLyricsModal from "@/components/GenerateLyricsModal";
 import { useToast } from "@/components/ui/use-toast";
@@ -51,10 +48,29 @@ export default function TrackDetail() {
         catch(() => null);
         setUploader(u);
       }
-      // Same relationship data the artist pages use, over the whole published
-      // catalogue rather than only the most-played tracks.
-      const all = await getPublishedTracks();
-      setMoreTracks(t ? moreFromArtist(all, t, 6) : []);
+      if (t?.artist) {
+        const splitNames = (str) =>
+        (str || "").
+        split(/\s*(?:,|&| feat\.| ft\.| x |;)\s*/i).
+        map((s) => s.trim().toLowerCase()).
+        filter(Boolean);
+        const names = splitNames(t.artist);
+        const all = await base44.entities.Track.list("-play_count", 100).catch(
+          () => []
+        );
+        setMoreTracks(
+          all.
+          filter(
+            (x) =>
+            x.id !== t.id &&
+            x.is_published === true &&
+            splitNames(x.artist).some((n) => names.includes(n))
+          ).
+          slice(0, 6)
+        );
+      } else {
+        setMoreTracks([]);
+      }
     } finally {
       setLoading(false);
     }
@@ -234,13 +250,6 @@ export default function TrackDetail() {
 
 
         
-        <LikeButton
-          track={track}
-          size={18}
-          showCount
-          className="px-4 py-2.5 rounded-full ring-1 ring-inset ring-border text-sm font-semibold hover:bg-accent transition" />
-        
-
         <TrackOptionsMenu
           track={track}
           variant="plus"

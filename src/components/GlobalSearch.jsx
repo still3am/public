@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import { Search, Loader2, Music, Disc3, CornerDownLeft } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 import { getPublishedTracks, getArtists } from "@/lib/catalogCache";
-import { artistMatches, trackMatchesQuery } from "@/lib/artistRelations";
 import { Image } from "@/components/ui/image";
 import Avatar from "@/components/Avatar";
 
@@ -128,12 +127,11 @@ export default function GlobalSearch({ open, onClose }) {
     t.title?.toLowerCase().includes(Q) ||
     t.artist?.toLowerCase().includes(Q) ||
     t.uploader_name?.toLowerCase().includes(Q) ||
-    t.genre?.toLowerCase().includes(Q) ||
-    trackMatchesQuery(t, Q)
+    t.genre?.toLowerCase().includes(Q)
     ).
     slice(0, 6);
     const artistHits = catalog.artists.
-    filter((a) => artistMatches(a, Q)).
+    filter((a) => a.name?.toLowerCase().includes(Q)).
     slice(0, 4);
     const pageHits = PAGES.filter((p) => p.label.toLowerCase().includes(Q)).slice(0, 3);
 

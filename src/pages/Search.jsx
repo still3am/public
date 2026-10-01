@@ -12,7 +12,6 @@ import {
 "lucide-react";
 import { base44 } from "@/api/base44Client";
 import { getPublishedTracks, getArtists } from "@/lib/catalogCache";
-import { artistMatches, trackMatchesQuery, tracksForArtist } from "@/lib/artistRelations";
 import TrackCard from "@/components/TrackCard";
 import VinylCrate from "@/components/search/VinylCrate";
 import Avatar from "@/components/Avatar";
@@ -94,10 +93,7 @@ export default function Search() {
       (t) =>
       t.title?.toLowerCase().includes(Q) ||
       t.artist?.toLowerCase().includes(Q) ||
-      t.uploader_name?.toLowerCase().includes(Q) ||
-      // Credit matching is accent- and notation-tolerant, so an artist inside
-      // a longer credit ("Bad Bunny, Beéle") is still found.
-      trackMatchesQuery(t, Q)
+      t.uploader_name?.toLowerCase().includes(Q)
     );
   }, [hasQuery, Q, allTracks]);
 
@@ -106,7 +102,7 @@ export default function Search() {
     return allArtists.
     filter(
       (a) =>
-      artistMatches(a, Q) ||
+      a.name?.toLowerCase().includes(Q) ||
       a.bio?.toLowerCase().includes(Q) ||
       a.location?.toLowerCase().includes(Q)
     ).
@@ -228,7 +224,7 @@ export default function Search() {
               <ArtistRow
                 key={a.id}
                 artist={a}
-                trackCount={tracksForArtist(allTracks, a).length}
+                trackCount={allTracks.filter((t) => t.artist?.toLowerCase() === a.name.toLowerCase()).length}
                 onPick={() => searchArtist(a.name)} />
               )}
                 </div>

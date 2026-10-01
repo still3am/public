@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams, Link, useNavigate } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import { useAuth } from "@/lib/AuthContext";
 import EmptyState from "@/components/EmptyState";
@@ -21,7 +21,6 @@ import {
   AtSign,
   Calendar,
   Share2,
-  MessageCircle,
   QrCode,
   BarChart2,
   Settings } from
@@ -31,7 +30,6 @@ import ProfileSong from "@/components/profile/ProfileSong";
 import TopTracks from "@/components/profile/TopTracks";
 import ProfileComments from "@/components/profile/ProfileComments";
 import FollowListModal from "@/components/profile/FollowListModal";
-import { findOrCreateConversation } from "@/lib/messaging";
 import { useColorPalette } from "@/hooks/useColorPalette";
 import { useCoverUrl } from "@/hooks/useCoverUrl";
 
@@ -67,8 +65,6 @@ export default function Profile() {
   const [saving, setSaving] = useState(false);
   const [uploadingAvatar, setUploadingAvatar] = useState(false);
   const [followList, setFollowList] = useState(null);
-  const [openingDm, setOpeningDm] = useState(false);
-  const nav = useNavigate();
 
   const [form, setForm] = useState({
     display_name: "",
@@ -172,17 +168,6 @@ export default function Profile() {
     if (anyModal) document.documentElement.classList.add("modal-open");
     return () => document.documentElement.classList.remove("modal-open");
   }, [showSettings, showDelete, showQR, followList]);
-
-  async function startConversation() {
-    if (!me?.id || !profile?.id || openingDm) return;
-    setOpeningDm(true);
-    try {
-      const conv = await findOrCreateConversation(me, profile);
-      nav(`/messages/${conv.id}`);
-    } finally {
-      setOpeningDm(false);
-    }
-  }
 
   async function toggleFollow() {
     if (!profile) return;
@@ -525,16 +510,6 @@ export default function Profile() {
                       className={`w-10 h-10 md:w-12 md:h-12 rounded-full grid place-items-center transition ${
                       following ? "border border-border" : "bg-foreground text-background"}`}>
                     {following ? <UserCheck size={16} /> : <UserPlus size={16} />}
-                  </button>
-                    }
-                {!isOwn && !editMode &&
-                    <button
-                      onClick={startConversation}
-                      disabled={openingDm}
-                      title="Message"
-                      aria-label="Message"
-                      className="w-10 h-10 md:w-12 md:h-12 rounded-full border border-border grid place-items-center disabled:opacity-40">
-                    {openingDm ? <Loader2 size={16} className="animate-spin" /> : <MessageCircle size={16} />}
                   </button>
                     }
                 {!editMode &&

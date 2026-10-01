@@ -10,7 +10,6 @@ import {
   Library as LibraryIcon,
   Shield,
   Bell,
-  MessageCircle,
   ChevronsLeft,
   ChevronsRight } from
 "lucide-react";
@@ -19,7 +18,6 @@ import Logo from "@/components/Logo";
 import ThemeToggle from "@/components/ThemeToggle";
 import { useAuth } from "@/lib/AuthContext";
 import { useUnreadCount } from "@/hooks/useNotifications";
-import { useUnreadMessages } from "@/hooks/useUnreadMessages";
 
 const NAV = [
 { to: "/", label: "Home", icon: Home, end: true },
@@ -38,7 +36,6 @@ export default function Sidebar({ onOpenSearch }) {
   const { collapsed, toggle } = useSidebarCollapsed();
   const location = useLocation();
   const unread = useUnreadCount();
-  const unreadMessages = useUnreadMessages();
 
   const links = [
   ...NAV,
@@ -46,9 +43,6 @@ export default function Sidebar({ onOpenSearch }) {
   [{ to: "/admin", label: "Admin", icon: Shield }] :
   [])];
 
-
-  const badgeFor = (to) =>
-  to === "/notifications" ? unread : to === "/messages" ? unreadMessages : 0;
 
   // Labels fade/slide but never unmount, so nothing pops during the width change.
   const fadeCls = collapsed ?
@@ -98,22 +92,19 @@ export default function Sidebar({ onOpenSearch }) {
       </div>
 
       <nav className="flex-1 flex flex-col gap-1 overflow-y-auto overflow-x-hidden pb-2 px-3">
-        {links.map(({ to, label, icon: Icon, end }) => {
-          const badge = badgeFor(to);
-          return (
+        {links.map(({ to, label, icon: Icon, end }) =>
         <NavLink key={to} to={to} className={navLinkCls} end={end} title={label}>
             <div className="relative shrink-0">
               <Icon size={18} />
-              {badge > 0 &&
+              {to === "/notifications" && unread > 0 &&
             <span className="absolute -top-1.5 -right-1.5 min-w-[14px] h-[14px] px-1 rounded-full bg-foreground text-background font-bold grid place-items-center text-xs" style={{ minWidth: "14px" }}>
-                  {badge > 99 ? "99+" : badge}
+                  {unread > 99 ? "99+" : unread}
                 </span>
             }
             </div>
             <span className={`shrink-0 ${EASE} ${fadeCls}`}>{label}</span>
           </NavLink>
-          );
-        })}
+        )}
       </nav>
 
       <div className="border-t border-border space-y-2 pb-28 p-3">

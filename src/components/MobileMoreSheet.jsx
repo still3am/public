@@ -8,16 +8,13 @@ import {
   Lightbulb,
   Library as LibraryIcon,
   Shield,
-  MessageCircle,
   Bell } from
 "lucide-react";
 import ThemeToggle from "@/components/ThemeToggle";
 import { useAuth } from "@/lib/AuthContext";
 import { useUnreadCount } from "@/hooks/useNotifications";
-import { useUnreadMessages } from "@/hooks/useUnreadMessages";
 
 const ITEMS = [
-{ to: "/messages", icon: MessageCircle, label: "Messages" },
 { to: "/upload", icon: Upload, label: "Upload" },
 { to: "/top", icon: BarChart3, label: "Top Charts" },
 { to: "/recent", icon: Clock, label: "Recently Added" },
@@ -31,9 +28,6 @@ export default function MobileMoreSheet({ onClose }) {
   const loc = useLocation();
   const { user } = useAuth();
   const unread = useUnreadCount();
-  const unreadMessages = useUnreadMessages();
-  const badgeFor = (to) =>
-  to === "/notifications" ? unread : to === "/messages" ? unreadMessages : 0;
   const items = user?.role === "admin" ?
   [...ITEMS, { to: "/admin", icon: Shield, label: "Admin" }] :
   ITEMS;
@@ -59,9 +53,7 @@ export default function MobileMoreSheet({ onClose }) {
           </button>
         </div>
         <div className="grid grid-cols-3 gap-1 p-3">
-          {items.map(({ to, icon: Icon, label }) => {
-            const badge = badgeFor(to);
-            return (
+          {items.map(({ to, icon: Icon, label }) =>
           <button
             key={to}
             onClick={() => go(to)}
@@ -72,15 +64,14 @@ export default function MobileMoreSheet({ onClose }) {
             }>
             
               <Icon size={22} />
-              {badge > 0 &&
+              {to === "/notifications" && unread > 0 &&
             <span className="absolute top-1.5 right-2 min-w-[16px] h-4 px-1 rounded-full bg-foreground text-background text-[9px] font-bold grid place-items-center">
-                  {badge > 99 ? "99+" : badge}
+                  {unread > 99 ? "99+" : unread}
                 </span>
             }
               <span className="text-[11px] font-medium">{label}</span>
             </button>
-            );
-          })}
+          )}
         </div>
         
 

@@ -1,14 +1,19 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { getPublishedTracks, getArtists } from "@/lib/catalogCache";
-import { artistKey, buildArtistIndex } from "@/lib/artistRelations";
 import PullToRefresh from "@/components/PullToRefresh";
 import { Loader2, Mic2, Disc3 } from "lucide-react";
 
-// Matching keys and the per-artist counts both come from artistRelations, so
-// this index agrees with every artist page. A track credited
-// "Drake feat. Future" counts toward both.
-const norm = artistKey;
+// Split a multi-artist string into individual names, preserving original
+// casing. A track credited "Drake feat. Future" counts toward both Drake and
+// Future as separate Public Records.
+const splitNames = (str) =>
+(str || "").
+split(/\s*(?:,|&| feat\.| ft\.| x |;|\/)\s*/i).
+map((s) => s.trim()).
+filter(Boolean);
+
+const norm = (s) => s.trim().toLowerCase();
 
 // Special group for names starting with a non-letter.
 const letterOf = (name) => {
@@ -62,7 +67,51 @@ export default function PublicRecordsIndex() {
       getArtists(),
       getPublishedTracks()]
       );
-      setArtists(buildArtistIndex(tracks, records));
+      const recordByName = new Map();
+      (Array.isArray(records) ? records : []).forEach((a) => {
+        const k = norm(a.name);
+        if (k && !recordByName.has(k)) recordByName.set(k, a);
+      });
+
+      // nameKey -> { display, record, count }
+      const map = new Map();
+      const bump = (display, record) => {
+        const key = norm(display);
+        if (!key) return;
+        const existing = map.get(key);
+        if (existing) {
+          existing.count += 1;
+          if (!existing.record && record) existing.record = record;
+        } else {
+          map.set(key, {
+            display: record ? record.name : display,
+            record: record || null,
+            count: 1
+          });
+        }
+      };
+
+      (Array.isArray(tracks) ? tracks : []).forEach((t) => {
+        const segs = splitNames(t.artist);
+        if (!segs.length) return;
+        segs.forEach((seg) => bump(seg, recordByName.get(norm(seg)) || null));
+      });
+
+      // Make sure Artist records with zero published tracks still appear.
+      recordByName.forEach((rec, key) => {
+        if (!map.has(key)) {
+          map.set(key, { display: rec.name, record: rec, count: 0 });
+        } else {
+          // prefer the canonical record name/casing
+          map.get(key).display = rec.name;
+          map.get(key).record = rec;
+        }
+      });
+
+      const list = [...map.values()].sort((a, b) =>
+      norm(a.display).localeCompare(norm(b.display))
+      );
+      setArtists(list);
     } finally {
     }
   };

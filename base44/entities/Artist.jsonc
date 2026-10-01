@@ -6,14 +6,6 @@
       "type": "string",
       "description": "Display / canonical name of the artist"
     },
-    "aliases": {
-      "type": "array",
-      "items": {
-        "type": "string"
-      },
-      "default": [],
-      "description": "Other names this artist is credited as on tracks \u2014 every surface groups those credits into this one artist"
-    },
     "bio": {
       "type": "string",
       "default": ""
