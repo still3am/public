@@ -1,7 +1,7 @@
 import { base44 } from "@/api/base44Client";
 
 // The public catalog is downloaded by several discovery screens (Home, Search,
-// Onboarding, Public Records). Reading the whole collection on each visit is the
+// Public Records). Reading the whole collection on each visit is the
 // app's heaviest source of entity read traffic, so these helpers read it once and
 // share the result for a short window — and collapse simultaneous calls into a
 // single request.

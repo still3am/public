@@ -1,4 +1,4 @@
-import { createContext, useCallback, useContext, useEffect, useState } from "react";
+import { createContext, useCallback, useContext, useEffect, useRef, useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { useAuth } from "@/lib/AuthContext";
 import { coalesce } from "@/lib/coalesce";
@@ -8,12 +8,25 @@ const LibraryContext = createContext(null);
 export function LibraryProvider({ children }) {
   const { user } = useAuth();
   const [ids, setIds] = useState(new Set());
+  // Mirror of `ids` so toggle() can read current membership without being
+  // re-created on every change (which made rapid taps race each other).
+  const idsRef = useRef(ids);
+  // Track ids with an in-flight write, so repeated taps can't queue up
+  // conflicting create/delete calls for the same track.
+  const pendingRef = useRef(new Set());
+
+  useEffect(() => {
+    idsRef.current = ids;
+  }, [ids]);
 
   const refresh = useCallback(async () => {
     if (!user?.id) {
       setIds(new Set());
       return;
     }
+    // A server read that lands mid-write would show a state the backend hasn't
+    // accepted yet — the write's own change event refreshes us afterwards.
+    if (pendingRef.current.size) return;
     try {
       const items = await base44.entities.LibraryItem.filter(
         { user_id: user.id },
@@ -40,38 +53,51 @@ export function LibraryProvider({ children }) {
     };
   }, [user?.id, refresh]);
 
+  // Optimistic: the UI updates on tap and rolls back if the backend rejects it,
+  // so a track can never sit in the library showing as saved when it isn't.
   const toggle = useCallback(
     async (track) => {
-      if (!user?.id || !track?.id) return false;
-      const isIn = ids.has(track.id);
+      const id = track?.id;
+      if (!user?.id || !id) return false;
+      if (pendingRef.current.has(id)) return false;
+      const wasIn = idsRef.current.has(id);
+      pendingRef.current.add(id);
+
+      setIds((prev) => {
+        const next = new Set(prev);
+        if (wasIn) next.delete(id);else next.add(id);
+        return next;
+      });
+
       try {
-        if (isIn) {
+        if (wasIn) {
           const recs = await base44.entities.LibraryItem.filter(
-            { user_id: user.id, track_id: track.id },
+            { user_id: user.id, track_id: id },
             "-created_date",
             5
           );
           await Promise.all(
             (recs || []).map((r) => base44.entities.LibraryItem.delete(r.id))
           );
-          setIds((prev) => {
-            const n = new Set(prev);
-            n.delete(track.id);
-            return n;
-          });
         } else {
           await base44.entities.LibraryItem.create({
             user_id: user.id,
-            track_id: track.id,
+            track_id: id,
           });
-          setIds((prev) => new Set(prev).add(track.id));
         }
         return true;
       } catch {
+        setIds((prev) => {
+          const next = new Set(prev);
+          if (wasIn) next.add(id);else next.delete(id);
+          return next;
+        });
         return false;
+      } finally {
+        pendingRef.current.delete(id);
       }
     },
-    [user?.id, ids]
+    [user?.id]
   );
 
   return (

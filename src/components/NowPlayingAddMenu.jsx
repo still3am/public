@@ -3,7 +3,6 @@ import {
   Plus,
   Share2,
   X,
-  Heart,
   ListMusic,
   Smartphone,
   Download,
@@ -14,8 +13,6 @@ import {
 
 export default function NowPlayingAddMenu({
   onShare,
-  showPulse,
-  onTogglePulse,
   onViewQueue,
   onToggleLibrary,
   onLounge,
@@ -96,15 +93,6 @@ export default function NowPlayingAddMenu({
         onLounge();
         close();
       },
-    },
-    onTogglePulse && {
-      icon: Heart,
-      label: showPulse ? "Hide color pulse" : "Color pulse",
-      onClick: (close) => {
-        onTogglePulse();
-        close();
-      },
-      accent: showPulse ? "text-white" : "",
     },
   ].filter(Boolean);
 

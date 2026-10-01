@@ -59,7 +59,10 @@ export default function FullScreenPlayer({ onClose }) {
   const coverUrl = useCoverUrl(offlineCover);
   const bg = useColorExtraction(coverUrl);
   const [lyricsMode, setLyricsMode] = useState(false);
-  const [showPulse, setShowPulse] = useState(false);
+  // Color Pulse is part of the player rather than a setting: it turns itself on
+  // with playback. It only runs while this screen is open and visible, so the
+  // audio analyser isn't left running behind the scenes.
+  const [pulseOn, setPulseOn] = useState(false);
   const [showVolHint, setShowVolHint] = useState(false);
   const [copied, setCopied] = useState(false);
   const [showQueue, setShowQueue] = useState(false);
@@ -157,6 +160,14 @@ export default function FullScreenPlayer({ onClose }) {
     };
   }, []);
 
+  useEffect(() => {
+    const update = () =>
+    setPulseOn(!!p.isPlaying && document.visibilityState === "visible");
+    update();
+    document.addEventListener("visibilitychange", update);
+    return () => document.removeEventListener("visibilitychange", update);
+  }, [p.isPlaying]);
+
   function flashHint() {
     setShowVolHint(true);
     clearTimeout(hintTimer.current);
@@ -236,7 +247,7 @@ export default function FullScreenPlayer({ onClose }) {
         style={{ background: `radial-gradient(ellipse at center, ${bg} 0%, transparent 70%)` }} />
 
       {/* reactive visualizer */}
-      {showPulse && <PulseVisualizer className="absolute inset-0 z-0" />}
+      {pulseOn && <PulseVisualizer className="absolute inset-0 z-0" />}
       
 
       {/* top bar */}
@@ -275,11 +286,6 @@ export default function FullScreenPlayer({ onClose }) {
         </div>
         <NowPlayingAddMenu
           onShare={shareNow}
-          showPulse={showPulse}
-          onTogglePulse={() => {
-            setShowPulse((v) => !v);
-            if (!showPulse) p.enableAnalyser?.();
-          }}
           onToggleLibrary={() => toggleLibrary(t)}
           inLibrary={isInLibrary(t.id)}
           onViewQueue={() => setShowQueue(true)}
