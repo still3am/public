@@ -21,7 +21,7 @@ import EmptyState from "@/components/EmptyState";
 import MessageBubble from "@/components/messages/MessageBubble";
 import MessageComposer from "@/components/messages/MessageComposer";
 import { useToast } from "@/components/ui/use-toast";
-import { dayLabel, displayNameOf, otherParticipant, toggleReaction } from "@/lib/messaging";
+import { attachmentLabel, dayLabel, displayNameOf, otherParticipant, toggleReaction } from "@/lib/messaging";
 
 export default function Conversation() {
   const { id } = useParams();
@@ -130,7 +130,10 @@ export default function Conversation() {
     }).catch(() => {});
   }
 
-  async function sendImage(file) {
+  // Photos and voice notes take the same path: upload the attachment privately,
+  // then post a message whose text is empty and whose preview label comes from
+  // its media type.
+  async function sendAttachment(file, mediaType) {
     if (!user?.id || !conv || !other) return;
     try {
       const { file_uri } = await base44.integrations.Core.UploadPrivateFile({ file });
@@ -142,18 +145,27 @@ export default function Conversation() {
         sender_avatar_url: user.avatar_url || "",
         text: "",
         media_url: file_uri,
-        media_type: "image"
+        media_type: mediaType
       });
       setMessages((prev) => [...prev, created]);
       base44.entities.Conversation.update(conv.id, {
-        last_message_text: "📷 Photo",
+        last_message_text: attachmentLabel(mediaType),
         last_message_at: new Date().toISOString(),
         last_sender_id: user.id
       }).catch(() => {});
     } catch {
-      toast({ title: "Couldn't send that photo", variant: "destructive" });
+      toast({
+        title:
+          mediaType === "audio" ?
+          "Couldn't send that voice note" :
+          "Couldn't send that photo",
+        variant: "destructive"
+      });
     }
   }
+
+  const sendImage = (file) => sendAttachment(file, "image");
+  const sendVoiceNote = (file) => sendAttachment(file, "audio");
 
   async function saveEdit(message, text) {
     setEditing(null);
@@ -361,6 +373,7 @@ export default function Conversation() {
         <MessageComposer
           onSend={send}
           onSendImage={sendImage}
+          onSendVoiceNote={sendVoiceNote}
           onTyping={handleTyping}
           editing={editing}
           onCancelEdit={() => setEditing(null)} />
