@@ -10,6 +10,10 @@ const FollowContext = createContext(null);
 export function FollowProvider({ children }) {
   const { user } = useAuth();
   const [keys, setKeys] = useState(() => new Set());
+  // The raw follow rows, kept alongside the key set so screens that need names
+  // or uploader ids (Home, the For You mix) reuse this one read.
+  const [followRows, setFollowRows] = useState([]);
+  const [ready, setReady] = useState(false);
   // Bumped on any follow change anywhere — lets pages showing counts know their
   // numbers are stale without every page subscribing itself.
   const [version, setVersion] = useState(0);
@@ -17,14 +21,17 @@ export function FollowProvider({ children }) {
   const load = useCallback(async () => {
     if (!user?.id) {
       setKeys(new Set());
+      setFollowRows([]);
+      setReady(true);
       return;
     }
     const rows = await base44.entities.Follow.filter({ follower_id: user.id }, "-created_date", 1000);
+    const list = Array.isArray(rows) ? rows : [];
     setKeys(
-      new Set(
-        (rows || []).map((r) => `${r.target_type || "user"}:${r.following_id}`)
-      )
+      new Set(list.map((r) => `${r.target_type || "user"}:${r.following_id}`))
     );
+    setFollowRows(list);
+    setReady(true);
   }, [user?.id]);
 
   useEffect(() => {
@@ -82,6 +89,19 @@ export function FollowProvider({ children }) {
             }).catch(() => {});
           }
         }
+        setFollowRows((prev) =>
+          wasFollowing ?
+          prev.filter((r) => r.following_id !== id) :
+          [
+          ...prev,
+          {
+            follower_id: user.id,
+            following_id: id,
+            target_type: type,
+            artist_name: type === "artist" ? name : ""
+          }]
+
+        );
         setVersion((v) => v + 1);
         return { following: !wasFollowing };
       } catch (e) {
@@ -94,7 +114,15 @@ export function FollowProvider({ children }) {
 
   return (
     <FollowContext.Provider
-      value={{ isFollowing, toggle, version, refresh: load, count: keys.size }}
+      value={{
+        isFollowing,
+        toggle,
+        version,
+        refresh: load,
+        count: keys.size,
+        follows: followRows,
+        ready
+      }}
     >
       {children}
     </FollowContext.Provider>
@@ -110,6 +138,8 @@ export function useFollow() {
       version: 0,
       refresh: async () => {},
       count: 0,
+      follows: [],
+      ready: false,
     };
   }
   return ctx;

@@ -78,9 +78,21 @@ export default function TopTracks({ trackIds, editMode, userTracks, onChange }) 
   useEffect(() => {
     const ids = (trackIds || []).filter(Boolean);
     if (!ids.length) {setPinnedTracks([]);return;}
-    Promise.all(ids.map((id) => base44.entities.Track.get(id).catch(() => null))).then((results) =>
-    setPinnedTracks(results.filter(Boolean))
-    );
+    // One batched read rather than a request per pinned track — a profile with
+    // eight pins used to open eight parallel calls.
+    let cancelled = false;
+    base44.entities.Track.filter({ id: { $in: ids } }).
+    then((rows) => {
+      if (cancelled) return;
+      const byId = new Map((rows || []).map((r) => [r.id, r]));
+      setPinnedTracks(ids.map((id) => byId.get(id)).filter(Boolean));
+    }).
+    catch(() => {
+      if (!cancelled) setPinnedTracks([]);
+    });
+    return () => {
+      cancelled = true;
+    };
   }, [idsKey]); // eslint-disable-line react-hooks/exhaustive-deps
 
   function removeTrack(id) {

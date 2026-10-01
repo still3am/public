@@ -1,17 +1,25 @@
 import { base44 } from "@/api/base44Client";
+import { getPublishedTracks } from "@/lib/catalogCache";
+import { byPlays } from "@/lib/catalogSlices";
 import { getRecentPlays } from "@/lib/recentPlays";
 import { getUserGenres } from "@/lib/userGenres";
 import { trackMatchesArtist } from "@/lib/artistTracks";
 
-// The home "For You" mix. One personalized queue built from three signals:
-// who the user follows, the genres they picked, and what they actually play.
-// Recently played tracks are left out so the mix keeps moving forward, and
-// anything outside the catalog's published tracks never enters the pool.
-export async function buildForYouMix(user, limit = 14) {
+/**
+ * The home "For You" mix. One personalized queue built from three signals:
+ * who the user follows, the genres they picked, and what they actually play.
+ * Recently played tracks are left out so the mix keeps moving forward, and
+ * anything outside the catalog's published tracks never enters the pool.
+ *
+ * `opts` lets a caller that has already loaded these hand them over — Home
+ * passes its own copy so opening the app costs one catalog read, not six.
+ */
+export async function buildForYouMix(user, limit = 14, opts = {}) {
   const played = getRecentPlays();
   const recentIds = new Set(played.map((t) => t?.id).filter(Boolean));
 
-  const savedGenres = (await getUserGenres().catch(() => [])) || [];
+  const savedGenres =
+    opts.savedGenres ?? ((await getUserGenres().catch(() => [])) || []);
   const genreFreq = {};
   for (const p of played) {
     if (p?.genre) genreFreq[p.genre] = (genreFreq[p.genre] || 0) + 1;
@@ -21,9 +29,15 @@ export async function buildForYouMix(user, limit = 14) {
     .map(([g]) => g);
   const genres = [...new Set([...savedGenres, ...playedGenres])].slice(0, 4);
 
-  const follows = user?.id
-    ? await base44.entities.Follow.filter({ follower_id: user.id }, "-created_date", 200).catch(() => [])
-    : [];
+  const follows =
+    opts.follows ??
+    (user?.id
+      ? await base44.entities.Follow.filter(
+          { follower_id: user.id },
+          "-created_date",
+          200
+        ).catch(() => [])
+      : []);
   const followedUserIds = new Set(
     (follows || [])
       .filter((f) => f && (f.target_type || "user") === "user")
@@ -33,19 +47,11 @@ export async function buildForYouMix(user, limit = 14) {
     .filter((f) => f && f.target_type === "artist" && f.artist_name)
     .map((f) => f.artist_name);
 
-  const [perGenre, popular] = await Promise.all([
-    Promise.all(
-      genres.map((g) =>
-        base44.entities.Track
-          .filter({ is_published: true, genre: g }, "-created_date", 24)
-          .catch(() => [])
-      )
-    ),
-    base44.entities.Track.filter({ is_published: true }, "-play_count", 60).catch(() => []),
-  ]);
-
+  // The pool is the shared catalog itself: the most played tracks plus
+  // everything in the listener's genres — no per-genre query.
+  const catalog = opts.catalog ?? (await getPublishedTracks().catch(() => []));
   const pool = new Map();
-  for (const track of [...perGenre.flat(), ...(popular || [])]) {
+  for (const track of [...byPlays(catalog, 60), ...catalog]) {
     if (track?.id && !pool.has(track.id)) pool.set(track.id, track);
   }
 

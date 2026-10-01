@@ -1,7 +1,9 @@
 import { useEffect, useRef, useState, useCallback } from "react";
 import { Link } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
-import { getCatalogCount } from "@/lib/catalogCache";
+import { getCatalogCount, getPublishedTracks } from "@/lib/catalogCache";
+import { byGenre as genreShelf, byNewest, shuffleList, topGenres } from "@/lib/catalogSlices";
+import { useFollow } from "@/context/FollowContext";
 import { useUnpublishedSync } from "@/hooks/useUnpublishedSync";
 import { useAuth } from "@/lib/AuthContext";
 import {
@@ -75,8 +77,18 @@ function Skeleton() {
 
 }
 
+// Only needed when the app-wide follow graph isn't loaded yet — otherwise Home
+// reuses that shared copy and adds no read of its own.
+function readFollowRows(userId) {
+  if (!userId) return Promise.resolve([]);
+  return base44.entities.Follow.
+  filter({ follower_id: userId }, "-created_date", 200).
+  catch(() => []);
+}
+
 export default function Home() {
   const { user } = useAuth();
+  const { follows, ready: followsReady } = useFollow();
   const [loading, setLoading] = useState(true);
   const [trending, setTrending] = useState([]);
   const [newReleases, setNewReleases] = useState([]);
@@ -119,18 +131,28 @@ export default function Home() {
   async function load() {
     setLoading(true);
     try {
-      const [t, n, fols, topForGenres] = await Promise.all([
-      base44.entities.Track.filter({ is_published: true }, "-play_count", 10),
-      base44.entities.Track.filter({ is_published: true }, "-created_date", 50),
-      user?.id ?
-      base44.entities.Follow.filter({ follower_id: user.id }, "-created_date", 200).catch(() => []) :
-      Promise.resolve([]),
-      base44.entities.Track.filter({ is_published: true }, "-play_count", 200).catch(() => [])]
+      // Two reads for the whole screen: the platform's true top ranked by
+      // plays, and the shared cached catalog every shelf below is sliced from.
+      // A query per genre row was the app's heaviest burst of entity traffic.
+      const [top, catalog] = await Promise.all([
+      base44.entities.Track.filter({ is_published: true }, "-play_count", 100).catch(() => []),
+      getPublishedTracks()]
       );
-      const followed = new Set((Array.isArray(fols) ? fols : []).map((f) => f.following_id));
-      setTrending(t);
-      setNewReleases(n.slice(0, 36));
-      setFromFollowing(n.filter((tk) => followed.has(tk.uploader_id)).slice(0, 12));
+      setTrending(top.slice(0, 10));
+
+      const rows = catalog.length ? catalog : top;
+      setNewReleases(byNewest(rows, 36));
+
+      // The follow graph is already held app-wide, so Home only reads it if
+      // that shared copy hasn't landed yet.
+      const fols = followsReady ? follows : await readFollowRows(user?.id);
+      const followed = new Set(
+        (fols || []).
+        filter((f) => (f.target_type || "user") === "user").
+        map((f) => f.following_id)
+      );
+      setFromFollowing(byNewest(rows.filter((tk) => followed.has(tk.uploader_id)), 12));
+
       // Counted server-side — downloading every record just to measure the
       // catalog was slow and got silently truncated by the query limit.
       const published = await getCatalogCount();
@@ -138,27 +160,11 @@ export default function Home() {
         setTotalTracks(published);
         loadedRef.current = true;
       }
+
       // Top genres = the ones users actually listen to most, measured by
       // aggregated play_count across the most-played tracks on the platform.
-      const genrePlays = {};
-      for (const tr of topForGenres) {
-        if (!tr?.genre) continue;
-        genrePlays[tr.genre] = (genrePlays[tr.genre] || 0) + (tr.play_count || 0);
-      }
-      const genres = Object.entries(genrePlays).
-      sort((a, b) => b[1] - a[1]).
-      slice(0, 3).
-      map(([g]) => g).
-      filter(Boolean);
-      const fallback = ["Electronic", "Hip-Hop", "Ambient"];
-      const finalGenres = genres.length ? genres : fallback;
-      const perGenre = await Promise.all(
-        finalGenres.map(async (g) => ({
-          genre: g,
-          tracks: await base44.entities.Track.filter({ is_published: true, genre: g }, "-play_count", 8)
-        }))
-      );
-      setByGenre(perGenre);
+      const finalGenres = topGenres(top.length ? top : rows, 3);
+      setByGenre(finalGenres.map((g) => ({ genre: g, tracks: genreShelf(rows, g, 8) })));
 
       // Discover: new tracks in the genres this user actually plays, excluding
       // what they've already heard. Falls back to fresh uploads when there's
@@ -181,27 +187,25 @@ export default function Home() {
       const allUserGenres = [...savedGenres, ...userGenres].slice(0, 5);
       let discoverPicks = [];
       if (allUserGenres.length) {
-        const perUserGenre = await Promise.all(
-          allUserGenres.map((g) =>
-          base44.entities.Track.filter({ is_published: true, genre: g }, "-created_date", 30).catch(() => [])
-          )
-        );
-        const pool = perUserGenre.flat().filter((tr) => tr && !playedIds.has(tr.id));
-        // Shuffle so the row isn't grouped by genre, then take the freshest.
-        for (let i = pool.length - 1; i > 0; i--) {
-          const j = Math.floor(Math.random() * (i + 1));
-          [pool[i], pool[j]] = [pool[j], pool[i]];
-        }
+        const pool = shuffleList(
+          allUserGenres.flatMap((g) => byNewest(rows.filter((t) => t.genre === g), 30))
+        ).filter((tr) => tr && !playedIds.has(tr.id));
         discoverPicks = pool.slice(0, 12);
       } else {
-        discoverPicks = n.filter((tr) => tr && !playedIds.has(tr.id)).slice(0, 12);
+        discoverPicks = byNewest(rows, 60).
+        filter((tr) => tr && !playedIds.has(tr.id)).
+        slice(0, 12);
       }
       setDiscover(discoverPicks);
 
       // The personalized mix, plus the shelf of songs this device has actually
       // repeated — both read from local state, so they cost no extra queries.
       setOnRepeat(getOnRepeat(12));
-      const mix = await buildForYouMix(user, 14).catch(() => []);
+      const mix = await buildForYouMix(user, 14, {
+        follows: fols,
+        savedGenres,
+        catalog: rows
+      }).catch(() => []);
       setForYou(mix);
     } finally {
       setLoading(false);
