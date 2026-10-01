@@ -59,3 +59,38 @@ export function dayLabel(iso) {
   if (isYesterday(d)) return "Yesterday";
   return format(d, isThisYear(d) ? "MMMM d" : "MMMM d, yyyy");
 }
+
+// The quick-reaction set offered on every message.
+export const QUICK_REACTIONS = ["❤️", "🔥", "😂", "👏", "🙌", "😮"];
+
+// reactions is stored as a JSON string of { emoji: [user_ids] }.
+export function parseReactions(json) {
+  if (!json) return {};
+  try {
+    const parsed = JSON.parse(json);
+    return parsed && typeof parsed === "object" ? parsed : {};
+  } catch {
+    return {};
+  }
+}
+
+export function toggleReaction(json, emoji, userId) {
+  const all = { ...parseReactions(json) };
+  const list = all[emoji] || [];
+  const next = list.includes(userId)
+    ? list.filter((id) => id !== userId)
+    : [...list, userId];
+  if (next.length) all[emoji] = next;
+  else delete all[emoji];
+  return Object.keys(all).length ? JSON.stringify(all) : "";
+}
+
+export function parseReply(json) {
+  if (!json) return null;
+  try {
+    const parsed = JSON.parse(json);
+    return parsed && typeof parsed === "object" ? parsed : null;
+  } catch {
+    return null;
+  }
+}

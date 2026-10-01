@@ -10,7 +10,8 @@ import {
   MoreHorizontal,
   Pin,
   PinOff,
-  User } from
+  User,
+  X } from
 "lucide-react";
 import { base44 } from "@/api/base44Client";
 import { useAuth } from "@/lib/AuthContext";
@@ -19,7 +20,7 @@ import Avatar from "@/components/Avatar";
 import EmptyState from "@/components/EmptyState";
 import MessageBubble from "@/components/messages/MessageBubble";
 import MessageComposer from "@/components/messages/MessageComposer";
-import { dayLabel, displayNameOf, otherParticipant } from "@/lib/messaging";
+import { dayLabel, displayNameOf, otherParticipant, toggleReaction } from "@/lib/messaging";
 
 export default function Conversation() {
   const { id } = useParams();
@@ -30,6 +31,9 @@ export default function Conversation() {
   const [loading, setLoading] = useState(true);
   const [menuOpen, setMenuOpen] = useState(false);
   const [tick, setTick] = useState(0);
+  const [editing, setEditing] = useState(null);
+  const [replyTo, setReplyTo] = useState(null);
+  const [highlightId, setHighlightId] = useState(null);
   const bottomRef = useRef(null);
   const typingSentRef = useRef(0);
 
@@ -93,14 +97,26 @@ export default function Conversation() {
 
   async function send(text) {
     if (!user?.id || !conv || !other) return;
+    if (editing) return saveEdit(editing, text);
+
     const created = await base44.entities.Message.create({
       conversation_id: conv.id,
       sender_id: user.id,
       recipient_id: other.id,
       sender_name: displayNameOf(user),
       sender_avatar_url: user.avatar_url || "",
-      text
+      text,
+      reply_to_id: replyTo?.id || "",
+      reply_preview: replyTo ?
+      JSON.stringify({
+        id: replyTo.id,
+        sender_name: replyTo.sender_name || displayNameOf(user),
+        text: (replyTo.text || "").slice(0, 160)
+      }) :
+      ""
     });
+
+    setReplyTo(null);
     setMessages((prev) => [...prev, created]);
     base44.entities.Conversation.update(conv.id, {
       last_message_text: text,
@@ -109,6 +125,54 @@ export default function Conversation() {
       typing_user_id: "",
       typing_at: ""
     }).catch(() => {});
+  }
+
+  async function saveEdit(message, text) {
+    setEditing(null);
+    const body = text.trim();
+    if (!body || body === (message.text || "")) return;
+    setMessages((prev) => prev.map((m) => m.id === message.id ? { ...m, text: body, edited: true } : m));
+    try {
+      await base44.entities.Message.update(message.id, { text: body, edited: true });
+    } catch {
+      fetchThread();
+    }
+  }
+
+  function react(message, emoji) {
+    if (!user?.id) return;
+    const next = toggleReaction(message.reactions, emoji, user.id);
+    setMessages((prev) => prev.map((m) => m.id === message.id ? { ...m, reactions: next } : m));
+    base44.entities.Message.update(message.id, { reactions: next }).catch(() => fetchThread());
+  }
+
+  async function deleteMessage(message) {
+    if (!window.confirm("Delete this message?")) return;
+    setMessages((prev) => prev.filter((m) => m.id !== message.id));
+    try {
+      await base44.entities.Message.delete(message.id);
+    } catch {
+      fetchThread();
+    }
+  }
+
+  function startReply(message) {
+    setEditing(null);
+    setReplyTo(message);
+  }
+
+  function startEdit(message) {
+    setReplyTo(null);
+    setEditing(message);
+  }
+
+  // Tapping a quoted message scrolls back to the original.
+  function jumpTo(messageId) {
+    const el = document.getElementById(`msg-${messageId}`);
+    if (!el) return;
+    el.scrollIntoView({ block: "center", behavior: "smooth" });
+    setHighlightId(messageId);
+    setTimeout(() => setHighlightId(null), 1400);
   }
 
   function handleTyping() {
@@ -230,7 +294,16 @@ export default function Conversation() {
                     {dayLabel(m.created_date)}
                   </div>
               }
-                <MessageBubble message={m} mine={m.sender_id === user?.id} />
+                <MessageBubble
+                  message={m}
+                  mine={m.sender_id === user?.id}
+                  myId={user?.id}
+                  highlight={highlightId === m.id}
+                  onReact={(emoji) => react(m, emoji)}
+                  onReply={startReply}
+                  onEdit={startEdit}
+                  onDelete={deleteMessage}
+                  onJumpTo={jumpTo} />
               </div>);
 
         })
@@ -238,7 +311,32 @@ export default function Conversation() {
         <div ref={bottomRef} />
       </div>
 
-      <MessageComposer onSend={send} onTyping={handleTyping} />
+      <div className="border-t border-border">
+        {replyTo &&
+        <div className="flex items-center gap-2 pt-2.5">
+            <div className="min-w-0 flex-1 border-l-2 border-foreground/40 pl-2.5">
+              <div className="text-[11px] font-semibold truncate">
+                Replying to {replyTo.sender_id === user?.id ? "yourself" : replyTo.sender_name || name}
+              </div>
+              <div className="text-[11px] text-foreground/55 truncate">{replyTo.text}</div>
+            </div>
+            <button
+            onClick={() => setReplyTo(null)}
+            aria-label="Cancel reply"
+            className="p-2 rounded-full hover:bg-accent">
+            
+              <X size={15} />
+            </button>
+          </div>
+        }
+
+        <MessageComposer
+          onSend={send}
+          onTyping={handleTyping}
+          editing={editing}
+          onCancelEdit={() => setEditing(null)} />
+        
+      </div>
     </div>);
 
 }
