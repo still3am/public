@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { X, Lightbulb, GitMerge, Palette, Trash2, ChevronRight, Sparkles, BarChart3, Loader2, LogOut } from "lucide-react";
+import { X, Lightbulb, GitMerge, Palette, Trash2, ChevronRight, Sparkles, BarChart3, Loader2, LogOut, Bug } from "lucide-react";
+import ReportProblemSheet from "@/components/ReportProblemSheet";
 import ThemeToggle from "@/components/ThemeToggle";
 import { Switch } from "@/components/ui/switch";
 import { useAuth } from "@/lib/AuthContext";
@@ -10,6 +11,7 @@ export default function SettingsSheet({ onClose, onDeleteAccount }) {
   const { user, checkUserAuth } = useAuth();
   const [toggling, setToggling] = useState(false);
   const [loggingOut, setLoggingOut] = useState(false);
+  const [showReport, setShowReport] = useState(false);
   const isArtist = user?.is_artist === true;
 
   async function handleLogout() {
@@ -93,6 +95,20 @@ export default function SettingsSheet({ onClose, onDeleteAccount }) {
             <ChevronRight size={16} className="text-foreground/30 shrink-0" />
           </Link>
 
+          <button
+            onClick={() => setShowReport(true)}
+            className="w-full flex items-center gap-3 p-3.5 rounded-2xl bg-foreground/[0.02] hover:bg-foreground/[0.05] transition active:scale-[0.99] text-left"
+          >
+            <div className="w-10 h-10 rounded-xl bg-foreground/[0.06] grid place-items-center shrink-0">
+              <Bug size={18} className="text-foreground/70" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <div className="text-sm font-bold">Report a Problem</div>
+              <div className="text-xs text-foreground/50 truncate">Something broken? Tell the admins</div>
+            </div>
+            <ChevronRight size={16} className="text-foreground/30 shrink-0" />
+          </button>
+
           <Link
             to="/settings/transitions"
             onClick={onClose}
@@ -152,6 +168,8 @@ export default function SettingsSheet({ onClose, onDeleteAccount }) {
           </button>
         </div>
       </div>
+
+      {showReport && <ReportProblemSheet onClose={() => setShowReport(false)} />}
     </div>
   );
 }
