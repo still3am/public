@@ -12,12 +12,14 @@ import {
   Play,
   Pause,
   Pencil,
+  Mic2,
   Sparkles,
   Wand2 } from
 "lucide-react";
 import TrackRow from "@/components/TrackRow";
 import TrackOptionsMenu from "@/components/TrackOptionsMenu";
 import GenerateLyricsModal from "@/components/GenerateLyricsModal";
+import SyncLyricsModal from "@/components/SyncLyricsModal";
 import { useToast } from "@/components/ui/use-toast";
 
 export default function TrackDetail() {
@@ -29,6 +31,7 @@ export default function TrackDetail() {
   const [loading, setLoading] = useState(true);
   const [uploader, setUploader] = useState(null);
   const [editing, setEditing] = useState(false);
+  const [syncing, setSyncing] = useState(false);
   const [generating, setGenerating] = useState(false);
   const [detecting, setDetecting] = useState(false);
   const [moreTracks, setMoreTracks] = useState([]);
@@ -130,6 +133,12 @@ export default function TrackDetail() {
     icon: Sparkles,
     label: track.lyrics_text?.trim() ? "Regenerate lyrics" : "Generate lyrics",
     onClick: () => setGenerating(true)
+  });
+  if (isOwner && track.audio_url)
+  ownerItems.push({
+    icon: Mic2,
+    label: "Sync lyrics (karaoke)",
+    onClick: () => setSyncing(true)
   });
 
   return (
@@ -311,6 +320,14 @@ export default function TrackDetail() {
           setTrack((prev) => ({ ...prev, ...updated }));
           setGenerating(false);
         }} />
+
+      }
+
+      {syncing &&
+      <SyncLyricsModal
+        track={track}
+        onClose={() => setSyncing(false)}
+        onSaved={() => setSyncing(false)} />
 
       }
     </div>);
