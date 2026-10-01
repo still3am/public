@@ -16,10 +16,17 @@ import BulkPlaylistPicker from "@/components/library/BulkPlaylistPicker";
 import BulkTagModal from "@/components/library/BulkTagModal";
 import { useToast } from "@/components/ui/use-toast";
 import { getRecentPlays } from "@/lib/recentPlays";
+import {
+  getLibraryItems,
+  getMyPlaylists,
+  getMyUploads,
+  invalidateMyUploads,
+  invalidateMyPlaylists,
+} from "@/lib/libraryData";
 
 export default function Library() {
   const { user } = useAuth();
-  const { ids, refresh } = useLibrary();
+  const { items: libItems, loading: libLoading, refresh } = useLibrary();
   const cache = useOfflineCache();
   const [tracks, setTracks] = useState(null);
   const [uploads, setUploads] = useState(null);
@@ -27,7 +34,6 @@ export default function Library() {
   const [loading, setLoading] = useState(true);
   const [playlists, setPlaylists] = useState(null);
   const [showCreate, setShowCreate] = useState(false);
-  const [libItems, setLibItems] = useState([]);
   const [selectMode, setSelectMode] = useState(false);
   const [selected, setSelected] = useState(() => new Set());
   const [showBulkPlaylist, setShowBulkPlaylist] = useState(false);
@@ -54,17 +60,19 @@ export default function Library() {
 
   const offlineCount = cache.records.length;
 
-  const loadPlaylists = useCallback(async () => {
-    if (!user?.id) return;
-    try {
-      const rows = await base44.entities.Playlist.filter({ creator_id: user.id }, "-created_date", 200);
-      setPlaylists(rows || []);
-    } catch {
+  const loadPlaylists = useCallback(async ({ force = false } = {}) => {
+    if (!user?.id) {
       setPlaylists([]);
+      return;
     }
+    if (force) invalidateMyPlaylists();
+    setPlaylists(await getMyPlaylists(user.id));
   }, [user?.id]);
 
-  const load = useCallback(async () => {
+  // Saved tracks are re-read only when the set of saved ids actually changes —
+  // uploads come from the shared cache, so a library change no longer costs
+  // three collection reads.
+  const loadSaved = useCallback(async (trackIds) => {
     if (!user?.id) {
       setTracks([]);
       setUploads([]);
@@ -73,29 +81,17 @@ export default function Library() {
     }
     setLoading(true);
     try {
-      const [items, uploaded] = await Promise.all([
-      base44.entities.LibraryItem.filter(
-        { user_id: user.id },
-        "-created_date",
-        1000
-      ),
-      base44.entities.Track.filter(
-        { uploader_id: user.id },
-        "-created_date",
-        1000
-      )]
+      const [list, uploaded] = await Promise.all([
+        trackIds.length ?
+        base44.entities.Track.filter(
+          { id: { $in: trackIds } },
+          "-created_date",
+          trackIds.length
+        ) :
+        [],
+        getMyUploads(user.id)]
       );
-      const trackIds = (items || []).
-      map((i) => i.track_id).
-      filter(Boolean);
       const uploadedIds = new Set((uploaded || []).map((t) => t.id));
-      const list = trackIds.length ?
-      await base44.entities.Track.filter(
-        { id: { $in: trackIds } },
-        "-created_date",
-        1000
-      ) :
-      [];
       const order = new Map(trackIds.map((id, i) => [id, i]));
       const sorted = (list || []).
       slice().
@@ -103,16 +99,31 @@ export default function Library() {
       filter((t) => !uploadedIds.has(t.id));
       setTracks(sorted);
       setUploads(uploaded || []);
-      setLibItems(items || []);
     } finally {
       setLoading(false);
     }
   }, [user?.id]);
 
+  const savedKey = useMemo(
+    () => libItems.map((i) => i.track_id).filter(Boolean).join(","),
+    [libItems]
+  );
+
   useEffect(() => {
-    load();
+    if (libLoading) return;
+    loadSaved(savedKey ? savedKey.split(",") : []);
+  }, [loadSaved, savedKey, libLoading]);
+
+  useEffect(() => {
     loadPlaylists();
-  }, [load, loadPlaylists, ids]);
+  }, [loadPlaylists]);
+
+  const refreshAll = async () => {
+    invalidateMyUploads();
+    await Promise.all([refresh({ force: true }), loadPlaylists({ force: true })]);
+    const rows = await getLibraryItems(user.id);
+    await loadSaved(rows.map((r) => r.track_id).filter(Boolean));
+  };
 
   useEffect(() => {
     const handler = () => setRecentlyPlayed(getRecentPlays());
@@ -150,7 +161,7 @@ export default function Library() {
       await base44.entities.Playlist.update(pl.id, {
         track_ids: [...current, ...toAdd],
       });
-      await loadPlaylists();
+      await loadPlaylists({ force: true });
       toast({
         title: `Added ${toAdd.length} ${toAdd.length === 1 ? "song" : "songs"} to ${pl.name}`,
       });
@@ -169,7 +180,7 @@ export default function Library() {
         tags: [...new Set([...(r.tags || []), ...tags])],
       }))
     );
-    await load();
+    await refresh({ force: true });
     toast({ title: `Tagged ${ids.length} ${ids.length === 1 ? "track" : "tracks"}` });
     exitSelect();
   }
@@ -187,8 +198,7 @@ export default function Library() {
       user_id: user.id,
       track_id: { $in: ids },
     });
-    await refresh();
-    await load();
+    await refresh({ force: true });
     toast({ title: `Removed ${ids.length} from your library` });
     exitSelect();
   }
@@ -232,8 +242,8 @@ export default function Library() {
         </div>
       </Link>
 
-      <PullToRefresh onRefresh={async () => {await refresh();await load();await loadPlaylists();}}>
-        {loading && tracks === null ?
+      <PullToRefresh onRefresh={refreshAll}>
+        {libLoading || loading && tracks === null ?
         <div className="flex justify-center py-20">
             <Loader2 className="animate-spin text-foreground/40" />
           </div> :
@@ -330,7 +340,7 @@ export default function Library() {
       {showCreate &&
       <CreatePlaylistModal
         onClose={() => setShowCreate(false)}
-        onCreated={() => loadPlaylists()} />
+        onCreated={() => loadPlaylists({ force: true })} />
 
       }
 

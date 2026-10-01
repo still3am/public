@@ -2,6 +2,7 @@ import { useState, useEffect, useMemo, useCallback } from "react";
 import { base44 } from "@/api/base44Client";
 import { useAuth } from "@/lib/AuthContext";
 import { useLibrary } from "@/context/LibraryContext";
+import { getLibraryItems, getMyUploads, invalidateMyPlaylists } from "@/lib/libraryData";
 import { X, Plus, Check, Loader2, Search } from "lucide-react";
 
 export default function AddToPlaylistPicker({ playlist, onClose }) {
@@ -23,9 +24,8 @@ export default function AddToPlaylistPicker({ playlist, onClose }) {
     setLoading(true);
     try {
       const [items, uploaded] = await Promise.all([
-        base44.entities.LibraryItem.filter({ user_id: user.id }, "-created_date", 1000),
-        base44.entities.Track.filter({ uploader_id: user.id }, "-created_date", 1000),
-      ]);
+        getLibraryItems(user.id),
+        getMyUploads(user.id)]);
       const libIds = (items || []).map((i) => i.track_id).filter(Boolean);
       const uploadIds = new Set((uploaded || []).map((t) => t.id));
       const allIds = [...new Set([...libIds, ...uploadIds])];
@@ -82,6 +82,7 @@ export default function AddToPlaylistPicker({ playlist, onClose }) {
         await base44.entities.Playlist.update(playlist.id, {
           track_ids: [...current, ...toAdd],
         });
+        invalidateMyPlaylists();
       }
       onClose();
     } catch {

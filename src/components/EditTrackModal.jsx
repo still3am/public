@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { GENRES } from "@/lib/audio-utils";
+import { invalidateMyUploads } from "@/lib/libraryData";
 import { Loader2, X, Save, Trash2 } from "lucide-react";
 import BottomSheetSelect from "@/components/BottomSheetSelect";
 
@@ -59,6 +60,7 @@ export default function EditTrackModal({ track, onClose, onSaved, onDeleted }) {
         cover_art_url,
       };
       await base44.entities.Track.update(track.id, payload);
+      invalidateMyUploads();
       onSaved?.({ ...track, ...payload });
       onClose();
     } catch (e) {
@@ -73,6 +75,7 @@ export default function EditTrackModal({ track, onClose, onSaved, onDeleted }) {
     setDeleting(true);
     try {
       await base44.entities.Track.delete(track.id);
+      invalidateMyUploads();
       onDeleted?.();
       onClose();
     } catch {

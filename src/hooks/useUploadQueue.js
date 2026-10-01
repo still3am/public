@@ -1,5 +1,7 @@
 import { useRef, useState } from "react";
 import { base44 } from "@/api/base44Client";
+import { invalidateMyUploads } from "@/lib/libraryData";
+import { invalidateDiscovery } from "@/lib/discoveryData";
 import {
   getAudioDuration,
   deriveDefaultTitle,
@@ -212,6 +214,8 @@ export function useUploadQueue({ user, isAdmin }) {
           .catch(() => null);
         const lyrics = res?.data?.lyrics;
         if (lyrics) await base44.entities.Track.update(track.id, { lyrics_text: lyrics }).catch(() => {});
+        invalidateMyUploads();
+        invalidateDiscovery();
       }
       patch(item.id, { status: "done" });
       setUploadedCount((n) => n + 1);
