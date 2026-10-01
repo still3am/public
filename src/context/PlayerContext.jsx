@@ -9,7 +9,6 @@ import {
 import { base44 } from "@/api/base44Client";
 import { getRecord, listRecords } from "@/lib/offlineCache";
 import { buildAutoQueue } from "@/lib/autoQueue";
-import { getUserGenres } from "@/lib/userGenres";
 import { useWakeLock } from "@/hooks/useWakeLock";
 import {
   getTransitionSettings,
@@ -809,12 +808,10 @@ export function PlayerProvider({ children }) {
     if (!track?.id || autoQueueLoadingRef.current) return false;
     autoQueueLoadingRef.current = true;
     try {
-      const userGenres = await getUserGenres();
       const picks = await buildAutoQueue(
         track,
         queueRef.current.map((t) => t.id),
-        15,
-        userGenres
+        15
       );
       if (!picks.length) return false;
       const start = queueRef.current.length;

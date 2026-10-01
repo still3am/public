@@ -63,7 +63,7 @@ export default function PlayerBar() {
   const offlineCover = useOfflineCoverUrl(p.currentTrack?.id, p.currentTrack?.cover_art_url);
   const coverUrl = useCoverUrl(offlineCover);
   useEffect(() => { setCoverFailed(false); }, [coverUrl]);
-  if (location.pathname === "/onboarding" || !p.currentTrack) return null;
+  if (!p.currentTrack) return null;
   const t = p.currentTrack;
   const pct = p.duration ? p.position / p.duration * 100 : 0;
   const remaining = Math.max(0, (p.duration || 0) - (p.position || 0));
