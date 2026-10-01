@@ -249,7 +249,8 @@ export default function TrackDetail() {
           align="right"
           className="ml-auto"
           buttonClassName="w-10 h-10 rounded-full bg-foreground text-background grid place-items-center hover:scale-105 transition"
-          items={ownerItems} />
+          items={ownerItems}
+          hideGoToTrack />
       </div>
 
       {track.lyrics_text && track.lyrics_text.trim() &&

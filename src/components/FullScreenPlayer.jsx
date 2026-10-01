@@ -1,10 +1,9 @@
 import { useState, useRef, useEffect } from "react";
 import { usePlayer } from "@/context/PlayerContext";
 import { useColorExtraction } from "@/hooks/useColorExtraction";
-import { useAuth } from "@/lib/AuthContext";
 import { formatTime } from "@/lib/audio-utils";
 import SyncedLyrics from "@/components/SyncedLyrics";
-import NowPlayingAddMenu from "@/components/NowPlayingAddMenu";
+import TrackOptionsMenu from "@/components/track/TrackOptionsMenu";
 import { Link } from "react-router-dom";
 import {
   SkipBack,
@@ -19,6 +18,8 @@ import {
   Shuffle,
   Disc3,
   AudioLines,
+  Heart,
+  ListMusic,
   X } from
 "lucide-react";
 import PulseVisualizer from "@/components/PulseVisualizer";
@@ -30,11 +31,8 @@ import PlaybackSpeedMenu from "@/components/PlaybackSpeedMenu";
 import LoungeHostModal from "@/components/LoungeHostModal";
 import StemMixer from "@/components/StemMixer";
 import { useLoungeHost } from "@/hooks/useLoungeHost";
-import { useLibrary } from "@/context/LibraryContext";
-import { useOfflineCache } from "@/hooks/useOfflineCache";
 import { useOfflineCoverUrl } from "@/hooks/useOfflineCoverUrl";
 import { useCoverUrl } from "@/hooks/useCoverUrl";
-import { useToast } from "@/components/ui/use-toast";
 import { base44 } from "@/api/base44Client";
 
 const clampVol = (v) => Math.max(0, Math.min(1, v));
@@ -55,8 +53,6 @@ function IconButton({ icon: Icon, onClick, active, size = 22, label, className =
 
 export default function FullScreenPlayer({ onClose }) {
   const p = usePlayer();
-  const { user } = useAuth();
-  const { isInLibrary, toggle: toggleLibrary } = useLibrary();
   const offlineCover = useOfflineCoverUrl(p.currentTrack?.id, p.currentTrack?.cover_art_url);
   const coverUrl = useCoverUrl(offlineCover);
   const bg = useColorExtraction(coverUrl);
@@ -73,8 +69,6 @@ export default function FullScreenPlayer({ onClose }) {
   const [showLyricsPanel, setShowLyricsPanel] = useState(true);
   const t = p.currentTrack;
   const lounge = useLoungeHost();
-  const cache = useOfflineCache();
-  const { toast } = useToast();
   const [loungeOpen, setLoungeOpen] = useState(false);
   const [showMixer, setShowMixer] = useState(false);
   const volDrag = useRef({ startY: 0, start: 0, active: false });
@@ -186,21 +180,6 @@ export default function FullScreenPlayer({ onClose }) {
     volDrag.current.active = false;
   };
 
-  async function toggleOffline() {
-    if (!t) return;
-    if (cache.isCached(t.id)) {
-      await cache.removeTrack(t.id);
-      toast({ title: "Removed from downloads" });
-      return;
-    }
-    const ok = await cache.downloadTrack(t);
-    toast(
-      ok
-        ? { title: "Saved for offline" }
-        : { title: "Couldn't save offline", variant: "destructive" }
-    );
-  }
-
   async function shareNow(copyOnly = false) {
     if (!t) return;
     const url = `${window.location.origin}/track/${t.id}`;
@@ -291,20 +270,19 @@ export default function FullScreenPlayer({ onClose }) {
           size={20} />
         <SleepTimerMenu />
         <PlaybackSpeedMenu />
-        <NowPlayingAddMenu
+        <TrackOptionsMenu
+          track={t}
+          align="right"
+          size={20}
+          buttonClassName="w-9 h-9 rounded-full grid place-items-center bg-white/10 hover:bg-white/20 active:scale-90 transition"
           onShare={shareNow}
-          showPulse={showPulse}
-          onTogglePulse={() => setShowPulse((v) => !v)}
-          onToggleLibrary={() => toggleLibrary(t)}
-          inLibrary={isInLibrary(t.id)}
-          onViewQueue={() => setShowQueue(true)}
-          onLounge={() => setLoungeOpen(true)}
-          onToggleOffline={toggleOffline}
-          savedOffline={cache.isCached(t.id)}
-          savingOffline={!!cache.downloading[t.id]}
-          queueCount={p.queue.length - p.currentIndex - 1 > 0 ? p.queue.length - p.currentIndex - 1 : 0}
           onMix={() => setShowMixer(true)}
-          mixerActive={p.mixer.bass !== 0 || p.mixer.beat !== 0 || p.mixer.vocals !== 0 || p.mixer.treble !== 0 || p.mixer.boost !== 1} />
+          mixerActive={p.mixer.bass !== 0 || p.mixer.beat !== 0 || p.mixer.vocals !== 0 || p.mixer.treble !== 0 || p.mixer.boost !== 1}
+          onLounge={() => setLoungeOpen(true)}
+          items={[
+          { icon: ListMusic, label: `View Queue (${p.queue.length - p.currentIndex - 1})`, onClick: () => setShowQueue(true) },
+          { icon: Heart, label: showPulse ? "Hide Color Pulse" : "Color Pulse", onClick: () => setShowPulse((v) => !v) }]
+          } />
         </div>
       </div>
 
