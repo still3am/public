@@ -3,8 +3,11 @@ import { base44 } from "@/api/base44Client";
 import { GENRES } from "@/lib/audio-utils";
 import { Loader2, X, Save, Trash2 } from "lucide-react";
 import BottomSheetSelect from "@/components/BottomSheetSelect";
+import { useAuth } from "@/lib/AuthContext";
+import { saveTimedLyrics } from "@/lib/lyricsTiming";
 
 export default function EditTrackModal({ track, onClose, onSaved, onDeleted }) {
+  const { user } = useAuth();
   const [form, setForm] = useState({
     title: track.title || "",
     artist: track.artist || "",
@@ -59,6 +62,19 @@ export default function EditTrackModal({ track, onClose, onSaved, onDeleted }) {
         cover_art_url,
       };
       await base44.entities.Track.update(track.id, payload);
+
+      // Edited lyrics get a fresh timecoded copy so the player never follows
+      // the previous version.
+      if ((payload.lyrics_text || "").trim() !== (track.lyrics_text || "").trim()) {
+        saveTimedLyrics({
+          trackId: track.id,
+          uploaderId: user?.id,
+          text: payload.lyrics_text,
+          durationSeconds: track.duration_seconds,
+          audioUrl: track.audio_url,
+        }).catch(() => {});
+      }
+
       onSaved?.({ ...track, ...payload });
       onClose();
     } catch (e) {

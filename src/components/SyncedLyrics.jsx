@@ -1,7 +1,15 @@
 import { useEffect, useRef, useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { Loader2 } from "lucide-react";
+import {
+  activeLineIndex,
+  activeWordIndex,
+  wordsForLine,
+} from "@/lib/lyricsTiming";
 
+// Timed lyrics with word-level highlighting on the line being sung: words
+// already sung sit at full strength, the rest wait at reduced opacity, so the
+// lyric keeps pace word by word instead of only line by line.
 export default function SyncedLyrics({ trackId, position, fallbackText = "", onSeek }) {
   const [lyrics, setLyrics] = useState(null);
   const [trackLyrics, setTrackLyrics] = useState("");
@@ -32,15 +40,9 @@ export default function SyncedLyrics({ trackId, position, fallbackText = "", onS
   const ms = position * 1000;
   const lines = lyrics?.lines || [];
   const hasTimed = lines.length && lines.some((l) => l.start_time_ms || l.end_time_ms);
-
-  let activeIdx = -1;
-  if (hasTimed) {
-    for (let i = 0; i < lines.length; i++) {
-      const s = lines[i].start_time_ms || 0;
-      if (ms >= s) activeIdx = i;
-      else break;
-    }
-  }
+  const activeIdx = hasTimed ? activeLineIndex(lines, ms) : -1;
+  const activeWords = activeIdx >= 0 ? wordsForLine(lines[activeIdx]) : [];
+  const wordIdx = activeIdx >= 0 ? activeWordIndex(activeWords, ms) : -1;
 
   useEffect(() => {
     if (activeIdx < 0) return;
@@ -92,7 +94,23 @@ export default function SyncedLyrics({ trackId, position, fallbackText = "", onS
                 filter: isActive ? "none" : "blur(0.3px)",
               }}
             >
-              {l.text && l.text.trim() ? l.text : "♪"}
+              {isActive && activeWords.length ? (
+                activeWords.map((w, wi) => (
+                  <span
+                    key={wi}
+                    className={`transition-opacity duration-200 ${
+                      wi <= wordIdx ? "opacity-100" : "opacity-35"
+                    }`}
+                  >
+                    {w.text}
+                    {wi < activeWords.length - 1 ? " " : ""}
+                  </span>
+                ))
+              ) : l.text && l.text.trim() ? (
+                l.text
+              ) : (
+                "♪"
+              )}
             </button>
           );
         })}
