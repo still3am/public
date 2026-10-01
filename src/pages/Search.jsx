@@ -12,6 +12,8 @@ import {
 "lucide-react";
 import { base44 } from "@/api/base44Client";
 import { getPublishedTracks, getArtists } from "@/lib/catalogCache";
+import { countTracksForArtist } from "@/lib/artistTracks";
+import FollowButton from "@/components/FollowButton";
 import TrackCard from "@/components/TrackCard";
 import VinylCrate from "@/components/search/VinylCrate";
 import Avatar from "@/components/Avatar";
@@ -221,11 +223,15 @@ export default function Search() {
                 </h3>
                 <div className="space-y-1">
                   {artistResults.map((a) =>
-              <ArtistRow
-                key={a.id}
-                artist={a}
-                trackCount={allTracks.filter((t) => t.artist?.toLowerCase() === a.name.toLowerCase()).length}
-                onPick={() => searchArtist(a.name)} />
+              <div key={a.id} className="flex items-center gap-1">
+                    <div className="min-w-0 flex-1">
+                      <ArtistRow
+                    artist={a}
+                    trackCount={countTracksForArtist(allTracks, a)}
+                    onPick={() => searchArtist(a.name)} />
+                    </div>
+                    <FollowButton id={a.id} type="artist" name={a.name} size={14} />
+                  </div>
               )}
                 </div>
               </div>
@@ -250,6 +256,7 @@ export default function Search() {
                         </div>
                         <div className="text-xs text-foreground/50 truncate">{u.email}</div>
                       </div>
+                      <FollowButton id={u.id} type="user" name={u.display_name || u.full_name} size={14} />
                     </Link>
               )}
                 </div>

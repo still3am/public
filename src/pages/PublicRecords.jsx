@@ -6,6 +6,9 @@ import TrackCard from "@/components/TrackCard";
 import PullToRefresh from "@/components/PullToRefresh";
 import ArtistNameEditor from "@/components/ArtistNameEditor";
 import ArtistColorTint from "@/components/ArtistColorTint";
+import FollowButton from "@/components/FollowButton";
+import { useFollow } from "@/context/FollowContext";
+import { tracksForArtist } from "@/lib/artistTracks";
 import { usePlayer } from "@/context/PlayerContext";
 import { useAuth } from "@/lib/AuthContext";
 import { useToast } from "@/components/ui/use-toast";
@@ -25,11 +28,7 @@ import {
   ExternalLink } from
 "lucide-react";
 
-const splitNames = (str) =>
-(str || "").
-split(/\s*(?:,|&| feat\.| ft\.| x |;)\s*/i).
-map((s) => s.trim().toLowerCase()).
-filter(Boolean);
+
 
 function safeUrl(u) {
   if (!u) return undefined;
@@ -90,8 +89,10 @@ export default function PublicRecords({ id: propId }) {
   const { toast } = useToast();
   const p = usePlayer();
   const { user } = useAuth();
+  const { isFollowing } = useFollow();
   const [artist, setArtist] = useState(null);
   const [tracks, setTracks] = useState([]);
+  const [followerBase, setFollowerBase] = useState(0);
   const [loading, setLoading] = useState(true);
   const [generating, setGenerating] = useState(false);
 
@@ -101,14 +102,18 @@ export default function PublicRecords({ id: propId }) {
       const a = await base44.entities.Artist.get(id).catch(() => null);
       setArtist(a);
       if (a?.name) {
-        const all = await getPublishedTracks();
-        const names = splitNames(a.name);
-        const matched = (Array.isArray(all) ? all : []).filter((t) =>
-        splitNames(t.artist).some((n) => names.includes(n))
+        // One relationship for the whole app: the same call powers "More from"
+        // on track pages and the A–Z directory.
+        const [all, follows] = await Promise.all([
+        getPublishedTracks(),
+        base44.entities.Follow.filter({ following_id: a.id }, "-created_date", 1000)]
         );
-        setTracks(matched);
+        setTracks(tracksForArtist(all, a));
+        // My own row is left out so a follow made anywhere is added back live.
+        setFollowerBase((follows || []).filter((f) => f.follower_id !== user?.id).length);
       } else {
         setTracks([]);
+        setFollowerBase(0);
       }
     } finally {
       setLoading(false);
@@ -183,6 +188,8 @@ export default function PublicRecords({ id: propId }) {
   find((t) => t.cover_art_url)?.cover_art_url;
 
   const isAdmin = !!user && user.role === "admin";
+  const followed = isFollowing(artist.id, "artist");
+  const followerCount = followerBase + (followed ? 1 : 0);
   const playAll = () => p.playTrackAt(tracks);
 
   return (
@@ -225,6 +232,11 @@ export default function PublicRecords({ id: propId }) {
                 </div>
               }
               <div className="flex flex-wrap items-center justify-center gap-3 mt-4">
+                <FollowButton id={artist.id} type="artist" name={artist.name} />
+                <span className="text-xs font-semibold text-foreground/55">
+                  <span className="font-bold text-foreground">{followerCount.toLocaleString()}</span>{" "}
+                  {followerCount === 1 ? "follower" : "followers"}
+                </span>
                 {tracks.length > 0 &&
                 <button
                   onClick={playAll}

@@ -18,11 +18,16 @@ export default function FollowListModal({ userId, type, onClose }) {
           type === "followers"
             ? { following_id: userId }
             : { follower_id: userId };
-        const follows = await base44.entities.Follow.filter(
+        const rows = await base44.entities.Follow.filter(
           filter,
           "-created_date",
           100
         );
+        // A user's "following" list is people — artist follows aren't accounts.
+        const follows =
+        type === "following" ?
+        rows.filter((f) => (f.target_type || "user") === "user") :
+        rows;
         const ids =
           type === "followers"
             ? follows.map((f) => f.follower_id)

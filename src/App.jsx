@@ -10,6 +10,7 @@ import { Navigate } from 'react-router-dom';
 import { PlayerProvider } from '@/context/PlayerContext';
 import { LibraryProvider } from '@/context/LibraryContext';
 import { UploadProvider } from '@/context/UploadContext';
+import { FollowProvider } from '@/context/FollowContext';
 import Layout from '@/components/Layout';
 import Login from '@/pages/Login';
 import Register from '@/pages/Register';
@@ -107,9 +108,11 @@ function App() {
         <Router>
           <PlayerProvider>
             <LibraryProvider>
-              <UploadProvider>
-                <AuthenticatedApp />
-              </UploadProvider>
+              <FollowProvider>
+                <UploadProvider>
+                  <AuthenticatedApp />
+                </UploadProvider>
+              </FollowProvider>
             </LibraryProvider>
           </PlayerProvider>
         </Router>

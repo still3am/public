@@ -10,12 +10,16 @@ import {
   Plus,
   Share2,
   Trash2,
+  UserCheck,
+  UserPlus,
 } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 import { useAuth } from "@/lib/AuthContext";
 import { useLibrary } from "@/context/LibraryContext";
 import { useOfflineCache } from "@/hooks/useOfflineCache";
 import { useToast } from "@/components/ui/use-toast";
+import { useFollow } from "@/context/FollowContext";
+import { ensureArtistRecord, findArtistRecord } from "@/lib/artistTracks";
 import PlaylistPickerModal from "@/components/playlist/PlaylistPickerModal";
 
 const MENU_WIDTH = 220;
@@ -41,6 +45,8 @@ export default function TrackOptionsMenu({
   const { user } = useAuth();
   const { toast } = useToast();
   const { isInLibrary, toggle } = useLibrary();
+  const { isFollowing, toggle: toggleFollow } = useFollow();
+  const [followId, setFollowId] = useState("");
   const cache = useOfflineCache();
   const [open, setOpen] = useState(false);
   const [pos, setPos] = useState(null);
@@ -58,6 +64,30 @@ export default function TrackOptionsMenu({
       window.removeEventListener("resize", close);
     };
   }, [open]);
+
+  // The artist credit is a name, not an account — resolve it to its Artist
+  // record so this menu shows the real follow state (and can create the record
+  // on first follow).
+  const followTarget = track?.artist ?
+  { type: "artist", name: track.artist } :
+  track?.uploader_id && track.uploader_name && track.uploader_id !== user?.id ?
+  { type: "user", id: track.uploader_id, name: track.uploader_name } :
+  null;
+
+  useEffect(() => {
+    let active = true;
+    setFollowId(followTarget?.type === "user" ? followTarget.id : "");
+    if (followTarget?.type === "artist") {
+      findArtistRecord(followTarget.name).
+      then((rec) => {
+        if (active && rec) setFollowId(rec.id);
+      }).
+      catch(() => {});
+    }
+    return () => {
+      active = false;
+    };
+  }, [followTarget?.type, followTarget?.id, followTarget?.name]);
 
   if (!track) return null;
 
@@ -132,6 +162,28 @@ export default function TrackOptionsMenu({
       },
     },
   ];
+
+  if (followTarget) {
+    const followed = !!followId && isFollowing(followId, followTarget.type);
+    base.push({
+      icon: followed ? UserCheck : UserPlus,
+      label: `${followed ? "Unfollow" : "Follow"} ${followTarget.name}`,
+      onClick: async () => {
+        try {
+          let targetId = followId;
+          if (!targetId && followTarget.type === "artist") {
+            const rec = await ensureArtistRecord(followTarget.name);
+            targetId = rec?.id || "";
+            if (targetId) setFollowId(targetId);
+          }
+          if (!targetId) return;
+          await toggleFollow({ id: targetId, type: followTarget.type, name: followTarget.name });
+        } catch {
+          toast({ title: "Couldn't update follow", variant: "destructive" });
+        }
+      },
+    });
+  }
 
   if (track.is_downloadable) {
     base.push({
