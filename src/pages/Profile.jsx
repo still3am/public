@@ -599,7 +599,7 @@ export default function Profile() {
         }
 
       {showDelete &&
-        <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm grid place-items-center p-4">
+        <div className="fixed inset-0 z-50 bg-media/50 backdrop-blur-sm grid place-items-center p-4">
           <div className="bg-card rounded-2xl w-full max-w-md p-5 shadow-2xl">
             <h3 className="text-lg font-extrabold mb-1">Delete your account</h3>
             <p className="text-sm text-foreground/60 mb-4">
@@ -626,7 +626,7 @@ export default function Profile() {
               <button
                 onClick={confirmDelete}
                 disabled={deleting || deleteConfirm.trim().toUpperCase() !== "DELETE"}
-                className="px-4 py-2 rounded-full bg-red-600 text-white text-sm font-semibold disabled:opacity-40 flex items-center gap-2">
+                className="px-4 py-2 rounded-full bg-destructive text-destructive-foreground text-sm font-semibold disabled:opacity-40 flex items-center gap-2">
               
                 {deleting && <Loader2 size={14} className="animate-spin" />}
                 {deleting ? "Deleting…" : "Permanently delete"}

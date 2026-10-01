@@ -23,17 +23,17 @@ function MixerSlider({ label, range, value, min, max, onChange }) {
         </div>
         <span
           className={`text-xs font-mono tabular-nums ${
-            isNeutral ? "opacity-50" : "text-white font-bold"}`}
+            isNeutral ? "opacity-50" : "text-media-foreground font-bold"}`}
         >
           {value > 0 ? "+" : ""}
           {value} dB
         </span>
       </div>
       <div className="relative h-7 flex items-center">
-        <div className="absolute left-0 right-0 top-1/2 -translate-y-1/2 h-[4px] bg-white/10 rounded-full" />
-        <div className="absolute left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2 w-[1px] h-3 bg-white/25" />
+        <div className="absolute left-0 right-0 top-1/2 -translate-y-1/2 h-[4px] bg-media-foreground/10 rounded-full" />
+        <div className="absolute left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2 w-[1px] h-3 bg-media-foreground/25" />
         <div
-          className="absolute top-1/2 -translate-y-1/2 h-[4px] bg-white rounded-full pointer-events-none"
+          className="absolute top-1/2 -translate-y-1/2 h-[4px] bg-media-foreground rounded-full pointer-events-none"
           style={{
             left: value >= 0 ? "50%" : `${pct}%`,
             right: value >= 0 ? `${100 - pct}%` : "50%",
@@ -41,7 +41,7 @@ function MixerSlider({ label, range, value, min, max, onChange }) {
         />
         <div
           className={`absolute w-5 h-5 rounded-full shadow-lg pointer-events-none -translate-x-1/2 border-2 ${
-            isNeutral ? "bg-white/80 border-white/30" : "bg-white border-white"}`}
+            isNeutral ? "bg-media-foreground/80 border-media-foreground/30" : "bg-media-foreground border-media-foreground"}`}
           style={{ left: `${pct}%` }}
         />
         <input
@@ -69,19 +69,19 @@ function BoostSlider({ value, onChange }) {
           <span className="text-xs font-semibold uppercase tracking-wider opacity-70">Volume Boost</span>
           <span className="text-[9px] opacity-40">up to 3×</span>
         </div>
-        <span className={`text-xs font-mono tabular-nums ${value !== 1 ? "text-white font-bold" : "opacity-50"}`}>
+        <span className={`text-xs font-mono tabular-nums ${value !== 1 ? "text-media-foreground font-bold" : "opacity-50"}`}>
           {Math.round(value * 100)}%
         </span>
       </div>
       <div className="relative h-7 flex items-center">
-        <div className="absolute left-0 right-0 top-1/2 -translate-y-1/2 h-[4px] bg-white/10 rounded-full" />
+        <div className="absolute left-0 right-0 top-1/2 -translate-y-1/2 h-[4px] bg-media-foreground/10 rounded-full" />
         <div
-          className="absolute left-0 top-1/2 -translate-y-1/2 h-[4px] bg-gradient-to-r from-white/60 to-white rounded-full pointer-events-none"
+          className="absolute left-0 top-1/2 -translate-y-1/2 h-[4px] bg-gradient-to-r from-media-foreground/60 to-media-foreground rounded-full pointer-events-none"
           style={{ width: `${pct}%` }}
         />
         <div
           className={`absolute w-5 h-5 rounded-full shadow-lg pointer-events-none -translate-x-1/2 border-2 ${
-            value !== 1 ? "bg-white border-white" : "bg-white/80 border-white/30"}`}
+            value !== 1 ? "bg-media-foreground border-media-foreground" : "bg-media-foreground/80 border-media-foreground/30"}`}
           style={{ left: `${pct}%` }}
         />
         <input
@@ -129,16 +129,16 @@ export default function StemMixer({ onClose }) {
   return (
     <div className="fixed inset-0 z-[60] flex items-end md:items-center justify-center">
       <div
-        className={`absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity duration-250 ${
+        className={`absolute inset-0 bg-media/60 backdrop-blur-sm transition-opacity duration-250 ${
           visible ? "opacity-100" : "opacity-0"}`}
         onClick={handleClose}
       />
       <div
-        className={`relative w-full md:max-w-md bg-zinc-900 border rounded-t-3xl md:rounded-3xl p-5 pb-[calc(1.25rem+env(safe-area-inset-bottom))] transition-transform duration-300 ease-out ${
-          isModified ? "border-white/20" : "border-white/10"} ${
+        className={`relative w-full md:max-w-md bg-media border rounded-t-3xl md:rounded-3xl p-5 pb-[calc(1.25rem+env(safe-area-inset-bottom))] transition-transform duration-300 ease-out ${
+          isModified ? "border-media-foreground/20" : "border-media-foreground/10"} ${
           visible ? "translate-y-0" : "translate-y-full md:translate-y-8"}`}
       >
-        <div className="md:hidden w-10 h-1 bg-white/20 rounded-full mx-auto mb-4" />
+        <div className="md:hidden w-10 h-1 bg-media-foreground/20 rounded-full mx-auto mb-4" />
 
         {/* header */}
         <div className="flex items-center justify-between mb-4">
@@ -147,14 +147,14 @@ export default function StemMixer({ onClose }) {
             {isModified && (
               <button
                 onClick={() => p.resetMixer()}
-                className="px-2.5 py-1 rounded-full text-[11px] font-medium bg-white/10 hover:bg-white/20 ring-1 ring-white/10 transition"
+                className="px-2.5 py-1 rounded-full text-[11px] font-medium bg-media-foreground/10 hover:bg-media-foreground/20 ring-1 ring-media-foreground/10 transition"
               >
                 Reset
               </button>
             )}
             <button
               onClick={handleClose}
-              className="p-2 rounded-full hover:bg-white/10 transition"
+              className="p-2 rounded-full hover:bg-media-foreground/10 transition"
               aria-label="Close mixer"
             >
               <X size={18} />
@@ -163,7 +163,7 @@ export default function StemMixer({ onClose }) {
         </div>
 
         {/* visualizer */}
-        <div className="mb-5 rounded-2xl bg-white/[0.03] p-3">
+        <div className="mb-5 rounded-2xl bg-media-foreground/[0.03] p-3">
           <MixerVisualizer />
         </div>
 
@@ -173,7 +173,7 @@ export default function StemMixer({ onClose }) {
             <button
               key={preset.label}
               onClick={() => applyPreset(preset.values)}
-              className="shrink-0 px-3 py-1.5 rounded-full text-xs font-medium bg-white/10 hover:bg-white/20 ring-1 ring-white/10 transition"
+              className="shrink-0 px-3 py-1.5 rounded-full text-xs font-medium bg-media-foreground/10 hover:bg-media-foreground/20 ring-1 ring-media-foreground/10 transition"
             >
               {preset.label}
             </button>

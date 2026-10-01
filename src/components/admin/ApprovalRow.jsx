@@ -31,7 +31,7 @@ export default function ApprovalRow({ track, busy, onApprove, onReject }) {
         <button
           onClick={onApprove}
           disabled={busy}
-          className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-full bg-emerald-600 text-white text-xs font-semibold disabled:opacity-50 active:scale-95 transition"
+          className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-full bg-success text-success-foreground text-xs font-semibold disabled:opacity-50 active:scale-95 transition"
         >
           {busy ? <Loader2 size={13} className="animate-spin" /> : <Check size={13} />} Approve
         </button>

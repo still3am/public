@@ -41,6 +41,23 @@
     --sidebar-accent-foreground: 240 5.9% 10%;
     --sidebar-border: 220 13% 91%;
     --sidebar-ring: 217.2 91.2% 59.8%;
+
+    /* Media chrome — the always-dark surfaces (fullscreen player, mixer, dark
+       sheets, pickers and scrims). Deliberately identical in both themes so
+       content on top of them never inverts. */
+    --media: 0 0% 4%;
+    --media-foreground: 0 0% 100%;
+
+    /* Status colors. Each theme keeps both a readable text tone and a solid
+       fill with an automatically matching foreground. */
+    --success: 152 62% 30%;
+    --success-foreground: 0 0% 100%;
+    --warning: 32 88% 34%;
+    --warning-foreground: 0 0% 100%;
+    --danger: 0 70% 40%;
+    --danger-foreground: 0 0% 100%;
+    --info: 221 72% 42%;
+    --info-foreground: 0 0% 100%;
   }
 
   .dark {
@@ -76,6 +93,18 @@
     --sidebar-accent-foreground: 240 4.8% 95.9%;
     --sidebar-border: 240 3.7% 15.9%;
     --sidebar-ring: 217.2 91.2% 59.8%;
+
+    --media: 0 0% 4%;
+    --media-foreground: 0 0% 100%;
+
+    --success: 152 55% 62%;
+    --success-foreground: 152 60% 8%;
+    --warning: 38 85% 62%;
+    --warning-foreground: 30 60% 8%;
+    --danger: 0 75% 68%;
+    --danger-foreground: 0 60% 8%;
+    --info: 217 80% 70%;
+    --info-foreground: 221 60% 8%;
   }
 }
 
@@ -193,8 +222,8 @@ html.dark img[alt="PUBLIC."] {
   filter: invert(1);
 }
 
-html.dark .bg-white {
-  background-color: hsl(var(--card)) !important;
-}
+/* NOTE: no global `bg-white` override here on purpose. Repainting every white
+   element in dark mode is what made white-on-dark controls disappear; surfaces
+   now use theme tokens (bg-card / bg-background / bg-media) instead. */
 
 html.modal-open .mobile-tab-bar { display: none !important; }

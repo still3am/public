@@ -45,7 +45,7 @@ export default function FollowListModal({ userId, type, onClose }) {
 
   return (
     <div
-      className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-end md:items-center justify-center p-0 md:p-4"
+      className="fixed inset-0 z-50 bg-media/50 backdrop-blur-sm flex items-end md:items-center justify-center p-0 md:p-4"
       onClick={onClose}
     >
       <div

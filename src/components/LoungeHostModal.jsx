@@ -40,7 +40,7 @@ export default function LoungeHostModal({ lounge, onClose }) {
 
   if (loading && !session) {
     return (
-      <div className="fixed inset-0 z-[60] bg-black/70 backdrop-blur-sm grid place-items-center p-4" onClick={onClose}>
+      <div className="fixed inset-0 z-[60] bg-media/70 backdrop-blur-sm grid place-items-center p-4" onClick={onClose}>
         <div className="bg-card rounded-3xl w-full max-w-sm p-8 text-center" onClick={(e) => e.stopPropagation()}>
           <Loader2 className="animate-spin mx-auto mb-3" />
           <p className="text-sm text-foreground/60">Starting your lounge…</p>
@@ -51,7 +51,7 @@ export default function LoungeHostModal({ lounge, onClose }) {
 
   if (!session) {
     return (
-      <div className="fixed inset-0 z-[60] bg-black/70 backdrop-blur-sm grid place-items-center p-4" onClick={onClose}>
+      <div className="fixed inset-0 z-[60] bg-media/70 backdrop-blur-sm grid place-items-center p-4" onClick={onClose}>
         <div className="bg-card rounded-3xl w-full max-w-sm p-8 text-center" onClick={(e) => e.stopPropagation()}>
           <p className="text-sm text-foreground/60">Couldn't start your lounge. Try again.</p>
         </div>
@@ -71,7 +71,7 @@ export default function LoungeHostModal({ lounge, onClose }) {
   }
 
   return (
-    <div className="fixed inset-0 z-[60] bg-black/80 backdrop-blur-md flex items-center justify-center p-4" onClick={onClose}>
+    <div className="fixed inset-0 z-[60] bg-media/80 backdrop-blur-md flex items-center justify-center p-4" onClick={onClose}>
       <div
         className="bg-card text-foreground rounded-3xl w-full max-w-md max-h-[90vh] overflow-y-auto p-6 relative shadow-2xl"
         onClick={(e) => e.stopPropagation()}>
@@ -223,7 +223,7 @@ export default function LoungeHostModal({ lounge, onClose }) {
             await endSession();
             onClose();
           }}
-          className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-2xl border border-dashed border-border text-sm font-semibold text-foreground/70 hover:text-red-600 hover:border-red-600/40 transition">
+          className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-2xl border border-dashed border-border text-sm font-semibold text-foreground/70 hover:text-danger hover:border-danger/40 transition">
           
           <Power size={15} /> End lounge
         </button>

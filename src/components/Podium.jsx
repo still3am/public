@@ -32,7 +32,7 @@ function PodiumCard({ track, rank, height, accent }) {
             </div>
           )}
           <span
-            className="absolute top-1.5 left-1.5 grid place-items-center font-extrabold rounded-full tabular-nums tracking-tight ring-1 ring-white/40 ring-inset backdrop-blur-md"
+            className="absolute top-1.5 left-1.5 grid place-items-center font-extrabold rounded-full tabular-nums tracking-tight ring-1 ring-media-foreground/40 ring-inset backdrop-blur-md"
             style={{
               width: rank <= 3 ? 26 : 22,
               height: rank <= 3 ? 26 : 22,

@@ -31,7 +31,7 @@ function PinnedTrackCard({ track, onRemove, editMode }) {
         {!editMode &&
         <button
           onClick={handlePlay}
-          className="absolute inset-0 grid place-items-center bg-black/0 group-hover:bg-black/30 transition"
+          className="absolute inset-0 grid place-items-center bg-media/0 group-hover:bg-media/30 transition"
           aria-label={isPlaying ? "Pause" : "Play"}>
           
             <span className="w-10 h-10 rounded-full bg-foreground text-background grid place-items-center opacity-0 group-hover:opacity-100 transition active:scale-90">

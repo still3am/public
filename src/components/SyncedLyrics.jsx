@@ -59,7 +59,7 @@ export default function SyncedLyrics({ trackId, position, fallbackText = "", onS
 
   if (loading) {
     return (
-      <div className="flex-1 grid place-items-center text-white/50">
+      <div className="flex-1 grid place-items-center text-media-foreground/50">
         <Loader2 className="animate-spin" size={22} />
       </div>
     );
@@ -104,13 +104,13 @@ export default function SyncedLyrics({ trackId, position, fallbackText = "", onS
   const text = trackLyrics.trim() || fallbackText.trim();
   if (!text) {
     return (
-      <div className="flex-1 flex items-center justify-center text-white/40 italic text-center px-6">
+      <div className="flex-1 flex items-center justify-center text-media-foreground/40 italic text-center px-6">
         No lyrics available for this track yet.
       </div>
     );
   }
   return (
-    <div className="selectable-content flex-1 min-h-0 overflow-y-auto no-scrollbar px-4 py-10 text-white/85 text-xl font-extrabold leading-relaxed whitespace-pre-line">
+    <div className="selectable-content flex-1 min-h-0 overflow-y-auto no-scrollbar px-4 py-10 text-media-foreground/85 text-xl font-extrabold leading-relaxed whitespace-pre-line">
       {text}
       <div className="h-24" />
     </div>

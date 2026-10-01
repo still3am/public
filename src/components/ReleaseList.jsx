@@ -19,7 +19,7 @@ function MenuBtn({ icon: Icon, label, onClick, danger }) {
     <button
     onClick={onClick}
     className={`w-full flex items-center gap-2.5 px-3.5 py-2.5 text-sm hover:bg-foreground/[0.04] active:bg-foreground/[0.08] text-left ${
-      danger ? "text-red-600" : ""
+      danger ? "text-danger" : ""
     }`}>
     <Icon size={15} /> {label}
     </button>
@@ -87,11 +87,11 @@ function ReleaseRow({ track, tracks, index, openMenuId, setOpenMenuId }) {
             </div>
           )}
         </div>
-        <span className="absolute inset-0 grid place-items-center bg-black/35 opacity-0 group-hover:opacity-100 transition">
+        <span className="absolute inset-0 grid place-items-center bg-media/35 opacity-0 group-hover:opacity-100 transition">
           {isPlayingHere ? (
-            <Pause size={18} className="text-white" />
+            <Pause size={18} className="text-media-foreground" />
           ) : (
-            <Play size={18} className="text-white" fill="currentColor" />
+            <Play size={18} className="text-media-foreground" fill="currentColor" />
           )}
         </span>
       </button>

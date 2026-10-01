@@ -42,7 +42,7 @@ function IconButton({ icon: Icon, onClick, active, size = 22, label, className =
     <button
       onClick={onClick}
       aria-label={label}
-      className={`p-2.5 rounded-full active:scale-90 hover:bg-white/10 transition ${
+      className={`p-2.5 rounded-full active:scale-90 hover:bg-media-foreground/10 transition ${
       active ? "opacity-100" : "opacity-50"} ${
       className}`}>
       
@@ -222,9 +222,9 @@ export default function FullScreenPlayer({ onClose }) {
 
   return (
     <div
-      className="fixed inset-0 z-50 text-white animate-[fadeIn_.25s_ease-out] flex flex-col overflow-hidden"
+      className="fixed inset-0 z-50 text-media-foreground animate-[fadeIn_.25s_ease-out] flex flex-col overflow-hidden"
       style={{
-        background: `linear-gradient(170deg, ${bg} 0%, #0d0d0f 55%, #000 100%)`,
+        background: `linear-gradient(170deg, ${bg} 0%, hsl(var(--media)) 55%, hsl(var(--media)) 100%)`,
         transform: `translateY(${dragY}px)`,
         opacity: dragging ? 1 - Math.min(dragY / (window.innerHeight || 800), 0.45) : 1,
         transition: dragging ? "none" : "transform .32s cubic-bezier(.22,1,.36,1), opacity .28s ease-out"
@@ -264,7 +264,7 @@ export default function FullScreenPlayer({ onClose }) {
           }
         }}
         className="relative flex items-center justify-between px-5 md:px-10 pt-8 pb-3 shrink-0 touch-none">
-        <button onClick={onClose} className="p-2 -ml-2 active:scale-90 hover:bg-white/10 rounded-full transition" aria-label="Close">
+        <button onClick={onClose} className="p-2 -ml-2 active:scale-90 hover:bg-media-foreground/10 rounded-full transition" aria-label="Close">
           <ChevronDown size={26} />
         </button>
         <div className="text-center px-4 min-w-0">
@@ -300,7 +300,7 @@ export default function FullScreenPlayer({ onClose }) {
           {/* artwork / mobile lyrics */}
           <div className="relative flex-1 xl:flex-none flex items-center justify-center min-h-0 py-4">
             {lyricsMode &&
-            <div className="xl:hidden w-full h-full rounded-3xl bg-white/[0.06] overflow-hidden flex flex-col min-h-0">
+            <div className="xl:hidden w-full h-full rounded-3xl bg-media-foreground/[0.06] overflow-hidden flex flex-col min-h-0">
                 <SyncedLyrics trackId={t.id} position={p.position} fallbackText={t.lyrics_text} onSeek={p.seek} />
               </div>
             }
@@ -308,7 +308,7 @@ export default function FullScreenPlayer({ onClose }) {
               onTouchStart={onVolTouchStart}
               onTouchMove={onVolTouchMove}
               onTouchEnd={onVolTouchEnd}
-              className={`relative aspect-square w-full max-w-[min(38vh,80vw)] xl:max-w-[440px] 2xl:max-w-[480px] xl:max-h-[46vh] 2xl:max-h-[52vh] rounded-3xl overflow-hidden shadow-[0_24px_90px_rgba(0,0,0,0.55)] bg-white/10 shrink-0 touch-none transition-transform duration-500 ${
+              className={`relative aspect-square w-full max-w-[min(38vh,80vw)] xl:max-w-[440px] 2xl:max-w-[480px] xl:max-h-[46vh] 2xl:max-h-[52vh] rounded-3xl overflow-hidden shadow-[0_24px_90px_rgba(0,0,0,0.55)] bg-media-foreground/10 shrink-0 touch-none transition-transform duration-500 ${
               p.isPlaying ? "scale-100" : "scale-[0.97]"} ${
               lyricsMode ? "hidden xl:flex" : "flex"}`}>
                 
@@ -321,7 +321,7 @@ export default function FullScreenPlayer({ onClose }) {
               }
                 {/* volume hint */}
                 <div
-                className={`absolute inset-0 grid place-items-center bg-black/30 backdrop-blur-sm transition-opacity duration-200 ${
+                className={`absolute inset-0 grid place-items-center bg-media/30 backdrop-blur-sm transition-opacity duration-200 ${
                 showVolHint ? "opacity-100" : "opacity-0 pointer-events-none"}`
                 }>
                   
@@ -349,7 +349,7 @@ export default function FullScreenPlayer({ onClose }) {
             {hasLyrics && !showLyricsPanel &&
             <button
               onClick={() => setShowLyricsPanel(true)}
-              className="hidden xl:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full ring-1 ring-white/20 hover:bg-white/10 text-xs font-semibold shrink-0 transition">
+              className="hidden xl:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full ring-1 ring-media-foreground/20 hover:bg-media-foreground/10 text-xs font-semibold shrink-0 transition">
                 Lyrics
             </button>
             }
@@ -357,10 +357,10 @@ export default function FullScreenPlayer({ onClose }) {
 
           {/* scrubber */}
           <div className="mb-1.5 shrink-0">
-            <div className="relative h-1.5 bg-white/20 rounded-full group">
-              <div className="absolute left-0 top-0 h-1.5 bg-white rounded-full" style={{ width: `${progress}%` }} />
+            <div className="relative h-1.5 bg-media-foreground/20 rounded-full group">
+              <div className="absolute left-0 top-0 h-1.5 bg-media-foreground rounded-full" style={{ width: `${progress}%` }} />
               <div
-                className="absolute top-1/2 -translate-y-1/2 w-3 h-3 bg-white rounded-full shadow-md opacity-0 group-hover:opacity-100 transition"
+                className="absolute top-1/2 -translate-y-1/2 w-3 h-3 bg-media-foreground rounded-full shadow-md opacity-0 group-hover:opacity-100 transition"
                 style={{ left: `calc(${progress}% - 6px)` }} />
               
               <input
@@ -426,18 +426,18 @@ export default function FullScreenPlayer({ onClose }) {
 
           {/* mobile artwork / lyrics toggle — only when this track has lyrics */}
           {hasLyrics && (
-            <div className="xl:hidden flex items-center gap-1 mx-auto mt-2 mb-5 p-1 rounded-full bg-white/10 shrink-0">
+            <div className="xl:hidden flex items-center gap-1 mx-auto mt-2 mb-5 p-1 rounded-full bg-media-foreground/10 shrink-0">
               <button
                 onClick={() => setLyricsMode(false)}
                 className={`flex items-center justify-center gap-1.5 px-4 py-1.5 rounded-full transition text-xs font-semibold ${
-                !lyricsMode ? "bg-white text-black" : "opacity-70"}`}
+                !lyricsMode ? "bg-media-foreground text-media" : "opacity-70"}`}
                 aria-label="Artwork">
                 <Disc3 size={14} /> Artwork
               </button>
               <button
                 onClick={() => setLyricsMode(true)}
                 className={`flex items-center justify-center gap-1.5 px-4 py-1.5 rounded-full transition text-xs font-semibold ${
-                lyricsMode ? "bg-white text-black" : "opacity-70"}`}
+                lyricsMode ? "bg-media-foreground text-media" : "opacity-70"}`}
                 aria-label="Lyrics">
                 <Mic2 size={14} /> Lyrics
               </button>
@@ -446,14 +446,14 @@ export default function FullScreenPlayer({ onClose }) {
         </div>
 
         {/* RIGHT (desktop): lyrics panel — only when this track has lyrics */}
-        <div className={`${hasLyrics && showLyricsPanel ? "hidden xl:flex" : "hidden"} flex-col min-h-0 w-[440px] 2xl:w-[480px] shrink-0 bg-white/[0.06] ring-1 ring-white/10 rounded-[2rem] overflow-hidden`}>
+        <div className={`${hasLyrics && showLyricsPanel ? "hidden xl:flex" : "hidden"} flex-col min-h-0 w-[440px] 2xl:w-[480px] shrink-0 bg-media-foreground/[0.06] ring-1 ring-media-foreground/10 rounded-[2rem] overflow-hidden`}>
           <div className="flex items-center justify-between px-5 pt-4 pb-1 shrink-0">
             <span className="text-[10px] uppercase tracking-[0.25em] opacity-50 flex items-center gap-2">
               <Mic2 size={13} /> Lyrics
             </span>
             <button
               onClick={() => setShowLyricsPanel(false)}
-              className="p-2 rounded-full hover:bg-white/10 opacity-60 hover:opacity-100 transition"
+              className="p-2 rounded-full hover:bg-media-foreground/10 opacity-60 hover:opacity-100 transition"
               aria-label="Hide lyrics">
               <X size={18} />
             </button>
@@ -484,7 +484,7 @@ export default function FullScreenPlayer({ onClose }) {
 
       {/* copied toast */}
       {copied &&
-      <div className="absolute bottom-24 left-1/2 -translate-x-1/2 px-4 py-2 rounded-full bg-white text-black text-xs font-semibold shadow-xl">
+      <div className="absolute bottom-24 left-1/2 -translate-x-1/2 px-4 py-2 rounded-full bg-media-foreground text-media text-xs font-semibold shadow-xl">
           Link copied
         </div>
       }

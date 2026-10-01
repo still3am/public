@@ -25,7 +25,7 @@ export default function CoverPicker({ previewUrl, onPick, disabled, loading }) {
           </span>
         )}
         {!disabled && previewUrl && (
-          <span className="absolute inset-0 grid place-items-center gap-1 bg-black/55 text-white text-[10px] font-bold opacity-0 group-hover:opacity-100 transition">
+          <span className="absolute inset-0 grid place-items-center gap-1 bg-media/55 text-media-foreground text-[10px] font-bold opacity-0 group-hover:opacity-100 transition">
             <ImagePlus size={16} />
             Change
           </span>

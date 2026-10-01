@@ -245,9 +245,9 @@ export default function Home() {
               backgroundImage:
               "radial-gradient(circle at 15% 15%, hsl(var(--foreground)) 0, transparent 40%), radial-gradient(circle at 85% 85%, hsl(var(--foreground)) 0, transparent 38%)"
             }} />
-          <div className="absolute inset-0 bg-gradient-to-br from-violet-500/8 via-transparent to-amber-400/8 pointer-events-none" />
-          <div className="absolute -right-20 -top-20 w-72 h-72 rounded-full bg-violet-500/12 blur-3xl pointer-events-none" />
-          <div className="absolute -left-12 -bottom-20 w-64 h-64 rounded-full bg-amber-400/12 blur-3xl pointer-events-none" />
+          <div className="absolute inset-0 bg-gradient-to-br from-violet-500/[0.08] via-transparent to-amber-400/[0.08] pointer-events-none" />
+          <div className="absolute -right-20 -top-20 w-72 h-72 rounded-full bg-violet-500/[0.12] blur-3xl pointer-events-none" />
+          <div className="absolute -left-12 -bottom-20 w-64 h-64 rounded-full bg-amber-400/[0.12] blur-3xl pointer-events-none" />
 
           <div className="relative">
             

@@ -33,10 +33,10 @@ export default function DuplicateModal({ tracks, onClose, onRemove }) {
   }
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm grid place-items-center p-4">
+    <div className="fixed inset-0 z-50 bg-media/50 backdrop-blur-sm grid place-items-center p-4">
       <div className="bg-card rounded-2xl w-full max-w-md shadow-2xl flex flex-col max-h-[85vh]">
         <div className="flex items-start gap-3 p-5 border-b border-border">
-          <div className="w-9 h-9 rounded-full bg-amber-100 text-amber-600 dark:bg-amber-900/30 dark:text-amber-400 grid place-items-center shrink-0">
+          <div className="w-9 h-9 rounded-full bg-warning/[0.12] text-warning grid place-items-center shrink-0">
             <AlertTriangle size={18} />
           </div>
           <div className="flex-1 min-w-0">
@@ -84,7 +84,7 @@ export default function DuplicateModal({ tracks, onClose, onRemove }) {
                   <div className="text-xs text-foreground/50 truncate">
                     {t.artist || "Unknown"} · {formatTime(t.duration)}
                   </div>
-                  <div className="text-[11px] text-amber-600 dark:text-amber-400 truncate">
+                  <div className="text-[11px] text-warning truncate">
                     {t.existingIsMine
                       ? "Already in your uploads"
                       : `Already on PUBLIC${t.existingBy ? ` — ${t.existingBy}` : ""}`}

@@ -37,7 +37,7 @@ export default function MobileMoreSheet({ onClose }) {
   }
   return (
     <div className="fixed inset-0 z-50 md:hidden" onClick={onClose}>
-      <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" />
+      <div className="absolute inset-0 bg-media/40 backdrop-blur-sm" />
       <div
         className="absolute left-1/2 -translate-x-1/2 bottom-[calc(4.5rem+env(safe-area-inset-bottom))] w-[min(94vw,28rem)] bg-card rounded-2xl shadow-2xl border border-border overflow-hidden animate-[accordion-down_.18s_ease-out]"
         onClick={(e) => e.stopPropagation()}>
