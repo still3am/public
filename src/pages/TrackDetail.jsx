@@ -18,7 +18,6 @@ import {
 import TrackRow from "@/components/TrackRow";
 import TrackOptionsMenu from "@/components/track/TrackOptionsMenu";
 import GenerateLyricsModal from "@/components/GenerateLyricsModal";
-import { useOfflineCache } from "@/hooks/useOfflineCache";
 import { useToast } from "@/components/ui/use-toast";
 
 export default function TrackDetail() {
@@ -33,7 +32,6 @@ export default function TrackDetail() {
   const [generating, setGenerating] = useState(false);
   const [detecting, setDetecting] = useState(false);
   const [moreTracks, setMoreTracks] = useState([]);
-  const cache = useOfflineCache();
   const { toast } = useToast();
 
   async function load() {
@@ -249,6 +247,7 @@ export default function TrackDetail() {
           variant="plus"
           size={18}
           align="right"
+          className="ml-auto"
           buttonClassName="w-10 h-10 rounded-full bg-foreground text-background grid place-items-center hover:scale-105 transition"
           items={ownerItems} />
       </div>

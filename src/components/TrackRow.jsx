@@ -16,11 +16,6 @@ export default function TrackRow({
 }) {
   const p = usePlayer();
   const isCurrent = p.currentTrack?.id === track.id;
-  const savedOffline = false;
-  const isRecent =
-    track.created_date &&
-    Date.now() - new Date(track.created_date).getTime() < 7 * 86400 * 1000;
-  const isTrending = (track.play_count || 0) > 30;
   const coverUrl = useCoverUrl(track.cover_art_url || albumCover);
 
   return (

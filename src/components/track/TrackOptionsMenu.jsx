@@ -36,6 +36,7 @@ export default function TrackOptionsMenu({
   buttonClassName,
   align = "right",
   size = 16,
+  className = "",
 }) {
   const { user } = useAuth();
   const { toast } = useToast();
@@ -192,7 +193,7 @@ export default function TrackOptionsMenu({
   const menuItems = [...base, ...items];
 
   return (
-    <div className="relative shrink-0">
+    <div className={`relative shrink-0 ${className}`}>
       <button
         ref={btnRef}
         onClick={() => (open ? setOpen(false) : openMenu())}
