@@ -31,7 +31,7 @@ const NAV = [
 
 const EASE = "transition-all duration-300 ease-out";
 
-export default function Sidebar() {
+export default function Sidebar({ onOpenSearch }) {
   const { user } = useAuth();
   const { collapsed, toggle } = useSidebarCollapsed();
   const location = useLocation();
@@ -75,6 +75,20 @@ export default function Sidebar() {
         <div className={`w-[184px] shrink-0 pl-3 ${EASE} ${fadeCls}`}>
           <Logo width="100%" />
         </div>
+      </div>
+
+      <div className="px-3 pb-2">
+        <button
+          onClick={onOpenSearch}
+          title="Quick search (⌘K)"
+          className="w-full flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-foreground/60 hover:text-foreground hover:bg-foreground/[0.03] transition-colors overflow-hidden">
+          
+          <Search size={18} className="shrink-0" />
+          <span className={`shrink-0 ${EASE} ${fadeCls}`}>Quick search</span>
+          <span className={`ml-auto shrink-0 text-[10px] font-bold border border-border rounded px-1.5 py-0.5 text-foreground/45 ${EASE} ${fadeCls}`}>
+            ⌘K
+          </span>
+        </button>
       </div>
 
       <nav className="flex-1 flex flex-col gap-1 overflow-y-auto overflow-x-hidden pb-2 px-3">

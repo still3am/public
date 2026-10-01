@@ -1,6 +1,8 @@
+import { useEffect, useState } from "react";
 import { Outlet, useLocation } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
 import Sidebar from "@/components/Sidebar";
+import GlobalSearch from "@/components/GlobalSearch";
 import MobileTabBar from "@/components/MobileTabBar";
 import MobileTopBar from "@/components/MobileTopBar";
 import ScrollingBanner from "@/components/ScrollingBanner";
@@ -11,9 +13,22 @@ import { useScrollRestore } from "@/hooks/useScrollRestore";
 export default function Layout() {
   const location = useLocation();
   useScrollRestore();
+  const [searchOpen, setSearchOpen] = useState(false);
+
+  useEffect(() => {
+    const onKey = (e) => {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
+        e.preventDefault();
+        setSearchOpen((v) => !v);
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, []);
+
   return (
     <div className="flex min-h-screen bg-background text-foreground">
-      <Sidebar />
+      <Sidebar onOpenSearch={() => setSearchOpen(true)} />
       <div className="flex-1 flex flex-col min-w-0">
         <MobileTopBar />
         <ScrollingBanner />
@@ -34,6 +49,7 @@ export default function Layout() {
       <ResumePlaybackBanner />
       <PlayerBar />
       <MobileTabBar />
+      <GlobalSearch open={searchOpen} onClose={() => setSearchOpen(false)} />
     </div>
   );
 }
