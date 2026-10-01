@@ -1,71 +1,13 @@
-import { useState, useRef, useEffect } from "react";
-import { createPortal } from "react-dom";
-import { Link, useNavigate } from "react-router-dom";
-import {
-  Play,
-  Pause,
-  MoreHorizontal,
-  Plus,
-  Check,
-  Loader2,
-  ChevronRight,
-} from "lucide-react";
+import { Link } from "react-router-dom";
+import { Play, Pause } from "lucide-react";
 import { usePlayer } from "@/context/PlayerContext";
-import { useLibrary } from "@/context/LibraryContext";
 import { Image } from "@/components/ui/image";
+import TrackOptionsMenu from "@/components/TrackOptionsMenu";
 
-function MenuBtn({ icon: Icon, label, onClick, danger }) {
-  return (
-    <button
-    onClick={onClick}
-    className={`w-full flex items-center gap-2.5 px-3.5 py-2.5 text-sm hover:bg-foreground/[0.04] active:bg-foreground/[0.08] text-left ${
-      danger ? "text-danger" : ""
-    }`}>
-    <Icon size={15} /> {label}
-    </button>
-  );
-}
-
-function ReleaseRow({ track, tracks, index, openMenuId, setOpenMenuId }) {
+function ReleaseRow({ track, tracks, index }) {
   const p = usePlayer();
-  const nav = useNavigate();
-  const { isInLibrary, toggle } = useLibrary();
-  const [busy, setBusy] = useState(false);
-  const [menuPos, setMenuPos] = useState({ top: 0, left: 0 });
-  const moreBtnRef = useRef(null);
-  const inLib = isInLibrary(track.id);
   const isCurrent = p.currentTrack?.id === track.id;
   const isPlayingHere = isCurrent && p.isPlaying;
-  const menuOpen = openMenuId === track.id;
-
-  const setMenuOpen = (v) => setOpenMenuId(v ? track.id : null);
-
-  const openMenu = () => {
-    if (moreBtnRef.current) {
-      const r = moreBtnRef.current.getBoundingClientRect();
-      const menuW = window.innerWidth < 640 ? 180 : 200;
-      const menuH = 150;
-      const gap = 4;
-      const vw = window.innerWidth;
-      const vh = window.innerHeight;
-      // Prefer opening below the button; flip above if it would overflow the bottom.
-      const top = r.bottom + gap + menuH > vh
-        ? Math.max(8, r.top - gap - menuH)
-        : r.bottom + gap;
-      // Keep the menu fully on-screen horizontally.
-      let left = r.right - menuW;
-      left = Math.max(8, Math.min(left, vw - menuW - 8));
-      setMenuPos({ top, left });
-    }
-    setOpenMenuId(track.id);
-  };
-
-  useEffect(() => {
-    if (!menuOpen) return;
-    const close = () => setOpenMenuId(null);
-    window.addEventListener("scroll", close, true);
-    return () => window.removeEventListener("scroll", close, true);
-  }, [menuOpen, setOpenMenuId]);
 
   const playHere = () => p.playTrackAt(tracks.slice(index), 0);
 
@@ -98,10 +40,7 @@ function ReleaseRow({ track, tracks, index, openMenuId, setOpenMenuId }) {
 
       <div className="min-w-0 flex-1">
         <Link to={`/track/${track.id}`} className="flex items-center gap-1.5 min-w-0">
-          <span
-            className={`text-[13px] md:text-[15px] font-bold truncate ${
-              isCurrent ? "text-foreground" : "text-foreground"
-            }`}>
+          <span className="text-[13px] md:text-[15px] font-bold truncate text-foreground">
             {track.title}
           </span>
           {track.explicit && (
@@ -115,66 +54,12 @@ function ReleaseRow({ track, tracks, index, openMenuId, setOpenMenuId }) {
         </div>
       </div>
 
-      <div className="relative shrink-0">
-        <button
-          ref={moreBtnRef}
-          onClick={() => (menuOpen ? setMenuOpen(false) : openMenu())}
-          className="p-1.5 md:p-2.5 rounded-full hover:bg-foreground/5 active:bg-foreground/10"
-          aria-label="More">
-          <MoreHorizontal size={16} className="text-foreground" />
-        </button>
-        {menuOpen &&
-          createPortal(
-            <>
-              <div
-                className="fixed inset-0 z-[60]"
-                onClick={() => setMenuOpen(false)}
-              />
-              <div
-                className="fixed z-[70] bg-popover border border-border rounded-xl shadow-xl py-1 w-[180px] sm:w-[200px] max-w-[calc(100vw-1rem)]"
-                style={{ top: menuPos.top, left: menuPos.left }}>
-                <MenuBtn
-                  icon={isPlayingHere ? Pause : Play}
-                  label={isPlayingHere ? "Pause" : "Play"}
-                  onClick={() => {
-                    setMenuOpen(false);
-                    if (isCurrent) p.togglePlay();
-                    else playHere();
-                  }}
-                />
-                <MenuBtn
-                  icon={busy ? Loader2 : inLib ? Check : Plus}
-                  label={busy ? "Saving…" : inLib ? "Remove from library" : "Add to library"}
-                  danger={!busy && inLib}
-                  onClick={async () => {
-                    setMenuOpen(false);
-                    setBusy(true);
-                    try {
-                      await toggle(track);
-                    } finally {
-                      setBusy(false);
-                    }
-                  }}
-                />
-                <MenuBtn
-                  icon={ChevronRight}
-                  label="Go to track"
-                  onClick={() => {
-                    setMenuOpen(false);
-                    nav(`/track/${track.id}`);
-                  }}
-                />
-              </div>
-            </>,
-            document.body
-          )}
-      </div>
+      <TrackOptionsMenu track={track} onPlay={playHere} showGoToTrack />
     </div>
   );
 }
 
 export default function ReleaseList({ tracks }) {
-  const [openMenuId, setOpenMenuId] = useState(null);
   if (!tracks?.length) return null;
   const chunks = [];
   for (let i = 0; i < tracks.length; i += 4) {
@@ -192,8 +77,6 @@ export default function ReleaseList({ tracks }) {
               track={t}
               tracks={tracks}
               index={gi * 4 + i}
-              openMenuId={openMenuId}
-              setOpenMenuId={setOpenMenuId}
             />
           ))}
         </div>
