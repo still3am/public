@@ -4,7 +4,7 @@ import { useColorExtraction } from "@/hooks/useColorExtraction";
 import { useAuth } from "@/lib/AuthContext";
 import { formatTime } from "@/lib/audio-utils";
 import SyncedLyrics from "@/components/SyncedLyrics";
-import NowPlayingAddMenu from "@/components/NowPlayingAddMenu";
+import TrackOptionsMenu from "@/components/track/TrackOptionsMenu";
 import { Link } from "react-router-dom";
 import {
   Play,
@@ -20,6 +20,9 @@ import {
   Repeat1,
   Shuffle,
   Disc3,
+  SlidersHorizontal,
+  ListMusic,
+  Smartphone,
   X } from
 "lucide-react";
 import PulseVisualizer from "@/components/PulseVisualizer";
@@ -284,18 +287,26 @@ export default function FullScreenPlayer({ onClose }) {
 
           
         </div>
-        <NowPlayingAddMenu
+        <TrackOptionsMenu
+          track={t}
           onShare={shareNow}
-          onToggleLibrary={() => toggleLibrary(t)}
-          inLibrary={isInLibrary(t.id)}
-          onViewQueue={() => setShowQueue(true)}
-          onLounge={() => setLoungeOpen(true)}
-          onToggleOffline={toggleOffline}
-          savedOffline={cache.isCached(t.id)}
-          savingOffline={!!cache.downloading[t.id]}
-          queueCount={p.queue.length - p.currentIndex - 1 > 0 ? p.queue.length - p.currentIndex - 1 : 0}
-          onMix={() => setShowMixer(true)}
-          mixerActive={p.mixer.bass !== 0 || p.mixer.beat !== 0 || p.mixer.vocals !== 0 || p.mixer.treble !== 0 || p.mixer.boost !== 1} />
+          extraActions={[
+          {
+            key: "mix",
+            icon: SlidersHorizontal,
+            label: "Mix",
+            accent: p.mixer.bass !== 0 || p.mixer.beat !== 0 || p.mixer.vocals !== 0 || p.mixer.treble !== 0 || p.mixer.boost !== 1,
+            onClick: () => setShowMixer(true)
+          },
+          {
+            key: "queue",
+            icon: ListMusic,
+            label: p.queue.length - p.currentIndex - 1 > 0 ? `Queue (${p.queue.length - p.currentIndex - 1})` : "Queue",
+            onClick: () => setShowQueue(true)
+          },
+          { key: "lounge", icon: Smartphone, label: "Lounge", onClick: () => setLoungeOpen(true) }]
+          }
+          triggerClassName="w-9 h-9 rounded-full grid place-items-center bg-white/10 hover:bg-white/20 active:scale-90 transition text-white" />
         
       </div>
 
