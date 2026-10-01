@@ -6,13 +6,15 @@ import MobileTopBar from "@/components/MobileTopBar";
 import ScrollingBanner from "@/components/ScrollingBanner";
 import PlayerBar from "@/components/PlayerBar";
 import ResumePlaybackBanner from "@/components/ResumePlaybackBanner";
+import AutomaticColorPulse from "@/components/AutomaticColorPulse";
 import { useScrollRestore } from "@/hooks/useScrollRestore";
 
 export default function Layout() {
   const location = useLocation();
   useScrollRestore();
   return (
-    <div className="flex min-h-screen bg-background text-foreground">
+    <div className="relative isolate flex min-h-screen bg-background text-foreground">
+      <AutomaticColorPulse />
       <Sidebar />
       <div className="flex-1 flex flex-col min-w-0">
         <MobileTopBar />
