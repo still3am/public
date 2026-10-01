@@ -21,11 +21,16 @@ export default function PlaylistPickerModal({ track, tracks, onClose }) {
 
   useEffect(() => {
     if (!user?.id) return;
-    base44.entities.Playlist
-      .filter({ creator_id: user.id }, "-created_date", 200)
-      .then((rows) => setPlaylists(rows || []))
-      .catch(() => setPlaylists([]))
-      .finally(() => setLoading(false));
+    // Own playlists plus any the user collaborates on — both are editable.
+    Promise.all([
+    base44.entities.Playlist.filter({ creator_id: user.id }, "-created_date", 200).catch(() => []),
+    base44.entities.Playlist.filter({ collaborator_ids: user.id }, "-created_date", 200).catch(() => [])]).
+    then(([owned, shared]) => {
+      const seen = new Set((owned || []).map((pl) => pl.id));
+      setPlaylists([...(owned || []), ...(shared || []).filter((pl) => !seen.has(pl.id))]);
+    }).
+    catch(() => setPlaylists([])).
+    finally(() => setLoading(false));
   }, [user?.id]);
 
   if (!items.length) return null;

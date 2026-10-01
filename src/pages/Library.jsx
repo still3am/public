@@ -59,8 +59,13 @@ export default function Library() {
   const loadPlaylists = useCallback(async () => {
     if (!user?.id) return;
     try {
-      const rows = await base44.entities.Playlist.filter({ creator_id: user.id }, "-created_date", 200);
-      setPlaylists(rows || []);
+      // Playlists the user owns, plus the ones they collaborate on.
+      const [owned, shared] = await Promise.all([
+      base44.entities.Playlist.filter({ creator_id: user.id }, "-created_date", 200).catch(() => []),
+      base44.entities.Playlist.filter({ collaborator_ids: user.id }, "-created_date", 200).catch(() => [])]
+      );
+      const seen = new Set((owned || []).map((pl) => pl.id));
+      setPlaylists([...(owned || []), ...(shared || []).filter((pl) => !seen.has(pl.id))]);
     } catch {
       setPlaylists([]);
     }
