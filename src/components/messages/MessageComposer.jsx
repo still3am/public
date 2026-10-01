@@ -1,9 +1,12 @@
 import { useEffect, useRef, useState } from "react";
-import { Check, ImagePlus, Loader2, SendHorizontal, X } from "lucide-react";
+import { Check, ImagePlus, Loader2, Mic, SendHorizontal, X } from "lucide-react";
+import VoiceRecorderBar from "@/components/messages/VoiceRecorderBar";
+import useVoiceRecorder from "@/hooks/useVoiceRecorder";
 
 export default function MessageComposer({
   onSend,
   onSendImage,
+  onSendVoiceNote,
   onTyping,
   editing = null,
   onCancelEdit,
@@ -14,6 +17,17 @@ export default function MessageComposer({
   const inputRef = useRef(null);
   const fileRef = useRef(null);
   const editingId = editing?.id;
+
+  const recorder = useVoiceRecorder({
+    onDone: async (file) => {
+      setUploading(true);
+      try {
+        await onSendVoiceNote?.(file);
+      } finally {
+        setUploading(false);
+      }
+    },
+  });
 
   // Entering or leaving edit mode swaps the input to that message's text.
   useEffect(() => {
@@ -48,66 +62,100 @@ export default function MessageComposer({
     }
   };
 
+  const busy = sending || uploading;
+  const canSend = !!text.trim();
+
   return (
     <div className="flex items-end gap-2 py-3 bg-background">
-      {!editing &&
-      <>
-          <input
-          ref={fileRef}
-          type="file"
-          accept="image/*"
-          className="hidden"
-          onChange={attach} />
-        
-          <button
-          onClick={() => fileRef.current?.click()}
-          disabled={uploading}
-          aria-label="Attach a photo"
-          className="shrink-0 w-10 h-10 rounded-full grid place-items-center hover:bg-accent disabled:opacity-40">
-          
-            {uploading ? <Loader2 size={18} className="animate-spin" /> : <ImagePlus size={18} />}
-          </button>
+      {recorder.active ? (
+        <VoiceRecorderBar
+          elapsed={recorder.elapsed}
+          error={recorder.error}
+          onSend={recorder.stop}
+          onCancel={recorder.cancel}
+        />
+      ) : (
+        <>
+          {!editing && (
+            <>
+              <input
+                ref={fileRef}
+                type="file"
+                accept="image/*"
+                className="hidden"
+                onChange={attach}
+              />
+              <button
+                onClick={() => fileRef.current?.click()}
+                disabled={uploading}
+                aria-label="Attach a photo"
+                className="shrink-0 w-10 h-10 rounded-full grid place-items-center hover:bg-accent disabled:opacity-40"
+              >
+                {uploading ? (
+                  <Loader2 size={18} className="animate-spin" />
+                ) : (
+                  <ImagePlus size={18} />
+                )}
+              </button>
+            </>
+          )}
+
+          <textarea
+            ref={inputRef}
+            value={text}
+            rows={1}
+            placeholder={editing ? "Edit message…" : "Write a message…"}
+            onChange={(e) => {
+              setText(e.target.value);
+              onTyping?.();
+            }}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" && !e.shiftKey) {
+                e.preventDefault();
+                submit();
+              } else if (e.key === "Escape" && editing) {
+                onCancelEdit?.();
+              }
+            }}
+            className="flex-1 min-w-0 resize-none max-h-32 px-3.5 py-2.5 rounded-2xl bg-foreground/[0.05] text-sm outline-none selectable-content"
+          />
+
+          {editing && (
+            <button
+              onClick={onCancelEdit}
+              aria-label="Cancel edit"
+              className="shrink-0 w-10 h-10 rounded-full grid place-items-center hover:bg-accent"
+            >
+              <X size={18} />
+            </button>
+          )}
+
+          {!canSend && !editing && !busy ? (
+            <button
+              onClick={recorder.start}
+              aria-label="Record a voice note"
+              className="shrink-0 w-10 h-10 rounded-full grid place-items-center hover:bg-accent"
+            >
+              <Mic size={18} />
+            </button>
+          ) : (
+            <button
+              onClick={submit}
+              disabled={!canSend || busy}
+              aria-label={editing ? "Save edit" : "Send message"}
+              className="shrink-0 w-10 h-10 rounded-full bg-foreground text-background grid place-items-center disabled:opacity-40"
+            >
+              {busy ? (
+                <Loader2 size={17} className="animate-spin" />
+              ) : editing ? (
+                <Check size={17} />
+              ) : (
+                <SendHorizontal size={17} />
+              )}
+            </button>
+          )}
         </>
-      }
-
-      <textarea
-        ref={inputRef}
-        value={text}
-        rows={1}
-        placeholder={editing ? "Edit message…" : "Write a message…"}
-        onChange={(e) => {
-          setText(e.target.value);
-          onTyping?.();
-        }}
-        onKeyDown={(e) => {
-          if (e.key === "Enter" && !e.shiftKey) {
-            e.preventDefault();
-            submit();
-          } else if (e.key === "Escape" && editing) {
-            onCancelEdit?.();
-          }
-        }}
-        className="flex-1 min-w-0 resize-none max-h-32 px-3.5 py-2.5 rounded-2xl bg-foreground/[0.05] text-sm outline-none selectable-content" />
-      
-
-      {editing &&
-      <button
-        onClick={onCancelEdit}
-        aria-label="Cancel edit"
-        className="shrink-0 w-10 h-10 rounded-full grid place-items-center hover:bg-accent">
-        
-          <X size={18} />
-        </button>
-      }
-
-      <button
-        onClick={submit}
-        disabled={!text.trim() || sending}
-        aria-label={editing ? "Save edit" : "Send message"}
-        className="shrink-0 w-10 h-10 rounded-full bg-foreground text-background grid place-items-center disabled:opacity-40">
-        
-        {editing ? <Check size={17} /> : <SendHorizontal size={17} />}
-      </button>
-    </div>);
-
+      )}
+    </div>
+  );
 }

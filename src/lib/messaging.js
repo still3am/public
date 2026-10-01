@@ -94,3 +94,12 @@ export function parseReply(json) {
     return null;
   }
 }
+
+// An attachment carries no text, so the inbox row, a reply quote and the bubble
+// all label it from its media type.
+export function attachmentLabel(mediaType) {
+  if (mediaType === "image") return "📷 Photo";
+  if (mediaType === "audio") return "🎤 Voice message";
+  if (mediaType === "video") return "🎬 Video";
+  return "Attachment";
+}

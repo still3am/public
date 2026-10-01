@@ -3,7 +3,15 @@ import { ImageOff, Loader2 } from "lucide-react";
 import { Image } from "@/components/ui/image";
 import { signedMediaUrl } from "@/lib/messageMedia";
 
-export default function MessageMedia({ fileUri }) {
+function Placeholder({ children }) {
+  return (
+    <div className="w-52 h-11 rounded-xl grid place-items-center bg-foreground/10 text-foreground/45">
+      {children}
+    </div>
+  );
+}
+
+export default function MessageMedia({ fileUri, mediaType = "image" }) {
   const [url, setUrl] = useState("");
   const [failed, setFailed] = useState(false);
 
@@ -22,27 +30,38 @@ export default function MessageMedia({ fileUri }) {
 
   if (failed) {
     return (
-      <div className="w-48 h-32 rounded-xl grid place-items-center bg-foreground/10 text-foreground/45">
-        <ImageOff size={20} />
-      </div>);
-
+      <Placeholder>
+        <ImageOff size={18} />
+      </Placeholder>
+    );
   }
 
   if (!url) {
     return (
-      <div className="w-48 h-32 rounded-xl grid place-items-center bg-foreground/10 text-foreground/45">
-        <Loader2 size={18} className="animate-spin" />
-      </div>);
+      <Placeholder>
+        <Loader2 size={16} className="animate-spin" />
+      </Placeholder>
+    );
+  }
 
+  if (mediaType === "audio") {
+    return (
+      <audio
+        controls
+        preload="metadata"
+        src={url}
+        className="w-52 max-w-full h-11"
+      />
+    );
   }
 
   return (
     <button
       onClick={() => window.open(url, "_blank", "noopener")}
       className="block max-w-[15rem] rounded-xl overflow-hidden"
-      aria-label="Open photo">
-      
+      aria-label="Open attachment"
+    >
       <Image src={url} alt="" fittingType="fill" className="w-full max-h-72 object-cover" />
-    </button>);
-
+    </button>
+  );
 }
