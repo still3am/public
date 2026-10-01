@@ -10,11 +10,18 @@
       "default": ""
     },
     "creator_id": {
-      "type": "string"
-    },
-    "artisan": {
       "type": "string",
-      "default": ""
+      "description": "User who created the album record"
+    },
+    "artist_id": {
+      "type": "string",
+      "default": "",
+      "description": "Artist record this release belongs to, when one is matched"
+    },
+    "artist_name": {
+      "type": "string",
+      "default": "",
+      "description": "Artist credit shown on the release; the fallback link when there is no artist record"
     },
     "genre": {
       "type": "string",

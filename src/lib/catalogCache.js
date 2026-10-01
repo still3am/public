@@ -14,7 +14,7 @@ function makeCache(fetcher, ttl = TTL) {
   let value = null;
   let expiresAt = 0;
   let inflight = null;
-  return async () => {
+  const read = async () => {
     if (hasValue && Date.now() < expiresAt) return value;
     if (inflight) return inflight;
     inflight = fetcher()
@@ -36,8 +36,15 @@ function makeCache(fetcher, ttl = TTL) {
       });
     return inflight;
   };
+  // A record just created by the app can be pushed into the cached list so
+  // surfaces reading it (artist releases, album grids) reflect it immediately
+  // instead of waiting out the cache window.
+  read.prime = (item) => {
+    if (!item?.id || !hasValue || !Array.isArray(value)) return;
+    value = [item, ...value.filter((v) => v?.id !== item.id)];
+  };
+  return read;
 }
-
 export const getPublishedTracks = makeCache(() =>
   base44.entities.Track.filter({ is_published: true }, "-created_date", MAX)
 );
@@ -45,6 +52,12 @@ export const getPublishedTracks = makeCache(() =>
 export const getArtists = makeCache(() =>
   base44.entities.Artist.list("-updated_date", MAX)
 );
+
+export const getAlbums = makeCache(() =>
+  base44.entities.Album.list("-updated_date", MAX)
+);
+
+export const primeAlbum = (album) => getAlbums.prime(album);
 
 // The catalog size is counted server-side (and shared app-wide for an hour), but
 // still reuse the answer here for a while so navigating back and forth is free.

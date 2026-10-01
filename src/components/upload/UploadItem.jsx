@@ -74,6 +74,13 @@ export default function UploadItem({
                 className="h-9 border-0 bg-foreground/[0.04] focus-visible:bg-foreground/[0.07]"
                 disabled={locked} />
               
+              <Input
+                value={item.album || ""}
+                onChange={(e) => onChange({ album: e.target.value })}
+                placeholder="Album (optional)"
+                className="h-9 border-0 bg-foreground/[0.04] focus-visible:bg-foreground/[0.07]"
+                disabled={locked} />
+              
             </div>
             <button
               onClick={onRemove}

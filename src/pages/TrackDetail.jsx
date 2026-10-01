@@ -3,6 +3,7 @@ import { Link, useParams, useNavigate } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import { useAuth } from "@/lib/AuthContext";
 import { usePlayer } from "@/context/PlayerContext";
+import { getAlbums } from "@/lib/catalogCache";
 import EmptyState from "@/components/EmptyState";
 import EditTrackModal from "@/components/EditTrackModal";
 import ArtistLinks from "@/components/ArtistLinks";
@@ -32,6 +33,7 @@ export default function TrackDetail() {
   const [generating, setGenerating] = useState(false);
   const [detecting, setDetecting] = useState(false);
   const [moreTracks, setMoreTracks] = useState([]);
+  const [album, setAlbum] = useState(null);
   const [copied, setCopied] = useState(false);
   const { toast } = useToast();
 
@@ -40,6 +42,16 @@ export default function TrackDetail() {
     try {
       const t = await base44.entities.Track.get(id).catch(() => null);
       setTrack(t);
+      // Resolve the release this track belongs to, so the track page links back
+      // to its album record.
+      if (t?.album_id) {
+        const releases = await getAlbums();
+        setAlbum(
+          (Array.isArray(releases) ? releases : []).find((a) => a.id === t.album_id) || null
+        );
+      } else {
+        setAlbum(null);
+      }
       if (t?.uploader_id) {
         const u = await base44.entities.User.
         get(t.uploader_id).
@@ -190,9 +202,19 @@ export default function TrackDetail() {
             }
           </div>
           <div className="flex-1 min-w-0 flex flex-col items-center w-full">
-            <span className="self-center text-[10px] uppercase tracking-[0.2em] text-foreground/50 font-semibold mb-2.5 border border-border rounded-full px-3 py-1">
-              {track.genre}
-            </span>
+            <div className="flex items-center justify-center flex-wrap gap-1.5 mb-2.5">
+              <span className="text-[10px] uppercase tracking-[0.2em] text-foreground/50 font-semibold border border-border rounded-full px-3 py-1">
+                {track.genre}
+              </span>
+              {album &&
+              <Link
+                to={`/album/${album.id}`}
+                className="text-[10px] uppercase tracking-[0.2em] text-foreground/60 font-semibold border border-border rounded-full px-3 py-1 hover:text-foreground hover:border-foreground/30 transition">
+                
+                  {album.title}
+                </Link>
+              }
+            </div>
             <div className="flex items-center gap-2 flex-wrap mb-1.5 justify-center">
               <h1 className="text-3xl md:text-4xl font-extrabold tracking-tighter leading-[1.05]">
                 {track.title}
