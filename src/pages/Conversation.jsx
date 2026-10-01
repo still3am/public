@@ -20,12 +20,14 @@ import Avatar from "@/components/Avatar";
 import EmptyState from "@/components/EmptyState";
 import MessageBubble from "@/components/messages/MessageBubble";
 import MessageComposer from "@/components/messages/MessageComposer";
+import { useToast } from "@/components/ui/use-toast";
 import { dayLabel, displayNameOf, otherParticipant, toggleReaction } from "@/lib/messaging";
 
 export default function Conversation() {
   const { id } = useParams();
   const nav = useNavigate();
   const { user } = useAuth();
+  const { toast } = useToast();
   const [conv, setConv] = useState(null);
   const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -111,7 +113,8 @@ export default function Conversation() {
       JSON.stringify({
         id: replyTo.id,
         sender_name: replyTo.sender_name || displayNameOf(user),
-        text: (replyTo.text || "").slice(0, 160)
+        text: (replyTo.text || "").slice(0, 160),
+        media_type: replyTo.media_url ? replyTo.media_type || "image" : ""
       }) :
       ""
     });
@@ -125,6 +128,31 @@ export default function Conversation() {
       typing_user_id: "",
       typing_at: ""
     }).catch(() => {});
+  }
+
+  async function sendImage(file) {
+    if (!user?.id || !conv || !other) return;
+    try {
+      const { file_uri } = await base44.integrations.Core.UploadPrivateFile({ file });
+      const created = await base44.entities.Message.create({
+        conversation_id: conv.id,
+        sender_id: user.id,
+        recipient_id: other.id,
+        sender_name: displayNameOf(user),
+        sender_avatar_url: user.avatar_url || "",
+        text: "",
+        media_url: file_uri,
+        media_type: "image"
+      });
+      setMessages((prev) => [...prev, created]);
+      base44.entities.Conversation.update(conv.id, {
+        last_message_text: "📷 Photo",
+        last_message_at: new Date().toISOString(),
+        last_sender_id: user.id
+      }).catch(() => {});
+    } catch {
+      toast({ title: "Couldn't send that photo", variant: "destructive" });
+    }
   }
 
   async function saveEdit(message, text) {
@@ -332,6 +360,7 @@ export default function Conversation() {
 
         <MessageComposer
           onSend={send}
+          onSendImage={sendImage}
           onTyping={handleTyping}
           editing={editing}
           onCancelEdit={() => setEditing(null)} />

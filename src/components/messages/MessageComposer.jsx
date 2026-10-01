@@ -1,10 +1,18 @@
 import { useEffect, useRef, useState } from "react";
-import { Check, SendHorizontal, X } from "lucide-react";
+import { Check, ImagePlus, Loader2, SendHorizontal, X } from "lucide-react";
 
-export default function MessageComposer({ onSend, onTyping, editing = null, onCancelEdit }) {
+export default function MessageComposer({
+  onSend,
+  onSendImage,
+  onTyping,
+  editing = null,
+  onCancelEdit,
+}) {
   const [text, setText] = useState("");
   const [sending, setSending] = useState(false);
+  const [uploading, setUploading] = useState(false);
   const inputRef = useRef(null);
+  const fileRef = useRef(null);
   const editingId = editing?.id;
 
   // Entering or leaving edit mode swaps the input to that message's text.
@@ -28,8 +36,40 @@ export default function MessageComposer({ onSend, onTyping, editing = null, onCa
     }
   };
 
+  const attach = async (e) => {
+    const file = e.target.files?.[0];
+    e.target.value = "";
+    if (!file || uploading) return;
+    setUploading(true);
+    try {
+      await onSendImage?.(file);
+    } finally {
+      setUploading(false);
+    }
+  };
+
   return (
     <div className="flex items-end gap-2 py-3 bg-background">
+      {!editing &&
+      <>
+          <input
+          ref={fileRef}
+          type="file"
+          accept="image/*"
+          className="hidden"
+          onChange={attach} />
+        
+          <button
+          onClick={() => fileRef.current?.click()}
+          disabled={uploading}
+          aria-label="Attach a photo"
+          className="shrink-0 w-10 h-10 rounded-full grid place-items-center hover:bg-accent disabled:opacity-40">
+          
+            {uploading ? <Loader2 size={18} className="animate-spin" /> : <ImagePlus size={18} />}
+          </button>
+        </>
+      }
+
       <textarea
         ref={inputRef}
         value={text}
