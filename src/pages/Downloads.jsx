@@ -196,11 +196,11 @@ export default function Downloads() {
                         className="w-10 h-10 rounded overflow-hidden shrink-0 relative bg-foreground/10 grid place-items-center"
                         aria-label="Play">
                         <DownloadCover record={t} size={16} />
-                        <span className="absolute inset-0 grid place-items-center bg-media/0 group-hover:bg-media/30 transition">
+                        <span className="absolute inset-0 grid place-items-center bg-black/0 group-hover:bg-black/30 transition">
                           {playingHere ?
-                        <Pause size={15} className="text-media-foreground" /> :
+                        <Pause size={15} className="text-white" /> :
 
-                        <Play size={15} className="text-media-foreground opacity-0 group-hover:opacity-100 transition" />
+                        <Play size={15} className="text-white opacity-0 group-hover:opacity-100 transition" />
                         }
                         </span>
                       </button>
@@ -246,7 +246,7 @@ export default function Downloads() {
       </PullToRefresh>
 
       {confirming &&
-      <div className="fixed inset-0 z-50 grid place-items-center p-6 bg-media/40">
+      <div className="fixed inset-0 z-50 grid place-items-center p-6 bg-black/40">
           <div className="bg-card rounded-2xl ring-1 ring-border max-w-sm w-full p-6 text-center shadow-2xl">
             <div className="w-12 h-12 rounded-full bg-destructive/10 grid place-items-center mx-auto mb-3">
               <Trash2 size={20} className="text-destructive" />

@@ -41,7 +41,7 @@ export default function UploadItem({
   return (
     <div
       className={`rounded-2xl overflow-hidden bg-card ring-1 ring-inset transition ${
-      done ? "ring-success/40" : "ring-border"}`
+      done ? "ring-emerald-500/40" : "ring-border"}`
       }>
       
       <div className="p-3 md:p-4 flex flex-col items-center sm:flex-row sm:items-start gap-3 md:gap-4">
@@ -133,7 +133,7 @@ export default function UploadItem({
 
       {/* Action footer */}
       {done ?
-      <div className="flex items-center justify-center gap-2 py-2.5 text-xs font-bold bg-success/10 text-success">
+      <div className="flex items-center justify-center gap-2 py-2.5 text-xs font-bold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
           <CheckCheck size={14} />
           {isAdmin && meetsRules ?
         "Published on PUBLIC" :

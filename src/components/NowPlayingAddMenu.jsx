@@ -51,7 +51,7 @@ export default function NowPlayingAddMenu({
         onMix();
         close();
       },
-      accent: mixerActive ? "text-media-foreground" : "",
+      accent: mixerActive ? "text-white" : "",
     },
     onShare && {
       icon: Share2,
@@ -104,7 +104,7 @@ export default function NowPlayingAddMenu({
         onTogglePulse();
         close();
       },
-      accent: showPulse ? "text-media-foreground" : "",
+      accent: showPulse ? "text-white" : "",
     },
   ].filter(Boolean);
 
@@ -116,14 +116,14 @@ export default function NowPlayingAddMenu({
             className="md:hidden fixed inset-0 z-40"
             onClick={() => setOpen(false)}
           />
-          <div className="absolute right-0 top-full mt-2 z-50 w-52 rounded-2xl bg-media/70 backdrop-blur-xl border border-media-foreground/10 shadow-2xl py-1.5 animate-[fadeIn_.15s_ease-out]">
+          <div className="absolute right-0 top-full mt-2 z-50 w-52 rounded-2xl bg-black/70 backdrop-blur-xl border border-white/10 shadow-2xl py-1.5 animate-[fadeIn_.15s_ease-out]">
             {options.map((opt, i) => {
               const Icon = opt.icon;
               return (
                 <button
                   key={i}
                   onClick={() => opt.onClick(() => setOpen(false))}
-                  className="w-full flex items-center gap-3 px-3.5 py-2.5 text-sm font-medium text-left hover:bg-media-foreground/10 active:scale-[0.98] transition"
+                  className="w-full flex items-center gap-3 px-3.5 py-2.5 text-sm font-medium text-left hover:bg-white/10 active:scale-[0.98] transition"
                 >
                   <Icon size={16} className={opt.accent || "opacity-80"} />
                   <span className="flex-1 truncate">{opt.label}</span>
@@ -137,7 +137,7 @@ export default function NowPlayingAddMenu({
         onClick={() => setOpen((v) => !v)}
         aria-label={open ? "Close menu" : "Open menu"}
         className={`w-9 h-9 rounded-full grid place-items-center active:scale-90 transition ${
-          open ? "bg-media-foreground/15" : "bg-media-foreground/10 hover:bg-media-foreground/20"
+          open ? "bg-white/15" : "bg-white/10 hover:bg-white/20"
         }`}
       >
         {open ? <X size={20} /> : <Plus size={20} />}

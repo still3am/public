@@ -29,8 +29,9 @@ import SettingsSheet from "@/components/profile/SettingsSheet";
 import ProfileSong from "@/components/profile/ProfileSong";
 import TopTracks from "@/components/profile/TopTracks";
 import ProfileComments from "@/components/profile/ProfileComments";
+import GenreTags from "@/components/profile/GenreTags";
 import FollowListModal from "@/components/profile/FollowListModal";
-import ColorPulse from "@/components/ColorPulse";
+import { useColorPalette } from "@/hooks/useColorPalette";
 import { useCoverUrl } from "@/hooks/useCoverUrl";
 
 function safeUrl(u) {
@@ -94,6 +95,7 @@ export default function Profile() {
   }, [profile?.featured_track_id]);
 
   const coverUrl = useCoverUrl(featuredCoverUrl);
+  const [bgPrimary, bgSecondary, bgAccent] = useColorPalette(coverUrl);
 
   async function load() {
     setLoading(true);
@@ -305,7 +307,32 @@ export default function Profile() {
 
   return (
     <PullToRefresh onRefresh={load}>
-    {coverUrl && <ColorPulse coverUrl={coverUrl} fixed className="z-0" />}
+    {coverUrl &&
+      <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
+        <div
+          className="absolute inset-0 animate-[herobreathebright_9s_ease-in-out_infinite]"
+          style={{
+            backgroundImage:
+            `radial-gradient(circle at 25% 25%, ${bgPrimary} 0, transparent 52%),` +
+            `radial-gradient(circle at 75% 75%, ${bgSecondary} 0, transparent 52%),` +
+            `radial-gradient(circle at 50% 90%, ${bgAccent} 0, transparent 52%)`,
+            filter: "blur(38px) saturate(1.8) brightness(1.2)",
+            mixBlendMode: "multiply"
+          }} />
+        
+        <div
+          className="absolute -inset-5 animate-[herobreathebright_11s_ease-in-out_infinite] [animation-delay:-3s]"
+          style={{
+            backgroundImage:
+            `radial-gradient(circle at 35% 30%, ${bgPrimary} 0, transparent 48%),` +
+            `radial-gradient(circle at 70% 72%, ${bgSecondary} 0, transparent 48%),` +
+            `radial-gradient(circle at 50% 50%, ${bgAccent} 0, transparent 45%)`,
+            filter: "blur(44px) saturate(1.9) brightness(1.3)",
+            mixBlendMode: "screen"
+          }} />
+        
+      </div>
+      }
     <div className="max-w-6xl mx-auto relative z-10">
       <div className="flex flex-col md:flex-row gap-4 md:gap-6 mb-8">
       <div className="relative rounded-2xl overflow-hidden ring-1 ring-inset ring-foreground/10 bg-card flex-1 min-w-0">
@@ -540,6 +567,7 @@ export default function Profile() {
           }
       </div>
 
+      {isOwn && !editMode && <GenreTags />}
 
       <TopTracks
           trackIds={editMode ? form.top_track_ids : profile?.top_track_ids || []}
@@ -571,7 +599,7 @@ export default function Profile() {
         }
 
       {showDelete &&
-        <div className="fixed inset-0 z-50 bg-media/50 backdrop-blur-sm grid place-items-center p-4">
+        <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm grid place-items-center p-4">
           <div className="bg-card rounded-2xl w-full max-w-md p-5 shadow-2xl">
             <h3 className="text-lg font-extrabold mb-1">Delete your account</h3>
             <p className="text-sm text-foreground/60 mb-4">
@@ -598,7 +626,7 @@ export default function Profile() {
               <button
                 onClick={confirmDelete}
                 disabled={deleting || deleteConfirm.trim().toUpperCase() !== "DELETE"}
-                className="px-4 py-2 rounded-full bg-destructive text-destructive-foreground text-sm font-semibold disabled:opacity-40 flex items-center gap-2">
+                className="px-4 py-2 rounded-full bg-red-600 text-white text-sm font-semibold disabled:opacity-40 flex items-center gap-2">
               
                 {deleting && <Loader2 size={14} className="animate-spin" />}
                 {deleting ? "Deleting…" : "Permanently delete"}

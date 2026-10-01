@@ -46,7 +46,7 @@ export default function CreatePlaylistModal({ onClose, onCreated }) {
 
   return (
     <div className="fixed inset-0 z-[70] flex items-end md:items-center justify-center">
-      <div className="absolute inset-0 bg-media/60 backdrop-blur-sm" onClick={onClose} />
+      <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={onClose} />
       <div className="relative w-full md:max-w-md bg-card border rounded-t-3xl md:rounded-3xl p-5 pb-[calc(1.25rem+env(safe-area-inset-bottom))] max-h-[85vh] overflow-y-auto">
         <div className="md:hidden w-10 h-1 bg-foreground/20 rounded-full mx-auto mb-4" />
         <div className="flex items-center justify-between mb-5">

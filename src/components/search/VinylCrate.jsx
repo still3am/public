@@ -26,7 +26,7 @@ export default function VinylCrate({ genres, onPick }) {
                 {g.genre}
               </div>
           }
-            <div className="absolute inset-0 bg-media/0 group-hover:bg-media/10 transition-colors duration-300" />
+            <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300" />
           </div>
           <div className="truncate text-sm font-semibold text-center">{g.genre}</div>
           <div className="text-xs text-foreground/55 truncate mt-0.5 hidden">

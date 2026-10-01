@@ -1,16 +1,10 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { useAuth } from "@/lib/AuthContext";
 import { X, ListMusic, Plus, Check, Loader2 } from "lucide-react";
 import CreatePlaylistModal from "@/components/playlist/CreatePlaylistModal";
 
-// Takes either a single `track` or a `tracks` array, so one picker backs both
-// the per-track menu and the library's bulk selection toolbar.
-export default function PlaylistPickerModal({ track, tracks, onClose, onAdded }) {
-  const list = useMemo(
-    () => (Array.isArray(tracks) && tracks.length ? tracks : track ? [track] : []),
-    [tracks, track]
-  );
+export default function PlaylistPickerModal({ track, onClose }) {
   const { user } = useAuth();
   const [playlists, setPlaylists] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -27,20 +21,20 @@ export default function PlaylistPickerModal({ track, tracks, onClose, onAdded })
       .finally(() => setLoading(false));
   }, [user?.id]);
 
-  if (!list.length) return null;
+  if (!track) return null;
 
   async function addToPlaylist(pl) {
     setAdding(pl.id);
     try {
       const ids = pl.track_ids || [];
-      const toAdd = list.map((t) => t.id).filter((id) => !ids.includes(id));
-      if (toAdd.length) {
-        await base44.entities.Playlist.update(pl.id, {
-          track_ids: [...ids, ...toAdd],
-        });
+      if (ids.includes(track.id)) {
+        setAddedTo(pl.id);
+        return;
       }
+      await base44.entities.Playlist.update(pl.id, {
+        track_ids: [...ids, track.id],
+      });
       setAddedTo(pl.id);
-      onAdded?.(pl, toAdd.length);
     } catch {
       alert("Could not add to playlist. Try again.");
     } finally {
@@ -50,15 +44,13 @@ export default function PlaylistPickerModal({ track, tracks, onClose, onAdded })
 
   return (
     <div className="fixed inset-0 z-[70] flex items-end md:items-center justify-center">
-      <div className="absolute inset-0 bg-media/60 backdrop-blur-sm" onClick={onClose} />
+      <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={onClose} />
       <div className="relative w-full md:max-w-md bg-card border rounded-t-3xl md:rounded-3xl p-5 pb-[calc(1.25rem+env(safe-area-inset-bottom))] max-h-[80vh] overflow-y-auto">
         <div className="md:hidden w-10 h-1 bg-foreground/20 rounded-full mx-auto mb-4" />
         <div className="flex items-center justify-between mb-4">
           <div className="min-w-0">
             <h2 className="text-lg font-extrabold tracking-tight">Add to playlist</h2>
-            <p className="text-xs text-foreground/50 truncate mt-0.5">
-              {list.length === 1 ? list[0].title : `${list.length} songs`}
-            </p>
+            <p className="text-xs text-foreground/50 truncate mt-0.5">{track.title}</p>
           </div>
           <button onClick={onClose} className="p-2 rounded-full hover:bg-foreground/10 shrink-0" aria-label="Close">
             <X size={18} />
@@ -112,7 +104,7 @@ export default function PlaylistPickerModal({ track, tracks, onClose, onAdded })
                   {isAdding ? (
                     <Loader2 size={18} className="animate-spin text-foreground/50" />
                   ) : isAdded ? (
-                    <Check size={18} className="text-success" />
+                    <Check size={18} className="text-emerald-500" />
                   ) : null}
                 </button>
               );

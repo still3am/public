@@ -1,7 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "react-router-dom";
-import { base44 } from "@/api/base44Client";
-import { useLibrary } from "@/context/LibraryContext";
 import { getPublishedTracks, getArtists } from "@/lib/catalogCache";
 import PullToRefresh from "@/components/PullToRefresh";
 import { Loader2, Mic2, Disc3 } from "lucide-react";
@@ -59,7 +57,6 @@ function AzReveal({ children }) {
 
 export default function PublicRecordsIndex() {
   const [artists, setArtists] = useState(null); // null = loading
-  const { ids: libraryTrackIds } = useLibrary();
   const [activeKey, setActiveKey] = useState("");
   const groupRefs = useRef({});
 
@@ -70,24 +67,6 @@ export default function PublicRecordsIndex() {
       getArtists(),
       getPublishedTracks()]
       );
-      const published = Array.isArray(tracks) ? tracks : [];
-
-      // Saving a song to your Library surfaces its artist here too — including
-      // tracks that aren't in the public catalog yet. Only the ones the public
-      // list doesn't already cover are looked up.
-      const knownIds = new Set(published.map((t) => t.id));
-      const extraIds = [...libraryTrackIds].
-      filter((id) => id && !knownIds.has(id)).
-      slice(0, 1000);
-      const saved = extraIds.length ?
-      await base44.entities.Track.filter(
-        { id: { $in: extraIds } },
-        "-created_date",
-        1000
-      ).catch(() => []) :
-      [];
-      const allTracks = published.concat(Array.isArray(saved) ? saved : []);
-
       const recordByName = new Map();
       (Array.isArray(records) ? records : []).forEach((a) => {
         const k = norm(a.name);
@@ -112,7 +91,7 @@ export default function PublicRecordsIndex() {
         }
       };
 
-      allTracks.forEach((t) => {
+      (Array.isArray(tracks) ? tracks : []).forEach((t) => {
         const segs = splitNames(t.artist);
         if (!segs.length) return;
         segs.forEach((seg) => bump(seg, recordByName.get(norm(seg)) || null));
@@ -137,17 +116,9 @@ export default function PublicRecordsIndex() {
     }
   };
 
-  // Stable key so library refreshes that change nothing don't trigger re-reads.
-  const libraryKey = useMemo(
-    () =>
-    [...libraryTrackIds].filter(Boolean).sort().join(","),
-    [libraryTrackIds]
-  );
-
   useEffect(() => {
     load();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [libraryKey]);
+  }, []);
 
   const groups = useMemo(() => {
     const map = {};

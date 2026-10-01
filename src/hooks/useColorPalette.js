@@ -11,85 +11,60 @@ function boost([r, g, b]) {
   return `rgb(${clamp(r * k)}, ${clamp(g * k)}, ${clamp(b * k)})`;
 }
 
-function samplePalette(img) {
-  const canvas = document.createElement("canvas");
-  const w = (canvas.width = 24);
-  const h = (canvas.height = 24);
-  const ctx = canvas.getContext("2d");
-  ctx.drawImage(img, 0, 0, w, h);
-  const data = ctx.getImageData(0, 0, w, h).data;
-
-  // bucket pixels by hue-ish key, keep the most saturated buckets
-  const buckets = new Map();
-  for (let i = 0; i < data.length; i += 4) {
-    const R = data[i], G = data[i + 1], B = data[i + 2];
-    const max = Math.max(R, G, B), min = Math.min(R, G, B);
-    if (max < 24 || (max > 240 && min > 230)) continue;
-    const key = `${R >> 5}-${G >> 5}-${B >> 5}`;
-    const b = buckets.get(key) || { r: 0, g: 0, b: 0, n: 0, sat: max - min };
-    b.r += R; b.g += G; b.b += B; b.n += 1;
-    buckets.set(key, b);
-  }
-  const ranked = [...buckets.values()]
-    .map((b) => ({ rgb: [b.r / b.n, b.g / b.n, b.b / b.n], score: b.n * (1 + b.sat / 120) }))
-    .sort((a, b) => b.score - a.score);
-
-  if (!ranked.length) return FALLBACK;
-  const pick = (i) => boost(ranked[Math.min(i, ranked.length - 1)].rgb);
-  return [pick(0), pick(1), pick(2)];
-}
-
-// A cover is sampled once per URL per session. The palette is now used by the
-// app-wide pulse, the hero, artist pages, profiles and the visualizers at the
-// same time — without this every one of them re-drew the same image.
-const cache = new Map();    // url -> palette
-const inFlight = new Map(); // url -> Promise<palette>
-
-function loadPalette(url) {
-  if (cache.has(url)) return Promise.resolve(cache.get(url));
-  if (inFlight.has(url)) return inFlight.get(url);
-
-  const p = new Promise((resolve) => {
-    const img = new Image();
-    img.crossOrigin = "anonymous";
-    img.onload = () => {
-      try {
-        resolve(samplePalette(img));
-      } catch {
-        resolve(FALLBACK);
-      }
-    };
-    img.onerror = () => resolve(FALLBACK);
-    img.src = url;
-  }).then((palette) => {
-    cache.set(url, palette);
-    inFlight.delete(url);
-    return palette;
-  });
-
-  inFlight.set(url, p);
-  return p;
-}
-
 // Samples an image and returns three vivid colors [primary, secondary, accent]
 // for gradient use. Falls back to neutral greys on CORS taint or failure.
 export function useColorPalette(url) {
-  const [palette, setPalette] = useState(() => (url && cache.get(url)) || FALLBACK);
+  const [palette, setPalette] = useState(FALLBACK);
 
   useEffect(() => {
+    let cancelled = false;
     if (!url) {
       setPalette(FALLBACK);
       return;
     }
-    const cached = cache.get(url);
-    if (cached) {
-      setPalette(cached);
-      return;
-    }
-    let cancelled = false;
-    loadPalette(url).then((next) => {
-      if (!cancelled) setPalette(next);
-    });
+    const img = new Image();
+    img.crossOrigin = "anonymous";
+
+    img.onload = () => {
+      if (cancelled) return;
+      try {
+        const canvas = document.createElement("canvas");
+        const w = (canvas.width = 24);
+        const h = (canvas.height = 24);
+        const ctx = canvas.getContext("2d");
+        ctx.drawImage(img, 0, 0, w, h);
+        const data = ctx.getImageData(0, 0, w, h).data;
+
+        // bucket pixels by hue-ish key, keep the most saturated buckets
+        const buckets = new Map();
+        for (let i = 0; i < data.length; i += 4) {
+          const R = data[i], G = data[i + 1], B = data[i + 2];
+          const max = Math.max(R, G, B), min = Math.min(R, G, B);
+          if (max < 24 || (max > 240 && min > 230)) continue;
+          const key = `${R >> 5}-${G >> 5}-${B >> 5}`;
+          const b = buckets.get(key) || { r: 0, g: 0, b: 0, n: 0, sat: max - min };
+          b.r += R; b.g += G; b.b += B; b.n += 1;
+          buckets.set(key, b);
+        }
+        const ranked = [...buckets.values()]
+          .map((b) => ({ rgb: [b.r / b.n, b.g / b.n, b.b / b.n], score: b.n * (1 + b.sat / 120) }))
+          .sort((a, b) => b.score - a.score);
+
+        if (!ranked.length) {
+          setPalette(FALLBACK);
+          return;
+        }
+        const pick = (i) => boost(ranked[Math.min(i, ranked.length - 1)].rgb);
+        setPalette([pick(0), pick(1), pick(2)]);
+      } catch {
+        setPalette(FALLBACK);
+      }
+    };
+    img.onerror = () => {
+      if (!cancelled) setPalette(FALLBACK);
+    };
+    img.src = url;
+
     return () => {
       cancelled = true;
     };

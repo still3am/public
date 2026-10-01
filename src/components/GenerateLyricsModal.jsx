@@ -46,7 +46,7 @@ export default function GenerateLyricsModal({ track, onClose, onSaved }) {
 
   return (
     <div
-      className="fixed inset-0 z-50 bg-media/60 backdrop-blur-sm flex items-end md:items-center justify-center"
+      className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-end md:items-center justify-center"
       onClick={onClose}>
       <div
         className="bg-background w-full md:max-w-lg rounded-t-3xl md:rounded-3xl border border-border shadow-2xl flex flex-col max-h-[92vh]"

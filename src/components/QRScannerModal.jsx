@@ -60,7 +60,7 @@ export default function QRScannerModal({ onClose }) {
 
   return (
     <div
-      className="fixed inset-0 z-[60] bg-media/85 backdrop-blur-md grid place-items-center p-4"
+      className="fixed inset-0 z-[60] bg-black/85 backdrop-blur-md grid place-items-center p-4"
       onClick={onClose}
     >
       <div
@@ -78,18 +78,18 @@ export default function QRScannerModal({ onClose }) {
         <p className="text-xs text-foreground/50 text-center mb-3">
           Point your camera at a profile or lounge QR code.
         </p>
-        <div className="relative rounded-2xl overflow-hidden bg-media aspect-square">
+        <div className="relative rounded-2xl overflow-hidden bg-black aspect-square">
           <div id="qr-reader" className="w-full h-full [&_video]:object-cover [&_video]:w-full [&_video]:h-full" />
           <div className="pointer-events-none absolute inset-0 grid place-items-center">
-            <div className="w-[62%] h-[62%] border-2 border-media-foreground/70 rounded-2xl" />
+            <div className="w-[62%] h-[62%] border-2 border-white/70 rounded-2xl" />
           </div>
           {starting && (
-            <div className="absolute inset-0 grid place-items-center text-media-foreground/80">
+            <div className="absolute inset-0 grid place-items-center text-white/80">
               <Loader2 className="animate-spin" />
             </div>
           )}
         </div>
-        {err && <p className="text-xs text-danger text-center mt-3">{err}</p>}
+        {err && <p className="text-xs text-red-500 text-center mt-3">{err}</p>}
         <p className="text-[10px] text-foreground/40 text-center mt-3 flex items-center justify-center gap-1">
           <ScanLine size={10} /> Opens PUBLIC profiles and lounges.
         </p>

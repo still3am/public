@@ -36,6 +36,7 @@ export default function Sidebar() {
   const { collapsed, toggle } = useSidebarCollapsed();
   const location = useLocation();
   const unread = useUnreadCount();
+  if (location.pathname === "/onboarding") return null;
 
   const links = [
   ...NAV,

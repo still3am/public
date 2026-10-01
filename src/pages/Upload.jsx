@@ -63,7 +63,7 @@ export default function Upload() {
                 {q.items.length} {q.items.length === 1 ? "track" : "tracks"} queued
               </div>
               {doneCount > 0 &&
-            <div className="text-[11px] font-semibold text-success flex items-center gap-1 mt-0.5">
+            <div className="text-[11px] font-semibold text-emerald-600 dark:text-emerald-400 flex items-center gap-1 mt-0.5">
                   <CheckCheck size={11} /> {doneCount} uploaded
                 </div>
             }

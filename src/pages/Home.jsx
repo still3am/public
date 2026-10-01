@@ -18,6 +18,7 @@ import ReleaseList from "@/components/ReleaseList";
 import ScoreboardTrackCount from "@/components/ScoreboardTrackCount";
 import EmptyState from "@/components/EmptyState";
 import { getRecentPlays } from "@/lib/recentPlays";
+import { getUserGenres } from "@/lib/userGenres";
 import PullToRefresh from "@/components/PullToRefresh";
 import HeroPlayingTint from "@/components/HeroPlayingTint";
 
@@ -173,11 +174,15 @@ export default function Home() {
         if (!p?.genre) continue;
         genreFreq[p.genre] = (genreFreq[p.genre] || 0) + 1;
       }
-      // Personalize the "for you" row from what the listener actually plays.
-      const allUserGenres = Object.entries(genreFreq).
+      // Merge onboarding picks with listening history — onboarding genres
+      // seed personalization from day one, recent plays refine it over time.
+      const onboardGenres = await getUserGenres();
+      const genreSet = new Set(onboardGenres);
+      const userGenres = Object.entries(genreFreq).
       sort((a, b) => b[1] - a[1]).
       map(([g]) => g).
-      slice(0, 5);
+      filter((g) => !genreSet.has(g));
+      const allUserGenres = [...onboardGenres, ...userGenres].slice(0, 5);
       let discoverPicks = [];
       if (allUserGenres.length) {
         const perUserGenre = await Promise.all(
@@ -240,9 +245,9 @@ export default function Home() {
               backgroundImage:
               "radial-gradient(circle at 15% 15%, hsl(var(--foreground)) 0, transparent 40%), radial-gradient(circle at 85% 85%, hsl(var(--foreground)) 0, transparent 38%)"
             }} />
-          <div className="absolute inset-0 bg-gradient-to-br from-violet-500/[0.08] via-transparent to-amber-400/[0.08] pointer-events-none" />
-          <div className="absolute -right-20 -top-20 w-72 h-72 rounded-full bg-violet-500/[0.12] blur-3xl pointer-events-none" />
-          <div className="absolute -left-12 -bottom-20 w-64 h-64 rounded-full bg-amber-400/[0.12] blur-3xl pointer-events-none" />
+          <div className="absolute inset-0 bg-gradient-to-br from-violet-500/8 via-transparent to-amber-400/8 pointer-events-none" />
+          <div className="absolute -right-20 -top-20 w-72 h-72 rounded-full bg-violet-500/12 blur-3xl pointer-events-none" />
+          <div className="absolute -left-12 -bottom-20 w-64 h-64 rounded-full bg-amber-400/12 blur-3xl pointer-events-none" />
 
           <div className="relative">
             

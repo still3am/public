@@ -30,7 +30,7 @@ export default function UploadSwitch() {
     <div className="max-w-md rounded-2xl p-5 bg-card ring-1 ring-inset ring-border space-y-4">
       <div className="flex items-center gap-2 text-sm font-extrabold tracking-tight">
         {enabled ? (
-          <CheckCircle2 size={16} className="text-success" />
+          <CheckCircle2 size={16} className="text-emerald-500" />
         ) : (
           <Ban size={16} className="text-destructive" />
         )}

@@ -83,7 +83,7 @@ export default function EditTrackModal({ track, onClose, onSaved, onDeleted }) {
   }
 
   return (
-    <div className="fixed inset-0 z-50 bg-media/40 backdrop-blur-sm grid place-items-center p-4 overflow-y-auto">
+    <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm grid place-items-center p-4 overflow-y-auto">
       <div className="bg-card rounded-2xl w-full max-w-lg p-5 my-auto shadow-2xl">
         <div className="flex items-center justify-between mb-5">
           <h2 className="text-lg font-extrabold tracking-tight">Edit track</h2>
@@ -185,7 +185,7 @@ export default function EditTrackModal({ track, onClose, onSaved, onDeleted }) {
             <button
               onClick={del}
               disabled={deleting}
-              className="px-4 py-2 rounded-full text-sm font-semibold text-danger border border-danger/30 flex items-center gap-2 disabled:opacity-40"
+              className="px-4 py-2 rounded-full text-sm font-semibold text-red-600 border border-red-200 flex items-center gap-2 disabled:opacity-40"
             >
               {deleting ? (
                 <Loader2 size={14} className="animate-spin" />
