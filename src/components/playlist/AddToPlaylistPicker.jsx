@@ -158,7 +158,7 @@ export default function AddToPlaylistPicker({ playlist, onClose }) {
                   {alreadyIn ? (
                     <Check size={18} className="text-emerald-400 shrink-0" />
                   ) : isSelected ? (
-                    <div className="w-6 h-6 rounded-full bg-white text-black grid place-items-center shrink-0">
+                    <div className="w-6 h-6 rounded-full bg-overlay-foreground text-overlay grid place-items-center shrink-0">
                       <Check size={14} />
                     </div>
                   ) : (
@@ -176,7 +176,7 @@ export default function AddToPlaylistPicker({ playlist, onClose }) {
           <button
             onClick={addSelected}
             disabled={saving}
-            className="w-full h-12 rounded-full bg-white text-black text-sm font-bold active:scale-95 transition flex items-center justify-center gap-2 disabled:opacity-50"
+            className="w-full h-12 rounded-full bg-overlay-foreground text-overlay text-sm font-bold active:scale-95 transition flex items-center justify-center gap-2 disabled:opacity-50"
           >
             {saving ? <Loader2 size={16} className="animate-spin" /> : <Plus size={16} />}
             {saving ? "Adding…" : `Add ${selected.size} ${selected.size === 1 ? "song" : "songs"}`}

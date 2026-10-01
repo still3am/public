@@ -23,7 +23,7 @@ function MixerSlider({ label, range, value, min, max, onChange }) {
         </div>
         <span
           className={`text-xs font-mono tabular-nums ${
-            isNeutral ? "opacity-50" : "text-white font-bold"}`}
+            isNeutral ? "opacity-50" : "text-overlay-foreground font-bold"}`}
         >
           {value > 0 ? "+" : ""}
           {value} dB
@@ -33,7 +33,7 @@ function MixerSlider({ label, range, value, min, max, onChange }) {
         <div className="absolute left-0 right-0 top-1/2 -translate-y-1/2 h-[4px] bg-white/10 rounded-full" />
         <div className="absolute left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2 w-[1px] h-3 bg-white/25" />
         <div
-          className="absolute top-1/2 -translate-y-1/2 h-[4px] bg-white rounded-full pointer-events-none"
+          className="absolute top-1/2 -translate-y-1/2 h-[4px] bg-overlay-foreground rounded-full pointer-events-none"
           style={{
             left: value >= 0 ? "50%" : `${pct}%`,
             right: value >= 0 ? `${100 - pct}%` : "50%",
@@ -41,7 +41,7 @@ function MixerSlider({ label, range, value, min, max, onChange }) {
         />
         <div
           className={`absolute w-5 h-5 rounded-full shadow-lg pointer-events-none -translate-x-1/2 border-2 ${
-            isNeutral ? "bg-white/80 border-white/30" : "bg-white border-white"}`}
+            isNeutral ? "bg-overlay-foreground/80 border-overlay-foreground/30" : "bg-overlay-foreground border-overlay-foreground"}`}
           style={{ left: `${pct}%` }}
         />
         <input
@@ -69,7 +69,7 @@ function BoostSlider({ value, onChange }) {
           <span className="text-xs font-semibold uppercase tracking-wider opacity-70">Volume Boost</span>
           <span className="text-[9px] opacity-40">up to 3×</span>
         </div>
-        <span className={`text-xs font-mono tabular-nums ${value !== 1 ? "text-white font-bold" : "opacity-50"}`}>
+        <span className={`text-xs font-mono tabular-nums ${value !== 1 ? "text-overlay-foreground font-bold" : "opacity-50"}`}>
           {Math.round(value * 100)}%
         </span>
       </div>
@@ -81,7 +81,7 @@ function BoostSlider({ value, onChange }) {
         />
         <div
           className={`absolute w-5 h-5 rounded-full shadow-lg pointer-events-none -translate-x-1/2 border-2 ${
-            value !== 1 ? "bg-white border-white" : "bg-white/80 border-white/30"}`}
+            value !== 1 ? "bg-overlay-foreground border-overlay-foreground" : "bg-overlay-foreground/80 border-overlay-foreground/30"}`}
           style={{ left: `${pct}%` }}
         />
         <input

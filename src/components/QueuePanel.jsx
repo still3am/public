@@ -127,7 +127,7 @@ export default function QueuePanel({ open, onClose }) {
               </div>
               <button
               onClick={p.togglePlay}
-              className="shrink-0 w-9 h-9 rounded-full bg-white text-black grid place-items-center active:scale-90 transition"
+              className="shrink-0 w-9 h-9 rounded-full bg-overlay-foreground text-overlay grid place-items-center active:scale-90 transition"
               aria-label={p.isPlaying ? "Pause" : "Play"}>
                 {p.isPlaying ?
               <Pause size={15} fill="black" /> :

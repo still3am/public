@@ -358,9 +358,9 @@ export default function FullScreenPlayer({ onClose }) {
           {/* scrubber */}
           <div className="mb-1.5 shrink-0">
             <div className="relative h-1.5 bg-white/20 rounded-full group">
-              <div className="absolute left-0 top-0 h-1.5 bg-white rounded-full" style={{ width: `${progress}%` }} />
+              <div className="absolute left-0 top-0 h-1.5 bg-overlay-foreground rounded-full" style={{ width: `${progress}%` }} />
               <div
-                className="absolute top-1/2 -translate-y-1/2 w-3 h-3 bg-white rounded-full shadow-md opacity-0 group-hover:opacity-100 transition"
+                className="absolute top-1/2 -translate-y-1/2 w-3 h-3 bg-overlay-foreground rounded-full shadow-md opacity-0 group-hover:opacity-100 transition"
                 style={{ left: `calc(${progress}% - 6px)` }} />
               
               <input
@@ -430,14 +430,14 @@ export default function FullScreenPlayer({ onClose }) {
               <button
                 onClick={() => setLyricsMode(false)}
                 className={`flex items-center justify-center gap-1.5 px-4 py-1.5 rounded-full transition text-xs font-semibold ${
-                !lyricsMode ? "bg-white text-black" : "opacity-70"}`}
+                !lyricsMode ? "bg-overlay-foreground text-overlay" : "opacity-70"}`}
                 aria-label="Artwork">
                 <Disc3 size={14} /> Artwork
               </button>
               <button
                 onClick={() => setLyricsMode(true)}
                 className={`flex items-center justify-center gap-1.5 px-4 py-1.5 rounded-full transition text-xs font-semibold ${
-                lyricsMode ? "bg-white text-black" : "opacity-70"}`}
+                lyricsMode ? "bg-overlay-foreground text-overlay" : "opacity-70"}`}
                 aria-label="Lyrics">
                 <Mic2 size={14} /> Lyrics
               </button>
@@ -484,7 +484,7 @@ export default function FullScreenPlayer({ onClose }) {
 
       {/* copied toast */}
       {copied &&
-      <div className="absolute bottom-24 left-1/2 -translate-x-1/2 px-4 py-2 rounded-full bg-white text-black text-xs font-semibold shadow-xl">
+      <div className="absolute bottom-24 left-1/2 -translate-x-1/2 px-4 py-2 rounded-full bg-overlay-foreground text-overlay text-xs font-semibold shadow-xl">
           Link copied
         </div>
       }
