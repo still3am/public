@@ -25,8 +25,6 @@ import {
 import PulseVisualizer from "@/components/PulseVisualizer";
 import PlayPauseButton from "@/components/PlayPauseButton";
 import QueuePanel from "@/components/QueuePanel";
-import SleepTimerMenu from "@/components/SleepTimerMenu";
-import PlaybackSpeedMenu from "@/components/PlaybackSpeedMenu";
 import LoungeHostModal from "@/components/LoungeHostModal";
 import StemMixer from "@/components/StemMixer";
 import { useLoungeHost } from "@/hooks/useLoungeHost";
@@ -278,9 +276,6 @@ export default function FullScreenPlayer({ onClose }) {
 
           
         </div>
-        <div className="flex items-center gap-1 shrink-0">
-        <SleepTimerMenu />
-        <PlaybackSpeedMenu />
         <NowPlayingAddMenu
           onShare={shareNow}
           showPulse={showPulse}
@@ -295,7 +290,7 @@ export default function FullScreenPlayer({ onClose }) {
           queueCount={p.queue.length - p.currentIndex - 1 > 0 ? p.queue.length - p.currentIndex - 1 : 0}
           onMix={() => setShowMixer(true)}
           mixerActive={p.mixer.bass !== 0 || p.mixer.beat !== 0 || p.mixer.vocals !== 0 || p.mixer.treble !== 0 || p.mixer.boost !== 1} />
-        </div>
+        
       </div>
 
       {/* body */}
