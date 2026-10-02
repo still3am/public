@@ -60,22 +60,22 @@ export default function MobileTopBar() {
 
   const showBack = !ROOTS.has(pathname);
 
-  return (
-    <header className="md:hidden sticky top-0 z-30 bg-background/85 backdrop-blur-md border-b border-border/60 top-bar-safe hidden">
-      <div className="flex items-center gap-1 px-2 h-12">
-        {showBack ?
-        <button
-          onClick={() => nav(-1)}
-          className="w-10 h-10 grid place-items-center rounded-full hover:bg-foreground/[0.06] active:scale-95 transition shrink-0"
-          aria-label="Go back">
-          
-            <ChevronLeft size={22} />
-          </button> :
+  return null;
 
-        <span className="w-2 shrink-0" />
-        }
-        <h1 className="text-base font-extrabold tracking-tight truncate hidden">{title}</h1>
-      </div>
-    </header>);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 }
