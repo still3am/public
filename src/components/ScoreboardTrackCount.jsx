@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
+import { Music } from "lucide-react";
 import { useUploadsEnabled } from "@/hooks/useUploadsEnabled";
 
 function Digit({ value }) {

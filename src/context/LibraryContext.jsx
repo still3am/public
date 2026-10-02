@@ -46,10 +46,14 @@ export function LibraryProvider({ children }) {
       const isIn = ids.has(track.id);
       try {
         if (isIn) {
-          await base44.entities.LibraryItem.deleteMany({
-            user_id: user.id,
-            track_id: track.id,
-          });
+          const recs = await base44.entities.LibraryItem.filter(
+            { user_id: user.id, track_id: track.id },
+            "-created_date",
+            5
+          );
+          await Promise.all(
+            (recs || []).map((r) => base44.entities.LibraryItem.delete(r.id))
+          );
           setIds((prev) => {
             const n = new Set(prev);
             n.delete(track.id);

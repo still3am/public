@@ -54,25 +54,16 @@ export default function ReportsManager() {
         <div className="space-y-2">
           {list.map((r) => {
             const t = tracks[r.track_id];
-            const isBug = r.kind === "bug";
             return (
               <div key={r.id} className="flex items-start gap-3 p-2 rounded-lg bg-foreground/[0.02]">
                 <div className="min-w-0 flex-1">
                   <div className="text-sm font-medium truncate">
-                    {isBug
-                      ? `Bug report${r.reporter_name ? ` · ${r.reporter_name}` : ""}`
-                      : t
-                        ? t.title
-                        : "Unknown track"}
+                    {t ? t.title : "Unknown track"}
                   </div>
                   <div className="text-xs text-foreground/50 truncate">{r.reason || "No reason given"}</div>
-                  {isBug ? (
-                    r.page ? <span className="text-[11px] text-foreground/40">{r.page}</span> : null
-                  ) : (
-                    <Link to={`/track/${r.track_id}`} className="text-[11px] text-foreground/40 hover:underline">
-                      Open track
-                    </Link>
-                  )}
+                  <Link to={`/track/${r.track_id}`} className="text-[11px] text-foreground/40 hover:underline">
+                    Open track
+                  </Link>
                 </div>
                 <div className="flex items-center gap-1 shrink-0">
                   <button

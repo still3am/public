@@ -19,32 +19,31 @@ const TITLES = {
   "/records": "Public Records",
   "/artist": "Artists",
   "/settings/transitions": "Transitions",
-  "/artist-dashboard": "Artist"
+  "/artist-dashboard": "Artist",
 };
 
 // Root destinations — these show a title but no back button.
 const ROOTS = new Set([
-"/",
-"/search",
-"/library",
-"/liked",
-"/upload",
-"/profile",
-"/discover",
-"/top",
-"/recent",
-"/notifications",
-"/admin",
-"/downloads",
-"/suggestions",
-"/records",
-"/artist"]
-);
+  "/",
+  "/search",
+  "/library",
+  "/liked",
+  "/upload",
+  "/profile",
+  "/discover",
+  "/top",
+  "/recent",
+  "/notifications",
+  "/admin",
+  "/downloads",
+  "/suggestions",
+  "/records",
+  "/artist",
+]);
 
 // Child routes with a dynamic id segment.
 function childTitle(pathname) {
   if (pathname.startsWith("/track/")) return "Track";
-  if (pathname.startsWith("/album/")) return "Album";
   if (pathname.startsWith("/playlist/")) return "Playlist";
   if (pathname.startsWith("/records/")) return "Artist";
   if (pathname.startsWith("/profile/")) return "Profile";
@@ -61,22 +60,22 @@ export default function MobileTopBar() {
 
   const showBack = !ROOTS.has(pathname);
 
-  return null;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+  return (
+    <header className="md:hidden sticky top-0 z-30 bg-background/85 backdrop-blur-md border-b border-border/60 top-bar-safe">
+      <div className="flex items-center gap-1 px-2 h-12">
+        {showBack ? (
+          <button
+            onClick={() => nav(-1)}
+            className="w-10 h-10 grid place-items-center rounded-full hover:bg-foreground/[0.06] active:scale-95 transition shrink-0"
+            aria-label="Go back"
+          >
+            <ChevronLeft size={22} />
+          </button>
+        ) : (
+          <span className="w-2 shrink-0" />
+        )}
+        <h1 className="text-base font-extrabold tracking-tight truncate">{title}</h1>
+      </div>
+    </header>
+  );
 }

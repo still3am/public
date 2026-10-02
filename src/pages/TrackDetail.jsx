@@ -3,8 +3,6 @@ import { Link, useParams, useNavigate } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import { useAuth } from "@/lib/AuthContext";
 import { usePlayer } from "@/context/PlayerContext";
-import { getPublishedTracks } from "@/lib/catalogCache";
-import { tracksForArtist } from "@/lib/artistTracks";
 import EmptyState from "@/components/EmptyState";
 import EditTrackModal from "@/components/EditTrackModal";
 import ArtistLinks from "@/components/ArtistLinks";
@@ -50,14 +48,24 @@ export default function TrackDetail() {
         catch(() => null);
         setUploader(u);
       }
-      if (t) {
-        // Same relationship and same published catalogue as the artist page, so
-        // this list can never disagree with the artist's discography.
-        const all = await getPublishedTracks();
+      if (t?.artist) {
+        const splitNames = (str) =>
+        (str || "").
+        split(/\s*(?:,|&| feat\.| ft\.| x |;)\s*/i).
+        map((s) => s.trim().toLowerCase()).
+        filter(Boolean);
+        const names = splitNames(t.artist);
+        const all = await base44.entities.Track.list("-play_count", 100).catch(
+          () => []
+        );
         setMoreTracks(
-          [...tracksForArtist(all, t)].
-          filter((x) => x.id !== t.id).
-          sort((a, b) => (b.play_count || 0) - (a.play_count || 0)).
+          all.
+          filter(
+            (x) =>
+            x.id !== t.id &&
+            x.is_published === true &&
+            splitNames(x.artist).some((n) => names.includes(n))
+          ).
           slice(0, 6)
         );
       } else {
@@ -249,8 +257,7 @@ export default function TrackDetail() {
           align="right"
           className="ml-auto"
           buttonClassName="w-10 h-10 rounded-full bg-foreground text-background grid place-items-center hover:scale-105 transition"
-          items={ownerItems}
-          hideGoToTrack />
+          items={ownerItems} />
       </div>
 
       {track.lyrics_text && track.lyrics_text.trim() &&

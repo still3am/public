@@ -10,6 +10,8 @@ import ProfileQRModal from "@/components/ProfileQRModal";
 import { formatNumber } from "@/lib/audio-utils";
 import {
   Loader2,
+  UserPlus,
+  UserCheck,
   Pencil,
   Save,
   Music,
@@ -28,8 +30,6 @@ import ProfileSong from "@/components/profile/ProfileSong";
 import TopTracks from "@/components/profile/TopTracks";
 import ProfileComments from "@/components/profile/ProfileComments";
 import FollowListModal from "@/components/profile/FollowListModal";
-import FollowButton from "@/components/FollowButton";
-import { useFollow } from "@/context/FollowContext";
 import { useColorPalette } from "@/hooks/useColorPalette";
 import { useCoverUrl } from "@/hooks/useCoverUrl";
 
@@ -47,15 +47,13 @@ export default function Profile() {
   const { id } = useParams();
   const { user: me } = useAuth();
   const isOwn = !id || id === me?.id;
-  const { isFollowing } = useFollow();
-
   const targetId = isOwn ? me?.id : id;
 
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
   const [tracks, setTracks] = useState([]);
   const [topTracks, setTopTracks] = useState([]);
-
+  const [following, setFollowing] = useState(false);
   const [stats, setStats] = useState({ followers: 0, following: 0, plays: 0, likes: 0 });
   const [editMode, setEditMode] = useState(false);
   const [copied, setCopied] = useState(false);
@@ -145,12 +143,12 @@ export default function Profile() {
         [...t].sort((a, b) => (b.play_count || 0) - (a.play_count || 0)).slice(0, 5)
       );
       setStats({
-        followers: followsToMe.filter((f) => f.follower_id !== me?.id).length,
-        following: followsFromMe.filter((f) => (f.target_type || "user") === "user").length,
+        followers: followsToMe.length,
+        following: followsFromMe.length,
         plays: t.reduce((s, x) => s + (x.play_count || 0), 0),
         likes: t.reduce((s, x) => s + (x.like_count || 0), 0)
       });
-
+      setFollowing(relToUser.length > 0);
     } finally {
       setLoading(false);
     }
@@ -171,10 +169,41 @@ export default function Profile() {
     return () => document.documentElement.classList.remove("modal-open");
   }, [showSettings, showDelete, showQR, followList]);
 
-  // The shared graph decides this — not a page-local flag — and my own follow
-  // row is excluded from the loaded count, so the number stays right either way.
-  const followed = !!profile && !isOwn && isFollowing(profile.id, "user");
-  const followerCount = stats.followers + (followed ? 1 : 0);
+  async function toggleFollow() {
+    if (!profile) return;
+    const wasFollowing = following;
+    setFollowing(!wasFollowing);
+    setStats((s) => ({
+      ...s,
+      followers: Math.max(0, s.followers + (wasFollowing ? -1 : 1))
+    }));
+    try {
+      if (wasFollowing) {
+        await base44.entities.Follow.deleteMany({
+          follower_id: me.id,
+          following_id: profile.id
+        });
+      } else {
+        await base44.entities.Follow.create({
+          follower_id: me.id,
+          following_id: profile.id
+        });
+        try {
+          await base44.entities.Notification.create({
+            user_id: profile.id,
+            type: "new_follower",
+            actor_id: me.id
+          });
+        } catch {}
+      }
+    } catch {
+      setFollowing(wasFollowing);
+      setStats((s) => ({
+        ...s,
+        followers: Math.max(0, s.followers + (wasFollowing ? 1 : -1))
+      }));
+    }
+  }
 
   async function uploadAvatar(file) {
     setUploadingAvatar(true);
@@ -383,7 +412,7 @@ export default function Profile() {
 
               <div className="flex flex-wrap items-center justify-center md:justify-start gap-x-4 gap-y-1 mt-2.5 text-sm md:text-base">
                 <button onClick={() => setFollowList("followers")} className="hover:underline transition">
-                  <span className="font-bold">{formatNumber(followerCount)}</span> <span className="text-foreground/50">followers</span>
+                  <span className="font-bold">{formatNumber(stats.followers)}</span> <span className="text-foreground/50">followers</span>
                 </button>
                 <button onClick={() => setFollowList("following")} className="hover:underline transition">
                   <span className="font-bold">{formatNumber(stats.following)}</span> <span className="text-foreground/50">following</span>
@@ -474,11 +503,14 @@ export default function Profile() {
                       className="w-10 h-10 md:w-12 md:h-12 rounded-full border border-border grid place-items-center">
                     <Pencil size={16} />
                   </button> :
-                    <FollowButton
-                      id={profile.id}
-                      type="user"
-                      name={profile.display_name || profile.full_name}
-                      variant="icon" />
+                    <button
+                      onClick={toggleFollow}
+                      title={following ? "Following (click to unfollow)" : "Follow"}
+                      aria-label={following ? "Unfollow" : "Follow"}
+                      className={`w-10 h-10 md:w-12 md:h-12 rounded-full grid place-items-center transition ${
+                      following ? "border border-border" : "bg-foreground text-background"}`}>
+                    {following ? <UserCheck size={16} /> : <UserPlus size={16} />}
+                  </button>
                     }
                 {!editMode &&
                     <button

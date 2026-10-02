@@ -14,7 +14,7 @@ import {
   SlidersHorizontal } from
 "lucide-react";
 import { usePlayer } from "@/context/PlayerContext";
-import { useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { formatTime } from "@/lib/audio-utils";
 import FullScreenPlayer from "@/components/FullScreenPlayer";
 import QueuePanel from "@/components/QueuePanel";

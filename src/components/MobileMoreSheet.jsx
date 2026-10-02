@@ -4,13 +4,13 @@ import {
   Upload,
   BarChart3,
   Clock,
+  Heart,
   Lightbulb,
   Library as LibraryIcon,
   Shield,
-  Bell,
-  LogOut } from
+  Bell } from
 "lucide-react";
-import { base44 } from "@/api/base44Client";
+import ThemeToggle from "@/components/ThemeToggle";
 import { useAuth } from "@/lib/AuthContext";
 import { useUnreadCount } from "@/hooks/useNotifications";
 
@@ -34,10 +34,6 @@ export default function MobileMoreSheet({ onClose }) {
   function go(to) {
     nav(to);
     onClose();
-  }
-  function signOut() {
-    onClose();
-    base44.auth.logout();
   }
   return (
     <div className="fixed inset-0 z-50 md:hidden" onClick={onClose}>
@@ -76,12 +72,6 @@ export default function MobileMoreSheet({ onClose }) {
               <span className="text-[11px] font-medium">{label}</span>
             </button>
           )}
-          <button
-            onClick={signOut}
-            className="relative flex flex-col items-center gap-2 p-3 rounded-xl transition tap-target text-foreground/70 hover:bg-foreground/[0.03]">
-            <LogOut size={22} />
-            <span className="text-[11px] font-medium">Sign out</span>
-          </button>
         </div>
         
 

@@ -1,16 +1,14 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { X, Lightbulb, GitMerge, Palette, Trash2, ChevronRight, Sparkles, BarChart3, Loader2, Flag, LogOut } from "lucide-react";
+import { X, Lightbulb, GitMerge, Palette, Trash2, ChevronRight, Sparkles, BarChart3, Loader2 } from "lucide-react";
 import ThemeToggle from "@/components/ThemeToggle";
 import { Switch } from "@/components/ui/switch";
 import { useAuth } from "@/lib/AuthContext";
 import { base44 } from "@/api/base44Client";
-import ReportBugSheet from "@/components/ReportBugSheet";
 
 export default function SettingsSheet({ onClose, onDeleteAccount }) {
   const { user, checkUserAuth } = useAuth();
   const [toggling, setToggling] = useState(false);
-  const [reportOpen, setReportOpen] = useState(false);
   const isArtist = user?.is_artist === true;
 
   async function toggleArtist(checked) {
@@ -115,32 +113,6 @@ export default function SettingsSheet({ onClose, onDeleteAccount }) {
           </div>
 
           <button
-            onClick={() => setReportOpen(true)}
-            className="w-full flex items-center gap-3 p-3.5 rounded-2xl bg-foreground/[0.02] hover:bg-foreground/[0.05] transition active:scale-[0.99] text-left"
-          >
-            <div className="w-10 h-10 rounded-xl bg-foreground/[0.06] grid place-items-center shrink-0">
-              <Flag size={18} className="text-foreground/70" />
-            </div>
-            <div className="flex-1 min-w-0">
-              <div className="text-sm font-bold">Report a problem</div>
-              <div className="text-xs text-foreground/50 truncate">Bugs, broken pages, anything off</div>
-            </div>
-          </button>
-
-          <button
-            onClick={() => { onClose(); base44.auth.logout(); }}
-            className="w-full flex items-center gap-3 p-3.5 rounded-2xl bg-foreground/[0.02] hover:bg-foreground/[0.05] transition active:scale-[0.99] text-left"
-          >
-            <div className="w-10 h-10 rounded-xl bg-foreground/[0.06] grid place-items-center shrink-0">
-              <LogOut size={18} className="text-foreground/70" />
-            </div>
-            <div className="flex-1 min-w-0">
-              <div className="text-sm font-bold">Sign out</div>
-              <div className="text-xs text-foreground/50 truncate">Log out of PUBLIC.</div>
-            </div>
-          </button>
-
-          <button
             onClick={() => { onDeleteAccount(); onClose(); }}
             className="w-full flex items-center gap-3 p-3.5 rounded-2xl bg-foreground/[0.02] hover:bg-foreground/[0.05] transition active:scale-[0.99] text-left"
           >
@@ -154,8 +126,6 @@ export default function SettingsSheet({ onClose, onDeleteAccount }) {
           </button>
         </div>
       </div>
-
-      {reportOpen && <ReportBugSheet onClose={() => setReportOpen(false)} />}
     </div>
   );
 }

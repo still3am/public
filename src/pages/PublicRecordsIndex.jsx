@@ -2,17 +2,18 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { getPublishedTracks, getArtists } from "@/lib/catalogCache";
 import PullToRefresh from "@/components/PullToRefresh";
-import { Loader2, Mic2 } from "lucide-react";
-import {
-  artistKeys,
-  normalizeArtistName,
-  trackArtistCredits } from
-"@/lib/artistTracks";
+import { Loader2, Mic2, Disc3 } from "lucide-react";
 
 // Split a multi-artist string into individual names, preserving original
 // casing. A track credited "Drake feat. Future" counts toward both Drake and
 // Future as separate Public Records.
-const norm = normalizeArtistName;
+const splitNames = (str) =>
+(str || "").
+split(/\s*(?:,|&| feat\.| ft\.| x |;|\/)\s*/i).
+map((s) => s.trim()).
+filter(Boolean);
+
+const norm = (s) => s.trim().toLowerCase();
 
 // Special group for names starting with a non-letter.
 const letterOf = (name) => {
@@ -68,9 +69,8 @@ export default function PublicRecordsIndex() {
       );
       const recordByName = new Map();
       (Array.isArray(records) ? records : []).forEach((a) => {
-        artistKeys(a).forEach((k) => {
-          if (k && !recordByName.has(k)) recordByName.set(k, a);
-        });
+        const k = norm(a.name);
+        if (k && !recordByName.has(k)) recordByName.set(k, a);
       });
 
       // nameKey -> { display, record, count }
@@ -92,8 +92,9 @@ export default function PublicRecordsIndex() {
       };
 
       (Array.isArray(tracks) ? tracks : []).forEach((t) => {
-        trackArtistCredits(t).forEach(({ name, key }) =>
-        bump(name, recordByName.get(key) || null));
+        const segs = splitNames(t.artist);
+        if (!segs.length) return;
+        segs.forEach((seg) => bump(seg, recordByName.get(norm(seg)) || null));
       });
 
       // Make sure Artist records with zero published tracks still appear.
@@ -200,7 +201,7 @@ export default function PublicRecordsIndex() {
     setDragging(true);
     try {
       e.currentTarget.setPointerCapture(e.pointerId);
-    } catch {}
+    } catch (_) {}
     onPick(e.clientY);
   };
   const moveDrag = (e) => {

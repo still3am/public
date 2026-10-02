@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import { useAuth } from "@/lib/AuthContext";
-import { findArtistRecord } from "@/lib/artistTracks";
 import {
   BarChart,
   Bar,
@@ -46,22 +45,13 @@ export default function ArtistDashboard() {
     let cancelled = false;
     async function load() {
       try {
-        // Followers can arrive two ways: following this account, or following
-        // the artist record on Public Records. Both count, each person once.
-        const artistName = user.display_name || user.full_name || "";
-        const record = artistName ?
-        await findArtistRecord(artistName).catch(() => null) :
-        null;
-        const [t, followsToMe, artistFollows] = await Promise.all([
+        const [t, followsToMe] = await Promise.all([
         base44.entities.Track.filter({ uploader_id: user.id }, "-play_count", 100),
-        base44.entities.Follow.filter({ following_id: user.id }, "-created_date", 1000),
-        record ?
-        base44.entities.Follow.filter({ following_id: record.id }, "-created_date", 1000) :
-        Promise.resolve([])]
+        base44.entities.Follow.filter({ following_id: user.id }, "-created_date", 1000)]
         );
         if (cancelled) return;
         setTracks(t);
-        setFollowers(new Set([...followsToMe, ...artistFollows].map((f) => f.follower_id)).size);
+        setFollowers(followsToMe.length);
       } finally {
         if (!cancelled) setLoading(false);
       }

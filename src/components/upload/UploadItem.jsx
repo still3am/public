@@ -4,12 +4,14 @@ import {
   UploadCloud,
   Loader2,
   AlertCircle,
-  Sparkles } from
+  Sparkles,
+  Clock } from
 "lucide-react";
 import GenrePicker from "@/components/GenrePicker";
 import ReleaseChecklist from "@/components/upload/ReleaseChecklist";
 import CoverPicker from "@/components/upload/CoverPicker";
 import { ensureHighResCover } from "@/lib/coverImage";
+import { formatTime } from "@/lib/audio-utils";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 
@@ -71,27 +73,7 @@ export default function UploadItem({
                 placeholder="Artist name"
                 className="h-9 border-0 bg-foreground/[0.04] focus-visible:bg-foreground/[0.07]"
                 disabled={locked} />
-
-              {/* Optional release: several tracks sharing a name become one
-                  album / EP and get their own page. */}
-              <div className="flex gap-2">
-                <Input
-                  value={item.album_title || ""}
-                  onChange={(e) => onChange({ album_title: e.target.value })}
-                  placeholder="Album or EP (optional)"
-                  className="h-9 border-0 bg-foreground/[0.04] focus-visible:bg-foreground/[0.07]"
-                  disabled={locked} />
-                {!!(item.album_title || "").trim() &&
-                <Input
-                  value={item.album_track || ""}
-                  onChange={(e) => onChange({ album_track: e.target.value.replace(/[^0-9]/g, "") })}
-                  placeholder="#"
-                  inputMode="numeric"
-                  aria-label="Track number"
-                  className="h-9 w-14 shrink-0 border-0 bg-foreground/[0.04] focus-visible:bg-foreground/[0.07] text-center"
-                  disabled={locked} />
-                }
-              </div>
+              
             </div>
             <button
               onClick={onRemove}

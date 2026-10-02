@@ -10,7 +10,6 @@ import { Navigate } from 'react-router-dom';
 import { PlayerProvider } from '@/context/PlayerContext';
 import { LibraryProvider } from '@/context/LibraryContext';
 import { UploadProvider } from '@/context/UploadContext';
-import { FollowProvider } from '@/context/FollowContext';
 import Layout from '@/components/Layout';
 import Login from '@/pages/Login';
 import Register from '@/pages/Register';
@@ -22,7 +21,6 @@ import TopCharts from '@/pages/TopCharts';
 import RecentlyAdded from '@/pages/RecentlyAdded';
 import Profile from '@/pages/Profile';
 import TrackDetail from '@/pages/TrackDetail';
-import AlbumDetail from '@/pages/AlbumDetail';
 import PublicRecords from '@/pages/PublicRecords';
 import PublicRecordsIndex from '@/pages/PublicRecordsIndex';
 import ArtistByName from '@/pages/ArtistByName';
@@ -74,7 +72,6 @@ const AuthenticatedApp = () => {
         <Route path="/top" element={<TopCharts />} />
         <Route path="/recent" element={<RecentlyAdded />} />
         <Route path="/track/:id" element={<TrackDetail />} />
-        <Route path="/album/:id" element={<AlbumDetail />} />
         <Route path="/records/:id" element={<PublicRecords />} />
         <Route path="/records" element={<PublicRecordsIndex />} />
         <Route path="/artist" element={<ArtistByName />} />
@@ -110,11 +107,9 @@ function App() {
         <Router>
           <PlayerProvider>
             <LibraryProvider>
-              <FollowProvider>
-                <UploadProvider>
-                  <AuthenticatedApp />
-                </UploadProvider>
-              </FollowProvider>
+              <UploadProvider>
+                <AuthenticatedApp />
+              </UploadProvider>
             </LibraryProvider>
           </PlayerProvider>
         </Router>

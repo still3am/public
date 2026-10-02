@@ -3,7 +3,7 @@ import { base44 } from "@/api/base44Client";
 import { usePlayer } from "@/context/PlayerContext";
 import { useCoverUrl } from "@/hooks/useCoverUrl";
 import { Image } from "@/components/ui/image";
-import { Play, Pause, X, Plus } from "lucide-react";
+import { Play, Pause, Star, X, Plus } from "lucide-react";
 import TrackPickerSheet from "@/components/profile/TrackPickerSheet";
 
 function PinnedTrackCard({ track, onRemove, editMode }) {
@@ -78,21 +78,9 @@ export default function TopTracks({ trackIds, editMode, userTracks, onChange }) 
   useEffect(() => {
     const ids = (trackIds || []).filter(Boolean);
     if (!ids.length) {setPinnedTracks([]);return;}
-    // One batched read rather than a request per pinned track — a profile with
-    // eight pins used to open eight parallel calls.
-    let cancelled = false;
-    base44.entities.Track.filter({ id: { $in: ids } }).
-    then((rows) => {
-      if (cancelled) return;
-      const byId = new Map((rows || []).map((r) => [r.id, r]));
-      setPinnedTracks(ids.map((id) => byId.get(id)).filter(Boolean));
-    }).
-    catch(() => {
-      if (!cancelled) setPinnedTracks([]);
-    });
-    return () => {
-      cancelled = true;
-    };
+    Promise.all(ids.map((id) => base44.entities.Track.get(id).catch(() => null))).then((results) =>
+    setPinnedTracks(results.filter(Boolean))
+    );
   }, [idsKey]); // eslint-disable-line react-hooks/exhaustive-deps
 
   function removeTrack(id) {

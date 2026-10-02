@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { UploadCloud } from "lucide-react";
+import { UploadCloud, Sparkles } from "lucide-react";
 
 const FORMATS = ["MP3", "WAV", "M4A", "FLAC", "OGG", "AAC", "OPUS", "AIFF"];
 

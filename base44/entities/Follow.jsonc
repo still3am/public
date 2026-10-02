@@ -3,26 +3,10 @@
   "type": "object",
   "properties": {
     "follower_id": {
-      "type": "string",
-      "description": "The user doing the following"
+      "type": "string"
     },
     "following_id": {
-      "type": "string",
-      "description": "Id of the row being followed \u2014 a User id, or an Artist record id when target_type is \"artist\""
-    },
-    "target_type": {
-      "type": "string",
-      "enum": [
-        "user",
-        "artist"
-      ],
-      "default": "user",
-      "description": "What following_id points at. Rows written before this field existed have no value and are read as \"user\"."
-    },
-    "artist_name": {
-      "type": "string",
-      "default": "",
-      "description": "Display name kept alongside an artist follow, so the follow survives a rename of the Artist record"
+      "type": "string"
     }
   },
   "required": [

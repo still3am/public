@@ -11,8 +11,6 @@ import { getRecord, listRecords } from "@/lib/offlineCache";
 import { buildAutoQueue } from "@/lib/autoQueue";
 import { getUserGenres } from "@/lib/userGenres";
 import { useWakeLock } from "@/hooks/useWakeLock";
-import { useMediaSession } from "@/hooks/useMediaSession";
-import { getBars } from "@/lib/playerBars";
 import {
   getTransitionSettings,
   isTransitionActive,
@@ -20,8 +18,6 @@ import {
   TRANSITION_MODES,
 } from "@/lib/transitions";
 import { useAuth } from "@/lib/AuthContext";
-import { addRecentPlay } from "@/lib/recentPlays";
-import { recordPlay } from "@/lib/playCounts";
 
 const PlayerContext = createContext(null);
 export const usePlayer = () => useContext(PlayerContext);
@@ -770,11 +766,26 @@ export function PlayerProvider({ children }) {
     if (!track || countedRef.current.has(track.id)) return;
     countedRef.current.add(track.id);
     base44.functions.invoke("registerPlay", { track_id: track.id }).catch(() => {});
-    // Both local stores live in lib/ so the Home shelves and the player can't
-    // drift: recent plays (the last 20 touched) and per-track play counts
-    // (which power "On Repeat").
-    addRecentPlay(track);
-    recordPlay(track);
+    try {
+      const KEY = "public:recently_played";
+      const v = JSON.parse(localStorage.getItem(KEY) || "[]");
+      const s = {
+        id: track.id,
+        title: track.title,
+        artist: track.artist,
+        uploader_name: track.uploader_name,
+        uploader_id: track.uploader_id,
+        cover_art_url: track.cover_art_url,
+        audio_url: track.audio_url,
+        duration_seconds: track.duration_seconds,
+        genre: track.genre,
+        explicit: track.explicit,
+        is_published: true,
+      };
+      const next = [s, ...v.filter((t) => t.id !== s.id)].slice(0, 20);
+      localStorage.setItem(KEY, JSON.stringify(next));
+      window.dispatchEvent(new CustomEvent("recentplays:change"));
+    } catch {}
   }, []);
 
   useEffect(() => {
@@ -1046,6 +1057,18 @@ export function PlayerProvider({ children }) {
     else if (repeat === "all") setCurrentIndex(queue.length - 1);
   }, [currentIndex, queue.length, repeat]);
 
+  const getBars = useCallback((seed) => {
+    let s = 0;
+    for (const c of String(seed || "x")) s = (s * 31 + c.charCodeAt(0)) | 0;
+    const bars = [];
+    for (let i = 0; i < 64; i++) {
+      s = (s * 1103515245 + 12345) & 0x7fffffff;
+      const v = (s % 1000) / 1000;
+      bars.push(0.25 + 0.75 * v);
+    }
+    return bars;
+  }, []);
+
   const setPlaybackRate = useCallback((r) => {
     setPlaybackRateState(r);
     els().forEach((a) => a && (a.playbackRate = r));
@@ -1236,16 +1259,60 @@ export function PlayerProvider({ children }) {
   // auto-lock and suspend the audio engine on the open page.
   useWakeLock(isPlaying && !!currentTrack);
 
-  // Lock-screen / Control Center metadata and hardware controls.
-  useMediaSession({
-    track: currentTrack,
-    isPlaying,
-    onPlay: resumePlayback,
-    onPause: pausePlayback,
-    onPrev: prev,
-    onNext: next,
-    onSeek: seek,
-  });
+  // --- Media Session API: lock-screen / Control Center metadata + controls ---
+  // Without this, iOS falls back to the app name + icon instead of the track's
+  // title, artist, and cover art on the lock-screen / now-playing widget.
+  useEffect(() => {
+    if (!("mediaSession" in navigator)) return;
+    const t = currentTrack;
+    if (!t) {
+      navigator.mediaSession.metadata = null;
+      navigator.mediaSession.playbackState = "none";
+      return;
+    }
+    // Multiple sizes widen compatibility: iOS lock screen wants 512+,
+    // Android notifications often prefer a smaller bitmap.
+    const artwork = t.cover_art_url
+      ? [
+          { src: t.cover_art_url, sizes: "96x96", type: "image/jpeg" },
+          { src: t.cover_art_url, sizes: "128x128", type: "image/jpeg" },
+          { src: t.cover_art_url, sizes: "192x192", type: "image/jpeg" },
+          { src: t.cover_art_url, sizes: "256x256", type: "image/jpeg" },
+          { src: t.cover_art_url, sizes: "384x384", type: "image/jpeg" },
+          { src: t.cover_art_url, sizes: "512x512", type: "image/jpeg" },
+        ]
+      : [];
+    try {
+      navigator.mediaSession.metadata = new MediaMetadata({
+        title: t.title || "PUBLIC.",
+        artist: t.artist || t.uploader_name || "Unknown",
+        album: "PUBLIC.",
+        artwork,
+      });
+      navigator.mediaSession.playbackState = isPlaying ? "playing" : "paused";
+    } catch {}
+  }, [currentTrack, isPlaying]);
+
+  useEffect(() => {
+    if (!("mediaSession" in navigator)) return;
+    const set = (action, handler) => {
+      try {
+        navigator.mediaSession.setActionHandler(action, handler);
+      } catch {}
+    };
+    set("play", () => resumePlayback());
+    set("pause", () => pausePlayback());
+    set("previoustrack", () => prev());
+    set("nexttrack", () => next());
+    set("seekto", (d) => {
+      if (d && typeof d.seekTime === "number") seek(d.seekTime);
+    });
+    return () => {
+      ["play", "pause", "previoustrack", "nexttrack", "seekto"].forEach((a) =>
+        set(a, null)
+      );
+    };
+  }, [resumePlayback, pausePlayback, prev, next, seek]);
 
   const value = {
     queue,

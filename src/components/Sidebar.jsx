@@ -1,4 +1,4 @@
-import { NavLink } from "react-router-dom";
+import { NavLink, useLocation } from "react-router-dom";
 import { useSidebarCollapsed } from "@/hooks/useSidebarCollapsed";
 
 import {
@@ -11,13 +11,11 @@ import {
   Shield,
   Bell,
   ChevronsLeft,
-  ChevronsRight,
-  LogOut } from
+  ChevronsRight } from
 "lucide-react";
 import Avatar from "@/components/Avatar";
 import Logo from "@/components/Logo";
 import ThemeToggle from "@/components/ThemeToggle";
-import { base44 } from "@/api/base44Client";
 import { useAuth } from "@/lib/AuthContext";
 import { useUnreadCount } from "@/hooks/useNotifications";
 
@@ -36,11 +34,8 @@ const EASE = "transition-all duration-300 ease-out";
 export default function Sidebar({ onOpenSearch }) {
   const { user } = useAuth();
   const { collapsed, toggle } = useSidebarCollapsed();
+  const location = useLocation();
   const unread = useUnreadCount();
-
-  async function signOut() {
-    await base44.auth.logout();
-  }
 
   const links = [
   ...NAV,
@@ -90,9 +85,9 @@ export default function Sidebar({ onOpenSearch }) {
           
           <Search size={18} className="shrink-0" />
           <span className={`shrink-0 ${EASE} ${fadeCls}`}>Quick search</span>
-          
-
-          
+          <span className={`ml-auto shrink-0 text-[10px] font-bold border border-border rounded px-1.5 py-0.5 text-foreground/45 ${EASE} ${fadeCls}`}>
+            ⌘K
+          </span>
         </button>
       </div>
 
@@ -126,13 +121,6 @@ export default function Sidebar({ onOpenSearch }) {
             </div>
           </div>
         </NavLink>
-        
-
-
-
-
-
-        
       </div>
     </aside>);
 

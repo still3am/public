@@ -74,6 +74,7 @@ export function usePlaybackSync() {
   // then on a slow heartbeat while playing.
   useEffect(() => {
     publish();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentTrack?.id, isPlaying]);
 
   useEffect(() => {

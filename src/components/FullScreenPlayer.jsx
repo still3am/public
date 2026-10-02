@@ -1,11 +1,14 @@
 import { useState, useRef, useEffect } from "react";
 import { usePlayer } from "@/context/PlayerContext";
 import { useColorExtraction } from "@/hooks/useColorExtraction";
+import { useAuth } from "@/lib/AuthContext";
 import { formatTime } from "@/lib/audio-utils";
 import SyncedLyrics from "@/components/SyncedLyrics";
-import TrackOptionsMenu from "@/components/track/TrackOptionsMenu";
+import NowPlayingAddMenu from "@/components/NowPlayingAddMenu";
 import { Link } from "react-router-dom";
 import {
+  Play,
+  Pause,
   SkipBack,
   SkipForward,
   ChevronDown,
@@ -17,13 +20,9 @@ import {
   Repeat1,
   Shuffle,
   Disc3,
-  AudioLines,
-  Heart,
-  ListMusic,
   X } from
 "lucide-react";
 import PulseVisualizer from "@/components/PulseVisualizer";
-import AudioVisualizer from "@/components/AudioVisualizer";
 import PlayPauseButton from "@/components/PlayPauseButton";
 import QueuePanel from "@/components/QueuePanel";
 import SleepTimerMenu from "@/components/SleepTimerMenu";
@@ -31,8 +30,11 @@ import PlaybackSpeedMenu from "@/components/PlaybackSpeedMenu";
 import LoungeHostModal from "@/components/LoungeHostModal";
 import StemMixer from "@/components/StemMixer";
 import { useLoungeHost } from "@/hooks/useLoungeHost";
+import { useLibrary } from "@/context/LibraryContext";
+import { useOfflineCache } from "@/hooks/useOfflineCache";
 import { useOfflineCoverUrl } from "@/hooks/useOfflineCoverUrl";
 import { useCoverUrl } from "@/hooks/useCoverUrl";
+import { useToast } from "@/components/ui/use-toast";
 import { base44 } from "@/api/base44Client";
 
 const clampVol = (v) => Math.max(0, Math.min(1, v));
@@ -53,6 +55,8 @@ function IconButton({ icon: Icon, onClick, active, size = 22, label, className =
 
 export default function FullScreenPlayer({ onClose }) {
   const p = usePlayer();
+  const { user } = useAuth();
+  const { isInLibrary, toggle: toggleLibrary } = useLibrary();
   const offlineCover = useOfflineCoverUrl(p.currentTrack?.id, p.currentTrack?.cover_art_url);
   const coverUrl = useCoverUrl(offlineCover);
   const bg = useColorExtraction(coverUrl);
@@ -61,14 +65,14 @@ export default function FullScreenPlayer({ onClose }) {
   // own, so it no longer waits for the user to switch it on. The menu toggle
   // stays available for anyone who wants a calmer screen.
   const [showPulse, setShowPulse] = useState(true);
-  // The bars visualizer is off by default — it's the loud one.
-  const [showVisualizer, setShowVisualizer] = useState(false);
   const [showVolHint, setShowVolHint] = useState(false);
   const [copied, setCopied] = useState(false);
   const [showQueue, setShowQueue] = useState(false);
   const [showLyricsPanel, setShowLyricsPanel] = useState(true);
   const t = p.currentTrack;
   const lounge = useLoungeHost();
+  const cache = useOfflineCache();
+  const { toast } = useToast();
   const [loungeOpen, setLoungeOpen] = useState(false);
   const [showMixer, setShowMixer] = useState(false);
   const volDrag = useRef({ startY: 0, start: 0, active: false });
@@ -180,6 +184,21 @@ export default function FullScreenPlayer({ onClose }) {
     volDrag.current.active = false;
   };
 
+  async function toggleOffline() {
+    if (!t) return;
+    if (cache.isCached(t.id)) {
+      await cache.removeTrack(t.id);
+      toast({ title: "Removed from downloads" });
+      return;
+    }
+    const ok = await cache.downloadTrack(t);
+    toast(
+      ok
+        ? { title: "Saved for offline" }
+        : { title: "Couldn't save offline", variant: "destructive" }
+    );
+  }
+
   async function shareNow(copyOnly = false) {
     if (!t) return;
     const url = `${window.location.origin}/track/${t.id}`;
@@ -208,7 +227,7 @@ export default function FullScreenPlayer({ onClose }) {
 
   return (
     <div
-      className="fixed inset-x-0 top-0 z-50 h-screen-safe text-white animate-[fadeIn_.25s_ease-out] flex flex-col overflow-hidden"
+      className="fixed inset-0 z-50 text-white animate-[fadeIn_.25s_ease-out] flex flex-col overflow-hidden"
       style={{
         background: `linear-gradient(170deg, ${bg} 0%, #0d0d0f 55%, #000 100%)`,
         transform: `translateY(${dragY}px)`,
@@ -223,8 +242,6 @@ export default function FullScreenPlayer({ onClose }) {
 
       {/* reactive visualizer */}
       {showPulse && <PulseVisualizer className="absolute inset-0 z-0" />}
-      {/* audio-synced bars, drawn live from the player's analyser */}
-      {showVisualizer && <AudioVisualizer className="absolute inset-0 z-0 opacity-70" bars={72} />}
       
 
       {/* top bar */}
@@ -251,7 +268,7 @@ export default function FullScreenPlayer({ onClose }) {
             setDragY(0);
           }
         }}
-        className="relative flex items-center justify-between px-5 md:px-10 pt-[calc(2rem+env(safe-area-inset-top))] pb-3 shrink-0 touch-none">
+        className="relative flex items-center justify-between px-5 md:px-10 pt-8 pb-3 shrink-0 touch-none">
         <button onClick={onClose} className="p-2 -ml-2 active:scale-90 hover:bg-white/10 rounded-full transition" aria-label="Close">
           <ChevronDown size={26} />
         </button>
@@ -262,27 +279,22 @@ export default function FullScreenPlayer({ onClose }) {
           
         </div>
         <div className="flex items-center gap-1 shrink-0">
-        <IconButton
-          icon={AudioLines}
-          onClick={() => setShowVisualizer((v) => !v)}
-          active={showVisualizer}
-          label="Visualizer"
-          size={20} />
         <SleepTimerMenu />
         <PlaybackSpeedMenu />
-        <TrackOptionsMenu
-          track={t}
-          align="right"
-          size={20}
-          buttonClassName="w-9 h-9 rounded-full grid place-items-center bg-white/10 hover:bg-white/20 active:scale-90 transition"
+        <NowPlayingAddMenu
           onShare={shareNow}
-          onMix={() => setShowMixer(true)}
-          mixerActive={p.mixer.bass !== 0 || p.mixer.beat !== 0 || p.mixer.vocals !== 0 || p.mixer.treble !== 0 || p.mixer.boost !== 1}
+          showPulse={showPulse}
+          onTogglePulse={() => setShowPulse((v) => !v)}
+          onToggleLibrary={() => toggleLibrary(t)}
+          inLibrary={isInLibrary(t.id)}
+          onViewQueue={() => setShowQueue(true)}
           onLounge={() => setLoungeOpen(true)}
-          items={[
-          { icon: ListMusic, label: `View Queue (${p.queue.length - p.currentIndex - 1})`, onClick: () => setShowQueue(true) },
-          { icon: Heart, label: showPulse ? "Hide Color Pulse" : "Color Pulse", onClick: () => setShowPulse((v) => !v) }]
-          } />
+          onToggleOffline={toggleOffline}
+          savedOffline={cache.isCached(t.id)}
+          savingOffline={!!cache.downloading[t.id]}
+          queueCount={p.queue.length - p.currentIndex - 1 > 0 ? p.queue.length - p.currentIndex - 1 : 0}
+          onMix={() => setShowMixer(true)}
+          mixerActive={p.mixer.bass !== 0 || p.mixer.beat !== 0 || p.mixer.vocals !== 0 || p.mixer.treble !== 0 || p.mixer.boost !== 1} />
         </div>
       </div>
 

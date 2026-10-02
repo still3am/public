@@ -91,8 +91,8 @@ export default function GlobalSearch({ open, onClose }) {
           artists: Array.isArray(artists) ? artists : []
         });
       } catch {
-
-        /* leave the catalogue empty; people search still works */}
+        /* leave the catalogue empty; people search still works */
+      }
     })();
     return () => {cancelled = true;};
   }, [open, catalog.tracks.length]);
@@ -188,8 +188,8 @@ export default function GlobalSearch({ open, onClose }) {
       setCursor((c) => Math.max(0, c - 1));
     } else if (e.key === "Enter") {
       e.preventDefault();
-      if (rows[cursor]) openRow(rows[cursor]);else
-      if (Q) {onClose();navigate(`/search?q=${encodeURIComponent(q.trim())}`);}
+      if (rows[cursor]) openRow(rows[cursor]);
+      else if (Q) {onClose();navigate(`/search?q=${encodeURIComponent(q.trim())}`);}
     }
   };
 
@@ -218,12 +218,12 @@ export default function GlobalSearch({ open, onClose }) {
             className="flex-1 bg-transparent text-sm font-medium focus:outline-none" />
           
           {loading && <Loader2 size={15} className="animate-spin text-foreground/40 shrink-0" />}
-          
-
-
-
-
-          
+          <button
+            onClick={onClose}
+            className="shrink-0 text-[10px] font-bold uppercase tracking-wider text-foreground/45 border border-border rounded px-1.5 py-1">
+            
+            Esc
+          </button>
         </div>
 
         <div className="flex-1 overflow-y-auto p-2">
@@ -252,10 +252,10 @@ export default function GlobalSearch({ open, onClose }) {
         </div>
 
         <div className="flex items-center justify-between px-4 py-2.5 border-t border-border text-xs text-foreground/50">
-          
-
-          
-          
+          <span className="flex items-center gap-1.5">
+            <CornerDownLeft size={13} /> Open
+          </span>
+          <span>↑↓ navigate · Esc close</span>
         </div>
       </div>
     </div>);

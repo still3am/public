@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Users, Check, X, Loader2, Power, Copy, ScanLine, Pencil } from "lucide-react";
+import { Users, Check, X, Loader2, Speaker, Power, Copy, ScanLine, Pencil } from "lucide-react";
 import { loungeUrl, qrImageUrl } from "@/lib/lounge";
 import QRScannerModal from "@/components/QRScannerModal";
 import { useToast } from "@/components/ui/use-toast";
