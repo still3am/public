@@ -74,7 +74,7 @@ export default function MobileTopBar() {
 
         <span className="w-2 shrink-0" />
         }
-        <h1 className="text-base font-extrabold tracking-tight truncate hidden">{title}</h1>
+        
       </div>
     </header>);
 
