@@ -4,7 +4,6 @@ import { useColorExtraction } from "@/hooks/useColorExtraction";
 import { useAuth } from "@/lib/AuthContext";
 import { formatTime } from "@/lib/audio-utils";
 import SyncedLyrics from "@/components/SyncedLyrics";
-import TrackOptionsMenu from "@/components/track/TrackOptionsMenu";
 import { Link } from "react-router-dom";
 import {
   Play,
@@ -20,9 +19,6 @@ import {
   Repeat1,
   Shuffle,
   Disc3,
-  Heart,
-  EyeOff,
-  ListMusic,
   X } from
 "lucide-react";
 import PulseVisualizer from "@/components/PulseVisualizer";
@@ -235,27 +231,6 @@ export default function FullScreenPlayer({ onClose }) {
 
           
         </div>
-        <TrackOptionsMenu
-          track={t}
-          dark
-          variant="plus"
-          size={20}
-          align="right"
-          buttonClassName="w-9 h-9 rounded-full grid place-items-center bg-white/10 hover:bg-white/20 active:scale-90 transition"
-          items={[
-            {
-              icon: ListMusic,
-              label: queueAhead > 0 ? `Queue (${queueAhead})` : "Queue",
-              onClick: () => setShowQueue(true),
-            },
-            {
-              icon: showPulse ? EyeOff : Heart,
-              label: showPulse ? "Hide color pulse" : "Color pulse",
-              onClick: () => setShowPulse((v) => !v),
-              active: showPulse,
-            },
-          ]} />
-        
       </div>
 
       {/* body */}

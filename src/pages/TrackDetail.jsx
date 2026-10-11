@@ -17,7 +17,6 @@ import {
   Wand2 } from
 "lucide-react";
 import TrackRow from "@/components/TrackRow";
-import TrackOptionsMenu from "@/components/track/TrackOptionsMenu";
 import SyncLyricsModal from "@/components/SyncLyricsModal";
 import GenerateLyricsModal from "@/components/GenerateLyricsModal";
 import { useToast } from "@/components/ui/use-toast";
@@ -237,14 +236,6 @@ export default function TrackDetail() {
 
 
         
-        <TrackOptionsMenu
-          track={track}
-          variant="plus"
-          size={18}
-          align="right"
-          className="ml-auto"
-          buttonClassName="w-10 h-10 rounded-full bg-foreground text-background grid place-items-center hover:scale-105 transition"
-          items={ownerItems} />
       </div>
 
       {track.lyrics_text && track.lyrics_text.trim() &&
