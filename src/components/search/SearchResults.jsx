@@ -3,6 +3,7 @@ import { Users } from "lucide-react";
 import TrackCard from "@/components/TrackCard";
 import Avatar from "@/components/Avatar";
 import ArtistRow from "@/components/search/ArtistRow";
+import PlaylistCard from "@/components/playlist/PlaylistCard";
 
 function SectionTitle({ children, count }) {
   return (
@@ -13,7 +14,7 @@ function SectionTitle({ children, count }) {
   );
 }
 
-export default function SearchResults({ tracks, artists, people, dimmed }) {
+export default function SearchResults({ tracks, artists, people, playlists = [], dimmed }) {
   return (
     <div className={`space-y-8 transition-opacity ${dimmed ? "opacity-60" : "opacity-100"}`}>
       {artists.length > 0 && (
@@ -51,6 +52,17 @@ export default function SearchResults({ tracks, artists, people, dimmed }) {
                   )}
                 </div>
               </Link>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {playlists.length > 0 && (
+        <div>
+          <SectionTitle count={playlists.length}>Playlists</SectionTitle>
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-1">
+            {playlists.map((pl) => (
+              <PlaylistCard key={pl.id} playlist={pl} />
             ))}
           </div>
         </div>

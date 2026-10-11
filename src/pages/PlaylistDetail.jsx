@@ -15,6 +15,7 @@ import {
   MoreHorizontal,
   Globe,
   Lock,
+  Check,
 } from "lucide-react";
 import TrackRow from "@/components/TrackRow";
 import EmptyState from "@/components/EmptyState";
@@ -35,6 +36,8 @@ export default function PlaylistDetail() {
   const [editing, setEditing] = useState(false);
   const [form, setForm] = useState({ name: "", description: "", is_public: true });
   const [saving, setSaving] = useState(false);
+  const [saved, setSaved] = useState(false);
+  const [savingSaved, setSavingSaved] = useState(false);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -69,6 +72,22 @@ export default function PlaylistDetail() {
   useEffect(() => {
     load();
   }, [load]);
+
+  // Whether this playlist already sits in the visitor's library — only playlists
+  // by other people need saving, since your own live in your library already.
+  useEffect(() => {
+    let alive = true;
+    if (!user?.id || !id) return;
+    base44.entities.SavedPlaylist
+      .filter({ user_id: user.id, playlist_id: id }, "-created_date", 1)
+      .then((rows) => {
+        if (alive) setSaved(!!(rows || []).length);
+      })
+      .catch(() => {});
+    return () => {
+      alive = false;
+    };
+  }, [id, user?.id]);
 
   const isOwn = playlist?.creator_id === user?.id;
 
@@ -111,6 +130,32 @@ export default function PlaylistDetail() {
     const updated = await base44.entities.Playlist.update(playlist.id, { track_ids: newIds });
     setPlaylist(updated);
     setTracks((prev) => prev.filter((t) => t.id !== trackId));
+  }
+
+  async function toggleSaved() {
+    if (savingSaved) return;
+    setSavingSaved(true);
+    try {
+      if (saved) {
+        await base44.entities.SavedPlaylist.deleteMany({
+          user_id: user.id,
+          playlist_id: playlist.id,
+        });
+        setSaved(false);
+        toast({ title: "Removed from your library" });
+      } else {
+        await base44.entities.SavedPlaylist.create({
+          user_id: user.id,
+          playlist_id: playlist.id,
+        });
+        setSaved(true);
+        toast({ title: "Added to your library" });
+      }
+    } catch {
+      toast({ title: "Couldn't update your library", variant: "destructive" });
+    } finally {
+      setSavingSaved(false);
+    }
   }
 
   function playAll() {
@@ -196,6 +241,26 @@ export default function PlaylistDetail() {
                 className="h-11 px-6 rounded-full bg-foreground text-background text-sm font-bold flex items-center gap-2 active:scale-95 transition"
               >
                 <Play size={16} fill="currentColor" /> Play
+              </button>
+            )}
+            {!isOwn && (
+              <button
+                onClick={toggleSaved}
+                disabled={savingSaved}
+                className={`h-11 px-5 rounded-full text-sm font-bold flex items-center gap-2 active:scale-95 transition disabled:opacity-60 ${
+                  saved
+                    ? "bg-foreground text-background"
+                    : "border border-border hover:bg-foreground/[0.04]"
+                }`}
+              >
+                {savingSaved ? (
+                  <Loader2 size={16} className="animate-spin" />
+                ) : saved ? (
+                  <Check size={16} />
+                ) : (
+                  <Plus size={16} />
+                )}
+                {saved ? "In your library" : "Add to library"}
               </button>
             )}
             {isOwn && !editing && (

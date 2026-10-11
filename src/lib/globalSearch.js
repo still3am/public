@@ -5,6 +5,7 @@ import { base44 } from "@/api/base44Client";
 // narrowed by the term the user has typed so far.
 
 const TRACK_LIMIT = 40;
+const PLAYLIST_LIMIT = 20; // public playlists the server returns per search
 const ARTIST_SCAN = 50; // artist records the server may return per search
 const ARTIST_SHOWN = 20; // ranked, de-duplicated artist rows actually surfaced
 const COVER_SCAN = 100; // published tracks read to borrow one cover per artist
@@ -54,6 +55,15 @@ function rankArtist(artist, lower) {
   return 1; // matched on bio or location only
 }
 
+// Playlists rank on their own name first, so a playlist actually named after the
+// term sits above ones that only mention it in their description.
+function rankPlaylist(playlist, lower) {
+  const name = (playlist.name || "").toLowerCase();
+  if (name.startsWith(lower)) return 3;
+  if (name.includes(lower)) return 2;
+  return 1; // matched on description only
+}
+
 // The catalogue holds several records per artist name (one per upload), so the
 // list must collapse to a single row per artist — the most recently updated
 // record wins, which is also the one the Public Record page resolves.
@@ -97,12 +107,12 @@ async function artistCovers(names) {
 
 async function runSearch(query) {
   const Q = query.trim();
-  if (!Q) return { tracks: [], artists: [], people: [], failed: false };
+  if (!Q) return { tracks: [], artists: [], people: [], playlists: [], failed: false };
 
   const pattern = escapeRegex(Q);
   const lower = Q.toLowerCase();
 
-  const [trackRes, artistRes, peopleRes] = await Promise.all([
+  const [trackRes, artistRes, peopleRes, playlistRes] = await Promise.all([
     read(
       base44.entities.Track.filter(
         {
@@ -129,6 +139,15 @@ async function runSearch(query) {
       )
     ),
     read(base44.functions.invoke("searchUsers", { q: lower })),
+    read(
+      base44.entities.Playlist.filter(
+        {
+          is_public: true,
+          $or: [contains("name", pattern), contains("description", pattern)],
+        },
+        { sort: "-created_date", limit: PLAYLIST_LIMIT }
+      )
+    ),
   ]);
 
   const tracks = [...(trackRes.value?.items || [])].sort(
@@ -144,10 +163,15 @@ async function runSearch(query) {
     cover_art_url: artist.cover_art_url || covers[normalizeName(artist.name)] || "",
   }));
 
+  const playlists = [...(playlistRes.value?.items || [])].sort(
+    (a, b) => rankPlaylist(b, lower) - rankPlaylist(a, lower)
+  );
+
   return {
     tracks,
     artists,
     people: peopleRes.value?.data?.results || [],
+    playlists,
     failed: !trackRes.ok,
   };
 }
@@ -162,7 +186,14 @@ const recent = new Map();
 
 export function globalSearch(query, { fresh = false } = {}) {
   const Q = query.trim();
-  if (!Q) return Promise.resolve({ tracks: [], artists: [], people: [], failed: false });
+  if (!Q)
+    return Promise.resolve({
+      tracks: [],
+      artists: [],
+      people: [],
+      playlists: [],
+      failed: false,
+    });
 
   const now = Date.now();
   for (const [term, entry] of recent) {

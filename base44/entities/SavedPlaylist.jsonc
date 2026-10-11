@@ -1,0 +1,31 @@
+{
+  "name": "SavedPlaylist",
+  "type": "object",
+  "properties": {
+    "user_id": {
+      "type": "string",
+      "description": "The user who saved the playlist into their library"
+    },
+    "playlist_id": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "user_id",
+    "playlist_id"
+  ],
+  "rls": {
+    "create": {
+      "data.user_id": "{{user.id}}"
+    },
+    "read": {
+      "data.user_id": "{{user.id}}"
+    },
+    "update": {
+      "data.user_id": "{{user.id}}"
+    },
+    "delete": {
+      "data.user_id": "{{user.id}}"
+    }
+  }
+}

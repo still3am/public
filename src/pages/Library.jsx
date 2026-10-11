@@ -3,7 +3,7 @@ import { base44 } from "@/api/base44Client";
 import { useAuth } from "@/lib/AuthContext";
 import { useLibrary } from "@/context/LibraryContext";
 import { useOfflineCache } from "@/hooks/useOfflineCache";
-import { Library as LibIcon, Loader2, CloudOff, History, Plus, ListMusic, Disc3 } from "lucide-react";
+import { Library as LibIcon, Loader2, CloudOff, History, Plus, ListMusic, Disc3, X } from "lucide-react";
 import TrackCard from "@/components/TrackCard";
 import EmptyState from "@/components/EmptyState";
 import PullToRefresh from "@/components/PullToRefresh";
@@ -24,6 +24,7 @@ export default function Library() {
   const [recentlyPlayed, setRecentlyPlayed] = useState([]);
   const [loading, setLoading] = useState(true);
   const [playlists, setPlaylists] = useState(null);
+  const [savedPlaylists, setSavedPlaylists] = useState(null);
   const [showCreate, setShowCreate] = useState(false);
   const [editMode, setEditMode] = useState(false);
   const [selected, setSelected] = useState(() => new Set());
@@ -40,6 +41,36 @@ export default function Library() {
       setPlaylists(rows || []);
     } catch {
       setPlaylists([]);
+    }
+  }, [user?.id]);
+
+  // Playlists other people made and this user added to their library.
+  const loadSavedPlaylists = useCallback(async () => {
+    if (!user?.id) return;
+    try {
+      const rows = await base44.entities.SavedPlaylist.filter(
+        { user_id: user.id },
+        "-created_date",
+        200
+      );
+      const ids = (rows || []).map((r) => r.playlist_id).filter(Boolean);
+      if (!ids.length) {
+        setSavedPlaylists([]);
+        return;
+      }
+      const list = await base44.entities.Playlist.filter(
+        { id: { $in: ids } },
+        "-created_date",
+        200
+      );
+      const order = new Map(ids.map((pid, i) => [pid, i]));
+      setSavedPlaylists(
+        (list || [])
+          .slice()
+          .sort((a, b) => (order.get(a.id) ?? 0) - (order.get(b.id) ?? 0))
+      );
+    } catch {
+      setSavedPlaylists([]);
     }
   }, [user?.id]);
 
@@ -90,7 +121,8 @@ export default function Library() {
   useEffect(() => {
     load();
     loadPlaylists();
-  }, [load, loadPlaylists, ids]);
+    loadSavedPlaylists();
+  }, [load, loadPlaylists, loadSavedPlaylists, ids]);
 
   useEffect(() => {
     const handler = () => setRecentlyPlayed(getRecentPlays());
@@ -158,6 +190,20 @@ export default function Library() {
     }
   };
 
+  const unsavePlaylist = async (playlistId) => {
+    setSavedPlaylists((prev) => (prev || []).filter((pl) => pl.id !== playlistId));
+    try {
+      await base44.entities.SavedPlaylist.deleteMany({
+        user_id: user.id,
+        playlist_id: playlistId,
+      });
+      toast({ title: "Removed from your library" });
+    } catch {
+      toast({ title: "Couldn't remove that playlist", variant: "destructive" });
+      loadSavedPlaylists();
+    }
+  };
+
   return (
     <div className="max-w-5xl mx-auto pb-10">
       <LibraryEntryRow
@@ -181,7 +227,7 @@ export default function Library() {
         onRemove={removeFromLibrary}
         onDelete={deleteUploads} />
 
-      <PullToRefresh onRefresh={async () => {await refresh();await load();await loadPlaylists();}}>
+      <PullToRefresh onRefresh={async () => {await refresh();await load();await loadPlaylists();await loadSavedPlaylists();}}>
         {loading && tracks === null ?
         <div className="flex justify-center py-20">
             <Loader2 className="animate-spin text-foreground/40" />
@@ -246,6 +292,26 @@ export default function Library() {
               </div>
             }
           </section>
+
+          {savedPlaylists?.length > 0 &&
+          <section className="mb-7">
+            <h2 className="text-sm font-bold text-foreground/70 uppercase tracking-wider mb-3">Saved Playlists</h2>
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
+              {savedPlaylists.map((pl) =>
+              <div key={pl.id} className="relative group">
+                  <PlaylistCard playlist={pl} />
+                  <button
+                  onClick={() => unsavePlaylist(pl.id)}
+                  className="absolute top-2.5 right-2.5 w-7 h-7 rounded-full grid place-items-center bg-background/85 backdrop-blur text-foreground/60 hover:text-destructive opacity-0 group-hover:opacity-100 transition"
+                  aria-label="Remove from your library">
+                  
+                    <X size={14} />
+                  </button>
+                </div>
+              )}
+            </div>
+          </section>
+          }
 
           <section>
             <h2 className="text-sm font-bold text-foreground/70 uppercase tracking-wider mb-3">Saved</h2>

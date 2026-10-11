@@ -45,6 +45,7 @@ export default function Search() {
     tracks: trackResults,
     artists: artistResults,
     people,
+    playlists,
     searching,
     failed,
     hasQuery,
@@ -106,7 +107,8 @@ export default function Search() {
     return allTracks.filter((t) => t.genre === genre);
   }, [genre, allTracks]);
 
-  const anyResults = trackResults.length || artistResults.length || people.length;
+  const anyResults =
+    trackResults.length || artistResults.length || people.length || playlists.length;
   const firstSearchInFlight = hasQuery && searching && anyResults === 0;
 
   const loader =
@@ -164,6 +166,7 @@ export default function Search() {
           tracks={trackResults}
           artists={artistResults}
           people={people}
+          playlists={playlists}
           dimmed={searching} /> :
 
 

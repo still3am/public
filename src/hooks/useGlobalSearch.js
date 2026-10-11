@@ -5,7 +5,7 @@ import { useUnpublishedSync } from "@/hooks/useUnpublishedSync";
 // Long enough that a fast typist fires one server search per pause instead of
 // one per character — each search scans tracks and artists server-side.
 const DEBOUNCE_MS = 400;
-const EMPTY = { tracks: [], artists: [], people: [] };
+const EMPTY = { tracks: [], artists: [], people: [], playlists: [] };
 
 /**
  * Live global search: every keystroke schedules a server query shortly after,
