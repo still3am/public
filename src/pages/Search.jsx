@@ -138,9 +138,9 @@ export default function Search() {
               </button>
               <div className="min-w-0 flex-1">
                 <h2 className="text-lg font-extrabold tracking-tight truncate">{genre}</h2>
-                <p className="text-xs text-foreground/50 hidden">
-                  {genreTracks.length} {genreTracks.length === 1 ? "track" : "tracks"}
-                </p>
+                
+
+              
               </div>
             </div>
             {genreTracks.length ?
