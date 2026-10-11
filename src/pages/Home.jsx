@@ -21,6 +21,7 @@ import { getRecentPlays } from "@/lib/recentPlays";
 import { getUserGenres } from "@/lib/userGenres";
 import PullToRefresh from "@/components/PullToRefresh";
 import HeroPlayingTint from "@/components/HeroPlayingTint";
+import { useUploadsEnabled } from "@/hooks/useUploadsEnabled";
 
 const greetingByHour = () => {
   const h = new Date().getHours();
@@ -84,6 +85,7 @@ function Skeleton() {
 
 export default function Home() {
   const { user } = useAuth();
+  const { enabled: uploadsEnabled } = useUploadsEnabled();
   const [loading, setLoading] = useState(true);
   const [trending, setTrending] = useState([]);
   const [newReleases, setNewReleases] = useState([]);
@@ -256,6 +258,22 @@ export default function Home() {
             <div className="mb-7">
               <ScoreboardTrackCount count={totalTracks} />
             </div>
+
+            {uploadsEnabled &&
+            <div className="relative">
+                <Link
+                to={user ? "/upload" : "/login?returnTo=/upload"}
+                className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-foreground text-background text-sm md:text-base font-bold shadow-lg hover:opacity-90 active:scale-95 transition">
+                
+                  <Upload size={17} /> Upload your song
+                </Link>
+                <p className="text-[11px] md:text-xs text-foreground/45 mt-3">
+                  {user ?
+                "Uploaded songs go live on the PUBLIC network once they're approved." :
+                "Sign in to share your music with everyone."}
+                </p>
+              </div>
+            }
             
 
 
