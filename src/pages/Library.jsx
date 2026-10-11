@@ -3,7 +3,7 @@ import { base44 } from "@/api/base44Client";
 import { useAuth } from "@/lib/AuthContext";
 import { useLibrary } from "@/context/LibraryContext";
 import { useOfflineCache } from "@/hooks/useOfflineCache";
-import { Library as LibIcon, Loader2, CloudOff, History, Plus, ListMusic, Disc3, X } from "lucide-react";
+import { Library as LibIcon, Loader2, Plus, ListMusic, Disc3, X, Upload } from "lucide-react";
 import TrackCard from "@/components/TrackCard";
 import EmptyState from "@/components/EmptyState";
 import PullToRefresh from "@/components/PullToRefresh";
@@ -14,16 +14,15 @@ import LibraryBulkBar from "@/components/library/LibraryBulkBar";
 import BulkAddToPlaylistSheet from "@/components/library/BulkAddToPlaylistSheet";
 import { useToast } from "@/components/ui/use-toast";
 import { getRecentPlays } from "@/lib/recentPlays";
+import { useMyPlaylists } from "@/hooks/useMyPlaylists";
 
 export default function Library() {
   const { user } = useAuth();
   const { ids, refresh } = useLibrary();
   const cache = useOfflineCache();
   const [tracks, setTracks] = useState(null);
-  const [uploads, setUploads] = useState(null);
   const [recentlyPlayed, setRecentlyPlayed] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [playlists, setPlaylists] = useState(null);
   const [savedPlaylists, setSavedPlaylists] = useState(null);
   const [showCreate, setShowCreate] = useState(false);
   const [editMode, setEditMode] = useState(false);
@@ -31,18 +30,10 @@ export default function Library() {
   const [showBulkPlaylist, setShowBulkPlaylist] = useState(false);
   const [bulkBusy, setBulkBusy] = useState(false);
   const { toast } = useToast();
+  const { playlists, reload: reloadPlaylists } = useMyPlaylists();
 
+  // Shown on the PUBLIC OFFLINE row so the row states how much is on the device.
   const offlineCount = cache.records.length;
-
-  const loadPlaylists = useCallback(async () => {
-    if (!user?.id) return;
-    try {
-      const rows = await base44.entities.Playlist.filter({ creator_id: user.id }, "-created_date", 200);
-      setPlaylists(rows || []);
-    } catch {
-      setPlaylists([]);
-    }
-  }, [user?.id]);
 
   // Playlists other people made and this user added to their library.
   const loadSavedPlaylists = useCallback(async () => {
@@ -77,28 +68,19 @@ export default function Library() {
   const load = useCallback(async () => {
     if (!user?.id) {
       setTracks([]);
-      setUploads([]);
       setLoading(false);
       return;
     }
     setLoading(true);
     try {
-      const [items, uploaded] = await Promise.all([
-      base44.entities.LibraryItem.filter(
+      const items = await base44.entities.LibraryItem.filter(
         { user_id: user.id },
         "-created_date",
         1000
-      ),
-      base44.entities.Track.filter(
-        { uploader_id: user.id },
-        "-created_date",
-        1000
-      )]
       );
       const trackIds = (items || []).
       map((i) => i.track_id).
       filter(Boolean);
-      const uploadedIds = new Set((uploaded || []).map((t) => t.id));
       const list = trackIds.length ?
       await base44.entities.Track.filter(
         { id: { $in: trackIds } },
@@ -107,12 +89,11 @@ export default function Library() {
       ) :
       [];
       const order = new Map(trackIds.map((id, i) => [id, i]));
-      const sorted = (list || []).
-      slice().
-      sort((a, b) => (order.get(a.id) ?? 0) - (order.get(b.id) ?? 0)).
-      filter((t) => !uploadedIds.has(t.id));
-      setTracks(sorted);
-      setUploads(uploaded || []);
+      setTracks(
+        (list || []).
+        slice().
+        sort((a, b) => (order.get(a.id) ?? 0) - (order.get(b.id) ?? 0))
+      );
     } finally {
       setLoading(false);
     }
@@ -120,9 +101,8 @@ export default function Library() {
 
   useEffect(() => {
     load();
-    loadPlaylists();
     loadSavedPlaylists();
-  }, [load, loadPlaylists, loadSavedPlaylists, ids]);
+  }, [load, loadSavedPlaylists, ids]);
 
   useEffect(() => {
     const handler = () => setRecentlyPlayed(getRecentPlays());
@@ -136,9 +116,7 @@ export default function Library() {
   }, []);
 
   const selectedIds = [...selected];
-  const uploadIds = new Set((uploads || []).map((t) => t.id));
   const removableIds = selectedIds.filter((id) => ids.has(id));
-  const deletableIds = selectedIds.filter((id) => uploadIds.has(id));
 
   const toggleSelect = (track) => {
     setSelected((prev) => {
@@ -173,23 +151,6 @@ export default function Library() {
     }
   };
 
-  const deleteUploads = async () => {
-    if (!deletableIds.length) return;
-    setBulkBusy(true);
-    try {
-      await base44.entities.Track.deleteMany({ id: { $in: deletableIds } });
-      await load();
-      toast({
-        title: `Deleted ${deletableIds.length} ${deletableIds.length === 1 ? "upload" : "uploads"}`
-      });
-      exitEditMode();
-    } catch {
-      toast({ title: "Couldn't delete those uploads", variant: "destructive" });
-    } finally {
-      setBulkBusy(false);
-    }
-  };
-
   const unsavePlaylist = async (playlistId) => {
     setSavedPlaylists((prev) => (prev || []).filter((pl) => pl.id !== playlistId));
     try {
@@ -207,49 +168,42 @@ export default function Library() {
   return (
     <div className="max-w-5xl mx-auto pb-10">
       <LibraryEntryRow
+        to="/my-uploads"
+        icon={Upload}
+        label="Your Uploads"
+        subtitle="Every song you've posted, in one place" />
+
+      <LibraryEntryRow
         to="/records"
         icon={Disc3}
         label="Public Record"
         subtitle="A–Z artist directory" />
 
-      <LibraryEntryRow to="/downloads" label="PUBLIC OFFLINE" />
+      <LibraryEntryRow
+        to="/downloads"
+        label="PUBLIC OFFLINE"
+        subtitle={
+        offlineCount ?
+        `${offlineCount} ${offlineCount === 1 ? "song" : "songs"} saved on this device` :
+        "Songs saved to play without data"} />
 
       <LibraryBulkBar
-        visible={!!(uploads?.length || tracks?.length)}
+        visible={!!tracks?.length}
         active={editMode}
         count={selected.size}
         canRemove={removableIds.length > 0}
-        canDelete={deletableIds.length > 0}
         busy={bulkBusy}
         onStart={() => setEditMode(true)}
         onExit={exitEditMode}
         onAddToPlaylist={() => setShowBulkPlaylist(true)}
-        onRemove={removeFromLibrary}
-        onDelete={deleteUploads} />
+        onRemove={removeFromLibrary} />
 
-      <PullToRefresh onRefresh={async () => {await refresh();await load();await loadPlaylists();await loadSavedPlaylists();}}>
+      <PullToRefresh onRefresh={async () => {await refresh();await load();await reloadPlaylists();await loadSavedPlaylists();}}>
         {loading && tracks === null ?
         <div className="flex justify-center py-20">
             <Loader2 className="animate-spin text-foreground/40" />
           </div> :
         <>
-          {uploads?.length > 0 &&
-          <section className="mb-7">
-            <h2 className="text-sm font-bold text-foreground/70 uppercase tracking-wider mb-3">Your Uploads</h2>
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
-              {uploads.map((t) =>
-              <TrackCard
-                key={t.id}
-                track={t}
-                selectable={editMode}
-                selected={selected.has(t.id)}
-                onToggleSelect={toggleSelect} />
-
-              )}
-            </div>
-          </section>
-          }
-
           {recentlyPlayed.length > 0 &&
           <section className="mb-7">
             <h2 className="text-sm font-bold text-foreground/70 uppercase tracking-wider mb-3">Recently Played</h2>
@@ -342,7 +296,7 @@ export default function Library() {
       {showCreate &&
       <CreatePlaylistModal
         onClose={() => setShowCreate(false)}
-        onCreated={() => loadPlaylists()} />
+        onCreated={reloadPlaylists} />
 
       }
 
