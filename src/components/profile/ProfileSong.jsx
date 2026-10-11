@@ -35,8 +35,14 @@ export default function ProfileSong({
     else p.playTrackAt([track]);
   }
 
+  // Nothing to show and nothing to pick: no card at all, so a profile whose
+  // featured track was deleted doesn't leave an empty box next to it.
+  if (!editMode && !track) return null;
+
   if (fillHeight) {
+    // The card owns its width so an absent track takes no space in the row.
     return (
+      <div className="md:w-80 lg:w-96 shrink-0">
       <div className="h-full flex flex-col rounded-2xl ring-1 ring-inset ring-foreground/10 bg-card overflow-hidden">
         {editMode ? (
           trackId && track ? (
@@ -105,6 +111,7 @@ export default function ProfileSong({
             onClose={() => setPickerOpen(false)}
           />
         )}
+      </div>
       </div>
     );
   }

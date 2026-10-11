@@ -4,9 +4,11 @@ import { useAuth } from "@/lib/AuthContext";
 import { coalesce } from "@/lib/coalesce";
 import Avatar from "@/components/Avatar";
 import { Loader2, Send, Trash2, MessageCircle } from "lucide-react";
+import { useToast } from "@/components/ui/use-toast";
 
 export default function ProfileComments({ profileId, isOwn }) {
   const { user } = useAuth();
+  const { toast } = useToast();
   const [comments, setComments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [message, setMessage] = useState("");
@@ -61,16 +63,23 @@ export default function ProfileComments({ profileId, isOwn }) {
         } catch {}
       }
     } catch {
-      // ignore — subscribe will not fire
+      toast({ title: "Couldn't post your comment", variant: "destructive" });
     } finally {
       setPosting(false);
     }
   }
 
   async function deleteComment(id) {
+    // Take it out of the list right away and put it back if the delete fails,
+    // rather than leaving the row sitting there waiting for a realtime event.
+    const before = comments;
+    setComments((prev) => prev.filter((c) => c.id !== id));
     try {
       await base44.entities.ProfileComment.delete(id);
-    } catch {}
+    } catch {
+      setComments(before);
+      toast({ title: "Couldn't delete that comment", variant: "destructive" });
+    }
   }
 
   return (

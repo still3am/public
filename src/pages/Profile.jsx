@@ -31,6 +31,7 @@ import ProfileSong from "@/components/profile/ProfileSong";
 import TopTracks from "@/components/profile/TopTracks";
 import ProfileComments from "@/components/profile/ProfileComments";
 import FollowListModal from "@/components/profile/FollowListModal";
+import StatusMessage from "@/components/profile/StatusMessage";
 import { useColorPalette } from "@/hooks/useColorPalette";
 import { useCoverUrl } from "@/hooks/useCoverUrl";
 
@@ -44,9 +45,29 @@ function safeUrl(u) {
   }
 }
 
+// One mapping from a stored profile to the editable form, shared by the first
+// load and by Cancel so discarded edits can never resurface on a later save.
+function formFromProfile(prof) {
+  return {
+    display_name: prof.display_name || prof.full_name || "",
+    bio: prof.bio || "",
+    avatar_url: prof.avatar_url || "",
+    banner_url: prof.banner_url || "",
+    location: prof.location || "",
+    pronouns: prof.pronouns || "",
+    website: prof.website || "",
+    instagram: prof.instagram || "",
+    twitter: prof.twitter || "",
+    soundcloud: prof.soundcloud || "",
+    status_message: prof.status_message || "",
+    featured_track_id: prof.featured_track_id || "",
+    top_track_ids: prof.top_track_ids || []
+  };
+}
+
 export default function Profile() {
   const { id } = useParams();
-  const { user: me } = useAuth();
+  const { user: me, checkUserAuth } = useAuth();
   const isOwn = !id || id === me?.id;
   const targetId = isOwn ? me?.id : id;
 
@@ -67,21 +88,7 @@ export default function Profile() {
   const [uploadingAvatar, setUploadingAvatar] = useState(false);
   const [followList, setFollowList] = useState(null);
 
-  const [form, setForm] = useState({
-    display_name: "",
-    bio: "",
-    avatar_url: "",
-    banner_url: "",
-    location: "",
-    pronouns: "",
-    website: "",
-    instagram: "",
-    twitter: "",
-    soundcloud: "",
-    status_message: "",
-    featured_track_id: "",
-    top_track_ids: []
-  });
+  const [form, setForm] = useState(() => formFromProfile({}));
 
   const [featuredCoverUrl, setFeaturedCoverUrl] = useState("");
   useEffect(() => {
@@ -109,29 +116,22 @@ export default function Profile() {
         return;
       }
       setProfile(prof);
-      setForm({
-        display_name: prof.display_name || prof.full_name || "",
-        bio: prof.bio || "",
-        avatar_url: prof.avatar_url || "",
-        banner_url: prof.banner_url || "",
-        location: prof.location || "",
-        pronouns: prof.pronouns || "",
-        website: prof.website || "",
-        instagram: prof.instagram || "",
-        twitter: prof.twitter || "",
-        soundcloud: prof.soundcloud || "",
-        status_message: prof.status_message || "",
-        featured_track_id: prof.featured_track_id || "",
-        top_track_ids: prof.top_track_ids || []
-      });
+      setForm(formFromProfile(prof));
       // Owners see all their own tracks (pending/private/approved); others only see approved ones.
       const trackFilter = isOwn ?
       { uploader_id: targetId } :
       { uploader_id: targetId, is_published: true };
-      const [t, followsToMe, followsFromMe, relToUser] = await Promise.all([
+      // The track list is one page (it fills the grids); the totals are counted on
+      // the server so they stay right for artists with more than a page of
+      // uploads, and the follower numbers never pull a thousand rows to measure.
+      const [t, totals, followersCount, followingCount, relToUser] = await Promise.all([
       base44.entities.Track.filter(trackFilter, "-created_date", 100),
-      base44.entities.Follow.filter({ following_id: targetId }, "-created_date", 1000),
-      base44.entities.Follow.filter({ follower_id: targetId }, "-created_date", 1000),
+      base44.entities.Track.aggregate({
+        query: trackFilter,
+        sum: ["play_count", "like_count"]
+      }).catch(() => null),
+      base44.entities.Follow.count({ following_id: targetId }),
+      base44.entities.Follow.count({ follower_id: targetId }),
       !isOwn ?
       base44.entities.Follow.filter(
         { follower_id: me.id, following_id: targetId },
@@ -144,11 +144,16 @@ export default function Profile() {
       setTopTracks(
         [...t].sort((a, b) => (b.play_count || 0) - (a.play_count || 0)).slice(0, 5)
       );
+      const totalsRow = totals?.rows?.[0];
       setStats({
-        followers: followsToMe.length,
-        following: followsFromMe.length,
-        plays: t.reduce((s, x) => s + (x.play_count || 0), 0),
-        likes: t.reduce((s, x) => s + (x.like_count || 0), 0)
+        followers: followersCount || 0,
+        following: followingCount || 0,
+        plays: totalsRow ?
+        totalsRow.sum_play_count || 0 :
+        t.reduce((s, x) => s + (x.play_count || 0), 0),
+        likes: totalsRow ?
+        totalsRow.sum_like_count || 0 :
+        t.reduce((s, x) => s + (x.like_count || 0), 0)
       });
       setFollowing(relToUser.length > 0);
     } finally {
@@ -239,6 +244,9 @@ export default function Profile() {
         featured_track_id: form.featured_track_id,
         top_track_ids: form.top_track_ids
       });
+      // Refresh the signed-in user the rest of the app reads from, otherwise the
+      // name and avatar in the sidebar keep the old values until a reload.
+      await checkUserAuth();
       setEditMode(false);
       setProfile((prev) => ({
         ...prev,
@@ -248,6 +256,12 @@ export default function Profile() {
     } finally {
       setSaving(false);
     }
+  }
+
+  function cancelEdit() {
+    // Reopening the editor must start from what is actually saved.
+    if (profile) setForm(formFromProfile(profile));
+    setEditMode(false);
   }
 
   async function shareProfile() {
@@ -439,6 +453,15 @@ export default function Profile() {
 
                   }
 
+              {editMode ?
+                  <StatusMessage
+                    value={form.status_message}
+                    editMode
+                    onChange={(v) => setForm((f) => ({ ...f, status_message: v }))} /> :
+
+                  <StatusMessage value={profile.status_message} />
+                  }
+
 
 
               {!editMode && (
@@ -491,7 +514,7 @@ export default function Profile() {
                         {saving ? <Loader2 size={16} className="animate-spin" /> : <Save size={16} />}
                       </button>
                       <button
-                        onClick={() => setEditMode(false)}
+                        onClick={cancelEdit}
                         title="Cancel"
                         aria-label="Cancel editing"
                         className="w-10 h-10 md:w-12 md:h-12 rounded-full border border-border grid place-items-center">
@@ -555,17 +578,12 @@ export default function Profile() {
           </div>
         </div>
       </div>
-      {(editMode || profile?.featured_track_id) &&
-          <div className="md:w-80 lg:w-96 shrink-0">
-          <ProfileSong
-              trackId={editMode ? form.featured_track_id : profile?.featured_track_id}
-              editMode={editMode}
-              userTracks={tracks}
-              onChange={(id) => setForm((f) => ({ ...f, featured_track_id: id }))}
-              fillHeight />
-            
-        </div>
-          }
+      <ProfileSong
+          trackId={editMode ? form.featured_track_id : profile?.featured_track_id}
+          editMode={editMode}
+          userTracks={tracks}
+          onChange={(id) => setForm((f) => ({ ...f, featured_track_id: id }))}
+          fillHeight />
       </div>
 
       <TopTracks
