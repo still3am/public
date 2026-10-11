@@ -3,29 +3,17 @@
 
 const KEY = "public:device_id";
 
-// Held for the lifetime of the page. This device must keep ONE identity even
-// when the browser refuses to persist storage (private windows, or Safari's
-// blocked third-party storage inside the preview frame, where every read comes
-// back empty). Re-reading storage on each render handed out a new id every
-// time, so the app stopped recognising the playback row it had just written —
-// it read it back as "another device", handed playback over, wrote another row,
-// and looped: the app froze, no audio played, and rows piled up in the database.
-let sessionId = null;
-
 export function getDeviceId() {
-  if (sessionId) return sessionId;
-  const fresh = () => `d_${Math.random().toString(36).slice(2)}${Date.now().toString(36)}`;
   try {
     let v = localStorage.getItem(KEY);
     if (!v) {
-      v = fresh();
+      v = `d_${Math.random().toString(36).slice(2)}${Date.now().toString(36)}`;
       localStorage.setItem(KEY, v);
     }
-    sessionId = v;
+    return v;
   } catch {
-    sessionId = fresh();
+    return "d_ephemeral";
   }
-  return sessionId;
 }
 
 export function getDeviceLabel() {

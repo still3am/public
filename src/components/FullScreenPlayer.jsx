@@ -4,7 +4,7 @@ import { useColorExtraction } from "@/hooks/useColorExtraction";
 import { useAuth } from "@/lib/AuthContext";
 import { formatTime } from "@/lib/audio-utils";
 import SyncedLyrics from "@/components/SyncedLyrics";
-import TrackOptionsMenu from "@/components/track/TrackOptionsMenu";
+import NowPlayingAddMenu from "@/components/NowPlayingAddMenu";
 import { Link } from "react-router-dom";
 import {
   Play,
@@ -20,8 +20,6 @@ import {
   Repeat1,
   Shuffle,
   Disc3,
-  Heart,
-  ListMusic,
   X } from
 "lucide-react";
 import PulseVisualizer from "@/components/PulseVisualizer";
@@ -30,8 +28,11 @@ import QueuePanel from "@/components/QueuePanel";
 import LoungeHostModal from "@/components/LoungeHostModal";
 import StemMixer from "@/components/StemMixer";
 import { useLoungeHost } from "@/hooks/useLoungeHost";
+import { useLibrary } from "@/context/LibraryContext";
+import { useOfflineCache } from "@/hooks/useOfflineCache";
 import { useOfflineCoverUrl } from "@/hooks/useOfflineCoverUrl";
 import { useCoverUrl } from "@/hooks/useCoverUrl";
+import { useToast } from "@/components/ui/use-toast";
 import { base44 } from "@/api/base44Client";
 
 const clampVol = (v) => Math.max(0, Math.min(1, v));
@@ -53,6 +54,7 @@ function IconButton({ icon: Icon, onClick, active, size = 22, label, className =
 export default function FullScreenPlayer({ onClose }) {
   const p = usePlayer();
   const { user } = useAuth();
+  const { isInLibrary, toggle: toggleLibrary } = useLibrary();
   const offlineCover = useOfflineCoverUrl(p.currentTrack?.id, p.currentTrack?.cover_art_url);
   const coverUrl = useCoverUrl(offlineCover);
   const bg = useColorExtraction(coverUrl);
@@ -62,14 +64,15 @@ export default function FullScreenPlayer({ onClose }) {
   // stays available for anyone who wants a calmer screen.
   const [showPulse, setShowPulse] = useState(true);
   const [showVolHint, setShowVolHint] = useState(false);
+  const [copied, setCopied] = useState(false);
   const [showQueue, setShowQueue] = useState(false);
   const [showLyricsPanel, setShowLyricsPanel] = useState(true);
   const t = p.currentTrack;
   const lounge = useLoungeHost();
+  const cache = useOfflineCache();
+  const { toast } = useToast();
   const [loungeOpen, setLoungeOpen] = useState(false);
-  // A Lounge can be started from any track menu; remember the last request we
-  // handled so reopening this player doesn't pop the sheet again.
-  const handledLoungeRef = useRef(0);
+  const [showMixer, setShowMixer] = useState(false);
   const volDrag = useRef({ startY: 0, start: 0, active: false });
   const hintTimer = useRef(null);
   const dismissDrag = useRef({ startY: 0, active: false, moved: false });
@@ -81,14 +84,6 @@ export default function FullScreenPlayer({ onClose }) {
 
   // Reset the broken-cover flag whenever the track (and thus its cover URL) changes.
   useEffect(() => { setCoverFailed(false); }, [coverUrl]);
-
-  // A track's menu (on any page) can ask for a Lounge: open the host sheet here.
-  useEffect(() => {
-    if (p.loungeRequest && p.loungeRequest !== handledLoungeRef.current) {
-      handledLoungeRef.current = p.loungeRequest;
-      setLoungeOpen(true);
-    }
-  }, [p.loungeRequest]);
 
   // Only show the Lyrics toggle when this track actually has lyrics available
   // (approved timed lyrics, or plain-text lyrics_text on the track).
@@ -187,7 +182,38 @@ export default function FullScreenPlayer({ onClose }) {
     volDrag.current.active = false;
   };
 
-  // Downloading and sharing a track are part of the shared track options menu.
+  async function toggleOffline() {
+    if (!t) return;
+    if (cache.isCached(t.id)) {
+      await cache.removeTrack(t.id);
+      toast({ title: "Removed from downloads" });
+      return;
+    }
+    const ok = await cache.downloadTrack(t);
+    toast(
+      ok
+        ? { title: "Saved for offline" }
+        : { title: "Couldn't save offline", variant: "destructive" }
+    );
+  }
+
+  async function shareNow(copyOnly = false) {
+    if (!t) return;
+    const url = `${window.location.origin}/track/${t.id}`;
+    if (copyOnly) {
+      navigator.clipboard?.writeText(url);
+      return;
+    }
+    if (navigator.share) {
+      try {
+        await navigator.share({ title: `${t.title} on PUBLIC.`, url });
+      } catch {}
+    } else {
+      navigator.clipboard?.writeText(url);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1500);
+    }
+  }
 
   if (!t) return null;
   const progress = p.duration ? p.position / p.duration * 100 : 0;
@@ -250,14 +276,20 @@ export default function FullScreenPlayer({ onClose }) {
 
           
         </div>
-        <TrackOptionsMenu
-          track={t}
-          tone="overlay"
-          size={20}
-          items={[
-          { id: "queue-view", icon: ListMusic, label: "View Queue", onClick: () => setShowQueue(true) },
-          { id: "pulse", icon: Heart, label: showPulse ? "Hide Color Pulse" : "Color Pulse", filled: showPulse, onClick: () => setShowPulse((v) => !v) }]
-          } />
+        <NowPlayingAddMenu
+          onShare={shareNow}
+          showPulse={showPulse}
+          onTogglePulse={() => setShowPulse((v) => !v)}
+          onToggleLibrary={() => toggleLibrary(t)}
+          inLibrary={isInLibrary(t.id)}
+          onViewQueue={() => setShowQueue(true)}
+          onLounge={() => setLoungeOpen(true)}
+          onToggleOffline={toggleOffline}
+          savedOffline={cache.isCached(t.id)}
+          savingOffline={!!cache.downloading[t.id]}
+          queueCount={p.queue.length - p.currentIndex - 1 > 0 ? p.queue.length - p.currentIndex - 1 : 0}
+          onMix={() => setShowMixer(true)}
+          mixerActive={p.mixer.bass !== 0 || p.mixer.beat !== 0 || p.mixer.vocals !== 0 || p.mixer.treble !== 0 || p.mixer.boost !== 1} />
         
       </div>
 
@@ -446,9 +478,16 @@ export default function FullScreenPlayer({ onClose }) {
       {loungeOpen && (
         <LoungeHostModal lounge={lounge} onClose={() => setLoungeOpen(false)} />
       )}
-      {p.mixerOpen && (
-        <StemMixer onClose={() => p.setMixerOpen(false)} />
+      {showMixer && (
+        <StemMixer onClose={() => setShowMixer(false)} />
       )}
+
+      {/* copied toast */}
+      {copied &&
+      <div className="absolute bottom-24 left-1/2 -translate-x-1/2 px-4 py-2 rounded-full bg-overlay-foreground text-overlay text-xs font-semibold shadow-xl">
+          Link copied
+        </div>
+      }
 
       {/* mobile bottom toggle bar */}
       

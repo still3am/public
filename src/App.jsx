@@ -9,10 +9,7 @@ import ProtectedRoute from '@/components/ProtectedRoute';
 import { Navigate } from 'react-router-dom';
 import { PlayerProvider } from '@/context/PlayerContext';
 import { LibraryProvider } from '@/context/LibraryContext';
-import { LikesProvider } from '@/context/LikesContext';
-import { FollowsProvider } from '@/context/FollowsContext';
 import { UploadProvider } from '@/context/UploadContext';
-import { OfflineCacheProvider } from '@/context/OfflineCacheContext';
 import Layout from '@/components/Layout';
 import Login from '@/pages/Login';
 import Register from '@/pages/Register';
@@ -108,24 +105,18 @@ function App() {
 
   return (
     <AuthProvider>
-      <OfflineCacheProvider>
-        <QueryClientProvider client={queryClientInstance}>
-          <Router>
+      <QueryClientProvider client={queryClientInstance}>
+        <Router>
           <PlayerProvider>
             <LibraryProvider>
-              <LikesProvider>
-                <FollowsProvider>
-                  <UploadProvider>
-                    <AuthenticatedApp />
-                  </UploadProvider>
-                </FollowsProvider>
-              </LikesProvider>
+              <UploadProvider>
+                <AuthenticatedApp />
+              </UploadProvider>
             </LibraryProvider>
           </PlayerProvider>
-          </Router>
-          <Toaster />
-        </QueryClientProvider>
-      </OfflineCacheProvider>
+        </Router>
+        <Toaster />
+      </QueryClientProvider>
     </AuthProvider>
   )
 }

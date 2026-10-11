@@ -29,7 +29,7 @@ export default function PlayerBar() {
   const location = useLocation();
   const [fullOpen, setFullOpen] = useState(false);
   const [queueOpen, setQueueOpen] = useState(false);
-  const handledLoungeRef = useRef(0);
+  const [mixerOpen, setMixerOpen] = useState(false);
   const [dragY, setDragY] = useState(0);
   const [coverFailed, setCoverFailed] = useState(false);
   const drag = useRef({ active: false, startY: 0, moved: false, dy: 0 });
@@ -59,15 +59,6 @@ export default function PlayerBar() {
     }
     setDragY(0);
   };
-
-  // A track menu anywhere in the app can ask for a Lounge: open the full-screen
-  // player, which owns the Lounge surface, and let it pick up the request.
-  useEffect(() => {
-    if (p.loungeRequest && p.loungeRequest !== handledLoungeRef.current) {
-      handledLoungeRef.current = p.loungeRequest;
-      setFullOpen(true);
-    }
-  }, [p.loungeRequest]);
 
   const offlineCover = useOfflineCoverUrl(p.currentTrack?.id, p.currentTrack?.cover_art_url);
   const coverUrl = useCoverUrl(offlineCover);
@@ -176,7 +167,7 @@ export default function PlayerBar() {
               <SkipForward size={20} />
             </button>
             <button
-              onClick={() => p.setMixerOpen(true)}
+              onClick={() => setMixerOpen(true)}
               className={`p-2 rounded-full hover:bg-foreground/5 active:scale-90 transition ${
                 p.mixer.bass !== 0 || p.mixer.beat !== 0 || p.mixer.vocals !== 0 || p.mixer.treble !== 0 || p.mixer.boost !== 1 ? "text-foreground" : "text-foreground/40"}`}
               aria-label="Mix">
@@ -230,8 +221,8 @@ export default function PlayerBar() {
           <QueuePanel open={queueOpen} onClose={() => setQueueOpen(false)} />
         </div>
       }
-      {p.mixerOpen && p.currentTrack && !fullOpen &&
-        <StemMixer onClose={() => p.setMixerOpen(false)} />
+      {mixerOpen && p.currentTrack &&
+        <StemMixer onClose={() => setMixerOpen(false)} />
       }
     </>);
 
