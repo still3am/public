@@ -1,7 +1,6 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
+import { createPortal } from "react-dom";
 import TrackOptionsList from "@/components/track/TrackOptionsList";
-import TrackLoungeSheet from "@/components/track/TrackLoungeSheet";
-import PlaylistPickerModal from "@/components/playlist/PlaylistPickerModal";
 import useTrackMenuItems from "@/hooks/useTrackMenuItems";
 
 const MENU_WIDTH = 220;
@@ -14,18 +13,11 @@ export default function TrackOptionsPanel({
   sheet = false,
   items = [],
   onReport,
+  onAddToPlaylist,
+  onLounge,
   onClose,
 }) {
-  const [pickerOpen, setPickerOpen] = useState(false);
-  const [loungeOpen, setLoungeOpen] = useState(false);
-
-  const groups = useTrackMenuItems({
-    track,
-    items,
-    onReport,
-    onAddToPlaylist: () => setPickerOpen(true),
-    onLounge: () => setLoungeOpen(true),
-  });
+  const groups = useTrackMenuItems({ track, items, onReport, onAddToPlaylist, onLounge });
 
   useEffect(() => {
     if (sheet) return;
@@ -45,7 +37,7 @@ export default function TrackOptionsPanel({
   const style = sheet
     ? undefined
     : {
-        top: (anchor?.bottom ?? 0) + 6,
+        top: Math.min((anchor?.bottom ?? 0) + 6, window.innerHeight - 320),
         left:
           align === "right"
             ? Math.max(8, Math.min((anchor?.right ?? 0) - MENU_WIDTH, window.innerWidth - MENU_WIDTH - 8))
@@ -53,13 +45,15 @@ export default function TrackOptionsPanel({
         width: MENU_WIDTH,
       };
 
-  return (
-    <>
-      <div className={`fixed inset-0 z-40 ${sheet ? "bg-black/50" : ""}`} onClick={onClose} />
+  // Portaled to <body> so transformed/clipped parents (cards, player) can't
+  // trap the fixed menu; clicks are stopped so they never reach the card.
+  return createPortal(
+    <div onClick={(e) => e.stopPropagation()} onPointerDown={(e) => e.stopPropagation()}>
+      <div className={`fixed inset-0 z-[90] ${sheet ? "bg-black/50" : ""}`} onClick={onClose} />
       <div
         role="menu"
         style={style}
-        className={`fixed z-50 overflow-y-auto ${
+        className={`fixed z-[91] overflow-y-auto ${
           sheet
             ? "inset-x-0 bottom-0 max-h-[74vh] rounded-t-3xl border-t pb-[env(safe-area-inset-bottom)]"
             : "rounded-xl border py-1 shadow-2xl max-h-[70vh]"
@@ -73,17 +67,7 @@ export default function TrackOptionsPanel({
         )}
         <TrackOptionsList groups={groups} dark={dark} onClose={onClose} />
       </div>
-
-      {pickerOpen && <PlaylistPickerModal track={track} onClose={() => setPickerOpen(false)} />}
-      {loungeOpen && (
-        <TrackLoungeSheet
-          track={track}
-          onClose={() => {
-            setLoungeOpen(false);
-            onClose();
-          }}
-        />
-      )}
-    </>
+    </div>,
+    document.body
   );
 }

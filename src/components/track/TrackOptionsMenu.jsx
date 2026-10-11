@@ -2,6 +2,8 @@ import { useRef, useState } from "react";
 import { MoreHorizontal, Plus } from "lucide-react";
 import TrackOptionsPanel from "@/components/track/TrackOptionsPanel";
 import { useIsMobile } from "@/hooks/use-mobile";
+import PlaylistPickerModal from "@/components/playlist/PlaylistPickerModal";
+import TrackLoungeSheet from "@/components/track/TrackLoungeSheet";
 
 /**
  * The one track options menu, shared by every surface that shows a track:
@@ -25,6 +27,8 @@ export default function TrackOptionsMenu({
   dark = false,
 }) {
   const [anchor, setAnchor] = useState(null);
+  const [pickerOpen, setPickerOpen] = useState(false);
+  const [loungeOpen, setLoungeOpen] = useState(false);
   const btnRef = useRef(null);
   const isMobile = useIsMobile();
 
@@ -70,9 +74,13 @@ export default function TrackOptionsMenu({
           sheet={isMobile}
           items={items}
           onReport={onReport}
+          onAddToPlaylist={() => setPickerOpen(true)}
+          onLounge={() => setLoungeOpen(true)}
           onClose={() => setAnchor(null)}
         />
       )}
+      {pickerOpen && <PlaylistPickerModal track={track} onClose={() => setPickerOpen(false)} />}
+      {loungeOpen && <TrackLoungeSheet track={track} onClose={() => setLoungeOpen(false)} />}
     </div>
   );
 }

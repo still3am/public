@@ -6,8 +6,8 @@ function Row({ item, dark, onClose }) {
     <button
       role="menuitem"
       onClick={() => {
-        onClose?.();
         item.onClick?.();
+        onClose?.();
       }}
       className={`w-full flex items-center gap-3 px-4 py-2.5 text-[13.5px] font-medium text-left transition ${
         dark ? "hover:bg-white/10 active:bg-white/15" : "hover:bg-accent active:bg-accent"
