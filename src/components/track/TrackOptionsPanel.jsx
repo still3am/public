@@ -71,7 +71,7 @@ export default function TrackOptionsPanel({
             <div className="mt-2 truncate text-[13px] font-bold">{track?.title}</div>
           </div>
         )}
-        <TrackOptionsList groups={groups} dark={dark} onClose={onClose} />
+        <TrackOptionsList groups={groups} dark={dark} sheet={sheet} onClose={onClose} />
       </div>
 
       {pickerOpen && <PlaylistPickerModal track={track} onClose={() => setPickerOpen(false)} />}

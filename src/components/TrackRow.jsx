@@ -4,6 +4,7 @@ import { usePlayer } from "@/context/PlayerContext";
 import { formatTime, timeAgo } from "@/lib/audio-utils";
 import ArtistLinks from "@/components/ArtistLinks";
 import { useCoverUrl } from "@/hooks/useCoverUrl";
+import TrackOptionsMenu from "@/components/track/TrackOptionsMenu";
 
 export default function TrackRow({
   track,
@@ -103,6 +104,7 @@ export default function TrackRow({
         {formatTime(track.duration_seconds)}
       </div>
 
+      <TrackOptionsMenu track={track} />
     </div>
   );
 }

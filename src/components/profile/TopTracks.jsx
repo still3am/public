@@ -5,6 +5,7 @@ import { useCoverUrl } from "@/hooks/useCoverUrl";
 import { Image } from "@/components/ui/image";
 import { Play, Pause, Star, X, Plus } from "lucide-react";
 import TrackPickerSheet from "@/components/profile/TrackPickerSheet";
+import TrackOptionsMenu from "@/components/track/TrackOptionsMenu";
 
 function PinnedTrackCard({ track, onRemove, editMode }) {
   const p = usePlayer();
@@ -21,6 +22,14 @@ function PinnedTrackCard({ track, onRemove, editMode }) {
   return (
     <div className="group relative rounded-xl overflow-hidden bg-foreground/[0.03]">
       <div className="aspect-square relative">
+        {!editMode &&
+        <div className="absolute top-1 right-1 z-10">
+            <TrackOptionsMenu
+            track={track}
+            size={15}
+            buttonClassName="w-8 h-8 rounded-full grid place-items-center bg-background/85 backdrop-blur text-foreground shadow-sm active:scale-90 transition" />
+          </div>
+        }
         {coverUrl ?
         <Image src={coverUrl} fittingType="fill" alt="" className="w-full h-full" /> :
 

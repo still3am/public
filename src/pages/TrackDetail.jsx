@@ -17,6 +17,7 @@ import {
   Wand2 } from
 "lucide-react";
 import TrackRow from "@/components/TrackRow";
+import TrackOptionsMenu from "@/components/track/TrackOptionsMenu";
 import SyncLyricsModal from "@/components/SyncLyricsModal";
 import GenerateLyricsModal from "@/components/GenerateLyricsModal";
 import { useToast } from "@/components/ui/use-toast";
@@ -223,6 +224,12 @@ export default function TrackDetail() {
           {isPlaying ? <Pause size={16} /> : <Play size={16} />}
           {isPlaying ? "Pause" : "Play"}
         </button>
+        <TrackOptionsMenu
+          track={track}
+          size={18}
+          className="ml-auto"
+          buttonClassName="w-10 h-10 rounded-full border border-border grid place-items-center hover:bg-accent active:scale-95 transition"
+          items={ownerItems} />
 
 
 

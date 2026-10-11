@@ -5,6 +5,7 @@ import { useCoverUrl } from "@/hooks/useCoverUrl";
 import { Image } from "@/components/ui/image";
 import { Play, Pause, Music, X } from "lucide-react";
 import TrackPickerSheet from "@/components/profile/TrackPickerSheet";
+import TrackOptionsMenu from "@/components/track/TrackOptionsMenu";
 
 export default function ProfileSong({
   trackId,
@@ -96,6 +97,7 @@ export default function ProfileSong({
             >
               {isPlaying ? <Pause size={20} fill="currentColor" /> : <Play size={20} fill="currentColor" className="ml-0.5" />}
             </button>
+            <TrackOptionsMenu track={track} size={18} />
           </div>
         ) : null}
         {pickerOpen && (
@@ -192,6 +194,7 @@ export default function ProfileSong({
         >
           {isPlaying ? <Pause size={20} fill="currentColor" /> : <Play size={20} fill="currentColor" className="ml-0.5" />}
         </button>
+        <TrackOptionsMenu track={track} size={18} />
       </div>
     </div>
   );

@@ -4,6 +4,7 @@ import { useColorExtraction } from "@/hooks/useColorExtraction";
 import { useAuth } from "@/lib/AuthContext";
 import { formatTime } from "@/lib/audio-utils";
 import SyncedLyrics from "@/components/SyncedLyrics";
+import TrackOptionsMenu from "@/components/track/TrackOptionsMenu";
 import { Link } from "react-router-dom";
 import {
   Play,
@@ -231,6 +232,11 @@ export default function FullScreenPlayer({ onClose }) {
 
           
         </div>
+        <TrackOptionsMenu
+          track={t}
+          dark
+          size={20}
+          buttonClassName="w-10 h-10 rounded-full grid place-items-center bg-white/10 hover:bg-white/20 active:scale-90 transition" />
       </div>
 
       {/* body */}
