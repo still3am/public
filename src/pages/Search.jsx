@@ -5,6 +5,7 @@ import {
   X,
   ArrowLeft } from
 "lucide-react";
+import { Button } from "@/components/ui/button";
 import { getPublishedTracks } from "@/lib/catalogCache";
 import { useGlobalSearch } from "@/hooks/useGlobalSearch";
 import { useUnpublishedSync } from "@/hooks/useUnpublishedSync";
@@ -29,7 +30,9 @@ export default function Search() {
     artists: artistResults,
     people,
     searching,
-    hasQuery } =
+    failed,
+    hasQuery,
+    refresh } =
   useGlobalSearch(q);
 
   // Keep the browse crate honest if an admin unpublishes a track mid-session.
@@ -50,6 +53,16 @@ export default function Search() {
   useEffect(() => {
     loadCatalogue();
   }, []);
+
+  // Pulling down re-runs whatever the page is currently showing: the live
+  // search when a term is typed, otherwise the genre crate.
+  async function handleRefresh() {
+    if (hasQuery) {
+      refresh();
+      return;
+    }
+    await loadCatalogue();
+  }
 
   const genreList = useMemo(() => {
     const map = {};
@@ -80,7 +93,7 @@ export default function Search() {
 
 
   return (
-    <PullToRefresh onRefresh={loadCatalogue}>
+    <PullToRefresh onRefresh={handleRefresh}>
       <div>
         <PageHeader eyebrow="Find" title="Search" subtitle="Find tracks, artists, and people across the PUBLIC network." />
 
@@ -114,6 +127,13 @@ export default function Search() {
         {hasQuery ?
         firstSearchInFlight ? loader :
         anyResults === 0 ?
+        failed ?
+        <EmptyState
+          icon={SearchIcon}
+          title="Search is unavailable right now"
+          description="We couldn't reach the catalogue. Check your connection and try again."
+          action={<Button variant="outline" onClick={refresh}>Try again</Button>} /> :
+
         <EmptyState
           icon={SearchIcon}
           title={`No results for "${q}"`}
@@ -155,7 +175,12 @@ export default function Search() {
           }
           </div> :
         loadingAll ? loader :
-        <VinylCrate genres={genreList} onPick={(g) => setGenre(g)} />
+        genreList.length ?
+        <VinylCrate genres={genreList} onPick={(g) => setGenre(g)} /> :
+
+        <EmptyState
+          title="Nothing published yet"
+          description="No tracks have been published to the catalogue, so there are no genres to browse." />
         }
       </div>
     </PullToRefresh>);

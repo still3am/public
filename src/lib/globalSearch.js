@@ -5,7 +5,9 @@ import { base44 } from "@/api/base44Client";
 // narrowed by the term the user has typed so far.
 
 const TRACK_LIMIT = 40;
-const ARTIST_LIMIT = 50;
+const ARTIST_SCAN = 50; // artist records the server may return per search
+const ARTIST_SHOWN = 20; // ranked, de-duplicated artist rows actually surfaced
+const COVER_SCAN = 200; // published tracks read to borrow one cover per artist
 
 function escapeRegex(input) {
   return input.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
@@ -15,8 +17,19 @@ function contains(field, pattern) {
   return { [field]: { $regex: pattern, $options: "i" } };
 }
 
-// One source failing (rate limit, offline) must not blank the other two.
-const safe = (promise, fallback) => promise.catch(() => fallback);
+// Same normalization the Public Record page uses, so a row and the page it
+// opens always agree on what counts as the same artist.
+function normalizeName(name) {
+  return (name || "").trim().replace(/\s+/g, " ").toLowerCase();
+}
+
+// Each source is read independently: one failing (rate limit, offline) must not
+// blank the others, but the caller still learns whether the main list failed so
+// an unreachable search is never reported as "no results".
+const read = (promise) =>
+  promise
+    .then((value) => ({ ok: true, value }))
+    .catch(() => ({ ok: false, value: null }));
 
 // The server narrows the results; inside that page we rank the closest matches
 // first so suggestions feel right while the user is still typing.
@@ -30,12 +43,37 @@ function rank(track, lower) {
   return 0;
 }
 
-// Artist records carry no uploaded artwork of their own, so each row borrows the
-// album cover of that artist's most recent published track — resolved in ONE
-// extra query for the whole result page instead of one lookup per artist.
+// Name matches outrank bio / location matches, so the artist the user is
+// actually typing sits first instead of wherever the record was last touched.
+function rankArtist(artist, lower) {
+  const name = normalizeName(artist.name);
+  if (!name) return 0;
+  if (name === lower) return 4;
+  if (name.startsWith(lower)) return 3;
+  if (name.includes(lower)) return 2;
+  return 1; // matched on bio or location only
+}
+
+// The catalogue holds several records per artist name (one per upload), so the
+// list must collapse to a single row per artist — the most recently updated
+// record wins, which is also the one the Public Record page resolves.
+function pruneArtists(artists, lower) {
+  const byName = new Map();
+  for (const artist of artists) {
+    const key = normalizeName(artist.name);
+    if (key && !byName.has(key)) byName.set(key, artist);
+  }
+  return [...byName.values()]
+    .sort((a, b) => rankArtist(b, lower) - rankArtist(a, lower))
+    .slice(0, ARTIST_SHOWN);
+}
+
+// Artist records carry no artwork of their own, so each row borrows the album
+// cover of that artist's most recent published track — resolved in ONE extra
+// query for the whole result page instead of one lookup per artist.
 async function artistCovers(names) {
   if (!names.length) return {};
-  const page = await safe(
+  const res = await read(
     base44.entities.Track.filter(
       {
         is_published: true,
@@ -44,15 +82,14 @@ async function artistCovers(names) {
       },
       {
         sort: "-created_date",
-        limit: 300,
+        limit: COVER_SCAN,
         fields: ["artist", "cover_art_url"],
       }
-    ),
-    { items: [] }
+    )
   );
   const map = {};
-  for (const t of page?.items || []) {
-    const key = (t.artist || "").trim().toLowerCase();
+  for (const t of res.value?.items || []) {
+    const key = normalizeName(t.artist);
     if (key && !map[key]) map[key] = t.cover_art_url;
   }
   return map;
@@ -60,13 +97,13 @@ async function artistCovers(names) {
 
 export async function globalSearch(query) {
   const Q = query.trim();
-  if (!Q) return { tracks: [], artists: [], people: [] };
+  if (!Q) return { tracks: [], artists: [], people: [], failed: false };
 
   const pattern = escapeRegex(Q);
   const lower = Q.toLowerCase();
 
-  const [trackPage, artistPage, peopleRes] = await Promise.all([
-    safe(
+  const [trackRes, artistRes, peopleRes] = await Promise.all([
+    read(
       base44.entities.Track.filter(
         {
           is_published: true,
@@ -77,10 +114,9 @@ export async function globalSearch(query) {
           ],
         },
         { sort: "-play_count", limit: TRACK_LIMIT }
-      ),
-      { items: [] }
+      )
     ),
-    safe(
+    read(
       base44.entities.Artist.filter(
         {
           $or: [
@@ -89,30 +125,29 @@ export async function globalSearch(query) {
             contains("location", pattern),
           ],
         },
-        { sort: "-updated_date", limit: ARTIST_LIMIT }
-      ),
-      { items: [] }
+        { sort: "-updated_date", limit: ARTIST_SCAN }
+      )
     ),
-    safe(base44.functions.invoke("searchUsers", { q: lower }), null),
+    read(base44.functions.invoke("searchUsers", { q: lower })),
   ]);
 
-  const tracks = [...(trackPage?.items || [])].sort(
+  const tracks = [...(trackRes.value?.items || [])].sort(
     (a, b) =>
       rank(b, lower) - rank(a, lower) ||
       (b.play_count || 0) - (a.play_count || 0)
   );
 
-  const found = artistPage?.items || [];
+  const found = pruneArtists(artistRes.value?.items || [], lower);
   const covers = await artistCovers(found.map((a) => a.name).filter(Boolean));
-  const artists = found.map((a) => ({
-    ...a,
-    cover_art_url:
-      a.cover_art_url || covers[(a.name || "").trim().toLowerCase()] || "",
+  const artists = found.map((artist) => ({
+    ...artist,
+    cover_art_url: artist.cover_art_url || covers[normalizeName(artist.name)] || "",
   }));
 
   return {
     tracks,
     artists,
-    people: peopleRes?.data?.results || [],
+    people: peopleRes.value?.data?.results || [],
+    failed: !trackRes.ok,
   };
 }
