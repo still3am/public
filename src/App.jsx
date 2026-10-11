@@ -9,6 +9,8 @@ import ProtectedRoute from '@/components/ProtectedRoute';
 import { Navigate } from 'react-router-dom';
 import { PlayerProvider } from '@/context/PlayerContext';
 import { LibraryProvider } from '@/context/LibraryContext';
+import { LikesProvider } from '@/context/LikesContext';
+import { FollowsProvider } from '@/context/FollowsContext';
 import { UploadProvider } from '@/context/UploadContext';
 import Layout from '@/components/Layout';
 import Login from '@/pages/Login';
@@ -109,9 +111,13 @@ function App() {
         <Router>
           <PlayerProvider>
             <LibraryProvider>
-              <UploadProvider>
-                <AuthenticatedApp />
-              </UploadProvider>
+              <LikesProvider>
+                <FollowsProvider>
+                  <UploadProvider>
+                    <AuthenticatedApp />
+                  </UploadProvider>
+                </FollowsProvider>
+              </LikesProvider>
             </LibraryProvider>
           </PlayerProvider>
         </Router>

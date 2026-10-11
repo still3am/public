@@ -1,52 +1,36 @@
 import { useEffect, useRef, useState } from "react";
-import {
-  Check,
-  Download,
-  EyeOff,
-  Flag,
-  ListMusic,
-  Loader2,
-  MoreHorizontal,
-  Plus,
-  Share2,
-  Trash2,
-} from "lucide-react";
-import { base44 } from "@/api/base44Client";
-import { useAuth } from "@/lib/AuthContext";
-import { useLibrary } from "@/context/LibraryContext";
-import { useOfflineCache } from "@/hooks/useOfflineCache";
-import { useToast } from "@/components/ui/use-toast";
+import { MoreHorizontal, Plus } from "lucide-react";
+import { useTrackActions } from "@/hooks/useTrackActions";
 import PlaylistPickerModal from "@/components/playlist/PlaylistPickerModal";
 
-const MENU_WIDTH = 220;
+const MENU_WIDTH = 240;
 
 /**
- * The one track options menu, shared by every surface that lists a track.
+ * THE track options menu. Every surface that shows a track renders this — the
+ * action set, its order and each item's state (in library, downloaded, liked,
+ * following) come from useTrackActions, so no surface can drift out of sync.
  *
- * Base actions are derived from the track itself: library, playlist, offline,
- * download, share, report and the admin takedown. Surfaces add what only they
- * know about through `items` (edit, detect genre, generate lyrics, …) and can
- * override the report flow with `onReport`.
+ * `items` appends things only a particular surface knows about (owner tools on
+ * the track page, the player's queue/pulse switches). `onPlay` lets a list play
+ * its own slice of the queue. `tone="overlay"` matches the always-dark player
+ * and queue surfaces.
  */
 export default function TrackOptionsMenu({
   track,
-  items = [],
+  items: extraItems = [],
+  onPlay,
   onReport,
   variant = "icon",
+  tone = "default",
   buttonClassName,
   align = "right",
   size = 16,
   className = "",
 }) {
-  const { user } = useAuth();
-  const { toast } = useToast();
-  const { isInLibrary, toggle } = useLibrary();
-  const cache = useOfflineCache();
   const [open, setOpen] = useState(false);
   const [pos, setPos] = useState(null);
-  const [busy, setBusy] = useState(false);
-  const [pickerOpen, setPickerOpen] = useState(false);
   const btnRef = useRef(null);
+  const { items, pickerOpen, setPickerOpen } = useTrackActions(track, { onPlay, onReport });
 
   useEffect(() => {
     if (!open) return;
@@ -61,11 +45,8 @@ export default function TrackOptionsMenu({
 
   if (!track) return null;
 
-  const inLib = isInLibrary(track.id);
-  const savedOffline = cache.isCached(track.id);
-  const savingOffline = !!cache.downloading[track.id];
-  const isOwner = track.uploader_id === user?.id;
-  const isAdmin = user?.role === "admin";
+  const menuItems = [...items, ...extraItems];
+  const overlay = tone === "overlay";
 
   const openMenu = () => {
     const rect = btnRef.current?.getBoundingClientRect();
@@ -80,130 +61,32 @@ export default function TrackOptionsMenu({
     setOpen(true);
   };
 
-  const report = async () => {
-    const reason = window.prompt("What's wrong with this track?");
-    if (!reason) return;
-    try {
-      await base44.entities.Report.create({
-        reporter_id: user.id,
-        track_id: track.id,
-        reason,
-      });
-      alert("Thanks — a report was sent to the PUBLIC admin team.");
-    } catch {
-      alert("Could not submit report. Try again later.");
-    }
-  };
-
-  const base = [
-    {
-      icon: busy ? Loader2 : inLib ? Check : Plus,
-      label: busy ? "Saving…" : inLib ? "Remove from library" : "Add to library",
-      danger: !busy && inLib,
-      onClick: async () => {
-        setBusy(true);
-        try {
-          await toggle(track);
-        } finally {
-          setBusy(false);
-        }
-      },
-    },
-    {
-      icon: ListMusic,
-      label: "Add to playlist",
-      onClick: () => setPickerOpen(true),
-    },
-    {
-      icon: savingOffline ? Loader2 : savedOffline ? Trash2 : Download,
-      label: savingOffline ? "Saving…" : savedOffline ? "Remove offline" : "Save offline",
-      onClick: async () => {
-        if (savedOffline) {
-          await cache.removeTrack(track.id);
-          toast({ title: "Removed from downloads" });
-        } else {
-          const ok = await cache.downloadTrack(track);
-          toast(
-            ok
-              ? { title: "Saved for offline" }
-              : { title: "Couldn't save offline", variant: "destructive" }
-          );
-        }
-      },
-    },
-  ];
-
-  if (track.is_downloadable) {
-    base.push({
-      icon: Download,
-      label: "Download",
-      onClick: () => {
-        if (track.audio_url && /^https?:\/\//i.test(track.audio_url)) {
-          window.open(track.audio_url, "_blank");
-        }
-      },
-    });
-  }
-
-  if (typeof navigator !== "undefined" && navigator.share) {
-    base.push({
-      icon: Share2,
-      label: "Share",
-      onClick: () =>
-        navigator
-          .share({ title: `${track.title} on PUBLIC.`, url: `${window.location.origin}/track/${track.id}` })
-          .catch(() => {}),
-    });
-  }
-
-  if (!isOwner) {
-    base.push({
-      icon: Flag,
-      label: "Report",
-      danger: true,
-      onClick: () => (onReport ? onReport(track) : report()),
-    });
-  }
-
-  if (isAdmin && track.is_published) {
-    base.push({
-      icon: EyeOff,
-      label: "Remove from PUBLIC",
-      danger: true,
-      onClick: async () => {
-        if (
-          !window.confirm(
-            "Remove this track from PUBLIC? It stays in the uploader's library and profile."
-          )
-        )
-          return;
-        try {
-          await base44.entities.Track.update(track.id, {
-            is_published: false,
-            approval_status: "rejected",
-          });
-          toast({ title: "Removed from PUBLIC" });
-        } catch {
-          toast({ title: "Couldn't remove track", variant: "destructive" });
-        }
-      },
-    });
-  }
-
-  const menuItems = [...base, ...items];
-
   return (
     <div className={`relative shrink-0 ${className}`}>
       <button
         ref={btnRef}
-        onClick={() => (open ? setOpen(false) : openMenu())}
-        className={buttonClassName || "p-2 rounded-full hover:bg-accent"}
+        onClick={(e) => {
+          e.stopPropagation();
+          e.preventDefault();
+          if (open) setOpen(false);
+          else openMenu();
+        }}
+        onDoubleClick={(e) => e.stopPropagation()}
+        className={
+          buttonClassName ||
+          (overlay
+            ? "w-9 h-9 rounded-full grid place-items-center bg-white/10 hover:bg-white/20 active:scale-90 transition text-white"
+            : "p-2 rounded-full hover:bg-accent")
+        }
         aria-label="Track options"
         aria-haspopup="menu"
         aria-expanded={open}
       >
         {variant === "plus" ? (
-          <Plus size={size} className={open ? "rotate-45 transition-transform" : "transition-transform"} />
+          <Plus
+            size={size}
+            className={open ? "rotate-45 transition-transform" : "transition-transform"}
+          />
         ) : (
           <MoreHorizontal size={size} />
         )}
@@ -211,28 +94,35 @@ export default function TrackOptionsMenu({
 
       {open && (
         <>
-          <div className="fixed inset-0 z-40" onClick={() => setOpen(false)} />
+          <div
+            className={`fixed inset-0 ${overlay ? "z-[75]" : "z-40"}`}
+            onClick={() => setOpen(false)}
+          />
           <div
             role="menu"
-            className="fixed z-50 bg-popover border border-border rounded-xl shadow-2xl py-1"
+            className={`fixed rounded-xl shadow-2xl py-1 ${
+              overlay
+                ? "z-[80] bg-black/85 backdrop-blur-xl border border-white/15 text-white"
+                : "z-50 bg-popover border border-border text-popover-foreground"
+            }`}
             style={{ top: pos?.top ?? 0, left: pos?.left ?? 0, width: MENU_WIDTH }}
           >
             {menuItems.map((m, i) => {
               const Icon = m.icon;
               return (
                 <button
-                  key={i}
+                  key={m.id || i}
                   role="menuitem"
                   onClick={() => {
                     setOpen(false);
                     m.onClick?.();
                   }}
-                  className={`w-full flex items-center gap-2.5 px-3 py-2 text-sm hover:bg-accent text-left ${
-                    m.danger ? "text-destructive" : ""
-                  }`}
+                  className={`w-full flex items-center gap-2.5 px-3.5 py-2.5 text-sm text-left transition ${
+                    overlay ? "hover:bg-white/10" : "hover:bg-accent"
+                  } ${m.danger ? (overlay ? "text-red-400" : "text-destructive") : ""}`}
                 >
-                  <Icon size={15} />
-                  {m.label}
+                  <Icon size={15} fill={m.filled ? "currentColor" : "none"} />
+                  <span className="truncate">{m.label}</span>
                 </button>
               );
             })}

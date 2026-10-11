@@ -128,6 +128,11 @@ export function PlayerProvider({ children }) {
   // Prevents ResumePlaybackBanner from auto-resuming a remote track right after
   // the user cleared the queue — "I don't want to listen" ≠ "I'm idle".
   const [dismissed, setDismissed] = useState(false);
+  // Shared "open the mixer / start a Lounge for THIS track" intents: a track
+  // menu can live on any page while the mixing and Lounge surfaces belong to
+  // the player, so the menu raises an intent the player picks up.
+  const [mixerOpen, setMixerOpen] = useState(false);
+  const [loungeRequest, setLoungeRequest] = useState(0);
   const [playbackRate, setPlaybackRateState] = useState(1);
   const sleepTimerRef = useRef(null);
   const [sleepTimerEndsAt, setSleepTimerEndsAt] = useState(null);
@@ -1092,6 +1097,30 @@ export function PlayerProvider({ children }) {
     setQueue((prev) => [...prev, ...tracks]);
   }, []);
 
+  // Make this track the one playing (without interrupting it when it already
+  // is), so a mixer or Lounge opened from its menu acts on the right song.
+  const playIfNotCurrent = useCallback((track) => {
+    if (!track?.id) return;
+    const cur = queueRef.current[currentIndexRef.current];
+    if (cur && cur.id === track.id) return;
+    countedRef.current = new Set();
+    setDismissed(false);
+    setQueue([track]);
+    setCurrentIndex(0);
+  }, []);
+
+  const openMixer = useCallback((track) => {
+    if (!track?.id) return;
+    playIfNotCurrent(track);
+    setMixerOpen(true);
+  }, [playIfNotCurrent]);
+
+  const requestLounge = useCallback((track) => {
+    if (!track?.id) return;
+    playIfNotCurrent(track);
+    setLoungeRequest(Date.now());
+  }, [playIfNotCurrent]);
+
   const removeFromQueue = useCallback((index) => {
     setCurrentIndex((ci) => {
       setQueue((prev) => {
@@ -1356,6 +1385,11 @@ export function PlayerProvider({ children }) {
     resetMixer,
     enableMixer,
     dismissed,
+    mixerOpen,
+    setMixerOpen,
+    openMixer,
+    loungeRequest,
+    requestLounge,
   };
 
   return (
