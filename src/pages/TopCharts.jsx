@@ -7,7 +7,6 @@ import { useUnpublishedSync } from "@/hooks/useUnpublishedSync";
 import EmptyState from "@/components/EmptyState";
 import { Music, Loader2 } from "lucide-react";
 import PullToRefresh from "@/components/PullToRefresh";
-import PageHeader from "@/components/PageHeader";
 
 export default function TopCharts() {
   const [tracks, setTracks] = useState([]);
@@ -47,11 +46,6 @@ export default function TopCharts() {
   return (
     <PullToRefresh onRefresh={load}>
       <div>
-        <PageHeader
-          eyebrow="Charts"
-          title="Top Charts"
-          subtitle="The most-played tracks on PUBLIC right now."
-        />
         {top5.length >= 3 && <Podium tracks={top5} />}
         {rest.length > 0 && (
           <>

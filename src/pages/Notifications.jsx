@@ -58,7 +58,6 @@ export default function Notifications() {
   return (
     <div className="max-w-2xl mx-auto">
       <div className="flex items-center justify-between gap-3 mb-5">
-        <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight">Notifications</h1>
         
 
 

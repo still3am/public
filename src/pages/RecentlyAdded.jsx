@@ -6,7 +6,6 @@ import { useUnpublishedSync } from "@/hooks/useUnpublishedSync";
 import EmptyState from "@/components/EmptyState";
 import { Music, Loader2 } from "lucide-react";
 import PullToRefresh from "@/components/PullToRefresh";
-import PageHeader from "@/components/PageHeader";
 
 export default function RecentlyAdded() {
   const [tracks, setTracks] = useState([]);
@@ -43,7 +42,6 @@ export default function RecentlyAdded() {
   return (
     <PullToRefresh onRefresh={load}>
     <div>
-      <PageHeader eyebrow="Newest" title="Recently Added" subtitle="Fresh uploads from across the network." />
       <IncrementalList
         items={tracks}
         className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-1"

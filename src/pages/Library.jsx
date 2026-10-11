@@ -7,7 +7,6 @@ import { Library as LibIcon, Loader2, CloudOff, History, Plus, ListMusic, Disc3 
 import TrackCard from "@/components/TrackCard";
 import EmptyState from "@/components/EmptyState";
 import PullToRefresh from "@/components/PullToRefresh";
-import PageHeader from "@/components/PageHeader";
 import LibraryEntryRow from "@/components/LibraryEntryRow";
 import PlaylistCard from "@/components/playlist/PlaylistCard";
 import CreatePlaylistModal from "@/components/playlist/CreatePlaylistModal";
@@ -161,8 +160,6 @@ export default function Library() {
 
   return (
     <div className="max-w-5xl mx-auto pb-10">
-      <PageHeader title="Your Library" subtitle="Everything you've saved, in one place." />
-
       <LibraryEntryRow
         to="/records"
         icon={Disc3}

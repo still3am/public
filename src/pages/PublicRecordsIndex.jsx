@@ -2,7 +2,6 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { getPublishedTracks, getArtists } from "@/lib/catalogCache";
 import PullToRefresh from "@/components/PullToRefresh";
-import PageHeader from "@/components/PageHeader";
 import { Loader2, Mic2, Disc3 } from "lucide-react";
 
 // Split a multi-artist string into individual names, preserving original
@@ -215,7 +214,6 @@ export default function PublicRecordsIndex() {
 
   return (
     <div className="max-w-3xl mx-auto pb-10">
-      <PageHeader eyebrow="Archive" title="Public Records" />
       
 
       

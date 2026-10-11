@@ -14,7 +14,6 @@ import TrackCard from "@/components/TrackCard";
 import VinylCrate from "@/components/search/VinylCrate";
 import SearchResults from "@/components/search/SearchResults";
 import PullToRefresh from "@/components/PullToRefresh";
-import PageHeader from "@/components/PageHeader";
 import EmptyState from "@/components/EmptyState";
 
 export default function Search() {
@@ -119,8 +118,6 @@ export default function Search() {
   return (
     <PullToRefresh onRefresh={handleRefresh}>
       <div>
-        <PageHeader eyebrow="Find" title="Search" subtitle="Find tracks, artists, and people across the PUBLIC network." />
-
         {/* Search input (mobile / tablet) — desktop uses the sidebar field instead */}
         <div className="relative mb-5 md:hidden">
           <SearchIcon size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-foreground/40 pointer-events-none" />
