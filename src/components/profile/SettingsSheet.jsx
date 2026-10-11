@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { X, Lightbulb, GitMerge, Palette, Trash2, ChevronRight, Sparkles, BarChart3, Loader2 } from "lucide-react";
+import { X, Lightbulb, GitMerge, Palette, Trash2, ChevronRight, Sparkles, BarChart3, Loader2, LogOut } from "lucide-react";
 import ThemeToggle from "@/components/ThemeToggle";
 import { Switch } from "@/components/ui/switch";
 import { useAuth } from "@/lib/AuthContext";
@@ -9,7 +9,19 @@ import { base44 } from "@/api/base44Client";
 export default function SettingsSheet({ onClose, onDeleteAccount }) {
   const { user, checkUserAuth } = useAuth();
   const [toggling, setToggling] = useState(false);
+  const [loggingOut, setLoggingOut] = useState(false);
   const isArtist = user?.is_artist === true;
+
+  // Full sign-out: the SDK clears the stored token, then the app reloads on the
+  // public landing screen so no signed-in state survives on this device.
+  async function handleLogout() {
+    setLoggingOut(true);
+    try {
+      await base44.auth.logout(`${window.location.origin}/`);
+    } catch {
+      window.location.href = "/";
+    }
+  }
 
   async function toggleArtist(checked) {
     setToggling(true);
@@ -122,6 +134,20 @@ export default function SettingsSheet({ onClose, onDeleteAccount }) {
             <div className="flex-1 min-w-0">
               <div className="text-sm font-bold text-destructive">Delete Account</div>
               <div className="text-xs text-foreground/50">Permanently remove your data</div>
+            </div>
+          </button>
+
+          <button
+            onClick={handleLogout}
+            disabled={loggingOut}
+            className="w-full flex items-center gap-3 p-3.5 rounded-2xl bg-foreground text-background hover:opacity-90 transition active:scale-[0.99] text-left disabled:opacity-60"
+          >
+            <div className="w-10 h-10 rounded-xl bg-background/15 grid place-items-center shrink-0">
+              {loggingOut ? <Loader2 size={18} className="animate-spin" /> : <LogOut size={18} />}
+            </div>
+            <div className="flex-1 min-w-0">
+              <div className="text-sm font-bold">Log Out</div>
+              <div className="text-xs text-background/70">Sign out of PUBLIC on this device</div>
             </div>
           </button>
         </div>
