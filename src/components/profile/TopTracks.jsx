@@ -5,30 +5,33 @@ import { useCoverUrl } from "@/hooks/useCoverUrl";
 import { Image } from "@/components/ui/image";
 import { Play, Pause, Star, X, Plus } from "lucide-react";
 import TrackPickerSheet from "@/components/profile/TrackPickerSheet";
-import TrackOptionsMenu from "@/components/track/TrackOptionsMenu";
+import HoverTrackMenu from "@/components/track/HoverTrackMenu";
+import { useLongPressMenu } from "@/hooks/useLongPressMenu";
 
 function PinnedTrackCard({ track, onRemove, editMode }) {
   const p = usePlayer();
   const coverUrl = useCoverUrl(track.cover_art_url);
   const isCurrent = p.currentTrack?.id === track.id;
   const isPlaying = isCurrent && p.isPlaying;
+  const lp = useLongPressMenu(editMode);
 
   function handlePlay(e) {
     e.stopPropagation();
+    if (lp.consumeLongPress()) return;
     if (isCurrent) p.togglePlay();else
     p.playTrackAt([track]);
   }
 
   return (
-    <div className="group relative rounded-xl overflow-hidden bg-foreground/[0.03]">
+    <div ref={lp.ref} {...lp.handlers} className="group relative rounded-xl overflow-hidden bg-foreground/[0.03]">
       <div className="aspect-square relative">
         {!editMode &&
-        <div className="absolute top-1 right-1 z-10">
-            <TrackOptionsMenu
-            track={track}
-            size={15}
-            buttonClassName="w-8 h-8 rounded-full grid place-items-center bg-background/85 backdrop-blur text-foreground shadow-sm active:scale-90 transition" />
-          </div>
+        <HoverTrackMenu
+          track={track}
+          lp={lp}
+          size={15}
+          className="absolute top-1 right-1 z-10"
+          buttonClassName="w-8 h-8 rounded-full grid place-items-center bg-background/85 backdrop-blur text-foreground shadow-sm active:scale-90 transition" />
         }
         {coverUrl ?
         <Image src={coverUrl} fittingType="fill" alt="" className="w-full h-full" /> :

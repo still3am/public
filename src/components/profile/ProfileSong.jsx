@@ -5,7 +5,8 @@ import { useCoverUrl } from "@/hooks/useCoverUrl";
 import { Image } from "@/components/ui/image";
 import { Play, Pause, Music, X } from "lucide-react";
 import TrackPickerSheet from "@/components/profile/TrackPickerSheet";
-import TrackOptionsMenu from "@/components/track/TrackOptionsMenu";
+import HoverTrackMenu from "@/components/track/HoverTrackMenu";
+import { useLongPressMenu } from "@/hooks/useLongPressMenu";
 
 export default function ProfileSong({
   trackId,
@@ -17,6 +18,7 @@ export default function ProfileSong({
   const p = usePlayer();
   const [track, setTrack] = useState(null);
   const [pickerOpen, setPickerOpen] = useState(false);
+  const lp = useLongPressMenu(editMode);
 
   useEffect(() => {
     if (!trackId) {
@@ -31,7 +33,7 @@ export default function ProfileSong({
   const isPlaying = isCurrent && p.isPlaying;
 
   function handlePlay() {
-    if (!track) return;
+    if (!track || lp.consumeLongPress()) return;
     if (isCurrent) p.togglePlay();
     else p.playTrackAt([track]);
   }
@@ -44,7 +46,7 @@ export default function ProfileSong({
     // The card owns its width so an absent track takes no space in the row.
     return (
       <div className="md:w-80 lg:w-96 shrink-0">
-      <div className="h-full flex flex-col rounded-2xl ring-1 ring-inset ring-foreground/10 bg-card overflow-hidden">
+      <div ref={lp.ref} {...lp.handlers} className="group h-full flex flex-col rounded-2xl ring-1 ring-inset ring-foreground/10 bg-card overflow-hidden">
         {editMode ? (
           trackId && track ? (
             <div className="flex-1 flex flex-col items-center justify-center gap-3 p-4 text-center">
@@ -97,7 +99,7 @@ export default function ProfileSong({
             >
               {isPlaying ? <Pause size={20} fill="currentColor" /> : <Play size={20} fill="currentColor" className="ml-0.5" />}
             </button>
-            <TrackOptionsMenu track={track} size={18} />
+            <HoverTrackMenu track={track} lp={lp} size={18} />
           </div>
         ) : null}
         {pickerOpen && (
@@ -179,7 +181,7 @@ export default function ProfileSong({
       <h2 className="text-lg font-extrabold tracking-tight mb-3 flex items-center gap-2">
         <Music size={18} /> Profile Song
       </h2>
-      <div className="flex items-center gap-3 p-3 rounded-2xl border border-border bg-foreground/[0.02]">
+      <div ref={lp.ref} {...lp.handlers} className="group flex items-center gap-3 p-3 rounded-2xl border border-border bg-foreground/[0.02]">
         <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-xl overflow-hidden bg-foreground/10 shrink-0">
           {coverUrl && <Image src={coverUrl} fittingType="fill" alt="" className="w-full h-full" />}
         </div>
@@ -194,7 +196,7 @@ export default function ProfileSong({
         >
           {isPlaying ? <Pause size={20} fill="currentColor" /> : <Play size={20} fill="currentColor" className="ml-0.5" />}
         </button>
-        <TrackOptionsMenu track={track} size={18} />
+        <HoverTrackMenu track={track} lp={lp} size={18} />
       </div>
     </div>
   );
