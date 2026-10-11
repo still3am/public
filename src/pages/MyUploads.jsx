@@ -2,7 +2,8 @@ import { useCallback, useEffect, useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { useAuth } from "@/lib/AuthContext";
 import { useLibrary } from "@/context/LibraryContext";
-import { Loader2, Upload as UploadIcon } from "lucide-react";
+import { ChevronLeft, Loader2, Upload as UploadIcon } from "lucide-react";
+import { Link } from "react-router-dom";
 import TrackCard from "@/components/TrackCard";
 import PublicSubmitButton from "@/components/upload/PublicSubmitButton";
 import BulkPublicSubmitBar from "@/components/upload/BulkPublicSubmitBar";
@@ -128,6 +129,13 @@ export default function MyUploads() {
 
   return (
     <div className="max-w-5xl mx-auto pb-10">
+      <Link
+        to="/library"
+        className="inline-flex items-center gap-1.5 mb-4 text-sm font-semibold text-foreground/60 hover:text-foreground transition"
+      >
+        <ChevronLeft size={18} /> Back to Library
+      </Link>
+
       <LibraryBulkBar
         visible={!!uploads?.length}
         active={editMode}
