@@ -13,6 +13,7 @@ import {
 const IMAGE_EXT_RE =
   /\.(jpe?g|jfif|png|gif|webp|avif|heic|heif|bmp|tiff?|svg|ico|apng)$/i;
 import { findDuplicateTracks } from "@/lib/duplicateCheck";
+import { readAllPages } from "@/lib/readPages";
 import { ensureHighResCover } from "@/lib/coverImage";
 
 let uid = 0;
@@ -90,9 +91,11 @@ export function useUploadQueue({ user, isAdmin }) {
     // Refresh the platform track list for each new batch so tracks that were
     // deleted since the last upload don't linger in the cache and cause false
     // duplicate hits.
-    allTracksRef.current = await base44.entities.Track
-      .list("-created_date", 5000)
-      .catch(() => []);
+    // The whole catalogue, followed cursor by cursor — a duplicate check that
+    // stopped at one page would miss older re-uploads entirely.
+    allTracksRef.current = await readAllPages((options) =>
+      base44.entities.Track.filter({}, { sort: "-created_date", ...options })
+    ).catch(() => []);
 
     // analyze each file in parallel
     newItems.forEach(async (item) => {

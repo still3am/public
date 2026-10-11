@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { Play, Pause } from "lucide-react";
 import { usePlayer } from "@/context/PlayerContext";
+import TrackOptionsMenu from "@/components/track/TrackOptionsMenu";
 
 function PodiumCard({ track, rank, height, accent }) {
   const p = usePlayer();
@@ -45,6 +46,17 @@ function PodiumCard({ track, rank, height, accent }) {
             }}>
             {rank}
           </span>
+          <div
+            className="absolute top-1.5 right-1.5 z-10"
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+            }}>
+            <TrackOptionsMenu
+              track={track}
+              size={16}
+              buttonClassName="w-8 h-8 rounded-full grid place-items-center bg-background/85 backdrop-blur text-foreground shadow-sm active:scale-90 transition" />
+          </div>
           <button
             onClick={play}
             className={`absolute bottom-2 right-2 w-10 h-10 rounded-full bg-foreground text-background grid place-items-center shadow-lg active:scale-95 transition-opacity duration-200 group-hover:opacity-100 focus:opacity-100 ${

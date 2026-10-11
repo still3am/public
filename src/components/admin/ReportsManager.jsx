@@ -15,8 +15,16 @@ export default function ReportsManager() {
       setReports(r);
       const ids = [...new Set(r.map((x) => x.track_id).filter(Boolean))];
       const map = {};
-      for (const id of ids) {
-        try { map[id] = await base44.entities.Track.get(id); } catch {}
+      if (ids.length) {
+        // One batched read for the whole queue — this used to fire a separate
+        // request per report, which tripped the API rate limit on a full queue.
+        const found = await base44.entities.Track.filter(
+          { id: { $in: ids } },
+          { fields: ["title"], limit: ids.length }
+        ).catch(() => null);
+        (found?.items || []).forEach((t) => {
+          map[t.id] = t;
+        });
       }
       setTracks(map);
     } catch {

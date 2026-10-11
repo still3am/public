@@ -1,4 +1,6 @@
+import { useRef, useState } from "react";
 import { Play, Check } from "lucide-react";
+import TrackOptionsMenu from "@/components/track/TrackOptionsMenu";
 import { Link } from "react-router-dom";
 import { usePlayer } from "@/context/PlayerContext";
 import { Image } from "@/components/ui/image";
@@ -30,14 +32,41 @@ export default function TrackCard({ track, selectable = false, selected = false,
 
   const coverUrl = useCoverUrl(track.cover_art_url);
 
+  const [menuSignal, setMenuSignal] = useState(0);
+  const cardRef = useRef(null);
+  const pressTimer = useRef(null);
+  const longPressed = useRef(false);
+
+  const cancelPress = () => clearTimeout(pressTimer.current);
+  const startPress = (e) => {
+    if (selectable || e.pointerType === "mouse") return;
+    longPressed.current = false;
+    cancelPress();
+    pressTimer.current = setTimeout(() => {
+      longPressed.current = true;
+      navigator.vibrate?.(15);
+      setMenuSignal((n) => n + 1);
+    }, 450);
+  };
+
   const handlePlay = (e) => {
     e.stopPropagation();
+    if (longPressed.current) {
+      longPressed.current = false;
+      return;
+    }
     if (isCurrent) p.togglePlay();
     else p.playTrackAt([track]);
   };
 
   return (
     <div
+      ref={cardRef}
+      onPointerDown={startPress}
+      onPointerUp={cancelPress}
+      onPointerMove={cancelPress}
+      onPointerCancel={cancelPress}
+      onContextMenu={(e) => e.preventDefault()}
       onClick={selectable ? () => onToggleSelect?.(track) : handlePlay}
       className={`group relative rounded-2xl p-2.5 sm:p-3 transition-all duration-300 cursor-pointer
         hover:bg-foreground/[0.04] active:scale-[0.98]
@@ -86,6 +115,20 @@ export default function TrackCard({ track, selectable = false, selected = false,
         {!selectable && isPlayingNow && (
           <div className="absolute bottom-2.5 right-2.5 w-11 h-11 md:w-12 md:h-12 rounded-full bg-background/85 backdrop-blur grid place-items-center text-foreground shadow-xl">
             <EqualizerBars active={isPlayingNow} />
+          </div>
+        )}
+
+        {!selectable && (
+          <div
+            className="absolute top-2 right-2 z-10 md:opacity-0 md:group-hover:opacity-100 md:focus-within:opacity-100 transition-opacity"
+            onClick={(e) => e.stopPropagation()}
+            onPointerDown={(e) => e.stopPropagation()}>
+            <TrackOptionsMenu
+              track={track}
+              size={17}
+              openSignal={menuSignal}
+              anchorRef={cardRef}
+              buttonClassName="hidden md:grid w-9 h-9 rounded-full place-items-center bg-background/85 backdrop-blur text-foreground shadow-sm hover:bg-background active:scale-90 transition" />
           </div>
         )}
       </div>

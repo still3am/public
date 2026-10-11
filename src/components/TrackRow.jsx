@@ -3,13 +3,12 @@ import { Link } from "react-router-dom";
 import { usePlayer } from "@/context/PlayerContext";
 import { formatTime, timeAgo } from "@/lib/audio-utils";
 import ArtistLinks from "@/components/ArtistLinks";
-import TrackOptionsMenu from "@/components/track/TrackOptionsMenu";
 import { useCoverUrl } from "@/hooks/useCoverUrl";
+import TrackOptionsMenu from "@/components/track/TrackOptionsMenu";
 
 export default function TrackRow({
   track,
   index,
-  onReport,
   showArt = true,
   albumArtist,
   albumCover,
@@ -105,7 +104,7 @@ export default function TrackRow({
         {formatTime(track.duration_seconds)}
       </div>
 
-      <TrackOptionsMenu track={track} onReport={onReport} />
+      <TrackOptionsMenu track={track} />
     </div>
   );
 }

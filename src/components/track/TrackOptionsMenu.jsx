@@ -37,6 +37,8 @@ export default function TrackOptionsMenu({
   align = "right",
   size = 16,
   className = "",
+  openSignal = 0,
+  anchorRef,
 }) {
   const { user } = useAuth();
   const { toast } = useToast();
@@ -58,6 +60,20 @@ export default function TrackOptionsMenu({
       window.removeEventListener("resize", close);
     };
   }, [open]);
+
+  // Lets a surface open the menu itself (e.g. press-and-hold on a card).
+  useEffect(() => {
+    if (!openSignal) return;
+    const rect = (anchorRef?.current || btnRef.current)?.getBoundingClientRect();
+    if (rect) {
+      const maxLeft = Math.max(8, window.innerWidth - MENU_WIDTH - 8);
+      setPos({
+        top: Math.max(8, Math.min(rect.bottom + 6, window.innerHeight - 380)),
+        left: Math.max(8, Math.min(rect.right - MENU_WIDTH, maxLeft)),
+      });
+    }
+    setOpen(true);
+  }, [openSignal]); // eslint-disable-line react-hooks/exhaustive-deps
 
   if (!track) return null;
 
