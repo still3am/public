@@ -84,20 +84,20 @@ export default function ProfileSong({
             </div>
           )
         ) : trackId && track ? (
-          <div className="flex-1 flex flex-col items-center justify-center gap-3 p-4 text-center">
-            <div className="w-20 h-20 rounded-xl overflow-hidden bg-foreground/10 shrink-0">
+          <div className="flex-1 flex flex-col items-center justify-center gap-2 md:gap-3 p-3 md:p-4 text-center">
+            <div className="w-14 h-14 md:w-20 md:h-20 rounded-xl overflow-hidden bg-foreground/10 shrink-0">
               {coverUrl && <Image src={coverUrl} fittingType="fill" alt="" className="w-full h-full" />}
             </div>
             <div className="w-full min-w-0">
-              <div className="text-sm font-semibold truncate">{track.title}</div>
-              <div className="text-xs text-foreground/50 truncate">{track.artist || track.uploader_name}</div>
+              <div className="text-xs md:text-sm font-semibold truncate">{track.title}</div>
+              <div className="text-[11px] md:text-xs text-foreground/50 truncate">{track.artist || track.uploader_name}</div>
             </div>
             <button
               onClick={handlePlay}
-              className="w-12 h-12 rounded-full bg-foreground text-background grid place-items-center shrink-0 active:scale-90 transition shadow-md"
+              className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-foreground text-background grid place-items-center shrink-0 active:scale-90 transition shadow-md"
               aria-label={isPlaying ? "Pause" : "Play"}
             >
-              {isPlaying ? <Pause size={20} fill="currentColor" /> : <Play size={20} fill="currentColor" className="ml-0.5" />}
+              {isPlaying ? <Pause size={20} fill="currentColor" className="w-4 h-4 md:w-5 md:h-5" /> : <Play size={20} fill="currentColor" className="ml-0.5 w-4 h-4 md:w-5 md:h-5" />}
             </button>
             <HoverTrackMenu track={track} lp={lp} size={18} />
           </div>
