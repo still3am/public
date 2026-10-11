@@ -224,5 +224,7 @@ export default function useTrackMenuItems({ track, items = [], onReport, onAddTo
       },
   ];
 
-  return groups.map((group) => group.filter(Boolean)).filter((group) => group.length);
+  return groups
+    .map((group) => (Array.isArray(group) ? group : [group]).filter(Boolean))
+    .filter((group) => group.length);
 }
