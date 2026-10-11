@@ -190,7 +190,7 @@ export default function PublicRecords({ id: propId }) {
       <div className="max-w-4xl mx-auto pb-16">
         <button
           onClick={() => nav(-1)}
-          className="hidden md:inline-flex items-center gap-1.5 mb-4 text-sm font-semibold text-foreground/60 hover:text-foreground transition"
+          className="inline-flex items-center gap-1.5 mb-4 text-sm font-semibold text-foreground/60 hover:text-foreground transition"
         >
           <ChevronLeft size={18} /> Back
         </button>

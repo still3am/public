@@ -2,7 +2,6 @@ import { Outlet, useLocation } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
 import Sidebar from "@/components/Sidebar";
 import MobileTabBar from "@/components/MobileTabBar";
-import MobileTopBar from "@/components/MobileTopBar";
 import ScrollingBanner from "@/components/ScrollingBanner";
 import PlayerBar from "@/components/PlayerBar";
 import ResumePlaybackBanner from "@/components/ResumePlaybackBanner";
@@ -15,7 +14,6 @@ export default function Layout() {
     <div className="flex min-h-screen bg-background text-foreground">
       <Sidebar />
       <div className="flex-1 flex flex-col min-w-0">
-        <MobileTopBar />
         <ScrollingBanner />
         <main className="flex-1 px-3 sm:px-4 md:px-8 lg:px-12 pt-3 pb-6 md:py-8 w-full max-w-[1600px] mx-auto main-content">
           <AnimatePresence mode="wait" initial={false}>

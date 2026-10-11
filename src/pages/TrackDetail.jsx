@@ -145,7 +145,7 @@ export default function TrackDetail() {
     <div className="max-w-3xl mx-auto">
       <button
         onClick={() => nav(-1)}
-        className="hidden md:inline-flex items-center gap-1.5 mb-4 text-sm font-semibold text-foreground/60 hover:text-foreground transition"
+        className="inline-flex items-center gap-1.5 mb-4 text-sm font-semibold text-foreground/60 hover:text-foreground transition"
       >
         <ChevronLeft size={18} /> Back
       </button>
