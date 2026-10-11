@@ -12,6 +12,7 @@ import { LibraryProvider } from '@/context/LibraryContext';
 import { LikesProvider } from '@/context/LikesContext';
 import { FollowsProvider } from '@/context/FollowsContext';
 import { UploadProvider } from '@/context/UploadContext';
+import { OfflineCacheProvider } from '@/context/OfflineCacheContext';
 import Layout from '@/components/Layout';
 import Login from '@/pages/Login';
 import Register from '@/pages/Register';
@@ -107,8 +108,9 @@ function App() {
 
   return (
     <AuthProvider>
-      <QueryClientProvider client={queryClientInstance}>
-        <Router>
+      <OfflineCacheProvider>
+        <QueryClientProvider client={queryClientInstance}>
+          <Router>
           <PlayerProvider>
             <LibraryProvider>
               <LikesProvider>
@@ -120,9 +122,10 @@ function App() {
               </LikesProvider>
             </LibraryProvider>
           </PlayerProvider>
-        </Router>
-        <Toaster />
-      </QueryClientProvider>
+          </Router>
+          <Toaster />
+        </QueryClientProvider>
+      </OfflineCacheProvider>
     </AuthProvider>
   )
 }
