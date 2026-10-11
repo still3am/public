@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { useAuth } from "@/lib/AuthContext";
 import { useLibrary } from "@/context/LibraryContext";
@@ -32,9 +32,6 @@ export default function Library() {
   const [bulkBusy, setBulkBusy] = useState(false);
   const { toast } = useToast();
   const { playlists, reload: reloadPlaylists } = useMyPlaylists();
-  // Ids already fetched back in after being saved elsewhere, so a track that
-  // can't be loaded (unpublished, deleted) is never re-requested forever.
-  const pulledRef = useRef(new Set());
 
   // Shown on the PUBLIC OFFLINE row so the row states how much is on the device.
   const offlineCount = cache.records.length;
@@ -106,26 +103,7 @@ export default function Library() {
   useEffect(() => {
     load();
     loadSavedPlaylists();
-  }, [load, loadSavedPlaylists]);
-
-  // The library set updates optimistically, so a song unsaved anywhere drops
-  // out of this list immediately; a song saved elsewhere is fetched in. Neither
-  // re-reads the whole list, which used to race the write that was still
-  // landing and put a just-removed song straight back on screen.
-  useEffect(() => {
-    if (!tracks) return;
-    if (tracks.some((t) => !ids.has(t.id))) {
-      setTracks((prev) => (prev || []).filter((t) => ids.has(t.id)));
-      return;
-    }
-    const missing = [...ids].filter(
-      (id) => !tracks.some((t) => t.id === id) && !pulledRef.current.has(id)
-    );
-    if (missing.length) {
-      missing.forEach((id) => pulledRef.current.add(id));
-      load();
-    }
-  }, [ids, tracks, load]);
+  }, [load, loadSavedPlaylists, ids]);
 
   useEffect(() => {
     const handler = () => setRecentlyPlayed(getRecentPlays());

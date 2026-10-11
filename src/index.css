@@ -226,20 +226,3 @@ html .hover\:bg-foreground\/\[0\.03\]:hover,
 html .hover\:bg-foreground\/\[0\.04\]:hover {
   background-color: hsl(var(--accent));
 }
-
-/* ---------------------------------------------------------------------------
-   Touch screens have no hover state. Controls that only appeared on hover —
-   the play glyph on a cover, a row's play icon, per-row remove buttons, the
-   slider thumb — therefore stayed invisible, and so effectively unusable, on
-   phones and tablets. On devices that cannot hover, those states are simply
-   shown, together with the scrim that makes a white glyph readable.
---------------------------------------------------------------------------- */
-@media (hover: none), (max-width: 767px) {
-  .group-hover\:opacity-100 { opacity: 1 !important; }
-  .group-hover\:inline-block { display: inline-block !important; }
-  .group-hover\:hidden { display: none !important; }
-  .group-hover\:bg-black\/10 { background-color: rgb(0 0 0 / 0.1) !important; }
-  .group-hover\:bg-black\/30 { background-color: rgb(0 0 0 / 0.3) !important; }
-  .group-hover\:bg-black\/35 { background-color: rgb(0 0 0 / 0.35) !important; }
-  .group-hover\:bg-black\/45 { background-color: rgb(0 0 0 / 0.45) !important; }
-}
