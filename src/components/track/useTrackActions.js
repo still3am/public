@@ -1,6 +1,6 @@
 import {
   Play, Pause, ListPlus, Check, Plus, ListMusic, Download, Trash2, Loader2, Heart,
-  Music2, User, UserPlus, UserCheck, Radio, Smartphone, Share2, Flag, EyeOff,
+  Music2, User, UserPlus, UserCheck, Radio, Smartphone, Share2, Flag, EyeOff, Send,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
@@ -162,6 +162,11 @@ export function useTrackActions(track, menuState, ui) {
     { icon: Radio, label: "Mix", onClick: startMix },
     { icon: Smartphone, label: "Lounge", onClick: () => requireAuth() && ui.openLounge() },
     { icon: Share2, label: "Share", onClick: share },
+    {
+      icon: Send,
+      label: "Send to a friend",
+      onClick: () => requireAuth() && ui.openSend(),
+    },
     !isOwner && {
       icon: Flag,
       label: "Report",
@@ -175,7 +180,7 @@ export function useTrackActions(track, menuState, ui) {
     [Play, Pause, ListPlus],
     [Check, Plus, ListMusic, Download, Trash2, Loader2, Heart],
     [Music2, User, UserPlus, UserCheck],
-    [Radio, Smartphone, Share2],
+    [Radio, Smartphone, Share2, Send],
     [Flag],
   ];
   standard.forEach((item) => {

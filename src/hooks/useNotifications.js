@@ -61,7 +61,31 @@ export function useNotifications() {
       actors.forEach((a) => {
         if (a) actorMap[a.id] = a;
       });
-      setNotifications(items.map((n) => ({ ...n, actor: actorMap[n.actor_id] || null })));
+      // A sent song arrives with only its id, so the feed can name what was
+      // sent without a lookup per row.
+      const sentTrackIds = [
+        ...new Set(
+          items.filter((n) => n.type === "track_shared" && n.track_id).map((n) => n.track_id)
+        ),
+      ];
+      const trackMap = {};
+      if (sentTrackIds.length) {
+        const sent = await base44.entities.Track.filter(
+          { id: { $in: sentTrackIds } },
+          "-created_date",
+          50
+        );
+        (Array.isArray(sent) ? sent : sent?.items || []).forEach((t) => {
+          trackMap[t.id] = t;
+        });
+      }
+      setNotifications(
+        items.map((n) => ({
+          ...n,
+          actor: actorMap[n.actor_id] || null,
+          track: trackMap[n.track_id] || null,
+        }))
+      );
     } catch {
       setNotifications([]);
     } finally {

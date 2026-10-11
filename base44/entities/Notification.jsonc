@@ -11,7 +11,8 @@
         "new_follower",
         "new_upload_from_followed",
         "track_liked",
-        "profile_comment"
+        "profile_comment",
+        "track_shared"
       ],
       "default": "track_liked"
     },

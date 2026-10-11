@@ -7,17 +7,20 @@ import {
   Music,
   MessageCircle,
   CheckCheck,
+  Send,
   Loader2 } from
 "lucide-react";
 import { useNotifications } from "@/hooks/useNotifications";
 import Avatar from "@/components/Avatar";
 import EmptyState from "@/components/EmptyState";
+import { Image } from "@/components/ui/image";
 
 const ICONS = {
   new_follower: UserPlus,
   track_liked: Heart,
   new_upload_from_followed: Music,
-  profile_comment: MessageCircle
+  profile_comment: MessageCircle,
+  track_shared: Send
 };
 
 function getLink(n) {
@@ -38,6 +41,8 @@ function getMessage(n) {
       return `${name} uploaded a new track`;
     case "profile_comment":
       return `${name} commented on your profile`;
+    case "track_shared":
+      return `${name} sent you a song`;
     default:
       return "New notification";
   }
@@ -80,7 +85,7 @@ export default function Notifications() {
       <EmptyState
         icon={Bell}
         title="No notifications yet"
-        description="When someone follows you, likes your track, or comments on your profile, you'll see it here." /> :
+        description="When someone follows you, likes your track, sends you a song, or comments on your profile, you'll see it here." /> :
 
 
       <div className="space-y-1.5">
@@ -103,6 +108,27 @@ export default function Notifications() {
                   <p className="text-sm text-foreground/80 leading-snug">
                     {getMessage(n)}
                   </p>
+                  {n.track &&
+                  <div className="mt-2 flex items-center gap-2.5 p-2 rounded-xl bg-foreground/[0.04]">
+                      <div className="w-9 h-9 rounded-lg overflow-hidden bg-foreground/10 shrink-0 grid place-items-center">
+                        {n.track.cover_art_url ?
+                      <Image
+                        src={n.track.cover_art_url}
+                        fittingType="fill"
+                        alt=""
+                        className="w-full h-full" /> :
+
+                      <Music size={14} className="text-foreground/40" />
+                      }
+                      </div>
+                      <div className="min-w-0">
+                        <div className="text-xs font-semibold truncate">{n.track.title}</div>
+                        <div className="text-[11px] text-muted-foreground truncate">
+                          {n.track.artist || n.track.uploader_name || "Unknown"}
+                        </div>
+                      </div>
+                    </div>
+                  }
                   <span className="text-[11px] text-foreground/40">
                     {formatDistanceToNow(new Date(n.created_date), {
                   addSuffix: true
