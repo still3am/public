@@ -1,15 +1,18 @@
 import { Link } from "react-router-dom";
 import { Disc3 } from "lucide-react";
+import { Image } from "@/components/ui/image";
 
 export default function ArtistRow({ artist }) {
+  const art = artist.cover_art_url || artist.avatar_url;
+
   return (
     <Link
       to={`/artist?name=${encodeURIComponent(artist.name || "")}`}
       className="w-full flex items-center gap-3 p-2.5 rounded-xl hover:bg-foreground/[0.03] transition text-left"
     >
       <div className="w-12 h-12 rounded-full overflow-hidden bg-foreground/10 shrink-0 grid place-items-center">
-        {artist.avatar_url ? (
-          <img src={artist.avatar_url} alt="" className="w-full h-full object-cover" />
+        {art ? (
+          <Image src={art} fittingType="fill" alt="" className="w-full h-full object-cover" />
         ) : (
           <Disc3 size={20} className="text-foreground/40" />
         )}

@@ -30,6 +30,34 @@ function rank(track, lower) {
   return 0;
 }
 
+// Artist records carry no uploaded artwork of their own, so each row borrows the
+// album cover of that artist's most recent published track — resolved in ONE
+// extra query for the whole result page instead of one lookup per artist.
+async function artistCovers(names) {
+  if (!names.length) return {};
+  const page = await safe(
+    base44.entities.Track.filter(
+      {
+        is_published: true,
+        artist: { $in: names },
+        cover_art_url: { $exists: true, $ne: "" },
+      },
+      {
+        sort: "-created_date",
+        limit: 300,
+        fields: ["artist", "cover_art_url"],
+      }
+    ),
+    { items: [] }
+  );
+  const map = {};
+  for (const t of page?.items || []) {
+    const key = (t.artist || "").trim().toLowerCase();
+    if (key && !map[key]) map[key] = t.cover_art_url;
+  }
+  return map;
+}
+
 export async function globalSearch(query) {
   const Q = query.trim();
   if (!Q) return { tracks: [], artists: [], people: [] };
@@ -74,9 +102,17 @@ export async function globalSearch(query) {
       (b.play_count || 0) - (a.play_count || 0)
   );
 
+  const found = artistPage?.items || [];
+  const covers = await artistCovers(found.map((a) => a.name).filter(Boolean));
+  const artists = found.map((a) => ({
+    ...a,
+    cover_art_url:
+      a.cover_art_url || covers[(a.name || "").trim().toLowerCase()] || "",
+  }));
+
   return {
     tracks,
-    artists: artistPage?.items || [],
+    artists,
     people: peopleRes?.data?.results || [],
   };
 }
