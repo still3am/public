@@ -5,6 +5,7 @@ import { useLibrary } from "@/context/LibraryContext";
 import { Loader2, Upload as UploadIcon } from "lucide-react";
 import TrackCard from "@/components/TrackCard";
 import PublicSubmitButton from "@/components/upload/PublicSubmitButton";
+import BulkPublicSubmitBar from "@/components/upload/BulkPublicSubmitBar";
 import EmptyState from "@/components/EmptyState";
 import PullToRefresh from "@/components/PullToRefresh";
 import LibraryBulkBar from "@/components/library/LibraryBulkBar";
@@ -114,11 +115,11 @@ export default function MyUploads() {
 
   // Flip the card in place once a song is offered to the public, so its action
   // swaps to the sent-for-review state without reloading the page.
-  const markSubmitted = (id) => {
+  const markSubmitted = (ids) => {
     const isAdmin = user?.role === "admin";
     setUploads((prev) =>
       (prev || []).map((t) =>
-        t.id === id
+        ids.includes(t.id)
           ? { ...t, approval_status: isAdmin ? "approved" : "pending", is_published: isAdmin }
           : t
       )
@@ -154,6 +155,7 @@ export default function MyUploads() {
           />
         ) : (
           <section>
+            <BulkPublicSubmitBar tracks={uploads} onSubmitted={markSubmitted} />
             <h2 className="text-sm font-bold text-foreground/70 uppercase tracking-wider mb-3">
               {uploads.length} {uploads.length === 1 ? "Song" : "Songs"}
             </h2>

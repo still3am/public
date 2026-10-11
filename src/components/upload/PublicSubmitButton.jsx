@@ -3,18 +3,7 @@ import { base44 } from "@/api/base44Client";
 import { useAuth } from "@/lib/AuthContext";
 import { useToast } from "@/components/ui/use-toast";
 import { Globe, Loader2 } from "lucide-react";
-
-// Songs that never reached the public catalogue: still private to the library.
-// Ones already sent for review, or pulled by an admin, are left alone.
-function awaitingFirstSubmit(track) {
-  if (!track || track.is_published) return false;
-  return track.approval_status !== "pending" && track.approval_status !== "rejected";
-}
-
-// The same bar the upload queue applies before a song may go public.
-function readyForPublic(track) {
-  return !!(track?.artist?.trim() && track?.genre && track?.cover_art_url);
-}
+import { awaitingFirstSubmit, publicSubmitBlockers } from "@/lib/publicSubmit";
 
 export default function PublicSubmitButton({ track, onSubmitted }) {
   const { user } = useAuth();
@@ -23,10 +12,11 @@ export default function PublicSubmitButton({ track, onSubmitted }) {
 
   if (!awaitingFirstSubmit(track)) return null;
 
-  if (!readyForPublic(track)) {
+  const missing = publicSubmitBlockers(track);
+  if (missing.length > 0) {
     return (
       <p className="mt-2 px-1 text-[11px] leading-snug text-muted-foreground">
-        Add cover art, artist and genre to publish this song.
+        Needs {missing.join(", ")} to publish this song.
       </p>
     );
   }
@@ -46,7 +36,7 @@ export default function PublicSubmitButton({ track, onSubmitted }) {
           ? `"${track.title}" is live on PUBLIC`
           : `"${track.title}" sent for review`,
       });
-      onSubmitted?.(track.id);
+      onSubmitted?.([track.id]);
     } catch {
       toast({ title: "Couldn't publish that song", variant: "destructive" });
     } finally {
