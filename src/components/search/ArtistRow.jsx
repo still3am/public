@@ -1,9 +1,10 @@
+import { Link } from "react-router-dom";
 import { Disc3 } from "lucide-react";
 
-export default function ArtistRow({ artist, onPick }) {
+export default function ArtistRow({ artist }) {
   return (
-    <button
-      onClick={onPick}
+    <Link
+      to={`/artist?name=${encodeURIComponent(artist.name || "")}`}
       className="w-full flex items-center gap-3 p-2.5 rounded-xl hover:bg-foreground/[0.03] transition text-left"
     >
       <div className="w-12 h-12 rounded-full overflow-hidden bg-foreground/10 shrink-0 grid place-items-center">
@@ -16,6 +17,6 @@ export default function ArtistRow({ artist, onPick }) {
       <div className="min-w-0 flex-1">
         <div className="text-sm font-semibold truncate">{artist.name}</div>
       </div>
-    </button>
+    </Link>
   );
 }

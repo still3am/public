@@ -13,7 +13,7 @@ function SectionTitle({ children, count }) {
   );
 }
 
-export default function SearchResults({ tracks, artists, people, onPickArtist, dimmed }) {
+export default function SearchResults({ tracks, artists, people, dimmed }) {
   return (
     <div className={`space-y-8 transition-opacity ${dimmed ? "opacity-60" : "opacity-100"}`}>
       {artists.length > 0 && (
@@ -21,7 +21,7 @@ export default function SearchResults({ tracks, artists, people, onPickArtist, d
           <SectionTitle count={artists.length}>Artists</SectionTitle>
           <div className="space-y-1">
             {artists.map((a) => (
-              <ArtistRow key={a.id} artist={a} onPick={() => onPickArtist(a.name)} />
+              <ArtistRow key={a.id} artist={a} />
             ))}
           </div>
         </div>

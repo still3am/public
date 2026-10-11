@@ -123,7 +123,6 @@ export default function Search() {
           tracks={trackResults}
           artists={artistResults}
           people={people}
-          onPickArtist={(name) => setQ(name)}
           dimmed={searching} /> :
 
 
