@@ -1,4 +1,6 @@
+import { useRef, useState } from "react";
 import { Play, Check } from "lucide-react";
+import TrackOptionsPanel from "@/components/track/TrackOptionsPanel";
 import { Link } from "react-router-dom";
 import { usePlayer } from "@/context/PlayerContext";
 import { Image } from "@/components/ui/image";
@@ -31,14 +33,39 @@ export default function TrackCard({ track, selectable = false, selected = false,
 
   const coverUrl = useCoverUrl(track.cover_art_url);
 
+  const [menuAnchor, setMenuAnchor] = useState(null);
+  const pressTimer = useRef(null);
+  const longPressed = useRef(false);
+
+  const cancelPress = () => clearTimeout(pressTimer.current);
+  const startPress = (e) => {
+    if (selectable || e.pointerType === "mouse") return;
+    longPressed.current = false;
+    cancelPress();
+    pressTimer.current = setTimeout(() => {
+      longPressed.current = true;
+      navigator.vibrate?.(15);
+      setMenuAnchor({ top: 0, bottom: 0, left: 0, right: 0 });
+    }, 450);
+  };
+
   const handlePlay = (e) => {
     e.stopPropagation();
+    if (longPressed.current) {
+      longPressed.current = false;
+      return;
+    }
     if (isCurrent) p.togglePlay();
     else p.playTrackAt([track]);
   };
 
   return (
     <div
+      onPointerDown={startPress}
+      onPointerUp={cancelPress}
+      onPointerMove={cancelPress}
+      onPointerCancel={cancelPress}
+      onContextMenu={(e) => e.preventDefault()}
       onClick={selectable ? () => onToggleSelect?.(track) : handlePlay}
       className={`group relative rounded-2xl p-2.5 sm:p-3 transition-all duration-300 cursor-pointer
         hover:bg-foreground/[0.04] active:scale-[0.98]
@@ -91,7 +118,9 @@ export default function TrackCard({ track, selectable = false, selected = false,
         )}
 
         {!selectable && (
-          <div className="absolute top-2 right-2 z-10" onClick={(e) => e.stopPropagation()}>
+          <div
+            className="absolute top-2 right-2 z-10 hidden md:block opacity-0 group-hover:opacity-100 focus-within:opacity-100 transition-opacity"
+            onClick={(e) => e.stopPropagation()}>
             <TrackOptionsMenu
               track={track}
               size={17}
@@ -112,6 +141,18 @@ export default function TrackCard({ track, selectable = false, selected = false,
         >
           <TrackCardMeta track={track} isCurrent={isCurrent} />
         </Link>
+      )}
+
+      {menuAnchor && (
+        <div onClick={(e) => e.stopPropagation()} onPointerDown={(e) => e.stopPropagation()}>
+          <TrackOptionsPanel
+            track={track}
+            anchor={menuAnchor}
+            sheet
+            items={[]}
+            onClose={() => setMenuAnchor(null)}
+          />
+        </div>
       )}
     </div>
   );
