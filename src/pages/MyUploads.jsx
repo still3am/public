@@ -4,6 +4,7 @@ import { useAuth } from "@/lib/AuthContext";
 import { useLibrary } from "@/context/LibraryContext";
 import { Loader2, Upload as UploadIcon } from "lucide-react";
 import TrackCard from "@/components/TrackCard";
+import PublicSubmitButton from "@/components/upload/PublicSubmitButton";
 import EmptyState from "@/components/EmptyState";
 import PullToRefresh from "@/components/PullToRefresh";
 import LibraryBulkBar from "@/components/library/LibraryBulkBar";
@@ -111,6 +112,19 @@ export default function MyUploads() {
     }
   };
 
+  // Flip the card in place once a song is offered to the public, so its action
+  // swaps to the sent-for-review state without reloading the page.
+  const markSubmitted = (id) => {
+    const isAdmin = user?.role === "admin";
+    setUploads((prev) =>
+      (prev || []).map((t) =>
+        t.id === id
+          ? { ...t, approval_status: isAdmin ? "approved" : "pending", is_published: isAdmin }
+          : t
+      )
+    );
+  };
+
   return (
     <div className="max-w-5xl mx-auto pb-10">
       <LibraryBulkBar
@@ -145,13 +159,17 @@ export default function MyUploads() {
             </h2>
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
               {uploads.map((t) => (
-                <TrackCard
-                  key={t.id}
-                  track={t}
-                  selectable={editMode}
-                  selected={selected.has(t.id)}
-                  onToggleSelect={toggleSelect}
-                />
+                <div key={t.id} className="flex flex-col">
+                  <TrackCard
+                    track={t}
+                    selectable={editMode}
+                    selected={selected.has(t.id)}
+                    onToggleSelect={toggleSelect}
+                  />
+                  {!editMode && (
+                    <PublicSubmitButton track={t} onSubmitted={markSubmitted} />
+                  )}
+                </div>
               ))}
             </div>
           </section>
