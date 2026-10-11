@@ -7,15 +7,15 @@ export default function StatusMessage({ value, editMode, onChange }) {
           onChange={(e) => onChange(e.target.value)}
           placeholder="What's your current mood?"
           maxLength={140}
-          className="w-full px-3 py-2 rounded-lg border border-border bg-background text-sm italic"
-        />
-      </div>
-    );
+          className="w-full px-3 py-2 rounded-lg border border-border bg-background text-sm italic" />
+        
+      </div>);
+
   }
   if (!value) return null;
   return (
-    <p className="text-sm italic text-foreground/60 mt-3 max-w-2xl mx-auto md:mx-0 flex items-center gap-1.5 justify-center md:justify-start">
+    <p className="text-sm italic text-foreground/60 mt-3 max-w-2xl mx-auto md:mx-0 flex items-center gap-1.5 justify-center md:justify-start hidden">
       <span className="text-base not-italic">♪</span> {value}
-    </p>
-  );
+    </p>);
+
 }
