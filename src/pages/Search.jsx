@@ -1,49 +1,19 @@
-import { useEffect, useMemo, useRef, useState, useCallback } from "react";
-import { Link } from "react-router-dom";
+import { useEffect, useMemo, useState } from "react";
 import {
   Search as SearchIcon,
   Loader2,
-  Music,
-  Users,
-  Mic2,
-  Disc3,
   X,
   ArrowLeft } from
 "lucide-react";
-import { base44 } from "@/api/base44Client";
-import { getPublishedTracks, getArtists } from "@/lib/catalogCache";
+import { getPublishedTracks } from "@/lib/catalogCache";
+import { useGlobalSearch } from "@/hooks/useGlobalSearch";
+import { useUnpublishedSync } from "@/hooks/useUnpublishedSync";
 import TrackCard from "@/components/TrackCard";
 import VinylCrate from "@/components/search/VinylCrate";
-import Avatar from "@/components/Avatar";
+import SearchResults from "@/components/search/SearchResults";
 import PullToRefresh from "@/components/PullToRefresh";
 import PageHeader from "@/components/PageHeader";
 import EmptyState from "@/components/EmptyState";
-import { useUnpublishedSync } from "@/hooks/useUnpublishedSync";
-
-function ArtistRow({ artist, trackCount, onPick }) {
-  return (
-    <button
-      onClick={onPick}
-      className="w-full flex items-center gap-3 p-2.5 rounded-xl hover:bg-foreground/[0.03] transition text-left">
-      
-      <div className="w-12 h-12 rounded-full overflow-hidden bg-foreground/10 shrink-0 grid place-items-center">
-        {artist.avatar_url ?
-        <img src={artist.avatar_url} alt="" className="w-full h-full object-cover" /> :
-
-        <Disc3 size={20} className="text-foreground/40" />
-        }
-      </div>
-      <div className="min-w-0 flex-1">
-        <div className="text-sm font-semibold truncate">{artist.name}</div>
-        
-
-
-        
-      </div>
-      
-    </button>);
-
-}
 
 export default function Search() {
   const [q, setQ] = useState("");
@@ -52,26 +22,26 @@ export default function Search() {
     return params.get("genre") || null;
   });
   const [allTracks, setAllTracks] = useState([]);
-  const [allArtists, setAllArtists] = useState([]);
-  const [people, setPeople] = useState([]);
   const [loadingAll, setLoadingAll] = useState(true);
-  const [loadingPeople, setLoadingPeople] = useState(false);
-  const peopleReqId = useRef(0);
 
-  const onUnpublished = useCallback((id) => {
+  const {
+    tracks: trackResults,
+    artists: artistResults,
+    people,
+    searching,
+    hasQuery } =
+  useGlobalSearch(q);
+
+  // Keep the browse crate honest if an admin unpublishes a track mid-session.
+  useUnpublishedSync((id) => {
     setAllTracks((prev) => prev.filter((t) => t.id !== id));
-  }, []);
-  useUnpublishedSync(onUnpublished);
+  });
 
   async function loadCatalogue() {
     setLoadingAll(true);
     try {
-      const [tracks, artists] = await Promise.all([
-      getPublishedTracks(),
-      getArtists()]
-      );
+      const tracks = await getPublishedTracks();
       setAllTracks(Array.isArray(tracks) ? tracks : []);
-      setAllArtists(Array.isArray(artists) ? artists : []);
     } finally {
       setLoadingAll(false);
     }
@@ -80,31 +50,6 @@ export default function Search() {
   useEffect(() => {
     loadCatalogue();
   }, []);
-
-  const Q = useMemo(() => q.trim().toLowerCase(), [q]);
-  const hasQuery = Q.length > 0;
-
-  const trackResults = useMemo(() => {
-    if (!hasQuery) return [];
-    return allTracks.filter(
-      (t) =>
-      t.title?.toLowerCase().includes(Q) ||
-      t.artist?.toLowerCase().includes(Q) ||
-      t.uploader_name?.toLowerCase().includes(Q)
-    );
-  }, [hasQuery, Q, allTracks]);
-
-  const artistResults = useMemo(() => {
-    if (!hasQuery) return [];
-    return allArtists.
-    filter(
-      (a) =>
-      a.name?.toLowerCase().includes(Q) ||
-      a.bio?.toLowerCase().includes(Q) ||
-      a.location?.toLowerCase().includes(Q)
-    ).
-    slice(0, 50);
-  }, [hasQuery, Q, allArtists]);
 
   const genreList = useMemo(() => {
     const map = {};
@@ -125,33 +70,8 @@ export default function Search() {
     return allTracks.filter((t) => t.genre === genre);
   }, [genre, allTracks]);
 
-  // People search is a remote function — debounce it.
-  useEffect(() => {
-    if (!hasQuery) {
-      setPeople([]);
-      return;
-    }
-    setLoadingPeople(true);
-    const reqId = ++peopleReqId.current;
-    const t = setTimeout(async () => {
-      try {
-        const res = await base44.functions.invoke("searchUsers", { q: Q });
-        if (reqId === peopleReqId.current) setPeople(res?.data?.results || []);
-      } catch {
-        if (reqId === peopleReqId.current) setPeople([]);
-      } finally {
-        if (reqId === peopleReqId.current) setLoadingPeople(false);
-      }
-    }, 250);
-    return () => clearTimeout(t);
-  }, [hasQuery, Q]);
-
   const anyResults = trackResults.length || artistResults.length || people.length;
-  const loading = loadingAll || hasQuery && loadingPeople && !people.length;
-
-  function searchArtist(name) {
-    setQ(name);
-  }
+  const firstSearchInFlight = hasQuery && searching && anyResults === 0;
 
   const loader =
   <div className="py-16 text-center">
@@ -164,14 +84,21 @@ export default function Search() {
       <div>
         <PageHeader eyebrow="Find" title="Search" subtitle="Find tracks, artists, and people across the PUBLIC network." />
 
-        {/* Search input */}
+        {/* Search input — results arrive as you type */}
         <div className="relative mb-5">
           <SearchIcon size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-foreground/40 pointer-events-none" />
           <input
             value={q}
             onChange={(e) => {setQ(e.target.value);setGenre(null);}}
             placeholder="Search tracks, artists, people…"
-            className="w-full pl-11 pr-11 py-3.5 rounded-full border border-border bg-background text-sm font-medium focus:outline-none focus:ring-2 focus:ring-foreground/10 transition shadow-sm" />
+            className="w-full pl-11 pr-20 py-3.5 rounded-full border border-border bg-background text-sm font-medium focus:outline-none focus:ring-2 focus:ring-foreground/10 transition shadow-sm" />
+
+          {searching &&
+          <Loader2
+            size={15}
+            className="animate-spin absolute right-11 top-1/2 -translate-y-1/2 text-foreground/40 pointer-events-none" />
+
+          }
 
           {q.trim() &&
           <button
@@ -185,74 +112,21 @@ export default function Search() {
 
         {/* Body */}
         {hasQuery ?
-        loading ? loader :
+        firstSearchInFlight ? loader :
         anyResults === 0 ?
         <EmptyState
           icon={SearchIcon}
           title={`No results for "${q}"`}
           description="Try a different spelling or search term." /> :
-        <div className="space-y-8">
-            {trackResults.length > 0 &&
-          <div>
-                <h3 className="flex items-center gap-2 text-sm font-bold uppercase tracking-wide text-foreground/60 mb-2 px-1">
-                   Tracks
-                  
-                </h3>
-                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-1">
-                  {trackResults.slice(0, 40).map((t) =>
-              <TrackCard key={t.id} track={t} />
-              )}
-                </div>
-              </div>
-          }
 
-            {artistResults.length > 0 &&
-          <div>
-                
+        <SearchResults
+          tracks={trackResults}
+          artists={artistResults}
+          people={people}
+          onPickArtist={(name) => setQ(name)}
+          dimmed={searching} /> :
 
 
-            
-                <h3 className="flex items-center gap-2 text-sm font-bold uppercase tracking-wide text-foreground/60 mb-2 px-1">
-                   Artists
-                  <span className="text-xs font-semibold text-foreground/40">{artistResults.length}</span>
-                </h3>
-                <div className="space-y-1">
-                  {artistResults.map((a) =>
-              <ArtistRow
-                key={a.id}
-                artist={a}
-                trackCount={allTracks.filter((t) => t.artist?.toLowerCase() === a.name.toLowerCase()).length}
-                onPick={() => searchArtist(a.name)} />
-              )}
-                </div>
-              </div>
-          }
-
-            {people.length > 0 &&
-          <div>
-                <h3 className="flex items-center gap-2 text-sm font-bold uppercase tracking-wide text-foreground/60 mb-2 px-1">
-                  <Users size={14} /> People
-                  <span className="text-xs font-semibold text-foreground/40">{people.length}</span>
-                </h3>
-                <div className="space-y-1">
-                  {people.map((u) =>
-              <Link
-                key={u.id}
-                to={`/profile/${u.id}`}
-                className="flex items-center gap-3 p-2.5 rounded-xl hover:bg-foreground/[0.03] transition">
-                      <Avatar user={u} size={48} />
-                      <div className="min-w-0 flex-1">
-                        <div className="text-sm font-semibold truncate flex items-center gap-1">
-                          {u.display_name || u.full_name || "Unnamed"}
-                        </div>
-                        <div className="text-xs text-foreground/50 truncate">{u.email}</div>
-                      </div>
-                    </Link>
-              )}
-                </div>
-              </div>
-          }
-          </div> :
         genre ?
         <div>
             <div className="flex items-center gap-3 mb-3">
