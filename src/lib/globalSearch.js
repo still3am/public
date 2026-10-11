@@ -1,4 +1,5 @@
 import { base44 } from "@/api/base44Client";
+import { splitArtistNames } from "@/lib/artistTracks";
 
 // Global search runs on the server so the whole catalogue is searchable without
 // downloading it: tracks, artists and people are queried in parallel, each
@@ -78,17 +79,30 @@ function pruneArtists(artists, lower) {
     .slice(0, ARTIST_SHOWN);
 }
 
-// Artist records carry no artwork of their own, so each row borrows the album
-// cover of that artist's most recent published track — resolved in ONE extra
-// query for the whole result page instead of one lookup per artist.
+function creditPattern(name) {
+  // Bounded by anything that is not a letter or digit, so "Yeat" matches the
+  // credit inside "Yeat, Drake" but never the "yeat" inside "Yeats".
+  return `(^|[^a-z0-9])${escapeRegex(name)}([^a-z0-9]|$)`;
+}
+
+// Artist records carry no artwork of their own, so each row borrows the cover of
+// that artist's most recent published track. Two things have to hold for that to
+// work: a track's artist tag often lists several credits at once ("Yeat, Drake"),
+// so the match is made against each credited name, and the query is narrowed on
+// the server to the artists actually on screen instead of scanning whichever
+// covers happen to be newest — which left every older artist without an image.
 async function artistCovers(names) {
-  if (!names.length) return {};
+  const wanted = new Set(names.flatMap(splitArtistNames));
+  if (!wanted.size) return new Map();
+
   const res = await read(
     base44.entities.Track.filter(
       {
         is_published: true,
-        artist: { $in: names },
         cover_art_url: { $exists: true, $ne: "" },
+        $or: [...wanted].map((name) => ({
+          artist: { $regex: creditPattern(name), $options: "i" },
+        })),
       },
       {
         sort: "-created_date",
@@ -97,12 +111,20 @@ async function artistCovers(names) {
       }
     )
   );
-  const map = {};
-  for (const t of res.value?.items || []) {
-    const key = normalizeName(t.artist);
-    if (key && !map[key]) map[key] = t.cover_art_url;
+
+  const map = new Map();
+  for (const track of res.value?.items || []) {
+    for (const credit of splitArtistNames(track.artist)) {
+      if (wanted.has(credit) && !map.has(credit)) map.set(credit, track.cover_art_url);
+    }
   }
   return map;
+}
+
+// An artist record may itself be a combined credit, so its row takes the cover
+// of whichever of its credited names has one.
+function coverFor(artist, covers) {
+  return splitArtistNames(artist.name).map((n) => covers.get(n)).find(Boolean) || "";
 }
 
 async function runSearch(query) {
@@ -160,7 +182,8 @@ async function runSearch(query) {
   const covers = await artistCovers(found.map((a) => a.name).filter(Boolean));
   const artists = found.map((artist) => ({
     ...artist,
-    cover_art_url: artist.cover_art_url || covers[normalizeName(artist.name)] || "",
+    cover_art_url:
+      artist.cover_art_url || artist.avatar_url || coverFor(artist, covers),
   }));
 
   const playlists = [...(playlistRes.value?.items || [])].sort(
