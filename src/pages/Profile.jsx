@@ -24,6 +24,7 @@ import {
   Share2,
   QrCode,
   BarChart2,
+  Check,
   Settings } from
 "lucide-react";
 import SettingsSheet from "@/components/profile/SettingsSheet";
@@ -351,6 +352,14 @@ export default function Profile() {
     <div className="max-w-6xl mx-auto relative z-10">
       <div className="flex flex-col md:flex-row gap-4 md:gap-6 mb-8">
       <div className="relative rounded-2xl overflow-hidden ring-1 ring-inset ring-foreground/10 bg-card flex-1 min-w-0">
+        {!editMode && profile.is_artist &&
+          <span
+            title="Artist"
+            aria-label="Artist"
+            className="absolute top-3 right-3 md:top-5 md:right-5 z-20 grid place-items-center w-6 h-6 md:w-7 md:h-7 rounded-full bg-foreground text-background shadow-md ring-2 ring-background">
+            <Check size={15} strokeWidth={3.5} />
+          </span>
+          }
         {/* Identity, stats, actions */}
         <div className="relative z-10 px-5 md:px-10 pb-5 md:pb-8 pt-5 md:pt-8">
           <div className="flex flex-col items-center md:flex-row md:items-center md:justify-center gap-4 md:gap-8">
@@ -398,11 +407,6 @@ export default function Profile() {
                     }
                 {!editMode && profile.pronouns &&
                     <span className="text-sm text-foreground/40">{profile.pronouns}</span>
-                    }
-                {!editMode && profile.is_artist &&
-                    <span className="inline-flex items-center gap-1 text-xs font-bold uppercase tracking-wide text-foreground/60 bg-foreground/[0.06] px-2 py-0.5 rounded-full">
-                     Artist
-                  </span>
                     }
 
               </div>
