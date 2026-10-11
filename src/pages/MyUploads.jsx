@@ -10,6 +10,7 @@ import LibraryBulkBar from "@/components/library/LibraryBulkBar";
 import BulkAddToPlaylistSheet from "@/components/library/BulkAddToPlaylistSheet";
 import { useMyPlaylists } from "@/hooks/useMyPlaylists";
 import { useToast } from "@/components/ui/use-toast";
+import { readAllPages } from "@/lib/readPages";
 
 // YOUR UPLOADS — every song this account has posted, on its own page so the
 // Library stays for saved music. Bulk select covers playlists, un-saving and
@@ -32,12 +33,14 @@ export default function MyUploads() {
       return;
     }
     try {
-      const rows = await base44.entities.Track.filter(
-        { uploader_id: user.id },
-        "-created_date",
-        1000
+      // Follow the server cursor until every upload is in — no fixed row cap.
+      const rows = await readAllPages((options) =>
+        base44.entities.Track.filter(
+          { uploader_id: user.id },
+          { sort: "-created_date", ...options }
+        )
       );
-      setUploads(rows || []);
+      setUploads(rows);
     } catch {
       setUploads([]);
     }
