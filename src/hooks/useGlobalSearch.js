@@ -2,7 +2,9 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { globalSearch } from "@/lib/globalSearch";
 import { useUnpublishedSync } from "@/hooks/useUnpublishedSync";
 
-const DEBOUNCE_MS = 250;
+// Long enough that a fast typist fires one server search per pause instead of
+// one per character — each search scans tracks and artists server-side.
+const DEBOUNCE_MS = 400;
 const EMPTY = { tracks: [], artists: [], people: [] };
 
 /**
@@ -18,6 +20,7 @@ export function useGlobalSearch(query) {
   const [failed, setFailed] = useState(false);
   const [nonce, setNonce] = useState(0);
   const reqId = useRef(0);
+  const forceFresh = useRef(false);
 
   useUnpublishedSync((id) => {
     setResults((prev) => ({
@@ -37,9 +40,12 @@ export function useGlobalSearch(query) {
 
     setSearching(true);
     const id = ++reqId.current;
+    // An explicit refresh must bypass the short-lived result reuse below.
+    const fresh = forceFresh.current;
+    forceFresh.current = false;
     const timer = setTimeout(async () => {
       try {
-        const res = await globalSearch(term);
+        const res = await globalSearch(term, { fresh });
         if (id === reqId.current) {
           setResults(res);
           setFailed(!!res.failed);
@@ -57,7 +63,10 @@ export function useGlobalSearch(query) {
     return () => clearTimeout(timer);
   }, [term, nonce]);
 
-  const refresh = useCallback(() => setNonce((n) => n + 1), []);
+  const refresh = useCallback(() => {
+    forceFresh.current = true;
+    setNonce((n) => n + 1);
+  }, []);
 
   return {
     ...results,

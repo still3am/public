@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   Search as SearchIcon,
   Loader2,
@@ -67,9 +67,16 @@ export default function Search() {
     }
   }
 
+  // The browse crate is only fetched when it is actually shown. Landing here with
+  // a term already typed (e.g. from the sidebar field) no longer pulls the whole
+  // catalogue at the same moment as the search, which is the heaviest read in the
+  // app and the main source of rate-limit errors.
+  const catalogueLoaded = useRef(false);
   useEffect(() => {
+    if (hasQuery || catalogueLoaded.current) return;
+    catalogueLoaded.current = true;
     loadCatalogue();
-  }, []);
+  }, [hasQuery]);
 
   // Pulling down re-runs whatever the page is currently showing: the live
   // search when a term is typed, otherwise the genre crate.

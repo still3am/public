@@ -7,7 +7,7 @@ import { base44 } from "@/api/base44Client";
 const TRACK_LIMIT = 40;
 const ARTIST_SCAN = 50; // artist records the server may return per search
 const ARTIST_SHOWN = 20; // ranked, de-duplicated artist rows actually surfaced
-const COVER_SCAN = 200; // published tracks read to borrow one cover per artist
+const COVER_SCAN = 100; // published tracks read to borrow one cover per artist
 
 function escapeRegex(input) {
   return input.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
@@ -95,7 +95,7 @@ async function artistCovers(names) {
   return map;
 }
 
-export async function globalSearch(query) {
+async function runSearch(query) {
   const Q = query.trim();
   if (!Q) return { tracks: [], artists: [], people: [], failed: false };
 
@@ -150,4 +150,31 @@ export async function globalSearch(query) {
     people: peopleRes.value?.data?.results || [],
     failed: !trackRes.ok,
   };
+}
+
+// Repeating the same term — backspacing, retyping, or navigating back to the
+// search page — must not re-fire this many requests, so an identical term is
+// answered from the last few seconds of results and simultaneous calls for the
+// same term share one request. A manual refresh passes `fresh` to go to the
+// server regardless.
+const RECENT_TTL = 20 * 1000;
+const recent = new Map();
+
+export function globalSearch(query, { fresh = false } = {}) {
+  const Q = query.trim();
+  if (!Q) return Promise.resolve({ tracks: [], artists: [], people: [], failed: false });
+
+  const now = Date.now();
+  for (const [term, entry] of recent) {
+    if (now - entry.at > RECENT_TTL) recent.delete(term);
+  }
+
+  if (!fresh) {
+    const hit = recent.get(Q);
+    if (hit) return hit.promise;
+  }
+
+  const promise = runSearch(Q);
+  recent.set(Q, { at: now, promise });
+  return promise;
 }
