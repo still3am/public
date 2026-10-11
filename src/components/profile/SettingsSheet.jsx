@@ -140,14 +140,14 @@ export default function SettingsSheet({ onClose, onDeleteAccount }) {
           <button
             onClick={handleLogout}
             disabled={loggingOut}
-            className="w-full flex items-center gap-3 p-3.5 rounded-2xl bg-foreground text-background hover:opacity-90 transition active:scale-[0.99] text-left disabled:opacity-60"
+            className="w-full flex items-center gap-3 p-3.5 rounded-2xl bg-overlay text-overlay-foreground ring-1 ring-inset ring-overlay-foreground/15 hover:opacity-90 transition active:scale-[0.99] text-left disabled:opacity-60"
           >
-            <div className="w-10 h-10 rounded-xl bg-background/15 grid place-items-center shrink-0">
+            <div className="w-10 h-10 rounded-xl bg-overlay-foreground/15 grid place-items-center shrink-0">
               {loggingOut ? <Loader2 size={18} className="animate-spin" /> : <LogOut size={18} />}
             </div>
             <div className="flex-1 min-w-0">
               <div className="text-sm font-bold">Log Out</div>
-              <div className="text-xs text-background/70">Sign out of PUBLIC on this device</div>
+              <div className="text-xs text-overlay-foreground/70">Sign out of PUBLIC on this device</div>
             </div>
           </button>
         </div>
