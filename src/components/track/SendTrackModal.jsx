@@ -2,27 +2,36 @@ import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { base44 } from "@/api/base44Client";
 import { useAuth } from "@/lib/AuthContext";
-import { Search, X, Send, Check, Loader2, Music } from "lucide-react";
+import { Search, X, Send, Check, Loader2, Music, ChevronLeft } from "lucide-react";
 import Avatar from "@/components/Avatar";
 import { Image } from "@/components/ui/image";
 import { useToast } from "@/components/ui/use-toast";
 
 const MIN_QUERY = 2;
 
+function nameOf(person) {
+  return person?.display_name || person?.full_name || "them";
+}
+
 /**
  * Sends a track to another listener. There is no chat here — the song is
  * delivered as a notification, so the recipient finds it in their feed and can
  * play it straight from there.
+ *
+ * Two steps on purpose: pick the friend, then write the note and send. The note
+ * belongs to the send, so it is asked for at the moment of sending rather than
+ * sitting above the search where it is easy to walk straight past.
  */
 export default function SendTrackModal({ track, onClose }) {
   const { user } = useAuth();
   const { toast } = useToast();
-  const [comment, setComment] = useState("");
   const [query, setQuery] = useState("");
   const [results, setResults] = useState([]);
   const [searching, setSearching] = useState(false);
-  const [sendingId, setSendingId] = useState(null);
-  const [sentIds, setSentIds] = useState([]);
+  const [picked, setPicked] = useState(null);
+  const [note, setNote] = useState("");
+  const [sending, setSending] = useState(false);
+  const [sent, setSent] = useState(null);
 
   useEffect(() => {
     const q = query.trim().toLowerCase();
@@ -47,27 +56,31 @@ export default function SendTrackModal({ track, onClose }) {
 
   if (!track) return null;
 
-  // Your own profile is included on purpose: it is the quickest way to check
-  // the whole flow end to end, and sending to yourself is harmless.
-  const people = results;
-
-  const send = async (person) => {
-    setSendingId(person.id);
+  const send = async () => {
+    if (!picked || sending) return;
+    setSending(true);
     try {
       await base44.entities.Notification.create({
-        user_id: person.id,
+        user_id: picked.id,
         type: "track_shared",
         actor_id: user.id,
         track_id: track.id,
-        comment: comment.trim(),
+        comment: note.trim(),
       });
-      setSentIds((prev) => [...prev, person.id]);
-      toast({ title: `Sent to ${person.display_name || person.full_name || "them"}` });
+      setSent({ person: picked, note: note.trim() });
     } catch {
       toast({ title: "Couldn't send that. Try again.", variant: "destructive" });
     } finally {
-      setSendingId(null);
+      setSending(false);
     }
+  };
+
+  const sendElsewhere = () => {
+    setSent(null);
+    setPicked(null);
+    setNote("");
+    setQuery("");
+    setResults([]);
   };
 
   return createPortal(
@@ -81,9 +94,15 @@ export default function SendTrackModal({ track, onClose }) {
 
         <div className="flex items-start justify-between gap-3 mb-3">
           <div className="min-w-0">
-            <h2 className="text-lg font-extrabold tracking-tight">Send to a friend</h2>
+            <h2 className="text-lg font-extrabold tracking-tight">
+              {sent ? "Sent" : picked ? "Add a note" : "Send to a friend"}
+            </h2>
             <p className="text-xs text-foreground/50 mt-0.5">
-              It lands in their notifications, ready to play.
+              {sent
+                ? "It is in their notifications, ready to play."
+                : picked
+                  ? "Your note travels with the song, right under it."
+                  : "It lands in their notifications, ready to play."}
             </p>
           </div>
           <button onClick={onClose} className="p-2 rounded-full hover:bg-foreground/10 shrink-0" aria-label="Close">
@@ -107,75 +126,118 @@ export default function SendTrackModal({ track, onClose }) {
           </div>
         </div>
 
-        <input
-          value={comment}
-          onChange={(e) => setComment(e.target.value)}
-          placeholder="Leave a comment (optional)"
-          maxLength={140}
-          className="w-full px-3.5 py-3 rounded-2xl bg-foreground/[0.05] border border-transparent focus:border-border focus:outline-none text-sm mb-3"
-        />
-
-        <div className="relative mb-3">
-          <Search size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-foreground/40" />
-          <input
-            autoFocus
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            placeholder="Search a friend by name…"
-            className="w-full pl-10 pr-3 py-3 rounded-2xl bg-foreground/[0.05] border border-transparent focus:border-border focus:outline-none text-sm"
-          />
-        </div>
-
-        <div className="flex-1 overflow-y-auto overscroll-contain -mx-1 px-1 min-h-[7rem]">
-          {searching ? (
-            <div className="grid place-items-center py-8">
-              <Loader2 size={18} className="animate-spin text-foreground/40" />
+        {sent ? (
+          <div className="flex-1 flex flex-col items-center justify-center py-6 text-center">
+            <div className="w-12 h-12 rounded-full bg-emerald-500/15 grid place-items-center mb-3">
+              <Check size={22} className="text-emerald-600" />
             </div>
-          ) : query.trim().length < MIN_QUERY ? (
-            <p className="text-center text-xs text-foreground/50 py-8 px-4">
-              Type at least two letters of your friend's name to find them.
-            </p>
-          ) : people.length === 0 ? (
-            <p className="text-center text-xs text-foreground/50 py-8 px-4">
-              No one matches that name.
-            </p>
-          ) : (
-            <div className="space-y-1">
-              {people.map((person) => {
-                const sent = sentIds.includes(person.id);
-                return (
-                  <button
-                    key={person.id}
-                    onClick={() => !sent && send(person)}
-                    disabled={sent || sendingId === person.id}
-                    className="w-full flex items-center gap-3 p-2.5 rounded-xl hover:bg-foreground/[0.04] transition text-left disabled:cursor-default"
-                  >
-                    <Avatar user={person} size={40} />
-                    <span className="flex-1 min-w-0 text-sm font-semibold truncate">
-                      {person.display_name || person.full_name || "Unnamed"}
-                    </span>
-                    {sendingId === person.id ? (
-                      <Loader2 size={16} className="animate-spin text-foreground/50" />
-                    ) : sent ? (
-                      <span className="inline-flex items-center gap-1 text-[11px] font-bold uppercase tracking-wider text-emerald-600">
-                        <Check size={14} /> Sent
-                      </span>
-                    ) : (
+            <p className="text-sm font-semibold">Sent to {nameOf(sent.person)}</p>
+            {sent.note && (
+              <p className="mt-2 text-xs italic text-foreground/70 break-words max-w-[16rem]">
+                "{sent.note}"
+              </p>
+            )}
+          </div>
+        ) : picked ? (
+          <div className="flex-1 flex flex-col">
+            <div className="flex items-center gap-3 p-2.5 rounded-2xl bg-foreground/[0.04] mb-3">
+              <Avatar user={picked} size={40} />
+              <span className="flex-1 min-w-0 text-sm font-semibold truncate">{nameOf(picked)}</span>
+              <button
+                onClick={() => setPicked(null)}
+                className="inline-flex items-center gap-1 text-xs font-semibold text-muted-foreground hover:text-foreground transition shrink-0"
+              >
+                <ChevronLeft size={14} /> Change
+              </button>
+            </div>
+
+            <textarea
+              autoFocus
+              rows={3}
+              value={note}
+              onChange={(e) => setNote(e.target.value)}
+              maxLength={200}
+              placeholder="Add a note (optional)"
+              className="w-full px-3.5 py-3 rounded-2xl bg-foreground/[0.05] border border-transparent focus:border-border focus:outline-none text-sm resize-none"
+            />
+          </div>
+        ) : (
+          <>
+            <div className="relative mb-3">
+              <Search size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-foreground/40" />
+              <input
+                autoFocus
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                placeholder="Search a friend by name…"
+                className="w-full pl-10 pr-3 py-3 rounded-2xl bg-foreground/[0.05] border border-transparent focus:border-border focus:outline-none text-sm"
+              />
+            </div>
+
+            <div className="flex-1 overflow-y-auto overscroll-contain -mx-1 px-1 min-h-[7rem]">
+              {searching ? (
+                <div className="grid place-items-center py-8">
+                  <Loader2 size={18} className="animate-spin text-foreground/40" />
+                </div>
+              ) : query.trim().length < MIN_QUERY ? (
+                <p className="text-center text-xs text-foreground/50 py-8 px-4">
+                  Type at least two letters of your friend's name to find them.
+                </p>
+              ) : results.length === 0 ? (
+                <p className="text-center text-xs text-foreground/50 py-8 px-4">
+                  No one matches that name.
+                </p>
+              ) : (
+                <div className="space-y-1">
+                  {results.map((person) => (
+                    <button
+                      key={person.id}
+                      onClick={() => setPicked(person)}
+                      className="w-full flex items-center gap-3 p-2.5 rounded-xl hover:bg-foreground/[0.04] transition text-left"
+                    >
+                      <Avatar user={person} size={40} />
+                      <span className="flex-1 min-w-0 text-sm font-semibold truncate">{nameOf(person)}</span>
                       <Send size={15} className="text-foreground/40" />
-                    )}
-                  </button>
-                );
-              })}
+                    </button>
+                  ))}
+                </div>
+              )}
             </div>
-          )}
-        </div>
+          </>
+        )}
 
-        <button
-          onClick={onClose}
-          className="mt-3 w-full py-3 rounded-2xl bg-foreground text-background text-sm font-bold active:scale-[0.99] transition"
-        >
-          Done
-        </button>
+        {sent ? (
+          <div className="mt-3 space-y-2">
+            <button
+              onClick={onClose}
+              className="w-full py-3 rounded-2xl bg-foreground text-background text-sm font-bold active:scale-[0.99] transition"
+            >
+              Done
+            </button>
+            <button
+              onClick={sendElsewhere}
+              className="w-full py-3 rounded-2xl bg-foreground/[0.06] text-sm font-semibold active:scale-[0.99] transition"
+            >
+              Send to someone else
+            </button>
+          </div>
+        ) : picked ? (
+          <button
+            onClick={send}
+            disabled={sending}
+            className="mt-3 w-full py-3 rounded-2xl bg-foreground text-background text-sm font-bold active:scale-[0.99] transition disabled:opacity-60 inline-flex items-center justify-center gap-2"
+          >
+            {sending ? <Loader2 size={16} className="animate-spin" /> : <Send size={15} />}
+            {sending ? "Sending…" : "Send song"}
+          </button>
+        ) : (
+          <button
+            onClick={onClose}
+            className="mt-3 w-full py-3 rounded-2xl bg-foreground text-background text-sm font-bold active:scale-[0.99] transition"
+          >
+            Done
+          </button>
+        )}
       </div>
     </div>,
     document.body
