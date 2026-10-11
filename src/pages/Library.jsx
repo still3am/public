@@ -160,7 +160,7 @@ export default function Library() {
   };
 
   return (
-    <div className="max-w-5xl mx-auto px-3 md:px-0 pb-10">
+    <div className="max-w-5xl mx-auto pb-10">
       <PageHeader title="Your Library" subtitle="Everything you've saved, in one place." />
 
       <LibraryEntryRow

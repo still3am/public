@@ -32,7 +32,7 @@ const greetingByHour = () => {
 function Section({ title, icon: Icon, children, seeAllTo }) {
   return (
     <section className="mb-10 md:mb-12">
-      <div className="flex items-end justify-between mb-3.5 px-3 md:px-0">
+      <div className="flex items-end justify-between mb-3.5 px-4 md:px-0">
         <h2 className="text-lg md:text-2xl font-extrabold tracking-tight flex items-center gap-2.5">
           
           {title}
@@ -51,7 +51,7 @@ function Section({ title, icon: Icon, children, seeAllTo }) {
 function CardRow({ tracks }) {
   if (!tracks?.length) return null;
   return (
-    <div className="flex gap-3 overflow-x-auto no-scrollbar pb-2 -mx-3 px-3 snap-x snap-mandatory md:grid md:grid-cols-4 lg:grid-cols-5 md:overflow-visible md:mx-0 md:px-0 md:gap-4">
+    <div className="flex gap-3 overflow-x-auto no-scrollbar pb-2 -mx-4 px-4 sm:-mx-5 sm:px-5 snap-x snap-mandatory md:grid md:grid-cols-4 lg:grid-cols-5 md:overflow-visible md:mx-0 md:px-0 md:gap-4">
       {tracks.map((t) =>
       <div key={t.id} className="snap-start shrink-0 w-[60vw] max-w-[210px] sm:w-[200px] md:w-auto">
           <TrackCard track={t} />
@@ -229,7 +229,7 @@ export default function Home() {
 
   return (
     <PullToRefresh onRefresh={load}>
-      <div className="space-y-3">
+      <div>
         {/* Hero */}
         <div className="relative rounded-3xl overflow-hidden border border-foreground/[0.06] p-7 md:p-14 mb-8 md:mb-10 text-center flex flex-col items-center">
           <HeroPlayingTint />

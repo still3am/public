@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { getPublishedTracks, getArtists } from "@/lib/catalogCache";
 import PullToRefresh from "@/components/PullToRefresh";
+import PageHeader from "@/components/PageHeader";
 import { Loader2, Mic2, Disc3 } from "lucide-react";
 
 // Split a multi-artist string into individual names, preserving original
@@ -213,7 +214,8 @@ export default function PublicRecordsIndex() {
   };
 
   return (
-    <div className="max-w-3xl mx-auto px-4 pb-10">
+    <div className="max-w-3xl mx-auto pb-10">
+      <PageHeader eyebrow="Archive" title="Public Records" />
       
 
       
@@ -238,7 +240,7 @@ export default function PublicRecordsIndex() {
             {groups.map((g) =>
           <AzReveal key={g.key}>
                 <div data-key={g.key} ref={(el) => groupRefs.current[g.key] = el}>
-                  <div className="sticky top-[calc(3.25rem_+_env(safe-area-inset-top))] z-10 -mx-1 px-1 py-1 bg-background/90 backdrop-blur-sm">
+                  <div className="sticky top-[calc(3.25rem_+_env(safe-area-inset-top))] z-10 -mx-4 sm:-mx-5 md:-mx-8 lg:-mx-12 px-4 sm:px-5 md:px-8 lg:px-12 py-1 bg-background/90 backdrop-blur-sm">
                     <span className="text-[11px] font-extrabold tracking-[0.18em] text-foreground/40">
                       {g.key}
                     </span>

@@ -72,7 +72,7 @@ export default function ArtistDashboard() {
 
   if (user?.is_artist !== true) {
     return (
-      <div className="max-w-md mx-auto px-5 pt-16">
+      <div className="max-w-md mx-auto pt-16">
         <EmptyState
           icon={Sparkles}
           title="Artist mode is off"
@@ -102,7 +102,7 @@ export default function ArtistDashboard() {
   filter((d) => d.plays > 0 || d.likes > 0);
 
   return (
-    <div className="max-w-4xl mx-auto px-4 sm:px-5 pt-4 pb-24 md:pb-12">
+    <div className="max-w-4xl mx-auto">
       {/* Header */}
       <div className="flex items-center gap-3 mb-6">
         <Link

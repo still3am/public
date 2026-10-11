@@ -128,7 +128,7 @@ export default function PlaylistDetail() {
   if (!playlist) return <EmptyState title="Playlist not found" />;
 
   return (
-    <div className="max-w-5xl mx-auto px-3 md:px-0 pb-10">
+    <div className="max-w-5xl mx-auto pb-10">
       <button
         onClick={() => nav(-1)}
         className="inline-flex items-center gap-1.5 mb-4 text-sm font-semibold text-foreground/60 hover:text-foreground transition"

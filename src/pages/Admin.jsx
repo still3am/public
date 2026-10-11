@@ -33,13 +33,13 @@ export default function Admin() {
   return (
     <div className="min-h-dvh pb-24 md:pb-12">
       {denied ? (
-        <div className="max-w-3xl mx-auto px-5 mt-20 text-center text-muted-foreground">
+        <div className="max-w-3xl mx-auto mt-20 text-center text-muted-foreground">
           <Music2 size={32} className="mx-auto mb-3 opacity-40" />
           <p className="text-sm">You don't have access to this area.</p>
         </div>
       ) : (
         <>
-          <div className="sticky top-[calc(3.5rem_+_env(safe-area-inset-top))] z-30 -mx-2 px-2 pt-2 pb-2 bg-background/80 backdrop-blur border-b border-border tab-strip flex gap-1.5 overflow-x-auto no-scrollbar">
+          <div className="sticky top-[calc(3.5rem_+_env(safe-area-inset-top))] z-30 -mx-4 sm:-mx-5 md:-mx-8 lg:-mx-12 px-4 sm:px-5 md:px-8 lg:px-12 pt-2 pb-2 bg-background/80 backdrop-blur border-b border-border tab-strip flex gap-1.5 overflow-x-auto no-scrollbar">
             {tabs.map(t => {
               const Icon = t.icon;
               const on = tab === t.id;
@@ -56,7 +56,7 @@ export default function Admin() {
             })}
           </div>
 
-          <div className="max-w-5xl mx-auto px-3 sm:px-5 pt-4">
+          <div className="max-w-5xl mx-auto">
             {tab === "approvals" && <ApprovalsManager />}
             {tab === "users" && <UsersManager />}
             {tab === "reports" && <ReportsManager />}

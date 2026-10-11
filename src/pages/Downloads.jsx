@@ -12,6 +12,7 @@ import { usePlayer } from "@/context/PlayerContext";
 import { useOfflineCache } from "@/hooks/useOfflineCache";
 import { formatTime, bytesToReadable } from "@/lib/audio-utils";
 import PullToRefresh from "@/components/PullToRefresh";
+import PageHeader from "@/components/PageHeader";
 import DownloadCover from "@/components/DownloadCover";
 import { useToast } from "@/components/ui/use-toast";
 
@@ -90,7 +91,7 @@ export default function Downloads() {
   };
 
   return (
-    <div className="max-w-3xl mx-auto px-4 md:px-6 main-content">
+    <div className="max-w-3xl mx-auto">
 
       
 
@@ -131,6 +132,8 @@ export default function Downloads() {
           You're offline — but your saved tracks still play perfectly.
         </div>
       }
+
+      <PageHeader title="Downloads" />
 
       <PullToRefresh disabled={dragging} onRefresh={async () => await cache.refresh()}>
         {loading ?

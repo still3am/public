@@ -115,7 +115,7 @@ export default function Lounge() {
 
   return (
     <div className="min-h-screen pb-10">
-      <div className="max-w-xl mx-auto px-4">
+      <div className="max-w-xl mx-auto">
         {loading ?
         <div className="flex justify-center py-24">
             <Loader2 className="animate-spin text-foreground/50" />

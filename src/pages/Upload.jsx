@@ -17,7 +17,7 @@ export default function Upload() {
 
   if (!loadingSwitch && !uploadsEnabled && !isAdmin) {
     return (
-      <div className="max-w-3xl mx-auto px-4 md:px-6 main-content">
+      <div className="max-w-3xl mx-auto">
         <div className="mt-20 text-center">
           <Ban size={32} className="mx-auto mb-3 text-foreground/30" />
           <h1 className="text-xl font-extrabold tracking-tight">Uploads are paused</h1>
@@ -34,7 +34,7 @@ export default function Upload() {
   const busy = q.items.some((it) => ["uploading", "enhancing"].includes(it.status));
 
   return (
-    <div className="max-w-3xl mx-auto px-4 md:px-6 main-content">
+    <div className="max-w-3xl mx-auto">
       
 
 
@@ -57,7 +57,7 @@ export default function Upload() {
 
       {q.items.length > 0 &&
       <>
-          <div className="sticky top-[calc(3.5rem_+_env(safe-area-inset-top))] z-20 -mx-4 md:-mx-6 px-4 md:px-6 py-3 mt-6 bg-background/85 backdrop-blur-md border-y border-border flex items-center justify-between gap-3">
+          <div className="sticky top-[calc(3.5rem_+_env(safe-area-inset-top))] z-20 -mx-4 sm:-mx-5 md:-mx-8 lg:-mx-12 px-4 sm:px-5 md:px-8 lg:px-12 py-3 mt-6 bg-background/85 backdrop-blur-md border-y border-border flex items-center justify-between gap-3">
             <div className="min-w-0">
               <div className="text-sm font-extrabold tracking-tight">
                 {q.items.length} {q.items.length === 1 ? "track" : "tracks"} queued
