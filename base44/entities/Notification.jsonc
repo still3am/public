@@ -24,6 +24,11 @@
       "type": "string",
       "default": ""
     },
+    "comment": {
+      "type": "string",
+      "default": "",
+      "description": "Optional note the sender attached when sharing a track"
+    },
     "read": {
       "type": "boolean",
       "default": false

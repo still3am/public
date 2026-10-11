@@ -17,6 +17,7 @@ const MIN_QUERY = 2;
 export default function SendTrackModal({ track, onClose }) {
   const { user } = useAuth();
   const { toast } = useToast();
+  const [comment, setComment] = useState("");
   const [query, setQuery] = useState("");
   const [results, setResults] = useState([]);
   const [searching, setSearching] = useState(false);
@@ -56,6 +57,7 @@ export default function SendTrackModal({ track, onClose }) {
         type: "track_shared",
         actor_id: user.id,
         track_id: track.id,
+        comment: comment.trim(),
       });
       setSentIds((prev) => [...prev, person.id]);
       toast({ title: `Sent to ${person.display_name || person.full_name || "them"}` });
@@ -102,6 +104,14 @@ export default function SendTrackModal({ track, onClose }) {
             </div>
           </div>
         </div>
+
+        <input
+          value={comment}
+          onChange={(e) => setComment(e.target.value)}
+          placeholder="Leave a comment (optional)"
+          maxLength={140}
+          className="w-full px-3.5 py-3 rounded-2xl bg-foreground/[0.05] border border-transparent focus:border-border focus:outline-none text-sm mb-3"
+        />
 
         <div className="relative mb-3">
           <Search size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-foreground/40" />

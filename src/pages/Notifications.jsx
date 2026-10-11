@@ -129,6 +129,11 @@ export default function Notifications() {
                       </div>
                     </div>
                   }
+                  {n.comment &&
+                  <p className="mt-1.5 text-xs italic text-foreground/70 break-words">
+                      "{n.comment}"
+                    </p>
+                  }
                   <span className="text-[11px] text-foreground/40">
                     {formatDistanceToNow(new Date(n.created_date), {
                   addSuffix: true
