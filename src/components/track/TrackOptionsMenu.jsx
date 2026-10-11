@@ -50,6 +50,7 @@ export default function TrackOptionsMenu({
   const [pos, setPos] = useState({ top: 0, left: 0, maxH: 400 });
   const [modal, setModal] = useState(null);
   const btnRef = useRef(null);
+  const menuRef = useRef(null);
 
   const menuState = useTrackMenuState(track, open);
   const { standard, manage } = useTrackActions(
@@ -72,10 +73,15 @@ export default function TrackOptionsMenu({
   useEffect(() => {
     if (!open || isMobile) return;
     const close = () => setOpen(false);
-    window.addEventListener("scroll", close, true);
+    // Scrolling inside the menu itself must not dismiss it.
+    const onScroll = (e) => {
+      if (menuRef.current && e.target instanceof Node && menuRef.current.contains(e.target)) return;
+      close();
+    };
+    window.addEventListener("scroll", onScroll, true);
     window.addEventListener("resize", close);
     return () => {
-      window.removeEventListener("scroll", close, true);
+      window.removeEventListener("scroll", onScroll, true);
       window.removeEventListener("resize", close);
     };
   }, [open, isMobile]);
@@ -140,7 +146,8 @@ export default function TrackOptionsMenu({
               </>
             ) : (
               <div
-                className="absolute bg-popover text-popover-foreground border border-border rounded-xl shadow-2xl overflow-y-auto"
+                ref={menuRef}
+                className="absolute bg-popover text-popover-foreground border border-border rounded-xl shadow-2xl overflow-y-auto overscroll-contain"
                 style={{ top: pos.top, left: pos.left, width: MENU_WIDTH, maxHeight: pos.maxH }}
                 onClick={(e) => e.stopPropagation()}
               >
