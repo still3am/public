@@ -16,17 +16,6 @@ function SectionTitle({ children, count }) {
 export default function SearchResults({ tracks, artists, people, onPickArtist, dimmed }) {
   return (
     <div className={`space-y-8 transition-opacity ${dimmed ? "opacity-60" : "opacity-100"}`}>
-      {tracks.length > 0 && (
-        <div>
-          <SectionTitle count={tracks.length}>Tracks</SectionTitle>
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-1">
-            {tracks.map((t) => (
-              <TrackCard key={t.id} track={t} />
-            ))}
-          </div>
-        </div>
-      )}
-
       {artists.length > 0 && (
         <div>
           <SectionTitle count={artists.length}>Artists</SectionTitle>
@@ -62,6 +51,17 @@ export default function SearchResults({ tracks, artists, people, onPickArtist, d
                   )}
                 </div>
               </Link>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {tracks.length > 0 && (
+        <div>
+          <SectionTitle count={tracks.length}>Tracks</SectionTitle>
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-1">
+            {tracks.map((t) => (
+              <TrackCard key={t.id} track={t} />
             ))}
           </div>
         </div>
