@@ -16,6 +16,11 @@ export default function PullToRefresh({
   const pullRef = useRef(0);
   const refreshingRef = useRef(false);
   const onRefreshRef = useRef(onRefresh);
+  const rootRef = useRef(null);
+
+  // Kept-alive tabs stay mounted while hidden — an invisible page must never
+  // react to (or refresh on) a pull gesture that belongs to the visible one.
+  const isVisible = () => rootRef.current?.offsetParent !== null;
 
   useEffect(() => {
     pullRef.current = pull;
@@ -30,12 +35,13 @@ export default function PullToRefresh({
   useEffect(() => {
     if (disabled) return;
     const onStart = (e) => {
+      if (!isVisible()) return;
       if (window.scrollY <= 0 && !refreshingRef.current) {
         startY.current = e.touches[0]?.clientY ?? null;
       }
     };
     const onMove = (e) => {
-      if (startY.current == null || refreshingRef.current) return;
+      if (startY.current == null || refreshingRef.current || !isVisible()) return;
       const delta = (e.touches[0]?.clientY ?? 0) - startY.current;
       if (delta > 4 && window.scrollY <= 0) {
         setPull(Math.min(THRESHOLD * 1.5, delta * 0.5));
@@ -68,7 +74,7 @@ export default function PullToRefresh({
   }, [disabled]);
 
   return (
-    <div className={`relative ${className}`}>
+    <div ref={rootRef} className={`relative ${className}`}>
       {(pull > 0 || refreshing) && (
         <div
           className="grid place-items-center text-foreground/60 overflow-hidden transition-[height] duration-150 ease-out"

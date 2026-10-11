@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, useLocation, Link } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import { useAuth } from "@/lib/AuthContext";
 import { getUsersByIds } from "@/lib/userLookup";
@@ -68,8 +68,11 @@ function formFromProfile(prof) {
 
 export default function Profile() {
   const { id } = useParams();
+  const { pathname } = useLocation();
   const { user: me, checkUserAuth } = useAuth();
   const isOwn = !id || id === me?.id;
+  // This page can stay mounted in the background as a kept-alive tab.
+  const isCurrentPage = pathname === (id ? `/profile/${id}` : "/profile");
   const targetId = isOwn ? me?.id : id;
 
   const [profile, setProfile] = useState(null);
@@ -172,10 +175,12 @@ export default function Profile() {
   // framer-motion opacity wrapper creates a stacking context that traps the
   // modal's z-index inside it).
   useEffect(() => {
-    const anyModal = showSettings || showDelete || showQR || !!followList;
+    // This page stays mounted in the background, so only hold the class while
+    // it is the page on screen.
+    const anyModal = (showSettings || showDelete || showQR || !!followList) && isCurrentPage;
     if (anyModal) document.documentElement.classList.add("modal-open");
     return () => document.documentElement.classList.remove("modal-open");
-  }, [showSettings, showDelete, showQR, followList]);
+  }, [showSettings, showDelete, showQR, followList, isCurrentPage]);
 
   async function toggleFollow() {
     if (!profile) return;

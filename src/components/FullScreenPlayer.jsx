@@ -267,7 +267,7 @@ export default function FullScreenPlayer({ onClose }) {
             setDragY(0);
           }
         }}
-        className="relative flex items-center justify-between px-5 md:px-10 pt-8 pb-3 shrink-0 touch-none">
+        className="relative flex items-center justify-between px-5 md:px-10 pt-[calc(1.25rem+env(safe-area-inset-top))] pb-3 shrink-0 touch-none">
         <button onClick={onClose} className="p-2 -ml-2 active:scale-90 hover:bg-white/10 rounded-full transition" aria-label="Close">
           <ChevronDown size={26} />
         </button>

@@ -66,8 +66,10 @@ const AuthenticatedApp = () => {
       <Route path="/register" element={<Register />} />
       <Route path="/forgot-password" element={<ForgotPassword />} />
       <Route path="/reset-password" element={<ResetPassword />} />
-      {/* Public browsing — no login required */}
+      {/* A single layout for every screen, so the mobile tabs stay mounted when
+          moving between public and personal sections */}
       <Route element={<Layout />}>
+        {/* Public browsing — no login required */}
         <Route path="/" element={<Home />} />
         <Route path="/search" element={<Search />} />
         <Route path="/top" element={<TopCharts />} />
@@ -77,10 +79,9 @@ const AuthenticatedApp = () => {
         <Route path="/records" element={<PublicRecordsIndex />} />
         <Route path="/artist" element={<ArtistByName />} />
         <Route path="/suggestions" element={<Suggestions />} />
-      </Route>
-      {/* Personal features — login required */}
-      <Route element={<ProtectedRoute unauthenticatedElement={<Navigate to="/login" replace />} />}>
-        <Route element={<Layout />}>
+
+        {/* Personal features — login required */}
+        <Route element={<ProtectedRoute unauthenticatedElement={<Navigate to="/login" replace />} />}>
           <Route path="/profile" element={<Profile />} />
           <Route path="/profile/:id" element={<Profile />} />
           <Route path="/upload" element={<Upload />} />
