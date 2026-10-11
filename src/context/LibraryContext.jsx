@@ -43,31 +43,43 @@ export function LibraryProvider({ children }) {
   const toggle = useCallback(
     async (track) => {
       if (!user?.id || !track?.id) return false;
-      const isIn = ids.has(track.id);
+      const trackId = track.id;
+      const isIn = ids.has(trackId);
+
+      // Optimistic: the heart flips the instant it is tapped, then the write is
+      // confirmed with the server and rolled back if that fails.
+      setIds((prev) => {
+        const n = new Set(prev);
+        if (isIn) n.delete(trackId);
+        else n.add(trackId);
+        return n;
+      });
+
       try {
         if (isIn) {
           const recs = await base44.entities.LibraryItem.filter(
-            { user_id: user.id, track_id: track.id },
+            { user_id: user.id, track_id: trackId },
             "-created_date",
             5
           );
           await Promise.all(
             (recs || []).map((r) => base44.entities.LibraryItem.delete(r.id))
           );
-          setIds((prev) => {
-            const n = new Set(prev);
-            n.delete(track.id);
-            return n;
-          });
         } else {
           await base44.entities.LibraryItem.create({
             user_id: user.id,
-            track_id: track.id,
+            track_id: trackId,
           });
-          setIds((prev) => new Set(prev).add(track.id));
         }
         return true;
       } catch {
+        // Roll back to exactly what the library held before the tap.
+        setIds((prev) => {
+          const n = new Set(prev);
+          if (isIn) n.add(trackId);
+          else n.delete(trackId);
+          return n;
+        });
         return false;
       }
     },

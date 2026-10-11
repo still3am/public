@@ -1,5 +1,6 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import { ChevronLeft } from "lucide-react";
+import Logo from "@/components/Logo";
 
 // Static titles for top-level routes.
 const TITLES = {
@@ -60,7 +61,24 @@ export default function MobileTopBar() {
 
   const showBack = !ROOTS.has(pathname);
 
-  return null;
+  return (
+    <div className="md:hidden sticky top-0 inset-x-0 z-30 h-[calc(3.5rem+env(safe-area-inset-top))] bg-background/85 backdrop-blur border-b border-border flex items-center justify-between px-4 pt-[env(safe-area-inset-top)]">
+      <div className="w-10 flex items-center">
+        {showBack && (
+          <button
+            onClick={() => nav(-1)}
+            className="p-2 -ml-2 hover:bg-foreground/5 rounded-full"
+            aria-label="Go back">
+            <ChevronLeft size={20} />
+          </button>
+        )}
+      </div>
+      <span className="text-sm font-extrabold tracking-tight truncate max-w-[65%]">
+        {title === "PUBLIC." ? <Logo size={24} /> : title}
+      </span>
+      <div className="w-10" />
+    </div>
+  );
 
 
 

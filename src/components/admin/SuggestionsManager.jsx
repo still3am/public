@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { useToast } from "@/components/ui/use-toast";
 import { Lightbulb, Loader2, Trash2 } from "lucide-react";
+import BottomSheetSelect from "@/components/BottomSheetSelect";
 
 const STATUSES = ["open", "reviewing", "planned", "done"];
 
@@ -74,15 +75,12 @@ export default function SuggestionsManager() {
                   <Loader2 size={15} className="animate-spin shrink-0" />
                 ) : (
                   <div className="flex items-center gap-1.5 shrink-0">
-                    <select
+                    <BottomSheetSelect
                       value={s.status}
-                      onChange={(e) => setStatus(s.id, e.target.value)}
-                      className="text-xs border border-border rounded-full px-2 py-1 bg-background"
-                    >
-                      {STATUSES.map((st) => (
-                        <option key={st} value={st}>{st}</option>
-                      ))}
-                    </select>
+                      options={STATUSES}
+                      onChange={(v) => setStatus(s.id, v)}
+                      className="text-xs px-2 capitalize"
+                    />
                     {s.status === "done" && (
                       <button
                         onClick={() => remove(s.id)}
