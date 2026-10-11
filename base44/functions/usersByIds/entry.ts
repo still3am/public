@@ -29,12 +29,15 @@ export default async function (req) {
       rows = found.filter(Boolean);
     }
 
-    // Only public profile fields — never email or role.
+    // Public profile fields only — never email, role, or block status. This is
+    // what the profile page renders for a member other than yourself, since the
+    // built-in User rules only let admins read other users.
     const users = (rows || []).filter(Boolean).map((u) => ({
       id: u.id,
       display_name: u.display_name || u.full_name || '',
       full_name: u.full_name || '',
       avatar_url: u.avatar_url || '',
+      banner_url: u.banner_url || '',
       bio: u.bio || '',
       location: u.location || '',
       pronouns: u.pronouns || '',
@@ -42,6 +45,11 @@ export default async function (req) {
       instagram: u.instagram || '',
       twitter: u.twitter || '',
       soundcloud: u.soundcloud || '',
+      status_message: u.status_message || '',
+      featured_track_id: u.featured_track_id || '',
+      top_track_ids: Array.isArray(u.top_track_ids) ? u.top_track_ids : [],
+      is_artist: !!u.is_artist,
+      created_date: u.created_date || '',
     }));
 
     return Response.json({ users });

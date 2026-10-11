@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import { useAuth } from "@/lib/AuthContext";
+import { getUsersByIds } from "@/lib/userLookup";
 import EmptyState from "@/components/EmptyState";
 import TrackCard from "@/components/TrackCard";
 import Avatar from "@/components/Avatar";
@@ -99,9 +100,10 @@ export default function Profile() {
   async function load() {
     setLoading(true);
     try {
-      let prof = isOwn ?
-      me :
-      await base44.entities.User.get(targetId).catch(() => null);
+      // Another member's profile comes from the public-profiles endpoint: the
+      // built-in User rules only let admins read other users, so a direct
+      // User.get left every other profile showing as "not found".
+      let prof = isOwn ? me : (await getUsersByIds([targetId]))[0] || null;
       if (!prof) {
         setProfile(null);
         return;
