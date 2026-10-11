@@ -5,6 +5,7 @@ import { useLibrary } from "@/context/LibraryContext";
 import { useOfflineCache } from "@/hooks/useOfflineCache";
 import { Library as LibIcon, Loader2, Plus, ListMusic, Disc3, X, Upload } from "lucide-react";
 import TrackCard from "@/components/TrackCard";
+import CardRail from "@/components/CardRail";
 import EmptyState from "@/components/EmptyState";
 import PullToRefresh from "@/components/PullToRefresh";
 import LibraryEntryRow from "@/components/LibraryEntryRow";
@@ -207,11 +208,11 @@ export default function Library() {
           {recentlyPlayed.length > 0 &&
           <section className="mb-7">
             <h2 className="text-sm font-bold text-foreground/70 uppercase tracking-wider mb-3">Recently Played</h2>
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
+            <CardRail>
               {recentlyPlayed.map((t) =>
               <TrackCard key={t.id} track={t} />
               )}
-            </div>
+            </CardRail>
           </section>
           }
 
@@ -276,7 +277,7 @@ export default function Library() {
               description="Tap the + on any track to save it here for quick access." /> :
 
 
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
+            <CardRail>
                 {tracks.map((t) =>
               <TrackCard
                 key={t.id}
@@ -286,7 +287,7 @@ export default function Library() {
                 onToggleSelect={toggleSelect} />
 
               )}
-              </div>
+              </CardRail>
             }
           </section>
         </>
