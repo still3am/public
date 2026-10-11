@@ -47,7 +47,9 @@ export default function SendTrackModal({ track, onClose }) {
 
   if (!track) return null;
 
-  const people = results.filter((u) => u.id !== user?.id);
+  // Your own profile is included on purpose: it is the quickest way to check
+  // the whole flow end to end, and sending to yourself is harmless.
+  const people = results;
 
   const send = async (person) => {
     setSendingId(person.id);
