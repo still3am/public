@@ -120,7 +120,7 @@ export default function TrackCard({ track, selectable = false, selected = false,
 
         {!selectable && (
           <div
-            className="absolute top-2 right-2 z-10 md:opacity-0 md:group-hover:opacity-100 md:focus-within:opacity-100 transition-opacity"
+            className="absolute top-1.5 right-1.5 md:top-2 md:right-2 z-10 md:opacity-0 md:group-hover:opacity-100 md:focus-within:opacity-100 transition-opacity"
             onClick={(e) => e.stopPropagation()}
             onPointerDown={(e) => e.stopPropagation()}>
             <TrackOptionsMenu
@@ -128,7 +128,7 @@ export default function TrackCard({ track, selectable = false, selected = false,
               size={17}
               openSignal={menuSignal}
               anchorRef={cardRef}
-              buttonClassName="hidden md:grid w-9 h-9 rounded-full place-items-center bg-background/85 backdrop-blur text-foreground shadow-sm hover:bg-background active:scale-90 transition" />
+              buttonClassName="grid w-8 h-8 md:w-9 md:h-9 rounded-full place-items-center bg-background/85 backdrop-blur text-foreground shadow-sm hover:bg-background active:scale-90 transition" />
           </div>
         )}
       </div>

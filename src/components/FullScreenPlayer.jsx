@@ -4,7 +4,8 @@ import { useColorExtraction } from "@/hooks/useColorExtraction";
 import { useAuth } from "@/lib/AuthContext";
 import { formatTime } from "@/lib/audio-utils";
 import SyncedLyrics from "@/components/SyncedLyrics";
-import NowPlayingAddMenu from "@/components/NowPlayingAddMenu";
+import TrackOptionsMenu from "@/components/track/TrackOptionsMenu";
+import { ListMusic, SlidersHorizontal, Sparkles } from "lucide-react";
 import { Link } from "react-router-dom";
 import {
   Play,
@@ -276,20 +277,16 @@ export default function FullScreenPlayer({ onClose }) {
 
           
         </div>
-        <NowPlayingAddMenu
-          onShare={shareNow}
-          showPulse={showPulse}
-          onTogglePulse={() => setShowPulse((v) => !v)}
-          onToggleLibrary={() => toggleLibrary(t)}
-          inLibrary={isInLibrary(t.id)}
-          onViewQueue={() => setShowQueue(true)}
-          onLounge={() => setLoungeOpen(true)}
-          onToggleOffline={toggleOffline}
-          savedOffline={cache.isCached(t.id)}
-          savingOffline={!!cache.downloading[t.id]}
-          queueCount={p.queue.length - p.currentIndex - 1 > 0 ? p.queue.length - p.currentIndex - 1 : 0}
-          onMix={() => setShowMixer(true)}
-          mixerActive={p.mixer.bass !== 0 || p.mixer.beat !== 0 || p.mixer.vocals !== 0 || p.mixer.treble !== 0 || p.mixer.boost !== 1} />
+        <TrackOptionsMenu
+          track={t}
+          variant="plus"
+          size={20}
+          buttonClassName="w-9 h-9 rounded-full grid place-items-center bg-white/10 hover:bg-white/20 active:scale-90 transition"
+          items={[
+            { icon: ListMusic, label: "View queue", onClick: () => setShowQueue(true) },
+            { icon: SlidersHorizontal, label: "Equalizer", onClick: () => setShowMixer(true) },
+            { icon: Sparkles, label: showPulse ? "Hide color pulse" : "Color pulse", onClick: () => setShowPulse((v) => !v) },
+          ]} />
         
       </div>
 

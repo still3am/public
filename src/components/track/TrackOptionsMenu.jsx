@@ -1,32 +1,37 @@
 import { useEffect, useRef, useState } from "react";
-import {
-  Check,
-  Download,
-  EyeOff,
-  Flag,
-  ListMusic,
-  Loader2,
-  MoreHorizontal,
-  Plus,
-  Share2,
-  Trash2,
-} from "lucide-react";
-import { base44 } from "@/api/base44Client";
-import { useAuth } from "@/lib/AuthContext";
-import { useLibrary } from "@/context/LibraryContext";
-import { useOfflineCache } from "@/hooks/useOfflineCache";
-import { useToast } from "@/components/ui/use-toast";
+import { createPortal } from "react-dom";
+import { MoreHorizontal, Plus, Music2 } from "lucide-react";
+import { useIsMobile } from "@/hooks/use-mobile";
+import { useCoverUrl } from "@/hooks/useCoverUrl";
+import { useTrackMenuState } from "@/hooks/useTrackMenuState";
+import { useTrackActions } from "@/components/track/useTrackActions";
+import TrackMenuList from "@/components/track/TrackMenuList";
+import ReportTrackDialog from "@/components/track/ReportTrackDialog";
+import TrackLoungeAction from "@/components/track/TrackLoungeAction";
 import PlaylistPickerModal from "@/components/playlist/PlaylistPickerModal";
 
-const MENU_WIDTH = 220;
+const MENU_WIDTH = 240;
+
+function SheetHeader({ track }) {
+  const cover = useCoverUrl(track.cover_art_url);
+  return (
+    <div className="flex items-center gap-3 px-4 pb-3 border-b border-border">
+      <div className="w-11 h-11 rounded-lg overflow-hidden bg-foreground/10 shrink-0 grid place-items-center">
+        {cover ? <img src={cover} alt="" className="w-full h-full object-cover" /> : <Music2 size={16} />}
+      </div>
+      <div className="min-w-0">
+        <div className="text-sm font-semibold truncate">{track.title}</div>
+        <div className="text-xs text-muted-foreground truncate">{track.artist || track.uploader_name || "Unknown"}</div>
+      </div>
+    </div>
+  );
+}
 
 /**
- * The one track options menu, shared by every surface that lists a track.
- *
- * Base actions are derived from the track itself: library, playlist, offline,
- * download, share, report and the admin takedown. Surfaces add what only they
- * know about through `items` (edit, detect genre, generate lyrics, …) and can
- * override the report flow with `onReport`.
+ * The one track options menu used on every surface. The action set, order and
+ * state-awareness live in useTrackActions; surfaces can only add `items`
+ * (owner/admin tools, player extras) below the standard list.
+ * Phones get a bottom sheet, larger screens a popover.
  */
 export default function TrackOptionsMenu({
   track,
@@ -40,18 +45,32 @@ export default function TrackOptionsMenu({
   openSignal = 0,
   anchorRef,
 }) {
-  const { user } = useAuth();
-  const { toast } = useToast();
-  const { isInLibrary, toggle } = useLibrary();
-  const cache = useOfflineCache();
+  const isMobile = useIsMobile();
   const [open, setOpen] = useState(false);
-  const [pos, setPos] = useState(null);
-  const [busy, setBusy] = useState(false);
-  const [pickerOpen, setPickerOpen] = useState(false);
+  const [pos, setPos] = useState({ top: 0, left: 0, maxH: 400 });
+  const [modal, setModal] = useState(null);
   const btnRef = useRef(null);
 
+  const menuState = useTrackMenuState(track, open);
+  const { standard, manage } = useTrackActions(
+    track || {},
+    menuState,
+    { openPicker: () => setModal("picker"), openReport: () => setModal("report"), openLounge: () => setModal("lounge"), onReport }
+  );
+
+  const place = (rect) => {
+    const left = align === "right" ? rect.right - MENU_WIDTH : rect.left;
+    const below = window.innerHeight - rect.bottom - 12;
+    const flip = below < 320 && rect.top > below;
+    setPos({
+      left: Math.max(8, Math.min(left, window.innerWidth - MENU_WIDTH - 8)),
+      top: flip ? Math.max(8, rect.top - 6 - Math.min(520, rect.top - 14)) : rect.bottom + 6,
+      maxH: Math.min(520, flip ? rect.top - 14 : below),
+    });
+  };
+
   useEffect(() => {
-    if (!open) return;
+    if (!open || isMobile) return;
     const close = () => setOpen(false);
     window.addEventListener("scroll", close, true);
     window.addEventListener("resize", close);
@@ -59,160 +78,38 @@ export default function TrackOptionsMenu({
       window.removeEventListener("scroll", close, true);
       window.removeEventListener("resize", close);
     };
-  }, [open]);
+  }, [open, isMobile]);
 
-  // Lets a surface open the menu itself (e.g. press-and-hold on a card).
   useEffect(() => {
     if (!openSignal) return;
     const rect = (anchorRef?.current || btnRef.current)?.getBoundingClientRect();
-    if (rect) {
-      const maxLeft = Math.max(8, window.innerWidth - MENU_WIDTH - 8);
-      setPos({
-        top: Math.max(8, Math.min(rect.bottom + 6, window.innerHeight - 380)),
-        left: Math.max(8, Math.min(rect.right - MENU_WIDTH, maxLeft)),
-      });
-    }
+    if (rect) place(rect);
     setOpen(true);
   }, [openSignal]); // eslint-disable-line react-hooks/exhaustive-deps
 
   if (!track) return null;
 
-  const inLib = isInLibrary(track.id);
-  const savedOffline = cache.isCached(track.id);
-  const savingOffline = !!cache.downloading[track.id];
-  const isOwner = track.uploader_id === user?.id;
-  const isAdmin = user?.role === "admin";
-
-  const openMenu = () => {
-    const rect = btnRef.current?.getBoundingClientRect();
-    if (rect) {
-      const maxLeft = Math.max(8, window.innerWidth - MENU_WIDTH - 8);
-      const left =
-        align === "right"
-          ? Math.max(8, Math.min(rect.right - MENU_WIDTH, maxLeft))
-          : Math.max(8, Math.min(rect.left, maxLeft));
-      setPos({ top: rect.bottom + 6, left });
-    }
+  const toggleOpen = (e) => {
+    e.stopPropagation();
+    if (open) return setOpen(false);
+    place(btnRef.current.getBoundingClientRect());
     setOpen(true);
   };
 
-  const report = async () => {
-    const reason = window.prompt("What's wrong with this track?");
-    if (!reason) return;
-    try {
-      await base44.entities.Report.create({
-        reporter_id: user.id,
-        track_id: track.id,
-        reason,
-      });
-      alert("Thanks — a report was sent to the PUBLIC admin team.");
-    } catch {
-      alert("Could not submit report. Try again later.");
-    }
+  const pick = (item) => {
+    setOpen(false);
+    item.onClick?.();
   };
 
-  const base = [
-    {
-      icon: busy ? Loader2 : inLib ? Check : Plus,
-      label: busy ? "Saving…" : inLib ? "Remove from library" : "Add to library",
-      danger: !busy && inLib,
-      onClick: async () => {
-        setBusy(true);
-        try {
-          await toggle(track);
-        } finally {
-          setBusy(false);
-        }
-      },
-    },
-    {
-      icon: ListMusic,
-      label: "Add to playlist",
-      onClick: () => setPickerOpen(true),
-    },
-    {
-      icon: savingOffline ? Loader2 : savedOffline ? Trash2 : Download,
-      label: savingOffline ? "Saving…" : savedOffline ? "Remove offline" : "Save offline",
-      onClick: async () => {
-        if (savedOffline) {
-          await cache.removeTrack(track.id);
-          toast({ title: "Removed from downloads" });
-        } else {
-          const ok = await cache.downloadTrack(track);
-          toast(
-            ok
-              ? { title: "Saved for offline" }
-              : { title: "Couldn't save offline", variant: "destructive" }
-          );
-        }
-      },
-    },
-  ];
-
-  if (track.is_downloadable) {
-    base.push({
-      icon: Download,
-      label: "Download",
-      onClick: () => {
-        if (track.audio_url && /^https?:\/\//i.test(track.audio_url)) {
-          window.open(track.audio_url, "_blank");
-        }
-      },
-    });
-  }
-
-  if (typeof navigator !== "undefined" && navigator.share) {
-    base.push({
-      icon: Share2,
-      label: "Share",
-      onClick: () =>
-        navigator
-          .share({ title: `${track.title} on PUBLIC.`, url: `${window.location.origin}/track/${track.id}` })
-          .catch(() => {}),
-    });
-  }
-
-  if (!isOwner) {
-    base.push({
-      icon: Flag,
-      label: "Report",
-      danger: true,
-      onClick: () => (onReport ? onReport(track) : report()),
-    });
-  }
-
-  if (isAdmin && track.is_published) {
-    base.push({
-      icon: EyeOff,
-      label: "Remove from PUBLIC",
-      danger: true,
-      onClick: async () => {
-        if (
-          !window.confirm(
-            "Remove this track from PUBLIC? It stays in the uploader's library and profile."
-          )
-        )
-          return;
-        try {
-          await base44.entities.Track.update(track.id, {
-            is_published: false,
-            approval_status: "rejected",
-          });
-          toast({ title: "Removed from PUBLIC" });
-        } catch {
-          toast({ title: "Couldn't remove track", variant: "destructive" });
-        }
-      },
-    });
-  }
-
-  const menuItems = [...base, ...items];
+  const list = (
+    <TrackMenuList standard={standard} manage={manage} extras={items} onPick={pick} roomy={isMobile} />
+  );
 
   return (
-    <div className={`relative shrink-0 ${className}`}>
+    <div className={`relative shrink-0 ${className}`} onClick={(e) => e.stopPropagation()}>
       <button
         ref={btnRef}
-        onClick={() => (open ? setOpen(false) : openMenu())}
+        onClick={toggleOpen}
         className={buttonClassName || "p-2 rounded-full hover:bg-accent"}
         aria-label="Track options"
         aria-haspopup="menu"
@@ -225,38 +122,38 @@ export default function TrackOptionsMenu({
         )}
       </button>
 
-      {open && (
-        <>
-          <div className="fixed inset-0 z-40" onClick={() => setOpen(false)} />
-          <div
-            role="menu"
-            className="fixed z-50 bg-popover border border-border rounded-xl shadow-2xl py-1"
-            style={{ top: pos?.top ?? 0, left: pos?.left ?? 0, width: MENU_WIDTH }}
-          >
-            {menuItems.map((m, i) => {
-              const Icon = m.icon;
-              return (
-                <button
-                  key={i}
-                  role="menuitem"
-                  onClick={() => {
-                    setOpen(false);
-                    m.onClick?.();
-                  }}
-                  className={`w-full flex items-center gap-2.5 px-3 py-2 text-sm hover:bg-accent text-left ${
-                    m.danger ? "text-destructive" : ""
-                  }`}
+      {open &&
+        createPortal(
+          <div className="fixed inset-0 z-[100]" onClick={(e) => { e.stopPropagation(); setOpen(false); }}>
+            {isMobile ? (
+              <>
+                <div className="absolute inset-0 bg-black/60" />
+                <div
+                  className="absolute inset-x-0 bottom-0 bg-popover text-popover-foreground rounded-t-3xl pt-3 max-h-[85vh] overflow-y-auto animate-in slide-in-from-bottom duration-200"
+                  style={{ paddingBottom: "calc(0.75rem + env(safe-area-inset-bottom))" }}
+                  onClick={(e) => e.stopPropagation()}
                 >
-                  <Icon size={15} />
-                  {m.label}
-                </button>
-              );
-            })}
-          </div>
-        </>
-      )}
+                  <div className="mx-auto mb-3 h-1 w-10 rounded-full bg-foreground/20" />
+                  <SheetHeader track={track} />
+                  {list}
+                </div>
+              </>
+            ) : (
+              <div
+                className="absolute bg-popover text-popover-foreground border border-border rounded-xl shadow-2xl overflow-y-auto"
+                style={{ top: pos.top, left: pos.left, width: MENU_WIDTH, maxHeight: pos.maxH }}
+                onClick={(e) => e.stopPropagation()}
+              >
+                {list}
+              </div>
+            )}
+          </div>,
+          document.body
+        )}
 
-      {pickerOpen && <PlaylistPickerModal track={track} onClose={() => setPickerOpen(false)} />}
+      {modal === "picker" && <PlaylistPickerModal track={track} onClose={() => setModal(null)} />}
+      {modal === "report" && <ReportTrackDialog track={track} onClose={() => setModal(null)} />}
+      {modal === "lounge" && <TrackLoungeAction track={track} onClose={() => setModal(null)} />}
     </div>
   );
 }

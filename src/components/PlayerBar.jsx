@@ -18,6 +18,7 @@ import { Link, useLocation } from "react-router-dom";
 import { formatTime } from "@/lib/audio-utils";
 import FullScreenPlayer from "@/components/FullScreenPlayer";
 import QueuePanel from "@/components/QueuePanel";
+import TrackOptionsMenu from "@/components/track/TrackOptionsMenu";
 import { useSidebarCollapsed } from "@/hooks/useSidebarCollapsed";
 import { useOfflineCoverUrl } from "@/hooks/useOfflineCoverUrl";
 import { useCoverUrl } from "@/hooks/useCoverUrl";
@@ -119,6 +120,8 @@ export default function PlayerBar() {
               </div>
             </div>
           </button>
+
+          <TrackOptionsMenu track={t} size={18} buttonClassName="p-2 rounded-full hover:bg-foreground/5 active:scale-90 transition" />
 
           {/* mobile controls */}
           <div className="flex items-center gap-1 shrink-0 md:hidden">
