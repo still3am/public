@@ -5,6 +5,7 @@ import {
   X,
   ArrowLeft } from
 "lucide-react";
+import { useSearchParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { getPublishedTracks } from "@/lib/catalogCache";
 import { useGlobalSearch } from "@/hooks/useGlobalSearch";
@@ -17,11 +18,27 @@ import PageHeader from "@/components/PageHeader";
 import EmptyState from "@/components/EmptyState";
 
 export default function Search() {
-  const [q, setQ] = useState("");
+  const [searchParams, setSearchParams] = useSearchParams();
+  const urlQ = searchParams.get("q") || "";
+  const [q, setQ] = useState(urlQ);
   const [genre, setGenre] = useState(() => {
     const params = new URLSearchParams(window.location.search);
     return params.get("genre") || null;
   });
+
+  // The desktop sidebar field drives this page through the same ?q= parameter,
+  // so results follow it as the user types there.
+  useEffect(() => {
+    setQ(urlQ);
+  }, [urlQ]);
+
+  const updateQuery = (next) => {
+    setQ(next);
+    const params = new URLSearchParams(searchParams);
+    if (next) params.set("q", next);
+    else params.delete("q");
+    setSearchParams(params, { replace: true });
+  };
   const [allTracks, setAllTracks] = useState([]);
   const [loadingAll, setLoadingAll] = useState(true);
 
@@ -97,12 +114,12 @@ export default function Search() {
       <div>
         <PageHeader eyebrow="Find" title="Search" subtitle="Find tracks, artists, and people across the PUBLIC network." />
 
-        {/* Search input — results arrive as you type */}
-        <div className="relative mb-5">
+        {/* Search input (mobile / tablet) — desktop uses the sidebar field instead */}
+        <div className="relative mb-5 md:hidden">
           <SearchIcon size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-foreground/40 pointer-events-none" />
           <input
             value={q}
-            onChange={(e) => {setQ(e.target.value);setGenre(null);}}
+            onChange={(e) => {updateQuery(e.target.value);setGenre(null);}}
             placeholder="Search tracks, artists, people…"
             className="w-full pl-11 pr-20 py-3.5 rounded-full border border-border bg-background text-sm font-medium focus:outline-none focus:ring-2 focus:ring-foreground/10 transition shadow-sm" />
 
@@ -115,7 +132,7 @@ export default function Search() {
 
           {q.trim() &&
           <button
-            onClick={() => setQ("")}
+            onClick={() => updateQuery("")}
             className="absolute right-3 top-1/2 -translate-y-1/2 p-1.5 rounded-full hover:bg-foreground/5 text-foreground/40"
             aria-label="Clear search">
             <X size={16} />

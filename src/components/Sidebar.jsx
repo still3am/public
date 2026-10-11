@@ -15,6 +15,7 @@ import {
 "lucide-react";
 import Avatar from "@/components/Avatar";
 import Logo from "@/components/Logo";
+import SidebarSearchField from "@/components/search/SidebarSearchField";
 import ThemeToggle from "@/components/ThemeToggle";
 import { useAuth } from "@/lib/AuthContext";
 import { useUnreadCount } from "@/hooks/useNotifications";
@@ -78,7 +79,13 @@ export default function Sidebar() {
       </div>
 
       <nav className="flex-1 flex flex-col gap-1 overflow-y-auto overflow-x-hidden pb-2 px-3">
-        {links.map(({ to, label, icon: Icon, end }) =>
+        {links.map(({ to, label, icon: Icon, end }) => {
+          // Expanded sidebar: the Search row becomes the actual search field.
+          // Collapsed: it stays the icon link.
+          if (to === "/search" && !collapsed) {
+            return <SidebarSearchField key="search" />;
+          }
+          return (
         <NavLink key={to} to={to} className={navLinkCls} end={end} title={label}>
             <div className="relative shrink-0">
               <Icon size={18} />
@@ -90,7 +97,8 @@ export default function Sidebar() {
             </div>
             <span className={`shrink-0 ${EASE} ${fadeCls}`}>{label}</span>
           </NavLink>
-        )}
+          );
+        })}
       </nav>
 
       <div className="border-t border-border space-y-2 pb-28 p-3">
