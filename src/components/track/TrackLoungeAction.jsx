@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { createPortal } from "react-dom";
 import { useLoungeHost } from "@/hooks/useLoungeHost";
 import { usePlayer } from "@/context/PlayerContext";
 import LoungeHostModal from "@/components/LoungeHostModal";
@@ -17,5 +18,5 @@ export default function TrackLoungeAction({ track, onClose }) {
     else if (p.currentTrack.id !== track.id && !p.queue.some((q) => q.id === track.id)) p.addToQueue(track);
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-  return <LoungeHostModal lounge={lounge} onClose={onClose} />;
+  return createPortal(<LoungeHostModal lounge={lounge} onClose={onClose} />, document.body);
 }
