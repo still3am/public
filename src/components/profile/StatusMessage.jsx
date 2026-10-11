@@ -13,7 +13,11 @@ export default function StatusMessage({ value, editMode, onChange }) {
 
   }
   if (!value) return null;
-  return null;
+  return (
+    <p className="mt-3 w-full max-w-2xl mx-auto md:mx-0 text-sm italic text-foreground/60 leading-relaxed break-words">
+      {value}
+    </p>
+  );
 
 
 

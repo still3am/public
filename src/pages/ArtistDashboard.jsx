@@ -20,6 +20,7 @@ import {
   Sparkles } from
 "lucide-react";
 import { formatNumber } from "@/lib/audio-utils";
+import { readAllPages } from "@/lib/readPages";
 import EmptyState from "@/components/EmptyState";
 
 function StatCard({ icon: Icon, label, value }) {
@@ -38,6 +39,7 @@ export default function ArtistDashboard() {
   const { user } = useAuth();
   const [loading, setLoading] = useState(true);
   const [tracks, setTracks] = useState([]);
+  const [totals, setTotals] = useState(null);
   const [followers, setFollowers] = useState(0);
 
   useEffect(() => {
@@ -45,13 +47,27 @@ export default function ArtistDashboard() {
     let cancelled = false;
     async function load() {
       try {
-        const [t, followsToMe] = await Promise.all([
-        base44.entities.Track.filter({ uploader_id: user.id }, "-play_count", 100),
-        base44.entities.Follow.filter({ following_id: user.id }, "-created_date", 1000)]
+        const [t, sums, followerCount] = await Promise.all([
+        // Every upload follows the server cursor, so the track list and the
+        // chart aren't cut off at one page.
+        readAllPages((options) =>
+        base44.entities.Track.filter(
+          { uploader_id: user.id },
+          { sort: "-play_count", ...options }
+        )
+        ),
+        // Plays and likes are summed on the server over ALL of the artist's
+        // songs, so the headline numbers don't stop at the first page either.
+        base44.entities.Track.aggregate({
+          query: { uploader_id: user.id },
+          sum: ["play_count", "like_count"]
+        }),
+        base44.entities.Follow.count({ following_id: user.id })]
         );
         if (cancelled) return;
         setTracks(t);
-        setFollowers(followsToMe.length);
+        setTotals(sums?.rows?.[0] || null);
+        setFollowers(followerCount || 0);
       } finally {
         if (!cancelled) setLoading(false);
       }
@@ -90,8 +106,10 @@ export default function ArtistDashboard() {
 
   }
 
-  const totalPlays = tracks.reduce((s, t) => s + (t.play_count || 0), 0);
-  const totalLikes = tracks.reduce((s, t) => s + (t.like_count || 0), 0);
+  const totalPlays =
+  totals?.sum_play_count ?? tracks.reduce((s, t) => s + (t.play_count || 0), 0);
+  const totalLikes =
+  totals?.sum_like_count ?? tracks.reduce((s, t) => s + (t.like_count || 0), 0);
   const chartData = tracks.
   slice(0, 10).
   map((t) => ({

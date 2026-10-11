@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import { getUsersByIds } from "@/lib/userLookup";
+import { readAllPages } from "@/lib/readPages";
 import { X, Loader2 } from "lucide-react";
 import Avatar from "@/components/Avatar";
 
@@ -18,10 +19,13 @@ export default function FollowListModal({ userId, type, onClose }) {
           type === "followers"
             ? { following_id: userId }
             : { follower_id: userId };
-        const follows = await base44.entities.Follow.filter(
-          filter,
-          "-created_date",
-          100
+        // Every follower, not just the first page — the counts shown on the
+        // profile are exact, so the list behind them has to be too.
+        const follows = await readAllPages((options) =>
+          base44.entities.Follow.filter(filter, {
+            sort: "-created_date",
+            ...options,
+          })
         );
         const ids =
           type === "followers"

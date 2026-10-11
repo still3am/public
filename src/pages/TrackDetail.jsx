@@ -21,6 +21,8 @@ import TrackOptionsMenu from "@/components/track/TrackOptionsMenu";
 import SyncLyricsModal from "@/components/SyncLyricsModal";
 import GenerateLyricsModal from "@/components/GenerateLyricsModal";
 import { useToast } from "@/components/ui/use-toast";
+import { fetchArtistTracks } from "@/lib/artistTracks";
+import { getUsersByIds } from "@/lib/userLookup";
 
 export default function TrackDetail() {
   const { id } = useParams();
@@ -43,31 +45,16 @@ export default function TrackDetail() {
       const t = await base44.entities.Track.get(id).catch(() => null);
       setTrack(t);
       if (t?.uploader_id) {
-        const u = await base44.entities.User.
-        get(t.uploader_id).
-        catch(() => null);
+        // Other people's user records are admin-only, so the uploader credit is
+        // resolved through the public-profile endpoint the profile page uses.
+        const u = (await getUsersByIds([t.uploader_id]))[0] || null;
         setUploader(u);
       }
       if (t?.artist) {
-        const splitNames = (str) =>
-        (str || "").
-        split(/\s*(?:,|&| feat\.| ft\.| x |;)\s*/i).
-        map((s) => s.trim().toLowerCase()).
-        filter(Boolean);
-        const names = splitNames(t.artist);
-        const all = await base44.entities.Track.list("-play_count", 100).catch(
-          () => []
-        );
-        setMoreTracks(
-          all.
-          filter(
-            (x) =>
-            x.id !== t.id &&
-            x.is_published === true &&
-            splitNames(x.artist).some((n) => names.includes(n))
-          ).
-          slice(0, 6)
-        );
+        // The artist's songs come from the server, so a large catalogue still
+        // surfaces their older tracks instead of only the top 100 by plays.
+        const all = await fetchArtistTracks(t.artist).catch(() => []);
+        setMoreTracks(all.filter((x) => x.id !== t.id).slice(0, 6));
       } else {
         setMoreTracks([]);
       }

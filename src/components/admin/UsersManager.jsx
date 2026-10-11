@@ -12,13 +12,15 @@ export default function UsersManager() {
   const [busyId, setBusyId] = useState(null);
 
   const load = async () => {
-    const [list, tracks] = await Promise.all([
+    const [list, groups] = await Promise.all([
       base44.entities.User.list("-created_date", 500),
-      base44.entities.Track.list("-created_date", 5000),
+      // Upload counts are tallied by the server, one row per uploader, instead
+      // of downloading the catalogue to count it here (and stopping at 5000).
+      base44.entities.Track.aggregate({ groupBy: "uploader_id" }),
     ]);
     const counts = {};
-    (tracks || []).forEach((t) => {
-      if (t.uploader_id) counts[t.uploader_id] = (counts[t.uploader_id] || 0) + 1;
+    (groups?.rows || []).forEach((r) => {
+      if (r.uploader_id) counts[r.uploader_id] = r.count;
     });
     setUploadCounts(counts);
     setUsers(list || []);

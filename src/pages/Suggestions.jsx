@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import { useAuth } from "@/lib/AuthContext";
 import EmptyState from "@/components/EmptyState";
@@ -111,6 +112,22 @@ export default function Suggestions() {
 
         
 
+        {!user &&
+        <div className="rounded-2xl border border-border bg-card p-5 mb-8 text-center">
+            <Lightbulb size={22} className="mx-auto text-foreground/40 mb-2" />
+            <p className="text-sm font-semibold">Sign in to share an idea</p>
+            <p className="text-xs text-foreground/50 mt-1 mb-3">
+              Ideas are tied to your PUBLIC account so we can follow up on them.
+            </p>
+            <Link
+            to="/login?returnTo=/suggestions"
+            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-foreground text-background text-sm font-semibold">
+              Sign in
+            </Link>
+          </div>
+        }
+
+        {user &&
         <form
           onSubmit={submit}
           className="rounded-2xl border border-border bg-card p-4 mb-8">
@@ -165,6 +182,7 @@ export default function Suggestions() {
             </button>
           </div>
         </form>
+        }
 
         {items.length > 0 &&
         <div className="flex items-center gap-1.5 mb-4">

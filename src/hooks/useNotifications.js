@@ -16,12 +16,13 @@ export function useUnreadCount() {
       try {
         // Only the badge number is needed here — a small page is enough and
         // keeps this read cheap since it runs on every app load.
-        const items = await base44.entities.Notification.filter(
-          { user_id: user.id, read: false },
-          "-created_date",
-          30
-        );
-        if (!cancelled) setCount(items.length);
+        // A count, not a page: the badge has to be right even when there are
+        // more unread notifications than one page holds.
+        const unread = await base44.entities.Notification.count({
+          user_id: user.id,
+          read: false,
+        });
+        if (!cancelled) setCount(unread || 0);
       } catch {
         if (!cancelled) setCount(0);
       }
