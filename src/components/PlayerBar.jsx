@@ -14,7 +14,7 @@ import {
   SlidersHorizontal } from
 "lucide-react";
 import { usePlayer } from "@/context/PlayerContext";
-import { Link, useLocation } from "react-router-dom";
+
 import { formatTime } from "@/lib/audio-utils";
 import FullScreenPlayer from "@/components/FullScreenPlayer";
 import QueuePanel from "@/components/QueuePanel";
@@ -27,7 +27,6 @@ import StemMixer from "@/components/StemMixer";
 export default function PlayerBar() {
   const p = usePlayer();
   const { collapsed } = useSidebarCollapsed();
-  const location = useLocation();
   const [fullOpen, setFullOpen] = useState(false);
   const [queueOpen, setQueueOpen] = useState(false);
   const [dragY, setDragY] = useState(0);
@@ -207,7 +206,12 @@ export default function PlayerBar() {
                 max="1"
                 step="0.01"
                 value={p.muted ? 0 : p.volume}
-                onChange={(e) => p.setVolume(Number(e.target.value))}
+                onChange={(e) => {
+                  // Dragging the slider is an instruction to hear it: a muted
+                  // player used to snap straight back to 0.
+                  p.setMuted(false);
+                  p.setVolume(Number(e.target.value));
+                }}
                 className="w-24 accent-foreground"
                 aria-label="Volume" />
               <button

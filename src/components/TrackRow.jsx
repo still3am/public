@@ -27,13 +27,13 @@ export default function TrackRow({
         {isCurrent && p.isPlaying ? (
           <Pause
             size={14}
-            className="inline-block cursor-pointer text-foreground"
+            className="-m-2 p-2 inline-block cursor-pointer text-foreground"
             onClick={() => p.togglePlay()}
           />
         ) : isCurrent ? (
           <Play
             size={14}
-            className="inline-block cursor-pointer text-foreground"
+            className="-m-2 p-2 inline-block cursor-pointer text-foreground"
             onClick={() => p.togglePlay()}
           />
         ) : (
@@ -43,7 +43,7 @@ export default function TrackRow({
             </span>
             <Play
               size={14}
-              className="hidden group-hover:inline-block cursor-pointer"
+              className="-m-2 p-2 hidden group-hover:inline-block cursor-pointer"
               onClick={() => p.playTrackAt([track])}
             />
           </>
