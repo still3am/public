@@ -18,6 +18,7 @@ import { Link, useLocation } from "react-router-dom";
 import { formatTime } from "@/lib/audio-utils";
 import FullScreenPlayer from "@/components/FullScreenPlayer";
 import QueuePanel from "@/components/QueuePanel";
+import TrackOptionsMenu from "@/components/track/TrackOptionsMenu";
 import { useSidebarCollapsed } from "@/hooks/useSidebarCollapsed";
 import { useOfflineCoverUrl } from "@/hooks/useOfflineCoverUrl";
 import { useCoverUrl } from "@/hooks/useCoverUrl";
@@ -29,7 +30,6 @@ export default function PlayerBar() {
   const location = useLocation();
   const [fullOpen, setFullOpen] = useState(false);
   const [queueOpen, setQueueOpen] = useState(false);
-  const [mixerOpen, setMixerOpen] = useState(false);
   const [dragY, setDragY] = useState(0);
   const [coverFailed, setCoverFailed] = useState(false);
   const drag = useRef({ active: false, startY: 0, moved: false, dy: 0 });
@@ -135,6 +135,11 @@ export default function PlayerBar() {
             <button onClick={p.next} className="p-2 rounded-full hover:bg-foreground/5 active:scale-90 transition" aria-label="Next">
               <SkipForward size={18} />
             </button>
+            <TrackOptionsMenu
+              track={t}
+              size={18}
+              align="right"
+              buttonClassName="p-2 rounded-full grid place-items-center hover:bg-foreground/5 active:scale-90 transition text-foreground/60" />
           </div>
 
           {/* desktop controls */}
@@ -167,7 +172,7 @@ export default function PlayerBar() {
               <SkipForward size={20} />
             </button>
             <button
-              onClick={() => setMixerOpen(true)}
+              onClick={() => p.openMixer()}
               className={`p-2 rounded-full hover:bg-foreground/5 active:scale-90 transition ${
                 p.mixer.bass !== 0 || p.mixer.beat !== 0 || p.mixer.vocals !== 0 || p.mixer.treble !== 0 || p.mixer.boost !== 1 ? "text-foreground" : "text-foreground/40"}`}
               aria-label="Mix">
@@ -187,6 +192,11 @@ export default function PlayerBar() {
                 </span>
               }
             </button>
+            <TrackOptionsMenu
+              track={t}
+              size={19}
+              align="right"
+              buttonClassName="p-2 rounded-full grid place-items-center hover:bg-foreground/5 active:scale-90 transition text-foreground/60" />
             <div className="flex items-center gap-2 pl-1">
               <button onClick={() => p.setMuted(!p.muted)} className="p-1 active:scale-90 transition" aria-label="Mute">
                 {p.muted || p.volume === 0 ? <VolumeX size={18} /> : <Volume2 size={18} />}
@@ -221,8 +231,8 @@ export default function PlayerBar() {
           <QueuePanel open={queueOpen} onClose={() => setQueueOpen(false)} />
         </div>
       }
-      {mixerOpen && p.currentTrack &&
-        <StemMixer onClose={() => setMixerOpen(false)} />
+      {p.mixerOpen && !fullOpen && p.currentTrack &&
+        <StemMixer onClose={p.closeMixer} />
       }
     </>);
 

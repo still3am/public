@@ -103,6 +103,7 @@ export function PlayerProvider({ children }) {
 
   const countedRef = useRef(new Set());
   const [queue, setQueue] = useState([]);
+  const [mixerOpen, setMixerOpen] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(-1);
   const [isPlaying, setIsPlaying] = useState(false);
   const [position, setPosition] = useState(0);
@@ -1355,6 +1356,9 @@ export function PlayerProvider({ children }) {
     setMixerValue,
     resetMixer,
     enableMixer,
+    mixerOpen,
+    openMixer: () => setMixerOpen(true),
+    closeMixer: () => setMixerOpen(false),
     dismissed,
   };
 

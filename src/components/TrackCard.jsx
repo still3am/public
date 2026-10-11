@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { usePlayer } from "@/context/PlayerContext";
 import { Image } from "@/components/ui/image";
 import { useCoverUrl } from "@/hooks/useCoverUrl";
+import TrackOptionsMenu from "@/components/track/TrackOptionsMenu";
 
 function EqualizerBars({ active }) {
   if (!active) return null;
@@ -86,6 +87,16 @@ export default function TrackCard({ track, selectable = false, selected = false,
         {!selectable && isPlayingNow && (
           <div className="absolute bottom-2.5 right-2.5 w-11 h-11 md:w-12 md:h-12 rounded-full bg-background/85 backdrop-blur grid place-items-center text-foreground shadow-xl">
             <EqualizerBars active={isPlayingNow} />
+          </div>
+        )}
+
+        {!selectable && (
+          <div className="absolute top-2 right-2 z-10" onClick={(e) => e.stopPropagation()}>
+            <TrackOptionsMenu
+              track={track}
+              size={17}
+              align="right"
+              buttonClassName="w-8 h-8 rounded-full grid place-items-center bg-background/85 backdrop-blur text-foreground shadow-sm hover:bg-background active:scale-90 transition" />
           </div>
         )}
       </div>
