@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState, useCallback } from "react";
 import { Link } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
-import { getCatalogCount } from "@/lib/catalogCache";
+import { getCatalogCount, getPublishedTracks, getTopTracks } from "@/lib/catalogCache";
 import { useUnpublishedSync } from "@/hooks/useUnpublishedSync";
 import { useAuth } from "@/lib/AuthContext";
 import {
@@ -123,29 +123,31 @@ export default function Home() {
   async function load() {
     setLoading(true);
     try {
-      const [t, n, fols, topForGenres] = await Promise.all([
-      base44.entities.Track.filter({ is_published: true }, "-play_count", 10),
-      base44.entities.Track.filter({ is_published: true }, "-created_date", 50),
+      // The complete catalogue, newest first and ranked by plays, read once and
+      // shared with the other discovery screens.
+      const [topTracks, published, fols] = await Promise.all([
+      getTopTracks(),
+      getPublishedTracks(),
       user?.id ?
       base44.entities.Follow.filter({ follower_id: user.id }, "-created_date", 200).catch(() => []) :
-      Promise.resolve([]),
-      base44.entities.Track.filter({ is_published: true }, "-play_count", 200).catch(() => [])]
+      Promise.resolve([])]
       );
       const followed = new Set((Array.isArray(fols) ? fols : []).map((f) => f.following_id));
-      setTrending(t);
-      setNewReleases(n.slice(0, 36));
-      setFromFollowing(n.filter((tk) => followed.has(tk.uploader_id)).slice(0, 12));
-      // Counted server-side — downloading every record just to measure the
-      // catalog was slow and got silently truncated by the query limit.
-      const published = await getCatalogCount();
-      if (typeof published === "number") {
-        setTotalTracks(published);
+      setTrending(topTracks.slice(0, 10));
+      setNewReleases(published.slice(0, 36));
+      // Every published track by the people you follow, not just the newest page.
+      setFromFollowing(published.filter((tk) => followed.has(tk.uploader_id)).slice(0, 12));
+      // The hero total is counted server-side, so it stays exact and costs one
+      // call instead of another pass over the catalogue.
+      const publishedCount = await getCatalogCount();
+      if (typeof publishedCount === "number") {
+        setTotalTracks(publishedCount);
         loadedRef.current = true;
       }
       // Top genres = the ones users actually listen to most, measured by
       // aggregated play_count across the most-played tracks on the platform.
       const genrePlays = {};
-      for (const tr of topForGenres) {
+      for (const tr of topTracks) {
         if (!tr?.genre) continue;
         genrePlays[tr.genre] = (genrePlays[tr.genre] || 0) + (tr.play_count || 0);
       }
@@ -156,17 +158,17 @@ export default function Home() {
       filter(Boolean);
       const fallback = ["Electronic", "Hip-Hop", "Ambient"];
       const finalGenres = genres.length ? genres : fallback;
-      const perGenre = await Promise.all(
-        finalGenres.map(async (g) => ({
+      // Top tracks per genre, taken from the ranked catalogue itself.
+      setByGenre(
+        finalGenres.map((g) => ({
           genre: g,
-          tracks: await base44.entities.Track.filter({ is_published: true, genre: g }, "-play_count", 8)
+          tracks: topTracks.filter((tr) => tr.genre === g).slice(0, 8)
         }))
       );
-      setByGenre(perGenre);
 
-      // Discover: new tracks in the genres this user actually plays, excluding
-      // what they've already heard. Falls back to fresh uploads when there's
-      // no listening history yet.
+      // Discover: tracks in the genres this user actually plays, excluding what
+      // they've already heard. Falls back to the newest uploads when there's no
+      // listening history yet.
       const played = getRecentPlays();
       const playedIds = new Set(played.map((p) => p.id));
       const genreFreq = {};
@@ -183,24 +185,16 @@ export default function Home() {
       map(([g]) => g).
       filter((g) => !genreSet.has(g));
       const allUserGenres = [...savedGenres, ...userGenres].slice(0, 5);
-      let discoverPicks = [];
-      if (allUserGenres.length) {
-        const perUserGenre = await Promise.all(
-          allUserGenres.map((g) =>
-          base44.entities.Track.filter({ is_published: true, genre: g }, "-created_date", 30).catch(() => [])
-          )
-        );
-        const pool = perUserGenre.flat().filter((tr) => tr && !playedIds.has(tr.id));
-        // Shuffle so the row isn't grouped by genre, then take the freshest.
-        for (let i = pool.length - 1; i > 0; i--) {
-          const j = Math.floor(Math.random() * (i + 1));
-          [pool[i], pool[j]] = [pool[j], pool[i]];
-        }
-        discoverPicks = pool.slice(0, 12);
-      } else {
-        discoverPicks = n.filter((tr) => tr && !playedIds.has(tr.id)).slice(0, 12);
+      // Drawn from the whole catalogue — the genres this user plays, minus what
+      // they've already heard — shuffled so the row isn't grouped by genre.
+      const pool = published.filter(
+        (tr) => tr && !playedIds.has(tr.id) && (!allUserGenres.length || allUserGenres.includes(tr.genre))
+      );
+      for (let i = pool.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [pool[i], pool[j]] = [pool[j], pool[i]];
       }
-      setDiscover(discoverPicks);
+      setDiscover(pool.slice(0, 12));
     } finally {
       setLoading(false);
     }

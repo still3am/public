@@ -1,13 +1,14 @@
 import { base44 } from "@/api/base44Client";
+import { readAllPages } from "@/lib/readPages";
 
-// The public catalog is downloaded by several discovery screens (Home, Search,
-// Onboarding, Public Records). Reading the whole collection on each visit is the
-// app's heaviest source of entity read traffic, so these helpers read it once and
-// share the result for a short window — and collapse simultaneous calls into a
+// The public catalog is read by several discovery screens (Home, Search, Public
+// Records, Recently Added, Top Charts). Reading it on each visit is the app's
+// heaviest source of entity read traffic, so these helpers read it once — in
+// full, following the server's cursor so the list is never cut off at one page —
+// and share the result for a short window, collapsing simultaneous calls into a
 // single request.
 const TTL = 10 * 60 * 1000;
 const RETRY_AFTER_ERROR = 30 * 1000;
-const MAX = 5000; // platform cap per request
 
 function makeCache(fetcher, ttl = TTL) {
   let hasValue = false;
@@ -38,12 +39,30 @@ function makeCache(fetcher, ttl = TTL) {
   };
 }
 
+// Newest first — the complete published catalogue.
 export const getPublishedTracks = makeCache(() =>
-  base44.entities.Track.filter({ is_published: true }, "-created_date", MAX)
+  readAllPages((opts) =>
+    base44.entities.Track.filter(
+      { is_published: true },
+      { sort: "-created_date", ...opts }
+    )
+  )
+);
+
+// Most played first — the same complete catalogue, ranked.
+export const getTopTracks = makeCache(() =>
+  readAllPages((opts) =>
+    base44.entities.Track.filter(
+      { is_published: true },
+      { sort: "-play_count", ...opts }
+    )
+  )
 );
 
 export const getArtists = makeCache(() =>
-  base44.entities.Artist.list("-updated_date", MAX)
+  readAllPages((opts) =>
+    base44.entities.Artist.filter({}, { sort: "-updated_date", ...opts })
+  )
 );
 
 // The catalog size is counted server-side (and shared app-wide for an hour), but

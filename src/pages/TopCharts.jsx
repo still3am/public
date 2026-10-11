@@ -1,6 +1,7 @@
 import { useEffect, useState, useCallback } from "react";
-import { base44 } from "@/api/base44Client";
+import { getTopTracks } from "@/lib/catalogCache";
 import TrackCard from "@/components/TrackCard";
+import IncrementalList from "@/components/IncrementalList";
 import Podium from "@/components/Podium";
 import { useUnpublishedSync } from "@/hooks/useUnpublishedSync";
 import EmptyState from "@/components/EmptyState";
@@ -20,12 +21,7 @@ export default function TopCharts() {
   async function load() {
     setLoading(true);
     try {
-      const t = await base44.entities.Track.filter(
-        { is_published: true },
-        "-play_count",
-        100
-      );
-      setTracks(t);
+      setTracks(await getTopTracks());
     } catch {
       // ignore on refresh
     } finally {
@@ -62,11 +58,11 @@ export default function TopCharts() {
             <h2 className="text-lg font-extrabold tracking-tight px-1 mb-3 mt-5">
               More top tracks
             </h2>
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-1">
-              {rest.map((t) => (
-                <TrackCard key={t.id} track={t} />
-              ))}
-            </div>
+            <IncrementalList
+              items={rest}
+              className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-1"
+              renderItem={(t) => <TrackCard key={t.id} track={t} />}
+            />
           </>
         )}
       </div>

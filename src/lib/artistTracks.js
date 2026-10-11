@@ -1,4 +1,5 @@
 import { base44 } from "@/api/base44Client";
+import { readAllPages } from "@/lib/readPages";
 
 // Splits a combined artist tag ("Adele & Beyoncé feat. Jay-Z") into individual
 // names — the same rule the artist links use, so every credited name resolves
@@ -31,8 +32,9 @@ export async function fetchArtistTracks(artistName) {
     })),
   };
 
-  const res = await base44.entities.Track.filter(query, "-created_date", 1000);
-  const list = Array.isArray(res) ? res : res.items || [];
+  const list = await readAllPages((opts) =>
+    base44.entities.Track.filter(query, { sort: "-created_date", ...opts })
+  );
   return list.filter((t) =>
     splitArtistNames(t.artist).some((n) => names.includes(n))
   );
