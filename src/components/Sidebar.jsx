@@ -4,7 +4,6 @@ import { useSidebarCollapsed } from "@/hooks/useSidebarCollapsed";
 import {
   Home,
   Upload,
-  Search,
   TrendingUp,
   Clock,
   Library as LibraryIcon,
@@ -23,7 +22,6 @@ import { useUnreadCount } from "@/hooks/useNotifications";
 const NAV = [
 { to: "/", label: "Home", icon: Home, end: true },
 { to: "/upload", label: "Upload", icon: Upload },
-{ to: "/search", label: "Search", icon: Search },
 { to: "/top", label: "Top Charts", icon: TrendingUp },
 { to: "/recent", label: "Recently Added", icon: Clock },
 { to: "/library", label: "Library", icon: LibraryIcon },
@@ -78,14 +76,12 @@ export default function Sidebar() {
         </div>
       </div>
 
+      <div className="px-3 pb-2">
+        <SidebarSearchField collapsed={collapsed} />
+      </div>
+
       <nav className="flex-1 flex flex-col gap-1 overflow-y-auto overflow-x-hidden pb-2 px-3">
-        {links.map(({ to, label, icon: Icon, end }) => {
-          // Expanded sidebar: the Search row becomes the actual search field.
-          // Collapsed: it stays the icon link.
-          if (to === "/search" && !collapsed) {
-            return <SidebarSearchField key="search" />;
-          }
-          return (
+        {links.map(({ to, label, icon: Icon, end }) =>
         <NavLink key={to} to={to} className={navLinkCls} end={end} title={label}>
             <div className="relative shrink-0">
               <Icon size={18} />
@@ -97,8 +93,7 @@ export default function Sidebar() {
             </div>
             <span className={`shrink-0 ${EASE} ${fadeCls}`}>{label}</span>
           </NavLink>
-          );
-        })}
+        )}
       </nav>
 
       <div className="border-t border-border space-y-2 pb-28 p-3">

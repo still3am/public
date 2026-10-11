@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
+import { NavLink, useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { Search as SearchIcon, X } from "lucide-react";
 
 /**
@@ -7,7 +7,7 @@ import { Search as SearchIcon, X } from "lucide-react";
  * ?q= parameter, so it *is* the search bar for that page: results update live
  * from anywhere in the app, and clearing it returns to genre browsing.
  */
-export default function SidebarSearchField() {
+export default function SidebarSearchField({ collapsed }) {
   const navigate = useNavigate();
   const location = useLocation();
   const [searchParams, setSearchParams] = useSearchParams();
@@ -30,6 +30,19 @@ export default function SidebarSearchField() {
     else params.delete("q");
     setSearchParams(params, { replace: true });
   };
+
+  // Collapsed rail: the field is just the search icon link.
+  if (collapsed) {
+    return (
+      <NavLink
+        to="/search"
+        title="Search"
+        className="tap-target flex items-center justify-center rounded-lg text-foreground/60 hover:text-foreground hover:bg-foreground/[0.03]"
+      >
+        <SearchIcon size={18} className="shrink-0" />
+      </NavLink>
+    );
+  }
 
   return (
     <div className="relative flex items-center">
