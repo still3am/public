@@ -31,6 +31,12 @@ export default function SidebarSearchField({ collapsed }) {
     setSearchParams(params, { replace: true });
   };
 
+  // Tapping the field opens the search page straight away, so the genre crates
+  // are there to browse before anything is typed.
+  const handleFocus = () => {
+    if (!onSearchPage) navigate("/search");
+  };
+
   // Collapsed rail: the field is just the search icon link.
   if (collapsed) {
     return (
@@ -49,6 +55,7 @@ export default function SidebarSearchField({ collapsed }) {
       <SearchIcon size={16} className="absolute left-3 text-foreground/40 pointer-events-none" />
       <input
         value={value}
+        onFocus={handleFocus}
         onChange={(e) => commit(e.target.value)}
         placeholder="Search…"
         aria-label="Search tracks, artists, people"
