@@ -1,3 +1,4 @@
+import { useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { Play, Pause } from "lucide-react";
 import { usePlayer } from "@/context/PlayerContext";
@@ -6,17 +7,54 @@ import TrackOptionsMenu from "@/components/track/TrackOptionsMenu";
 function PodiumCard({ track, rank, height, accent }) {
   const p = usePlayer();
   const isCurrent = p.currentTrack?.id === track.id;
+  const cardRef = useRef(null);
+  const pressTimer = useRef(null);
+  const longPressed = useRef(false);
+  const [menuSignal, setMenuSignal] = useState(0);
+
+  const cancelPress = () => clearTimeout(pressTimer.current);
+  const startPress = (e) => {
+    if (e.pointerType === "mouse") return;
+    longPressed.current = false;
+    cancelPress();
+    pressTimer.current = setTimeout(() => {
+      longPressed.current = true;
+      navigator.vibrate?.(15);
+      setMenuSignal((n) => n + 1);
+    }, 450);
+  };
+
   const play = (e) => {
     e.preventDefault();
     e.stopPropagation();
+    if (longPressed.current) {
+      longPressed.current = false;
+      return;
+    }
     if (isCurrent) p.togglePlay();
     else p.playTrackAt([track]);
   };
+
+  const guardClick = (e) => {
+    e.stopPropagation();
+    if (longPressed.current) {
+      longPressed.current = false;
+      e.preventDefault();
+    }
+  };
+
   return (
-    <div className="flex flex-col items-center gap-2 min-w-0 flex-1 w-full">
+    <div
+      ref={cardRef}
+      onPointerDown={startPress}
+      onPointerUp={cancelPress}
+      onPointerMove={cancelPress}
+      onPointerCancel={cancelPress}
+      onContextMenu={(e) => e.preventDefault()}
+      className="flex flex-col items-center gap-2 min-w-0 flex-1 w-full">
       <Link
         to={`/track/${track.id}`}
-        onClick={(e) => e.stopPropagation()}
+        onClick={guardClick}
         className="block w-full text-center min-w-0">
         <div
           className="group relative aspect-square w-full rounded-lg overflow-hidden bg-foreground/10"
@@ -47,7 +85,7 @@ function PodiumCard({ track, rank, height, accent }) {
             {rank}
           </span>
           <div
-            className="absolute top-1.5 right-1.5 z-10"
+            className="hidden md:block absolute top-1.5 right-1.5 z-10 md:opacity-0 md:group-hover:opacity-100 md:focus-within:opacity-100 transition-opacity"
             onClick={(e) => {
               e.preventDefault();
               e.stopPropagation();
@@ -55,6 +93,8 @@ function PodiumCard({ track, rank, height, accent }) {
             <TrackOptionsMenu
               track={track}
               size={16}
+              openSignal={menuSignal}
+              anchorRef={cardRef}
               buttonClassName="w-8 h-8 rounded-full grid place-items-center bg-background/85 backdrop-blur text-foreground shadow-sm active:scale-90 transition" />
           </div>
           <button
