@@ -29,7 +29,9 @@ export default function CollapsibleText({
 
   return (
     <div>
-      <div ref={bodyRef} className={`overflow-hidden ${clampClass} ${className}`}>
+      <div
+        ref={bodyRef}
+        className={`overflow-hidden ${expanded ? "" : clampClass} ${className}`}>
         {text}
       </div>
       {cutOff &&
