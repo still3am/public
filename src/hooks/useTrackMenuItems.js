@@ -224,5 +224,9 @@ export default function useTrackMenuItems({ track, items = [], onReport, onAddTo
       },
   ];
 
-  return groups.map((group) => group.filter(Boolean)).filter((group) => group.length);
+  // A group is usually a list, but a conditional one arrives as a single item
+  // (or as false/undefined when its condition fails), so normalise before filtering.
+  return groups
+    .map((group) => (Array.isArray(group) ? group : group ? [group] : []).filter(Boolean))
+    .filter((group) => group.length);
 }
