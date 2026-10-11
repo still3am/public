@@ -5,6 +5,7 @@ import { fetchArtistTracks } from "@/lib/artistTracks";
 import TrackCard from "@/components/TrackCard";
 import PullToRefresh from "@/components/PullToRefresh";
 import ArtistNameEditor from "@/components/ArtistNameEditor";
+import CollapsibleText from "@/components/CollapsibleText";
 import ArtistColorTint from "@/components/ArtistColorTint";
 import { usePlayer } from "@/context/PlayerContext";
 import { useAuth } from "@/lib/AuthContext";
@@ -259,9 +260,9 @@ export default function PublicRecords({ id: propId }) {
           </SectionTitle>
           <div className="rounded-2xl border border-border bg-gradient-to-br from-foreground/[0.04] to-transparent p-5 md:p-6">
             {artist.history_text ?
-            <p className="selectable-content text-sm text-foreground/80 leading-relaxed whitespace-pre-line">
-                {artist.history_text}
-              </p> :
+            <CollapsibleText
+              text={artist.history_text}
+              className="selectable-content text-sm text-foreground/80 leading-relaxed whitespace-pre-line" /> :
 
             <div className="text-center py-4">
                 <div className="w-11 h-11 rounded-full bg-foreground/[0.06] grid place-items-center mx-auto mb-3">
