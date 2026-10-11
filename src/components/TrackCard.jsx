@@ -1,11 +1,10 @@
 import { useRef, useState } from "react";
 import { Play, Check } from "lucide-react";
-import TrackOptionsPanel from "@/components/track/TrackOptionsPanel";
+import TrackOptionsMenu from "@/components/track/TrackOptionsMenu";
 import { Link } from "react-router-dom";
 import { usePlayer } from "@/context/PlayerContext";
 import { Image } from "@/components/ui/image";
 import { useCoverUrl } from "@/hooks/useCoverUrl";
-import TrackOptionsMenu from "@/components/track/TrackOptionsMenu";
 
 function EqualizerBars({ active }) {
   if (!active) return null;
@@ -33,7 +32,8 @@ export default function TrackCard({ track, selectable = false, selected = false,
 
   const coverUrl = useCoverUrl(track.cover_art_url);
 
-  const [menuAnchor, setMenuAnchor] = useState(null);
+  const [menuSignal, setMenuSignal] = useState(0);
+  const cardRef = useRef(null);
   const pressTimer = useRef(null);
   const longPressed = useRef(false);
 
@@ -45,7 +45,7 @@ export default function TrackCard({ track, selectable = false, selected = false,
     pressTimer.current = setTimeout(() => {
       longPressed.current = true;
       navigator.vibrate?.(15);
-      setMenuAnchor({ top: 0, bottom: 0, left: 0, right: 0 });
+      setMenuSignal((n) => n + 1);
     }, 450);
   };
 
@@ -61,6 +61,7 @@ export default function TrackCard({ track, selectable = false, selected = false,
 
   return (
     <div
+      ref={cardRef}
       onPointerDown={startPress}
       onPointerUp={cancelPress}
       onPointerMove={cancelPress}
@@ -119,12 +120,15 @@ export default function TrackCard({ track, selectable = false, selected = false,
 
         {!selectable && (
           <div
-            className="absolute top-2 right-2 z-10 hidden md:block opacity-0 group-hover:opacity-100 focus-within:opacity-100 transition-opacity"
-            onClick={(e) => e.stopPropagation()}>
+            className="absolute top-2 right-2 z-10 md:opacity-0 md:group-hover:opacity-100 md:focus-within:opacity-100 transition-opacity"
+            onClick={(e) => e.stopPropagation()}
+            onPointerDown={(e) => e.stopPropagation()}>
             <TrackOptionsMenu
               track={track}
               size={17}
-              buttonClassName="w-9 h-9 rounded-full grid place-items-center bg-background/85 backdrop-blur text-foreground shadow-sm hover:bg-background active:scale-90 transition" />
+              openSignal={menuSignal}
+              anchorRef={cardRef}
+              buttonClassName="hidden md:grid w-9 h-9 rounded-full place-items-center bg-background/85 backdrop-blur text-foreground shadow-sm hover:bg-background active:scale-90 transition" />
           </div>
         )}
       </div>
@@ -141,18 +145,6 @@ export default function TrackCard({ track, selectable = false, selected = false,
         >
           <TrackCardMeta track={track} isCurrent={isCurrent} />
         </Link>
-      )}
-
-      {menuAnchor && (
-        <div onClick={(e) => e.stopPropagation()} onPointerDown={(e) => e.stopPropagation()}>
-          <TrackOptionsPanel
-            track={track}
-            anchor={menuAnchor}
-            sheet
-            items={[]}
-            onClose={() => setMenuAnchor(null)}
-          />
-        </div>
       )}
     </div>
   );
