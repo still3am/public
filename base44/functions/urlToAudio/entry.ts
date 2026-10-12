@@ -1,3 +1,5 @@
+import {request as requestHttps} from 'node:https';
+import {request as requestHttp} from 'node:http';
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.40';
 
 const MAX_BYTES = 80 * 1024 * 1024; // 80 MB hard cap to keep things reasonable
@@ -36,12 +38,14 @@ export default async function(req) {
       if (a === 172 && b >= 16 && b <= 31) return true; // 172.16.0.0/12
       if (a === 192 && b === 168) return true;    // 192.168.0.0/16
       if (a === 100 && b >= 64 && b <= 127) return true; // 100.64.0.0/10 CGNAT
+      if (a===198 && (b===18||b===19))return true;
       if (a >= 224) return true;                  // multicast / reserved
       return false;
     }
 
     function isPrivateIPv6(ip) {
       const h = ip.toLowerCase();
+      if(!/^[23][0-9a-f]{3}:/.test(h) || h.startsWith("2001:db8:")) return true;
       if (h === '::1' || h === '::') return true;            // loopback / unspecified
       if (h.startsWith('fe8') || h.startsWith('fe9') || h.startsWith('fea') || h.startsWith('feb')) return true; // fe80::/10
       if (h.startsWith('fc') || h.startsWith('fd')) return true; // fc00::/7 ULA
@@ -102,11 +106,14 @@ export default async function(req) {
       return records[0];
     }
 
-    function pinnedFetchUrl(url, pin) {
-      const u = new URL(url);
-      const port = u.port ? `:${u.port}` : '';
-      u.host = (pin.isV6 ? `[${pin.ip}]` : pin.ip) + port;
-      return u;
+    async function pinnedRequest(url,pin){
+      return await new Promise((resolve,reject)=>{
+        const request=(url.protocol==='https:'?requestHttps:requestHttp)(url,{method:'GET',servername:url.hostname.replace(/^\[|\]$/g,''),lookup:(_host,options,callback)=>{if(options?.all)callback(null,[{address:pin.ip,family:pin.isV6?6:4}]);else callback(null,pin.ip,pin.isV6?6:4);}},response=>{
+          const headers=new Headers();for(const [key,val] of Object.entries(response.headers)){if(val!=null)headers.set(key,Array.isArray(val)?val.join(','):String(val));}
+          const stream=new ReadableStream({start(controller){response.on('data',chunk=>controller.enqueue(new Uint8Array(chunk)));response.on('end',()=>controller.close());response.on('error',e=>controller.error(e));},cancel(){response.destroy();}});
+          resolve(new Response(stream,{status:response.statusCode||502,headers}));
+        });request.setTimeout(20000,()=>request.destroy(new Error('Download timed out')));request.on('error',reject);request.end();
+      });
     }
 
     async function assertSafeUrl(u) {
@@ -127,11 +134,7 @@ export default async function(req) {
       for (let i = 0; i <= MAX_REDIRECTS; i++) {
         // Connect directly to the validated IP (pinned) so fetch cannot be
         // rebinding'd to a private/internal address on a second DNS lookup.
-        upstream = await fetch(pinnedFetchUrl(current, pin).toString(), {
-          method: 'GET',
-          redirect: 'manual',
-          headers: { Host: current.host },
-        });
+        upstream = await pinnedRequest(current,pin);
         if (upstream.status >= 300 && upstream.status < 400) {
           const loc = upstream.headers.get('location');
           if (!loc || i === MAX_REDIRECTS) {
@@ -203,7 +206,8 @@ export default async function(req) {
       }
     });
 
-    const file = new File([stream], filename, { type: contentType });
+    if(!/^(audio\/|video\/|application\/octet-stream)/i.test(contentType))return Response.json({error:"The URL must point directly to an audio file"},{status:415});
+    const file = new File([buf.subarray(0,len)], filename, { type: contentType });
 
     const uploaded = await base44.integrations.Core.UploadFile({ file });
     return Response.json({

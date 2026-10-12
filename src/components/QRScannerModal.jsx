@@ -31,7 +31,8 @@ export default function QRScannerModal({ onClose }) {
     (async () => {
       try {
         const mod = await import("html5-qrcode");
-        const Html5Qrcode = mod.Html5Qrcode || mod.default;
+        const Html5Qrcode = mod.Html5Qrcode;
+        if(typeof Html5Qrcode!=="function")throw new Error("Scanner unavailable");
         if (cancelled) return;
         const inst = new Html5Qrcode("qr-reader");
         instRef.current = inst;

@@ -1,6 +1,6 @@
 const isNode = typeof window === 'undefined';
-const windowObj = isNode ? { localStorage: new Map() } : window;
-const storage = windowObj.localStorage;
+const memory=new Map();
+const storage=isNode?{getItem:key=>memory.get(key)||null,setItem:(key,value)=>memory.set(key,value),removeItem:key=>memory.delete(key)}:window.localStorage;
 
 const toSnakeCase = (str) => {
 	return str.replace(/([A-Z])/g, '_$1').toLowerCase();
@@ -12,7 +12,7 @@ const getAppParamValue = (paramName, { defaultValue = undefined, removeFromUrl =
 	}
 	const storageKey = `base44_${toSnakeCase(paramName)}`;
 	const urlParams = new URLSearchParams(window.location.search);
-	const searchParam = urlParams.get(paramName);
+	const searchParam = ["app_id","app_base_url","functions_version"].includes(paramName) ? null : urlParams.get(paramName);
 	if (removeFromUrl) {
 		urlParams.delete(paramName);
 		const newUrl = `${window.location.pathname}${urlParams.toString() ? `?${urlParams.toString()}` : ""

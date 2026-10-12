@@ -20,6 +20,7 @@ let uid = 0;
 const nextId = () => `u${Date.now()}_${uid++}`;
 
 // Auto-detects explicit flag + cleans up title/artist using AI (internet context).
+/** @returns {Promise<any>} */
 async function detectMeta(title, artist) {
   try {
     const res = await base44.integrations.Core.InvokeLLM({
@@ -44,7 +45,7 @@ async function detectMeta(title, artist) {
         required: ["explicit"],
       },
     });
-    return res || null;
+    return typeof res==="string" ? JSON.parse(res) : res || null;
   } catch {
     return null;
   }

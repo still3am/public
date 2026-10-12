@@ -38,7 +38,7 @@ export async function ensureHighResCover(file, target = COVER_TARGET) {
       canvas.toBlob(res, "image/jpeg", 0.92)
     );
     if (!blob) return file;
-    const baseName = (file.name || "cover").replace(/\.[a-z0-9]+$/i, "");
+    const baseName = ((file instanceof File ? file.name : "cover")).replace(/\.[a-z0-9]+$/i, "");
     return new File([blob], `${baseName}.jpg`, { type: "image/jpeg" });
   } catch {
     return file;

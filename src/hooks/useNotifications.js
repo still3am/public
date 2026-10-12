@@ -75,7 +75,7 @@ export function useNotifications() {
           "-created_date",
           50
         );
-        (Array.isArray(sent) ? sent : sent?.items || []).forEach((t) => {
+        sent.forEach((t) => {
           trackMap[t.id] = t;
         });
       }

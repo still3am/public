@@ -4,7 +4,8 @@ import {clearPersonalData} from '@/lib/clearPersonalData';
 import { appParams } from '@/lib/app-params';
 import { createAxiosClient } from '@base44/sdk/dist/utils/axios-client';
 
-const AuthContext = createContext();
+/** @type {import("react").Context<any>} */
+const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);

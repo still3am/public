@@ -39,8 +39,8 @@ export function PlayerProvider({ children }) {
         // slowed, or chipmunked) even if playbackRate changes or a browser
         // defaults preservesPitch to false.
         try { a.preservesPitch = true; } catch {}
-        try { a.mozPreservesPitch = true; } catch {}
-        try { a.webkitPreservesPitch = true; } catch {}
+        try { Object.assign(a,{mozPreservesPitch:true}); } catch {}
+        try { Object.assign(a,{webkitPreservesPitch:true}); } catch {}
         r.current = a;
       }
     });
@@ -66,7 +66,7 @@ export function PlayerProvider({ children }) {
   const crossfadeTimerRef = useRef(null);
   const preloadedTargetRef = useRef(null);
   const loadTokenRef = useRef(0);
-  const handleTimeRef = useRef(() => {});
+  const handleTimeRef = useRef((/** @type {HTMLAudioElement} */ _audio) => {});
   const handleEndedRef = useRef(() => {});
 
   // --- Stem mixer (EQ-based mixing via Web Audio BiquadFilters) ---
@@ -183,7 +183,7 @@ export function PlayerProvider({ children }) {
   const ensureGraph = useCallback(() => {
     if (audioCtxRef.current) return audioCtxRef.current;
     try {
-      const AC = window.AudioContext || window.webkitAudioContext;
+      const AC = window.AudioContext || Reflect.get(window,"webkitAudioContext");
       if (!AC) return null;
       const ctx = new AC();
       const analyser = ctx.createAnalyser();

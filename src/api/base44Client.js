@@ -7,8 +7,10 @@ const lounge = new Set(['LoungeSession','LoungeMember','LoungeQueueItem']);
 const gateway = async(entity,action,args) => (await raw.functions.invoke('securityGateway',{entity,action,args})).data.result;
 const handlers = new Map();
 const entities = new Proxy(raw.entities,{get(target,name) {
-  if(typeof name!=='string'||!guarded.has(name)) return target[name];
+  if(typeof name!=='string')return Reflect.get(target,name);
+  if(!guarded.has(name))return target[name];
   if(!handlers.has(name)) handlers.set(name,new Proxy(target[name],{get(h,method) {
+    if(typeof method!=="string")return Reflect.get(h,method);
     if(['create','update','delete','deleteMany','bulkUpdate'].includes(method)) return (...args)=>gateway(name,method,args);
     if((lounge.has(name)&&['get','list','filter'].includes(method))||(name==='Track'&&['get','list','filter','count','aggregate'].includes(method))) return (...args)=>gateway(name,'read',[method,...args]);
     return h[method];

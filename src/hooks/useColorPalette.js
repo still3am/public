@@ -4,6 +4,7 @@ const FALLBACK = ["#8b8b8b", "#4b4b4b", "#e8e8e8"];
 
 const clamp = (v) => Math.max(0, Math.min(255, Math.round(v)));
 
+/** @param {number[]} rgb */
 function boost([r, g, b]) {
   // push toward a vivid, screen-friendly version of the sampled color
   const max = Math.max(r, g, b) || 1;

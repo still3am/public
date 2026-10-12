@@ -151,7 +151,7 @@ export default function PublicRecordsIndex() {
         const visible = entries.
         filter((e) => e.isIntersecting).
         sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
-        if (visible[0]) setActiveKey(visible[0].target.dataset.key);
+        if (visible[0]) setActiveKey(visible[0].target.getAttribute("data-key"));
       },
       { rootMargin: "-20% 0px -70% 0px", threshold: 0 }
     );
