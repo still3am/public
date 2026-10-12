@@ -19,7 +19,7 @@ function makeCache(fetcher, ttl = TTL) {
   let inflight = null;
   resets.push(()=>{hasValue=false;expiresAt=0;});
   return async (fresh=false) => {
-    if(fresh){hasValue=false;expiresAt=0;}
+    if(fresh)expiresAt=0;
     if (hasValue && Date.now() < expiresAt) return value;
     if (inflight) return inflight;
     inflight = fetcher()
