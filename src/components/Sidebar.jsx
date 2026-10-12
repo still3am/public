@@ -25,8 +25,6 @@ const NAV = [
 { to: "/top", label: "Top Charts", icon: TrendingUp },
 { to: "/recent", label: "Recently Added", icon: Clock },
 { to: "/library", label: "Library", icon: LibraryIcon },
-{ to: "/support", label: "Support", icon: Shield },
-{ to: "/privacy", label: "Privacy", icon: Shield },
 { to: "/notifications", label: "Notifications", icon: Bell }];
 
 
