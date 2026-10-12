@@ -1,101 +1,12 @@
-import { useEffect, useState } from "react";
-import { base44 } from "@/api/base44Client";
-import { Link } from "react-router-dom";
-import { Check, X, Loader2, Flag } from "lucide-react";
-
+import {useEffect,useState} from 'react';
+import {base44} from '@/api/base44Client';
+import {Button} from '@/components/ui/button';
 export default function ReportsManager() {
-  const [reports, setReports] = useState(null);
-  const [tracks, setTracks] = useState({});
-  const [busy, setBusy] = useState("");
-
-  async function load() {
-    setReports(null);
-    try {
-      const r = await base44.entities.Report.filter({ status: "pending" }, "-created_date", 50);
-      setReports(r);
-      const ids = [...new Set(r.map((x) => x.track_id).filter(Boolean))];
-      const map = {};
-      if (ids.length) {
-        // One batched read for the whole queue — this used to fire a separate
-        // request per report, which tripped the API rate limit on a full queue.
-        const found = await base44.entities.Track.filter(
-          { id: { $in: ids } },
-          { fields: ["title"], limit: ids.length }
-        ).catch(() => null);
-        (found?.items || []).forEach((t) => {
-          map[t.id] = t;
-        });
-      }
-      setTracks(map);
-    } catch {
-      setReports([]);
-    }
-  }
-
-  useEffect(() => { load(); }, []);
-
-  async function setStatus(id, status) {
-    setBusy(id);
-    try {
-      await base44.entities.Report.update(id, { status });
-      setReports((prev) => (prev || []).filter((r) => r.id !== id));
-    } catch {} finally {
-      setBusy("");
-    }
-  }
-
-  const list = reports || [];
-
-  return (
-    <div className="rounded-2xl border border-border bg-card p-4">
-      <div className="flex items-center justify-between mb-3">
-        <div className="text-sm font-semibold flex items-center gap-2">
-          <Flag size={15} /> Reports Queue
-        </div>
-        <button onClick={load} className="text-xs text-foreground/50 hover:text-foreground">Refresh</button>
-      </div>
-      {reports === null ? (
-        <div className="flex justify-center py-6"><Loader2 className="animate-spin text-foreground/40" /></div>
-      ) : list.length === 0 ? (
-        <div className="text-xs text-foreground/50 py-6 text-center">No pending reports.</div>
-      ) : (
-        <div className="space-y-2">
-          {list.map((r) => {
-            const t = tracks[r.track_id];
-            return (
-              <div key={r.id} className="flex items-start gap-3 p-2 rounded-lg bg-foreground/[0.02]">
-                <div className="min-w-0 flex-1">
-                  <div className="text-sm font-medium truncate">
-                    {t ? t.title : "Unknown track"}
-                  </div>
-                  <div className="text-xs text-foreground/50 truncate">{r.reason || "No reason given"}</div>
-                  <Link to={`/track/${r.track_id}`} className="text-[11px] text-foreground/40 hover:underline">
-                    Open track
-                  </Link>
-                </div>
-                <div className="flex items-center gap-1 shrink-0">
-                  <button
-                    onClick={() => setStatus(r.id, "dismissed")}
-                    disabled={busy === r.id}
-                    className="p-2 rounded-full hover:bg-foreground/5"
-                    aria-label="Dismiss"
-                  >
-                    {busy === r.id ? <Loader2 size={15} className="animate-spin" /> : <X size={15} />}
-                  </button>
-                  <button
-                    onClick={() => setStatus(r.id, "reviewed")}
-                    disabled={busy === r.id}
-                    className="p-2 rounded-full hover:bg-foreground/5 text-green-600"
-                    aria-label="Mark reviewed"
-                  >
-                    <Check size={15} />
-                  </button>
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      )}
-    </div>
-  );
+ const [rows,setRows]=useState(null),[error,setError]=useState(''),[busy,setBusy]=useState('');
+ const load=async()=>{try{setRows(await base44.entities.Report.filter({status:'pending'},'-created_date',100));}catch{setError('Could not load the reports queue');}};
+ useEffect(()=>{load();},[]);
+ const act=async(r,remove=false,dismiss=false)=>{setBusy(r.id);try{await base44.functions.invoke('safety',{action:'moderate',id:r.id,remove,dismiss});await load();}catch(e){setError(e?.response?.data?.error||'Moderation action failed');}finally{setBusy('');}};
+ const path=r=>({track:'/track/',user:'/profile/',artist:'/records/'}[r.target_type||'track']||'')+(r.target_id||r.track_id);
+ return <section className="space-y-4"><div className="flex justify-between"><h2 className="text-xl font-bold">Moderation inbox</h2><Button variant="outline" onClick={load}>Refresh</Button></div><p className="text-sm text-muted-foreground">Review reports promptly. Removing content is separate from marking it reviewed. User reports can be handled through the Users tab.</p>
+ {error&&<p role="alert" className="text-destructive">{error}</p>}{rows===null?<p>Loading…</p>:!rows.length?<p>No pending reports.</p>:rows.map(r=><article key={r.id} className="border rounded-2xl p-4 space-y-3"><h3 className="font-bold capitalize">{r.target_type||'track'} report</h3><p className="whitespace-pre-wrap break-words">{r.reason}</p><p className="text-xs text-muted-foreground break-all">Content ID: {r.target_id||r.track_id}</p>{['track','user','artist'].includes(r.target_type||'track')&&<a href={path(r)} target="_blank" rel="noreferrer" className="underline text-sm">Open content</a>}<div className="flex flex-wrap gap-2"><Button disabled={busy===r.id} variant="outline" onClick={()=>act(r,false,true)}>Dismiss</Button><Button disabled={busy===r.id} variant="outline" onClick={()=>act(r)}>Mark reviewed</Button>{r.target_type!=='user'&&<Button disabled={busy===r.id} onClick={()=>window.confirm('Remove this reported content?')&&act(r,true)}>Remove content</Button>}</div></article>)}</section>;
 }
