@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { useSearchParams, Link } from "react-router-dom";
-import { base44 } from "@/api/base44Client";
 import { getArtists } from "@/lib/catalogCache";
 import PublicRecords from "@/pages/PublicRecords";
 import { Loader2, Mic2 } from "lucide-react";
