@@ -27,6 +27,7 @@ export default async function(req) {
    return Response.json({success:true});
   }
   requireUser();
+  if(d.action==='markAllRead'){await s.entities.Notification.updateMany({user_id:u.id,read:false},{$set:{read:true}});return Response.json({success:true});}
   if(d.action==='offline') {
    const current=await s.entities.User.get(u.id);
    let ids=current.offline_track_ids;

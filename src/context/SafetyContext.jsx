@@ -7,7 +7,7 @@ export function SafetyProvider({children}) {
  const reload=useCallback(async()=>{
   if(!user?.id){setBlocked(new Set());setOwn([]);return;}
   const r=await base44.functions.invoke('safety',{action:'blocked'});
-  setBlocked(new Set(r.data.ids));setOwn(r.data.own||[]);
+  setBlocked(new Set(r.data.ids));setOwn(r.data.own||[]);window.dispatchEvent(new Event("catalog:invalidate"));
  },[user?.id]);
  useEffect(()=>{reload().catch(()=>{});},[reload]);
  return <Context.Provider value={{blocked,own,reload}}>{children}</Context.Provider>;

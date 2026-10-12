@@ -1,3 +1,4 @@
+import {useSafety} from '@/context/SafetyContext';
 import {
   createContext,
   useContext,
@@ -24,6 +25,7 @@ export const usePlayer = () => useContext(PlayerContext);
 
 export function PlayerProvider({ children }) {
   const { user } = useAuth();
+  const {blocked}=useSafety();const blockedRef=useRef(blocked);blockedRef.current=blocked;
   // Two audio elements enable a REAL overlapping crossfade: while one track
   // fades out on the inactive element, the next track fades in on the other.
   const audioRefs = [useRef(null), useRef(null)];
@@ -103,6 +105,7 @@ export function PlayerProvider({ children }) {
 
   const retryRef=useRef(new Map());
   const countedRef = useRef(new Set());
+  const playAttemptRef=useRef(new Map());
   const [queue, setQueue] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(-1);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -369,16 +372,11 @@ export function PlayerProvider({ children }) {
   // connection.
   const resolveUrl = useCallback(async (track, side) => {
     sideLoadedIdRef[side].current = track.id;
-    let url = track.audio_url;
-    if(navigator.onLine && track._private_audio){const fresh=await base44.entities.Track.get(track.id);url=fresh.audio_url;}
-    const online =
-      typeof navigator === "undefined" ? true : navigator.onLine;
-    let blobUrl = null;
-    if (!online) {
-      try {
-        const rec = await getRecord(track.id);
-        if (rec && rec._blob) blobUrl = URL.createObjectURL(rec._blob);
-      } catch {}
+    if(blockedRef.current.has(track.uploader_id))throw Error('This uploader is blocked.');
+    let url=track.audio_url,blobUrl=null;
+    try{const rec=await getRecord(track.id);if(rec?._blob)blobUrl=URL.createObjectURL(rec._blob);}catch{}
+    if(!blobUrl && navigator.onLine && track._private_audio){
+      const fresh=await base44.entities.Track.get(track.id);url=fresh.audio_url;
     }
     if (blobUrlRefs[side].current && blobUrlRefs[side].current !== blobUrl) {
       URL.revokeObjectURL(blobUrlRefs[side].current);
@@ -703,7 +701,7 @@ export function PlayerProvider({ children }) {
         }
       };
       const onEnded = () => {
-        if (a === activeEl()) handleEndedRef.current();
+        if (a === activeEl()) {countedRef.current.delete(queueRef.current[currentIndexRef.current]?.id);handleEndedRef.current();}
       };
       const onError=async()=>{
         if(a!==activeEl())return;
@@ -737,6 +735,8 @@ export function PlayerProvider({ children }) {
     });
     return () => cleanups.forEach((c) => c());
   }, []);
+
+  useEffect(()=>{const t=queueRef.current[currentIndexRef.current];if(t&&blocked.has(t.uploader_id)){els().forEach(a=>a?.pause());setIsPlaying(false);window.dispatchEvent(new CustomEvent('player:error',{detail:'Playback stopped because this uploader is blocked.'}));}},[blocked]);
 
   // timeupdate logic (reads latest via ref)
   useEffect(() => {
@@ -784,9 +784,10 @@ export function PlayerProvider({ children }) {
 
   // continued play counting
   const countPlay = useCallback((track) => {
-    if (!track || countedRef.current.has(track.id)) return;
+    if (!track || countedRef.current.has(track.id)||Date.now()-(playAttemptRef.current.get(track.id)||0)<60000) return;
+    playAttemptRef.current.set(track.id,Date.now());
     countedRef.current.add(track.id);
-    base44.functions.invoke("registerPlay", { track_id: track.id }).catch(() => {});
+    base44.functions.invoke("registerPlay", { track_id: track.id }).catch(() => {countedRef.current.delete(track.id);});
     try {
       const KEY = "public:recently_played";
       const v = JSON.parse(localStorage.getItem(KEY) || "[]");

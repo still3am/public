@@ -19,7 +19,18 @@ const entities = new Proxy(raw.entities,{get(target,name) {
         // The entity API independently enforces Track RLS and private-file FLS.
         const status=error?.response?.status ?? error?.status;
         if(status===403 || status===422 || (method==='get'&&status===404))throw error;
-        const result=await h[method](...args);
+        const current=await raw.auth.me().catch(e=>{if((e.status??e.response?.status)===401)return null;throw e;});
+        const blocks=current&&current.role!=='admin'?await raw.entities.Block.filter({$or:[{user_id:current.id},{blocked_user_id:current.id}]},'-created_date',1000):[];
+        const hidden=blocks.map(r=>r.user_id===current.id?r.blocked_user_id:r.user_id);
+        const rule=hidden.length?{uploader_id:{$nin:hidden}}:{};
+        let result;
+        if(method==='get'){
+          result=await h.get(...args);
+          if(hidden.includes(result?.uploader_id))throw Object.assign(new Error('Track unavailable'),{status:403});
+        }else if(method==='filter'||method==='count')result=await h[method]({$and:[args[0]||{},rule]},...args.slice(1));
+        else if(method==='list')result=await h.filter(rule,...args);
+        else result=await h.aggregate({...args[0],query:{$and:[args[0]?.query||{},rule]}});
+
         const mark=t=>t&&!t.audio_url?{...t,_private_audio:true}:t;
         if(method==='get'){
           const track=mark(result);

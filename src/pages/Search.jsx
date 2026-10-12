@@ -30,6 +30,7 @@ export default function Search() {
   useEffect(() => {
     setQ(urlQ);
   }, [urlQ]);
+  useEffect(()=>setGenre(searchParams.get("genre")||null),[searchParams]);
 
   const updateQuery = (next) => {
     setQ(next);
@@ -78,6 +79,8 @@ export default function Search() {
     catalogueLoaded.current = true;
     loadCatalogue();
   }, [hasQuery]);
+
+  useEffect(()=>{const change=()=>{loadCatalogue();refresh();};window.addEventListener('catalog:invalidate',change);return()=>window.removeEventListener('catalog:invalidate',change);},[refresh]);
 
   // Pulling down re-runs whatever the page is currently showing: the live
   // search when a term is typed, otherwise the genre crate.

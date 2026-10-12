@@ -5,6 +5,7 @@ import { base44 } from "@/api/base44Client";
 // platform rate limit, so ids are resolved in a single batched request, cached
 // for the session, and identical batches share one in-flight request.
 const cache = new Map();
+window.addEventListener("catalog:invalidate",()=>cache.clear());
 const inflight = new Map();
 const CHUNK = 100;
 
