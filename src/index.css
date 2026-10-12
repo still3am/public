@@ -4,7 +4,7 @@
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
+    --background: 0 0% 98%;
     --foreground: 0 0% 3.9%;
     --card: 0 0% 100%;
     --card-foreground: 0 0% 3.9%;
@@ -20,15 +20,15 @@
     --accent-foreground: 0 0% 9%;
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
-    --border: 0 0% 84%;
-    --input: 0 0% 84%;
+    --border: 0 0% 88%;
+    --input: 0 0% 86%;
     --ring: 0 0% 3.9%;
     --chart-1: 12 76% 61%;
     --chart-2: 173 58% 39%;
     --chart-3: 197 37% 24%;
     --chart-4: 43 74% 66%;
     --chart-5: 27 87% 67%;
-    --radius: 0.5rem;
+    --radius: 1rem;
     --font-heading: ui-sans-serif, system-ui, sans-serif;
     --font-body: ui-sans-serif, system-ui, sans-serif;
     --font-display: ui-sans-serif, system-ui, sans-serif;
@@ -63,7 +63,7 @@
     --accent-foreground: 0 0% 98%;
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 0 0% 98%;
-    --border: 0 0% 24%;
+    --border: 0 0% 19%;
     --input: 0 0% 24%;
     --ring: 0 0% 83.1%;
     --chart-1: 220 70% 50%;
@@ -230,3 +230,64 @@ html .hover\:bg-foreground\/\[0\.04\]:hover {
  *,*::before,*::after {animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important;}
 }
 @media (pointer:coarse){button,[role="button"]{min-height:44px;}input,textarea,select{font-size:16px;}}
+
+/* PUBLIC — shared spacing and monochrome chrome surfaces. */
+:root {
+ --app-gutter: 1rem;
+ --chrome-shadow: 0 8px 30px -18px rgb(0 0 0 / .3);
+}
+body { line-height: 1.5; font-feature-settings: 'cv02','cv03','cv04','cv11'; }
+h1,h2,h3 { text-wrap: balance; }
+.app-content {
+ max-width: 1360px;
+ padding: 1.5rem var(--app-gutter) calc(6.5rem + env(safe-area-inset-bottom));
+}
+.has-player .app-content { padding-bottom: calc(11.5rem + env(safe-area-inset-bottom)); }
+.app-header {
+ position: sticky; top: 0; z-index: 20;
+ border-bottom: 1px solid hsl(var(--border) / .6);
+ background: hsl(var(--background) / .94);
+ backdrop-filter: blur(20px);
+}
+.app-header-inner {
+ max-width: 1360px; margin-inline: auto;
+ min-height: 56px; padding: 6px var(--app-gutter);
+ display:flex;align-items:center;gap:1rem;
+}
+.header-icon {
+ display:inline-flex;align-items:center;justify-content:center;
+ width:44px;height:44px;border-radius:50%;
+ color:hsl(var(--muted-foreground));transition:background .18s,color .18s;
+}
+.header-icon:hover {background:hsl(var(--accent));color:hsl(var(--foreground));}
+.eyebrow {font-size:10px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:hsl(var(--muted-foreground));}
+.page-heading {margin-bottom:1.75rem;}
+.page-heading h1 {font-size:clamp(1.75rem,3.6vw,2.5rem);line-height:1.12;letter-spacing:-.045em;font-weight:700;margin-top:.6rem;}
+.page-description {margin-top:.65rem;font-size:14px;line-height:1.6;color:hsl(var(--muted-foreground));max-width:36rem;}
+.chrome-button,.chrome-action {
+ color:#151515;
+ background:linear-gradient(135deg,#fafafa 0%,#dfe1e4 46%,#f7f7f8 100%);
+ border:1px solid rgb(160 164 172 / .35);
+ box-shadow:inset 0 1px 0 rgb(255 255 255 / .8),0 2px 6px rgb(0 0 0 / .06);
+}
+.chrome-button {display:inline-flex;align-items:center;justify-content:center;gap:.5rem;min-height:40px;padding:.6rem 1.1rem;border-radius:999px;font-weight:600;}
+.chrome-button:hover,.chrome-action:hover {filter:brightness(.97);}
+.home-hero {background:linear-gradient(135deg,hsl(var(--card)),hsl(var(--muted) / .45));}
+.sidebar-surface {background:linear-gradient(180deg,hsl(var(--card)),hsl(var(--background)));}
+.music-card {min-width:0;}
+.music-card:hover {box-shadow:var(--chrome-shadow);}
+.song-row {min-height:72px;}
+.player-surface {box-shadow:0 -8px 30px -24px rgb(0 0 0 / .3);}
+.auth-card {box-shadow:0 20px 60px -42px rgb(0 0 0 / .3);}
+@media (min-width:640px) { :root {--app-gutter:1.25rem;} .page-heading {margin-bottom:2rem;} }
+@media (min-width:768px) {
+ :root {--app-gutter:2rem;}
+ .app-content {padding-top:2rem;padding-bottom:3rem;}
+ .has-player .app-content {padding-bottom:8rem;}
+ .page-heading {margin-bottom:2.25rem;}
+}
+@media (min-width:1024px) { :root {--app-gutter:3rem;} .app-content {padding-top:2.5rem;} }
+@media (max-width:380px) {
+ .chrome-button {padding-inline:.85rem;}
+ .player-surface > div:last-child {gap:.5rem;padding-inline:.6rem;}
+}

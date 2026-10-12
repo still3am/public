@@ -96,7 +96,7 @@ export default function Sidebar() {
         )}
       </nav>
 
-      <div className="border-t border-border/60 space-y-2 pb-28 p-3 pt-4">
+      <div className="border-t border-border/60 space-y-2 pb-5 p-3 pt-4">
         <ThemeToggle labelClassName={`shrink-0 ${EASE} ${fadeCls}`} />
         <NavLink
           to="/profile"
