@@ -20,16 +20,43 @@
         "dismissed"
       ],
       "default": "pending"
+    },
+    "target_type": {
+      "type": "string",
+      "enum": [
+        "track",
+        "user",
+        "comment",
+        "annotation",
+        "suggestion",
+        "notification",
+        "artist"
+      ]
+    },
+    "target_id": {
+      "type": "string"
+    },
+    "admin_notes": {
+      "type": "string",
+      "default": ""
     }
   },
   "required": [
     "reporter_id",
-    "track_id",
     "reason"
   ],
   "rls": {
     "create": {
-      "data.reporter_id": "{{user.id}}"
+      "$and": [
+        {
+          "data.reporter_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "is_blocked": false
+          }
+        }
+      ]
     },
     "read": {
       "$or": [
@@ -44,9 +71,18 @@
       ]
     },
     "update": {
-      "user_condition": {
-        "role": "admin"
-      }
+      "$and": [
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        },
+        {
+          "user_condition": {
+            "is_blocked": false
+          }
+        }
+      ]
     },
     "delete": {
       "user_condition": {

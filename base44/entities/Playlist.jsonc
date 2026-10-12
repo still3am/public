@@ -34,7 +34,16 @@
   ],
   "rls": {
     "create": {
-      "data.creator_id": "{{user.id}}"
+      "$and": [
+        {
+          "data.creator_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "is_blocked": false
+          }
+        }
+      ]
     },
     "read": {
       "$or": [
@@ -52,13 +61,22 @@
       ]
     },
     "update": {
-      "$or": [
+      "$and": [
         {
-          "data.creator_id": "{{user.id}}"
+          "$or": [
+            {
+              "data.creator_id": "{{user.id}}"
+            },
+            {
+              "user_condition": {
+                "role": "admin"
+              }
+            }
+          ]
         },
         {
           "user_condition": {
-            "role": "admin"
+            "is_blocked": false
           }
         }
       ]

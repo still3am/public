@@ -24,6 +24,30 @@
       "type": "string",
       "default": "",
       "description": "ISO timestamp of when catalog_count was measured"
+    },
+    "operator_name": {
+      "type": "string",
+      "default": ""
+    },
+    "support_email": {
+      "type": "string",
+      "default": ""
+    },
+    "privacy_reviewed": {
+      "type": "boolean",
+      "default": false
+    },
+    "rights_reviewed": {
+      "type": "boolean",
+      "default": false
+    },
+    "ios_tested": {
+      "type": "boolean",
+      "default": false
+    },
+    "apple_login_verified": {
+      "type": "boolean",
+      "default": false
     }
   },
   "rls": {

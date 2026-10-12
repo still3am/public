@@ -5,67 +5,110 @@
     "is_blocked": {
       "type": "boolean",
       "default": false,
-      "description": "When true, the user is blocked from the platform"
+      "description": "When true, the user is blocked from the platform",
+      "rls": {
+        "write": {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      }
     },
     "display_name": {
       "type": "string",
       "default": "",
-      "description": "User-chosen display name shown across the app; falls back to full_name when empty"
+      "description": "User-chosen display name shown across the app; falls back to full_name when empty",
+      "rls": {
+        "write": false
+      }
     },
     "bio": {
       "type": "string",
       "default": "",
-      "description": "Profile bio text"
+      "description": "Profile bio text",
+      "rls": {
+        "write": false
+      }
     },
     "avatar_url": {
       "type": "string",
       "default": "",
-      "description": "Profile avatar image URL"
+      "description": "Profile avatar image URL",
+      "rls": {
+        "write": false
+      }
     },
     "banner_url": {
       "type": "string",
       "default": "",
-      "description": "Profile banner image URL"
+      "description": "Profile banner image URL",
+      "rls": {
+        "write": false
+      }
     },
     "location": {
       "type": "string",
       "default": "",
-      "description": "User location"
+      "description": "User location",
+      "rls": {
+        "write": false
+      }
     },
     "pronouns": {
       "type": "string",
       "default": "",
-      "description": "User pronouns"
+      "description": "User pronouns",
+      "rls": {
+        "write": false
+      }
     },
     "website": {
       "type": "string",
       "default": "",
-      "description": "User personal website URL"
+      "description": "User personal website URL",
+      "rls": {
+        "write": false
+      }
     },
     "instagram": {
       "type": "string",
       "default": "",
-      "description": "Instagram handle or URL"
+      "description": "Instagram handle or URL",
+      "rls": {
+        "write": false
+      }
     },
     "twitter": {
       "type": "string",
       "default": "",
-      "description": "Twitter / X handle or URL"
+      "description": "Twitter / X handle or URL",
+      "rls": {
+        "write": false
+      }
     },
     "soundcloud": {
       "type": "string",
       "default": "",
-      "description": "SoundCloud handle or URL"
+      "description": "SoundCloud handle or URL",
+      "rls": {
+        "write": false
+      }
     },
     "status_message": {
       "type": "string",
       "default": "",
-      "description": "Short status / mood message displayed on the profile"
+      "description": "Short status / mood message displayed on the profile",
+      "rls": {
+        "write": false
+      }
     },
     "featured_track_id": {
       "type": "string",
       "default": "",
-      "description": "Track id pinned as the profile song visitors can play"
+      "description": "Track id pinned as the profile song visitors can play",
+      "rls": {
+        "write": false
+      }
     },
     "top_track_ids": {
       "type": "array",
@@ -73,12 +116,25 @@
         "type": "string"
       },
       "default": [],
-      "description": "Up to 8 track ids pinned to the profile as the user's Top 8"
+      "description": "Up to 8 track ids pinned to the profile as the user's Top 8",
+      "rls": {
+        "write": false
+      }
     },
     "is_artist": {
       "type": "boolean",
       "default": false,
-      "description": "When true, the user is marked as an artist and gets access to artist tools and an artist badge on their profile"
+      "description": "When true, the user is marked as an artist and gets access to artist tools and an artist badge on their profile",
+      "rls": {
+        "write": false
+      }
+    },
+    "show_explicit": {
+      "type": "boolean",
+      "default": false,
+      "rls": {
+        "write": false
+      }
     }
   },
   "required": []

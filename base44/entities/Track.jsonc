@@ -125,6 +125,10 @@
       "type": "boolean",
       "default": false,
       "description": "True only once an admin approves the track for public release"
+    },
+    "rights_confirmed_at": {
+      "type": "string",
+      "format": "date-time"
     }
   },
   "required": [
@@ -135,11 +139,22 @@
   ],
   "rls": {
     "create": {
-      "data.uploader_id": "{{user.id}}"
+      "user_condition": {
+        "role": "admin"
+      }
     },
-    "read": null,
-    "update": {
+    "read": {
       "$or": [
+        {
+          "$and": [
+            {
+              "data.is_published": true
+            },
+            {
+              "data.approval_status": "approved"
+            }
+          ]
+        },
         {
           "data.uploader_id": "{{user.id}}"
         },
@@ -149,18 +164,16 @@
           }
         }
       ]
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
     },
     "delete": {
-      "$or": [
-        {
-          "data.uploader_id": "{{user.id}}"
-        },
-        {
-          "user_condition": {
-            "role": "admin"
-          }
-        }
-      ]
+      "user_condition": {
+        "role": "admin"
+      }
     }
   }
 }

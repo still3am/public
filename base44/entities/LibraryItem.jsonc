@@ -7,6 +7,17 @@
     },
     "track_id": {
       "type": "string"
+    },
+    "folder": {
+      "type": "string",
+      "default": ""
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "default": []
     }
   },
   "required": [
@@ -15,13 +26,31 @@
   ],
   "rls": {
     "create": {
-      "data.user_id": "{{user.id}}"
+      "$and": [
+        {
+          "data.user_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "is_blocked": false
+          }
+        }
+      ]
     },
     "read": {
       "data.user_id": "{{user.id}}"
     },
     "update": {
-      "data.user_id": "{{user.id}}"
+      "$and": [
+        {
+          "data.user_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "is_blocked": false
+          }
+        }
+      ]
     },
     "delete": {
       "$or": [

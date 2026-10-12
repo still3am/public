@@ -32,32 +32,20 @@
   ],
   "rls": {
     "create": {
-      "data.author_id": "{{user.id}}"
+      "user_condition": {
+        "role": "admin"
+      }
     },
     "read": null,
     "update": {
-      "$or": [
-        {
-          "data.author_id": "{{user.id}}"
-        },
-        {
-          "user_condition": {
-            "role": "admin"
-          }
-        }
-      ]
+      "user_condition": {
+        "role": "admin"
+      }
     },
     "delete": {
-      "$or": [
-        {
-          "data.author_id": "{{user.id}}"
-        },
-        {
-          "user_condition": {
-            "role": "admin"
-          }
-        }
-      ]
+      "user_condition": {
+        "role": "admin"
+      }
     }
   }
 }

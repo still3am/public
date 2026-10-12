@@ -80,7 +80,9 @@
   ],
   "rls": {
     "create": {
-      "data.sender_id": "{{user.id}}"
+      "user_condition": {
+        "role": "admin"
+      }
     },
     "read": {
       "$or": [
@@ -93,24 +95,14 @@
       ]
     },
     "update": {
-      "$or": [
-        {
-          "data.sender_id": "{{user.id}}"
-        },
-        {
-          "data.recipient_id": "{{user.id}}"
-        }
-      ]
+      "user_condition": {
+        "role": "admin"
+      }
     },
     "delete": {
-      "$or": [
-        {
-          "data.sender_id": "{{user.id}}"
-        },
-        {
-          "data.recipient_id": "{{user.id}}"
-        }
-      ]
+      "user_condition": {
+        "role": "admin"
+      }
     }
   }
 }
