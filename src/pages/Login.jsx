@@ -64,6 +64,9 @@ export default function Login() {
         </>
       }
     >
+      <Button variant="outline" className="w-full h-12 mb-3" onClick={()=>base44.auth.redirectToLogin(window.location.origin + "/")}>
+        More sign-in options
+      </Button>
       <div className="space-y-3 mb-6">
         {providers.includes('apple')&&(
         <Button
