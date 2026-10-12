@@ -4,11 +4,10 @@ import { readAllPages } from "@/lib/readPages";
 // Splits a combined artist tag ("Adele & Beyoncé feat. Jay-Z") into individual
 // names — the same rule the artist links use, so every credited name resolves
 // to its own Public Record page.
-export const splitArtistNames = (str) =>
-  (str || "")
-    .split(/\s*(?:,|&| feat\.| ft\.| x |;)\s*/i)
-    .map((s) => s.trim().toLowerCase())
-    .filter(Boolean);
+export const splitArtistNames = (str, lower=true) =>
+  (str || '').split(/\s*(?:,|&| feat\.| ft\.| x |;|\/)\s*/i)
+    .map(s=>s.trim().replace(/\s+/g,' ')).filter(Boolean).map(s=>lower?s.toLowerCase():s);
+
 
 const escapeRegex = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 

@@ -34,6 +34,7 @@ export default function Admin() {
     { id: "banner", icon: Megaphone, label: "Banner" }
   ];
 
+  if(user?.role!=="admin")return <div className="p-8 text-center">You do not have access to this area.</div>;
   return (
     <div className="min-h-dvh pb-24 md:pb-12">
       {denied ? (

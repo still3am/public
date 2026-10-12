@@ -23,7 +23,7 @@ function OptionTile({ active, onClick, locked, icon: Icon, title, subtitle }) {
           <span className="text-[15px] font-semibold text-foreground">{title}</span>
           {locked && (
             <span className="text-[9px] font-bold tracking-wide uppercase text-muted-foreground bg-muted border border-border rounded px-1 py-0.5">
-              Premium
+              Testing
             </span>
           )}
         </div>
@@ -60,6 +60,7 @@ function CrossfadeSlider({ value, disabled, onChange }) {
             />
           </div>
           <input
+            aria-label="Crossfade duration in seconds"
             type="range"
             min={CROSSFADE_MIN}
             max={CROSSFADE_MAX}
@@ -159,7 +160,7 @@ export default function SongTransitions() {
             <OptionTile
               icon={Wand2}
               title="AutoMix"
-              subtitle="Songs transition at the perfect moment, based on analysis of the key and tempo of the music."
+              subtitle="A short 1.5-second crossfade, available during admin testing."
               active={t.isAutoMix && isAdmin}
               locked={!isAdmin}
               onClick={selectAutoMix}
@@ -183,11 +184,11 @@ export default function SongTransitions() {
             {!isAdmin && (
               <>
                 AutoMix is a{" "}
-                <span className="text-primary font-medium">premium</span>{" "}
+                <span className="text-primary font-medium">testing</span>{" "}
                 feature, available to admins during testing.{" "}
               </>
             )}
-            <span className="text-primary">Learn More</span>
+            <span>Crossfade blends two songs; Gapless joins them without a fade.</span>
           </p>
         </section>
 

@@ -1,3 +1,4 @@
+import LoadError from '@/components/LoadError';
 import { useEffect, useState, useCallback } from "react";
 import { getTopTracks } from "@/lib/catalogCache";
 import TrackCard from "@/components/TrackCard";
@@ -10,6 +11,7 @@ import PullToRefresh from "@/components/PullToRefresh";
 
 export default function TopCharts() {
   const [tracks, setTracks] = useState([]);
+  const [loadError,setLoadError]=useState(false);
   const [loading, setLoading] = useState(true);
 
   const onUnpublished = useCallback((id) => {
@@ -18,11 +20,11 @@ export default function TopCharts() {
   useUnpublishedSync(onUnpublished);
 
   async function load() {
-    setLoading(true);
+    setLoading(true);setLoadError(false);
     try {
       setTracks(await getTopTracks(true));
     } catch {
-      // ignore on refresh
+      setLoadError(true);
     } finally {
       setLoading(false);
     }
@@ -38,6 +40,7 @@ export default function TopCharts() {
         <Loader2 className="animate-spin" />
       </div>
     );
+  if(loadError&&!tracks.length)return <LoadError onRetry={load}/>;
   if (!tracks.length) return <EmptyState icon={Music} title="No tracks yet" />;
 
   const top5 = tracks.slice(0, 5);
@@ -46,7 +49,8 @@ export default function TopCharts() {
   return (
     <PullToRefresh onRefresh={load}>
       <div>
-        {top5.length >= 3 && <Podium tracks={top5} />}
+        {loadError&&<LoadError onRetry={load}/>} 
+        {top5.length > 0 && <Podium tracks={top5} />}
         {rest.length > 0 && (
           <>
             <h2 className="text-lg font-extrabold tracking-tight px-1 mb-3 mt-5">

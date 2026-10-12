@@ -1,3 +1,4 @@
+import {safeReturnTo} from "@/lib/authReturnTo";
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
@@ -26,7 +27,7 @@ export default function Login() {
     setLoading(true);
     try {
       await base44.auth.loginViaEmailPassword(email, password);
-      window.location.href = "/";
+      window.location.href = safeReturnTo();
     } catch (err) {
       setError(err.message || "Invalid email or password");
     } finally {
@@ -35,19 +36,19 @@ export default function Login() {
   };
 
   const handleGoogle = () => {
-    base44.auth.loginWithProvider("google", "/");
+    base44.auth.loginWithProvider("google", safeReturnTo());
   };
 
   const handleApple = () => {
-    base44.auth.loginWithProvider("apple", "/");
+    base44.auth.loginWithProvider("apple", safeReturnTo());
   };
 
   const handleFacebook = () => {
-    base44.auth.loginWithProvider("facebook", "/");
+    base44.auth.loginWithProvider("facebook", safeReturnTo());
   };
 
   const handleMicrosoft = () => {
-    base44.auth.loginWithProvider("microsoft", "/");
+    base44.auth.loginWithProvider("microsoft", safeReturnTo());
   };
 
   return (
@@ -64,7 +65,7 @@ export default function Login() {
         </>
       }
     >
-      <Button variant="outline" className="w-full h-12 mb-3" onClick={()=>base44.auth.redirectToLogin(window.location.origin + "/")}>
+      <Button variant="outline" className="w-full h-12 mb-3" onClick={()=>base44.auth.redirectToLogin(window.location.origin + safeReturnTo())}>
         More sign-in options
       </Button>
       <div className="space-y-3 mb-6">

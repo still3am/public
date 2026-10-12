@@ -1,5 +1,7 @@
+import LoadError from '@/components/LoadError';
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "react-router-dom";
+import { splitArtistNames } from "@/lib/artistTracks";
 import { getPublishedTracks, getArtists } from "@/lib/catalogCache";
 import PullToRefresh from "@/components/PullToRefresh";
 import { Loader2, Mic2 } from "lucide-react";
@@ -7,11 +9,7 @@ import { Loader2, Mic2 } from "lucide-react";
 // Split a multi-artist string into individual names, preserving original
 // casing. A track credited "Drake feat. Future" counts toward both Drake and
 // Future as separate Public Records.
-const splitNames = (str) =>
-(str || "").
-split(/\s*(?:,|&| feat\.| ft\.| x |;|\/)\s*/i).
-map((s) => s.trim()).
-filter(Boolean);
+const splitNames = str => splitArtistNames(str, false);
 
 const norm = (s) => s.trim().toLowerCase();
 
@@ -57,12 +55,13 @@ function AzReveal({ children }) {
 }
 
 export default function PublicRecordsIndex() {
+  const [loadError,setLoadError]=useState(false);
   const [artists, setArtists] = useState(null); // null = loading
   const [activeKey, setActiveKey] = useState("");
   const groupRefs = useRef({});
 
   const load = async () => {
-    setArtists(null);
+    setLoadError(false);
     try {
       const [records, tracks] = await Promise.all([
       getArtists(true),
@@ -113,8 +112,7 @@ export default function PublicRecordsIndex() {
       norm(a.display).localeCompare(norm(b.display))
       );
       setArtists(list);
-    } finally {
-    }
+    } catch {setLoadError(true);}
   };
 
   useEffect(() => {
@@ -213,6 +211,7 @@ export default function PublicRecordsIndex() {
     setDragLetter("");
   };
 
+  if(loadError)return <LoadError onRetry={load}/>;
   return (
     <div className="max-w-3xl mx-auto pb-10">
       

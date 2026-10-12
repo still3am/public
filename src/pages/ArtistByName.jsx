@@ -1,3 +1,4 @@
+import LoadError from '@/components/LoadError';
 import { useEffect, useState } from "react";
 import { useSearchParams, Link } from "react-router-dom";
 import { getArtists } from "@/lib/catalogCache";
@@ -14,11 +15,12 @@ const normalize = (str) =>
 export default function ArtistByName() {
   const [params] = useSearchParams();
   const name = params.get("name") || "";
+  const [error,setError]=useState(false),[retry,setRetry]=useState(0);
   const [artist, setArtist] = useState(undefined); // undefined = loading, null = not found
 
   useEffect(() => {
-    let active = true;
-    (async () => {
+    let active = true;setError(false);setArtist(undefined);
+    (async () => {try {
       if (!name) {
         if (active) setArtist(null);
         return;
@@ -39,12 +41,13 @@ export default function ArtistByName() {
       }
       // Build the record view from real catalog credits without writing during browsing.
       if(active)setArtist({id:'',name:name.trim()});
-    })();
+    }catch{if(active)setError(true);}})();
     return () => {
       active = false;
     };
-  }, [name]);
+  }, [name,retry]);
 
+  if(error)return <LoadError onRetry={()=>setRetry(n=>n+1)}/>;
   if (artist === undefined) {
     return (
       <div className="py-20 grid place-items-center">

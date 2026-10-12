@@ -1,3 +1,4 @@
+import LoadError from '@/components/LoadError';
 import { useEffect, useState, useCallback } from "react";
 import { getPublishedTracks } from "@/lib/catalogCache";
 import TrackCard from "@/components/TrackCard";
@@ -9,6 +10,7 @@ import PullToRefresh from "@/components/PullToRefresh";
 
 export default function RecentlyAdded() {
   const [tracks, setTracks] = useState([]);
+  const [loadError,setLoadError]=useState(false);
   const [loading, setLoading] = useState(true);
 
   const onUnpublished = useCallback((id) => {
@@ -17,11 +19,11 @@ export default function RecentlyAdded() {
   useUnpublishedSync(onUnpublished);
 
   async function load() {
-    setLoading(true);
+    setLoading(true);setLoadError(false);
     try {
       setTracks(await getPublishedTracks(true));
     } catch {
-      // ignore on refresh
+      setLoadError(true);
     } finally {
       setLoading(false);
     }
@@ -37,6 +39,7 @@ export default function RecentlyAdded() {
         <Loader2 className="animate-spin" />
       </div>
     );
+  if(loadError&&!tracks.length)return <LoadError onRetry={load}/>;
   if (!tracks.length) return <EmptyState icon={Music} title="No tracks yet" />;
 
   return (

@@ -34,7 +34,7 @@ export default function SettingsSheet({ onClose, onDeleteAccount }) {
     try {
       await base44.auth.updateMe({ is_artist: checked });
       await checkUserAuth();
-    } catch {
+    } catch {window.alert("Artist Mode could not save. Please retry.");
     } finally {
       setToggling(false);
     }

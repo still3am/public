@@ -152,18 +152,18 @@ export default function Podium({ tracks }) {
           />
         )}
       </div>
-      {fourth && fifth && (
+      {(fourth || fifth) && (
         <div className="flex items-center gap-2 sm:gap-4 px-2 sm:px-6">
-          <PodiumCard
+          {fourth&&<PodiumCard
             track={fourth}
             rank={4}
             accent="rgba(120,120,120,0.8)"
-          />
-          <PodiumCard
+          />} 
+          {fifth&&<PodiumCard
             track={fifth}
             rank={5}
             accent="rgba(120,120,120,0.8)"
-          />
+          />} 
         </div>
       )}
     </div>
