@@ -46,6 +46,7 @@ export async function putTrack(track, blob, coverBlob) {
     uploader_name: track.uploader_name || "",
     cover_art_url: track.cover_art_url || "",
     audio_url: track.audio_url || "",
+    _private_audio:!!track._private_audio,
     duration_seconds: track.duration_seconds || 0,
     genre: track.genre || "",
     explicit: !!track.explicit,

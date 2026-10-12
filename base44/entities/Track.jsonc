@@ -129,6 +129,29 @@
     "rights_confirmed_at": {
       "type": "string",
       "format": "date-time"
+    },
+    "audio_file_uri": {
+      "type": "string",
+      "default": "",
+      "rls": {
+        "read": {
+          "$or": [
+            {
+              "data.uploader_id": "{{user.id}}"
+            },
+            {
+              "user_condition": {
+                "role": "admin"
+              }
+            }
+          ]
+        },
+        "write": {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      }
     }
   },
   "required": [

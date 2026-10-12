@@ -15,6 +15,7 @@ function slim(track) {
     uploader_id: track.uploader_id,
     cover_art_url: track.cover_art_url,
     audio_url: track.audio_url,
+    _private_audio:!!track._private_audio,
     duration_seconds: track.duration_seconds,
     genre: track.genre,
     explicit: track.explicit,

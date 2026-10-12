@@ -39,6 +39,7 @@ export default function Downloads() {
       genre: r.genre,
       explicit: r.explicit,
       _coverBlob: r._coverBlob,
+      _private_audio:!!r._private_audio,
       _offline: true
     })),
     [cache.records]

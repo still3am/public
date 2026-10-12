@@ -1,7 +1,7 @@
 import { createClientFromRequest } from 'npm:@base44/sdk';
 const ADMIN = 'admin';
 const entities = ['Track','Lyrics','LoungeSession','LoungeMember','LoungeQueueItem','ProfileComment','TrackAnnotation','Suggestion','Notification','Message','Conversation','Follow','Playlist','User'];
-const editableTrack = ['title','artist','genre','description','lyrics_text','cover_art_url','audio_url','explicit','is_downloadable','duration_seconds','album_id','track_number'];
+const editableTrack = ['audio_file_uri','title','artist','genre','description','lyrics_text','cover_art_url','audio_url','explicit','is_downloadable','duration_seconds','album_id','track_number'];
 const fail = (message, status=403) => { throw Object.assign(new Error(message), {status}); };
 const pick = (obj, fields) => Object.fromEntries(fields.filter(k => obj[k] !== undefined).map(k => [k,obj[k]]));
 async function moderate(svc, text) {
@@ -45,12 +45,18 @@ export default async function(req) {
       const target=await svc.entities.User.get(other);
       if(target.is_blocked || target.disabled) fail('This account is unavailable');
     };
+    const hydrate=async(track,sign=false)=>{
+      const result={...track};
+      if(track.audio_file_uri){result._private_audio=true;result.audio_url=sign?(await svc.integrations.Core.CreateFileSignedUrl({file_uri:track.audio_file_uri,expires_in:3600})).signed_url:'';}
+      if(track.uploader_id!==user.id&&!isAdmin)delete result.audio_file_uri;
+      return result;
+    };
     const requireTrack = async id => {
       const t=await svc.entities.Track.get(id);
       if(!isAdmin && t.uploader_id!==user.id && t.explicit && !(user.show_explicit && user.adult_confirmed)) fail('Explicit content is hidden',404);
       if(user.id && t.uploader_id!==user.id) await relation(t.uploader_id);
       if(!isAdmin && t.uploader_id!==user.id && !(t.is_published && t.approval_status==='approved')) fail('Track unavailable',404);
-      return t;
+      return await hydrate(t,true);
     };
     const member = async sid => {
       const s=await svc.entities.LoungeSession.get(sid);
@@ -69,6 +75,10 @@ export default async function(req) {
         const q=method==='filter'||method==='count'?(params[0]||{}):method==='aggregate'?(params[0]?.query||{}):{};
         const query={$and:[q,access]};
         const result=method==='count'?await handler.count(query):method==='aggregate'?await handler.aggregate({...params[0],query}):await handler.filter(query,...(method==='filter'?params.slice(1):params));
+        if(method==='filter'||method==='list'){
+          if(Array.isArray(result))return Response.json({result:await Promise.all(result.map(t=>hydrate(t)))});
+          return Response.json({result:{...result,items:await Promise.all((result.items||[]).map(t=>hydrate(t)))}});
+        }
         return Response.json({result});
       }
       if(!['LoungeSession','LoungeMember','LoungeQueueItem'].includes(entity)) fail('Unsupported read',400);
@@ -117,6 +127,12 @@ export default async function(req) {
           if(setting?.uploads_enabled===false) fail('Uploads are paused',403);
         }
         const content=pick(data,editableTrack);
+        if(content.audio_file_uri){
+          if(typeof content.audio_file_uri!=='string'||!content.audio_file_uri.startsWith('private/'))fail('Invalid private audio file',422);
+          // Use the caller's storage permissions when attaching an uploaded file.
+          await base44.integrations.Core.CreateFileSignedUrl({file_uri:content.audio_file_uri,expires_in:60});
+          content.audio_url='';
+        }
         for(const key of ['audio_url','cover_art_url'])if(content[key]){try{const url=new URL(content[key]);if(url.protocol!=='https:')fail('Use a secure HTTPS media URL',422);}catch{fail('Invalid media URL',422);}}
         if(content.title?.length>300||content.description?.length>5000)fail('Track metadata is too long',422);
         if(Object.keys(content).length) await moderate(svc,[content.title,content.description,content.lyrics_text].filter(Boolean).join('\n'));

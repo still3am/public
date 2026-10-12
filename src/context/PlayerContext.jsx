@@ -368,7 +368,8 @@ export function PlayerProvider({ children }) {
   // connection.
   const resolveUrl = useCallback(async (track, side) => {
     sideLoadedIdRef[side].current = track.id;
-    const url = track.audio_url;
+    let url = track.audio_url;
+    if(navigator.onLine && track._private_audio){const fresh=await base44.entities.Track.get(track.id);url=fresh.audio_url;}
     const online =
       typeof navigator === "undefined" ? true : navigator.onLine;
     let blobUrl = null;
@@ -427,7 +428,7 @@ export function PlayerProvider({ children }) {
       if (!el) return;
       cancelCrossfade();
       const token = ++loadTokenRef.current;
-      const url = await resolveUrl(track, side);
+      let url;try{url = await resolveUrl(track, side);}catch{setIsPlaying(false);window.dispatchEvent(new CustomEvent("player:error",{detail:"This track is unavailable. Check your connection or sign in again."}));return;}
       if (token !== loadTokenRef.current) return; // a newer load superseded us
       mirrorPlayback(el);
       el.src = url;
@@ -784,6 +785,7 @@ export function PlayerProvider({ children }) {
         uploader_id: track.uploader_id,
         cover_art_url: track.cover_art_url,
         audio_url: track.audio_url,
+        _private_audio:!!track._private_audio,
         duration_seconds: track.duration_seconds,
         genre: track.genre,
         explicit: track.explicit,
@@ -849,6 +851,7 @@ export function PlayerProvider({ children }) {
         uploader_id: r.uploader_id,
         cover_art_url: r.cover_art_url,
         audio_url: r.audio_url,
+        _private_audio:!!r._private_audio,
         duration_seconds: r.duration_seconds,
         genre: r.genre,
         explicit: r.explicit,

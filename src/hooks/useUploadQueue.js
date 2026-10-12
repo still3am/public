@@ -189,7 +189,7 @@ export function useUploadQueue({ user, isAdmin }) {
     patch(item.id, { status: "uploading", error: "" });
     try {
       if(!item.rightsConfirmed) throw new Error("Confirm that you own or have permission to distribute this song, artwork and lyrics.");
-      const { file_url } = await base44.integrations.Core.UploadFile({ file: item.file });
+      const { file_uri } = await base44.integrations.Core.UploadPrivateFile({ file: item.file });
       let cover_art_url = "";
       if (item.coverFile) {
         const r = await base44.integrations.Core.UploadFile({ file: item.coverFile }).catch(() => null);
@@ -198,7 +198,8 @@ export function useUploadQueue({ user, isAdmin }) {
       const meetsRules = !!(item.artist.trim() && item.genre && cover_art_url);
       const track = await base44.entities.Track.create({
         title: item.title.trim() || "Untitled",
-        audio_url: file_url,
+        audio_url: "",
+        audio_file_uri:file_uri,
         cover_art_url,
         uploader_id: user.id,
         uploader_name: user.display_name || user.full_name || "",

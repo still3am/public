@@ -14,6 +14,7 @@ export default async function(req) {
     const track = await base44.entities.Track.get(trackId).catch(() => null);
     if (!track) return Response.json({ error: 'Track not found' }, { status: 404 });
     if(track.uploader_id!==user.id && user.role!=='admin') return Response.json({error:'Only the owner can transcribe this track'},{status:403});
+    if(track.audio_file_uri)track.audio_url=(await base44.integrations.Core.CreateFileSignedUrl({file_uri:track.audio_file_uri,expires_in:3600})).signed_url;
     if (!track.audio_url) {
       return Response.json({ error: 'No audio file attached to this track' }, { status: 400 });
     }

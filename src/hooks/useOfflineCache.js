@@ -118,11 +118,14 @@ export function useOfflineCache() {
   }, [refresh]);
 
   const downloadTrack = useCallback(async (track) => {
-    if (!user?.id || !track?.audio_url || track.is_downloadable!==true) return false;
+    if (!user?.id || !track?.id || track.is_downloadable!==true) return false;
     if(downloadingIds.has(track.id))return false;
     downloadingIds.add(track.id);
     setDownloading((s) => ({ ...s, [track.id]: true }));
     try {
+      const authorized=await base44.entities.Track.get(track.id);
+      if(!authorized.is_downloadable)throw new Error("Download permission was removed");
+      track=authorized;
       const res = await fetch(track.audio_url);
       if (!res.ok) throw new Error("Download failed");
       const blob = await res.blob();

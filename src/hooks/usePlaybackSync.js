@@ -39,6 +39,7 @@ export function usePlaybackSync() {
         uploader_name: t.uploader_name,
         cover_art_url: t.cover_art_url,
         audio_url: t.audio_url,
+        _private_audio:!!t._private_audio,
         duration_seconds: t.duration_seconds,
         genre: t.genre,
         explicit: t.explicit,
