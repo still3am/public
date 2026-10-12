@@ -1,3 +1,4 @@
+import LoadError from '@/components/LoadError';
 import SafetyControls from '@/components/SafetyControls';
 import {useSafety} from '@/context/SafetyContext';
 import { Link } from "react-router-dom";
@@ -52,10 +53,10 @@ function getMessage(n) {
 
 export default function Notifications() {
   const {blocked}=useSafety();
-  const { notifications, loading, unreadCount, markAllAsRead, markAsRead } =
+  const { notifications, loading, error, hasMore, reload, loadMore, unreadCount, markAllAsRead, markAsRead } =
   useNotifications();
 
-  if (loading) {
+  if (loading && !notifications.length) {
     return (
       <div className="py-20 grid place-items-center">
         <Loader2 className="animate-spin" />
@@ -84,6 +85,7 @@ export default function Notifications() {
         }
       </div>
 
+      {error&&<LoadError onRetry={reload}/>}
       {notifications.length === 0 ?
       <EmptyState
         icon={Bell}
@@ -156,6 +158,7 @@ export default function Notifications() {
         })}
         </div>
       }
+      {hasMore&&<button disabled={loading} onClick={loadMore} className="border rounded-full px-4 py-2 mt-4">{loading?"Loading…":"Load older notifications"}</button>}
     </div>);
 
 }
