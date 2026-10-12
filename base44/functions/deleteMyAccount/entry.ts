@@ -28,8 +28,9 @@ export default async function(req) {
   await s.entities.LoungeSession.deleteMany({host_id:id});
   for(const t of tracks.items||tracks||[]) {
    await s.entities.Playlist.updateMany({track_ids:{$in:[t.id]}},{$pull:{track_ids:t.id}});
-   for(const name of ['LibraryItem','Lyrics','Like','TrackAnnotation']) await s.entities[name].deleteMany({track_id:t.id});
+   for(const name of ['LibraryItem','Lyrics','Like','TrackAnnotation','LoungeQueueItem','PlaybackState']) await s.entities[name].deleteMany({track_id:t.id});
   }
+  for(const t of tracks)await s.entities.User.updateMany({offline_track_ids:{$in:[t.id]}},{$pull:{offline_track_ids:t.id}});
   await s.entities.User.updateMany({featured_track_id:{$in:tracks.map(t=>t.id)}},{$set:{featured_track_id:''}});
   for(const t of tracks)await s.entities.User.updateMany({top_track_ids:{$in:[t.id]}},{$pull:{top_track_ids:t.id}});
   // No anonymization fallback: never claim completion while identity survives.

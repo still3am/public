@@ -27,6 +27,29 @@ export default async function(req) {
    return Response.json({success:true});
   }
   requireUser();
+  if(d.action==='offline') {
+   const current=await s.entities.User.get(u.id);
+   let ids=current.offline_track_ids;
+   if(!Array.isArray(ids)){
+    const old=(await s.entities.OfflineSync.filter({user_id:u.id},'-updated_date',1))[0];
+    try{ids=JSON.parse(old?.tracks||'[]').map(t=>t.id).filter(Boolean);}catch{ids=[];}
+    await s.entities.User.update(u.id,{offline_track_ids:ids});
+   }
+   if(d.operation==='add'){
+    const track=await b.entities.Track.get(d.track_id);
+    if(!track.is_downloadable)err('Downloads are not enabled for this track',403);
+    await s.entities.User.updateMany({id:u.id},{$addToSet:{offline_track_ids:track.id}});
+   }else if(d.operation==='remove')await s.entities.User.updateMany({id:u.id},{$pull:{offline_track_ids:d.track_id}});
+   else if(d.operation==='clear')await s.entities.User.update(u.id,{offline_track_ids:[]});
+   else if(d.operation!=='read')err('Invalid offline operation');
+   const updated=await s.entities.User.get(u.id);
+   const visible=[];
+   for(let offset=0;offset<(updated.offline_track_ids||[]).length;offset+=100){
+    const tracks=await b.entities.Track.filter({id:{$in:updated.offline_track_ids.slice(offset,offset+100)},is_downloadable:true},'-created_date',100);
+    visible.push(...tracks);
+   }
+   return Response.json({tracks:visible});
+  }
   if(d.action==='blocked') {
    const rows=await s.entities.Block.filter({$or:[{user_id:u.id},{blocked_user_id:u.id}]},'-created_date',1000);
    return Response.json({ids:[...new Set(rows.map(r=>r.user_id===u.id?r.blocked_user_id:r.user_id))],own:rows.filter(r=>r.user_id===u.id)});

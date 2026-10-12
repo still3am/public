@@ -142,6 +142,17 @@
       "rls": {
         "write": false
       }
+    },
+    "offline_track_ids": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "default": [],
+      "rls": {
+        "read": false,
+        "write": false
+      }
     }
   },
   "required": []
