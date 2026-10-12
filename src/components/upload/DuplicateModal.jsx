@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Music2, Loader2, X, AlertTriangle, Trash2 } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 import { formatTime } from "@/lib/audio-utils";
@@ -9,6 +9,7 @@ export default function DuplicateModal({ tracks, onClose, onRemove }) {
   const [removing, setRemoving] = useState({});
   const [removingAll, setRemovingAll] = useState(false);
   const [list, setList] = useState(tracks);
+  useEffect(()=>setList(tracks),[tracks]);
 
   async function remove(id) {
     setRemoving((s) => ({ ...s, [id]: true }));
@@ -34,7 +35,7 @@ export default function DuplicateModal({ tracks, onClose, onRemove }) {
   }
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm grid place-items-center p-4">
+    <div role="dialog" aria-modal="true" aria-label="Upload matches" data-public-dialog tabIndex={-1} onKeyDown={e=>e.key==="Escape"&&onClose()} className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm grid place-items-center p-4">
       <div className="bg-card rounded-2xl w-full max-w-md shadow-2xl flex flex-col max-h-[85vh]">
         <div className="flex items-start gap-3 p-5 border-b border-border">
           <div className="w-9 h-9 rounded-full bg-amber-100 text-amber-600 dark:bg-amber-900/30 dark:text-amber-400 grid place-items-center shrink-0">
@@ -45,8 +46,7 @@ export default function DuplicateModal({ tracks, onClose, onRemove }) {
               Possible duplicates
             </h3>
             <p className="text-xs text-foreground/60 mt-0.5">
-              These tracks already exist on PUBLIC. Remove any you don't want
-              to upload again.
+              These files or song details match existing uploads. Review the reason before deciding.
             </p>
           </div>
           <button
@@ -86,9 +86,7 @@ export default function DuplicateModal({ tracks, onClose, onRemove }) {
                     {t.artist || "Unknown"} · {formatTime(t.duration)}
                   </div>
                   <div className="text-[11px] text-amber-600 dark:text-amber-400 truncate">
-                    {t.existingIsMine
-                      ? "Already in your uploads"
-                      : `Already on PUBLIC${t.existingBy ? ` — ${t.existingBy}` : ""}`}
+                    {t.reason || "Similar song details"}{t.existingBy ? ` — ${t.existingBy}` : ""}
                   </div>
                 </div>
                 <button

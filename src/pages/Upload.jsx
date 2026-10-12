@@ -42,6 +42,8 @@ export default function Upload() {
 
       
 
+      {q.catalogError&&<div role="alert" className="border rounded-xl p-3 mb-4 text-sm">{q.catalogError}<button className="underline ml-2" onClick={q.refreshDuplicates}>Retry check</button></div>}
+      {doneCount>0&&<button className="underline text-sm mb-3" onClick={q.clearFinished}>Clear completed uploads</button>}
       <FileDropZone onFiles={q.addFiles} inputRef={inputRef} />
       <input
         ref={inputRef}

@@ -63,6 +63,16 @@ export default async function(req) {
       const ms=await svc.entities.LoungeMember.filter({session_id:sid,user_id:user.id},'-created_date',1);
       return {s,m:ms[0],host:isAdmin||s.host_id===user.id};
     };
+    if(action==='checkDuplicate' && entity==='Track'){
+      const input=args[0]||{};
+      if(!/^[a-f0-9]{64}$/.test(input.audio_sha256||''))fail('Invalid file checksum',400);
+      if(input.upload_request_id){
+        const own=await handler.filter({uploader_id:user.id,upload_request_id:input.upload_request_id},'-created_date',1);
+        if(own.length)return Response.json({result:{duplicate:false,resumable:true}});
+      }
+      const rows=await handler.filter({audio_sha256:input.audio_sha256,$or:[{uploader_id:user.id},{is_published:true,approval_status:'approved'}]},'-created_date',1);
+      return Response.json({result:{duplicate:rows.length>0}});
+    }
     if(action==='read') {
       if(entity==='Track') {
         const [method,...params]=args;

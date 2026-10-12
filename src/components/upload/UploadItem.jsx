@@ -30,7 +30,7 @@ export default function UploadItem({
   const hasGenre = !!item.genre;
   const hasCover = !!item.coverFile;
   const meetsRules = hasArtist && hasGenre && hasCover;
-  const locked = uploading || done;
+  const locked = uploading || enhancing || done;
 
   const toggles = [
   { key: "rightsConfirmed", label: "I own or have permission to distribute this audio, artwork and lyrics", icon: null },
@@ -117,6 +117,8 @@ export default function UploadItem({
             )}
           </div>
 
+          {item.releaseStatus&&<p className="text-xs font-semibold">Saved · {item.releaseStatus==="approved"?"Published":item.releaseStatus==="pending"?"Awaiting review":"Private"}</p>}
+          {!done&&<label className="flex items-center gap-2 text-xs"><input type="checkbox" checked={!!item.duplicateAcknowledged} onChange={e=>onChange({duplicateAcknowledged:e.target.checked})} disabled={locked}/>If a metadata match appears, I confirm this is a different recording.</label>}
           <ReleaseChecklist
             hasGenre={hasGenre}
             hasArtist={hasArtist}
