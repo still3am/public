@@ -381,8 +381,6 @@ export function PlayerProvider({ children }) {
       } catch {}
     }
     if (blobUrlRefs[side].current && blobUrlRefs[side].current !== blobUrl) {
-      let onlineUrl=t.audio_url;
-      if(t._private_audio){try{onlineUrl=(await base44.entities.Track.get(t.id)).audio_url;}catch{return;}}
       URL.revokeObjectURL(blobUrlRefs[side].current);
     }
     blobUrlRefs[side].current = blobUrl || null;
