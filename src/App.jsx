@@ -43,7 +43,7 @@ import PlaylistDetail from '@/pages/PlaylistDetail';
 import MyUploads from '@/pages/MyUploads';
 
 const AuthenticatedApp = () => {
-  const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
+  const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin, checkAppState } = useAuth();
 
   // Show loading spinner while checking app public settings or auth
   if (isLoadingPublicSettings || isLoadingAuth) {
@@ -56,6 +56,7 @@ const AuthenticatedApp = () => {
 
   // Handle authentication errors
   if (authError) {
+    if(['connection','unknown'].includes(authError.type))return <div className="p-8 text-center space-y-4"><p>{authError.message}</p><button className="underline" onClick={checkAppState}>Retry connection</button></div>;
     if(authError.type==='suspended' && !['/support','/privacy','/terms','/login'].includes(window.location.pathname)) return <div className="p-8 text-center space-y-4"><p>{authError.message}</p><a className="underline" href="/support">Contact support</a><button className="block mx-auto underline" onClick={()=>window.location.href='/login'}>Return to login</button></div>;
     if (authError.type === 'user_not_registered') {
       return <UserNotRegisteredError />;
