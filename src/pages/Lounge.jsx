@@ -1,3 +1,4 @@
+import LoadError from '@/components/LoadError';
 import { useEffect, useState, useCallback, useMemo } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
@@ -28,6 +29,7 @@ export default function Lounge() {
   const [members, setMembers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
+  const [error,setError]=useState(false),[retry,setRetry]=useState(0);
   const [pickerOpen, setPickerOpen] = useState(false);
 
   // Resolve session + create-or-fetch my membership record.
@@ -35,7 +37,7 @@ export default function Lounge() {
     let cancelled = false;
     (async () => {
       if (!code || !user?.id) return;
-      setLoading(true);
+      setLoading(true);setError(false);setNotFound(false);
       try {
         const s = await fetchSessionByCode(code);
         if (cancelled) return;
@@ -73,7 +75,7 @@ export default function Lounge() {
           if (!cancelled) setMember(m);
         }
       } catch {
-        if (!cancelled) setNotFound(true);
+        if (!cancelled) setError(true);
       } finally {
         if (!cancelled) setLoading(false);
       }
@@ -81,7 +83,7 @@ export default function Lounge() {
     return () => {
       cancelled = true;
     };
-  }, [code, user?.id]);
+  }, [code, user?.id,retry]);
 
   const refreshMember = useCallback(async (sid) => {
     try {
@@ -112,6 +114,7 @@ export default function Lounge() {
   const rejected = member?.status === "rejected";
   const pending = member?.status === "pending";
 
+  if(error)return <LoadError onRetry={()=>setRetry(n=>n+1)}/>;
   return (
     <div className="min-h-screen pb-10">
       <div className="max-w-xl mx-auto">

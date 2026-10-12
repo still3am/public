@@ -1,3 +1,5 @@
+import LoadError from '@/components/LoadError';
+import {useRef} from 'react';
 import {readAllPages} from '@/lib/readPages';
 import { useEffect, useState } from "react";
 import { useParams, useLocation, Link } from "react-router-dom";
@@ -111,19 +113,22 @@ export default function Profile() {
   const coverUrl = useCoverUrl(featuredCoverUrl);
   const [bgPrimary, bgSecondary, bgAccent] = useColorPalette(coverUrl);
 
+  const loadVersion=useRef(0);
+  const [loadError,setLoadError]=useState(false);
   async function load() {
-    setLoading(true);
+    const request=++loadVersion.current;(request===loadVersion.current)&&setLoadError(false);
+    (request===loadVersion.current)&&setLoading(true);
     try {
       // Another member's profile comes from the public-profiles endpoint: the
       // built-in User rules only let admins read other users, so a direct
       // User.get left every other profile showing as "not found".
       let prof = isOwn ? me : (await getUsersByIds([targetId]))[0] || null;
       if (!prof) {
-        setProfile(null);
+        (request===loadVersion.current)&&setProfile(null);
         return;
       }
-      setProfile(prof);
-      setForm(formFromProfile(prof));
+      (request===loadVersion.current)&&setProfile(prof);
+      (request===loadVersion.current)&&setForm(formFromProfile(prof));
       // Owners see all their own tracks (pending/private/approved); others only see approved ones.
       const trackFilter = isOwn ?
       { uploader_id: targetId } :
@@ -147,12 +152,12 @@ export default function Profile() {
       ) :
       Promise.resolve([])]
       );
-      setTracks(t);
-      setTopTracks(
+      (request===loadVersion.current)&&setTracks(t);
+      (request===loadVersion.current)&&setTopTracks(
         [...t].sort((a, b) => (b.play_count || 0) - (a.play_count || 0)).slice(0, 5)
       );
       const totalsRow = totals?.rows?.[0];
-      setStats({
+      (request===loadVersion.current)&&setStats({
         followers: followersCount || 0,
         following: followingCount || 0,
         plays: totalsRow ?
@@ -162,9 +167,10 @@ export default function Profile() {
         totalsRow.sum_like_count || 0 :
         t.reduce((s, x) => s + (x.like_count || 0), 0)
       });
-      setFollowing(relToUser.length > 0);
+      (request===loadVersion.current)&&setFollowing(relToUser.length > 0);
+    } catch {(request===loadVersion.current)&&setLoadError(true);
     } finally {
-      setLoading(false);
+      (request===loadVersion.current)&&setLoading(false);
     }
   }
 
@@ -318,6 +324,7 @@ export default function Profile() {
     }
   }
 
+  if(loadError)return <LoadError onRetry={load}/>;
   if (loading && !profile)
   return (
     <div className="py-20 grid place-items-center">

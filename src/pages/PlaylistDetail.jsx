@@ -1,3 +1,5 @@
+import LoadError from '@/components/LoadError';
+import {useRef} from 'react';
 import {readAllPages} from '@/lib/readPages';
 import { useState, useEffect, useCallback, useMemo } from "react";
 import { useParams, useNavigate } from "react-router-dom";
@@ -39,16 +41,19 @@ export default function PlaylistDetail() {
   const [saved, setSaved] = useState(false);
   const [savingSaved, setSavingSaved] = useState(false);
 
+  const loadVersion=useRef(0);
+  const [loadError,setLoadError]=useState(false);
   const load = useCallback(async () => {
-    setLoading(true);
+    const request=++loadVersion.current;(request===loadVersion.current)&&setLoadError(false);
+    (request===loadVersion.current)&&setLoading(true);
     try {
-      const pl = await base44.entities.Playlist.get(id).catch(() => null);
+      const pl = await base44.entities.Playlist.get(id);
       if (!pl) {
-        setPlaylist(null);
+        (request===loadVersion.current)&&setPlaylist(null);
         return;
       }
-      setPlaylist(pl);
-      setForm({ name: pl.name || "", description: pl.description || "", is_public: pl.is_public !== false });
+      (request===loadVersion.current)&&setPlaylist(pl);
+      (request===loadVersion.current)&&setForm({ name: pl.name || "", description: pl.description || "", is_public: pl.is_public !== false });
       const ids = pl.track_ids || [];
       if (ids.length) {
         const list = await readAllPages(opts=>base44.entities.Track.filter({id:{$in:ids}},{sort:"-created_date",...opts}));
@@ -56,12 +61,13 @@ export default function PlaylistDetail() {
         const sorted = (list || [])
           .slice()
           .sort((a, b) => (order.get(a.id) ?? 0) - (order.get(b.id) ?? 0));
-        setTracks(sorted);
+        (request===loadVersion.current)&&setTracks(sorted);
       } else {
-        setTracks([]);
+        (request===loadVersion.current)&&setTracks([]);
       }
+    } catch {(request===loadVersion.current)&&setLoadError(true);
     } finally {
-      setLoading(false);
+      (request===loadVersion.current)&&setLoading(false);
     }
   }, [id]);
 
@@ -121,12 +127,12 @@ export default function PlaylistDetail() {
     }
   }
 
-  async function removeTrack(trackId) {
+  async function removeTrack(trackId) {try {
     const newIds = (playlist.track_ids || []).filter((tid) => tid !== trackId);
     const updated = await base44.entities.Playlist.update(playlist.id, { track_ids: newIds });
     setPlaylist(updated);
     setTracks((prev) => prev.filter((t) => t.id !== trackId));
-  }
+  }catch{toast({title:"Could not remove the song. Retry.",variant:"destructive"});}}
 
   async function toggleSaved() {
     if (savingSaved) return;
@@ -160,6 +166,7 @@ export default function PlaylistDetail() {
     p.playTrackAt(tracks, 0);
   }
 
+  if(loadError)return <LoadError onRetry={load}/>;
   if (loading)
     return (
       <div className="py-20 grid place-items-center">

@@ -1,3 +1,4 @@
+import LoadError from '@/components/LoadError';
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
@@ -42,10 +43,11 @@ export default function ArtistDashboard() {
   const [tracks, setTracks] = useState([]);
   const [totals, setTotals] = useState(null);
   const [followers, setFollowers] = useState(0);
+  const [error,setError]=useState(false),[retry,setRetry]=useState(0);
 
   useEffect(() => {
     if (!user) return;
-    let cancelled = false;
+    let cancelled = false;setError(false);setLoading(true);
     async function load() {
       try {
         const [t, sums, followerCount] = await Promise.all([
@@ -62,13 +64,14 @@ export default function ArtistDashboard() {
         base44.entities.Track.aggregate({
           query: { uploader_id: user.id },
           sum: ["play_count", "like_count"]
-        }),
-        base44.entities.Follow.count({ following_id: user.id })]
+        }).catch(()=>null),
+        base44.entities.Follow.count({ following_id: user.id }).catch(()=>null)]
         );
         if (cancelled) return;
         setTracks(t);
         setTotals(sums?.rows?.[0] || null);
-        setFollowers(followerCount || 0);
+        setFollowers(followerCount);
+      } catch {if(!cancelled)setError(true);
       } finally {
         if (!cancelled) setLoading(false);
       }
@@ -77,8 +80,9 @@ export default function ArtistDashboard() {
     return () => {
       cancelled = true;
     };
-  }, [user]);
+  }, [user,retry]);
 
+  if(error)return <LoadError onRetry={()=>setRetry(n=>n+1)}/>;
   if (loading) {
     return (
       <div className="py-20 grid place-items-center">
@@ -140,7 +144,7 @@ export default function ArtistDashboard() {
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
         <StatCard icon={Play} label="Total Plays" value={formatNumber(totalPlays)} />
         <StatCard icon={Heart} label="Total Likes" value={formatNumber(totalLikes)} />
-        <StatCard icon={Users} label="Followers" value={formatNumber(followers)} />
+        <StatCard icon={Users} label="Followers" value={followers===null?"Unavailable":formatNumber(followers)} />
         <StatCard icon={Music} label="Tracks" value={formatNumber(tracks.length)} />
       </div>
 

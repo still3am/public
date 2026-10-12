@@ -1,3 +1,4 @@
+import LoadError from '@/components/LoadError';
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
@@ -24,6 +25,7 @@ const CATEGORIES = [
 export default function Suggestions() {
   const { user } = useAuth();
   const [items, setItems] = useState([]);
+  const [error,setError]=useState(false);
   const [loading, setLoading] = useState(true);
   const [category, setCategory] = useState("feature");
   const [title, setTitle] = useState("");
@@ -32,12 +34,11 @@ export default function Suggestions() {
   const [sort, setSort] = useState("recent");
 
   async function load() {
-    setLoading(true);
+    setLoading(true);setError(false);
     try {
-      const rows = await base44.entities.Suggestion.list("-created_date", 100).catch(
-        () => []
-      );
+      const rows = await base44.entities.Suggestion.list("-created_date", 100);
       setItems(rows);
+    } catch {setError(true);
     } finally {
       setLoading(false);
     }
@@ -64,6 +65,7 @@ export default function Suggestions() {
       setDetails("");
       setCategory("feature");
       setItems((prev) => [created, ...prev.filter(Boolean)]);
+    } catch {window.dispatchEvent(new Event("public:error"));
     } finally {
       setSubmitting(false);
     }
@@ -106,6 +108,7 @@ export default function Suggestions() {
   ) :
   items;
 
+  if(error)return <LoadError onRetry={load}/>;
   return (
     <PullToRefresh onRefresh={load}>
       <div>

@@ -1,3 +1,5 @@
+import LoadError from '@/components/LoadError';
+import {useRef} from 'react';
 import { useCallback, useEffect, useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { useAuth } from "@/lib/AuthContext";
@@ -30,9 +32,12 @@ export default function MyUploads() {
   const [showBulkPlaylist, setShowBulkPlaylist] = useState(false);
   const [busy, setBusy] = useState(false);
 
+  const loadVersion=useRef(0);
+  const [loadError,setLoadError]=useState(false);
   const load = useCallback(async () => {
+    const request=++loadVersion.current;(request===loadVersion.current)&&setLoadError(false);
     if (!user?.id) {
-      setUploads([]);
+      (request===loadVersion.current)&&setUploads([]);
       return;
     }
     try {
@@ -43,9 +48,9 @@ export default function MyUploads() {
           { sort: "-created_date", ...options }
         )
       );
-      setUploads(rows);
+      (request===loadVersion.current)&&setUploads(rows);
     } catch {
-      setUploads([]);
+      (request===loadVersion.current)&&setLoadError(true);
     }
   }, [user?.id]);
 
@@ -127,6 +132,7 @@ export default function MyUploads() {
     );
   };
 
+  if(loadError)return <LoadError onRetry={load}/>;
   return (
     <div className="max-w-5xl mx-auto pb-10">
       <Link

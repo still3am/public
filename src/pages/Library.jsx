@@ -1,3 +1,5 @@
+import LoadError from '@/components/LoadError';
+import {useRef} from 'react';
 import BulkOrganizeSheet from '@/components/library/BulkOrganizeSheet';
 import {readAllPages} from '@/lib/readPages';
 import { useCallback, useEffect, useState } from "react";
@@ -65,17 +67,20 @@ export default function Library() {
     }
   }, [user?.id]);
 
+  const loadVersion=useRef(0);
+  const [loadError,setLoadError]=useState(false);
   const load = useCallback(async () => {
+    const request=++loadVersion.current;(request===loadVersion.current)&&setLoadError(false);
     if (!user?.id) {
-      setTracks([]);
-      setLoading(false);
+      (request===loadVersion.current)&&setTracks([]);
+      (request===loadVersion.current)&&setLoading(false);
       return;
     }
-    setLoading(true);
+    (request===loadVersion.current)&&setLoading(true);
     try {
       const items = await readAllPages(opts=>base44.entities.LibraryItem.filter({user_id:user.id},{sort:"-created_date",...opts}));
-      setEntryMap(Object.fromEntries(items.map(r=>[r.track_id,r])));
-      setFolders([...new Set(items.map(r=>r.folder).filter(Boolean))]);
+      (request===loadVersion.current)&&setEntryMap(Object.fromEntries(items.map(r=>[r.track_id,r])));
+      (request===loadVersion.current)&&setFolders([...new Set(items.map(r=>r.folder).filter(Boolean))]);
       const trackIds = (items || []).
       map((i) => i.track_id).
       filter(Boolean);
@@ -83,13 +88,14 @@ export default function Library() {
       await readAllPages(opts=>base44.entities.Track.filter({id:{$in:trackIds}},{sort:"-created_date",...opts})) :
       [];
       const order = new Map(trackIds.map((id, i) => [id, i]));
-      setTracks(
+      (request===loadVersion.current)&&setTracks(
         (list || []).
         slice().
         sort((a, b) => (order.get(a.id) ?? 0) - (order.get(b.id) ?? 0))
       );
+    } catch {(request===loadVersion.current)&&setLoadError(true);
     } finally {
-      setLoading(false);
+      (request===loadVersion.current)&&setLoading(false);
     }
   }, [user?.id]);
 
@@ -103,7 +109,8 @@ export default function Library() {
     handler();
     window.addEventListener("recentplays:change", handler);
     window.addEventListener("storage", handler);
-    return () => {
+    if(loadError)return <LoadError onRetry={load}/>;
+  return () => {
       window.removeEventListener("recentplays:change", handler);
       window.removeEventListener("storage", handler);
     };

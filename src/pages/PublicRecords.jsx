@@ -1,3 +1,5 @@
+import LoadError from '@/components/LoadError';
+import {useRef} from 'react';
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
@@ -95,14 +97,18 @@ export default function PublicRecords({ id: propId, fallbackArtist = null }) {
   const [loading, setLoading] = useState(true);
   const [generating, setGenerating] = useState(false);
 
+  const loadVersion=useRef(0);
+  const [loadError,setLoadError]=useState(false);
   async function load() {
-    setLoading(true);
+    const request=++loadVersion.current;(request===loadVersion.current)&&setLoadError(false);
+    (request===loadVersion.current)&&setLoading(true);
     try {
-      const a = fallbackArtist || await base44.entities.Artist.get(id).catch(() => null);
-      setArtist(a);
-      setTracks(a?.name ? await fetchArtistTracks(a.name) : []);
+      const a = fallbackArtist || await base44.entities.Artist.get(id);
+      (request===loadVersion.current)&&setArtist(a);
+      (request===loadVersion.current)&&setTracks(a?.name ? await fetchArtistTracks(a.name) : []);
+    } catch {(request===loadVersion.current)&&setLoadError(true);
     } finally {
-      setLoading(false);
+      (request===loadVersion.current)&&setLoading(false);
     }
   }
 
@@ -132,6 +138,7 @@ export default function PublicRecords({ id: propId, fallbackArtist = null }) {
     }
   }
 
+  if(loadError)return <LoadError onRetry={load}/>;
   if (loading) {
     return (
       <div className="py-24 grid place-items-center">

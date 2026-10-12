@@ -1,3 +1,5 @@
+import LoadError from '@/components/LoadError';
+import {useRef} from 'react';
 import { useEffect, useState } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
@@ -39,27 +41,31 @@ export default function TrackDetail() {
   const [moreTracks, setMoreTracks] = useState([]);
   const { toast } = useToast();
 
+  const loadVersion=useRef(0);
+  const [loadError,setLoadError]=useState(false);
   async function load() {
-    setLoading(true);
+    const request=++loadVersion.current;(request===loadVersion.current)&&setLoadError(false);
+    (request===loadVersion.current)&&setLoading(true);
     try {
-      const t = await base44.entities.Track.get(id).catch(() => null);
-      setTrack(t);
+      const t = await base44.entities.Track.get(id);
+      (request===loadVersion.current)&&setTrack(t);
       if (t?.uploader_id) {
         // Other people's user records are admin-only, so the uploader credit is
         // resolved through the public-profile endpoint the profile page uses.
         const u = (await getUsersByIds([t.uploader_id]))[0] || null;
-        setUploader(u);
+        (request===loadVersion.current)&&setUploader(u);
       }
       if (t?.artist) {
         // The artist's songs come from the server, so a large catalogue still
         // surfaces their older tracks instead of only the top 100 by plays.
         const all = await fetchArtistTracks(t.artist).catch(() => []);
-        setMoreTracks(all.filter((x) => x.id !== t.id).slice(0, 6));
+        (request===loadVersion.current)&&setMoreTracks(all.filter((x) => x.id !== t.id).slice(0, 6));
       } else {
-        setMoreTracks([]);
+        (request===loadVersion.current)&&setMoreTracks([]);
       }
+    } catch {(request===loadVersion.current)&&setLoadError(true);
     } finally {
-      setLoading(false);
+      (request===loadVersion.current)&&setLoading(false);
     }
   }
 
@@ -88,6 +94,7 @@ export default function TrackDetail() {
     }
   }
 
+  if(loadError)return <LoadError onRetry={load}/>;
   if (loading) {
     return (
       <div className="py-20 grid place-items-center">

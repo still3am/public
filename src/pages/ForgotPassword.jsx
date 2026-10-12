@@ -11,17 +11,18 @@ export default function ForgotPassword() {
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
   const [sent, setSent] = useState(false);
+  const [error,setError]=useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
+    setLoading(true);setError("");
     try {
-      await base44.auth.resetPasswordRequest(email);
-    } catch {
-      // Always show success regardless
+      await base44.auth.resetPasswordRequest(email);setSent(true);
+    } catch(e) {
+      const status=e.status??e.response?.status;
+      if(!status||status===429||status>=500)setError("The reset request could not send. Check your connection and retry.");else setSent(true);
     } finally {
       setLoading(false);
-      setSent(true);
     }
   };
 
@@ -36,6 +37,7 @@ export default function ForgotPassword() {
         </Link>
       }
     >
+      {error&&<p role="alert" className="text-sm text-destructive mb-3">{error}</p>}
       {sent ? (
         <p className="text-sm text-foreground text-center">
           If an account exists with that email, you'll receive a password reset link shortly.
