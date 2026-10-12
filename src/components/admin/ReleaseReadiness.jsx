@@ -2,7 +2,7 @@ import {useEffect,useState} from 'react';
 import {base44} from '@/api/base44Client';
 import {Button} from '@/components/ui/button';
 import {useToast} from '@/components/ui/use-toast';
-const flags=[['privacy_reviewed','Privacy policy and operator details reviewed'],['rights_reviewed','Music, artwork, lyrics and download rights verified'],['ios_tested','TestFlight playback, offline, camera, sharing and deletion tested'],['apple_login_verified','Every advertised sign-in provider and Apple account revocation verified']];
+const flags=[['legacy_storage_reviewed','Older public uploads and hosting-file deletion/retention reviewed'],['privacy_reviewed','Privacy policy and operator details reviewed'],['rights_reviewed','Music, artwork, lyrics and download rights verified'],['ios_tested','TestFlight playback, offline, camera, sharing and deletion tested'],['apple_login_verified','Every advertised sign-in provider and Apple account revocation verified']];
 export default function ReleaseReadiness() {
  const [row,setRow]=useState(null),[error,setError]=useState(''),[busy,setBusy]=useState(false);
  const {toast}=useToast();

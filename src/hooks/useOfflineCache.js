@@ -23,7 +23,8 @@ const EVT = "offlinecache:change";
 // cloud track twice in one session.
 const autoQueued = new Set();
 const downloadingIds=new Set();
-window.addEventListener('account:cleared',()=>{autoQueued.clear();downloadingIds.clear();});
+let generation=0;
+window.addEventListener('account:cleared',()=>{generation++;autoQueued.clear();downloadingIds.clear();});
 
 // PUBLIC files (covers) are served as a generic octet-stream; a blob: URL only
 // renders in an <img> when its MIME is image/*, so sniff the magic bytes and
@@ -121,6 +122,7 @@ export function useOfflineCache() {
     if (!user?.id || !track?.id || track.is_downloadable!==true) return false;
     if(downloadingIds.has(track.id))return false;
     downloadingIds.add(track.id);
+    const startedGeneration=generation;
     setDownloading((s) => ({ ...s, [track.id]: true }));
     try {
       const authorized=await base44.entities.Track.get(track.id);
@@ -137,6 +139,7 @@ export function useOfflineCache() {
         if (cres.ok) coverBlob = await toImageBlob(cres);
         }
       } catch {}
+      if(startedGeneration!==generation)throw new Error("Account changed during download");
       await putTrack(track, blob, coverBlob);
       // Keep the saved download order in sync: a freshly saved track goes to
       // the top so it's easy to find (matching the previous newest-first view).

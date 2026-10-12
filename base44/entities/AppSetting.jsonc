@@ -61,6 +61,10 @@
         ]
       },
       "default": []
+    },
+    "legacy_storage_reviewed": {
+      "type": "boolean",
+      "default": false
     }
   },
   "rls": {

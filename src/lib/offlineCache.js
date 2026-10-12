@@ -57,7 +57,8 @@ export async function putTrack(track, blob, coverBlob) {
   };
   return new Promise((res, rej) => {
     const r = store.put(record);
-    r.onsuccess = () => res();
+    store.transaction.oncomplete = () => res();
+    store.transaction.onabort = () => rej(store.transaction.error);
     r.onerror = () => rej(r.error);
   });
 }
@@ -72,7 +73,8 @@ export async function putCoverArt(id, coverBlob) {
       if (!rec) return res();
       rec._coverBlob = coverBlob;
       const pr = store.put(rec);
-      pr.onsuccess = () => res();
+      store.transaction.oncomplete = () => res();
+      store.transaction.onabort = () => rej(store.transaction.error);
       pr.onerror = () => rej(pr.error);
     };
     req.onerror = () => rej(req.error);
@@ -105,7 +107,8 @@ export async function deleteRecord(id) {
   const store = await tx("readwrite");
   return new Promise((res, rej) => {
     const r = store.delete(id);
-    r.onsuccess = () => res();
+    store.transaction.oncomplete = () => res();
+    store.transaction.onabort = () => rej(store.transaction.error);
     r.onerror = () => rej(r.error);
   });
 }
@@ -114,7 +117,8 @@ export async function clearAll() {
   const store = await tx("readwrite");
   return new Promise((res, rej) => {
     const r = store.clear();
-    r.onsuccess = () => res();
+    store.transaction.oncomplete = () => res();
+    store.transaction.onabort = () => rej(store.transaction.error);
     r.onerror = () => rej(r.error);
   });
 }
@@ -137,7 +141,8 @@ export async function setOrderIds(ids) {
   const store = await txMeta("readwrite");
   return new Promise((res, rej) => {
     const r = store.put({ key: "order", ids });
-    r.onsuccess = () => res();
+    store.transaction.oncomplete = () => res();
+    store.transaction.onabort = () => rej(store.transaction.error);
     r.onerror = () => rej(r.error);
   });
 }
