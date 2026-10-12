@@ -3,6 +3,7 @@ import { ListMusic } from "lucide-react";
 import { Image } from "@/components/ui/image";
 import { usePlaylistCover } from "@/hooks/usePlaylistCover";
 
+/** @param {any} props */
 export default function PlaylistCard({ playlist }) {
   const count = playlist.track_ids?.length || 0;
   const cover = usePlaylistCover(playlist);

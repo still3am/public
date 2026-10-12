@@ -4,6 +4,7 @@ import {useAuth} from '@/lib/AuthContext';
 import {readAllPages} from '@/lib/readPages';
 import {Dialog,DialogContent,DialogHeader,DialogTitle,DialogDescription} from '@/components/ui/dialog';
 import {Button} from '@/components/ui/button';
+/** @param {any} props */
 export default function BulkOrganizeSheet({trackIds,onClose,onDone}) {
  const {user}=useAuth(),[folder,setFolder]=useState(''),[tags,setTags]=useState(''),[busy,setBusy]=useState(false),[error,setError]=useState('');
  const save=async()=>{setBusy(true);try{

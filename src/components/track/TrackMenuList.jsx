@@ -1,5 +1,6 @@
 import { Fragment } from "react";
 
+/** @param {any} props */
 function Row({ item, onPick, roomy }) {
   const Icon = item.icon;
   return (
@@ -22,6 +23,7 @@ function Row({ item, onPick, roomy }) {
 }
 
 /** Standard actions, divided into groups, then any surface-specific extras. */
+/** @param {any} props */
 export default function TrackMenuList({ standard, manage, extras, onPick, roomy }) {
   return (
     <div role="menu" className="py-1">

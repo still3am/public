@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { ChevronDown, Check } from "lucide-react";
 
+/** @param {any} props */
 export default function BottomSheetSelect({
   value,
   options,

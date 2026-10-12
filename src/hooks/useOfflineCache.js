@@ -22,7 +22,8 @@ const EVT = "offlinecache:change";
 // Module-level guard so multiple hook instances don't auto-download the same
 // cloud track twice in one session.
 const autoQueued = new Set();
-const pendingDownloads=new Map();
+const downloadingIds=new Set();
+window.addEventListener('account:cleared',()=>{autoQueued.clear();downloadingIds.clear();});
 
 // PUBLIC files (covers) are served as a generic octet-stream; a blob: URL only
 // renders in an <img> when its MIME is image/*, so sniff the magic bytes and
@@ -118,7 +119,8 @@ export function useOfflineCache() {
 
   const downloadTrack = useCallback(async (track) => {
     if (!user?.id || !track?.audio_url || track.is_downloadable!==true) return false;
-    if(pendingDownloads.has(track.id)) return await pendingDownloads.get(track.id);
+    if(downloadingIds.has(track.id))return false;
+    downloadingIds.add(track.id);
     setDownloading((s) => ({ ...s, [track.id]: true }));
     try {
       const res = await fetch(track.audio_url);
@@ -145,6 +147,7 @@ export function useOfflineCache() {
     } catch {
       return false;
     } finally {
+      downloadingIds.delete(track.id);
       setDownloading((s) => ({ ...s, [track.id]: false }));
     }
   }, [user?.id]);

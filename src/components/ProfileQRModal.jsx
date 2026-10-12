@@ -2,6 +2,7 @@ import { useState } from "react";
 import { X, Share2, ScanLine } from "lucide-react";
 import QRScannerModal from "@/components/QRScannerModal";
 
+/** @param {any} props */
 export default function ProfileQRModal({ url, name, avatar, onClose }) {
   const [scanning, setScanning] = useState(false);
   const [copied, setCopied] = useState(false);

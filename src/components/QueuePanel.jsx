@@ -23,6 +23,7 @@ import {
 "@/hooks/useTransitions";
 import { TRANSITION_MODES } from "@/lib/transitions";
 
+/** @param {any} props */
 export default function QueuePanel({ open, onClose }) {
   const p = usePlayer();
   const { user } = useAuth();

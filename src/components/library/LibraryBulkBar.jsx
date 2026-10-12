@@ -2,6 +2,7 @@ import { CheckSquare, ListPlus, Trash2, FolderMinus, Loader2 } from "lucide-reac
 
 // Bulk edit toolbar for the library: toggles selection mode, then acts on
 // everything currently selected.
+/** @param {any} props */
 export default function LibraryBulkBar({
   visible,
   active,

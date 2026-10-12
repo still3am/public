@@ -8,7 +8,6 @@ import {
   TrendingUp,
   Sparkles,
   Music,
-  Disc,
   Upload,
   ChevronRight } from
 "lucide-react";
@@ -29,6 +28,7 @@ const greetingByHour = () => {
   return "Good evening";
 };
 
+/** @param {any} props */
 function Section({ title, icon: Icon, children, seeAllTo }) {
   return (
     <section className="mb-10 md:mb-12">
@@ -48,6 +48,7 @@ function Section({ title, icon: Icon, children, seeAllTo }) {
 
 }
 
+/** @param {any} props */
 function CardRow({ tracks }) {
   if (!tracks?.length) return null;
   return (

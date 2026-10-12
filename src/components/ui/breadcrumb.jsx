@@ -5,11 +5,11 @@ import { ChevronRight, MoreHorizontal } from "lucide-react"
 import { cn } from "@/lib/utils"
 
 const Breadcrumb = React.forwardRef(
-  ({ ...props }, ref) => <nav ref={ref} aria-label="breadcrumb" {...props} />
+  /** @param {any} props */ ({ ...props }, ref) => <nav ref={ref} aria-label="breadcrumb" {...props} />
 )
 Breadcrumb.displayName = "Breadcrumb"
 
-const BreadcrumbList = React.forwardRef(({ className, ...props }, ref) => (
+const BreadcrumbList = React.forwardRef(/** @param {any} props */ ({ className, ...props }, ref) => (
   <ol
     ref={ref}
     className={cn(
@@ -20,7 +20,7 @@ const BreadcrumbList = React.forwardRef(({ className, ...props }, ref) => (
 ))
 BreadcrumbList.displayName = "BreadcrumbList"
 
-const BreadcrumbItem = React.forwardRef(({ className, ...props }, ref) => (
+const BreadcrumbItem = React.forwardRef(/** @param {any} props */ ({ className, ...props }, ref) => (
   <li
     ref={ref}
     className={cn("inline-flex items-center gap-1.5", className)}
@@ -28,7 +28,7 @@ const BreadcrumbItem = React.forwardRef(({ className, ...props }, ref) => (
 ))
 BreadcrumbItem.displayName = "BreadcrumbItem"
 
-const BreadcrumbLink = React.forwardRef(({ asChild, className, ...props }, ref) => {
+const BreadcrumbLink = React.forwardRef(/** @param {any} props */ ({ asChild, className, ...props }, ref) => {
   const Comp = asChild ? Slot : "a"
 
   return (
@@ -40,7 +40,7 @@ const BreadcrumbLink = React.forwardRef(({ asChild, className, ...props }, ref) 
 })
 BreadcrumbLink.displayName = "BreadcrumbLink"
 
-const BreadcrumbPage = React.forwardRef(({ className, ...props }, ref) => (
+const BreadcrumbPage = React.forwardRef(/** @param {any} props */ ({ className, ...props }, ref) => (
   <span
     ref={ref}
     role="link"

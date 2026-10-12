@@ -5,6 +5,7 @@ import { useAuth } from "@/lib/AuthContext";
 import { X, Loader2, ImagePlus } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
 
+/** @param {any} props */
 export default function CreatePlaylistModal({ onClose, onCreated }) {
   const { user } = useAuth();
   const [name, setName] = useState("");

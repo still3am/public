@@ -7,6 +7,7 @@ const STEP = 120;
  * loaded — this only grows the DOM gradually, so a catalogue of thousands of
  * tracks stays smooth instead of mounting every card at once.
  */
+/** @param {any} props */
 export default function IncrementalList({ items, renderItem, className }) {
   const [shown, setShown] = useState(STEP);
   const sentinel = useRef(null);

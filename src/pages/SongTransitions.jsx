@@ -8,6 +8,7 @@ import {
   CROSSFADE_MAX,
 } from "@/lib/transitions";
 
+/** @param {any} props */
 function OptionTile({ active, onClick, locked, icon: Icon, title, subtitle }) {
   return (
     <button
@@ -41,6 +42,7 @@ function OptionTile({ active, onClick, locked, icon: Icon, title, subtitle }) {
   );
 }
 
+/** @param {any} props */
 function CrossfadeSlider({ value, disabled, onChange }) {
   const pct =
     ((value - CROSSFADE_MIN) / (CROSSFADE_MAX - CROSSFADE_MIN)) * 100;

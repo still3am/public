@@ -4,6 +4,7 @@ import { GENRES } from "@/lib/audio-utils";
 import { Loader2, X, Save, Trash2 } from "lucide-react";
 import BottomSheetSelect from "@/components/BottomSheetSelect";
 
+/** @param {any} props */
 export default function EditTrackModal({ track, onClose, onSaved, onDeleted }) {
   const [form, setForm] = useState({
     title: track.title || "",

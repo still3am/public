@@ -6,6 +6,7 @@ import ArtistLinks from "@/components/ArtistLinks";
 import { useCoverUrl } from "@/hooks/useCoverUrl";
 import TrackOptionsMenu from "@/components/track/TrackOptionsMenu";
 
+/** @param {any} props */
 export default function TrackRow({
   track,
   index,

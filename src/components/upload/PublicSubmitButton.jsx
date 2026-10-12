@@ -5,6 +5,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { Globe, Loader2 } from "lucide-react";
 import { awaitingFirstSubmit, publicSubmitBlockers } from "@/lib/publicSubmit";
 
+/** @param {any} props */
 export default function PublicSubmitButton({ track, onSubmitted }) {
   const { user } = useAuth();
   const { toast } = useToast();

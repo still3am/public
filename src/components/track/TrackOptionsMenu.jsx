@@ -13,6 +13,7 @@ import PlaylistPickerModal from "@/components/playlist/PlaylistPickerModal";
 
 const MENU_WIDTH = 240;
 
+/** @param {any} props */
 function SheetHeader({ track }) {
   const cover = useCoverUrl(track.cover_art_url);
   return (
@@ -34,6 +35,7 @@ function SheetHeader({ track }) {
  * (owner/admin tools, player extras) below the standard list.
  * Phones get a bottom sheet, larger screens a popover.
  */
+/** @param {any} props */
 export default function TrackOptionsMenu({
   track,
   items = [],

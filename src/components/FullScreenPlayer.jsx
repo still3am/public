@@ -6,11 +6,9 @@ import { formatTime } from "@/lib/audio-utils";
 import { shareTrack } from "@/lib/shareTrack";
 import SyncedLyrics from "@/components/SyncedLyrics";
 import TrackOptionsMenu from "@/components/track/TrackOptionsMenu";
-import { ListMusic, SlidersHorizontal, Sparkles } from "lucide-react";
+import { ListMusic, SlidersHorizontal } from "lucide-react";
 import { Link } from "react-router-dom";
 import {
-  Play,
-  Pause,
   SkipBack,
   SkipForward,
   ChevronDown,
@@ -39,6 +37,7 @@ import { base44 } from "@/api/base44Client";
 
 const clampVol = (v) => Math.max(0, Math.min(1, v));
 
+/** @param {any} props */
 function IconButton({ icon: Icon, onClick, active, size = 22, label, className = "" }) {
   return (
     <button
@@ -53,6 +52,7 @@ function IconButton({ icon: Icon, onClick, active, size = 22, label, className =
 
 }
 
+/** @param {any} props */
 export default function FullScreenPlayer({ onClose }) {
   const p = usePlayer();
   const { user } = useAuth();

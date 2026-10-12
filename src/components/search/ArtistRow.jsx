@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { Disc3 } from "lucide-react";
 import { Image } from "@/components/ui/image";
 
+/** @param {any} props */
 export default function ArtistRow({ artist }) {
   const art = artist.cover_art_url || artist.avatar_url;
 

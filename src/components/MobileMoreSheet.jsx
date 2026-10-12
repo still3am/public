@@ -4,13 +4,11 @@ import {
   Upload,
   BarChart3,
   Clock,
-  Heart,
   Lightbulb,
   Library as LibraryIcon,
   Shield,
   Bell } from
 "lucide-react";
-import ThemeToggle from "@/components/ThemeToggle";
 import { useAuth } from "@/lib/AuthContext";
 import { useUnreadCount } from "@/hooks/useNotifications";
 
@@ -25,6 +23,7 @@ const ITEMS = [
 { to: "/suggestions", icon: Lightbulb, label: "Suggestions" }];
 
 
+/** @param {any} props */
 export default function MobileMoreSheet({ onClose }) {
   const nav = useNavigate();
   const loc = useLocation();

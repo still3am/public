@@ -44,6 +44,7 @@ const mkSocial = (url, icon, label) => {
   return href ? { href, icon, label } : null;
 };
 
+/** @param {any} props */
 function Pill({ icon: Icon, children }) {
   return (
     <span className="inline-flex items-center gap-1.5 text-[11px] font-semibold text-foreground/55 bg-foreground/[0.05] rounded-full px-2.5 py-1">
@@ -53,6 +54,7 @@ function Pill({ icon: Icon, children }) {
 
 }
 
+/** @param {any} props */
 function SocialChip({ href, icon: Icon, label }) {
   return (
     <a
@@ -67,6 +69,7 @@ function SocialChip({ href, icon: Icon, label }) {
 
 }
 
+/** @param {any} props */
 function SectionTitle({ icon: Icon, children, right }) {
   return (
     <div className="flex items-center justify-between gap-3 mb-3">
@@ -79,6 +82,7 @@ function SectionTitle({ icon: Icon, children, right }) {
 
 }
 
+/** @param {any} props */
 export default function PublicRecords({ id: propId }) {
   const { id: paramId } = useParams();
   const id = propId || paramId;

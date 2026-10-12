@@ -45,6 +45,7 @@ const clamp01 = (n) => Math.min(1, Math.max(0, n))
  * `<base>/v1/{fill|fit}/w_,h_[,fp_x_y|al_c],q_,usm_…/<name>.webp`
  * GIFs keep their extension (WebP output could drop animation).
  */
+/** @param {any} props */
 function buildTransformUrl({ baseUrl, filename }, { width, height, crop, focalPoint, quality }) {
   const params = [`w_${clampDim(width)}`, `h_${clampDim(height || width)}`]
   if (crop) {
@@ -72,7 +73,7 @@ function buildSrcSet(parsed, options) {
   ).join(", ")
 }
 
-const ImageWrapper = React.forwardRef(({ aspectRatio, className, style, children }, ref) => (
+const ImageWrapper = React.forwardRef(/** @param {any} props */ ({ aspectRatio, className, style, children }, ref) => (
   <span
     ref={ref}
     className={cn("inline-block relative", className)}
@@ -84,7 +85,7 @@ const ImageWrapper = React.forwardRef(({ aspectRatio, className, style, children
 ImageWrapper.displayName = "ImageWrapper"
 
 const ResponsiveImage = React.forwardRef(
-  ({ parsed, fittingType, focalPoint, quality, className, style, aspectRatio, onLoad, ...props }, parentRef) => {
+  /** @param {any} props */ ({ parsed, fittingType, focalPoint, quality, className, style, aspectRatio, onLoad, ...props }, parentRef) => {
     const wrapperRef = React.useRef(null)
     const imgRef = React.useRef(null)
     const size = useSize(wrapperRef)
@@ -173,7 +174,7 @@ ResponsiveImage.displayName = "ResponsiveImage"
  * plain <img>. Failed loads swap to a fallback image.
  */
 const Image = React.forwardRef(
-  (
+  /** @param {any} props */ (
     {
       src,
       fittingType = "fill",

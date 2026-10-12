@@ -6,6 +6,7 @@ import { readAllPages } from "@/lib/readPages";
 import { X, Loader2 } from "lucide-react";
 import Avatar from "@/components/Avatar";
 
+/** @param {any} props */
 export default function FollowListModal({ userId, type, onClose }) {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);

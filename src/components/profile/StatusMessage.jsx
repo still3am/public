@@ -1,3 +1,4 @@
+/** @param {any} props */
 export default function StatusMessage({ value, editMode, onChange }) {
   if (editMode) {
     return (

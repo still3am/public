@@ -9,6 +9,7 @@ const DefaultFallback = () => (
   </div>
 );
 
+/** @param {any} props */
 export default function ProtectedRoute({ fallback = <DefaultFallback />, unauthenticatedElement }) {
   const { isAuthenticated, isLoadingAuth, authChecked, authError, checkUserAuth } = useAuth();
 

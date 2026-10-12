@@ -5,11 +5,10 @@ import { useAuth } from "@/lib/AuthContext";
 import { useToast } from "@/components/ui/use-toast";
 import { usePlayer } from "@/context/PlayerContext";
 import { useLibrary } from "@/context/LibraryContext";
-import { fetchSessionByCode, loungeUrl, parseTrack } from "@/lib/lounge";
+import { fetchSessionByCode, parseTrack } from "@/lib/lounge";
 import { getRecentPlays } from "@/lib/recentPlays";
 import {
   Loader2,
-  Users,
   Speaker,
   Plus,
   Check,
@@ -222,6 +221,7 @@ export default function Lounge() {
 }
 
 // ---------------- Guest add-to-queue picker ----------------
+/** @param {any} props */
 function GuestQueuePicker({ sessionId, user, onClose, onAdded }) {
   const { ids } = useLibrary();
   const libraryIds = Array.from(ids || []);
@@ -355,6 +355,7 @@ function GuestQueuePicker({ sessionId, user, onClose, onAdded }) {
 }
 
 // ---------------- Live shared queue ----------------
+/** @param {any} props */
 function LoungeQueueList({ sessionId, isHost }) {
   const p = usePlayer();
   const { toast } = useToast();

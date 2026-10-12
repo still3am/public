@@ -8,6 +8,7 @@ import {clearPersonalData} from '@/lib/clearPersonalData';
 import {useSafety} from '@/context/SafetyContext';
 import { base44 } from "@/api/base44Client";
 
+/** @param {any} props */
 export default function SettingsSheet({ onClose, onDeleteAccount }) {
   const safety=useSafety();
   const { user, checkUserAuth } = useAuth();

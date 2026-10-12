@@ -6,6 +6,7 @@ import {Button} from '@/components/ui/button';
 import {Dialog,DialogContent,DialogHeader,DialogTitle,DialogDescription} from '@/components/ui/dialog';
 import {useToast} from '@/components/ui/use-toast';
 import {Flag,ShieldOff} from 'lucide-react';
+/** @param {any} props */
 export default function SafetyControls({type,id,userId='',label='content'}) {
  const {user}=useAuth(),safety=useSafety(),{toast}=useToast();
  const [open,setOpen]=useState(false),[reason,setReason]=useState(''),[busy,setBusy]=useState(false);

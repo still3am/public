@@ -5,6 +5,7 @@ import Avatar from "@/components/Avatar";
 import ArtistRow from "@/components/search/ArtistRow";
 import PlaylistCard from "@/components/playlist/PlaylistCard";
 
+/** @param {any} props */
 function SectionTitle({ children, count }) {
   return (
     <h3 className="flex items-center gap-2 text-sm font-bold uppercase tracking-wide text-foreground/60 mb-2 px-1">
@@ -14,6 +15,7 @@ function SectionTitle({ children, count }) {
   );
 }
 
+/** @param {any} props */
 export default function SearchResults({ tracks, artists, people, playlists = [], dimmed }) {
   return (
     <div className={`space-y-8 transition-opacity ${dimmed ? "opacity-60" : "opacity-100"}`}>

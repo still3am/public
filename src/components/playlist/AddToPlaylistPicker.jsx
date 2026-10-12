@@ -4,6 +4,7 @@ import { useAuth } from "@/lib/AuthContext";
 import { useLibrary } from "@/context/LibraryContext";
 import { X, Plus, Check, Loader2, Search } from "lucide-react";
 
+/** @param {any} props */
 export default function AddToPlaylistPicker({ playlist, onClose }) {
   const { user } = useAuth();
   const { ids: libIds } = useLibrary();

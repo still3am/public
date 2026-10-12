@@ -11,6 +11,7 @@ const PRESETS = [
   { label: "Warm", values: { bass: 4, beat: 0, vocals: 2, treble: -4 } },
 ];
 
+/** @param {any} props */
 function MixerSlider({ label, range, value, min, max, onChange }) {
   const pct = (value - min) / (max - min) * 100;
   const isNeutral = value === 0;
@@ -60,6 +61,7 @@ function MixerSlider({ label, range, value, min, max, onChange }) {
   );
 }
 
+/** @param {any} props */
 function BoostSlider({ value, onChange }) {
   const pct = ((value - 1) / 2) * 100; // 1x → 0%, 3x → 100%
   return (
@@ -100,6 +102,7 @@ function BoostSlider({ value, onChange }) {
   );
 }
 
+/** @param {any} props */
 export default function StemMixer({ onClose }) {
   const p = usePlayer();
   const [visible, setVisible] = useState(false);

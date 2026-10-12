@@ -3,6 +3,7 @@ import { Loader2, X, Sparkles, Save, RotateCcw } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 import { useToast } from "@/components/ui/use-toast";
 
+/** @param {any} props */
 export default function GenerateLyricsModal({ track, onClose, onSaved }) {
   const [loading, setLoading] = useState(true);
   const [lyrics, setLyrics] = useState("");

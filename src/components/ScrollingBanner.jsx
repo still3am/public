@@ -1,5 +1,6 @@
 import { useBannerMessages } from "@/hooks/useBannerMessages";
 
+/** @param {any} props */
 function MarqueeItem({ text }) {
   return (
     <span className="px-6 text-[11px] font-semibold uppercase tracking-[0.25em]">

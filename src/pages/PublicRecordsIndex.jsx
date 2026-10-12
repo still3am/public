@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { getPublishedTracks, getArtists } from "@/lib/catalogCache";
 import PullToRefresh from "@/components/PullToRefresh";
-import { Loader2, Mic2, Disc3 } from "lucide-react";
+import { Loader2, Mic2 } from "lucide-react";
 
 // Split a multi-artist string into individual names, preserving original
 // casing. A track credited "Drake feat. Future" counts toward both Drake and
@@ -22,6 +22,7 @@ const letterOf = (name) => {
 };
 
 // Fades + slides each letter group in as it scrolls into view.
+/** @param {any} props */
 function AzReveal({ children }) {
   const ref = useRef(null);
   const [shown, setShown] = useState(false);

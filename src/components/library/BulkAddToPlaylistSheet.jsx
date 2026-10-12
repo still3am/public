@@ -4,6 +4,7 @@ import { ListMusic, Loader2, X } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 
 // Appends every selected track to the chosen playlist in one go.
+/** @param {any} props */
 export default function BulkAddToPlaylistSheet({ trackIds = [], playlists, onClose, onDone }) {
   const [busyId, setBusyId] = useState(null);
   const { toast } = useToast();

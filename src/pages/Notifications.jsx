@@ -1,4 +1,5 @@
 import SafetyControls from '@/components/SafetyControls';
+import {useSafety} from '@/context/SafetyContext';
 import { Link } from "react-router-dom";
 import { formatDistanceToNow } from "date-fns";
 import {
@@ -50,6 +51,7 @@ function getMessage(n) {
 }
 
 export default function Notifications() {
+  const {blocked}=useSafety();
   const { notifications, loading, unreadCount, markAllAsRead, markAsRead } =
   useNotifications();
 
@@ -90,7 +92,7 @@ export default function Notifications() {
 
 
       <div className="space-y-1.5">
-          {notifications.map((n) => {
+          {notifications.filter(n=>!blocked.has(n.actor_id)).map((n) => {
           const Icon = ICONS[n.type] || Bell;
           const link = getLink(n);
           const content =
@@ -149,23 +151,7 @@ export default function Notifications() {
           const handle = () => {
             if (!n.read) markAsRead(n.id);
           };
-          return link ?
-          <Link
-            key={n.id}
-            to={link}
-            onClick={handle}
-            className="block active:scale-[0.99] transition">
-            
-                {content}
-              </Link> :
-
-          <button
-            key={n.id}
-            onClick={handle}
-            className="block w-full text-left">
-            
-                {content}
-              </button>;
+          return <div key={n.id}>{link?<Link to={link} onClick={handle} className="block active:scale-[0.99] transition">{content}</Link>:<button onClick={handle} className="block w-full text-left">{content}</button>}<SafetyControls type="notification" id={n.id} userId={n.actor_id} label="note"/></div>;
 
         })}
         </div>

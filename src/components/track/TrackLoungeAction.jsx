@@ -9,6 +9,7 @@ import LoungeHostModal from "@/components/LoungeHostModal";
  * don't each carry a lounge host. Makes sure the track is in the host's
  * player, then opens the host's lounge.
  */
+/** @param {any} props */
 export default function TrackLoungeAction({ track, onClose }) {
   const lounge = useLoungeHost();
   const p = usePlayer();

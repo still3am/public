@@ -4,6 +4,7 @@ import { Play, Pause } from "lucide-react";
 import { usePlayer } from "@/context/PlayerContext";
 import TrackOptionsMenu from "@/components/track/TrackOptionsMenu";
 
+/** @param {any} props */
 function PodiumCard({ track, rank, height, accent }) {
   const p = usePlayer();
   const isCurrent = p.currentTrack?.id === track.id;
@@ -115,6 +116,7 @@ function PodiumCard({ track, rank, height, accent }) {
   );
 }
 
+/** @param {any} props */
 export default function Podium({ tracks }) {
   const top = tracks.slice(0, 5);
   if (top.length < 5) {

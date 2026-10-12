@@ -3,6 +3,7 @@ import {usePlayer} from '@/context/PlayerContext';
 import {base44} from '@/api/base44Client';
 import {useAuth} from '@/lib/AuthContext';
 import {Button} from '@/components/ui/button';
+/** @param {any} props */
 export default function WordTimingEditor({track,text,onSaved,onCancel}) {
  const p=usePlayer(),{user}=useAuth();
  const units=useMemo(()=>text.split('\n').map(s=>s.trim()).filter(Boolean).flatMap((line,lineIndex)=>line.split(/\s+/).map(word=>({text:word,line:lineIndex}))),[text]);

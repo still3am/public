@@ -110,6 +110,7 @@ function dispatch(action) {
   });
 }
 
+/** @param {any} props */
 function toast({ ...props }) {
   const id = genId();
 

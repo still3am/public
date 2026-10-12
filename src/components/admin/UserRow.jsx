@@ -1,6 +1,7 @@
 import { Ban, ShieldCheck, Trash2, Loader2 } from "lucide-react";
 import Avatar from "@/components/Avatar";
 
+/** @param {any} props */
 export default function UserRow({ u, uploads = 0, busy, onToggleBlock, onDelete }) {
   return (
     <div className="flex items-center gap-3 py-2.5 border-b border-border last:border-0">

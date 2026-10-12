@@ -5,6 +5,7 @@ import { useAuth } from "@/lib/AuthContext";
 import { X, ListMusic, Plus, Check, Loader2 } from "lucide-react";
 import CreatePlaylistModal from "@/components/playlist/CreatePlaylistModal";
 
+/** @param {any} props */
 export default function PlaylistPickerModal({ track, onClose }) {
   const { user } = useAuth();
   const [playlists, setPlaylists] = useState(null);

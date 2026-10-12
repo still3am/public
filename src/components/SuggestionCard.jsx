@@ -15,6 +15,7 @@ const STATUS_META = {
   done: "Shipped",
 };
 
+/** @param {any} props */
 export default function SuggestionCard({ s, onVote, hasVoted }) {
   const meta = CATEGORY_META[s.category] || CATEGORY_META.other;
   const Icon = meta.icon;

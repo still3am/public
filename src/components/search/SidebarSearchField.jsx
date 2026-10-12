@@ -7,6 +7,7 @@ import { Search as SearchIcon, X } from "lucide-react";
  * ?q= parameter, so it *is* the search bar for that page: results update live
  * from anywhere in the app, and clearing it returns to genre browsing.
  */
+/** @param {any} props */
 export default function SidebarSearchField({ collapsed }) {
   const navigate = useNavigate();
   const location = useLocation();

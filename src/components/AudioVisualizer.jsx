@@ -5,6 +5,7 @@ import { useColorPalette } from "@/hooks/useColorPalette";
 // Reactive audio visualizer driven by a Web Audio AnalyserNode connected to
 // the player's audio element. Bars are tinted with colors sampled from the
 // current track's album cover, with smoothing and a soft glow.
+/** @param {any} props */
 export default function AudioVisualizer({
   className = "",
   bars = 56,

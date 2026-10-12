@@ -6,6 +6,7 @@ import { ChevronDown } from "lucide-react";
  * control beneath it. The control only appears when the text is genuinely cut
  * off, so wider screens — where the clamp is lifted — never show it.
  */
+/** @param {any} props */
 export default function CollapsibleText({
   text,
   className = "",

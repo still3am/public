@@ -1,5 +1,6 @@
 import { Image } from "@/components/ui/image";
 
+/** @param {any} props */
 export default function VinylCrate({ genres, onPick }) {
   if (!genres?.length) return null;
 

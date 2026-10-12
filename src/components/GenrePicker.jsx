@@ -9,6 +9,7 @@ import {
 } from "@/components/ui/dialog";
 import { ChevronDown, Music2 } from "lucide-react";
 
+/** @param {any} props */
 export default function GenrePicker({
   value,
   onChange,

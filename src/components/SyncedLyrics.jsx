@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { Loader2 } from "lucide-react";
 
+/** @param {any} props */
 export default function SyncedLyrics({ trackId, position, fallbackText = "", onSeek }) {
   const [lyrics, setLyrics] = useState(null);
   const [trackLyrics, setTrackLyrics] = useState("");

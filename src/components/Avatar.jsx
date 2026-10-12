@@ -1,3 +1,4 @@
+/** @param {any} props */
 export default function Avatar({ user, size = 40, className = "" }) {
   if (!user) return null;
   const px = `${size}px`;

@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { ChevronRight } from "lucide-react";
 
 // One navigation row inside Library (the PUBLIC OFFLINE / Public Record set).
+/** @param {any} props */
 export default function LibraryEntryRow({ to, icon: Icon, label, subtitle }) {
   return (
     <Link

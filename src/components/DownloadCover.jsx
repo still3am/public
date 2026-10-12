@@ -4,6 +4,7 @@ import { CloudOff } from "lucide-react";
 // Renders a downloaded track's cover art from the locally-cached image blob so
 // it still shows offline; falls back to the remote URL while online, and to a
 // placeholder if neither is available.
+/** @param {any} props */
 export default function DownloadCover({ record, size = 16 }) {
   const [src, setSrc] = useState(null);
   const [failed, setFailed] = useState(false);

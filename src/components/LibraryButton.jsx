@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Plus, Check, Loader2 } from "lucide-react";
 import { useLibrary } from "@/context/LibraryContext";
 
+/** @param {any} props */
 export default function LibraryButton({
   track,
   className = "",

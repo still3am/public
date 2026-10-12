@@ -3,6 +3,7 @@ import { Pencil, Check, X, Loader2 } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 import { useToast } from "@/components/ui/use-toast";
 
+/** @param {any} props */
 export default function ArtistNameEditor({ artist, canEdit, onSaved }) {
   const { toast } = useToast();
   const [editing, setEditing] = useState(false);

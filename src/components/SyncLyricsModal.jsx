@@ -10,6 +10,7 @@ import { formatTime } from "@/lib/audio-utils";
 // Tap-along lyrics timing: the owner pastes (or reuses) the lyrics, plays the
 // track and stamps each line at the moment it starts. The saved timings are
 // what the now-playing screen follows line by line.
+/** @param {any} props */
 export default function SyncLyricsModal({ track, onClose, onSaved }) {
   const { user } = useAuth();
   const { toast } = useToast();

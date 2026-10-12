@@ -3,11 +3,12 @@ import { base44 } from "@/api/base44Client";
 import { usePlayer } from "@/context/PlayerContext";
 import { useCoverUrl } from "@/hooks/useCoverUrl";
 import { Image } from "@/components/ui/image";
-import { Play, Pause, Star, X, Plus } from "lucide-react";
+import { Play, Pause, X, Plus } from "lucide-react";
 import TrackPickerSheet from "@/components/profile/TrackPickerSheet";
 import HoverTrackMenu from "@/components/track/HoverTrackMenu";
 import { useLongPressMenu } from "@/hooks/useLongPressMenu";
 
+/** @param {any} props */
 function PinnedTrackCard({ track, onRemove, editMode }) {
   const p = usePlayer();
   const coverUrl = useCoverUrl(track.cover_art_url);
@@ -82,6 +83,7 @@ function PinnedTrackCard({ track, onRemove, editMode }) {
 
 }
 
+/** @param {any} props */
 export default function TopTracks({ trackIds, editMode, userTracks, onChange }) {
   const [pinnedTracks, setPinnedTracks] = useState([]);
   const [pickerOpen, setPickerOpen] = useState(false);

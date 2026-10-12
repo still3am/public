@@ -8,6 +8,7 @@ import Avatar from "@/components/Avatar";
 import { Loader2, Send, Trash2, MessageCircle } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 
+/** @param {any} props */
 export default function ProfileComments({ profileId, isOwn }) {
   const { user } = useAuth();
   const {blocked}=useSafety();

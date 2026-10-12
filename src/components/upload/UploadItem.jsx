@@ -4,17 +4,16 @@ import {
   UploadCloud,
   Loader2,
   AlertCircle,
-  Sparkles,
-  Clock } from
+  Sparkles } from
 "lucide-react";
 import GenrePicker from "@/components/GenrePicker";
 import ReleaseChecklist from "@/components/upload/ReleaseChecklist";
 import CoverPicker from "@/components/upload/CoverPicker";
 import { ensureHighResCover } from "@/lib/coverImage";
-import { formatTime } from "@/lib/audio-utils";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 
+/** @param {any} props */
 export default function UploadItem({
   item,
   onChange,

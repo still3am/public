@@ -8,6 +8,7 @@ import TrackPickerSheet from "@/components/profile/TrackPickerSheet";
 import HoverTrackMenu from "@/components/track/HoverTrackMenu";
 import { useLongPressMenu } from "@/hooks/useLongPressMenu";
 
+/** @param {any} props */
 export default function ProfileSong({
   trackId,
   editMode,

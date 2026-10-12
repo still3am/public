@@ -2,6 +2,7 @@ import { useRef } from "react";
 import { Loader2, ImagePlus } from "lucide-react";
 import { IMAGE_ACCEPT } from "@/lib/audio-utils";
 
+/** @param {any} props */
 export default function CoverPicker({ previewUrl, onPick, disabled, loading }) {
   const inputRef = useRef(null);
 

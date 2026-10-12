@@ -1,3 +1,4 @@
+/** @param {any} props */
 export default function EmptyState({ title, description, action, icon: Icon }) {
   return (
     <div className="flex flex-col items-center justify-center text-center py-14 px-6">

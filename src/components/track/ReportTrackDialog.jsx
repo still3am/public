@@ -9,6 +9,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 
 const REASONS = ["Copyright / not mine", "Explicit content not marked", "Spam or misleading", "Offensive or harmful", "Other"];
 
+/** @param {any} props */
 export default function ReportTrackDialog({ track, onClose }) {
   const { user } = useAuth();
   const { toast } = useToast();

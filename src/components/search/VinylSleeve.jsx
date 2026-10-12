@@ -1,3 +1,4 @@
+/** @param {any} props */
 export default function VinylSleeve({ genre, count, cover, index, active, onClick }) {
   const tilt = 12 - Math.min(index, 8) * 0.8;
   return (

@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 // Public Record page. Original separators between names are preserved as
 // plain text. When there are more than `maxShown` artists, only the first
 // `maxShown` are linked and a "+N" remainder is shown as plain text.
+/** @param {any} props */
 export default function ArtistLinks({
   artist,
   className = "",

@@ -1,5 +1,6 @@
 import { Play, Pause } from "lucide-react";
 
+/** @param {any} props */
 export default function PlayPauseButton({ isPlaying, onClick }) {
   return (
     <button

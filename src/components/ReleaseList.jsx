@@ -4,6 +4,7 @@ import { usePlayer } from "@/context/PlayerContext";
 import { Image } from "@/components/ui/image";
 import TrackOptionsMenu from "@/components/track/TrackOptionsMenu";
 
+/** @param {any} props */
 function ReleaseRow({ track, tracks, index }) {
   const p = usePlayer();
   const isCurrent = p.currentTrack?.id === track.id;
@@ -56,6 +57,7 @@ function ReleaseRow({ track, tracks, index }) {
   );
 }
 
+/** @param {any} props */
 export default function ReleaseList({ tracks }) {
   if (!tracks?.length) return null;
   const chunks = [];

@@ -3,6 +3,7 @@ import { Check, X, Music2, Loader2 } from "lucide-react";
 
 // One pending-upload row: cover, title/artist/genre, approve + reject.
 // All actions are owned by the parent; this is purely presentational.
+/** @param {any} props */
 export default function ApprovalRow({ track, busy, onApprove, onReject }) {
   return (
     <div className="flex items-center gap-3 p-2 rounded-xl border border-border/70 bg-background/40">

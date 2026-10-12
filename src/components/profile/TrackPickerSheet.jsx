@@ -3,6 +3,7 @@ import { getPublishedTracks } from "@/lib/catalogCache";
 import { Image } from "@/components/ui/image";
 import { Check, X, Search, Loader2 } from "lucide-react";
 
+/** @param {any} props */
 export default function TrackPickerSheet({ title, selectedIds, max, tracks, onToggle, onClose }) {
   const [query, setQuery] = useState("");
   const [allTracks, setAllTracks] = useState([]);

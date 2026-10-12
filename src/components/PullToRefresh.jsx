@@ -3,6 +3,7 @@ import { Loader2, ArrowDown } from "lucide-react";
 
 const THRESHOLD = 70;
 
+/** @param {any} props */
 export default function PullToRefresh({
   onRefresh,
   disabled = false,

@@ -6,6 +6,7 @@ import { usePlayer } from "@/context/PlayerContext";
 import { Image } from "@/components/ui/image";
 import { useCoverUrl } from "@/hooks/useCoverUrl";
 
+/** @param {any} props */
 function EqualizerBars({ active }) {
   if (!active) return null;
   return (
@@ -25,6 +26,7 @@ function EqualizerBars({ active }) {
   );
 }
 
+/** @param {any} props */
 export default function TrackCard({ track, selectable = false, selected = false, onToggleSelect }) {
   const p = usePlayer();
   const isCurrent = p.currentTrack?.id === track.id;
@@ -150,6 +152,7 @@ export default function TrackCard({ track, selectable = false, selected = false,
   );
 }
 
+/** @param {any} props */
 function TrackCardMeta({ track, isCurrent }) {
   return (
     <>

@@ -3,6 +3,7 @@ import { Music2, Loader2, X, AlertTriangle, Trash2 } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 import { formatTime } from "@/lib/audio-utils";
 
+/** @param {any} props */
 export default function DuplicateModal({ tracks, onClose, onRemove }) {
   const { toast } = useToast();
   const [removing, setRemoving] = useState({});

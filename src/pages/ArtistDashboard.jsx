@@ -23,6 +23,7 @@ import { formatNumber } from "@/lib/audio-utils";
 import { readAllPages } from "@/lib/readPages";
 import EmptyState from "@/components/EmptyState";
 
+/** @param {any} props */
 function StatCard({ icon: Icon, label, value }) {
   return (
     <div className="rounded-2xl bg-card ring-1 ring-inset ring-border p-4">

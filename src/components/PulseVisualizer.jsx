@@ -5,6 +5,7 @@ import { useColorPalette } from "@/hooks/useColorPalette";
 // Color-only "heartbeat" visualizer: the cover-art palette swells and contracts
 // with the track's low-end energy, so the pulse follows the music's tempo
 // instead of drawing bars.
+/** @param {any} props */
 export default function PulseVisualizer({ className = "" }) {
   const p = usePlayer();
   const [primary, secondary, accent] = useColorPalette(p.currentTrack?.cover_art_url);

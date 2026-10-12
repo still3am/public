@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { Music } from "lucide-react";
 import { useUploadsEnabled } from "@/hooks/useUploadsEnabled";
 
+/** @param {any} props */
 function Digit({ value }) {
   const [display, setDisplay] = useState(value);
   useEffect(() => setDisplay(value), [value]);
@@ -26,6 +26,7 @@ function Digit({ value }) {
 
 }
 
+/** @param {any} props */
 export default function ScoreboardTrackCount({ count = 0 }) {
   const [padded, setPadded] = useState(() => String(count).padStart(4, "0"));
   const { enabled } = useUploadsEnabled();

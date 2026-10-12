@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { X, Loader2, ScanLine } from "lucide-react";
 
+/** @param {any} props */
 export default function QRScannerModal({ onClose }) {
   const nav = useNavigate();
   const instRef = useRef(null);

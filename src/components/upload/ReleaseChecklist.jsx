@@ -1,5 +1,6 @@
 import { Check, X } from "lucide-react";
 
+/** @param {any} props */
 export default function ReleaseChecklist({ hasGenre, hasArtist, hasCover, isAdmin }) {
   const rules = [
     { ok: hasGenre, label: "Genre" },

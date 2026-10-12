@@ -11,6 +11,7 @@ import {
 
 // One pass over the whole upload list: every private song that already clears
 // the public bar is picked for you, and the rest say what they are missing.
+/** @param {any} props */
 export default function BulkPublicSubmitBar({ tracks, onSubmitted }) {
   const { user } = useAuth();
   const { toast } = useToast();

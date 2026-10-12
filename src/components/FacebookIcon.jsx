@@ -1,5 +1,6 @@
 import React from "react";
 
+/** @param {any} props */
 export default function FacebookIcon({ className = "w-5 h-5" }) {
   return (
     <svg className={className} viewBox="0 0 24 24" aria-hidden="true" fill="currentColor">

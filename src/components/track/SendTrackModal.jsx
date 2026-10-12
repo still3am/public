@@ -22,6 +22,7 @@ function nameOf(person) {
  * belongs to the send, so it is asked for at the moment of sending rather than
  * sitting above the search where it is easy to walk straight past.
  */
+/** @param {any} props */
 export default function SendTrackModal({ track, onClose }) {
   const { user } = useAuth();
   const { toast } = useToast();

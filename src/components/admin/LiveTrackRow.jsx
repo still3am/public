@@ -3,6 +3,7 @@ import { EyeOff, Music2, Loader2 } from "lucide-react";
 
 // One live-on-PUBLIC row: cover, title/artist/genre/play count, takedown.
 // The takedown action is owned by the parent; this is purely presentational.
+/** @param {any} props */
 export default function LiveTrackRow({ track, busy, onTakedown }) {
   return (
     <div className="flex items-center gap-3 p-2 rounded-xl border border-border/70 bg-background/40">

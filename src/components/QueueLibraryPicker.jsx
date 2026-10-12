@@ -5,6 +5,7 @@ import { useLibrary } from "@/context/LibraryContext";
 import { usePlayer } from "@/context/PlayerContext";
 import { X, Plus, Check, Loader2, Search, ListMusic } from "lucide-react";
 
+/** @param {any} props */
 export default function QueueLibraryPicker({ open, onClose }) {
   const { user } = useAuth();
   const { ids } = useLibrary();

@@ -1,6 +1,7 @@
 import { useColorPalette } from "@/hooks/useColorPalette";
 
 // Bright, breathing gradient bleed built from a cover art's dominant palette.
+/** @param {any} props */
 export default function ArtistColorTint({ coverUrl }) {
   const [primary, secondary, accent] = useColorPalette(coverUrl);
 
