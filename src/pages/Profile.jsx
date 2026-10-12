@@ -3,6 +3,8 @@ import { useParams, useLocation, Link } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import { useAuth } from "@/lib/AuthContext";
 import { getUsersByIds } from "@/lib/userLookup";
+import SafetyControls from '@/components/SafetyControls';
+import {clearPersonalData} from '@/lib/clearPersonalData';
 import EmptyState from "@/components/EmptyState";
 import TrackCard from "@/components/TrackCard";
 import Avatar from "@/components/Avatar";
@@ -303,9 +305,10 @@ export default function Profile() {
     if (deleteConfirm.trim().toUpperCase() !== "DELETE") return;
     setDeleting(true);
     try {
-      await base44.functions.invoke("deleteMyAccount", {});
-      await base44.auth.logout();
-      window.location.href = "/login";
+      const result=await base44.functions.invoke("deleteMyAccount", {});
+      if(result.data?.deleted!==true) throw new Error("Deletion incomplete");
+      await clearPersonalData();
+      base44.auth.logout(window.location.origin+"/login");
     } catch {
       setDeleting(false);
       alert(
@@ -615,6 +618,7 @@ export default function Profile() {
         </div>
         }
 
+      <SafetyControls type="user" id={targetId} userId={targetId} label="profile" />
       <ProfileComments profileId={targetId} isOwn={isOwn} />
 
       {showSettings && isOwn &&

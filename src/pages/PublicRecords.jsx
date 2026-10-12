@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import { fetchArtistTracks } from "@/lib/artistTracks";
+import SafetyControls from '@/components/SafetyControls';
 import TrackCard from "@/components/TrackCard";
 import PullToRefresh from "@/components/PullToRefresh";
 import ArtistNameEditor from "@/components/ArtistNameEditor";
@@ -277,6 +278,7 @@ export default function PublicRecords({ id: propId }) {
           </div>
         </section>
 
+        <SafetyControls type="artist" id={id} label="artist page" />
         {/* Discography */}
         <section className="mb-12">
           <SectionTitle icon={Disc3} right={

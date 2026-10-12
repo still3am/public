@@ -2,12 +2,15 @@ import { useEffect, useState, useCallback } from "react";
 import { base44 } from "@/api/base44Client";
 import { useAuth } from "@/lib/AuthContext";
 import { coalesce } from "@/lib/coalesce";
+import SafetyControls from '@/components/SafetyControls';
+import {useSafety} from '@/context/SafetyContext';
 import Avatar from "@/components/Avatar";
 import { Loader2, Send, Trash2, MessageCircle } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 
 export default function ProfileComments({ profileId, isOwn }) {
   const { user } = useAuth();
+  const {blocked}=useSafety();
   const { toast } = useToast();
   const [comments, setComments] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -116,7 +119,7 @@ export default function ProfileComments({ profileId, isOwn }) {
         </p>
       ) : (
         <div className="space-y-3">
-          {comments.map((c) => (
+          {comments.filter(c=>!blocked.has(c.author_id)).map((c) => (
             <div key={c.id} className="flex gap-3 p-3 rounded-2xl bg-foreground/[0.02]">
               <Avatar user={{ avatar_url: c.author_avatar_url, full_name: c.author_name }} size={40} />
               <div className="flex-1 min-w-0">
@@ -126,7 +129,7 @@ export default function ProfileComments({ profileId, isOwn }) {
                     {new Date(c.created_date).toLocaleDateString(undefined, { month: "short", day: "numeric" })}
                   </span>
                 </div>
-                <p className="selectable-content text-sm text-foreground/70 mt-1 break-words">{c.message}</p>
+                <p className="selectable-content text-sm text-foreground/70 mt-1 break-words">{c.message}</p><SafetyControls type="comment" id={c.id} userId={c.author_id} label="comment" />
               </div>
               {(c.author_id === user?.id || isOwn) && (
                 <button

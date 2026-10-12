@@ -27,10 +27,11 @@ async function all(handler, query) {
 export default async function(req) {
   try {
     const base44=createClientFromRequest(req),svc=base44.asServiceRole;
-    const user=await base44.auth.me().catch(()=>null);
-    if(!user) fail('Sign in to continue',401);
+    const caller=await base44.auth.me().catch(()=>null);
+    const user=caller||{id:'',role:'guest'};
     if(user.is_blocked || user.disabled) fail('This account is suspended',403);
     const body=await req.json(), {entity,action,args=[]}=body;
+    if(!caller && !(entity==='Track' && action==='read')) fail('Sign in to continue',401);
     if(!entities.includes(entity)) fail('Unsupported resource',400);
     const handler=svc.entities[entity],isAdmin=user.role===ADMIN;
     const mine = (r,key) => isAdmin || r?.[key]===user.id;
@@ -44,6 +45,8 @@ export default async function(req) {
     };
     const requireTrack = async id => {
       const t=await svc.entities.Track.get(id);
+      if(!isAdmin && t.uploader_id!==user.id && t.explicit && !(user.show_explicit && user.adult_confirmed)) fail('Explicit content is hidden',404);
+      if(user.id && t.uploader_id!==user.id) await relation(t.uploader_id);
       if(!isAdmin && t.uploader_id!==user.id && !(t.is_published && t.approval_status==='approved')) fail('Track unavailable',404);
       return t;
     };
@@ -53,6 +56,19 @@ export default async function(req) {
       return {s,m:ms[0],host:isAdmin||s.host_id===user.id};
     };
     if(action==='read') {
+      if(entity==='Track') {
+        const [method,...params]=args;
+        if(!['get','list','filter','count','aggregate'].includes(method)) fail('Unsupported track read',400);
+        if(method==='get') return Response.json({result:await requireTrack(params[0])});
+        const blocks=user.id ? await svc.entities.Block.filter({$or:[{user_id:user.id},{blocked_user_id:user.id}]},'-created_date',1000) : [];
+        const hidden=blocks.map(r=>r.user_id===user.id?r.blocked_user_id:r.user_id);
+        const publicRule={is_published:true,approval_status:'approved',...(!(user.show_explicit&&user.adult_confirmed)?{explicit:{$ne:true}}:{}),...(hidden.length?{uploader_id:{$nin:hidden}}:{})};
+        const access=isAdmin?{}:user.id?{$or:[publicRule,{uploader_id:user.id}]}:publicRule;
+        const q=method==='filter'||method==='count'?(params[0]||{}):method==='aggregate'?(params[0]?.query||{}):{};
+        const query={$and:[q,access]};
+        const result=method==='count'?await handler.count(query):method==='aggregate'?await handler.aggregate({...params[0],query}):await handler.filter(query,...(method==='filter'?params.slice(1):params));
+        return Response.json({result});
+      }
       if(!['LoungeSession','LoungeMember','LoungeQueueItem'].includes(entity)) fail('Unsupported read',400);
       const [method,...params]=args;
       if(!['get','list','filter'].includes(method)) fail('Unsupported read',400);
@@ -166,7 +182,8 @@ export default async function(req) {
         }
       } else if(entity==='User') {
         if(kind!=='update'||id!==user.id) fail('Profile access denied');
-        data=pick(data,['display_name','bio','avatar_url','banner_url','location','pronouns','website','instagram','twitter','soundcloud','status_message','featured_track_id','top_track_ids','is_artist','show_explicit']);
+        data=pick(data,['display_name','bio','avatar_url','banner_url','location','pronouns','website','instagram','twitter','soundcloud','status_message','featured_track_id','top_track_ids','is_artist','show_explicit','adult_confirmed']);
+        if(data.show_explicit===true && !(data.adult_confirmed===true || user.adult_confirmed===true)) fail('Confirm that you are 18 or older to show explicit content',422);
         await moderate(svc,[data.display_name,data.bio,data.status_message].filter(Boolean).join('\n'));
         for(const tid of [data.featured_track_id,...(data.top_track_ids||[])].filter(Boolean)) await requireTrack(tid);
       } else {

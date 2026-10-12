@@ -20,6 +20,8 @@ const ITEMS = [
 { to: "/recent", icon: Clock, label: "Recently Added" },
 { to: "/library", icon: LibraryIcon, label: "Library" },
 { to: "/notifications", icon: Bell, label: "Notifications" },
+{ to: "/support", icon: Shield, label: "Support" },
+{ to: "/privacy", icon: Shield, label: "Privacy" },
 { to: "/suggestions", icon: Lightbulb, label: "Suggestions" }];
 
 

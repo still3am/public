@@ -111,6 +111,7 @@ export default function Login() {
         </div>
       )}
 
+      <p className="text-xs text-muted-foreground mb-4"><Link to="/privacy" className="underline">Privacy</Link> · <Link to="/terms" className="underline">Terms</Link> · <Link to="/support" className="underline">Support</Link></p>
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="space-y-2">
           <Label htmlFor="email">Email</Label>

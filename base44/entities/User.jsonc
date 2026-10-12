@@ -135,6 +135,13 @@
       "rls": {
         "write": false
       }
+    },
+    "adult_confirmed": {
+      "type": "boolean",
+      "default": false,
+      "rls": {
+        "write": false
+      }
     }
   },
   "required": []

@@ -15,6 +15,7 @@ import { toast } from "@/components/ui/use-toast";
 import { safeReturnTo } from "@/lib/authReturnTo";
 
 export default function Register() {
+  const [accepted,setAccepted]=useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -30,6 +31,7 @@ export default function Register() {
       setError("Passwords do not match");
       return;
     }
+    if(!accepted){setError('Accept the terms and confirm you are at least 13 to continue.');return;}
     setLoading(true);
     try {
       await base44.auth.register({ email, password });
@@ -51,6 +53,7 @@ export default function Register() {
       if (token) {
         base44.auth.setToken(token);
       }
+      if(!token) await base44.auth.loginViaEmailPassword(email,password);
       window.location.href = safeReturnTo();
     } catch (err) {
       setError(err.message || "Invalid verification code");
@@ -73,18 +76,22 @@ export default function Register() {
   };
 
   const handleGoogle = () => {
+    if(!accepted){setError('Accept the terms and confirm you are at least 13 to continue.');return;}
     base44.auth.loginWithProvider("google", safeReturnTo());
   };
 
   const handleApple = () => {
+    if(!accepted){setError('Accept the terms and confirm you are at least 13 to continue.');return;}
     base44.auth.loginWithProvider("apple", safeReturnTo());
   };
 
   const handleFacebook = () => {
+    if(!accepted){setError('Accept the terms and confirm you are at least 13 to continue.');return;}
     base44.auth.loginWithProvider("facebook", safeReturnTo());
   };
 
   const handleMicrosoft = () => {
+    if(!accepted){setError('Accept the terms and confirm you are at least 13 to continue.');return;}
     base44.auth.loginWithProvider("microsoft", safeReturnTo());
   };
 
@@ -206,6 +213,7 @@ export default function Register() {
         </div>
       )}
 
+      <label className="flex items-start gap-2 text-xs mb-4"><input type="checkbox" checked={accepted} onChange={e=>setAccepted(e.target.checked)}/> <span>I am at least 13 and accept the <Link className="underline" to="/terms">terms and community standards</Link>. Read the <Link className="underline" to="/privacy">privacy policy</Link>.</span></label>
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="space-y-2">
           <Label htmlFor="email">Email</Label>

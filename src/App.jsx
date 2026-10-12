@@ -11,6 +11,10 @@ import { PlayerProvider } from '@/context/PlayerContext';
 import { LibraryProvider } from '@/context/LibraryContext';
 import { UploadProvider } from '@/context/UploadContext';
 import Layout from '@/components/Layout';
+import Support from '@/pages/Support';
+import Policies from '@/pages/Policies';
+import ErrorBoundary from '@/components/ErrorBoundary';
+import {SafetyProvider} from '@/context/SafetyContext';
 import Login from '@/pages/Login';
 import Register from '@/pages/Register';
 import ForgotPassword from '@/pages/ForgotPassword';
@@ -50,6 +54,7 @@ const AuthenticatedApp = () => {
 
   // Handle authentication errors
   if (authError) {
+    if(authError.type==='suspended') return <div className="p-8 text-center space-y-4"><p>{authError.message}</p><a className="underline" href="/support">Contact support</a><button className="block mx-auto underline" onClick={()=>window.location.href='/login'}>Return to login</button></div>;
     if (authError.type === 'user_not_registered') {
       return <UserNotRegisteredError />;
     } else if (authError.type === 'auth_required') {
@@ -78,6 +83,10 @@ const AuthenticatedApp = () => {
         <Route path="/records/:id" element={<PublicRecords />} />
         <Route path="/records" element={<PublicRecordsIndex />} />
         <Route path="/artist" element={<ArtistByName />} />
+        <Route path="/support" element={<Support />} />
+        <Route path="/privacy" element={<Policies />} />
+        <Route path="/terms" element={<Policies />} />
+        <Route path="/playlist/:id" element={<PlaylistDetail />} />
         <Route path="/suggestions" element={<Suggestions />} />
 
         {/* Personal features — login required */}
@@ -92,7 +101,6 @@ const AuthenticatedApp = () => {
           <Route path="/settings/transitions" element={<SongTransitions />} />
           <Route path="/notifications" element={<Notifications />} />
           <Route path="/artist-dashboard" element={<ArtistDashboard />} />
-          <Route path="/playlist/:id" element={<PlaylistDetail />} />
           <Route path="/my-uploads" element={<MyUploads />} />
         </Route>
       </Route>
@@ -108,13 +116,13 @@ function App() {
     <AuthProvider>
       <QueryClientProvider client={queryClientInstance}>
         <Router>
-          <PlayerProvider>
+          <ErrorBoundary><SafetyProvider><PlayerProvider>
             <LibraryProvider>
               <UploadProvider>
                 <AuthenticatedApp />
               </UploadProvider>
             </LibraryProvider>
-          </PlayerProvider>
+          </PlayerProvider></SafetyProvider></ErrorBoundary>
         </Router>
         <Toaster />
       </QueryClientProvider>

@@ -10,7 +10,7 @@ const entities = new Proxy(raw.entities,{get(target,name) {
   if(typeof name!=='string'||!guarded.has(name)) return target[name];
   if(!handlers.has(name)) handlers.set(name,new Proxy(target[name],{get(h,method) {
     if(['create','update','delete','deleteMany','bulkUpdate'].includes(method)) return (...args)=>gateway(name,method,args);
-    if(lounge.has(name)&&['get','list','filter'].includes(method)) return (...args)=>gateway(name,'read',[method,...args]);
+    if((lounge.has(name)&&['get','list','filter'].includes(method))||(name==='Track'&&['get','list','filter','count','aggregate'].includes(method))) return (...args)=>gateway(name,'read',[method,...args]);
     return h[method];
   }}));
   return handlers.get(name);

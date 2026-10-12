@@ -4,9 +4,12 @@ import { X, Lightbulb, GitMerge, Palette, Trash2, ChevronRight, Sparkles, BarCha
 import ThemeToggle from "@/components/ThemeToggle";
 import { Switch } from "@/components/ui/switch";
 import { useAuth } from "@/lib/AuthContext";
+import {clearPersonalData} from '@/lib/clearPersonalData';
+import {useSafety} from '@/context/SafetyContext';
 import { base44 } from "@/api/base44Client";
 
 export default function SettingsSheet({ onClose, onDeleteAccount }) {
+  const safety=useSafety();
   const { user, checkUserAuth } = useAuth();
   const [toggling, setToggling] = useState(false);
   const [loggingOut, setLoggingOut] = useState(false);
@@ -17,6 +20,7 @@ export default function SettingsSheet({ onClose, onDeleteAccount }) {
   async function handleLogout() {
     setLoggingOut(true);
     try {
+      await clearPersonalData();
       await base44.auth.logout(`${window.location.origin}/`);
     } catch {
       window.location.href = "/";
@@ -47,6 +51,10 @@ export default function SettingsSheet({ onClose, onDeleteAccount }) {
         </div>
 
         <div className="space-y-2">
+          <Link to="/support" onClick={onClose} className="block p-3 rounded-xl border">Support & copyright requests</Link>
+          <div className="flex gap-4 text-sm p-3"><Link to="/privacy" onClick={onClose} className="underline">Privacy</Link><Link to="/terms" onClick={onClose} className="underline">Terms & community</Link></div>
+          <label className="flex items-center gap-3 p-3 rounded-xl border text-sm"><input type="checkbox" checked={!!user?.show_explicit} onChange={async e=>{const enabled=e.target.checked;if(enabled&&!window.confirm('I confirm I am at least 18 and want to see explicit music.'))return;try{await base44.auth.updateMe({show_explicit:enabled,adult_confirmed:enabled||!!user?.adult_confirmed});await checkUserAuth();window.dispatchEvent(new Event('catalog:invalidate'));}catch{window.alert('Could not save your content preference.');}}}/>Show explicit music (18+)</label>
+          {safety.own.length>0&&<div className="p-3 border rounded-xl"><h3 className="font-bold text-sm mb-2">Blocked users</h3>{safety.own.map(r=><button key={r.id} className="block text-xs underline p-2" onClick={async()=>{await base44.functions.invoke('safety',{action:'block',user_id:r.blocked_user_id,blocked:false});await safety.reload();window.dispatchEvent(new Event('catalog:invalidate'));}}>Unblock {r.blocked_user_id}</button>)}</div>}
           {/* Artist Mode */}
           <div className="p-3.5 rounded-2xl bg-foreground/[0.02]">
             <div className="flex items-center gap-3">

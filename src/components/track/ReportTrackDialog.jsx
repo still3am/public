@@ -19,9 +19,7 @@ export default function ReportTrackDialog({ track, onClose }) {
   const submit = async () => {
     setSending(true);
     try {
-      await base44.entities.Report.create({
-        reporter_id: user.id,
-        track_id: track.id,
+      await base44.functions.invoke("safety", {action:"report",target_type:"track",target_id:track.id,
         reason: details.trim() ? `${reason}: ${details.trim()}` : reason,
       });
       toast({ title: "Report sent", description: "Thanks, the PUBLIC team will review it." });
