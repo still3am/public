@@ -121,6 +121,16 @@ export default async function(req) {
           await svc.entities.Playlist.updateMany({track_ids:{$in:[id]}},{$pull:{track_ids:id}});
           return {id};
         }
+        if(kind==='create' && input.upload_request_id){
+          if(typeof input.upload_request_id!=='string'||input.upload_request_id.length>100)fail('Invalid upload request',400);
+          const previous=await handler.filter({uploader_id:user.id,upload_request_id:input.upload_request_id},'-created_date',1);
+          if(previous[0])return previous[0];
+        }
+        if(kind==='create' && input.audio_sha256){
+          if(!/^[a-f0-9]{64}$/.test(input.audio_sha256))fail('Invalid file checksum',400);
+          const same=await handler.filter({audio_sha256:input.audio_sha256,$or:[{uploader_id:user.id},{is_published:true,approval_status:'approved'}]},'-created_date',1);
+          if(same.length)fail('This identical file already exists. Keep the existing song instead of uploading another copy.',409);
+        }
         if(kind==='create' && data.rights_confirmed!==true) fail('Confirm your rights before uploading',422);
         if(kind==='create' && !isAdmin) {
           const setting=(await svc.entities.AppSetting.list('-created_date',1))[0];
@@ -139,6 +149,7 @@ export default async function(req) {
         if(kind==='create') {
           data={...content,uploader_id:user.id,uploader_name:user.display_name||user.full_name||'',uploader_avatar_url:user.avatar_url||'',rights_confirmed:true,rights_confirmed_at:new Date().toISOString(),is_published:false,approval_status:'private',play_count:0,like_count:0};
         } else data=content;
+        if(kind==='create'){if(input.audio_sha256)data.audio_sha256=input.audio_sha256;if(input.upload_request_id)data.upload_request_id=input.upload_request_id;}
         const combined={...old,...data};
         const ready=!!(combined.artist?.trim()&&combined.genre&&combined.cover_art_url&&combined.rights_confirmed);
         if(isAdmin && input.approval_status) {
