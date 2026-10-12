@@ -83,7 +83,7 @@ function SectionTitle({ icon: Icon, children, right }) {
 }
 
 /** @param {any} props */
-export default function PublicRecords({ id: propId }) {
+export default function PublicRecords({ id: propId, fallbackArtist = null }) {
   const { id: paramId } = useParams();
   const id = propId || paramId;
   const nav = useNavigate();
@@ -98,7 +98,7 @@ export default function PublicRecords({ id: propId }) {
   async function load() {
     setLoading(true);
     try {
-      const a = await base44.entities.Artist.get(id).catch(() => null);
+      const a = fallbackArtist || await base44.entities.Artist.get(id).catch(() => null);
       setArtist(a);
       setTracks(a?.name ? await fetchArtistTracks(a.name) : []);
     } finally {
@@ -109,7 +109,7 @@ export default function PublicRecords({ id: propId }) {
   useEffect(() => {
     load();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id]);
+  }, [id,fallbackArtist?.name]);
 
   async function generateHistory() {
     setGenerating(true);
@@ -224,7 +224,7 @@ export default function PublicRecords({ id: propId }) {
                     <Play size={13} className="fill-current" /> Play all
                   </button>
                 }
-                {isAdmin && (generating ?
+                {isAdmin && id && (generating ?
                 <span className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full bg-foreground/[0.06] text-foreground/60 text-xs font-semibold">
                     <Loader2 size={13} className="animate-spin" /> Generating…
                   </span> :
@@ -274,8 +274,7 @@ export default function PublicRecords({ id: propId }) {
                   <Sparkles size={18} className="text-foreground/40" />
                 </div>
                 <p className="text-sm text-foreground/55 max-w-sm mx-auto leading-relaxed">
-                  No history yet. Tap “Generate history” and PUBLIC’s AI will research this
-                  artist and write an encyclopedia-style summary.
+                  No verified artist history is available yet.
                 </p>
               </div>
             }

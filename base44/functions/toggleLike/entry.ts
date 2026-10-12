@@ -12,6 +12,10 @@ export default async function(req) {
       return Response.json({ error: 'track_id and liked are required' }, { status: 400 });
     }
 
+    const track=await base44.entities.Track.get(track_id);
+    if(!track)return Response.json({error:'Track unavailable'},{status:404});
+    const blocked=await base44.asServiceRole.entities.Block.filter({$or:[{user_id:user.id,blocked_user_id:track.uploader_id},{user_id:track.uploader_id,blocked_user_id:user.id}]},'-created_date',1);
+    if(blocked.length)return Response.json({error:'Interaction unavailable'},{status:403});
     const existing = await base44.asServiceRole.entities.Like.filter(
       { user_id: user.id, track_id },
       '-created_date',

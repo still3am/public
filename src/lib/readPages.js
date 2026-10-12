@@ -15,11 +15,11 @@ export async function readAllPages(fetchPage) {
     // (a plain array) is already the whole answer.
     if (Array.isArray(res)) {
       out.push(...res);
-      break;
+      return out;
     }
     out.push(...(res?.items || []));
-    if (!res?.has_more || !res.next_cursor) break;
+    if (!res?.has_more || !res.next_cursor) return out;
     cursor = res.next_cursor;
   }
-  return out;
+  throw new Error("The collection exceeds this request limit. Narrow your search or contact support.");
 }

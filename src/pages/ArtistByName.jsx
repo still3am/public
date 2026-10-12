@@ -38,13 +38,8 @@ export default function ArtistByName() {
         setArtist(match);
         return;
       }
-      // No record for this exact artist yet — give them their own page.
-      try {
-        const created = await base44.entities.Artist.create({ name: name.trim(),created_by_id:(await base44.auth.me()).id });
-        if (active) setArtist(created);
-      } catch {
-        if (active) setArtist(null);
-      }
+      // Build the record view from real catalog credits without writing during browsing.
+      if(active)setArtist({id:'',name:name.trim()});
     })();
     return () => {
       active = false;
@@ -77,5 +72,5 @@ export default function ArtistByName() {
       </div>
     );
   }
-  return <PublicRecords id={artist.id} />;
+  return <PublicRecords id={artist.id} fallbackArtist={!artist.id?artist:null} />;
 }

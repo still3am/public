@@ -1,3 +1,4 @@
+import {readAllPages} from '@/lib/readPages';
 import { useEffect, useState } from "react";
 import { useParams, useLocation, Link } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
@@ -131,7 +132,7 @@ export default function Profile() {
       // the server so they stay right for artists with more than a page of
       // uploads, and the follower numbers never pull a thousand rows to measure.
       const [t, totals, followersCount, followingCount, relToUser] = await Promise.all([
-      base44.entities.Track.filter(trackFilter, "-created_date", 100),
+      readAllPages(opts=>base44.entities.Track.filter(trackFilter,{sort:"-created_date",...opts})),
       base44.entities.Track.aggregate({
         query: trackFilter,
         sum: ["play_count", "like_count"]
