@@ -796,8 +796,8 @@ export function PlayerProvider({ children }) {
   }, []);
 
   useEffect(() => {
-    if (isPlaying && currentTrack) countPlay(currentTrack);
-  }, [isPlaying, currentTrack?.id]);
+    if (isPlaying && currentTrack && position>=Math.min(30, Math.max(5,duration/2))) countPlay(currentTrack);
+  }, [isPlaying, currentTrack?.id,position,duration,countPlay]);
 
   const nextIndex = useCallback(() => {
     if (!queue.length) return -1;

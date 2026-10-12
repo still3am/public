@@ -34,16 +34,9 @@
   ],
   "rls": {
     "create": {
-      "$and": [
-        {
-          "data.creator_id": "{{user.id}}"
-        },
-        {
-          "user_condition": {
-            "is_blocked": false
-          }
-        }
-      ]
+      "user_condition": {
+        "role": "admin"
+      }
     },
     "read": {
       "$or": [
@@ -61,37 +54,14 @@
       ]
     },
     "update": {
-      "$and": [
-        {
-          "$or": [
-            {
-              "data.creator_id": "{{user.id}}"
-            },
-            {
-              "user_condition": {
-                "role": "admin"
-              }
-            }
-          ]
-        },
-        {
-          "user_condition": {
-            "is_blocked": false
-          }
-        }
-      ]
+      "user_condition": {
+        "role": "admin"
+      }
     },
     "delete": {
-      "$or": [
-        {
-          "data.creator_id": "{{user.id}}"
-        },
-        {
-          "user_condition": {
-            "role": "admin"
-          }
-        }
-      ]
+      "user_condition": {
+        "role": "admin"
+      }
     }
   }
 }

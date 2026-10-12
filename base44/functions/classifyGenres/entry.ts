@@ -31,13 +31,14 @@ export default async function(req) {
       : { $or: [ { genre: 'Other' }, { genre: '' }, { genre: { $exists: false } } ] };
 
     let processed = 0;
+    let skip=Number.isInteger(body?.skip)?Math.max(0,body.skip):0;
     let has_more = false;
     const start = Date.now();
 
     while (Date.now() - start < TIME_BUDGET_MS) {
       let tracks = [];
       try {
-        tracks = await base44.asServiceRole.entities.Track.filter(query, '-created_date', BATCH);
+        tracks = await base44.asServiceRole.entities.Track.filter({}, '-created_date', BATCH,skip);
       } catch {
         tracks = await base44.asServiceRole.entities.Track.filter(
           { genre: 'Other' }, '-created_date', BATCH
@@ -47,6 +48,8 @@ export default async function(req) {
       has_more = tracks.length >= BATCH;
 
       for (const track of tracks) {
+        skip++;
+        if(!force && track.genre && track.genre!=='Other')continue;
         const info = [];
         if (track.title) info.push(`Title: ${track.title}`);
         if (track.artist) info.push(`Artist: ${track.artist}`);
@@ -87,7 +90,7 @@ export default async function(req) {
       }
     }
 
-    return Response.json({ processed, has_more });
+    return Response.json({ processed, has_more, skip });
   } catch (error) {
     return Response.json({ error: error?.message || 'Failed to classify genres' }, { status: 500 });
   }

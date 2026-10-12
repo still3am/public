@@ -6,7 +6,7 @@ export default async function(req) {
   const s=b.asServiceRole,id=u.id;
   // Fail closed: any cleanup failure keeps the account available for retry.
   const queries={
-   Track:{uploader_id:id},Lyrics:{uploader_id:id},Album:{creator_id:id},
+   PlayEvent:{user_id:id},Track:{uploader_id:id},Lyrics:{uploader_id:id},Album:{creator_id:id},
    LibraryItem:{user_id:id},SavedPlaylist:{user_id:id},Playlist:{creator_id:id},Like:{user_id:id},
    UserGenre:{user_id:id},OfflineSync:{user_id:id},PlaybackState:{user_id:id},
    ProfileComment:{$or:[{author_id:id},{profile_id:id}]},TrackAnnotation:{author_id:id},

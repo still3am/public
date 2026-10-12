@@ -1,6 +1,6 @@
 import { createClientFromRequest } from 'npm:@base44/sdk';
 const ADMIN = 'admin';
-const entities = ['Track','Lyrics','LoungeSession','LoungeMember','LoungeQueueItem','ProfileComment','TrackAnnotation','Suggestion','Notification','Message','Conversation','Follow','User'];
+const entities = ['Track','Lyrics','LoungeSession','LoungeMember','LoungeQueueItem','ProfileComment','TrackAnnotation','Suggestion','Notification','Message','Conversation','Follow','Playlist','User'];
 const editableTrack = ['title','artist','genre','description','lyrics_text','cover_art_url','audio_url','explicit','is_downloadable','duration_seconds','album_id','track_number'];
 const fail = (message, status=403) => { throw Object.assign(new Error(message), {status}); };
 const pick = (obj, fields) => Object.fromEntries(fields.filter(k => obj[k] !== undefined).map(k => [k,obj[k]]));
@@ -31,6 +31,7 @@ export default async function(req) {
     const user=caller||{id:'',role:'guest'};
     if(user.is_blocked || user.disabled) fail('This account is suspended',403);
     const body=await req.json(), {entity,action,args=[]}=body;
+    if(!Array.isArray(args))fail('Invalid arguments',400);
     if(!caller && !(entity==='Track' && action==='read')) fail('Sign in to continue',401);
     if(!entities.includes(entity)) fail('Unsupported resource',400);
     const handler=svc.entities[entity],isAdmin=user.role===ADMIN;
@@ -180,6 +181,14 @@ export default async function(req) {
           const track=await requireTrack(data.track_id||old?.track_id);
           data={session_id:a.s.id,track_id:track.id,track:JSON.stringify(track),added_by_id:user.id,added_by_name:user.display_name||user.full_name||''};
         }
+      } else if(entity==='Playlist') {
+        if(old&&!mine(old,'creator_id'))fail('Playlist access denied');
+        if(kind!=='delete'){
+          data=pick(data,['name','description','cover_art_url','is_public','track_ids']);
+          await moderate(svc,[data.name,data.description].filter(Boolean).join('\n'));
+          for(const tid of data.track_ids||[])await requireTrack(tid);
+          if(kind==='create')data.creator_id=user.id;
+        }
       } else if(entity==='User') {
         if(kind!=='update'||id!==user.id) fail('Profile access denied');
         data=pick(data,['display_name','bio','avatar_url','banner_url','location','pronouns','website','instagram','twitter','soundcloud','status_message','featured_track_id','top_track_ids','is_artist','show_explicit','adult_confirmed']);
@@ -193,11 +202,11 @@ export default async function(req) {
         if(entity==='Conversation') fail('Messaging is not enabled',403);
         if(entity==='Message') fail('Use the song-sharing feature',403);
         if(kind==='create') data[ownerKey]=user.id;
-        if(entity==='ProfileComment') {await relation(data.profile_id||old?.profile_id);await moderate(svc,String(data.message||''));}
+        if(entity==='ProfileComment') {data.author_name=user.display_name||user.full_name||'';data.author_avatar_url=user.avatar_url||'';await relation(data.profile_id||old?.profile_id);await moderate(svc,String(data.message||''));}
         if(entity==='TrackAnnotation') {await requireTrack(data.track_id||old?.track_id);await moderate(svc,String(data.body||''));}
         if(entity==='Suggestion') {
           if(kind==='update'&&!isAdmin) fail('Only administrators can manage ideas');
-          if(kind==='create') {await moderate(svc,[data.title,data.details].filter(Boolean).join('\n')); data.voter_ids=[user.id];data.status='open';}
+          if(kind==='create') {data.user_name=user.display_name||user.full_name||'';await moderate(svc,[data.title,data.details].filter(Boolean).join('\n')); data.voter_ids=[user.id];data.status='open';}
         }
         if(entity==='Follow') {
           await relation(data.following_id||old?.following_id);

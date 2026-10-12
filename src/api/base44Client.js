@@ -2,7 +2,7 @@ import { createClient } from '@base44/sdk';
 import { appParams } from '@/lib/app-params';
 const { appId, token, functionsVersion, appBaseUrl } = appParams;
 const raw = createClient({appId,token,functionsVersion,serverUrl:'',requiresAuth:false,appBaseUrl});
-const guarded = new Set(['Track','Lyrics','LoungeSession','LoungeMember','LoungeQueueItem','ProfileComment','TrackAnnotation','Suggestion','Notification','Message','Conversation','Follow']);
+const guarded = new Set(['Track','Lyrics','LoungeSession','LoungeMember','LoungeQueueItem','ProfileComment','TrackAnnotation','Suggestion','Notification','Message','Conversation','Follow','Playlist']);
 const lounge = new Set(['LoungeSession','LoungeMember','LoungeQueueItem']);
 const gateway = async(entity,action,args) => (await raw.functions.invoke('securityGateway',{entity,action,args})).data.result;
 const handlers = new Map();
