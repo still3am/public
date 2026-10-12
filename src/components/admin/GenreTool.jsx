@@ -12,12 +12,14 @@ export default function GenreTool() {
     if (busy) return;
     setBusy(true);
     setInfo(null);
-    let total = 0;
+    let total = 0,skip=0;
     try {
       while (true) {
-        const res = await base44.functions.invoke("classifyGenres", { force });
+        const res = await base44.functions.invoke("classifyGenres", { force,skip });
         const d = res?.data || {};
         total += d.processed || 0;
+        if(d.has_more&&(!Number.isInteger(d.skip)||d.skip<=skip))throw new Error("Classifier did not advance");
+        skip=d.skip||skip;
         setInfo({ total, done: !d.has_more });
         if (!d.has_more) break;
       }

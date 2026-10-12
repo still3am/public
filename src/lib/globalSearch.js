@@ -204,6 +204,7 @@ async function runSearch(query) {
 // server regardless.
 const RECENT_TTL = 20 * 1000;
 const recent = new Map();
+window.addEventListener("catalog:invalidate",()=>recent.clear());
 
 export function globalSearch(query, { fresh = false } = {}) {
   const Q = query.trim();

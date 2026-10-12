@@ -43,7 +43,7 @@ export default async function (req) {
     // list users, which would silently leave this section empty for everyone
     // else. The projection below is what keeps that elevation safe — public
     // profile fields only.
-    const users = await base44.asServiceRole.entities.User.list('-created_date', USER_SCAN);
+    const users = await base44.asServiceRole.entities.User.filter({$or:[{display_name:{$regex:Q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'),$options:'i'}},{full_name:{$regex:Q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'),$options:'i'}}],is_blocked:{$ne:true}},'-created_date',MAX_RESULTS);
 
     const results = (Array.isArray(users) ? users : users?.items || [])
       .filter((u) => (u.display_name || u.full_name || '').toLowerCase().includes(Q))
