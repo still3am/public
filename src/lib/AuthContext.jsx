@@ -94,6 +94,7 @@ export const AuthProvider = ({ children }) => {
       // Now check if the user is authenticated
       setIsLoadingAuth(true);
       const currentUser = await base44.auth.me();
+      if(currentUser?.is_blocked || currentUser?.disabled) { setUser(null); setIsAuthenticated(false); setAuthError({type:'suspended',message:'Your account is suspended. Contact PUBLIC support.'}); setIsLoadingAuth(false); setAuthChecked(true); return; }
       setUser(currentUser);
       setIsAuthenticated(true);
       setIsLoadingAuth(false);

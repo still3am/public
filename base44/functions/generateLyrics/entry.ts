@@ -5,6 +5,7 @@ export default async function(req) {
     const base44 = createClientFromRequest(req);
     const user = await base44.auth.me();
     if (!user) return Response.json({ error: 'Unauthorized' }, { status: 401 });
+    if(user.is_blocked || user.disabled) return Response.json({error:'Account suspended'},{status:403});
 
     const body = await req.json().catch(() => ({}));
     const trackId = body?.track_id;
@@ -12,6 +13,7 @@ export default async function(req) {
 
     const track = await base44.entities.Track.get(trackId).catch(() => null);
     if (!track) return Response.json({ error: 'Track not found' }, { status: 404 });
+    if(track.uploader_id!==user.id && user.role!=='admin') return Response.json({error:'Only the owner can transcribe this track'},{status:403});
     if (!track.audio_url) {
       return Response.json({ error: 'No audio file attached to this track' }, { status: 400 });
     }

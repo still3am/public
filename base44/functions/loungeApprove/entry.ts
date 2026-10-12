@@ -9,6 +9,7 @@ export default async function(req: Request): Promise<Response> {
     const base44 = createClientFromRequest(req);
     const user = await base44.auth.me();
     if (!user) return Response.json({ error: 'Unauthorized' }, { status: 401 });
+    if(user.is_blocked || user.disabled) return Response.json({error:'Account suspended'},{status:403});
 
     const body = await req.json().catch(() => ({}));
     const { member_id, session_id, action } = body || {};
@@ -33,6 +34,9 @@ export default async function(req: Request): Promise<Response> {
       return Response.json({ error: 'Only the host can approve members' }, { status: 403 });
     }
 
+    const member = await base44.asServiceRole.entities.LoungeMember.get(member_id);
+    if(member.session_id !== session_id) return Response.json({error:'Member belongs to a different lounge'},{status:403});
+    if(user.is_blocked || user.disabled) return Response.json({error:'Account suspended'},{status:403});
     const newStatus = action === 'approve' ? 'approved' : 'rejected';
     await base44.asServiceRole.entities.LoungeMember.update(member_id, { status: newStatus });
     return Response.json({ ok: true, status: newStatus });

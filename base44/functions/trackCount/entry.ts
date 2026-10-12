@@ -12,8 +12,6 @@ const PAGE = 1000;
 export default async function (req) {
   try {
     const base44 = createClientFromRequest(req);
-    const user = await base44.auth.me();
-    if (!user) return Response.json({ error: 'Unauthorized' }, { status: 401 });
 
     // The count lives on the app's settings row. Never create one here — a second
     // settings row would shadow the real one for every other settings reader.

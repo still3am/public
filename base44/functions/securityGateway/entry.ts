@@ -171,6 +171,7 @@ export default async function(req) {
         for(const tid of [data.featured_track_id,...(data.top_track_ids||[])].filter(Boolean)) await requireTrack(tid);
       } else {
         const ownerKey={ProfileComment:'author_id',TrackAnnotation:'author_id',Suggestion:'user_id',Notification:'actor_id',Message:'sender_id',Conversation:null,Follow:'follower_id'}[entity];
+        if(entity==='Notification' && kind==='update') { if(old.user_id!==user.id&&!isAdmin) fail('Notification access denied'); return await handler.update(id,{read:!!data.read}); }
         if(old&&!isAdmin && old[ownerKey]!==user.id && !(entity==='ProfileComment'&&kind==='delete'&&old.profile_id===user.id)) fail('Record access denied');
         if(entity==='Conversation') fail('Messaging is not enabled',403);
         if(entity==='Message') fail('Use the song-sharing feature',403);

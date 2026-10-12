@@ -15,6 +15,7 @@ export default async function(req) {
     const base44 = createClientFromRequest(req);
     const user = await base44.auth.me();
     if (!user) return Response.json({ error: 'Unauthorized' }, { status: 401 });
+    if(user.is_blocked || user.disabled) return Response.json({error:'Account suspended'},{status:403});
 
     const body = await req.json().catch(() => ({}));
     const trackId = body?.track_id;
@@ -51,7 +52,7 @@ export default async function(req) {
     if (typeof genre === 'string') genre = genre.trim();
     if (!genre || !GENRES.includes(genre)) genre = 'Other';
 
-    await base44.entities.Track.update(trackId, { genre });
+    await base44.asServiceRole.entities.Track.update(trackId, { genre });
     return Response.json({ genre });
   } catch (error) {
     return Response.json({ error: error?.message || 'Failed to detect genre' }, { status: 500 });
