@@ -101,6 +101,7 @@ export function PlayerProvider({ children }) {
   const inactiveIdx = () => (activeIdxRef.current === 0 ? 1 : 0);
   const inactiveEl = () => els()[inactiveIdx()];
 
+  const retryRef=useRef(new Map());
   const countedRef = useRef(new Set());
   const [queue, setQueue] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(-1);
@@ -380,6 +381,8 @@ export function PlayerProvider({ children }) {
       } catch {}
     }
     if (blobUrlRefs[side].current && blobUrlRefs[side].current !== blobUrl) {
+      let onlineUrl=t.audio_url;
+      if(t._private_audio){try{onlineUrl=(await base44.entities.Track.get(t.id)).audio_url;}catch{return;}}
       URL.revokeObjectURL(blobUrlRefs[side].current);
     }
     blobUrlRefs[side].current = blobUrl || null;
@@ -704,7 +707,19 @@ export function PlayerProvider({ children }) {
       const onEnded = () => {
         if (a === activeEl()) handleEndedRef.current();
       };
-      const onError=async()=>{if(a!==activeEl())return;setIsPlaying(false);window.dispatchEvent(new CustomEvent('player:error',{detail:'This track could not load. Check your connection or choose another song.'}));};
+      const onError=async()=>{
+        if(a!==activeEl())return;
+        const track=queueRef.current[currentIndexRef.current],side=activeIdxRef.current,token=loadTokenRef.current;
+        if(track && Date.now()-(retryRef.current.get(track.id)||0)>60000){
+          retryRef.current.set(track.id,Date.now());
+          const at=a.currentTime||position;let url=null;
+          try{if(navigator.onLine&&track._private_audio)url=(await base44.entities.Track.get(track.id)).audio_url;
+            else{const rec=await getRecord(track.id);if(rec?._blob){url=URL.createObjectURL(rec._blob);blobUrlRefs[side].current=url;}}
+          }catch{}
+          if(url&&token===loadTokenRef.current){pendingSeekRef.current={id:track.id,at};a.src=url;a.load();a.play().catch(()=>setIsPlaying(false));return;}
+        }
+        setIsPlaying(false);window.dispatchEvent(new CustomEvent('player:error',{detail:'This track could not load. Check your connection or choose another song.'}));
+      };
       a.addEventListener('error',onError);
       a.addEventListener("timeupdate", onTime);
       a.addEventListener("durationchange", onDur);
@@ -1232,19 +1247,21 @@ export function PlayerProvider({ children }) {
   // the offline cache blob back to streaming — preserving the playback
   // position so the listener doesn't hear a jump.
   useEffect(() => {
-    const handleOnline = () => {
+    const handleOnline = async () => {
       if (crossfadingRef.current) return;
       const side = activeIdxRef.current;
       const a = els()[side];
       const t = queueRef.current[currentIndexRef.current];
-      if (!a || !t || !t.audio_url) return;
+      if (!a || !t || (!t.audio_url&&!t._private_audio)) return;
       if (!blobUrlRefs[side].current) return; // not currently on a cache blob
       const wasPlaying = isPlayingRef.current;
       const pos = a.currentTime || 0;
+      let onlineUrl=t.audio_url;
+      if(t._private_audio){try{onlineUrl=(await base44.entities.Track.get(t.id)).audio_url;}catch{return;}}
       URL.revokeObjectURL(blobUrlRefs[side].current);
       blobUrlRefs[side].current = null;
       const token = ++loadTokenRef.current;
-      a.src = t.audio_url;
+      a.src = onlineUrl;
       a.load();
       const onReady = () => {
         a.removeEventListener("loadedmetadata", onReady);
