@@ -71,6 +71,7 @@ export default function TrackDetail() {
 
   useEffect(() => {
     load();
+    return()=>{loadVersion.current++;};
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 

@@ -54,14 +54,9 @@ export const getPublishedTracks = makeCache(() =>
 );
 
 // Most played first — the same complete catalogue, ranked.
-export const getTopTracks = makeCache(() =>
-  readAllPages((opts) =>
-    base44.entities.Track.filter(
-      { is_published: true },
-      { sort: "-play_count", ...opts }
-    )
-  )
-);
+export const getTopTracks = async (fresh=false) =>
+  [...await getPublishedTracks(fresh)].sort((a,b)=>(b.play_count||0)-(a.play_count||0));
+
 
 export const getArtists = makeCache(() =>
   readAllPages((opts) =>

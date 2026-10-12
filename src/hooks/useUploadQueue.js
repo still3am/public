@@ -59,7 +59,7 @@ export function useUploadQueue({ user, isAdmin }) {
  useEffect(()=>{generation.current++;setItems([]);setDupes(null);catalog.current=[];assets.current.clear();claimedHashes.current.clear();},[user?.id]);
  const patch=(id,data)=>setItems(prev=>prev.map(it=>it.id===id?{...it,...data}:it));
  async function refreshDuplicates(){
-  try{catalog.current=await readAllPages(opts=>base44.entities.Track.filter({},{sort:'-created_date',...opts}));setCatalogError('');}
+  try{catalog.current=await readAllPages(opts=>base44.entities.Track.filter({},{sort:'-created_date',fields:['id','title','artist','duration_seconds','uploader_id','uploader_name','audio_url'],...opts}));setCatalogError('');}
   catch{setCatalogError('Metadata comparison is unavailable. Exact-file verification still runs before upload. Retry the comparison.');}
  }
  const warn=(item,hits)=>{

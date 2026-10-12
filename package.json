@@ -11,7 +11,9 @@
     "typecheck": "tsc -p ./jsconfig.json",
     "preview": "vite preview",
     "test:security": "node tests/security-gateway.test.mjs",
-    "test:duplicates": "node tests/duplicate-detection.test.mjs"
+    "test:duplicates": "node tests/duplicate-detection.test.mjs",
+    "test:uploads": "node tests/upload-queue.test.mjs",
+    "test": "npm run test:duplicates && npm run test:uploads && npm run test:security"
   },
   "dependencies": {
     "@base44/sdk": "^0.8.53",

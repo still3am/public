@@ -15,7 +15,6 @@ function fetchChunk(ids) {
   const req = base44.functions
     .invoke("usersByIds", { ids })
     .then((res) => res?.data?.users || [])
-    .catch(() => [])
     .finally(() => inflight.delete(key));
   inflight.set(key, req);
   return req;

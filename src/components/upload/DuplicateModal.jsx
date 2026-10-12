@@ -28,7 +28,7 @@ export default function DuplicateModal({ tracks, onClose, onRemove }) {
     try {
       list.forEach((t) => onRemove?.(t.id));
       setList([]);
-      toast({ title: "Removed all duplicates" });
+      toast({ title: "Removed flagged uploads" });
     } finally {
       setRemovingAll(false);
     }
@@ -88,6 +88,7 @@ export default function DuplicateModal({ tracks, onClose, onRemove }) {
                   <div className="text-[11px] text-amber-600 dark:text-amber-400 truncate">
                     {t.reason || "Similar song details"}{t.existingBy ? ` — ${t.existingBy}` : ""}
                   </div>
+                  {/^[a-f0-9]{24}$/.test(t.existingId||"")&&<a href={`/track/${t.existingId}`} target="_blank" rel="noreferrer" className="text-xs underline">View existing song</a>}
                 </div>
                 <button
                   onClick={() => remove(t.id)}
@@ -113,7 +114,7 @@ export default function DuplicateModal({ tracks, onClose, onRemove }) {
             className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-semibold text-destructive hover:bg-destructive/10 disabled:opacity-40 active:scale-95 transition"
           >
             {removingAll ? <Loader2 size={14} className="animate-spin" /> : <Trash2 size={14} />}
-            Remove all
+            Remove flagged uploads
           </button>
           <button
             onClick={onClose}

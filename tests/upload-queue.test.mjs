@@ -20,7 +20,7 @@ console.log('PASS failed save resumes without uploading audio twice');
 q=await prepare([file('Rain.mp3',[4,5,6])]);it=q.items.find(it=>it.title==='Rain');
 await Promise.all([q.uploadOne(it),q.uploadOne(it)]);q=render();assert.equal(uploads,2);assert.equal(creates,3);
 console.log('PASS double-click creates one upload');
-q=await prepare([file('Renamed.mp3',[4,5,6],'Other Artist')]);it=q.items.find(it=>it.title==='Renamed');await q.uploadOne(it);q=render();assert.equal(creates,3);assert.match(q.items.find(it=>it.id===it.id)?.status||'',/done|ready/);
+q=await prepare([file('Renamed.mp3',[4,5,6],'Other Artist')]);it=q.items.find(it=>it.title==='Renamed');await q.uploadOne(it);q=render();assert.equal(creates,3);assert.equal(q.items.find(row=>row.id===it.id).status,'ready');assert.match(q.items.find(row=>row.id===it.id).error,/identical|same file/i);
 console.log('PASS exact bytes in a batch cannot create a second track');
 q=await prepare([file('New.mp3',[7,8,9])]);it=q.items.find(it=>it.title==='New');failCheck=true;await q.uploadOne(it);q=render();assert.equal(uploads,2);assert.equal(q.items.find(t=>t.id===it.id).status,'ready');failCheck=false;
 console.log('PASS failed duplicate verification stops before storage upload');
