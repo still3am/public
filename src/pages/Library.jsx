@@ -109,8 +109,7 @@ export default function Library() {
     handler();
     window.addEventListener("recentplays:change", handler);
     window.addEventListener("storage", handler);
-    if(loadError)return <LoadError onRetry={load}/>;
-  return () => {
+    return () => {
       window.removeEventListener("recentplays:change", handler);
       window.removeEventListener("storage", handler);
     };
@@ -166,6 +165,7 @@ export default function Library() {
     }
   };
 
+  if(loadError)return <LoadError onRetry={load}/>;
   return (
     <div className="max-w-5xl mx-auto pb-10">
       <LibraryEntryRow
