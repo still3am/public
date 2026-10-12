@@ -38,6 +38,7 @@ export default function Search() {
     else params.delete("q");
     setSearchParams(params, { replace: true });
   };
+  const [browseError,setBrowseError]=useState("");
   const [allTracks, setAllTracks] = useState([]);
   const [loadingAll, setLoadingAll] = useState(true);
 
@@ -58,11 +59,11 @@ export default function Search() {
   });
 
   async function loadCatalogue() {
-    setLoadingAll(true);
+    setLoadingAll(true);setBrowseError("");
     try {
       const tracks = await getPublishedTracks(true);
       setAllTracks(Array.isArray(tracks) ? tracks : []);
-    } finally {
+    } catch {setBrowseError("The catalog is unavailable. Retry after checking your connection.");} finally {
       setLoadingAll(false);
     }
   }
@@ -198,7 +199,7 @@ export default function Search() {
             description="No published tracks in this genre." />
           }
           </div> :
-        loadingAll ? loader :
+        browseError ? <div role="alert" className="p-6 text-center"><p>{browseError}</p><Button onClick={loadCatalogue}>Retry</Button></div> : loadingAll ? loader :
         genreList.length ?
         <VinylCrate genres={genreList} onPick={(g) => setGenre(g)} /> :
 

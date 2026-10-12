@@ -85,6 +85,7 @@ function Skeleton() {
 
 export default function Home() {
   const { user } = useAuth();
+  const [loadError,setLoadError]=useState("");
   const [loading, setLoading] = useState(true);
   const [trending, setTrending] = useState([]);
   const [newReleases, setNewReleases] = useState([]);
@@ -109,6 +110,7 @@ export default function Home() {
 
   async function load() {
     setLoading(true);
+    setLoadError("");
     try {
       // The complete catalogue, newest first and ranked by plays, read once and
       // shared with the other discovery screens.
@@ -182,7 +184,7 @@ export default function Home() {
         [pool[i], pool[j]] = [pool[j], pool[i]];
       }
       setDiscover(pool.slice(0, 12));
-    } finally {
+    } catch {setLoadError("The music catalog could not load. Check your connection and retry.");} finally {
       setLoading(false);
     }
   }
@@ -191,6 +193,7 @@ export default function Home() {
     load();
   }, []);
 
+  if(loadError&&!trending.length)return <div className="p-8 text-center space-y-4"><p role="alert">{loadError}</p><button className="border p-3 rounded-xl" onClick={load}>Retry</button></div>;
   if (loading && !trending.length) return <Skeleton />;
 
   const allEmpty =

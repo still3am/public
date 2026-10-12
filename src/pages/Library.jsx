@@ -47,21 +47,13 @@ export default function Library() {
   const loadSavedPlaylists = useCallback(async () => {
     if (!user?.id) return;
     try {
-      const rows = await base44.entities.SavedPlaylist.filter(
-        { user_id: user.id },
-        "-created_date",
-        200
-      );
+      const rows=await readAllPages(opts=>base44.entities.SavedPlaylist.filter({user_id:user.id},{sort:"-created_date",...opts}));
       const ids = (rows || []).map((r) => r.playlist_id).filter(Boolean);
       if (!ids.length) {
         setSavedPlaylists([]);
         return;
       }
-      const list = await base44.entities.Playlist.filter(
-        { id: { $in: ids } },
-        "-created_date",
-        200
-      );
+      const list=await readAllPages(opts=>base44.entities.Playlist.filter({id:{$in:ids}},{sort:"-created_date",...opts}));
       const order = new Map(ids.map((pid, i) => [pid, i]));
       setSavedPlaylists(
         (list || [])

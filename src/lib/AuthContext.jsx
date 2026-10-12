@@ -120,6 +120,12 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  useEffect(()=>{
+    if(!authChecked)return;
+    const verify=async()=>{if(!isAuthenticated)return;try{const current=await base44.auth.me();if(current.is_blocked||current.disabled){setUser(null);setIsAuthenticated(false);setAuthError({type:'suspended',message:'Your account is suspended. Contact PUBLIC support.'});}}catch(error){if(error.status===401){setUser(null);setIsAuthenticated(false);setAuthError(null);}}};
+    const timer=setInterval(verify,60000);window.addEventListener('focus',verify);
+    return()=>{clearInterval(timer);window.removeEventListener('focus',verify);};
+  },[authChecked,isAuthenticated]);
   const logout = (shouldRedirect = true) => {
     setUser(null);
     setIsAuthenticated(false);

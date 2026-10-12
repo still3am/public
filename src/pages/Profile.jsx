@@ -262,7 +262,7 @@ export default function Profile() {
         ...form,
         full_name: form.display_name || prev?.full_name
       }));
-    } finally {
+    } catch {window.dispatchEvent(new Event("public:error"));} finally {
       setSaving(false);
     }
   }

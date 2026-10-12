@@ -15,11 +15,7 @@ export function useMyPlaylists() {
       return;
     }
     try {
-      const rows = await base44.entities.Playlist.filter(
-        { creator_id: user.id },
-        "-created_date",
-        200
-      );
+      const rows=await readAllPages(opts=>base44.entities.Playlist.filter({creator_id:user.id},{sort:"-created_date",...opts}));
       setPlaylists(rows || []);
     } catch {
       setPlaylists([]);

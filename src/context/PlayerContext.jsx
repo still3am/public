@@ -636,7 +636,7 @@ export function PlayerProvider({ children }) {
       return;
     }
     loadOnActive(track);
-  }, [currentTrack?.id]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [currentTrack?.id,currentIndex]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Preload the upcoming track on the inactive element as soon as the current
   // track starts, so a crossfade has a buffered source ready WELL before the
@@ -871,7 +871,8 @@ export function PlayerProvider({ children }) {
     countedRef.current = new Set();
     setQueue(tracks);
     setCurrentIndex(nextIdx);
-  }, [getOfflineQueue, currentTrack]);
+    if(tracks[nextIdx]?.id===curId)loadOnActive(tracks[nextIdx]);
+  }, [getOfflineQueue, currentTrack,loadOnActive]);
 
   // ended handler (only the active element, only when not crossfading)
   useEffect(() => {
@@ -919,8 +920,10 @@ export function PlayerProvider({ children }) {
     countedRef.current = new Set();
     setDismissed(false);
     setQueue(tracks);
-    setCurrentIndex(index);
-  }, []);
+    const target=Math.max(0,Math.min(tracks.length-1,index));
+    setCurrentIndex(target);
+    if(currentTrack?.id===tracks[target]?.id)loadOnActive(tracks[target]);
+  }, [currentTrack?.id,loadOnActive]);
 
   // Hand off playback from another device: load the track and seek to where
   // that device left off, as soon as the media reports it's seekable.
