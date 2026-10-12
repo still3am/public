@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import { Button } from "@/components/ui/button";
@@ -12,6 +12,9 @@ import FacebookIcon from "@/components/FacebookIcon";
 import MicrosoftIcon from "@/components/MicrosoftIcon";
 
 export default function Login() {
+  const [providers,setProviders]=useState([]);
+  useEffect(()=>{base44.entities.AppSetting.list('-created_date',1).then(rows=>setProviders(rows[0]?.login_providers||[])).catch(()=>{});},[]);
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -62,6 +65,7 @@ export default function Login() {
       }
     >
       <div className="space-y-3 mb-6">
+        {providers.includes('apple')&&(
         <Button
           variant="outline"
           className="w-full h-12 text-sm font-medium"
@@ -70,6 +74,8 @@ export default function Login() {
           <AppleIcon className="w-5 h-5 mr-2" />
           Continue with Apple
         </Button>
+        )}
+        {providers.includes('google')&&(
         <Button
           variant="outline"
           className="w-full h-12 text-sm font-medium"
@@ -78,6 +84,8 @@ export default function Login() {
           <GoogleIcon className="w-5 h-5 mr-2" />
           Continue with Google
         </Button>
+        )}
+        {providers.includes('facebook')&&(
         <Button
           variant="outline"
           className="w-full h-12 text-sm font-medium"
@@ -86,6 +94,8 @@ export default function Login() {
           <FacebookIcon className="w-5 h-5 mr-2" />
           Continue with Facebook
         </Button>
+        )}
+        {providers.includes('microsoft')&&(
         <Button
           variant="outline"
           className="w-full h-12 text-sm font-medium"
@@ -94,6 +104,7 @@ export default function Login() {
           <MicrosoftIcon className="w-5 h-5 mr-2" />
           Continue with Microsoft
         </Button>
+        )}
       </div>
 
       <div className="relative mb-6">

@@ -48,6 +48,19 @@
     "apple_login_verified": {
       "type": "boolean",
       "default": false
+    },
+    "login_providers": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "apple",
+          "google",
+          "facebook",
+          "microsoft"
+        ]
+      },
+      "default": []
     }
   },
   "rls": {

@@ -1,7 +1,11 @@
+import {useEffect,useState} from 'react';
+import {base44} from '@/api/base44Client';
 import {Link,useLocation} from 'react-router-dom';
 export default function Policies() {
+ const [operator,setOperator]=useState('PUBLIC');
+ useEffect(()=>{base44.entities.AppSetting.list('-created_date',1).then(rows=>setOperator(rows[0]?.operator_name||'PUBLIC')).catch(()=>{});},[]);
  const privacy=useLocation().pathname==='/privacy';
- return <article className="max-w-2xl mx-auto pb-10 space-y-5"><h1 className="text-3xl font-extrabold">{privacy?'PUBLIC Privacy Policy':'PUBLIC Terms & Community Standards'}</h1><p className="text-sm text-muted-foreground">Updated October 12, 2026</p>
+ return <article className="max-w-2xl mx-auto pb-10 space-y-5"><h1 className="text-3xl font-extrabold">{privacy?'PUBLIC Privacy Policy':'PUBLIC Terms & Community Standards'}</h1><p className="text-sm text-muted-foreground">Updated October 12, 2026 · Operated by {operator}</p>
  {privacy?<><p>PUBLIC is a music listening, upload and community service. Contact the team through <Link to="/support" className="underline">PUBLIC Support</Link>.</p>
  <h2 className="font-bold text-xl">Information used by the service</h2><p>We use your account email and authentication information, profile details you choose to provide, uploaded audio and artwork, saved music and playlists, listening and device playback state, comments, suggestions, song-sharing notes, reports, blocks and support requests to operate PUBLIC.</p>
  <h2 className="font-bold text-xl">Public and private information</h2><p>Published music, artist records and public profile details can be viewed by other people. New audio uploads use private storage and temporary playback links. Older uploaded file URLs may remain public until removed from hosting storage. Your saved library, private playlists, support requests and personal playback state are restricted to you and authorized service operators. A public profile is not a place to post sensitive personal information.</p>

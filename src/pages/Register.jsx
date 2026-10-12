@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import { Button } from "@/components/ui/button";
@@ -15,6 +15,9 @@ import { toast } from "@/components/ui/use-toast";
 import { safeReturnTo } from "@/lib/authReturnTo";
 
 export default function Register() {
+  const [providers,setProviders]=useState([]);
+  useEffect(()=>{base44.entities.AppSetting.list('-created_date',1).then(rows=>setProviders(rows[0]?.login_providers||[])).catch(()=>{});},[]);
+
   const [accepted,setAccepted]=useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -164,6 +167,7 @@ export default function Register() {
       }
     >
       <div className="space-y-3 mb-6">
+        {providers.includes('apple')&&(
         <Button
           variant="outline"
           className="w-full h-12 text-sm font-medium"
@@ -172,6 +176,8 @@ export default function Register() {
           <AppleIcon className="w-5 h-5 mr-2" />
           Continue with Apple
         </Button>
+        )}
+        {providers.includes('google')&&(
         <Button
           variant="outline"
           className="w-full h-12 text-sm font-medium"
@@ -180,6 +186,8 @@ export default function Register() {
           <GoogleIcon className="w-5 h-5 mr-2" />
           Continue with Google
         </Button>
+        )}
+        {providers.includes('facebook')&&(
         <Button
           variant="outline"
           className="w-full h-12 text-sm font-medium"
@@ -188,6 +196,8 @@ export default function Register() {
           <FacebookIcon className="w-5 h-5 mr-2" />
           Continue with Facebook
         </Button>
+        )}
+        {providers.includes('microsoft')&&(
         <Button
           variant="outline"
           className="w-full h-12 text-sm font-medium"
@@ -196,6 +206,7 @@ export default function Register() {
           <MicrosoftIcon className="w-5 h-5 mr-2" />
           Continue with Microsoft
         </Button>
+        )}
       </div>
 
       <div className="relative mb-6">
