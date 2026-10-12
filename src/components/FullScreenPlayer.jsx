@@ -61,9 +61,7 @@ export default function FullScreenPlayer({ onClose }) {
   const coverUrl = useCoverUrl(offlineCover);
   const bg = useColorExtraction(coverUrl);
   const [lyricsMode, setLyricsMode] = useState(false);
-  // Color Pulse is on by default — it follows the track's low-end energy on its
-  // own, so it no longer waits for the user to switch it on. The menu toggle
-  // stays available for anyone who wants a calmer screen.
+  // Automatic visual pulse does not force an AudioContext; it can use an existing analyser when available.
   const showPulse = true;
   const [showVolHint, setShowVolHint] = useState(false);
   const [copied, setCopied] = useState(false);

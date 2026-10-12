@@ -30,10 +30,10 @@ export default async function(req) {
   if(d.action==='offline') {
    const current=await s.entities.User.get(u.id);
    let ids=current.offline_track_ids;
-   if(!Array.isArray(ids)){
+   if(!current.offline_migrated){
     const old=(await s.entities.OfflineSync.filter({user_id:u.id},'-updated_date',1))[0];
     try{ids=JSON.parse(old?.tracks||'[]').map(t=>t.id).filter(Boolean);}catch{ids=[];}
-    await s.entities.User.update(u.id,{offline_track_ids:ids});
+    await s.entities.User.updateMany({id:u.id,offline_migrated:{$ne:true}},{$set:{offline_track_ids:ids,offline_migrated:true}});
    }
    if(d.operation==='add'){
     const track=await b.entities.Track.get(d.track_id);

@@ -153,6 +153,14 @@
         "read": false,
         "write": false
       }
+    },
+    "offline_migrated": {
+      "type": "boolean",
+      "default": false,
+      "rls": {
+        "read": false,
+        "write": false
+      }
     }
   },
   "required": []
