@@ -14,6 +14,7 @@ export default function LibraryBulkBar({
   onAddToPlaylist,
   onRemove,
   onDelete,
+  onOrganize,
 }) {
   if (!visible) return null;
 
@@ -43,6 +44,7 @@ export default function LibraryBulkBar({
         <button onClick={onAddToPlaylist} disabled={!count || busy} className={actionClass}>
           <ListPlus size={14} /> Add to playlist
         </button>
+        {onOrganize&&<button onClick={onOrganize} disabled={!count||busy} className={actionClass}>Move / tag</button>}
         {canRemove && (
           <button onClick={onRemove} disabled={busy} className={actionClass}>
             <FolderMinus size={14} /> Remove from library

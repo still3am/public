@@ -80,6 +80,8 @@ export function useUploadQueue({ user, isAdmin }) {
       duration: 0,
       explicit: false,
       aiLyrics: false,
+      rightsConfirmed:false,
+      allowDownloads:false,
       coverFile: null,
       coverPreviewUrl: "",
       status: "analyzing",
@@ -185,6 +187,7 @@ export function useUploadQueue({ user, isAdmin }) {
   async function uploadOne(item) {
     patch(item.id, { status: "uploading", error: "" });
     try {
+      if(!item.rightsConfirmed) throw new Error("Confirm that you own or have permission to distribute this song, artwork and lyrics.");
       const { file_url } = await base44.integrations.Core.UploadFile({ file: item.file });
       let cover_art_url = "";
       if (item.coverFile) {
@@ -203,7 +206,8 @@ export function useUploadQueue({ user, isAdmin }) {
         genre: item.genre || "Other",
         duration_seconds: item.duration,
         explicit: item.explicit,
-        rights_confirmed: true,
+        rights_confirmed: item.rightsConfirmed===true,
+        is_downloadable:item.allowDownloads===true,
         approval_status: meetsRules ? (isAdmin ? "approved" : "pending") : "private",
         is_published: isAdmin && meetsRules,
       });

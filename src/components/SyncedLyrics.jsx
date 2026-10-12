@@ -92,7 +92,7 @@ export default function SyncedLyrics({ trackId, position, fallbackText = "", onS
                 filter: isActive ? "none" : "blur(0.3px)",
               }}
             >
-              {l.text && l.text.trim() ? l.text : "♪"}
+              {l.words?.length ? l.words.map((w,j)=>{const progress=Math.max(0,Math.min(1,(ms-w.start_time_ms)/Math.max(1,w.end_time_ms-w.start_time_ms)));return <span key={j} style={isActive?{backgroundImage:'linear-gradient(to right, white '+(progress*100)+'%, rgba(255,255,255,.38) '+(progress*100)+'%)',backgroundClip:'text',WebkitBackgroundClip:'text',color:'transparent'}:{}}>{w.text}{j<l.words.length-1?' ':''}</span>;}) : (l.text && l.text.trim() ? l.text : "♪")}
             </button>
           );
         })}

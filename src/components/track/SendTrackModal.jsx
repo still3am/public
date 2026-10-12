@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { createPortal } from "react-dom";
 import { base44 } from "@/api/base44Client";
 import { useAuth } from "@/lib/AuthContext";
@@ -25,6 +25,7 @@ function nameOf(person) {
 export default function SendTrackModal({ track, onClose }) {
   const { user } = useAuth();
   const { toast } = useToast();
+  const request=useRef(0);
   const [query, setQuery] = useState("");
   const [results, setResults] = useState([]);
   const [searching, setSearching] = useState(false);
@@ -34,6 +35,7 @@ export default function SendTrackModal({ track, onClose }) {
   const [sent, setSent] = useState(null);
 
   useEffect(() => {
+    const id=++request.current;
     const q = query.trim().toLowerCase();
     if (q.length < MIN_QUERY) {
       setResults([]);
@@ -44,11 +46,11 @@ export default function SendTrackModal({ track, onClose }) {
     const timer = setTimeout(async () => {
       try {
         const res = await base44.functions.invoke("searchUsers", { q });
-        setResults(res?.data?.results || []);
+        if(id===request.current)setResults(res?.data?.results || []);
       } catch {
-        setResults([]);
+        if(id===request.current)setResults([]);
       } finally {
-        setSearching(false);
+        if(id===request.current)setSearching(false);
       }
     }, 300);
     return () => clearTimeout(timer);

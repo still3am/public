@@ -1,3 +1,5 @@
+import BulkOrganizeSheet from '@/components/library/BulkOrganizeSheet';
+import {readAllPages} from '@/lib/readPages';
 import { useCallback, useEffect, useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { useAuth } from "@/lib/AuthContext";
@@ -26,6 +28,11 @@ export default function Library() {
   const [loading, setLoading] = useState(true);
   const [savedPlaylists, setSavedPlaylists] = useState(null);
   const [showCreate, setShowCreate] = useState(false);
+  const [showOrganize,setShowOrganize]=useState(false);
+  const [folders,setFolders]=useState([]);
+  const [folder,setFolder]=useState("");
+  const [tagQuery,setTagQuery]=useState("");
+  const [entryMap,setEntryMap]=useState({});
   const [editMode, setEditMode] = useState(false);
   const [selected, setSelected] = useState(() => new Set());
   const [showBulkPlaylist, setShowBulkPlaylist] = useState(false);
@@ -74,20 +81,14 @@ export default function Library() {
     }
     setLoading(true);
     try {
-      const items = await base44.entities.LibraryItem.filter(
-        { user_id: user.id },
-        "-created_date",
-        1000
-      );
+      const items = await readAllPages(opts=>base44.entities.LibraryItem.filter({user_id:user.id},{sort:"-created_date",...opts}));
+      setEntryMap(Object.fromEntries(items.map(r=>[r.track_id,r])));
+      setFolders([...new Set(items.map(r=>r.folder).filter(Boolean))]);
       const trackIds = (items || []).
       map((i) => i.track_id).
       filter(Boolean);
       const list = trackIds.length ?
-      await base44.entities.Track.filter(
-        { id: { $in: trackIds } },
-        "-created_date",
-        1000
-      ) :
+      await readAllPages(opts=>base44.entities.Track.filter({id:{$in:trackIds}},{sort:"-created_date",...opts})) :
       [];
       const order = new Map(trackIds.map((id, i) => [id, i]));
       setTracks(
@@ -194,11 +195,13 @@ export default function Library() {
         count={selected.size}
         canRemove={removableIds.length > 0}
         busy={bulkBusy}
+        onOrganize={()=>setShowOrganize(true)}
         onStart={() => setEditMode(true)}
         onExit={exitEditMode}
         onAddToPlaylist={() => setShowBulkPlaylist(true)}
         onRemove={removeFromLibrary} />
 
+      <div className="flex gap-2 mb-4"><select aria-label="Library folder" className="bg-background border rounded-xl p-2 text-sm" value={folder} onChange={e=>setFolder(e.target.value)}><option value="">All folders</option>{folders.map(name=><option key={name}>{name}</option>)}</select><input aria-label="Filter tags" placeholder="Filter by tag" className="min-w-0 bg-background border rounded-xl p-2 text-sm" value={tagQuery} onChange={e=>setTagQuery(e.target.value)}/></div>
       <PullToRefresh onRefresh={async () => {await refresh();await load();await reloadPlaylists();await loadSavedPlaylists();}}>
         {loading && tracks === null ?
         <div className="flex justify-center py-20">
@@ -257,7 +260,7 @@ export default function Library() {
                   <PlaylistCard playlist={pl} />
                   <button
                   onClick={() => unsavePlaylist(pl.id)}
-                  className="absolute top-2.5 right-2.5 w-7 h-7 rounded-full grid place-items-center bg-background/85 backdrop-blur text-foreground/60 hover:text-destructive opacity-0 group-hover:opacity-100 transition"
+                  className="absolute top-2.5 right-2.5 w-7 h-7 rounded-full grid place-items-center bg-background/85 backdrop-blur text-foreground/60 hover:text-destructive opacity-100 md:opacity-0 md:group-hover:opacity-100 transition"
                   aria-label="Remove from your library">
                   
                     <X size={14} />
@@ -278,7 +281,7 @@ export default function Library() {
 
 
             <CardRail>
-                {tracks.map((t) =>
+                {tracks.filter(t=>(!folder||entryMap[t.id]?.folder===folder)&&(!tagQuery||(entryMap[t.id]?.tags||[]).some(tag=>tag.toLowerCase().includes(tagQuery.toLowerCase())))).map((t) =>
               <TrackCard
                 key={t.id}
                 track={t}
@@ -294,6 +297,7 @@ export default function Library() {
         }
       </PullToRefresh>
 
+      {showOrganize&&<BulkOrganizeSheet trackIds={selectedIds} onClose={()=>setShowOrganize(false)} onDone={()=>{setShowOrganize(false);exitEditMode();load();}}/>}
       {showCreate &&
       <CreatePlaylistModal
         onClose={() => setShowCreate(false)}

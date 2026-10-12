@@ -1,3 +1,4 @@
+import WordTimingEditor from '@/components/WordTimingEditor';
 import { useEffect, useRef, useState } from "react";
 import { Loader2, X, Pause, Play, Save, Timer, RotateCcw, Undo2 } from "lucide-react";
 import { base44 } from "@/api/base44Client";
@@ -19,6 +20,7 @@ export default function SyncLyricsModal({ track, onClose, onSaved }) {
   const [draft, setDraft] = useState("");
   const [rows, setRows] = useState([]);
   const [cursor, setCursor] = useState(0);
+  const [language,setLanguage]=useState("en");
   const [saving, setSaving] = useState(false);
   const rowRefs = useRef([]);
 
@@ -91,6 +93,7 @@ export default function SyncLyricsModal({ track, onClose, onSaved }) {
   const save = async () => {
     setSaving(true);
     try {
+      if(rows.some((r,i)=>r.start_ms==null || (i>0&&r.start_ms<rows[i-1].start_ms))) throw new Error("Time every line in order before saving");
       const durationMs = Math.round((p.duration || track.duration_seconds || 0) * 1000);
       const lines = rows.map((r, i) => {
         const start = r.start_ms || 0;
@@ -102,7 +105,7 @@ export default function SyncLyricsModal({ track, onClose, onSaved }) {
       const payload = {
         track_id: track.id,
         uploader_id: user.id,
-        language_code: "en",
+        language_code: language,
         lines,
         status: "approved",
         out_of_sync: false,
@@ -143,11 +146,11 @@ export default function SyncLyricsModal({ track, onClose, onSaved }) {
           <div className="py-16 grid place-items-center text-foreground/60">
             <Loader2 className="animate-spin" size={22} />
           </div>
-        ) : step === "edit" ? (
+        ) : step === "words" ? <WordTimingEditor track={track} text={draft} onSaved={onSaved} onCancel={()=>setStep("edit")} /> : step === "edit" ? (
           <>
             <div className="p-4 flex-1 overflow-y-auto">
               <p className="text-xs text-foreground/50 mb-2 px-1">
-                One line per row. Next you'll play the track and tap through the lines to time them.
+                Choose word timing for karaoke highlighting, or line timing. One line per row. Next you'll play the track and tap through the lines to time them.
               </p>
               <textarea
                 value={draft}
@@ -157,6 +160,7 @@ export default function SyncLyricsModal({ track, onClose, onSaved }) {
               />
             </div>
             <div className="p-4 border-t border-border flex items-center justify-end gap-2 shrink-0">
+              <button onClick={()=>setStep("words")} disabled={!draft.trim()} className="border rounded-full px-3 py-2 text-xs">Time every word</button>
               <button
                 onClick={onClose}
                 className="px-4 py-2 rounded-full text-sm font-semibold hover:bg-foreground/5"
@@ -250,7 +254,7 @@ export default function SyncLyricsModal({ track, onClose, onSaved }) {
                 </button>
                 <button
                   onClick={save}
-                  disabled={saving || marked === 0}
+                  disabled={saving || marked !== rows.length || !rows.length}
                   className="h-11 px-5 rounded-full border border-border text-sm font-semibold inline-flex items-center gap-2 disabled:opacity-50"
                 >
                   {saving ? <Loader2 size={14} className="animate-spin" /> : <Save size={14} />} Save

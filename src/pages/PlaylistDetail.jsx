@@ -1,3 +1,4 @@
+import {readAllPages} from '@/lib/readPages';
 import { useState, useEffect, useCallback, useMemo } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
@@ -51,11 +52,7 @@ export default function PlaylistDetail() {
       setForm({ name: pl.name || "", description: pl.description || "", is_public: pl.is_public !== false });
       const ids = pl.track_ids || [];
       if (ids.length) {
-        const list = await base44.entities.Track.filter(
-          { id: { $in: ids } },
-          "-created_date",
-          1000
-        );
+        const list = await readAllPages(opts=>base44.entities.Track.filter({id:{$in:ids}},{sort:"-created_date",...opts}));
         const order = new Map(ids.map((tid, i) => [tid, i]));
         const sorted = (list || [])
           .slice()
@@ -134,6 +131,7 @@ export default function PlaylistDetail() {
 
   async function toggleSaved() {
     if (savingSaved) return;
+    if(!user){nav("/login?returnTo="+encodeURIComponent(window.location.pathname));return;}
     setSavingSaved(true);
     try {
       if (saved) {
@@ -338,7 +336,7 @@ export default function PlaylistDetail() {
               {isOwn && !editing && (
                 <button
                   onClick={() => removeTrack(t.id)}
-                  className="absolute right-0 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full grid place-items-center text-foreground/40 hover:text-destructive hover:bg-destructive/10 opacity-0 group-hover:opacity-100 transition"
+                  className="absolute right-0 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full grid place-items-center text-foreground/40 hover:text-destructive hover:bg-destructive/10 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition"
                   aria-label="Remove from playlist"
                 >
                   <X size={15} />

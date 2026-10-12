@@ -1,3 +1,5 @@
+import {readAllPages} from '@/lib/readPages';
+import {useRef} from 'react';
 import { createContext, useCallback, useContext, useEffect, useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { useAuth } from "@/lib/AuthContext";
@@ -7,6 +9,7 @@ const LibraryContext = createContext(null);
 
 export function LibraryProvider({ children }) {
   const { user } = useAuth();
+  const pending=useRef(new Set());
   const [ids, setIds] = useState(new Set());
 
   const refresh = useCallback(async () => {
@@ -15,11 +18,7 @@ export function LibraryProvider({ children }) {
       return;
     }
     try {
-      const items = await base44.entities.LibraryItem.filter(
-        { user_id: user.id },
-        "-created_date",
-        1000
-      );
+      const items = await readAllPages(opts=>base44.entities.LibraryItem.filter({user_id:user.id},{sort:"-created_date",...opts}));
       setIds(new Set((items || []).map((i) => i.track_id).filter(Boolean)));
     } catch {
       /* keep current set */
@@ -44,6 +43,8 @@ export function LibraryProvider({ children }) {
     async (track) => {
       if (!user?.id || !track?.id) return false;
       const trackId = track.id;
+      if(pending.current.has(trackId))return false;
+      pending.current.add(trackId);
       const isIn = ids.has(trackId);
 
       // Optimistic: the heart flips the instant it is tapped, then the write is
@@ -81,7 +82,7 @@ export function LibraryProvider({ children }) {
           return n;
         });
         return false;
-      }
+      }finally{pending.current.delete(trackId);}
     },
     [user?.id, ids]
   );
