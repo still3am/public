@@ -46,7 +46,8 @@ export default async function(req) {
       if(target.is_blocked || target.disabled) fail('This account is unavailable');
     };
     const hydrate=async(track,sign=false)=>{
-      const result={...track};
+      const result={...track};delete result.audio_sha256;
+      if(track.uploader_id!==user.id&&!isAdmin)delete result.upload_request_id;
       if(track.audio_file_uri){result._private_audio=true;result.audio_url=sign?(await svc.integrations.Core.CreateFileSignedUrl({file_uri:track.audio_file_uri,expires_in:3600})).signed_url:'';}
       if(track.uploader_id!==user.id&&!isAdmin)delete result.audio_file_uri;
       return result;

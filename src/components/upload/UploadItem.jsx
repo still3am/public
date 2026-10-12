@@ -147,7 +147,7 @@ export default function UploadItem({
 
       <button
         onClick={onUpload}
-        disabled={uploading || enhancing || disabled}
+        disabled={uploading || enhancing || disabled || item.status==="error"}
         className="w-full inline-flex items-center justify-center gap-2 py-3 bg-foreground text-background text-sm font-bold disabled:opacity-50 active:opacity-80 transition">
         
           {uploading || enhancing ?

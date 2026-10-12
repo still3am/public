@@ -20,7 +20,7 @@ const reset=()=>{
   async update(id,data){const r=(db[name]||[]).find(r=>r.id===id);if(!r)throw Error('Not found');Object.assign(r,clone(data));writes.push([name,'update']);return clone(r);},
   async delete(id){db[name]=(db[name]||[]).filter(r=>r.id!==id);if(name==='User')deleted=true;writes.push([name,'delete']);return {id};},
   async deleteMany(q){if(failCleanup&&name==='LibraryItem')throw Error('Cleanup failed');db[name]=(db[name]||[]).filter(r=>!matches(r,q));},
-  async updateMany(){return {};},async count(q){return (db[name]||[]).filter(r=>matches(r,q)).length;}
+  async updateMany(q,ops){for(const r of db[name]||[])if(matches(r,q)){if(ops.$set)Object.assign(r,clone(ops.$set));}return {};},async count(q){return (db[name]||[]).filter(r=>matches(r,q)).length;}
  })});
  globalThis.__client={auth:{me:async()=>user?clone(user):null},entities:handlers,asServiceRole:{entities:handlers,integrations:{Core:{InvokeLLM:async()=>({allowed:true,reason:''}),CreateFileSignedUrl:async({file_uri})=>({signed_url:"https://signed.example.test/"+file_uri})}}}};
 };
@@ -58,6 +58,12 @@ await check('malformed lyric timing is rejected',async()=>{const r=await invoke(
 await check('mutual block prevents sharing',async()=>{db.Block=[{user_id:'other',blocked_user_id:'owner'}];const r=await invoke(gateway,{entity:'Notification',action:'create',args:[{user_id:'other',type:'track_shared',track_id:'public'}]});assert.equal(r.status,403);});
 const safety=await load('base44/functions/safety/entry.ts');
 await check('support receipt cannot be opened with another token',async()=>{const r=await invoke(safety,{action:'contact',subject:'Playback issue',message:'The track stops while I am listening.'});assert.equal(r.status,200);const denied=await invoke(safety,{action:'ticket',id:r.data.id,token:'wrong'});assert.equal(denied.status,403);const allowed=await invoke(safety,{action:'ticket',id:r.data.id,token:r.data.token});assert.equal(allowed.status,200);assert.equal(allowed.data.ticket.access_hash,undefined);});
+await check('anonymous checksum lookup rejected',async()=>{user=null;assert.equal((await invoke(gateway,{entity:'Track',action:'checkDuplicate',args:[{audio_sha256:'a'.repeat(64)}]})).status,401);});
+await check('invalid checksum rejected',async()=>{assert.equal((await invoke(gateway,{entity:'Track',action:'checkDuplicate',args:[{audio_sha256:'bad'}]})).status,400);});
+await check('private foreign checksum never reported',async()=>{db.Track.push({id:'secret',uploader_id:'other',is_published:false,approval_status:'private',audio_sha256:'a'.repeat(64)});const r=await invoke(gateway,{entity:'Track',action:'checkDuplicate',args:[{audio_sha256:'a'.repeat(64)}]});assert.equal(r.status,200);assert.equal(r.data.result.duplicate,false);});
+await check('identical public file rejected on create',async()=>{db.Track[1].audio_sha256='a'.repeat(64);const r=await invoke(gateway,{entity:'Track',action:'create',args:[{title:'Changed tags',rights_confirmed:true,audio_sha256:'a'.repeat(64)}]});assert.equal(r.status,409);assert.equal(writes.length,0);});
+await check('upload retry reuses the original record',async()=>{db.Track[0].upload_request_id='retry-key';const r=await invoke(gateway,{entity:'Track',action:'create',args:[{upload_request_id:'retry-key',rights_confirmed:true}]});assert.equal(r.status,200);assert.equal(r.data.result.id,'private');assert.equal(writes.length,0);});
+await check('mark all read affects only current recipient',async()=>{db.Notification.push({id:'someone-else',user_id:'other',read:false});const r=await invoke(safety,{action:'markAllRead',user_id:'other'});assert.equal(r.status,200);assert.equal(db.Notification[0].read,true);assert.equal(db.Notification[1].read,false);});
 console.log(JSON.stringify({passed,total:passed,environment:'isolated mocked SDK; no live data changed'}));
 
 let backendFiles=0,syntaxErrors=0;
