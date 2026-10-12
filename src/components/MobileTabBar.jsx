@@ -34,8 +34,8 @@ export default function MobileTabBar() {
 
   return (
     <>
-      <nav className="mobile-tab-bar md:hidden fixed bottom-0 inset-x-0 z-20 bg-background/85 backdrop-blur-xl border-t border-border tab-bar-safe">
-        <div className="grid grid-cols-5 h-16 items-center">
+      <nav className="mobile-tab-bar md:hidden fixed bottom-0 inset-x-0 z-20 bg-background/95 backdrop-blur-xl border-t border-border/60 tab-bar-safe">
+        <div className="grid grid-cols-5 h-16 items-center gap-1 px-3">
           {left.map(({ to, label, Icon, end }) => (
             <NavLink
               key={to}
@@ -43,7 +43,7 @@ export default function MobileTabBar() {
               end={end}
               onClick={(e) => handleTab(to, e)}
               className={({ isActive }) =>
-                `flex flex-col items-center justify-center gap-1 text-[10px] font-medium px-1.5 py-1 rounded-xl transition ${
+                `flex flex-col items-center justify-center gap-1 text-[10px] font-semibold px-1.5 py-2 rounded-2xl transition ${
                   isActive ? "text-foreground bg-foreground/[0.06]" : "text-foreground/40 hover:text-foreground/70"
                 }`
               }
@@ -56,7 +56,7 @@ export default function MobileTabBar() {
           <div className="flex items-center justify-center">
             <button
               onClick={() => setMoreOpen(true)}
-              className="w-11 h-11 rounded-full bg-foreground text-background grid place-items-center shadow-lg active:scale-95 transition"
+              className="w-11 h-11 rounded-2xl chrome-action grid place-items-center shadow-sm active:scale-95 transition"
               aria-label="More pages"
             >
               <Plus size={22} />
@@ -69,7 +69,7 @@ export default function MobileTabBar() {
               to={to}
               onClick={(e) => handleTab(to, e)}
               className={({ isActive }) =>
-                `flex flex-col items-center justify-center gap-1 text-[10px] font-medium px-1.5 py-1 rounded-xl transition ${
+                `flex flex-col items-center justify-center gap-1 text-[10px] font-semibold px-1.5 py-2 rounded-2xl transition ${
                   isActive ? "text-foreground bg-foreground/[0.06]" : "text-foreground/40 hover:text-foreground/70"
                 }`
               }

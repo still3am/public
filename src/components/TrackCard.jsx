@@ -70,12 +70,12 @@ export default function TrackCard({ track, selectable = false, selected = false,
       onPointerCancel={cancelPress}
       onContextMenu={(e) => e.preventDefault()}
       onClick={selectable ? () => onToggleSelect?.(track) : handlePlay}
-      className={`group relative rounded-2xl p-2.5 sm:p-3 transition-all duration-300 cursor-pointer
+      className={`music-card group relative rounded-2xl p-2 sm:p-2.5 transition-all duration-300 cursor-pointer
         hover:bg-foreground/[0.04] active:scale-[0.98]
         ${selectable && selected ? "bg-accent ring-1 ring-foreground/40" : ""}
         ${isCurrent ? "bg-foreground/[0.03]" : ""}`}
     >
-      <div className="relative aspect-square rounded-xl overflow-hidden bg-foreground/[0.06] mb-2.5 shadow-sm">
+      <div className="relative aspect-square rounded-xl overflow-hidden bg-foreground/[0.06] mb-3 shadow-sm ring-1 ring-inset ring-foreground/5">
         {coverUrl ? (
           <Image
             src={coverUrl}
@@ -108,7 +108,7 @@ export default function TrackCard({ track, selectable = false, selected = false,
             aria-label="Play"
             className="absolute bottom-2.5 right-2.5 w-11 h-11 md:w-12 md:h-12 rounded-full grid place-items-center shadow-xl
               transition-all duration-300 active:scale-90 bg-foreground text-background
-              opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 hover:scale-105"
+              opacity-100 md:opacity-0 md:translate-y-2 md:group-hover:opacity-100 md:group-hover:translate-y-0 md:group-focus-within:opacity-100 hover:scale-105"
           >
             <Play size={18} fill="currentColor" className="ml-0.5" />
           </button>
@@ -157,7 +157,7 @@ function TrackCardMeta({ track, isCurrent }) {
   return (
     <>
       <div className="flex items-center gap-1.5">
-        <span className={`truncate text-sm font-semibold ${isCurrent ? "text-foreground" : ""}`}>
+        <span className={`truncate text-[13px] sm:text-sm font-semibold leading-5 ${isCurrent ? "text-foreground" : ""}`}>
           {track.title}
         </span>
         {track.explicit && (
@@ -166,7 +166,7 @@ function TrackCardMeta({ track, isCurrent }) {
           </span>
         )}
       </div>
-      <div className="text-xs text-foreground/55 truncate mt-0.5">
+      <div className="text-xs text-muted-foreground truncate mt-1">
         {track.artist || track.uploader_name || "Unknown"}
       </div>
     </>

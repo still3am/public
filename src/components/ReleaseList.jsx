@@ -13,12 +13,12 @@ function ReleaseRow({ track, tracks, index }) {
   const artistName = track.artist || track.uploader_name || "Unknown";
 
   return (
-    <div className="group flex items-center gap-2 md:gap-3 px-2 py-1.5 md:py-2.5 rounded-lg hover:bg-foreground/[0.04] active:scale-[0.99] transition">
+    <div className="group flex items-center gap-3 md:gap-4 px-3 py-3 rounded-xl hover:bg-foreground/[0.04] active:scale-[0.99] transition">
       <button
         onClick={() => (isCurrent ? p.togglePlay() : playHere())}
         className="relative shrink-0"
         aria-label={isPlayingHere ? "Pause" : "Play"}>
-        <div className="w-10 h-10 md:w-12 md:h-12 rounded-lg overflow-hidden bg-foreground/10">
+        <div className="w-12 h-12 md:w-14 md:h-14 rounded-lg overflow-hidden bg-foreground/10">
           {track.cover_art_url ? (
             <Image src={track.cover_art_url} fittingType="fill" className="w-full h-full" />
           ) : (
@@ -38,7 +38,7 @@ function ReleaseRow({ track, tracks, index }) {
 
       <div className="min-w-0 flex-1">
         <Link to={`/track/${track.id}`} className="flex items-center gap-1.5 min-w-0">
-          <span className="text-[13px] md:text-[15px] font-bold truncate text-foreground">
+          <span className="text-sm md:text-[15px] font-semibold truncate text-foreground">
             {track.title}
           </span>
           {track.explicit && (
@@ -47,7 +47,7 @@ function ReleaseRow({ track, tracks, index }) {
             </span>
           )}
         </Link>
-        <div className="text-[11px] md:text-[13px] text-muted-foreground truncate mt-0.5">
+        <div className="text-xs md:text-[13px] text-muted-foreground truncate mt-0.5">
           {artistName}
         </div>
       </div>
@@ -65,11 +65,11 @@ export default function ReleaseList({ tracks }) {
     chunks.push(tracks.slice(i, i + 4));
   }
   return (
-    <div className="flex gap-3 overflow-x-auto no-scrollbar snap-x snap-mandatory -mx-4 px-4 sm:-mx-5 sm:px-5 md:mx-0 md:px-0">
+    <div className="flex gap-3 overflow-x-auto no-scrollbar snap-x snap-mandatory -mx-4 px-4 sm:-mx-5 sm:px-5 md:mx-0 md:px-0 md:grid md:grid-cols-2 lg:grid-cols-3">
       {chunks.map((group, gi) => (
         <div
           key={gi}
-          className="snap-start shrink-0 w-[88%] sm:w-[calc(50%-0.375rem)] md:w-full divide-y divide-foreground/[0.05]">
+          className="snap-start shrink-0 w-[88%] sm:w-[calc(50%-0.375rem)] md:w-auto rounded-2xl border border-border/60 bg-card/60 p-1 divide-y divide-foreground/[0.05]">
           {group.map((t, i) => (
             <ReleaseRow key={t.id} track={t} tracks={tracks} index={gi * 4 + i} />
           ))}

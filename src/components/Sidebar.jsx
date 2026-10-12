@@ -49,28 +49,28 @@ export default function Sidebar() {
   "opacity-100 translate-x-0";
 
   const navLinkCls = ({ isActive }) =>
-  `flex items-center gap-3 rounded-lg text-sm font-medium whitespace-nowrap overflow-hidden px-3 py-2 ${
+  `flex items-center gap-3 rounded-xl text-[13px] font-semibold whitespace-nowrap overflow-hidden px-3 py-3 ${
   isActive ?
-  "bg-foreground/[0.06] text-foreground" :
+  "bg-foreground/[0.08] text-foreground ring-1 ring-inset ring-foreground/5" :
   "text-foreground/60 hover:text-foreground hover:bg-foreground/[0.03]"}`;
 
 
   return (
     <aside
-      className={`hidden md:flex flex-col shrink-0 relative isolate z-10 border-r border-border bg-background h-screen sticky top-0 overflow-hidden transition-[width] duration-300 ease-out [will-change:width] ${
+      className={`hidden md:flex flex-col shrink-0 relative isolate z-10 border-r border-border sidebar-surface bg-background h-dvh sticky top-0 overflow-hidden transition-[width] duration-300 ease-out [will-change:width] ${
       collapsed ? "w-[68px]" : "w-64"}`
       }>
       
       <button
         onClick={toggle}
-        className="absolute top-2 right-2 z-10 text-foreground/30 hover:text-foreground transition-colors"
+        className="absolute top-3 right-2 z-10 w-9 h-9 grid place-items-center rounded-full text-foreground/30 hover:text-foreground transition-colors"
         aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
         title={collapsed ? "Expand sidebar" : "Collapse sidebar"}>
         
         {collapsed ? <ChevronsRight size={15} /> : <ChevronsLeft size={15} />}
       </button>
 
-      <div className="flex items-center py-6 px-3 h-[76px]">
+      <div className="flex items-center py-6 px-3 h-[96px]">
         <div className={`w-[184px] shrink-0 pl-3 ${EASE} ${fadeCls}`}>
           <Logo width="100%" />
         </div>
@@ -80,7 +80,7 @@ export default function Sidebar() {
         <SidebarSearchField collapsed={collapsed} />
       </div>
 
-      <nav className="flex-1 flex flex-col gap-1 overflow-y-auto overflow-x-hidden pb-2 px-3">
+      <nav className="flex-1 flex flex-col gap-1.5 overflow-y-auto overflow-x-hidden pb-2 px-3">
         {links.map(({ to, label, icon: Icon, end }) =>
         <NavLink key={to} to={to} className={navLinkCls} end={end} title={label}>
             <div className="relative shrink-0">
@@ -96,7 +96,7 @@ export default function Sidebar() {
         )}
       </nav>
 
-      <div className="border-t border-border space-y-2 pb-28 p-3">
+      <div className="border-t border-border/60 space-y-2 pb-28 p-3 pt-4">
         <ThemeToggle labelClassName={`shrink-0 ${EASE} ${fadeCls}`} />
         <NavLink
           to="/profile"

@@ -305,7 +305,7 @@ export default function PublicRecords({ id: propId, fallbackArtist = null }) {
               <p className="text-sm text-foreground/50">No published tracks linked to this artist yet.</p>
             </div> :
 
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-1">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 md:gap-4">
               {tracks.map((t) =>
             <TrackCard key={t.id} track={t} />
             )}

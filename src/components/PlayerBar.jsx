@@ -84,7 +84,7 @@ export default function PlayerBar() {
           opacity: 1 - Math.min(dragY / 200, 0.6),
           transition: drag.current.active ? "none" : "transform .25s ease, opacity .25s ease, left .3s ease-out"
         }}
-        className={`fixed left-0 right-0 z-30 bg-background/90 backdrop-blur-xl border-t border-border player-bar-mobile-bottom touch-none transition-[left] duration-300 ease-out [will-change:left] ${
+        className={`fixed left-0 right-0 z-30 player-surface bg-background/95 backdrop-blur-xl border-t border-border/60 player-bar-mobile-bottom touch-none transition-[left] duration-300 ease-out [will-change:left] ${
         collapsed ? "md:left-[68px]" : "md:left-64"}`
         }>
         {/* progress (mobile - thin top accent) */}
@@ -95,7 +95,7 @@ export default function PlayerBar() {
           
         </div>
 
-        <div className="flex items-center gap-3 px-3 sm:px-4 py-2.5">
+        <div className="flex items-center gap-3 px-3 sm:px-5 py-3">
           {/* artwork + meta */}
           <button onClick={() => setFullOpen(true)} className="flex items-center gap-3 min-w-0 flex-1 text-left" aria-label="Open Now Playing">
             <div className="shrink-0 relative">

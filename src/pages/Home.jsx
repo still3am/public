@@ -32,8 +32,8 @@ const greetingByHour = () => {
 function Section({ title, icon: Icon, children, seeAllTo }) {
   return (
     <section className="mb-10 md:mb-12">
-      <div className="flex items-end justify-between mb-3.5 px-4 md:px-0">
-        <h2 className="text-lg md:text-2xl font-extrabold tracking-tight flex items-center gap-2.5">
+      <div className="flex items-end justify-between mb-4 px-1 md:px-0">
+        <h2 className="text-xl md:text-2xl font-bold tracking-tight flex items-center gap-2.5">
           
           {title}
         </h2>
@@ -54,7 +54,7 @@ function CardRow({ tracks }) {
   return (
     <div className="flex gap-3 overflow-x-auto no-scrollbar pb-2 -mx-4 px-4 sm:-mx-5 sm:px-5 snap-x snap-mandatory md:grid md:grid-cols-4 lg:grid-cols-5 md:overflow-visible md:mx-0 md:px-0 md:gap-4">
       {tracks.map((t) =>
-      <div key={t.id} className="snap-start shrink-0 w-[60vw] max-w-[210px] sm:w-[200px] md:w-auto">
+      <div key={t.id} className="snap-start shrink-0 w-[46vw] max-w-[210px] sm:w-[200px] md:w-auto">
           <TrackCard track={t} />
         </div>
       )}
@@ -221,29 +221,31 @@ export default function Home() {
     <PullToRefresh onRefresh={load}>
       <div>
         {/* Hero */}
-        <div className="relative rounded-3xl overflow-hidden border border-foreground/[0.06] p-7 md:p-14 mb-8 md:mb-10 text-center flex flex-col items-center">
-          <HeroPlayingTint />
+        <div className="home-hero relative rounded-3xl overflow-hidden border border-border/60 p-6 sm:p-9 md:p-12 mb-9 md:mb-12 text-left flex flex-col items-start">
+          <div className="opacity-40"><HeroPlayingTint /></div>
           <div
             className="absolute inset-0 opacity-[0.04] pointer-events-none"
             style={{
               backgroundImage:
               "radial-gradient(circle at 15% 15%, hsl(var(--foreground)) 0, transparent 40%), radial-gradient(circle at 85% 85%, hsl(var(--foreground)) 0, transparent 38%)"
             }} />
-          <div className="absolute inset-0 bg-gradient-to-br from-violet-500/8 via-transparent to-amber-400/8 pointer-events-none" />
-          <div className="absolute -right-20 -top-20 w-72 h-72 rounded-full bg-violet-500/12 blur-3xl pointer-events-none" />
-          <div className="absolute -left-12 -bottom-20 w-64 h-64 rounded-full bg-amber-400/12 blur-3xl pointer-events-none" />
+          <div className="absolute inset-0 bg-gradient-to-br from-foreground/[0.03] via-transparent to-foreground/[0.02] pointer-events-none" />
+          <div className="absolute -right-20 -top-20 w-72 h-72 rounded-full bg-foreground/[0.06] blur-3xl pointer-events-none" />
+          <div className="absolute -left-12 -bottom-20 w-64 h-64 rounded-full bg-foreground/[0.04] blur-3xl pointer-events-none" />
 
-          <div className="relative">
+          <div className="relative w-full">
+            <p className="eyebrow mb-5">{greeting} · PUBLIC</p>
             
 
             
-            <h1 className="text-4xl md:text-6xl font-extrabold tracking-tighter mb-3 max-w-2xl leading-[1.02]">
+            <h1 className="text-[32px] sm:text-4xl md:text-5xl font-bold tracking-tight mb-4 max-w-2xl leading-[1.08] break-words">
               {user?.display_name || user?.full_name ? `Hey, ${user.display_name || user.full_name}.` : "Welcome to PUBLIC."}
             </h1>
-            <p className="text-foreground/55 max-w-md text-sm md:text-base mb-5 mx-auto">
-              Listen, upload, and share — a space for sound, made by the people, for the people.
+            <p className="text-muted-foreground max-w-md text-sm md:text-base leading-relaxed mb-6">
+              Your next favorite sound is here. Discover music made and shared by the community.
             </p>
-            <div className="mb-7">
+            <div className="flex flex-wrap items-center gap-4 mb-1">
+              <Link to="/search" className="chrome-button text-sm">Explore music <ChevronRight size={16}/></Link>
               <ScoreboardTrackCount count={totalTracks} />
             </div>
             

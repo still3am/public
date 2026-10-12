@@ -20,7 +20,7 @@ export default function TrackRow({
 
   return (
     <div
-      className="group flex items-center gap-4 px-3 py-2.5 rounded-lg hover:bg-foreground/[0.04] transition"
+      className="song-row group flex items-center gap-3 sm:gap-4 px-2.5 sm:px-3 py-3 rounded-xl hover:bg-foreground/[0.04] transition"
       onDoubleClick={() => p.playTrackAt([track])}
     >
       <div className="w-6 text-center text-sm font-medium text-foreground/40 shrink-0">
@@ -51,7 +51,7 @@ export default function TrackRow({
       </div>
 
       {showArt && (
-        <div className="w-10 h-10 rounded-md overflow-hidden bg-foreground/10 shrink-0">
+        <div className="w-12 h-12 rounded-lg overflow-hidden bg-foreground/10 shrink-0">
           {(track.cover_art_url || albumCover) && (
             <img src={coverUrl} alt="" className="w-full h-full object-cover" />
           )}
