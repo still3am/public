@@ -10,6 +10,7 @@ import { useLibrary } from "@/context/LibraryContext";
 import { useOfflineCache } from "@/hooks/useOfflineCache";
 import { useToast } from "@/components/ui/use-toast";
 import { buildAutoQueue } from "@/lib/autoQueue";
+import { shareTrack } from "@/lib/shareTrack";
 
 /**
  * The one standard action list for a track, in fixed order. Every entry
@@ -88,13 +89,8 @@ export function useTrackActions(track, menuState, ui) {
   };
 
   const share = async () => {
-    const url = `${window.location.origin}/track/${track.id}`;
-    if (navigator.share) {
-      navigator.share({ title: `${track.title} on PUBLIC.`, url }).catch(() => {});
-    } else {
-      await navigator.clipboard.writeText(url);
-      toast({ title: "Link copied" });
-    }
+    const result = await shareTrack(track);
+    if (result === "copied") toast({ title: "Link copied" });
   };
 
   const takedown = async () => {

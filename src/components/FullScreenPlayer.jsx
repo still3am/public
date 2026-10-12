@@ -3,6 +3,7 @@ import { usePlayer } from "@/context/PlayerContext";
 import { useColorExtraction } from "@/hooks/useColorExtraction";
 import { useAuth } from "@/lib/AuthContext";
 import { formatTime } from "@/lib/audio-utils";
+import { shareTrack } from "@/lib/shareTrack";
 import SyncedLyrics from "@/components/SyncedLyrics";
 import TrackOptionsMenu from "@/components/track/TrackOptionsMenu";
 import { ListMusic, SlidersHorizontal, Sparkles } from "lucide-react";
@@ -205,12 +206,8 @@ export default function FullScreenPlayer({ onClose }) {
       navigator.clipboard?.writeText(url);
       return;
     }
-    if (navigator.share) {
-      try {
-        await navigator.share({ title: `${t.title} on PUBLIC.`, url });
-      } catch {}
-    } else {
-      navigator.clipboard?.writeText(url);
+    const result = await shareTrack(t);
+    if (result === "copied") {
       setCopied(true);
       setTimeout(() => setCopied(false), 1500);
     }
