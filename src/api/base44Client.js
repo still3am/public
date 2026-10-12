@@ -12,7 +12,27 @@ const entities = new Proxy(raw.entities,{get(target,name) {
   if(!handlers.has(name)) handlers.set(name,new Proxy(target[name],{get(h,method) {
     if(typeof method!=="string")return Reflect.get(h,method);
     if(['create','update','delete','deleteMany','bulkUpdate'].includes(method)) return async (...args)=>{if(method==='bulkUpdate'&&Array.isArray(args[0])&&args[0].length>100){const results=[];for(let i=0;i<args[0].length;i+=100)results.push(...await gateway(name,method,[args[0].slice(i,i+100)]));return results;}return gateway(name,method,args);};
-    if((lounge.has(name)&&['get','list','filter'].includes(method))||(name==='Track'&&['get','list','filter','count','aggregate'].includes(method))) return (...args)=>gateway(name,'read',[method,...args]);
+    if(name==='Track'&&['get','list','filter','count','aggregate'].includes(method)) return async (...args)=>{
+      try { return await gateway(name,'read',[method,...args]); }
+      catch(error) {
+        // Function availability must not blank an otherwise accessible catalog.
+        // The entity API independently enforces Track RLS and private-file FLS.
+        const status=error?.response?.status ?? error?.status;
+        if(status===403 || status===404 || status===422)throw error;
+        const result=await h[method](...args);
+        const mark=t=>t&&!t.audio_url?{...t,_private_audio:true}:t;
+        if(method==='get'){
+          const track=mark(result);
+          // Private audio still requires the gateway to authorize and sign it.
+          if(track?._private_audio)throw error;
+          return track;
+        }
+        if(Array.isArray(result))return result.map(mark);
+        if(Array.isArray(result?.items))return {...result,items:result.items.map(mark)};
+        return result;
+      }
+    };
+    if(lounge.has(name)&&['get','list','filter'].includes(method)) return (...args)=>gateway(name,'read',[method,...args]);
     return h[method];
   }}));
   return handlers.get(name);
