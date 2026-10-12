@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { ShieldCheck, Music2, Flag, Lightbulb, Wand2, Ban, Users, Megaphone } from "lucide-react";
 import { useAuth } from "@/lib/AuthContext";
+import SupportInbox from '@/components/admin/SupportInbox';
+import ReleaseReadiness from '@/components/admin/ReleaseReadiness';
 import ApprovalsManager from "@/components/admin/ApprovalsManager";
 import SuggestionsManager from "@/components/admin/SuggestionsManager";
 import ReportsManager from "@/components/admin/ReportsManager";
@@ -21,6 +23,8 @@ export default function Admin() {
   }, [user]);
 
   const tabs = [
+    { id: "readiness", icon: ShieldCheck, label: "Release" },
+    { id: "support", icon: Users, label: "Support" },
     { id: "approvals", icon: ShieldCheck, label: "Approvals" },
     { id: "users", icon: Users, label: "Users" },
     { id: "reports", icon: Flag, label: "Reports" },
@@ -57,6 +61,8 @@ export default function Admin() {
           </div>
 
           <div className="max-w-5xl mx-auto">
+            {tab === "readiness" && <ReleaseReadiness />}
+            {tab === "support" && <SupportInbox />}
             {tab === "approvals" && <ApprovalsManager />}
             {tab === "users" && <UsersManager />}
             {tab === "reports" && <ReportsManager />}

@@ -64,8 +64,8 @@ export default function PublicRecordsIndex() {
     setArtists(null);
     try {
       const [records, tracks] = await Promise.all([
-      getArtists(),
-      getPublishedTracks()]
+      getArtists(true),
+      getPublishedTracks(true)]
       );
       const recordByName = new Map();
       (Array.isArray(records) ? records : []).forEach((a) => {

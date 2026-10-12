@@ -13,9 +13,10 @@ export default function PulseVisualizer({ className = "" }) {
   const smooth = useRef(0);
 
   useEffect(() => {
-    p.enableAnalyser?.();
+    // Keep plain media playback available on iOS; visual decoration never forces Web Audio.
     const loop = () => {
       const an = p.getAnalyser?.();
+      if(!an) setBeat(p.isPlaying ? (Math.sin(Date.now()/650)+1)*0.18 : 0);
       if (an) {
         const data = new Uint8Array(an.frequencyBinCount);
         an.getByteFrequencyData(data);

@@ -19,7 +19,7 @@ export default function RecentlyAdded() {
   async function load() {
     setLoading(true);
     try {
-      setTracks(await getPublishedTracks());
+      setTracks(await getPublishedTracks(true));
     } catch {
       // ignore on refresh
     } finally {

@@ -20,7 +20,7 @@ export default function TopCharts() {
   async function load() {
     setLoading(true);
     try {
-      setTracks(await getTopTracks());
+      setTracks(await getTopTracks(true));
     } catch {
       // ignore on refresh
     } finally {

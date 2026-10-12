@@ -73,6 +73,8 @@ export function useTrackActions(track, menuState, ui) {
   };
 
   const toggleOffline = async () => {
+    if(!requireAuth()) return;
+    if(!offline && !track.is_downloadable){toast({title:"The artist has not enabled downloads"});return;}
     if (offline) {
       await cache.removeTrack(track.id);
       toast({ title: "Removed from downloads" });
@@ -89,8 +91,8 @@ export function useTrackActions(track, menuState, ui) {
   };
 
   const share = async () => {
-    const result = await shareTrack(track);
-    if (result === "copied") toast({ title: "Link copied" });
+    try {const result = await shareTrack(track);
+    if (result === "copied") toast({ title: "Link copied" });}catch{toast({title:"Sharing is unavailable. Try again.",variant:"destructive"});}
   };
 
   const takedown = async () => {
@@ -128,8 +130,8 @@ export function useTrackActions(track, menuState, ui) {
       active: inLib,
       onClick: async () => {
         if (!requireAuth()) return;
-        await toggle(track);
-        toast({ title: inLib ? "Removed from library" : "Added to library" });
+        const ok=await toggle(track);
+        toast(ok?{ title: inLib ? "Removed from library" : "Added to library" }:{title:"Could not update your library",variant:"destructive"});
       },
     },
     { icon: ListMusic, label: "Add to playlist", onClick: () => requireAuth() && ui.openPicker() },
@@ -137,7 +139,7 @@ export function useTrackActions(track, menuState, ui) {
       icon: savingOffline ? Loader2 : offline ? Trash2 : Download,
       label: savingOffline ? "Downloading…" : offline ? "Remove offline" : "Download",
       spin: savingOffline,
-      disabled: savingOffline,
+      disabled: savingOffline || (!offline && !track.is_downloadable),
       onClick: toggleOffline,
     },
     {

@@ -55,7 +55,8 @@ export default function Downloads() {
 
   const playAll = () => {
     if (!tracks.length) return;
-    p.playTrackAt(tracks, 0);
+    if(anyPlayingHere) p.togglePlay();
+    else p.playTrackAt(tracks, 0);
   };
 
   const playOne = (i) => {
@@ -154,6 +155,7 @@ export default function Downloads() {
         <>
             {tracks.length > 0 &&
           <div className="flex items-center justify-between mb-3 px-1">
+                <button onClick={()=>setConfirming(true)} className="border rounded-full px-3 py-2 text-xs">Clear downloads</button>
                 <button
               onClick={playAll}
               className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-foreground text-background text-sm font-bold active:scale-95 transition">

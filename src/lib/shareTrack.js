@@ -26,7 +26,8 @@ async function coverFile(track) {
 export async function shareTrack(track) {
   const url = `${window.location.origin}/track/${track.id}`;
   const title = `${track.title} on PUBLIC.`;
-  const file = await coverFile(track);
+  // Call native share during the user gesture; fetching artwork first can lose activation.
+  const file = null;
   const artist = track.artist || track.uploader_name;
   const withCover =
     file && navigator.canShare?.({ files: [file] })
@@ -55,6 +56,8 @@ export async function shareTrack(track) {
     }
   }
 
-  await navigator.clipboard?.writeText(url);
+  if(!navigator.clipboard?.writeText) {
+    const input=document.createElement("textarea");input.value=url;document.body.appendChild(input);input.select();const copied=document.execCommand("copy");input.remove();if(!copied)throw new Error("Clipboard unavailable");
+  }else await navigator.clipboard.writeText(url);
   return "copied";
 }

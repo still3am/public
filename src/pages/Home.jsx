@@ -100,25 +100,11 @@ export default function Home() {
     setFromFollowing((p) => p.filter((t) => t.id !== id));
     setDiscover((p) => p.filter((t) => t.id !== id));
     setByGenre((p) => p.map((s) => ({ ...s, tracks: s.tracks.filter((t) => t.id !== id) })));
-    setTotalTracks((c) => Math.max(0, c - 1));
+
   }, []);
   useUnpublishedSync(onUnpublished);
 
-  useEffect(() => {
-    const unsub = base44.entities.Track.subscribe((event) => {
-      if (!loadedRef.current) return;
-      setTotalTracks((c) => {
-        if (event.type === "create" && event.data?.is_published !== false) return c + 1;
-        if (event.type === "delete") return Math.max(0, c - 1);
-        if (event.type === "update") {
-          if (event.data?.is_published === false && c > 0) return c - 1;
-          if (event.data?.is_published === true) return c + 1;
-        }
-        return c;
-      });
-    });
-    return unsub;
-  }, []);
+  useEffect(()=>{const handler=()=>load().catch(()=>{});window.addEventListener('catalog:invalidate',handler);return()=>window.removeEventListener('catalog:invalidate',handler);},[user?.id]);
 
   async function load() {
     setLoading(true);
@@ -126,8 +112,8 @@ export default function Home() {
       // The complete catalogue, newest first and ranked by plays, read once and
       // shared with the other discovery screens.
       const [topTracks, published, fols] = await Promise.all([
-      getTopTracks(),
-      getPublishedTracks(),
+      getTopTracks(true),
+      getPublishedTracks(true),
       user?.id ?
       base44.entities.Follow.filter({ follower_id: user.id }, "-created_date", 200).catch(() => []) :
       Promise.resolve([])]
@@ -139,7 +125,7 @@ export default function Home() {
       setFromFollowing(published.filter((tk) => followed.has(tk.uploader_id)).slice(0, 12));
       // The hero total is counted server-side, so it stays exact and costs one
       // call instead of another pass over the catalogue.
-      const publishedCount = await getCatalogCount();
+      const publishedCount = await getCatalogCount(true);
       if (typeof publishedCount === "number") {
         setTotalTracks(publishedCount);
         loadedRef.current = true;

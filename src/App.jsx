@@ -54,7 +54,7 @@ const AuthenticatedApp = () => {
 
   // Handle authentication errors
   if (authError) {
-    if(authError.type==='suspended') return <div className="p-8 text-center space-y-4"><p>{authError.message}</p><a className="underline" href="/support">Contact support</a><button className="block mx-auto underline" onClick={()=>window.location.href='/login'}>Return to login</button></div>;
+    if(authError.type==='suspended' && !['/support','/privacy','/terms','/login'].includes(window.location.pathname)) return <div className="p-8 text-center space-y-4"><p>{authError.message}</p><a className="underline" href="/support">Contact support</a><button className="block mx-auto underline" onClick={()=>window.location.href='/login'}>Return to login</button></div>;
     if (authError.type === 'user_not_registered') {
       return <UserNotRegisteredError />;
     } else if (authError.type === 'auth_required') {

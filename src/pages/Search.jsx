@@ -60,7 +60,7 @@ export default function Search() {
   async function loadCatalogue() {
     setLoadingAll(true);
     try {
-      const tracks = await getPublishedTracks();
+      const tracks = await getPublishedTracks(true);
       setAllTracks(Array.isArray(tracks) ? tracks : []);
     } finally {
       setLoadingAll(false);

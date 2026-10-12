@@ -64,7 +64,7 @@ export default function FullScreenPlayer({ onClose }) {
   // Color Pulse is on by default — it follows the track's low-end energy on its
   // own, so it no longer waits for the user to switch it on. The menu toggle
   // stays available for anyone who wants a calmer screen.
-  const [showPulse, setShowPulse] = useState(true);
+  const showPulse = true;
   const [showVolHint, setShowVolHint] = useState(false);
   const [copied, setCopied] = useState(false);
   const [showQueue, setShowQueue] = useState(false);
@@ -282,7 +282,7 @@ export default function FullScreenPlayer({ onClose }) {
           items={[
             { icon: ListMusic, label: "View queue", onClick: () => setShowQueue(true) },
             { icon: SlidersHorizontal, label: "Equalizer", onClick: () => setShowMixer(true) },
-            { icon: Sparkles, label: showPulse ? "Hide color pulse" : "Color pulse", onClick: () => setShowPulse((v) => !v) },
+            
           ]} />
         
       </div>

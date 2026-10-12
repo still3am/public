@@ -32,7 +32,7 @@ export default function UsersManager() {
 
   const toggleBlock = async (u) => {
     setBusyId(u.id);
-    await base44.entities.User.update(u.id, { is_blocked: !u.is_blocked });
+    await base44.functions.invoke("safety", {action:"suspend",user_id:u.id,blocked:!u.is_blocked});
     setUsers((prev) =>
       prev.map((x) => (x.id === u.id ? { ...x, is_blocked: !u.is_blocked } : x))
     );

@@ -171,7 +171,7 @@
 
       function openDB() {
         return new Promise((res, rej) => {
-          const r = indexedDB.open(DB_NAME, 1);
+          const r = indexedDB.open(DB_NAME, 2);
           r.onupgradeneeded = () => {
             const db = r.result;
             if (!db.objectStoreNames.contains(STORE)) db.createObjectStore(STORE, { keyPath: "id" });
@@ -214,7 +214,7 @@
           cov.className = "cover";
           if (r.cover_art_url) {
             const img = document.createElement("img");
-            img.src = r.cover_art_url;
+            img.src = r._coverBlob ? URL.createObjectURL(r._coverBlob) : r.cover_art_url;
             cov.appendChild(img);
           } else { cov.textContent = (r.genre || "—").slice(0, 2).toUpperCase(); }
           const meta = document.createElement("div");
@@ -251,7 +251,7 @@
           const ncover = document.getElementById("ncover");
           ncover.innerHTML = "";
           if (r.cover_art_url) {
-            const img = document.createElement("img"); img.src = r.cover_art_url; ncover.appendChild(img);
+            const img = document.createElement("img"); img.src = r._coverBlob ? URL.createObjectURL(r._coverBlob) : r.cover_art_url; ncover.appendChild(img);
           }
           document.getElementById("ntitle").textContent = r.title || "Unknown";
           document.getElementById("nartist").textContent = r.artist || r.uploader_name || "";

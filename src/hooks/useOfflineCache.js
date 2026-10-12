@@ -22,6 +22,7 @@ const EVT = "offlinecache:change";
 // Module-level guard so multiple hook instances don't auto-download the same
 // cloud track twice in one session.
 const autoQueued = new Set();
+const pendingDownloads=new Map();
 
 // PUBLIC files (covers) are served as a generic octet-stream; a blob: URL only
 // renders in an <img> when its MIME is image/*, so sniff the magic bytes and
@@ -116,7 +117,8 @@ export function useOfflineCache() {
   }, [refresh]);
 
   const downloadTrack = useCallback(async (track) => {
-    if (!track?.audio_url) return false;
+    if (!user?.id || !track?.audio_url || track.is_downloadable!==true) return false;
+    if(pendingDownloads.has(track.id)) return await pendingDownloads.get(track.id);
     setDownloading((s) => ({ ...s, [track.id]: true }));
     try {
       const res = await fetch(track.audio_url);
@@ -145,7 +147,7 @@ export function useOfflineCache() {
     } finally {
       setDownloading((s) => ({ ...s, [track.id]: false }));
     }
-  }, []);
+  }, [user?.id]);
 
   // Pull the user's cloud-synced offline list and download any tracks that
   // aren't on this device yet, so the same songs are available offline everywhere.
@@ -153,10 +155,12 @@ export function useOfflineCache() {
     if (!user?.id || !cachedIds) return;
     if (typeof navigator !== "undefined" && !navigator.onLine) return;
     const cloud = await getCloudList(user.id);
-    for (const t of cloud) {
+    for (const saved of cloud) {
+      const t=await base44.entities.Track.get(saved.id).catch(()=>null);
+      if(!t || !t.is_downloadable) continue;
       if (cachedIds.has(t.id) || autoQueued.has(t.id)) continue;
       autoQueued.add(t.id);
-      downloadTrack(t).catch(() => {});
+      downloadTrack(t).then(ok=>{if(!ok)autoQueued.delete(t.id);}).catch(()=>autoQueued.delete(t.id));
     }
   }, [user?.id, cachedIds, downloadTrack]);
 

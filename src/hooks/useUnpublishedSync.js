@@ -14,8 +14,9 @@ export function useUnpublishedSync(onUnpublished) {
 
   useEffect(() => {
     const unsub = base44.entities.Track.subscribe((event) => {
-      if (event.type === "update" && event.data?.is_published === false) {
-        ref.current?.(event.data.id);
+      if(event.type==="delete" || (event.type === "update" && event.data?.is_published === false)) {
+        window.dispatchEvent(new Event("catalog:invalidate"));
+        ref.current?.(event.data?.id||event.id);
       }
     });
     return unsub;

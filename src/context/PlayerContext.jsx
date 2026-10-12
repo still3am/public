@@ -124,6 +124,8 @@ export function PlayerProvider({ children }) {
   });
   const [repeat, setRepeat] = useState("off"); // off | all | one
   const [shuffle, setShuffle] = useState(false);
+  const shuffleRef=useRef(false);
+  useEffect(()=>{shuffleRef.current=shuffle;preloadedTargetRef.current=null;},[shuffle]);
   // True when the user explicitly dismissed the player (clearQueue / drag-down).
   // Prevents ResumePlaybackBanner from auto-resuming a remote track right after
   // the user cleared the queue — "I don't want to listen" ≠ "I'm idle".
@@ -493,7 +495,8 @@ export function PlayerProvider({ children }) {
     const q = queueRef.current;
     if (ci < 0 || !q.length) return;
     let n = -1;
-    if (ci + 1 < q.length) n = ci + 1;
+    if(shuffleRef.current && q.length>1){do{n=Math.floor(Math.random()*q.length);}while(n===ci);}
+    else if (ci + 1 < q.length) n = ci + 1;
     else if (repeatRef.current === "all" && q.length) n = 0;
     if (n === -1 || !q[n]) return;
     const side = inactiveIdx();
@@ -644,7 +647,7 @@ export function PlayerProvider({ children }) {
   useEffect(() => {
     if (crossfadingRef.current) return;
     preloadNextTrack();
-  }, [currentTrack?.id]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [currentTrack?.id,shuffle,queue.length]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Report playback position/duration to the OS Media Session. iOS uses this
   // (together with the now-playing metadata + action handlers) to recognize a
@@ -700,6 +703,8 @@ export function PlayerProvider({ children }) {
       const onEnded = () => {
         if (a === activeEl()) handleEndedRef.current();
       };
+      const onError=async()=>{if(a!==activeEl())return;setIsPlaying(false);window.dispatchEvent(new CustomEvent('player:error',{detail:'This track could not load. Check your connection or choose another song.'}));};
+      a.addEventListener('error',onError);
       a.addEventListener("timeupdate", onTime);
       a.addEventListener("durationchange", onDur);
       a.addEventListener("loadedmetadata", onDur);
@@ -707,6 +712,7 @@ export function PlayerProvider({ children }) {
       a.addEventListener("pause", onPause);
       a.addEventListener("ended", onEnded);
       return () => {
+        a.removeEventListener('error',onError);
         a.removeEventListener("timeupdate", onTime);
         a.removeEventListener("durationchange", onDur);
         a.removeEventListener("loadedmetadata", onDur);
@@ -735,10 +741,11 @@ export function PlayerProvider({ children }) {
       const ci = currentIndexRef.current;
       let n = -1;
       if (repeatRef.current !== "one") {
-        if (ci + 1 < qi.length) n = ci + 1;
+        if(shuffleRef.current && qi.length>1) n=preloadedTargetRef.current;
+        else if (ci + 1 < qi.length) n = ci + 1;
         else if (repeatRef.current === "all" && qi.length) n = 0;
       }
-      if (n === -1) return; // queue ends here — let the ended handler auto-radio
+      if (n == null || n === -1) return; // queue ends here — let the ended handler auto-radio
       if (gapless) {
         const side = inactiveIdx();
         if (remaining <= 6 && sideLoadedIdRef[side].current !== qi[n].id) {
@@ -974,7 +981,7 @@ export function PlayerProvider({ children }) {
       if (graphNeeded()) ensureGraph();
       resumeAndPlay(a);
     } else {
-      a.pause();
+      els().forEach(el=>el?.pause());
       setIsPlaying(false);
     }
   }, [currentTrack, ensureGraph, graphNeeded, resumeAndPlay]);
@@ -1161,7 +1168,7 @@ export function PlayerProvider({ children }) {
     setSleepTimerEndsAt(ends);
     sleepTimerRef.current = setTimeout(() => {
       const a = activeEl();
-      if (a) a.pause();
+      els().forEach(el=>el?.pause());
       setIsPlaying(false);
       setSleepTimerEndsAt(null);
       sleepTimerRef.current = null;
@@ -1187,7 +1194,7 @@ export function PlayerProvider({ children }) {
   const pausePlayback = useCallback(() => {
     const a = activeEl();
     if (!a) return;
-    a.pause();
+    els().forEach(el=>el?.pause());
     setIsPlaying(false);
   }, []);
 
@@ -1313,6 +1320,8 @@ export function PlayerProvider({ children }) {
       );
     };
   }, [resumePlayback, pausePlayback, prev, next, seek]);
+
+  useEffect(()=>()=>{els().forEach(a=>a?.pause());if(crossfadeTimerRef.current)clearTimeout(crossfadeTimerRef.current);if(sleepTimerRef.current)clearTimeout(sleepTimerRef.current);audioCtxRef.current?.close().catch(()=>{});},[]);
 
   const value = {
     queue,

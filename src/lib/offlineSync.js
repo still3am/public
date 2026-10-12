@@ -16,6 +16,7 @@ function minTrack(t) {
     duration_seconds: t.duration_seconds,
     genre: t.genre,
     explicit: !!t.explicit,
+    is_downloadable: !!t.is_downloadable,
   };
 }
 
@@ -55,7 +56,9 @@ export async function setCloudList(userId, tracks) {
   }
 }
 
-export async function addCloudTrack(userId, track) {
+let serial=Promise.resolve();
+export function addCloudTrack(userId,track){const next=serial.catch(()=>{}).then(()=>addCloudTrackImpl(userId,track));serial=next;return next;}
+async function addCloudTrackImpl(userId, track) {
   if (!userId || !track?.id) return;
   const list = await getCloudList(userId);
   if (list.some((t) => t.id === track.id)) return;
@@ -63,7 +66,8 @@ export async function addCloudTrack(userId, track) {
   await setCloudList(userId, list);
 }
 
-export async function removeCloudTrack(userId, id) {
+export function removeCloudTrack(userId,id){const next=serial.catch(()=>{}).then(()=>removeCloudTrackImpl(userId,id));serial=next;return next;}
+async function removeCloudTrackImpl(userId, id) {
   if (!userId || !id) return;
   const list = await getCloudList(userId);
   const next = list.filter((t) => t.id !== id);

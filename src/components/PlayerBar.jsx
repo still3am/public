@@ -1,3 +1,4 @@
+import {useToast} from '@/components/ui/use-toast';
 import { useState, useRef, useEffect } from "react";
 import {
   Play,
@@ -26,6 +27,8 @@ import StemMixer from "@/components/StemMixer";
 
 export default function PlayerBar() {
   const p = usePlayer();
+  const {toast}=useToast();
+  useEffect(()=>{const handler=e=>toast({title:e.detail,variant:"destructive"});window.addEventListener("player:error",handler);return()=>window.removeEventListener("player:error",handler);},[toast]);
   const { collapsed } = useSidebarCollapsed();
   const location = useLocation();
   const [fullOpen, setFullOpen] = useState(false);

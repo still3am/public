@@ -7,6 +7,8 @@ import { readAllPages } from "@/lib/readPages";
 // full, following the server's cursor so the list is never cut off at one page —
 // and share the result for a short window, collapsing simultaneous calls into a
 // single request.
+const resets=[];
+window.addEventListener("catalog:invalidate",()=>resets.forEach(reset=>reset()));
 const TTL = 10 * 60 * 1000;
 const RETRY_AFTER_ERROR = 30 * 1000;
 
@@ -15,7 +17,9 @@ function makeCache(fetcher, ttl = TTL) {
   let value = null;
   let expiresAt = 0;
   let inflight = null;
-  return async () => {
+  resets.push(()=>{hasValue=false;expiresAt=0;});
+  return async (fresh=false) => {
+    if(fresh){hasValue=false;expiresAt=0;}
     if (hasValue && Date.now() < expiresAt) return value;
     if (inflight) return inflight;
     inflight = fetcher()
@@ -30,7 +34,7 @@ function makeCache(fetcher, ttl = TTL) {
         // truth — that would blank the catalog for the whole window. Keep
         // serving the last good value and allow a retry shortly after.
         expiresAt = Date.now() + RETRY_AFTER_ERROR;
-        return hasValue ? value : [];
+        if(hasValue)return value;throw new Error("The music catalog is unavailable. Please check your connection.");
       })
       .finally(() => {
         inflight = null;
