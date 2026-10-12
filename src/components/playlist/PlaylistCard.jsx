@@ -1,18 +1,20 @@
 import { Link } from "react-router-dom";
 import { ListMusic } from "lucide-react";
 import { Image } from "@/components/ui/image";
+import { usePlaylistCover } from "@/hooks/usePlaylistCover";
 
 export default function PlaylistCard({ playlist }) {
   const count = playlist.track_ids?.length || 0;
+  const cover = usePlaylistCover(playlist);
   return (
     <Link
       to={`/playlist/${playlist.id}`}
       className="group relative rounded-2xl p-2.5 sm:p-3 transition-all duration-300 hover:bg-foreground/[0.04] active:scale-[0.98]"
     >
       <div className="relative aspect-square rounded-xl overflow-hidden bg-foreground/[0.06] mb-2.5 shadow-sm">
-        {playlist.cover_art_url ? (
+        {cover ? (
           <Image
-            src={playlist.cover_art_url}
+            src={cover}
             fittingType="fill"
             alt=""
             className="w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-[1.06]"

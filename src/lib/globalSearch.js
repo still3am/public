@@ -56,13 +56,11 @@ function rankArtist(artist, lower) {
   return 1; // matched on bio or location only
 }
 
-// Playlists rank on their own name first, so a playlist actually named after the
-// term sits above ones that only mention it in their description.
+// Playlists rank on their own name: one that starts with the term sits above one
+// that only mentions it further along.
 function rankPlaylist(playlist, lower) {
   const name = (playlist.name || "").toLowerCase();
-  if (name.startsWith(lower)) return 3;
-  if (name.includes(lower)) return 2;
-  return 1; // matched on description only
+  return name.startsWith(lower) ? 2 : 1;
 }
 
 // The catalogue holds several records per artist name (one per upload), so the
@@ -163,10 +161,10 @@ async function runSearch(query) {
     read(base44.functions.invoke("searchUsers", { q: lower })),
     read(
       base44.entities.Playlist.filter(
-        {
-          is_public: true,
-          $or: [contains("name", pattern), contains("description", pattern)],
-        },
+        // A playlist belongs in the results only when the term matches the
+        // playlist itself — a description that happens to mention the term is not
+        // a search for that playlist.
+        { is_public: true, ...contains("name", pattern) },
         { sort: "-created_date", limit: PLAYLIST_LIMIT }
       )
     ),
