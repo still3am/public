@@ -25,7 +25,7 @@ const entities = new Proxy(raw.entities,{get(target,name) {
         const rule=hidden.length?{uploader_id:{$nin:hidden}}:{};
         let result;
         if(method==='get'){
-          result=await h.get(...args);
+          result=await h.get(args[0]);
           if(hidden.includes(result?.uploader_id))throw Object.assign(new Error('Track unavailable'),{status:403});
         }else if(method==='filter'||method==='count')result=await h[method]({$and:[args[0]||{},rule]},...args.slice(1));
         else if(method==='list')result=await h.filter(rule,...args);

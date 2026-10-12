@@ -15,6 +15,7 @@ export function usePlaybackSync() {
   const deviceId = getDeviceId();
 
   const rowIdRef = useRef(null);
+  useEffect(()=>{rowIdRef.current=null;setRemote(null);lastPushRef.current=0;},[user?.id]);
   const lastPushRef = useRef(0);
   const latestRef = useRef({ currentTrack, position, isPlaying });
   const [remote, setRemote] = useState(null);

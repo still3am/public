@@ -17,6 +17,7 @@ import Support from '@/pages/Support';
 import Policies from '@/pages/Policies';
 import ErrorBoundary from '@/components/ErrorBoundary';
 import {SafetyProvider} from '@/context/SafetyContext';
+import OAuthConsent from '@/pages/OAuthConsent';
 import Login from '@/pages/Login';
 import Register from '@/pages/Register';
 import ForgotPassword from '@/pages/ForgotPassword';
@@ -70,6 +71,7 @@ const AuthenticatedApp = () => {
   // Render the main app
   return (
     <Routes>
+      <Route path="/oauth-consent" element={<OAuthConsent />} />
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
       <Route path="/forgot-password" element={<ForgotPassword />} />
