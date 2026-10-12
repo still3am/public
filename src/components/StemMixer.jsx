@@ -130,7 +130,7 @@ export default function StemMixer({ onClose }) {
   }
 
   return (
-    <div className="fixed inset-0 z-[60] flex items-end md:items-center justify-center">
+    <div role="dialog" aria-modal="true" aria-label="StemMixer" data-public-dialog tabIndex={-1} onKeyDown={e=>{if(e.key==="Escape"){e.stopPropagation();onClose?.();}}} className="fixed inset-0 z-[60] flex items-end md:items-center justify-center">
       <div
         className={`absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity duration-250 ${
           visible ? "opacity-100" : "opacity-0"}`}

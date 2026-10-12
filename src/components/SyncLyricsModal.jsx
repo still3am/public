@@ -126,7 +126,7 @@ export default function SyncLyricsModal({ track, onClose, onSaved }) {
   const marked = rows.filter((r) => r.start_ms != null).length;
 
   return (
-    <div
+    <div role="dialog" aria-modal="true" aria-label="SyncLyrics" data-public-dialog tabIndex={-1} onKeyDown={e=>{if(e.key==="Escape"){e.stopPropagation();onClose?.();}}}
       className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-end md:items-center justify-center"
       onClick={onClose}
     >

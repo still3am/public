@@ -46,7 +46,7 @@ export default function GenerateLyricsModal({ track, onClose, onSaved }) {
   }
 
   return (
-    <div
+    <div role="dialog" aria-modal="true" aria-label="GenerateLyrics" data-public-dialog tabIndex={-1} onKeyDown={e=>{if(e.key==="Escape"){e.stopPropagation();onClose?.();}}}
       className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-end md:items-center justify-center"
       onClick={onClose}>
       <div

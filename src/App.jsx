@@ -11,6 +11,7 @@ import { PlayerProvider } from '@/context/PlayerContext';
 import { LibraryProvider } from '@/context/LibraryContext';
 import { UploadProvider } from '@/context/UploadContext';
 import Layout from '@/components/Layout';
+import DialogFocusManager from '@/components/DialogFocusManager';
 import GlobalStatus from '@/components/GlobalStatus';
 import Support from '@/pages/Support';
 import Policies from '@/pages/Policies';
@@ -117,7 +118,7 @@ function App() {
     <AuthProvider>
       <QueryClientProvider client={queryClientInstance}>
         <Router>
-          <ErrorBoundary><GlobalStatus/><SafetyProvider><PlayerProvider>
+          <ErrorBoundary><GlobalStatus/><DialogFocusManager/><SafetyProvider><PlayerProvider>
             <LibraryProvider>
               <UploadProvider>
                 <AuthenticatedApp />

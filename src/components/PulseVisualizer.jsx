@@ -16,6 +16,7 @@ export default function PulseVisualizer({ className = "" }) {
   useEffect(() => {
     // Keep plain media playback available on iOS; visual decoration never forces Web Audio.
     const loop = () => {
+      if(window.matchMedia("(prefers-reduced-motion: reduce)").matches){setBeat(0);return;}
       const an = p.getAnalyser?.();
       if(!an) setBeat(p.isPlaying ? (Math.sin(Date.now()/650)+1)*0.18 : 0);
       if (an) {

@@ -84,7 +84,7 @@ export default function EditTrackModal({ track, onClose, onSaved, onDeleted }) {
   }
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm grid place-items-center p-4 overflow-y-auto">
+    <div role="dialog" aria-modal="true" aria-label="EditTrack" data-public-dialog tabIndex={-1} onKeyDown={e=>{if(e.key==="Escape"){e.stopPropagation();onClose?.();}}} className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm grid place-items-center p-4 overflow-y-auto">
       <div className="bg-card rounded-2xl w-full max-w-lg p-5 my-auto shadow-2xl">
         <div className="flex items-center justify-between mb-5">
           <h2 className="text-lg font-extrabold tracking-tight">Edit track</h2>

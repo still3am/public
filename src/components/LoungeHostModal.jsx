@@ -41,7 +41,7 @@ export default function LoungeHostModal({ lounge, onClose }) {
 
   if (loading && !session) {
     return (
-      <div className="fixed inset-0 z-[60] bg-black/70 backdrop-blur-sm grid place-items-center p-4" onClick={onClose}>
+      <div role="dialog" aria-modal="true" aria-label="LoungeHost" data-public-dialog tabIndex={-1} onKeyDown={e=>{if(e.key==="Escape"){e.stopPropagation();onClose?.();}}} className="fixed inset-0 z-[60] bg-black/70 backdrop-blur-sm grid place-items-center p-4" onClick={onClose}>
         <div className="bg-card rounded-3xl w-full max-w-sm p-8 text-center" onClick={(e) => e.stopPropagation()}>
           <Loader2 className="animate-spin mx-auto mb-3" />
           <p className="text-sm text-foreground/60">Starting your lounge…</p>

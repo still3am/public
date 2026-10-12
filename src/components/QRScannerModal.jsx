@@ -61,7 +61,7 @@ export default function QRScannerModal({ onClose }) {
   }, []);
 
   return (
-    <div
+    <div role="dialog" aria-modal="true" aria-label="QRScanner" data-public-dialog tabIndex={-1} onKeyDown={e=>{if(e.key==="Escape"){e.stopPropagation();onClose?.();}}}
       className="fixed inset-0 z-[60] bg-black/85 backdrop-blur-md grid place-items-center p-4"
       onClick={onClose}
     >

@@ -56,7 +56,7 @@ export default function QueuePanel({ open, onClose }) {
   null;
 
   return (
-    <div className="absolute inset-0 z-[60] bg-black/85 backdrop-blur-2xl flex flex-col animate-[fadeIn_.22s_ease-out]">
+    <div role="dialog" aria-modal="true" aria-label="QueuePanel" data-public-dialog tabIndex={-1} onKeyDown={e=>{if(e.key==="Escape"){e.stopPropagation();onClose?.();}}} className="absolute inset-0 z-[60] bg-black/85 backdrop-blur-2xl flex flex-col animate-[fadeIn_.22s_ease-out]">
       {/* Header */}
       <div className="top-bar-safe flex items-center justify-between px-4 pt-2 pb-3 shrink-0 border-b border-white/5">
         <div className="flex items-center gap-2 min-w-0">

@@ -220,7 +220,7 @@ export default function FullScreenPlayer({ onClose }) {
   const VolIcon = isMutedLow ? VolumeX : p.volume < 0.5 ? Volume1 : Volume2;
 
   return (
-    <div
+    <div role="dialog" aria-modal="true" aria-label="Now playing" data-public-dialog tabIndex={-1} onKeyDown={e=>{if(e.key==="Escape"){e.stopPropagation();onClose?.();}}}
       className="fixed inset-0 z-50 text-white animate-[fadeIn_.25s_ease-out] flex flex-col overflow-hidden"
       style={{
         background: `linear-gradient(170deg, ${bg} 0%, #0d0d0f 55%, #000 100%)`,
