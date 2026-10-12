@@ -96,19 +96,22 @@ export const AuthProvider = ({ children }) => {
       if(previous && previous!==currentUser.id)await clearPersonalData();
       localStorage.setItem("public:active-account",currentUser.id);
       setUser(currentUser);
+      setAuthError(null);
       setIsAuthenticated(true);
       setIsLoadingAuth(false);
       setAuthChecked(true);
     } catch (error) {
       console.error('User auth check failed:', error);
       setIsLoadingAuth(false);
-      setIsAuthenticated(false);
       setAuthChecked(true);
-      
-      // If user auth fails, it might be an expired token
-      if (error.status === 401 || error.status === 403) {
+      const status=error.status ?? error.response?.status;
+      // An unavailable connection must not make an existing account look new.
+      if (status === 401 || status === 403) {
         setUser(null);
+        setIsAuthenticated(false);
         setAuthError(null);
+      } else {
+        setAuthError({type:'connection',message:'Could not reconnect to your account. Your data has not been reset.'});
       }
     }
   };
