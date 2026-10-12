@@ -47,7 +47,8 @@ export default async function(req) {
    if(!map[d.target_type]||!d.target_id)err('Choose content to report');
    const reason=String(d.reason||'').trim();
    if(reason.length<3||reason.length>2000)err('Explain the issue in 3–2000 characters');
-   const record=await b.entities[map[d.target_type]].get(d.target_id);
+   const record=await (d.target_type==="user"?s:b).entities[map[d.target_type]].get(d.target_id);
+   if(d.target_type==="notification" && record.user_id!==u.id && u.role!=="admin")err("Content access denied",403);
    if(!record)err('Content unavailable',404);
    const recent=await s.entities.Report.filter({reporter_id:u.id,created_date:{$gte:new Date(Date.now()-60000).toISOString()}},'-created_date',10);
    if(recent.length>=5)err('Please wait a minute before reporting again',429);

@@ -1,5 +1,6 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
+import {clearPersonalData} from '@/lib/clearPersonalData';
 import { appParams } from '@/lib/app-params';
 import { createAxiosClient } from '@base44/sdk/dist/utils/axios-client';
 
@@ -95,6 +96,9 @@ export const AuthProvider = ({ children }) => {
       setIsLoadingAuth(true);
       const currentUser = await base44.auth.me();
       if(currentUser?.is_blocked || currentUser?.disabled) { setUser(null); setIsAuthenticated(false); setAuthError({type:'suspended',message:'Your account is suspended. Contact PUBLIC support.'}); setIsLoadingAuth(false); setAuthChecked(true); return; }
+      const previous=localStorage.getItem("public:active-account");
+      if(previous && previous!==currentUser.id)await clearPersonalData();
+      localStorage.setItem("public:active-account",currentUser.id);
       setUser(currentUser);
       setIsAuthenticated(true);
       setIsLoadingAuth(false);

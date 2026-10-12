@@ -34,6 +34,8 @@ export default function UploadItem({
   const locked = uploading || done;
 
   const toggles = [
+  { key: "rightsConfirmed", label: "I own or have permission to distribute this audio, artwork and lyrics", icon: null },
+  { key: "allowDownloads", label: "Allow downloads", icon: null },
   { key: "explicit", label: "Explicit", icon: null },
   { key: "aiLyrics", label: "AI lyrics", icon: Sparkles }];
 

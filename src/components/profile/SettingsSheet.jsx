@@ -23,7 +23,8 @@ export default function SettingsSheet({ onClose, onDeleteAccount }) {
       await clearPersonalData();
       await base44.auth.logout(`${window.location.origin}/`);
     } catch {
-      window.location.href = "/";
+      window.alert("Sign-out could not complete. Please retry.");
+      setLoggingOut(false);
     }
   }
 

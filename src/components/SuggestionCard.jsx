@@ -1,3 +1,4 @@
+import SafetyControls from '@/components/SafetyControls';
 import { Music, Sparkles, Wrench, MessageSquare, ArrowBigUp } from "lucide-react";
 
 const CATEGORY_META = {
@@ -54,6 +55,7 @@ export default function SuggestionCard({ s, onVote, hasVoted }) {
         )}
         <div className="text-[11px] text-foreground/40 mt-2">
           By {s.user_name || "a PUBLIC member"}
+          <SafetyControls type="suggestion" id={s.id} userId={s.user_id} label="suggestion"/>
         </div>
       </div>
     </div>
