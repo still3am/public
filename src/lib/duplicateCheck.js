@@ -1,168 +1,41 @@
-// Duplicate detection for track uploads.
-// Compares a candidate upload against every track already on the app using
-// fuzzy title/artist similarity + duration, so re-uploads still get caught when
-// the tags are messy ("Artist - Title (Official Audio)", swapped fields, typos).
-
-const NOISE_WORDS =
-  /\b(official|officialvideo|audio|video|lyric|lyrics|hd|hq|4k|remaster|remastered|feat|ft|featuring|with|explicit|clean|version|single|preview|prod|mv|visualizer|visualiser|extended|radio|edit|bonus|track|full|song|free|download|mp3)\b/g;
-
-// Lowercases, strips accents/parentheticals/noise words, leaves single spaces.
-function basic(s) {
-  return (s || "")
-    .toLowerCase()
-    .normalize("NFKD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .replace(/[\(\[\{].*?[\)\]\}]/g, "")
-    .replace(/&/g, " and ")
-    .replace(/[^a-z0-9]+/g, " ")
-    .replace(NOISE_WORDS, " ")
-    .replace(/\s+/g, " ")
-    .trim();
+// Match metadata conservatively. File hashes identify identical bytes, not re-encodes.
+const normalize=s=>String(s||'').normalize('NFKD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/\.(mp3|wav|flac|m4a|aac|ogg|aiff)$/i,'').replace(/\b(official\s+(audio|video)|lyrics?\s+video|music\s+video)\b/g,'').replace(/[^\p{L}\p{N}]+/gu,' ').replace(/\s+/g,' ').trim();
+const version=s=>{
+ const text=normalize(s),tags=['live','remix','acoustic','instrumental','karaoke','cover','demo','sped up','slowed','radio edit','extended','remaster','clean','explicit'];
+ return tags.filter(t=>new RegExp('(?:^| )'+t+'(?: |$)').test(text)).join('|');
+};
+function similarity(a,b){
+ if(a===b)return 1;if(!a||!b)return 0;
+ const wordsA=new Set(a.split(' ')),wordsB=new Set(b.split(' '));
+ const common=[...wordsA].filter(w=>wordsB.has(w)).length;
+ return 2*common/(wordsA.size+wordsB.size);
 }
-
-// Alphanumeric-only form — punctuation and spacing differences disappear.
-function compact(s) {
-  return basic(s).replace(/ /g, "");
+export const normalizeKey=(title='',artist='')=>normalize(title)+'::'+normalize(artist)+'::'+version(title);
+export async function hashAudioFile(file){
+ if(!globalThis.crypto?.subtle)throw new Error('File verification requires a secure connection. Reload PUBLIC over HTTPS.');
+ const bytes=await file.arrayBuffer();
+ return Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',bytes)),n=>n.toString(16).padStart(2,'0')).join('');
 }
-
-function tokens(s) {
-  return basic(s).split(" ").filter(Boolean);
-}
-
-// Dice coefficient over character bigrams: 1 = identical, 0 = nothing shared.
-function similarity(a, b) {
-  if (!a || !b) return 0;
-  if (a === b) return 1;
-  if (a.length < 2 || b.length < 2) return a === b ? 1 : 0;
-  const grams = new Map();
-  for (let i = 0; i < a.length - 1; i++) {
-    const g = a.slice(i, i + 2);
-    grams.set(g, (grams.get(g) || 0) + 1);
+export function findDuplicateTracks(existingTracks=[],candidate={}){
+ const title=normalize(candidate.title),artist=normalize(candidate.artist);
+ const runtime=Number(candidate.duration??candidate.duration_seconds)||0,variant=version(candidate.title);
+ return existingTracks.flatMap(t=>{
+  if(!t||t.id===candidate.id)return [];
+  const exactFile=!!candidate.audio_sha256&&candidate.audio_sha256===t.audio_sha256;
+  const exactUrl=!!candidate.audio_url&&candidate.audio_url===t.audio_url;
+  let score=0,reason='',kind='possible';
+  if(exactFile||exactUrl){score=1;reason=exactFile?'Identical audio file':'Same audio source';kind='exact';}
+  else{
+   const otherTitle=normalize(t.title),otherArtist=normalize(t.artist),otherRuntime=Number(t.duration_seconds??t.duration)||0;
+   if(!title||!otherTitle||variant!==version(t.title))return [];
+   const sameArtist=!!artist&&!!otherArtist&&artist===otherArtist;
+   const known=runtime>0&&otherRuntime>0,delta=known?Math.abs(runtime-otherRuntime):Infinity;
+   // Different known artists are different recordings, even with the same title.
+   if(artist&&otherArtist&&!sameArtist)return [];
+   if(sameArtist&&title===otherTitle&&(!known||delta<=4)){score=known?0.96:0.85;reason=known?'Same artist, title and similar duration':'Same artist and title; duration unverified';}
+   else if(sameArtist&&similarity(title,otherTitle)>=0.85&&known&&delta<=2){score=0.8;reason='Similar title, same artist and duration';}
+   else if((!artist||!otherArtist)&&title===otherTitle&&known&&delta<=2){score=0.65;reason='Same title and duration; artist needs review';}
   }
-  let hits = 0;
-  for (let i = 0; i < b.length - 1; i++) {
-    const g = b.slice(i, i + 2);
-    const n = grams.get(g) || 0;
-    if (n > 0) {
-      grams.set(g, n - 1);
-      hits++;
-    }
-  }
-  return (2 * hits) / (a.length + b.length - 2);
-}
-
-function containsEither(a, b) {
-  if (!a || !b) return false;
-  const short = a.length <= b.length ? a : b;
-  const long = a.length <= b.length ? b : a;
-  return short.length >= 4 && long.includes(short);
-}
-
-// One token set fully covers the other (e.g. "levitating" vs "levitating dualipa").
-function tokenSubset(a, b) {
-  const ta = tokens(a);
-  const tb = tokens(b);
-  if (!ta.length || !tb.length) return false;
-  const small = ta.length <= tb.length ? ta : tb;
-  const big = new Set(ta.length <= tb.length ? tb : ta);
-  return small.every((t) => big.has(t));
-}
-
-// Filenames and tags often merge both fields: "Artist - Title", "Title by Artist".
-// Produce every plausible (title, artist) reading so either arrangement matches.
-function readings(title, artist) {
-  const out = [{ t: title || "", a: artist || "" }];
-  const raw = (title || "").replace(/\.[a-z0-9]{2,4}$/i, "");
-  const dash = raw.split(/\s[-–—_]\s|\s{2,}[-–—]\s{0,}/);
-  if (dash.length === 2) {
-    out.push({ t: dash[1], a: dash[0] });
-    out.push({ t: dash[0], a: dash[1] });
-  }
-  const by = raw.split(/\sby\s/i);
-  if (by.length === 2) out.push({ t: by[0], a: by[1] });
-  return out;
-}
-
-export function normalizeKey(title = "", artist = "") {
-  const t = compact(title);
-  if (!t) return "";
-  const a = compact(artist);
-  return a ? `${t}::${a}` : t;
-}
-
-function artistsMatch(a, b) {
-  const ca = compact(a);
-  const cb = compact(b);
-  if (!ca || !cb) return false;
-  return ca === cb || containsEither(ca, cb) || similarity(ca, cb) >= 0.8;
-}
-
-// Scores one candidate reading against one existing track.
-// Returns a confidence 0..1; anything >= 0.5 is treated as a duplicate.
-function scorePair(cand, existing, cDur, tDur) {
-  const ct = compact(cand.t);
-  const et = compact(existing.t);
-  if (!ct || !et) return 0;
-
-  const titleSim = Math.max(
-    similarity(ct, et),
-    tokenSubset(cand.t, existing.t) ? 0.9 : 0,
-    containsEither(ct, et) ? 0.85 : 0
-  );
-  const sameArtist = artistsMatch(cand.a, existing.a);
-  const durKnown = cDur > 0 && tDur > 0;
-  const durDelta = durKnown ? Math.abs(cDur - tDur) : Infinity;
-
-  // Exact same title text — strongest signal there is.
-  if (ct === et && ct.length > 3) return 1;
-  // Same artist and a clearly similar title.
-  if (sameArtist && titleSim >= 0.72) return 0.95;
-  // Near-identical runtime plus a recognizable title.
-  if (durDelta <= 2 && titleSim >= 0.6) return 0.9;
-  // Same artist and same runtime — retitled re-upload of the same audio.
-  if (sameArtist && durDelta <= 2) return 0.85;
-  // Very similar title on its own — flags the same song name anywhere on
-  // PUBLIC, regardless of artist or uploader (covers, re-uploads, retags).
-  if (titleSim >= 0.8 && ct.length > 3) return 0.7;
-  // Same runtime and the artist name appears inside the other's title.
-  if (durDelta <= 1 && (containsEither(ct, compact(existing.a)) || containsEither(et, compact(cand.a))))
-    return 0.6;
-  return 0;
-}
-
-// candidate: { title, artist, duration | duration_seconds, file_name, audio_url }
-// Returns matching existing tracks, most confident first.
-export function findDuplicateTracks(existingTracks = [], candidate = {}) {
-  const cDur = Math.round(candidate.duration || candidate.duration_seconds || 0);
-  const cUrl = candidate.audio_url || "";
-
-  // Every way of reading the incoming metadata, including the raw filename.
-  const cands = [
-    ...readings(candidate.title, candidate.artist),
-    ...(candidate.file_name ? readings(candidate.file_name, candidate.artist) : []),
-  ].filter((r) => compact(r.t));
-
-  const scored = [];
-  for (const t of existingTracks || []) {
-    if (!t) continue;
-    if (cUrl && t.audio_url && cUrl === t.audio_url) {
-      scored.push({ track: t, score: 1 });
-      continue;
-    }
-    const tDur = Math.round(t.duration_seconds || 0);
-    const exs = readings(t.title, t.artist);
-    let best = 0;
-    for (const c of cands) {
-      for (const e of exs) {
-        best = Math.max(best, scorePair(c, e, cDur, tDur));
-        if (best === 1) break;
-      }
-      if (best === 1) break;
-    }
-    if (best >= 0.5) scored.push({ track: t, score: best });
-  }
-
-  return scored
-    .sort((a, b) => b.score - a.score)
-    .map((s) => ({ ...s.track, _match_score: s.score }));
+  return score?[{...t,_match_score:score,_match_reason:reason,_match_kind:kind}]:[];
+ }).sort((a,b)=>b._match_score-a._match_score);
 }
