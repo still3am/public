@@ -106,16 +106,16 @@ export default function TrackCard({ track, selectable = false, selected = false,
           <button
             onClick={handlePlay}
             aria-label="Play"
-            className={`absolute bottom-2.5 right-2.5 w-11 h-11 md:w-12 md:h-12 rounded-full ${isCurrent?"grid":"hidden md:grid"} place-items-center shadow-xl
+            className={`absolute bottom-2 right-2 w-8 h-8 md:bottom-2.5 md:right-2.5 md:w-12 md:h-12 min-h-0 rounded-full grid place-items-center shadow-xl
               transition-all duration-300 active:scale-90 bg-foreground text-background
               opacity-100 md:opacity-0 md:translate-y-2 md:group-hover:opacity-100 md:group-hover:translate-y-0 md:group-focus-within:opacity-100 hover:scale-105`}
           >
-            <Play size={18} fill="currentColor" className="ml-0.5" />
+            <Play size={18} fill="currentColor" className="w-3.5 h-3.5 md:w-[18px] md:h-[18px] ml-0.5" />
           </button>
         )}
 
         {!selectable && isPlayingNow && (
-          <div className="absolute bottom-2.5 right-2.5 w-11 h-11 md:w-12 md:h-12 rounded-full bg-background/85 backdrop-blur grid place-items-center text-foreground shadow-xl">
+          <div className="absolute bottom-2 right-2 w-8 h-8 md:bottom-2.5 md:right-2.5 md:w-12 md:h-12 rounded-full bg-background/85 backdrop-blur grid place-items-center text-foreground shadow-xl">
             <EqualizerBars active={isPlayingNow} />
           </div>
         )}
