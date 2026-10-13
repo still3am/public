@@ -7,7 +7,7 @@ import {
 "lucide-react";
 import { useSearchParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { getPublishedTracks,peekPublishedTracks } from "@/lib/catalogCache";
+import { getPublishedTracks, peekPublishedTracks } from "@/lib/catalogCache";
 import { useGlobalSearch } from "@/hooks/useGlobalSearch";
 import { useUnpublishedSync } from "@/hooks/useUnpublishedSync";
 import TrackCard from "@/components/TrackCard";
@@ -43,7 +43,7 @@ export default function Search() {
     params.delete("q");
     setSearchParams(params, { replace: true });
   };
-  const chooseGenre=next=>{const params=new URLSearchParams(searchParams);params.delete("q");params.delete("type");if(next)params.set("genre",next);else params.delete("genre");setQ("");setGenre(next);setSearchParams(params,{replace:true});};
+  const chooseGenre = (next) => {const params = new URLSearchParams(searchParams);params.delete("q");params.delete("type");if (next) params.set("genre", next);else params.delete("genre");setQ("");setGenre(next);setSearchParams(params, { replace: true });};
   const [browseError, setBrowseError] = useState("");
   const [allTracks, setAllTracks] = useState(peekPublishedTracks);
   const [loadingAll, setLoadingAll] = useState(true);
@@ -65,7 +65,7 @@ export default function Search() {
     setAllTracks((prev) => prev.filter((t) => t.id !== id));
   });
 
-  async function loadCatalogue(fresh=false) {
+  async function loadCatalogue(fresh = false) {
     setLoadingAll(true);setBrowseError("");
     try {
       const tracks = await getPublishedTracks(fresh);
@@ -131,7 +131,7 @@ export default function Search() {
     <PullToRefresh onRefresh={handleRefresh}>
       <div className="search-page">
         <div className="page-intro"><h1>Find your next favorite.</h1><p>Explore music, artists, playlists, and people.</p></div>
-        <div className="view-switch mb-5" role="group" aria-label="Search type"><button aria-pressed={!peopleMode} className={!peopleMode ? "active" : ""} onClick={() => chooseScope("all")}>Music & more</button><button aria-pressed={peopleMode} className={peopleMode ? "active" : ""} onClick={() => chooseScope("people")}>People</button></div>
+        <div className="view-switch mb-5 hidden" role="group" aria-label="Search type"><button aria-pressed={!peopleMode} className={!peopleMode ? "active" : ""} onClick={() => chooseScope("all")}>Music & more</button><button aria-pressed={peopleMode} className={peopleMode ? "active" : ""} onClick={() => chooseScope("people")}>People</button></div>
         
 
 
@@ -201,7 +201,7 @@ export default function Search() {
             {genreTracks.length ?
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 md:gap-4">
                 {genreTracks.map((t) =>
-            <TrackCard key={t.id} track={t} queue={genreTracks}/>
+            <TrackCard key={t.id} track={t} queue={genreTracks} />
             )}
               </div> :
 
