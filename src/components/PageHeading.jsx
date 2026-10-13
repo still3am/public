@@ -13,5 +13,5 @@ const pages = {
 export default function PageHeading() {
   const { pathname } = useLocation(),page = pages[pathname];
   if (!page) return null;
-  return <div className="page-heading"><p className="eyebrow hidden">PUBLIC / {pathname === '/upload' ? 'Create' : 'Your sound'}</p><h1>{page[0]}</h1><p className="page-description">{page[1]}</p></div>;
+  return <div className="page-heading hidden"><p className="eyebrow hidden">PUBLIC / {pathname === '/upload' ? 'Create' : 'Your sound'}</p><h1>{page[0]}</h1><p className="page-description">{page[1]}</p></div>;
 }
