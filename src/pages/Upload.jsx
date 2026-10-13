@@ -35,7 +35,7 @@ export default function Upload() {
 
   return (
     <div className="upload-page max-w-3xl mx-auto">
-      <header className="page-intro"><p className="eyebrow hidden">Share your sound</p><h1>Upload music</h1><p>Add your audio, review its details, and publish to PUBLIC.</p></header>
+      <header className="page-intro"><h1>Upload music</h1><p>Add your audio, review its details, and publish to PUBLIC.</p></header>
       
 
 

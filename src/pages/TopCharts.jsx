@@ -49,7 +49,7 @@ export default function TopCharts() {
   return (
     <PullToRefresh onRefresh={load}>
       <div className="collection-page">
-        <header className="page-intro"><p className="eyebrow hidden">PUBLIC</p><h1>Top tracks</h1><p>The music PUBLIC is listening to.</p></header>
+        <header className="page-intro"><h1>Top tracks</h1><p>The music PUBLIC is listening to.</p></header>
         {loadError && <LoadError onRetry={load} />} 
         {top5.length > 0 && <Podium tracks={top5} />}
         {rest.length > 0 &&
