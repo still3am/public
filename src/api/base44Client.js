@@ -43,7 +43,6 @@ const entities = new Proxy(raw.entities,{get(target,name) {
         return result;
       }
     };
-    if(name==='Follow'&&['filter','count'].includes(method))return (...args)=>gateway(name,'read',[method,...args]);
     if(lounge.has(name)&&['get','list','filter'].includes(method)) return (...args)=>gateway(name,'read',[method,...args]);
     return h[method];
   }}));
