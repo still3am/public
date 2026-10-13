@@ -633,7 +633,7 @@ export default function Profile({ownProfileTab=false}) {
         </div>
             }
 
-      </section><aside className="profile-conversation"><ProfileComments profileId={targetId} isOwn={isOwn} /><SafetyControls type="user" id={targetId} userId={targetId} label="profile" /></aside></div>
+      </section><aside className="profile-conversation"><ProfileComments profileId={targetId} isOwn={isOwn} active={isCurrentPage}/><SafetyControls type="user" id={targetId} userId={targetId} label="profile" /></aside></div>
 
       {showColors&&isOwn&&<ProfileColorPicker coverUrl={coverUrl} colors={coverColors} loading={colorsLoading} value={backgroundValue} onPreview={setBackgroundDraft} onSave={saveColors} onClose={closeColors}/>}
 

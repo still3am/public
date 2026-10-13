@@ -10,7 +10,7 @@ import { Loader2, Send, Trash2, MessageCircle } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 
 /** @param {any} props */
-export default function ProfileComments({ profileId, isOwn }) {
+export default function ProfileComments({ profileId, isOwn, active = true }) {
   const { user } = useAuth();
   const { blocked } = useSafety();
   const { toast } = useToast();
@@ -38,8 +38,9 @@ export default function ProfileComments({ profileId, isOwn }) {
     }
   }, [profileId]);
 
+  useEffect(()=>{setComments([]);setMessage("");setLoading(true);},[profileId]);
   useEffect(() => {
-    setComments([]);setMessage("");setLoading(true);
+    if(!active)return;
     load();
     const reload = coalesce(load, 1200);
     let unsub = () => {};try {unsub = base44.entities.ProfileComment.subscribe(() => reload());} catch {}
@@ -48,7 +49,7 @@ export default function ProfileComments({ profileId, isOwn }) {
       requestVersion.current++;clearInterval(timer);reload.cancel();
       unsub();
     };
-  }, [load]);
+  }, [load,active]);
 
   async function postComment(e) {
     e.preventDefault();

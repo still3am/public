@@ -26,9 +26,9 @@ const suppress=(userId,ids,remove=false)=>{if(!userId)return;try{const set=suppr
 // Module-level guard so multiple hook instances don't auto-download the same
 // cloud track twice in one session.
 const autoQueued = new Set();
-const downloadingIds=new Set(),removalVersions=new Map();
+const downloadingIds=new Set(),removalVersions=new Map(),cloudSyncJobs=new Map();
 let generation=0;
-window.addEventListener('account:cleared',()=>{generation++;autoQueued.clear();downloadingIds.clear();removalVersions.clear();});
+window.addEventListener('account:cleared',()=>{generation++;autoQueued.clear();downloadingIds.clear();removalVersions.clear();cloudSyncJobs.clear();});
 
 // PUBLIC files (covers) are served as a generic octet-stream; a blob: URL only
 // renders in an <img> when its MIME is image/*, so sniff the magic bytes and
@@ -157,7 +157,7 @@ export function useOfflineCache() {
       if(!stored?._blob?.size)throw new Error("Audio did not persist");
       // Keep the saved download order in sync: a freshly saved track goes to
       // the top so it's easy to find (matching the previous newest-first view).
-      const order = (await getOrderIds()) || [];
+      const order = (await getOrderIds().catch(()=>[])) || [];
       await setOrderIds([track.id, ...order.filter((id) => id !== track.id)]).catch(()=>{});
       // Mirror this save into the user's cloud offline list so other devices
       // auto-download it too.
@@ -175,18 +175,25 @@ export function useOfflineCache() {
 
   // Pull the user's cloud-synced offline list and download any tracks that
   // aren't on this device yet, so the same songs are available offline everywhere.
-  const syncFromCloud = useCallback(async () => {
-    if (!user?.id || !cachedIds) return;
-    if (typeof navigator !== "undefined" && !navigator.onLine) return;
-    const cloud = await getCloudList(user.id);
-    for (const saved of cloud) {
-      const t=await base44.entities.Track.get(saved.id).catch(()=>null);
-      if(!t||suppressedFor(user.id).has(t.id)) continue;
-      if (cachedIds.has(t.id) || autoQueued.has(t.id)) continue;
-      autoQueued.add(t.id);
-      downloadTrack(t,{automatic:true}).then(ok=>{if(!ok)autoQueued.delete(t.id);}).catch(()=>autoQueued.delete(t.id));
-    }
-  }, [user?.id, cachedIds, downloadTrack]);
+  const syncFromCloud=useCallback(async()=>{
+    const uid=user?.id;
+    if(!uid||!cachedIds||cloudSyncJobs.has(uid)||!navigator.onLine)return;
+    const job=Symbol(uid),startedGeneration=generation;cloudSyncJobs.set(uid,job);
+    try{
+      const cloud=await getCloudList(uid);let cursor=0;
+      const worker=async()=>{while(cursor<cloud.length){
+        if(startedGeneration!==generation)return;
+        const track=cloud[cursor++],id=track?.id;
+        if(!id||cachedIds.has(id)||autoQueued.has(id)||suppressedFor(uid).has(id))continue;
+        autoQueued.add(id);
+        // downloadTrack performs the access check itself. Reserve the item
+        // before waiting, so every song menu does not sign the same track again.
+        const ok=await downloadTrack(track,{automatic:true});if(!ok)autoQueued.delete(id);
+      }};
+      await Promise.all([worker(),worker()]);
+    }catch{/* Keep this device's confirmed offline collection. */}
+    finally{if(cloudSyncJobs.get(uid)===job)cloudSyncJobs.delete(uid);}
+  },[user?.id,cachedIds,downloadTrack]);
 
   useEffect(() => {
     syncFromCloud();

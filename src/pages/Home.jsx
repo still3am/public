@@ -195,7 +195,7 @@ export default function Home() {
     }
   }
 
-  useEffect(() => {clearUserGenresCache();load();return () => {loadVersion.current++;};}, [user?.id]);
+  useEffect(() => {setFromFollowing([]);setDiscover([]);setRecent(getRecentPlays().slice(0,8));clearUserGenresCache();load();return () => {loadVersion.current++;};}, [user?.id]);
   useEffect(() => {const update = () => setRecent(getRecentPlays().slice(0, 8));window.addEventListener("recentplays:change", update);return () => window.removeEventListener("recentplays:change", update);}, []);
 
   if (loadError && !trending.length) return <div className="p-8 text-center"><button className="playlist-action" onClick={() => load(true)}>Refresh music</button></div>;
@@ -241,7 +241,7 @@ export default function Home() {
         <Section title="Trending" icon={TrendingUp} seeAllTo="/top">
           {trending.length >= 3 ?
           <>
-              <Podium tracks={trending.slice(0, 5)} />
+              <Podium tracks={trending.slice(0, 5)} queue={trending}/>
               {trending.length > 5 &&
             <div className="mt-4">
                   <CardRow tracks={trending.slice(5)} />
