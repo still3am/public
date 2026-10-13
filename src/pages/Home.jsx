@@ -23,7 +23,7 @@ import {Image} from "@/components/ui/image";
 import TrackOptionsMenu from "@/components/track/TrackOptionsMenu";
 import EmptyState from "@/components/EmptyState";
 import { getRecentPlays } from "@/lib/recentPlays";
-import { getUserGenres } from "@/lib/userGenres";
+import { getUserGenres,clearUserGenresCache } from "@/lib/userGenres";
 import PullToRefresh from "@/components/PullToRefresh";
 
 const greetingByHour = () => {
@@ -194,7 +194,7 @@ export default function Home() {
     }
   }
 
-  useEffect(()=>{load();return()=>{loadVersion.current++;};},[user?.id]);
+  useEffect(()=>{clearUserGenresCache();load();return()=>{loadVersion.current++;};},[user?.id]);
   useEffect(()=>{const update=()=>setRecent(getRecentPlays().slice(0,8));window.addEventListener("recentplays:change",update);return()=>window.removeEventListener("recentplays:change",update);},[]);
 
   if (loadError && !trending.length) return <div className="p-8 text-center"><button className="playlist-action" onClick={()=>load(true)}>Refresh music</button></div>;
@@ -228,7 +228,7 @@ export default function Home() {
   return (
     <PullToRefresh onRefresh={()=>load(true)}>
       <div className="home-page">
-        <header className="home-welcome"><div><p className="eyebrow">{greeting}</p><h1>{user?.display_name||user?.full_name?`Made for ${user.display_name||user.full_name}.`:"Find your sound."}</h1></div><Link to="/search" className="home-browse-link"><Compass size={17}/><span>Explore music</span><ChevronRight size={14}/></Link></header>
+        <header className="home-welcome"><div><p className="eyebrow">{greeting}</p><h1>{user?.display_name||user?.full_name?`Made for ${user.display_name||user.full_name}.`:"Find your sound."}</h1></div><Link to="/search" className="home-browse-link" aria-label="Explore music"><Compass size={17}/><span>Explore music</span><ChevronRight size={14}/></Link></header>
         <section className="home-feature">
           <div className="home-feature-copy"><p className="eyebrow">Independent music. Open to everyone.</p><h2>Your next favorite<br/>starts here.</h2><p>Fresh releases, familiar favorites, and music worth sharing.</p><div className="home-feature-actions"><button disabled={!discoveryQueue.length} onClick={()=>{p.setShuffle(false);p.playTrackAt(discoveryQueue,0);}} className="chrome-button"><Play size={15} fill="currentColor"/>Play discovery</button><Link className="playlist-action" to="/recent">Latest music<ChevronRight size={14}/></Link></div></div>
           {featured&&<div className="home-spotlight"><div className="home-spotlight-art">{featured.cover_art_url?<Image src={featured.cover_art_url} fittingType="fill" alt="" className="w-full h-full"/>:<Music size={42}/>}<button className="home-spotlight-play" onClick={playFeatured} aria-label={featuredPlaying?`Pause ${featured.title}`:`Play ${featured.title}`}>{featuredPlaying?<Pause size={20} fill="currentColor"/>:<Play size={20} fill="currentColor"/>}</button><div className="home-spotlight-menu"><TrackOptionsMenu track={featured}/></div></div><div className="home-spotlight-meta"><div><p className="eyebrow">Featured release</p><Link to={`/track/${featured.id}`} className="font-semibold text-sm block truncate mt-1">{featured.title}</Link><p className="text-xs text-muted-foreground truncate mt-1">{featured.artist||featured.uploader_name}</p></div></div></div>}
