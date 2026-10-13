@@ -1,3 +1,4 @@
+import { useState } from "react";
 import LoadError from '@/components/LoadError';
 import SafetyControls from '@/components/SafetyControls';
 import {useSafety} from '@/context/SafetyContext';
@@ -53,8 +54,11 @@ function getMessage(n) {
 
 export default function Notifications() {
   const {blocked}=useSafety();
+  const [view,setView]=useState("all");
   const { notifications, loading, error, hasMore, reload, loadMore, unreadCount, markAllAsRead, markAsRead } =
   useNotifications();
+
+  const visibleNotifications=notifications.filter(n=>!blocked.has(n.actor_id)&&(view!=="unread"||!n.read)&&(view!=="music"||n.type==="track_shared"||n.type==="new_upload_from_followed"));
 
   if (loading && !notifications.length) {
     return (
@@ -65,7 +69,9 @@ export default function Notifications() {
   }
 
   return (
-    <div className="max-w-2xl mx-auto">
+    <div className="notifications-page max-w-2xl mx-auto">
+      <header className="page-intro"><p className="eyebrow">Your community</p><h1>Activity</h1><p>New followers, shared songs, and conversations.</p></header>
+      <div className="view-switch mb-5" role="group" aria-label="Notification filter">{[["all","All"],["unread","Unread"],["music","Music"]].map(([value,label])=><button key={value} aria-pressed={view===value} onClick={()=>setView(value)} className={view===value?"active":""}>{label}{value==="unread"&&unreadCount>0&&<span className="ml-2 tabular-nums">{unreadCount}</span>}</button>)}</div>
       <div className="flex items-center justify-between gap-3 mb-5">
         
 
@@ -86,15 +92,15 @@ export default function Notifications() {
       </div>
 
       {error&&<LoadError onRetry={reload}/>}
-      {notifications.length === 0 ?
+      {visibleNotifications.length === 0 ?
       <EmptyState
         icon={Bell}
-        title="No notifications yet"
+        title={view==="unread"?"You’re all caught up":view==="music"?"No music activity here yet":"No notifications yet"}
         description="When someone follows you, likes your track, sends you a song, or comments on your profile, you'll see it here." /> :
 
 
       <div className="space-y-1.5">
-          {notifications.filter(n=>!blocked.has(n.actor_id)).map((n) => {
+          {visibleNotifications.map((n) => {
           const Icon = ICONS[n.type] || Bell;
           const link = getLink(n);
           const content =
@@ -153,7 +159,7 @@ export default function Notifications() {
           const handle = () => {
             if (!n.read) markAsRead(n.id);
           };
-          return <div key={n.id}>{link?<Link to={link} onClick={handle} className="block active:scale-[0.99] transition">{content}</Link>:<button onClick={handle} className="block w-full text-left">{content}</button>}<SafetyControls type="notification" id={n.id} userId={n.actor_id} label="note"/></div>;
+          return <div className="notification-item" key={n.id}>{link?<Link to={link} onClick={handle} className="block active:scale-[0.99] transition">{content}</Link>:<button onClick={handle} className="block w-full text-left">{content}</button>}<SafetyControls type="notification" id={n.id} userId={n.actor_id} label="note"/></div>;
 
         })}
         </div>
