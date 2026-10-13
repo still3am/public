@@ -37,7 +37,7 @@ export default function ProfileSong({
         const page=await base44.entities.Track.filter({id:trackId},'-created_date',1);song=(Array.isArray(page)?page:page?.items||[])[0];
       }
       if(active&&song)setTrack(song);
-    }catch{/* Keep accessible metadata already supplied by this profile. */}})();
+    }catch(error){const status=error?.status??error?.response?.status;if(active&&(status===403||status===404))setTrack(null);}})();
     return()=>{active=false;};
   }, [trackId,userTracks]);
 

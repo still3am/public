@@ -1,4 +1,4 @@
-import { useEffect,useState } from "react";
+import { useEffect,useState,useRef } from "react";
 import { createPortal } from "react-dom";
 import { base44 } from "@/api/base44Client";
 import { useAuth } from "@/lib/AuthContext";
@@ -14,23 +14,26 @@ export default function CreatePlaylistModal({ onClose, onCreated }) {
   const [coverFile, setCoverFile] = useState(null);
   const [coverPreview, setCoverPreview] = useState("");
   const [saving, setSaving] = useState(false);
+  const saveLock=useRef(false),artwork=useRef(null),alive=useRef(true);
+  useEffect(()=>{alive.current=true;return()=>{alive.current=false;};},[]);
 
   useEffect(()=>()=>{if(coverPreview)URL.revokeObjectURL(coverPreview);},[coverPreview]);
   async function handleCover(file) {
-    if(!file.type.startsWith("image/")||file.size>10*1024*1024){alert("Choose an image under 10 MB.");return;}
+    if(!file?.type.startsWith("image/")||file.size>10*1024*1024||saveLock.current)return;
     setCoverFile(file);
     setCoverPreview(URL.createObjectURL(file));
   }
 
   async function save() {
-    if (!name.trim() || saving) return;
-    setSaving(true);
+    if (!user?.id || !name.trim() || saveLock.current) return;
+    saveLock.current=true;setSaving(true);
     try {
       let cover_art_url = "";
-      if (coverFile) {
-        const r = await base44.integrations.Core.UploadFile({ file: coverFile });
-        cover_art_url = r?.file_url || "";
+      if(coverFile){
+        if(artwork.current?.file!==coverFile){const result=await base44.integrations.Core.UploadFile({file:coverFile});if(!result?.file_url)throw Error('Artwork did not upload');artwork.current={file:coverFile,url:result.file_url};}
+        cover_art_url=artwork.current.url;
       }
+      if(!alive.current)return;
       const pl = await base44.entities.Playlist.create({
         name: name.trim(),
         description: description.trim(),
@@ -40,17 +43,16 @@ export default function CreatePlaylistModal({ onClose, onCreated }) {
         cover_art_url,
       });
       window.dispatchEvent(new Event("playlists:changed"));
-      onCreated?.(pl);
-      onClose();
+      if(alive.current){onCreated?.(pl);onClose();}
     } catch {
-      alert("Could not create playlist. Please try again.");
+      // Keep the name, description, and uploaded artwork ready to retry.
     } finally {
-      setSaving(false);
+      saveLock.current=false;if(alive.current)setSaving(false);
     }
   }
 
   return createPortal(
-    <div role="dialog" aria-modal="true" aria-label="New playlist" data-public-dialog tabIndex={-1} onKeyDown={e=>e.key==="Escape"&&!saving&&onClose()} className="fixed inset-0 z-[70] flex items-end md:items-center justify-center">
+    <div role="dialog" aria-modal="true" aria-label="New playlist" data-public-dialog tabIndex={-1} onKeyDown={e=>{if(e.key==="Escape"){e.stopPropagation();onClose();}}} className="fixed inset-0 z-[70] flex items-end md:items-center justify-center">
       <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={onClose} />
       <div className="relative w-full md:max-w-md bg-card border rounded-t-3xl md:rounded-3xl p-5 pb-[calc(1.25rem+env(safe-area-inset-bottom))] max-h-[85vh] overflow-y-auto">
         <div className="md:hidden w-10 h-1 bg-foreground/20 rounded-full mx-auto mb-4" />
@@ -61,7 +63,7 @@ export default function CreatePlaylistModal({ onClose, onCreated }) {
           </button>
         </div>
 
-        <div className="space-y-4">
+        <form className="space-y-4" onSubmit={event=>{event.preventDefault();save();}}>
           <div className="flex items-center gap-4">
             <label className="relative w-24 h-24 rounded-xl overflow-hidden bg-foreground/[0.06] grid place-items-center cursor-pointer shrink-0 ring-1 ring-inset ring-border">
               {coverPreview ? (
@@ -70,18 +72,19 @@ export default function CreatePlaylistModal({ onClose, onCreated }) {
                 <ImagePlus size={22} className="text-foreground/30" />
               )}
               <input
+                aria-label="Choose playlist cover" disabled={saving}
                 type="file"
                 accept="image/*"
                 className="hidden"
                 onChange={(e) => {
-                  const f = e.target.files?.[0];
+                  const f = e.target.files?.[0];e.target.value="";
                   if (f) handleCover(f);
                 }}
               />
             </label>
             <div className="flex-1 min-w-0">
               <input
-                aria-label="Playlist name" maxLength={160}
+                aria-label="Playlist name" required disabled={saving} maxLength={160}
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 placeholder="Playlist name"
@@ -91,8 +94,9 @@ export default function CreatePlaylistModal({ onClose, onCreated }) {
             </div>
           </div>
 
+          <p className="text-xs text-muted-foreground">Cover artwork: choose an image up to 10 MB.</p>
           <textarea
-            aria-label="Playlist description" maxLength={2000}
+            aria-label="Playlist description" disabled={saving} maxLength={2000}
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             placeholder="Add a description…"
@@ -105,18 +109,18 @@ export default function CreatePlaylistModal({ onClose, onCreated }) {
               <div className="text-sm font-semibold">Public</div>
               <div className="text-xs text-foreground/50">Anyone can find and listen</div>
             </div>
-            <Switch checked={isPublic} onCheckedChange={setIsPublic} />
+            <Switch aria-label="Make playlist public" disabled={saving} checked={isPublic} onCheckedChange={setIsPublic} />
           </div>
 
           <button
-            onClick={save}
+            type="submit"
             disabled={!name.trim() || saving}
             className="w-full h-12 rounded-full bg-foreground text-background text-sm font-bold disabled:opacity-40 active:scale-95 transition flex items-center justify-center gap-2"
           >
             {saving && <Loader2 size={16} className="animate-spin" />}
             {saving ? "Creating…" : "Create"}
           </button>
-        </div>
+        </form>
       </div>
     </div>,
     document.body
