@@ -42,7 +42,7 @@ export default function PlaylistDetail(){
   if(sort==='shortest')rows.sort((a,b)=>(a.duration_seconds||0)-(b.duration_seconds||0));
   return rows;
  },[tracks,query,sort]);
- const total=tracks.reduce((n,t)=>n+(t.duration_seconds||0),0),missing=Math.max(0,(playlist?.track_ids||[]).length-tracks.length);
+ const total=tracks.reduce((n,t)=>n+(t.duration_seconds||0),0),missing=Math.max(0,new Set(playlist?.track_ids||[]).size-tracks.length);
  async function write(fn){
   if(writeLock.current)return;writeLock.current=true;setBusy(true);
   try{await fn();window.dispatchEvent(new Event('playlists:changed'));}
@@ -93,16 +93,18 @@ export default function PlaylistDetail(){
    <div className="playlist-cover">{cover?<img src={cover} alt="Playlist cover" className="w-full h-full object-cover"/>:<ListMusic size={52} className="text-muted-foreground"/>}
     {isOwn&&editing&&<label className="absolute bottom-3 inset-x-3 bg-background/90 border rounded-full px-3 py-2 flex items-center justify-center gap-2 text-xs cursor-pointer"><ImagePlus size={15}/>Change cover<input aria-label="Playlist cover" type="file" accept="image/jpeg,image/png,image/webp" className="hidden" onChange={e=>{const f=e.target.files?.[0];if(!f)return;if(!['image/jpeg','image/png','image/webp'].includes(f.type)||f.size>10*1024*1024){toast({title:'Choose a JPEG, PNG or WebP image under 10 MB',variant:'destructive'});return;}setCoverFile(f);setPreview(URL.createObjectURL(f));}}/></label>}
    </div>
-   <div className="min-w-0 flex-1">
+   <div className="playlist-info min-w-0 flex-1">
     <p className="eyebrow mb-3">{playlist.is_public?'Public playlist':'Private playlist'}</p>
     {editing?<input aria-label="Playlist name" maxLength={160} className="playlist-title bg-transparent border-b w-full" value={form.name} onChange={e=>setForm({...form,name:e.target.value})}/>:<h1 className="playlist-title break-words">{playlist.name}</h1>}
     {editing?<><textarea aria-label="Playlist description" maxLength={2000} rows={3} className="w-full mt-4 bg-background border rounded-xl p-3 text-sm" value={form.description} onChange={e=>setForm({...form,description:e.target.value})}/><label className="flex gap-2 items-center text-sm my-4"><input type="checkbox" checked={form.is_public} onChange={e=>setForm({...form,is_public:e.target.checked})}/>Public — anyone can find this playlist</label></>:playlist.description&&<p className="text-muted-foreground text-sm leading-relaxed max-w-xl mt-4 whitespace-pre-wrap">{playlist.description}</p>}
     <p className="text-sm text-muted-foreground mt-4 mb-5">{tracks.length} songs · {Math.floor(total/3600)>0?Math.floor(total/3600)+' hr ':''}{Math.floor(total/60)%60} min{missing>0?' · '+missing+' unavailable':''}</p>
-    <div className="flex flex-wrap gap-2">
-     {!editing&&<><button disabled={!tracks.length} onClick={()=>playAll(false)} className="chrome-button disabled:opacity-40"><Play size={16}/>Play</button><button disabled={!tracks.length} onClick={()=>playAll(true)} className="playlist-action"><Shuffle size={16}/>Shuffle play</button><button disabled={!tracks.length} onClick={()=>{p.addManyToQueue(tracks);toast({title:'Playlist added to queue'});}} className="playlist-action"><ListMusic size={16}/>Queue</button><button onClick={share} className="playlist-action" aria-label="Share playlist"><Share2 size={16}/></button></>}
+    <div className="playlist-controls flex flex-wrap gap-2">
+     {!editing&&<><button disabled={!tracks.length} onClick={()=>playAll(false)} className="chrome-button disabled:opacity-40"><Play size={16}/>Play</button><button disabled={!tracks.length} onClick={()=>playAll(true)} className="playlist-action"><Shuffle size={16}/>Shuffle play</button></>}
+     {!editing&&<details className="playlist-more-actions"><summary>More options</summary><div className="playlist-secondary-actions"><button disabled={!tracks.length} onClick={()=>{p.addManyToQueue(tracks);toast({title:'Playlist added to queue'});}} className="playlist-action"><ListMusic size={16}/>Queue</button><button onClick={share} className="playlist-action" aria-label="Share playlist"><Share2 size={16}/></button>
      {isOwn&&!editing&&<><button disabled={busy} onClick={()=>setShowAdd(true)} className="playlist-action"><Plus size={16}/>Add songs</button><button onClick={()=>setEditing(true)} className="playlist-action"><Pencil size={16}/>Edit</button></>}
      {!isOwn&&!editing&&<button disabled={busy} onClick={toggleSaved} className="playlist-action">{saved?<Check size={16}/>:<Plus size={16}/>} {saved?'Saved':'Save playlist'}</button>}
      {!editing&&<button disabled={busy} onClick={duplicate} className="playlist-action">Make a copy</button>}
+     </div></details>}
      {editing&&<><button disabled={busy||!form.name.trim()} onClick={saveEdit} className="chrome-button">{busy?'Saving…':'Save changes'}</button><button disabled={busy} onClick={()=>{setEditing(false);setCoverFile(null);setPreview('');setForm({name:playlist.name,description:playlist.description||'',is_public:!!playlist.is_public});}} className="playlist-action">Cancel</button><button disabled={busy} className="playlist-action text-destructive" onClick={()=>{if(confirm('Delete this playlist? Your songs will remain on PUBLIC.'))write(async()=>{await base44.entities.Playlist.delete(id);nav('/library');});}}><Trash2 size={16}/>Delete playlist</button></>}
     </div>
     {playlist.is_public&&tracks.some(t=>!t.is_published)&&<p className="text-xs text-muted-foreground mt-3">Private or pending songs are only playable by their owner until published.</p>}

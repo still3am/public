@@ -41,7 +41,7 @@ export default function LoungeHostModal({ lounge, onClose }) {
 
   if (loading && !session) {
     return (
-      <div role="dialog" aria-modal="true" aria-label="LoungeHost" data-public-dialog tabIndex={-1} onKeyDown={e=>{if(e.key==="Escape"){e.stopPropagation();onClose?.();}}} className="fixed inset-0 z-[60] bg-black/70 backdrop-blur-sm grid place-items-center p-4" onClick={onClose}>
+      <div role="dialog" aria-modal="true" aria-label="LoungeHost" data-public-dialog tabIndex={-1} onKeyDown={e=>{if(e.key==="Escape"){e.stopPropagation();onClose?.();}}} className="fixed inset-0 z-[110] bg-black/70 backdrop-blur-sm grid place-items-center p-4" onClick={onClose}>
         <div className="bg-card rounded-3xl w-full max-w-sm p-8 text-center" onClick={(e) => e.stopPropagation()}>
           <Loader2 className="animate-spin mx-auto mb-3" />
           <p className="text-sm text-foreground/60">Starting your lounge…</p>
@@ -52,9 +52,9 @@ export default function LoungeHostModal({ lounge, onClose }) {
 
   if (!session) {
     return (
-      <div className="fixed inset-0 z-[60] bg-black/70 backdrop-blur-sm grid place-items-center p-4" onClick={onClose}>
+      <div className="fixed inset-0 z-[110] bg-black/70 backdrop-blur-sm grid place-items-center p-4" onClick={onClose}>
         <div className="bg-card rounded-3xl w-full max-w-sm p-8 text-center" onClick={(e) => e.stopPropagation()}>
-          <p className="text-sm text-foreground/60">Couldn't start your lounge. Try again.</p>
+          <h2 className="text-lg font-semibold mb-4">Your Lounge</h2><div className="flex justify-center gap-2"><button className="chrome-button" onClick={()=>ensureSession()}>Start lounge</button><button className="playlist-action" onClick={onClose}>Close</button></div>
         </div>
       </div>);
 
@@ -65,14 +65,15 @@ export default function LoungeHostModal({ lounge, onClose }) {
   const approvedGuests = members.filter((m) => m.status === "approved" && m.role !== "host");
 
   function copy() {
-    navigator.clipboard?.writeText(url).then(() => {
+    if(!navigator.clipboard?.writeText)return;
+    navigator.clipboard.writeText(url).then(() => {
       setCopied(true);
       setTimeout(() => setCopied(false), 1500);
-    });
+    }).catch(()=>{});
   }
 
   return (
-    <div className="fixed inset-0 z-[60] bg-black/80 backdrop-blur-md flex items-center justify-center p-4" onClick={onClose}>
+    <div className="fixed inset-0 z-[110] bg-black/80 backdrop-blur-md flex items-center justify-center p-4" onClick={onClose}>
       <div
         className="bg-card text-foreground rounded-3xl w-full max-w-md max-h-[90vh] overflow-y-auto p-6 relative shadow-2xl"
         onClick={(e) => e.stopPropagation()}>

@@ -26,6 +26,7 @@ export function useLoungeHost() {
   const [members, setMembers] = useState([]);
   const [loading, setLoading] = useState(false);
 
+  const startingRef=useRef(null);
   const addedRef = useRef(null);
   if (addedRef.current === null) addedRef.current = loadAddedSet();
   const pRef = useRef(p);
@@ -57,6 +58,8 @@ export function useLoungeHost() {
       refreshMembers(session.id);
       return session;
     }
+    if(startingRef.current)return startingRef.current;
+    const request=(async()=>{
     setLoading(true);
     try {
       // Reuse an active session this host already created (e.g. reopened).
@@ -99,6 +102,9 @@ export function useLoungeHost() {
     } finally {
       setLoading(false);
     }
+    })();
+    startingRef.current=request;
+    try{return await request;}finally{if(startingRef.current===request)startingRef.current=null;}
   }, [user?.id, session, refreshMembers]);
 
   const approve = useCallback(
@@ -135,9 +141,10 @@ export function useLoungeHost() {
     if (!session?.id) return;
     try {
       await base44.entities.LoungeSession.update(session.id, { is_active: false });
-    } catch {}
+    } catch {return false;}
     setSession(null);
     setMembers([]);
+    return true;
   }, [session?.id]);
 
   const updateName = useCallback(
