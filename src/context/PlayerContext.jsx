@@ -372,7 +372,7 @@ export function PlayerProvider({ children }) {
   // While online we stream from the remote URL; while offline we fall back to
   // the locally cached blob — so the player source automatically follows the
   // connection.
-  const resolveUrl = useCallback(async (track, side, valid=()=>true) => {
+  const resolveUrl = useCallback(async (track, side, valid=/** @type {()=>boolean} */ (()=>true)) => {
     if(blockedRef.current.has(track.uploader_id))throw Error('This uploader is blocked.');
     let url=track.audio_url,blobUrl=null;
     try{const rec=await getRecord(track.id);if(rec?._blob)blobUrl=URL.createObjectURL(rec._blob);}catch{}
@@ -993,7 +993,8 @@ export function PlayerProvider({ children }) {
           a && a.duration && isFinite(a.duration)
             ? a.duration - (a.currentTime || 0)
             : s.crossfadeSeconds;
-        beginCrossfade(targetIndex, s.crossfadeSeconds, remaining);
+        const expected=currentIndexRef.current;
+        beginCrossfade(targetIndex,s.mode===TRANSITION_MODES.AUTOMIX?1.5:s.crossfadeSeconds,remaining).then(ok=>{if(!ok&&currentIndexRef.current===expected&&!crossfadingRef.current)setCurrentIndex(targetIndex);});
       } else {
         autoPlayOnLoadRef.current=!!activeEl()&&!activeEl().paused;
         if(currentIndexRef.current===targetIndex)loadOnActive(target);else setCurrentIndex(targetIndex);
