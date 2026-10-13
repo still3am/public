@@ -26,7 +26,15 @@ export default function ProfileSong({
       setTrack(null);
       return;
     }
-    base44.entities.Track.get(trackId).then(setTrack).catch(() => setTrack(null));
+    let active=true;
+    setTrack(null);
+    (async()=>{
+      let next;
+      try{next=await base44.entities.Track.get(trackId);}
+      catch{try{const rows=await base44.entities.Track.filter({id:trackId},"-created_date",1);next=rows[0];}catch{next=null;}}
+      if(active)setTrack(next||null);
+    })();
+    return()=>{active=false;};
   }, [trackId]);
 
   const coverUrl = useCoverUrl(track?.cover_art_url);
@@ -109,9 +117,9 @@ export default function ProfileSong({
             selectedIds={trackId ? [trackId] : []}
             max={1}
             tracks={userTracks}
-            onToggle={(id) => {
-              onChange(id);
-              setPickerOpen(false);
+            onToggle={async(id)=>{
+              const saved=await onChange(id);
+              if(saved!==false)setPickerOpen(false);
             }}
             onClose={() => setPickerOpen(false)}
           />
@@ -164,9 +172,9 @@ export default function ProfileSong({
             selectedIds={trackId ? [trackId] : []}
             max={1}
             tracks={userTracks}
-            onToggle={(id) => {
-              onChange(id);
-              setPickerOpen(false);
+            onToggle={async(id)=>{
+              const saved=await onChange(id);
+              if(saved!==false)setPickerOpen(false);
             }}
             onClose={() => setPickerOpen(false)}
           />

@@ -245,6 +245,22 @@ export default function Profile() {
     }
   }
 
+  const profileSongSaveLock=useRef(false);
+  async function saveProfileSong(id){
+    if(!isOwn||profileSongSaveLock.current)return false;
+    profileSongSaveLock.current=true;
+    try{
+      await base44.auth.updateMe({featured_track_id:id});
+      const confirmed=await base44.auth.me();
+      if((confirmed.featured_track_id||"")!==id)return false;
+      setForm(previous=>({...previous,featured_track_id:id}));
+      setProfile(previous=>({...previous,featured_track_id:id}));
+      window.dispatchEvent(new Event("profiles:changed"));
+      await checkUserAuth({silent:true});
+      return true;
+    }catch{return false;}finally{profileSongSaveLock.current=false;}
+  }
+
   async function saveProfile() {
     setSaving(true);
     try {
@@ -265,7 +281,7 @@ export default function Profile() {
       });
       // Refresh the signed-in user the rest of the app reads from, otherwise the
       // name and avatar in the sidebar keep the old values until a reload.
-      await checkUserAuth();
+      await checkUserAuth({silent:true});
       setEditMode(false);
       setProfile((prev) => ({
         ...prev,
@@ -601,7 +617,7 @@ export default function Profile() {
             trackId={editMode ? form.featured_track_id : profile?.featured_track_id}
             editMode={editMode}
             userTracks={tracks}
-            onChange={(id) => setForm((f) => ({ ...f, featured_track_id: id }))}
+            onChange={saveProfileSong}
             fillHeight />
       </div>
 
