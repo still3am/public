@@ -230,6 +230,7 @@ function GuestQueuePicker({ sessionId, user, onClose, onAdded }) {
   const addingRef=useRef(new Set());
   const [adding,setAdding]=useState(new Set());
   const [pickerError,setPickerError]=useState(false);
+  useEffect(()=>{const previous=document.activeElement;const handler=e=>{if(e.key==="Escape")onClose();if(e.key==="Tab"){const nodes=[...document.querySelectorAll(".lounge-picker button:not(:disabled),.lounge-picker input")];const first=nodes[0],last=nodes[nodes.length-1];if(e.shiftKey&&document.activeElement===first){e.preventDefault();last?.focus();}else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first?.focus();}}};document.addEventListener("keydown",handler);return()=>{document.removeEventListener("keydown",handler);previous?.focus?.();};},[onClose]);
 
   const load = useCallback(async () => {
     setPickerError(false);
@@ -366,6 +367,7 @@ function GuestQueuePicker({ sessionId, user, onClose, onAdded }) {
 /** @param {any} props */
 function LoungeQueueList({ sessionId, isHost }) {
   const p = usePlayer();
+  const {user}=useAuth();
   const { toast } = useToast();
   const [items, setItems] = useState([]);
   const [loadingQ, setLoadingQ] = useState(true);
@@ -464,7 +466,7 @@ function LoungeQueueList({ sessionId, isHost }) {
                       {playing ? "Now" : "Play"}
                     </button>
                 }
-                  <button
+                  {(isHost || t._row.added_by_id===user?.id) && <button
                   onClick={() => removeItem(t._row.id)}
                   disabled={removingId === t._row.id}
                   className="shrink-0 w-7 h-7 rounded-full grid place-items-center text-foreground/40 hover:text-destructive hover:bg-destructive/10 active:scale-90 transition disabled:opacity-40"
@@ -475,7 +477,7 @@ function LoungeQueueList({ sessionId, isHost }) {
 
                   <X size={14} />
                   }
-                  </button>
+                  </button>}
                 </div>
               </div>);
 

@@ -178,11 +178,11 @@ export function useLoungeHost() {
       for(const it of rows){if(addedRef.current.has(it.id))continue;let track;try{track=JSON.parse(it.track);}catch{continue;}
         if(!track?.id)continue;addedRef.current.add(it.id);player.addToQueue({...track,_loungeRowId:it.id});}
       const live=new Set(rows.map(r=>r.id));
-      [...player.queue].forEach((t,i)=>{if(t._loungeRowId&&!live.has(t._loungeRowId))player.removeFromQueue(i);});
+      for(let i=player.queue.length-1;i>=0;i--){const t=player.queue[i];if(t._loungeRowId&&!live.has(t._loungeRowId))player.removeFromQueue(i);}
       persistAdded();
     }catch{}}
-    load();const timer=setInterval(load,8000);const unsub=base44.entities.LoungeQueueItem.subscribe(()=>load());
-    return()=>{active=false;clearInterval(timer);unsub();};
+    load();const timer=setInterval(load,8000);let unsub;try{unsub=base44.entities.LoungeQueueItem.subscribe(()=>load());}catch{}
+    return()=>{active=false;clearInterval(timer);if(unsub)unsub();};
   },[session?.id]);
 
   // Cleanup tracked "added" ids when the session changes / ends so a new lounge
