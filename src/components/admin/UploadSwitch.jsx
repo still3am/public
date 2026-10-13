@@ -9,11 +9,12 @@ export default function UploadSwitch() {
   const { toast } = useToast();
 
   async function toggle() {
+    if(saving)return;
     setSaving(true);
     try {
       await setEnabled(!enabled);
       toast({ title: enabled ? "Uploads stopped" : "Uploads reopened" });
-    } finally {
+    } catch {/* Retain the last saved upload setting. */} finally {
       setSaving(false);
     }
   }

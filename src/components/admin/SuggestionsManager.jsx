@@ -1,3 +1,4 @@
+import {readAllPages} from "@/lib/readPages";
 import { useEffect, useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { useToast } from "@/components/ui/use-toast";
@@ -12,18 +13,18 @@ export default function SuggestionsManager() {
   const [busy, setBusy] = useState("");
 
   async function load() {
-    setItems(null);
     try {
-      const r = await base44.entities.Suggestion.filter({}, "-created_date", 50);
+      const r=await readAllPages(opts=>base44.entities.Suggestion.filter({},{sort:"-created_date",...opts}));
       setItems(r);
     } catch {
-      setItems([]);
+      setItems(previous=>previous===null?[]:previous);
     }
   }
 
   useEffect(() => { load(); }, []);
 
   async function setStatus(id, status) {
+    if(busy)return;
     setBusy(id);
     try {
       await base44.entities.Suggestion.update(id, { status });
@@ -35,6 +36,7 @@ export default function SuggestionsManager() {
   }
 
   async function remove(id) {
+    if(busy||!window.confirm("Delete this completed suggestion?"))return;
     setBusy(id);
     try {
       await base44.entities.Suggestion.delete(id);

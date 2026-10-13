@@ -1,4 +1,6 @@
-import { useEffect, useState } from "react";
+import {readAllPages} from "@/lib/readPages";
+import IncrementalList from "@/components/IncrementalList";
+import { useEffect, useState, useRef } from "react";
 import { base44 } from "@/api/base44Client";
 import { useToast } from "@/components/ui/use-toast";
 import { ShieldCheck, EyeOff, RefreshCw, Loader2 } from "lucide-react";
@@ -9,45 +11,30 @@ export default function ApprovalsManager() {
   const { toast } = useToast();
   const [tracks, setTracks] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [busyId, setBusyId] = useState("");
+  const [busyIds,setBusyIds]=useState(new Set()),[query,setQuery]=useState("");
+  const writes=useRef(new Set()),pendingVersion=useRef(0),liveVersion=useRef(0);
+  const [pendingFailed,setPendingFailed]=useState(false),[liveFailed,setLiveFailed]=useState(false);
+  const begin=id=>{if(writes.current.has(id))return false;writes.current.add(id);setBusyIds(new Set(writes.current));return true;};
+  const finish=id=>{writes.current.delete(id);setBusyIds(new Set(writes.current));};
   const [live, setLive] = useState(null);
   const [liveLoading, setLiveLoading] = useState(false);
 
-  async function load() {
-    setLoading(true);
-    try {
-      const t = await base44.entities.Track.filter(
-        { approval_status: "pending" },
-        "-created_date",
-        200
-      ).catch(() => []);
-      setTracks(Array.isArray(t) ? t : []);
-    } finally {
-      setLoading(false);
-    }
+  async function load(){
+    const request=++pendingVersion.current;setLoading(true);setPendingFailed(false);
+    try{const rows=await readAllPages(opts=>base44.entities.Track.filter({approval_status:"pending"},{sort:"-created_date",...opts}));if(request===pendingVersion.current)setTracks(rows);}
+    catch{if(request===pendingVersion.current)setPendingFailed(true);}
+    finally{if(request===pendingVersion.current)setLoading(false);}
   }
-
-  async function loadLive() {
-    setLiveLoading(true);
-    try {
-      const t = await base44.entities.Track.filter(
-        { is_published: true },
-        "-play_count",
-        100
-      ).catch(() => []);
-      setLive(Array.isArray(t) ? t : []);
-    } finally {
-      setLiveLoading(false);
-    }
+  async function loadLive(){
+    const request=++liveVersion.current;setLiveLoading(true);setLiveFailed(false);
+    try{const rows=await readAllPages(opts=>base44.entities.Track.filter({is_published:true},{sort:"-play_count",...opts}));if(request===liveVersion.current)setLive(rows);}
+    catch{if(request===liveVersion.current)setLiveFailed(true);}
+    finally{if(request===liveVersion.current)setLiveLoading(false);}
   }
-
-  useEffect(() => {
-    load();
-    loadLive();
-  }, []);
+  useEffect(()=>{load();loadLive();return()=>{pendingVersion.current++;liveVersion.current++;};},[]);
 
   async function approve(track) {
-    setBusyId(track.id);
+    if(!begin(track.id))return;
     try {
       await base44.entities.Track.update(track.id, {
         is_published: true,
@@ -59,13 +46,13 @@ export default function ApprovalsManager() {
     } catch (e) {
       toast({ title: "Couldn't approve track", variant: "destructive" });
     } finally {
-      setBusyId("");
+      finish(track.id);
     }
   }
 
   async function takedown(track) {
     if (!window.confirm(`Remove "${track.title}" from PUBLIC? It stays in the uploader's library and profile.`)) return;
-    setBusyId(track.id);
+    if(!begin(track.id))return;
     try {
       await base44.entities.Track.update(track.id, {
         is_published: false,
@@ -76,12 +63,12 @@ export default function ApprovalsManager() {
     } catch (e) {
       toast({ title: "Couldn't remove track", variant: "destructive" });
     } finally {
-      setBusyId("");
+      finish(track.id);
     }
   }
 
   async function reject(track) {
-    setBusyId(track.id);
+    if(!begin(track.id))return;
     try {
       await base44.entities.Track.update(track.id, {
         is_published: false,
@@ -92,15 +79,18 @@ export default function ApprovalsManager() {
     } catch (e) {
       toast({ title: "Couldn't reject track", variant: "destructive" });
     } finally {
-      setBusyId("");
+      finish(track.id);
     }
   }
 
   const count = (tracks || []).length;
+  const matches=track=>!query.trim()||[track.title,track.artist,track.uploader_name].some(value=>(value||"").toLowerCase().includes(query.trim().toLowerCase()));
+  const pendingFiltered=(tracks||[]).filter(matches),liveFiltered=(live||[]).filter(matches);
 
   return (
     <div className="space-y-4">
-      {/* Pending approvals */}
+      <div className="collection-tools"><input aria-label="Search music in approvals" placeholder="Find a title, artist, or uploader" value={query} onChange={e=>setQuery(e.target.value)} onKeyDown={e=>{if(e.key==="Escape")setQuery("");}}/>{query&&<button className="playlist-action" onClick={()=>setQuery("")}>Clear search</button>}</div>
+      {/* Pending approvals */
       <div className="rounded-2xl border border-border bg-card p-4">
         <div className="flex items-center justify-between gap-3 mb-3">
           <div className="flex items-center gap-2">
@@ -110,7 +100,7 @@ export default function ApprovalsManager() {
             <div>
               <div className="text-sm font-semibold">Upload approvals</div>
               <div className="text-xs text-foreground/50">
-                {count > 0 ? `${count} awaiting review` : "Queue is clear"}
+                {tracks===null?"Review queue":count > 0 ? `${count} awaiting review` : "Queue is clear"}
               </div>
             </div>
           </div>
@@ -123,21 +113,21 @@ export default function ApprovalsManager() {
           </button>
         </div>
 
-        {loading && tracks === null ? (
+        {pendingFailed&&tracks===null?<button className="playlist-action" onClick={load}>Refresh approvals</button>:loading && tracks === null ? (
           <div className="py-10 grid place-items-center">
             <Loader2 className="animate-spin text-foreground/40" />
           </div>
-        ) : !count ? (
+        ) : !pendingFiltered.length ? (
           <div className="py-8 text-center text-sm text-foreground/50">
-            No tracks waiting for approval.
+            {query?"No matching uploads awaiting review.":"No tracks waiting for approval."}
           </div>
         ) : (
           <div className="space-y-2">
-            {(tracks || []).map((t) => (
+            {pendingFiltered.map((t) => (
               <ApprovalRow
                 key={t.id}
                 track={t}
-                busy={busyId === t.id}
+                busy={busyIds.has(t.id)}
                 onApprove={() => approve(t)}
                 onReject={() => reject(t)}
               />
@@ -160,25 +150,16 @@ export default function ApprovalsManager() {
           </div>
         </div>
 
-        {liveLoading && live === null ? (
+        {liveFailed&&live===null?<button className="playlist-action" onClick={loadLive}>Refresh published music</button>:liveLoading && live === null ? (
           <div className="py-10 grid place-items-center">
             <Loader2 className="animate-spin text-foreground/40" />
           </div>
-        ) : !live?.length ? (
+        ) : !liveFiltered.length ? (
           <div className="py-6 text-center text-sm text-foreground/50">
-            No tracks are live on PUBLIC right now.
+            {query?"No matching published music.":"No tracks are live on PUBLIC right now."}
           </div>
         ) : (
-          <div className="space-y-2">
-            {(live || []).map((t) => (
-              <LiveTrackRow
-                key={t.id}
-                track={t}
-                busy={busyId === t.id}
-                onTakedown={() => takedown(t)}
-              />
-            ))}
-          </div>
+          <IncrementalList items={liveFiltered} className="space-y-2" renderItem={track=><LiveTrackRow key={track.id} track={track} busy={busyIds.has(track.id)} onTakedown={()=>takedown(track)}/>}/>
         )}
       </div>
     </div>

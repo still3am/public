@@ -26,13 +26,14 @@ export default function BannerEditor() {
   const previewMsgs = cleaned.length > 0 ? cleaned : ["—"];
 
   async function save() {
+    if(saving)return;
     setSaving(true);
     try {
-      const clean = draft.filter((m) => m.trim());
+      const clean = draft.map(message=>message.trim()).filter(Boolean);
       await setMessages(clean);
       setDraft(clean);
       toast({ title: "Banner updated" });
-    } finally {
+    } catch {/* Keep the editable draft for another save attempt. */} finally {
       setSaving(false);
     }
   }
@@ -74,14 +75,15 @@ export default function BannerEditor() {
           {draft.map((msg, i) => (
             <div key={i} className="flex items-center gap-2">
               <input
+                aria-label={`Banner message ${i+1}`} disabled={saving}
                 value={msg}
                 onChange={(e) => setDraft(draft.map((m, idx) => (idx === i ? e.target.value : m)))}
                 placeholder="Message text"
-                className="flex-1 px-3 py-2 rounded-lg bg-background ring-1 ring-inset ring-border text-sm focus:ring-foreground/30 outline-none"
+                className="min-w-0 flex-1 px-3 py-2 rounded-lg bg-background ring-1 ring-inset ring-border text-sm focus:ring-foreground/30 outline-none"
               />
               <button
                 onClick={() => setDraft(draft.filter((_, idx) => idx !== i))}
-                disabled={draft.length <= 1}
+                aria-label={`Remove banner message ${i+1}`} disabled={saving||draft.length <= 1}
                 className="shrink-0 w-9 h-9 grid place-items-center rounded-lg text-muted-foreground hover:text-destructive disabled:opacity-30 transition"
               >
                 <Trash2 size={15} />
