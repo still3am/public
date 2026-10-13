@@ -22,12 +22,7 @@ export default function LibraryBulkBar({
   if (!active) {
     return (
       <div className="flex justify-end mb-3">
-        
-
-
-
-
-        
+        <button onClick={onStart} className="library-tool"><CheckSquare size={16}/><span>Select</span></button>
       </div>);
 
   }

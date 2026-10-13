@@ -1,6 +1,6 @@
 import {readAllPages} from "@/lib/readPages";
 import {Image} from "@/components/ui/image";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState, useRef } from "react";
 import { base44 } from "@/api/base44Client";
 import { useAuth } from "@/lib/AuthContext";
 import { useLibrary } from "@/context/LibraryContext";
@@ -16,6 +16,7 @@ export default function QueueLibraryPicker({ open, onClose }) {
   const [loading, setLoading] = useState(false);
   const [query, setQuery] = useState("");
   const [justAdded, setJustAdded] = useState(new Set());
+  const addedRef=useRef(new Set());
 
   const load = useCallback(async () => {
     if (!user?.id) {
@@ -45,7 +46,7 @@ export default function QueueLibraryPicker({ open, onClose }) {
 
   useEffect(() => {
     if (open) {
-      setJustAdded(new Set());
+      addedRef.current=new Set();setJustAdded(new Set());
       load();
     }
   }, [open, load, ids]);
@@ -64,12 +65,12 @@ export default function QueueLibraryPicker({ open, onClose }) {
   if (!open) return null;
 
   const addOne = (track) => {
-    if(justAdded.has(track.id))return;
-    p.addToQueue(track);
+    if(addedRef.current.has(track.id))return;
+    addedRef.current.add(track.id);p.addToQueue(track);
     setJustAdded((prev) => new Set(prev).add(track.id));
   };
 
-  const addAll=()=>{const remaining=filtered.filter(track=>!justAdded.has(track.id));if(!remaining.length)return;p.addManyToQueue(remaining);setJustAdded(previous=>new Set([...previous,...remaining.map(track=>track.id)]));};
+  const addAll=()=>{const remaining=filtered.filter(track=>!addedRef.current.has(track.id));if(!remaining.length)return;remaining.forEach(track=>addedRef.current.add(track.id));p.addManyToQueue(remaining);setJustAdded(new Set(addedRef.current));};
 
   return (
     <div className="queue-library-picker absolute inset-0 z-[60] bg-card text-foreground flex flex-col animate-[fadeIn_.2s_ease-out]">
@@ -146,7 +147,7 @@ export default function QueueLibraryPicker({ open, onClose }) {
                     disabled={added}
                     className={`shrink-0 w-9 h-9 rounded-full grid place-items-center active:scale-90 transition ${
                       added
-                        ? "bg-green-500/30 text-green-300"
+                        ? "bg-foreground text-background"
                         : "bg-muted hover:bg-accent"
                     }`}
                     aria-label={added ? "Added to queue" : "Add to queue"}

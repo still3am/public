@@ -1,9 +1,10 @@
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import { base44 } from "@/api/base44Client";
 import { useAuth } from "@/lib/AuthContext";
 import { coalesce } from "@/lib/coalesce";
 import SafetyControls from '@/components/SafetyControls';
 import { useSafety } from '@/context/SafetyContext';
+import { Link } from "react-router-dom";
 import Avatar from "@/components/Avatar";
 import { Loader2, Send, Trash2, MessageCircle } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
@@ -18,8 +19,10 @@ export default function ProfileComments({ profileId, isOwn }) {
   const [error, setError] = useState(false);
   const [message, setMessage] = useState("");
   const [posting, setPosting] = useState(false);
+  const requestVersion=useRef(0),postingRef=useRef(false),currentProfile=useRef(profileId);currentProfile.current=profileId;
 
   const load = useCallback(async () => {
+    const request=++requestVersion.current;
     setError(false);
     try {
       const items = await base44.entities.ProfileComment.filter(
@@ -27,21 +30,22 @@ export default function ProfileComments({ profileId, isOwn }) {
         "-created_date",
         200
       );
-      setComments(items || []);
+      if(request===requestVersion.current&&currentProfile.current===profileId)setComments(items || []);
     } catch {
-      setError(true);
+      if(request===requestVersion.current)setError(true);
     } finally {
-      setLoading(false);
+      if(request===requestVersion.current)setLoading(false);
     }
   }, [profileId]);
 
   useEffect(() => {
+    setComments([]);setMessage("");setLoading(true);
     load();
     const reload = coalesce(load, 1200);
     let unsub = () => {};try {unsub = base44.entities.ProfileComment.subscribe(() => reload());} catch {}
     const timer = setInterval(reload, 30000);
     return () => {
-      clearInterval(timer);reload.cancel();
+      requestVersion.current++;clearInterval(timer);reload.cancel();
       unsub();
     };
   }, [load]);
@@ -49,8 +53,8 @@ export default function ProfileComments({ profileId, isOwn }) {
   async function postComment(e) {
     e.preventDefault();
     const text = message.trim();
-    if (!text || !user) return;
-    setPosting(true);
+    if (!text || !user || postingRef.current) return;
+    postingRef.current=true;setPosting(true);
     try {
       await base44.entities.ProfileComment.create({
         profile_id: profileId,
@@ -59,8 +63,7 @@ export default function ProfileComments({ profileId, isOwn }) {
         author_avatar_url: user.avatar_url || "",
         message: text
       });
-      setMessage("");
-      await load();
+      if(currentProfile.current===profileId){setMessage("");await load();}
       if (profileId !== user.id) {
         try {
           await base44.entities.Notification.create({
@@ -73,7 +76,7 @@ export default function ProfileComments({ profileId, isOwn }) {
     } catch {
       toast({ title: "Couldn't post your comment", variant: "destructive" });
     } finally {
-      setPosting(false);
+      postingRef.current=false;setPosting(false);
     }
   }
 
@@ -85,7 +88,7 @@ export default function ProfileComments({ profileId, isOwn }) {
     try {
       await base44.entities.ProfileComment.delete(id);
     } catch {
-      setComments(before);
+      if(currentProfile.current===profileId)setComments(previous=>{if(previous.some(row=>row.id===id))return previous;const row=before.find(row=>row.id===id);if(!row)return previous;const next=[...previous];next.splice(Math.min(before.findIndex(row=>row.id===id),next.length),0,row);return next;});
       toast({ title: "Couldn't delete that comment", variant: "destructive" });
     }
   }
@@ -99,11 +102,12 @@ export default function ProfileComments({ profileId, isOwn }) {
 
       <form onSubmit={postComment} className="flex mb-4 gap-2">
         <input
+          aria-label="Leave a profile comment"
           value={message}
           onChange={(e) => setMessage(e.target.value)}
           placeholder="Leave a comment..."
           maxLength={500}
-          className="flex-1 py-2.5 rounded-full border border-border bg-background text-sm px-2.5" />
+          className="min-w-0 flex-1 py-2.5 rounded-full border border-border bg-background text-sm px-2.5" />
         
         <button
           type="submit"
@@ -127,7 +131,7 @@ export default function ProfileComments({ profileId, isOwn }) {
       <div className="space-y-3">
           {comments.filter((c) => !blocked.has(c.author_id)).map((c) =>
         <div key={c.id} className="flex gap-3 p-3 rounded-2xl bg-foreground/[0.02]">
-              <Avatar user={{ avatar_url: c.author_avatar_url, full_name: c.author_name }} size={40} />
+              <Link to={`/profile/${c.author_id}`} aria-label={`View ${c.author_name || "user"} profile`} className="shrink-0"><Avatar user={{ avatar_url: c.author_avatar_url, full_name: c.author_name }} size={40} /></Link>
               <div className="flex-1 min-w-0">
                 <div className="flex items-center justify-between gap-2">
                   <span className="text-sm font-semibold truncate">{c.author_name || "Someone"}</span>

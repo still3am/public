@@ -226,7 +226,7 @@ export default function Library() {
         <label>Sort<select value={sort} onChange={(e) => setSort(e.target.value)}><option value="saved">Recently saved</option><option value="title">Title A–Z</option><option value="artist">Artist A–Z</option></select></label>
         {activeFilters && <button className="text-xs underline underline-offset-4" onClick={() => {setFolder("");setTagQuery("");setSort("saved");}}>Reset filters</button>}
       </div>}
-      <LibraryBulkBar visible={libraryView === "songs" && (!!tracks?.length || !!savedPlaylists?.length)} active={editMode} count={selected.size} canRemove={removableIds.length > 0} busy={bulkBusy} onOrganize={() => setShowOrganize(true)} onStart={() => setEditMode(true)} onExit={exitEditMode} onAddToPlaylist={() => setShowBulkPlaylist(true)} onRemove={removeFromLibrary} />
+      <LibraryBulkBar visible={libraryView !== "recent" && (!!tracks?.length || !!savedPlaylists?.length)} active={editMode} count={selected.size} canRemove={removableIds.length > 0} busy={bulkBusy} onOrganize={() => setShowOrganize(true)} onStart={() => setEditMode(true)} onExit={exitEditMode} onAddToPlaylist={() => setShowBulkPlaylist(true)} onRemove={removeFromLibrary} />
       <PullToRefresh onRefresh={async () => {await refresh();await load();await reloadPlaylists();await loadSavedPlaylists();}}>
         {loading && tracks === null ? <div className="flex justify-center py-20"><Loader2 className="animate-spin text-muted-foreground" /></div> : <>
           {libraryView === "songs" && <section>
