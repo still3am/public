@@ -104,14 +104,18 @@ export default function Profile() {
   const [form, setForm] = useState(() => formFromProfile({}));
 
   const [featuredCoverUrl, setFeaturedCoverUrl] = useState("");
+  const chosenProfileSong=useRef(null);
+  const profileSongSaving=useRef(false);
   useEffect(() => {
     const tid = profile?.featured_track_id;
     if (!tid) {setFeaturedCoverUrl("");return;}
+    if(chosenProfileSong.current?.id===tid){setFeaturedCoverUrl(chosenProfileSong.current.cover_art_url||"");return;}
     setFeaturedCoverUrl("");
     let cancelled = false;
-    base44.entities.Track.get(tid).
-    then((t) => {if (!cancelled) setFeaturedCoverUrl(t?.cover_art_url || "");}).
-    catch(() => {if (!cancelled) setFeaturedCoverUrl("");});
+    base44.entities.Track.filter({id:tid},"-created_date",1).then(page=>{
+      const rows=Array.isArray(page)?page:page?.items||[];
+      if(!cancelled)setFeaturedCoverUrl(rows[0]?.cover_art_url||"");
+    }).catch(()=>{if(!cancelled)setFeaturedCoverUrl("");});
     return () => {cancelled = true;};
   }, [profile?.featured_track_id]);
 
@@ -245,6 +249,25 @@ export default function Profile() {
     }
   }
 
+  async function saveProfileSong(id,chosen){
+    if(!isOwn||profileSongSaving.current)return false;
+    profileSongSaving.current=true;
+    try{
+      const update={featured_track_id:id,profile_background_mode:"auto",profile_background_colors:[]};
+      await base44.auth.updateMe(update);
+      const confirmed=await base44.auth.me();
+      if((confirmed.featured_track_id||"")!==id||confirmed.profile_background_mode!=="auto")return false;
+      chosenProfileSong.current=chosen?.id===id?chosen:null;
+      if(chosen)setFeaturedCoverUrl(chosen.cover_art_url||"");
+      setProfile(previous=>({...previous,...update}));
+      setForm(previous=>({...previous,featured_track_id:id}));
+      setBackgroundDraft(null);
+      window.dispatchEvent(new Event("profiles:changed"));
+      await checkUserAuth({silent:true});
+      return true;
+    }catch{return false;}finally{profileSongSaving.current=false;}
+  }
+
   async function saveProfile() {
     setSaving(true);
     try {
@@ -265,7 +288,7 @@ export default function Profile() {
       });
       // Refresh the signed-in user the rest of the app reads from, otherwise the
       // name and avatar in the sidebar keep the old values until a reload.
-      await checkUserAuth();
+      await checkUserAuth({silent:true});
       setEditMode(false);
       setProfile((prev) => ({
         ...prev,
@@ -601,7 +624,7 @@ export default function Profile() {
             trackId={editMode ? form.featured_track_id : profile?.featured_track_id}
             editMode={editMode}
             userTracks={tracks}
-            onChange={(id) => setForm((f) => ({ ...f, featured_track_id: id }))}
+            onChange={saveProfileSong}
             fillHeight />
       </div>
 

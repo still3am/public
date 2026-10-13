@@ -113,9 +113,10 @@ export default function ProfileSong({
             selectedIds={trackId ? [trackId] : []}
             max={1}
             tracks={userTracks}
-            onToggle={(id,chosen) => {
+            onToggle={async(id,chosen)=>{
+              const saved=await onChange(id,chosen);
+              if(saved===false)return;
               pickedTrack.current=chosen;setTrack(chosen);
-              onChange(id);
               setPickerOpen(false);
             }}
             onClose={() => setPickerOpen(false)}
@@ -169,9 +170,10 @@ export default function ProfileSong({
             selectedIds={trackId ? [trackId] : []}
             max={1}
             tracks={userTracks}
-            onToggle={(id,chosen) => {
+            onToggle={async(id,chosen)=>{
+              const saved=await onChange(id,chosen);
+              if(saved===false)return;
               pickedTrack.current=chosen;setTrack(chosen);
-              onChange(id);
               setPickerOpen(false);
             }}
             onClose={() => setPickerOpen(false)}

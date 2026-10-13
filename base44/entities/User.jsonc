@@ -107,8 +107,9 @@
       "default": "",
       "description": "Track id pinned as the profile song visitors can play",
       "rls": {
-        "write": false
-      }
+        "write": true
+      },
+      "maxLength": 100
     },
     "top_track_ids": {
       "type": "array",
