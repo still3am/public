@@ -1,4 +1,6 @@
 import { useMemo } from "react";
+import {useCoverUrl} from "@/hooks/useCoverUrl";
+function QueueCover({url}){const cover=useCoverUrl(url);return cover?<img src={cover} alt="" className="w-full h-full object-cover"/>:<Music2 size={18} className="text-muted-foreground"/>;}
 import {
   X,
   Trash2,
@@ -8,6 +10,8 @@ import {
   Plus,
   Music2,
   GripVertical,
+  ArrowUp,
+  ArrowDown,
   GitMerge } from
 "lucide-react";
 import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
@@ -56,28 +60,19 @@ export default function QueuePanel({ open, onClose }) {
   null;
 
   return (
-    <div role="dialog" aria-modal="true" aria-label="QueuePanel" data-public-dialog tabIndex={-1} onKeyDown={e=>{if(e.key==="Escape"){e.stopPropagation();onClose?.();}}} className="absolute inset-0 z-[60] bg-black/85 backdrop-blur-2xl flex flex-col animate-[fadeIn_.22s_ease-out]">
+    <div role="dialog" aria-modal="true" aria-label="Playback queue" data-public-dialog tabIndex={-1} onKeyDown={e=>{if(e.key==="Escape"){e.stopPropagation();onClose?.();}}} className="queue-panel absolute inset-0 z-[60] bg-card text-foreground flex flex-col animate-[fadeIn_.22s_ease-out]">
       {/* Header */}
-      <div className="top-bar-safe flex items-center justify-between px-4 pt-2 pb-3 shrink-0 border-b border-white/5">
+      <div className="top-bar-safe flex items-center justify-between px-4 pt-2 pb-3 shrink-0 border-b border-border">
         <div className="flex items-center gap-2 min-w-0">
-          <ListMusic size={20} className="text-white/80 shrink-0" />
-          <div className="leading-tight min-w-0">
-            
-            
-
-
-
-
-
-            
-          </div>
+          <ListMusic size={20} className="text-foreground shrink-0" />
+          <div className="leading-tight min-w-0"><h2 className="text-xl font-semibold tracking-tight">Your queue</h2><p className="text-xs text-muted-foreground mt-1">{upcoming.length} up next · {formatTime(upcoming.reduce((sum,{trk})=>sum+(trk.duration_seconds||0),0))}</p></div>
         </div>
         <div className="flex items-center gap-1.5">
           <button
             onClick={() => setShowPicker(true)}
-            className="p-2 rounded-full bg-white/10 hover:bg-white/20 active:scale-95 transition"
+            className="queue-add-button chrome-button"
             aria-label="Add from library">
-            <Plus size={18} />
+            <Plus size={18} /><span className="text-xs font-semibold">Add</span>
           </button>
           {upcoming.length > 0 &&
           <button
@@ -87,14 +82,14 @@ export default function QueuePanel({ open, onClose }) {
                 p.setQueue(keep);
               }
             }}
-            className="p-2 rounded-full hover:bg-white/10 active:scale-90 transition text-white/70"
+            className="p-2 rounded-full hover:bg-muted active:scale-90 transition text-muted-foreground"
             aria-label="Clear queue">
               <Trash2 size={18} />
             </button>
           }
           <button
             onClick={onClose}
-            className="p-2 rounded-full hover:bg-white/10 active:scale-90 transition text-white/80"
+            className="p-2 rounded-full hover:bg-muted active:scale-90 transition text-foreground"
             aria-label="Close">
             <X size={22} />
           </button>
@@ -102,28 +97,22 @@ export default function QueuePanel({ open, onClose }) {
       </div>
 
       {/* Scrollable body */}
-      <div className="flex-1 min-h-0 overflow-y-auto px-3 pb-10">
+      <div className="queue-body flex-1 min-h-0 overflow-y-auto px-3 pb-10">
         {/* Now playing */}
         {p.currentTrack &&
         <div className="px-1 pt-3 pb-4">
-            <div className="text-[10px] uppercase tracking-[0.2em] text-white/40 px-1 mb-1.5">
+            <div className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground px-1 mb-1.5">
               Now playing
             </div>
-            <div className="flex items-center gap-3 px-2.5 py-2.5 rounded-xl bg-gradient-to-r from-white/12 to-white/[0.04] ring-1 ring-white/10">
-              <div className="relative w-11 h-11 rounded-lg overflow-hidden bg-white/10 shrink-0">
-                {p.currentTrack.cover_art_url &&
-              <img
-                src={p.currentTrack.cover_art_url}
-                alt=""
-                className="w-full h-full object-cover" />
-
-              }
+            <div className="queue-now-playing flex items-center gap-3 px-2.5 py-2.5 rounded-xl">
+              <div className="relative w-11 h-11 rounded-lg overflow-hidden bg-muted shrink-0">
+                <QueueCover url={p.currentTrack.cover_art_url}/>
               </div>
               <div className="min-w-0 flex-1">
                 <div className="text-sm font-semibold truncate">
                   {p.currentTrack.title}
                 </div>
-                <div className="text-xs text-white/55 truncate">
+                <div className="text-xs text-muted-foreground truncate">
                   {p.currentTrack.artist || p.currentTrack.uploader_name || "Unknown"}
                 </div>
               </div>
@@ -151,24 +140,23 @@ export default function QueuePanel({ open, onClose }) {
           className="w-full mb-3 flex items-center gap-2 px-3 py-2 rounded-xl bg-foreground/[0.06] text-foreground/70 text-[11px] font-semibold active:scale-[0.99] transition">
             <GitMerge size={13} />
             <span className="flex-1 text-left">{transitionLabel} active</span>
-            <span className="text-white/50 text-[10px]">Edit</span>
+            <span className="text-muted-foreground text-[10px]">Edit</span>
           </button>
         }
 
         {/* Upcoming */}
-        <div className="text-[10px] uppercase tracking-[0.2em] text-white/40 px-2 mb-1">
+        <div className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground px-2 mb-1">
           {upcoming.length ? "Next up" : ""}
         </div>
         {!upcoming.length ?
         <div className="text-center py-16 px-6">
-            <div className="w-16 h-16 rounded-2xl bg-white/5 grid place-items-center mx-auto mb-4">
-              <Music2 size={30} className="text-white/40" />
+            <div className="w-16 h-16 rounded-2xl bg-muted grid place-items-center mx-auto mb-4">
+              <Music2 size={30} className="text-muted-foreground" />
             </div>
-            <p className="text-sm text-white/55 mb-1">Your queue is empty.</p>
-            <p className="text-xs text-white/35">
-              Tap “Add” above to queue songs from your library. Auto-queue keeps
-              the music going when you reach the end.
-            </p>
+            <p className="text-sm text-muted-foreground mb-1">Your queue is empty.</p>
+            <p className="text-xs text-muted-foreground">
+              Add music from your library to choose what plays next.
+            </p><button className="chrome-button mt-5" onClick={()=>setShowPicker(true)}><Plus size={15}/>Add music</button>
           </div> :
 
         <DragDropContext
@@ -189,24 +177,18 @@ export default function QueuePanel({ open, onClose }) {
                   ref={dragProvided.innerRef}
                   {...dragProvided.draggableProps}
                   style={{ ...dragProvided.draggableProps.style, touchAction: snapshot.isDragging ? "none" : "pan-y" }}
-                  className={`group flex items-center gap-3 px-2 py-2 rounded-xl transition ${
-                  snapshot.isDragging ? "bg-white/[0.12] ring-1 ring-white/15" : "hover:bg-white/[0.06]"}`}>
+                  className={`queue-upcoming-row group flex items-center gap-3 px-2 py-2 rounded-xl transition ${
+                  snapshot.isDragging ? "bg-accent ring-1 ring-border" : "hover:bg-accent"}`}>
                 <div
                     {...dragProvided.dragHandleProps}
-                    className="shrink-0 -ml-1 p-1 text-white/30 hover:text-white/70 cursor-grab active:cursor-grabbing touch-none"
+                    className="shrink-0 -ml-1 p-1 text-muted-foreground hover:text-muted-foreground cursor-grab active:cursor-grabbing touch-none"
                     aria-label="Reorder">
                   <GripVertical size={16} />
                 </div>
 
             
-                <div className="relative w-10 h-10 rounded-lg overflow-hidden bg-white/10 shrink-0">
-                  {tt.cover_art_url &&
-                    <img
-                      src={tt.cover_art_url}
-                      alt=""
-                      className="w-full h-full object-cover" />
-
-                    }
+                <div className="relative w-10 h-10 rounded-lg overflow-hidden bg-muted shrink-0">
+                  <QueueCover url={tt.cover_art_url}/>
                   <button
                       onClick={() => p.playQueueItem(i)}
                       className="absolute inset-0 grid place-items-center bg-black/45 opacity-0 group-hover:opacity-100 transition"
@@ -218,17 +200,18 @@ export default function QueuePanel({ open, onClose }) {
                     onClick={() => p.playQueueItem(i)}
                     className="min-w-0 flex-1 text-left">
                   <div className="text-sm font-medium truncate">{tt.title}</div>
-                  <div className="text-xs text-white/50 truncate">
+                  <div className="text-xs text-muted-foreground truncate">
                     {tt.artist || tt.uploader_name || "Unknown"}
                   </div>
                 </button>
-                <span className="hidden sm:block text-[11px] text-white/40 tabular-nums">
+                <span className="hidden sm:block text-[11px] text-muted-foreground tabular-nums">
                   {formatTime(tt.duration_seconds)}
                 </span>
+                <div className="queue-move-buttons"><button disabled={pos===0} onClick={()=>p.moveInQueue(i,upcoming[pos-1].i)} aria-label={`Move ${tt.title} up`}><ArrowUp size={14}/></button><button disabled={pos===upcoming.length-1} onClick={()=>p.moveInQueue(i,upcoming[pos+1].i)} aria-label={`Move ${tt.title} down`}><ArrowDown size={14}/></button></div>
                 <TrackOptionsMenu
                     track={tt}
                     size={16}
-                    buttonClassName="w-8 h-8 rounded-full grid place-items-center text-white/60 hover:text-white hover:bg-white/10 active:scale-90 transition"
+                    buttonClassName="w-8 h-8 rounded-full grid place-items-center text-muted-foreground hover:text-white hover:bg-muted active:scale-90 transition"
                     items={[{ icon: Trash2, label: "Remove from queue", danger: true, onClick: () => p.removeFromQueue(i) }]} />
               </div>
                 }
@@ -243,38 +226,34 @@ export default function QueuePanel({ open, onClose }) {
 
         {/* History */}
         {history.length > 0 && (
-          <div className="border-t border-white/5 mt-4 pt-3">
-            <div className="text-[10px] uppercase tracking-[0.2em] text-white/40 px-2 mb-1">
-              History
-            </div>
+          <details className="queue-history border-t border-border mt-4 pt-3">
+            <summary className="text-xs font-semibold text-muted-foreground px-2 mb-3 cursor-pointer">Previously played · {history.length}</summary>
             <div className="space-y-0.5">
               {history.map(({ trk: tt, i }) => (
                 <button
                   key={tt.id + i}
                   onClick={() => p.playQueueItem(i)}
-                  className="group flex items-center gap-3 px-2 py-2 rounded-xl hover:bg-white/[0.06] transition w-full text-left"
+                  className="group flex items-center gap-3 px-2 py-2 rounded-xl hover:bg-accent transition w-full text-left"
                 >
-                  <div className="relative w-10 h-10 rounded-lg overflow-hidden bg-white/10 shrink-0 opacity-60">
-                    {tt.cover_art_url && (
-                      <img src={tt.cover_art_url} alt="" className="w-full h-full object-cover" />
-                    )}
+                  <div className="relative w-10 h-10 rounded-lg overflow-hidden bg-muted shrink-0 opacity-60">
+                    <QueueCover url={tt.cover_art_url}/>
                     <div className="absolute inset-0 grid place-items-center bg-black/30 opacity-0 group-hover:opacity-100 transition">
                       <Play size={14} fill="white" />
                     </div>
                   </div>
                   <div className="min-w-0 flex-1">
-                    <div className="text-sm font-medium truncate text-white/70">{tt.title}</div>
-                    <div className="text-xs text-white/40 truncate">
+                    <div className="text-sm font-medium truncate text-muted-foreground">{tt.title}</div>
+                    <div className="text-xs text-muted-foreground truncate">
                       {tt.artist || tt.uploader_name || "Unknown"}
                     </div>
                   </div>
-                  <span className="hidden sm:block text-[11px] text-white/30 tabular-nums">
+                  <span className="hidden sm:block text-[11px] text-muted-foreground tabular-nums">
                     {formatTime(tt.duration_seconds)}
                   </span>
                 </button>
               ))}
             </div>
-          </div>
+          </details>
         )}
       </div>
 
