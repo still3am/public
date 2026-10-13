@@ -46,7 +46,7 @@ export default function ProfileSong({
   if (fillHeight) {
     // The card owns its width so an absent track takes no space in the row.
     return (
-      <div className="md:w-80 lg:w-96 shrink-0">
+      <div className="profile-featured md:w-80 lg:w-96 shrink-0">
       <div ref={lp.ref} {...lp.handlers} className="group h-full flex flex-col rounded-2xl ring-1 ring-inset ring-foreground/10 bg-card overflow-hidden">
         {editMode ? (
           trackId && track ? (
@@ -85,7 +85,7 @@ export default function ProfileSong({
             </div>
           )
         ) : trackId && track ? (
-          <div className="flex-1 flex flex-col items-center justify-center gap-2 md:gap-3 p-3 md:p-4 text-center">
+          <div className="profile-featured-content flex-1 flex flex-col items-center justify-center gap-2 md:gap-3 p-3 md:p-4 text-center">
             <div className="w-14 h-14 md:w-20 md:h-20 rounded-xl overflow-hidden bg-foreground/10 shrink-0">
               {coverUrl && <Image src={coverUrl} fittingType="fill" alt="" className="w-full h-full" />}
             </div>

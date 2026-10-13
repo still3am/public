@@ -10,6 +10,7 @@ import SafetyControls from '@/components/SafetyControls';
 import { clearPersonalData } from '@/lib/clearPersonalData';
 import EmptyState from "@/components/EmptyState";
 import TrackCard from "@/components/TrackCard";
+import TrackRow from "@/components/TrackRow";
 import Avatar from "@/components/Avatar";
 import PullToRefresh from "@/components/PullToRefresh";
 import ProfileQRModal from "@/components/ProfileQRModal";
@@ -88,6 +89,7 @@ export default function Profile() {
   const [stats, setStats] = useState({ followers: null, following: null, plays: 0, likes: 0 });
   const [editMode, setEditMode] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [trackQuery,setTrackQuery]=useState("");
   const [showQR, setShowQR] = useState(false);
   const [showDelete, setShowDelete] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
@@ -166,7 +168,7 @@ export default function Profile() {
   }
 
   useEffect(() => {
-    setProfile(null);setTracks([]);setTopTracks([]);setFollowing(false);setStats({ followers: null, following: null, plays: 0, likes: 0 });
+    setProfile(null);setTracks([]);setTopTracks([]);setTrackQuery("");setFollowing(false);setStats({ followers: null, following: null, plays: 0, likes: 0 });
     if (targetId) load();
     return () => {loadVersion.current++;};
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -330,6 +332,7 @@ export default function Profile() {
 
   const displayName = profile.display_name || profile.full_name || "Unnamed";
   const avatarUrl = editMode ? form.avatar_url : profile.avatar_url;
+  const visibleUploads=tracks.filter(t=>!trackQuery.trim()||[t.title,t.artist,t.uploader_name].some(value=>(value||"").toLowerCase().includes(trackQuery.trim().toLowerCase())));
 
 
   return (
@@ -361,8 +364,8 @@ export default function Profile() {
         
       </div>
       }
-    <div className="max-w-6xl mx-auto relative z-10">
-      <div className="flex flex-col md:flex-row gap-4 md:gap-6 mb-8">
+    <div className="profile-page max-w-6xl mx-auto relative z-10">
+      <div className="profile-overview flex flex-col md:flex-row gap-4 md:gap-6 mb-8">
       <div className="profile-identity relative rounded-2xl overflow-hidden ring-1 ring-inset ring-foreground/10 bg-card flex-1 min-w-0">
         {!editMode && profile.is_artist &&
             <span
@@ -372,15 +375,16 @@ export default function Profile() {
             <Check size={15} strokeWidth={3.5} />
           </span>
             }
+        <div className="profile-cover-strip" aria-hidden="true"><span>PUBLIC</span></div>
         {/* Identity, stats, actions */}
-        <div className="relative z-10 px-5 md:px-10 pb-5 md:pb-8 pt-5 md:pt-8">
-          <div className="flex flex-col items-center md:flex-row md:items-center md:justify-center gap-4 md:gap-8">
+        <div className="profile-details relative z-10 px-5 md:px-10 pb-5 md:pb-8 pt-5 md:pt-8">
+          <div className="profile-identity-row flex flex-col items-center md:flex-row md:items-center md:justify-center gap-4 md:gap-8">
             <div className="relative shrink-0">
               <div className="rounded-full bg-background p-1 inline-block ring-1 ring-foreground/10 shadow-sm">
                 <Avatar
                       user={{ ...profile, avatar_url: avatarUrl }}
                       size={128}
-                      className="md:!w-40 md:!h-40 lg:!w-48 lg:!h-48" />
+                      className="profile-avatar" />
 
               </div>
               {editMode &&
@@ -403,7 +407,7 @@ export default function Profile() {
                   }
             </div>
 
-            <div className="flex-1 min-w-0 w-full md:w-auto text-center md:text-left">
+            <div className="profile-info flex-1 min-w-0 w-full md:w-auto text-center md:text-left">
               <div className="flex items-baseline gap-2 flex-wrap justify-center md:justify-start">
                 {editMode ?
                     <input
@@ -442,7 +446,7 @@ export default function Profile() {
                 </div>
                   }
 
-              <div className="flex flex-wrap items-center justify-center md:justify-start gap-x-4 gap-y-1 mt-2.5 text-sm md:text-base">
+              <div className="profile-stats flex flex-wrap items-center justify-center md:justify-start gap-x-4 gap-y-1 mt-2.5 text-sm md:text-base">
                 <button onClick={() => setFollowList("followers")} className="hover:underline transition">
                   <span className="font-bold">{stats.followers === null ? "—" : formatNumber(stats.followers)}</span> <span className="text-foreground/50">followers</span>
                 </button>
@@ -517,7 +521,7 @@ export default function Profile() {
                 </div>
                   }
 
-              <div className="flex items-center gap-2 md:gap-3 mt-3 flex-wrap justify-center md:justify-start">
+              <div className="profile-actions flex items-center gap-2 md:gap-3 mt-3 flex-wrap justify-center md:justify-start">
                 {isOwn ?
                     editMode ?
                     <>
@@ -526,31 +530,31 @@ export default function Profile() {
                         disabled={saving}
                         title="Save"
                         aria-label="Save changes"
-                        className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-foreground text-background grid place-items-center disabled:opacity-40">
-                        {saving ? <Loader2 size={16} className="animate-spin" /> : <Save size={16} />}
+                        className="profile-primary-action chrome-button disabled:opacity-40">
+                        {saving ? <Loader2 size={16} className="animate-spin" /> : <Save size={16} />}<span>{saving?"Saving…":"Save changes"}</span>
                       </button>
                       <button
                         onClick={cancelEdit}
                         title="Cancel"
                         aria-label="Cancel editing"
-                        className="w-10 h-10 md:w-12 md:h-12 rounded-full border border-border grid place-items-center">
-                        <X size={16} />
+                        className="profile-primary-action playlist-action">
+                        <X size={16} /><span>Cancel</span>
                       </button>
                     </> :
                     <button
                       onClick={() => setEditMode(true)}
                       title="Edit profile"
                       aria-label="Edit profile"
-                      className="w-10 h-10 md:w-12 md:h-12 rounded-full border border-border grid place-items-center">
-                    <Pencil size={16} />
+                      className="profile-primary-action playlist-action">
+                    <Pencil size={16} /><span>Edit profile</span>
                   </button> :
                     <button
                       disabled={followingBusy} onClick={toggleFollow}
                       title={following ? "Following (click to unfollow)" : "Follow"}
                       aria-label={following ? "Unfollow" : "Follow"}
-                      className={`w-10 h-10 md:w-12 md:h-12 rounded-full grid place-items-center transition ${
+                      className={`profile-primary-action playlist-action transition ${
                       following ? "border border-border" : "bg-foreground text-background"}`}>
-                    {following ? <UserCheck size={16} /> : <UserPlus size={16} />}
+                    {followingBusy?<Loader2 size={16} className="animate-spin"/>:following ? <UserCheck size={16} /> : <UserPlus size={16} />}<span>{following?"Following":"Follow"}</span>
                   </button>
                     }
                 {!editMode &&
@@ -602,6 +606,7 @@ export default function Profile() {
             fillHeight />
       </div>
 
+      <div className="profile-content"><section className="profile-music">
       <TopTracks
           trackIds={editMode ? form.top_track_ids : profile?.top_track_ids || []}
           editMode={editMode}
@@ -622,8 +627,12 @@ export default function Profile() {
         </div>
         }
 
-      <SafetyControls type="user" id={targetId} userId={targetId} label="profile" />
-      <ProfileComments profileId={targetId} isOwn={isOwn} />
+      {!editMode&&<section className="profile-uploads">
+        <div className="profile-section-title"><div><p className="eyebrow">Shared sound</p><h2>{isOwn?"Your music":"Uploads"}<span>{tracks.length}</span></h2></div>{isOwn&&<Link to="/upload" className="playlist-action"><Music size={15}/>Upload</Link>}</div>
+        {tracks.length>0&&<div className="profile-track-search"><input aria-label="Search profile music" placeholder="Search songs or artists" value={trackQuery} onChange={e=>setTrackQuery(e.target.value)} onKeyDown={e=>{if(e.key==="Escape")setTrackQuery("");}}/>{trackQuery&&<button aria-label="Clear music search" onClick={()=>setTrackQuery("")}><X size={15}/></button>}</div>}
+        {visibleUploads.length?<div className="profile-upload-list">{visibleUploads.map((t,i)=><TrackRow key={t.id} track={t} index={i} queue={visibleUploads} queueIndex={i}/>)}</div>:<EmptyState icon={Music} title={trackQuery?"No matching songs":isOwn?"Your sound belongs here":"No uploads yet"} description={trackQuery?"Try another title or artist.":isOwn?"Share your first song with PUBLIC.":"Music shared by this person will appear here."}/>}
+      </section>}
+      </section><aside className="profile-conversation"><ProfileComments profileId={targetId} isOwn={isOwn}/><SafetyControls type="user" id={targetId} userId={targetId} label="profile"/></aside></div>
 
       {showSettings && isOwn &&
         <SettingsSheet
