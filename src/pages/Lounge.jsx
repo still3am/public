@@ -17,7 +17,7 @@ import {
   X,
   ListMusic,
   Search,
-  Clock, Copy, Users, Music } from
+  Clock, Copy, Users } from
 "lucide-react";
 
 export default function Lounge() {
@@ -230,7 +230,7 @@ function GuestQueuePicker({ sessionId, user, onClose, onAdded }) {
   const addingRef=useRef(new Set());
   const [adding,setAdding]=useState(new Set());
   const [pickerError,setPickerError]=useState(false);
-  useEffect(()=>{const previous=document.activeElement;const handler=e=>{if(e.key==="Escape")onClose();if(e.key==="Tab"){const nodes=[...document.querySelectorAll(".lounge-picker button:not(:disabled),.lounge-picker input")];const first=nodes[0],last=nodes[nodes.length-1];if(e.shiftKey&&document.activeElement===first){e.preventDefault();last?.focus();}else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first?.focus();}}};document.addEventListener("keydown",handler);return()=>{document.removeEventListener("keydown",handler);previous?.focus?.();};},[onClose]);
+  useEffect(()=>{const previous=/** @type {HTMLElement|null} */ (document.activeElement);const handler=e=>{if(e.key==="Escape")onClose();if(e.key==="Tab"){const nodes=Array.from(document.querySelectorAll(".lounge-picker button:not(:disabled),.lounge-picker input")).map(node=>/** @type {HTMLElement} */ (node));const first=nodes[0],last=nodes[nodes.length-1];if(e.shiftKey&&document.activeElement===first){e.preventDefault();last?.focus();}else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first?.focus();}}};document.addEventListener("keydown",handler);return()=>{document.removeEventListener("keydown",handler);previous?.focus?.();};},[onClose]);
 
   const load = useCallback(async () => {
     setPickerError(false);
