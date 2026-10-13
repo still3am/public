@@ -5,6 +5,7 @@ import { CheckSquare, ListPlus, Trash2, FolderMinus, Loader2 } from "lucide-reac
 /** @param {any} props */
 export default function LibraryBulkBar({
   visible,
+  playlistMode=false,
   active,
   count,
   canRemove,
@@ -22,10 +23,12 @@ export default function LibraryBulkBar({
   if (!active) {
     return (
       <div className="flex justify-end mb-3">
-        <button onClick={onStart} className="library-tool"><CheckSquare size={16}/><span>Select</span></button>
+        <button onClick={onStart} className="library-tool"><CheckSquare size={16}/><span>{playlistMode?"Manage saved playlists":"Select"}</span></button>
       </div>);
 
   }
+
+  if(playlistMode)return <div className="flex items-center justify-between gap-3 mb-4 p-3 border rounded-xl"><p className="text-xs text-muted-foreground">Use the × on a saved playlist to remove its shortcut.</p><button className="playlist-action" onClick={onExit}>Done</button></div>;
 
   const actionClass =
   "inline-flex items-center gap-1.5 px-3 py-2 rounded-full text-xs font-bold border border-border hover:bg-accent transition disabled:opacity-40 disabled:hover:bg-transparent";
