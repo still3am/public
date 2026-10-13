@@ -104,6 +104,7 @@ export default function PlaylistDetail(){
      {!editing&&<button disabled={busy} onClick={duplicate} className="playlist-action">Make a copy</button>}
      {editing&&<><button disabled={busy||!form.name.trim()} onClick={saveEdit} className="chrome-button">{busy?'Saving…':'Save changes'}</button><button disabled={busy} onClick={()=>{setEditing(false);setCoverFile(null);setPreview('');setForm({name:playlist.name,description:playlist.description||'',is_public:!!playlist.is_public});}} className="playlist-action">Cancel</button><button disabled={busy} className="playlist-action text-destructive" onClick={()=>{if(confirm('Delete this playlist? Your songs will remain on PUBLIC.'))write(async()=>{await base44.entities.Playlist.delete(id);nav('/library');});}}><Trash2 size={16}/>Delete playlist</button></>}
     </div>
+    {playlist.is_public&&tracks.some(t=>!t.is_published)&&<p className="text-xs text-muted-foreground mt-3">Private or pending songs are only playable by their owner until published.</p>}
     {!playlist.is_public&&<p className="text-xs text-muted-foreground mt-3">Sharing the link does not give other accounts access to a private playlist.</p>}
    </div>
   </section>
