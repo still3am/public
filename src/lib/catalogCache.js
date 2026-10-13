@@ -43,15 +43,23 @@ function makeCache(fetcher, ttl = TTL) {
   };
 }
 
-// Newest first — the complete published catalogue.
-export const getPublishedTracks = makeCache(() =>
-  readAllPages((opts) =>
-    base44.entities.Track.filter(
-      { is_published: true },
-      { sort: "-created_date", ...opts }
-    )
-  )
-);
+// Share partial catalog pages with lightweight pickers while the full read continues.
+let publishedSnapshot=[];
+const publishedListeners=new Set();
+export const peekPublishedTracks=()=>publishedSnapshot;
+export const subscribePublishedTracks=listener=>{publishedListeners.add(listener);return()=>publishedListeners.delete(listener);};
+const publishSnapshot=rows=>{publishedSnapshot=rows;publishedListeners.forEach(listener=>listener(rows));};
+window.addEventListener("catalog:invalidate",()=>publishSnapshot([]));
+window.addEventListener("account:cleared",()=>publishSnapshot([]));
+export const getPublishedTracks=makeCache(async()=>{
+ const partial=[];
+ const all=await readAllPages(opts=>base44.entities.Track.filter({is_published:true},{sort:"-created_date",...opts}).then(page=>{
+  partial.push(...(Array.isArray(page)?page:page?.items||[]));
+  publishSnapshot([...new Map(partial.map(t=>[t.id,t])).values()]);
+  return page;
+ }));
+ publishSnapshot(all);return all;
+});
 
 // Most played first — the same complete catalogue, ranked.
 export const getTopTracks = async (fresh=false) =>

@@ -719,3 +719,17 @@ html:not(.dark) .profile-page .profile-identity,html:not(.dark) .profile-page .p
 .queue-panel .queue-body{overscroll-behavior-y:contain;touch-action:pan-y;}
 .queue-panel .queue-upcoming-row [data-rfd-drag-handle-draggable-id]{touch-action:none;min-width:32px;min-height:44px;}
 @media(min-width:768px){.queue-panel{right:0;}}
+
+.profile-song-picker{display:flex;flex-direction:column;gap:14px;width:calc(100% - 24px);max-width:560px;height:min(760px,calc(100dvh - 48px));padding:24px;}
+.profile-picker-search{display:flex;align-items:center;gap:10px;padding:0 12px;border:1px solid hsl(var(--border));border-radius:13px;background:hsl(var(--muted)/.4);color:hsl(var(--muted-foreground));}
+.profile-picker-search input{min-width:0;width:100%;padding:12px 0;background:transparent;outline:none;font-size:14px;color:hsl(var(--foreground));}
+.profile-picker-search:focus-within{outline:2px solid hsl(var(--ring)/.45);outline-offset:2px;}
+.profile-picker-search button{min-width:36px;min-height:44px;display:grid;place-items:center;}
+.profile-picker-list{flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;}
+.profile-picker-row{display:flex;align-items:center;gap:12px;width:100%;padding:10px;border:1px solid transparent;border-radius:14px;text-align:left;min-height:70px;}
+.profile-picker-row:hover{background:hsl(var(--accent));}
+.profile-picker-row.selected{background:hsl(var(--muted));border-color:hsl(var(--border));}
+.profile-picker-row:disabled{opacity:.6;}
+.profile-picker-cover{display:grid;place-items:center;width:48px;height:48px;flex-shrink:0;border-radius:10px;overflow:hidden;background:hsl(var(--muted));color:hsl(var(--muted-foreground));}
+.profile-picker-cover img{width:100%;height:100%!important;object-fit:cover;}
+@media(max-width:767px){.profile-song-picker{top:auto;bottom:0;left:0;width:100%;max-width:none;transform:none;height:86dvh;max-height:86dvh;border-radius:24px 24px 0 0;padding:22px 16px calc(16px + env(safe-area-inset-bottom));}.profile-song-picker>div:first-child{text-align:center;padding-top:14px;padding-right:0;}.profile-song-picker .view-switch{width:100%;}}

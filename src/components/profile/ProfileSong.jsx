@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { usePlayer } from "@/context/PlayerContext";
 import { useCoverUrl } from "@/hooks/useCoverUrl";
@@ -18,6 +18,7 @@ export default function ProfileSong({
 }) {
   const p = usePlayer();
   const [track, setTrack] = useState(null);
+  const pickedTrack=useRef(null);
   const [pickerOpen, setPickerOpen] = useState(false);
   const lp = useLongPressMenu(editMode);
 
@@ -26,7 +27,10 @@ export default function ProfileSong({
       setTrack(null);
       return;
     }
-    base44.entities.Track.get(trackId).then(setTrack).catch(() => setTrack(null));
+    if(pickedTrack.current?.id===trackId){setTrack(pickedTrack.current);return;}
+    let active=true;
+    base44.entities.Track.get(trackId).then(t=>{if(active)setTrack(t);}).catch(()=>{if(active)setTrack(null);});
+    return()=>{active=false;};
   }, [trackId]);
 
   const coverUrl = useCoverUrl(track?.cover_art_url);
@@ -109,7 +113,8 @@ export default function ProfileSong({
             selectedIds={trackId ? [trackId] : []}
             max={1}
             tracks={userTracks}
-            onToggle={(id) => {
+            onToggle={(id,chosen) => {
+              pickedTrack.current=chosen;setTrack(chosen);
               onChange(id);
               setPickerOpen(false);
             }}
@@ -164,7 +169,8 @@ export default function ProfileSong({
             selectedIds={trackId ? [trackId] : []}
             max={1}
             tracks={userTracks}
-            onToggle={(id) => {
+            onToggle={(id,chosen) => {
+              pickedTrack.current=chosen;setTrack(chosen);
               onChange(id);
               setPickerOpen(false);
             }}

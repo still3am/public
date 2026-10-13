@@ -1,116 +1,24 @@
-import { useEffect, useState } from "react";
-import { getPublishedTracks } from "@/lib/catalogCache";
-import { Image } from "@/components/ui/image";
-import { Check, X, Search, Loader2 } from "lucide-react";
-
-/** @param {any} props */
-export default function TrackPickerSheet({ title, selectedIds, max, tracks, onToggle, onClose }) {
-  const [query, setQuery] = useState("");
-  const [allTracks, setAllTracks] = useState([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    let cancelled = false;
-    (async () => {
-      try {
-        const published = await getPublishedTracks();
-        if (cancelled) return;
-        // Merge in any passed tracks (e.g. user's own non-public tracks) without duplicates
-        const seen = new Set();
-        const merged = [...(tracks || []), ...published].filter((t) => {
-          if (seen.has(t.id)) return false;
-          seen.add(t.id);
-          return true;
-        });
-        setAllTracks(merged);
-      } catch {
-        if (!cancelled) setAllTracks(tracks || []);
-      } finally {
-        if (!cancelled) setLoading(false);
-      }
-    })();
-    return () => { cancelled = true; };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  const q = query.toLowerCase().trim();
-  const filtered = q
-    ? allTracks.filter(
-        (t) =>
-          t.title?.toLowerCase().includes(q) ||
-          (t.artist || "").toLowerCase().includes(q) ||
-          (t.uploader_name || "").toLowerCase().includes(q) ||
-          (t.genre || "").toLowerCase().includes(q)
-      )
-    : allTracks;
-
-  return (
-    <div className="fixed inset-0 z-[70] flex items-end md:items-center justify-center">
-      <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={onClose} />
-      <div className="relative w-full md:max-w-lg bg-card border rounded-t-3xl md:rounded-3xl p-5 pb-[calc(1.25rem+env(safe-area-inset-bottom))] max-h-[80vh] flex flex-col">
-        <div className="md:hidden w-10 h-1 bg-foreground/20 rounded-full mx-auto mb-4" />
-        <div className="flex items-center justify-between mb-4">
-          <h3 className="text-base font-extrabold">{title}</h3>
-          <button onClick={onClose} className="p-2 rounded-full hover:bg-foreground/10" aria-label="Close">
-            <X size={18} />
-          </button>
-        </div>
-        <div className="relative mb-3">
-          <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-foreground/30" />
-          <input
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            placeholder="Search tracks..."
-            className="w-full pl-9 pr-3 py-2 rounded-lg border border-border bg-background text-sm"
-          />
-        </div>
-        <div className="flex-1 overflow-y-auto space-y-1.5 -mx-1 px-1">
-          {loading ? (
-            <div className="grid place-items-center py-10">
-              <Loader2 size={22} className="animate-spin text-foreground/40" />
-            </div>
-          ) : filtered.length === 0 ? (
-            <p className="text-center text-sm text-foreground/40 py-8">
-              {allTracks.length === 0 ? "No tracks available." : "No tracks found"}
-            </p>
-          ) : (
-            filtered.map((t) => {
-              const selected = selectedIds.includes(t.id);
-              const canSelect = selected || selectedIds.length < max;
-              return (
-                <button
-                  key={t.id}
-                  onClick={() => canSelect && onToggle(t.id)}
-                  disabled={!canSelect && !selected}
-                  className={`w-full flex items-center gap-3 p-2.5 rounded-xl text-left transition ${
-                    selected ? "bg-foreground/[0.06] ring-1 ring-foreground/20" : "hover:bg-foreground/[0.03]"
-                  } ${!canSelect && !selected ? "opacity-40" : ""}`}
-                >
-                  <div className="w-12 h-12 rounded-lg overflow-hidden bg-foreground/10 shrink-0">
-                    {t.cover_art_url ? (
-                      <Image src={t.cover_art_url} fittingType="fill" alt="" className="w-full h-full" />
-                    ) : (
-                      <div className="w-full h-full grid place-items-center text-[8px] uppercase text-foreground/30">
-                        {t.genre}
-                      </div>
-                    )}
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="text-sm font-semibold truncate">{t.title}</div>
-                    <div className="text-xs text-foreground/50 truncate">{t.artist || t.uploader_name}</div>
-                  </div>
-                  {selected && <Check size={18} className="text-foreground shrink-0" />}
-                </button>
-              );
-            })
-          )}
-        </div>
-        {max > 1 && (
-          <p className="text-xs text-foreground/40 mt-3 text-center">
-            {selectedIds.length} / {max} selected
-          </p>
-        )}
-      </div>
-    </div>
-  );
+import {useDeferredValue,useEffect,useMemo,useRef,useState} from "react";
+import {getPublishedTracks,peekPublishedTracks,subscribePublishedTracks} from "@/lib/catalogCache";
+import {useCoverUrl} from "@/hooks/useCoverUrl";
+import {Check,Search,Loader2,Music2,X} from "lucide-react";
+import {Dialog,DialogContent,DialogHeader,DialogTitle,DialogDescription} from "@/components/ui/dialog";
+function Cover({url}){const cover=useCoverUrl(url);return cover?<img src={cover} alt="" loading="lazy" decoding="async"/>:<Music2 size={18}/>;}
+export default function TrackPickerSheet({title,selectedIds=[],max=1,tracks=[],onToggle,onClose}){
+ const [query,setQuery]=useState(""),[scope,setScope]=useState("all"),[published,setPublished]=useState(peekPublishedTracks),[loading,setLoading]=useState(true),[limit,setLimit]=useState(50),[selecting,setSelecting]=useState("");
+ const sentinel=useRef(null),scroll=useRef(null),lock=useRef(false);
+ const deferred=useDeferredValue(query);
+ useEffect(()=>{let active=true;const unsubscribe=subscribePublishedTracks(rows=>{if(active)setPublished(rows);});getPublishedTracks().then(rows=>{if(active)setPublished(rows);}).catch(()=>{}).finally(()=>{if(active)setLoading(false);});return()=>{active=false;unsubscribe();};},[]);
+ const indexed=useMemo(()=>[...new Map([...tracks,...published].filter(t=>t?.id).map(t=>[t.id,t])).values()].map(t=>({track:t,search:[t.title,t.artist,t.uploader_name,t.genre].filter(Boolean).join(" ").toLowerCase()})),[tracks,published]);
+ const ownIds=useMemo(()=>new Set(tracks.map(t=>t.id)),[tracks]);
+ const filtered=useMemo(()=>{const term=deferred.trim().toLowerCase();return indexed.filter(row=>(scope!=="own"||ownIds.has(row.track.id))&&(!term||row.search.includes(term))).map(row=>row.track);},[indexed,deferred,scope,ownIds]);
+ useEffect(()=>{setLimit(50);scroll.current?.scrollTo({top:0});},[deferred,scope]);
+ useEffect(()=>{const target=sentinel.current;if(!target||limit>=filtered.length)return;const observer=new IntersectionObserver(entries=>{if(entries[0]?.isIntersecting)setLimit(n=>Math.min(n+50,filtered.length));},{root:scroll.current,rootMargin:"250px"});observer.observe(target);return()=>observer.disconnect();},[limit,filtered.length]);
+ const select=async track=>{if(lock.current)return;lock.current=true;setSelecting(track.id);try{await onToggle(track.id,track);}finally{lock.current=false;setSelecting("");}};
+ return <Dialog open onOpenChange={open=>{if(!open&&!selecting)onClose();}}><DialogContent className="profile-song-picker"><DialogHeader><DialogTitle>{title}</DialogTitle><DialogDescription>{max===1?"Pick the sound that represents you.":`Choose up to ${max} songs for your profile.`}</DialogDescription></DialogHeader>
+ <div className="profile-picker-search"><Search size={17}/><input aria-label="Search profile songs" placeholder="Search songs, artists, or genres" value={query} onChange={e=>setQuery(e.target.value)} onKeyDown={e=>{if(e.key==="Escape"&&query){e.stopPropagation();setQuery("");}}}/>{query&&<button aria-label="Clear song search" onClick={()=>setQuery("")}><X size={16}/></button>}</div>
+ <div className="view-switch" role="group" aria-label="Song source"><button aria-pressed={scope==="all"} className={scope==="all"?"active":""} onClick={()=>setScope("all")}>All music</button><button aria-pressed={scope==="own"} className={scope==="own"?"active":""} onClick={()=>setScope("own")}>Your uploads</button></div>
+ <div className="flex items-center justify-between text-xs text-muted-foreground"><span>{filtered.length} songs{max>1?` · ${selectedIds.length}/${max} selected`:""}</span>{loading&&<span className="flex items-center gap-1.5"><Loader2 size={12} className="animate-spin"/>Loading more</span>}</div>
+ <div ref={scroll} className="profile-picker-list" aria-busy={!!selecting}>{!filtered.length?<div className="text-center py-10 text-sm text-muted-foreground">{loading?"Finding your music…":query?"No matching songs. Try another artist or title.":"No songs here yet."}</div>:filtered.slice(0,limit).map(track=>{const selected=selectedIds.includes(track.id),canSelect=max===1||selected||selectedIds.length<max;return <button key={track.id} disabled={!!selecting||!canSelect} aria-pressed={selected} onClick={()=>select(track)} className={`profile-picker-row ${selected?"selected":""}`}><div className="profile-picker-cover"><Cover url={track.cover_art_url}/></div><div className="min-w-0 flex-1"><p className="text-sm font-semibold truncate">{track.title}</p><p className="text-xs text-muted-foreground truncate mt-0.5">{track.artist||track.uploader_name||"Unknown"}</p></div>{selecting===track.id?<Loader2 size={18} className="animate-spin"/>:selected?<Check size={18}/>:null}</button>;})}<div ref={sentinel}/>{limit<filtered.length&&<button className="playlist-action mx-auto mt-3 flex" onClick={()=>setLimit(n=>n+50)}>Show more songs</button>}</div>
+ </DialogContent></Dialog>;
 }
