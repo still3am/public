@@ -79,10 +79,10 @@ export default function Search() {
   // app and the main source of rate-limit errors.
   const catalogueLoaded = useRef(false);
   useEffect(() => {
-    if (hasQuery || catalogueLoaded.current) return;
+    if (peopleMode || hasQuery || catalogueLoaded.current) return;
     catalogueLoaded.current = true;
     loadCatalogue();
-  }, [hasQuery]);
+  }, [hasQuery,peopleMode]);
 
   useEffect(() => {const change = () => {loadCatalogue();refresh();};window.addEventListener('catalog:invalidate', change);return () => window.removeEventListener('catalog:invalidate', change);}, [refresh]);
 

@@ -19,6 +19,11 @@ for(const mode of ['array','page']){
  shape=mode;const res=await globalSearch('Denzel '+mode,{fresh:true});
  assert.equal(res.tracks[0].id,'t1');assert.equal(res.playlists[0].id,'p1');assert.equal(res.people[0].id,'u1');
 }
+const originalTrackFilter=globalThis.__searchMock.entities.Track.filter;
+globalThis.__searchMock.entities.Track.filter=async()=>{throw Error('music unavailable');};
+const onlyPeople=await globalSearch('Denzel people',{scope:'people',fresh:true});
+assert.equal(onlyPeople.people[0].id,'u1');assert.equal(onlyPeople.tracks.length,0);assert.equal(onlyPeople.failed,false);
+globalThis.__searchMock.entities.Track.filter=originalTrackFilter;
 peopleFail=true;const partial=await globalSearch('Denzel retry');assert.equal(partial.tracks.length,1);assert.equal(partial.peopleFailed,true);
 peopleFail=false;const retried=await globalSearch('Denzel retry');assert.equal(retried.people.length,1,'failed directory results must not be cached');
 primaryFail=true;const fallback=await globalSearch('gateway fallback',{fresh:true});assert.equal(fallback.people[0].id,'u1');assert.equal(fallback.peopleFailed,false);
