@@ -13,6 +13,7 @@ export default function AddToPlaylistPicker({playlist,onClose}){
  const {user}=useAuth(),{ids:libraryIds,refresh}=useLibrary();
  const [own,setOwn]=useState([]),[published,setPublished]=useState(peekPublishedTracks),[query,setQuery]=useState(''),[scope,setScope]=useState('all'),[selected,setSelected]=useState(new Set()),[saving,setSaving]=useState(false),[loading,setLoading]=useState(true),[failed,setFailed]=useState(false),[limit,setLimit]=useState(60);
  const version=useRef(0),lock=useRef(false),alive=useRef(true);
+ const ownParts=useRef({uid:user?.id,uploads:[],saved:[]});
  const libraryKey=[...libraryIds].join(',');
  const load=useCallback(async()=>{
   if(!user?.id)return;const request=++version.current;setLoading(true);setFailed(false);
@@ -22,7 +23,10 @@ export default function AddToPlaylistPicker({playlist,onClose}){
     (async()=>{const ids=[...libraryIds],rows=[];for(let start=0;start<ids.length;start+=200)rows.push(...await readAllPages(options=>base44.entities.Track.filter({id:{$in:ids.slice(start,start+200)}},{fields,...options})));return rows;})()
    ]);
    if(request!==version.current)return;
-   setOwn([...new Map([...(uploads.status==='fulfilled'?uploads.value:[]),...(saved.status==='fulfilled'?saved.value:[])].map(track=>[track.id,track])).values()]);
+   if(ownParts.current.uid!==user.id)ownParts.current={uid:user.id,uploads:[],saved:[]};
+   if(uploads.status==='fulfilled')ownParts.current.uploads=uploads.value;
+   if(saved.status==='fulfilled')ownParts.current.saved=saved.value;
+   setOwn([...new Map([...ownParts.current.uploads,...ownParts.current.saved].map(track=>[track.id,track])).values()]);
    if(uploads.status==='rejected'||saved.status==='rejected')setFailed(true);
   })();
   const catalogue=getPublishedTracks().then(rows=>{if(request===version.current)setPublished(rows);}).catch(()=>{if(request===version.current)setFailed(true);});

@@ -42,7 +42,7 @@ export default function BulkAddToPlaylistSheet({ trackIds = [], playlists, error
       onClick={onClose}
     >
       <div
-        className="bg-background w-full md:max-w-md rounded-t-3xl md:rounded-3xl border border-border shadow-2xl flex flex-col max-h-[80vh]"
+        className="bg-background w-full md:max-w-md rounded-t-3xl md:rounded-3xl border border-border shadow-2xl flex flex-col max-h-[85dvh]"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-center justify-between p-4 border-b border-border shrink-0">
@@ -60,7 +60,7 @@ export default function BulkAddToPlaylistSheet({ trackIds = [], playlists, error
         </div>
 
         <div className="px-4 pt-4"><input aria-label="Search playlists for selected songs" value={query} placeholder="Find a playlist" onChange={event=>setQuery(event.target.value)} className="w-full bg-background border rounded-xl p-3"/></div>
-        <div className="flex-1 min-h-0 overflow-y-auto p-3 pb-[calc(1rem+env(safe-area-inset-bottom))]">
+        <div className="flex-1 min-h-0 overflow-y-auto overscroll-contain p-3 pb-[calc(1rem+env(safe-area-inset-bottom))]">
           {!playlists ? (
             <div className="grid place-items-center py-12 text-foreground/50">
               {error?<button className="playlist-action" onClick={onRetry}>Refresh playlists</button>:<Loader2 className="animate-spin" size={20} />}
@@ -87,7 +87,7 @@ export default function BulkAddToPlaylistSheet({ trackIds = [], playlists, error
                 <div className="min-w-0 flex-1">
                   <div className="text-sm font-semibold truncate">{pl.name}</div>
                   <div className="text-xs text-foreground/50">
-                    {pl.track_ids?.length || 0} {pl.track_ids?.length === 1 ? "song" : "songs"}
+                    {new Set(pl.track_ids||[]).size} {new Set(pl.track_ids||[]).size === 1 ? "song" : "songs"}
                   </div>
                 </div>
                 {busyId === pl.id && <Loader2 size={16} className="animate-spin text-foreground/50" />}

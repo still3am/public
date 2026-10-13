@@ -26,10 +26,10 @@ function nameOf(person) {
 /** @param {any} props */
 export default function SendTrackModal({ track, onClose }) {
   const { user } = useAuth();
+  const request=useRef(0);
   const alive=useRef(true),seed=useRef("");
   seed.current=[user?.id,track?.id].join(":");
   useEffect(()=>{alive.current=true;return()=>{alive.current=false;request.current++;};},[]);
-  const request=useRef(0);
   const [query, setQuery] = useState("");
   const [retry,setRetry]=useState(0);
   const [searchFailed,setSearchFailed]=useState(false);
