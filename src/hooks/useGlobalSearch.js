@@ -18,6 +18,7 @@ export function useGlobalSearch(query) {
   const [results, setResults] = useState(EMPTY);
   const [searching, setSearching] = useState(false);
   const [failed, setFailed] = useState(false);
+  const [peopleFailed,setPeopleFailed]=useState(false);
   const [nonce, setNonce] = useState(0);
   const reqId = useRef(0);
   const forceFresh = useRef(false);
@@ -33,7 +34,7 @@ export function useGlobalSearch(query) {
     if (!term) {
       reqId.current += 1;
       setResults(EMPTY);
-      setFailed(false);
+      setFailed(false);setPeopleFailed(false);
       setSearching(false);
       return;
     }
@@ -47,13 +48,13 @@ export function useGlobalSearch(query) {
       try {
         const res = await globalSearch(term, { fresh });
         if (id === reqId.current) {
-          setResults(res);
+          setResults(prev=>({...res,tracks:res.failed?prev.tracks:res.tracks,people:res.peopleFailed?prev.people:res.people}));
+          setPeopleFailed(!!res.peopleFailed);
           setFailed(!!res.failed);
         }
       } catch {
         if (id === reqId.current) {
-          setResults(EMPTY);
-          setFailed(true);
+          setFailed(true);setPeopleFailed(true);
         }
       } finally {
         if (id === reqId.current) setSearching(false);
@@ -72,6 +73,7 @@ export function useGlobalSearch(query) {
     ...results,
     searching,
     failed,
+    peopleFailed,
     hasQuery: term.length > 0,
     refresh,
   };

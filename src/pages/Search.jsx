@@ -50,6 +50,7 @@ export default function Search() {
     playlists,
     searching,
     failed,
+    peopleFailed,
     hasQuery,
     refresh } =
   useGlobalSearch(q);
@@ -124,6 +125,7 @@ export default function Search() {
   return (
     <PullToRefresh onRefresh={handleRefresh}>
       <div>
+        {hasQuery&&peopleFailed&&<div role="alert" className="mb-4 p-4 rounded-xl border border-border text-sm">People search could not load. <button onClick={refresh} className="underline font-semibold">Retry people search</button></div>}
         {/* Search input (mobile / tablet) — desktop uses the sidebar field instead */}
         <div className="relative mb-6 max-w-2xl md:hidden">
           <SearchIcon size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-foreground/40 pointer-events-none" />

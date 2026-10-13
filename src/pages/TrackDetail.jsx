@@ -49,10 +49,11 @@ export default function TrackDetail() {
     try {
       const t = await base44.entities.Track.get(id);
       (request===loadVersion.current)&&setTrack(t);
+      (request===loadVersion.current)&&setUploader(null);
       if (t?.uploader_id) {
         // Other people's user records are admin-only, so the uploader credit is
         // resolved through the public-profile endpoint the profile page uses.
-        const u = (await getUsersByIds([t.uploader_id]))[0] || null;
+        const u = (await getUsersByIds([t.uploader_id]).catch(() => []))[0] || null;
         (request===loadVersion.current)&&setUploader(u);
       }
       if (t?.artist) {

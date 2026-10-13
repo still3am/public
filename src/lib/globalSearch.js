@@ -5,6 +5,7 @@ import { splitArtistNames } from "@/lib/artistTracks";
 // downloading it: tracks, artists and people are queried in parallel, each
 // narrowed by the term the user has typed so far.
 
+const rows = value => Array.isArray(value) ? value : Array.isArray(value?.items) ? value.items : [];
 const TRACK_LIMIT = 40;
 const PLAYLIST_LIMIT = 20; // public playlists the server returns per search
 const ARTIST_SCAN = 50; // artist records the server may return per search
@@ -111,7 +112,7 @@ async function artistCovers(names) {
   );
 
   const map = new Map();
-  for (const track of res.value?.items || []) {
+  for (const track of rows(res.value)) {
     for (const credit of splitArtistNames(track.artist)) {
       if (wanted.has(credit) && !map.has(credit)) map.set(credit, track.cover_art_url);
     }
@@ -170,13 +171,13 @@ async function runSearch(query) {
     ),
   ]);
 
-  const tracks = [...(trackRes.value?.items || [])].sort(
+  const tracks = [...(rows(trackRes.value))].sort(
     (a, b) =>
       rank(b, lower) - rank(a, lower) ||
       (b.play_count || 0) - (a.play_count || 0)
   );
 
-  const found = pruneArtists(artistRes.value?.items || [], lower);
+  const found = pruneArtists(rows(artistRes.value), lower);
   const covers = await artistCovers(found.map((a) => a.name).filter(Boolean));
   const artists = found.map((artist) => ({
     ...artist,
@@ -184,7 +185,7 @@ async function runSearch(query) {
       artist.cover_art_url || artist.avatar_url || coverFor(artist, covers),
   }));
 
-  const playlists = [...(playlistRes.value?.items || [])].sort(
+  const playlists = [...(rows(playlistRes.value))].sort(
     (a, b) => rankPlaylist(b, lower) - rankPlaylist(a, lower)
   );
 
@@ -194,6 +195,7 @@ async function runSearch(query) {
     people: peopleRes.value?.data?.results || [],
     playlists,
     failed: !trackRes.ok,
+    peopleFailed: !peopleRes.ok,
   };
 }
 
@@ -205,6 +207,7 @@ async function runSearch(query) {
 const RECENT_TTL = 20 * 1000;
 const recent = new Map();
 window.addEventListener("catalog:invalidate",()=>recent.clear());
+window.addEventListener("account:cleared",()=>recent.clear());
 
 export function globalSearch(query, { fresh = false } = {}) {
   const Q = query.trim();
@@ -227,7 +230,7 @@ export function globalSearch(query, { fresh = false } = {}) {
     if (hit) return hit.promise;
   }
 
-  const promise = runSearch(Q);
+  const promise = runSearch(Q).then(result=>{if(result.failed||result.peopleFailed)recent.delete(Q);return result;}).catch(error=>{recent.delete(Q);throw error;});
   recent.set(Q, { at: now, promise });
   return promise;
 }

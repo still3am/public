@@ -1,7 +1,6 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.52';
 
 const MIN_QUERY = 2;
-const USER_SCAN = 1000; // the whole directory is read in a single page
 const MAX_RESULTS = 30;
 
 // Only public profile fields ever leave this endpoint — never the email
@@ -46,7 +45,7 @@ export default async function (req) {
     const users = await base44.asServiceRole.entities.User.filter({$or:[{display_name:{$regex:Q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'),$options:'i'}},{full_name:{$regex:Q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'),$options:'i'}}],is_blocked:{$ne:true}},'-created_date',MAX_RESULTS);
 
     const results = (Array.isArray(users) ? users : users?.items || [])
-      .filter((u) => (u.display_name || u.full_name || '').toLowerCase().includes(Q))
+      .filter((u) => !u.is_blocked && !u.disabled && [u.display_name,u.full_name].some(name=>String(name||'').toLowerCase().includes(Q)))
       .slice(0, MAX_RESULTS)
       .map(publicProfile);
 

@@ -348,10 +348,11 @@ export function PlayerProvider({ children }) {
     if(blockedRef.current.has(track.uploader_id))throw Error('This uploader is blocked.');
     let url=track.audio_url,blobUrl=null;
     try{const rec=await getRecord(track.id);if(rec?._blob)blobUrl=URL.createObjectURL(rec._blob);}catch{}
-    if(!blobUrl && navigator.onLine && track._private_audio){
+    if(!blobUrl && navigator.onLine && (track._private_audio || !url)){
       const fresh=await base44.entities.Track.get(track.id);url=fresh.audio_url;
     }
     if(!valid()){if(blobUrl)URL.revokeObjectURL(blobUrl);throw Error("Playback request was replaced");}
+    if(!blobUrl && (!url || typeof url!=="string"))throw Error("No playable audio source is available.");
     sideLoadedIdRef[side].current=track.id;
     if (blobUrlRefs[side].current && blobUrlRefs[side].current !== blobUrl) {
       URL.revokeObjectURL(blobUrlRefs[side].current);
