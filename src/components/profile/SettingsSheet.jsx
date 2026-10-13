@@ -122,15 +122,15 @@ export default function SettingsSheet({ onClose, onDeleteAccount }) {
           </Link>
 
           <div className="p-3.5 rounded-2xl bg-foreground/[0.02]">
-            <div className="flex items-center gap-3 mb-3 hidden">
-              <div className="w-10 h-10 rounded-xl bg-foreground/[0.06] grid place-items-center shrink-0">
-                <Palette size={18} className="text-foreground/70" />
-              </div>
-              <div className="flex-1 min-w-0">
-                <div className="text-sm font-bold">Appearance</div>
-                <div className="text-xs text-foreground/50">Dark / light mode</div>
-              </div>
-            </div>
+            
+
+
+
+
+
+
+
+            
             <ThemeToggle />
           </div>
 
