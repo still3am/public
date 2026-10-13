@@ -15,7 +15,7 @@ export function Toaster() {
           <ToastClose aria-label="Dismiss notification" />
         </Toast>
       )}
-      <ToastViewport className="z-[100] pb-[calc(5rem+env(safe-area-inset-bottom))] md:pb-4 hidden" />
+      
     </ToastProvider>);
 
 }

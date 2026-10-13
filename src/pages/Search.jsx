@@ -128,10 +128,10 @@ export default function Search() {
   return (
     <PullToRefresh onRefresh={handleRefresh}>
       <div>
-        <div className="flex gap-2 mb-5 hidden" role="group" aria-label="Search category">
-          <button className={`chip min-h-11 ${!peopleMode ? "active" : ""}`} aria-pressed={!peopleMode} onClick={() => chooseScope("all")}>All</button>
-          <button className={`chip min-h-11 ${peopleMode ? "active" : ""}`} aria-pressed={peopleMode} onClick={() => chooseScope("people")}>People</button>
-        </div>
+        
+
+
+        
         {/* Search input (mobile / tablet) — desktop uses the sidebar field instead */}
         <div className={`relative mb-6 max-w-2xl ${peopleMode ? "" : "md:hidden"}`}>
           <SearchIcon size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-foreground/40 pointer-events-none" />
