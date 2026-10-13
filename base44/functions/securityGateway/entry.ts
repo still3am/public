@@ -101,7 +101,9 @@ export default async function handleRequest(req) {
       }else if(action==='playlistRemove'){
         await handler.updateMany({id},{$pull:{track_ids:{$in:unique}}});
       }else{
-        if(unique.length!==ids.length || unique.length!==current.length || current.some(id=>!unique.includes(id)))fail('Reorder must retain every song exactly once',400);
+        const frequencies=values=>{const result=new Map();for(const value of values)result.set(value,(result.get(value)||0)+1);return result;};
+        const before=frequencies(current),after=frequencies(ids);
+        if(ids.length!==current.length||before.size!==after.size||[...before].some(([id,count])=>after.get(id)!==count))fail('Reorder must retain every stored song',400);
         if(JSON.stringify(expected)!==JSON.stringify(current))fail('This playlist changed on another device. Refresh before reordering.',409);
         await handler.updateMany({id,track_ids:current},{$set:{track_ids:ids}});
         const updated=await handler.get(id);

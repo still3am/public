@@ -62,9 +62,9 @@ export default function PlaylistDetail(){
   });
  }
  async function move(t,delta){
-  const original=playlist.track_ids||[],next=movePlaylistTrack(original,t.id,delta);
+  const original=playlist.track_ids||[],next=movePlaylistTrack(original,t.id,delta,tracks.map(row=>row.id));
   if(next.every((id,i)=>id===original[i]))return;
-  await write(async()=>{const updated=await reorderPlaylistTracks(id,next,original);setPlaylist(updated);const order=new Map(next.map((id,i)=>[id,i]));setTracks(prev=>[...prev].sort((a,b)=>order.get(a.id)-order.get(b.id)));});
+  await write(async()=>{const updated=await reorderPlaylistTracks(id,next,original);setPlaylist(updated);const order=new Map([...new Set(next)].map((id,i)=>[id,i]));setTracks(prev=>[...prev].sort((a,b)=>order.get(a.id)-order.get(b.id)));});
  }
  async function remove(ids){
   if(!ids.length||!window.confirm('Remove '+ids.length+' song'+(ids.length===1?'':'s')+' from this playlist? The songs will stay on PUBLIC.'))return;
@@ -121,7 +121,7 @@ export default function PlaylistDetail(){
    <div className="playlist-song-list">{view.map((t,i)=><div key={t.id} className="playlist-song-item">
     {isOwn&&<input aria-label={'Select '+t.title} type="checkbox" checked={selected.has(t.id)} onChange={()=>setSelected(prev=>{const next=new Set(prev);next.has(t.id)?next.delete(t.id):next.add(t.id);return next;})}/>}
     <div className="flex-1 min-w-0"><TrackRow track={t} index={i} queue={tracks} queueIndex={tracks.findIndex(row=>row.id===t.id)} showArt/></div>
-    {isOwn&&<div className="playlist-row-actions"><button disabled={busy||sort!=='custom'||!!query||playlist.track_ids.indexOf(t.id)===0} onClick={()=>move(t,-1)} aria-label={'Move '+t.title+' up'}><ArrowUp size={15}/></button><button disabled={busy||sort!=='custom'||!!query||playlist.track_ids.indexOf(t.id)===playlist.track_ids.length-1} onClick={()=>move(t,1)} aria-label={'Move '+t.title+' down'}><ArrowDown size={15}/></button><button disabled={busy} onClick={()=>remove([t.id])} aria-label={'Remove '+t.title+' from playlist'}><X size={15}/></button></div>}
+    {isOwn&&<div className="playlist-row-actions"><button disabled={busy||sort!=='custom'||!!query||tracks.findIndex(row=>row.id===t.id)===0} onClick={()=>move(t,-1)} aria-label={'Move '+t.title+' up'}><ArrowUp size={15}/></button><button disabled={busy||sort!=='custom'||!!query||tracks.findIndex(row=>row.id===t.id)===tracks.length-1} onClick={()=>move(t,1)} aria-label={'Move '+t.title+' down'}><ArrowDown size={15}/></button><button disabled={busy} onClick={()=>remove([t.id])} aria-label={'Remove '+t.title+' from playlist'}><X size={15}/></button></div>}
    </div>)}</div>}
   {isOwn&&(query||sort!=='custom')&&<p className="text-xs text-muted-foreground mt-3">Switch to Playlist order and clear search to rearrange songs.</p>}
   {showAdd&&<AddToPlaylistPicker playlist={playlist} onClose={()=>{setShowAdd(false);load();}}/>}
