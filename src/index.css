@@ -363,3 +363,21 @@ html:not(.dark){color-scheme:light;}
 .dark .player-surface{border-color:hsl(var(--border));box-shadow:0 -12px 32px -24px #000;}
 @media(max-width:639px){.artist-search-row{padding:10px;min-height:72px;gap:12px;}.music-card,.playlist-card{border-radius:18px;}}
 @media(prefers-reduced-motion:reduce){.music-card,.playlist-card,.artist-search-row{transition:none;}}
+
+/* Consistent touch and focus treatment across page controls. */
+.mobile-tab-bar a{min-height:48px;}
+.mobile-tab-bar a[aria-current=page]{box-shadow:inset 0 1px 0 hsl(var(--foreground)/.08);background:hsl(var(--foreground)/.08);}
+.dark .mobile-tab-bar{background:rgb(14 14 17/.96);border-color:hsl(var(--border));}
+.dark .mobile-tab-bar a[aria-current=page]{background:rgb(255 255 255/.1);color:#fff;}
+.song-row{border:1px solid transparent;}
+.song-row:focus-within{border-color:hsl(var(--border));background:hsl(var(--accent)/.45);}
+.song-row button:focus-visible{outline:2px solid hsl(var(--ring));outline-offset:2px;}
+.auth-card{background:linear-gradient(145deg,hsl(var(--card)),hsl(var(--muted)/.28));}
+.dark .auth-card{background:linear-gradient(145deg,#19191c,#121214);box-shadow:inset 0 1px 0 #ffffff08,0 24px 64px -36px #000;}
+.app-content textarea{line-height:1.6;}
+@media(max-width:639px){
+ [role=dialog] textarea{max-height:35dvh;}
+ .playlist-action,.chrome-button{min-height:44px;}
+ .song-row{gap:12px;}
+ .song-row a{line-height:1.5;}
+}

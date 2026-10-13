@@ -19,7 +19,7 @@ export default function MobileTabBar() {
     if (loc.pathname === to) {
       // already at root of that section — just scroll to top
       e.preventDefault();
-      window.scrollTo({ top: 0, behavior: "smooth" });
+      window.scrollTo({ top: 0, behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth" });
       return;
     }
     if (to !== "/" && loc.pathname.startsWith(to + "/")) {
@@ -34,7 +34,7 @@ export default function MobileTabBar() {
 
   return (
     <>
-      <nav className="mobile-tab-bar md:hidden fixed bottom-0 inset-x-0 z-20 bg-background/95 backdrop-blur-xl border-t border-border/60 tab-bar-safe">
+      <nav aria-label="Main navigation" className="mobile-tab-bar md:hidden fixed bottom-0 inset-x-0 z-20 bg-background/95 backdrop-blur-xl border-t border-border/60 tab-bar-safe">
         <div className="grid grid-cols-5 h-16 items-center gap-1 px-3">
           {left.map(({ to, label, Icon, end }) => (
             <NavLink
@@ -48,7 +48,7 @@ export default function MobileTabBar() {
                 }`
               }
             >
-              <Icon size={20} />
+              <Icon size={20} aria-hidden="true" />
               {label}
             </NavLink>
           ))}
@@ -57,7 +57,7 @@ export default function MobileTabBar() {
             <button
               onClick={() => setMoreOpen(true)}
               className="w-11 h-11 rounded-2xl chrome-action grid place-items-center shadow-sm active:scale-95 transition"
-              aria-label="More pages"
+              aria-label="More pages" aria-haspopup="dialog" aria-expanded={moreOpen}
             >
               <Plus size={22} />
             </button>
@@ -74,7 +74,7 @@ export default function MobileTabBar() {
                 }`
               }
             >
-              <Icon size={20} />
+              <Icon size={20} aria-hidden="true" />
               {label}
             </NavLink>
           ))}

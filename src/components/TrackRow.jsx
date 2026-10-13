@@ -26,39 +26,24 @@ export default function TrackRow({
       className="song-row group flex items-center gap-3 sm:gap-4 px-2.5 sm:px-3 py-3 rounded-xl hover:bg-foreground/[0.04] transition"
       onDoubleClick={play}
     >
-      <div className="w-6 text-center text-sm font-medium text-foreground/40 shrink-0">
-        {isCurrent && p.isPlaying ? (
-          <Pause
-            size={14}
-            className="inline-block cursor-pointer text-foreground"
-            onClick={() => p.togglePlay()}
-          />
-        ) : isCurrent ? (
-          <Play
-            size={14}
-            className="inline-block cursor-pointer text-foreground"
-            onClick={() => p.togglePlay()}
-          />
-        ) : (
-          <>
-            <span className="group-hover:hidden text-foreground/40">
-              {index != null ? index + 1 : ""}
-            </span>
-            <Play
-              size={14}
-              className="hidden group-hover:inline-block cursor-pointer"
-              onClick={play}
-            />
-          </>
-        )}
-      </div>
+      <button type="button"
+        className="hidden md:grid place-items-center w-8 h-11 text-sm font-medium text-muted-foreground shrink-0"
+        aria-label={isCurrent&&p.isPlaying?`Pause ${track.title}`:`Play ${track.title}`}
+        onClick={()=>isCurrent?p.togglePlay():play()} onDoubleClick={e=>e.stopPropagation()}>
+        {isCurrent ? (p.isPlaying?<Pause size={15}/>:<Play size={15}/>) :
+          <><span className="group-hover:hidden">{index!=null?index+1:""}</span><Play size={15} className="hidden group-hover:block"/></>}
+      </button>
 
       {showArt && (
-        <div className="w-12 h-12 rounded-lg overflow-hidden bg-foreground/10 shrink-0">
-          {(track.cover_art_url || albumCover) && (
-            <img src={coverUrl} alt="" className="w-full h-full object-cover" />
-          )}
-        </div>
+        <button type="button"
+          onClick={()=>isCurrent?p.togglePlay():play()} onDoubleClick={e=>e.stopPropagation()}
+          aria-label={isCurrent&&p.isPlaying?`Pause ${track.title}`:`Play ${track.title}`}
+          className="relative w-12 h-12 rounded-lg overflow-hidden bg-muted shrink-0 grid place-items-center">
+          {coverUrl&&<img src={coverUrl} alt="" loading="lazy" className="w-full h-full object-cover"/>}
+          <span className="absolute bottom-1 right-1 rounded-full bg-black/75 text-white p-1 md:opacity-0 md:group-hover:opacity-100 md:group-focus-within:opacity-100">
+            {isCurrent&&p.isPlaying?<Pause size={12}/>:<Play size={12} fill="currentColor"/>}
+          </span>
+        </button>
       )}
 
       <div className="min-w-0 flex-1">
