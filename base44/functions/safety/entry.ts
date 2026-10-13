@@ -1,7 +1,7 @@
 import { createClientFromRequest } from 'npm:@base44/sdk';
 const err=(message,status=400)=>{throw Object.assign(new Error(message),{status});};
 const hash=async text=>Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',new TextEncoder().encode(text)))).map(b=>b.toString(16).padStart(2,'0')).join('');
-export default async function(req) {
+export default async function handleRequest(req) {
  try {
   const b=createClientFromRequest(req),s=b.asServiceRole,u=await b.auth.me().catch(()=>null),d=await req.json();
   const requireUser=()=>{if(!u)err('Sign in required',401);if(u.is_blocked||u.disabled)err('Account suspended',403);};
@@ -103,3 +103,5 @@ export default async function(req) {
   err('Unknown action');
  } catch(e) {return Response.json({error:e.message||'Request failed'},{status:e.status||500});}
 }
+// Register the HTTP handler in Base44’s Deno runtime.
+if (typeof Deno !== "undefined") Deno.serve(handleRequest);

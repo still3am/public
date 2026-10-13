@@ -6,7 +6,7 @@ import { createClientFromRequest } from 'npm:@base44/sdk@0.8.40';
 // through this function which verifies the caller's authority and uses the
 // service role to delete the record — syncing the removal to all devices via
 // the existing realtime subscription.
-export default async function(req: Request): Promise<Response> {
+export default async function handleRequest(req: Request): Promise<Response> {
   try {
     const base44 = createClientFromRequest(req);
     const user = await base44.auth.me();
@@ -53,3 +53,5 @@ export default async function(req: Request): Promise<Response> {
     return Response.json({ error: error?.message || 'Server error' }, { status: 500 });
   }
 }
+// Register the HTTP handler in Base44’s Deno runtime.
+if (typeof Deno !== "undefined") Deno.serve(handleRequest);

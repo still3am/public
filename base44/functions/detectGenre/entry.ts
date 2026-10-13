@@ -152,7 +152,7 @@ const GENRES = [
   "Other"
 ];
 
-export default async function(req) {
+export default async function handleRequest(req) {
   try {
     const base44 = createClientFromRequest(req);
     const user = await base44.auth.me();
@@ -200,3 +200,5 @@ export default async function(req) {
     return Response.json({ error: error?.message || 'Failed to detect genre' }, { status: 500 });
   }
 }
+// Register the HTTP handler in Base44’s Deno runtime.
+if (typeof Deno !== "undefined") Deno.serve(handleRequest);

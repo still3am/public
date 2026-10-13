@@ -1,5 +1,5 @@
 import { createClientFromRequest } from 'npm:@base44/sdk';
-export default async function(req) {
+export default async function handleRequest(req) {
  try {
   const b=createClientFromRequest(req),u=await b.auth.me();
   if(!u) return Response.json({error:'Sign in required'},{status:401});
@@ -40,3 +40,5 @@ export default async function(req) {
   return Response.json({error:'Deletion did not complete. Your account remains available for another attempt. '+(e.message||'')},{status:500});
  }
 }
+// Register the HTTP handler in Base44’s Deno runtime.
+if (typeof Deno !== "undefined") Deno.serve(handleRequest);

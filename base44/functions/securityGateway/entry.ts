@@ -36,7 +36,7 @@ async function searchPublicUsers(svc,raw) {
   const users=Array.isArray(page)?page:page?.items||[];
   return users.map(u=>({id:u.id,display_name:u.display_name||u.full_name||'',avatar_url:u.avatar_url||''}));
 }
-export default async function(req) {
+export default async function handleRequest(req) {
   try {
     const base44=createClientFromRequest(req),svc=base44.asServiceRole;
     const caller=await base44.auth.me().catch(()=>null);
@@ -320,3 +320,5 @@ export default async function(req) {
     return Response.json({result});
   } catch(e) {return Response.json({error:e.message||'Request failed'},{status:e.status||500});}
 }
+// Register the HTTP handler in Base44’s Deno runtime.
+if (typeof Deno !== "undefined") Deno.serve(handleRequest);

@@ -5,7 +5,7 @@ import { createClientFromRequest } from 'npm:@base44/sdk@0.8.40';
 const MAX_BYTES = 80 * 1024 * 1024; // 80 MB hard cap to keep things reasonable
 const ALLOWED_EXT = ['mp3', 'wav', 'm4a', 'mp4', 'webm', 'ogg', 'oga', 'flac', 'aac', 'mpeg', 'mpga'];
 
-export default async function(req) {
+export default async function handleRequest(req) {
   try {
     const base44 = createClientFromRequest(req);
     const user = await base44.auth.me();
@@ -220,3 +220,5 @@ export default async function(req) {
     return Response.json({ error: error?.message || 'Server error' }, { status: 500 });
   }
 }
+// Register the HTTP handler in Base44’s Deno runtime.
+if (typeof Deno !== "undefined") Deno.serve(handleRequest);

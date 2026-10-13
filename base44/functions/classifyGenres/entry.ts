@@ -155,7 +155,7 @@ const GENRES = [
 const BATCH = 12;
 const TIME_BUDGET_MS = 50000;
 
-export default async function(req) {
+export default async function handleRequest(req) {
   try {
     const base44 = createClientFromRequest(req);
     const user = await base44.auth.me();
@@ -237,3 +237,5 @@ export default async function(req) {
     return Response.json({ error: error?.message || 'Failed to classify genres' }, { status: 500 });
   }
 }
+// Register the HTTP handler in Base44’s Deno runtime.
+if (typeof Deno !== "undefined") Deno.serve(handleRequest);

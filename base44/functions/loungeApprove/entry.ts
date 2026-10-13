@@ -4,7 +4,7 @@ import { createClientFromRequest } from 'npm:@base44/sdk@0.8.40';
 // entity's RLS only lets each user update their own row, so the host's approve
 // action goes through this function which verifies the caller is the session
 // host and uses the service role to flip the member's status.
-export default async function(req: Request): Promise<Response> {
+export default async function handleRequest(req: Request): Promise<Response> {
   try {
     const base44 = createClientFromRequest(req);
     const user = await base44.auth.me();
@@ -44,3 +44,5 @@ export default async function(req: Request): Promise<Response> {
     return Response.json({ error: error?.message || 'Server error' }, { status: 500 });
   }
 }
+// Register the HTTP handler in Base44’s Deno runtime.
+if (typeof Deno !== "undefined") Deno.serve(handleRequest);

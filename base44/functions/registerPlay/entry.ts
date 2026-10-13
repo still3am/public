@@ -1,5 +1,5 @@
 import {createClientFromRequest} from 'npm:@base44/sdk';
-export default async function(req){
+export default async function handleRequest(req){
  try{
   const b=createClientFromRequest(req),u=await b.auth.me();
   if(!u||u.is_blocked||u.disabled)return Response.json({error:'Account unavailable'},{status:403});
@@ -14,3 +14,5 @@ export default async function(req){
   return Response.json({ok:true,counted:true});
  }catch(e){return Response.json({error:e.message||'Play count unavailable'},{status:500});}
 }
+// Register the HTTP handler in Base44’s Deno runtime.
+if (typeof Deno !== "undefined") Deno.serve(handleRequest);

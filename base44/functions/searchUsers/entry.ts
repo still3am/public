@@ -11,7 +11,7 @@ async function searchPublicUsers(svc,raw) {
   return users.map(u=>({id:u.id,display_name:u.display_name||u.full_name||'',avatar_url:u.avatar_url||''}));
 }
 
-export default async function(req) {
+export default async function handleRequest(req) {
  try{
   const base44=createClientFromRequest(req);
   const user=await base44.auth.me();
@@ -21,3 +21,6 @@ export default async function(req) {
   return Response.json({results:await searchPublicUsers(base44.asServiceRole,body?.q)});
  }catch(error){return Response.json({error:error?.message||'People search is unavailable'},{status:500});}
 }
+
+// Register the HTTP handler in Base44’s Deno runtime.
+if (typeof Deno !== "undefined") Deno.serve(handleRequest);

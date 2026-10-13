@@ -9,7 +9,7 @@ import { createClientFromRequest } from 'npm:@base44/sdk@0.8.52';
 const FRESH_MS = 60 * 60 * 1000;
 const PAGE = 1000;
 
-export default async function (req) {
+export default async function handleRequest(req) {
   try {
     const base44 = createClientFromRequest(req);
 
@@ -78,3 +78,5 @@ export default async function (req) {
     return Response.json({ error: error.message }, { status: 500 });
   }
 }
+// Register the HTTP handler in Base44’s Deno runtime.
+if (typeof Deno !== "undefined") Deno.serve(handleRequest);

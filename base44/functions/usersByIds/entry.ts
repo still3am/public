@@ -3,7 +3,7 @@ import { createClientFromRequest } from 'npm:@base44/sdk@0.8.52';
 // Resolves many user ids in ONE request. Surfaces like the follower list and the
 // notifications feed previously fired one User.get per id, which burst the API
 // and tripped the platform rate limit.
-export default async function (req) {
+export default async function handleRequest(req) {
   try {
     const base44 = createClientFromRequest(req);
     const user = await base44.auth.me();
@@ -58,3 +58,5 @@ export default async function (req) {
     return Response.json({ error: error?.message || 'Server error' }, { status: 500 });
   }
 }
+// Register the HTTP handler in Base44’s Deno runtime.
+if (typeof Deno !== "undefined") Deno.serve(handleRequest);
