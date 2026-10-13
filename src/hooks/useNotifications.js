@@ -31,9 +31,9 @@ export function useUnreadCount() {
     // A burst of likes/follows arrives as several events — collapse them.
     const reload = coalesce(load, 1500);
     let unsub=()=>{};try{unsub=base44.entities.Notification.subscribe(()=>reload());}catch{}
-    const timer=setInterval(reload,30000);
+    const timer=setInterval(reload,30000);window.addEventListener("notifications:changed",reload);
     return () => {
-      cancelled = true;clearInterval(timer);
+      cancelled = true;clearInterval(timer);window.removeEventListener("notifications:changed",reload);
       reload.cancel();
       unsub();
     };
@@ -63,9 +63,13 @@ export function useNotifications(){
    setNotifications(prev=>{
     const previous=new Map(prev.map(n=>[n.id,n]));
     const enriched=items.map(n=>({...n,actor_id:n.actor_id||n.sender_id,actor:actorMap.get(n.actor_id||n.sender_id)||previous.get(n.id)?.actor||null,track:trackMap.get(n.track_id)||previous.get(n.id)?.track||null}));
-    return reset?enriched:[...prev,...enriched.filter(n=>!previous.has(n.id))];
+    const merged=enriched.map(n=>markingAll.current||readingIds.current.has(n.id)?{...n,read:true}:n);
+    if(!reset)return [...prev,...merged.filter(n=>!previous.has(n.id))];
+    const boundary=items.at(-1)?.created_date,headIds=new Set(items.map(n=>n.id));
+    const older=page.has_more&&boundary?prev.filter(n=>!headIds.has(n.id)&&n.created_date<boundary):[];
+    return [...merged,...older];
    });
-   cursor.current=page.next_cursor||null;setHasMore(!!page.has_more&&!!page.next_cursor);if(typeof count==="number")setUnreadCount(count);
+   cursor.current=page.next_cursor||null;setHasMore(!!page.has_more&&!!page.next_cursor);if(typeof count==="number"&&!markingAll.current&&!readingIds.current.size)setUnreadCount(count);
   }catch{if(request===epoch.current)setError(true);}
   finally{if(request===epoch.current){setLoading(false);busy.current=false;}}
  },[user?.id]);
@@ -82,7 +86,7 @@ export function useNotifications(){
   setNotifications(prev=>prev.map(n=>({...n,read:true})));setUnreadCount(0);
   try{const r=await base44.functions.invoke('safety',{action:'markAllRead'});if(r.data?.success!==true)throw Error();}
   catch{if(account.current===uid){setNotifications(prev=>prev.map(n=>unread.has(n.id)?{...n,read:false}:n));setUnreadCount(count);}}
-  finally{if(account.current===uid)markingAll.current=false;}
+  finally{if(account.current===uid){markingAll.current=false;window.dispatchEvent(new Event("notifications:changed"));load(true);}}
  }
  async function markAsRead(id){
   const uid=user?.id,wasUnread=notifications.some(n=>n.id===id&&!n.read);
@@ -91,7 +95,7 @@ export function useNotifications(){
   setNotifications(prev=>prev.map(n=>n.id===id?{...n,read:true}:n));setUnreadCount(n=>Math.max(0,n-1));
   try{await base44.entities.Notification.update(id,{read:true});}
   catch{if(account.current===uid){setNotifications(prev=>prev.map(n=>n.id===id?{...n,read:false}:n));setUnreadCount(n=>n+1);}}
-  finally{if(account.current===uid)readingIds.current.delete(id);}
+  finally{if(account.current===uid){readingIds.current.delete(id);window.dispatchEvent(new Event("notifications:changed"));}}
  }
  return {notifications,loading,error,hasMore,unreadCount,markAllAsRead,markAsRead,reload:()=>load(true),loadMore:()=>load(false)};
 }

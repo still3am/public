@@ -1,3 +1,4 @@
+import {copyText} from '@/lib/shareLink';
 import {readAllPages} from "@/lib/readPages";
 import {Image} from "@/components/ui/image";
 import {coalesce} from "@/lib/coalesce";
@@ -35,10 +36,12 @@ export default function Lounge() {
   const [notFound, setNotFound] = useState(false);
   const [error,setError]=useState(false),[retry,setRetry]=useState(0);
   const [pickerOpen, setPickerOpen] = useState(false);
+  const memberVersion=useRef(0),room=useRef({code,uid:user?.id,sid:session?.id});room.current={code,uid:user?.id,sid:session?.id};
 
   // Resolve session + create-or-fetch my membership record.
   useEffect(() => {
     let cancelled = false;
+    memberVersion.current++;setSession(null);setMember(null);setMembers([]);setPickerOpen(false);
     (async () => {
       if (!code || !user?.id) return;
       setLoading(true);setError(false);setNotFound(false);
@@ -90,27 +93,23 @@ export default function Lounge() {
   }, [code, user?.id,retry]);
 
   const refreshMember = useCallback(async (sid) => {
+    const request=++memberVersion.current,uid=user?.id;
     try {
-      const all = await base44.entities.LoungeMember.filter({ session_id: sid }, "created_date", 200);
-      setMembers(all || []);
-      const me = (all || []).find((m) => m.user_id === user?.id);
-      if (me) setMember(me);
-    } catch {}
+      const all=await readAllPages(options=>base44.entities.LoungeMember.filter({session_id:sid},{sort:'created_date',...options}));
+      if(request!==memberVersion.current||room.current.sid!==sid||room.current.uid!==uid)return;
+      setMembers(all);
+      setMember(all.find(member=>member.user_id===uid)||null);
+    } catch {/* Preserve confirmed membership if a poll fails. */}
   }, [user?.id]);
 
-  // Live member / approval status updates.
   useEffect(() => {
     if (!session?.id) return;
     refreshMember(session.id);
+    const reload=coalesce(()=>refreshMember(session.id),700);
     let unsub;
-    try {
-      unsub = base44.entities.LoungeMember.subscribe(() => refreshMember(session.id));
-    } catch {}
-    const poll = setInterval(() => refreshMember(session.id), 30000);
-    return () => {
-      if (unsub) unsub();
-      clearInterval(poll);
-    };
+    try {unsub=base44.entities.LoungeMember.subscribe(reload);} catch {}
+    const poll=setInterval(reload,30000);
+    return()=>{memberVersion.current++;reload.cancel();unsub?.();clearInterval(poll);};
   }, [session?.id, refreshMember]);
 
   const approved = member?.status === "approved";
@@ -172,7 +171,7 @@ export default function Lounge() {
               <h1>{session.name || "Good music. Shared company."}</h1>
               <p>A shared queue, selected by everyone in the room. Hosted by {session.host_name || "Host"}.</p>
               <div className="flex flex-wrap items-center gap-3 mt-5">
-                <button className="chrome-button" onClick={async()=>{try{await navigator.clipboard.writeText(window.location.href);toast({title:"Lounge invite copied"});}catch{toast({title:"Copy the page URL to invite someone",variant:"destructive"});}}}><Copy size={15}/> Copy invite</button>
+                <button className="chrome-button" onClick={async()=>{try{await copyText(window.location.href);toast({title:"Lounge invite copied"});}catch{/* Keep the room available. */}}}><Copy size={15}/> Copy invite</button>
                 <span className="chip"><Users size={14}/>{members.filter(m=>m.status==="approved").length} approved</span>
                 <span className="chip">Code {session.code}</span>
               </div>
@@ -228,8 +227,11 @@ function GuestQueuePicker({ sessionId, user, onClose, onAdded }) {
   const { ids } = useLibrary();
   const libraryIds = Array.from(ids || []);
   const [tracks, setTracks] = useState(()=>peekPublishedTracks().length?peekPublishedTracks():null);
-  const pickerVersion=useRef(0);
+  const pickerVersion=useRef(0),pickerAlive=useRef(true);
+  const [resultLimit,setResultLimit]=useState(60);
+  useEffect(()=>{pickerAlive.current=true;return()=>{pickerAlive.current=false;};},[]);
   const [query, setQuery] = useState("");
+  useEffect(()=>setResultLimit(60),[query]);
   const [justAdded, setJustAdded] = useState(new Set());
   const addingRef=useRef(new Set());
   const [adding,setAdding]=useState(new Set());
@@ -286,16 +288,15 @@ function GuestQueuePicker({ sessionId, user, onClose, onAdded }) {
         added_by_id: user?.id,
         added_by_name: user?.display_name || user?.full_name || ""
       });
-      setJustAdded((prev) => new Set(prev).add(t.id));
-      onAdded?.(true);
+      if(pickerAlive.current){setJustAdded((prev) => new Set(prev).add(t.id));onAdded?.(true);}
     } catch (e) {
-      onAdded?.(false);
-    } finally {addingRef.current.delete(t.id);setAdding(new Set(addingRef.current));}
+      // Preserve the picker for retry without a failure popup.
+    } finally {addingRef.current.delete(t.id);if(pickerAlive.current)setAdding(new Set(addingRef.current));}
   };
 
   return (
     <div role="dialog" aria-modal="true" aria-label="Add music to lounge" className="lounge-picker fixed inset-0 z-[70] bg-card text-foreground backdrop-blur-xl flex flex-col animate-[fadeIn_.2s_ease-out]">
-      <div className="flex items-center justify-between px-5 pt-8 pb-3 shrink-0 text-foreground">
+      <div className="flex items-center justify-between px-5 pt-[calc(1rem+env(safe-area-inset-top))] pb-3 shrink-0 text-foreground">
         <div className="flex items-center gap-2 min-w-0">
           <ListMusic size={20} className="opacity-80 shrink-0" />
           <h2 className="text-lg font-bold truncate">Add to the lounge queue</h2>
@@ -315,8 +316,8 @@ function GuestQueuePicker({ sessionId, user, onClose, onAdded }) {
           
         </div>
       </div>
-      <div className="flex-1 min-h-0 overflow-y-auto px-3 pb-10 text-foreground">
-        {pickerError&&<button onClick={load} className="p-3 text-sm underline">PUBLIC catalog unavailable. Tap to retry.</button>}
+      <div className="flex-1 min-h-0 overflow-y-auto overscroll-contain px-3 pb-[calc(1rem+env(safe-area-inset-bottom))] text-foreground">
+        {pickerError&&<button onClick={load} className="p-3 text-sm underline">Refresh music</button>}
         {!tracks ?
         <div className="flex justify-center py-16">
             <Loader2 className="animate-spin text-muted-foreground" />
@@ -327,7 +328,7 @@ function GuestQueuePicker({ sessionId, user, onClose, onAdded }) {
           </div> :
 
         <div className="space-y-0.5">
-            {filtered.map((t) => {
+            {filtered.slice(0,resultLimit).map((t) => {
             const added = justAdded.has(t.id);
             return (
               <div key={t.id} className="flex items-center gap-3 px-2 py-2 rounded-lg hover:bg-accent transition">
@@ -351,6 +352,7 @@ function GuestQueuePicker({ sessionId, user, onClose, onAdded }) {
                 </div>);
 
           })}
+          {resultLimit<filtered.length&&<button onClick={()=>setResultLimit(value=>value+60)} className="playlist-action mx-auto flex mt-4">Show more songs</button>}
           </div>
         }
       </div>
