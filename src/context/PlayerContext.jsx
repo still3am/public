@@ -1,3 +1,4 @@
+import {DEFAULT_MIXER,normalizeMixer,mixerHeadroom,smoothAudioParam} from "@/lib/equalizer";
 import {commitAudioHandoff,transitionDuration} from "@/lib/audioHandoff";
 import {useSafety} from '@/context/SafetyContext';
 import {
@@ -82,17 +83,9 @@ export function PlayerProvider({ children }) {
   const [mixer, setMixerState] = useState(() => {
     try {
       const saved = JSON.parse(localStorage.getItem("public:player_mixer"));
-      if (saved && typeof saved === "object") {
-        return {
-          bass: saved.bass || 0,
-          beat: saved.beat || 0,
-          vocals: saved.vocals || 0,
-          treble: saved.treble || 0,
-          boost: Number.isFinite(saved.boost) ? saved.boost : 1,
-        };
-      }
+      return normalizeMixer(saved);
     } catch {}
-    return { bass: 0, beat: 0, vocals: 0, treble: 0, boost: 1 };
+    return {...DEFAULT_MIXER};
   });
   const mixerRef = useRef(mixer);
   useEffect(() => {
@@ -169,19 +162,17 @@ export function PlayerProvider({ children }) {
     const set = (ref, val) => {
       if (ref.current) {
         const t = ctx.currentTime;
-        ref.current.gain.cancelScheduledValues(t);
-        ref.current.gain.setValueAtTime(val, t);
+        smoothAudioParam(ref.current.gain,m.enabled ? val : 0,t);
       }
     };
     set(filterRefs.bass, m.bass);
-    filterRefs.beat.forEach((ref) => set(ref, m.beat));
-    filterRefs.vocals.forEach((ref) => set(ref, m.vocals));
+    filterRefs.beat.forEach((ref,i) => set(ref, i===0 ? m.beat : 0));
+    filterRefs.vocals.forEach((ref,i) => set(ref, i===0 ? m.vocals : 0));
     set(filterRefs.treble, m.treble);
     // Volume boost: master gain can exceed 1.0 for louder-than-max playback
     if (masterGainRef.current) {
       const t = ctx.currentTime;
-      masterGainRef.current.gain.cancelScheduledValues(t);
-      masterGainRef.current.gain.setValueAtTime(m.boost, t);
+      smoothAudioParam(masterGainRef.current.gain,mixerHeadroom(m),t);
     }
   }, []);
 
@@ -210,15 +201,12 @@ export function PlayerProvider({ children }) {
       // Stem mixer filter chain: analyser -> bass -> vocals -> treble -> master -> destination
       const bassF = ctx.createBiquadFilter();
       bassF.type = "lowshelf";
-      bassF.frequency.value = 200;
-      // Beat isolation: three peaking filters with WIDE Q cover the full drum
-      // spectrum — sub-kick + kick fundamental (~50Hz), kick punch + snare body
-      // (~150Hz), and snare crack + hi-hats (~2.5kHz). Wide Q (0.3–0.4) ensures
-      // the boost is clearly audible instead of a narrow inaudible notch.
+      bassF.frequency.value = 120;
+      // Low mids and presence use one filter each, avoiding stacked boosts.
       const beatF1 = ctx.createBiquadFilter();
       beatF1.type = "peaking";
-      beatF1.frequency.value = 50;
-      beatF1.Q.value = 0.3;
+      beatF1.frequency.value = 400;
+      beatF1.Q.value = 0.8;
       const beatF2 = ctx.createBiquadFilter();
       beatF2.type = "peaking";
       beatF2.frequency.value = 150;
@@ -227,13 +215,9 @@ export function PlayerProvider({ children }) {
       beatF3.type = "peaking";
       beatF3.frequency.value = 2500;
       beatF3.Q.value = 0.4;
-      // Multi-band vocal cut: three peaking filters cover the full vocal
-      // range (low fundamentals ~500Hz, body ~1500Hz, presence ~3500Hz) so
-      // that pulling the slider all the way down removes vocals completely
-      // instead of just notching a single narrow band.
       const vocalsF1 = ctx.createBiquadFilter();
       vocalsF1.type = "peaking";
-      vocalsF1.frequency.value = 500;
+      vocalsF1.frequency.value = 2000;
       vocalsF1.Q.value = 0.8;
       const vocalsF2 = ctx.createBiquadFilter();
       vocalsF2.type = "peaking";
@@ -245,15 +229,11 @@ export function PlayerProvider({ children }) {
       vocalsF3.Q.value = 0.8;
       const trebleF = ctx.createBiquadFilter();
       trebleF.type = "highshelf";
-      trebleF.frequency.value = 4000;
+      trebleF.frequency.value = 8000;
       analyser.connect(bassF);
       bassF.connect(beatF1);
-      beatF1.connect(beatF2);
-      beatF2.connect(beatF3);
-      beatF3.connect(vocalsF1);
-      vocalsF1.connect(vocalsF2);
-      vocalsF2.connect(vocalsF3);
-      vocalsF3.connect(trebleF);
+      beatF1.connect(vocalsF1);
+      vocalsF1.connect(trebleF);
       trebleF.connect(master);
       filterRefs.bass.current = bassF;
       filterRefs.beat[0].current = beatF1;
@@ -265,10 +245,10 @@ export function PlayerProvider({ children }) {
       filterRefs.treble.current = trebleF;
       master.connect(ctx.destination);
       // Apply any mixer settings the user already chose to the new filters
-      applyMixerToGraph(mixerRef.current);
       audioCtxRef.current = ctx;
       analyserRef.current = analyser;
       masterGainRef.current = master;
+      applyMixerToGraph(mixerRef.current);
       return ctx;
     } catch {
       return null;
@@ -287,7 +267,7 @@ export function PlayerProvider({ children }) {
     if (isTransitionActive(s)) return true;
     // Mixer active (non-neutral) also needs the Web Audio graph
     const m = mixerRef.current;
-    return m.bass !== 0 || m.beat !== 0 || m.vocals !== 0 || m.treble !== 0 || m.boost !== 1;
+    return m.enabled && (m.bass !== 0 || m.beat !== 0 || m.vocals !== 0 || m.treble !== 0 || m.boost !== 1);
   }, []);
 
   const getAnalyser = useCallback(() => analyserRef.current, []);
@@ -306,28 +286,20 @@ export function PlayerProvider({ children }) {
     return !!filterRefs.bass.current;
   }, [ensureGraph]);
 
-  const setMixerValue = useCallback((key, value) => {
-    // Ensure the Web Audio graph exists BEFORE the state updater so the
-    // filter nodes are ready. Side effects must not live inside a state
-    // updater (React StrictMode double-invokes updaters).
+  const setMixerValues = useCallback((values) => {
     if (!audioCtxRef.current) ensureGraph();
-    const ctx = audioCtxRef.current;
-    if (ctx && ctx.state === "suspended") ctx.resume().catch(() => {});
-    setMixerState((prev) => {
-      const next = { ...prev, [key]: value };
-      applyMixerToGraph(next);
-      return next;
-    });
-  }, [applyMixerToGraph, ensureGraph]);
-
-  const resetMixer = useCallback(() => {
-    if (!audioCtxRef.current) ensureGraph();
-    const ctx = audioCtxRef.current;
-    if (ctx && ctx.state === "suspended") ctx.resume().catch(() => {});
-    const neutral = { bass: 0, beat: 0, vocals: 0, treble: 0, boost: 1 };
-    setMixerState(neutral);
-    applyMixerToGraph(neutral);
-  }, [applyMixerToGraph, ensureGraph]);
+    const ctx=audioCtxRef.current;
+    if (ctx?.state==="suspended") ctx.resume().catch(()=>{});
+    const next=normalizeMixer({...mixerRef.current,...values});
+    mixerRef.current=next;
+    applyMixerToGraph(next);
+    setMixerState(next);
+  },[applyMixerToGraph,ensureGraph]);
+  const setMixerValue=useCallback((key,value)=>{
+    if(!(key in DEFAULT_MIXER))return;
+    setMixerValues({[key]:value});
+  },[setMixerValues]);
+  const resetMixer=useCallback(()=>setMixerValues({...DEFAULT_MIXER}),[setMixerValues]);
 
   // --- gain helpers ---
   const setGainImmediate = useCallback((side, v) => {
@@ -1330,6 +1302,7 @@ export function PlayerProvider({ children }) {
     getAnalyser,
     enableAnalyser,
     mixer,
+    setMixerValues,
     setMixerValue,
     resetMixer,
     enableMixer,

@@ -1,19 +1,13 @@
+import {EQ_PRESETS as PRESETS} from "@/lib/equalizer";
 import { useEffect, useState } from "react";
 import { usePlayer } from "@/context/PlayerContext";
 import { X } from "lucide-react";
 import MixerVisualizer from "@/components/MixerVisualizer";
 
-const PRESETS = [
-  { label: "Beat+", values: { bass: 2, beat: 12, vocals: 0, treble: 0 } },
-  { label: "Vocal-", values: { bass: 0, beat: 0, vocals: -48, treble: 0 } },
-  { label: "Vocal+", values: { bass: -2, beat: 0, vocals: 8, treble: 2 } },
-  { label: "Bright", values: { bass: -2, beat: 0, vocals: 0, treble: 6 } },
-  { label: "Warm", values: { bass: 4, beat: 0, vocals: 2, treble: -4 } },
-];
-
 /** @param {any} props */
 function MixerSlider({ label, range, value, min, max, onChange }) {
   const pct = (value - min) / (max - min) * 100;
+  const zero=(0-min)/(max-min)*100;
   const isNeutral = value === 0;
   return (
     <div>
@@ -30,14 +24,14 @@ function MixerSlider({ label, range, value, min, max, onChange }) {
           {value} dB
         </span>
       </div>
-      <div className="relative h-7 flex items-center">
+      <div className="relative h-11 flex items-center">
         <div className="absolute left-0 right-0 top-1/2 -translate-y-1/2 h-[4px] bg-white/10 rounded-full" />
-        <div className="absolute left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2 w-[1px] h-3 bg-white/25" />
+        <div className="absolute -translate-x-1/2 top-1/2 -translate-y-1/2 w-[1px] h-3 bg-white/25" style={{left:`${zero}%`}} />
         <div
           className="absolute top-1/2 -translate-y-1/2 h-[4px] bg-overlay-foreground rounded-full pointer-events-none"
           style={{
-            left: value >= 0 ? "50%" : `${pct}%`,
-            right: value >= 0 ? `${100 - pct}%` : "50%",
+            left: value >= 0 ? `${zero}%` : `${pct}%`,
+            right: value >= 0 ? `${100 - pct}%` : `${zero}%`,
           }}
         />
         <div
@@ -63,19 +57,19 @@ function MixerSlider({ label, range, value, min, max, onChange }) {
 
 /** @param {any} props */
 function BoostSlider({ value, onChange }) {
-  const pct = ((value - 1) / 2) * 100; // 1x → 0%, 3x → 100%
+  const pct = (value - .5) * 100;
   return (
     <div>
       <div className="flex items-center justify-between mb-1.5">
         <div className="flex items-baseline gap-1.5">
-          <span className="text-xs font-semibold uppercase tracking-wider opacity-70">Volume Boost</span>
-          <span className="text-[9px] opacity-40">up to 3×</span>
+          <span className="text-xs font-semibold uppercase tracking-wider opacity-70">Output level</span>
+          <span className="text-[9px] opacity-40">50–150%</span>
         </div>
         <span className={`text-xs font-mono tabular-nums ${value !== 1 ? "text-overlay-foreground font-bold" : "opacity-50"}`}>
           {Math.round(value * 100)}%
         </span>
       </div>
-      <div className="relative h-7 flex items-center">
+      <div className="relative h-11 flex items-center">
         <div className="absolute left-0 right-0 top-1/2 -translate-y-1/2 h-[4px] bg-white/10 rounded-full" />
         <div
           className="absolute left-0 top-1/2 -translate-y-1/2 h-[4px] bg-gradient-to-r from-white/60 to-white rounded-full pointer-events-none"
@@ -88,14 +82,14 @@ function BoostSlider({ value, onChange }) {
         />
         <input
           type="range"
-          min={1}
-          max={3}
-          step={0.1}
+          min={0.5}
+          max={1.5}
+          step={0.05}
           value={value}
           onChange={(e) => onChange(Number(e.target.value))}
           className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
           style={{ touchAction: "none" }}
-          aria-label="Volume boost"
+          aria-label="Equalizer output level"
         />
       </div>
     </div>
@@ -106,9 +100,10 @@ function BoostSlider({ value, onChange }) {
 export default function StemMixer({ onClose }) {
   const p = usePlayer();
   const [visible, setVisible] = useState(false);
+  const [ready,setReady]=useState(true);
 
   useEffect(() => {
-    p.enableMixer?.();
+    setReady(p.enableMixer?.()!==false);
     const raf = requestAnimationFrame(() => setVisible(true));
     return () => cancelAnimationFrame(raf);
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
@@ -123,21 +118,18 @@ export default function StemMixer({ onClose }) {
   }
 
   function applyPreset(values) {
-    p.setMixerValue("bass", values.bass);
-    p.setMixerValue("beat", values.beat);
-    p.setMixerValue("vocals", values.vocals);
-    p.setMixerValue("treble", values.treble);
+    p.setMixerValues({...values,boost:1,enabled:true});
   }
 
   return (
-    <div role="dialog" aria-modal="true" aria-label="StemMixer" data-public-dialog tabIndex={-1} onKeyDown={e=>{if(e.key==="Escape"){e.stopPropagation();onClose?.();}}} className="fixed inset-0 z-[60] flex items-end md:items-center justify-center">
+    <div role="dialog" aria-modal="true" aria-label="Equalizer" data-public-dialog tabIndex={-1} onKeyDown={e=>{if(e.key==="Escape"){e.stopPropagation();onClose?.();}}} className="fixed inset-0 z-[60] flex items-end md:items-center ">
       <div
         className={`absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity duration-250 ${
           visible ? "opacity-100" : "opacity-0"}`}
         onClick={handleClose}
       />
       <div
-        className={`relative w-full md:max-w-md bg-zinc-900 border rounded-t-3xl md:rounded-3xl p-5 pb-[calc(1.25rem+env(safe-area-inset-bottom))] transition-transform duration-300 ease-out ${
+        className={`relative w-full md:max-w-md bg-zinc-900 text-white max-h-[90dvh] overflow-y-auto border rounded-t-3xl md:rounded-3xl p-5 pb-[calc(1.25rem+env(safe-area-inset-bottom))] transition-transform duration-300 ease-out ${
           isModified ? "border-white/20" : "border-white/10"} ${
           visible ? "translate-y-0" : "translate-y-full md:translate-y-8"}`}
       >
@@ -145,8 +137,9 @@ export default function StemMixer({ onClose }) {
 
         {/* header */}
         <div className="flex items-center justify-between mb-4">
-          <span className="text-xs font-semibold uppercase tracking-wider opacity-60">Mixer</span>
+          <span className="text-xs font-semibold uppercase tracking-wider opacity-60">Equalizer</span>
           <div className="flex items-center gap-1">
+            <button aria-pressed={mixer.enabled} onClick={()=>p.setMixerValue("enabled",!mixer.enabled)} className="min-h-11 px-3 rounded-full bg-white/10 text-xs">{mixer.enabled?"On":"Bypassed"}</button>
             {isModified && (
               <button
                 onClick={() => p.resetMixer()}
@@ -158,7 +151,7 @@ export default function StemMixer({ onClose }) {
             <button
               onClick={handleClose}
               className="p-2 rounded-full hover:bg-white/10 transition"
-              aria-label="Close mixer"
+              aria-label="Close equalizer"
             >
               <X size={18} />
             </button>
@@ -171,7 +164,7 @@ export default function StemMixer({ onClose }) {
         </div>
 
         {/* presets */}
-        <div className="flex gap-2 mb-5 overflow-x-auto no-scrollbar justify-center">
+        <div className="flex gap-2 mb-5 overflow-x-auto no-scrollbar ">
           {PRESETS.map((preset) => (
             <button
               key={preset.label}
@@ -183,35 +176,36 @@ export default function StemMixer({ onClose }) {
           ))}
         </div>
 
+        {!ready&&<p role="alert" className="text-sm mb-4">Audio processing could not start. <button className="underline" onClick={()=>setReady(p.enableMixer?.()!==false)}>Retry</button></p>}
         {/* sliders */}
         <div className="space-y-4">
           <MixerSlider
             label="Bass"
-            range="20–250Hz"
+            range="120 Hz"
             value={mixer.bass}
-            min={-48}
+            min={-12}
             max={12}
             onChange={(v) => p.setMixerValue("bass", v)}
           />
           <MixerSlider
-            label="Beat"
-            range="50Hz–5kHz"
+            label="Low mids"
+            range="400 Hz"
             value={mixer.beat}
-            min={-48}
-            max={18}
+            min={-12}
+            max={12}
             onChange={(v) => p.setMixerValue("beat", v)}
           />
           <MixerSlider
-            label="Vocals"
-            range="1k–4kHz"
+            label="Presence"
+            range="2 kHz"
             value={mixer.vocals}
-            min={-48}
+            min={-12}
             max={12}
             onChange={(v) => p.setMixerValue("vocals", v)}
           />
           <MixerSlider
             label="Treble"
-            range="4k–20kHz"
+            range="8 kHz"
             value={mixer.treble}
             min={-12}
             max={12}
@@ -224,7 +218,7 @@ export default function StemMixer({ onClose }) {
         </div>
 
         <p className="text-[10px] text-center opacity-40 mt-4">
-          Adjust how you hear the music — mixes in real time.
+          Shape the full mix in real time. Headroom compensation reduces clipping when bands are boosted.
         </p>
       </div>
     </div>
