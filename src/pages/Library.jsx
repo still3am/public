@@ -219,8 +219,8 @@ export default function Library() {
         </>}
       </div>
       {libraryView === "songs" && showFilters && <div id="library-filters" className="library-filters">
-        <label>Folder<select value={folder} onChange={(e) => setFolder(e.target.value)}><option value="">All folders</option>{folders.map((name) => <option key={name}>{name}</option>)}</select></label>
-        <label>Tag<input placeholder="Any tag" value={tagQuery} onChange={(e) => setTagQuery(e.target.value)} className="text-xs" /></label>
+        <label className="hidden">Folder<select value={folder} onChange={(e) => setFolder(e.target.value)}><option value="">All folders</option>{folders.map((name) => <option key={name}>{name}</option>)}</select></label>
+        <label className="hidden">Tag<input placeholder="Any tag" value={tagQuery} onChange={(e) => setTagQuery(e.target.value)} className="text-xs" /></label>
         <label>Sort<select value={sort} onChange={(e) => setSort(e.target.value)}><option value="saved">Recently saved</option><option value="title">Title A–Z</option><option value="artist">Artist A–Z</option></select></label>
         {activeFilters && <button className="text-xs underline underline-offset-4" onClick={() => {setFolder("");setTagQuery("");setSort("saved");}}>Reset filters</button>}
       </div>}
