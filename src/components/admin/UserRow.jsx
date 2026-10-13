@@ -20,7 +20,7 @@ export default function UserRow({ u, uploads = 0, busy, onToggleBlock, onDelete 
         </div>
         <div className="text-xs text-foreground/50 truncate">{u.email}</div>
         <div className="text-[11px] text-foreground/40 mt-0.5">
-          Joined {new Date(u.created_date).toLocaleDateString()} · {uploads}{" "}
+          Joined {new Date(u.created_date).toLocaleDateString()} · {uploads??"—"}{" "}
           {uploads === 1 ? "upload" : "uploads"}
         </div>
       </div>
@@ -31,13 +31,14 @@ export default function UserRow({ u, uploads = 0, busy, onToggleBlock, onDelete 
           <button
             onClick={() => onToggleBlock(u)}
             className="p-2 rounded-full hover:bg-foreground/5 text-foreground/60 hover:text-foreground transition"
+            aria-label={u.is_blocked?"Unblock user":"Block user"}
             title={u.is_blocked ? "Unblock user" : "Block user"}>
             {u.is_blocked ? <ShieldCheck size={16} /> : <Ban size={16} />}
           </button>
           <button
             onClick={() => onDelete(u)}
             className="p-2 rounded-full hover:bg-destructive/10 text-foreground/60 hover:text-destructive transition"
-            title="Delete user">
+            aria-label="Delete user" title="Delete user">
             <Trash2 size={16} />
           </button>
         </div>

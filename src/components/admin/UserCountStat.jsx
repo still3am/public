@@ -2,15 +2,15 @@ import { useEffect, useState } from "react";
 import { Users, Loader2 } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 
-export default function UserCountStat() {
+export default function UserCountStat({confirmedCount}) {
   const [count, setCount] = useState(null);
 
   useEffect(() => {
-    (async () => {
-      const users = await base44.entities.User.list("-created_date", 5000);
-      setCount((users || []).length);
-    })();
-  }, []);
+    if(typeof confirmedCount==="number")return;
+    let active=true;base44.entities.User.count({}).then(value=>{if(active)setCount(value);}).catch(()=>{if(active)setCount("—");});
+    return()=>{active=false;};
+  }, [confirmedCount]);
+  const displayCount=typeof confirmedCount==="number"?confirmedCount:count;
 
   return (
     <div className="flex items-center gap-3 rounded-2xl ring-1 ring-inset ring-border bg-foreground/[0.03] px-4 py-3 mb-4">
@@ -19,14 +19,14 @@ export default function UserCountStat() {
       </div>
       <div className="min-w-0">
         <div className="text-lg font-extrabold tracking-tight tabular-nums leading-none flex items-center gap-2">
-          {count === null ? (
+          {displayCount === null ? (
             <Loader2 size={16} className="animate-spin text-foreground/40" />
           ) : (
-            count.toLocaleString()
+            displayCount.toLocaleString()
           )}
         </div>
         <p className="text-xs text-foreground/55 mt-1">
-          {count === 1 ? "registered user" : "registered users"}
+          {displayCount === 1 ? "registered user" : "registered users"}
         </p>
       </div>
     </div>

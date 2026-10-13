@@ -1,4 +1,5 @@
-import { useEffect, useState } from "react";
+import {readAllPages} from "@/lib/readPages";
+import { useEffect, useState, useRef } from "react";
 import { Loader2, Search, Users } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 import { Input } from "@/components/ui/input";
@@ -7,44 +8,34 @@ import UserCountStat from "@/components/admin/UserCountStat";
 
 export default function UsersManager() {
   const [users, setUsers] = useState(null);
-  const [uploadCounts, setUploadCounts] = useState({});
+  const [uploadCounts, setUploadCounts] = useState(null);
   const [q, setQ] = useState("");
-  const [busyId, setBusyId] = useState(null);
+  const [busyIds,setBusyIds]=useState(new Set());
+  const writes=useRef(new Set()),version=useRef(0);
+  const [failed,setFailed]=useState(false);
 
-  const load = async () => {
-    const [list, groups] = await Promise.all([
-      base44.entities.User.list("-created_date", 500),
-      // Upload counts are tallied by the server, one row per uploader, instead
-      // of downloading the catalogue to count it here (and stopping at 5000).
-      base44.entities.Track.aggregate({ groupBy: "uploader_id" }),
+  const load=async()=>{
+    const request=++version.current;setFailed(false);
+    const [list,groups]=await Promise.allSettled([
+      readAllPages(opts=>base44.entities.User.filter({},{sort:"-created_date",...opts})),
+      base44.entities.Track.aggregate({groupBy:"uploader_id"})
     ]);
-    const counts = {};
-    (groups?.rows || []).forEach((r) => {
-      if (r.uploader_id) counts[r.uploader_id] = r.count;
-    });
-    setUploadCounts(counts);
-    setUsers(list || []);
+    if(request!==version.current)return;
+    if(list.status==="fulfilled")setUsers(list.value);else setFailed(true);
+    if(groups.status==="fulfilled"){const counts={};(groups.value?.rows||[]).forEach(row=>{if(row.uploader_id)counts[row.uploader_id]=row.count;});setUploadCounts(counts);}
   };
-
-  useEffect(() => {
-    load();
-  }, []);
-
-  const toggleBlock = async (u) => {
-    setBusyId(u.id);
-    try{await base44.functions.invoke("safety", {action:"suspend",user_id:u.id,blocked:!u.is_blocked});}catch{window.alert("Could not update this account");setBusyId(null);return;}
-    setUsers((prev) =>
-      prev.map((x) => (x.id === u.id ? { ...x, is_blocked: !u.is_blocked } : x))
-    );
-    setBusyId(null);
+  useEffect(()=>{load();return()=>{version.current++;};},[]);
+  const begin=id=>{if(writes.current.has(id))return false;writes.current.add(id);setBusyIds(new Set(writes.current));return true;};
+  const finish=id=>{writes.current.delete(id);setBusyIds(new Set(writes.current));};
+  const toggleBlock=async user=>{
+    if(!begin(user.id))return;
+    try{await base44.functions.invoke("safety",{action:"suspend",user_id:user.id,blocked:!user.is_blocked});setUsers(previous=>previous.map(row=>row.id===user.id?{...row,is_blocked:!user.is_blocked}:row));}
+    catch{/* Keep the confirmed account state. */}finally{finish(user.id);}
   };
-
-  const remove = async (u) => {
-    if (!window.confirm(`Delete ${u.display_name || u.full_name || u.email}? This cannot be undone.`)) return;
-    setBusyId(u.id);
-    await base44.entities.User.delete(u.id);
-    setUsers((prev) => prev.filter((x) => x.id !== u.id));
-    setBusyId(null);
+  const remove=async user=>{
+    if(writes.current.has(user.id)||!window.confirm(`Delete ${user.display_name||user.full_name||user.email}? This cannot be undone.`)||!begin(user.id))return;
+    try{await base44.entities.User.delete(user.id);setUsers(previous=>previous.filter(row=>row.id!==user.id));}
+    catch{/* Keep the account in the list if deletion did not succeed. */}finally{finish(user.id);}
   };
 
   const term = q.trim().toLowerCase();
@@ -59,17 +50,19 @@ export default function UsersManager() {
   if (!users) {
     return (
       <div className="py-16 grid place-items-center">
-        <Loader2 size={20} className="animate-spin text-foreground/40" />
+        {failed?<button className="playlist-action" onClick={load}>Refresh users</button>:<Loader2 size={20} className="animate-spin text-foreground/40" />}
       </div>
     );
   }
 
   return (
     <div>
-      <UserCountStat />
+      <UserCountStat confirmedCount={users.length}/>
+      <button className="playlist-action text-xs mb-3" onClick={load}>Refresh users</button>
       <div className="relative mb-2">
         <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-foreground/40" />
         <Input
+          aria-label="Search registered users"
           value={q}
           onChange={(e) => setQ(e.target.value)}
           placeholder="Search users"
@@ -88,8 +81,8 @@ export default function UsersManager() {
             <UserRow
               key={u.id}
               u={u}
-              uploads={uploadCounts[u.id] || 0}
-              busy={busyId === u.id}
+              uploads={uploadCounts?uploadCounts[u.id]||0:null}
+              busy={busyIds.has(u.id)}
               onToggleBlock={toggleBlock}
               onDelete={remove}
             />
