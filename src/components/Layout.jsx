@@ -58,7 +58,7 @@ export default function Layout() {
           <AnimatePresence mode="wait" initial={false}>
             {!activeTab &&
             <motion.div
-              key={location.pathname}
+              key={`${location.pathname}:${user?.id||"guest"}`}
               className="page-surface"
               data-page={location.pathname.split("/")[1] || "home"}
               initial={{ opacity: 0 }}

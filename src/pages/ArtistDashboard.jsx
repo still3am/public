@@ -40,15 +40,16 @@ function StatCard({ icon: Icon, label, value }) {
 export default function ArtistDashboard() {
   const { user } = useAuth();
   const [loading, setLoading] = useState(true);
+  const [loaded,setLoaded]=useState(false);
   const [tracks, setTracks] = useState([]);
   const [totals, setTotals] = useState(null);
-  const [followers, setFollowers] = useState(0);
+  const [followers, setFollowers] = useState(null);
   const [query,setQuery]=useState(""),[sort,setSort]=useState("plays");
   const visibleTracks=useMemo(()=>{const term=query.trim().toLowerCase();const rows=tracks.filter(t=>!term||[t.title,t.genre,t.artist].some(value=>(value||"").toLowerCase().includes(term)));rows.sort((a,b)=>sort==="likes"?(b.like_count||0)-(a.like_count||0):sort==="title"?(a.title||"").localeCompare(b.title||""):(b.play_count||0)-(a.play_count||0));return rows;},[tracks,query,sort]);
   const [error,setError]=useState(false),[retry,setRetry]=useState(0);
 
   useEffect(() => {
-    if (!user) return;
+    if (!user?.is_artist){setLoading(false);return;}
     let cancelled = false;setError(false);setLoading(true);
     async function load() {
       try {
@@ -70,7 +71,7 @@ export default function ArtistDashboard() {
         base44.entities.Follow.count({ following_id: user.id }).catch(()=>null)]
         );
         if (cancelled) return;
-        setTracks(t);
+        setTracks(t);setLoaded(true);
         setTotals(sums?.rows?.[0] || null);
         setFollowers(followerCount);
       } catch {if(!cancelled)setError(true);
@@ -82,10 +83,10 @@ export default function ArtistDashboard() {
     return () => {
       cancelled = true;
     };
-  }, [user,retry]);
+  }, [user?.id,user?.is_artist,retry]);
 
-  if(error)return <LoadError onRetry={()=>setRetry(n=>n+1)}/>;
-  if (loading) {
+  if(error&&!loaded)return <LoadError onRetry={()=>setRetry(n=>n+1)}/>;
+  if (loading&&!loaded) {
     return (
       <div className="py-20 grid place-items-center">
         <Loader2 className="animate-spin" />
@@ -137,6 +138,7 @@ export default function ArtistDashboard() {
           
           <ArrowLeft size={18} />
         </Link>
+        <button aria-label="Refresh artist analytics" className="playlist-action ml-auto text-xs" disabled={loading} onClick={()=>setRetry(value=>value+1)}>{loading?"Refreshing…":"Refresh"}</button>
         <h1 className="text-2xl font-extrabold tracking-tight flex items-center gap-2">
            Artist Dashboard
         </h1>

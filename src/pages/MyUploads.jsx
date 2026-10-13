@@ -63,7 +63,7 @@ export default function MyUploads() {
   }, [user?.id]);
 
   useEffect(() => {
-    load();
+    setSelected(new Set());setEditMode(false);load();return()=>{loadVersion.current++;};
   }, [load]);
 
   const selectedIds = [...selected];
@@ -84,7 +84,7 @@ export default function MyUploads() {
   };
 
   const removeFromLibrary = async () => {
-    if (!removableIds.length) return;
+    if (!removableIds.length||busy||!user?.id) return;
     setBusy(true);
     try {
       await base44.entities.LibraryItem.deleteMany({
@@ -187,7 +187,7 @@ export default function MyUploads() {
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
               {visibleUploads.map((t) =>
             <div key={t.id} className="flex flex-col">
-                  <TrackCard
+                  <TrackCard queue={visibleUploads}
                 track={t}
                 selectable={editMode}
                 selected={selected.has(t.id)}
