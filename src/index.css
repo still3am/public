@@ -592,3 +592,22 @@ html:not(.dark){color-scheme:light;}
  .profile-section-title h2{font-size:20px;}
  .profile-upload-list .song-row{padding:10px 6px;gap:10px;}
 }
+
+/* Center the profile on mobile. */
+@media(max-width:767px){
+ .profile-cover-strip span{display:none;}
+ .profile-identity-row{align-items:center;}
+ .profile-info{text-align:center;}
+ .profile-info>div{justify-content:center;}
+ .profile-info .selectable-content{margin-inline:auto;}
+ .profile-stats,.profile-actions{justify-content:center!important;}
+ .profile-stats>button,.profile-stats>span{align-items:center;padding:4px 10px;}
+ .profile-featured-content{flex-direction:column;text-align:center;justify-content:center;}
+ .profile-featured-content>div:nth-child(2){width:100%;flex:auto;}
+ .profile-section-title{flex-direction:column;text-align:center;}
+ .profile-section-title h2{justify-content:center;}
+ .profile-track-search input{text-align:center;}
+ .profile-music h2,.profile-conversation h2{justify-content:center;text-align:center;}
+ .profile-upload-list .song-row>div.min-w-0{text-align:center;}
+ .profile-conversation>div>p{text-align:center;}
+}
