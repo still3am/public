@@ -713,3 +713,9 @@ html:not(.dark) .profile-page .profile-identity,html:not(.dark) .profile-page .p
 .queue-history summary{min-height:44px;display:flex;align-items:center;justify-content:center;border:1px solid hsl(var(--border));border-radius:12px;background:hsl(var(--muted)/.4);}
 @media(min-width:768px){.queue-panel{left:auto;width:520px;border-left:1px solid hsl(var(--border));box-shadow:-20px 0 80px rgb(0 0 0/.3);}.queue-panel .queue-body{padding-inline:24px;}}
 @media(max-width:767px){.queue-panel>.top-bar-safe{padding-inline:16px;}.queue-panel .queue-upcoming-row{gap:8px!important;}.queue-panel .queue-upcoming-row>button.min-w-0{font-size:13px;}.queue-panel .queue-upcoming-row>div:first-child{margin-left:-4px;}.queue-panel .queue-upcoming-row .w-8{min-width:36px;width:36px;min-height:44px;}}
+
+/* Keep queue dragging independent of the full-screen player's transform. */
+.queue-panel{overscroll-behavior:contain;}
+.queue-panel .queue-body{overscroll-behavior-y:contain;touch-action:pan-y;}
+.queue-panel .queue-upcoming-row [data-rfd-drag-handle-draggable-id]{touch-action:none;min-width:32px;min-height:44px;}
+@media(min-width:768px){.queue-panel{right:0;}}

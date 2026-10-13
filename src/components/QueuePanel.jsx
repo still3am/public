@@ -1,3 +1,4 @@
+import {createPortal} from "react-dom";
 import { useEffect,useMemo } from "react";
 import {useCoverUrl} from "@/hooks/useCoverUrl";
 function QueueCover({url}){const cover=useCoverUrl(url);return cover?<img src={cover} alt="" className="w-full h-full object-cover"/>:<Music2 size={18} className="text-muted-foreground"/>;}
@@ -10,8 +11,6 @@ import {
   Plus,
   Music2,
   GripVertical,
-  ArrowUp,
-  ArrowDown,
   GitMerge } from
 "lucide-react";
 import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
@@ -60,8 +59,8 @@ export default function QueuePanel({ open, onClose }) {
   `Crossfade ${t.crossfadeSeconds}s` :
   null;
 
-  return (
-    <div role="dialog" aria-modal="true" aria-label="Playback queue" data-public-dialog tabIndex={-1} onKeyDown={e=>{if(e.key==="Escape"){e.stopPropagation();onClose?.();}}} className="queue-panel absolute inset-0 z-[60] bg-card text-foreground flex flex-col animate-[fadeIn_.22s_ease-out]">
+  return createPortal(
+    <div role="dialog" aria-modal="true" aria-label="Playback queue" data-public-dialog tabIndex={-1} onKeyDown={e=>{if(e.key==="Escape"){e.stopPropagation();onClose?.();}}} className="queue-panel fixed inset-0 z-[60] bg-card text-foreground flex flex-col animate-[fadeIn_.22s_ease-out]">
       {/* Header */}
       <div className="top-bar-safe flex items-center justify-between px-4 pt-2 pb-3 shrink-0 border-b border-border">
         <div className="flex items-center gap-2 min-w-0">
@@ -208,7 +207,7 @@ export default function QueuePanel({ open, onClose }) {
                 <span className="hidden sm:block text-[11px] text-muted-foreground tabular-nums">
                   {formatTime(tt.duration_seconds)}
                 </span>
-                <div className="queue-move-buttons"><button disabled={pos===0} onClick={()=>p.moveInQueue(i,upcoming[pos-1].i)} aria-label={`Move ${tt.title} up`}><ArrowUp size={14}/></button><button disabled={pos===upcoming.length-1} onClick={()=>p.moveInQueue(i,upcoming[pos+1].i)} aria-label={`Move ${tt.title} down`}><ArrowDown size={14}/></button></div>
+
                 <TrackOptionsMenu
                     track={tt}
                     size={16}
@@ -259,6 +258,6 @@ export default function QueuePanel({ open, onClose }) {
       </div>
 
       <QueueLibraryPicker open={showPicker} onClose={() => setShowPicker(false)} />
-    </div>);
+    </div>,document.body);
 
 }
