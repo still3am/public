@@ -11,7 +11,7 @@ import PullToRefresh from "@/components/PullToRefresh";
 
 export default function TopCharts() {
   const [tracks, setTracks] = useState([]);
-  const [loadError,setLoadError]=useState(false);
+  const [loadError, setLoadError] = useState(false);
   const [loading, setLoading] = useState(true);
 
   const onUnpublished = useCallback((id) => {
@@ -35,12 +35,12 @@ export default function TopCharts() {
   }, []);
 
   if (loading && !tracks.length)
-    return (
-      <div className="py-20 grid place-items-center">
+  return (
+    <div className="py-20 grid place-items-center">
         <Loader2 className="animate-spin" />
-      </div>
-    );
-  if(loadError&&!tracks.length)return <LoadError onRetry={load}/>;
+      </div>);
+
+  if (loadError && !tracks.length) return <LoadError onRetry={load} />;
   if (!tracks.length) return <EmptyState icon={Music} title="No tracks yet" />;
 
   const top5 = tracks.slice(0, 5);
@@ -49,22 +49,22 @@ export default function TopCharts() {
   return (
     <PullToRefresh onRefresh={load}>
       <div className="collection-page">
-        <header className="page-intro"><p className="eyebrow">PUBLIC</p><h1>Top tracks</h1><p>The music PUBLIC is listening to.</p></header>
-        {loadError&&<LoadError onRetry={load}/>} 
+        <header className="page-intro"><p className="eyebrow hidden">PUBLIC</p><h1>Top tracks</h1><p>The music PUBLIC is listening to.</p></header>
+        {loadError && <LoadError onRetry={load} />} 
         {top5.length > 0 && <Podium tracks={top5} />}
-        {rest.length > 0 && (
-          <>
+        {rest.length > 0 &&
+        <>
             <h2 className="text-lg font-extrabold tracking-tight px-1 mb-3 mt-5">
               More top tracks
             </h2>
             <IncrementalList
-              items={rest}
-              className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 md:gap-4"
-              renderItem={(t) => <TrackCard key={t.id} track={t} />}
-            />
+            items={rest}
+            className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 md:gap-4"
+            renderItem={(t) => <TrackCard key={t.id} track={t} />} />
+          
           </>
-        )}
+        }
       </div>
-    </PullToRefresh>
-  );
+    </PullToRefresh>);
+
 }
