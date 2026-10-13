@@ -12,7 +12,7 @@ const handlers={};
 for(const name of fs.readdirSync(new URL('../base44/functions/',import.meta.url))){
  const path=new URL('../base44/functions/'+name+'/entry.ts',import.meta.url);
  if(!fs.existsSync(path))continue;
- let source=fs.readFileSync(path,'utf8').replace(/import \{ createClientFromRequest \} from [^;]+;/,'const createClientFromRequest=()=>globalThis.__registrationClient;');
+ let source=fs.readFileSync(path,'utf8').replace(/import\s*\{\s*createClientFromRequest\s*\}\s*from\s*[^;]+;/,'const createClientFromRequest=()=>globalThis.__registrationClient;');
  const code=ts.transpileModule(source,{compilerOptions:{target:ts.ScriptTarget.ES2022,module:ts.ModuleKind.ESNext}}).outputText;
  registered=undefined;
  const module=await import('data:text/javascript;base64,'+Buffer.from(code).toString('base64'));
