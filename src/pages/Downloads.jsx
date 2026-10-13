@@ -24,6 +24,8 @@ export default function Downloads() {
   const { toast } = useToast();
   const [confirming, setConfirming] = useState(false);
   const [dragging, setDragging] = useState(false);
+  const [query,setQuery]=useState("");
+  const [clearing,setClearing]=useState(false);
 
   const tracks = useMemo(
     () =>
@@ -45,6 +47,7 @@ export default function Downloads() {
     [cache.records]
   );
 
+  const visibleTracks=useMemo(()=>tracks.map((track,index)=>({track,index})).filter(({track})=>!query.trim()||[track.title,track.artist].some(value=>(value||"").toLowerCase().includes(query.trim().toLowerCase()))),[tracks,query]);
   const totalBytes = useMemo(
     () => cache.records.reduce((sum, r) => sum + (r._size || 0), 0),
     [cache.records]
@@ -54,11 +57,7 @@ export default function Downloads() {
   const anyPlayingHere =
   isPlaying(tracks, p) && p.isPlaying;
 
-  const playAll = () => {
-    if (!tracks.length) return;
-    if (anyPlayingHere) p.togglePlay();else
-    p.playTrackAt(tracks, 0);
-  };
+  const playAll=()=>{const list=visibleTracks.map(row=>row.track);if(!list.length)return;if(list.some(track=>track.id===p.currentTrack?.id)&&p.isPlaying)p.togglePlay();else p.playTrackAt(list,0);};
 
   const playOne = (i) => {
     if (isCurrent(tracks[i].id)) {
@@ -73,11 +72,7 @@ export default function Downloads() {
     toast({ title: "Removed from PUBLIC OFFLINE" });
   };
 
-  const clearEverything = async () => {
-    await cache.clearAllCache();
-    setConfirming(false);
-    toast({ title: "Downloads cleared" });
-  };
+  const clearEverything=async()=>{if(clearing)return;setClearing(true);try{await cache.clearAllCache();setConfirming(false);toast({title:"Offline music cleared"});}finally{setClearing(false);}};
 
   const online = typeof navigator !== "undefined" ? navigator.onLine : true;
   const loading = cache.loading;
@@ -136,6 +131,8 @@ export default function Downloads() {
         </div>
       }
 
+      <div className="collection-tools"><input aria-label="Search offline music" placeholder="Find a saved song or artist" value={query} onChange={e=>setQuery(e.target.value)} onKeyDown={e=>{if(e.key==="Escape")setQuery("");}}/>{query&&<button className="playlist-action" onClick={()=>setQuery("")}>Clear search</button>}</div>
+      {query&&<p className="text-xs text-muted-foreground mb-3">{visibleTracks.length} matching songs. Clear search to rearrange your music.</p>}
       <PullToRefresh disabled={dragging} onRefresh={async () => await cache.refresh()}>
         {loading ?
         <div className="flex justify-center py-16">
@@ -158,7 +155,7 @@ export default function Downloads() {
         <>
             {tracks.length > 0 &&
           <div className="flex items-center justify-between mb-3 px-1">
-                <button onClick={() => setConfirming(true)} className="border rounded-full px-3 py-2 text-xs">Clear downloads</button>
+                <button onClick={() => setConfirming(true)} className="border rounded-full px-3 py-2 text-xs">Clear offline music</button>
                 <button
               onClick={playAll}
               className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-foreground text-background text-sm font-bold active:scale-95 transition">
@@ -177,11 +174,11 @@ export default function Downloads() {
               <Droppable droppableId="downloads">
                 {(dropProvided) =>
               <div ref={dropProvided.innerRef} {...dropProvided.droppableProps} className="space-y-1 touch-pan-y">
-                  {tracks.map((t, i) => {
+                  {visibleTracks.map(({track:t,index:i},visibleIndex) => {
                   const here = isCurrent(t.id);
                   const playingHere = here && p.isPlaying;
                   return (
-                    <Draggable key={t.id} draggableId={t.id} index={i}>
+                    <Draggable key={t.id} draggableId={t.id} index={visibleIndex} isDragDisabled={!!query}>
                       {(dragProvided, snapshot) =>
                       <div
                         ref={dragProvided.innerRef}
@@ -199,7 +196,7 @@ export default function Downloads() {
                       <button
                           onClick={() => playOne(i)}
                           className="w-10 h-10 rounded overflow-hidden shrink-0 relative bg-foreground/10 grid place-items-center"
-                          aria-label="Play">
+                          aria-label={playingHere?`Pause ${t.title}`:`Play ${t.title}`}>
                         <DownloadCover record={t} size={16} />
                         <span className="absolute inset-0 grid place-items-center bg-black/0 group-hover:bg-black/30 transition">
                           {playingHere ?
@@ -257,7 +254,7 @@ export default function Downloads() {
               <Trash2 size={20} className="text-destructive" />
             </div>
             <h3 className="text-lg font-extrabold tracking-tight mb-1.5">
-              Remove all downloads?
+              Remove all offline music?
             </h3>
             <p className="text-sm text-foreground/55 mb-5">
               This deletes {cache.records.length} saved track
@@ -271,9 +268,9 @@ export default function Downloads() {
                 Cancel
               </button>
               <button
-              onClick={clearEverything}
+              onClick={clearEverything} disabled={clearing}
               className="flex-1 py-2.5 rounded-full bg-destructive text-destructive-foreground text-sm font-bold active:scale-95 transition">
-                Remove all
+                {clearing?"Removing…":"Remove all"}
               </button>
             </div>
           </div>

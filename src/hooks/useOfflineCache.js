@@ -20,6 +20,9 @@ import {
 } from "@/lib/offlineSync";
 
 const EVT = "offlinecache:change";
+const suppressedFor=userId=>{try{return new Set(JSON.parse(localStorage.getItem("public:offline:suppressed:"+userId)||"[]"));}catch{return new Set();}};
+const suppress=(userId,ids,remove=false)=>{if(!userId)return;try{const set=suppressedFor(userId);ids.forEach(id=>remove?set.delete(id):set.add(id));localStorage.setItem("public:offline:suppressed:"+userId,JSON.stringify([...set]));}catch{}};
+
 // Module-level guard so multiple hook instances don't auto-download the same
 // cloud track twice in one session.
 const autoQueued = new Set();
@@ -119,7 +122,7 @@ export function useOfflineCache() {
     return () => window.removeEventListener(EVT, onChange);
   }, [refresh]);
 
-  const downloadTrack = useCallback(async (track) => {
+  const downloadTrack = useCallback(async (track,{automatic=false}={}) => {
     if (!user?.id || !track?.id) return false;
     if(downloadingIds.has(track.id))return false;
     downloadingIds.add(track.id);
@@ -157,6 +160,7 @@ export function useOfflineCache() {
       // Mirror this save into the user's cloud offline list so other devices
       // auto-download it too.
       if (user?.id) addCloudTrack(user.id, track).catch(() => {});
+      if(!automatic)suppress(user.id,[track.id],true);
       window.dispatchEvent(new CustomEvent(EVT));
       return true;
     } catch {
@@ -175,10 +179,10 @@ export function useOfflineCache() {
     const cloud = await getCloudList(user.id);
     for (const saved of cloud) {
       const t=await base44.entities.Track.get(saved.id).catch(()=>null);
-      if(!t) continue;
+      if(!t||suppressedFor(user.id).has(t.id)) continue;
       if (cachedIds.has(t.id) || autoQueued.has(t.id)) continue;
       autoQueued.add(t.id);
-      downloadTrack(t).then(ok=>{if(!ok)autoQueued.delete(t.id);}).catch(()=>autoQueued.delete(t.id));
+      downloadTrack(t,{automatic:true}).then(ok=>{if(!ok)autoQueued.delete(t.id);}).catch(()=>autoQueued.delete(t.id));
     }
   }, [user?.id, cachedIds, downloadTrack]);
 
@@ -195,6 +199,7 @@ export function useOfflineCache() {
 
   const removeTrack = useCallback(async (id) => {
     await deleteRecord(id);
+    suppress(user?.id,[id]);
     const order = await getOrderIds();
     if (order) await setOrderIds(order.filter((x) => x !== id));
     if (user?.id) removeCloudTrack(user.id, id).catch(() => {});
@@ -214,12 +219,14 @@ export function useOfflineCache() {
   }, []);
 
   const clearAllCache = useCallback(async () => {
+    const removed=records.map(track=>track.id);
     await clearAll();
+    suppress(user?.id,removed);
     await clearMeta();
     autoQueued.clear();
     if (user?.id) setCloudList(user.id, []).catch(() => {});
     window.dispatchEvent(new CustomEvent(EVT));
-  }, [user?.id]);
+  }, [user?.id,records]);
 
   return {
     cachedIds: cachedIds || new Set(),

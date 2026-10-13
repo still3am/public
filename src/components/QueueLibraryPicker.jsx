@@ -1,3 +1,5 @@
+import {readAllPages} from "@/lib/readPages";
+import {Image} from "@/components/ui/image";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { useAuth } from "@/lib/AuthContext";
@@ -22,28 +24,20 @@ export default function QueueLibraryPicker({ open, onClose }) {
     }
     setLoading(true);
     try {
-      const items = await base44.entities.LibraryItem.filter(
-        { user_id: user.id },
-        "-created_date",
-        1000
-      );
+      const items=await readAllPages(options=>base44.entities.LibraryItem.filter({user_id:user.id},{sort:"-created_date",...options}));
       const trackIds = (items || []).map((i) => i.track_id).filter(Boolean);
       if (!trackIds.length) {
         setTracks([]);
         return;
       }
-      const list = await base44.entities.Track.filter(
-        { id: { $in: trackIds } },
-        "-created_date",
-        1000
-      );
+      const list=[];for(let start=0;start<trackIds.length;start+=200)list.push(...await readAllPages(options=>base44.entities.Track.filter({id:{$in:trackIds.slice(start,start+200)}},{...options})));
       const order = new Map(trackIds.map((id, i) => [id, i]));
       const sorted = (list || [])
         .slice()
         .sort((a, b) => (order.get(a.id) ?? 0) - (order.get(b.id) ?? 0));
       setTracks(sorted);
     } catch {
-      setTracks([]);
+      // Keep an already-loaded library available.
     } finally {
       setLoading(false);
     }
@@ -70,18 +64,15 @@ export default function QueueLibraryPicker({ open, onClose }) {
   if (!open) return null;
 
   const addOne = (track) => {
+    if(justAdded.has(track.id))return;
     p.addToQueue(track);
     setJustAdded((prev) => new Set(prev).add(track.id));
   };
 
-  const addAll = () => {
-    if (!filtered.length) return;
-    p.addManyToQueue(filtered);
-    setJustAdded(new Set(filtered.map((t) => t.id)));
-  };
+  const addAll=()=>{const remaining=filtered.filter(track=>!justAdded.has(track.id));if(!remaining.length)return;p.addManyToQueue(remaining);setJustAdded(previous=>new Set([...previous,...remaining.map(track=>track.id)]));};
 
   return (
-    <div className="absolute inset-0 z-[60] bg-black/80 backdrop-blur-xl flex flex-col animate-[fadeIn_.2s_ease-out]">
+    <div className="queue-library-picker absolute inset-0 z-[60] bg-card text-foreground flex flex-col animate-[fadeIn_.2s_ease-out]">
       <div className="flex items-center justify-between px-5 pt-8 pb-3 shrink-0">
         <div className="flex items-center gap-2 min-w-0">
           <ListMusic size={20} className="opacity-80 shrink-0" />
@@ -89,7 +80,7 @@ export default function QueueLibraryPicker({ open, onClose }) {
         </div>
         <button
           onClick={onClose}
-          className="p-2 -mr-2 rounded-full hover:bg-white/10 active:scale-90 transition"
+          className="p-2 -mr-2 rounded-full hover:bg-muted active:scale-90 transition"
           aria-label="Close"
         >
           <X size={22} />
@@ -105,16 +96,16 @@ export default function QueueLibraryPicker({ open, onClose }) {
           <input
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="Search your library"
-            className="w-full pl-10 pr-3 py-2.5 rounded-full bg-white/10 border border-white/10 text-sm placeholder:text-white/40 focus:outline-none focus:bg-white/15 transition"
+            aria-label="Search songs to add to queue" placeholder="Search your library"
+            className="w-full pl-10 pr-3 py-2.5 rounded-full bg-muted border border-border text-sm placeholder:text-muted-foreground focus:outline-none focus:bg-accent transition"
           />
         </div>
         {filtered.length > 0 && (
           <button
-            onClick={addAll}
-            className="mt-2 text-xs font-semibold px-3 py-1.5 rounded-full bg-white/10 hover:bg-white/20 active:scale-95 transition"
+            onClick={addAll} disabled={filtered.every(track=>justAdded.has(track.id))}
+            className="mt-2 text-xs font-semibold px-3 py-1.5 rounded-full bg-muted hover:bg-accent active:scale-95 transition"
           >
-            Add all ({filtered.length})
+            Add remaining ({filtered.filter(track=>!justAdded.has(track.id)).length})
           </button>
         )}
       </div>
@@ -122,11 +113,11 @@ export default function QueueLibraryPicker({ open, onClose }) {
       <div className="flex-1 min-h-0 overflow-y-auto px-3 pb-10">
         {loading ? (
           <div className="flex justify-center py-16">
-            <Loader2 className="animate-spin text-white/50" />
+            <Loader2 className="animate-spin text-muted-foreground" />
           </div>
         ) : !filtered.length ? (
           <div className="text-center py-16 px-6">
-            <p className="text-sm text-white/50">
+            <p className="text-sm text-muted-foreground">
               {query ? "No matches." : "Your library is empty."}
             </p>
           </div>
@@ -137,20 +128,16 @@ export default function QueueLibraryPicker({ open, onClose }) {
               return (
                 <div
                   key={t.id}
-                  className="flex items-center gap-3 px-2 py-2 rounded-lg hover:bg-white/5 transition"
+                  className="flex items-center gap-3 px-2 py-2 rounded-lg hover:bg-accent transition"
                 >
-                  <div className="w-10 h-10 rounded overflow-hidden bg-white/10 shrink-0">
+                  <div className="w-10 h-10 rounded overflow-hidden bg-muted shrink-0">
                     {t.cover_art_url && (
-                      <img
-                        src={t.cover_art_url}
-                        alt=""
-                        className="w-full h-full object-cover"
-                      />
+                      <Image src={t.cover_art_url} alt="" className="w-full h-full" fittingType="fill"/>
                     )}
                   </div>
                   <div className="min-w-0 flex-1">
                     <div className="text-sm font-medium truncate">{t.title}</div>
-                    <div className="text-xs text-white/50 truncate">
+                    <div className="text-xs text-muted-foreground truncate">
                       {t.artist || t.uploader_name || "Unknown"}
                     </div>
                   </div>
@@ -160,7 +147,7 @@ export default function QueueLibraryPicker({ open, onClose }) {
                     className={`shrink-0 w-9 h-9 rounded-full grid place-items-center active:scale-90 transition ${
                       added
                         ? "bg-green-500/30 text-green-300"
-                        : "bg-white/10 hover:bg-white/20"
+                        : "bg-muted hover:bg-accent"
                     }`}
                     aria-label={added ? "Added to queue" : "Add to queue"}
                   >
