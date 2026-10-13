@@ -6,16 +6,24 @@ import { base44 } from "@/api/base44Client";
 // for the session, and identical batches share one in-flight request.
 const cache = new Map();
 window.addEventListener("catalog:invalidate",()=>cache.clear());
+window.addEventListener("account:cleared",()=>cache.clear());
 const inflight = new Map();
 const CHUNK = 100;
 
 function fetchChunk(ids) {
   const key = ids.join(",");
   if (inflight.has(key)) return inflight.get(key);
-  const req = base44.functions
-    .invoke("usersByIds", { ids })
-    .then((res) => res?.data?.users || [])
-    .finally(() => inflight.delete(key));
+  const req = (async()=>{
+    try{
+      const res=await base44.functions.invoke("usersByIds",{ids});
+      if(!Array.isArray(res?.data?.users))throw Error("Invalid profile response");
+      return res.data.users;
+    }catch(primary){
+      const res=await base44.functions.invoke("securityGateway",{entity:"User",action:"lookupPublic",args:[ids]});
+      if(!Array.isArray(res?.data?.result))throw primary;
+      return res.data.result;
+    }
+  })().finally(()=>inflight.delete(key));
   inflight.set(key, req);
   return req;
 }

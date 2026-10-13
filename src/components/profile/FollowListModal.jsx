@@ -1,3 +1,4 @@
+import {createPortal} from "react-dom";
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
@@ -10,11 +11,13 @@ import Avatar from "@/components/Avatar";
 export default function FollowListModal({ userId, type, onClose }) {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error,setError]=useState(false);
+  const [retry,setRetry]=useState(0);
 
   useEffect(() => {
     let cancelled = false;
     async function load() {
-      setLoading(true);
+      setLoading(true);setError(false);
       try {
         const filter =
           type === "followers"
@@ -38,7 +41,7 @@ export default function FollowListModal({ userId, type, onClose }) {
         }
         const details = await getUsersByIds(ids);
         if (!cancelled) setUsers(details);
-      } finally {
+      } catch {if(!cancelled)setError(true);} finally {
         if (!cancelled) setLoading(false);
       }
     }
@@ -46,11 +49,11 @@ export default function FollowListModal({ userId, type, onClose }) {
     return () => {
       cancelled = true;
     };
-  }, [userId, type]);
+  }, [userId, type,retry]);
 
-  return (
-    <div
-      className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-end md:items-center justify-center p-0 md:p-4"
+  return createPortal(
+    <div role="dialog" aria-modal="true" aria-label={type==="followers"?"Followers":"Following"} data-public-dialog tabIndex={-1} onKeyDown={e=>{if(e.key==="Escape")onClose();}}
+      className="fixed inset-0 z-[80] bg-black/50 backdrop-blur-sm flex items-end md:items-center justify-center p-0 md:p-4"
       onClick={onClose}
     >
       <div
@@ -62,18 +65,19 @@ export default function FollowListModal({ userId, type, onClose }) {
             {type === "followers" ? "Followers" : "Following"}
           </h3>
           <button
-            onClick={onClose}
+            aria-label="Close follow list" onClick={onClose}
             className="w-8 h-8 grid place-items-center rounded-full hover:bg-foreground/5 text-muted-foreground"
           >
             <X size={18} />
           </button>
         </div>
         <div className="overflow-y-auto flex-1">
+          {error&&<div role="alert" className="p-5 text-sm">The people list could not load. Your saved follows have not been removed. <button className="underline font-semibold" onClick={()=>setRetry(n=>n+1)}>Retry</button></div>}
           {loading ? (
             <div className="py-16 grid place-items-center">
               <Loader2 className="animate-spin text-foreground/30" />
             </div>
-          ) : users.length === 0 ? (
+          ) : users.length === 0 && !error ? (
             <div className="py-16 text-center text-sm text-foreground/50">
               {type === "followers"
                 ? "No followers yet."
@@ -105,6 +109,6 @@ export default function FollowListModal({ userId, type, onClose }) {
           )}
         </div>
       </div>
-    </div>
+    </div>,document.body
   );
 }

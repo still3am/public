@@ -1,4 +1,4 @@
-import { createClientFromRequest } from 'npm:@base44/sdk@0.8.52';
+import { createClientFromRequest } from 'npm:@base44/sdk';
 
 // Resolves many user ids in ONE request. Surfaces like the follower list and the
 // notifications feed previously fired one User.get per id, which burst the API
@@ -18,14 +18,15 @@ export default async function handleRequest(req) {
 
     let rows = [];
     try {
-      rows = await base44.asServiceRole.entities.User.filter({ id: { $in: ids } });
-    } catch {
-      rows = [];
+      rows = await base44.asServiceRole.entities.User.filter({ id: { $in: ids } }, "-created_date", 200);
+      rows=Array.isArray(rows)?rows:rows?.items||[];
+    } catch (error) {
+      return Response.json({error:"Profile lookup is temporarily unavailable"},{status:503});
     }
     if (!rows || rows.length === 0) {
       // Fallback for environments where the $in operator isn't available.
       const found = await Promise.all(
-        ids.slice(0, 50).map((id) => base44.asServiceRole.entities.User.get(id).catch(() => null))
+        ids.map((id) => base44.asServiceRole.entities.User.get(id).catch(error => {if((error.status??error.response?.status)===404)return null;throw error;}))
       );
       rows = found.filter(Boolean);
     }

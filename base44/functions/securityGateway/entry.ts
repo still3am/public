@@ -108,7 +108,26 @@ export default async function handleRequest(req) {
       const rows=await handler.filter({audio_sha256:input.audio_sha256,$or:[{uploader_id:user.id},{is_published:true,approval_status:'approved'}]},'-created_date',1);
       return Response.json({result:{duplicate:rows.length>0}});
     }
+    if(entity==='User'&&action==='lookupPublic'){
+      const ids=Array.isArray(args[0])?[...new Set(args[0].filter(id=>typeof id==='string'&&id))].slice(0,200):[];
+      if(!ids.length)return Response.json({result:[]});
+      const page=await handler.filter({id:{$in:ids},is_blocked:{$ne:true},disabled:{$ne:true}},'-created_date',200,0,['id','display_name','full_name','avatar_url']);
+      const rows=Array.isArray(page)?page:page?.items||[];
+      return Response.json({result:rows.map(u=>({id:u.id,display_name:u.display_name||u.full_name||'',avatar_url:u.avatar_url||''}))});
+    }
     if(action==='read') {
+      if(entity==='Follow'){
+        const [method,query,...options]=args;
+        if(!['filter','count'].includes(method))fail('Unsupported relationship read',400);
+        if(!query||!['follower_id','following_id'].some(key=>typeof query[key]==='string'&&query[key]))fail('Profile ID required',400);
+        if(Object.keys(query).some(key=>!['follower_id','following_id'].includes(key)))fail('Invalid relationship query',400);
+        for(const key of Object.keys(query))if(typeof query[key]!=='string')fail('Invalid profile ID',400);
+        if(method==='count'){
+          try{return Response.json({result:await handler.count(query)});}catch{return Response.json({result:(await all(handler,query)).length});}
+        }
+        return Response.json({result:await handler.filter(query,...options)});
+      }
+
       if(entity==='Track') {
         const [method,...params]=args;
         if(!['get','list','filter','count','aggregate'].includes(method)) fail('Unsupported track read',400);
