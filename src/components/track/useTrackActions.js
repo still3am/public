@@ -146,7 +146,7 @@ export function useTrackActions(track, menuState, ui) {
     { icon: ListMusic, label: "Add to playlist", onClick: () => requireAuth() && ui.openPicker() },
     {
       icon: savingOffline ? Loader2 : offline ? Trash2 : Download,
-      label: savingOffline ? "Downloading…" : offline ? "Remove offline" : "Download",
+      label: savingOffline ? "Saving to offline…" : offline ? "Remove from offline" : "Add to offline",
       spin: savingOffline,
       disabled: savingOffline || (!offline && track.is_downloadable===false),
       onClick: toggleOffline,
