@@ -144,7 +144,7 @@ export default function Search() {
           {searching &&
           <Loader2
             size={15}
-            className="animate-spin absolute right-11 top-1/2 -translate-y-1/2 text-foreground/40 pointer-events-none" />
+            className="hidden md:block animate-spin absolute right-11 top-1/2 -translate-y-1/2 text-foreground/40 pointer-events-none" />
 
           }
 
