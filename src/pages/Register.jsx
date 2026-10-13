@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import { Button } from "@/components/ui/button";
@@ -15,8 +15,7 @@ import { toast } from "@/components/ui/use-toast";
 import { safeReturnTo } from "@/lib/authReturnTo";
 
 export default function Register() {
-  const [providers,setProviders]=useState([]);
-  useEffect(()=>{base44.entities.AppSetting.list('-created_date',1).then(rows=>setProviders(rows[0]?.login_providers||[])).catch(()=>{});},[]);
+  const providers=["apple","google","facebook","microsoft"];
 
   const [accepted,setAccepted]=useState(false);
   const [email, setEmail] = useState("");

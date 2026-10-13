@@ -1,5 +1,5 @@
 import {safeReturnTo} from "@/lib/authReturnTo";
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import { Button } from "@/components/ui/button";
@@ -13,8 +13,7 @@ import FacebookIcon from "@/components/FacebookIcon";
 import MicrosoftIcon from "@/components/MicrosoftIcon";
 
 export default function Login() {
-  const [providers,setProviders]=useState([]);
-  useEffect(()=>{base44.entities.AppSetting.list('-created_date',1).then(rows=>setProviders(rows[0]?.login_providers||[])).catch(()=>{});},[]);
+  const providers=["apple","google","facebook","microsoft"];
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");

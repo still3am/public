@@ -1,3 +1,4 @@
+import {searchPeople} from "@/lib/globalSearch";
 import { useEffect, useState, useRef } from "react";
 import { createPortal } from "react-dom";
 import { base44 } from "@/api/base44Client";
@@ -28,6 +29,9 @@ export default function SendTrackModal({ track, onClose }) {
   const { toast } = useToast();
   const request=useRef(0);
   const [query, setQuery] = useState("");
+  const [retry,setRetry]=useState(0);
+  const [searchFailed,setSearchFailed]=useState(false);
+  const sendingRef=useRef(false);
   const [results, setResults] = useState([]);
   const [searching, setSearching] = useState(false);
   const [picked, setPicked] = useState(null);
@@ -36,7 +40,7 @@ export default function SendTrackModal({ track, onClose }) {
   const [sent, setSent] = useState(null);
 
   useEffect(() => {
-    const id=++request.current;
+    const id=++request.current;setSearchFailed(false);
     const q = query.trim().toLowerCase();
     if (q.length < MIN_QUERY) {
       setResults([]);
@@ -46,22 +50,22 @@ export default function SendTrackModal({ track, onClose }) {
     setSearching(true);
     const timer = setTimeout(async () => {
       try {
-        const res = await base44.functions.invoke("searchUsers", { q });
-        if(id===request.current)setResults(res?.data?.results || []);
+        const res = await searchPeople(q);
+        if(id===request.current)setResults((res?.data?.results || []).filter(person=>person.id!==user?.id));
       } catch {
-        if(id===request.current)setResults([]);
+        if(id===request.current){setResults([]);setSearchFailed(true);}
       } finally {
         if(id===request.current)setSearching(false);
       }
     }, 300);
-    return () => clearTimeout(timer);
-  }, [query]);
+    return () => {request.current++;clearTimeout(timer);};
+  }, [query,retry,user?.id]);
 
   if (!track) return null;
 
   const send = async () => {
-    if (!picked || sending) return;
-    setSending(true);
+    if (!picked || !user?.id || sendingRef.current) return;
+    sendingRef.current=true;setSending(true);
     try {
       await base44.entities.Notification.create({
         user_id: picked.id,
@@ -74,7 +78,7 @@ export default function SendTrackModal({ track, onClose }) {
     } catch {
       toast({ title: "Couldn't send that. Try again.", variant: "destructive" });
     } finally {
-      setSending(false);
+      sendingRef.current=false;setSending(false);
     }
   };
 
@@ -129,6 +133,7 @@ export default function SendTrackModal({ track, onClose }) {
           </div>
         </div>
 
+        {searchFailed&&!picked&&!sent&&<button onClick={()=>setRetry(n=>n+1)} className="text-sm underline p-3">Refresh people</button>}
         {sent ? (
           <div className="flex-1 flex flex-col items-center justify-center py-6 text-center">
             <div className="w-12 h-12 rounded-full bg-emerald-500/15 grid place-items-center mb-3">

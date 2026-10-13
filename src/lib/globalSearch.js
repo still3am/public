@@ -126,7 +126,7 @@ function coverFor(artist, covers) {
   return splitArtistNames(artist.name).map((n) => covers.get(n)).find(Boolean) || "";
 }
 
-async function searchPeople(q) {
+export async function searchPeople(q) {
   try{
     const response=await base44.functions.invoke("searchUsers",{q});
     if(!Array.isArray(response?.data?.results))throw Error("Invalid people response");
