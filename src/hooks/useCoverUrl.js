@@ -75,7 +75,18 @@ export function useCoverUrl(url) {
           if (!cancelled) setFixed(url); // let the <img onError> handle it
           return;
         }
-        const blob = await res.blob();
+        let blob = await res.blob();
+        // Older image hosts use application/octet-stream; preserve actual image
+        // bytes with the correct MIME so Safari can render their object URLs.
+        if(!blob.type.startsWith("image/")){
+          const bytes=new Uint8Array(await blob.slice(0,12).arrayBuffer());
+          let mime;
+          if(bytes[0]===0xff&&bytes[1]===0xd8)mime="image/jpeg";
+          else if(bytes[0]===0x89&&bytes[1]===0x50&&bytes[2]===0x4e&&bytes[3]===0x47)mime="image/png";
+          else if(bytes[0]===0x47&&bytes[1]===0x49&&bytes[2]===0x46)mime="image/gif";
+          else if(bytes[0]===0x52&&bytes[1]===0x49&&bytes[2]===0x46&&bytes[8]===0x57&&bytes[9]===0x45)mime="image/webp";
+          if(mime)blob=new Blob([blob],{type:mime});
+        }
         if (cancelled) return;
         const blobUrl = URL.createObjectURL(blob);
         blobCache.set(url, blobUrl);

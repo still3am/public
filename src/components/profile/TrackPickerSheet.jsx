@@ -1,15 +1,25 @@
 import {useDeferredValue,useEffect,useMemo,useRef,useState} from "react";
 import {getPublishedTracks,peekPublishedTracks,subscribePublishedTracks} from "@/lib/catalogCache";
 import {useCoverUrl} from "@/hooks/useCoverUrl";
+import {Image} from "@/components/ui/image";
 import {Check,Search,Loader2,Music2,X} from "lucide-react";
 import {Dialog,DialogContent,DialogHeader,DialogTitle,DialogDescription} from "@/components/ui/dialog";
-function Cover({url}){const cover=useCoverUrl(url);return cover?<img src={cover} alt="" loading="lazy" decoding="async"/>:<Music2 size={18}/>;}
+function Cover({url}){
+ let cdn=false;try{cdn=["media.base44.com","static.wixstatic.com"].includes(new URL(url).hostname);}catch{}
+ const fixed=useCoverUrl(cdn?"":url);
+ const source=cdn?url:fixed;
+ return source?<Image src={source} fittingType="fill" alt="" className="block w-full h-full" decoding="async"/>:<Music2 size={18}/>;
+}
 export default function TrackPickerSheet({title,selectedIds=[],max=1,tracks=[],onToggle,onClose}){
  const [query,setQuery]=useState(""),[scope,setScope]=useState("all"),[published,setPublished]=useState(peekPublishedTracks),[loading,setLoading]=useState(true),[limit,setLimit]=useState(50),[selecting,setSelecting]=useState("");
  const sentinel=useRef(null),scroll=useRef(null),lock=useRef(false);
  const deferred=useDeferredValue(query);
  useEffect(()=>{let active=true;const unsubscribe=subscribePublishedTracks(rows=>{if(active)setPublished(rows);});getPublishedTracks().then(rows=>{if(active)setPublished(rows);}).catch(()=>{}).finally(()=>{if(active)setLoading(false);});return()=>{active=false;unsubscribe();};},[]);
- const indexed=useMemo(()=>[...new Map([...tracks,...published].filter(t=>t?.id).map(t=>[t.id,t])).values()].map(t=>({track:t,search:[t.title,t.artist,t.uploader_name,t.genre].filter(Boolean).join(" ").toLowerCase()})),[tracks,published]);
+ const indexed=useMemo(()=>{
+  const merged=new Map();
+  for(const track of [...tracks,...published]){if(!track?.id)continue;const previous=merged.get(track.id);merged.set(track.id,{...previous,...track,cover_art_url:track.cover_art_url||previous?.cover_art_url||""});}
+  return [...merged.values()].map(t=>({track:t,search:[t.title,t.artist,t.uploader_name,t.genre].filter(Boolean).join(" ").toLowerCase()}));
+ },[tracks,published]);
  const ownIds=useMemo(()=>new Set(tracks.map(t=>t.id)),[tracks]);
  const filtered=useMemo(()=>{const term=deferred.trim().toLowerCase();return indexed.filter(row=>(scope!=="own"||ownIds.has(row.track.id))&&(!term||row.search.includes(term))).map(row=>row.track);},[indexed,deferred,scope,ownIds]);
  useEffect(()=>{setLimit(50);scroll.current?.scrollTo({top:0});},[deferred,scope]);
