@@ -1,3 +1,4 @@
+import {readAllPages} from "@/lib/readPages";
 import { useEffect, useRef, useState, useCallback } from "react";
 import { Link } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
@@ -127,7 +128,7 @@ export default function Home() {
       getTopTracks(fresh),
       getPublishedTracks(fresh),
       user?.id ?
-      base44.entities.Follow.filter({ follower_id: user.id }, "-created_date", 200).catch(() => []) :
+      readAllPages(opts=>base44.entities.Follow.filter({follower_id:user.id},{sort:"-created_date",...opts})).catch(()=>null) :
       Promise.resolve([])]
       );
       if (request !== loadVersion.current) return;
@@ -135,7 +136,7 @@ export default function Home() {
       setTrending(topTracks.slice(0, 10));
       setNewReleases(published.slice(0, 36));
       // Every published track by the people you follow, not just the newest page.
-      setFromFollowing(published.filter((tk) => followed.has(tk.uploader_id)).slice(0, 12));
+      if(fols!==null)setFromFollowing(published.filter((tk) => followed.has(tk.uploader_id)).slice(0, 12));
       // Top genres = the ones users actually listen to most, measured by
       // aggregated play_count across the most-played tracks on the platform.
       const genrePlays = {};
@@ -234,7 +235,7 @@ export default function Home() {
           {featured && <div className="home-spotlight"><div className="home-spotlight-art">{featured.cover_art_url ? <Image src={featured.cover_art_url} fittingType="fill" alt="" className="w-full h-full" /> : <Music size={42} />}<button className="home-spotlight-play" onClick={playFeatured} aria-label={featuredPlaying ? `Pause ${featured.title}` : `Play ${featured.title}`}>{featuredPlaying ? <Pause size={20} fill="currentColor" /> : <Play size={20} fill="currentColor" />}</button><div className="home-spotlight-menu"><TrackOptionsMenu track={featured} /></div></div><div className="home-spotlight-meta"><div><p className="eyebrow">Featured release</p><Link to={`/track/${featured.id}`} className="font-semibold text-sm block truncate mt-1">{featured.title}</Link><p className="text-xs text-muted-foreground truncate mt-1">{featured.artist || featured.uploader_name}</p></div></div></div>}
         </section>
         
-        {genreList.length > 0 && <div className="home-genre-rail" aria-label="Browse genres">{genreList.map((genre) => null)}</div>}
+        {genreList.length > 0 && <div className="home-genre-rail" aria-label="Browse genres">{genreList.map(genre=><Link key={genre} className="chip" to={`/search?genre=${encodeURIComponent(genre)}`}>{genre}</Link>)}</div>}
         <Section title="New on PUBLIC" icon={Sparkles} seeAllTo="/recent"><ReleaseList tracks={newReleases} /></Section>
         {recent.length > 0 && <Section title="Recently played"><CardRow tracks={recent} /></Section>}
         <Section title="Trending" icon={TrendingUp} seeAllTo="/top">

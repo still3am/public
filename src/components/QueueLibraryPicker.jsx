@@ -16,9 +16,10 @@ export default function QueueLibraryPicker({ open, onClose }) {
   const [loading, setLoading] = useState(false);
   const [query, setQuery] = useState("");
   const [justAdded, setJustAdded] = useState(new Set());
-  const addedRef=useRef(new Set());
+  const addedRef=useRef(new Set()),loadVersion=useRef(0);
 
   const load = useCallback(async () => {
+    const request=++loadVersion.current;
     if (!user?.id) {
       setTracks([]);
       return;
@@ -36,20 +37,17 @@ export default function QueueLibraryPicker({ open, onClose }) {
       const sorted = (list || [])
         .slice()
         .sort((a, b) => (order.get(a.id) ?? 0) - (order.get(b.id) ?? 0));
-      setTracks(sorted);
+      if(request===loadVersion.current)setTracks(sorted);
     } catch {
       // Keep an already-loaded library available.
     } finally {
-      setLoading(false);
+      if(request===loadVersion.current)setLoading(false);
     }
   }, [user?.id]);
 
-  useEffect(() => {
-    if (open) {
-      addedRef.current=new Set();setJustAdded(new Set());
-      load();
-    }
-  }, [open, load, ids]);
+  useEffect(()=>{addedRef.current=new Set();setJustAdded(new Set());setQuery("");},[open,user?.id]);
+  useEffect(()=>{setTracks(null);loadVersion.current++;},[user?.id]);
+  useEffect(()=>{if(open)load();return()=>{loadVersion.current++;};},[open,load,ids]);
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -73,7 +71,7 @@ export default function QueueLibraryPicker({ open, onClose }) {
   const addAll=()=>{const remaining=filtered.filter(track=>!addedRef.current.has(track.id));if(!remaining.length)return;remaining.forEach(track=>addedRef.current.add(track.id));p.addManyToQueue(remaining);setJustAdded(new Set(addedRef.current));};
 
   return (
-    <div className="queue-library-picker absolute inset-0 z-[60] bg-card text-foreground flex flex-col animate-[fadeIn_.2s_ease-out]">
+    <div role="dialog" aria-modal="true" aria-label="Add music from your library" data-public-dialog tabIndex={-1} className="queue-library-picker absolute inset-0 z-[60] bg-card text-foreground flex flex-col animate-[fadeIn_.2s_ease-out]">
       <div className="flex items-center justify-between px-5 pt-8 pb-3 shrink-0">
         <div className="flex items-center gap-2 min-w-0">
           <ListMusic size={20} className="opacity-80 shrink-0" />
@@ -97,6 +95,7 @@ export default function QueueLibraryPicker({ open, onClose }) {
           <input
             value={query}
             onChange={(e) => setQuery(e.target.value)}
+            autoFocus onKeyDown={e=>{if(e.key==="Escape"){e.stopPropagation();onClose();}}}
             aria-label="Search songs to add to queue" placeholder="Search your library"
             className="w-full pl-10 pr-3 py-2.5 rounded-full bg-muted border border-border text-sm placeholder:text-muted-foreground focus:outline-none focus:bg-accent transition"
           />

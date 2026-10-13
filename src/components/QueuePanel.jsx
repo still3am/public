@@ -11,7 +11,7 @@ import {
   Plus,
   Music2,
   GripVertical,
-  GitMerge } from
+  GitMerge, Search } from
 "lucide-react";
 import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
 import { useNavigate } from "react-router-dom";
@@ -33,7 +33,8 @@ export default function QueuePanel({ open, onClose }) {
   const t = useTransitions();
   const nav = useNavigate();
   const [showPicker, setShowPicker] = useState(false);
-  useEffect(()=>{if(!open)setShowPicker(false);},[open]);
+  const [query,setQuery]=useState(""),[dragRows,setDragRows]=useState(null);
+  useEffect(()=>{if(!open){setShowPicker(false);setQuery("");setDragRows(null);}},[open]);
 
   const upcoming = useMemo(
     () => p.queue.map((trk, i) => ({ trk, i })).filter(({ i }) => i > p.currentIndex),
@@ -44,6 +45,9 @@ export default function QueuePanel({ open, onClose }) {
     () => p.queue.map((trk, i) => ({ trk, i })).filter(({ i }) => i < p.currentIndex),
     [p.queue, p.currentIndex]
   );
+
+  const displayUpcoming=dragRows||upcoming;
+  const visibleUpcoming=displayUpcoming.filter(({trk})=>!query.trim()||[trk.title,trk.artist,trk.uploader_name].some(value=>(value||"").toLowerCase().includes(query.trim().toLowerCase())));
 
   if (!open) return null;
 
@@ -60,7 +64,7 @@ export default function QueuePanel({ open, onClose }) {
   null;
 
   return createPortal(
-    <div role="dialog" aria-modal="true" aria-label="Playback queue" data-public-dialog tabIndex={-1} onKeyDown={e=>{if(e.key==="Escape"){e.stopPropagation();onClose?.();}}} className="queue-panel fixed inset-0 z-[60] bg-card text-foreground flex flex-col animate-[fadeIn_.22s_ease-out]">
+    <div role="dialog" aria-modal="true" aria-label="Playback queue" data-public-dialog tabIndex={-1} onKeyDown={e=>{if(e.key==="Escape"){e.stopPropagation();if(showPicker)setShowPicker(false);else onClose?.();}}} className="queue-panel fixed inset-0 z-[60] bg-card text-foreground flex flex-col animate-[fadeIn_.22s_ease-out]">
       {/* Header */}
       <div className="top-bar-safe flex items-center justify-between px-4 pt-2 pb-3 shrink-0 border-b border-border">
         <div className="flex items-center gap-2 min-w-0">
@@ -144,6 +148,8 @@ export default function QueuePanel({ open, onClose }) {
           </button>
         }
 
+        {upcoming.length>5&&<div className="collection-tools mt-2"><div className="relative w-full"><Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground"/><input style={{paddingLeft:38,paddingRight:44}} className="w-full" aria-label="Search upcoming songs" placeholder="Find a song up next" value={query} disabled={!!dragRows} onChange={e=>setQuery(e.target.value)}/>{query&&<button className="absolute right-1 top-1/2 -translate-y-1/2 w-10 h-10 grid place-items-center rounded-full" onClick={()=>setQuery("")} aria-label="Clear queue search"><X size={15}/></button>}</div></div>}
+        {query.trim()&&<p className="text-xs text-muted-foreground px-2 mb-3">{visibleUpcoming.length} matching songs. Clear search to rearrange.</p>}
         {/* Upcoming */}
         <div className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground px-2 mb-1">
           {upcoming.length ? "Next up" : ""}
@@ -160,18 +166,23 @@ export default function QueuePanel({ open, onClose }) {
           </div> :
 
         <DragDropContext
+          onDragStart={()=>setDragRows(upcoming)}
           onDragEnd={(res) => {
+            const rows=dragRows||upcoming;setDragRows(null);
             if (!res.destination) return;
-            const from = upcoming[res.source.index]?.i;
-            const to = upcoming[res.destination.index]?.i;
-            if (from == null || to == null) return;
-            p.moveInQueue(from, to);
+            const source=rows[res.source.index]?.trk,target=rows[res.destination.index]?.trk;
+            const from=p.queue.indexOf(source),to=p.queue.indexOf(target);
+            // Playback and shared queue additions may advance during a drag.
+            // Locate the same entries, and never move the song now playing.
+            if(from<=p.currentIndex||to<=p.currentIndex||from===to)return;
+            p.moveInQueue(from,to);
           }}>
           <Droppable droppableId="queue">
             {(dropProvided) =>
             <div className="space-y-0.5" ref={dropProvided.innerRef} {...dropProvided.droppableProps}>
-            {upcoming.map(({ trk: tt, i }, pos) =>
-              <Draggable key={tt.id + i} draggableId={tt.id + i} index={pos}>
+            {!visibleUpcoming.length&&<div className="collection-empty"><h2>No matching songs</h2><button className="playlist-action" onClick={()=>setQuery("")}>Show upcoming songs</button></div>}
+            {visibleUpcoming.map(({ trk: tt, i }, pos) =>
+              <Draggable key={tt.id + i} draggableId={tt.id + i} index={pos} isDragDisabled={!!query.trim()}>
             {(dragProvided, snapshot) =>
                 <div
                   ref={dragProvided.innerRef}
@@ -192,7 +203,7 @@ export default function QueuePanel({ open, onClose }) {
                   <button
                       onClick={() => p.playQueueItem(i)}
                       className="absolute inset-0 grid place-items-center bg-black/45 opacity-0 group-hover:opacity-100 transition"
-                      aria-label="Play this track">
+                      aria-label={`Play ${tt.title || "song"}`}>
                     <Play size={15} fill="white" />
                   </button>
                 </div>
