@@ -1,5 +1,6 @@
 import { ArrowLeft, Check, Wand2, GitMerge, AlignHorizontalJustifyCenter } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import {resetTransitionSettings} from "@/lib/transitions";
 import { useAuth } from "@/lib/AuthContext";
 import { useTransitions } from "@/hooks/useTransitions";
 import {
@@ -52,8 +53,8 @@ function CrossfadeSlider({ value, disabled, onChange }) {
         <div className="text-sm font-semibold text-foreground mb-4">
           {value} seconds
         </div>
-        <div className="relative">
-          <div className="relative h-1.5 rounded-full bg-muted">
+        <div className="relative h-11 flex items-center">
+          <div className="relative w-full h-1.5 rounded-full bg-muted">
             <div
               className="absolute inset-y-0 left-0 rounded-full bg-primary transition-[width] duration-150"
               style={{ width: `${disabled ? 0 : pct}%` }}
@@ -79,6 +80,7 @@ function CrossfadeSlider({ value, disabled, onChange }) {
           <span>1s</span>
           <span>12s</span>
         </div>
+        <button onClick={resetTransitionSettings} className="border rounded-full px-4 py-2 text-sm">Reset to default</button>
       </div>
     </div>
   );
@@ -109,7 +111,7 @@ export default function SongTransitions() {
   const selectGapless = () => t.setMode(TRANSITION_MODES.GAPLESS);
 
   return (
-    <div className="fixed inset-0 bg-background z-[70] flex flex-col text-foreground">
+    <div className="fixed inset-0 bg-background z-[70] flex flex-col text-foreground md:relative md:inset-auto md:z-auto md:max-w-4xl md:mx-auto md:border md:rounded-3xl md:overflow-hidden">
       {/* Top bar */}
       <div className="top-bar-safe flex items-center px-3 pt-2 pb-3 shrink-0">
         <button
@@ -124,7 +126,7 @@ export default function SongTransitions() {
         <div className="w-9" />
       </div>
 
-      <div className="flex-1 min-h-0 overflow-y-auto px-4 pb-16 space-y-7">
+      <div className="flex-1 min-h-0 overflow-y-auto px-4 pb-16 space-y-7 md:px-8 md:pb-8">
         {/* Master toggle */}
         <section>
           <div className="rounded-2xl bg-card border border-border px-4 py-3.5">
@@ -145,8 +147,7 @@ export default function SongTransitions() {
               </button>
             </div>
             <p className="text-[13px] text-muted-foreground leading-snug mt-2">
-              Beginnings and endings of songs blend together seamlessly. Albums
-              and some genres will still play without transitions.
+              Choose how songs join. Crossfade overlaps their endings; Gapless keeps the complete song before starting the next.
             </p>
           </div>
         </section>
@@ -168,7 +169,7 @@ export default function SongTransitions() {
             <OptionTile
               icon={AlignHorizontalJustifyCenter}
               title="Gapless"
-              subtitle="No fade and no silence — the next song starts the exact instant the last one ends. Ideal for albums and live sets."
+              subtitle="Play songs in sequence without overlapping their endings. Ideal for albums and live sets."
               active={t.isGapless}
               onClick={selectGapless}
             />

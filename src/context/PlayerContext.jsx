@@ -372,14 +372,15 @@ export function PlayerProvider({ children }) {
   // While online we stream from the remote URL; while offline we fall back to
   // the locally cached blob — so the player source automatically follows the
   // connection.
-  const resolveUrl = useCallback(async (track, side) => {
-    sideLoadedIdRef[side].current = track.id;
+  const resolveUrl = useCallback(async (track, side, valid=()=>true) => {
     if(blockedRef.current.has(track.uploader_id))throw Error('This uploader is blocked.');
     let url=track.audio_url,blobUrl=null;
     try{const rec=await getRecord(track.id);if(rec?._blob)blobUrl=URL.createObjectURL(rec._blob);}catch{}
     if(!blobUrl && navigator.onLine && track._private_audio){
       const fresh=await base44.entities.Track.get(track.id);url=fresh.audio_url;
     }
+    if(!valid()){if(blobUrl)URL.revokeObjectURL(blobUrl);throw Error("Playback request was replaced");}
+    sideLoadedIdRef[side].current=track.id;
     if (blobUrlRefs[side].current && blobUrlRefs[side].current !== blobUrl) {
       URL.revokeObjectURL(blobUrlRefs[side].current);
     }
@@ -430,7 +431,7 @@ export function PlayerProvider({ children }) {
       if (!el) return;
       cancelCrossfade();
       const token = ++loadTokenRef.current;
-      let url;try{url = await resolveUrl(track, side);}catch{setIsPlaying(false);window.dispatchEvent(new CustomEvent("player:error",{detail:"This track is unavailable. Check your connection or sign in again."}));return;}
+      let url;try{url = await resolveUrl(track, side,()=>token===loadTokenRef.current&&side===activeIdxRef.current);}catch{if(token!==loadTokenRef.current)return;setIsPlaying(false);window.dispatchEvent(new CustomEvent("player:error",{detail:"This track is unavailable. Check your connection or sign in again."}));return;}
       if (token !== loadTokenRef.current) return; // a newer load superseded us
       mirrorPlayback(el);
       el.src = url;
@@ -463,7 +464,7 @@ export function PlayerProvider({ children }) {
     sideReadyRef[side].current=false;
     if(readyListenerRef[side].current){el.removeEventListener('canplay',readyListenerRef[side].current);readyListenerRef[side].current=null;}
     try{
-      const url=await resolveUrl(track,side);
+      const url=await resolveUrl(track,side,()=>token===preloadVersionRef.current&&side===inactiveIdx());
       if(token!==preloadVersionRef.current||side!==inactiveIdx()||queueRef.current[targetIndex]?.id!==track.id)return;
       mirrorPlayback(el);el.src=url;sideLoadedIdRef[side].current=track.id;
       const ready=()=>{if(token===preloadVersionRef.current&&sideLoadedIdRef[side].current===track.id){sideReadyRef[side].current=true;readyListenerRef[side].current=null;}};
@@ -1017,6 +1018,7 @@ export function PlayerProvider({ children }) {
   }, [nextIndex, transitionTo, currentTrack, extendWithGenreRadio, advanceOffline]);
 
   const prev = useCallback(() => {
+    cancelCrossfade();
     const a = activeEl();
     if (a && a.currentTime > 3) {
       a.currentTime = 0;
@@ -1025,7 +1027,7 @@ export function PlayerProvider({ children }) {
     }
     if (currentIndex - 1 >= 0) setCurrentIndex(currentIndex - 1);
     else if (repeat === "all") setCurrentIndex(queue.length - 1);
-  }, [currentIndex, queue.length, repeat]);
+  }, [currentIndex, queue.length, repeat,cancelCrossfade]);
 
   const getBars = useCallback((seed) => {
     let s = 0;
@@ -1045,12 +1047,13 @@ export function PlayerProvider({ children }) {
   }, []);
 
   const skipBy = useCallback((delta) => {
+    cancelCrossfade();
     const a = activeEl();
     if (!a) return;
     const t = Math.max(0, Math.min(a.duration || 0, (a.currentTime || 0) + delta));
     a.currentTime = t;
     setPosition(t);
-  }, []);
+  }, [cancelCrossfade]);
 
   const addToQueue = useCallback((track) => {
     setDismissed(false);

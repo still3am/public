@@ -25,6 +25,8 @@ const NAV = [
 { to: "/top", label: "Top Charts", icon: TrendingUp },
 { to: "/recent", label: "Recently Added", icon: Clock },
 { to: "/library", label: "Library", icon: LibraryIcon },
+{ to: "/records", label: "Artists", icon: LibraryIcon },
+{ to: "/my-uploads", label: "Your uploads", icon: Upload },
 { to: "/notifications", label: "Notifications", icon: Bell }];
 
 
