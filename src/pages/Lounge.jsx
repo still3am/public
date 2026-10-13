@@ -440,11 +440,11 @@ function LoungeQueueList({ sessionId, isHost }) {
           The queue is empty. Add a song and it shows up here for everyone.
         </p> :
 
-      <div className="space-y-1 max-h-[65vh] overflow-y-auto no-scrollbar">
+      <div className="lounge-queue-scroll space-y-1 max-h-[65vh] overflow-y-auto no-scrollbar">
           {!visibleQueue.length&&<p className="text-sm text-muted-foreground p-3">No matching songs in this queue.</p>}
           {visibleQueue.map((t) => {
           const i=parsed.indexOf(t);
-          const playing = p.currentTrack?.id === t.id;
+          const playing = p.currentTrack?._loungeRowId === t._row.id;
           return (
             <div
               key={t._row.id}
