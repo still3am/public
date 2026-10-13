@@ -126,6 +126,18 @@ function coverFor(artist, covers) {
   return splitArtistNames(artist.name).map((n) => covers.get(n)).find(Boolean) || "";
 }
 
+async function searchPeople(q) {
+  try{
+    const response=await base44.functions.invoke("searchUsers",{q});
+    if(!Array.isArray(response?.data?.results))throw Error("Invalid people response");
+    return {data:{results:response.data.results}};
+  }catch(primary){
+    const response=await base44.functions.invoke("securityGateway",{entity:"User",action:"searchPublic",args:[q]});
+    if(!Array.isArray(response?.data?.result))throw primary;
+    return {data:{results:response.data.result}};
+  }
+}
+
 async function runSearch(query) {
   const Q = query.trim();
   if (!Q) return { tracks: [], artists: [], people: [], playlists: [], failed: false };
@@ -159,7 +171,7 @@ async function runSearch(query) {
         { sort: "-updated_date", limit: ARTIST_SCAN }
       )
     ),
-    read(base44.functions.invoke("searchUsers", { q: lower })),
+    read(searchPeople(lower)),
     read(
       base44.entities.Playlist.filter(
         // A playlist belongs in the results only when the term matches the

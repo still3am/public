@@ -25,6 +25,17 @@ async function all(handler, query) {
   }
   fail('Collection too large for this request',503);
 }
+async function searchPublicUsers(svc,raw) {
+  const q=String(raw||'').trim().replace(/^@/,'').slice(0,100);
+  if(q.length<2)return [];
+  const pattern=q.replace(/[.*+?^$\{\}()|[\]\\]/g,'\\$&');
+  const page=await svc.entities.User.filter({
+    $or:[{display_name:{$regex:pattern,$options:'i'}},{full_name:{$regex:pattern,$options:'i'}}],
+    is_blocked:{$ne:true},disabled:{$ne:true}
+  },'-created_date',30,0,['id','display_name','full_name','avatar_url']);
+  const users=Array.isArray(page)?page:page?.items||[];
+  return users.map(u=>({id:u.id,display_name:u.display_name||u.full_name||'',avatar_url:u.avatar_url||''}));
+}
 export default async function(req) {
   try {
     const base44=createClientFromRequest(req),svc=base44.asServiceRole;
@@ -36,6 +47,10 @@ export default async function(req) {
     if(!caller && !(entity==='Track' && action==='read')) fail('Sign in to continue',401);
     if(!entities.includes(entity)) fail('Unsupported resource',400);
     const handler=svc.entities[entity],isAdmin=user.role===ADMIN;
+    if(entity==='User'&&action==='searchPublic'){
+      return Response.json({result:await searchPublicUsers(svc,args[0])});
+    }
+
     const mine = (r,key) => isAdmin || r?.[key]===user.id;
     const get = async id => { if(typeof id!=='string'||!id) fail('Missing record',400); return await handler.get(id); };
     const relation = async other => {
