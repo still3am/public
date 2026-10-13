@@ -340,7 +340,7 @@ export default function Profile() {
   return (
     <PullToRefresh onRefresh={load}>
 
-    {coverUrl && <div className="profile-color-background fixed inset-0 pointer-events-none z-0" style={{ backgroundImage: `radial-gradient(ellipse at 15% 20%, ${bgPrimary} 0, transparent 60%),radial-gradient(ellipse at 85% 70%, ${bgSecondary} 0, transparent 60%)` }} />}
+    <div className="profile-color-background fixed inset-0 pointer-events-none z-0" aria-hidden="true" />
     <div className="profile-page max-w-6xl mx-auto relative z-10">
       <div className="profile-overview flex flex-col md:flex-row gap-4 md:gap-6 mb-8">
       <div className="profile-identity relative rounded-2xl overflow-hidden ring-1 ring-inset ring-foreground/10 bg-card flex-1 min-w-0">
