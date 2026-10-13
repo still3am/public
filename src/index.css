@@ -618,6 +618,8 @@ html:not(.dark){color-scheme:light;}
 .profile-color-background{opacity:1;filter:none;background:radial-gradient(ellipse at 12% 28%,#007ee8 0%,transparent 65%),radial-gradient(ellipse at 88% 76%,#e5b43f 0%,transparent 65%),linear-gradient(135deg,#07335c,#17120b);}
 .profile-page .profile-identity,.profile-page .profile-featured>div,.profile-page .profile-conversation{background:hsl(var(--card));}
 .profile-page .profile-cover-strip{background:hsl(var(--card));}
+html:not(.dark) .profile-color-background{opacity:1;filter:none;background:radial-gradient(ellipse at 12% 28%,#168ee8 0%,transparent 65%),radial-gradient(ellipse at 88% 76%,#efc350 0%,transparent 65%),linear-gradient(135deg,#c7e6ff,#fff0c5);}
+html:not(.dark) .profile-page .profile-identity,html:not(.dark) .profile-page .profile-featured>div,html:not(.dark) .profile-page .profile-conversation{background:#fff;border-color:rgb(0 0 0/.12);}
 .artist-mode-switch{height:28px!important;min-height:28px!important;width:48px;border-width:4px;}
 .artist-mode-switch>span{height:20px;width:20px;}
 .artist-mode-switch>span[data-state=checked]{transform:translateX(20px);}
