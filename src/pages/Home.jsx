@@ -85,7 +85,7 @@ function Skeleton() {
 
 export default function Home() {
   const { user } = useAuth();
-  const [loadError,setLoadError]=useState("");
+  const [loadError, setLoadError] = useState("");
   const [loading, setLoading] = useState(true);
   const [trending, setTrending] = useState([]);
   const [newReleases, setNewReleases] = useState([]);
@@ -106,7 +106,7 @@ export default function Home() {
   }, []);
   useUnpublishedSync(onUnpublished);
 
-  useEffect(()=>{const handler=()=>load().catch(()=>{});window.addEventListener('catalog:invalidate',handler);return()=>window.removeEventListener('catalog:invalidate',handler);},[user?.id]);
+  useEffect(() => {const handler = () => load().catch(() => {});window.addEventListener('catalog:invalidate', handler);return () => window.removeEventListener('catalog:invalidate', handler);}, [user?.id]);
 
   async function load() {
     setLoading(true);
@@ -193,7 +193,7 @@ export default function Home() {
     load();
   }, []);
 
-  if(loadError&&!trending.length)return <div className="p-8 text-center space-y-4"><p role="alert">{loadError}</p><button className="border p-3 rounded-xl" onClick={load}>Retry</button></div>;
+  if (loadError && !trending.length) return <div className="p-8 text-center space-y-4"><p role="alert">{loadError}</p><button className="border p-3 rounded-xl" onClick={load}>Retry</button></div>;
   if (loading && !trending.length) return <Skeleton />;
 
   const allEmpty =
@@ -234,7 +234,7 @@ export default function Home() {
           <div className="absolute -left-12 -bottom-20 w-64 h-64 rounded-full bg-foreground/[0.04] blur-3xl pointer-events-none" />
 
           <div className="relative w-full">
-            <p className="eyebrow mb-5">{greeting} · PUBLIC</p>
+            <p className="eyebrow mb-5 hidden">{greeting} · PUBLIC</p>
             
 
             
@@ -245,7 +245,7 @@ export default function Home() {
               Your next favorite sound is here. Discover music made and shared by the community.
             </p>
             <div className="flex flex-wrap items-center gap-4 mb-1">
-              <Link to="/search" className="chrome-button text-sm">Explore music <ChevronRight size={16}/></Link>
+              <Link to="/search" className="chrome-button text-sm">Explore music <ChevronRight size={16} /></Link>
               <ScoreboardTrackCount count={totalTracks} />
             </div>
             
