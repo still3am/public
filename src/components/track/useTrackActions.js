@@ -1,7 +1,7 @@
 import {useRef} from "react";
 import {
   Play, Pause, ListPlus, Check, Plus, ListMusic, Download, Trash2, Loader2, Heart,
-  Music2, User, UserPlus, UserCheck, Radio, Smartphone, Share2, Flag, EyeOff, Send,
+  CloudOff, Music2, User, UserPlus, UserCheck, Radio, Smartphone, Share2, Flag, EyeOff, Send,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
@@ -11,6 +11,7 @@ import { useLibrary } from "@/context/LibraryContext";
 import { useOfflineCache } from "@/hooks/useOfflineCache";
 import { useToast } from "@/components/ui/use-toast";
 import { buildAutoQueue } from "@/lib/autoQueue";
+import {downloadTrackFile} from "@/lib/downloadTrackFile";
 import { shareTrack } from "@/lib/shareTrack";
 
 /**
@@ -26,6 +27,7 @@ export function useTrackActions(track, menuState, ui) {
   const { isInLibrary, toggle } = useLibrary();
   const cache = useOfflineCache();
   const mixing=useRef(false);
+  const exporting=useRef(false);
 
   const requireAuth = () => {
     if (user) return true;
@@ -76,13 +78,12 @@ export function useTrackActions(track, menuState, ui) {
 
   const toggleOffline = async () => {
     if(!requireAuth()) return;
-    if(!offline && track.is_downloadable===false){toast({title:"The artist has not enabled downloads"});return;}
     if (offline) {
       await cache.removeTrack(track.id);
       toast({ title: "Removed from downloads" });
       return;
     }
-    const ok = await cache.downloadTrack(track);
+    const ok = await cache.saveForOffline(track);
     toast(ok ? { title: "Saved for offline" } : { title: "Couldn't save offline", variant: "destructive" });
   };
 
@@ -145,11 +146,20 @@ export function useTrackActions(track, menuState, ui) {
     },
     { icon: ListMusic, label: "Add to playlist", onClick: () => requireAuth() && ui.openPicker() },
     {
-      icon: savingOffline ? Loader2 : offline ? Trash2 : Download,
+      icon: savingOffline ? Loader2 : offline ? Trash2 : CloudOff,
       label: savingOffline ? "Saving to offline…" : offline ? "Remove from offline" : "Add to offline",
       spin: savingOffline,
-      disabled: savingOffline || (!offline && track.is_downloadable===false),
+      disabled: savingOffline,
       onClick: toggleOffline,
+    },
+    {
+      icon:Download,label:"Download to device",disabled:track.is_downloadable!==true,
+      onClick:async()=>{
+        if(!requireAuth()||exporting.current)return;
+        exporting.current=true;
+        try{if(await downloadTrackFile(track))toast({title:"File download started"});}
+        catch{/* Keep playback unchanged. */}finally{exporting.current=false;}
+      },
     },
     {
       icon: Heart,
@@ -185,7 +195,7 @@ export function useTrackActions(track, menuState, ui) {
   // Visual dividers: playback | your stuff | navigate/follow | extras | report
   const GROUPS = [
     [Play, Pause, ListPlus],
-    [Check, Plus, ListMusic, Download, Trash2, Loader2, Heart],
+    [Check, Plus, ListMusic, Download, CloudOff, Trash2, Loader2, Heart],
     [Music2, User, UserPlus, UserCheck],
     [Radio, Smartphone, Share2, Send],
     [Flag],

@@ -127,7 +127,6 @@ export function useOfflineCache() {
     setDownloading((s) => ({ ...s, [track.id]: true }));
     try {
       const authorized=await base44.entities.Track.get(track.id);
-      if(authorized.is_downloadable!==true)throw new Error("Download permission was removed");
       track=authorized;
       if(!track.audio_url)throw new Error("Audio link is unavailable");
       const controller=new AbortController();
@@ -176,7 +175,7 @@ export function useOfflineCache() {
     const cloud = await getCloudList(user.id);
     for (const saved of cloud) {
       const t=await base44.entities.Track.get(saved.id).catch(()=>null);
-      if(!t || !t.is_downloadable) continue;
+      if(!t) continue;
       if (cachedIds.has(t.id) || autoQueued.has(t.id)) continue;
       autoQueued.add(t.id);
       downloadTrack(t).then(ok=>{if(!ok)autoQueued.delete(t.id);}).catch(()=>autoQueued.delete(t.id));
@@ -230,6 +229,7 @@ export function useOfflineCache() {
     refresh,
     isCached: (id) => (cachedIds ? cachedIds.has(id) : false),
     downloadTrack,
+    saveForOffline:downloadTrack,
     removeTrack,
     reorder,
     clearAllCache,
