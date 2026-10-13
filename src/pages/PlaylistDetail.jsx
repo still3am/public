@@ -39,6 +39,7 @@ export default function PlaylistDetail(){
   if(sort==='title')rows.sort((a,b)=>(a.title||'').localeCompare(b.title||''));
   if(sort==='artist')rows.sort((a,b)=>(a.artist||'').localeCompare(b.artist||''));
   if(sort==='duration')rows.sort((a,b)=>(b.duration_seconds||0)-(a.duration_seconds||0));
+  if(sort==='shortest')rows.sort((a,b)=>(a.duration_seconds||0)-(b.duration_seconds||0));
   return rows;
  },[tracks,query,sort]);
  const total=tracks.reduce((n,t)=>n+(t.duration_seconds||0),0),missing=Math.max(0,(playlist?.track_ids||[]).length-tracks.length);
@@ -109,11 +110,11 @@ export default function PlaylistDetail(){
    </div>
   </section>
   <div className="playlist-toolbar">
-   <div className="relative flex-1 max-w-md"><Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground"/><input aria-label="Search this playlist" value={query} onChange={e=>setQuery(e.target.value)} placeholder="Search in this playlist" className="w-full bg-background border rounded-xl pl-10 pr-3 py-2.5 text-sm"/></div>
-   <select aria-label="Sort playlist" value={sort} onChange={e=>setSort(e.target.value)} className="bg-background border rounded-xl px-3 py-2.5 text-sm"><option value="custom">Playlist order</option><option value="title">Title</option><option value="artist">Artist</option><option value="duration">Longest first</option></select>
-   {isOwn&&view.length>0&&<button className="playlist-action text-xs" onClick={()=>setSelected(selected.size===view.length?new Set():new Set(view.map(t=>t.id)))}>Select visible</button>}
+   <div className="relative flex-1 max-w-md"><Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground"/><input aria-label="Search this playlist" value={query} onChange={e=>setQuery(e.target.value)} onKeyDown={e=>{if(e.key==='Escape')setQuery('');}} placeholder="Search in this playlist" className="w-full bg-background border rounded-xl pl-10 pr-12 py-2.5 text-sm"/>{query&&<button type="button" aria-label="Clear playlist search" onClick={()=>setQuery('')} className="absolute right-1 top-1/2 -translate-y-1/2 w-10 h-10 grid place-items-center rounded-lg text-muted-foreground hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring"><X size={15}/></button>}</div>
+   <select aria-label="Sort playlist" value={sort} onChange={e=>setSort(e.target.value)} className="bg-background border rounded-xl px-3 py-2.5 text-sm"><option value="custom">Playlist order</option><option value="title">Title</option><option value="artist">Artist</option><option value="duration">Longest first</option><option value="shortest">Shortest first</option></select>
+   {isOwn&&view.length>0&&<button className="playlist-action text-xs" onClick={()=>setSelected(prev=>{const next=new Set(prev),allVisible=view.every(t=>prev.has(t.id));view.forEach(t=>{if(allVisible)next.delete(t.id);else next.add(t.id);});return next;})}>{view.every(t=>selected.has(t.id))?'Deselect visible':'Select visible'}</button>}
   </div>
-  {selected.size>0&&isOwn&&<div className="flex items-center justify-between border rounded-xl p-3 mb-3 text-sm"><span>{selected.size} selected</span><button disabled={busy} onClick={()=>remove([...selected])} className="text-destructive inline-flex gap-2 items-center"><Trash2 size={15}/>Remove selected</button></div>}
+  {selected.size>0&&isOwn&&<div className="flex items-center justify-between border rounded-xl p-3 mb-3 text-sm"><div className="flex flex-wrap items-center gap-3"><span>{selected.size} selected</span><button type="button" disabled={busy} onClick={()=>setSelected(new Set())} className="text-xs text-muted-foreground hover:text-foreground underline underline-offset-4">Clear selection</button></div><button disabled={busy} onClick={()=>remove([...selected])} className="text-destructive inline-flex gap-2 items-center"><Trash2 size={15}/>Remove selected</button></div>}
   {!view.length?<EmptyState icon={ListMusic} title={query?'No matching songs':'No songs yet'} description={query?'Try a different title or artist.':'Add music to start building this playlist.'}/>:
    <div className="playlist-song-list">{view.map((t,i)=><div key={t.id} className="playlist-song-item">
     {isOwn&&<input aria-label={'Select '+t.title} type="checkbox" checked={selected.has(t.id)} onChange={()=>setSelected(prev=>{const next=new Set(prev);next.has(t.id)?next.delete(t.id):next.add(t.id);return next;})}/>}
