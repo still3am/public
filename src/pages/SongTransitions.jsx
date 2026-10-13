@@ -81,7 +81,6 @@ function CrossfadeSlider({ value, disabled, onChange }) {
           <span>1s</span>
           <span>12s</span>
         </div>
-        <button onClick={()=>{lastMode.current=TRANSITION_MODES.CROSSFADE;resetTransitionSettings();}} className="border rounded-full px-4 py-2 text-sm">Reset to default</button>
       </div>
     </div>
   );
@@ -199,6 +198,7 @@ export default function SongTransitions() {
             onChange={t.setCrossfadeSeconds}
           />
         </section>
+        <button onClick={()=>{lastMode.current=TRANSITION_MODES.CROSSFADE;resetTransitionSettings();}} className="border rounded-full px-4 py-2 text-sm">Reset to default</button>
       </div>
     </div>
   );
