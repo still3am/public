@@ -36,7 +36,8 @@ export default function Admin() {
 
   if(user?.role!=="admin")return <div className="p-8 text-center">You do not have access to this area.</div>;
   return (
-    <div className="min-h-dvh pb-24 md:pb-12">
+    <div className="admin-page min-h-dvh pb-24 md:pb-12">
+      <header className="page-intro"><p className="eyebrow">PUBLIC admin</p><h1>Manage your community</h1><p>Review music, support requests, reports, and release settings.</p></header>
       {denied ? (
         <div className="max-w-3xl mx-auto mt-20 text-center text-muted-foreground">
           <Music2 size={32} className="mx-auto mb-3 opacity-40" />
@@ -44,13 +45,13 @@ export default function Admin() {
         </div>
       ) : (
         <>
-          <div className="sticky top-[calc(3.5rem_+_env(safe-area-inset-top))] z-30 -mx-4 sm:-mx-5 md:-mx-8 lg:-mx-12 px-4 sm:px-5 md:px-8 lg:px-12 pt-2 pb-2 bg-background/80 backdrop-blur border-b border-border tab-strip flex gap-1.5 overflow-x-auto no-scrollbar">
+          <div role="group" aria-label="Admin sections" className="sticky top-[calc(3.5rem_+_env(safe-area-inset-top))] z-30 -mx-4 sm:-mx-5 md:-mx-8 lg:-mx-12 px-4 sm:px-5 md:px-8 lg:px-12 pt-2 pb-2 bg-background/80 backdrop-blur border-b border-border tab-strip flex gap-1.5 overflow-x-auto no-scrollbar">
             {tabs.map(t => {
               const Icon = t.icon;
               const on = tab === t.id;
               return (
                 <button
-                  key={t.id}
+                  aria-pressed={on} key={t.id}
                   onClick={() => setTab(t.id)}
                   className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap transition ${
                     on ? "bg-foreground text-background" : "text-muted-foreground hover:text-foreground"
@@ -61,7 +62,7 @@ export default function Admin() {
             })}
           </div>
 
-          <div className="max-w-5xl mx-auto">
+          <div role="region" aria-label={tabs.find(item=>item.id===tab)?.label} className="max-w-5xl mx-auto pt-6">
             {tab === "readiness" && <ReleaseReadiness />}
             {tab === "support" && <SupportInbox />}
             {tab === "approvals" && <ApprovalsManager />}

@@ -1,3 +1,4 @@
+import {Image} from "@/components/ui/image";
 import { Link } from "react-router-dom";
 import { Check, X, Music2, Loader2 } from "lucide-react";
 
@@ -6,10 +7,10 @@ import { Check, X, Music2, Loader2 } from "lucide-react";
 /** @param {any} props */
 export default function ApprovalRow({ track, busy, onApprove, onReject }) {
   return (
-    <div className="flex items-center gap-3 p-2 rounded-xl border border-border/70 bg-background/40">
+    <div className="grid grid-cols-[44px_minmax(0,1fr)] sm:flex items-center gap-3 p-3 rounded-xl border border-border/70 bg-background/40">
       <div className="w-11 h-11 rounded-md overflow-hidden bg-foreground/10 shrink-0 grid place-items-center">
         {track.cover_art_url ? (
-          <img src={track.cover_art_url} alt="" className="w-full h-full object-cover" />
+          <Image src={track.cover_art_url} fittingType="fill" alt="" className="w-full h-full"/>
         ) : (
           <Music2 size={16} className="text-foreground/40" />
         )}
@@ -28,7 +29,7 @@ export default function ApprovalRow({ track, busy, onApprove, onReject }) {
           by {track.uploader_name || "Unknown"}
         </div>
       </div>
-      <div className="flex items-center gap-1 shrink-0">
+      <div className="col-span-2 flex items-center justify-end gap-2 shrink-0">
         <button
           onClick={onApprove}
           disabled={busy}
