@@ -28,7 +28,8 @@ export function useTrackActions(track, menuState, ui) {
   const cache = useOfflineCache();
   const mixing=useRef(false),latestPlayer=useRef(p),account=useRef(user?.id),alive=useRef(true);latestPlayer.current=p;account.current=user?.id;
   useEffect(()=>{alive.current=true;return()=>{alive.current=false;};},[]);
-  const exporting=useRef(false);
+  const exporting=useRef(false),likeLock=useRef(false),followLock=useRef(false);
+  const actionKey=[user?.id,track.id,track.uploader_id].join(":"),latestAction=useRef(actionKey);latestAction.current=actionKey;
 
   const requireAuth = () => {
     if (user) return true;
@@ -47,19 +48,21 @@ export function useTrackActions(track, menuState, ui) {
   const artistName = track.artist || track.uploader_name || "artist";
 
   const toggleLike = async () => {
-    if (!requireAuth()) return;
+    if (!requireAuth()||!menuState.likeReady||likeLock.current) return;
+    likeLock.current=true;const started=actionKey;
     menuState.setLiked(!liked);
     try {
       await base44.functions.invoke("toggleLike", { track_id: track.id, liked: !liked });
       toast({ title: liked ? "Removed from liked" : "Liked" });
     } catch {
-      menuState.setLiked(liked);
-      toast({ title: "Couldn't update like", variant: "destructive" });
-    }
+      if(alive.current&&latestAction.current===started)menuState.setLiked(liked);
+      // Keep the confirmed value when the write fails.
+    } finally{likeLock.current=false;}
   };
 
   const toggleFollow = async () => {
-    if (!requireAuth()) return;
+    if (!requireAuth()||!menuState.followReady||followLock.current) return;
+    followLock.current=true;const started=actionKey;
     menuState.setFollowing(!following);
     try {
       if (following) {
@@ -72,9 +75,9 @@ export function useTrackActions(track, menuState, ui) {
       }
       toast({ title: following ? `Unfollowed ${artistName}` : `Following ${artistName}` });
     } catch {
-      menuState.setFollowing(following);
-      toast({ title: "Couldn't update follow", variant: "destructive" });
-    }
+      if(alive.current&&latestAction.current===started)menuState.setFollowing(following);
+      // Keep the confirmed value when the write fails.
+    } finally{followLock.current=false;}
   };
 
   const toggleOffline = async () => {
@@ -168,6 +171,7 @@ export function useTrackActions(track, menuState, ui) {
       label: liked ? "Unlike" : "Like",
       active: liked,
       fill: liked,
+      disabled:!!user&&!menuState.likeReady,
       onClick: toggleLike,
     },
     { icon: Music2, label: "Go to track", onClick: () => nav(`/track/${track.id}`) },
@@ -176,6 +180,7 @@ export function useTrackActions(track, menuState, ui) {
       icon: following ? UserCheck : UserPlus,
       label: following ? `Unfollow ${artistName}` : `Follow ${artistName}`,
       active: following,
+      disabled:!!user&&!menuState.followReady,
       onClick: toggleFollow,
     },
     { icon: Radio, label: "Mix", onClick: startMix },
