@@ -19,4 +19,4 @@ console.log('PASS transient profile lookup failure preserves notification sender
 
 await n.markAllAsRead();n=render();assert.equal(allAction,'markAllRead');assert.equal(n.unreadCount,0);assert(n.notifications.every(n=>n.read));
 console.log('PASS mark-all calls server action and updates visible inbox');
-console.log(JSON.stringify({passed:4,environment:'actual notification hook with isolated React/SDK dependencies; no live data changed'}));
+console.log(JSON.stringify({passed:5,environment:'actual notification hook with isolated React/SDK dependencies; no live data changed'}));
