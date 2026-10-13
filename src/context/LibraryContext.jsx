@@ -18,7 +18,7 @@ export function LibraryProvider({ children }) {
     const uid=user?.id,request=++version.current;
     if(!uid){setIds(new Set());return;}
     try{
-      const items=await readAllPages(options=>base44.entities.LibraryItem.filter({user_id:uid},{sort:"-created_date",...options}));
+      const items=await readAllPages(options=>base44.entities.LibraryItem.filter({user_id:uid},{sort:"-created_date",fields:["id","track_id"],...options}));
       if(request!==version.current||account.current!==uid)return;
       const next=new Set(items.map(item=>item.track_id).filter(Boolean));
       pending.current.forEach((operation,id)=>{if(operation.uid===uid){if(operation.desired)next.add(id);else next.delete(id);}});
@@ -39,7 +39,7 @@ export function LibraryProvider({ children }) {
       if (!user?.id || !track?.id) return false;
       const trackId = track.id;
       if(pending.current.has(trackId))return false;
-      const uid=user.id,isIn=ids.has(trackId),operation={uid,desired:!isIn};
+      const uid=user.id,isIn=owner.current===user.id&&ids.has(trackId),operation={uid,desired:!isIn};
       pending.current.set(trackId,operation);
 
       // Optimistic: the heart flips the instant it is tapped, then the write is

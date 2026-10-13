@@ -237,14 +237,13 @@ export default function Profile({ownProfileTab=false}) {
   }
 
   async function uploadAvatar(file) {
+    if(uploadingAvatar||!file?.type.startsWith("image/")||file.size>10*1024*1024)return;
     setUploadingAvatar(true);
     try {
       const { file_url } = await base44.integrations.Core.UploadFile({ file });
-      setForm((f) => ({ ...f, avatar_url: file_url }));
+      if(file_url)setForm((f) => ({ ...f, avatar_url: file_url }));
     } catch {
-      alert(
-        "Profile image uploads are temporarily unavailable. Please try again later."
-      );
+      // Keep the current profile image if upload does not complete.
     } finally {
       setUploadingAvatar(false);
     }
@@ -320,7 +319,7 @@ export default function Profile({ownProfileTab=false}) {
   }
 
   async function confirmDelete() {
-    if (deleteConfirm.trim().toUpperCase() !== "DELETE") return;
+    if (deleting||deleteConfirm.trim().toUpperCase() !== "DELETE") return;
     setDeleting(true);
     try {
       const result = await base44.functions.invoke("deleteMyAccount", {});
@@ -329,9 +328,7 @@ export default function Profile({ownProfileTab=false}) {
       base44.auth.logout(window.location.origin + "/login");
     } catch {
       setDeleting(false);
-      alert(
-        "Could not delete your account right now. Please try again or contact support."
-      );
+      // Keep the confirmation open so the user can retry or use Support.
     }
   }
 

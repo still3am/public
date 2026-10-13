@@ -1,64 +1,12 @@
-import { useState } from "react";
-import { ChevronDown, Check } from "lucide-react";
-
-/** @param {any} props */
-export default function BottomSheetSelect({
-  value,
-  options,
-  onChange,
-  placeholder = "Select…",
-  className = ""
-}) {
-  const [open, setOpen] = useState(false);
-  const current = options.find((o) => (o.value ?? o) === value);
-  const label = current?.label ?? current ?? value ?? placeholder;
-  return (
-    <>
-      <button
-        type="button"
-        onClick={() => setOpen(true)}
-        className={`tap-target inline-flex items-center justify-between gap-2 rounded-lg border border-border bg-background hover:bg-foreground/[0.02] px-3 text-sm ${className}`}>
-        
-        <span className={current ? "text-foreground font-medium" : "text-foreground/40"}>
-          {label}
-        </span>
-        <ChevronDown size={16} className="text-foreground/40 shrink-0" />
-      </button>
-      {open &&
-      <div
-        className="fixed inset-0 z-50 flex items-end sm:items-center sm:justify-center bg-black/40 backdrop-blur-sm"
-        onClick={() => setOpen(false)}>
-        
-          <div
-          className="bg-background w-full sm:max-w-sm rounded-t-2xl sm:rounded-2xl p-3 shadow-2xl max-h-[70vh] overflow-y-auto animate-in slide-in-from-bottom duration-200"
-          onClick={(e) => e.stopPropagation()}>
-          
-            <div className="mx-auto w-10 h-1 rounded-full bg-foreground/20 mb-3" />
-            <div className="space-y-1">
-              {options.map((opt) => {
-              const v = opt.value ?? opt;
-              const l = opt.label ?? opt;
-              const isActive = v === value;
-              return (
-                <button
-                  key={v}
-                  onClick={() => {
-                    onChange(v);
-                    setOpen(false);
-                  }}
-                  className={`tap-target w-full text-left px-3 rounded-lg text-sm transition flex items-center justify-between ${
-                  isActive ? "bg-foreground text-background" : "hover:bg-foreground/[0.04]"}`
-                  }>
-                  
-                    <span className="min-w-0 truncate">{l}</span>
-                    {isActive && <Check size={16} className="shrink-0" />}
-                  </button>);
-
-            })}
-            </div>
-          </div>
-        </div>
-      }
-    </>);
-
+import {useEffect,useId,useMemo,useState} from 'react';
+import {createPortal} from 'react-dom';
+import {ChevronDown,Check,Search,X} from 'lucide-react';
+const valueOf=option=>option&&typeof option==='object'?option.value:option;
+const labelOf=option=>String(option&&typeof option==='object'?option.label??option.value??'':option??'');
+export default function BottomSheetSelect({value,options=[],onChange,placeholder='Select…',className='',disabled=false,label='Choose an option'}){
+ const [open,setOpen]=useState(false),[query,setQuery]=useState('');const id=useId();
+ const current=options.find(option=>valueOf(option)===value),display=current!==undefined?labelOf(current):value==null?placeholder:String(value);
+ const visible=useMemo(()=>options.filter(option=>!query.trim()||labelOf(option).toLowerCase().includes(query.trim().toLowerCase())),[options,query]);
+ useEffect(()=>{if(!open)setQuery('');},[open]);
+ return <><button type="button" disabled={disabled} aria-haspopup="dialog" aria-expanded={open} aria-controls={open?id:undefined} onClick={()=>setOpen(true)} className={`tap-target inline-flex items-center justify-between gap-2 min-w-0 rounded-xl border bg-background hover:bg-accent px-3 text-sm disabled:opacity-50 ${className}`}><span className="min-w-0 flex-1 truncate text-left" title={display}>{display}</span><ChevronDown size={16} className="text-muted-foreground shrink-0"/></button>{open&&createPortal(<div id={id} role="dialog" aria-modal="true" aria-label={label} data-public-dialog tabIndex={-1} onKeyDown={event=>{if(event.key==='Escape'){event.stopPropagation();setOpen(false);}}} className="fixed inset-0 z-[140] flex items-end sm:items-center justify-center bg-black/50 backdrop-blur-sm" onClick={()=>setOpen(false)}><section className="bg-card text-foreground w-full sm:max-w-sm rounded-t-3xl sm:rounded-3xl border shadow-2xl max-h-[85dvh] flex flex-col pb-[env(safe-area-inset-bottom)]" onClick={event=>event.stopPropagation()}><header className="flex items-center justify-between gap-3 p-4 border-b"><h2 className="text-base font-bold">{label}</h2><button type="button" aria-label="Close selection" onClick={()=>setOpen(false)} className="tap-target rounded-full hover:bg-accent"><X size={18}/></button></header>{options.length>8&&<div className="relative m-3"><Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground"/><input autoFocus aria-label="Search available options" placeholder="Find an option" value={query} onChange={event=>setQuery(event.target.value)} className="w-full pl-10 pr-3 py-3 border rounded-xl bg-background"/></div>}<div className="min-h-0 overflow-y-auto p-3 space-y-1">{!visible.length&&<p className="text-sm text-muted-foreground text-center p-6">No matching options.</p>}{visible.map(option=>{const next=valueOf(option),active=next===value;return <button key={String(next)} type="button" aria-pressed={active} onClick={()=>{onChange?.(next);setOpen(false);}} className={`tap-target w-full text-left px-3 py-2 rounded-xl text-sm flex items-center justify-between gap-3 ${active?'bg-foreground text-background':'hover:bg-accent'}`}><span className="min-w-0 flex-1">{labelOf(option)}</span>{active&&<Check size={16} className="shrink-0"/>}</button>;})}</div></section></div>,document.body)}</>;
 }

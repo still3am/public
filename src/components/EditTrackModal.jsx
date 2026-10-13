@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { base44 } from "@/api/base44Client";
 import { GENRES } from "@/lib/audio-utils";
 import { Loader2, X, Save, Trash2 } from "lucide-react";
@@ -19,6 +19,8 @@ export default function EditTrackModal({ track, onClose, onSaved, onDeleted }) {
   const [coverPreview, setCoverPreview] = useState(track.cover_art_url || "");
   const [saving, setSaving] = useState(false);
   const [deleting, setDeleting] = useState(false);
+  const baseline=useRef(form),artwork=useRef(null),writeLock=useRef(false),alive=useRef(true);
+  useEffect(()=>{alive.current=true;return()=>{alive.current=false;};},[]);
 
   // Revoke any blob: preview URL when the modal closes so picking a new cover
   // repeatedly doesn't leak object URLs.
@@ -35,6 +37,7 @@ export default function EditTrackModal({ track, onClose, onSaved, onDeleted }) {
   }
 
   function pickCover(file) {
+    if(!file?.type.startsWith("image/")||file.size>10*1024*1024||writeLock.current)return;
     setCover(file);
     if (coverPreview?.startsWith("blob:")) {
       try { URL.revokeObjectURL(coverPreview); } catch {}
@@ -43,48 +46,41 @@ export default function EditTrackModal({ track, onClose, onSaved, onDeleted }) {
   }
 
   async function save() {
-    if (!form.title.trim()) return;
-    setSaving(true);
+    if (!form.title.trim()||writeLock.current) return;
+    writeLock.current=true;setSaving(true);
     try {
-      let cover_art_url = coverPreview;
-      if (cover) {
-        const { file_url } = await base44.integrations.Core.UploadFile({
-          file: cover,
-        });
-        cover_art_url = file_url;
+      const normalized={...form,title:form.title.trim(),artist:(form.artist||'').trim()};
+      const payload=Object.fromEntries(Object.entries(normalized).filter(([key,value])=>value!==baseline.current[key]));
+      if(cover){
+        if(artwork.current?.file!==cover){const result=await base44.integrations.Core.UploadFile({file:cover});if(!result?.file_url)throw Error('Artwork did not upload');artwork.current={file:cover,url:result.file_url};}
+        payload.cover_art_url=artwork.current.url;
       }
-      const payload = {
-        ...form,
-        title: form.title.trim(),
-        artist: (form.artist || "").trim(),
-        cover_art_url,
-      };
-      await base44.entities.Track.update(track.id, payload);
-      onSaved?.({ ...track, ...payload });
-      onClose();
+      if(!alive.current)return;
+      if(!Object.keys(payload).length){onClose();return;}
+      const saved=await base44.entities.Track.update(track.id,payload);
+      if(alive.current){onSaved?.(saved?.id?saved:{...track,...payload});onClose();}
     } catch (e) {
-      alert("Could not save. Try again later.");
+      // Keep the draft and uploaded artwork ready for another attempt.
     } finally {
-      setSaving(false);
+      writeLock.current=false;if(alive.current)setSaving(false);
     }
   }
 
   async function del() {
-    if (!window.confirm("Delete this track permanently? This cannot be undone.")) return;
-    setDeleting(true);
+    if(writeLock.current||!window.confirm("Delete this track permanently? This cannot be undone."))return;
+    writeLock.current=true;setDeleting(true);
     try {
       await base44.entities.Track.delete(track.id);
-      onDeleted?.();
-      onClose();
+      if(alive.current){onDeleted?.();onClose();}
     } catch {
-      alert("Could not delete. Try again later.");
+      // Keep the track and the delete control available if the request fails.
     } finally {
-      setDeleting(false);
+      writeLock.current=false;if(alive.current)setDeleting(false);
     }
   }
 
   return (
-    <div role="dialog" aria-modal="true" aria-label="EditTrack" data-public-dialog tabIndex={-1} onKeyDown={e=>{if(e.key==="Escape"){e.stopPropagation();onClose?.();}}} className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm grid place-items-center p-4 overflow-y-auto">
+    <div role="dialog" aria-modal="true" aria-label="Edit track" data-public-dialog tabIndex={-1} onKeyDown={e=>{if(e.key==="Escape"){e.stopPropagation();onClose?.();}}} className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm grid place-items-center p-4 overflow-y-auto">
       <div className="bg-card rounded-2xl w-full max-w-lg p-5 my-auto shadow-2xl">
         <div className="flex items-center justify-between mb-5">
           <h2 className="text-lg font-extrabold tracking-tight">Edit track</h2>
@@ -110,24 +106,27 @@ export default function EditTrackModal({ track, onClose, onSaved, onDeleted }) {
                 "Cover"
               )}
               <input
+                aria-label="Choose track cover" disabled={saving||deleting}
                 type="file"
                 accept="image/*"
                 className="hidden"
                 onChange={(e) => {
-                  const f = e.target.files?.[0];
+                  const f = e.target.files?.[0];e.target.value="";
                   if (f) pickCover(f);
                 }}
               />
             </label>
             <div className="flex-1 space-y-2">
               <input
-                value={form.title}
+                aria-label="Track title" disabled={saving||deleting}
+            value={form.title}
                 onChange={(e) => patch({ title: e.target.value })}
                 placeholder="Track title"
                 className="w-full px-3 py-2 rounded-lg border border-border bg-background text-sm font-semibold focus:outline-none"
               />
               <input
-                value={form.artist}
+                aria-label="Artist name" disabled={saving||deleting}
+            value={form.artist}
                 onChange={(e) => patch({ artist: e.target.value })}
                 placeholder="Artist (defaults to your name)"
                 className="w-full px-3 py-2 rounded-lg border border-border bg-background text-sm focus:outline-none"
