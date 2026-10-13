@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useEffect,useMemo } from "react";
 import {useCoverUrl} from "@/hooks/useCoverUrl";
 function QueueCover({url}){const cover=useCoverUrl(url);return cover?<img src={cover} alt="" className="w-full h-full object-cover"/>:<Music2 size={18} className="text-muted-foreground"/>;}
 import {
@@ -34,6 +34,7 @@ export default function QueuePanel({ open, onClose }) {
   const t = useTransitions();
   const nav = useNavigate();
   const [showPicker, setShowPicker] = useState(false);
+  useEffect(()=>{if(!open)setShowPicker(false);},[open]);
 
   const upcoming = useMemo(
     () => p.queue.map((trk, i) => ({ trk, i })).filter(({ i }) => i > p.currentIndex),
@@ -211,7 +212,7 @@ export default function QueuePanel({ open, onClose }) {
                 <TrackOptionsMenu
                     track={tt}
                     size={16}
-                    buttonClassName="w-8 h-8 rounded-full grid place-items-center text-muted-foreground hover:text-white hover:bg-muted active:scale-90 transition"
+                    buttonClassName="w-8 h-8 rounded-full grid place-items-center text-muted-foreground hover:text-foreground hover:bg-accent active:scale-90 transition"
                     items={[{ icon: Trash2, label: "Remove from queue", danger: true, onClick: () => p.removeFromQueue(i) }]} />
               </div>
                 }
