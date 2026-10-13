@@ -25,7 +25,7 @@ import { useMyPlaylists } from "@/hooks/useMyPlaylists";
 
 export default function Library() {
   const { user } = useAuth();
-  const { ids, refresh } = useLibrary();
+  const { ids, refresh, revision } = useLibrary();
   const cache = useOfflineCache();
   const [tracks, setTracks] = useState(null);
   const [recentlyPlayed, setRecentlyPlayed] = useState([]);
@@ -45,7 +45,7 @@ export default function Library() {
   const [showBulkPlaylist, setShowBulkPlaylist] = useState(false);
   const [bulkBusy, setBulkBusy] = useState(false);
   const { toast } = useToast();
-  const { playlists, reload: reloadPlaylists } = useMyPlaylists();
+  const { playlists, reload: reloadPlaylists, error:playlistError } = useMyPlaylists();
 
   // Shown on the PUBLIC OFFLINE row so the row states how much is on the device.
   const offlineCount = cache.records.length;
@@ -109,7 +109,7 @@ export default function Library() {
   useEffect(() => {
     load();
     loadSavedPlaylists();
-  }, [load, loadSavedPlaylists, ids]);
+  }, [load, loadSavedPlaylists, ids, revision]);
 
   useEffect(() => {
     const handler = () => setRecentlyPlayed(getRecentPlays());
@@ -239,7 +239,7 @@ export default function Library() {
           </section>}
           {libraryView === "playlists" && <>
             <section className="mb-8"><div className="library-section-heading"><h2>Your playlists <span>{ownPlaylists.length}</span></h2></div>
-              {!playlists ? <div className="py-8 grid place-items-center"><Loader2 size={18} className="animate-spin" /></div> : ownPlaylists.length ? <div className="library-playlist-grid">{ownPlaylists.map((pl) => <PlaylistCard key={pl.id} playlist={pl} />)}</div> : <EmptyState icon={ListMusic} title={search ? "No matching playlists" : "Your next mix starts here"} description={search ? "Try a different playlist name." : "Collect your favorites and make a playlist for any mood."} action={!search && <button className="chrome-button" onClick={() => setShowCreate(true)}><Plus size={15} />Create playlist</button>} />}
+              {!playlists ? <div className="py-8 grid place-items-center">{playlistError?<button className="playlist-action" onClick={()=>reloadPlaylists()}>Refresh playlists</button>:<Loader2 size={18} className="animate-spin" />}</div> : ownPlaylists.length ? <div className="library-playlist-grid">{ownPlaylists.map((pl) => <PlaylistCard key={pl.id} playlist={pl} />)}</div> : <EmptyState icon={ListMusic} title={search ? "No matching playlists" : "Your next mix starts here"} description={search ? "Try a different playlist name." : "Collect your favorites and make a playlist for any mood."} action={!search && <button className="chrome-button" onClick={() => setShowCreate(true)}><Plus size={15} />Create playlist</button>} />}
             </section>
             {otherPlaylists.length > 0 && <section><div className="library-section-heading"><h2>Saved playlists <span>{otherPlaylists.length}</span></h2></div><div className="library-playlist-grid">{otherPlaylists.map((pl) => <div key={pl.id} className="relative group/saved-playlist"><PlaylistCard playlist={pl} /><button onClick={(e) => {e.preventDefault();e.stopPropagation();unsavePlaylist(pl.id);}} disabled={unsavingIds.has(pl.id)} className={`absolute z-20 top-1 right-1 w-11 h-11 grid place-items-center rounded-full text-foreground transition disabled:opacity-60 ${editMode ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none group-hover/saved-playlist:opacity-100 group-hover/saved-playlist:pointer-events-auto group-focus-within/saved-playlist:opacity-100 group-focus-within/saved-playlist:pointer-events-auto focus-visible:opacity-100 focus-visible:pointer-events-auto"}`} aria-label={`Remove ${pl.name} from saved playlists`} title="Remove saved playlist"><span className="w-6 h-6 rounded-full grid place-items-center bg-background/95 border border-border shadow-sm">{unsavingIds.has(pl.id) ? <Loader2 size={12} className="animate-spin" /> : <X size={12} />}</span></button></div>)}</div></section>}
           </>}
@@ -248,7 +248,7 @@ export default function Library() {
       </PullToRefresh>
       {showOrganize && <BulkOrganizeSheet folders={folders} trackIds={selectedIds} onClose={() => setShowOrganize(false)} onDone={() => {setShowOrganize(false);exitEditMode();load();}} />}
       {showCreate && <CreatePlaylistModal onClose={() => setShowCreate(false)} onCreated={() => {reloadPlaylists();chooseView("playlists");}} />}
-      {showBulkPlaylist && <BulkAddToPlaylistSheet trackIds={selectedIds} playlists={playlists} onClose={() => setShowBulkPlaylist(false)} onDone={() => {setShowBulkPlaylist(false);exitEditMode();}} />}
+      {showBulkPlaylist && <BulkAddToPlaylistSheet trackIds={selectedIds} playlists={playlists} error={playlistError} onRetry={()=>reloadPlaylists()} onClose={() => setShowBulkPlaylist(false)} onDone={() => {setShowBulkPlaylist(false);exitEditMode();}} />}
     </div>);
 
 }

@@ -18,7 +18,7 @@ export async function buildAutoQueue(seed, excludeIds = [], limit = 15, userGenr
   const skip = new Set(excludeIds);
   if (seed?.id) skip.add(seed.id);
 
-  const catalog=(await getPublishedTracks()).filter(t=>t?.audio_url||t?._offline);
+  const catalog=(await getPublishedTracks()).filter(t=>t?.audio_url||t?._private_audio||t?._offline);
   const sameArtist=catalog.filter(t=>seed?.artist&&t.artist===seed.artist);
   const sameGenre=catalog.filter(t=>seed?.genre&&t.genre===seed.genre);
   const popular=[...catalog].sort((a,b)=>(b.play_count||0)-(a.play_count||0));
