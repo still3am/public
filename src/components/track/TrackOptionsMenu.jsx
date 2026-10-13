@@ -112,7 +112,8 @@ export default function TrackOptionsMenu({
   };
 
   const pick = (item) => {
-    setOpen(false);
+    if(item.disabled)return;
+    if(!item.keepOpen)setOpen(false);
     item.onClick?.();
   };
 

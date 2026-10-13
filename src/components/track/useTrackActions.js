@@ -183,7 +183,7 @@ export function useTrackActions(track, menuState, ui) {
       disabled:!!user&&!menuState.followReady,
       onClick: toggleFollow,
     },
-    user&&(!menuState.likeReady||(canFollow&&!menuState.followReady))&&{icon:RefreshCw,label:"Refresh song actions",onClick:menuState.reload},
+    user&&(!menuState.likeReady||(canFollow&&!menuState.followReady))&&{icon:RefreshCw,label:"Refresh song actions",keepOpen:true,onClick:menuState.reload},
     { icon: Radio, label: "Mix", onClick: startMix },
     { icon: Smartphone, label: "Lounge", onClick: () => requireAuth() && ui.openLounge() },
     { icon: Share2, label: "Share", onClick: share },
