@@ -10,7 +10,7 @@ const TRACK_LIMIT = 40;
 const PLAYLIST_LIMIT = 20; // public playlists the server returns per search
 const ARTIST_SCAN = 50; // artist records the server may return per search
 const ARTIST_SHOWN = 20; // ranked, de-duplicated artist rows actually surfaced
-const COVER_SCAN = 100; // published tracks read to borrow one cover per artist
+const COVER_SCAN = 200; // artwork page size; continue until each artist has a match
 
 function escapeRegex(input) {
   return input.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
@@ -71,7 +71,12 @@ function pruneArtists(artists, lower) {
   const byName = new Map();
   for (const artist of artists) {
     const key = normalizeName(artist.name);
-    if (key && !byName.has(key)) byName.set(key, artist);
+    if (key && !byName.has(key)) byName.set(key, {...artist});
+    else if(key){
+      const newest=byName.get(key);
+      if(!newest.cover_art_url&&artist.cover_art_url)newest.cover_art_url=artist.cover_art_url;
+      if(!newest.avatar_url&&artist.avatar_url)newest.avatar_url=artist.avatar_url;
+    }
   }
   return [...byName.values()]
     .sort((a, b) => rankArtist(b, lower) - rankArtist(a, lower))
@@ -84,8 +89,8 @@ function creditPattern(name) {
   return `(^|[^a-z0-9])${escapeRegex(name)}([^a-z0-9]|$)`;
 }
 
-// Artist records carry no artwork of their own, so each row borrows the cover of
-// that artist's most recent published track. Two things have to hold for that to
+// Missing artist artwork is filled from the artist's newest accessible track.
+// Track permissions still control which covers this listener can retrieve. Two things have to hold for that to
 // work: a track's artist tag often lists several credits at once ("Yeat, Drake"),
 // so the match is made against each credited name, and the query is narrowed on
 // the server to the artists actually on screen instead of scanning whichever
@@ -94,28 +99,22 @@ async function artistCovers(names) {
   const wanted = new Set(names.flatMap(splitArtistNames));
   if (!wanted.size) return new Map();
 
-  const res = await read(
-    base44.entities.Track.filter(
-      {
-        is_published: true,
-        cover_art_url: { $exists: true, $ne: "" },
-        $or: [...wanted].map((name) => ({
-          artist: { $regex: creditPattern(name), $options: "i" },
-        })),
-      },
-      {
-        sort: "-created_date",
-        limit: COVER_SCAN,
-        fields: ["artist", "cover_art_url"],
-      }
-    )
-  );
-
   const map = new Map();
-  for (const track of rows(res.value)) {
-    for (const credit of splitArtistNames(track.artist)) {
-      if (wanted.has(credit) && !map.has(credit)) map.set(credit, track.cover_art_url);
+  let cursor;
+  for(let page=0;page<40;page++){
+    const res=await read(base44.entities.Track.filter({
+      cover_art_url:{$exists:true,$ne:""},
+      $or:[...wanted].map(name=>({artist:{$regex:creditPattern(name),$options:"i"}}))
+    },{sort:"-created_date",limit:COVER_SCAN,fields:["artist","cover_art_url"],...(cursor?{cursor}:{})}));
+    if(!res.ok)break;
+    for(const track of rows(res.value)){
+      if(!track.cover_art_url?.trim())continue;
+      for(const credit of splitArtistNames(track.artist)){
+        if(wanted.has(credit)&&!map.has(credit))map.set(credit,track.cover_art_url);
+      }
     }
+    if(map.size===wanted.size||Array.isArray(res.value)||!res.value?.has_more||!res.value?.next_cursor)break;
+    cursor=res.value.next_cursor;
   }
   return map;
 }
