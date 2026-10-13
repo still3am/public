@@ -19,7 +19,7 @@ export default function PlaylistDetail(){
  const [editing,setEditing]=useState(false),[showAdd,setShowAdd]=useState(false),[busy,setBusy]=useState(false),[saved,setSaved]=useState(false);
  const [query,setQuery]=useState(''),[sort,setSort]=useState('custom'),[selected,setSelected]=useState(new Set());
  const [form,setForm]=useState({name:'',description:'',is_public:true}),[coverFile,setCoverFile]=useState(null),[preview,setPreview]=useState('');
- const version=useRef(0),writeLock=useRef(false),imageMemo=useRef(null),baseline=useRef(null);
+ const version=useRef(0),writeLock=useRef(false),imageMemo=useRef(null),baseline=useRef(null),savedRead=useRef(0);
  const load=useCallback(async()=>{
   const v=++version.current;setLoading(true);setError(false);
   try{
@@ -31,7 +31,7 @@ export default function PlaylistDetail(){
   }catch{if(v===version.current)setError(true);}finally{if(v===version.current)setLoading(false);}
  },[id]);
  useEffect(()=>{setSelected(new Set());setQuery('');setSort('custom');setSaved(false);load();return()=>{version.current++;};},[load]);
- useEffect(()=>{let alive=true;if(user?.id)base44.entities.SavedPlaylist.filter({user_id:user.id,playlist_id:id},'-created_date',1).then(rows=>{if(alive)setSaved(!!rows.length);}).catch(()=>{});return()=>{alive=false;};},[id,user?.id]);
+ useEffect(()=>{let alive=true;const request=++savedRead.current;if(user?.id)base44.entities.SavedPlaylist.filter({user_id:user.id,playlist_id:id},'-created_date',1).then(rows=>{if(alive&&request===savedRead.current)setSaved(!!rows.length);}).catch(()=>{});return()=>{alive=false;};},[id,user?.id]);
  useEffect(()=>()=>{if(preview)URL.revokeObjectURL(preview);},[preview]);
  const isOwn=!!user&&playlist?.creator_id===user.id;
  const cover=useCoverUrl(preview||playlist?.cover_art_url||tracks.find(t=>t.cover_art_url)?.cover_art_url||'');
@@ -62,7 +62,7 @@ export default function PlaylistDetail(){
    const payload=Object.fromEntries(Object.entries(values).filter(([key,value])=>value!==(key==='is_public'?!!original[key]:original[key]||'')));
    if(coverFile)payload.cover_art_url=url;
    const result=Object.keys(payload).length?await base44.entities.Playlist.update(id,payload):playlist;
-   setPlaylist(result);setEditing(false);setPreview('');setCoverFile(null);toast({title:'Playlist updated'});
+   baseline.current=result;setPlaylist(result);setEditing(false);setPreview('');setCoverFile(null);toast({title:'Playlist updated'});
   });
  }
  async function move(t,delta){
@@ -85,6 +85,7 @@ export default function PlaylistDetail(){
  }
  async function toggleSaved(){
   if(!user){nav('/login?returnTo='+encodeURIComponent(window.location.pathname));return;}
+  savedRead.current++;
   await write(async()=>{if(saved)await base44.entities.SavedPlaylist.deleteMany({user_id:user.id,playlist_id:id});else{const existing=await base44.entities.SavedPlaylist.filter({user_id:user.id,playlist_id:id},'-created_date',1);if(!existing.length)await base44.entities.SavedPlaylist.create({user_id:user.id,playlist_id:id});}setSaved(!saved);toast({title:saved?'Removed from your library':'Added to your library'});});
  }
  const playAll=shuffle=>{if(!tracks.length)return;p.setShuffle(false);p.playTrackAt(shuffle?shufflePlaylist(tracks):tracks,0);};
