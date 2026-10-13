@@ -2,7 +2,6 @@ import {usePlayer} from "@/context/PlayerContext";
 import { useRef } from "react";
 import { Outlet, useLocation } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
-import AppHeader from "@/components/AppHeader";
 import PageHeading from "@/components/PageHeading";
 import Sidebar from "@/components/Sidebar";
 import MobileTabBar from "@/components/MobileTabBar";
@@ -46,7 +45,6 @@ export default function Layout() {
       <Sidebar />
       <div className="flex-1 flex flex-col min-w-0">
         <ScrollingBanner />
-        <AppHeader />
         <main className="flex-1 w-full mx-auto main-content app-content">
           <PageHeading />
           {TABS.map(({ path, Page }) =>
