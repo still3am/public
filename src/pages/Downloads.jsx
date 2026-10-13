@@ -88,7 +88,7 @@ export default function Downloads() {
 
   return (
     <div className="downloads-page max-w-3xl mx-auto">
-      <header className="page-intro"><h1>PUBLIC Offline</h1><p>Your downloaded music, wherever you go.</p></header>
+      <header className="page-intro"><h1>PUBLIC Offline</h1><p>Saved for listening without Wi-Fi or data.</p></header>
       
 
       
@@ -144,11 +144,10 @@ export default function Downloads() {
               <CloudOff size={28} className="text-foreground/35" />
             </div>
             <h2 className="text-lg font-extrabold tracking-tight mb-1.5">
-              No downloads yet
+              No offline music yet
             </h2>
             <p className="text-sm text-foreground/50 max-w-xs mx-auto">
-              Tap the download icon on any song to save it here for offline
-              listening.
+              Open a song’s menu and choose Add to offline to save it here for listening without a connection.
             </p>
           </div> :
 
@@ -170,6 +169,7 @@ export default function Downloads() {
               </div>
           }
 
+            {!visibleTracks.length && <div className="collection-empty"><h2>No matching songs</h2><p>Try another title or artist.</p><button className="playlist-action" onClick={()=>setQuery("")}>Show all offline music</button></div>}
             <DragDropContext onDragStart={() => setDragging(true)} onDragEnd={onDragEnd}>
               <Droppable droppableId="downloads">
                 {(dropProvided) =>
@@ -230,7 +230,7 @@ export default function Downloads() {
                       <button
                           onClick={() => removeOne(t.id)}
                           className="p-2 rounded-full text-foreground/45 hover:text-destructive hover:bg-destructive/5 active:scale-90 transition shrink-0"
-                          aria-label="Remove download">
+                          aria-label={`Remove ${t.title} from offline music`}>
                         <Trash2 size={15} />
                       </button>
                     </div>
