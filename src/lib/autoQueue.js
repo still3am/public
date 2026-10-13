@@ -1,4 +1,4 @@
-import { base44 } from "@/api/base44Client";
+import { getPublishedTracks } from "@/lib/catalogCache";
 
 function shuffle(arr) {
   const a = [...arr];
@@ -18,38 +18,16 @@ export async function buildAutoQueue(seed, excludeIds = [], limit = 15, userGenr
   const skip = new Set(excludeIds);
   if (seed?.id) skip.add(seed.id);
 
-  const genreQueries = (userGenres?.length ? userGenres : seed?.genre ? [seed.genre] : []).slice(0, 4);
-
-  const [sameArtist, sameGenre, popular, fresh, userGenreLists] = await Promise.all([
-    seed?.artist
-      ? base44.entities.Track.filter(
-          { is_published: true, artist: seed.artist },
-          "-created_date",
-          30
-        ).catch(() => [])
-      : Promise.resolve([]),
-    seed?.genre
-      ? base44.entities.Track.filter(
-          { is_published: true, genre: seed.genre },
-          "-created_date",
-          50
-        ).catch(() => [])
-      : Promise.resolve([]),
-    base44.entities.Track.filter({ is_published: true }, "-play_count", 50).catch(
-      () => []
-    ),
-    base44.entities.Track.filter({ is_published: true }, "-created_date", 50).catch(
-      () => []
-    ),
-    Promise.all(
-      genreQueries.map((g) =>
-        base44.entities.Track.filter({ is_published: true, genre: g }, "-play_count", 40).catch(() => [])
-      )
-    ),
-  ]);
+  const catalog=(await getPublishedTracks()).filter(t=>t?.audio_url||t?._offline);
+  const sameArtist=catalog.filter(t=>seed?.artist&&t.artist===seed.artist);
+  const sameGenre=catalog.filter(t=>seed?.genre&&t.genre===seed.genre);
+  const popular=[...catalog].sort((a,b)=>(b.play_count||0)-(a.play_count||0));
+  const fresh=catalog;
+  const userGenreLists=[catalog.filter(t=>(userGenres||[]).includes(t.genre))];
 
   const take = (list, n) => {
     const out = [];
+    if(n<=0)return out;
     for (const t of list) {
       if (!t?.id || skip.has(t.id)) continue;
       skip.add(t.id);
@@ -69,5 +47,5 @@ export async function buildAutoQueue(seed, excludeIds = [], limit = 15, userGenr
     ...take(shuffle(fresh), 2),
   ];
 
-  return picks.slice(0, limit);
+  return [...picks,...take(shuffle(catalog),Math.max(0,limit-picks.length))].slice(0,limit);
 }

@@ -1,3 +1,4 @@
+import {useRef} from "react";
 import {
   Play, Pause, ListPlus, Check, Plus, ListMusic, Download, Trash2, Loader2, Heart,
   Music2, User, UserPlus, UserCheck, Radio, Smartphone, Share2, Flag, EyeOff, Send,
@@ -24,6 +25,7 @@ export function useTrackActions(track, menuState, ui) {
   const { toast } = useToast();
   const { isInLibrary, toggle } = useLibrary();
   const cache = useOfflineCache();
+  const mixing=useRef(false);
 
   const requireAuth = () => {
     if (user) return true;
@@ -74,7 +76,7 @@ export function useTrackActions(track, menuState, ui) {
 
   const toggleOffline = async () => {
     if(!requireAuth()) return;
-    if(!offline && !track.is_downloadable){toast({title:"The artist has not enabled downloads"});return;}
+    if(!offline && track.is_downloadable===false){toast({title:"The artist has not enabled downloads"});return;}
     if (offline) {
       await cache.removeTrack(track.id);
       toast({ title: "Removed from downloads" });
@@ -85,9 +87,15 @@ export function useTrackActions(track, menuState, ui) {
   };
 
   const startMix = async () => {
-    toast({ title: "Building your mix…" });
-    const more = await buildAutoQueue(track, [], 20);
-    p.playTrackAt([track, ...more]);
+    if(mixing.current)return;mixing.current=true;
+    const progress=toast({title:"Building your mix…",duration:20000});
+    try{
+      const more=await buildAutoQueue(track,[],20);
+      if(!more.length)return;
+      if(isCurrent)p.setQueue([...p.queue.slice(0,p.currentIndex+1),...more]);
+      else p.playTrackAt([track,...more]);
+      toast({title:`Mix ready · ${more.length} songs`});
+    }catch{/* Keep the current playback and queue. */}finally{mixing.current=false;progress.dismiss();}
   };
 
   const share = async () => {
@@ -139,7 +147,7 @@ export function useTrackActions(track, menuState, ui) {
       icon: savingOffline ? Loader2 : offline ? Trash2 : Download,
       label: savingOffline ? "Downloading…" : offline ? "Remove offline" : "Download",
       spin: savingOffline,
-      disabled: savingOffline || (!offline && !track.is_downloadable),
+      disabled: savingOffline || (!offline && track.is_downloadable===false),
       onClick: toggleOffline,
     },
     {

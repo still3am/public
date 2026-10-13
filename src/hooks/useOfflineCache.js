@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import {
   putTrack,
+  getRecord,
   putCoverArt,
   listRecords,
   deleteRecord,
@@ -119,32 +120,41 @@ export function useOfflineCache() {
   }, [refresh]);
 
   const downloadTrack = useCallback(async (track) => {
-    if (!user?.id || !track?.id || track.is_downloadable!==true) return false;
+    if (!user?.id || !track?.id) return false;
     if(downloadingIds.has(track.id))return false;
     downloadingIds.add(track.id);
     const startedGeneration=generation;
     setDownloading((s) => ({ ...s, [track.id]: true }));
     try {
       const authorized=await base44.entities.Track.get(track.id);
-      if(!authorized.is_downloadable)throw new Error("Download permission was removed");
+      if(authorized.is_downloadable!==true)throw new Error("Download permission was removed");
       track=authorized;
-      const res = await fetch(track.audio_url);
+      if(!track.audio_url)throw new Error("Audio link is unavailable");
+      const controller=new AbortController();
+      const timer=setTimeout(()=>controller.abort(),60000);
+      let blob;
+      try{
+      const res = await fetch(track.audio_url,{signal:controller.signal});
       if (!res.ok) throw new Error("Download failed");
-      const blob = await res.blob();
+      blob = await res.blob();
+      if(!blob.size||blob.type.includes("text/html")||blob.type.includes("application/json"))throw new Error("Invalid audio download");
+      }finally{clearTimeout(timer);}
       // Best-effort: cache the cover-art image too so it renders offline.
       let coverBlob = null;
       try {
         if (track.cover_art_url) {
-        const cres = await fetch(track.cover_art_url);
+        const cres = await fetch(track.cover_art_url,{signal:AbortSignal.timeout(10000)});
         if (cres.ok) coverBlob = await toImageBlob(cres);
         }
       } catch {}
       if(startedGeneration!==generation)throw new Error("Account changed during download");
       await putTrack(track, blob, coverBlob);
+      const stored=await getRecord(track.id);
+      if(!stored?._blob?.size)throw new Error("Audio did not persist");
       // Keep the saved download order in sync: a freshly saved track goes to
       // the top so it's easy to find (matching the previous newest-first view).
       const order = (await getOrderIds()) || [];
-      await setOrderIds([track.id, ...order.filter((id) => id !== track.id)]);
+      await setOrderIds([track.id, ...order.filter((id) => id !== track.id)]).catch(()=>{});
       // Mirror this save into the user's cloud offline list so other devices
       // auto-download it too.
       if (user?.id) addCloudTrack(user.id, track).catch(() => {});
