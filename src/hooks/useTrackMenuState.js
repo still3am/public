@@ -9,6 +9,7 @@ export function useTrackMenuState(track, open) {
   const key=[user?.id,track?.id,artistId].join(':');
   const empty={key,liked:false,following:false,likeReady:false,followReady:false};
   const [state,setState]=useState(empty);
+  const [retry,setRetry]=useState(0);
   const current=state.key===key?state:empty;
   const canFollow=!!user&&!!artistId&&artistId!==user.id;
   useEffect(()=>{
@@ -27,8 +28,8 @@ export function useTrackMenuState(track, open) {
       });
     });
     return()=>{alive=false;};
-  },[open,key,canFollow]);
+  },[open,key,canFollow,retry]);
   const patch=change=>setState(previous=>previous.key===key?{...previous,...change}:previous);
-  return {...current,ready:current.likeReady&&current.followReady,canFollow,
+  return {...current,reload:()=>setRetry(value=>value+1),ready:current.likeReady&&current.followReady,canFollow,
     setLiked:liked=>patch({liked}),setFollowing:following=>patch({following})};
 }

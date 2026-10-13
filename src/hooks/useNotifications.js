@@ -46,6 +46,7 @@ export function useUnreadCount() {
 export function useNotifications(){
  const {user}=useAuth();
  const [notifications,setNotifications]=useState([]),[loading,setLoading]=useState(true),[error,setError]=useState(false),[hasMore,setHasMore]=useState(false),[unreadCount,setUnreadCount]=useState(0);
+ const paging=useRef({pages:0,hasMore:false});
  const cursor=useRef(null),epoch=useRef(0),busy=useRef(false),account=useRef(user?.id),readingIds=useRef(new Set()),markingAll=useRef(false);account.current=user?.id;
  const load=useCallback(async(reset=true)=>{
   if(!user?.id){setNotifications([]);setUnreadCount(0);setLoading(false);return;}
@@ -66,15 +67,18 @@ export function useNotifications(){
     const merged=enriched.map(n=>markingAll.current||readingIds.current.has(n.id)?{...n,read:true}:n);
     if(!reset)return [...prev,...merged.filter(n=>!previous.has(n.id))];
     const boundary=items.at(-1)?.created_date,headIds=new Set(items.map(n=>n.id));
-    const older=page.has_more&&boundary?prev.filter(n=>!headIds.has(n.id)&&n.created_date<boundary):[];
+    const older=page.has_more&&boundary?prev.filter(n=>!headIds.has(n.id)&&n.created_date<=boundary):[];
     return [...merged,...older];
    });
-   cursor.current=page.next_cursor||null;setHasMore(!!page.has_more&&!!page.next_cursor);if(typeof count==="number"&&!markingAll.current&&!readingIds.current.size)setUnreadCount(count);
+   const more=!!page.has_more&&!!page.next_cursor;
+   if(!reset||paging.current.pages<=1||!more){
+    cursor.current=page.next_cursor||null;paging.current={pages:reset?1:paging.current.pages+1,hasMore:more};setHasMore(more);
+   }else setHasMore(paging.current.hasMore);if(typeof count==="number"&&!markingAll.current&&!readingIds.current.size)setUnreadCount(count);
   }catch{if(request===epoch.current)setError(true);}
   finally{if(request===epoch.current){setLoading(false);busy.current=false;}}
  },[user?.id]);
  useEffect(()=>{
-  cursor.current=null;epoch.current++;busy.current=false;readingIds.current.clear();markingAll.current=false;setHasMore(false);setNotifications([]);setUnreadCount(0);load(true);
+  cursor.current=null;paging.current={pages:0,hasMore:false};epoch.current++;busy.current=false;readingIds.current.clear();markingAll.current=false;setHasMore(false);setNotifications([]);setUnreadCount(0);load(true);
   if(!user?.id)return;
   const reload=coalesce(()=>load(true),1500);let unsub=()=>{};try{unsub=base44.entities.Notification.subscribe(()=>reload());}catch{}
   const timer=setInterval(reload,30000);
