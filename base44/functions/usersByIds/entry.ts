@@ -50,6 +50,8 @@ export default async function handleRequest(req) {
       soundcloud: u.soundcloud || '',
       status_message: u.status_message || '',
       featured_track_id: u.featured_track_id || '',
+      profile_background_mode: u.profile_background_mode || 'auto',
+      profile_background_colors: Array.isArray(u.profile_background_colors) ? u.profile_background_colors : [],
       top_track_ids: Array.isArray(u.top_track_ids) ? u.top_track_ids : [],
       is_artist: !!u.is_artist,
       created_date: u.created_date || '',

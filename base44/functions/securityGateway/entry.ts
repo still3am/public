@@ -306,7 +306,12 @@ export default async function handleRequest(req) {
         }
       } else if(entity==='User') {
         if(kind!=='update'||id!==user.id) fail('Profile access denied');
-        data=pick(data,['display_name','bio','avatar_url','banner_url','location','pronouns','website','instagram','twitter','soundcloud','status_message','featured_track_id','top_track_ids','is_artist','show_explicit','adult_confirmed']);
+        data=pick(data,['display_name','bio','avatar_url','banner_url','location','pronouns','website','instagram','twitter','soundcloud','status_message','featured_track_id','top_track_ids','is_artist','show_explicit','adult_confirmed','profile_background_mode','profile_background_colors']);
+        if(data.profile_background_mode!==undefined&&!['auto','custom','off'].includes(data.profile_background_mode))fail('Invalid background mode',422);
+        if(data.profile_background_colors!==undefined){
+          if(!Array.isArray(data.profile_background_colors)||data.profile_background_colors.length>3||data.profile_background_colors.some(c=>typeof c!=='string'||!/^#[0-9a-f]{6}$/i.test(c)))fail('Invalid profile colors',422);
+          data.profile_background_colors=[...new Set(data.profile_background_colors.map(c=>c.toLowerCase()))];
+        }
         if(data.show_explicit===true && !(data.adult_confirmed===true || user.adult_confirmed===true)) fail('Confirm that you are 18 or older to show explicit content',422);
         await moderate(svc,[data.display_name,data.bio,data.status_message].filter(Boolean).join('\n'));
         for(const tid of [data.featured_track_id,...(data.top_track_ids||[])].filter(Boolean)) await requireTrack(tid);

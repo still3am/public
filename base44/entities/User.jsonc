@@ -161,6 +161,29 @@
         "read": false,
         "write": false
       }
+    },
+    "profile_background_mode": {
+      "type": "string",
+      "enum": [
+        "auto",
+        "custom",
+        "off"
+      ],
+      "default": "auto",
+      "rls": {
+        "write": false
+      }
+    },
+    "profile_background_colors": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "default": [],
+      "description": "Up to three hex colors selected from profile song artwork",
+      "rls": {
+        "write": false
+      }
     }
   },
   "required": []
