@@ -135,7 +135,7 @@ export default function MyUploads() {
   if (loadError) return <LoadError onRetry={load} />;
   return (
     <div className="uploads-page max-w-5xl mx-auto pb-10">
-      <header className="page-intro"><p>Manage the songs you have shared with PUBLIC.</p></header>
+      <header className="page-intro"></header>
       <Link
         to="/library"
         className="inline-flex items-center gap-1.5 mb-4 text-sm font-semibold text-foreground/60 hover:text-foreground transition">
