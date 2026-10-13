@@ -184,9 +184,9 @@ export default function Profile() {
     return () => document.documentElement.classList.remove("modal-open");
   }, [showSettings, showDelete, showQR, followList, isCurrentPage]);
 
-  useEffect(()=>{
-    if(isOwn&&me?.id===targetId)setProfile(previous=>previous?{...previous,is_artist:!!me.is_artist}:previous);
-  },[isOwn,targetId,me?.id,me?.is_artist]);
+  useEffect(() => {
+    if (isOwn && me?.id === targetId) setProfile((previous) => previous ? { ...previous, is_artist: !!me.is_artist } : previous);
+  }, [isOwn, targetId, me?.id, me?.is_artist]);
 
   async function toggleFollow() {
     if (!profile || !me?.id || followBusyRef.current) return;
@@ -340,7 +340,7 @@ export default function Profile() {
   return (
     <PullToRefresh onRefresh={load}>
 
-    {coverUrl && <div className="profile-color-background fixed inset-0 pointer-events-none z-0" style={{backgroundImage:`radial-gradient(ellipse at 15% 20%, ${bgPrimary} 0, transparent 60%),radial-gradient(ellipse at 85% 70%, ${bgSecondary} 0, transparent 60%)`}}/>}
+    {coverUrl && <div className="profile-color-background fixed inset-0 pointer-events-none z-0" style={{ backgroundImage: `radial-gradient(ellipse at 15% 20%, ${bgPrimary} 0, transparent 60%),radial-gradient(ellipse at 85% 70%, ${bgSecondary} 0, transparent 60%)` }} />}
     <div className="profile-page max-w-6xl mx-auto relative z-10">
       <div className="profile-overview flex flex-col md:flex-row gap-4 md:gap-6 mb-8">
       <div className="profile-identity relative rounded-2xl overflow-hidden ring-1 ring-inset ring-foreground/10 bg-card flex-1 min-w-0">
@@ -352,7 +352,7 @@ export default function Profile() {
             <BadgeCheck size={26} strokeWidth={2} />
           </span>
             }
-        <div className="profile-cover-strip" aria-hidden="true" />
+        <div className="profile-cover-strip hidden" aria-hidden="true" />
         {/* Identity, stats, actions */}
         <div className="profile-details relative z-10 px-5 md:px-10 pb-5 md:pb-8 pt-5 md:pt-8">
           <div className="profile-identity-row flex flex-col items-center md:flex-row md:items-center md:justify-center gap-4 md:gap-8">
@@ -508,7 +508,7 @@ export default function Profile() {
                         title="Save"
                         aria-label="Save changes"
                         className="profile-primary-action chrome-button disabled:opacity-40">
-                        {saving ? <Loader2 size={16} className="animate-spin" /> : <Save size={16} />}<span>{saving?"Saving…":"Save changes"}</span>
+                        {saving ? <Loader2 size={16} className="animate-spin" /> : <Save size={16} />}<span>{saving ? "Saving…" : "Save changes"}</span>
                       </button>
                       <button
                         onClick={cancelEdit}
@@ -531,7 +531,7 @@ export default function Profile() {
                       aria-label={following ? "Unfollow" : "Follow"}
                       className={`profile-primary-action playlist-action transition ${
                       following ? "border border-border" : "bg-foreground text-background"}`}>
-                    {followingBusy?<Loader2 size={16} className="animate-spin"/>:following ? <UserCheck size={16} /> : <UserPlus size={16} />}<span>{following?"Following":"Follow"}</span>
+                    {followingBusy ? <Loader2 size={16} className="animate-spin" /> : following ? <UserCheck size={16} /> : <UserPlus size={16} />}<span>{following ? "Following" : "Follow"}</span>
                   </button>
                     }
                 {!editMode &&
@@ -585,26 +585,26 @@ export default function Profile() {
 
       <div className="profile-content"><section className="profile-music">
       <TopTracks
-          trackIds={editMode ? form.top_track_ids : profile?.top_track_ids || []}
-          editMode={editMode}
-          userTracks={tracks}
-          onChange={(ids) => setForm((f) => ({ ...f, top_track_ids: ids }))} />
+              trackIds={editMode ? form.top_track_ids : profile?.top_track_ids || []}
+              editMode={editMode}
+              userTracks={tracks}
+              onChange={(ids) => setForm((f) => ({ ...f, top_track_ids: ids }))} />
         
 
       {!editMode && !isOwn && topTracks.length > 0 && !(profile?.top_track_ids?.length > 0) &&
-        <div className="mb-8">
+            <div className="mb-8">
           <h2 className="text-lg font-extrabold tracking-tight mb-3 flex items-center gap-2">
             <BarChart2 size={18} /> Top Tracks
           </h2>
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
             {topTracks.map((t) =>
-            <TrackCard key={t.id} track={t} />
-            )}
+                <TrackCard key={t.id} track={t} />
+                )}
           </div>
         </div>
-        }
+            }
 
-      </section><aside className="profile-conversation"><ProfileComments profileId={targetId} isOwn={isOwn}/><SafetyControls type="user" id={targetId} userId={targetId} label="profile"/></aside></div>
+      </section><aside className="profile-conversation"><ProfileComments profileId={targetId} isOwn={isOwn} /><SafetyControls type="user" id={targetId} userId={targetId} label="profile" /></aside></div>
 
       {showSettings && isOwn &&
         <SettingsSheet
