@@ -5,6 +5,7 @@ const clone=x=>structuredClone(x);
 const matches=(r,q)=>Object.entries(q||{}).every(([k,v])=>{
  if(k==='$and')return v.every(x=>matches(r,x));if(k==='$or')return v.some(x=>matches(r,x));
  const value=r[k];
+ if(Array.isArray(v))return JSON.stringify(value)===JSON.stringify(v);
  if(v&&typeof v==='object'){if('$in'in v)return Array.isArray(value)?value.some(x=>v.$in.includes(x)):v.$in.includes(value);if('$nin'in v)return !v.$nin.includes(value);if('$ne'in v)return value!==v.$ne;if('$gte'in v)return value>=v.$gte;}
  return value===v;
 });
@@ -20,7 +21,11 @@ const reset=()=>{
   async update(id,data){const r=(db[name]||[]).find(r=>r.id===id);if(!r)throw Error('Not found');Object.assign(r,clone(data));writes.push([name,'update']);return clone(r);},
   async delete(id){db[name]=(db[name]||[]).filter(r=>r.id!==id);if(name==='User')deleted=true;writes.push([name,'delete']);return {id};},
   async deleteMany(q){if(failCleanup&&name==='LibraryItem')throw Error('Cleanup failed');db[name]=(db[name]||[]).filter(r=>!matches(r,q));},
-  async updateMany(q,ops){for(const r of db[name]||[])if(matches(r,q)){if(ops.$set)Object.assign(r,clone(ops.$set));}return {};},async count(q){return (db[name]||[]).filter(r=>matches(r,q)).length;}
+  async updateMany(q,ops){for(const r of db[name]||[])if(matches(r,q)){
+ if(ops.$set)Object.assign(r,clone(ops.$set));
+ for(const [key,val]of Object.entries(ops.$addToSet||{})){const add=val&&typeof val==='object'&&'$each'in val?val.$each:[val];r[key]=[...new Set([...(r[key]||[]),...add])];}
+ for(const [key,val]of Object.entries(ops.$pull||{})){r[key]=(r[key]||[]).filter(x=>val&&typeof val==='object'&&'$in'in val?!val.$in.includes(x):x!==val);}
+}return {};},async count(q){return (db[name]||[]).filter(r=>matches(r,q)).length;}
  })});
  globalThis.__client={auth:{me:async()=>user?clone(user):null},entities:handlers,asServiceRole:{entities:handlers,integrations:{Core:{InvokeLLM:async()=>({allowed:true,reason:''}),CreateFileSignedUrl:async({file_uri})=>({signed_url:"https://signed.example.test/"+file_uri})}}}};
 };
@@ -64,6 +69,13 @@ await check('private foreign checksum never reported',async()=>{db.Track.push({i
 await check('identical public file rejected on create',async()=>{db.Track[1].audio_sha256='a'.repeat(64);const r=await invoke(gateway,{entity:'Track',action:'create',args:[{title:'Changed tags',rights_confirmed:true,audio_sha256:'a'.repeat(64)}]});assert.equal(r.status,409);assert.equal(writes.length,0);});
 await check('upload retry reuses the original record',async()=>{db.Track[0].upload_request_id='retry-key';const r=await invoke(gateway,{entity:'Track',action:'create',args:[{upload_request_id:'retry-key',rights_confirmed:true}]});assert.equal(r.status,200);assert.equal(r.data.result.id,'private');assert.equal(writes.length,0);});
 await check('mark all read affects only current recipient',async()=>{db.Notification.push({id:'someone-else',user_id:'other',read:false});const r=await invoke(safety,{action:'markAllRead',user_id:'other'});assert.equal(r.status,200);assert.equal(db.Notification[0].read,true);assert.equal(db.Notification[1].read,false);});
+await check('playlist owner can add without duplicate IDs',async()=>{db.Playlist.push({id:'owned',creator_id:'owner',track_ids:['public']});const r=await invoke(gateway,{entity:'Playlist',action:'playlistAdd',args:['owned',['foreign','foreign']]});assert.equal(r.status,200);assert.deepEqual(r.data.result.track_ids,['public','foreign']);});
+await check('concurrent playlist additions both survive',async()=>{db.Playlist.push({id:'owned',creator_id:'owner',track_ids:[]});await Promise.all(['public','foreign'].map(id=>invoke(gateway,{entity:'Playlist',action:'playlistAdd',args:['owned',[id]]})));assert.deepEqual(db.Playlist.find(p=>p.id==='owned').track_ids.sort(),['foreign','public']);});
+await check('foreign playlist song mutation denied',async()=>{assert.equal((await invoke(gateway,{entity:'Playlist',action:'playlistAdd',args:['other-playlist',['public']]})).status,403);});
+await check('stale playlist reorder cannot overwrite newer order',async()=>{db.Playlist.push({id:'owned',creator_id:'owner',track_ids:['public','foreign']});const r=await invoke(gateway,{entity:'Playlist',action:'playlistReorder',args:['owned',['foreign','public'],['public']]});assert.equal(r.status,409);assert.deepEqual(db.Playlist.find(p=>p.id==='owned').track_ids,['public','foreign']);});
+await check('playlist reorder retains all songs',async()=>{db.Playlist.push({id:'owned',creator_id:'owner',track_ids:['public','foreign']});assert.equal((await invoke(gateway,{entity:'Playlist',action:'playlistReorder',args:['owned',['public'],['public','foreign']]})).status,400);const r=await invoke(gateway,{entity:'Playlist',action:'playlistReorder',args:['owned',['foreign','public'],['public','foreign']]});assert.equal(r.status,200);assert.deepEqual(r.data.result.track_ids,['foreign','public']);});
+await check('playlist removal deletes only associations',async()=>{db.Playlist.push({id:'owned',creator_id:'owner',track_ids:['public','foreign']});const before=db.Track.length;const r=await invoke(gateway,{entity:'Playlist',action:'playlistRemove',args:['owned',['public']]});assert.equal(r.status,200);assert.deepEqual(r.data.result.track_ids,['foreign']);assert.equal(db.Track.length,before);});
+await check('playlist deletion cleans saved references but preserves songs',async()=>{db.Playlist.push({id:'owned',creator_id:'owner',track_ids:['public']});db.SavedPlaylist=[{playlist_id:'owned',user_id:'other'}];const before=db.Track.length;assert.equal((await invoke(gateway,{entity:'Playlist',action:'delete',args:['owned']})).status,200);assert.equal(db.SavedPlaylist.length,0);assert.equal(db.Track.length,before);});
 console.log(JSON.stringify({passed,total:passed,environment:'isolated mocked SDK; no live data changed'}));
 
 let backendFiles=0,syntaxErrors=0;
