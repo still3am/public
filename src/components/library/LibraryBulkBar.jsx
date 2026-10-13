@@ -22,12 +22,12 @@ export default function LibraryBulkBar({
   if (!active) {
     return (
       <div className="flex justify-end mb-3">
-        <button
-          onClick={onStart}
-          className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full text-xs font-bold border border-border hover:bg-accent transition hidden">
-          
-          <CheckSquare size={14} /> Select
-        </button>
+        
+
+
+
+
+        
       </div>);
 
   }
