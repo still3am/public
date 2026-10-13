@@ -523,7 +523,7 @@ html:not(.dark){color-scheme:light;}
 .profile-overview{align-items:stretch;}
 .profile-identity{position:relative;border:1px solid hsl(var(--border));box-shadow:none;}
 .profile-cover-strip{height:88px;background:radial-gradient(ellipse at 20% 0%,hsl(var(--foreground)/.09),transparent 65%),linear-gradient(120deg,hsl(var(--muted)),hsl(var(--card)));border-bottom:1px solid hsl(var(--border)/.6);display:flex;justify-content:flex-end;align-items:center;padding:24px;}
-.profile-cover-strip span{font-size:10px;font-weight:700;letter-spacing:.3em;color:hsl(var(--muted-foreground)/.55);}
+.profile-cover-strip span{display:none;}
 .profile-details{padding:0 28px 28px!important;}
 .profile-identity-row{align-items:flex-start;justify-content:flex-start;gap:24px;}
 .profile-identity-row>div:first-child{margin-top:-35px;}
