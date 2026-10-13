@@ -15,7 +15,7 @@ export default function LibraryBulkBar({
   onAddToPlaylist,
   onRemove,
   onDelete,
-  onOrganize,
+  onOrganize
 }) {
   if (!visible) return null;
 
@@ -24,16 +24,16 @@ export default function LibraryBulkBar({
       <div className="flex justify-end mb-3">
         <button
           onClick={onStart}
-          className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full text-xs font-bold border border-border hover:bg-accent transition"
-        >
+          className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full text-xs font-bold border border-border hover:bg-accent transition hidden">
+          
           <CheckSquare size={14} /> Select
         </button>
-      </div>
-    );
+      </div>);
+
   }
 
   const actionClass =
-    "inline-flex items-center gap-1.5 px-3 py-2 rounded-full text-xs font-bold border border-border hover:bg-accent transition disabled:opacity-40 disabled:hover:bg-transparent";
+  "inline-flex items-center gap-1.5 px-3 py-2 rounded-full text-xs font-bold border border-border hover:bg-accent transition disabled:opacity-40 disabled:hover:bg-transparent";
 
   return (
     <div className="bulk-toolbar sticky top-2 z-30 mb-4 rounded-2xl border border-border bg-card/95 backdrop-blur px-3 py-2.5 shadow-sm">
@@ -45,28 +45,28 @@ export default function LibraryBulkBar({
         <button onClick={onAddToPlaylist} disabled={!count || busy} className={actionClass}>
           <ListPlus size={14} /> Add to playlist
         </button>
-        {onOrganize&&<button onClick={onOrganize} disabled={!count||busy} className={actionClass}>Move / tag</button>}
-        {canRemove && (
-          <button onClick={onRemove} disabled={busy} className={actionClass}>
+        {onOrganize && <button onClick={onOrganize} disabled={!count || busy} className={actionClass}>Move / tag</button>}
+        {canRemove &&
+        <button onClick={onRemove} disabled={busy} className={actionClass}>
             <FolderMinus size={14} /> Remove from library
           </button>
-        )}
-        {canDelete && (
-          <button
-            onClick={onDelete}
-            disabled={busy}
-            className="inline-flex items-center gap-1.5 px-3 py-2 rounded-full text-xs font-bold border border-destructive/40 text-destructive hover:bg-destructive/10 transition disabled:opacity-40"
-          >
+        }
+        {canDelete &&
+        <button
+          onClick={onDelete}
+          disabled={busy}
+          className="inline-flex items-center gap-1.5 px-3 py-2 rounded-full text-xs font-bold border border-destructive/40 text-destructive hover:bg-destructive/10 transition disabled:opacity-40">
+          
             <Trash2 size={14} /> Delete uploads
           </button>
-        )}
+        }
         <button
           onClick={onExit}
-          className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full text-xs font-bold bg-foreground text-background"
-        >
+          className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full text-xs font-bold bg-foreground text-background">
+          
           Done
         </button>
       </div>
-    </div>
-  );
+    </div>);
+
 }
