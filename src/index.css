@@ -655,3 +655,13 @@ html:not(.dark) .profile-page .profile-identity,html:not(.dark) .profile-page .p
 .profile-palette-dialog .view-switch{width:100%;}
 .profile-palette-dialog .view-switch button{flex:1;padding-inline:10px;}
 @media(max-width:767px){.profile-palette-dialog{padding:20px;}.profile-palette-preview{min-height:140px;padding:20px;}}
+
+@media(max-width:767px){
+ .profile-palette-dialog{text-align:center;}
+ .profile-palette-dialog>div:first-child{padding-right:0;padding-top:24px;align-items:center;text-align:center;}
+ .profile-palette-dialog .profile-palette-preview{flex-direction:column;justify-content:center;text-align:center;}
+ .profile-palette-dialog .profile-palette-swatches{justify-content:center;}
+ .profile-palette-dialog>.flex{justify-content:center;flex-wrap:wrap;}
+ .profile-palette-dialog>.flex>button{flex:1;justify-content:center;}
+ .profile-palette-dialog p{text-align:center;}
+}

@@ -51,6 +51,16 @@ const entities = new Proxy(raw.entities,{get(target,name) {
 export const base44 = new Proxy(raw,{get(target,name) {
   if(name==='entities') return entities;
   if(name==='auth') return {...target.auth,updateMe:async data=>{
+    // Only these non-text appearance settings use the SDK's own-account route.
+    // All other profile fields keep the moderated security gateway.
+    const colorKeys=['profile_background_mode','profile_background_colors'];
+    const keys=Object.keys(data||{});
+    if(keys.length&&keys.every(key=>colorKeys.includes(key))){
+      if(data.profile_background_mode!==undefined&&!['auto','custom','off'].includes(data.profile_background_mode))throw new Error('Invalid background mode');
+      const colors=data.profile_background_colors;
+      if(colors!==undefined&&(!Array.isArray(colors)||colors.length>3||colors.some(c=>typeof c!=='string'||!/^#[0-9a-f]{6}$/i.test(c))))throw new Error('Invalid profile colors');
+      return target.auth.updateMe(data);
+    }
     const user=await target.auth.me();
     return gateway('User','update',[user.id,data]);
   }};

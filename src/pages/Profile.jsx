@@ -346,7 +346,10 @@ export default function Profile() {
     if(!isOwn)return;
     const update={profile_background_mode:value.mode,profile_background_colors:value.colors};
     await base44.auth.updateMe(update);
-    setProfile(previous=>({...previous,...update}));
+    const confirmed=await base44.auth.me();
+    const actualColors=confirmed.profile_background_colors||[];
+    if(confirmed.profile_background_mode!==value.mode||actualColors.join(",").toLowerCase()!==value.colors.join(",").toLowerCase())throw new Error("Colors have not saved yet");
+    setProfile(previous=>({...previous,profile_background_mode:confirmed.profile_background_mode,profile_background_colors:actualColors}));
     window.dispatchEvent(new Event("profiles:changed"));
     await checkUserAuth({silent:true});
   };

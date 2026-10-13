@@ -1,13 +1,14 @@
-import {useState} from "react";
+import {useRef,useState} from "react";
 import {Check,Loader2} from "lucide-react";
 import {Dialog,DialogContent,DialogHeader,DialogTitle,DialogDescription} from "@/components/ui/dialog";
 import {profileGradient} from "@/hooks/useCoverPalette";
 export default function ProfileColorPicker({coverUrl,colors,loading,value,onPreview,onSave,onClose}){
  const [draft,setDraft]=useState(value),[saving,setSaving]=useState(false);
+ const saveLock=useRef(false);
  const update=next=>{setDraft(next);onPreview(next);};
  const toggle=color=>{const selected=draft.colors.includes(color)?draft.colors.filter(c=>c!==color):[...draft.colors,color].slice(-3);update({mode:"custom",colors:selected});};
  const preview=draft.mode==="off"?[]:draft.mode==="custom"?draft.colors:colors.slice(0,3);
- const save=async()=>{if(saving)return;setSaving(true);try{await onSave(draft);onClose();}catch{/* Keep the dialog and draft available to retry. */}finally{setSaving(false);}};
+ const save=async()=>{if(saveLock.current)return;saveLock.current=true;setSaving(true);try{await onSave(draft);onClose();}catch{/* Keep the dialog and draft available to retry. */}finally{saveLock.current=false;setSaving(false);}};
  return <Dialog open onOpenChange={open=>{if(!open&&!saving)onClose();}}><DialogContent className="profile-palette-dialog"><DialogHeader><DialogTitle>Your profile colors</DialogTitle><DialogDescription>Make your profile yours. Choose up to three colors from your profile song’s cover.</DialogDescription></DialogHeader>
  <div className="profile-palette-preview" style={{backgroundImage:profileGradient(preview)}}>{coverUrl&&<img src={coverUrl} alt="Profile song cover"/>}<span>Live preview</span></div>
  <div className="view-switch" role="group" aria-label="Profile background mode">{[["auto","Automatic"],["custom","Custom"],["off","No color"]].map(([mode,label])=><button key={mode} disabled={saving} aria-pressed={draft.mode===mode} className={draft.mode===mode?"active":""} onClick={()=>update({...draft,mode})}>{label}</button>)}</div>

@@ -171,19 +171,21 @@
       ],
       "default": "auto",
       "rls": {
-        "write": false
+        "write": true
       }
     },
     "profile_background_colors": {
       "type": "array",
       "items": {
-        "type": "string"
+        "type": "string",
+        "pattern": "^#[0-9a-fA-F]{6}$"
       },
       "default": [],
       "description": "Up to three hex colors selected from profile song artwork",
       "rls": {
-        "write": false
-      }
+        "write": true
+      },
+      "maxItems": 3
     }
   },
   "required": []
