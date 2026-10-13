@@ -86,10 +86,10 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const checkUserAuth = async () => {
+  const checkUserAuth = async ({ silent = false } = {}) => {
     try {
-      // Now check if the user is authenticated
-      setIsLoadingAuth(true);
+      // Settings refreshes keep the current page mounted.
+      if(!silent)setIsLoadingAuth(true);
       const currentUser = await base44.auth.me();
       if(currentUser?.is_blocked || currentUser?.disabled) { setUser(null); setIsAuthenticated(false); setAuthError({type:'suspended',message:'Your account is suspended. Contact PUBLIC support.'}); setIsLoadingAuth(false); setAuthChecked(true); return; }
       const previous=localStorage.getItem("public:active-account");

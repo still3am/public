@@ -10,7 +10,6 @@ import SafetyControls from '@/components/SafetyControls';
 import { clearPersonalData } from '@/lib/clearPersonalData';
 import EmptyState from "@/components/EmptyState";
 import TrackCard from "@/components/TrackCard";
-import TrackRow from "@/components/TrackRow";
 import Avatar from "@/components/Avatar";
 import PullToRefresh from "@/components/PullToRefresh";
 import ProfileQRModal from "@/components/ProfileQRModal";
@@ -30,7 +29,7 @@ import {
   Share2,
   QrCode,
   BarChart2,
-  Check,
+  BadgeCheck,
   Settings } from
 "lucide-react";
 import SettingsSheet from "@/components/profile/SettingsSheet";
@@ -89,7 +88,6 @@ export default function Profile() {
   const [stats, setStats] = useState({ followers: null, following: null, plays: 0, likes: 0 });
   const [editMode, setEditMode] = useState(false);
   const [copied, setCopied] = useState(false);
-  const [trackQuery,setTrackQuery]=useState("");
   const [showQR, setShowQR] = useState(false);
   const [showDelete, setShowDelete] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
@@ -168,7 +166,7 @@ export default function Profile() {
   }
 
   useEffect(() => {
-    setProfile(null);setTracks([]);setTopTracks([]);setTrackQuery("");setFollowing(false);setStats({ followers: null, following: null, plays: 0, likes: 0 });
+    setProfile(null);setTracks([]);setTopTracks([]);setFollowing(false);setStats({ followers: null, following: null, plays: 0, likes: 0 });
     if (targetId) load();
     return () => {loadVersion.current++;};
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -185,6 +183,10 @@ export default function Profile() {
     if (anyModal) document.documentElement.classList.add("modal-open");
     return () => document.documentElement.classList.remove("modal-open");
   }, [showSettings, showDelete, showQR, followList, isCurrentPage]);
+
+  useEffect(()=>{
+    if(isOwn&&me?.id===targetId)setProfile(previous=>previous?{...previous,is_artist:!!me.is_artist}:previous);
+  },[isOwn,targetId,me?.id,me?.is_artist]);
 
   async function toggleFollow() {
     if (!profile || !me?.id || followBusyRef.current) return;
@@ -332,38 +334,13 @@ export default function Profile() {
 
   const displayName = profile.display_name || profile.full_name || "Unnamed";
   const avatarUrl = editMode ? form.avatar_url : profile.avatar_url;
-  const visibleUploads=tracks.filter(t=>!trackQuery.trim()||[t.title,t.artist,t.uploader_name].some(value=>(value||"").toLowerCase().includes(trackQuery.trim().toLowerCase())));
+
 
 
   return (
     <PullToRefresh onRefresh={load}>
 
-    {coverUrl &&
-      <div className="profile-ambient fixed inset-0 pointer-events-none z-0 overflow-hidden">
-        <div
-          className="absolute inset-0 animate-[herobreathebright_9s_ease-in-out_infinite]"
-          style={{
-            backgroundImage:
-            `radial-gradient(circle at 25% 25%, ${bgPrimary} 0, transparent 52%),` +
-            `radial-gradient(circle at 75% 75%, ${bgSecondary} 0, transparent 52%),` +
-            `radial-gradient(circle at 50% 90%, ${bgAccent} 0, transparent 52%)`,
-            filter: "blur(38px) saturate(1.8) brightness(1.2)",
-            mixBlendMode: "multiply"
-          }} />
-        
-        <div
-          className="absolute -inset-5 animate-[herobreathebright_11s_ease-in-out_infinite] [animation-delay:-3s]"
-          style={{
-            backgroundImage:
-            `radial-gradient(circle at 35% 30%, ${bgPrimary} 0, transparent 48%),` +
-            `radial-gradient(circle at 70% 72%, ${bgSecondary} 0, transparent 48%),` +
-            `radial-gradient(circle at 50% 50%, ${bgAccent} 0, transparent 45%)`,
-            filter: "blur(44px) saturate(1.9) brightness(1.3)",
-            mixBlendMode: "screen"
-          }} />
-        
-      </div>
-      }
+    {coverUrl && <div className="profile-color-background fixed inset-0 pointer-events-none z-0" style={{backgroundImage:`radial-gradient(ellipse at 15% 20%, ${bgPrimary} 0, transparent 60%),radial-gradient(ellipse at 85% 70%, ${bgSecondary} 0, transparent 60%)`}}/>}
     <div className="profile-page max-w-6xl mx-auto relative z-10">
       <div className="profile-overview flex flex-col md:flex-row gap-4 md:gap-6 mb-8">
       <div className="profile-identity relative rounded-2xl overflow-hidden ring-1 ring-inset ring-foreground/10 bg-card flex-1 min-w-0">
@@ -371,8 +348,8 @@ export default function Profile() {
             <span
               title="Artist"
               aria-label="Artist"
-              className="absolute top-3 right-3 md:top-5 md:right-5 z-20 grid place-items-center w-6 h-6 md:w-7 md:h-7 rounded-full bg-foreground text-background shadow-md ring-2 ring-background">
-            <Check size={15} strokeWidth={3.5} />
+              className="profile-artist-badge absolute top-3 right-3 md:top-5 md:right-5 z-20 grid place-items-center">
+            <BadgeCheck size={26} strokeWidth={2} />
           </span>
             }
         <div className="profile-cover-strip" aria-hidden="true"><span>PUBLIC</span></div>
@@ -627,11 +604,6 @@ export default function Profile() {
         </div>
         }
 
-      {!editMode&&<section className="profile-uploads">
-        <div className="profile-section-title"><div><p className="eyebrow">Shared sound</p><h2>{isOwn?"Your music":"Uploads"}<span>{tracks.length}</span></h2></div>{isOwn&&<Link to="/upload" className="playlist-action"><Music size={15}/>Upload</Link>}</div>
-        {tracks.length>0&&<div className="profile-track-search"><input aria-label="Search profile music" placeholder="Search songs or artists" value={trackQuery} onChange={e=>setTrackQuery(e.target.value)} onKeyDown={e=>{if(e.key==="Escape")setTrackQuery("");}}/>{trackQuery&&<button aria-label="Clear music search" onClick={()=>setTrackQuery("")}><X size={15}/></button>}</div>}
-        {visibleUploads.length?<div className="profile-upload-list">{visibleUploads.map((t,i)=><TrackRow key={t.id} track={t} index={i} queue={visibleUploads} queueIndex={i}/>)}</div>:<EmptyState icon={Music} title={trackQuery?"No matching songs":isOwn?"Your sound belongs here":"No uploads yet"} description={trackQuery?"Try another title or artist.":isOwn?"Share your first song with PUBLIC.":"Music shared by this person will appear here."}/>}
-      </section>}
       </section><aside className="profile-conversation"><ProfileComments profileId={targetId} isOwn={isOwn}/><SafetyControls type="user" id={targetId} userId={targetId} label="profile"/></aside></div>
 
       {showSettings && isOwn &&

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { X, Lightbulb, GitMerge, Palette, Trash2, ChevronRight, Sparkles, BarChart3, Loader2, LogOut } from "lucide-react";
 import ThemeToggle from "@/components/ThemeToggle";
@@ -13,6 +13,7 @@ export default function SettingsSheet({ onClose, onDeleteAccount }) {
   const safety = useSafety();
   const { user, checkUserAuth } = useAuth();
   const [toggling, setToggling] = useState(false);
+  const artistSaveLock=useRef(false);
   const [loggingOut, setLoggingOut] = useState(false);
   const isArtist = user?.is_artist === true;
 
@@ -30,12 +31,16 @@ export default function SettingsSheet({ onClose, onDeleteAccount }) {
   }
 
   async function toggleArtist(checked) {
+    if(!user?.id||artistSaveLock.current)return;
+    artistSaveLock.current=true;
     setToggling(true);
     try {
       await base44.auth.updateMe({ is_artist: checked });
-      await checkUserAuth();
-    } catch {window.alert("Artist Mode could not save. Please retry.");
+      await checkUserAuth({silent:true});
+    } catch {
+      // Keep the last saved state; no error popup.
     } finally {
+      artistSaveLock.current=false;
       setToggling(false);
     }
   }
@@ -68,6 +73,8 @@ export default function SettingsSheet({ onClose, onDeleteAccount }) {
                 <div className="text-xs text-foreground/50">Show an artist badge and unlock analytics tools</div>
               </div>
               <Switch
+                aria-label="Artist mode"
+                className="artist-mode-switch"
                 checked={isArtist}
                 onCheckedChange={toggleArtist}
                 disabled={toggling} />

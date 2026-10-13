@@ -611,3 +611,12 @@ html:not(.dark){color-scheme:light;}
  .profile-upload-list .song-row>div.min-w-0{text-align:center;}
  .profile-conversation>div>p{text-align:center;}
 }
+
+/* Artist badge and clean profile colors. */
+.profile-artist-badge{width:36px;height:36px;border-radius:12px;background:hsl(var(--foreground));color:hsl(var(--background));box-shadow:0 2px 6px rgb(0 0 0/.12);}
+.profile-cover-strip{background:hsl(var(--muted));}
+.profile-color-background{opacity:.18;filter:blur(32px);}
+.artist-mode-switch{height:28px!important;min-height:28px!important;width:48px;border-width:4px;}
+.artist-mode-switch>span{height:20px;width:20px;}
+.artist-mode-switch>span[data-state=checked]{transform:translateX(20px);}
+@media(max-width:767px){.profile-artist-badge{width:32px;height:32px;border-radius:10px;}.profile-artist-badge svg{width:23px;height:23px;}}
