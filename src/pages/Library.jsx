@@ -196,7 +196,7 @@ export default function Library() {
         "Songs saved to play without data"} />
 
       <LibraryBulkBar
-        visible={!!tracks?.length}
+        visible={!!tracks?.length || !!savedPlaylists?.length}
         active={editMode}
         count={selected.size}
         canRemove={removableIds.length > 0}
@@ -266,10 +266,10 @@ export default function Library() {
                   <PlaylistCard playlist={pl} />
                   <button
                   onClick={e=>{e.preventDefault();e.stopPropagation();unsavePlaylist(pl.id);}} disabled={unsavingIds.has(pl.id)}
-                  className="absolute z-20 top-2.5 right-2.5 w-11 h-11 md:w-9 md:h-9 rounded-full grid place-items-center border border-border bg-background/95 backdrop-blur shadow-md text-foreground hover:bg-accent opacity-100 md:opacity-0 md:group-hover/saved-playlist:opacity-100 md:group-focus-within/saved-playlist:opacity-100 focus-visible:opacity-100 transition disabled:opacity-60"
+                  className={`absolute z-20 top-1 right-1 w-11 h-11 grid place-items-center rounded-full text-foreground transition disabled:opacity-60 ${editMode?"opacity-100 pointer-events-auto":"opacity-0 pointer-events-none group-hover/saved-playlist:opacity-100 group-hover/saved-playlist:pointer-events-auto group-focus-within/saved-playlist:opacity-100 group-focus-within/saved-playlist:pointer-events-auto focus-visible:opacity-100 focus-visible:pointer-events-auto"}`}
                   aria-label={`Remove ${pl.name} from saved playlists`} title="Remove saved playlist">
                   
-                    {unsavingIds.has(pl.id)?<Loader2 size={16} className="animate-spin" />:<X size={16} />}
+                    <span className="w-6 h-6 rounded-full grid place-items-center bg-background/95 border border-border shadow-sm">{unsavingIds.has(pl.id)?<Loader2 size={12} className="animate-spin" />:<X size={12} />}</span>
                   </button>
                 </div>
               )}
