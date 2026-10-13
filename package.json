@@ -13,9 +13,10 @@
     "test:security": "node tests/security-gateway.test.mjs",
     "test:duplicates": "node tests/duplicate-detection.test.mjs",
     "test:uploads": "node tests/upload-queue.test.mjs",
-    "test": "npm run test:duplicates && npm run test:uploads && npm run test:notifications && npm run test:playlists && npm run test:security",
+    "test": "npm run test:duplicates && npm run test:uploads && npm run test:notifications && npm run test:playlists && npm run test:security && npm run test:backend-registration",
     "test:notifications": "node tests/notification-recovery.test.mjs",
-    "test:playlists": "node tests/playlist-transitions.test.mjs"
+    "test:playlists": "node tests/playlist-transitions.test.mjs",
+    "test:backend-registration": "node tests/backend-registration.test.mjs"
   },
   "dependencies": {
     "@base44/sdk": "^0.8.53",
