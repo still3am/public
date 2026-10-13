@@ -23,7 +23,7 @@ export default function LibraryBulkBar({
   if (!active) {
     return (
       <div className="flex justify-end mb-3">
-        <button onClick={onStart} className="library-tool hidden"><CheckSquare size={16} /><span>{playlistMode ? "Manage saved playlists" : "Select"}</span></button>
+        
       </div>);
 
   }
