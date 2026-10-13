@@ -228,9 +228,9 @@ export default function Library() {
       <PullToRefresh onRefresh={async () => {await refresh();await load();await reloadPlaylists();await loadSavedPlaylists();}}>
         {loading && tracks === null ? <div className="flex justify-center py-20"><Loader2 className="animate-spin text-muted-foreground" /></div> : <>
           {libraryView === "songs" && <section>
-            <div className="library-section-heading hidden"><h2>Saved songs <span>{visibleTracks.length}</span></h2>
-              {!editMode && visibleTracks.length > 0 && <div className="flex gap-2"><button aria-label="Add visible songs to queue" className="library-tool text-xs" onClick={() => {p.addManyToQueue(visibleTracks);toast({ title: "Songs added to queue" });}}><ListPlus size={15} /><span className="hidden sm:inline">Queue</span></button><button className="chrome-button text-xs" onClick={() => {p.setShuffle(false);p.playTrackAt(visibleTracks, 0);}}><Play size={14} fill="currentColor" />Play</button></div>}
-            </div>
+            
+
+            
             {!visibleTracks.length ? <EmptyState icon={LibIcon} title={tracks?.length ? "No matching songs" : "Make this space yours"} description={tracks?.length ? "Try another search or reset your filters." : "Save songs from anywhere on PUBLIC to find them here."} action={tracks?.length ? <button className="playlist-action" onClick={() => {setSearch("");setFolder("");setTagQuery("");}}>Clear filters</button> : <Link className="chrome-button" to="/search">Find music</Link>} /> :
             display === "grid" ? <div className="library-music-grid">{visibleTracks.map((t) => <TrackCard key={t.id} track={t} selectable={editMode} selected={selected.has(t.id)} onToggleSelect={toggleSelect} />)}</div> :
             <div className="library-song-list">{visibleTracks.map((t, i) => <div key={t.id} className="library-song-item">{editMode && <input type="checkbox" aria-label={`Select ${t.title}`} checked={selected.has(t.id)} onChange={() => toggleSelect(t)} />}<div className="min-w-0 flex-1"><TrackRow track={t} index={i} queue={visibleTracks} queueIndex={i} /></div></div>)}</div>}
