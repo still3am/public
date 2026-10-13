@@ -47,10 +47,10 @@ export default function Layout() {
         <ScrollingBanner />
         <main className="flex-1 w-full mx-auto main-content app-content">
           <PageHeading />
-          {TABS.map(({ path, Page }) =>
-          mountedTabs.current.has(path) ?
-          <div key={path} data-page={path === "/" ? "home" : path.slice(1)} className={activeTab?.path === path ? "page-surface block" : "page-surface hidden"}>
-              <Page />
+          {TABS.map(({ path, Page, requiresAuth }) =>
+          mountedTabs.current.has(path) && (!requiresAuth || user) ?
+          <div key={`${path}:${requiresAuth?user?.id:"public"}`} data-page={path === "/" ? "home" : path.slice(1)} className={activeTab?.path === path ? "page-surface block" : "page-surface hidden"}>
+              <Page ownProfileTab={path === "/profile"} />
             </div> :
           null
           )}

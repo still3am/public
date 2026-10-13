@@ -73,8 +73,9 @@ function formFromProfile(prof) {
   };
 }
 
-export default function Profile() {
-  const { id } = useParams();
+export default function Profile({ownProfileTab=false}) {
+  const { id:routeId } = useParams();
+  const id=ownProfileTab?undefined:routeId;
   const { pathname } = useLocation();
   const { user: me, checkUserAuth } = useAuth();
   const isOwn = !id || id === me?.id;

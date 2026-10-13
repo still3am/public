@@ -6,7 +6,6 @@ import PageNotFound from './lib/PageNotFound';
 import { AuthProvider, useAuth } from '@/lib/AuthContext';
 import UserNotRegisteredError from '@/components/UserNotRegisteredError';
 import ProtectedRoute from '@/components/ProtectedRoute';
-import { Navigate } from 'react-router-dom';
 import { PlayerProvider } from '@/context/PlayerContext';
 import { LibraryProvider } from '@/context/LibraryContext';
 import { UploadProvider } from '@/context/UploadContext';
@@ -95,7 +94,7 @@ const AuthenticatedApp = () => {
         <Route path="/suggestions" element={<Suggestions />} />
 
         {/* Personal features — login required */}
-        <Route element={<ProtectedRoute unauthenticatedElement={<Navigate to="/login" replace />} />}>
+        <Route element={<ProtectedRoute />}>
           <Route path="/profile" element={<Profile />} />
           <Route path="/profile/:id" element={<Profile />} />
           <Route path="/upload" element={<Upload />} />
