@@ -27,11 +27,19 @@ export default function ProfileSong({
       setTrack(null);
       return;
     }
-    if(pickedTrack.current?.id===trackId){setTrack(pickedTrack.current);return;}
+    const available=(userTracks||[]).find(row=>row.id===trackId)|| (pickedTrack.current?.id===trackId?pickedTrack.current:null);
+    setTrack(available||null);
     let active=true;
-    base44.entities.Track.get(trackId).then(t=>{if(active)setTrack(t);}).catch(()=>{if(active)setTrack(null);});
+    (async()=>{try{
+      let song;
+      try{song=await base44.entities.Track.get(trackId);}catch(error){
+        const status=error?.status??error?.response?.status;if(status===403||status===404)throw error;
+        const page=await base44.entities.Track.filter({id:trackId},'-created_date',1);song=(Array.isArray(page)?page:page?.items||[])[0];
+      }
+      if(active&&song)setTrack(song);
+    }catch{/* Keep accessible metadata already supplied by this profile. */}})();
     return()=>{active=false;};
-  }, [trackId]);
+  }, [trackId,userTracks]);
 
   const coverUrl = useCoverUrl(track?.cover_art_url);
   const isCurrent = p.currentTrack?.id === trackId;

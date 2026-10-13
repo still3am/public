@@ -246,7 +246,7 @@ export default function Library() {
           {libraryView === "recent" && <section><div className="library-section-heading"><h2>Recently played <span>{recent.length}</span></h2></div>{recent.length ? <div className="library-song-list">{recent.map((t, i) => <TrackRow key={t.id} track={t} index={i} queue={recent} queueIndex={i} />)}</div> : <EmptyState icon={History} title={search ? "No matching recent music" : "Your listening history starts here"} description="Songs you play on this device will appear here." />}</section>}
         </>}
       </PullToRefresh>
-      {showOrganize && <BulkOrganizeSheet trackIds={selectedIds} onClose={() => setShowOrganize(false)} onDone={() => {setShowOrganize(false);exitEditMode();load();}} />}
+      {showOrganize && <BulkOrganizeSheet folders={folders} trackIds={selectedIds} onClose={() => setShowOrganize(false)} onDone={() => {setShowOrganize(false);exitEditMode();load();}} />}
       {showCreate && <CreatePlaylistModal onClose={() => setShowCreate(false)} onCreated={() => {reloadPlaylists();chooseView("playlists");}} />}
       {showBulkPlaylist && <BulkAddToPlaylistSheet trackIds={selectedIds} playlists={playlists} onClose={() => setShowBulkPlaylist(false)} onDone={() => {setShowBulkPlaylist(false);exitEditMode();}} />}
     </div>);
