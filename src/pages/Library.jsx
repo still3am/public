@@ -56,12 +56,13 @@ export default function Library() {
     if (!user?.id) return;
     try {
       const rows = await readAllPages((opts) => base44.entities.SavedPlaylist.filter({ user_id: user.id }, { sort: "-created_date", ...opts }));
-      const ids = (rows || []).map((r) => r.playlist_id).filter(Boolean);
+      const ids = [...new Set((rows || []).map((r) => r.playlist_id).filter(Boolean))];
       if (!ids.length) {
         if (request === savedLoadVersion.current) setSavedPlaylists([]);
         return;
       }
-      const list = await readAllPages((opts) => base44.entities.Playlist.filter({ id: { $in: ids } }, { sort: "-created_date", ...opts }));
+      const list=[];
+      for(let start=0;start<ids.length;start+=200){list.push(...await readAllPages(opts=>base44.entities.Playlist.filter({id:{$in:ids.slice(start,start+200)}},{sort:"-created_date",...opts})));}
       const order = new Map(ids.map((pid, i) => [pid, i]));
       if (request !== savedLoadVersion.current) return;
       setSavedPlaylists(
@@ -91,9 +92,8 @@ export default function Library() {
       const trackIds = (items || []).
       map((i) => i.track_id).
       filter(Boolean);
-      const list = trackIds.length ?
-      await readAllPages((opts) => base44.entities.Track.filter({ id: { $in: trackIds } }, { sort: "-created_date", ...opts })) :
-      [];
+      const uniqueIds=[...new Set(trackIds)],list=[];
+      for(let start=0;start<uniqueIds.length;start+=200){list.push(...await readAllPages(opts=>base44.entities.Track.filter({id:{$in:uniqueIds.slice(start,start+200)}},{sort:"-created_date",...opts})));}
       const order = new Map(trackIds.map((id, i) => [id, i]));
       request === loadVersion.current && setTracks(
         (list || []).
@@ -140,7 +140,7 @@ export default function Library() {
   };
 
   const removeFromLibrary = async () => {
-    if (!removableIds.length) return;
+    if (!removableIds.length || bulkBusy || !user?.id) return;
     setBulkBusy(true);
     try {
       await base44.entities.LibraryItem.deleteMany({
@@ -221,10 +221,12 @@ export default function Library() {
       {libraryView === "songs" && showFilters && <div id="library-filters" className="library-filters">
         
         
+        {folders.length>0&&<label>Folder<select value={folder} onChange={e=>setFolder(e.target.value)}><option value="">All folders</option>{folders.map(name=><option key={name} value={name}>{name}</option>)}</select></label>}
+        <label>Tag<input aria-label="Filter saved songs by tag" placeholder="Any tag" value={tagQuery} onChange={e=>setTagQuery(e.target.value)}/></label>
         <label>Sort<select value={sort} onChange={(e) => setSort(e.target.value)}><option value="saved">Recently saved</option><option value="title">Title A–Z</option><option value="artist">Artist A–Z</option></select></label>
         {activeFilters && <button className="text-xs underline underline-offset-4" onClick={() => {setFolder("");setTagQuery("");setSort("saved");}}>Reset filters</button>}
       </div>}
-      <LibraryBulkBar visible={libraryView !== "recent" && (!!tracks?.length || !!savedPlaylists?.length)} active={editMode} count={selected.size} canRemove={removableIds.length > 0} busy={bulkBusy} onOrganize={() => setShowOrganize(true)} onStart={() => setEditMode(true)} onExit={exitEditMode} onAddToPlaylist={() => setShowBulkPlaylist(true)} onRemove={removeFromLibrary} />
+      <LibraryBulkBar visible={libraryView === "songs" && (!!tracks?.length || !!savedPlaylists?.length)} active={editMode} count={selected.size} canRemove={removableIds.length > 0} busy={bulkBusy} onOrganize={() => setShowOrganize(true)} onStart={() => setEditMode(true)} onExit={exitEditMode} onAddToPlaylist={() => setShowBulkPlaylist(true)} onRemove={removeFromLibrary} />
       <PullToRefresh onRefresh={async () => {await refresh();await load();await reloadPlaylists();await loadSavedPlaylists();}}>
         {loading && tracks === null ? <div className="flex justify-center py-20"><Loader2 className="animate-spin text-muted-foreground" /></div> : <>
           {libraryView === "songs" && <section>
