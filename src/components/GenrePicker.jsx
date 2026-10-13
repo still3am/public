@@ -53,7 +53,7 @@ export default function GenrePicker({
         <input
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          placeholder="Search genres…"
+          aria-label="Search genres" placeholder="Search genres, e.g. Sexy Drill…"
           className="w-full px-3 py-2 rounded-lg border border-border bg-background text-sm mb-3"
           autoFocus
         />
@@ -67,7 +67,7 @@ export default function GenrePicker({
                 setOpen(false);
                 setSearch("");
               }}
-              className={`text-left px-2.5 py-1.5 rounded-lg text-xs font-medium border transition ${
+              className={`text-left min-h-11 px-2.5 py-2 rounded-lg text-xs font-medium border transition ${
                 g === value
                   ? "bg-foreground text-background border-foreground"
                   : "border-border hover:bg-foreground/[0.04]"
