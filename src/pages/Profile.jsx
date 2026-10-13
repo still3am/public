@@ -231,9 +231,10 @@ export default function Profile({ownProfileTab=false}) {
           });
         } catch {}
       }
+      if(identity.current===started)window.dispatchEvent(new CustomEvent('follows:changed',{detail:{uid:me.id,followingId:profile.id,following:!wasFollowing}}));
     } catch {
-      setSectionError("Your follow change could not save. Please retry.");
       if(identity.current!==started)return;
+      setSectionError("Your follow change could not save. Please retry.");
       setFollowing(wasFollowing);
       setStats((s) => ({
         ...s,
@@ -349,11 +350,11 @@ export default function Profile({ownProfileTab=false}) {
 
 
   return (
-    <PullToRefresh onRefresh={load}>
+    <PullToRefresh onRefresh={load} disabled={editMode||saving||uploadingAvatar||showSettings||showDelete||showQR||showColors||!!followList}>
 
     {(backgroundColors.length>0||(currentBackground.mode==="auto"&&coverUrl))&&<div className="profile-artwork-background fixed inset-0 pointer-events-none z-0" aria-hidden="true" style={backgroundColors.length?{backgroundImage:profileGradient(backgroundColors),backgroundColor:"hsl(var(--background))"}:{backgroundImage:`url(${JSON.stringify(coverUrl)})`,backgroundSize:"cover",backgroundPosition:"center",filter:"blur(45px) saturate(1.35)",transform:"scale(1.12)",opacity:.6}}/>}
     <div className="profile-page max-w-6xl mx-auto relative z-10">
-      {sectionError&&<button disabled={loading} onClick={load} className="playlist-action text-xs mb-4">Refresh profile</button>}
+      {sectionError&&<button disabled={loading||editMode||saving||uploadingAvatar} onClick={load} className="playlist-action text-xs mb-4">Refresh profile</button>}
       <div className="profile-overview flex flex-col md:flex-row gap-4 md:gap-6 mb-8">
       <div className="profile-identity relative rounded-2xl overflow-hidden ring-1 ring-inset ring-foreground/10 bg-card flex-1 min-w-0">
         {!editMode && profile.is_artist &&

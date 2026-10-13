@@ -73,7 +73,7 @@ export function useTrackActions(track, menuState, ui) {
           user_id: track.uploader_id, type: "new_follower", actor_id: user.id,
         }).catch(() => {});
       }
-      toast({ title: following ? `Unfollowed ${artistName}` : `Following ${artistName}` });
+      if(alive.current&&latestAction.current===started){window.dispatchEvent(new CustomEvent("follows:changed",{detail:{uid:user.id,followingId:track.uploader_id,following:!following}}));toast({ title: following ? `Unfollowed ${artistName}` : `Following ${artistName}` });}
     } catch {
       if(alive.current&&latestAction.current===started)menuState.setFollowing(following);
       // Keep the confirmed value when the write fails.

@@ -39,8 +39,10 @@ export async function getUsersByIds(ids = []) {
   const started=generation;
   const missing = unique.filter((id) => !cache.has(id)||(expires.get(id)||0)<=Date.now());
   for (let i = 0; i < missing.length; i += CHUNK) {
-    const users = await fetchChunk(missing.slice(i, i + CHUNK));
+    const chunk=missing.slice(i,i+CHUNK);
+    const users = await fetchChunk(chunk);
     if(started!==generation)throw Error("Profile lookup changed while loading");
+    chunk.forEach(id=>{cache.delete(id);expires.delete(id);});
     users.forEach((u) => {
       if (u?.id){cache.set(u.id,u);expires.set(u.id,Date.now()+TTL);}
     });

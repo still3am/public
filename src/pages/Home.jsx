@@ -196,6 +196,17 @@ export default function Home() {
   }
 
   useEffect(() => {setFromFollowing([]);setDiscover([]);setRecent(getRecentPlays().slice(0,8));clearUserGenresCache();load();return () => {loadVersion.current++;};}, [user?.id]);
+  useEffect(()=>{
+    const update=event=>{
+      const change=event.detail;if(!change||change.uid!==user?.id)return;
+      setFromFollowing(previous=>{
+        if(!change.following)return previous.filter(track=>track.uploader_id!==change.followingId);
+        const incoming=peekPublishedTracks().filter(track=>track.uploader_id===change.followingId);
+        return [...new Map([...previous,...incoming].map(track=>[track.id,track])).values()].sort((a,b)=>(b.created_date||'').localeCompare(a.created_date||'')).slice(0,12);
+      });
+    };
+    window.addEventListener('follows:changed',update);return()=>window.removeEventListener('follows:changed',update);
+  },[user?.id]);
   useEffect(() => {const update = () => setRecent(getRecentPlays().slice(0, 8));window.addEventListener("recentplays:change", update);return () => window.removeEventListener("recentplays:change", update);}, []);
 
   if (loadError && !trending.length) return <div className="p-8 text-center"><button className="playlist-action" onClick={() => load(true)}>Refresh music</button></div>;
