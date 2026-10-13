@@ -1,4 +1,4 @@
-import {useRef} from "react";
+import {useRef,useEffect} from "react";
 import {
   Play, Pause, ListPlus, Check, Plus, ListMusic, Download, Trash2, Loader2, Heart,
   CloudOff, Music2, User, UserPlus, UserCheck, Radio, Smartphone, Share2, Flag, EyeOff, Send,
@@ -26,7 +26,8 @@ export function useTrackActions(track, menuState, ui) {
   const { toast } = useToast();
   const { isInLibrary, toggle } = useLibrary();
   const cache = useOfflineCache();
-  const mixing=useRef(false);
+  const mixing=useRef(false),latestPlayer=useRef(p),account=useRef(user?.id),alive=useRef(true);latestPlayer.current=p;account.current=user?.id;
+  useEffect(()=>{alive.current=true;return()=>{alive.current=false;};},[]);
   const exporting=useRef(false);
 
   const requireAuth = () => {
@@ -79,8 +80,7 @@ export function useTrackActions(track, menuState, ui) {
   const toggleOffline = async () => {
     if(!requireAuth()) return;
     if (offline) {
-      await cache.removeTrack(track.id);
-      toast({ title: "Removed from downloads" });
+      if(await cache.removeTrack(track.id))toast({ title: "Removed from offline music" });
       return;
     }
     const ok = await cache.saveForOffline(track);
@@ -89,13 +89,15 @@ export function useTrackActions(track, menuState, ui) {
 
   const startMix = async () => {
     if(mixing.current)return;mixing.current=true;
+    const uid=user?.id,startedTrack=latestPlayer.current.currentTrack?.id;
     const progress=toast({title:"Building your mix…",duration:20000});
     let timer;
     try{
       const more=await Promise.race([buildAutoQueue(track,[],20),new Promise((_,reject)=>{timer=setTimeout(()=>reject(new Error("Mix request timed out")),20000);})]);
-      if(!more.length)return;
-      if(isCurrent)p.setQueue([...p.queue.slice(0,p.currentIndex+1),...more]);
-      else p.playTrackAt([track,...more]);
+      const player=latestPlayer.current;
+      if(!more.length||!alive.current||account.current!==uid||player.currentTrack?.id!==startedTrack)return;
+      if(player.currentTrack?.id===track.id)player.setQueue([...player.queue.slice(0,player.currentIndex+1),...more]);
+      else player.playTrackAt([track,...more]);
       toast({title:`Mix ready · ${more.length} songs`});
     }catch{/* Keep the current playback and queue. */}finally{clearTimeout(timer);mixing.current=false;progress.dismiss();}
   };

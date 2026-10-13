@@ -185,8 +185,7 @@ export default function FullScreenPlayer({ onClose }) {
   async function toggleOffline() {
     if (!t) return;
     if (cache.isCached(t.id)) {
-      await cache.removeTrack(t.id);
-      toast({ title: "Removed from downloads" });
+      if(await cache.removeTrack(t.id))toast({ title: "Removed from offline music" });
       return;
     }
     const ok = await cache.downloadTrack(t);

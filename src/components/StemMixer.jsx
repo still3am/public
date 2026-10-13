@@ -1,5 +1,5 @@
 import {EQ_PRESETS as PRESETS} from "@/lib/equalizer";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { usePlayer } from "@/context/PlayerContext";
 import { X } from "lucide-react";
 import MixerVisualizer from "@/components/MixerVisualizer";
@@ -14,7 +14,7 @@ function MixerSlider({ label, range, value, min, max, onChange }) {
       <div className="flex items-center justify-between mb-1.5">
         <div className="flex items-baseline gap-1.5">
           <span className="text-xs font-semibold uppercase tracking-wider opacity-70">{label}</span>
-          <span className="text-[9px] opacity-40">{range}</span>
+          <span className="text-[10px] opacity-60">{range}</span>
         </div>
         <span
           className={`text-xs font-mono tabular-nums ${
@@ -48,7 +48,7 @@ function MixerSlider({ label, range, value, min, max, onChange }) {
           onChange={(e) => onChange(Number(e.target.value))}
           className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
           style={{ touchAction: "none" }}
-          aria-label={label}
+          aria-label={label} aria-valuetext={`${value>0?"+":""}${value} decibels`}
         />
       </div>
     </div>
@@ -63,7 +63,7 @@ function BoostSlider({ value, onChange }) {
       <div className="flex items-center justify-between mb-1.5">
         <div className="flex items-baseline gap-1.5">
           <span className="text-xs font-semibold uppercase tracking-wider opacity-70">Output level</span>
-          <span className="text-[9px] opacity-40">50–150%</span>
+          <span className="text-[10px] opacity-60">50–150%</span>
         </div>
         <span className={`text-xs font-mono tabular-nums ${value !== 1 ? "text-overlay-foreground font-bold" : "opacity-50"}`}>
           {Math.round(value * 100)}%
@@ -89,7 +89,7 @@ function BoostSlider({ value, onChange }) {
           onChange={(e) => onChange(Number(e.target.value))}
           className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
           style={{ touchAction: "none" }}
-          aria-label="Equalizer output level"
+          aria-label="Equalizer output level" aria-valuetext={`${Math.round(value*100)} percent`}
         />
       </div>
     </div>
@@ -101,11 +101,12 @@ export default function StemMixer({ onClose }) {
   const p = usePlayer();
   const [visible, setVisible] = useState(false);
   const [ready,setReady]=useState(true);
+  const closeTimer=useRef(null),closing=useRef(false);
 
   useEffect(() => {
     setReady(p.enableMixer?.()!==false);
     const raf = requestAnimationFrame(() => setVisible(true));
-    return () => cancelAnimationFrame(raf);
+    return () => {cancelAnimationFrame(raf);if(closeTimer.current)clearTimeout(closeTimer.current);};
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const { mixer } = p;
@@ -113,8 +114,9 @@ export default function StemMixer({ onClose }) {
     mixer.bass !== 0 || mixer.beat !== 0 || mixer.vocals !== 0 || mixer.treble !== 0 || mixer.boost !== 1;
 
   function handleClose() {
-    setVisible(false);
-    setTimeout(onClose, 250);
+    if(closing.current)return;closing.current=true;setVisible(false);
+    if(window.matchMedia("(prefers-reduced-motion: reduce)").matches){onClose?.();return;}
+    closeTimer.current=setTimeout(()=>onClose?.(),250);
   }
 
   function applyPreset(values) {
@@ -122,14 +124,14 @@ export default function StemMixer({ onClose }) {
   }
 
   return (
-    <div role="dialog" aria-modal="true" aria-label="Equalizer" data-public-dialog tabIndex={-1} onKeyDown={e=>{if(e.key==="Escape"){e.stopPropagation();onClose?.();}}} className="fixed inset-0 z-[60] flex items-end md:items-center ">
+    <div role="dialog" aria-modal="true" aria-label="Equalizer" data-public-dialog tabIndex={-1} onKeyDown={e=>{if(e.key==="Escape"){e.stopPropagation();handleClose();}}} className="mixer-panel fixed inset-0 z-[60] flex items-end md:items-center justify-center">
       <div
         className={`absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity duration-250 ${
           visible ? "opacity-100" : "opacity-0"}`}
         onClick={handleClose}
       />
       <div
-        className={`relative w-full md:max-w-md bg-zinc-900 text-white max-h-[90dvh] overflow-y-auto border rounded-t-3xl md:rounded-3xl p-5 pb-[calc(1.25rem+env(safe-area-inset-bottom))] transition-transform duration-300 ease-out ${
+        className={`relative w-full md:max-w-md bg-overlay text-overlay-foreground max-h-[90dvh] overflow-y-auto border rounded-t-3xl md:rounded-3xl p-5 pb-[calc(1.25rem+env(safe-area-inset-bottom))] transition-transform duration-300 ease-out ${
           isModified ? "border-white/20" : "border-white/10"} ${
           visible ? "translate-y-0" : "translate-y-full md:translate-y-8"}`}
       >
@@ -164,12 +166,12 @@ export default function StemMixer({ onClose }) {
         </div>
 
         {/* presets */}
-        <div className="flex gap-2 mb-5 overflow-x-auto no-scrollbar ">
+        <div role="group" aria-label="Equalizer presets" className="flex gap-2 mb-5 overflow-x-auto no-scrollbar ">
           {PRESETS.map((preset) => (
             <button
               key={preset.label}
-              onClick={() => applyPreset(preset.values)}
-              className="shrink-0 px-3 py-1.5 rounded-full text-xs font-medium bg-white/10 hover:bg-white/20 ring-1 ring-white/10 transition"
+              aria-pressed={mixer.enabled&&mixer.boost===1&&Object.entries(preset.values).every(([key,value])=>mixer[key]===value)} onClick={() => applyPreset(preset.values)}
+              className={`shrink-0 px-3 py-1.5 rounded-full text-xs font-medium ring-1 ring-white/10 transition ${mixer.enabled&&mixer.boost===1&&Object.entries(preset.values).every(([key,value])=>mixer[key]===value)?"bg-overlay-foreground text-overlay":"bg-white/10 hover:bg-white/20"}`}
             >
               {preset.label}
             </button>
@@ -217,7 +219,7 @@ export default function StemMixer({ onClose }) {
           />
         </div>
 
-        <p className="text-[10px] text-center opacity-40 mt-4">
+        <p className="text-xs text-center opacity-60 mt-4">
           Shape the full mix in real time. Headroom compensation reduces clipping when bands are boosted.
         </p>
       </div>

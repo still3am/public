@@ -26,9 +26,9 @@ const suppress=(userId,ids,remove=false)=>{if(!userId)return;try{const set=suppr
 // Module-level guard so multiple hook instances don't auto-download the same
 // cloud track twice in one session.
 const autoQueued = new Set();
-const downloadingIds=new Set();
+const downloadingIds=new Set(),removalVersions=new Map();
 let generation=0;
-window.addEventListener('account:cleared',()=>{generation++;autoQueued.clear();downloadingIds.clear();});
+window.addEventListener('account:cleared',()=>{generation++;autoQueued.clear();downloadingIds.clear();removalVersions.clear();});
 
 // PUBLIC files (covers) are served as a generic octet-stream; a blob: URL only
 // renders in an <img> when its MIME is image/*, so sniff the magic bytes and
@@ -126,10 +126,11 @@ export function useOfflineCache() {
     if (!user?.id || !track?.id) return false;
     if(downloadingIds.has(track.id))return false;
     downloadingIds.add(track.id);
-    const startedGeneration=generation;
+    const startedGeneration=generation,startedRemoval=removalVersions.get(track.id)||0;
     setDownloading((s) => ({ ...s, [track.id]: true }));
     try {
       const authorized=await base44.entities.Track.get(track.id);
+      if(!authorized?.id||authorized.id!==track.id)throw new Error("Track unavailable");
       track=authorized;
       if(!track.audio_url)throw new Error("Audio link is unavailable");
       const controller=new AbortController();
@@ -149,9 +150,9 @@ export function useOfflineCache() {
         if (cres.ok) coverBlob = await toImageBlob(cres);
         }
       } catch {}
-      if(startedGeneration!==generation||(automatic&&suppressedFor(user.id).has(track.id)))throw new Error("Offline save was canceled");
+      if(startedGeneration!==generation||startedRemoval!==(removalVersions.get(track.id)||0)||(automatic&&suppressedFor(user.id).has(track.id)))throw new Error("Offline save was canceled");
       await putTrack(track, blob, coverBlob);
-      if(startedGeneration!==generation||(automatic&&suppressedFor(user.id).has(track.id))){await deleteRecord(track.id);throw new Error("Offline save was canceled");}
+      if(startedGeneration!==generation||startedRemoval!==(removalVersions.get(track.id)||0)||(automatic&&suppressedFor(user.id).has(track.id))){await deleteRecord(track.id);throw new Error("Offline save was canceled");}
       const stored=await getRecord(track.id);
       if(!stored?._blob?.size)throw new Error("Audio did not persist");
       // Keep the saved download order in sync: a freshly saved track goes to
@@ -200,7 +201,7 @@ export function useOfflineCache() {
 
   const removeTrack=useCallback(async id=>{
     try{
-      await deleteRecord(id);suppress(user?.id,[id]);
+      await deleteRecord(id);removalVersions.set(id,(removalVersions.get(id)||0)+1);suppress(user?.id,[id]);
       const order=await getOrderIds().catch(()=>null);
       if(order)await setOrderIds(order.filter(value=>value!==id)).catch(()=>{});
       if(user?.id)removeCloudTrack(user.id,id).catch(()=>{});
@@ -221,7 +222,7 @@ export function useOfflineCache() {
   }, []);
 
   const clearAllCache=useCallback(async()=>{
-    const removed=records.map(track=>track.id);
+    const removed=[...new Set([...records.map(track=>track.id),...autoQueued,...downloadingIds])];
     try{
       await clearAll();generation++;suppress(user?.id,removed);
       await clearMeta().catch(()=>{});autoQueued.clear();
