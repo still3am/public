@@ -41,7 +41,7 @@ function Section({ title, icon: Icon, children, seeAllTo }) {
       <div className="flex items-end justify-between mb-4 px-1 md:px-0">
         <h2 className="text-xl md:text-2xl font-bold tracking-tight flex items-center gap-2.5">
           
-          {Icon && <Icon size={17} className="text-muted-foreground" />}{title}
+          {Icon && <Icon size={17} className="text-muted-foreground hidden" />}{title}
         </h2>
         {seeAllTo &&
         <Link to={seeAllTo} className="text-xs font-semibold text-foreground/50 hover:text-foreground transition shrink-0 inline-flex items-center gap-0.5">
@@ -246,7 +246,7 @@ export default function Home() {
           {featured && <div className="home-spotlight"><div className="home-spotlight-art">{featured.cover_art_url ? <Image src={featured.cover_art_url} fittingType="fill" alt="" className="w-full h-full" /> : <Music size={42} />}<button className="home-spotlight-play" onClick={playFeatured} aria-label={featuredPlaying ? `Pause ${featured.title}` : `Play ${featured.title}`}>{featuredPlaying ? <Pause size={20} fill="currentColor" /> : <Play size={20} fill="currentColor" />}</button><div className="home-spotlight-menu"><TrackOptionsMenu track={featured} /></div></div><div className="home-spotlight-meta"><div><p className="eyebrow">Featured release</p><Link to={`/track/${featured.id}`} className="font-semibold text-sm block truncate mt-1">{featured.title}</Link><p className="text-xs text-muted-foreground truncate mt-1">{featured.artist || featured.uploader_name}</p></div></div></div>}
         </section>
         
-        {genreList.length > 0 && <div className="home-genre-rail" aria-label="Browse genres">{genreList.map((genre) => <Link key={genre} className="chip" to={`/search?genre=${encodeURIComponent(genre)}`}>{genre}</Link>)}</div>}
+        {genreList.length > 0 && <div className="home-genre-rail hidden" aria-label="Browse genres">{genreList.map((genre) => <Link key={genre} className="chip" to={`/search?genre=${encodeURIComponent(genre)}`}>{genre}</Link>)}</div>}
         <Section title="New on PUBLIC" icon={Sparkles} seeAllTo="/recent"><ReleaseList tracks={newReleases} /></Section>
         {recent.length > 0 && <Section title="Recently played"><CardRow tracks={recent} /></Section>}
         <Section title="Trending" icon={TrendingUp} seeAllTo="/top">
