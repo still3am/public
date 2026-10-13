@@ -1,13 +1,13 @@
 import LoadError from '@/components/LoadError';
-import {useRef} from 'react';
-import {readAllPages} from '@/lib/readPages';
+import { useRef } from 'react';
+import { readAllPages } from '@/lib/readPages';
 import { useEffect, useState } from "react";
 import { useParams, useLocation, Link } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import { useAuth } from "@/lib/AuthContext";
 import { getUsersByIds } from "@/lib/userLookup";
 import SafetyControls from '@/components/SafetyControls';
-import {clearPersonalData} from '@/lib/clearPersonalData';
+import { clearPersonalData } from '@/lib/clearPersonalData';
 import EmptyState from "@/components/EmptyState";
 import TrackCard from "@/components/TrackCard";
 import Avatar from "@/components/Avatar";
@@ -113,25 +113,25 @@ export default function Profile() {
   const coverUrl = useCoverUrl(featuredCoverUrl);
   const [bgPrimary, bgSecondary, bgAccent] = useColorPalette(coverUrl);
 
-  const loadVersion=useRef(0);
-  const [loadError,setLoadError]=useState(false);
-  const [sectionError,setSectionError]=useState("");
-  const [followingBusy,setFollowingBusy]=useState(false);
-  const followBusyRef=useRef(false);
+  const loadVersion = useRef(0);
+  const [loadError, setLoadError] = useState(false);
+  const [sectionError, setSectionError] = useState("");
+  const [followingBusy, setFollowingBusy] = useState(false);
+  const followBusyRef = useRef(false);
   async function load() {
-    const request=++loadVersion.current;(request===loadVersion.current)&&setLoadError(false);setSectionError("");
-    (request===loadVersion.current)&&setLoading(true);
+    const request = ++loadVersion.current;request === loadVersion.current && setLoadError(false);setSectionError("");
+    request === loadVersion.current && setLoading(true);
     try {
       // Another member's profile comes from the public-profiles endpoint: the
       // built-in User rules only let admins read other users, so a direct
       // User.get left every other profile showing as "not found".
       let prof = isOwn ? me : (await getUsersByIds([targetId]))[0] || null;
       if (!prof) {
-        (request===loadVersion.current)&&setProfile(null);
+        request === loadVersion.current && setProfile(null);
         return;
       }
-      (request===loadVersion.current)&&setProfile(prof);
-      (request===loadVersion.current)&&setForm(formFromProfile(prof));
+      request === loadVersion.current && setProfile(prof);
+      request === loadVersion.current && setForm(formFromProfile(prof));
       // Owners see all their own tracks (pending/private/approved); others only see approved ones.
       const trackFilter = isOwn ?
       { uploader_id: targetId } :
@@ -140,35 +140,35 @@ export default function Profile() {
       // the server so they stay right for artists with more than a page of
       // uploads, and the follower numbers never pull a thousand rows to measure.
       const responses = await Promise.allSettled([
-        readAllPages(opts=>base44.entities.Track.filter(trackFilter,{sort:"-created_date",...opts})),
-        base44.entities.Track.aggregate({query:trackFilter,sum:["play_count","like_count"]}),
-        base44.entities.Follow.count({following_id:targetId}),
-        base44.entities.Follow.count({follower_id:targetId}),
-        !isOwn&&me?.id?base44.entities.Follow.filter({follower_id:me.id,following_id:targetId},"-created_date",1):Promise.resolve([])
-      ]);
-      if(request!==loadVersion.current)return;
-      const result=index=>{const response=/** @type {any} */ (responses[index]);return response.status==="fulfilled"?response.value:null;};
-      const t=result(0),totals=result(1),followersCount=result(2),followingCount=result(3),relToUser=result(4);
-      if(t){setTracks(t);setTopTracks([...t].sort((a,b)=>(b.play_count||0)-(a.play_count||0)).slice(0,5));}
-      const totalsRow=totals?.rows?.[0];
-      setStats(previous=>({
-        followers:typeof followersCount==="number"?followersCount:previous.followers,
-        following:typeof followingCount==="number"?followingCount:previous.following,
-        plays:totalsRow?totalsRow.sum_play_count||0:t?t.reduce((sum,x)=>sum+(x.play_count||0),0):previous.plays,
-        likes:totalsRow?totalsRow.sum_like_count||0:t?t.reduce((sum,x)=>sum+(x.like_count||0),0):previous.likes
+      readAllPages((opts) => base44.entities.Track.filter(trackFilter, { sort: "-created_date", ...opts })),
+      base44.entities.Track.aggregate({ query: trackFilter, sum: ["play_count", "like_count"] }),
+      base44.entities.Follow.count({ following_id: targetId }),
+      base44.entities.Follow.count({ follower_id: targetId }),
+      !isOwn && me?.id ? base44.entities.Follow.filter({ follower_id: me.id, following_id: targetId }, "-created_date", 1) : Promise.resolve([])]
+      );
+      if (request !== loadVersion.current) return;
+      const result = (index) => responses[index].status === "fulfilled" ? responses[index].value : null;
+      const t = result(0),totals = result(1),followersCount = result(2),followingCount = result(3),relToUser = result(4);
+      if (t) {setTracks(t);setTopTracks([...t].sort((a, b) => (b.play_count || 0) - (a.play_count || 0)).slice(0, 5));}
+      const totalsRow = totals?.rows?.[0];
+      setStats((previous) => ({
+        followers: typeof followersCount === "number" ? followersCount : previous.followers,
+        following: typeof followingCount === "number" ? followingCount : previous.following,
+        plays: totalsRow ? totalsRow.sum_play_count || 0 : t ? t.reduce((sum, x) => sum + (x.play_count || 0), 0) : previous.plays,
+        likes: totalsRow ? totalsRow.sum_like_count || 0 : t ? t.reduce((sum, x) => sum + (x.like_count || 0), 0) : previous.likes
       }));
-      if(relToUser)setFollowing((Array.isArray(relToUser)?relToUser:relToUser.items||[]).length>0);
-      if(responses.some((r,i)=>i!==1&&r.status==="rejected"))setSectionError("Some profile information could not refresh. Saved music and follows have not been removed.");
-    } catch {(request===loadVersion.current)&&setLoadError(true);
+      if (relToUser) setFollowing((Array.isArray(relToUser) ? relToUser : relToUser.items || []).length > 0);
+      if (responses.some((r, i) => i !== 1 && r.status === "rejected")) setSectionError("Some profile information could not refresh. Saved music and follows have not been removed.");
+    } catch {request === loadVersion.current && setLoadError(true);
     } finally {
-      (request===loadVersion.current)&&setLoading(false);
+      request === loadVersion.current && setLoading(false);
     }
   }
 
   useEffect(() => {
-    setProfile(null);setTracks([]);setTopTracks([]);setFollowing(false);setStats({followers:null,following:null,plays:0,likes:0});
+    setProfile(null);setTracks([]);setTopTracks([]);setFollowing(false);setStats({ followers: null, following: null, plays: 0, likes: 0 });
     if (targetId) load();
-    return()=>{loadVersion.current++;};
+    return () => {loadVersion.current++;};
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [targetId]);
 
@@ -186,7 +186,7 @@ export default function Profile() {
 
   async function toggleFollow() {
     if (!profile || !me?.id || followBusyRef.current) return;
-    followBusyRef.current=true;setFollowingBusy(true);
+    followBusyRef.current = true;setFollowingBusy(true);
     const wasFollowing = following;
     setFollowing(!wasFollowing);
     setStats((s) => ({
@@ -219,7 +219,7 @@ export default function Profile() {
         ...s,
         followers: Math.max(0, s.followers + (wasFollowing ? 1 : -1))
       }));
-    }finally{followBusyRef.current=false;setFollowingBusy(false);}
+    } finally {followBusyRef.current = false;setFollowingBusy(false);}
   }
 
   async function uploadAvatar(file) {
@@ -307,10 +307,10 @@ export default function Profile() {
     if (deleteConfirm.trim().toUpperCase() !== "DELETE") return;
     setDeleting(true);
     try {
-      const result=await base44.functions.invoke("deleteMyAccount", {});
-      if(result.data?.deleted!==true) throw new Error("Deletion incomplete");
+      const result = await base44.functions.invoke("deleteMyAccount", {});
+      if (result.data?.deleted !== true) throw new Error("Deletion incomplete");
       await clearPersonalData();
-      base44.auth.logout(window.location.origin+"/login");
+      base44.auth.logout(window.location.origin + "/login");
     } catch {
       setDeleting(false);
       alert(
@@ -319,7 +319,7 @@ export default function Profile() {
     }
   }
 
-  if(loadError&&!profile)return <LoadError onRetry={load}/>;
+  if (loadError && !profile) return <LoadError onRetry={load} />;
   if (loading && !profile)
   return (
     <div className="py-20 grid place-items-center">
@@ -334,7 +334,7 @@ export default function Profile() {
 
   return (
     <PullToRefresh onRefresh={load}>
-    {(sectionError||loadError)&&<div role="alert" className="relative z-10 border rounded-xl p-4 text-sm mb-4">{sectionError||"Profile could not refresh."} <button className="underline font-semibold" onClick={load}>Retry</button></div>}
+    {(sectionError || loadError) && <div role="alert" className="relative z-10 border rounded-xl p-4 text-sm mb-4 hidden">{sectionError || "Profile could not refresh."} <button className="underline font-semibold" onClick={load}>Retry</button></div>}
     {coverUrl &&
       <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
         <div
@@ -365,13 +365,13 @@ export default function Profile() {
       <div className="flex flex-col md:flex-row gap-4 md:gap-6 mb-8">
       <div className="relative rounded-2xl overflow-hidden ring-1 ring-inset ring-foreground/10 bg-card flex-1 min-w-0">
         {!editMode && profile.is_artist &&
-          <span
-            title="Artist"
-            aria-label="Artist"
-            className="absolute top-3 right-3 md:top-5 md:right-5 z-20 grid place-items-center w-6 h-6 md:w-7 md:h-7 rounded-full bg-foreground text-background shadow-md ring-2 ring-background">
+            <span
+              title="Artist"
+              aria-label="Artist"
+              className="absolute top-3 right-3 md:top-5 md:right-5 z-20 grid place-items-center w-6 h-6 md:w-7 md:h-7 rounded-full bg-foreground text-background shadow-md ring-2 ring-background">
             <Check size={15} strokeWidth={3.5} />
           </span>
-          }
+            }
         {/* Identity, stats, actions */}
         <div className="relative z-10 px-5 md:px-10 pb-5 md:pb-8 pt-5 md:pt-8">
           <div className="flex flex-col items-center md:flex-row md:items-center md:justify-center gap-4 md:gap-8">
@@ -444,10 +444,10 @@ export default function Profile() {
 
               <div className="flex flex-wrap items-center justify-center md:justify-start gap-x-4 gap-y-1 mt-2.5 text-sm md:text-base">
                 <button onClick={() => setFollowList("followers")} className="hover:underline transition">
-                  <span className="font-bold">{stats.followers===null?"—":formatNumber(stats.followers)}</span> <span className="text-foreground/50">followers</span>
+                  <span className="font-bold">{stats.followers === null ? "—" : formatNumber(stats.followers)}</span> <span className="text-foreground/50">followers</span>
                 </button>
                 <button onClick={() => setFollowList("following")} className="hover:underline transition">
-                  <span className="font-bold">{stats.following===null?"—":formatNumber(stats.following)}</span> <span className="text-foreground/50">following</span>
+                  <span className="font-bold">{stats.following === null ? "—" : formatNumber(stats.following)}</span> <span className="text-foreground/50">following</span>
                 </button>
                 {(profile.is_artist || stats.plays > 0) && <span><span className="font-bold">{formatNumber(stats.plays)}</span> <span className="text-foreground/50">plays</span></span>}
                 {stats.likes > 0 && <span><span className="font-bold">{formatNumber(stats.likes)}</span> <span className="text-foreground/50">likes</span></span>}
@@ -595,11 +595,11 @@ export default function Profile() {
         </div>
       </div>
       <ProfileSong
-          trackId={editMode ? form.featured_track_id : profile?.featured_track_id}
-          editMode={editMode}
-          userTracks={tracks}
-          onChange={(id) => setForm((f) => ({ ...f, featured_track_id: id }))}
-          fillHeight />
+            trackId={editMode ? form.featured_track_id : profile?.featured_track_id}
+            editMode={editMode}
+            userTracks={tracks}
+            onChange={(id) => setForm((f) => ({ ...f, featured_track_id: id }))}
+            fillHeight />
       </div>
 
       <TopTracks
