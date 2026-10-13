@@ -431,7 +431,7 @@ export function PlayerProvider({ children }) {
       if (!el) return;
       cancelCrossfade();
       const token = ++loadTokenRef.current;
-      let url;try{url = await resolveUrl(track, side,()=>token===loadTokenRef.current&&side===activeIdxRef.current);}catch{if(token!==loadTokenRef.current)return;setIsPlaying(false);window.dispatchEvent(new CustomEvent("player:error",{detail:"This track is unavailable. Check your connection or sign in again."}));return;}
+      let url;try{url = await resolveUrl(track, side,()=>token===loadTokenRef.current&&side===activeIdxRef.current);}catch{if(token!==loadTokenRef.current||side!==activeIdxRef.current)return;setIsPlaying(false);window.dispatchEvent(new CustomEvent("player:error",{detail:"This track is unavailable. Check your connection or sign in again."}));return;}
       if (token !== loadTokenRef.current) return; // a newer load superseded us
       mirrorPlayback(el);
       el.src = url;
@@ -521,7 +521,7 @@ export function PlayerProvider({ children }) {
         crossfadingRef.current=false;preloadNextTrack();
       },fd*1000);
     });
-    if(!ok&&valid()){crossfadingRef.current=false;setGainImmediate(side,0);setGainImmediate(oldSide,1);sideReadyRef[side].current=false;}
+    if(!ok&&valid()){el.pause();crossfadingRef.current=false;setGainImmediate(side,0);setGainImmediate(oldSide,1);sideReadyRef[side].current=false;if(els()[oldSide]?.ended)handleEndedRef.current();}
     return ok;
   },[ensureGraph,preloadSide,mirrorPlayback,setGainImmediate,rampGainEqualPower,preloadNextTrack]);
 
@@ -539,7 +539,7 @@ export function PlayerProvider({ children }) {
       setPosition(el.currentTime||0);setDuration(el.duration||0);setIsPlaying(true);
       crossfadeTimerRef.current=setTimeout(()=>{if(token!==transitionVersionRef.current)return;crossfadingRef.current=false;preloadNextTrack();},100);
     });
-    if(!ok&&valid()){crossfadingRef.current=false;setGainImmediate(side,0);setGainImmediate(oldSide,1);}
+    if(!ok&&valid()){el.pause();crossfadingRef.current=false;setGainImmediate(side,0);setGainImmediate(oldSide,1);}
     return ok;
   },[mirrorPlayback,setGainImmediate,preloadNextTrack]);
 

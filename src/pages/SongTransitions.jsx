@@ -1,3 +1,4 @@
+import {useEffect,useRef} from "react";
 import { ArrowLeft, Check, Wand2, GitMerge, AlignHorizontalJustifyCenter } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import {resetTransitionSettings} from "@/lib/transitions";
@@ -91,6 +92,8 @@ export default function SongTransitions() {
   const { user } = useAuth();
   const t = useTransitions();
   const isAdmin = !!user && user.role === "admin";
+  const lastMode=useRef(t.mode!==TRANSITION_MODES.OFF?t.mode:TRANSITION_MODES.CROSSFADE);
+  useEffect(()=>{if(t.mode!==TRANSITION_MODES.OFF)lastMode.current=t.mode;},[t.mode]);
 
   const back = () =>
     window.history.length > 1 ? nav(-1) : nav("/profile");
@@ -100,7 +103,7 @@ export default function SongTransitions() {
     (t.isCrossfade || t.isGapless || (t.isAutoMix && isAdmin));
 
   const toggleMaster = () => {
-    t.setMode(masterOn ? TRANSITION_MODES.OFF : TRANSITION_MODES.CROSSFADE);
+    t.setMode(masterOn?TRANSITION_MODES.OFF:lastMode.current===TRANSITION_MODES.AUTOMIX&&!isAdmin?TRANSITION_MODES.CROSSFADE:lastMode.current);
   };
 
   const selectAutoMix = () => {
@@ -132,18 +135,10 @@ export default function SongTransitions() {
           <div className="rounded-2xl bg-card border border-border px-4 py-3.5">
             <div className="flex items-center justify-between gap-3">
               <span className="text-[15px] font-semibold">Song Transitions</span>
-              <button
-                onClick={toggleMaster}
-                role="switch"
-                aria-checked={masterOn}
-                className={`relative w-[51px] h-[31px] rounded-full transition-colors shrink-0 ${
-                  masterOn ? "bg-primary" : "bg-muted"
-                }`}>
-                <span
-                  className={`absolute top-[2px] left-[2px] w-[27px] h-[27px] rounded-full bg-background shadow transition-transform ${
-                    masterOn ? "translate-x-[20px]" : "translate-x-0"
-                  }`}
-                />
+              <button onClick={toggleMaster} role="switch" aria-label="Enable song transitions" aria-checked={masterOn} className="relative w-[56px] h-11 shrink-0 grid place-items-center">
+                <span className={`relative block w-[51px] h-[31px] rounded-full transition-colors ${masterOn?'bg-primary':'bg-muted'}`}>
+                  <span className={`absolute top-[2px] left-[2px] w-[27px] h-[27px] rounded-full bg-background shadow transition-transform ${masterOn?'translate-x-[20px]':'translate-x-0'}`}/>
+                </span>
               </button>
             </div>
             <p className="text-[13px] text-muted-foreground leading-snug mt-2">
