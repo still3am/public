@@ -85,7 +85,7 @@ export default function Profile() {
   const [tracks, setTracks] = useState([]);
   const [topTracks, setTopTracks] = useState([]);
   const [following, setFollowing] = useState(false);
-  const [stats, setStats] = useState({ followers: 0, following: 0, plays: 0, likes: 0 });
+  const [stats, setStats] = useState({ followers: null, following: null, plays: 0, likes: 0 });
   const [editMode, setEditMode] = useState(false);
   const [copied, setCopied] = useState(false);
   const [showQR, setShowQR] = useState(false);
@@ -115,8 +115,11 @@ export default function Profile() {
 
   const loadVersion=useRef(0);
   const [loadError,setLoadError]=useState(false);
+  const [sectionError,setSectionError]=useState("");
+  const [followingBusy,setFollowingBusy]=useState(false);
+  const followBusyRef=useRef(false);
   async function load() {
-    const request=++loadVersion.current;(request===loadVersion.current)&&setLoadError(false);
+    const request=++loadVersion.current;(request===loadVersion.current)&&setLoadError(false);setSectionError("");
     (request===loadVersion.current)&&setLoading(true);
     try {
       // Another member's profile comes from the public-profiles endpoint: the
@@ -136,38 +139,26 @@ export default function Profile() {
       // The track list is one page (it fills the grids); the totals are counted on
       // the server so they stay right for artists with more than a page of
       // uploads, and the follower numbers never pull a thousand rows to measure.
-      const [t, totals, followersCount, followingCount, relToUser] = await Promise.all([
-      readAllPages(opts=>base44.entities.Track.filter(trackFilter,{sort:"-created_date",...opts})),
-      base44.entities.Track.aggregate({
-        query: trackFilter,
-        sum: ["play_count", "like_count"]
-      }).catch(() => null),
-      base44.entities.Follow.count({ following_id: targetId }),
-      base44.entities.Follow.count({ follower_id: targetId }),
-      !isOwn ?
-      base44.entities.Follow.filter(
-        { follower_id: me.id, following_id: targetId },
-        "-created_date",
-        1
-      ) :
-      Promise.resolve([])]
-      );
-      (request===loadVersion.current)&&setTracks(t);
-      (request===loadVersion.current)&&setTopTracks(
-        [...t].sort((a, b) => (b.play_count || 0) - (a.play_count || 0)).slice(0, 5)
-      );
-      const totalsRow = totals?.rows?.[0];
-      (request===loadVersion.current)&&setStats({
-        followers: followersCount || 0,
-        following: followingCount || 0,
-        plays: totalsRow ?
-        totalsRow.sum_play_count || 0 :
-        t.reduce((s, x) => s + (x.play_count || 0), 0),
-        likes: totalsRow ?
-        totalsRow.sum_like_count || 0 :
-        t.reduce((s, x) => s + (x.like_count || 0), 0)
-      });
-      (request===loadVersion.current)&&setFollowing(relToUser.length > 0);
+      const responses = await Promise.allSettled([
+        readAllPages(opts=>base44.entities.Track.filter(trackFilter,{sort:"-created_date",...opts})),
+        base44.entities.Track.aggregate({query:trackFilter,sum:["play_count","like_count"]}),
+        base44.entities.Follow.count({following_id:targetId}),
+        base44.entities.Follow.count({follower_id:targetId}),
+        !isOwn&&me?.id?base44.entities.Follow.filter({follower_id:me.id,following_id:targetId},"-created_date",1):Promise.resolve([])
+      ]);
+      if(request!==loadVersion.current)return;
+      const result=index=>responses[index].status==="fulfilled"?responses[index].value:null;
+      const t=result(0),totals=result(1),followersCount=result(2),followingCount=result(3),relToUser=result(4);
+      if(t){setTracks(t);setTopTracks([...t].sort((a,b)=>(b.play_count||0)-(a.play_count||0)).slice(0,5));}
+      const totalsRow=totals?.rows?.[0];
+      setStats(previous=>({
+        followers:typeof followersCount==="number"?followersCount:previous.followers,
+        following:typeof followingCount==="number"?followingCount:previous.following,
+        plays:totalsRow?totalsRow.sum_play_count||0:t?t.reduce((sum,x)=>sum+(x.play_count||0),0):previous.plays,
+        likes:totalsRow?totalsRow.sum_like_count||0:t?t.reduce((sum,x)=>sum+(x.like_count||0),0):previous.likes
+      }));
+      if(relToUser)setFollowing((Array.isArray(relToUser)?relToUser:relToUser.items||[]).length>0);
+      if(responses.some((r,i)=>i!==1&&r.status==="rejected"))setSectionError("Some profile information could not refresh. Saved music and follows have not been removed.");
     } catch {(request===loadVersion.current)&&setLoadError(true);
     } finally {
       (request===loadVersion.current)&&setLoading(false);
@@ -175,7 +166,9 @@ export default function Profile() {
   }
 
   useEffect(() => {
+    setProfile(null);setTracks([]);setTopTracks([]);setFollowing(false);setStats({followers:null,following:null,plays:0,likes:0});
     if (targetId) load();
+    return()=>{loadVersion.current++;};
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [targetId]);
 
@@ -192,7 +185,8 @@ export default function Profile() {
   }, [showSettings, showDelete, showQR, followList, isCurrentPage]);
 
   async function toggleFollow() {
-    if (!profile) return;
+    if (!profile || !me?.id || followBusyRef.current) return;
+    followBusyRef.current=true;setFollowingBusy(true);
     const wasFollowing = following;
     setFollowing(!wasFollowing);
     setStats((s) => ({
@@ -219,12 +213,13 @@ export default function Profile() {
         } catch {}
       }
     } catch {
+      setSectionError("Your follow change could not save. Please retry.");
       setFollowing(wasFollowing);
       setStats((s) => ({
         ...s,
         followers: Math.max(0, s.followers + (wasFollowing ? 1 : -1))
       }));
-    }
+    }finally{followBusyRef.current=false;setFollowingBusy(false);}
   }
 
   async function uploadAvatar(file) {
@@ -324,7 +319,7 @@ export default function Profile() {
     }
   }
 
-  if(loadError)return <LoadError onRetry={load}/>;
+  if(loadError&&!profile)return <LoadError onRetry={load}/>;
   if (loading && !profile)
   return (
     <div className="py-20 grid place-items-center">
@@ -339,6 +334,7 @@ export default function Profile() {
 
   return (
     <PullToRefresh onRefresh={load}>
+    {(sectionError||loadError)&&<div role="alert" className="relative z-10 border rounded-xl p-4 text-sm mb-4">{sectionError||"Profile could not refresh."} <button className="underline font-semibold" onClick={load}>Retry</button></div>}
     {coverUrl &&
       <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
         <div
@@ -448,10 +444,10 @@ export default function Profile() {
 
               <div className="flex flex-wrap items-center justify-center md:justify-start gap-x-4 gap-y-1 mt-2.5 text-sm md:text-base">
                 <button onClick={() => setFollowList("followers")} className="hover:underline transition">
-                  <span className="font-bold">{formatNumber(stats.followers)}</span> <span className="text-foreground/50">followers</span>
+                  <span className="font-bold">{stats.followers===null?"—":formatNumber(stats.followers)}</span> <span className="text-foreground/50">followers</span>
                 </button>
                 <button onClick={() => setFollowList("following")} className="hover:underline transition">
-                  <span className="font-bold">{formatNumber(stats.following)}</span> <span className="text-foreground/50">following</span>
+                  <span className="font-bold">{stats.following===null?"—":formatNumber(stats.following)}</span> <span className="text-foreground/50">following</span>
                 </button>
                 {(profile.is_artist || stats.plays > 0) && <span><span className="font-bold">{formatNumber(stats.plays)}</span> <span className="text-foreground/50">plays</span></span>}
                 {stats.likes > 0 && <span><span className="font-bold">{formatNumber(stats.likes)}</span> <span className="text-foreground/50">likes</span></span>}
@@ -549,7 +545,7 @@ export default function Profile() {
                     <Pencil size={16} />
                   </button> :
                     <button
-                      onClick={toggleFollow}
+                      disabled={followingBusy} onClick={toggleFollow}
                       title={following ? "Following (click to unfollow)" : "Follow"}
                       aria-label={following ? "Unfollow" : "Follow"}
                       className={`w-10 h-10 md:w-12 md:h-12 rounded-full grid place-items-center transition ${

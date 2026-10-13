@@ -32,10 +32,11 @@ export function LibraryProvider({ children }) {
   useEffect(() => {
     if (!user?.id) return;
     const reload = coalesce(refresh, 1200);
-    const unsub = base44.entities.LibraryItem.subscribe(() => reload());
+    let unsub;try{unsub=base44.entities.LibraryItem.subscribe(()=>reload());}catch{}
+    const timer=setInterval(reload,30000);
     return () => {
       reload.cancel();
-      unsub();
+      clearInterval(timer);if(unsub)unsub();
     };
   }, [user?.id, refresh]);
 

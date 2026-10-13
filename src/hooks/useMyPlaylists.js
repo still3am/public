@@ -1,5 +1,5 @@
 import {readAllPages} from '@/lib/readPages';
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState, useRef } from "react";
 import { base44 } from "@/api/base44Client";
 import { useAuth } from "@/lib/AuthContext";
 
@@ -8,23 +8,26 @@ import { useAuth } from "@/lib/AuthContext";
 export function useMyPlaylists() {
   const { user } = useAuth();
   const [playlists, setPlaylists] = useState(null);
+  const [error,setError]=useState(false);
+  const version=useRef(0);
 
   const reload = useCallback(async () => {
+    const request=++version.current;setError(false);
     if (!user?.id) {
       setPlaylists([]);
       return;
     }
     try {
       const rows=await readAllPages(opts=>base44.entities.Playlist.filter({creator_id:user.id},{sort:"-created_date",...opts}));
-      setPlaylists(rows || []);
+      if(request===version.current)setPlaylists(rows || []);
     } catch {
-      setPlaylists([]);
+      if(request===version.current)setError(true);
     }
   }, [user?.id]);
 
   useEffect(() => {
-    reload();window.addEventListener("playlists:changed",reload);return()=>window.removeEventListener("playlists:changed",reload);
+    setPlaylists(null);reload();window.addEventListener("playlists:changed",reload);return()=>{version.current++;window.removeEventListener("playlists:changed",reload);};
   }, [reload]);
 
-  return { playlists, reload };
+  return { playlists, reload,error };
 }
