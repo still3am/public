@@ -3248,5 +3248,130 @@
     "es": "Subir todo (",
     "fr": "Tout importer (",
     "zh-CN": "全部上传（"
+  },
+  "Updated October 12, 2026 · Operated by": {
+    "es": "Actualizado el 12 de octubre de 2026 · Operado por",
+    "fr": "Mis à jour le 12 octobre 2026 · Exploité par",
+    "zh-CN": "更新于 2026 年 10 月 12 日 · 运营方："
+  },
+  "PUBLIC is a music listening, upload and community service. Contact the team through": {
+    "es": "PUBLIC es un servicio de escucha, subida de música y comunidad. Contacta al equipo mediante",
+    "fr": "PUBLIC est un service d’écoute, d’import de musique et de communauté. Contactez l’équipe via",
+    "zh-CN": "PUBLIC 提供音乐收听、上传和社区服务。联系团队请使用"
+  },
+  "PUBLIC Support": {
+    "es": "Soporte de PUBLIC",
+    "fr": "Assistance PUBLIC",
+    "zh-CN": "PUBLIC 支持"
+  },
+  "Information used by the service": {
+    "es": "Información utilizada por el servicio",
+    "fr": "Informations utilisées par le service",
+    "zh-CN": "服务使用的信息"
+  },
+  "We use your account email and authentication information, profile details you choose to provide, uploaded audio and artwork, saved music and playlists, listening and device playback state, comments, suggestions, song-sharing notes, reports, blocks and support requests to operate PUBLIC.": {
+    "es": "Utilizamos tu correo e información de autenticación, los detalles del perfil que proporcionas, audio y portadas subidos, música y listas guardadas, estado de escucha y reproducción del dispositivo, comentarios, sugerencias, notas al compartir canciones, reportes, bloqueos y solicitudes de soporte para operar PUBLIC.",
+    "fr": "Nous utilisons votre e-mail et vos informations d’authentification, les détails de profil fournis, l’audio et les pochettes importés, la musique et les playlists enregistrées, l’état d’écoute et de lecture, les commentaires, suggestions, notes de partage, signalements, blocages et demandes d’assistance pour exploiter PUBLIC.",
+    "zh-CN": "我们使用账户邮箱和认证信息、你提供的主页资料、上传的音频与封面、保存的音乐与歌单、收听和设备播放状态、评论、建议、歌曲分享留言、举报、屏蔽和支持请求来运营 PUBLIC。"
+  },
+  "Public and private information": {
+    "es": "Información pública y privada",
+    "fr": "Informations publiques et privées",
+    "zh-CN": "公开与私密信息"
+  },
+  "Published music, artist records and public profile details can be viewed by other people. New audio uploads use private storage and temporary playback links. Older uploaded file URLs may remain public until removed from hosting storage. Your saved library, private playlists, support requests and personal playback state are restricted to you and authorized service operators. A public profile is not a place to post sensitive personal information.": {
+    "es": "Otras personas pueden ver música publicada, fichas de artistas y perfiles públicos. Las nuevas subidas usan almacenamiento privado y enlaces temporales. Las URL antiguas pueden seguir públicas hasta eliminarse del alojamiento. Tu biblioteca guardada, listas privadas, solicitudes de soporte y estado de reproducción están restringidos a ti y operadores autorizados. No publiques datos personales sensibles en un perfil público.",
+    "fr": "Les autres peuvent voir la musique publiée, les fiches d’artistes et les profils publics. Les nouveaux imports utilisent un stockage privé et des liens temporaires. Les anciennes URL peuvent rester publiques jusqu’à leur retrait de l’hébergement. Votre bibliothèque, vos playlists privées, demandes d’assistance et état de lecture sont réservés à vous et aux opérateurs autorisés. Ne publiez pas de données sensibles sur un profil public.",
+    "zh-CN": "其他人可以查看已发布的音乐、艺人档案和公开主页资料。新音频采用私密存储和临时播放链接。旧文件链接可能在从托管存储移除前保持公开。已保存音乐库、私密歌单、支持请求和个人播放状态仅限你和获授权的运营人员访问。请勿在公开主页发布敏感个人信息。"
+  },
+  "Service providers and AI": {
+    "es": "Proveedores del servicio e IA",
+    "fr": "Prestataires et IA",
+    "zh-CN": "服务提供商与 AI"
+  },
+  "Base44 supplies hosting, storage and authentication. When you request AI features or submit content for safety review, relevant text or audio is processed through Base44 AI integrations. QR images use api.qrserver.com, which receives the encoded profile or Lounge link. Social sign-in providers handle the authentication flow you choose. PUBLIC does not sell your personal information.": {
+    "es": "Base44 proporciona alojamiento, almacenamiento y autenticación. Al solicitar funciones de IA o revisión de seguridad, el texto o audio relevante se procesa mediante integraciones de IA de Base44. Los QR usan api.qrserver.com, que recibe el enlace del perfil o sala. Los proveedores de inicio de sesión gestionan la autenticación elegida. PUBLIC no vende tu información personal.",
+    "fr": "Base44 fournit l’hébergement, le stockage et l’authentification. Lors de fonctions IA ou de revues de sécurité, le texte ou l’audio concerné est traité via les intégrations IA de Base44. Les QR utilisent api.qrserver.com, qui reçoit le lien du profil ou salon. Les fournisseurs de connexion gèrent l’authentification choisie. PUBLIC ne vend pas vos données personnelles.",
+    "zh-CN": "Base44 提供托管、存储和认证。使用 AI 功能或提交安全审核时，相关文本或音频由 Base44 AI 集成处理。二维码由 api.qrserver.com 生成，该服务会收到编码的主页或房间链接。社交登录提供商处理你选择的认证流程。PUBLIC 不出售个人信息。"
+  },
+  "Device storage and controls": {
+    "es": "Almacenamiento y controles del dispositivo",
+    "fr": "Stockage et contrôles de l’appareil",
+    "zh-CN": "设备存储与控制"
+  },
+  "Downloads and preferences use local device storage. You can remove downloads, block users, edit your profile, and initiate account deletion in Profile → Settings. Signing out clears local listening history and downloaded copies from this installation.": {
+    "es": "Las descargas y preferencias usan almacenamiento local. Puedes eliminar descargas, bloquear usuarios, editar tu perfil e iniciar la eliminación de cuenta en Perfil → Configuración. Cerrar sesión borra el historial local y las copias descargadas de esta instalación.",
+    "fr": "Les téléchargements et préférences utilisent le stockage local. Vous pouvez retirer les téléchargements, bloquer des utilisateurs, modifier votre profil et demander la suppression du compte dans Profil → Paramètres. La déconnexion efface l’historique local et les copies téléchargées de cette installation.",
+    "zh-CN": "下载和偏好保存在设备本地。你可以删除下载、屏蔽用户、编辑主页，并在“主页 → 设置”发起账户删除。退出登录会清除此安装中的本地收听历史和下载副本。"
+  },
+  "Deletion and retention": {
+    "es": "Eliminación y conservación",
+    "fr": "Suppression et conservation",
+    "zh-CN": "删除与保留"
+  },
+  "Account deletion removes your account and associated application records. A failed deletion is reported so you can retry or contact support. Storage backups and files held by hosting providers may require additional processing; ask support about removal of uploaded files or any necessary retention. We do not describe anonymization alone as completed account deletion.": {
+    "es": "Eliminar la cuenta quita tu cuenta y los registros asociados. Si falla, se informa para que reintentes o contactes soporte. Las copias de seguridad y archivos del proveedor pueden requerir procesamiento adicional; consulta soporte sobre eliminación o conservación necesaria. La anonimización sola no se considera eliminación completa.",
+    "fr": "La suppression retire votre compte et les données associées. Un échec est signalé pour permettre de réessayer ou de contacter l’assistance. Les sauvegardes et fichiers des hébergeurs peuvent nécessiter un traitement supplémentaire ; demandez à l’assistance leur retrait ou la conservation requise. L’anonymisation seule n’est pas une suppression complète.",
+    "zh-CN": "删除账户会移除账户及相关应用记录。删除失败时会提示，以便重试或联系支持。托管方的备份和文件可能需要额外处理；有关上传文件移除或必要保留，请咨询支持。仅匿名化不视为完成账户删除。"
+  },
+  "Young users and contact": {
+    "es": "Usuarios jóvenes y contacto",
+    "fr": "Jeunes utilisateurs et contact",
+    "zh-CN": "未成年用户与联系"
+  },
+  "PUBLIC is not designed for children under 13. Explicit tracks are hidden by default; access requires an adult declaration. Use Support for privacy requests, questions about data, or copyright complaints.": {
+    "es": "PUBLIC no está diseñado para menores de 13 años. Las canciones explícitas están ocultas por defecto y requieren declaración de mayoría de edad. Usa Soporte para solicitudes de privacidad, datos o quejas de derechos.",
+    "fr": "PUBLIC n’est pas conçu pour les moins de 13 ans. Les titres explicites sont masqués par défaut et nécessitent une déclaration de majorité. Utilisez l’assistance pour les demandes de confidentialité, données ou droits d’auteur.",
+    "zh-CN": "PUBLIC 不面向 13 岁以下儿童。成人歌曲默认隐藏，访问须声明已成年。隐私请求、数据问题或版权投诉请使用支持功能。"
+  },
+  "Use PUBLIC respectfully. You must be at least 13 to create an account. You are responsible for the material you upload and share.": {
+    "es": "Usa PUBLIC con respeto. Debes tener al menos 13 años para crear una cuenta. Eres responsable de lo que subes y compartes.",
+    "fr": "Utilisez PUBLIC avec respect. Vous devez avoir au moins 13 ans pour créer un compte. Vous êtes responsable du contenu importé et partagé.",
+    "zh-CN": "请尊重他人使用 PUBLIC。创建账户须年满 13 岁。你对上传和分享的内容负责。"
+  },
+  "Music rights": {
+    "es": "Derechos musicales",
+    "fr": "Droits musicaux",
+    "zh-CN": "音乐版权"
+  },
+  "Only upload audio, artwork and lyrics you own or have permission to distribute. Confirm your rights before uploading. You grant PUBLIC permission to host and stream submitted content for the service, and to offer downloads only when you enable them. You retain your ownership. Submitting a famous artist's name does not grant any rights.": {
+    "es": "Sube solo audio, portadas y letras que te pertenezcan o puedas distribuir. Confirma tus derechos antes de subir. Autorizas a PUBLIC a alojar y transmitir el contenido, y a ofrecer descargas solo si las habilitas. Conservas tu propiedad. Usar el nombre de un artista famoso no concede derechos.",
+    "fr": "Importez uniquement l’audio, les pochettes et paroles dont vous détenez les droits ou l’autorisation de distribution. Confirmez vos droits avant l’import. Vous autorisez PUBLIC à héberger et diffuser le contenu, et à proposer des téléchargements uniquement si vous les activez. Vous conservez votre propriété. Nommer un artiste célèbre ne confère aucun droit.",
+    "zh-CN": "仅上传你拥有或获授权分发的音频、封面和歌词。上传前请确认权利。你授权 PUBLIC 托管并流播提交内容；仅在你启用时提供下载。所有权仍归你。使用知名艺人名称不赋予任何版权。"
+  },
+  "Community standards": {
+    "es": "Normas comunitarias",
+    "fr": "Règles communautaires",
+    "zh-CN": "社区准则"
+  },
+  "Do not post threats, targeted harassment, hateful abuse, sexual exploitation, private personal information, impersonation or spam. Mark explicit music accurately. Public releases require review; material that breaks these standards may be removed and accounts suspended.": {
+    "es": "No publiques amenazas, acoso dirigido, odio, explotación sexual, información privada, suplantación o spam. Marca correctamente la música explícita. Las publicaciones públicas se revisan; los contenidos infractores pueden retirarse y las cuentas suspenderse.",
+    "fr": "Ne publiez pas de menaces, harcèlement ciblé, haine, exploitation sexuelle, informations privées, usurpation ou spam. Identifiez correctement la musique explicite. Les publications sont soumises à revue ; les contenus contraires peuvent être retirés et les comptes suspendus.",
+    "zh-CN": "禁止发布威胁、定向骚扰、仇恨辱骂、性剥削、私人信息、冒充或垃圾内容。请准确标记成人音乐。公开发布须经审核；违规内容可能被移除，账户可能被暂停。"
+  },
+  "Reports and copyright": {
+    "es": "Reportes y derechos de autor",
+    "fr": "Signalements et droits d’auteur",
+    "zh-CN": "举报与版权"
+  },
+  "Use Report on tracks, profiles, comments, notes, suggestions and artist pages. Block abusive users from their profile. For copyright requests, use Support and include the content link, a description of your rights, your contact details and the action requested. Administrators review reports in the moderation inbox.": {
+    "es": "Usa Reportar en canciones, perfiles, comentarios, notas, sugerencias y páginas de artistas. Bloquea usuarios abusivos desde su perfil. Para derechos, usa Soporte e incluye el enlace, descripción de tus derechos, contacto y acción solicitada. Los administradores revisan los reportes en moderación.",
+    "fr": "Utilisez Signaler sur les titres, profils, commentaires, notes, suggestions et pages artistes. Bloquez les utilisateurs abusifs depuis leur profil. Pour les droits, utilisez l’assistance avec le lien, vos droits, vos coordonnées et l’action demandée. Les administrateurs examinent les signalements dans la boîte de modération.",
+    "zh-CN": "可在歌曲、主页、评论、留言、建议和艺人页面使用举报功能。在用户主页屏蔽骚扰者。版权请求请使用支持功能，提供内容链接、权利说明、联系方式和请求的处理措施。管理员在审核收件箱查看举报。"
+  },
+  "Service and account controls": {
+    "es": "Controles del servicio y cuenta",
+    "fr": "Contrôles du service et du compte",
+    "zh-CN": "服务与账户控制"
+  },
+  "Availability depends on your connection and the service. Downloads require sufficient device space. You can delete your account in Settings. Do not use private uploads to distribute content to people who lack permission to access it.": {
+    "es": "La disponibilidad depende de tu conexión y del servicio. Las descargas requieren espacio suficiente. Puedes eliminar tu cuenta en Configuración. No uses subidas privadas para distribuir contenido a quienes no tengan permiso.",
+    "fr": "La disponibilité dépend de votre connexion et du service. Les téléchargements nécessitent de l’espace. Vous pouvez supprimer votre compte dans les paramètres. N’utilisez pas les imports privés pour distribuer du contenu à des personnes non autorisées.",
+    "zh-CN": "可用性取决于网络和服务状态。下载须有足够设备空间。你可在设置中删除账户。请勿利用私密上传向无访问授权的人分发内容。"
+  },
+  "Contact PUBLIC": {
+    "es": "Contactar a PUBLIC",
+    "fr": "Contacter PUBLIC",
+    "zh-CN": "联系 PUBLIC"
   }
 }
