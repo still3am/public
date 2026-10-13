@@ -7,6 +7,7 @@ import { base44 } from "@/api/base44Client";
 const cache = new Map();
 window.addEventListener("catalog:invalidate",()=>cache.clear());
 window.addEventListener("account:cleared",()=>cache.clear());
+window.addEventListener("profiles:changed",()=>cache.clear());
 const inflight = new Map();
 const CHUNK = 100;
 

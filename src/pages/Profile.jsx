@@ -29,6 +29,7 @@ import {
   Share2,
   QrCode,
   BarChart2,
+  Palette,
   BadgeCheck,
   Settings } from
 "lucide-react";
@@ -38,7 +39,8 @@ import TopTracks from "@/components/profile/TopTracks";
 import ProfileComments from "@/components/profile/ProfileComments";
 import FollowListModal from "@/components/profile/FollowListModal";
 import StatusMessage from "@/components/profile/StatusMessage";
-import { useColorPalette } from "@/hooks/useColorPalette";
+import { useCoverPalette,profileGradient } from "@/hooks/useCoverPalette";
+import ProfileColorPicker from "@/components/profile/ProfileColorPicker";
 import { useCoverUrl } from "@/hooks/useCoverUrl";
 
 function safeUrl(u) {
@@ -91,6 +93,8 @@ export default function Profile() {
   const [showQR, setShowQR] = useState(false);
   const [showDelete, setShowDelete] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
+  const [showColors,setShowColors]=useState(false);
+  const [backgroundDraft,setBackgroundDraft]=useState(null);
   const [deleteConfirm, setDeleteConfirm] = useState("");
   const [deleting, setDeleting] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -111,7 +115,7 @@ export default function Profile() {
   }, [profile?.featured_track_id]);
 
   const coverUrl = useCoverUrl(featuredCoverUrl);
-  const [bgPrimary, bgSecondary, bgAccent] = useColorPalette(coverUrl);
+  const {colors:coverColors,loading:colorsLoading}=useCoverPalette(coverUrl);
 
   const loadVersion = useRef(0);
   const [loadError, setLoadError] = useState(false);
@@ -179,10 +183,10 @@ export default function Profile() {
   useEffect(() => {
     // This page stays mounted in the background, so only hold the class while
     // it is the page on screen.
-    const anyModal = (showSettings || showDelete || showQR || !!followList) && isCurrentPage;
+    const anyModal = (showSettings || showDelete || showQR || showColors || !!followList) && isCurrentPage;
     if (anyModal) document.documentElement.classList.add("modal-open");
     return () => document.documentElement.classList.remove("modal-open");
-  }, [showSettings, showDelete, showQR, followList, isCurrentPage]);
+  }, [showSettings, showDelete, showQR, showColors, followList, isCurrentPage]);
 
   useEffect(() => {
     if (isOwn && me?.id === targetId) setProfile((previous) => previous ? { ...previous, is_artist: !!me.is_artist } : previous);
@@ -334,12 +338,26 @@ export default function Profile() {
 
   const displayName = profile.display_name || profile.full_name || "Unnamed";
   const avatarUrl = editMode ? form.avatar_url : profile.avatar_url;
+  const backgroundValue={mode:profile.profile_background_mode||"auto",colors:(profile.profile_background_colors||[]).filter(c=>/^#[0-9a-f]{6}$/i.test(c)).slice(0,3)};
+  const currentBackground=backgroundDraft||backgroundValue;
+  const backgroundColors=currentBackground.mode==="off"?[]:currentBackground.mode==="custom"?currentBackground.colors:coverColors.slice(0,3);
+  const closeColors=()=>{setShowColors(false);setBackgroundDraft(null);};
+  const saveColors=async value=>{
+    if(!isOwn)return;
+    const update={profile_background_mode:value.mode,profile_background_colors:value.colors};
+    await base44.auth.updateMe(update);
+    setProfile(previous=>({...previous,...update}));
+    window.dispatchEvent(new Event("profiles:changed"));
+    await checkUserAuth({silent:true});
+  };
+
 
 
 
   return (
     <PullToRefresh onRefresh={load}>
 
+    {backgroundColors.length>0&&<div className="profile-color-background fixed inset-0 pointer-events-none z-0" aria-hidden="true" style={{backgroundImage:profileGradient(backgroundColors)}}/>}
     <div className="profile-page max-w-6xl mx-auto relative z-10">
       <div className="profile-overview flex flex-col md:flex-row gap-4 md:gap-6 mb-8">
       <div className="profile-identity relative rounded-2xl overflow-hidden ring-1 ring-inset ring-foreground/10 bg-card flex-1 min-w-0">
@@ -560,6 +578,7 @@ export default function Profile() {
                     <Settings size={16} />
                   </button>
                     }
+                  {isOwn&&!editMode&&<button onClick={()=>setShowColors(true)} aria-label="Customize profile colors" title="Profile colors" className="w-10 h-10 rounded-full border border-border grid place-items-center"><Palette size={16}/></button>}
                   {isOwn && !editMode && profile.is_artist &&
                     <Link
                       to="/artist-dashboard"
@@ -604,6 +623,8 @@ export default function Profile() {
             }
 
       </section><aside className="profile-conversation"><ProfileComments profileId={targetId} isOwn={isOwn} /><SafetyControls type="user" id={targetId} userId={targetId} label="profile" /></aside></div>
+
+      {showColors&&isOwn&&<ProfileColorPicker coverUrl={coverUrl} colors={coverColors} loading={colorsLoading} value={backgroundValue} onPreview={setBackgroundDraft} onSave={saveColors} onClose={closeColors}/>}
 
       {showSettings && isOwn &&
         <SettingsSheet

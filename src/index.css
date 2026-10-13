@@ -615,10 +615,10 @@ html:not(.dark){color-scheme:light;}
 /* Artist badge and clean profile colors. */
 .profile-artist-badge{width:36px;height:36px;border-radius:12px;background:hsl(var(--foreground));color:hsl(var(--background));box-shadow:0 2px 6px rgb(0 0 0/.12);}
 .profile-cover-strip{background:hsl(var(--muted));}
-.profile-color-background{opacity:1;filter:none;background:radial-gradient(ellipse at 12% 28%,#007ee8 0%,transparent 65%),radial-gradient(ellipse at 88% 76%,#e5b43f 0%,transparent 65%),linear-gradient(135deg,#07335c,#17120b);}
+.profile-color-background{opacity:1;filter:none;background-color:hsl(var(--background));}
 .profile-page .profile-identity,.profile-page .profile-featured>div,.profile-page .profile-conversation{background:hsl(var(--card));}
 .profile-page .profile-cover-strip{background:hsl(var(--card));}
-html:not(.dark) .profile-color-background{opacity:1;filter:none;background:radial-gradient(ellipse at 12% 28%,#168ee8 0%,transparent 65%),radial-gradient(ellipse at 88% 76%,#efc350 0%,transparent 65%),linear-gradient(135deg,#c7e6ff,#fff0c5);}
+html:not(.dark) .profile-color-background{background-color:#f6f6f8;}
 html:not(.dark) .profile-page .profile-identity,html:not(.dark) .profile-page .profile-featured>div,html:not(.dark) .profile-page .profile-conversation{background:#fff;border-color:rgb(0 0 0/.12);}
 .artist-mode-switch{height:28px!important;min-height:28px!important;width:48px;border-width:4px;}
 .artist-mode-switch>span{height:20px;width:20px;}
@@ -644,3 +644,14 @@ html:not(.dark) .profile-page .profile-identity,html:not(.dark) .profile-page .p
  .profile-artist-badge svg{width:21px;height:21px;}
  .profile-featured-content{padding:18px;gap:10px;}
 }
+
+.profile-palette-preview{min-height:160px;border-radius:18px;border:1px solid hsl(var(--border));background-color:hsl(var(--background));display:flex;align-items:center;justify-content:center;gap:16px;padding:24px;}
+.profile-palette-preview img{width:72px;height:72px!important;object-fit:cover;border-radius:12px;box-shadow:0 8px 24px -12px #000;}
+.profile-palette-preview>span{font-size:12px;font-weight:600;border:1px solid hsl(var(--border));background:hsl(var(--card));color:hsl(var(--foreground));padding:10px 14px;border-radius:12px;}
+.profile-palette-swatches{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;}
+.profile-palette-swatches>button{height:54px;border-radius:13px;border:2px solid hsl(var(--border));position:relative;}
+.profile-palette-swatches>button[aria-pressed=true]{outline:2px solid hsl(var(--foreground));outline-offset:3px;}
+.profile-palette-swatches>button>span{position:absolute;right:6px;bottom:6px;display:grid;place-items:center;width:23px;height:23px;border-radius:50%;background:#fff;color:#111;box-shadow:0 1px 6px #0005;}
+.profile-palette-dialog .view-switch{width:100%;}
+.profile-palette-dialog .view-switch button{flex:1;padding-inline:10px;}
+@media(max-width:767px){.profile-palette-dialog{padding:20px;}.profile-palette-preview{min-height:140px;padding:20px;}}
