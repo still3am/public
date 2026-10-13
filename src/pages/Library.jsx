@@ -29,6 +29,9 @@ export default function Library() {
   const [recentlyPlayed, setRecentlyPlayed] = useState([]);
   const [loading, setLoading] = useState(true);
   const [savedPlaylists, setSavedPlaylists] = useState(null);
+  const [unsavingIds,setUnsavingIds]=useState(new Set());
+  const unsavingRef=useRef(new Set());
+  const savedLoadVersion=useRef(0);
   const [showCreate, setShowCreate] = useState(false);
   const [showOrganize,setShowOrganize]=useState(false);
   const [folders,setFolders]=useState([]);
@@ -47,23 +50,25 @@ export default function Library() {
 
   // Playlists other people made and this user added to their library.
   const loadSavedPlaylists = useCallback(async () => {
+    const request=++savedLoadVersion.current;
     if (!user?.id) return;
     try {
       const rows=await readAllPages(opts=>base44.entities.SavedPlaylist.filter({user_id:user.id},{sort:"-created_date",...opts}));
       const ids = (rows || []).map((r) => r.playlist_id).filter(Boolean);
       if (!ids.length) {
-        setSavedPlaylists([]);
+        if(request===savedLoadVersion.current)setSavedPlaylists([]);
         return;
       }
       const list=await readAllPages(opts=>base44.entities.Playlist.filter({id:{$in:ids}},{sort:"-created_date",...opts}));
       const order = new Map(ids.map((pid, i) => [pid, i]));
+      if(request!==savedLoadVersion.current)return;
       setSavedPlaylists(
         (list || [])
           .slice()
           .sort((a, b) => (order.get(a.id) ?? 0) - (order.get(b.id) ?? 0))
       );
     } catch {
-      setSavedPlaylists([]);
+      /* Keep saved playlists visible if a refresh fails. */
     }
   }, [user?.id]);
 
@@ -152,16 +157,18 @@ export default function Library() {
   };
 
   const unsavePlaylist = async (playlistId) => {
-    setSavedPlaylists((prev) => (prev || []).filter((pl) => pl.id !== playlistId));
+    if(!user?.id||unsavingRef.current.has(playlistId))return;
+    unsavingRef.current.add(playlistId);setUnsavingIds(new Set(unsavingRef.current));
+    savedLoadVersion.current++;
     try {
-      await base44.entities.SavedPlaylist.deleteMany({
-        user_id: user.id,
-        playlist_id: playlistId,
-      });
-      toast({ title: "Removed from your library" });
+      await base44.entities.SavedPlaylist.deleteMany({user_id:user.id,playlist_id:playlistId});
+      savedLoadVersion.current++;
+      setSavedPlaylists(previous=>(previous||[]).filter(pl=>pl.id!==playlistId));
+      toast({title:"Removed from your library"});
     } catch {
-      toast({ title: "Couldn't remove that playlist", variant: "destructive" });
-      loadSavedPlaylists();
+      /* Keep the saved shortcut so the user can try again. */
+    } finally {
+      unsavingRef.current.delete(playlistId);setUnsavingIds(new Set(unsavingRef.current));
     }
   };
 
@@ -255,14 +262,14 @@ export default function Library() {
             <h2 className="text-sm font-bold text-foreground/70 uppercase tracking-wider mb-3">Saved Playlists</h2>
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
               {savedPlaylists.map((pl) =>
-              <div key={pl.id} className="relative group">
+              <div key={pl.id} className="relative group/saved-playlist">
                   <PlaylistCard playlist={pl} />
                   <button
-                  onClick={() => unsavePlaylist(pl.id)}
-                  className="absolute top-2.5 right-2.5 w-7 h-7 rounded-full grid place-items-center bg-background/85 backdrop-blur text-foreground/60 hover:text-destructive opacity-100 md:opacity-0 md:group-hover:opacity-100 transition"
-                  aria-label="Remove from your library">
+                  onClick={e=>{e.preventDefault();e.stopPropagation();unsavePlaylist(pl.id);}} disabled={unsavingIds.has(pl.id)}
+                  className="absolute z-20 top-2.5 right-2.5 w-11 h-11 md:w-9 md:h-9 rounded-full grid place-items-center border border-border bg-background/95 backdrop-blur shadow-md text-foreground hover:bg-accent opacity-100 md:opacity-0 md:group-hover/saved-playlist:opacity-100 md:group-focus-within/saved-playlist:opacity-100 focus-visible:opacity-100 transition disabled:opacity-60"
+                  aria-label={`Remove ${pl.name} from saved playlists`} title="Remove saved playlist">
                   
-                    <X size={14} />
+                    {unsavingIds.has(pl.id)?<Loader2 size={16} className="animate-spin" />:<X size={16} />}
                   </button>
                 </div>
               )}
