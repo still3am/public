@@ -45,7 +45,7 @@ export default function RecentlyAdded() {
   return (
     <PullToRefresh onRefresh={load}>
     <div className="collection-page">
-        <header className="page-intro"><p className="eyebrow hidden">PUBLIC</p><h1>Fresh on PUBLIC</h1><p>New music, ready to discover.</p></header>
+        <header className="page-intro"><h1>Fresh on PUBLIC</h1><p>New music, ready to discover.</p></header>
       <IncrementalList
           items={tracks}
           className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 md:gap-4"
