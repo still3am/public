@@ -801,3 +801,8 @@ html:not(.dark) .profile-page .profile-identity,html:not(.dark) .profile-page .p
 .collection-empty .playlist-action{margin-top:1rem;}
 .queue-library-picker input{background:hsl(var(--background));color:hsl(var(--foreground));}
 @media(max-width:640px){.collection-tools{gap:.5rem;}.collection-tools input{flex-basis:100%;width:100%;}.collection-tools select{flex:1 1 140px;}.collection-tools button{min-height:44px;}}
+
+.library-filters input{background:hsl(var(--background));border:1px solid hsl(var(--border));border-radius:10px;padding:.55rem .7rem;width:100%;min-width:0;min-height:44px;color:hsl(var(--foreground));}
+.support-page section button{margin-right:.5rem;margin-bottom:.5rem;}
+.support-page input[type=file]{display:block;margin-top:.6rem;max-width:100%;font-size:.875rem;}
+.support-page label input,.support-page label textarea{margin-top:.4rem;}

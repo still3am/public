@@ -8,57 +8,56 @@ import { readAllPages } from "@/lib/readPages";
 // and share the result for a short window, collapsing simultaneous calls into a
 // single request.
 const resets=[];
-window.addEventListener("catalog:invalidate",()=>resets.forEach(reset=>reset()));
+let catalogGeneration=0;
+const resetCaches=()=>{catalogGeneration++;resets.forEach(reset=>reset());};
+window.addEventListener("catalog:invalidate",resetCaches);
+window.addEventListener("account:cleared",resetCaches);
 const TTL = 10 * 60 * 1000;
 const RETRY_AFTER_ERROR = 30 * 1000;
 
 function makeCache(fetcher, ttl = TTL) {
-  let hasValue = false;
-  let value = null;
-  let expiresAt = 0;
-  let inflight = null;
-  resets.push(()=>{hasValue=false;expiresAt=0;});
-  return async (fresh=false) => {
+  let hasValue=false,value=null,expiresAt=0,inflight=null,version=0;
+  resets.push(()=>{version++;hasValue=false;value=null;expiresAt=0;inflight=null;});
+  const read=async(fresh=false)=>{
     if(fresh)expiresAt=0;
-    if (hasValue && Date.now() < expiresAt) return value;
-    if (inflight) return inflight;
-    inflight = fetcher()
-      .then((v) => {
-        value = v;
-        hasValue = true;
-        expiresAt = Date.now() + ttl;
-        return v;
-      })
-      .catch(() => {
-        // A failed read (rate limit, offline) must never be cached as the new
-        // truth — that would blank the catalog for the whole window. Keep
-        // serving the last good value and allow a retry shortly after.
-        expiresAt = Date.now() + RETRY_AFTER_ERROR;
-        if(hasValue)return value;throw new Error("The music catalog is unavailable. Please check your connection.");
-      })
-      .finally(() => {
-        inflight = null;
-      });
-    return inflight;
+    if(hasValue&&Date.now()<expiresAt)return value;
+    if(inflight)return inflight;
+    const requestVersion=version;
+    let request;
+    request=fetcher().then(next=>{
+      // A read started before a preference/account change cannot repopulate
+      // the cache with the previous account's catalogue visibility.
+      if(requestVersion!==version)return read();
+      value=next;hasValue=true;expiresAt=Date.now()+ttl;return next;
+    }).catch(()=>{
+      if(requestVersion!==version)return read();
+      expiresAt=Date.now()+RETRY_AFTER_ERROR;
+      if(hasValue)return value;
+      throw new Error("The music catalog is unavailable. Please check your connection.");
+    }).finally(()=>{if(inflight===request)inflight=null;});
+    inflight=request;return request;
   };
+  return read;
 }
 
 // Share partial catalog pages with lightweight pickers while the full read continues.
-let publishedSnapshot=[];
+let publishedSnapshot=[],completePublished=[];
 const publishedListeners=new Set();
 export const peekPublishedTracks=()=>publishedSnapshot;
 export const subscribePublishedTracks=listener=>{publishedListeners.add(listener);return()=>publishedListeners.delete(listener);};
-const publishSnapshot=rows=>{publishedSnapshot=rows;publishedListeners.forEach(listener=>listener(rows));};
-window.addEventListener("catalog:invalidate",()=>publishSnapshot([]));
-window.addEventListener("account:cleared",()=>publishSnapshot([]));
+const publishSnapshot=rows=>{publishedSnapshot=rows;publishedListeners.forEach(listener=>{try{listener(rows);}catch{}});};
+window.addEventListener("catalog:invalidate",()=>{completePublished=[];publishSnapshot([]);});
+window.addEventListener("account:cleared",()=>{completePublished=[];publishSnapshot([]);});
 export const getPublishedTracks=makeCache(async()=>{
- const partial=[];
+ const partial=[],startedGeneration=catalogGeneration;
+ try{
  const all=await readAllPages(opts=>base44.entities.Track.filter({is_published:true},{sort:"-created_date",...opts}).then(page=>{
   partial.push(...(Array.isArray(page)?page:page?.items||[]));
-  publishSnapshot([...new Map(partial.map(t=>[t.id,t])).values()]);
+  if(startedGeneration===catalogGeneration)publishSnapshot([...new Map(partial.map(t=>[t.id,t])).values()]);
   return page;
  }));
- publishSnapshot(all);return all;
+ if(startedGeneration===catalogGeneration){completePublished=all;publishSnapshot(all);}return all;
+ }catch(error){if(startedGeneration===catalogGeneration)publishSnapshot(completePublished);throw error;}
 });
 
 // Most played first — the same complete catalogue, ranked.
