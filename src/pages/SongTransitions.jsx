@@ -1,14 +1,14 @@
-import {useEffect,useRef} from "react";
+import { useEffect, useRef } from "react";
 import { ArrowLeft, Check, Wand2, GitMerge, AlignHorizontalJustifyCenter } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import {resetTransitionSettings} from "@/lib/transitions";
+import { resetTransitionSettings } from "@/lib/transitions";
 import { useAuth } from "@/lib/AuthContext";
 import { useTransitions } from "@/hooks/useTransitions";
 import {
   TRANSITION_MODES,
   CROSSFADE_MIN,
-  CROSSFADE_MAX,
-} from "@/lib/transitions";
+  CROSSFADE_MAX } from
+"@/lib/transitions";
 
 /** @param {any} props */
 function OptionTile({ active, onClick, locked, icon: Icon, title, subtitle }) {
@@ -23,31 +23,31 @@ function OptionTile({ active, onClick, locked, icon: Icon, title, subtitle }) {
       <div className="min-w-0 flex-1">
         <div className="flex items-center gap-2">
           <span className="text-[15px] font-semibold text-foreground">{title}</span>
-          {locked && (
-            <span className="text-[9px] font-bold tracking-wide uppercase text-muted-foreground bg-muted border border-border rounded px-1 py-0.5">
+          {locked &&
+          <span className="text-[9px] font-bold tracking-wide uppercase text-muted-foreground bg-muted border border-border rounded px-1 py-0.5">
               Testing
             </span>
-          )}
+          }
         </div>
         <p className="text-[13px] text-muted-foreground leading-snug mt-0.5">
           {subtitle}
         </p>
       </div>
       <div className="shrink-0">
-        {locked ? null : active ? (
-          <Check size={18} className="text-primary" strokeWidth={3} />
-        ) : (
-          <div className="w-[18px] h-[18px] rounded-full border border-border" />
-        )}
+        {locked ? null : active ?
+        <Check size={18} className="text-primary" strokeWidth={3} /> :
+
+        <div className="w-[18px] h-[18px] rounded-full border border-border" />
+        }
       </div>
-    </button>
-  );
+    </button>);
+
 }
 
 /** @param {any} props */
 function CrossfadeSlider({ value, disabled, onChange }) {
   const pct =
-    ((value - CROSSFADE_MIN) / (CROSSFADE_MAX - CROSSFADE_MIN)) * 100;
+  (value - CROSSFADE_MIN) / (CROSSFADE_MAX - CROSSFADE_MIN) * 100;
   return (
     <div className="px-4 py-4">
       <div className="rounded-2xl bg-card border border-border px-4 py-5">
@@ -58,8 +58,8 @@ function CrossfadeSlider({ value, disabled, onChange }) {
           <div className="relative w-full h-1.5 rounded-full bg-muted">
             <div
               className="absolute inset-y-0 left-0 rounded-full bg-primary transition-[width] duration-150"
-              style={{ width: `${disabled ? 0 : pct}%` }}
-            />
+              style={{ width: `${disabled ? 0 : pct}%` }} />
+            
           </div>
           <input
             aria-label="Crossfade duration in seconds"
@@ -70,20 +70,20 @@ function CrossfadeSlider({ value, disabled, onChange }) {
             value={value}
             disabled={disabled}
             onChange={(e) => onChange(Number(e.target.value))}
-            className="absolute inset-0 w-full h-full opacity-0 cursor-pointer disabled:cursor-not-allowed"
-          />
+            className="absolute inset-0 w-full h-full opacity-0 cursor-pointer disabled:cursor-not-allowed" />
+          
           <div
             className="pointer-events-none absolute top-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-foreground shadow-md transition-colors"
-            style={{ left: `calc(${disabled ? 0 : pct}% - 12px)` }}
-          />
+            style={{ left: `calc(${disabled ? 0 : pct}% - 12px)` }} />
+          
         </div>
         <div className="flex justify-between mt-4 text-[11px] text-muted-foreground">
           <span>1s</span>
           <span>12s</span>
         </div>
       </div>
-    </div>
-  );
+    </div>);
+
 }
 
 export default function SongTransitions() {
@@ -91,18 +91,18 @@ export default function SongTransitions() {
   const { user } = useAuth();
   const t = useTransitions();
   const isAdmin = !!user && user.role === "admin";
-  const lastMode=useRef(t.mode!==TRANSITION_MODES.OFF?t.mode:TRANSITION_MODES.CROSSFADE);
-  useEffect(()=>{if(t.mode!==TRANSITION_MODES.OFF)lastMode.current=t.mode;},[t.mode]);
+  const lastMode = useRef(t.mode !== TRANSITION_MODES.OFF ? t.mode : TRANSITION_MODES.CROSSFADE);
+  useEffect(() => {if (t.mode !== TRANSITION_MODES.OFF) lastMode.current = t.mode;}, [t.mode]);
 
   const back = () =>
-    window.history.length > 1 ? nav(-1) : nav("/profile");
+  window.history.length > 1 ? nav(-1) : nav("/profile");
 
   const masterOn =
-    t.mode !== TRANSITION_MODES.OFF &&
-    (t.isCrossfade || t.isGapless || (t.isAutoMix && isAdmin));
+  t.mode !== TRANSITION_MODES.OFF && (
+  t.isCrossfade || t.isGapless || t.isAutoMix && isAdmin);
 
   const toggleMaster = () => {
-    t.setMode(masterOn?TRANSITION_MODES.OFF:lastMode.current===TRANSITION_MODES.AUTOMIX&&!isAdmin?TRANSITION_MODES.CROSSFADE:lastMode.current);
+    t.setMode(masterOn ? TRANSITION_MODES.OFF : lastMode.current === TRANSITION_MODES.AUTOMIX && !isAdmin ? TRANSITION_MODES.CROSSFADE : lastMode.current);
   };
 
   const selectAutoMix = () => {
@@ -135,8 +135,8 @@ export default function SongTransitions() {
             <div className="flex items-center justify-between gap-3">
               <span className="text-[15px] font-semibold">Song Transitions</span>
               <button onClick={toggleMaster} role="switch" aria-label="Enable song transitions" aria-checked={masterOn} className="relative w-[56px] h-11 shrink-0 grid place-items-center">
-                <span className={`relative block w-[51px] h-[31px] rounded-full transition-colors ${masterOn?'bg-primary':'bg-muted'}`}>
-                  <span className={`absolute top-[2px] left-[2px] w-[27px] h-[27px] rounded-full bg-background shadow transition-transform ${masterOn?'translate-x-[20px]':'translate-x-0'}`}/>
+                <span className={`relative block w-[51px] h-[31px] rounded-full transition-colors ${masterOn ? 'bg-primary' : 'bg-muted'}`}>
+                  <span className={`absolute top-[2px] left-[2px] w-[27px] h-[27px] rounded-full bg-background shadow transition-transform ${masterOn ? 'translate-x-[20px]' : 'translate-x-0'}`} />
                 </span>
               </button>
             </div>
@@ -158,31 +158,31 @@ export default function SongTransitions() {
               subtitle="A short 1.5-second crossfade, available during admin testing."
               active={t.isAutoMix && isAdmin}
               locked={!isAdmin}
-              onClick={selectAutoMix}
-            />
+              onClick={selectAutoMix} />
+            
             <OptionTile
               icon={AlignHorizontalJustifyCenter}
               title="Gapless"
               subtitle="Play songs in sequence without overlapping their endings. Ideal for albums and live sets."
               active={t.isGapless}
-              onClick={selectGapless}
-            />
+              onClick={selectGapless} />
+            
             <OptionTile
               icon={GitMerge}
               title="Crossfade"
               subtitle="Simple song transitions from one to the next for a set duration."
               active={t.isCrossfade}
-              onClick={selectCrossfade}
-            />
+              onClick={selectCrossfade} />
+            
           </div>
           <p className="text-[12px] text-muted-foreground px-4 mt-2.5">
-            {!isAdmin && (
-              <>
+            {!isAdmin &&
+            <>
                 AutoMix is a{" "}
                 <span className="text-primary font-medium">testing</span>{" "}
                 feature, available to admins during testing.{" "}
               </>
-            )}
+            }
             <span>Crossfade blends two songs; Gapless joins them without a fade.</span>
           </p>
         </section>
@@ -195,11 +195,11 @@ export default function SongTransitions() {
           <CrossfadeSlider
             value={t.crossfadeSeconds}
             disabled={!t.isCrossfade}
-            onChange={t.setCrossfadeSeconds}
-          />
+            onChange={t.setCrossfadeSeconds} />
+          
         </section>
-        <button onClick={()=>{lastMode.current=TRANSITION_MODES.CROSSFADE;resetTransitionSettings();}} className="border rounded-full px-4 py-2 text-sm">Reset to default</button>
+        <button onClick={() => {lastMode.current = TRANSITION_MODES.CROSSFADE;resetTransitionSettings();}} className="border rounded-full px-4 py-2 text-sm hidden">Reset to default</button>
       </div>
-    </div>
-  );
+    </div>);
+
 }
