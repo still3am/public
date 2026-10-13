@@ -13,15 +13,18 @@ export default function TrackRow({
   showArt = true,
   albumArtist,
   albumCover,
+  queue,
+  queueIndex,
 }) {
   const p = usePlayer();
+  const play=()=>p.playTrackAt(queue||[track],queue?(queueIndex??index??0):0);
   const isCurrent = p.currentTrack?.id === track.id;
   const coverUrl = useCoverUrl(track.cover_art_url || albumCover);
 
   return (
     <div
       className="song-row group flex items-center gap-3 sm:gap-4 px-2.5 sm:px-3 py-3 rounded-xl hover:bg-foreground/[0.04] transition"
-      onDoubleClick={() => p.playTrackAt([track])}
+      onDoubleClick={play}
     >
       <div className="w-6 text-center text-sm font-medium text-foreground/40 shrink-0">
         {isCurrent && p.isPlaying ? (
@@ -44,7 +47,7 @@ export default function TrackRow({
             <Play
               size={14}
               className="hidden group-hover:inline-block cursor-pointer"
-              onClick={() => p.playTrackAt([track])}
+              onClick={play}
             />
           </>
         )}

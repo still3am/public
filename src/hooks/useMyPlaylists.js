@@ -23,7 +23,7 @@ export function useMyPlaylists() {
   }, [user?.id]);
 
   useEffect(() => {
-    reload();
+    reload();window.addEventListener("playlists:changed",reload);return()=>window.removeEventListener("playlists:changed",reload);
   }, [reload]);
 
   return { playlists, reload };

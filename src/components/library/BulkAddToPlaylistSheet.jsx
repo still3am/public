@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { base44 } from "@/api/base44Client";
+import {addPlaylistTracks} from "@/lib/playlistActions";
 import { ListMusic, Loader2, X } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 
@@ -16,9 +16,7 @@ export default function BulkAddToPlaylistSheet({ trackIds = [], playlists, onClo
       const current = playlist.track_ids || [];
       const added = trackIds.filter((id) => !current.includes(id));
       if (added.length) {
-        await base44.entities.Playlist.update(playlist.id, {
-          track_ids: [...current, ...added],
-        });
+        await addPlaylistTracks(playlist.id,added);
       }
       toast({
         title: added.length

@@ -1,3 +1,4 @@
+import {addPlaylistTracks} from "@/lib/playlistActions";
 import { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { base44 } from "@/api/base44Client";
@@ -33,9 +34,7 @@ export default function PlaylistPickerModal({ track, onClose }) {
         setAddedTo(pl.id);
         return;
       }
-      await base44.entities.Playlist.update(pl.id, {
-        track_ids: [...ids, track.id],
-      });
+      await addPlaylistTracks(pl.id,[track.id]);
       setAddedTo(pl.id);
     } catch {
       alert("Could not add to playlist. Try again.");

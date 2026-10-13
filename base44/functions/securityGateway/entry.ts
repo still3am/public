@@ -64,6 +64,25 @@ export default async function(req) {
       const ms=await svc.entities.LoungeMember.filter({session_id:sid,user_id:user.id},'-created_date',1);
       return {s,m:ms[0],host:isAdmin||s.host_id===user.id};
     };
+    if(entity==='Playlist' && ['playlistAdd','playlistRemove','playlistReorder'].includes(action)){
+      const [id,ids,expected]=args,pl=await handler.get(id);
+      if(!mine(pl,'creator_id'))fail('Only the playlist owner can change its songs',403);
+      if(!Array.isArray(ids)||ids.length>5000||ids.some(id=>typeof id!=='string'||!id))fail('Invalid song selection',400);
+      const unique=[...new Set(ids)],current=pl.track_ids||[];
+      if(action==='playlistAdd'){
+        for(const tid of unique)if(!current.includes(tid))await requireTrack(tid);
+        await handler.updateMany({id},{$addToSet:{track_ids:{$each:unique}}});
+      }else if(action==='playlistRemove'){
+        await handler.updateMany({id},{$pull:{track_ids:{$in:unique}}});
+      }else{
+        if(unique.length!==ids.length || unique.length!==current.length || current.some(id=>!unique.includes(id)))fail('Reorder must retain every song exactly once',400);
+        if(JSON.stringify(expected)!==JSON.stringify(current))fail('This playlist changed on another device. Refresh before reordering.',409);
+        await handler.updateMany({id,track_ids:current},{$set:{track_ids:ids}});
+        const updated=await handler.get(id);
+        if(JSON.stringify(updated.track_ids)!==JSON.stringify(ids))fail('The playlist changed while saving. Refresh and retry.',409);
+      }
+      return Response.json({result:await handler.get(id)});
+    }
     if(action==='checkDuplicate' && entity==='Track'){
       const input=args[0]||{};
       if(!/^[a-f0-9]{64}$/.test(input.audio_sha256||''))fail('Invalid file checksum',400);
@@ -224,8 +243,13 @@ export default async function(req) {
         }
       } else if(entity==='Playlist') {
         if(old&&!mine(old,'creator_id'))fail('Playlist access denied');
+        if(kind==='delete'){await svc.entities.SavedPlaylist.deleteMany({playlist_id:id});return await handler.delete(id);}
         if(kind!=='delete'){
           data=pick(data,['name','description','cover_art_url','is_public','track_ids']);
+          if(data.name!==undefined&&(typeof data.name!=='string'||!data.name.trim()||data.name.length>160))fail('Playlist name must be 1–160 characters',422);
+          if(data.description?.length>2000)fail('Description must be at most 2000 characters',422);
+          if(data.is_public!==undefined&&typeof data.is_public!=='boolean')fail('Invalid visibility',400);
+          if(data.track_ids){if(!Array.isArray(data.track_ids)||data.track_ids.length>5000||data.track_ids.some(id=>typeof id!=='string'))fail('Invalid songs',400);data.track_ids=[...new Set(data.track_ids)];}
           await moderate(svc,[data.name,data.description].filter(Boolean).join('\n'));
           for(const tid of data.track_ids||[])await requireTrack(tid);
           if(kind==='create')data.creator_id=user.id;
