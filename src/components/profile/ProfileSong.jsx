@@ -67,12 +67,12 @@ export default function ProfileSong({
                 <div className="text-xs text-foreground/50 truncate">{track.artist || track.uploader_name}</div>
               </div>
               <div className="flex items-center gap-2">
-                <button
-                onClick={() => setPickerOpen(true)}
-                className="px-3 py-1.5 rounded-full text-xs font-semibold border border-border hover:bg-foreground/5 transition hidden">
                 
-                  Change
-                </button>
+
+
+
+
+              
                 <button
                 onClick={() => onChange("")}
                 className="p-2 rounded-full hover:bg-foreground/10 text-foreground/50"
