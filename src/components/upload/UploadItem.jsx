@@ -34,7 +34,7 @@ export default function UploadItem({
 
   const toggles = [
   { key: "rightsConfirmed", label: "I own or have permission to distribute this audio, artwork and lyrics", icon: null },
-  { key: "allowDownloads", label: "Allow downloads", icon: null },
+  { key: "allowDownloads", label: "Allow file downloads", icon: null },
   { key: "explicit", label: "Explicit", icon: null },
   { key: "aiLyrics", label: "AI lyrics", icon: Sparkles }];
 
@@ -62,6 +62,7 @@ export default function UploadItem({
           <div className="flex items-start gap-2">
             <div className="flex-1 min-w-0 space-y-2">
               <Input
+                aria-label="Track title" maxLength={200}
                 value={item.title}
                 onChange={(e) => onChange({ title: e.target.value })}
                 placeholder="Track title"
@@ -69,6 +70,7 @@ export default function UploadItem({
                 disabled={locked} />
               
               <Input
+                aria-label="Artist name" maxLength={200}
                 value={item.artist}
                 onChange={(e) => onChange({ artist: e.target.value })}
                 placeholder="Artist name"
@@ -79,8 +81,8 @@ export default function UploadItem({
             <button
               onClick={onRemove}
               className="shrink-0 tap-target rounded-full hover:bg-destructive/10 hover:text-destructive text-foreground/35 transition"
-              disabled={uploading}
-              aria-label="Remove">
+              disabled={uploading || enhancing}
+              aria-label={`Remove ${item.title || "upload"}`}>
               
               <X size={16} />
             </button>

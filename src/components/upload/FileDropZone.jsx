@@ -7,7 +7,7 @@ const FORMATS = ["MP3", "WAV", "M4A", "FLAC", "OGG", "AAC", "OPUS", "AIFF"];
 export default function FileDropZone({ onFiles, inputRef }) {
   const [drag, setDrag] = useState(false);
   return (
-    <div
+    <div role="button" tabIndex={0} aria-label="Choose audio files to upload" onKeyDown={e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();inputRef.current?.click();}}}
       onDragOver={(e) => {
         e.preventDefault();
         setDrag(true);
@@ -48,7 +48,7 @@ export default function FileDropZone({ onFiles, inputRef }) {
           drag ? "text-background/70" : "text-foreground/50"}`
           }>
           
-          or <span className="underline underline-offset-2 font-semibold">browse files</span> — upload as many as you like, any size.
+          or <span className="underline underline-offset-2 font-semibold">browse files</span> to select audio and optional cover artwork.
         </div>
 
         <div
@@ -56,7 +56,7 @@ export default function FileDropZone({ onFiles, inputRef }) {
           drag ? "bg-background/15 text-background" : "bg-foreground/[0.06] text-foreground/60"}`
           }>
           
-           Title, artist, genre &amp; artwork auto-detected
+           Review title, artist, genre &amp; artwork before saving
         </div>
 
         <div className="flex flex-wrap justify-center gap-1.5 mt-6">
