@@ -138,10 +138,15 @@ async function searchPeople(q) {
   }
 }
 
-async function runSearch(query) {
+async function runSearch(query,scope="all") {
   const Q = query.trim();
   if (!Q) return { tracks: [], artists: [], people: [], playlists: [], failed: false };
 
+  if(scope==="people"){
+    if(Q.length<2)return {tracks:[],artists:[],people:[],playlists:[],failed:false,peopleFailed:false};
+    const response=await read(searchPeople(Q));
+    return {tracks:[],artists:[],people:response.value?.data?.results||[],playlists:[],failed:false,peopleFailed:!response.ok};
+  }
   const pattern = escapeRegex(Q);
   const lower = Q.toLowerCase();
 
@@ -221,7 +226,7 @@ const recent = new Map();
 window.addEventListener("catalog:invalidate",()=>recent.clear());
 window.addEventListener("account:cleared",()=>recent.clear());
 
-export function globalSearch(query, { fresh = false } = {}) {
+export function globalSearch(query, { fresh = false,scope="all" } = {}) {
   const Q = query.trim();
   if (!Q)
     return Promise.resolve({
@@ -232,17 +237,18 @@ export function globalSearch(query, { fresh = false } = {}) {
       failed: false,
     });
 
+  const key=scope+"::"+Q;
   const now = Date.now();
   for (const [term, entry] of recent) {
     if (now - entry.at > RECENT_TTL) recent.delete(term);
   }
 
   if (!fresh) {
-    const hit = recent.get(Q);
+    const hit = recent.get(key);
     if (hit) return hit.promise;
   }
 
-  const promise = runSearch(Q).then(result=>{if(result.failed||result.peopleFailed)recent.delete(Q);return result;}).catch(error=>{recent.delete(Q);throw error;});
-  recent.set(Q, { at: now, promise });
+  const promise = runSearch(Q,scope).then(result=>{if(result.failed||result.peopleFailed)recent.delete(key);return result;}).catch(error=>{recent.delete(key);throw error;});
+  recent.set(key, { at: now, promise });
   return promise;
 }

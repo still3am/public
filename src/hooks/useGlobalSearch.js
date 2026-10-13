@@ -13,7 +13,7 @@ const EMPTY = { tracks: [], artists: [], people: [], playlists: [] };
  * the next ones are in flight. `refresh` re-runs the current term on demand
  * (pull to refresh) without waiting for another keystroke.
  */
-export function useGlobalSearch(query) {
+export function useGlobalSearch(query,scope="all") {
   const term = query.trim();
   const [results, setResults] = useState(EMPTY);
   const [searching, setSearching] = useState(false);
@@ -46,7 +46,7 @@ export function useGlobalSearch(query) {
     forceFresh.current = false;
     const timer = setTimeout(async () => {
       try {
-        const res = await globalSearch(term, { fresh });
+        const res = await globalSearch(term, { fresh,scope });
         if (id === reqId.current) {
           setResults(prev=>({...res,tracks:res.failed?prev.tracks:res.tracks,people:res.peopleFailed?prev.people:res.people}));
           setPeopleFailed(!!res.peopleFailed);
@@ -62,7 +62,7 @@ export function useGlobalSearch(query) {
     }, DEBOUNCE_MS);
 
     return () => clearTimeout(timer);
-  }, [term, nonce]);
+  }, [term, nonce,scope]);
 
   const refresh = useCallback(() => {
     forceFresh.current = true;

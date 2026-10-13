@@ -334,7 +334,7 @@ export default function Profile() {
 
   return (
     <PullToRefresh onRefresh={load}>
-    {(sectionError || loadError) && <div role="alert" className="relative z-10 border rounded-xl p-4 text-sm mb-4 hidden">{sectionError || "Profile could not refresh."} <button className="underline font-semibold" onClick={load}>Retry</button></div>}
+
     {coverUrl &&
       <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
         <div

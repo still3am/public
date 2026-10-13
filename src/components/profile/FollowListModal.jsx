@@ -73,7 +73,7 @@ export default function FollowListModal({ userId, type, onClose }) {
           </button>
         </div>
         <div className="overflow-y-auto flex-1">
-          {error&&<div role="alert" className="p-5 text-sm">The people list could not load. Your saved follows have not been removed. <button className="underline font-semibold" onClick={()=>setRetry(n=>n+1)}>Retry</button></div>}
+          {error&&<div className="p-5 text-sm"><button className="underline font-semibold" onClick={()=>setRetry(n=>n+1)}>Refresh list</button></div>}
           {loading ? (
             <div className="py-16 grid place-items-center">
               <Loader2 className="animate-spin text-foreground/30" />
