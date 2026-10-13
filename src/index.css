@@ -383,7 +383,7 @@ html:not(.dark){color-scheme:light;}
 }
 
 /* PUBLIC collection remodel — compact mobile layouts and shared page rhythm. */
-.page-surface{min-width:0;isolation:isolate;}
+.page-surface{min-width:0;}
 .page-surface h1{letter-spacing:-.05em;overflow-wrap:anywhere;}
 .page-surface :where(h2,h3){letter-spacing:-.025em;}
 .page-intro{margin-bottom:2rem;max-width:44rem;}
