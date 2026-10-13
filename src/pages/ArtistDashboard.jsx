@@ -138,10 +138,10 @@ export default function ArtistDashboard() {
           
           <ArrowLeft size={18} />
         </Link>
-        <button aria-label="Refresh artist analytics" className="playlist-action ml-auto text-xs" disabled={loading} onClick={()=>setRetry(value=>value+1)}>{loading?"Refreshing…":"Refresh"}</button>
-        <h1 className="text-2xl font-extrabold tracking-tight flex items-center gap-2">
+        <h1 className="min-w-0 flex-1 text-xl sm:text-2xl font-extrabold tracking-tight flex items-center gap-2">
            Artist Dashboard
         </h1>
+        <button aria-label="Refresh artist analytics" className="playlist-action ml-auto text-xs" disabled={loading} onClick={()=>setRetry(value=>value+1)}>{loading?"Refreshing…":"Refresh"}</button>
       </div>
 
       {/* Stat cards */}
