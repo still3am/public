@@ -19,34 +19,22 @@ const DEFAULTS = {
   crossfadeSeconds: 4,
 };
 
-export function getTransitionSettings() {
-  try {
-    const v = JSON.parse(localStorage.getItem(KEY) || "null");
-    if (!v || typeof v !== "object") return { ...DEFAULTS };
-    return {
-      mode: Object.values(TRANSITION_MODES).includes(v.mode)
-        ? v.mode
-        : DEFAULTS.mode,
-      crossfadeSeconds: Math.min(
-        CROSSFADE_MAX,
-        Math.max(CROSSFADE_MIN, Number(v.crossfadeSeconds) || DEFAULTS.crossfadeSeconds)
-      ),
-    };
-  } catch {
-    return { ...DEFAULTS };
-  }
+let memory={...DEFAULTS};
+const normalize=v=>({
+ mode:Object.values(TRANSITION_MODES).includes(v?.mode)?v.mode:DEFAULTS.mode,
+ crossfadeSeconds:Number.isFinite(Number(v?.crossfadeSeconds))?Math.min(CROSSFADE_MAX,Math.max(CROSSFADE_MIN,Number(v.crossfadeSeconds))):DEFAULTS.crossfadeSeconds
+});
+export function getTransitionSettings(){
+ try{const raw=localStorage.getItem(KEY);if(raw){memory=normalize(JSON.parse(raw));}else memory={...DEFAULTS};}catch{}
+ return {...memory};
 }
-
-export function setTransitionSettings(next) {
-  const merged = { ...getTransitionSettings(), ...next };
-  try {
-    localStorage.setItem(KEY, JSON.stringify(merged));
-  } catch {
-    /* storage unavailable/quota — keep in-memory + event so the session still works */
-  }
-  window.dispatchEvent(new CustomEvent("transitions:change", { detail: merged }));
-  return merged;
+export function setTransitionSettings(next){
+ const merged=normalize({...getTransitionSettings(),...next});memory=merged;
+ try{localStorage.setItem(KEY,JSON.stringify(merged));}catch{}
+ window.dispatchEvent(new CustomEvent('transitions:change',{detail:{...merged}}));
+ return {...merged};
 }
+export function resetTransitionSettings(){return setTransitionSettings(DEFAULTS);}
 
 // True when a BLENDING mode is active (so the player should fade in/out).
 // Gapless is deliberately excluded — it's a hard butt-join, not a fade.

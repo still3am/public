@@ -1,3 +1,4 @@
+import {commitAudioHandoff,transitionDuration} from "@/lib/audioHandoff";
 import {useSafety} from '@/context/SafetyContext';
 import {
   createContext,
@@ -104,6 +105,7 @@ export function PlayerProvider({ children }) {
   const inactiveEl = () => els()[inactiveIdx()];
 
   const retryRef=useRef(new Map());
+  const preloadVersionRef=useRef(0),transitionVersionRef=useRef(0);
   const countedRef = useRef(new Set());
   const playAttemptRef=useRef(new Map());
   const [queue, setQueue] = useState([]);
@@ -282,7 +284,7 @@ export function PlayerProvider({ children }) {
   // (Home-Screen) PWA. Transitions/visualizer opt back in via ensureGraph().
   const graphNeeded = useCallback(() => {
     const s = getTransitionSettings();
-    if (isTransitionActive(s) || isGapless(s)) return true;
+    if (isTransitionActive(s)) return true;
     // Mixer active (non-neutral) also needs the Web Audio graph
     const m = mixerRef.current;
     return m.bass !== 0 || m.beat !== 0 || m.vocals !== 0 || m.treble !== 0 || m.boost !== 1;
@@ -397,6 +399,7 @@ export function PlayerProvider({ children }) {
 
   // Abort any crossfade in progress: silence the tail element, restore active.
   const cancelCrossfade = useCallback(() => {
+    preloadVersionRef.current++;transitionVersionRef.current++;
     crossfadingRef.current = false;
     preloadedTargetRef.current = null;
     if (crossfadeTimerRef.current) {
@@ -453,39 +456,21 @@ export function PlayerProvider({ children }) {
   );
 
   // Preload the next track onto the inactive element (no playback yet).
-  const preloadSide = useCallback(
-    async (targetIndex) => {
-      const side = inactiveIdx();
-      const el = els()[side];
-      const track = queueRef.current[targetIndex];
-      if (!el || !track) return;
-      sideReadyRef[side].current = false;
-      sideLoadedIdRef[side].current = track.id;
-      // Drop any still-pending ready listener from a previous preload on this
-      // side so it can't fire for the wrong track and falsely mark us ready.
-      if (readyListenerRef[side].current) {
-        el.removeEventListener("canplay", readyListenerRef[side].current);
-        readyListenerRef[side].current = null;
-      }
-      const url = await resolveUrl(track, side);
-      // If the active side changed hands while we were resolving, bail.
-      if (side !== inactiveIdx()) return;
-      mirrorPlayback(el);
-      el.src = url;
-      el.load();
-      const markReady = () => {
-        sideReadyRef[side].current = true;
-        readyListenerRef[side].current = null;
-      };
-      readyListenerRef[side].current = markReady;
-      el.addEventListener("canplay", markReady, { once: true });
-      if (el.readyState >= 4) {
-        sideReadyRef[side].current = true;
-        readyListenerRef[side].current = null;
-      }
-    },
-    [resolveUrl, mirrorPlayback]
-  );
+  const preloadSide = useCallback(async targetIndex=>{
+    const side=inactiveIdx(),el=els()[side],track=queueRef.current[targetIndex];
+    if(!el||!track||crossfadingRef.current)return;
+    const token=++preloadVersionRef.current;
+    sideReadyRef[side].current=false;
+    if(readyListenerRef[side].current){el.removeEventListener('canplay',readyListenerRef[side].current);readyListenerRef[side].current=null;}
+    try{
+      const url=await resolveUrl(track,side);
+      if(token!==preloadVersionRef.current||side!==inactiveIdx()||queueRef.current[targetIndex]?.id!==track.id)return;
+      mirrorPlayback(el);el.src=url;sideLoadedIdRef[side].current=track.id;
+      const ready=()=>{if(token===preloadVersionRef.current&&sideLoadedIdRef[side].current===track.id){sideReadyRef[side].current=true;readyListenerRef[side].current=null;}};
+      readyListenerRef[side].current=ready;el.addEventListener('canplay',ready,{once:true});el.load();
+      if(el.readyState>=3){el.removeEventListener('canplay',ready);ready();}
+    }catch{if(token===preloadVersionRef.current){sideReadyRef[side].current=false;sideLoadedIdRef[side].current=null;preloadedTargetRef.current=null;}}
+  },[resolveUrl,mirrorPlayback]);
 
   // Compute the upcoming track index and pre-buffer it on the inactive element
   // (unless it's already loaded+ready). Used right after a track loads AND after
@@ -511,103 +496,57 @@ export function PlayerProvider({ children }) {
 
   // Real crossfade: start the next track on the inactive element and ramp the
   // two gains across one another, then promote the inactive element to active.
-  const beginCrossfade = useCallback(
-    (targetIndex, cf, remaining) => {
-      const side = inactiveIdx();
-      const el = els()[side];
-      const track = queueRef.current[targetIndex];
-      if (!el || !track) return;
-      // Make sure the RIGHT track is loaded on the inactive element. If not,
-      // kick off the load and retry on the next tick.
-      if (sideLoadedIdRef[side].current !== track.id) {
-        preloadedTargetRef.current = targetIndex;
-        preloadSide(targetIndex);
-        return;
-      }
-      // Wait until the upcoming track has enough buffered to start cleanly
-      // (canplay / readyState 4); starting sooner causes micro-stutters.
-      if (!sideReadyRef[side].current) return;
-      crossfadingRef.current = true;
-      const oldSide = activeIdxRef.current; // capture BEFORE swapping below
-      const fd = Math.min(cf, Math.max(0.5, remaining || cf));
-      setGainImmediate(side, 0);
-      mirrorPlayback(el);
-      const p = el.play();
-      // Equal-power blend: new track power rises (sin) as old track power falls (cos).
-      Promise.resolve(p)
-        .then(() => {
-          rampGainEqualPower(side, true, fd);
-          rampGainEqualPower(oldSide, false, fd);
-        })
-        .catch(() => {});
-      // The new track is now "current" — switch active side so UI follows it.
-      activeIdxRef.current = side;
-      sideReadyRef[side].current = false;
-      preloadedTargetRef.current = null;
-      setCurrentIndex(targetIndex); // track-change effect sees it's loaded + crossfading -> skips reload
-      if (crossfadeTimerRef.current) clearTimeout(crossfadeTimerRef.current);
-      crossfadeTimerRef.current = setTimeout(() => {
-        const oldEl = els()[oldSide];
-        if (oldEl) {
-          try {
-            oldEl.pause();
-          } catch {}
-        }
-        setGainImmediate(oldSide, 0);
-        crossfadingRef.current = false;
-        // The inactive element is now free — pre-buffer the upcoming track.
-        preloadNextTrack();
-      }, (fd + 0.4) * 1000);
-    },
-    [preloadSide, mirrorPlayback, setGainImmediate, rampGainEqualPower, preloadNextTrack]
-  );
+  const beginCrossfade = useCallback(async(targetIndex,cf,remaining)=>{
+    if(crossfadingRef.current)return false;
+    const oldSide=activeIdxRef.current,side=inactiveIdx(),el=els()[side],track=queueRef.current[targetIndex];
+    if(!el||!track)return false;
+    if(sideLoadedIdRef[side].current!==track.id||!sideReadyRef[side].current){preloadedTargetRef.current=targetIndex;preloadSide(targetIndex);return false;}
+    const token=++transitionVersionRef.current,valid=()=>token===transitionVersionRef.current&&activeIdxRef.current===oldSide&&queueRef.current[targetIndex]?.id===track.id;
+    const ctx=ensureGraph();if(!ctx)return false;
+    crossfadingRef.current=true;
+    try{if(ctx.state==='suspended')await ctx.resume();}catch{if(valid())crossfadingRef.current=false;return false;}
+    if(!valid())return false;
+    const fd=transitionDuration(cf,remaining,el.duration,activeEl()?.playbackRate||1);
+    if(!fd){crossfadingRef.current=false;return false;}
+    setGainImmediate(side,0);mirrorPlayback(el);
+    const ok=await commitAudioHandoff(el,valid,()=>{
+      rampGainEqualPower(side,true,fd);rampGainEqualPower(oldSide,false,fd);
+      activeIdxRef.current=side;sideReadyRef[side].current=false;preloadedTargetRef.current=null;
+      setCurrentIndex(targetIndex);setPosition(el.currentTime||0);setDuration(el.duration||0);setIsPlaying(true);
+      if(crossfadeTimerRef.current)clearTimeout(crossfadeTimerRef.current);
+      crossfadeTimerRef.current=setTimeout(()=>{
+        if(token!==transitionVersionRef.current)return;
+        els()[oldSide]?.pause();setGainImmediate(oldSide,0);setGainImmediate(side,1);
+        crossfadingRef.current=false;preloadNextTrack();
+      },fd*1000);
+    });
+    if(!ok&&valid()){crossfadingRef.current=false;setGainImmediate(side,0);setGainImmediate(oldSide,1);sideReadyRef[side].current=false;}
+    return ok;
+  },[ensureGraph,preloadSide,mirrorPlayback,setGainImmediate,rampGainEqualPower,preloadNextTrack]);
 
-  // TRUE GAPLESS: no fade at all. The upcoming track is already decoded and
-  // buffered on the inactive element, so we butt-join it to the outgoing track
-  // — swap the gains in the same instant and hard-stop the old element. Fired a
-  // hair (~0.2s) before the reported end because `timeupdate` only ticks ~4x a
-  // second and the tail of that window is decay/silence.
-  const beginGapless = useCallback(
-    (targetIndex) => {
-      const side = inactiveIdx();
-      const el = els()[side];
-      const track = queueRef.current[targetIndex];
-      if (!el || !track) return;
-      if (sideLoadedIdRef[side].current !== track.id) {
-        preloadedTargetRef.current = targetIndex;
-        preloadSide(targetIndex);
-        return;
-      }
-      if (!sideReadyRef[side].current) return;
+  const beginGapless = useCallback(async targetIndex=>{
+    if(crossfadingRef.current)return false;
+    const oldSide=activeIdxRef.current,side=inactiveIdx(),el=els()[side],track=queueRef.current[targetIndex];
+    if(!el||!track||sideLoadedIdRef[side].current!==track.id||!sideReadyRef[side].current)return false;
+    const token=++transitionVersionRef.current,valid=()=>token===transitionVersionRef.current&&activeIdxRef.current===oldSide&&queueRef.current[targetIndex]?.id===track.id;
+    crossfadingRef.current=true;
+    try{el.currentTime=0;const ctx=audioCtxRef.current;if(ctx?.state==='suspended')await ctx.resume();}catch{if(valid())crossfadingRef.current=false;return false;}
+    mirrorPlayback(el);setGainImmediate(side,1);
+    const ok=await commitAudioHandoff(el,valid,()=>{
+      els()[oldSide]?.pause();setGainImmediate(oldSide,0);activeIdxRef.current=side;
+      sideReadyRef[side].current=false;preloadedTargetRef.current=null;setCurrentIndex(targetIndex);
+      setPosition(el.currentTime||0);setDuration(el.duration||0);setIsPlaying(true);
+      crossfadeTimerRef.current=setTimeout(()=>{if(token!==transitionVersionRef.current)return;crossfadingRef.current=false;preloadNextTrack();},100);
+    });
+    if(!ok&&valid()){crossfadingRef.current=false;setGainImmediate(side,0);setGainImmediate(oldSide,1);}
+    return ok;
+  },[mirrorPlayback,setGainImmediate,preloadNextTrack]);
 
-      const oldSide = activeIdxRef.current;
-      crossfadingRef.current = true; // guards the reload + ended handlers
-      try {
-        el.currentTime = 0;
-      } catch {}
-      mirrorPlayback(el);
-      setGainImmediate(side, 1);
-      el.play().catch(() => {});
-      const oldEl = els()[oldSide];
-      if (oldEl) {
-        try {
-          oldEl.pause();
-        } catch {}
-      }
-      setGainImmediate(oldSide, 0);
-
-      activeIdxRef.current = side;
-      sideReadyRef[side].current = false;
-      preloadedTargetRef.current = null;
-      setCurrentIndex(targetIndex);
-      if (crossfadeTimerRef.current) clearTimeout(crossfadeTimerRef.current);
-      crossfadeTimerRef.current = setTimeout(() => {
-        crossfadingRef.current = false;
-        preloadNextTrack();
-      }, 300);
-    },
-    [preloadSide, mirrorPlayback, setGainImmediate, preloadNextTrack]
-  );
+  useEffect(()=>{
+    const change=()=>{cancelCrossfade();if(graphNeeded()){const ctx=ensureGraph();if(ctx?.state==='suspended')ctx.resume().catch(()=>{});}preloadNextTrack();};
+    window.addEventListener('transitions:change',change);
+    return()=>window.removeEventListener('transitions:change',change);
+  },[cancelCrossfade,ensureGraph,graphNeeded,preloadNextTrack]);
 
   // --- per-track load: crossfade engine handles natural advances, manual
   // changes load on the active element. ---
@@ -647,7 +586,7 @@ export function PlayerProvider({ children }) {
   useEffect(() => {
     if (crossfadingRef.current) return;
     preloadNextTrack();
-  }, [currentTrack?.id,shuffle,queue.length]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [currentTrack?.id,shuffle,queue]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Report playback position/duration to the OS Media Session. iOS uses this
   // (together with the now-playing metadata + action handlers) to recognize a
@@ -746,7 +685,7 @@ export function PlayerProvider({ children }) {
       syncPositionState(a);
       const s = getTransitionSettings();
       const gapless = isGapless(s);
-      if ((!isTransitionActive(s) && !gapless) || crossfadingRef.current) return;
+      if(a.paused || a.ended || (!isTransitionActive(s) && !gapless) || crossfadingRef.current) return;
       const d = a.duration;
       if (!d || !isFinite(d)) return;
       const remaining = d - cur;
@@ -766,7 +705,7 @@ export function PlayerProvider({ children }) {
           preloadedTargetRef.current = n;
           preloadSide(n);
         }
-        if (remaining <= 0.2) beginGapless(n);
+        // Hand off on ended, preserving the complete outgoing tail.
         return;
       }
       // AutoMix: short, snappy mix (1.5s) so the song plays almost fully before
@@ -778,7 +717,7 @@ export function PlayerProvider({ children }) {
         preloadedTargetRef.current = n;
         preloadSide(n);
       }
-      if (remaining <= cf && remaining > 0) beginCrossfade(n, cf, remaining);
+      if (remaining/(a.playbackRate||1) <= cf && remaining > 0) beginCrossfade(n, cf, remaining);
     };
   }, [preloadSide, beginCrossfade, beginGapless]);
 
@@ -818,6 +757,7 @@ export function PlayerProvider({ children }) {
   const nextIndex = useCallback(() => {
     if (!queue.length) return -1;
     if (shuffle && queue.length > 1) {
+      const prepared=preloadedTargetRef.current;if(Number.isInteger(prepared)&&prepared!==currentIndex&&prepared>=0&&prepared<queue.length)return prepared;
       let n;
       do {
         n = Math.floor(Math.random() * queue.length);
@@ -910,7 +850,8 @@ export function PlayerProvider({ children }) {
       }
       const n = nextIndex();
       if (n !== -1) {
-        setCurrentIndex(n);
+        if(isGapless(getTransitionSettings())&&await beginGapless(n))return;
+        autoPlayOnLoadRef.current=true;setCurrentIndex(n);
         return;
       }
       if (repeat === "off" && currentTrack) {
@@ -919,7 +860,7 @@ export function PlayerProvider({ children }) {
       }
       setIsPlaying(false);
     };
-  }, [repeat, nextIndex, currentTrack, extendWithGenreRadio, advanceOffline]);
+  }, [repeat, nextIndex, currentTrack, extendWithGenreRadio, advanceOffline,beginGapless]);
 
   // volume / mute / rate apply to both elements
   useEffect(() => {
@@ -1001,12 +942,13 @@ export function PlayerProvider({ children }) {
       if (graphNeeded()) ensureGraph();
       resumeAndPlay(a);
     } else {
-      els().forEach(el=>el?.pause());
+      cancelCrossfade();els().forEach(el=>el?.pause());
       setIsPlaying(false);
     }
-  }, [currentTrack, ensureGraph, graphNeeded, resumeAndPlay]);
+  }, [currentTrack, ensureGraph, graphNeeded, resumeAndPlay,cancelCrossfade]);
 
   const seek = useCallback((time) => {
+    cancelCrossfade();
     const a = activeEl();
     if (!a) return;
     a.currentTime = time;
@@ -1019,7 +961,7 @@ export function PlayerProvider({ children }) {
     try {
       localStorage.setItem("public:player_muted", String(m));
     } catch {}
-  }, []);
+  }, [cancelCrossfade]);
 
   const setVolume = useCallback((v) => {
     setVolumeState(v);
@@ -1044,7 +986,7 @@ export function PlayerProvider({ children }) {
         target &&
         sideLoadedIdRef[side].current === target.id &&
         sideReadyRef[side].current;
-      if (isTransitionActive(s) && ready) {
+      if (isTransitionActive(s) && ready && !activeEl()?.paused) {
         const a = activeEl();
         const remaining =
           a && a.duration && isFinite(a.duration)
@@ -1052,10 +994,11 @@ export function PlayerProvider({ children }) {
             : s.crossfadeSeconds;
         beginCrossfade(targetIndex, s.crossfadeSeconds, remaining);
       } else {
-        setCurrentIndex(targetIndex);
+        autoPlayOnLoadRef.current=!!activeEl()&&!activeEl().paused;
+        if(currentIndexRef.current===targetIndex)loadOnActive(target);else setCurrentIndex(targetIndex);
       }
     },
-    [beginCrossfade]
+    [beginCrossfade,loadOnActive]
   );
 
   const next = useCallback(() => {
