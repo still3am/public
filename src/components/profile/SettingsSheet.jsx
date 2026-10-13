@@ -4,13 +4,13 @@ import { X, Lightbulb, GitMerge, Palette, Trash2, ChevronRight, Sparkles, BarCha
 import ThemeToggle from "@/components/ThemeToggle";
 import { Switch } from "@/components/ui/switch";
 import { useAuth } from "@/lib/AuthContext";
-import {clearPersonalData} from '@/lib/clearPersonalData';
-import {useSafety} from '@/context/SafetyContext';
+import { clearPersonalData } from '@/lib/clearPersonalData';
+import { useSafety } from '@/context/SafetyContext';
 import { base44 } from "@/api/base44Client";
 
 /** @param {any} props */
 export default function SettingsSheet({ onClose, onDeleteAccount }) {
-  const safety=useSafety();
+  const safety = useSafety();
   const { user, checkUserAuth } = useAuth();
   const [toggling, setToggling] = useState(false);
   const [loggingOut, setLoggingOut] = useState(false);
@@ -41,7 +41,7 @@ export default function SettingsSheet({ onClose, onDeleteAccount }) {
   }
 
   return (
-    <div role="dialog" aria-modal="true" aria-label="Settings" data-public-dialog tabIndex={-1} onKeyDown={e=>e.key==="Escape"&&onClose()} className="fixed inset-0 z-[60] flex items-end md:items-center justify-center">
+    <div role="dialog" aria-modal="true" aria-label="Settings" data-public-dialog tabIndex={-1} onKeyDown={(e) => e.key === "Escape" && onClose()} className="fixed inset-0 z-[60] flex items-end md:items-center justify-center">
       <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={onClose} />
       <div className="relative w-full md:max-w-md bg-card border rounded-t-3xl md:rounded-3xl p-5 pb-[calc(1.25rem+env(safe-area-inset-bottom))] max-h-[80vh] overflow-y-auto">
         <div className="md:hidden w-10 h-1 bg-foreground/20 rounded-full mx-auto mb-4" />
@@ -55,8 +55,8 @@ export default function SettingsSheet({ onClose, onDeleteAccount }) {
         <div className="space-y-2">
           <Link to="/support" onClick={onClose} className="block p-3 rounded-xl border">Support & copyright requests</Link>
           <div className="flex gap-4 text-sm p-3"><Link to="/privacy" onClick={onClose} className="underline">Privacy</Link><Link to="/terms" onClick={onClose} className="underline">Terms & community</Link></div>
-          <label className="flex items-center gap-3 p-3 rounded-xl border text-sm"><input type="checkbox" checked={!!user?.show_explicit} onChange={async e=>{const enabled=e.target.checked;if(enabled&&!window.confirm('I confirm I am at least 18 and want to see explicit music.'))return;try{await base44.auth.updateMe({show_explicit:enabled,adult_confirmed:enabled||!!user?.adult_confirmed});await checkUserAuth();window.dispatchEvent(new Event('catalog:invalidate'));}catch{window.alert('Could not save your content preference.');}}}/>Show explicit music (18+)</label>
-          {safety.own.length>0&&<div className="p-3 border rounded-xl"><h3 className="font-bold text-sm mb-2">Blocked users</h3>{safety.own.map(r=><button key={r.id} className="block text-xs underline p-2" onClick={async()=>{await base44.functions.invoke('safety',{action:'block',user_id:r.blocked_user_id,blocked:false});await safety.reload();window.dispatchEvent(new Event('catalog:invalidate'));}}>Unblock {r.blocked_user_id}</button>)}</div>}
+          <label className="flex items-center gap-3 p-3 rounded-xl border text-sm"><input type="checkbox" checked={!!user?.show_explicit} onChange={async (e) => {const enabled = e.target.checked;if (enabled && !window.confirm('I confirm I am at least 18 and want to see explicit music.')) return;try {await base44.auth.updateMe({ show_explicit: enabled, adult_confirmed: enabled || !!user?.adult_confirmed });await checkUserAuth();window.dispatchEvent(new Event('catalog:invalidate'));} catch {window.alert('Could not save your content preference.');}}} />Show explicit music (18+)</label>
+          {safety.own.length > 0 && <div className="p-3 border rounded-xl"><h3 className="font-bold text-sm mb-2">Blocked users</h3>{safety.own.map((r) => <button key={r.id} className="block text-xs underline p-2" onClick={async () => {await base44.functions.invoke('safety', { action: 'block', user_id: r.blocked_user_id, blocked: false });await safety.reload();window.dispatchEvent(new Event('catalog:invalidate'));}}>Unblock {r.blocked_user_id}</button>)}</div>}
           {/* Artist Mode */}
           <div className="p-3.5 rounded-2xl bg-foreground/[0.02]">
             <div className="flex items-center gap-3">
@@ -70,15 +70,15 @@ export default function SettingsSheet({ onClose, onDeleteAccount }) {
               <Switch
                 checked={isArtist}
                 onCheckedChange={toggleArtist}
-                disabled={toggling}
-              />
+                disabled={toggling} />
+              
             </div>
-            {isArtist && (
-              <Link
-                to="/artist-dashboard"
-                onClick={onClose}
-                className="mt-3 flex items-center gap-3 p-3 rounded-xl bg-foreground/[0.04] hover:bg-foreground/[0.07] transition active:scale-[0.99]"
-              >
+            {isArtist &&
+            <Link
+              to="/artist-dashboard"
+              onClick={onClose}
+              className="mt-3 flex items-center gap-3 p-3 rounded-xl bg-foreground/[0.04] hover:bg-foreground/[0.07] transition active:scale-[0.99]">
+              
                 <div className="w-9 h-9 rounded-lg bg-foreground/[0.06] grid place-items-center shrink-0">
                   <BarChart3 size={16} className="text-foreground/70" />
                 </div>
@@ -88,14 +88,14 @@ export default function SettingsSheet({ onClose, onDeleteAccount }) {
                 </div>
                 <ChevronRight size={16} className="text-foreground/30 shrink-0" />
               </Link>
-            )}
+            }
           </div>
 
           <Link
             to="/suggestions"
             onClick={onClose}
-            className="flex items-center gap-3 p-3.5 rounded-2xl bg-foreground/[0.02] hover:bg-foreground/[0.05] transition active:scale-[0.99]"
-          >
+            className="flex items-center gap-3 p-3.5 rounded-2xl bg-foreground/[0.02] hover:bg-foreground/[0.05] transition active:scale-[0.99]">
+            
             <div className="w-10 h-10 rounded-xl bg-foreground/[0.06] grid place-items-center shrink-0">
               <Lightbulb size={18} className="text-foreground/70" />
             </div>
@@ -109,8 +109,8 @@ export default function SettingsSheet({ onClose, onDeleteAccount }) {
           <Link
             to="/settings/transitions"
             onClick={onClose}
-            className="flex items-center gap-3 p-3.5 rounded-2xl bg-foreground/[0.02] hover:bg-foreground/[0.05] transition active:scale-[0.99]"
-          >
+            className="flex items-center gap-3 p-3.5 rounded-2xl bg-foreground/[0.02] hover:bg-foreground/[0.05] transition active:scale-[0.99]">
+            
             <div className="w-10 h-10 rounded-xl bg-foreground/[0.06] grid place-items-center shrink-0">
               <GitMerge size={18} className="text-foreground/70" />
             </div>
@@ -122,7 +122,7 @@ export default function SettingsSheet({ onClose, onDeleteAccount }) {
           </Link>
 
           <div className="p-3.5 rounded-2xl bg-foreground/[0.02]">
-            <div className="flex items-center gap-3 mb-3">
+            <div className="flex items-center gap-3 mb-3 hidden">
               <div className="w-10 h-10 rounded-xl bg-foreground/[0.06] grid place-items-center shrink-0">
                 <Palette size={18} className="text-foreground/70" />
               </div>
@@ -135,9 +135,9 @@ export default function SettingsSheet({ onClose, onDeleteAccount }) {
           </div>
 
           <button
-            onClick={() => { onDeleteAccount(); onClose(); }}
-            className="w-full flex items-center gap-3 p-3.5 rounded-2xl bg-foreground/[0.02] hover:bg-foreground/[0.05] transition active:scale-[0.99] text-left"
-          >
+            onClick={() => {onDeleteAccount();onClose();}}
+            className="w-full flex items-center gap-3 p-3.5 rounded-2xl bg-foreground/[0.02] hover:bg-foreground/[0.05] transition active:scale-[0.99] text-left">
+            
             <div className="w-10 h-10 rounded-xl bg-destructive/10 grid place-items-center shrink-0">
               <Trash2 size={18} className="text-destructive" />
             </div>
@@ -150,8 +150,8 @@ export default function SettingsSheet({ onClose, onDeleteAccount }) {
           <button
             onClick={handleLogout}
             disabled={loggingOut}
-            className="w-full flex items-center gap-3 p-3.5 rounded-2xl bg-overlay text-overlay-foreground ring-1 ring-inset ring-overlay-foreground/15 hover:opacity-90 transition active:scale-[0.99] text-left disabled:opacity-60"
-          >
+            className="w-full flex items-center gap-3 p-3.5 rounded-2xl bg-overlay text-overlay-foreground ring-1 ring-inset ring-overlay-foreground/15 hover:opacity-90 transition active:scale-[0.99] text-left disabled:opacity-60">
+            
             <div className="w-10 h-10 rounded-xl bg-overlay-foreground/15 grid place-items-center shrink-0">
               {loggingOut ? <Loader2 size={18} className="animate-spin" /> : <LogOut size={18} />}
             </div>
@@ -162,6 +162,6 @@ export default function SettingsSheet({ onClose, onDeleteAccount }) {
           </button>
         </div>
       </div>
-    </div>
-  );
+    </div>);
+
 }
