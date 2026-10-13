@@ -152,9 +152,9 @@ export default function QueuePanel({ open, onClose }) {
         {query.trim()&&<p className="text-xs text-muted-foreground px-2 mb-3">{visibleUpcoming.length} matching songs. Clear search to rearrange.</p>}
         {/* Upcoming */}
         <div className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground px-2 mb-1">
-          {upcoming.length ? "Next up" : ""}
+          {displayUpcoming.length ? "Next up" : ""}
         </div>
-        {!upcoming.length ?
+        {!displayUpcoming.length ?
         <div className="text-center py-16 px-6">
             <div className="w-16 h-16 rounded-2xl bg-muted grid place-items-center mx-auto mb-4">
               <Music2 size={30} className="text-muted-foreground" />

@@ -1,4 +1,7 @@
-import { getPublishedTracks } from "@/lib/catalogCache";
+import {readAllPages} from "@/lib/readPages";
+import {Image} from "@/components/ui/image";
+import {coalesce} from "@/lib/coalesce";
+import { getPublishedTracks,peekPublishedTracks } from "@/lib/catalogCache";
 import LoadError from '@/components/LoadError';
 import { useEffect, useState, useCallback, useMemo, useRef } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
@@ -176,7 +179,7 @@ export default function Lounge() {
             </header>
             <div className="lounge-columns">
             <div>
-            <LoungeQueueList sessionId={session.id} isHost={isHost} />
+            <LoungeQueueList key={session.id} sessionId={session.id} isHost={isHost} />
 
             </div>
             <aside className="lounge-community">
@@ -224,7 +227,8 @@ export default function Lounge() {
 function GuestQueuePicker({ sessionId, user, onClose, onAdded }) {
   const { ids } = useLibrary();
   const libraryIds = Array.from(ids || []);
-  const [tracks, setTracks] = useState(null);
+  const [tracks, setTracks] = useState(()=>peekPublishedTracks().length?peekPublishedTracks():null);
+  const pickerVersion=useRef(0);
   const [query, setQuery] = useState("");
   const [justAdded, setJustAdded] = useState(new Set());
   const addingRef=useRef(new Set());
@@ -233,28 +237,19 @@ function GuestQueuePicker({ sessionId, user, onClose, onAdded }) {
   useEffect(()=>{const previous=/** @type {HTMLElement|null} */ (document.activeElement);const handler=e=>{if(e.key==="Escape")onClose();if(e.key==="Tab"){const nodes=Array.from(document.querySelectorAll(".lounge-picker button:not(:disabled),.lounge-picker input")).map(node=>/** @type {HTMLElement} */ (node));const first=nodes[0],last=nodes[nodes.length-1];if(e.shiftKey&&document.activeElement===first){e.preventDefault();last?.focus();}else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first?.focus();}}};document.addEventListener("keydown",handler);return()=>{document.removeEventListener("keydown",handler);previous?.focus?.();};},[onClose]);
 
   const load = useCallback(async () => {
-    setPickerError(false);
-    const recent = getRecentPlays().slice(0, 30);
-    let published=[];
-    try{published=await getPublishedTracks();}catch{setPickerError(true);}
-    let libTracks = [];
-    try {
-      if (libraryIds.length) {
-        libTracks = await base44.entities.Track.filter(
-          { id: { $in: libraryIds.slice(0, 200) } },
-          "-created_date",
-          300
-        );
-      }
-    } catch {}
-    const byId = new Map();
-    [...(libTracks || []), ...recent, ...published].forEach((t) => t && byId.set(t.id, t));
-    setTracks([...byId.values()]);
+    const request=++pickerVersion.current;setPickerError(false);
+    const recent=getRecentPlays().slice(0,30);
+    const [catalogue,library]=await Promise.allSettled([
+      getPublishedTracks(),
+      (async()=>{const list=[];for(let start=0;start<libraryIds.length;start+=200){list.push(...await readAllPages(opts=>base44.entities.Track.filter({id:{$in:libraryIds.slice(start,start+200)}},{...opts})));}return list;})()
+    ]);
+    if(request!==pickerVersion.current)return;
+    const byId=new Map();
+    [...(library.status==="fulfilled"?library.value:[]),...recent,...(catalogue.status==="fulfilled"?catalogue.value:peekPublishedTracks())].forEach(track=>{if(track?.id)byId.set(track.id,track);});
+    setTracks([...byId.values()]);setPickerError(catalogue.status==="rejected");
   }, [libraryIds.join(",")]);
 
-  useEffect(() => {
-    load();
-  }, [load]);
+  useEffect(()=>{load();return()=>{pickerVersion.current++;};},[load]);
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -299,13 +294,13 @@ function GuestQueuePicker({ sessionId, user, onClose, onAdded }) {
   };
 
   return (
-    <div role="dialog" aria-modal="true" aria-label="Add music to lounge" className="lounge-picker fixed inset-0 z-[70] bg-black/85 backdrop-blur-xl flex flex-col animate-[fadeIn_.2s_ease-out]">
-      <div className="flex items-center justify-between px-5 pt-8 pb-3 shrink-0 text-white">
+    <div role="dialog" aria-modal="true" aria-label="Add music to lounge" className="lounge-picker fixed inset-0 z-[70] bg-card text-foreground backdrop-blur-xl flex flex-col animate-[fadeIn_.2s_ease-out]">
+      <div className="flex items-center justify-between px-5 pt-8 pb-3 shrink-0 text-foreground">
         <div className="flex items-center gap-2 min-w-0">
           <ListMusic size={20} className="opacity-80 shrink-0" />
           <h2 className="text-lg font-bold truncate">Add to the lounge queue</h2>
         </div>
-        <button onClick={onClose} className="p-2 -mr-2 rounded-full hover:bg-white/10 active:scale-90 transition" aria-label="Close">
+        <button onClick={onClose} className="p-2 -mr-2 rounded-full hover:bg-muted active:scale-90 transition" aria-label="Close">
           <X size={22} />
         </button>
       </div>
@@ -315,39 +310,39 @@ function GuestQueuePicker({ sessionId, user, onClose, onAdded }) {
           <input
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            autoFocus placeholder="Search PUBLIC, your library & recent plays"
-            className="w-full pl-10 pr-3 py-2.5 rounded-full bg-white/10 border border-white/10 text-sm placeholder:text-white/40 focus:outline-none focus:bg-white/15 transition text-white" />
+            aria-label="Find music for the lounge queue" autoFocus placeholder="Search PUBLIC, your library & recent plays"
+            className="w-full pl-10 pr-3 py-2.5 rounded-full bg-muted border border-border text-sm placeholder:text-muted-foreground focus:outline-none focus:bg-accent transition text-foreground" />
           
         </div>
       </div>
-      <div className="flex-1 min-h-0 overflow-y-auto px-3 pb-10 text-white">
+      <div className="flex-1 min-h-0 overflow-y-auto px-3 pb-10 text-foreground">
         {pickerError&&<button onClick={load} className="p-3 text-sm underline">PUBLIC catalog unavailable. Tap to retry.</button>}
         {!tracks ?
         <div className="flex justify-center py-16">
-            <Loader2 className="animate-spin text-white/50" />
+            <Loader2 className="animate-spin text-muted-foreground" />
           </div> :
         !filtered.length ?
         <div className="text-center py-16">
-            <p className="text-sm text-white/50">{query ? "No matches." : "Add tracks to your library first."}</p>
+            <p className="text-sm text-muted-foreground">{query ? "No matches." : "Add tracks to your library first."}</p>
           </div> :
 
         <div className="space-y-0.5">
             {filtered.map((t) => {
             const added = justAdded.has(t.id);
             return (
-              <div key={t.id} className="flex items-center gap-3 px-2 py-2 rounded-lg hover:bg-white/5 transition">
-                  <div className="w-10 h-10 rounded overflow-hidden bg-white/10 shrink-0">
-                    {t.cover_art_url && <img src={t.cover_art_url} alt="" className="w-full h-full object-cover" />}
+              <div key={t.id} className="flex items-center gap-3 px-2 py-2 rounded-lg hover:bg-accent transition">
+                  <div className="w-10 h-10 rounded overflow-hidden bg-muted shrink-0">
+                    {t.cover_art_url && <Image src={t.cover_art_url} fittingType="fill" alt="" className="w-full h-full"/>}
                   </div>
                   <div className="min-w-0 flex-1">
                     <div className="text-sm font-medium truncate">{t.title}</div>
-                    <div className="text-xs text-white/50 truncate">{t.artist || t.uploader_name || "Unknown"}</div>
+                    <div className="text-xs text-muted-foreground truncate">{t.artist || t.uploader_name || "Unknown"}</div>
                   </div>
                   <button
                   onClick={() => add(t)}
                   disabled={added || adding.has(t.id)}
                   className={`shrink-0 w-9 h-9 rounded-full grid place-items-center active:scale-90 transition ${
-                  added ? "bg-white/25 text-white" : "bg-white/10 hover:bg-white/20"}`
+                  added ? "bg-accent text-foreground" : "bg-muted hover:bg-accent"}`
                   }
                   aria-label={added ? "Added" : "Add"}>
                   
@@ -374,35 +369,22 @@ function LoungeQueueList({ sessionId, isHost }) {
   const [queueError,setQueueError]=useState(false);
   const [removingId, setRemovingId] = useState("");
   const [queueQuery,setQueueQuery]=useState("");
+  const queueVersion=useRef(0);
 
   const load = useCallback(async () => {
-    try {
-      setQueueError(false);
-      const list = await base44.entities.LoungeQueueItem.filter(
-        { session_id: sessionId },
-        "created_date",
-        1000
-      );
-      setItems(list || []);
-    } catch {
-      setQueueError(true);
-    } finally {
-      setLoadingQ(false);
-    }
-  }, [sessionId]);
-
-  useEffect(() => {
-    load();
-    let unsub;
-    try {
-      unsub = base44.entities.LoungeQueueItem.subscribe(() => load());
-    } catch {}
-    const poll = setInterval(load, 30000);
-    return () => {
-      if (unsub) unsub();
-      clearInterval(poll);
-    };
-  }, [load]);
+    const request=++queueVersion.current;
+    try{
+      const list=await readAllPages(opts=>base44.entities.LoungeQueueItem.filter({session_id:sessionId},{sort:"created_date",...opts}));
+      if(request===queueVersion.current){setQueueError(false);setItems(list);}
+    }catch{if(request===queueVersion.current)setQueueError(true);}
+    finally{if(request===queueVersion.current)setLoadingQ(false);}
+  },[sessionId]);
+  useEffect(()=>{
+    load();const reload=coalesce(load,500);let unsub;
+    try{unsub=base44.entities.LoungeQueueItem.subscribe(reload);}catch{}
+    const poll=setInterval(reload,30000);
+    return()=>{queueVersion.current++;reload.cancel();if(unsub)unsub();clearInterval(poll);};
+  },[load]);
 
   const parsed = items.
   map((it) => ({ ...parseTrack(it.track), _row: it })).
@@ -411,6 +393,7 @@ function LoungeQueueList({ sessionId, isHost }) {
   const visibleQueue=parsed.filter(t=>!queueQuery.trim()||[t.title,t.artist,t._row.added_by_name].some(value=>(value||"").toLowerCase().includes(queueQuery.trim().toLowerCase())));
 
   const removeItem = async (rowId) => {
+    if(removingId)return;
     setRemovingId(rowId);
     try {
       await base44.functions.invoke("loungeRemoveQueueItem", { queue_item_id: rowId });
@@ -452,7 +435,7 @@ function LoungeQueueList({ sessionId, isHost }) {
               
                 <div className="w-7 text-center text-xs text-foreground/40 shrink-0">{i + 1}</div>
                 <div className="w-10 h-10 rounded overflow-hidden bg-foreground/10 shrink-0">
-                  {t.cover_art_url && <img src={t.cover_art_url} alt="" className="w-full h-full object-cover" />}
+                  {t.cover_art_url && <Image src={t.cover_art_url} fittingType="fill" alt="" className="w-full h-full"/>}
                 </div>
                 <div className="min-w-0 flex-1">
                   <div className={`text-sm font-medium truncate ${playing ? "text-foreground" : ""}`}>
@@ -475,7 +458,7 @@ function LoungeQueueList({ sessionId, isHost }) {
                 }
                   {(isHost || t._row.added_by_id===user?.id) && <button
                   onClick={() => removeItem(t._row.id)}
-                  disabled={removingId === t._row.id}
+                  disabled={!!removingId}
                   className="shrink-0 w-7 h-7 rounded-full grid place-items-center text-foreground/40 hover:text-destructive hover:bg-destructive/10 active:scale-90 transition disabled:opacity-40"
                   aria-label="Remove from queue">
                   

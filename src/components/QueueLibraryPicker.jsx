@@ -21,7 +21,7 @@ export default function QueueLibraryPicker({ open, onClose }) {
   const load = useCallback(async () => {
     const request=++loadVersion.current;
     if (!user?.id) {
-      setTracks([]);
+      setTracks([]);setLoading(false);
       return;
     }
     setLoading(true);
@@ -29,7 +29,7 @@ export default function QueueLibraryPicker({ open, onClose }) {
       const items=await readAllPages(options=>base44.entities.LibraryItem.filter({user_id:user.id},{sort:"-created_date",...options}));
       const trackIds = (items || []).map((i) => i.track_id).filter(Boolean);
       if (!trackIds.length) {
-        setTracks([]);
+        if(request===loadVersion.current)setTracks([]);
         return;
       }
       const list=[];for(let start=0;start<trackIds.length;start+=200)list.push(...await readAllPages(options=>base44.entities.Track.filter({id:{$in:trackIds.slice(start,start+200)}},{...options})));
