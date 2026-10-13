@@ -111,7 +111,8 @@ export default function Suggestions() {
   if(error)return <LoadError onRetry={load}/>;
   return (
     <PullToRefresh onRefresh={load}>
-      <div>
+      <div className="collection-page">
+        <header className="page-intro"><p className="eyebrow">PUBLIC</p><h1>Make PUBLIC better</h1><p>Share an idea. Support the ones you want to see.</p></header>
 
         
 

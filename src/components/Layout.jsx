@@ -49,7 +49,7 @@ export default function Layout() {
           <PageHeading />
           {TABS.map(({ path, Page }) =>
           mountedTabs.current.has(path) ?
-          <div key={path} className={activeTab?.path === path ? "block" : "hidden"}>
+          <div key={path} data-page={path === "/" ? "home" : path.slice(1)} className={activeTab?.path === path ? "page-surface block" : "page-surface hidden"}>
               <Page />
             </div> :
           null
@@ -59,6 +59,8 @@ export default function Layout() {
             {!activeTab &&
             <motion.div
               key={location.pathname}
+              className="page-surface"
+              data-page={location.pathname.split("/")[1] || "home"}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}

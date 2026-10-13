@@ -147,7 +147,7 @@ export default function TrackDetail() {
       </button>
 
       {/* Hero */}
-      <div className="relative rounded-3xl overflow-hidden border border-border mb-6 md:mb-8">
+      <div className="track-detail-hero relative rounded-3xl overflow-hidden border border-border mb-6 md:mb-8">
         {track.cover_art_url &&
         <div className="absolute inset-0">
             <img
@@ -158,7 +158,7 @@ export default function TrackDetail() {
             <div className="absolute inset-0 bg-background/70" />
           </div>
         }
-        <div className="relative p-6 md:p-10 flex flex-col items-center text-center gap-5">
+        <div className="track-detail-content relative p-6 md:p-10 flex flex-col items-center text-center gap-5">
           <div className="w-40 h-40 md:w-52 md:h-52 rounded-2xl overflow-hidden bg-foreground/10 shrink-0 shadow-lg ring-1 ring-foreground/10">
             {track.cover_art_url &&
             <img

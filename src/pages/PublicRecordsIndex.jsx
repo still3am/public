@@ -213,7 +213,8 @@ export default function PublicRecordsIndex() {
 
   if(loadError)return <LoadError onRetry={load}/>;
   return (
-    <div className="max-w-3xl mx-auto pb-10">
+    <div className="directory-page max-w-3xl mx-auto pb-10">
+      <header className="page-intro"><p className="eyebrow">Public Record</p><h1>The artist directory</h1><p>Explore the names behind the music.</p></header>
       
 
       

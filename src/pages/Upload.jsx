@@ -34,7 +34,8 @@ export default function Upload() {
   const busy = q.items.some((it) => ["uploading", "enhancing"].includes(it.status));
 
   return (
-    <div className="max-w-3xl mx-auto">
+    <div className="upload-page max-w-3xl mx-auto">
+      <header className="page-intro"><p className="eyebrow">Share your sound</p><h1>Upload music</h1><p>Add your audio, review its details, and publish to PUBLIC.</p></header>
       
 
 

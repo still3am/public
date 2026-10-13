@@ -36,7 +36,7 @@ export default function LibraryBulkBar({
     "inline-flex items-center gap-1.5 px-3 py-2 rounded-full text-xs font-bold border border-border hover:bg-accent transition disabled:opacity-40 disabled:hover:bg-transparent";
 
   return (
-    <div className="sticky top-2 z-30 mb-4 rounded-2xl border border-border bg-card/95 backdrop-blur px-3 py-2.5 shadow-sm">
+    <div className="bulk-toolbar sticky top-2 z-30 mb-4 rounded-2xl border border-border bg-card/95 backdrop-blur px-3 py-2.5 shadow-sm">
       <div className="flex items-center gap-2 flex-wrap">
         <span className="text-xs font-bold mr-auto tabular-nums">
           {count} selected
