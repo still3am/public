@@ -263,12 +263,12 @@ export default function Home() {
           </div>
         </div>
 
-        <nav aria-label="Explore music genres" className="discovery-genres hidden">
-          <Link to="/search" className="chip active">All sounds</Link>
-          {byGenre.filter((s) => s.tracks.length).map((s) => <Link key={s.genre} to={`/search?genre=${encodeURIComponent(s.genre)}`} className="chip">{s.genre}</Link>)}
-          <Link to="/recent" className="chip">Fresh releases</Link>
-          <Link to="/library" className="chip">Your collection</Link>
-        </nav>
+        
+
+
+
+
+        
         <Section title="Trending" icon={TrendingUp} seeAllTo="/top">
           {trending.length >= 3 ?
           <>
