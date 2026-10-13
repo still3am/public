@@ -93,8 +93,8 @@ export default function Downloads() {
 
   return (
     <div className="downloads-page max-w-3xl mx-auto">
-      <header className="page-intro"><p className="eyebrow hidden">On this device</p><h1>PUBLIC Offline</h1><p>Your downloaded music, wherever you go.</p></header>
-      <div className="download-summary hidden"><CloudOff size={20} className="hidden" /><div><strong>{tracks.length} {tracks.length === 1 ? "song" : "songs"} saved</strong><p>{bytesToReadable(totalBytes)} on this device · Drag to reorder</p></div></div>
+      <header className="page-intro"><h1>PUBLIC Offline</h1><p>Your downloaded music, wherever you go.</p></header>
+      
 
       
 
