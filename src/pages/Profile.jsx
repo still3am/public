@@ -618,7 +618,7 @@ export default function Profile() {
           <h2 className="text-lg font-extrabold tracking-tight mb-3 flex items-center gap-2">
             <BarChart2 size={18} /> Top Tracks
           </h2>
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
             {topTracks.map((t) =>
             <TrackCard key={t.id} track={t} />
             )}

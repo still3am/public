@@ -173,7 +173,7 @@ export default function MyUploads() {
             <h2 className="text-sm font-bold text-foreground/70 uppercase tracking-wider mb-3">
               {uploads.length} {uploads.length === 1 ? "Song" : "Songs"}
             </h2>
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
               {uploads.map((t) => (
                 <div key={t.id} className="flex flex-col">
                   <TrackCard

@@ -65,7 +65,7 @@ export default function ReleaseList({ tracks }) {
     chunks.push(tracks.slice(i, i + 4));
   }
   return (
-    <div className="flex gap-3 overflow-x-auto no-scrollbar snap-x snap-mandatory -mx-4 px-4 sm:-mx-5 sm:px-5 md:mx-0 md:px-0 md:grid md:grid-cols-2 lg:grid-cols-3">
+    <div className="flex gap-3 overflow-x-auto no-scrollbar snap-x snap-mandatory -mx-4 px-4 sm:-mx-5 sm:px-5 md:mx-0 md:px-0 md:grid md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3">
       {chunks.map((group, gi) => (
         <div
           key={gi}
