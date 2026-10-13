@@ -1,5 +1,5 @@
 import {useMyPlaylists} from "@/hooks/useMyPlaylists";
-import {ListMusic,Disc3} from "lucide-react";
+import {ListMusic} from "lucide-react";
 import { NavLink, useLocation } from "react-router-dom";
 import { useSidebarCollapsed } from "@/hooks/useSidebarCollapsed";
 
@@ -27,8 +27,6 @@ const NAV = [
 { to: "/top", label: "Top Charts", icon: TrendingUp },
 { to: "/recent", label: "Recently Added", icon: Clock },
 { to: "/library", label: "Library", icon: LibraryIcon },
-{ to: "/records", label: "Artists", icon: Disc3 },
-{ to: "/my-uploads", label: "Your uploads", icon: Upload },
 { to: "/notifications", label: "Notifications", icon: Bell }];
 
 
