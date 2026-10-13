@@ -373,6 +373,7 @@ function LoungeQueueList({ sessionId, isHost }) {
   const [loadingQ, setLoadingQ] = useState(true);
   const [queueError,setQueueError]=useState(false);
   const [removingId, setRemovingId] = useState("");
+  const [queueQuery,setQueueQuery]=useState("");
 
   const load = useCallback(async () => {
     try {
@@ -407,6 +408,8 @@ function LoungeQueueList({ sessionId, isHost }) {
   map((it) => ({ ...parseTrack(it.track), _row: it })).
   filter((x) => x && x.id);
 
+  const visibleQueue=parsed.filter(t=>!queueQuery.trim()||[t.title,t.artist,t._row.added_by_name].some(value=>(value||"").toLowerCase().includes(queueQuery.trim().toLowerCase())));
+
   const removeItem = async (rowId) => {
     setRemovingId(rowId);
     try {
@@ -422,11 +425,12 @@ function LoungeQueueList({ sessionId, isHost }) {
   };
 
   return (
-    <div className="rounded-2xl border border-border bg-foreground/[0.02] p-3 mb-3">
+    <div className="lounge-queue rounded-2xl border border-border bg-foreground/[0.02] p-3 mb-3">
       <div className="flex items-center gap-2 text-[11px] uppercase tracking-wider text-foreground/40 mb-2">
         <ListMusic size={12} /> Up next {parsed.length ? `· ${parsed.length}` : ""}
       </div>
-      {queueError&&<div role="alert" className="text-sm p-3">Queue could not refresh. <button onClick={load} className="underline">Retry</button></div>}
+      {parsed.length>0&&<div className="lounge-queue-search"><input aria-label="Search lounge queue" placeholder="Find a song in this room" value={queueQuery} onChange={e=>setQueueQuery(e.target.value)} onKeyDown={e=>{if(e.key==="Escape")setQueueQuery("");}}/>{queueQuery&&<button aria-label="Clear queue search" onClick={()=>setQueueQuery("")}><X size={15}/></button>}</div>}
+      {queueError&&<button onClick={load} className="playlist-action text-xs mb-3">Refresh queue</button>}
       {loadingQ ?
       <div className="flex justify-center py-3">
           <Loader2 size={15} className="animate-spin text-foreground/40" />
@@ -437,7 +441,9 @@ function LoungeQueueList({ sessionId, isHost }) {
         </p> :
 
       <div className="space-y-1 max-h-[65vh] overflow-y-auto no-scrollbar">
-          {parsed.map((t, i) => {
+          {!visibleQueue.length&&<p className="text-sm text-muted-foreground p-3">No matching songs in this queue.</p>}
+          {visibleQueue.map((t) => {
+          const i=parsed.indexOf(t);
           const playing = p.currentTrack?.id === t.id;
           return (
             <div
@@ -460,10 +466,11 @@ function LoungeQueueList({ sessionId, isHost }) {
                 <div className="flex items-center gap-1 shrink-0">
                   {isHost &&
                 <button
-                  onClick={() => p.playTrackAt(parsed.map(x=>({...x,_loungeRowId:x._row.id})),i)}
+                  aria-label={playing&&p.isPlaying?`Pause ${t.title}`:`Play ${t.title}`}
+                  onClick={() => playing?p.togglePlay():p.playTrackAt(parsed.map(x=>({...x,_loungeRowId:x._row.id})),i)}
                   className="shrink-0 text-xs font-semibold px-3 py-1.5 rounded-full bg-foreground text-background active:scale-90 transition">
                   
-                      {playing ? "Now" : "Play"}
+                      {playing&&p.isPlaying ? "Pause" : "Play"}
                     </button>
                 }
                   {(isHost || t._row.added_by_id===user?.id) && <button
