@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import PasswordInput from "@/components/PasswordInput";
 import { Label } from "@/components/ui/label";
 import { UserPlus, Mail, Lock, Loader2 } from "lucide-react";
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
@@ -25,9 +26,12 @@ export default function Register() {
   const [loading, setLoading] = useState(false);
   const [showOtp, setShowOtp] = useState(false);
   const [otpCode, setOtpCode] = useState("");
+  const [resending,setResending]=useState(false),[resendWait,setResendWait]=useState(0);
+  useEffect(()=>{if(!resendWait)return;const timer=setTimeout(()=>setResendWait(value=>Math.max(0,value-1)),1000);return()=>clearTimeout(timer);},[resendWait]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if(loading)return;
     setError("");
     if (password !== confirmPassword) {
       setError("Passwords do not match");
@@ -36,8 +40,8 @@ export default function Register() {
     if(!accepted){setError('Accept the terms and confirm you are at least 13 to continue.');return;}
     setLoading(true);
     try {
-      await base44.auth.register({ email, password });
-      setShowOtp(true);
+      await base44.auth.register({ email:email.trim(), password });
+      setEmail(email.trim());setResendWait(30);setShowOtp(true);
     } catch (err) {
       setError(err.message || "Registration failed");
     } finally {
@@ -46,6 +50,7 @@ export default function Register() {
   };
 
   const handleVerify = async () => {
+    if(loading||resending||otpCode.length!==6)return;
     setError("");
     setLoading(true);
     try {
@@ -65,16 +70,17 @@ export default function Register() {
   };
 
   const handleResend = async () => {
-    setError("");
+    if(resending||loading||resendWait)return;
+    setResending(true);setError("");
     try {
-      await base44.auth.resendOtp(email);
+      await base44.auth.resendOtp(email);setResendWait(30);
       toast({
         title: "Code sent",
         description: "Check your email for the new code.",
       });
     } catch (err) {
       setError(err.message || "Failed to resend code");
-    }
+    }finally{setResending(false);}
   };
 
   const handleGoogle = () => {
@@ -111,6 +117,7 @@ export default function Register() {
         )}
         <div className="flex justify-center mb-6">
           <InputOTP
+            aria-label="Email verification code" inputMode="numeric" onKeyDown={e=>{if(e.key==="Enter"){e.preventDefault();handleVerify();}}}
             maxLength={6}
             value={otpCode}
             onChange={setOtpCode}
@@ -130,7 +137,7 @@ export default function Register() {
         <Button
           className="w-full h-12 font-medium"
           onClick={handleVerify}
-          disabled={loading || otpCode.length < 6}
+          disabled={loading || resending || otpCode.length < 6}
         >
           {loading ? (
             <>
@@ -143,8 +150,8 @@ export default function Register() {
         </Button>
         <p className="text-center text-sm text-muted-foreground mt-4">
           Didn't receive the code?{" "}
-          <button onClick={handleResend} className="text-primary font-medium hover:underline">
-            Resend
+          <button disabled={resending||loading||resendWait>0} onClick={handleResend} className="text-primary font-medium hover:underline disabled:opacity-50">
+            {resending?"Sending…":resendWait?`Resend in ${resendWait}s`:"Resend"}
           </button>
         </p>
       </AuthLayout>
@@ -159,7 +166,7 @@ export default function Register() {
       footer={
         <>
           Already have an account?{" "}
-          <Link to="/login" className="text-primary font-medium hover:underline">
+          <Link to={`/login?returnTo=${encodeURIComponent(safeReturnTo())}`} className="text-primary font-medium hover:underline">
             Log in
           </Link>
         </>
@@ -231,7 +238,7 @@ export default function Register() {
             <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" aria-hidden="true" />
             <Input
               id="email"
-              type="email"
+              type="email" inputMode="email" autoCapitalize="none" spellCheck={false}
               autoComplete="email"
               autoFocus
               placeholder="you@example.com"
@@ -246,7 +253,7 @@ export default function Register() {
           <Label htmlFor="password">Password</Label>
           <div className="relative">
             <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" aria-hidden="true" />
-            <Input
+            <PasswordInput
               id="password"
               type="password"
               autoComplete="new-password"
@@ -262,7 +269,7 @@ export default function Register() {
           <Label htmlFor="confirm">Confirm Password</Label>
           <div className="relative">
             <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" aria-hidden="true" />
-            <Input
+            <PasswordInput
               id="confirm"
               type="password"
               autoComplete="new-password"

@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import PasswordInput from "@/components/PasswordInput";
 import { Label } from "@/components/ui/label";
 import { LogIn, Mail, Lock, Loader2 } from "lucide-react";
 import AuthLayout from "@/components/AuthLayout";
@@ -22,10 +23,11 @@ export default function Login() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if(loading)return;
     setError("");
     setLoading(true);
     try {
-      await base44.auth.loginViaEmailPassword(email, password);
+      await base44.auth.loginViaEmailPassword(email.trim(), password);
       window.location.href = safeReturnTo();
     } catch (err) {
       setError(err.message || "Invalid email or password");
@@ -58,7 +60,7 @@ export default function Login() {
       footer={
         <>
           Don't have an account?{" "}
-          <Link to="/register" className="text-primary font-medium hover:underline">
+          <Link to={`/register?returnTo=${encodeURIComponent(safeReturnTo())}`} className="text-primary font-medium hover:underline">
             Create one
           </Link>
         </>
@@ -72,7 +74,7 @@ export default function Login() {
         <Button
           variant="outline"
           className="w-full h-12 text-sm font-medium"
-          onClick={handleApple}
+          disabled={loading} onClick={handleApple}
         >
           <AppleIcon className="w-5 h-5 mr-2" />
           Continue with Apple
@@ -82,7 +84,7 @@ export default function Login() {
         <Button
           variant="outline"
           className="w-full h-12 text-sm font-medium"
-          onClick={handleGoogle}
+          disabled={loading} onClick={handleGoogle}
         >
           <GoogleIcon className="w-5 h-5 mr-2" />
           Continue with Google
@@ -92,7 +94,7 @@ export default function Login() {
         <Button
           variant="outline"
           className="w-full h-12 text-sm font-medium"
-          onClick={handleFacebook}
+          disabled={loading} onClick={handleFacebook}
         >
           <FacebookIcon className="w-5 h-5 mr-2" />
           Continue with Facebook
@@ -102,7 +104,7 @@ export default function Login() {
         <Button
           variant="outline"
           className="w-full h-12 text-sm font-medium"
-          onClick={handleMicrosoft}
+          disabled={loading} onClick={handleMicrosoft}
         >
           <MicrosoftIcon className="w-5 h-5 mr-2" />
           Continue with Microsoft
@@ -133,7 +135,7 @@ export default function Login() {
             <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" aria-hidden="true" />
             <Input
               id="email"
-              type="email"
+              type="email" inputMode="email" autoCapitalize="none" spellCheck={false}
               autoComplete="email"
               autoFocus
               placeholder="you@example.com"
@@ -147,13 +149,13 @@ export default function Login() {
         <div className="space-y-2">
           <div className="flex items-center justify-between">
             <Label htmlFor="password">Password</Label>
-            <Link to="/forgot-password" className="text-xs text-primary hover:underline">
+            <Link to={`/forgot-password?returnTo=${encodeURIComponent(safeReturnTo())}`} className="text-xs text-primary hover:underline">
               Forgot password?
             </Link>
           </div>
           <div className="relative">
             <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" aria-hidden="true" />
-            <Input
+            <PasswordInput
               id="password"
               type="password"
               autoComplete="current-password"
