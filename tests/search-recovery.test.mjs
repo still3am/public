@@ -11,7 +11,7 @@ globalThis.__searchMock={
   Artist:{filter:async()=>shape==='array'?[]:{items:[]}},
   Playlist:{filter:async()=>shape==='array'?[{id:'p1',name:'Denzel mix'}]:{items:[{id:'p1',name:'Denzel mix'}]}}
  },
- functions:{invoke:async()=>{if(peopleFail)throw Error('network');return {data:{results:[{id:'u1',display_name:'3AM'}]}}}
+ functions:{invoke:async()=>{if(peopleFail)throw Error('network');return {data:{results:[{id:'u1',display_name:'3AM'}]}}}}
 };
 let source=read('src/lib/globalSearch.js').replace(/import \{ base44 \}[^;]*;/,'const base44=globalThis.__searchMock;').replace(/import \{ splitArtistNames \}[^;]*;/,'const splitArtistNames=name=>[name];');
 const {globalSearch}=await importSource(source);
