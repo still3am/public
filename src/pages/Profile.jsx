@@ -107,6 +107,7 @@ export default function Profile() {
   useEffect(() => {
     const tid = profile?.featured_track_id;
     if (!tid) {setFeaturedCoverUrl("");return;}
+    setFeaturedCoverUrl("");
     let cancelled = false;
     base44.entities.Track.get(tid).
     then((t) => {if (!cancelled) setFeaturedCoverUrl(t?.cover_art_url || "");}).
@@ -129,7 +130,7 @@ export default function Profile() {
       // Another member's profile comes from the public-profiles endpoint: the
       // built-in User rules only let admins read other users, so a direct
       // User.get left every other profile showing as "not found".
-      let prof = isOwn ? me : (await getUsersByIds([targetId]))[0] || null;
+      let prof = isOwn ? await base44.auth.me() : (await getUsersByIds([targetId]))[0] || null;
       if (!prof) {
         request === loadVersion.current && setProfile(null);
         return;
@@ -360,7 +361,7 @@ export default function Profile() {
   return (
     <PullToRefresh onRefresh={load}>
 
-    {backgroundColors.length>0&&<div className="profile-color-background fixed inset-0 pointer-events-none z-0" aria-hidden="true" style={{backgroundImage:profileGradient(backgroundColors)}}/>}
+    {backgroundColors.length>0&&<div className="profile-artwork-background fixed inset-0 pointer-events-none z-0" aria-hidden="true" style={{backgroundImage:profileGradient(backgroundColors),backgroundColor:"hsl(var(--background))"}}/>}
     <div className="profile-page max-w-6xl mx-auto relative z-10">
       <div className="profile-overview flex flex-col md:flex-row gap-4 md:gap-6 mb-8">
       <div className="profile-identity relative rounded-2xl overflow-hidden ring-1 ring-inset ring-foreground/10 bg-card flex-1 min-w-0">
