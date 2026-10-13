@@ -16,19 +16,20 @@ export default async function handleRequest(req) {
       : [];
     if (!ids.length) return Response.json({ users: [] });
 
-    let rows = [];
-    try {
-      rows = await base44.asServiceRole.entities.User.filter({ id: { $in: ids } }, "-created_date", 200);
-      rows=Array.isArray(rows)?rows:rows?.items||[];
-    } catch (error) {
-      return Response.json({error:"Profile lookup is temporarily unavailable"},{status:503});
-    }
-    if (!rows || rows.length === 0) {
-      // Fallback for environments where the $in operator isn't available.
-      const found = await Promise.all(
-        ids.map((id) => base44.asServiceRole.entities.User.get(id).catch(error => {if((error.status??error.response?.status)===404)return null;throw error;}))
-      );
-      rows = found.filter(Boolean);
+    let rows=[];
+    try{
+      const page=await base44.asServiceRole.entities.User.filter({id:{$in:ids}},"-created_date",200);
+      rows=Array.isArray(page)?page:page?.items||[];
+    }catch{}
+    const foundIds=new Set(rows.map(row=>row.id));
+    const missing=ids.filter(id=>!foundIds.has(id));
+    // Recover requested IDs in small batches instead of treating a failed query as deleted accounts.
+    for(let i=0;i<missing.length;i+=4){
+      const recovered=await Promise.all(missing.slice(i,i+4).map(async id=>{
+        try{return await base44.asServiceRole.entities.User.get(id);}
+        catch(error){if((error.status??error.response?.status)===404)return null;throw error;}
+      }));
+      rows.push(...recovered.filter(Boolean));
     }
 
     // Public profile fields only — never email, role, or block status. This is

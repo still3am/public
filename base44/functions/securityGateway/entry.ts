@@ -111,8 +111,13 @@ export default async function handleRequest(req) {
     if(entity==='User'&&action==='lookupPublic'){
       const ids=Array.isArray(args[0])?[...new Set(args[0].filter(id=>typeof id==='string'&&id))].slice(0,200):[];
       if(!ids.length)return Response.json({result:[]});
-      const page=await handler.filter({id:{$in:ids},is_blocked:{$ne:true},disabled:{$ne:true}},'-created_date',200,0,['id','display_name','full_name','avatar_url']);
-      const rows=Array.isArray(page)?page:page?.items||[];
+      const rows=[];
+      for(let i=0;i<ids.length;i+=4){
+        const page=await Promise.all(ids.slice(i,i+4).map(async id=>{
+          try{return await handler.get(id);}catch(error){if((error.status??error.response?.status)===404)return null;throw error;}
+        }));
+        rows.push(...page.filter(u=>u&&!u.is_blocked&&!u.disabled));
+      }
       return Response.json({result:rows.map(u=>({id:u.id,display_name:u.display_name||u.full_name||'',avatar_url:u.avatar_url||''}))});
     }
     if(action==='read') {

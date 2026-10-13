@@ -54,14 +54,17 @@ export function useNotifications(){
   try{
    const page=await base44.entities.Notification.filter({user_id:uid},{sort:'-created_date',limit:50,...(!reset&&cursor.current?{cursor:cursor.current}:{})});
    const items=Array.isArray(page)?page:page.items||[];
-   const actors=await getUsersByIds([...new Set(items.map(n=>n.actor_id).filter(Boolean))]).catch(()=>[]);
+   const actors=await getUsersByIds([...new Set(items.map(n=>n.actor_id||n.sender_id).filter(Boolean))]).catch(()=>[]);
    const actorMap=new Map(actors.map(a=>[a.id,a])),trackMap=new Map();
    const ids=[...new Set(items.map(n=>n.track_id).filter(Boolean))];
    if(ids.length){try{const tracks=await base44.entities.Track.filter({id:{$in:ids}},'-created_date',50);tracks.forEach(t=>trackMap.set(t.id,t));}catch{}}
    const count=await base44.entities.Notification.count({user_id:uid,read:false}).catch(()=>null);
    if(request!==epoch.current||account.current!==uid)return;
-   const enriched=items.map(n=>({...n,actor:actorMap.get(n.actor_id)||null,track:trackMap.get(n.track_id)||null}));
-   setNotifications(prev=>reset?enriched:[...prev,...enriched.filter(n=>!prev.some(p=>p.id===n.id))]);
+   setNotifications(prev=>{
+    const previous=new Map(prev.map(n=>[n.id,n]));
+    const enriched=items.map(n=>({...n,actor_id:n.actor_id||n.sender_id,actor:actorMap.get(n.actor_id||n.sender_id)||previous.get(n.id)?.actor||null,track:trackMap.get(n.track_id)||previous.get(n.id)?.track||null}));
+    return reset?enriched:[...prev,...enriched.filter(n=>!previous.has(n.id))];
+   });
    cursor.current=page.next_cursor||null;setHasMore(!!page.has_more&&!!page.next_cursor);if(typeof count==="number")setUnreadCount(count);
   }catch{if(request===epoch.current)setError(true);}
   finally{if(request===epoch.current){setLoading(false);busy.current=false;}}

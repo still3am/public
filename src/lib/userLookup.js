@@ -16,7 +16,7 @@ function fetchChunk(ids) {
   const req = (async()=>{
     try{
       const res=await base44.functions.invoke("usersByIds",{ids});
-      if(!Array.isArray(res?.data?.users))throw Error("Invalid profile response");
+      if(!Array.isArray(res?.data?.users)||(!res.data.users.length&&ids.length))throw Error("Profile response could not resolve these accounts");
       return res.data.users;
     }catch(primary){
       const res=await base44.functions.invoke("securityGateway",{entity:"User",action:"lookupPublic",args:[ids]});
