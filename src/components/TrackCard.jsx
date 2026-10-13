@@ -105,11 +105,11 @@ export default function TrackCard({ track, selectable = false, selected = false,
         {!selectable && !isPlayingNow && (
           <button
             onClick={handlePlay}
-            aria-label="Play"
+            aria-label={`Play ${track.title || "song"}`}
             style={{minHeight:0}}
             className={`absolute bottom-2 right-2 w-8 h-8 md:bottom-2.5 md:right-2.5 md:w-12 md:h-12 min-h-0 rounded-full grid place-items-center shadow-xl
               transition-all duration-300 active:scale-90 bg-foreground text-background
-              opacity-100 md:opacity-0 md:translate-y-2 md:group-hover:opacity-100 md:group-hover:translate-y-0 md:group-focus-within:opacity-100 hover:scale-105`}
+              opacity-0 pointer-events-none translate-y-2 group-hover:opacity-100 group-hover:pointer-events-auto group-hover:translate-y-0 group-focus-within:opacity-100 group-focus-within:pointer-events-auto group-focus-within:translate-y-0 focus-visible:opacity-100 focus-visible:pointer-events-auto focus-visible:translate-y-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-foreground focus-visible:ring-offset-2 hover:scale-105 motion-reduce:transition-none`}
           >
             <Play size={18} fill="currentColor" className="w-3.5 h-3.5 md:w-[18px] md:h-[18px] ml-0.5" />
           </button>
