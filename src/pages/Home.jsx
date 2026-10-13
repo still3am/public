@@ -238,14 +238,14 @@ export default function Home() {
             
 
             
-            <h1 className="text-[32px] sm:text-4xl md:text-5xl font-bold tracking-tight mb-4 max-w-2xl leading-[1.08] break-words">
+            <h1 className="text-[32px] sm:text-4xl md:text-5xl font-bold tracking-tight mb-4 max-w-2xl leading-[1.08] break-words text-center">
               {user?.display_name || user?.full_name ? `Hey, ${user.display_name || user.full_name}.` : "Welcome to PUBLIC."}
             </h1>
             <p className="text-muted-foreground max-w-md text-sm md:text-base leading-relaxed mb-6">
               Your next favorite sound is here. Discover music made and shared by the community.
             </p>
             <div className="flex flex-wrap items-center gap-4 mb-1">
-              <Link to="/search" className="chrome-button text-sm">Explore music <ChevronRight size={16} /></Link>
+              <Link to="/search" className="chrome-button text-sm hidden">Explore music <ChevronRight size={16} /></Link>
               <ScoreboardTrackCount count={totalTracks} />
             </div>
             
