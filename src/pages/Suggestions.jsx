@@ -1,5 +1,6 @@
+import {readAllPages} from "@/lib/readPages";
 import LoadError from '@/components/LoadError';
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { Link } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import { useAuth } from "@/lib/AuthContext";
@@ -32,26 +33,28 @@ export default function Suggestions() {
   const [details, setDetails] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [sort, setSort] = useState("recent");
+  const [filter,setFilter]=useState("all"),[query,setQuery]=useState("");
+  const voteLocks=useRef(new Set()),submitLock=useRef(false),loadVersion=useRef(0);
 
   async function load() {
-    setLoading(true);setError(false);
+    const request=++loadVersion.current;setLoading(true);setError(false);
     try {
-      const rows = await base44.entities.Suggestion.list("-created_date", 100);
-      setItems(rows);
-    } catch {setError(true);
+      const rows=await readAllPages(opts=>base44.entities.Suggestion.filter({},{sort:"-created_date",...opts}));
+      if(request===loadVersion.current)setItems(rows);
+    } catch {if(request===loadVersion.current)setError(true);
     } finally {
-      setLoading(false);
+      if(request===loadVersion.current)setLoading(false);
     }
   }
 
   useEffect(() => {
-    load();
+    load();return()=>{loadVersion.current++;};
   }, []);
 
   async function submit(e) {
     e?.preventDefault();
-    if (!title.trim()) return;
-    setSubmitting(true);
+    if (!title.trim() || !user?.id || submitLock.current) return;
+    submitLock.current=true;setSubmitting(true);
     try {
       const created = await base44.entities.Suggestion.create({
         user_id: user?.id || "",
@@ -67,13 +70,14 @@ export default function Suggestions() {
       setItems((prev) => [created, ...prev.filter(Boolean)]);
     } catch {window.dispatchEvent(new Event("public:error"));
     } finally {
-      setSubmitting(false);
+      submitLock.current=false;setSubmitting(false);
     }
   }
 
   async function vote(s) {
     const meId = user?.id;
-    if (!meId) return;
+    if (!meId || voteLocks.current.has(s.id)) return;
+    voteLocks.current.add(s.id);
     const voted = (s.voter_ids || []).includes(meId);
     const next = voted ?
     (s.voter_ids || []).filter((x) => x !== meId) :
@@ -94,8 +98,8 @@ export default function Suggestions() {
         );
       }
     } catch {
-      setItems(prevItems);
-    }
+      setItems(current=>current.map(row=>row.id===s.id?{...row,voter_ids:s.voter_ids||[]}:row));
+    }finally{voteLocks.current.delete(s.id);}
   }
 
   const hasVoted = (s) => !!user?.id && (s.voter_ids || []).includes(user.id);
@@ -108,7 +112,9 @@ export default function Suggestions() {
   ) :
   items;
 
-  if(error)return <LoadError onRetry={load}/>;
+  const visibleItems=sortedItems.filter(item=>(filter==="all"||item.category===filter)&&(!query.trim()||[item.title,item.details,item.user_name].some(value=>(value||"").toLowerCase().includes(query.trim().toLowerCase()))));
+
+  if(error&&!items.length)return <LoadError onRetry={load}/>;
   return (
     <PullToRefresh onRefresh={load}>
       <div className="collection-page">
@@ -144,7 +150,7 @@ export default function Suggestions() {
                 <button
                   type="button"
                   key={c.id}
-                  onClick={() => setCategory(c.id)}
+                  aria-pressed={active} onClick={() => setCategory(c.id)}
                   className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold transition ${
                   active ?
                   "bg-foreground text-background" :
@@ -157,6 +163,7 @@ export default function Suggestions() {
             })}
           </div>
           <input
+            aria-label="Suggestion title" required
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             placeholder="Short, punchy title"
@@ -164,6 +171,7 @@ export default function Suggestions() {
             maxLength={120} />
           
           <textarea
+            aria-label="Suggestion details"
             value={details}
             onChange={(e) => setDetails(e.target.value)}
             placeholder="Add details (optional)"
@@ -188,6 +196,7 @@ export default function Suggestions() {
         </form>
         }
 
+        <div className="collection-tools"><input aria-label="Search suggestions" placeholder="Find an idea" value={query} onChange={e=>setQuery(e.target.value)} onKeyDown={e=>{if(e.key==="Escape")setQuery("");}}/><select aria-label="Filter suggestion category" value={filter} onChange={e=>setFilter(e.target.value)}><option value="all">All ideas</option>{CATEGORIES.map(category=><option key={category.id} value={category.id}>{category.label}</option>)}</select></div>
         {items.length > 0 &&
         <div className="flex items-center gap-1.5 mb-4">
             {[
@@ -221,7 +230,8 @@ export default function Suggestions() {
 
 
         <div className="space-y-2">
-            {sortedItems.map((s) =>
+            {!visibleItems.length&&<div className="collection-empty"><h2>No matching ideas</h2><button className="playlist-action" onClick={()=>{setQuery("");setFilter("all");}}>Show all ideas</button></div>}
+            {visibleItems.map((s) =>
           <SuggestionCard
             key={s.id}
             s={s}
