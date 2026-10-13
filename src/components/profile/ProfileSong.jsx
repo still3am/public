@@ -28,7 +28,7 @@ export default function ProfileSong({
       return;
     }
     const available=(userTracks||[]).find(row=>row.id===trackId)|| (pickedTrack.current?.id===trackId?pickedTrack.current:null);
-    setTrack(available||null);
+    setTrack(previous=>available||(previous?.id===trackId?previous:null));
     let active=true;
     (async()=>{try{
       let song;

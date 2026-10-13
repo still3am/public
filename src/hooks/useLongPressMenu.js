@@ -14,7 +14,7 @@ export function useLongPressMenu(disabled = false) {
   const origin=useRef(null);
 
   const cancel=()=>{clearTimeout(timer.current);origin.current=null;};
-  useEffect(()=>{cancel();fired.current=false;return cancel;},[disabled]);
+  useEffect(()=>{cancel();fired.current=false;if(disabled)setSignal(0);return cancel;},[disabled]);
   const start = (e) => {
     fired.current=false;cancel();
     if(disabled||e.pointerType==='mouse'||e.isPrimary===false)return;

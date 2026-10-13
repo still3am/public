@@ -14,7 +14,8 @@ function Cover({url}){
 export default function TrackPickerSheet({title,selectedIds=[],max=1,tracks=[],onToggle,onClose}){
  const {ids:libraryIds}=useLibrary();
  const [query,setQuery]=useState(""),[scope,setScope]=useState("all"),[published,setPublished]=useState(peekPublishedTracks),[loading,setLoading]=useState(true),[limit,setLimit]=useState(50),[selecting,setSelecting]=useState("");
- const sentinel=useRef(null),scroll=useRef(null),lock=useRef(false);
+ const sentinel=useRef(null),scroll=useRef(null),lock=useRef(false),alive=useRef(true);
+ useEffect(()=>{alive.current=true;return()=>{alive.current=false;};},[]);
  const deferred=useDeferredValue(query);
  useEffect(()=>{let active=true;const unsubscribe=subscribePublishedTracks(rows=>{if(active)setPublished(rows);});getPublishedTracks().then(rows=>{if(active)setPublished(rows);}).catch(()=>{}).finally(()=>{if(active)setLoading(false);});return()=>{active=false;unsubscribe();};},[]);
  const indexed=useMemo(()=>{
@@ -26,7 +27,7 @@ export default function TrackPickerSheet({title,selectedIds=[],max=1,tracks=[],o
  const filtered=useMemo(()=>{const term=deferred.trim().toLowerCase();return indexed.filter(row=>(scope!=="own"||ownIds.has(row.track.id))&&(scope!=="library"||libraryIds.has(row.track.id))&&(!term||row.search.includes(term))).map(row=>row.track);},[indexed,deferred,scope,ownIds,libraryIds]);
  useEffect(()=>{setLimit(50);scroll.current?.scrollTo({top:0});},[deferred,scope]);
  useEffect(()=>{const target=sentinel.current;if(!target||limit>=filtered.length||!window.IntersectionObserver)return;const observer=new IntersectionObserver(entries=>{if(entries[0]?.isIntersecting)setLimit(n=>Math.min(n+50,filtered.length));},{root:scroll.current,rootMargin:"250px"});observer.observe(target);return()=>observer.disconnect();},[limit,filtered.length]);
- const select=async track=>{if(lock.current)return;lock.current=true;setSelecting(track.id);try{await onToggle(track.id,track);}catch{/* Keep the last confirmed song selection. */}finally{lock.current=false;setSelecting("");}};
+ const select=async track=>{if(lock.current)return;if(max===1&&selectedIds.includes(track.id)){onClose();return;}lock.current=true;setSelecting(track.id);try{await onToggle(track.id,track);}catch{/* Keep the last confirmed song selection. */}finally{lock.current=false;if(alive.current)setSelecting("");}};
  return <Dialog open onOpenChange={open=>{if(!open)onClose();}}><DialogContent className="profile-song-picker"><DialogHeader><DialogTitle>{title}</DialogTitle><DialogDescription>{max===1?"Pick the sound that represents you.":`Choose up to ${max} songs for your profile.`}</DialogDescription></DialogHeader>
  <div className="profile-picker-search"><Search size={17}/><input aria-label="Search profile songs" placeholder="Search songs, artists, or genres" value={query} onChange={e=>setQuery(e.target.value)} onKeyDown={e=>{if(e.key==="Escape"&&query){e.stopPropagation();setQuery("");}}}/>{query&&<button aria-label="Clear song search" onClick={()=>setQuery("")}><X size={16}/></button>}</div>
  <div className="view-switch" role="group" aria-label="Song source"><button aria-pressed={scope==="all"} className={scope==="all"?"active":""} onClick={()=>setScope("all")}>All</button><button aria-pressed={scope==="library"} className={scope==="library"?"active":""} onClick={()=>setScope("library")}>Library</button><button aria-pressed={scope==="own"} className={scope==="own"?"active":""} onClick={()=>setScope("own")}>Uploads</button></div>
