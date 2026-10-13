@@ -1,4 +1,4 @@
-import {readAllPages} from "@/lib/readPages";
+import { readAllPages } from "@/lib/readPages";
 import { useEffect, useRef, useState, useCallback } from "react";
 import { Link } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
@@ -61,7 +61,7 @@ function CardRow({ tracks }) {
     <div className="flex gap-3 overflow-x-auto no-scrollbar pb-2 -mx-4 px-4 sm:-mx-5 sm:px-5 snap-x snap-mandatory md:grid md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 md:overflow-visible md:mx-0 md:px-0 md:gap-4">
       {tracks.map((t) =>
       <div key={t.id} className="snap-start shrink-0 w-[46vw] max-w-[210px] sm:w-[200px] md:w-auto">
-          <TrackCard track={t} queue={tracks}/>
+          <TrackCard track={t} queue={tracks} />
         </div>
       )}
     </div>);
@@ -93,7 +93,7 @@ export default function Home() {
   const { user } = useAuth();
   const p = usePlayer();
   const loadVersion = useRef(0);
-  const followedIds=useRef({uid:user?.id,ids:new Set()});
+  const followedIds = useRef({ uid: user?.id, ids: new Set() });
   const [recent, setRecent] = useState(() => getRecentPlays().slice(0, 8));
   const [genreList, setGenreList] = useState([]);
   const [loadError, setLoadError] = useState("");
@@ -129,7 +129,7 @@ export default function Home() {
       getTopTracks(fresh),
       getPublishedTracks(fresh),
       user?.id ?
-      readAllPages(opts=>base44.entities.Follow.filter({follower_id:user.id},{sort:"-created_date",...opts})).catch(()=>null) :
+      readAllPages((opts) => base44.entities.Follow.filter({ follower_id: user.id }, { sort: "-created_date", ...opts })).catch(() => null) :
       Promise.resolve([])]
       );
       if (request !== loadVersion.current) return;
@@ -137,7 +137,7 @@ export default function Home() {
       setTrending(topTracks.slice(0, 10));
       setNewReleases(published.slice(0, 36));
       // Every published track by the people you follow, not just the newest page.
-      if(fols!==null){followedIds.current={uid:user?.id,ids:followed};setFromFollowing(published.filter((tk) => followed.has(tk.uploader_id)).slice(0, 12));}
+      if (fols !== null) {followedIds.current = { uid: user?.id, ids: followed };setFromFollowing(published.filter((tk) => followed.has(tk.uploader_id)).slice(0, 12));}
       // Top genres = the ones users actually listen to most, measured by
       // aggregated play_count across the most-played tracks on the platform.
       const genrePlays = {};
@@ -196,17 +196,17 @@ export default function Home() {
     }
   }
 
-  useEffect(() => {setFromFollowing([]);setDiscover([]);setRecent(getRecentPlays().slice(0,8));clearUserGenresCache();load();return () => {loadVersion.current++;};}, [user?.id]);
-  useEffect(()=>{
-    const update=event=>{
-      const change=event.detail;if(!change||change.uid!==user?.id)return;
-      if(followedIds.current.uid!==user.id)followedIds.current={uid:user.id,ids:new Set()};
-      const followed=followedIds.current.ids;
-      if(change.following)followed.add(change.followingId);else followed.delete(change.followingId);
-      setFromFollowing(peekPublishedTracks().filter(track=>followed.has(track.uploader_id)).slice(0,12));
+  useEffect(() => {setFromFollowing([]);setDiscover([]);setRecent(getRecentPlays().slice(0, 8));clearUserGenresCache();load();return () => {loadVersion.current++;};}, [user?.id]);
+  useEffect(() => {
+    const update = (event) => {
+      const change = event.detail;if (!change || change.uid !== user?.id) return;
+      if (followedIds.current.uid !== user.id) followedIds.current = { uid: user.id, ids: new Set() };
+      const followed = followedIds.current.ids;
+      if (change.following) followed.add(change.followingId);else followed.delete(change.followingId);
+      setFromFollowing(peekPublishedTracks().filter((track) => followed.has(track.uploader_id)).slice(0, 12));
     };
-    window.addEventListener('follows:changed',update);return()=>window.removeEventListener('follows:changed',update);
-  },[user?.id]);
+    window.addEventListener('follows:changed', update);return () => window.removeEventListener('follows:changed', update);
+  }, [user?.id]);
   useEffect(() => {const update = () => setRecent(getRecentPlays().slice(0, 8));window.addEventListener("recentplays:change", update);return () => window.removeEventListener("recentplays:change", update);}, []);
 
   if (loadError && !trending.length) return <div className="p-8 text-center"><button className="playlist-action" onClick={() => load(true)}>Refresh music</button></div>;
@@ -240,19 +240,19 @@ export default function Home() {
   return (
     <PullToRefresh onRefresh={() => load(true)}>
       <div className="home-page">
-        <header className="home-welcome"><div><p className="eyebrow">{greeting}</p><h1>{user?.display_name || user?.full_name ? `Made for ${user.display_name || user.full_name}.` : "Find your sound."}</h1></div><Link to="/search" className="home-browse-link" aria-label="Explore music"><Compass size={17} /><span>Explore music</span><ChevronRight size={14} /></Link></header>
+        <header className="home-welcome"><div><p className="eyebrow">{greeting}</p><h1>{user?.display_name || user?.full_name ? `Made for ${user.display_name || user.full_name}.` : "Find your sound."}</h1></div><Link to="/search" className="home-browse-link hidden" aria-label="Explore music"><Compass size={17} /><span>Explore music</span><ChevronRight size={14} /></Link></header>
         <section className="home-feature">
-          <div className="home-feature-copy"><p className="eyebrow">Independent music. Open to everyone.</p><h2>Your next favorite<br />starts here.</h2><p>Fresh releases, familiar favorites, and music worth sharing.</p><div className="home-feature-actions"><button disabled={!discoveryQueue.length} onClick={() => {p.setShuffle(false);p.playTrackAt(discoveryQueue, 0);}} className="chrome-button"><Play size={15} fill="currentColor" />Play discovery</button><Link className="playlist-action" to="/recent">Latest music<ChevronRight size={14} /></Link></div></div>
+          <div className="home-feature-copy"><p className="eyebrow hidden">Independent music. Open to everyone.</p><h2>Your next favorite<br />starts here.</h2><p>Fresh releases, familiar favorites, and music worth sharing.</p><div className="home-feature-actions"><button disabled={!discoveryQueue.length} onClick={() => {p.setShuffle(false);p.playTrackAt(discoveryQueue, 0);}} className="chrome-button"><Play size={15} fill="currentColor" />Play discovery</button><Link className="playlist-action" to="/recent">Latest music<ChevronRight size={14} /></Link></div></div>
           {featured && <div className="home-spotlight"><div className="home-spotlight-art">{featured.cover_art_url ? <Image src={featured.cover_art_url} fittingType="fill" alt="" className="w-full h-full" /> : <Music size={42} />}<button className="home-spotlight-play" onClick={playFeatured} aria-label={featuredPlaying ? `Pause ${featured.title}` : `Play ${featured.title}`}>{featuredPlaying ? <Pause size={20} fill="currentColor" /> : <Play size={20} fill="currentColor" />}</button><div className="home-spotlight-menu"><TrackOptionsMenu track={featured} /></div></div><div className="home-spotlight-meta"><div><p className="eyebrow">Featured release</p><Link to={`/track/${featured.id}`} className="font-semibold text-sm block truncate mt-1">{featured.title}</Link><p className="text-xs text-muted-foreground truncate mt-1">{featured.artist || featured.uploader_name}</p></div></div></div>}
         </section>
         
-        {genreList.length > 0 && <div className="home-genre-rail" aria-label="Browse genres">{genreList.map(genre=><Link key={genre} className="chip" to={`/search?genre=${encodeURIComponent(genre)}`}>{genre}</Link>)}</div>}
+        {genreList.length > 0 && <div className="home-genre-rail" aria-label="Browse genres">{genreList.map((genre) => <Link key={genre} className="chip" to={`/search?genre=${encodeURIComponent(genre)}`}>{genre}</Link>)}</div>}
         <Section title="New on PUBLIC" icon={Sparkles} seeAllTo="/recent"><ReleaseList tracks={newReleases} /></Section>
         {recent.length > 0 && <Section title="Recently played"><CardRow tracks={recent} /></Section>}
         <Section title="Trending" icon={TrendingUp} seeAllTo="/top">
           {trending.length >= 3 ?
           <>
-              <Podium tracks={trending.slice(0, 5)} queue={trending}/>
+              <Podium tracks={trending.slice(0, 5)} queue={trending} />
               {trending.length > 5 &&
             <div className="mt-4">
                   <CardRow tracks={trending.slice(5)} />
