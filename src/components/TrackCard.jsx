@@ -1,4 +1,5 @@
-import { useRef, useState } from "react";
+import {useLongPressMenu} from "@/hooks/useLongPressMenu";
+import { useState } from "react";
 import { Play, Check } from "lucide-react";
 import TrackOptionsMenu from "@/components/track/TrackOptionsMenu";
 import { Link } from "react-router-dom";
@@ -34,27 +35,11 @@ export default function TrackCard({ track, selectable = false, selected = false,
 
   const coverUrl = useCoverUrl(track.cover_art_url);
 
-  const [menuSignal, setMenuSignal] = useState(0);
-  const cardRef = useRef(null);
-  const pressTimer = useRef(null);
-  const longPressed = useRef(false);
-
-  const cancelPress = () => clearTimeout(pressTimer.current);
-  const startPress = (e) => {
-    if (selectable || e.pointerType === "mouse") return;
-    longPressed.current = false;
-    cancelPress();
-    pressTimer.current = setTimeout(() => {
-      longPressed.current = true;
-      navigator.vibrate?.(15);
-      setMenuSignal((n) => n + 1);
-    }, 450);
-  };
+  const lp=useLongPressMenu(selectable);
 
   const handlePlay = (e) => {
     e.stopPropagation();
-    if (longPressed.current) {
-      longPressed.current = false;
+    if (lp.consumeLongPress()) {
       return;
     }
     if (isCurrent) p.togglePlay();
@@ -63,12 +48,9 @@ export default function TrackCard({ track, selectable = false, selected = false,
 
   return (
     <div
-      ref={cardRef}
-      onPointerDown={startPress}
-      onPointerUp={cancelPress}
-      onPointerMove={cancelPress}
-      onPointerCancel={cancelPress}
-      onContextMenu={(e) => e.preventDefault()}
+      ref={lp.ref} {...lp.handlers}
+      role={selectable?"checkbox":"group"} tabIndex={selectable?0:undefined} aria-checked={selectable?selected:undefined} aria-label={selectable?`Select ${track.title||"song"}`:undefined}
+      onKeyDown={event=>{if(selectable&&event.target===event.currentTarget&&(event.key==="Enter"||event.key===" ")){event.preventDefault();onToggleSelect?.(track);}}
       onClick={selectable ? () => onToggleSelect?.(track) : handlePlay}
       className={`music-card group relative rounded-2xl p-2 sm:p-2.5 transition-all duration-300 cursor-pointer
         hover:bg-foreground/[0.04] active:scale-[0.98]
@@ -129,8 +111,8 @@ export default function TrackCard({ track, selectable = false, selected = false,
             <TrackOptionsMenu
               track={track}
               size={17}
-              openSignal={menuSignal}
-              anchorRef={cardRef}
+              openSignal={lp.signal}
+              anchorRef={lp.ref}
               buttonClassName="grid w-8 h-8 md:w-9 md:h-9 rounded-full place-items-center bg-background/85 backdrop-blur text-foreground shadow-sm hover:bg-background active:scale-90 transition" />
           </div>
         )}
@@ -143,7 +125,7 @@ export default function TrackCard({ track, selectable = false, selected = false,
       ) : (
         <Link
           to={`/track/${track.id}`}
-          onClick={(e) => e.stopPropagation()}
+          onClick={event=>{event.stopPropagation();if(lp.consumeLongPress())event.preventDefault();}}
           className="block"
         >
           <TrackCardMeta track={track} isCurrent={isCurrent} />

@@ -16,7 +16,7 @@ function SectionTitle({ children, count }) {
 }
 
 /** @param {any} props */
-export default function SearchResults({ tracks, artists, people, playlists = [], dimmed }) {
+export default function SearchResults({ tracks=[], artists=[], people=[], playlists = [], dimmed }) {
   return (
     <div className={`space-y-8 transition-opacity ${dimmed ? "opacity-60" : "opacity-100"}`}>
       {artists.length > 0 && (
@@ -47,9 +47,9 @@ export default function SearchResults({ tracks, artists, people, playlists = [],
                   <div className="text-sm font-semibold truncate">
                     {u.display_name || u.full_name || "Unnamed"}
                   </div>
-                  {(u.email || u.bio || u.location) && (
+                  {(u.bio || u.location) && (
                     <div className="text-xs text-foreground/50 truncate">
-                      {u.email || u.bio || u.location}
+                      {u.bio || u.location}
                     </div>
                   )}
                 </div>
@@ -75,7 +75,7 @@ export default function SearchResults({ tracks, artists, people, playlists = [],
           <SectionTitle count={tracks.length}>Tracks</SectionTitle>
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-1">
             {tracks.map((t) => (
-              <TrackCard key={t.id} track={t} />
+              <TrackCard key={t.id} track={t} queue={tracks}/>
             ))}
           </div>
         </div>
