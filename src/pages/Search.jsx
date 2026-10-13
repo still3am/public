@@ -128,7 +128,7 @@ export default function Search() {
   return (
     <PullToRefresh onRefresh={handleRefresh}>
       <div className="search-page">
-        <div className="page-intro"><p className="eyebrow hidden">Discover PUBLIC</p><h1>Find your next favorite.</h1><p>Explore music, artists, playlists, and people.</p></div>
+        <div className="page-intro"><h1>Find your next favorite.</h1><p>Explore music, artists, playlists, and people.</p></div>
         <div className="view-switch mb-5" role="group" aria-label="Search type"><button aria-pressed={!peopleMode} className={!peopleMode ? "active" : ""} onClick={() => chooseScope("all")}>Music & more</button><button aria-pressed={peopleMode} className={peopleMode ? "active" : ""} onClick={() => chooseScope("people")}>People</button></div>
         
 
