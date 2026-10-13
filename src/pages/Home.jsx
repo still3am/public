@@ -18,12 +18,12 @@ import {
 import TrackCard from "@/components/TrackCard";
 import Podium from "@/components/Podium";
 import ReleaseList from "@/components/ReleaseList";
-import {usePlayer} from "@/context/PlayerContext";
-import {Image} from "@/components/ui/image";
+import { usePlayer } from "@/context/PlayerContext";
+import { Image } from "@/components/ui/image";
 import TrackOptionsMenu from "@/components/track/TrackOptionsMenu";
 import EmptyState from "@/components/EmptyState";
 import { getRecentPlays } from "@/lib/recentPlays";
-import { getUserGenres,clearUserGenresCache } from "@/lib/userGenres";
+import { getUserGenres, clearUserGenresCache } from "@/lib/userGenres";
 import PullToRefresh from "@/components/PullToRefresh";
 
 const greetingByHour = () => {
@@ -40,7 +40,7 @@ function Section({ title, icon: Icon, children, seeAllTo }) {
       <div className="flex items-end justify-between mb-4 px-1 md:px-0">
         <h2 className="text-xl md:text-2xl font-bold tracking-tight flex items-center gap-2.5">
           
-          {Icon&&<Icon size={17} className="text-muted-foreground"/>}{title}
+          {Icon && <Icon size={17} className="text-muted-foreground" />}{title}
         </h2>
         {seeAllTo &&
         <Link to={seeAllTo} className="text-xs font-semibold text-foreground/50 hover:text-foreground transition shrink-0 inline-flex items-center gap-0.5">
@@ -90,14 +90,14 @@ function Skeleton() {
 
 export default function Home() {
   const { user } = useAuth();
-  const p=usePlayer();
-  const loadVersion=useRef(0);
-  const [recent,setRecent]=useState(()=>getRecentPlays().slice(0,8));
-  const [genreList,setGenreList]=useState([]);
+  const p = usePlayer();
+  const loadVersion = useRef(0);
+  const [recent, setRecent] = useState(() => getRecentPlays().slice(0, 8));
+  const [genreList, setGenreList] = useState([]);
   const [loadError, setLoadError] = useState("");
   const [loading, setLoading] = useState(true);
-  const [trending, setTrending] = useState(()=>[...peekPublishedTracks()].sort((a,b)=>(b.play_count||0)-(a.play_count||0)).slice(0,10));
-  const [newReleases, setNewReleases] = useState(()=>peekPublishedTracks().slice(0,36));
+  const [trending, setTrending] = useState(() => [...peekPublishedTracks()].sort((a, b) => (b.play_count || 0) - (a.play_count || 0)).slice(0, 10));
+  const [newReleases, setNewReleases] = useState(() => peekPublishedTracks().slice(0, 36));
   const [byGenre, setByGenre] = useState([]);
   const [fromFollowing, setFromFollowing] = useState([]);
   const [discover, setDiscover] = useState([]);
@@ -116,8 +116,8 @@ export default function Home() {
 
   useEffect(() => {const handler = () => load(true).catch(() => {});window.addEventListener('catalog:invalidate', handler);return () => window.removeEventListener('catalog:invalidate', handler);}, [user?.id]);
 
-  async function load(fresh=false) {
-    const request=++loadVersion.current;
+  async function load(fresh = false) {
+    const request = ++loadVersion.current;
     setLoading(true);
     setLoadError("");
     try {
@@ -130,7 +130,7 @@ export default function Home() {
       base44.entities.Follow.filter({ follower_id: user.id }, "-created_date", 200).catch(() => []) :
       Promise.resolve([])]
       );
-      if(request!==loadVersion.current)return;
+      if (request !== loadVersion.current) return;
       const followed = new Set((Array.isArray(fols) ? fols : []).map((f) => f.following_id));
       setTrending(topTracks.slice(0, 10));
       setNewReleases(published.slice(0, 36));
@@ -143,7 +143,7 @@ export default function Home() {
         if (!tr?.genre) continue;
         genrePlays[tr.genre] = (genrePlays[tr.genre] || 0) + (tr.play_count || 0);
       }
-      setGenreList(Object.entries(genrePlays).sort((a,b)=>b[1]-a[1]).slice(0,8).map(([name])=>name));
+      setGenreList(Object.entries(genrePlays).sort((a, b) => b[1] - a[1]).slice(0, 8).map(([name]) => name));
       const genres = Object.entries(genrePlays).
       sort((a, b) => b[1] - a[1]).
       slice(0, 3).
@@ -172,7 +172,7 @@ export default function Home() {
       // Merge saved genre picks with listening history — saved genres seed
       // personalization, recent plays refine it over time.
       const savedGenres = await getUserGenres();
-      if(request!==loadVersion.current)return;
+      if (request !== loadVersion.current) return;
       const genreSet = new Set(savedGenres);
       const userGenres = Object.entries(genreFreq).
       sort((a, b) => b[1] - a[1]).
@@ -189,15 +189,15 @@ export default function Home() {
         [pool[i], pool[j]] = [pool[j], pool[i]];
       }
       setDiscover(pool.slice(0, 12));
-    } catch {if(request===loadVersion.current)setLoadError("The music catalog could not load. Check your connection and retry.");} finally {
-      if(request===loadVersion.current)setLoading(false);
+    } catch {if (request === loadVersion.current) setLoadError("The music catalog could not load. Check your connection and retry.");} finally {
+      if (request === loadVersion.current) setLoading(false);
     }
   }
 
-  useEffect(()=>{clearUserGenresCache();load();return()=>{loadVersion.current++;};},[user?.id]);
-  useEffect(()=>{const update=()=>setRecent(getRecentPlays().slice(0,8));window.addEventListener("recentplays:change",update);return()=>window.removeEventListener("recentplays:change",update);},[]);
+  useEffect(() => {clearUserGenresCache();load();return () => {loadVersion.current++;};}, [user?.id]);
+  useEffect(() => {const update = () => setRecent(getRecentPlays().slice(0, 8));window.addEventListener("recentplays:change", update);return () => window.removeEventListener("recentplays:change", update);}, []);
 
-  if (loadError && !trending.length) return <div className="p-8 text-center"><button className="playlist-action" onClick={()=>load(true)}>Refresh music</button></div>;
+  if (loadError && !trending.length) return <div className="p-8 text-center"><button className="playlist-action" onClick={() => load(true)}>Refresh music</button></div>;
   if (loading && !trending.length) return <Skeleton />;
 
   const allEmpty =
@@ -221,22 +221,22 @@ export default function Home() {
 
   }
 
-  const featured=newReleases[0]||trending[0];
-  const discoveryQueue=discover.length?discover:trending;
-  const featuredPlaying=p.currentTrack?.id===featured?.id&&p.isPlaying;
-  const playFeatured=()=>{if(!featured)return;if(p.currentTrack?.id===featured.id)p.togglePlay();else{p.setShuffle(false);p.playTrackAt(newReleases.length?newReleases:[featured],0);}};
+  const featured = newReleases[0] || trending[0];
+  const discoveryQueue = discover.length ? discover : trending;
+  const featuredPlaying = p.currentTrack?.id === featured?.id && p.isPlaying;
+  const playFeatured = () => {if (!featured) return;if (p.currentTrack?.id === featured.id) p.togglePlay();else {p.setShuffle(false);p.playTrackAt(newReleases.length ? newReleases : [featured], 0);}};
   return (
-    <PullToRefresh onRefresh={()=>load(true)}>
+    <PullToRefresh onRefresh={() => load(true)}>
       <div className="home-page">
-        <header className="home-welcome"><div><p className="eyebrow">{greeting}</p><h1>{user?.display_name||user?.full_name?`Made for ${user.display_name||user.full_name}.`:"Find your sound."}</h1></div><Link to="/search" className="home-browse-link" aria-label="Explore music"><Compass size={17}/><span>Explore music</span><ChevronRight size={14}/></Link></header>
+        <header className="home-welcome"><div><p className="eyebrow">{greeting}</p><h1>{user?.display_name || user?.full_name ? `Made for ${user.display_name || user.full_name}.` : "Find your sound."}</h1></div><Link to="/search" className="home-browse-link" aria-label="Explore music"><Compass size={17} /><span>Explore music</span><ChevronRight size={14} /></Link></header>
         <section className="home-feature">
-          <div className="home-feature-copy"><p className="eyebrow">Independent music. Open to everyone.</p><h2>Your next favorite<br/>starts here.</h2><p>Fresh releases, familiar favorites, and music worth sharing.</p><div className="home-feature-actions"><button disabled={!discoveryQueue.length} onClick={()=>{p.setShuffle(false);p.playTrackAt(discoveryQueue,0);}} className="chrome-button"><Play size={15} fill="currentColor"/>Play discovery</button><Link className="playlist-action" to="/recent">Latest music<ChevronRight size={14}/></Link></div></div>
-          {featured&&<div className="home-spotlight"><div className="home-spotlight-art">{featured.cover_art_url?<Image src={featured.cover_art_url} fittingType="fill" alt="" className="w-full h-full"/>:<Music size={42}/>}<button className="home-spotlight-play" onClick={playFeatured} aria-label={featuredPlaying?`Pause ${featured.title}`:`Play ${featured.title}`}>{featuredPlaying?<Pause size={20} fill="currentColor"/>:<Play size={20} fill="currentColor"/>}</button><div className="home-spotlight-menu"><TrackOptionsMenu track={featured}/></div></div><div className="home-spotlight-meta"><div><p className="eyebrow">Featured release</p><Link to={`/track/${featured.id}`} className="font-semibold text-sm block truncate mt-1">{featured.title}</Link><p className="text-xs text-muted-foreground truncate mt-1">{featured.artist||featured.uploader_name}</p></div></div></div>}
+          <div className="home-feature-copy"><p className="eyebrow">Independent music. Open to everyone.</p><h2>Your next favorite<br />starts here.</h2><p>Fresh releases, familiar favorites, and music worth sharing.</p><div className="home-feature-actions"><button disabled={!discoveryQueue.length} onClick={() => {p.setShuffle(false);p.playTrackAt(discoveryQueue, 0);}} className="chrome-button"><Play size={15} fill="currentColor" />Play discovery</button><Link className="playlist-action" to="/recent">Latest music<ChevronRight size={14} /></Link></div></div>
+          {featured && <div className="home-spotlight"><div className="home-spotlight-art">{featured.cover_art_url ? <Image src={featured.cover_art_url} fittingType="fill" alt="" className="w-full h-full" /> : <Music size={42} />}<button className="home-spotlight-play" onClick={playFeatured} aria-label={featuredPlaying ? `Pause ${featured.title}` : `Play ${featured.title}`}>{featuredPlaying ? <Pause size={20} fill="currentColor" /> : <Play size={20} fill="currentColor" />}</button><div className="home-spotlight-menu"><TrackOptionsMenu track={featured} /></div></div><div className="home-spotlight-meta"><div><p className="eyebrow">Featured release</p><Link to={`/track/${featured.id}`} className="font-semibold text-sm block truncate mt-1">{featured.title}</Link><p className="text-xs text-muted-foreground truncate mt-1">{featured.artist || featured.uploader_name}</p></div></div></div>}
         </section>
-        <nav className="home-shortcuts" aria-label="Explore PUBLIC"><Link to="/library"><ListMusic size={17}/><span>Your library</span><ChevronRight size={14}/></Link><Link to="/top"><TrendingUp size={17}/><span>Top tracks</span><ChevronRight size={14}/></Link><Link to="/upload"><Upload size={17}/><span>Share music</span><ChevronRight size={14}/></Link></nav>
-        {genreList.length>0&&<div className="home-genre-rail" aria-label="Browse genres">{genreList.map(genre=><Link key={genre} className="chip" to={`/search?genre=${encodeURIComponent(genre)}`}>{genre}</Link>)}</div>}
-        <Section title="New on PUBLIC" icon={Sparkles} seeAllTo="/recent"><ReleaseList tracks={newReleases}/></Section>
-        {recent.length>0&&<Section title="Recently played"><CardRow tracks={recent}/></Section>}
+        <nav className="home-shortcuts hidden" aria-label="Explore PUBLIC"><Link to="/library"><ListMusic size={17} /><span>Your library</span><ChevronRight size={14} /></Link><Link to="/top"><TrendingUp size={17} /><span>Top tracks</span><ChevronRight size={14} /></Link><Link to="/upload"><Upload size={17} /><span>Share music</span><ChevronRight size={14} /></Link></nav>
+        {genreList.length > 0 && <div className="home-genre-rail" aria-label="Browse genres">{genreList.map((genre) => <Link key={genre} className="chip hidden" to={`/search?genre=${encodeURIComponent(genre)}`}>{genre}</Link>)}</div>}
+        <Section title="New on PUBLIC" icon={Sparkles} seeAllTo="/recent"><ReleaseList tracks={newReleases} /></Section>
+        {recent.length > 0 && <Section title="Recently played"><CardRow tracks={recent} /></Section>}
         <Section title="Trending" icon={TrendingUp} seeAllTo="/top">
           {trending.length >= 3 ?
           <>
