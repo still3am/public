@@ -30,16 +30,16 @@ export default function Search() {
   useEffect(() => {
     setQ(urlQ);
   }, [urlQ]);
-  useEffect(()=>setGenre(searchParams.get("genre")||null),[searchParams]);
+  useEffect(() => setGenre(searchParams.get("genre") || null), [searchParams]);
 
   const updateQuery = (next) => {
     setQ(next);
     const params = new URLSearchParams(searchParams);
-    if (next) params.set("q", next);
-    else params.delete("q");
+    if (next) params.set("q", next);else
+    params.delete("q");
     setSearchParams(params, { replace: true });
   };
-  const [browseError,setBrowseError]=useState("");
+  const [browseError, setBrowseError] = useState("");
   const [allTracks, setAllTracks] = useState([]);
   const [loadingAll, setLoadingAll] = useState(true);
 
@@ -81,7 +81,7 @@ export default function Search() {
     loadCatalogue();
   }, [hasQuery]);
 
-  useEffect(()=>{const change=()=>{loadCatalogue();refresh();};window.addEventListener('catalog:invalidate',change);return()=>window.removeEventListener('catalog:invalidate',change);},[refresh]);
+  useEffect(() => {const change = () => {loadCatalogue();refresh();};window.addEventListener('catalog:invalidate', change);return () => window.removeEventListener('catalog:invalidate', change);}, [refresh]);
 
   // Pulling down re-runs whatever the page is currently showing: the live
   // search when a term is typed, otherwise the genre crate.
@@ -113,7 +113,7 @@ export default function Search() {
   }, [genre, allTracks]);
 
   const anyResults =
-    trackResults.length || artistResults.length || people.length || playlists.length;
+  trackResults.length || artistResults.length || people.length || playlists.length;
   const firstSearchInFlight = hasQuery && searching && anyResults === 0;
 
   const loader =
@@ -125,7 +125,7 @@ export default function Search() {
   return (
     <PullToRefresh onRefresh={handleRefresh}>
       <div>
-        {hasQuery&&peopleFailed&&<div role="alert" className="mb-4 p-4 rounded-xl border border-border text-sm">People search could not load. <button onClick={refresh} className="underline font-semibold">Retry people search</button></div>}
+        {hasQuery && peopleFailed && <div role="alert" className="mb-4 p-4 rounded-xl border border-border text-sm hidden">People search could not load. <button onClick={refresh} className="underline font-semibold">Retry people search</button></div>}
         {/* Search input (mobile / tablet) — desktop uses the sidebar field instead */}
         <div className="relative mb-6 max-w-2xl md:hidden">
           <SearchIcon size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-foreground/40 pointer-events-none" />
