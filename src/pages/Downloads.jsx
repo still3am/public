@@ -39,7 +39,7 @@ export default function Downloads() {
       genre: r.genre,
       explicit: r.explicit,
       _coverBlob: r._coverBlob,
-      _private_audio:!!r._private_audio,
+      _private_audio: !!r._private_audio,
       _offline: true
     })),
     [cache.records]
@@ -56,8 +56,8 @@ export default function Downloads() {
 
   const playAll = () => {
     if (!tracks.length) return;
-    if(anyPlayingHere) p.togglePlay();
-    else p.playTrackAt(tracks, 0);
+    if (anyPlayingHere) p.togglePlay();else
+    p.playTrackAt(tracks, 0);
   };
 
   const playOne = (i) => {
@@ -93,8 +93,8 @@ export default function Downloads() {
 
   return (
     <div className="downloads-page max-w-3xl mx-auto">
-      <header className="page-intro"><p className="eyebrow">On this device</p><h1>PUBLIC Offline</h1><p>Your downloaded music, wherever you go.</p></header>
-      <div className="download-summary"><CloudOff size={20}/><div><strong>{tracks.length} {tracks.length===1?"song":"songs"} saved</strong><p>{bytesToReadable(totalBytes)} on this device · Drag to reorder</p></div></div>
+      <header className="page-intro"><p className="eyebrow hidden">On this device</p><h1>PUBLIC Offline</h1><p>Your downloaded music, wherever you go.</p></header>
+      <div className="download-summary"><CloudOff size={20} /><div><strong>{tracks.length} {tracks.length === 1 ? "song" : "songs"} saved</strong><p>{bytesToReadable(totalBytes)} on this device · Drag to reorder</p></div></div>
 
       
 
@@ -158,7 +158,7 @@ export default function Downloads() {
         <>
             {tracks.length > 0 &&
           <div className="flex items-center justify-between mb-3 px-1">
-                <button onClick={()=>setConfirming(true)} className="border rounded-full px-3 py-2 text-xs">Clear downloads</button>
+                <button onClick={() => setConfirming(true)} className="border rounded-full px-3 py-2 text-xs">Clear downloads</button>
                 <button
               onClick={playAll}
               className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-foreground text-background text-sm font-bold active:scale-95 transition">
@@ -175,50 +175,50 @@ export default function Downloads() {
 
             <DragDropContext onDragStart={() => setDragging(true)} onDragEnd={onDragEnd}>
               <Droppable droppableId="downloads">
-                {(dropProvided) => (
-                <div ref={dropProvided.innerRef} {...dropProvided.droppableProps} className="space-y-1 touch-pan-y">
+                {(dropProvided) =>
+              <div ref={dropProvided.innerRef} {...dropProvided.droppableProps} className="space-y-1 touch-pan-y">
                   {tracks.map((t, i) => {
                   const here = isCurrent(t.id);
                   const playingHere = here && p.isPlaying;
                   return (
                     <Draggable key={t.id} draggableId={t.id} index={i}>
-                      {(dragProvided, snapshot) => (
-                    <div
-                      ref={dragProvided.innerRef}
-                      {...dragProvided.draggableProps}
-                      onDoubleClick={() => playOne(i)}
-                      style={{ ...dragProvided.draggableProps.style, overscrollBehavior: "contain", touchAction: snapshot.isDragging ? "none" : "pan-y" }}
-                      className={`group flex items-center gap-2 px-2 py-2 rounded-lg transition ${
-                      snapshot.isDragging ? "bg-foreground/[0.06] ring-1 ring-border shadow-lg" : "hover:bg-foreground/[0.03]"}`}>
+                      {(dragProvided, snapshot) =>
                       <div
-                        {...dragProvided.dragHandleProps}
-                        className="shrink-0 -ml-1 p-1 text-foreground/30 hover:text-foreground/70 cursor-grab active:cursor-grabbing touch-none"
-                        aria-label="Reorder">
+                        ref={dragProvided.innerRef}
+                        {...dragProvided.draggableProps}
+                        onDoubleClick={() => playOne(i)}
+                        style={{ ...dragProvided.draggableProps.style, overscrollBehavior: "contain", touchAction: snapshot.isDragging ? "none" : "pan-y" }}
+                        className={`group flex items-center gap-2 px-2 py-2 rounded-lg transition ${
+                        snapshot.isDragging ? "bg-foreground/[0.06] ring-1 ring-border shadow-lg" : "hover:bg-foreground/[0.03]"}`}>
+                      <div
+                          {...dragProvided.dragHandleProps}
+                          className="shrink-0 -ml-1 p-1 text-foreground/30 hover:text-foreground/70 cursor-grab active:cursor-grabbing touch-none"
+                          aria-label="Reorder">
                         <GripVertical size={16} />
                       </div>
                       <button
-                        onClick={() => playOne(i)}
-                        className="w-10 h-10 rounded overflow-hidden shrink-0 relative bg-foreground/10 grid place-items-center"
-                        aria-label="Play">
+                          onClick={() => playOne(i)}
+                          className="w-10 h-10 rounded overflow-hidden shrink-0 relative bg-foreground/10 grid place-items-center"
+                          aria-label="Play">
                         <DownloadCover record={t} size={16} />
                         <span className="absolute inset-0 grid place-items-center bg-black/0 group-hover:bg-black/30 transition">
                           {playingHere ?
-                        <Pause size={15} className="text-white" /> :
+                            <Pause size={15} className="text-white" /> :
 
-                        <Play size={15} className="text-white opacity-0 group-hover:opacity-100 transition" />
-                        }
+                            <Play size={15} className="text-white opacity-0 group-hover:opacity-100 transition" />
+                            }
                         </span>
                       </button>
                       <button
-                        onClick={() => playOne(i)}
-                        className="min-w-0 flex-1 text-left">
+                          onClick={() => playOne(i)}
+                          className="min-w-0 flex-1 text-left">
                         <div className="text-sm font-medium truncate flex items-center gap-1.5">
                           {t.title}
                           {t.explicit &&
-                        <span className="px-1 py-0.5 rounded bg-foreground/15 text-[9px] font-extrabold">
+                            <span className="px-1 py-0.5 rounded bg-foreground/15 text-[9px] font-extrabold">
                               E
                             </span>
-                        }
+                            }
 
 
 
@@ -231,19 +231,19 @@ export default function Downloads() {
                         {formatTime(t.duration_seconds)}
                       </div>
                       <button
-                        onClick={() => removeOne(t.id)}
-                        className="p-2 rounded-full text-foreground/45 hover:text-destructive hover:bg-destructive/5 active:scale-90 transition shrink-0"
-                        aria-label="Remove download">
+                          onClick={() => removeOne(t.id)}
+                          className="p-2 rounded-full text-foreground/45 hover:text-destructive hover:bg-destructive/5 active:scale-90 transition shrink-0"
+                          aria-label="Remove download">
                         <Trash2 size={15} />
                       </button>
                     </div>
-                      )}
-                    </Draggable>
-                  );
+                      }
+                    </Draggable>);
+
                 })}
                 {dropProvided.placeholder}
                 </div>
-                )}
+              }
               </Droppable>
             </DragDropContext>
           </>
