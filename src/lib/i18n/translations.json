@@ -1,1 +1,1647 @@
-{}
+{
+  "Language": {
+    "es": "Idioma",
+    "fr": "Langue",
+    "zh-CN": "语言"
+  },
+  "Choose the language for PUBLIC.": {
+    "es": "Elige el idioma de PUBLIC.",
+    "fr": "Choisissez la langue de PUBLIC.",
+    "zh-CN": "选择 PUBLIC 的界面语言。"
+  },
+  "Home": {
+    "es": "Inicio",
+    "fr": "Accueil",
+    "zh-CN": "首页"
+  },
+  "Search": {
+    "es": "Buscar",
+    "fr": "Rechercher",
+    "zh-CN": "搜索"
+  },
+  "Me": {
+    "es": "Yo",
+    "fr": "Moi",
+    "zh-CN": "我"
+  },
+  "More": {
+    "es": "Más",
+    "fr": "Plus",
+    "zh-CN": "更多"
+  },
+  "More pages": {
+    "es": "Más páginas",
+    "fr": "Plus de pages",
+    "zh-CN": "更多页面"
+  },
+  "Upload": {
+    "es": "Subir",
+    "fr": "Importer",
+    "zh-CN": "上传"
+  },
+  "Upload music": {
+    "es": "Subir música",
+    "fr": "Importer de la musique",
+    "zh-CN": "上传音乐"
+  },
+  "Top Charts": {
+    "es": "Listas de éxitos",
+    "fr": "Classements",
+    "zh-CN": "排行榜"
+  },
+  "Recently Added": {
+    "es": "Añadido recientemente",
+    "fr": "Ajouts récents",
+    "zh-CN": "最近添加"
+  },
+  "Library": {
+    "es": "Biblioteca",
+    "fr": "Bibliothèque",
+    "zh-CN": "音乐库"
+  },
+  "Notifications": {
+    "es": "Notificaciones",
+    "fr": "Notifications",
+    "zh-CN": "通知"
+  },
+  "Suggestions": {
+    "es": "Sugerencias",
+    "fr": "Suggestions",
+    "zh-CN": "建议"
+  },
+  "Admin": {
+    "es": "Administración",
+    "fr": "Administration",
+    "zh-CN": "管理"
+  },
+  "Settings": {
+    "es": "Configuración",
+    "fr": "Paramètres",
+    "zh-CN": "设置"
+  },
+  "Close": {
+    "es": "Cerrar",
+    "fr": "Fermer",
+    "zh-CN": "关闭"
+  },
+  "Save": {
+    "es": "Guardar",
+    "fr": "Enregistrer",
+    "zh-CN": "保存"
+  },
+  "Cancel": {
+    "es": "Cancelar",
+    "fr": "Annuler",
+    "zh-CN": "取消"
+  },
+  "Delete": {
+    "es": "Eliminar",
+    "fr": "Supprimer",
+    "zh-CN": "删除"
+  },
+  "Edit": {
+    "es": "Editar",
+    "fr": "Modifier",
+    "zh-CN": "编辑"
+  },
+  "Add": {
+    "es": "Añadir",
+    "fr": "Ajouter",
+    "zh-CN": "添加"
+  },
+  "Remove": {
+    "es": "Quitar",
+    "fr": "Retirer",
+    "zh-CN": "移除"
+  },
+  "Back": {
+    "es": "Atrás",
+    "fr": "Retour",
+    "zh-CN": "返回"
+  },
+  "Next": {
+    "es": "Siguiente",
+    "fr": "Suivant",
+    "zh-CN": "下一首"
+  },
+  "Previous": {
+    "es": "Anterior",
+    "fr": "Précédent",
+    "zh-CN": "上一首"
+  },
+  "Play": {
+    "es": "Reproducir",
+    "fr": "Lire",
+    "zh-CN": "播放"
+  },
+  "Pause": {
+    "es": "Pausar",
+    "fr": "Pause",
+    "zh-CN": "暂停"
+  },
+  "Shuffle": {
+    "es": "Aleatorio",
+    "fr": "Lecture aléatoire",
+    "zh-CN": "随机播放"
+  },
+  "Repeat": {
+    "es": "Repetir",
+    "fr": "Répéter",
+    "zh-CN": "循环播放"
+  },
+  "Now playing": {
+    "es": "Reproduciendo",
+    "fr": "Lecture en cours",
+    "zh-CN": "正在播放"
+  },
+  "Now Playing": {
+    "es": "Reproduciendo",
+    "fr": "Lecture en cours",
+    "zh-CN": "正在播放"
+  },
+  "Queue": {
+    "es": "Cola",
+    "fr": "File d’attente",
+    "zh-CN": "播放队列"
+  },
+  "View queue": {
+    "es": "Ver cola",
+    "fr": "Voir la file",
+    "zh-CN": "查看队列"
+  },
+  "Add to queue": {
+    "es": "Añadir a la cola",
+    "fr": "Ajouter à la file",
+    "zh-CN": "加入队列"
+  },
+  "Added to queue": {
+    "es": "Añadido a la cola",
+    "fr": "Ajouté à la file",
+    "zh-CN": "已加入队列"
+  },
+  "Clear queue": {
+    "es": "Vaciar cola",
+    "fr": "Vider la file",
+    "zh-CN": "清空队列"
+  },
+  "Remove from queue": {
+    "es": "Quitar de la cola",
+    "fr": "Retirer de la file",
+    "zh-CN": "从队列移除"
+  },
+  "Your queue is empty.": {
+    "es": "Tu cola está vacía.",
+    "fr": "Votre file est vide.",
+    "zh-CN": "播放队列为空。"
+  },
+  "Play this track": {
+    "es": "Reproducir esta canción",
+    "fr": "Lire ce titre",
+    "zh-CN": "播放这首歌曲"
+  },
+  "Play track": {
+    "es": "Reproducir canción",
+    "fr": "Lire le titre",
+    "zh-CN": "播放歌曲"
+  },
+  "Mute": {
+    "es": "Silenciar",
+    "fr": "Couper le son",
+    "zh-CN": "静音"
+  },
+  "Unmute": {
+    "es": "Activar sonido",
+    "fr": "Rétablir le son",
+    "zh-CN": "取消静音"
+  },
+  "Volume": {
+    "es": "Volumen",
+    "fr": "Volume",
+    "zh-CN": "音量"
+  },
+  "Seek": {
+    "es": "Avanzar o retroceder",
+    "fr": "Position de lecture",
+    "zh-CN": "调整进度"
+  },
+  "Seek playback": {
+    "es": "Cambiar posición",
+    "fr": "Modifier la position",
+    "zh-CN": "调整播放进度"
+  },
+  "Open Now Playing": {
+    "es": "Abrir reproducción",
+    "fr": "Ouvrir la lecture",
+    "zh-CN": "打开播放页面"
+  },
+  "Close player": {
+    "es": "Cerrar reproductor",
+    "fr": "Fermer le lecteur",
+    "zh-CN": "关闭播放器"
+  },
+  "Mix": {
+    "es": "Ecualizador",
+    "fr": "Égaliseur",
+    "zh-CN": "均衡器"
+  },
+  "Equalizer": {
+    "es": "Ecualizador",
+    "fr": "Égaliseur",
+    "zh-CN": "均衡器"
+  },
+  "Output level": {
+    "es": "Nivel de salida",
+    "fr": "Niveau de sortie",
+    "zh-CN": "输出音量"
+  },
+  "Equalizer output level": {
+    "es": "Nivel de salida del ecualizador",
+    "fr": "Niveau de sortie de l’égaliseur",
+    "zh-CN": "均衡器输出音量"
+  },
+  "Reset": {
+    "es": "Restablecer",
+    "fr": "Réinitialiser",
+    "zh-CN": "重置"
+  },
+  "Close equalizer": {
+    "es": "Cerrar ecualizador",
+    "fr": "Fermer l’égaliseur",
+    "zh-CN": "关闭均衡器"
+  },
+  "Bass": {
+    "es": "Graves",
+    "fr": "Graves",
+    "zh-CN": "低音"
+  },
+  "Low mids": {
+    "es": "Medios bajos",
+    "fr": "Bas médiums",
+    "zh-CN": "中低音"
+  },
+  "Presence": {
+    "es": "Presencia",
+    "fr": "Présence",
+    "zh-CN": "清晰度"
+  },
+  "Treble": {
+    "es": "Agudos",
+    "fr": "Aigus",
+    "zh-CN": "高音"
+  },
+  "Flat": {
+    "es": "Plano",
+    "fr": "Neutre",
+    "zh-CN": "平坦"
+  },
+  "Bass boost": {
+    "es": "Realce de graves",
+    "fr": "Renfort des graves",
+    "zh-CN": "低音增强"
+  },
+  "Clear": {
+    "es": "Claro",
+    "fr": "Clair",
+    "zh-CN": "清晰"
+  },
+  "Warm": {
+    "es": "Cálido",
+    "fr": "Chaud",
+    "zh-CN": "温暖"
+  },
+  "Bright": {
+    "es": "Brillante",
+    "fr": "Brillant",
+    "zh-CN": "明亮"
+  },
+  "Balanced": {
+    "es": "Equilibrado",
+    "fr": "Équilibré",
+    "zh-CN": "均衡"
+  },
+  "Audio processing could not start.": {
+    "es": "No se pudo iniciar el procesamiento de audio.",
+    "fr": "Le traitement audio n’a pas pu démarrer.",
+    "zh-CN": "无法启动音频处理。"
+  },
+  "Shape the full mix in real time. Headroom compensation reduces clipping when bands are boosted.": {
+    "es": "Ajusta la mezcla en tiempo real. La compensación reduce la distorsión al aumentar las bandas.",
+    "fr": "Ajustez le mix en temps réel. La compensation réduit la saturation lors de l’amplification des bandes.",
+    "zh-CN": "实时调整整体音效。提升频段时，余量补偿可减少削波失真。"
+  },
+  "On": {
+    "es": "Activado",
+    "fr": "Activé",
+    "zh-CN": "开启"
+  },
+  "Bypassed": {
+    "es": "Desactivado",
+    "fr": "Désactivé",
+    "zh-CN": "已旁路"
+  },
+  "Lyrics": {
+    "es": "Letra",
+    "fr": "Paroles",
+    "zh-CN": "歌词"
+  },
+  "Hide lyrics": {
+    "es": "Ocultar letra",
+    "fr": "Masquer les paroles",
+    "zh-CN": "隐藏歌词"
+  },
+  "Artwork": {
+    "es": "Portada",
+    "fr": "Pochette",
+    "zh-CN": "封面"
+  },
+  "Swipe to adjust": {
+    "es": "Desliza para ajustar",
+    "fr": "Glissez pour ajuster",
+    "zh-CN": "滑动调整"
+  },
+  "History": {
+    "es": "Historial",
+    "fr": "Historique",
+    "zh-CN": "历史记录"
+  },
+  "Done": {
+    "es": "Listo",
+    "fr": "Terminé",
+    "zh-CN": "完成"
+  },
+  "Reorder": {
+    "es": "Reordenar",
+    "fr": "Réorganiser",
+    "zh-CN": "调整顺序"
+  },
+  "Refresh": {
+    "es": "Actualizar",
+    "fr": "Actualiser",
+    "zh-CN": "刷新"
+  },
+  "Loading…": {
+    "es": "Cargando…",
+    "fr": "Chargement…",
+    "zh-CN": "加载中…"
+  },
+  "Loading...": {
+    "es": "Cargando...",
+    "fr": "Chargement...",
+    "zh-CN": "加载中…"
+  },
+  "Try again": {
+    "es": "Intentar de nuevo",
+    "fr": "Réessayer",
+    "zh-CN": "重试"
+  },
+  "Retry": {
+    "es": "Reintentar",
+    "fr": "Réessayer",
+    "zh-CN": "重试"
+  },
+  "Retry connection": {
+    "es": "Reintentar conexión",
+    "fr": "Réessayer la connexion",
+    "zh-CN": "重新连接"
+  },
+  "Contact support": {
+    "es": "Contactar soporte",
+    "fr": "Contacter l’assistance",
+    "zh-CN": "联系支持"
+  },
+  "Return to login": {
+    "es": "Volver al inicio de sesión",
+    "fr": "Revenir à la connexion",
+    "zh-CN": "返回登录"
+  },
+  "This screen could not load": {
+    "es": "No se pudo cargar esta pantalla",
+    "fr": "Impossible de charger cette page",
+    "zh-CN": "无法加载此页面"
+  },
+  "Your saved account data has not been changed. Reload or contact support if this continues.": {
+    "es": "Tus datos guardados no han cambiado. Recarga o contacta soporte si continúa.",
+    "fr": "Vos données enregistrées sont intactes. Rechargez ou contactez l’assistance si le problème persiste.",
+    "zh-CN": "已保存的账户数据未更改。请重新加载；若问题持续，请联系支持。"
+  },
+  "Reload PUBLIC": {
+    "es": "Recargar PUBLIC",
+    "fr": "Recharger PUBLIC",
+    "zh-CN": "重新加载 PUBLIC"
+  },
+  "An action could not complete": {
+    "es": "No se pudo completar la acción",
+    "fr": "L’action n’a pas pu aboutir",
+    "zh-CN": "无法完成操作"
+  },
+  "Check your connection and retry. Contact Support if this continues.": {
+    "es": "Comprueba tu conexión y vuelve a intentar. Contacta soporte si continúa.",
+    "fr": "Vérifiez votre connexion et réessayez. Contactez l’assistance si le problème persiste.",
+    "zh-CN": "请检查连接后重试。若问题持续，请联系支持。"
+  },
+  "Offline — saved downloads remain available.": {
+    "es": "Sin conexión: las descargas guardadas siguen disponibles.",
+    "fr": "Hors ligne — vos téléchargements restent disponibles.",
+    "zh-CN": "当前离线，已保存的下载仍可使用。"
+  },
+  "Removed from downloads": {
+    "es": "Eliminado de descargas",
+    "fr": "Retiré des téléchargements",
+    "zh-CN": "已从下载中移除"
+  },
+  "Saved for offline": {
+    "es": "Guardado para escuchar sin conexión",
+    "fr": "Enregistré pour l’écoute hors ligne",
+    "zh-CN": "已保存供离线使用"
+  },
+  "Couldn't save offline": {
+    "es": "No se pudo guardar sin conexión",
+    "fr": "Impossible d’enregistrer hors ligne",
+    "zh-CN": "无法保存供离线使用"
+  },
+  "Couldn't update name": {
+    "es": "No se pudo actualizar el nombre",
+    "fr": "Impossible de modifier le nom",
+    "zh-CN": "无法更新名称"
+  },
+  "Artist name updated": {
+    "es": "Nombre del artista actualizado",
+    "fr": "Nom de l’artiste modifié",
+    "zh-CN": "已更新艺人名称"
+  },
+  "Save name": {
+    "es": "Guardar nombre",
+    "fr": "Enregistrer le nom",
+    "zh-CN": "保存名称"
+  },
+  "Edit artist name": {
+    "es": "Editar nombre del artista",
+    "fr": "Modifier le nom de l’artiste",
+    "zh-CN": "编辑艺人名称"
+  },
+  "EditTrack": {
+    "es": "Editar canción",
+    "fr": "Modifier le titre",
+    "zh-CN": "编辑歌曲"
+  },
+  "Edit track": {
+    "es": "Editar canción",
+    "fr": "Modifier le titre",
+    "zh-CN": "编辑歌曲"
+  },
+  "Track title": {
+    "es": "Título de la canción",
+    "fr": "Titre du morceau",
+    "zh-CN": "歌曲名称"
+  },
+  "Artist (defaults to your name)": {
+    "es": "Artista (tu nombre por defecto)",
+    "fr": "Artiste (votre nom par défaut)",
+    "zh-CN": "艺人（默认为你的名字）"
+  },
+  "Description (optional)": {
+    "es": "Descripción (opcional)",
+    "fr": "Description (facultative)",
+    "zh-CN": "描述（可选）"
+  },
+  "Explicit content": {
+    "es": "Contenido explícito",
+    "fr": "Contenu explicite",
+    "zh-CN": "成人内容"
+  },
+  "Allow downloads": {
+    "es": "Permitir descargas",
+    "fr": "Autoriser les téléchargements",
+    "zh-CN": "允许下载"
+  },
+  "Paste full lyrics here (one line per lyric line)": {
+    "es": "Pega la letra completa aquí (una línea por verso)",
+    "fr": "Collez les paroles complètes ici (une ligne par vers)",
+    "zh-CN": "在此粘贴完整歌词（每句一行）"
+  },
+  "Link copied": {
+    "es": "Enlace copiado",
+    "fr": "Lien copié",
+    "zh-CN": "链接已复制"
+  },
+  "Lyrics saved": {
+    "es": "Letra guardada",
+    "fr": "Paroles enregistrées",
+    "zh-CN": "歌词已保存"
+  },
+  "Could not save lyrics": {
+    "es": "No se pudo guardar la letra",
+    "fr": "Impossible d’enregistrer les paroles",
+    "zh-CN": "无法保存歌词"
+  },
+  "GenerateLyrics": {
+    "es": "Generar letra",
+    "fr": "Générer les paroles",
+    "zh-CN": "生成歌词"
+  },
+  "AI Lyrics Generator": {
+    "es": "Generador de letra con IA",
+    "fr": "Générateur de paroles par IA",
+    "zh-CN": "AI 歌词生成器"
+  },
+  "Listening to the audio & transcribing lyrics…": {
+    "es": "Escuchando el audio y transcribiendo la letra…",
+    "fr": "Écoute et transcription des paroles…",
+    "zh-CN": "正在听取音频并转写歌词…"
+  },
+  "AI transcribed the lyrics from the audio. Review and edit before saving — machines aren't perfect.": {
+    "es": "La IA transcribió la letra del audio. Revísala y edítala antes de guardar; puede haber errores.",
+    "fr": "L’IA a transcrit les paroles. Vérifiez et corrigez avant d’enregistrer : des erreurs sont possibles.",
+    "zh-CN": "AI 已从音频转写歌词。保存前请检查并编辑，转写可能有误。"
+  },
+  "Review and edit the generated lyrics…": {
+    "es": "Revisa y edita la letra generada…",
+    "fr": "Vérifiez et modifiez les paroles générées…",
+    "zh-CN": "检查并编辑生成的歌词…"
+  },
+  "Regenerate": {
+    "es": "Volver a generar",
+    "fr": "Régénérer",
+    "zh-CN": "重新生成"
+  },
+  "Save lyrics": {
+    "es": "Guardar letra",
+    "fr": "Enregistrer les paroles",
+    "zh-CN": "保存歌词"
+  },
+  "Choose a genre": {
+    "es": "Elige un género",
+    "fr": "Choisissez un genre",
+    "zh-CN": "选择流派"
+  },
+  "Search genres": {
+    "es": "Buscar géneros",
+    "fr": "Rechercher des genres",
+    "zh-CN": "搜索流派"
+  },
+  "Search genres, e.g. Sexy Drill…": {
+    "es": "Busca géneros, p. ej. Sexy Drill…",
+    "fr": "Recherchez un genre, par ex. Sexy Drill…",
+    "zh-CN": "搜索流派，例如 Sexy Drill…"
+  },
+  "No genres match “": {
+    "es": "Ningún género coincide con «",
+    "fr": "Aucun genre ne correspond à «",
+    "zh-CN": "没有匹配的流派：“"
+  },
+  "Lounge name updated": {
+    "es": "Nombre de la sala actualizado",
+    "fr": "Nom du salon modifié",
+    "zh-CN": "房间名称已更新"
+  },
+  "LoungeHost": {
+    "es": "Anfitrión de la sala",
+    "fr": "Hôte du salon",
+    "zh-CN": "房间主持人"
+  },
+  "Starting your lounge…": {
+    "es": "Iniciando tu sala…",
+    "fr": "Création de votre salon…",
+    "zh-CN": "正在创建房间…"
+  },
+  "Couldn't start your lounge. Try again.": {
+    "es": "No se pudo iniciar tu sala. Inténtalo de nuevo.",
+    "fr": "Impossible de créer le salon. Réessayez.",
+    "zh-CN": "无法创建房间，请重试。"
+  },
+  "Lounge name": {
+    "es": "Nombre de la sala",
+    "fr": "Nom du salon",
+    "zh-CN": "房间名称"
+  },
+  "Rename lounge": {
+    "es": "Renombrar sala",
+    "fr": "Renommer le salon",
+    "zh-CN": "重命名房间"
+  },
+  "Friends scan this to join and add songs straight to your play queue.": {
+    "es": "Tus amigos pueden escanearlo para unirse y añadir canciones a la cola.",
+    "fr": "Vos amis peuvent scanner ce code pour rejoindre le salon et ajouter des titres à la file.",
+    "zh-CN": "朋友扫描后即可加入，并直接向播放队列添加歌曲。"
+  },
+  "Copy link": {
+    "es": "Copiar enlace",
+    "fr": "Copier le lien",
+    "zh-CN": "复制链接"
+  },
+  "Join requests": {
+    "es": "Solicitudes para unirse",
+    "fr": "Demandes d’accès",
+    "zh-CN": "加入申请"
+  },
+  "No one waiting. Share your QR to invite friends.": {
+    "es": "No hay nadie esperando. Comparte tu QR para invitar amigos.",
+    "fr": "Personne n’attend. Partagez votre QR pour inviter vos amis.",
+    "zh-CN": "暂无等待者。分享二维码邀请朋友。"
+  },
+  "Approve": {
+    "es": "Aprobar",
+    "fr": "Approuver",
+    "zh-CN": "批准"
+  },
+  "Decline": {
+    "es": "Rechazar",
+    "fr": "Refuser",
+    "zh-CN": "拒绝"
+  },
+  "In the lounge": {
+    "es": "En la sala",
+    "fr": "Dans le salon",
+    "zh-CN": "房间成员"
+  },
+  "Scan to join a lounge": {
+    "es": "Escanear para unirse a una sala",
+    "fr": "Scanner pour rejoindre un salon",
+    "zh-CN": "扫码加入房间"
+  },
+  "End lounge": {
+    "es": "Cerrar sala",
+    "fr": "Fermer le salon",
+    "zh-CN": "结束房间"
+  },
+  "Playlists": {
+    "es": "Listas de reproducción",
+    "fr": "Playlists",
+    "zh-CN": "歌单"
+  },
+  "Artists": {
+    "es": "Artistas",
+    "fr": "Artistes",
+    "zh-CN": "艺人"
+  },
+  "People": {
+    "es": "Personas",
+    "fr": "Personnes",
+    "zh-CN": "用户"
+  },
+  "Tracks": {
+    "es": "Canciones",
+    "fr": "Titres",
+    "zh-CN": "歌曲"
+  },
+  "Your playlists": {
+    "es": "Tus listas",
+    "fr": "Vos playlists",
+    "zh-CN": "你的歌单"
+  },
+  "Report": {
+    "es": "Reportar",
+    "fr": "Signaler",
+    "zh-CN": "举报"
+  },
+  "Report details": {
+    "es": "Detalles del reporte",
+    "fr": "Détails du signalement",
+    "zh-CN": "举报详情"
+  },
+  "Report received": {
+    "es": "Reporte recibido",
+    "fr": "Signalement reçu",
+    "zh-CN": "已收到举报"
+  },
+  "The PUBLIC team can review it in the moderation inbox.": {
+    "es": "El equipo de PUBLIC puede revisarlo en la bandeja de moderación.",
+    "fr": "L’équipe PUBLIC pourra l’examiner dans la boîte de modération.",
+    "zh-CN": "PUBLIC 团队可在审核收件箱中查看。"
+  },
+  "Tell us about copyright infringement, harassment, spam or unsafe content.": {
+    "es": "Cuéntanos sobre infracciones de derechos, acoso, spam o contenido peligroso.",
+    "fr": "Signalez une violation des droits, du harcèlement, du spam ou du contenu dangereux.",
+    "zh-CN": "请说明侵权、骚扰、垃圾信息或不安全内容。"
+  },
+  "Report sent": {
+    "es": "Reporte enviado",
+    "fr": "Signalement envoyé",
+    "zh-CN": "举报已发送"
+  },
+  "Thanks, the PUBLIC team will review it.": {
+    "es": "Gracias, el equipo de PUBLIC lo revisará.",
+    "fr": "Merci, l’équipe PUBLIC l’examinera.",
+    "zh-CN": "谢谢，PUBLIC 团队将进行审核。"
+  },
+  "Couldn't send report": {
+    "es": "No se pudo enviar el reporte",
+    "fr": "Impossible d’envoyer le signalement",
+    "zh-CN": "无法发送举报"
+  },
+  "Report track": {
+    "es": "Reportar canción",
+    "fr": "Signaler le titre",
+    "zh-CN": "举报歌曲"
+  },
+  "Add details (optional)": {
+    "es": "Añade detalles (opcional)",
+    "fr": "Ajoutez des détails (facultatif)",
+    "zh-CN": "补充详情（可选）"
+  },
+  "Feature": {
+    "es": "Función",
+    "fr": "Fonctionnalité",
+    "zh-CN": "功能"
+  },
+  "Music": {
+    "es": "Música",
+    "fr": "Musique",
+    "zh-CN": "音乐"
+  },
+  "Improvement": {
+    "es": "Mejora",
+    "fr": "Amélioration",
+    "zh-CN": "改进"
+  },
+  "Other": {
+    "es": "Otro",
+    "fr": "Autre",
+    "zh-CN": "其他"
+  },
+  "Vote": {
+    "es": "Votar",
+    "fr": "Voter",
+    "zh-CN": "投票"
+  },
+  "By": {
+    "es": "Por",
+    "fr": "Par",
+    "zh-CN": "作者"
+  },
+  "by": {
+    "es": "por",
+    "fr": "par",
+    "zh-CN": "作者"
+  },
+  "suggestion": {
+    "es": "sugerencia",
+    "fr": "suggestion",
+    "zh-CN": "建议"
+  },
+  "Synced lyrics saved": {
+    "es": "Letra sincronizada guardada",
+    "fr": "Paroles synchronisées enregistrées",
+    "zh-CN": "同步歌词已保存"
+  },
+  "Couldn't save synced lyrics": {
+    "es": "No se pudo guardar la letra sincronizada",
+    "fr": "Impossible d’enregistrer les paroles synchronisées",
+    "zh-CN": "无法保存同步歌词"
+  },
+  "SyncLyrics": {
+    "es": "Sincronizar letra",
+    "fr": "Synchroniser les paroles",
+    "zh-CN": "同步歌词"
+  },
+  "Sync lyrics": {
+    "es": "Sincronizar letra",
+    "fr": "Synchroniser les paroles",
+    "zh-CN": "同步歌词"
+  },
+  "Choose word timing for karaoke highlighting, or line timing. One line per row. Next you'll play the track and tap through the lines to time them.": {
+    "es": "Elige sincronización por palabra o por línea. Escribe una línea por fila. Luego reproduce y pulsa para marcar los tiempos.",
+    "fr": "Choisissez une synchronisation par mot ou par ligne. Une ligne par rangée. Lancez ensuite le titre et touchez pour marquer les temps.",
+    "zh-CN": "选择逐字高亮或逐行同步，每行填写一句。接着播放歌曲并点击标记时间。"
+  },
+  "Paste or type the lyrics, one line per row…": {
+    "es": "Pega o escribe la letra, una línea por fila…",
+    "fr": "Collez ou saisissez les paroles, une ligne par rangée…",
+    "zh-CN": "粘贴或输入歌词，每句一行…"
+  },
+  "Time every word": {
+    "es": "Sincronizar cada palabra",
+    "fr": "Synchroniser chaque mot",
+    "zh-CN": "逐字同步"
+  },
+  "Start syncing": {
+    "es": "Comenzar sincronización",
+    "fr": "Commencer la synchronisation",
+    "zh-CN": "开始同步"
+  },
+  "Back to start": {
+    "es": "Volver al inicio",
+    "fr": "Revenir au début",
+    "zh-CN": "返回开头"
+  },
+  "lines timed": {
+    "es": "líneas sincronizadas",
+    "fr": "lignes synchronisées",
+    "zh-CN": "行已同步"
+  },
+  "Undo": {
+    "es": "Deshacer",
+    "fr": "Annuler",
+    "zh-CN": "撤销"
+  },
+  "Edit text": {
+    "es": "Editar texto",
+    "fr": "Modifier le texte",
+    "zh-CN": "编辑文本"
+  },
+  "No lyrics available for this track yet.": {
+    "es": "Esta canción aún no tiene letra.",
+    "fr": "Aucune parole disponible pour ce titre.",
+    "zh-CN": "这首歌曲暂无歌词。"
+  },
+  "Toggle theme": {
+    "es": "Cambiar tema",
+    "fr": "Changer le thème",
+    "zh-CN": "切换主题"
+  },
+  "Access Restricted": {
+    "es": "Acceso restringido",
+    "fr": "Accès restreint",
+    "zh-CN": "访问受限"
+  },
+  "You are not registered to use this application. Please contact the app administrator to request access.": {
+    "es": "No estás registrado para usar esta aplicación. Contacta al administrador para solicitar acceso.",
+    "fr": "Vous n’êtes pas autorisé à utiliser cette application. Contactez l’administrateur pour demander l’accès.",
+    "zh-CN": "你尚未获得此应用的访问权限，请联系管理员申请。"
+  },
+  "If you believe this is an error, you can:": {
+    "es": "Si crees que es un error, puedes:",
+    "fr": "Si vous pensez qu’il s’agit d’une erreur, vous pouvez :",
+    "zh-CN": "如果你认为这是错误，可以："
+  },
+  "Verify you are logged in with the correct account": {
+    "es": "Comprueba que usas la cuenta correcta",
+    "fr": "Vérifier que vous utilisez le bon compte",
+    "zh-CN": "确认登录了正确的账户"
+  },
+  "Contact the app administrator for access": {
+    "es": "Contacta al administrador para obtener acceso",
+    "fr": "Contacter l’administrateur pour obtenir l’accès",
+    "zh-CN": "联系管理员获取权限"
+  },
+  "Try logging out and back in again": {
+    "es": "Intenta cerrar sesión y volver a entrar",
+    "fr": "Essayer de vous déconnecter puis de vous reconnecter",
+    "zh-CN": "尝试退出后重新登录"
+  },
+  "Word-by-word timing": {
+    "es": "Sincronización palabra por palabra",
+    "fr": "Synchronisation mot par mot",
+    "zh-CN": "逐字同步"
+  },
+  "Play from the beginning, then tap Mark when each word starts. Timing must be complete before saving.": {
+    "es": "Reproduce desde el principio y pulsa Marcar al empezar cada palabra. Completa la sincronización antes de guardar.",
+    "fr": "Lancez la lecture au début et touchez Marquer à chaque mot. Terminez la synchronisation avant d’enregistrer.",
+    "zh-CN": "从头播放，每个字词开始时点击标记。完成全部同步后才能保存。"
+  },
+  "Lyrics language": {
+    "es": "Idioma de la letra",
+    "fr": "Langue des paroles",
+    "zh-CN": "歌词语言"
+  },
+  "English": {
+    "es": "Inglés",
+    "fr": "Anglais",
+    "zh-CN": "英语"
+  },
+  "Spanish": {
+    "es": "Español",
+    "fr": "Espagnol",
+    "zh-CN": "西班牙语"
+  },
+  "Other / unspecified": {
+    "es": "Otro / sin especificar",
+    "fr": "Autre / non précisé",
+    "zh-CN": "其他／未指定"
+  },
+  "Start / restart": {
+    "es": "Iniciar / reiniciar",
+    "fr": "Démarrer / recommencer",
+    "zh-CN": "开始／重新开始"
+  },
+  "Pause / resume": {
+    "es": "Pausar / continuar",
+    "fr": "Pause / reprendre",
+    "zh-CN": "暂停／继续"
+  },
+  "words": {
+    "es": "palabras",
+    "fr": "mots",
+    "zh-CN": "字词"
+  },
+  "Mark next word": {
+    "es": "Marcar siguiente palabra",
+    "fr": "Marquer le mot suivant",
+    "zh-CN": "标记下一个字词"
+  },
+  "Reject": {
+    "es": "Rechazar",
+    "fr": "Refuser",
+    "zh-CN": "拒绝"
+  },
+  "Couldn't approve track": {
+    "es": "No se pudo aprobar la canción",
+    "fr": "Impossible d’approuver le titre",
+    "zh-CN": "无法批准歌曲"
+  },
+  "Removed from PUBLIC": {
+    "es": "Quitado de PUBLIC",
+    "fr": "Retiré de PUBLIC",
+    "zh-CN": "已从 PUBLIC 下架"
+  },
+  "Couldn't remove track": {
+    "es": "No se pudo quitar la canción",
+    "fr": "Impossible de retirer le titre",
+    "zh-CN": "无法移除歌曲"
+  },
+  "Track rejected": {
+    "es": "Canción rechazada",
+    "fr": "Titre refusé",
+    "zh-CN": "歌曲已被拒绝"
+  },
+  "Couldn't reject track": {
+    "es": "No se pudo rechazar la canción",
+    "fr": "Impossible de refuser le titre",
+    "zh-CN": "无法拒绝歌曲"
+  },
+  "Upload approvals": {
+    "es": "Aprobaciones de subidas",
+    "fr": "Validation des imports",
+    "zh-CN": "上传审核"
+  },
+  "No tracks waiting for approval.": {
+    "es": "No hay canciones pendientes de aprobación.",
+    "fr": "Aucun titre en attente de validation.",
+    "zh-CN": "暂无待审核歌曲。"
+  },
+  "Live on PUBLIC": {
+    "es": "Publicado en PUBLIC",
+    "fr": "Publié sur PUBLIC",
+    "zh-CN": "已在 PUBLIC 发布"
+  },
+  "Remove a track from public without deleting it; it stays in the owner's profile and library.": {
+    "es": "Retira una canción del público sin eliminarla; queda en el perfil y biblioteca del propietario.",
+    "fr": "Retirez un titre du public sans le supprimer ; il reste dans le profil et la bibliothèque du propriétaire.",
+    "zh-CN": "将歌曲下架但不删除；歌曲仍保留在所有者的主页和音乐库中。"
+  },
+  "No tracks are live on PUBLIC right now.": {
+    "es": "No hay canciones publicadas en PUBLIC ahora.",
+    "fr": "Aucun titre n’est actuellement publié sur PUBLIC.",
+    "zh-CN": "PUBLIC 当前暂无已发布歌曲。"
+  },
+  "Banner updated": {
+    "es": "Banner actualizado",
+    "fr": "Bannière modifiée",
+    "zh-CN": "横幅已更新"
+  },
+  "Live Preview": {
+    "es": "Vista previa en vivo",
+    "fr": "Aperçu en direct",
+    "zh-CN": "实时预览"
+  },
+  "Banner Messages": {
+    "es": "Mensajes del banner",
+    "fr": "Messages de la bannière",
+    "zh-CN": "横幅消息"
+  },
+  "These scroll across the top of the app. Add one or more — they'll alternate in the banner.": {
+    "es": "Se desplazan en la parte superior. Añade uno o más; se alternarán en el banner.",
+    "fr": "Ces messages défilent en haut de l’application. Ajoutez-en plusieurs pour les faire alterner.",
+    "zh-CN": "这些消息会在应用顶部滚动。可添加一条或多条，横幅会轮流显示。"
+  },
+  "Message text": {
+    "es": "Texto del mensaje",
+    "fr": "Texte du message",
+    "zh-CN": "消息文本"
+  },
+  "Add message": {
+    "es": "Añadir mensaje",
+    "fr": "Ajouter un message",
+    "zh-CN": "添加消息"
+  },
+  "Save banner": {
+    "es": "Guardar banner",
+    "fr": "Enregistrer la bannière",
+    "zh-CN": "保存横幅"
+  },
+  "Classification failed": {
+    "es": "Falló la clasificación",
+    "fr": "Échec de la classification",
+    "zh-CN": "分类失败"
+  },
+  "Auto-classify genres": {
+    "es": "Clasificar géneros con IA",
+    "fr": "Classer les genres automatiquement",
+    "zh-CN": "自动分类流派"
+  },
+  "Runs AI genre detection on tracks still lacking a genre.": {
+    "es": "Detecta con IA el género de las canciones que aún no tienen uno.",
+    "fr": "Détecte par IA le genre des titres qui n’en ont pas encore.",
+    "zh-CN": "使用 AI 检测尚未设置流派的歌曲。"
+  },
+  "Re-classify all": {
+    "es": "Volver a clasificar todo",
+    "fr": "Tout reclasser",
+    "zh-CN": "全部重新分类"
+  },
+  "plays": {
+    "es": "reproducciones",
+    "fr": "écoutes",
+    "zh-CN": "次播放"
+  },
+  "votes": {
+    "es": "votos",
+    "fr": "votes",
+    "zh-CN": "票"
+  },
+  "Status updated": {
+    "es": "Estado actualizado",
+    "fr": "Statut modifié",
+    "zh-CN": "状态已更新"
+  },
+  "Suggestion deleted": {
+    "es": "Sugerencia eliminada",
+    "fr": "Suggestion supprimée",
+    "zh-CN": "建议已删除"
+  },
+  "No suggestions yet.": {
+    "es": "Aún no hay sugerencias.",
+    "fr": "Aucune suggestion pour le moment.",
+    "zh-CN": "暂无建议。"
+  },
+  "Delete suggestion": {
+    "es": "Eliminar sugerencia",
+    "fr": "Supprimer la suggestion",
+    "zh-CN": "删除建议"
+  },
+  "Support inbox": {
+    "es": "Bandeja de soporte",
+    "fr": "Boîte d’assistance",
+    "zh-CN": "支持收件箱"
+  },
+  "No open support requests.": {
+    "es": "No hay solicitudes de soporte abiertas.",
+    "fr": "Aucune demande d’assistance ouverte.",
+    "zh-CN": "暂无未处理的支持请求。"
+  },
+  "Support reply": {
+    "es": "Respuesta de soporte",
+    "fr": "Réponse de l’assistance",
+    "zh-CN": "支持回复"
+  },
+  "Post private reply": {
+    "es": "Enviar respuesta privada",
+    "fr": "Envoyer une réponse privée",
+    "zh-CN": "发送私密回复"
+  },
+  "The requester reads this reply using their private support receipt.": {
+    "es": "La persona leerá esta respuesta con su recibo privado de soporte.",
+    "fr": "Le demandeur lit cette réponse avec son reçu d’assistance privé.",
+    "zh-CN": "请求者凭私密支持凭证查看此回复。"
+  },
+  "Uploads are": {
+    "es": "Las subidas están",
+    "fr": "Les imports sont",
+    "zh-CN": "上传状态："
+  },
+  "admin": {
+    "es": "administrador",
+    "fr": "administrateur",
+    "zh-CN": "管理员"
+  },
+  "blocked": {
+    "es": "bloqueado",
+    "fr": "bloqué",
+    "zh-CN": "已封禁"
+  },
+  "Joined": {
+    "es": "Se unió",
+    "fr": "Inscrit",
+    "zh-CN": "加入时间"
+  },
+  "Delete user": {
+    "es": "Eliminar usuario",
+    "fr": "Supprimer l’utilisateur",
+    "zh-CN": "删除用户"
+  },
+  "Search users": {
+    "es": "Buscar usuarios",
+    "fr": "Rechercher des utilisateurs",
+    "zh-CN": "搜索用户"
+  },
+  "No users found.": {
+    "es": "No se encontraron usuarios.",
+    "fr": "Aucun utilisateur trouvé.",
+    "zh-CN": "未找到用户。"
+  },
+  "Privacy": {
+    "es": "Privacidad",
+    "fr": "Confidentialité",
+    "zh-CN": "隐私"
+  },
+  "Terms": {
+    "es": "Términos",
+    "fr": "Conditions",
+    "zh-CN": "条款"
+  },
+  "Support": {
+    "es": "Soporte",
+    "fr": "Assistance",
+    "zh-CN": "支持"
+  },
+  "Moderation inbox": {
+    "es": "Bandeja de moderación",
+    "fr": "Boîte de modération",
+    "zh-CN": "审核收件箱"
+  },
+  "Review reports promptly. Removing content is separate from marking it reviewed. User reports can be handled through the Users tab.": {
+    "es": "Revisa los reportes pronto. Quitar contenido no equivale a marcarlo revisado. Gestiona reportes de usuarios en la pestaña Usuarios.",
+    "fr": "Examinez les signalements rapidement. Retirer un contenu et le marquer comme examiné sont deux actions distinctes. Gérez les utilisateurs dans l’onglet Utilisateurs.",
+    "zh-CN": "请及时审查举报。移除内容与标记已审核是不同操作。用户举报可在用户标签页处理。"
+  },
+  "No pending reports.": {
+    "es": "No hay reportes pendientes.",
+    "fr": "Aucun signalement en attente.",
+    "zh-CN": "暂无待处理举报。"
+  },
+  "report": {
+    "es": "reporte",
+    "fr": "signalement",
+    "zh-CN": "举报"
+  },
+  "Content ID:": {
+    "es": "ID del contenido:",
+    "fr": "ID du contenu :",
+    "zh-CN": "内容 ID："
+  },
+  "Open content": {
+    "es": "Abrir contenido",
+    "fr": "Ouvrir le contenu",
+    "zh-CN": "打开内容"
+  },
+  "Dismiss": {
+    "es": "Descartar",
+    "fr": "Ignorer",
+    "zh-CN": "忽略"
+  },
+  "Mark reviewed": {
+    "es": "Marcar revisado",
+    "fr": "Marquer comme examiné",
+    "zh-CN": "标记已审核"
+  },
+  "Remove content": {
+    "es": "Quitar contenido",
+    "fr": "Retirer le contenu",
+    "zh-CN": "移除内容"
+  },
+  "Couldn't add to playlist": {
+    "es": "No se pudo añadir a la lista",
+    "fr": "Impossible d’ajouter à la playlist",
+    "zh-CN": "无法加入歌单"
+  },
+  "Add to playlist": {
+    "es": "Añadir a una lista",
+    "fr": "Ajouter à une playlist",
+    "zh-CN": "加入歌单"
+  },
+  "selected": {
+    "es": "seleccionados",
+    "fr": "sélectionnés",
+    "zh-CN": "已选择"
+  },
+  "You don't have any playlists yet — create one first from your library.": {
+    "es": "Aún no tienes listas; crea una desde tu biblioteca.",
+    "fr": "Vous n’avez pas encore de playlist ; créez-en une dans votre bibliothèque.",
+    "zh-CN": "你还没有歌单，请先在音乐库创建一个。"
+  },
+  "Organize": {
+    "es": "Organizar",
+    "fr": "Organiser",
+    "zh-CN": "整理"
+  },
+  "songs": {
+    "es": "canciones",
+    "fr": "titres",
+    "zh-CN": "首歌曲"
+  },
+  "Move saved tracks to a folder and set their tags. An empty folder returns them to the main library.": {
+    "es": "Mueve canciones guardadas a una carpeta y añade etiquetas. Deja la carpeta vacía para devolverlas a la biblioteca principal.",
+    "fr": "Déplacez les titres enregistrés dans un dossier et ajoutez des tags. Un dossier vide les renvoie à la bibliothèque principale.",
+    "zh-CN": "将已保存歌曲移入文件夹并设置标签。留空文件夹名称可将歌曲移回主音乐库。"
+  },
+  "Folder": {
+    "es": "Carpeta",
+    "fr": "Dossier",
+    "zh-CN": "文件夹"
+  },
+  "Tags, separated by commas": {
+    "es": "Etiquetas separadas por comas",
+    "fr": "Tags séparés par des virgules",
+    "zh-CN": "标签，以逗号分隔"
+  },
+  "Select": {
+    "es": "Seleccionar",
+    "fr": "Sélectionner",
+    "zh-CN": "选择"
+  },
+  "Move / tag": {
+    "es": "Mover / etiquetar",
+    "fr": "Déplacer / étiqueter",
+    "zh-CN": "移动／添加标签"
+  },
+  "Remove from library": {
+    "es": "Quitar de la biblioteca",
+    "fr": "Retirer de la bibliothèque",
+    "zh-CN": "从音乐库移除"
+  },
+  "Delete uploads": {
+    "es": "Eliminar subidas",
+    "fr": "Supprimer les imports",
+    "zh-CN": "删除上传"
+  },
+  "Add songs to playlist": {
+    "es": "Añadir canciones a la lista",
+    "fr": "Ajouter des titres à la playlist",
+    "zh-CN": "向歌单添加歌曲"
+  },
+  "Add to": {
+    "es": "Añadir a",
+    "fr": "Ajouter à",
+    "zh-CN": "添加到"
+  },
+  "Search your music and the public catalog": {
+    "es": "Busca en tu música y el catálogo público",
+    "fr": "Recherchez dans votre musique et le catalogue public",
+    "zh-CN": "搜索你的音乐和公开曲库"
+  },
+  "Search your music or PUBLIC…": {
+    "es": "Busca en tu música o PUBLIC…",
+    "fr": "Recherchez votre musique ou PUBLIC…",
+    "zh-CN": "搜索你的音乐或 PUBLIC…"
+  },
+  "Some music could not load.": {
+    "es": "No se pudo cargar parte de la música.",
+    "fr": "Certains titres n’ont pas pu charger.",
+    "zh-CN": "部分音乐无法加载。"
+  },
+  "Retry your library": {
+    "es": "Recargar tu biblioteca",
+    "fr": "Réessayer la bibliothèque",
+    "zh-CN": "重新加载音乐库"
+  },
+  "Searching PUBLIC…": {
+    "es": "Buscando en PUBLIC…",
+    "fr": "Recherche sur PUBLIC…",
+    "zh-CN": "正在搜索 PUBLIC…"
+  },
+  "New playlist": {
+    "es": "Nueva lista",
+    "fr": "Nouvelle playlist",
+    "zh-CN": "新歌单"
+  },
+  "New Playlist": {
+    "es": "Nueva lista",
+    "fr": "Nouvelle playlist",
+    "zh-CN": "新歌单"
+  },
+  "Playlist name": {
+    "es": "Nombre de la lista",
+    "fr": "Nom de la playlist",
+    "zh-CN": "歌单名称"
+  },
+  "Playlist description": {
+    "es": "Descripción de la lista",
+    "fr": "Description de la playlist",
+    "zh-CN": "歌单描述"
+  },
+  "Add a description…": {
+    "es": "Añade una descripción…",
+    "fr": "Ajoutez une description…",
+    "zh-CN": "添加描述…"
+  },
+  "Public": {
+    "es": "Público",
+    "fr": "Public",
+    "zh-CN": "公开"
+  },
+  "Anyone can find and listen": {
+    "es": "Cualquiera puede encontrarla y escucharla",
+    "fr": "Tout le monde peut la trouver et l’écouter",
+    "zh-CN": "任何人均可找到并收听"
+  },
+  "Create new playlist": {
+    "es": "Crear nueva lista",
+    "fr": "Créer une playlist",
+    "zh-CN": "创建新歌单"
+  },
+  "No playlists yet. Create one above.": {
+    "es": "Aún no hay listas. Crea una arriba.",
+    "fr": "Aucune playlist. Créez-en une ci-dessus.",
+    "zh-CN": "暂无歌单，请在上方创建。"
+  },
+  "Couldn't post your comment": {
+    "es": "No se pudo publicar tu comentario",
+    "fr": "Impossible de publier votre commentaire",
+    "zh-CN": "无法发布评论"
+  },
+  "Couldn't delete that comment": {
+    "es": "No se pudo eliminar el comentario",
+    "fr": "Impossible de supprimer ce commentaire",
+    "zh-CN": "无法删除评论"
+  },
+  "Comments": {
+    "es": "Comentarios",
+    "fr": "Commentaires",
+    "zh-CN": "评论"
+  },
+  "Leave a comment...": {
+    "es": "Deja un comentario...",
+    "fr": "Laissez un commentaire...",
+    "zh-CN": "发表评论…"
+  },
+  "Post comment": {
+    "es": "Publicar comentario",
+    "fr": "Publier le commentaire",
+    "zh-CN": "发布评论"
+  },
+  "No comments yet. Be the first to leave one!": {
+    "es": "Aún no hay comentarios. ¡Sé el primero!",
+    "fr": "Aucun commentaire. Soyez le premier !",
+    "zh-CN": "暂无评论，来发第一条吧！"
+  },
+  "comment": {
+    "es": "comentario",
+    "fr": "commentaire",
+    "zh-CN": "评论"
+  },
+  "Delete comment": {
+    "es": "Eliminar comentario",
+    "fr": "Supprimer le commentaire",
+    "zh-CN": "删除评论"
+  },
+  "Change": {
+    "es": "Cambiar",
+    "fr": "Changer",
+    "zh-CN": "更改"
+  },
+  "Remove profile song": {
+    "es": "Quitar canción del perfil",
+    "fr": "Retirer le titre du profil",
+    "zh-CN": "移除主页歌曲"
+  },
+  "+ Choose your profile song": {
+    "es": "+ Elige tu canción de perfil",
+    "fr": "+ Choisir votre titre de profil",
+    "zh-CN": "+ 选择主页歌曲"
+  },
+  "Choose profile song": {
+    "es": "Elegir canción de perfil",
+    "fr": "Choisir le titre du profil",
+    "zh-CN": "选择主页歌曲"
+  },
+  "Profile Song": {
+    "es": "Canción del perfil",
+    "fr": "Titre du profil",
+    "zh-CN": "主页歌曲"
+  },
+  "Support & copyright requests": {
+    "es": "Soporte y solicitudes de derechos",
+    "fr": "Assistance et demandes de droits",
+    "zh-CN": "支持与版权请求"
+  },
+  "Terms & community": {
+    "es": "Términos y comunidad",
+    "fr": "Conditions et communauté",
+    "zh-CN": "条款与社区"
+  },
+  "Show explicit music (18+)": {
+    "es": "Mostrar música explícita (18+)",
+    "fr": "Afficher la musique explicite (18+)",
+    "zh-CN": "显示成人音乐（18 岁以上）"
+  },
+  "Blocked users": {
+    "es": "Usuarios bloqueados",
+    "fr": "Utilisateurs bloqués",
+    "zh-CN": "已屏蔽用户"
+  },
+  "Unblock": {
+    "es": "Desbloquear",
+    "fr": "Débloquer",
+    "zh-CN": "取消屏蔽"
+  },
+  "Artist Mode": {
+    "es": "Modo artista",
+    "fr": "Mode artiste",
+    "zh-CN": "艺人模式"
+  },
+  "Show an artist badge and unlock analytics tools": {
+    "es": "Muestra una insignia de artista y desbloquea estadísticas",
+    "fr": "Affichez un badge d’artiste et accédez aux statistiques",
+    "zh-CN": "显示艺人徽章并启用数据分析工具"
+  },
+  "Artist Dashboard": {
+    "es": "Panel del artista",
+    "fr": "Tableau de bord artiste",
+    "zh-CN": "艺人控制台"
+  },
+  "Plays, likes, followers & more": {
+    "es": "Reproducciones, me gusta, seguidores y más",
+    "fr": "Écoutes, mentions J’aime, abonnés et plus",
+    "zh-CN": "播放、点赞、粉丝等"
+  },
+  "Ideas & Suggestions": {
+    "es": "Ideas y sugerencias",
+    "fr": "Idées et suggestions",
+    "zh-CN": "想法与建议"
+  },
+  "Tell us what should come next": {
+    "es": "Dinos qué debería venir después",
+    "fr": "Dites-nous ce que vous souhaitez ensuite",
+    "zh-CN": "告诉我们你期待的新功能"
+  },
+  "Song Transitions": {
+    "es": "Transiciones de canciones",
+    "fr": "Transitions entre titres",
+    "zh-CN": "歌曲过渡"
+  },
+  "Crossfade & AutoMix": {
+    "es": "Fundido cruzado y AutoMix",
+    "fr": "Fondu enchaîné et AutoMix",
+    "zh-CN": "交叉淡化与 AutoMix"
+  },
+  "Appearance": {
+    "es": "Apariencia",
+    "fr": "Apparence",
+    "zh-CN": "外观"
+  },
+  "Dark / light mode": {
+    "es": "Modo oscuro / claro",
+    "fr": "Mode sombre / clair",
+    "zh-CN": "深色／浅色模式"
+  },
+  "Delete Account": {
+    "es": "Eliminar cuenta",
+    "fr": "Supprimer le compte",
+    "zh-CN": "删除账户"
+  },
+  "Permanently remove your data": {
+    "es": "Elimina tus datos permanentemente",
+    "fr": "Supprimez définitivement vos données",
+    "zh-CN": "永久删除你的数据"
+  },
+  "Log Out": {
+    "es": "Cerrar sesión",
+    "fr": "Se déconnecter",
+    "zh-CN": "退出登录"
+  },
+  "Sign out of PUBLIC on this device": {
+    "es": "Cierra sesión de PUBLIC en este dispositivo",
+    "fr": "Déconnectez-vous de PUBLIC sur cet appareil",
+    "zh-CN": "在此设备退出 PUBLIC"
+  },
+  "What's your current mood?": {
+    "es": "¿Cómo te sientes ahora?",
+    "fr": "Quelle est votre humeur ?",
+    "zh-CN": "你现在心情如何？"
+  },
+  "Remove from Top 8": {
+    "es": "Quitar de las 8 favoritas",
+    "fr": "Retirer du Top 8",
+    "zh-CN": "从最爱 8 首中移除"
+  },
+  "Add track": {
+    "es": "Añadir canción",
+    "fr": "Ajouter un titre",
+    "zh-CN": "添加歌曲"
+  },
+  "+ Pin your top 8 tracks": {
+    "es": "+ Fija tus 8 canciones favoritas",
+    "fr": "+ Épingler vos 8 titres favoris",
+    "zh-CN": "+ 置顶最爱的 8 首歌曲"
+  },
+  "Choose your Top 8": {
+    "es": "Elige tus 8 favoritas",
+    "fr": "Choisissez votre Top 8",
+    "zh-CN": "选择最爱的 8 首"
+  },
+  "Search tracks...": {
+    "es": "Busca canciones...",
+    "fr": "Recherchez des titres...",
+    "zh-CN": "搜索歌曲…"
+  },
+  "Search…": {
+    "es": "Buscar…",
+    "fr": "Rechercher…",
+    "zh-CN": "搜索…"
+  },
+  "Search tracks, artists, people": {
+    "es": "Busca canciones, artistas, personas",
+    "fr": "Recherchez des titres, artistes, personnes",
+    "zh-CN": "搜索歌曲、艺人和用户"
+  },
+  "Clear search": {
+    "es": "Limpiar búsqueda",
+    "fr": "Effacer la recherche",
+    "zh-CN": "清空搜索"
+  },
+  "Couldn't send that. Try again.": {
+    "es": "No se pudo enviar. Inténtalo de nuevo.",
+    "fr": "Impossible d’envoyer. Réessayez.",
+    "zh-CN": "无法发送，请重试。"
+  },
+  "Sent to": {
+    "es": "Enviado a",
+    "fr": "Envoyé à",
+    "zh-CN": "发送给"
+  },
+  "Add a note (optional)": {
+    "es": "Añade una nota (opcional)",
+    "fr": "Ajoutez une note (facultatif)",
+    "zh-CN": "添加留言（可选）"
+  },
+  "Search a friend by name…": {
+    "es": "Busca a un amigo por su nombre…",
+    "fr": "Recherchez un ami par son nom…",
+    "zh-CN": "按名字搜索朋友…"
+  },
+  "Type at least two letters of your friend's name to find them.": {
+    "es": "Escribe al menos dos letras del nombre de tu amigo.",
+    "fr": "Saisissez au moins deux lettres du nom de votre ami.",
+    "zh-CN": "输入朋友名字的至少两个字符进行搜索。"
+  },
+  "No one matches that name.": {
+    "es": "Nadie coincide con ese nombre.",
+    "fr": "Personne ne correspond à ce nom.",
+    "zh-CN": "没有匹配此名字的用户。"
+  },
+  "Send to someone else": {
+    "es": "Enviar a otra persona",
+    "fr": "Envoyer à quelqu’un d’autre",
+    "zh-CN": "发送给其他人"
+  },
+  "Track options": {
+    "es": "Opciones de la canción",
+    "fr": "Options du titre",
+    "zh-CN": "歌曲选项"
+  },
+  "Sign in to do that": {
+    "es": "Inicia sesión para hacerlo",
+    "fr": "Connectez-vous pour continuer",
+    "zh-CN": "请登录后操作"
+  },
+  "Couldn't update like": {
+    "es": "No se pudo actualizar el me gusta",
+    "fr": "Impossible de modifier la mention J’aime",
+    "zh-CN": "无法更新点赞"
+  },
+  "Couldn't update follow": {
+    "es": "No se pudo actualizar el seguimiento",
+    "fr": "Impossible de modifier l’abonnement",
+    "zh-CN": "无法更新关注"
+  },
+  "The artist has not enabled downloads": {
+    "es": "El artista no ha habilitado las descargas",
+    "fr": "L’artiste n’a pas autorisé les téléchargements",
+    "zh-CN": "艺人尚未允许下载"
+  },
+  "Building your mix…": {
+    "es": "Creando tu mezcla…",
+    "fr": "Création de votre mix…",
+    "zh-CN": "正在创建你的混音…"
+  },
+  "Sharing is unavailable. Try again.": {
+    "es": "No se puede compartir ahora. Inténtalo de nuevo.",
+    "fr": "Le partage est indisponible. Réessayez.",
+    "zh-CN": "暂时无法分享，请重试。"
+  },
+  "Could not update your library": {
+    "es": "No se pudo actualizar tu biblioteca",
+    "fr": "Impossible de modifier votre bibliothèque",
+    "zh-CN": "无法更新音乐库"
+  },
+  "Go to track": {
+    "es": "Ir a la canción",
+    "fr": "Voir le titre",
+    "zh-CN": "查看歌曲"
+  },
+  "Go to artist": {
+    "es": "Ir al artista",
+    "fr": "Voir l’artiste",
+    "zh-CN": "查看艺人"
+  },
+  "Lounge": {
+    "es": "Sala",
+    "fr": "Salon",
+    "zh-CN": "音乐房间"
+  },
+  "Share": {
+    "es": "Compartir",
+    "fr": "Partager",
+    "zh-CN": "分享"
+  },
+  "Send to a friend": {
+    "es": "Enviar a un amigo",
+    "fr": "Envoyer à un ami",
+    "zh-CN": "发送给朋友"
+  },
+  "Remove from PUBLIC": {
+    "es": "Quitar de PUBLIC",
+    "fr": "Retirer de PUBLIC",
+    "zh-CN": "从 PUBLIC 下架"
+  }
+}
