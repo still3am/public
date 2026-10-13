@@ -53,12 +53,6 @@ export const base44 = new Proxy(raw,{get(target,name) {
   if(name==='auth') return {...target.auth,updateMe:async data=>{
     // Only these non-text appearance settings use the SDK's own-account route.
     // All other profile fields keep the moderated security gateway.
-    if(Object.keys(data||{}).length===1&&Object.prototype.hasOwnProperty.call(data,'featured_track_id')){
-      const id=data.featured_track_id;
-      if(typeof id!=='string'||id.length>100||(id&&!/^[a-zA-Z0-9_-]+$/.test(id)))throw new Error('Invalid profile song');
-      if(id){const rows=await target.entities.Track.filter({id},'-created_date',1);if(!rows?.length)throw new Error('Song unavailable');}
-      return target.auth.updateMe({featured_track_id:id});
-    }
     const colorKeys=['profile_background_mode','profile_background_colors'];
     const keys=Object.keys(data||{});
     if(keys.length&&keys.every(key=>colorKeys.includes(key))){

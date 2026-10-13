@@ -39,7 +39,7 @@ import TopTracks from "@/components/profile/TopTracks";
 import ProfileComments from "@/components/profile/ProfileComments";
 import FollowListModal from "@/components/profile/FollowListModal";
 import StatusMessage from "@/components/profile/StatusMessage";
-import { useCoverPalette, profileGradient } from "@/hooks/useCoverPalette";
+import { useCoverPalette,profileGradient } from "@/hooks/useCoverPalette";
 import ProfileColorPicker from "@/components/profile/ProfileColorPicker";
 import { useCoverUrl } from "@/hooks/useCoverUrl";
 
@@ -93,8 +93,8 @@ export default function Profile() {
   const [showQR, setShowQR] = useState(false);
   const [showDelete, setShowDelete] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
-  const [showColors, setShowColors] = useState(false);
-  const [backgroundDraft, setBackgroundDraft] = useState(null);
+  const [showColors,setShowColors]=useState(false);
+  const [backgroundDraft,setBackgroundDraft]=useState(null);
   const [deleteConfirm, setDeleteConfirm] = useState("");
   const [deleting, setDeleting] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -116,7 +116,7 @@ export default function Profile() {
   }, [profile?.featured_track_id]);
 
   const coverUrl = useCoverUrl(featuredCoverUrl);
-  const { colors: coverColors, loading: colorsLoading } = useCoverPalette(coverUrl);
+  const {colors:coverColors,loading:colorsLoading}=useCoverPalette(coverUrl);
 
   const loadVersion = useRef(0);
   const [loadError, setLoadError] = useState(false);
@@ -245,22 +245,6 @@ export default function Profile() {
     }
   }
 
-  const profileSongSaveLock = useRef(false);
-  async function saveProfileSong(id) {
-    if (!isOwn || profileSongSaveLock.current) return false;
-    profileSongSaveLock.current = true;
-    try {
-      await base44.auth.updateMe({ featured_track_id: id });
-      const confirmed = await base44.auth.me();
-      if ((confirmed.featured_track_id || "") !== id) return false;
-      setForm((previous) => ({ ...previous, featured_track_id: id }));
-      setProfile((previous) => ({ ...previous, featured_track_id: id }));
-      window.dispatchEvent(new Event("profiles:changed"));
-      await checkUserAuth({ silent: true });
-      return true;
-    } catch {return false;} finally {profileSongSaveLock.current = false;}
-  }
-
   async function saveProfile() {
     setSaving(true);
     try {
@@ -281,7 +265,7 @@ export default function Profile() {
       });
       // Refresh the signed-in user the rest of the app reads from, otherwise the
       // name and avatar in the sidebar keep the old values until a reload.
-      await checkUserAuth({ silent: true });
+      await checkUserAuth();
       setEditMode(false);
       setProfile((prev) => ({
         ...prev,
@@ -355,20 +339,20 @@ export default function Profile() {
 
   const displayName = profile.display_name || profile.full_name || "Unnamed";
   const avatarUrl = editMode ? form.avatar_url : profile.avatar_url;
-  const backgroundValue = { mode: profile.profile_background_mode || "auto", colors: (profile.profile_background_colors || []).filter((c) => /^#[0-9a-f]{6}$/i.test(c)).slice(0, 3) };
-  const currentBackground = backgroundDraft || backgroundValue;
-  const backgroundColors = currentBackground.mode === "off" ? [] : currentBackground.mode === "custom" ? currentBackground.colors : coverColors.slice(0, 3);
-  const closeColors = () => {setShowColors(false);setBackgroundDraft(null);};
-  const saveColors = async (value) => {
-    if (!isOwn) return;
-    const update = { profile_background_mode: value.mode, profile_background_colors: value.colors };
+  const backgroundValue={mode:profile.profile_background_mode||"auto",colors:(profile.profile_background_colors||[]).filter(c=>/^#[0-9a-f]{6}$/i.test(c)).slice(0,3)};
+  const currentBackground=backgroundDraft||backgroundValue;
+  const backgroundColors=currentBackground.mode==="off"?[]:currentBackground.mode==="custom"?currentBackground.colors:coverColors.slice(0,3);
+  const closeColors=()=>{setShowColors(false);setBackgroundDraft(null);};
+  const saveColors=async value=>{
+    if(!isOwn)return;
+    const update={profile_background_mode:value.mode,profile_background_colors:value.colors};
     await base44.auth.updateMe(update);
-    const confirmed = await base44.auth.me();
-    const actualColors = confirmed.profile_background_colors || [];
-    if (confirmed.profile_background_mode !== value.mode || actualColors.join(",").toLowerCase() !== value.colors.join(",").toLowerCase()) throw new Error("Colors have not saved yet");
-    setProfile((previous) => ({ ...previous, profile_background_mode: confirmed.profile_background_mode, profile_background_colors: actualColors }));
+    const confirmed=await base44.auth.me();
+    const actualColors=confirmed.profile_background_colors||[];
+    if(confirmed.profile_background_mode!==value.mode||actualColors.join(",").toLowerCase()!==value.colors.join(",").toLowerCase())throw new Error("Colors have not saved yet");
+    setProfile(previous=>({...previous,profile_background_mode:confirmed.profile_background_mode,profile_background_colors:actualColors}));
     window.dispatchEvent(new Event("profiles:changed"));
-    await checkUserAuth({ silent: true });
+    await checkUserAuth({silent:true});
   };
 
 
@@ -377,7 +361,7 @@ export default function Profile() {
   return (
     <PullToRefresh onRefresh={load}>
 
-    {backgroundColors.length > 0 && <div className="profile-artwork-background fixed inset-0 pointer-events-none z-0" aria-hidden="true" style={{ backgroundImage: profileGradient(backgroundColors), backgroundColor: "hsl(var(--background))" }} />}
+    {backgroundColors.length>0&&<div className="profile-artwork-background fixed inset-0 pointer-events-none z-0" aria-hidden="true" style={{backgroundImage:profileGradient(backgroundColors),backgroundColor:"hsl(var(--background))"}}/>}
     <div className="profile-page max-w-6xl mx-auto relative z-10">
       <div className="profile-overview flex flex-col md:flex-row gap-4 md:gap-6 mb-8">
       <div className="profile-identity relative rounded-2xl overflow-hidden ring-1 ring-inset ring-foreground/10 bg-card flex-1 min-w-0">
@@ -558,9 +542,9 @@ export default function Profile() {
                     <button
                       onClick={() => setEditMode(true)}
                       title="Edit profile"
-                      aria-label="Edit profile" className="w-10 h-10 md:w-12 md:h-12 rounded-full border border-border grid place-items-center">
-                      
-                    <Pencil size={16} />
+                      aria-label="Edit profile"
+                      className="profile-primary-action playlist-action">
+                    <Pencil size={16} /><span>Edit profile</span>
                   </button> :
                     <button
                       disabled={followingBusy} onClick={toggleFollow}
@@ -598,7 +582,7 @@ export default function Profile() {
                     <Settings size={16} />
                   </button>
                     }
-                  {isOwn && !editMode && <button onClick={() => setShowColors(true)} aria-label="Customize profile colors" title="Profile colors" className="w-10 h-10 rounded-full border border-border grid place-items-center"><Palette size={16} /></button>}
+                  {isOwn&&!editMode&&<button onClick={()=>setShowColors(true)} aria-label="Customize profile colors" title="Profile colors" className="w-10 h-10 rounded-full border border-border grid place-items-center"><Palette size={16}/></button>}
                   {isOwn && !editMode && profile.is_artist &&
                     <Link
                       to="/artist-dashboard"
@@ -617,7 +601,7 @@ export default function Profile() {
             trackId={editMode ? form.featured_track_id : profile?.featured_track_id}
             editMode={editMode}
             userTracks={tracks}
-            onChange={saveProfileSong}
+            onChange={(id) => setForm((f) => ({ ...f, featured_track_id: id }))}
             fillHeight />
       </div>
 
@@ -644,7 +628,7 @@ export default function Profile() {
 
       </section><aside className="profile-conversation"><ProfileComments profileId={targetId} isOwn={isOwn} /><SafetyControls type="user" id={targetId} userId={targetId} label="profile" /></aside></div>
 
-      {showColors && isOwn && <ProfileColorPicker coverUrl={coverUrl} colors={coverColors} loading={colorsLoading} value={backgroundValue} onPreview={setBackgroundDraft} onSave={saveColors} onClose={closeColors} />}
+      {showColors&&isOwn&&<ProfileColorPicker coverUrl={coverUrl} colors={coverColors} loading={colorsLoading} value={backgroundValue} onPreview={setBackgroundDraft} onSave={saveColors} onClose={closeColors}/>}
 
       {showSettings && isOwn &&
         <SettingsSheet

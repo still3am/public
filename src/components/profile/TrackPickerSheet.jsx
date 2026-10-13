@@ -8,7 +8,6 @@ export default function TrackPickerSheet({ title, selectedIds, max, tracks, onTo
   const [query, setQuery] = useState("");
   const [allTracks, setAllTracks] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [selecting,setSelecting]=useState(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -56,13 +55,12 @@ export default function TrackPickerSheet({ title, selectedIds, max, tracks, onTo
             <X size={18} />
           </button>
         </div>
-        {max===1&&<p className="text-xs text-muted-foreground mb-3">Choose any accessible song on PUBLIC. Selecting a song saves it to your profile.</p>}
         <div className="relative mb-3">
           <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-foreground/30" />
           <input
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            aria-label="Search all PUBLIC music" placeholder="Search all PUBLIC music…"
+            placeholder="Search tracks..."
             className="w-full pl-9 pr-3 py-2 rounded-lg border border-border bg-background text-sm"
           />
         </div>
@@ -78,12 +76,12 @@ export default function TrackPickerSheet({ title, selectedIds, max, tracks, onTo
           ) : (
             filtered.map((t) => {
               const selected = selectedIds.includes(t.id);
-              const canSelect = max===1 || selected || selectedIds.length < max;
+              const canSelect = selected || selectedIds.length < max;
               return (
                 <button
                   key={t.id}
-                  onClick={async()=>{if(!canSelect||selecting)return;setSelecting(true);try{await onToggle(t.id);}finally{setSelecting(false);}}}
-                  disabled={selecting||(!canSelect&&!selected)}
+                  onClick={() => canSelect && onToggle(t.id)}
+                  disabled={!canSelect && !selected}
                   className={`w-full flex items-center gap-3 p-2.5 rounded-xl text-left transition ${
                     selected ? "bg-foreground/[0.06] ring-1 ring-foreground/20" : "hover:bg-foreground/[0.03]"
                   } ${!canSelect && !selected ? "opacity-40" : ""}`}
