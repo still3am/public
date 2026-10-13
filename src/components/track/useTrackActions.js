@@ -89,13 +89,14 @@ export function useTrackActions(track, menuState, ui) {
   const startMix = async () => {
     if(mixing.current)return;mixing.current=true;
     const progress=toast({title:"Building your mix…",duration:20000});
+    let timer;
     try{
-      const more=await buildAutoQueue(track,[],20);
+      const more=await Promise.race([buildAutoQueue(track,[],20),new Promise((_,reject)=>{timer=setTimeout(()=>reject(new Error("Mix request timed out")),20000);})]);
       if(!more.length)return;
       if(isCurrent)p.setQueue([...p.queue.slice(0,p.currentIndex+1),...more]);
       else p.playTrackAt([track,...more]);
       toast({title:`Mix ready · ${more.length} songs`});
-    }catch{/* Keep the current playback and queue. */}finally{mixing.current=false;progress.dismiss();}
+    }catch{/* Keep the current playback and queue. */}finally{clearTimeout(timer);mixing.current=false;progress.dismiss();}
   };
 
   const share = async () => {

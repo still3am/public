@@ -1,5 +1,5 @@
 // Inspired by react-hot-toast library
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 
 const TOAST_LIMIT = 3;
 const TOAST_REMOVE_DELAY = 250;
@@ -144,6 +144,7 @@ function toast({ ...props }) {
 
 function useToast() {
   const [state, setState] = useState(memoryState);
+  const dismissToast=useCallback(toastId=>dispatch({type:actionTypes.DISMISS_TOAST,toastId}),[]);
 
   useEffect(() => {
     listeners.push(setState);
@@ -158,7 +159,7 @@ function useToast() {
   return {
     ...state,
     toast,
-    dismiss: (toastId) => dispatch({ type: actionTypes.DISMISS_TOAST, toastId }),
+    dismiss: dismissToast,
   };
 }
 
