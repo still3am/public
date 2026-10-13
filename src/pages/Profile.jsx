@@ -1,3 +1,4 @@
+import {shareLink} from '@/lib/shareLink';
 import LoadError from '@/components/LoadError';
 import { useRef } from 'react';
 import { readAllPages } from '@/lib/readPages';
@@ -294,32 +295,10 @@ export default function Profile({ownProfileTab=false}) {
   }
 
   async function shareProfile() {
-    const url = `${window.location.origin}/profile/${targetId}`;
-    if (navigator.share) {
-      try {
-        await navigator.share({
-          title: displayName,
-          url
-        });
-        return;
-      } catch {}
-    }
     try {
-      if (navigator.clipboard?.writeText) {
-        await navigator.clipboard.writeText(url);
-      } else {
-        const ta = document.createElement("textarea");
-        ta.value = url;
-        ta.style.position = "fixed";
-        ta.style.opacity = "0";
-        document.body.appendChild(ta);
-        ta.select();
-        document.execCommand("copy");
-        document.body.removeChild(ta);
-      }
-      setCopied(true);
-      setTimeout(() => setCopied(false), 1500);
-    } catch {}
+      const result=await shareLink({title:displayName,url:window.location.origin+'/profile/'+encodeURIComponent(targetId)});
+      if(result==='copied'){setCopied(true);setTimeout(()=>setCopied(false),1500);}
+    } catch {/* Keep the profile available if the system share controls fail. */}
   }
 
   async function confirmDelete() {

@@ -1,3 +1,4 @@
+import {copyText} from '@/lib/shareLink';
 import { useState, useRef, useEffect } from "react";
 import { usePlayer } from "@/context/PlayerContext";
 import { useColorExtraction } from "@/hooks/useColorExtraction";
@@ -198,16 +199,10 @@ export default function FullScreenPlayer({ onClose }) {
 
   async function shareNow(copyOnly = false) {
     if (!t) return;
-    const url = `${window.location.origin}/track/${t.id}`;
-    if (copyOnly) {
-      navigator.clipboard?.writeText(url);
-      return;
-    }
-    const result = await shareTrack(t);
-    if (result === "copied") {
-      setCopied(true);
-      setTimeout(() => setCopied(false), 1500);
-    }
+    try{
+      const result=copyOnly?(await copyText(window.location.origin+'/track/'+encodeURIComponent(t.id)),'copied'):await shareTrack(t);
+      if(result==='copied'){setCopied(true);setTimeout(()=>setCopied(false),1500);}
+    }catch{/* Keep the player open and leave playback running. */}
   }
 
   if (!t) return null;

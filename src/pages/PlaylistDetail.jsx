@@ -1,3 +1,4 @@
+import {shareLink} from '@/lib/shareLink';
 import {useState,useEffect,useMemo,useCallback,useRef} from 'react';
 import {useParams,useNavigate} from 'react-router-dom';
 import {base44} from '@/api/base44Client';
@@ -71,10 +72,10 @@ export default function PlaylistDetail(){
   await write(async()=>{const updated=await removePlaylistTracks(id,ids);setPlaylist(updated);setTracks(prev=>prev.filter(t=>!ids.includes(t.id)));setSelected(new Set());toast({title:'Removed from playlist'});});
  }
  async function share(){
-  const url=window.location.origin+'/playlist/'+id;
-  try{if(navigator.share)await navigator.share({title:playlist.name,url});else{await navigator.clipboard.writeText(url);toast({title:'Playlist link copied'});}}
-  catch(e){if(e.name!=='AbortError')toast({title:'Could not share this link',variant:'destructive'});}
+  try{const result=await shareLink({title:playlist.name,url:window.location.origin+'/playlist/'+encodeURIComponent(id)});if(result==='copied')toast({title:'Playlist link copied'});}
+  catch{/* Keep the playlist and playback available. */}
  }
+
  async function duplicate(){
   if(!user){nav('/login?returnTo='+encodeURIComponent(window.location.pathname));return;}
   await write(async()=>{const copy=await base44.entities.Playlist.create({name:(playlist.name+' — Copy').slice(0,160),description:playlist.description||'',cover_art_url:playlist.cover_art_url||'',is_public:false,track_ids:tracks.map(t=>t.id)});nav('/playlist/'+copy.id);toast({title:'Private playlist copy created'});});

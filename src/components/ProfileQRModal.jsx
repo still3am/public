@@ -1,3 +1,4 @@
+import {copyText,shareLink} from '@/lib/shareLink';
 import { useState } from "react";
 import { X, Share2, ScanLine } from "lucide-react";
 import QRScannerModal from "@/components/QRScannerModal";
@@ -10,25 +11,11 @@ export default function ProfileQRModal({ url, name, avatar, onClose }) {
     url
   )}`;
 
-  function copy() {
-    navigator.clipboard?.writeText(url).then(() => {
-      setCopied(true);
-      setTimeout(() => setCopied(false), 1500);
-    });
+  async function copy() {
+    try{await copyText(url);setCopied(true);setTimeout(()=>setCopied(false),1500);}catch{}
   }
-
   async function share() {
-    if (navigator.share) {
-      try {
-        await navigator.share({
-          title: `${name} on PUBLIC.`,
-          text: `Listen to ${name} on PUBLIC.`,
-          url
-        });
-      } catch {}
-    } else {
-      copy();
-    }
+    try{const result=await shareLink({title:name+' on PUBLIC.',text:'Listen to '+name+' on PUBLIC.',url});if(result==='copied'){setCopied(true);setTimeout(()=>setCopied(false),1500);}}catch{}
   }
 
   function download() {
@@ -40,12 +27,12 @@ export default function ProfileQRModal({ url, name, avatar, onClose }) {
   }
 
   return (
-    <div
+    <div role="dialog" aria-modal="true" aria-label="Profile QR code" data-public-dialog tabIndex={-1} onKeyDown={event=>{if(event.key==="Escape"){event.stopPropagation();if(!scanning)onClose();}}}
       className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm grid place-items-center p-4"
       onClick={onClose}>
       
       <div
-        className="bg-card rounded-3xl w-full max-w-sm p-6 shadow-2xl text-center relative"
+        className="bg-card rounded-3xl w-full max-w-sm p-6 shadow-2xl text-center relative max-h-[90dvh] overflow-y-auto overscroll-contain"
         onClick={(e) => e.stopPropagation()}>
         
         <button
@@ -81,11 +68,12 @@ export default function ProfileQRModal({ url, name, avatar, onClose }) {
             alt={`QR code for ${name}`}
             width="240"
             height="240"
-            className="rounded-xl" />
+            className="rounded-xl w-full max-w-[240px] h-auto" />
           
         </div>
 
         <div className="grid grid-cols-2 gap-2 mb-2">
+          <button onClick={copy} className="col-span-2 px-4 py-2.5 rounded-full border text-sm font-semibold">{copied?'Link copied':'Copy profile link'}</button>
           {navigator.share ?
           <button
             onClick={share}
