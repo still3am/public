@@ -245,7 +245,7 @@ export default function Library() {
         </>}
       </PullToRefresh>
       {showOrganize&&<BulkOrganizeSheet trackIds={selectedIds} onClose={()=>setShowOrganize(false)} onDone={()=>{setShowOrganize(false);exitEditMode();load();}}/>}
-      {showCreate&&<CreatePlaylistModal onClose={()=>setShowCreate(false)} onCreated={reloadPlaylists}/>}
+      {showCreate&&<CreatePlaylistModal onClose={()=>setShowCreate(false)} onCreated={()=>{reloadPlaylists();chooseView("playlists");}}/>}
       {showBulkPlaylist&&<BulkAddToPlaylistSheet trackIds={selectedIds} playlists={playlists} onClose={()=>setShowBulkPlaylist(false)} onDone={()=>{setShowBulkPlaylist(false);exitEditMode();}}/>}
     </div>
   );
