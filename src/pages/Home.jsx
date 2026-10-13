@@ -93,6 +93,7 @@ export default function Home() {
   const { user } = useAuth();
   const p = usePlayer();
   const loadVersion = useRef(0);
+  const followedIds=useRef({uid:user?.id,ids:new Set()});
   const [recent, setRecent] = useState(() => getRecentPlays().slice(0, 8));
   const [genreList, setGenreList] = useState([]);
   const [loadError, setLoadError] = useState("");
@@ -136,7 +137,7 @@ export default function Home() {
       setTrending(topTracks.slice(0, 10));
       setNewReleases(published.slice(0, 36));
       // Every published track by the people you follow, not just the newest page.
-      if(fols!==null)setFromFollowing(published.filter((tk) => followed.has(tk.uploader_id)).slice(0, 12));
+      if(fols!==null){followedIds.current={uid:user?.id,ids:followed};setFromFollowing(published.filter((tk) => followed.has(tk.uploader_id)).slice(0, 12));}
       // Top genres = the ones users actually listen to most, measured by
       // aggregated play_count across the most-played tracks on the platform.
       const genrePlays = {};
@@ -199,11 +200,10 @@ export default function Home() {
   useEffect(()=>{
     const update=event=>{
       const change=event.detail;if(!change||change.uid!==user?.id)return;
-      setFromFollowing(previous=>{
-        if(!change.following)return previous.filter(track=>track.uploader_id!==change.followingId);
-        const incoming=peekPublishedTracks().filter(track=>track.uploader_id===change.followingId);
-        return [...new Map([...previous,...incoming].map(track=>[track.id,track])).values()].sort((a,b)=>(b.created_date||'').localeCompare(a.created_date||'')).slice(0,12);
-      });
+      if(followedIds.current.uid!==user.id)followedIds.current={uid:user.id,ids:new Set()};
+      const followed=followedIds.current.ids;
+      if(change.following)followed.add(change.followingId);else followed.delete(change.followingId);
+      setFromFollowing(peekPublishedTracks().filter(track=>followed.has(track.uploader_id)).slice(0,12));
     };
     window.addEventListener('follows:changed',update);return()=>window.removeEventListener('follows:changed',update);
   },[user?.id]);
