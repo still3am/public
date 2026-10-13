@@ -234,7 +234,7 @@ export default function Home() {
           <div className="absolute -left-12 -bottom-20 w-64 h-64 rounded-full bg-foreground/[0.04] blur-3xl pointer-events-none" />
 
           <div className="relative w-full">
-            <p className="eyebrow mb-5 hidden">{greeting} · PUBLIC</p>
+            
             
 
             
@@ -245,7 +245,7 @@ export default function Home() {
               Your next favorite sound is here. Discover music made and shared by the community.
             </p>
             <div className="flex flex-wrap items-center gap-4 mb-1">
-              <Link to="/search" className="chrome-button text-sm hidden">Explore music <ChevronRight size={16} /></Link>
+              
               <ScoreboardTrackCount count={totalTracks} />
             </div>
             
