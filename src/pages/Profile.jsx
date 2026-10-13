@@ -100,6 +100,8 @@ export default function Profile({ownProfileTab=false}) {
   const [deleting, setDeleting] = useState(false);
   const [saving, setSaving] = useState(false);
   const [uploadingAvatar, setUploadingAvatar] = useState(false);
+  const avatarVersion=useRef(0),avatarBusy=useRef(false);
+  useEffect(()=>{avatarVersion.current++;avatarBusy.current=false;setUploadingAvatar(false);return()=>{avatarVersion.current++;};},[targetId]);
   const [followList, setFollowList] = useState(null);
 
   const [form, setForm] = useState(() => formFromProfile({}));
@@ -237,15 +239,16 @@ export default function Profile({ownProfileTab=false}) {
   }
 
   async function uploadAvatar(file) {
-    if(uploadingAvatar||!file?.type.startsWith("image/")||file.size>10*1024*1024)return;
+    if(avatarBusy.current||!isOwn||!file?.type.startsWith("image/")||file.size>10*1024*1024)return;
+    avatarBusy.current=true;const version=++avatarVersion.current;
     setUploadingAvatar(true);
     try {
       const { file_url } = await base44.integrations.Core.UploadFile({ file });
-      if(file_url)setForm((f) => ({ ...f, avatar_url: file_url }));
+      if(file_url&&version===avatarVersion.current)setForm((f) => ({ ...f, avatar_url: file_url }));
     } catch {
       // Keep the current profile image if upload does not complete.
     } finally {
-      setUploadingAvatar(false);
+      if(version===avatarVersion.current){avatarBusy.current=false;setUploadingAvatar(false);}
     }
   }
 
@@ -284,6 +287,7 @@ export default function Profile({ownProfileTab=false}) {
   }
 
   function cancelEdit() {
+    avatarVersion.current++;avatarBusy.current=false;setUploadingAvatar(false);
     // Reopening the editor must start from what is actually saved.
     if (profile) setForm(formFromProfile(profile));
     setEditMode(false);

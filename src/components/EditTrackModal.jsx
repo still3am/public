@@ -135,6 +135,7 @@ export default function EditTrackModal({ track, onClose, onSaved, onDeleted }) {
           </div>
 
           <BottomSheetSelect
+            label="Genre" disabled={saving||deleting}
             value={form.genre}
             options={GENRES}
             onChange={(v) => patch({ genre: v })}
@@ -142,6 +143,7 @@ export default function EditTrackModal({ track, onClose, onSaved, onDeleted }) {
           />
 
           <textarea
+            aria-label="Track description" disabled={saving||deleting}
             value={form.description}
             onChange={(e) => patch({ description: e.target.value })}
             placeholder="Description (optional)"
@@ -152,6 +154,7 @@ export default function EditTrackModal({ track, onClose, onSaved, onDeleted }) {
           <div className="flex flex-wrap gap-4">
             <label className="flex items-center gap-2 text-sm">
               <input
+                disabled={saving||deleting}
                 type="checkbox"
                 checked={form.explicit}
                 onChange={(e) => patch({ explicit: e.target.checked })}
@@ -160,6 +163,7 @@ export default function EditTrackModal({ track, onClose, onSaved, onDeleted }) {
             </label>
             <label className="flex items-center gap-2 text-sm">
               <input
+                disabled={saving||deleting}
                 type="checkbox"
                 checked={form.is_downloadable}
                 onChange={(e) => patch({ is_downloadable: e.target.checked })}
@@ -173,6 +177,7 @@ export default function EditTrackModal({ track, onClose, onSaved, onDeleted }) {
               Lyrics
             </div>
             <textarea
+              aria-label="Lyrics" disabled={saving||deleting}
               value={form.lyrics_text}
               onChange={(e) => patch({ lyrics_text: e.target.value })}
               placeholder="Paste full lyrics here (one line per lyric line)"
@@ -184,7 +189,7 @@ export default function EditTrackModal({ track, onClose, onSaved, onDeleted }) {
           <div className="flex justify-between pt-3 border-t border-border mt-3">
             <button
               onClick={del}
-              disabled={deleting}
+              disabled={saving||deleting}
               className="px-4 py-2 rounded-full text-sm font-semibold text-red-600 border border-red-200 flex items-center gap-2 disabled:opacity-40"
             >
               {deleting ? (
@@ -203,7 +208,7 @@ export default function EditTrackModal({ track, onClose, onSaved, onDeleted }) {
               </button>
               <button
                 onClick={save}
-                disabled={saving}
+                disabled={saving||deleting}
                 className="px-4 py-2 rounded-full bg-foreground text-background text-sm font-semibold flex items-center gap-2 disabled:opacity-40"
               >
                 {saving ? (

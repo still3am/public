@@ -6,7 +6,7 @@ import { useAuth } from "@/lib/AuthContext";
 import { Search, X, Send, Check, Loader2, Music, ChevronLeft } from "lucide-react";
 import Avatar from "@/components/Avatar";
 import { Image } from "@/components/ui/image";
-import { useToast } from "@/components/ui/use-toast";
+
 
 const MIN_QUERY = 2;
 
@@ -26,7 +26,9 @@ function nameOf(person) {
 /** @param {any} props */
 export default function SendTrackModal({ track, onClose }) {
   const { user } = useAuth();
-  const { toast } = useToast();
+  const alive=useRef(true),seed=useRef("");
+  seed.current=[user?.id,track?.id].join(":");
+  useEffect(()=>{alive.current=true;return()=>{alive.current=false;request.current++;};},[]);
   const request=useRef(0);
   const [query, setQuery] = useState("");
   const [retry,setRetry]=useState(0);
@@ -61,11 +63,13 @@ export default function SendTrackModal({ track, onClose }) {
     return () => {request.current++;clearTimeout(timer);};
   }, [query,retry,user?.id]);
 
+  useEffect(()=>{setPicked(null);setSent(null);setNote("");setQuery("");setResults([]);},[track?.id,user?.id]);
+
   if (!track) return null;
 
   const send = async () => {
     if (!picked || !user?.id || sendingRef.current) return;
-    sendingRef.current=true;setSending(true);
+    sendingRef.current=true;setSending(true);const started=seed.current;
     try {
       await base44.entities.Notification.create({
         user_id: picked.id,
@@ -74,11 +78,11 @@ export default function SendTrackModal({ track, onClose }) {
         track_id: track.id,
         comment: note.trim(),
       });
-      setSent({ person: picked, note: note.trim() });
+      if(alive.current&&seed.current===started)setSent({ person: picked, note: note.trim() });
     } catch {
-      toast({ title: "Couldn't send that. Try again.", variant: "destructive" });
+      // Keep the recipient and note ready for another attempt.
     } finally {
-      sendingRef.current=false;setSending(false);
+      sendingRef.current=false;if(alive.current)setSending(false);
     }
   };
 
@@ -91,10 +95,10 @@ export default function SendTrackModal({ track, onClose }) {
   };
 
   return createPortal(
-    <div className="fixed inset-0 z-[110] flex items-end md:items-center justify-center">
+    <div role="dialog" aria-modal="true" aria-label="Send song to a friend" data-public-dialog tabIndex={-1} onKeyDown={event=>{if(event.key==="Escape"){event.stopPropagation();onClose();}}} className="fixed inset-0 z-[110] flex items-end md:items-center justify-center">
       <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={onClose} />
       <div
-        className="relative w-full md:max-w-md bg-card border rounded-t-3xl md:rounded-3xl p-5 max-h-[85vh] flex flex-col"
+        className="relative w-full md:max-w-md bg-card border rounded-t-3xl md:rounded-3xl p-5 max-h-[85dvh] flex flex-col overflow-y-auto overscroll-contain"
         style={{ paddingBottom: "calc(1.25rem + env(safe-area-inset-bottom))" }}
       >
         <div className="md:hidden w-10 h-1 bg-foreground/20 rounded-full mx-auto mb-4" />
@@ -152,6 +156,7 @@ export default function SendTrackModal({ track, onClose }) {
               <Avatar user={picked} size={40} />
               <span className="flex-1 min-w-0 text-sm font-semibold truncate">{nameOf(picked)}</span>
               <button
+                disabled={sending}
                 onClick={() => setPicked(null)}
                 className="inline-flex items-center gap-1 text-xs font-semibold text-muted-foreground hover:text-foreground transition shrink-0"
               >
@@ -162,6 +167,7 @@ export default function SendTrackModal({ track, onClose }) {
             <textarea
               autoFocus
               rows={3}
+              aria-label="Optional note" disabled={sending}
               value={note}
               onChange={(e) => setNote(e.target.value)}
               maxLength={200}
@@ -175,6 +181,7 @@ export default function SendTrackModal({ track, onClose }) {
               <Search size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-foreground/40" />
               <input
                 autoFocus
+                aria-label="Search friends"
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 placeholder="Search a friend by name…"
@@ -191,7 +198,7 @@ export default function SendTrackModal({ track, onClose }) {
                 <p className="text-center text-xs text-foreground/50 py-8 px-4">
                   Type at least two letters of your friend's name to find them.
                 </p>
-              ) : results.length === 0 ? (
+              ) : results.length === 0 && !searchFailed ? (
                 <p className="text-center text-xs text-foreground/50 py-8 px-4">
                   No one matches that name.
                 </p>

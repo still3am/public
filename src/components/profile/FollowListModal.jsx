@@ -1,5 +1,5 @@
 import {createPortal} from "react-dom";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import { getUsersByIds } from "@/lib/userLookup";
@@ -13,9 +13,14 @@ export default function FollowListModal({ userId, type, onClose }) {
   const [loading, setLoading] = useState(true);
   const [error,setError]=useState(false);
   const [retry,setRetry]=useState(0);
+  const [query,setQuery]=useState("");
+  const identity=useRef("");
+  const [partial,setPartial]=useState(false);
 
   useEffect(() => {
     let cancelled = false;
+    const key=[userId,type].join(":");
+    if(identity.current!==key){identity.current=key;setUsers([]);setQuery("");setPartial(false);}
     async function load() {
       setLoading(true);setError(false);
       try {
@@ -36,12 +41,13 @@ export default function FollowListModal({ userId, type, onClose }) {
             ? follows.map((f) => f.follower_id)
             : follows.map((f) => f.following_id);
         if (ids.length === 0) {
-          if (!cancelled) setUsers([]);
+          if (!cancelled){setUsers([]);setPartial(false);}
           return;
         }
-        const details = await getUsersByIds(ids);
+        const uniqueIds=[...new Set(ids.filter(Boolean))];
+        const details = await getUsersByIds(uniqueIds);
         if(ids.length&&!details.length)throw Error("Profile details could not be resolved");
-        if (!cancelled) setUsers(details);
+        if (!cancelled){const byId=new Map(details.map(person=>[person.id,person]));setUsers(uniqueIds.map(id=>byId.get(id)).filter(Boolean));setPartial(details.length<uniqueIds.length);}
       } catch {if(!cancelled)setError(true);} finally {
         if (!cancelled) setLoading(false);
       }
@@ -52,13 +58,15 @@ export default function FollowListModal({ userId, type, onClose }) {
     };
   }, [userId, type,retry]);
 
+  const visibleUsers=users.filter(person=>[person.display_name,person.full_name,person.bio].join(" ").toLowerCase().includes(query.trim().toLowerCase()));
+
   return createPortal(
     <div role="dialog" aria-modal="true" aria-label={type==="followers"?"Followers":"Following"} data-public-dialog tabIndex={-1} onKeyDown={e=>{if(e.key==="Escape")onClose();}}
       className="fixed inset-0 z-[80] bg-black/50 backdrop-blur-sm flex items-end md:items-center justify-center p-0 md:p-4"
       onClick={onClose}
     >
       <div
-        className="bg-card w-full max-w-md rounded-t-2xl md:rounded-2xl shadow-2xl flex flex-col max-h-[80vh] md:max-h-[70vh]"
+        className="bg-card w-full max-w-md rounded-t-2xl md:rounded-2xl shadow-2xl flex flex-col max-h-[85dvh] md:max-h-[70vh] pb-[env(safe-area-inset-bottom)]"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-center justify-between px-5 py-4 border-b border-border">
@@ -72,9 +80,10 @@ export default function FollowListModal({ userId, type, onClose }) {
             <X size={18} />
           </button>
         </div>
-        <div className="overflow-y-auto flex-1">
-          {error&&<div className="p-5 text-sm"><button className="underline font-semibold" onClick={()=>setRetry(n=>n+1)}>Refresh list</button></div>}
-          {loading ? (
+        {users.length>5&&<div className="px-5 py-3 border-b border-border"><input aria-label="Filter this follow list" value={query} onChange={event=>setQuery(event.target.value)} placeholder="Find someone in this list" className="w-full rounded-xl bg-foreground/5 px-3 py-2.5 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-foreground/30" /></div>}
+        <div className="overflow-y-auto overscroll-contain flex-1">
+          {(error||partial)&&<div className="p-5 text-sm"><button className="underline font-semibold" onClick={()=>setRetry(n=>n+1)}>Refresh list</button></div>}
+          {loading&&!users.length ? (
             <div className="py-16 grid place-items-center">
               <Loader2 className="animate-spin text-foreground/30" />
             </div>
@@ -86,7 +95,8 @@ export default function FollowListModal({ userId, type, onClose }) {
             </div>
           ) : (
             <div className="divide-y divide-border">
-              {users.map((u) => (
+              {!visibleUsers.length&&query.trim()&&<p className="px-5 py-8 text-center text-sm text-muted-foreground">No matches in this list.</p>}
+              {visibleUsers.map((u) => (
                 <Link
                   key={u.id}
                   to={`/profile/${u.id}`}
