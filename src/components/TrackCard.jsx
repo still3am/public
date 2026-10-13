@@ -106,6 +106,7 @@ export default function TrackCard({ track, selectable = false, selected = false,
           <button
             onClick={handlePlay}
             aria-label="Play"
+            style={{minHeight:0}}
             className={`absolute bottom-2 right-2 w-8 h-8 md:bottom-2.5 md:right-2.5 md:w-12 md:h-12 min-h-0 rounded-full grid place-items-center shadow-xl
               transition-all duration-300 active:scale-90 bg-foreground text-background
               opacity-100 md:opacity-0 md:translate-y-2 md:group-hover:opacity-100 md:group-hover:translate-y-0 md:group-focus-within:opacity-100 hover:scale-105`}
