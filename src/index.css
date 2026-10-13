@@ -790,3 +790,14 @@ html:not(.dark) .profile-page .profile-identity,html:not(.dark) .profile-page .p
  .home-page .home-section{margin-bottom:28px;}
  .home-page .home-section h2{font-size:18px;}
 }
+
+/* Searchable collections share one compact layout in both themes. */
+.collection-tools{display:flex;align-items:center;flex-wrap:wrap;gap:.65rem;margin-bottom:1.25rem;min-width:0;}
+.collection-tools input,.collection-tools select{min-height:44px;border:1px solid hsl(var(--border));border-radius:14px;background:hsl(var(--card));color:hsl(var(--foreground));padding:.65rem .9rem;min-width:0;}
+.collection-tools input{flex:1 1 220px;}
+.collection-tools select{flex:0 1 auto;max-width:100%;}
+.collection-empty{text-align:center;padding:2.5rem 1rem;color:hsl(var(--muted-foreground));}
+.collection-empty h2{font-weight:700;color:hsl(var(--foreground));margin-bottom:.35rem;}
+.collection-empty .playlist-action{margin-top:1rem;}
+.queue-library-picker input{background:hsl(var(--background));color:hsl(var(--foreground));}
+@media(max-width:640px){.collection-tools{gap:.5rem;}.collection-tools input{flex-basis:100%;width:100%;}.collection-tools select{flex:1 1 140px;}.collection-tools button{min-height:44px;}}
