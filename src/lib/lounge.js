@@ -23,16 +23,12 @@ export function qrImageUrl(data, size = 360) {
 }
 
 export async function fetchSessionByCode(code) {
-  try {
-    const list = await base44.entities.LoungeSession.filter(
+  const list = await base44.entities.LoungeSession.filter(
       { code, is_active: true },
       "-created_date",
       5
     );
-    return (list && list[0]) || null;
-  } catch {
-    return null;
-  }
+  return (list && list[0]) || null;
 }
 
 export function parseTrack(str) {

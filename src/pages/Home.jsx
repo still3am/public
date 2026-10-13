@@ -238,11 +238,11 @@ export default function Home() {
             
 
             
-            <h1 className="text-[32px] sm:text-4xl md:text-5xl font-bold tracking-tight mb-4 max-w-2xl leading-[1.08] break-words text-left">
+            <h1 className="text-[36px] sm:text-5xl md:text-6xl font-bold tracking-tight mb-4 max-w-2xl leading-[1.08] break-words text-left">
               {user?.display_name || user?.full_name ? `Hey, ${user.display_name || user.full_name}.` : "Welcome to PUBLIC."}
             </h1>
             <p className="text-muted-foreground max-w-md text-sm md:text-base leading-relaxed mb-6 text-left">
-              Your next favorite sound is here. Discover music made and shared by the community.
+              Independent music. Open to everyone. Find your next favorite sound.
             </p>
             <div className="flex flex-wrap items-center gap-4 mb-1">
               
@@ -263,6 +263,12 @@ export default function Home() {
           </div>
         </div>
 
+        <nav aria-label="Explore music genres" className="discovery-genres">
+          <Link to="/search" className="chip active">All sounds</Link>
+          {byGenre.filter(s=>s.tracks.length).map(s=><Link key={s.genre} to={`/search?genre=${encodeURIComponent(s.genre)}`} className="chip">{s.genre}</Link>)}
+          <Link to="/recent" className="chip">Fresh releases</Link>
+          <Link to="/library" className="chip">Your collection</Link>
+        </nav>
         <Section title="Trending" icon={TrendingUp} seeAllTo="/top">
           {trending.length >= 3 ?
           <>

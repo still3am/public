@@ -306,3 +306,18 @@ h1,h2,h3 { text-wrap: balance; }
 .playlist-song-item .song-row{padding-inline:.25rem;gap:.6rem;}.playlist-song-item .song-row>div:first-child{display:none;}
 @media(min-width:768px){.playlist-hero{flex-direction:row;align-items:end;padding:2rem;gap:2rem;}.playlist-cover{width:224px;height:224px;margin-inline:0;}.playlist-picker{inset:6vh max(8vw,calc((100vw - 800px)/2));border-radius:24px;border:1px solid #ffffff30;box-shadow:0 0 0 100vmax rgb(0 0 0/.65);max-height:88vh;}.playlist-row-actions{opacity:.65;}.playlist-song-item:hover .playlist-row-actions,.playlist-song-item:focus-within .playlist-row-actions{opacity:1;}}
 @media(max-width:639px){.playlist-song-item .song-row>div:nth-child(2){width:36px;height:36px;}.playlist-row-actions button{min-width:28px;}.playlist-song-item{padding-inline:.4rem;gap:.35rem;}}
+
+/* Editorial rhythm, shared by the desktop and pocket experience. */
+.app-content section{scroll-margin-top:2rem;}
+.app-content h2{letter-spacing:-.035em;}
+.discovery-genres{display:flex;gap:.6rem;overflow-x:auto;padding:0 0 1.75rem;margin-top:-1rem;scrollbar-width:none;}
+.discovery-genres .chip{min-height:40px;padding:.6rem 1rem;}
+.lounge-layout{max-width:1120px;}
+.lounge-hero{padding:clamp(1.5rem,4vw,3rem);margin-bottom:1.5rem;border:1px solid hsl(var(--border));border-radius:24px;background:linear-gradient(135deg,hsl(var(--card)),hsl(var(--muted)/.6));}
+.lounge-hero h1{font-size:clamp(2rem,5vw,3.5rem);letter-spacing:-.05em;line-height:1.08;font-weight:750;max-width:650px;margin:.9rem 0;}
+.lounge-hero>p{max-width:34rem;color:hsl(var(--muted-foreground));font-size:14px;line-height:1.7;}
+.lounge-columns{display:grid;gap:1.5rem;}
+.lounge-community{border:1px solid hsl(var(--border));border-radius:20px;padding:1.5rem;align-self:start;background:hsl(var(--card));}
+.lounge-columns>div>div{padding:1rem;}
+@media(min-width:900px){.lounge-columns{grid-template-columns:minmax(0,1fr) 300px;}.lounge-picker{inset:6vh max(8vw,calc((100vw - 800px)/2));border-radius:24px;box-shadow:0 0 0 100vmax rgb(0 0 0/.65);border:1px solid #ffffff30;}}
+@media(max-width:639px){.lounge-hero{border-radius:20px;}.lounge-columns{gap:1rem;}.lounge-community{padding:1.25rem;}}

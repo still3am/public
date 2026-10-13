@@ -1,5 +1,6 @@
+import { getPublishedTracks } from "@/lib/catalogCache";
 import LoadError from '@/components/LoadError';
-import { useEffect, useState, useCallback, useMemo } from "react";
+import { useEffect, useState, useCallback, useMemo, useRef } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import { useAuth } from "@/lib/AuthContext";
@@ -16,7 +17,7 @@ import {
   X,
   ListMusic,
   Search,
-  Clock } from
+  Clock, Copy, Users, Music } from
 "lucide-react";
 
 export default function Lounge() {
@@ -117,7 +118,7 @@ export default function Lounge() {
   if(error)return <LoadError onRetry={()=>setRetry(n=>n+1)}/>;
   return (
     <div className="min-h-screen pb-10">
-      <div className="max-w-xl mx-auto">
+      <div className="lounge-layout mx-auto">
         {loading ?
         <div className="flex justify-center py-24">
             <Loader2 className="animate-spin text-foreground/50" />
@@ -163,32 +164,26 @@ export default function Lounge() {
           </div> :
 
         <>
-            
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-          
-
+            <header className="lounge-hero">
+              <div className="eyebrow flex items-center gap-2"><Speaker size={14}/> PUBLIC Lounge</div>
+              <h1>{session.name || "Good music. Shared company."}</h1>
+              <p>A shared queue, selected by everyone in the room. Hosted by {session.host_name || "Host"}.</p>
+              <div className="flex flex-wrap items-center gap-3 mt-5">
+                <button className="chrome-button" onClick={async()=>{try{await navigator.clipboard.writeText(window.location.href);toast({title:"Lounge invite copied"});}catch{toast({title:"Copy the page URL to invite someone",variant:"destructive"});}}}><Copy size={15}/> Copy invite</button>
+                <span className="chip"><Users size={14}/>{members.filter(m=>m.status==="approved").length} approved</span>
+                <span className="chip">Code {session.code}</span>
+              </div>
+            </header>
+            <div className="lounge-columns">
+            <div>
             <LoungeQueueList sessionId={session.id} isHost={isHost} />
 
+            </div>
+            <aside className="lounge-community">
+              <div className="eyebrow">In this room</div>
+              <h2 className="text-xl font-bold mt-2 mb-4">The listening circle</h2>
+              <div className="space-y-3">{members.filter(m=>m.status==="approved").map(m=><div key={m.id} className="flex items-center gap-3"><div className="w-9 h-9 rounded-full bg-muted grid place-items-center"><Users size={15}/></div><div className="min-w-0"><p className="text-sm font-semibold truncate">{m.name || "Listener"}</p><p className="text-xs text-muted-foreground">{m.role==="host"?"Host":"Guest"}</p></div></div>)}</div>
+              <p className="text-sm text-muted-foreground leading-relaxed mt-5 mb-4">Add something you love. The host controls playback; everyone helps shape the queue.</p>
             {/* Add to the shared queue */}
             <button
             onClick={() => setPickerOpen(true)}
@@ -201,6 +196,7 @@ export default function Lounge() {
               Lounge code <span className="font-bold tracking-widest">{session?.code}</span>
               {!isHost && ` · hosted by ${session?.host_name || "Host"}`}
             </div>
+            </aside></div>
           </>
         }
       </div>
@@ -231,9 +227,15 @@ function GuestQueuePicker({ sessionId, user, onClose, onAdded }) {
   const [tracks, setTracks] = useState(null);
   const [query, setQuery] = useState("");
   const [justAdded, setJustAdded] = useState(new Set());
+  const addingRef=useRef(new Set());
+  const [adding,setAdding]=useState(new Set());
+  const [pickerError,setPickerError]=useState(false);
 
   const load = useCallback(async () => {
+    setPickerError(false);
     const recent = getRecentPlays().slice(0, 30);
+    let published=[];
+    try{published=await getPublishedTracks();}catch{setPickerError(true);}
     let libTracks = [];
     try {
       if (libraryIds.length) {
@@ -245,7 +247,7 @@ function GuestQueuePicker({ sessionId, user, onClose, onAdded }) {
       }
     } catch {}
     const byId = new Map();
-    [...(libTracks || []), ...recent].forEach((t) => t && byId.set(t.id, t));
+    [...(libTracks || []), ...recent, ...published].forEach((t) => t && byId.set(t.id, t));
     setTracks([...byId.values()]);
   }, [libraryIds.join(",")]);
 
@@ -266,6 +268,8 @@ function GuestQueuePicker({ sessionId, user, onClose, onAdded }) {
   }, [tracks, query]);
 
   const add = async (t) => {
+    if(addingRef.current.has(t.id)||justAdded.has(t.id))return;
+    addingRef.current.add(t.id);setAdding(new Set(addingRef.current));
     const slim = {
       id: t.id,
       title: t.title,
@@ -290,11 +294,11 @@ function GuestQueuePicker({ sessionId, user, onClose, onAdded }) {
       onAdded?.(true);
     } catch (e) {
       onAdded?.(false);
-    }
+    } finally {addingRef.current.delete(t.id);setAdding(new Set(addingRef.current));}
   };
 
   return (
-    <div className="fixed inset-0 z-[70] bg-black/85 backdrop-blur-xl flex flex-col animate-[fadeIn_.2s_ease-out]">
+    <div role="dialog" aria-modal="true" aria-label="Add music to lounge" className="lounge-picker fixed inset-0 z-[70] bg-black/85 backdrop-blur-xl flex flex-col animate-[fadeIn_.2s_ease-out]">
       <div className="flex items-center justify-between px-5 pt-8 pb-3 shrink-0 text-white">
         <div className="flex items-center gap-2 min-w-0">
           <ListMusic size={20} className="opacity-80 shrink-0" />
@@ -310,12 +314,13 @@ function GuestQueuePicker({ sessionId, user, onClose, onAdded }) {
           <input
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="Search your library & recently played"
+            autoFocus placeholder="Search PUBLIC, your library & recent plays"
             className="w-full pl-10 pr-3 py-2.5 rounded-full bg-white/10 border border-white/10 text-sm placeholder:text-white/40 focus:outline-none focus:bg-white/15 transition text-white" />
           
         </div>
       </div>
       <div className="flex-1 min-h-0 overflow-y-auto px-3 pb-10 text-white">
+        {pickerError&&<button onClick={load} className="p-3 text-sm underline">PUBLIC catalog unavailable. Tap to retry.</button>}
         {!tracks ?
         <div className="flex justify-center py-16">
             <Loader2 className="animate-spin text-white/50" />
@@ -339,13 +344,13 @@ function GuestQueuePicker({ sessionId, user, onClose, onAdded }) {
                   </div>
                   <button
                   onClick={() => add(t)}
-                  disabled={added}
+                  disabled={added || adding.has(t.id)}
                   className={`shrink-0 w-9 h-9 rounded-full grid place-items-center active:scale-90 transition ${
-                  added ? "bg-green-500/30 text-green-300" : "bg-white/10 hover:bg-white/20"}`
+                  added ? "bg-white/25 text-white" : "bg-white/10 hover:bg-white/20"}`
                   }
                   aria-label={added ? "Added" : "Add"}>
                   
-                    {added ? <Check size={16} /> : <Plus size={16} />}
+                    {adding.has(t.id)?<Loader2 size={16} className="animate-spin"/>:added ? <Check size={16} /> : <Plus size={16} />}
                   </button>
                 </div>);
 
@@ -364,18 +369,20 @@ function LoungeQueueList({ sessionId, isHost }) {
   const { toast } = useToast();
   const [items, setItems] = useState([]);
   const [loadingQ, setLoadingQ] = useState(true);
+  const [queueError,setQueueError]=useState(false);
   const [removingId, setRemovingId] = useState("");
 
   const load = useCallback(async () => {
     try {
+      setQueueError(false);
       const list = await base44.entities.LoungeQueueItem.filter(
         { session_id: sessionId },
         "created_date",
-        100
+        1000
       );
       setItems(list || []);
     } catch {
-      setItems([]);
+      setQueueError(true);
     } finally {
       setLoadingQ(false);
     }
@@ -402,6 +409,7 @@ function LoungeQueueList({ sessionId, isHost }) {
     setRemovingId(rowId);
     try {
       await base44.functions.invoke("loungeRemoveQueueItem", { queue_item_id: rowId });
+      await load();
       // The subscription will refresh the list across all devices — no local
       // optimisation needed.
     } catch {
@@ -416,6 +424,7 @@ function LoungeQueueList({ sessionId, isHost }) {
       <div className="flex items-center gap-2 text-[11px] uppercase tracking-wider text-foreground/40 mb-2">
         <ListMusic size={12} /> Up next {parsed.length ? `· ${parsed.length}` : ""}
       </div>
+      {queueError&&<div role="alert" className="text-sm p-3">Queue could not refresh. <button onClick={load} className="underline">Retry</button></div>}
       {loadingQ ?
       <div className="flex justify-center py-3">
           <Loader2 size={15} className="animate-spin text-foreground/40" />
@@ -425,7 +434,7 @@ function LoungeQueueList({ sessionId, isHost }) {
           The queue is empty. Add a song and it shows up here for everyone.
         </p> :
 
-      <div className="space-y-1 max-h-64 overflow-y-auto no-scrollbar">
+      <div className="space-y-1 max-h-[65vh] overflow-y-auto no-scrollbar">
           {parsed.map((t, i) => {
           const playing = p.currentTrack?.id === t.id;
           return (
@@ -449,7 +458,7 @@ function LoungeQueueList({ sessionId, isHost }) {
                 <div className="flex items-center gap-1 shrink-0">
                   {isHost &&
                 <button
-                  onClick={() => p.playTrackAt([t])}
+                  onClick={() => p.playTrackAt(parsed.map(x=>({...x,_loungeRowId:x._row.id})),i)}
                   className="shrink-0 text-xs font-semibold px-3 py-1.5 rounded-full bg-foreground text-background active:scale-90 transition">
                   
                       {playing ? "Now" : "Play"}
