@@ -1,3 +1,5 @@
+import {readAllPages} from "@/lib/readPages";
+import {coalesce} from "@/lib/coalesce";
 import { useEffect, useState, useRef, useCallback } from "react";
 import { base44 } from "@/api/base44Client";
 import { useAuth } from "@/lib/AuthContext";
@@ -70,6 +72,7 @@ export function useLoungeHost() {
         "-created_date",
         5
       );
+      if(accountRef.current!==uid)return null;
       let active = own && own[0];
       if (!active) {
         const code = generateLoungeCode();
@@ -85,6 +88,7 @@ export function useLoungeHost() {
           current_track: "",
           sync_anchor_at: new Date().toISOString(),
         });
+        if(accountRef.current!==uid)return null;
         // The host is a member of their own lounge.
         try {
           await base44.entities.LoungeMember.create({
@@ -179,9 +183,9 @@ export function useLoungeHost() {
 
   useEffect(()=>{
     if(!session?.id)return;
-    let active=true;
-    const load=async()=>{try{
-      const rows=await base44.entities.LoungeQueueItem.filter({session_id:session.id},'created_date',1000);
+    let active=true,reading=false;
+    const load=async()=>{if(!active||reading)return;reading=true;try{
+      const rows=await readAllPages(opts=>base44.entities.LoungeQueueItem.filter({session_id:session.id},{sort:"created_date",...opts}));
       if(!active)return;
       const player=pRef.current;
       for(const it of rows){if(addedRef.current.has(it.id))continue;let track;try{track=JSON.parse(it.track);}catch{continue;}
@@ -189,9 +193,9 @@ export function useLoungeHost() {
       const live=new Set(rows.map(r=>r.id));
       for(let i=player.queue.length-1;i>=0;i--){const t=player.queue[i];if(t._loungeRowId&&!live.has(t._loungeRowId))player.removeFromQueue(i);}
       persistAdded();
-    }catch{}}
-    load();const timer=setInterval(load,8000);let unsub;try{unsub=base44.entities.LoungeQueueItem.subscribe(()=>load());}catch{}
-    return()=>{active=false;clearInterval(timer);if(unsub)unsub();};
+    }catch{}finally{reading=false;}}
+    load();const reload=coalesce(load,400),timer=setInterval(reload,8000);let unsub;try{unsub=base44.entities.LoungeQueueItem.subscribe(reload);}catch{}
+    return()=>{active=false;reload.cancel();clearInterval(timer);if(unsub)unsub();};
   },[session?.id]);
 
   // Cleanup tracked "added" ids when the session changes / ends so a new lounge
