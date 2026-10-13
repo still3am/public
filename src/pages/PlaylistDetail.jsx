@@ -19,7 +19,7 @@ export default function PlaylistDetail(){
  const [editing,setEditing]=useState(false),[showAdd,setShowAdd]=useState(false),[busy,setBusy]=useState(false),[saved,setSaved]=useState(false);
  const [query,setQuery]=useState(''),[sort,setSort]=useState('custom'),[selected,setSelected]=useState(new Set());
  const [form,setForm]=useState({name:'',description:'',is_public:true}),[coverFile,setCoverFile]=useState(null),[preview,setPreview]=useState('');
- const version=useRef(0),writeLock=useRef(false),imageMemo=useRef(null);
+ const version=useRef(0),writeLock=useRef(false),imageMemo=useRef(null),baseline=useRef(null);
  const load=useCallback(async()=>{
   const v=++version.current;setLoading(true);setError(false);
   try{
@@ -27,7 +27,7 @@ export default function PlaylistDetail(){
    for(let start=0;start<ids.length;start+=200)list.push(...await readAllPages(opts=>base44.entities.Track.filter({id:{$in:ids.slice(start,start+200)}},{...opts})));
    if(v!==version.current)return;
    const order=new Map(ids.map((id,i)=>[id,i]));list.sort((a,b)=>order.get(a.id)-order.get(b.id));
-   setPlaylist(pl);setTracks(list);setForm({name:pl.name||'',description:pl.description||'',is_public:!!pl.is_public});
+   setPlaylist(pl);setTracks(list);baseline.current=pl;setForm({name:pl.name||'',description:pl.description||'',is_public:!!pl.is_public});
   }catch{if(v===version.current)setError(true);}finally{if(v===version.current)setLoading(false);}
  },[id]);
  useEffect(()=>{setSelected(new Set());setQuery('');setSort('custom');setSaved(false);load();return()=>{version.current++;};},[load]);
@@ -58,7 +58,10 @@ export default function PlaylistDetail(){
     if(imageMemo.current?.file!==coverFile){const r=await base44.integrations.Core.UploadFile({file:coverFile});if(!r.file_url)throw Error('Artwork did not upload.');imageMemo.current={file:coverFile,url:r.file_url};}
     url=imageMemo.current.url;
    }
-   const result=await base44.entities.Playlist.update(id,{name:form.name.trim(),description:form.description.trim(),is_public:form.is_public,cover_art_url:url});
+   const original=baseline.current||playlist,values={name:form.name.trim(),description:form.description.trim(),is_public:form.is_public};
+   const payload=Object.fromEntries(Object.entries(values).filter(([key,value])=>value!==(key==='is_public'?!!original[key]:original[key]||'')));
+   if(coverFile)payload.cover_art_url=url;
+   const result=Object.keys(payload).length?await base44.entities.Playlist.update(id,payload):playlist;
    setPlaylist(result);setEditing(false);setPreview('');setCoverFile(null);toast({title:'Playlist updated'});
   });
  }
@@ -82,22 +85,23 @@ export default function PlaylistDetail(){
  }
  async function toggleSaved(){
   if(!user){nav('/login?returnTo='+encodeURIComponent(window.location.pathname));return;}
-  await write(async()=>{if(saved)await base44.entities.SavedPlaylist.deleteMany({user_id:user.id,playlist_id:id});else await base44.entities.SavedPlaylist.create({user_id:user.id,playlist_id:id});setSaved(!saved);toast({title:saved?'Removed from your library':'Added to your library'});});
+  await write(async()=>{if(saved)await base44.entities.SavedPlaylist.deleteMany({user_id:user.id,playlist_id:id});else{const existing=await base44.entities.SavedPlaylist.filter({user_id:user.id,playlist_id:id},'-created_date',1);if(!existing.length)await base44.entities.SavedPlaylist.create({user_id:user.id,playlist_id:id});}setSaved(!saved);toast({title:saved?'Removed from your library':'Added to your library'});});
  }
  const playAll=shuffle=>{if(!tracks.length)return;p.setShuffle(false);p.playTrackAt(shuffle?shufflePlaylist(tracks):tracks,0);};
- if(error)return <LoadError onRetry={load}/>;
- if(loading)return <div className="py-16 grid place-items-center"><Loader2 className="animate-spin"/></div>;
+ if(error&&!playlist)return <LoadError onRetry={load}/>;
+ if(loading&&!playlist)return <div className="py-16 grid place-items-center"><Loader2 className="animate-spin"/></div>;
  if(!playlist)return <EmptyState title="Playlist unavailable"/>;
  return <div className="playlist-page max-w-6xl mx-auto pb-8">
   <button onClick={()=>nav('/library')} className="inline-flex items-center gap-1 text-sm text-muted-foreground mb-6"><ChevronLeft size={16}/>Library</button>
+  {error&&<button disabled={loading||busy||editing} onClick={load} className="playlist-action mb-4">Refresh playlist</button>}
   <section className="playlist-hero">
    <div className="playlist-cover">{cover?<img src={cover} alt="Playlist cover" className="w-full h-full object-cover"/>:<ListMusic size={52} className="text-muted-foreground"/>}
-    {isOwn&&editing&&<label className="absolute bottom-3 inset-x-3 bg-background/90 border rounded-full px-3 py-2 flex items-center justify-center gap-2 text-xs cursor-pointer"><ImagePlus size={15}/>Change cover<input aria-label="Playlist cover" type="file" accept="image/jpeg,image/png,image/webp" className="hidden" onChange={e=>{const f=e.target.files?.[0];if(!f)return;if(!['image/jpeg','image/png','image/webp'].includes(f.type)||f.size>10*1024*1024){toast({title:'Choose a JPEG, PNG or WebP image under 10 MB',variant:'destructive'});return;}setCoverFile(f);setPreview(URL.createObjectURL(f));}}/></label>}
+    {isOwn&&editing&&<label className="absolute bottom-3 inset-x-3 bg-background/90 border rounded-full px-3 py-2 flex items-center justify-center gap-2 text-xs cursor-pointer"><ImagePlus size={15}/>Change cover<input aria-label="Playlist cover" disabled={busy} type="file" accept="image/jpeg,image/png,image/webp" className="hidden" onChange={e=>{const f=e.target.files?.[0];e.target.value='';if(!f||writeLock.current)return;if(!['image/jpeg','image/png','image/webp'].includes(f.type)||f.size>10*1024*1024){toast({title:'Choose a JPEG, PNG or WebP image under 10 MB',variant:'destructive'});return;}setCoverFile(f);setPreview(URL.createObjectURL(f));}}/></label>}
    </div>
    <div className="playlist-info min-w-0 flex-1">
     <p className="eyebrow mb-3">{playlist.is_public?'Public playlist':'Private playlist'}</p>
-    {editing?<input aria-label="Playlist name" maxLength={160} className="playlist-title bg-transparent border-b w-full" value={form.name} onChange={e=>setForm({...form,name:e.target.value})}/>:<h1 className="playlist-title break-words">{playlist.name}</h1>}
-    {editing?<><textarea aria-label="Playlist description" maxLength={2000} rows={3} className="w-full mt-4 bg-background border rounded-xl p-3 text-sm" value={form.description} onChange={e=>setForm({...form,description:e.target.value})}/><label className="flex gap-2 items-center text-sm my-4"><input type="checkbox" checked={form.is_public} onChange={e=>setForm({...form,is_public:e.target.checked})}/>Public — anyone can find this playlist</label></>:playlist.description&&<p className="text-muted-foreground text-sm leading-relaxed max-w-xl mt-4 whitespace-pre-wrap">{playlist.description}</p>}
+    {editing?<input aria-label="Playlist name" disabled={busy} maxLength={160} className="playlist-title bg-transparent border-b w-full" value={form.name} onChange={e=>setForm({...form,name:e.target.value})}/>:<h1 className="playlist-title break-words">{playlist.name}</h1>}
+    {editing?<><textarea aria-label="Playlist description" disabled={busy} maxLength={2000} rows={3} className="w-full mt-4 bg-background border rounded-xl p-3 text-sm" value={form.description} onChange={e=>setForm({...form,description:e.target.value})}/><label className="flex gap-2 items-center text-sm my-4"><input type="checkbox" disabled={busy} checked={form.is_public} onChange={e=>setForm({...form,is_public:e.target.checked})}/>Public — anyone can find this playlist</label></>:playlist.description&&<p className="text-muted-foreground text-sm leading-relaxed max-w-xl mt-4 whitespace-pre-wrap">{playlist.description}</p>}
     <p className="text-sm text-muted-foreground mt-4 mb-5">{tracks.length} songs · {Math.floor(total/3600)>0?Math.floor(total/3600)+' hr ':''}{Math.floor(total/60)%60} min{missing>0?' · '+missing+' unavailable':''}</p>
     <div className="playlist-controls flex flex-wrap gap-2">
      {!editing&&<><button disabled={!tracks.length} onClick={()=>playAll(false)} className="chrome-button disabled:opacity-40"><Play size={16}/>Play</button><button disabled={!tracks.length} onClick={()=>playAll(true)} className="playlist-action"><Shuffle size={16}/>Shuffle play</button></>}

@@ -9,7 +9,7 @@ function ReleaseRow({ track, tracks, index }) {
   const p = usePlayer();
   const isCurrent = p.currentTrack?.id === track.id;
   const isPlayingHere = isCurrent && p.isPlaying;
-  const playHere = () => p.playTrackAt(tracks.slice(index), 0);
+  const playHere = () => p.playTrackAt(tracks, index);
   const artistName = track.artist || track.uploader_name || "Unknown";
 
   return (
@@ -17,17 +17,17 @@ function ReleaseRow({ track, tracks, index }) {
       <button
         onClick={() => (isCurrent ? p.togglePlay() : playHere())}
         className="relative shrink-0"
-        aria-label={isPlayingHere ? "Pause" : "Play"}>
+        aria-label={isPlayingHere ? "Pause "+track.title : "Play "+track.title}>
         <div className="w-12 h-12 md:w-14 md:h-14 rounded-lg overflow-hidden bg-foreground/10">
           {track.cover_art_url ? (
-            <Image src={track.cover_art_url} fittingType="fill" className="w-full h-full" />
+            <Image src={track.cover_art_url} fittingType="fill" alt="" className="w-full h-full" />
           ) : (
             <div className="w-full h-full grid place-items-center text-foreground/30 text-[9px] font-bold text-center px-1">
               {track.genre}
             </div>
           )}
         </div>
-        <span className="absolute inset-0 grid place-items-center bg-black/35 opacity-0 group-hover:opacity-100 transition">
+        <span className="absolute inset-0 grid place-items-center bg-black/35 opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition">
           {isPlayingHere ? (
             <Pause size={18} className="text-white" />
           ) : (
