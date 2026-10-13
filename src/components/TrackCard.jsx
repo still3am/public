@@ -123,7 +123,7 @@ export default function TrackCard({ track, selectable = false, selected = false,
 
         {!selectable && (
           <div
-            className="hidden md:block absolute top-1.5 right-1.5 md:top-2 md:right-2 z-10 md:opacity-0 md:group-hover:opacity-100 md:focus-within:opacity-100 transition-opacity"
+            className="block absolute top-1.5 right-1.5 md:top-2 md:right-2 z-10 md:opacity-0 md:group-hover:opacity-100 md:focus-within:opacity-100 transition-opacity"
             onClick={(e) => e.stopPropagation()}
             onPointerDown={(e) => e.stopPropagation()}>
             <TrackOptionsMenu
