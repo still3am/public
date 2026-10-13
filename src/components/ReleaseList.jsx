@@ -65,11 +65,11 @@ export default function ReleaseList({ tracks }) {
     chunks.push(tracks.slice(i, i + 4));
   }
   return (
-    <div className="flex gap-3 overflow-x-auto no-scrollbar snap-x snap-mandatory -mx-4 px-4 sm:-mx-5 sm:px-5 md:mx-0 md:px-0 md:grid md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3">
+    <div role="region" aria-label="New releases, scroll horizontally" tabIndex={0} className="flex gap-3 overflow-x-auto no-scrollbar snap-x snap-mandatory overscroll-x-contain pb-2 -mx-4 px-4 sm:-mx-5 sm:px-5 md:mx-0 md:px-0">
       {chunks.map((group, gi) => (
         <div
           key={gi}
-          className="snap-start shrink-0 w-[88%] sm:w-[calc(50%-0.375rem)] md:w-auto rounded-2xl border border-border/60 bg-card/60 p-1 divide-y divide-foreground/[0.05]">
+          className="snap-start shrink-0 w-[88%] sm:w-[calc(50%-0.375rem)] md:w-[340px] lg:w-[360px] rounded-2xl border border-border/60 bg-card/60 p-1 divide-y divide-foreground/[0.05]">
           {group.map((t, i) => (
             <ReleaseRow key={t.id} track={t} tracks={tracks} index={gi * 4 + i} />
           ))}
