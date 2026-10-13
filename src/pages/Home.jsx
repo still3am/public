@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState, useCallback } from "react";
 import { Link } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
-import { getCatalogCount, getPublishedTracks, getTopTracks } from "@/lib/catalogCache";
+import { getPublishedTracks, getTopTracks, peekPublishedTracks } from "@/lib/catalogCache";
 import { useUnpublishedSync } from "@/hooks/useUnpublishedSync";
 import { useAuth } from "@/lib/AuthContext";
 import {
@@ -9,17 +9,22 @@ import {
   Sparkles,
   Music,
   Upload,
+  Play,
+  Pause,
+  Compass,
+  ListMusic,
   ChevronRight } from
 "lucide-react";
 import TrackCard from "@/components/TrackCard";
 import Podium from "@/components/Podium";
 import ReleaseList from "@/components/ReleaseList";
-import ScoreboardTrackCount from "@/components/ScoreboardTrackCount";
+import {usePlayer} from "@/context/PlayerContext";
+import {Image} from "@/components/ui/image";
+import TrackOptionsMenu from "@/components/track/TrackOptionsMenu";
 import EmptyState from "@/components/EmptyState";
 import { getRecentPlays } from "@/lib/recentPlays";
 import { getUserGenres } from "@/lib/userGenres";
 import PullToRefresh from "@/components/PullToRefresh";
-import HeroPlayingTint from "@/components/HeroPlayingTint";
 
 const greetingByHour = () => {
   const h = new Date().getHours();
@@ -31,11 +36,11 @@ const greetingByHour = () => {
 /** @param {any} props */
 function Section({ title, icon: Icon, children, seeAllTo }) {
   return (
-    <section className="mb-10 md:mb-12">
+    <section className="home-section mb-10 md:mb-12">
       <div className="flex items-end justify-between mb-4 px-1 md:px-0">
         <h2 className="text-xl md:text-2xl font-bold tracking-tight flex items-center gap-2.5">
           
-          {title}
+          {Icon&&<Icon size={17} className="text-muted-foreground"/>}{title}
         </h2>
         {seeAllTo &&
         <Link to={seeAllTo} className="text-xs font-semibold text-foreground/50 hover:text-foreground transition shrink-0 inline-flex items-center gap-0.5">
@@ -85,15 +90,18 @@ function Skeleton() {
 
 export default function Home() {
   const { user } = useAuth();
+  const p=usePlayer();
+  const loadVersion=useRef(0);
+  const [recent,setRecent]=useState(()=>getRecentPlays().slice(0,8));
+  const [genreList,setGenreList]=useState([]);
   const [loadError, setLoadError] = useState("");
   const [loading, setLoading] = useState(true);
-  const [trending, setTrending] = useState([]);
-  const [newReleases, setNewReleases] = useState([]);
+  const [trending, setTrending] = useState(()=>[...peekPublishedTracks()].sort((a,b)=>(b.play_count||0)-(a.play_count||0)).slice(0,10));
+  const [newReleases, setNewReleases] = useState(()=>peekPublishedTracks().slice(0,36));
   const [byGenre, setByGenre] = useState([]);
   const [fromFollowing, setFromFollowing] = useState([]);
   const [discover, setDiscover] = useState([]);
-  const [totalTracks, setTotalTracks] = useState(0);
-  const loadedRef = useRef(false);
+
   const greeting = greetingByHour();
 
   const onUnpublished = useCallback((id) => {
@@ -106,33 +114,28 @@ export default function Home() {
   }, []);
   useUnpublishedSync(onUnpublished);
 
-  useEffect(() => {const handler = () => load().catch(() => {});window.addEventListener('catalog:invalidate', handler);return () => window.removeEventListener('catalog:invalidate', handler);}, [user?.id]);
+  useEffect(() => {const handler = () => load(true).catch(() => {});window.addEventListener('catalog:invalidate', handler);return () => window.removeEventListener('catalog:invalidate', handler);}, [user?.id]);
 
-  async function load() {
+  async function load(fresh=false) {
+    const request=++loadVersion.current;
     setLoading(true);
     setLoadError("");
     try {
       // The complete catalogue, newest first and ranked by plays, read once and
       // shared with the other discovery screens.
       const [topTracks, published, fols] = await Promise.all([
-      getTopTracks(true),
-      getPublishedTracks(true),
+      getTopTracks(fresh),
+      getPublishedTracks(fresh),
       user?.id ?
       base44.entities.Follow.filter({ follower_id: user.id }, "-created_date", 200).catch(() => []) :
       Promise.resolve([])]
       );
+      if(request!==loadVersion.current)return;
       const followed = new Set((Array.isArray(fols) ? fols : []).map((f) => f.following_id));
       setTrending(topTracks.slice(0, 10));
       setNewReleases(published.slice(0, 36));
       // Every published track by the people you follow, not just the newest page.
       setFromFollowing(published.filter((tk) => followed.has(tk.uploader_id)).slice(0, 12));
-      // The hero total is counted server-side, so it stays exact and costs one
-      // call instead of another pass over the catalogue.
-      const publishedCount = await getCatalogCount(true);
-      if (typeof publishedCount === "number") {
-        setTotalTracks(publishedCount);
-        loadedRef.current = true;
-      }
       // Top genres = the ones users actually listen to most, measured by
       // aggregated play_count across the most-played tracks on the platform.
       const genrePlays = {};
@@ -140,6 +143,7 @@ export default function Home() {
         if (!tr?.genre) continue;
         genrePlays[tr.genre] = (genrePlays[tr.genre] || 0) + (tr.play_count || 0);
       }
+      setGenreList(Object.entries(genrePlays).sort((a,b)=>b[1]-a[1]).slice(0,8).map(([name])=>name));
       const genres = Object.entries(genrePlays).
       sort((a, b) => b[1] - a[1]).
       slice(0, 3).
@@ -168,6 +172,7 @@ export default function Home() {
       // Merge saved genre picks with listening history — saved genres seed
       // personalization, recent plays refine it over time.
       const savedGenres = await getUserGenres();
+      if(request!==loadVersion.current)return;
       const genreSet = new Set(savedGenres);
       const userGenres = Object.entries(genreFreq).
       sort((a, b) => b[1] - a[1]).
@@ -184,16 +189,15 @@ export default function Home() {
         [pool[i], pool[j]] = [pool[j], pool[i]];
       }
       setDiscover(pool.slice(0, 12));
-    } catch {setLoadError("The music catalog could not load. Check your connection and retry.");} finally {
-      setLoading(false);
+    } catch {if(request===loadVersion.current)setLoadError("The music catalog could not load. Check your connection and retry.");} finally {
+      if(request===loadVersion.current)setLoading(false);
     }
   }
 
-  useEffect(() => {
-    load();
-  }, []);
+  useEffect(()=>{load();return()=>{loadVersion.current++;};},[user?.id]);
+  useEffect(()=>{const update=()=>setRecent(getRecentPlays().slice(0,8));window.addEventListener("recentplays:change",update);return()=>window.removeEventListener("recentplays:change",update);},[]);
 
-  if (loadError && !trending.length) return <div className="p-8 text-center space-y-4"><p role="alert">{loadError}</p><button className="border p-3 rounded-xl" onClick={load}>Retry</button></div>;
+  if (loadError && !trending.length) return <div className="p-8 text-center"><button className="playlist-action" onClick={()=>load(true)}>Refresh music</button></div>;
   if (loading && !trending.length) return <Skeleton />;
 
   const allEmpty =
@@ -217,58 +221,22 @@ export default function Home() {
 
   }
 
+  const featured=newReleases[0]||trending[0];
+  const discoveryQueue=discover.length?discover:trending;
+  const featuredPlaying=p.currentTrack?.id===featured?.id&&p.isPlaying;
+  const playFeatured=()=>{if(!featured)return;if(p.currentTrack?.id===featured.id)p.togglePlay();else{p.setShuffle(false);p.playTrackAt(newReleases.length?newReleases:[featured],0);}};
   return (
-    <PullToRefresh onRefresh={load}>
-      <div>
-        {/* Hero */}
-        <div className="home-hero relative rounded-3xl overflow-hidden border border-border/60 p-6 sm:p-9 md:p-12 mb-9 md:mb-12 text-left flex flex-col items-start">
-          <div className="opacity-40"><HeroPlayingTint /></div>
-          <div
-            className="absolute inset-0 opacity-[0.04] pointer-events-none"
-            style={{
-              backgroundImage:
-              "radial-gradient(circle at 15% 15%, hsl(var(--foreground)) 0, transparent 40%), radial-gradient(circle at 85% 85%, hsl(var(--foreground)) 0, transparent 38%)"
-            }} />
-          <div className="absolute inset-0 bg-gradient-to-br from-foreground/[0.03] via-transparent to-foreground/[0.02] pointer-events-none" />
-          <div className="absolute -right-20 -top-20 w-72 h-72 rounded-full bg-foreground/[0.06] blur-3xl pointer-events-none" />
-          <div className="absolute -left-12 -bottom-20 w-64 h-64 rounded-full bg-foreground/[0.04] blur-3xl pointer-events-none" />
-
-          <div className="relative w-full">
-            
-            
-
-            
-            <h1 className="text-[36px] sm:text-5xl md:text-6xl font-bold tracking-tight mb-4 max-w-2xl leading-[1.08] break-words text-left">
-              {user?.display_name || user?.full_name ? `Hey, ${user.display_name || user.full_name}.` : "Welcome to PUBLIC."}
-            </h1>
-            <p className="text-muted-foreground max-w-md text-sm md:text-base leading-relaxed mb-6 text-left">
-              Independent music. Open to everyone. Find your next favorite sound.
-            </p>
-            <div className="flex flex-wrap items-center gap-4 mb-1">
-              
-              <ScoreboardTrackCount count={totalTracks} />
-            </div>
-            
-
-
-
-
-
-
-
-
-
-
-            
-          </div>
-        </div>
-
-        
-
-
-
-
-        
+    <PullToRefresh onRefresh={()=>load(true)}>
+      <div className="home-page">
+        <header className="home-welcome"><div><p className="eyebrow">{greeting}</p><h1>{user?.display_name||user?.full_name?`Made for ${user.display_name||user.full_name}.`:"Find your sound."}</h1></div><Link to="/search" className="home-browse-link"><Compass size={17}/><span>Explore music</span><ChevronRight size={14}/></Link></header>
+        <section className="home-feature">
+          <div className="home-feature-copy"><p className="eyebrow">Independent music. Open to everyone.</p><h2>Your next favorite<br/>starts here.</h2><p>Fresh releases, familiar favorites, and music worth sharing.</p><div className="home-feature-actions"><button disabled={!discoveryQueue.length} onClick={()=>{p.setShuffle(false);p.playTrackAt(discoveryQueue,0);}} className="chrome-button"><Play size={15} fill="currentColor"/>Play discovery</button><Link className="playlist-action" to="/recent">Latest music<ChevronRight size={14}/></Link></div></div>
+          {featured&&<div className="home-spotlight"><div className="home-spotlight-art">{featured.cover_art_url?<Image src={featured.cover_art_url} fittingType="fill" alt="" className="w-full h-full"/>:<Music size={42}/>}<button className="home-spotlight-play" onClick={playFeatured} aria-label={featuredPlaying?`Pause ${featured.title}`:`Play ${featured.title}`}>{featuredPlaying?<Pause size={20} fill="currentColor"/>:<Play size={20} fill="currentColor"/>}</button><div className="home-spotlight-menu"><TrackOptionsMenu track={featured}/></div></div><div className="home-spotlight-meta"><div><p className="eyebrow">Featured release</p><Link to={`/track/${featured.id}`} className="font-semibold text-sm block truncate mt-1">{featured.title}</Link><p className="text-xs text-muted-foreground truncate mt-1">{featured.artist||featured.uploader_name}</p></div></div></div>}
+        </section>
+        <nav className="home-shortcuts" aria-label="Explore PUBLIC"><Link to="/library"><ListMusic size={17}/><span>Your library</span><ChevronRight size={14}/></Link><Link to="/top"><TrendingUp size={17}/><span>Top tracks</span><ChevronRight size={14}/></Link><Link to="/upload"><Upload size={17}/><span>Share music</span><ChevronRight size={14}/></Link></nav>
+        {genreList.length>0&&<div className="home-genre-rail" aria-label="Browse genres">{genreList.map(genre=><Link key={genre} className="chip" to={`/search?genre=${encodeURIComponent(genre)}`}>{genre}</Link>)}</div>}
+        <Section title="New on PUBLIC" icon={Sparkles} seeAllTo="/recent"><ReleaseList tracks={newReleases}/></Section>
+        {recent.length>0&&<Section title="Recently played"><CardRow tracks={recent}/></Section>}
         <Section title="Trending" icon={TrendingUp} seeAllTo="/top">
           {trending.length >= 3 ?
           <>
@@ -282,9 +250,6 @@ export default function Home() {
 
           <CardRow tracks={trending} />
           }
-        </Section>
-        <Section title="New on PUBLIC" seeAllTo="/recent">
-          <ReleaseList tracks={newReleases} />
         </Section>
 
         {discover.length > 0 &&
