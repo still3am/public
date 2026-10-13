@@ -107,8 +107,8 @@ export function useOfflineCache() {
         }
       }
     } catch {
-      setCachedIds(new Set());
-      setRecords([]);
+      // A temporary storage failure must not erase a collection already shown.
+      setCachedIds(previous => previous || new Set());
     }
   }, []);
 
