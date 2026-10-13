@@ -208,7 +208,7 @@ export default function Library() {
       </div>
       <div className="library-navigation" role="group" aria-label="Library views">
         {[["songs", "Songs", tracks?.length], ["playlists", "Playlists", playlists ? playlists.length + (savedPlaylists?.length || 0) : null], ["recent", "Recent", recentlyPlayed.length]].map(([value, label, count]) =>
-        <button key={value} aria-pressed={libraryView === value} onClick={() => chooseView(value)} className={libraryView === value ? "active" : ""}>{label}{count != null && <span>{count}</span>}</button>
+        <button key={value} aria-pressed={libraryView === value} onClick={() => chooseView(value)} className={libraryView === value ? "active text-left" : ""}>{label}{count != null && <span>{count}</span>}</button>
         )}
       </div>
       <div className="library-tools">
