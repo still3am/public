@@ -23,7 +23,7 @@ import { readAllPages } from "@/lib/readPages";
 export default function MyUploads() {
   const { user } = useAuth();
   const { ids, refresh } = useLibrary();
-  const { playlists } = useMyPlaylists();
+  const { playlists,error:playlistError,reload:reloadPlaylists } = useMyPlaylists();
   const { toast } = useToast();
 
   const [uploads, setUploads] = useState(null);
@@ -206,7 +206,7 @@ export default function MyUploads() {
       {showBulkPlaylist &&
       <BulkAddToPlaylistSheet
         trackIds={selectedIds}
-        playlists={playlists}
+        playlists={playlists} error={playlistError} onRetry={()=>reloadPlaylists()}
         onClose={() => setShowBulkPlaylist(false)}
         onDone={() => {
           setShowBulkPlaylist(false);

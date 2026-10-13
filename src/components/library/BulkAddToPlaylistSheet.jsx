@@ -1,20 +1,25 @@
-import { useState } from "react";
+import {Image} from "@/components/ui/image";
+import { useState,useRef,useEffect } from "react";
 import {addPlaylistTracks} from "@/lib/playlistActions";
 import { ListMusic, Loader2, X } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 
 // Appends every selected track to the chosen playlist in one go.
 /** @param {any} props */
-export default function BulkAddToPlaylistSheet({ trackIds = [], playlists, onClose, onDone }) {
+export default function BulkAddToPlaylistSheet({ trackIds = [], playlists, error=false, onRetry, onClose, onDone }) {
   const [busyId, setBusyId] = useState(null);
   const { toast } = useToast();
+  const [query,setQuery]=useState("");
+  const lock=useRef(false),alive=useRef(true);
+  useEffect(()=>{alive.current=true;return()=>{alive.current=false;};},[]);
+  const filtered=(playlists||[]).filter(playlist=>!query.trim()||(playlist.name||"").toLowerCase().includes(query.trim().toLowerCase()));
 
   const add = async (playlist) => {
-    if (busyId) return;
+    if(lock.current||!trackIds.length)return;lock.current=true;
     setBusyId(playlist.id);
     try {
       const current = playlist.track_ids || [];
-      const added = trackIds.filter((id) => !current.includes(id));
+      const added = [...new Set(trackIds)].filter((id) => !current.includes(id));
       if (added.length) {
         await addPlaylistTracks(playlist.id,added);
       }
@@ -23,17 +28,17 @@ export default function BulkAddToPlaylistSheet({ trackIds = [], playlists, onClo
           ? `Added ${added.length} ${added.length === 1 ? "song" : "songs"} to ${playlist.name}`
           : "Already in that playlist",
       });
-      onDone?.();
+      if(alive.current)onDone?.();
     } catch {
       toast({ title: "Couldn't add to playlist", variant: "destructive" });
     } finally {
-      setBusyId(null);
+      lock.current=false;if(alive.current)setBusyId(null);
     }
   };
 
   return (
-    <div
-      className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-end md:items-center justify-center"
+    <div role="dialog" aria-modal="true" aria-label="Add selected songs to a playlist" data-public-dialog tabIndex={-1} onKeyDown={event=>{if(event.key==="Escape"){event.stopPropagation();onClose();}}}
+      className="fixed inset-0 z-[70] bg-black/60 backdrop-blur-sm flex items-end md:items-center justify-center"
       onClick={onClose}
     >
       <div
@@ -54,17 +59,18 @@ export default function BulkAddToPlaylistSheet({ trackIds = [], playlists, onClo
           </button>
         </div>
 
-        <div className="flex-1 overflow-y-auto p-3">
+        <div className="px-4 pt-4"><input aria-label="Search playlists for selected songs" value={query} placeholder="Find a playlist" onChange={event=>setQuery(event.target.value)} className="w-full bg-background border rounded-xl p-3"/></div>
+        <div className="flex-1 min-h-0 overflow-y-auto p-3 pb-[calc(1rem+env(safe-area-inset-bottom))]">
           {!playlists ? (
             <div className="grid place-items-center py-12 text-foreground/50">
-              <Loader2 className="animate-spin" size={20} />
+              {error?<button className="playlist-action" onClick={onRetry}>Refresh playlists</button>:<Loader2 className="animate-spin" size={20} />}
             </div>
-          ) : !playlists.length ? (
+          ) : !filtered.length ? (
             <p className="text-center text-sm text-foreground/55 py-12 px-6">
-              You don't have any playlists yet — create one first from your library.
+              {query?'No matching playlists.':'Create a playlist from your library to get started.'}
             </p>
           ) : (
-            playlists.map((pl) => (
+            filtered.map((pl) => (
               <button
                 key={pl.id}
                 onClick={() => add(pl)}
@@ -73,7 +79,7 @@ export default function BulkAddToPlaylistSheet({ trackIds = [], playlists, onClo
               >
                 <div className="w-10 h-10 rounded-lg overflow-hidden bg-foreground/10 grid place-items-center shrink-0">
                   {pl.cover_art_url ? (
-                    <img src={pl.cover_art_url} alt="" className="w-full h-full object-cover" />
+                    <Image src={pl.cover_art_url} fittingType="fill" alt="" className="w-full h-full"/>
                   ) : (
                     <ListMusic size={16} className="text-foreground/40" />
                   )}
