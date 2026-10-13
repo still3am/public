@@ -13,6 +13,7 @@ export default function LoungeHostModal({ lounge, onClose }) {
   const [editingName, setEditingName] = useState(false);
   const [nameDraft, setNameDraft] = useState("");
   const [savingName, setSavingName] = useState(false);
+  const [ending,setEnding]=useState(false);
 
   useEffect(() => {
     ensureSession();
@@ -27,9 +28,9 @@ export default function LoungeHostModal({ lounge, onClose }) {
   }
 
   async function saveName() {
-    if (!updateName) return;
+    if (!updateName || savingName || !nameDraft.trim()) return;
     setSavingName(true);
-    const ok = await updateName(nameDraft);
+    const ok = await updateName(nameDraft.trim());
     setSavingName(false);
     if (ok) {
       setEditingName(false);
@@ -73,7 +74,7 @@ export default function LoungeHostModal({ lounge, onClose }) {
   }
 
   return (
-    <div className="fixed inset-0 z-[110] bg-black/80 backdrop-blur-md flex items-center justify-center p-4" onClick={onClose}>
+    <div role="dialog" aria-modal="true" aria-label="Your lounge" data-public-dialog tabIndex={-1} onKeyDown={e=>{if(e.key==="Escape"){e.stopPropagation();onClose?.();}}} className="fixed inset-0 z-[110] bg-black/80 backdrop-blur-md flex items-center justify-center p-4" onClick={onClose}>
       <div
         className="bg-card text-foreground rounded-3xl w-full max-w-md max-h-[90vh] overflow-y-auto p-6 relative shadow-2xl"
         onClick={(e) => e.stopPropagation()}>
@@ -222,12 +223,14 @@ export default function LoungeHostModal({ lounge, onClose }) {
 
         <button
           onClick={async () => {
-            await endSession();
-            onClose();
+            if(ending)return;
+            setEnding(true);
+            try{if(await endSession())onClose();}finally{setEnding(false);}
           }}
+          disabled={ending}
           className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-2xl border border-dashed border-border text-sm font-semibold text-foreground/70 hover:text-red-600 hover:border-red-600/40 transition">
           
-          <Power size={15} /> End lounge
+          <Power size={15} /> {ending?"Ending lounge…":"End lounge"}
         </button>
       </div>
       {scanning && <QRScannerModal onClose={() => setScanning(false)} />}
