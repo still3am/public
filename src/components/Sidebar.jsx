@@ -1,5 +1,5 @@
-import {useMyPlaylists} from "@/hooks/useMyPlaylists";
-import {ListMusic} from "lucide-react";
+import { useMyPlaylists } from "@/hooks/useMyPlaylists";
+import { ListMusic } from "lucide-react";
 import { NavLink, useLocation } from "react-router-dom";
 import { useSidebarCollapsed } from "@/hooks/useSidebarCollapsed";
 
@@ -37,7 +37,7 @@ export default function Sidebar() {
   const { collapsed, toggle } = useSidebarCollapsed();
   const location = useLocation();
   const unread = useUnreadCount();
-  const {playlists}=useMyPlaylists();
+  const { playlists } = useMyPlaylists();
 
   const links = [
   ...NAV,
@@ -97,7 +97,7 @@ export default function Sidebar() {
             <span className={`shrink-0 ${EASE} ${fadeCls}`}>{label}</span>
           </NavLink>
         )}
-        {user&&!!playlists?.length&&<div className="mt-5 pt-4 border-t border-border/60"><p className={`text-[10px] uppercase tracking-widest px-3 mb-2 text-muted-foreground ${fadeCls}`}>Your playlists</p>{playlists.slice(0,6).map(pl=><NavLink key={pl.id} to={`/playlist/${pl.id}`} title={pl.name} className={navLinkCls}><ListMusic size={18} className="shrink-0"/><span className={`truncate text-xs ${fadeCls}`}>{pl.name}</span></NavLink>)}</div>}
+        {user && !!playlists?.length && <div className="mt-5 pt-4 border-t border-border/60"><p className={`text-[10px] uppercase tracking-widest px-3 mb-2 text-muted-foreground ${fadeCls}`}>Your playlists</p>{playlists.slice(0, 6).map((pl) => <NavLink key={pl.id} to={`/playlist/${pl.id}`} title={pl.name} className={navLinkCls}><ListMusic size={18} className="shrink-0 hidden" /><span className={`truncate text-xs ${fadeCls}`}>{pl.name}</span></NavLink>)}</div>}
       </nav>
 
       <div className="border-t border-border/60 space-y-2 pb-5 p-3 pt-4">
