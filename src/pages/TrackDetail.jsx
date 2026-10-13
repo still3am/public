@@ -47,9 +47,16 @@ export default function TrackDetail() {
     const request=++loadVersion.current;(request===loadVersion.current)&&setLoadError(false);
     (request===loadVersion.current)&&setLoading(true);
     try {
-      const t = await base44.entities.Track.get(id);
+      let t;
+      try{t=await base44.entities.Track.get(id);}catch(original){
+        const status=original?.status??original?.response?.status;
+        if(status===403||status===404)throw original;
+        const rows=await base44.entities.Track.filter({id},"-created_date",1);
+        t=rows[0];if(!t)throw original;
+      }
       (request===loadVersion.current)&&setTrack(t);
       (request===loadVersion.current)&&setUploader(null);
+      if(request===loadVersion.current){setMoreTracks([]);setLoading(false);}
       if (t?.uploader_id) {
         // Other people's user records are admin-only, so the uploader credit is
         // resolved through the public-profile endpoint the profile page uses.
@@ -96,7 +103,7 @@ export default function TrackDetail() {
     }
   }
 
-  if(loadError)return <LoadError onRetry={load}/>;
+  if(loadError&&!track)return <LoadError onRetry={load}/>;
   if (loading) {
     return (
       <div className="py-20 grid place-items-center">

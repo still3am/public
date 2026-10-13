@@ -1,6 +1,6 @@
 import LoadError from '@/components/LoadError';
 import { useRef } from 'react';
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { useAuth } from "@/lib/AuthContext";
 import { useLibrary } from "@/context/LibraryContext";
@@ -31,6 +31,14 @@ export default function MyUploads() {
   const [selected, setSelected] = useState(() => new Set());
   const [showBulkPlaylist, setShowBulkPlaylist] = useState(false);
   const [busy, setBusy] = useState(false);
+  const [query,setQuery]=useState(""),[status,setStatus]=useState("all"),[sort,setSort]=useState("newest");
+  const visibleUploads=useMemo(()=>{
+    const term=query.trim().toLowerCase();
+    const rows=(uploads||[]).filter(t=>(status==="all"||(t.approval_status||(t.is_published?"approved":"private"))===status)&&(!term||[t.title,t.artist,t.genre].some(value=>(value||"").toLowerCase().includes(term))));
+    if(sort==="title")rows.sort((a,b)=>(a.title||"").localeCompare(b.title||""));
+    if(sort==="plays")rows.sort((a,b)=>(b.play_count||0)-(a.play_count||0));
+    return rows;
+  },[uploads,query,status,sort]);
 
   const loadVersion = useRef(0);
   const [loadError, setLoadError] = useState(false);
@@ -94,7 +102,7 @@ export default function MyUploads() {
   };
 
   const deleteUploads = async () => {
-    if (!selectedIds.length) return;
+    if (!selectedIds.length||busy||!window.confirm(`Permanently delete ${selectedIds.length} uploads? This removes the songs from PUBLIC.`)) return;
     setBusy(true);
     try {
       await base44.entities.Track.deleteMany({ id: { $in: selectedIds } });
@@ -132,7 +140,7 @@ export default function MyUploads() {
     );
   };
 
-  if (loadError) return <LoadError onRetry={load} />;
+  if (loadError&&uploads===null) return <LoadError onRetry={load} />;
   return (
     <div className="uploads-page max-w-5xl mx-auto pb-10">
       <header className="page-intro"></header>
@@ -157,6 +165,7 @@ export default function MyUploads() {
         onDelete={deleteUploads} />
       
 
+      <div className="collection-tools"><input aria-label="Search your uploads" placeholder="Search songs, artists, or genres" value={query} onChange={e=>setQuery(e.target.value)}/><select aria-label="Upload status" value={status} onChange={e=>setStatus(e.target.value)}><option value="all">All uploads</option><option value="approved">Published</option><option value="pending">Pending review</option><option value="private">Private</option><option value="rejected">Needs changes</option></select><select aria-label="Sort uploads" value={sort} onChange={e=>setSort(e.target.value)}><option value="newest">Newest first</option><option value="title">Title A–Z</option><option value="plays">Most played</option></select></div>
       <PullToRefresh onRefresh={load}>
         {uploads === null ?
         <div className="flex justify-center py-20">
@@ -172,10 +181,11 @@ export default function MyUploads() {
         <section>
             <BulkPublicSubmitBar tracks={uploads} onSubmitted={markSubmitted} />
             <h2 className="text-sm font-bold text-foreground/70 uppercase tracking-wider mb-3">
-              {uploads.length} {uploads.length === 1 ? "Song" : "Songs"}
+              {visibleUploads.length} {visibleUploads.length === 1 ? "Song" : "Songs"}
             </h2>
+            {!visibleUploads.length&&<EmptyState title="No matching uploads" description="Try another search or status." action={<button className="playlist-action" onClick={()=>{setQuery("");setStatus("all");}}>Reset filters</button>}/>}
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
-              {uploads.map((t) =>
+              {visibleUploads.map((t) =>
             <div key={t.id} className="flex flex-col">
                   <TrackCard
                 track={t}

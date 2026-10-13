@@ -1,5 +1,5 @@
 import LoadError from '@/components/LoadError';
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import { useAuth } from "@/lib/AuthContext";
@@ -43,6 +43,8 @@ export default function ArtistDashboard() {
   const [tracks, setTracks] = useState([]);
   const [totals, setTotals] = useState(null);
   const [followers, setFollowers] = useState(0);
+  const [query,setQuery]=useState(""),[sort,setSort]=useState("plays");
+  const visibleTracks=useMemo(()=>{const term=query.trim().toLowerCase();const rows=tracks.filter(t=>!term||[t.title,t.genre,t.artist].some(value=>(value||"").toLowerCase().includes(term)));rows.sort((a,b)=>sort==="likes"?(b.like_count||0)-(a.like_count||0):sort==="title"?(a.title||"").localeCompare(b.title||""):(b.play_count||0)-(a.play_count||0));return rows;},[tracks,query,sort]);
   const [error,setError]=useState(false),[retry,setRetry]=useState(0);
 
   useEffect(() => {
@@ -118,7 +120,7 @@ export default function ArtistDashboard() {
   const chartData = tracks.
   slice(0, 10).
   map((t) => ({
-    name: t.title.length > 14 ? t.title.slice(0, 14) + "…" : t.title,
+    name: (t.title||"Untitled").length > 14 ? (t.title||"Untitled").slice(0, 14) + "…" : t.title||"Untitled",
     plays: t.play_count || 0,
     likes: t.like_count || 0
   })).
@@ -144,7 +146,7 @@ export default function ArtistDashboard() {
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
         <StatCard icon={Play} label="Total Plays" value={formatNumber(totalPlays)} />
         <StatCard icon={Heart} label="Total Likes" value={formatNumber(totalLikes)} />
-        <StatCard icon={Users} label="Followers" value={followers===null?"Unavailable":formatNumber(followers)} />
+        <StatCard icon={Users} label="Followers" value={followers===null?"—":formatNumber(followers)} />
         <StatCard icon={Music} label="Tracks" value={formatNumber(tracks.length)} />
       </div>
 
@@ -180,14 +182,14 @@ export default function ArtistDashboard() {
 
       {/* Track breakdown */}
       <div className="rounded-2xl bg-card ring-1 ring-inset ring-border p-4">
-        <h2 className="text-sm font-bold mb-3">Track Breakdown</h2>
+        <h2 className="text-sm font-bold mb-3">Track Breakdown</h2><div className="collection-tools"><input aria-label="Search track analytics" placeholder="Search your tracks" value={query} onChange={e=>setQuery(e.target.value)}/><select aria-label="Sort track analytics" value={sort} onChange={e=>setSort(e.target.value)}><option value="plays">Most played</option><option value="likes">Most liked</option><option value="title">Title A–Z</option></select></div>
         {tracks.length === 0 ?
         <p className="text-sm text-foreground/50 text-center py-8">
             No tracks uploaded yet. Upload your first track to see analytics.
           </p> :
 
         <div className="space-y-1">
-            {tracks.map((t, i) =>
+            {visibleTracks.map((t, i) =>
           <Link
             key={t.id}
             to={`/track/${t.id}`}

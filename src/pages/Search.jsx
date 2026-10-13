@@ -7,7 +7,7 @@ import {
 "lucide-react";
 import { useSearchParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { getPublishedTracks } from "@/lib/catalogCache";
+import { getPublishedTracks,peekPublishedTracks } from "@/lib/catalogCache";
 import { useGlobalSearch } from "@/hooks/useGlobalSearch";
 import { useUnpublishedSync } from "@/hooks/useUnpublishedSync";
 import TrackCard from "@/components/TrackCard";
@@ -38,12 +38,14 @@ export default function Search() {
   const updateQuery = (next) => {
     setQ(next);
     const params = new URLSearchParams(searchParams);
+    params.delete("genre");setGenre(null);
     if (next) params.set("q", next);else
     params.delete("q");
     setSearchParams(params, { replace: true });
   };
+  const chooseGenre=next=>{const params=new URLSearchParams(searchParams);params.delete("q");params.delete("type");if(next)params.set("genre",next);else params.delete("genre");setQ("");setGenre(next);setSearchParams(params,{replace:true});};
   const [browseError, setBrowseError] = useState("");
-  const [allTracks, setAllTracks] = useState([]);
+  const [allTracks, setAllTracks] = useState(peekPublishedTracks);
   const [loadingAll, setLoadingAll] = useState(true);
 
   const {
@@ -63,10 +65,10 @@ export default function Search() {
     setAllTracks((prev) => prev.filter((t) => t.id !== id));
   });
 
-  async function loadCatalogue() {
+  async function loadCatalogue(fresh=false) {
     setLoadingAll(true);setBrowseError("");
     try {
-      const tracks = await getPublishedTracks(true);
+      const tracks = await getPublishedTracks(fresh);
       setAllTracks(Array.isArray(tracks) ? tracks : []);
     } catch {setBrowseError("The catalog is unavailable. Retry after checking your connection.");} finally {
       setLoadingAll(false);
@@ -93,7 +95,7 @@ export default function Search() {
       refresh();
       return;
     }
-    await loadCatalogue();
+    await loadCatalogue(true);
   }
 
   const genreList = useMemo(() => {
@@ -184,7 +186,7 @@ export default function Search() {
         <div>
             <div className="flex items-center gap-3 mb-3">
               <button
-              onClick={() => setGenre(null)}
+              onClick={() => chooseGenre(null)}
               className="tap-target rounded-full hover:bg-foreground/[0.06]"
               aria-label="Back to genres">
                 <ArrowLeft size={20} />
@@ -210,7 +212,7 @@ export default function Search() {
           </div> :
         browseError ? <div className="p-6 text-center"><Button onClick={loadCatalogue}>Refresh music</Button></div> : loadingAll ? loader :
         genreList.length ?
-        <VinylCrate genres={genreList} onPick={(g) => setGenre(g)} /> :
+        <VinylCrate genres={genreList} onPick={chooseGenre} /> :
 
         <EmptyState
           title="Nothing published yet"

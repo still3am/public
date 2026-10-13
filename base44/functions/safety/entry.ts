@@ -38,7 +38,6 @@ export default async function handleRequest(req) {
    }
    if(d.operation==='add'){
     const track=await b.entities.Track.get(d.track_id);
-    if(!track.is_downloadable)err('Downloads are not enabled for this track',403);
     await s.entities.User.updateMany({id:u.id},{$addToSet:{offline_track_ids:track.id}});
    }else if(d.operation==='remove')await s.entities.User.updateMany({id:u.id},{$pull:{offline_track_ids:d.track_id}});
    else if(d.operation==='clear')await s.entities.User.update(u.id,{offline_track_ids:[]});
@@ -46,7 +45,7 @@ export default async function handleRequest(req) {
    const updated=await s.entities.User.get(u.id);
    const visible=[];
    for(let offset=0;offset<(updated.offline_track_ids||[]).length;offset+=100){
-    const tracks=await b.entities.Track.filter({id:{$in:updated.offline_track_ids.slice(offset,offset+100)},is_downloadable:true},'-created_date',100);
+    const tracks=await b.entities.Track.filter({id:{$in:updated.offline_track_ids.slice(offset,offset+100)}},'-created_date',100);
     visible.push(...tracks);
    }
    return Response.json({tracks:visible});
