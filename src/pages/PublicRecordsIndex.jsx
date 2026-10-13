@@ -11,7 +11,7 @@ import { Loader2, Mic2 } from "lucide-react";
 // Future as separate Public Records.
 const splitNames = str => splitArtistNames(str, false);
 
-const norm = (s) => s.trim().toLowerCase();
+const norm = (s) => (s || "").trim().toLowerCase();
 
 // Special group for names starting with a non-letter.
 const letterOf = (name) => {
@@ -27,6 +27,7 @@ function AzReveal({ children }) {
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
+    if(!window.IntersectionObserver||window.matchMedia("(prefers-reduced-motion: reduce)").matches){setShown(true);return;}
     const io = new IntersectionObserver(
       (entries) => {
         entries.forEach((e) => {
@@ -58,14 +59,16 @@ export default function PublicRecordsIndex() {
   const [loadError,setLoadError]=useState(false);
   const [artists, setArtists] = useState(null); // null = loading
   const [activeKey, setActiveKey] = useState("");
+  const [query,setQuery]=useState("");
+  const requestVersion=useRef(0);
   const groupRefs = useRef({});
 
-  const load = async () => {
-    setLoadError(false);
+  const load = async (fresh=false) => {
+    const request=++requestVersion.current;setLoadError(false);
     try {
       const [records, tracks] = await Promise.all([
-      getArtists(true),
-      getPublishedTracks(true)]
+      getArtists(fresh),
+      getPublishedTracks(fresh)]
       );
       const recordByName = new Map();
       (Array.isArray(records) ? records : []).forEach((a) => {
@@ -111,17 +114,17 @@ export default function PublicRecordsIndex() {
       const list = [...map.values()].sort((a, b) =>
       norm(a.display).localeCompare(norm(b.display))
       );
-      setArtists(list);
-    } catch {setLoadError(true);}
+      if(request===requestVersion.current)setArtists(list);
+    } catch {if(request===requestVersion.current)setLoadError(true);}
   };
 
   useEffect(() => {
-    load();
+    load();return()=>{requestVersion.current++;};
   }, []);
 
   const groups = useMemo(() => {
     const map = {};
-    (artists || []).forEach((a) => {
+    (artists || []).filter(a=>!query.trim()||norm(a.display).includes(norm(query))).forEach((a) => {
       const key = letterOf(a.display);
       if (!map[key]) map[key] = [];
       map[key].push(a);
@@ -129,7 +132,7 @@ export default function PublicRecordsIndex() {
     return Object.keys(map).
     sort((x, y) => x === "#" ? 1 : y === "#" ? -1 : x.localeCompare(y)).
     map((key) => ({ key, items: map[key] }));
-  }, [artists]);
+  }, [artists,query]);
 
   const letters = groups.map((g) => g.key);
   const allLetters = useMemo(
@@ -143,7 +146,7 @@ export default function PublicRecordsIndex() {
 
   // Track which letter section is nearest the top of the viewport.
   useEffect(() => {
-    if (!groups.length) return;
+    if (!groups.length || !window.IntersectionObserver) return;
     const obs = new IntersectionObserver(
       (entries) => {
         const visible = entries.
@@ -163,7 +166,7 @@ export default function PublicRecordsIndex() {
   const scrollToLetter = (key) => {
     const el = groupRefs.current[key];
     if (!el) return;
-    el.scrollIntoView({ behavior: "smooth", block: "start" });
+    el.scrollIntoView({ behavior: dragging||window.matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth", block: "start" });
     setActiveKey(key);
   };
 
@@ -211,7 +214,7 @@ export default function PublicRecordsIndex() {
     setDragLetter("");
   };
 
-  if(loadError)return <LoadError onRetry={load}/>;
+  if(loadError&&artists===null)return <LoadError onRetry={()=>load(true)}/>;
   return (
     <div className="directory-page max-w-3xl mx-auto pb-10">
       <header className="page-intro"><p className="eyebrow">Public Record</p><h1>The artist directory</h1><p>Explore the names behind the music.</p></header>
@@ -219,7 +222,8 @@ export default function PublicRecordsIndex() {
 
       
 
-      <PullToRefresh onRefresh={load}>
+      <div className="collection-tools"><input aria-label="Search the artist directory" placeholder="Find an artist" value={query} onChange={e=>setQuery(e.target.value)} onKeyDown={e=>{if(e.key==="Escape")setQuery("");}}/>{query&&<button className="playlist-action" onClick={()=>setQuery("")}>Clear search</button>}</div>
+      <PullToRefresh onRefresh={()=>load(true)}>
         {artists === null ?
         <div className="flex justify-center py-20">
             <Loader2 className="animate-spin text-foreground/40" />
@@ -235,10 +239,11 @@ export default function PublicRecordsIndex() {
             </p>
           </div> :
 
-        <div className="pr-5 md:pr-0">
+        <div className="pr-5 md:pr-8">
+            {!groups.length&&<div className="collection-empty"><h2>No matching artists</h2><p>Try another name.</p></div>}
             {groups.map((g) =>
           <AzReveal key={g.key}>
-                <div data-key={g.key} ref={(el) => groupRefs.current[g.key] = el}>
+                <div className="scroll-mt-24" data-key={g.key} ref={(el) => groupRefs.current[g.key] = el}>
                   <div className="sticky top-[calc(3.25rem_+_env(safe-area-inset-top))] z-10 -mx-4 sm:-mx-5 md:-mx-8 lg:-mx-12 px-4 sm:px-5 md:px-8 lg:px-12 py-1 bg-background/90 backdrop-blur-sm">
                     <span className="text-[11px] font-extrabold tracking-[0.18em] text-foreground/40">
                       {g.key}
@@ -279,9 +284,10 @@ export default function PublicRecordsIndex() {
       </PullToRefresh>
 
       {/* iOS-style index — mobile only, tap & drag */}
-      {artists && artists.length > 0 &&
+      {artists && groups.length > 0 &&
       <>
           <div
+          aria-label="Artist alphabet index" role="navigation" tabIndex={0} onKeyDown={e=>{if(!["ArrowDown","ArrowUp","Home","End"].includes(e.key))return;e.preventDefault();const index=letters.indexOf(activeKey);const next=e.key==="Home"?0:e.key==="End"?letters.length-1:Math.max(0,Math.min(letters.length-1,index+(e.key==="ArrowDown"?1:-1)));scrollToLetter(letters[next]);}}
           ref={railRef}
           onPointerDown={startDrag}
           onPointerMove={moveDrag}

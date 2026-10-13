@@ -1,6 +1,6 @@
 import LoadError from '@/components/LoadError';
 import {useRef} from 'react';
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import { fetchArtistTracks } from "@/lib/artistTracks";
@@ -96,6 +96,8 @@ export default function PublicRecords({ id: propId, fallbackArtist = null }) {
   const [tracks, setTracks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [generating, setGenerating] = useState(false);
+  const [query,setQuery]=useState(""),[sort,setSort]=useState("recent");
+  const visibleTracks=useMemo(()=>{const term=query.trim().toLowerCase(),list=tracks.filter(t=>!term||[t.title,t.artist,t.uploader_name].some(value=>(value||"").toLowerCase().includes(term)));if(sort==="popular")list.sort((a,b)=>(b.play_count||0)-(a.play_count||0));if(sort==="title")list.sort((a,b)=>(a.title||"").localeCompare(b.title||""));return list;},[tracks,query,sort]);
 
   const loadVersion=useRef(0);
   const [loadError,setLoadError]=useState(false);
@@ -105,7 +107,8 @@ export default function PublicRecords({ id: propId, fallbackArtist = null }) {
     try {
       const a = fallbackArtist || await base44.entities.Artist.get(id);
       (request===loadVersion.current)&&setArtist(a);
-      (request===loadVersion.current)&&setTracks(a?.name ? await fetchArtistTracks(a.name) : []);
+      const list=a?.name?await fetchArtistTracks(a.name):[];
+      if(request===loadVersion.current)setTracks(list);
     } catch {(request===loadVersion.current)&&setLoadError(true);
     } finally {
       (request===loadVersion.current)&&setLoading(false);
@@ -113,12 +116,13 @@ export default function PublicRecords({ id: propId, fallbackArtist = null }) {
   }
 
   useEffect(() => {
-    load();
+    setArtist(null);setTracks([]);setQuery("");setSort("recent");load();
     return()=>{loadVersion.current++;};
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id,fallbackArtist?.name]);
 
   async function generateHistory() {
+    if(generating||!id||user?.role!=="admin")return;
     setGenerating(true);
     try {
       const res = await base44.functions.invoke("generateArtistHistory", { artist_id: id });
@@ -139,7 +143,7 @@ export default function PublicRecords({ id: propId, fallbackArtist = null }) {
     }
   }
 
-  if(loadError)return <LoadError onRetry={load}/>;
+  if(loadError&&!artist)return <LoadError onRetry={load}/>;
   if (loading) {
     return (
       <div className="py-24 grid place-items-center">
@@ -182,7 +186,7 @@ export default function PublicRecords({ id: propId, fallbackArtist = null }) {
   find((t) => t.cover_art_url)?.cover_art_url;
 
   const isAdmin = !!user && user.role === "admin";
-  const playAll = () => p.playTrackAt(tracks);
+  const playAll = () => p.playTrackAt(visibleTracks.length?visibleTracks:tracks);
 
   return (
     <PullToRefresh onRefresh={load}>
@@ -299,6 +303,7 @@ export default function PublicRecords({ id: propId, fallbackArtist = null }) {
           }>
             Discography
           </SectionTitle>
+          {tracks.length>0&&<div className="collection-tools"><input aria-label="Search artist discography" placeholder="Find a song" value={query} onChange={e=>setQuery(e.target.value)} onKeyDown={e=>{if(e.key==="Escape")setQuery("");}}/><select aria-label="Sort artist discography" value={sort} onChange={e=>setSort(e.target.value)}><option value="recent">Newest</option><option value="popular">Most played</option><option value="title">Title A–Z</option></select></div>}
           {tracks.length === 0 ?
           <div className="rounded-2xl border border-dashed border-border py-10 text-center px-6">
               <Music size={22} className="text-foreground/35 mx-auto mb-2" />
@@ -306,7 +311,8 @@ export default function PublicRecords({ id: propId, fallbackArtist = null }) {
             </div> :
 
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 md:gap-4">
-              {tracks.map((t) =>
+              {!visibleTracks.length&&<div className="collection-empty col-span-full"><h2>No matching songs</h2><button className="playlist-action" onClick={()=>setQuery("")}>Show all songs</button></div>}
+              {visibleTracks.map((t) =>
             <TrackCard key={t.id} track={t} />
             )}
             </div>

@@ -20,12 +20,13 @@ export default function SettingsSheet({ onClose, onDeleteAccount }) {
   // Full sign-out: the SDK clears the stored token, then the app reloads on the
   // public landing screen so no signed-in state survives on this device.
   async function handleLogout() {
+    if(loggingOut)return;
     setLoggingOut(true);
     try {
       await clearPersonalData();
       await base44.auth.logout(`${window.location.origin}/`);
     } catch {
-      window.alert("Sign-out could not complete. Please retry.");
+      // Keep the sign-out control available for another attempt.
       setLoggingOut(false);
     }
   }
@@ -60,7 +61,7 @@ export default function SettingsSheet({ onClose, onDeleteAccount }) {
         <div className="space-y-2">
           <Link to="/support" onClick={onClose} className="block p-3 rounded-xl border">Support & copyright requests</Link>
           <div className="flex gap-4 text-sm p-3"><Link to="/privacy" onClick={onClose} className="underline">Privacy</Link><Link to="/terms" onClick={onClose} className="underline">Terms & community</Link></div>
-          <label className="flex items-center gap-3 p-3 rounded-xl border text-sm"><input type="checkbox" checked={!!user?.show_explicit} onChange={async (e) => {const enabled = e.target.checked;if (enabled && !window.confirm('I confirm I am at least 18 and want to see explicit music.')) return;try {await base44.auth.updateMe({ show_explicit: enabled, adult_confirmed: enabled || !!user?.adult_confirmed });await checkUserAuth();window.dispatchEvent(new Event('catalog:invalidate'));} catch {window.alert('Could not save your content preference.');}}} />Show explicit music (18+)</label>
+          <label className="flex items-center gap-3 p-3 rounded-xl border text-sm"><input type="checkbox" checked={!!user?.show_explicit} onChange={async (e) => {const enabled = e.target.checked;if (enabled && !window.confirm('I confirm I am at least 18 and want to see explicit music.')) return;try {await base44.auth.updateMe({ show_explicit: enabled, adult_confirmed: enabled || !!user?.adult_confirmed });await checkUserAuth();window.dispatchEvent(new Event('catalog:invalidate'));} catch {/* Keep the confirmed content preference. */}}} />Show explicit music (18+)</label>
           {safety.own.length > 0 && <div className="p-3 border rounded-xl"><h3 className="font-bold text-sm mb-2">Blocked users</h3>{safety.own.map((r) => <button key={r.id} className="block text-xs underline p-2" onClick={async () => {await base44.functions.invoke('safety', { action: 'block', user_id: r.blocked_user_id, blocked: false });await safety.reload();window.dispatchEvent(new Event('catalog:invalidate'));}}>Unblock {r.blocked_user_id}</button>)}</div>}
           {/* Artist Mode */}
           <div className="p-3.5 rounded-2xl bg-foreground/[0.02]">
@@ -123,7 +124,7 @@ export default function SettingsSheet({ onClose, onDeleteAccount }) {
             </div>
             <div className="flex-1 min-w-0">
               <div className="text-sm font-bold">Song Transitions</div>
-              <div className="text-xs text-foreground/50 truncate">Crossfade & AutoMix</div>
+              <div className="text-xs text-foreground/50 truncate">Crossfade & gapless</div>
             </div>
             <ChevronRight size={16} className="text-foreground/30 shrink-0" />
           </Link>
