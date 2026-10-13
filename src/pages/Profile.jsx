@@ -558,8 +558,8 @@ export default function Profile() {
                     <button
                       onClick={() => setEditMode(true)}
                       title="Edit profile"
-                      aria-label="Edit profile"
-                      className="profile-primary-action playlist-action">
+                      aria-label="Edit profile" className="w-10 h-10 md:w-12 md:h-12 rounded-full border border-border grid place-items-center">
+                      
                     <Pencil size={16} /><span className="hidden">Edit profile</span>
                   </button> :
                     <button
