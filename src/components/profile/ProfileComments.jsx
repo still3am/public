@@ -15,10 +15,12 @@ export default function ProfileComments({ profileId, isOwn }) {
   const { toast } = useToast();
   const [comments, setComments] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error,setError]=useState(false);
   const [message, setMessage] = useState("");
   const [posting, setPosting] = useState(false);
 
   const load = useCallback(async () => {
+    setError(false);
     try {
       const items = await base44.entities.ProfileComment.filter(
         { profile_id: profileId },
@@ -27,7 +29,7 @@ export default function ProfileComments({ profileId, isOwn }) {
       );
       setComments(items || []);
     } catch {
-      setComments([]);
+      setError(true);
     } finally {
       setLoading(false);
     }
@@ -36,9 +38,10 @@ export default function ProfileComments({ profileId, isOwn }) {
   useEffect(() => {
     load();
     const reload = coalesce(load, 1200);
-    const unsub = base44.entities.ProfileComment.subscribe(() => reload());
+    let unsub=()=>{};try{unsub=base44.entities.ProfileComment.subscribe(()=>reload());}catch{}
+    const timer=setInterval(reload,30000);
     return () => {
-      reload.cancel();
+      clearInterval(timer);reload.cancel();
       unsub();
     };
   }, [load]);
@@ -57,6 +60,7 @@ export default function ProfileComments({ profileId, isOwn }) {
         message: text,
       });
       setMessage("");
+      await load();
       if (profileId !== user.id) {
         try {
           await base44.entities.Notification.create({
@@ -88,6 +92,7 @@ export default function ProfileComments({ profileId, isOwn }) {
 
   return (
     <div className="mb-8">
+      {error&&<div role="alert" className="text-sm p-3 border rounded-xl mb-3">Comments could not refresh. <button className="underline" onClick={load}>Retry</button></div>}
       <h2 className="text-lg font-extrabold tracking-tight mb-4 flex items-center gap-2">
         <MessageCircle size={18} /> Comments
       </h2>

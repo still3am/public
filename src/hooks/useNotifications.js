@@ -24,15 +24,16 @@ export function useUnreadCount() {
         });
         if (!cancelled) setCount(unread || 0);
       } catch {
-        if (!cancelled) setCount(0);
+        /* preserve the last confirmed unread count */
       }
     }
     load();
     // A burst of likes/follows arrives as several events — collapse them.
     const reload = coalesce(load, 1500);
-    const unsub = base44.entities.Notification.subscribe(() => reload());
+    let unsub=()=>{};try{unsub=base44.entities.Notification.subscribe(()=>reload());}catch{}
+    const timer=setInterval(reload,30000);
     return () => {
-      cancelled = true;
+      cancelled = true;clearInterval(timer);
       reload.cancel();
       unsub();
     };
@@ -53,23 +54,24 @@ export function useNotifications(){
   try{
    const page=await base44.entities.Notification.filter({user_id:uid},{sort:'-created_date',limit:50,...(!reset&&cursor.current?{cursor:cursor.current}:{})});
    const items=Array.isArray(page)?page:page.items||[];
-   const actors=await getUsersByIds([...new Set(items.map(n=>n.actor_id).filter(Boolean))]);
+   const actors=await getUsersByIds([...new Set(items.map(n=>n.actor_id).filter(Boolean))]).catch(()=>[]);
    const actorMap=new Map(actors.map(a=>[a.id,a])),trackMap=new Map();
    const ids=[...new Set(items.map(n=>n.track_id).filter(Boolean))];
    if(ids.length){try{const tracks=await base44.entities.Track.filter({id:{$in:ids}},'-created_date',50);tracks.forEach(t=>trackMap.set(t.id,t));}catch{}}
-   const count=await base44.entities.Notification.count({user_id:uid,read:false});
+   const count=await base44.entities.Notification.count({user_id:uid,read:false}).catch(()=>null);
    if(request!==epoch.current||account.current!==uid)return;
    const enriched=items.map(n=>({...n,actor:actorMap.get(n.actor_id)||null,track:trackMap.get(n.track_id)||null}));
    setNotifications(prev=>reset?enriched:[...prev,...enriched.filter(n=>!prev.some(p=>p.id===n.id))]);
-   cursor.current=page.next_cursor||null;setHasMore(!!page.has_more&&!!page.next_cursor);setUnreadCount(count||0);
+   cursor.current=page.next_cursor||null;setHasMore(!!page.has_more&&!!page.next_cursor);if(typeof count==="number")setUnreadCount(count);
   }catch{if(request===epoch.current)setError(true);}
   finally{if(request===epoch.current){setLoading(false);busy.current=false;}}
  },[user?.id]);
  useEffect(()=>{
   cursor.current=null;epoch.current++;setNotifications([]);setUnreadCount(0);load(true);
   if(!user?.id)return;
-  const reload=coalesce(()=>load(true),1500),unsub=base44.entities.Notification.subscribe(()=>reload());
-  return()=>{epoch.current++;reload.cancel();unsub();};
+  const reload=coalesce(()=>load(true),1500);let unsub=()=>{};try{unsub=base44.entities.Notification.subscribe(()=>reload());}catch{}
+  const timer=setInterval(reload,30000);
+  return()=>{epoch.current++;clearInterval(timer);reload.cancel();unsub();};
  },[load,user?.id]);
  async function markAllAsRead(){
   const before=notifications,count=unreadCount;setNotifications(prev=>prev.map(n=>({...n,read:true})));setUnreadCount(0);

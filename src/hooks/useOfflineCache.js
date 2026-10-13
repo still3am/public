@@ -180,7 +180,7 @@ export function useOfflineCache() {
   // When another device updates the cloud offline list, re-read it here.
   useEffect(() => {
     if (!user?.id) return;
-    const unsub = base44.entities.OfflineSync.subscribe(() => syncFromCloud());
+    let unsub=()=>{};try{unsub=base44.entities.OfflineSync.subscribe(()=>syncFromCloud());}catch{}
     return unsub;
   }, [user?.id, syncFromCloud]);
 

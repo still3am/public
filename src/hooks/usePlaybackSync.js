@@ -133,10 +133,10 @@ export function usePlaybackSync() {
     // Every listening device writes this row on a heartbeat, so our own writes
     // would otherwise trigger a pointless re-read of the collection. Only a
     // change from ANOTHER device is worth refreshing.
-    const unsub = base44.entities.PlaybackState.subscribe((event) => {
+    let unsub=()=>{};try{unsub = base44.entities.PlaybackState.subscribe((event) => {
       if (event?.data?.device_id === deviceId) return;
       loadRemote();
-    });
+    });}catch{}
     return unsub;
   }, [loadRemote, deviceId]);
 

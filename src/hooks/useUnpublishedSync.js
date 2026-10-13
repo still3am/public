@@ -13,12 +13,12 @@ export function useUnpublishedSync(onUnpublished) {
   }, [onUnpublished]);
 
   useEffect(() => {
-    const unsub = base44.entities.Track.subscribe((event) => {
+    let unsub=()=>{};try{unsub = base44.entities.Track.subscribe((event) => {
       if(event.type==="delete" || (event.type === "update" && event.data?.is_published === false)) {
         window.dispatchEvent(new Event("catalog:invalidate"));
         ref.current?.(event.data?.id||event.id);
       }
-    });
+    });}catch{}
     return unsub;
   }, []);
 }
