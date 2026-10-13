@@ -27,11 +27,11 @@ export default function TrackRow({
       onDoubleClick={play}
     >
       <button type="button"
-        className="hidden md:grid place-items-center w-8 h-11 text-sm font-medium text-muted-foreground shrink-0"
+        className={`${showArt?"hidden md:grid":"grid"} place-items-center w-8 h-11 text-sm font-medium text-muted-foreground shrink-0`}
         aria-label={isCurrent&&p.isPlaying?`Pause ${track.title}`:`Play ${track.title}`}
         onClick={()=>isCurrent?p.togglePlay():play()} onDoubleClick={e=>e.stopPropagation()}>
         {isCurrent ? (p.isPlaying?<Pause size={15}/>:<Play size={15}/>) :
-          <><span className="group-hover:hidden">{index!=null?index+1:""}</span><Play size={15} className="hidden group-hover:block"/></>}
+          <><span className="hidden md:block md:group-hover:hidden">{index!=null?index+1:""}</span><Play size={15} className="md:hidden md:group-hover:block"/></>}
       </button>
 
       {showArt && (
