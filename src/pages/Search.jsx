@@ -19,9 +19,9 @@ import EmptyState from "@/components/EmptyState";
 export default function Search() {
   const [searchParams, setSearchParams] = useSearchParams();
   const urlQ = searchParams.get("q") || "";
-  const scope=searchParams.get("type")==="people"?"people":"all";
-  const peopleMode=scope==="people";
-  function chooseScope(next){const params=new URLSearchParams(searchParams);params.delete("genre");if(next==="people")params.set("type","people");else params.delete("type");setSearchParams(params,{replace:true});setGenre(null);}
+  const scope = searchParams.get("type") === "people" ? "people" : "all";
+  const peopleMode = scope === "people";
+  function chooseScope(next) {const params = new URLSearchParams(searchParams);params.delete("genre");if (next === "people") params.set("type", "people");else params.delete("type");setSearchParams(params, { replace: true });setGenre(null);}
   const [q, setQ] = useState(urlQ);
   const [genre, setGenre] = useState(() => {
     const params = new URLSearchParams(window.location.search);
@@ -56,7 +56,7 @@ export default function Search() {
     peopleFailed,
     hasQuery,
     refresh } =
-  useGlobalSearch(q,scope);
+  useGlobalSearch(q, scope);
 
   // Keep the browse crate honest if an admin unpublishes a track mid-session.
   useUnpublishedSync((id) => {
@@ -82,7 +82,7 @@ export default function Search() {
     if (peopleMode || hasQuery || catalogueLoaded.current) return;
     catalogueLoaded.current = true;
     loadCatalogue();
-  }, [hasQuery,peopleMode]);
+  }, [hasQuery, peopleMode]);
 
   useEffect(() => {const change = () => {loadCatalogue();refresh();};window.addEventListener('catalog:invalidate', change);return () => window.removeEventListener('catalog:invalidate', change);}, [refresh]);
 
@@ -128,17 +128,17 @@ export default function Search() {
   return (
     <PullToRefresh onRefresh={handleRefresh}>
       <div>
-        <div className="flex gap-2 mb-5" role="group" aria-label="Search category">
-          <button className={`chip min-h-11 ${!peopleMode?"active":""}`} aria-pressed={!peopleMode} onClick={()=>chooseScope("all")}>All</button>
-          <button className={`chip min-h-11 ${peopleMode?"active":""}`} aria-pressed={peopleMode} onClick={()=>chooseScope("people")}>People</button>
+        <div className="flex gap-2 mb-5 hidden" role="group" aria-label="Search category">
+          <button className={`chip min-h-11 ${!peopleMode ? "active" : ""}`} aria-pressed={!peopleMode} onClick={() => chooseScope("all")}>All</button>
+          <button className={`chip min-h-11 ${peopleMode ? "active" : ""}`} aria-pressed={peopleMode} onClick={() => chooseScope("people")}>People</button>
         </div>
         {/* Search input (mobile / tablet) — desktop uses the sidebar field instead */}
-        <div className={`relative mb-6 max-w-2xl ${peopleMode?"":"md:hidden"}`}>
+        <div className={`relative mb-6 max-w-2xl ${peopleMode ? "" : "md:hidden"}`}>
           <SearchIcon size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-foreground/40 pointer-events-none" />
           <input
             value={q}
             onChange={(e) => {updateQuery(e.target.value);setGenre(null);}}
-            aria-label={peopleMode?"Search people by name":"Search tracks, artists, people"} placeholder={peopleMode?"Search people by name…":"Search tracks, artists, people…"}
+            aria-label={peopleMode ? "Search people by name" : "Search tracks, artists, people"} placeholder={peopleMode ? "Search people by name…" : "Search tracks, artists, people…"}
             className="w-full pl-11 pr-20 py-3.5 rounded-full border border-border bg-background text-sm font-medium focus:outline-none focus:ring-2 focus:ring-foreground/10 transition shadow-sm" />
 
           {searching &&
@@ -162,7 +162,7 @@ export default function Search() {
         {hasQuery ?
         firstSearchInFlight ? loader :
         anyResults === 0 ?
-        (failed||peopleFailed) ?
+        failed || peopleFailed ?
         <div className="py-10 text-center"><Button variant="outline" onClick={refresh}>Refresh results</Button></div> :
         <EmptyState
           icon={SearchIcon}
@@ -177,7 +177,7 @@ export default function Search() {
           dimmed={searching} /> :
 
 
-        peopleMode ? <EmptyState icon={SearchIcon} title="Find people on PUBLIC" description="Search by display name or full name to open their profile and follow them."/> :
+        peopleMode ? <EmptyState icon={SearchIcon} title="Find people on PUBLIC" description="Search by display name or full name to open their profile and follow them." /> :
         genre ?
         <div>
             <div className="flex items-center gap-3 mb-3">
