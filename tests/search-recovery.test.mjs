@@ -29,12 +29,19 @@ peopleFail=false;const retried=await globalSearch('Denzel retry');assert.equal(r
 primaryFail=true;const fallback=await globalSearch('gateway fallback',{fresh:true});assert.equal(fallback.people[0].id,'u1');assert.equal(fallback.peopleFailed,false);
 globalThis.__usersMock={
  auth:{me:async()=>({id:'caller'})},
- asServiceRole:{entities:{User:{filter:async(query,sort,limit,skip,fields)=>{assert.equal(limit,30);assert.equal(query.disabled.$ne,true);assert.deepEqual(fields,['id','display_name','full_name','avatar_url']);return [{id:'u1',display_name:'3AM',full_name:'Denzel Valdez',email:'private@example.com',bio:'private detail'}];}}}}
+ asServiceRole:{entities:{User:{filter:async(query,sort,limit,skip,fields)=>{assert.equal(limit,30);assert.deepEqual(fields,['id','display_name','full_name','avatar_url','is_blocked']);return [{id:'u1',display_name:'3AM',full_name:'Denzel Valdez',email:'private@example.com',bio:'private detail'}];}}}}
 };
 source=read('base44/functions/searchUsers/entry.ts').replace(/import \{ createClientFromRequest \}[^;]*;/,'const createClientFromRequest=()=>globalThis.__usersMock;');
 const {default:handler}=await importSource(source);
 const response=await handler(new Request('https://example.test',{method:'POST',body:JSON.stringify({q:'denzel'})}));
 assert.equal(response.status,200);const data=await response.json();assert.equal(data.results.length,1);assert.equal(data.results[0].id,'u1');assert.equal(data.results[0].email,undefined);assert.equal(data.results[0].full_name,undefined);assert.equal(data.results[0].bio,undefined);
+const originalDirectoryFilter=globalThis.__usersMock.asServiceRole.entities.User.filter;
+globalThis.__usersMock.asServiceRole.entities.User.filter=async()=>[];
+globalThis.__usersMock.asServiceRole.entities.User.list=async(sort,limit,skip,fields)=>{assert.equal(limit,200);assert.ok(!fields.includes('email'));return [{id:'u1',display_name:'3AM',full_name:'Denzel Valdez'}];};
+const legacy=await handler(new Request('https://example.test',{method:'POST',body:JSON.stringify({q:'denzel'})}));
+assert.equal((await legacy.json()).results[0].display_name,'3AM');
+globalThis.__usersMock.asServiceRole.entities.User.filter=originalDirectoryFilter;
+
 source=read('base44/functions/securityGateway/entry.ts').replace(/import \{ createClientFromRequest \}[^;]*;/,'const createClientFromRequest=()=>globalThis.__usersMock;');
 const gateway=(await importSource(source)).default;
 const gatewayResponse=await gateway(new Request('https://example.test',{method:'POST',body:JSON.stringify({entity:'User',action:'searchPublic',args:['Denzel']})}));

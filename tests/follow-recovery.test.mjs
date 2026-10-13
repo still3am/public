@@ -6,7 +6,7 @@ let caller={id:'viewer',role:'user'},countFails=false,profileFails=false;
 const follows=[{id:'f1',follower_id:'viewer',following_id:'other'},{id:'f2',follower_id:'friend',following_id:'viewer'}];
 const profiles=Array.from({length:100},(_,i)=>({id:'u'+i,display_name:'Listener '+i,email:'private@example.test'}));
 globalThis.__followSDK={auth:{me:async()=>caller},asServiceRole:{entities:{
- User:{filter:async()=>{if(profileFails)throw Error('offline');return {items:profiles};}},
+ User:{filter:async()=>{if(profileFails)throw Error('offline');return {items:profiles};},get:async id=>profiles.find(u=>u.id===id)||null},
  Follow:{count:async q=>{if(countFails)throw Error('count unavailable');return follows.filter(r=>Object.entries(q).every(([k,v])=>r[k]===v)).length;},filter:async(q,options)=>{const rows=follows.filter(r=>Object.entries(q).every(([k,v])=>r[k]===v));return typeof options==='object'?{items:rows,has_more:false}:rows;}}
 }}};
 const prepare=p=>source(p).replace(/import\s*\{\s*createClientFromRequest\s*\}\s*from\s*[^;]+;/,'const createClientFromRequest=()=>globalThis.__followSDK;');
@@ -15,7 +15,7 @@ const users=(await load(prepare('base44/functions/usersByIds/entry.ts'))).defaul
 const req=body=>new Request('https://example.test',{method:'POST',body:JSON.stringify(body)});
 const details=await users(req({ids:profiles.map(u=>u.id)}));
 assert.equal(details.status,200);const data=await details.json();assert.equal(data.users.length,100);assert.equal(data.users[0].email,undefined);
-profileFails=true;assert.equal((await users(req({ids:['u1']}))).status,503);profileFails=false;
+profileFails=true;const recovered=await users(req({ids:['u1']}));assert.equal(recovered.status,200);assert.equal((await recovered.json()).users[0].id,'u1');profileFails=false;
 for(const query of [{follower_id:'viewer'},{following_id:'viewer'}]){
  const r=await gateway(req({entity:'Follow',action:'read',args:['filter',query,{limit:200}]}));
  assert.equal(r.status,200);assert.equal((await r.json()).result.items.length,1);
