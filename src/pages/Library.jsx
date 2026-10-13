@@ -198,7 +198,7 @@ export default function Library() {
   return (
     <div className="library-page max-w-6xl mx-auto pb-10">
       <header className="library-heading">
-        <div><p className="eyebrow hidden">Your collection</p><h1>Library</h1><p className="text-sm text-muted-foreground mt-2">Music you keep coming back to.</p></div>
+        <div><h1>Library</h1><p className="text-sm text-muted-foreground mt-2">Music you keep coming back to.</p></div>
         <button onClick={() => setShowCreate(true)} className="chrome-button"><Plus size={16} /><span>New playlist</span></button>
       </header>
       <div className="library-shortcuts">
