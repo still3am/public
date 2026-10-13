@@ -1,3 +1,6 @@
+import {readAllPages} from "@/lib/readPages";
+import {addPlaylistTracks} from "@/lib/playlistActions";
+import {createPortal} from "react-dom";
 import { useState, useEffect, useMemo, useCallback } from "react";
 import { base44 } from "@/api/base44Client";
 import { useAuth } from "@/lib/AuthContext";
@@ -13,6 +16,7 @@ export default function AddToPlaylistPicker({ playlist, onClose }) {
   const [query, setQuery] = useState("");
   const [selected, setSelected] = useState(new Set());
   const [saving, setSaving] = useState(false);
+  const [error,setError]=useState(false),[publicMatches,setPublicMatches]=useState([]),[searching,setSearching]=useState(false);
 
   const existingIds = useMemo(() => new Set(playlist?.track_ids || []), [playlist]);
 
@@ -21,11 +25,11 @@ export default function AddToPlaylistPicker({ playlist, onClose }) {
       setTracks([]);
       return;
     }
-    setLoading(true);
+    setLoading(true);setError(false);
     try {
       const [items, uploaded] = await Promise.all([
-        base44.entities.LibraryItem.filter({ user_id: user.id }, "-created_date", 1000),
-        base44.entities.Track.filter({ uploader_id: user.id }, "-created_date", 1000),
+        readAllPages(opts=>base44.entities.LibraryItem.filter({user_id:user.id},{sort:"-created_date",...opts})),
+        readAllPages(opts=>base44.entities.Track.filter({uploader_id:user.id},{sort:"-created_date",...opts})),
       ]);
       const libIds = (items || []).map((i) => i.track_id).filter(Boolean);
       const uploadIds = new Set((uploaded || []).map((t) => t.id));
@@ -34,14 +38,10 @@ export default function AddToPlaylistPicker({ playlist, onClose }) {
         setTracks([]);
         return;
       }
-      const list = await base44.entities.Track.filter(
-        { id: { $in: allIds } },
-        "-created_date",
-        1000
-      );
+      const list=[];for(let i=0;i<allIds.length;i+=200)list.push(...await readAllPages(opts=>base44.entities.Track.filter({id:{$in:allIds.slice(i,i+200)}},{...opts})));
       setTracks(list || []);
     } catch {
-      setTracks([]);
+      setError(true);
     } finally {
       setLoading(false);
     }
@@ -51,16 +51,28 @@ export default function AddToPlaylistPicker({ playlist, onClose }) {
     if (playlist) load();
   }, [playlist, load, libIds]);
 
+  useEffect(()=>{
+    let alive=true;
+    if(query.trim().length<2){setPublicMatches([]);setSearching(false);return;}
+    setSearching(true);
+    const timer=setTimeout(async()=>{
+      const escaped=query.trim().replace(/[.*+?^${}()|[]\\]/g,'\\$&');
+      try{const rows=await base44.entities.Track.filter({is_published:true,$or:[{title:{$regex:escaped,$options:'i'}},{artist:{$regex:escaped,$options:'i'}}]},'-play_count',60);if(alive)setPublicMatches(rows);}
+      catch{if(alive)setError(true);}finally{if(alive)setSearching(false);}
+    },400);
+    return()=>{alive=false;clearTimeout(timer);};
+  },[query]);
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
-    if (!q) return tracks || [];
-    return (tracks || []).filter(
+    const all=[...new Map([...(tracks||[]),...publicMatches].map(t=>[t.id,t])).values()];
+    if (!q) return all;
+    return all.filter(
       (t) =>
         t.title?.toLowerCase().includes(q) ||
         t.artist?.toLowerCase().includes(q) ||
         t.uploader_name?.toLowerCase().includes(q)
     );
-  }, [tracks, query]);
+  }, [tracks, query,publicMatches]);
 
   if (!playlist) return null;
 
@@ -80,9 +92,7 @@ export default function AddToPlaylistPicker({ playlist, onClose }) {
       const current = playlist.track_ids || [];
       const toAdd = [...selected].filter((id) => !current.includes(id));
       if (toAdd.length) {
-        await base44.entities.Playlist.update(playlist.id, {
-          track_ids: [...current, ...toAdd],
-        });
+        await addPlaylistTracks(playlist.id,toAdd);
       }
       onClose();
     } catch {
@@ -92,8 +102,8 @@ export default function AddToPlaylistPicker({ playlist, onClose }) {
     }
   }
 
-  return (
-    <div className="fixed inset-0 z-[70] bg-black/85 backdrop-blur-xl flex flex-col animate-[fadeIn_.2s_ease-out]">
+  return createPortal(
+    <div role="dialog" aria-modal="true" aria-label="Add songs to playlist" data-public-dialog tabIndex={-1} onKeyDown={e=>{if(e.key==="Escape"&&!saving)onClose();}} className="playlist-picker fixed inset-0 z-[70] bg-black/95 text-overlay-foreground backdrop-blur-xl flex flex-col animate-[fadeIn_.2s_ease-out]">
       <div className="flex items-center justify-between px-5 pt-8 pb-3 shrink-0">
         <div className="min-w-0">
           <h2 className="text-lg font-bold truncate">Add to {playlist.name}</h2>
@@ -112,12 +122,15 @@ export default function AddToPlaylistPicker({ playlist, onClose }) {
           <input
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="Search your music"
+            aria-label="Search your music and the public catalog"
+            placeholder="Search your music or PUBLIC…"
             className="w-full pl-10 pr-3 py-2.5 rounded-full bg-white/10 border border-white/10 text-sm placeholder:text-white/40 focus:outline-none focus:bg-white/15 transition"
           />
         </div>
       </div>
 
+      {error&&<p role="alert" className="px-5 text-sm text-red-300">Some music could not load. <button className="underline" onClick={load}>Retry your library</button></p>}
+      {searching&&<p className="px-5 text-xs text-white/60">Searching PUBLIC…</p>}
       <div className="flex-1 min-h-0 overflow-y-auto px-3 pb-24">
         {loading ? (
           <div className="flex justify-center py-16">
@@ -184,6 +197,6 @@ export default function AddToPlaylistPicker({ playlist, onClose }) {
           </button>
         </div>
       )}
-    </div>
+    </div>,document.body
   );
 }

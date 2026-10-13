@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect,useState } from "react";
 import { createPortal } from "react-dom";
 import { base44 } from "@/api/base44Client";
 import { useAuth } from "@/lib/AuthContext";
@@ -15,7 +15,9 @@ export default function CreatePlaylistModal({ onClose, onCreated }) {
   const [coverPreview, setCoverPreview] = useState("");
   const [saving, setSaving] = useState(false);
 
+  useEffect(()=>()=>{if(coverPreview)URL.revokeObjectURL(coverPreview);},[coverPreview]);
   async function handleCover(file) {
+    if(!file.type.startsWith("image/")||file.size>10*1024*1024){alert("Choose an image under 10 MB.");return;}
     setCoverFile(file);
     setCoverPreview(URL.createObjectURL(file));
   }
@@ -26,7 +28,7 @@ export default function CreatePlaylistModal({ onClose, onCreated }) {
     try {
       let cover_art_url = "";
       if (coverFile) {
-        const r = await base44.integrations.Core.UploadFile({ file: coverFile }).catch(() => null);
+        const r = await base44.integrations.Core.UploadFile({ file: coverFile });
         cover_art_url = r?.file_url || "";
       }
       const pl = await base44.entities.Playlist.create({
@@ -37,6 +39,7 @@ export default function CreatePlaylistModal({ onClose, onCreated }) {
         is_public: isPublic,
         cover_art_url,
       });
+      window.dispatchEvent(new Event("playlists:changed"));
       onCreated?.(pl);
       onClose();
     } catch {
@@ -47,7 +50,7 @@ export default function CreatePlaylistModal({ onClose, onCreated }) {
   }
 
   return createPortal(
-    <div className="fixed inset-0 z-[70] flex items-end md:items-center justify-center">
+    <div role="dialog" aria-modal="true" aria-label="New playlist" data-public-dialog tabIndex={-1} onKeyDown={e=>e.key==="Escape"&&!saving&&onClose()} className="fixed inset-0 z-[70] flex items-end md:items-center justify-center">
       <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={onClose} />
       <div className="relative w-full md:max-w-md bg-card border rounded-t-3xl md:rounded-3xl p-5 pb-[calc(1.25rem+env(safe-area-inset-bottom))] max-h-[85vh] overflow-y-auto">
         <div className="md:hidden w-10 h-1 bg-foreground/20 rounded-full mx-auto mb-4" />
@@ -78,6 +81,7 @@ export default function CreatePlaylistModal({ onClose, onCreated }) {
             </label>
             <div className="flex-1 min-w-0">
               <input
+                aria-label="Playlist name" maxLength={160}
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 placeholder="Playlist name"
@@ -88,6 +92,7 @@ export default function CreatePlaylistModal({ onClose, onCreated }) {
           </div>
 
           <textarea
+            aria-label="Playlist description" maxLength={2000}
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             placeholder="Add a description…"
