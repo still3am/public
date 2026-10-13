@@ -234,7 +234,7 @@ export default function Library() {
 
             
             {!visibleTracks.length ? <EmptyState icon={LibIcon} title={tracks?.length ? "No matching songs" : "Make this space yours"} description={tracks?.length ? "Try another search or reset your filters." : "Save songs from anywhere on PUBLIC to find them here."} action={tracks?.length ? <button className="playlist-action" onClick={() => {setSearch("");setFolder("");setTagQuery("");}}>Clear filters</button> : <Link className="chrome-button" to="/search">Find music</Link>} /> :
-            display === "grid" ? <div className="library-music-grid">{visibleTracks.map((t) => <TrackCard key={t.id} track={t} selectable={editMode} selected={selected.has(t.id)} onToggleSelect={toggleSelect} />)}</div> :
+            display === "grid" ? <div className="library-music-grid">{visibleTracks.map((t) => <TrackCard key={t.id} track={t} queue={visibleTracks} selectable={editMode} selected={selected.has(t.id)} onToggleSelect={toggleSelect} />)}</div> :
             <div className="library-song-list">{visibleTracks.map((t, i) => <div key={t.id} className="library-song-item">{editMode && <input type="checkbox" aria-label={`Select ${t.title}`} checked={selected.has(t.id)} onChange={() => toggleSelect(t)} />}<div className="min-w-0 flex-1"><TrackRow track={t} index={i} queue={visibleTracks} queueIndex={i} /></div></div>)}</div>}
           </section>}
           {libraryView === "playlists" && <>

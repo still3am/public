@@ -52,25 +52,18 @@ export default function TrackDetail() {
         const status=original?.status??original?.response?.status;
         if(status===403||status===404)throw original;
         const rows=await base44.entities.Track.filter({id},"-created_date",1);
-        t=rows[0];if(!t)throw original;
+        t=(Array.isArray(rows)?rows:rows?.items||[])[0];if(!t)throw original;
       }
-      (request===loadVersion.current)&&setTrack(t);
-      (request===loadVersion.current)&&setUploader(null);
-      if(request===loadVersion.current){setMoreTracks([]);setLoading(false);}
-      if (t?.uploader_id) {
-        // Other people's user records are admin-only, so the uploader credit is
-        // resolved through the public-profile endpoint the profile page uses.
-        const u = (await getUsersByIds([t.uploader_id]).catch(() => []))[0] || null;
-        (request===loadVersion.current)&&setUploader(u);
-      }
-      if (t?.artist) {
-        // The artist's songs come from the server, so a large catalogue still
-        // surfaces their older tracks instead of only the top 100 by plays.
-        const all = await fetchArtistTracks(t.artist).catch(() => []);
-        (request===loadVersion.current)&&setMoreTracks(all.filter((x) => x.id !== t.id).slice(0, 6));
-      } else {
-        (request===loadVersion.current)&&setMoreTracks([]);
-      }
+      if(request!==loadVersion.current)return;
+      setTrack(t);setLoading(false);
+      setUploader(previous=>previous?.id===t?.uploader_id?previous:t?.uploader_id?{id:t.uploader_id,display_name:t.uploader_name||"PUBLIC member"}:null);
+      const [credit,related]=await Promise.allSettled([
+        t?.uploader_id?getUsersByIds([t.uploader_id]):Promise.resolve([]),
+        t?.artist?fetchArtistTracks(t.artist):Promise.resolve([])
+      ]);
+      if(request!==loadVersion.current)return;
+      if(credit.status==="fulfilled"&&credit.value[0])setUploader(credit.value[0]);
+      if(related.status==="fulfilled")setMoreTracks(related.value.filter(row=>row.id!==t.id).slice(0,6));
     } catch {(request===loadVersion.current)&&setLoadError(true);
     } finally {
       (request===loadVersion.current)&&setLoading(false);
@@ -78,20 +71,20 @@ export default function TrackDetail() {
   }
 
   useEffect(() => {
-    load();
+    setTrack(null);setUploader(null);setMoreTracks([]);setEditing(false);setGenerating(false);setSyncing(false);setDetecting(false);load();
     return()=>{loadVersion.current++;};
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 
 
   async function detectGenre() {
-    if (!track) return;
-    setDetecting(true);
+    if (!track||detecting) return;
+    const trackId=track.id,request=loadVersion.current;setDetecting(true);
     try {
       const res = await base44.functions.invoke("detectGenre", { track_id: track.id });
       const genre = res?.data?.genre;
       if (genre) {
-        setTrack((prev) => ({ ...prev, genre }));
+        setTrack(previous=>previous?.id===trackId?{...previous,genre}:previous);
         toast({ title: `Genre set to ${genre}` });
       } else {
         toast({ title: "Couldn't detect genre", variant: "destructive" });
@@ -99,7 +92,7 @@ export default function TrackDetail() {
     } catch (e) {
       toast({ title: e?.response?.data?.error || "Couldn't detect genre", variant: "destructive" });
     } finally {
-      setDetecting(false);
+      if(request===loadVersion.current)setDetecting(false);
     }
   }
 

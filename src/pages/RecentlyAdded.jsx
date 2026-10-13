@@ -1,5 +1,5 @@
 import LoadError from '@/components/LoadError';
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useMemo, useRef } from "react";
 import { getPublishedTracks } from "@/lib/catalogCache";
 import TrackCard from "@/components/TrackCard";
 import IncrementalList from "@/components/IncrementalList";
@@ -12,6 +12,10 @@ export default function RecentlyAdded() {
   const [tracks, setTracks] = useState([]);
   const [loadError, setLoadError] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [query,setQuery]=useState(""),[genre,setGenre]=useState("");
+  const loadVersion=useRef(0);
+  const genres=useMemo(()=>[...new Set(tracks.map(track=>track.genre).filter(Boolean))].sort((a,b)=>a.localeCompare(b)),[tracks]);
+  const visible=useMemo(()=>tracks.filter(track=>(!genre||track.genre===genre)&&(!query.trim()||[track.title,track.artist,track.uploader_name].some(value=>(value||"").toLowerCase().includes(query.trim().toLowerCase())))),[tracks,genre,query]);
 
   const onUnpublished = useCallback((id) => {
     setTracks((prev) => prev.filter((t) => t.id !== id));
@@ -19,18 +23,18 @@ export default function RecentlyAdded() {
   useUnpublishedSync(onUnpublished);
 
   async function load() {
-    setLoading(true);setLoadError(false);
+    const request=++loadVersion.current;setLoading(true);setLoadError(false);
     try {
-      setTracks(await getPublishedTracks(true));
+      const rows=await getPublishedTracks(true);if(request===loadVersion.current)setTracks(rows);
     } catch {
-      setLoadError(true);
+      if(request===loadVersion.current)setLoadError(true);
     } finally {
-      setLoading(false);
+      if(request===loadVersion.current)setLoading(false);
     }
   }
 
   useEffect(() => {
-    load();
+    load();return()=>{loadVersion.current++;};
   }, []);
 
   if (loading && !tracks.length)
@@ -46,10 +50,12 @@ export default function RecentlyAdded() {
     <PullToRefresh onRefresh={load}>
     <div className="collection-page">
         <header className="page-intro"><h1>Fresh on PUBLIC</h1><p>New music, ready to discover.</p></header>
+        <div className="collection-tools"><input aria-label="Search this music collection" placeholder="Find a song or artist" value={query} onChange={e=>setQuery(e.target.value)} onKeyDown={e=>{if(e.key==="Escape")setQuery("");}}/><select aria-label="Filter music genre" value={genre} onChange={e=>setGenre(e.target.value)}><option value="">All genres</option>{genres.map(name=><option key={name} value={name}>{name}</option>)}</select>{(query||genre)&&<button className="playlist-action" onClick={()=>{setQuery("");setGenre("");}}>Reset</button>}</div>
+        {!visible.length&&<div className="collection-empty"><h2>No matching songs</h2><p>Try another title, artist, or genre.</p></div>}
       <IncrementalList
-          items={tracks}
+          items={visible}
           className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 md:gap-4"
-          renderItem={(t) => <TrackCard key={t.id} track={t} />} />
+          renderItem={track=><TrackCard key={track.id} track={track} queue={visible}/>} />
         
     </div>
     </PullToRefresh>);

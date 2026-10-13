@@ -5,7 +5,7 @@ import { usePlayer } from "@/context/PlayerContext";
 import TrackOptionsMenu from "@/components/track/TrackOptionsMenu";
 
 /** @param {any} props */
-function PodiumCard({ track, rank, height, accent }) {
+function PodiumCard({ track, rank, height, accent, queue }) {
   const p = usePlayer();
   const isCurrent = p.currentTrack?.id === track.id;
   const cardRef = useRef(null);
@@ -33,7 +33,7 @@ function PodiumCard({ track, rank, height, accent }) {
       return;
     }
     if (isCurrent) p.togglePlay();
-    else p.playTrackAt([track]);
+    else{const list=queue?.length?queue:[track];p.playTrackAt(list,Math.max(0,list.findIndex(row=>row.id===track.id)));}
   };
 
   const guardClick = (e) => {
@@ -86,7 +86,7 @@ function PodiumCard({ track, rank, height, accent }) {
             {rank}
           </span>
           <div
-            className="hidden md:block absolute top-1.5 right-1.5 z-10 md:opacity-0 md:group-hover:opacity-100 md:focus-within:opacity-100 transition-opacity"
+            className="block absolute top-1.5 right-1.5 z-10 md:opacity-0 md:group-hover:opacity-100 md:focus-within:opacity-100 transition-opacity"
             onClick={(e) => {
               e.preventDefault();
               e.stopPropagation();
@@ -103,7 +103,7 @@ function PodiumCard({ track, rank, height, accent }) {
             className={`absolute bottom-2 right-2 w-10 h-10 rounded-full bg-foreground text-background grid place-items-center shadow-lg active:scale-95 transition-opacity duration-200 group-hover:opacity-100 focus:opacity-100 ${
               isCurrent && p.isPlaying ? "opacity-100" : "opacity-0"
             }`}
-            aria-label="Play track">
+            aria-label={isCurrent&&p.isPlaying?`Pause ${track.title}`:`Play ${track.title}`}>
             {isCurrent && p.isPlaying ? <Pause size={18} /> : <Play size={18} />}
           </button>
         </div>
@@ -117,7 +117,7 @@ function PodiumCard({ track, rank, height, accent }) {
 }
 
 /** @param {any} props */
-export default function Podium({ tracks }) {
+export default function Podium({ tracks, queue = tracks }) {
   const top = tracks.slice(0, 5);
   if (top.length < 5) {
     // not enough for a full podium yet — still render in order
@@ -130,7 +130,7 @@ export default function Podium({ tracks }) {
       <div className="flex items-end justify-center gap-2 sm:gap-4">
         {second && (
           <PodiumCard
-            track={second}
+            queue={queue} track={second}
             rank={2}
             accent="rgba(180,180,180,0.9)"
           />
@@ -138,7 +138,7 @@ export default function Podium({ tracks }) {
         {first && (
           <div className="flex flex-col min-w-0 flex-[1.12]">
             <PodiumCard
-              track={first}
+              queue={queue} track={first}
               rank={1}
               accent="rgba(250,204,80,0.95)"
             />
@@ -146,7 +146,7 @@ export default function Podium({ tracks }) {
         )}
         {third && (
           <PodiumCard
-            track={third}
+            queue={queue} track={third}
             rank={3}
             accent="rgba(200,130,60,0.85)"
           />
@@ -155,12 +155,12 @@ export default function Podium({ tracks }) {
       {(fourth || fifth) && (
         <div className="flex items-center gap-2 sm:gap-4 px-2 sm:px-6">
           {fourth&&<PodiumCard
-            track={fourth}
+            queue={queue} track={fourth}
             rank={4}
             accent="rgba(120,120,120,0.8)"
           />} 
           {fifth&&<PodiumCard
-            track={fifth}
+            queue={queue} track={fifth}
             rank={5}
             accent="rgba(120,120,120,0.8)"
           />} 

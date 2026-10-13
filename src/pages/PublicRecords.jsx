@@ -313,7 +313,7 @@ export default function PublicRecords({ id: propId, fallbackArtist = null }) {
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 md:gap-4">
               {!visibleTracks.length&&<div className="collection-empty col-span-full"><h2>No matching songs</h2><button className="playlist-action" onClick={()=>setQuery("")}>Show all songs</button></div>}
               {visibleTracks.map((t) =>
-            <TrackCard key={t.id} track={t} />
+            <TrackCard key={t.id} track={t} queue={visibleTracks}/>
             )}
             </div>
           }

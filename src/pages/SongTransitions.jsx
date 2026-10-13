@@ -14,7 +14,7 @@ import {
 function OptionTile({ active, onClick, locked, icon: Icon, title, subtitle }) {
   return (
     <button
-      onClick={onClick}
+      aria-pressed={active} onClick={onClick}
       disabled={locked}
       className="w-full flex items-center gap-3.5 px-4 py-3.5 text-left hover:bg-foreground/[0.03] active:scale-[0.99] disabled:opacity-50 disabled:cursor-not-allowed transition">
       <div className="shrink-0 w-9 h-9 rounded-[7px] bg-muted grid place-items-center">
@@ -62,7 +62,7 @@ function CrossfadeSlider({ value, disabled, onChange }) {
             
           </div>
           <input
-            aria-label="Crossfade duration in seconds"
+            aria-label="Crossfade duration in seconds" aria-valuetext={`${value} seconds`}
             type="range"
             min={CROSSFADE_MIN}
             max={CROSSFADE_MAX}

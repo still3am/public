@@ -27,7 +27,7 @@ function EqualizerBars({ active }) {
 }
 
 /** @param {any} props */
-export default function TrackCard({ track, selectable = false, selected = false, onToggleSelect }) {
+export default function TrackCard({ track, selectable = false, selected = false, onToggleSelect, queue, queueIndex }) {
   const p = usePlayer();
   const isCurrent = p.currentTrack?.id === track.id;
   const isPlayingNow = isCurrent && p.isPlaying;
@@ -58,7 +58,7 @@ export default function TrackCard({ track, selectable = false, selected = false,
       return;
     }
     if (isCurrent) p.togglePlay();
-    else p.playTrackAt([track]);
+    else{const list=queue?.length?queue:[track],index=Number.isInteger(queueIndex)&&list[queueIndex]?.id===track.id?queueIndex:list.findIndex(row=>row.id===track.id);p.playTrackAt(list,Math.max(0,index));}
   };
 
   return (
