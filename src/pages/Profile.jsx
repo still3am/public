@@ -268,36 +268,19 @@ export default function Profile() {
     }catch{return false;}finally{profileSongSaving.current=false;}
   }
 
-  async function saveProfile() {
+  async function saveProfile(){
+    if(saving||profileSongSaving.current)return;
+    const baseline=formFromProfile(profile);
+    const changes=Object.fromEntries(Object.entries(form).filter(([key,value])=>JSON.stringify(value)!==JSON.stringify(baseline[key])));
+    if(!Object.keys(changes).length){setEditMode(false);return;}
     setSaving(true);
-    try {
-      await base44.auth.updateMe({
-        display_name: form.display_name,
-        bio: form.bio,
-        avatar_url: form.avatar_url,
-        banner_url: form.banner_url,
-        location: form.location,
-        pronouns: form.pronouns,
-        website: form.website,
-        instagram: form.instagram,
-        twitter: form.twitter,
-        soundcloud: form.soundcloud,
-        status_message: form.status_message,
-        featured_track_id: form.featured_track_id,
-        top_track_ids: form.top_track_ids
-      });
-      // Refresh the signed-in user the rest of the app reads from, otherwise the
-      // name and avatar in the sidebar keep the old values until a reload.
+    try{
+      await base44.auth.updateMe(changes);
+      const confirmed=await base44.auth.me();
+      setProfile(confirmed);setForm(formFromProfile(confirmed));
       await checkUserAuth({silent:true});
       setEditMode(false);
-      setProfile((prev) => ({
-        ...prev,
-        ...form,
-        full_name: form.display_name || prev?.full_name
-      }));
-    } catch {window.dispatchEvent(new Event("public:error"));} finally {
-      setSaving(false);
-    }
+    }catch{window.dispatchEvent(new Event("public:error"));}finally{setSaving(false);}
   }
 
   function cancelEdit() {
@@ -384,7 +367,7 @@ export default function Profile() {
   return (
     <PullToRefresh onRefresh={load}>
 
-    {backgroundColors.length>0&&<div className="profile-artwork-background fixed inset-0 pointer-events-none z-0" aria-hidden="true" style={{backgroundImage:profileGradient(backgroundColors),backgroundColor:"hsl(var(--background))"}}/>}
+    {(backgroundColors.length>0||(currentBackground.mode==="auto"&&coverUrl))&&<div className="profile-artwork-background fixed inset-0 pointer-events-none z-0" aria-hidden="true" style={backgroundColors.length?{backgroundImage:profileGradient(backgroundColors),backgroundColor:"hsl(var(--background))"}:{backgroundImage:`url(${JSON.stringify(coverUrl)})`,backgroundSize:"cover",backgroundPosition:"center",filter:"blur(45px) saturate(1.35)",transform:"scale(1.12)",opacity:.6}}/>}
     <div className="profile-page max-w-6xl mx-auto relative z-10">
       <div className="profile-overview flex flex-col md:flex-row gap-4 md:gap-6 mb-8">
       <div className="profile-identity relative rounded-2xl overflow-hidden ring-1 ring-inset ring-foreground/10 bg-card flex-1 min-w-0">
