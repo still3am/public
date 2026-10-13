@@ -14,6 +14,6 @@ export default defineConfig({
       analyticsTracker: true,
       visualEditAgent: true
     }),
-    react({babel:{plugins:["./scripts/localize-jsx.cjs"]}}),
+    react(),
   ]
 });

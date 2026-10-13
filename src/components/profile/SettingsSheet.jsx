@@ -1,7 +1,6 @@
-import {LANGUAGES,useLanguage} from "@/lib/i18n/LanguageContext";
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { Languages, X, Lightbulb, GitMerge, Palette, Trash2, ChevronRight, Sparkles, BarChart3, Loader2, LogOut } from "lucide-react";
+import { X, Lightbulb, GitMerge, Palette, Trash2, ChevronRight, Sparkles, BarChart3, Loader2, LogOut } from "lucide-react";
 import ThemeToggle from "@/components/ThemeToggle";
 import { Switch } from "@/components/ui/switch";
 import { useAuth } from "@/lib/AuthContext";
@@ -12,7 +11,6 @@ import { base44 } from "@/api/base44Client";
 /** @param {any} props */
 export default function SettingsSheet({ onClose, onDeleteAccount }) {
   const safety=useSafety();
-  const {language,setLanguage}=useLanguage();
   const { user, checkUserAuth } = useAuth();
   const [toggling, setToggling] = useState(false);
   const [loggingOut, setLoggingOut] = useState(false);
@@ -55,11 +53,6 @@ export default function SettingsSheet({ onClose, onDeleteAccount }) {
         </div>
 
         <div className="space-y-2">
-          <div className="p-3.5 rounded-2xl border border-border">
-            <label htmlFor="public-language" className="flex items-center gap-3 text-sm font-bold mb-2"><Languages size={18}/> Language</label>
-            <p className="text-xs text-muted-foreground mb-3">Choose the language for PUBLIC.</p>
-            <select id="public-language" value={language} onChange={e=>setLanguage(e.target.value)} className="w-full min-h-11 px-3 rounded-xl border border-border bg-background text-sm">{LANGUAGES.map(l=><option key={l.code} value={l.code} lang={l.code}>{l.name}</option>)}</select>
-          </div>
           <Link to="/support" onClick={onClose} className="block p-3 rounded-xl border">Support & copyright requests</Link>
           <div className="flex gap-4 text-sm p-3"><Link to="/privacy" onClick={onClose} className="underline">Privacy</Link><Link to="/terms" onClick={onClose} className="underline">Terms & community</Link></div>
           <label className="flex items-center gap-3 p-3 rounded-xl border text-sm"><input type="checkbox" checked={!!user?.show_explicit} onChange={async e=>{const enabled=e.target.checked;if(enabled&&!window.confirm('I confirm I am at least 18 and want to see explicit music.'))return;try{await base44.auth.updateMe({show_explicit:enabled,adult_confirmed:enabled||!!user?.adult_confirmed});await checkUserAuth();window.dispatchEvent(new Event('catalog:invalidate'));}catch{window.alert('Could not save your content preference.');}}}/>Show explicit music (18+)</label>
