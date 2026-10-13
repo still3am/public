@@ -1,5 +1,6 @@
 import {useEffect,useState} from 'react';
 import {base44} from '@/api/base44Client';
+import {useAuth} from '@/lib/AuthContext';
 import {readAllPages} from '@/lib/readPages';
 import {peekPublishedTracks} from '@/lib/catalogCache';
 const covers=new Map(),inflight=new Map();let generation=0;
@@ -23,7 +24,8 @@ function load(key,ids){
  inflight.set(key,request);return request;
 }
 export function usePlaylistCover(playlist){
- const own=playlist?.cover_art_url||'',ids=[...new Set(playlist?.track_ids||[])],key=(playlist?.id||'')+':'+ids.join(',');
+ const {user}=useAuth();
+ const own=playlist?.cover_art_url||'',ids=[...new Set(playlist?.track_ids||[])],key=(user?.id||'guest')+':'+(playlist?.id||'')+':'+ids.join(',');
  const [borrowed,setBorrowed]=useState({key:'',cover:''}),[revision,setRevision]=useState(0);
  useEffect(()=>{const update=()=>{setBorrowed({key:'',cover:''});setRevision(value=>value+1);};window.addEventListener('catalog:invalidate',update);window.addEventListener('account:cleared',update);return()=>{window.removeEventListener('catalog:invalidate',update);window.removeEventListener('account:cleared',update);};},[]);
  useEffect(()=>{if(own||!playlist?.id||!ids.length)return;let alive=true;load(key,ids).then(cover=>{if(alive)setBorrowed({key,cover});}).catch(()=>{});return()=>{alive=false;};},[key,own,revision]);

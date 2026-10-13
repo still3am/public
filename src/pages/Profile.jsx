@@ -89,6 +89,8 @@ export default function Profile({ownProfileTab=false}) {
   const [tracks, setTracks] = useState([]);
   const [topTracks, setTopTracks] = useState([]);
   const [following, setFollowing] = useState(false);
+  const [followReady,setFollowReady]=useState(false);
+  const identity=useRef("");identity.current=[me?.id,targetId].join(":");
   const [stats, setStats] = useState({ followers: null, following: null, plays: 0, likes: 0 });
   const [editMode, setEditMode] = useState(false);
   const [copied, setCopied] = useState(false);
@@ -170,7 +172,7 @@ export default function Profile({ownProfileTab=false}) {
         plays: totalsRow ? totalsRow.sum_play_count || 0 : t ? t.reduce((sum, x) => sum + (x.play_count || 0), 0) : previous.plays,
         likes: totalsRow ? totalsRow.sum_like_count || 0 : t ? t.reduce((sum, x) => sum + (x.like_count || 0), 0) : previous.likes
       }));
-      if (relToUser) setFollowing((Array.isArray(relToUser) ? relToUser : relToUser.items || []).length > 0);
+      if(relToUser){setFollowing((Array.isArray(relToUser)?relToUser:relToUser.items||[]).length>0);setFollowReady(true);}
       if (responses.some((r, i) => i !== 1 && r.status === "rejected")) setSectionError("Some profile information could not refresh. Saved music and follows have not been removed.");
     } catch {request === loadVersion.current && setLoadError(true);
     } finally {
@@ -179,7 +181,7 @@ export default function Profile({ownProfileTab=false}) {
   }
 
   useEffect(() => {
-    setProfile(null);setTracks([]);setTopTracks([]);setFollowing(false);setStats({ followers: null, following: null, plays: 0, likes: 0 });
+    setProfile(null);setTracks([]);setTopTracks([]);setFollowing(false);setFollowReady(false);setStats({ followers: null, following: null, plays: 0, likes: 0 });
     if (targetId) load();
     return () => {loadVersion.current++;};
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -202,13 +204,13 @@ export default function Profile({ownProfileTab=false}) {
   }, [isOwn, targetId, me?.id, me?.is_artist]);
 
   async function toggleFollow() {
-    if (!profile || !me?.id || followBusyRef.current) return;
-    followBusyRef.current = true;setFollowingBusy(true);
+    if (!profile || !me?.id || !followReady || followBusyRef.current) return;
+    followBusyRef.current = true;setFollowingBusy(true);const started=identity.current;
     const wasFollowing = following;
     setFollowing(!wasFollowing);
     setStats((s) => ({
       ...s,
-      followers: Math.max(0, s.followers + (wasFollowing ? -1 : 1))
+      followers: s.followers===null?null:Math.max(0,s.followers+(wasFollowing?-1:1))
     }));
     try {
       if (wasFollowing) {
@@ -231,10 +233,11 @@ export default function Profile({ownProfileTab=false}) {
       }
     } catch {
       setSectionError("Your follow change could not save. Please retry.");
+      if(identity.current!==started)return;
       setFollowing(wasFollowing);
       setStats((s) => ({
         ...s,
-        followers: Math.max(0, s.followers + (wasFollowing ? 1 : -1))
+        followers: s.followers===null?null:Math.max(0,s.followers+(wasFollowing?1:-1))
       }));
     } finally {followBusyRef.current = false;setFollowingBusy(false);}
   }
@@ -350,6 +353,7 @@ export default function Profile({ownProfileTab=false}) {
 
     {(backgroundColors.length>0||(currentBackground.mode==="auto"&&coverUrl))&&<div className="profile-artwork-background fixed inset-0 pointer-events-none z-0" aria-hidden="true" style={backgroundColors.length?{backgroundImage:profileGradient(backgroundColors),backgroundColor:"hsl(var(--background))"}:{backgroundImage:`url(${JSON.stringify(coverUrl)})`,backgroundSize:"cover",backgroundPosition:"center",filter:"blur(45px) saturate(1.35)",transform:"scale(1.12)",opacity:.6}}/>}
     <div className="profile-page max-w-6xl mx-auto relative z-10">
+      {sectionError&&<button disabled={loading} onClick={load} className="playlist-action text-xs mb-4">Refresh profile</button>}
       <div className="profile-overview flex flex-col md:flex-row gap-4 md:gap-6 mb-8">
       <div className="profile-identity relative rounded-2xl overflow-hidden ring-1 ring-inset ring-foreground/10 bg-card flex-1 min-w-0">
         {!editMode && profile.is_artist &&
@@ -534,7 +538,7 @@ export default function Profile({ownProfileTab=false}) {
                     <Pencil size={16} /><span>Edit profile</span>
                   </button> :
                     <button
-                      disabled={followingBusy} onClick={toggleFollow}
+                      disabled={followingBusy||!followReady} onClick={toggleFollow}
                       title={following ? "Following (click to unfollow)" : "Follow"}
                       aria-label={following ? "Unfollow" : "Follow"}
                       className={`profile-primary-action playlist-action transition ${

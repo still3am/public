@@ -23,7 +23,7 @@ async function readMine(uid,fresh=false){
 export function useMyPlaylists(){
  const {user}=useAuth(),uid=user?.id;
  const [playlists,setPlaylists]=useState(()=>cache.get(uid)?.rows||null),[error,setError]=useState(false),[loading,setLoading]=useState(false);
- const version=useRef(0),account=useRef(uid);account.current=uid;
+ const owner=useRef(uid),version=useRef(0),account=useRef(uid);account.current=uid;
  const reload=useCallback(async(fresh=true)=>{
   const request=++version.current;setError(false);
   if(!uid){setPlaylists([]);setLoading(false);return;}
@@ -33,9 +33,9 @@ export function useMyPlaylists(){
   finally{if(request===version.current)setLoading(false);}
  },[uid]);
  useEffect(()=>{
-  setPlaylists(cache.get(uid)?.rows||null);reload(false);
+  owner.current=uid;setPlaylists(cache.get(uid)?.rows||null);reload(false);
   const refresh=()=>reload(true);window.addEventListener('playlists:changed',refresh);
   return()=>{version.current++;window.removeEventListener('playlists:changed',refresh);};
  },[uid,reload]);
- return {playlists,error,loading,reload};
+ return {playlists:owner.current===uid?playlists:cache.get(uid)?.rows||null,error,loading,reload};
 }
