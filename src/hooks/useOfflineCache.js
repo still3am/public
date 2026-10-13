@@ -149,8 +149,9 @@ export function useOfflineCache() {
         if (cres.ok) coverBlob = await toImageBlob(cres);
         }
       } catch {}
-      if(startedGeneration!==generation)throw new Error("Account changed during download");
+      if(startedGeneration!==generation||(automatic&&suppressedFor(user.id).has(track.id)))throw new Error("Offline save was canceled");
       await putTrack(track, blob, coverBlob);
+      if(startedGeneration!==generation||(automatic&&suppressedFor(user.id).has(track.id))){await deleteRecord(track.id);throw new Error("Offline save was canceled");}
       const stored=await getRecord(track.id);
       if(!stored?._blob?.size)throw new Error("Audio did not persist");
       // Keep the saved download order in sync: a freshly saved track goes to
@@ -197,14 +198,15 @@ export function useOfflineCache() {
     return unsub;
   }, [user?.id, syncFromCloud]);
 
-  const removeTrack = useCallback(async (id) => {
-    await deleteRecord(id);
-    suppress(user?.id,[id]);
-    const order = await getOrderIds();
-    if (order) await setOrderIds(order.filter((x) => x !== id));
-    if (user?.id) removeCloudTrack(user.id, id).catch(() => {});
-    window.dispatchEvent(new CustomEvent(EVT));
-  }, [user?.id]);
+  const removeTrack=useCallback(async id=>{
+    try{
+      await deleteRecord(id);suppress(user?.id,[id]);
+      const order=await getOrderIds().catch(()=>null);
+      if(order)await setOrderIds(order.filter(value=>value!==id)).catch(()=>{});
+      if(user?.id)removeCloudTrack(user.id,id).catch(()=>{});
+      window.dispatchEvent(new CustomEvent(EVT));return true;
+    }catch{return false;}
+  },[user?.id]);
 
   const reorder = useCallback(async (orderedIds) => {
     // Optimistic local re-order so the drag feels instant, then persist.
@@ -218,15 +220,15 @@ export function useOfflineCache() {
     window.dispatchEvent(new CustomEvent(EVT));
   }, []);
 
-  const clearAllCache = useCallback(async () => {
+  const clearAllCache=useCallback(async()=>{
     const removed=records.map(track=>track.id);
-    await clearAll();
-    suppress(user?.id,removed);
-    await clearMeta();
-    autoQueued.clear();
-    if (user?.id) setCloudList(user.id, []).catch(() => {});
-    window.dispatchEvent(new CustomEvent(EVT));
-  }, [user?.id,records]);
+    try{
+      await clearAll();generation++;suppress(user?.id,removed);
+      await clearMeta().catch(()=>{});autoQueued.clear();
+      if(user?.id)setCloudList(user.id,[]).catch(()=>{});
+      window.dispatchEvent(new CustomEvent(EVT));return true;
+    }catch{return false;}
+  },[user?.id,records]);
 
   return {
     cachedIds: cachedIds || new Set(),

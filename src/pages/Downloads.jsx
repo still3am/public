@@ -54,8 +54,7 @@ export default function Downloads() {
   );
 
   const isCurrent = (id) => p.currentTrack?.id === id;
-  const anyPlayingHere =
-  isPlaying(tracks, p) && p.isPlaying;
+  const anyPlayingHere=visibleTracks.some(({track})=>track.id===p.currentTrack?.id)&&p.isPlaying;
 
   const playAll=()=>{const list=visibleTracks.map(row=>row.track);if(!list.length)return;if(list.some(track=>track.id===p.currentTrack?.id)&&p.isPlaying)p.togglePlay();else p.playTrackAt(list,0);};
 
@@ -68,11 +67,10 @@ export default function Downloads() {
   };
 
   const removeOne = async (id) => {
-    await cache.removeTrack(id);
-    toast({ title: "Removed from PUBLIC OFFLINE" });
+    if(await cache.removeTrack(id))toast({ title: "Removed from PUBLIC OFFLINE" });
   };
 
-  const clearEverything=async()=>{if(clearing)return;setClearing(true);try{await cache.clearAllCache();setConfirming(false);toast({title:"Offline music cleared"});}finally{setClearing(false);}};
+  const clearEverything=async()=>{if(clearing)return;setClearing(true);try{if(await cache.clearAllCache()){setConfirming(false);toast({title:"Offline music cleared"});}}finally{setClearing(false);}};
 
   const online = typeof navigator !== "undefined" ? navigator.onLine : true;
   const loading = cache.loading;
@@ -156,10 +154,10 @@ export default function Downloads() {
           <div className="flex items-center justify-between mb-3 px-1">
                 <button onClick={() => setConfirming(true)} className="border rounded-full px-3 py-2 text-xs">Clear offline music</button>
                 <button
-              onClick={playAll}
+              onClick={playAll} disabled={!visibleTracks.length}
               className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-foreground text-background text-sm font-bold active:scale-95 transition">
                   {anyPlayingHere ? <Pause size={15} /> : <Play size={15} />}
-                  {anyPlayingHere ? "Pause all" : "Play all"}
+                  {anyPlayingHere ? "Pause" : query ? "Play results" : "Play all"}
                 </button>
                 
 

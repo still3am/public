@@ -41,7 +41,7 @@ export default function TrackDetail() {
   const [moreTracks, setMoreTracks] = useState([]);
   const { toast } = useToast();
 
-  const loadVersion=useRef(0);
+  const loadVersion=useRef(0),detectVersion=useRef(0);
   const [loadError,setLoadError]=useState(false);
   async function load() {
     const request=++loadVersion.current;(request===loadVersion.current)&&setLoadError(false);
@@ -71,7 +71,7 @@ export default function TrackDetail() {
   }
 
   useEffect(() => {
-    setTrack(null);setUploader(null);setMoreTracks([]);setEditing(false);setGenerating(false);setSyncing(false);setDetecting(false);load();
+    detectVersion.current++;setTrack(null);setUploader(null);setMoreTracks([]);setEditing(false);setGenerating(false);setSyncing(false);setDetecting(false);load();
     return()=>{loadVersion.current++;};
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
@@ -79,7 +79,7 @@ export default function TrackDetail() {
 
   async function detectGenre() {
     if (!track||detecting) return;
-    const trackId=track.id,request=loadVersion.current;setDetecting(true);
+    const trackId=track.id,request=++detectVersion.current;setDetecting(true);
     try {
       const res = await base44.functions.invoke("detectGenre", { track_id: track.id });
       const genre = res?.data?.genre;
@@ -92,7 +92,7 @@ export default function TrackDetail() {
     } catch (e) {
       toast({ title: e?.response?.data?.error || "Couldn't detect genre", variant: "destructive" });
     } finally {
-      if(request===loadVersion.current)setDetecting(false);
+      if(request===detectVersion.current)setDetecting(false);
     }
   }
 

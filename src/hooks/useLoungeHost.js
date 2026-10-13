@@ -26,7 +26,8 @@ export function useLoungeHost() {
   const [members, setMembers] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  const startingRef=useRef(null);
+  const startingRef=useRef(null),accountRef=useRef(user?.id),sessionKey=useRef(null);accountRef.current=user?.id;
+  useEffect(()=>{startingRef.current=null;sessionKey.current=null;setSession(null);setMembers([]);setLoading(false);},[user?.id]);
   const addedRef = useRef(null);
   if (addedRef.current === null) addedRef.current = loadAddedSet();
   const pRef = useRef(p);
@@ -48,17 +49,18 @@ export function useLoungeHost() {
         "created_date",
         200
       );
-      setMembers(list || []);
+      if(sessionKey.current===sid)setMembers(list || []);
     } catch {}
   }, []);
 
   const ensureSession = useCallback(async () => {
     if (!user?.id) return null;
-    if (session?.id && session.is_active) {
+    if (session?.id && session.is_active && session.host_id===user.id) {
       refreshMembers(session.id);
       return session;
     }
     if(startingRef.current)return startingRef.current;
+    const uid=user.id;
     const request=(async()=>{
     setLoading(true);
     try {
@@ -94,13 +96,14 @@ export function useLoungeHost() {
           });
         } catch {}
       }
-      setSession(active);
+      if(accountRef.current!==uid)return null;
+      sessionKey.current=active.id;setSession(active);
       refreshMembers(active.id);
       return active;
     } catch (e) {
       return null;
     } finally {
-      setLoading(false);
+      if(accountRef.current===uid)setLoading(false);
     }
     })();
     startingRef.current=request;
@@ -142,8 +145,7 @@ export function useLoungeHost() {
     try {
       await base44.entities.LoungeSession.update(session.id, { is_active: false });
     } catch {return false;}
-    setSession(null);
-    setMembers([]);
+    if(sessionKey.current===session.id){sessionKey.current=null;setSession(null);setMembers([]);}
     return true;
   }, [session?.id]);
 
@@ -153,7 +155,7 @@ export function useLoungeHost() {
       const clean = (name || "").slice(0, 60);
       try {
         await base44.entities.LoungeSession.update(session.id, { name: clean });
-        setSession((prev) => (prev ? { ...prev, name: clean } : prev));
+        setSession((prev) => (prev?.id===session.id ? { ...prev, name: clean } : prev));
         return true;
       } catch {
         return false;
