@@ -40,6 +40,7 @@ export default function FollowListModal({ userId, type, onClose }) {
           return;
         }
         const details = await getUsersByIds(ids);
+        if(ids.length&&!details.length)throw Error("Profile details could not be resolved");
         if (!cancelled) setUsers(details);
       } catch {if(!cancelled)setError(true);} finally {
         if (!cancelled) setLoading(false);
