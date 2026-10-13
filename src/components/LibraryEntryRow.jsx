@@ -9,11 +9,11 @@ export default function LibraryEntryRow({ to, icon: Icon, label, subtitle }) {
       to={to}
       className="library-shortcut block rounded-2xl border border-border bg-card hover:bg-accent transition group">
       <div className="flex items-center gap-3.5">
-        {Icon &&
-        <span className="shrink-0 w-10 h-10 rounded-xl grid place-items-center bg-foreground/[0.06] text-foreground/70 hidden">
-            <Icon size={18} />
-          </span>
-        }
+        
+
+
+
+        
         <div className="min-w-0 flex-1">
           <div className="text-sm font-extrabold tracking-tight">{label}</div>
           {subtitle &&
