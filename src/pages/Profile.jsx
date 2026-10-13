@@ -147,8 +147,8 @@ export default function Profile() {
       !isOwn && me?.id ? base44.entities.Follow.filter({ follower_id: me.id, following_id: targetId }, "-created_date", 1) : Promise.resolve([])]
       );
       if (request !== loadVersion.current) return;
-      const result = (index) => responses[index].status === "fulfilled" ? Reflect.get(responses[index], "value") : null;
-      const t = result(0),totals = result(1),followersCount = result(2),followingCount = result(3),relToUser = result(4);
+      const result = (response) => response.status === "fulfilled" ? response.value : null;
+      const t = result(responses[0]),totals = result(responses[1]),followersCount = result(responses[2]),followingCount = result(responses[3]),relToUser = result(responses[4]);
       if (t) {setTracks(t);setTopTracks([...t].sort((a, b) => (b.play_count || 0) - (a.play_count || 0)).slice(0, 5));}
       const totalsRow = totals?.rows?.[0];
       setStats((previous) => ({
