@@ -97,13 +97,13 @@ export default function ProfileComments({ profileId, isOwn }) {
         <MessageCircle size={18} /> Comments
       </h2>
 
-      <form onSubmit={postComment} className="flex mb-4 gap-">
+      <form onSubmit={postComment} className="flex mb-4 gap-2">
         <input
           value={message}
           onChange={(e) => setMessage(e.target.value)}
           placeholder="Leave a comment..."
           maxLength={500}
-          className="flex-1 px-4 py-2.5 rounded-full border border-border bg-background text-sm" />
+          className="flex-1 py-2.5 rounded-full border border-border bg-background text-sm px-2.5" />
         
         <button
           type="submit"
