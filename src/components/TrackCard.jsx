@@ -49,7 +49,7 @@ export default function TrackCard({ track, selectable = false, selected = false,
     <div
       ref={lp.ref} {...lp.handlers}
       role={selectable?"checkbox":"group"} tabIndex={selectable?0:undefined} aria-checked={selectable?selected:undefined} aria-label={selectable?`Select ${track.title||"song"}`:undefined}
-      onKeyDown={event=>{if(selectable&&event.target===event.currentTarget&&(event.key==="Enter"||event.key===" ")){event.preventDefault();onToggleSelect?.(track);}}
+      onKeyDown={event=>{if(selectable&&event.target===event.currentTarget&&(event.key==="Enter"||event.key===" ")){event.preventDefault();onToggleSelect?.(track);}}}
       onClick={selectable ? () => onToggleSelect?.(track) : handlePlay}
       className={`music-card group relative rounded-2xl p-2 sm:p-2.5 transition-all duration-300 cursor-pointer
         hover:bg-foreground/[0.04] active:scale-[0.98]

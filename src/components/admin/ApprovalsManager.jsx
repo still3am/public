@@ -90,7 +90,7 @@ export default function ApprovalsManager() {
   return (
     <div className="space-y-4">
       <div className="collection-tools"><input aria-label="Search music in approvals" placeholder="Find a title, artist, or uploader" value={query} onChange={e=>setQuery(e.target.value)} onKeyDown={e=>{if(e.key==="Escape")setQuery("");}}/>{query&&<button className="playlist-action" onClick={()=>setQuery("")}>Clear search</button>}</div>
-      {/* Pending approvals */
+      {/* Pending approvals */}
       <div className="rounded-2xl border border-border bg-card p-4">
         <div className="flex items-center justify-between gap-3 mb-3">
           <div className="flex items-center gap-2">
