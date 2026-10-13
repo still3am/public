@@ -1,7 +1,7 @@
 import {usePlayer} from "@/context/PlayerContext";
 import { useRef } from "react";
 import { Outlet, useLocation } from "react-router-dom";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import PageHeading from "@/components/PageHeading";
 import Sidebar from "@/components/Sidebar";
 import MobileTabBar from "@/components/MobileTabBar";
@@ -29,6 +29,7 @@ const TABS = [
 
 export default function Layout() {
   const location = useLocation();
+  const reducedMotion=useReducedMotion();
   const { user } = useAuth();
   const {currentTrack}=usePlayer();
   useScrollRestore();
@@ -42,10 +43,11 @@ export default function Layout() {
 
   return (
     <div className={`flex min-h-screen bg-background text-foreground ${currentTrack?"has-player":""}`}>
+      <a href="#main-content" className="public-skip-link">Skip to content</a>
       <Sidebar />
       <div className="flex-1 flex flex-col min-w-0">
         <ScrollingBanner />
-        <main className="flex-1 w-full mx-auto main-content app-content">
+        <main id="main-content" tabIndex={-1} className="flex-1 w-full mx-auto main-content app-content">
           <PageHeading />
           {TABS.map(({ path, Page, requiresAuth }) =>
           mountedTabs.current.has(path) && (!requiresAuth || user) ?
@@ -64,7 +66,7 @@ export default function Layout() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              transition={{ duration: 0.18, ease: "easeInOut" }}>
+              transition={{ duration: reducedMotion?0:0.18, ease: "easeInOut" }}>
 
                 <Outlet />
               </motion.div>

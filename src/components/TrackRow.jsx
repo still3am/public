@@ -17,14 +17,18 @@ export default function TrackRow({
   queueIndex,
 }) {
   const p = usePlayer();
-  const play=()=>p.playTrackAt(queue||[track],queue?(queueIndex??index??0):0);
+  const play=()=>{
+    const list=queue?.length?queue:[track];
+    const position=Number.isInteger(queueIndex)&&list[queueIndex]?.id===track.id?queueIndex:list.findIndex(row=>row.id===track.id);
+    p.playTrackAt(list,Math.max(0,position));
+  };
   const isCurrent = p.currentTrack?.id === track.id;
   const coverUrl = useCoverUrl(track.cover_art_url || albumCover);
 
   return (
     <div
       className="song-row group flex items-center gap-3 sm:gap-4 px-2.5 sm:px-3 py-3 rounded-xl hover:bg-foreground/[0.04] transition"
-      onDoubleClick={play}
+      onDoubleClick={event=>{if(event.target instanceof Element&&event.target.closest("a,button,input,select,textarea"))return;play();}}
     >
       <button type="button"
         className={`${showArt?"hidden md:grid":"grid"} place-items-center w-8 h-11 text-sm font-medium text-muted-foreground shrink-0`}
@@ -48,6 +52,7 @@ export default function TrackRow({
 
       <div className="min-w-0 flex-1">
         <Link
+          title={track.title}
           to={`/track/${track.id}`}
           className={`text-sm font-medium truncate block ${isCurrent ? "text-foreground" : ""}`}
         >
@@ -78,7 +83,7 @@ export default function TrackRow({
       )}
 
       {track.genre && (
-        <span className="hidden md:block text-xs text-foreground/45 px-2.5 py-1 rounded-full bg-foreground/[0.05] shrink-0">
+        <span title={track.genre} className="hidden md:block max-w-[9rem] truncate text-xs text-foreground/45 px-2.5 py-1 rounded-full bg-foreground/[0.05] shrink-0">
           {track.genre}
         </span>
       )}

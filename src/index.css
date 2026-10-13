@@ -806,3 +806,29 @@ html:not(.dark) .profile-page .profile-identity,html:not(.dark) .profile-page .p
 .support-page section button{margin-right:.5rem;margin-bottom:.5rem;}
 .support-page input[type=file]{display:block;margin-top:.6rem;max-width:100%;font-size:.875rem;}
 .support-page label input,.support-page label textarea{margin-top:.4rem;}
+
+/* Compact collections and keyboard access use the same theme tokens. */
+.public-skip-link{position:fixed;left:16px;top:calc(12px + env(safe-area-inset-top));z-index:200;transform:translateY(-200%);padding:12px 18px;border-radius:12px;border:1px solid hsl(var(--border));background:hsl(var(--foreground));color:hsl(var(--background));font-size:14px;font-weight:600;}
+.public-skip-link:focus{transform:translateY(0);outline:2px solid hsl(var(--ring));outline-offset:3px;}
+#main-content:focus{outline:none;}
+.collection-empty h3{font-weight:700;color:hsl(var(--foreground));margin-bottom:.35rem;}
+.playlist-info .playlist-title{overflow-wrap:anywhere;}
+.playlist-picker header,.playlist-picker footer{min-width:0;}
+.playlist-picker header h2{line-height:1.3;}
+@media(min-width:768px){.playlist-picker{border-color:hsl(var(--border));max-height:88dvh;}}
+@media(max-width:639px){
+ .playlist-toolbar .playlist-action{flex:1;min-height:44px;}
+ .playlist-info>p{overflow-wrap:anywhere;}
+ .playlist-controls{row-gap:10px;}
+ .playlist-song-item .song-row{gap:8px;}
+ .playlist-song-item .song-row>button:nth-of-type(2){width:36px;height:36px;}
+ .playlist-row-actions button{min-height:44px;}
+}
+@media(max-width:359px){
+ .playlist-song-item{flex-wrap:wrap;row-gap:0;padding-block:4px;}
+ .playlist-row-actions{width:100%;justify-content:flex-end;padding-bottom:3px;}
+ .playlist-row-actions button{min-width:44px;}
+ .playlist-cover{width:120px;height:120px;}
+ .home-feature-copy h2{font-size:29px;}
+ .home-feature{padding:18px;}
+}

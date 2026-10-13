@@ -5,7 +5,7 @@ import { usePlaylistCover } from "@/hooks/usePlaylistCover";
 
 /** @param {any} props */
 export default function PlaylistCard({ playlist }) {
-  const count = playlist.track_ids?.length || 0;
+  const count = new Set(playlist.track_ids||[]).size;
   const cover = usePlaylistCover(playlist);
   return (
     <Link
@@ -26,7 +26,7 @@ export default function PlaylistCard({ playlist }) {
           </div>
         )}
       </div>
-      <div className="truncate text-sm font-semibold">{playlist.name}</div>
+      <div title={playlist.name} className="truncate text-sm font-semibold">{playlist.name}</div>
       <div className="text-xs text-foreground/50 truncate mt-0.5">
         {count} {count === 1 ? "song" : "songs"}
       </div>
