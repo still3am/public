@@ -10,7 +10,7 @@ export default function PlaylistCard({ playlist }) {
   return (
     <Link
       to={`/playlist/${playlist.id}`}
-      className="group relative rounded-2xl p-2.5 sm:p-3 transition-all duration-300 hover:bg-foreground/[0.04] active:scale-[0.98]"
+      className="playlist-card group relative rounded-2xl p-2.5 sm:p-3 transition-all duration-300 hover:bg-foreground/[0.04] active:scale-[0.98]"
     >
       <div className="relative aspect-square rounded-xl overflow-hidden bg-foreground/[0.06] mb-2.5 shadow-sm">
         {cover ? (
