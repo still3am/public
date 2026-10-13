@@ -131,7 +131,7 @@ export default function Search() {
     <PullToRefresh onRefresh={handleRefresh}>
       <div className="search-page">
         <div className="page-intro"><h1>Find your next favorite.</h1><p>Explore music, artists, playlists, and people.</p></div>
-        <div className="view-switch mb-5 hidden" role="group" aria-label="Search type"><button aria-pressed={!peopleMode} className={!peopleMode ? "active" : ""} onClick={() => chooseScope("all")}>Music & more</button><button aria-pressed={peopleMode} className={peopleMode ? "active" : ""} onClick={() => chooseScope("people")}>People</button></div>
+        
         
 
 
@@ -139,11 +139,11 @@ export default function Search() {
         {/* Search input (mobile / tablet) — desktop uses the sidebar field instead */}
         <div className={`relative mb-6 max-w-2xl ${peopleMode ? "" : "md:hidden"}`}>
           <SearchIcon size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-foreground/40 pointer-events-none" />
-          <input
-            value={q}
-            onChange={(e) => {updateQuery(e.target.value);setGenre(null);}}
-            aria-label={peopleMode ? "Search people by name" : "Search tracks, artists, people"} placeholder={peopleMode ? "Search people by name…" : "Search tracks, artists, people…"}
-            className="w-full pl-11 pr-20 py-3.5 rounded-full border border-border bg-background text-sm font-medium focus:outline-none focus:ring-2 focus:ring-foreground/10 transition shadow-sm hidden" />
+          
+
+
+
+          
 
           {searching &&
           <Loader2
