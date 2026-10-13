@@ -29,10 +29,12 @@ const ICONS = {
 
 function getLink(n) {
   if (n.type === "profile_comment" || n.type === "new_follower")
-  return `/profile/${n.actor_id}`;
+  return n.actor_id ? `/profile/${n.actor_id}` : null;
   if (n.track_id) return `/track/${n.track_id}`;
   return null;
 }
+
+function activityTime(value){const date=new Date(value);return Number.isNaN(date.getTime())?"":formatDistanceToNow(date,{addSuffix:true});}
 
 function getMessage(n) {
   const name = n.actor?.display_name || n.actor?.full_name || "Someone";
@@ -91,11 +93,11 @@ export default function Notifications() {
         }
       </div>
 
-      {error&&<LoadError onRetry={reload}/>}
+      {error&&!notifications.length&&<LoadError onRetry={reload}/>}
       {visibleNotifications.length === 0 ?
       <EmptyState
         icon={Bell}
-        title={view==="unread"?"You’re all caught up":view==="music"?"No music activity here yet":"No notifications yet"}
+        title={hasMore?"No matches in this activity":view==="unread"?"You’re all caught up":view==="music"?"No music activity here yet":"No notifications yet"}
         description="When someone follows you, likes your track, sends you a song, or comments on your profile, you'll see it here." /> :
 
 
@@ -146,9 +148,7 @@ export default function Notifications() {
                     </p>
                   }
                   <span className="text-[11px] text-foreground/40">
-                    {formatDistanceToNow(new Date(n.created_date), {
-                  addSuffix: true
-                })}
+                    {activityTime(n.created_date)}
                   </span>
                 </div>
                 {!n.read &&
