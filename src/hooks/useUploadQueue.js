@@ -134,7 +134,7 @@ export function useUploadQueue({ user, isAdmin }) {
    patch(item.id,{status:'done',detecting:false,error:warning,releaseStatus:track.approval_status});setUploadedCount(n=>n+1);
   }catch(e){
    if(!assets.current.get(item.id)?.track&&claimedHashes.current.get(assets.current.get(item.id)?.sha)===item.id)claimedHashes.current.delete(assets.current.get(item.id)?.sha);
-   if(epoch===generation.current)patch(item.id,{status:'ready',error:e?.response?.data?.error||e.message||'Upload failed. Retry to resume.'});
+   if(epoch===generation.current)patch(item.id,{status:'ready',error:Number(e?.response?.status||e?.status)===402?'Upload paused: the app needs available integration credits. Your file is still queued.':e?.response?.data?.error||e.message||'Upload did not finish. Retry to resume.'});
   }finally{busy.current.delete(item.id);}
  }
  async function uploadAll(){
