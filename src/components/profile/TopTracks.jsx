@@ -92,9 +92,9 @@ export default function TopTracks({ trackIds, editMode, userTracks, onChange }) 
   useEffect(() => {
     const ids = (trackIds || []).filter(Boolean);
     if (!ids.length) {setPinnedTracks([]);return;}
-    Promise.all(ids.map((id) => base44.entities.Track.get(id).catch(() => null))).then((results) =>
-    setPinnedTracks(results.filter(Boolean))
-    );
+    let active=true;
+    Promise.all(ids.map((id) => base44.entities.Track.get(id).catch(() => null))).then(results=>{if(active)setPinnedTracks(results.filter(Boolean));});
+    return()=>{active=false;};
   }, [idsKey]); // eslint-disable-line react-hooks/exhaustive-deps
 
   function removeTrack(id) {
@@ -115,7 +115,8 @@ export default function TopTracks({ trackIds, editMode, userTracks, onChange }) 
   if (!showSection) return null;
 
   return (
-    <div className="mb-8">
+    <div className="profile-pinned-section mb-8">
+      <h2 className="text-xl font-bold tracking-tight mb-4">{editMode ? "Your Top 8" : "On repeat"}</h2>
       
 
       
