@@ -590,6 +590,7 @@ export function PlayerProvider({ children }) {
   // PWA keep Web-Audio-routed audio alive in the background / on the lock screen.
   const syncPositionState = useCallback((a) => {
     if (!a || !("mediaSession" in navigator)) return;
+    try{navigator.mediaSession.playbackState=a.paused?"paused":"playing";}catch{}
     const d = a.duration;
     if (!d || !isFinite(d)) return;
     try {
@@ -945,14 +946,19 @@ export function PlayerProvider({ children }) {
     }
   }, [currentTrack, ensureGraph, graphNeeded, resumeAndPlay,cancelCrossfade]);
 
-  const seek = useCallback((time) => {
+  const seek=useCallback(value=>{
+    const time=Number(value);if(!Number.isFinite(time))return;
     cancelCrossfade();
-    const a = activeEl();
-    if (!a) return;
-    a.currentTime = time;
-    setPosition(time);
-    syncPositionState(a);
-  }, [syncPositionState]);
+    const a=activeEl();if(!a)return;
+    const track=queueRef.current[currentIndexRef.current];
+    const known=Number.isFinite(a.duration)&&a.duration>0?a.duration:Number(track?.duration_seconds)||0;
+    const target=Math.max(0,known>0?Math.min(time,known):time);
+    try{a.currentTime=target;}catch{
+      if(track?.id)pendingSeekRef.current={id:track.id,at:target};
+      return;
+    }
+    setPosition(target);syncPositionState(a);
+  },[cancelCrossfade,syncPositionState]);
 
   const setMuted = useCallback((m) => {
     setMutedState(m);
@@ -1053,14 +1059,10 @@ export function PlayerProvider({ children }) {
     els().forEach((a) => a && (a.playbackRate = r));
   }, []);
 
-  const skipBy = useCallback((delta) => {
-    cancelCrossfade();
-    const a = activeEl();
-    if (!a) return;
-    const t = Math.max(0, Math.min(a.duration || 0, (a.currentTime || 0) + delta));
-    a.currentTime = t;
-    setPosition(t);
-  }, [cancelCrossfade]);
+  const skipBy=useCallback(delta=>{
+    const value=Number(delta),a=activeEl();if(!a||!Number.isFinite(value))return;
+    seek((a.currentTime||0)+value);
+  },[seek]);
 
   const addToQueue = useCallback((track) => {
     setDismissed(false);
@@ -1157,11 +1159,10 @@ export function PlayerProvider({ children }) {
     // element with no source / nothing decoded. Reload the current track so
     // the lock-screen play button always produces sound instead of no-op.
     if (!a.src || a.readyState === 0) {
-      loadOnActive(currentTrack);
-      return;
+      return loadOnActive(currentTrack);
     }
     if (graphNeeded()) ensureGraph();
-    resumeAndPlay(a);
+    return resumeAndPlay(a);
   }, [currentTrack, ensureGraph, graphNeeded, loadOnActive, resumeAndPlay]);
 
   const pausePlayback = useCallback(() => {
@@ -1169,7 +1170,9 @@ export function PlayerProvider({ children }) {
     if (!a) return;
     els().forEach(el=>el?.pause());
     setIsPlaying(false);
-  }, []);
+    try{navigator.mediaSession.playbackState="paused";}catch{}
+    syncPositionState(a);
+  }, [syncPositionState]);
 
   // iOS suspends the AudioContext when a standalone PWA is backgrounded /
   // the screen locks, which silences Web-Audio-routed playback. On return to
@@ -1276,26 +1279,25 @@ export function PlayerProvider({ children }) {
     } catch {}
   }, [currentTrack, isPlaying]);
 
-  useEffect(() => {
-    if (!("mediaSession" in navigator)) return;
-    const set = (action, handler) => {
-      try {
-        navigator.mediaSession.setActionHandler(action, handler);
-      } catch {}
+  // Register once; every OS action reads the current controls rather than an
+  // old track/queue closure while React is catching up in the background.
+  const mediaControls=useRef(null);
+  mediaControls.current={resumePlayback,pausePlayback,prev,next,seek,skipBy};
+  useEffect(()=>{
+    if(!("mediaSession" in navigator))return;
+    const invoke=(name,...args)=>{try{const result=mediaControls.current?.[name]?.(...args);result?.catch?.(()=>{});}catch{}};
+    const offset=details=>Number.isFinite(details?.seekOffset)&&details.seekOffset>0?details.seekOffset:10;
+    const actions={
+      play:()=>invoke("resumePlayback"),pause:()=>invoke("pausePlayback"),
+      previoustrack:()=>invoke("prev"),nexttrack:()=>invoke("next"),
+      seekto:details=>{if(Number.isFinite(details?.seekTime))invoke("seek",details.seekTime);},
+      seekbackward:details=>invoke("skipBy",-offset(details)),
+      seekforward:details=>invoke("skipBy",offset(details)),
+      stop:()=>{invoke("pausePlayback");invoke("seek",0);},
     };
-    set("play", () => resumePlayback());
-    set("pause", () => pausePlayback());
-    set("previoustrack", () => prev());
-    set("nexttrack", () => next());
-    set("seekto", (d) => {
-      if (d && typeof d.seekTime === "number") seek(d.seekTime);
-    });
-    return () => {
-      ["play", "pause", "previoustrack", "nexttrack", "seekto"].forEach((a) =>
-        set(a, null)
-      );
-    };
-  }, [resumePlayback, pausePlayback, prev, next, seek]);
+    for(const [action,handler] of Object.entries(actions)){try{navigator.mediaSession.setActionHandler(action,handler);}catch{}}
+    return()=>{for(const action of Object.keys(actions)){try{navigator.mediaSession.setActionHandler(action,null);}catch{}}};
+  },[]);
 
   useEffect(()=>()=>{els().forEach(a=>a?.pause());if(crossfadeTimerRef.current)clearTimeout(crossfadeTimerRef.current);if(sleepTimerRef.current)clearTimeout(sleepTimerRef.current);audioCtxRef.current?.close().catch(()=>{});},[]);
 
