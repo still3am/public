@@ -207,3 +207,10 @@ html.dark {
  .public-app .mobile-search-field { padding-inline:10px;gap:7px; }
  .public-app .search-page .genre-browse-label { font-size:16px;left:10px;bottom:12px; }
 }
+@keyframes public-mobile-page-enter { from { opacity:.65; } to { opacity:1; } }
+@keyframes public-mobile-nav-enter { from { opacity:.4; } to { opacity:1; } }
+@media(max-width:767px) and (prefers-reduced-motion:no-preference) {
+ .public-app .public-page-enter { animation:public-mobile-page-enter .22s ease-out; }
+ .public-app .mobile-nav-pill,.public-app .mobile-search-field,.public-app .mobile-search-home { animation:public-mobile-nav-enter .18s ease-out; }
+}
+
