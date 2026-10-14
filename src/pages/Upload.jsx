@@ -60,9 +60,9 @@ export default function Upload() {
 
       {q.items.length > 0 &&
       <>
-          <div className="sticky top-[calc(3.5rem_+_env(safe-area-inset-top))] z-20 -mx-4 sm:-mx-5 md:-mx-8 lg:-mx-12 px-4 sm:px-5 md:px-8 lg:px-12 py-3 mt-6 bg-background/85 backdrop-blur-md border-y border-border flex items-center justify-between gap-3">
+          <div className="upload-queue-toolbar sticky top-[env(safe-area-inset-top)] md:top-0 z-20 px-3 py-2 mt-5 bg-background border border-border rounded-xl flex items-center justify-between gap-2">
             <div className="min-w-0">
-              <div className="text-sm font-extrabold tracking-tight">
+              <div className="text-xs sm:text-sm font-bold tracking-tight">
                 {q.items.length} {q.items.length === 1 ? "track" : "tracks"} queued
               </div>
               {doneCount > 0 &&
@@ -75,7 +75,7 @@ export default function Upload() {
           <button
             onClick={q.uploadAll}
             disabled={busy}
-            className="shrink-0 inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-foreground text-background text-sm font-bold disabled:opacity-50 active:scale-95 transition">
+            className="upload-batch-action shrink-0 inline-flex items-center justify-center gap-1.5 px-3 rounded-full bg-foreground text-background text-xs font-semibold disabled:opacity-50 active:scale-95 transition">
             
                 {busy ?
             <Loader2 size={14} className="animate-spin" /> :
