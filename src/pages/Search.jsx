@@ -136,8 +136,8 @@ export default function Search() {
 
 
         
-        {/* Search input (mobile / tablet) — desktop uses the sidebar field instead */}
-        <div className={`relative mb-6 max-w-2xl ${peopleMode ? "" : "md:hidden"}`}>
+        {/* Desktop people search; mobile uses the expanding bottom field. */}
+        <div className={`relative mb-6 max-w-2xl ${peopleMode ? "hidden md:block" : "hidden"}`}>
           <SearchIcon size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-foreground/40 pointer-events-none" />
           <input
             value={q}
