@@ -213,4 +213,45 @@ html.dark {
  .public-app .public-page-enter { animation:public-mobile-page-enter .22s ease-out; }
  .public-app .mobile-nav-pill,.public-app .mobile-search-field,.public-app .mobile-search-home { animation:public-mobile-nav-enter .18s ease-out; }
 }
+/* Artist pages put artwork and listening first. */
+.artist-hero { position:relative;min-height:420px;height:clamp(360px,43vw,520px);overflow:hidden;border-radius:22px;background:#18191d;color:#fff;margin-bottom:32px;isolation:isolate; }
+.artist-hero-image { position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 35%; }
+.artist-art-fallback { display:grid;place-items:center;background:linear-gradient(140deg,#363840,#101114);color:rgb(255 255 255/.4); }
+.artist-hero-shade { position:absolute;inset:0;background:linear-gradient(180deg,rgb(0 0 0/.15),transparent 25%,rgb(0 0 0/.25) 55%,rgb(0 0 0/.9)); }
+.artist-back { position:absolute;top:22px;left:22px;display:grid;place-items:center;width:44px;height:44px;border-radius:50%;background:rgb(22 22 25/.65);color:#fff;border:1px solid rgb(255 255 255/.17);backdrop-filter:blur(16px); }
+.artist-hero-bottom { position:absolute;left:32px;right:32px;bottom:30px;display:flex;align-items:flex-end;gap:20px; }
+.artist-hero-name { flex:1; }
+.artist-eyebrow { font-size:10px;font-weight:650;text-transform:uppercase;letter-spacing:.13em;color:rgb(255 255 255/.7);margin-bottom:12px; }
+.artist-hero-name>div { justify-content:flex-start;text-align:left; }
+.artist-hero-name h1 { font-size:clamp(38px,6vw,72px);font-weight:750;line-height:1.04;letter-spacing:-.045em;overflow-wrap:anywhere; }
+.artist-track-count { font-size:12px;color:rgb(255 255 255/.65);margin-top:12px; }
+.artist-play { width:64px;height:64px;display:grid;place-items:center;flex-shrink:0;border-radius:50%;background:linear-gradient(145deg,#fff,#d1d4d9);color:#111216;box-shadow:inset 0 1px 0 #fff,0 5px 20px rgb(0 0 0/.2); }
+.artist-play svg { margin-left:3px; }
+.artist-latest { display:flex;align-items:center;gap:24px;margin:0 0 36px; }
+.artist-latest-cover { width:150px;height:150px;flex-shrink:0;border-radius:14px;overflow:hidden;background:hsl(var(--muted)); }
+.artist-latest-title { display:block;font-size:24px;font-weight:650;letter-spacing:-.025em;line-height:1.15;overflow-wrap:anywhere; }
+.artist-top-songs { margin-bottom:36px; }
+.artist-page section>div>h2 { font-size:24px;letter-spacing:-.035em; }
+.artist-top-list { display:grid;grid-template-columns:1fr 1fr;column-gap:28px; }
+.artist-top-list .song-row { border-bottom:1px solid hsl(var(--border)/.65);border-radius:0;padding-inline:0; }
+.artist-top-list .song-row>button:first-child { display:none; }
+.artist-top-list .song-row .hidden.md\\:block,.artist-top-list .song-row .hidden.lg\\:block { display:none; }
+.artist-discography { scroll-margin-top:24px; }
+.artist-about { padding-top:24px;margin-bottom:24px;border-top:1px solid hsl(var(--border));max-width:720px; }
+@media(max-width:767px) {
+ .artist-hero { margin:0 calc(-1 * var(--app-gutter)) 28px;border-radius:0;height:430px;min-height:0; }
+ .artist-hero-bottom { left:20px;right:20px;bottom:24px;gap:14px; }
+ .artist-hero-name h1 { font-size:44px; }
+ .artist-back { left:18px;top:18px; }
+ .artist-play { width:58px;height:58px; }
+ .artist-latest { gap:18px;margin-bottom:30px; }
+ .artist-latest-cover { width:104px;height:104px;border-radius:12px; }
+ .artist-latest-title { font-size:20px; }
+ .artist-latest .eyebrow { font-size:9px;letter-spacing:.08em; }
+ .artist-top-list { grid-template-columns:1fr; }
+ .artist-page section>div>h2 { font-size:23px; }
+ .artist-top-list .song-row { min-height:72px; }
+ .artist-page .collection-tools { flex-wrap:wrap; }
+}
+
 
