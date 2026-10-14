@@ -1,7 +1,7 @@
 import { createClientFromRequest } from 'npm:@base44/sdk';
 const ADMIN = 'admin';
 const entities = ['Track','Lyrics','LoungeSession','LoungeMember','LoungeQueueItem','ProfileComment','TrackAnnotation','Suggestion','Notification','Message','Conversation','Follow','Playlist','User'];
-const editableTrack = ['audio_file_uri','title','artist','genre','description','lyrics_text','cover_art_url','audio_url','explicit','is_downloadable','duration_seconds','album_id','track_number'];
+const editableTrack = ['music_video_file_uri','audio_file_uri','title','artist','genre','description','lyrics_text','cover_art_url','audio_url','explicit','is_downloadable','duration_seconds','album_id','track_number'];
 const fail = (message, status=403) => { throw Object.assign(new Error(message), {status}); };
 const pick = (obj, fields) => Object.fromEntries(fields.filter(k => obj[k] !== undefined).map(k => [k,obj[k]]));
 async function moderate(svc, text) {
@@ -55,7 +55,7 @@ export default async function handleRequest(req) {
     if(user.is_blocked || user.disabled) fail('This account is suspended',403);
     const body=await req.json(), {entity,action,args=[]}=body;
     if(!Array.isArray(args))fail('Invalid arguments',400);
-    if(!caller && !(entity==='Track' && action==='read')) fail('Sign in to continue',401);
+    if(!caller && !(entity==='Track' && ['read','videoPlayback'].includes(action))) fail('Sign in to continue',401);
     if(!entities.includes(entity)) fail('Unsupported resource',400);
     const handler=svc.entities[entity],isAdmin=user.role===ADMIN;
     if(entity==='User'&&action==='searchPublic'){
@@ -75,16 +75,24 @@ export default async function handleRequest(req) {
       const result={...track};delete result.audio_sha256;
       if(track.uploader_id!==user.id&&!isAdmin)delete result.upload_request_id;
       if(track.audio_file_uri){result._private_audio=true;result.audio_url=sign?(await svc.integrations.Core.CreateFileSignedUrl({file_uri:track.audio_file_uri,expires_in:3600})).signed_url:'';}
-      if(track.uploader_id!==user.id&&!isAdmin)delete result.audio_file_uri;
+      if(track.music_video_file_uri)result._has_music_video=true;
+      if(track.uploader_id!==user.id&&!isAdmin){delete result.audio_file_uri;delete result.music_video_file_uri;}
       return result;
     };
-    const requireTrack = async id => {
+    const requireTrack = async (id,sign=true) => {
       const t=await svc.entities.Track.get(id);
       if(!isAdmin && t.uploader_id!==user.id && t.explicit && !(user.show_explicit && user.adult_confirmed)) fail('Explicit content is hidden',404);
       if(user.id && t.uploader_id!==user.id) await relation(t.uploader_id);
       if(!isAdmin && t.uploader_id!==user.id && !(t.is_published && t.approval_status==='approved')) fail('Track unavailable',404);
-      return await hydrate(t,true);
+      return await hydrate(t,sign);
     };
+    if(entity==='Track' && action==='videoPlayback'){
+      await requireTrack(args[0],false);
+      const track=await svc.entities.Track.get(args[0]);
+      if(!track.music_video_file_uri)fail('No music video is attached',404);
+      const signed=await svc.integrations.Core.CreateFileSignedUrl({file_uri:track.music_video_file_uri,expires_in:3600});
+      return Response.json({result:{url:signed.signed_url}});
+    }
     const member = async sid => {
       const s=await svc.entities.LoungeSession.get(sid);
       const ms=await svc.entities.LoungeMember.filter({session_id:sid,user_id:user.id},'-created_date',1);
@@ -219,6 +227,11 @@ export default async function handleRequest(req) {
           if(setting?.uploads_enabled===false) fail('Uploads are paused',403);
         }
         const content=pick(data,editableTrack);
+        if(content.music_video_file_uri){
+          if(typeof content.music_video_file_uri!=='string'||!content.music_video_file_uri.startsWith('private/'))fail('Invalid private video file',422);
+          if(content.music_video_file_uri!==old?.music_video_file_uri && input.video_rights_confirmed!==true)fail('Confirm your rights to this video',422);
+          await base44.integrations.Core.CreateFileSignedUrl({file_uri:content.music_video_file_uri,expires_in:60});
+        }
         if(content.audio_file_uri){
           if(typeof content.audio_file_uri!=='string'||!content.audio_file_uri.startsWith('private/'))fail('Invalid private audio file',422);
           // Use the caller's storage permissions when attaching an uploaded file.
@@ -232,6 +245,7 @@ export default async function handleRequest(req) {
           data={...content,uploader_id:user.id,uploader_name:user.display_name||user.full_name||'',uploader_avatar_url:user.avatar_url||'',rights_confirmed:true,rights_confirmed_at:new Date().toISOString(),is_published:false,approval_status:'private',play_count:0,like_count:0};
         } else data=content;
         if(kind==='create'){if(input.audio_sha256)data.audio_sha256=input.audio_sha256;if(input.upload_request_id)data.upload_request_id=input.upload_request_id;}
+        if(content.music_video_file_uri && content.music_video_file_uri!==old?.music_video_file_uri)data.music_video_rights_confirmed_at=new Date().toISOString();
         const combined={...old,...data};
         const ready=!!(combined.artist?.trim()&&combined.genre&&combined.cover_art_url&&combined.rights_confirmed);
         if(isAdmin && input.approval_status) {
