@@ -136,6 +136,8 @@ export default function Downloads() {
         <div className="flex justify-center py-16">
             <Loader2 className="animate-spin text-foreground/40" />
           </div> :
+        cache.storageAvailable===false&&tracks.length===0 ?
+        <div className="text-center py-12"><button className="playlist-action" onClick={()=>cache.refresh()}>Retry offline music</button></div> :
         tracks.length === 0 ?
         <div className="text-center py-16 px-6">
             <div className="w-16 h-16 rounded-full bg-foreground/[0.05] grid place-items-center mx-auto mb-4">

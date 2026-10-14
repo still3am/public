@@ -57,6 +57,7 @@ async function toImageBlob(res) {
 export function useOfflineCache() {
   const [cachedIds, setCachedIds] = useState(null);
   const [records, setRecords] = useState([]);
+  const [storageAvailable,setStorageAvailable]=useState(null);
   const [downloading, setDownloading] = useState({});
   const backfilled = useRef(new Set()),refreshVersion=useRef(0);
   const { user } = useAuth();
@@ -80,6 +81,7 @@ export function useOfflineCache() {
     try {
       const [all, orderIds] = await Promise.all([listRecords(), getOrderIds()]);
       if(request!==refreshVersion.current||startedGeneration!==generation)return;
+      setStorageAvailable(true);
       if(all.length)requestPersistentStorage();
       setRecords(applyOrder(all,orderIds));
       const next=new Set(all.map(record=>record.id));
@@ -113,7 +115,7 @@ export function useOfflineCache() {
       }
     } catch {
       // A temporary storage failure must not erase a collection already shown.
-      if(request===refreshVersion.current&&startedGeneration===generation)setCachedIds(previous=>previous||new Set());
+      if(request===refreshVersion.current&&startedGeneration===generation){setStorageAvailable(false);setCachedIds(previous=>previous||new Set());}
     }
   }, []);
 
@@ -264,6 +266,7 @@ export function useOfflineCache() {
   return {
     cachedIds: cachedIds || new Set(),
     records,
+    storageAvailable,
     downloading,
     loading: cachedIds === null,
     refresh,
