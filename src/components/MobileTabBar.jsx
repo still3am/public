@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { flushSync } from "react-dom";
 import { NavLink, useLocation, useNavigate, useSearchParams } from "react-router-dom";
-import { Home, Search, X, User, MoreHorizontal, Library as LibraryIcon } from "lucide-react";
+import { Home, ArrowLeft, Search, X, User, MoreHorizontal, Library as LibraryIcon } from "lucide-react";
 import MobileMoreSheet from "@/components/MobileMoreSheet";
 
 const TABS = [
@@ -14,6 +14,7 @@ export default function MobileTabBar() {
   const [moreOpen, setMoreOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const inputRef = useRef(null);
+  const lastPage = useRef("/");
   const loc = useLocation();
   const nav = useNavigate();
   const [params] = useSearchParams();
@@ -21,7 +22,13 @@ export default function MobileTabBar() {
   const expanded = onSearch || searchOpen;
   const query = onSearch ? params.get("q") || "" : "";
 
-  useEffect(() => { setSearchOpen(false); }, [loc.pathname]);
+  useEffect(() => {
+    if (loc.pathname !== "/search") lastPage.current = loc.pathname + loc.search + loc.hash;
+    setSearchOpen(false);
+  }, [loc.pathname]);
+  useEffect(() => {
+    if (loc.pathname !== "/search") lastPage.current = loc.pathname + loc.search + loc.hash;
+  }, [loc.pathname, loc.search, loc.hash]);
   useEffect(() => {
     const viewport = window.visualViewport;
     const root = document.documentElement;
@@ -60,19 +67,32 @@ export default function MobileTabBar() {
     // Mount and focus within the tap gesture so iOS can open its keyboard.
     flushSync(() => setSearchOpen(true));
     inputRef.current?.focus({ preventScroll: true });
-    if (!onSearch) nav("/search");
+    if (!onSearch) {
+      lastPage.current = loc.pathname + loc.search + loc.hash;
+      nav("/search", { state: { searchReturnTo: lastPage.current } });
+    }
   }
   function updateQuery(value) {
     const next = new URLSearchParams(onSearch ? params : undefined);
     next.delete("genre");
     if (value) next.set("q", value); else next.delete("q");
-    nav({ pathname: "/search", search: next.toString() }, { replace: true });
+    nav({ pathname: "/search", search: next.toString() }, { replace: true, state: loc.state });
+  }
+  const returnTo = loc.state?.searchReturnTo?.startsWith("/") && !loc.state.searchReturnTo.startsWith("//") && !loc.state.searchReturnTo.startsWith("/search") ? loc.state.searchReturnTo : lastPage.current;
+  const returnPath = returnTo.split(/[?#]/)[0];
+  const ReturnIcon = returnPath === "/" ? Home : returnPath === "/library" ? LibraryIcon : returnPath.startsWith("/profile") ? User : ArrowLeft;
+  const returnLabel = returnPath === "/" ? "Home" : returnPath === "/library" ? "Library" : returnPath.startsWith("/profile") ? "profile" : "previous page";
+  function returnFromSearch(event) {
+    event.preventDefault();
+    inputRef.current?.blur();
+    if (loc.state?.searchReturnTo === returnTo) nav(-1);
+    else nav(returnTo, { replace: true });
   }
   const moreActive = !["/", "/search", "/library", "/profile"].some(path => loc.pathname === path || (path !== "/" && loc.pathname.startsWith(path + "/")));
   return <>
     <nav aria-label={expanded ? "Search navigation" : "Main navigation"} className={"mobile-tab-bar md:hidden" + (expanded ? " mobile-search-expanded" : "")}>
       {expanded ? <>
-        <NavLink to="/" onClick={event => handleTab("/", event)} className="mobile-search-home" aria-label="Return to Home"><Home size={25} strokeWidth={1.9} aria-hidden="true" /></NavLink>
+        <NavLink to={returnTo} onClick={returnFromSearch} className="mobile-search-home" aria-label={"Return to " + returnLabel} title={"Return to " + returnLabel}><ReturnIcon size={25} strokeWidth={1.9} aria-hidden="true" /></NavLink>
         <form role="search" className="mobile-search-field" onSubmit={event => {event.preventDefault();inputRef.current?.blur();}}>
           <Search size={22} aria-hidden="true" className="shrink-0" />
           <input ref={inputRef} type="search" value={query} onChange={event => updateQuery(event.target.value)} placeholder="Artists, songs, people…" aria-label={params.get("type") === "people" ? "Search people by name" : "Search songs, artists, playlists, and people"} autoComplete="off" autoCapitalize="none" spellCheck={false} enterKeyHint="search" />
