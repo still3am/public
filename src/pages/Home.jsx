@@ -1,4 +1,4 @@
-import {useLongPressMenu} from '@/hooks/useLongPressMenu';
+import { useLongPressMenu } from '@/hooks/useLongPressMenu';
 import { readAllPages } from "@/lib/readPages";
 import { useEffect, useRef, useState, useCallback } from "react";
 import { Link } from "react-router-dom";
@@ -93,7 +93,7 @@ function Skeleton() {
 export default function Home() {
   const { user } = useAuth();
   const p = usePlayer();
-  const featuredMenu=useLongPressMenu(false,{allowButtons:true});
+  const featuredMenu = useLongPressMenu(false, { allowButtons: true });
   const loadVersion = useRef(0);
   const followedIds = useRef({ uid: user?.id, ids: new Set() });
   const [recent, setRecent] = useState(() => getRecentPlays().slice(0, 8));
@@ -242,11 +242,11 @@ export default function Home() {
   return (
     <PullToRefresh onRefresh={() => load(true)}>
       <div className="home-page">
-        <header className="page-intro home-intro"><p className="eyebrow">{greeting}</p><h1>Listen now</h1><p>Your music. Your people. All PUBLIC.</p></header>
+        <header className="page-intro home-intro hidden"><p className="eyebrow">{greeting}</p><h1>Listen now</h1><p>Your music. Your people. All PUBLIC.</p></header>
         
         <section className="home-feature">
           <div className="home-feature-copy"><p className="eyebrow">Find something you love</p><h2>Music, made PUBLIC.</h2><p>Fresh releases, familiar favorites, and music worth sharing.</p><div className="home-feature-actions"><button disabled={!discoveryQueue.length} onClick={() => {p.setShuffle(false);p.playTrackAt(discoveryQueue, 0);}} className="chrome-button"><Play size={15} fill="currentColor" />Play discovery</button><Link className="playlist-action" to="/recent">Latest music<ChevronRight size={14} /></Link></div></div>
-          {featured && <div ref={featuredMenu.ref} {...featuredMenu.handlers} onClickCapture={event=>{if(!event.currentTarget.contains(event.target))return;if(featuredMenu.consumeLongPress()){event.preventDefault();event.stopPropagation();}}} className="home-spotlight song-menu-surface group"><div className="home-spotlight-art">{featured.cover_art_url ? <Image src={featured.cover_art_url} fittingType="fill" alt="" className="w-full h-full" /> : <Music size={42} />}<button className="home-spotlight-play" onClick={playFeatured} aria-label={featuredPlaying ? `Pause ${featured.title}` : `Play ${featured.title}`}>{featuredPlaying ? <Pause size={20} fill="currentColor" /> : <Play size={20} fill="currentColor" />}</button><div className="home-spotlight-menu song-menu-reveal"><TrackOptionsMenu track={featured} openSignal={featuredMenu.signal} anchorRef={featuredMenu.ref}/></div></div><div className="home-spotlight-meta"><div><p className="eyebrow">Featured release</p><Link to={`/track/${featured.id}`} className="font-semibold text-sm block truncate mt-1">{featured.title}</Link><p className="text-xs text-muted-foreground truncate mt-1">{featured.artist || featured.uploader_name}</p></div></div></div>}
+          {featured && <div ref={featuredMenu.ref} {...featuredMenu.handlers} onClickCapture={(event) => {if (!event.currentTarget.contains(event.target)) return;if (featuredMenu.consumeLongPress()) {event.preventDefault();event.stopPropagation();}}} className="home-spotlight song-menu-surface group"><div className="home-spotlight-art">{featured.cover_art_url ? <Image src={featured.cover_art_url} fittingType="fill" alt="" className="w-full h-full" /> : <Music size={42} />}<button className="home-spotlight-play" onClick={playFeatured} aria-label={featuredPlaying ? `Pause ${featured.title}` : `Play ${featured.title}`}>{featuredPlaying ? <Pause size={20} fill="currentColor" /> : <Play size={20} fill="currentColor" />}</button><div className="home-spotlight-menu song-menu-reveal"><TrackOptionsMenu track={featured} openSignal={featuredMenu.signal} anchorRef={featuredMenu.ref} /></div></div><div className="home-spotlight-meta"><div><p className="eyebrow">Featured release</p><Link to={`/track/${featured.id}`} className="font-semibold text-sm block truncate mt-1">{featured.title}</Link><p className="text-xs text-muted-foreground truncate mt-1">{featured.artist || featured.uploader_name}</p></div></div></div>}
         </section>
         
         
