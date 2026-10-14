@@ -1,7 +1,6 @@
 import { useNavigate, useLocation } from "react-router-dom";
 import {
   X,
-  Radio,
   Upload,
   BarChart3,
   Clock,
@@ -14,7 +13,6 @@ import { useAuth } from "@/lib/AuthContext";
 import { useUnreadCount } from "@/hooks/useNotifications";
 
 const ITEMS = [
-{ to: "/radio", icon: Radio, label: "PUBLIC. Radio" },
 { to: "/upload", icon: Upload, label: "Upload" },
 { to: "/top", icon: BarChart3, label: "Top Charts" },
 { to: "/recent", icon: Clock, label: "Recently Added" },
@@ -37,7 +35,7 @@ export default function MobileMoreSheet({ onClose }) {
     onClose();
   }
   return (
-    <div role="dialog" aria-modal="true" aria-label="MobileMore" data-public-dialog tabIndex={-1} onKeyDown={e=>{if(e.key==="Escape"){e.stopPropagation();onClose?.();}}} className="fixed inset-0 z-50 md:hidden" onClick={onClose}>
+    <div role="dialog" aria-modal="true" aria-label="More pages" data-public-dialog tabIndex={-1} onKeyDown={e=>{if(e.key==="Escape"){e.stopPropagation();onClose?.();}}} className="fixed inset-0 z-50 md:hidden" onClick={onClose}>
       <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" />
       <div
         className="absolute left-1/2 -translate-x-1/2 bottom-[calc(4.5rem+env(safe-area-inset-bottom))] w-[min(94vw,28rem)] max-h-[80dvh] flex flex-col bg-card rounded-2xl shadow-2xl border border-border overflow-hidden animate-[accordion-down_.18s_ease-out]"
