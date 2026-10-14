@@ -284,13 +284,14 @@ export default function FullScreenPlayer({ onClose }) {
           <ChevronDown size={26} />
         </button>
         <div className="flex-1 min-w-0 px-3">
-          {showingLyrics && <div className="xl:hidden flex items-center gap-3 min-w-0">
+          {showingLyrics && <button type="button" onClick={() => setLyricsMode(false)} aria-label="Return to artwork and playback controls" title="Show artwork" className="xl:hidden flex items-center gap-3 min-w-0 w-full text-left bg-transparent rounded-lg">
             {coverUrl && !coverFailed && <img src={coverUrl} alt="" className="w-10 h-10 rounded-lg object-cover shrink-0" />}
-            <div className="min-w-0">
+            <div className="min-w-0 flex-1">
               <p className="text-sm font-bold truncate">{t.title}</p>
               <p className="text-xs text-white/60 truncate mt-0.5">{t.artist || t.uploader_name || "Unknown"}</p>
             </div>
-          </div>}
+            <Disc3 size={16} className="shrink-0 text-white/60" aria-hidden="true" />
+          </button>}
         </div>
         <TrackOptionsMenu
           track={t}
@@ -370,7 +371,7 @@ export default function FullScreenPlayer({ onClose }) {
           </div>
 
           {/* scrubber */}
-          <div className="mb-1.5 shrink-0">
+          <div className={`${showingLyrics ? "hidden xl:block" : "block"} mb-1.5 shrink-0`}>
             <div className="relative h-1.5 bg-white/20 rounded-full group">
               <div className="absolute left-0 top-0 h-1.5 bg-overlay-foreground rounded-full" style={{ width: `${progress}%` }} />
               <div
@@ -395,7 +396,7 @@ export default function FullScreenPlayer({ onClose }) {
           </div>
 
           {/* controls */}
-          <div className="flex items-center justify-between gap-2 my-4 shrink-0">
+          <div className={`${showingLyrics ? "hidden xl:flex" : "flex"} items-center justify-between gap-2 my-4 shrink-0`}>
             <IconButton icon={Shuffle} onClick={() => p.setShuffle(!p.shuffle)} active={p.shuffle} label="Shuffle" size={20} />
             <button onClick={() => p.prev()} className="p-2 active:scale-90 transition" aria-label="Previous">
               <SkipBack size={30} fill="white" strokeWidth={1.5} />
@@ -439,7 +440,7 @@ export default function FullScreenPlayer({ onClose }) {
           
 
           {/* mobile artwork / lyrics toggle — only when this track has lyrics */}
-          {hasLyrics && (
+          {hasLyrics && !showingLyrics && (
             <div className="now-playing-view-switch xl:hidden" role="group" aria-label="Now Playing view">
               <button type="button" onClick={() => setLyricsMode(false)} aria-pressed={!showingLyrics}>
                 <Disc3 size={15} aria-hidden="true" /> Artwork
