@@ -35,6 +35,7 @@ import {
   Settings } from
 "lucide-react";
 import SettingsSheet from "@/components/profile/SettingsSheet";
+import ProfilePlaylists from "@/components/profile/ProfilePlaylists";
 import ProfileSong from "@/components/profile/ProfileSong";
 import TopTracks from "@/components/profile/TopTracks";
 import ProfileComments from "@/components/profile/ProfileComments";
@@ -126,6 +127,7 @@ export default function Profile({ownProfileTab=false}) {
   }, [profile?.featured_track_id]);
 
   const coverUrl = useCoverUrl(featuredCoverUrl);
+  const bannerUrl = useCoverUrl(profile?.banner_url);
   const {colors:coverColors,loading:colorsLoading}=useCoverPalette(coverUrl);
 
   const loadVersion = useRef(0);
@@ -353,10 +355,14 @@ export default function Profile({ownProfileTab=false}) {
     <PullToRefresh onRefresh={load} disabled={editMode||saving||uploadingAvatar||showSettings||showDelete||showQR||showColors||!!followList}>
 
     {(backgroundColors.length>0||(currentBackground.mode==="auto"&&coverUrl))&&<div className="profile-artwork-background fixed inset-0 pointer-events-none z-0" aria-hidden="true" style={backgroundColors.length?{backgroundImage:profileGradient(backgroundColors),backgroundColor:"hsl(var(--background))"}:{backgroundImage:`url(${JSON.stringify(coverUrl)})`,backgroundSize:"cover",backgroundPosition:"center",filter:"blur(45px) saturate(1.35)",transform:"scale(1.12)",opacity:.6}}/>}
-    <div className="profile-page max-w-6xl mx-auto relative z-10">
+    <div className={`profile-page profile-redesigned max-w-6xl mx-auto relative z-10 ${editMode ? "profile-is-editing" : ""}`}>
       {sectionError&&<button disabled={loading||editMode||saving||uploadingAvatar} onClick={load} className="playlist-action text-xs mb-4">Refresh profile</button>}
       <div className="profile-overview flex flex-col md:flex-row gap-4 md:gap-6 mb-8">
       <div className="profile-identity relative rounded-2xl overflow-hidden ring-1 ring-inset ring-foreground/10 bg-card flex-1 min-w-0">
+        <div className="profile-cover-stage" aria-hidden="true" style={backgroundColors.length ? {backgroundImage:profileGradient(backgroundColors)} : undefined}>
+          {(bannerUrl || (currentBackground.mode==="auto" && coverUrl)) && <img src={bannerUrl || coverUrl} alt="" onError={event=>{event.currentTarget.style.visibility="hidden";}} />}
+          <div className="profile-cover-fade" />
+        </div>
         {!editMode && profile.is_artist &&
             <span
               title="Artist"
@@ -589,12 +595,14 @@ export default function Profile({ownProfileTab=false}) {
           </div>
         </div>
       </div>
+      </div>
+      <div className="profile-song-spotlight">
       <ProfileSong
             trackId={editMode ? form.featured_track_id : profile?.featured_track_id}
             editMode={editMode}
             userTracks={tracks}
             onChange={saveProfileSong}
-            fillHeight />
+            />
       </div>
 
       <div className="profile-content"><section className="profile-music">
@@ -618,6 +626,7 @@ export default function Profile({ownProfileTab=false}) {
         </div>
             }
 
+      <ProfilePlaylists userId={targetId} active={isCurrentPage} />
       </section><aside className="profile-conversation"><ProfileComments profileId={targetId} isOwn={isOwn} active={isCurrentPage}/><SafetyControls type="user" id={targetId} userId={targetId} label="profile" /></aside></div>
 
       {showColors&&isOwn&&<ProfileColorPicker coverUrl={coverUrl} colors={coverColors} loading={colorsLoading} value={backgroundValue} onPreview={setBackgroundDraft} onSave={saveColors} onClose={closeColors}/>}
