@@ -7,11 +7,11 @@ import PlaylistCard from "@/components/playlist/PlaylistCard";
 
 /** @param {any} props */
 function SectionTitle({ children, count }) {
-  return (
-    <h3 className="flex items-center gap-2 text-sm font-bold uppercase tracking-wide text-foreground/60 mb-2 px-1 hidden">
-      {children}
-      {count > 0 && <span className="text-xs font-semibold text-foreground/40">{count}</span>}
-    </h3>);
+  return null;
+
+
+
+
 
 }
 
