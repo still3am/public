@@ -350,6 +350,33 @@ html.dark {
  .release-shelf { gap:14px; }
  .release-shelf-card { flex-basis:44%; }
 }
+.release-header-full { position:relative;isolation:isolate;max-width:none;padding-top:0; }
+.release-full-image { display:none; }
+.music-video-card { max-width:640px; }
+.music-video-card video,.music-video-poster { display:block;position:relative;width:100%;aspect-ratio:16/9;border-radius:14px;overflow:hidden;background:#141417;object-fit:contain; }
+.music-video-poster>img { width:100%;height:100%;object-fit:cover;filter:brightness(.7); }
+.music-video-poster>span { position:absolute;inset:0;margin:auto;width:60px;height:60px;border-radius:50%;display:grid;place-items:center;background:rgb(255 255 255/.92);color:#151518; }
+.music-video-card h3 { font-size:16px;font-weight:650;margin-top:12px; }
+.music-video-card>p { font-size:13px;color:hsl(var(--muted-foreground));margin-top:3px; }
+@media(max-width:767px) {
+ .release-page { position:relative; }
+ .release-page .release-toolbar { margin-bottom:0; }
+ .release-header-full { margin:calc(-44px - 24px) calc(-1 * var(--app-gutter)) 28px;padding:0 20px 0;max-width:none; }
+ .release-header-full.has-release-art { background:hsl(var(--background)); }
+ .release-header-full .release-art { width:calc(100% + 40px);max-width:none;aspect-ratio:1;margin:0 -20px 0;border-radius:0;box-shadow:none;background:hsl(var(--muted)); }
+ .release-header-full .release-art img { object-fit:cover; }
+ .release-header-full.has-release-art .release-art { visibility:hidden; }
+ .release-full-image { display:block;position:absolute;top:0;left:0;right:0;aspect-ratio:1;z-index:-1; }
+ .release-full-image>img { width:100%;height:100%;object-fit:cover; }
+ .release-full-image>div { position:absolute;inset:0;background:linear-gradient(180deg,transparent 65%,hsl(var(--background)/.4) 85%,hsl(var(--background)) 100%); }
+ .release-header-full h1 { position:relative;margin-top:-8px;font-size:27px; }
+ .release-header-full .release-play-controls { margin-top:24px; }
+ .release-page .release-toolbar .release-round { background:hsl(var(--card)/.8); }
+ .release-page .release-toolbar-actions .release-round { background:transparent; }
+ .release-page .release-toolbar-actions { background:hsl(var(--card)/.8); }
+ .music-video-card video,.music-video-poster { border-radius:12px; }
+}
+
 
 
 
