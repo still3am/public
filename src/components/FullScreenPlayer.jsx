@@ -353,7 +353,6 @@ export default function FullScreenPlayer({ onClose }) {
           {/* metadata */}
           <div className={`${showingLyrics ? "hidden xl:flex" : "flex"} items-start justify-between gap-3 mt-1 mb-4 shrink-0`}>
             <div className="min-w-0">
-              {t._public_radio && <Link to="/radio" onClick={onClose} className="block text-[10px] uppercase tracking-widest text-white/70 mb-2">PUBLIC. Radio · Shared station</Link>}
               <h2 className="text-xl md:text-2xl xl:text-4xl font-extrabold tracking-tight truncate">{t.title}</h2>
               <Link
                 to={`/track/${t.id}`}
@@ -399,17 +398,16 @@ export default function FullScreenPlayer({ onClose }) {
 
           {/* controls */}
           <div className={`${showingLyrics ? "hidden xl:flex" : "flex"} items-center justify-between gap-2 my-4 shrink-0`}>
-            <IconButton disabled={!!t._public_radio} icon={Shuffle} onClick={() => p.setShuffle(!p.shuffle)} active={p.shuffle} label="Shuffle" size={20} />
-            <button disabled={!!t._public_radio} onClick={() => p.prev()} className="p-2 active:scale-90 transition disabled:opacity-25 disabled:cursor-default" aria-label="Previous">
+            <IconButton icon={Shuffle} onClick={() => p.setShuffle(!p.shuffle)} active={p.shuffle} label="Shuffle" size={20} />
+            <button onClick={() => p.prev()} className="p-2 active:scale-90 transition disabled:opacity-25 disabled:cursor-default" aria-label="Previous">
               <SkipBack size={30} fill="white" strokeWidth={1.5} />
             </button>
             <PlayPauseButton isPlaying={p.isPlaying} onClick={() => p.togglePlay()} />
-            <button disabled={!!t._public_radio} onClick={() => p.next()} className="p-2 active:scale-90 transition disabled:opacity-25 disabled:cursor-default" aria-label="Next">
+            <button onClick={() => p.next()} className="p-2 active:scale-90 transition disabled:opacity-25 disabled:cursor-default" aria-label="Next">
               <SkipForward size={30} fill="white" strokeWidth={1.5} />
             </button>
             <IconButton
               icon={repeatOff ? Repeat : Repeat1}
-              disabled={!!t._public_radio}
               onClick={() => p.setRepeat(p.repeat === "off" ? "all" : p.repeat === "all" ? "one" : "off")}
               active={!repeatOff}
               label="Repeat"
