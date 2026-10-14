@@ -3,6 +3,7 @@ import {useRef} from 'react';
 import { useEffect, useState, useMemo } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
+import { getArtists, getPublishedTracks } from "@/lib/catalogCache";
 import { fetchArtistTracks } from "@/lib/artistTracks";
 import SafetyControls from '@/components/SafetyControls';
 import TrackCard from "@/components/TrackCard";
@@ -104,6 +105,38 @@ export default function PublicRecords({ id: propId, fallbackArtist = null }) {
   const { user } = useAuth();
   const [artist, setArtist] = useState(null);
   const [tracks, setTracks] = useState([]);
+  const [similarArtists,setSimilarArtists] = useState([]);
+  useEffect(() => {
+    let active = true;
+    setSimilarArtists([]);
+    if (!artist?.name || !tracks.length) return;
+    const normalize = value => String(value || "").trim().replace(/\s+/g," ").toLowerCase();
+    const genres = new Set(tracks.map(track => normalize(track.genre)).filter(Boolean));
+    if (!genres.size) return;
+    Promise.all([getArtists(),getPublishedTracks()]).then(([artists,catalog]) => {
+      const byName = new Map();
+      for (const track of catalog) {
+        const key = normalize(track.artist);
+        if (!key || key === normalize(artist.name)) continue;
+        if (!byName.has(key)) byName.set(key,{name:track.artist,genres:new Set(),cover:track.cover_art_url,plays:0});
+        const row = byName.get(key);
+        if (track.genre) row.genres.add(normalize(track.genre));
+        if (!row.cover && track.cover_art_url) row.cover = track.cover_art_url;
+        row.plays += Number(track.play_count) || 0;
+      }
+      const seen = new Set(),picks = [];
+      for (const candidate of artists) {
+        const key = normalize(candidate.name),row = byName.get(key);
+        if (!row || seen.has(key)) continue;
+        seen.add(key);
+        const shared = [...row.genres].filter(genre => genres.has(genre)).length;
+        if (shared) picks.push({...candidate,image:candidate.avatar_url || candidate.cover_art_url || row.cover,shared,plays:row.plays});
+      }
+      picks.sort((a,b)=>b.shared-a.shared || b.plays-a.plays || a.name.localeCompare(b.name));
+      if(active)setSimilarArtists(picks.slice(0,12));
+    }).catch(()=>{});
+    return () => {active=false;};
+  }, [artist?.name,tracks]);
   const [loading, setLoading] = useState(true);
   const [generating, setGenerating] = useState(false);
   const [query,setQuery]=useState(""),[sort,setSort]=useState("recent");
@@ -196,7 +229,7 @@ export default function PublicRecords({ id: propId, fallbackArtist = null }) {
   find((t) => t.cover_art_url)?.cover_art_url;
 
   const latestTrack = [...tracks].sort((a,b) => (Date.parse(b.created_date)||0) - (Date.parse(a.created_date)||0))[0];
-  const topTracks = [...tracks].sort((a,b) => (b.play_count||0) - (a.play_count||0)).slice(0,6);
+  const topTracks = [...tracks].sort((a,b) => (b.play_count||0) - (a.play_count||0)).slice(0,18);
   const isAdmin = !!user && user.role === "admin";
   const playAll = () => p.playTrackAt(visibleTracks.length?visibleTracks:tracks);
 
@@ -229,7 +262,7 @@ export default function PublicRecords({ id: propId, fallbackArtist = null }) {
 
         {topTracks.length > 0 && <section className="artist-top-songs">
           <SectionTitle icon={Music} right={<button className="text-xs text-muted-foreground px-2 py-2" onClick={() => document.getElementById("artist-discography")?.scrollIntoView({behavior:window.matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth"})}>All songs <ChevronRight size={14} className="inline" /></button>}>Top Songs</SectionTitle>
-          <div className="artist-top-list">{topTracks.map((track,index) => <TrackRow key={track.id} track={track} index={index} queue={topTracks} queueIndex={index} />)}</div>
+          <div className="artist-top-list" tabIndex={0} role="region" aria-label="Swipe through top songs">{Array.from({length:Math.ceil(topTracks.length/3)},(_,column)=><div className="artist-top-column" key={column}>{topTracks.slice(column*3,column*3+3).map((track,index)=><TrackRow key={track.id} track={track} index={column*3+index} queue={topTracks} queueIndex={column*3+index} />)}</div>)}</div>
         </section>}
 
         {/* Discography */}
@@ -256,13 +289,25 @@ export default function PublicRecords({ id: propId, fallbackArtist = null }) {
             </div>
           }
         </section>
-        {(artist.bio || meta.length > 0 || socials.length > 0 || artist.history_text || isAdmin) && <section className="artist-about">
+        {(artist.bio || meta.length > 0 || socials.length > 0 || artist.history_text || tracks.some(track=>track.genre) || isAdmin) && <section className="artist-about">
           <SectionTitle icon={Mic2}>About {artist.name}</SectionTitle>
-          {artist.bio && <CollapsibleText text={artist.bio} className="selectable-content text-sm text-muted-foreground leading-relaxed" />}
-          {meta.length > 0 && <div className="flex flex-wrap gap-2 mt-4">{meta.map((m,i) => <Pill key={i} icon={m.icon}>{m.label}</Pill>)}</div>}
+          {artist.bio && <CollapsibleText text={artist.bio} className="artist-about-copy selectable-content leading-relaxed" clampClass="max-h-28" />}
+          <dl className="artist-facts">
+            {artist.location && <div><dt>From</dt><dd>{artist.location}</dd></div>}
+            {artist.formed_year && <div><dt>Formed</dt><dd>{artist.formed_year}</dd></div>}
+            {artist.members && <div><dt>Members</dt><dd>{artist.members}</dd></div>}
+            {tracks.some(track=>track.genre) && <div><dt>Genre</dt><dd>{[...new Set(tracks.map(track=>track.genre).filter(Boolean))].slice(0,4).join(" · ")}</dd></div>}
+          </dl>
           {socials.length > 0 && <div className="flex flex-wrap gap-2 mt-4">{socials.map((s,i) => <SocialChip key={i} href={s.href} icon={s.icon} label={s.label} />)}</div>}
           {artist.history_text && <div className="mt-6"><h3 className="font-semibold mb-3">History</h3><CollapsibleText text={artist.history_text} className="selectable-content text-sm text-muted-foreground leading-relaxed whitespace-pre-line" /></div>}
           {isAdmin && id && <button onClick={generateHistory} disabled={generating} className="playlist-action inline-flex items-center gap-2 px-4 py-2.5 mt-5 text-xs">{generating ? <Loader2 size={14} className="animate-spin" /> : <Sparkles size={14} />}{generating ? "Generating…" : artist.history_text ? "Regenerate history" : "Generate history"}</button>}
+        </section>}
+        {similarArtists.length > 0 && <section className="artist-similar">
+          <SectionTitle icon={Users}>Similar Artists</SectionTitle>
+          <p className="text-xs text-muted-foreground mb-4">More artists in the same genres.</p>
+          <div className="artist-similar-list" tabIndex={0} role="region" aria-label="Similar artists">
+            {similarArtists.map(candidate=><Link className="artist-similar-card" key={candidate.id} to={"/records/"+candidate.id}><ArtistArtwork source={candidate.image} className="artist-similar-image" /><span>{candidate.name}</span></Link>)}
+          </div>
         </section>}
         {id && <SafetyControls type="artist" id={id} label="artist page" />}
       </div>
