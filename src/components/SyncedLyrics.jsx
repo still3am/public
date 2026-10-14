@@ -3,7 +3,7 @@ import { base44 } from "@/api/base44Client";
 import { Loader2 } from "lucide-react";
 
 /** @param {any} props */
-export default function SyncedLyrics({ trackId, position, fallbackText = "", onSeek }) {
+export default function SyncedLyrics({ trackId, position, fallbackText = "", onSeek, onUnavailable }) {
   const [lyrics, setLyrics] = useState(null);
   const [trackLyrics, setTrackLyrics] = useState("");
   const [loading, setLoading] = useState(true);
@@ -54,6 +54,11 @@ export default function SyncedLyrics({ trackId, position, fallbackText = "", onS
     }
   }, [activeIdx]);
 
+  const text = (typeof trackLyrics === "string" ? trackLyrics.trim() : "") || (typeof fallbackText === "string" ? fallbackText.trim() : "");
+  useEffect(() => {
+    if (!loading && !hasTimed && !text) onUnavailable?.();
+  }, [loading, hasTimed, text, onUnavailable]);
+
   const markUserScroll = () => {
     userScrollUntil.current = Date.now() + 4000;
   };
@@ -102,7 +107,6 @@ export default function SyncedLyrics({ trackId, position, fallbackText = "", onS
     );
   }
 
-  const text = trackLyrics.trim() || fallbackText.trim();
   if (!text) {
     return (
       <div className="flex-1 flex items-center justify-center text-overlay-foreground/70 italic text-center px-6">
