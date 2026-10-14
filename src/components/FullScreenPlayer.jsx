@@ -104,7 +104,7 @@ export default function FullScreenPlayer({ onClose }) {
     }
     setLyricsMode(false);
     const fallbackText = typeof t.lyrics_text === "string" ? t.lyrics_text.trim() : "";
-    setLyricsAvailability({ trackId: t.id, available: !!fallbackText });
+    setLyricsAvailability({ trackId: t.id, available: !!fallbackText, record: null, text: fallbackText });
     Promise.all([
       base44.entities.Lyrics
         .filter({ track_id: t.id, status: "approved" }, "-created_date", 5)
@@ -112,12 +112,12 @@ export default function FullScreenPlayer({ onClose }) {
       base44.entities.Track.get(t.id).catch(() => null),
     ]).then(([lyricsRes, track]) => {
       if (!alive) return;
-      const found = Array.isArray(lyricsRes) && lyricsRes.length ? lyricsRes[0] : null;
+      const found = Array.isArray(lyricsRes) ? lyricsRes.find(record => Array.isArray(record.lines) && record.lines.some(line => (line.text?.trim() || line.words?.some(word => word.text?.trim())) && (line.start_time_ms || line.end_time_ms))) : null;
       const lines = found?.lines || [];
       const hasTimed = lines.length && lines.some((l) => l.start_time_ms || l.end_time_ms);
       const text = typeof track?.lyrics_text === "string" ? track.lyrics_text.trim() : fallbackText;
       const available = !!hasTimed || !!text;
-      setLyricsAvailability({ trackId: t.id, available });
+      setLyricsAvailability({ trackId: t.id, available, record: found, text });
       if (!available) setLyricsMode(false);
     });
     return () => { alive = false; };
@@ -309,8 +309,8 @@ export default function FullScreenPlayer({ onClose }) {
           {/* artwork / mobile lyrics */}
           <div className="relative flex-1 xl:flex-none flex items-center justify-center min-h-0 py-4">
             {showingLyrics &&
-            <div className="xl:hidden w-full h-full rounded-3xl bg-white/[0.06] overflow-hidden flex flex-col min-h-0">
-                <SyncedLyrics key={t.id} trackId={t.id} position={p.position} fallbackText={t.lyrics_text} onSeek={p.seek} onUnavailable={handleLyricsUnavailable} />
+            <div className="xl:hidden w-full h-full overflow-hidden flex flex-col min-h-0">
+                <SyncedLyrics key={t.id} trackId={t.id} position={p.position} fallbackText={t.lyrics_text} resolvedLyrics={lyricsAvailability} onSeek={p.seek} onUnavailable={handleLyricsUnavailable} />
               </div>
             }
               <div
@@ -437,20 +437,12 @@ export default function FullScreenPlayer({ onClose }) {
 
           {/* mobile artwork / lyrics toggle — only when this track has lyrics */}
           {hasLyrics && (
-            <div className="xl:hidden flex items-center gap-1 mx-auto mt-2 mb-5 p-1 rounded-full bg-white/10 shrink-0">
-              <button
-                onClick={() => setLyricsMode(false)}
-                className={`flex items-center justify-center gap-1.5 px-4 py-1.5 rounded-full transition text-xs font-semibold ${
-                !lyricsMode ? "bg-overlay-foreground text-overlay" : "opacity-70"}`}
-                aria-label="Artwork">
-                <Disc3 size={14} /> Artwork
+            <div className="now-playing-view-switch xl:hidden" role="group" aria-label="Now Playing view">
+              <button type="button" onClick={() => setLyricsMode(false)} aria-pressed={!showingLyrics}>
+                <Disc3 size={15} aria-hidden="true" /> Artwork
               </button>
-              <button
-                onClick={() => setLyricsMode(true)}
-                className={`flex items-center justify-center gap-1.5 px-4 py-1.5 rounded-full transition text-xs font-semibold ${
-                lyricsMode ? "bg-overlay-foreground text-overlay" : "opacity-70"}`}
-                aria-label="Lyrics">
-                <Mic2 size={14} /> Lyrics
+              <button type="button" onClick={() => setLyricsMode(true)} aria-pressed={showingLyrics}>
+                <Mic2 size={15} aria-hidden="true" /> Lyrics
               </button>
             </div>
           )}
@@ -480,7 +472,7 @@ export default function FullScreenPlayer({ onClose }) {
 
           
           <div className="flex-1 min-h-0 flex flex-col">
-            {hasLyrics && showLyricsPanel && <SyncedLyrics key={t.id} trackId={t.id} position={p.position} fallbackText={t.lyrics_text} onSeek={p.seek} onUnavailable={handleLyricsUnavailable} />}
+            {hasLyrics && showLyricsPanel && <SyncedLyrics key={t.id} trackId={t.id} position={p.position} fallbackText={t.lyrics_text} resolvedLyrics={lyricsAvailability} onSeek={p.seek} onUnavailable={handleLyricsUnavailable} />}
           </div>
         </div>
       </div>
