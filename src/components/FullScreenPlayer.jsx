@@ -290,7 +290,7 @@ export default function FullScreenPlayer({ onClose }) {
               <p className="text-sm font-bold truncate">{t.title}</p>
               <p className="text-xs text-white/60 truncate mt-0.5">{t.artist || t.uploader_name || "Unknown"}</p>
             </div>
-            <Disc3 size={16} className="shrink-0 text-white/60 hidden" aria-hidden="true" />
+            
           </button>}
         </div>
         <TrackOptionsMenu
