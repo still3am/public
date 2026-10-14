@@ -461,6 +461,13 @@ html.dark {
  .profile-playlist-tile { flex-basis:144px; }
  .profile-playlist-art { width:144px;height:144px; }
 }
+.profile-redesigned:not(.profile-is-editing) .profile-pinned-section>.grid { display:flex;gap:16px;overflow-x:auto;scroll-snap-type:x proximity;overscroll-behavior-x:contain;padding-bottom:12px; }
+.profile-redesigned:not(.profile-is-editing) .profile-pinned-section>.grid>div { flex:0 0 160px;min-width:0;scroll-snap-align:start; }
+.profile-redesigned:not(.profile-is-editing) .profile-pinned-section>.grid>div .p-2 { background:hsl(var(--card)); }
+@media(max-width:767px) {
+ .profile-redesigned:not(.profile-is-editing) .profile-pinned-section>.grid>div { flex-basis:44%; }
+}
+
 
 
 
