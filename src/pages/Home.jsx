@@ -242,7 +242,7 @@ export default function Home() {
   return (
     <PullToRefresh onRefresh={() => load(true)}>
       <div className="home-page">
-        <header className="page-intro home-intro hidden"><p className="eyebrow">{greeting}</p><h1>Listen now</h1><p>Your music. Your people. All PUBLIC.</p></header>
+        
         
         <section className="home-feature">
           <div className="home-feature-copy"><p className="eyebrow">Find something you love</p><h2>Music, made PUBLIC.</h2><p>Fresh releases, familiar favorites, and music worth sharing.</p><div className="home-feature-actions"><button disabled={!discoveryQueue.length} onClick={() => {p.setShuffle(false);p.playTrackAt(discoveryQueue, 0);}} className="chrome-button"><Play size={15} fill="currentColor" />Play discovery</button><Link className="playlist-action" to="/recent">Latest music<ChevronRight size={14} /></Link></div></div>
