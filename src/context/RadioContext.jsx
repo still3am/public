@@ -25,7 +25,7 @@ export function RadioProvider({children}){
    if(epoch!==version.current)return null;
    const data=response?.data;
    if(!Array.isArray(data?.slots)||!Number.isFinite(data.server_now))throw Error("Invalid station response");
-   offset.current=data.server_now-(started+Date.now())/2;
+   offset.current=data.server_now-Date.now();
    state.current=data;setSchedule(data);setClock(Date.now()+offset.current);return data;
   }).catch(error=>{
    if(epoch===version.current){setNotice(Number(error?.response?.status)===402?"Radio needs available app integration credits. Try again later.":"The station couldn't connect. Try joining again.");joinedRef.current=false;setJoined(false);}
@@ -51,7 +51,7 @@ export function RadioProvider({children}){
    const now=Date.now()+offset.current;setClock(now);
    if(!joinedRef.current)return;
    const player=latest.current;
-   if(Date.now()-lastCommand.current>4000&&player.currentTrack&&!player.currentTrack._public_radio){joinedRef.current=false;setJoined(false);return;}
+   if(Date.now()-lastCommand.current>4000&&(!player.currentTrack||!player.currentTrack._public_radio)){joinedRef.current=false;setJoined(false);return;}
    const entry=currentEntry();
    if(!entry){refresh().then(data=>{if(data&&joinedRef.current)apply(currentEntry());});return;}
    if(entry.start_ms!==activeSlot.current)apply(entry);
