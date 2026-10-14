@@ -120,7 +120,7 @@ export function PlayerProvider({ children }) {
   const applyVolume=useCallback(value=>{
     const gain=volumeGainRef.current,ctx=audioCtxRef.current;
     els().forEach(audio=>{if(audio)audio.volume=gain?1:value;});
-    if(gain&&ctx){gain.gain.cancelScheduledValues(ctx.currentTime);gain.gain.setTargetAtTime(value,ctx.currentTime,.015);}
+    if(gain&&ctx){gain.gain.cancelScheduledValues(ctx.currentTime);if(value===0)gain.gain.setValueAtTime(0,ctx.currentTime);else gain.gain.setTargetAtTime(value,ctx.currentTime,.015);}
   },[]);
   const [muted, setMutedState] = useState(() => {
     try {
@@ -285,7 +285,7 @@ export function PlayerProvider({ children }) {
 
   const enableAnalyser = useCallback(() => {
     const ctx = ensureGraph();
-    if (ctx && ctx.state === "suspended") ctx.resume().catch(() => {});
+    if (ctx && (ctx.state === "suspended" || ctx.state === "interrupted")) ctx.resume().catch(() => {});
     return !!analyserRef.current;
   }, [ensureGraph]);
 
@@ -293,7 +293,7 @@ export function PlayerProvider({ children }) {
   // through them. Called when the mixer panel opens.
   const enableMixer = useCallback(() => {
     const ctx = ensureGraph();
-    if (ctx && ctx.state === "suspended") ctx.resume().catch(() => {});
+    if (ctx && (ctx.state === "suspended" || ctx.state === "interrupted")) ctx.resume().catch(() => {});
     return !!filterRefs.bass.current;
   }, [ensureGraph]);
 
@@ -424,7 +424,7 @@ export function PlayerProvider({ children }) {
       setDuration(0);
       if (graphNeeded()) ensureGraph();
       const ctx = audioCtxRef.current;
-      if (ctx && ctx.state === "suspended") ctx.resume().catch(() => {});
+      if (ctx && (ctx.state === "suspended" || ctx.state === "interrupted")) ctx.resume().catch(() => {});
       setGainImmediate(side, 1);
       const shouldPlay = autoPlayOnLoadRef.current;
       autoPlayOnLoadRef.current = true;
@@ -912,7 +912,7 @@ export function PlayerProvider({ children }) {
           })
           .catch(() => {});
       };
-      if (ctx && ctx.state === "suspended") {
+      if (ctx && (ctx.state === "suspended" || ctx.state === "interrupted")) {
         return ctx.resume().then(run).catch(() => {});
       }
       return run();
@@ -1163,7 +1163,7 @@ export function PlayerProvider({ children }) {
     const onVis = () => {
       if (document.visibilityState !== "visible") return;
       const ctx = audioCtxRef.current;
-      if (ctx && ctx.state === "suspended") ctx.resume().catch(() => {});
+      if (ctx && (ctx.state === "suspended" || ctx.state === "interrupted")) ctx.resume().catch(() => {});
       if (!isPlayingRef.current) return;
       const a = activeEl();
       if (a && a.paused) {

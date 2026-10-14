@@ -188,6 +188,7 @@ export default function FullScreenPlayer({ onClose }) {
   const onVolPointerEnd=event=>{
     if(volDrag.current.pointerId!==event.pointerId)return;
     volDrag.current.active=false;
+    p.prepareVolumeControl?.();
     if(event.currentTarget.hasPointerCapture?.(event.pointerId))event.currentTarget.releasePointerCapture(event.pointerId);
     flashHint();
   };
