@@ -23,6 +23,7 @@ export default function ProfileComments({ profileId, isOwn, active = true }) {
   useEffect(()=>{alive.current=true;return()=>{alive.current=false;requestVersion.current++;};},[]);
 
   const load = useCallback(async () => {
+    if(!profileId){setComments([]);setLoading(false);return;}
     const request=++requestVersion.current;
     setError(false);
     try {
