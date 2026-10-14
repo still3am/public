@@ -20,7 +20,7 @@ export function RadioProvider({children}){
  const currentEntry=()=>state.current?.slots?.find(slot=>slot.start_ms<=Date.now()+offset.current&&slot.end_ms>Date.now()+offset.current);
  const refresh=async()=>{
   if(inflight.current)return inflight.current;
-  const epoch=version.current,started=Date.now();setLoading(true);setNotice("");
+  const epoch=version.current;setLoading(true);setNotice("");
   const request=base44.functions.invoke("publicRadio",{}).then(response=>{
    if(epoch!==version.current)return null;
    const data=response?.data;
