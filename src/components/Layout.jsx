@@ -30,6 +30,7 @@ const TABS = [
 export default function Layout() {
   const location = useLocation();
   const reducedMotion=useReducedMotion();
+  const artworkPage = /^\/(?:track\/[^/]+|records\/[^/]+|artist)\/?$/.test(location.pathname);
   const { user } = useAuth();
   const {currentTrack}=usePlayer();
   useScrollRestore();
@@ -48,7 +49,7 @@ export default function Layout() {
       <Sidebar />
       <div className="flex-1 flex flex-col min-w-0">
         <ScrollingBanner />
-        <main id="main-content" tabIndex={-1} className="flex-1 w-full mx-auto main-content app-content">
+        <main id="main-content" tabIndex={-1} className={`flex-1 w-full mx-auto main-content app-content ${artworkPage ? "artwork-content" : ""}`}>
           <PageHeading />
           {TABS.map(({ path, Page, requiresAuth }) =>
           mountedTabs.current.has(path) && (!requiresAuth || user) ?
