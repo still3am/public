@@ -1,5 +1,5 @@
 import LoadError from '@/components/LoadError';
-import {useRef} from 'react';
+import { useRef } from 'react';
 import { useEffect, useState } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
@@ -41,50 +41,50 @@ export default function TrackDetail() {
   const [moreTracks, setMoreTracks] = useState([]);
   const { toast } = useToast();
 
-  const loadVersion=useRef(0),detectVersion=useRef(0);
-  const [loadError,setLoadError]=useState(false);
+  const loadVersion = useRef(0),detectVersion = useRef(0);
+  const [loadError, setLoadError] = useState(false);
   async function load() {
-    const request=++loadVersion.current;(request===loadVersion.current)&&setLoadError(false);
-    (request===loadVersion.current)&&setLoading(true);
+    const request = ++loadVersion.current;request === loadVersion.current && setLoadError(false);
+    request === loadVersion.current && setLoading(true);
     try {
       let t;
-      try{t=await base44.entities.Track.get(id);}catch(original){
-        const status=original?.status??original?.response?.status;
-        if(status===403||status===404)throw original;
-        const rows=await base44.entities.Track.filter({id},"-created_date",1);
-        t=(Array.isArray(rows)?rows:rows?.items||[])[0];if(!t)throw original;
+      try {t = await base44.entities.Track.get(id);} catch (original) {
+        const status = original?.status ?? original?.response?.status;
+        if (status === 403 || status === 404) throw original;
+        const rows = await base44.entities.Track.filter({ id }, "-created_date", 1);
+        t = (Array.isArray(rows) ? rows : rows?.items || [])[0];if (!t) throw original;
       }
-      if(request!==loadVersion.current)return;
+      if (request !== loadVersion.current) return;
       setTrack(t);setLoading(false);
-      setUploader(previous=>previous?.id===t?.uploader_id?previous:t?.uploader_id?{id:t.uploader_id,display_name:t.uploader_name||"PUBLIC member"}:null);
-      const [credit,related]=await Promise.allSettled([
-        t?.uploader_id?getUsersByIds([t.uploader_id]):Promise.resolve([]),
-        t?.artist?fetchArtistTracks(t.artist):Promise.resolve([])
-      ]);
-      if(request!==loadVersion.current)return;
-      if(credit.status==="fulfilled"&&credit.value[0])setUploader(credit.value[0]);
-      if(related.status==="fulfilled")setMoreTracks(related.value.filter(row=>row.id!==t.id).slice(0,6));
-    } catch {(request===loadVersion.current)&&setLoadError(true);
+      setUploader((previous) => previous?.id === t?.uploader_id ? previous : t?.uploader_id ? { id: t.uploader_id, display_name: t.uploader_name || "PUBLIC member" } : null);
+      const [credit, related] = await Promise.allSettled([
+      t?.uploader_id ? getUsersByIds([t.uploader_id]) : Promise.resolve([]),
+      t?.artist ? fetchArtistTracks(t.artist) : Promise.resolve([])]
+      );
+      if (request !== loadVersion.current) return;
+      if (credit.status === "fulfilled" && credit.value[0]) setUploader(credit.value[0]);
+      if (related.status === "fulfilled") setMoreTracks(related.value.filter((row) => row.id !== t.id).slice(0, 6));
+    } catch {request === loadVersion.current && setLoadError(true);
     } finally {
-      (request===loadVersion.current)&&setLoading(false);
+      request === loadVersion.current && setLoading(false);
     }
   }
 
   useEffect(() => {
     detectVersion.current++;setTrack(null);setUploader(null);setMoreTracks([]);setEditing(false);setGenerating(false);setSyncing(false);setDetecting(false);load();
-    return()=>{loadVersion.current++;};
+    return () => {loadVersion.current++;};
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 
 
   async function detectGenre() {
-    if (!track||detecting) return;
-    const trackId=track.id,request=++detectVersion.current;setDetecting(true);
+    if (!track || detecting) return;
+    const trackId = track.id,request = ++detectVersion.current;setDetecting(true);
     try {
       const res = await base44.functions.invoke("detectGenre", { track_id: track.id });
       const genre = res?.data?.genre;
       if (genre) {
-        setTrack(previous=>previous?.id===trackId?{...previous,genre}:previous);
+        setTrack((previous) => previous?.id === trackId ? { ...previous, genre } : previous);
         toast({ title: `Genre set to ${genre}` });
       } else {
         toast({ title: "Couldn't detect genre", variant: "destructive" });
@@ -92,11 +92,11 @@ export default function TrackDetail() {
     } catch (e) {
       toast({ title: e?.response?.data?.error || "Couldn't detect genre", variant: "destructive" });
     } finally {
-      if(request===detectVersion.current)setDetecting(false);
+      if (request === detectVersion.current) setDetecting(false);
     }
   }
 
-  if(loadError&&!track)return <LoadError onRetry={load}/>;
+  if (loadError && !track) return <LoadError onRetry={load} />;
   if (loading) {
     return (
       <div className="py-20 grid place-items-center">
@@ -142,8 +142,8 @@ export default function TrackDetail() {
     <div className="max-w-3xl mx-auto">
       <button
         onClick={() => nav(-1)}
-        className="inline-flex items-center gap-1.5 mb-4 text-sm font-semibold text-foreground/60 hover:text-foreground transition"
-      >
+        className="inline-flex items-center gap-1.5 mb-4 text-sm font-semibold text-foreground/60 hover:text-foreground transition">
+        
         <ChevronLeft size={18} /> Back
       </button>
 
@@ -195,7 +195,7 @@ export default function TrackDetail() {
                 {uploader &&
               <Link
                 to={`/profile/${uploader.id}`}
-                className="hover:underline inline-flex items-center gap-1.5">
+                className="hover:underline inline-flex items-center gap-1.5 hidden">
                 
                     {uploader.avatar_url ?
                 <img
