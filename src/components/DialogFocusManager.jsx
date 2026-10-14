@@ -30,7 +30,10 @@ export default function DialogFocusManager(){
    if(e.shiftKey&&(document.activeElement===first||!current.contains(document.activeElement))){e.preventDefault();last.focus();}
    else if(!e.shiftKey&&(document.activeElement===last||!current.contains(document.activeElement))){e.preventDefault();first.focus();}
   };
-  const observer=new MutationObserver(schedule);observer.observe(document.body,{childList:true,subtree:true,attributes:true,attributeFilter:['class','style','hidden','aria-hidden','data-state','role','data-public-menu']});
+  const observer=new MutationObserver(records=>{
+   // Playback progress styles update frequently and do not affect overlay state.
+   if(records.some(record=>record.type!=='attributes'||record.attributeName!=='style'||record.target.matches('[role="dialog"],[data-public-menu],[role="menu"],[role="listbox"]')||record.target.querySelector('[role="dialog"],[data-public-menu],[role="menu"],[role="listbox"]')))schedule();
+  });observer.observe(document.body,{childList:true,subtree:true,attributes:true,attributeFilter:['class','style','hidden','aria-hidden','data-state','role','data-public-menu']});
   document.addEventListener('focusin',focus);document.addEventListener('keydown',key);update();
   return()=>{observer.disconnect();document.documentElement.removeAttribute('data-public-overlay-open');if(frame)cancelAnimationFrame(frame);document.removeEventListener('focusin',focus);document.removeEventListener('keydown',key);const opener=current&&openers.get(current);if(opener?.isConnected)opener.focus();};
  },[]);
