@@ -116,7 +116,7 @@ export default function PlayerBar() {
                 }
               </div>
               <div className="text-xs text-foreground/50 truncate">
-                {t._public_radio ? "PUBLIC. Radio · " : ""}{t.artist || t.uploader_name || "Unknown"}
+                {t.artist || t.uploader_name || "Unknown"}
               </div>
               <div className="text-[10px] text-foreground/40 mt-0.5 hidden sm:flex items-center gap-1">
                 <span>{formatTime(p.position)}</span>
@@ -125,21 +125,19 @@ export default function PlayerBar() {
             </div>
           </button>
 
-          <TrackOptionsMenu track={t} size={18} buttonClassName="p-2 rounded-full hover:bg-foreground/5 active:scale-90 transition" />
+          <div className="hidden md:block"><TrackOptionsMenu track={t} size={18} buttonClassName="p-2 rounded-full hover:bg-foreground/5 active:scale-90 transition" /></div>
 
-          {/* mobile controls */}
+          {/* compact mobile controls; full controls remain in Now Playing */}
           <div className="flex items-center gap-1 shrink-0 md:hidden">
-            <button disabled={!!t._public_radio} onClick={p.prev} className="p-2 rounded-full hover:bg-foreground/5 active:scale-90 transition disabled:opacity-25 disabled:cursor-default" aria-label="Previous">
-              <SkipBack size={18} />
-            </button>
+            
             <button
               onClick={p.togglePlay}
-              className="w-11 h-11 rounded-full bg-foreground text-background grid place-items-center hover:scale-105 active:scale-95 transition shadow-md"
+              className="mini-player-play w-11 h-11 rounded-full grid place-items-center active:scale-95 transition"
               aria-label={p.isPlaying ? "Pause" : "Play"}>
               
               {p.isPlaying ? <Pause size={20} /> : <Play size={20} className="ml-0.5" />}
             </button>
-            <button disabled={!!t._public_radio} onClick={p.next} className="p-2 rounded-full hover:bg-foreground/5 active:scale-90 transition disabled:opacity-25 disabled:cursor-default" aria-label="Next">
+            <button onClick={p.next} className="p-2 rounded-full hover:bg-foreground/5 active:scale-90 transition disabled:opacity-25 disabled:cursor-default" aria-label="Next">
               <SkipForward size={18} />
             </button>
           </div>
@@ -149,18 +147,18 @@ export default function PlayerBar() {
             <button
               onClick={() => p.setRepeat(p.repeat === "off" ? "all" : p.repeat === "all" ? "one" : "off")}
               className={`hidden lg:inline-flex p-2 rounded-full hover:bg-foreground/5 active:scale-90 transition ${p.repeat !== "off" ? "text-foreground" : "text-foreground/40"}`}
-              disabled={!!t._public_radio} aria-label="Repeat">
+              aria-label="Repeat">
               
               <RepeatIcon size={18} />
             </button>
             <button
               onClick={() => p.setShuffle(!p.shuffle)}
               className={`hidden lg:inline-flex p-2 rounded-full hover:bg-foreground/5 active:scale-90 transition ${p.shuffle ? "text-foreground" : "text-foreground/40"}`}
-              disabled={!!t._public_radio} aria-label="Shuffle">
+              aria-label="Shuffle">
               
               <Shuffle size={18} />
             </button>
-            <button disabled={!!t._public_radio} onClick={p.prev} className="p-2 rounded-full hover:bg-foreground/5 active:scale-90 transition disabled:opacity-25 disabled:cursor-default" aria-label="Previous">
+            <button onClick={p.prev} className="p-2 rounded-full hover:bg-foreground/5 active:scale-90 transition disabled:opacity-25 disabled:cursor-default" aria-label="Previous">
               <SkipBack size={20} />
             </button>
             <button
@@ -170,7 +168,7 @@ export default function PlayerBar() {
               
               {p.isPlaying ? <Pause size={20} /> : <Play size={20} className="ml-0.5" />}
             </button>
-            <button disabled={!!t._public_radio} onClick={p.next} className="p-2 rounded-full hover:bg-foreground/5 active:scale-90 transition disabled:opacity-25 disabled:cursor-default" aria-label="Next">
+            <button onClick={p.next} className="p-2 rounded-full hover:bg-foreground/5 active:scale-90 transition disabled:opacity-25 disabled:cursor-default" aria-label="Next">
               <SkipForward size={20} />
             </button>
             <button
