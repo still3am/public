@@ -230,7 +230,7 @@ export default function PublicRecords({ id: propId, fallbackArtist = null }) {
         {topTracks.length > 0 && <section className="artist-top-songs">
           <SectionTitle icon={Music} right={<button className="text-xs text-muted-foreground px-2 py-2" onClick={() => document.getElementById("artist-discography")?.scrollIntoView({behavior:window.matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth"})}>All songs <ChevronRight size={14} className="inline" /></button>}>Top Songs</SectionTitle>
           <div className="artist-top-list">{topTracks.map((track,index) => <TrackRow key={track.id} track={track} index={index} queue={topTracks} queueIndex={index} />)}</div>
-        </section>
+        </section>}
 
         {/* Discography */}
         <section id="artist-discography" className="artist-discography mb-8">
