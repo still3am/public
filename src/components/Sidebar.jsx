@@ -5,7 +5,6 @@ import { useSidebarCollapsed } from "@/hooks/useSidebarCollapsed";
 
 import {
   Home,
-  Radio,
   Upload,
   TrendingUp,
   Clock,
@@ -24,7 +23,6 @@ import { useUnreadCount } from "@/hooks/useNotifications";
 
 const NAV = [
 { to: "/", label: "Home", icon: Home, end: true },
-{ to: "/radio", label: "Radio", icon: Radio },
 { to: "/upload", label: "Upload", icon: Upload },
 { to: "/top", label: "Top Charts", icon: TrendingUp },
 { to: "/recent", label: "Recently Added", icon: Clock },
