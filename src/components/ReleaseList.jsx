@@ -15,7 +15,7 @@ function ReleaseRow({ track, tracks, index }) {
   const artistName = track.artist || track.uploader_name || "Unknown";
 
   return (
-    <div ref={lp.ref} {...lp.handlers} onClickCapture={event=>{if(lp.consumeLongPress()){event.preventDefault();event.stopPropagation();}}} className="song-menu-surface group flex items-center gap-3 md:gap-4 px-3 py-3 rounded-xl hover:bg-foreground/[0.04] active:scale-[0.99] transition">
+    <div ref={lp.ref} {...lp.handlers} onClickCapture={event=>{if(!event.currentTarget.contains(event.target))return;if(lp.consumeLongPress()){event.preventDefault();event.stopPropagation();}}} className="song-menu-surface group flex items-center gap-3 md:gap-4 px-3 py-3 rounded-xl hover:bg-foreground/[0.04] active:scale-[0.99] transition">
       <button
         onClick={() => (isCurrent ? p.togglePlay() : playHere())}
         className="relative shrink-0"
