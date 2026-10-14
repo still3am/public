@@ -199,6 +199,7 @@ export function useOfflineCache() {
           // Check the device itself; a remembered download is not proof that
           // the browser still has its audio after storage eviction.
           const stored=await getRecord(id);
+          if(startedGeneration!==generation)return;
           if(stored?._blob?.size)continue;
           const ok=await downloadTrack(track,{automatic:true});
           if(!ok)retryAfter.set(id,Date.now()+60000);
