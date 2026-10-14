@@ -116,7 +116,7 @@ export default function PlayerBar() {
                 }
               </div>
               <div className="text-xs text-foreground/50 truncate">
-                {t.artist || t.uploader_name || "Unknown"}
+                {t._public_radio ? "PUBLIC. Radio · " : ""}{t.artist || t.uploader_name || "Unknown"}
               </div>
               <div className="text-[10px] text-foreground/40 mt-0.5 hidden sm:flex items-center gap-1">
                 <span>{formatTime(p.position)}</span>
@@ -129,7 +129,7 @@ export default function PlayerBar() {
 
           {/* mobile controls */}
           <div className="flex items-center gap-1 shrink-0 md:hidden">
-            <button onClick={p.prev} className="p-2 rounded-full hover:bg-foreground/5 active:scale-90 transition" aria-label="Previous">
+            <button disabled={!!t._public_radio} onClick={p.prev} className="p-2 rounded-full hover:bg-foreground/5 active:scale-90 transition disabled:opacity-25 disabled:cursor-default" aria-label="Previous">
               <SkipBack size={18} />
             </button>
             <button
@@ -139,7 +139,7 @@ export default function PlayerBar() {
               
               {p.isPlaying ? <Pause size={20} /> : <Play size={20} className="ml-0.5" />}
             </button>
-            <button onClick={p.next} className="p-2 rounded-full hover:bg-foreground/5 active:scale-90 transition" aria-label="Next">
+            <button disabled={!!t._public_radio} onClick={p.next} className="p-2 rounded-full hover:bg-foreground/5 active:scale-90 transition disabled:opacity-25 disabled:cursor-default" aria-label="Next">
               <SkipForward size={18} />
             </button>
           </div>
@@ -149,18 +149,18 @@ export default function PlayerBar() {
             <button
               onClick={() => p.setRepeat(p.repeat === "off" ? "all" : p.repeat === "all" ? "one" : "off")}
               className={`hidden lg:inline-flex p-2 rounded-full hover:bg-foreground/5 active:scale-90 transition ${p.repeat !== "off" ? "text-foreground" : "text-foreground/40"}`}
-              aria-label="Repeat">
+              disabled={!!t._public_radio} aria-label="Repeat">
               
               <RepeatIcon size={18} />
             </button>
             <button
               onClick={() => p.setShuffle(!p.shuffle)}
               className={`hidden lg:inline-flex p-2 rounded-full hover:bg-foreground/5 active:scale-90 transition ${p.shuffle ? "text-foreground" : "text-foreground/40"}`}
-              aria-label="Shuffle">
+              disabled={!!t._public_radio} aria-label="Shuffle">
               
               <Shuffle size={18} />
             </button>
-            <button onClick={p.prev} className="p-2 rounded-full hover:bg-foreground/5 active:scale-90 transition" aria-label="Previous">
+            <button disabled={!!t._public_radio} onClick={p.prev} className="p-2 rounded-full hover:bg-foreground/5 active:scale-90 transition disabled:opacity-25 disabled:cursor-default" aria-label="Previous">
               <SkipBack size={20} />
             </button>
             <button
@@ -170,7 +170,7 @@ export default function PlayerBar() {
               
               {p.isPlaying ? <Pause size={20} /> : <Play size={20} className="ml-0.5" />}
             </button>
-            <button onClick={p.next} className="p-2 rounded-full hover:bg-foreground/5 active:scale-90 transition" aria-label="Next">
+            <button disabled={!!t._public_radio} onClick={p.next} className="p-2 rounded-full hover:bg-foreground/5 active:scale-90 transition disabled:opacity-25 disabled:cursor-default" aria-label="Next">
               <SkipForward size={20} />
             </button>
             <button
