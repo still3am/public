@@ -5,7 +5,7 @@ export function artistTrackRole(track, artistName) {
   if (!target) return null;
   const credit = String(track.artist || "");
   if (normalize(credit) === target) return "lead";
-  const standardized = credit.replace(/\s+(?:feat(?:uring)?\.?|ft\.?)\s+/gi,", ");
+  const standardized = credit.replace(/\s+[\[(]?(?:feat(?:uring)?\.?|ft\.?)\s+/gi,", ");
   const names = splitArtistNames(standardized);
   if (names[0] === target) return "lead";
   if (names.includes(target)) return "appearance";
