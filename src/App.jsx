@@ -41,6 +41,8 @@ import Notifications from '@/pages/Notifications';
 import ArtistDashboard from '@/pages/ArtistDashboard';
 import PlaylistDetail from '@/pages/PlaylistDetail';
 import MyUploads from '@/pages/MyUploads';
+import Radio from '@/pages/Radio';
+import {RadioProvider} from '@/context/RadioContext';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin, checkAppState } = useAuth();
@@ -100,6 +102,7 @@ const AuthenticatedApp = () => {
           <Route path="/upload" element={<Upload />} />
           <Route path="/lounge/:code" element={<Lounge />} />
           <Route path="/library" element={<Library />} />
+          <Route path="/radio" element={<Radio />} />
           <Route path="/downloads" element={<Downloads />} />
           <Route path="/admin" element={<Admin />} />
           <Route path="/settings/transitions" element={<SongTransitions />} />
@@ -121,11 +124,11 @@ function App() {
       <QueryClientProvider client={queryClientInstance}>
         <Router>
           <ErrorBoundary><GlobalStatus/><DialogFocusManager/><SafetyProvider><PlayerProvider>
-            <LibraryProvider>
+            <RadioProvider><LibraryProvider>
               <UploadProvider>
                 <AuthenticatedApp />
               </UploadProvider>
-            </LibraryProvider>
+            </LibraryProvider></RadioProvider>
           </PlayerProvider></SafetyProvider></ErrorBoundary>
         </Router>
         <Toaster />
