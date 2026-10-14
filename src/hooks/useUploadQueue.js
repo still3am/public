@@ -72,7 +72,7 @@ export function useUploadQueue({ user, isAdmin }) {
   if(!user?.id)return;const epoch=generation.current;
   const all=Array.from(fileList),files=all.filter(isAudioFile),coverFallback=all.find(f=>f.type.startsWith('image/')||IMAGE_EXT_RE.test(f.name||''));
   if(!files.length)return;
-  const batch=files.map(file=>({id:nextId(),file,title:deriveDefaultTitle(file),artist:'',genre:'',duration:0,explicit:false,aiLyrics:false,rightsConfirmed:false,allowDownloads:false,coverFile:null,coverPreviewUrl:'',status:'analyzing',detecting:true,error:'',duplicateAcknowledged:false}));
+  const batch=files.map(file=>({id:nextId(),file,title:deriveDefaultTitle(file),artist:'',genre:'',duration:0,explicit:false,aiLyrics:false,rightsConfirmed:false,allowDownloads:false,videoFile:null,coverFile:null,coverPreviewUrl:'',status:'analyzing',detecting:true,error:'',duplicateAcknowledged:false}));
   setItems(prev=>[...prev,...batch]);await refreshDuplicates();if(epoch!==generation.current)return;
   let cursor=0;
   const worker=async()=>{while(cursor<batch.length){const item=batch[cursor++];try{
@@ -101,7 +101,7 @@ export function useUploadQueue({ user, isAdmin }) {
   if(!user?.id||busy.current.has(item.id)||['done','analyzing','error'].includes(item.status))return;
   busy.current.add(item.id);const epoch=generation.current;patch(item.id,{status:'uploading',error:''});
   try{
-   if(!item.rightsConfirmed)throw Error('Confirm your rights to this audio, artwork and lyrics.');
+   if(!item.rightsConfirmed)throw Error('Confirm your rights to this audio, artwork, lyrics and any attached video.');
    if(!item.title.trim())throw Error('Enter a song title.');
    const memo=assets.current.get(item.id)||{};
    memo.sha ||= item.audio_sha256||await hashAudioFile(item.file);if(epoch!==generation.current)throw Error('Account changed. Start this upload again.');assets.current.set(item.id,memo);
@@ -125,8 +125,13 @@ export function useUploadQueue({ user, isAdmin }) {
    if(!memo.file_uri){memo.file_uri=(await base44.integrations.Core.UploadPrivateFile({file:item.file})).file_uri;if(!memo.file_uri)throw Error('Audio upload did not return a file.');}
    if(item.coverFile&&memo.coverFile!==item.coverFile){memo.cover_art_url=(await base44.integrations.Core.UploadFile({file:item.coverFile})).file_url;memo.coverFile=item.coverFile;if(!memo.cover_art_url)throw Error('Artwork could not upload. Retry without re-uploading your audio.');}
    if(epoch!==generation.current)throw Error('Account changed. Start this upload again.');
+   if(item.videoFile){
+    if(!/\.(mp4|webm)$/i.test(item.videoFile.name)||item.videoFile.size>100*1024*1024)throw Error('Choose an MP4 or WebM video under 100 MB.');
+    if(memo.videoFile!==item.videoFile){memo.video_uri=(await base44.integrations.Core.UploadPrivateFile({file:item.videoFile})).file_uri;if(!memo.video_uri)throw Error('Video upload did not finish. Retry to resume.');memo.videoFile=item.videoFile;}
+   }
+   if(epoch!==generation.current)throw Error('Account changed. Start this upload again.');
    const ready=!!(item.artist.trim()&&item.genre&&memo.cover_art_url);
-   const track=await base44.entities.Track.create({title:item.title.trim(),audio_url:'',audio_file_uri:memo.file_uri,audio_sha256:memo.sha,upload_request_id:item.id,cover_art_url:memo.cover_art_url||'',artist:item.artist.trim(),genre:item.genre||'Other',duration_seconds:item.duration,explicit:item.explicit,rights_confirmed:true,is_downloadable:item.allowDownloads===true,approval_status:ready?(isAdmin?'approved':'pending'):'private',is_published:isAdmin&&ready});
+   const track=await base44.entities.Track.create({title:item.title.trim(),audio_url:'',audio_file_uri:memo.file_uri,...(item.videoFile?{music_video_file_uri:memo.video_uri,video_rights_confirmed:true}:{}),audio_sha256:memo.sha,upload_request_id:item.id,cover_art_url:memo.cover_art_url||'',artist:item.artist.trim(),genre:item.genre||'Other',duration_seconds:item.duration,explicit:item.explicit,rights_confirmed:true,is_downloadable:item.allowDownloads===true,approval_status:ready?(isAdmin?'approved':'pending'):'private',is_published:isAdmin&&ready});
    memo.track=track;catalog.current.push({...track,audio_sha256:memo.sha});
    let warning='';
    if(item.aiLyrics){patch(item.id,{status:'enhancing'});try{const lyrics=(await base44.functions.invoke('generateLyrics',{track_id:track.id})).data?.lyrics;if(!lyrics)throw Error();await base44.entities.Track.update(track.id,{lyrics_text:lyrics});}catch{warning='Audio saved. Lyrics could not generate; retry from the song page.';}}
