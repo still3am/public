@@ -1,4 +1,4 @@
-import {copyText} from '@/lib/shareLink';
+import { copyText } from '@/lib/shareLink';
 import { useState, useRef, useEffect, useCallback } from "react";
 import { usePlayer } from "@/context/PlayerContext";
 import { useColorPalette } from "@/hooks/useColorPalette";
@@ -86,12 +86,12 @@ export default function FullScreenPlayer({ onClose }) {
   const showingLyrics = lyricsMode && hasLyrics;
   const handleLyricsUnavailable = useCallback(() => {
     setLyricsMode(false);
-    setLyricsAvailability(previous => previous.trackId === t?.id && !previous.available ? previous : { trackId: t?.id, available: false });
+    setLyricsAvailability((previous) => previous.trackId === t?.id && !previous.available ? previous : { trackId: t?.id, available: false });
   }, [t?.id]);
   const [coverFailed, setCoverFailed] = useState(false);
 
   // Reset the broken-cover flag whenever the track (and thus its cover URL) changes.
-  useEffect(() => { setCoverFailed(false); }, [coverUrl]);
+  useEffect(() => {setCoverFailed(false);}, [coverUrl]);
 
   // Only show the Lyrics toggle when this track actually has lyrics available
   // (approved timed lyrics, or plain-text lyrics_text on the track).
@@ -106,13 +106,13 @@ export default function FullScreenPlayer({ onClose }) {
     const fallbackText = typeof t.lyrics_text === "string" ? t.lyrics_text.trim() : "";
     setLyricsAvailability({ trackId: t.id, available: !!fallbackText, record: null, text: fallbackText });
     Promise.all([
-      base44.entities.Lyrics
-        .filter({ track_id: t.id, status: "approved" }, "-created_date", 5)
-        .catch(() => []),
-      base44.entities.Track.get(t.id).catch(() => null),
-    ]).then(([lyricsRes, track]) => {
+    base44.entities.Lyrics.
+    filter({ track_id: t.id, status: "approved" }, "-created_date", 5).
+    catch(() => []),
+    base44.entities.Track.get(t.id).catch(() => null)]
+    ).then(([lyricsRes, track]) => {
       if (!alive) return;
-      const found = Array.isArray(lyricsRes) ? lyricsRes.find(record => Array.isArray(record.lines) && record.lines.some(line => (line.text?.trim() || line.words?.some(word => word.text?.trim())) && (line.start_time_ms || line.end_time_ms))) : null;
+      const found = Array.isArray(lyricsRes) ? lyricsRes.find((record) => Array.isArray(record.lines) && record.lines.some((line) => (line.text?.trim() || line.words?.some((word) => word.text?.trim())) && (line.start_time_ms || line.end_time_ms))) : null;
       const lines = found?.lines || [];
       const hasTimed = lines.length && lines.some((l) => l.start_time_ms || l.end_time_ms);
       const text = typeof track?.lyrics_text === "string" ? track.lyrics_text.trim() : fallbackText;
@@ -120,7 +120,7 @@ export default function FullScreenPlayer({ onClose }) {
       setLyricsAvailability({ trackId: t.id, available, record: found, text });
       if (!available) setLyricsMode(false);
     });
-    return () => { alive = false; };
+    return () => {alive = false;};
   }, [t?.id]);
 
   // keyboard shortcuts
@@ -179,52 +179,52 @@ export default function FullScreenPlayer({ onClose }) {
     hintTimer.current = setTimeout(() => setShowVolHint(false), 1000);
   }
 
-  useEffect(()=>()=>{clearTimeout(hintTimer.current);volDrag.current.active=false;},[]);
-  const onVolPointerDown=event=>{
-    if(event.isPrimary===false||(event.pointerType==='mouse'&&event.button!==0))return;
+  useEffect(() => () => {clearTimeout(hintTimer.current);volDrag.current.active = false;}, []);
+  const onVolPointerDown = (event) => {
+    if (event.isPrimary === false || event.pointerType === 'mouse' && event.button !== 0) return;
     event.stopPropagation();
     event.currentTarget.setPointerCapture?.(event.pointerId);
-    volDrag.current={pointerId:event.pointerId,startY:event.clientY,start:p.muted?0:p.volume,active:true};
+    volDrag.current = { pointerId: event.pointerId, startY: event.clientY, start: p.muted ? 0 : p.volume, active: true };
     p.prepareVolumeControl?.();
     flashHint();
   };
-  const onVolPointerMove=event=>{
-    const drag=volDrag.current;
-    if(!drag.active||drag.pointerId!==event.pointerId)return;
+  const onVolPointerMove = (event) => {
+    const drag = volDrag.current;
+    if (!drag.active || drag.pointerId !== event.pointerId) return;
     event.stopPropagation();
-    if(event.cancelable)event.preventDefault();
-    const distance=Math.max(160,Math.min(320,event.currentTarget.getBoundingClientRect().height));
-    p.setVolume(clampVol(drag.start+(drag.startY-event.clientY)/distance));
+    if (event.cancelable) event.preventDefault();
+    const distance = Math.max(160, Math.min(320, event.currentTarget.getBoundingClientRect().height));
+    p.setVolume(clampVol(drag.start + (drag.startY - event.clientY) / distance));
     flashHint();
   };
-  const onVolPointerEnd=event=>{
-    if(volDrag.current.pointerId!==event.pointerId)return;
-    volDrag.current.active=false;
+  const onVolPointerEnd = (event) => {
+    if (volDrag.current.pointerId !== event.pointerId) return;
+    volDrag.current.active = false;
     p.prepareVolumeControl?.();
-    if(event.currentTarget.hasPointerCapture?.(event.pointerId))event.currentTarget.releasePointerCapture(event.pointerId);
+    if (event.currentTarget.hasPointerCapture?.(event.pointerId)) event.currentTarget.releasePointerCapture(event.pointerId);
     flashHint();
   };
 
   async function toggleOffline() {
     if (!t) return;
     if (cache.isCached(t.id)) {
-      if(await cache.removeTrack(t.id))toast({ title: "Removed from offline music" });
+      if (await cache.removeTrack(t.id)) toast({ title: "Removed from offline music" });
       return;
     }
     const ok = await cache.downloadTrack(t);
     toast(
-      ok
-        ? { title: "Saved for offline" }
-        : { title: "Couldn't save offline", variant: "destructive" }
+      ok ?
+      { title: "Saved for offline" } :
+      { title: "Couldn't save offline", variant: "destructive" }
     );
   }
 
   async function shareNow(copyOnly = false) {
     if (!t) return;
-    try{
-      const result=copyOnly?(await copyText(window.location.origin+'/track/'+encodeURIComponent(t.id)),'copied'):await shareTrack(t);
-      if(result==='copied'){setCopied(true);setTimeout(()=>setCopied(false),1500);}
-    }catch{/* Keep the player open and leave playback running. */}
+    try {
+      const result = copyOnly ? (await copyText(window.location.origin + '/track/' + encodeURIComponent(t.id)), 'copied') : await shareTrack(t);
+      if (result === 'copied') {setCopied(true);setTimeout(() => setCopied(false), 1500);}
+    } catch {/* Keep the player open and leave playback running. */}
   }
 
   if (!t) return null;
@@ -236,14 +236,14 @@ export default function FullScreenPlayer({ onClose }) {
   const VolIcon = isMutedLow ? VolumeX : p.volume < 0.5 ? Volume1 : Volume2;
 
   return (
-    <div role="dialog" aria-modal="true" aria-label="Now playing" data-public-dialog tabIndex={-1} onKeyDown={e=>{if(e.key==="Escape"){e.stopPropagation();onClose?.();}}}
-      className="fixed inset-0 z-50 text-white animate-[fadeIn_.25s_ease-out] flex flex-col overflow-hidden"
-      style={{
-        background: "#101116",
-        transform: `translateY(${dragY}px)`,
-        opacity: dragging ? 1 - Math.min(dragY / (window.innerHeight || 800), 0.45) : 1,
-        transition: dragging ? "none" : "transform .32s cubic-bezier(.22,1,.36,1), opacity .28s ease-out"
-      }}>
+    <div role="dialog" aria-modal="true" aria-label="Now playing" data-public-dialog tabIndex={-1} onKeyDown={(e) => {if (e.key === "Escape") {e.stopPropagation();onClose?.();}}}
+    className="fixed inset-0 z-50 text-white animate-[fadeIn_.25s_ease-out] flex flex-col overflow-hidden"
+    style={{
+      background: "#101116",
+      transform: `translateY(${dragY}px)`,
+      opacity: dragging ? 1 - Math.min(dragY / (window.innerHeight || 800), 0.45) : 1,
+      transition: dragging ? "none" : "transform .32s cubic-bezier(.22,1,.36,1), opacity .28s ease-out"
+    }}>
       
       {/* ambient glow */}
       <div
@@ -290,7 +290,7 @@ export default function FullScreenPlayer({ onClose }) {
               <p className="text-sm font-bold truncate">{t.title}</p>
               <p className="text-xs text-white/60 truncate mt-0.5">{t.artist || t.uploader_name || "Unknown"}</p>
             </div>
-            <Disc3 size={16} className="shrink-0 text-white/60" aria-hidden="true" />
+            <Disc3 size={16} className="shrink-0 text-white/60 hidden" aria-hidden="true" />
           </button>}
         </div>
         <TrackOptionsMenu
@@ -299,10 +299,10 @@ export default function FullScreenPlayer({ onClose }) {
           size={20}
           buttonClassName="w-9 h-9 rounded-full grid place-items-center bg-white/10 hover:bg-white/20 active:scale-90 transition"
           items={[
-            { icon: ListMusic, label: "View queue", onClick: () => setShowQueue(true) },
-            { icon: SlidersHorizontal, label: "Equalizer", onClick: () => setShowMixer(true) },
-            
-          ]} />
+          { icon: ListMusic, label: "View queue", onClick: () => setShowQueue(true) },
+          { icon: SlidersHorizontal, label: "Equalizer", onClick: () => setShowMixer(true) }]
+
+          } />
         
       </div>
 
@@ -322,7 +322,7 @@ export default function FullScreenPlayer({ onClose }) {
               onPointerMove={onVolPointerMove}
               onPointerUp={onVolPointerEnd}
               onPointerCancel={onVolPointerEnd}
-              onLostPointerCapture={()=>{volDrag.current.active=false;}}
+              onLostPointerCapture={() => {volDrag.current.active = false;}}
               className={`relative aspect-square w-full max-w-[min(38vh,80vw)] xl:max-w-[440px] 2xl:max-w-[480px] xl:max-h-[46vh] 2xl:max-h-[52vh] rounded-3xl overflow-hidden shadow-[0_24px_90px_rgba(0,0,0,0.55)] bg-white/10 shrink-0 touch-none transition-transform duration-500 ${
               p.isPlaying ? "scale-100" : "scale-[0.97]"} ${
               showingLyrics ? "hidden xl:flex" : "flex"}`}>
@@ -440,8 +440,8 @@ export default function FullScreenPlayer({ onClose }) {
           
 
           {/* mobile artwork / lyrics toggle — only when this track has lyrics */}
-          {hasLyrics && !showingLyrics && (
-            <div className="now-playing-view-switch xl:hidden" role="group" aria-label="Now Playing view">
+          {hasLyrics && !showingLyrics &&
+          <div className="now-playing-view-switch xl:hidden" role="group" aria-label="Now Playing view">
               <button type="button" onClick={() => setLyricsMode(false)} aria-pressed={!showingLyrics}>
                 <Disc3 size={15} aria-hidden="true" /> Artwork
               </button>
@@ -449,7 +449,7 @@ export default function FullScreenPlayer({ onClose }) {
                 <Mic2 size={15} aria-hidden="true" /> Lyrics
               </button>
             </div>
-          )}
+          }
         </div>
 
         {/* RIGHT (desktop): lyrics panel — only when this track has lyrics */}
@@ -482,12 +482,12 @@ export default function FullScreenPlayer({ onClose }) {
       </div>
 
       <QueuePanel open={showQueue} onClose={() => setShowQueue(false)} />
-      {loungeOpen && (
-        <LoungeHostModal lounge={lounge} onClose={() => setLoungeOpen(false)} />
-      )}
-      {showMixer && (
-        <StemMixer onClose={() => setShowMixer(false)} />
-      )}
+      {loungeOpen &&
+      <LoungeHostModal lounge={lounge} onClose={() => setLoungeOpen(false)} />
+      }
+      {showMixer &&
+      <StemMixer onClose={() => setShowMixer(false)} />
+      }
 
       {/* copied toast */}
       {copied &&
