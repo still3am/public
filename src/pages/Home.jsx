@@ -24,7 +24,6 @@ import { usePlayer } from "@/context/PlayerContext";
 import { Image } from "@/components/ui/image";
 import TrackOptionsMenu from "@/components/track/TrackOptionsMenu";
 import EmptyState from "@/components/EmptyState";
-import RadioPromo from "@/components/RadioPromo";
 import { getRecentPlays } from "@/lib/recentPlays";
 import { getUserGenres, clearUserGenresCache } from "@/lib/userGenres";
 import PullToRefresh from "@/components/PullToRefresh";
@@ -251,7 +250,6 @@ export default function Home() {
         </section>
         
         
-        <RadioPromo />
         <Section title="New on PUBLIC" icon={Sparkles} seeAllTo="/recent"><ReleaseList tracks={newReleases} /></Section>
         {recent.length > 0 && <Section title="Recently played"><CardRow tracks={recent} /></Section>}
         <Section title="Trending" icon={TrendingUp} seeAllTo="/top">
