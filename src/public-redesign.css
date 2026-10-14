@@ -376,6 +376,33 @@ html.dark {
  .release-page .release-toolbar-actions { background:hsl(var(--card)/.8); }
  .music-video-card video,.music-video-poster { border-radius:12px; }
 }
+/* Artwork pages begin immediately after the banner and span the content area. */
+.public-app .app-content.artwork-content { padding-top:0;max-width:none; }
+.artwork-content .artist-page,.artwork-content .release-page { max-width:none; }
+.artwork-content .artist-hero { margin:0 calc(-1 * var(--app-gutter)) 32px;border-radius:0;border:0;height:clamp(420px,45vw,620px); }
+.artwork-content .release-toolbar { height:0;min-height:0;margin:0;transform:translateY(18px); }
+.artwork-content .release-header-full {
+ --release-cover-height:clamp(400px,50vw,660px);
+ margin:0 calc(-1 * var(--app-gutter)) 30px;padding:0 var(--app-gutter);max-width:none;
+}
+.artwork-content .release-header-full .release-art {
+ width:calc(100% + 2 * var(--app-gutter));max-width:none;height:var(--release-cover-height);aspect-ratio:auto;
+ margin:0 calc(-1 * var(--app-gutter));border-radius:0;box-shadow:none;
+}
+.artwork-content .release-header-full.has-release-art .release-art { visibility:hidden; }
+.artwork-content .release-full-image { display:block;position:absolute;top:0;left:0;right:0;height:var(--release-cover-height);aspect-ratio:auto;z-index:-1; }
+.artwork-content .release-full-image>img { width:100%;height:100%;object-fit:cover;object-position:center; }
+.artwork-content .release-full-image>div { position:absolute;inset:0;background:linear-gradient(180deg,transparent 58%,hsl(var(--background)/.5) 80%,hsl(var(--background)) 100%); }
+.artwork-content .release-header-full h1 { position:relative;max-width:800px;margin:-40px auto 0; }
+.artwork-content .release-header-full .release-artist { max-width:800px;margin-inline:auto;position:relative; }
+@media(max-width:767px) {
+ .public-app .app-content.artwork-content { padding-top:0; }
+ .artwork-content .artist-hero { height:430px;min-height:0;margin-top:0;margin-bottom:28px; }
+ .artwork-content .release-header-full { --release-cover-height:100vw;margin-top:0; }
+ .artwork-content .release-header-full h1 { margin-top:-8px; }
+ .artwork-content .release-toolbar { transform:translateY(16px); }
+}
+
 
 
 
