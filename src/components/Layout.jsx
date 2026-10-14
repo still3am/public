@@ -42,7 +42,7 @@ export default function Layout() {
   if (activeTab) mountedTabs.current.add(activeTab.path);
 
   return (
-    <div className={`flex min-h-screen bg-background text-foreground ${currentTrack?"has-player":""}`}>
+    <div className={`public-app flex min-h-screen bg-background text-foreground ${currentTrack?"has-player":""}`}>
       <div aria-hidden="true" className="public-status-bar-shield" />
       <a href="#main-content" className="public-skip-link">Skip to content</a>
       <Sidebar />
