@@ -278,6 +278,12 @@ html.dark {
  .artist-similar-card { flex-basis:112px; }
  .artist-similar-image { width:112px;height:112px; }
 }
+.artist-appears-on { margin:32px 0; }
+.artist-appears-list { display:flex;gap:18px;overflow-x:auto;scroll-snap-type:x proximity;overscroll-behavior-x:contain;padding-bottom:12px; }
+.artist-appears-card { flex:0 0 190px;min-width:0;scroll-snap-align:start; }
+.artist-appears-list:focus-visible { outline:2px solid hsl(var(--foreground)/.4);outline-offset:4px; }
+@media(max-width:767px) { .artist-appears-card { flex-basis:44%; } .artist-appears-list { gap:12px; } }
+
 
 
 
