@@ -5,27 +5,42 @@ const STORE = "tracks";
 const META_STORE = "meta";
 let dbPromise = null;
 
+let persistenceRequest=null;
+export function requestPersistentStorage(){
+ if(persistenceRequest)return persistenceRequest;
+ let request;
+ request=(async()=>{
+  try{
+   const storage=typeof navigator!=="undefined"?navigator.storage:null;
+   if(!storage)return false;
+   if(await storage.persisted?.())return true;
+   return storage.persist?await storage.persist():false;
+  }catch{return false;}
+ })().then(granted=>{if(!granted&&persistenceRequest===request)persistenceRequest=null;return granted;});
+ persistenceRequest=request;return request;
+}
+
 function openDB() {
-  if (dbPromise) return dbPromise;
-  dbPromise = new Promise((resolve, reject) => {
-    if (typeof indexedDB === "undefined") {
-      reject(new Error("IndexedDB unavailable"));
-      return;
-    }
-    const req = indexedDB.open(DB_NAME, 2);
-    req.onupgradeneeded = () => {
-      const db = req.result;
-      if (!db.objectStoreNames.contains(STORE)) {
-        db.createObjectStore(STORE, { keyPath: "id" });
-      }
-      if (!db.objectStoreNames.contains(META_STORE)) {
-        db.createObjectStore(META_STORE, { keyPath: "key" });
-      }
+  if(dbPromise)return dbPromise;
+  let attempt;
+  attempt=new Promise((resolve,reject)=>{
+    if(typeof indexedDB==="undefined"){reject(Error("IndexedDB unavailable"));return;}
+    const req=indexedDB.open(DB_NAME,2);
+    req.onupgradeneeded=()=>{
+      const db=req.result;
+      if(!db.objectStoreNames.contains(STORE))db.createObjectStore(STORE,{keyPath:"id"});
+      if(!db.objectStoreNames.contains(META_STORE))db.createObjectStore(META_STORE,{keyPath:"key"});
     };
-    req.onsuccess = () => resolve(req.result);
-    req.onerror = () => reject(req.error);
-  });
-  return dbPromise;
+    req.onsuccess=()=>{
+      const db=req.result;
+      const reset=()=>{if(dbPromise===attempt)dbPromise=null;};
+      db.onversionchange=()=>{db.close();reset();};
+      db.onclose=reset;
+      resolve(db);
+    };
+    req.onerror=()=>reject(req.error);
+  }).catch(error=>{if(dbPromise===attempt)dbPromise=null;throw error;});
+  dbPromise=attempt;return attempt;
 }
 
 function txMeta(mode) {

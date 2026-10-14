@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import {
+  requestPersistentStorage,
   putTrack,
   getRecord,
   putCoverArt,
@@ -25,10 +26,10 @@ const suppress=(userId,ids,remove=false)=>{if(!userId)return;try{const set=suppr
 
 // Module-level guard so multiple hook instances don't auto-download the same
 // cloud track twice in one session.
-const autoQueued = new Set();
+const autoQueued = new Set(),retryAfter=new Map();
 const downloadingIds=new Set(),removalVersions=new Map(),cloudSyncJobs=new Map();
 let generation=0;
-window.addEventListener('account:cleared',()=>{generation++;autoQueued.clear();downloadingIds.clear();removalVersions.clear();cloudSyncJobs.clear();});
+window.addEventListener('account:cleared',()=>{generation++;autoQueued.clear();retryAfter.clear();downloadingIds.clear();removalVersions.clear();cloudSyncJobs.clear();});
 
 // PUBLIC files (covers) are served as a generic octet-stream; a blob: URL only
 // renders in an <img> when its MIME is image/*, so sniff the magic bytes and
@@ -57,7 +58,7 @@ export function useOfflineCache() {
   const [cachedIds, setCachedIds] = useState(null);
   const [records, setRecords] = useState([]);
   const [downloading, setDownloading] = useState({});
-  const backfilled = useRef(new Set());
+  const backfilled = useRef(new Set()),refreshVersion=useRef(0);
   const { user } = useAuth();
 
   const applyOrder = useCallback((all, orderIds) => {
@@ -75,10 +76,14 @@ export function useOfflineCache() {
   }, []);
 
   const refresh = useCallback(async () => {
+    const request=++refreshVersion.current,startedGeneration=generation;
     try {
       const [all, orderIds] = await Promise.all([listRecords(), getOrderIds()]);
-      setRecords(applyOrder(all, orderIds));
-      setCachedIds(new Set(all.map((r) => r.id)));
+      if(request!==refreshVersion.current||startedGeneration!==generation)return;
+      if(all.length)requestPersistentStorage();
+      setRecords(applyOrder(all,orderIds));
+      const next=new Set(all.map(record=>record.id));
+      setCachedIds(previous=>previous&&previous.size===next.size&&[...next].every(id=>previous.has(id))?previous:next);
       // Backfill cover-art blobs for any saved track still missing one. Runs
       // whenever we're online, retrying each record once per session so a
       // dropped fetch doesn't permanently strand a cover offline.
@@ -108,12 +113,13 @@ export function useOfflineCache() {
       }
     } catch {
       // A temporary storage failure must not erase a collection already shown.
-      setCachedIds(previous => previous || new Set());
+      if(request===refreshVersion.current&&startedGeneration===generation)setCachedIds(previous=>previous||new Set());
     }
   }, []);
 
   useEffect(() => {
     refresh();
+    return()=>{refreshVersion.current++;};
   }, [refresh]);
 
   useEffect(() => {
@@ -126,6 +132,8 @@ export function useOfflineCache() {
     if (!user?.id || !track?.id) return false;
     if(downloadingIds.has(track.id))return false;
     downloadingIds.add(track.id);
+    retryAfter.delete(track.id);
+    requestPersistentStorage();
     const startedGeneration=generation,startedRemoval=removalVersions.get(track.id)||0;
     setDownloading((s) => ({ ...s, [track.id]: true }));
     try {
@@ -185,10 +193,16 @@ export function useOfflineCache() {
         if(startedGeneration!==generation)return;
         const track=cloud[cursor++],id=track?.id;
         if(!id||cachedIds.has(id)||autoQueued.has(id)||suppressedFor(uid).has(id))continue;
+        if((retryAfter.get(id)||0)>Date.now())continue;
         autoQueued.add(id);
-        // downloadTrack performs the access check itself. Reserve the item
-        // before waiting, so every song menu does not sign the same track again.
-        const ok=await downloadTrack(track,{automatic:true});if(!ok)autoQueued.delete(id);
+        try{
+          // Check the device itself; a remembered download is not proof that
+          // the browser still has its audio after storage eviction.
+          const stored=await getRecord(id);
+          if(stored?._blob?.size)continue;
+          const ok=await downloadTrack(track,{automatic:true});
+          if(!ok)retryAfter.set(id,Date.now()+60000);
+        }finally{autoQueued.delete(id);}
       }};
       await Promise.all([worker(),worker()]);
     }catch{/* Keep this device's confirmed offline collection. */}
@@ -205,6 +219,14 @@ export function useOfflineCache() {
     let unsub=()=>{};try{unsub=base44.entities.OfflineSync.subscribe(()=>syncFromCloud());}catch{}
     return unsub;
   }, [user?.id, syncFromCloud]);
+
+  useEffect(()=>{
+    const recover=()=>{if(document.visibilityState==="hidden")return;refresh();syncFromCloud();};
+    window.addEventListener('online',recover);
+    window.addEventListener('focus',recover);
+    document.addEventListener('visibilitychange',recover);
+    return()=>{window.removeEventListener('online',recover);window.removeEventListener('focus',recover);document.removeEventListener('visibilitychange',recover);};
+  },[refresh,syncFromCloud]);
 
   const removeTrack=useCallback(async id=>{
     try{
