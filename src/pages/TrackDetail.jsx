@@ -1,3 +1,4 @@
+import TrackMusicVideo from "@/components/TrackMusicVideo";
 import { shareLink } from "@/lib/shareLink";
 import { getPublishedTracks } from "@/lib/catalogCache";
 import { splitArtistNames } from "@/lib/artistTracks";
@@ -172,7 +173,8 @@ export default function TrackDetail() {
           <TrackOptionsMenu track={track} size={22} buttonClassName="release-round" items={ownerItems} />
         </div>
       </div>
-      <section className="release-header">
+      <section className={"release-header release-header-full" + (coverUrl && !coverFailed ? " has-release-art" : "")}>
+        {coverUrl&&!coverFailed&&<div aria-hidden="true" className="release-full-image"><img src={coverUrl} alt=""/><div/></div>}
         <div className="release-art">{coverUrl && !coverFailed ? <img src={coverUrl} alt={track.title+" cover"} onError={() => setCoverFailed(true)} /> : <Music size={52} />}</div>
         <h1>{track.title}</h1>
         <div className="release-artist">{displayArtist ? <ArtistLinks artist={displayArtist} maxShown={8} linkClassName="hover:underline" /> : uploader && <Link to={"/profile/"+uploader.id}>{uploader.display_name || uploader.full_name || track.uploader_name}</Link>}</div>
@@ -219,6 +221,7 @@ export default function TrackDetail() {
         </section>
       }
 
+      {(track._has_music_video || track.music_video_file_uri) && <TrackMusicVideo key={track.id} track={track} />}
       {moreTracks.length > 0 && <section className="track-page-section">
         <h2>More by {track.artist}</h2>
         <div className="release-shelf" tabIndex={0} role="region" aria-label="More songs by this artist">{moreTracks.map(row=><div key={row.id} className="release-shelf-card"><TrackCard track={row} queue={moreTracks} /></div>)}</div>
