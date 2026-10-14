@@ -47,7 +47,7 @@ function AzReveal({ children }) {
       ref={ref}
       style={{ transitionTimingFunction: "cubic-bezier(0.16,1,0.3,1)" }}
       className={`transition-all duration-500 ${
-      shown ? "opacity-100 translate-y-0" : "opacity-0 translate-y-3"}`
+      shown ? "opacity-100" : "opacity-0 translate-y-3"}`
       }>
       
       {children}
@@ -243,8 +243,8 @@ export default function PublicRecordsIndex() {
             {!groups.length&&<div className="collection-empty"><h2>No matching artists</h2><p>Try another name.</p></div>}
             {groups.map((g) =>
           <AzReveal key={g.key}>
-                <div className="scroll-mt-24" data-key={g.key} ref={(el) => groupRefs.current[g.key] = el}>
-                  <div className="sticky top-[calc(3.25rem_+_env(safe-area-inset-top))] z-10 -mx-4 sm:-mx-5 md:-mx-8 lg:-mx-12 px-4 sm:px-5 md:px-8 lg:px-12 py-1 bg-background/90 backdrop-blur-sm">
+                <div className="scroll-mt-[calc(env(safe-area-inset-top)+2.5rem)]" data-key={g.key} ref={(el) => groupRefs.current[g.key] = el}>
+                  <div className="sticky top-[env(safe-area-inset-top)] md:top-0 z-10 px-2 py-2 bg-background border-b border-border/40">
                     <span className="text-[11px] font-extrabold tracking-[0.18em] text-foreground/40">
                       {g.key}
                     </span>
