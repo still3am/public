@@ -4,6 +4,7 @@ import { useEffect, useState, useMemo } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import { getArtists, getPublishedTracks } from "@/lib/catalogCache";
+import { artistTrackRole } from "@/lib/artistTrackRole";
 import { fetchArtistTracks } from "@/lib/artistTracks";
 import SafetyControls from '@/components/SafetyControls';
 import TrackCard from "@/components/TrackCard";
@@ -140,7 +141,9 @@ export default function PublicRecords({ id: propId, fallbackArtist = null }) {
   const [loading, setLoading] = useState(true);
   const [generating, setGenerating] = useState(false);
   const [query,setQuery]=useState(""),[sort,setSort]=useState("recent");
-  const visibleTracks=useMemo(()=>{const term=query.trim().toLowerCase(),list=tracks.filter(t=>!term||[t.title,t.artist,t.uploader_name].some(value=>(value||"").toLowerCase().includes(term)));if(sort==="popular")list.sort((a,b)=>(b.play_count||0)-(a.play_count||0));if(sort==="title")list.sort((a,b)=>(a.title||"").localeCompare(b.title||""));return list;},[tracks,query,sort]);
+  const mainTracks = useMemo(() => tracks.filter(track => artistTrackRole(track,artist?.name) === "lead"), [tracks,artist?.name]);
+  const appearanceTracks = useMemo(() => tracks.filter(track => artistTrackRole(track,artist?.name) === "appearance"), [tracks,artist?.name]);
+  const visibleTracks=useMemo(()=>{const term=query.trim().toLowerCase(),list=mainTracks.filter(t=>!term||[t.title,t.artist,t.uploader_name].some(value=>(value||"").toLowerCase().includes(term)));if(sort==="popular")list.sort((a,b)=>(b.play_count||0)-(a.play_count||0));if(sort==="title")list.sort((a,b)=>(a.title||"").localeCompare(b.title||""));return list;},[mainTracks,query,sort]);
 
   const loadVersion=useRef(0);
   const [loadError,setLoadError]=useState(false);
@@ -228,10 +231,10 @@ export default function PublicRecords({ id: propId, fallbackArtist = null }) {
   sort((a, b) => (b.play_count || 0) - (a.play_count || 0)).
   find((t) => t.cover_art_url)?.cover_art_url;
 
-  const latestTrack = [...tracks].sort((a,b) => (Date.parse(b.created_date)||0) - (Date.parse(a.created_date)||0))[0];
-  const topTracks = [...tracks].sort((a,b) => (b.play_count||0) - (a.play_count||0)).slice(0,18);
+  const latestTrack = [...mainTracks].sort((a,b) => (Date.parse(b.created_date)||0) - (Date.parse(a.created_date)||0))[0];
+  const topTracks = [...mainTracks].sort((a,b) => (b.play_count||0) - (a.play_count||0)).slice(0,18);
   const isAdmin = !!user && user.role === "admin";
-  const playAll = () => p.playTrackAt(visibleTracks.length?visibleTracks:tracks);
+  const playAll = () => p.playTrackAt(visibleTracks.length?visibleTracks:mainTracks.length?mainTracks:appearanceTracks);
 
   return (
     <PullToRefresh onRefresh={load}>
@@ -244,14 +247,14 @@ export default function PublicRecords({ id: propId, fallbackArtist = null }) {
             <div className="artist-hero-name min-w-0">
               <p className="artist-eyebrow">Artist on PUBLIC</p>
               <ArtistNameEditor artist={artist} canEdit={!!user && !!id} onSaved={name => setArtist(prev => prev ? {...prev,name} : prev)} />
-              <p className="artist-track-count">{tracks.length} {tracks.length === 1 ? "song" : "songs"}</p>
+              <p className="artist-track-count">{mainTracks.length} {mainTracks.length === 1 ? "song" : "songs"}{appearanceTracks.length > 0 && ` · ${appearanceTracks.length} appearances`}</p>
             </div>
             {tracks.length > 0 && <button onClick={playAll} className="artist-play" aria-label={"Play " + artist.name}><Play size={26} fill="currentColor" /></button>}
           </div>
         </section>
 
         {latestTrack && <section className="artist-latest">
-          <button className="artist-latest-cover" onClick={() => p.playTrackAt(tracks, tracks.findIndex(track => track.id === latestTrack.id))} aria-label={"Play " + latestTrack.title}><ArtistArtwork source={latestTrack.cover_art_url} className="w-full h-full object-cover" /></button>
+          <button className="artist-latest-cover" onClick={() => p.playTrackAt(mainTracks, mainTracks.findIndex(track => track.id === latestTrack.id))} aria-label={"Play " + latestTrack.title}><ArtistArtwork source={latestTrack.cover_art_url} className="w-full h-full object-cover" /></button>
           <div className="min-w-0 flex-1">
             <p className="eyebrow text-muted-foreground mb-2">Recently added to PUBLIC</p>
             <Link to={"/track/" + latestTrack.id} className="artist-latest-title">{latestTrack.title}</Link>
@@ -269,16 +272,16 @@ export default function PublicRecords({ id: propId, fallbackArtist = null }) {
         <section id="artist-discography" className="artist-discography mb-8">
           <SectionTitle icon={Disc3} right={
           <span className="text-xs font-semibold text-foreground/40 bg-foreground/[0.05] rounded-full px-2.5 py-1">
-              {tracks.length}
+              {mainTracks.length}
             </span>
           }>
             Songs
           </SectionTitle>
-          {tracks.length>0&&<div className="collection-tools"><input aria-label="Search artist discography" placeholder="Find a song" value={query} onChange={e=>setQuery(e.target.value)} onKeyDown={e=>{if(e.key==="Escape")setQuery("");}}/><select aria-label="Sort artist discography" value={sort} onChange={e=>setSort(e.target.value)}><option value="recent">Newest</option><option value="popular">Most played</option><option value="title">Title A–Z</option></select></div>}
-          {tracks.length === 0 ?
+          {mainTracks.length>0&&<div className="collection-tools"><input aria-label="Search artist discography" placeholder="Find a song" value={query} onChange={e=>setQuery(e.target.value)} onKeyDown={e=>{if(e.key==="Escape")setQuery("");}}/><select aria-label="Sort artist discography" value={sort} onChange={e=>setSort(e.target.value)}><option value="recent">Newest</option><option value="popular">Most played</option><option value="title">Title A–Z</option></select></div>}
+          {mainTracks.length === 0 ?
           <div className="rounded-2xl border border-dashed border-border py-10 text-center px-6">
               <Music size={22} className="text-foreground/35 mx-auto mb-2" />
-              <p className="text-sm text-foreground/50">No published tracks linked to this artist yet.</p>
+              <p className="text-sm text-foreground/50">No lead-artist songs are listed yet. Featured songs are shown in Appears On.</p>
             </div> :
 
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 md:gap-4">
@@ -289,6 +292,12 @@ export default function PublicRecords({ id: propId, fallbackArtist = null }) {
             </div>
           }
         </section>
+        {appearanceTracks.length > 0 && <section className="artist-appears-on">
+          <SectionTitle icon={Disc3}>Appears On</SectionTitle>
+          <div className="artist-appears-list" tabIndex={0} role="region" aria-label="Swipe through featured appearances">
+            {appearanceTracks.map(track=><div className="artist-appears-card" key={track.id}><TrackCard track={track} queue={appearanceTracks} /></div>)}
+          </div>
+        </section>}
         {(artist.bio || meta.length > 0 || socials.length > 0 || artist.history_text || tracks.some(track=>track.genre) || isAdmin) && <section className="artist-about">
           <SectionTitle icon={Mic2}>About {artist.name}</SectionTitle>
           {artist.bio && <CollapsibleText text={artist.bio} className="artist-about-copy selectable-content leading-relaxed" clampClass="max-h-28" />}
