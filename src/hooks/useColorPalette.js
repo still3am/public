@@ -14,7 +14,7 @@ function boost([r, g, b]) {
 
 // Samples an image and returns three vivid colors [primary, secondary, accent]
 // for gradient use. Falls back to neutral greys on CORS taint or failure.
-export function useColorPalette(url) {
+export function useColorPalette(url, vivid = false) {
   const [palette, setPalette] = useState(FALLBACK);
 
   useEffect(() => {
@@ -47,8 +47,11 @@ export function useColorPalette(url) {
           b.r += R; b.g += G; b.b += B; b.n += 1;
           buckets.set(key, b);
         }
-        const ranked = [...buckets.values()]
-          .map((b) => ({ rgb: [b.r / b.n, b.g / b.n, b.b / b.n], score: b.n * (1 + b.sat / 120) }))
+        const allBuckets = [...buckets.values()];
+        const saturated = allBuckets.filter(bucket => bucket.sat > 45 && bucket.n >= 2);
+        const candidates = vivid && saturated.length ? saturated : allBuckets;
+        const ranked = candidates
+          .map((b) => ({ rgb: [b.r / b.n, b.g / b.n, b.b / b.n], score: b.n * (1 + b.sat / (vivid ? 45 : 120)) }))
           .sort((a, b) => b.score - a.score);
 
         if (!ranked.length) {
@@ -69,7 +72,7 @@ export function useColorPalette(url) {
     return () => {
       cancelled = true;
     };
-  }, [url]);
+  }, [url, vivid]);
 
   return palette;
 }
