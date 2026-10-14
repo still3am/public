@@ -1,3 +1,7 @@
+import { shareLink } from "@/lib/shareLink";
+import { getPublishedTracks } from "@/lib/catalogCache";
+import { splitArtistNames } from "@/lib/artistTracks";
+import TrackCard from "@/components/TrackCard";
 import LoadError from '@/components/LoadError';
 import { useRef } from 'react';
 import { useEffect, useState } from "react";
@@ -14,6 +18,7 @@ import EditTrackModal from "@/components/EditTrackModal";
 import ArtistLinks from "@/components/ArtistLinks";
 import {
   ChevronLeft,
+  Share2,
   Music,
   Loader2,
   Play,
@@ -47,6 +52,18 @@ export default function TrackDetail() {
   const [detecting, setDetecting] = useState(false);
   const [syncing, setSyncing] = useState(false);
   const [moreTracks, setMoreTracks] = useState([]);
+  const [recommended,setRecommended] = useState([]);
+  useEffect(() => {
+    let active=true;setRecommended([]);
+    if(!track?.genre || track.genre==="Other")return;
+    const names=new Set(splitArtistNames(track.artist));
+    getPublishedTracks().then(rows=>{
+      const picks=rows.filter(row=>row.id!==track.id && row.genre===track.genre && !splitArtistNames(row.artist).some(name=>names.has(name)));
+      picks.sort((a,b)=>(b.play_count||0)-(a.play_count||0));
+      if(active)setRecommended(picks.slice(0,10));
+    }).catch(()=>{});
+    return()=>{active=false;};
+  },[track?.id,track?.genre,track?.artist]);
   const { toast } = useToast();
 
   const loadVersion = useRef(0),detectVersion = useRef(0);
@@ -147,35 +164,32 @@ export default function TrackDetail() {
   [];
 
   return (
-    <div className="track-page max-w-5xl mx-auto">
-      <section className="track-page-hero">
-        {coverUrl && !coverFailed && <img src={coverUrl} alt="" className="track-page-backdrop" />}
-        <div className="track-page-shade" />
-        <button onClick={() => window.history.state?.idx > 0 ? nav(-1) : nav("/search")} className="artist-back" aria-label="Back"><ChevronLeft size={25} /></button>
-        <div className="track-page-art">{coverUrl && !coverFailed ? <img src={coverUrl} alt={track.title + " cover"} onError={() => setCoverFailed(true)} /> : <Music size={50} />}</div>
-        <div className="track-page-heading">
-          <p className="artist-eyebrow">Song on PUBLIC</p>
-          <div className="flex items-start gap-2"><h1>{track.title}</h1>{track.explicit && <span className="track-page-explicit" aria-label="Explicit">E</span>}</div>
-          {displayArtist ? <ArtistLinks artist={displayArtist} maxShown={8} linkClassName="hover:underline" /> : uploader && <Link to={"/profile/" + uploader.id}>{uploader.display_name || uploader.full_name || track.uploader_name}</Link>}
-          <p className="track-page-meta">{[track.genre,track.duration_seconds > 0 ? formatTime(track.duration_seconds) : null].filter(Boolean).join(" · ")}</p>
+    <div className="track-page release-page max-w-5xl mx-auto">
+      <div className="release-toolbar">
+        <button onClick={() => window.history.state?.idx > 0 ? nav(-1) : nav("/search")} className="release-round" aria-label="Back"><ChevronLeft size={26} /></button>
+        <div className="release-toolbar-actions">
+          <button className="release-round" aria-label="Share song" onClick={async () => {try {const result=await shareLink({title:track.title,text:track.artist || track.title,url:window.location.origin+"/track/"+track.id});if(result==="copied")toast({title:"Song link copied"});} catch {}}}><Share2 size={21} /></button>
+          <TrackOptionsMenu track={track} size={22} buttonClassName="release-round" items={ownerItems} />
         </div>
-        <button onClick={() => isCurrent ? p.togglePlay() : p.playTrackAt([track])} className="artist-play track-page-play" aria-label={(isPlaying ? "Pause " : "Play ") + track.title}>{isPlaying ? <Pause size={26} fill="currentColor" /> : <Play size={26} fill="currentColor" />}</button>
-      </section>
-
-      <div className="track-page-actions">
-        <LibraryButton track={track} label className="playlist-action inline-flex items-center justify-center gap-2 px-4 py-2.5" />
-        <TrackOptionsMenu track={track} size={20} className="ml-auto" buttonClassName="w-11 h-11 rounded-full border border-border grid place-items-center hover:bg-accent transition" items={ownerItems} />
       </div>
-
-      <section className="track-page-about">
-        <h2>About this song</h2>
-        {track.description && <CollapsibleText text={track.description} className="selectable-content text-sm leading-relaxed text-muted-foreground" />}
-        <dl className="artist-facts">
-          {displayArtist && <div><dt>Artists</dt><dd><ArtistLinks artist={displayArtist} maxShown={8} linkClassName="hover:underline" /></dd></div>}
-          {track.genre && <div><dt>Genre</dt><dd>{track.genre}</dd></div>}
-          {track.duration_seconds > 0 && <div><dt>Duration</dt><dd>{formatTime(track.duration_seconds)}</dd></div>}
-          {uploader && <div><dt>Shared by</dt><dd><Link to={"/profile/" + uploader.id} className="hover:underline">{uploader.display_name || uploader.full_name || track.uploader_name || "PUBLIC member"}</Link></dd></div>}
-        </dl>
+      <section className="release-header">
+        <div className="release-art">{coverUrl && !coverFailed ? <img src={coverUrl} alt={track.title+" cover"} onError={() => setCoverFailed(true)} /> : <Music size={52} />}</div>
+        <h1>{track.title}</h1>
+        <div className="release-artist">{displayArtist ? <ArtistLinks artist={displayArtist} maxShown={8} linkClassName="hover:underline" /> : uploader && <Link to={"/profile/"+uploader.id}>{uploader.display_name || uploader.full_name || track.uploader_name}</Link>}</div>
+        <p className="release-subtitle">{[track.genre,track.duration_seconds>0?formatTime(track.duration_seconds):null].filter(Boolean).join(" · ")}{track.explicit && <span className="release-explicit" aria-label="Explicit">E</span>}</p>
+        <div className="release-play-controls">
+          <button className="release-play-button" onClick={() => isCurrent ? p.togglePlay() : p.playTrackAt([track])}>{isPlaying?<Pause size={22} fill="currentColor" />:<Play size={22} fill="currentColor" />}{isPlaying?"Pause":"Play"}</button>
+          <LibraryButton track={track} size={24} className="release-add-button" />
+        </div>
+      </section>
+      <section className="release-song-list" aria-label="Song">
+        <TrackRow track={track} index={0} showArt={false} queue={[track]} queueIndex={0} />
+      </section>
+      <section className="release-credits">
+        {track.created_date && Number.isFinite(Date.parse(track.created_date)) && <p>Added to PUBLIC {new Intl.DateTimeFormat(undefined,{month:"long",day:"numeric",year:"numeric"}).format(new Date(track.created_date))}</p>}
+        <p>1 song{track.duration_seconds>0?" · "+formatTime(track.duration_seconds):""}</p>
+        {uploader && <p>Shared by <Link to={"/profile/"+uploader.id} className="hover:underline">{uploader.display_name || uploader.full_name || track.uploader_name || "PUBLIC member"}</Link></p>}
+        {track.description && <div className="mt-4"><CollapsibleText text={track.description} className="selectable-content leading-relaxed" /></div>}
       </section>
 
       {track.lyrics_text && track.lyrics_text.trim() &&
@@ -205,22 +219,14 @@ export default function TrackDetail() {
         </section>
       }
 
-      {moreTracks.length > 0 &&
-      <section className="track-page-section">
-          <h2 className="text-lg font-extrabold tracking-tight mb-3 flex items-center gap-2">
-             More from {track.artist}
-          </h2>
-          <div className="space-y-0.5">
-            {moreTracks.map((t, i) =>
-          <TrackRow
-            key={t.id}
-            track={t}
-            index={i} queue={moreTracks} queueIndex={i} />
-
-          )}
-          </div>
-        </section>
-      }
+      {moreTracks.length > 0 && <section className="track-page-section">
+        <h2>More by {track.artist}</h2>
+        <div className="release-shelf" tabIndex={0} role="region" aria-label="More songs by this artist">{moreTracks.map(row=><div key={row.id} className="release-shelf-card"><TrackCard track={row} queue={moreTracks} /></div>)}</div>
+      </section>}
+      {recommended.length > 0 && <section className="track-page-section">
+        <h2>You Might Also Like</h2>
+        <div className="release-shelf" tabIndex={0} role="region" aria-label="Songs in the same genre">{recommended.map(row=><div key={row.id} className="release-shelf-card"><TrackCard track={row} queue={recommended} /></div>)}</div>
+      </section>}
 
       {editing &&
       <EditTrackModal
