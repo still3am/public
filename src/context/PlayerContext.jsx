@@ -22,6 +22,7 @@ import {
 } from "@/lib/transitions";
 import { useAuth } from "@/lib/AuthContext";
 
+const isIOSDevice=()=>typeof navigator!=="undefined"&&(/iPad|iPhone|iPod/.test(navigator.userAgent)||(navigator.platform==="MacIntel"&&navigator.maxTouchPoints>1));
 const PlayerContext = createContext(null);
 export const usePlayer = () => useContext(PlayerContext);
 
@@ -55,6 +56,7 @@ export function PlayerProvider({ children }) {
   const audioCtxRef = useRef(null);
   const analyserRef = useRef(null);
   const masterGainRef = useRef(null);
+  const volumeGainRef=useRef(null);
   const gainRefs = [useRef(null), useRef(null)];
   const sourceRefs = [useRef(null), useRef(null)];
 
@@ -114,6 +116,12 @@ export function PlayerProvider({ children }) {
       return 1;
     }
   });
+  const volumeRef=useRef(volume);volumeRef.current=volume;
+  const applyVolume=useCallback(value=>{
+    const gain=volumeGainRef.current,ctx=audioCtxRef.current;
+    els().forEach(audio=>{if(audio)audio.volume=gain?1:value;});
+    if(gain&&ctx){gain.gain.cancelScheduledValues(ctx.currentTime);gain.gain.setTargetAtTime(value,ctx.currentTime,.015);}
+  },[]);
   const [muted, setMutedState] = useState(() => {
     try {
       return localStorage.getItem("public:player_muted") === "true";
@@ -188,6 +196,7 @@ export function PlayerProvider({ children }) {
       analyser.smoothingTimeConstant = 0.82;
       const master = ctx.createGain();
       master.gain.value = 1;
+      const volumeGain=ctx.createGain();volumeGain.gain.value=volumeRef.current;
       els().forEach((a, i) => {
         if (!a) return;
         const src = ctx.createMediaElementSource(a);
@@ -243,11 +252,13 @@ export function PlayerProvider({ children }) {
       filterRefs.vocals[1].current = vocalsF2;
       filterRefs.vocals[2].current = vocalsF3;
       filterRefs.treble.current = trebleF;
-      master.connect(ctx.destination);
+      master.connect(volumeGain);volumeGain.connect(ctx.destination);
       // Apply any mixer settings the user already chose to the new filters
       audioCtxRef.current = ctx;
       analyserRef.current = analyser;
       masterGainRef.current = master;
+      volumeGainRef.current=volumeGain;
+      els().forEach(audio=>{if(audio)audio.volume=1;});
       applyMixerToGraph(mixerRef.current);
       return ctx;
     } catch {
@@ -264,7 +275,7 @@ export function PlayerProvider({ children }) {
   // (Home-Screen) PWA. Transitions/visualizer opt back in via ensureGraph().
   const graphNeeded = useCallback(() => {
     const s = getTransitionSettings();
-    if (isTransitionActive(s)) return true;
+    if (isTransitionActive(s)||(isIOSDevice()&&volumeRef.current<1)) return true;
     // Mixer active (non-neutral) also needs the Web Audio graph
     const m = mixerRef.current;
     return m.enabled && (m.bass !== 0 || m.beat !== 0 || m.vocals !== 0 || m.treble !== 0 || m.boost !== 1);
@@ -364,7 +375,7 @@ export function PlayerProvider({ children }) {
   const mirrorPlayback = useCallback(
     (el) => {
       if (!el) return;
-      el.volume = volume;
+      el.volume = volumeGainRef.current?1:volume;
       el.muted = muted;
       el.playbackRate = playbackRate;
     },
@@ -838,8 +849,8 @@ export function PlayerProvider({ children }) {
 
   // volume / mute / rate apply to both elements
   useEffect(() => {
-    els().forEach((a) => a && (a.volume = volume));
-  }, [volume]);
+    applyVolume(volume);
+  }, [volume,applyVolume]);
   useEffect(() => {
     els().forEach((a) => a && (a.muted = muted));
   }, [muted]);
@@ -937,14 +948,21 @@ export function PlayerProvider({ children }) {
     } catch {}
   }, [cancelCrossfade]);
 
-  const setVolume = useCallback((v) => {
+  const prepareVolumeControl=useCallback(()=>{
+    if(!isIOSDevice())return;
+    const ctx=ensureGraph();
+    if(ctx&&ctx.state!=="running")ctx.resume().catch(()=>{});
+  },[ensureGraph]);
+  const setVolume = useCallback((input) => {
+    const value=Number(input);if(!Number.isFinite(value))return;
+    const v=Math.max(0,Math.min(1,value));
+    volumeRef.current=v;
+    prepareVolumeControl();
+    applyVolume(v);
     setVolumeState(v);
-    try {
-      localStorage.setItem("public:player_volume", String(v));
-    } catch {}
-    els().forEach((a) => a && (a.volume = v));
-    if (v > 0) setMuted(false);
-  }, [setMuted]);
+    try {localStorage.setItem("public:player_volume",String(v));} catch {}
+    if(v>0)setMuted(false);
+  },[setMuted,prepareVolumeControl,applyVolume]);
 
   // Crossfade-aware skip: if transitions are on AND the upcoming track is
   // already preloaded+ready on the inactive element, blend into it; otherwise
@@ -1281,6 +1299,7 @@ export function PlayerProvider({ children }) {
     togglePlay,
     seek,
     setVolume,
+    prepareVolumeControl,
     setMuted,
     next,
     prev,

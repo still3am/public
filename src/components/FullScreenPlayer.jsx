@@ -167,20 +167,29 @@ export default function FullScreenPlayer({ onClose }) {
     hintTimer.current = setTimeout(() => setShowVolHint(false), 1000);
   }
 
-  const onVolTouchStart = (e) => {
-    const touch = e.touches[0];
-    volDrag.current = { startY: touch.clientY, start: p.muted ? 0 : p.volume, active: true };
+  useEffect(()=>()=>{clearTimeout(hintTimer.current);volDrag.current.active=false;},[]);
+  const onVolPointerDown=event=>{
+    if(event.isPrimary===false||(event.pointerType==='mouse'&&event.button!==0))return;
+    event.stopPropagation();
+    event.currentTarget.setPointerCapture?.(event.pointerId);
+    volDrag.current={pointerId:event.pointerId,startY:event.clientY,start:p.muted?0:p.volume,active:true};
+    p.prepareVolumeControl?.();
     flashHint();
   };
-  const onVolTouchMove = (e) => {
-    if (!volDrag.current.active) return;
-    const touch = e.touches[0];
-    const dy = volDrag.current.startY - touch.clientY;
-    p.setVolume(clampVol(volDrag.current.start + dy / 200));
-    e.preventDefault();
+  const onVolPointerMove=event=>{
+    const drag=volDrag.current;
+    if(!drag.active||drag.pointerId!==event.pointerId)return;
+    event.stopPropagation();
+    if(event.cancelable)event.preventDefault();
+    const distance=Math.max(160,Math.min(320,event.currentTarget.getBoundingClientRect().height));
+    p.setVolume(clampVol(drag.start+(drag.startY-event.clientY)/distance));
+    flashHint();
   };
-  const onVolTouchEnd = () => {
-    volDrag.current.active = false;
+  const onVolPointerEnd=event=>{
+    if(volDrag.current.pointerId!==event.pointerId)return;
+    volDrag.current.active=false;
+    if(event.currentTarget.hasPointerCapture?.(event.pointerId))event.currentTarget.releasePointerCapture(event.pointerId);
+    flashHint();
   };
 
   async function toggleOffline() {
@@ -291,15 +300,17 @@ export default function FullScreenPlayer({ onClose }) {
               </div>
             }
               <div
-              onTouchStart={onVolTouchStart}
-              onTouchMove={onVolTouchMove}
-              onTouchEnd={onVolTouchEnd}
+              onPointerDown={onVolPointerDown}
+              onPointerMove={onVolPointerMove}
+              onPointerUp={onVolPointerEnd}
+              onPointerCancel={onVolPointerEnd}
+              onLostPointerCapture={()=>{volDrag.current.active=false;}}
               className={`relative aspect-square w-full max-w-[min(38vh,80vw)] xl:max-w-[440px] 2xl:max-w-[480px] xl:max-h-[46vh] 2xl:max-h-[52vh] rounded-3xl overflow-hidden shadow-[0_24px_90px_rgba(0,0,0,0.55)] bg-white/10 shrink-0 touch-none transition-transform duration-500 ${
               p.isPlaying ? "scale-100" : "scale-[0.97]"} ${
               lyricsMode ? "hidden xl:flex" : "flex"}`}>
                 
                 {coverUrl && !coverFailed ?
-              <img src={coverUrl} alt="" onError={() => setCoverFailed(true)} className="w-full h-full object-cover" /> :
+              <img src={coverUrl} alt="" draggable={false} onError={() => setCoverFailed(true)} className="w-full h-full object-cover pointer-events-none select-none" /> :
 
               <div className="w-full h-full grid place-items-center opacity-40">
                     <Disc3 size={64} />
