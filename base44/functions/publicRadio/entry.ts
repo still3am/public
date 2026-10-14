@@ -48,16 +48,16 @@ export default async function handleRequest(req) {
     const start = schedule.anchor_ms + cycle * total + accumulated;
     const blocks = pageRows(await svc.entities.Block.filter({ $or:[{user_id:user.id},{blocked_user_id:user.id}] }, "-created_date", 5000));
     const hidden = new Set(blocks.map(block => block.user_id===user.id ? block.blocked_user_id : block.user_id));
-    const safeTrack = async (entry, sign) => {
+    const safeTrack = async (entry) => {
       const track = await svc.entities.Track.get(entry.track_id).catch(() => null);
       if (!track || !track.is_published || track.approval_status!=="approved" || track.explicit || hidden.has(track.uploader_id)) return null;
       let url = track.audio_url || "";
       return {id:track.id,title:track.title,artist:track.artist,uploader_id:track.uploader_id,uploader_name:track.uploader_name,genre:track.genre,cover_art_url:track.cover_art_url,audio_url:url,_private_audio:!!track.audio_file_uri,duration_seconds:entry.duration_seconds,is_published:true,approval_status:"approved",explicit:false,is_downloadable:!!track.is_downloadable};
     };
     const slots = []; let cursor = start;
-    for (let step=0; step<7; step++) {
-      const entry = entries[(current+step)%entries.length], end = cursor + entry.duration_seconds * 1000;
-      slots.push({ start_ms:cursor,end_ms:end,track:await safeTrack(entry,true) });
+    for (let step=0; step<7 && cursor < anchor + 86400000; step++) {
+      const entry = entries[(current+step)%entries.length], end = Math.min(anchor + 86400000, cursor + entry.duration_seconds * 1000);
+      slots.push({ start_ms:cursor,end_ms:end,track:await safeTrack(entry) });
       cursor = end;
     }
     const recent = []; cursor = start;
@@ -65,7 +65,7 @@ export default async function handleRequest(req) {
       const entry = entries[(current-step+entries.length)%entries.length];
       cursor -= entry.duration_seconds * 1000;
       if(cursor < schedule.anchor_ms)break;
-      recent.push({start_ms:cursor,track:await safeTrack(entry,false)});
+      recent.push({start_ms:cursor,track:await safeTrack(entry)});
     }
     return Response.json({server_now:Date.now(),day_key:day,slots,recent});
   } catch (error) {
