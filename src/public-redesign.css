@@ -62,28 +62,8 @@ html.dark {
 .public-app .player-surface { box-shadow:0 -5px 22px -18px rgb(0 0 0/.3); }
 .auth-layout .auth-card { border-radius:22px; box-shadow:0 12px 50px -32px rgb(0 0 0/.3); }
 .auth-layout h1 { letter-spacing:-.045em; font-weight:750; }
-.radio-promo { display:flex;align-items:center;gap:18px;padding:22px 24px;margin:24px 0 36px;border:1px solid hsl(var(--border));border-radius:18px;background:hsl(var(--card));transition:background .2s; }
-.radio-promo:hover { background:hsl(var(--accent)); }
-.radio-promo-icon { width:64px;height:64px;flex-shrink:0;border-radius:16px;display:grid;place-items:center;background:linear-gradient(145deg,#fafafa,#c5c8ce);color:#17181c;box-shadow:inset 0 1px 0 #fff; }
-.radio-promo h3 { font-size:19px;font-weight:700;letter-spacing:-.035em;margin-top:4px; }
-.radio-promo p:not(.eyebrow) { font-size:12px;color:hsl(var(--muted-foreground));margin-top:4px; }
-.radio-hero { display:grid;grid-template-columns:minmax(230px,340px) 1fr;gap:48px;align-items:center;padding:32px;border:1px solid hsl(var(--border));border-radius:22px;background:hsl(var(--card));margin-bottom:40px; }
-.radio-station-art { position:relative;aspect-ratio:1;border-radius:18px;overflow:hidden;background:linear-gradient(145deg,#24262d,#050608);box-shadow:0 16px 42px -24px #000; }
-.radio-station-art>img { width:100%;height:100%;object-fit:cover; }
-.radio-station-mark { height:100%;padding:28px;display:flex;flex-direction:column;justify-content:space-between;color:#f6f6f7; }
-.radio-station-mark strong { font-size:clamp(32px,4vw,58px);line-height:.98;letter-spacing:-.06em; }
-.radio-air-label { position:absolute;top:14px;left:14px;display:flex;align-items:center;gap:6px;padding:7px 10px;border-radius:999px;background:rgba(0,0,0,.6);color:#fff;font-size:10px;font-weight:650;backdrop-filter:blur(12px); }
-.radio-air-label>span { width:6px;height:6px;background:#fff;border-radius:50%; }
-.radio-hero-copy h2 { font-size:clamp(28px,3vw,42px);letter-spacing:-.045em;line-height:1.12;font-weight:750;margin:12px 0;overflow-wrap:anywhere; }
-.radio-hero-copy>p:not(.eyebrow) { font-size:15px;color:hsl(var(--muted-foreground));line-height:1.6; }
-.radio-hero-actions { display:flex;align-items:center;gap:10px;margin-top:24px; }
-.radio-hero-copy .radio-caption { margin-top:14px;font-size:12px; }
-.radio-columns { display:grid;grid-template-columns:1fr 1fr;gap:40px; }
 .section-heading { display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px; }
 .section-heading h2 { font-size:22px;font-weight:700;letter-spacing:-.035em; }
-.radio-track { display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid hsl(var(--border)/.6); }
-.radio-track-art { width:54px;height:54px;display:grid;place-items:center;flex-shrink:0;border-radius:10px;overflow:hidden;background:hsl(var(--muted)); }
-.radio-track-art img { width:100%;height:100%;object-fit:cover; }
 @media(max-width:767px) {
  .public-app .app-content { --app-gutter:18px;padding-top:24px; }
  .public-app .page-intro,.public-app .library-heading { margin-bottom:24px; }
@@ -102,18 +82,8 @@ html.dark {
  .public-app .library-navigation { justify-content:center;gap:18px; }
  .public-app .song-row { padding-inline:6px; }
  .public-app .collection-tools { gap:8px; }
- .radio-promo { padding:17px;gap:12px;margin:20px 0 30px; }
- .radio-promo-icon { width:48px;height:48px;border-radius:12px; }
- .radio-promo h3 { font-size:16px; }
- .radio-promo p:not(.eyebrow) { font-size:11px; }
- .radio-hero { grid-template-columns:1fr;gap:24px;padding:20px;border-radius:20px;text-align:center; }
- .radio-station-art { width:min(100%,280px);margin-inline:auto; }
- .radio-hero-copy h2 { font-size:29px; }
- .radio-hero-actions { justify-content:center; }
- .radio-columns { grid-template-columns:1fr;gap:30px; }
  .section-heading h2 { font-size:21px; }
 }
-@media(prefers-reduced-motion:reduce) { .radio-promo { transition:none; } }
 
 /* Social and creator screens share the music library's calm surfaces. */
 .public-app .profile-identity { border-radius:22px; box-shadow:0 10px 35px -28px rgb(0 0 0/.4); }
