@@ -1,5 +1,5 @@
 import {copyText} from '@/lib/shareLink';
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import { usePlayer } from "@/context/PlayerContext";
 import { useColorExtraction } from "@/hooks/useColorExtraction";
 import { useAuth } from "@/lib/AuthContext";
@@ -83,6 +83,10 @@ export default function FullScreenPlayer({ onClose }) {
   const [lyricsAvailability, setLyricsAvailability] = useState({ trackId: null, available: false });
   const hasLyrics = lyricsAvailability.trackId === t?.id && lyricsAvailability.available;
   const showingLyrics = lyricsMode && hasLyrics;
+  const handleLyricsUnavailable = useCallback(() => {
+    setLyricsMode(false);
+    setLyricsAvailability(previous => previous.trackId === t?.id && !previous.available ? previous : { trackId: t?.id, available: false });
+  }, [t?.id]);
   const [coverFailed, setCoverFailed] = useState(false);
 
   // Reset the broken-cover flag whenever the track (and thus its cover URL) changes.
@@ -304,7 +308,7 @@ export default function FullScreenPlayer({ onClose }) {
           <div className="relative flex-1 xl:flex-none flex items-center justify-center min-h-0 py-4">
             {showingLyrics &&
             <div className="xl:hidden w-full h-full rounded-3xl bg-white/[0.06] overflow-hidden flex flex-col min-h-0">
-                <SyncedLyrics key={t.id} trackId={t.id} position={p.position} fallbackText={t.lyrics_text} onSeek={p.seek} onUnavailable={() => { setLyricsMode(false); setLyricsAvailability({ trackId: t.id, available: false }); }} />
+                <SyncedLyrics key={t.id} trackId={t.id} position={p.position} fallbackText={t.lyrics_text} onSeek={p.seek} onUnavailable={handleLyricsUnavailable} />
               </div>
             }
               <div
@@ -474,7 +478,7 @@ export default function FullScreenPlayer({ onClose }) {
 
           
           <div className="flex-1 min-h-0 flex flex-col">
-            <SyncedLyrics key={t.id} trackId={t.id} position={p.position} fallbackText={t.lyrics_text} onSeek={p.seek} onUnavailable={() => { setLyricsMode(false); setLyricsAvailability({ trackId: t.id, available: false }); }} />
+            {hasLyrics && showLyricsPanel && <SyncedLyrics key={t.id} trackId={t.id} position={p.position} fallbackText={t.lyrics_text} onSeek={p.seek} onUnavailable={handleLyricsUnavailable} />}
           </div>
         </div>
       </div>
