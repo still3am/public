@@ -43,6 +43,7 @@ export default function Layout() {
 
   return (
     <div className={`flex min-h-screen bg-background text-foreground ${currentTrack?"has-player":""}`}>
+      <div aria-hidden="true" className="public-status-bar-shield" />
       <a href="#main-content" className="public-skip-link">Skip to content</a>
       <Sidebar />
       <div className="flex-1 flex flex-col min-w-0">
