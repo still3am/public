@@ -474,7 +474,7 @@ export function PlayerProvider({ children }) {
   const preloadNextTrack = useCallback(() => {
     const ci = currentIndexRef.current;
     const q = queueRef.current;
-    if (ci < 0 || !q.length) return;
+    if (ci < 0 || !q.length || q[ci]?._public_radio) return;
     let n = -1;
     if(shuffleRef.current && q.length>1){do{n=Math.floor(Math.random()*q.length);}while(n===ci);}
     else if (ci + 1 < q.length) n = ci + 1;
@@ -681,6 +681,7 @@ export function PlayerProvider({ children }) {
       const cur = a.currentTime || 0;
       setPosition(cur);
       syncPositionState(a);
+      if (queueRef.current[currentIndexRef.current]?._public_radio) return;
       const s = getTransitionSettings();
       const gapless = isGapless(s);
       if(a.paused || a.ended || (!isTransitionActive(s) && !gapless) || crossfadingRef.current) return;
