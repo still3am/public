@@ -49,7 +49,7 @@ async function formatLyrics(core, text: string) {
     if (!Array.isArray(parsed?.lines) || parsed.lines.some(line => typeof line !== "string")) return fallback;
     const proposed = parsed.lines.join("\n").trim();
     // Reject omissions, invented text, rearranged words and collapsed repetitions.
-    if (!proposed || proposed.replace(/\s/gu, "") !== text.replace(/\s/gu, "")) return fallback;
+    if (!proposed || proposed.replace(/\s+/gu, " ") !== text.replace(/\s+/gu, " ")) return fallback;
     return { lines: wrapTranscript(proposed), formatting: "phrases" };
   } catch {
     // Formatting availability must not discard a successful transcription.
