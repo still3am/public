@@ -6,6 +6,7 @@ import {
   AlertCircle,
   Sparkles } from
 "lucide-react";
+import MusicVideoPicker from "@/components/upload/MusicVideoPicker";
 import GenrePicker from "@/components/GenrePicker";
 import ReleaseChecklist from "@/components/upload/ReleaseChecklist";
 import CoverPicker from "@/components/upload/CoverPicker";
@@ -33,7 +34,7 @@ export default function UploadItem({
   const locked = uploading || enhancing || done;
 
   const toggles = [
-  { key: "rightsConfirmed", label: "I own or have permission to distribute this audio, artwork and lyrics", icon: null },
+  { key: "rightsConfirmed", label: "I own or have permission to distribute this audio, artwork, lyrics and any attached video", icon: null },
   { key: "allowDownloads", label: "Allow file downloads", icon: null },
   { key: "explicit", label: "Explicit", icon: null },
   { key: "aiLyrics", label: "AI lyrics", icon: Sparkles }];
@@ -97,6 +98,7 @@ export default function UploadItem({
             
           </div>
 
+          <MusicVideoPicker file={item.videoFile} onChange={videoFile=>onChange({videoFile})} disabled={locked || disabled} />
           <div className="grid grid-cols-2 gap-2">
             {toggles.map(({ key, label, icon: Icon }) =>
             <label
