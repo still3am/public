@@ -108,6 +108,7 @@ export default function SyncedLyrics({ trackId, position, fallbackText = "", onS
   }
 
   if (!text) {
+    if (onUnavailable) return null;
     return (
       <div className="flex-1 flex items-center justify-center text-overlay-foreground/70 italic text-center px-6">
         No lyrics available for this track yet.
