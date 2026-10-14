@@ -5,11 +5,16 @@ import { Link, useParams, useNavigate } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import { useAuth } from "@/lib/AuthContext";
 import { usePlayer } from "@/context/PlayerContext";
+import LibraryButton from "@/components/LibraryButton";
+import CollapsibleText from "@/components/CollapsibleText";
+import { useCoverUrl } from "@/hooks/useCoverUrl";
+import { formatTime } from "@/lib/audio-utils";
 import EmptyState from "@/components/EmptyState";
 import EditTrackModal from "@/components/EditTrackModal";
 import ArtistLinks from "@/components/ArtistLinks";
 import {
   ChevronLeft,
+  Music,
   Loader2,
   Play,
   Pause,
@@ -32,6 +37,9 @@ export default function TrackDetail() {
   const { user } = useAuth();
   const p = usePlayer();
   const [track, setTrack] = useState(null);
+  const coverUrl = useCoverUrl(track?.cover_art_url);
+  const [coverFailed,setCoverFailed] = useState(false);
+  useEffect(() => setCoverFailed(false), [coverUrl]);
   const [loading, setLoading] = useState(true);
   const [uploader, setUploader] = useState(null);
   const [editing, setEditing] = useState(false);
@@ -139,141 +147,54 @@ export default function TrackDetail() {
   [];
 
   return (
-    <div className="max-w-3xl mx-auto">
-      <button
-        onClick={() => nav(-1)}
-        className="inline-flex items-center gap-1.5 mb-4 text-sm font-semibold text-foreground/60 hover:text-foreground transition">
-        
-        <ChevronLeft size={18} /> Back
-      </button>
-
-      {/* Hero */}
-      <div className="track-detail-hero relative rounded-3xl overflow-hidden border border-border mb-6 md:mb-8">
-        {track.cover_art_url &&
-        <div className="absolute inset-0">
-            <img
-            src={track.cover_art_url}
-            alt=""
-            className="w-full h-full object-cover blur-2xl scale-125 opacity-30" />
-          
-            <div className="absolute inset-0 bg-background/70" />
-          </div>
-        }
-        <div className="track-detail-content relative p-6 md:p-10 flex flex-col items-center text-center gap-5">
-          <div className="w-40 h-40 md:w-52 md:h-52 rounded-2xl overflow-hidden bg-foreground/10 shrink-0 shadow-lg ring-1 ring-foreground/10">
-            {track.cover_art_url &&
-            <img
-              src={track.cover_art_url}
-              alt=""
-              className="w-full h-full object-cover" />
-            }
-          </div>
-          <div className="flex-1 min-w-0 flex flex-col items-center w-full">
-            <span className="self-center text-[10px] uppercase tracking-[0.2em] text-foreground/50 font-semibold mb-2.5 border border-border rounded-full px-3 py-1">
-              {track.genre}
-            </span>
-            <div className="flex items-center gap-2 flex-wrap mb-1.5 justify-center">
-              <h1 className="text-3xl md:text-4xl font-extrabold tracking-tighter leading-[1.05]">
-                {track.title}
-              </h1>
-              {track.explicit &&
-              <span className="px-1.5 py-0.5 rounded bg-foreground/15 text-[10px] font-extrabold">
-                  E
-                </span>
-              }
-            </div>
-            {(displayArtist || uploader) &&
-            <div className="text-sm text-foreground/60 mb-2 flex flex-wrap items-center gap-x-1.5 gap-y-0.5">
-                {displayArtist &&
-              <ArtistLinks
-                artist={displayArtist}
-                linkClassName="font-semibold text-foreground/80 px-1 hover:underline" />
-              }
-                
-
-              
-                
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-              
-              </div>
-            }
-            
-
-            
-            {track.description &&
-            <p className="selectable-content text-sm text-foreground/70 leading-relaxed mb-3">
-                {track.description}
-              </p>
-            }
-          </div>
+    <div className="track-page max-w-5xl mx-auto">
+      <section className="track-page-hero">
+        {coverUrl && !coverFailed && <img src={coverUrl} alt="" className="track-page-backdrop" />}
+        <div className="track-page-shade" />
+        <button onClick={() => window.history.state?.idx > 0 ? nav(-1) : nav("/search")} className="artist-back" aria-label="Back"><ChevronLeft size={25} /></button>
+        <div className="track-page-art">{coverUrl && !coverFailed ? <img src={coverUrl} alt={track.title + " cover"} onError={() => setCoverFailed(true)} /> : <Music size={50} />}</div>
+        <div className="track-page-heading">
+          <p className="artist-eyebrow">Song on PUBLIC</p>
+          <div className="flex items-start gap-2"><h1>{track.title}</h1>{track.explicit && <span className="track-page-explicit" aria-label="Explicit">E</span>}</div>
+          {displayArtist ? <ArtistLinks artist={displayArtist} maxShown={8} linkClassName="hover:underline" /> : uploader && <Link to={"/profile/" + uploader.id}>{uploader.display_name || uploader.full_name || track.uploader_name}</Link>}
+          <p className="track-page-meta">{[track.genre,track.duration_seconds > 0 ? formatTime(track.duration_seconds) : null].filter(Boolean).join(" · ")}</p>
         </div>
+        <button onClick={() => isCurrent ? p.togglePlay() : p.playTrackAt([track])} className="artist-play track-page-play" aria-label={(isPlaying ? "Pause " : "Play ") + track.title}>{isPlaying ? <Pause size={26} fill="currentColor" /> : <Play size={26} fill="currentColor" />}</button>
+      </section>
+
+      <div className="track-page-actions">
+        <LibraryButton track={track} label className="playlist-action inline-flex items-center justify-center gap-2 px-4 py-2.5" />
+        <TrackOptionsMenu track={track} size={20} className="ml-auto" buttonClassName="w-11 h-11 rounded-full border border-border grid place-items-center hover:bg-accent transition" items={ownerItems} />
       </div>
 
-      {/* Action row */}
-      <div className="flex items-center gap-2 mb-8">
-        <button
-          onClick={() => isCurrent ? p.togglePlay() : p.playTrackAt([track])}
-          className="px-5 py-2.5 rounded-full bg-foreground text-background text-sm font-semibold flex items-center gap-2 hover:scale-[1.02] transition">
-          
-          {isPlaying ? <Pause size={16} /> : <Play size={16} />}
-          {isPlaying ? "Pause" : "Play"}
-        </button>
-        <TrackOptionsMenu
-          track={track}
-          size={18}
-          className="ml-auto"
-          buttonClassName="w-10 h-10 rounded-full border border-border grid place-items-center hover:bg-accent active:scale-95 transition"
-          items={ownerItems} />
-
-
-
-
-
-
-
-
-
-
-
-
-        
-      </div>
+      <section className="track-page-about">
+        <h2>About this song</h2>
+        {track.description && <CollapsibleText text={track.description} className="selectable-content text-sm leading-relaxed text-muted-foreground" />}
+        <dl className="artist-facts">
+          {displayArtist && <div><dt>Artists</dt><dd><ArtistLinks artist={displayArtist} maxShown={8} linkClassName="hover:underline" /></dd></div>}
+          {track.genre && <div><dt>Genre</dt><dd>{track.genre}</dd></div>}
+          {track.duration_seconds > 0 && <div><dt>Duration</dt><dd>{formatTime(track.duration_seconds)}</dd></div>}
+          {uploader && <div><dt>Shared by</dt><dd><Link to={"/profile/" + uploader.id} className="hover:underline">{uploader.display_name || uploader.full_name || track.uploader_name || "PUBLIC member"}</Link></dd></div>}
+        </dl>
+      </section>
 
       {track.lyrics_text && track.lyrics_text.trim() &&
-      <div className="mb-6">
+      <section className="track-page-section">
           <h2 className="text-lg font-extrabold tracking-tight mb-3 flex items-center gap-2">
              Lyrics
           </h2>
-          <div className="selectable-content whitespace-pre-line text-sm text-foreground/70 leading-relaxed max-h-96 overflow-y-auto px-1">
-            {track.lyrics_text}
-          </div>
+          <CollapsibleText text={track.lyrics_text} className="track-page-lyrics selectable-content whitespace-pre-line leading-relaxed" clampClass="max-h-64" />
           {isOwner && hasLyricsAudio &&
         <button
           onClick={() => setGenerating(true)}
           className="mt-3 inline-flex items-center gap-2 text-xs font-semibold text-foreground/60 hover:text-foreground">
              Regenerate with AI
           </button>}
-        </div>
+        </section>
       }
 
       {isOwner && !track.lyrics_text?.trim() && hasLyricsAudio &&
-      <div className="mb-6 rounded-2xl border border-dashed border-border p-5 text-center">
+      <section className="track-page-section rounded-2xl border border-dashed border-border p-5 text-center">
           <Sparkles size={20} className="mx-auto text-foreground/40 mb-2" />
           <p className="text-sm text-foreground/60 mb-3">No lyrics yet. Let AI transcribe them from this track's audio.</p>
           <button
@@ -281,11 +202,11 @@ export default function TrackDetail() {
           className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-foreground text-background text-sm font-semibold">
             <Sparkles size={14} /> Generate lyrics
           </button>
-        </div>
+        </section>
       }
 
       {moreTracks.length > 0 &&
-      <div className="mb-6">
+      <section className="track-page-section">
           <h2 className="text-lg font-extrabold tracking-tight mb-3 flex items-center gap-2">
              More from {track.artist}
           </h2>
@@ -294,11 +215,11 @@ export default function TrackDetail() {
           <TrackRow
             key={t.id}
             track={t}
-            index={i} />
+            index={i} queue={moreTracks} queueIndex={i} />
 
           )}
           </div>
-        </div>
+        </section>
       }
 
       {editing &&
