@@ -1,4 +1,4 @@
-import {safeReturnTo} from "@/lib/authReturnTo";
+import { safeReturnTo } from "@/lib/authReturnTo";
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
@@ -14,7 +14,7 @@ import FacebookIcon from "@/components/FacebookIcon";
 import MicrosoftIcon from "@/components/MicrosoftIcon";
 
 export default function Login() {
-  const providers=["apple","google","facebook","microsoft"];
+  const providers = ["apple", "google", "facebook", "microsoft"];
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -23,7 +23,7 @@ export default function Login() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if(loading)return;
+    if (loading) return;
     setError("");
     setLoading(true);
     try {
@@ -58,58 +58,58 @@ export default function Login() {
       title="Welcome back"
       subtitle="Log in to your account"
       footer={
-        <>
+      <>
           Don't have an account?{" "}
           <Link to={`/register?returnTo=${encodeURIComponent(safeReturnTo())}`} className="text-primary font-medium hover:underline">
             Create one
           </Link>
         </>
-      }
-    >
-      <Button variant="outline" className="w-full h-12 mb-3" onClick={()=>base44.auth.redirectToLogin(window.location.origin + safeReturnTo())}>
+      }>
+      
+      <Button variant="outline" className="w-full h-12 mb-3 hidden" onClick={() => base44.auth.redirectToLogin(window.location.origin + safeReturnTo())}>
         More sign-in options
       </Button>
       <div className="space-y-3 mb-6">
-        {providers.includes('apple')&&(
+        {providers.includes('apple') &&
         <Button
           variant="outline"
           className="w-full h-12 text-sm font-medium"
-          disabled={loading} onClick={handleApple}
-        >
+          disabled={loading} onClick={handleApple}>
+          
           <AppleIcon className="w-5 h-5 mr-2" />
           Continue with Apple
         </Button>
-        )}
-        {providers.includes('google')&&(
+        }
+        {providers.includes('google') &&
         <Button
           variant="outline"
           className="w-full h-12 text-sm font-medium"
-          disabled={loading} onClick={handleGoogle}
-        >
+          disabled={loading} onClick={handleGoogle}>
+          
           <GoogleIcon className="w-5 h-5 mr-2" />
           Continue with Google
         </Button>
-        )}
-        {providers.includes('facebook')&&(
+        }
+        {providers.includes('facebook') &&
         <Button
           variant="outline"
           className="w-full h-12 text-sm font-medium"
-          disabled={loading} onClick={handleFacebook}
-        >
+          disabled={loading} onClick={handleFacebook}>
+          
           <FacebookIcon className="w-5 h-5 mr-2" />
           Continue with Facebook
         </Button>
-        )}
-        {providers.includes('microsoft')&&(
+        }
+        {providers.includes('microsoft') &&
         <Button
           variant="outline"
           className="w-full h-12 text-sm font-medium"
-          disabled={loading} onClick={handleMicrosoft}
-        >
+          disabled={loading} onClick={handleMicrosoft}>
+          
           <MicrosoftIcon className="w-5 h-5 mr-2" />
           Continue with Microsoft
         </Button>
-        )}
+        }
       </div>
 
       <div className="relative mb-6">
@@ -121,11 +121,11 @@ export default function Login() {
         </div>
       </div>
 
-      {error && (
-        <div className="mb-4 p-3 rounded-lg bg-destructive/10 text-destructive text-sm">
+      {error &&
+      <div className="mb-4 p-3 rounded-lg bg-destructive/10 text-destructive text-sm">
           {error}
         </div>
-      )}
+      }
 
       <p className="text-xs text-muted-foreground mb-4"><Link to="/privacy" className="underline">Privacy</Link> · <Link to="/terms" className="underline">Terms</Link> · <Link to="/support" className="underline">Support</Link></p>
       <form onSubmit={handleSubmit} className="space-y-4">
@@ -142,8 +142,8 @@ export default function Login() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               className="pl-10 h-12"
-              required
-            />
+              required />
+            
           </div>
         </div>
         <div className="space-y-2">
@@ -163,21 +163,21 @@ export default function Login() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               className="pl-10 h-12"
-              required
-            />
+              required />
+            
           </div>
         </div>
         <Button type="submit" className="w-full h-12 font-medium" disabled={loading}>
-          {loading ? (
-            <>
+          {loading ?
+          <>
               <Loader2 className="w-4 h-4 mr-2 animate-spin" />
               Logging in...
-            </>
-          ) : (
-            "Log in"
-          )}
+            </> :
+
+          "Log in"
+          }
         </Button>
       </form>
-    </AuthLayout>
-  );
+    </AuthLayout>);
+
 }
