@@ -40,7 +40,7 @@ export default function MobileMoreSheet({ onClose }) {
     <div role="dialog" aria-modal="true" aria-label="MobileMore" data-public-dialog tabIndex={-1} onKeyDown={e=>{if(e.key==="Escape"){e.stopPropagation();onClose?.();}}} className="fixed inset-0 z-50 md:hidden" onClick={onClose}>
       <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" />
       <div
-        className="absolute left-1/2 -translate-x-1/2 bottom-[calc(4.5rem+env(safe-area-inset-bottom))] w-[min(94vw,28rem)] bg-card rounded-2xl shadow-2xl border border-border overflow-hidden animate-[accordion-down_.18s_ease-out]"
+        className="absolute left-1/2 -translate-x-1/2 bottom-[calc(4.5rem+env(safe-area-inset-bottom))] w-[min(94vw,28rem)] max-h-[80dvh] flex flex-col bg-card rounded-2xl shadow-2xl border border-border overflow-hidden animate-[accordion-down_.18s_ease-out]"
         onClick={(e) => e.stopPropagation()}>
         
         <div className="flex items-center justify-between px-4 py-3 border-b border-border">
@@ -53,12 +53,12 @@ export default function MobileMoreSheet({ onClose }) {
             <X size={18} />
           </button>
         </div>
-        <div className="grid grid-cols-3 gap-1 p-3">
+        <div className="flex flex-col gap-1 p-3 min-h-0 overflow-y-auto">
           {items.map(({ to, icon: Icon, label }) =>
           <button
             key={to}
             onClick={() => go(to)}
-            className={`relative flex flex-col items-center gap-2 p-3 rounded-xl transition tap-target ${
+            className={`relative flex items-center gap-3 px-3 py-2 rounded-xl transition tap-target text-left ${
             loc.pathname === to ?
             "bg-foreground/5 text-foreground" :
             "hover:bg-foreground/[0.03] text-foreground/70"}`
@@ -70,7 +70,7 @@ export default function MobileMoreSheet({ onClose }) {
                   {unread > 99 ? "99+" : unread}
                 </span>
             }
-              <span className="text-[11px] font-medium">{label}</span>
+              <span className="text-sm font-medium">{label}</span>
             </button>
           )}
         </div>
