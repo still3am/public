@@ -1,3 +1,4 @@
+import {useLongPressMenu} from '@/hooks/useLongPressMenu';
 import { createPortal } from "react-dom";
 import { useEffect, useMemo } from "react";
 import { useCoverUrl } from "@/hooks/useCoverUrl";
@@ -27,6 +28,14 @@ import {
 import { TRANSITION_MODES } from "@/lib/transitions";
 
 /** @param {any} props */
+function QueueMenuRow({provided,dragging,children}){
+ const lp=useLongPressMenu(dragging,{allowButtons:true});
+ return <div ref={node=>{provided.innerRef(node);lp.ref.current=node;}} {...provided.draggableProps} {...lp.handlers}
+  onClickCapture={event=>{if(!event.currentTarget.contains(event.target))return;if(lp.consumeLongPress()){event.preventDefault();event.stopPropagation();}}}
+  style={{...provided.draggableProps.style,touchAction:dragging?'none':'pan-y'}}
+  className={'queue-upcoming-row song-menu-surface group flex items-center gap-3 px-2 py-2 rounded-xl transition '+(dragging?'bg-accent ring-1 ring-border':'hover:bg-accent')}>{children(lp)}</div>;
+}
+
 export default function QueuePanel({ open, onClose }) {
   const p = usePlayer();
   const { user } = useAuth();
@@ -184,12 +193,7 @@ export default function QueuePanel({ open, onClose }) {
             {visibleUpcoming.map(({ trk: tt, i }, pos) =>
               <Draggable key={tt.id + i} draggableId={tt.id + i} index={pos} isDragDisabled={!!query.trim()}>
             {(dragProvided, snapshot) =>
-                <div
-                  ref={dragProvided.innerRef}
-                  {...dragProvided.draggableProps}
-                  style={{ ...dragProvided.draggableProps.style, touchAction: snapshot.isDragging ? "none" : "pan-y" }}
-                  className={`queue-upcoming-row group flex items-center gap-3 px-2 py-2 rounded-xl transition ${
-                  snapshot.isDragging ? "bg-accent ring-1 ring-border" : "hover:bg-accent"}`}>
+                <QueueMenuRow provided={dragProvided} dragging={snapshot.isDragging}>{lp=><>
                 <div
                     {...dragProvided.dragHandleProps}
                     className="shrink-0 -ml-1 p-1 text-muted-foreground hover:text-muted-foreground cursor-grab active:cursor-grabbing touch-none"
@@ -220,11 +224,12 @@ export default function QueuePanel({ open, onClose }) {
                 </span>
 
                 <TrackOptionsMenu
+                    className="song-menu-reveal" openSignal={lp.signal} anchorRef={lp.ref}
                     track={tt}
                     size={16}
                     buttonClassName="w-8 h-8 rounded-full grid place-items-center text-muted-foreground hover:text-foreground hover:bg-accent active:scale-90 transition"
                     items={[{ icon: Trash2, label: "Remove from queue", danger: true, onClick: () => p.removeFromQueue(i) }]} />
-              </div>
+              </>}</QueueMenuRow>
                 }
           </Draggable>
               )}
