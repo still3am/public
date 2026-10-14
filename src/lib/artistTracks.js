@@ -35,7 +35,7 @@ export async function fetchArtistTracks(artistName) {
     base44.entities.Track.filter(query, { sort: "-created_date", ...opts })
   );
   return list.filter(track => {
-    const credits = splitArtistNames(String(track.artist || "").replace(/\s+(?:feat(?:uring)?\.?|ft\.?)\s+/gi,", "));
+    const credits = splitArtistNames(String(track.artist || "").replace(/\s+[\[(]?(?:feat(?:uring)?\.?|ft\.?)\s+/gi,", "));
     const titleFeature = String(track.title || "").match(/\b(?:feat(?:uring)?\.?|ft\.?)\s+([^)\]}]+)/i);
     const guests = titleFeature ? splitArtistNames(titleFeature[1]) : [];
     return [...credits,...guests].some(name => names.includes(name));
