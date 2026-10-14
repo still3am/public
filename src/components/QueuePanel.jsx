@@ -68,7 +68,7 @@ export default function QueuePanel({ open, onClose }) {
       {/* Header */}
       <div className="top-bar-safe flex items-center justify-between px-4 pt-2 pb-3 shrink-0 border-b border-border">
         <div className="flex items-center gap-2 min-w-0">
-          <ListMusic size={20} className="text-foreground shrink-0 hidden" />
+          
           <div className="leading-tight min-w-0"><h2 className="text-xl font-semibold tracking-tight">Your queue</h2><p className="text-xs text-muted-foreground mt-1">{upcoming.length} up next · {formatTime(upcoming.reduce((sum, { trk }) => sum + (trk.duration_seconds || 0), 0))}</p></div>
         </div>
         <div className="flex items-center gap-1.5">
