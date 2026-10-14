@@ -10,7 +10,7 @@ export function RadioProvider({children}){
  const [schedule,setSchedule]=useState(null),[loading,setLoading]=useState(false),[notice,setNotice]=useState(""),[joined,setJoined]=useState(false),[clock,setClock]=useState(Date.now());
  const state=useRef(null),offset=useRef(0),joinedRef=useRef(false),inflight=useRef(null),version=useRef(0),lastCommand=useRef(0),activeSlot=useRef(null);
  const apply=entry=>{
-  if(!entry?.track){joinedRef.current=false;setJoined(false);setNotice("This song is unavailable. Join again when the next song starts.");return;}
+  if(!entry?.track){joinedRef.current=false;setJoined(false);if(latest.current.currentTrack?._public_radio&&latest.current.isPlaying)latest.current.togglePlay();setNotice("This song is unavailable. Join again when the next song starts.");return;}
   const player=latest.current;
   lastCommand.current=Date.now();activeSlot.current=entry.start_ms;
   player.setShuffle(false);player.setRepeat("off");player.setPlaybackRate(1);
@@ -55,6 +55,10 @@ export function RadioProvider({children}){
    const entry=currentEntry();
    if(!entry){refresh().then(data=>{if(data&&joinedRef.current)apply(currentEntry());});return;}
    if(entry.start_ms!==activeSlot.current)apply(entry);
+   else if(player.isPlaying&&Date.now()-lastCommand.current>15000&&player.duration>0){
+    const livePosition=(now-entry.start_ms)/1000;
+    if(Math.abs(player.position-livePosition)>3&&livePosition<player.duration-1){player.seek(livePosition);lastCommand.current=Date.now();}
+   }
   },1000);
   const resume=()=>{if(!document.hidden&&joinedRef.current){const entry=currentEntry();if(entry)apply(entry);else join();}};
   const onJoin=()=>join();
