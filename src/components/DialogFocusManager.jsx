@@ -8,6 +8,10 @@ export default function DialogFocusManager(){
   const focus=e=>{previousFocused=lastFocused;lastFocused=e.target;};
   const update=()=>{
    frame=0;const dialogs=visible(),top=dialogs.at(-1),next=top?.hasAttribute('data-public-dialog')?top:null;
+   // Keep the player mounted so its portaled menus and audio session survive.
+   // Count only visible overlays: inactive retained tabs must not hide it.
+   const menuOpen=[...document.querySelectorAll('[data-public-menu],[role="menu"],[role="listbox"]')].some(el=>el.getAttribute('aria-hidden')!=='true'&&el.getAttribute('data-state')!=='closed'&&el.getClientRects().length&&getComputedStyle(el).visibility!=='hidden');
+   document.documentElement.toggleAttribute('data-public-overlay-open',dialogs.length>0||menuOpen);
    if(next===current)return;
    if(current&&!dialogs.includes(current)){
     const opener=openers.get(current);openers.delete(current);
@@ -26,9 +30,9 @@ export default function DialogFocusManager(){
    if(e.shiftKey&&(document.activeElement===first||!current.contains(document.activeElement))){e.preventDefault();last.focus();}
    else if(!e.shiftKey&&(document.activeElement===last||!current.contains(document.activeElement))){e.preventDefault();first.focus();}
   };
-  const observer=new MutationObserver(schedule);observer.observe(document.body,{childList:true,subtree:true,attributes:true,attributeFilter:['class','hidden','aria-hidden']});
+  const observer=new MutationObserver(schedule);observer.observe(document.body,{childList:true,subtree:true,attributes:true,attributeFilter:['class','style','hidden','aria-hidden','data-state','role','data-public-menu']});
   document.addEventListener('focusin',focus);document.addEventListener('keydown',key);update();
-  return()=>{observer.disconnect();if(frame)cancelAnimationFrame(frame);document.removeEventListener('focusin',focus);document.removeEventListener('keydown',key);const opener=current&&openers.get(current);if(opener?.isConnected)opener.focus();};
+  return()=>{observer.disconnect();document.documentElement.removeAttribute('data-public-overlay-open');if(frame)cancelAnimationFrame(frame);document.removeEventListener('focusin',focus);document.removeEventListener('keydown',key);const opener=current&&openers.get(current);if(opener?.isConnected)opener.focus();};
  },[]);
  return null;
 }
