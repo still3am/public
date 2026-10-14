@@ -838,3 +838,16 @@ html:not(.dark) .profile-page .profile-identity,html:not(.dark) .profile-page .p
 .song-menu-reveal:focus-within{opacity:1;pointer-events:auto;}
 @media(hover:hover) and (pointer:fine){.song-menu-surface:hover .song-menu-reveal{opacity:1;pointer-events:auto;}}
 @media(hover:none){.song-menu-reveal{width:0;min-width:0;overflow:hidden;}.song-menu-reveal:focus-within{width:auto;overflow:visible;}.song-menu-reveal.absolute{width:auto;}}
+
+/* Keep the mobile profile song centered without stretching to the identity card. */
+@media(max-width:767px){
+ .profile-overview>.profile-featured{width:100%;max-width:320px;min-width:0;align-self:center;}
+ .profile-featured>div{height:auto;min-height:0;}
+ .profile-featured-content{padding:16px;gap:10px;flex-direction:column;text-align:center;align-items:center;}
+ .profile-featured-content>div:first-child{width:96px;height:96px;flex:0 0 96px;border-radius:16px;}
+ .profile-featured-content>div:nth-child(2){width:100%;min-width:0;flex:0 1 auto;}
+ .profile-featured-content>div:nth-child(2)>div:first-child{font-size:14px;line-height:1.4;white-space:normal;overflow-wrap:anywhere;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden;}
+ .profile-featured-content>div:nth-child(2)>div:last-child{font-size:12px;line-height:1.5;margin-top:3px;}
+ .profile-featured-content>button{width:44px;height:44px;min-height:44px;flex-shrink:0;}
+}
+@media(max-width:359px){.profile-featured-content>div:first-child{width:88px;height:88px;flex-basis:88px;}.profile-featured-content{padding:14px;}}
