@@ -1,3 +1,4 @@
+import {readAllPages} from '@/lib/readPages';
 import { useEffect, useState, useCallback, useRef } from "react";
 import { base44 } from "@/api/base44Client";
 import { useAuth } from "@/lib/AuthContext";
@@ -7,30 +8,29 @@ import { useSafety } from '@/context/SafetyContext';
 import { Link } from "react-router-dom";
 import Avatar from "@/components/Avatar";
 import { Loader2, Send, Trash2, MessageCircle } from "lucide-react";
-import { useToast } from "@/components/ui/use-toast";
 
 /** @param {any} props */
 export default function ProfileComments({ profileId, isOwn, active = true }) {
   const { user } = useAuth();
   const { blocked } = useSafety();
-  const { toast } = useToast();
+
   const [comments, setComments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const [message, setMessage] = useState("");
   const [posting, setPosting] = useState(false);
-  const requestVersion=useRef(0),postingRef=useRef(false),currentProfile=useRef(profileId);currentProfile.current=profileId;
+  const requestVersion=useRef(0),postingRef=useRef(false),currentProfile=useRef(profileId),confirmed=useRef(new Map()),deleting=useRef(new Set()),alive=useRef(true);currentProfile.current=profileId;
+  useEffect(()=>{alive.current=true;return()=>{alive.current=false;requestVersion.current++;};},[]);
 
   const load = useCallback(async () => {
     const request=++requestVersion.current;
     setError(false);
     try {
-      const items = await base44.entities.ProfileComment.filter(
-        { profile_id: profileId },
-        "-created_date",
-        200
-      );
-      if(request===requestVersion.current&&currentProfile.current===profileId)setComments(items || []);
+      const items=await readAllPages(options=>base44.entities.ProfileComment.filter({profile_id:profileId},{sort:"-created_date",...options}));
+      if(request!==requestVersion.current||currentProfile.current!==profileId||!alive.current)return;
+      items.forEach(row=>confirmed.current.delete(row.id));
+      const merged=new Map([...items,...confirmed.current.values()].filter(row=>!deleting.current.has(row.id)).map(row=>[row.id,row]));
+      setComments([...merged.values()].sort((a,b)=>(b.created_date||'').localeCompare(a.created_date||'')));
     } catch {
       if(request===requestVersion.current)setError(true);
     } finally {
@@ -38,7 +38,7 @@ export default function ProfileComments({ profileId, isOwn, active = true }) {
     }
   }, [profileId]);
 
-  useEffect(()=>{setComments([]);setMessage("");setLoading(true);},[profileId]);
+  useEffect(()=>{requestVersion.current++;confirmed.current.clear();deleting.current.clear();setComments([]);setMessage("");setLoading(true);},[profileId]);
   useEffect(() => {
     if(!active)return;
     load();
@@ -54,43 +54,55 @@ export default function ProfileComments({ profileId, isOwn, active = true }) {
   async function postComment(e) {
     e.preventDefault();
     const text = message.trim();
-    if (!text || !user || postingRef.current) return;
+    if (!text || !user?.id || !profileId || postingRef.current) return;
     postingRef.current=true;setPosting(true);
     try {
-      await base44.entities.ProfileComment.create({
+      const saved=await base44.entities.ProfileComment.create({
         profile_id: profileId,
         author_id: user.id,
         author_name: user.display_name || user.full_name || "",
         author_avatar_url: user.avatar_url || "",
         message: text
       });
-      if(currentProfile.current===profileId){setMessage("");await load();}
+      if(!saved?.id)throw Error("Comment save was not confirmed");
+      if(alive.current&&currentProfile.current===profileId){
+        requestVersion.current++;
+        confirmed.current.set(saved.id,saved);
+        setComments(previous=>[saved,...previous.filter(row=>row.id!==saved.id)]);
+        setLoading(false);setError(false);
+        setMessage(previous=>previous.trim()===text?'':previous);
+        load();
+      }
       if (profileId !== user.id) {
         try {
-          await base44.entities.Notification.create({
+          base44.entities.Notification.create({
             user_id: profileId,
             type: "profile_comment",
             actor_id: user.id
-          });
+          }).catch(()=>{});
         } catch {}
       }
     } catch {
-      toast({ title: "Couldn't post your comment", variant: "destructive" });
+      // Keep the unsaved text in the composer for another attempt.
     } finally {
-      postingRef.current=false;setPosting(false);
+      postingRef.current=false;if(alive.current)setPosting(false);
     }
   }
 
   async function deleteComment(id) {
     // Take it out of the list right away and put it back if the delete fails,
     // rather than leaving the row sitting there waiting for a realtime event.
+    if(deleting.current.has(id))return;
+    deleting.current.add(id);
     const before = comments;
+    confirmed.current.delete(id);
     setComments((prev) => prev.filter((c) => c.id !== id));
     try {
       await base44.entities.ProfileComment.delete(id);
     } catch {
-      if(currentProfile.current===profileId)setComments(previous=>{if(previous.some(row=>row.id===id))return previous;const row=before.find(row=>row.id===id);if(!row)return previous;const next=[...previous];next.splice(Math.min(before.findIndex(row=>row.id===id),next.length),0,row);return next;});
-      toast({ title: "Couldn't delete that comment", variant: "destructive" });
+      deleting.current.delete(id);
+      if(alive.current&&currentProfile.current===profileId)setComments(previous=>{if(previous.some(row=>row.id===id))return previous;const row=before.find(row=>row.id===id);if(!row)return previous;const next=[...previous];next.splice(Math.min(before.findIndex(row=>row.id===id),next.length),0,row);return next;});
+      // Restore the saved comment if deletion fails.
     }
   }
 
@@ -112,7 +124,7 @@ export default function ProfileComments({ profileId, isOwn, active = true }) {
         
         <button
           type="submit"
-          disabled={posting || !message.trim()}
+          disabled={posting || !user?.id || !message.trim()}
           className="w-11 h-11 rounded-full bg-foreground text-background grid place-items-center disabled:opacity-40 active:scale-90 transition shrink-0"
           aria-label="Post comment">
           
