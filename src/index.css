@@ -832,3 +832,9 @@ html:not(.dark) .profile-page .profile-identity,html:not(.dark) .profile-page .p
  .home-feature-copy h2{font-size:29px;}
  .home-feature{padding:18px;}
 }
+
+/* Card actions reveal on hover or keyboard focus; touch uses long-press. */
+.song-menu-reveal{opacity:0;pointer-events:none;transition:opacity .15s ease;}
+.song-menu-reveal:focus-within{opacity:1;pointer-events:auto;}
+@media(hover:hover) and (pointer:fine){.song-menu-surface:hover .song-menu-reveal{opacity:1;pointer-events:auto;}}
+@media(hover:none){.song-menu-reveal{width:0;min-width:0;overflow:hidden;}.song-menu-reveal:focus-within{width:auto;overflow:visible;}.song-menu-reveal.absolute{width:auto;}}

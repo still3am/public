@@ -9,7 +9,7 @@ import TrackOptionsMenu from "@/components/track/TrackOptionsMenu";
 export default function HoverTrackMenu({ track, lp, size = 18, className = "", buttonClassName }) {
   return (
     <div
-      className={`hidden md:block md:opacity-0 md:group-hover:opacity-100 md:focus-within:opacity-100 transition-opacity ${className}`}
+      className={`song-menu-reveal transition-opacity ${className}`}
       onClick={(e) => e.stopPropagation()}
       onPointerDown={(e) => e.stopPropagation()}
     >

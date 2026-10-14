@@ -1,3 +1,4 @@
+import {useLongPressMenu} from '@/hooks/useLongPressMenu';
 import { Link } from "react-router-dom";
 import { Play, Pause } from "lucide-react";
 import { usePlayer } from "@/context/PlayerContext";
@@ -7,13 +8,14 @@ import TrackOptionsMenu from "@/components/track/TrackOptionsMenu";
 /** @param {any} props */
 function ReleaseRow({ track, tracks, index }) {
   const p = usePlayer();
+  const lp=useLongPressMenu(false,{allowButtons:true});
   const isCurrent = p.currentTrack?.id === track.id;
   const isPlayingHere = isCurrent && p.isPlaying;
   const playHere = () => p.playTrackAt(tracks, index);
   const artistName = track.artist || track.uploader_name || "Unknown";
 
   return (
-    <div className="group flex items-center gap-3 md:gap-4 px-3 py-3 rounded-xl hover:bg-foreground/[0.04] active:scale-[0.99] transition">
+    <div ref={lp.ref} {...lp.handlers} onClickCapture={event=>{if(lp.consumeLongPress()){event.preventDefault();event.stopPropagation();}}} className="song-menu-surface group flex items-center gap-3 md:gap-4 px-3 py-3 rounded-xl hover:bg-foreground/[0.04] active:scale-[0.99] transition">
       <button
         onClick={() => (isCurrent ? p.togglePlay() : playHere())}
         className="relative shrink-0"
@@ -52,7 +54,7 @@ function ReleaseRow({ track, tracks, index }) {
         </div>
       </div>
 
-      <TrackOptionsMenu track={track} size={17} />
+      <TrackOptionsMenu track={track} size={17} className="song-menu-reveal" openSignal={lp.signal} anchorRef={lp.ref}/>
     </div>
   );
 }

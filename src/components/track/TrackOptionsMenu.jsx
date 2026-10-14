@@ -124,6 +124,7 @@ export default function TrackOptionsMenu({
   return (
     <div className={`relative shrink-0 ${className}`} onClick={(e) => e.stopPropagation()}>
       <button
+        data-song-menu-trigger
         ref={btnRef}
         onClick={toggleOpen}
         className={buttonClassName || "p-2 rounded-full hover:bg-accent"}

@@ -6,7 +6,7 @@ import { useRef, useState, useEffect } from "react";
  * `consumeLongPress()` at the top of click handlers so the release after a
  * long-press doesn't also trigger play/navigation.
  */
-export function useLongPressMenu(disabled = false) {
+export function useLongPressMenu(disabled = false, {allowButtons=false} = {}) {
   const ref = useRef(null);
   const timer = useRef(null);
   const fired = useRef(false);
@@ -18,7 +18,7 @@ export function useLongPressMenu(disabled = false) {
   const start = (e) => {
     fired.current=false;cancel();
     if(disabled||e.pointerType==='mouse'||e.isPrimary===false)return;
-    if(e.target instanceof Element&&e.target.closest('button,input,textarea,select'))return;
+    if(e.target instanceof Element&&(e.target.closest('input,textarea,select,[data-song-menu-trigger],[data-rfd-drag-handle-draggable-id]')||(!allowButtons&&e.target.closest('button'))))return;
     origin.current={x:e.clientX,y:e.clientY};
     timer.current = setTimeout(() => {
       if(!ref.current?.isConnected||!ref.current.getClientRects().length)return;

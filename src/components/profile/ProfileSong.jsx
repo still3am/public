@@ -20,7 +20,7 @@ export default function ProfileSong({
   const [track, setTrack] = useState(null);
   const pickedTrack=useRef(null);
   const [pickerOpen, setPickerOpen] = useState(false);
-  const lp = useLongPressMenu(editMode);
+  const lp = useLongPressMenu(editMode,{allowButtons:true});
 
   useEffect(() => {
     if (!trackId) {
@@ -59,7 +59,7 @@ export default function ProfileSong({
     // The card owns its width so an absent track takes no space in the row.
     return (
       <div className="profile-featured md:w-80 lg:w-96 shrink-0">
-      <div ref={lp.ref} {...lp.handlers} className="group h-full flex flex-col rounded-2xl ring-1 ring-inset ring-foreground/10 bg-card overflow-hidden">
+      <div ref={lp.ref} {...lp.handlers} className="song-menu-surface group h-full flex flex-col rounded-2xl ring-1 ring-inset ring-foreground/10 bg-card overflow-hidden">
         {editMode ? (
           trackId && track ? (
             <div className="flex-1 flex flex-col items-center justify-center gap-3 p-4 text-center">
@@ -198,7 +198,7 @@ export default function ProfileSong({
       <h2 className="text-lg font-extrabold tracking-tight mb-3 flex items-center gap-2">
         <Music size={18} /> Profile Song
       </h2>
-      <div ref={lp.ref} {...lp.handlers} className="group flex items-center gap-3 p-3 rounded-2xl border border-border bg-foreground/[0.02]">
+      <div ref={lp.ref} {...lp.handlers} className="song-menu-surface group flex items-center gap-3 p-3 rounded-2xl border border-border bg-foreground/[0.02]">
         <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-xl overflow-hidden bg-foreground/10 shrink-0">
           {coverUrl && <Image src={coverUrl} fittingType="fill" alt="" className="w-full h-full" />}
         </div>

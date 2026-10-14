@@ -34,7 +34,7 @@ export default function TrackCard({ track, selectable = false, selected = false,
 
   const coverUrl = useCoverUrl(track.cover_art_url);
 
-  const lp=useLongPressMenu(selectable);
+  const lp=useLongPressMenu(selectable,{allowButtons:true});
 
   const handlePlay = (e) => {
     e.stopPropagation();
@@ -51,7 +51,7 @@ export default function TrackCard({ track, selectable = false, selected = false,
       role={selectable?"checkbox":"group"} tabIndex={selectable?0:undefined} aria-checked={selectable?selected:undefined} aria-label={selectable?`Select ${track.title||"song"}`:undefined}
       onKeyDown={event=>{if(selectable&&event.target===event.currentTarget&&(event.key==="Enter"||event.key===" ")){event.preventDefault();onToggleSelect?.(track);}}}
       onClick={selectable ? () => onToggleSelect?.(track) : handlePlay}
-      className={`music-card group relative rounded-2xl p-2 sm:p-2.5 transition-all duration-300 cursor-pointer
+      className={`music-card song-menu-surface group relative rounded-2xl p-2 sm:p-2.5 transition-all duration-300 cursor-pointer
         hover:bg-foreground/[0.04] active:scale-[0.98]
         ${selectable && selected ? "bg-accent ring-1 ring-foreground/40" : ""}
         ${isCurrent ? "bg-foreground/[0.03]" : ""}`}
@@ -104,7 +104,7 @@ export default function TrackCard({ track, selectable = false, selected = false,
 
         {!selectable && (
           <div
-            className="block absolute top-1.5 right-1.5 md:top-2 md:right-2 z-10 md:opacity-0 md:group-hover:opacity-100 md:focus-within:opacity-100 transition-opacity"
+            className="song-menu-reveal absolute top-1.5 right-1.5 md:top-2 md:right-2 z-10 transition-opacity"
             onClick={(e) => e.stopPropagation()}
             onPointerDown={(e) => e.stopPropagation()}>
             <TrackOptionsMenu

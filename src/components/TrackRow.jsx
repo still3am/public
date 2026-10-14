@@ -1,3 +1,4 @@
+import {useLongPressMenu} from '@/hooks/useLongPressMenu';
 import { Play, Pause } from "lucide-react";
 import { Link } from "react-router-dom";
 import { usePlayer } from "@/context/PlayerContext";
@@ -17,6 +18,7 @@ export default function TrackRow({
   queueIndex,
 }) {
   const p = usePlayer();
+  const lp=useLongPressMenu(false,{allowButtons:true});
   const play=()=>{
     const list=queue?.length?queue:[track];
     const position=Number.isInteger(queueIndex)&&list[queueIndex]?.id===track.id?queueIndex:list.findIndex(row=>row.id===track.id);
@@ -27,7 +29,8 @@ export default function TrackRow({
 
   return (
     <div
-      className="song-row group flex items-center gap-3 sm:gap-4 px-2.5 sm:px-3 py-3 rounded-xl hover:bg-foreground/[0.04] transition"
+      ref={lp.ref} {...lp.handlers} onClickCapture={event=>{if(lp.consumeLongPress()){event.preventDefault();event.stopPropagation();}}}
+      className="song-row song-menu-surface group flex items-center gap-3 sm:gap-4 px-2.5 sm:px-3 py-3 rounded-xl hover:bg-foreground/[0.04] transition"
       onDoubleClick={event=>{if(event.target instanceof Element&&event.target.closest("a,button,input,select,textarea"))return;play();}}
     >
       <button type="button"
@@ -98,7 +101,7 @@ export default function TrackRow({
         {formatTime(track.duration_seconds)}
       </div>
 
-      <TrackOptionsMenu track={track} />
+      <TrackOptionsMenu track={track} className="song-menu-reveal" openSignal={lp.signal} anchorRef={lp.ref}/>
     </div>
   );
 }

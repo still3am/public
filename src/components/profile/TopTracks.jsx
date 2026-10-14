@@ -14,7 +14,7 @@ function PinnedTrackCard({ track, onRemove, editMode }) {
   const coverUrl = useCoverUrl(track.cover_art_url);
   const isCurrent = p.currentTrack?.id === track.id;
   const isPlaying = isCurrent && p.isPlaying;
-  const lp = useLongPressMenu(editMode);
+  const lp = useLongPressMenu(editMode,{allowButtons:true});
 
   function handlePlay(e) {
     e.stopPropagation();
@@ -24,7 +24,7 @@ function PinnedTrackCard({ track, onRemove, editMode }) {
   }
 
   return (
-    <div ref={lp.ref} {...lp.handlers} className="group relative rounded-xl overflow-hidden bg-foreground/[0.03]">
+    <div ref={lp.ref} {...lp.handlers} className="song-menu-surface group relative rounded-xl overflow-hidden bg-foreground/[0.03]">
       <div className="aspect-square relative">
         {!editMode &&
         <HoverTrackMenu
