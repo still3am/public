@@ -202,6 +202,16 @@ html.modal-open .mobile-tab-bar { display: none !important; }
 
 /* Stop scrolling page content from showing beneath the phone's status icons. */
 .public-status-bar-shield { display: none; }
+
+/* Keep the upload form compact without shrinking the option-row tap targets. */
+.upload-option { min-height: 44px; }
+.upload-item .upload-option-checkbox {
+  width: 18px; height: 18px; min-width: 18px; min-height: 18px;
+  padding: 0; flex: 0 0 18px;
+}
+.upload-batch-action { height: 40px; min-height: 40px; }
+.upload-item-action { width: calc(100% - 1.5rem); height: 44px; min-height: 44px; }
+.upload-queue-toolbar { scroll-margin-top: env(safe-area-inset-top); }
 @media (max-width: 767px) {
   .public-status-bar-shield {
     display: block;
