@@ -283,11 +283,14 @@ export default function FullScreenPlayer({ onClose }) {
         <button onClick={onClose} className="p-2 -ml-2 active:scale-90 hover:bg-white/10 rounded-full transition" aria-label="Close">
           <ChevronDown size={26} />
         </button>
-        <div className="text-center px-4 min-w-0">
-          <div className="text-[10px] uppercase tracking-[0.3em] opacity-50 hidden">Now Playing</div>
-          
-
-          
+        <div className="flex-1 min-w-0 px-3">
+          {showingLyrics && <div className="xl:hidden flex items-center gap-3 min-w-0">
+            {coverUrl && !coverFailed && <img src={coverUrl} alt="" className="w-10 h-10 rounded-lg object-cover shrink-0" />}
+            <div className="min-w-0">
+              <p className="text-sm font-bold truncate">{t.title}</p>
+              <p className="text-xs text-white/60 truncate mt-0.5">{t.artist || t.uploader_name || "Unknown"}</p>
+            </div>
+          </div>}
         </div>
         <TrackOptionsMenu
           track={t}
@@ -346,7 +349,7 @@ export default function FullScreenPlayer({ onClose }) {
           </div>
 
           {/* metadata */}
-          <div className="flex items-start justify-between gap-3 mt-1 mb-4 shrink-0">
+          <div className={`${showingLyrics ? "hidden xl:flex" : "flex"} items-start justify-between gap-3 mt-1 mb-4 shrink-0`}>
             <div className="min-w-0">
               <h2 className="text-xl md:text-2xl xl:text-4xl font-extrabold tracking-tight truncate">{t.title}</h2>
               <Link
