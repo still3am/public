@@ -3,7 +3,7 @@ import { Loader2, X, Sparkles, Save, RotateCcw, Timer } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 
 function normalize(text) {
-  return String(text || "").replace(/\r\n?/g, "\n").split("\n").map(line => line.trim()).join("\n").replace(/\n{3,}/g, "\n\n").trim();
+  return (typeof text === "string" ? text : "").replace(/\r\n?/g, "\n").split("\n").map(line => line.trim()).join("\n").replace(/\n{3,}/g, "\n\n").trim();
 }
 
 function generationMessage(error) {
