@@ -247,7 +247,7 @@ export default function FullScreenPlayer({ onClose }) {
       
       {/* ambient glow */}
       <div
-        className="pointer-events-none absolute inset-0 opacity-55"
+        className="pointer-events-none absolute inset-0 opacity-[0.55]"
         style={{ background: `radial-gradient(ellipse at 20% 5%, ${ambientPrimary} 0%, transparent 70%), radial-gradient(ellipse at 85% 60%, ${ambientSecondary} 0%, transparent 75%)` }} />
 
       {/* reactive visualizer */}
