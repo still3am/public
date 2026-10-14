@@ -3,122 +3,133 @@ import { base44 } from "@/api/base44Client";
 import { Loader2 } from "lucide-react";
 
 /** @param {any} props */
-export default function SyncedLyrics({ trackId, position, fallbackText = "", onSeek, onUnavailable }) {
+export default function SyncedLyrics({ trackId, position, fallbackText = "", resolvedLyrics, onSeek, onUnavailable }) {
   const [lyrics, setLyrics] = useState(null);
   const [trackLyrics, setTrackLyrics] = useState("");
   const [loading, setLoading] = useState(true);
   const lineRefs = useRef([]);
   const scrollRef = useRef(null);
+  const activeRef = useRef(-1);
   const userScrollUntil = useRef(0);
+  const resumeTimer = useRef(null);
 
   useEffect(() => {
     let alive = true;
+    lineRefs.current = [];
+    userScrollUntil.current = 0;
+    clearTimeout(resumeTimer.current);
+    if (resolvedLyrics?.trackId === trackId && typeof resolvedLyrics.text === "string") {
+      setLyrics(resolvedLyrics.record || null);
+      setTrackLyrics(resolvedLyrics.text);
+      setLoading(false);
+      return () => { alive = false; };
+    }
     setLoading(true);
     setLyrics(null);
     setTrackLyrics("");
     Promise.all([
-      base44.entities.Lyrics
-        .filter({ track_id: trackId, status: "approved" }, "-created_date", 5)
-        .catch(() => []),
+      base44.entities.Lyrics.filter({ track_id: trackId, status: "approved" }, "-created_date", 5).catch(() => []),
       base44.entities.Track.get(trackId).catch(() => null),
-    ]).then(([lyricsRes, track]) => {
+    ]).then(([records, track]) => {
       if (!alive) return;
-      const found = Array.isArray(lyricsRes) && lyricsRes.length ? lyricsRes[0] : null;
+      const found = Array.isArray(records) ? records.find(record => Array.isArray(record.lines) && record.lines.some(line => (line.text?.trim() || line.words?.some(word => word.text?.trim())) && (line.start_time_ms || line.end_time_ms))) : null;
       setLyrics(found || null);
-      setTrackLyrics(track?.lyrics_text || "");
-    }).finally(() => alive && setLoading(false));
+      setTrackLyrics(typeof track?.lyrics_text === "string" ? track.lyrics_text : "");
+    }).finally(() => { if (alive) setLoading(false); });
     return () => { alive = false; };
-  }, [trackId]);
+  }, [trackId, resolvedLyrics]);
 
-  const ms = position * 1000;
-  const lines = lyrics?.lines || [];
-  const hasTimed = lines.length && lines.some((l) => l.start_time_ms || l.end_time_ms);
-
+  const ms = Math.max(0, Number(position) || 0) * 1000;
+  const lines = (Array.isArray(lyrics?.lines) ? lyrics.lines : [])
+    .filter(line => Number.isFinite(Number(line.start_time_ms)) && Number(line.start_time_ms) >= 0)
+    .slice().sort((a, b) => Number(a.start_time_ms) - Number(b.start_time_ms));
+  const hasTimed = lines.length > 0 && lines.some(line => Number(line.start_time_ms) > 0 || Number(line.end_time_ms) > 0);
   let activeIdx = -1;
   if (hasTimed) {
-    for (let i = 0; i < lines.length; i++) {
-      const s = lines[i].start_time_ms || 0;
-      if (ms >= s) activeIdx = i;
+    for (let index = 0; index < lines.length; index++) {
+      if (ms >= Number(lines[index].start_time_ms)) activeIdx = index;
       else break;
     }
   }
+  activeRef.current = activeIdx;
+
+  const centerActive = () => {
+    const container = scrollRef.current;
+    const line = lineRefs.current[activeRef.current];
+    if (!container || !line || Date.now() < userScrollUntil.current) return;
+    // Bounding rectangles use the actual scroll viewport, not an outer positioned ancestor.
+    const top = container.scrollTop + line.getBoundingClientRect().top - container.getBoundingClientRect().top
+      - container.clientHeight * 0.32;
+    const target = Math.max(0, Math.min(container.scrollHeight - container.clientHeight, top));
+    if (Math.abs(container.scrollTop - target) > 2) container.scrollTo({
+      top: target,
+      behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth",
+    });
+  };
 
   useEffect(() => {
-    if (activeIdx < 0) return;
-    if (Date.now() < userScrollUntil.current) return;
-    const el = lineRefs.current[activeIdx];
-    const container = scrollRef.current;
-    if (el && container) {
-      const top = el.offsetTop - container.clientHeight / 2 + el.clientHeight / 2;
-      container.scrollTo({ top, behavior: "smooth" });
-    }
-  }, [activeIdx]);
+    if (loading || activeIdx < 0) return;
+    const frame = requestAnimationFrame(centerActive);
+    return () => cancelAnimationFrame(frame);
+  }, [activeIdx, loading, trackId]);
+
+  useEffect(() => () => clearTimeout(resumeTimer.current), []);
+  const markUserScroll = () => {
+    userScrollUntil.current = Date.now() + 4000;
+    clearTimeout(resumeTimer.current);
+    resumeTimer.current = setTimeout(() => {
+      userScrollUntil.current = 0;
+      centerActive();
+    }, 4100);
+  };
+  const seekLine = line => {
+    clearTimeout(resumeTimer.current);
+    userScrollUntil.current = 0;
+    onSeek?.(Number(line.start_time_ms) / 1000);
+  };
 
   const text = (typeof trackLyrics === "string" ? trackLyrics.trim() : "") || (typeof fallbackText === "string" ? fallbackText.trim() : "");
   useEffect(() => {
     if (!loading && !hasTimed && !text) onUnavailable?.();
   }, [loading, hasTimed, text, onUnavailable]);
 
-  const markUserScroll = () => {
-    userScrollUntil.current = Date.now() + 4000;
-  };
+  if (loading) return <div className="flex-1 grid place-items-center text-white/60"><Loader2 className="animate-spin" size={22} /></div>;
 
-  if (loading) {
-    return (
-      <div className="flex-1 grid place-items-center text-overlay-foreground/60">
-        <Loader2 className="animate-spin" size={22} />
-      </div>
-    );
-  }
-
-  if (hasTimed) {
-    return (
-      <div
-        ref={scrollRef}
-        onWheel={markUserScroll}
-        onTouchStart={markUserScroll}
-        onTouchMove={markUserScroll}
-        className="flex-1 min-h-0 overflow-y-auto no-scrollbar px-4 py-10 leading-snug"
-      >
-        {lines.map((l, i) => {
-          const isActive = i === activeIdx;
-          const dist = Math.abs(i - activeIdx);
-          const opacity = isActive ? 1 : dist === 1 ? 0.62 : dist === 2 ? 0.45 : 0.34;
-          return (
-            <button
-              key={i}
-              ref={(el) => (lineRefs.current[i] = el)}
-              onClick={() => onSeek?.((l.start_time_ms || 0) / 1000)}
-              className={`selectable-content block text-left w-full mb-3 transition-all duration-500 ${
-                isActive ? "text-2xl font-extrabold" : "text-lg font-bold"
-              }`}
-              style={{
-                opacity,
-                transform: isActive ? "translateX(10px) scale(1.0)" : "translateX(0) scale(1)",
-                filter: isActive ? "none" : "blur(0.3px)",
-              }}
-            >
-              {l.words?.length ? l.words.map((w,j)=>{const progress=Math.max(0,Math.min(1,(ms-w.start_time_ms)/Math.max(1,w.end_time_ms-w.start_time_ms)));return <span key={j} style={isActive?{backgroundImage:'linear-gradient(to right, white '+(progress*100)+'%, rgba(255,255,255,.38) '+(progress*100)+'%)',backgroundClip:'text',WebkitBackgroundClip:'text',color:'transparent'}:{}}>{w.text}{j<l.words.length-1?' ':''}</span>;}) : (l.text && l.text.trim() ? l.text : "♪")}
-            </button>
-          );
-        })}
-        <div className="h-24" />
-      </div>
-    );
-  }
+  if (hasTimed) return (
+    <div ref={scrollRef} onWheel={markUserScroll} onTouchStart={markUserScroll} onTouchMove={markUserScroll}
+      className="public-lyrics-scroll no-scrollbar" aria-label="Synced song lyrics">
+      {lines.map((line, index) => {
+        const active = index === activeIdx;
+        const distance = activeIdx < 0 ? index : Math.abs(index - activeIdx);
+        const opacity = active ? 1 : distance <= 1 ? 0.58 : distance === 2 ? 0.4 : 0.28;
+        return <button type="button" key={index} ref={element => { lineRefs.current[index] = element; }}
+          onClick={() => seekLine(line)} aria-current={active ? "true" : undefined}
+          className="public-lyric-line selectable-content"
+          style={{ opacity, filter: active ? "none" : "blur(" + (distance <= 1 ? 0.4 : distance === 2 ? 0.8 : 1.2) + "px)" }}>
+          {Array.isArray(line.words) && line.words.length ? line.words.map((word, wordIndex) => {
+            const start = Number(word.start_time_ms), end = Number(word.end_time_ms);
+            const valid = Number.isFinite(start) && Number.isFinite(end) && end > start;
+            const progress = valid ? Math.max(0, Math.min(1, (ms - start) / (end - start))) : 1;
+            return <span key={wordIndex} style={active && valid ? {
+              backgroundImage: "linear-gradient(to right,#fff " + progress * 100 + "%,rgba(255,255,255,.4) " + progress * 100 + "%)",
+              backgroundClip: "text", WebkitBackgroundClip: "text", color: "transparent",
+            } : undefined}>{word.text}{wordIndex < line.words.length - 1 ? " " : ""}</span>;
+          }) : (line.text?.trim() || "♪")}
+        </button>;
+      })}
+    </div>
+  );
 
   if (!text) {
     if (onUnavailable) return null;
-    return (
-      <div className="flex-1 flex items-center justify-center text-overlay-foreground/70 italic text-center px-6">
-        No lyrics available for this track yet.
-      </div>
-    );
+    return <div className="flex-1 grid place-items-center px-6 text-white/60 text-sm">No lyrics available for this track yet.</div>;
   }
   return (
-    <div className="selectable-content flex-1 min-h-0 overflow-y-auto no-scrollbar px-4 py-10 text-overlay-foreground/85 text-xl font-extrabold leading-relaxed whitespace-pre-line">
-      {text}
-      <div className="h-24" />
+    <div className="public-lyrics-scroll no-scrollbar" aria-label="Song lyrics">
+      <p className="public-lyrics-note">Lyrics · not synced</p>
+      {text.replace(/\r\n?/g, "\n").split("\n").map((line, index) =>
+        line.trim() ? <p key={index} className="public-lyric-line public-lyric-plain selectable-content">{line}</p>
+          : <div key={index} className="h-6" aria-hidden="true" />)}
     </div>
   );
 }
