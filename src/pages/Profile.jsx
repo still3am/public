@@ -360,7 +360,7 @@ export default function Profile({ownProfileTab=false}) {
       <div className="profile-overview flex flex-col md:flex-row gap-4 md:gap-6 mb-8">
       <div className="profile-identity relative rounded-2xl overflow-hidden ring-1 ring-inset ring-foreground/10 bg-card flex-1 min-w-0">
         <div className="profile-cover-stage" aria-hidden="true" style={backgroundColors.length ? {backgroundImage:profileGradient(backgroundColors)} : undefined}>
-          {(bannerUrl || (currentBackground.mode==="auto" && coverUrl)) && <img src={bannerUrl || coverUrl} alt="" onError={event=>{event.currentTarget.style.visibility="hidden";}} />}
+          {(bannerUrl || (currentBackground.mode==="auto" && coverUrl)) && <img key={bannerUrl || coverUrl} src={bannerUrl || coverUrl} alt="" onError={event=>{event.currentTarget.style.visibility="hidden";}} />}
           <div className="profile-cover-fade" />
         </div>
         {!editMode && profile.is_artist &&
