@@ -98,7 +98,7 @@ export default function UploadItem({
             
           </div>
 
-          <MusicVideoPicker file={item.videoFile} onChange={videoFile=>onChange({videoFile})} disabled={locked || disabled} />
+          <MusicVideoPicker file={item.videoFile} onChange={videoFile=>onChange({videoFile,rightsConfirmed:false})} disabled={locked || disabled} />
           <div className="grid grid-cols-2 gap-2">
             {toggles.map(({ key, label, icon: Icon }) =>
             <label
