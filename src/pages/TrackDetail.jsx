@@ -109,6 +109,7 @@ export default function TrackDetail() {
   const isCurrent = p.currentTrack?.id === track.id;
   const isOwner = track.uploader_id === user?.id;
   const isPlaying = isCurrent && p.isPlaying;
+  const hasLyricsAudio = !!(track.audio_url || track.audio_file_uri || track._private_audio);
   const displayArtist = track.artist || "";
 
   const ownerItems = isOwner ?
@@ -123,7 +124,7 @@ export default function TrackDetail() {
     label: detecting ? "Detecting genre…" : "Detect genre (AI)",
     onClick: detectGenre
   },
-  ...(track.audio_url ?
+  ...(hasLyricsAudio ?
   [{
     icon: Sparkles,
     label: track.lyrics_text?.trim() ? "Regenerate lyrics" : "Generate lyrics",
@@ -262,7 +263,7 @@ export default function TrackDetail() {
           <div className="selectable-content whitespace-pre-line text-sm text-foreground/70 leading-relaxed max-h-96 overflow-y-auto px-1">
             {track.lyrics_text}
           </div>
-          {isOwner && track.audio_url &&
+          {isOwner && hasLyricsAudio &&
         <button
           onClick={() => setGenerating(true)}
           className="mt-3 inline-flex items-center gap-2 text-xs font-semibold text-foreground/60 hover:text-foreground">
@@ -271,7 +272,7 @@ export default function TrackDetail() {
         </div>
       }
 
-      {isOwner && !track.lyrics_text?.trim() && track.audio_url &&
+      {isOwner && !track.lyrics_text?.trim() && hasLyricsAudio &&
       <div className="mb-6 rounded-2xl border border-dashed border-border p-5 text-center">
           <Sparkles size={20} className="mx-auto text-foreground/40 mb-2" />
           <p className="text-sm text-foreground/60 mb-3">No lyrics yet. Let AI transcribe them from this track's audio.</p>
@@ -313,9 +314,10 @@ export default function TrackDetail() {
       <GenerateLyricsModal
         track={track}
         onClose={() => setGenerating(false)}
-        onSaved={(updated) => {
+        onSaved={(updated, options) => {
           setTrack((prev) => ({ ...prev, ...updated }));
           setGenerating(false);
+          if (options?.sync) setSyncing("generated");
         }} />
 
       }
@@ -323,6 +325,7 @@ export default function TrackDetail() {
       {syncing &&
       <SyncLyricsModal
         track={track}
+        preferTrackLyrics={syncing === "generated"}
         onClose={() => setSyncing(false)}
         onSaved={() => setSyncing(false)} />
 
