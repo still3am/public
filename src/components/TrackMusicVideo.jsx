@@ -15,7 +15,7 @@ export default function TrackMusicVideo({track}){
   try{
    const result=(await base44.functions.invoke("securityGateway",{entity:"Track",action:"videoPlayback",args:[track.id]})).data?.result;
    if(!result?.url)throw Error();
-   if(alive.current){setUrl(result.url);if(p.isPlaying)p.togglePlay();}
+   if(alive.current)setUrl(result.url);
   }catch{if(alive.current)setNotice("Video couldn't load. Try again.");}
   finally{lock.current=false;if(alive.current)setLoading(false);}
  }
