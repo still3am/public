@@ -141,6 +141,8 @@ export default function PublicRecords({ id: propId, fallbackArtist = null }) {
   const [loading, setLoading] = useState(true);
   const [generating, setGenerating] = useState(false);
   const [query,setQuery]=useState(""),[sort,setSort]=useState("recent");
+  const [songsExpanded,setSongsExpanded]=useState(false);
+  const songPreviewLimit=6;
   const mainTracks = useMemo(() => tracks.filter(track => artistTrackRole(track,artist?.name) === "lead"), [tracks,artist?.name]);
   const appearanceTracks = useMemo(() => tracks.filter(track => artistTrackRole(track,artist?.name) === "appearance"), [tracks,artist?.name]);
   const visibleTracks=useMemo(()=>{const term=query.trim().toLowerCase(),list=mainTracks.filter(t=>!term||[t.title,t.artist,t.uploader_name].some(value=>(value||"").toLowerCase().includes(term)));if(sort==="popular")list.sort((a,b)=>(b.play_count||0)-(a.play_count||0));if(sort==="title")list.sort((a,b)=>(a.title||"").localeCompare(b.title||""));return list;},[mainTracks,query,sort]);
@@ -162,7 +164,7 @@ export default function PublicRecords({ id: propId, fallbackArtist = null }) {
   }
 
   useEffect(() => {
-    setArtist(null);setTracks([]);setQuery("");setSort("recent");load();
+    setArtist(null);setTracks([]);setQuery("");setSort("recent");setSongsExpanded(false);load();
     return()=>{loadVersion.current++;};
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id,fallbackArtist?.name]);
@@ -264,7 +266,7 @@ export default function PublicRecords({ id: propId, fallbackArtist = null }) {
         </section>}
 
         {topTracks.length > 0 && <section className="artist-top-songs">
-          <SectionTitle icon={Music} right={<button className="text-xs text-muted-foreground px-2 py-2" onClick={() => document.getElementById("artist-discography")?.scrollIntoView({behavior:window.matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth"})}>All songs <ChevronRight size={14} className="inline" /></button>}>Top Songs</SectionTitle>
+          <SectionTitle icon={Music} right={<button className="text-xs text-muted-foreground px-2 py-2" onClick={() => {setSongsExpanded(true);requestAnimationFrame(() => document.getElementById("artist-discography")?.scrollIntoView({behavior:window.matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth"}));}}>All songs <ChevronRight size={14} className="inline" /></button>}>Top Songs</SectionTitle>
           <div className="artist-top-list" tabIndex={0} role="region" aria-label="Swipe through top songs">{Array.from({length:Math.ceil(topTracks.length/3)},(_,column)=><div className="artist-top-column" key={column}>{topTracks.slice(column*3,column*3+3).map((track,index)=><TrackRow key={track.id} track={track} index={column*3+index} queue={topTracks} queueIndex={column*3+index} />)}</div>)}</div>
         </section>}
 
@@ -284,13 +286,20 @@ export default function PublicRecords({ id: propId, fallbackArtist = null }) {
               <p className="text-sm text-foreground/50">No lead-artist songs are listed yet. Featured songs are shown in Appears On.</p>
             </div> :
 
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 md:gap-4">
+          <div id="artist-song-grid" className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 md:gap-4">
               {!visibleTracks.length&&<div className="collection-empty col-span-full"><h2>No matching songs</h2><button className="playlist-action" onClick={()=>setQuery("")}>Show all songs</button></div>}
-              {visibleTracks.map((t) =>
+              {(songsExpanded || query.trim() ? visibleTracks : visibleTracks.slice(0,songPreviewLimit)).map((t) =>
             <TrackCard key={t.id} track={t} queue={visibleTracks}/>
             )}
             </div>
           }
+          {!query.trim() && visibleTracks.length > songPreviewLimit && <div className="flex items-center justify-between gap-3 mt-5">
+            <span className="text-xs text-muted-foreground">{songsExpanded ? visibleTracks.length : songPreviewLimit} of {visibleTracks.length} songs</span>
+            <button type="button" aria-expanded={songsExpanded} aria-controls="artist-song-grid" className="playlist-action px-4 py-2.5 text-sm" onClick={() => {
+              setSongsExpanded(value => !value);
+              if(songsExpanded)requestAnimationFrame(() => document.getElementById("artist-discography")?.scrollIntoView({behavior:window.matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth"}));
+            }}>{songsExpanded ? "Show less" : "Show all songs"}</button>
+          </div>}
         </section>
         {appearanceTracks.length > 0 && <section className="artist-appears-on">
           <SectionTitle icon={Disc3}>Appears On</SectionTitle>
