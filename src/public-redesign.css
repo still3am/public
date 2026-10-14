@@ -1,0 +1,116 @@
+/* PUBLIC's music-first interface. Existing page actions and data stay in place. */
+:root {
+ --background:0 0% 98.8%; --foreground:240 6% 8%; --card:0 0% 100%;
+ --muted:240 5% 95%; --muted-foreground:240 4% 43%;
+ --border:240 5% 89%; --accent:240 5% 94%; --input:240 5% 87%;
+}
+html.dark {
+ --background:240 5% 7%; --foreground:0 0% 96%; --card:240 4% 11%;
+ --muted:240 4% 15%; --muted-foreground:240 4% 65%;
+ --border:240 4% 21%; --accent:240 4% 17%; --input:240 4% 25%;
+}
+.public-app { font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; }
+.public-app .app-content { max-width:1440px; padding-top:32px; --app-gutter:clamp(22px,3.5vw,52px); }
+.public-app .page-intro,.public-app .library-heading { margin-bottom:30px; }
+.public-app .page-intro h1,.public-app .library-heading h1 { font-size:clamp(30px,3vw,42px); line-height:1.1; letter-spacing:-.045em; font-weight:750; }
+.public-app .page-intro>p:not(.eyebrow) { max-width:42rem; margin-top:10px; font-size:14px; line-height:1.65; color:hsl(var(--muted-foreground)); }
+.public-app .eyebrow { font-size:10px; font-weight:650; letter-spacing:.13em; }
+.public-app .sidebar-surface { background:hsl(var(--card)); border-color:hsl(var(--border)); }
+.public-app .sidebar-surface nav { gap:3px; }
+.public-app .sidebar-surface nav>a { min-height:44px; padding-block:10px; border-radius:9px; font-weight:550; }
+.public-app .sidebar-surface nav>a[aria-current=page] { background:hsl(var(--foreground)); color:hsl(var(--background)); box-shadow:none; }
+.public-app .chrome-button { background:linear-gradient(145deg,#fff,#e3e5e8); color:#16171a; border:1px solid #c7c9ce; box-shadow:inset 0 1px 0 #fff; min-height:42px; padding:10px 19px; font-size:13px; font-weight:650; }
+.public-app .playlist-action { border-color:hsl(var(--border)); background:hsl(var(--card)); font-weight:550; border-radius:999px; }
+.public-app .collection-tools { border:0; padding:0; background:transparent; gap:10px; margin-bottom:22px; }
+.public-app .collection-tools input,.public-app .playlist-toolbar input { box-shadow:none; border-radius:12px; background:hsl(var(--muted)); border-color:transparent; }
+.public-app .view-switch { border:0; background:hsl(var(--muted)); border-radius:11px; padding:3px; }
+.public-app .view-switch button { border-radius:8px; font-size:12px; min-height:38px; padding:8px 15px; }
+.public-app .view-switch button.active { background:hsl(var(--card)); box-shadow:0 1px 4px rgb(0 0 0/.08); }
+.public-app .home-feature { background:hsl(var(--card)); border:1px solid hsl(var(--border)); border-radius:22px; padding:30px; gap:36px; box-shadow:none; }
+.public-app .home-feature-copy h2 { font-size:clamp(32px,3.3vw,50px); line-height:1.04; letter-spacing:-.045em; margin-top:12px; }
+.public-app .home-feature-copy>p:not(.eyebrow) { font-size:14px; line-height:1.65; max-width:27rem; }
+.public-app .home-feature-actions { margin-top:22px; gap:9px; }
+.public-app .home-spotlight { border:0; background:transparent; box-shadow:none; padding:0; }
+.public-app .home-spotlight-art { border-radius:16px; box-shadow:0 14px 35px -20px rgb(0 0 0/.4); }
+.public-app .home-section { margin-bottom:38px; }
+.public-app .home-section h2 { font-size:22px; font-weight:700; }
+.public-app .music-card { border-radius:14px; padding:7px; background:transparent; box-shadow:none; }
+.public-app .music-card img { border-radius:12px; }
+.public-app .song-row { border-radius:10px; padding-top:10px; padding-bottom:10px; }
+.public-app .song-row:hover { background:hsl(var(--accent)); }
+.public-app .library-navigation { gap:24px; border-color:hsl(var(--border)); }
+.public-app .library-navigation button { font-size:14px; font-weight:550; min-height:46px; }
+.public-app .library-navigation button.active { font-weight:700; }
+.public-app .library-section-heading h2 { font-size:20px; font-weight:700; }
+.public-app .playlist-hero { background:transparent; border:0; padding:0 0 28px; border-radius:0; gap:32px; box-shadow:none; }
+.public-app .playlist-cover { border-radius:16px; box-shadow:0 12px 30px -18px rgb(0 0 0/.45); }
+.public-app .playlist-title { font-size:clamp(30px,4vw,54px); font-weight:750; line-height:1.1; }
+.public-app .playlist-song-list { border-top:1px solid hsl(var(--border)); }
+.public-app .playlist-song-item { border:0; border-bottom:1px solid hsl(var(--border)/.5); border-radius:0; margin:0; padding:4px 0; }
+.public-app .playlist-toolbar { padding-inline:0; border:0; background:transparent; }
+.public-app .profile-shell { border-radius:22px; }
+.public-app .profile-section h2 { font-size:20px; }
+.public-app .profile-actions { gap:8px; }
+.public-app .profile-track-search { box-shadow:none; background:hsl(var(--muted)); border-color:transparent; }
+.public-app .lounge-card,.public-app .lounge-community { border-radius:18px; box-shadow:none; }
+.public-app .upload-item { border-radius:18px; box-shadow:none; }
+.public-app .upload-item input:not([type=checkbox]) { border-radius:10px; box-shadow:none; }
+.public-app .downloads-page .collection-tools { margin-top:20px; }
+.public-app .notifications-page { max-width:760px; }
+.public-app .suggestions-page .bg-card { box-shadow:none; border-radius:18px; }
+.public-app .support-page section { box-shadow:none; border-radius:18px; }
+.public-app .player-surface { box-shadow:0 -5px 22px -18px rgb(0 0 0/.3); }
+.auth-layout .auth-card { border-radius:22px; box-shadow:0 12px 50px -32px rgb(0 0 0/.3); }
+.auth-layout h1 { letter-spacing:-.045em; font-weight:750; }
+.radio-promo { display:flex;align-items:center;gap:18px;padding:22px 24px;margin:24px 0 36px;border:1px solid hsl(var(--border));border-radius:18px;background:hsl(var(--card));transition:background .2s; }
+.radio-promo:hover { background:hsl(var(--accent)); }
+.radio-promo-icon { width:64px;height:64px;flex-shrink:0;border-radius:16px;display:grid;place-items:center;background:linear-gradient(145deg,#fafafa,#c5c8ce);color:#17181c;box-shadow:inset 0 1px 0 #fff; }
+.radio-promo h3 { font-size:19px;font-weight:700;letter-spacing:-.035em;margin-top:4px; }
+.radio-promo p:not(.eyebrow) { font-size:12px;color:hsl(var(--muted-foreground));margin-top:4px; }
+.radio-hero { display:grid;grid-template-columns:minmax(230px,340px) 1fr;gap:48px;align-items:center;padding:32px;border:1px solid hsl(var(--border));border-radius:22px;background:hsl(var(--card));margin-bottom:40px; }
+.radio-station-art { position:relative;aspect-ratio:1;border-radius:18px;overflow:hidden;background:linear-gradient(145deg,#24262d,#050608);box-shadow:0 16px 42px -24px #000; }
+.radio-station-art>img { width:100%;height:100%;object-fit:cover; }
+.radio-station-mark { height:100%;padding:28px;display:flex;flex-direction:column;justify-content:space-between;color:#f6f6f7; }
+.radio-station-mark strong { font-size:clamp(32px,4vw,58px);line-height:.98;letter-spacing:-.06em; }
+.radio-air-label { position:absolute;top:14px;left:14px;display:flex;align-items:center;gap:6px;padding:7px 10px;border-radius:999px;background:rgba(0,0,0,.6);color:#fff;font-size:10px;font-weight:650;backdrop-filter:blur(12px); }
+.radio-air-label>span { width:6px;height:6px;background:#fff;border-radius:50%; }
+.radio-hero-copy h2 { font-size:clamp(28px,3vw,42px);letter-spacing:-.045em;line-height:1.12;font-weight:750;margin:12px 0;overflow-wrap:anywhere; }
+.radio-hero-copy>p:not(.eyebrow) { font-size:15px;color:hsl(var(--muted-foreground));line-height:1.6; }
+.radio-hero-actions { display:flex;align-items:center;gap:10px;margin-top:24px; }
+.radio-hero-copy .radio-caption { margin-top:14px;font-size:12px; }
+.radio-columns { display:grid;grid-template-columns:1fr 1fr;gap:40px; }
+.section-heading { display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px; }
+.section-heading h2 { font-size:22px;font-weight:700;letter-spacing:-.035em; }
+.radio-track { display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid hsl(var(--border)/.6); }
+.radio-track-art { width:54px;height:54px;display:grid;place-items:center;flex-shrink:0;border-radius:10px;overflow:hidden;background:hsl(var(--muted)); }
+.radio-track-art img { width:100%;height:100%;object-fit:cover; }
+@media(max-width:767px) {
+ .public-app .app-content { --app-gutter:18px;padding-top:24px; }
+ .public-app .page-intro,.public-app .library-heading { margin-bottom:24px; }
+ .public-app .page-intro h1,.public-app .library-heading h1 { font-size:32px; }
+ .public-app .page-intro>p:not(.eyebrow) { font-size:13px; }
+ .public-app .home-feature { padding:22px;gap:22px;border-radius:20px; }
+ .public-app .home-feature-copy h2 { font-size:34px; }
+ .public-app .home-spotlight { padding-top:18px;border-top:1px solid hsl(var(--border)); }
+ .public-app .home-section h2 { font-size:21px; }
+ .public-app .mobile-tab-bar { background:hsl(var(--background)/.96); }
+ .public-app .mobile-tab-bar a[aria-current=page] { background:transparent;font-weight:750;color:hsl(var(--foreground)); }
+ .public-app .mobile-tab-bar a { font-size:10px;border-radius:12px; }
+ .public-app .mobile-tab-bar a svg { width:22px;height:22px; }
+ .public-app .playlist-hero { padding:0 0 24px;gap:20px; }
+ .public-app .playlist-controls { justify-content:center; }
+ .public-app .library-navigation { justify-content:center;gap:18px; }
+ .public-app .song-row { padding-inline:6px; }
+ .public-app .collection-tools { gap:8px; }
+ .radio-promo { padding:17px;gap:12px;margin:20px 0 30px; }
+ .radio-promo-icon { width:48px;height:48px;border-radius:12px; }
+ .radio-promo h3 { font-size:16px; }
+ .radio-promo p:not(.eyebrow) { font-size:11px; }
+ .radio-hero { grid-template-columns:1fr;gap:24px;padding:20px;border-radius:20px;text-align:center; }
+ .radio-station-art { width:min(100%,280px);margin-inline:auto; }
+ .radio-hero-copy h2 { font-size:29px; }
+ .radio-hero-actions { justify-content:center; }
+ .radio-columns { grid-template-columns:1fr;gap:30px; }
+ .section-heading h2 { font-size:21px; }
+}
+@media(prefers-reduced-motion:reduce) { .radio-promo { transition:none; } }
