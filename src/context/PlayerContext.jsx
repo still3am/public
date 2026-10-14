@@ -474,7 +474,7 @@ export function PlayerProvider({ children }) {
   const preloadNextTrack = useCallback(() => {
     const ci = currentIndexRef.current;
     const q = queueRef.current;
-    if (ci < 0 || !q.length || q[ci]?._public_radio) return;
+    if (ci < 0 || !q.length) return;
     let n = -1;
     if(shuffleRef.current && q.length>1){do{n=Math.floor(Math.random()*q.length);}while(n===ci);}
     else if (ci + 1 < q.length) n = ci + 1;
@@ -681,7 +681,6 @@ export function PlayerProvider({ children }) {
       const cur = a.currentTime || 0;
       setPosition(cur);
       syncPositionState(a);
-      if (queueRef.current[currentIndexRef.current]?._public_radio) return;
       const s = getTransitionSettings();
       const gapless = isGapless(s);
       if(a.paused || a.ended || (!isTransitionActive(s) && !gapless) || crossfadingRef.current) return;
@@ -834,7 +833,6 @@ export function PlayerProvider({ children }) {
   useEffect(() => {
     handleEndedRef.current = async () => {
       if (crossfadingRef.current) return;
-      if (currentTrack?._public_radio) { setIsPlaying(false); return; }
       if (repeat === "one") {
         const a = activeEl();
         if (a) {
@@ -940,10 +938,6 @@ export function PlayerProvider({ children }) {
   const togglePlay = useCallback(() => {
     const a = activeEl();
     if (!a || !currentTrack) return;
-    if (currentTrack._public_radio) {
-      window.dispatchEvent(new Event(a.paused ? "publicradio:join" : "publicradio:pause"));
-      if (a.paused) return;
-    }
     if (a.paused) {
       if (graphNeeded()) ensureGraph();
       resumeAndPlay(a);
@@ -1023,7 +1017,6 @@ export function PlayerProvider({ children }) {
   );
 
   const next = useCallback(() => {
-    if (currentTrack?._public_radio) { window.dispatchEvent(new Event("publicradio:join")); return; }
     // No connection? Skip ahead using the offline cache instead of a remote URL.
     if (typeof navigator !== "undefined" && !navigator.onLine) {
       advanceOffline();
@@ -1039,7 +1032,6 @@ export function PlayerProvider({ children }) {
   }, [nextIndex, transitionTo, currentTrack, extendWithGenreRadio, advanceOffline]);
 
   const prev = useCallback(() => {
-    if (currentTrack?._public_radio) { window.dispatchEvent(new Event("publicradio:join")); return; }
     cancelCrossfade();
     const a = activeEl();
     if (a && a.currentTime > 3) {
@@ -1151,7 +1143,6 @@ export function PlayerProvider({ children }) {
     const ends = Date.now() + minutes * 60 * 1000;
     setSleepTimerEndsAt(ends);
     sleepTimerRef.current = setTimeout(() => {
-      window.dispatchEvent(new Event("publicradio:pause"));
       const a = activeEl();
       els().forEach(el=>el?.pause());
       setIsPlaying(false);
@@ -1165,7 +1156,6 @@ export function PlayerProvider({ children }) {
   const resumePlayback = useCallback(() => {
     const a = activeEl();
     if (!a || !currentTrack) return;
-    if (currentTrack._public_radio) { window.dispatchEvent(new Event("publicradio:join")); return; }
     // The page may have been frozen by the OS while backgrounded, leaving the
     // element with no source / nothing decoded. Reload the current track so
     // the lock-screen play button always produces sound instead of no-op.
@@ -1177,7 +1167,6 @@ export function PlayerProvider({ children }) {
   }, [currentTrack, ensureGraph, graphNeeded, loadOnActive, resumeAndPlay]);
 
   const pausePlayback = useCallback(() => {
-    window.dispatchEvent(new Event("publicradio:pause"));
     const a = activeEl();
     if (!a) return;
     els().forEach(el=>el?.pause());
