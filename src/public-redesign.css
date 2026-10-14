@@ -283,6 +283,38 @@ html.dark {
 .artist-appears-card { flex:0 0 190px;min-width:0;scroll-snap-align:start; }
 .artist-appears-list:focus-visible { outline:2px solid hsl(var(--foreground)/.4);outline-offset:4px; }
 @media(max-width:767px) { .artist-appears-card { flex-basis:44%; } .artist-appears-list { gap:12px; } }
+/* Track detail uses the same artwork-first hierarchy as artist pages. */
+.track-page-hero { position:relative;isolation:isolate;overflow:hidden;display:grid;grid-template-columns:240px minmax(0,1fr) 64px;gap:32px;align-items:center;min-height:380px;padding:76px 36px 36px;border-radius:22px;background:#17181d;color:#fff; }
+.track-page-backdrop { position:absolute;inset:0;z-index:-2;width:100%;height:100%;object-fit:cover;filter:blur(24px);transform:scale(1.12);opacity:.6; }
+.track-page-shade { position:absolute;inset:0;z-index:-1;background:linear-gradient(145deg,rgb(0 0 0/.2),rgb(0 0 0/.78)); }
+.track-page-art { width:240px;height:240px;display:grid;place-items:center;overflow:hidden;border-radius:16px;background:rgb(255 255 255/.08);color:rgb(255 255 255/.4);box-shadow:0 18px 40px -20px #000; }
+.track-page-art img { width:100%;height:100%;object-fit:cover; }
+.track-page-heading h1 { font-size:clamp(30px,3.5vw,48px);font-weight:750;line-height:1.08;letter-spacing:-.045em;overflow-wrap:anywhere;margin-bottom:12px; }
+.track-page-heading a { color:rgb(255 255 255/.82);font-size:16px;line-height:1.5; }
+.track-page-explicit { background:rgb(255 255 255/.2);border-radius:4px;padding:2px 5px;font-size:10px;font-weight:800;flex-shrink:0;margin-top:8px; }
+.track-page-meta { font-size:12px;color:rgb(255 255 255/.6);margin-top:15px; }
+.track-page-actions { display:flex;align-items:center;gap:12px;padding:20px 0;margin-bottom:12px; }
+.track-page-about { padding:26px;background:hsl(var(--card));border-radius:18px;margin-bottom:32px; }
+.track-page h2 { font-size:24px;letter-spacing:-.035em;font-weight:750;margin-bottom:18px; }
+.track-page-about .artist-facts { margin-top:18px; }
+.track-page-about .artist-facts dd { font-size:16px; }
+.track-page-section { margin-bottom:32px; }
+.track-page-lyrics { font-size:19px;font-weight:550;color:hsl(var(--foreground));line-height:1.8; }
+.track-page-section .song-row { border-radius:0;border-bottom:1px solid hsl(var(--border)/.65);padding-inline:0; }
+@media(max-width:767px) {
+ .track-page-hero { margin:0 calc(-1 * var(--app-gutter));border-radius:0;grid-template-columns:minmax(0,1fr) 58px;gap:24px 14px;padding:74px 20px 26px;min-height:0; }
+ .track-page-art { grid-column:1/-1;width:min(64vw,250px);height:auto;aspect-ratio:1;margin-inline:auto;border-radius:14px; }
+ .track-page-heading h1 { font-size:32px; }
+ .track-page-heading a { font-size:14px; }
+ .track-page-play { width:58px;height:58px;align-self:end; }
+ .track-page-heading .artist-eyebrow { margin-bottom:10px; }
+ .track-page-meta { margin-top:10px; }
+ .track-page-about { padding:22px 18px;margin-bottom:28px; }
+ .track-page-about .artist-facts { grid-template-columns:repeat(2,minmax(0,1fr));gap:22px 16px; }
+ .track-page h2 { font-size:23px; }
+ .track-page-lyrics { font-size:18px; }
+}
+
 
 
 
