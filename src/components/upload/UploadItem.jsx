@@ -41,7 +41,7 @@ export default function UploadItem({
 
   return (
     <div
-      className={`rounded-2xl overflow-hidden bg-card ring-1 ring-inset transition ${
+      className={`upload-item rounded-2xl overflow-hidden bg-card ring-1 ring-inset transition ${
       done ? "ring-emerald-500/40" : "ring-border"}`
       }>
       
@@ -97,11 +97,11 @@ export default function UploadItem({
             
           </div>
 
-          <div className="flex flex-wrap gap-1.5">
+          <div className="grid grid-cols-2 gap-2">
             {toggles.map(({ key, label, icon: Icon }) =>
             <label
               key={key}
-              className={`inline-flex items-center gap-1.5 pl-2 pr-2.5 py-1.5 rounded-full text-[11px] font-bold cursor-pointer transition ring-1 ring-inset ${
+              className={`upload-option ${key === "rightsConfirmed" ? "col-span-2" : ""} flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-medium leading-snug cursor-pointer transition ring-1 ring-inset ${
               item[key] ?
               "bg-foreground text-background ring-foreground" :
               "bg-transparent text-foreground/55 ring-border hover:bg-foreground/[0.04]"} ${
@@ -111,16 +111,16 @@ export default function UploadItem({
                 checked={item[key]}
                 onCheckedChange={(v) => onChange({ [key]: !!v })}
                 disabled={locked}
-                className="h-3.5 w-3.5 rounded-[4px] border-current" />
+                className="upload-option-checkbox rounded-[4px] border-current shrink-0" />
               
-                {Icon && <Icon size={11} />}
-                {label}
+                {Icon && <Icon size={13} className="shrink-0" />}
+                <span className="min-w-0">{label}</span>
               </label>
             )}
           </div>
 
           {item.releaseStatus&&<p className="text-xs font-semibold">Saved · {item.releaseStatus==="approved"?"Published":item.releaseStatus==="pending"?"Awaiting review":"Private"}</p>}
-          {!done&&<label className="flex items-center gap-2 text-xs"><input type="checkbox" checked={!!item.duplicateAcknowledged} onChange={e=>onChange({duplicateAcknowledged:e.target.checked})} disabled={locked}/>If a metadata match appears, I confirm this is a different recording.</label>}
+          {!done&&<label className="flex items-start gap-2 text-xs leading-relaxed py-1"><input className="mt-0.5" type="checkbox" checked={!!item.duplicateAcknowledged} onChange={e=>onChange({duplicateAcknowledged:e.target.checked})} disabled={locked}/>If a metadata match appears, I confirm this is a different recording.</label>}
           <ReleaseChecklist
             hasGenre={hasGenre}
             hasArtist={hasArtist}
@@ -129,7 +129,7 @@ export default function UploadItem({
           
 
           {item.error &&
-          <div className="flex items-center gap-1.5 text-xs font-medium text-destructive">
+          <div role="status" className="flex items-start gap-2 text-xs text-foreground/60 leading-relaxed">
               <AlertCircle size={13} /> {item.error}
             </div>
           }
@@ -150,7 +150,7 @@ export default function UploadItem({
       <button
         onClick={onUpload}
         disabled={uploading || enhancing || disabled || item.status==="error"}
-        className="w-full inline-flex items-center justify-center gap-2 py-3 bg-foreground text-background text-sm font-bold disabled:opacity-50 active:opacity-80 transition">
+        className="upload-item-action flex items-center justify-center gap-2 mx-3 mb-3 px-4 rounded-xl bg-foreground text-background text-xs sm:text-sm font-semibold disabled:opacity-50 active:opacity-80 transition">
         
           {uploading || enhancing ?
         <Loader2 size={15} className="animate-spin" /> :
