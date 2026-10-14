@@ -27,14 +27,17 @@ export async function fetchArtistTracks(artistName) {
   const query = {
     is_published: true,
     $or: names.map((n) => ({
-      artist: { $regex: escapeRegex(n), $options: "i" },
+      $or: [{ artist: { $regex: escapeRegex(n), $options: "i" } }, { title: { $regex: escapeRegex(n), $options: "i" } }],
     })),
   };
 
   const list = await readAllPages((opts) =>
     base44.entities.Track.filter(query, { sort: "-created_date", ...opts })
   );
-  return list.filter((t) =>
-    splitArtistNames(t.artist).some((n) => names.includes(n))
-  );
+  return list.filter(track => {
+    const credits = splitArtistNames(String(track.artist || "").replace(/\s+(?:feat(?:uring)?\.?|ft\.?)\s+/gi,", "));
+    const titleFeature = String(track.title || "").match(/\b(?:feat(?:uring)?\.?|ft\.?)\s+([^)\]}]+)/i);
+    const guests = titleFeature ? splitArtistNames(titleFeature[1]) : [];
+    return [...credits,...guests].some(name => names.includes(name));
+  });
 }
