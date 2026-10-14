@@ -142,7 +142,7 @@ export default function TrackOptionsMenu({
 
       {open &&
         createPortal(
-          <div className="fixed inset-0 z-[100]" onClick={(e) => { e.stopPropagation(); setOpen(false); }}>
+          <div data-public-menu className="fixed inset-0 z-[100]" onClick={(e) => { e.stopPropagation(); setOpen(false); }}>
             {isMobile ? (
               <>
                 <div className="absolute inset-0 bg-black/60" />
