@@ -1,11 +1,10 @@
 import { useState } from "react";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
-import { Home, Search, User, Plus, Library as LibraryIcon } from "lucide-react";
+import { Home, Search, User, MoreHorizontal, Library as LibraryIcon } from "lucide-react";
 import MobileMoreSheet from "@/components/MobileMoreSheet";
 
 const TABS = [
   { to: "/", label: "Home", Icon: Home, end: true },
-  { to: "/search", label: "Search", Icon: Search },
   { to: "/library", label: "Library", Icon: LibraryIcon },
   { to: "/profile", label: "Me", Icon: User },
 ];
@@ -14,73 +13,31 @@ export default function MobileTabBar() {
   const [moreOpen, setMoreOpen] = useState(false);
   const loc = useLocation();
   const nav = useNavigate();
-
-  function handleTab(to, e) {
+  function handleTab(to, event) {
     if (loc.pathname === to) {
-      // already at root of that section — just scroll to top
-      e.preventDefault();
-      window.scrollTo({ top: 0, behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth" });
-      return;
-    }
-    if (to !== "/" && loc.pathname.startsWith(to + "/")) {
-      // already on a sub-route of this section — go back to its root
-      e.preventDefault();
+      event.preventDefault();
+      window.scrollTo({ top: 0, behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
+    } else if (to !== "/" && loc.pathname.startsWith(to + "/")) {
+      event.preventDefault();
       nav(to);
     }
   }
-
-  const left = TABS.slice(0, 2);
-  const right = TABS.slice(2);
-
-  return (
-    <>
-      <nav aria-label="Main navigation" className="mobile-tab-bar md:hidden fixed bottom-0 inset-x-0 z-20 bg-background/95 backdrop-blur-xl border-t border-border/60 tab-bar-safe">
-        <div className="grid grid-cols-5 h-16 items-center gap-1 px-3">
-          {left.map(({ to, label, Icon, end }) => (
-            <NavLink
-              key={to}
-              to={to}
-              end={end}
-              onClick={(e) => handleTab(to, e)}
-              className={({ isActive }) =>
-                `flex flex-col items-center justify-center gap-1 text-[10px] font-semibold px-1.5 py-2 rounded-2xl transition ${
-                  isActive ? "text-foreground bg-foreground/[0.06]" : "text-foreground/40 hover:text-foreground/70"
-                }`
-              }
-            >
-              <Icon size={20} aria-hidden="true" />
-              {label}
-            </NavLink>
-          ))}
-
-          <div className="flex items-center justify-center">
-            <button
-              onClick={() => setMoreOpen(true)}
-              className="w-11 h-11 rounded-2xl chrome-action grid place-items-center shadow-sm active:scale-95 transition"
-              aria-label="More pages" aria-haspopup="dialog" aria-expanded={moreOpen}
-            >
-              <Plus size={22} />
-            </button>
-          </div>
-
-          {right.map(({ to, label, Icon }) => (
-            <NavLink
-              key={to}
-              to={to}
-              onClick={(e) => handleTab(to, e)}
-              className={({ isActive }) =>
-                `flex flex-col items-center justify-center gap-1 text-[10px] font-semibold px-1.5 py-2 rounded-2xl transition ${
-                  isActive ? "text-foreground bg-foreground/[0.06]" : "text-foreground/40 hover:text-foreground/70"
-                }`
-              }
-            >
-              <Icon size={20} aria-hidden="true" />
-              {label}
-            </NavLink>
-          ))}
-        </div>
-      </nav>
-      {moreOpen && <MobileMoreSheet onClose={() => setMoreOpen(false)} />}
-    </>
-  );
+  const moreActive = !["/", "/search", "/library", "/profile"].some(path => loc.pathname === path || (path !== "/" && loc.pathname.startsWith(path + "/")));
+  return <>
+    <nav aria-label="Main navigation" className="mobile-tab-bar md:hidden">
+      <div className="mobile-nav-pill">
+        {TABS.map(({ to, label, Icon, end }) => <NavLink key={to} to={to} end={end} onClick={event => handleTab(to, event)} className={({ isActive }) => "mobile-nav-tab" + (isActive ? " is-active" : "")}>
+          <Icon size={23} strokeWidth={1.9} aria-hidden="true" />
+          <span>{label}</span>
+        </NavLink>)}
+        <button type="button" onClick={() => setMoreOpen(true)} className={"mobile-nav-tab" + (moreOpen || moreActive ? " is-active" : "")} aria-label="More pages" aria-haspopup="dialog" aria-expanded={moreOpen}>
+          <MoreHorizontal size={23} strokeWidth={1.9} aria-hidden="true" /><span>More</span>
+        </button>
+      </div>
+      <NavLink to="/search" onClick={event => handleTab("/search", event)} className={({ isActive }) => "mobile-nav-search" + (isActive ? " is-active" : "")} aria-label="Search music and people">
+        <Search size={26} strokeWidth={2} aria-hidden="true" />
+      </NavLink>
+    </nav>
+    {moreOpen && <MobileMoreSheet onClose={() => setMoreOpen(false)} />}
+  </>;
 }
