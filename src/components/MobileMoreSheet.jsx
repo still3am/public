@@ -1,6 +1,7 @@
 import { useNavigate, useLocation } from "react-router-dom";
 import {
   X,
+  Radio,
   Upload,
   BarChart3,
   Clock,
@@ -13,6 +14,7 @@ import { useAuth } from "@/lib/AuthContext";
 import { useUnreadCount } from "@/hooks/useNotifications";
 
 const ITEMS = [
+{ to: "/radio", icon: Radio, label: "PUBLIC. Radio" },
 { to: "/upload", icon: Upload, label: "Upload" },
 { to: "/top", icon: BarChart3, label: "Top Charts" },
 { to: "/recent", icon: Clock, label: "Recently Added" },
