@@ -1,75 +1,97 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { usePlayer } from "@/context/PlayerContext";
-import { useColorPalette } from "@/hooks/useColorPalette";
 
-// Color-only "heartbeat" visualizer: the cover-art palette swells and contracts
-// with the track's low-end energy, so the pulse follows the music's tempo
-// instead of drawing bars.
-/** @param {any} props */
-export default function PulseVisualizer({ className = "" }) {
+const NEUTRAL = ["#53545b", "#383a43", "#777982"];
+
+// The animation never creates an audio graph. Native playback stays available.
+export default function PulseVisualizer({ className = "", palette = NEUTRAL }) {
   const p = usePlayer();
-  const [primary, secondary, accent] = useColorPalette(p.currentTrack?.cover_art_url);
-  const [beat, setBeat] = useState(0);
-  const raf = useRef(null);
+  const latest = useRef(p);
+  latest.current = p;
+  const primaryLayer = useRef(null);
+  const accentLayer = useRef(null);
   const smooth = useRef(0);
+  const phase = useRef(0);
+  const [primary, secondary, accent] = palette;
 
   useEffect(() => {
-    // Keep plain media playback available on iOS; visual decoration never forces Web Audio.
-    const loop = () => {
-      if(window.matchMedia("(prefers-reduced-motion: reduce)").matches){setBeat(0);return;}
-      const an = p.getAnalyser?.();
-      if(!an) setBeat(p.isPlaying ? (Math.sin(Date.now()/650)+1)*0.18 : 0);
-      if (an) {
-        const data = new Uint8Array(an.frequencyBinCount);
-        an.getByteFrequencyData(data);
-        // Low frequencies carry the kick — that's the "heart".
-        const n = Math.max(4, Math.floor(data.length * 0.12));
-        let sum = 0;
-        for (let i = 0; i < n; i++) sum += data[i];
-        const energy = sum / n / 255;
-        // Fast attack, slow release => thump then relax.
-        smooth.current =
-          energy > smooth.current
-            ? smooth.current + (energy - smooth.current) * 0.55
-            : smooth.current + (energy - smooth.current) * 0.08;
-        setBeat(smooth.current);
+    let frame = 0, lastTime = 0, analyser = null, bins = null;
+    const motion = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const paint = energy => {
+      if (primaryLayer.current) {
+        primaryLayer.current.style.transform = "translate3d(0,0,0) scale(" + (1.03 + energy * 0.11) + ")";
+        primaryLayer.current.style.opacity = String(0.6 + energy * 0.18);
       }
-      raf.current = requestAnimationFrame(loop);
+      if (accentLayer.current) {
+        accentLayer.current.style.transform = "translate3d(0,0,0) scale(" + (1.02 + energy * 0.16) + ")";
+        accentLayer.current.style.opacity = String(0.3 + energy * 0.12);
+      }
     };
-    raf.current = requestAnimationFrame(loop);
-    return () => raf.current && cancelAnimationFrame(raf.current);
-  }, [p]);
-
-  const scale = 1 + beat * 0.35;
-  const opacity = 0.3 + Math.min(0.65, beat * 0.9);
+    const loop = time => {
+      frame = 0;
+      if (document.hidden || motion.matches) { paint(0); return; }
+      const dt = lastTime ? Math.min(64, Math.max(1, time - lastTime)) : 16;
+      lastTime = time;
+      phase.current += dt;
+      const player = latest.current;
+      let target = 0;
+      if (player.isPlaying) {
+        target = 0.18 + (Math.sin(phase.current / 850) + 1) * 0.12;
+        const next = player.getAnalyser?.();
+        if (next) {
+          if (next !== analyser || bins?.length !== next.frequencyBinCount) {
+            analyser = next;
+            bins = new Uint8Array(next.frequencyBinCount);
+          }
+          try {
+            analyser.getByteFrequencyData(bins);
+            const count = Math.min(bins.length, Math.max(4, Math.floor(bins.length * 0.12)));
+            let total = 0;
+            for (let index = 0; index < count; index++) total += bins[index];
+            target = count ? Math.min(1, total / count / 255) : 0;
+          } catch { /* Keep the ambient pulse if the analyser is unavailable. */ }
+        }
+      }
+      const duration = target > smooth.current ? 180 : 650;
+      smooth.current += (target - smooth.current) * (1 - Math.exp(-dt / duration));
+      paint(smooth.current);
+      if (player.isPlaying || smooth.current > 0.002) frame = requestAnimationFrame(loop);
+    };
+    const resume = () => {
+      if (frame) cancelAnimationFrame(frame);
+      frame = 0;
+      lastTime = 0;
+      if (document.hidden || motion.matches) { paint(0); return; }
+      frame = requestAnimationFrame(loop);
+    };
+    document.addEventListener("visibilitychange", resume);
+    motion.addEventListener("change", resume);
+    resume();
+    return () => {
+      if (frame) cancelAnimationFrame(frame);
+      document.removeEventListener("visibilitychange", resume);
+      motion.removeEventListener("change", resume);
+    };
+  }, [p.isPlaying]);
 
   return (
-    <div className={`pointer-events-none overflow-hidden ${className}`}>
-      <div
-        className="absolute inset-0"
+    <div className={"pointer-events-none overflow-hidden " + className}>
+      <div ref={primaryLayer} className="absolute -inset-[12%]"
         style={{
-          transform: `scale(${scale})`,
-          opacity,
-          transition: "transform 90ms ease-out, opacity 140ms ease-out",
-          backgroundImage:
-            `radial-gradient(circle at 30% 30%, ${primary} 0, transparent 46%),` +
-            `radial-gradient(circle at 72% 68%, ${secondary} 0, transparent 46%),` +
-            `radial-gradient(circle at 50% 88%, ${accent} 0, transparent 50%)`,
-          filter: "blur(60px) saturate(1.7)",
-        }}
-      />
-      <div
-        className="absolute inset-0"
+          opacity: 0.6,
+          transform: "translate3d(0,0,0) scale(1.03)",
+          willChange: "transform, opacity",
+          backgroundImage: "radial-gradient(ellipse at 25% 25%, " + primary + " 0, transparent 62%),radial-gradient(ellipse at 80% 60%, " + secondary + " 0, transparent 62%),radial-gradient(ellipse at 45% 85%, " + accent + " 0, transparent 58%)",
+          filter: "blur(38px) saturate(1.45)",
+        }} />
+      <div ref={accentLayer} className="absolute -inset-[12%]"
         style={{
-          transform: `scale(${1 + beat * 0.6})`,
-          opacity: opacity * 0.7,
-          transition: "transform 130ms ease-out, opacity 180ms ease-out",
-          backgroundImage:
-            `radial-gradient(circle at 50% 50%, ${primary} 0, transparent 55%)`,
-          filter: "blur(80px) saturate(1.6)",
-          mixBlendMode: "screen",
-        }}
-      />
+          opacity: 0.3,
+          transform: "translate3d(0,0,0) scale(1.02)",
+          willChange: "transform, opacity",
+          backgroundImage: "radial-gradient(ellipse at 50% 55%, " + primary + " 0, transparent 62%)",
+          filter: "blur(48px) saturate(1.35)",
+        }} />
     </div>
   );
 }
