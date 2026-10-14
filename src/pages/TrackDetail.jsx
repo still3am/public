@@ -192,25 +192,25 @@ export default function TrackDetail() {
                 
 
               
-                {uploader &&
-              <Link
-                to={`/profile/${uploader.id}`}
-                className="hover:underline inline-flex items-center gap-1.5 hidden">
                 
-                    {uploader.avatar_url ?
-                <img
-                  src={uploader.avatar_url}
-                  alt=""
-                  className="w-5 h-5 rounded-full object-cover" /> :
 
 
-                <div className="w-5 h-5 rounded-full bg-foreground/10 grid place-items-center text-[9px] font-semibold">
-                        {(uploader.display_name || uploader.full_name || uploader.email || "?").charAt(0)}
-                      </div>
-                }
-                    {uploader.display_name || uploader.full_name || "Unknown"}
-                  </Link>
-              }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+              
               </div>
             }
             
