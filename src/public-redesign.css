@@ -172,4 +172,3 @@ html.dark {
 @media(prefers-reduced-motion:reduce) {
  .public-app .mobile-tab-bar .mobile-nav-tab { transition:none; }
 }
-

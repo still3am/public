@@ -92,7 +92,7 @@ export default function PlayerBar() {
           <div
             className="absolute left-0 top-0 h-[3px] bg-foreground/80"
             style={{ width: `${pct}%` }} />
-          
+
           <input aria-label="Seek playback" type="range" min="0" max={p.duration||0} step="1" value={Math.min(p.position||0,p.duration||0)} disabled={!p.duration} onChange={e=>p.seek(Number(e.target.value))} className="hidden md:block absolute inset-0 opacity-0 w-full h-full cursor-pointer disabled:cursor-default"/>
         </div>
 
@@ -129,12 +129,12 @@ export default function PlayerBar() {
 
           {/* compact mobile controls; full controls remain in Now Playing */}
           <div className="flex items-center gap-1 shrink-0 md:hidden">
-            
+
             <button
               onClick={p.togglePlay}
               className="mini-player-play w-11 h-11 rounded-full grid place-items-center active:scale-95 transition"
               aria-label={p.isPlaying ? "Pause" : "Play"}>
-              
+
               {p.isPlaying ? <Pause size={20} /> : <Play size={20} className="ml-0.5" />}
             </button>
             <button onClick={p.next} className="p-2 rounded-full hover:bg-foreground/5 active:scale-90 transition disabled:opacity-25 disabled:cursor-default" aria-label="Next">
@@ -148,14 +148,14 @@ export default function PlayerBar() {
               onClick={() => p.setRepeat(p.repeat === "off" ? "all" : p.repeat === "all" ? "one" : "off")}
               className={`hidden lg:inline-flex p-2 rounded-full hover:bg-foreground/5 active:scale-90 transition ${p.repeat !== "off" ? "text-foreground" : "text-foreground/40"}`}
               aria-label="Repeat">
-              
+
               <RepeatIcon size={18} />
             </button>
             <button
               onClick={() => p.setShuffle(!p.shuffle)}
               className={`hidden lg:inline-flex p-2 rounded-full hover:bg-foreground/5 active:scale-90 transition ${p.shuffle ? "text-foreground" : "text-foreground/40"}`}
               aria-label="Shuffle">
-              
+
               <Shuffle size={18} />
             </button>
             <button onClick={p.prev} className="p-2 rounded-full hover:bg-foreground/5 active:scale-90 transition disabled:opacity-25 disabled:cursor-default" aria-label="Previous">
@@ -165,7 +165,7 @@ export default function PlayerBar() {
               onClick={p.togglePlay}
               className="w-11 h-11 rounded-full bg-foreground text-background grid place-items-center hover:scale-105 active:scale-95 transition shadow"
               aria-label={p.isPlaying ? "Pause" : "Play"}>
-              
+
               {p.isPlaying ? <Pause size={20} /> : <Play size={20} className="ml-0.5" />}
             </button>
             <button onClick={p.next} className="p-2 rounded-full hover:bg-foreground/5 active:scale-90 transition disabled:opacity-25 disabled:cursor-default" aria-label="Next">
@@ -184,7 +184,7 @@ export default function PlayerBar() {
               p.queue.length - p.currentIndex - 1 > 0 ? "text-foreground" : "text-foreground/40"}`
               }
               aria-label="Queue">
-              
+
               <ListMusic size={18} />
               {p.queue.length - p.currentIndex - 1 > 0 &&
               <span className="absolute -top-0.5 -right-0.5 min-w-[16px] h-4 px-1 rounded-full bg-foreground text-background text-[10px] font-bold grid place-items-center">
