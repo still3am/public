@@ -11,7 +11,7 @@ import { formatTime } from "@/lib/audio-utils";
 // track and stamps each line at the moment it starts. The saved timings are
 // what the now-playing screen follows line by line.
 /** @param {any} props */
-export default function SyncLyricsModal({ track, onClose, onSaved }) {
+export default function SyncLyricsModal({ track, onClose, onSaved, preferTrackLyrics = false }) {
   const { user } = useAuth();
   const { toast } = useToast();
   const p = usePlayer();
@@ -32,13 +32,13 @@ export default function SyncLyricsModal({ track, onClose, onSaved }) {
         .filter({ track_id: track.id }, "-created_date", 5)
         .catch(() => []);
       const mine = Array.isArray(records) ? records.find((r) => r.uploader_id === user?.id) : null;
-      let text = "";
-      if (mine?.lines?.length) {
+      let text = preferTrackLyrics ? track.lyrics_text || "" : "";
+      if (!text.trim() && mine?.lines?.length) {
         text = mine.lines.map((l) => l.text || "").join("\n");
       }
       if (!text.trim()) {
         const t = await base44.entities.Track.get(track.id).catch(() => null);
-        text = t?.lyrics_text || "";
+        text = t?.lyrics_text || track.lyrics_text || "";
       }
       if (!alive) return;
       setExistingId(mine?.id || null);
@@ -48,7 +48,7 @@ export default function SyncLyricsModal({ track, onClose, onSaved }) {
     return () => {
       alive = false;
     };
-  }, [track.id, user?.id]);
+  }, [track.id, user?.id, preferTrackLyrics]);
 
   useEffect(() => {
     if (step !== "sync") return;
@@ -66,13 +66,14 @@ export default function SyncLyricsModal({ track, onClose, onSaved }) {
     setStep("sync");
     if (p.currentTrack?.id !== track.id) {
       p.playTrackAt([track]);
-    } else if (!p.isPlaying) {
-      p.togglePlay?.();
+    } else {
+      p.seek?.(0);
+      if (!p.isPlaying) p.togglePlay?.();
     }
   };
 
   const mark = () => {
-    if (cursor >= rows.length) return;
+    if (cursor >= rows.length || p.currentTrack?.id !== track.id || !p.isPlaying) return;
     const at = Math.round((p.position || 0) * 1000);
     setRows((prev) => prev.map((r, i) => (i === cursor ? { ...r, start_ms: at } : r)));
     setCursor((c) => c + 1);
@@ -248,7 +249,7 @@ export default function SyncLyricsModal({ track, onClose, onSaved }) {
               <div className="flex items-center gap-2">
                 <button
                   onClick={mark}
-                  disabled={cursor >= rows.length}
+                  disabled={cursor >= rows.length || p.currentTrack?.id !== track.id || !p.isPlaying}
                   className="flex-1 h-11 rounded-full bg-foreground text-background text-sm font-semibold disabled:opacity-50"
                 >
                   {cursor >= rows.length ? "All lines timed" : `Mark line ${cursor + 1}`}
