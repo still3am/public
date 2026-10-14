@@ -110,7 +110,7 @@ export default function PlayerBar() {
             </div>
             <div className="min-w-0">
               <div className="text-sm font-semibold truncate flex items-center gap-1.5">
-                {t.title}
+                <span className="min-w-0 truncate">{t.title}</span>
                 {t.explicit &&
                 <span className="px-1 py-0.5 rounded bg-foreground/15 text-[9px] font-extrabold leading-none">E</span>
                 }
