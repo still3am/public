@@ -200,6 +200,20 @@ html.dark img[alt="PUBLIC."] {
 
 html.modal-open .mobile-tab-bar { display: none !important; }
 
+/* Stop scrolling page content from showing beneath the phone's status icons. */
+.public-status-bar-shield { display: none; }
+@media (max-width: 767px) {
+  .public-status-bar-shield {
+    display: block;
+    position: fixed;
+    inset: 0 0 auto;
+    height: env(safe-area-inset-top, 0px);
+    background: hsl(var(--background));
+    z-index: 40;
+    pointer-events: none;
+  }
+}
+
 /* Mobile overlays own the screen; the audio player stays mounted and playing. */
 @media (max-width: 767px) {
   html.modal-open .player-surface,
