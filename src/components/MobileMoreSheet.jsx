@@ -1,6 +1,8 @@
+import { useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import {
   X,
+  ChevronRight,
   Upload,
   BarChart3,
   Clock,
@@ -28,45 +30,58 @@ export default function MobileMoreSheet({ onClose }) {
   const items = user?.role === "admin" ?
   [...ITEMS, { to: "/admin", icon: Shield, label: "Admin" }] :
   ITEMS;
+  useEffect(() => {
+    const root = document.documentElement;
+    const hadModalClass = root.classList.contains("modal-open");
+    const previousOverflow = document.body.style.overflow;
+    root.classList.add("modal-open");
+    document.body.style.overflow = "hidden";
+    return () => {
+      if (!hadModalClass) root.classList.remove("modal-open");
+      document.body.style.overflow = previousOverflow;
+    };
+  }, []);
   function go(to) {
     nav(to);
     onClose();
   }
   return (
-    <div role="dialog" aria-modal="true" aria-label="More pages" data-public-dialog tabIndex={-1} onKeyDown={e=>{if(e.key==="Escape"){e.stopPropagation();onClose?.();}}} className="fixed inset-0 z-50 md:hidden" onClick={onClose}>
-      <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" />
+    <div role="dialog" aria-modal="true" aria-label="More pages" data-public-dialog tabIndex={-1} onKeyDown={e=>{if(e.key==="Escape"){e.stopPropagation();onClose?.();}}} className="fixed inset-0 z-[60] flex items-end justify-center md:hidden">
+      <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={onClose} />
       <div
-        className="absolute left-1/2 -translate-x-1/2 bottom-[calc(4.5rem+env(safe-area-inset-bottom))] w-[min(94vw,28rem)] max-h-[80dvh] flex flex-col bg-card rounded-2xl shadow-2xl border border-border overflow-hidden animate-[accordion-down_.18s_ease-out]"
+        className="relative w-full max-h-[80dvh] flex flex-col bg-card rounded-t-3xl border border-border p-5 pb-[calc(1.25rem+env(safe-area-inset-bottom))] overflow-hidden"
         onClick={(e) => e.stopPropagation()}>
         
-        <div className="flex items-center justify-between px-4 py-3 border-b border-border">
-          <h3 className="font-bold">More</h3>
+        <div aria-hidden="true" className="w-10 h-1 bg-foreground/20 rounded-full mx-auto mb-4 shrink-0" />
+        <div className="flex items-center justify-between mb-5 shrink-0">
+          <h2 className="text-lg font-extrabold tracking-tight">More</h2>
           <button
             onClick={onClose}
-            className="p-2 rounded-full hover:bg-foreground/5"
+            className="w-11 h-11 grid place-items-center rounded-full hover:bg-foreground/10"
             aria-label="Close">
             
             <X size={18} />
           </button>
         </div>
-        <div className="flex flex-col gap-1 p-3 min-h-0 overflow-y-auto">
+        <div className="flex flex-col gap-2 min-h-0 overflow-y-auto overscroll-contain">
           {items.map(({ to, icon: Icon, label }) =>
           <button
             key={to}
             onClick={() => go(to)}
-            className={`relative flex items-center gap-3 px-3 py-2 rounded-xl transition tap-target text-left ${
+            className={`relative w-full min-h-[64px] flex items-center justify-start gap-3 p-3.5 rounded-2xl transition text-left shrink-0 ${
             loc.pathname === to ?
             "bg-foreground/5 text-foreground" :
-            "hover:bg-foreground/[0.03] text-foreground/70"}`
+            "bg-foreground/[0.02] hover:bg-foreground/[0.05] text-foreground"}`
             }>
             
-              <Icon size={22} />
+              <span className="w-10 h-10 rounded-xl bg-foreground/[0.06] grid place-items-center shrink-0"><Icon size={18} className="text-foreground/70" /></span>
+              <span className="text-sm font-bold flex-1 min-w-0">{label}</span>
               {to === "/notifications" && unread > 0 &&
-            <span className="absolute top-1.5 right-2 min-w-[16px] h-4 px-1 rounded-full bg-foreground text-background text-[9px] font-bold grid place-items-center">
+            <span className="min-w-[20px] h-5 px-1.5 rounded-full bg-foreground text-background text-[10px] font-bold grid place-items-center shrink-0">
                   {unread > 99 ? "99+" : unread}
                 </span>
             }
-              <span className="text-sm font-medium">{label}</span>
+              <ChevronRight size={16} className="text-foreground/30 shrink-0" />
             </button>
           )}
         </div>
