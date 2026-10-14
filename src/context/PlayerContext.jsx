@@ -23,6 +23,11 @@ import {
 import { useAuth } from "@/lib/AuthContext";
 
 const isIOSDevice=()=>typeof navigator!=="undefined"&&(/iPad|iPhone|iPod/.test(navigator.userAgent)||(navigator.platform==="MacIntel"&&navigator.maxTouchPoints>1));
+// Declare music playback so supported WebKit versions keep the audio session
+// eligible for background output, including MediaElementSource audio.
+function configurePlaybackSession(){
+ try{const session=Reflect.get(navigator,"audioSession");if(session&&session.type!=="playback")session.type="playback";}catch{}
+}
 const PlayerContext = createContext(null);
 export const usePlayer = () => useContext(PlayerContext);
 
@@ -186,6 +191,7 @@ export function PlayerProvider({ children }) {
 
   // --- Web Audio graph (created once, on first play) ---
   const ensureGraph = useCallback(() => {
+    configurePlaybackSession();
     if (audioCtxRef.current) return audioCtxRef.current;
     try {
       const AC = window.AudioContext || Reflect.get(window,"webkitAudioContext");
@@ -429,6 +435,11 @@ export function PlayerProvider({ children }) {
       const shouldPlay = autoPlayOnLoadRef.current;
       autoPlayOnLoadRef.current = true;
       if (shouldPlay) {
+        configurePlaybackSession();
+        if(ctx&&(ctx.state==="suspended"||ctx.state==="interrupted")){
+          try{await ctx.resume();}catch{}
+          if(token!==loadTokenRef.current)return;
+        }
         el
           .play()
           .then(() => setIsPlaying(true))
@@ -614,6 +625,7 @@ export function PlayerProvider({ children }) {
       };
       const onPlay = () => {
         if (a === activeEl()) {
+          configurePlaybackSession();
           setIsPlaying(true);
           syncPositionState(a);
         }
@@ -886,6 +898,7 @@ export function PlayerProvider({ children }) {
   // silent — the "volume disappears after pause" bug. await resume, then play.
   const resumeAndPlay = useCallback(
     (a) => {
+      configurePlaybackSession();
       const ctx = audioCtxRef.current;
       const run = () => {
         if (!crossfadingRef.current) setGainImmediate(activeIdxRef.current, 1);
@@ -950,6 +963,8 @@ export function PlayerProvider({ children }) {
 
   const prepareVolumeControl=useCallback(()=>{
     if(!isIOSDevice())return;
+    // A tap at full volume should leave native background playback available.
+    if(!audioCtxRef.current&&volumeRef.current>=1)return;
     const ctx=ensureGraph();
     if(ctx&&ctx.state!=="running")ctx.resume().catch(()=>{});
   },[ensureGraph]);
@@ -1161,10 +1176,10 @@ export function PlayerProvider({ children }) {
   // the foreground, re-arm the context and resume the track if it was playing.
   useEffect(() => {
     const onVis = () => {
-      if (document.visibilityState !== "visible") return;
-      const ctx = audioCtxRef.current;
-      if (ctx && (ctx.state === "suspended" || ctx.state === "interrupted")) ctx.resume().catch(() => {});
-      if (!isPlayingRef.current) return;
+      if(document.visibilityState!=="visible"||!isPlayingRef.current)return;
+      configurePlaybackSession();
+      const ctx=audioCtxRef.current;
+      if(ctx&&(ctx.state==="suspended"||ctx.state==="interrupted"))ctx.resume().catch(()=>{});
       const a = activeEl();
       if (a && a.paused) {
         if (!crossfadingRef.current) setGainImmediate(activeIdxRef.current, 1);
@@ -1233,6 +1248,7 @@ export function PlayerProvider({ children }) {
     if (!("mediaSession" in navigator)) return;
     const t = currentTrack;
     if (!t) {
+      try{const session=Reflect.get(navigator,"audioSession");if(session?.type==="playback")session.type="auto";}catch{}
       navigator.mediaSession.metadata = null;
       navigator.mediaSession.playbackState = "none";
       return;
