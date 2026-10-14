@@ -1,3 +1,4 @@
+import MusicVideoPicker from "@/components/upload/MusicVideoPicker";
 import { useState, useEffect, useRef } from "react";
 import { base44 } from "@/api/base44Client";
 import { GENRES } from "@/lib/audio-utils";
@@ -16,6 +17,8 @@ export default function EditTrackModal({ track, onClose, onSaved, onDeleted }) {
     is_downloadable: !!track.is_downloadable,
   });
   const [cover, setCover] = useState(null);
+  const [videoFile,setVideoFile]=useState(null),[videoRemoved,setVideoRemoved]=useState(false),[videoRights,setVideoRights]=useState(false);
+  const videoUpload=useRef(null);
   const [coverPreview, setCoverPreview] = useState(track.cover_art_url || "");
   const [saving, setSaving] = useState(false);
   const [deleting, setDeleting] = useState(false);
@@ -46,7 +49,7 @@ export default function EditTrackModal({ track, onClose, onSaved, onDeleted }) {
   }
 
   async function save() {
-    if (!form.title.trim()||writeLock.current) return;
+    if (!form.title.trim()||writeLock.current||(videoFile&&!videoRights)) return;
     writeLock.current=true;setSaving(true);
     try {
       const normalized={...form,title:form.title.trim(),artist:(form.artist||'').trim()};
@@ -55,6 +58,10 @@ export default function EditTrackModal({ track, onClose, onSaved, onDeleted }) {
         if(artwork.current?.file!==cover){const result=await base44.integrations.Core.UploadFile({file:cover});if(!result?.file_url)throw Error('Artwork did not upload');artwork.current={file:cover,url:result.file_url};}
         payload.cover_art_url=artwork.current.url;
       }
+      if(videoFile){
+        if(videoUpload.current?.file!==videoFile){const uploaded=await base44.integrations.Core.UploadPrivateFile({file:videoFile});if(!uploaded?.file_uri)throw Error('Video did not upload');videoUpload.current={file:videoFile,uri:uploaded.file_uri};}
+        payload.music_video_file_uri=videoUpload.current.uri;payload.video_rights_confirmed=true;
+      }else if(videoRemoved)payload.music_video_file_uri='';
       if(!alive.current)return;
       if(!Object.keys(payload).length){onClose();return;}
       const saved=await base44.entities.Track.update(track.id,payload);
@@ -142,6 +149,8 @@ export default function EditTrackModal({ track, onClose, onSaved, onDeleted }) {
             className="w-full"
           />
 
+          <MusicVideoPicker file={videoFile} existing={!videoRemoved&&!!(track.music_video_file_uri||track._has_music_video)} disabled={saving||deleting} onChange={file=>{setVideoFile(file);setVideoRights(false);}} onRemoveExisting={()=>setVideoRemoved(true)} />
+          {videoFile&&<label className="flex items-start gap-2 text-xs leading-relaxed"><input type="checkbox" checked={videoRights} onChange={event=>setVideoRights(event.target.checked)} disabled={saving||deleting}/>I own or have permission to distribute this video.</label>}
           <textarea
             aria-label="Track description" disabled={saving||deleting}
             value={form.description}
@@ -208,7 +217,7 @@ export default function EditTrackModal({ track, onClose, onSaved, onDeleted }) {
               </button>
               <button
                 onClick={save}
-                disabled={saving||deleting}
+                disabled={saving||deleting||(!!videoFile&&!videoRights)}
                 className="px-4 py-2 rounded-full bg-foreground text-background text-sm font-semibold flex items-center gap-2 disabled:opacity-40"
               >
                 {saving ? (
