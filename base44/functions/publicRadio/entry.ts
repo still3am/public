@@ -52,8 +52,7 @@ export default async function handleRequest(req) {
       const track = await svc.entities.Track.get(entry.track_id).catch(() => null);
       if (!track || !track.is_published || track.approval_status!=="approved" || track.explicit || hidden.has(track.uploader_id)) return null;
       let url = track.audio_url || "";
-      if (sign && track.audio_file_uri) url = (await svc.integrations.Core.CreateFileSignedUrl({file_uri:track.audio_file_uri,expires_in:3600})).signed_url;
-      return {id:track.id,title:track.title,artist:track.artist,uploader_id:track.uploader_id,uploader_name:track.uploader_name,genre:track.genre,cover_art_url:track.cover_art_url,audio_url:sign?url:"",_private_audio:!sign&&!!track.audio_file_uri,duration_seconds:entry.duration_seconds,is_published:true,approval_status:"approved",explicit:false,is_downloadable:!!track.is_downloadable};
+      return {id:track.id,title:track.title,artist:track.artist,uploader_id:track.uploader_id,uploader_name:track.uploader_name,genre:track.genre,cover_art_url:track.cover_art_url,audio_url:url,_private_audio:!!track.audio_file_uri,duration_seconds:entry.duration_seconds,is_published:true,approval_status:"approved",explicit:false,is_downloadable:!!track.is_downloadable};
     };
     const slots = []; let cursor = start;
     for (let step=0; step<7; step++) {
