@@ -237,7 +237,8 @@ html.modal-open .mobile-tab-bar { display: none !important; }
   line-height: 1.3; overflow-wrap: anywhere; white-space: normal;
   transition: opacity .35s ease, filter .35s ease;
 }
-.public-lyric-line:active { transform: none; }
+.public-lyrics-scroll .public-lyric-line:active { transform: none; }
+.now-playing-view-switch > button:active { transform: none; }
 .public-lyric-line:focus-visible { outline: 2px solid rgba(255,255,255,.75); outline-offset: 5px; border-radius: 6px; }
 .public-lyric-plain { opacity: .88; }
 .public-lyrics-note { color: rgba(255,255,255,.5); font-size: 11px; margin-bottom: 20px; }
