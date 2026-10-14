@@ -48,7 +48,7 @@ function IconButton({ icon: Icon, onClick, active, size = 22, label, disabled = 
       className={`disabled:opacity-25 disabled:cursor-default p-2.5 rounded-full active:scale-90 hover:bg-white/10 transition ${
       active ? "opacity-100" : "opacity-50"} ${
       className}`}>
-      
+
       <Icon size={size} />
     </button>);
 
@@ -245,7 +245,7 @@ export default function FullScreenPlayer({ onClose }) {
       opacity: dragging ? 1 - Math.min(dragY / (window.innerHeight || 800), 0.45) : 1,
       transition: dragging ? "none" : "transform .32s cubic-bezier(.22,1,.36,1), opacity .28s ease-out"
     }}>
-      
+
       {/* ambient glow */}
       <div
         className="pointer-events-none absolute inset-0 opacity-[0.55]"
@@ -254,7 +254,7 @@ export default function FullScreenPlayer({ onClose }) {
       {/* reactive visualizer */}
       {showPulse && <PulseVisualizer palette={playerPalette} className="absolute inset-0 z-0" />}
       <div aria-hidden="true" className="pointer-events-none absolute inset-0 z-0" style={{ background: "linear-gradient(180deg, rgba(5,6,10,.14) 0%, rgba(5,6,10,.08) 38%, rgba(5,6,10,.48) 100%)" }} />
-      
+
 
       {/* top bar */}
       <div
@@ -291,7 +291,7 @@ export default function FullScreenPlayer({ onClose }) {
               <p className="text-sm font-bold truncate">{t.title}</p>
               <p className="text-xs text-white/60 truncate mt-0.5">{t.artist || t.uploader_name || "Unknown"}</p>
             </div>
-            
+
           </button>}
         </div>
         <TrackOptionsMenu
@@ -304,7 +304,7 @@ export default function FullScreenPlayer({ onClose }) {
           { icon: SlidersHorizontal, label: "Equalizer", onClick: () => setShowMixer(true) }]
 
           } />
-        
+
       </div>
 
       {/* body */}
@@ -327,7 +327,7 @@ export default function FullScreenPlayer({ onClose }) {
               className={`relative aspect-square w-full max-w-[min(38vh,80vw)] xl:max-w-[440px] 2xl:max-w-[480px] xl:max-h-[46vh] 2xl:max-h-[52vh] rounded-3xl overflow-hidden shadow-[0_24px_90px_rgba(0,0,0,0.55)] bg-white/10 shrink-0 touch-none transition-transform duration-500 ${
               p.isPlaying ? "scale-100" : "scale-[0.97]"} ${
               showingLyrics ? "hidden xl:flex" : "flex"}`}>
-                
+
                 {coverUrl && !coverFailed ?
               <img src={coverUrl} alt="" draggable={false} onError={() => setCoverFailed(true)} className="w-full h-full object-cover pointer-events-none select-none" /> :
 
@@ -340,7 +340,7 @@ export default function FullScreenPlayer({ onClose }) {
                 className={`absolute inset-0 grid place-items-center bg-black/30 backdrop-blur-sm transition-opacity duration-200 ${
                 showVolHint ? "opacity-100" : "opacity-0 pointer-events-none"}`
                 }>
-                  
+
                   <div className="flex flex-col items-center gap-2">
                     <VolIcon size={40} />
                     <span className="text-4xl font-extrabold tabular-nums">{Math.round(volPct)}%</span>
@@ -359,7 +359,7 @@ export default function FullScreenPlayer({ onClose }) {
                 to={`/track/${t.id}`}
                 onClick={onClose}
                 className="text-sm md:text-base opacity-70 hover:opacity-100 truncate block mt-1">
-                
+
                 {t.artist || t.uploader_name || "Unknown"}
               </Link>
             </div>
@@ -379,7 +379,7 @@ export default function FullScreenPlayer({ onClose }) {
               <div
                 className="absolute top-1/2 -translate-y-1/2 w-3 h-3 bg-overlay-foreground rounded-full shadow-md opacity-0 group-hover:opacity-100 transition"
                 style={{ left: `calc(${progress}% - 6px)` }} />
-              
+
               <input
                 type="range"
                 min={0}
@@ -389,7 +389,7 @@ export default function FullScreenPlayer({ onClose }) {
                 onChange={(e) => p.seek(Number(e.target.value))}
                 className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
                 aria-label="Seek" />
-              
+
             </div>
             <div className="flex justify-between text-[11px] opacity-70 mt-2 tabular-nums">
               <span>{formatTime(p.position)}</span>
@@ -414,11 +414,10 @@ export default function FullScreenPlayer({ onClose }) {
               active={!repeatOff}
               label="Repeat"
               size={20} />
-            
+
           </div>
 
           {/* volume (desktop inline) */}
-          
 
 
 
@@ -440,7 +439,8 @@ export default function FullScreenPlayer({ onClose }) {
 
 
 
-          
+
+
 
           {/* mobile artwork / lyrics toggle — only when this track has lyrics */}
           {hasLyrics && !showingLyrics &&
@@ -468,7 +468,6 @@ export default function FullScreenPlayer({ onClose }) {
               <X size={18} />
             </button>
           </div>
-          
 
 
 
@@ -477,7 +476,8 @@ export default function FullScreenPlayer({ onClose }) {
 
 
 
-          
+
+
           <div className="flex-1 min-h-0 flex flex-col">
             {hasLyrics && showLyricsPanel && <SyncedLyrics key={t.id} trackId={t.id} position={p.position} fallbackText={t.lyrics_text} resolvedLyrics={lyricsAvailability} onSeek={p.seek} onUnavailable={handleLyricsUnavailable} />}
           </div>
@@ -500,7 +500,6 @@ export default function FullScreenPlayer({ onClose }) {
       }
 
       {/* mobile bottom toggle bar */}
-      
 
 
 
@@ -521,7 +520,8 @@ export default function FullScreenPlayer({ onClose }) {
 
 
 
-      
+
+
 
     </div>);
 
