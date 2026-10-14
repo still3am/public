@@ -1150,6 +1150,7 @@ export function PlayerProvider({ children }) {
     const ends = Date.now() + minutes * 60 * 1000;
     setSleepTimerEndsAt(ends);
     sleepTimerRef.current = setTimeout(() => {
+      window.dispatchEvent(new Event("publicradio:pause"));
       const a = activeEl();
       els().forEach(el=>el?.pause());
       setIsPlaying(false);
@@ -1163,6 +1164,7 @@ export function PlayerProvider({ children }) {
   const resumePlayback = useCallback(() => {
     const a = activeEl();
     if (!a || !currentTrack) return;
+    if (currentTrack._public_radio) { window.dispatchEvent(new Event("publicradio:join")); return; }
     // The page may have been frozen by the OS while backgrounded, leaving the
     // element with no source / nothing decoded. Reload the current track so
     // the lock-screen play button always produces sound instead of no-op.
@@ -1174,6 +1176,7 @@ export function PlayerProvider({ children }) {
   }, [currentTrack, ensureGraph, graphNeeded, loadOnActive, resumeAndPlay]);
 
   const pausePlayback = useCallback(() => {
+    window.dispatchEvent(new Event("publicradio:pause"));
     const a = activeEl();
     if (!a) return;
     els().forEach(el=>el?.pause());
