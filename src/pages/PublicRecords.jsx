@@ -1,7 +1,7 @@
 import LoadError from '@/components/LoadError';
 import {useRef} from 'react';
 import { useEffect, useState, useMemo } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { Link, useParams, useNavigate } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import { fetchArtistTracks } from "@/lib/artistTracks";
 import SafetyControls from '@/components/SafetyControls';
@@ -9,12 +9,15 @@ import TrackCard from "@/components/TrackCard";
 import PullToRefresh from "@/components/PullToRefresh";
 import ArtistNameEditor from "@/components/ArtistNameEditor";
 import CollapsibleText from "@/components/CollapsibleText";
-import ArtistColorTint from "@/components/ArtistColorTint";
+import TrackRow from "@/components/TrackRow";
+import LibraryButton from "@/components/LibraryButton";
+import { useCoverUrl } from "@/hooks/useCoverUrl";
 import { usePlayer } from "@/context/PlayerContext";
 import { useAuth } from "@/lib/AuthContext";
 import { useToast } from "@/components/ui/use-toast";
 import {
   ChevronLeft,
+  ChevronRight,
   Loader2,
   Music,
   Mic2,
@@ -45,6 +48,13 @@ const mkSocial = (url, icon, label) => {
   const href = safeUrl(url);
   return href ? { href, icon, label } : null;
 };
+
+function ArtistArtwork({source,className}) {
+  const url = useCoverUrl(source);
+  const [failed,setFailed] = useState(false);
+  useEffect(() => setFailed(false), [url]);
+  return url && !failed ? <img src={url} alt="" className={className} onError={() => setFailed(true)} /> : <div aria-hidden="true" className={className + " artist-art-fallback"}><Mic2 size={36} /></div>;
+}
 
 /** @param {any} props */
 function Pill({ icon: Icon, children }) {
@@ -185,123 +195,51 @@ export default function PublicRecords({ id: propId, fallbackArtist = null }) {
   sort((a, b) => (b.play_count || 0) - (a.play_count || 0)).
   find((t) => t.cover_art_url)?.cover_art_url;
 
+  const latestTrack = [...tracks].sort((a,b) => (Date.parse(b.created_date)||0) - (Date.parse(a.created_date)||0))[0];
+  const topTracks = [...tracks].sort((a,b) => (b.play_count||0) - (a.play_count||0)).slice(0,6);
   const isAdmin = !!user && user.role === "admin";
   const playAll = () => p.playTrackAt(visibleTracks.length?visibleTracks:tracks);
 
   return (
     <PullToRefresh onRefresh={load}>
-      <div className="max-w-4xl mx-auto pb-16">
-        <button
-          onClick={() => nav(-1)}
-          className="inline-flex items-center gap-1.5 mb-4 text-sm font-semibold text-foreground/60 hover:text-foreground transition"
-        >
-          <ChevronLeft size={18} /> Back
-        </button>
-
-        {/* Hero */}
-        <section className="relative rounded-3xl overflow-hidden border border-border bg-card mb-6">
-          <div className="relative h-36 md:h-52">
-            {artist.cover_art_url ?
-            <img
-              src={artist.cover_art_url}
-              alt=""
-              className="absolute inset-0 w-full h-full object-cover scale-110 blur-2xl opacity-60" /> :
-
-
-            <div className="absolute inset-0 bg-gradient-to-br from-foreground/20 via-foreground/[0.07] to-transparent" />
-            }
-            <ArtistColorTint coverUrl={topCover} />
-            
-          </div>
-
-          <div className="relative px-5 md:px-10 pb-6 md:pb-8 flex flex-col items-center text-center -mt-16 md:-mt-20">
-            <div className="flex-1 min-w-0">
-              <ArtistNameEditor
-                artist={artist}
-                canEdit={!!user}
-                onSaved={(name) => setArtist((prev) => prev ? { ...prev, name } : prev)} />
-              {meta.length > 0 &&
-              <div className="flex flex-wrap items-center justify-center gap-1.5 mt-3">
-                  {meta.map((m, i) =>
-                <Pill key={i} icon={m.icon}>{m.label}</Pill>
-                )}
-                </div>
-              }
-              <div className="flex flex-wrap items-center justify-center gap-3 mt-4">
-                {tracks.length > 0 &&
-                <button
-                  onClick={playAll}
-                  className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-foreground text-background text-xs font-bold active:scale-95 transition shadow-sm">
-                  
-                    <Play size={13} className="fill-current" /> Play all
-                  </button>
-                }
-                {isAdmin && id && (generating ?
-                <span className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full bg-foreground/[0.06] text-foreground/60 text-xs font-semibold">
-                    <Loader2 size={13} className="animate-spin" /> Generating…
-                  </span> :
-
-                <button
-                  onClick={generateHistory}
-                  className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full bg-foreground/[0.06] hover:bg-foreground/[0.1] text-foreground/70 text-xs font-semibold active:scale-95 transition">
-                  
-                    <Sparkles size={13} /> {artist.history_text ? "Regenerate history" : "Generate history"}
-                  </button>)
-                }
-              </div>
+      <div className="artist-page max-w-5xl mx-auto pb-12">
+        <section className="artist-hero">
+          <ArtistArtwork source={artist.cover_art_url || topCover} className="artist-hero-image" />
+          <div className="artist-hero-shade" />
+          <button onClick={() => window.history.state?.idx > 0 ? nav(-1) : nav("/search")} className="artist-back" aria-label="Back"><ChevronLeft size={25} /></button>
+          <div className="artist-hero-bottom">
+            <div className="artist-hero-name min-w-0">
+              <p className="artist-eyebrow">Artist on PUBLIC</p>
+              <ArtistNameEditor artist={artist} canEdit={!!user && !!id} onSaved={name => setArtist(prev => prev ? {...prev,name} : prev)} />
+              <p className="artist-track-count">{tracks.length} {tracks.length === 1 ? "song" : "songs"}</p>
             </div>
-          </div>
-
-          {(artist.bio || socials.length > 0) &&
-          <div className="px-5 md:px-10 pb-6 md:pb-8 border-t border-border/60 pt-5 flex flex-col md:flex-row gap-4 md:items-center">
-              {artist.bio &&
-            <p className="selectable-content text-sm text-foreground/70 leading-relaxed flex-1 min-w-0">
-                  {artist.bio}
-                </p>
-            }
-              {socials.length > 0 &&
-            <div className="flex flex-wrap gap-2 justify-center md:justify-end">
-                  {socials.map((s, i) =>
-              <SocialChip key={i} href={s.href} icon={s.icon} label={s.label} />
-              )}
-                </div>
-            }
-            </div>
-          }
-        </section>
-
-        {/* History (AI) */}
-        <section className="mb-8">
-          <SectionTitle icon={Sparkles}>
-            History
-          </SectionTitle>
-          <div className="rounded-2xl border border-border bg-gradient-to-br from-foreground/[0.04] to-transparent p-5 md:p-6">
-            {artist.history_text ?
-            <CollapsibleText
-              text={artist.history_text}
-              className="selectable-content text-sm text-foreground/80 leading-relaxed whitespace-pre-line" /> :
-
-            <div className="text-center py-4">
-                <div className="w-11 h-11 rounded-full bg-foreground/[0.06] grid place-items-center mx-auto mb-3">
-                  <Sparkles size={18} className="text-foreground/40" />
-                </div>
-                <p className="text-sm text-foreground/55 max-w-sm mx-auto leading-relaxed">
-                  No verified artist history is available yet.
-                </p>
-              </div>
-            }
+            {tracks.length > 0 && <button onClick={playAll} className="artist-play" aria-label={"Play " + artist.name}><Play size={26} fill="currentColor" /></button>}
           </div>
         </section>
 
-        <SafetyControls type="artist" id={id} label="artist page" />
+        {latestTrack && <section className="artist-latest">
+          <button className="artist-latest-cover" onClick={() => p.playTrackAt(tracks, tracks.findIndex(track => track.id === latestTrack.id))} aria-label={"Play " + latestTrack.title}><ArtistArtwork source={latestTrack.cover_art_url} className="w-full h-full object-cover" /></button>
+          <div className="min-w-0 flex-1">
+            <p className="eyebrow text-muted-foreground mb-2">Recently added to PUBLIC</p>
+            <Link to={"/track/" + latestTrack.id} className="artist-latest-title">{latestTrack.title}</Link>
+            <p className="text-sm text-muted-foreground mt-1 truncate">{latestTrack.artist || artist.name}</p>
+            <div className="mt-2"><LibraryButton track={latestTrack} /></div>
+          </div>
+        </section>}
+
+        {topTracks.length > 0 && <section className="artist-top-songs">
+          <SectionTitle icon={Music} right={<button className="text-xs text-muted-foreground px-2 py-2" onClick={() => document.getElementById("artist-discography")?.scrollIntoView({behavior:window.matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth"})}>All songs <ChevronRight size={14} className="inline" /></button>}>Top Songs</SectionTitle>
+          <div className="artist-top-list">{topTracks.map((track,index) => <TrackRow key={track.id} track={track} index={index} queue={topTracks} queueIndex={index} />)}</div>
+        </section>
+
         {/* Discography */}
-        <section className="mb-12">
+        <section id="artist-discography" className="artist-discography mb-8">
           <SectionTitle icon={Disc3} right={
           <span className="text-xs font-semibold text-foreground/40 bg-foreground/[0.05] rounded-full px-2.5 py-1">
               {tracks.length}
             </span>
           }>
-            Discography
+            Songs
           </SectionTitle>
           {tracks.length>0&&<div className="collection-tools"><input aria-label="Search artist discography" placeholder="Find a song" value={query} onChange={e=>setQuery(e.target.value)} onKeyDown={e=>{if(e.key==="Escape")setQuery("");}}/><select aria-label="Sort artist discography" value={sort} onChange={e=>setSort(e.target.value)}><option value="recent">Newest</option><option value="popular">Most played</option><option value="title">Title A–Z</option></select></div>}
           {tracks.length === 0 ?
@@ -318,6 +256,15 @@ export default function PublicRecords({ id: propId, fallbackArtist = null }) {
             </div>
           }
         </section>
+        {(artist.bio || meta.length > 0 || socials.length > 0 || artist.history_text || isAdmin) && <section className="artist-about">
+          <SectionTitle icon={Mic2}>About {artist.name}</SectionTitle>
+          {artist.bio && <CollapsibleText text={artist.bio} className="selectable-content text-sm text-muted-foreground leading-relaxed" />}
+          {meta.length > 0 && <div className="flex flex-wrap gap-2 mt-4">{meta.map((m,i) => <Pill key={i} icon={m.icon}>{m.label}</Pill>)}</div>}
+          {socials.length > 0 && <div className="flex flex-wrap gap-2 mt-4">{socials.map((s,i) => <SocialChip key={i} href={s.href} icon={s.icon} label={s.label} />)}</div>}
+          {artist.history_text && <div className="mt-6"><h3 className="font-semibold mb-3">History</h3><CollapsibleText text={artist.history_text} className="selectable-content text-sm text-muted-foreground leading-relaxed whitespace-pre-line" /></div>}
+          {isAdmin && id && <button onClick={generateHistory} disabled={generating} className="playlist-action inline-flex items-center gap-2 px-4 py-2.5 mt-5 text-xs">{generating ? <Loader2 size={14} className="animate-spin" /> : <Sparkles size={14} />}{generating ? "Generating…" : artist.history_text ? "Regenerate history" : "Generate history"}</button>}
+        </section>}
+        {id && <SafetyControls type="artist" id={id} label="artist page" />}
       </div>
     </PullToRefresh>);
 
