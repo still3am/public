@@ -106,3 +106,70 @@ html.dark {
  .public-app .lounge-community { padding:16px; }
  .public-app .profile-actions { justify-content:center; }
 }
+
+/* Floating mobile navigation and a compact player with shared safe-area spacing. */
+@media(max-width:767px) {
+ .public-app { --mobile-nav-bottom:calc(8px + env(safe-area-inset-bottom)); --mobile-nav-height:64px; }
+ .public-app .mobile-tab-bar {
+  position:fixed;left:12px;right:12px;bottom:var(--mobile-nav-bottom);z-index:20;
+  display:flex;align-items:center;gap:8px;height:var(--mobile-nav-height);max-width:520px;margin-inline:auto;
+  padding:0;border:0;background:transparent;backdrop-filter:none;pointer-events:none;
+ }
+ .public-app .mobile-nav-pill {
+  display:grid;grid-template-columns:repeat(4,minmax(0,1fr));align-items:center;flex:1;min-width:0;height:64px;padding:4px;
+  border-radius:999px;background:hsl(var(--card)/.9);border:1px solid hsl(var(--foreground)/.1);
+  box-shadow:inset 0 1px 0 hsl(var(--foreground)/.05),0 8px 26px rgb(0 0 0/.12);
+  backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);pointer-events:auto;
+ }
+ .public-app .mobile-tab-bar .mobile-nav-tab {
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;
+  min-width:0;min-height:48px;height:54px;margin:0;padding:4px 2px;border:0;border-radius:999px;
+  background:transparent;color:hsl(var(--foreground)/.58);box-shadow:none;
+  font-size:10px;font-weight:600;line-height:1.15;text-decoration:none;transition:background .18s,color .18s;
+  -webkit-tap-highlight-color:transparent;
+ }
+ .public-app .mobile-tab-bar .mobile-nav-tab svg { width:23px;height:23px;flex-shrink:0; }
+ .public-app .mobile-tab-bar .mobile-nav-tab.is-active {
+  background:hsl(var(--foreground)/.09);color:hsl(var(--foreground));font-weight:750;
+  box-shadow:inset 0 1px 0 hsl(var(--foreground)/.05);
+ }
+ .public-app .mobile-tab-bar .mobile-nav-search {
+  display:grid;place-items:center;width:64px;min-width:64px;height:64px;min-height:64px;border-radius:50%;
+  background:hsl(var(--card)/.9);border:1px solid hsl(var(--foreground)/.1);color:hsl(var(--foreground));
+  box-shadow:inset 0 1px 0 hsl(var(--foreground)/.05),0 8px 26px rgb(0 0 0/.12);
+  backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);pointer-events:auto;
+ }
+ .public-app .mobile-tab-bar .mobile-nav-search svg { width:26px;height:26px; }
+ .public-app .mobile-tab-bar .mobile-nav-search.is-active { background:hsl(var(--foreground));color:hsl(var(--background)); }
+ .public-app .mobile-tab-bar a:focus-visible,.public-app .mobile-tab-bar button:focus-visible { outline:2px solid hsl(var(--foreground));outline-offset:3px; }
+ .public-app .player-surface {
+  left:12px;right:12px;bottom:calc(var(--mobile-nav-bottom) + var(--mobile-nav-height) + 10px);max-width:520px;margin-inline:auto;
+  border:1px solid hsl(var(--foreground)/.1);border-radius:22px;background:hsl(var(--card)/.94);
+  box-shadow:0 5px 22px rgb(0 0 0/.1);overflow:hidden;
+ }
+ .public-app .player-surface>div:first-child { height:2px; }
+ .public-app .player-surface>div:first-child>div { height:2px; }
+ .public-app .player-surface>div:last-child { min-height:60px;padding:7px 10px;gap:8px; }
+ .public-app .player-surface button[aria-label="Open Now Playing"] { gap:10px;overflow:hidden; }
+ .public-app .player-surface button[aria-label="Open Now Playing"] img,
+ .public-app .player-surface button[aria-label="Open Now Playing"]>.shrink-0>div { width:40px;height:40px;border-radius:10px;box-shadow:none; }
+ .public-app .mini-player-play { background:transparent;color:hsl(var(--foreground));box-shadow:none; }
+ .public-app .player-surface button[aria-label="Next"] { display:grid;place-items:center;width:44px;height:44px;padding:8px; }
+ .public-app .app-content { padding-bottom:calc(100px + env(safe-area-inset-bottom)); }
+ .public-app.has-player .app-content { padding-bottom:calc(175px + env(safe-area-inset-bottom)); }
+ .public-app .home-feature { padding:20px;background:transparent;border:0; }
+ .public-app .home-feature-copy h2 { font-size:30px; }
+ .public-app .home-feature-copy>p:not(.eyebrow) { font-size:13px; }
+ .public-app .home-feature-actions { margin-top:18px;flex-wrap:wrap; }
+ .public-app .home-section { margin-bottom:30px; }
+}
+@media(max-width:359px) {
+ .public-app .mobile-tab-bar,.public-app .player-surface { left:8px;right:8px; }
+ .public-app .mobile-tab-bar { gap:6px; }
+ .public-app .mobile-tab-bar .mobile-nav-search { width:56px;min-width:56px;height:56px;min-height:56px; }
+ .public-app .mobile-tab-bar .mobile-nav-tab { font-size:9px; }
+}
+@media(prefers-reduced-motion:reduce) {
+ .public-app .mobile-tab-bar .mobile-nav-tab { transition:none; }
+}
+
