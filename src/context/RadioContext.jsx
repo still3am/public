@@ -1,4 +1,4 @@
-import {createContext,useContext,useEffect,useRef,useState} from "react";
+import {createContext,useContext,useEffect,useLayoutEffect,useRef,useState} from "react";
 import {base44} from "@/api/base44Client";
 import {usePlayer} from "@/context/PlayerContext";
 import {useAuth} from "@/lib/AuthContext";
@@ -42,7 +42,7 @@ export function RadioProvider({children}){
   joinedRef.current=false;setJoined(false);
   if(latest.current.currentTrack?._public_radio&&latest.current.isPlaying)latest.current.togglePlay();
  };
- useEffect(()=>{
+ useLayoutEffect(()=>{
   version.current++;state.current=null;inflight.current=null;joinedRef.current=false;activeSlot.current=null;
   setSchedule(null);setJoined(false);setNotice("");setLoading(false);
  },[user?.id]);
