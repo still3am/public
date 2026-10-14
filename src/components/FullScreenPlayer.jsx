@@ -1,7 +1,7 @@
 import {copyText} from '@/lib/shareLink';
 import { useState, useRef, useEffect, useCallback } from "react";
 import { usePlayer } from "@/context/PlayerContext";
-import { useColorExtraction } from "@/hooks/useColorExtraction";
+import { useColorPalette } from "@/hooks/useColorPalette";
 import { useAuth } from "@/lib/AuthContext";
 import { formatTime } from "@/lib/audio-utils";
 import { shareTrack } from "@/lib/shareTrack";
@@ -60,7 +60,8 @@ export default function FullScreenPlayer({ onClose }) {
   const { isInLibrary, toggle: toggleLibrary } = useLibrary();
   const offlineCover = useOfflineCoverUrl(p.currentTrack?.id, p.currentTrack?.cover_art_url);
   const coverUrl = useCoverUrl(offlineCover);
-  const bg = useColorExtraction(coverUrl);
+  const playerPalette = useColorPalette(coverUrl, true);
+  const [ambientPrimary, ambientSecondary] = playerPalette;
   const [lyricsMode, setLyricsMode] = useState(false);
   // Automatic visual pulse does not force an AudioContext; it can use an existing analyser when available.
   const showPulse = true;
@@ -238,7 +239,7 @@ export default function FullScreenPlayer({ onClose }) {
     <div role="dialog" aria-modal="true" aria-label="Now playing" data-public-dialog tabIndex={-1} onKeyDown={e=>{if(e.key==="Escape"){e.stopPropagation();onClose?.();}}}
       className="fixed inset-0 z-50 text-white animate-[fadeIn_.25s_ease-out] flex flex-col overflow-hidden"
       style={{
-        background: `linear-gradient(170deg, ${bg} 0%, #0d0d0f 55%, #000 100%)`,
+        background: "#101116",
         transform: `translateY(${dragY}px)`,
         opacity: dragging ? 1 - Math.min(dragY / (window.innerHeight || 800), 0.45) : 1,
         transition: dragging ? "none" : "transform .32s cubic-bezier(.22,1,.36,1), opacity .28s ease-out"
@@ -246,11 +247,12 @@ export default function FullScreenPlayer({ onClose }) {
       
       {/* ambient glow */}
       <div
-        className="pointer-events-none absolute -top-1/3 left-0 right-0 h-2/3 opacity-40 blur-3xl"
-        style={{ background: `radial-gradient(ellipse at center, ${bg} 0%, transparent 70%)` }} />
+        className="pointer-events-none absolute inset-0 opacity-55"
+        style={{ background: `radial-gradient(ellipse at 20% 5%, ${ambientPrimary} 0%, transparent 70%), radial-gradient(ellipse at 85% 60%, ${ambientSecondary} 0%, transparent 75%)` }} />
 
       {/* reactive visualizer */}
-      {showPulse && <PulseVisualizer className="absolute inset-0 z-0" />}
+      {showPulse && <PulseVisualizer palette={playerPalette} className="absolute inset-0 z-0" />}
+      <div aria-hidden="true" className="pointer-events-none absolute inset-0 z-0" style={{ background: "linear-gradient(180deg, rgba(5,6,10,.14) 0%, rgba(5,6,10,.08) 38%, rgba(5,6,10,.48) 100%)" }} />
       
 
       {/* top bar */}
