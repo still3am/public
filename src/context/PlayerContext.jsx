@@ -833,6 +833,7 @@ export function PlayerProvider({ children }) {
   useEffect(() => {
     handleEndedRef.current = async () => {
       if (crossfadingRef.current) return;
+      if (currentTrack?._public_radio) { setIsPlaying(false); return; }
       if (repeat === "one") {
         const a = activeEl();
         if (a) {
@@ -891,7 +892,8 @@ export function PlayerProvider({ children }) {
     setDismissed(false);
     setQueue([track]);
     setCurrentIndex(0);
-  }, []);
+    if (currentTrack?.id === track.id) loadOnActive(track);
+  }, [currentTrack?.id, loadOnActive]);
 
   // Play the active element, resuming a suspended AudioContext FIRST. WebKit
   // auto-suspends the AudioContext while audio is paused; if we call play()
@@ -937,6 +939,10 @@ export function PlayerProvider({ children }) {
   const togglePlay = useCallback(() => {
     const a = activeEl();
     if (!a || !currentTrack) return;
+    if (currentTrack._public_radio) {
+      window.dispatchEvent(new Event(a.paused ? "publicradio:join" : "publicradio:pause"));
+      if (a.paused) return;
+    }
     if (a.paused) {
       if (graphNeeded()) ensureGraph();
       resumeAndPlay(a);
@@ -1016,6 +1022,7 @@ export function PlayerProvider({ children }) {
   );
 
   const next = useCallback(() => {
+    if (currentTrack?._public_radio) { window.dispatchEvent(new Event("publicradio:join")); return; }
     // No connection? Skip ahead using the offline cache instead of a remote URL.
     if (typeof navigator !== "undefined" && !navigator.onLine) {
       advanceOffline();
@@ -1031,6 +1038,7 @@ export function PlayerProvider({ children }) {
   }, [nextIndex, transitionTo, currentTrack, extendWithGenreRadio, advanceOffline]);
 
   const prev = useCallback(() => {
+    if (currentTrack?._public_radio) { window.dispatchEvent(new Event("publicradio:join")); return; }
     cancelCrossfade();
     const a = activeEl();
     if (a && a.currentTime > 3) {
@@ -1040,7 +1048,7 @@ export function PlayerProvider({ children }) {
     }
     if (currentIndex - 1 >= 0) setCurrentIndex(currentIndex - 1);
     else if (repeat === "all") setCurrentIndex(queue.length - 1);
-  }, [currentIndex, queue.length, repeat,cancelCrossfade]);
+  }, [currentIndex, queue.length, repeat,cancelCrossfade,currentTrack]);
 
   const getBars = useCallback((seed) => {
     let s = 0;
