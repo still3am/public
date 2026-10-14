@@ -221,7 +221,7 @@ export default function TrackDetail() {
         </section>
       }
 
-      {(track._has_music_video || track.music_video_file_uri) && <TrackMusicVideo key={track.id} track={track} />}
+      {(track._has_music_video || track.music_video_file_uri) && <TrackMusicVideo key={track.id+":"+(track.music_video_file_uri||"")} track={track} />}
       {moreTracks.length > 0 && <section className="track-page-section">
         <h2>More by {track.artist}</h2>
         <div className="release-shelf" tabIndex={0} role="region" aria-label="More songs by this artist">{moreTracks.map(row=><div key={row.id} className="release-shelf-card"><TrackCard track={row} queue={moreTracks} /></div>)}</div>
@@ -235,7 +235,7 @@ export default function TrackDetail() {
       <EditTrackModal
         track={track}
         onClose={() => setEditing(false)}
-        onSaved={(updated) => setTrack((prev) => ({ ...prev, ...updated }))}
+        onSaved={(updated) => setTrack((prev) => ({ ...prev, ...updated, _has_music_video: updated.music_video_file_uri !== undefined ? !!updated.music_video_file_uri : prev?._has_music_video }))}
         onDeleted={() => nav("/profile", { replace: true })} />
 
       }
