@@ -175,7 +175,7 @@ html.dark {
 
 @media(max-width:767px) {
  .public-app .mobile-tab-bar { bottom:calc(var(--mobile-nav-bottom) + var(--mobile-search-keyboard-offset,0px)); }
- .public-app .mobile-search-home {
+ .public-app .mobile-tab-bar .mobile-search-home {
   display:grid;place-items:center;width:64px;min-width:64px;height:64px;min-height:64px;
   border-radius:50%;border:1px solid hsl(var(--foreground)/.1);background:hsl(var(--card)/.94);
   color:hsl(var(--foreground));box-shadow:0 8px 26px rgb(0 0 0/.12);pointer-events:auto;
@@ -203,7 +203,7 @@ html.dark {
  .public-app .search-page .genre-browse-label { position:absolute;left:14px;right:12px;bottom:14px;white-space:normal;text-align:left;color:#fff;font-size:19px;font-weight:750;line-height:1.1;text-shadow:0 1px 8px rgb(0 0 0/.3); }
 }
 @media(max-width:359px) {
- .public-app .mobile-search-home { width:56px;min-width:56px;height:56px;min-height:56px; }
+ .public-app .mobile-tab-bar .mobile-search-home { width:56px;min-width:56px;height:56px;min-height:56px; }
  .public-app .mobile-search-field { padding-inline:10px;gap:7px; }
  .public-app .search-page .genre-browse-label { font-size:16px;left:10px;bottom:12px; }
 }
