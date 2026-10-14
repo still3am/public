@@ -30,7 +30,7 @@ const TABS = [
 export default function Layout() {
   const location = useLocation();
   const reducedMotion=useReducedMotion();
-  const artworkPage = /^\/(?:track\/[^/]+|records\/[^/]+|artist)\/?$/.test(location.pathname);
+  const artworkPage = /^\/(?:track\/[^/]+|records\/[^/]+|artist|profile(?:\/[^/]+)?)\/?$/.test(location.pathname);
   const { user } = useAuth();
   const {currentTrack}=usePlayer();
   useScrollRestore();
