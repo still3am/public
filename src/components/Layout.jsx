@@ -52,7 +52,7 @@ export default function Layout() {
           <PageHeading />
           {TABS.map(({ path, Page, requiresAuth }) =>
           mountedTabs.current.has(path) && (!requiresAuth || user) ?
-          <div key={`${path}:${requiresAuth?user?.id:"public"}`} data-page={path === "/" ? "home" : path.slice(1)} className={activeTab?.path === path ? "page-surface block" : "page-surface hidden"}>
+          <div key={`${path}:${requiresAuth?user?.id:"public"}`} data-page={path === "/" ? "home" : path.slice(1)} className={activeTab?.path === path ? "page-surface block public-page-enter" : "page-surface hidden"}>
               <Page ownProfileTab={path === "/profile"} />
             </div> :
           null
