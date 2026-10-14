@@ -80,7 +80,9 @@ export default function FullScreenPlayer({ onClose }) {
   const [dragY, setDragY] = useState(0);
   const [dragging, setDragging] = useState(false);
   const dismissThreshold = 110;
-  const [hasLyrics, setHasLyrics] = useState(false);
+  const [lyricsAvailability, setLyricsAvailability] = useState({ trackId: null, available: false });
+  const hasLyrics = lyricsAvailability.trackId === t?.id && lyricsAvailability.available;
+  const showingLyrics = lyricsMode && hasLyrics;
   const [coverFailed, setCoverFailed] = useState(false);
 
   // Reset the broken-cover flag whenever the track (and thus its cover URL) changes.
@@ -91,10 +93,13 @@ export default function FullScreenPlayer({ onClose }) {
   useEffect(() => {
     let alive = true;
     if (!t?.id) {
-      setHasLyrics(false);
+      setLyricsAvailability({ trackId: null, available: false });
+      setLyricsMode(false);
       return;
     }
-    setHasLyrics(false);
+    setLyricsMode(false);
+    const fallbackText = typeof t.lyrics_text === "string" ? t.lyrics_text.trim() : "";
+    setLyricsAvailability({ trackId: t.id, available: !!fallbackText });
     Promise.all([
       base44.entities.Lyrics
         .filter({ track_id: t.id, status: "approved" }, "-created_date", 5)
@@ -105,8 +110,10 @@ export default function FullScreenPlayer({ onClose }) {
       const found = Array.isArray(lyricsRes) && lyricsRes.length ? lyricsRes[0] : null;
       const lines = found?.lines || [];
       const hasTimed = lines.length && lines.some((l) => l.start_time_ms || l.end_time_ms);
-      const text = (track?.lyrics_text || "").trim();
-      setHasLyrics(!!hasTimed || !!text);
+      const text = typeof track?.lyrics_text === "string" ? track.lyrics_text.trim() : fallbackText;
+      const available = !!hasTimed || !!text;
+      setLyricsAvailability({ trackId: t.id, available });
+      if (!available) setLyricsMode(false);
     });
     return () => { alive = false; };
   }, [t?.id]);
@@ -140,7 +147,7 @@ export default function FullScreenPlayer({ onClose }) {
           p.setMuted(!p.muted);
           break;
         case "KeyL":
-          setLyricsMode((v) => !v);
+          if (hasLyrics) setLyricsMode((v) => !v);
           break;
         case "Escape":
           onClose();
@@ -149,7 +156,7 @@ export default function FullScreenPlayer({ onClose }) {
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [p, onClose]);
+  }, [p, onClose, hasLyrics]);
 
   // Lock the background page while the full-screen player is open so the drag-
   // to-dismiss gesture can't scroll / overscroll the Home feed behind it.
@@ -295,9 +302,9 @@ export default function FullScreenPlayer({ onClose }) {
         <div className="flex-1 flex flex-col px-6 md:px-10 xl:px-10 xl:max-w-[580px] xl:mx-auto xl:justify-center min-h-0 pb-[env(safe-area-inset-bottom)]">
           {/* artwork / mobile lyrics */}
           <div className="relative flex-1 xl:flex-none flex items-center justify-center min-h-0 py-4">
-            {lyricsMode &&
+            {showingLyrics &&
             <div className="xl:hidden w-full h-full rounded-3xl bg-white/[0.06] overflow-hidden flex flex-col min-h-0">
-                <SyncedLyrics trackId={t.id} position={p.position} fallbackText={t.lyrics_text} onSeek={p.seek} />
+                <SyncedLyrics key={t.id} trackId={t.id} position={p.position} fallbackText={t.lyrics_text} onSeek={p.seek} onUnavailable={() => { setLyricsMode(false); setLyricsAvailability({ trackId: t.id, available: false }); }} />
               </div>
             }
               <div
@@ -308,7 +315,7 @@ export default function FullScreenPlayer({ onClose }) {
               onLostPointerCapture={()=>{volDrag.current.active=false;}}
               className={`relative aspect-square w-full max-w-[min(38vh,80vw)] xl:max-w-[440px] 2xl:max-w-[480px] xl:max-h-[46vh] 2xl:max-h-[52vh] rounded-3xl overflow-hidden shadow-[0_24px_90px_rgba(0,0,0,0.55)] bg-white/10 shrink-0 touch-none transition-transform duration-500 ${
               p.isPlaying ? "scale-100" : "scale-[0.97]"} ${
-              lyricsMode ? "hidden xl:flex" : "flex"}`}>
+              showingLyrics ? "hidden xl:flex" : "flex"}`}>
                 
                 {coverUrl && !coverFailed ?
               <img src={coverUrl} alt="" draggable={false} onError={() => setCoverFailed(true)} className="w-full h-full object-cover pointer-events-none select-none" /> :
@@ -467,7 +474,7 @@ export default function FullScreenPlayer({ onClose }) {
 
           
           <div className="flex-1 min-h-0 flex flex-col">
-            <SyncedLyrics trackId={t.id} position={p.position} fallbackText={t.lyrics_text} onSeek={p.seek} />
+            <SyncedLyrics key={t.id} trackId={t.id} position={p.position} fallbackText={t.lyrics_text} onSeek={p.seek} onUnavailable={() => { setLyricsMode(false); setLyricsAvailability({ trackId: t.id, available: false }); }} />
           </div>
         </div>
       </div>
