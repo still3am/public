@@ -92,10 +92,10 @@ export default function PlaylistDetail(){
  if(error&&!playlist)return <LoadError onRetry={load}/>;
  if(loading&&!playlist)return <div className="py-16 grid place-items-center"><Loader2 className="animate-spin"/></div>;
  if(!playlist)return <EmptyState title="Playlist unavailable"/>;
- return <div className="playlist-page playlist-refined max-w-6xl mx-auto pb-8">
-  <button onClick={()=>nav('/library')} className="inline-flex items-center gap-1 text-sm text-muted-foreground mb-6"><ChevronLeft size={16}/>Library</button>
+ return <div className="playlist-page playlist-refined playlist-full-art mx-auto pb-8">
+  <button onClick={()=>nav('/library')} className="playlist-art-back" aria-label="Back to Library"><ChevronLeft size={26}/></button>
   {error&&<button disabled={loading||busy||editing} onClick={load} className="playlist-action mb-4">Refresh playlist</button>}
-  <section className="playlist-hero">
+  <section className="playlist-hero playlist-full-hero">
    <div className="playlist-cover">{cover?<img src={cover} alt="Playlist cover" className="w-full h-full object-cover"/>:<ListMusic size={52} className="text-muted-foreground"/>}
     {isOwn&&editing&&<label className="absolute bottom-3 inset-x-3 bg-background/90 border rounded-full px-3 py-2 flex items-center justify-center gap-2 text-xs cursor-pointer"><ImagePlus size={15}/>Change cover<input aria-label="Playlist cover" disabled={busy} type="file" accept="image/jpeg,image/png,image/webp" className="hidden" onChange={e=>{const f=e.target.files?.[0];e.target.value='';if(!f||writeLock.current)return;if(!['image/jpeg','image/png','image/webp'].includes(f.type)||f.size>10*1024*1024){toast({title:'Choose a JPEG, PNG or WebP image under 10 MB',variant:'destructive'});return;}setCoverFile(f);setPreview(URL.createObjectURL(f));}}/></label>}
    </div>
