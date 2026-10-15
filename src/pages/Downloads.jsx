@@ -55,7 +55,7 @@ export default function Downloads() {
   return <div className="downloads-page max-w-4xl mx-auto pb-8">
   <Link to="/library" className="inline-flex items-center gap-1.5 min-h-11 text-sm text-muted-foreground hover:text-foreground mb-3"><ArrowLeft size={18} />Library</Link>
   <header className="mb-7">
-   <div className="flex items-center justify-between gap-4"><div><p className="text-[10px] font-semibold tracking-[.18em] uppercase text-muted-foreground mb-2 hidden">PUBLIC. ON YOUR DEVICE</p><h1 className="text-4xl md:text-5xl font-bold tracking-tight">Offline</h1></div><div className="w-14 h-14 md:w-16 md:h-16 rounded-2xl bg-foreground/[0.05] border grid place-items-center hidden"><CloudDownload size={27} strokeWidth={1.5} /></div></div>
+   <div className="flex items-center justify-between gap-4"><div><h1 className="text-4xl md:text-5xl font-bold tracking-tight">Offline</h1></div><div className="w-14 h-14 md:w-16 md:h-16 rounded-2xl bg-foreground/[0.05] border grid place-items-center hidden"><CloudDownload size={27} strokeWidth={1.5} /></div></div>
    <p className="text-sm text-muted-foreground mt-3 leading-relaxed">Your music, ready wherever you go.</p>
   </header>
   <section className="rounded-3xl border bg-card p-4 md:p-6 mb-6" aria-label="Download storage">
