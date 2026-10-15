@@ -43,6 +43,7 @@ import FollowListModal from "@/components/profile/FollowListModal";
 import StatusMessage from "@/components/profile/StatusMessage";
 import { useCoverPalette,profileGradient } from "@/hooks/useCoverPalette";
 import ProfileColorPicker from "@/components/profile/ProfileColorPicker";
+import MotionGradient from "@/components/MotionGradient";
 import { useCoverUrl } from "@/hooks/useCoverUrl";
 
 function safeUrl(u) {
@@ -332,18 +333,18 @@ export default function Profile({ownProfileTab=false}) {
 
   const displayName = profile.display_name || profile.full_name || "Unnamed";
   const avatarUrl = editMode ? form.avatar_url : profile.avatar_url;
-  const backgroundValue={mode:profile.profile_background_mode||"auto",colors:(profile.profile_background_colors||[]).filter(c=>/^#[0-9a-f]{6}$/i.test(c)).slice(0,3)};
+  const backgroundValue={mode:profile.profile_background_mode||"auto",motion:profile.profile_background_motion==="still"?"still":"flow",speed:Math.max(.35,Math.min(1.6,Number(profile.profile_background_speed)||1)),colors:(profile.profile_background_colors||[]).filter(c=>/^#[0-9a-f]{6}$/i.test(c)).slice(0,3)};
   const currentBackground=backgroundDraft||backgroundValue;
   const backgroundColors=currentBackground.mode==="off"?[]:currentBackground.mode==="custom"?currentBackground.colors:coverColors.slice(0,3);
   const closeColors=()=>{setShowColors(false);setBackgroundDraft(null);};
   const saveColors=async value=>{
     if(!isOwn)return;
-    const update={profile_background_mode:value.mode,profile_background_colors:value.colors};
+    const update={profile_background_mode:value.mode,profile_background_colors:value.colors,profile_background_motion:value.motion,profile_background_speed:value.speed};
     await base44.auth.updateMe(update);
     const confirmed=await base44.auth.me();
     const actualColors=confirmed.profile_background_colors||[];
-    if(confirmed.profile_background_mode!==value.mode||actualColors.join(",").toLowerCase()!==value.colors.join(",").toLowerCase())throw new Error("Colors have not saved yet");
-    setProfile(previous=>({...previous,profile_background_mode:confirmed.profile_background_mode,profile_background_colors:actualColors}));
+    if(confirmed.profile_background_mode!==value.mode||actualColors.join(",").toLowerCase()!==value.colors.join(",").toLowerCase()||confirmed.profile_background_motion!==value.motion||Number(confirmed.profile_background_speed)!==value.speed)throw new Error("Colors have not saved yet");
+    setProfile(previous=>({...previous,...update,profile_background_colors:actualColors}));
     window.dispatchEvent(new Event("profiles:changed"));
     await checkUserAuth({silent:true});
   };
@@ -354,7 +355,7 @@ export default function Profile({ownProfileTab=false}) {
   return (
     <PullToRefresh onRefresh={load} disabled={editMode||saving||uploadingAvatar||showSettings||showDelete||showQR||showColors||!!followList}>
 
-    {(backgroundColors.length>0||(currentBackground.mode==="auto"&&coverUrl))&&<div className="profile-artwork-background fixed inset-0 pointer-events-none z-0" aria-hidden="true" style={backgroundColors.length?{backgroundImage:profileGradient(backgroundColors),backgroundColor:"hsl(var(--background))"}:{backgroundImage:`url(${JSON.stringify(coverUrl)})`,backgroundSize:"cover",backgroundPosition:"center",filter:"blur(45px) saturate(1.35)",transform:"scale(1.12)",opacity:.6}}/>}
+    {backgroundColors.length>0&&<MotionGradient colors={backgroundColors} motion={currentBackground.motion} speed={currentBackground.speed} active={isCurrentPage&&!showColors&&!showSettings&&!showQR&&!showDelete&&!followList} className="profile-artwork-background fixed inset-0 pointer-events-none z-0" style={{opacity:.72}}/>}
     <div className={`profile-page profile-redesigned max-w-6xl mx-auto relative z-10 ${editMode ? "profile-is-editing" : ""}`}>
       {sectionError&&<button disabled={loading||editMode||saving||uploadingAvatar} onClick={load} className="playlist-action text-xs mb-4">Refresh profile</button>}
       <div className="profile-overview flex flex-col md:flex-row gap-4 md:gap-6 mb-8">
