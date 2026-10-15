@@ -126,14 +126,18 @@ function coverFor(artist, covers) {
 }
 
 export async function searchPeople(q) {
+  const term=String(q||"").trim().replace(/^@/,"").slice(0,100);
+  if(term.length<2)return {data:{results:[]}};
   try{
-    const response=await base44.functions.invoke("searchUsers",{q});
-    if(!Array.isArray(response?.data?.results))throw Error("Invalid people response");
-    return {data:{results:response.data.results}};
+    const pattern=escapeRegex(term);
+    const page=await base44.entities.PublicProfile.filter({visible:true,$or:[contains("display_name",pattern),contains("full_name",pattern)]},{sort:"-updated_date",limit:50,fields:["user_id","display_name","full_name","avatar_url"]});
+    const results=rows(page).map(row=>({id:row.user_id,display_name:row.display_name||row.full_name||"",avatar_url:row.avatar_url||""}));
+    results.sort((a,b)=>Number(b.display_name.toLowerCase()===term.toLowerCase())-Number(a.display_name.toLowerCase()===term.toLowerCase()));
+    return {data:{results}};
   }catch(primary){
-    const response=await base44.functions.invoke("securityGateway",{entity:"User",action:"searchPublic",args:[q]});
-    if(!Array.isArray(response?.data?.result))throw primary;
-    return {data:{results:response.data.result}};
+    const response=await base44.functions.invoke("searchUsers",{q:term});
+    if(!Array.isArray(response?.data?.results))throw primary;
+    return {data:{results:response.data.results}};
   }
 }
 
