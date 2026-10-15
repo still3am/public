@@ -167,7 +167,14 @@ export default function PublicRecords({ id: propId, fallbackArtist = null }) {
     setArtist(null);setTracks([]);setQuery("");setSort("recent");setSongsExpanded(false);load();
     return()=>{loadVersion.current++;};
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id,fallbackArtist?.name]);
+  }, [id,fallbackArtist?.name,user?.id,user?.show_explicit,user?.adult_confirmed]);
+
+  useEffect(() => {
+    const refreshCatalog = () => load();
+    window.addEventListener("catalog:invalidate", refreshCatalog);
+    return () => window.removeEventListener("catalog:invalidate", refreshCatalog);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [id,fallbackArtist?.name,user?.id,user?.show_explicit,user?.adult_confirmed]);
 
   async function generateHistory() {
     if(generating||!id||user?.role!=="admin")return;
