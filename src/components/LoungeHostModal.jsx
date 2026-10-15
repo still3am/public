@@ -53,7 +53,7 @@ export default function LoungeHostModal({ lounge, onClose }) {
 
   if (!session) {
     return (
-      <div className="fixed inset-0 z-[110] bg-black/70 backdrop-blur-sm grid place-items-center p-4" onClick={onClose}>
+      <div role="dialog" aria-modal="true" aria-label="Start your lounge" data-public-dialog tabIndex={-1} onKeyDown={event=>{if(event.key==="Escape"){event.stopPropagation();onClose();}}} className="fixed inset-0 z-[110] bg-black/70 backdrop-blur-sm grid place-items-center p-4" onClick={onClose}>
         <div className="bg-card rounded-3xl w-full max-w-sm p-8 text-center" onClick={(e) => e.stopPropagation()}>
           <h2 className="text-lg font-semibold mb-4">Your Lounge</h2><div className="flex justify-center gap-2"><button className="chrome-button" onClick={()=>ensureSession()}>Start lounge</button><button className="playlist-action" onClick={onClose}>Close</button></div>
         </div>
@@ -179,14 +179,14 @@ export default function LoungeHostModal({ lounge, onClose }) {
                   <span className="text-sm truncate flex-1">{m.name || "Someone"}</span>
                   <button
                 onClick={() => approve(m)}
-                className="w-8 h-8 rounded-full bg-foreground text-background grid place-items-center active:scale-90 transition"
+                className="w-11 h-11 rounded-full bg-foreground text-background grid place-items-center active:scale-90 transition"
                 aria-label="Approve">
                 
                     <Check size={15} />
                   </button>
                   <button
                 onClick={() => reject(m)}
-                className="w-8 h-8 rounded-full border border-border grid place-items-center active:scale-90 transition"
+                className="w-11 h-11 rounded-full border border-border grid place-items-center active:scale-90 transition"
                 aria-label="Decline">
                 
                     <X size={15} />
