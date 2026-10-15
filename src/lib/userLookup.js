@@ -16,14 +16,23 @@ function fetchChunk(ids) {
   if (inflight.has(key)) return inflight.get(key);
   let req;
   req = (async()=>{
+    let profiles=[];
     try{
-      const res=await base44.functions.invoke("usersByIds",{ids});
-      if(!Array.isArray(res?.data?.users)||(!res.data.users.length&&ids.length))throw Error("Profile response could not resolve these accounts");
-      return res.data.users;
+      const page=await base44.entities.PublicProfile.filter({user_id:{$in:ids},visible:true},{limit:200,sort:"-updated_date"});
+      profiles=(Array.isArray(page)?page:page?.items||[]).map(row=>({...row,id:row.user_id,created_date:row.joined_at||""}));
+    }catch{/* Fall back only for members whose public record is not available yet. */}
+    const found=new Set(profiles.map(row=>row.id)),missing=ids.filter(id=>!found.has(id));
+    if(!missing.length)return profiles;
+    try{
+      const res=await base44.functions.invoke("usersByIds",{ids:missing});
+      if(!Array.isArray(res?.data?.users))throw Error("Profile lookup unavailable");
+      return [...profiles,...res.data.users];
     }catch(primary){
-      const res=await base44.functions.invoke("securityGateway",{entity:"User",action:"lookupPublic",args:[ids]});
-      if(!Array.isArray(res?.data?.result))throw primary;
-      return res.data.result;
+      try{
+        const res=await base44.functions.invoke("securityGateway",{entity:"User",action:"lookupPublic",args:[missing]});
+        if(!Array.isArray(res?.data?.result))throw primary;
+        return [...profiles,...res.data.result];
+      }catch{if(profiles.length)return profiles;throw primary;}
     }
   })().finally(()=>{if(inflight.get(key)===req)inflight.delete(key);});
   inflight.set(key, req);
