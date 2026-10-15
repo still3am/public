@@ -1,3 +1,4 @@
+import {useSafety} from "@/context/SafetyContext";
 import {searchPeople} from "@/lib/globalSearch";
 import { useEffect, useState, useRef } from "react";
 import { createPortal } from "react-dom";
@@ -26,6 +27,8 @@ function nameOf(person) {
 /** @param {any} props */
 export default function SendTrackModal({ track, onClose }) {
   const { user } = useAuth();
+  const { blocked } = useSafety();
+  useEffect(()=>{const previous=document.body.style.overflow;document.body.style.overflow="hidden";return()=>{document.body.style.overflow=previous;};},[]);
   const request=useRef(0);
   const alive=useRef(true),seed=useRef("");
   seed.current=[user?.id,track?.id].join(":");
@@ -204,7 +207,7 @@ export default function SendTrackModal({ track, onClose }) {
                 </p>
               ) : (
                 <div className="space-y-1">
-                  {results.map((person) => (
+                  {results.filter(person=>!blocked.has(person.id)).map((person) => (
                     <button
                       key={person.id}
                       onClick={() => setPicked(person)}
