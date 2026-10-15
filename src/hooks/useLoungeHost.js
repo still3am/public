@@ -1,6 +1,6 @@
 import {readAllPages} from "@/lib/readPages";
 import {coalesce} from "@/lib/coalesce";
-import { useEffect, useState, useRef, useCallback, createContext, useContext } from "react";
+import { useEffect, useState, useRef, useCallback, createContext, useContext, createElement } from "react";
 import { base44 } from "@/api/base44Client";
 import { useAuth } from "@/lib/AuthContext";
 import { usePlayer } from "@/context/PlayerContext";
@@ -221,7 +221,7 @@ function useLoungeHostState() {
 const LoungeHostContext=createContext(null);
 export function LoungeHostProvider({children}){
  const lounge=useLoungeHostState();
- return <LoungeHostContext.Provider value={lounge}>{children}</LoungeHostContext.Provider>;
+ return createElement(LoungeHostContext.Provider,{value:lounge},children);
 }
 export function useLoungeHost(){
  const lounge=useContext(LoungeHostContext);
