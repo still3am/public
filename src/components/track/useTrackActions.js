@@ -56,7 +56,7 @@ export function useTrackActions(track, menuState, ui) {
       toast({ title: liked ? "Removed from liked" : "Liked" });
     } catch {
       if(alive.current&&latestAction.current===started)menuState.setLiked(liked);
-      // Keep the confirmed value when the write fails.
+      toast({title:"Couldn’t update this song. Please try again.",variant:"destructive"});
     } finally{likeLock.current=false;}
   };
 
@@ -76,14 +76,14 @@ export function useTrackActions(track, menuState, ui) {
       if(alive.current&&latestAction.current===started){window.dispatchEvent(new CustomEvent("follows:changed",{detail:{uid:user.id,followingId:track.uploader_id,following:!following}}));toast({ title: following ? `Unfollowed ${artistName}` : `Following ${artistName}` });}
     } catch {
       if(alive.current&&latestAction.current===started)menuState.setFollowing(following);
-      // Keep the confirmed value when the write fails.
+      toast({title:"Couldn’t update this song. Please try again.",variant:"destructive"});
     } finally{followLock.current=false;}
   };
 
   const toggleOffline = async () => {
     if(!requireAuth()) return;
     if (offline) {
-      if(await cache.removeTrack(track.id))toast({ title: "Removed from offline music" });
+      const ok=await cache.removeTrack(track.id);toast(ok?{title:"Removed from offline music"}:{title:"Couldn’t remove offline music. Try again.",variant:"destructive"});
       return;
     }
     const ok = await cache.saveForOffline(track);
@@ -98,11 +98,12 @@ export function useTrackActions(track, menuState, ui) {
     try{
       const more=await Promise.race([buildAutoQueue(track,[],20),new Promise((_,reject)=>{timer=setTimeout(()=>reject(new Error("Mix request timed out")),20000);})]);
       const player=latestPlayer.current;
-      if(!more.length||!alive.current||account.current!==uid||player.currentTrack?.id!==startedTrack)return;
+      if(!alive.current||account.current!==uid||player.currentTrack?.id!==startedTrack)return;
+      if(!more.length){toast({title:"No matching songs found for this mix. Try another song."});return;}
       if(player.currentTrack?.id===track.id)player.setQueue([...player.queue.slice(0,player.currentIndex+1),...more]);
       else player.playTrackAt([track,...more]);
       toast({title:`Mix ready · ${more.length} songs`});
-    }catch{/* Keep the current playback and queue. */}finally{clearTimeout(timer);mixing.current=false;progress.dismiss();}
+    }catch{toast({title:"Couldn’t build this mix. Please try again.",variant:"destructive"});}finally{clearTimeout(timer);mixing.current=false;progress.dismiss();}
   };
 
   const share = async () => {
@@ -162,8 +163,8 @@ export function useTrackActions(track, menuState, ui) {
       onClick:async()=>{
         if(!requireAuth()||exporting.current)return;
         exporting.current=true;
-        try{if(await downloadTrackFile(track))toast({title:"File download started"});}
-        catch{/* Keep playback unchanged. */}finally{exporting.current=false;}
+        try{const ok=await downloadTrackFile(track);toast(ok?{title:"File download started"}:{title:"Couldn’t start the download. Please try again.",variant:"destructive"});}
+        catch{toast({title:"Couldn’t download this song. Please try again.",variant:"destructive"});}finally{exporting.current=false;}
       },
     },
     {
