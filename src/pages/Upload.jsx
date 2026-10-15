@@ -1,4 +1,5 @@
 import { useRef } from "react";
+import { Link } from "react-router-dom";
 import { UploadCloud, Loader2, CheckCheck, Ban } from "lucide-react";
 import { useUploadsEnabled } from "@/hooks/useUploadsEnabled";
 import { useAuth } from "@/lib/AuthContext";
@@ -36,6 +37,7 @@ export default function Upload() {
   return (
     <div className="upload-page max-w-3xl mx-auto">
       <header className="page-intro"><h1>Upload music</h1><p>Add your audio, review its details, and publish to PUBLIC.</p></header>
+      <Link to="/unfinished-uploads" className="playlist-action mb-5">Finish saved uploads</Link>
       
 
 
