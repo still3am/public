@@ -689,5 +689,14 @@ html.dark {
  .playlist-full-art .playlist-title { font-size:32px; }
  .playlist-full-art .playlist-cover>label { bottom:54px; }
 }
+@media(max-width:767px) {
+ /* Playlist artwork starts at the banner edge without page/header spacing. */
+ .public-app #main-content:has(>.page-surface[data-page="playlist"]) { padding-top:0;margin-top:0; }
+ .public-app #main-content>.page-surface[data-page="playlist"] { padding-top:0;margin-top:0;display:flow-root; }
+ .public-app .playlist-full-art { padding-top:0;margin-top:0;border-top:0; }
+ .public-app .playlist-full-art .playlist-full-hero { margin-top:0;padding-top:0;border-top:0;row-gap:0; }
+ .public-app .playlist-full-art .playlist-cover { align-self:stretch;margin-top:0;padding-top:0;border-top:0; }
+ .public-app .playlist-full-art .playlist-cover>img { display:block;align-self:stretch;object-position:center top; }
+}
 
 
