@@ -1,4 +1,5 @@
 import {useRef,useState} from "react";
+import {actionError} from "@/lib/actionError";
 import {Plus,Check,Loader2} from "lucide-react";
 import {useNavigate} from "react-router-dom";
 import {useLibrary} from "@/context/LibraryContext";
@@ -18,7 +19,7 @@ export default function LibraryButton({track,className="",size=16,label=false}){
   try{
    const ok=await toggle(track);
    toast(ok?{title:"Library updated"}:{title:"Couldn’t update your library. Please try again.",variant:"destructive"});
-  }catch{toast({title:"Couldn’t update your library. Please try again.",variant:"destructive"});}
+  }catch(error){const status=error?.status??error?.response?.status;toast({title:actionError(error,"Couldn’t "+(error?.libraryStage==="read"?"check your saved songs":"update your library")+". Please try again."),description:status?"Library request: HTTP "+status:undefined,variant:"destructive"});}
   finally{lock.current=false;setBusy(false);}
  }
  return <button type="button" disabled={saving||!track?.id} onClick={save} className={className} aria-busy={saving} aria-pressed={inLib}
