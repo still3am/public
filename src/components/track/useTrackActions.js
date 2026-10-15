@@ -24,7 +24,7 @@ export function useTrackActions(track, menuState, ui) {
   const p = usePlayer();
   const nav = useNavigate();
   const { toast } = useToast();
-  const { isInLibrary, toggle } = useLibrary();
+  const { isInLibrary, isPending, toggle } = useLibrary();
   const cache = useOfflineCache();
   const mixing=useRef(false),latestPlayer=useRef(p),account=useRef(user?.id),alive=useRef(true);latestPlayer.current=p;account.current=user?.id;
   useEffect(()=>{alive.current=true;return()=>{alive.current=false;};},[]);
@@ -144,10 +144,11 @@ export function useTrackActions(track, menuState, ui) {
       icon: inLib ? Check : Plus,
       label: inLib ? "Remove from library" : "Add to library",
       active: inLib,
+      disabled:isPending(track.id),
       onClick: async () => {
         if (!requireAuth()) return;
         const ok=await toggle(track);
-        toast(ok?{ title: inLib ? "Removed from library" : "Added to library" }:{title:"Could not update your library",variant:"destructive"});
+        toast(ok?{ title: "Library updated" }:{title:"Could not update your library",variant:"destructive"});
       },
     },
     { icon: ListMusic, label: "Add to playlist", onClick: () => requireAuth() && ui.openPicker() },
