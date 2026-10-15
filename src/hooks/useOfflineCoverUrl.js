@@ -19,7 +19,7 @@ export function useOfflineCoverUrl(trackId, fallbackUrl) {
         return;
       }
       try {
-        const rec = await getRecord(trackId,user?.id);
+        const rec = await getRecord(trackId,user?.id||null);
         if (cancelled) return;
         if (rec?._coverBlob) {
           blobUrl = URL.createObjectURL(rec._coverBlob);
