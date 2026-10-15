@@ -341,6 +341,8 @@ export default async function handleRequest(req) {
           if(!Array.isArray(data.profile_background_colors)||data.profile_background_colors.length>3||data.profile_background_colors.some(c=>typeof c!=='string'||!/^#[0-9a-f]{6}$/i.test(c)))fail('Invalid profile colors',422);
           data.profile_background_colors=[...new Set(data.profile_background_colors.map(c=>c.toLowerCase()))];
         }
+        if(data.is_artist!==undefined&&typeof data.is_artist!=='boolean')fail('Invalid artist preference',422);
+        if(isAdmin&&data.is_artist===true)fail('Administrators cannot enable Artist Mode',422);
         if(data.show_explicit===true && !(data.adult_confirmed===true || user.adult_confirmed===true)) fail('Confirm that you are 18 or older to show explicit content',422);
         await moderate(svc,[data.display_name,data.bio,data.status_message].filter(Boolean).join('\n'));
         for(const tid of [data.featured_track_id,...(data.top_track_ids||[])].filter(Boolean)) await requireTrack(tid);
