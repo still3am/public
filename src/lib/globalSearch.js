@@ -1,4 +1,5 @@
 import { base44 } from "@/api/base44Client";
+import { peekPublishedTracks } from "@/lib/catalogCache";
 import { splitArtistNames } from "@/lib/artistTracks";
 
 // Global search runs on the server so the whole catalogue is searchable without
@@ -95,34 +96,49 @@ function creditPattern(name) {
 // so the match is made against each credited name, and the query is narrowed on
 // the server to the artists actually on screen instead of scanning whichever
 // covers happen to be newest — which left every older artist without an image.
+function artworkName(value) {
+  return String(value||"").normalize("NFKD").replace(/[\u0300-\u036f]/g,"").replace(/[’‘]/g,"'").trim().replace(/\s+/g," ").toLowerCase();
+}
+function artworkCredits(track) {
+  const raw=String(track.artist||"");
+  const standard=raw.replace(/\s+[\[(]?(?:feat(?:uring)?\.?|ft\.?)\s+/gi,", ");
+  const feature=String(track.title||"").match(/\b(?:feat(?:uring)?\.?|ft\.?)\s+([^)\]}]+)/i);
+  return [...new Set([raw,...splitArtistNames(standard,false),...(feature?splitArtistNames(feature[1],false):[])].map(value=>artworkName(value.replace(/[)\]]\s*$/,""))).filter(Boolean))];
+}
 async function artistCovers(names) {
-  const wanted = new Set(names.flatMap(splitArtistNames));
-  if (!wanted.size) return new Map();
-
-  const map = new Map();
+  const wanted=new Set(names.flatMap(name=>[name,...splitArtistNames(name,false)]).map(artworkName).filter(Boolean));
+  const map=new Map();
+  const add=track=>{
+    const cover=String(track.cover_art_url||"").trim();
+    if(!cover)return;
+    for(const credit of artworkCredits(track)){
+      if(!wanted.has(credit))continue;
+      const list=map.get(credit)||[];
+      if(list.length<4&&!list.includes(cover))map.set(credit,[...list,cover]);
+    }
+  };
+  // Reuse the accessible catalog already read by Home/Search before requesting artwork.
+  peekPublishedTracks().forEach(add);
+  if(!wanted.size||[...wanted].every(name=>(map.get(name)?.length||0)>=3))return map;
   let cursor;
   for(let page=0;page<40;page++){
     const res=await read(base44.entities.Track.filter({
       cover_art_url:{$exists:true,$ne:""},
-      $or:[...wanted].map(name=>({artist:{$regex:creditPattern(name),$options:"i"}}))
-    },{sort:"-created_date",limit:COVER_SCAN,fields:["artist","cover_art_url"],...(cursor?{cursor}:{})}));
+      $or:[...new Set(names.flatMap(name=>[name,...splitArtistNames(name,false)]))].flatMap(name=>{
+        const pattern=creditPattern(name.trim()).replace(/\s+/g,"\\s+").replace(/[’‘]/g,"['’‘]");
+        return [{artist:{$regex:pattern,$options:"i"}},{title:{$regex:pattern,$options:"i"}}];
+      })
+    },{sort:"-created_date",limit:COVER_SCAN,fields:["artist","title","cover_art_url"],...(cursor?{cursor}:{})}));
     if(!res.ok)break;
-    for(const track of rows(res.value)){
-      if(!track.cover_art_url?.trim())continue;
-      for(const credit of splitArtistNames(track.artist)){
-        if(wanted.has(credit)&&!map.has(credit))map.set(credit,track.cover_art_url);
-      }
-    }
-    if(map.size===wanted.size||Array.isArray(res.value)||!res.value?.has_more||!res.value?.next_cursor)break;
+    rows(res.value).forEach(add);
+    if([...wanted].every(name=>(map.get(name)?.length||0)>=3)||Array.isArray(res.value)||!res.value?.has_more||!res.value?.next_cursor)break;
     cursor=res.value.next_cursor;
   }
   return map;
 }
-
-// An artist record may itself be a combined credit, so its row takes the cover
-// of whichever of its credited names has one.
-function coverFor(artist, covers) {
-  return splitArtistNames(artist.name).map((n) => covers.get(n)).find(Boolean) || "";
+function coversFor(artist,covers) {
+  const keys=[artist.name,...splitArtistNames(artist.name,false)].map(artworkName);
+  return [...new Set(keys.flatMap(key=>covers.get(key)||[]))];
 }
 
 export async function searchPeople(q) {
@@ -201,8 +217,8 @@ async function runSearch(query,scope="all") {
   const covers = await artistCovers(found.map((a) => a.name).filter(Boolean));
   const artists = found.map((artist) => ({
     ...artist,
-    cover_art_url:
-      artist.cover_art_url || artist.avatar_url || coverFor(artist, covers),
+    cover_candidates: [...new Set([artist.avatar_url,artist.cover_art_url,...coversFor(artist,covers)].filter(value=>typeof value==="string"&&value.trim()))],
+    cover_art_url: artist.cover_art_url || artist.avatar_url || coversFor(artist,covers)[0] || "",
   }));
 
   const playlists = [...(rows(playlistRes.value))].sort(
