@@ -15,7 +15,6 @@ import { Library as LibIcon, Loader2, Plus, ListMusic, Disc3, X, Upload, CloudOf
 import TrackCard from "@/components/TrackCard";
 import EmptyState from "@/components/EmptyState";
 import PullToRefresh from "@/components/PullToRefresh";
-import LibraryEntryRow from "@/components/LibraryEntryRow";
 import PlaylistCard from "@/components/playlist/PlaylistCard";
 import CreatePlaylistModal from "@/components/playlist/CreatePlaylistModal";
 import LibraryBulkBar from "@/components/library/LibraryBulkBar";
@@ -241,7 +240,11 @@ export default function Library() {
             <section className="library-recently-added"><div className="library-section-heading"><h2>Recently Added</h2>{tracks?.length>12&&<button className="library-see-all" onClick={()=>chooseView("songs")}>See all<ChevronRight size={16}/></button>}</div>
               {tracks?.length?<div className="library-music-grid">{tracks.slice(0,12).map(t=><TrackCard key={t.id} track={t} queue={tracks}/>)}</div>:<EmptyState icon={LibIcon} title="Your music belongs here" description="Save songs and build playlists to make this library yours." action={<Link className="chrome-button" to="/search">Find music</Link>}/>}
             </section>
-            <div className="library-more-links"><button onClick={()=>chooseView("recent")}><History size={20}/><span>Recently played</span><ChevronRight size={18}/></button><LibraryEntryRow to="/my-uploads" icon={Upload} label="Uploads" subtitle="Your posted music"/><LibraryEntryRow to="/records" icon={Disc3} label="Artists" subtitle="Explore the catalog"/></div>
+            <nav className="library-footer-links" aria-label="More from your library">
+              <button onClick={()=>chooseView("recent")}><span className="library-footer-icon"><History size={21}/></span><span>Recently played</span><ChevronRight size={18}/></button>
+              <Link to="/my-uploads"><span className="library-footer-icon"><Upload size={21}/></span><span>Uploads</span><ChevronRight size={18}/></Link>
+              <Link to="/records"><span className="library-footer-icon"><Disc3 size={21}/></span><span>Artists</span><ChevronRight size={18}/></Link>
+            </nav>
           </>}
           {libraryView === "songs" && <section>
             <div className="library-section-heading"><h2>{search.trim() ? "Search results" : sort==="saved" ? "Recently saved" : "Songs"}</h2>{visibleTracks.length>0&&!editMode&&<button className="library-play-all" onClick={()=>{p.setShuffle(false);p.playTrackAt(visibleTracks,0);}}><Play size={14} fill="currentColor"/>Play all</button>}</div>
