@@ -1,3 +1,4 @@
+import {reportActionError} from "@/lib/actionError";
 import { useEffect,useState,useRef } from "react";
 import { createPortal } from "react-dom";
 import { base44 } from "@/api/base44Client";
@@ -19,7 +20,8 @@ export default function CreatePlaylistModal({ onClose, onCreated }) {
 
   useEffect(()=>()=>{if(coverPreview)URL.revokeObjectURL(coverPreview);},[coverPreview]);
   async function handleCover(file) {
-    if(!file?.type.startsWith("image/")||file.size>10*1024*1024||saveLock.current)return;
+    if(saveLock.current)return;
+    if(!file?.type.startsWith("image/")||file.size>10*1024*1024){reportActionError(null,"Choose an image under 10 MB.");return;}
     setCoverFile(file);
     setCoverPreview(URL.createObjectURL(file));
   }
@@ -44,8 +46,8 @@ export default function CreatePlaylistModal({ onClose, onCreated }) {
       });
       window.dispatchEvent(new Event("playlists:changed"));
       if(alive.current){onCreated?.(pl);onClose();}
-    } catch {
-      // Keep the name, description, and uploaded artwork ready to retry.
+    } catch(error) {
+      reportActionError(error,"Couldn’t create the playlist. Your details are still here—please try again.");
     } finally {
       saveLock.current=false;if(alive.current)setSaving(false);
     }
@@ -114,7 +116,7 @@ export default function CreatePlaylistModal({ onClose, onCreated }) {
 
           <button
             type="submit"
-            disabled={!name.trim() || saving}
+            disabled={!user?.id || !name.trim() || saving}
             className="w-full h-12 rounded-full bg-foreground text-background text-sm font-bold disabled:opacity-40 active:scale-95 transition flex items-center justify-center gap-2"
           >
             {saving && <Loader2 size={16} className="animate-spin" />}
