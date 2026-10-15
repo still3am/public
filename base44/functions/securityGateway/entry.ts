@@ -305,6 +305,7 @@ export default async function handleRequest(req) {
         if(old && !a.host && old.added_by_id!==user.id) fail('Queue access denied');
         if(kind!=='delete') {
           const track=await requireTrack(data.track_id||old?.track_id,false);
+          if(track.uploader_id!==a.s.host_id&&!(track.is_published&&track.approval_status==='approved'))fail('Choose a published song the host can play',422);
           data={session_id:a.s.id,track_id:track.id,track:JSON.stringify(track),added_by_id:user.id,added_by_name:user.display_name||user.full_name||''};
         }
       } else if(entity==='Playlist') {
