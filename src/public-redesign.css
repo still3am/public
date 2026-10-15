@@ -698,5 +698,23 @@ html.dark {
  .public-app .playlist-full-art .playlist-cover { align-self:stretch;margin-top:0;padding-top:0;border-top:0; }
  .public-app .playlist-full-art .playlist-cover>img { display:block;align-self:stretch;object-position:center top; }
 }
+/* Activity cards keep sender identity and song details inside the card. */
+.notifications-page .notification-item { min-width:0;width:100%;border-radius:18px; }
+.notifications-page .notification-content { display:flex;align-items:flex-start;gap:14px;padding:16px;min-width:0;width:100%; }
+.notifications-page .notification-avatar { width:46px;min-width:46px;height:48px;flex:0 0 46px; }
+.notifications-page .notification-avatar>div:last-child { border:2px solid hsl(var(--background));box-sizing:content-box; }
+.notifications-page .notification-message { overflow-wrap:anywhere;font-size:14px;line-height:1.5; }
+.notifications-page .notification-track { width:100%;max-width:100%;min-width:0;padding:10px;border-radius:14px; }
+.notifications-page .notification-content>div:nth-child(2) { min-width:0; }
+.notifications-page .notification-content p { overflow-wrap:anywhere; }
+.notifications-page .notification-content span.text-foreground\/40 { display:inline-block;margin-top:8px; }
+.notifications-page .view-switch { display:flex;justify-content:center;max-width:100%; }
+@media(max-width:767px) {
+ .notifications-page .notification-content { padding:14px 12px;gap:10px; }
+ .notifications-page .notification-avatar { width:44px;min-width:44px;flex-basis:44px; }
+ .notifications-page .notification-message { font-size:13px; }
+ .notifications-page .notification-track { padding:8px;gap:8px; }
+ .notifications-page .notification-item { border-radius:16px; }
+}
 
 
