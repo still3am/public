@@ -5,10 +5,18 @@ import {useAuth} from "@/lib/AuthContext";
 import {getCloudList,addCloudTrack} from "@/lib/offlineSync";
 
 const EVT="offlinecache:change",STATUS="offlinecache:downloads";
-const jobs=new Map(),autoQueued=new Set(),retryAfter=new Map(),removals=new Map(),cloudJobs=new Map();
+const jobs=new Map(),autoQueued=new Set(),retryAfter=new Map(),removals=new Map(),cloudJobs=new Map(),storageReads=new Map(),cloudKnown=new Map();
 let generation=0;
 const emit=event=>window.dispatchEvent(new Event(event));
-const invalidate=()=>{generation++;jobs.clear();autoQueued.clear();retryAfter.clear();removals.clear();cloudJobs.clear();emit(STATUS);};
+const invalidate=()=>{generation++;jobs.clear();autoQueued.clear();retryAfter.clear();removals.clear();cloudJobs.clear();cloudKnown.clear();storageReads.clear();emit(STATUS);};
+// Track menus share one pending device read instead of loading every audio
+// blob again for each song card mounted on the page.
+window.addEventListener(EVT,()=>storageReads.clear());
+function readDevice(uid){
+ if(storageReads.has(uid))return storageReads.get(uid);
+ let job;job=Promise.all([listRecords(uid),getOrderIds(uid)]).finally(()=>{if(storageReads.get(uid)===job)storageReads.delete(uid);});
+ storageReads.set(uid,job);return job;
+}
 window.addEventListener("account:cleared",invalidate);
 window.addEventListener("offlinecache:account",invalidate);
 const suppressedFor=uid=>{try{return new Set(JSON.parse(localStorage.getItem("public:offline:suppressed:"+uid)||"[]"));}catch{return new Set();}};
@@ -48,7 +56,7 @@ export function useOfflineCache(){
   const request=++refreshVersion.current,started=generation;
   if(!active()){loadedFor.current=null;setRecords([]);setCachedIds(new Set());setStorageAvailable(null);return;}
   try{
-   const [rows,order]=await Promise.all([listRecords(uid),getOrderIds(uid)]);
+   const [rows,order]=await readDevice(uid);
    if(request!==refreshVersion.current||started!==generation||!active())return;
    const all=rows.filter(r=>r._blob?.size>0);
    loadedFor.current=uid;setStorageAvailable(true);setRecords(applyOrder(all,order));
@@ -108,7 +116,7 @@ export function useOfflineCache(){
   if(!active()||loadedFor.current!==uid||!cachedIds||cloudJobs.has(uid)||!navigator.onLine)return;
   const token=Symbol(uid),started=generation;cloudJobs.set(uid,token);emit(STATUS);
   try{
-   const cloud=await getCloudList(uid);let cursor=0;
+   const cloud=await getCloudList(uid);if(started!==generation||!active())return;cloudKnown.set(uid,new Set(cloud.map(track=>track?.id).filter(Boolean)));let cursor=0;
    const worker=async()=>{while(cursor<cloud.length){
     if(started!==generation||!active())return;
     const track=cloud[cursor++],id=track?.id,key=uid+":"+id;
@@ -116,7 +124,7 @@ export function useOfflineCache(){
     autoQueued.add(key);
     try{const saved=await getRecord(id,uid);if(started!==generation||!active())return;if(saved?._blob?.size)continue;
      if(!await downloadTrack(track,{automatic:true})&&started===generation)retryAfter.set(key,Date.now()+60000);
-    }finally{autoQueued.delete(key);}
+    }finally{if(started===generation)autoQueued.delete(key);}
    }};
    await Promise.all([worker(),worker()]);
   }catch{/* Cloud availability never removes this device's files. */}
@@ -146,7 +154,7 @@ export function useOfflineCache(){
  },[uid,active,applyOrder,refresh]);
  const clearAllCache=useCallback(async()=>{
   if(!active())return false;
-  const ids=[...new Set([...records.map(row=>row.id),...[...jobs.values()].filter(job=>job.uid===uid).map(job=>job.id)])];
+  const ids=[...new Set([...records.map(row=>row.id),...(cloudKnown.get(uid)||[]),...[...jobs.values()].filter(job=>job.uid===uid).map(job=>job.id)])];
   generation++;jobs.clear();autoQueued.clear();retryAfter.clear();cloudJobs.clear();emit(STATUS);
   try{await clearAll(uid);suppress(uid,ids);await clearMeta(uid).catch(()=>{});emit(EVT);return true;}catch{return false;}
  },[uid,active,records]);
