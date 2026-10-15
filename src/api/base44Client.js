@@ -51,11 +51,12 @@ const entities = new Proxy(raw.entities,{get(target,name) {
 export const base44 = new Proxy(raw,{get(target,name) {
   if(name==='entities') return entities;
   if(name==='auth') return {...target.auth,updateMe:async data=>{
-    // Only these non-text appearance settings use the SDK's own-account route.
+    // Only these non-text own-account preferences use the SDK's own-account route.
     // All other profile fields keep the moderated security gateway.
-    const colorKeys=['profile_background_mode','profile_background_colors','profile_background_motion','profile_background_speed','featured_track_id'];
+    const colorKeys=['profile_background_mode','profile_background_colors','profile_background_motion','profile_background_speed','featured_track_id','onboarding_completed'];
     const keys=Object.keys(data||{});
     if(keys.length&&keys.every(key=>colorKeys.includes(key))){
+      if(data.onboarding_completed!==undefined&&typeof data.onboarding_completed!=='boolean')throw new Error('Invalid onboarding preference');
       if(data.profile_background_mode!==undefined&&!['auto','custom','off'].includes(data.profile_background_mode))throw new Error('Invalid background mode');
       if(data.profile_background_motion!==undefined&&!['flow','still'].includes(data.profile_background_motion))throw new Error('Invalid background motion');
       if(data.profile_background_speed!==undefined&&(typeof data.profile_background_speed!=='number'||!Number.isFinite(data.profile_background_speed)||data.profile_background_speed<.35||data.profile_background_speed>1.6))throw new Error('Invalid background speed');
@@ -69,6 +70,7 @@ export const base44 = new Proxy(raw,{get(target,name) {
       const saved=await target.auth.updateMe(data);
       const publicAppearance=Object.fromEntries(['featured_track_id','profile_background_mode','profile_background_colors','profile_background_motion','profile_background_speed'].filter(key=>data[key]!==undefined).map(key=>[key,data[key]]));
       try{
+        if(!Object.keys(publicAppearance).length)return saved;
         const uid=saved?.id || (await target.auth.me()).id;
         const page=await target.entities.PublicProfile.filter({user_id:uid},'-updated_date',1);
         const row=(Array.isArray(page)?page:page?.items||[])[0];
