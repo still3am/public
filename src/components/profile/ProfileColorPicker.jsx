@@ -1,18 +1,26 @@
 import {useRef,useState} from "react";
 import {Check,Loader2,Plus,X} from "lucide-react";
 import {Dialog,DialogContent,DialogHeader,DialogTitle,DialogDescription} from "@/components/ui/dialog";
-import {profileGradient} from "@/hooks/useCoverPalette";
 import MotionGradient from "@/components/MotionGradient";
 import "./profile-colors.css";
 
 const PRESETS=[
- {name:"Midnight",colors:["#253b80","#6948a6","#182641"]},
- {name:"Sunset",colors:["#b44435","#bd7545","#67416c"]},
- {name:"Forest",colors:["#195748","#56866a","#243f50"]},
- {name:"Rose",colors:["#a94572","#7a426d","#3d3b70"]},
- {name:"Ocean",colors:["#186c9b","#258786","#263e79"]},
- {name:"Chrome",colors:["#777f8e","#bac3cc","#505a6e"]}
+ {name:"Midnight",colors:["#172768","#9854ef","#56c9e2"]},
+ {name:"Sunset",colors:["#f25340","#ffc179","#ae327d"]},
+ {name:"Forest",colors:["#123f3c","#a9cd6b","#26a78c"]},
+ {name:"Rose",colors:["#e7639a","#ffd0ac","#743e9b"]},
+ {name:"Ocean",colors:["#154cb2","#5cd9dc","#453b9b"]},
+ {name:"Chrome",colors:["#34465e","#e7eef4","#8eaec4"]},
+ {name:"Aurora",colors:["#133c50","#68e2b5","#9164df"]},
+ {name:"Ember",colors:["#68253e","#ff743f","#ffc467"]},
+ {name:"Lavender",colors:["#7563d7","#edb1dc","#bfddeb"]},
+ {name:"Lagoon",colors:["#12666d","#82dbb6","#f2cf86"]},
+ {name:"Prism",colors:["#4059d8","#ec6bad","#ffa76e"]},
+ {name:"Dune",colors:["#92604d","#edc79a","#849c91"]}
 ];
+// Broad color pools keep every palette legible at thumbnail size without extra WebGL canvases.
+const presetGradient=([a,b,c])=>
+ `radial-gradient(ellipse at 12% 12%, ${b} 0%, ${b}00 64%),radial-gradient(ellipse at 90% 85%, ${c} 0%, ${c}00 68%),linear-gradient(135deg, ${a} 15%, ${a} 55%, ${c} 100%)`;
 const valid=color=>/^#[0-9a-f]{6}$/i.test(color);
 const normalize=text=>"#"+text.replace(/^#/,"").toLowerCase();
 
@@ -63,7 +71,7 @@ export default function ProfileColorPicker({coverUrl,colors,loading,value,onPrev
       {draft.colors.some(c=>!valid(c))&&<p className="profile-color-hint" role="status">Use a six-digit hex color, such as #6948a6.</p>}
       {draft.colors.length<3&&<button type="button" className="profile-color-add" disabled={saving} onClick={()=>setColors([...draft.colors,PRESETS[0].colors[draft.colors.length]])}><Plus size={16}/>Add color</button>}
      </section>
-     <section className="profile-color-section"><h3>Ready-made palettes</h3><div className="profile-color-presets">{PRESETS.map(preset=><button type="button" key={preset.name} disabled={saving} aria-pressed={draft.colors.join(",").toLowerCase()===preset.colors.join(",")} onClick={()=>setColors([...preset.colors])}><span className="profile-color-preset-art" style={{backgroundImage:profileGradient(preset.colors),backgroundColor:preset.colors[0]}}/><span>{preset.name}</span></button>)}</div></section>
+     <section className="profile-color-section"><h3>Ready-made palettes</h3><div className="profile-color-presets">{PRESETS.map(preset=><button type="button" key={preset.name} disabled={saving} aria-pressed={draft.colors.join(",").toLowerCase()===preset.colors.join(",")} onClick={()=>setColors([...preset.colors])}><span className="profile-color-preset-art" style={{backgroundImage:presetGradient(preset.colors),backgroundColor:preset.colors[0]}}>{draft.colors.join(",").toLowerCase()===preset.colors.join(",")&&<span className="profile-color-preset-check"><Check size={14}/></span>}</span><span>{preset.name}</span></button>)}</div></section>
      {(colors.length>0||loading)&&<section className="profile-color-section"><h3>From your song cover</h3>{loading?<p className="profile-color-hint">Reading cover colors…</p>:<div className="profile-color-cover-swatches">{colors.map(color=><button type="button" key={color} disabled={saving} aria-label={`Use cover color ${color}`} aria-pressed={draft.colors.includes(color)} onClick={()=>toggle(color)} style={{backgroundColor:color}}>{draft.colors.includes(color)&&<Check size={16}/>}</button>)}</div>}</section>}
     </>}
    </div>
