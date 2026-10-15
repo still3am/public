@@ -18,7 +18,8 @@ export async function readAllPages(fetchPage) {
       return out;
     }
     out.push(...(res?.items || []));
-    if (!res?.has_more || !res.next_cursor) return out;
+    if (!res?.has_more) return out;
+    if (!res.next_cursor || res.next_cursor === cursor) throw new Error("This list could not finish loading. Please refresh and try again.");
     cursor = res.next_cursor;
   }
   throw new Error("The collection exceeds this request limit. Narrow your search or contact support.");
