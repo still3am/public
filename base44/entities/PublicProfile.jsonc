@@ -3,77 +3,224 @@
   "properties": {
     "display_name": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "rls": {
+        "write": {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      }
     },
     "full_name": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "rls": {
+        "write": {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      }
     },
     "avatar_url": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "rls": {
+        "write": {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      }
     },
     "banner_url": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "rls": {
+        "write": {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      }
     },
     "bio": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "rls": {
+        "write": {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      }
     },
     "location": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "rls": {
+        "write": {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      }
     },
     "pronouns": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "rls": {
+        "write": {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      }
     },
     "website": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "rls": {
+        "write": {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      }
     },
     "instagram": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "rls": {
+        "write": {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      }
     },
     "twitter": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "rls": {
+        "write": {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      }
     },
     "soundcloud": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "rls": {
+        "write": {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      }
     },
     "status_message": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "rls": {
+        "write": {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      }
     },
     "featured_track_id": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "rls": {
+        "write": {
+          "$or": [
+            {
+              "data.user_id": "{{user.id}}"
+            },
+            {
+              "user_condition": {
+                "role": "admin"
+              }
+            }
+          ]
+        }
+      }
     },
     "profile_background_mode": {
       "type": "string",
-      "default": ""
+      "default": "auto",
+      "rls": {
+        "write": {
+          "$or": [
+            {
+              "data.user_id": "{{user.id}}"
+            },
+            {
+              "user_condition": {
+                "role": "admin"
+              }
+            }
+          ]
+        }
+      },
+      "enum": [
+        "auto",
+        "custom",
+        "off"
+      ]
     },
     "profile_background_colors": {
       "type": "array",
       "items": {
-        "type": "string"
+        "type": "string",
+        "pattern": "^#[0-9a-fA-F]{6}$"
       },
-      "default": []
+      "default": [],
+      "rls": {
+        "write": {
+          "$or": [
+            {
+              "data.user_id": "{{user.id}}"
+            },
+            {
+              "user_condition": {
+                "role": "admin"
+              }
+            }
+          ]
+        }
+      },
+      "maxItems": 3
     },
     "top_track_ids": {
       "type": "array",
       "items": {
         "type": "string"
       },
-      "default": []
+      "default": [],
+      "rls": {
+        "write": {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      }
     },
     "is_artist": {
       "type": "boolean",
-      "default": false
+      "default": false,
+      "rls": {
+        "write": {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      }
     },
     "user_id": {
       "type": "string",
@@ -83,7 +230,14 @@
     },
     "joined_at": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "rls": {
+        "write": {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      }
     },
     "visible": {
       "type": "boolean",
@@ -106,9 +260,16 @@
       }
     },
     "update": {
-      "user_condition": {
-        "role": "admin"
-      }
+      "$or": [
+        {
+          "data.user_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
     },
     "delete": {
       "user_condition": {
