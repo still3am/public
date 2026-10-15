@@ -1,4 +1,5 @@
 import { useRef, useState } from "react";
+import {reportActionError} from "@/lib/actionError";
 import { Link } from "react-router-dom";
 import { X, Lightbulb, GitMerge, Palette, Trash2, ChevronRight, Sparkles, BarChart3, Loader2, LogOut } from "lucide-react";
 import ThemeToggle from "@/components/ThemeToggle";
@@ -13,7 +14,8 @@ export default function SettingsSheet({ onClose, onDeleteAccount }) {
   const safety = useSafety();
   const { user, checkUserAuth } = useAuth();
   const [toggling, setToggling] = useState(false);
-  const artistSaveLock=useRef(false);
+  const artistSaveLock=useRef(false),contentLock=useRef(false);
+  const [contentSaving,setContentSaving]=useState(false),[unblocking,setUnblocking]=useState("");
   const [loggingOut, setLoggingOut] = useState(false);
   const isArtist = user?.is_artist === true;
 
@@ -23,10 +25,10 @@ export default function SettingsSheet({ onClose, onDeleteAccount }) {
     if(loggingOut)return;
     setLoggingOut(true);
     try {
-      await clearPersonalData();
+      await clearPersonalData().catch(()=>{});
       await base44.auth.logout(`${window.location.origin}/`);
-    } catch {
-      // Keep the sign-out control available for another attempt.
+    } catch(error) {
+      reportActionError(error,"Couldn’t sign out. Please try again.");
       setLoggingOut(false);
     }
   }
@@ -38,8 +40,8 @@ export default function SettingsSheet({ onClose, onDeleteAccount }) {
     try {
       await base44.auth.updateMe({ is_artist: checked });
       await checkUserAuth({silent:true});
-    } catch {
-      // Keep the last saved state; no error popup.
+    } catch(error) {
+      reportActionError(error,"Couldn’t change Artist Mode. Please try again.");
     } finally {
       artistSaveLock.current=false;
       setToggling(false);
@@ -61,10 +63,10 @@ export default function SettingsSheet({ onClose, onDeleteAccount }) {
         <div className="space-y-2">
           <Link to="/support" onClick={onClose} className="block p-3 rounded-xl border">Support & copyright requests</Link>
           <div className="flex gap-4 text-sm p-3"><Link to="/privacy" onClick={onClose} className="underline">Privacy</Link><Link to="/terms" onClick={onClose} className="underline">Terms & community</Link></div>
-          <label className="flex items-center gap-3 p-3 rounded-xl border text-sm"><input type="checkbox" checked={!!user?.show_explicit} onChange={async (e) => {const enabled = e.target.checked;if (enabled && !window.confirm('I confirm I am at least 18 and want to see explicit music.')) return;try {await base44.auth.updateMe({ show_explicit: enabled, adult_confirmed: enabled || !!user?.adult_confirmed });await checkUserAuth();window.dispatchEvent(new Event('catalog:invalidate'));} catch {/* Keep the confirmed content preference. */}}} />Show explicit music (18+)</label>
-          {safety.own.length > 0 && <div className="p-3 border rounded-xl"><h3 className="font-bold text-sm mb-2">Blocked users</h3>{safety.own.map((r) => <button key={r.id} className="block text-xs underline p-2" onClick={async () => {await base44.functions.invoke('safety', { action: 'block', user_id: r.blocked_user_id, blocked: false });await safety.reload();window.dispatchEvent(new Event('catalog:invalidate'));}}>Unblock {r.blocked_user_id}</button>)}</div>}
+          <label className="flex items-center gap-3 p-3 rounded-xl border text-sm"><input type="checkbox" disabled={contentSaving} checked={!!user?.show_explicit} onChange={async event=>{if(contentLock.current)return;const enabled=event.target.checked;if(enabled&&!window.confirm("I confirm I am at least 18 and want to see explicit music."))return;contentLock.current=true;setContentSaving(true);try{await base44.auth.updateMe({show_explicit:enabled,adult_confirmed:enabled||!!user?.adult_confirmed});await checkUserAuth({silent:true});window.dispatchEvent(new Event("catalog:invalidate"));}catch(error){reportActionError(error,"Couldn’t save your content preference.");}finally{contentLock.current=false;setContentSaving(false);}}}/>Show explicit music (18+)</label>
+          {safety.own.length>0&&<div className="p-3 border rounded-xl"><h3 className="font-bold text-sm mb-2">Blocked users</h3>{safety.own.map(row=><button key={row.id} disabled={!!unblocking} className="block text-xs underline p-2 disabled:opacity-40" onClick={async()=>{if(unblocking)return;setUnblocking(row.id);try{await base44.functions.invoke("safety",{action:"block",user_id:row.blocked_user_id,blocked:false});await safety.reload();window.dispatchEvent(new Event("catalog:invalidate"));}catch(error){reportActionError(error,"Couldn’t unblock this account.");}finally{setUnblocking("");}}}>{unblocking===row.id?"Unblocking…":"Unblock "+row.blocked_user_id}</button>)}</div>}
           {/* Artist Mode */}
-          <div className="p-3.5 rounded-2xl bg-foreground/[0.02]">
+          {user?.role!=="admin"&&<div className="p-3.5 rounded-2xl bg-foreground/[0.02]">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-xl bg-foreground/[0.06] grid place-items-center shrink-0">
                 {toggling ? <Loader2 size={18} className="animate-spin text-foreground/70" /> : <Sparkles size={18} className="text-foreground/70" />}
@@ -97,7 +99,7 @@ export default function SettingsSheet({ onClose, onDeleteAccount }) {
                 <ChevronRight size={16} className="text-foreground/30 shrink-0" />
               </Link>
             }
-          </div>
+          </div>}
 
           <Link
             to="/suggestions"
