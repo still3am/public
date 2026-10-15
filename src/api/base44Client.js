@@ -64,7 +64,15 @@ export const base44 = new Proxy(raw,{get(target,name) {
         if(typeof id!=='string'||id.length>100||(id&&!/^[a-zA-Z0-9_-]+$/.test(id)))throw new Error('Invalid profile song');
         if(id){const page=await target.entities.Track.filter({id},'-created_date',1);const rows=Array.isArray(page)?page:page?.items||[];if(!rows.length)throw new Error('Song unavailable');}
       }
-      return target.auth.updateMe(data);
+      const saved=await target.auth.updateMe(data);
+      const publicAppearance=Object.fromEntries(['featured_track_id','profile_background_mode','profile_background_colors'].filter(key=>data[key]!==undefined).map(key=>[key,data[key]]));
+      try{
+        const uid=saved?.id || (await target.auth.me()).id;
+        const page=await target.entities.PublicProfile.filter({user_id:uid},'-updated_date',1);
+        const row=(Array.isArray(page)?page:page?.items||[])[0];
+        if(row)await target.entities.PublicProfile.update(row.id,publicAppearance);
+      }catch{}
+      return saved;
     }
     const user=await target.auth.me();
     return gateway('User','update',[user.id,data]);
