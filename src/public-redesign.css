@@ -667,4 +667,27 @@ html.dark {
  .edit-track-options { grid-template-columns:1fr;gap:8px; }
 }
 @media(min-width:768px) and (max-width:1023px) { .collection-art-grid { grid-template-columns:repeat(3,minmax(0,1fr)); } }
+/* Edge-to-edge playlist artwork, matching release pages */
+.artwork-content .playlist-full-art { position:relative;max-width:none; }
+.playlist-full-art .playlist-art-back { position:absolute;top:18px;left:0;z-index:5;width:44px;height:44px;min-height:44px;display:grid;place-items:center;border-radius:999px;background:hsl(var(--card)/.85);color:hsl(var(--foreground));border:1px solid hsl(var(--border)/.4);backdrop-filter:blur(18px); }
+.public-app .playlist-full-art .playlist-full-hero { --playlist-art-height:clamp(440px,48vw,680px);display:flex;flex-direction:column;align-items:stretch;gap:0;margin:0 calc(-1 * var(--app-gutter)) 28px;padding:0 0 28px;border:0;border-radius:0;background:hsl(var(--background)); }
+.public-app .playlist-full-art .playlist-cover { width:100%;max-width:none;height:var(--playlist-art-height);aspect-ratio:auto;margin:0;border-radius:0;box-shadow:none; }
+.playlist-full-art .playlist-cover::after { content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(180deg,transparent 55%,hsl(var(--background)/.45) 78%,hsl(var(--background)) 100%); }
+.playlist-full-art .playlist-cover>img { object-position:center; }
+.playlist-full-art .playlist-cover>label { z-index:2;bottom:70px;max-width:220px;margin-inline:auto; }
+.public-app .playlist-full-art .playlist-info { position:relative;z-index:1;flex:none;max-width:840px;width:100%;padding:0 32px;margin:-24px auto 0;text-align:center; }
+.playlist-full-art .playlist-info>p { margin-inline:auto; }
+.playlist-full-art .playlist-title { max-width:780px;margin-inline:auto; }
+.playlist-full-art .playlist-controls { justify-content:center; }
+.playlist-full-art .playlist-secondary-actions { justify-content:center; }
+.playlist-full-art .playlist-more-actions summary { padding-inline:16px; }
+.playlist-full-art .playlist-song-list,.playlist-full-art .playlist-toolbar,.playlist-full-art .playlist-section-title { max-width:1152px;margin-inline:auto; }
+@media(max-width:767px) {
+ .public-app .playlist-full-art .playlist-full-hero { --playlist-art-height:100vw;padding-bottom:16px;margin-bottom:20px; }
+ .public-app .playlist-full-art .playlist-info { padding-inline:24px;margin-top:-10px; }
+ .playlist-full-art .playlist-art-back { top:16px; }
+ .playlist-full-art .playlist-title { font-size:32px; }
+ .playlist-full-art .playlist-cover>label { bottom:54px; }
+}
+
 
