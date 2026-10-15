@@ -206,9 +206,19 @@ export default async function handleRequest(req) {
       if(entity==='Track') {
         if(old && !mine(old,'uploader_id')) fail('Only the owner can change this track');
         if(kind==='delete') {
-          await handler.delete(id);
-          for(const name of ['Like','Lyrics','TrackAnnotation','LibraryItem']) await svc.entities[name].deleteMany({track_id:id});
+          // Keep the track until cleanup succeeds so a failed request remains retryable.
+          for(const name of ['Like','Lyrics','TrackAnnotation','LibraryItem','PlayEvent','LoungeQueueItem','Notification'])await svc.entities[name].deleteMany({track_id:id});
           await svc.entities.Playlist.updateMany({track_ids:{$in:[id]}},{$pull:{track_ids:id}});
+          await svc.entities.PublicProfile.updateMany({featured_track_id:id},{$set:{featured_track_id:''}});
+          await svc.entities.PublicProfile.updateMany({top_track_ids:{$in:[id]}},{$pull:{top_track_ids:id}});
+          const pinned=await all(svc.entities.User,{$or:[{featured_track_id:id},{top_track_ids:{$in:[id]}}]});
+          for(const member of pinned){
+            const patch={};
+            if(member.featured_track_id===id)patch.featured_track_id='';
+            if(Array.isArray(member.top_track_ids))patch.top_track_ids=member.top_track_ids.filter(tid=>tid!==id);
+            if(Object.keys(patch).length)await svc.entities.User.update(member.id,patch);
+          }
+          await handler.delete(id);
           return {id};
         }
         if(kind==='create' && input.upload_request_id){
