@@ -375,7 +375,7 @@ export default async function handleRequest(req) {
           if(kind!=='create') fail('Unsupported notification write',400);
           await relation(data.user_id);
           if(!['new_follower','profile_comment','track_shared'].includes(data.type)) fail('Invalid notification',400);
-          if(data.track_id) await requireTrack(data.track_id,false);
+          if(data.track_id){const shared=await requireTrack(data.track_id,false);if(shared.uploader_id!==data.user_id&&!(shared.is_published&&shared.approval_status==='approved'))fail('Publish the song before sharing it with another listener',422);}
           await moderate(svc,String(data.comment||''));
           data={...pick(data,['user_id','type','track_id','comment']),actor_id:user.id,actor_name:user.display_name||user.full_name||'',actor_avatar_url:user.avatar_url||'',read:false};
         }
