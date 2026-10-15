@@ -124,7 +124,7 @@ export default function FullScreenPlayer({ onClose }) {
   // keyboard shortcuts
   useEffect(() => {
     const onKey = (e) => {
-      if (e.target?.tagName === "INPUT" || e.target?.tagName === "TEXTAREA") return;
+      if(e.defaultPrevented||e.target?.closest?.("button,a,input,textarea,select,[contenteditable=true],[role=menu],[data-public-menu]"))return;
       switch (e.code) {
         case "Space":
           e.preventDefault();
