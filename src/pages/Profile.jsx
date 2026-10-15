@@ -43,6 +43,7 @@ import FollowListModal from "@/components/profile/FollowListModal";
 import StatusMessage from "@/components/profile/StatusMessage";
 import { useCoverPalette,profileGradient } from "@/hooks/useCoverPalette";
 import ProfileColorPicker from "@/components/profile/ProfileColorPicker";
+import AdminProfileBadge from "@/components/profile/AdminProfileBadge";
 import MotionGradient from "@/components/MotionGradient";
 import { useCoverUrl } from "@/hooks/useCoverUrl";
 
@@ -331,6 +332,7 @@ export default function Profile({ownProfileTab=false}) {
 
   if (!profile) return <EmptyState title="User not found" />;
 
+  const isAdminProfile=isOwn?me?.role==="admin":profile.is_public_admin===true;
   const displayName = profile.display_name || profile.full_name || "Unnamed";
   const avatarUrl = editMode ? form.avatar_url : profile.avatar_url;
   const backgroundValue={mode:profile.profile_background_mode||"auto",motion:profile.profile_background_motion==="still"?"still":"flow",speed:Math.max(.35,Math.min(1.6,Number(profile.profile_background_speed)||1)),colors:(profile.profile_background_colors||[]).filter(c=>/^#[0-9a-f]{6}$/i.test(c)).slice(0,3)};
@@ -365,7 +367,8 @@ export default function Profile({ownProfileTab=false}) {
           {(bannerUrl || (currentBackground.mode==="auto" && coverUrl)) && <img key={bannerUrl || coverUrl} src={bannerUrl || coverUrl} alt="" onError={event=>{event.currentTarget.style.visibility="hidden";}} />}
           <div className="profile-cover-fade" />
         </div>
-        {!editMode && profile.is_artist &&
+        {!editMode && isAdminProfile && <AdminProfileBadge/>}
+        {!editMode && !isAdminProfile && profile.is_artist &&
             <span
               title="Artist"
               aria-label="Artist"
