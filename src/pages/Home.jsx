@@ -11,19 +11,12 @@ import {
   Sparkles,
   Music,
   Upload,
-  Play,
-  Pause,
-  Compass,
-  ListMusic,
   ChevronRight } from
 "lucide-react";
 import TrackCard from "@/components/TrackCard";
 import Avatar from "@/components/Avatar";
-import ArtistLinks from "@/components/ArtistLinks";
 import ReleaseList from "@/components/ReleaseList";
 import { usePlayer } from "@/context/PlayerContext";
-import { Image } from "@/components/ui/image";
-import TrackOptionsMenu from "@/components/track/TrackOptionsMenu";
 import EmptyState from "@/components/EmptyState";
 import { getRecentPlays } from "@/lib/recentPlays";
 import { getUserGenres, clearUserGenresCache } from "@/lib/userGenres";
@@ -108,6 +101,8 @@ export default function Home() {
 
   const greeting = greetingByHour();
 
+  useEffect(()=>{const update=event=>{if(event.detail?.uid===user?.id)load().catch(()=>{});};window.addEventListener("preferences:changed",update);return()=>window.removeEventListener("preferences:changed",update);},[user?.id]);
+
   const onUnpublished = useCallback((id) => {
     setTrending((p) => p.filter((t) => t.id !== id));
     setNewReleases((p) => p.filter((t) => t.id !== id));
@@ -175,7 +170,7 @@ export default function Home() {
       }
       // Merge saved genre picks with listening history — saved genres seed
       // personalization, recent plays refine it over time.
-      const savedGenres = await getUserGenres();
+      const savedGenres = await getUserGenres(user?.id);
       if (request !== loadVersion.current) return;
       const genreSet = new Set(savedGenres);
       const userGenres = Object.entries(genreFreq).
