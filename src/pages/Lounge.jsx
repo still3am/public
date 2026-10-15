@@ -112,6 +112,17 @@ export default function Lounge() {
     return()=>{memberVersion.current++;reload.cancel();unsub?.();clearInterval(poll);};
   }, [session?.id, refreshMember]);
 
+  useEffect(()=>{
+    if(!session?.id||member?.status!=="approved")return;
+    let active=true,reading=false;
+    const refresh=async()=>{
+      if(reading||document.hidden)return;
+      reading=true;
+      try{const current=await base44.entities.LoungeSession.get(session.id);if(active){setSession(current);if(!current.is_active){setNotFound(true);setPickerOpen(false);}}}catch(error){if(active&&(error.status??error.response?.status)===410){setNotFound(true);setPickerOpen(false);}}finally{reading=false;}
+    };
+    refresh();const timer=setInterval(refresh,15000);
+    return()=>{active=false;clearInterval(timer);};
+  },[session?.id,member?.status]);
   const approved = member?.status === "approved";
   const isHost = member?.role === "host";
   const rejected = member?.status === "rejected";
@@ -295,7 +306,7 @@ function GuestQueuePicker({ sessionId, user, onClose, onAdded }) {
   };
 
   return (
-    <div role="dialog" aria-modal="true" aria-label="Add music to lounge" className="lounge-picker fixed inset-0 z-[70] bg-card text-foreground backdrop-blur-xl flex flex-col animate-[fadeIn_.2s_ease-out]">
+    <div role="dialog" aria-modal="true" aria-label="Add music to lounge" data-public-dialog tabIndex={-1} onKeyDown={event=>{if(event.key==="Escape"){event.stopPropagation();onClose();}}} className="lounge-picker fixed inset-0 z-[70] bg-card text-foreground backdrop-blur-xl flex flex-col animate-[fadeIn_.2s_ease-out]">
       <div className="flex items-center justify-between px-5 pt-[calc(1rem+env(safe-area-inset-top))] pb-3 shrink-0 text-foreground">
         <div className="flex items-center gap-2 min-w-0">
           <ListMusic size={20} className="opacity-80 shrink-0" />
@@ -398,7 +409,7 @@ function LoungeQueueList({ sessionId, isHost }) {
     if(removingId)return;
     setRemovingId(rowId);
     try {
-      await base44.functions.invoke("loungeRemoveQueueItem", { queue_item_id: rowId });
+      await base44.entities.LoungeQueueItem.delete(rowId);
       await load();
       // The subscription will refresh the list across all devices — no local
       // optimisation needed.
