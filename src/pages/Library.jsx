@@ -174,7 +174,7 @@ export default function Library() {
       toast({ title: "Removed from your library" });
     } catch {
 
-      /* Keep the saved shortcut so the user can try again. */} finally {
+      toast({title:"Couldn’t remove this playlist. Please try again.",variant:"destructive"});} finally {
       unsavingRef.current.delete(playlistId);setUnsavingIds(new Set(unsavingRef.current));
     }
   };
