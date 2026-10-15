@@ -31,7 +31,6 @@ import {
   QrCode,
   BarChart2,
   Palette,
-  BadgeCheck,
   Settings } from
 "lucide-react";
 import SettingsSheet from "@/components/profile/SettingsSheet";
@@ -43,7 +42,7 @@ import FollowListModal from "@/components/profile/FollowListModal";
 import StatusMessage from "@/components/profile/StatusMessage";
 import { useCoverPalette,profileGradient } from "@/hooks/useCoverPalette";
 import ProfileColorPicker from "@/components/profile/ProfileColorPicker";
-import AdminProfileBadge from "@/components/profile/AdminProfileBadge";
+import ProfileBadge from "@/components/profile/AdminProfileBadge";
 import MotionGradient from "@/components/MotionGradient";
 import { useCoverUrl } from "@/hooks/useCoverUrl";
 
@@ -367,15 +366,8 @@ export default function Profile({ownProfileTab=false}) {
           {(bannerUrl || (currentBackground.mode==="auto" && coverUrl)) && <img key={bannerUrl || coverUrl} src={bannerUrl || coverUrl} alt="" onError={event=>{event.currentTarget.style.visibility="hidden";}} />}
           <div className="profile-cover-fade" />
         </div>
-        {!editMode && isAdminProfile && <AdminProfileBadge/>}
-        {!editMode && !isAdminProfile && profile.is_artist &&
-            <span
-              title="Artist"
-              aria-label="Artist"
-              className="profile-artist-badge absolute top-3 right-3 md:top-5 md:right-5 z-20 grid place-items-center">
-            <BadgeCheck size={26} strokeWidth={2} />
-          </span>
-            }
+        {!editMode && isAdminProfile && <ProfileBadge variant="admin"/>}
+        {!editMode && !isAdminProfile && profile.is_artist && <ProfileBadge variant="artist"/>}
         
         {/* Identity, stats, actions */}
         <div className="profile-details relative z-10 px-5 md:px-10 pb-5 md:pb-8 pt-5 md:pt-8">
