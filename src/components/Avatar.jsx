@@ -5,12 +5,12 @@ export default function Avatar({ user, size = 40, className = "" }) {
   const name =
   user.display_name || user.full_name || user.email || "?";
   if (user.avatar_url) {
-    return (
-      <img
-        src={user.avatar_url}
-        alt=""
-        style={{ width: px, height: px }}
-        className={`rounded-full object-cover shrink-0 hidden ${className}`} />);
+    return null;
+
+
+
+
+
 
 
   }
