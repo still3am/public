@@ -107,6 +107,10 @@ export default function Library() {
   }, [user?.id]);
 
   useEffect(() => {
+    loadVersion.current++;savedLoadVersion.current++;
+    setTracks(null);setSavedPlaylists(null);setEntryMap({});setFolders([]);setFolder("");setTagQuery("");setSelected(new Set());setEditMode(false);
+  },[user?.id]);
+  useEffect(() => {
     load();
     loadSavedPlaylists();
   }, [load, loadSavedPlaylists, ids, revision]);
@@ -120,7 +124,7 @@ export default function Library() {
       window.removeEventListener("recentplays:change", handler);
       window.removeEventListener("storage", handler);
     };
-  }, []);
+  }, [user?.id]);
 
   const selectedIds = [...selected];
   const removableIds = selectedIds.filter((id) => ids.has(id));
@@ -180,7 +184,7 @@ export default function Library() {
   const [search, setSearch] = useState("");
   const [showFilters, setShowFilters] = useState(false);
   const [sort, setSort] = useState("saved");
-  const [display, setDisplay] = useState("list");
+  const [display, setDisplay] = useState("grid");
   const p = usePlayer();
   const visibleTracks = useMemo(() => {
     const term = search.trim().toLowerCase();
@@ -197,14 +201,14 @@ export default function Library() {
   const chooseView = (value) => {setLibraryView(value);exitEditMode();setSearch("");};
   if (loadError && tracks === null) return <LoadError onRetry={load} />;
   return (
-    <div className="library-page max-w-6xl mx-auto pb-10">
+    <div className="library-page library-redesigned max-w-6xl mx-auto pb-10">
       <header className="library-heading">
-        <div><h1>Library</h1><p className="text-sm text-muted-foreground mt-2">Music you keep coming back to.</p></div>
-        <button onClick={() => setShowCreate(true)} className="chrome-button"><Plus size={16} /><span>New playlist</span></button>
+        <div><p className="eyebrow text-muted-foreground">Your collection</p><h1>Library</h1><p className="text-sm text-muted-foreground mt-2">{tracks===null?"Your music, collected.":`${tracks.length} saved ${tracks.length===1?"song":"songs"}`}</p></div>
+        <button onClick={() => setShowCreate(true)} className="chrome-button library-create" aria-label="Create playlist"><Plus size={19} /><span>New playlist</span></button>
       </header>
       <div className="library-shortcuts">
         <LibraryEntryRow to="/my-uploads" icon={Upload} label="Uploads" subtitle="Your posted music" />
-        <LibraryEntryRow to="/records" icon={Disc3} label="Public Record" subtitle="Explore artists A–Z" />
+        <LibraryEntryRow to="/records" icon={Disc3} label="Artists" subtitle="Explore the catalog" />
         <LibraryEntryRow to="/downloads" icon={CloudOff} label="Offline" subtitle={offlineCount ? `${offlineCount} songs on this device` : "Listen without data"} />
       </div>
       <div className="library-navigation" role="group" aria-label="Library views">
@@ -231,6 +235,7 @@ export default function Library() {
       <PullToRefresh onRefresh={async () => {await refresh();await load();await reloadPlaylists();await loadSavedPlaylists();}}>
         {loading && tracks === null ? <div className="flex justify-center py-20"><Loader2 className="animate-spin text-muted-foreground" /></div> : <>
           {libraryView === "songs" && <section>
+            <div className="library-section-heading"><h2>{search.trim() ? "Search results" : sort==="saved" ? "Recently saved" : "Songs"}</h2>{visibleTracks.length>0&&!editMode&&<button className="library-play-all" onClick={()=>{p.setShuffle(false);p.playTrackAt(visibleTracks,0);}}><Play size={14} fill="currentColor"/>Play all</button>}</div>
             
 
             
