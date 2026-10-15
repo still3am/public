@@ -1,9 +1,9 @@
 import LoadError from '@/components/LoadError';
 import { useEffect, useState, useCallback, useMemo, useRef } from "react";
 import { getTopTracks } from "@/lib/catalogCache";
-import TrackCard from "@/components/TrackCard";
+import TrackRow from "@/components/TrackRow";
+import CollectionSpotlight from "@/components/CollectionSpotlight";
 import IncrementalList from "@/components/IncrementalList";
-import Podium from "@/components/Podium";
 import { useUnpublishedSync } from "@/hooks/useUnpublishedSync";
 import EmptyState from "@/components/EmptyState";
 import { Music, Loader2 } from "lucide-react";
@@ -48,29 +48,18 @@ export default function TopCharts() {
   if (!tracks.length) return <EmptyState icon={Music} title="No tracks yet" />;
 
   const filtering=!!query.trim()||!!genre;
-  const top5=filtering?[]:tracks.slice(0,5),rest=filtering?visible:tracks.slice(5);
   const ranks=new Map(tracks.map((track,index)=>[track.id,index+1]));
 
   return (
     <PullToRefresh onRefresh={load}>
-      <div className="collection-page">
-        <header className="page-intro"><h1>Top tracks</h1><p>The music PUBLIC is listening to.</p></header>
+      <div className="collection-page collection-refined charts-refined">
+        <CollectionSpotlight title="Top Charts" eyebrow="On repeat" description="Ranked by the music people play on PUBLIC." tracks={visible}/>
         <div className="collection-tools"><input aria-label="Search this music collection" placeholder="Find a song or artist" value={query} onChange={e=>setQuery(e.target.value)} onKeyDown={e=>{if(e.key==="Escape")setQuery("");}}/><select aria-label="Filter music genre" value={genre} onChange={e=>setGenre(e.target.value)}><option value="">All genres</option>{genres.map(name=><option key={name} value={name}>{name}</option>)}</select>{(query||genre)&&<button className="playlist-action" onClick={()=>{setQuery("");setGenre("");}}>Reset</button>}</div>
         {!visible.length&&<div className="collection-empty"><h2>No matching songs</h2><p>Try another title, artist, or genre.</p></div>}
 
-        {top5.length > 0 && <Podium tracks={top5} queue={tracks}/>}
-        {rest.length > 0 &&
-        <>
-            <h2 className="text-lg font-extrabold tracking-tight px-1 mb-3 mt-5">
-              {filtering?"Matching tracks":"More top tracks"}
-            </h2>
-            <IncrementalList
-            items={rest}
-            className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 md:gap-4"
-            renderItem={track=><div key={track.id} className="relative"><TrackCard track={track} queue={filtering?visible:tracks}/><span className="absolute top-3 left-3 pointer-events-none z-10 bg-background/95 text-foreground border rounded-full px-2 py-1 text-[10px] font-bold tabular-nums">#{ranks.get(track.id)}</span></div>} />
-          
-          </>
-        }
+        <div className="collection-results-heading"><h2>{filtering?"Matching tracks":"The chart"}</h2><span>{visible.length} songs</span></div>
+        <IncrementalList items={visible} className="chart-ranked-list" renderItem={track=><div key={track.id} className="chart-ranked-row"><span className="chart-position">{ranks.get(track.id)}</span><div className="min-w-0 flex-1"><TrackRow track={track} queue={visible} queueIndex={visible.findIndex(t=>t.id===track.id)} showArt/></div></div>}/>
+
       </div>
     </PullToRefresh>);
 
