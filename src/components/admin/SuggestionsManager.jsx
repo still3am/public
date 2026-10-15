@@ -1,3 +1,4 @@
+import {reportActionError} from "@/lib/actionError";
 import {readAllPages} from "@/lib/readPages";
 import { useEffect, useState } from "react";
 import { base44 } from "@/api/base44Client";
@@ -30,7 +31,7 @@ export default function SuggestionsManager() {
       await base44.entities.Suggestion.update(id, { status });
       setItems((prev) => (prev || []).map((s) => (s.id === id ? { ...s, status } : s)));
       toast({ title: "Status updated" });
-    } catch {} finally {
+    } catch(error) {reportActionError(error,"Couldn’t update this suggestion. Please try again.");} finally {
       setBusy("");
     }
   }
@@ -42,7 +43,7 @@ export default function SuggestionsManager() {
       await base44.entities.Suggestion.delete(id);
       setItems((prev) => (prev || []).filter((s) => s.id !== id));
       toast({ title: "Suggestion deleted" });
-    } catch {} finally {
+    } catch(error) {reportActionError(error,"Couldn’t update this suggestion. Please try again.");} finally {
       setBusy("");
     }
   }
