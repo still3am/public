@@ -1,3 +1,4 @@
+import {reportActionError} from "@/lib/actionError";
 import {readAllPages} from '@/lib/readPages';
 import { useEffect, useState, useCallback, useRef } from "react";
 import { base44 } from "@/api/base44Client";
@@ -88,8 +89,8 @@ export default function ProfileComments({ profileId, isOwn, active = true }) {
           }).catch(()=>{});
         } catch {}
       }
-    } catch {
-      // Keep the unsaved text in the composer for another attempt.
+    } catch(error) {
+      reportActionError(error,"Couldn’t post your comment. Your draft is still here.");
     } finally {
       postingRef.current=false;if(alive.current)setPosting(false);
     }
@@ -108,7 +109,7 @@ export default function ProfileComments({ profileId, isOwn, active = true }) {
     } catch {
       deleting.current.delete(id);
       if(alive.current&&currentProfile.current===profileId)setComments(previous=>{if(previous.some(row=>row.id===id))return previous;const row=before.find(row=>row.id===id);if(!row)return previous;const next=[...previous];next.splice(Math.min(before.findIndex(row=>row.id===id),next.length),0,row);return next;});
-      // Restore the saved comment if deletion fails.
+      reportActionError(null,"Couldn’t delete this comment. Please try again.");
     }
   }
 
