@@ -365,7 +365,7 @@ export function PlayerProvider({ children }) {
   const resolveUrl = useCallback(async (track, side, valid=/** @type {()=>boolean} */ (()=>true)) => {
     if(blockedRef.current.has(track.uploader_id))throw Error('This uploader is blocked.');
     let url=track.audio_url,blobUrl=null;
-    try{const rec=await getRecord(track.id,offlineAccountRef.current);if(rec?._blob)blobUrl=URL.createObjectURL(rec._blob);}catch{}
+    try{const rec=await getRecord(track.id,offlineAccountRef.current||null);if(rec?._blob)blobUrl=URL.createObjectURL(rec._blob);}catch{}
     if(!blobUrl && navigator.onLine && (track._private_audio || !url)){
       const fresh=await base44.entities.Track.get(track.id);url=fresh.audio_url;
     }
@@ -648,7 +648,7 @@ export function PlayerProvider({ children }) {
           retryRef.current.set(track.id,Date.now());
           const at=a.currentTime||position;let url=null;
           try{if(navigator.onLine&&track._private_audio)url=(await base44.entities.Track.get(track.id)).audio_url;
-            else{const rec=await getRecord(track.id,offlineAccountRef.current);if(rec?._blob){url=URL.createObjectURL(rec._blob);blobUrlRefs[side].current=url;}}
+            else{const rec=await getRecord(track.id,offlineAccountRef.current||null);if(rec?._blob){url=URL.createObjectURL(rec._blob);blobUrlRefs[side].current=url;}}
           }catch{}
           if(url&&token===loadTokenRef.current){pendingSeekRef.current={id:track.id,at};a.src=url;a.load();a.play().catch(()=>setIsPlaying(false));return;}
         }
@@ -793,7 +793,7 @@ export function PlayerProvider({ children }) {
   // user can actually hear instead of a remote URL that would fail to load.
   const getOfflineQueue = useCallback(async () => {
     try {
-      const recs = await listRecords(offlineAccountRef.current);
+      const recs = await listRecords(offlineAccountRef.current||null);
       if (!recs.length) return null;
       recs.sort((a, b) => (b._savedAt || 0) - (a._savedAt || 0));
       return recs.map((r) => ({
