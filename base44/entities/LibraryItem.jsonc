@@ -31,9 +31,18 @@
           "data.user_id": "{{user.id}}"
         },
         {
-          "user_condition": {
-            "is_blocked": false
-          }
+          "$nor": [
+            {
+              "user_condition": {
+                "is_blocked": true
+              }
+            },
+            {
+              "user_condition": {
+                "disabled": true
+              }
+            }
+          ]
         }
       ]
     },
@@ -46,9 +55,18 @@
           "data.user_id": "{{user.id}}"
         },
         {
-          "user_condition": {
-            "is_blocked": false
-          }
+          "$nor": [
+            {
+              "user_condition": {
+                "is_blocked": true
+              }
+            },
+            {
+              "user_condition": {
+                "disabled": true
+              }
+            }
+          ]
         }
       ]
     },
