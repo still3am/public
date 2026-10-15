@@ -1,6 +1,6 @@
 import {readAllPages} from "@/lib/readPages";
 import {coalesce} from "@/lib/coalesce";
-import { useEffect, useState, useRef, useCallback } from "react";
+import { useEffect, useState, useRef, useCallback, createContext, useContext } from "react";
 import { base44 } from "@/api/base44Client";
 import { useAuth } from "@/lib/AuthContext";
 import { usePlayer } from "@/context/PlayerContext";
@@ -21,7 +21,7 @@ function loadAddedSet() {
 // session, surfaces members + pending join requests, hands the host approve /
 // reject actions (via the loungeApprove backend function), and pipes_guest
 // queue submissions straight into the host's local PlayerContext queue.
-export function useLoungeHost() {
+function useLoungeHostState() {
   const { user } = useAuth();
   const p = usePlayer();
   const [session, setSession] = useState(null);
@@ -217,4 +217,14 @@ export function useLoungeHost() {
     endSession,
     updateName,
   };
+}
+const LoungeHostContext=createContext(null);
+export function LoungeHostProvider({children}){
+ const lounge=useLoungeHostState();
+ return <LoungeHostContext.Provider value={lounge}>{children}</LoungeHostContext.Provider>;
+}
+export function useLoungeHost(){
+ const lounge=useContext(LoungeHostContext);
+ if(!lounge)throw new Error("LoungeHostProvider is required");
+ return lounge;
 }
