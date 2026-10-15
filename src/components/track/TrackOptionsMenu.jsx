@@ -1,3 +1,4 @@
+import {reportActionError} from "@/lib/actionError";
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { MoreHorizontal, Plus, Music2 } from "lucide-react";
@@ -102,6 +103,12 @@ export default function TrackOptionsMenu({
     setOpen(true);
   }, [openSignal]); // eslint-disable-line react-hooks/exhaustive-deps
 
+  useEffect(()=>{
+    if(!open)return;
+    const key=event=>{if(event.key==="Escape"){event.preventDefault();event.stopPropagation();setOpen(false);btnRef.current?.focus();}};
+    window.addEventListener("keydown",key,true);return()=>window.removeEventListener("keydown",key,true);
+  },[open]);
+
   if (!track) return null;
 
   const toggleOpen = (e) => {
@@ -111,10 +118,10 @@ export default function TrackOptionsMenu({
     setOpen(true);
   };
 
-  const pick = (item) => {
+  const pick = async (item) => {
     if(item.disabled)return;
     if(!item.keepOpen)setOpen(false);
-    item.onClick?.();
+    try{await item.onClick?.();}catch(error){reportActionError(error,"Couldn’t complete this song action. Please try again.");}
   };
 
   const list = (
@@ -142,12 +149,12 @@ export default function TrackOptionsMenu({
 
       {open &&
         createPortal(
-          <div data-public-menu className="fixed inset-0 z-[100]" onClick={(e) => { e.stopPropagation(); setOpen(false); }}>
+          <div data-public-menu data-public-dialog role="dialog" aria-modal="true" aria-label="Song options" tabIndex={-1} className="fixed inset-0 z-[100]" onClick={(e) => { e.stopPropagation(); setOpen(false); }}>
             {isMobile ? (
               <>
                 <div className="absolute inset-0 bg-black/60" />
                 <div
-                  className="absolute inset-x-0 bottom-0 bg-popover text-popover-foreground rounded-t-3xl pt-3 max-h-[85vh] overflow-y-auto animate-in slide-in-from-bottom duration-200"
+                  className="absolute inset-x-0 bottom-0 bg-popover text-popover-foreground rounded-t-3xl pt-3 max-h-[85dvh] overflow-y-auto overscroll-contain animate-in slide-in-from-bottom duration-200"
                   style={{ paddingBottom: "calc(0.75rem + env(safe-area-inset-bottom))" }}
                   onClick={(e) => e.stopPropagation()}
                 >
