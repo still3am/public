@@ -467,6 +467,81 @@ html.dark {
 @media(max-width:767px) {
  .profile-redesigned:not(.profile-is-editing) .profile-pinned-section>.grid>div { flex-basis:44%; }
 }
+/* A seamless announcement strip, independent of page width. */
+.public-banner { position:relative;z-index:10;isolation:isolate;overflow:hidden;flex-shrink:0;padding-top:env(safe-area-inset-top);background:hsl(var(--foreground));color:hsl(var(--background));border-bottom:1px solid hsl(var(--border)/.3); }
+.public-banner-track { display:flex;width:max-content;animation:public-banner-scroll var(--banner-duration,28s) linear infinite;will-change:transform; }
+.public-banner-copy { display:flex;align-items:center;justify-content:space-around;flex:0 0 auto;min-width:var(--banner-width,100vw);padding-block:8px; }
+.public-banner-copy>span { flex-shrink:0;padding-inline:24px;white-space:nowrap;font-size:10px;font-weight:650;letter-spacing:.16em;text-transform:uppercase; }
+.public-banner:hover .public-banner-track { animation-play-state:paused; }
+@keyframes public-banner-scroll { from { transform:translateX(0); } to { transform:translateX(-50%); } }
+@media(prefers-reduced-motion:reduce) {
+ .public-banner-track { animation:none;width:100%;will-change:auto; }
+ .public-banner-copy { width:100%;min-width:0;flex-wrap:wrap;gap:6px; }
+ .public-banner-copy>span { white-space:normal;text-align:center; }
+ .public-banner-copy[aria-hidden=true] { display:none; }
+}
+.home-welcome { display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:26px; }
+.home-welcome h1 { font-size:40px;font-weight:750;letter-spacing:-.045em;line-height:1.05;margin-top:8px; }
+.public-app .home-redesigned .home-feature { grid-template-columns:minmax(0,1fr) minmax(240px,340px);gap:40px;padding:28px;margin-bottom:22px;border:1px solid hsl(var(--border));border-radius:22px;background:hsl(var(--card));box-shadow:none; }
+.home-redesigned .home-feature-copy h2 { margin:14px 0;font-size:clamp(28px,3vw,44px);line-height:1.08;overflow-wrap:anywhere; }
+.home-feature-artist { font-size:18px;line-height:1.45;color:hsl(var(--muted-foreground)); }
+.home-redesigned .home-spotlight { padding:0;display:block; }
+.home-redesigned .home-spotlight-art { width:100%;height:auto;aspect-ratio:1;border-radius:16px;overflow:hidden; }
+.home-redesigned .home-spotlight-meta { display:none; }
+.home-redesigned .home-feature-actions { margin-top:24px; }
+.home-redesigned .home-feature-actions button { min-height:46px;padding:10px 20px;font-size:14px; }
+.home-genre-links { display:flex;gap:8px;overflow-x:auto;padding:0 0 12px;margin-bottom:22px; }
+.home-genre-links a { flex-shrink:0;padding:10px 16px;border-radius:999px;border:1px solid hsl(var(--border));font-size:12px;font-weight:550;background:hsl(var(--card)); }
+.home-genre-links a:hover { background:hsl(var(--accent)); }
+.home-redesigned .home-section { margin-bottom:34px; }
+.home-redesigned .home-section h2 { font-size:24px;font-weight:700; }
+.home-card-shelf { gap:18px;overscroll-behavior-x:contain; }
+.home-shelf-card { width:190px; }
+.home-redesigned .home-card-shelf .music-card { padding:0; }
+.home-redesigned .home-section>[role=region]>div { border:0;background:transparent;padding:0; }
+.library-redesigned .library-heading { align-items:center;margin-bottom:28px; }
+.library-redesigned .library-heading h1 { margin-top:8px; }
+.library-redesigned .library-heading>div>p:last-child { display:block;font-size:12px; }
+.library-redesigned .library-shortcuts { gap:12px; }
+.library-redesigned .library-shortcut { padding:16px;border-radius:16px;background:hsl(var(--card));box-shadow:none; }
+.library-shortcut-icon { width:42px;height:42px;display:grid;place-items:center;flex-shrink:0;border-radius:12px;background:hsl(var(--muted));color:hsl(var(--foreground)); }
+.library-redesigned .library-navigation { display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:4px;border:0;background:hsl(var(--muted));padding:4px;border-radius:14px;margin-bottom:22px; }
+.library-redesigned .library-navigation button { justify-content:center;min-height:42px;border:0;border-radius:10px;padding:8px;font-size:13px; }
+.library-redesigned .library-navigation button.active { background:hsl(var(--card));box-shadow:0 1px 4px rgb(0 0 0/.06); }
+.library-redesigned .library-search { background:hsl(var(--muted));border-color:transparent;box-shadow:none;border-radius:12px; }
+.library-redesigned .library-tool { border-radius:12px;background:hsl(var(--card)); }
+.library-redesigned .library-section-heading h2 { font-size:22px;letter-spacing:-.035em; }
+.library-play-all { display:flex;align-items:center;gap:6px;min-height:44px;padding:8px 12px;font-size:12px;font-weight:600;border-radius:999px;background:hsl(var(--muted)); }
+.library-redesigned .library-music-grid,.library-redesigned .library-playlist-grid { gap:22px 18px; }
+.library-redesigned .library-music-grid .music-card { padding:0; }
+.library-redesigned .library-song-list { border:0;border-radius:0;padding:0;background:transparent; }
+.library-redesigned .library-filters { background:hsl(var(--card));border-radius:14px; }
+@media(max-width:767px) {
+ .home-welcome { margin-bottom:22px; }
+ .home-welcome h1 { font-size:34px; }
+ .public-app .home-redesigned .home-feature { display:flex;flex-direction:column;gap:20px;padding:18px;border-radius:20px; }
+ .home-redesigned .home-spotlight { order:-1; }
+ .home-redesigned .home-feature-copy h2 { font-size:29px;margin-block:10px; }
+ .home-feature-artist { font-size:15px; }
+ .home-redesigned .home-feature-actions { margin-top:18px; }
+ .home-redesigned .home-feature-actions button { padding:10px 16px;font-size:12px; }
+ .home-redesigned .home-section h2 { font-size:22px; }
+ .home-shelf-card { width:43vw;max-width:190px; }
+ .home-card-shelf { gap:14px; }
+ .home-redesigned .home-section>[role=region]>div { width:90%; }
+ .library-redesigned .library-create { width:44px;height:44px;min-height:44px;padding:0;display:grid;place-items:center;margin:0; }
+ .library-redesigned .library-create span { display:none; }
+ .library-redesigned .library-shortcuts { grid-template-columns:1fr;gap:0;margin-bottom:22px; }
+ .library-redesigned .library-shortcut { border:0;border-bottom:1px solid hsl(var(--border));border-radius:0;background:transparent;padding:12px 0; }
+ .library-redesigned .library-shortcut .shortcut-subtitle { display:none; }
+ .library-redesigned .library-shortcut .text-sm { font-size:16px;font-weight:550; }
+ .library-redesigned .library-navigation { justify-content:center; }
+ .library-redesigned .library-navigation button span { display:none; }
+ .library-redesigned .library-search input { font-size:16px; }
+ .library-redesigned .library-music-grid,.library-redesigned .library-playlist-grid { grid-template-columns:repeat(2,minmax(0,1fr));gap:20px 14px; }
+ .library-redesigned .library-section-heading h2 { font-size:21px; }
+}
+
 
 
 
