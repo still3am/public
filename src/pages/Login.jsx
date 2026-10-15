@@ -127,7 +127,7 @@ export default function Login() {
         </div>
       }
 
-      <p className="text-xs text-muted-foreground mb-4"><Link to="/privacy" className="underline">Privacy</Link> · <Link to="/terms" className="underline">Terms</Link> · <Link to="/support" className="underline">Support</Link></p>
+      <nav aria-label="Privacy and support" className="flex flex-wrap items-center justify-center gap-1.5 text-center text-xs text-muted-foreground mb-4 w-full"><Link to="/privacy" className="underline underline-offset-2">Privacy</Link><span aria-hidden="true">·</span><Link to="/terms" className="underline underline-offset-2">Terms</Link><span aria-hidden="true">·</span><Link to="/support" className="underline underline-offset-2">Support</Link></nav>
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="space-y-2">
           <Label htmlFor="email">Email</Label>
