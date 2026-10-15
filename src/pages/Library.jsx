@@ -243,6 +243,7 @@ export default function Library() {
             <nav className="library-footer-links" aria-label="More from your library">
               <button onClick={()=>chooseView("recent")}><span className="library-footer-icon"><History size={21}/></span><span>Recently played</span><ChevronRight size={18}/></button>
               <Link to="/my-uploads"><span className="library-footer-icon"><Upload size={21}/></span><span>Uploads</span><ChevronRight size={18}/></Link>
+              <Link to="/unfinished-uploads"><span className="library-footer-icon"><ListPlus size={21}/></span><span>Unfinished uploads</span><ChevronRight size={18}/></Link>
               <Link to="/records"><span className="library-footer-icon"><Disc3 size={21}/></span><span>Artists</span><ChevronRight size={18}/></Link>
             </nav>
           </>}
