@@ -163,6 +163,14 @@
         "write": false
       }
     },
+    "onboarding_completed": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether this member finished or skipped the first-time welcome",
+      "rls": {
+        "write": true
+      }
+    },
     "profile_background_mode": {
       "type": "string",
       "enum": [
