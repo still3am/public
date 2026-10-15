@@ -18,7 +18,8 @@ import {
   ChevronRight } from
 "lucide-react";
 import TrackCard from "@/components/TrackCard";
-import Podium from "@/components/Podium";
+import Avatar from "@/components/Avatar";
+import ArtistLinks from "@/components/ArtistLinks";
 import ReleaseList from "@/components/ReleaseList";
 import { usePlayer } from "@/context/PlayerContext";
 import { Image } from "@/components/ui/image";
@@ -59,9 +60,9 @@ function Section({ title, icon: Icon, children, seeAllTo }) {
 function CardRow({ tracks }) {
   if (!tracks?.length) return null;
   return (
-    <div className="flex gap-3 overflow-x-auto no-scrollbar pb-2 -mx-4 px-4 sm:-mx-5 sm:px-5 snap-x snap-mandatory md:grid md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 md:overflow-visible md:mx-0 md:px-0 md:gap-4">
+    <div className="home-card-shelf flex gap-3 overflow-x-auto no-scrollbar pb-2 snap-x snap-mandatory">
       {tracks.map((t) =>
-      <div key={t.id} className="snap-start shrink-0 w-[46vw] max-w-[210px] sm:w-[200px] md:w-auto">
+      <div key={t.id} className="home-shelf-card snap-start shrink-0">
           <TrackCard track={t} queue={tracks} />
         </div>
       )}
@@ -241,30 +242,21 @@ export default function Home() {
   const playFeatured = () => {if (!featured) return;if (p.currentTrack?.id === featured.id) p.togglePlay();else {p.setShuffle(false);p.playTrackAt(newReleases.length ? newReleases : [featured], 0);}};
   return (
     <PullToRefresh onRefresh={() => load(true)}>
-      <div className="home-page">
+      <div className="home-page home-redesigned">
+        <header className="home-welcome"><div><p className="eyebrow text-muted-foreground">{greeting}</p><h1>Home</h1></div><Link to="/profile" aria-label="Your profile"><Avatar user={user} size={44}/></Link></header>
         
         
         <section className="home-feature">
-          <div className="home-feature-copy"><p className="eyebrow">Find something you love</p><h2>Music, made PUBLIC.</h2><p>Fresh releases, familiar favorites, and music worth sharing.</p><div className="home-feature-actions"><button disabled={!discoveryQueue.length} onClick={() => {p.setShuffle(false);p.playTrackAt(discoveryQueue, 0);}} className="chrome-button"><Play size={15} fill="currentColor" />Play discovery</button><Link className="playlist-action" to="/recent">Latest music<ChevronRight size={14} /></Link></div></div>
+          <div className="home-feature-copy"><p className="eyebrow">New on PUBLIC</p><h2><Link to={`/track/${featured.id}`}>{featured.title}</Link></h2><div className="home-feature-artist"><ArtistLinks artist={featured.artist || featured.uploader_name} linkClassName="hover:underline" maxShown={4}/></div><div className="home-feature-actions"><button onClick={playFeatured} className="chrome-button">{featuredPlaying?<Pause size={18} fill="currentColor"/>:<Play size={18} fill="currentColor"/>}{featuredPlaying?"Pause":"Play"}</button><button disabled={!discoveryQueue.length} onClick={()=>{p.setShuffle(false);p.playTrackAt(discoveryQueue,0);}} className="playlist-action">Discover music<ChevronRight size={15}/></button></div></div>
           {featured && <div ref={featuredMenu.ref} {...featuredMenu.handlers} onClickCapture={(event) => {if (!event.currentTarget.contains(event.target)) return;if (featuredMenu.consumeLongPress()) {event.preventDefault();event.stopPropagation();}}} className="home-spotlight song-menu-surface group"><div className="home-spotlight-art">{featured.cover_art_url ? <Image src={featured.cover_art_url} fittingType="fill" alt="" className="w-full h-full" /> : <Music size={42} />}<button className="home-spotlight-play" onClick={playFeatured} aria-label={featuredPlaying ? `Pause ${featured.title}` : `Play ${featured.title}`}>{featuredPlaying ? <Pause size={20} fill="currentColor" /> : <Play size={20} fill="currentColor" />}</button><div className="home-spotlight-menu song-menu-reveal"><TrackOptionsMenu track={featured} openSignal={featuredMenu.signal} anchorRef={featuredMenu.ref} /></div></div><div className="home-spotlight-meta"><div><p className="eyebrow">Featured release</p><Link to={`/track/${featured.id}`} className="font-semibold text-sm block truncate mt-1">{featured.title}</Link><p className="text-xs text-muted-foreground truncate mt-1">{featured.artist || featured.uploader_name}</p></div></div></div>}
         </section>
         
         
+        {genreList.length>0&&<nav className="home-genre-links" aria-label="Browse genres">{genreList.map(genre=><Link key={genre} to={`/search?genre=${encodeURIComponent(genre)}`}>{genre}</Link>)}</nav>}
         <Section title="New on PUBLIC" icon={Sparkles} seeAllTo="/recent"><ReleaseList tracks={newReleases} /></Section>
         {recent.length > 0 && <Section title="Recently played"><CardRow tracks={recent} /></Section>}
         <Section title="Trending" icon={TrendingUp} seeAllTo="/top">
-          {trending.length >= 3 ?
-          <>
-              <Podium tracks={trending.slice(0, 5)} queue={trending} />
-              {trending.length > 5 &&
-            <div className="mt-4">
-                  <CardRow tracks={trending.slice(5)} />
-                </div>
-            }
-            </> :
-
           <CardRow tracks={trending} />
-          }
         </Section>
 
         {discover.length > 0 &&
