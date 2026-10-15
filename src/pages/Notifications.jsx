@@ -27,31 +27,19 @@ const ICONS = {
   track_shared: Send
 };
 
-function getLink(n) {
-  if (n.type === "profile_comment" || n.type === "new_follower")
-  return n.actor_id ? `/profile/${n.actor_id}` : null;
-  if (n.track_id) return `/track/${n.track_id}`;
-  return null;
-}
-
 function activityTime(value){const date=new Date(value);return Number.isNaN(date.getTime())?"":formatDistanceToNow(date,{addSuffix:true});}
 
+function actorName(n) {
+  return n.actor?.display_name || n.actor?.full_name || n.actor_name || "PUBLIC member";
+}
 function getMessage(n) {
-  const name = n.actor?.display_name || n.actor?.full_name || n.actor_name || "PUBLIC member";
-  switch (n.type) {
-    case "new_follower":
-      return `${name} started following you`;
-    case "track_liked":
-      return `${name} liked your track`;
-    case "new_upload_from_followed":
-      return `${name} uploaded a new track`;
-    case "profile_comment":
-      return `${name} commented on your profile`;
-    case "track_shared":
-      return `${name} sent you a song`;
-    default:
-      return "New notification";
-  }
+  return ({
+    new_follower:"started following you",
+    track_liked:"liked your track",
+    new_upload_from_followed:"uploaded a new track",
+    profile_comment:"commented on your profile",
+    track_shared:"sent you a song"
+  })[n.type] || "sent you a notification";
 }
 
 export default function Notifications() {
@@ -104,7 +92,8 @@ export default function Notifications() {
       <div className="space-y-1.5">
           {visibleNotifications.map((n) => {
           const Icon = ICONS[n.type] || Bell;
-          const link = getLink(n);
+          const profileLink = n.actor_id ? `/profile/${encodeURIComponent(n.actor_id)}` : null;
+          const handle = () => {if (!n.read) markAsRead(n.id);};
           const content =
           <div
             className={`notification-content flex items-start gap-3 p-3 rounded-2xl transition ${
@@ -112,17 +101,17 @@ export default function Notifications() {
             }>
             
                 <div className="notification-avatar relative shrink-0">
-                  <Avatar user={n.actor || {display_name:n.actor_name||"PUBLIC member",avatar_url:n.actor_avatar_url||""}} size={44} />
-                  <div className="absolute bottom-0 right-0 w-5 h-5 rounded-full bg-background grid place-items-center ring-1 ring-border">
+                  {profileLink ? <Link to={profileLink} onClick={handle} aria-label={`View ${actorName(n)} profile`} className="block rounded-full focus-visible:ring-2 focus-visible:ring-ring"><Avatar user={n.actor || {display_name:actorName(n),avatar_url:n.actor_avatar_url||""}} size={44}/></Link> : <Avatar user={n.actor || {display_name:actorName(n),avatar_url:n.actor_avatar_url||""}} size={44}/>}
+                  <div className="pointer-events-none absolute bottom-0 right-0 w-5 h-5 rounded-full bg-background grid place-items-center ring-1 ring-border">
                     <Icon size={11} className="text-foreground/60" />
                   </div>
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="notification-message text-sm text-foreground/80 leading-snug">
-                    {getMessage(n)}
+                    {profileLink ? <Link to={profileLink} onClick={handle} className="font-semibold text-foreground hover:underline focus-visible:underline">{actorName(n)}</Link> : <span className="font-semibold">{actorName(n)}</span>}{" "}{getMessage(n)}
                   </p>
                   {n.track &&
-                  <div className="notification-track mt-2 flex items-center gap-2.5 p-2 rounded-xl bg-foreground/[0.04]">
+                  <Link to={`/track/${encodeURIComponent(n.track.id || n.track_id)}`} onClick={handle} aria-label={`Open ${n.track.title}`} className="notification-track mt-2 flex items-center gap-2.5 p-2 rounded-xl bg-foreground/[0.04]">
                       <div className="w-9 h-9 rounded-lg overflow-hidden bg-foreground/10 shrink-0 grid place-items-center">
                         {n.track.cover_art_url ?
                       <Image
@@ -140,7 +129,7 @@ export default function Notifications() {
                           {n.track.artist || n.track.uploader_name || "Unknown"}
                         </div>
                       </div>
-                    </div>
+                    </Link>
                   }
                   {n.comment &&
                   <p className="mt-1.5 text-xs italic text-foreground/70 break-words">
@@ -156,10 +145,7 @@ export default function Notifications() {
             }
               </div>;
 
-          const handle = () => {
-            if (!n.read) markAsRead(n.id);
-          };
-          return <div className="notification-item" key={n.id}>{link?<Link to={link} onClick={handle} className="block active:scale-[0.99] transition">{content}</Link>:<button onClick={handle} className="block w-full text-left">{content}</button>}<SafetyControls type="notification" id={n.id} userId={n.actor_id} label="note"/></div>;
+          return <div className="notification-item" key={n.id}>{content}<SafetyControls type="notification" id={n.id} userId={n.actor_id} label="note"/></div>;
 
         })}
         </div>
