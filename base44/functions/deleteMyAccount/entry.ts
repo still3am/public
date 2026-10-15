@@ -24,14 +24,14 @@ export async function deleteAccountData(b,u){
   }
   throw Error('Cleanup limit reached');
  };
- const [tracks,playlists,sessions]=await Promise.all([
-  collect(s,'Track',{uploader_id:id}),collect(s,'Playlist',{creator_id:id}),collect(s,'LoungeSession',{host_id:id})
+ const [tracks,sessions]=await Promise.all([
+  collect(s,'Track',{uploader_id:id}),collect(s,'LoungeSession',{host_id:id})
  ]);
  const trackIds=tracks.map(t=>t.id);
  // Clean references while uploaded tracks, playlists and sessions still exist.
  for(let offset=0;offset<trackIds.length;offset+=100){
   const ids=trackIds.slice(offset,offset+100),q={track_id:{$in:ids}};
-  for(const name of ['PlayEvent','LibraryItem','Like','Lyrics','TrackAnnotation','LoungeQueueItem','Notification','PlaybackState'])await erase(s,name,q);
+  for(const name of ['PlayEvent','LibraryItem','Like','Lyrics','TrackAnnotation','LoungeQueueItem','Notification'])await erase(s,name,q);
   await s.entities.Playlist.updateMany({track_ids:{$in:ids}},{$pull:{track_ids:{$in:ids}}});
   await s.entities.PublicProfile.updateMany({featured_track_id:{$in:ids}},{$set:{featured_track_id:''}});
   await s.entities.PublicProfile.updateMany({top_track_ids:{$in:ids}},{$pull:{top_track_ids:{$in:ids}}});
@@ -45,7 +45,6 @@ export async function deleteAccountData(b,u){
    if(Object.keys(data).length)await s.entities.User.update(member.id,data);
   }
  }
- for(const playlist of playlists)await erase(s,'SavedPlaylist',{playlist_id:playlist.id});
  for(const room of sessions){
   await erase(s,'LoungeMember',{session_id:room.id});
   await erase(s,'LoungeQueueItem',{session_id:room.id});
