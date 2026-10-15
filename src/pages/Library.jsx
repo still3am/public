@@ -210,7 +210,7 @@ export default function Library() {
       {libraryView==="overview"&&<nav className="library-collection-rows" aria-label="Your collections">
         <button onClick={()=>chooseView("playlists")}><ListMusic size={26}/><span>Playlists</span><ChevronRight size={21}/></button>
         <button onClick={()=>chooseView("songs")}><Music2 size={26}/><span>Songs</span><ChevronRight size={21}/></button>
-        <Link to="/downloads"><CloudOff size={26}/><span>Offline music</span><ChevronRight size={21}/></Link>
+        <Link to="/downloads" aria-label={`Offline music, ${offlineCount} songs on this device`}><CloudOff size={26}/><span>Offline music</span><ChevronRight size={21}/></Link>
       </nav>}
       {libraryView!=="overview"&&<>
       <div className="library-navigation" role="group" aria-label="Library views">
