@@ -38,7 +38,7 @@ function rgb(value){
  return m?m.slice(1).map(n=>Math.min(255,Number(n))/255):null;
 }
 function paletteOf(colors){
- const values=(colors||[]).filter(c=>rgb(c)).slice(0,3);
+ const values=[...new Set((colors||[]).filter(c=>rgb(c)))].slice(0,3);
  if(!values.length)return DEFAULT;
  const shade=(color,factor)=>"rgb("+rgb(color).map(v=>Math.round(Math.min(255,v*255*factor))).join(", ")+")";
  return [values[0],values[1]||shade(values[0],.62),values[2]||values[1]||shade(values[0],1.3)];
@@ -102,7 +102,9 @@ export default function MotionGradient({colors=DEFAULT,motion="flow",speed=1,act
   document.addEventListener("visibilitychange",resume);reduced.addEventListener("change",resume);
   const observer=typeof IntersectionObserver!=="undefined"?new IntersectionObserver(entries=>{visible=entries[0]?.isIntersecting??true;resume();}):null;
   observer?.observe(element);
-  const dialogs=new MutationObserver(resume);dialogs.observe(document.body,{childList:true,subtree:true});
+  let wasCovered=covered();
+  const dialogs=new MutationObserver(()=>{const next=covered();if(next!==wasCovered){wasCovered=next;resume();}});
+  if(settings.current.pauseWhenCovered)dialogs.observe(document.body,{childList:true,subtree:true});
   const resize=typeof ResizeObserver!=="undefined"?new ResizeObserver(resume):null;resize?.observe(element);
   draw(0,false);setReady(true);resume();
   return()=>{
