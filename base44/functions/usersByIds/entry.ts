@@ -55,11 +55,12 @@ export default async function handleRequest(req) {
       profile_background_speed: typeof u.profile_background_speed === 'number' ? Math.max(.35,Math.min(1.6,u.profile_background_speed)) : 1,
       profile_background_colors: Array.isArray(u.profile_background_colors) ? u.profile_background_colors : [],
       top_track_ids: Array.isArray(u.top_track_ids) ? u.top_track_ids : [],
-      is_artist: !!u.is_artist,
+      is_artist: u.role!=='admin' && !!u.is_artist,
+      is_public_admin: u.role==='admin',
       created_date: u.created_date || '',
     }));
 
-    const publicFields=["display_name","full_name","avatar_url","banner_url","bio","location","pronouns","website","instagram","twitter","soundcloud","status_message","featured_track_id","profile_background_mode","profile_background_colors","profile_background_motion","profile_background_speed","top_track_ids","is_artist"];
+    const publicFields=["display_name","full_name","avatar_url","banner_url","bio","location","pronouns","website","instagram","twitter","soundcloud","status_message","featured_track_id","profile_background_mode","profile_background_colors","profile_background_motion","profile_background_speed","top_track_ids","is_artist","is_public_admin"];
     await Promise.allSettled(users.map(async profile=>{
       const page=await base44.asServiceRole.entities.PublicProfile.filter({user_id:profile.id},'-updated_date',1);
       const data={...Object.fromEntries(publicFields.filter(key=>profile[key]!==undefined).map(key=>[key,profile[key]])),user_id:profile.id,joined_at:profile.created_date||"",visible:true};
