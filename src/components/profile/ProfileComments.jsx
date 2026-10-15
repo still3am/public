@@ -123,7 +123,7 @@ export default function ProfileComments({ profileId, isOwn, active = true }) {
         <input
           aria-label="Leave a profile comment"
           value={message}
-          onChange={(e) => {const value=e.target.value;setMessage(value);try{if(user?.id){if(value)localStorage.setItem(draftKey,value);else localStorage.removeItem(draftKey);}}catch{}}
+          onChange={(e) => {const value=e.target.value;setMessage(value);try{if(user?.id){if(value)localStorage.setItem(draftKey,value);else localStorage.removeItem(draftKey);}}catch{}}}
           placeholder="Leave a comment..."
           maxLength={500}
           className="min-w-0 flex-1 py-2.5 rounded-full border border-border bg-background text-sm px-2.5" />
