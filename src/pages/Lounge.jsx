@@ -99,7 +99,7 @@ export default function Lounge() {
       if(request!==memberVersion.current||room.current.sid!==sid||room.current.uid!==uid)return;
       setMembers(all);
       setMember(all.find(member=>member.user_id===uid)||null);
-    } catch {/* Preserve confirmed membership if a poll fails. */}
+    } catch(error) {if((error.status??error.response?.status)===410&&room.current.sid===sid){setNotFound(true);setPickerOpen(false);}}
   }, [user?.id]);
 
   useEffect(() => {
