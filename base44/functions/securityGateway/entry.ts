@@ -207,7 +207,7 @@ export default async function handleRequest(req) {
         if(old && !mine(old,'uploader_id')) fail('Only the owner can change this track');
         if(kind==='delete') {
           // Keep the track until cleanup succeeds so a failed request remains retryable.
-          for(const name of ['Like','Lyrics','TrackAnnotation','LibraryItem','PlayEvent','LoungeQueueItem','Notification','PlaybackState'])await svc.entities[name].deleteMany({track_id:id});
+          for(const name of ['Like','Lyrics','TrackAnnotation','LibraryItem','PlayEvent','LoungeQueueItem','Notification'])await svc.entities[name].deleteMany({track_id:id});
           await svc.entities.Playlist.updateMany({track_ids:{$in:[id]}},{$pull:{track_ids:id}});
           await svc.entities.PublicProfile.updateMany({featured_track_id:id},{$set:{featured_track_id:''}});
           await svc.entities.PublicProfile.updateMany({top_track_ids:{$in:[id]}},{$pull:{top_track_ids:id}});
