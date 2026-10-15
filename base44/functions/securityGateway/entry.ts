@@ -356,7 +356,7 @@ export default async function handleRequest(req) {
           if(!['new_follower','profile_comment','track_shared'].includes(data.type)) fail('Invalid notification',400);
           if(data.track_id) await requireTrack(data.track_id);
           await moderate(svc,String(data.comment||''));
-          data={...pick(data,['user_id','type','track_id','comment']),actor_id:user.id,read:false};
+          data={...pick(data,['user_id','type','track_id','comment']),actor_id:user.id,actor_name:user.display_name||user.full_name||'',actor_avatar_url:user.avatar_url||'',read:false};
         }
       }
       return kind==='create'?await handler.create(data):kind==='update'?await handler.update(id,data):await handler.delete(id);
