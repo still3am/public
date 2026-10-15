@@ -2,6 +2,7 @@ import {useRef,useState} from "react";
 import {Check,Loader2,Plus,X} from "lucide-react";
 import {Dialog,DialogContent,DialogHeader,DialogTitle,DialogDescription} from "@/components/ui/dialog";
 import {profileGradient} from "@/hooks/useCoverPalette";
+import MotionGradient from "@/components/MotionGradient";
 import "./profile-colors.css";
 
 const PRESETS=[
@@ -16,12 +17,12 @@ const valid=color=>/^#[0-9a-f]{6}$/i.test(color);
 const normalize=text=>"#"+text.replace(/^#/,"").toLowerCase();
 
 export default function ProfileColorPicker({coverUrl,colors,loading,value,onPreview,onSave,onClose}){
- const [draft,setDraft]=useState(()=>({mode:value.mode,colors:[...value.colors]}));
+ const [draft,setDraft]=useState(()=>({mode:value.mode,colors:[...value.colors],motion:value.motion||"flow",speed:value.speed||1}));
  const [saving,setSaving]=useState(false),[error,setError]=useState("");
  const saveLock=useRef(false);
  const update=next=>{if(saveLock.current)return;setError("");setDraft(next);onPreview({...next,colors:next.colors.filter(valid)});};
  const customColors=draft.colors.length?draft.colors:colors.slice(0,3).length?colors.slice(0,3):PRESETS[0].colors;
- const setColors=next=>update({mode:"custom",colors:next.slice(0,3)});
+ const setColors=next=>update({...draft,mode:"custom",colors:next.slice(0,3)});
  const toggle=color=>setColors(draft.mode==="custom"&&draft.colors.includes(color)?draft.colors.filter(c=>c!==color):[...(draft.mode==="custom"?draft.colors:[]),color].slice(-3));
  const preview=draft.mode==="off"?[]:draft.mode==="custom"?draft.colors.filter(valid):colors.slice(0,3);
  const invalid=draft.mode==="custom"&&(!draft.colors.length||draft.colors.some(color=>!valid(color)));
@@ -36,14 +37,20 @@ export default function ProfileColorPicker({coverUrl,colors,loading,value,onPrev
   <DialogContent className="profile-palette-dialog profile-color-editor" data-public-dialog>
    <DialogHeader><DialogTitle>Your profile colors</DialogTitle><DialogDescription>Pick any colors, try a palette, or follow your profile song.</DialogDescription></DialogHeader>
    <div className="profile-color-body">
-    <div className="profile-color-preview" style={{backgroundImage:profileGradient(preview)}}>
+    <div className="profile-color-preview">
+     {preview.length>0&&<MotionGradient colors={preview} motion={draft.motion} speed={draft.speed} className="absolute inset-0" style={{borderRadius:"inherit",zIndex:-2}}/>}
      {coverUrl&&<img src={coverUrl} alt="" onError={event=>{event.currentTarget.style.display="none";}}/>}
      <div><strong>Make it yours</strong><span>Live profile preview</span></div>
     </div>
     <div className="profile-color-modes" role="group" aria-label="Profile background mode">
-     {[["auto","Automatic"],["custom","Custom"],["off","No color"]].map(([mode,label])=><button type="button" key={mode} disabled={saving} aria-pressed={draft.mode===mode} onClick={()=>update({mode,colors:mode==="custom"?customColors:draft.colors})}>{label}</button>)}
+     {[["auto","Automatic"],["custom","Custom"],["off","No color"]].map(([mode,label])=><button type="button" key={mode} disabled={saving} aria-pressed={draft.mode===mode} onClick={()=>update({...draft,mode,colors:mode==="custom"?customColors:draft.colors})}>{label}</button>)}
     </div>
     <p className="profile-color-hint">{draft.mode==="auto"?(coverUrl?"Colors update with your profile song.":"Add a profile song for automatic colors, or choose Custom now."):draft.mode==="off"?"Use PUBLIC’s clean background. Your custom palette is kept.":"Your custom colors stay the same when you change your profile song."}</p>
+    {draft.mode!=="off"&&<section className="profile-color-section"><h3>Movement</h3>
+     <div className="profile-color-modes profile-motion-modes" role="group" aria-label="Gradient movement">{[["still","Still"],["flow","Flowing"]].map(([motion,label])=><button key={motion} type="button" disabled={saving} aria-pressed={draft.motion===motion} onClick={()=>update({...draft,motion})}>{label}</button>)}</div>
+     {draft.motion==="flow"&&<label className="profile-motion-speed"><span>Speed <span>{draft.speed<.75?"Slow":draft.speed>1.2?"Lively":"Gentle"}</span></span><input type="range" min=".35" max="1.6" step=".05" value={draft.speed} disabled={saving} aria-label="Gradient movement speed" onChange={event=>update({...draft,speed:Number(event.target.value)})}/></label>}
+     <p className="profile-color-hint">Motion follows each viewer’s Reduce Motion setting.</p>
+    </section>}
     {draft.mode==="custom"&&<>
      <section className="profile-color-section"><h3>Your palette <span>Up to 3 colors</span></h3>
       <div className="profile-color-stops">{draft.colors.map((color,index)=><div className="profile-color-stop" key={index}>
