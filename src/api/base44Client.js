@@ -53,10 +53,12 @@ export const base44 = new Proxy(raw,{get(target,name) {
   if(name==='auth') return {...target.auth,updateMe:async data=>{
     // Only these non-text appearance settings use the SDK's own-account route.
     // All other profile fields keep the moderated security gateway.
-    const colorKeys=['profile_background_mode','profile_background_colors','featured_track_id'];
+    const colorKeys=['profile_background_mode','profile_background_colors','profile_background_motion','profile_background_speed','featured_track_id'];
     const keys=Object.keys(data||{});
     if(keys.length&&keys.every(key=>colorKeys.includes(key))){
       if(data.profile_background_mode!==undefined&&!['auto','custom','off'].includes(data.profile_background_mode))throw new Error('Invalid background mode');
+      if(data.profile_background_motion!==undefined&&!['flow','still'].includes(data.profile_background_motion))throw new Error('Invalid background motion');
+      if(data.profile_background_speed!==undefined&&(typeof data.profile_background_speed!=='number'||!Number.isFinite(data.profile_background_speed)||data.profile_background_speed<.35||data.profile_background_speed>1.6))throw new Error('Invalid background speed');
       const colors=data.profile_background_colors;
       if(colors!==undefined&&(!Array.isArray(colors)||colors.length>3||colors.some(c=>typeof c!=='string'||!/^#[0-9a-f]{6}$/i.test(c))))throw new Error('Invalid profile colors');
       if(data.featured_track_id!==undefined){
@@ -65,7 +67,7 @@ export const base44 = new Proxy(raw,{get(target,name) {
         if(id){const page=await target.entities.Track.filter({id},'-created_date',1);const rows=Array.isArray(page)?page:page?.items||[];if(!rows.length)throw new Error('Song unavailable');}
       }
       const saved=await target.auth.updateMe(data);
-      const publicAppearance=Object.fromEntries(['featured_track_id','profile_background_mode','profile_background_colors'].filter(key=>data[key]!==undefined).map(key=>[key,data[key]]));
+      const publicAppearance=Object.fromEntries(['featured_track_id','profile_background_mode','profile_background_colors','profile_background_motion','profile_background_speed'].filter(key=>data[key]!==undefined).map(key=>[key,data[key]]));
       try{
         const uid=saved?.id || (await target.auth.me()).id;
         const page=await target.entities.PublicProfile.filter({user_id:uid},'-updated_date',1);
