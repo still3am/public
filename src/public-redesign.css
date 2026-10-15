@@ -610,6 +610,7 @@ html.dark {
 .chart-ranked-row { display:flex;align-items:center;gap:10px;border-bottom:1px solid hsl(var(--border)/.6);padding:7px 0;min-width:0; }
 .chart-position { width:34px;flex-shrink:0;text-align:center;font-size:17px;font-weight:650;font-variant-numeric:tabular-nums;color:hsl(var(--muted-foreground)); }
 .chart-ranked-row:first-child .chart-position { color:hsl(var(--foreground)); }
+.chart-ranked-row .song-row>button:first-child { display:none; }
 .playlist-refined .playlist-hero { padding:20px 0 32px;align-items:center;margin-bottom:20px;border-bottom:1px solid hsl(var(--border)); }
 .playlist-refined .playlist-cover { width:240px;height:240px;border-radius:20px; }
 .playlist-refined .playlist-title { font-size:clamp(30px,4vw,52px);line-height:1.1;letter-spacing:-.04em; }
