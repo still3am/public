@@ -9,6 +9,7 @@ import ProtectedRoute from '@/components/ProtectedRoute';
 import { PlayerProvider } from '@/context/PlayerContext';
 import { LibraryProvider } from '@/context/LibraryContext';
 import { UploadProvider } from '@/context/UploadContext';
+import { LoungeHostProvider } from '@/hooks/useLoungeHost';
 import Layout from '@/components/Layout';
 import DialogFocusManager from '@/components/DialogFocusManager';
 import GlobalStatus from '@/components/GlobalStatus';
@@ -125,7 +126,7 @@ function App() {
           <ErrorBoundary><GlobalStatus/><DialogFocusManager/><SafetyProvider><PlayerProvider>
             <LibraryProvider>
               <UploadProvider>
-                <AuthenticatedApp />
+                <LoungeHostProvider><AuthenticatedApp /></LoungeHostProvider>
               </UploadProvider>
             </LibraryProvider>
           </PlayerProvider></SafetyProvider></ErrorBoundary>
