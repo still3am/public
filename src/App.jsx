@@ -41,6 +41,7 @@ import Notifications from '@/pages/Notifications';
 import ArtistDashboard from '@/pages/ArtistDashboard';
 import PlaylistDetail from '@/pages/PlaylistDetail';
 import MyUploads from '@/pages/MyUploads';
+import UnfinishedUploads from '@/pages/UnfinishedUploads';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin, checkAppState } = useAuth();
@@ -106,6 +107,7 @@ const AuthenticatedApp = () => {
           <Route path="/notifications" element={<Notifications />} />
           <Route path="/artist-dashboard" element={<ArtistDashboard />} />
           <Route path="/my-uploads" element={<MyUploads />} />
+          <Route path="/unfinished-uploads" element={<UnfinishedUploads />} />
         </Route>
       </Route>
       <Route path="*" element={<PageNotFound />} />
