@@ -316,7 +316,7 @@ export default function Profile({ ownProfileTab = false }) {
     try{
       const result=await base44.functions.invoke("deleteMyAccount",{confirmation:"DELETE"});
       if(result.data?.deleted!==true)throw Error("Deletion was not confirmed");
-      await clearPersonalData({deleteOffline:true,userId:user?.id}).catch(()=>{});
+      await clearPersonalData({deleteOffline:true,userId:me?.id}).catch(()=>{});
       base44.auth.logout(window.location.origin+"/login");
     }catch(error){
       const status=error?.status??error?.response?.status;
