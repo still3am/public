@@ -1,285 +1,83 @@
-import { useMemo, useState } from "react";
-import {
-  CloudOff,
-  Play,
-  Pause,
-  Trash2,
-  Loader2,
-  GripVertical } from
-"lucide-react";
-import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
-import { usePlayer } from "@/context/PlayerContext";
-import { useOfflineCache } from "@/hooks/useOfflineCache";
-import { formatTime, bytesToReadable } from "@/lib/audio-utils";
-import PullToRefresh from "@/components/PullToRefresh";
+import {useEffect,useMemo,useRef,useState} from "react";
+import {Link} from "react-router-dom";
+import {ArrowLeft,CloudDownload,CloudOff,Play,Pause,Shuffle,Trash2,Loader2,GripVertical,Search,X,ArrowDownUp,Check,HardDrive} from "lucide-react";
+import {DragDropContext,Droppable,Draggable} from "@hello-pangea/dnd";
+import {usePlayer} from "@/context/PlayerContext";
+import {useOfflineCache} from "@/hooks/useOfflineCache";
+import {formatTime,bytesToReadable} from "@/lib/audio-utils";
+import {shufflePlaylist} from "@/lib/playlistActions";
 import DownloadCover from "@/components/DownloadCover";
-import { useToast } from "@/components/ui/use-toast";
+import {useToast} from "@/components/ui/use-toast";
 
-// PUBLIC OFFLINE — locally-cached tracks that play without Wi-Fi or data.
-// Everything here runs off IndexedDB blobs already on the device, so the page
-// is fully usable on airplane mode.
-export default function Downloads() {
-  const p = usePlayer();
-  const cache = useOfflineCache();
-  const { toast } = useToast();
-  const [confirming, setConfirming] = useState(false);
-  const [dragging, setDragging] = useState(false);
-  const [query,setQuery]=useState("");
-  const [clearing,setClearing]=useState(false);
-
-  const tracks = useMemo(
-    () =>
-    cache.records.map((r) => ({
-      id: r.id,
-      title: r.title,
-      artist: r.artist || r.uploader_name,
-      uploader_name: r.uploader_name,
-      uploader_id: r.uploader_id,
-      cover_art_url: r.cover_art_url,
-      audio_url: r.audio_url,
-      duration_seconds: r.duration_seconds,
-      genre: r.genre,
-      explicit: r.explicit,
-      _coverBlob: r._coverBlob,
-      _private_audio: !!r._private_audio,
-      _offline: true
-    })),
-    [cache.records]
-  );
-
-  const visibleTracks=useMemo(()=>tracks.map((track,index)=>({track,index})).filter(({track})=>!query.trim()||[track.title,track.artist].some(value=>(value||"").toLowerCase().includes(query.trim().toLowerCase()))),[tracks,query]);
-  const totalBytes = useMemo(
-    () => cache.records.reduce((sum, r) => sum + (r._size || 0), 0),
-    [cache.records]
-  );
-
-  const isCurrent = (id) => p.currentTrack?.id === id;
-  const anyPlayingHere=visibleTracks.some(({track})=>track.id===p.currentTrack?.id)&&p.isPlaying;
-
-  const playAll=()=>{const list=visibleTracks.map(row=>row.track);if(!list.length)return;if(list.some(track=>track.id===p.currentTrack?.id)&&p.isPlaying)p.togglePlay();else p.playTrackAt(list,0);};
-
-  const playOne = (i) => {
-    if (isCurrent(tracks[i].id)) {
-      p.togglePlay();
-      return;
-    }
-    p.playTrackAt(tracks, i);
-  };
-
-  const removeOne = async (id) => {
-    if(await cache.removeTrack(id))toast({ title: "Removed from PUBLIC OFFLINE" });
-  };
-
-  const clearEverything=async()=>{if(clearing)return;setClearing(true);try{if(await cache.clearAllCache()){setConfirming(false);toast({title:"Offline music cleared"});}}finally{setClearing(false);}};
-
-  const online = typeof navigator !== "undefined" ? navigator.onLine : true;
-  const loading = cache.loading;
-
-  const onDragEnd = (res) => {
-    setDragging(false);
-    if (!res.destination || res.source.index === res.destination.index) return;
-    const ids = tracks.map((t) => t.id);
-    const [moved] = ids.splice(res.source.index, 1);
-    ids.splice(res.destination.index, 0, moved);
-    cache.reorder(ids);
-  };
-
-  return (
-    <div className="downloads-page max-w-3xl mx-auto">
-      <header className="page-intro"><h1>PUBLIC Offline</h1><p>Saved for listening without Wi-Fi or data.</p></header>
-      
-
-      
-
-
-
-
-
-
-
-
-
-
-      
-
-      {/* Status card */}
-      
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-      
-
-      {!online &&
-      <div className="mb-5 rounded-2xl bg-foreground/[0.05] px-4 py-3 flex items-center gap-2.5 text-sm text-foreground/70">
-          <CloudOff size={16} />
-          You're offline — but your saved tracks still play perfectly.
-        </div>
-      }
-
-      <div className="collection-tools"><input aria-label="Search offline music" placeholder="Find a saved song or artist" value={query} onChange={e=>setQuery(e.target.value)} onKeyDown={e=>{if(e.key==="Escape")setQuery("");}}/>{query&&<button className="playlist-action" onClick={()=>setQuery("")}>Clear search</button>}</div>
-      {query&&<p className="text-xs text-muted-foreground mb-3">{visibleTracks.length} matching songs. Clear search to rearrange your music.</p>}
-      <PullToRefresh disabled={dragging} onRefresh={async () => await cache.refresh()}>
-        {loading ?
-        <div className="flex justify-center py-16">
-            <Loader2 className="animate-spin text-foreground/40" />
-          </div> :
-        cache.storageAvailable===false&&tracks.length===0 ?
-        <div className="text-center py-12"><button className="playlist-action" onClick={()=>cache.refresh()}>Retry offline music</button></div> :
-        tracks.length === 0 ?
-        <div className="text-center py-16 px-6">
-            <div className="w-16 h-16 rounded-full bg-foreground/[0.05] grid place-items-center mx-auto mb-4">
-              <CloudOff size={28} className="text-foreground/35" />
-            </div>
-            <h2 className="text-lg font-extrabold tracking-tight mb-1.5">
-              No offline music yet
-            </h2>
-            <p className="text-sm text-foreground/50 max-w-xs mx-auto">
-              Open a song’s menu and choose Add to offline to save it here for listening without a connection.
-            </p>
-          </div> :
-
-        <>
-            {tracks.length > 0 &&
-          <div className="flex items-center justify-between mb-3 px-1">
-                <button onClick={() => setConfirming(true)} className="border rounded-full px-3 py-2 text-xs">Clear offline music</button>
-                <button
-              onClick={playAll} disabled={!visibleTracks.length}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-foreground text-background text-sm font-bold active:scale-95 transition">
-                  {anyPlayingHere ? <Pause size={15} /> : <Play size={15} />}
-                  {anyPlayingHere ? "Pause" : query ? "Play results" : "Play all"}
-                </button>
-                
-
-
-
-            
-              </div>
-          }
-
-            {!visibleTracks.length && <div className="collection-empty"><h2>No matching songs</h2><p>Try another title or artist.</p><button className="playlist-action" onClick={()=>setQuery("")}>Show all offline music</button></div>}
-            <DragDropContext onDragStart={() => setDragging(true)} onDragEnd={onDragEnd}>
-              <Droppable droppableId="downloads">
-                {(dropProvided) =>
-              <div ref={dropProvided.innerRef} {...dropProvided.droppableProps} className="space-y-1 touch-pan-y">
-                  {visibleTracks.map(({track:t,index:i},visibleIndex) => {
-                  const here = isCurrent(t.id);
-                  const playingHere = here && p.isPlaying;
-                  return (
-                    <Draggable key={t.id} draggableId={t.id} index={visibleIndex} isDragDisabled={!!query}>
-                      {(dragProvided, snapshot) =>
-                      <div
-                        ref={dragProvided.innerRef}
-                        {...dragProvided.draggableProps}
-                        onDoubleClick={() => playOne(i)}
-                        style={{ ...dragProvided.draggableProps.style, overscrollBehavior: "contain", touchAction: snapshot.isDragging ? "none" : "pan-y" }}
-                        className={`group flex items-center gap-2 px-2 py-2 rounded-lg transition ${
-                        snapshot.isDragging ? "bg-foreground/[0.06] ring-1 ring-border shadow-lg" : "hover:bg-foreground/[0.03]"}`}>
-                      <div
-                          {...dragProvided.dragHandleProps}
-                          className="shrink-0 -ml-1 p-1 text-foreground/30 hover:text-foreground/70 cursor-grab active:cursor-grabbing touch-none"
-                          aria-label="Reorder">
-                        <GripVertical size={16} />
-                      </div>
-                      <button
-                          onClick={() => playOne(i)}
-                          className="w-10 h-10 rounded overflow-hidden shrink-0 relative bg-foreground/10 grid place-items-center"
-                          aria-label={playingHere?`Pause ${t.title}`:`Play ${t.title}`}>
-                        <DownloadCover record={t} size={16} />
-                        <span className="absolute inset-0 grid place-items-center bg-black/0 group-hover:bg-black/30 transition">
-                          {playingHere ?
-                            <Pause size={15} className="text-white" /> :
-
-                            <Play size={15} className="text-white opacity-0 group-hover:opacity-100 transition" />
-                            }
-                        </span>
-                      </button>
-                      <button
-                          onClick={() => playOne(i)}
-                          className="min-w-0 flex-1 text-left">
-                        <div className="text-sm font-medium truncate flex items-center gap-1.5">
-                          {t.title}
-                          {t.explicit &&
-                            <span className="px-1 py-0.5 rounded bg-foreground/15 text-[9px] font-extrabold">
-                              E
-                            </span>
-                            }
-
-
-
-                        </div>
-                        <div className="text-xs text-foreground/50 truncate">
-                          {t.artist || t.uploader_name || "Unknown"}
-                        </div>
-                      </button>
-                      <div className="hidden sm:block text-xs text-foreground/40 w-10 text-right">
-                        {formatTime(t.duration_seconds)}
-                      </div>
-                      <button
-                          onClick={() => removeOne(t.id)}
-                          className="p-2 rounded-full text-foreground/45 hover:text-destructive hover:bg-destructive/5 active:scale-90 transition shrink-0"
-                          aria-label={`Remove ${t.title} from offline music`}>
-                        <Trash2 size={15} />
-                      </button>
-                    </div>
-                      }
-                    </Draggable>);
-
-                })}
-                {dropProvided.placeholder}
-                </div>
-              }
-              </Droppable>
-            </DragDropContext>
-          </>
-        }
-      </PullToRefresh>
-
-      {confirming &&
-      <div className="fixed inset-0 z-50 grid place-items-center p-6 bg-black/40">
-          <div className="bg-card rounded-2xl ring-1 ring-border max-w-sm w-full p-6 text-center shadow-2xl">
-            <div className="w-12 h-12 rounded-full bg-destructive/10 grid place-items-center mx-auto mb-3">
-              <Trash2 size={20} className="text-destructive" />
-            </div>
-            <h3 className="text-lg font-extrabold tracking-tight mb-1.5">
-              Remove all offline music?
-            </h3>
-            <p className="text-sm text-foreground/55 mb-5">
-              This deletes {cache.records.length} saved track
-              {cache.records.length === 1 ? "" : "s"} (
-              {bytesToReadable(totalBytes)}) from this device.
-            </p>
-            <div className="flex items-center gap-2">
-              <button
-              onClick={() => setConfirming(false)}
-              className="flex-1 py-2.5 rounded-full bg-foreground/[0.06] text-sm font-bold active:scale-95 transition">
-                Cancel
-              </button>
-              <button
-              onClick={clearEverything} disabled={clearing}
-              className="flex-1 py-2.5 rounded-full bg-destructive text-destructive-foreground text-sm font-bold active:scale-95 transition">
-                {clearing?"Removing…":"Remove all"}
-              </button>
-            </div>
-          </div>
-        </div>
-      }
-    </div>);
-
-}
-
-function isPlaying(tracks, p) {
-  return tracks.some((t) => t.id === p.currentTrack?.id);
+export default function Downloads(){
+ const p=usePlayer(),cache=useOfflineCache(),{toast}=useToast();
+ const [query,setQuery]=useState(""),[sort,setSort]=useState("saved"),[editing,setEditing]=useState(false),[confirming,setConfirming]=useState(false),[clearing,setClearing]=useState(false),[removing,setRemoving]=useState(new Set()),[online,setOnline]=useState(()=>navigator.onLine);
+ const removeLocks=useRef(new Set()),clearLock=useRef(false);
+ useEffect(()=>{const update=()=>setOnline(navigator.onLine);window.addEventListener("online",update);window.addEventListener("offline",update);return()=>{window.removeEventListener("online",update);window.removeEventListener("offline",update);};},[]);
+ const tracks=useMemo(()=>cache.records.map(({_blob,...row})=>({...row,_offline:true})),[cache.records]);
+ const view=useMemo(()=>{
+  const term=query.trim().toLowerCase(),rows=tracks.filter(t=>!term||[t.title,t.artist,t.uploader_name].some(v=>(v||"").toLowerCase().includes(term)));
+  if(sort==="title")rows.sort((a,b)=>(a.title||"").localeCompare(b.title||""));
+  if(sort==="artist")rows.sort((a,b)=>(a.artist||"").localeCompare(b.artist||"")||(a.title||"").localeCompare(b.title||""));
+  return rows;
+ },[tracks,query,sort]);
+ const totalBytes=cache.records.reduce((sum,r)=>sum+(r._size||r._blob?.size||0),0),seconds=tracks.reduce((sum,t)=>sum+(t.duration_seconds||0),0);
+ const duration=seconds>=3600?Math.floor(seconds/3600)+" hr "+Math.floor(seconds%3600/60)+" min":Math.floor(seconds/60)+" min";
+ const downloading=Object.values(cache.downloading).filter(Boolean).length;
+ const playing=!!p.isPlaying&&view.some(t=>t.id===p.currentTrack?.id);
+ const canReorder=editing&&!query&&sort==="saved";
+ function play(track){
+  if(p.currentTrack?.id===track.id){p.togglePlay();return;}
+  p.setShuffle(false);p.playTrackAt(view,view.findIndex(t=>t.id===track.id));
+ }
+ function playAll(shuffle=false){
+  if(!view.length)return;
+  if(!shuffle&&view.some(t=>t.id===p.currentTrack?.id)){p.togglePlay();return;}
+  p.setShuffle(false);p.playTrackAt(shuffle?shufflePlaylist(view):view,0);
+ }
+ async function remove(id){
+  if(removeLocks.current.has(id)||clearLock.current)return;
+  removeLocks.current.add(id);setRemoving(new Set(removeLocks.current));
+  try{const ok=await cache.removeTrack(id);toast(ok?{title:"Removed from this device"}:{title:"Couldn’t remove this download. Try again.",variant:"destructive"});}
+  finally{removeLocks.current.delete(id);setRemoving(new Set(removeLocks.current));}
+ }
+ async function clear(){
+  if(clearLock.current||removeLocks.current.size)return;
+  clearLock.current=true;setClearing(true);
+  try{const ok=await cache.clearAllCache();if(ok){setConfirming(false);setEditing(false);}toast(ok?{title:"Downloads removed from this device"}:{title:"Couldn’t clear offline music. Try again.",variant:"destructive"});}
+  finally{clearLock.current=false;setClearing(false);}
+ }
+ async function reorder(result){
+  if(!canReorder||!result.destination||result.destination.index===result.source.index)return;
+  const ids=tracks.map(t=>t.id),[moved]=ids.splice(result.source.index,1);ids.splice(result.destination.index,0,moved);
+  if(!await cache.reorder(ids))toast({title:"Couldn’t save the song order. Please try again.",variant:"destructive"});
+ }
+ return <div className="downloads-page max-w-4xl mx-auto pb-8">
+  <Link to="/library" className="inline-flex items-center gap-1.5 min-h-11 text-sm text-muted-foreground hover:text-foreground mb-3"><ArrowLeft size={18}/>Library</Link>
+  <header className="mb-7">
+   <div className="flex items-center justify-between gap-4"><div><p className="text-[10px] font-semibold tracking-[.18em] uppercase text-muted-foreground mb-2">PUBLIC. ON YOUR DEVICE</p><h1 className="text-4xl md:text-5xl font-bold tracking-tight">Offline</h1></div><div className="w-14 h-14 md:w-16 md:h-16 rounded-2xl bg-foreground/[0.05] border grid place-items-center"><CloudDownload size={27} strokeWidth={1.5}/></div></div>
+   <p className="text-sm text-muted-foreground mt-3 leading-relaxed">Your music, ready wherever you go.</p>
+  </header>
+  <section className="rounded-3xl border bg-card p-4 md:p-6 mb-6" aria-label="Download storage">
+   <div className="flex gap-4 items-center">
+    <div className="grid grid-cols-2 w-20 h-20 md:w-24 md:h-24 gap-0.5 rounded-2xl overflow-hidden shrink-0 bg-muted">{Array.from({length:4},(_,i)=><div key={i} className="grid place-items-center overflow-hidden bg-foreground/[0.04]">{tracks[i]?<DownloadCover record={tracks[i]} size={17}/>:<CloudOff size={17} className="text-muted-foreground/30"/>}</div>)}</div>
+    <div className="min-w-0"><p className="font-semibold text-lg">{tracks.length} {tracks.length===1?"song":"songs"} saved</p><p className="text-xs text-muted-foreground mt-1">{bytesToReadable(totalBytes)} on this device{seconds>0?" · "+duration:""}</p><p className="text-xs text-muted-foreground flex items-center gap-1.5 mt-2"><HardDrive size={13}/>{online?"Available without a connection":"Listening offline"}</p></div>
+   </div>
+   {tracks.length>0&&<div className="flex gap-2 mt-5"><button type="button" onClick={()=>playAll()} disabled={!view.length} className="min-h-11 flex-1 rounded-full bg-foreground text-background inline-flex items-center justify-center gap-2 text-sm font-semibold disabled:opacity-40">{playing?<Pause size={18} fill="currentColor"/>:<Play size={18} fill="currentColor"/>}{playing?"Pause":query?"Play results":"Play"}</button><button type="button" onClick={()=>playAll(true)} disabled={!view.length} className="min-h-11 flex-1 border rounded-full inline-flex items-center justify-center gap-2 text-sm font-semibold hover:bg-accent disabled:opacity-40"><Shuffle size={18}/>Shuffle</button></div>}
+  </section>
+  {(downloading>0||cache.syncing)&&<div role="status" className="flex items-center gap-3 rounded-2xl bg-foreground/[0.04] border px-4 py-3 mb-5 text-sm"><Loader2 size={16} className="animate-spin shrink-0"/><span>{downloading?"Saving "+downloading+" "+(downloading===1?"song":"songs")+" to this device…":"Checking saved music…"}</span></div>}
+  {cache.storageAvailable===false&&<div role="alert" className="border rounded-2xl p-4 mb-5"><p className="text-sm font-semibold">Couldn’t access offline storage</p><p className="text-xs text-muted-foreground mt-1">Retry without clearing your saved music.</p><button type="button" className="mt-3 min-h-11 px-4 rounded-full border text-sm font-semibold" onClick={()=>cache.refresh()}>Retry storage</button></div>}
+  {(tracks.length>0||query)&&<>
+   <div className="relative mb-4"><Search size={18} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground"/><input value={query} onChange={e=>setQuery(e.target.value)} onKeyDown={e=>{if(e.key==="Escape")setQuery("");}} aria-label="Search offline music" placeholder="Search your downloads" className="w-full h-12 rounded-2xl bg-foreground/[0.04] border pl-11 pr-12 text-sm"/>{query&&<button type="button" aria-label="Clear search" onClick={()=>setQuery("")} className="absolute right-1 top-1/2 -translate-y-1/2 w-11 h-11 grid place-items-center"><X size={17}/></button>}</div>
+   <div className="flex items-center justify-between gap-3 mb-3"><h2 className="font-semibold">{query?view.length+" results":"Songs"}</h2><div className="flex items-center gap-1"><label className="relative flex items-center"><ArrowDownUp size={14} className="absolute left-2.5 pointer-events-none text-muted-foreground"/><select aria-label="Sort offline music" value={sort} disabled={editing} onChange={e=>setSort(e.target.value)} className="h-11 pl-8 pr-2 bg-transparent border-0 text-xs font-medium max-w-[135px]"><option value="saved">Your order</option><option value="title">Song title</option><option value="artist">Artist</option></select></label><button type="button" disabled={clearing} onClick={()=>{setEditing(!editing);setSort("saved");setQuery("");}} className="min-h-11 px-3 rounded-full text-xs font-semibold border">{editing?<span className="inline-flex items-center gap-1"><Check size={14}/>Done</span>:"Reorder"}</button></div></div>
+  </>}
+  {cache.loading?<div role="status" aria-label="Loading offline music" className="py-16 grid place-items-center"><Loader2 className="animate-spin text-muted-foreground"/></div>:!tracks.length?<div className="text-center py-12 px-5 border border-dashed rounded-3xl"><CloudOff size={32} strokeWidth={1.4} className="text-muted-foreground mx-auto mb-4"/><h2 className="text-lg font-semibold">{downloading?"Your music is on its way":"Take your music with you"}</h2><p className="text-sm text-muted-foreground max-w-xs mx-auto mt-2 leading-relaxed">Choose Add to offline in a song’s menu. Downloaded songs appear here.</p><Link to="/search" className="min-h-11 mt-5 px-5 inline-flex items-center rounded-full bg-foreground text-background font-semibold text-sm">Find music</Link>{online&&!cache.syncing&&<button type="button" onClick={()=>cache.syncFromCloud()} className="block mx-auto min-h-11 text-xs text-muted-foreground mt-2 underline underline-offset-4">Check for saved downloads</button>}</div>:!view.length?<div className="text-center py-12 text-sm text-muted-foreground">No matching songs. Try another title or artist.</div>:<DragDropContext onDragEnd={reorder}><Droppable droppableId="offline-songs">{drop=><div ref={drop.innerRef} {...drop.droppableProps} className="divide-y divide-border/60">{view.map((track,index)=><Draggable key={track.id} draggableId={track.id} index={index} isDragDisabled={!canReorder}>{(drag,snapshot)=><div ref={drag.innerRef} {...drag.draggableProps} style={drag.draggableProps.style} className={"flex items-center gap-3 py-3 px-1 rounded-xl "+(snapshot.isDragging?"bg-card shadow-xl border":"")}>
+   {canReorder&&<button type="button" {...drag.dragHandleProps} aria-label={"Move "+track.title} className="w-9 min-h-11 shrink-0 grid place-items-center touch-none text-muted-foreground"><GripVertical size={17}/></button>}
+   <button type="button" onClick={()=>play(track)} aria-label={(p.currentTrack?.id===track.id&&p.isPlaying?"Pause ":"Play ")+track.title} className="relative w-12 h-12 md:w-14 md:h-14 rounded-xl overflow-hidden shrink-0 bg-muted grid place-items-center"><DownloadCover record={track} size={18}/>{p.currentTrack?.id===track.id&&p.isPlaying&&<span className="absolute inset-0 bg-black/35 grid place-items-center"><Pause size={18} fill="white" className="text-white"/></span>}</button>
+   <button type="button" onClick={()=>play(track)} className="min-w-0 flex-1 text-left min-h-11"><span className={"block truncate text-sm font-semibold "+(p.currentTrack?.id===track.id?"text-foreground":"")}>{track.title}</span><span className="block truncate text-xs text-muted-foreground mt-1">{track.artist||track.uploader_name||"Unknown artist"}{track.explicit?" · E":""}</span></button>
+   <span className="text-[11px] text-muted-foreground hidden sm:block tabular-nums">{formatTime(track.duration_seconds)}</span><button type="button" disabled={removing.has(track.id)||clearing} onClick={()=>remove(track.id)} aria-label={"Remove "+track.title+" from this device"} className="w-11 h-11 shrink-0 rounded-full grid place-items-center text-muted-foreground hover:text-red-500 hover:bg-red-500/5 disabled:opacity-40">{removing.has(track.id)?<Loader2 size={16} className="animate-spin"/>:<Trash2 size={16}/>}</button>
+  </div>}</Draggable>)}{drop.placeholder}</div>}</Droppable></DragDropContext>}
+  <footer className="mt-7 pt-5 border-t"><p className="text-xs text-muted-foreground leading-relaxed">Signing out keeps this account’s downloads on this device. Sign back in to the same account to see them again.</p>{tracks.length>0&&<button type="button" disabled={clearing||removing.size>0} onClick={()=>setConfirming(true)} className="min-h-11 inline-flex items-center gap-2 mt-3 text-xs text-red-500 font-semibold"><Trash2 size={14}/>Remove all downloads</button>}</footer>
+  {confirming&&<div role="dialog" aria-modal="true" aria-label="Remove offline downloads" data-public-dialog tabIndex={-1} onKeyDown={e=>{if(e.key==="Escape"&&!clearing){e.stopPropagation();setConfirming(false);}}} className="fixed inset-0 z-[90] bg-black/55 backdrop-blur-sm flex items-end sm:items-center justify-center sm:p-5" onClick={()=>{if(!clearing)setConfirming(false);}}><div onClick={e=>e.stopPropagation()} className="w-full max-w-md bg-card border rounded-t-3xl sm:rounded-3xl p-6 pb-[calc(1.5rem+env(safe-area-inset-bottom))]"><h2 className="text-xl font-bold tracking-tight">Remove downloads?</h2><p className="text-sm text-muted-foreground leading-relaxed mt-3">Remove {tracks.length} downloaded {tracks.length===1?"song":"songs"} ({bytesToReadable(totalBytes)}) from this device. Your library and other devices stay unchanged.</p><div className="grid grid-cols-2 gap-3 mt-6"><button type="button" disabled={clearing} onClick={()=>setConfirming(false)} className="min-h-12 rounded-full border font-semibold text-sm">Keep music</button><button type="button" disabled={clearing} onClick={clear} className="min-h-12 rounded-full bg-red-600 text-white font-semibold text-sm disabled:opacity-50">{clearing?"Removing…":"Remove"}</button></div></div></div>}
+ </div>;
 }
