@@ -31,7 +31,7 @@ export async function deleteAccountData(b,u){
  // Clean references while uploaded tracks, playlists and sessions still exist.
  for(let offset=0;offset<trackIds.length;offset+=100){
   const ids=trackIds.slice(offset,offset+100),q={track_id:{$in:ids}};
-  for(const name of ['PlayEvent','LibraryItem','Like','Lyrics','TrackAnnotation','LoungeQueueItem','Notification'])await erase(s,name,q);
+  for(const name of ['PlayEvent','LibraryItem','Like','Lyrics','TrackAnnotation','LoungeQueueItem','Notification','PlaybackState'])await erase(s,name,q);
   await s.entities.Playlist.updateMany({track_ids:{$in:ids}},{$pull:{track_ids:{$in:ids}}});
   await s.entities.PublicProfile.updateMany({featured_track_id:{$in:ids}},{$set:{featured_track_id:''}});
   await s.entities.PublicProfile.updateMany({top_track_ids:{$in:ids}},{$pull:{top_track_ids:{$in:ids}}});
@@ -61,6 +61,7 @@ export async function deleteAccountData(b,u){
   LoungeMember:{user_id:id},LoungeQueueItem:{added_by_id:id},
   Block:{$or:[{user_id:id},{blocked_user_id:id}]},SupportTicket:{user_id:id}
  };
+ await s.entities.Suggestion.updateMany({voter_ids:{$in:[id]}},{$pull:{voter_ids:id}});
  for(const [name,query] of Object.entries(queries))await erase(s,name,query);
  // These are deleted only after reference cleanup, so retries retain their IDs.
  await erase(s,'LoungeSession',{host_id:id});
