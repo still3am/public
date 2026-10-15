@@ -1,6 +1,7 @@
 import MusicVideoPicker from "@/components/upload/MusicVideoPicker";
 import { useState, useEffect, useRef } from "react";
 import { base44 } from "@/api/base44Client";
+import {reportActionError} from "@/lib/actionError";
 import { GENRES } from "@/lib/audio-utils";
 import { Loader2, X, Save, Trash2 } from "lucide-react";
 import BottomSheetSelect from "@/components/BottomSheetSelect";
@@ -67,7 +68,7 @@ export default function EditTrackModal({ track, onClose, onSaved, onDeleted }) {
       const saved=await base44.entities.Track.update(track.id,payload);
       if(alive.current){onSaved?.(saved?.id?saved:{...track,...payload});onClose();}
     } catch (e) {
-      // Keep the draft and uploaded artwork ready for another attempt.
+      reportActionError(e,"Couldn’t save this track. Your draft is still here.");
     } finally {
       writeLock.current=false;if(alive.current)setSaving(false);
     }
@@ -79,8 +80,8 @@ export default function EditTrackModal({ track, onClose, onSaved, onDeleted }) {
     try {
       await base44.entities.Track.delete(track.id);
       if(alive.current){onDeleted?.();onClose();}
-    } catch {
-      // Keep the track and the delete control available if the request fails.
+    } catch(error) {
+      reportActionError(error,"Couldn’t delete this track. Please try again.");
     } finally {
       writeLock.current=false;if(alive.current)setDeleting(false);
     }
