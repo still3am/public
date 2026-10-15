@@ -30,6 +30,7 @@ export default function SettingsSheet({onClose,onDeleteAccount}){
  const [artist,setArtist]=useState(!!user?.is_artist),[explicit,setExplicit]=useState(!!user?.show_explicit);
  const [saving,setSaving]=useState(""),[unblocking,setUnblocking]=useState(""),[loggingOut,setLoggingOut]=useState(false);
  const lock=useRef(false),logoutLock=useRef(false),blockedLock=useRef(false);
+ useEffect(()=>{const previous=document.body.style.overflow;document.body.style.overflow="hidden";return()=>{document.body.style.overflow=previous;};},[]);
  useEffect(()=>{setArtist(!!user?.is_artist);setExplicit(!!user?.show_explicit);},[user?.id,user?.is_artist,user?.show_explicit]);
  async function preference(key,value){
   if(!user?.id||lock.current||logoutLock.current)return;
