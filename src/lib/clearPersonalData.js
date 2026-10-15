@@ -11,7 +11,7 @@ export async function clearPersonalData({deleteOffline=false,userId=getOfflineAc
   try{for(const key of Object.keys(localStorage)){
    if(!key.startsWith('public:'))continue;
    if(key.startsWith('public:offline:')){
-    if(deleteOffline&&key==="public:offline:suppressed:"+userId)localStorage.removeItem(key);
+    if(deleteOffline&&(key==="public:offline:suppressed:"+userId||(key==="public:offline:legacy-owner"&&localStorage.getItem(key)===userId)))localStorage.removeItem(key);
     continue;
    }
    localStorage.removeItem(key);
