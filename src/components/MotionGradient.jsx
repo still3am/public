@@ -39,13 +39,15 @@ function rgb(value){
 }
 function paletteOf(colors){
  const values=(colors||[]).filter(c=>rgb(c)).slice(0,3);
- return values.length?[values[0],values[1]||values[0],values[2]||values[1]||values[0]]:DEFAULT;
+ if(!values.length)return DEFAULT;
+ const shade=(color,factor)=>"rgb("+rgb(color).map(v=>Math.round(Math.min(255,v*255*factor))).join(", ")+")";
+ return [values[0],values[1]||shade(values[0],.62),values[2]||values[1]||shade(values[0],1.3)];
 }
-export default function MotionGradient({colors=DEFAULT,motion="flow",speed=1,active=true,className="",style}){
+export default function MotionGradient({colors=DEFAULT,motion="flow",speed=1,active=true,pauseWhenCovered=false,className="",style}){
  const canvas=useRef(null),settings=useRef(null),wake=useRef(null),phase=useRef(4.6);
  const [ready,setReady]=useState(false),[version,setVersion]=useState(0);
  const palette=paletteOf(colors),key=palette.join("|");
- settings.current={palette,motion,speed:Math.max(.35,Math.min(1.6,Number(speed)||1)),active};
+ settings.current={palette,motion,speed:Math.max(.35,Math.min(1.6,Number(speed)||1)),active,pauseWhenCovered};
  useEffect(()=>{
   const element=canvas.current;
   let gl,program,buffer,vertex,fragment,raf=0,last=0,painted=0,visible=true,disposed=false,lost=false;
@@ -81,9 +83,10 @@ export default function MotionGradient({colors=DEFAULT,motion="flow",speed=1,act
    ["a","b","c"].forEach((name,i)=>gl.uniform3fv(uniforms[name],current[i]));
    gl.drawArrays(gl.TRIANGLES,0,6);
   };
+  const covered=()=>settings.current.pauseWhenCovered&&!element.closest("[role=dialog]")&&!!document.querySelector("[data-public-dialog], [role=dialog][aria-modal=true]");
   const tick=now=>{
    raf=0;
-   if(disposed||lost||document.hidden||!visible||!settings.current.active)return;
+   if(disposed||lost||document.hidden||!visible||!settings.current.active||covered())return;
    const animate=settings.current.motion==="flow"&&!reduced.matches;
    // Limit GPU work to 30fps while preserving continuous time.
    if(animate&&painted&&now-painted<32){raf=requestAnimationFrame(tick);return;}
@@ -91,7 +94,7 @@ export default function MotionGradient({colors=DEFAULT,motion="flow",speed=1,act
    draw(dt,animate);
    if(animate)raf=requestAnimationFrame(tick);
   };
-  const resume=()=>{stop();if(!disposed&&!lost&&!document.hidden&&visible&&settings.current.active)raf=requestAnimationFrame(tick);};
+  const resume=()=>{stop();if(!disposed&&!lost&&!document.hidden&&visible&&settings.current.active&&!covered())raf=requestAnimationFrame(tick);};
   wake.current=resume;
   const onLost=event=>{event.preventDefault();lost=true;stop();setReady(false);};
   const onRestored=()=>{if(!disposed)setVersion(v=>v+1);};
@@ -99,16 +102,17 @@ export default function MotionGradient({colors=DEFAULT,motion="flow",speed=1,act
   document.addEventListener("visibilitychange",resume);reduced.addEventListener("change",resume);
   const observer=typeof IntersectionObserver!=="undefined"?new IntersectionObserver(entries=>{visible=entries[0]?.isIntersecting??true;resume();}):null;
   observer?.observe(element);
+  const dialogs=new MutationObserver(resume);dialogs.observe(document.body,{childList:true,subtree:true});
   const resize=typeof ResizeObserver!=="undefined"?new ResizeObserver(resume):null;resize?.observe(element);
   draw(0,false);setReady(true);resume();
   return()=>{
-   disposed=true;stop();wake.current=null;observer?.disconnect();resize?.disconnect();
+   disposed=true;stop();wake.current=null;observer?.disconnect();resize?.disconnect();dialogs.disconnect();
    element.removeEventListener("webglcontextlost",onLost);element.removeEventListener("webglcontextrestored",onRestored);
    document.removeEventListener("visibilitychange",resume);reduced.removeEventListener("change",resume);
    gl.deleteBuffer(buffer);gl.deleteProgram(program);gl.deleteShader(vertex);gl.deleteShader(fragment);
   };
  },[version]);
- useEffect(()=>{wake.current?.();},[key,motion,speed,active]);
+ useEffect(()=>{wake.current?.();},[key,motion,speed,active,pauseWhenCovered]);
  return <div aria-hidden="true" className={className} style={{pointerEvents:"none",overflow:"hidden",...style}}>
   <div style={{position:"absolute",inset:0,backgroundColor:palette[0],backgroundImage:`radial-gradient(ellipse at 15% 25%, ${palette[1]}, transparent 70%),radial-gradient(ellipse at 85% 80%, ${palette[2]}, transparent 75%)`}}/>
   <canvas ref={canvas} style={{position:"absolute",inset:0,width:"100%",height:"100%",display:"block",opacity:ready?1:0,transition:"opacity .5s ease"}}/>
