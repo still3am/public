@@ -335,7 +335,7 @@ export default async function handleRequest(req) {
         await moderate(svc,[data.display_name,data.bio,data.status_message].filter(Boolean).join('\n'));
         for(const tid of [data.featured_track_id,...(data.top_track_ids||[])].filter(Boolean)) await requireTrack(tid);
         const saved=await handler.update(id,data);
-        const publicData={...pick(saved,["display_name","full_name","avatar_url","banner_url","bio","location","pronouns","website","instagram","twitter","soundcloud","status_message","featured_track_id","profile_background_mode","profile_background_colors","profile_background_motion","profile_background_speed","top_track_ids","is_artist"]),is_public_admin:saved.role===ADMIN,user_id:saved.id,joined_at:saved.created_date||"",visible:!saved.is_blocked&&!saved.disabled};
+        const publicData={...pick(saved,["display_name","full_name","avatar_url","banner_url","bio","location","pronouns","website","instagram","twitter","soundcloud","status_message","featured_track_id","profile_background_mode","profile_background_colors","profile_background_motion","profile_background_speed","top_track_ids","is_artist"]),is_public_admin:isAdmin,user_id:saved.id,joined_at:saved.created_date||"",visible:!saved.is_blocked&&!saved.disabled};
         const mirrors=await svc.entities.PublicProfile.filter({user_id:saved.id},'-updated_date',1);
         if(mirrors[0])await svc.entities.PublicProfile.update(mirrors[0].id,publicData);
         else await svc.entities.PublicProfile.create(publicData);
