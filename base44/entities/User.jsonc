@@ -175,6 +175,26 @@
         "write": true
       }
     },
+    "profile_background_motion": {
+      "type": "string",
+      "enum": [
+        "flow",
+        "still"
+      ],
+      "default": "flow",
+      "rls": {
+        "write": true
+      }
+    },
+    "profile_background_speed": {
+      "type": "number",
+      "minimum": 0.35,
+      "maximum": 1.6,
+      "default": 1,
+      "rls": {
+        "write": true
+      }
+    },
     "profile_background_colors": {
       "type": "array",
       "items": {
