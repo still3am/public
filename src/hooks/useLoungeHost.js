@@ -118,11 +118,7 @@ function useLoungeHostState() {
     async (m) => {
       if (!session?.id || !m) return;
       try {
-        await base44.functions.invoke("loungeApprove", {
-          member_id: m.id,
-          session_id: session.id,
-          action: "approve",
-        });
+        await base44.entities.LoungeMember.update(m.id,{status:"approved"});
         refreshMembers(session.id);
       } catch {}
     },
@@ -133,11 +129,7 @@ function useLoungeHostState() {
     async (m) => {
       if (!session?.id || !m) return;
       try {
-        await base44.functions.invoke("loungeApprove", {
-          member_id: m.id,
-          session_id: session.id,
-          action: "reject",
-        });
+        await base44.entities.LoungeMember.update(m.id,{status:"rejected"});
         refreshMembers(session.id);
       } catch {}
     },
