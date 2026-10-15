@@ -8,7 +8,7 @@ export default async function handleRequest(req) {
   const queries={
    PlayEvent:{user_id:id},Track:{uploader_id:id},Lyrics:{uploader_id:id},Album:{creator_id:id},
    LibraryItem:{user_id:id},SavedPlaylist:{user_id:id},Playlist:{creator_id:id},Like:{user_id:id},
-   UserGenre:{user_id:id},OfflineSync:{user_id:id},PlaybackState:{user_id:id},
+   PublicProfile:{user_id:id},UserGenre:{user_id:id},OfflineSync:{user_id:id},PlaybackState:{user_id:id},
    ProfileComment:{$or:[{author_id:id},{profile_id:id}]},TrackAnnotation:{author_id:id},
    Suggestion:{user_id:id},Follow:{$or:[{follower_id:id},{following_id:id}]},
    Notification:{$or:[{user_id:id},{actor_id:id}]},Report:{reporter_id:id},
