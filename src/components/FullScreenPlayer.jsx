@@ -23,7 +23,7 @@ import {
   Disc3,
   X } from
 "lucide-react";
-import PulseVisualizer from "@/components/PulseVisualizer";
+import MotionGradient from "@/components/MotionGradient";
 import PlayPauseButton from "@/components/PlayPauseButton";
 import QueuePanel from "@/components/QueuePanel";
 import LoungeHostModal from "@/components/LoungeHostModal";
@@ -62,10 +62,7 @@ export default function FullScreenPlayer({ onClose }) {
   const offlineCover = useOfflineCoverUrl(p.currentTrack?.id, p.currentTrack?.cover_art_url);
   const coverUrl = useCoverUrl(offlineCover);
   const playerPalette = useColorPalette(coverUrl, true);
-  const [ambientPrimary, ambientSecondary] = playerPalette;
   const [lyricsMode, setLyricsMode] = useState(false);
-  // Automatic visual pulse does not force an AudioContext; it can use an existing analyser when available.
-  const showPulse = true;
   const [showVolHint, setShowVolHint] = useState(false);
   const [copied, setCopied] = useState(false);
   const [showQueue, setShowQueue] = useState(false);
@@ -246,13 +243,7 @@ export default function FullScreenPlayer({ onClose }) {
       transition: dragging ? "none" : "transform .32s cubic-bezier(.22,1,.36,1), opacity .28s ease-out"
     }}>
 
-      {/* ambient glow */}
-      <div
-        className="pointer-events-none absolute inset-0 opacity-[0.55]"
-        style={{ background: `radial-gradient(ellipse at 20% 5%, ${ambientPrimary} 0%, transparent 70%), radial-gradient(ellipse at 85% 60%, ${ambientSecondary} 0%, transparent 75%)` }} />
-
-      {/* reactive visualizer */}
-      {showPulse && <PulseVisualizer palette={playerPalette} className="absolute inset-0 z-0" />}
+      <MotionGradient colors={playerPalette} speed={.85} active={!showQueue&&!showMixer&&!loungeOpen} className="absolute inset-0 z-0" />
       <div aria-hidden="true" className="pointer-events-none absolute inset-0 z-0" style={{ background: "linear-gradient(180deg, rgba(5,6,10,.14) 0%, rgba(5,6,10,.08) 38%, rgba(5,6,10,.48) 100%)" }} />
 
 
