@@ -1,9 +1,21 @@
-import {clearAll,clearMeta} from '@/lib/offlineCache';
-export async function clearPersonalData() {
- await clearAll();await clearMeta();
- for(const key of Object.keys(localStorage)) {
-  if(key.startsWith('public:')) localStorage.removeItem(key);
- }
+import {clearAll,clearMeta,getOfflineAccount,setOfflineAccount,rememberLegacyOfflineOwner} from '@/lib/offlineCache';
+export async function clearPersonalData({deleteOffline=false,userId=getOfflineAccount()}={}) {
+ rememberLegacyOfflineOwner(userId);
+ setOfflineAccount(null);
+ // Invalidate pending downloads and playback before clearing session state.
  window.dispatchEvent(new Event('account:cleared'));
- for(const event of ['offlinecache:change','recentplays:change','catalog:invalidate']) window.dispatchEvent(new Event(event));
+ try{
+  if(deleteOffline&&userId){await clearAll(userId);await clearMeta(userId);}
+ }finally{
+  try{for(const key of Object.keys(localStorage)){
+   if(!key.startsWith('public:'))continue;
+   if(key.startsWith('public:offline:')){
+    if(deleteOffline&&key==="public:offline:suppressed:"+userId)localStorage.removeItem(key);
+    continue;
+   }
+   localStorage.removeItem(key);
+  }}catch{}
+  for(const event of ['offlinecache:change','recentplays:change','catalog:invalidate'])window.dispatchEvent(new Event(event));
+ }
 }
+
