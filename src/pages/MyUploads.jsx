@@ -143,7 +143,8 @@ export default function MyUploads() {
   if (loadError&&uploads===null) return <LoadError onRetry={load} />;
   return (
     <div className="uploads-page max-w-5xl mx-auto pb-10">
-      <header className="page-intro"></header>
+      <header className="page-intro"><h1>Your uploads</h1><p>Manage your music and finish songs waiting to go public.</p></header>
+      <Link className="playlist-action mb-4" to="/unfinished-uploads">Unfinished uploads</Link>
       <Link
         to="/library"
         className="inline-flex items-center gap-1.5 mb-4 text-sm font-semibold text-foreground/60 hover:text-foreground transition">
