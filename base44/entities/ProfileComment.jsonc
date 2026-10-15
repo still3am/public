@@ -17,6 +17,11 @@
       "type": "string",
       "default": ""
     },
+    "request_id": {
+      "type": "string",
+      "default": "",
+      "maxLength": 100
+    },
     "message": {
       "type": "string"
     }
