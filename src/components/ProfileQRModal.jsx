@@ -1,3 +1,4 @@
+import {reportActionError} from '@/lib/actionError';
 import {copyText,shareLink} from '@/lib/shareLink';
 import { useState } from "react";
 import { X, Share2, ScanLine } from "lucide-react";
@@ -12,10 +13,10 @@ export default function ProfileQRModal({ url, name, avatar, onClose }) {
   )}`;
 
   async function copy() {
-    try{await copyText(url);setCopied(true);setTimeout(()=>setCopied(false),1500);}catch{}
+    try{await copyText(url);setCopied(true);setTimeout(()=>setCopied(false),1500);}catch(error){reportActionError(error,'Couldn’t share or copy this profile link. Please try again.');}
   }
   async function share() {
-    try{const result=await shareLink({title:name+' on PUBLIC.',text:'Listen to '+name+' on PUBLIC.',url});if(result==='copied'){setCopied(true);setTimeout(()=>setCopied(false),1500);}}catch{}
+    try{const result=await shareLink({title:name+' on PUBLIC.',text:'Listen to '+name+' on PUBLIC.',url});if(result==='copied'){setCopied(true);setTimeout(()=>setCopied(false),1500);}}catch(error){reportActionError(error,'Couldn’t share or copy this profile link. Please try again.');}
   }
 
   function download() {
