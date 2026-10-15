@@ -49,3 +49,9 @@
  .profile-color-cover-swatches {grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;}
  .profile-color-cover-swatches button {height:44px;}
 }
+.profile-color-editor .profile-color-preview {overflow:hidden;}
+.profile-color-editor .profile-motion-modes {grid-template-columns:repeat(2,minmax(0,1fr));margin-top:0;}
+.profile-motion-speed {display:block;margin-top:14px;}
+.profile-motion-speed>span {display:flex;justify-content:space-between;font-size:12px;font-weight:550;}
+.profile-motion-speed>span>span {color:hsl(var(--muted-foreground));font-weight:400;}
+.profile-color-editor .profile-motion-speed input[type=range] {display:block;width:100%;height:32px;min-height:32px;margin-top:4px;accent-color:hsl(var(--foreground));padding:0;cursor:pointer;}
