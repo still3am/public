@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
+import {useAuth} from "@/lib/AuthContext";
 import { getRecord } from "@/lib/offlineCache";
 
 // Resolves a track's cover art to a local blob: URL when the track is in the
 // offline cache, so artwork still renders with no connection. Falls back to
 // the remote URL (or whatever was passed in) when nothing is cached.
 export function useOfflineCoverUrl(trackId, fallbackUrl) {
+  const {user}=useAuth();
   const [url, setUrl] = useState(fallbackUrl || "");
 
   useEffect(() => {
@@ -17,7 +19,7 @@ export function useOfflineCoverUrl(trackId, fallbackUrl) {
         return;
       }
       try {
-        const rec = await getRecord(trackId);
+        const rec = await getRecord(trackId,user?.id);
         if (cancelled) return;
         if (rec?._coverBlob) {
           blobUrl = URL.createObjectURL(rec._coverBlob);
@@ -34,7 +36,7 @@ export function useOfflineCoverUrl(trackId, fallbackUrl) {
       cancelled = true;
       if (blobUrl) URL.revokeObjectURL(blobUrl);
     };
-  }, [trackId, fallbackUrl]);
+  }, [trackId, fallbackUrl,user?.id]);
 
   return url;
 }
