@@ -28,7 +28,7 @@ export default function ProfileColorPicker({coverUrl,colors,loading,value,onPrev
  const save=async()=>{
   if(saveLock.current||invalid)return;
   saveLock.current=true;setSaving(true);setError("");
-  try{await onSave({...draft,colors:draft.colors.map(c=>c.toLowerCase())});onClose();}
+  try{await onSave({...draft,colors:[...new Set(draft.colors.filter(valid).map(c=>c.toLowerCase()))]});onClose();}
   catch{setError("Your colors couldn’t save. Try again; your choices are still here.");}
   finally{saveLock.current=false;setSaving(false);}
  };
