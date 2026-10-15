@@ -25,7 +25,7 @@ function WelcomeFlow({user}){
    if(confirmed.onboarding_completed!==true)throw Error("Not saved");
    try{localStorage.setItem("public:onboarded:"+user.id,"1");}catch{}
    setDone(true);window.dispatchEvent(new CustomEvent("preferences:changed",{detail:{uid:user.id}}));
-   await checkUserAuth({silent:true});
+   await checkUserAuth({silent:true}).catch(()=>{});
   }catch{setError("Setup couldn’t save. Your choices are still here—please try again.");}
   finally{lock.current=false;setBusy(false);}
  }
