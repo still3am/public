@@ -103,6 +103,8 @@ export default function Profile({ ownProfileTab = false }) {
   const [backgroundDraft, setBackgroundDraft] = useState(null);
   const [deleteConfirm, setDeleteConfirm] = useState("");
   const [deleting, setDeleting] = useState(false);
+  const [deleteError,setDeleteError]=useState("");
+  const deleteLock=useRef(false);
   const [saving, setSaving] = useState(false);
   const [uploadingAvatar, setUploadingAvatar] = useState(false);
   const avatarVersion = useRef(0),avatarBusy = useRef(false);
@@ -309,16 +311,17 @@ export default function Profile({ ownProfileTab = false }) {
   }
 
   async function confirmDelete() {
-    if (deleting || deleteConfirm.trim().toUpperCase() !== "DELETE") return;
-    setDeleting(true);
-    try {
-      const result = await base44.functions.invoke("deleteMyAccount", {});
-      if (result.data?.deleted !== true) throw new Error("Deletion incomplete");
-      await clearPersonalData();
-      base44.auth.logout(window.location.origin + "/login");
-    } catch {
-      setDeleting(false);
-      // Keep the confirmation open so the user can retry or use Support.
+    if(deleteLock.current||deleteConfirm.trim().toUpperCase()!=="DELETE")return;
+    deleteLock.current=true;setDeleting(true);setDeleteError("");
+    try{
+      const result=await base44.functions.invoke("deleteMyAccount",{confirmation:"DELETE"});
+      if(result.data?.deleted!==true)throw Error("Deletion was not confirmed");
+      await clearPersonalData().catch(()=>{});
+      base44.auth.logout(window.location.origin+"/login");
+    }catch(error){
+      const status=error?.status??error?.response?.status;
+      setDeleteError(status===402?"Account deletion is temporarily unavailable. Please contact PUBLIC support.":status===401?"Your session expired. Sign in again before deleting your account.":"Deletion didn’t finish. Please retry to complete it, or contact support.");
+      deleteLock.current=false;setDeleting(false);
     }
   }
 
@@ -636,7 +639,7 @@ export default function Profile({ ownProfileTab = false }) {
         }
 
       {showDelete &&
-        <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm grid place-items-center p-4">
+        <div role="dialog" aria-modal="true" aria-label="Delete your account" data-public-dialog className="fixed inset-0 z-[90] bg-black/50 backdrop-blur-sm grid place-items-center p-4">
           <div className="bg-card rounded-2xl w-full max-w-md p-5 shadow-2xl">
             <h3 className="text-lg font-extrabold mb-1">Delete your account</h3>
             <p className="text-sm text-foreground/60 mb-4">
@@ -649,7 +652,8 @@ export default function Profile({ ownProfileTab = false }) {
               placeholder="DELETE"
               className="w-full px-3 py-2 rounded-lg border border-border bg-background text-sm mb-3 font-mono uppercase tracking-widest" />
           
-            <div className="flex justify-end gap-2">
+            {deleteError&&<p role="alert" className="text-sm text-destructive mb-4">{deleteError} <Link to="/support" onClick={()=>setShowDelete(false)} className="underline">Support</Link></p>}
+            <div className="flex flex-wrap justify-end gap-2">
               <button
                 onClick={() => {
                   setShowDelete(false);
