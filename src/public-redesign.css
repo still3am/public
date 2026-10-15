@@ -542,13 +542,38 @@ html.dark {
  .library-redesigned .library-section-heading h2 { font-size:21px; }
 }
 
-
-
-
-
-
-
-
-
-
+/* Library collection landing */
+.library-apple .library-heading { display:flex;justify-content:space-between;align-items:center;gap:16px;margin-bottom:22px; }
+.library-apple .library-heading h1 { margin:0;font-size:clamp(36px,5vw,52px);line-height:1.12;letter-spacing:-.045em; }
+.library-header-actions { display:flex;align-items:center;gap:12px;flex-shrink:0; }
+.library-apple .library-back { display:flex;align-items:center;gap:2px;min-height:36px;font-size:14px;color:hsl(var(--muted-foreground));margin-bottom:8px; }
+.library-collection-rows { margin:0 0 36px; }
+.library-collection-rows>a,.library-collection-rows>button { width:100%;display:grid;grid-template-columns:30px minmax(0,1fr) 22px;align-items:center;gap:18px;text-align:left;min-height:76px;background:transparent;border:0;border-radius:0;position:relative;padding:12px 0;color:hsl(var(--foreground)); }
+.library-collection-rows>a::after,.library-collection-rows>button::after { content:"";position:absolute;bottom:0;left:48px;right:0;height:1px;background:hsl(var(--border)); }
+.library-collection-rows span { font-size:23px;font-weight:550;letter-spacing:-.025em; }
+.library-collection-rows svg:last-child { color:hsl(var(--muted-foreground)); }
+.library-collection-rows>a:hover,.library-collection-rows>button:hover { opacity:.7; }
+.library-apple .library-recently-added .library-section-heading { margin-bottom:22px; }
+.library-apple .library-recently-added h2 { font-size:29px;letter-spacing:-.03em; }
+.library-see-all { display:flex;align-items:center;gap:3px;font-size:13px;min-height:44px;color:hsl(var(--muted-foreground)); }
+.library-apple .library-recently-added .library-music-grid { grid-template-columns:repeat(4,minmax(0,1fr));gap:28px 22px; }
+.library-more-links { margin-top:36px;display:grid;gap:0; }
+.library-more-links>button,.library-more-links .library-shortcut { display:flex;width:100%;align-items:center;gap:14px;min-height:60px;text-align:left;border:0;border-bottom:1px solid hsl(var(--border));border-radius:0;background:transparent;padding:10px 0; }
+.library-more-links>button>span { flex:1; }
+.library-more-links .shortcut-subtitle { display:none; }
+.library-more-links .library-shortcut-icon { width:24px;height:30px;background:transparent; }
+.library-more-links .library-shortcut .text-sm { font-size:15px; }
+@media(max-width:767px) {
+ .library-apple .library-heading { margin-bottom:20px; }
+ .library-apple .library-heading h1 { font-size:38px; }
+ .library-apple .library-header-actions { gap:10px; }
+ .library-apple .library-create { border-radius:999px; }
+ .library-collection-rows { margin-bottom:30px; }
+ .library-collection-rows>a,.library-collection-rows>button { min-height:72px;gap:14px;grid-template-columns:28px minmax(0,1fr) 20px; }
+ .library-collection-rows span { font-size:21px; }
+ .library-collection-rows>a::after,.library-collection-rows>button::after { left:42px; }
+ .library-apple .library-recently-added h2 { font-size:27px; }
+ .library-apple .library-recently-added .library-music-grid { grid-template-columns:repeat(2,minmax(0,1fr));gap:25px 16px; }
+}
+@media(min-width:768px) { .library-collection-rows { max-width:640px; } }
 
