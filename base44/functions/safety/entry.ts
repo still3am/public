@@ -93,6 +93,7 @@ export default async function handleRequest(req) {
   if(d.action==='suspend') {
    admin();if(d.user_id===u.id)err('You cannot suspend your own account');
    await s.entities.User.update(d.user_id,{is_blocked:d.blocked!==false});
+   await s.entities.PublicProfile.updateMany({user_id:d.user_id},{$set:{visible:d.blocked===false}});
    if(d.blocked!==false) {
     await s.entities.Track.updateMany({uploader_id:d.user_id},{$set:{is_published:false,approval_status:'rejected'}});
     await s.entities.LoungeSession.updateMany({host_id:d.user_id},{$set:{is_active:false}});
