@@ -1,3 +1,4 @@
+import PlaylistActionsSheet from '@/components/playlist/PlaylistActionsSheet';
 import {shareLink} from '@/lib/shareLink';
 import {useState,useEffect,useMemo,useCallback,useRef} from 'react';
 import {useParams,useNavigate} from 'react-router-dom';
@@ -6,7 +7,7 @@ import {useAuth} from '@/lib/AuthContext';
 import {usePlayer} from '@/context/PlayerContext';
 import {readAllPages} from '@/lib/readPages';
 import {removePlaylistTracks,reorderPlaylistTracks,movePlaylistTrack,shufflePlaylist} from '@/lib/playlistActions';
-import {Play,Shuffle,Plus,Pencil,Trash2,Share2,ListMusic,Search,ArrowUp,ArrowDown,X,Check,Loader2,ImagePlus,ChevronLeft} from 'lucide-react';
+import {Play,Shuffle,Plus,Pencil,Trash2,Share2,ListMusic,Search,ArrowUp,ArrowDown,X,Check,Loader2,ImagePlus,ChevronLeft,MoreHorizontal,Copy} from 'lucide-react';
 import TrackRow from '@/components/TrackRow';
 import AddToPlaylistPicker from '@/components/playlist/AddToPlaylistPicker';
 import EmptyState from '@/components/EmptyState';
@@ -16,6 +17,7 @@ import {useCoverUrl} from '@/hooks/useCoverUrl';
 export default function PlaylistDetail(){
  const {id}=useParams(),nav=useNavigate(),{user}=useAuth(),p=usePlayer(),{toast}=useToast();
  const [playlist,setPlaylist]=useState(null),[tracks,setTracks]=useState([]),[loading,setLoading]=useState(true),[error,setError]=useState(false);
+ const [showMore,setShowMore]=useState(false);
  const [editing,setEditing]=useState(false),[showAdd,setShowAdd]=useState(false),[busy,setBusy]=useState(false),[saved,setSaved]=useState(false);
  const [query,setQuery]=useState(''),[sort,setSort]=useState('custom'),[selected,setSelected]=useState(new Set());
  const [form,setForm]=useState({name:'',description:'',is_public:true}),[coverFile,setCoverFile]=useState(null),[preview,setPreview]=useState('');
@@ -30,7 +32,7 @@ export default function PlaylistDetail(){
    setPlaylist(pl);setTracks(list);baseline.current=pl;setForm({name:pl.name||'',description:pl.description||'',is_public:!!pl.is_public});
   }catch{if(v===version.current)setError(true);}finally{if(v===version.current)setLoading(false);}
  },[id]);
- useEffect(()=>{setSelected(new Set());setQuery('');setSort('custom');setSaved(false);load();return()=>{version.current++;};},[load]);
+ useEffect(()=>{setSelected(new Set());setQuery('');setSort('custom');setSaved(false);setShowMore(false);load();return()=>{version.current++;};},[load]);
  useEffect(()=>{let alive=true;const request=++savedRead.current;if(user?.id)base44.entities.SavedPlaylist.filter({user_id:user.id,playlist_id:id},'-created_date',1).then(rows=>{if(alive&&request===savedRead.current)setSaved(!!rows.length);}).catch(()=>{});return()=>{alive=false;};},[id,user?.id]);
  useEffect(()=>()=>{if(preview)URL.revokeObjectURL(preview);},[preview]);
  const isOwn=!!user&&playlist?.creator_id===user.id;
@@ -106,7 +108,8 @@ export default function PlaylistDetail(){
     <p className="text-sm text-muted-foreground mt-4 mb-5">{tracks.length} songs · {Math.floor(total/3600)>0?Math.floor(total/3600)+' hr ':''}{Math.floor(total/60)%60} min{missing>0?' · '+missing+' unavailable':''}</p>
     <div className="playlist-controls flex flex-wrap gap-2">
      {!editing&&<><button disabled={!tracks.length} onClick={()=>playAll(false)} className="chrome-button disabled:opacity-40"><Play size={16}/>Play</button><button disabled={!tracks.length} onClick={()=>playAll(true)} className="playlist-action"><Shuffle size={16}/>Shuffle play</button></>}
-     {!editing&&<details className="playlist-more-actions"><summary>More options</summary><div className="playlist-secondary-actions"><button disabled={!tracks.length} onClick={()=>{p.addManyToQueue(tracks);toast({title:'Playlist added to queue'});}} className="playlist-action"><ListMusic size={16}/>Queue</button><button onClick={share} className="playlist-action" aria-label="Share playlist"><Share2 size={16}/></button>
+     {!editing&&<button className="playlist-action md:hidden" aria-label="More playlist options" aria-haspopup="dialog" aria-expanded={showMore} onClick={()=>setShowMore(true)}><MoreHorizontal size={20}/><span>More</span></button>}
+     {!editing&&<details className="playlist-more-actions hidden md:block"><summary>More options</summary><div className="playlist-secondary-actions"><button disabled={!tracks.length} onClick={()=>{p.addManyToQueue(tracks);toast({title:'Playlist added to queue'});}} className="playlist-action"><ListMusic size={16}/>Queue</button><button onClick={share} className="playlist-action" aria-label="Share playlist"><Share2 size={16}/></button>
      {isOwn&&!editing&&<><button disabled={busy} onClick={()=>setShowAdd(true)} className="playlist-action"><Plus size={16}/>Add songs</button><button onClick={()=>setEditing(true)} className="playlist-action"><Pencil size={16}/>Edit</button></>}
      {!isOwn&&!editing&&<button disabled={busy} onClick={toggleSaved} className="playlist-action">{saved?<Check size={16}/>:<Plus size={16}/>} {saved?'Saved':'Save playlist'}</button>}
      {!editing&&<button disabled={busy} onClick={duplicate} className="playlist-action">Make a copy</button>}
@@ -131,6 +134,15 @@ export default function PlaylistDetail(){
     {isOwn&&<div className="playlist-row-actions"><button disabled={busy||sort!=='custom'||!!query||tracks.findIndex(row=>row.id===t.id)===0} onClick={()=>move(t,-1)} aria-label={'Move '+t.title+' up'}><ArrowUp size={15}/></button><button disabled={busy||sort!=='custom'||!!query||tracks.findIndex(row=>row.id===t.id)===tracks.length-1} onClick={()=>move(t,1)} aria-label={'Move '+t.title+' down'}><ArrowDown size={15}/></button><button disabled={busy} onClick={()=>remove([t.id])} aria-label={'Remove '+t.title+' from playlist'}><X size={15}/></button></div>}
    </div>)}</div>}
   {isOwn&&(query||sort!=='custom')&&<p className="text-xs text-muted-foreground mt-3">Switch to Playlist order and clear search to rearrange songs.</p>}
+  {showMore&&<PlaylistActionsSheet name={playlist.name} cover={cover} subtitle={tracks.length+' songs · '+(playlist.is_public?'Public playlist':'Private playlist')} onClose={()=>setShowMore(false)} actions={[
+   {label:'Add to queue',description:'Play after your current queue',icon:ListMusic,disabled:!tracks.length,onClick:()=>{p.addManyToQueue(tracks);toast({title:'Playlist added to queue'});}},
+   {label:'Share playlist',description:playlist.is_public?'Send a link to this playlist':'Copy your private playlist link',icon:Share2,onClick:share},
+   ...(isOwn?[
+    {label:'Add songs',icon:Plus,disabled:busy,onClick:()=>setShowAdd(true)},
+    {label:'Edit playlist',description:'Artwork, name and privacy',icon:Pencil,disabled:busy,onClick:()=>setEditing(true)}
+   ]:[{label:saved?'Remove from library':'Save to library',icon:saved?Check:Plus,disabled:busy,onClick:toggleSaved}]),
+   {label:'Make a copy',description:'Create your own private version',icon:Copy,disabled:busy,onClick:duplicate}
+  ]}/>}
   {showAdd&&<AddToPlaylistPicker playlist={playlist} onClose={()=>{setShowAdd(false);load();}}/>}
  </div>;
 }
