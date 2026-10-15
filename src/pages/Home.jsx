@@ -1,4 +1,4 @@
-import { useLongPressMenu } from '@/hooks/useLongPressMenu';
+import HomeSpotlight from "@/components/HomeSpotlight";
 import { readAllPages } from "@/lib/readPages";
 import { useEffect, useRef, useState, useCallback } from "react";
 import { Link } from "react-router-dom";
@@ -94,7 +94,6 @@ function Skeleton() {
 export default function Home() {
   const { user } = useAuth();
   const p = usePlayer();
-  const featuredMenu = useLongPressMenu(false, { allowButtons: true });
   const loadVersion = useRef(0);
   const followedIds = useRef({ uid: user?.id, ids: new Set() });
   const [recent, setRecent] = useState(() => getRecentPlays().slice(0, 8));
@@ -243,13 +242,10 @@ export default function Home() {
   return (
     <PullToRefresh onRefresh={() => load(true)}>
       <div className="home-page home-redesigned">
-        <header className="home-welcome"><div><h1>Home</h1></div><Link to="/profile" aria-label="Your profile"><Avatar user={user} size={44} /></Link></header>
+        <header className="home-welcome"><div><p className="home-welcome-greeting">{greeting}</p><h1>Home</h1></div><Link to={user?"/profile":"/login"} aria-label={user?"Your profile":"Sign in"}><Avatar user={user} size={44}/></Link></header>
         
         
-        <section className="home-feature">
-          <div className="home-feature-copy"><p className="eyebrow">New on PUBLIC</p><h2><Link to={`/track/${featured.id}`}>{featured.title}</Link></h2><div className="home-feature-artist"><ArtistLinks artist={featured.artist || featured.uploader_name} linkClassName="hover:underline" maxShown={4} /></div><div className="home-feature-actions"><button onClick={playFeatured} className="chrome-button">{featuredPlaying ? <Pause size={18} fill="currentColor" /> : <Play size={18} fill="currentColor" />}{featuredPlaying ? "Pause" : "Play"}</button><button disabled={!discoveryQueue.length} onClick={() => {p.setShuffle(false);p.playTrackAt(discoveryQueue, 0);}} className="playlist-action">Discover music<ChevronRight size={15} /></button></div></div>
-          {featured && <div ref={featuredMenu.ref} {...featuredMenu.handlers} onClickCapture={(event) => {if (!event.currentTarget.contains(event.target)) return;if (featuredMenu.consumeLongPress()) {event.preventDefault();event.stopPropagation();}}} className="home-spotlight song-menu-surface group"><div className="home-spotlight-art">{featured.cover_art_url ? <Image src={featured.cover_art_url} fittingType="fill" alt="" className="w-full h-full" /> : <Music size={42} />}<button className="home-spotlight-play" onClick={playFeatured} aria-label={featuredPlaying ? `Pause ${featured.title}` : `Play ${featured.title}`}>{featuredPlaying ? <Pause size={20} fill="currentColor" /> : <Play size={20} fill="currentColor" />}</button><div className="home-spotlight-menu song-menu-reveal"><TrackOptionsMenu track={featured} openSignal={featuredMenu.signal} anchorRef={featuredMenu.ref} /></div></div><div className="home-spotlight-meta"><div><p className="eyebrow">Featured release</p><Link to={`/track/${featured.id}`} className="font-semibold text-sm block truncate mt-1">{featured.title}</Link><p className="text-xs text-muted-foreground truncate mt-1">{featured.artist || featured.uploader_name}</p></div></div></div>}
-        </section>
+        <HomeSpotlight track={featured} playing={featuredPlaying} onPlay={playFeatured} discoveryQueue={discoveryQueue} onDiscover={()=>{p.setShuffle(false);p.playTrackAt(discoveryQueue,0);}}/>
         
         
         {genreList.length > 0 && <nav className="home-genre-links" aria-label="Browse genres">{genreList.map((genre) => <Link key={genre} to={`/search?genre=${encodeURIComponent(genre)}`}>{genre}</Link>)}</nav>}
