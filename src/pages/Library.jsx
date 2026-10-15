@@ -1,3 +1,4 @@
+import Avatar from "@/components/Avatar";
 import LoadError from '@/components/LoadError';
 import { useRef } from 'react';
 import BulkOrganizeSheet from '@/components/library/BulkOrganizeSheet';
@@ -10,7 +11,7 @@ import { base44 } from "@/api/base44Client";
 import { useAuth } from "@/lib/AuthContext";
 import { useLibrary } from "@/context/LibraryContext";
 import { useOfflineCache } from "@/hooks/useOfflineCache";
-import { Library as LibIcon, Loader2, Plus, ListMusic, Disc3, X, Upload, CloudOff, Search, SlidersHorizontal, LayoutGrid, ListPlus, Play, History } from "lucide-react";
+import { Library as LibIcon, Loader2, Plus, ListMusic, Disc3, X, Upload, CloudOff, Search, SlidersHorizontal, LayoutGrid, ListPlus, Play, History, ChevronLeft, ChevronRight, Music2 } from "lucide-react";
 import TrackCard from "@/components/TrackCard";
 import EmptyState from "@/components/EmptyState";
 import PullToRefresh from "@/components/PullToRefresh";
@@ -180,7 +181,7 @@ export default function Library() {
   };
 
 
-  const [libraryView, setLibraryView] = useState("songs");
+  const [libraryView, setLibraryView] = useState("overview");
   const [search, setSearch] = useState("");
   const [showFilters, setShowFilters] = useState(false);
   const [sort, setSort] = useState("saved");
@@ -201,16 +202,17 @@ export default function Library() {
   const chooseView = (value) => {setLibraryView(value);exitEditMode();setSearch("");};
   if (loadError && tracks === null) return <LoadError onRetry={load} />;
   return (
-    <div className="library-page library-redesigned max-w-6xl mx-auto pb-10">
+    <div className="library-page library-redesigned library-apple max-w-6xl mx-auto pb-10">
       <header className="library-heading">
-        <div><p className="eyebrow text-muted-foreground">Your collection</p><h1>Library</h1><p className="text-sm text-muted-foreground mt-2">{tracks===null?"Your music, collected.":`${tracks.length} saved ${tracks.length===1?"song":"songs"}`}</p></div>
-        <button onClick={() => setShowCreate(true)} className="chrome-button library-create" aria-label="Create playlist"><Plus size={19} /><span>New playlist</span></button>
+        <div>{libraryView!=="overview"&&<button className="library-back" onClick={()=>chooseView("overview")}><ChevronLeft size={17}/>Library</button>}<h1>{({overview:"Library",songs:"Songs",playlists:"Playlists",recent:"Recently played"})[libraryView]}</h1></div>
+        <div className="library-header-actions"><button onClick={() => setShowCreate(true)} className="library-create chrome-button" aria-label="Create playlist"><ListPlus size={22}/><span>New playlist</span></button>{user&&<Link to="/profile" aria-label="Your profile"><Avatar user={user} size={42}/></Link>}</div>
       </header>
-      <div className="library-shortcuts">
-        <LibraryEntryRow to="/my-uploads" icon={Upload} label="Uploads" subtitle="Your posted music" />
-        <LibraryEntryRow to="/records" icon={Disc3} label="Artists" subtitle="Explore the catalog" />
-        <LibraryEntryRow to="/downloads" icon={CloudOff} label="Offline" subtitle={offlineCount ? `${offlineCount} songs on this device` : "Listen without data"} />
-      </div>
+      {libraryView==="overview"&&<nav className="library-collection-rows" aria-label="Your collections">
+        <button onClick={()=>chooseView("playlists")}><ListMusic size={26}/><span>Playlists</span><ChevronRight size={21}/></button>
+        <button onClick={()=>chooseView("songs")}><Music2 size={26}/><span>Songs</span><ChevronRight size={21}/></button>
+        <Link to="/downloads"><CloudOff size={26}/><span>Offline music</span><ChevronRight size={21}/></Link>
+      </nav>}
+      {libraryView!=="overview"&&<>
       <div className="library-navigation" role="group" aria-label="Library views">
         {[["songs", "Songs", tracks?.length], ["playlists", "Playlists", playlists ? playlists.length + (savedPlaylists?.length || 0) : null], ["recent", "Recent", recentlyPlayed.length]].map(([value, label, count]) =>
         <button key={value} aria-pressed={libraryView === value} onClick={() => chooseView(value)} className={libraryView === value ? "active text-left" : ""}>{label}{count != null && <span>{count}</span>}</button>
@@ -232,8 +234,15 @@ export default function Library() {
         {activeFilters && <button className="text-xs underline underline-offset-4" onClick={() => {setFolder("");setTagQuery("");setSort("saved");}}>Reset filters</button>}
       </div>}
       <LibraryBulkBar playlistMode={libraryView==="playlists"} visible={libraryView==="songs"?!!tracks?.length:libraryView==="playlists"&&!!savedPlaylists?.length} active={editMode} count={selected.size} canRemove={removableIds.length > 0} busy={bulkBusy} onOrganize={() => setShowOrganize(true)} onStart={() => setEditMode(true)} onExit={exitEditMode} onAddToPlaylist={() => setShowBulkPlaylist(true)} onRemove={removeFromLibrary} />
+      </>}
       <PullToRefresh onRefresh={async () => {await refresh();await load();await reloadPlaylists();await loadSavedPlaylists();}}>
         {loading && tracks === null ? <div className="flex justify-center py-20"><Loader2 className="animate-spin text-muted-foreground" /></div> : <>
+          {libraryView==="overview"&&<>
+            <section className="library-recently-added"><div className="library-section-heading"><h2>Recently Added</h2>{tracks?.length>12&&<button className="library-see-all" onClick={()=>chooseView("songs")}>See all<ChevronRight size={16}/></button>}</div>
+              {tracks?.length?<div className="library-music-grid">{tracks.slice(0,12).map(t=><TrackCard key={t.id} track={t} queue={tracks}/>)}</div>:<EmptyState icon={LibIcon} title="Your music belongs here" description="Save songs and build playlists to make this library yours." action={<Link className="chrome-button" to="/search">Find music</Link>}/>}
+            </section>
+            <div className="library-more-links"><button onClick={()=>chooseView("recent")}><History size={20}/><span>Recently played</span><ChevronRight size={18}/></button><LibraryEntryRow to="/my-uploads" icon={Upload} label="Uploads" subtitle="Your posted music"/><LibraryEntryRow to="/records" icon={Disc3} label="Artists" subtitle="Explore the catalog"/></div>
+          </>}
           {libraryView === "songs" && <section>
             <div className="library-section-heading"><h2>{search.trim() ? "Search results" : sort==="saved" ? "Recently saved" : "Songs"}</h2>{visibleTracks.length>0&&!editMode&&<button className="library-play-all" onClick={()=>{p.setShuffle(false);p.playTrackAt(visibleTracks,0);}}><Play size={14} fill="currentColor"/>Play all</button>}</div>
             
