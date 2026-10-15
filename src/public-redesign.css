@@ -447,7 +447,8 @@ html.dark {
  .profile-redesigned .profile-info>div { justify-content:center; }
  .profile-redesigned .profile-info h1 { font-size:34px; }
  .profile-redesigned .profile-info .selectable-content { margin-inline:auto; }
- .profile-redesigned .profile-stats { gap:14px;justify-content:center!important; }
+ .profile-redesigned .profile-stats { display:flex;flex-wrap:nowrap;width:fit-content;max-width:100%;margin-inline:auto;gap:16px!important;justify-content:center!important; }
+ .profile-redesigned .profile-stats>button,.profile-redesigned .profile-stats>span { flex:0 1 auto;min-width:56px;padding:4px; }
  .profile-redesigned .profile-stats button { flex-direction:column;gap:0;align-items:center;justify-content:center;line-height:1.4; }
  .profile-redesigned .profile-stats button>span:last-child { font-size:11px; }
  .profile-redesigned .profile-actions { justify-content:center!important;gap:8px!important; }
