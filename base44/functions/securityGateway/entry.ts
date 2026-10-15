@@ -331,6 +331,13 @@ export default async function handleRequest(req) {
         if(data.show_explicit===true && !(data.adult_confirmed===true || user.adult_confirmed===true)) fail('Confirm that you are 18 or older to show explicit content',422);
         await moderate(svc,[data.display_name,data.bio,data.status_message].filter(Boolean).join('\n'));
         for(const tid of [data.featured_track_id,...(data.top_track_ids||[])].filter(Boolean)) await requireTrack(tid);
+        const saved=await handler.update(id,data);
+        const publicData={...pick(saved,["display_name","full_name","avatar_url","banner_url","bio","location","pronouns","website","instagram","twitter","soundcloud","status_message","featured_track_id","profile_background_mode","profile_background_colors","top_track_ids","is_artist"]),user_id:saved.id,joined_at:saved.created_date||"",visible:!saved.is_blocked&&!saved.disabled};
+        const mirrors=await svc.entities.PublicProfile.filter({user_id:saved.id},'-updated_date',1);
+        if(mirrors[0])await svc.entities.PublicProfile.update(mirrors[0].id,publicData);
+        else await svc.entities.PublicProfile.create(publicData);
+        return saved;
+
       } else {
         const ownerKey={ProfileComment:'author_id',TrackAnnotation:'author_id',Suggestion:'user_id',Notification:'actor_id',Message:'sender_id',Conversation:null,Follow:'follower_id'}[entity];
         if(entity==='Notification' && kind==='update') { if(old.user_id!==user.id&&!isAdmin) fail('Notification access denied'); return await handler.update(id,{read:!!data.read}); }
