@@ -255,9 +255,9 @@ export default function Profile({ ownProfileTab = false }) {
       if (file_url && version === avatarVersion.current) setForm((f) => ({ ...f, avatar_url: file_url }));
     } catch {
 
+
       // Keep the current profile image if upload does not complete.
-    } finally {if (version === avatarVersion.current) {avatarBusy.current = false;setUploadingAvatar(false);}
-    }
+    } finally {if (version === avatarVersion.current) {avatarBusy.current = false;setUploadingAvatar(false);}}
   }
 
   async function saveProfileSong(id, chosen) {
@@ -373,13 +373,13 @@ export default function Profile({ ownProfileTab = false }) {
         <div className="profile-details relative z-10 px-5 md:px-10 pb-5 md:pb-8 pt-5 md:pt-8">
           <div className="profile-identity-row flex flex-col items-center md:flex-row md:items-center md:justify-center gap-4 md:gap-8">
             <div className="relative shrink-0">
-              <div className="rounded-full bg-background p-1 inline-block ring-1 ring-foreground/10 shadow-sm hidden">
-                <Avatar
-                      user={{ ...profile, avatar_url: avatarUrl }}
-                      size={128}
-                      className="profile-avatar" />
+              
 
-              </div>
+
+
+
+
+                  
               {editMode &&
                   <label className="absolute bottom-1 right-1 p-2 rounded-full bg-foreground text-background cursor-pointer shadow-lg">
                   {uploadingAvatar ?
