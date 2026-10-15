@@ -1,80 +1,64 @@
-import { useEffect, useState } from "react";
-import { ShieldCheck, Music2, Flag, Lightbulb, Wand2, Ban, Users, Megaphone } from "lucide-react";
-import { useAuth } from "@/lib/AuthContext";
-import SupportInbox from '@/components/admin/SupportInbox';
-import ReleaseReadiness from '@/components/admin/ReleaseReadiness';
-import ApprovalsManager from "@/components/admin/ApprovalsManager";
-import SuggestionsManager from "@/components/admin/SuggestionsManager";
-import ReportsManager from "@/components/admin/ReportsManager";
-import GenreTool from "@/components/admin/GenreTool";
-import UploadSwitch from "@/components/admin/UploadSwitch";
-import UsersManager from "@/components/admin/UsersManager";
-import BannerEditor from "@/components/admin/BannerEditor";
+import {lazy,Suspense,useEffect,useRef,useState} from "react";
+import {Link,useSearchParams} from "react-router-dom";
+import {LayoutDashboard,Music2,Flag,Users,LifeBuoy,Settings2,ChevronRight,RefreshCw,Loader2,ArrowUpRight,ShieldCheck} from "lucide-react";
+import {useAuth} from "@/lib/AuthContext";
+import {base44} from "@/api/base44Client";
+import "@/components/admin/admin-dashboard.css";
 
-export default function Admin() {
-  const { user } = useAuth();
-  const [tab, setTab] = useState("approvals");
-  const [denied, setDenied] = useState(false);
-
-  useEffect(() => {
-    if (user !== undefined && user !== null && user.role !== "admin") {
-      setDenied(true);
-    }
-  }, [user]);
-
-  const tabs = [
-    { id: "readiness", icon: ShieldCheck, label: "Release" },
-    { id: "support", icon: Users, label: "Support" },
-    { id: "approvals", icon: ShieldCheck, label: "Approvals" },
-    { id: "users", icon: Users, label: "Users" },
-    { id: "reports", icon: Flag, label: "Reports" },
-    { id: "suggestions", icon: Lightbulb, label: "Suggestions" },
-    { id: "genre", icon: Wand2, label: "Genre Tool" },
-    { id: "uploads", icon: Ban, label: "Uploads" },
-    { id: "banner", icon: Megaphone, label: "Banner" }
-  ];
-
-  if(user?.role!=="admin")return <div className="p-8 text-center">You do not have access to this area.</div>;
-  return (
-    <div className="admin-page min-h-dvh pb-24 md:pb-12">
-      <header className="page-intro"><p className="eyebrow">PUBLIC admin</p><h1>Manage your community</h1><p>Review music, support requests, reports, and release settings.</p></header>
-      {denied ? (
-        <div className="max-w-3xl mx-auto mt-20 text-center text-muted-foreground">
-          <Music2 size={32} className="mx-auto mb-3 opacity-40" />
-          <p className="text-sm">You don't have access to this area.</p>
-        </div>
-      ) : (
-        <>
-          <div role="group" aria-label="Admin sections" className="sticky top-[calc(3.5rem_+_env(safe-area-inset-top))] z-30 -mx-4 sm:-mx-5 md:-mx-8 lg:-mx-12 px-4 sm:px-5 md:px-8 lg:px-12 pt-2 pb-2 bg-background/80 backdrop-blur border-b border-border tab-strip flex gap-1.5 overflow-x-auto no-scrollbar">
-            {tabs.map(t => {
-              const Icon = t.icon;
-              const on = tab === t.id;
-              return (
-                <button
-                  aria-pressed={on} key={t.id}
-                  onClick={() => setTab(t.id)}
-                  className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap transition ${
-                    on ? "bg-foreground text-background" : "text-muted-foreground hover:text-foreground"
-                  }`}>
-                  <Icon size={13} /> {t.label}
-                </button>
-              );
-            })}
-          </div>
-
-          <div role="region" aria-label={tabs.find(item=>item.id===tab)?.label} className="max-w-5xl mx-auto pt-6">
-            {tab === "readiness" && <ReleaseReadiness />}
-            {tab === "support" && <SupportInbox />}
-            {tab === "approvals" && <ApprovalsManager />}
-            {tab === "users" && <UsersManager />}
-            {tab === "reports" && <ReportsManager />}
-            {tab === "suggestions" && <SuggestionsManager />}
-            {tab === "genre" && <GenreTool />}
-            {tab === "uploads" && <UploadSwitch />}
-            {tab === "banner" && <BannerEditor />}
-          </div>
-        </>
-      )}
-    </div>
-  );
+const Music=lazy(()=>import("@/components/admin/ApprovalsManager"));
+const Reports=lazy(()=>import("@/components/admin/ReportsManager"));
+const Members=lazy(()=>import("@/components/admin/UsersManager"));
+const Support=lazy(()=>import("@/components/admin/SupportInbox"));
+const Feedback=lazy(()=>import("@/components/admin/SuggestionsManager"));
+const Uploads=lazy(()=>import("@/components/admin/UploadSwitch"));
+const Banner=lazy(()=>import("@/components/admin/BannerEditor"));
+const SECTIONS=[
+ {id:"overview",label:"Overview",icon:LayoutDashboard,description:"What needs your attention."},
+ {id:"music",label:"Music",icon:Music2,description:"Review uploads and manage music on PUBLIC."},
+ {id:"reports",label:"Reports",icon:Flag,description:"Review reported content and protect the community."},
+ {id:"members",label:"Members",icon:Users,description:"Find accounts and manage community access."},
+ {id:"support",label:"Support",icon:LifeBuoy,description:"Help members and review their feedback."},
+ {id:"settings",label:"Settings",icon:Settings2,description:"Control uploads and the app announcement banner."}
+];
+const METRICS=[
+ {key:"pending",label:"Awaiting approval",section:"music",icon:Music2},
+ {key:"reports",label:"Open reports",section:"reports",icon:Flag},
+ {key:"support",label:"Support requests",section:"support",icon:LifeBuoy},
+ {key:"members",label:"Registered members",section:"members",icon:Users}
+];
+function Dashboard(){
+ const [params,setParams]=useSearchParams(),[stats,setStats]=useState({}),[loading,setLoading]=useState(false),[failed,setFailed]=useState(false),[feedback,setFeedback]=useState(false);
+ const version=useRef(0),section=SECTIONS.find(item=>item.id===params.get("section"))||SECTIONS[0];
+ const choose=id=>{setParams(id==="overview"?{}:{section:id});};
+ async function refresh(){
+  const request=++version.current;setLoading(true);setFailed(false);
+  const results=await Promise.allSettled([base44.entities.Track.count({approval_status:"pending"}),base44.entities.Report.count({status:"pending"}),base44.entities.SupportTicket.count({status:"open"}),base44.entities.User.count({})]);
+  if(request!==version.current)return;
+  setStats(previous=>{const next={...previous};results.forEach((result,index)=>{if(result.status==="fulfilled"&&typeof result.value==="number")next[METRICS[index].key]=result.value;});return next;});
+  setFailed(results.some(result=>result.status==="rejected"));setLoading(false);
+ }
+ useEffect(()=>{if(section.id==="overview")refresh();return()=>{version.current++;};},[section.id]);
+ return <div className="admin-workspace">
+  <header className="admin-workspace-header"><div><p className="eyebrow"><ShieldCheck size={13}/>PUBLIC ADMIN</p><h1>Keep PUBLIC moving.</h1><p>Your community. The essentials, in one place.</p></div><Link to="/">View PUBLIC<ArrowUpRight size={16}/></Link></header>
+  <div className="admin-workspace-layout"><nav className="admin-section-nav" aria-label="Admin sections">{SECTIONS.map(item=><button type="button" key={item.id} onClick={()=>choose(item.id)} aria-current={section.id===item.id?"page":undefined}><item.icon size={18}/><span>{item.label}</span></button>)}</nav>
+   <div className="admin-workspace-main"><header className="admin-section-heading"><div><h2>{section.label}</h2><p>{section.description}</p></div>{section.id==="overview"&&<button type="button" onClick={refresh} disabled={loading} aria-label="Refresh dashboard counts"><RefreshCw size={17} className={loading?"animate-spin":""}/></button>}</header>
+    {section.id==="overview"?<>
+     {failed&&<p className="admin-refresh-note" role="status">Some counts couldn’t refresh. Open a section to review it or try Refresh.</p>}
+     <div className="admin-metrics">{METRICS.map(metric=><button type="button" key={metric.key} onClick={()=>choose(metric.section)}><metric.icon size={19}/><strong>{typeof stats[metric.key]==="number"?stats[metric.key].toLocaleString():"—"}</strong><span>{metric.label}<ChevronRight size={14}/></span></button>)}</div>
+     <section className="admin-quick-actions"><h3>Start here</h3>{[{id:"music",title:"Review music",copy:"Approve submissions or take a release off PUBLIC."},{id:"reports",title:"Review reports",copy:"Investigate reported tracks, artists, and profiles."},{id:"support",title:"Help a member",copy:"Read requests and post private replies."}].map(action=><button key={action.id} onClick={()=>choose(action.id)}><span><strong>{action.title}</strong><small>{action.copy}</small></span><ChevronRight size={18}/></button>)}</section>
+     <Link className="admin-recovery-link" to="/unfinished-uploads"><Music2 size={19}/><span><strong>Unfinished uploads</strong><small>Find music that still needs release details.</small></span><ArrowUpRight size={18}/></Link>
+    </>:<Suspense fallback={<div className="admin-panel-loading"><Loader2 size={22} className="animate-spin"/><span>Opening {section.label.toLowerCase()}…</span></div>}>
+     {section.id==="music"&&<Music/>}{section.id==="reports"&&<Reports/>}{section.id==="members"&&<Members/>}
+     {section.id==="support"&&<><div className="admin-support-switch" role="group" aria-label="Support view"><button aria-pressed={!feedback} onClick={()=>setFeedback(false)}>Requests</button><button aria-pressed={feedback} onClick={()=>setFeedback(true)}>Suggestions</button></div>{feedback?<Feedback/>:<Support/>}</>}
+     {section.id==="settings"&&<div className="admin-settings-grid"><section><h3>Upload access</h3><Uploads/></section><section><h3>Announcements</h3><Banner/></section></div>}
+    </Suspense>}
+   </div>
+  </div>
+ </div>;
+}
+export default function Admin(){
+ const {user,isLoadingAuth}=useAuth();
+ if(isLoadingAuth)return <div className="py-12 grid place-items-center"><Loader2 className="animate-spin"/></div>;
+ if(user?.role!=="admin")return <div className="p-8 text-center"><p>You do not have access to this area.</p><Link to="/" className="underline">Return home</Link></div>;
+ return <Dashboard key={user.id}/>;
 }
