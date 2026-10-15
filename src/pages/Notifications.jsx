@@ -37,7 +37,7 @@ function getLink(n) {
 function activityTime(value){const date=new Date(value);return Number.isNaN(date.getTime())?"":formatDistanceToNow(date,{addSuffix:true});}
 
 function getMessage(n) {
-  const name = n.actor?.display_name || n.actor?.full_name || "Someone";
+  const name = n.actor?.display_name || n.actor?.full_name || n.actor_name || "PUBLIC member";
   switch (n.type) {
     case "new_follower":
       return `${name} started following you`;
@@ -107,22 +107,22 @@ export default function Notifications() {
           const link = getLink(n);
           const content =
           <div
-            className={`flex items-start gap-3 p-3 rounded-2xl transition ${
+            className={`notification-content flex items-start gap-3 p-3 rounded-2xl transition ${
             n.read ? "bg-transparent" : "bg-foreground/[0.03]"}`
             }>
             
-                <div className="relative shrink-0">
-                  <Avatar user={n.actor} size={44} />
-                  <div className="absolute -bottom-1 -right-1 w-5 h-5 rounded-full bg-background grid place-items-center ring-1 ring-border">
+                <div className="notification-avatar relative shrink-0">
+                  <Avatar user={n.actor || {display_name:n.actor_name||"PUBLIC member",avatar_url:n.actor_avatar_url||""}} size={44} />
+                  <div className="absolute bottom-0 right-0 w-5 h-5 rounded-full bg-background grid place-items-center ring-1 ring-border">
                     <Icon size={11} className="text-foreground/60" />
                   </div>
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm text-foreground/80 leading-snug">
+                  <p className="notification-message text-sm text-foreground/80 leading-snug">
                     {getMessage(n)}
                   </p>
                   {n.track &&
-                  <div className="mt-2 flex items-center gap-2.5 p-2 rounded-xl bg-foreground/[0.04]">
+                  <div className="notification-track mt-2 flex items-center gap-2.5 p-2 rounded-xl bg-foreground/[0.04]">
                       <div className="w-9 h-9 rounded-lg overflow-hidden bg-foreground/10 shrink-0 grid place-items-center">
                         {n.track.cover_art_url ?
                       <Image
@@ -134,7 +134,7 @@ export default function Notifications() {
                       <Music size={14} className="text-foreground/40" />
                       }
                       </div>
-                      <div className="min-w-0">
+                      <div className="min-w-0 flex-1">
                         <div className="text-xs font-semibold truncate">{n.track.title}</div>
                         <div className="text-[11px] text-muted-foreground truncate">
                           {n.track.artist || n.track.uploader_name || "Unknown"}
