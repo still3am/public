@@ -87,21 +87,21 @@ export default function EditTrackModal({ track, onClose, onSaved, onDeleted }) {
   }
 
   return (
-    <div role="dialog" aria-modal="true" aria-label="Edit track" data-public-dialog tabIndex={-1} onKeyDown={e=>{if(e.key==="Escape"){e.stopPropagation();onClose?.();}}} className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm grid place-items-center p-4 overflow-y-auto">
-      <div className="bg-card rounded-2xl w-full max-w-lg p-5 my-auto shadow-2xl">
-        <div className="flex items-center justify-between mb-5">
-          <h2 className="text-lg font-extrabold tracking-tight">Edit track</h2>
+    <div role="dialog" aria-modal="true" aria-label="Edit track" data-public-dialog tabIndex={-1} onKeyDown={e=>{if(e.key==="Escape"){e.stopPropagation();onClose?.();}}} className="edit-track-overlay fixed inset-0 z-50 bg-black/40 backdrop-blur-sm">
+      <div className="edit-track-panel bg-card shadow-2xl">
+        <div className="edit-track-header">
+          <div><p className="eyebrow text-muted-foreground">Your music</p><h2 className="text-xl font-bold tracking-tight mt-1">Edit song</h2></div>
           <button
             onClick={onClose}
-            className="p-1.5 rounded-full hover:bg-foreground/5"
+            className="edit-track-close"
             aria-label="Close"
           >
             <X size={20} />
           </button>
         </div>
 
-        <div className="space-y-3">
-          <div className="flex gap-3 items-end">
+        <div className="edit-track-body space-y-5">
+          <div className="edit-track-metadata flex gap-4 items-center">
             <label className="w-24 h-24 rounded-xl overflow-hidden bg-foreground/10 grid place-items-center text-xs text-foreground/40 cursor-pointer shrink-0 relative">
               {coverPreview ? (
                 <img
@@ -123,7 +123,7 @@ export default function EditTrackModal({ track, onClose, onSaved, onDeleted }) {
                 }}
               />
             </label>
-            <div className="flex-1 space-y-2">
+            <div className="flex-1 min-w-0 space-y-3">
               <input
                 aria-label="Track title" disabled={saving||deleting}
             value={form.title}
@@ -160,7 +160,7 @@ export default function EditTrackModal({ track, onClose, onSaved, onDeleted }) {
             className="w-full px-3 py-2 rounded-lg border border-border bg-background text-sm focus:outline-none"
           />
 
-          <div className="flex flex-wrap gap-4">
+          <div className="edit-track-options">
             <label className="flex items-center gap-2 text-sm">
               <input
                 disabled={saving||deleting}
@@ -195,7 +195,8 @@ export default function EditTrackModal({ track, onClose, onSaved, onDeleted }) {
             />
           </div>
 
-          <div className="flex justify-between pt-3 border-t border-border mt-3">
+        </div>
+          <footer className="edit-track-footer">
             <button
               onClick={del}
               disabled={saving||deleting}
@@ -217,7 +218,7 @@ export default function EditTrackModal({ track, onClose, onSaved, onDeleted }) {
               </button>
               <button
                 onClick={save}
-                disabled={saving||deleting||(!!videoFile&&!videoRights)}
+                disabled={saving||deleting||!form.title.trim()||(!!videoFile&&!videoRights)}
                 className="px-4 py-2 rounded-full bg-foreground text-background text-sm font-semibold flex items-center gap-2 disabled:opacity-40"
               >
                 {saving ? (
@@ -228,8 +229,7 @@ export default function EditTrackModal({ track, onClose, onSaved, onDeleted }) {
                 Save
               </button>
             </div>
-          </div>
-        </div>
+          </footer>
       </div>
     </div>
   );
