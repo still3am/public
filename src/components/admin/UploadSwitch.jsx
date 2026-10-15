@@ -4,7 +4,7 @@ import { useUploadsEnabled } from "@/hooks/useUploadsEnabled";
 import { useToast } from "@/components/ui/use-toast";
 
 export default function UploadSwitch() {
-  const { loading, enabled, setEnabled } = useUploadsEnabled();
+  const { loading, enabled, setEnabled,error,reload } = useUploadsEnabled();
   const [saving, setSaving] = useState(false);
   const { toast } = useToast();
 
@@ -14,7 +14,7 @@ export default function UploadSwitch() {
     try {
       await setEnabled(!enabled);
       toast({ title: enabled ? "Uploads stopped" : "Uploads reopened" });
-    } catch {/* Retain the last saved upload setting. */} finally {
+    } catch {toast({title:"Couldn’t change upload access. Please try again.",variant:"destructive"});} finally {
       setSaving(false);
     }
   }
@@ -27,6 +27,7 @@ export default function UploadSwitch() {
     );
   }
 
+  if(error)return <div className="border rounded-2xl p-5 space-y-3"><p className="text-sm">Couldn’t read upload access.</p><button className="playlist-action" onClick={reload}>Retry settings</button></div>;
   return (
     <div className="max-w-md rounded-2xl p-5 bg-card ring-1 ring-inset ring-border space-y-4">
       <div className="flex items-center gap-2 text-sm font-extrabold tracking-tight">
