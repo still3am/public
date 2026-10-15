@@ -1,4 +1,4 @@
-import {readAllPages} from '@/lib/readPages';
+import {readLibraryRows} from '@/lib/libraryRows';
 import {createContext,useCallback,useContext,useEffect,useRef,useState} from "react";
 import {base44} from "@/api/base44Client";
 import {useAuth} from "@/lib/AuthContext";
@@ -14,7 +14,7 @@ export function LibraryProvider({children}){
   const uid=user?.id,request=++version.current;
   if(!uid){setIds(new Set());return;}
   try{
-   const items=await readAllPages(options=>base44.entities.LibraryItem.filter({user_id:uid},{sort:"-created_date",fields:["id","track_id"],...options}));
+   const items=await readLibraryRows(base44.entities.LibraryItem,{user_id:uid});
    if(request!==version.current||account.current!==uid)return;
    const next=new Set(items.map(item=>item.track_id).filter(Boolean));
    pending.current.forEach((op,id)=>{if(op.uid===uid&&op.desired!==null){if(op.desired)next.add(id);else next.delete(id);}});
@@ -37,15 +37,15 @@ export function LibraryProvider({children}){
   const uid=user.id,trackId=track.id;
   if(pending.current.has(trackId))return false;
   const op={uid,desired:null};pending.current.set(trackId,op);setPendingIds(new Set(pending.current.keys()));
-  let wasSaved;
+  let wasSaved,stage="read";
   const display=saved=>setIds(previous=>{const next=new Set(previous);if(saved)next.add(trackId);else next.delete(trackId);return next;});
   try{
    // Resolve the actual saved state before toggling. A slow initial list or
    // another open tab must not turn a remove into a duplicate add.
-   const result=await base44.entities.LibraryItem.filter({user_id:uid,track_id:trackId},{sort:"-created_date",limit:1});
-   if(!Array.isArray(result)&&!Array.isArray(result?.items))throw Error("Library state unavailable");
+   const result=await readLibraryRows(base44.entities.LibraryItem,{user_id:uid,track_id:trackId},{one:true});
    if(account.current!==uid)return false;
-   wasSaved=(Array.isArray(result)?result:result.items).length>0;
+   wasSaved=result.length>0;
+   stage=wasSaved?"remove":"save";
    op.desired=!wasSaved;version.current++;display(op.desired);
    const saved=wasSaved
     ?await base44.entities.LibraryItem.deleteMany({user_id:uid,track_id:trackId})
@@ -55,9 +55,11 @@ export function LibraryProvider({children}){
    if(account.current!==uid)return false;
    setRevision(v=>v+1);
    return true;
-  }catch{
+  }catch(error){
    if(account.current===uid&&wasSaved!==undefined)display(wasSaved);
-   return false;
+   // Preserve the SDK status instead of hiding the failed request behind false.
+   if(error&&typeof error==="object")error.libraryStage=stage;
+   throw error;
   }finally{
    if(pending.current.get(trackId)===op){
     pending.current.delete(trackId);
