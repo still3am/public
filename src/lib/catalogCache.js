@@ -12,7 +12,7 @@ let catalogGeneration=0;
 const resetCaches=()=>{catalogGeneration++;resets.forEach(reset=>reset());};
 window.addEventListener("catalog:invalidate",resetCaches);
 window.addEventListener("account:cleared",resetCaches);
-const TTL = 10 * 60 * 1000;
+const TTL = 2 * 60 * 1000;
 const RETRY_AFTER_ERROR = 30 * 1000;
 
 function makeCache(fetcher, ttl = TTL) {
