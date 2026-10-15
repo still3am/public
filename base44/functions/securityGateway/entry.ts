@@ -285,7 +285,7 @@ export default async function handleRequest(req) {
       } else if(entity==='LoungeSession') {
         if(old&&!mine(old,'host_id')) fail('Host access required');
         data={...pick(data,['name','code','is_active','is_playing','position_seconds','current_track_id','current_track','sync_anchor_at']),...(kind==='create'?{host_id:user.id,host_name:user.display_name||user.full_name||''}:{})};
-        if(data.current_track_id) data.current_track=JSON.stringify(await requireTrack(data.current_track_id));
+        if(data.current_track_id) data.current_track=JSON.stringify(await requireTrack(data.current_track_id,false));
       } else if(entity==='LoungeMember') {
         const a=await member(data.session_id||old?.session_id);
         if(kind==='create') {
@@ -304,7 +304,7 @@ export default async function handleRequest(req) {
         if(!a.s.is_active || (!a.host&&a.m?.status!=='approved')) fail('Host approval required');
         if(old && !a.host && old.added_by_id!==user.id) fail('Queue access denied');
         if(kind!=='delete') {
-          const track=await requireTrack(data.track_id||old?.track_id);
+          const track=await requireTrack(data.track_id||old?.track_id,false);
           data={session_id:a.s.id,track_id:track.id,track:JSON.stringify(track),added_by_id:user.id,added_by_name:user.display_name||user.full_name||''};
         }
       } else if(entity==='Playlist') {
@@ -361,7 +361,7 @@ export default async function handleRequest(req) {
           if(kind!=='create') fail('Unsupported notification write',400);
           await relation(data.user_id);
           if(!['new_follower','profile_comment','track_shared'].includes(data.type)) fail('Invalid notification',400);
-          if(data.track_id) await requireTrack(data.track_id);
+          if(data.track_id) await requireTrack(data.track_id,false);
           await moderate(svc,String(data.comment||''));
           data={...pick(data,['user_id','type','track_id','comment']),actor_id:user.id,actor_name:user.display_name||user.full_name||'',actor_avatar_url:user.avatar_url||'',read:false};
         }
