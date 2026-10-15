@@ -1,6 +1,7 @@
 import {clearAll,clearMeta,getOfflineAccount,setOfflineAccount,rememberLegacyOfflineOwner} from '@/lib/offlineCache';
 export async function clearPersonalData({deleteOffline=false,userId=getOfflineAccount()}={}) {
- rememberLegacyOfflineOwner(userId);
+ let legacyOwner=userId;try{legacyOwner=legacyOwner||localStorage.getItem("public:active-account");}catch{}
+ rememberLegacyOfflineOwner(legacyOwner);
  setOfflineAccount(null);
  // Invalidate pending downloads and playback before clearing session state.
  window.dispatchEvent(new Event('account:cleared'));
