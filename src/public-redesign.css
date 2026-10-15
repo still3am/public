@@ -380,7 +380,7 @@ html.dark {
 .public-app .app-content.artwork-content { padding-top:0;max-width:none; }
 .artwork-content .artist-page,.artwork-content .release-page { max-width:none; }
 .artwork-content .artist-hero { margin:0 calc(-1 * var(--app-gutter)) 32px;border-radius:0;border:0;height:clamp(420px,45vw,620px); }
-.artwork-content .release-toolbar { height:0;min-height:0;margin:0;transform:translateY(18px); }
+.artwork-content .release-toolbar { height:0;min-height:0;margin:0;align-items:flex-start;transform:translateY(18px); }
 .artwork-content .release-header-full {
  --release-cover-height:clamp(400px,50vw,660px);
  margin:0 calc(-1 * var(--app-gutter)) 30px;padding:0 var(--app-gutter);max-width:none;
@@ -400,7 +400,11 @@ html.dark {
  .artwork-content .artist-hero { height:430px;min-height:0;margin-top:0;margin-bottom:28px; }
  .artwork-content .release-header-full { --release-cover-height:100vw;margin-top:0; }
  .artwork-content .release-header-full h1 { margin-top:-8px; }
- .artwork-content .release-toolbar { transform:translateY(16px); }
+ .artwork-content .release-toolbar { transform:translateY(12px); }
+ .release-page .release-toolbar .release-round { position:relative;width:36px!important;height:36px!important;min-width:36px!important;min-height:36px!important; }
+ .release-page .release-toolbar .release-round::before { content:"";position:absolute;inset:-4px;border-radius:50%; }
+ .release-page .release-toolbar .release-round svg { width:19px;height:19px; }
+ .release-page .release-toolbar-actions { gap:6px;padding:2px; }
 }
 /* Personal profiles share the artist header but keep their own music and identity. */
 .artwork-content .profile-redesigned { max-width:none; }
