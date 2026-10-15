@@ -1,3 +1,4 @@
+import {reportActionError} from "@/lib/actionError";
 import {readAllPages} from "@/lib/readPages";
 import { useEffect, useState, useRef } from "react";
 import { Loader2, Search, Users } from "lucide-react";
@@ -30,12 +31,12 @@ export default function UsersManager() {
   const toggleBlock=async user=>{
     if(!begin(user.id))return;
     try{await base44.functions.invoke("safety",{action:"suspend",user_id:user.id,blocked:!user.is_blocked});setUsers(previous=>previous.map(row=>row.id===user.id?{...row,is_blocked:!user.is_blocked}:row));}
-    catch{/* Keep the confirmed account state. */}finally{finish(user.id);}
+    catch(error){reportActionError(error,"Couldn’t change this account’s access. Try again.");}finally{finish(user.id);}
   };
   const remove=async user=>{
     if(writes.current.has(user.id)||!window.confirm(`Delete ${user.display_name||user.full_name||user.email}? This cannot be undone.`)||!begin(user.id))return;
     try{await base44.entities.User.delete(user.id);setUsers(previous=>previous.filter(row=>row.id!==user.id));}
-    catch{/* Keep the account in the list if deletion did not succeed. */}finally{finish(user.id);}
+    catch(error){reportActionError(error,"Couldn’t delete this account. Please try again.");}finally{finish(user.id);}
   };
 
   const term = q.trim().toLowerCase();
