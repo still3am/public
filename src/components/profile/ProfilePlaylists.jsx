@@ -3,8 +3,11 @@ import {Link} from "react-router-dom";
 import {ListMusic} from "lucide-react";
 import {base44} from "@/api/base44Client";
 import {useCoverUrl} from "@/hooks/useCoverUrl";
+import {usePlaylistCover} from "@/hooks/usePlaylistCover";
 function PlaylistTile({playlist}){
- const cover=useCoverUrl(playlist.cover_art_url),[failed,setFailed]=useState(false);
+ const source=usePlaylistCover(playlist);
+ const cover=useCoverUrl(source),[failed,setFailed]=useState(false);
+ useEffect(()=>setFailed(false),[cover]);
  return <Link to={"/playlist/"+playlist.id} className="profile-playlist-tile">
   <div className="profile-playlist-art">{cover&&!failed?<img src={cover} alt="" loading="lazy" onError={()=>setFailed(true)}/>:<ListMusic size={30}/>}</div>
   <h3>{playlist.name}</h3><p>{playlist.track_ids?.length||0} songs</p>
