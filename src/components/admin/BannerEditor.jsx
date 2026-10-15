@@ -1,3 +1,4 @@
+import {reportActionError} from "@/lib/actionError";
 import { useState, useEffect } from "react";
 import { Plus, Trash2, Loader2, Megaphone, RotateCcw } from "lucide-react";
 import { useBannerMessages } from "@/hooks/useBannerMessages";
@@ -33,7 +34,7 @@ export default function BannerEditor() {
       await setMessages(clean);
       setDraft(clean);
       toast({ title: "Banner updated" });
-    } catch {/* Keep the editable draft for another save attempt. */} finally {
+    } catch(error) {reportActionError(error,"Couldn’t save the banner. Your draft is still here.");} finally {
       setSaving(false);
     }
   }
@@ -93,7 +94,7 @@ export default function BannerEditor() {
         </div>
 
         <button
-          onClick={() => setDraft([...draft, ""])}
+          disabled={saving} onClick={() => setDraft([...draft, ""])}
           className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold text-muted-foreground hover:text-foreground ring-1 ring-inset ring-border transition"
         >
           <Plus size={13} /> Add message
@@ -110,7 +111,7 @@ export default function BannerEditor() {
           </button>
           {isCustom && (
             <button
-              onClick={reset}
+              disabled={saving} onClick={reset}
               className="inline-flex items-center gap-1.5 px-3 py-2.5 rounded-full text-xs font-semibold text-muted-foreground hover:text-foreground ring-1 ring-inset ring-border transition"
             >
               <RotateCcw size={13} /> Reset
