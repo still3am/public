@@ -1,6 +1,7 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
 import {clearPersonalData} from '@/lib/clearPersonalData';
+import {setOfflineAccount,migrateLegacyOffline} from '@/lib/offlineCache';
 import { appParams } from '@/lib/app-params';
 import { createAxiosClient } from '@base44/sdk/dist/utils/axios-client';
 
@@ -91,10 +92,12 @@ export const AuthProvider = ({ children }) => {
       // Settings refreshes keep the current page mounted.
       if(!silent)setIsLoadingAuth(true);
       const currentUser = await base44.auth.me();
-      if(currentUser?.is_blocked || currentUser?.disabled) { setUser(null); setIsAuthenticated(false); setAuthError({type:'suspended',message:'Your account is suspended. Contact PUBLIC support.'}); setIsLoadingAuth(false); setAuthChecked(true); return; }
-      const previous=localStorage.getItem("public:active-account");
+      if(currentUser?.is_blocked || currentUser?.disabled) { await clearPersonalData();setUser(null); setIsAuthenticated(false); setAuthError({type:'suspended',message:'Your account is suspended. Contact PUBLIC support.'}); setIsLoadingAuth(false); setAuthChecked(true); return; }
+      let previous;try{previous=localStorage.getItem("public:active-account");}catch{}
       if(previous && previous!==currentUser.id)await clearPersonalData();
-      localStorage.setItem("public:active-account",currentUser.id);
+      await migrateLegacyOffline(currentUser.id,previous).catch(()=>{});
+      setOfflineAccount(currentUser.id);
+      try{localStorage.setItem("public:active-account",currentUser.id);}catch{}
       setUser(currentUser);
       setAuthError(null);
       setIsAuthenticated(true);
@@ -107,6 +110,7 @@ export const AuthProvider = ({ children }) => {
       const status=error.status ?? error.response?.status;
       // An unavailable connection must not make an existing account look new.
       if (status === 401 || status === 403) {
+        await clearPersonalData();
         setUser(null);
         setIsAuthenticated(false);
         setAuthError(null);
@@ -118,11 +122,12 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(()=>{
     if(!authChecked)return;
-    const verify=async()=>{if(!isAuthenticated)return;try{const current=await base44.auth.me();if(current.is_blocked||current.disabled){setUser(null);setIsAuthenticated(false);setAuthError({type:'suspended',message:'Your account is suspended. Contact PUBLIC support.'});}}catch(error){if(error.status===401){setUser(null);setIsAuthenticated(false);setAuthError(null);}}};
+    const verify=async()=>{if(!isAuthenticated)return;try{const current=await base44.auth.me();if(current.is_blocked||current.disabled){await clearPersonalData();setUser(null);setIsAuthenticated(false);setAuthError({type:'suspended',message:'Your account is suspended. Contact PUBLIC support.'});}}catch(error){if(error.status===401){await clearPersonalData();setUser(null);setIsAuthenticated(false);setAuthError(null);}}};
     const timer=setInterval(verify,60000);window.addEventListener('focus',verify);
     return()=>{clearInterval(timer);window.removeEventListener('focus',verify);};
   },[authChecked,isAuthenticated]);
-  const logout = (shouldRedirect = true) => {
+  const logout = async (shouldRedirect = true) => {
+    await clearPersonalData();
     setUser(null);
     setIsAuthenticated(false);
     
