@@ -263,10 +263,10 @@ export default function Profile({ownProfileTab=false}) {
     if(!isOwn||profileSongSaving.current)return false;
     profileSongSaving.current=true;
     try{
-      const update={featured_track_id:id,profile_background_mode:"auto",profile_background_colors:[]};
+      const update={featured_track_id:id};
       await base44.auth.updateMe(update);
       const confirmed=await base44.auth.me();
-      if((confirmed.featured_track_id||"")!==id||confirmed.profile_background_mode!=="auto")return false;
+      if((confirmed.featured_track_id||"")!==id)return false;
       chosenProfileSong.current=chosen?.id===id?chosen:null;
       if(chosen)setFeaturedCoverUrl(chosen.cover_art_url||"");
       setProfile(previous=>({...previous,...update}));
