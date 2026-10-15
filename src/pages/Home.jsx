@@ -236,7 +236,7 @@ export default function Home() {
 
   }
 
-  const featured = newReleases[0] || trending[0];
+  const featured = newReleases[0] || trending[0] || byGenre.find(section=>section.tracks.length)?.tracks[0];
   const discoveryQueue = discover.length ? discover : trending;
   const featuredPlaying = p.currentTrack?.id === featured?.id && p.isPlaying;
   const playFeatured = () => {if (!featured) return;if (p.currentTrack?.id === featured.id) p.togglePlay();else {p.setShuffle(false);p.playTrackAt(newReleases.length ? newReleases : [featured], 0);}};
