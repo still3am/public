@@ -58,13 +58,13 @@ export default function Downloads() {
    <div className="flex items-center justify-between gap-4"><div><h1 className="text-4xl md:text-5xl font-bold tracking-tight">Offline</h1></div><div className="w-14 h-14 md:w-16 md:h-16 rounded-2xl bg-foreground/[0.05] border grid place-items-center hidden"><CloudDownload size={27} strokeWidth={1.5} /></div></div>
    <p className="text-sm text-muted-foreground mt-3 leading-relaxed">Your music, ready wherever you go.</p>
   </header>
-  <section className="rounded-3xl border bg-card p-4 md:p-6 mb-6 hidden" aria-label="Download storage">
-   <div className="flex gap-4 items-center">
-    <div className="grid grid-cols-2 w-20 h-20 md:w-24 md:h-24 gap-0.5 rounded-2xl overflow-hidden shrink-0 bg-muted">{Array.from({ length: 4 }, (_, i) => <div key={i} className="grid place-items-center overflow-hidden bg-foreground/[0.04]">{tracks[i] ? <DownloadCover record={tracks[i]} size={17} /> : <CloudOff size={17} className="text-muted-foreground/30" />}</div>)}</div>
-    <div className="min-w-0"><p className="font-semibold text-lg">{tracks.length} {tracks.length === 1 ? "song" : "songs"} saved</p><p className="text-xs text-muted-foreground mt-1">{bytesToReadable(totalBytes)} on this device{seconds > 0 ? " · " + duration : ""}</p><p className="text-xs text-muted-foreground flex items-center gap-1.5 mt-2"><HardDrive size={13} />{online ? "Available without a connection" : "Listening offline"}</p></div>
-   </div>
-   {tracks.length > 0 && <div className="flex gap-2 mt-5"><button type="button" onClick={() => playAll()} disabled={!view.length} className="min-h-11 flex-1 rounded-full bg-foreground text-background inline-flex items-center justify-center gap-2 text-sm font-semibold disabled:opacity-40">{playing ? <Pause size={18} fill="currentColor" /> : <Play size={18} fill="currentColor" />}{playing ? "Pause" : query ? "Play results" : "Play"}</button><button type="button" onClick={() => playAll(true)} disabled={!view.length} className="min-h-11 flex-1 border rounded-full inline-flex items-center justify-center gap-2 text-sm font-semibold hover:bg-accent disabled:opacity-40"><Shuffle size={18} />Shuffle</button></div>}
-  </section>
+  
+
+
+
+
+
+    
   {(downloading > 0 || cache.syncing) && <div role="status" className="flex items-center gap-3 rounded-2xl bg-foreground/[0.04] border px-4 py-3 mb-5 text-sm"><Loader2 size={16} className="animate-spin shrink-0" /><span>{downloading ? "Saving " + downloading + " " + (downloading === 1 ? "song" : "songs") + " to this device…" : "Checking saved music…"}</span></div>}
   {cache.storageAvailable === false && <div role="alert" className="border rounded-2xl p-4 mb-5"><p className="text-sm font-semibold">Couldn’t access offline storage</p><p className="text-xs text-muted-foreground mt-1">Retry without clearing your saved music.</p><button type="button" className="mt-3 min-h-11 px-4 rounded-full border text-sm font-semibold" onClick={() => cache.refresh()}>Retry storage</button></div>}
   {(tracks.length > 0 || query) && <>
