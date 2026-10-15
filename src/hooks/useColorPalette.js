@@ -58,8 +58,13 @@ export function useColorPalette(url, vivid = false) {
           setPalette(FALLBACK);
           return;
         }
-        const pick = (i) => boost(ranked[Math.min(i, ranked.length - 1)].rgb);
-        setPalette([pick(0), pick(1), pick(2)]);
+        const distinct=[];
+        for(const candidate of ranked){
+          if(distinct.every(previous=>Math.hypot(...previous.map((value,index)=>value-candidate.rgb[index]))>70))distinct.push(candidate.rgb);
+          if(distinct.length===3)break;
+        }
+        // Distinct artwork colors make the flowing bands visible instead of picking three almost identical buckets.
+        setPalette(distinct.map(color=>boost(color)));
       } catch {
         setPalette(FALLBACK);
       }
