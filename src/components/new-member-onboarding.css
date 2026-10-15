@@ -1,0 +1,36 @@
+.new-member-onboarding {padding:0;gap:0;overflow:hidden;display:grid;grid-template-rows:210px minmax(0,1fr) auto;width:calc(100% - 32px);max-width:560px;max-height:calc(100dvh - 48px);}
+.new-member-onboarding>button:last-child {display:none;}
+.onboarding-visual {position:relative;isolation:isolate;overflow:hidden;color:#fff;min-height:0;}
+.onboarding-visual-shade {position:absolute;inset:0;background:linear-gradient(180deg,#080c1720,#080c1766);}
+.onboarding-wordmark {position:absolute;top:24px;left:28px;font-size:19px;letter-spacing:-.06em;font-weight:800;}
+.onboarding-skip {position:absolute;top:16px;right:18px;min-height:44px;padding:10px 12px;font-size:11px;color:#ffffffd9;border-radius:999px;}
+.onboarding-skip:focus-visible {outline:2px solid #fff;outline-offset:1px;}
+.onboarding-visual-copy {position:absolute;left:28px;right:28px;bottom:27px;}
+.onboarding-visual-copy p {font-size:25px;font-weight:600;letter-spacing:-.04em;line-height:1.1;margin-top:14px;}
+.onboarding-content {padding:28px;min-height:0;overflow-y:auto;overscroll-behavior:contain;animation:onboardingStepIn .3s ease-out;}
+.onboarding-step-label {font-size:9px;letter-spacing:.13em;font-weight:650;color:hsl(var(--muted-foreground));margin-bottom:12px;}
+.new-member-onboarding h2 {font-size:30px;font-weight:750;line-height:1.07;letter-spacing:-.045em;}
+.new-member-onboarding h2+p {font-size:13px;line-height:1.65;margin-top:12px;color:hsl(var(--muted-foreground));}
+.onboarding-benefits {display:grid;gap:17px;margin-top:26px;}
+.onboarding-benefits>span {display:flex;gap:12px;align-items:center;font-size:13px;font-weight:550;}
+.onboarding-genres {display:flex;flex-wrap:wrap;gap:8px;margin-top:22px;}
+.onboarding-genres>button {min-height:40px;display:flex;align-items:center;justify-content:center;gap:6px;padding:9px 13px;border:1px solid hsl(var(--border));border-radius:999px;font-size:12px;}
+.onboarding-genres>button[aria-pressed=true] {background:hsl(var(--foreground));color:hsl(var(--background));border-color:hsl(var(--foreground));}
+.onboarding-optional {font-size:11px;color:hsl(var(--muted-foreground));margin-top:15px;}
+.onboarding-guide {display:grid;gap:18px;margin-top:24px;}
+.onboarding-guide>div {display:flex;align-items:flex-start;gap:13px;}
+.onboarding-guide svg {flex-shrink:0;margin-top:2px;}
+.onboarding-guide strong {display:block;font-size:13px;font-weight:600;}
+.onboarding-guide small {display:block;font-size:12px;line-height:1.5;color:hsl(var(--muted-foreground));margin-top:4px;}
+.onboarding-footer {padding:18px 28px max(22px,env(safe-area-inset-bottom));border-top:1px solid hsl(var(--border));background:hsl(var(--card));}
+.onboarding-footer>p {font-size:12px;line-height:1.5;color:hsl(var(--muted-foreground));margin-bottom:12px;}
+.onboarding-progress {display:flex;justify-content:center;gap:6px;margin-bottom:17px;}
+.onboarding-progress>span {width:5px;height:5px;background:hsl(var(--foreground)/.18);border-radius:50%;}
+.onboarding-progress>.active {width:20px;border-radius:999px;background:hsl(var(--foreground));}
+.onboarding-buttons {display:flex;gap:10px;}
+.onboarding-buttons>button {display:flex;align-items:center;justify-content:center;gap:9px;min-height:48px;padding:12px 18px;border:1px solid hsl(var(--border));border-radius:999px;font-size:13px;font-weight:600;}
+.onboarding-buttons>.onboarding-next {flex:1;background:hsl(var(--foreground));color:hsl(var(--background));border-color:hsl(var(--foreground));}
+.new-member-onboarding button:disabled {opacity:.45;}
+@keyframes onboardingStepIn {from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:translateY(0)}}
+@media(max-width:600px){.new-member-onboarding {width:calc(100% - 24px);grid-template-rows:minmax(150px,25dvh) minmax(0,1fr) auto;max-height:calc(100dvh - max(24px,env(safe-area-inset-top)) - max(16px,env(safe-area-inset-bottom)));border-radius:24px;}.onboarding-content {padding:24px 22px;}.onboarding-footer {padding-inline:22px;}.onboarding-wordmark {left:22px;}.onboarding-visual-copy {left:22px;right:22px;bottom:22px;}.onboarding-visual-copy p {font-size:23px;}.new-member-onboarding h2 {font-size:29px;}}
+@media(prefers-reduced-motion:reduce){.onboarding-content {animation:none;}}
