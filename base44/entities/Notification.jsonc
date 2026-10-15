@@ -29,6 +29,21 @@
         "write": false
       }
     },
+    "actor_name": {
+      "type": "string",
+      "default": "",
+      "description": "Verified sender display name saved when the notification is created",
+      "rls": {
+        "write": false
+      }
+    },
+    "actor_avatar_url": {
+      "type": "string",
+      "default": "",
+      "rls": {
+        "write": false
+      }
+    },
     "track_id": {
       "type": "string",
       "default": "",
