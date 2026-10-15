@@ -63,7 +63,7 @@ export function useNotifications(){
    if(request!==epoch.current||account.current!==uid)return;
    setNotifications(prev=>{
     const previous=new Map(prev.map(n=>[n.id,n]));
-    const enriched=items.map(n=>({...n,actor_id:n.actor_id||n.sender_id,actor:actorMap.get(n.actor_id||n.sender_id)||previous.get(n.id)?.actor||null,track:trackMap.get(n.track_id)||previous.get(n.id)?.track||null}));
+    const enriched=items.map(n=>({...n,actor_id:n.actor_id||n.sender_id,actor:actorMap.get(n.actor_id||n.sender_id)||previous.get(n.id)?.actor||(n.actor_name?{id:n.actor_id||n.sender_id,display_name:n.actor_name,avatar_url:n.actor_avatar_url||''}:null),track:trackMap.get(n.track_id)||previous.get(n.id)?.track||null}));
     const merged=enriched.map(n=>markingAll.current||readingIds.current.has(n.id)?{...n,read:true}:n);
     if(!reset)return [...prev,...merged.filter(n=>!previous.has(n.id))];
     const boundary=items.at(-1)?.created_date,headIds=new Set(items.map(n=>n.id));
