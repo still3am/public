@@ -1,3 +1,4 @@
+import CollectionSpotlight from "@/components/CollectionSpotlight";
 import LoadError from '@/components/LoadError';
 import { useEffect, useState, useCallback, useMemo, useRef } from "react";
 import { getPublishedTracks } from "@/lib/catalogCache";
@@ -48,13 +49,14 @@ export default function RecentlyAdded() {
 
   return (
     <PullToRefresh onRefresh={load}>
-    <div className="collection-page">
-        <header className="page-intro"><h1>Fresh on PUBLIC</h1><p>New music, ready to discover.</p></header>
-        <div className="collection-tools"><input aria-label="Search this music collection" placeholder="Find a song or artist" value={query} onChange={(e) => setQuery(e.target.value)} onKeyDown={(e) => {if (e.key === "Escape") setQuery("");}} /><select aria-label="Filter music genre" value={genre} onChange={(e) => setGenre(e.target.value)} className="hidden"><option value="">All genres</option>{genres.map((name) => <option key={name} value={name}>{name}</option>)}</select>{(query || genre) && <button className="playlist-action" onClick={() => {setQuery("");setGenre("");}}>Reset</button>}</div>
+    <div className="collection-page collection-refined recent-refined">
+        <CollectionSpotlight title="Recently Added" eyebrow="Fresh on PUBLIC" description="The latest music added by the PUBLIC community." tracks={visible}/>
+        <div className="collection-tools"><input aria-label="Search this music collection" placeholder="Find a song or artist" value={query} onChange={(e) => setQuery(e.target.value)} onKeyDown={(e) => {if (e.key === "Escape") setQuery("");}} /><select aria-label="Filter music genre" value={genre} onChange={(e) => setGenre(e.target.value)}><option value="">All genres</option>{genres.map((name) => <option key={name} value={name}>{name}</option>)}</select>{(query || genre) && <button className="playlist-action" onClick={() => {setQuery("");setGenre("");}}>Reset</button>}</div>
         {!visible.length && <div className="collection-empty"><h2>No matching songs</h2><p>Try another title, artist, or genre.</p></div>}
+      <div className="collection-results-heading"><h2>{query||genre?"Matching songs":"Explore the latest"}</h2><span>{visible.length} songs</span></div>
       <IncrementalList
           items={visible}
-          className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 md:gap-4"
+          className="collection-art-grid"
           renderItem={(track) => <TrackCard key={track.id} track={track} queue={visible} />} />
         
     </div>
