@@ -19,6 +19,8 @@ export default function ProfileComments({ profileId, isOwn, active = true }) {
   const [error, setError] = useState(false);
   const [message, setMessage] = useState("");
   const [posting, setPosting] = useState(false);
+  const commentRequest=useRef({text:"",key:"",id:""});
+  const draftKey=`public:comment-draft:${user?.id||"guest"}:${profileId||""}`;
   const requestVersion=useRef(0),postingRef=useRef(false),currentProfile=useRef(profileId),confirmed=useRef(new Map()),deleting=useRef(new Set()),alive=useRef(true);currentProfile.current=profileId;
   useEffect(()=>{alive.current=true;return()=>{alive.current=false;requestVersion.current++;};},[]);
 
@@ -39,7 +41,7 @@ export default function ProfileComments({ profileId, isOwn, active = true }) {
     }
   }, [profileId]);
 
-  useEffect(()=>{requestVersion.current++;confirmed.current.clear();deleting.current.clear();setComments([]);setMessage("");setLoading(true);},[profileId]);
+  useEffect(()=>{requestVersion.current++;confirmed.current.clear();deleting.current.clear();setComments([]);try{setMessage(user?.id?localStorage.getItem(draftKey)||"":"");}catch{setMessage("");}setLoading(true);},[profileId,user?.id]);
   useEffect(() => {
     if(!active)return;
     load();
@@ -56,6 +58,7 @@ export default function ProfileComments({ profileId, isOwn, active = true }) {
     e.preventDefault();
     const text = message.trim();
     if (!text || !user?.id || !profileId || postingRef.current) return;
+    if(commentRequest.current.text!==text||commentRequest.current.key!==draftKey)commentRequest.current={text,key:draftKey,id:globalThis.crypto?.randomUUID?.()||`${Date.now()}-${Math.random().toString(36).slice(2)}`};
     postingRef.current=true;setPosting(true);
     try {
       const saved=await base44.entities.ProfileComment.create({
@@ -63,7 +66,8 @@ export default function ProfileComments({ profileId, isOwn, active = true }) {
         author_id: user.id,
         author_name: user.display_name || user.full_name || "",
         author_avatar_url: user.avatar_url || "",
-        message: text
+        message: text,
+        request_id: commentRequest.current.id
       });
       if(!saved?.id)throw Error("Comment save was not confirmed");
       if(alive.current&&currentProfile.current===profileId){
@@ -72,6 +76,7 @@ export default function ProfileComments({ profileId, isOwn, active = true }) {
         setComments(previous=>[saved,...previous.filter(row=>row.id!==saved.id)]);
         setLoading(false);setError(false);
         setMessage(previous=>previous.trim()===text?'':previous);
+        try{if((localStorage.getItem(draftKey)||'').trim()===text)localStorage.removeItem(draftKey);}catch{}
         load();
       }
       if (profileId !== user.id) {
@@ -118,7 +123,7 @@ export default function ProfileComments({ profileId, isOwn, active = true }) {
         <input
           aria-label="Leave a profile comment"
           value={message}
-          onChange={(e) => setMessage(e.target.value)}
+          onChange={(e) => {const value=e.target.value;setMessage(value);try{if(user?.id){if(value)localStorage.setItem(draftKey,value);else localStorage.removeItem(draftKey);}}catch{}}
           placeholder="Leave a comment..."
           maxLength={500}
           className="min-w-0 flex-1 py-2.5 rounded-full border border-border bg-background text-sm px-2.5" />
@@ -148,7 +153,7 @@ export default function ProfileComments({ profileId, isOwn, active = true }) {
               <Link to={`/profile/${c.author_id}`} aria-label={`View ${c.author_name || "user"} profile`} className="shrink-0"><Avatar user={{ avatar_url: c.author_avatar_url, full_name: c.author_name }} size={40} /></Link>
               <div className="flex-1 min-w-0">
                 <div className="flex items-center justify-between gap-2">
-                  <span className="text-sm font-semibold truncate">{c.author_name || "Someone"}</span>
+                  <Link to={`/profile/${c.author_id}`} className="text-sm font-semibold truncate hover:underline">{c.author_name || "PUBLIC member"}</Link>
                   <span className="text-[10px] text-foreground/40 shrink-0">
                     {new Date(c.created_date).toLocaleDateString(undefined, { month: "short", day: "numeric" })}
                   </span>
