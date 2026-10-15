@@ -1,39 +1,18 @@
-import { useCallback, useEffect, useRef, useState } from "react";
-import {
-  requestPersistentStorage,
-  putTrack,
-  getRecord,
-  putCoverArt,
-  listRecords,
-  deleteRecord,
-  clearAll,
-  getOrderIds,
-  setOrderIds,
-  clearMeta,
-} from "@/lib/offlineCache";
-import { base44 } from "@/api/base44Client";
-import { useAuth } from "@/lib/AuthContext";
-import {
-  getCloudList,
-  setCloudList,
-  addCloudTrack,
-  removeCloudTrack,
-} from "@/lib/offlineSync";
+import {useCallback,useEffect,useRef,useState} from "react";
+import {requestPersistentStorage,putTrack,getRecord,putCoverArt,listRecords,deleteRecord,clearAll,getOrderIds,setOrderIds,clearMeta,getOfflineAccount} from "@/lib/offlineCache";
+import {base44} from "@/api/base44Client";
+import {useAuth} from "@/lib/AuthContext";
+import {getCloudList,addCloudTrack} from "@/lib/offlineSync";
 
-const EVT = "offlinecache:change";
-const suppressedFor=userId=>{try{return new Set(JSON.parse(localStorage.getItem("public:offline:suppressed:"+userId)||"[]"));}catch{return new Set();}};
-const suppress=(userId,ids,remove=false)=>{if(!userId)return;try{const set=suppressedFor(userId);ids.forEach(id=>remove?set.delete(id):set.add(id));localStorage.setItem("public:offline:suppressed:"+userId,JSON.stringify([...set]));}catch{}};
-
-// Module-level guard so multiple hook instances don't auto-download the same
-// cloud track twice in one session.
-const autoQueued = new Set(),retryAfter=new Map();
-const downloadingIds=new Set(),removalVersions=new Map(),cloudSyncJobs=new Map();
+const EVT="offlinecache:change",STATUS="offlinecache:downloads";
+const jobs=new Map(),autoQueued=new Set(),retryAfter=new Map(),removals=new Map(),cloudJobs=new Map();
 let generation=0;
-window.addEventListener('account:cleared',()=>{generation++;autoQueued.clear();retryAfter.clear();downloadingIds.clear();removalVersions.clear();cloudSyncJobs.clear();});
-
-// PUBLIC files (covers) are served as a generic octet-stream; a blob: URL only
-// renders in an <img> when its MIME is image/*, so sniff the magic bytes and
-// re-type the stored blob accordingly.
+const emit=event=>window.dispatchEvent(new Event(event));
+const invalidate=()=>{generation++;jobs.clear();autoQueued.clear();retryAfter.clear();removals.clear();cloudJobs.clear();emit(STATUS);};
+window.addEventListener("account:cleared",invalidate);
+window.addEventListener("offlinecache:account",invalidate);
+const suppressedFor=uid=>{try{return new Set(JSON.parse(localStorage.getItem("public:offline:suppressed:"+uid)||"[]"));}catch{return new Set();}};
+function suppress(uid,ids,remove=false){if(!uid)return;try{const set=suppressedFor(uid);ids.forEach(id=>remove?set.delete(id):set.add(id));localStorage.setItem("public:offline:suppressed:"+uid,JSON.stringify([...set]));}catch{}}
 async function toImageBlob(res) {
   const raw = await res.blob();
   if (raw.type && raw.type.startsWith("image/")) return raw;
@@ -54,227 +33,123 @@ async function toImageBlob(res) {
   return new Blob([buf], { type });
 }
 
-export function useOfflineCache() {
-  const [cachedIds, setCachedIds] = useState(null);
-  const [records, setRecords] = useState([]);
-  const [storageAvailable,setStorageAvailable]=useState(null);
-  const [downloading, setDownloading] = useState({});
-  const backfilled = useRef(new Set()),refreshVersion=useRef(0);
-  const { user } = useAuth();
 
-  const applyOrder = useCallback((all, orderIds) => {
-    if (!orderIds || !orderIds.length) {
-      return [...all].sort((a, b) => (b._savedAt || 0) - (a._savedAt || 0));
-    }
-    const byId = new Map(all.map((r) => [r.id, r]));
-    const ordered = orderIds.map((id) => byId.get(id)).filter(Boolean);
-    const leftover = all
-      .filter((r) => !orderIds.includes(r.id))
-      .sort((a, b) => (b._savedAt || 0) - (a._savedAt || 0));
-    // New downloads (not yet in the saved order) stay on top; the user's custom
-    // arrangement follows below.
-    return [...leftover, ...ordered];
-  }, []);
+export function useOfflineCache(){
+ const {user}=useAuth(),uid=user?.id,account=useRef(uid);account.current=uid;
+ const [cachedIds,setCachedIds]=useState(null),[records,setRecords]=useState([]),[storageAvailable,setStorageAvailable]=useState(null),[downloading,setDownloading]=useState({}),[syncing,setSyncing]=useState(false);
+ const refreshVersion=useRef(0),loadedFor=useRef(null),backfilled=useRef(new Set());
+ const active=useCallback(()=>!!uid&&account.current===uid&&getOfflineAccount()===uid,[uid]);
+ const applyOrder=useCallback((all,ids)=>{
+  if(!ids?.length)return [...all].sort((a,b)=>(b._savedAt||0)-(a._savedAt||0));
+  const byId=new Map(all.map(r=>[r.id,r])),chosen=new Set(ids);
+  return [...all.filter(r=>!chosen.has(r.id)).sort((a,b)=>(b._savedAt||0)-(a._savedAt||0)),...ids.map(id=>byId.get(id)).filter(Boolean)];
+ },[]);
+ const refresh=useCallback(async()=>{
+  const request=++refreshVersion.current,started=generation;
+  if(!active()){loadedFor.current=null;setRecords([]);setCachedIds(new Set());setStorageAvailable(null);return;}
+  try{
+   const [rows,order]=await Promise.all([listRecords(uid),getOrderIds(uid)]);
+   if(request!==refreshVersion.current||started!==generation||!active())return;
+   const all=rows.filter(r=>r._blob?.size>0);
+   loadedFor.current=uid;setStorageAvailable(true);setRecords(applyOrder(all,order));
+   const next=new Set(all.map(r=>r.id));
+   setCachedIds(previous=>previous&&previous.size===next.size&&[...next].every(id=>previous.has(id))?previous:next);
+   if(navigator.onLine){
+    const need=all.filter(r=>r.cover_art_url&&!backfilled.current.has(r.id)&&!r._coverBlob?.type?.startsWith("image/"));
+    if(need.length)(async()=>{let changed=false;for(const row of need){
+     if(started!==generation||!active())return;
+     backfilled.current.add(row.id);
+     try{const response=await fetch(row.cover_art_url,{signal:AbortSignal.timeout(10000)});if(response.ok){const blob=await toImageBlob(response);if(started!==generation||!active())return;await putCoverArt(row.id,blob,uid);changed=true;}}catch{}
+    }if(changed)emit(EVT);})();
+   }
+  }catch{if(request===refreshVersion.current&&started===generation&&active()){setStorageAvailable(false);setCachedIds(previous=>previous||new Set());}}
+ },[uid,active,applyOrder]);
+ useEffect(()=>{loadedFor.current=null;backfilled.current.clear();setRecords([]);setCachedIds(null);setDownloading({});refresh();return()=>{refreshVersion.current++;};},[refresh]);
+ useEffect(()=>{
+  const status=()=>{const next={};for(const job of jobs.values())if(job.uid===uid)next[job.id]=true;setDownloading(next);setSyncing(cloudJobs.has(uid));};
+  const changed=()=>{status();refresh();};
+  window.addEventListener(EVT,changed);window.addEventListener(STATUS,status);window.addEventListener("offlinecache:account",changed);status();
+  return()=>{window.removeEventListener(EVT,changed);window.removeEventListener(STATUS,status);window.removeEventListener("offlinecache:account",changed);};
+ },[uid,refresh]);
 
-  const refresh = useCallback(async () => {
-    const request=++refreshVersion.current,startedGeneration=generation;
-    try {
-      const [all, orderIds] = await Promise.all([listRecords(), getOrderIds()]);
-      if(request!==refreshVersion.current||startedGeneration!==generation)return;
-      setStorageAvailable(true);
-      if(all.length)requestPersistentStorage();
-      setRecords(applyOrder(all,orderIds));
-      const next=new Set(all.map(record=>record.id));
-      setCachedIds(previous=>previous&&previous.size===next.size&&[...next].every(id=>previous.has(id))?previous:next);
-      // Backfill cover-art blobs for any saved track still missing one. Runs
-      // whenever we're online, retrying each record once per session so a
-      // dropped fetch doesn't permanently strand a cover offline.
-      if (typeof navigator !== "undefined" && navigator.onLine) {
-        const need = all.filter(
-          (r) =>
-            r.cover_art_url &&
-            !backfilled.current.has(r.id) &&
-            (!r._coverBlob || !r._coverBlob.type || !r._coverBlob.type.startsWith("image/"))
-        );
-        if (need.length) {
-          need.forEach((r) => backfilled.current.add(r.id));
-          (async () => {
-            let changed = false;
-            for (const r of need) {
-              try {
-                const res = await fetch(r.cover_art_url);
-                if (res.ok) {
-                  await putCoverArt(r.id, await toImageBlob(res));
-                  changed = true;
-                }
-              } catch {}
-            }
-            if (changed) window.dispatchEvent(new CustomEvent(EVT));
-          })();
-        }
-      }
-    } catch {
-      // A temporary storage failure must not erase a collection already shown.
-      if(request===refreshVersion.current&&startedGeneration===generation){setStorageAvailable(false);setCachedIds(previous=>previous||new Set());}
-    }
-  }, []);
+ const downloadTrack=useCallback(async(track,{automatic=false}={})=>{
+  if(!active()||!track?.id)return false;
+  const id=track.id,key=uid+":"+id;
+  if(jobs.has(key))return false;
+  const job={uid,id},started=generation,removed=removals.get(key)||0;jobs.set(key,job);retryAfter.delete(key);emit(STATUS);
+  const valid=()=>active()&&started===generation&&removed===(removals.get(key)||0)&&(!automatic||!suppressedFor(uid).has(id));
+  try{
+   const existing=await getRecord(id,uid);
+   if(!valid())return false;
+   if(existing?._blob?.size){if(!automatic)suppress(uid,[id],true);return true;}
+   if(!automatic)requestPersistentStorage();
+   const authorized=await base44.entities.Track.get(id);
+   if(!valid()||authorized?.id!==id||!authorized.audio_url)return false;
+   track=authorized;
+   const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),60000);
+   let blob;
+   try{const response=await fetch(track.audio_url,{signal:controller.signal});if(!response.ok)throw Error("Audio download failed");blob=await response.blob();if(!blob.size||/text\/html|application\/json/.test(blob.type))throw Error("Invalid audio download");}finally{clearTimeout(timer);}
+   let cover=null;
+   try{if(track.cover_art_url){const response=await fetch(track.cover_art_url,{signal:AbortSignal.timeout(10000)});if(response.ok)cover=await toImageBlob(response);}}catch{}
+   if(!valid())return false;
+   await putTrack(track,blob,cover,uid);
+   if(!valid()){await deleteRecord(id,uid);return false;}
+   const saved=await getRecord(id,uid);if(!saved?._blob?.size)throw Error("Audio did not persist");
+   const order=await getOrderIds(uid).catch(()=>[]);if(!valid())return false;
+   await setOrderIds([id,...(order||[]).filter(value=>value!==id)],uid).catch(()=>{});
+   if(!automatic)suppress(uid,[id],true);
+   if(valid())addCloudTrack(uid,track).catch(()=>{});
+   emit(EVT);return true;
+  }catch{return false;}
+  finally{if(jobs.get(key)===job){jobs.delete(key);emit(STATUS);}}
+ },[uid,active]);
 
-  useEffect(() => {
-    refresh();
-    return()=>{refreshVersion.current++;};
-  }, [refresh]);
+ const syncFromCloud=useCallback(async()=>{
+  if(!active()||loadedFor.current!==uid||!cachedIds||cloudJobs.has(uid)||!navigator.onLine)return;
+  const token=Symbol(uid),started=generation;cloudJobs.set(uid,token);emit(STATUS);
+  try{
+   const cloud=await getCloudList(uid);let cursor=0;
+   const worker=async()=>{while(cursor<cloud.length){
+    if(started!==generation||!active())return;
+    const track=cloud[cursor++],id=track?.id,key=uid+":"+id;
+    if(!id||cachedIds.has(id)||autoQueued.has(key)||suppressedFor(uid).has(id)||(retryAfter.get(key)||0)>Date.now())continue;
+    autoQueued.add(key);
+    try{const saved=await getRecord(id,uid);if(started!==generation||!active())return;if(saved?._blob?.size)continue;
+     if(!await downloadTrack(track,{automatic:true})&&started===generation)retryAfter.set(key,Date.now()+60000);
+    }finally{autoQueued.delete(key);}
+   }};
+   await Promise.all([worker(),worker()]);
+  }catch{/* Cloud availability never removes this device's files. */}
+  finally{if(cloudJobs.get(uid)===token){cloudJobs.delete(uid);emit(STATUS);}}
+ },[uid,active,cachedIds,downloadTrack]);
+ useEffect(()=>{syncFromCloud();},[syncFromCloud]);
+ useEffect(()=>{
+  if(!uid)return;
+  let unsubscribe=()=>{};try{unsubscribe=base44.entities.OfflineSync.subscribe(()=>syncFromCloud());}catch{}
+  return unsubscribe;
+ },[uid,syncFromCloud]);
+ useEffect(()=>{
+  const recover=()=>{if(document.visibilityState!=="hidden"){refresh();syncFromCloud();}};
+  window.addEventListener("online",recover);window.addEventListener("focus",recover);document.addEventListener("visibilitychange",recover);
+  return()=>{window.removeEventListener("online",recover);window.removeEventListener("focus",recover);document.removeEventListener("visibilitychange",recover);};
+ },[refresh,syncFromCloud]);
 
-  useEffect(() => {
-    const onChange = () => refresh();
-    window.addEventListener(EVT, onChange);
-    return () => window.removeEventListener(EVT, onChange);
-  }, [refresh]);
-
-  const downloadTrack = useCallback(async (track,{automatic=false}={}) => {
-    if (!user?.id || !track?.id) return false;
-    if(downloadingIds.has(track.id))return false;
-    downloadingIds.add(track.id);
-    retryAfter.delete(track.id);
-    requestPersistentStorage();
-    const startedGeneration=generation,startedRemoval=removalVersions.get(track.id)||0;
-    setDownloading((s) => ({ ...s, [track.id]: true }));
-    try {
-      const authorized=await base44.entities.Track.get(track.id);
-      if(!authorized?.id||authorized.id!==track.id)throw new Error("Track unavailable");
-      track=authorized;
-      if(!track.audio_url)throw new Error("Audio link is unavailable");
-      const controller=new AbortController();
-      const timer=setTimeout(()=>controller.abort(),60000);
-      let blob;
-      try{
-      const res = await fetch(track.audio_url,{signal:controller.signal});
-      if (!res.ok) throw new Error("Download failed");
-      blob = await res.blob();
-      if(!blob.size||blob.type.includes("text/html")||blob.type.includes("application/json"))throw new Error("Invalid audio download");
-      }finally{clearTimeout(timer);}
-      // Best-effort: cache the cover-art image too so it renders offline.
-      let coverBlob = null;
-      try {
-        if (track.cover_art_url) {
-        const cres = await fetch(track.cover_art_url,{signal:AbortSignal.timeout(10000)});
-        if (cres.ok) coverBlob = await toImageBlob(cres);
-        }
-      } catch {}
-      if(startedGeneration!==generation||startedRemoval!==(removalVersions.get(track.id)||0)||(automatic&&suppressedFor(user.id).has(track.id)))throw new Error("Offline save was canceled");
-      await putTrack(track, blob, coverBlob);
-      if(startedGeneration!==generation||startedRemoval!==(removalVersions.get(track.id)||0)||(automatic&&suppressedFor(user.id).has(track.id))){await deleteRecord(track.id);throw new Error("Offline save was canceled");}
-      const stored=await getRecord(track.id);
-      if(!stored?._blob?.size)throw new Error("Audio did not persist");
-      // Keep the saved download order in sync: a freshly saved track goes to
-      // the top so it's easy to find (matching the previous newest-first view).
-      const order = (await getOrderIds().catch(()=>[])) || [];
-      await setOrderIds([track.id, ...order.filter((id) => id !== track.id)]).catch(()=>{});
-      // Mirror this save into the user's cloud offline list so other devices
-      // auto-download it too.
-      if (user?.id) addCloudTrack(user.id, track).catch(() => {});
-      if(!automatic)suppress(user.id,[track.id],true);
-      window.dispatchEvent(new CustomEvent(EVT));
-      return true;
-    } catch {
-      return false;
-    } finally {
-      downloadingIds.delete(track.id);
-      setDownloading((s) => ({ ...s, [track.id]: false }));
-    }
-  }, [user?.id]);
-
-  // Pull the user's cloud-synced offline list and download any tracks that
-  // aren't on this device yet, so the same songs are available offline everywhere.
-  const syncFromCloud=useCallback(async()=>{
-    const uid=user?.id;
-    if(!uid||!cachedIds||cloudSyncJobs.has(uid)||!navigator.onLine)return;
-    const job=Symbol(uid),startedGeneration=generation;cloudSyncJobs.set(uid,job);
-    try{
-      const cloud=await getCloudList(uid);let cursor=0;
-      const worker=async()=>{while(cursor<cloud.length){
-        if(startedGeneration!==generation)return;
-        const track=cloud[cursor++],id=track?.id;
-        if(!id||cachedIds.has(id)||autoQueued.has(id)||suppressedFor(uid).has(id))continue;
-        if((retryAfter.get(id)||0)>Date.now())continue;
-        autoQueued.add(id);
-        try{
-          // Check the device itself; a remembered download is not proof that
-          // the browser still has its audio after storage eviction.
-          const stored=await getRecord(id);
-          if(startedGeneration!==generation)return;
-          if(stored?._blob?.size)continue;
-          const ok=await downloadTrack(track,{automatic:true});
-          if(!ok)retryAfter.set(id,Date.now()+60000);
-        }finally{autoQueued.delete(id);}
-      }};
-      await Promise.all([worker(),worker()]);
-    }catch{/* Keep this device's confirmed offline collection. */}
-    finally{if(cloudSyncJobs.get(uid)===job)cloudSyncJobs.delete(uid);}
-  },[user?.id,cachedIds,downloadTrack]);
-
-  useEffect(() => {
-    syncFromCloud();
-  }, [syncFromCloud]);
-
-  // When another device updates the cloud offline list, re-read it here.
-  useEffect(() => {
-    if (!user?.id) return;
-    let unsub=()=>{};try{unsub=base44.entities.OfflineSync.subscribe(()=>syncFromCloud());}catch{}
-    return unsub;
-  }, [user?.id, syncFromCloud]);
-
-  useEffect(()=>{
-    const recover=()=>{if(document.visibilityState==="hidden")return;refresh();syncFromCloud();};
-    window.addEventListener('online',recover);
-    window.addEventListener('focus',recover);
-    document.addEventListener('visibilitychange',recover);
-    return()=>{window.removeEventListener('online',recover);window.removeEventListener('focus',recover);document.removeEventListener('visibilitychange',recover);};
-  },[refresh,syncFromCloud]);
-
-  const removeTrack=useCallback(async id=>{
-    try{
-      await deleteRecord(id);removalVersions.set(id,(removalVersions.get(id)||0)+1);suppress(user?.id,[id]);
-      const order=await getOrderIds().catch(()=>null);
-      if(order)await setOrderIds(order.filter(value=>value!==id)).catch(()=>{});
-      if(user?.id)removeCloudTrack(user.id,id).catch(()=>{});
-      window.dispatchEvent(new CustomEvent(EVT));return true;
-    }catch{return false;}
-  },[user?.id]);
-
-  const reorder = useCallback(async (orderedIds) => {
-    // Optimistic local re-order so the drag feels instant, then persist.
-    setRecords((prev) => {
-      const byId = new Map(prev.map((r) => [r.id, r]));
-      const next = orderedIds.map((id) => byId.get(id)).filter(Boolean);
-      next.push(...prev.filter((r) => !orderedIds.includes(r.id)));
-      return next;
-    });
-    await setOrderIds(orderedIds);
-    window.dispatchEvent(new CustomEvent(EVT));
-  }, []);
-
-  const clearAllCache=useCallback(async()=>{
-    const removed=[...new Set([...records.map(track=>track.id),...autoQueued,...downloadingIds])];
-    try{
-      await clearAll();generation++;suppress(user?.id,removed);
-      await clearMeta().catch(()=>{});autoQueued.clear();
-      if(user?.id)setCloudList(user.id,[]).catch(()=>{});
-      window.dispatchEvent(new CustomEvent(EVT));return true;
-    }catch{return false;}
-  },[user?.id,records]);
-
-  return {
-    cachedIds: cachedIds || new Set(),
-    records,
-    storageAvailable,
-    downloading,
-    loading: cachedIds === null,
-    refresh,
-    isCached: (id) => (cachedIds ? cachedIds.has(id) : false),
-    downloadTrack,
-    saveForOffline:downloadTrack,
-    removeTrack,
-    reorder,
-    clearAllCache,
-  };
+ const removeTrack=useCallback(async id=>{
+  if(!active())return false;
+  const key=uid+":"+id;removals.set(key,(removals.get(key)||0)+1);
+  try{await deleteRecord(id,uid);suppress(uid,[id]);const order=await getOrderIds(uid).catch(()=>null);if(order)await setOrderIds(order.filter(value=>value!==id),uid).catch(()=>{});emit(EVT);return true;}catch{return false;}
+ },[uid,active]);
+ const reorder=useCallback(async ids=>{
+  if(!active())return false;
+  setRecords(previous=>applyOrder(previous,ids));
+  try{await setOrderIds(ids,uid);emit(EVT);return true;}catch{await refresh();return false;}
+ },[uid,active,applyOrder,refresh]);
+ const clearAllCache=useCallback(async()=>{
+  if(!active())return false;
+  const ids=[...new Set([...records.map(row=>row.id),...[...jobs.values()].filter(job=>job.uid===uid).map(job=>job.id)])];
+  generation++;jobs.clear();autoQueued.clear();retryAfter.clear();cloudJobs.clear();emit(STATUS);
+  try{await clearAll(uid);suppress(uid,ids);await clearMeta(uid).catch(()=>{});emit(EVT);return true;}catch{return false;}
+ },[uid,active,records]);
+ const visible=active()&&loadedFor.current===uid;
+ return {cachedIds:visible&&cachedIds?cachedIds:new Set(),records:visible?records:[],storageAvailable,downloading:active()?downloading:{},syncing:active()&&syncing,loading:active()&&cachedIds===null,refresh,syncFromCloud,isCached:id=>visible&&!!cachedIds?.has(id),downloadTrack,saveForOffline:downloadTrack,removeTrack,reorder,clearAllCache};
 }
