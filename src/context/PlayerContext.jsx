@@ -33,6 +33,7 @@ export const usePlayer = () => useContext(PlayerContext);
 
 export function PlayerProvider({ children }) {
   const { user } = useAuth();
+  const offlineAccountRef=useRef(user?.id);offlineAccountRef.current=user?.id;
   const {blocked}=useSafety();const blockedRef=useRef(blocked);blockedRef.current=blocked;
   // Two audio elements enable a REAL overlapping crossfade: while one track
   // fades out on the inactive element, the next track fades in on the other.
@@ -364,7 +365,7 @@ export function PlayerProvider({ children }) {
   const resolveUrl = useCallback(async (track, side, valid=/** @type {()=>boolean} */ (()=>true)) => {
     if(blockedRef.current.has(track.uploader_id))throw Error('This uploader is blocked.');
     let url=track.audio_url,blobUrl=null;
-    try{const rec=await getRecord(track.id);if(rec?._blob)blobUrl=URL.createObjectURL(rec._blob);}catch{}
+    try{const rec=await getRecord(track.id,offlineAccountRef.current);if(rec?._blob)blobUrl=URL.createObjectURL(rec._blob);}catch{}
     if(!blobUrl && navigator.onLine && (track._private_audio || !url)){
       const fresh=await base44.entities.Track.get(track.id);url=fresh.audio_url;
     }
@@ -647,7 +648,7 @@ export function PlayerProvider({ children }) {
           retryRef.current.set(track.id,Date.now());
           const at=a.currentTime||position;let url=null;
           try{if(navigator.onLine&&track._private_audio)url=(await base44.entities.Track.get(track.id)).audio_url;
-            else{const rec=await getRecord(track.id);if(rec?._blob){url=URL.createObjectURL(rec._blob);blobUrlRefs[side].current=url;}}
+            else{const rec=await getRecord(track.id,offlineAccountRef.current);if(rec?._blob){url=URL.createObjectURL(rec._blob);blobUrlRefs[side].current=url;}}
           }catch{}
           if(url&&token===loadTokenRef.current){pendingSeekRef.current={id:track.id,at};a.src=url;a.load();a.play().catch(()=>setIsPlaying(false));return;}
         }
@@ -792,7 +793,7 @@ export function PlayerProvider({ children }) {
   // user can actually hear instead of a remote URL that would fail to load.
   const getOfflineQueue = useCallback(async () => {
     try {
-      const recs = await listRecords();
+      const recs = await listRecords(offlineAccountRef.current);
       if (!recs.length) return null;
       recs.sort((a, b) => (b._savedAt || 0) - (a._savedAt || 0));
       return recs.map((r) => ({
@@ -1117,6 +1118,20 @@ export function PlayerProvider({ children }) {
     [queue.length]
   );
 
+  useEffect(()=>{
+    const clearSession=()=>{
+      loadTokenRef.current++;cancelCrossfade();queueRef.current=[];currentIndexRef.current=-1;
+      for(const audio of els()){try{audio?.pause();audio?.removeAttribute("src");audio?.load();}catch{}}
+      for(const ref of blobUrlRefs){if(ref.current)URL.revokeObjectURL(ref.current);ref.current=null;}
+      for(const ref of sideLoadedIdRef)ref.current=null;
+      if(sleepTimerRef.current)clearTimeout(sleepTimerRef.current);
+      setQueue([]);setCurrentIndex(-1);setIsPlaying(false);setPosition(0);setDuration(0);setDismissed(true);setSleepTimerEndsAt(null);
+    };
+    window.addEventListener("account:cleared",clearSession);
+    window.addEventListener("offlinecache:account",clearSession);
+    return()=>{window.removeEventListener("account:cleared",clearSession);window.removeEventListener("offlinecache:account",clearSession);};
+  },[cancelCrossfade]);
+
   const clearQueue = useCallback(() => {
     setQueue([]);
     setCurrentIndex(-1);
@@ -1199,47 +1214,8 @@ export function PlayerProvider({ children }) {
     };
   }, [setGainImmediate]);
 
-  // When the connection comes back, switch the currently-playing track from
-  // the offline cache blob back to streaming — preserving the playback
-  // position so the listener doesn't hear a jump.
-  useEffect(() => {
-    const handleOnline = async () => {
-      if (crossfadingRef.current) return;
-      const side = activeIdxRef.current;
-      const a = els()[side];
-      const t = queueRef.current[currentIndexRef.current];
-      if (!a || !t || (!t.audio_url&&!t._private_audio)) return;
-      if (!blobUrlRefs[side].current) return; // not currently on a cache blob
-      const wasPlaying = isPlayingRef.current;
-      const pos = a.currentTime || 0;
-      let onlineUrl=t.audio_url;
-      if(t._private_audio){try{onlineUrl=(await base44.entities.Track.get(t.id)).audio_url;}catch{return;}}
-      URL.revokeObjectURL(blobUrlRefs[side].current);
-      blobUrlRefs[side].current = null;
-      const token = ++loadTokenRef.current;
-      a.src = onlineUrl;
-      a.load();
-      const onReady = () => {
-        a.removeEventListener("loadedmetadata", onReady);
-        if (token !== loadTokenRef.current) return;
-        if (isFinite(pos)) {
-          try { a.currentTime = pos; } catch {}
-          setPosition(pos);
-        }
-        if (wasPlaying) {
-          const ctx = audioCtxRef.current;
-          const doPlay = () =>
-            a.play().then(() => setIsPlaying(true)).catch(() => {});
-          if (ctx && ctx.state === "suspended")
-            ctx.resume().then(doPlay).catch(() => {});
-          else doPlay();
-        }
-      };
-      a.addEventListener("loadedmetadata", onReady);
-    };
-    window.addEventListener("online", handleOnline);
-    return () => window.removeEventListener("online", handleOnline);
-  }, []);
+  // Cached audio remains the active source when the connection changes.
+  // Replacing its blob URL on every online event interrupts saved playback.
 
   // Keep the screen awake while a track is actively playing so iOS doesn't
   // auto-lock and suspend the audio engine on the open page.
