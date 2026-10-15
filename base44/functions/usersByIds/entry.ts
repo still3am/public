@@ -35,7 +35,7 @@ export default async function handleRequest(req) {
     // Public profile fields only — never email, role, or block status. This is
     // what the profile page renders for a member other than yourself, since the
     // built-in User rules only let admins read other users.
-    const users = (rows || []).filter(Boolean).map((u) => ({
+    const users = (rows || []).filter(u=>u&&!u.is_blocked&&!u.disabled).map((u) => ({
       id: u.id,
       display_name: u.display_name || u.full_name || '',
       full_name: u.full_name || '',
@@ -57,6 +57,13 @@ export default async function handleRequest(req) {
       created_date: u.created_date || '',
     }));
 
+    const publicFields=["display_name","full_name","avatar_url","banner_url","bio","location","pronouns","website","instagram","twitter","soundcloud","status_message","featured_track_id","profile_background_mode","profile_background_colors","top_track_ids","is_artist"];
+    await Promise.allSettled(users.map(async profile=>{
+      const page=await base44.asServiceRole.entities.PublicProfile.filter({user_id:profile.id},'-updated_date',1);
+      const data={...Object.fromEntries(publicFields.filter(key=>profile[key]!==undefined).map(key=>[key,profile[key]])),user_id:profile.id,joined_at:profile.created_date||"",visible:true};
+      if(page[0])await base44.asServiceRole.entities.PublicProfile.update(page[0].id,data);
+      else await base44.asServiceRole.entities.PublicProfile.create(data);
+    }));
     return Response.json({ users });
   } catch (error) {
     return Response.json({ error: error?.message || 'Server error' }, { status: 500 });
