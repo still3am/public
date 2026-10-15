@@ -1,4 +1,4 @@
-.new-member-onboarding {padding:0;gap:0;overflow:hidden;display:grid;grid-template-rows:210px minmax(0,1fr) auto;width:calc(100% - 32px);max-width:560px;max-height:calc(100dvh - 48px);}
+[role=dialog].new-member-onboarding {padding:0;gap:0;overflow:hidden;display:grid;grid-template-rows:210px minmax(0,1fr) auto;width:calc(100% - 32px);max-width:560px;max-height:calc(100dvh - 48px);}
 .new-member-onboarding>button:last-child {display:none;}
 .onboarding-visual {position:relative;isolation:isolate;overflow:hidden;color:#fff;min-height:0;}
 .onboarding-visual-shade {position:absolute;inset:0;background:linear-gradient(180deg,#080c1720,#080c1766);}
@@ -32,5 +32,5 @@
 .onboarding-buttons>.onboarding-next {flex:1;background:hsl(var(--foreground));color:hsl(var(--background));border-color:hsl(var(--foreground));}
 .new-member-onboarding button:disabled {opacity:.45;}
 @keyframes onboardingStepIn {from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:translateY(0)}}
-@media(max-width:600px){.new-member-onboarding {width:calc(100% - 24px);grid-template-rows:minmax(150px,25dvh) minmax(0,1fr) auto;max-height:calc(100dvh - max(24px,env(safe-area-inset-top)) - max(16px,env(safe-area-inset-bottom)));border-radius:24px;}.onboarding-content {padding:24px 22px;}.onboarding-footer {padding-inline:22px;}.onboarding-wordmark {left:22px;}.onboarding-visual-copy {left:22px;right:22px;bottom:22px;}.onboarding-visual-copy p {font-size:23px;}.new-member-onboarding h2 {font-size:29px;}}
+@media(max-width:600px){[role=dialog].new-member-onboarding {width:calc(100% - 24px);grid-template-rows:minmax(150px,25dvh) minmax(0,1fr) auto;max-height:calc(100dvh - max(24px,env(safe-area-inset-top)) - max(16px,env(safe-area-inset-bottom)));border-radius:24px;}.onboarding-content {padding:24px 22px;}.onboarding-footer {padding-inline:22px;}.onboarding-wordmark {left:22px;}.onboarding-visual-copy {left:22px;right:22px;bottom:22px;}.onboarding-visual-copy p {font-size:23px;}.new-member-onboarding h2 {font-size:29px;}}
 @media(prefers-reduced-motion:reduce){.onboarding-content {animation:none;}}
