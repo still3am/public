@@ -9,6 +9,7 @@ import { useUpload } from "@/context/UploadContext";
 import { useCoverUrl } from "@/hooks/useCoverUrl";
 import EditTrackModal from "@/components/EditTrackModal";
 import PublicSubmitButton from "@/components/upload/PublicSubmitButton";
+import BulkPublicSubmitBar from "@/components/upload/BulkPublicSubmitBar";
 import EmptyState from "@/components/EmptyState";
 import { GENRES } from "@/lib/audio-utils";
 
@@ -88,8 +89,9 @@ export default function UnfinishedUploads() {
       <button className="text-sm underline" onClick={()=>setSelected(new Set())} disabled={saving}>Clear selection</button>
       {batchFailed&&<span className="text-xs text-muted-foreground">Some changes did not save. Remaining songs are still selected; retry when ready.</span>}
     </div>}
+    {selected.size>0&&!saving&&<BulkPublicSubmitBar tracks={(tracks||[]).filter(t=>selected.has(t.id)&&canEdit(t))} onSubmitted={ids=>{markSubmitted(ids);setSelected(prev=>new Set([...prev].filter(id=>!ids.includes(id))));}}/>}
     {tracks===null&&refreshing?<div className="py-16 grid place-items-center"><Loader2 className="animate-spin"/></div>:failed&&tracks===null?<button className="playlist-action" onClick={load}>Retry loading uploads</button>:!visible.length?<EmptyState icon={FileAudio} title={tracks?.length?"No matching uploads":"Nothing unfinished here"} description={tracks?.length?"Try another search or filter.":"Files that never reached PUBLIC must be selected again from your device."}/>:<>
-      <p className="text-xs text-muted-foreground mb-3">{visible.length} songs · Select drafts to change their genre together.</p>
+      <div className="flex flex-wrap items-center justify-between gap-2 mb-3"><p className="text-xs text-muted-foreground">{visible.length} songs · Select drafts to edit or submit together.</p><button className="text-xs underline min-h-11" disabled={saving} onClick={()=>setSelected(prev=>new Set([...prev,...visible.slice(0,limit).filter(t=>canEdit(t)&&draft(t)).map(t=>t.id)]))}>Select shown drafts</button></div>
       <div className="divide-y divide-border">{visible.slice(0,limit).map(t=>{
         const missing=publicSubmitBlockers(t),editable=canEdit(t),isDraft=draft(t);
         return <article key={t.id} className="flex flex-wrap sm:flex-nowrap items-center gap-3 py-4 min-w-0">
