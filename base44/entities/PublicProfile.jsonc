@@ -253,6 +253,14 @@
         }
       }
     },
+    "is_public_admin": {
+      "type": "boolean",
+      "default": false,
+      "description": "Public admin badge, derived only from the account role by trusted server code",
+      "rls": {
+        "write": false
+      }
+    },
     "is_artist": {
       "type": "boolean",
       "default": false,
