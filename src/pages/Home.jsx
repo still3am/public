@@ -243,7 +243,7 @@ export default function Home() {
   return (
     <PullToRefresh onRefresh={() => load(true)}>
       <div className="home-page home-redesigned">
-        <header className="home-welcome"><div><p className="eyebrow text-muted-foreground hidden">{greeting}</p><h1>Home</h1></div><Link to="/profile" aria-label="Your profile"><Avatar user={user} size={44} /></Link></header>
+        <header className="home-welcome"><div><h1>Home</h1></div><Link to="/profile" aria-label="Your profile"><Avatar user={user} size={44} /></Link></header>
         
         
         <section className="home-feature">
