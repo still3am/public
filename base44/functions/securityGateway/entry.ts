@@ -345,7 +345,21 @@ export default async function handleRequest(req) {
         if(entity==='Conversation') fail('Messaging is not enabled',403);
         if(entity==='Message') fail('Use the song-sharing feature',403);
         if(kind==='create') data[ownerKey]=user.id;
-        if(entity==='ProfileComment') {data.author_name=user.display_name||user.full_name||'';data.author_avatar_url=user.avatar_url||'';await relation(data.profile_id||old?.profile_id);await moderate(svc,String(data.message||''));}
+        if(entity==='ProfileComment') {
+          await relation(data.profile_id||old?.profile_id);
+          if(kind!=='delete'){
+            const message=String(data.message||'').trim();
+            if(!message||message.length>500)fail('Comment must contain 1–500 characters',422);
+            const requestId=typeof input.request_id==='string'?input.request_id:'';
+            if(requestId.length>100)fail('Invalid comment request',400);
+            if(kind==='create'&&requestId){
+              const existing=await handler.filter({author_id:user.id,profile_id:data.profile_id,request_id:requestId},'-created_date',1);
+              if(existing[0])return existing[0];
+            }
+            await moderate(svc,message);
+            data={profile_id:data.profile_id||old?.profile_id,author_id:user.id,author_name:user.display_name||user.full_name||'',author_avatar_url:user.avatar_url||'',message,...(requestId?{request_id:requestId}:{})};
+          }
+        }
         if(entity==='TrackAnnotation') {await requireTrack(data.track_id||old?.track_id);await moderate(svc,String(data.body||''));}
         if(entity==='Suggestion') {
           if(kind==='update'&&!isAdmin) fail('Only administrators can manage ideas');
