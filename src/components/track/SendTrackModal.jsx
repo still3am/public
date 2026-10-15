@@ -1,3 +1,4 @@
+import {reportActionError} from "@/lib/actionError";
 import {useSafety} from "@/context/SafetyContext";
 import {searchPeople} from "@/lib/globalSearch";
 import { useEffect, useState, useRef } from "react";
@@ -82,8 +83,8 @@ export default function SendTrackModal({ track, onClose }) {
         comment: note.trim(),
       });
       if(alive.current&&seed.current===started)setSent({ person: picked, note: note.trim() });
-    } catch {
-      // Keep the recipient and note ready for another attempt.
+    } catch(error) {
+      reportActionError(error,"Couldn’t send this song. Your message is still here.");
     } finally {
       sendingRef.current=false;if(alive.current)setSending(false);
     }
