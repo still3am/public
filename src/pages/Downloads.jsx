@@ -58,7 +58,7 @@ export default function Downloads() {
    <div className="flex items-center justify-between gap-4"><div><h1 className="text-4xl md:text-5xl font-bold tracking-tight">Offline</h1></div><div className="w-14 h-14 md:w-16 md:h-16 rounded-2xl bg-foreground/[0.05] border grid place-items-center hidden"><CloudDownload size={27} strokeWidth={1.5} /></div></div>
    <p className="text-sm text-muted-foreground mt-3 leading-relaxed">Your music, ready wherever you go.</p>
   </header>
-  <section className="rounded-3xl border bg-card p-4 md:p-6 mb-6" aria-label="Download storage">
+  <section className="rounded-3xl border bg-card p-4 md:p-6 mb-6 hidden" aria-label="Download storage">
    <div className="flex gap-4 items-center">
     <div className="grid grid-cols-2 w-20 h-20 md:w-24 md:h-24 gap-0.5 rounded-2xl overflow-hidden shrink-0 bg-muted">{Array.from({ length: 4 }, (_, i) => <div key={i} className="grid place-items-center overflow-hidden bg-foreground/[0.04]">{tracks[i] ? <DownloadCover record={tracks[i]} size={17} /> : <CloudOff size={17} className="text-muted-foreground/30" />}</div>)}</div>
     <div className="min-w-0"><p className="font-semibold text-lg">{tracks.length} {tracks.length === 1 ? "song" : "songs"} saved</p><p className="text-xs text-muted-foreground mt-1">{bytesToReadable(totalBytes)} on this device{seconds > 0 ? " · " + duration : ""}</p><p className="text-xs text-muted-foreground flex items-center gap-1.5 mt-2"><HardDrive size={13} />{online ? "Available without a connection" : "Listening offline"}</p></div>
