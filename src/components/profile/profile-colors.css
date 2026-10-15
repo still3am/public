@@ -25,11 +25,14 @@
 .profile-color-hex input[aria-invalid=true] {color:#e96868;}
 .profile-color-stop>button {width:44px;height:44px;display:grid;place-items:center;flex-shrink:0;border-radius:50%;}
 .profile-color-add {display:flex;align-items:center;gap:7px;min-height:44px;margin-top:6px;font-size:12px;font-weight:600;}
-.profile-color-presets {display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;}
-.profile-color-presets>button {min-width:0;border:1px solid hsl(var(--border));border-radius:12px;padding:5px;text-align:left;}
+.profile-color-presets {display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;}
+.profile-color-presets>button {min-width:0;border:1px solid hsl(var(--border));border-radius:15px;padding:6px;text-align:left;transition:border-color .2s,box-shadow .2s;}
+.profile-color-presets>button:hover {border-color:hsl(var(--foreground)/.5);}
+.profile-color-presets>button[aria-pressed=true] {background:hsl(var(--muted));}
 .profile-color-presets>button[aria-pressed=true] {outline:2px solid hsl(var(--foreground));outline-offset:1px;}
-.profile-color-preset-art {display:block;height:48px;border-radius:7px;}
-.profile-color-presets>button>span:last-child {display:block;font-size:11px;font-weight:550;padding:7px 4px 3px;}
+.profile-color-preset-art {display:block;height:76px;border-radius:10px;position:relative;overflow:hidden;box-shadow:inset 0 0 0 1px #ffffff16;}
+.profile-color-preset-check {position:absolute;right:7px;top:7px;width:23px;height:23px;display:grid;place-items:center;border-radius:50%;background:#fff;color:#111;box-shadow:0 2px 10px #0003;}
+.profile-color-presets>button>span:last-child {display:block;font-size:12px;font-weight:600;padding:9px 5px 5px;}
 .profile-color-cover-swatches {display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:8px;}
 .profile-color-cover-swatches button {height:40px;border-radius:10px;border:1px solid #8885;display:grid;place-items:center;}
 .profile-color-cover-swatches button[aria-pressed=true] {outline:2px solid hsl(var(--foreground));outline-offset:2px;}
@@ -46,6 +49,8 @@
  .profile-color-editor .profile-color-body {padding:0 18px 18px;}
  .profile-color-editor .profile-color-preview {min-height:100px;padding:16px;}
  .profile-color-footer {padding-inline:18px;}
+ .profile-color-presets {grid-template-columns:repeat(2,minmax(0,1fr));}
+ .profile-color-preset-art {height:88px;}
  .profile-color-cover-swatches {grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;}
  .profile-color-cover-swatches button {height:44px;}
 }
