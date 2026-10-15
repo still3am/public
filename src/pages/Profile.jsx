@@ -1,4 +1,4 @@
-import {shareLink} from '@/lib/shareLink';
+import { shareLink } from '@/lib/shareLink';
 import LoadError from '@/components/LoadError';
 import { useRef } from 'react';
 import { readAllPages } from '@/lib/readPages';
@@ -40,7 +40,7 @@ import TopTracks from "@/components/profile/TopTracks";
 import ProfileComments from "@/components/profile/ProfileComments";
 import FollowListModal from "@/components/profile/FollowListModal";
 import StatusMessage from "@/components/profile/StatusMessage";
-import { useCoverPalette,profileGradient } from "@/hooks/useCoverPalette";
+import { useCoverPalette, profileGradient } from "@/hooks/useCoverPalette";
 import ProfileColorPicker from "@/components/profile/ProfileColorPicker";
 import ProfileBadge from "@/components/profile/AdminProfileBadge";
 import MotionGradient from "@/components/MotionGradient";
@@ -76,9 +76,9 @@ function formFromProfile(prof) {
   };
 }
 
-export default function Profile({ownProfileTab=false}) {
-  const { id:routeId } = useParams();
-  const id=ownProfileTab?undefined:routeId;
+export default function Profile({ ownProfileTab = false }) {
+  const { id: routeId } = useParams();
+  const id = ownProfileTab ? undefined : routeId;
   const { pathname } = useLocation();
   const { user: me, checkUserAuth } = useAuth();
   const isOwn = !id || id === me?.id;
@@ -91,45 +91,45 @@ export default function Profile({ownProfileTab=false}) {
   const [tracks, setTracks] = useState([]);
   const [topTracks, setTopTracks] = useState([]);
   const [following, setFollowing] = useState(false);
-  const [followReady,setFollowReady]=useState(false);
-  const identity=useRef("");identity.current=[me?.id,targetId].join(":");
+  const [followReady, setFollowReady] = useState(false);
+  const identity = useRef("");identity.current = [me?.id, targetId].join(":");
   const [stats, setStats] = useState({ followers: null, following: null, plays: 0, likes: 0 });
   const [editMode, setEditMode] = useState(false);
   const [copied, setCopied] = useState(false);
   const [showQR, setShowQR] = useState(false);
   const [showDelete, setShowDelete] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
-  const [showColors,setShowColors]=useState(false);
-  const [backgroundDraft,setBackgroundDraft]=useState(null);
+  const [showColors, setShowColors] = useState(false);
+  const [backgroundDraft, setBackgroundDraft] = useState(null);
   const [deleteConfirm, setDeleteConfirm] = useState("");
   const [deleting, setDeleting] = useState(false);
   const [saving, setSaving] = useState(false);
   const [uploadingAvatar, setUploadingAvatar] = useState(false);
-  const avatarVersion=useRef(0),avatarBusy=useRef(false);
-  useEffect(()=>{avatarVersion.current++;avatarBusy.current=false;setUploadingAvatar(false);return()=>{avatarVersion.current++;};},[targetId]);
+  const avatarVersion = useRef(0),avatarBusy = useRef(false);
+  useEffect(() => {avatarVersion.current++;avatarBusy.current = false;setUploadingAvatar(false);return () => {avatarVersion.current++;};}, [targetId]);
   const [followList, setFollowList] = useState(null);
 
   const [form, setForm] = useState(() => formFromProfile({}));
 
   const [featuredCoverUrl, setFeaturedCoverUrl] = useState("");
-  const chosenProfileSong=useRef(null);
-  const profileSongSaving=useRef(false);
+  const chosenProfileSong = useRef(null);
+  const profileSongSaving = useRef(false);
   useEffect(() => {
     const tid = profile?.featured_track_id;
     if (!tid) {setFeaturedCoverUrl("");return;}
-    if(chosenProfileSong.current?.id===tid){setFeaturedCoverUrl(chosenProfileSong.current.cover_art_url||"");return;}
+    if (chosenProfileSong.current?.id === tid) {setFeaturedCoverUrl(chosenProfileSong.current.cover_art_url || "");return;}
     setFeaturedCoverUrl("");
     let cancelled = false;
-    base44.entities.Track.filter({id:tid},"-created_date",1).then(page=>{
-      const rows=Array.isArray(page)?page:page?.items||[];
-      if(!cancelled)setFeaturedCoverUrl(rows[0]?.cover_art_url||"");
-    }).catch(()=>{if(!cancelled)setFeaturedCoverUrl("");});
+    base44.entities.Track.filter({ id: tid }, "-created_date", 1).then((page) => {
+      const rows = Array.isArray(page) ? page : page?.items || [];
+      if (!cancelled) setFeaturedCoverUrl(rows[0]?.cover_art_url || "");
+    }).catch(() => {if (!cancelled) setFeaturedCoverUrl("");});
     return () => {cancelled = true;};
   }, [profile?.featured_track_id]);
 
   const coverUrl = useCoverUrl(featuredCoverUrl);
   const bannerUrl = useCoverUrl(profile?.banner_url);
-  const {colors:coverColors,loading:colorsLoading}=useCoverPalette(coverUrl);
+  const { colors: coverColors, loading: colorsLoading } = useCoverPalette(coverUrl);
 
   const loadVersion = useRef(0);
   const [loadError, setLoadError] = useState(false);
@@ -175,7 +175,7 @@ export default function Profile({ownProfileTab=false}) {
         plays: totalsRow ? totalsRow.sum_play_count || 0 : t ? t.reduce((sum, x) => sum + (x.play_count || 0), 0) : previous.plays,
         likes: totalsRow ? totalsRow.sum_like_count || 0 : t ? t.reduce((sum, x) => sum + (x.like_count || 0), 0) : previous.likes
       }));
-      if(relToUser){setFollowing((Array.isArray(relToUser)?relToUser:relToUser.items||[]).length>0);setFollowReady(true);}
+      if (relToUser) {setFollowing((Array.isArray(relToUser) ? relToUser : relToUser.items || []).length > 0);setFollowReady(true);}
       if (responses.some((r, i) => i !== 1 && r.status === "rejected")) setSectionError("Some profile information could not refresh. Saved music and follows have not been removed.");
     } catch {request === loadVersion.current && setLoadError(true);
     } finally {
@@ -208,12 +208,12 @@ export default function Profile({ownProfileTab=false}) {
 
   async function toggleFollow() {
     if (!profile || !me?.id || !followReady || followBusyRef.current) return;
-    followBusyRef.current = true;setFollowingBusy(true);const started=identity.current;
+    followBusyRef.current = true;setFollowingBusy(true);const started = identity.current;
     const wasFollowing = following;
     setFollowing(!wasFollowing);
     setStats((s) => ({
       ...s,
-      followers: s.followers===null?null:Math.max(0,s.followers+(wasFollowing?-1:1))
+      followers: s.followers === null ? null : Math.max(0, s.followers + (wasFollowing ? -1 : 1))
     }));
     try {
       if (wasFollowing) {
@@ -234,68 +234,68 @@ export default function Profile({ownProfileTab=false}) {
           });
         } catch {}
       }
-      if(identity.current===started)window.dispatchEvent(new CustomEvent('follows:changed',{detail:{uid:me.id,followingId:profile.id,following:!wasFollowing}}));
+      if (identity.current === started) window.dispatchEvent(new CustomEvent('follows:changed', { detail: { uid: me.id, followingId: profile.id, following: !wasFollowing } }));
     } catch {
-      if(identity.current!==started)return;
+      if (identity.current !== started) return;
       setSectionError("Your follow change could not save. Please retry.");
       setFollowing(wasFollowing);
       setStats((s) => ({
         ...s,
-        followers: s.followers===null?null:Math.max(0,s.followers+(wasFollowing?1:-1))
+        followers: s.followers === null ? null : Math.max(0, s.followers + (wasFollowing ? 1 : -1))
       }));
     } finally {followBusyRef.current = false;setFollowingBusy(false);}
   }
 
   async function uploadAvatar(file) {
-    if(avatarBusy.current||!isOwn||!file?.type.startsWith("image/")||file.size>10*1024*1024)return;
-    avatarBusy.current=true;const version=++avatarVersion.current;
+    if (avatarBusy.current || !isOwn || !file?.type.startsWith("image/") || file.size > 10 * 1024 * 1024) return;
+    avatarBusy.current = true;const version = ++avatarVersion.current;
     setUploadingAvatar(true);
     try {
       const { file_url } = await base44.integrations.Core.UploadFile({ file });
-      if(file_url&&version===avatarVersion.current)setForm((f) => ({ ...f, avatar_url: file_url }));
+      if (file_url && version === avatarVersion.current) setForm((f) => ({ ...f, avatar_url: file_url }));
     } catch {
+
       // Keep the current profile image if upload does not complete.
-    } finally {
-      if(version===avatarVersion.current){avatarBusy.current=false;setUploadingAvatar(false);}
+    } finally {if (version === avatarVersion.current) {avatarBusy.current = false;setUploadingAvatar(false);}
     }
   }
 
-  async function saveProfileSong(id,chosen){
-    if(!isOwn||profileSongSaving.current)return false;
-    profileSongSaving.current=true;
-    try{
-      const update={featured_track_id:id};
+  async function saveProfileSong(id, chosen) {
+    if (!isOwn || profileSongSaving.current) return false;
+    profileSongSaving.current = true;
+    try {
+      const update = { featured_track_id: id };
       await base44.auth.updateMe(update);
-      const confirmed=await base44.auth.me();
-      if((confirmed.featured_track_id||"")!==id)return false;
-      chosenProfileSong.current=chosen?.id===id?chosen:null;
-      if(chosen)setFeaturedCoverUrl(chosen.cover_art_url||"");
-      setProfile(previous=>({...previous,...update}));
-      setForm(previous=>({...previous,featured_track_id:id}));
+      const confirmed = await base44.auth.me();
+      if ((confirmed.featured_track_id || "") !== id) return false;
+      chosenProfileSong.current = chosen?.id === id ? chosen : null;
+      if (chosen) setFeaturedCoverUrl(chosen.cover_art_url || "");
+      setProfile((previous) => ({ ...previous, ...update }));
+      setForm((previous) => ({ ...previous, featured_track_id: id }));
       setBackgroundDraft(null);
       window.dispatchEvent(new Event("profiles:changed"));
-      await checkUserAuth({silent:true});
+      await checkUserAuth({ silent: true });
       return true;
-    }catch{return false;}finally{profileSongSaving.current=false;}
+    } catch {return false;} finally {profileSongSaving.current = false;}
   }
 
-  async function saveProfile(){
-    if(saving||profileSongSaving.current)return;
-    const baseline=formFromProfile(profile);
-    const changes=Object.fromEntries(Object.entries(form).filter(([key,value])=>JSON.stringify(value)!==JSON.stringify(baseline[key])));
-    if(!Object.keys(changes).length){setEditMode(false);return;}
+  async function saveProfile() {
+    if (saving || profileSongSaving.current) return;
+    const baseline = formFromProfile(profile);
+    const changes = Object.fromEntries(Object.entries(form).filter(([key, value]) => JSON.stringify(value) !== JSON.stringify(baseline[key])));
+    if (!Object.keys(changes).length) {setEditMode(false);return;}
     setSaving(true);
-    try{
+    try {
       await base44.auth.updateMe(changes);
-      const confirmed=await base44.auth.me();
+      const confirmed = await base44.auth.me();
       setProfile(confirmed);setForm(formFromProfile(confirmed));
-      await checkUserAuth({silent:true});
+      await checkUserAuth({ silent: true });
       setEditMode(false);
-    }catch{window.dispatchEvent(new Event("public:error"));}finally{setSaving(false);}
+    } catch {window.dispatchEvent(new Event("public:error"));} finally {setSaving(false);}
   }
 
   function cancelEdit() {
-    avatarVersion.current++;avatarBusy.current=false;setUploadingAvatar(false);
+    avatarVersion.current++;avatarBusy.current = false;setUploadingAvatar(false);
     // Reopening the editor must start from what is actually saved.
     if (profile) setForm(formFromProfile(profile));
     setEditMode(false);
@@ -303,13 +303,13 @@ export default function Profile({ownProfileTab=false}) {
 
   async function shareProfile() {
     try {
-      const result=await shareLink({title:displayName,url:window.location.origin+'/profile/'+encodeURIComponent(targetId)});
-      if(result==='copied'){setCopied(true);setTimeout(()=>setCopied(false),1500);}
+      const result = await shareLink({ title: displayName, url: window.location.origin + '/profile/' + encodeURIComponent(targetId) });
+      if (result === 'copied') {setCopied(true);setTimeout(() => setCopied(false), 1500);}
     } catch {/* Keep the profile available if the system share controls fail. */}
   }
 
   async function confirmDelete() {
-    if (deleting||deleteConfirm.trim().toUpperCase() !== "DELETE") return;
+    if (deleting || deleteConfirm.trim().toUpperCase() !== "DELETE") return;
     setDeleting(true);
     try {
       const result = await base44.functions.invoke("deleteMyAccount", {});
@@ -331,49 +331,49 @@ export default function Profile({ownProfileTab=false}) {
 
   if (!profile) return <EmptyState title="User not found" />;
 
-  const isAdminProfile=isOwn?me?.role==="admin":profile.is_public_admin===true;
+  const isAdminProfile = isOwn ? me?.role === "admin" : profile.is_public_admin === true;
   const displayName = profile.display_name || profile.full_name || "Unnamed";
   const avatarUrl = editMode ? form.avatar_url : profile.avatar_url;
-  const backgroundValue={mode:profile.profile_background_mode||"auto",motion:profile.profile_background_motion==="still"?"still":"flow",speed:Math.max(.35,Math.min(1.6,Number(profile.profile_background_speed)||1)),colors:(profile.profile_background_colors||[]).filter(c=>/^#[0-9a-f]{6}$/i.test(c)).slice(0,3)};
-  const currentBackground=backgroundDraft||backgroundValue;
-  const backgroundColors=currentBackground.mode==="off"?[]:currentBackground.mode==="custom"?currentBackground.colors:coverColors.slice(0,3);
-  const closeColors=()=>{setShowColors(false);setBackgroundDraft(null);};
-  const saveColors=async value=>{
-    if(!isOwn)return;
-    const update={profile_background_mode:value.mode,profile_background_colors:value.colors,profile_background_motion:value.motion,profile_background_speed:value.speed};
+  const backgroundValue = { mode: profile.profile_background_mode || "auto", motion: profile.profile_background_motion === "still" ? "still" : "flow", speed: Math.max(.35, Math.min(1.6, Number(profile.profile_background_speed) || 1)), colors: (profile.profile_background_colors || []).filter((c) => /^#[0-9a-f]{6}$/i.test(c)).slice(0, 3) };
+  const currentBackground = backgroundDraft || backgroundValue;
+  const backgroundColors = currentBackground.mode === "off" ? [] : currentBackground.mode === "custom" ? currentBackground.colors : coverColors.slice(0, 3);
+  const closeColors = () => {setShowColors(false);setBackgroundDraft(null);};
+  const saveColors = async (value) => {
+    if (!isOwn) return;
+    const update = { profile_background_mode: value.mode, profile_background_colors: value.colors, profile_background_motion: value.motion, profile_background_speed: value.speed };
     await base44.auth.updateMe(update);
-    const confirmed=await base44.auth.me();
-    const actualColors=confirmed.profile_background_colors||[];
-    if(confirmed.profile_background_mode!==value.mode||actualColors.join(",").toLowerCase()!==value.colors.join(",").toLowerCase()||confirmed.profile_background_motion!==value.motion||Number(confirmed.profile_background_speed)!==value.speed)throw new Error("Colors have not saved yet");
-    setProfile(previous=>({...previous,...update,profile_background_colors:actualColors}));
+    const confirmed = await base44.auth.me();
+    const actualColors = confirmed.profile_background_colors || [];
+    if (confirmed.profile_background_mode !== value.mode || actualColors.join(",").toLowerCase() !== value.colors.join(",").toLowerCase() || confirmed.profile_background_motion !== value.motion || Number(confirmed.profile_background_speed) !== value.speed) throw new Error("Colors have not saved yet");
+    setProfile((previous) => ({ ...previous, ...update, profile_background_colors: actualColors }));
     window.dispatchEvent(new Event("profiles:changed"));
-    await checkUserAuth({silent:true});
+    await checkUserAuth({ silent: true });
   };
 
 
 
 
   return (
-    <PullToRefresh onRefresh={load} disabled={editMode||saving||uploadingAvatar||showSettings||showDelete||showQR||showColors||!!followList}>
+    <PullToRefresh onRefresh={load} disabled={editMode || saving || uploadingAvatar || showSettings || showDelete || showQR || showColors || !!followList}>
 
-    {backgroundColors.length>0&&<MotionGradient colors={backgroundColors} motion={currentBackground.motion} speed={currentBackground.speed} active={isCurrentPage&&!showColors&&!showSettings&&!showQR&&!showDelete&&!followList} pauseWhenCovered className="profile-artwork-background fixed inset-0 pointer-events-none z-0" style={{opacity:.72}}/>}
-    {!backgroundColors.length&&currentBackground.mode==="auto"&&coverUrl&&<div aria-hidden="true" className="profile-artwork-background fixed inset-0 pointer-events-none z-0" style={{backgroundImage:`url(${JSON.stringify(coverUrl)})`,backgroundSize:"cover",backgroundPosition:"center",filter:"blur(45px) saturate(1.35)",transform:"scale(1.12)",opacity:.6}}/>}
+    {backgroundColors.length > 0 && <MotionGradient colors={backgroundColors} motion={currentBackground.motion} speed={currentBackground.speed} active={isCurrentPage && !showColors && !showSettings && !showQR && !showDelete && !followList} pauseWhenCovered className="profile-artwork-background fixed inset-0 pointer-events-none z-0" style={{ opacity: .72 }} />}
+    {!backgroundColors.length && currentBackground.mode === "auto" && coverUrl && <div aria-hidden="true" className="profile-artwork-background fixed inset-0 pointer-events-none z-0" style={{ backgroundImage: `url(${JSON.stringify(coverUrl)})`, backgroundSize: "cover", backgroundPosition: "center", filter: "blur(45px) saturate(1.35)", transform: "scale(1.12)", opacity: .6 }} />}
     <div className={`profile-page profile-redesigned max-w-6xl mx-auto relative z-10 ${editMode ? "profile-is-editing" : ""}`}>
-      {sectionError&&<button disabled={loading||editMode||saving||uploadingAvatar} onClick={load} className="playlist-action text-xs mb-4">Refresh profile</button>}
+      {sectionError && <button disabled={loading || editMode || saving || uploadingAvatar} onClick={load} className="playlist-action text-xs mb-4">Refresh profile</button>}
       <div className="profile-overview flex flex-col md:flex-row gap-4 md:gap-6 mb-8">
       <div className="profile-identity relative rounded-2xl overflow-hidden ring-1 ring-inset ring-foreground/10 bg-card flex-1 min-w-0">
-        <div className="profile-cover-stage" aria-hidden="true" style={backgroundColors.length ? {backgroundImage:profileGradient(backgroundColors)} : undefined}>
-          {(bannerUrl || (currentBackground.mode==="auto" && coverUrl)) && <img key={bannerUrl || coverUrl} src={bannerUrl || coverUrl} alt="" onError={event=>{event.currentTarget.style.visibility="hidden";}} />}
+        <div className="profile-cover-stage" aria-hidden="true" style={backgroundColors.length ? { backgroundImage: profileGradient(backgroundColors) } : undefined}>
+          {(bannerUrl || currentBackground.mode === "auto" && coverUrl) && <img key={bannerUrl || coverUrl} src={bannerUrl || coverUrl} alt="" onError={(event) => {event.currentTarget.style.visibility = "hidden";}} />}
           <div className="profile-cover-fade" />
         </div>
-        {!editMode && isAdminProfile && <ProfileBadge variant="admin"/>}
-        {!editMode && !isAdminProfile && profile.is_artist && <ProfileBadge variant="artist"/>}
+        {!editMode && isAdminProfile && <ProfileBadge variant="admin" />}
+        {!editMode && !isAdminProfile && profile.is_artist && <ProfileBadge variant="artist" />}
         
         {/* Identity, stats, actions */}
         <div className="profile-details relative z-10 px-5 md:px-10 pb-5 md:pb-8 pt-5 md:pt-8">
           <div className="profile-identity-row flex flex-col items-center md:flex-row md:items-center md:justify-center gap-4 md:gap-8">
             <div className="relative shrink-0">
-              <div className="rounded-full bg-background p-1 inline-block ring-1 ring-foreground/10 shadow-sm">
+              <div className="rounded-full bg-background p-1 inline-block ring-1 ring-foreground/10 shadow-sm hidden">
                 <Avatar
                       user={{ ...profile, avatar_url: avatarUrl }}
                       size={128}
@@ -542,7 +542,7 @@ export default function Profile({ownProfileTab=false}) {
                     <Pencil size={16} /><span>Edit profile</span>
                   </button> :
                     <button
-                      disabled={followingBusy||!followReady} onClick={toggleFollow}
+                      disabled={followingBusy || !followReady} onClick={toggleFollow}
                       title={following ? "Following (click to unfollow)" : "Follow"}
                       aria-label={following ? "Unfollow" : "Follow"}
                       className={`profile-primary-action playlist-action transition ${
@@ -577,7 +577,7 @@ export default function Profile({ownProfileTab=false}) {
                     <Settings size={16} />
                   </button>
                     }
-                  {isOwn&&!editMode&&<button onClick={()=>setShowColors(true)} aria-label="Customize profile colors" title="Profile colors" className="w-10 h-10 rounded-full border border-border grid place-items-center"><Palette size={16}/></button>}
+                  {isOwn && !editMode && <button onClick={() => setShowColors(true)} aria-label="Customize profile colors" title="Profile colors" className="w-10 h-10 rounded-full border border-border grid place-items-center"><Palette size={16} /></button>}
                   {isOwn && !editMode && profile.is_artist &&
                     <Link
                       to="/artist-dashboard"
@@ -598,8 +598,8 @@ export default function Profile({ownProfileTab=false}) {
             trackId={editMode ? form.featured_track_id : profile?.featured_track_id}
             editMode={editMode}
             userTracks={tracks}
-            onChange={saveProfileSong}
-            />
+            onChange={saveProfileSong} />
+          
       </div>
 
       <div className="profile-content"><section className="profile-music">
@@ -624,9 +624,9 @@ export default function Profile({ownProfileTab=false}) {
             }
 
       <ProfilePlaylists userId={targetId} active={isCurrentPage} />
-      </section><aside className="profile-conversation"><ProfileComments profileId={targetId} isOwn={isOwn} active={isCurrentPage}/><SafetyControls type="user" id={targetId} userId={targetId} label="profile" /></aside></div>
+      </section><aside className="profile-conversation"><ProfileComments profileId={targetId} isOwn={isOwn} active={isCurrentPage} /><SafetyControls type="user" id={targetId} userId={targetId} label="profile" /></aside></div>
 
-      {showColors&&isOwn&&<ProfileColorPicker coverUrl={coverUrl} colors={coverColors} loading={colorsLoading} value={backgroundValue} onPreview={setBackgroundDraft} onSave={saveColors} onClose={closeColors}/>}
+      {showColors && isOwn && <ProfileColorPicker coverUrl={coverUrl} colors={coverColors} loading={colorsLoading} value={backgroundValue} onPreview={setBackgroundDraft} onSave={saveColors} onClose={closeColors} />}
 
       {showSettings && isOwn &&
         <SettingsSheet
