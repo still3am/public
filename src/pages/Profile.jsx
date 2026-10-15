@@ -355,7 +355,8 @@ export default function Profile({ownProfileTab=false}) {
   return (
     <PullToRefresh onRefresh={load} disabled={editMode||saving||uploadingAvatar||showSettings||showDelete||showQR||showColors||!!followList}>
 
-    {backgroundColors.length>0&&<MotionGradient colors={backgroundColors} motion={currentBackground.motion} speed={currentBackground.speed} active={isCurrentPage&&!showColors&&!showSettings&&!showQR&&!showDelete&&!followList} className="profile-artwork-background fixed inset-0 pointer-events-none z-0" style={{opacity:.72}}/>}
+    {backgroundColors.length>0&&<MotionGradient colors={backgroundColors} motion={currentBackground.motion} speed={currentBackground.speed} active={isCurrentPage&&!showColors&&!showSettings&&!showQR&&!showDelete&&!followList} pauseWhenCovered className="profile-artwork-background fixed inset-0 pointer-events-none z-0" style={{opacity:.72}}/>}
+    {!backgroundColors.length&&currentBackground.mode==="auto"&&coverUrl&&<div aria-hidden="true" className="profile-artwork-background fixed inset-0 pointer-events-none z-0" style={{backgroundImage:`url(${JSON.stringify(coverUrl)})`,backgroundSize:"cover",backgroundPosition:"center",filter:"blur(45px) saturate(1.35)",transform:"scale(1.12)",opacity:.6}}/>}
     <div className={`profile-page profile-redesigned max-w-6xl mx-auto relative z-10 ${editMode ? "profile-is-editing" : ""}`}>
       {sectionError&&<button disabled={loading||editMode||saving||uploadingAvatar} onClick={load} className="playlist-action text-xs mb-4">Refresh profile</button>}
       <div className="profile-overview flex flex-col md:flex-row gap-4 md:gap-6 mb-8">
