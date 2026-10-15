@@ -33,7 +33,7 @@ export default function PlaylistDetail(){
   }catch{if(v===version.current)setError(true);}finally{if(v===version.current)setLoading(false);}
  },[id]);
  useEffect(()=>{setSelected(new Set());setQuery('');setSort('custom');setSaved(false);setShowMore(false);load();return()=>{version.current++;};},[load]);
- useEffect(()=>{let alive=true;const request=++savedRead.current;if(user?.id)base44.entities.SavedPlaylist.filter({user_id:user.id,playlist_id:id},'-created_date',1).then(rows=>{if(alive&&request===savedRead.current)setSaved(!!rows.length);}).catch(()=>{});return()=>{alive=false;};},[id,user?.id]);
+ useEffect(()=>{let alive=true;const request=++savedRead.current;if(user?.id)base44.entities.SavedPlaylist.filter({user_id:user.id,playlist_id:id},'-created_date',1).then(rows=>{if(alive&&request===savedRead.current)setSaved((Array.isArray(rows)?rows:rows?.items||[]).length>0);}).catch(()=>{});return()=>{alive=false;};},[id,user?.id]);
  useEffect(()=>()=>{if(preview)URL.revokeObjectURL(preview);},[preview]);
  const isOwn=!!user&&playlist?.creator_id===user.id;
  const cover=useCoverUrl(preview||playlist?.cover_art_url||tracks.find(t=>t.cover_art_url)?.cover_art_url||'');
@@ -78,7 +78,7 @@ export default function PlaylistDetail(){
  }
  async function share(){
   try{const result=await shareLink({title:playlist.name,url:window.location.origin+'/playlist/'+encodeURIComponent(id)});if(result==='copied')toast({title:'Playlist link copied'});}
-  catch{/* Keep the playlist and playback available. */}
+  catch{toast({title:'Couldn’t share this playlist. Please try again.',variant:'destructive'});}
  }
 
  async function duplicate(){
@@ -88,7 +88,7 @@ export default function PlaylistDetail(){
  async function toggleSaved(){
   if(!user){nav('/login?returnTo='+encodeURIComponent(window.location.pathname));return;}
   savedRead.current++;
-  await write(async()=>{if(saved)await base44.entities.SavedPlaylist.deleteMany({user_id:user.id,playlist_id:id});else{const existing=await base44.entities.SavedPlaylist.filter({user_id:user.id,playlist_id:id},'-created_date',1);if(!existing.length)await base44.entities.SavedPlaylist.create({user_id:user.id,playlist_id:id});}setSaved(!saved);toast({title:saved?'Removed from your library':'Added to your library'});});
+  await write(async()=>{const result=await base44.entities.SavedPlaylist.filter({user_id:user.id,playlist_id:id},{sort:'-created_date',limit:1});if(!Array.isArray(result)&&!Array.isArray(result?.items))throw Error('Could not check saved playlists. Please retry.');const wasSaved=(Array.isArray(result)?result:result.items).length>0;if(wasSaved)await base44.entities.SavedPlaylist.deleteMany({user_id:user.id,playlist_id:id});else await base44.entities.SavedPlaylist.create({user_id:user.id,playlist_id:id});setSaved(!wasSaved);toast({title:wasSaved?'Removed from your library':'Added to your library'});});
  }
  const playAll=shuffle=>{if(!tracks.length)return;p.setShuffle(false);p.playTrackAt(shuffle?shufflePlaylist(tracks):tracks,0);};
  if(error&&!playlist)return <LoadError onRetry={load}/>;
