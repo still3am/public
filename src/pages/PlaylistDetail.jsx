@@ -92,7 +92,7 @@ export default function PlaylistDetail(){
  if(error&&!playlist)return <LoadError onRetry={load}/>;
  if(loading&&!playlist)return <div className="py-16 grid place-items-center"><Loader2 className="animate-spin"/></div>;
  if(!playlist)return <EmptyState title="Playlist unavailable"/>;
- return <div className="playlist-page max-w-6xl mx-auto pb-8">
+ return <div className="playlist-page playlist-refined max-w-6xl mx-auto pb-8">
   <button onClick={()=>nav('/library')} className="inline-flex items-center gap-1 text-sm text-muted-foreground mb-6"><ChevronLeft size={16}/>Library</button>
   {error&&<button disabled={loading||busy||editing} onClick={load} className="playlist-action mb-4">Refresh playlist</button>}
   <section className="playlist-hero">
@@ -117,6 +117,7 @@ export default function PlaylistDetail(){
     {!playlist.is_public&&<p className="text-xs text-muted-foreground mt-3">Sharing the link does not give other accounts access to a private playlist.</p>}
    </div>
   </section>
+  <div className="collection-results-heading playlist-section-title"><h2>Songs</h2><span>{tracks.length} in this playlist</span></div>
   <div className="playlist-toolbar">
    <div className="relative flex-1 max-w-md"><Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground"/><input aria-label="Search this playlist" value={query} onChange={e=>setQuery(e.target.value)} onKeyDown={e=>{if(e.key==='Escape')setQuery('');}} placeholder="Search in this playlist" className="w-full bg-background border rounded-xl pl-10 pr-12 py-2.5 text-sm"/>{query&&<button type="button" aria-label="Clear playlist search" onClick={()=>setQuery('')} className="absolute right-1 top-1/2 -translate-y-1/2 w-10 h-10 grid place-items-center rounded-lg text-muted-foreground hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring"><X size={15}/></button>}</div>
    <select aria-label="Sort playlist" value={sort} onChange={e=>setSort(e.target.value)} className="bg-background border rounded-xl px-3 py-2.5 text-sm"><option value="custom">Playlist order</option><option value="title">Title</option><option value="artist">Artist</option><option value="duration">Longest first</option><option value="shortest">Shortest first</option></select>
