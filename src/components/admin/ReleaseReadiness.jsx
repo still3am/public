@@ -1,14 +1,15 @@
-import {useEffect,useState} from 'react';
-import {base44} from '@/api/base44Client';
+import {useEffect,useState,useRef} from 'react';
+import {readAppSetting,saveAppSetting} from '@/lib/appSettings';
 import {Button} from '@/components/ui/button';
 import {useToast} from '@/components/ui/use-toast';
 const flags=[['legacy_storage_reviewed','Older public uploads and hosting-file deletion/retention reviewed'],['privacy_reviewed','Privacy policy and operator details reviewed'],['rights_reviewed','Music, artwork, lyrics and download rights verified'],['ios_tested','TestFlight playback, offline, camera, sharing and deletion tested'],['apple_login_verified','Every advertised sign-in provider and Apple account revocation verified']];
 export default function ReleaseReadiness() {
  const [row,setRow]=useState(null),[error,setError]=useState(''),[busy,setBusy]=useState(false);
- const {toast}=useToast();
- useEffect(()=>{base44.entities.AppSetting.list('-created_date',1).then(rows=>setRow(rows[0]||{})).catch(()=>setError('Could not load release settings'));},[]);
- const save=async()=>{setBusy(true);try{const data={operator_name:row.operator_name||'',support_email:row.support_email||'',login_providers:row.login_providers||[],...Object.fromEntries(flags.map(([k])=>[k,!!row[k]]))};const result=row.id?await base44.entities.AppSetting.update(row.id,data):await base44.entities.AppSetting.create(data);setRow(result);toast({title:'Release checklist saved'});}catch{setError('Could not save settings');}finally{setBusy(false);}};
- if(!row)return <p>{error||'Loading release checklist…'}</p>;
+ const {toast}=useToast();const lock=useRef(false);
+ const load=async()=>{setError('');try{setRow(await readAppSetting(true)||{});}catch{setError('Could not load release settings');}};
+ useEffect(()=>{load();},[]);
+ const save=async()=>{if(lock.current||!row)return;lock.current=true;setBusy(true);setError('');try{const data={operator_name:row.operator_name||'',support_email:row.support_email||'',login_providers:row.login_providers||[],...Object.fromEntries(flags.map(([k])=>[k,!!row[k]]))};const result=await saveAppSetting(data);setRow(result);toast({title:'Release checklist saved'});}catch{setError('Could not save settings');}finally{lock.current=false;setBusy(false);}};
+ if(!row)return <div><p role={error?'alert':undefined}>{error||'Loading release checklist…'}</p>{error&&<Button onClick={load}>Retry</Button>}</div>;
  const pending=flags.filter(([k])=>!row[k]).length+(!row.operator_name?.trim()?1:0);
  return <section className="rounded-2xl border p-5 space-y-4"><h2 className="text-xl font-bold">App Store readiness</h2><p className="text-sm text-muted-foreground">{pending?pending+' items require verification':'Checklist complete. Confirm the uploaded build matches the tested version.'}</p>
  <label className="block text-sm">Legal operator name<input className="block w-full bg-background border rounded-xl p-3" value={row.operator_name||''} onChange={e=>setRow({...row,operator_name:e.target.value})}/></label>

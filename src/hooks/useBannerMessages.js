@@ -1,32 +1,29 @@
 import {useCallback,useEffect,useRef,useState} from "react";
 import {base44} from "@/api/base44Client";
+import {readAppSetting,saveAppSetting,invalidateAppSetting} from "@/lib/appSettings";
+import {coalesce} from "@/lib/coalesce";
 const DEFAULT_MESSAGES=["Made by the people, for the people.","New Music Weekly"];
-let cached=null,loaded=false,expires=0,inflight=null;
 const clean=values=>Array.isArray(values)?values.filter(value=>typeof value==="string").map(value=>value.trim()).filter(Boolean):[];
-async function readSetting(fresh=false){
- if(!fresh&&loaded&&Date.now()<expires)return cached;
- if(inflight)return inflight;
- const request=base44.entities.AppSetting.list("-created_date",1).then(page=>{const rows=Array.isArray(page)?page:page?.items||[];cached=rows[0]||null;loaded=true;expires=Date.now()+30000;return cached;}).finally(()=>{if(inflight===request)inflight=null;});
- inflight=request;return request;
-}
 export function useBannerMessages(){
- const [setting,setSetting]=useState(cached),[loading,setLoading]=useState(!loaded);
- const alive=useRef(true);
- const load=useCallback(async()=>{try{const next=await readSetting();if(alive.current)setSetting(next);}catch{}finally{if(alive.current)setLoading(false);}},[]);
+ const [setting,setSetting]=useState(null),[loading,setLoading]=useState(true),[error,setError]=useState(false);
+ const alive=useRef(true),version=useRef(0);
+ const load=useCallback(async(fresh=false)=>{
+  const request=++version.current;
+  try{const next=await readAppSetting(fresh);if(alive.current&&request===version.current){setSetting(next);setError(false);}}
+  catch{if(alive.current&&request===version.current)setError(true);}
+  finally{if(alive.current&&request===version.current)setLoading(false);}
+ },[]);
  useEffect(()=>{
   alive.current=true;load();
-  const change=event=>{if(event.detail){cached=event.detail;loaded=true;expires=Date.now()+30000;setSetting(event.detail);}else{expires=0;load();}};
-  const visible=()=>{if(!document.hidden)load();};
-  window.addEventListener("banner:changed",change);window.addEventListener("focus",load);document.addEventListener("visibilitychange",visible);
-  return()=>{alive.current=false;window.removeEventListener("banner:changed",change);window.removeEventListener("focus",load);document.removeEventListener("visibilitychange",visible);};
+  const change=event=>{if(event.detail?.id){version.current++;setSetting(event.detail);setError(false);setLoading(false);}else load(true);};
+  const refresh=()=>{if(!document.hidden){invalidateAppSetting();load(true);}};
+  const reload=coalesce(refresh,500);
+  let unsub=()=>{};try{unsub=base44.entities.AppSetting.subscribe(reload);}catch{}
+  const timer=setInterval(refresh,30000);
+  window.addEventListener("banner:changed",change);window.addEventListener("appsettings:changed",change);window.addEventListener("focus",refresh);document.addEventListener("visibilitychange",refresh);
+  return()=>{alive.current=false;version.current++;clearInterval(timer);reload.cancel();if(typeof unsub==='function')unsub();window.removeEventListener("banner:changed",change);window.removeEventListener("appsettings:changed",change);window.removeEventListener("focus",refresh);document.removeEventListener("visibilitychange",refresh);};
  },[load]);
- async function setMessages(values){
-  const messages=clean(values),current=setting||await readSetting(true);
-  const updated=current?await base44.entities.AppSetting.update(current.id,{banner_messages:messages}):await base44.entities.AppSetting.create({banner_messages:messages});
-  cached=updated;loaded=true;expires=Date.now()+30000;
-  if(alive.current)setSetting(updated);
-  window.dispatchEvent(new CustomEvent("banner:changed",{detail:updated}));
- }
+ async function setMessages(values){return saveAppSetting({banner_messages:clean(values)});}
  const custom=clean(setting?.banner_messages);
- return {loading,messages:custom.length?custom:DEFAULT_MESSAGES,isCustom:custom.length>0,setMessages};
+ return {loading,error,reload:()=>load(true),messages:custom.length?custom:DEFAULT_MESSAGES,isCustom:custom.length>0,setMessages};
 }

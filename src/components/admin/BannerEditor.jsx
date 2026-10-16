@@ -5,7 +5,7 @@ import { useBannerMessages } from "@/hooks/useBannerMessages";
 import { useToast } from "@/components/ui/use-toast";
 
 export default function BannerEditor() {
-  const { loading, messages, isCustom, setMessages } = useBannerMessages();
+  const { loading, error, reload, messages, isCustom, setMessages } = useBannerMessages();
   const [draft, setDraft] = useState(null);
   const [saving, setSaving] = useState(false);
   const { toast } = useToast();
@@ -27,7 +27,7 @@ export default function BannerEditor() {
   const previewMsgs = cleaned.length > 0 ? cleaned : ["—"];
 
   async function save() {
-    if(saving)return;
+    if(saving||!cleaned.length)return;
     setSaving(true);
     try {
       const clean = draft.map(message=>message.trim()).filter(Boolean);
@@ -45,6 +45,7 @@ export default function BannerEditor() {
 
   return (
     <div className="max-w-md space-y-4">
+      {error&&<div role="alert" className="border rounded-xl p-3 text-sm">Banner settings could not refresh. Your draft is kept. <button className="underline" onClick={reload}>Retry</button></div>}
       {/* Live preview */}
       <div className="rounded-2xl overflow-hidden ring-1 ring-inset ring-border">
         <div className="px-4 py-1.5 text-[10px] font-bold uppercase tracking-widest text-foreground/40 border-b border-border">
@@ -69,14 +70,14 @@ export default function BannerEditor() {
           Banner Messages
         </div>
         <p className="text-xs text-foreground/55 leading-relaxed">
-          These scroll across the top of the app. Add one or more — they'll alternate in the banner.
+          These scroll across the top of the app. Add one or more — they'll scroll together in the banner. Up to 8 messages, 200 characters each.
         </p>
 
         <div className="space-y-2">
           {draft.map((msg, i) => (
             <div key={i} className="flex items-center gap-2">
               <input
-                aria-label={`Banner message ${i+1}`} disabled={saving}
+                aria-label={`Banner message ${i+1}`} maxLength={200} disabled={saving}
                 value={msg}
                 onChange={(e) => setDraft(draft.map((m, idx) => (idx === i ? e.target.value : m)))}
                 placeholder="Message text"
@@ -94,7 +95,7 @@ export default function BannerEditor() {
         </div>
 
         <button
-          disabled={saving} onClick={() => setDraft([...draft, ""])}
+          disabled={saving||draft.length>=8} onClick={() => setDraft([...draft, ""])}
           className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold text-muted-foreground hover:text-foreground ring-1 ring-inset ring-border transition"
         >
           <Plus size={13} /> Add message
@@ -103,7 +104,7 @@ export default function BannerEditor() {
         <div className="flex items-center gap-2 pt-2">
           <button
             onClick={save}
-            disabled={!changed || saving}
+            disabled={!changed || saving || !cleaned.length}
             className="flex-1 inline-flex items-center justify-center gap-2 py-2.5 rounded-full text-sm font-bold bg-foreground text-background disabled:opacity-40 transition"
           >
             {saving ? <Loader2 size={14} className="animate-spin" /> : null}
