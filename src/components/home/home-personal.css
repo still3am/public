@@ -60,6 +60,42 @@
 .personal-mix-page .release-play-button{min-width:0;min-height:52px;}
 .personal-mix-page button:disabled{opacity:.5;}
 @media(max-width:767px){.personal-mix-page .personal-mix-page-art{--release-cover-height:100vw;}.personal-mix-page .release-play-controls{gap:10px;}.personal-mix-page .personal-mix-page-art>strong{font-size:clamp(38px,11vw,58px);}.personal-mix-page .personal-mix-page-art>.personal-mix-brand{top:22px;right:20px;}}
+/* Immersive mixes: one moving canvas, a single title, and a tinted song surface. */
+.public-app .personal-mix-immersive{
+ --foreground:0 0% 100%;--muted-foreground:0 0% 78%;--card:240 12% 10%;--background:240 14% 6%;--muted:240 8% 18%;--accent:240 8% 21%;--border:0 0% 100%;
+ position:relative;isolation:isolate;margin-inline:calc(-1 * var(--app-gutter));padding:0 var(--app-gutter) 48px;color:#fff;
+ background:#101018;background:color-mix(in srgb,var(--mix-tint) 22%,#09090e);
+}
+.personal-mix-atmosphere{position:absolute;inset:0 0 auto;height:850px;z-index:-1;overflow:hidden;pointer-events:none;}
+.personal-mix-page-gradient{position:absolute!important;inset:0;}
+.personal-mix-atmosphere-shade{position:absolute;inset:0;background:linear-gradient(180deg,#0001 0%,#0001 25%,#0009 55%,#101018 100%);}
+@supports(background:color-mix(in srgb,red,black)){
+ .personal-mix-atmosphere-shade{background:linear-gradient(180deg,#0001 0%,#0001 25%,#0009 55%,color-mix(in srgb,var(--mix-tint) 22%,#09090e) 100%);}
+}
+.public-app .personal-mix-immersive .release-header-full{margin:0 0 24px;padding:0;background:transparent;text-align:center;}
+.personal-mix-open-art{height:clamp(220px,52vw,380px);}
+.personal-mix-eyebrow{font-size:10px;line-height:1.5;letter-spacing:.2em;font-weight:650;color:#fff9;margin-bottom:10px;}
+.public-app .personal-mix-immersive .release-header-full h1{margin:0 auto;max-width:680px;font-size:clamp(32px,8vw,54px);line-height:1.05;letter-spacing:-.055em;color:white;}
+.public-app .personal-mix-immersive .personal-mix-curator{font-size:17px;margin-top:12px;color:#fffc;}
+.public-app .personal-mix-immersive .release-subtitle{font-size:11px;color:#fffa;margin-top:12px;}
+.public-app .personal-mix-immersive .release-play-controls{display:flex;max-width:410px;gap:14px;margin:24px auto 0;flex-wrap:nowrap;}
+.public-app .personal-mix-immersive .release-play-button{order:2;flex:1;border:0;background:white;color:#15151b;box-shadow:0 5px 30px #0002;font-size:17px;}
+.public-app .personal-mix-immersive .release-add-button{background:#ffffff16;border:1px solid #ffffff20;color:white;backdrop-filter:blur(18px);border-radius:50%;}
+.personal-mix-immersive .release-add-button[aria-label="Shuffle mix"]{order:1;}
+.personal-mix-immersive .release-add-button[aria-label="Save playlist"],.personal-mix-immersive .release-add-button[aria-label="Playlist saved"]{order:3;}
+.personal-mix-immersive .personal-mix-page-body{max-width:800px;}
+.personal-mix-immersive .personal-mix-page-description{max-width:none;text-align:left;margin:0 0 22px;font-size:14px;line-height:1.6;color:#fffb;}
+.public-app .personal-mix-immersive .release-song-list{background:transparent;border:0;padding:0;}
+.public-app .personal-mix-immersive .song-row{border:0;border-radius:12px;margin:2px 0;padding-block:12px;}
+.public-app .personal-mix-immersive .song-row:hover{background:#ffffff0d;}
+.personal-mix-immersive .release-credits{color:#fff7;font-size:11px;line-height:1.6;margin-top:24px;}
+.public-app .personal-mix-immersive .release-round{color:white;background:#0003!important;border-color:#ffffff24;}
+@media(max-width:767px){
+ .personal-mix-atmosphere{height:760px;}
+ .personal-mix-open-art{height:clamp(190px,53vw,310px);}
+ .public-app .personal-mix-immersive .release-header-full h1{font-size:clamp(30px,8.5vw,42px);}
+ .public-app .personal-mix-immersive .release-play-controls{gap:12px;}
+}
 /* Borderless artwork avoids a pale seam against the moving gradient. */
 .personal-mix-art{border:0;}
 .personal-mix-page .personal-mix-page-art{border:0;outline:0;box-shadow:none;}
