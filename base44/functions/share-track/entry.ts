@@ -14,7 +14,7 @@ export default async function handler(req){
   const rows=Array.isArray(page)?page:page?.items;
   if(!Array.isArray(rows))throw Error('Invalid catalog response');
   const track=rows[0];
-  if(!track||track.explicit===true)return new Response('Open PUBLIC to view this song.',{status:404,headers:{'Cache-Control':'no-store','X-Robots-Tag':'noindex'}});
+  if(!track)return new Response('Open PUBLIC to view this song.',{status:404,headers:{'Cache-Control':'no-store','X-Robots-Tag':'noindex'}});
   const owners=await sdk.entities.User.filter({id:track.uploader_id},'-created_date',1,0,['id','is_blocked','disabled']);
   const owner=(Array.isArray(owners)?owners:owners?.items||[])[0];
   if(!owner||owner.is_blocked||owner.disabled)return new Response('Song unavailable',{status:404,headers:{'Cache-Control':'no-store'}});
