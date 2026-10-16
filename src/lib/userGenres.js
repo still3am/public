@@ -8,12 +8,10 @@ export async function getUserGenres(userId){
  if(!uid)return [];
  if(cache&&owner===uid)return cache;
  const request=generation;
- {
-  const records=rows(await base44.entities.UserGenre.filter({user_id:uid},"-created_date",1));
-  const genres=Array.isArray(records[0]?.genres)?records[0].genres:[];
-  if(request!==generation)throw Error("Account changed. Please retry.");
-  owner=uid;cache=genres;return genres;
- }
+ const records=rows(await base44.entities.UserGenre.filter({user_id:uid},"-created_date",1));
+ const genres=Array.isArray(records[0]?.genres)?records[0].genres:[];
+ if(request!==generation)throw Error("Account changed. Please retry.");
+ owner=uid;cache=genres;return genres;
 }
 export function clearUserGenresCache(){generation++;cache=null;owner=null;}
 window.addEventListener("account:cleared",clearUserGenresCache);

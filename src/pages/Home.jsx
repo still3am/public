@@ -92,6 +92,7 @@ export default function Home() {
   const [recent, setRecent] = useState(() => getRecentPlays().slice(0, 8));
   const [genreList, setGenreList] = useState([]);
   const [loadError, setLoadError] = useState("");
+  const [preferencesError,setPreferencesError]=useState(false);
   const [loading, setLoading] = useState(true);
   const [trending, setTrending] = useState(() => [...peekPublishedTracks()].sort((a, b) => (b.play_count || 0) - (a.play_count || 0)).slice(0, 10));
   const [newReleases, setNewReleases] = useState(() => peekPublishedTracks().slice(0, 36));
@@ -118,7 +119,7 @@ export default function Home() {
   async function load(fresh = false) {
     const request = ++loadVersion.current;
     setLoading(true);
-    setLoadError("");
+    setLoadError("");setPreferencesError(false);
     try {
       // The complete catalogue, newest first and ranked by plays, read once and
       // shared with the other discovery screens.
@@ -170,7 +171,7 @@ export default function Home() {
       }
       // Merge saved genre picks with listening history — saved genres seed
       // personalization, recent plays refine it over time.
-      const savedGenres = await getUserGenres(user?.id);
+      const savedGenres = await getUserGenres(user?.id).catch(()=>{if(request===loadVersion.current)setPreferencesError(true);return [];});
       if (request !== loadVersion.current) return;
       const genreSet = new Set(savedGenres);
       const userGenres = Object.entries(genreFreq).
@@ -240,6 +241,7 @@ export default function Home() {
         <header className="home-welcome"><div><p className="home-welcome-greeting">{greeting}</p><h1>Home</h1></div><Link to={user?"/profile":"/login"} aria-label={user?"Your profile":"Sign in"}><Avatar user={user} size={44}/></Link></header>
         
         
+        {(loadError||preferencesError)&&<div role="alert" className="border border-border rounded-2xl p-4 mb-4 text-sm"><p>{loadError||"Your music preferences could not load. Discovery is using your listening history for now."}</p><button disabled={loading} className="playlist-action mt-2" onClick={()=>load(true)}>Retry</button></div>}
         <HomeSpotlight track={featured} playing={featuredPlaying} onPlay={playFeatured} discoveryQueue={discoveryQueue} onDiscover={()=>{p.setShuffle(false);p.playTrackAt(discoveryQueue,0);}}/>
         
         
