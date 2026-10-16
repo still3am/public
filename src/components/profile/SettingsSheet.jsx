@@ -27,18 +27,20 @@ function SettingGroup({title,children}){
 /** @param {any} props */
 export default function SettingsSheet({onClose,onDeleteAccount}){
  const safety=useSafety(),{user,checkUserAuth}=useAuth(),theme=useTheme();
- const [artist,setArtist]=useState(!!user?.is_artist),[explicit,setExplicit]=useState(!!user?.show_explicit);
+ const [artist,setArtist]=useState(!!user?.is_artist),[explicit,setExplicit]=useState(user?.show_explicit===true&&user?.adult_confirmed===true);
  const [saving,setSaving]=useState(""),[unblocking,setUnblocking]=useState(""),[loggingOut,setLoggingOut]=useState(false);
  const lock=useRef(false),logoutLock=useRef(false),blockedLock=useRef(false);
  useEffect(()=>{const previous=document.body.style.overflow;document.body.style.overflow="hidden";return()=>{document.body.style.overflow=previous;};},[]);
- useEffect(()=>{setArtist(!!user?.is_artist);setExplicit(!!user?.show_explicit);},[user?.id,user?.is_artist,user?.show_explicit]);
+ useEffect(()=>{setArtist(!!user?.is_artist);setExplicit(user?.show_explicit===true&&user?.adult_confirmed===true);},[user?.id,user?.is_artist,user?.show_explicit,user?.adult_confirmed]);
  async function preference(key,value){
   if(!user?.id||lock.current||logoutLock.current)return;
   if(key==="show_explicit"&&value&&!window.confirm("I confirm I am at least 18 and want to see explicit music."))return;
   lock.current=true;setSaving(key);
-  const before=key==="is_artist"?artist:explicit,set=key==="is_artist"?setArtist:setExplicit;set(value);
+  const before=key==="is_artist"?artist:explicit,set=key==="is_artist"?setArtist:setExplicit;
   try{
-   await base44.auth.updateMe(key==="is_artist"?{is_artist:value}:{show_explicit:value,adult_confirmed:value||!!user.adult_confirmed});
+   const saved=await base44.auth.updateMe(key==="is_artist"?{is_artist:value}:{show_explicit:value,adult_confirmed:value||!!user.adult_confirmed});
+   if(saved?.id!==user.id||saved[key]!==value||(key==="show_explicit"&&value&&saved.adult_confirmed!==true))throw new Error("This setting was not confirmed. Please retry.");
+   set(value);
    await checkUserAuth({silent:true});
    if(key==="show_explicit")window.dispatchEvent(new Event("catalog:invalidate"));
   }catch(error){set(before);reportActionError(error,"Couldn’t save this setting. Please try again.");}
