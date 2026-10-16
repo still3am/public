@@ -1,0 +1,84 @@
+.home-weather-dialog.weather-experience{--foreground:0 0% 100%;--background:230 35% 10%;--card:230 25% 15%;--muted-foreground:225 15% 75%;--border:0 0% 100% / .15;position:fixed;inset:0;transform:none;width:100vw;max-width:none;height:100dvh;max-height:none;display:block;overflow:hidden;border:0;border-radius:0;padding:0;background:#101525;color:#fff;isolation:isolate;animation:none!important;}
+.weather-experience>button:last-child{display:none;}
+.weather-music-shell{position:relative;height:100%;overflow:hidden;}
+.weather-music-toolbar{position:absolute;inset:0 0 auto;z-index:3;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:calc(env(safe-area-inset-top,0px) + 12px) 20px 12px;background:linear-gradient(#0b102b55,transparent);}
+.weather-music-toolbar>button{width:44px;height:44px;display:grid;place-items:center;border:1px solid #ffffff24;border-radius:50%;background:#ffffff14;backdrop-filter:blur(14px);flex-shrink:0;}
+.weather-music-toolbar h2{font-size:10px;letter-spacing:.2em;font-weight:650;color:#ffffffa0;}
+.weather-music-scroll{position:relative;z-index:1;height:100%;overflow-y:auto;overscroll-behavior:contain;padding:calc(env(safe-area-inset-top,0px) + 82px) 22px calc(env(safe-area-inset-bottom,0px) + 28px);scrollbar-width:thin;scrollbar-color:#ffffff30 transparent;}
+.weather-music-summary{text-align:center;margin:12px auto 30px;min-height:150px;}
+.weather-music-city{display:inline-flex;align-items:center;gap:8px;font-size:25px;font-weight:500;letter-spacing:-.04em;max-width:100%;line-height:1.25;}
+.weather-music-city svg{flex-shrink:0;opacity:.6;}
+.weather-music-degrees{font-size:78px;line-height:1.1;font-weight:250;letter-spacing:-.075em;margin:3px 0;}
+.weather-music-summary>p{font-size:14px;color:#ffffffc0;}
+.weather-music-summary>p>span{color:#ffffff70;font-size:11px;}
+.weather-music-summary .weather-music-unset{margin:20px auto 0;max-width:220px;line-height:1.7;color:#ffffff90;}
+.weather-music-content,.weather-music-settings,.weather-music-notice{max-width:660px;margin-inline:auto;}
+.weather-music-heading{margin:0 0 22px;}
+.weather-music-heading>p,.weather-music-featured>div>p{font-size:9px;font-weight:650;letter-spacing:.19em;color:#ffffff90;margin-bottom:9px;}
+.weather-music-heading h2{font-size:32px;line-height:1.08;letter-spacing:-.045em;font-weight:700;margin-bottom:10px;}
+.weather-music-heading>span{font-size:13px;line-height:1.6;color:#ffffff9c;}
+.weather-music-artwork{aspect-ratio:1;position:relative;overflow:hidden;border:1px solid #ffffff20;border-radius:22px;background:#ffffff0c;box-shadow:0 28px 70px #0003;}
+.weather-music-artwork>img{display:block;width:100%;height:100%;object-fit:cover;}
+.weather-music-art-placeholder{width:100%;height:100%;display:grid;place-items:center;color:#ffffff66;background:linear-gradient(140deg,#ffffff15,#ffffff03);}
+.weather-music-art-shade{position:absolute;inset:20% 0 0;background:linear-gradient(transparent,#0008 70%,#000c);pointer-events:none;}
+.weather-music-featured{position:absolute;inset:auto 20px 20px;display:flex;align-items:flex-end;gap:16px;}
+.weather-music-featured>div{min-width:0;flex:1;}
+.weather-music-featured h3{font-size:24px;line-height:1.12;letter-spacing:-.035em;font-weight:700;overflow-wrap:anywhere;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+.weather-music-featured>div>span{font-size:13px;color:#ffffffb0;display:block;margin-top:8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.weather-music-featured>button{display:grid;place-items:center;width:52px;height:52px;border-radius:50%;background:white;color:#121421;flex-shrink:0;box-shadow:0 3px 18px #0002;}
+.weather-music-play-actions{display:flex;gap:12px;margin:18px 0 34px;}
+.weather-music-play{display:flex;align-items:center;justify-content:center;gap:9px;min-height:48px;flex:1;border-radius:999px;background:#fff;color:#111524;font-size:13px;font-weight:650;}
+.weather-music-shuffle{width:48px;height:48px;display:grid;place-items:center;border-radius:50%;border:1px solid #ffffff2b;background:#ffffff0a;}
+.weather-music-track-list>h3{font-size:21px;font-weight:700;letter-spacing:-.035em;margin-bottom:12px;}
+.weather-music-track-list .song-row{border-bottom:1px solid #ffffff10;border-radius:0;padding-inline:0;}
+.weather-music-selection-note{color:#ffffff60;font-size:10px;line-height:1.6;margin-top:18px;}
+.weather-music-status{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:10px 16px;color:#ffffff60;font-size:9px;line-height:1.7;margin:30px auto 0;}
+.weather-music-status>button{display:flex;align-items:center;gap:5px;min-height:32px;}
+.weather-music-status>a{text-decoration:underline;text-underline-offset:3px;}
+.weather-music-settings{padding:20px;border:1px solid #ffffff20;border-radius:22px;background:#ffffff0a;backdrop-filter:blur(20px);margin-bottom:30px;}
+.weather-music-preferences{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:18px;}
+.weather-music-preferences>span{font-size:9px;letter-spacing:.17em;color:#ffffff80;}
+.weather-music-preferences>div{display:flex;padding:3px;border:1px solid #ffffff26;border-radius:999px;}
+.weather-music-preferences button{width:38px;min-height:32px;border-radius:999px;font-size:11px;}
+.weather-music-preferences button[aria-pressed=true]{background:#fff;color:#111524;}
+.weather-music-settings .home-weather-footer{font-size:9px;}
+.weather-music-settings .home-weather-search>input{background:#0002;border-color:#ffffff25;}
+.weather-music-settings .home-weather-search>button{background:#fff;color:#111524;}
+.weather-music-done{display:block;margin:16px 0 0 auto;font-size:12px;min-height:36px;padding-inline:16px;border-radius:999px;background:#ffffff14;}
+.weather-music-notice{padding:15px 18px;border:1px solid #ffffff20;border-radius:16px;background:#ffffff0a;font-size:12px;line-height:1.6;margin-bottom:22px;}
+.weather-music-notice button{text-decoration:underline;text-underline-offset:3px;margin-left:5px;min-height:32px;}
+.weather-music-loading{display:grid;justify-items:center;gap:12px;padding:44px 0;color:#ffffff90;font-size:12px;}
+.weather-experience button:disabled{opacity:.5;}
+.weather-sky{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:0;background:linear-gradient(155deg,#172c46,#2f4060 55%,#10192c);}
+.weather-sky--ambient{background:linear-gradient(150deg,#1a2844,#39345a 55%,#111627);}
+.weather-sky--sun{background:linear-gradient(160deg,#387eb2,#6aacc7 38%,#748baf 73%,#354665);}
+.weather-sky--night,.weather-sky--cloud-night{background:linear-gradient(160deg,#070d24,#1c2245 40%,#323953 75%,#151f37);}
+.weather-sky--rain,.weather-sky--rain-night,.weather-sky--storm{background:linear-gradient(155deg,#1d2b3a,#394659 50%,#142339);}
+.weather-sky--rain-night{background:linear-gradient(145deg,#081525,#192a40 50%,#182137);}
+.weather-sky--storm{background:linear-gradient(145deg,#101a2d,#2f3349 50%,#172437);}
+.weather-sky--snow{background:linear-gradient(155deg,#526a87,#8499b1 50%,#4b617f);}
+.weather-sky--fog,.weather-sky--cloud{background:linear-gradient(155deg,#466079,#788693 45%,#3b4e65);}
+.weather-sky-glow{position:absolute;width:140%;height:110%;left:-20%;top:-10%;background:radial-gradient(ellipse at 20% 10%,#c1c8ed18,transparent 55%);animation:weather-glow-drift 28s ease-in-out infinite alternate;}
+.weather-sky-shade{position:absolute;inset:0;background:linear-gradient(transparent,#0c152231 30%,#0b11297a 85%);}
+.weather-sky-sun,.weather-sky-moon{position:absolute;border-radius:50%;top:12%;right:12%;width:90px;height:90px;}
+.weather-sky-sun{background:#fff9db;box-shadow:0 0 60px 30px #fff5be55,0 0 150px 70px #ffecc122;animation:weather-sun-breathe 14s ease-in-out infinite alternate;}
+.weather-sky-moon{width:50px;height:50px;background:#e6e8f8;box-shadow:0 0 35px 10px #c4d2ff20;opacity:.65;}
+.weather-sky-stars{position:absolute;inset:0;}
+.weather-sky-stars i{position:absolute;left:var(--x);top:var(--y);width:var(--size);height:var(--size);border-radius:50%;background:#fff;box-shadow:0 0 5px #fff8;animation:weather-star-breathe 8s ease-in-out infinite alternate;animation-delay:var(--delay);}
+.weather-sky-clouds{position:absolute;inset:-10% -50% 0;opacity:.55;}
+.weather-sky-clouds>i{position:absolute;left:-20%;top:8%;width:80%;height:34%;background:radial-gradient(ellipse,#c3d1e330,transparent 68%);border-radius:50%;transform:rotate(-15deg);animation:weather-cloud-drift 48s linear infinite alternate;}
+.weather-sky-clouds>i:nth-child(2){left:20%;top:2%;opacity:.55;animation-delay:-20s;animation-duration:65s;}
+.weather-sky-clouds>i:nth-child(3){left:0;top:28%;opacity:.4;animation-delay:-35s;animation-duration:80s;}
+.weather-sky-particles{position:absolute;inset:-20% 0;overflow:hidden;}
+.weather-sky-particles>i{position:absolute;top:-12%;left:var(--x);animation-delay:var(--delay);animation-duration:var(--speed);animation-timing-function:linear;animation-iteration-count:infinite;opacity:var(--opacity);}
+.weather-sky-particles.is-rain>i{width:1px;height:60px;background:linear-gradient(transparent,#c5dcf1);animation-name:weather-rain-fall;}
+.weather-sky-particles.is-snow>i{width:4px;height:4px;border-radius:50%;background:#fff;animation-name:weather-snow-fall;}
+.weather-sky--paused *{animation-play-state:paused!important;}
+@keyframes weather-glow-drift{to{transform:translate3d(6%,3%,0);}}
+@keyframes weather-sun-breathe{to{transform:scale(1.08);opacity:.8;}}
+@keyframes weather-star-breathe{from{opacity:.25;}to{opacity:.85;}}
+@keyframes weather-cloud-drift{to{transform:translate3d(40%,6%,0) rotate(-8deg);}}
+@keyframes weather-rain-fall{to{transform:translate3d(-80px,130vh,0);}}
+@keyframes weather-snow-fall{to{transform:translate3d(60px,130vh,0) rotate(30deg);}}
+@media(min-width:768px){.home-weather-dialog.weather-experience{inset:auto;left:50%;top:50%;transform:translate(-50%,-50%);width:min(960px,94vw);height:92dvh;max-height:1000px;border:1px solid #ffffff20;border-radius:28px;}.weather-music-scroll{padding-inline:48px;padding-top:90px;}.weather-music-toolbar{padding:16px 24px;}.weather-music-summary{margin-bottom:34px;}.weather-music-artwork{aspect-ratio:1.45;}.weather-music-heading h2{font-size:40px;}.weather-music-featured h3{font-size:32px;}.weather-music-featured{inset:auto 28px 28px;}}
+@media(prefers-reduced-motion:reduce){.weather-sky *{animation:none!important;}.weather-sky-particles{display:none;}}
