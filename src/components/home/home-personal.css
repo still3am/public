@@ -46,7 +46,10 @@
 .shared-song-shelf{overscroll-behavior-x:contain;-webkit-overflow-scrolling:touch;scroll-padding-inline:0;touch-action:pan-x pan-y;}
 .shared-song-shelf:focus-visible{outline:2px solid hsl(var(--ring));outline-offset:5px;border-radius:12px;}
 .personal-mix-page .personal-mix-page-art{display:flex;flex-direction:column;justify-content:center;align-items:center;isolation:isolate;color:white;}
-.personal-mix-page-art>.personal-mix-artists{display:none;}
+.personal-mix-page-art>.personal-mix-artists,.personal-mix-page-art>.personal-mix-brand{display:none;}
+.personal-mix-toolbar-brand{display:flex;align-items:center;justify-content:center;width:72px;height:44px;pointer-events:none;}
+.personal-mix-toolbar-brand .personal-mix-logo{width:72px!important;height:auto!important;max-width:none;filter:brightness(0) invert(1);}
+@media(max-width:767px){.personal-mix-toolbar-brand{height:36px;}}
 .personal-mix-page-art>.personal-mix-brand{top:22px;right:22px;}
 .personal-mix-page .personal-mix-page-art>strong{font-size:clamp(42px,10vw,76px);max-width:700px;padding-inline:20px;}
 .personal-mix-page .personal-mix-shade{background:linear-gradient(#0002,transparent 30%,#0002 65%,hsl(var(--background)) 100%);}
