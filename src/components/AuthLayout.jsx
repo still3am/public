@@ -1,11 +1,14 @@
 import React from "react";
 import Logo from "@/components/Logo";
+import BrandGradient from "@/components/BrandGradient";
+import "./auth-brand.css";
 
 /** @param {any} props */
-export default function AuthLayout({ icon: Icon, title, subtitle, footer, children }) {
+export default function AuthLayout({ icon: Icon, title, subtitle, footer, children, brandMotion = false }) {
   return (
-    <div className="auth-layout min-h-screen flex items-center justify-center bg-background px-4 py-10 sm:py-16">
-      <div className="w-full max-w-md">
+    <div className={`auth-layout min-h-screen flex items-center justify-center bg-background px-4 py-10 sm:py-16 ${brandMotion ? "auth-brand-motion" : ""}`}>
+      {brandMotion && <><BrandGradient className="auth-brand-gradient" /><div className="auth-brand-shade" aria-hidden="true" /></>}
+      <div className="auth-content w-full max-w-md">
         <div className="text-center mb-10">
           <div className="flex justify-center mb-5">
             <Logo width="184px" className="max-w-[60%]" />
