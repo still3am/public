@@ -182,7 +182,7 @@ export default function Lounge() {
               <h1>{session.name || "Good music. Shared company."}</h1>
               <p>A shared queue, selected by everyone in the room. Hosted by {session.host_name || "Host"}.</p>
               <div className="flex flex-wrap items-center gap-3 mt-5">
-                <button className="chrome-button" onClick={async()=>{try{await copyText(window.location.href);toast({title:"Lounge invite copied"});}catch{/* Keep the room available. */}}}><Copy size={15}/> Copy invite</button>
+                <button className="chrome-button" onClick={async()=>{try{await copyText(window.location.href);toast({title:"Lounge invite copied"});}catch{toast({title:"Couldn’t copy the lounge invite. Please try again.",variant:"destructive"});}}}><Copy size={15}/> Copy invite</button>
                 <span className="chip"><Users size={14}/>{members.filter(m=>m.status==="approved").length} approved</span>
                 <span className="chip">Code {session.code}</span>
               </div>

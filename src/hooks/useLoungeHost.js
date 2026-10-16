@@ -1,3 +1,4 @@
+import {reportActionError} from "@/lib/actionError";
 import {readAllPages} from "@/lib/readPages";
 import {coalesce} from "@/lib/coalesce";
 import { useEffect, useState, useRef, useCallback, createContext, useContext, createElement } from "react";
@@ -28,6 +29,7 @@ function useLoungeHostState() {
   const [members, setMembers] = useState([]);
   const [loading, setLoading] = useState(false);
 
+  const memberLocks=useRef(new Set());
   const startingRef=useRef(null),accountRef=useRef(user?.id),sessionKey=useRef(null);accountRef.current=user?.id;
   useEffect(()=>{startingRef.current=null;sessionKey.current=null;setSession(null);setMembers([]);setLoading(false);},[user?.id]);
   const addedRef = useRef(null);
@@ -116,22 +118,26 @@ function useLoungeHostState() {
 
   const approve = useCallback(
     async (m) => {
-      if (!session?.id || !m) return;
+      if (!session?.id || !m || memberLocks.current.has(m.id)) return false;
+      memberLocks.current.add(m.id);
       try {
         await base44.entities.LoungeMember.update(m.id,{status:"approved"});
-        refreshMembers(session.id);
-      } catch {}
+        refreshMembers(session.id);return true;
+      } catch(error) {if(sessionKey.current===session.id)reportActionError(error,"Couldn’t approve this listener. Please retry.");return false;}
+      finally{memberLocks.current.delete(m.id);}
     },
     [session?.id, refreshMembers]
   );
 
   const reject = useCallback(
     async (m) => {
-      if (!session?.id || !m) return;
+      if (!session?.id || !m || memberLocks.current.has(m.id)) return false;
+      memberLocks.current.add(m.id);
       try {
         await base44.entities.LoungeMember.update(m.id,{status:"rejected"});
-        refreshMembers(session.id);
-      } catch {}
+        refreshMembers(session.id);return true;
+      } catch(error) {if(sessionKey.current===session.id)reportActionError(error,"Couldn’t reject this request. Please retry.");return false;}
+      finally{memberLocks.current.delete(m.id);}
     },
     [session?.id, refreshMembers]
   );
@@ -140,7 +146,7 @@ function useLoungeHostState() {
     if (!session?.id) return;
     try {
       await base44.entities.LoungeSession.update(session.id, { is_active: false });
-    } catch {return false;}
+    } catch(error) {if(sessionKey.current===session.id)reportActionError(error,"Couldn’t end the lounge. Please retry.");return false;}
     if(sessionKey.current===session.id){sessionKey.current=null;setSession(null);setMembers([]);}
     return true;
   }, [session?.id]);
@@ -153,8 +159,8 @@ function useLoungeHostState() {
         await base44.entities.LoungeSession.update(session.id, { name: clean });
         setSession((prev) => (prev?.id===session.id ? { ...prev, name: clean } : prev));
         return true;
-      } catch {
-        return false;
+      } catch(error) {
+        if(sessionKey.current===session.id)reportActionError(error,"Couldn’t rename the lounge. Your changes have not been saved.");return false;
       }
     },
     [session?.id]

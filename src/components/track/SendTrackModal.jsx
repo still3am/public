@@ -75,16 +75,17 @@ export default function SendTrackModal({ track, onClose }) {
     if (!picked || !user?.id || sendingRef.current) return;
     sendingRef.current=true;setSending(true);const started=seed.current;
     try {
-      await base44.entities.Notification.create({
+      const saved=await base44.entities.Notification.create({
         user_id: picked.id,
         type: "track_shared",
         actor_id: user.id,
         track_id: track.id,
         comment: note.trim(),
       });
+      if(!saved?.id)throw Error("Song delivery was not confirmed");
       if(alive.current&&seed.current===started)setSent({ person: picked, note: note.trim() });
     } catch(error) {
-      reportActionError(error,"Couldn’t send this song. Your message is still here.");
+      if(alive.current&&seed.current===started)reportActionError(error,"Couldn’t send this song. Your message is still here.");
     } finally {
       sendingRef.current=false;if(alive.current)setSending(false);
     }

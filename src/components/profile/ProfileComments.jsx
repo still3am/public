@@ -21,6 +21,9 @@ export default function ProfileComments({ profileId, isOwn, active = true }) {
   const [message, setMessage] = useState("");
   const [posting, setPosting] = useState(false);
   const commentRequest=useRef({text:"",key:"",id:""});
+  const identity=useRef(null);
+  if(!identity.current||identity.current.uid!==user?.id||identity.current.profileId!==profileId)identity.current={uid:user?.id,profileId};
+  const scope=identity.current;
   const draftKey=`public:comment-draft:${user?.id||"guest"}:${profileId||""}`;
   const requestVersion=useRef(0),postingRef=useRef(false),currentProfile=useRef(profileId),confirmed=useRef(new Map()),deleting=useRef(new Set()),alive=useRef(true);currentProfile.current=profileId;
   useEffect(()=>{alive.current=true;return()=>{alive.current=false;requestVersion.current++;};},[]);
@@ -40,9 +43,9 @@ export default function ProfileComments({ profileId, isOwn, active = true }) {
     } finally {
       if(request===requestVersion.current)setLoading(false);
     }
-  }, [profileId]);
+  }, [profileId,user?.id]);
 
-  useEffect(()=>{requestVersion.current++;confirmed.current.clear();deleting.current.clear();setComments([]);try{setMessage(user?.id?localStorage.getItem(draftKey)||"":"");}catch{setMessage("");}setLoading(true);},[profileId,user?.id]);
+  useEffect(()=>{requestVersion.current++;confirmed.current.clear();deleting.current.clear();setComments([]);setPosting(false);try{setMessage(user?.id?localStorage.getItem(draftKey)||"":"");}catch{setMessage("");}setLoading(true);},[profileId,user?.id]);
   useEffect(() => {
     if(!active)return;
     load();
@@ -58,9 +61,9 @@ export default function ProfileComments({ profileId, isOwn, active = true }) {
   async function postComment(e) {
     e.preventDefault();
     const text = message.trim();
-    if (!text || !user?.id || !profileId || postingRef.current) return;
+    if (!text || !user?.id || !profileId || postingRef.current===scope) return;
     if(commentRequest.current.text!==text||commentRequest.current.key!==draftKey)commentRequest.current={text,key:draftKey,id:globalThis.crypto?.randomUUID?.()||`${Date.now()}-${Math.random().toString(36).slice(2)}`};
-    postingRef.current=true;setPosting(true);
+    postingRef.current=scope;setPosting(true);
     try {
       const saved=await base44.entities.ProfileComment.create({
         profile_id: profileId,
@@ -71,7 +74,7 @@ export default function ProfileComments({ profileId, isOwn, active = true }) {
         request_id: commentRequest.current.id
       });
       if(!saved?.id)throw Error("Comment save was not confirmed");
-      if(alive.current&&currentProfile.current===profileId){
+      if(alive.current&&identity.current===scope){
         requestVersion.current++;
         confirmed.current.set(saved.id,saved);
         setComments(previous=>[saved,...previous.filter(row=>row.id!==saved.id)]);
@@ -80,7 +83,7 @@ export default function ProfileComments({ profileId, isOwn, active = true }) {
         try{if((localStorage.getItem(draftKey)||'').trim()===text)localStorage.removeItem(draftKey);}catch{}
         load();
       }
-      if (profileId !== user.id) {
+      if (identity.current===scope && profileId !== user.id) {
         try {
           base44.entities.Notification.create({
             user_id: profileId,
@@ -90,9 +93,9 @@ export default function ProfileComments({ profileId, isOwn, active = true }) {
         } catch {}
       }
     } catch(error) {
-      reportActionError(error,"Couldn’t post your comment. Your draft is still here.");
+      if(alive.current&&identity.current===scope)reportActionError(error,"Couldn’t post your comment. Your draft is still here.");
     } finally {
-      postingRef.current=false;if(alive.current)setPosting(false);
+      if(postingRef.current===scope)postingRef.current=false;if(alive.current&&identity.current===scope)setPosting(false);
     }
   }
 
@@ -107,9 +110,10 @@ export default function ProfileComments({ profileId, isOwn, active = true }) {
     try {
       await base44.entities.ProfileComment.delete(id);
     } catch {
+      if(identity.current!==scope)return;
       deleting.current.delete(id);
-      if(alive.current&&currentProfile.current===profileId)setComments(previous=>{if(previous.some(row=>row.id===id))return previous;const row=before.find(row=>row.id===id);if(!row)return previous;const next=[...previous];next.splice(Math.min(before.findIndex(row=>row.id===id),next.length),0,row);return next;});
-      reportActionError(null,"Couldn’t delete this comment. Please try again.");
+      if(alive.current&&identity.current===scope)setComments(previous=>{if(previous.some(row=>row.id===id))return previous;const row=before.find(row=>row.id===id);if(!row)return previous;const next=[...previous];next.splice(Math.min(before.findIndex(row=>row.id===id),next.length),0,row);return next;});
+      if(alive.current&&identity.current===scope)reportActionError(null,"Couldn’t delete this comment. Please try again.");
     }
   }
 
