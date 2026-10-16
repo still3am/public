@@ -2,6 +2,7 @@ import {useRef,useState} from "react";
 import {Check,Loader2,Plus,X} from "lucide-react";
 import {Dialog,DialogContent,DialogHeader,DialogTitle,DialogDescription} from "@/components/ui/dialog";
 import MotionGradient from "@/components/MotionGradient";
+import ProfileColorWheel from "./ProfileColorWheel";
 import "./profile-colors.css";
 
 const PRESETS=[
@@ -28,6 +29,8 @@ export default function ProfileColorPicker({coverUrl,colors,loading,value,onPrev
  const [draft,setDraft]=useState(()=>({mode:value.mode,colors:[...value.colors],motion:value.motion||"flow",speed:value.speed||1}));
  const [saving,setSaving]=useState(false),[error,setError]=useState("");
  const saveLock=useRef(false);
+ const [activeColor,setActiveColor]=useState(0);
+ const activeIndex=Math.min(activeColor,Math.max(0,draft.colors.length-1));
  const update=next=>{if(saveLock.current)return;setError("");setDraft(next);onPreview({...next,colors:next.colors.filter(valid)});};
  const customColors=draft.colors.length?draft.colors:colors.slice(0,3).length?colors.slice(0,3):PRESETS[0].colors;
  const setColors=next=>update({...draft,mode:"custom",colors:next.slice(0,3)});
@@ -43,7 +46,7 @@ export default function ProfileColorPicker({coverUrl,colors,loading,value,onPrev
  };
  return <Dialog open onOpenChange={open=>{if(!open&&!saveLock.current)onClose();}}>
   <DialogContent className="profile-palette-dialog profile-color-editor" data-public-dialog>
-   <DialogHeader><DialogTitle>Your profile colors</DialogTitle><DialogDescription>Pick any colors, try a palette, or follow your profile song.</DialogDescription></DialogHeader>
+   <DialogHeader><DialogTitle>Your profile colors</DialogTitle><DialogDescription>Build your gradient with the color wheel, choose a palette, or follow your song.</DialogDescription></DialogHeader>
    <div className="profile-color-body">
     <div className="profile-color-preview">
      {preview.length>0&&<MotionGradient colors={preview} motion={draft.motion} speed={draft.speed} className="absolute inset-0" style={{borderRadius:"inherit",zIndex:-2}}/>}
@@ -62,15 +65,14 @@ export default function ProfileColorPicker({coverUrl,colors,loading,value,onPrev
     {draft.mode==="custom"&&<>
      <section className="profile-color-section"><h3>Your palette <span>Up to 3 colors</span></h3>
       <div className="profile-color-stops">{draft.colors.map((color,index)=><div className="profile-color-stop" key={index}>
-       <label className="profile-color-wheel" style={{backgroundColor:valid(color)?color:"#777777"}}>
-        <input type="color" aria-label={`Pick color ${index+1}`} disabled={saving} value={valid(color)?color:"#777777"} onChange={event=>setColors(draft.colors.map((c,i)=>i===index?event.target.value:c))}/>
-       </label>
+       <button type="button" className="profile-color-wheel profile-color-select" aria-label={`Edit color ${index+1} on the wheel`} aria-pressed={activeIndex===index} disabled={saving} style={{backgroundColor:valid(color)?color:"#777777"}} onClick={()=>setActiveColor(index)}>{activeIndex===index&&<Check size={16}/>}</button>
        <label className="profile-color-hex"><span>Color {index+1}</span><input aria-label={`Color ${index+1} hex code`} spellCheck={false} autoComplete="off" maxLength={7} value={color} disabled={saving} aria-invalid={!valid(color)} onChange={event=>setColors(draft.colors.map((c,i)=>i===index?normalize(event.target.value):c))}/></label>
        <button type="button" disabled={saving} aria-label={`Remove color ${index+1}`} onClick={()=>setColors(draft.colors.filter((_,i)=>i!==index))}><X size={16}/></button>
       </div>)}</div>
       {draft.colors.some(c=>!valid(c))&&<p className="profile-color-hint" role="status">Use a six-digit hex color, such as #6948a6.</p>}
-      {draft.colors.length<3&&<button type="button" className="profile-color-add" disabled={saving} onClick={()=>setColors([...draft.colors,PRESETS[0].colors[draft.colors.length]])}><Plus size={16}/>Add color</button>}
+      {draft.colors.length<3&&<button type="button" className="profile-color-add" disabled={saving} onClick={()=>{setActiveColor(draft.colors.length);setColors([...draft.colors,PRESETS[0].colors[draft.colors.length]]);}}><Plus size={16}/>Add color</button>}
      </section>
+     {draft.colors.length>0&&<ProfileColorWheel key={activeIndex} colorNumber={activeIndex+1} value={valid(draft.colors[activeIndex])?draft.colors[activeIndex]:"#777777"} disabled={saving} onChange={color=>setColors(draft.colors.map((c,i)=>i===activeIndex?color:c))}/>}
      <section className="profile-color-section"><h3>Ready-made palettes</h3><div className="profile-color-presets">{PRESETS.map(preset=><button type="button" key={preset.name} disabled={saving} aria-pressed={draft.colors.join(",").toLowerCase()===preset.colors.join(",")} onClick={()=>setColors([...preset.colors])}><span className="profile-color-preset-art" style={{backgroundImage:presetGradient(preset.colors),backgroundColor:preset.colors[0]}}>{draft.colors.join(",").toLowerCase()===preset.colors.join(",")&&<span className="profile-color-preset-check"><Check size={14}/></span>}</span><span>{preset.name}</span></button>)}</div></section>
      {(colors.length>0||loading)&&<section className="profile-color-section"><h3>From your song cover</h3>{loading?<p className="profile-color-hint">Reading cover colors…</p>:<div className="profile-color-cover-swatches">{colors.map(color=><button type="button" key={color} disabled={saving} aria-label={`Use cover color ${color}`} aria-pressed={draft.colors.includes(color)} onClick={()=>toggle(color)} style={{backgroundColor:color}}>{draft.colors.includes(color)&&<Check size={16}/>}</button>)}</div>}</section>}
     </>}
