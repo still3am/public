@@ -1,6 +1,7 @@
 import MotionGradient from '@/components/MotionGradient';
+import { PUBLIC_GRADIENT_COLORS } from '@/components/BrandGradient';
 const palettes = {
- ambient:['#283d91','#b2498d','#287d82'],
+ ambient:PUBLIC_GRADIENT_COLORS,
  sun:['#d17632','#efb06a','#668cae'],
  night:['#172755','#513b85','#1c526c'],
  'cloud-night':['#293577','#8a427d','#336b82'],
@@ -13,7 +14,8 @@ const palettes = {
 };
 // Keep weather abstract: condition controls color and the pace of the flowing mesh.
 const speeds={ambient:.7,sun:.9,night:.4,'cloud-night':.45,rain:.6,'rain-night':.5,storm:1.35,snow:.35,fog:.35,cloud:.55};
-export default function WeatherScene({scene='ambient'}){
- return <><MotionGradient className="atmosphere-gradient" colors={palettes[scene] || palettes.ambient} speed={speeds[scene] ?? speeds.ambient} /><div className="atmosphere-gradient-shade" aria-hidden="true" /></>;
+export default function WeatherScene({scene='ambient',brand=false}){
+ const monochrome=brand || scene==='ambient';
+ return <><MotionGradient className="atmosphere-gradient" colors={monochrome ? PUBLIC_GRADIENT_COLORS : palettes[scene] || palettes.ambient} speed={monochrome ? .65 : speeds[scene] ?? speeds.ambient} /><div className={'atmosphere-gradient-shade'+(monochrome?' atmosphere-gradient-shade--brand':'')} aria-hidden="true" /></>;
 }
 
