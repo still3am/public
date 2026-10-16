@@ -7,6 +7,7 @@ const MAX_PAGES = 40; // safety stop, far above the current catalogue size
 export async function readAllPages(fetchPage) {
   const out = [];
   let cursor;
+  const seenCursors = new Set();
   for (let page = 0; page < MAX_PAGES; page++) {
     const res = await fetchPage(
       cursor ? { limit: PAGE_SIZE, cursor } : { limit: PAGE_SIZE }
@@ -17,9 +18,11 @@ export async function readAllPages(fetchPage) {
       out.push(...res);
       return out;
     }
-    out.push(...(res?.items || []));
+    if (!res || !Array.isArray(res.items) || (res.has_more !== undefined && typeof res.has_more !== "boolean")) throw new Error("This list returned an invalid response. Please refresh and try again.");
+    out.push(...res.items);
     if (!res?.has_more) return out;
-    if (!res.next_cursor || res.next_cursor === cursor) throw new Error("This list could not finish loading. Please refresh and try again.");
+    if (typeof res.next_cursor !== "string" || !res.next_cursor || seenCursors.has(res.next_cursor)) throw new Error("This list could not finish loading. Please refresh and try again.");
+    seenCursors.add(res.next_cursor);
     cursor = res.next_cursor;
   }
   throw new Error("The collection exceeds this request limit. Narrow your search or contact support.");

@@ -771,7 +771,7 @@ export function PlayerProvider({ children }) {
     if (!track?.id || autoQueueLoadingRef.current) return false;
     autoQueueLoadingRef.current = true;
     try {
-      const userGenres = await getUserGenres();
+      const userGenres = await getUserGenres().catch(() => []);
       const picks = await buildAutoQueue(
         track,
         queueRef.current.map((t) => t.id),

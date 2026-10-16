@@ -14,9 +14,9 @@ export function usePlaybackSync() {
   const { currentTrack, position, isPlaying } = usePlayer();
   const deviceId = getDeviceId();
 
-  const rowIdRef = useRef(null);
-  useEffect(()=>{rowIdRef.current=null;setRemote(null);lastPushRef.current=0;},[user?.id]);
-  const lastPushRef = useRef(0);
+  const scopeRef = useRef(null);
+  if (!scopeRef.current || scopeRef.current.uid !== user?.id) scopeRef.current = { uid:user?.id, rowId:null, tail:Promise.resolve(), read:0 };
+  const scope = scopeRef.current;
   const latestRef = useRef({ currentTrack, position, isPlaying });
   const [remote, setRemote] = useState(null);
 
@@ -25,7 +25,7 @@ export function usePlaybackSync() {
   }, [currentTrack, position, isPlaying]);
 
   const publish = useCallback(async () => {
-    if (!user?.id) return;
+    if (!scope.uid || scopeRef.current !== scope) return;
     const { currentTrack: t, position: pos, isPlaying: playing } = latestRef.current;
     const payload = {
       user_id: user.id,
@@ -50,26 +50,27 @@ export function usePlaybackSync() {
       is_playing: !!playing && !!t,
       sampled_at: new Date().toISOString(),
     };
-    lastPushRef.current = Date.now();
-    try {
-      if (!rowIdRef.current) {
-        const existing = await base44.entities.PlaybackState.filter(
-          { user_id: user.id, device_id: deviceId },
-          "-created_date",
-          1
-        );
-        rowIdRef.current = existing?.[0]?.id || null;
+    const task = scope.tail.then(async () => {
+      if (scopeRef.current !== scope) return;
+      if (!scope.rowId) {
+        const page = await base44.entities.PlaybackState.filter({user_id:scope.uid,device_id:deviceId},"-created_date",1);
+        if (scopeRef.current !== scope) return;
+        const rows=Array.isArray(page)?page:page?.items;
+        if (!Array.isArray(rows)) throw Error("Invalid playback state response");
+        scope.rowId=rows[0]?.id || null;
       }
-      if (rowIdRef.current) {
-        await base44.entities.PlaybackState.update(rowIdRef.current, payload);
-      } else {
-        const created = await base44.entities.PlaybackState.create(payload);
-        rowIdRef.current = created?.id || null;
+      if (scopeRef.current !== scope) return;
+      if (scope.rowId) await base44.entities.PlaybackState.update(scope.rowId,payload);
+      else {
+        const created=await base44.entities.PlaybackState.create(payload);
+        if (scopeRef.current === scope) scope.rowId=created?.id || null;
       }
-    } catch {
-      /* sync is best-effort — never interrupt playback */
-    }
-  }, [user?.id, deviceId]);
+    });
+    // Serialize writes so rapid play/pause events cannot create duplicate rows
+    // or let an older position finish after the newest one.
+    scope.tail=task.catch(()=>{});
+    await scope.tail;
+  }, [scope, deviceId]);
 
   // Push on every meaningful change (including clearing the queue, so the
   // server doesn't keep a stale "playing" record that triggers auto-resume),
@@ -77,7 +78,7 @@ export function usePlaybackSync() {
   useEffect(() => {
     publish();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentTrack?.id, isPlaying]);
+  }, [currentTrack?.id, isPlaying, publish]);
 
   useEffect(() => {
     if (!isPlaying) return;
@@ -87,14 +88,18 @@ export function usePlaybackSync() {
 
   // Read the newest state belonging to a DIFFERENT device.
   const loadRemote = useCallback(async () => {
-    if (!user?.id) return;
+    if (!scope.uid || scopeRef.current !== scope) return;
+    const request=++scope.read;
     try {
-      const rows = await base44.entities.PlaybackState.filter(
+      const page = await base44.entities.PlaybackState.filter(
         { user_id: user.id },
         "-updated_date",
         20
       );
-      const other = (rows || [])
+      if(scopeRef.current!==scope || request!==scope.read)return;
+      const rows=Array.isArray(page)?page:page?.items;
+      if(!Array.isArray(rows))throw Error("Invalid playback state response");
+      const other = rows
         .filter((r) => r.device_id !== deviceId && r.track_id && r.track)
         .filter((r) => {
           const at = new Date(r.sampled_at || r.updated_date).getTime();
@@ -122,11 +127,11 @@ export function usePlaybackSync() {
         const dur = track.duration_seconds || 0;
         if (dur) at = Math.min(at, dur);
       }
-      setRemote({ ...other, trackObj: track, resumeAt: Math.round(at) });
+      setRemote({ owner:scope, value:{ ...other, trackObj: track, resumeAt: Math.round(at) } });
     } catch {
-      setRemote(null);
+      // Preserve confirmed same-account state on transient network failures.
     }
-  }, [user?.id, deviceId]);
+  }, [scope, deviceId]);
 
   useEffect(() => {
     loadRemote();
@@ -157,5 +162,5 @@ export function usePlaybackSync() {
     };
   }, [publish, loadRemote]);
 
-  return { remote, refreshRemote: loadRemote };
+  return { remote:remote?.owner===scope?remote.value:null, refreshRemote: loadRemote };
 }
