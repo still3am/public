@@ -57,3 +57,12 @@
 .personal-mix-page .release-play-button{min-width:0;min-height:52px;}
 .personal-mix-page button:disabled{opacity:.5;}
 @media(max-width:767px){.personal-mix-page .personal-mix-page-art{--release-cover-height:100vw;}.personal-mix-page .release-play-controls{gap:10px;}.personal-mix-page .personal-mix-page-art>strong{font-size:clamp(38px,11vw,58px);}.personal-mix-page .personal-mix-page-art>.personal-mix-brand{top:22px;right:20px;}}
+/* Borderless artwork avoids a pale seam against the moving gradient. */
+.personal-mix-art{border:0;}
+.personal-mix-page .personal-mix-page-art{border:0;outline:0;box-shadow:none;}
+.personal-mix-page .release-song-list{border-top:0;border-bottom:0;}
+@media(max-width:767px){
+ .home-shared-section .shared-song-shelf{display:flex;gap:14px;overflow-x:auto;overflow-y:hidden;max-width:100%;min-width:0;padding:3px 0 10px;scroll-snap-type:x mandatory;scrollbar-width:none;}
+ .home-shared-section .shared-song{flex:0 0 calc(100% - 28px);width:calc(100% - 28px);min-width:0;min-height:118px;border:0;border-radius:18px;background:hsl(var(--muted)/.45);padding:14px;scroll-snap-align:start;scroll-snap-stop:normal;}
+ .home-shared-section .shared-song-shelf::-webkit-scrollbar{display:none;}
+}
