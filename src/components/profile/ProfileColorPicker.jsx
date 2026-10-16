@@ -46,7 +46,7 @@ export default function ProfileColorPicker({coverUrl,colors,loading,value,onPrev
  };
  return <Dialog open onOpenChange={open=>{if(!open&&!saveLock.current)onClose();}}>
   <DialogContent className="profile-palette-dialog profile-color-editor" data-public-dialog>
-   <DialogHeader><DialogTitle>Your profile colors</DialogTitle><DialogDescription>Build your gradient with the color wheel, choose a palette, or follow your song.</DialogDescription></DialogHeader>
+   <DialogHeader><DialogTitle>Your profile colors</DialogTitle><DialogDescription>Build your gradient with the color spectrum, choose a palette, or follow your song.</DialogDescription></DialogHeader>
    <div className="profile-color-body">
     <div className="profile-color-preview">
      {preview.length>0&&<MotionGradient colors={preview} motion={draft.motion} speed={draft.speed} className="absolute inset-0" style={{borderRadius:"inherit",zIndex:-2}}/>}
@@ -65,7 +65,7 @@ export default function ProfileColorPicker({coverUrl,colors,loading,value,onPrev
     {draft.mode==="custom"&&<>
      <section className="profile-color-section"><h3>Your palette <span>Up to 3 colors</span></h3>
       <div className="profile-color-stops">{draft.colors.map((color,index)=><div className="profile-color-stop" key={index}>
-       <button type="button" className="profile-color-wheel profile-color-select" aria-label={`Edit color ${index+1} on the wheel`} aria-pressed={activeIndex===index} disabled={saving} style={{backgroundColor:valid(color)?color:"#777777"}} onClick={()=>setActiveColor(index)}>{activeIndex===index&&<Check size={16}/>}</button>
+       <button type="button" className="profile-color-wheel profile-color-select" aria-label={`Edit color ${index+1} on the spectrum`} aria-pressed={activeIndex===index} disabled={saving} style={{backgroundColor:valid(color)?color:"#777777"}} onClick={()=>setActiveColor(index)}>{activeIndex===index&&<Check size={16}/>}</button>
        <label className="profile-color-hex"><span>Color {index+1}</span><input aria-label={`Color ${index+1} hex code`} spellCheck={false} autoComplete="off" maxLength={7} value={color} disabled={saving} aria-invalid={!valid(color)} onChange={event=>setColors(draft.colors.map((c,i)=>i===index?normalize(event.target.value):c))}/></label>
        <button type="button" disabled={saving} aria-label={`Remove color ${index+1}`} onClick={()=>setColors(draft.colors.filter((_,i)=>i!==index))}><X size={16}/></button>
       </div>)}</div>
