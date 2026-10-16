@@ -256,7 +256,7 @@ export default function Home() {
         {genreList.length > 0 && <nav className="home-genre-links" aria-label="Browse genres">{genreList.map((genre) => <Link key={genre} to={`/search?genre=${encodeURIComponent(genre)}`}>{genre}</Link>)}</nav>}
         <Section title="New on PUBLIC" icon={Sparkles} seeAllTo="/recent"><ReleaseList tracks={newReleases} /></Section>
         <MadeForYou key={"mixes:"+user?.id} catalog={personalCatalog} genres={personalGenres}/>
-        <SharedWithYou key={"shared:"+user?.id} catalog={personalCatalog}/>
+        <SharedWithYou key={"shared:"+user?.id} catalog={personalCatalog} catalogReady={personal.uid===user?.id}/>
         {recent.length > 0 && <Section title="Recently played"><CardRow tracks={recent} /></Section>}
         <Section title="Trending" icon={TrendingUp} seeAllTo="/top">
           <CardRow tracks={trending} />
