@@ -53,6 +53,28 @@ export const base44 = new Proxy(raw,{get(target,name) {
   if(name==='auth') return {...target.auth,updateMe:async data=>{
     // Only these non-text own-account preferences use the SDK's own-account route.
     // All other profile fields keep the moderated security gateway.
+    const preferenceKeys=['is_artist','show_explicit','adult_confirmed'];
+    const preferenceFields=Object.keys(data||{});
+    if(preferenceFields.length&&preferenceFields.every(key=>preferenceKeys.includes(key))){
+      if(preferenceFields.some(key=>typeof data[key]!=='boolean'))throw new Error('Invalid account preference');
+      const current=await target.auth.me();
+      if(!current?.id||current.is_blocked||current.disabled)throw new Error('Account unavailable');
+      if(current.role==='admin'&&data.is_artist===true)throw new Error('Administrators cannot enable Artist Mode');
+      if(data.show_explicit===true&&!(data.adult_confirmed===true||current.adult_confirmed===true))throw new Error('Confirm that you are 18 or older to show explicit content');
+      // The SDK endpoint can update only the signed-in account. These boolean
+      // preferences have their own field permissions; text moderation stays in the gateway.
+      await target.auth.updateMe(data);
+      const confirmed=await target.auth.me();
+      if(confirmed?.id!==current.id||preferenceFields.some(key=>confirmed[key]!==data[key]))throw new Error('This setting was not confirmed. Please retry.');
+      if(data.is_artist!==undefined){
+        try{
+          const page=await target.entities.PublicProfile.filter({user_id:current.id},'-updated_date',1);
+          const row=(Array.isArray(page)?page:page?.items||[])[0];
+          if(row)await target.entities.PublicProfile.update(row.id,{is_artist:data.is_artist});
+        }catch{}
+      }
+      return confirmed;
+    }
     const colorKeys=['profile_background_mode','profile_background_colors','profile_background_motion','profile_background_speed','featured_track_id','onboarding_completed'];
     const keys=Object.keys(data||{});
     if(keys.length&&keys.every(key=>colorKeys.includes(key))){
