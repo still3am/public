@@ -13,6 +13,6 @@ export function prepareTrackShare(){
 export function getTrackShareUrl(track){
  if(!track?.id)throw Error('Song unavailable');
  const id=encodeURIComponent(track.id);
- if(available&&track.is_published===true&&track.explicit!==true)return PUBLIC_ORIGIN+'/functions/share-track?id='+id;
+ if(available&&track.is_published===true)return PUBLIC_ORIGIN+'/functions/share-track?id='+id;
  return PUBLIC_ORIGIN+'/track/'+id;
 }
