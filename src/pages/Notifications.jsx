@@ -1,8 +1,7 @@
-import { useState } from "react";
 import LoadError from '@/components/LoadError';
 import SafetyControls from '@/components/SafetyControls';
 import {useSafety} from '@/context/SafetyContext';
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { formatDistanceToNow } from "date-fns";
 import {
   Bell,
@@ -44,11 +43,13 @@ function getMessage(n) {
 
 export default function Notifications() {
   const {blocked}=useSafety();
-  const [view,setView]=useState("all");
+  const [params,setParams]=useSearchParams();
+  const view=["all","unread","music","shared"].includes(params.get("view"))?params.get("view"):"all";
+  const setView=value=>setParams(previous=>{const next=new URLSearchParams(previous);if(value==="all")next.delete("view");else next.set("view",value);return next;},{replace:true});
   const { notifications, loading, error, hasMore, reload, loadMore, unreadCount, markAllAsRead, markAsRead } =
   useNotifications();
 
-  const visibleNotifications=notifications.filter(n=>!blocked.has(n.actor_id)&&(view!=="unread"||!n.read)&&(view!=="music"||n.type==="track_shared"||n.type==="new_upload_from_followed"));
+  const visibleNotifications=notifications.filter(n=>!blocked.has(n.actor_id)&&(view!=="unread"||!n.read)&&(view!=="music"||n.type==="track_shared"||n.type==="new_upload_from_followed")&&(view!=="shared"||n.type==="track_shared"));
 
   if (loading && !notifications.length) {
     return (
@@ -61,7 +62,7 @@ export default function Notifications() {
   return (
     <div className="notifications-page max-w-2xl mx-auto">
       <header className="page-intro"><p className="eyebrow">Your community</p><h1>Activity</h1><p>New followers, shared songs, and conversations.</p></header>
-      <div className="view-switch mb-5" role="group" aria-label="Notification filter">{[["all","All"],["unread","Unread"],["music","Music"]].map(([value,label])=><button key={value} aria-pressed={view===value} onClick={()=>setView(value)} className={view===value?"active":""}>{label}{value==="unread"&&unreadCount>0&&<span className="ml-2 tabular-nums">{unreadCount}</span>}</button>)}</div>
+      <div className="view-switch mb-5" role="group" aria-label="Notification filter">{[["all","All"],["unread","Unread"],["music","Music"],["shared","Shared"].map(([value,label])=><button key={value} aria-pressed={view===value} onClick={()=>setView(value)} className={view===value?"active":""}>{label}{value==="unread"&&unreadCount>0&&<span className="ml-2 tabular-nums">{unreadCount}</span>}</button>)}</div>
       <div className="flex items-center justify-between gap-3 mb-5">
         
 
@@ -85,7 +86,7 @@ export default function Notifications() {
       {visibleNotifications.length === 0 ?
       <EmptyState
         icon={Bell}
-        title={hasMore?"No matches in this activity":view==="unread"?"You’re all caught up":view==="music"?"No music activity here yet":"No notifications yet"}
+        title={hasMore?"No matches in this activity":view==="unread"?"You’re all caught up":view==="shared"?"No shared songs here yet":view==="music"?"No music activity here yet":"No notifications yet"}
         description="When someone follows you, likes your track, sends you a song, or comments on your profile, you'll see it here." /> :
 
 
