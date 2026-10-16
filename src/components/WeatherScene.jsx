@@ -1,17 +1,19 @@
 import MotionGradient from '@/components/MotionGradient';
 const palettes = {
  ambient:['#283d91','#b2498d','#287d82'],
- sun:['#b35b24','#ed9260','#455caa'],
- night:['#25358d','#8d3c92','#1e6c83'],
+ sun:['#d17632','#efb06a','#668cae'],
+ night:['#172755','#513b85','#1c526c'],
  'cloud-night':['#293577','#8a427d','#336b82'],
  rain:['#24587e','#6e4d9f','#29817a'],
  'rain-night':['#252858','#68417e','#24647a'],
- storm:['#34256d','#925270','#2c6478'],
- snow:['#456b8f','#8e74b1','#4b8f96'],
- fog:['#49637a','#9a7c93','#4a807c'],
- cloud:['#486a85','#ae738b','#5b728f'],
+ storm:['#20263f','#65557e','#344d68'],
+ snow:['#819db7','#b6b0cb','#638f9f'],
+ fog:['#6b7d87','#a099aa','#67858b'],
+ cloud:['#56738e','#9b9aaa','#697e96'],
 };
+// Keep weather abstract: condition controls color and the pace of the flowing mesh.
+const speeds={ambient:.7,sun:.9,night:.4,'cloud-night':.45,rain:.6,'rain-night':.5,storm:1.35,snow:.35,fog:.35,cloud:.55};
 export default function WeatherScene({scene='ambient'}){
- return <><MotionGradient className="atmosphere-gradient" colors={palettes[scene] || palettes.ambient} speed={.85} /><div className="atmosphere-gradient-shade" aria-hidden="true" /></>;
+ return <><MotionGradient className="atmosphere-gradient" colors={palettes[scene] || palettes.ambient} speed={speeds[scene] ?? speeds.ambient} /><div className="atmosphere-gradient-shade" aria-hidden="true" /></>;
 }
 
