@@ -1,6 +1,6 @@
 import {useEffect,useRef,useState} from "react";
 import {Link} from "react-router-dom";
-import {X,Lightbulb,GitMerge,Trash2,ChevronRight,Sparkles,BarChart3,Loader2,LogOut,Sun,Moon,Shield,Headphones,FileText,Music2} from "lucide-react";
+import {X,Lightbulb,GitMerge,Trash2,ChevronRight,Sparkles,BarChart3,Loader2,LogOut,Sun,Moon,Shield,Headphones,FileText} from "lucide-react";
 import {reportActionError} from "@/lib/actionError";
 import {useTheme} from "@/lib/useTheme";
 import {useAuth} from "@/lib/AuthContext";
@@ -27,19 +27,18 @@ function SettingGroup({title,children}){
 /** @param {any} props */
 export default function SettingsSheet({onClose,onDeleteAccount}){
  const safety=useSafety(),{user,checkUserAuth}=useAuth(),theme=useTheme();
- const [artist,setArtist]=useState(!!user?.is_artist),[explicit,setExplicit]=useState(user?.show_explicit===true&&user?.adult_confirmed===true);
+ const [artist,setArtist]=useState(!!user?.is_artist);
  const [saving,setSaving]=useState(""),[unblocking,setUnblocking]=useState(""),[loggingOut,setLoggingOut]=useState(false);
  const lock=useRef(false),logoutLock=useRef(false),blockedLock=useRef(false);
  useEffect(()=>{const previous=document.body.style.overflow;document.body.style.overflow="hidden";return()=>{document.body.style.overflow=previous;};},[]);
- useEffect(()=>{setArtist(!!user?.is_artist);setExplicit(user?.show_explicit===true&&user?.adult_confirmed===true);},[user?.id,user?.is_artist,user?.show_explicit,user?.adult_confirmed]);
+ useEffect(()=>{setArtist(!!user?.is_artist);},[user?.id,user?.is_artist]);
  async function preference(key,value){
   if(!user?.id||lock.current||logoutLock.current)return;
-  if(key==="show_explicit"&&value&&!window.confirm("I confirm I am at least 18 and want to see explicit music."))return;
   lock.current=true;setSaving(key);
-  const before=key==="is_artist"?artist:explicit,set=key==="is_artist"?setArtist:setExplicit;
+  const before=artist,set=setArtist;
   try{
-   const saved=await base44.auth.updateMe(key==="is_artist"?{is_artist:value}:{show_explicit:value,adult_confirmed:value||!!user.adult_confirmed});
-   if(saved?.id!==user.id||saved[key]!==value||(key==="show_explicit"&&value&&saved.adult_confirmed!==true))throw new Error("This setting was not confirmed. Please retry.");
+   const saved=await base44.auth.updateMe({is_artist:value});
+   if(saved?.id!==user.id||saved[key]!==value)throw new Error("This setting was not confirmed. Please retry.");
    set(value);
    await checkUserAuth({silent:true});
 
@@ -68,7 +67,6 @@ export default function SettingsSheet({onClose,onDeleteAccount}){
    </header>
    <div className="min-h-0 overflow-y-auto overscroll-contain px-4 md:px-5 pt-5 pb-[calc(1.5rem+env(safe-area-inset-bottom))] space-y-6">
     <SettingGroup title="Listening & appearance">
-     <SettingRow icon={Music2} title="Explicit music" description="Show songs marked explicit. Ages 18+."><SettingSwitch label="Show explicit music" checked={explicit} busy={!!saving||loggingOut} onChange={v=>preference("show_explicit",v)}/></SettingRow>
      <SettingRow icon={GitMerge} title="Song transitions" description="Crossfade and gapless playback" to="/settings/transitions" onClick={onClose}/>
      <SettingRow icon={theme.isDark?Moon:Sun} title="Dark appearance" description={theme.isDark?"Dark backgrounds, softer light":"Light backgrounds, clear contrast"}><SettingSwitch label="Dark appearance" checked={theme.isDark} onChange={theme.toggle}/></SettingRow>
     </SettingGroup>
