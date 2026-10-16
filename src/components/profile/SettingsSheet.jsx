@@ -42,7 +42,7 @@ export default function SettingsSheet({onClose,onDeleteAccount}){
    if(saved?.id!==user.id||saved[key]!==value||(key==="show_explicit"&&value&&saved.adult_confirmed!==true))throw new Error("This setting was not confirmed. Please retry.");
    set(value);
    await checkUserAuth({silent:true});
-   if(key==="show_explicit")window.dispatchEvent(new Event("catalog:invalidate"));
+
   }catch(error){set(before);reportActionError(error,"Couldn’t save this setting. Please try again.");}
   finally{lock.current=false;setSaving("");}
  }
