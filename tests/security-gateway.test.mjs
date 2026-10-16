@@ -30,7 +30,7 @@ const reset=()=>{
  globalThis.__client={auth:{me:async()=>user?clone(user):null},entities:handlers,asServiceRole:{entities:handlers,integrations:{Core:{InvokeLLM:async()=>({allowed:true,reason:''}),CreateFileSignedUrl:async({file_uri})=>({signed_url:"https://signed.example.test/"+file_uri})}}}};
 };
 const load=async path=>{
- let code=fs.readFileSync(new URL('../'+path,import.meta.url),'utf8').replace(/import \{ createClientFromRequest \} from [^;]+;/,"const createClientFromRequest=()=>globalThis.__client;");
+ let code=fs.readFileSync(new URL('../'+path,import.meta.url),'utf8').replace(/import\s*\{\s*createClientFromRequest\s*\}\s*from\s*[^;]+;/,"const createClientFromRequest=()=>globalThis.__client;");
  code=ts.transpileModule(code,{compilerOptions:{target:ts.ScriptTarget.ES2022,module:ts.ModuleKind.ESNext}}).outputText;
  return (await import('data:text/javascript;base64,'+Buffer.from(code).toString('base64'))).default;
 };
