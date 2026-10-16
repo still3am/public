@@ -61,13 +61,15 @@ export function useGlobalSearch(query,scope="all") {
       }
     }, DEBOUNCE_MS);
 
-    return () => clearTimeout(timer);
+    return () => {clearTimeout(timer);if(reqId.current===id)reqId.current+=1;};
   }, [term, nonce,scope]);
 
   const refresh = useCallback(() => {
     forceFresh.current = true;
     setNonce((n) => n + 1);
   }, []);
+
+  useEffect(()=>{const changed=()=>{reqId.current+=1;setResults(EMPTY);refresh();};window.addEventListener("catalog:invalidate",changed);window.addEventListener("account:cleared",changed);return()=>{window.removeEventListener("catalog:invalidate",changed);window.removeEventListener("account:cleared",changed);};},[refresh]);
 
   return {
     ...results,
