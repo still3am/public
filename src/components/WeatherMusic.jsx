@@ -44,7 +44,7 @@ export default function WeatherMusic({ weather, city, unit, loading, error, onRe
     {lock.current = false;setStarting(false);}
   }
   return <div className="weather-music-shell">
-  <WeatherScene scene={atmosphere.scene} />
+  <WeatherScene scene={atmosphere.scene} brand={configuring || !city} />
   <header className="weather-music-toolbar"><DialogClose asChild><button type="button" aria-label={configuring && city ? "Back to music" : "Back to Home"} onClick={event=>{if(configuring&&city){event.preventDefault();setConfiguring(false);}}}><ChevronLeft size={22} /></button></DialogClose><div><DialogTitle>{configuring ? 'YOUR ATMOSPHERE' : 'PUBLIC ATMOSPHERES'}</DialogTitle><DialogDescription className="sr-only">A flowing gradient and a soundtrack for your chosen city.</DialogDescription></div><button type="button" aria-label="Change weather city" aria-expanded={configuring} onClick={() => setConfiguring((value) => city ? !value : true)}><MapPin size={19} /></button></header>
   <div className="weather-music-scroll" ref={scroll}>
    {!configuring && <section className="weather-music-summary" aria-busy={loading}><button type="button" className="weather-music-city" onClick={() => setConfiguring((value) => city ? !value : true)}>{city ? city.label.split(',')[0] : 'Your city'}</button>
