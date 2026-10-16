@@ -1,6 +1,7 @@
+import WeatherMusic from '@/components/WeatherMusic';
 import {useCallback,useEffect,useRef,useState} from 'react';
-import {Sun,Moon,CloudSun,CloudMoon,Cloud,CloudFog,CloudDrizzle,CloudRain,CloudSnow,CloudLightning,MapPin,Search,Loader2,RefreshCw} from 'lucide-react';
-import {Dialog,DialogTrigger,DialogContent,DialogHeader,DialogTitle,DialogDescription} from '@/components/ui/dialog';
+import {Sun,Moon,CloudSun,CloudMoon,Cloud,CloudFog,CloudDrizzle,CloudRain,CloudSnow,CloudLightning,MapPin,Search,Loader2} from 'lucide-react';
+import {Dialog,DialogTrigger,DialogContent} from '@/components/ui/dialog';
 import {useAuth} from '@/lib/AuthContext';
 import {fetchWeather,searchWeatherCities,normalizeWeatherCity,weatherCondition,weatherTemperature,WEATHER_TTL} from '@/lib/weather';
 const icons={sun:Sun,moon:Moon,partly:CloudSun,'night-cloud':CloudMoon,cloud:Cloud,fog:CloudFog,drizzle:CloudDrizzle,rain:CloudRain,snow:CloudSnow,storm:CloudLightning};
@@ -48,21 +49,16 @@ function WeatherIndicator({owner}){
  function clearCity(){request.current++;controller.current?.abort();setPreferences(previous=>({...previous,city:null}));setWeather(null);setLoading(false);setError('');}
  return <Dialog open={open} onOpenChange={setOpen}>
   <DialogTrigger asChild><button type="button" className="home-weather-chip" aria-label={label} title={label}>{loading&&!weather?<Loader2 size={20} className="animate-spin"/>:<Icon size={21} strokeWidth={1.6}/>}<span>{weather?weatherTemperature(weather.temperature,unit):'Weather'}</span></button></DialogTrigger>
-  <DialogContent className="home-weather-dialog" data-public-dialog>
-   <DialogHeader><DialogTitle>Weather</DialogTitle><DialogDescription>A little context for your listening.</DialogDescription></DialogHeader>
-   {city&&<section className="home-weather-current" aria-busy={loading}>
-    <p className="home-weather-location"><MapPin size={14}/>{city.label}</p>
-    {weather?<><Icon size={42} strokeWidth={1.3}/><div className="home-weather-temperature">{weatherTemperature(weather.temperature,unit)}</div><p className="font-medium">{condition.label}</p>{weather.feelsLike!==null&&<p className="text-sm text-muted-foreground">Feels like {weatherTemperature(weather.feelsLike,unit)}</p>}<p className="text-xs text-muted-foreground mt-3">{error?'Last update':'Updated'} {new Date(weather.observedAt).toLocaleTimeString([],{hour:'numeric',minute:'2-digit'})}</p></>:<p className="text-sm py-5">{loading?'Loading current weather…':'Current weather unavailable'}</p>}
-    <div className="home-weather-controls"><div className="home-weather-units" role="group" aria-label="Temperature units">{['F','C'].map(value=><button type="button" key={value} aria-pressed={unit===value} onClick={()=>setPreferences(previous=>({...previous,unit:value}))}>°{value}</button>)}</div><button type="button" className="playlist-action" disabled={loading} onClick={()=>refresh(true)}><RefreshCw size={14} className={loading?'animate-spin':''}/>Refresh</button></div>
-   </section>}
-   {error&&<p role="alert" className="text-sm text-destructive">{error}</p>}
+  {open&&<DialogContent className="home-weather-dialog weather-experience" data-public-dialog>
+   <WeatherMusic weather={weather} city={city} unit={unit} loading={loading} error={error} onRefresh={()=>refresh(true)} onUnitChange={value=>setPreferences(previous=>({...previous,unit:value}))}>
    <section className="space-y-3"><h3 className="text-sm font-semibold">{city?'Change city':'Choose your city'}</h3><p className="text-xs text-muted-foreground leading-relaxed">City searches and weather are provided by Open-Meteo. Your chosen city stays on this device and isn’t added to your PUBLIC profile.</p>
     <form onSubmit={search} className="home-weather-search"><input aria-label="Search weather cities" value={query} maxLength={100} placeholder="City or postal code" onChange={event=>{searchRequest.current++;searchController.current?.abort();setSearching(false);setQuery(event.target.value);setResults(null);setSearchError('');}}/><button type="submit" aria-label="Search cities" disabled={searching||query.trim().length<2}>{searching?<Loader2 size={18} className="animate-spin"/>:<Search size={18}/>}</button></form>
     {searchError&&<p role="alert" className="text-sm text-destructive">{searchError}</p>}
-    {results&&<div className="home-weather-results">{results.length?results.map(place=><button type="button" key={place.id} onClick={()=>{setPreferences(previous=>({...previous,city:place}));setOpen(false);}}><MapPin size={16}/><span>{place.label}</span></button>):<p className="text-sm text-muted-foreground p-3">No cities found. Try adding a state or country.</p>}</div>}
+    {results&&<div className="home-weather-results">{results.length?results.map(place=><button type="button" key={place.id} onClick={()=>{setWeather(null);setPreferences(previous=>({...previous,city:place}));}}><MapPin size={16}/><span>{place.label}</span></button>):<p className="text-sm text-muted-foreground p-3">No cities found. Try adding a state or country.</p>}</div>}
    </section>
    <footer className="home-weather-footer"><a href="https://open-meteo.com/" target="_blank" rel="noreferrer">Weather by Open-Meteo</a><a href="https://www.geonames.org/" target="_blank" rel="noreferrer">City data: GeoNames</a>{city&&<button type="button" onClick={clearCity}>Remove city</button>}</footer>
-  </DialogContent>
+   </WeatherMusic>
+  </DialogContent>}
  </Dialog>;
 }
 export default function HomeWeather(){const {user}=useAuth();const owner=user?.id||'guest';return <WeatherIndicator key={owner} owner={owner}/>;}
