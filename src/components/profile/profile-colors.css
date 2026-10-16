@@ -79,16 +79,3 @@
 .profile-spectrum-fine summary{font-size:12px;color:hsl(var(--muted-foreground));padding:10px 0;cursor:pointer;min-height:40px;}
 .profile-spectrum-editor>.profile-color-hint{text-align:center!important;margin-top:18px;}
 @media(max-width:359px){.profile-spectrum-editor{padding:16px;}.profile-spectrum-cursor{width:22px;height:22px;}}
-
-/* Soft luminous spectrum inspired by the reference, rather than a circular disk. */
-.profile-spectrum-editor{background:#080808;color:#fff;border-color:#ffffff1c;padding:20px;}
-.profile-spectrum-editor .profile-color-hint,.profile-spectrum-editor .profile-spectrum-title>span:last-child,.profile-spectrum-editor .profile-spectrum-slider>span>span,.profile-spectrum-editor .profile-spectrum-fine summary{color:#ffffffa6;}
-.profile-spectrum-wheel{width:min(80%,220px);aspect-ratio:2/3;margin:28px auto 24px;border-radius:26% / 18%;background:transparent;box-shadow:none;}
-.profile-spectrum-wheel::before{content:"";position:absolute;inset:4px;border-radius:inherit;background:conic-gradient(#00f,#f0b,#f50,#0ca,#00f);filter:blur(16px);opacity:.55;pointer-events:none;}
-.profile-spectrum-paint{position:absolute;inset:0;border-radius:inherit;overflow:hidden;filter:blur(2px);background:radial-gradient(ellipse at center,#fff9,transparent 70%),conic-gradient(#00f,#f0b,#f50,#0ca,#00f);pointer-events:none;}
-.profile-spectrum-paint canvas{display:block;width:100%;height:100%;}
-.profile-spectrum-darken{border-radius:inherit;filter:blur(2px);}
-.profile-spectrum-editor .profile-spectrum-slider input[type=range]{accent-color:#fff;}
-.profile-spectrum-editor .profile-spectrum-wheel:focus-visible{outline-color:white;}
-.profile-spectrum-cursor{width:22px;height:22px;z-index:1;}
-@media(max-width:359px){.profile-spectrum-wheel{width:78%;margin-block:22px;}}
