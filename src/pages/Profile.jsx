@@ -251,7 +251,7 @@ export default function Profile({ ownProfileTab = false }) {
 
   async function uploadAvatar(file) {
     if (avatarBusy.current || !isOwn || !file) return;
-    if (!file.type.startsWith("image/") || file.size > 10 * 1024 * 1024) {reportActionError(new Error("Choose an image under 10 MB."));return;}
+    if (!file.type.startsWith("image/") || file.size > 10 * 1024 * 1024) {reportActionError(null, "Choose an image under 10 MB.");return;}
     avatarBusy.current = true;const version = ++avatarVersion.current;
     setUploadingAvatar(true);
     try {
@@ -259,7 +259,7 @@ export default function Profile({ ownProfileTab = false }) {
       if (!file_url) throw new Error("Your profile image did not upload. Please retry.");
       if (version === avatarVersion.current) setForm((f) => ({ ...f, avatar_url: file_url }));
     } catch (error) {
-      if (version === avatarVersion.current) reportActionError(error);
+      if (version === avatarVersion.current) reportActionError(error, "Your profile image could not upload. Please retry.");
     } finally {if (version === avatarVersion.current) {avatarBusy.current = false;setUploadingAvatar(false);}}
   }
 
@@ -270,7 +270,7 @@ export default function Profile({ ownProfileTab = false }) {
       const update = { featured_track_id: id };
       await base44.auth.updateMe(update);
       const confirmed = await base44.auth.me();
-      if ((confirmed.featured_track_id || "") !== id) return false;
+      if ((confirmed.featured_track_id || "") !== id) throw new Error("Profile song did not save");
       chosenProfileSong.current = chosen?.id === id ? chosen : null;
       if (chosen) setFeaturedCoverUrl(chosen.cover_art_url || "");
       setProfile((previous) => ({ ...previous, ...update }));
@@ -279,7 +279,7 @@ export default function Profile({ ownProfileTab = false }) {
       window.dispatchEvent(new Event("profiles:changed"));
       await checkUserAuth({ silent: true });
       return true;
-    } catch {return false;} finally {profileSongSaving.current = false;}
+    } catch (error) {reportActionError(error, "Your profile song could not save. Please retry.");return false;} finally {profileSongSaving.current = false;}
   }
 
   async function saveProfile() {
@@ -294,7 +294,7 @@ export default function Profile({ ownProfileTab = false }) {
       setProfile(confirmed);setForm(formFromProfile(confirmed));
       await checkUserAuth({ silent: true });
       setEditMode(false);
-    } catch (error) {reportActionError(error);} finally {setSaving(false);}
+    } catch (error) {reportActionError(error, "Your profile changes could not save. Please retry.");} finally {setSaving(false);}
   }
 
   function cancelEdit() {
@@ -308,7 +308,7 @@ export default function Profile({ ownProfileTab = false }) {
     try {
       const result = await shareLink({ title: displayName, url: window.location.origin + '/profile/' + encodeURIComponent(targetId) });
       if (result === 'copied') {setCopied(true);setTimeout(() => setCopied(false), 1500);}
-    } catch (error) {reportActionError(error);}
+    } catch (error) {reportActionError(error, "Your profile link could not be shared or copied. Please retry.");}
   }
 
   async function confirmDelete() {
