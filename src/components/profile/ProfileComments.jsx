@@ -34,14 +34,14 @@ export default function ProfileComments({ profileId, isOwn, active = true }) {
     setError(false);
     try {
       const items=await readAllPages(options=>base44.entities.ProfileComment.filter({profile_id:profileId},{sort:"-created_date",...options}));
-      if(request!==requestVersion.current||currentProfile.current!==profileId||!alive.current)return;
+      if(request!==requestVersion.current||identity.current!==scope||currentProfile.current!==profileId||!alive.current)return;
       items.forEach(row=>confirmed.current.delete(row.id));
       const merged=new Map([...items,...confirmed.current.values()].filter(row=>!deleting.current.has(row.id)).map(row=>[row.id,row]));
       setComments([...merged.values()].sort((a,b)=>(b.created_date||'').localeCompare(a.created_date||'')));
     } catch {
-      if(request===requestVersion.current)setError(true);
+      if(request===requestVersion.current&&identity.current===scope)setError(true);
     } finally {
-      if(request===requestVersion.current)setLoading(false);
+      if(request===requestVersion.current&&identity.current===scope)setLoading(false);
     }
   }, [profileId,user?.id]);
 
