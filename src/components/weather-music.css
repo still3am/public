@@ -79,14 +79,11 @@
  .weather-music-scroll{padding-inline:48px;padding-top:88px;}
  .weather-music-toolbar{padding:16px 24px;}
  .weather-music-summary{margin-bottom:28px;}
- .weather-music-content{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:0 32px;max-width:800px;}
- .weather-music-heading{grid-column:1/-1;margin-bottom:30px;}
+ .weather-music-content{max-width:660px;}
+ .weather-music-heading{margin-bottom:30px;}
  .weather-music-heading h2{font-size:44px;}
- .weather-music-artwork{grid-column:1;grid-row:2;align-self:start;width:100%;}
- .weather-music-play-actions{grid-column:1;grid-row:3;width:100%;align-self:start;}
- .weather-music-track-list{grid-column:2;grid-row:2/5;min-width:0;}
- .weather-music-selection-note{grid-column:1;}
- .weather-music-content>.weather-music-notice,.weather-music-content>.weather-music-loading{grid-column:1/-1;}
+ .weather-music-artwork{width:min(100%,420px);}
+ .weather-music-play-actions{max-width:420px;}
 }
 @media(prefers-reduced-motion:reduce){.atmosphere-gradient canvas{transition:none!important;}}
 
