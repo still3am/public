@@ -246,7 +246,7 @@ export default function FullScreenPlayer({ onClose }) {
     }}>
 
       <MotionGradient colors={playerPalette} speed={.85} active={!showQueue&&!showMixer&&!loungeOpen} className="absolute inset-0 z-0" />
-      <div aria-hidden="true" className="pointer-events-none absolute inset-0 z-0" style={{ background: "linear-gradient(180deg, rgba(5,6,10,.14) 0%, rgba(5,6,10,.08) 38%, rgba(5,6,10,.48) 100%)" }} />
+
 
 
       {/* top bar */}
