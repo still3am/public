@@ -63,15 +63,12 @@
 /* Immersive mixes: one moving canvas, a single title, and a tinted song surface. */
 .public-app .personal-mix-immersive{
  --foreground:0 0% 100%;--muted-foreground:0 0% 78%;--card:240 12% 10%;--background:240 14% 6%;--muted:240 8% 18%;--accent:240 8% 21%;--border:0 0% 100%;
- position:relative;isolation:isolate;margin-inline:calc(-1 * var(--app-gutter));padding:0 var(--app-gutter) 48px;color:#fff;
+ position:relative;isolation:isolate;min-height:100svh;margin-inline:calc(-1 * var(--app-gutter));padding:0 var(--app-gutter) 48px;color:#fff;
  background:#101018;background:color-mix(in srgb,var(--mix-tint) 22%,#09090e);
 }
-.personal-mix-atmosphere{position:absolute;inset:0 0 auto;height:850px;z-index:-1;overflow:hidden;pointer-events:none;}
+.personal-mix-atmosphere{position:absolute;inset:0;z-index:-1;overflow:hidden;pointer-events:none;}
 .personal-mix-page-gradient{position:absolute!important;inset:0;}
-.personal-mix-atmosphere-shade{position:absolute;inset:0;background:linear-gradient(180deg,#0001 0%,#0001 25%,#0009 55%,#101018 100%);}
-@supports(background:color-mix(in srgb,red,black)){
- .personal-mix-atmosphere-shade{background:linear-gradient(180deg,#0001 0%,#0001 25%,#0009 55%,color-mix(in srgb,var(--mix-tint) 22%,#09090e) 100%);}
-}
+.personal-mix-atmosphere-shade{position:absolute;inset:0;background:linear-gradient(180deg,#0002 0%,#0007 22%,#0009 40%,#0009 100%);}
 .public-app .personal-mix-immersive .release-header-full{margin:0 0 24px;padding:0;background:transparent;text-align:center;}
 .personal-mix-open-art{height:clamp(220px,52vw,380px);}
 .personal-mix-eyebrow{font-size:10px;line-height:1.5;letter-spacing:.2em;font-weight:650;color:#fff9;margin-bottom:10px;}
@@ -91,7 +88,6 @@
 .personal-mix-immersive .release-credits{color:#fff7;font-size:11px;line-height:1.6;margin-top:24px;}
 .public-app .personal-mix-immersive .release-round{color:white;background:#0003!important;border-color:#ffffff24;}
 @media(max-width:767px){
- .personal-mix-atmosphere{height:760px;}
  .personal-mix-open-art{height:clamp(190px,53vw,310px);}
  .public-app .personal-mix-immersive .release-header-full h1{font-size:clamp(30px,8.5vw,42px);}
  .public-app .personal-mix-immersive .release-play-controls{gap:12px;}
