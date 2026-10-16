@@ -1,6 +1,6 @@
 import WeatherMusic from '@/components/WeatherMusic';
 import {useCallback,useEffect,useRef,useState} from 'react';
-import {Sun,Moon,CloudSun,CloudMoon,Cloud,CloudFog,CloudDrizzle,CloudRain,CloudSnow,CloudLightning,MapPin,Search,Loader2} from 'lucide-react';
+import {Sun,Moon,CloudSun,CloudMoon,Cloud,CloudFog,CloudDrizzle,CloudRain,CloudSnow,CloudLightning,MapPin,Search,Loader2,Check,X} from 'lucide-react';
 import {Dialog,DialogTrigger,DialogContent} from '@/components/ui/dialog';
 import {useAuth} from '@/lib/AuthContext';
 import {fetchWeather,searchWeatherCities,normalizeWeatherCity,weatherCondition,weatherTemperature,WEATHER_TTL} from '@/lib/weather';
@@ -51,12 +51,17 @@ function WeatherIndicator({owner}){
   <DialogTrigger asChild><button type="button" className="home-weather-chip" aria-label={label} title={label}>{loading&&!weather?<Loader2 size={20} className="animate-spin"/>:<Icon size={21} strokeWidth={1.6}/>}<span>{weather?weatherTemperature(weather.temperature,unit):'Weather'}</span></button></DialogTrigger>
   {open&&<DialogContent className="home-weather-dialog weather-experience" data-public-dialog>
    <WeatherMusic weather={weather} city={city} unit={unit} loading={loading} error={error} onRefresh={()=>refresh(true)} onUnitChange={value=>setPreferences(previous=>({...previous,unit:value}))}>
-   <section className="space-y-3"><h3 className="text-sm font-semibold">{city?'Change city':'Choose your city'}</h3><p className="text-xs text-muted-foreground leading-relaxed">City searches and weather are provided by Open-Meteo. Your chosen city stays on this device and isn’t added to your PUBLIC profile.</p>
-    <form onSubmit={search} className="home-weather-search"><input aria-label="Search weather cities" value={query} maxLength={100} placeholder="City or postal code" onChange={event=>{searchRequest.current++;searchController.current?.abort();setSearching(false);setQuery(event.target.value);setResults(null);setSearchError('');}}/><button type="submit" aria-label="Search cities" disabled={searching||query.trim().length<2}>{searching?<Loader2 size={18} className="animate-spin"/>:<Search size={18}/>}</button></form>
-    {searchError&&<p role="alert" className="text-sm text-destructive">{searchError}</p>}
-    {results&&<div className="home-weather-results">{results.length?results.map(place=><button type="button" key={place.id} onClick={()=>{setWeather(null);setPreferences(previous=>({...previous,city:place}));}}><MapPin size={16}/><span>{place.label}</span></button>):<p className="text-sm text-muted-foreground p-3">No cities found. Try adding a state or country.</p>}</div>}
+   <section className="atmosphere-city-picker">
+    <div className="atmosphere-picker-heading"><h3>{city?'Find another city':'Find your city'}</h3><p>A local soundtrack starts with a place.</p></div>
+    {city && <div className="atmosphere-selected-city"><MapPin size={19}/><div><span>CURRENT CITY</span><strong>{city.label.split(',')[0]}</strong><small>{city.label.split(',').slice(1).join(',').trim()}</small></div><Check size={18}/></div>}
+    <form onSubmit={search} className="home-weather-search atmosphere-city-search"><Search size={18} aria-hidden="true"/><input aria-label="Search weather cities" value={query} maxLength={100} placeholder="City or postal code" enterKeyHint="search" autoComplete="off" onChange={event=>{searchRequest.current++;searchController.current?.abort();setSearching(false);setQuery(event.target.value);setResults(null);setSearchError('');}}/>{query&&<button type="button" className="atmosphere-search-clear" aria-label="Clear city search" onClick={()=>{searchRequest.current++;searchController.current?.abort();setQuery('');setResults(null);setSearching(false);setSearchError('');}}><X size={16}/></button>}<button type="submit" aria-label="Search cities" disabled={searching||query.trim().length<2}>{searching?<Loader2 size={18} className="animate-spin"/>:<span>Find</span>}</button></form>
+    {searching&&<p className="atmosphere-city-feedback" role="status">Finding cities…</p>}
+    {searchError&&<p role="alert" className="atmosphere-city-feedback">{searchError}</p>}
+    {results&&<div className="atmosphere-city-results"><p className="atmosphere-results-label">{results.length?'CHOOSE A CITY':'NO CITIES FOUND'}</p>{results.length?results.map(place=><button type="button" key={place.id} aria-pressed={city?.id===place.id} onClick={()=>{searchRequest.current++;searchController.current?.abort();if(city?.id!==place.id){setWeather(null);setPreferences(previous=>({...previous,city:place}));}setQuery('');setResults(null);setSearchError('');}}><span className="atmosphere-result-icon"><MapPin size={18}/></span><span><strong>{place.label.split(',')[0]}</strong><small>{place.label.split(',').slice(1).join(',').trim()}</small></span>{city?.id===place.id&&<Check size={18}/>}</button>):<p className="atmosphere-city-feedback">Try a city name with a state or country.</p>}</div>}
+    <div className="atmosphere-location-note">Saved on this device. Never shown on your profile.</div>
+    <details className="atmosphere-data-details"><summary>Weather &amp; city data</summary><p>Searches and weather are provided by <a href="https://open-meteo.com/" target="_blank" rel="noreferrer">Open-Meteo</a>. City data by <a href="https://www.geonames.org/" target="_blank" rel="noreferrer">GeoNames</a>.</p></details>
+    {city&&<button type="button" className="atmosphere-remove-city" onClick={()=>{searchRequest.current++;searchController.current?.abort();setQuery('');setResults(null);setSearching(false);setSearchError('');clearCity();}}>Remove saved city</button>}
    </section>
-   <footer className="home-weather-footer"><a href="https://open-meteo.com/" target="_blank" rel="noreferrer">Weather by Open-Meteo</a><a href="https://www.geonames.org/" target="_blank" rel="noreferrer">City data: GeoNames</a>{city&&<button type="button" onClick={clearCity}>Remove city</button>}</footer>
    </WeatherMusic>
   </DialogContent>}
  </Dialog>;

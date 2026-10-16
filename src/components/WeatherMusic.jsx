@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { ChevronLeft, MapPin, RefreshCw, Play, Pause, Shuffle, Music2, Loader2, ChevronDown } from 'lucide-react';
+import { ChevronLeft, MapPin, RefreshCw, Play, Pause, Shuffle, Music2, Loader2 } from 'lucide-react';
 import { DialogClose, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { usePlayer } from '@/context/PlayerContext';
 import { getPublishedTracks } from '@/lib/catalogCache';
@@ -45,14 +45,14 @@ export default function WeatherMusic({ weather, city, unit, loading, error, onRe
   }
   return <div className="weather-music-shell">
   <WeatherScene scene={atmosphere.scene} />
-  <header className="weather-music-toolbar"><DialogClose asChild><button type="button" aria-label="Back to Home"><ChevronLeft size={22} /></button></DialogClose><div><DialogTitle>PUBLIC ATMOSPHERES</DialogTitle><DialogDescription className="sr-only">A flowing gradient and a soundtrack for your chosen city.</DialogDescription></div><button type="button" aria-label="Change weather city" aria-expanded={configuring} onClick={() => setConfiguring((value) => !value)}><MapPin size={19} /></button></header>
+  <header className="weather-music-toolbar"><DialogClose asChild><button type="button" aria-label={configuring && city ? "Back to music" : "Back to Home"} onClick={event=>{if(configuring&&city){event.preventDefault();setConfiguring(false);}}}><ChevronLeft size={22} /></button></DialogClose><div><DialogTitle>{configuring ? 'YOUR ATMOSPHERE' : 'PUBLIC ATMOSPHERES'}</DialogTitle><DialogDescription className="sr-only">A flowing gradient and a soundtrack for your chosen city.</DialogDescription></div><button type="button" aria-label="Change weather city" aria-expanded={configuring} onClick={() => setConfiguring((value) => !value)}><MapPin size={19} /></button></header>
   <div className="weather-music-scroll" ref={scroll}>
-   <section className="weather-music-summary" aria-busy={loading}><button type="button" className="weather-music-city" onClick={() => setConfiguring((value) => !value)}>{city ? city.label.split(',')[0] : 'Your city'}</button>
+   {!configuring && <section className="weather-music-summary" aria-busy={loading}><button type="button" className="weather-music-city" onClick={() => setConfiguring((value) => !value)}>{city ? city.label.split(',')[0] : 'Your city'}</button>
     {weather ? <><div className="weather-music-degrees">{weatherTemperature(weather.temperature, unit).replace(/[FC]$/, '')}</div><p>{condition.label}<span> · °{unit}</span></p></> : <p className="weather-music-unset">{loading ? 'Finding the atmosphere…' : 'Choose a city. Find your soundtrack.'}</p>}
-   </section>
-   {(configuring || !city) && <section className="weather-music-settings"><div className="weather-music-preferences"><span>YOUR ATMOSPHERE</span><div role="group" aria-label="Temperature units">{['F', 'C'].map((value) => <button key={value} type="button" aria-pressed={unit === value} onClick={() => onUnitChange(value)}>°{value}</button>)}</div></div>{children}{city && <button type="button" className="weather-music-done" onClick={() => setConfiguring(false)}>Done</button>}</section>}
+   </section>}
+   {(configuring || !city) && <section className="weather-music-settings">{children}<div className="weather-music-preferences"><span>Temperature</span><div role="group" aria-label="Temperature units">{['F', 'C'].map((value) => <button key={value} type="button" aria-pressed={unit === value} onClick={() => onUnitChange(value)}>°{value}</button>)}</div></div>{city && <button type="button" className="weather-music-done" onClick={() => setConfiguring(false)}>Back to the music</button>}</section>}
    {error && <div className="weather-music-notice" role="alert">{error} <button disabled={loading} onClick={onRefresh}>Retry weather</button></div>}
-   {weather && city && <section className="weather-music-content">
+   {weather && city && !configuring && <section className="weather-music-content">
     <div className="weather-music-heading"><p>THE SOUND OF RIGHT NOW</p><h2>{atmosphere.title}</h2><span>{atmosphere.subtitle}</span></div>
     {musicLoading && !tracks.length ? <div className="weather-music-loading"><Loader2 size={24} className="animate-spin" /><p>Finding the music…</p></div> : featured ? <>
      <div className="weather-music-artwork">{cover && !artFailed ? <img src={cover} alt={featured.title + ' artwork'} onError={() => setArtFailed(true)} /> : <div className="weather-music-art-placeholder"><Music2 size={70} /></div>}<div className="weather-music-art-shade" /><div className="weather-music-featured"><div><p>IN THIS ATMOSPHERE</p><h3>{featured.title}</h3><span>{featured.artist || featured.uploader_name}</span></div><button type="button" disabled={starting} onClick={playFeatured} aria-label={player.currentTrack?.id === featured.id && player.isPlaying ? 'Pause ' + featured.title : 'Play ' + featured.title}>{player.currentTrack?.id === featured.id && player.isPlaying ? <Pause size={24} fill="currentColor" /> : <Play size={24} fill="currentColor" />}</button></div></div>
@@ -62,7 +62,7 @@ export default function WeatherMusic({ weather, city, unit, loading, error, onRe
     </> : !musicError && <div className="weather-music-notice">No playable songs are available for this atmosphere yet.</div>}
     {musicError && <div className="weather-music-notice" role="alert">Music could not refresh. <button onClick={() => setRetry((value) => value + 1)}>Retry music</button></div>}
    </section>}
-   <footer className="weather-music-status">{weather && <span>{error ? 'Last update' : 'Weather updated'} {new Date(weather.observedAt).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })}</span>}{city && <button type="button" disabled={loading} onClick={onRefresh}><RefreshCw size={12} className={loading ? 'animate-spin' : ''} />Refresh weather</button>}</footer>
+   {!configuring && <footer className="weather-music-status">{weather && <span>{error ? 'Last update' : 'Weather updated'} {new Date(weather.observedAt).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })}</span>}{city && <button type="button" disabled={loading} onClick={onRefresh}><RefreshCw size={12} className={loading ? 'animate-spin' : ''} />Refresh weather</button>}</footer>}
   </div>
  </div>;
 }
