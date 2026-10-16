@@ -41,3 +41,19 @@
 .shared-song-empty{display:flex;align-items:center;gap:12px;padding:18px;border:1px solid hsl(var(--border));border-radius:18px;color:hsl(var(--muted-foreground));font-size:12px;}
 @media(max-width:359px){.personal-section-heading>span{display:none;}.personal-mix-card{flex-basis:77vw;}.shared-song-cover{flex-basis:64px;width:64px;height:64px;min-height:64px;}}
 @media(min-width:768px){.home-personal-section,.home-shared-section{margin-bottom:48px;}.personal-mix-card{flex-basis:270px;}.personal-mix-art>strong{font-size:44px;}.personal-mix-detail-body{padding:28px;}}
+.personal-mix-brand .personal-mix-logo{width:72px!important;height:auto!important;max-width:none;filter:brightness(0) invert(1);}
+.home-page>.home-shared-section:last-child{padding-bottom:calc(32px + env(safe-area-inset-bottom,0px));margin-bottom:60px;}
+.shared-song-shelf{overscroll-behavior-x:contain;-webkit-overflow-scrolling:touch;scroll-padding-inline:0;touch-action:pan-x pan-y;}
+.shared-song-shelf:focus-visible{outline:2px solid hsl(var(--ring));outline-offset:5px;border-radius:12px;}
+.personal-mix-page .personal-mix-page-art{display:flex;flex-direction:column;justify-content:center;align-items:center;isolation:isolate;color:white;}
+.personal-mix-page-art>.personal-mix-artists{display:none;}
+.personal-mix-page-art>.personal-mix-brand{top:22px;right:22px;}
+.personal-mix-page .personal-mix-page-art>strong{font-size:clamp(42px,10vw,76px);max-width:700px;padding-inline:20px;}
+.personal-mix-page .personal-mix-shade{background:linear-gradient(#0002,transparent 30%,#0002 65%,hsl(var(--background)) 100%);}
+.personal-mix-page .personal-mix-curator{font-size:18px;}
+.personal-mix-page-description{max-width:440px;margin:12px auto 0;font-size:13px;line-height:1.7;color:hsl(var(--muted-foreground));}
+.personal-mix-page-body{max-width:900px;margin-inline:auto;padding-bottom:32px;}
+.personal-mix-page .release-add-button{padding:0;flex:0 0 52px;width:52px;min-width:52px;height:52px;min-height:52px;max-height:52px;aspect-ratio:1;}
+.personal-mix-page .release-play-button{min-width:0;min-height:52px;}
+.personal-mix-page button:disabled{opacity:.5;}
+@media(max-width:767px){.personal-mix-page .personal-mix-page-art{--release-cover-height:100vw;}.personal-mix-page .release-play-controls{gap:10px;}.personal-mix-page .personal-mix-page-art>strong{font-size:clamp(38px,11vw,58px);}.personal-mix-page .personal-mix-page-art>.personal-mix-brand{top:22px;right:20px;}}
