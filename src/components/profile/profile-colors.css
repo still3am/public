@@ -4,7 +4,7 @@
 .profile-color-editor p {text-align:left!important;}
 .profile-color-editor .profile-color-body {overflow-y:auto;overscroll-behavior:contain;padding:0 24px 22px;min-height:0;}
 .profile-color-editor .profile-color-preview {min-height:116px;display:flex;align-items:center;gap:14px;padding:20px;border-radius:18px;background-color:#171921;color:#fff;position:relative;isolation:isolate;}
-.profile-color-preview:before {content:"";position:absolute;inset:0;background:#0003;border-radius:inherit;z-index:-1;}
+.profile-color-preview:before {content:"";position:absolute;inset:0;background:transparent;border-radius:inherit;z-index:-1;}
 .profile-color-editor .profile-color-preview img {width:56px;height:56px!important;object-fit:cover;border-radius:10px;box-shadow:0 5px 18px #0003;}
 .profile-color-preview strong {display:block;font-size:20px;letter-spacing:-.03em;}
 .profile-color-preview span {display:block;font-size:12px;opacity:.8;margin-top:3px;}
