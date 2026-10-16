@@ -9,7 +9,7 @@ export async function clearPersonalData({deleteOffline=false,userId=getOfflineAc
   if(deleteOffline&&userId){await clearAll(userId);await clearMeta(userId);}
  }finally{
   try{for(const key of Object.keys(localStorage)){
-   if(!key.startsWith('public:'))continue;
+   if(!key.startsWith('public:')||key==='public:device_id')continue;
    if(key.startsWith('public:offline:')){
     if(deleteOffline&&(key==="public:offline:suppressed:"+userId||(key==="public:offline:legacy-owner"&&localStorage.getItem(key)===userId)))localStorage.removeItem(key);
     continue;

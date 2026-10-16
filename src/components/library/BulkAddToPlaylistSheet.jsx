@@ -18,16 +18,9 @@ export default function BulkAddToPlaylistSheet({ trackIds = [], playlists, error
     if(lock.current||!trackIds.length)return;lock.current=true;
     setBusyId(playlist.id);
     try {
-      const current = playlist.track_ids || [];
-      const added = [...new Set(trackIds)].filter((id) => !current.includes(id));
-      if (added.length) {
-        await addPlaylistTracks(playlist.id,added);
-      }
-      toast({
-        title: added.length
-          ? `Added ${added.length} ${added.length === 1 ? "song" : "songs"} to ${playlist.name}`
-          : "Already in that playlist",
-      });
+      // The server merges against the current playlist; a cached card may be stale.
+      await addPlaylistTracks(playlist.id,[...new Set(trackIds)]);
+      toast({ title:"Playlist updated", description:`Selected songs saved to ${playlist.name}` });
       if(alive.current)onDone?.();
     } catch {
       toast({ title: "Couldn't add to playlist", variant: "destructive" });

@@ -2,18 +2,17 @@
 // device" apart from "my other device".
 
 const KEY = "public:device_id";
+let sessionId = null;
+const newId = () => `d_${globalThis.crypto?.randomUUID?.() || Math.random().toString(36).slice(2)+Date.now().toString(36)}`;
 
 export function getDeviceId() {
+  if(sessionId)return sessionId;
   try {
-    let v = localStorage.getItem(KEY);
-    if (!v) {
-      v = `d_${Math.random().toString(36).slice(2)}${Date.now().toString(36)}`;
-      localStorage.setItem(KEY, v);
-    }
-    return v;
-  } catch {
-    return "d_ephemeral";
-  }
+    const saved=localStorage.getItem(KEY);
+    sessionId=typeof saved==='string'&&saved.startsWith('d_')&&saved.length>2?saved:newId();
+    if(sessionId!==saved)localStorage.setItem(KEY,sessionId);
+  } catch { sessionId=sessionId||newId(); }
+  return sessionId;
 }
 
 export function getDeviceLabel() {

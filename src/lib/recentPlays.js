@@ -5,49 +5,37 @@
 const KEY = "public:recently_played";
 const MAX = 20;
 
+let memory = [];
 function slim(track) {
-  if (!track) return null;
-  return {
-    id: track.id,
-    title: track.title,
-    artist: track.artist,
-    uploader_name: track.uploader_name,
-    uploader_id: track.uploader_id,
-    cover_art_url: track.cover_art_url,
-    audio_url: track.audio_url,
-    _private_audio:!!track._private_audio,
-    duration_seconds: track.duration_seconds,
-    genre: track.genre,
-    explicit: track.explicit,
-    is_published: true,
-  };
+  if (!track || typeof track.id !== "string" || !track.id.trim()) return null;
+  const result = { id:track.id };
+  for (const key of ['title','artist','uploader_name','uploader_id','cover_art_url','audio_url','genre']) result[key]=typeof track[key]==='string'?track[key]:'';
+  result._private_audio=track._private_audio===true;
+  result.explicit=track.explicit===true;
+  result.is_published=track.is_published===true;
+  result.duration_seconds=Number.isFinite(track.duration_seconds)&&track.duration_seconds>=0?track.duration_seconds:0;
+  return result;
 }
-
+function normalize(value) {
+  if (!Array.isArray(value)) return [];
+  const seen=new Set();
+  return value.map(slim).filter(track=>track&&!seen.has(track.id)&&seen.add(track.id)).slice(0,MAX);
+}
 export function getRecentPlays() {
-  try {
-    return JSON.parse(localStorage.getItem(KEY) || "[]");
-  } catch {
-    return [];
-  }
+  try { memory=normalize(JSON.parse(localStorage.getItem(KEY)||"[]")); } catch {}
+  return memory.slice();
 }
-
 export function addRecentPlay(track) {
-  try {
-    const v = JSON.parse(localStorage.getItem(KEY) || "[]");
-    const s = slim(track);
-    if (!s) return v;
-    const next = [s, ...v.filter((t) => t.id !== s.id)].slice(0, MAX);
-    localStorage.setItem(KEY, JSON.stringify(next));
-    window.dispatchEvent(new CustomEvent("recentplays:change"));
-    return next;
-  } catch {
-    return [];
-  }
+  const song=slim(track);
+  if(!song)return getRecentPlays();
+  memory=normalize([song,...getRecentPlays()]);
+  try { localStorage.setItem(KEY,JSON.stringify(memory)); } catch {}
+  window.dispatchEvent(new CustomEvent("recentplays:change"));
+  return memory.slice();
 }
-
 export function clearRecentPlays() {
-  try {
-    localStorage.removeItem(KEY);
-    window.dispatchEvent(new CustomEvent("recentplays:change"));
-  } catch {}
+  memory=[];
+  try { localStorage.removeItem(KEY); } catch {}
+  window.dispatchEvent(new CustomEvent("recentplays:change"));
 }
+window.addEventListener("account:cleared",()=>{memory=[];});
