@@ -1,4 +1,5 @@
 import { shareLink } from '@/lib/shareLink';
+import { reportActionError } from '@/lib/actionError';
 import LoadError from '@/components/LoadError';
 import { useRef } from 'react';
 import { readAllPages } from '@/lib/readPages';
@@ -249,16 +250,16 @@ export default function Profile({ ownProfileTab = false }) {
   }
 
   async function uploadAvatar(file) {
-    if (avatarBusy.current || !isOwn || !file?.type.startsWith("image/") || file.size > 10 * 1024 * 1024) return;
+    if (avatarBusy.current || !isOwn || !file) return;
+    if (!file.type.startsWith("image/") || file.size > 10 * 1024 * 1024) {reportActionError(new Error("Choose an image under 10 MB."));return;}
     avatarBusy.current = true;const version = ++avatarVersion.current;
     setUploadingAvatar(true);
     try {
       const { file_url } = await base44.integrations.Core.UploadFile({ file });
-      if (file_url && version === avatarVersion.current) setForm((f) => ({ ...f, avatar_url: file_url }));
-    } catch {
-
-
-      // Keep the current profile image if upload does not complete.
+      if (!file_url) throw new Error("Your profile image did not upload. Please retry.");
+      if (version === avatarVersion.current) setForm((f) => ({ ...f, avatar_url: file_url }));
+    } catch (error) {
+      if (version === avatarVersion.current) reportActionError(error);
     } finally {if (version === avatarVersion.current) {avatarBusy.current = false;setUploadingAvatar(false);}}
   }
 
@@ -293,7 +294,7 @@ export default function Profile({ ownProfileTab = false }) {
       setProfile(confirmed);setForm(formFromProfile(confirmed));
       await checkUserAuth({ silent: true });
       setEditMode(false);
-    } catch {window.dispatchEvent(new Event("public:error"));} finally {setSaving(false);}
+    } catch (error) {reportActionError(error);} finally {setSaving(false);}
   }
 
   function cancelEdit() {
@@ -307,7 +308,7 @@ export default function Profile({ ownProfileTab = false }) {
     try {
       const result = await shareLink({ title: displayName, url: window.location.origin + '/profile/' + encodeURIComponent(targetId) });
       if (result === 'copied') {setCopied(true);setTimeout(() => setCopied(false), 1500);}
-    } catch {/* Keep the profile available if the system share controls fail. */}
+    } catch (error) {reportActionError(error);}
   }
 
   async function confirmDelete() {
