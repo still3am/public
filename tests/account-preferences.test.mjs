@@ -34,10 +34,10 @@ const sheet=read('src/components/profile/SettingsSheet.jsx');
 const handler=sheet.slice(sheet.indexOf(' async function preference('),sheet.indexOf(' async function logout('));
 let checked=false,busy='',errors=0,confirmed=true,saveFails=false,writes=0;
 const fn=new Function('user','lock','logoutLock','window','artist','explicit','setArtist','setExplicit','setSaving','base44','checkUserAuth','reportActionError',handler+';return preference;');
-const ui=()=>fn({id:'listener',adult_confirmed:false},{current:false},{current:false},{confirm:()=>confirmed},false,checked,()=>{},value=>{checked=value;},value=>{busy=value;},{auth:{updateMe:async data=>{writes++;assert.equal(checked,false,'switch cannot turn on before confirmation');if(saveFails)throw Error('network');return {id:'listener',...data};}}},async()=>{},()=>{errors++;});
-confirmed=false;await ui()('show_explicit',true);assert.equal(writes,0);assert.equal(checked,false);
-confirmed=true;saveFails=true;await ui()('show_explicit',true);assert.equal(checked,false);assert.equal(errors,1);assert.equal(busy,'');
-saveFails=false;await ui()('show_explicit',true);assert.equal(checked,true);assert.equal(busy,'');
+const ui=()=>fn({id:'listener',adult_confirmed:false},{current:false},{current:false},{confirm:()=>confirmed},checked,false,value=>{checked=value;},()=>{},value=>{busy=value;},{auth:{updateMe:async data=>{writes++;assert.equal(checked,false,'switch cannot turn on before confirmation');if(saveFails)throw Error('network');return {id:'listener',...data};}}},async()=>{},()=>{errors++;});
+saveFails=true;await ui()('is_artist',true);assert.equal(checked,false);assert.equal(errors,1);assert.equal(busy,'');
+saveFails=false;await ui()('is_artist',true);assert.equal(checked,true);assert.equal(busy,'');
+assert.ok(!sheet.includes('label="Show explicit music"'),'explicit visibility switch must not remain after opening the public catalog');
 
 // The mirror permission remains owner-scoped; unrelated roles/fields stay protected.
 const schema=JSON.parse(read('base44/entities/User.jsonc'));
