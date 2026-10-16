@@ -3,14 +3,15 @@ import { base44 } from "@/api/base44Client";
 import { useAuth } from "@/lib/AuthContext";
 import { getUsersByIds } from "@/lib/userLookup";
 import { coalesce } from "@/lib/coalesce";
+import { reportActionError } from "@/lib/actionError";
 
 // Lightweight unread-count badge for nav surfaces.
 export function useUnreadCount() {
   const { user } = useAuth();
-  const [count, setCount] = useState(0);
+  const [badge, setBadge] = useState({uid:null,count:0});
 
   useEffect(() => {
-    if (!user) {setCount(0);return;}
+    if (!user) {setBadge({uid:null,count:0});return;}
     let cancelled = false;
     async function load() {
       try {
@@ -22,7 +23,7 @@ export function useUnreadCount() {
           user_id: user.id,
           read: false,
         });
-        if (!cancelled) setCount(unread || 0);
+        if (!cancelled) setBadge({uid:user.id,count:typeof unread==="number"?unread:0});
       } catch {
         /* preserve the last confirmed unread count */
       }
@@ -39,7 +40,7 @@ export function useUnreadCount() {
     };
   }, [user?.id]);
 
-  return count;
+  return badge.uid===user?.id?badge.count:0;
 }
 
 // Notifications load in pages; mark-all is scoped to the current user on the server.
@@ -54,7 +55,9 @@ export function useNotifications(){
   const request=++epoch.current,uid=user.id;busy.current=true;setLoading(true);setError(false);
   try{
    const page=await base44.entities.Notification.filter({user_id:uid},{sort:'-created_date',limit:50,...(!reset&&cursor.current?{cursor:cursor.current}:{})});
-   const items=Array.isArray(page)?page:page.items||[];
+   const items=Array.isArray(page)?page:page?.items;
+   if(!Array.isArray(items))throw Error("Invalid notification response");
+   if(page.has_more&&(!page.next_cursor||page.next_cursor===cursor.current))throw Error("Notifications could not finish loading. Please retry.");
    const actors=await getUsersByIds([...new Set(items.map(n=>n.actor_id||n.sender_id).filter(Boolean))]).catch(()=>[]);
    const actorMap=new Map(actors.map(a=>[a.id,a])),trackMap=new Map();
    const ids=[...new Set(items.map(n=>n.track_id).filter(Boolean))];
@@ -89,7 +92,7 @@ export function useNotifications(){
   markingAll.current=true;const uid=user.id,count=unreadCount,unread=new Set(notifications.filter(n=>!n.read).map(n=>n.id));
   setNotifications(prev=>prev.map(n=>({...n,read:true})));setUnreadCount(0);
   try{const r=await base44.functions.invoke('safety',{action:'markAllRead'});if(r.data?.success!==true)throw Error();}
-  catch{if(account.current===uid){setNotifications(prev=>prev.map(n=>unread.has(n.id)?{...n,read:false}:n));setUnreadCount(count);}}
+  catch(error){if(account.current===uid){setNotifications(prev=>prev.map(n=>unread.has(n.id)?{...n,read:false}:n));setUnreadCount(count);reportActionError(error,"Notifications could not be marked as read. Please retry.");}}
   finally{if(account.current===uid){markingAll.current=false;window.dispatchEvent(new Event("notifications:changed"));load(true);}}
  }
  async function markAsRead(id){
@@ -98,7 +101,7 @@ export function useNotifications(){
   readingIds.current.add(id);
   setNotifications(prev=>prev.map(n=>n.id===id?{...n,read:true}:n));setUnreadCount(n=>Math.max(0,n-1));
   try{await base44.entities.Notification.update(id,{read:true});}
-  catch{if(account.current===uid){setNotifications(prev=>prev.map(n=>n.id===id?{...n,read:false}:n));setUnreadCount(n=>n+1);}}
+  catch(error){if(account.current===uid){setNotifications(prev=>prev.map(n=>n.id===id?{...n,read:false}:n));setUnreadCount(n=>n+1);reportActionError(error,"This notification could not be marked as read. Please retry.");}}
   finally{if(account.current===uid){readingIds.current.delete(id);window.dispatchEvent(new Event("notifications:changed"));}}
  }
  return {notifications,loading,error,hasMore,unreadCount,markAllAsRead,markAsRead,reload:()=>load(true),loadMore:()=>load(false)};
