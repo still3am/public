@@ -62,7 +62,7 @@ export default function Notifications() {
   return (
     <div className="notifications-page max-w-2xl mx-auto">
       <header className="page-intro"><p className="eyebrow">Your community</p><h1>Activity</h1><p>New followers, shared songs, and conversations.</p></header>
-      <div className="view-switch mb-5" role="group" aria-label="Notification filter">{[["all","All"],["unread","Unread"],["music","Music"],["shared","Shared"].map(([value,label])=><button key={value} aria-pressed={view===value} onClick={()=>setView(value)} className={view===value?"active":""}>{label}{value==="unread"&&unreadCount>0&&<span className="ml-2 tabular-nums">{unreadCount}</span>}</button>)}</div>
+      <div className="view-switch mb-5" role="group" aria-label="Notification filter">{[["all","All"],["unread","Unread"],["music","Music"],["shared","Shared"]].map(([value,label])=><button key={value} aria-pressed={view===value} onClick={()=>setView(value)} className={view===value?"active":""}>{label}{value==="unread"&&unreadCount>0&&<span className="ml-2 tabular-nums">{unreadCount}</span>}</button>)}</div>
       <div className="flex items-center justify-between gap-3 mb-5">
         
 
