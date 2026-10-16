@@ -12,12 +12,12 @@ export function buildPersonalMixes(catalog,{recent=[],savedIds=new Set(),genres=
  const mixes=[];
  const add=(id,title,subtitle,palette,list)=>{const chosen=diverse(list);if(chosen.length)mixes.push({id,title,subtitle,palette,tracks:chosen,artists:[...new Set(chosen.map(t=>t.artist||t.uploader_name).filter(Boolean))].slice(0,4).join(', ')});};
  add('fresh',preferred.length?'New Finds':'Fresh on PUBLIC',preferred.length?'New discoveries shaped by your listening and genre picks.':'Start exploring. Your mixes grow with your listening.',['#ff326b','#b4ff46','#3e18ba'],stable(tracks.filter(t=>!heard.has(t.id)&&!savedIds.has(t.id)),'fresh'));
- add('rotation','Back in the Mix','Recent plays and songs you saved.',['#cf124b','#ff745c','#ffbc47'],[...new Map([...played,...stable(tracks.filter(t=>savedIds.has(t.id)),'rotation')].map(t=>[t.id,t])).values()]);
+ add('rotation','Back in the Mix','Recent plays and songs you saved.',['#ff1800','#ff7900','#edff00'],[...new Map([...played,...stable(tracks.filter(t=>savedIds.has(t.id)),'rotation')].map(t=>[t.id,t])).values()]);
  const essentials=tracks.filter(t=>savedIds.has(t.id));
  add('essentials','Your Essentials','A selection from your saved music.',['#5030ff','#40f5dc','#ed71ff'],stable(essentials,'essentials'));
  const energetic=['dance','electronic','afrobeats','reggaeton','latin','trap','hip-hop','hip hop','funk'];
  add('energy','Turn It Up','An upbeat selection, with your tastes first.',['#eaff36','#00d999','#064c75'],stable(tracks.filter(t=>genreMatch(t,energetic)),'energy'));
  const mellow=['ambient','jazz','classical','r&b','soul','indie','lo-fi','lofi','acoustic'];
- add('chill','Slow Down','Softer genres for a change of pace.',['#008e96','#91f4cf','#102b60'],stable(tracks.filter(t=>genreMatch(t,mellow)),'chill'));
+ add('chill','Slow Down','Softer genres for a change of pace.',['#000000','#ffffff','#303030'],stable(tracks.filter(t=>genreMatch(t,mellow)),'chill'));
  return mixes;
 }
