@@ -54,6 +54,7 @@ export default function Login() {
 
   return (
     <AuthLayout
+      brandMotion
       icon={LogIn}
       title="Welcome back"
       subtitle="Log in to your account"
@@ -137,7 +138,6 @@ export default function Login() {
               id="email"
               type="email" inputMode="email" autoCapitalize="none" spellCheck={false}
               autoComplete="email"
-              autoFocus
               placeholder="you@example.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
