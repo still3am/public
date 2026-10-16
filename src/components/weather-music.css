@@ -125,3 +125,4 @@
 .weather-experience .weather-music-preferences button{min-height:38px;width:48px;font-size:13px;}
 .weather-experience .weather-music-done{width:100%;min-height:48px;margin:12px 0 20px;background:white;color:#161827;font-weight:650;font-size:14px;}
 @media(max-width:359px){.atmosphere-picker-heading h3{font-size:27px;}.weather-experience .atmosphere-city-search{padding-left:10px;}.weather-experience .atmosphere-city-search>button{padding-inline:9px;}}
+.atmosphere-gradient-shade--brand{background:linear-gradient(180deg,#0009,#0007 45%,#000c);}
