@@ -40,7 +40,7 @@ export default function PullToRefresh({
     const onStart=event=>{
       const root=rootRef.current,target=event.target;
       if(!isVisible()||!root?.contains(target)||event.touches.length!==1||window.scrollY>0||refreshingRef.current)return;
-      if(target instanceof Element&&target.closest('button,a,input,textarea,select,[role="button"],[role="checkbox"],[role="dialog"],[data-rfd-drag-handle-draggable-id]'))return;
+      if(target instanceof Element&&target.closest('button,a,input,textarea,select,[role="button"],[role="checkbox"],[role="dialog"],[data-rfd-drag-handle-draggable-id],[data-horizontal-scroll]'))return;
       const touch=event.touches[0];startY.current=touch.clientY;startX=touch.clientX;
     };
     const onMove=event=>{
