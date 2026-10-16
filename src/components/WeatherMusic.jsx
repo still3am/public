@@ -12,9 +12,10 @@ import { reportActionError } from '@/lib/actionError';
 import './weather-music.css';
 export default function WeatherMusic({ weather, city, unit, loading, error, onRefresh, onUnitChange, children }) {
   const player = usePlayer(),[catalog, setCatalog] = useState([]),[musicLoading, setMusicLoading] = useState(false),[musicError, setMusicError] = useState(false),[retry, setRetry] = useState(0),[configuring, setConfiguring] = useState(!city);
-  const [starting, setStarting] = useState(false),[artFailed, setArtFailed] = useState(false),lock = useRef(false);
+  const [starting, setStarting] = useState(false),[artFailed, setArtFailed] = useState(false),lock = useRef(false),scroll = useRef(null);
   const atmosphere = weatherAtmosphere(weather);
   useEffect(() => {setConfiguring(!city);}, [city?.id]);
+  useEffect(() => {if (configuring) scroll.current?.scrollTo({top:0,behavior:'instant'});}, [configuring]);
   useEffect(() => {
     if (!city || !weather) return;
     let active = true;setMusicLoading(true);setMusicError(false);
@@ -45,7 +46,7 @@ export default function WeatherMusic({ weather, city, unit, loading, error, onRe
   return <div className="weather-music-shell">
   <WeatherScene scene={atmosphere.scene} />
   <header className="weather-music-toolbar"><DialogClose asChild><button type="button" aria-label="Back to Home"><ChevronLeft size={22} /></button></DialogClose><div><DialogTitle>PUBLIC ATMOSPHERES</DialogTitle><DialogDescription className="sr-only">A flowing gradient and a soundtrack for your chosen city.</DialogDescription></div><button type="button" aria-label="Change weather city" aria-expanded={configuring} onClick={() => setConfiguring((value) => !value)}><MapPin size={19} /></button></header>
-  <div className="weather-music-scroll">
+  <div className="weather-music-scroll" ref={scroll}>
    <section className="weather-music-summary" aria-busy={loading}><button type="button" className="weather-music-city" onClick={() => setConfiguring((value) => !value)}>{city ? city.label.split(',')[0] : 'Your city'}<ChevronDown size={16} /></button>
     {weather ? <><div className="weather-music-degrees">{weatherTemperature(weather.temperature, unit).replace(/[FC]$/, '')}</div><p>{condition.label}<span> · °{unit}</span></p></> : <p className="weather-music-unset">{loading ? 'Finding the atmosphere…' : 'Choose a city. Find your soundtrack.'}</p>}
    </section>
