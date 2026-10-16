@@ -23,6 +23,7 @@ import Register from '@/pages/Register';
 import ForgotPassword from '@/pages/ForgotPassword';
 import ResetPassword from '@/pages/ResetPassword';
 import Home from '@/pages/Home';
+import PersonalMix from '@/pages/PersonalMix';
 import Search from '@/pages/Search';
 import TopCharts from '@/pages/TopCharts';
 import RecentlyAdded from '@/pages/RecentlyAdded';
@@ -97,6 +98,7 @@ const AuthenticatedApp = () => {
 
         {/* Personal features — login required */}
         <Route element={<ProtectedRoute />}>
+          <Route path="/mix/:id" element={<PersonalMix />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/profile/:id" element={<Profile />} />
           <Route path="/upload" element={<Upload />} />
