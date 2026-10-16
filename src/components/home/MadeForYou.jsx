@@ -20,7 +20,7 @@ function MixArt({mix,className='',children}){
 function MixDetails({mix,uid,onClose}){
  const p=usePlayer(),{blocked}=useSafety(),[busy,setBusy]=useState(false),[saving,setSaving]=useState(false),[saved,setSaved]=useState(null),[saveError,setSaveError]=useState('');
  const lock=useRef(false),saveLock=useRef(false),alive=useRef(true);
- useEffect(()=>()=>{alive.current=false;},[]);
+ useEffect(()=>{alive.current=true;return()=>{alive.current=false;};},[]);
  const tracks=mix.tracks.filter(t=>!blocked.has(t.uploader_id));
  const playing=p.isPlaying&&tracks.some(t=>t.id===p.currentTrack?.id);
  async function play(shuffle=false){
