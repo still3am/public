@@ -1,4 +1,4 @@
-.home-weather-dialog.weather-experience{--foreground:0 0% 100%;--background:230 35% 10%;--card:230 25% 15%;--muted-foreground:225 15% 75%;--border:0 0% 100% / .15;position:fixed;inset:0;transform:none;width:100vw;max-width:none;height:100dvh;max-height:none;display:block;overflow:hidden;border:0;border-radius:0;padding:0;background:#101525;color:#fff;isolation:isolate;animation:none!important;}
+.home-weather-dialog.weather-experience{--foreground:0 0% 100%;--background:230 35% 10%;--card:230 25% 15%;--muted-foreground:225 15% 75%;--border:225 20% 30%;position:fixed;inset:0;transform:none;width:100vw;max-width:none;height:100dvh;max-height:none;display:block;overflow:hidden;border:0;border-radius:0;padding:0;background:#101525;color:#fff;isolation:isolate;animation:none!important;}
 .weather-experience>button:last-child{display:none;}
 .weather-music-shell{position:relative;height:100%;overflow:hidden;}
 .weather-music-toolbar{position:absolute;inset:0 0 auto;z-index:3;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:calc(env(safe-area-inset-top,0px) + 12px) 20px 12px;background:linear-gradient(#0b102b55,transparent);}

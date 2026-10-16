@@ -12,7 +12,7 @@ import {reportActionError} from '@/lib/actionError';
 import './weather-music.css';
 export default function WeatherMusic({weather,city,unit,loading,error,onRefresh,onUnitChange,children}){
  const player=usePlayer(),[catalog,setCatalog]=useState([]),[musicLoading,setMusicLoading]=useState(false),[musicError,setMusicError]=useState(false),[retry,setRetry]=useState(0),[configuring,setConfiguring]=useState(!city);
- const [starting,setStarting]=useState(false),lock=useRef(false);
+ const [starting,setStarting]=useState(false),[artFailed,setArtFailed]=useState(false),lock=useRef(false);
  const atmosphere=weatherAtmosphere(weather);
  useEffect(()=>{if(!city)setConfiguring(true);},[city?.id]);
  useEffect(()=>{
@@ -24,6 +24,7 @@ export default function WeatherMusic({weather,city,unit,loading,error,onRefresh,
  },[city?.id,!!weather,retry]);
  const tracks=useMemo(()=>weather&&city?selectWeatherTracks(catalog,weather,city.id):[],[catalog,weather,city]);
  const featured=tracks[0],cover=useCoverUrl(featured?.cover_art_url),condition=weather?weatherCondition(weather.code,weather.isDay):null;
+ useEffect(()=>setArtFailed(false),[cover]);
  const playing=player.isPlaying&&tracks.some(track=>track.id===player.currentTrack?.id);
  async function play(shuffle=false){
   if(lock.current||!tracks.length)return;lock.current=true;setStarting(true);
@@ -33,6 +34,12 @@ export default function WeatherMusic({weather,city,unit,loading,error,onRefresh,
    const queue=[...tracks];if(shuffle)for(let i=queue.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[queue[i],queue[j]]=[queue[j],queue[i]];}
    player.setShuffle(false);await player.playTrackAt(queue,0);
   }catch(e){reportActionError(e,'This atmosphere could not start. Please retry.');}
+  finally{lock.current=false;setStarting(false);}
+ }
+ async function playFeatured(){
+  if(lock.current||!featured)return;lock.current=true;setStarting(true);
+  try{if(player.currentTrack?.id===featured.id)player.togglePlay();else{player.setShuffle(false);await player.playTrackAt(tracks,0);}}
+  catch(e){reportActionError(e,'This song could not start. Please retry.');}
   finally{lock.current=false;setStarting(false);}
  }
  return <div className="weather-music-shell">
@@ -47,7 +54,7 @@ export default function WeatherMusic({weather,city,unit,loading,error,onRefresh,
    {weather&&city&&<section className="weather-music-content">
     <div className="weather-music-heading"><p>THE SOUND OF RIGHT NOW</p><h2>{atmosphere.title}</h2><span>{atmosphere.subtitle}</span></div>
     {musicLoading&&!tracks.length?<div className="weather-music-loading"><Loader2 size={24} className="animate-spin"/><p>Finding the music…</p></div>:featured?<>
-     <div className="weather-music-artwork">{cover?<img src={cover} alt={featured.title+' artwork'}/>:<div className="weather-music-art-placeholder"><Music2 size={70}/></div>}<div className="weather-music-art-shade"/><div className="weather-music-featured"><div><p>START HERE</p><h3>{featured.title}</h3><span>{featured.artist||featured.uploader_name}</span></div><button type="button" disabled={starting} onClick={()=>{if(player.currentTrack?.id===featured.id)player.togglePlay();else{player.setShuffle(false);player.playTrackAt(tracks,0);}}} aria-label={player.currentTrack?.id===featured.id&&player.isPlaying?'Pause '+featured.title:'Play '+featured.title}>{player.currentTrack?.id===featured.id&&player.isPlaying?<Pause size={24} fill="currentColor"/>:<Play size={24} fill="currentColor"/>}</button></div></div>
+     <div className="weather-music-artwork">{cover&&!artFailed?<img src={cover} alt={featured.title+' artwork'} onError={()=>setArtFailed(true)}/>:<div className="weather-music-art-placeholder"><Music2 size={70}/></div>}<div className="weather-music-art-shade"/><div className="weather-music-featured"><div><p>START HERE</p><h3>{featured.title}</h3><span>{featured.artist||featured.uploader_name}</span></div><button type="button" disabled={starting} onClick={playFeatured} aria-label={player.currentTrack?.id===featured.id&&player.isPlaying?'Pause '+featured.title:'Play '+featured.title}>{player.currentTrack?.id===featured.id&&player.isPlaying?<Pause size={24} fill="currentColor"/>:<Play size={24} fill="currentColor"/>}</button></div></div>
      <div className="weather-music-play-actions"><button type="button" className="weather-music-play" disabled={starting} onClick={()=>play()}>{starting?<Loader2 size={18} className="animate-spin"/>:playing?<Pause size={18} fill="currentColor"/>:<Play size={18} fill="currentColor"/>}{playing?'Pause atmosphere':'Play this atmosphere'}</button><button type="button" className="weather-music-shuffle" aria-label="Shuffle this atmosphere" disabled={starting} onClick={()=>play(true)}><Shuffle size={20}/></button></div>
      <section className="weather-music-track-list"><h3>Keep the feeling</h3>{tracks.map((track,index)=><TrackRow key={track.id} track={track} index={index} queue={tracks} queueIndex={index}/>)}</section>
      <p className="weather-music-selection-note">A genre-led selection from music on PUBLIC.</p>
