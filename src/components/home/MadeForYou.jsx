@@ -39,8 +39,8 @@ export default function MadeForYou({catalog,genres}){
  const {user}=useAuth(),{ids}=useLibrary(),{blocked}=useSafety(),[recent,setRecent]=useState(()=>getRecentPlays()),[selected,setSelected]=useState(null);
  useEffect(()=>{const update=()=>setRecent(getRecentPlays());window.addEventListener('recentplays:change',update);return()=>window.removeEventListener('recentplays:change',update);},[]);
  const mixes=useMemo(()=>buildPersonalMixes(catalog.filter(t=>!blocked.has(t.uploader_id)),{recent,savedIds:ids,genres,uid:user?.id||''}),[catalog,recent,ids,genres,user?.id,blocked]);
- useEffect(()=>{if(selected&&!mixes.some(m=>m.id===selected))setSelected(null);},[mixes,selected]);
  if(!user?.id)return null;
- const current=mixes.find(m=>m.id===selected);
- return <section className="home-section home-personal-section"><div className="personal-section-heading"><h2>Made for You</h2><span>Your music, remixed</span></div>{mixes.length?<div className="personal-mix-shelf">{mixes.map(mix=><button type="button" key={mix.id} className="personal-mix-card" onClick={()=>setSelected(mix.id)} aria-label={'Open '+mix.title+' mix'}><MixArt mix={mix}/></button>)}</div>:<p className="personal-mix-note">Save a few songs or choose genres to start shaping your mixes.</p>}{current&&<MixDetails key={user.id+current.id} mix={current} uid={user.id} onClose={()=>setSelected(null)}/>}</section>;
+ const available=new Map(catalog.filter(t=>!blocked.has(t.uploader_id)).map(t=>[t.id,t]));
+ const current=selected?{...selected,tracks:selected.tracks.map(t=>available.get(t.id)).filter(Boolean)}:null;
+ return <section className="home-section home-personal-section"><div className="personal-section-heading"><h2>Made for You</h2><span>Your music, remixed</span></div>{mixes.length?<div className="personal-mix-shelf">{mixes.map(mix=><button type="button" key={mix.id} className="personal-mix-card" onClick={()=>setSelected(mix)} aria-label={'Open '+mix.title+' mix'}><MixArt mix={mix}/></button>)}</div>:<p className="personal-mix-note">Save a few songs or choose genres to start shaping your mixes.</p>}{current&&<MixDetails key={user.id+current.id} mix={current} uid={user.id} onClose={()=>setSelected(null)}/>}</section>;
 }
