@@ -1,4 +1,6 @@
 import HomeWeather from '@/components/HomeWeather';
+import MadeForYou from '@/components/home/MadeForYou';
+import SharedWithYou from '@/components/home/SharedWithYou';
 import HomeSpotlight from "@/components/HomeSpotlight";
 import { readAllPages } from "@/lib/readPages";
 import { useEffect, useRef, useState, useCallback } from "react";
@@ -101,11 +103,15 @@ export default function Home() {
   const [fromFollowing, setFromFollowing] = useState([]);
   const [discover, setDiscover] = useState([]);
 
+  const [personal,setPersonal]=useState({uid:null,catalog:[],genres:[]});
+  const personalCatalog=personal.uid===user?.id?personal.catalog:[];
+  const personalGenres=personal.uid===user?.id?personal.genres:[];
   const greeting = greetingByHour();
 
   useEffect(()=>{const update=event=>{if(event.detail?.uid===user?.id)load().catch(()=>{});};window.addEventListener("preferences:changed",update);return()=>window.removeEventListener("preferences:changed",update);},[user?.id]);
 
   const onUnpublished = useCallback((id) => {
+    setPersonal(previous=>({...previous,catalog:previous.catalog.filter(t=>t.id!==id)}));
     setTrending((p) => p.filter((t) => t.id !== id));
     setNewReleases((p) => p.filter((t) => t.id !== id));
     setFromFollowing((p) => p.filter((t) => t.id !== id));
@@ -174,6 +180,7 @@ export default function Home() {
       // personalization, recent plays refine it over time.
       const savedGenres = await getUserGenres(user?.id).catch(()=>{if(request===loadVersion.current)setPreferencesError(true);return [];});
       if (request !== loadVersion.current) return;
+      setPersonal({uid:user?.id,catalog:published,genres:savedGenres});
       const genreSet = new Set(savedGenres);
       const userGenres = Object.entries(genreFreq).
       sort((a, b) => b[1] - a[1]).
@@ -248,6 +255,8 @@ export default function Home() {
         
         {genreList.length > 0 && <nav className="home-genre-links" aria-label="Browse genres">{genreList.map((genre) => <Link key={genre} to={`/search?genre=${encodeURIComponent(genre)}`}>{genre}</Link>)}</nav>}
         <Section title="New on PUBLIC" icon={Sparkles} seeAllTo="/recent"><ReleaseList tracks={newReleases} /></Section>
+        <MadeForYou key={"mixes:"+user?.id} catalog={personalCatalog} genres={personalGenres}/>
+        <SharedWithYou key={"shared:"+user?.id} catalog={personalCatalog}/>
         {recent.length > 0 && <Section title="Recently played"><CardRow tracks={recent} /></Section>}
         <Section title="Trending" icon={TrendingUp} seeAllTo="/top">
           <CardRow tracks={trending} />
