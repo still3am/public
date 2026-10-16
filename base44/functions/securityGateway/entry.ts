@@ -81,7 +81,7 @@ export default async function handleRequest(req) {
     };
     const requireTrack = async (id,sign=true) => {
       const t=await svc.entities.Track.get(id);
-      if(!isAdmin && t.uploader_id!==user.id && t.explicit && !(user.show_explicit && user.adult_confirmed)) fail('Explicit content is hidden',404);
+      // Explicit is a content label, not a catalog visibility restriction.
       if(user.id && t.uploader_id!==user.id) await relation(t.uploader_id);
       if(!isAdmin && t.uploader_id!==user.id && !(t.is_published && t.approval_status==='approved')) fail('Track unavailable',404);
       return await hydrate(t,sign);
@@ -160,7 +160,7 @@ export default async function handleRequest(req) {
         if(method==='get') return Response.json({result:await requireTrack(params[0])});
         const blocks=user.id ? await svc.entities.Block.filter({$or:[{user_id:user.id},{blocked_user_id:user.id}]},'-created_date',1000) : [];
         const hidden=blocks.map(r=>r.user_id===user.id?r.blocked_user_id:r.user_id);
-        const publicRule={is_published:true,approval_status:'approved',...(!(user.show_explicit&&user.adult_confirmed)?{explicit:{$ne:true}}:{}),...(hidden.length?{uploader_id:{$nin:hidden}}:{})};
+        const publicRule={is_published:true,approval_status:'approved',...(hidden.length?{uploader_id:{$nin:hidden}}:{})};
         const access=isAdmin?{}:user.id?{$or:[publicRule,{uploader_id:user.id}]}:publicRule;
         const q=method==='filter'||method==='count'?(params[0]||{}):method==='aggregate'?(params[0]?.query||{}):{};
         const query={$and:[q,access]};
