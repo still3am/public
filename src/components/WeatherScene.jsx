@@ -1,14 +1,17 @@
-import {useEffect,useState} from 'react';
+import MotionGradient from '@/components/MotionGradient';
+const palettes = {
+ ambient:['#283d91','#b2498d','#287d82'],
+ sun:['#b35b24','#ed9260','#455caa'],
+ night:['#25358d','#8d3c92','#1e6c83'],
+ 'cloud-night':['#293577','#8a427d','#336b82'],
+ rain:['#24587e','#6e4d9f','#29817a'],
+ 'rain-night':['#252858','#68417e','#24647a'],
+ storm:['#34256d','#925270','#2c6478'],
+ snow:['#456b8f','#8e74b1','#4b8f96'],
+ fog:['#49637a','#9a7c93','#4a807c'],
+ cloud:['#486a85','#ae738b','#5b728f'],
+};
 export default function WeatherScene({scene='ambient'}){
- const [paused,setPaused]=useState(()=>document.hidden);
- useEffect(()=>{const update=()=>setPaused(document.hidden);document.addEventListener('visibilitychange',update);return()=>document.removeEventListener('visibilitychange',update);},[]);
- const night=['night','cloud-night','rain-night'].includes(scene),rain=['rain','rain-night','storm'].includes(scene),snow=scene==='snow';
- return <div className={'weather-sky weather-sky--'+scene+(paused?' weather-sky--paused':'')} aria-hidden="true">
-  <div className="weather-sky-glow"/>
-  {scene==='sun'&&<div className="weather-sky-sun"/>}
-  {night&&<><div className="weather-sky-moon"/><div className="weather-sky-stars">{Array.from({length:28},(_,i)=><i key={i} style={{'--x':((i*37+11)%100)+'%','--y':((i*23+7)%76)+'%','--delay':-(i%9)+'s','--size':(i%3===0?2:1)+'px'}}/>)}</div></>}
-  {scene!=='ambient'&&scene!=='sun'&&<div className="weather-sky-clouds"><i/><i/><i/></div>}
-  {(rain||snow)&&<div className={'weather-sky-particles '+(snow?'is-snow':'is-rain')}>{Array.from({length:snow?24:32},(_,i)=><i key={i} style={{'--x':((i*31+3)%110)+'%','--delay':-(i%13)+'s','--speed':(snow?7+i%5:.8+(i%5)*.15)+'s','--opacity':.15+(i%5)*.12}}/>)}</div>}
-  <div className="weather-sky-shade"/>
- </div>;
+ return <><MotionGradient className="atmosphere-gradient" colors={palettes[scene] || palettes.ambient} speed={.85} /><div className="atmosphere-gradient-shade" aria-hidden="true" /></>;
 }
+
