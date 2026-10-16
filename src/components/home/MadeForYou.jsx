@@ -33,15 +33,17 @@ export function PersonalMixContent({mix,uid,onBack}){
   try{const playlist=await base44.entities.Playlist.create({name:mix.title,description:mix.subtitle+' Saved from Made for You on PUBLIC.',creator_id:uid,is_public:false,track_ids:tracks.map(t=>t.id),cover_art_url:''});if(!playlist?.id)throw Error('Save not confirmed');window.dispatchEvent(new Event('playlists:changed'));if(alive.current)setSaved(playlist.id);}
   catch{if(alive.current)setSaveError('This mix could not save. Please retry.');}finally{saveLock.current=false;if(alive.current)setSaving(false);}
  }
- return <div className="release-page personal-mix-page">
+ return <div className="release-page personal-mix-page personal-mix-immersive" style={{'--mix-tint':mix.palette[2]}}>
+  <div className="personal-mix-atmosphere" aria-hidden="true"><MotionGradient colors={mix.palette} speed={.8} pauseWhenCovered className="personal-mix-page-gradient"/><div className="personal-mix-atmosphere-shade"/></div>
   <div className="release-toolbar"><button type="button" className="release-round" aria-label="Back to Home" onClick={onBack}><ChevronLeft size={22}/></button><span className="personal-mix-toolbar-brand"><Logo width="72px" className="personal-mix-logo"/></span></div>
   <section className="release-header release-header-full">
-   <MixArt mix={mix} className="release-art personal-mix-page-art"/>
-   <h1>{mix.title}</h1><p className="release-artist personal-mix-curator">Made for you</p>
-   <p className="personal-mix-page-description">{mix.subtitle}</p><p className="release-subtitle">{tracks.length} songs</p>
+   <div className="personal-mix-open-art" aria-hidden="true"/>
+   <p className="personal-mix-eyebrow">YOUR PUBLIC. MIX</p><h1>{mix.title}</h1><p className="release-artist personal-mix-curator">A little more you.</p>
+   <p className="release-subtitle">{tracks.length} songs · Made for you</p>
    <div className="release-play-controls"><button type="button" className="release-play-button" disabled={busy||!tracks.length} onClick={()=>play()}>{busy?<Loader2 size={21} className="animate-spin"/>:playing?<Pause size={21} fill="currentColor"/>:<Play size={21} fill="currentColor"/>}{playing?'Pause':'Play'}</button><button type="button" className="release-add-button" aria-label="Shuffle mix" disabled={busy||!tracks.length} onClick={()=>play(true)}><Shuffle size={22}/></button>{uid&&<button type="button" className="release-add-button" disabled={saving||!!saved||!tracks.length} aria-label={saved?'Playlist saved':'Save playlist'} title={saved?'Playlist saved':'Save playlist'} onClick={save}>{saving?<Loader2 size={22} className="animate-spin"/>:saved?<Check size={24}/>:<Plus size={24}/>}</button>}</div>
   </section>
   <div className="personal-mix-page-body">
+   <p className="personal-mix-page-description">{mix.subtitle}</p>
    {saveError&&<p role="alert" className="personal-mix-note">{saveError}</p>}
    {saved&&<Link className="personal-mix-saved-link" to={'/playlist/'+encodeURIComponent(saved)}>Open saved playlist</Link>}
    <section className="release-song-list" aria-label="Songs in this mix">{tracks.map((track,index)=><TrackRow key={track.id} track={track} index={index} queue={tracks} queueIndex={index}/>)}</section>
