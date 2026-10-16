@@ -317,7 +317,7 @@ export default function FullScreenPlayer({ onClose }) {
               onPointerUp={onVolPointerEnd}
               onPointerCancel={onVolPointerEnd}
               onLostPointerCapture={() => {volDrag.current.active = false;}}
-              className={`relative aspect-square w-full max-w-[min(38vh,80vw)] xl:max-w-[440px] 2xl:max-w-[480px] xl:max-h-[46vh] 2xl:max-h-[52vh] rounded-3xl overflow-hidden shadow-[0_24px_90px_rgba(0,0,0,0.55)] bg-white/10 shrink-0 touch-none transition-transform duration-500 ${
+              className={`relative aspect-square w-full max-w-[min(38vh,80vw)] xl:max-w-[440px] 2xl:max-w-[480px] xl:max-h-[46vh] 2xl:max-h-[52vh] rounded-3xl overflow-hidden shadow-none bg-white/10 shrink-0 touch-none transition-transform duration-500 ${
               p.isPlaying ? "scale-100" : "scale-[0.97]"} ${
               showingLyrics ? "hidden xl:flex" : "flex"}`}>
 
