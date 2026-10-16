@@ -126,6 +126,8 @@ export const AuthProvider = ({ children }) => {
     const timer=setInterval(verify,60000);window.addEventListener('focus',verify);
     return()=>{clearInterval(timer);window.removeEventListener('focus',verify);};
   },[authChecked,isAuthenticated]);
+  useEffect(()=>{window.dispatchEvent(new Event("catalog:invalidate"));},[user?.id,user?.show_explicit,user?.adult_confirmed]);
+
   const logout = async (shouldRedirect = true) => {
     await clearPersonalData();
     setUser(null);
