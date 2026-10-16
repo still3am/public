@@ -266,9 +266,25 @@
       "default": false,
       "rls": {
         "write": {
-          "user_condition": {
-            "role": "admin"
-          }
+          "$or": [
+            {
+              "user_condition": {
+                "role": "admin"
+              }
+            },
+            {
+              "$and": [
+                {
+                  "data.user_id": "{{user.id}}"
+                },
+                {
+                  "user_condition": {
+                    "role": "user"
+                  }
+                }
+              ]
+            }
+          ]
         }
       }
     },
