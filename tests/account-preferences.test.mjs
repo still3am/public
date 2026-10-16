@@ -44,7 +44,7 @@ const schema=JSON.parse(read('base44/entities/User.jsonc'));
 assert.equal(schema.properties.show_explicit.rls.write,true);
 assert.equal(schema.properties.adult_confirmed.rls.write,true);
 assert.deepEqual(schema.properties.is_artist.rls.write,{user_condition:{role:'user'}});
-assert.equal(schema.properties.is_blocked.rls.write,false);
+assert.deepEqual(schema.properties.is_blocked.rls.write,{user_condition:{role:'admin'}});
 const publicSchema=JSON.parse(read('base44/entities/PublicProfile.jsonc'));
 const ownerRule=publicSchema.properties.is_artist.rls.write.$or[1].$and;
 assert.ok(ownerRule.some(r=>r['data.user_id']==='{{user.id}}'));
