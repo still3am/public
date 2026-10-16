@@ -55,7 +55,9 @@
 .atmosphere-gradient-shade{position:absolute;inset:0;pointer-events:none;background:linear-gradient(180deg,#090b1830 0%,#090b180a 20%,#090b186b 55%,#090b18dc 100%);}
 .weather-music-toolbar{background:linear-gradient(#10101c88,transparent);}
 .weather-music-toolbar h2{font-size:10px;letter-spacing:.15em;color:#ffffffe0;white-space:nowrap;}
-.weather-music-toolbar>button{width:40px;height:40px;min-width:40px;}
+.weather-music-toolbar>button{position:relative;width:36px;height:36px;min-width:36px;}
+.weather-music-toolbar>button::after{content:"";position:absolute;inset:-4px;border-radius:50%;}
+.weather-music-toolbar>button>svg{width:18px;height:18px;}
 .weather-music-summary .weather-music-unset{width:100%;margin:6px auto;}
 .weather-music-city{min-height:44px;min-width:0;max-width:100%;overflow-wrap:anywhere;}
 .weather-music-city svg{width:13px;}
