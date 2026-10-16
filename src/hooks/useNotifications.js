@@ -57,7 +57,7 @@ export function useNotifications(){
    const page=await base44.entities.Notification.filter({user_id:uid},{sort:'-created_date',limit:50,...(!reset&&cursor.current?{cursor:cursor.current}:{})});
    const items=Array.isArray(page)?page:page?.items;
    if(!Array.isArray(items))throw Error("Invalid notification response");
-   if(page.has_more&&(!page.next_cursor||page.next_cursor===cursor.current))throw Error("Notifications could not finish loading. Please retry.");
+   if(page.has_more&&(typeof page.next_cursor!=="string"||!page.next_cursor||(!reset&&page.next_cursor===cursor.current)))throw Error("Notifications could not finish loading. Please retry.");
    const actors=await getUsersByIds([...new Set(items.map(n=>n.actor_id||n.sender_id).filter(Boolean))]).catch(()=>[]);
    const actorMap=new Map(actors.map(a=>[a.id,a])),trackMap=new Map();
    const ids=[...new Set(items.map(n=>n.track_id).filter(Boolean))];
