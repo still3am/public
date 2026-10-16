@@ -13,6 +13,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { buildAutoQueue } from "@/lib/autoQueue";
 import {downloadTrackFile} from "@/lib/downloadTrackFile";
 import { shareTrack } from "@/lib/shareTrack";
+import {prepareTrackShare} from "@/lib/trackShareUrl";
 
 /**
  * The one standard action list for a track, in fixed order. Every entry
@@ -30,6 +31,8 @@ export function useTrackActions(track, menuState, ui) {
   useEffect(()=>{alive.current=true;return()=>{alive.current=false;};},[]);
   const exporting=useRef(false),likeLock=useRef(false),followLock=useRef(false);
   const actionKey=[user?.id,track.id,track.uploader_id].join(":"),latestAction=useRef(actionKey);latestAction.current=actionKey;
+
+  useEffect(()=>{prepareTrackShare();},[track.id]);
 
   const requireAuth = () => {
     if (user) return true;

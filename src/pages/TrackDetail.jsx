@@ -1,5 +1,6 @@
 import TrackMusicVideo from "@/components/TrackMusicVideo";
-import { shareLink } from "@/lib/shareLink";
+import { shareTrack } from "@/lib/shareTrack";
+import {prepareTrackShare} from "@/lib/trackShareUrl";
 import { getPublishedTracks } from "@/lib/catalogCache";
 import { splitArtistNames } from "@/lib/artistTracks";
 import TrackCard from "@/components/TrackCard";
@@ -39,6 +40,7 @@ import { getUsersByIds } from "@/lib/userLookup";
 
 export default function TrackDetail() {
   const { id } = useParams();
+  useEffect(()=>{prepareTrackShare();},[id]);
   const nav = useNavigate();
   const { user } = useAuth();
   const p = usePlayer();
@@ -169,7 +171,7 @@ export default function TrackDetail() {
       <div className="release-toolbar">
         <button onClick={() => window.history.state?.idx > 0 ? nav(-1) : nav("/search")} className="release-round" aria-label="Back"><ChevronLeft size={26} /></button>
         <div className="release-toolbar-actions">
-          <button className="release-round" aria-label="Share song" onClick={async () => {try {const result=await shareLink({title:track.title,text:track.artist || track.title,url:window.location.origin+"/track/"+track.id});if(result==="copied")toast({title:"Song link copied"});} catch {toast({title:"Couldn’t share this song. Please try again.",variant:"destructive"});}}}><Share2 size={21} /></button>
+          <button className="release-round" aria-label="Share song" onClick={async () => {try {const result=await shareTrack(track);if(result==="copied")toast({title:"Song link copied"});} catch {toast({title:"Couldn’t share this song. Please try again.",variant:"destructive"});}}}><Share2 size={21} /></button>
           <TrackOptionsMenu track={track} size={22} buttonClassName="release-round" items={ownerItems} />
         </div>
       </div>

@@ -5,6 +5,7 @@ import { useColorPalette } from "@/hooks/useColorPalette";
 import { useAuth } from "@/lib/AuthContext";
 import { formatTime } from "@/lib/audio-utils";
 import { shareTrack } from "@/lib/shareTrack";
+import {getTrackShareUrl,prepareTrackShare} from "@/lib/trackShareUrl";
 import SyncedLyrics from "@/components/SyncedLyrics";
 import TrackOptionsMenu from "@/components/track/TrackOptionsMenu";
 import { ListMusic, SlidersHorizontal } from "lucide-react";
@@ -68,6 +69,7 @@ export default function FullScreenPlayer({ onClose }) {
   const [showQueue, setShowQueue] = useState(false);
   const [showLyricsPanel, setShowLyricsPanel] = useState(true);
   const t = p.currentTrack;
+  useEffect(()=>{if(t?.id)prepareTrackShare();},[t?.id]);
   const lounge = useLoungeHost();
   const cache = useOfflineCache();
   const { toast } = useToast();
@@ -220,9 +222,9 @@ export default function FullScreenPlayer({ onClose }) {
   async function shareNow(copyOnly = false) {
     if (!t) return;
     try {
-      const result = copyOnly ? (await copyText(window.location.origin + '/track/' + encodeURIComponent(t.id)), 'copied') : await shareTrack(t);
+      const result = copyOnly ? (await copyText(getTrackShareUrl(t)), 'copied') : await shareTrack(t);
       if (result === 'copied') {setCopied(true);setTimeout(() => setCopied(false), 1500);}
-    } catch {/* Keep the player open and leave playback running. */}
+    } catch {toast({title:"Couldn’t share this song. Please try again.",variant:"destructive"});}
   }
 
   if (!t) return null;
