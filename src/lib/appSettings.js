@@ -15,7 +15,10 @@ export async function readAppSetting(fresh=false){
   const rows=Array.isArray(page)?page:page?.items;
   if(!Array.isArray(rows)||rows.some(row=>!row?.id))throw Error('App settings returned an invalid response. Please retry.');
   if(version!==revision)return loaded?cached:readAppSetting(true);
-  cached=rows[0]||null;loaded=true;expires=Date.now()+30000;return cached;
+  const next=rows[0]||null,changed=JSON.stringify(next)!==JSON.stringify(cached);
+  cached=next;loaded=true;expires=Date.now()+30000;
+  if(changed&&cached?.id)window.dispatchEvent(new CustomEvent('appsettings:changed',{detail:cached}));
+  return cached;
  }).finally(()=>{if(inflight===request)inflight=null;});
  inflight=request;return request;
 }

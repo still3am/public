@@ -1,5 +1,5 @@
 import {reportActionError} from "@/lib/actionError";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Plus, Trash2, Loader2, Megaphone, RotateCcw } from "lucide-react";
 import { useBannerMessages } from "@/hooks/useBannerMessages";
 import { useToast } from "@/components/ui/use-toast";
@@ -9,10 +9,12 @@ export default function BannerEditor() {
   const [draft, setDraft] = useState(null);
   const [saving, setSaving] = useState(false);
   const { toast } = useToast();
+  const dirty=useRef(false),lock=useRef(false);
+  const messageKey=JSON.stringify(messages);
 
   useEffect(() => {
-    if (draft === null && !loading) setDraft(messages);
-  }, [loading, messages, draft]);
+    if (!loading && !dirty.current) setDraft(messages);
+  }, [loading, messageKey]);
 
   if (loading || draft === null) {
     return (
@@ -22,25 +24,25 @@ export default function BannerEditor() {
     );
   }
 
-  const cleaned = draft.filter((m) => m.trim());
+  const cleaned = draft.map(m=>m.trim()).filter(Boolean);
   const changed = JSON.stringify(cleaned) !== JSON.stringify(messages.filter((m) => m.trim()));
   const previewMsgs = cleaned.length > 0 ? cleaned : ["—"];
 
   async function save() {
-    if(saving||!cleaned.length)return;
-    setSaving(true);
+    if(lock.current||!cleaned.length)return;
+    lock.current=true;setSaving(true);
     try {
       const clean = draft.map(message=>message.trim()).filter(Boolean);
       await setMessages(clean);
-      setDraft(clean);
+      dirty.current=false;setDraft(clean);
       toast({ title: "Banner updated" });
     } catch(error) {reportActionError(error,"Couldn’t save the banner. Your draft is still here.");} finally {
-      setSaving(false);
+      lock.current=false;setSaving(false);
     }
   }
 
   function reset() {
-    setDraft(["Made by the people, for the people.", "New Music Weekly"]);
+    dirty.current=true;setDraft(["Made by the people, for the people.", "New Music Weekly"]);
   }
 
   return (
@@ -79,12 +81,12 @@ export default function BannerEditor() {
               <input
                 aria-label={`Banner message ${i+1}`} maxLength={200} disabled={saving}
                 value={msg}
-                onChange={(e) => setDraft(draft.map((m, idx) => (idx === i ? e.target.value : m)))}
+                onChange={(e) => {dirty.current=true;setDraft(draft.map((m, idx) => (idx === i ? e.target.value : m)));}}
                 placeholder="Message text"
                 className="min-w-0 flex-1 px-3 py-2 rounded-lg bg-background ring-1 ring-inset ring-border text-sm focus:ring-foreground/30 outline-none"
               />
               <button
-                onClick={() => setDraft(draft.filter((_, idx) => idx !== i))}
+                onClick={() => {dirty.current=true;setDraft(draft.filter((_, idx) => idx !== i));}}
                 aria-label={`Remove banner message ${i+1}`} disabled={saving||draft.length <= 1}
                 className="shrink-0 w-9 h-9 grid place-items-center rounded-lg text-muted-foreground hover:text-destructive disabled:opacity-30 transition"
               >
@@ -95,12 +97,13 @@ export default function BannerEditor() {
         </div>
 
         <button
-          disabled={saving||draft.length>=8} onClick={() => setDraft([...draft, ""])}
+          disabled={saving||draft.length>=8} onClick={() => {dirty.current=true;setDraft([...draft, ""]);}}
           className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold text-muted-foreground hover:text-foreground ring-1 ring-inset ring-border transition"
         >
           <Plus size={13} /> Add message
         </button>
 
+        {!cleaned.length&&<p role="status" className="text-xs text-muted-foreground">Add at least one message before saving.</p>}
         <div className="flex items-center gap-2 pt-2">
           <button
             onClick={save}
