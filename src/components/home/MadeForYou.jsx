@@ -34,7 +34,7 @@ export function PersonalMixContent({mix,uid,onBack}){
   catch{if(alive.current)setSaveError('This mix could not save. Please retry.');}finally{saveLock.current=false;if(alive.current)setSaving(false);}
  }
  return <div className="release-page personal-mix-page">
-  <div className="release-toolbar"><button type="button" className="release-round" aria-label="Back to Home" onClick={onBack}><ChevronLeft size={22}/></button></div>
+  <div className="release-toolbar"><button type="button" className="release-round" aria-label="Back to Home" onClick={onBack}><ChevronLeft size={22}/></button><span className="personal-mix-toolbar-brand"><Logo width="72px" className="personal-mix-logo"/></span></div>
   <section className="release-header release-header-full">
    <MixArt mix={mix} className="release-art personal-mix-page-art"/>
    <h1>{mix.title}</h1><p className="release-artist personal-mix-curator">Made for you</p>
