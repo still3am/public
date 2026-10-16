@@ -176,7 +176,7 @@ export default function TrackDetail() {
         </div>
       </div>
       <section className={"release-header release-header-full" + (coverUrl && !coverFailed ? " has-release-art" : "")}>
-        {coverUrl&&!coverFailed&&<div aria-hidden="true" className="release-full-image"><img src={coverUrl} alt=""/><div/></div>}
+        {coverUrl&&!coverFailed&&<div aria-hidden="true" className="release-full-image"><img src={coverUrl} alt=""/></div>}
         <div className="release-art">{coverUrl && !coverFailed ? <img src={coverUrl} alt={track.title+" cover"} onError={() => setCoverFailed(true)} /> : <Music size={52} />}</div>
         <h1>{track.title}</h1>
         <div className="release-artist">{displayArtist ? <ArtistLinks artist={displayArtist} maxShown={8} linkClassName="hover:underline" /> : uploader && <Link to={"/profile/"+uploader.id}>{uploader.display_name || uploader.full_name || track.uploader_name}</Link>}</div>
