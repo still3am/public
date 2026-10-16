@@ -125,23 +125,27 @@
     "is_artist": {
       "type": "boolean",
       "default": false,
-      "description": "When true, the user is marked as an artist and gets access to artist tools and an artist badge on their profile",
+      "description": "Self-selected artist mode for regular users; never grants administrator access.",
       "rls": {
-        "write": false
+        "write": {
+          "user_condition": {
+            "role": "user"
+          }
+        }
       }
     },
     "show_explicit": {
       "type": "boolean",
       "default": false,
       "rls": {
-        "write": false
+        "write": true
       }
     },
     "adult_confirmed": {
       "type": "boolean",
       "default": false,
       "rls": {
-        "write": false
+        "write": true
       }
     },
     "offline_track_ids": {
