@@ -65,13 +65,15 @@ export default function Search() {
     setAllTracks((prev) => prev.filter((t) => t.id !== id));
   });
 
+  const catalogueRequest=useRef(0);
   async function loadCatalogue(fresh = false) {
+    const request=++catalogueRequest.current;
     setLoadingAll(true);setBrowseError("");
     try {
       const tracks = await getPublishedTracks(fresh);
-      setAllTracks(Array.isArray(tracks) ? tracks : []);
-    } catch {setBrowseError("The catalog is unavailable. Retry after checking your connection.");} finally {
-      setLoadingAll(false);
+      if(request===catalogueRequest.current)setAllTracks(Array.isArray(tracks) ? tracks : []);
+    } catch {if(request===catalogueRequest.current)setBrowseError("The catalog is unavailable. Retry after checking your connection.");} finally {
+      if(request===catalogueRequest.current)setLoadingAll(false);
     }
   }
 
@@ -86,7 +88,7 @@ export default function Search() {
     loadCatalogue();
   }, [hasQuery, peopleMode]);
 
-  useEffect(() => {const change = () => {loadCatalogue();refresh();};window.addEventListener('catalog:invalidate', change);return () => window.removeEventListener('catalog:invalidate', change);}, [refresh]);
+  useEffect(() => {const change = () => {setAllTracks([]);loadCatalogue();};window.addEventListener('catalog:invalidate', change);return () => {catalogueRequest.current+=1;window.removeEventListener('catalog:invalidate', change);};}, []);
 
   // Pulling down re-runs whatever the page is currently showing: the live
   // search when a term is typed, otherwise the genre crate.
