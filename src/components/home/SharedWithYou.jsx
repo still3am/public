@@ -1,4 +1,5 @@
 import {Link} from 'react-router-dom';
+import {useRef} from 'react';
 import {Music2,ChevronRight,Play,Pause,Loader2} from 'lucide-react';
 import {useAuth} from '@/lib/AuthContext';
 import {useSafety} from '@/context/SafetyContext';
@@ -10,9 +11,10 @@ import Avatar from '@/components/Avatar';
 import './home-personal.css';
 function SharedSong({note,track,queue}){
  const p=usePlayer(),cover=useCoverUrl(track?.cover_art_url),name=note.actor?.display_name||note.actor?.full_name||note.actor_name||'PUBLIC member';
+ const lock=useRef(false);
  const active=p.currentTrack?.id===track?.id&&p.isPlaying;
- async function play(){if(!track)return;try{if(p.currentTrack?.id===track.id)p.togglePlay();else{p.setShuffle(false);await p.playTrackAt(queue,Math.max(0,queue.findIndex(t=>t.id===track.id)));}}catch(e){reportActionError(e,'This shared song could not play. Please retry.');}}
- return <article className="shared-song"><button type="button" className="shared-song-cover" onClick={play} disabled={!track} aria-label={track?(active?'Pause ':'Play ')+track.title:'Song unavailable'}>{cover?<img src={cover} alt="" loading="lazy" onError={event=>{event.currentTarget.style.display='none';}}/>:<Music2 size={23}/>}<span>{active?<Pause size={12}/>:<Play size={12} fill="currentColor"/>}</span></button><div className="shared-song-info">{track?<Link className="shared-song-title" to={'/track/'+encodeURIComponent(track.id)}>{track.title}</Link>:<strong className="shared-song-title">Song unavailable</strong>}<p>{track?track.artist||track.uploader_name:'No longer in the public catalog'}</p>{note.actor_id?<Link className="shared-song-sender" to={'/profile/'+encodeURIComponent(note.actor_id)}><Avatar user={note.actor} size={21}/><span>From <strong>{name}</strong></span><ChevronRight size={12}/></Link>:<span className="shared-song-sender">From {name}</span>}{note.comment&&<p className="shared-song-note" title={note.comment}>{note.comment}</p>}</div></article>;
+ async function play(){if(!track||lock.current)return;lock.current=true;try{if(p.currentTrack?.id===track.id)p.togglePlay();else{p.setShuffle(false);await p.playTrackAt(queue,Math.max(0,queue.findIndex(t=>t.id===track.id)));}}catch(e){reportActionError(e,'This shared song could not play. Please retry.');}finally{lock.current=false;}}
+ return <article className="shared-song"><button type="button" className="shared-song-cover" onClick={play} disabled={!track} aria-label={track?(active?'Pause ':'Play ')+track.title:'Song unavailable'}>{cover?<img src={cover} alt="" loading="lazy" onError={event=>{event.currentTarget.style.display='none';}}/>:<Music2 size={23}/>}<span>{active?<Pause size={12}/>:<Play size={12} fill="currentColor"/>}</span></button><div className="shared-song-info">{track?<Link className="shared-song-title" to={'/track/'+encodeURIComponent(track.id)}>{track.title}</Link>:<strong className="shared-song-title">Song unavailable</strong>}<p>{track?track.artist||track.uploader_name:'Not available in your current catalog'}</p>{note.actor_id?<Link className="shared-song-sender" to={'/profile/'+encodeURIComponent(note.actor_id)}><Avatar user={note.actor} size={21}/><span>From <strong>{name}</strong></span><ChevronRight size={12}/></Link>:<span className="shared-song-sender">From {name}</span>}{note.comment&&<p className="shared-song-note" title={note.comment}>{note.comment}</p>}</div></article>;
 }
 export default function SharedWithYou({catalog,catalogReady=true}){
  const {user}=useAuth(),{blocked}=useSafety(),{rows,loading,error,reload}=useSharedTracks(user?.id);
