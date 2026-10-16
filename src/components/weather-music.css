@@ -87,3 +87,39 @@
 }
 @media(prefers-reduced-motion:reduce){.atmosphere-gradient canvas{transition:none!important;}}
 
+
+/* Focused location settings, sized for one-handed mobile use. */
+.weather-experience .weather-music-settings{max-width:460px;border:0;background:transparent;backdrop-filter:none;padding:8px 0 0;margin:0 auto;}
+.atmosphere-picker-heading h3{font-size:30px;line-height:1.15;font-weight:700;letter-spacing:-.045em;}
+.atmosphere-picker-heading p{font-size:13px;line-height:1.6;color:#ffffffaa;margin-top:8px;margin-bottom:24px;}
+.atmosphere-selected-city{display:flex;align-items:center;gap:13px;border:1px solid #ffffff28;border-radius:20px;background:#ffffff0c;padding:16px;margin-bottom:22px;}
+.atmosphere-selected-city>svg{flex-shrink:0;color:#ffffffaa;}
+.atmosphere-selected-city>div{flex:1;min-width:0;}
+.atmosphere-selected-city span{display:block;font-size:9px;letter-spacing:.16em;color:#ffffff80;margin-bottom:6px;}
+.atmosphere-selected-city strong{display:block;font-size:19px;font-weight:600;line-height:1.25;overflow-wrap:anywhere;}
+.atmosphere-selected-city small{display:block;font-size:12px;color:#ffffffaa;line-height:1.5;margin-top:3px;overflow-wrap:anywhere;}
+.weather-experience .atmosphere-city-search{display:flex;align-items:center;gap:4px;border:1px solid #ffffff30;border-radius:17px;background:#10152466;padding:4px 5px 4px 14px;}
+.atmosphere-city-search>svg{flex-shrink:0;color:#ffffff90;margin-right:4px;}
+.weather-experience .atmosphere-city-search>input{flex:1;width:0;min-width:0;border:0;border-radius:0;background:transparent;padding:10px 0;box-shadow:none;outline:none;font-size:16px;color:white;height:44px;}
+.weather-experience .atmosphere-city-search>input::placeholder{color:#ffffff80;font-size:14px;}
+.weather-experience .atmosphere-city-search>button{width:auto;min-width:44px;height:44px;border:0;border-radius:12px;padding:0 12px;background:#fff;color:#151724;font-size:12px;font-weight:650;flex-shrink:0;}
+.weather-experience .atmosphere-city-search>.atmosphere-search-clear{background:transparent;color:#ffffffa0;min-width:32px;padding:0 5px;}
+.atmosphere-city-feedback{font-size:13px;line-height:1.6;color:#ffffffbb;padding:12px 0;}
+.atmosphere-city-results{margin-top:22px;}
+.atmosphere-results-label{font-size:9px;letter-spacing:.16em;color:#ffffff80;margin:0 0 10px 3px;}
+.atmosphere-city-results>button{display:flex;align-items:center;gap:12px;width:100%;text-align:left;min-height:68px;padding:12px 6px;border-bottom:1px solid #ffffff18;}
+.atmosphere-result-icon{width:34px;height:34px;display:grid;place-items:center;flex-shrink:0;background:#ffffff0c;border-radius:50%;color:#ffffffa0;}
+.atmosphere-city-results>button>span:nth-child(2){flex:1;min-width:0;}
+.atmosphere-city-results strong{display:block;font-size:15px;line-height:1.3;font-weight:550;overflow-wrap:anywhere;}
+.atmosphere-city-results small{display:block;color:#ffffff90;font-size:12px;line-height:1.5;margin-top:3px;overflow-wrap:anywhere;}
+.atmosphere-city-results>button[aria-pressed=true]{background:#ffffff0a;border-radius:12px;}
+.atmosphere-location-note{font-size:11px;line-height:1.6;color:#ffffff90;margin:18px 0 8px;}
+.atmosphere-data-details{font-size:11px;line-height:1.7;color:#ffffff80;}
+.atmosphere-data-details summary{cursor:pointer;min-height:32px;padding-block:6px;}
+.atmosphere-data-details p{margin:4px 0 12px;}.atmosphere-data-details a{text-decoration:underline;text-underline-offset:3px;}
+.atmosphere-remove-city{font-size:12px;color:#ffffffa0;text-decoration:underline;text-underline-offset:4px;min-height:44px;}
+.weather-experience .weather-music-preferences{margin:20px 0 0;padding:16px 0;border-top:1px solid #ffffff1c;}
+.weather-experience .weather-music-preferences>span{font-size:13px;letter-spacing:0;color:#ffffffc0;}
+.weather-experience .weather-music-preferences button{min-height:38px;width:48px;font-size:13px;}
+.weather-experience .weather-music-done{width:100%;min-height:48px;margin:12px 0 20px;background:white;color:#161827;font-weight:650;font-size:14px;}
+@media(max-width:359px){.atmosphere-picker-heading h3{font-size:27px;}.weather-experience .atmosphere-city-search{padding-left:10px;}.weather-experience .atmosphere-city-search>button{padding-inline:9px;}}
