@@ -351,21 +351,6 @@
             },
             {
               "data.approval_status": "approved"
-            },
-            {
-              "$or": [
-                {
-                  "data.explicit": {
-                    "$ne": true
-                  }
-                },
-                {
-                  "user_condition": {
-                    "show_explicit": true,
-                    "adult_confirmed": true
-                  }
-                }
-              ]
             }
           ]
         },
