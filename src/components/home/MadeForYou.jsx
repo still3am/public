@@ -34,7 +34,7 @@ export function PersonalMixContent({mix,uid,onBack}){
   catch{if(alive.current)setSaveError('This mix could not save. Please retry.');}finally{saveLock.current=false;if(alive.current)setSaving(false);}
  }
  return <div className="release-page personal-mix-page personal-mix-immersive" style={{'--mix-tint':mix.palette[2]}}>
-  <div className="personal-mix-atmosphere" aria-hidden="true"><MotionGradient colors={mix.palette} speed={1.05} pauseWhenCovered className="personal-mix-page-gradient"/><div className="personal-mix-atmosphere-shade"/></div>
+  <div className="personal-mix-atmosphere" aria-hidden="true"><MotionGradient colors={mix.palette} speed={1.05} pauseWhenCovered className="personal-mix-page-gradient"/></div>
   <div className="release-toolbar"><button type="button" className="release-round" aria-label="Back to Home" onClick={onBack}><ChevronLeft size={22}/></button><span className="personal-mix-toolbar-brand"><Logo width="72px" className="personal-mix-logo"/></span></div>
   <section className="release-header release-header-full">
    <div className="personal-mix-open-art" aria-hidden="true"/>
