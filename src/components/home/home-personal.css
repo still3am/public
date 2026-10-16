@@ -7,7 +7,7 @@
 .personal-mix-card{display:block;flex:0 0 clamp(236px,72vw,300px);min-width:0;scroll-snap-align:start;text-align:left;border-radius:22px;overflow:hidden;}
 .personal-mix-art{position:relative;isolation:isolate;overflow:hidden;aspect-ratio:3/4;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:24px;color:#fff;background:#342847;border:1px solid #ffffff24;border-radius:22px;}
 .personal-mix-gradient{position:absolute!important;inset:0;z-index:-2;}
-.personal-mix-shade{position:absolute;inset:0;z-index:-1;background:linear-gradient(#0002,transparent 25%,#0001 50%,#0007);}
+.personal-mix-artists{text-shadow:0 1px 4px #0007;}
 .personal-mix-brand{position:absolute;right:18px;top:17px;font-size:12px;letter-spacing:.02em;font-weight:750;}
 .personal-mix-art>strong{display:block;text-align:center;font-size:clamp(36px,9vw,48px);font-weight:650;line-height:1.02;letter-spacing:-.055em;max-width:100%;overflow-wrap:break-word;text-shadow:0 2px 18px #0002;}
 .personal-mix-artists{position:absolute;bottom:22px;left:22px;right:22px;font-size:13px;line-height:1.45;font-weight:550;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;}
@@ -52,7 +52,7 @@
 @media(max-width:767px){.personal-mix-toolbar-brand{height:36px;}}
 .personal-mix-page-art>.personal-mix-brand{top:22px;right:22px;}
 .personal-mix-page .personal-mix-page-art>strong{font-size:clamp(42px,10vw,76px);max-width:700px;padding-inline:20px;}
-.personal-mix-page .personal-mix-shade{background:linear-gradient(#0002,transparent 30%,#0002 65%,hsl(var(--background)) 100%);}
+
 .personal-mix-page .personal-mix-curator{font-size:18px;}
 .personal-mix-page-description{max-width:440px;margin:12px auto 0;font-size:13px;line-height:1.7;color:hsl(var(--muted-foreground));}
 .personal-mix-page-body{max-width:900px;margin-inline:auto;padding-bottom:32px;}
