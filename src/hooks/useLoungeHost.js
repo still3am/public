@@ -107,6 +107,7 @@ function useLoungeHostState() {
       refreshMembers(active.id);
       return active;
     } catch (e) {
+      if(accountRef.current===uid)reportActionError(e,"Your lounge could not start. Please retry.");
       return null;
     } finally {
       if(accountRef.current===uid)setLoading(false);
@@ -159,9 +160,7 @@ function useLoungeHostState() {
         await base44.entities.LoungeSession.update(session.id, { name: clean });
         setSession((prev) => (prev?.id===session.id ? { ...prev, name: clean } : prev));
         return true;
-      } catch(error) {
-        if(sessionKey.current===session.id)reportActionError(error,"Couldn’t rename the lounge. Your changes have not been saved.");return false;
-      }
+      } catch {return false;}
     },
     [session?.id]
   );

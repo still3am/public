@@ -16,7 +16,7 @@ export async function clearPersonalData({deleteOffline=false,userId=getOfflineAc
    }
    localStorage.removeItem(key);
   }}catch{}
-  for(const event of ['offlinecache:change','recentplays:change','catalog:invalidate'])window.dispatchEvent(new Event(event));
+  for(const event of ['offlinecache:change','recentplays:change','catalog:invalidate','transitions:change'])window.dispatchEvent(new Event(event));
  }
 }
 

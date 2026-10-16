@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import {copyText} from "@/lib/shareLink";
 import { Users, Check, X, Loader2, Power, Copy, ScanLine, Pencil } from "lucide-react";
 import { loungeUrl, qrImageUrl } from "@/lib/lounge";
 import QRScannerModal from "@/components/QRScannerModal";
@@ -65,12 +66,11 @@ export default function LoungeHostModal({ lounge, onClose }) {
   const pending = members.filter((m) => m.status === "pending" && m.role !== "host");
   const approvedGuests = members.filter((m) => m.status === "approved" && m.role !== "host");
 
-  function copy() {
-    if(!navigator.clipboard?.writeText)return;
-    navigator.clipboard.writeText(url).then(() => {
-      setCopied(true);
-      setTimeout(() => setCopied(false), 1500);
-    }).catch(()=>{});
+  async function copy() {
+    try {
+      await copyText(url);
+      setCopied(true);setTimeout(()=>setCopied(false),1500);
+    } catch {toast({title:"Couldn’t copy the lounge invite. Please try again.",variant:"destructive"});}
   }
 
   return (
