@@ -31,12 +31,13 @@ const {ONBOARDING_PALETTES,cleanHandle,validHandle,credits,recommendPeople,readO
 const usePlayer=()=>globalThis.__player||{currentTrack:null,isPlaying:false,playTrackAt(){},togglePlay(){}},useNavigate=()=>()=>{},base44={},getPublishedTracks=async()=>[],getUserMusicPreferences=async()=>({}),saveUserMusicPreferences=async()=>{};
 const GENRES=["Hip-Hop","R&B","Pop","Afrobeats","Latin","Dance","Indie","Rock","Soul","Jazz","Electronic","Reggaeton","Ambient"];
 const useCoverUrl=url=>url;
+const useCoverPalette=()=>({colors:globalThis.__artColors||[],loading:false});
 const ArrowRight=()=>null,ArrowLeft=ArrowRight,Check=ArrowRight,Headphones=ArrowRight,Loader2=ArrowRight,Camera=ArrowRight,Search=ArrowRight,Music2=ArrowRight,ShieldCheck=ArrowRight,Plus=ArrowRight,Play=ArrowRight,Pause=ArrowRight;
 const Dialog=({children})=>React.createElement(React.Fragment,null,children);
 const DialogContent=({children,...props})=>React.createElement("section",{"data-step":props["data-onboarding-step"]},children);
 const DialogTitle=React.forwardRef(({children},ref)=>React.createElement("h2",{ref},children));
 const DialogDescription=({children})=>React.createElement("p",null,children);
-const MotionGradient=()=>null,Logo=()=>null,ProfileColorWheel=()=>null,TrackPickerSheet=()=>null;
+const MotionGradient=props=>{globalThis.__gradientColors=props.colors;return null;},Logo=()=>null,ProfileColorWheel=()=>null,TrackPickerSheet=()=>null;
 const Avatar=()=>React.createElement("span");
 `);
 for(let step=0;step<7;step++){
@@ -76,3 +77,13 @@ assert.match(songMarkup,/My profile song/);assert.match(songMarkup,/Preview arti
 globalThis.__player={currentTrack:previewSong,isPlaying:true};
 songMarkup=renderToStaticMarkup(React.createElement(ui.OnboardingProfileSong,{track:previewSong,onChange(){}}));assert.match(songMarkup,/Pause My profile song/);
 console.log("PASS selected profile song shows real artwork, artist and player state");
+
+storage.set(model.draftKey(current.id),JSON.stringify({uid:current.id,step:5,mode:"auto",profileTrack:"preview"}));
+globalThis.__artColors=["#a02020","#e0a020","#201010"];
+let autoHtml=renderToStaticMarkup(React.createElement(ui.WelcomeFlow,{user:current,onDone(){}}));
+assert.match(autoHtml,/Automatic · From your song/);assert.match(autoHtml,/onboarding-auto-color[^>]*aria-pressed="true"/);
+assert.deepEqual(globalThis.__gradientColors,globalThis.__artColors,"automatic preview uses extracted artwork palette");
+globalThis.__artColors=[];
+renderToStaticMarkup(React.createElement(ui.WelcomeFlow,{user:current,onDone(){}}));
+assert.deepEqual(globalThis.__gradientColors,model.ONBOARDING_PALETTES[0].colors,"unavailable colors use a stable brand fallback");
+console.log("PASS automatic artwork choice, matching live palette and extraction fallback");

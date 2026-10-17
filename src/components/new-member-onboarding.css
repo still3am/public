@@ -179,3 +179,13 @@
 .onboarding-song-play{width:44px;min-width:44px;height:44px;min-height:44px;border-radius:50%;padding:0;flex-shrink:0;background:#fff;color:#111;display:grid;place-items:center}
 .onboarding-song-play svg{display:block}
 @media(max-width:360px){.onboarding-song-preview{gap:9px;padding:10px}.onboarding-song-preview>.onboarding-cover{width:48px;height:48px}.onboarding-song-details strong{font-size:12px}}
+
+.onboarding-auto-color{display:flex;align-items:center;gap:13px;width:100%;min-height:76px;padding:14px;border:1px solid #ffffff30;border-radius:20px;background:#ffffff08;text-align:left;transition:border-color .2s ease,background-color .2s ease}
+.onboarding-auto-color[aria-pressed=true]{border-color:#fff;background:#ffffff16}
+.onboarding-auto-swatch{width:46px;height:46px;flex-shrink:0;border:1px solid #ffffff40;border-radius:13px;display:grid;place-items:center;color:#fff}
+.onboarding-auto-swatch svg{background:#00000040;padding:4px;box-sizing:content-box;border-radius:50%}
+.onboarding-auto-copy{flex:1;min-width:0}
+.onboarding-auto-copy strong{display:block;font-size:13px;font-weight:600;line-height:1.4}
+.onboarding-auto-copy small{display:block;font-size:11px;line-height:1.5;color:#ffffffb8;margin-top:4px}
+.onboarding-auto-check{width:20px;flex-shrink:0;display:grid;place-items:center}
+@media(prefers-reduced-motion:reduce){.onboarding-auto-color{transition:none}}

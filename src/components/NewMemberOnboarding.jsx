@@ -9,6 +9,7 @@ import {usePlayer} from "@/context/PlayerContext";
 import ProfileColorWheel from "@/components/profile/ProfileColorWheel";
 import TrackPickerSheet from "@/components/profile/TrackPickerSheet";
 import {useCoverUrl} from "@/hooks/useCoverUrl";
+import {useCoverPalette} from "@/hooks/useCoverPalette";
 import {useAuth} from "@/lib/AuthContext";
 import {useSafety} from "@/context/SafetyContext";
 import {base44} from "@/api/base44Client";
@@ -78,6 +79,8 @@ export function WelcomeFlow({user,onDone}){
  const visibleCatalog=useMemo(()=>catalog.filter(t=>t.is_published===true&&!blocked.has(t.uploader_id)),[catalog,blocked]);
  const byId=useMemo(()=>new Map(visibleCatalog.map(t=>[t.id,t])),[visibleCatalog]);
  const previewTrack=byId.get(draft.profileTrack)||(pickedTrack?.id===draft.profileTrack&&!blocked.has(pickedTrack.uploader_id)?pickedTrack:null);
+ const artworkUrl=useCoverUrl(step===5?previewTrack?.cover_art_url:"");
+ const {colors:artworkColors,loading:artworkLoading}=useCoverPalette(artworkUrl);
  const artistOptions=useMemo(()=>{
   const map=new Map();for(const track of visibleCatalog)for(const name of credits(track)){const key=name.toLowerCase();if(!map.has(key))map.set(key,{name,cover:track.cover_art_url,genre:track.genre});}
   return [...map.values()].sort((a,b)=>Number(draft.genres.includes(b.genre))-Number(draft.genres.includes(a.genre))||a.name.localeCompare(b.name));
@@ -135,7 +138,8 @@ export function WelcomeFlow({user,onDone}){
  }
  const toggle=(key,value,max)=>{const current=draft[key];if(!current.includes(value)&&current.length>=max){setError("Choose up to "+max+" "+(key==="artists"?"artists":"songs")+".");return;}update({[key]:current.includes(value)?current.filter(v=>v!==value):[...current,value]});};
  const genreOptions=genreQuery.trim()||allGenres?GENRES.filter(g=>g!=="Other"): [...new Set([...draft.genres,...FEATURED_GENRES.filter(g=>GENRES.includes(g))])];
- const colors=step===5&&draft.mode!=="off"?draft.colors:ONBOARDING_PALETTES[0].colors;
+ const automaticColors=artworkColors.length?artworkColors.slice(0,3):ONBOARDING_PALETTES[0].colors;
+ const colors=step===5&&draft.mode!=="off"?(draft.mode==="auto"?automaticColors:draft.colors):ONBOARDING_PALETTES[0].colors;
  return <Dialog open>
   <DialogContent className="new-member-onboarding onboarding-identity" data-public-dialog data-onboarding-step={step} onPointerDownOutside={e=>e.preventDefault()} onOpenAutoFocus={e=>{e.preventDefault();heading.current?.focus({preventScroll:true});}} onEscapeKeyDown={e=>{e.preventDefault();if(!picker)defer();}}>
    <MotionGradient colors={colors} speed={.85} className="onboarding-background"/>
@@ -178,6 +182,7 @@ export function WelcomeFlow({user,onDone}){
     </div>}
     {step===5&&<div className="onboarding-mood">
      <div className="onboarding-profile-preview mood-preview"><Avatar user={{display_name:draft.name,avatar_url:draft.avatar}} size={64}/><strong>{draft.name||"Your PUBLIC"}</strong><OnboardingProfileSong track={previewTrack} disabled={busy} onChange={()=>setPicker(true)} onError={setError}/></div>
+     <button type="button" className="onboarding-auto-color" disabled={busy} aria-pressed={draft.mode==="auto"} onClick={()=>update({mode:"auto"})}><span className="onboarding-auto-swatch" aria-hidden="true" style={{background:"linear-gradient(135deg,"+automaticColors.join(",")+")"}}><Music2 size={19}/></span><span className="onboarding-auto-copy"><strong>Automatic · From your song</strong><small>{!draft.profileTrack?"Choose a profile song to match its artwork.":artworkLoading?"Finding your artwork colors…":artworkColors.length?"Changes with your profile song.":"Choose a palette if artwork colors aren’t available."}</small></span><span className="onboarding-auto-check">{draft.mode==="auto"&&<Check size={18}/>}</span></button>
      <div className="onboarding-palettes" role="group" aria-label="Profile color palettes">{ONBOARDING_PALETTES.map(palette=><button key={palette.name} type="button" aria-pressed={draft.mode==="custom"&&draft.colors.join()===palette.colors.join()} onClick={()=>update({colors:[...palette.colors],mode:"custom"})}><span style={{background:"linear-gradient(130deg,"+palette.colors.join(",")+")"}}>{draft.mode==="custom"&&draft.colors.join()===palette.colors.join()&&<Check size={16}/>}</span>{palette.name}</button>)}</div>
      <details className="onboarding-custom-colors"><summary>Customize colors</summary><div className="onboarding-color-stops">{draft.colors.map((color,index)=><button key={index} type="button" aria-label={"Edit color "+(index+1)} aria-pressed={colorIndex===index} style={{background:color}} onClick={()=>setColorIndex(index)}>{colorIndex===index&&<Check size={18}/>}</button>)}</div><ProfileColorWheel value={draft.colors[colorIndex]||"#303030"} colorNumber={colorIndex+1} disabled={busy} onChange={color=>update({mode:"custom",colors:draft.colors.map((c,i)=>i===colorIndex?color:c)})}/><button className="onboarding-text-button" type="button" onClick={()=>update({mode:draft.mode==="off"?"custom":"off"})}>{draft.mode==="off"?"Turn colors on":"Use a plain background"}</button></details>
      {draft.profileTrack&&<button type="button" className="onboarding-text-button" onClick={()=>update({profileTrack:""})}>Remove profile song</button>}

@@ -39,8 +39,8 @@ assert.equal(ranked[0].tracks[0].id,"song");assert.ok(!ranked.some(m=>m.id==="ro
 // Exercise real save/skip/completion handlers with a mocked service, without writing to live users.
 const component=read("src/components/NewMemberOnboarding.jsx");
 const handlers=component.slice(component.indexOf(" async function owner()"),component.indexOf(" async function upload("));
-function flow(step,{sharingChanged=false,shareFavorites=false,failure=false,switched=false,ignored=false,musicReady=true,refreshUnmounts=false}={}){
- let draft={step,name:"Listener",username:"listener",avatar:"",genres:["Pop"],trackIds:["song"],artists:["Artist"],profileTrack:"",mode:"custom",colors:["#000000","#ffffff","#303030"],sharingChanged,shareFavorites};
+function flow(step,{sharingChanged=false,shareFavorites=false,failure=false,switched=false,ignored=false,musicReady=true,refreshUnmounts=false,mode="custom"}={}){
+ let draft={step,name:"Listener",username:"listener",avatar:"",genres:["Pop"],trackIds:["song"],artists:["Artist"],profileTrack:"",mode,colors:["#000000","#ffffff","#303030"],sharingChanged,shareFavorites};
  const state={error:"",done:false,patches:[],preferences:[],busy:false,navigated:false};const alive={current:true};let account={id:"a",top_track_ids:["existing"],onboarding_completed:false};
  const args={base44:{auth:{me:async()=>switched?{id:"other"}:account,updateMe:async patch=>{if(failure)throw Error("save failed");state.patches.push(patch);if(!ignored)Object.assign(account,patch);return account;}}},user:{id:"a",display_name:"Listener",username:"listener"},draft,step,byId:new Map(catalog.map(t=>[t.id,t])),artistOptions:[{name:"Artist"}],lock:{current:false},followLock:{current:false},alive,setBusy:v=>state.busy=v,setError:v=>state.error=v,setDraft:fn=>{draft=fn(draft);state.step=draft.step;},checkUserAuth:async()=>{if(refreshUnmounts)alive.current=false;},onDone:()=>state.done=true,nav:()=>{state.navigated=true;},saveUserMusicPreferences:async patch=>{if(failure)throw Error("save failed");state.preferences.push(patch);},cleanHandle:model.cleanHandle,validHandle:model.validHandle,errorText:e=>e.message,draftKey:model.draftKey,loading:false,musicReady,loadError:""};
  const api=new Function(...Object.keys(args),handlers+";return {next,complete};")(...Object.values(args));return {api,state};
@@ -86,3 +86,6 @@ assert.equal(model.onboardingSearchMatch("Beyoncé", "  BEYONCE  "),true);
 assert.equal(model.onboardingSearchMatch("Rauw  Alejandro", "rauw alejandro"),true);
 assert.equal(model.onboardingSearchMatch("Artist", "Other"),false);
 console.log("PASS onboarding search handles accents, capitalization and extra spaces");
+
+f=flow(5,{mode:"auto"});await f.api.next();assert.equal(f.state.patches[0].profile_background_mode,"auto");assert.equal(f.state.step,6);assert.deepEqual(f.state.patches[0].profile_background_colors,["#000000","#ffffff","#303030"],"switching automatic must retain manual colors");
+console.log("PASS automatic mode saves while preserving the manual palette");
