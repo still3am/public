@@ -15,9 +15,9 @@ const source=fs.readFileSync('src/pages/PlaylistDetail.jsx','utf8').replace(/^im
 const stubs=`
 const React=globalThis.__React;
 const {useState,useEffect,useMemo,useCallback,useRef}=React;
-const useParams=()=>({id:globalThis.__route||'p1'}),useNavigate=()=>()=>{},useAuth=()=>({user:{id:globalThis.__viewer||'owner'}}),usePlayer=()=>({}),useToast=()=>({toast(){}}),useCoverUrl=v=>v;
+const useParams=()=>({id:globalThis.__route||'p1'}),useNavigate=()=>()=>{},useAuth=()=>({user:{id:globalThis.__viewer||'owner'}}),usePlayer=()=>globalThis.__player||({}),useToast=()=>({toast(){}}),useCoverUrl=v=>v;
 const base44={},readAllPages=()=>{},shareLink=()=>{},removePlaylistTracks=()=>{},reorderPlaylistTracks=()=>{},movePlaylistTrack=()=>{},shufflePlaylist=v=>v;
-const Play=()=>null,Shuffle=Play,Plus=Play,Pencil=Play,Trash2=Play,Share2=Play,ListMusic=Play,Search=Play,ArrowUp=Play,ArrowDown=Play,X=Play,Check=Play,Loader2=Play,ImagePlus=Play,ChevronLeft=Play,MoreHorizontal=Play,Copy=Play;
+const Play=()=>null,Pause=Play,Shuffle=Play,Plus=Play,Pencil=Play,Trash2=Play,Share2=Play,ListMusic=Play,Search=Play,ArrowUp=Play,ArrowDown=Play,X=Play,Check=Play,Loader2=Play,ImagePlus=Play,ChevronLeft=Play,MoreHorizontal=Play,Copy=Play;
 const PlaylistActionsSheet=()=>null,AddToPlaylistPicker=()=>null,EmptyState=({title})=>React.createElement('p',null,title),LoadError=()=>React.createElement('p',null,'Retry loading');
 const TrackRow=({track,queue,queueIndex})=>{globalThis.__rows.push({id:track.id,queue:queue.map(t=>t.id),queueIndex});return React.createElement('p',null,track.title);};
 `;
@@ -37,4 +37,14 @@ assert.doesNotMatch(html,/First song/);assert.match(html,/Second song/);
 assert.deepEqual(globalThis.__rows,[{id:'b',queue:['a','b'],queueIndex:1}],'search keeps the original playback queue and song position');
 globalThis.__route='p2';globalThis.__error=true;html=render();
 assert.match(html,/Retry loading/);assert.doesNotMatch(html,/Night drive/);
-console.log('PASS compact listening, owner-only editing, filtered playback mapping, and failed route-change recovery');
+globalThis.__route='p1';globalThis.__error=false;globalThis.__query='';
+globalThis.__player={queue:globalThis.__tracks,currentTrack:globalThis.__tracks[0],isPlaying:true};
+html=render();assert.match(html,/aria-label="Pause Night drive"/);assert.match(html,/data-current="true"/);
+globalThis.__player.isPlaying=false;assert.match(render(),/aria-label="Resume Night drive"/);
+globalThis.__player.queue=[globalThis.__tracks[0]];assert.match(render(),/aria-label="Play Night drive"/,'a different queue must not show playlist pause');
+globalThis.__tracks=[1,2,3,4].map(n=>({id:'t'+n,title:'Song '+n,cover_art_url:'https://example.test/'+n+'.jpg'}));
+html=render();assert.match(html,/playlist-cover playlist-collage/);assert.equal((html.match(/class="playlist-collage-tile"/g)||[]).length,4);
+globalThis.__playlist.cover_art_url='https://example.test/custom.jpg';assert.doesNotMatch(render(),/playlist-cover playlist-collage/,'custom artwork takes priority');
+globalThis.__tracks=[];html=render();assert.match(html,/Add your first songs/);
+globalThis.__viewer='visitor';assert.doesNotMatch(render(),/Add your first songs/);
+console.log('PASS compact listening, ownership, search mapping, route recovery, player state, artwork collage and empty actions');
