@@ -24,6 +24,11 @@ const TITLES=["Welcome to PUBLIC.","Make it yours.","What’s your sound?","Choo
 const DESCRIPTIONS=["A little about you. A better place to listen.","Choose how people see you.","Pick a few favorites. Explore everything.","Start with the artists and songs you love.","Good music is better together.","Give your profile its own feeling.","One last choice before the music."];
 const rows=page=>Array.isArray(page)?page:Array.isArray(page?.items)?page.items:[];
 const errorText=error=>(error?.response?.status===402||error?.status===402)?"This save is temporarily unavailable. Your choices are kept. Please retry.":error?.response?.data?.error||error?.message||"This step could not save. Your choices are kept.";
+// Keep one complete accessible phrase; only its decorative copy is split into letters.
+function OnboardingLetters({text,delay=0,className=""}){
+ let index=0;
+ return <span className={"onboarding-letter-text "+className}><span className="sr-only">{text}</span><span aria-hidden="true">{text.split(/(\s+)/).map((word,wordIndex)=>/\s/.test(word)?word:<span className="onboarding-word" key={wordIndex}>{Array.from(word).map((letter,letterIndex)=><span key={letterIndex} className="onboarding-letter" style={{"--letter-delay":(delay+Math.min(index++*17,300))+"ms"}}>{letter}</span>)}</span>)}</span></span>;
+}
 function SongCover({url}){const cover=useCoverUrl(url);return <span className="onboarding-cover">{cover?<img src={cover} alt="" loading="lazy"/>:<Music2 size={20}/>}</span>;}
 function initialDraft(user){
  const previous=readOnboardingDraft(user.id);
@@ -126,8 +131,8 @@ export function WelcomeFlow({user,onDone}){
     <div className="onboarding-progress" role="progressbar" aria-label="Setup progress" aria-valuemin={1} aria-valuemax={7} aria-valuenow={step+1}>{TITLES.map((title,index)=><span key={title} className={index<=step?"active":""}/>)}</div>
    </header>
    <main ref={content} className="onboarding-content" key={step}>
-    <div className="onboarding-page-intro"><p className="onboarding-step-label">{step===0?"MADE AROUND YOU":"YOUR PUBLIC · "+step+" OF 6"}</p><DialogTitle ref={heading} tabIndex={-1}>{TITLES[step]}</DialogTitle><DialogDescription>{DESCRIPTIONS[step]}</DialogDescription></div>
-    {step===0&&<div className="onboarding-welcome"><div className="onboarding-welcome-symbol"><Headphones size={76} strokeWidth={1}/></div><p className="onboarding-welcome-line">Your taste.<br/>Your people.<br/><span>Your PUBLIC.</span></p><p className="onboarding-note">Make it yours in a few simple steps.</p></div>}
+    <div className="onboarding-page-intro"><p className="onboarding-step-label">{step===0?"MADE AROUND YOU":"YOUR PUBLIC · "+step+" OF 6"}</p><DialogTitle ref={heading} tabIndex={-1}><OnboardingLetters text={TITLES[step]}/></DialogTitle><DialogDescription>{DESCRIPTIONS[step]}</DialogDescription></div>
+    {step===0&&<div className="onboarding-welcome"><div className="onboarding-welcome-symbol"><Headphones size={76} strokeWidth={1}/></div><p className="onboarding-welcome-line"><OnboardingLetters text="Your taste." delay={180}/><br/><OnboardingLetters text="Your people." delay={300}/><br/><OnboardingLetters text="Your PUBLIC." delay={420} className="onboarding-signature"/></p><p className="onboarding-note">Make it yours in a few simple steps.</p></div>}
     {step===1&&<div className="onboarding-form">
      <div className="onboarding-photo-area"><button className="onboarding-photo" type="button" disabled={busy} onClick={()=>fileInput.current?.click()} aria-label="Choose your profile photo"><Avatar user={{display_name:draft.name,avatar_url:draft.avatar}} size={80}/><span><Camera size={15}/></span></button><span className="onboarding-note">Add a photo · optional</span></div>
      <input ref={fileInput} type="file" accept="image/jpeg,image/png,image/webp" className="hidden" onChange={e=>{upload(e.target.files?.[0]);e.target.value="";}}/>

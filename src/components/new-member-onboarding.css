@@ -20,7 +20,7 @@
 .onboarding-welcome{display:flex;flex-direction:column;align-items:center;text-align:center}
 .onboarding-welcome-symbol{display:grid;place-items:center;width:140px;height:140px;border-radius:50%;background:radial-gradient(circle,#ffffff18,#ffffff00 70%);margin:0 auto 18px}
 .onboarding-welcome-line{font-size:clamp(30px,6vw,40px);font-weight:600;line-height:1.2;letter-spacing:-.035em}
-.onboarding-welcome-line span{color:#ffffff8f}
+.onboarding-welcome-line>.onboarding-signature{color:#fff}
 .onboarding-form{display:grid;gap:22px}
 .onboarding-form label{display:flex;flex-wrap:wrap;align-items:center;gap:9px;font-size:12px;font-weight:550}
 .onboarding-form label small{margin-left:auto;font-size:10px;font-weight:400;color:#ffffff75}
@@ -109,3 +109,22 @@
 .onboarding-picked-chips{display:flex;flex-wrap:wrap;gap:8px;padding-bottom:16px}
 .onboarding-picked-chips button{display:flex;align-items:center;gap:10px;min-height:44px;max-width:100%;padding:8px 13px;border:1px solid #ffffff25;border-radius:999px;font-size:11px;overflow-wrap:anywhere;background:#ffffff08}
 .onboarding-picked-chips button span{font-size:18px;flex-shrink:0}
+
+/* Letter reveals run once on step entry; forms stay immediately usable. */
+.onboarding-word{display:inline-block;white-space:nowrap}
+.onboarding-letter{display:inline-block;animation:onboardingLetterReveal .62s cubic-bezier(.2,.75,.2,1) both;animation-delay:var(--letter-delay,0ms);transform-origin:50% 85%}
+.onboarding-page-intro>p:first-child{animation:onboardingEyebrowReveal .55s ease-out both}
+.onboarding-page-intro h2+p{animation:onboardingCopyReveal .6s .18s ease-out both}
+.onboarding-welcome>.onboarding-note{animation:onboardingCopyReveal .6s .65s ease-out both}
+.onboarding-welcome-symbol{animation:onboardingHeadphonesReveal 1s cubic-bezier(.16,1,.3,1) both}
+.onboarding-signature .onboarding-letter{animation-name:onboardingLetterReveal,onboardingLetterGleam;animation-duration:.62s,1.35s;animation-timing-function:cubic-bezier(.2,.75,.2,1),ease-in-out;animation-delay:var(--letter-delay),calc(var(--letter-delay) + .5s);animation-fill-mode:both,backwards}
+.onboarding-progress>span{transition:background-color .35s ease}
+.onboarding-next{transition:transform .18s ease,box-shadow .18s ease}
+.onboarding-next:not(:disabled):active{transform:scale(.98)}
+@media(hover:hover){.onboarding-next:not(:disabled):hover{transform:translateY(-2px);box-shadow:0 8px 28px #ffffff15}}
+@keyframes onboardingLetterReveal{from{opacity:0;transform:translateY(.42em) rotate(5deg) scale(.94)}to{opacity:1;transform:translateY(0) rotate(0) scale(1)}}
+@keyframes onboardingLetterGleam{0%,100%{color:#fff}45%{color:#a5a5a5}65%{color:#fff}}
+@keyframes onboardingEyebrowReveal{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+@keyframes onboardingCopyReveal{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:translateY(0)}}
+@keyframes onboardingHeadphonesReveal{from{opacity:0;transform:scale(.87) rotate(-8deg)}to{opacity:1;transform:scale(1) rotate(0)}}
+@media(prefers-reduced-motion:reduce){.onboarding-letter,.onboarding-signature .onboarding-letter,.onboarding-page-intro>p:first-child,.onboarding-page-intro h2+p,.onboarding-welcome>.onboarding-note,.onboarding-welcome-symbol{animation:none;opacity:1;transform:none}.onboarding-progress>span,.onboarding-next{transition:none}.onboarding-next:not(:disabled):hover,.onboarding-next:not(:disabled):active{transform:none}}
