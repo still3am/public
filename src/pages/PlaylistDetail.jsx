@@ -140,6 +140,6 @@ export default function PlaylistDetail(){
    ]:[{label:saved?'Remove from library':'Save to library',icon:saved?Check:Plus,disabled:busy,onClick:toggleSaved}]),
    {label:'Make a copy',description:'Create your own private version',icon:Copy,disabled:busy,onClick:duplicate}
   ]}/>}
-  {showAdd&&<AddToPlaylistPicker playlist={playlist} onClose={()=>{setShowAdd(false);load();}}/>}}
+  {showAdd&&<AddToPlaylistPicker playlist={playlist} onClose={()=>{setShowAdd(false);load();}}/>}
  </div>;
 }
