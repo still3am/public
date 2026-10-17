@@ -22,7 +22,7 @@ import ReleaseList from "@/components/ReleaseList";
 import { usePlayer } from "@/context/PlayerContext";
 import EmptyState from "@/components/EmptyState";
 import { getRecentPlays } from "@/lib/recentPlays";
-import { getUserGenres, clearUserGenresCache } from "@/lib/userGenres";
+import { getUserMusicPreferences, clearUserGenresCache } from "@/lib/userGenres";
 import PullToRefresh from "@/components/PullToRefresh";
 
 const greetingByHour = () => {
