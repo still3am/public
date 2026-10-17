@@ -193,7 +193,7 @@ export default function Profile({ ownProfileTab = false }) {
     if (targetId) load();
     return () => {loadVersion.current++;};
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [targetId]);
+  }, [targetId,me?.id]);
 
   // Other entry points (song menus/onboarding) refresh mounted profile counts.
   useEffect(()=>{
