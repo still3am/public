@@ -4,7 +4,7 @@ import {Loader2} from 'lucide-react';
 import {useAuth} from '@/lib/AuthContext';
 import {useSafety} from '@/context/SafetyContext';
 import {getPublishedTracks} from '@/lib/catalogCache';
-import {getUserGenres} from '@/lib/userGenres';
+import {getUserMusicPreferences} from '@/lib/userGenres';
 import {getRecentPlays} from '@/lib/recentPlays';
 import {readLibraryRows} from '@/lib/libraryRows';
 import {base44} from '@/api/base44Client';
@@ -18,9 +18,9 @@ export default function PersonalMix(){
   const request=++version.current,uid=user?.id;if(!uid)return;
   setData(old=>({...old,loading:true,error:false}));
   try{
-   const [catalog,preferences,library]=await Promise.all([getPublishedTracks(fresh),getUserGenres(uid).then(value=>({value,error:false})).catch(()=>({value:[],error:true})),readLibraryRows(base44.entities.LibraryItem,{user_id:uid}).then(value=>({value,error:false})).catch(()=>({value:[],error:true}))]);
+   const [catalog,preferences,library]=await Promise.all([getPublishedTracks(fresh),getUserMusicPreferences(uid).then(value=>({value,error:false})).catch(()=>({value:{genres:[],favorite_track_ids:[],favorite_artists:[]},error:true})),readLibraryRows(base44.entities.LibraryItem,{user_id:uid}).then(value=>({value,error:false})).catch(()=>({value:[],error:true}))]);
    if(request!==version.current)return;
-   const mixes=buildPersonalMixes(catalog,{uid,recent:getRecentPlays(),genres:preferences.value,savedIds:new Set(library.value.map(row=>row.track_id))});
+   const mixes=buildPersonalMixes(catalog,{uid,recent:getRecentPlays(),genres:preferences.value.genres,favoriteTrackIds:preferences.value.favorite_track_ids,favoriteArtists:preferences.value.favorite_artists,savedIds:new Set(library.value.map(row=>row.track_id))});
    let mix=mixes.find(item=>item.id===id)||null;
    const passed=snapshot.current;
    if(mix&&passed?.owner===uid&&passed.mixId===id&&Array.isArray(passed.trackIds)){

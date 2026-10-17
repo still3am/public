@@ -178,9 +178,10 @@ export default function Home() {
       }
       // Merge saved genre picks with listening history — saved genres seed
       // personalization, recent plays refine it over time.
-      const savedGenres = await getUserGenres(user?.id).catch(()=>{if(request===loadVersion.current)setPreferencesError(true);return [];});
+      const taste = await getUserMusicPreferences(user?.id).catch(()=>{if(request===loadVersion.current)setPreferencesError(true);return {genres:[],favorite_track_ids:[],favorite_artists:[]};});
+      const savedGenres=taste.genres;
       if (request !== loadVersion.current) return;
-      setPersonal({uid:user?.id,catalog:published,genres:savedGenres});
+      setPersonal({uid:user?.id,catalog:published,genres:savedGenres,taste});
       const genreSet = new Set(savedGenres);
       const userGenres = Object.entries(genreFreq).
       sort((a, b) => b[1] - a[1]).
@@ -255,7 +256,7 @@ export default function Home() {
         
         {genreList.length > 0 && <nav className="home-genre-links" aria-label="Browse genres">{genreList.map((genre) => <Link key={genre} to={`/search?genre=${encodeURIComponent(genre)}`}>{genre}</Link>)}</nav>}
         <Section title="New on PUBLIC" icon={Sparkles} seeAllTo="/recent"><ReleaseList tracks={newReleases} /></Section>
-        <MadeForYou key={"mixes:"+user?.id} catalog={personalCatalog} genres={personalGenres}/>
+        <MadeForYou key={"mixes:"+user?.id} catalog={personalCatalog} genres={personalGenres} taste={personal.uid===user?.id?personal.taste:null}/>
         {recent.length > 0 && <Section title="Recently played"><CardRow tracks={recent} /></Section>}
         <Section title="Trending" icon={TrendingUp} seeAllTo="/top">
           <CardRow tracks={trending} />
