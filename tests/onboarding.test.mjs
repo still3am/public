@@ -68,3 +68,16 @@ f=flow(6,{ignored:true});await f.api.complete();assert.equal(f.state.done,false)
 f=flow(5,{ignored:true});await f.api.next();assert.equal(f.state.step,undefined);assert.match(f.state.error,/not confirmed/);
 f=flow(6,{refreshUnmounts:true});await f.api.complete();assert.equal(f.state.navigated,true,"completion must reach Home even if auth refresh hides onboarding");
 console.log("PASS slow loading preserves edits, bounded load recovery, stale Settings completion, unavailable favorites protection, ignored saves and completion navigation");
+
+// A catalog/preferences load started before saving cannot replace the freshly saved cache.
+prefs.clearUserGenresCache();uid="a";
+const originalFilter=globalThis.__b.entities.UserGenre.filter;
+let release;
+globalThis.__b.entities.UserGenre.filter=()=>new Promise(resolve=>{release=resolve;});
+const oldRead=prefs.getUserMusicPreferences("a");
+globalThis.__b.entities.UserGenre.filter=originalFilter;
+await prefs.saveUserGenres(["Pop"],"a");
+release([{id:"taste-a",genres:["Jazz"],favorite_track_ids:[]}]);
+assert.deepEqual((await oldRead).genres,["Pop"]);
+assert.deepEqual(await prefs.getUserGenres("a"),["Pop"]);
+console.log("PASS in-flight preference reads cannot overwrite a newer save");

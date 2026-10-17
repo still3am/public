@@ -72,13 +72,13 @@ export function WelcomeFlow({user,onDone}){
   if(lock.current||followLock.current)return;lock.current=true;setBusy(true);setError("");
   try{
    await owner();
-   if(!skip&&draft.sharingChanged){const current=await owner();const selected=draft.trackIds.filter(id=>byId.has(id)).slice(0,8);if(draft.shareFavorites&&(loading||!musicReady||selected.length!==draft.trackIds.length))throw Error("Some favorites aren’t available. Review your songs or turn sharing off to continue.");const next=draft.shareFavorites?selected:[];if(JSON.stringify(current.top_track_ids||[])!==JSON.stringify(next))await base44.auth.updateMe({top_track_ids:next});}
+   if(!skip&&draft.sharingChanged){const current=await owner();const selected=draft.trackIds.filter(id=>byId.has(id)).slice(0,8);if(draft.shareFavorites&&(loading||!musicReady||!selected.length||selected.length!==draft.trackIds.length))throw Error("Some favorites aren’t available. Review your songs or turn sharing off to continue.");const next=draft.shareFavorites?selected:[];if(JSON.stringify(current.top_track_ids||[])!==JSON.stringify(next))await base44.auth.updateMe({top_track_ids:next});}
    await base44.auth.updateMe({onboarding_completed:true});
    const confirmed=await owner();if(confirmed.onboarding_completed!==true)throw Error("Completion was not confirmed. Please retry.");
    try{localStorage.setItem("public:onboarded:"+user.id,"1");localStorage.removeItem(draftKey(user.id));}catch{}
    window.dispatchEvent(new CustomEvent("onboarding:completed",{detail:{uid:user.id}}));window.dispatchEvent(new CustomEvent("preferences:changed",{detail:{uid:user.id}}));window.dispatchEvent(new Event("profiles:changed"));
+   if(alive.current){onDone();nav("/");}
    await checkUserAuth({silent:true});
-   if((await base44.auth.me())?.id===user.id){onDone();nav("/");}
   }catch(e){if(alive.current)setError(errorText(e));}
   finally{lock.current=false;if(alive.current)setBusy(false);}
  }
@@ -166,6 +166,7 @@ export function WelcomeFlow({user,onDone}){
     {step===6&&<div className="onboarding-privacy">
      <div className="onboarding-privacy-heading"><ShieldCheck size={24} strokeWidth={1.5}/><span>Your listening stays yours.</span></div>
      <label className="onboarding-sharing"><span><strong>Share my favorite songs</strong><small>Show your picks in your profile’s Top 8.</small></span><input type="checkbox" checked={draft.shareFavorites} onChange={e=>update({shareFavorites:e.target.checked,sharingChanged:true})}/></label>
+     {!draft.trackIds.length&&<button type="button" className="onboarding-text-button" disabled={busy} onClick={()=>{update({step:3});setMusicTab("songs");}}>Choose favorite songs</button>}
      <p className="onboarding-note">Your profile is public. Private playlists and your recent listening history stay private.</p>
      <details className="onboarding-custom-colors"><summary>What people can see</summary><p className="onboarding-note">Your name, photo, profile song and public playlists. Your artist and genre picks help personalize recommendations privately.</p></details>
     </div>}
