@@ -147,7 +147,7 @@
 .onboarding-person+ .onboarding-person{border-top:1px solid #ffffff18}
 .mood-preview{padding:30px 20px;border-color:#ffffff35;background:linear-gradient(135deg,#ffffff18,#00000014)}
 .onboarding-ready-card{display:flex;align-items:center;gap:13px;padding:22px 16px;border-radius:22px;background:linear-gradient(135deg,#ffffff14,#ffffff04);border:1px solid #ffffff25;margin-bottom:2px}
-.onboarding-ready-card>div{flex:1;min-width:0}
+.onboarding-ready-card>div:nth-child(2){flex:1;min-width:0}
 .onboarding-ready-card small{display:block;font-size:8px;letter-spacing:.14em;color:#ffffff80;margin-bottom:7px}
 .onboarding-ready-card strong{display:block;font-size:20px;letter-spacing:-.025em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .onboarding-ready-card span{display:block;font-size:11px;color:#ffffff90;margin-top:5px}
