@@ -28,10 +28,10 @@ current.onboarding_completed=false;
 assert.match(settingsMarkup(),/Finish setting up PUBLIC/,"completion does not leak between accounts");
 const ui=await load(fs.readFileSync("src/components/NewMemberOnboarding.jsx","utf8"),common+`
 const {ONBOARDING_PALETTES,cleanHandle,validHandle,credits,recommendPeople,readOnboardingDraft,draftKey,onboardingComplete,normalizeOnboardingColors,mergeOnboardingTaste,withOnboardingDeadline,onboardingSearchMatch}=globalThis.__model;
-const useNavigate=()=>()=>{},base44={},getPublishedTracks=async()=>[],getUserMusicPreferences=async()=>({}),saveUserMusicPreferences=async()=>{};
+const usePlayer=()=>globalThis.__player||{currentTrack:null,isPlaying:false,playTrackAt(){},togglePlay(){}},useNavigate=()=>()=>{},base44={},getPublishedTracks=async()=>[],getUserMusicPreferences=async()=>({}),saveUserMusicPreferences=async()=>{};
 const GENRES=["Hip-Hop","R&B","Pop","Afrobeats","Latin","Dance","Indie","Rock","Soul","Jazz","Electronic","Reggaeton","Ambient"];
 const useCoverUrl=url=>url;
-const ArrowRight=()=>null,ArrowLeft=ArrowRight,Check=ArrowRight,Headphones=ArrowRight,Loader2=ArrowRight,Camera=ArrowRight,Search=ArrowRight,Music2=ArrowRight,ShieldCheck=ArrowRight,Plus=ArrowRight;
+const ArrowRight=()=>null,ArrowLeft=ArrowRight,Check=ArrowRight,Headphones=ArrowRight,Loader2=ArrowRight,Camera=ArrowRight,Search=ArrowRight,Music2=ArrowRight,ShieldCheck=ArrowRight,Plus=ArrowRight,Play=ArrowRight,Pause=ArrowRight;
 const Dialog=({children})=>React.createElement(React.Fragment,null,children);
 const DialogContent=({children,...props})=>React.createElement("section",{"data-step":props["data-onboarding-step"]},children);
 const DialogTitle=React.forwardRef(({children},ref)=>React.createElement("h2",{ref},children));
@@ -69,3 +69,10 @@ const DialogContent=Dialog,DialogHeader=Dialog,DialogTitle=Dialog,DialogDescript
 const pickerHtml=renderToStaticMarkup(React.createElement(picker.default,{title:"Your profile song",onToggle(){},onClose(){}}));
 assert.match(pickerHtml,/Allowed song/);assert.doesNotMatch(pickerHtml,/Blocked song/);
 console.log("PASS stale-context Settings completion, account separation and shared picker blocked-user filtering");
+
+const previewSong={id:"preview",title:"My profile song",artist:"Preview artist",cover_art_url:"https://example.test/art.jpg"};
+let songMarkup=renderToStaticMarkup(React.createElement(ui.OnboardingProfileSong,{track:previewSong,onChange(){}}));
+assert.match(songMarkup,/My profile song/);assert.match(songMarkup,/Preview artist/);assert.match(songMarkup,/art.jpg/);assert.match(songMarkup,/Play My profile song/);
+globalThis.__player={currentTrack:previewSong,isPlaying:true};
+songMarkup=renderToStaticMarkup(React.createElement(ui.OnboardingProfileSong,{track:previewSong,onChange(){}}));assert.match(songMarkup,/Pause My profile song/);
+console.log("PASS selected profile song shows real artwork, artist and player state");

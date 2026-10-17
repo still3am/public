@@ -1,10 +1,11 @@
 import {useEffect,useMemo,useRef,useState} from "react";
 import {useNavigate} from "react-router-dom";
-import {ArrowRight,ArrowLeft,Check,Loader2,Camera,Search,Music2,ShieldCheck,Plus} from "lucide-react";
+import {ArrowRight,ArrowLeft,Check,Loader2,Camera,Search,Music2,ShieldCheck,Plus,Play,Pause} from "lucide-react";
 import {Dialog,DialogContent,DialogTitle,DialogDescription} from "@/components/ui/dialog";
 import MotionGradient from "@/components/MotionGradient";
 import Logo from "@/components/Logo";
 import Avatar from "@/components/Avatar";
+import {usePlayer} from "@/context/PlayerContext";
 import ProfileColorWheel from "@/components/profile/ProfileColorWheel";
 import TrackPickerSheet from "@/components/profile/TrackPickerSheet";
 import {useCoverUrl} from "@/hooks/useCoverUrl";
@@ -30,13 +31,24 @@ function OnboardingLetters({text,delay=0,className=""}){
  return <span className={"onboarding-letter-text "+className}><span className="sr-only">{text}</span><span aria-hidden="true">{text.split(/(\s+)/).map((word,wordIndex)=>/\s/.test(word)?word:<span className="onboarding-word" key={wordIndex}>{Array.from(word).map((letter,letterIndex)=><span key={letterIndex} className="onboarding-letter" style={{"--letter-delay":(delay+Math.min(index++*11,220))+"ms"}}>{letter}</span>)}</span>)}</span></span>;
 }
 function SongCover({url}){const cover=useCoverUrl(url);return <span className="onboarding-cover">{cover?<img src={cover} alt="" loading="lazy"/>:<Music2 size={20}/>}</span>;}
+export function OnboardingProfileSong({track,onChange,onError,disabled=false}){
+ const player=usePlayer();
+ const playing=player?.currentTrack?.id===track?.id&&player?.isPlaying;
+ async function play(){
+  if(!track||disabled||!player)return;
+  try{if(player.currentTrack?.id===track.id)await player.togglePlay();else await player.playTrackAt([track]);}
+  catch(error){onError?.(errorText(error));}
+ }
+ if(!track)return <button type="button" className="onboarding-profile-song" disabled={disabled} onClick={onChange}><Music2 size={16}/><span>Add a profile song</span><Plus size={16}/></button>;
+ return <div className="onboarding-song-preview"><SongCover url={track.cover_art_url}/><button type="button" className="onboarding-song-details" disabled={disabled} onClick={onChange} aria-label={"Change profile song: "+track.title}><strong>{track.title}</strong><span>{track.artist||track.uploader_name||"PUBLIC"}</span><small>Change song</small></button><button type="button" className="onboarding-song-play" disabled={disabled||!player} onClick={play} aria-label={(playing?"Pause ":"Play ")+track.title}>{playing?<Pause size={19} fill="currentColor"/>:<Play size={19} fill="currentColor"/>}</button></div>;
+}
 function initialDraft(user){
  const previous=readOnboardingDraft(user.id);
  return {step:0,name:user.display_name||user.full_name||"",username:user.username||"",avatar:user.avatar_url||"",genres:[],trackIds:[],artists:[],profileTrack:user.featured_track_id||"",mode:user.profile_background_mode||"custom",colors:normalizeOnboardingColors(user.profile_background_colors),editedFields:[],shareFavorites:!!user.top_track_ids?.length,sharingChanged:false,...previous};
 }
 export function WelcomeFlow({user,onDone}){
  const nav=useNavigate(),{checkUserAuth}=useAuth(),{blocked}=useSafety();
- const [draft,setDraft]=useState(()=>initialDraft(user)),[busy,setBusy]=useState(false),[error,setError]=useState(""),[catalog,setCatalog]=useState([]),[profiles,setProfiles]=useState([]),[following,setFollowing]=useState(new Set()),[loading,setLoading]=useState(true),[musicReady,setMusicReady]=useState(false),[loadError,setLoadError]=useState(""),[followBusy,setFollowBusy]=useState(""),[query,setQuery]=useState(""),[genreQuery,setGenreQuery]=useState(""),[musicTab,setMusicTab]=useState("artists"),[limit,setLimit]=useState(8),[allGenres,setAllGenres]=useState(false),[colorIndex,setColorIndex]=useState(0),[picker,setPicker]=useState(false);
+ const [draft,setDraft]=useState(()=>initialDraft(user)),[busy,setBusy]=useState(false),[error,setError]=useState(""),[catalog,setCatalog]=useState([]),[profiles,setProfiles]=useState([]),[following,setFollowing]=useState(new Set()),[loading,setLoading]=useState(true),[musicReady,setMusicReady]=useState(false),[loadError,setLoadError]=useState(""),[followBusy,setFollowBusy]=useState(""),[query,setQuery]=useState(""),[genreQuery,setGenreQuery]=useState(""),[musicTab,setMusicTab]=useState("artists"),[limit,setLimit]=useState(8),[allGenres,setAllGenres]=useState(false),[colorIndex,setColorIndex]=useState(0),[picker,setPicker]=useState(false),[pickedTrack,setPickedTrack]=useState(null);
  const lock=useRef(false),alive=useRef(true),content=useRef(null),fileInput=useRef(null),heading=useRef(null),request=useRef(0),followLock=useRef(false);
 
  const step=Math.max(0,Math.min(6,Number(draft.step)||0));
@@ -44,7 +56,7 @@ export function WelcomeFlow({user,onDone}){
  const update=patch=>{if(lock.current||followLock.current)return;setError("");setDraft(old=>({...old,...patch,editedFields:[...new Set([...(old.editedFields||[]),...Object.keys(patch).filter(key=>["genres","trackIds","artists"].includes(key))])]}));};
  const defer=()=>{if(lock.current||followLock.current)return;try{localStorage.setItem(draftKey(user.id),JSON.stringify({...draft,uid:user.id}));}catch{}onDone();};
  useEffect(()=>{try{localStorage.setItem(draftKey(user.id),JSON.stringify({...draft,uid:user.id}));}catch{}},[draft,user.id]);
- useEffect(()=>{content.current?.scrollTo({top:0});heading.current?.focus({preventScroll:true});setQuery("");setLimit(8);},[step]);
+ useEffect(()=>{heading.current?.focus({preventScroll:true});if(content.current){content.current.scrollTop=0;const dialog=content.current.closest("[role=dialog]");if(dialog)dialog.scrollTop=0;}setQuery("");setLimit(8);},[step]);
  async function load(){
   const version=++request.current;setLoading(true);setMusicReady(false);setLoadError("");
   const result=await Promise.allSettled([
@@ -65,6 +77,7 @@ export function WelcomeFlow({user,onDone}){
  useEffect(()=>{load();},[user.id]);
  const visibleCatalog=useMemo(()=>catalog.filter(t=>t.is_published===true&&!blocked.has(t.uploader_id)),[catalog,blocked]);
  const byId=useMemo(()=>new Map(visibleCatalog.map(t=>[t.id,t])),[visibleCatalog]);
+ const previewTrack=byId.get(draft.profileTrack)||(pickedTrack?.id===draft.profileTrack&&!blocked.has(pickedTrack.uploader_id)?pickedTrack:null);
  const artistOptions=useMemo(()=>{
   const map=new Map();for(const track of visibleCatalog)for(const name of credits(track)){const key=name.toLowerCase();if(!map.has(key))map.set(key,{name,cover:track.cover_art_url,genre:track.genre});}
   return [...map.values()].sort((a,b)=>Number(draft.genres.includes(b.genre))-Number(draft.genres.includes(a.genre))||a.name.localeCompare(b.name));
@@ -164,7 +177,7 @@ export function WelcomeFlow({user,onDone}){
      <p className="onboarding-note">Follow anyone you like, or keep exploring solo.</p>
     </div>}
     {step===5&&<div className="onboarding-mood">
-     <div className="onboarding-profile-preview mood-preview"><Avatar user={{display_name:draft.name,avatar_url:draft.avatar}} size={64}/><strong>{draft.name||"Your PUBLIC"}</strong><button type="button" className="onboarding-profile-song" onClick={()=>setPicker(true)}><Music2 size={15}/><span>{byId.get(draft.profileTrack)?.title||"Add a profile song"}</span><Plus size={15}/></button></div>
+     <div className="onboarding-profile-preview mood-preview"><Avatar user={{display_name:draft.name,avatar_url:draft.avatar}} size={64}/><strong>{draft.name||"Your PUBLIC"}</strong><OnboardingProfileSong track={previewTrack} disabled={busy} onChange={()=>setPicker(true)} onError={setError}/></div>
      <div className="onboarding-palettes" role="group" aria-label="Profile color palettes">{ONBOARDING_PALETTES.map(palette=><button key={palette.name} type="button" aria-pressed={draft.mode==="custom"&&draft.colors.join()===palette.colors.join()} onClick={()=>update({colors:[...palette.colors],mode:"custom"})}><span style={{background:"linear-gradient(130deg,"+palette.colors.join(",")+")"}}>{draft.mode==="custom"&&draft.colors.join()===palette.colors.join()&&<Check size={16}/>}</span>{palette.name}</button>)}</div>
      <details className="onboarding-custom-colors"><summary>Customize colors</summary><div className="onboarding-color-stops">{draft.colors.map((color,index)=><button key={index} type="button" aria-label={"Edit color "+(index+1)} aria-pressed={colorIndex===index} style={{background:color}} onClick={()=>setColorIndex(index)}>{colorIndex===index&&<Check size={18}/>}</button>)}</div><ProfileColorWheel value={draft.colors[colorIndex]||"#303030"} colorNumber={colorIndex+1} disabled={busy} onChange={color=>update({mode:"custom",colors:draft.colors.map((c,i)=>i===colorIndex?color:c)})}/><button className="onboarding-text-button" type="button" onClick={()=>update({mode:draft.mode==="off"?"custom":"off"})}>{draft.mode==="off"?"Turn colors on":"Use a plain background"}</button></details>
      {draft.profileTrack&&<button type="button" className="onboarding-text-button" onClick={()=>update({profileTrack:""})}>Remove profile song</button>}
@@ -180,7 +193,7 @@ export function WelcomeFlow({user,onDone}){
     {loadError&&step>1&&step<5&&<div className="onboarding-load-error" role="status"><p>{loadError}</p><button type="button" disabled={loading} onClick={load}>Retry</button></div>}
    </main>
    <footer className="onboarding-footer">{error&&<p role="alert">{error}</p>}<div className="onboarding-buttons">{step>0&&step<6&&<button className="onboarding-skip" type="button" disabled={busy||!!followBusy} onClick={()=>next(true)}>Skip</button>}<button type="button" className="onboarding-next" disabled={busy||!!followBusy} onClick={()=>next()}>{busy?<Loader2 size={18} className="animate-spin"/>:null}{busy?"Saving…":step===0?"Let’s go":step===6?"Start listening":"Continue"}{!busy&&<ArrowRight size={18}/>}</button></div></footer>
-   {picker&&<TrackPickerSheet title="Your profile song" tracks={visibleCatalog.filter(t=>t.uploader_id===user.id)} selectedIds={draft.profileTrack?[draft.profileTrack]:[]} onToggle={id=>{update({profileTrack:id});setPicker(false);}} onClose={()=>setPicker(false)}/>}
+   {picker&&<TrackPickerSheet title="Your profile song" tracks={visibleCatalog.filter(t=>t.uploader_id===user.id)} selectedIds={draft.profileTrack?[draft.profileTrack]:[]} onToggle={(id,track)=>{setPickedTrack(track);update({profileTrack:id});setPicker(false);}} onClose={()=>setPicker(false)}/>}
   </DialogContent>
  </Dialog>;
 }
