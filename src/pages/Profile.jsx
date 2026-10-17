@@ -1,3 +1,4 @@
+import {setFollowState,followError} from '@/lib/followActions';
 import { shareLink } from '@/lib/shareLink';
 import { reportActionError } from '@/lib/actionError';
 import LoadError from '@/components/LoadError';
@@ -138,8 +139,9 @@ export default function Profile({ ownProfileTab = false }) {
   const [loadError, setLoadError] = useState(false);
   const [sectionError, setSectionError] = useState("");
   const [followingBusy, setFollowingBusy] = useState(false);
-  const followBusyRef = useRef(false);
+  const followBusyRef = useRef(false),followRevision=useRef(0);
   async function load() {
+    const revision=followRevision.current;
     const request = ++loadVersion.current;request === loadVersion.current && setLoadError(false);setSectionError("");
     request === loadVersion.current && setLoading(true);
     try {
@@ -173,12 +175,12 @@ export default function Profile({ ownProfileTab = false }) {
       if (t) {setTracks(t);setTopTracks([...t].sort((a, b) => (b.play_count || 0) - (a.play_count || 0)).slice(0, 5));}
       const totalsRow = totals?.rows?.[0];
       setStats((previous) => ({
-        followers: typeof followersCount === "number" ? followersCount : previous.followers,
-        following: typeof followingCount === "number" ? followingCount : previous.following,
+        followers: revision===followRevision.current&&typeof followersCount === "number" ? followersCount : previous.followers,
+        following: revision===followRevision.current&&typeof followingCount === "number" ? followingCount : previous.following,
         plays: totalsRow ? totalsRow.sum_play_count || 0 : t ? t.reduce((sum, x) => sum + (x.play_count || 0), 0) : previous.plays,
         likes: totalsRow ? totalsRow.sum_like_count || 0 : t ? t.reduce((sum, x) => sum + (x.like_count || 0), 0) : previous.likes
       }));
-      if (relToUser) {setFollowing((Array.isArray(relToUser) ? relToUser : relToUser.items || []).length > 0);setFollowReady(true);}
+      if (relToUser&&revision===followRevision.current) {setFollowing((Array.isArray(relToUser) ? relToUser : relToUser.items || []).length > 0);setFollowReady(true);}
       if (responses.some((r, i) => i !== 1 && r.status === "rejected")) setSectionError("Some profile information could not refresh. Saved music and follows have not been removed.");
     } catch {request === loadVersion.current && setLoadError(true);
     } finally {
@@ -212,40 +214,17 @@ export default function Profile({ ownProfileTab = false }) {
   async function toggleFollow() {
     if (!profile || !me?.id || !followReady || followBusyRef.current) return;
     followBusyRef.current = true;setFollowingBusy(true);const started = identity.current;
-    const wasFollowing = following;
-    setFollowing(!wasFollowing);
-    setStats((s) => ({
-      ...s,
-      followers: s.followers === null ? null : Math.max(0, s.followers + (wasFollowing ? -1 : 1))
-    }));
+    const wasFollowing = following;followRevision.current++;setSectionError("");
     try {
-      if (wasFollowing) {
-        await base44.entities.Follow.deleteMany({
-          follower_id: me.id,
-          following_id: profile.id
-        });
-      } else {
-        await base44.entities.Follow.create({
-          follower_id: me.id,
-          following_id: profile.id
-        });
-        try {
-          await base44.entities.Notification.create({
-            user_id: profile.id,
-            type: "new_follower",
-            actor_id: me.id
-          });
-        } catch {}
-      }
+      const result=await setFollowState(base44,me.id,profile.id,!wasFollowing);
+      if(identity.current!==started)return;
+      followRevision.current++;setFollowing(result.following);
+      if(result.changed)setStats(s=>({...s,followers:s.followers===null?null:Math.max(0,s.followers+(result.following?1:-1))}));
+      if(result.changed&&result.following)base44.entities.Notification.create({user_id:profile.id,type:"new_follower",actor_id:me.id}).catch(()=>{});
       if (identity.current === started) window.dispatchEvent(new CustomEvent('follows:changed', { detail: { uid: me.id, followingId: profile.id, following: !wasFollowing } }));
-    } catch {
+    } catch(error) {
       if (identity.current !== started) return;
-      setSectionError("Your follow change could not save. Please retry.");
-      setFollowing(wasFollowing);
-      setStats((s) => ({
-        ...s,
-        followers: s.followers === null ? null : Math.max(0, s.followers + (wasFollowing ? 1 : -1))
-      }));
+      followRevision.current++;setSectionError(followError(error));
     } finally {followBusyRef.current = false;setFollowingBusy(false);}
   }
 
@@ -358,12 +337,12 @@ export default function Profile({ ownProfileTab = false }) {
 
 
   return (
-    <PullToRefresh onRefresh={load} disabled={editMode || saving || uploadingAvatar || showSettings || showDelete || showQR || showColors || !!followList}>
+    <PullToRefresh onRefresh={load} disabled={followingBusy || editMode || saving || uploadingAvatar || showSettings || showDelete || showQR || showColors || !!followList}>
 
     {backgroundColors.length > 0 && <MotionGradient colors={backgroundColors} motion={currentBackground.motion} speed={currentBackground.speed} active={isCurrentPage && !showColors && !showSettings && !showQR && !showDelete && !followList} pauseWhenCovered className="profile-artwork-background fixed inset-0 pointer-events-none z-0" style={{ opacity: 1 }} />}
     {!backgroundColors.length && currentBackground.mode === "auto" && coverUrl && <div aria-hidden="true" className="profile-artwork-background fixed inset-0 pointer-events-none z-0" style={{ backgroundImage: `url(${JSON.stringify(coverUrl)})`, backgroundSize: "cover", backgroundPosition: "center", filter: "blur(45px) saturate(1.35)", transform: "scale(1.12)", opacity: 1 }} />}
     <div className={`profile-page profile-redesigned max-w-6xl mx-auto relative z-10 ${editMode ? "profile-is-editing" : ""}`}>
-      {sectionError && <button disabled={loading || editMode || saving || uploadingAvatar} onClick={load} className="playlist-action text-xs mb-4">Refresh profile</button>}
+      {sectionError && <div role="status" className="border rounded-xl p-4 mb-4 text-sm"><p>{sectionError}</p><button disabled={followingBusy || loading || editMode || saving || uploadingAvatar} onClick={load} className="playlist-action text-xs mt-3">Refresh profile</button></div>}
       <div className="profile-overview flex flex-col md:flex-row gap-4 md:gap-6 mb-8">
       <div className="profile-identity relative rounded-2xl overflow-hidden ring-1 ring-inset ring-foreground/10 bg-card flex-1 min-w-0">
         <div className="profile-cover-stage" aria-hidden="true" style={backgroundColors.length ? { backgroundImage: profileGradient(backgroundColors) } : undefined}>
@@ -553,7 +532,7 @@ export default function Profile({ ownProfileTab = false }) {
                       aria-label={following ? "Unfollow" : "Follow"}
                       className={`profile-primary-action playlist-action transition ${
                       following ? "border border-border" : "bg-foreground text-background"}`}>
-                    {followingBusy ? <Loader2 size={16} className="animate-spin" /> : following ? <UserCheck size={16} /> : <UserPlus size={16} />}<span>{following ? "Following" : "Follow"}</span>
+                    {followingBusy ? <Loader2 size={16} className="animate-spin" /> : following ? <UserCheck size={16} /> : <UserPlus size={16} />}<span>{followingBusy ? "Saving…" : following ? "Following" : "Follow"}</span>
                   </button>
                     }
                 {!editMode &&
