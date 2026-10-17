@@ -29,6 +29,27 @@ export function readOnboardingDraft(uid){
   if(["auto","custom","off"].includes(raw.mode))clean.mode=raw.mode;
   if(Array.isArray(raw.colors)&&raw.colors.length===3&&raw.colors.every(c=>/^#[0-9a-f]{6}$/i.test(c)))clean.colors=raw.colors;
   for(const key of ["shareFavorites","sharingChanged"])if(typeof raw[key]==="boolean")clean[key]=raw[key];
+  if(Array.isArray(raw.editedFields))clean.editedFields=raw.editedFields.filter(key=>["genres","trackIds","artists"].includes(key));
+  else clean.editedFields=["genres","trackIds","artists"].filter(key=>Array.isArray(raw[key]));
   return clean;
  }catch{return null;}
+}
+
+export function onboardingComplete(user){
+ if(!user?.id)return false;
+ if(user.onboarding_completed===true)return true;
+ try{return localStorage.getItem("public:onboarded:"+user.id)==="1";}catch{return false;}
+}
+export function normalizeOnboardingColors(colors){
+ const valid=Array.isArray(colors)?colors.filter(c=>/^#[0-9a-f]{6}$/i.test(c)):[];
+ return [valid[0]||"#000000",valid[1]||"#ffffff",valid[2]||"#303030"];
+}
+export function mergeOnboardingTaste(draft,taste){
+ const edited=new Set(draft.editedFields||[]),next={...draft};
+ for(const [field,source] of [["genres","genres"],["trackIds","favorite_track_ids"],["artists","favorite_artists"]])if(!edited.has(field))next[field]=Array.isArray(taste?.[source])?[...taste[source]]:[];
+ return next;
+}
+export function withOnboardingDeadline(promise,ms=15000){
+ let timer;
+ return Promise.race([promise,new Promise((_,reject)=>{timer=setTimeout(()=>reject(Error("Choices took too long to load. Please retry.")),ms);})]).finally(()=>clearTimeout(timer));
 }

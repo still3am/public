@@ -1,3 +1,4 @@
+import {useSafety} from "@/context/SafetyContext";
 import {useLibrary} from "@/context/LibraryContext";
 import {useDeferredValue,useEffect,useMemo,useRef,useState} from "react";
 import {getPublishedTracks,peekPublishedTracks,subscribePublishedTracks} from "@/lib/catalogCache";
@@ -13,6 +14,7 @@ function Cover({url}){
 }
 export default function TrackPickerSheet({title,selectedIds=[],max=1,tracks=[],onToggle,onClose}){
  const {ids:libraryIds}=useLibrary();
+ const {blocked}=useSafety();
  const [query,setQuery]=useState(""),[scope,setScope]=useState("all"),[published,setPublished]=useState(peekPublishedTracks),[loading,setLoading]=useState(true),[limit,setLimit]=useState(50),[selecting,setSelecting]=useState("");
  const sentinel=useRef(null),scroll=useRef(null),lock=useRef(false),alive=useRef(true);
  useEffect(()=>{alive.current=true;return()=>{alive.current=false;};},[]);
@@ -20,9 +22,9 @@ export default function TrackPickerSheet({title,selectedIds=[],max=1,tracks=[],o
  useEffect(()=>{let active=true;const unsubscribe=subscribePublishedTracks(rows=>{if(active)setPublished(rows);});getPublishedTracks().then(rows=>{if(active)setPublished(rows);}).catch(()=>{}).finally(()=>{if(active)setLoading(false);});return()=>{active=false;unsubscribe();};},[]);
  const indexed=useMemo(()=>{
   const merged=new Map();
-  for(const track of [...tracks,...published]){if(!track?.id)continue;const previous=merged.get(track.id);merged.set(track.id,{...previous,...track,cover_art_url:track.cover_art_url||previous?.cover_art_url||""});}
+  for(const track of [...tracks,...published]){if(!track?.id||blocked.has(track.uploader_id))continue;const previous=merged.get(track.id);merged.set(track.id,{...previous,...track,cover_art_url:track.cover_art_url||previous?.cover_art_url||""});}
   return [...merged.values()].map(t=>({track:t,search:[t.title,t.artist,t.uploader_name,t.genre].filter(Boolean).join(" ").toLowerCase()}));
- },[tracks,published]);
+ },[tracks,published,blocked]);
  const ownIds=useMemo(()=>new Set(tracks.map(t=>t.id)),[tracks]);
  const filtered=useMemo(()=>{const term=deferred.trim().toLowerCase();return indexed.filter(row=>(scope!=="own"||ownIds.has(row.track.id))&&(scope!=="library"||libraryIds.has(row.track.id))&&(!term||row.search.includes(term))).map(row=>row.track);},[indexed,deferred,scope,ownIds,libraryIds]);
  useEffect(()=>{setLimit(50);scroll.current?.scrollTo({top:0});},[deferred,scope]);

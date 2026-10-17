@@ -6,6 +6,7 @@ import {useTheme} from "@/lib/useTheme";
 import {useAuth} from "@/lib/AuthContext";
 import {clearPersonalData} from "@/lib/clearPersonalData";
 import {useSafety} from "@/context/SafetyContext";
+import {onboardingComplete} from "@/lib/onboardingModel";
 import {base44} from "@/api/base44Client";
 
 /** @param {any} props */
@@ -67,7 +68,7 @@ export default function SettingsSheet({onClose,onDeleteAccount}){
    </header>
    <div className="min-h-0 overflow-y-auto overscroll-contain px-4 md:px-5 pt-5 pb-[calc(1.5rem+env(safe-area-inset-bottom))] space-y-6">
     <SettingGroup title="Listening & appearance">
-     {user&&user.onboarding_completed!==true&&<SettingRow icon={Sparkles} title="Finish setting up PUBLIC" description="Your taste, people and profile colors" onClick={()=>{onClose();window.dispatchEvent(new Event("onboarding:open"));}}/>}
+     {user&&!onboardingComplete(user)&&<SettingRow icon={Sparkles} title="Finish setting up PUBLIC" description="Your taste, people and profile colors" onClick={()=>{onClose();window.dispatchEvent(new Event("onboarding:open"));}}/>}
      <SettingRow icon={GitMerge} title="Song transitions" description="Crossfade and gapless playback" to="/settings/transitions" onClick={onClose}/>
      <SettingRow icon={theme.isDark?Moon:Sun} title="Dark appearance" description={theme.isDark?"Dark backgrounds, softer light":"Light backgrounds, clear contrast"}><SettingSwitch label="Dark appearance" checked={theme.isDark} onChange={theme.toggle}/></SettingRow>
     </SettingGroup>

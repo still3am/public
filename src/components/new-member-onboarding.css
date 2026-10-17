@@ -102,3 +102,10 @@
 @media(max-width:360px){.onboarding-header{padding-inline:20px}.onboarding-content{padding-inline:20px}.onboarding-footer{padding-inline:20px}.onboarding-palettes{gap:7px}.onboarding-palettes button{font-size:8px}.onboarding-person{gap:9px}}
 @media(max-height:700px){.onboarding-content{padding-top:22px}.onboarding-page-intro{margin-bottom:22px}.onboarding-welcome-symbol{height:90px;width:90px;margin-bottom:12px}.onboarding-welcome-symbol svg{width:58px;height:58px}.onboarding-welcome-line{font-size:30px}.onboarding-progress{margin-top:12px}}
 @media(prefers-reduced-motion:reduce){.onboarding-content{animation:none}.onboarding-genres>button{transition:none}}
+
+.onboarding-page-intro h2:focus{outline:none}
+.onboarding-selected-review{margin:0 0 20px;border-bottom:1px solid #ffffff15}
+.onboarding-selected-review summary{min-height:44px;padding:12px 0;font-size:12px;color:#ffffffb0;cursor:pointer}
+.onboarding-picked-chips{display:flex;flex-wrap:wrap;gap:8px;padding-bottom:16px}
+.onboarding-picked-chips button{display:flex;align-items:center;gap:10px;min-height:44px;max-width:100%;padding:8px 13px;border:1px solid #ffffff25;border-radius:999px;font-size:11px;overflow-wrap:anywhere;background:#ffffff08}
+.onboarding-picked-chips button span{font-size:18px;flex-shrink:0}

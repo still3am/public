@@ -14,7 +14,7 @@ import {base44} from "@/api/base44Client";
 import {GENRES} from "@/lib/audio-utils";
 import {getPublishedTracks} from "@/lib/catalogCache";
 import {getUserMusicPreferences,saveUserMusicPreferences} from "@/lib/userGenres";
-import {ONBOARDING_PALETTES,cleanHandle,validHandle,credits,recommendPeople,readOnboardingDraft,draftKey} from "@/lib/onboardingModel";
+import {ONBOARDING_PALETTES,cleanHandle,validHandle,credits,recommendPeople,readOnboardingDraft,draftKey,onboardingComplete,normalizeOnboardingColors,mergeOnboardingTaste,withOnboardingDeadline} from "@/lib/onboardingModel";
 import "./new-member-onboarding.css";
 import "./profile/profile-colors.css";
 
@@ -23,35 +23,35 @@ const FEATURED_GENRES=["Hip-Hop","R&B","Pop","Afrobeats","Latin","Dance","Indie"
 const TITLES=["Welcome to PUBLIC.","Make it yours.","What’s your sound?","Choose your favorites.","Find your people.","Set the mood.","Your music. Your choice."];
 const DESCRIPTIONS=["A little about you. A better place to listen.","Choose how people see you.","Pick a few favorites. Explore everything.","Start with the artists and songs you love.","Good music is better together.","Give your profile its own feeling.","One last choice before the music."];
 const rows=page=>Array.isArray(page)?page:Array.isArray(page?.items)?page.items:[];
-const savedLocally=id=>{try{return localStorage.getItem("public:onboarded:"+id)==="1";}catch{return false;}};
-const errorText=error=>(error?.response?.status===402||error?.status===402)?"This save is temporarily unavailable. Your choices are kept; retry or skip this step.":error?.response?.data?.error||error?.message||"This step could not save. Your choices are kept.";
+const errorText=error=>(error?.response?.status===402||error?.status===402)?"This save is temporarily unavailable. Your choices are kept. Please retry.":error?.response?.data?.error||error?.message||"This step could not save. Your choices are kept.";
 function SongCover({url}){const cover=useCoverUrl(url);return <span className="onboarding-cover">{cover?<img src={cover} alt="" loading="lazy"/>:<Music2 size={20}/>}</span>;}
 function initialDraft(user){
  const previous=readOnboardingDraft(user.id);
- return {step:0,name:user.display_name||user.full_name||"",username:user.username||"",avatar:user.avatar_url||"",genres:[],trackIds:[],artists:[],profileTrack:user.featured_track_id||"",mode:user.profile_background_mode||"custom",colors:user.profile_background_colors?.length?user.profile_background_colors:ONBOARDING_PALETTES[0].colors,shareFavorites:!!user.top_track_ids?.length,sharingChanged:false,...previous};
+ return {step:0,name:user.display_name||user.full_name||"",username:user.username||"",avatar:user.avatar_url||"",genres:[],trackIds:[],artists:[],profileTrack:user.featured_track_id||"",mode:user.profile_background_mode||"custom",colors:normalizeOnboardingColors(user.profile_background_colors),editedFields:[],shareFavorites:!!user.top_track_ids?.length,sharingChanged:false,...previous};
 }
 export function WelcomeFlow({user,onDone}){
  const nav=useNavigate(),{checkUserAuth}=useAuth(),{blocked}=useSafety();
  const [draft,setDraft]=useState(()=>initialDraft(user)),[busy,setBusy]=useState(false),[error,setError]=useState(""),[catalog,setCatalog]=useState([]),[profiles,setProfiles]=useState([]),[following,setFollowing]=useState(new Set()),[loading,setLoading]=useState(true),[musicReady,setMusicReady]=useState(false),[loadError,setLoadError]=useState(""),[followBusy,setFollowBusy]=useState(""),[query,setQuery]=useState(""),[genreQuery,setGenreQuery]=useState(""),[musicTab,setMusicTab]=useState("artists"),[limit,setLimit]=useState(8),[allGenres,setAllGenres]=useState(false),[colorIndex,setColorIndex]=useState(0),[picker,setPicker]=useState(false);
- const lock=useRef(false),alive=useRef(true),content=useRef(null),fileInput=useRef(null),hasDraft=useRef(!!readOnboardingDraft(user.id)),request=useRef(0),followLock=useRef(false);
+ const lock=useRef(false),alive=useRef(true),content=useRef(null),fileInput=useRef(null),heading=useRef(null),request=useRef(0),followLock=useRef(false);
 
  const step=Math.max(0,Math.min(6,Number(draft.step)||0));
  useEffect(()=>{alive.current=true;return()=>{alive.current=false;request.current++;};},[]);
- const update=patch=>{if(lock.current)return;setError("");setDraft(old=>({...old,...patch}));};
+ const update=patch=>{if(lock.current||followLock.current)return;setError("");setDraft(old=>({...old,...patch,editedFields:[...new Set([...(old.editedFields||[]),...Object.keys(patch).filter(key=>["genres","trackIds","artists"].includes(key))])]}));};
+ const defer=()=>{if(lock.current||followLock.current)return;try{localStorage.setItem(draftKey(user.id),JSON.stringify({...draft,uid:user.id}));}catch{}onDone();};
  useEffect(()=>{try{localStorage.setItem(draftKey(user.id),JSON.stringify({...draft,uid:user.id}));}catch{}},[draft,user.id]);
- useEffect(()=>{content.current?.scrollTo({top:0});setQuery("");setLimit(8);},[step]);
+ useEffect(()=>{content.current?.scrollTo({top:0});heading.current?.focus({preventScroll:true});setQuery("");setLimit(8);},[step]);
  async function load(){
   const version=++request.current;setLoading(true);setMusicReady(false);setLoadError("");
   const result=await Promise.allSettled([
-   getPublishedTracks(),
-   getUserMusicPreferences(user.id),
-   base44.entities.PublicProfile.filter({visible:true},{sort:"-updated_date",limit:100,fields:["user_id","display_name","username","avatar_url","top_track_ids","is_artist","visible"]}),
-   base44.entities.Follow.filter({follower_id:user.id},"-created_date",500)
+   withOnboardingDeadline(getPublishedTracks()),
+   withOnboardingDeadline(getUserMusicPreferences(user.id)),
+   withOnboardingDeadline(base44.entities.PublicProfile.filter({visible:true},{sort:"-updated_date",limit:100,fields:["user_id","display_name","username","avatar_url","top_track_ids","is_artist","visible"]})),
+   withOnboardingDeadline(base44.entities.Follow.filter({follower_id:user.id},"-created_date",500))
   ]);
   if(!alive.current||version!==request.current)return;
   setMusicReady(result[0].status==="fulfilled"&&result[1].status==="fulfilled");
   if(result[0].status==="fulfilled")setCatalog(result[0].value);
-  if(result[1].status==="fulfilled"&&!hasDraft.current){const taste=result[1].value;setDraft(old=>({...old,genres:taste.genres,trackIds:taste.favorite_track_ids,artists:taste.favorite_artists}));hasDraft.current=true;}
+  if(result[1].status==="fulfilled")setDraft(old=>mergeOnboardingTaste(old,result[1].value));
   if(result[2].status==="fulfilled")setProfiles(rows(result[2].value));
   if(result[3].status==="fulfilled")setFollowing(new Set(rows(result[3].value).map(r=>r.following_id)));
   if(result.some(r=>r.status==="rejected"))setLoadError("Some choices could not load. Retry, or skip any optional step.");
@@ -72,13 +72,13 @@ export function WelcomeFlow({user,onDone}){
   if(lock.current||followLock.current)return;lock.current=true;setBusy(true);setError("");
   try{
    await owner();
-   if(!skip&&draft.sharingChanged){const current=await owner();const selected=draft.trackIds.filter(id=>byId.has(id)).slice(0,8);const next=draft.shareFavorites?selected:[];if(JSON.stringify(current.top_track_ids||[])!==JSON.stringify(next))await base44.auth.updateMe({top_track_ids:next});}
+   if(!skip&&draft.sharingChanged){const current=await owner();const selected=draft.trackIds.filter(id=>byId.has(id)).slice(0,8);if(draft.shareFavorites&&(loading||!musicReady||selected.length!==draft.trackIds.length))throw Error("Some favorites aren’t available. Review your songs or turn sharing off to continue.");const next=draft.shareFavorites?selected:[];if(JSON.stringify(current.top_track_ids||[])!==JSON.stringify(next))await base44.auth.updateMe({top_track_ids:next});}
    await base44.auth.updateMe({onboarding_completed:true});
    const confirmed=await owner();if(confirmed.onboarding_completed!==true)throw Error("Completion was not confirmed. Please retry.");
    try{localStorage.setItem("public:onboarded:"+user.id,"1");localStorage.removeItem(draftKey(user.id));}catch{}
-   window.dispatchEvent(new CustomEvent("preferences:changed",{detail:{uid:user.id}}));window.dispatchEvent(new Event("profiles:changed"));
+   window.dispatchEvent(new CustomEvent("onboarding:completed",{detail:{uid:user.id}}));window.dispatchEvent(new CustomEvent("preferences:changed",{detail:{uid:user.id}}));window.dispatchEvent(new Event("profiles:changed"));
    await checkUserAuth({silent:true});
-   if(alive.current){onDone();nav("/");}
+   if((await base44.auth.me())?.id===user.id){onDone();nav("/");}
   }catch(e){if(alive.current)setError(errorText(e));}
   finally{lock.current=false;if(alive.current)setBusy(false);}
  }
@@ -92,11 +92,11 @@ export function WelcomeFlow({user,onDone}){
     if(name.length<2||name.length>60)throw Error("Use a display name between 2 and 60 characters.");
     if(!validHandle(username))throw Error("Use 3–24 letters, numbers or underscores for your username.");
     const patch={};if(name!==(user.display_name||user.full_name||""))patch.display_name=name;if(username!==(user.username||""))patch.username=username;if(draft.avatar!==(user.avatar_url||""))patch.avatar_url=draft.avatar;
-    if(Object.keys(patch).length){const saved=await base44.auth.updateMe(patch);if(saved?.id!==user.id)throw Error("Profile was not confirmed.");await checkUserAuth({silent:true});window.dispatchEvent(new Event("profiles:changed"));}
+    if(Object.keys(patch).length){const saved=await base44.auth.updateMe(patch);if(saved?.id!==user.id||Object.keys(patch).some(key=>saved[key]!==patch[key]))throw Error("Profile was not confirmed. Please retry.");await checkUserAuth({silent:true});window.dispatchEvent(new Event("profiles:changed"));}
    }
    if(!skip&&step===2)await saveUserMusicPreferences({genres:draft.genres},user.id);
    if(!skip&&step===3){if(loading||!musicReady)throw Error("Retry loading your music choices, or skip this step.");await saveUserMusicPreferences({favorite_track_ids:draft.trackIds.filter(id=>byId.has(id)),favorite_artists:draft.artists.filter(name=>artistOptions.some(a=>a.name===name))},user.id);}
-   if(!skip&&step===5){const patch={profile_background_mode:draft.mode,profile_background_colors:draft.colors,profile_background_motion:"flow",profile_background_speed:1,featured_track_id:draft.profileTrack};await base44.auth.updateMe(patch);const saved=await owner();if(saved.featured_track_id!==draft.profileTrack||saved.profile_background_mode!==draft.mode)throw Error("Profile style was not confirmed.");await checkUserAuth({silent:true});}
+   if(!skip&&step===5){const patch={profile_background_mode:draft.mode,profile_background_colors:draft.colors,profile_background_motion:"flow",profile_background_speed:1,featured_track_id:draft.profileTrack};await base44.auth.updateMe(patch);const saved=await owner();if(saved.featured_track_id!==draft.profileTrack||saved.profile_background_mode!==draft.mode||JSON.stringify(saved.profile_background_colors)!==JSON.stringify(draft.colors))throw Error("Profile style was not confirmed.");await checkUserAuth({silent:true});}
    if(alive.current)setDraft(old=>({...old,step:step+1}));
   }catch(e){if(alive.current)setError(errorText(e));}
   finally{lock.current=false;if(alive.current)setBusy(false);}
@@ -119,14 +119,14 @@ export function WelcomeFlow({user,onDone}){
  const genreOptions=genreQuery.trim()||allGenres?GENRES.filter(g=>g!=="Other"): [...new Set([...draft.genres,...FEATURED_GENRES.filter(g=>GENRES.includes(g))])];
  const colors=step===5&&draft.mode!=="off"?draft.colors:ONBOARDING_PALETTES[0].colors;
  return <Dialog open>
-  <DialogContent className="new-member-onboarding onboarding-identity" data-public-dialog data-onboarding-step={step} onPointerDownOutside={e=>e.preventDefault()} onEscapeKeyDown={e=>e.preventDefault()}>
+  <DialogContent className="new-member-onboarding onboarding-identity" data-public-dialog data-onboarding-step={step} onPointerDownOutside={e=>e.preventDefault()} onOpenAutoFocus={e=>{e.preventDefault();heading.current?.focus({preventScroll:true});}} onEscapeKeyDown={e=>{e.preventDefault();if(!picker)defer();}}>
    <MotionGradient colors={colors} speed={.85} className="onboarding-background"/>
    <header className="onboarding-header">
-    <div className="onboarding-topbar">{step>0?<button type="button" className="onboarding-back" disabled={busy||!!followBusy} aria-label="Previous step" onClick={()=>update({step:step-1})}><ArrowLeft size={18}/></button>:<Logo width="92px" className="onboarding-logo"/>}<button type="button" className="onboarding-later" disabled={busy||!!followBusy} onClick={()=>{if(!lock.current&&!followLock.current)onDone();}}>Finish later</button></div>
+    <div className="onboarding-topbar">{step>0?<button type="button" className="onboarding-back" disabled={busy||!!followBusy} aria-label="Previous step" onClick={()=>update({step:step-1})}><ArrowLeft size={18}/></button>:<Logo width="92px" className="onboarding-logo"/>}<button type="button" className="onboarding-later" disabled={busy||!!followBusy} onClick={defer}>Finish later</button></div>
     <div className="onboarding-progress" role="progressbar" aria-label="Setup progress" aria-valuemin={1} aria-valuemax={7} aria-valuenow={step+1}>{TITLES.map((title,index)=><span key={title} className={index<=step?"active":""}/>)}</div>
    </header>
    <main ref={content} className="onboarding-content" key={step}>
-    <div className="onboarding-page-intro"><p className="onboarding-step-label">{step===0?"MADE AROUND YOU":"YOUR PUBLIC · "+step+" OF 6"}</p><DialogTitle>{TITLES[step]}</DialogTitle><DialogDescription>{DESCRIPTIONS[step]}</DialogDescription></div>
+    <div className="onboarding-page-intro"><p className="onboarding-step-label">{step===0?"MADE AROUND YOU":"YOUR PUBLIC · "+step+" OF 6"}</p><DialogTitle ref={heading} tabIndex={-1}>{TITLES[step]}</DialogTitle><DialogDescription>{DESCRIPTIONS[step]}</DialogDescription></div>
     {step===0&&<div className="onboarding-welcome"><div className="onboarding-welcome-symbol"><Headphones size={76} strokeWidth={1}/></div><p className="onboarding-welcome-line">Your taste.<br/>Your people.<br/><span>Your PUBLIC.</span></p><p className="onboarding-note">Make it yours in a few simple steps.</p></div>}
     {step===1&&<div className="onboarding-form">
      <div className="onboarding-photo-area"><button className="onboarding-photo" type="button" disabled={busy} onClick={()=>fileInput.current?.click()} aria-label="Choose your profile photo"><Avatar user={{display_name:draft.name,avatar_url:draft.avatar}} size={80}/><span><Camera size={15}/></span></button><span className="onboarding-note">Add a photo · optional</span></div>
@@ -145,6 +145,7 @@ export function WelcomeFlow({user,onDone}){
     {step===3&&<>
      <div className="onboarding-tabs" role="group" aria-label="Choose favorites"><button type="button" aria-pressed={musicTab==="artists"} onClick={()=>{setMusicTab("artists");setLimit(8);}}>Artists <small>{draft.artists.length}/5</small></button><button type="button" aria-pressed={musicTab==="songs"} onClick={()=>{setMusicTab("songs");setLimit(8);}}>Songs <small>{draft.trackIds.length}/8</small></button></div>
      <div className="onboarding-search"><Search size={18}/><input aria-label="Search favorite music" placeholder={musicTab==="artists"?"Find an artist":"Find a song"} value={query} onChange={e=>{setQuery(e.target.value);setLimit(8);}}/></div>
+     {(draft.artists.length>0||draft.trackIds.length>0)&&<details className="onboarding-selected-review"><summary>Your picks · {draft.artists.length} artists, {draft.trackIds.length} songs</summary><div className="onboarding-picked-chips">{draft.artists.map(name=><button key={name} type="button" disabled={busy} aria-label={"Remove artist "+name} onClick={()=>toggle("artists",name,5)}>{name}<span aria-hidden="true">×</span></button>)}{draft.trackIds.map(id=><button key={id} type="button" disabled={busy} aria-label={"Remove song "+(byId.get(id)?.title||"unavailable song")} onClick={()=>toggle("trackIds",id,8)}>{byId.get(id)?.title||"Unavailable song"}<span aria-hidden="true">×</span></button>)}</div></details>}
      {musicTab==="artists"?<div className="onboarding-artist-grid">{artists.slice(0,limit).map(a=><button type="button" key={a.name} aria-pressed={draft.artists.includes(a.name)} onClick={()=>toggle("artists",a.name,5)}><span className="onboarding-artist-art"><SongCover url={a.cover}/><span className="onboarding-pick-check">{draft.artists.includes(a.name)?<Check size={15}/>:<Plus size={15}/>}</span></span><strong>{a.name}</strong></button>)}</div>:<div className="onboarding-music-list">{songs.slice(0,limit).map(t=><button type="button" className="onboarding-music-row" key={t.id} aria-pressed={draft.trackIds.includes(t.id)} onClick={()=>toggle("trackIds",t.id,8)}><SongCover url={t.cover_art_url}/><span><strong>{t.title}</strong><small>{t.artist||t.uploader_name}</small></span><span className="onboarding-row-check">{draft.trackIds.includes(t.id)?<Check size={17}/>:<Plus size={17}/>}</span></button>)}</div>}
      {loading?<p className="onboarding-note">Loading music…</p>:!(musicTab==="artists"?artists:songs).length&&<p className="onboarding-note">No matches. Try another search or skip for now.</p>}
      {(musicTab==="artists"?artists:songs).length>limit&&<button type="button" className="onboarding-text-button" onClick={()=>setLimit(n=>n+8)}>Show more</button>}
@@ -171,7 +172,7 @@ export function WelcomeFlow({user,onDone}){
     {loadError&&step>1&&step<5&&<div className="onboarding-load-error" role="status"><p>{loadError}</p><button type="button" disabled={loading} onClick={load}>Retry</button></div>}
    </main>
    <footer className="onboarding-footer">{error&&<p role="alert">{error}</p>}<div className="onboarding-buttons">{step>0&&step<6&&<button className="onboarding-skip" type="button" disabled={busy||!!followBusy} onClick={()=>next(true)}>Skip</button>}<button type="button" className="onboarding-next" disabled={busy||!!followBusy} onClick={()=>next()}>{busy?<Loader2 size={18} className="animate-spin"/>:null}{busy?"Saving…":step===0?"Let’s go":step===6?"Start listening":"Continue"}{!busy&&<ArrowRight size={18}/>}</button></div></footer>
-   {picker&&<TrackPickerSheet title="Your profile song" tracks={visibleCatalog} selectedIds={draft.profileTrack?[draft.profileTrack]:[]} onToggle={id=>{update({profileTrack:id});setPicker(false);}} onClose={()=>setPicker(false)}/>}
+   {picker&&<TrackPickerSheet title="Your profile song" tracks={visibleCatalog.filter(t=>t.uploader_id===user.id)} selectedIds={draft.profileTrack?[draft.profileTrack]:[]} onToggle={id=>{update({profileTrack:id});setPicker(false);}} onClose={()=>setPicker(false)}/>}
   </DialogContent>
  </Dialog>;
 }
@@ -179,7 +180,7 @@ export function WelcomeFlow({user,onDone}){
 export default function NewMemberOnboarding(){
  const {user}=useAuth(),[forced,setForced]=useState(false),[dismissed,setDismissed]=useState(false);
  useEffect(()=>{setForced(false);setDismissed(false);},[user?.id]);
- useEffect(()=>{const open=()=>{if(user?.onboarding_completed===true)return;setDismissed(false);setForced(true);};window.addEventListener("onboarding:open",open);return()=>window.removeEventListener("onboarding:open",open);},[user?.onboarding_completed]);
- if(!user?.id||dismissed||(!forced&&(user.role==="admin"||user.onboarding_completed===true||savedLocally(user.id)||!(Date.parse(user.created_date)>=ENROLLMENT_START))))return null;
+ useEffect(()=>{const open=()=>{if(onboardingComplete(user))return;setDismissed(false);setForced(true);};window.addEventListener("onboarding:open",open);return()=>window.removeEventListener("onboarding:open",open);},[user?.onboarding_completed]);
+ if(!user?.id||dismissed||(!forced&&(user.role==="admin"||onboardingComplete(user)||!(Date.parse(user.created_date)>=ENROLLMENT_START))))return null;
  return <WelcomeFlow key={user.id} user={user} onDone={()=>{setDismissed(true);setForced(false);}}/>;
 }
