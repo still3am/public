@@ -8,7 +8,7 @@ globalThis.CustomEvent=class{constructor(type,options){this.type=type;this.detai
 globalThis.window={addEventListener(){},dispatchEvent(){}};
 const model=await load(read("src/lib/onboardingModel.js"));
 storage.set(model.draftKey("a"),JSON.stringify({uid:"a",step:999,genres:"bad",artists:[null,"Artist"],colors:["bad"],mode:"fake",shareFavorites:"true"}));
-assert.deepEqual(model.readOnboardingDraft("a"),{step:6,artists:["Artist"]});
+assert.deepEqual(model.readOnboardingDraft("a"),{step:6,artists:["Artist"],editedFields:["artists"]});
 assert.equal(model.readOnboardingDraft("b"),null);
 assert.equal(model.validHandle("bad name"),false);
 assert.equal(model.cleanHandle("@My_Sound"),"my_sound");
@@ -39,10 +39,10 @@ assert.equal(ranked[0].tracks[0].id,"song");assert.ok(!ranked.some(m=>m.id==="ro
 // Exercise real save/skip/completion handlers with a mocked service, without writing to live users.
 const component=read("src/components/NewMemberOnboarding.jsx");
 const handlers=component.slice(component.indexOf(" async function owner()"),component.indexOf(" async function upload("));
-function flow(step,{sharingChanged=false,shareFavorites=false,failure=false,switched=false}={}){
+function flow(step,{sharingChanged=false,shareFavorites=false,failure=false,switched=false,ignored=false,musicReady=true,refreshUnmounts=false}={}){
  let draft={step,name:"Listener",username:"listener",avatar:"",genres:["Pop"],trackIds:["song"],artists:["Artist"],profileTrack:"",mode:"custom",colors:["#000000","#ffffff","#303030"],sharingChanged,shareFavorites};
- const state={error:"",done:false,patches:[],preferences:[],busy:false};let account={id:"a",top_track_ids:["existing"],onboarding_completed:false};
- const args={base44:{auth:{me:async()=>switched?{id:"other"}:account,updateMe:async patch=>{if(failure)throw Error("save failed");state.patches.push(patch);Object.assign(account,patch);return account;}}},user:{id:"a",display_name:"Listener",username:"listener"},draft,step,byId:new Map(catalog.map(t=>[t.id,t])),artistOptions:[{name:"Artist"}],lock:{current:false},followLock:{current:false},alive:{current:true},setBusy:v=>state.busy=v,setError:v=>state.error=v,setDraft:fn=>{draft=fn(draft);state.step=draft.step;},checkUserAuth:async()=>{},onDone:()=>state.done=true,nav:()=>{},saveUserMusicPreferences:async patch=>{if(failure)throw Error("save failed");state.preferences.push(patch);},cleanHandle:model.cleanHandle,validHandle:model.validHandle,errorText:e=>e.message,draftKey:model.draftKey,loading:false,musicReady:true,loadError:""};
+ const state={error:"",done:false,patches:[],preferences:[],busy:false,navigated:false};const alive={current:true};let account={id:"a",top_track_ids:["existing"],onboarding_completed:false};
+ const args={base44:{auth:{me:async()=>switched?{id:"other"}:account,updateMe:async patch=>{if(failure)throw Error("save failed");state.patches.push(patch);if(!ignored)Object.assign(account,patch);return account;}}},user:{id:"a",display_name:"Listener",username:"listener"},draft,step,byId:new Map(catalog.map(t=>[t.id,t])),artistOptions:[{name:"Artist"}],lock:{current:false},followLock:{current:false},alive,setBusy:v=>state.busy=v,setError:v=>state.error=v,setDraft:fn=>{draft=fn(draft);state.step=draft.step;},checkUserAuth:async()=>{if(refreshUnmounts)alive.current=false;},onDone:()=>state.done=true,nav:()=>{state.navigated=true;},saveUserMusicPreferences:async patch=>{if(failure)throw Error("save failed");state.preferences.push(patch);},cleanHandle:model.cleanHandle,validHandle:model.validHandle,errorText:e=>e.message,draftKey:model.draftKey,loading:false,musicReady,loadError:""};
  const api=new Function(...Object.keys(args),handlers+";return {next,complete};")(...Object.values(args));return {api,state};
 }
 let f=flow(2);await f.api.next();assert.deepEqual(f.state.preferences,[{genres:["Pop"]}]);assert.equal(f.state.step,3);
@@ -53,3 +53,18 @@ f=flow(6);await f.api.complete();assert.equal(f.state.done,true);assert.deepEqua
 f=flow(6,{sharingChanged:true,shareFavorites:true});await f.api.complete();assert.deepEqual(f.state.patches[0],{top_track_ids:["song"]});assert.equal(f.state.done,true);
 f=flow(6,{failure:true});await f.api.complete();assert.equal(f.state.done,false);assert.equal(f.state.error,"save failed");
 console.log("PASS onboarding draft validation, account isolation, real taste ranking, privacy preservation, save/skip/failure/completion handlers");
+
+// Late hydration may fill untouched values, but must never undo edits or restored drafts.
+let hydrated=model.mergeOnboardingTaste({genres:["Jazz"],artists:[],trackIds:[],editedFields:["genres"]},{genres:["Pop"],favorite_artists:["Artist"],favorite_track_ids:["song"]});
+assert.deepEqual(hydrated.genres,["Jazz"]);assert.deepEqual(hydrated.artists,["Artist"]);
+hydrated=model.mergeOnboardingTaste({...hydrated,artists:["New artist"],editedFields:["genres","artists"]},{genres:[],favorite_artists:["Old artist"]});
+assert.deepEqual(hydrated.artists,["New artist"]);
+assert.deepEqual(model.normalizeOnboardingColors(["bad","#123456"]),["#123456","#ffffff","#303030"]);
+assert.equal(await model.withOnboardingDeadline(Promise.resolve("ready"),5),"ready");
+await assert.rejects(model.withOnboardingDeadline(new Promise(()=>{}),5),/too long/);
+storage.set("public:onboarded:a","1");assert.equal(model.onboardingComplete({id:"a",onboarding_completed:false}),true);assert.equal(model.onboardingComplete({id:"b",onboarding_completed:false}),false);storage.delete("public:onboarded:a");
+f=flow(6,{sharingChanged:true,shareFavorites:true,musicReady:false});await f.api.complete();assert.equal(f.state.patches.length,0);assert.equal(f.state.done,false);assert.match(f.state.error,/aren’t available/);
+f=flow(6,{ignored:true});await f.api.complete();assert.equal(f.state.done,false);assert.match(f.state.error,/not confirmed/);
+f=flow(5,{ignored:true});await f.api.next();assert.equal(f.state.step,undefined);assert.match(f.state.error,/not confirmed/);
+f=flow(6,{refreshUnmounts:true});await f.api.complete();assert.equal(f.state.navigated,true,"completion must reach Home even if auth refresh hides onboarding");
+console.log("PASS slow loading preserves edits, bounded load recovery, stale Settings completion, unavailable favorites protection, ignored saves and completion navigation");

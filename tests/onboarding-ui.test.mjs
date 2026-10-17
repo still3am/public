@@ -13,8 +13,9 @@ const load=async(source,stubs)=>{
 };
 const current={id:"listener",display_name:"Listener",created_date:"2026-10-17",onboarding_completed:false};
 globalThis.__user=current;
-const common=`const React=globalThis.__React;const {useEffect,useRef,useState,useMemo}=React;const useAuth=()=>({user:globalThis.__user,checkUserAuth:async()=>{}});const useSafety=()=>({blocked:new Set(),own:[]});`;
+const common=`const React=globalThis.__React;const {useEffect,useRef,useState,useMemo,useDeferredValue}=React;const useAuth=()=>({user:globalThis.__user,checkUserAuth:async()=>{}});const useSafety=()=>({blocked:globalThis.__blocked||new Set(),own:[]});`;
 const settings=await load(fs.readFileSync("src/components/profile/SettingsSheet.jsx","utf8"),common+`
+const {onboardingComplete}=globalThis.__model;
 const Link=({children,...props})=>React.createElement("a",props,children);
 const X=()=>null,Lightbulb=X,GitMerge=X,Trash2=X,ChevronRight=X,Sparkles=X,BarChart3=X,Loader2=X,LogOut=X,Sun=X,Moon=X,Shield=X,Headphones=X,FileText=X;
 const useTheme=()=>({isDark:true,toggle(){}}),reportActionError=()=>{},clearPersonalData=async()=>{},base44={};
@@ -26,14 +27,14 @@ assert.doesNotMatch(settingsMarkup(),/Finish setting up PUBLIC|Personalize your 
 current.onboarding_completed=false;
 assert.match(settingsMarkup(),/Finish setting up PUBLIC/,"completion does not leak between accounts");
 const ui=await load(fs.readFileSync("src/components/NewMemberOnboarding.jsx","utf8"),common+`
-const {ONBOARDING_PALETTES,cleanHandle,validHandle,credits,recommendPeople,readOnboardingDraft,draftKey}=globalThis.__model;
+const {ONBOARDING_PALETTES,cleanHandle,validHandle,credits,recommendPeople,readOnboardingDraft,draftKey,onboardingComplete,normalizeOnboardingColors,mergeOnboardingTaste,withOnboardingDeadline}=globalThis.__model;
 const useNavigate=()=>()=>{},base44={},getPublishedTracks=async()=>[],getUserMusicPreferences=async()=>({}),saveUserMusicPreferences=async()=>{};
 const GENRES=["Hip-Hop","R&B","Pop","Afrobeats","Latin","Dance","Indie","Rock","Soul","Jazz","Electronic","Reggaeton","Ambient"];
 const useCoverUrl=url=>url;
 const ArrowRight=()=>null,ArrowLeft=ArrowRight,Check=ArrowRight,Headphones=ArrowRight,Loader2=ArrowRight,Camera=ArrowRight,Search=ArrowRight,Music2=ArrowRight,ShieldCheck=ArrowRight,Plus=ArrowRight;
 const Dialog=({children})=>React.createElement(React.Fragment,null,children);
 const DialogContent=({children,...props})=>React.createElement("section",{"data-step":props["data-onboarding-step"]},children);
-const DialogTitle=({children})=>React.createElement("h2",null,children);
+const DialogTitle=React.forwardRef(({children},ref)=>React.createElement("h2",{ref},children));
 const DialogDescription=({children})=>React.createElement("p",null,children);
 const MotionGradient=()=>null,Logo=()=>null,ProfileColorWheel=()=>null,TrackPickerSheet=()=>null;
 const Avatar=()=>React.createElement("span");
@@ -50,3 +51,21 @@ for(let step=0;step<7;step++){
  if(step===6){assert.match(html,/Share my favorite songs/);assert.match(html,/<details/,"additional privacy detail is collapsed");}
 }
 console.log("PASS all seven onboarding screens render; concise genre choices, progressive controls, and completion-aware Settings");
+
+// Confirmed completion remains hidden even if the context refresh has stale data.
+storage.set("public:onboarded:"+current.id,"1");
+assert.doesNotMatch(settingsMarkup(),/Finish setting up PUBLIC/);
+globalThis.__user={id:"another",onboarding_completed:false};assert.match(settingsMarkup(),/Finish setting up PUBLIC/);
+globalThis.__user=current;
+globalThis.__blocked=new Set(["blocked"]);
+const picker=await load(fs.readFileSync("src/components/profile/TrackPickerSheet.jsx","utf8"),common+`
+const useLibrary=()=>({ids:new Set()}),useCoverUrl=url=>url;
+const peekPublishedTracks=()=>[{id:"allowed",uploader_id:"friend",title:"Allowed song"},{id:"hidden",uploader_id:"blocked",title:"Blocked song"}];
+const getPublishedTracks=async()=>peekPublishedTracks(),subscribePublishedTracks=()=>()=>{};
+const Check=()=>null,Search=Check,Loader2=Check,Music2=Check,X=Check,Image=()=>null;
+const Dialog=({children})=>React.createElement(React.Fragment,null,children);
+const DialogContent=Dialog,DialogHeader=Dialog,DialogTitle=Dialog,DialogDescription=Dialog;
+`);
+const pickerHtml=renderToStaticMarkup(React.createElement(picker.default,{title:"Your profile song",onToggle(){},onClose(){}}));
+assert.match(pickerHtml,/Allowed song/);assert.doesNotMatch(pickerHtml,/Blocked song/);
+console.log("PASS stale-context Settings completion, account separation and shared picker blocked-user filtering");
