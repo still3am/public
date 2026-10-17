@@ -390,7 +390,7 @@ export default async function handleRequest(req) {
         }
         if(entity==='Follow') {
           await relation(data.following_id||old?.following_id);
-          if(kind==='create') {const exists=await handler.filter({follower_id:user.id,following_id:data.following_id},'-created_date',1);if(exists[0]) return Response.json({result:exists[0]});}
+          if(kind==='create') {const exists=await handler.filter({follower_id:user.id,following_id:data.following_id},'-created_date',1);if(exists[0]) return exists[0];}
         }
         if(entity==='Notification') {
           const recent=await handler.filter({actor_id:user.id,created_date:{$gte:new Date(Date.now()-60000).toISOString()}},'-created_date',20);
