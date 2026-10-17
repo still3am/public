@@ -1,6 +1,6 @@
 import {useEffect,useMemo,useRef,useState} from "react";
 import {useNavigate} from "react-router-dom";
-import {ArrowRight,ArrowLeft,Check,Headphones,Loader2,Camera,Search,Music2,ShieldCheck,Plus} from "lucide-react";
+import {ArrowRight,ArrowLeft,Check,Loader2,Camera,Search,Music2,ShieldCheck,Plus} from "lucide-react";
 import {Dialog,DialogContent,DialogTitle,DialogDescription} from "@/components/ui/dialog";
 import MotionGradient from "@/components/MotionGradient";
 import Logo from "@/components/Logo";
@@ -20,7 +20,7 @@ import "./profile/profile-colors.css";
 
 const ENROLLMENT_START=Date.parse("2026-10-15T06:07:04Z");
 const FEATURED_GENRES=["Hip-Hop","R&B","Pop","Afrobeats","Latin","Dance","Indie","Rock","Soul","Jazz","Electronic","Reggaeton"];
-const TITLES=["Welcome to PUBLIC.","Make it yours.","What’s your sound?","Choose your favorites.","Find your people.","Set the mood.","Your music. Your choice."];
+const TITLES=["Welcome to PUBLIC.","Make it yours.","What’s your sound?","Choose your favorites.","Find your people.","Set the mood.","Ready when you are."];
 const DESCRIPTIONS=["A little about you. A better place to listen.","Choose how people see you.","Pick a few favorites. Explore everything.","Start with the artists and songs you love.","Good music is better together.","Give your profile its own feeling.","One last choice before the music."];
 const rows=page=>Array.isArray(page)?page:Array.isArray(page?.items)?page.items:[];
 const errorText=error=>(error?.response?.status===402||error?.status===402)?"This save is temporarily unavailable. Your choices are kept. Please retry.":error?.response?.data?.error||error?.message||"This step could not save. Your choices are kept.";
@@ -127,12 +127,12 @@ export function WelcomeFlow({user,onDone}){
   <DialogContent className="new-member-onboarding onboarding-identity" data-public-dialog data-onboarding-step={step} onPointerDownOutside={e=>e.preventDefault()} onOpenAutoFocus={e=>{e.preventDefault();heading.current?.focus({preventScroll:true});}} onEscapeKeyDown={e=>{e.preventDefault();if(!picker)defer();}}>
    <MotionGradient colors={colors} speed={.85} className="onboarding-background"/>
    <header className="onboarding-header">
-    <div className="onboarding-topbar">{step>0?<button type="button" className="onboarding-back" disabled={busy||!!followBusy} aria-label="Previous step" onClick={()=>update({step:step-1})}><ArrowLeft size={18}/></button>:<Logo width="92px" className="onboarding-logo"/>}<button type="button" className="onboarding-later" disabled={busy||!!followBusy} onClick={defer}>Finish later</button></div>
+    <div className="onboarding-topbar"><div className="onboarding-nav-start">{step>0&&<button type="button" className="onboarding-back" disabled={busy||!!followBusy} aria-label="Previous step" onClick={()=>update({step:step-1})}><ArrowLeft size={18}/></button>}</div><Logo width="82px" className="onboarding-logo"/><button type="button" className="onboarding-later" disabled={busy||!!followBusy} onClick={defer}>Finish later</button></div>
     <div className="onboarding-progress" role="progressbar" aria-label="Setup progress" aria-valuemin={1} aria-valuemax={7} aria-valuenow={step+1}>{TITLES.map((title,index)=><span key={title} className={index<=step?"active":""}/>)}</div>
    </header>
    <main ref={content} className="onboarding-content" key={step}>
     <div className="onboarding-page-intro"><p className="onboarding-step-label">{step===0?"MADE AROUND YOU":"YOUR PUBLIC · "+step+" OF 6"}</p><DialogTitle ref={heading} tabIndex={-1}><OnboardingLetters text={TITLES[step]}/></DialogTitle><DialogDescription>{DESCRIPTIONS[step]}</DialogDescription></div>
-    {step===0&&<div className="onboarding-welcome"><div className="onboarding-welcome-symbol"><Headphones size={76} strokeWidth={1}/></div><p className="onboarding-welcome-line"><OnboardingLetters text="Your taste." delay={120}/><br/><OnboardingLetters text="Your people." delay={240}/><br/><OnboardingLetters text="Your PUBLIC." delay={360} className="onboarding-signature"/></p><p className="onboarding-note">Make it yours in a few simple steps.</p></div>}
+    {step===0&&<div className="onboarding-welcome"><div className="onboarding-record-stage" aria-hidden="true"><div className="onboarding-record"><span className="onboarding-record-grooves"/><span className="onboarding-record-light"/><div className="onboarding-record-label"><Logo width="65px" className="onboarding-logo"/></div></div><span className="onboarding-record-caption">A SOUND OF YOUR OWN</span></div><p className="onboarding-welcome-line"><OnboardingLetters text="Your taste." delay={120}/><br/><OnboardingLetters text="Your people." delay={240}/><br/><OnboardingLetters text="Your PUBLIC." delay={360} className="onboarding-signature"/></p><p className="onboarding-note">A few choices. A whole new way to find your sound.</p></div>}
     {step===1&&<div className="onboarding-form">
      <div className="onboarding-photo-area"><button className="onboarding-photo" type="button" disabled={busy} onClick={()=>fileInput.current?.click()} aria-label="Choose your profile photo"><Avatar user={{display_name:draft.name,avatar_url:draft.avatar}} size={80}/><span><Camera size={15}/></span></button><span className="onboarding-note">Add a photo · optional</span></div>
      <input ref={fileInput} type="file" accept="image/jpeg,image/png,image/webp" className="hidden" onChange={e=>{upload(e.target.files?.[0]);e.target.value="";}}/>
@@ -164,11 +164,12 @@ export function WelcomeFlow({user,onDone}){
     </div>}
     {step===5&&<div className="onboarding-mood">
      <div className="onboarding-profile-preview mood-preview"><Avatar user={{display_name:draft.name,avatar_url:draft.avatar}} size={64}/><strong>{draft.name||"Your PUBLIC"}</strong><button type="button" className="onboarding-profile-song" onClick={()=>setPicker(true)}><Music2 size={15}/><span>{byId.get(draft.profileTrack)?.title||"Add a profile song"}</span><Plus size={15}/></button></div>
-     <div className="onboarding-palettes" role="group" aria-label="Profile color palettes">{ONBOARDING_PALETTES.map(palette=><button key={palette.name} type="button" aria-pressed={draft.mode==="custom"&&draft.colors.join()===palette.colors.join()} onClick={()=>update({colors:[...palette.colors],mode:"custom"})}><span style={{background:"linear-gradient(130deg,"+palette.colors.join(",")+")"}}/>{palette.name}</button>)}</div>
+     <div className="onboarding-palettes" role="group" aria-label="Profile color palettes">{ONBOARDING_PALETTES.map(palette=><button key={palette.name} type="button" aria-pressed={draft.mode==="custom"&&draft.colors.join()===palette.colors.join()} onClick={()=>update({colors:[...palette.colors],mode:"custom"})}><span style={{background:"linear-gradient(130deg,"+palette.colors.join(",")+")"}}>{draft.mode==="custom"&&draft.colors.join()===palette.colors.join()&&<Check size={16}/>}</span>{palette.name}</button>)}</div>
      <details className="onboarding-custom-colors"><summary>Customize colors</summary><div className="onboarding-color-stops">{draft.colors.map((color,index)=><button key={index} type="button" aria-label={"Edit color "+(index+1)} aria-pressed={colorIndex===index} style={{background:color}} onClick={()=>setColorIndex(index)}>{colorIndex===index&&<Check size={18}/>}</button>)}</div><ProfileColorWheel value={draft.colors[colorIndex]||"#303030"} colorNumber={colorIndex+1} disabled={busy} onChange={color=>update({mode:"custom",colors:draft.colors.map((c,i)=>i===colorIndex?color:c)})}/><button className="onboarding-text-button" type="button" onClick={()=>update({mode:draft.mode==="off"?"custom":"off"})}>{draft.mode==="off"?"Turn colors on":"Use a plain background"}</button></details>
      {draft.profileTrack&&<button type="button" className="onboarding-text-button" onClick={()=>update({profileTrack:""})}>Remove profile song</button>}
     </div>}
     {step===6&&<div className="onboarding-privacy">
+     <div className="onboarding-ready-card"><Avatar user={user} size={52}/><div><small>YOUR PLACE ON PUBLIC</small><strong>{user.display_name||user.full_name||"Your PUBLIC"}</strong><span>Music. People. Possibilities.</span></div><Check size={20}/></div>
      <div className="onboarding-privacy-heading"><ShieldCheck size={24} strokeWidth={1.5}/><span>Your listening stays yours.</span></div>
      <label className="onboarding-sharing"><span><strong>Share my favorite songs</strong><small>Show your picks in your profile’s Top 8.</small></span><input type="checkbox" checked={draft.shareFavorites} onChange={e=>update({shareFavorites:e.target.checked,sharingChanged:true})}/></label>
      {!draft.trackIds.length&&<button type="button" className="onboarding-text-button" disabled={busy} onClick={()=>{update({step:3});setMusicTab("songs");}}>Choose favorite songs</button>}
