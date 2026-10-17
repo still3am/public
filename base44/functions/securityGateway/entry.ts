@@ -333,7 +333,14 @@ export default async function handleRequest(req) {
         }
       } else if(entity==='User') {
         if(kind!=='update'||id!==user.id) fail('Profile access denied');
-        data=pick(data,['display_name','bio','avatar_url','banner_url','location','pronouns','website','instagram','twitter','soundcloud','status_message','featured_track_id','top_track_ids','is_artist','show_explicit','adult_confirmed','profile_background_mode','profile_background_colors','profile_background_motion','profile_background_speed']);
+        data=pick(data,['username','display_name','bio','avatar_url','banner_url','location','pronouns','website','instagram','twitter','soundcloud','status_message','featured_track_id','top_track_ids','is_artist','show_explicit','adult_confirmed','profile_background_mode','profile_background_colors','profile_background_motion','profile_background_speed']);
+        if(data.username!==undefined){
+          if(typeof data.username!=='string')fail('Choose a valid username',422);
+          data.username=data.username.trim().toLowerCase().replace(/^@/,'');
+          if(data.username&&!/^[a-z0-9_]{3,24}$/.test(data.username))fail('Use 3–24 letters, numbers or underscores',422);
+          if(data.username&&['admin','administrator','support','system','api'].includes(data.username)&&!isAdmin)fail('Choose another username',422);
+          if(data.username){const page=await svc.entities.User.filter({username:data.username},'-created_date',10);const rows=Array.isArray(page)?page:page?.items||[];if(rows.some(row=>row.id!==user.id))fail('That username is taken. Try another.',409);}
+        }
         if(data.profile_background_mode!==undefined&&!['auto','custom','off'].includes(data.profile_background_mode))fail('Invalid background mode',422);
         if(data.profile_background_motion!==undefined&&!['flow','still'].includes(data.profile_background_motion))fail('Invalid background motion',422);
         if(data.profile_background_speed!==undefined&&(typeof data.profile_background_speed!=='number'||!Number.isFinite(data.profile_background_speed)||data.profile_background_speed<.35||data.profile_background_speed>1.6))fail('Invalid background speed',422);
@@ -344,10 +351,10 @@ export default async function handleRequest(req) {
         if(data.is_artist!==undefined&&typeof data.is_artist!=='boolean')fail('Invalid artist preference',422);
         if(isAdmin&&data.is_artist===true)fail('Administrators cannot enable Artist Mode',422);
         if(data.show_explicit===true && !(data.adult_confirmed===true || user.adult_confirmed===true)) fail('Confirm that you are 18 or older to show explicit content',422);
-        await moderate(svc,[data.display_name,data.bio,data.status_message].filter(Boolean).join('\n'));
+        await moderate(svc,[data.username,data.display_name,data.bio,data.status_message].filter(Boolean).join('\n'));
         for(const tid of [data.featured_track_id,...(data.top_track_ids||[])].filter(Boolean)) await requireTrack(tid);
         const saved=await handler.update(id,data);
-        const publicData={...pick(saved,["display_name","full_name","avatar_url","banner_url","bio","location","pronouns","website","instagram","twitter","soundcloud","status_message","featured_track_id","profile_background_mode","profile_background_colors","profile_background_motion","profile_background_speed","top_track_ids","is_artist"]),is_public_admin:isAdmin,user_id:saved.id,joined_at:saved.created_date||"",visible:!saved.is_blocked&&!saved.disabled};
+        const publicData={...pick(saved,["username","display_name","full_name","avatar_url","banner_url","bio","location","pronouns","website","instagram","twitter","soundcloud","status_message","featured_track_id","profile_background_mode","profile_background_colors","profile_background_motion","profile_background_speed","top_track_ids","is_artist"]),is_public_admin:isAdmin,user_id:saved.id,joined_at:saved.created_date||"",visible:!saved.is_blocked&&!saved.disabled};
         const mirrors=await svc.entities.PublicProfile.filter({user_id:saved.id},'-updated_date',1);
         if(mirrors[0])await svc.entities.PublicProfile.update(mirrors[0].id,publicData);
         else await svc.entities.PublicProfile.create(publicData);
