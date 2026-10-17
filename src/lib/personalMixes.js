@@ -4,8 +4,8 @@ const genreMatch=(track,genres)=>genres.some(genre=>clean(track.genre).includes(
 export function buildPersonalMixes(catalog,{recent=[],savedIds=new Set(),genres=[],favoriteTrackIds=[],favoriteArtists=[],uid='',day=Math.floor(Date.now()/86400000)}={}){
  const seen=new Set(),tracks=(catalog||[]).filter(t=>t?.id&&t.is_published===true&&(t.audio_url||t._private_audio)&&!seen.has(t.id)&&seen.add(t.id));
  const byId=new Map(tracks.map(t=>[t.id,t])),played=recent.map(t=>byId.get(t.id)).filter(Boolean),heard=new Set(played.map(t=>t.id));
- const preferred=[...new Set([...genres.map(clean),...seeds.map(t=>clean(t.genre)),...played.map(t=>clean(t.genre)),...tracks.filter(t=>savedIds.has(t.id)).map(t=>clean(t.genre))].filter(Boolean))];
  const seeds=tracks.filter(t=>favoriteTrackIds.includes(t.id));
+ const preferred=[...new Set([...genres.map(clean),...seeds.map(t=>clean(t.genre)),...played.map(t=>clean(t.genre)),...tracks.filter(t=>savedIds.has(t.id)).map(t=>clean(t.genre))].filter(Boolean))];
  const chosenArtists=favoriteArtists.map(clean);
  const artists=new Set([...seeds,...played,...tracks.filter(t=>savedIds.has(t.id))].map(t=>clean(t.artist)).filter(Boolean));
  const affinity=t=>(genreMatch(t,preferred)?4:0)+(artists.has(clean(t.artist))?3:0)+(chosenArtists.some(name=>clean(t.artist).includes(name))?5:0)+(favoriteTrackIds.includes(t.id)?6:0);
