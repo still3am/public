@@ -195,6 +195,22 @@ export default function Profile({ ownProfileTab = false }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [targetId]);
 
+  // Other entry points (song menus/onboarding) refresh mounted profile counts.
+  useEffect(()=>{
+    let alive=true,request=0;
+    const refresh=async event=>{
+      const change=event.detail;
+      if(!change||change.uid!==me?.id||![change.uid,change.followingId].includes(targetId))return;
+      const seq=++request,key=identity.current;followRevision.current++;
+      if(change.followingId===targetId&&!isOwn){setFollowing(!!change.following);setFollowReady(true);}
+      const counts=await Promise.allSettled([base44.entities.Follow.count({following_id:targetId}),base44.entities.Follow.count({follower_id:targetId})]);
+      if(!alive||request!==seq||identity.current!==key)return;
+      setStats(old=>({...old,...(counts[0].status==="fulfilled"&&typeof counts[0].value==="number"?{followers:counts[0].value}:{}),...(counts[1].status==="fulfilled"&&typeof counts[1].value==="number"?{following:counts[1].value}:{})}));
+    };
+    window.addEventListener('follows:changed',refresh);
+    return()=>{alive=false;window.removeEventListener('follows:changed',refresh);};
+  },[me?.id,targetId,isOwn]);
+
   // Hide the mobile tab bar when any modal/sheet is open so it doesn't overlap
   // the bottom of the sheet content (z-index alone can't fix this because the
   // framer-motion opacity wrapper creates a stacking context that traps the
