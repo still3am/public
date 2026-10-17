@@ -31,7 +31,7 @@ function initialDraft(user){
 }
 export function WelcomeFlow({user,onDone}){
  const nav=useNavigate(),{checkUserAuth}=useAuth(),{blocked}=useSafety();
- const [draft,setDraft]=useState(()=>initialDraft(user)),[busy,setBusy]=useState(false),[error,setError]=useState(""),[catalog,setCatalog]=useState([]),[profiles,setProfiles]=useState([]),[following,setFollowing]=useState(new Set()),[loading,setLoading]=useState(true),[loadError,setLoadError]=useState(""),[followBusy,setFollowBusy]=useState(""),[query,setQuery]=useState(""),[genreQuery,setGenreQuery]=useState(""),[musicTab,setMusicTab]=useState("artists"),[limit,setLimit]=useState(20),[colorIndex,setColorIndex]=useState(0),[picker,setPicker]=useState(false);
+ const [draft,setDraft]=useState(()=>initialDraft(user)),[busy,setBusy]=useState(false),[error,setError]=useState(""),[catalog,setCatalog]=useState([]),[profiles,setProfiles]=useState([]),[following,setFollowing]=useState(new Set()),[loading,setLoading]=useState(true),[musicReady,setMusicReady]=useState(false),[loadError,setLoadError]=useState(""),[followBusy,setFollowBusy]=useState(""),[query,setQuery]=useState(""),[genreQuery,setGenreQuery]=useState(""),[musicTab,setMusicTab]=useState("artists"),[limit,setLimit]=useState(20),[colorIndex,setColorIndex]=useState(0),[picker,setPicker]=useState(false);
  const lock=useRef(false),alive=useRef(true),content=useRef(null),fileInput=useRef(null),hasDraft=useRef(!!readOnboardingDraft(user.id)),request=useRef(0),followLock=useRef(false);
 
  const step=Math.max(0,Math.min(6,Number(draft.step)||0));
@@ -40,7 +40,7 @@ export function WelcomeFlow({user,onDone}){
  useEffect(()=>{try{localStorage.setItem(draftKey(user.id),JSON.stringify({...draft,uid:user.id}));}catch{}},[draft,user.id]);
  useEffect(()=>{content.current?.scrollTo({top:0});setQuery("");setLimit(20);},[step]);
  async function load(){
-  const version=++request.current;setLoading(true);setLoadError("");
+  const version=++request.current;setLoading(true);setMusicReady(false);setLoadError("");
   const result=await Promise.allSettled([
    getPublishedTracks(),
    getUserMusicPreferences(user.id),
@@ -48,6 +48,7 @@ export function WelcomeFlow({user,onDone}){
    base44.entities.Follow.filter({follower_id:user.id},"-created_date",500)
   ]);
   if(!alive.current||version!==request.current)return;
+  setMusicReady(result[0].status==="fulfilled"&&result[1].status==="fulfilled");
   if(result[0].status==="fulfilled")setCatalog(result[0].value);
   if(result[1].status==="fulfilled"&&!hasDraft.current){const taste=result[1].value;setDraft(old=>({...old,genres:taste.genres,trackIds:taste.favorite_track_ids,artists:taste.favorite_artists}));hasDraft.current=true;}
   if(result[2].status==="fulfilled")setProfiles(rows(result[2].value));
@@ -93,7 +94,7 @@ export function WelcomeFlow({user,onDone}){
     if(Object.keys(patch).length){const saved=await base44.auth.updateMe(patch);if(saved?.id!==user.id)throw Error("Profile was not confirmed.");await checkUserAuth({silent:true});window.dispatchEvent(new Event("profiles:changed"));}
    }
    if(!skip&&step===2)await saveUserMusicPreferences({genres:draft.genres},user.id);
-   if(!skip&&step===3){if(loading||loadError)throw Error("Retry loading your music choices, or skip this step.");await saveUserMusicPreferences({favorite_track_ids:draft.trackIds.filter(id=>byId.has(id)),favorite_artists:draft.artists.filter(name=>artistOptions.some(a=>a.name===name))},user.id);}
+   if(!skip&&step===3){if(loading||!musicReady)throw Error("Retry loading your music choices, or skip this step.");await saveUserMusicPreferences({favorite_track_ids:draft.trackIds.filter(id=>byId.has(id)),favorite_artists:draft.artists.filter(name=>artistOptions.some(a=>a.name===name))},user.id);}
    if(!skip&&step===5){const patch={profile_background_mode:draft.mode,profile_background_colors:draft.colors,profile_background_motion:"flow",profile_background_speed:1,featured_track_id:draft.profileTrack};await base44.auth.updateMe(patch);const saved=await owner();if(saved.featured_track_id!==draft.profileTrack||saved.profile_background_mode!==draft.mode)throw Error("Profile style was not confirmed.");await checkUserAuth({silent:true});}
    if(alive.current)setDraft(old=>({...old,step:step+1}));
   }catch(e){if(alive.current)setError(errorText(e));}
@@ -109,6 +110,7 @@ export function WelcomeFlow({user,onDone}){
  async function follow(profile){
   if(lock.current||followLock.current)return;followLock.current=true;const uid=profile.user_id;setFollowBusy(uid);setError("");
   try{await owner();const was=following.has(uid);if(was)await base44.entities.Follow.deleteMany({follower_id:user.id,following_id:uid});else{const result=await base44.entities.Follow.create({follower_id:user.id,following_id:uid});if(!result?.id)throw Error("Follow was not confirmed.");}
+   await owner();
    if(alive.current){setFollowing(old=>{const value=new Set(old);if(was)value.delete(uid);else value.add(uid);return value;});window.dispatchEvent(new CustomEvent("follows:changed",{detail:{uid:user.id,followingId:uid,following:!was}}));}
   }catch(e){if(alive.current)setError(errorText(e));}finally{followLock.current=false;if(alive.current)setFollowBusy("");}
  }
@@ -117,7 +119,7 @@ export function WelcomeFlow({user,onDone}){
  return <Dialog open onOpenChange={open=>{if(!open&&!busy)complete(true);}}>
   <DialogContent className="new-member-onboarding onboarding-identity" data-public-dialog onPointerDownOutside={e=>e.preventDefault()} onEscapeKeyDown={e=>{e.preventDefault();}}>
    <MotionGradient colors={colors} speed={.85} className="onboarding-background"/>
-   <header className="onboarding-header"><Logo width="92px" className="onboarding-logo"/><button type="button" disabled={busy||!!followBusy} onClick={()=>complete(true)}>Finish later</button></header>
+   <header className="onboarding-header"><Logo width="92px" className="onboarding-logo"/><button type="button" disabled={busy||!!followBusy} onClick={()=>{if(!lock.current&&!followLock.current)onDone();}}>Finish later</button></header>
    <main ref={content} className="onboarding-content" key={step}>
     <div className="onboarding-page-intro"><p className="onboarding-step-label">{step===0?"YOUR SOUND STARTS HERE":"YOUR PUBLIC · "+step+" OF 6"}</p><DialogTitle>{TITLES[step]}</DialogTitle><DialogDescription>{DESCRIPTIONS[step]}</DialogDescription></div>
     {step===0&&<div className="onboarding-welcome"><div className="onboarding-welcome-symbol"><Headphones size={62} strokeWidth={1}/></div><div className="onboarding-benefits"><span><Music2 size={18}/>Music that feels like you</span><span><Users size={18}/>People who get your sound</span><span><Palette size={18}/>A profile with its own mood</span></div><p className="onboarding-note">Start as a listener. Artist Mode is always available later in Settings.</p></div>}
