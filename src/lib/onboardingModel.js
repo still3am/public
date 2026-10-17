@@ -21,6 +21,14 @@ export function recommendPeople(profiles,catalog,{uid,blocked=new Set(),genres=[
 }
 export const draftKey=uid=>"public:onboarding-draft:v2:"+uid;
 export function readOnboardingDraft(uid){
- try{const raw=JSON.parse(localStorage.getItem(draftKey(uid))||"null");if(raw?.uid===uid)return raw;}catch{}
- return null;
+ try{
+  const raw=JSON.parse(localStorage.getItem(draftKey(uid))||"null");if(raw?.uid!==uid)return null;
+  const clean={step:Math.max(0,Math.min(6,Math.floor(Number(raw.step)||0)))};
+  for(const key of ["name","username","avatar","profileTrack"])if(typeof raw[key]==="string")clean[key]=raw[key].slice(0,key==="avatar"?2048:160);
+  for(const [key,max] of [["genres",300],["artists",5],["trackIds",8]])if(Array.isArray(raw[key]))clean[key]=[...new Set(raw[key].filter(v=>typeof v==="string"&&v.length<=160))].slice(0,max);
+  if(["auto","custom","off"].includes(raw.mode))clean.mode=raw.mode;
+  if(Array.isArray(raw.colors)&&raw.colors.length===3&&raw.colors.every(c=>/^#[0-9a-f]{6}$/i.test(c)))clean.colors=raw.colors;
+  for(const key of ["shareFavorites","sharingChanged"])if(typeof raw[key]==="boolean")clean[key]=raw[key];
+  return clean;
+ }catch{return null;}
 }

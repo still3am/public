@@ -2,7 +2,7 @@ import {base44} from "@/api/base44Client";
 import {GENRES} from "@/lib/audio-utils";
 let cache=null,owner=null,generation=0;
 const rows=page=>{if(Array.isArray(page))return page;if(Array.isArray(page?.items))return page.items;throw Error("Music preferences could not load. Please retry.");};
-const normalized=record=>({genres:[...new Set((record?.genres||[]).filter(g=>GENRES.includes(g)))],favorite_track_ids:[...new Set((record?.favorite_track_ids||[]).filter(id=>typeof id==="string"))].slice(0,8),favorite_artists:[...new Set((record?.favorite_artists||[]).filter(name=>typeof name==="string"&&name.trim()).map(name=>name.trim()))].slice(0,5)});
+const normalized=record=>({genres:[...new Set((Array.isArray(record?.genres)?record.genres:[]).filter(g=>GENRES.includes(g)))],favorite_track_ids:[...new Set((Array.isArray(record?.favorite_track_ids)?record.favorite_track_ids:[]).filter(id=>typeof id==="string"))].slice(0,8),favorite_artists:[...new Set((Array.isArray(record?.favorite_artists)?record.favorite_artists:[]).filter(name=>typeof name==="string"&&name.trim()).map(name=>name.trim()))].slice(0,5)});
 export async function getUserMusicPreferences(userId){
  const uid=userId||(await base44.auth.me().catch(error=>{if((error?.status??error?.response?.status)===401)return null;throw error;}))?.id;
  if(!uid)return normalized(null);
