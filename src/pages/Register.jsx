@@ -106,6 +106,7 @@ export default function Register() {
   if (showOtp) {
     return (
       <AuthLayout
+      brandMotion
         icon={Mail}
         title="Verify your email"
         subtitle={`We sent a code to ${email}`}
@@ -160,6 +161,7 @@ export default function Register() {
 
   return (
     <AuthLayout
+      brandMotion
       icon={UserPlus}
       title="Create your account"
       subtitle="Sign up to get started"
