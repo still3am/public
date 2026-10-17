@@ -1,3 +1,4 @@
+import {setFollowState,followError} from "@/lib/followActions";
 import {useRef,useEffect} from "react";
 import {
   Play, Pause, ListPlus, Check, Plus, ListMusic, Download, Trash2, Loader2, Heart,
@@ -66,20 +67,14 @@ export function useTrackActions(track, menuState, ui) {
   const toggleFollow = async () => {
     if (!requireAuth()||!menuState.followReady||followLock.current) return;
     followLock.current=true;const started=actionKey;
-    menuState.setFollowing(!following);
     try {
-      if (following) {
-        await base44.entities.Follow.deleteMany({ follower_id: user.id, following_id: track.uploader_id });
-      } else {
-        await base44.entities.Follow.create({ follower_id: user.id, following_id: track.uploader_id });
-        base44.entities.Notification.create({
-          user_id: track.uploader_id, type: "new_follower", actor_id: user.id,
-        }).catch(() => {});
-      }
+      const result=await setFollowState(base44,user.id,track.uploader_id,!following);
+      if(!alive.current||latestAction.current!==started)return;
+      menuState.setFollowing(result.following);
+      if(result.changed&&result.following)base44.entities.Notification.create({user_id:track.uploader_id,type:"new_follower",actor_id:user.id}).catch(()=>{});
       if(alive.current&&latestAction.current===started){window.dispatchEvent(new CustomEvent("follows:changed",{detail:{uid:user.id,followingId:track.uploader_id,following:!following}}));toast({ title: following ? `Unfollowed ${artistName}` : `Following ${artistName}` });}
-    } catch {
-      if(alive.current&&latestAction.current===started)menuState.setFollowing(following);
-      toast({title:"Couldn’t update this song. Please try again.",variant:"destructive"});
+    } catch(error) {
+      if(alive.current&&latestAction.current===started)toast({title:followError(error),variant:"destructive"});
     } finally{followLock.current=false;}
   };
 
