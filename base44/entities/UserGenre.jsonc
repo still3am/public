@@ -12,6 +12,23 @@
       },
       "default": [],
       "description": "Genres the user picked during onboarding \u2014 used to personalize Discover and auto-queue"
+    },
+    "favorite_track_ids": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "maxItems": 8,
+      "default": []
+    },
+    "favorite_artists": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "maxLength": 160
+      },
+      "maxItems": 5,
+      "default": []
     }
   },
   "required": [

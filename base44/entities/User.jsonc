@@ -219,6 +219,16 @@
         "write": true
       },
       "maxItems": 3
+    },
+    "username": {
+      "type": "string",
+      "default": "",
+      "maxLength": 24,
+      "pattern": "^$|^[a-z0-9_]{3,24}$",
+      "description": "Public lowercase handle, checked for availability by the profile gateway",
+      "rls": {
+        "write": false
+      }
     }
   },
   "required": []
