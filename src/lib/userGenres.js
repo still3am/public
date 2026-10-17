@@ -1,29 +1,32 @@
 import {base44} from "@/api/base44Client";
 import {GENRES} from "@/lib/audio-utils";
-
 let cache=null,owner=null,generation=0;
 const rows=page=>{if(Array.isArray(page))return page;if(Array.isArray(page?.items))return page.items;throw Error("Music preferences could not load. Please retry.");};
-export async function getUserGenres(userId){
+const normalized=record=>({genres:[...new Set((record?.genres||[]).filter(g=>GENRES.includes(g)))],favorite_track_ids:[...new Set((record?.favorite_track_ids||[]).filter(id=>typeof id==="string"))].slice(0,8),favorite_artists:[...new Set((record?.favorite_artists||[]).filter(name=>typeof name==="string"&&name.trim()).map(name=>name.trim()))].slice(0,5)});
+export async function getUserMusicPreferences(userId){
  const uid=userId||(await base44.auth.me().catch(error=>{if((error?.status??error?.response?.status)===401)return null;throw error;}))?.id;
- if(!uid)return [];
+ if(!uid)return normalized(null);
  if(cache&&owner===uid)return cache;
  const request=generation;
  const records=rows(await base44.entities.UserGenre.filter({user_id:uid},"-created_date",1));
- const genres=Array.isArray(records[0]?.genres)?records[0].genres:[];
  if(request!==generation)throw Error("Account changed. Please retry.");
- owner=uid;cache=genres;return genres;
+ owner=uid;cache=normalized(records[0]);return cache;
 }
+export async function getUserGenres(userId){return (await getUserMusicPreferences(userId)).genres;}
 export function clearUserGenresCache(){generation++;cache=null;owner=null;}
 window.addEventListener("account:cleared",clearUserGenresCache);
-export async function saveUserGenres(genres,userId){
+export async function saveUserMusicPreferences(patch,userId){
  if(!userId)throw Error("Sign in to save preferences");
- const request=generation;
- const clean=[...new Set(genres.filter(genre=>GENRES.includes(genre)))];
+ const request=generation,current=await base44.auth.me();
+ if(current?.id!==userId)throw Error("Account changed. Please retry.");
  const existing=rows(await base44.entities.UserGenre.filter({user_id:userId},"-created_date",1))[0];
  if(request!==generation)throw Error("Account changed. Please retry.");
- if(existing)await base44.entities.UserGenre.update(existing.id,{genres:clean});
- else await base44.entities.UserGenre.create({user_id:userId,genres:clean});
- if(request!==generation)throw Error("Account changed. Please retry.");
+ const clean=normalized({...existing,...patch});
+ const saved=existing?await base44.entities.UserGenre.update(existing.id,clean):await base44.entities.UserGenre.create({user_id:userId,...clean});
+ if(request!==generation||!saved?.id)throw Error("Preferences were not confirmed. Please retry.");
  owner=userId;cache=clean;
+ window.dispatchEvent(new CustomEvent("preferences:changed",{detail:{uid:userId}}));
+ return clean;
 }
+export async function saveUserGenres(genres,userId){return saveUserMusicPreferences({genres},userId);}
 export async function hasUserGenres(){return (await getUserGenres()).length>0;}
