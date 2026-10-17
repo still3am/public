@@ -34,7 +34,7 @@ const useCoverUrl=url=>url;
 const useCoverPalette=()=>({colors:globalThis.__artColors||[],loading:false});
 const ArrowRight=()=>null,ArrowLeft=ArrowRight,Check=ArrowRight,Headphones=ArrowRight,Loader2=ArrowRight,Camera=ArrowRight,Search=ArrowRight,Music2=ArrowRight,ShieldCheck=ArrowRight,Plus=ArrowRight,Play=ArrowRight,Pause=ArrowRight;
 const Dialog=({children})=>React.createElement(React.Fragment,null,children);
-const DialogContent=({children,...props})=>React.createElement("section",{"data-step":props["data-onboarding-step"]},children);
+const DialogContent=({children,...props})=>React.createElement("section",{"data-step":props["data-onboarding-step"],"data-onboarding-contrast":props["data-onboarding-contrast"]},children);
 const DialogTitle=React.forwardRef(({children},ref)=>React.createElement("h2",{ref},children));
 const DialogDescription=({children})=>React.createElement("p",null,children);
 const MotionGradient=props=>{globalThis.__gradientColors=props.colors;return null;},Logo=()=>null,ProfileColorWheel=()=>null,TrackPickerSheet=()=>null;
@@ -87,3 +87,13 @@ globalThis.__artColors=[];
 renderToStaticMarkup(React.createElement(ui.WelcomeFlow,{user:current,onDone(){}}));
 assert.deepEqual(globalThis.__gradientColors,model.ONBOARDING_PALETTES[0].colors,"unavailable colors use a stable brand fallback");
 console.log("PASS automatic artwork choice, matching live palette and extraction fallback");
+
+// Core PUBLIC backgrounds can reach pure white: readable cards must remain opaque.
+storage.set(model.draftKey(current.id),JSON.stringify({uid:current.id,step:4}));
+const contrastHtml=renderToStaticMarkup(React.createElement(ui.WelcomeFlow,{user:current,onDone(){}}));
+assert.match(contrastHtml,/data-onboarding-contrast="monochrome"/);
+const styles=fs.readFileSync("src/components/new-member-onboarding.css","utf8");
+const panel=styles.match(/--onboarding-panel:(#[0-9a-f]{6})/i)[1],copy=styles.match(/--onboarding-copy:(#[0-9a-f]{6})/i)[1];
+const lum=hex=>[1,3,5].map(i=>parseInt(hex.slice(i,i+2),16)/255).map(v=>v<=.04045?v/12.92:((v+.055)/1.055)**2.4).reduce((sum,v,i)=>sum+v*[.2126,.7152,.0722][i],0);
+assert.ok((lum(copy)+.05)/(lum(panel)+.05)>=4.5,"secondary copy must stay readable on opaque surfaces even over a white gradient");
+console.log("PASS PUBLIC contrast surfaces remain readable over white gradient bands");

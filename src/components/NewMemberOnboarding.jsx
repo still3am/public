@@ -141,7 +141,7 @@ export function WelcomeFlow({user,onDone}){
  const automaticColors=artworkColors.length?artworkColors.slice(0,3):ONBOARDING_PALETTES[0].colors;
  const colors=step===5&&draft.mode!=="off"?(draft.mode==="auto"?automaticColors:draft.colors):ONBOARDING_PALETTES[0].colors;
  return <Dialog open>
-  <DialogContent className="new-member-onboarding onboarding-identity" data-public-dialog data-onboarding-step={step} onPointerDownOutside={e=>e.preventDefault()} onOpenAutoFocus={e=>{e.preventDefault();heading.current?.focus({preventScroll:true});}} onEscapeKeyDown={e=>{e.preventDefault();if(!picker)defer();}}>
+  <DialogContent className="new-member-onboarding onboarding-identity" data-public-dialog data-onboarding-step={step} data-onboarding-contrast={colors.every(color=>color.length===7&&color.slice(1,3)===color.slice(3,5)&&color.slice(3,5)===color.slice(5,7))?"monochrome":"color"} onPointerDownOutside={e=>e.preventDefault()} onOpenAutoFocus={e=>{e.preventDefault();heading.current?.focus({preventScroll:true});}} onEscapeKeyDown={e=>{e.preventDefault();if(!picker)defer();}}>
    <MotionGradient colors={colors} speed={.85} className="onboarding-background"/>
    <header className="onboarding-header">
     <div className="onboarding-topbar"><div className="onboarding-nav-start">{step>0&&<button type="button" className="onboarding-back" disabled={busy||!!followBusy} aria-label="Previous step" onClick={()=>update({step:step-1})}><ArrowLeft size={18}/></button>}</div><Logo width="82px" className="onboarding-logo"/><button type="button" className="onboarding-later" disabled={busy||!!followBusy} onClick={defer}>Finish later</button></div>
