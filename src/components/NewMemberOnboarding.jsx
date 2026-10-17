@@ -1,3 +1,4 @@
+import {setFollowState,followError} from "@/lib/followActions";
 import {useEffect,useMemo,useRef,useState} from "react";
 import {useNavigate} from "react-router-dom";
 import {ArrowRight,ArrowLeft,Check,Loader2,Camera,Search,Music2,ShieldCheck,Plus,Play,Pause} from "lucide-react";
@@ -131,10 +132,10 @@ export function WelcomeFlow({user,onDone}){
  }
  async function follow(profile){
   if(lock.current||followLock.current)return;followLock.current=true;const uid=profile.user_id;setFollowBusy(uid);setError("");
-  try{await owner();const was=following.has(uid);if(was)await base44.entities.Follow.deleteMany({follower_id:user.id,following_id:uid});else{const result=await base44.entities.Follow.create({follower_id:user.id,following_id:uid});if(!result?.id)throw Error("Follow was not confirmed.");}
+  try{await owner();const was=following.has(uid);await setFollowState(base44,user.id,uid,!was);
    await owner();
    if(alive.current){setFollowing(old=>{const value=new Set(old);if(was)value.delete(uid);else value.add(uid);return value;});window.dispatchEvent(new CustomEvent("follows:changed",{detail:{uid:user.id,followingId:uid,following:!was}}));}
-  }catch(e){if(alive.current)setError(errorText(e));}finally{followLock.current=false;if(alive.current)setFollowBusy("");}
+  }catch(e){if(alive.current)setError(followError(e));}finally{followLock.current=false;if(alive.current)setFollowBusy("");}
  }
  const toggle=(key,value,max)=>{const current=draft[key];if(!current.includes(value)&&current.length>=max){setError("Choose up to "+max+" "+(key==="artists"?"artists":"songs")+".");return;}update({[key]:current.includes(value)?current.filter(v=>v!==value):[...current,value]});};
  const genreOptions=genreQuery.trim()||allGenres?GENRES.filter(g=>g!=="Other"): [...new Set([...draft.genres,...FEATURED_GENRES.filter(g=>GENRES.includes(g))])];
