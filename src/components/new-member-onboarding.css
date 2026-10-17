@@ -156,3 +156,11 @@
 @keyframes onboardingRecordLight{from{transform:rotate(-28deg);opacity:.4}to{transform:rotate(0);opacity:1}}
 @media(max-height:700px){.onboarding-record{width:145px}.onboarding-record-stage{gap:12px;margin-bottom:18px}.onboarding-welcome-line{font-size:29px}.onboarding-record-label .onboarding-logo{max-width:80%}.new-member-onboarding[data-onboarding-step="0"] .onboarding-page-intro{margin-bottom:18px}}
 @media(prefers-reduced-motion:reduce){.onboarding-record,.onboarding-record-light{animation:none}}
+
+.onboarding-search>button{width:32px;height:32px;flex-shrink:0;display:grid;place-items:center;border-radius:50%;font-size:22px;color:#ffffffa6;background:#ffffff0c;margin:-4px}
+.onboarding-selection-status{font-size:11px;line-height:1.5;color:#ffffff9c;margin:-8px 0 18px;min-height:17px}
+.onboarding-remove-photo{font-size:11px;color:#ffffffa6;text-decoration:underline;text-underline-offset:3px;min-height:36px;margin-top:-8px}
+.onboarding-tabs{position:sticky;top:0;z-index:2;background:#181818ed;backdrop-filter:blur(12px)}
+.onboarding-search:focus-within,.onboarding-handle:focus-within{border-color:#ffffff80;box-shadow:0 0 0 3px #ffffff08}
+.onboarding-search,.onboarding-handle{transition:border-color .2s ease,box-shadow .2s ease}
+@media(prefers-reduced-motion:reduce){.onboarding-search,.onboarding-handle{transition:none}}

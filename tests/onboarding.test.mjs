@@ -81,3 +81,8 @@ release([{id:"taste-a",genres:["Jazz"],favorite_track_ids:[]}]);
 assert.deepEqual((await oldRead).genres,["Pop"]);
 assert.deepEqual(await prefs.getUserGenres("a"),["Pop"]);
 console.log("PASS in-flight preference reads cannot overwrite a newer save");
+
+assert.equal(model.onboardingSearchMatch("Beyoncé", "  BEYONCE  "),true);
+assert.equal(model.onboardingSearchMatch("Rauw  Alejandro", "rauw alejandro"),true);
+assert.equal(model.onboardingSearchMatch("Artist", "Other"),false);
+console.log("PASS onboarding search handles accents, capitalization and extra spaces");

@@ -53,3 +53,8 @@ export function withOnboardingDeadline(promise,ms=15000){
  let timer;
  return Promise.race([promise,new Promise((_,reject)=>{timer=setTimeout(()=>reject(Error("Choices took too long to load. Please retry.")),ms);})]).finally(()=>clearTimeout(timer));
 }
+
+export function onboardingSearchMatch(value,query){
+ const normalize=input=>String(input||"").normalize("NFKD").replace(/[\u0300-\u036f]/g,"").toLowerCase().trim().replace(/\s+/g," ");
+ return normalize(value).includes(normalize(query));
+}

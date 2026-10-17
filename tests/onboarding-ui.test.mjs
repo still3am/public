@@ -27,7 +27,7 @@ assert.doesNotMatch(settingsMarkup(),/Finish setting up PUBLIC|Personalize your 
 current.onboarding_completed=false;
 assert.match(settingsMarkup(),/Finish setting up PUBLIC/,"completion does not leak between accounts");
 const ui=await load(fs.readFileSync("src/components/NewMemberOnboarding.jsx","utf8"),common+`
-const {ONBOARDING_PALETTES,cleanHandle,validHandle,credits,recommendPeople,readOnboardingDraft,draftKey,onboardingComplete,normalizeOnboardingColors,mergeOnboardingTaste,withOnboardingDeadline}=globalThis.__model;
+const {ONBOARDING_PALETTES,cleanHandle,validHandle,credits,recommendPeople,readOnboardingDraft,draftKey,onboardingComplete,normalizeOnboardingColors,mergeOnboardingTaste,withOnboardingDeadline,onboardingSearchMatch}=globalThis.__model;
 const useNavigate=()=>()=>{},base44={},getPublishedTracks=async()=>[],getUserMusicPreferences=async()=>({}),saveUserMusicPreferences=async()=>{};
 const GENRES=["Hip-Hop","R&B","Pop","Afrobeats","Latin","Dance","Indie","Rock","Soul","Jazz","Electronic","Reggaeton","Ambient"];
 const useCoverUrl=url=>url;
