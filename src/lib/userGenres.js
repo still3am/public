@@ -23,7 +23,7 @@ export async function saveUserMusicPreferences(patch,userId){
  if(request!==generation)throw Error("Account changed. Please retry.");
  const clean=normalized({...existing,...patch});
  const saved=existing?await base44.entities.UserGenre.update(existing.id,clean):await base44.entities.UserGenre.create({user_id:userId,...clean});
- if(request!==generation||!saved?.id)throw Error("Preferences were not confirmed. Please retry.");
+ if(request!==generation||!saved?.id||(await base44.auth.me())?.id!==userId||JSON.stringify(normalized(saved))!==JSON.stringify(clean))throw Error("Preferences were not confirmed. Please retry.");
  owner=userId;cache=clean;
  window.dispatchEvent(new CustomEvent("preferences:changed",{detail:{uid:userId}}));
  return clean;

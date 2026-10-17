@@ -107,7 +107,7 @@ export function WelcomeFlow({user,onDone}){
   catch(e){if(alive.current)setError(errorText(e));}finally{lock.current=false;if(alive.current)setBusy(false);}
  }
  async function follow(profile){
-  if(lock.current||followLock.current)return;const uid=profile.user_id;setFollowBusy(uid);setError("");
+  if(lock.current||followLock.current)return;followLock.current=true;const uid=profile.user_id;setFollowBusy(uid);setError("");
   try{await owner();const was=following.has(uid);if(was)await base44.entities.Follow.deleteMany({follower_id:user.id,following_id:uid});else{const result=await base44.entities.Follow.create({follower_id:user.id,following_id:uid});if(!result?.id)throw Error("Follow was not confirmed.");}
    if(alive.current){setFollowing(old=>{const value=new Set(old);if(was)value.delete(uid);else value.add(uid);return value;});window.dispatchEvent(new CustomEvent("follows:changed",{detail:{uid:user.id,followingId:uid,following:!was}}));}
   }catch(e){if(alive.current)setError(errorText(e));}finally{followLock.current=false;if(alive.current)setFollowBusy("");}

@@ -32,20 +32,20 @@ async function searchPublicUsers(svc,raw) {
   let users=[];
   try{
     const page=await svc.entities.User.filter({
-      $or:[{display_name:{$regex:pattern,$options:'i'}},{full_name:{$regex:pattern,$options:'i'}}]
-    },'-created_date',30,0,['id','display_name','full_name','avatar_url','is_blocked']);
+      $or:[{display_name:{$regex:pattern,$options:'i'}},{full_name:{$regex:pattern,$options:'i'}},{username:{$regex:pattern,$options:'i'}}]
+    },'-created_date',30,0,['id','username','display_name','full_name','avatar_url','is_blocked','disabled']);
     users=Array.isArray(page)?page:page?.items||[];
   }catch{}
   if(!users.length){
     // Bounded compatibility page: only identifiers and public name/avatar fields, never private contacts.
-    const page=await svc.entities.User.list('-created_date',200,0,['id','display_name','full_name','avatar_url','is_blocked']);
+    const page=await svc.entities.User.list('-created_date',200,0,['id','username','display_name','full_name','avatar_url','is_blocked','disabled']);
     const rows=Array.isArray(page)?page:page?.items||[];
     const name=value=>String(value||'').normalize('NFKD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
     const term=name(q);
-    users=rows.filter(u=>[u.display_name,u.full_name].some(value=>name(value).includes(term)));
+    users=rows.filter(u=>[u.display_name,u.full_name,u.username].some(value=>name(value).includes(term)));
   }
   users=users.filter(u=>!u.is_blocked&&!u.disabled).slice(0,30);
-  return users.map(u=>({id:u.id,display_name:u.display_name||u.full_name||'',avatar_url:u.avatar_url||''}));
+  return users.map(u=>({id:u.id,username:u.username||'',display_name:u.display_name||u.full_name||'',avatar_url:u.avatar_url||''}));
 }
 export default async function handleRequest(req) {
   try {
@@ -139,7 +139,7 @@ export default async function handleRequest(req) {
         }));
         rows.push(...page.filter(u=>u&&!u.is_blocked&&!u.disabled));
       }
-      return Response.json({result:rows.map(u=>({id:u.id,display_name:u.display_name||u.full_name||'',avatar_url:u.avatar_url||''}))});
+      return Response.json({result:rows.map(u=>({id:u.id,username:u.username||'',display_name:u.display_name||u.full_name||'',avatar_url:u.avatar_url||''}))});
     }
     if(action==='read') {
       if(entity==='Follow'){
@@ -334,6 +334,7 @@ export default async function handleRequest(req) {
       } else if(entity==='User') {
         if(kind!=='update'||id!==user.id) fail('Profile access denied');
         data=pick(data,['username','display_name','bio','avatar_url','banner_url','location','pronouns','website','instagram','twitter','soundcloud','status_message','featured_track_id','top_track_ids','is_artist','show_explicit','adult_confirmed','profile_background_mode','profile_background_colors','profile_background_motion','profile_background_speed']);
+        if(data.display_name!==undefined&&(typeof data.display_name!=='string'||data.display_name.trim().length<2||data.display_name.trim().length>60))fail('Use a display name between 2 and 60 characters',422);
         if(data.username!==undefined){
           if(typeof data.username!=='string')fail('Choose a valid username',422);
           data.username=data.username.trim().toLowerCase().replace(/^@/,'');

@@ -146,8 +146,8 @@ export async function searchPeople(q) {
   if(term.length<2)return {data:{results:[]}};
   try{
     const pattern=escapeRegex(term);
-    const page=await base44.entities.PublicProfile.filter({visible:true,$or:[contains("display_name",pattern),contains("full_name",pattern)]},{sort:"-updated_date",limit:50,fields:["user_id","display_name","full_name","avatar_url"]});
-    const results=rows(page).map(row=>({id:row.user_id,display_name:row.display_name||row.full_name||"",avatar_url:row.avatar_url||""}));
+    const page=await base44.entities.PublicProfile.filter({visible:true,$or:[contains("display_name",pattern),contains("full_name",pattern),contains("username",pattern)]},{sort:"-updated_date",limit:50,fields:["user_id","display_name","full_name","username","avatar_url"]});
+    const results=rows(page).map(row=>({id:row.user_id,username:row.username||"",display_name:row.display_name||row.full_name||"",avatar_url:row.avatar_url||""}));
     results.sort((a,b)=>Number(b.display_name.toLowerCase()===term.toLowerCase())-Number(a.display_name.toLowerCase()===term.toLowerCase()));
     return {data:{results}};
   }catch(primary){

@@ -377,6 +377,7 @@ export default function Profile({ ownProfileTab = false }) {
         <div className="profile-details relative z-10 px-5 md:px-10 pb-5 md:pb-8 pt-5 md:pt-8">
           <div className="profile-identity-row flex flex-col items-center md:flex-row md:items-center md:justify-center gap-4 md:gap-8">
             <div className="relative shrink-0">
+              <Avatar user={{...profile,avatar_url:avatarUrl}} size={96}/>
               
 
 
@@ -426,6 +427,7 @@ export default function Profile({ ownProfileTab = false }) {
 
               {!editMode &&
                   <div className="flex flex-wrap items-center justify-center md:justify-start gap-x-3 gap-y-1 text-xs text-foreground/40 mt-1.5">
+                  {profile.username && <span>@{profile.username}</span>}
                   {profile.location &&
                     <span className="inline-flex items-center gap-1">
                       <MapPin size={12} /> {profile.location}
