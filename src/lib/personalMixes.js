@@ -1,12 +1,14 @@
 const clean=value=>String(value||'').trim().toLowerCase();
 const hash=value=>[...String(value)].reduce((n,c)=>(Math.imul(n,31)+c.charCodeAt(0))>>>0,0);
 const genreMatch=(track,genres)=>genres.some(genre=>clean(track.genre).includes(genre));
-export function buildPersonalMixes(catalog,{recent=[],savedIds=new Set(),genres=[],uid='',day=Math.floor(Date.now()/86400000)}={}){
+export function buildPersonalMixes(catalog,{recent=[],savedIds=new Set(),genres=[],favoriteTrackIds=[],favoriteArtists=[],uid='',day=Math.floor(Date.now()/86400000)}={}){
  const seen=new Set(),tracks=(catalog||[]).filter(t=>t?.id&&t.is_published===true&&(t.audio_url||t._private_audio)&&!seen.has(t.id)&&seen.add(t.id));
  const byId=new Map(tracks.map(t=>[t.id,t])),played=recent.map(t=>byId.get(t.id)).filter(Boolean),heard=new Set(played.map(t=>t.id));
- const preferred=[...new Set([...genres.map(clean),...played.map(t=>clean(t.genre)),...tracks.filter(t=>savedIds.has(t.id)).map(t=>clean(t.genre))].filter(Boolean))];
- const artists=new Set([...played,...tracks.filter(t=>savedIds.has(t.id))].map(t=>clean(t.artist)).filter(Boolean));
- const affinity=t=>(genreMatch(t,preferred)?4:0)+(artists.has(clean(t.artist))?3:0);
+ const preferred=[...new Set([...genres.map(clean),...seeds.map(t=>clean(t.genre)),...played.map(t=>clean(t.genre)),...tracks.filter(t=>savedIds.has(t.id)).map(t=>clean(t.genre))].filter(Boolean))];
+ const seeds=tracks.filter(t=>favoriteTrackIds.includes(t.id));
+ const chosenArtists=favoriteArtists.map(clean);
+ const artists=new Set([...seeds,...played,...tracks.filter(t=>savedIds.has(t.id))].map(t=>clean(t.artist)).filter(Boolean));
+ const affinity=t=>(genreMatch(t,preferred)?4:0)+(artists.has(clean(t.artist))?3:0)+(chosenArtists.some(name=>clean(t.artist).includes(name))?5:0)+(favoriteTrackIds.includes(t.id)?6:0);
  const stable=(list,key)=>[...list].sort((a,b)=>affinity(b)-affinity(a)||hash(uid+day+key+a.id)-hash(uid+day+key+b.id));
  const diverse=list=>{const result=[],counts=new Map();for(const t of list){const artist=clean(t.artist)||t.id;if((counts.get(artist)||0)>=3)continue;counts.set(artist,(counts.get(artist)||0)+1);result.push(t);if(result.length===24)break;}return result;};
  const mixes=[];
