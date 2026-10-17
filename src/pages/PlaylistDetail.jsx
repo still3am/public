@@ -92,7 +92,7 @@ export default function PlaylistDetail(){
   await write(async()=>{const result=await base44.entities.SavedPlaylist.filter({user_id:user.id,playlist_id:id},{sort:'-created_date',limit:1});if(!Array.isArray(result)&&!Array.isArray(result?.items))throw Error('Could not check saved playlists. Please retry.');const wasSaved=(Array.isArray(result)?result:result.items).length>0;if(wasSaved)await base44.entities.SavedPlaylist.deleteMany({user_id:user.id,playlist_id:id});else await base44.entities.SavedPlaylist.create({user_id:user.id,playlist_id:id});setSaved(!wasSaved);toast({title:wasSaved?'Removed from your library':'Added to your library'});});
  }
  const playAll=shuffle=>{if(!tracks.length)return;p.setShuffle(false);p.playTrackAt(shuffle?shufflePlaylist(tracks):tracks,0);};
- if(playlist&&playlist.id!==id)return <div className="py-16 grid place-items-center"><Loader2 className="animate-spin"/></div>;
+ if(playlist&&playlist.id!==id)return error?<LoadError onRetry={load}/>:<div className="py-16 grid place-items-center"><Loader2 className="animate-spin"/></div>;
  if(error&&!playlist)return <LoadError onRetry={load}/>;
  if(loading&&!playlist)return <div className="py-16 grid place-items-center"><Loader2 className="animate-spin"/></div>;
  if(!playlist)return <EmptyState title="Playlist unavailable"/>;
