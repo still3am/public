@@ -27,7 +27,8 @@ const entities = new Proxy(raw.entities,{get(target,name) {
         // Function availability must not blank an otherwise accessible catalog.
         // The entity API independently enforces Track RLS and private-file FLS.
         const status=error?.response?.status ?? error?.status;
-        if(status===403 || status===422 || (method==='get'&&status===404))throw error;
+        const platformFunctionOrigin=status===403&&String(error?.response?.data?.message||error?.message||'').includes('Backend functions cannot be accessed from the platform domain');
+        if((status===403&&!platformFunctionOrigin) || status===422 || (method==='get'&&status===404))throw error;
         const current=await raw.auth.me().catch(e=>{if((e.status??e.response?.status)===401)return null;throw e;});
         const blocks=current&&current.role!=='admin'?await raw.entities.Block.filter({$or:[{user_id:current.id},{blocked_user_id:current.id}]},'-created_date',1000):[];
         const hidden=blocks.map(r=>r.user_id===current.id?r.blocked_user_id:r.user_id);
