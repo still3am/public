@@ -331,7 +331,42 @@
  .weather-experience .weather-music-toolbar{padding-inline:max(32px,calc((100vw - 1120px)/2))}
  .weather-experience .weather-music-settings{max-width:660px;padding:32px}
 }
+@media(min-width:1024px){
+ .public-app .artwork-content .track-page .release-header-full{grid-template-rows:auto auto auto auto auto;padding:32px;gap:0 40px;border:1px solid hsl(var(--border));border-radius:30px;background:hsl(var(--card));min-height:380px}
+ .public-app .track-page .release-header-full .release-art{grid-row:1/6;border-radius:22px}
+ .public-app .track-page .track-release-kicker{grid-column:2;grid-row:1;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:hsl(var(--muted-foreground));align-self:end;margin-bottom:18px}
+ .public-app .track-page .release-header-full h1{grid-row:2;align-self:start;font-size:clamp(36px,3.8vw,58px);overflow-wrap:anywhere}
+ .public-app .track-page .release-header-full .release-artist{grid-row:3;font-size:20px;line-height:1.5}
+ .public-app .track-page .release-header-full .release-subtitle{grid-row:4}
+ .public-app .track-page .release-header-full .release-play-controls{grid-row:5}
+ .public-app .track-page .release-song-list{border:1px solid hsl(var(--border));border-radius:18px;padding:6px 16px;margin-bottom:30px;background:hsl(var(--card))}
+ .public-app .track-detail-columns{display:grid;grid-template-columns:minmax(0,.85fr) minmax(0,1.3fr);gap:28px;align-items:start;margin-bottom:36px}
+ .public-app .track-detail-columns>.release-credits,.public-app .track-detail-columns>.track-page-section{padding:28px;margin:0;border:1px solid hsl(var(--border));border-radius:24px;background:hsl(var(--card));min-width:0}
+ .public-app .track-detail-columns>.release-credits:only-child{grid-column:1/-1}
+ .public-app .track-details-title{font-size:20px;font-weight:650;margin-bottom:20px;letter-spacing:-.03em;color:hsl(var(--foreground))}
+ .public-app .track-page-lyrics{font-size:17px;line-height:1.9}
+ .public-app .track-page .release-shelf{scrollbar-width:thin;scroll-snap-type:x proximity;padding-bottom:14px}
+ .public-app .track-page .release-shelf-card{flex-basis:clamp(160px,16vw,210px)}
+ .public-app .artwork-content .artist-page .artist-hero{display:grid;grid-template-columns:minmax(230px,.85fr) minmax(0,1.3fr);align-items:center;height:auto;min-height:0;padding:28px;gap:36px;border:1px solid hsl(var(--border));border-radius:30px;background:hsl(var(--card));color:hsl(var(--foreground))}
+ .public-app .artist-hero .artist-hero-image{position:relative;inset:auto;width:100%;height:auto;aspect-ratio:1;max-height:420px;border-radius:22px;object-position:center}
+ .public-app .artist-hero .artist-hero-shade{display:none}
+ .public-app .artist-hero .artist-hero-bottom{position:static;display:flex;flex-direction:column;align-items:flex-start;justify-content:center;gap:28px;min-width:0}
+ .public-app .artist-hero .artist-eyebrow{color:hsl(var(--muted-foreground));font-size:11px;letter-spacing:.14em}
+ .public-app .artist-hero .artist-track-count{color:hsl(var(--muted-foreground));font-size:14px;margin-top:18px}
+ .public-app .artist-hero .artist-hero-name h1{font-size:clamp(38px,4vw,66px);line-height:1.05}
+ .public-app .artist-hero .artist-play{background:hsl(var(--foreground));color:hsl(var(--background));width:64px;height:64px;box-shadow:none}
+ .public-app .artist-hero .artist-back{top:42px;left:42px;background:hsl(var(--card));color:hsl(var(--foreground));border:1px solid hsl(var(--border));width:40px;height:40px}
+ .public-app .artist-about-copy{font-size:16px;line-height:1.8;max-width:75ch}
+ .public-app .artist-facts{grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:24px}
+}
 @media(min-width:1280px){
+ .public-app .artist-feature-grid{display:grid;grid-template-columns:260px minmax(0,1fr);gap:32px;align-items:start;margin-bottom:36px}
+ .public-app .artist-feature-grid>.artist-latest{flex-direction:column;align-items:stretch;padding:20px;gap:20px;margin:0}
+ .public-app .artist-feature-grid .artist-latest-cover{width:100%;height:auto;aspect-ratio:1;border-radius:18px}
+ .public-app .artist-feature-grid .artist-latest-title{font-size:23px}
+ .public-app .artist-feature-grid>.artist-top-songs{min-width:0;margin:0}
+ .public-app .artist-feature-grid>.artist-top-songs:only-child{grid-column:1/-1}
+ .public-app .artist-feature-grid>.artist-latest:only-child{grid-column:1/-1;max-width:500px}
  .public-app .notifications-grid[data-view=shared],.public-app .notifications-grid[data-view=music]{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;align-items:start}
  .public-app .notifications-grid[data-view=shared]>.notification-item,.public-app .notifications-grid[data-view=music]>.notification-item{margin-top:0}
  .public-app .notifications-grid .notification-track{padding:12px;gap:12px}
