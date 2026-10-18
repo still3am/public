@@ -173,7 +173,7 @@
  .public-app .directory-desktop-alphabet button:disabled{opacity:.25;cursor:default}
  .public-app .directory-desktop-alphabet button[aria-current=location]{background:hsl(var(--foreground));color:hsl(var(--background))}
  .public-app .directory-desktop-alphabet button:not(:disabled):hover{background:hsl(var(--accent));color:hsl(var(--foreground))}
- .public-app .directory-page [data-key]{scroll-margin-top:200px}
+ .public-app .directory-page [data-key]{scroll-margin-top:230px}
  .public-app .directory-page [data-key]>.sticky{position:static}
  .public-app .artist-top-list,.public-app .artist-appears-list,.public-app .artist-similar-list{scrollbar-width:thin;scrollbar-color:hsl(var(--border)) transparent;scroll-snap-type:x proximity;padding-bottom:14px}
  .public-app .artist-top-column{flex-basis:clamp(300px,32vw,400px)}
