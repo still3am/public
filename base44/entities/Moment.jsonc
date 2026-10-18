@@ -1,0 +1,104 @@
+{
+  "name": "Moment",
+  "type": "object",
+  "properties": {
+    "user_id": {
+      "type": "string"
+    },
+    "caption": {
+      "type": "string"
+    },
+    "track_id": {
+      "type": "string"
+    },
+    "clip_start": {
+      "type": "number"
+    },
+    "clip_duration": {
+      "type": "number"
+    },
+    "music_volume": {
+      "type": "number"
+    },
+    "original_volume": {
+      "type": "number"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "published",
+        "deleted"
+      ],
+      "default": "published"
+    },
+    "request_id": {
+      "type": "string"
+    },
+    "rights_confirmed": {
+      "type": "boolean"
+    },
+    "liker_ids": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "default": []
+    },
+    "media": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "image",
+              "video"
+            ]
+          },
+          "size": {
+            "type": "number"
+          },
+          "duration": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "url",
+          "type"
+        ]
+      }
+    }
+  },
+  "required": [
+    "user_id",
+    "track_id",
+    "media",
+    "request_id"
+  ],
+  "rls": {
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}
