@@ -178,9 +178,37 @@
       "type": "string",
       "enum": [
         "flow",
+        "orbit",
+        "tide",
         "still"
       ],
       "default": "flow",
+      "rls": {
+        "write": {
+          "$or": [
+            {
+              "data.user_id": "{{user.id}}"
+            },
+            {
+              "user_condition": {
+                "role": "admin"
+              }
+            }
+          ]
+        }
+      }
+    },
+    "profile_background_direction": {
+      "type": "string",
+      "enum": [
+        "evolve",
+        "right",
+        "left",
+        "up",
+        "down",
+        "diagonal"
+      ],
+      "default": "evolve",
       "rls": {
         "write": {
           "$or": [
