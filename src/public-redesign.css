@@ -116,7 +116,7 @@ html.dark {
   padding:0;border:0;background:transparent;backdrop-filter:none;pointer-events:none;
  }
  .public-app .mobile-nav-pill {
-  display:grid;grid-template-columns:repeat(4,minmax(0,1fr));align-items:center;flex:1;min-width:0;height:64px;padding:4px;
+  display:grid;grid-template-columns:repeat(5,minmax(0,1fr));align-items:center;flex:1;min-width:0;height:64px;padding:4px;
   border-radius:999px;background:hsl(var(--card)/.9);border:1px solid hsl(var(--foreground)/.1);
   box-shadow:inset 0 1px 0 hsl(var(--foreground)/.05),0 8px 26px rgb(0 0 0/.12);
   backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);pointer-events:auto;
