@@ -45,7 +45,7 @@ function PinnedTrackCard({ track, onRemove, editMode }) {
         <button
           onClick={handlePlay}
           className="absolute inset-0 grid place-items-center bg-black/0 group-hover:bg-black/30 transition"
-          aria-label={isPlaying ? "Pause" : "Play"}>
+          aria-label={`${isPlaying ? "Pause" : "Play"} ${track.title || "song"}`}>
           
             <span className="w-10 h-10 rounded-full bg-foreground text-background grid place-items-center opacity-0 group-hover:opacity-100 transition active:scale-90">
               {isPlaying ? <Pause size={16} fill="currentColor" /> : <Play size={16} fill="currentColor" className="ml-0.5" />}
@@ -56,7 +56,7 @@ function PinnedTrackCard({ track, onRemove, editMode }) {
         <button
           onClick={() => onRemove(track.id)}
           className="absolute top-1.5 right-1.5 w-7 h-7 rounded-full bg-foreground/80 text-background grid place-items-center"
-          aria-label="Remove from Top 8">
+          aria-label={`Remove ${track.title || "song"} from Top 8`}>
           
             <X size={14} />
           </button>
