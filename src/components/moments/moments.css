@@ -74,3 +74,71 @@
  .moments-route .moments-page button:focus-visible,.moments-route .moments-page a:focus-visible,.moments-route .moments-page summary:focus-visible{outline-color:#fff}
 }
 @media(prefers-reduced-motion:reduce){.moments-page .animate-spin{animation:none}}
+
+/* Creation stays inside the viewport; only the working area scrolls. */
+.moment-composer{display:grid;grid-template-rows:auto minmax(0,1fr) auto;gap:0;max-width:900px!important;width:calc(100vw - 48px)!important;height:min(760px,calc(100dvh - 48px));max-height:calc(100dvh - 48px);overflow:hidden;padding:0!important;border-radius:28px!important}
+.moment-composer>div:first-child{padding:26px 70px 22px 28px;border-bottom:1px solid hsl(var(--border))}
+.moment-composer>div:first-child .moments-eyebrow{font-size:9px;margin-bottom:6px}
+.moment-composer h2{font-size:30px}
+.moment-compose-workspace{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:26px;overflow-y:auto;min-height:0;overscroll-behavior:contain;padding:24px 28px}
+.moment-compose-media,.moment-compose-fields{min-width:0;display:flex;flex-direction:column;gap:16px;align-self:start}
+.moment-compose-step{display:flex;align-items:center;gap:9px;font-size:12px;font-weight:600}
+.moment-compose-step>span{display:grid;place-items:center;width:25px;height:25px;border:1px solid hsl(var(--border));border-radius:50%;font-size:9px;color:hsl(var(--muted-foreground))}
+.moment-composer .moment-upload-zone{width:100%;min-height:340px;gap:15px;background:linear-gradient(145deg,hsl(var(--muted)/.65),hsl(var(--background)));border-radius:20px}
+.moment-composer .moment-upload-zone strong{font-size:14px}
+.moment-composer .moment-upload-zone span{max-width:220px;text-align:center;font-size:11px;line-height:1.7}
+.moment-composer .moment-media{max-height:340px;border-radius:20px}
+.moment-composer .moment-song-choice{min-width:0;width:100%;gap:12px;padding:15px;border-radius:17px;background:hsl(var(--muted)/.35)}
+.moment-composer .moment-song-choice>span{min-width:0}
+.moment-composer .moment-song-choice strong{font-size:13px;font-weight:600}
+.moment-composer .moment-song-choice small{font-size:11px;line-height:1.5}
+.moment-sound-options{border:1px solid hsl(var(--border));border-radius:16px;overflow:hidden}
+.moment-sound-options>summary{display:flex;align-items:center;justify-content:space-between;gap:8px;min-height:48px;padding:12px 14px;font-size:12px;font-weight:600;cursor:pointer}
+.moment-sound-options>summary>span{font-size:11px;font-weight:400;color:hsl(var(--muted-foreground))}
+.moment-sound-options .moment-audio-editor{border:0;border-radius:0;padding:4px 14px 16px;gap:14px}
+.moment-composer .moment-caption-label{font-size:12px;gap:8px}
+.moment-composer .moment-caption-label>textarea{min-height:104px;border-radius:16px;font-size:14px;background:hsl(var(--muted)/.2)}
+.moment-composer .moment-rights{font-size:10px;line-height:1.6;gap:9px}
+.moment-composer .moment-composer-footer{padding:14px 28px;border-top:1px solid hsl(var(--border));background:hsl(var(--card));gap:12px}
+.moment-composer .moment-composer-footer>.moment-primary{min-width:150px;max-width:75%;white-space:normal;text-align:center}
+.moment-composer .moment-inline-message{padding:0}
+.profile-picker-feedback{display:flex;align-items:center;justify-content:space-between;gap:12px;font-size:11px;line-height:1.6;color:hsl(var(--muted-foreground));padding:10px 12px;background:hsl(var(--muted)/.65);border-radius:12px;flex-shrink:0}
+.profile-picker-feedback button{min-height:36px;font-weight:600;text-decoration:underline;color:hsl(var(--foreground))}
+.moment-track-picker{max-width:640px!important;padding:26px!important;gap:16px;height:min(740px,calc(100dvh - 48px));overflow:hidden}
+.moment-track-picker>div:first-child{text-align:left}
+.moment-track-picker h2{font-size:27px;letter-spacing:-.04em;line-height:1.2}
+.moment-track-picker .profile-picker-search{border-radius:999px;padding:0 16px;min-height:48px}
+.moment-track-picker .view-switch{display:flex;border:0;background:hsl(var(--muted));padding:4px;border-radius:999px;gap:4px}
+.moment-track-picker .view-switch button{flex:1;min-height:38px;border-radius:999px;font-size:12px}
+.moment-track-picker .view-switch button.active{background:hsl(var(--foreground));color:hsl(var(--background));box-shadow:none}
+.moment-track-picker .profile-picker-row{min-height:72px;padding:10px 8px;border-radius:13px;gap:12px}
+.moment-track-picker .profile-picker-cover{width:46px;height:46px;border-radius:11px}
+.moment-track-picker .profile-picker-list{padding-right:4px}
+.moment-track-picker>div:not(.profile-picker-list){flex-shrink:0}
+@media(min-width:851px){
+ .moments-layout{grid-template-columns:230px minmax(0,600px);justify-content:center;gap:52px}
+ .moments-intro{top:110px;padding:22px 16px 22px 0}
+ .moments-intro h2{font-size:30px;line-height:1.2}
+ .moments-intro p{font-size:12px;line-height:1.85}
+ .moments-header{padding-bottom:26px}
+ .moments-header h1{font-size:64px}
+ .moments-feed .moments-tabs{position:sticky;top:70px;z-index:12;padding:8px 0;background:hsl(var(--background)/.95);backdrop-filter:blur(16px);margin-bottom:18px}
+ .moment-card{box-shadow:0 12px 40px -34px #0008}
+}
+@media(max-width:767px){
+ .moment-composer{width:calc(100vw - 20px)!important;height:calc(100dvh - 24px);max-height:calc(100dvh - 24px);border-radius:24px!important}
+ .moment-composer>div:first-child{padding:21px 58px 18px 20px}
+ .moment-composer h2{font-size:27px}
+ .moment-composer>div:first-child p:last-child{font-size:12px;line-height:1.6}
+ .moment-compose-workspace{grid-template-columns:minmax(0,1fr);gap:22px;padding:20px}
+ .moment-composer .moment-upload-zone{min-height:184px;padding:20px;gap:12px}
+ .moment-composer .moment-upload-zone span{max-width:250px;font-size:10px}
+ .moment-composer .moment-media{max-height:280px}
+ .moment-composer .moment-caption-label>textarea,.moment-composer .moment-clip-inputs input,.moment-track-picker .profile-picker-search input{font-size:16px}
+ .moment-composer .moment-composer-footer{padding:12px 20px calc(12px + env(safe-area-inset-bottom));min-height:74px}
+ .moment-composer .moment-composer-footer>.moment-primary{flex:1;min-width:0}
+ .moment-track-picker{top:auto!important;bottom:0!important;left:0!important;transform:none!important;width:100%!important;max-width:none!important;height:92dvh;max-height:92dvh;padding:22px 18px calc(18px + env(safe-area-inset-bottom))!important;border-radius:26px 26px 0 0!important;gap:15px}
+ .moment-track-picker>div:first-child{text-align:left!important;padding:0 36px 0 0!important}
+ .moment-track-picker h2{font-size:26px}
+ .moment-track-picker>div:first-child p{font-size:12px;line-height:1.6}
+}
