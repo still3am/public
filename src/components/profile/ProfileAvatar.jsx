@@ -11,7 +11,7 @@ export default function ProfileAvatar({user,editing=false,busy=false,onUpload}){
    <button type="button" aria-label={busy?"Uploading profile image":"Choose profile image"} disabled={busy} onClick={()=>input.current?.click()} className="profile-avatar-upload absolute bottom-1 right-1 w-10 h-10 rounded-full bg-foreground text-background grid place-items-center border-2 border-card shadow-sm disabled:opacity-60" title="Change profile image">
     {busy?<Loader2 size={16} className="animate-spin"/>:<Camera size={17}/>}
    </button>
-   <input ref={input} type="file" accept="image/*" className="hidden" aria-label="Profile image file" onChange={event=>{const file=event.target.files?.[0];event.target.value="";if(file)onUpload?.(file);}}/>
+   <input ref={input} disabled={busy} type="file" accept="image/*" className="hidden" aria-label="Profile image file" onChange={event=>{const file=event.target.files?.[0];event.target.value="";if(file)onUpload?.(file);}}/>
   </>}
  </div>;
 }
