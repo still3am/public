@@ -48,6 +48,12 @@ const entities = new Proxy(raw.entities,{get(target,name) {
   }}));
   return handlers.get(name);
 }});
+// Narrow native database surface for public song-note metadata.
+// Track RLS/FLS still enforce publication and protect private audio.
+export const publicNoteDatabase = {
+  auth: {me:()=>raw.auth.me()},
+  entities: {PublicProfile:raw.entities.PublicProfile,Block:raw.entities.Block,Track:raw.entities.Track}
+};
 export const base44 = new Proxy(raw,{get(target,name) {
   if(name==='entities') return entities;
   if(name==='auth') return {...target.auth,updateMe:async data=>{
