@@ -117,11 +117,13 @@ export default function Suggestions() {
   if(error&&!items.length)return <LoadError onRetry={load}/>;
   return (
     <PullToRefresh onRefresh={load}>
-      <div className="collection-page">
+      <div className="collection-page suggestions-page">
         <header className="page-intro"><p className="eyebrow">PUBLIC</p><h1>Make PUBLIC better</h1><p>Share an idea. Support the ones you want to see.</p></header>
 
         
 
+        <div className="suggestions-workspace">
+        <aside className="suggestions-composer" aria-label="Share an idea">
         {!user &&
         <div className="rounded-2xl border border-border bg-card p-5 mb-8 text-center">
             <Lightbulb size={22} className="mx-auto text-foreground/40 mb-2" />
@@ -196,6 +198,8 @@ export default function Suggestions() {
         </form>
         }
 
+        </aside>
+        <section className="suggestions-feed" aria-label="Community ideas">
         <div className="collection-tools"><input aria-label="Search suggestions" placeholder="Find an idea" value={query} onChange={e=>setQuery(e.target.value)} onKeyDown={e=>{if(e.key==="Escape")setQuery("");}}/><select aria-label="Filter suggestion category" value={filter} onChange={e=>setFilter(e.target.value)}><option value="all">All ideas</option>{CATEGORIES.map(category=><option key={category.id} value={category.id}>{category.label}</option>)}</select></div>
         {items.length > 0 &&
         <div className="flex items-center gap-1.5 mb-4">
@@ -205,6 +209,7 @@ export default function Suggestions() {
           map((opt) =>
           <button
             key={opt.id}
+            aria-pressed={sort === opt.id}
             onClick={() => setSort(opt.id)}
             className={`px-3 py-1.5 rounded-full text-xs font-semibold border transition ${
             sort === opt.id ?
@@ -241,6 +246,8 @@ export default function Suggestions() {
           )}
           </div>
         }
+        </section>
+        </div>
       </div>
     </PullToRefresh>);
 
