@@ -42,7 +42,7 @@ function rgb(value){
  return m?m.slice(1).map(n=>Math.min(255,Number(n))/255):null;
 }
 function paletteOf(colors){
- const values=[...new Set((colors||[]).filter(c=>rgb(c)))].slice(0,3);
+ const values=[...new Set((Array.isArray(colors)?colors:[]).filter(c=>rgb(c)))].slice(0,3);
  if(!values.length)return DEFAULT;
  const shade=(color,factor)=>"rgb("+rgb(color).map(v=>Math.round(Math.min(255,v*255*factor))).join(", ")+")";
  return [values[0],values[1]||shade(values[0],.62),values[2]||values[1]||shade(values[0],1.3)];
@@ -51,12 +51,13 @@ export default function MotionGradient({colors=DEFAULT,motion="flow",speed=1,act
  const canvas=useRef(null),settings=useRef(null),wake=useRef(null),phase=useRef(4.6);
  const [ready,setReady]=useState(false),[version,setVersion]=useState(0);
  const palette=paletteOf(colors),key=palette.join("|");
- settings.current={palette,motion,speed:Math.max(.35,Math.min(1.6,Number(speed)||1)),active,pauseWhenCovered};
+ settings.current={palette,target:palette.map(rgb),motion,speed:Math.max(.35,Math.min(1.6,Number(speed)||1)),active,pauseWhenCovered};
  useEffect(()=>{
   const element=canvas.current;
   let gl,program,buffer,vertex,fragment,raf=0,last=0,painted=0,visible=true,disposed=false,lost=false;
   const reduced=window.matchMedia("(prefers-reduced-motion: reduce)");
-  let current=settings.current.palette.map(rgb),velocity=settings.current.speed,sizeDirty=true,width=1,height=1;
+  const current=settings.current.target.map(color=>[...color]);
+  let velocity=settings.current.speed,sizeDirty=true,width=1,height=1;
   setReady(false);
   const compile=(type,source)=>{
    const shader=gl.createShader(type);gl.shaderSource(shader,source);gl.compileShader(shader);
@@ -76,9 +77,9 @@ export default function MotionGradient({colors=DEFAULT,motion="flow",speed=1,act
   const uniforms=Object.fromEntries(["time","aspect","a","b","c"].map(name=>[name,gl.getUniformLocation(program,"u_"+name)]));
   const stop=()=>{if(raf)cancelAnimationFrame(raf);raf=0;last=0;painted=0;};
   const draw=(dt,animate)=>{
-   const {palette,speed}=settings.current;
-   const target=palette.map(rgb),blend=animate?1-Math.exp(-dt/1100):1;
-   current=current.map((c,i)=>c.map((v,j)=>v+(target[i][j]-v)*blend));
+   const {target,speed}=settings.current;
+   const blend=animate?1-Math.exp(-dt/1100):1;
+   for(let i=0;i<3;i++)for(let j=0;j<3;j++)current[i][j]+=(target[i][j]-current[i][j])*blend;
    velocity+=(speed-velocity)*(animate?1-Math.exp(-dt/300):1);
    if(animate)phase.current+=dt*.001*velocity;
    // Cache layout measurements; only resizing/waking needs a new canvas size.
@@ -104,7 +105,13 @@ export default function MotionGradient({colors=DEFAULT,motion="flow",speed=1,act
    if(animate)raf=requestAnimationFrame(tick);
   };
   const resume=()=>{stop();sizeDirty=true;wasCovered=covered();if(!disposed&&!lost&&!document.hidden&&visible&&settings.current.active&&!wasCovered)raf=requestAnimationFrame(tick);};
-  wake.current=resume;
+  // Live wheel/speed updates keep the current clock and scheduled frame.
+  // Restarting the loop on every drag event would bypass the frame cap.
+  wake.current=()=>{
+   wasCovered=covered();
+   if(disposed||lost||document.hidden||!visible||!settings.current.active||wasCovered){stop();return;}
+   if(!raf){last=0;painted=0;raf=requestAnimationFrame(tick);}
+  };
   const onLost=event=>{event.preventDefault();lost=true;stop();setReady(false);};
   const onRestored=()=>{if(!disposed)setVersion(v=>v+1);};
   element.addEventListener("webglcontextlost",onLost);element.addEventListener("webglcontextrestored",onRestored);
