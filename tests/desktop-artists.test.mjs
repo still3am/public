@@ -1,0 +1,33 @@
+import assert from "node:assert/strict";
+import fs from "node:fs";
+import ts from "typescript";
+import * as React from "react";
+globalThis.__React=React;
+const load=async(path,stubs)=>import("data:text/javascript;base64,"+Buffer.from(ts.transpileModule(stubs+fs.readFileSync(path,"utf8").replace(/^import[^;]+;/gm,""),{compilerOptions:{jsx:ts.JsxEmit.React,target:ts.ScriptTarget.ES2022,module:ts.ModuleKind.ESNext}}).outputText).toString("base64"));
+const all=(node,predicate)=>!node||typeof node!=="object"?[]:[...(predicate(node)?[node]:[]),...React.Children.toArray(node.props?.children).flatMap(child=>all(child,predicate))];
+let index=0,values=[],calls=[];
+globalThis.__state=initial=>{const i=index++;return [i in values?values[i]:initial,()=>{}];};
+const tracks=[1,2,3].map(i=>({id:"song"+i,title:"Song "+i,artist:"Artist",created_date:"2026-10-0"+i,play_count:i}));
+globalThis.__player={queue:tracks,currentTrack:tracks[1],isPlaying:true,togglePlay:()=>calls.push("toggle"),playTrackAt:(queue,index)=>calls.push({queue,index})};
+const common=`const React=globalThis.__React,useState=globalThis.__state,useEffect=()=>{},useMemo=fn=>fn(),useRef=()=>({current:{}});
+const Link="a",Loader2=()=>null,Mic2=Loader2,LoadError=Loader2,PullToRefresh="div";
+`;
+const artist=await load("src/pages/PublicRecords.jsx",common+`
+const useParams=()=>({id:"artist"}),useNavigate=()=>()=>{},useToast=()=>({toast(){}}),usePlayer=()=>globalThis.__player,useAuth=()=>({user:null});
+const base44={},getArtists=async()=>[],getPublishedTracks=async()=>[],fetchArtistTracks=async()=>[],artistTrackRole=t=>t.artist==="Artist"?"lead":"appearance",useCoverUrl=url=>url;
+const SafetyControls=()=>null,TrackCard=SafetyControls,TrackRow=SafetyControls,ArtistNameEditor=SafetyControls,CollapsibleText=SafetyControls,LibraryButton=SafetyControls,ScrollShelf="section";
+const ChevronLeft=Mic2,ChevronRight=Mic2,Music=Mic2,Sparkles=Mic2,Globe=Mic2,Calendar=Mic2,Users=Mic2,MapPin=Mic2,Disc3=Mic2,Headphones=Mic2,Play=Mic2,Pause=Mic2,ExternalLink=Mic2;
+`);
+values=[{id:"artist",name:"Artist"},tracks,[],false,false,"","recent",false,false];index=0;
+let tree=artist.default({});const hero=all(tree,n=>n.props?.className==="artist-play")[0];assert.equal(hero.props["aria-label"],"Pause Artist");hero.props.onClick();assert.deepEqual(calls,["toggle"],"artist playback pauses without restarting");
+const latest=all(tree,n=>n.props?.className==="artist-latest-cover")[0];latest.props.onClick();assert.deepEqual(calls.at(-1),{queue:tracks,index:2},"latest song uses its real full-queue index");
+globalThis.__player.currentTrack=tracks[2];index=0;tree=artist.default({});all(tree,n=>n.props?.className==="artist-latest-cover")[0].props.onClick();assert.equal(calls.at(-1),"toggle","latest-song control resumes/pauses the current song");
+assert.equal(all(tree,n=>n.props?.label==="Artist top songs").length,1,"top songs use the shared mouse/keyboard shelf");
+const directory=await load("src/pages/PublicRecordsIndex.jsx",common+`
+const splitArtistNames=value=>[value],getPublishedTracks=async()=>[],getArtists=async()=>[];
+`);
+const renderDirectory=query=>{values=[false,[{display:"Aster",record:{id:"a"}},{display:"Zeta",record:{id:"z"}}],"A",query,false,"",0];index=0;return directory.default();};
+tree=renderDirectory("");let letters=all(tree,n=>n.type==="button"&&n.props["aria-label"]?.startsWith("Artists starting"));
+assert.equal(letters.length,26);assert.equal(letters.find(n=>n.props.children==="A").props.disabled,false);assert.equal(letters.find(n=>n.props.children==="B").props.disabled,true);assert.equal(letters.find(n=>n.props.children==="A").props["aria-current"],"location");
+tree=renderDirectory("zeta");letters=all(tree,n=>n.type==="button"&&n.props["aria-label"]?.startsWith("Artists starting"));assert.equal(letters.find(n=>n.props.children==="A").props.disabled,true);assert.equal(letters.find(n=>n.props.children==="Z").props.disabled,false);
+console.log("PASS artist pause/resume, latest-song queue position, shelf controls and filtered desktop alphabet");
