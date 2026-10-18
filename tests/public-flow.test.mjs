@@ -42,5 +42,12 @@ const before=times.at(-1);refIndex=0;stateIndex=0;effects=[];Flow({speed:1.6,col
 const delta=times.at(-1)-before;assert.ok(delta>.35*.033&&delta<1.6*.033,"speed ramps instead of snapping");
 assert.ok(uniformColors.u_a[0]>0&&uniformColors.u_a[2]>0,"palette changes blend through intermediate colors");
 const beforeResize=layoutReads;resizeCallback();frame(200);assert.equal(layoutReads,beforeResize+1,"resizing refreshes the cached canvas measurement");mounted.cleanup();
+mounted=mount();frame(100);const pendingFrame=frames.keys().next().value,dragReads=layoutReads,dragDraws=draws;
+for(let i=0;i<20;i++){refIndex=0;stateIndex=0;effects=[];Flow({speed:1+i*.02,colors:["#ff0000","#00ff00","#0000ff"]});effects[1]();}
+assert.equal(frames.size,1,"rapid control updates keep a single scheduled frame");
+assert.equal(frames.keys().next().value,pendingFrame,"dragging does not restart the animation clock");
+frame(110);assert.equal(draws,dragDraws,"rapid control updates cannot bypass the frame cap");
+frame(140);assert.equal(layoutReads,dragReads,"dragging colors and speed never remeasures layout");mounted.cleanup();
 available=false;mounted=mount({colors:["#ff0000","#00ff00","#0000ff"]});assert.equal(mounted.cleanup,undefined);assert.match(mounted.tree.props.children[0].props.style.backgroundImage,/#ff0000/,"a palette fallback remains without WebGL");
-console.log("PASS PUBLIC Flow lifecycle, frame limits, reduced motion, still mode, inactive/offscreen/covered pausing, resource cleanup and fallback");
+mounted=mount({colors:{unexpected:"palette"}});assert.match(mounted.tree.props.children[0].props.style.backgroundImage,/#303030/,"malformed palettes safely use PUBLIC colors");
+console.log("PASS PUBLIC Flow lifecycle, continuous live controls, frame limits, resize cache, visibility, reduced motion, resource cleanup and palette fallback");
