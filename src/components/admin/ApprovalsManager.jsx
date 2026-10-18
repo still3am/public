@@ -159,7 +159,7 @@ export default function ApprovalsManager() {
             {query?"No matching published music.":"No tracks are live on PUBLIC right now."}
           </div>
         ) : (
-          <IncrementalList items={liveFiltered} className="space-y-2" renderItem={track=><LiveTrackRow key={track.id} track={track} busy={busyIds.has(track.id)} onTakedown={()=>takedown(track)}/>}/>
+          <IncrementalList resetKey={query} items={liveFiltered} className="space-y-2" renderItem={track=><LiveTrackRow key={track.id} track={track} busy={busyIds.has(track.id)} onTakedown={()=>takedown(track)}/>}/>
         )}
       </div>
     </div>
