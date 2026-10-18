@@ -33,8 +33,8 @@ export default function Layout() {
   const location = useLocation();
   const reducedMotion=useReducedMotion();
   const artworkPage = /^\/(?:track\/[^/]+|playlist\/[^/]+|mix\/[^/]+|records\/[^/]+|artist|profile(?:\/[^/]+)?)\/?$/.test(location.pathname);
-  const momentsRoute = /^\/moments(?:\/[^/]+)?\/?$/.test(location.pathname);
   const { user } = useAuth();
+  const momentsRoute = user?.role === "admin" && /^\/moments(?:\/[^/]+)?\/?$/.test(location.pathname);
   const {currentTrack}=usePlayer();
   useScrollRestore();
 
