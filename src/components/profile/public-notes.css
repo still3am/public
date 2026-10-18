@@ -9,8 +9,9 @@
 .public-note-avatar-bubble>strong>span{overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
 .public-note-avatar-bubble>span{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:1;overflow:hidden;overflow-wrap:anywhere;font-size:11px;line-height:1.4;color:hsl(var(--muted-foreground))}
 .public-app .profile-redesigned .profile-avatar-notes>.public-notes.public-notes-empty{position:absolute;inset:0;width:100%;height:100%;margin:0;pointer-events:none}
-.public-note-create-dot{position:absolute;bottom:0;right:0;display:grid;place-items:center;width:28px;height:28px;border-radius:50%;border:2px solid hsl(var(--card));background:hsl(var(--foreground));color:hsl(var(--background));pointer-events:auto}
-.public-note-create-dot::before{content:"";position:absolute;inset:-8px;border-radius:50%}
+.public-app .profile-redesigned .public-note-create-dot{position:absolute;bottom:0;right:0;display:grid;place-items:center;width:32px!important;height:32px!important;min-width:32px!important;min-height:32px!important;max-width:32px!important;max-height:32px!important;aspect-ratio:1;box-sizing:border-box;flex:0 0 32px;padding:0!important;margin:0;line-height:1;border-radius:50%!important;appearance:none;border:2px solid hsl(var(--card));background:hsl(var(--foreground));color:hsl(var(--background));pointer-events:auto;touch-action:manipulation}
+.public-note-create-dot>svg{display:block;width:16px;height:16px;flex-shrink:0}
+.public-note-create-dot::before{content:"";position:absolute;inset:-6px;border-radius:50%}
 .public-note-avatar-bubble>.public-note-text-only{-webkit-line-clamp:2;color:hsl(var(--foreground));font-weight:550}
 .public-note-avatar-bubble{isolation:isolate}
 .public-note-avatar-bubble>.public-note-song-content{position:relative;z-index:1;display:flex;align-items:center;gap:8px;width:100%;overflow:visible;-webkit-line-clamp:unset;color:inherit}
