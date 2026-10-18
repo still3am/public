@@ -1,0 +1,15 @@
+/* Keep equal dimensions despite the global coarse-pointer minimum height. */
+.public-app .profile-redesigned .profile-edit-circle{
+ --profile-edit-size:44px;
+ display:grid;place-items:center;box-sizing:border-box;
+ width:var(--profile-edit-size)!important;height:var(--profile-edit-size)!important;
+ min-width:var(--profile-edit-size)!important;min-height:var(--profile-edit-size)!important;
+ max-width:var(--profile-edit-size)!important;max-height:var(--profile-edit-size)!important;
+ flex:0 0 var(--profile-edit-size);aspect-ratio:1;
+ border-radius:50%!important;padding:0!important;line-height:1;appearance:none;
+ touch-action:manipulation;
+}
+.public-app .profile-redesigned .profile-edit-circle-small{--profile-edit-size:32px}
+.profile-edit-circle-small::before{content:"";position:absolute;inset:-6px;border-radius:50%}
+.profile-edit-circle>svg{display:block;flex-shrink:0}
+.profile-edit-circle:focus-visible{outline:2px solid hsl(var(--foreground));outline-offset:3px}
