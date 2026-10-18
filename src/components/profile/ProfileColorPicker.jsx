@@ -53,7 +53,7 @@ export default function ProfileColorPicker({coverUrl,colors,loading,value,onPrev
     <div className="profile-color-preview">
      {preview.length>0&&<MotionGradient colors={preview} motion={draft.motion} speed={draft.speed} className="absolute inset-0" style={{borderRadius:"inherit",zIndex:-2}}/>}
      {coverUrl&&<img src={coverUrl} alt="" onError={event=>{event.currentTarget.style.display="none";}}/>}
-     <div><strong>Make it yours</strong><span>{draft.motion==="flow"?"PUBLIC Flow · Live preview":"Still · Live preview"}</span></div>
+     <div><strong>Make it yours</strong><span>{draft.mode==="off"?"Clean background":draft.motion==="flow"?"PUBLIC Flow · Live preview":"Still · Live preview"}</span></div>
     </div>
     <div className="profile-color-modes" role="group" aria-label="Profile background mode">
      {[["auto","Automatic"],["custom","Custom"],["off","No color"]].map(([mode,label])=><button type="button" key={mode} disabled={saving} aria-pressed={draft.mode===mode} onClick={()=>update({...draft,mode,colors:mode==="custom"?customColors:draft.colors})}>{label}</button>)}
