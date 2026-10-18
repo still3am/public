@@ -1,5 +1,5 @@
 /* Desktop refinements. Mobile rules and immersive gradients remain independent. */
-.desktop-header,.desktop-shelf-controls,.profile-desktop-editor{display:none}
+.desktop-header,.desktop-shelf-controls{display:none}
 @media(min-width:768px){
  body{-webkit-user-select:text;user-select:text}
  .public-app{--desktop-header-height:0px}
