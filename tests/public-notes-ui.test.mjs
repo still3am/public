@@ -1,0 +1,37 @@
+import assert from "node:assert/strict";
+import fs from "node:fs";
+import ts from "typescript";
+import * as React from "react";
+globalThis.__React=React;
+let values=[],index=0,calls=[];
+globalThis.__state=initial=>{const slot=index++;return [slot in values?values[slot]:initial,value=>{values[slot]=typeof value==="function"?value(values[slot]):value;}];};
+globalThis.__user={id:"me"};
+globalThis.__player={currentTrack:{id:"song"},isPlaying:true,togglePlay:()=>calls.push("toggle"),playTrackAt:queue=>calls.push(queue)};
+globalThis.__api=async()=>{throw {response:{status:402}};};
+const stubs=`
+const React=globalThis.__React,useState=globalThis.__state,useEffect=()=>{},useRef=initial=>({current:initial});
+const base44={functions:{invoke:(...args)=>globalThis.__api(...args)}},useAuth=()=>({user:globalThis.__user}),usePlayer=()=>globalThis.__player,useCoverUrl=x=>x,useCoverPalette=()=>({colors:[]});
+const MotionGradient="gradient",TrackPickerSheet="picker",Dialog="dialog",DialogContent="content",DialogHeader="header",DialogTitle="h1",DialogDescription="p";
+const Music2=()=>null,Plus=Music2,Play=Music2,Pause=Music2,Loader2=Music2;
+`;
+const code=ts.transpileModule(stubs+fs.readFileSync("src/components/profile/PublicNotes.jsx","utf8").replace(/^import[^;]+;/gm,""),{compilerOptions:{jsx:ts.JsxEmit.React,target:ts.ScriptTarget.ES2022,module:ts.ModuleKind.ESNext}}).outputText;
+const Component=(await import("data:text/javascript;base64,"+Buffer.from(code).toString("base64"))).default;
+const find=(node,test)=>!node||typeof node!=="object"?[]:[...(test(node)?[node]:[]),...React.Children.toArray(node.props?.children).flatMap(child=>find(child,test))];
+const note={id:"n",track_id:"song",expires_at:new Date(Date.now()+86400000).toISOString(),caption:"On repeat",track:{id:"song",title:"A song",artist:"Artist"}};
+function render(state,own=true){values=state;index=0;return Component({profileId:own?"me":"other",isOwn:own,profile:{},userTracks:[]});}
+let tree=render([note,false,"",false,false,null,"",false,Date.now()]);
+find(tree,n=>n.props?.className==="public-note-play")[0].props.onClick();
+assert.deepEqual(calls,["toggle"],"note playback resumes/pauses without restarting");
+tree=render([{...note,expires_at:new Date(Date.now()-1).toISOString()},false,"",false,false,null,"",false,Date.now()],false);
+assert.equal(tree,null,"visitors never see an expired note");
+tree=render([note,false,"",true,false,note.track,"Unsaved draft",false,Date.now()]);
+await find(tree,n=>n.props?.className==="public-note-post")[0].props.onClick();
+assert.equal(values[0],note,"failed save keeps confirmed note");
+assert.match(values[2],/Couldn’t save/);assert.equal(values[3],true,"draft remains editable");assert.equal(values[1],false,"save settles any interrupted refresh");
+globalThis.__api=async()=>({data:{result:{...note,caption:"Saved"}}});
+tree=render([note,false,"",true,false,note.track,"Saved",false,Date.now()]);
+await find(tree,n=>n.props?.className==="public-note-post")[0].props.onClick();
+assert.equal(values[0].caption,"Saved");assert.equal(values[3],false);
+globalThis.__user=null;
+assert.equal(render([note,false,""]),null,"signed-out session does not leak a previously loaded note");
+console.log("PASS PUBLIC Notes playback, expiry, failed-save draft preservation, confirmed posting and session isolation");
