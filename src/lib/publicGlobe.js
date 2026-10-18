@@ -26,6 +26,11 @@ export async function saveGlobeShare(db,country,trackId,remove=false){
   if(!COUNTRIES.some(c=>c.code===country))throw Error("Choose a country.");
   const track=rows(await db.entities.Track.filter({id:trackId,is_published:true,approval_status:"approved"},"-created_date",1))[0];
   if(!track)throw Error("Choose an available published song.");
+  if(track.explicit&&!(user.show_explicit&&user.adult_confirmed))throw Error("This song is unavailable with your current listening settings.");
+  if(track.uploader_id&&track.uploader_id!==user.id){
+   const blocked=rows(await db.entities.Block.filter({$or:[{user_id:user.id,blocked_user_id:track.uploader_id},{user_id:track.uploader_id,blocked_user_id:user.id}]},"-created_date",1));
+   if(blocked.length)throw Error("This song is unavailable.");
+  }
  }
  const profile=rows(await db.entities.PublicProfile.filter({user_id:user.id,visible:true},"-updated_date",1))[0];
  if(!profile)throw Error("Finish setting up your public profile first.");
@@ -35,5 +40,6 @@ export async function saveGlobeShare(db,country,trackId,remove=false){
  if(!saved||Object.keys(state).some(key=>saved.public_globe?.[key]!==state[key])){
   if(failure)throw failure;throw Error("Your share wasn’t confirmed. Please retry.");
  }
+ if(!remove&&!activeGlobeShare(saved))throw Error("The share time wasn’t confirmed. Please retry.");
  return saved;
 }
