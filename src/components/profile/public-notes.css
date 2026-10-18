@@ -74,7 +74,7 @@
 .public-notes button:focus-visible,.public-note-dialog button:focus-visible{outline:2px solid hsl(var(--foreground));outline-offset:3px}
 .public-note-avatar-bubble,.public-note-create-dot{transition:transform .18s ease,border-color .18s ease}
 .public-note-avatar-bubble:active,.public-note-create-dot:active{transform:scale(.97)}
-.public-note-avatar-bubble{animation:public-note-arrive .3s ease both}
+.public-note-avatar-bubble{animation:public-note-arrive .3s ease backwards}
 .public-note-preview{animation:none}
 @keyframes public-note-arrive{from{opacity:0;transform:translateY(4px) scale(.98)}to{opacity:1;transform:translateY(0) scale(1)}}
 @media(prefers-reduced-motion:reduce){.public-note-avatar-bubble,.public-note-create-dot{animation:none;transition:none}.public-note-avatar-bubble:active,.public-note-create-dot:active{transform:none}}
