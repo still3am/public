@@ -146,7 +146,17 @@
  .public-app .profile-desktop-editor p{font-size:12px;color:hsl(var(--muted-foreground));margin-top:4px}
  .public-app .profile-desktop-editor>div:last-child{display:flex;gap:10px;flex-shrink:0}
  .public-app .profile-is-editing .profile-actions{display:none}
- .public-app .profile-redesigned .profile-desktop-avatar{width:112px!important;height:112px!important}
+ .public-app .profile-redesigned .profile-avatar-frame{width:120px;height:120px;flex:0 0 120px;padding:5px;border-radius:50%;background:hsl(var(--card));margin-top:-60px;align-self:flex-start;box-sizing:border-box}
+ .public-app .profile-redesigned .profile-avatar-frame>.profile-desktop-avatar{display:block;width:100%!important;height:100%!important;max-width:none;aspect-ratio:1;object-fit:cover;object-position:center;border-radius:50%;padding:0;box-shadow:none;overflow:hidden}
+ .public-app .profile-redesigned .profile-avatar-frame>div.profile-desktop-avatar{display:grid}
+ .public-app .profile-avatar-upload{padding:0;z-index:2}
+ .public-app .profile-avatar-upload:focus-visible{outline:2px solid hsl(var(--ring));outline-offset:3px}
+ .public-app .profile-redesigned .profile-info .selectable-content{overflow-wrap:anywhere}
+ .public-app .profile-redesigned .profile-info .chip{max-width:100%;overflow-wrap:anywhere}
+ .public-app .profile-redesigned .profile-song-spotlight .song-menu-surface{gap:18px;padding:20px;border-radius:22px}
+ .public-app .profile-redesigned .profile-song-spotlight .song-menu-surface>div:first-child{width:84px;height:84px;aspect-ratio:1;overflow:hidden}
+ .public-app .profile-redesigned .profile-song-spotlight .song-menu-surface>div:first-child img{width:100%;height:100%;object-fit:cover}
+ .public-app .profile-redesigned .profile-actions>button:focus-visible,.public-app .profile-redesigned .profile-actions>a:focus-visible{outline:2px solid hsl(var(--ring));outline-offset:3px}
  .public-app .profile-pinned-section .song-menu-surface{border-radius:18px}
  .public-app .profile-pinned-section .song-menu-surface>.p-2{padding:12px}
  .public-app .profile-pinned-section .song-menu-surface>.p-2>div:first-child{font-size:13px}
