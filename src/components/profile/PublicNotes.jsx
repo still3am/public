@@ -61,7 +61,7 @@ export default function PublicNotes({ profileId, isOwn, profile, active = true, 
       if (alive.current) { setNote(remove ? null : saved); setNow(Date.now()); setEditing(false); }
     } catch (e) {
       if (alive.current) setError(e?.response?.status === 422 ? e.response.data?.error || "Check your note and try again." : remove ? "Couldn’t remove your note. Please retry." : "Couldn’t save your note. Please retry.");
-    } finally { lock.current = false; if (alive.current) setBusy(false); }
+    } finally { lock.current = false; if (alive.current) { setBusy(false); setLoading(false); } }
   }
   if (!user?.id || (!isOwn && !valid && !error)) return null;
   const playing = valid && player.currentTrack?.id === note.track_id && player.isPlaying;
@@ -79,6 +79,6 @@ export default function PublicNotes({ profileId, isOwn, profile, active = true, 
       {error && <p role="alert" className="public-note-error">{error}</p>}
       <div className="public-note-composer-actions">{valid && <button type="button" disabled={busy} onClick={() => save(true)}>Remove note</button>}<button type="button" className="public-note-post" disabled={busy || !draft} onClick={() => save()}>{busy ? <Loader2 size={18} className="animate-spin" /> : valid ? "Replace note" : "Share note"}</button></div>
     </DialogContent></Dialog>}
-    {editing && picker && <TrackPickerSheet title="Choose your note’s song" tracks={userTracks} selectedIds={draft ? [draft.id] : []} onToggle={(_id, track) => { setDraft(track); setPicker(false); }} onClose={() => setPicker(false)} />}
+    {editing && picker && <TrackPickerSheet title="Choose your note’s song" tracks={userTracks.filter(track => track.is_published && track.approval_status === "approved")} selectedIds={draft ? [draft.id] : []} onToggle={(_id, track) => { setDraft(track); setPicker(false); }} onClose={() => setPicker(false)} />}
   </section>;
 }
