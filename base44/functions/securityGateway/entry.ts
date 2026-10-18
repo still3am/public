@@ -94,9 +94,10 @@ export default async function handleRequest(req) {
         const rows=await handler.filter({user_id:owner,expires_at:{$gt:new Date().toISOString()}},'-updated_date',1);
         const note=(Array.isArray(rows)?rows:rows?.items||[])[0];
         if(!note)return Response.json({result:null});
-        let track;
-        try{track=await requireTrack(note.track_id,false);}catch(e){if([403,404].includes(e.status))return Response.json({result:null});throw e;}
-        return Response.json({result:{...pick(note,['id','user_id','track_id','caption','expires_at']),track}});
+        let track=null;
+        if(note.track_id){try{track=await requireTrack(note.track_id,false);}catch(e){if([403,404].includes(e.status)){if(!note.caption?.trim())return Response.json({result:null});}else throw e;}}
+        if(!track&&!note.caption?.trim())return Response.json({result:null});
+        return Response.json({result:{...pick(note,['id','user_id','caption','expires_at']),track_id:track?.id||'',track}});
       }
       if(action==='removeNote'){
         await handler.deleteMany({user_id:user.id});
@@ -105,13 +106,15 @@ export default async function handleRequest(req) {
       if(action==='saveNote'){
         const input=args[0]||{},caption=typeof input.caption==='string'?input.caption.trim():'';
         if(caption.length>80)fail('Keep your note to 80 characters',422);
-        if(typeof input.track_id!=='string'||!input.track_id||input.track_id.length>100)fail('Choose a song',422);
-        const track=await requireTrack(input.track_id,false);
-        if(!(track.is_published&&track.approval_status==='approved'))fail('Choose a published song for your note',422);
+        const trackId=input.track_id??'';
+        if(typeof trackId!=='string'||trackId.length>100)fail('Invalid song',422);
+        if(!trackId&&!caption)fail('Add a note, a song, or both',422);
+        const track=trackId?await requireTrack(trackId,false):null;
+        if(track&&!(track.is_published&&track.approval_status==='approved'))fail('Choose a published song for your note',422);
         await moderate(svc,caption);
         const rows=await handler.filter({user_id:user.id},'-updated_date',1);
         const previous=(Array.isArray(rows)?rows:rows?.items||[])[0];
-        const data={user_id:user.id,track_id:track.id,caption,expires_at:new Date(Date.now()+24*60*60*1000).toISOString()};
+        const data={user_id:user.id,track_id:track?.id||'',caption,expires_at:new Date(Date.now()+24*60*60*1000).toISOString()};
         const saved=previous?await handler.update(previous.id,data):await handler.create(data);
         return Response.json({result:{...pick(saved,['id','user_id','track_id','caption','expires_at']),track}});
       }
