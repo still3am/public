@@ -89,6 +89,15 @@ assert.equal(find(tree,n=>n.props?.className==="public-note-preview-panel").leng
 assert.ok(find(tree,n=>n.props?.className==="public-note-text-only").some(n=>n.props.children==="My text preview"));
 find(tree,n=>n.props?.className==="public-note-cancel")[0].props.onClick();
 assert.equal(values[3],false,"Cancel dismisses the composer without posting");
+tree=render([null,false,"",true,false,note.track,"",false,Date.now(),false,"classic","","🔥",true]);
+assert.equal(find(tree,n=>n.props?.className==="public-note-emoji-badge")[0].props.children,"🔥");
+find(tree,n=>n.type==="emoji-picker")[0].props.onSelect("💜");
+assert.equal(values[12],"💜");assert.equal(values[13],false);
+tree=render([null,false,"",true,false,note.track,"",false,Date.now(),false,"classic","","💜",false]);
+find(tree,n=>n.type==="button"&&n.props.children==="Remove emoji")[0].props.onClick();
+assert.equal(values[12],"");
+tree=render([{...note,emoji:"🎧"},false,"",false,false,null,"",false,Date.now()]);
+assert.equal(find(tree,n=>n.props?.className==="public-note-emoji-badge")[0].props.children,"🎧","saved badge appears on avatar note");
 globalThis.__user=null;
 assert.equal(render([note,false,""]),null,"signed-out session does not leak a previously loaded note");
 console.log("PASS PUBLIC Notes playback, expiry, failed-save draft preservation, confirmed posting and session isolation");
