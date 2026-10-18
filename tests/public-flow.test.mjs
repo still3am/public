@@ -50,6 +50,11 @@ assert.equal(frames.size,1,"rapid control updates keep a single scheduled frame"
 assert.equal(frames.keys().next().value,pendingFrame,"dragging does not restart the animation clock");
 frame(110);assert.equal(draws,dragDraws,"rapid control updates cannot bypass the frame cap");
 frame(140);assert.equal(layoutReads,dragReads,"dragging colors and speed never remeasures layout");mounted.cleanup();
+for(const motion of ["orbit","tide"]){mounted=mount({motion,direction:"left"});frame(100);assert.equal(frames.size,1,motion+" animates");assert.deepEqual(uniformColors.u_motion,motion==="orbit"?[0,1,0]:[0,0,1]);mounted.cleanup();}
+for(let t=0;t<1000;t+=.5){const state=flowLogic.flowState(t);assert.ok(state.weights.every(v=>v>=0&&v<=1));assert.ok(Math.abs(state.weights.reduce((a,b)=>a+b,0)-1)<1e-9);assert.ok(Number.isFinite(state.angle));}
+assert.notDeepEqual(flowLogic.flowState(0).weights,flowLogic.flowState(10).weights,"PUBLIC Flow changes its choreography over time");
+assert.equal(flowLogic.normalizeFlowDirection("bad"),"evolve");assert.equal(flowLogic.normalizeFlowMotion("bad"),"flow");
+assert.ok(Math.abs(flowLogic.approachAngle(Math.PI-.01,-Math.PI+.01,.5)-Math.PI)<.001,"direction turns take the short path");
 available=false;mounted=mount({colors:["#ff0000","#00ff00","#0000ff"]});assert.equal(mounted.cleanup,undefined);assert.match(mounted.tree.props.children[0].props.style.backgroundImage,/#ff0000/,"a palette fallback remains without WebGL");
 mounted=mount({colors:{unexpected:"palette"}});assert.match(mounted.tree.props.children[0].props.style.backgroundImage,/#303030/,"malformed palettes safely use PUBLIC colors");
 console.log("PASS PUBLIC Flow lifecycle, continuous live controls, frame limits, resize cache, visibility, reduced motion, resource cleanup and palette fallback");
