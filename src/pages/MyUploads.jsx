@@ -1,3 +1,4 @@
+import IncrementalList from "@/components/IncrementalList";
 import LoadError from '@/components/LoadError';
 import { useRef } from 'react';
 import { useCallback, useEffect, useMemo, useState } from "react";
@@ -185,8 +186,7 @@ export default function MyUploads() {
               {visibleUploads.length} {visibleUploads.length === 1 ? "Song" : "Songs"}
             </h2>
             {!visibleUploads.length&&<EmptyState title="No matching uploads" description="Try another search or status." action={<button className="playlist-action" onClick={()=>{setQuery("");setStatus("all");}}>Reset filters</button>}/>}
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
-              {visibleUploads.map((t) =>
+            <IncrementalList items={visibleUploads} resetKey={JSON.stringify([query,status,sort])} className="desktop-card-grid grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3" renderItem={(t) =>
             <div key={t.id} className="flex flex-col">
                   <TrackCard queue={visibleUploads}
                 track={t}
@@ -198,8 +198,7 @@ export default function MyUploads() {
               <PublicSubmitButton track={t} onSubmitted={markSubmitted} />
               }
                 </div>
-            )}
-            </div>
+            }/>
           </section>
         }
       </PullToRefresh>
