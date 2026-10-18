@@ -1,0 +1,23 @@
+import assert from "node:assert/strict";
+import fs from "node:fs";
+import ts from "typescript";
+import * as React from "react";
+import {NOTE_EMOJIS} from "../src/lib/noteEmojis.js";
+globalThis.__React=React;globalThis.__emojis=NOTE_EMOJIS;
+let values=[],index=0,selected="";
+globalThis.__useState=initial=>{const slot=index++;if(!(slot in values))values[slot]=typeof initial==="function"?initial():initial;return [values[slot],value=>{values[slot]=value;}];};
+const stub='const React=globalThis.__React,useState=globalThis.__useState,NOTE_EMOJIS=globalThis.__emojis;';
+const code=ts.transpileModule(stub+fs.readFileSync("src/components/profile/NoteEmojiPicker.jsx","utf8").replace(/^import[^;]+;/gm,""),{compilerOptions:{jsx:ts.JsxEmit.React,target:ts.ScriptTarget.ES2022,module:ts.ModuleKind.ESNext}}).outputText;
+const Picker=(await import("data:text/javascript;base64,"+Buffer.from(code).toString("base64"))).default;
+const find=(node,test)=>!node||typeof node!=="object"?[]:[...(test(node)?[node]:[]),...React.Children.toArray(node.props?.children).flatMap(child=>find(child,test))];
+const render=()=>{index=0;return Picker({selected:"👍🏽",onSelect:value=>{selected=value;}});};
+let tree=render();
+let buttons=find(tree,node=>node.type==="button"&&node.props.title);
+assert.equal(buttons.length,NOTE_EMOJIS.length,"every catalog emoji is rendered without a page cap, even when editing a toned emoji");
+for(const emoji of ["🇩🇴","👨‍👩‍👧‍👦","👍🏽","🦋"]){const button=buttons.find(node=>node.props.children===emoji);assert.ok(button,emoji+" is reachable without Show more");button.props.onClick();assert.equal(selected,emoji);}
+find(tree,node=>node.props?.["aria-label"]==="Search note emojis")[0].props.onChange({target:{value:"flag"}});
+tree=render();buttons=find(tree,node=>node.type==="button"&&node.props.title);
+assert.equal(buttons.length,NOTE_EMOJIS.filter(row=>row[1].toLowerCase().includes("flag")).length,"search is not capped either");
+find(tree,node=>node.props?.["aria-label"]==="Emoji category")[0].props.onChange({target:{value:"Animals & Nature"}});
+tree=render();assert.equal(find(tree,node=>node.type==="button"&&node.props.title).length,NOTE_EMOJIS.filter(row=>row[2]==="Animals & Nature").length);
+console.log("PASS uncapped full emoji catalog, all skin tones, search, category filtering and selection");
