@@ -4,6 +4,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 
 export const DESKTOP_PAGES = {
   "": { label: "Home", section: "Discover" }, search: { label: "Search", section: "Discover" }, top: { label: "Top charts", section: "Discover" }, recent: { label: "Recently added", section: "Discover" },
+  moments: { label: "Moments", section: "Community" },
   track: { label: "Song", section: "Music" }, playlist: { label: "Playlist", section: "Your music" }, mix: { label: "Made for you", section: "Your music" },
   library: { label: "Library", section: "Your music" }, downloads: { label: "Offline music", section: "Your music" }, profile: { label: "Profile", section: "Community" },
   artist: { label: "Artist", section: "Discover" }, records: { label: "Artists", section: "Discover" }, notifications: { label: "Notifications", section: "Community" },
