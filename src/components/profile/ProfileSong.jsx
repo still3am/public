@@ -108,7 +108,7 @@ export default function ProfileSong({
             <button
               onClick={handlePlay}
               className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-foreground text-background grid place-items-center shrink-0 active:scale-90 transition shadow-md"
-              aria-label={isPlaying ? "Pause" : "Play"}>
+              aria-label={`${isPlaying ? "Pause" : "Play"} ${track.title || "profile song"}`}>
               
               {isPlaying ? <Pause size={20} fill="currentColor" className="w-4 h-4 md:w-5 md:h-5" /> : <Play size={20} fill="currentColor" className="ml-0.5 w-4 h-4 md:w-5 md:h-5" />}
             </button>
@@ -209,7 +209,7 @@ export default function ProfileSong({
         <button
           onClick={handlePlay}
           className="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-foreground text-background grid place-items-center shrink-0 active:scale-90 transition shadow-md"
-          aria-label={isPlaying ? "Pause" : "Play"}>
+          aria-label={`${isPlaying ? "Pause" : "Play"} ${track.title || "profile song"}`}>
           
           {isPlaying ? <Pause size={20} fill="currentColor" /> : <Play size={20} fill="currentColor" className="ml-0.5" />}
         </button>
