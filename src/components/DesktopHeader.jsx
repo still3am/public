@@ -1,7 +1,6 @@
-import { useEffect } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
-import { ChevronLeft, Search, ArrowUpRight } from "lucide-react";
-import { useAuth } from "@/lib/AuthContext";
+import { useEffect,useCallback } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+
 
 export const DESKTOP_PAGES = {
   "": { label: "Home", section: "Discover" }, search: { label: "Search", section: "Discover" }, top: { label: "Top charts", section: "Discover" }, recent: { label: "Recently added", section: "Discover" },
@@ -13,16 +12,15 @@ export const DESKTOP_PAGES = {
   admin: { label: "Admin", section: "Manage" }, settings: { label: "Song transitions", section: "Settings" }, support: { label: "Support", section: "PUBLIC" }, privacy: { label: "Privacy", section: "PUBLIC" }, terms: { label: "Community & terms", section: "PUBLIC" }
 };
 export default function DesktopHeader() {
-  const location = useLocation(),navigate = useNavigate(),{ user } = useAuth();
-  const page = DESKTOP_PAGES[location.pathname.split("/")[1]] || { label: "PUBLIC", section: "Music" };
-  const search = () => {
+  const location = useLocation(),navigate = useNavigate();
+  const search = useCallback(() => {
     if (location.pathname !== "/search") navigate("/search");
     requestAnimationFrame(() => document.querySelector('[data-desktop-search]')?.focus());
-  };
+  },[location.pathname,navigate]);
   useEffect(() => {
     const key = (event) => {if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "k" && window.matchMedia("(min-width:768px)").matches) {event.preventDefault();search();}};
     window.addEventListener("keydown", key);return () => window.removeEventListener("keydown", key);
-  }, [location.pathname, navigate]);
+  }, [search]);
   return null;
 
 
