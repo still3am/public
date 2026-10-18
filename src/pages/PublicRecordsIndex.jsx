@@ -222,7 +222,10 @@ export default function PublicRecordsIndex() {
 
       
 
+      <div className="directory-toolbar">
       <div className="collection-tools"><input aria-label="Search the artist directory" placeholder="Find an artist" value={query} onChange={e=>setQuery(e.target.value)} onKeyDown={e=>{if(e.key==="Escape")setQuery("");}}/>{query&&<button className="playlist-action" onClick={()=>setQuery("")}>Clear search</button>}</div>
+      {!!groups.length&&<nav className="directory-desktop-alphabet hidden md:flex" aria-label="Jump to artist letter">{allLetters.map(letter=><button type="button" key={letter} disabled={!letters.includes(letter)} aria-label={`Artists starting with ${letter}`} aria-current={activeKey===letter?"location":undefined} onClick={()=>scrollToLetter(letter)}>{letter}</button>)}</nav>}
+      </div>
       <PullToRefresh onRefresh={()=>load(true)}>
         {artists === null ?
         <div className="flex justify-center py-20">
@@ -293,7 +296,7 @@ export default function PublicRecordsIndex() {
           onPointerMove={moveDrag}
           onPointerUp={endDrag}
           onPointerCancel={endDrag}
-          className="fixed right-1 md:right-2 top-1/2 -translate-y-1/2 z-30 touch-none select-none px-0.5 md:px-1 py-1 md:py-1.5 rounded-full bg-foreground/[0.05] backdrop-blur-md border border-foreground/[0.06] flex flex-col items-center max-h-[78vh] overflow-hidden">
+          className="md:hidden fixed right-1 md:right-2 top-1/2 -translate-y-1/2 z-30 touch-none select-none px-0.5 md:px-1 py-1 md:py-1.5 rounded-full bg-foreground/[0.05] backdrop-blur-md border border-foreground/[0.06] flex flex-col items-center max-h-[78vh] overflow-hidden">
 
           {allLetters.map((L) => {
           const has = letters.includes(L);
