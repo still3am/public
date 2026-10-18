@@ -13,7 +13,7 @@ import SafetyControls from '@/components/SafetyControls';
 import { clearPersonalData } from '@/lib/clearPersonalData';
 import EmptyState from "@/components/EmptyState";
 import TrackCard from "@/components/TrackCard";
-import Avatar from "@/components/Avatar";
+import ProfileAvatar from "@/components/profile/ProfileAvatar";
 import PullToRefresh from "@/components/PullToRefresh";
 import ProfileQRModal from "@/components/ProfileQRModal";
 import { formatNumber } from "@/lib/audio-utils";
@@ -373,34 +373,7 @@ export default function Profile({ ownProfileTab = false }) {
         {/* Identity, stats, actions */}
         <div className="profile-details relative z-10 px-5 md:px-10 pb-5 md:pb-8 pt-5 md:pt-8">
           <div className="profile-identity-row flex flex-col items-center md:flex-row md:items-center md:justify-center gap-4 md:gap-8">
-            <div className="relative shrink-0">
-              <Avatar user={{...profile,avatar_url:avatarUrl}} size={96} className="profile-desktop-avatar"/>
-              
-
-
-
-
-
-                  
-              {editMode &&
-                  <label className="absolute bottom-1 right-1 p-2 rounded-full bg-foreground text-background cursor-pointer shadow-lg">
-                  {uploadingAvatar ?
-                    <Loader2 size={14} className="animate-spin" /> :
-
-                    <Pencil size={14} />
-                    }
-                  <input
-                      type="file"
-                      accept="image/*"
-                      className="hidden"
-                      onChange={(e) => {
-                        const f = e.target.files?.[0];
-                        if (f) uploadAvatar(f);
-                      }} />
-                  
-                </label>
-                  }
-            </div>
+            <ProfileAvatar user={{...profile,avatar_url:avatarUrl}} editing={editMode} busy={uploadingAvatar||saving} onUpload={uploadAvatar}/>
 
             <div className="profile-info flex-1 min-w-0 w-full md:w-auto text-center md:text-left">
               <div className="flex items-baseline gap-2 flex-wrap justify-center md:justify-start">
