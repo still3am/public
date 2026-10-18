@@ -4,6 +4,7 @@ import App from '@/App.jsx'
 import '@/index.css'
 import '@/public-redesign.css'
 import '@/desktop.css'
+import '@/mobile-music.css'
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <App />
