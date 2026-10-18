@@ -66,7 +66,16 @@ export const publicNoteDatabase = {
 export const base44 = new Proxy(raw,{get(target,name) {
   if(name==='entities') return entities;
   if(name==='auth') return {...target.auth,me:async()=>withPresetAvatar(await target.auth.me()),updateMe:async data=>{
-    if(Object.keys(data||{}).length===1&&Object.prototype.hasOwnProperty.call(data,"avatar_url")&&(data.avatar_url===""||AVATAR_PRESETS.some(item=>item.url===data.avatar_url)))return savePresetAvatar(target,data.avatar_url);
+    if(Object.prototype.hasOwnProperty.call(data||{},"avatar_url")&&(data.avatar_url===""||AVATAR_PRESETS.some(item=>item.url===data.avatar_url))){
+      const current=await target.auth.me();
+      if(!current?.id||current.is_blocked||current.disabled)throw new Error('Account unavailable');
+      const {avatar_url,...profileChanges}=data;
+      // Text still uses moderation; built-in artwork uses the confirmed native preset save.
+      if(Object.keys(profileChanges).length)await base44.auth.updateMe(profileChanges);
+      const owner=await target.auth.me();
+      if(owner?.id!==current.id)throw new Error('Your account changed. Reopen your profile before saving.');
+      return savePresetAvatar(target,avatar_url);
+    }
 
     // Only these non-text own-account preferences use the SDK's own-account route.
     // All other profile fields keep the moderated security gateway.
