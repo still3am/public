@@ -266,6 +266,7 @@ export default function PublicRecords({ id: propId, fallbackArtist = null }) {
           </div>
         </section>
 
+        <div className="artist-feature-grid">
         {latestTrack && <section className="artist-latest">
           <button className="artist-latest-cover" onClick={() => {if(p.currentTrack?.id===latestTrack.id)p.togglePlay();else p.playTrackAt(mainTracks, mainTracks.findIndex(track => track.id === latestTrack.id));}} aria-label={(p.currentTrack?.id===latestTrack.id&&p.isPlaying?"Pause ":"Play ") + latestTrack.title}><ArtistArtwork source={latestTrack.cover_art_url} className="w-full h-full object-cover" /></button>
           <div className="min-w-0 flex-1">
@@ -281,6 +282,7 @@ export default function PublicRecords({ id: propId, fallbackArtist = null }) {
           <ScrollShelf className="artist-top-list" label="Artist top songs">{Array.from({length:Math.ceil(topTracks.length/3)},(_,column)=><div className="artist-top-column" key={column}>{topTracks.slice(column*3,column*3+3).map((track,index)=><TrackRow key={track.id} track={track} index={column*3+index} queue={topTracks} queueIndex={column*3+index} />)}</div>)}</ScrollShelf>
         </section>}
 
+        </div>
         {/* Discography */}
         <section id="artist-discography" className="artist-discography mb-8">
           <SectionTitle icon={Disc3} right={
