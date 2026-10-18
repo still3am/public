@@ -6,6 +6,7 @@ import {Dialog,DialogContent,DialogTitle,DialogDescription} from "@/components/u
 import MotionGradient from "@/components/MotionGradient";
 import Logo from "@/components/Logo";
 import Avatar from "@/components/Avatar";
+import {AVATAR_PRESETS} from "@/lib/avatarPresets";
 import {usePlayer} from "@/context/PlayerContext";
 import ProfileColorWheel from "@/components/profile/ProfileColorWheel";
 import TrackPickerSheet from "@/components/profile/TrackPickerSheet";
@@ -113,8 +114,11 @@ export function WelcomeFlow({user,onDone}){
     const name=draft.name.trim(),username=cleanHandle(draft.username);
     if(name.length<2||name.length>60)throw Error("Use a display name between 2 and 60 characters.");
     if(!validHandle(username))throw Error("Use 3–24 letters, numbers or underscores for your username.");
-    const patch={};if(name!==(user.display_name||user.full_name||""))patch.display_name=name;if(username!==(user.username||""))patch.username=username;if(draft.avatar!==(user.avatar_url||""))patch.avatar_url=draft.avatar;
-    if(Object.keys(patch).length){const saved=await base44.auth.updateMe(patch);if(saved?.id!==user.id||Object.keys(patch).some(key=>saved[key]!==patch[key]))throw Error("Profile was not confirmed. Please retry.");await checkUserAuth({silent:true});window.dispatchEvent(new Event("profiles:changed"));}
+    const current=await owner(),patch={};if(name!==(current.display_name||current.full_name||""))patch.display_name=name;if(username!==(current.username||""))patch.username=username;
+    let changed=false;
+    if(Object.keys(patch).length){const saved=await base44.auth.updateMe(patch);if(saved?.id!==user.id||Object.keys(patch).some(key=>saved[key]!==patch[key]))throw Error("Profile was not confirmed. Please retry.");changed=true;}
+    if(draft.avatar!==(current.avatar_url||"")){await owner();const saved=await base44.auth.updateMe({avatar_url:draft.avatar});if(saved?.id!==user.id||saved.avatar_url!==draft.avatar)throw Error("Avatar was not confirmed. Please retry.");changed=true;}
+    if(changed){await checkUserAuth({silent:true});window.dispatchEvent(new Event("profiles:changed"));}
    }
    if(!skip&&step===2)await saveUserMusicPreferences({genres:draft.genres},user.id);
    if(!skip&&step===3){if(loading||!musicReady)throw Error("Retry loading your music choices, or skip this step.");await saveUserMusicPreferences({favorite_track_ids:draft.trackIds.filter(id=>byId.has(id)),favorite_artists:draft.artists.filter(name=>artistOptions.some(a=>a.name===name))},user.id);}
@@ -152,7 +156,9 @@ export function WelcomeFlow({user,onDone}){
     <div className="onboarding-page-intro"><p className="onboarding-step-label">{step===0?"MADE AROUND YOU":"YOUR PUBLIC · "+step+" OF 6"}</p><DialogTitle ref={heading} tabIndex={-1}><OnboardingLetters text={TITLES[step]}/></DialogTitle><DialogDescription>{DESCRIPTIONS[step]}</DialogDescription></div>
     {step===0&&<div className="onboarding-welcome"><div className="onboarding-record-stage" aria-hidden="true"><div className="onboarding-record"><span className="onboarding-record-grooves"/><span className="onboarding-record-light"/><div className="onboarding-record-label"><Logo width="65px" className="onboarding-logo"/></div></div><span className="onboarding-record-caption">A SOUND OF YOUR OWN</span></div><p className="onboarding-welcome-line"><OnboardingLetters text="Your taste." delay={120}/><br/><OnboardingLetters text="Your people." delay={240}/><br/><OnboardingLetters text="Your PUBLIC." delay={360} className="onboarding-signature"/></p><p className="onboarding-note">A few choices. A whole new way to find your sound.</p></div>}
     {step===1&&<form className="onboarding-form" onSubmit={e=>{e.preventDefault();next();}}>
-     <div className="onboarding-photo-area"><button className="onboarding-photo" type="button" disabled={busy} onClick={()=>fileInput.current?.click()} aria-label="Choose your profile photo"><Avatar user={{display_name:draft.name,avatar_url:draft.avatar}} size={80}/><span><Camera size={15}/></span></button><span className="onboarding-note">Add a photo · optional</span>{draft.avatar&&<button type="button" className="onboarding-remove-photo" disabled={busy} onClick={()=>update({avatar:""})}>Remove photo</button>}</div>
+     <div className="onboarding-photo-area"><button className="onboarding-photo" type="button" disabled={busy} onClick={()=>fileInput.current?.click()} aria-label="Choose your profile photo"><Avatar user={{display_name:draft.name,avatar_url:draft.avatar}} size={80}/><span><Camera size={15}/></span></button><span className="onboarding-note">Choose an avatar or add a photo · optional</span>{draft.avatar&&<button type="button" className="onboarding-remove-photo" disabled={busy} onClick={()=>update({avatar:""})}>Remove photo</button>}</div>
+     <details className="onboarding-avatar-gallery"><summary>Choose an avatar</summary><div className="onboarding-avatar-grid" role="group" aria-label="Profile avatar gallery">{AVATAR_PRESETS.map(item=><button type="button" key={item.id} disabled={busy} aria-label={"Choose "+item.name+" avatar"} aria-pressed={draft.avatar===item.url} onClick={()=>update({avatar:item.url})}><span><img src={item.url} alt="" loading="lazy"/>{draft.avatar===item.url&&<i aria-hidden="true"><Check size={14}/></i>}</span><strong>{item.name}</strong></button>)}</div><p className="onboarding-note">Artwork by mu.staffa · supplied by PUBLIC.</p></details>
+     <button type="button" className="onboarding-upload-photo" disabled={busy} onClick={()=>fileInput.current?.click()}><Camera size={16}/>Upload a photo</button>
      <input ref={fileInput} type="file" accept="image/jpeg,image/png,image/webp" className="hidden" onChange={e=>{upload(e.target.files?.[0]);e.target.value="";}}/>
      <label>Display name<input value={draft.name} maxLength={60} autoComplete="nickname" disabled={busy} placeholder="What should we call you?" onChange={e=>update({name:e.target.value})}/></label>
      <label>Username <small>Optional</small><div className="onboarding-handle"><span>@</span><input value={draft.username} maxLength={24} autoCapitalize="none" autoCorrect="off" spellCheck={false} autoComplete="off" disabled={busy} placeholder="your_sound" onChange={e=>update({username:cleanHandle(e.target.value)})}/></div></label>
