@@ -12,5 +12,5 @@ export default function OverflowText({text="",children,className=""}){
   document.fonts?.ready.then(measure);measure();
   return()=>{alive=false;resize.disconnect();observer.disconnect();};
  },[text]);
- return <span ref={root} title={text} className={"overflow-text "+(distance?"has-overflow ":"")+className} style={{"--text-travel":distance+"px","--text-duration":Math.max(9,distance/24+3)+"s","--text-play":visible?"running":"paused"}}><span className="overflow-text-track"><span ref={content} className="overflow-text-copy">{children||text}</span>{distance>0&&<span className="overflow-text-copy overflow-text-duplicate" aria-hidden="true">{text}</span>}</span></span>;
+ return <span ref={root} title={text} className={"overflow-text "+(distance?"has-overflow ":"")+className} style={{"--text-travel":distance+"px","--text-duration":distance/22+"s","--text-play":visible?"running":"paused"}}><span key={text} className="overflow-text-track"><span ref={content} className="overflow-text-copy">{children||text}</span>{distance>0&&<span className="overflow-text-copy overflow-text-duplicate" aria-hidden="true">{text}</span>}</span></span>;
 }
