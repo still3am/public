@@ -4,6 +4,8 @@ import ts from "typescript";
 import * as React from "react";
 import {renderToStaticMarkup} from "react-dom/server";
 import * as model from "../src/lib/onboardingModel.js";
+import {AVATAR_PRESETS} from "../src/lib/avatarPresets.js";
+globalThis.__avatars=AVATAR_PRESETS;
 globalThis.__React=React;globalThis.__model=model;
 const storage=new Map();
 globalThis.localStorage={getItem:key=>storage.get(key)||null,setItem:(key,value)=>storage.set(key,value)};
@@ -38,6 +40,7 @@ const DialogContent=({children,...props})=>React.createElement("section",{"data-
 const DialogTitle=React.forwardRef(({children},ref)=>React.createElement("h2",{ref},children));
 const DialogDescription=({children})=>React.createElement("p",null,children);
 const MotionGradient=props=>{globalThis.__gradientColors=props.colors;return null;},Logo=()=>null,ProfileColorWheel=()=>null,TrackPickerSheet=()=>null;
+const AVATAR_PRESETS=globalThis.__avatars;
 const Avatar=()=>React.createElement("span");
 `);
 for(let step=0;step<7;step++){
@@ -47,6 +50,7 @@ for(let step=0;step<7;step++){
  assert.equal((html.match(/<h2/g)||[]).length,1,"one clear heading per screen");
  assert.match(html,/Setup progress/);
  assert.match(html,step===6?/Start listening/:step===0?/Let’s go/:/Continue/);
+ if(step===1){assert.match(html,/Choose an avatar/);assert.match(html,/Upload a photo/);assert.equal((html.match(/aria-label="Choose [^"]+ avatar"/g)||[]).length,AVATAR_PRESETS.length,"onboarding offers the complete gallery");}
  if(step===2){assert.equal((html.match(/aria-pressed=/g)||[]).length,12,"genres begin with a short selection");assert.match(html,/More genres/);}
  if(step===5){assert.match(html,/<details/,"custom color wheel is collapsed");assert.match(html,/Add a profile song/);}
  if(step===6){assert.match(html,/Share my favorite songs/);assert.match(html,/<details/,"additional privacy detail is collapsed");}
