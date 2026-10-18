@@ -143,11 +143,16 @@
  .moment-track-picker>div:first-child p{font-size:12px;line-height:1.6}
 }
 
-/* A quiet launch placeholder, with PUBLIC's chrome accent. */
-.moments-coming-soon{display:flex;align-items:center;justify-content:center;flex-direction:column;text-align:center;min-height:calc(100svh - 220px);padding:64px 20px;max-width:780px;margin:0 auto}
-.moments-coming-accent{width:46px;height:4px;border-radius:999px;margin-bottom:26px;background:linear-gradient(90deg,hsl(var(--foreground)/.12),hsl(var(--foreground)/.85),hsl(var(--foreground)/.2))}
-.moments-coming-soon>.moments-coming-label{font-size:10px;font-weight:600;line-height:1.5;letter-spacing:.18em;text-transform:uppercase;color:hsl(var(--muted-foreground));margin:0 0 18px}
-.moments-coming-soon h1{font-size:clamp(56px,8vw,96px);font-weight:750;line-height:1.05;letter-spacing:-.065em;margin:0}
-.moments-coming-soon h1>span{color:hsl(var(--muted-foreground))}
-.moments-coming-soon>.moments-coming-description{font-size:15px;line-height:1.6;color:hsl(var(--muted-foreground));margin:20px 0 0}
-@media(max-width:767px){.moments-coming-soon{min-height:calc(100svh - 230px);padding:48px 16px}.moments-coming-soon h1{font-size:clamp(54px,15vw,72px)}.moments-coming-soon>.moments-coming-description{font-size:14px;margin-top:16px}}
+/* PUBLIC's restrained chrome launch treatment. */
+.moments-coming-soon{position:relative;isolation:isolate;display:grid;place-items:center;text-align:center;min-height:max(430px,calc(100svh - 220px));padding:72px 20px;max-width:1040px;margin:0 auto;overflow:hidden}
+.moments-coming-copy{position:relative;z-index:1}
+.moments-coming-glow{position:absolute;z-index:0;left:50%;top:50%;width:min(760px,130%);aspect-ratio:1.4;transform:translate(-50%,-50%);background:radial-gradient(ellipse at 28% 42%,hsl(var(--foreground)/.085),transparent 47%),radial-gradient(ellipse at 74% 56%,hsl(var(--foreground)/.055),transparent 44%);filter:blur(28px);pointer-events:none;animation:moment-launch-glow 18s ease-in-out infinite alternate}
+.moments-coming-label{display:flex;align-items:center;justify-content:center;gap:9px;font-size:10px;font-weight:600;line-height:1.5;letter-spacing:.16em;text-transform:uppercase;color:hsl(var(--muted-foreground));margin:0 0 26px}
+.moments-coming-label>span{width:5px;height:5px;border-radius:50%;background:hsl(var(--foreground)/.65);box-shadow:0 0 0 4px hsl(var(--foreground)/.045)}
+.moments-coming-soon h1{font-size:clamp(64px,10vw,116px);font-weight:750;line-height:1.15;letter-spacing:-.075em;margin:0;padding:0 .08em .05em 0;color:hsl(var(--foreground))}
+@supports(background-clip:text){.moments-coming-soon h1{background:linear-gradient(110deg,hsl(var(--foreground)) 15%,hsl(var(--foreground)) 36%,hsl(var(--foreground)/.56) 48%,hsl(var(--foreground)) 60%,hsl(var(--foreground)) 85%);background-size:260% 100%;background-position:90% 50%;background-clip:text;-webkit-background-clip:text;color:transparent;animation:moment-launch-chrome 16s ease-in-out infinite}}
+.moments-coming-description{font-size:16px;font-weight:400;line-height:1.7;color:hsl(var(--muted-foreground));margin:14px 0 0;letter-spacing:-.015em}
+@keyframes moment-launch-chrome{0%,20%{background-position:90% 50%}70%,100%{background-position:10% 50%}}
+@keyframes moment-launch-glow{from{transform:translate(-53%,-52%) scale(.95)}to{transform:translate(-47%,-48%) scale(1.08)}}
+@media(max-width:767px){.moments-coming-soon{min-height:max(360px,calc(100svh - 230px));padding:56px 12px}.moments-coming-soon h1{font-size:clamp(58px,17vw,84px)}.moments-coming-label{font-size:9px;margin-bottom:22px}.moments-coming-description{font-size:14px;margin-top:12px}.moments-coming-glow{width:150%;filter:blur(22px)}}
+@media(prefers-reduced-motion:reduce){.moments-coming-glow,.moments-coming-soon h1{animation:none}}
