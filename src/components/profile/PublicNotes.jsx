@@ -56,11 +56,11 @@ export default function PublicNotes({ profileId, isOwn, active = true, userTrack
     if (!active) { setEditing(false); setPicker(false); }
   }, [active, valid]);
   function open() { setViewing(false); setDraft(valid ? note.track : null); setCaption(valid ? note.caption || "" : ""); setError(""); setEditing(true); }
-  async function save(remove = false) {
+  async function save(remove = false, songOnly = false) {
     if (lock.current || !isOwn || !user?.id || user.id !== profileId || (!remove && !draft && !caption.trim())) return;
     lock.current = true; version.current++; setBusy(true); setError("");
     try {
-      const saved = remove ? await request("removeNote", [profileId]) : await savePublicNote(base44, profileId, { track_id: draft?.id || "", caption }, publicNoteDatabase);
+      const saved = remove ? await request("removeNote", [profileId]) : await savePublicNote(base44, profileId, { track_id: draft?.id || "", caption: songOnly ? "" : caption }, publicNoteDatabase);
       if (!remove && (!saved?.id || (saved.track_id ? !saved.track : !saved.caption?.trim()) || !saved.expires_at)) throw Error("Note not confirmed");
       if (alive.current) { setNote(remove ? null : saved); setNow(Date.now()); setEditing(false); }
     } catch (e) {
@@ -86,6 +86,7 @@ export default function PublicNotes({ profileId, isOwn, active = true, userTrack
       {draft && <button type="button" className="public-note-clear-song" disabled={busy} onClick={() => setDraft(null)}>Remove song</button>}
       <label className="public-note-label" htmlFor="public-note-caption">Add a thought <span>Optional</span></label><textarea id="public-note-caption" maxLength={80} rows={3} placeholder="This one’s on my mind…" value={caption} disabled={busy} onChange={e => setCaption(e.target.value)} /><div className="public-note-counter">{caption.length}/80</div>
       {error && <p role="alert" className="public-note-error">{error}</p>}
+      {error.includes("service limit") && draft && <button type="button" disabled={busy} className="public-note-post" onClick={() => save(false, true)}>Share just the song</button>}
       <div className="public-note-composer-actions">{valid && <button type="button" disabled={busy} onClick={() => save(true)}>Remove note</button>}<button type="button" className="public-note-post" disabled={busy || (!draft && !caption.trim())} onClick={() => save()}>{busy ? <Loader2 size={18} className="animate-spin" /> : valid ? "Replace note" : "Share note"}</button></div>
     </DialogContent></Dialog>}
     {editing && picker && <TrackPickerSheet title="Choose your note’s song" tracks={userTracks.filter(track => track.is_published && track.approval_status === "approved")} selectedIds={draft ? [draft.id] : []} onToggle={(_id, track) => { setDraft(track); setPicker(false); }} onClose={() => setPicker(false)} />}
