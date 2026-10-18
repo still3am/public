@@ -1,6 +1,8 @@
+import {withPresetAvatar} from "@/lib/nativeAvatar";
 import {useEffect,useState} from "react";
 /** @param {any} props */
 export default function Avatar({user,size=40,className=""}){
+ user=withPresetAvatar(user);
  const [failed,setFailed]=useState(false);
  useEffect(()=>setFailed(false),[user?.avatar_url]);
  if(!user)return null;

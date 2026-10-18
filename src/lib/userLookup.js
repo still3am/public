@@ -1,3 +1,4 @@
+import {withPresetAvatar} from "./nativeAvatar.js";
 import { base44 } from "@/api/base44Client";
 
 // Surfaces like the follower list and the notifications feed need details for
@@ -53,7 +54,7 @@ export async function getUsersByIds(ids = []) {
     if(started!==generation)throw Error("Profile lookup changed while loading");
     chunk.forEach(id=>{cache.delete(id);expires.delete(id);});
     users.forEach((u) => {
-      if (u?.id){cache.set(u.id,u);expires.set(u.id,Date.now()+TTL);}
+      if (u?.id){cache.set(u.id,withPresetAvatar(u));expires.set(u.id,Date.now()+TTL);}
     });
   }
   return unique.map((id) => cache.get(id)).filter(Boolean);

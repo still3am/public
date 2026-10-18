@@ -1,3 +1,5 @@
+import {AVATAR_PRESETS} from "@/lib/avatarPresets";
+import {savePresetAvatar,withPresetAvatar} from "@/lib/nativeAvatar";
 import { createClient } from '@base44/sdk';
 import { appParams } from '@/lib/app-params';
 const { appId, token, functionsVersion, appBaseUrl } = appParams;
@@ -8,6 +10,13 @@ const gateway = async(entity,action,args) => {const response=await raw.functions
 const handlers = new Map();
 const entities = new Proxy(raw.entities,{get(target,name) {
   if(typeof name!=='string')return Reflect.get(target,name);
+  if(name==="PublicProfile"){
+   if(!handlers.has(name))handlers.set(name,new Proxy(target[name],{get(h,method){
+    if(["get","list","filter"].includes(method))return async(...args)=>{const page=await h[method](...args);return Array.isArray(page)?page.map(withPresetAvatar):Array.isArray(page?.items)?{...page,items:page.items.map(withPresetAvatar)}:withPresetAvatar(page);};
+    return h[method];
+   }}));
+   return handlers.get(name);
+  }
   if(!guarded.has(name))return target[name];
   if(!handlers.has(name)) handlers.set(name,new Proxy(target[name],{get(h,method) {
     if(typeof method!=="string")return Reflect.get(h,method);
@@ -56,7 +65,9 @@ export const publicNoteDatabase = {
 };
 export const base44 = new Proxy(raw,{get(target,name) {
   if(name==='entities') return entities;
-  if(name==='auth') return {...target.auth,updateMe:async data=>{
+  if(name==='auth') return {...target.auth,me:async()=>withPresetAvatar(await target.auth.me()),updateMe:async data=>{
+    if(Object.keys(data||{}).length===1&&Object.prototype.hasOwnProperty.call(data,"avatar_url")&&(data.avatar_url===""||AVATAR_PRESETS.some(item=>item.url===data.avatar_url)))return savePresetAvatar(target,data.avatar_url);
+
     // Only these non-text own-account preferences use the SDK's own-account route.
     // All other profile fields keep the moderated security gateway.
     const preferenceKeys=['is_artist','show_explicit','adult_confirmed'];

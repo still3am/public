@@ -374,6 +374,7 @@ export default async function handleRequest(req) {
       } else if(entity==='User') {
         if(kind!=='update'||id!==user.id) fail('Profile access denied');
         data=pick(data,['username','display_name','bio','avatar_url','banner_url','location','pronouns','website','instagram','twitter','soundcloud','status_message','featured_track_id','top_track_ids','is_artist','show_explicit','adult_confirmed','profile_background_mode','profile_background_colors','profile_background_motion','profile_background_speed']);
+        if(data.avatar_url!==undefined)data.avatar_preset='';
         if(data.display_name!==undefined&&(typeof data.display_name!=='string'||data.display_name.trim().length<2||data.display_name.trim().length>60))fail('Use a display name between 2 and 60 characters',422);
         if(data.username!==undefined){
           if(typeof data.username!=='string')fail('Choose a valid username',422);
@@ -395,7 +396,7 @@ export default async function handleRequest(req) {
         await moderate(svc,[data.username,data.display_name,data.bio,data.status_message].filter(Boolean).join('\n'));
         for(const tid of [data.featured_track_id,...(data.top_track_ids||[])].filter(Boolean)) await requireTrack(tid);
         const saved=await handler.update(id,data);
-        const publicData={...pick(saved,["username","display_name","full_name","avatar_url","banner_url","bio","location","pronouns","website","instagram","twitter","soundcloud","status_message","featured_track_id","profile_background_mode","profile_background_colors","profile_background_motion","profile_background_speed","top_track_ids","is_artist"]),is_public_admin:isAdmin,user_id:saved.id,joined_at:saved.created_date||"",visible:!saved.is_blocked&&!saved.disabled};
+        const publicData={...pick(saved,["username","display_name","full_name","avatar_url","avatar_preset","banner_url","bio","location","pronouns","website","instagram","twitter","soundcloud","status_message","featured_track_id","profile_background_mode","profile_background_colors","profile_background_motion","profile_background_speed","top_track_ids","is_artist"]),is_public_admin:isAdmin,user_id:saved.id,joined_at:saved.created_date||"",visible:!saved.is_blocked&&!saved.disabled};
         const mirrors=await svc.entities.PublicProfile.filter({user_id:saved.id},'-updated_date',1);
         if(mirrors[0])await svc.entities.PublicProfile.update(mirrors[0].id,publicData);
         else await svc.entities.PublicProfile.create(publicData);
