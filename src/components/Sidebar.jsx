@@ -1,11 +1,12 @@
 import {NavLink} from "react-router-dom";
-import {Home,Search,TrendingUp,Clock,Library as LibraryIcon,Disc3,Upload,Bell,ChevronsLeft,ChevronsRight,ListMusic,CloudOff,FolderOpen,BarChart3,Shield,Lightbulb,LifeBuoy,Music2} from "lucide-react";
+import {Home,Search,TrendingUp,Clock,Library as LibraryIcon,Disc3,Upload,Bell,ChevronsLeft,ChevronsRight,ListMusic,CloudOff,FolderOpen,BarChart3,Shield,Lightbulb,LifeBuoy} from "lucide-react";
 import {useMyPlaylists} from "@/hooks/useMyPlaylists";
 import {useSidebarCollapsed} from "@/hooks/useSidebarCollapsed";
 import {useAuth} from "@/lib/AuthContext";
 import {useUnreadCount} from "@/hooks/useNotifications";
 import Avatar from "@/components/Avatar";
 import Logo from "@/components/Logo";
+import publicMonogram from "@/assets/public-monogram.svg";
 import ThemeToggle from "@/components/ThemeToggle";
 
 export default function Sidebar(){
@@ -17,7 +18,7 @@ export default function Sidebar(){
  ];
  const linkClass=({isActive})=>"desktop-nav-link "+(isActive?"is-active":"");
  return <aside data-collapsed={collapsed} className={"desktop-sidebar hidden md:flex flex-col shrink-0 relative isolate z-10 border-r border-border sidebar-surface bg-background h-dvh sticky top-0 overflow-hidden transition-[width] duration-300 ease-out "+(collapsed?"w-[68px]":"w-64")}>
-  <div className="desktop-sidebar-brand"><NavLink to="/" aria-label="PUBLIC home" className="desktop-brand-link">{collapsed?<Music2 size={22}/>:<Logo width="146px"/>}</NavLink><button type="button" onClick={toggle} className="desktop-sidebar-toggle" aria-label={collapsed?"Expand sidebar":"Collapse sidebar"} title={collapsed?"Expand sidebar":"Collapse sidebar"}>{collapsed?<ChevronsRight size={15}/>:<ChevronsLeft size={15}/>}</button></div>
+  <div className="desktop-sidebar-brand"><NavLink to="/" aria-label="PUBLIC home" className="desktop-brand-link">{collapsed?<img src={publicMonogram} width={28} height={28} alt="" aria-hidden="true" className="logo-dark-invert shrink-0"/>:<Logo width="146px"/>}</NavLink><button type="button" onClick={toggle} className="desktop-sidebar-toggle" aria-label={collapsed?"Expand sidebar":"Collapse sidebar"} title={collapsed?"Expand sidebar":"Collapse sidebar"}>{collapsed?<ChevronsRight size={15}/>:<ChevronsLeft size={15}/>}</button></div>
   <nav aria-label="Main navigation" className="desktop-sidebar-nav">
    {groups.map(group=><div className="desktop-nav-group" key={group.label}><p className="desktop-nav-label" aria-hidden={collapsed}>{group.label}</p>{group.links.map(([to,label,Icon,end])=><NavLink to={to} key={to} end={end} title={label} aria-label={label} className={linkClass}><span className="desktop-nav-icon"><Icon size={18}/>{to==="/notifications"&&unread>0&&<span className="desktop-unread-dot"/>}</span><span className="desktop-nav-text">{label}</span>{to==="/notifications"&&unread>0&&<span className="desktop-unread-count">{unread>99?"99+":unread}</span>}</NavLink>)}</div>)}
    {user&&!!playlists?.length&&<div className="desktop-nav-group"><p className="desktop-nav-label" aria-hidden={collapsed}>Your playlists</p>{playlists.slice(0,8).map(pl=><NavLink to={"/playlist/"+pl.id} key={pl.id} title={pl.name} aria-label={pl.name} className={linkClass}><ListMusic size={17}/><span className="desktop-nav-text">{pl.name}</span></NavLink>)}</div>}
