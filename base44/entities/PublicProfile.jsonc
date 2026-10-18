@@ -133,6 +133,49 @@
         }
       }
     },
+    "public_song_note": {
+      "type": "object",
+      "description": "Native song-only note state. Contains no user-authored text.",
+      "properties": {
+        "mode": {
+          "type": "string",
+          "enum": [
+            "song",
+            "server",
+            "none"
+          ]
+        },
+        "track_id": {
+          "type": "string",
+          "maxLength": 100,
+          "pattern": "^$|^[a-zA-Z0-9_-]+$"
+        },
+        "expires_at": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "mode",
+        "track_id",
+        "expires_at"
+      ],
+      "rls": {
+        "write": {
+          "$or": [
+            {
+              "data.user_id": "{{user.id}}"
+            },
+            {
+              "user_condition": {
+                "role": "admin"
+              }
+            }
+          ]
+        }
+      }
+    },
     "featured_track_id": {
       "type": "string",
       "default": "",
