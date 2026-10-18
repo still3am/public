@@ -4376,7 +4376,11 @@
         "/avatars/rose-silhouette.webp",
         "/avatars/stoney.webp",
         "/avatars/whole-lotta-red.webp",
-        "/avatars/butterfly-lavender.webp"
+        "/avatars/butterfly-lavender.webp",
+        "/avatars/damn.webp",
+        "/avatars/starboy.webp",
+        "/avatars/blue-horns.webp",
+        "/avatars/drip-harder.webp"
       ],
       "default": "",
       "description": "Preinstalled gallery choice only. External uploads remain in avatar_url.",
