@@ -23,6 +23,7 @@
 .public-note-mini-meta>span{font-size:10px}
 .public-note-avatar-bubble>.public-note-bubble-flow{position:absolute;inset:0;z-index:0;border-radius:inherit}
 .public-note-avatar-bubble.is-flow{border-color:transparent}
+.public-note-avatar-bubble.is-flow .public-note-mini-meta{text-shadow:0 1px 3px var(--note-shadow,#000b)}
 .public-note-avatar-bubble.is-flow::after{background:var(--note-tail,#555555);border:0}
 .public-note-appearance legend{font-size:12px;font-weight:600;margin-bottom:10px}
 .public-note-appearance>div{display:grid;grid-template-columns:1fr 1fr;gap:8px}
@@ -66,11 +67,17 @@
 .public-note-label span{font-size:11px;font-weight:400;color:hsl(var(--muted-foreground));margin-left:6px}
 .public-note-dialog textarea{width:100%;resize:vertical;min-height:96px;max-height:220px;border:1px solid hsl(var(--border));border-radius:16px;padding:14px;font-size:16px;line-height:1.6;background:hsl(var(--background))}
 .public-note-counter{text-align:right;font-size:11px;color:hsl(var(--muted-foreground));margin-top:-8px}
-.public-note-composer-actions{display:flex;align-items:center;justify-content:space-between;gap:16px}
+.public-note-composer-actions{position:sticky;bottom:0;z-index:2;display:flex;align-items:center;justify-content:space-between;gap:16px;padding-block:12px 4px;background:hsl(var(--card))}
 .public-note-composer-actions>button{font-size:13px;min-height:46px}
 .public-note-post{margin-left:auto;display:flex;justify-content:center;align-items:center;gap:8px;min-width:140px;padding:12px 20px;border-radius:999px;background:hsl(var(--foreground));color:hsl(var(--background));font-weight:650}
 .public-notes button:disabled,.public-note-dialog button:disabled{opacity:.45;cursor:default}
-.public-notes button:focus-visible{outline:2px solid hsl(var(--foreground));outline-offset:3px}
+.public-notes button:focus-visible,.public-note-dialog button:focus-visible{outline:2px solid hsl(var(--foreground));outline-offset:3px}
+.public-note-avatar-bubble,.public-note-create-dot{transition:transform .18s ease,border-color .18s ease}
+.public-note-avatar-bubble:active,.public-note-create-dot:active{transform:scale(.97)}
+.public-note-avatar-bubble{animation:public-note-arrive .3s ease both}
+.public-note-preview{animation:none}
+@keyframes public-note-arrive{from{opacity:0;transform:translateY(4px) scale(.98)}to{opacity:1;transform:translateY(0) scale(1)}}
+@media(prefers-reduced-motion:reduce){.public-note-avatar-bubble,.public-note-create-dot{animation:none;transition:none}.public-note-avatar-bubble:active,.public-note-create-dot:active{transform:none}}
 @media(max-width:767px){
  .public-notes-heading h2{font-size:20px!important}
  .public-note-card{gap:14px;padding:16px;flex-wrap:wrap;border-radius:22px}
