@@ -20,6 +20,7 @@ tree=incremental.default({items,renderItem});assert.equal(tree.props.children[0]
 assert.equal(tree.props.children[0].props.children.at(-1).props["data-index"],244,"playback positions stay absolute");
 const changed=items.slice().reverse();tree=incremental.default({items:changed,renderItem});assert.equal(tree.props.children[0].props.children.length,120,"a new filter resets before painting a previously expanded list");
 assert.equal(items[0].id,"t0","rendering never mutates the complete collection");
+progress=undefined;tree=incremental.default({items,resetKey:"same-filter",renderItem});tree.props.children[1].props.children[1].props.onClick();tree=incremental.default({items:changed,resetKey:"same-filter",renderItem});assert.equal(tree.props.children[0].props.children.length,240,"updates within a filter preserve the expanded window");
 const results=await load("src/components/search/SearchResults.jsx",`
 const React=globalThis.__React,Link=({children,to,...props})=>React.createElement("a",{href:to,...props},children);
 const Users=()=>null,Avatar=Users,ArtistRow=({artist})=>React.createElement("p",null,artist.name),PlaylistCard=({playlist})=>React.createElement("p",null,playlist.name);
