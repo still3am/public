@@ -2,6 +2,8 @@ import assert from "node:assert/strict";
 import fs from "node:fs";
 import ts from "typescript";
 import * as React from "react";
+import * as flowLogic from "../src/lib/publicFlow.js";
+globalThis.__flowLogic=flowLogic;
 globalThis.__React=React;
 const source=fs.readFileSync("src/components/MotionGradient.jsx","utf8");
 let effects=[],refs=[],states=[],refIndex=0,stateIndex=0,frames=new Map(),nextFrame=0,draws=0,reduced=false,hidden=false,covered=false,intersection,canvasEvents={},deleted=0,available=true,layoutReads=0,dialogQueries=0,dialogVisible=true,mutate,resizeCallback,times=[],uniformColors={};
@@ -17,7 +19,7 @@ globalThis.cancelAnimationFrame=id=>frames.delete(id);
 globalThis.IntersectionObserver=class{constructor(fn){intersection=fn;}observe(){}disconnect(){}};
 globalThis.ResizeObserver=class{constructor(fn){resizeCallback=fn;}observe(){}disconnect(){}};
 globalThis.MutationObserver=class{constructor(fn){mutate=fn;}observe(){}disconnect(){}};
-const code=ts.transpileModule('const React=globalThis.__React,useRef=globalThis.__ref,useState=globalThis.__state,useEffect=globalThis.__effect;'+source.replace(/^import[^;]+;/gm,""),{compilerOptions:{jsx:ts.JsxEmit.React,target:ts.ScriptTarget.ES2022,module:ts.ModuleKind.ESNext}}).outputText;
+const code=ts.transpileModule('const {flowState,approachAngle,normalizeFlowMotion,normalizeFlowDirection}=globalThis.__flowLogic;const React=globalThis.__React,useRef=globalThis.__ref,useState=globalThis.__state,useEffect=globalThis.__effect;'+source.replace(/^import[^;]+;/gm,""),{compilerOptions:{jsx:ts.JsxEmit.React,target:ts.ScriptTarget.ES2022,module:ts.ModuleKind.ESNext}}).outputText;
 const {default:Flow}=await import("data:text/javascript;base64,"+Buffer.from(code).toString("base64"));
 function mount(props={}){effects=[];refs=[];states=[];refIndex=0;stateIndex=0;frames.clear();draws=0;const tree=Flow(props);const cleanup=effects[0]();effects[1]();return {tree,cleanup};}
 function frame(time){const entry=frames.entries().next().value;if(entry){frames.delete(entry[0]);entry[1](time);}}
