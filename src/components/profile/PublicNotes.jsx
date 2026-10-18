@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import "./public-notes.css";
 import { base44 } from "@/api/base44Client";
 import { useAuth } from "@/lib/AuthContext";
 import { usePlayer } from "@/context/PlayerContext";
