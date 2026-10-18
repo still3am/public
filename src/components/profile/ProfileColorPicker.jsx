@@ -1,14 +1,11 @@
-import {normalizeFlowMotion,normalizeFlowDirection} from "@/lib/publicFlow";
 import {useRef,useState} from "react";
 import {Check,Loader2,Plus,X} from "lucide-react";
 import {Dialog,DialogContent,DialogHeader,DialogTitle,DialogDescription} from "@/components/ui/dialog";
 import MotionGradient from "@/components/MotionGradient";
-import {PUBLIC_GRADIENT_COLORS} from "@/components/BrandGradient";
 import ProfileColorWheel from "./ProfileColorWheel";
 import "./profile-colors.css";
 
 const PRESETS=[
- {name:"PUBLIC",colors:[...PUBLIC_GRADIENT_COLORS]},
  {name:"Midnight",colors:["#172768","#9854ef","#56c9e2"]},
  {name:"Sunset",colors:["#f25340","#ffc179","#ae327d"]},
  {name:"Forest",colors:["#123f3c","#a9cd6b","#26a78c"]},
@@ -29,7 +26,7 @@ const valid=color=>/^#[0-9a-f]{6}$/i.test(color);
 const normalize=text=>"#"+text.replace(/^#/,"").toLowerCase();
 
 export default function ProfileColorPicker({coverUrl,colors,loading,value,onPreview,onSave,onClose}){
- const [draft,setDraft]=useState(()=>({mode:value.mode,colors:[...value.colors],motion:normalizeFlowMotion(value.motion),direction:normalizeFlowDirection(value.direction),speed:value.speed||1}));
+ const [draft,setDraft]=useState(()=>({mode:value.mode,colors:[...value.colors],motion:value.motion||"flow",speed:value.speed||1}));
  const [saving,setSaving]=useState(false),[error,setError]=useState("");
  const saveLock=useRef(false);
  const [activeColor,setActiveColor]=useState(0);
@@ -52,9 +49,9 @@ export default function ProfileColorPicker({coverUrl,colors,loading,value,onPrev
    <DialogHeader><DialogTitle>Your profile colors</DialogTitle><DialogDescription>Build your gradient with the color wheel, choose a palette, or follow your song.</DialogDescription></DialogHeader>
    <div className="profile-color-body">
     <div className="profile-color-preview">
-     {preview.length>0&&<MotionGradient colors={preview} motion={draft.motion} direction={draft.direction} speed={draft.speed} className="absolute inset-0" style={{borderRadius:"inherit",zIndex:-2}}/>}
+     {preview.length>0&&<MotionGradient colors={preview} motion={draft.motion} speed={draft.speed} className="absolute inset-0" style={{borderRadius:"inherit",zIndex:-2}}/>}
      {coverUrl&&<img src={coverUrl} alt="" onError={event=>{event.currentTarget.style.display="none";}}/>}
-     <div><strong>Make it yours</strong><span>{draft.mode==="off"?"Clean background":draft.motion==="still"?"Still · Live preview":draft.motion==="orbit"?"PUBLIC Flow · Orbit":draft.motion==="tide"?"PUBLIC Flow · Tide":"PUBLIC Flow · Evolving"}</span></div>
+     <div><strong>Make it yours</strong><span>Live profile preview</span></div>
     </div>
     <div className="profile-color-modes" role="group" aria-label="Profile background mode">
      {[["auto","Automatic"],["custom","Custom"],["off","No color"]].map(([mode,label])=><button type="button" key={mode} disabled={saving} aria-pressed={draft.mode===mode} onClick={()=>update({...draft,mode,colors:mode==="custom"?customColors:draft.colors})}>{label}</button>)}
@@ -77,10 +74,9 @@ export default function ProfileColorPicker({coverUrl,colors,loading,value,onPrev
      {(colors.length>0||loading)&&<section className="profile-color-section"><h3>From your song cover</h3>{loading?<p className="profile-color-hint">Reading cover colors…</p>:<div className="profile-color-cover-swatches">{colors.map(color=><button type="button" key={color} disabled={saving} aria-label={`Use cover color ${color}`} aria-pressed={draft.colors.includes(color)} onClick={()=>toggle(color)} style={{backgroundColor:color}}>{draft.colors.includes(color)&&<Check size={16}/>}</button>)}</div>}</section>}
     </>}
     {draft.mode!=="off"&&<details className="profile-color-section profile-color-details"><summary>Movement &amp; speed</summary>
-     <div className="profile-color-modes profile-motion-modes" role="group" aria-label="Gradient movement">{[["flow","PUBLIC Flow"],["orbit","Orbit"],["tide","Tide"],["still","Still"]].map(([motion,label])=><button key={motion} type="button" disabled={saving} aria-pressed={draft.motion===motion} onClick={()=>update({...draft,motion})}>{label}</button>)}</div>
-     {draft.motion!=="still"&&<div className="profile-color-modes profile-flow-directions" role="group" aria-label="Flow direction">{[["evolve","Evolving"],["right","Right"],["left","Left"],["up","Up"],["down","Down"],["diagonal","Diagonal"]].map(([direction,label])=><button type="button" key={direction} disabled={saving} aria-pressed={draft.direction===direction} onClick={()=>update({...draft,direction})}>{label}</button>)}</div>}
-     {draft.motion!=="still"&&<label className="profile-motion-speed"><span>Speed <span>{draft.speed<.75?"Slow":draft.speed>1.2?"Lively":"Gentle"}</span></span><input type="range" min=".35" max="1.6" step=".05" value={draft.speed} disabled={saving} aria-label="Gradient movement speed" onChange={event=>update({...draft,speed:Number(event.target.value)})}/></label>}
-     <p className="profile-color-hint">Evolving gently changes direction and rhythm. Motion follows each viewer’s Reduce Motion setting.</p>
+     <div className="profile-color-modes profile-motion-modes" role="group" aria-label="Gradient movement">{[["still","Still"],["flow","Flowing"]].map(([motion,label])=><button key={motion} type="button" disabled={saving} aria-pressed={draft.motion===motion} onClick={()=>update({...draft,motion})}>{label}</button>)}</div>
+     {draft.motion==="flow"&&<label className="profile-motion-speed"><span>Speed <span>{draft.speed<.75?"Slow":draft.speed>1.2?"Lively":"Gentle"}</span></span><input type="range" min=".35" max="1.6" step=".05" value={draft.speed} disabled={saving} aria-label="Gradient movement speed" onChange={event=>update({...draft,speed:Number(event.target.value)})}/></label>}
+     <p className="profile-color-hint">Motion follows each viewer’s Reduce Motion setting.</p>
     </details>}
    </div>
    <footer className="profile-color-footer">

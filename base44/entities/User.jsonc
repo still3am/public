@@ -191,26 +191,9 @@
       "type": "string",
       "enum": [
         "flow",
-        "orbit",
-        "tide",
         "still"
       ],
       "default": "flow",
-      "rls": {
-        "write": true
-      }
-    },
-    "profile_background_direction": {
-      "type": "string",
-      "enum": [
-        "evolve",
-        "right",
-        "left",
-        "up",
-        "down",
-        "diagonal"
-      ],
-      "default": "evolve",
       "rls": {
         "write": true
       }

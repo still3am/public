@@ -3,7 +3,7 @@ import { base44 } from "@/api/base44Client";
 import { usePlayer } from "@/context/PlayerContext";
 import { useCoverUrl } from "@/hooks/useCoverUrl";
 import { Image } from "@/components/ui/image";
-import { Play, Pause, X } from "lucide-react";
+import { Play, Pause, Music, X } from "lucide-react";
 import TrackPickerSheet from "@/components/profile/TrackPickerSheet";
 import HoverTrackMenu from "@/components/track/HoverTrackMenu";
 import { useLongPressMenu } from "@/hooks/useLongPressMenu";
@@ -138,9 +138,9 @@ export default function ProfileSong({
   if (editMode) {
     return (
       <div className="mb-6">
-        
-
-        
+        <h2 className="text-lg font-extrabold tracking-tight mb-3 flex items-center gap-2">
+          <Music size={18} /> Profile Song
+        </h2>
         {trackId && track ?
         <div className="flex items-center gap-3 p-3 rounded-2xl border border-border bg-foreground/[0.02]">
             <div className="w-14 h-14 rounded-xl overflow-hidden bg-foreground/10 shrink-0">
