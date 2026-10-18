@@ -102,9 +102,9 @@ export default function MobileTabBar() {
       </> : <>
         <div className="mobile-nav-pill">
           {TABS.map(({ to, label, Icon, end }) => <NavLink key={to} to={to} end={end} onClick={(event) => handleTab(to, event)} className={({ isActive }) => "mobile-nav-tab" + (isActive ? " is-active" : "")}>
-            <Icon size={23} strokeWidth={1.9} aria-hidden="true" /><span className="hidden">{label}</span>
+            <Icon size={23} strokeWidth={1.9} aria-hidden="true" />
           </NavLink>)}
-          <button type="button" onClick={() => setMoreOpen(true)} className={"mobile-nav-tab" + (moreOpen || moreActive ? " is-active" : "")} aria-label="More pages" aria-haspopup="dialog" aria-expanded={moreOpen}><MoreHorizontal size={23} strokeWidth={1.9} aria-hidden="true" /><span className="hidden">More</span></button>
+          <button type="button" onClick={() => setMoreOpen(true)} className={"mobile-nav-tab" + (moreOpen || moreActive ? " is-active" : "")} aria-label="More pages" aria-haspopup="dialog" aria-expanded={moreOpen}><MoreHorizontal size={23} strokeWidth={1.9} aria-hidden="true" /></button>
         </div>
         <NavLink to="/search" onClick={openSearch} className="mobile-nav-search" aria-label="Search music and people"><Search size={26} strokeWidth={2} aria-hidden="true" /></NavLink>
       </>}
