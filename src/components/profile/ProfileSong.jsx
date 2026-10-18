@@ -138,7 +138,7 @@ export default function ProfileSong({
   if (editMode) {
     return (
       <div className="mb-6">
-        <h2 className="text-lg font-extrabold tracking-tight mb-3 flex items-center gap-2">
+        <h2 className="text-lg font-extrabold tracking-tight mb-3 flex items-center gap-2 hidden">
           <Music size={18} /> Profile Song
         </h2>
         {trackId && track ?
