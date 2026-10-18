@@ -41,7 +41,7 @@
  .moments-route .moment-author small{color:#ddd;font-size:10px;text-shadow:0 1px 5px #000}
  .moments-route .moment-follow{border-color:#ffffff70;color:#fff;background:#0004;padding:6px 10px;min-height:36px;font-size:10px}
  .moments-route .moment-card-body{padding:0;order:1}
- .moments-route .moment-caption{font-size:13px;line-height:1.5;max-height:60px;overflow:auto;margin:0 0 12px;color:#fff;text-shadow:0 1px 6px #000}
+ .moments-route .moment-caption{pointer-events:auto;font-size:13px;line-height:1.5;max-height:60px;overflow:auto;margin:0 0 12px;color:#fff;text-shadow:0 1px 6px #000}
  .moments-route .moment-actions{position:absolute;right:-62px;bottom:74px;display:flex;flex-direction:column;gap:17px;margin:0;width:48px;pointer-events:auto}
  .moments-route .moment-actions>button{flex-direction:column;gap:5px;min-width:44px;min-height:48px;font-size:11px;margin:0;text-shadow:0 1px 6px #000}
  .moments-route .moment-actions>button svg{width:28px;height:28px;filter:drop-shadow(0 1px 3px #0006)}
