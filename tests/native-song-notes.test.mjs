@@ -21,6 +21,9 @@ assert.equal(note.track_id,"song");assert.equal(calls,0,"song save never calls a
 assert.equal(note.track.audio_file_uri,undefined,"private file identifiers are not exposed");
 assert.equal((await requestPublicNote(client,"readNote",["me"],db)).id,"native:profile");
 assert.equal(calls,0,"native note reloads across sessions without integration calls");
+await savePublicNote(client,"me",{track_id:"song",appearance:"cover_flow"},db);
+assert.equal((await requestPublicNote(client,"readNote",["me"],db)).appearance,"cover_flow","cover animation choice survives a database reload");
+assert.equal(calls,0,"cover-style song notes still avoid integrations");
 await requestPublicNote(client,"removeNote",["me"],db);
 assert.equal(await requestPublicNote(client,"readNote",["me"],db),null);
 assert.equal(row.public_song_note.mode,"none","removal masks an older gateway note so it cannot reappear");
