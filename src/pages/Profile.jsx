@@ -598,6 +598,7 @@ export default function Profile({ ownProfileTab = false }) {
       </div>
       </div>
       {sectionError&&<div className="flex items-center justify-between gap-3 text-xs text-muted-foreground mb-4"><span>Some profile details couldn’t refresh.</span><button type="button" disabled={followingBusy||loading||editMode||saving||uploadingAvatar} onClick={load} className="underline underline-offset-2">Retry</button></div>}
+      <div className="profile-content"><section className="profile-music" aria-label="Profile music">
       <div className="profile-song-spotlight">
       <ProfileSong
             trackId={editMode ? form.featured_track_id : profile?.featured_track_id}
@@ -607,7 +608,6 @@ export default function Profile({ ownProfileTab = false }) {
           
       </div>
 
-      <div className="profile-content"><section className="profile-music">
       <TopTracks
               trackIds={editMode ? form.top_track_ids : profile?.top_track_ids || []}
               editMode={editMode}
@@ -629,7 +629,7 @@ export default function Profile({ ownProfileTab = false }) {
             }
 
       <ProfilePlaylists userId={targetId} active={isCurrentPage} />
-      </section><aside className="profile-conversation"><ProfileComments profileId={targetId} isOwn={isOwn} active={isCurrentPage} /><SafetyControls type="user" id={targetId} userId={targetId} label="profile" /></aside></div>
+      </section><aside className="profile-conversation" aria-label="Profile conversation"><ProfileComments profileId={targetId} isOwn={isOwn} active={isCurrentPage} /><SafetyControls type="user" id={targetId} userId={targetId} label="profile" /></aside></div>
 
       {showColors && isOwn && <ProfileColorPicker coverUrl={coverUrl} colors={coverColors} loading={colorsLoading} value={backgroundValue} onPreview={setBackgroundDraft} onSave={saveColors} onClose={closeColors} />}
 
