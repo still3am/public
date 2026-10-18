@@ -34,7 +34,7 @@ function ReportMoment({ target, onClose }) {
 export default function Moments() {
   const {user}=useAuth();
   if(user?.role==='admin'&&!user.disabled&&!user.is_blocked)return <MomentsExperience/>;
-  return <section className="moments-coming-soon" aria-labelledby="moments-coming-title"><div className="moments-coming-orbit" aria-hidden="true"><Music2 size={42}/></div><p className="moments-eyebrow">PUBLIC MOMENTS</p><h1 id="moments-coming-title">Your life.<br/>Your soundtrack.</h1><span className="moments-coming-label">Coming soon</span><p>Share the little things, the big feelings, and the music behind them.</p><Link to="/" className="moment-primary">Explore PUBLIC <ArrowUpRight size={16}/></Link></section>;
+  return <section className="moments-coming-soon" aria-labelledby="moments-coming-title"><span className="moments-coming-accent" aria-hidden="true"/><p className="moments-coming-label">Coming soon</p><h1 id="moments-coming-title">Moments<span>.</span></h1><p className="moments-coming-description">Life, set to music.</p></section>;
 }
 export function MomentsExperience() {
   const { id } = useParams(),[params, setParams] = useSearchParams(),{ user } = useAuth(),safety = useSafety(),player = usePlayer(),nav = useNavigate();const scope = params.get('view') || 'discover',trackFilter = params.get('song') || '';
