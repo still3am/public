@@ -22,6 +22,7 @@ export default function TrackPickerSheet({title,description,className="",selecte
  useEffect(()=>{alive.current=true;return()=>{alive.current=false;};},[]);
  const deferred=useDeferredValue(query);
  useEffect(()=>{let active=true;setLoading(true);setLoadError("");const unsubscribe=subscribePublishedTracks(rows=>{if(active)setPublished(rows);});getPublishedTracks(retry>0).then(rows=>{if(active)setPublished(rows);}).catch(()=>{if(active)setLoadError("Music could not finish loading.");}).finally(()=>{if(active)setLoading(false);});return()=>{active=false;unsubscribe();};},[retry]);
+ useEffect(()=>{const refresh=()=>setRetry(n=>n+1);window.addEventListener("catalog:invalidate",refresh);window.addEventListener("account:cleared",refresh);return()=>{window.removeEventListener("catalog:invalidate",refresh);window.removeEventListener("account:cleared",refresh);};},[]);
  const indexed=useMemo(()=>{
   const merged=new Map();
   for(const track of [...tracks,...published]){if(!track?.id||blocked.has(track.uploader_id))continue;const previous=merged.get(track.id);merged.set(track.id,{...previous,...track,cover_art_url:track.cover_art_url||previous?.cover_art_url||""});}
