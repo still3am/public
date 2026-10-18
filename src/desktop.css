@@ -144,7 +144,12 @@
  .public-app .desktop-player-progress:focus-within{outline:2px solid hsl(var(--ring));outline-offset:2px}
  .public-app .desktop-player-content{padding:6px 24px 14px;gap:14px;min-height:74px}
  .public-app .desktop-player-content>button:first-child{max-width:none;min-width:120px}
- .public-app .desktop-player-controls{gap:4px}
+ .public-app .desktop-player-controls{gap:14px;min-width:0}
+ .public-app .desktop-player-transport,.public-app .desktop-player-tools{display:flex;align-items:center;gap:4px;flex-shrink:0}
+ .public-app .desktop-player-tools{margin-left:auto}
+ .public-app .desktop-player-volume{min-width:0}
+ .public-app .desktop-player-volume input{height:26px;cursor:pointer}
+ .public-app .desktop-player-volume input:focus-visible{outline:2px solid hsl(var(--ring));outline-offset:4px;border-radius:5px}
  .public-app .desktop-player-controls button{min-width:34px;min-height:34px}
  .public-app .desktop-player-controls button[aria-pressed=true]{background:hsl(var(--foreground)/.1)}
  .public-app .desktop-player-content img{width:48px;height:48px}
@@ -210,7 +215,8 @@
  .public-app .desktop-workspace>.app-content{--app-gutter:48px}
  .public-app .shared-song-shelf{grid-auto-columns:calc(33.333% - 20px)}
  .public-app .admin-metrics{grid-template-columns:repeat(4,minmax(0,1fr))}
- .public-app .desktop-player-controls{gap:8px}
+ .public-app .desktop-player-controls{gap:32px}
+ .public-app .desktop-player-transport,.public-app .desktop-player-tools{gap:8px}
 }
 @media(min-width:768px) and (max-width:1100px){
  .desktop-header-context>span:first-of-type,.desktop-search-trigger kbd{display:none}
@@ -221,7 +227,11 @@
  .public-app .library-collection-rows>*{padding:14px 10px;grid-template-columns:22px minmax(0,1fr) 12px;gap:6px}
  .public-app .library-collection-rows span{font-size:13px}
  .public-app .admin-settings-grid{grid-template-columns:1fr}
- .public-app .desktop-player-content{padding-inline:16px}
+ .public-app .desktop-player-content{padding-inline:16px;gap:10px}
+ .public-app .desktop-player-content>button:first-child{min-width:100px}
+ .public-app .desktop-player-controls{gap:10px}
+ .public-app .desktop-player-controls button{min-width:30px;min-height:34px;padding:6px}
+ .public-app .desktop-player-transport,.public-app .desktop-player-tools{gap:2px}
 }
 @media(min-width:768px) and (prefers-reduced-motion:reduce){
  .public-app .music-card:hover{transform:none}
