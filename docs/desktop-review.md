@@ -33,13 +33,13 @@ The desktop stylesheet is loaded after the existing styles in main.jsx. Every la
 - Discover, personal music, creator/community, playlists, help, appearance, and profile links.
 - Guest sign-in and join actions; admin and artist links follow account roles.
 - Collapsible rail retains accessible labels.
-- Desktop page-context toolbar and Cmd/Ctrl+K search.
+- Cmd/Ctrl+K search. The toolbar and search-scope buttons were removed through concurrent builder visual edits and those choices are preserved.
 - Shelf arrow buttons disable at the appropriate edges and honor reduced motion.
 
 ## Verification
-- All configured layout routes have a desktop toolbar label.
+- All configured layout routes are accounted for in desktop navigation metadata; the visual toolbar remains removed.
 - Component tests exercise guest/member/admin navigation, keyboard search, shelf boundaries and reduced motion.
 - CSS parser check verifies that new layout rules cannot apply below the desktop breakpoint.
-- Existing playlist, onboarding, search and playback regression tests run separately.
+- Existing playlist, onboarding and playback regression tests pass. The older search-recovery test stops at an unstubbed catalogCache import before executing; no search backend code was changed in this pass.
 - The public browser was used to review the earlier published desktop Home. It still serves the earlier published bundle; the latest code is saved for Base44 preview/publishing. Signed-in/admin live screens were reviewed in source, not authenticated in the browser.
 - No database, permissions, moderation, or integration-credit behavior is changed.
