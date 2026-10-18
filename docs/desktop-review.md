@@ -19,7 +19,7 @@ The desktop stylesheet is loaded after the existing styles in main.jsx. Every la
 | Upload / Your uploads / Unfinished uploads | Wider form/list workspace, sticky batch toolbar, comfortable editing rows and progressively rendered upload cards with full playback queues |
 | Artist dashboard | Wider analytics workspace and larger chart panels |
 | Admin | Desktop section navigation, offset sticky controls, adaptive metric and settings grids |
-| Notifications | Wider readable activity list and bounded shared-track cards |
+| Notifications | Desktop sticky activity filter rail, search across loaded sender/song/message fields, wider readable activity list, two-column shared/music cards on wide screens, accessible counts and recoverable error states; older-page access stays available when filtering |
 | Suggestions | Side-by-side sticky composer and community feed on wide screens, search/category filters and accessible sort state |
 | Listening room | Wider room columns and sticky community pane |
 | Song transitions | Bounded transition settings panel and larger heading; profile Settings opens a wider grouped two-column dialog on desktop |
