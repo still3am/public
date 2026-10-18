@@ -139,9 +139,10 @@ export default function Search() {
 
         
         {/* Desktop people search; mobile uses the expanding bottom field. */}
-        <div className={`relative mb-6 max-w-2xl ${peopleMode ? "hidden md:block" : "hidden"}`}>
+        <div className="desktop-page-search relative mb-6 max-w-2xl hidden md:block">
           <SearchIcon size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-foreground/40 pointer-events-none" />
           <input
+            data-desktop-search
             value={q}
             onChange={(e) => {updateQuery(e.target.value);setGenre(null);}}
             aria-label={peopleMode ? "Search people by name" : "Search tracks, artists, people"} placeholder={peopleMode ? "Search people by name…" : "Search tracks, artists, people…"}
