@@ -173,6 +173,16 @@
  .public-app .notifications-page .notification-content{padding:20px;gap:18px}
  .public-app .notifications-page .notification-track{max-width:540px}
  .public-app .notifications-page .view-switch{justify-content:flex-start;max-width:fit-content}
+ .public-app .notifications-results{min-width:0}
+ .public-app .notifications-search{display:flex;align-items:center;gap:12px;padding:0 14px;border:1px solid hsl(var(--border));border-radius:16px;background:hsl(var(--card));min-height:50px}
+ .public-app .notifications-search>svg{flex-shrink:0;color:hsl(var(--muted-foreground))}
+ .public-app .notifications-search input{min-width:0;flex:1;padding:14px 0;background:transparent;border:0;outline:none;font-size:14px}
+ .public-app .notifications-search:focus-within{outline:2px solid hsl(var(--ring));outline-offset:3px}
+ .public-app .notifications-search button{width:32px;height:38px;display:grid;place-items:center;border-radius:50%}
+ .public-app .notifications-count{font-size:12px;color:hsl(var(--muted-foreground));margin:16px 0}
+ .public-app .notification-item{border:1px solid hsl(var(--border)/.65);border-radius:20px;overflow:hidden}
+ .public-app .notification-item:focus-within{border-color:hsl(var(--ring))}
+ .public-app .notification-load-more{min-height:44px;padding-inline:22px;margin-top:24px}
  .public-app .page-surface[data-page=suggestions] .collection-page{max-width:960px;margin-inline:auto}
  .public-app .uploads-page,.public-app .page-surface[data-page=unfinished-uploads]>div{max-width:1240px}
  .public-app .upload-page{max-width:1000px}
@@ -228,6 +238,12 @@
  .public-app .music-card:focus-within{outline:2px solid hsl(var(--ring));outline-offset:4px;border-radius:14px}
 }
 @media(min-width:1024px){
+ .public-app .page-surface[data-page=notifications] .notifications-page{max-width:1180px}
+ .public-app .notifications-workspace{display:grid;grid-template-columns:160px minmax(0,1fr);gap:32px;align-items:start}
+ .public-app .notifications-toolbar{position:sticky;top:24px}
+ .public-app .notifications-toolbar .view-switch{display:grid;grid-template-columns:1fr;width:100%;max-width:none;border-radius:18px;padding:6px;gap:4px}
+ .public-app .notifications-toolbar .view-switch button{justify-content:flex-start;text-align:left;min-height:44px;padding-inline:14px;border-radius:12px}
+ .public-app .notifications-toolbar>div:last-child button{min-height:44px;padding:10px}
  .profile-settings-dialog .profile-settings-panel{max-width:880px}
  .profile-settings-panel .profile-settings-groups{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));align-items:start;gap:28px 24px}
  .profile-settings-panel .profile-settings-groups>*{margin-top:0}
@@ -291,6 +307,10 @@
  .weather-experience .weather-music-settings{max-width:660px;padding:32px}
 }
 @media(min-width:1280px){
+ .public-app .notifications-grid[data-view=shared],.public-app .notifications-grid[data-view=music]{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;align-items:start}
+ .public-app .notifications-grid[data-view=shared]>.notification-item,.public-app .notifications-grid[data-view=music]>.notification-item{margin-top:0}
+ .public-app .notifications-grid .notification-track{padding:12px;gap:12px}
+ .public-app .notifications-grid .notification-track>div:first-child{width:52px;height:52px}
  .full-player-screen .full-player-layout{width:100%;max-width:1580px;margin-inline:auto;gap:clamp(24px,4vw,72px);padding-inline:clamp(24px,4vw,70px)}
  .full-player-screen .full-player-main{padding-inline:20px;max-width:600px}
  .full-player-screen .full-player-lyrics{width:clamp(330px,32vw,480px);margin-bottom:12px}
