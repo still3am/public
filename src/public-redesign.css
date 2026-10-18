@@ -406,6 +406,32 @@ html.dark {
  .release-page .release-toolbar .release-round svg { width:19px;height:19px; }
  .release-page .release-toolbar-actions { gap:6px;padding:2px; }
 }
+/* Public Record artist directory: real catalog artwork on every screen. */
+.public-app .record-directory-intro { padding-bottom:10px; }
+.public-app .record-directory-count { display:inline-block;margin-top:18px;font-size:12px;color:hsl(var(--muted-foreground)); }
+.public-app .directory-page [data-key] { margin-bottom:26px; }
+.public-app .directory-page [data-key]>div:last-child { gap:12px; }
+.public-app .directory-page [data-key] a.record-directory-card { display:flex;align-items:center;gap:16px;min-width:0;min-height:104px;padding:14px;border:1px solid hsl(var(--border));border-radius:22px;background:hsl(var(--card));text-decoration:none;transition:background-color .18s,border-color .18s; }
+.public-app .record-directory-card:hover { background:hsl(var(--accent));border-color:hsl(var(--foreground)/.25); }
+.public-app .record-directory-card:focus-visible { outline:2px solid hsl(var(--foreground));outline-offset:3px; }
+.public-app .record-artwork { width:76px;height:76px;flex:0 0 76px;display:grid;place-items:center;overflow:hidden;border-radius:18px;background:hsl(var(--muted)); }
+.public-app .record-artwork img { width:100%;height:100%;object-fit:cover; }
+.public-app .record-artwork>span { font-size:28px;font-weight:650;color:hsl(var(--muted-foreground)); }
+.public-app .record-directory-identity { display:flex;flex:1;flex-direction:column;gap:7px;min-width:0; }
+.public-app .record-directory-name { font-size:17px;font-weight:650;line-height:1.3;letter-spacing:-.025em;overflow-wrap:anywhere; }
+.public-app .record-directory-meta { font-size:12px;color:hsl(var(--muted-foreground)); }
+.public-app .record-directory-arrow { flex-shrink:0;color:hsl(var(--muted-foreground)); }
+@media(max-width:767px) {
+ .public-app .directory-page [data-key]>div:last-child { display:grid;grid-template-columns:minmax(0,1fr);gap:10px;margin-top:10px; }
+ .public-app .directory-page [data-key] a.record-directory-card { gap:12px;min-height:88px;padding:12px;border-radius:18px; }
+ .public-app .record-artwork { width:62px;height:62px;flex-basis:62px;border-radius:14px; }
+ .public-app .record-directory-name { font-size:16px; }
+ .public-app .record-directory-intro h1 { font-size:clamp(30px,8vw,42px); }
+}
+@media(min-width:768px) {
+ .public-app .directory-page [data-key]>div:last-child { gap:14px;margin-top:12px; }
+}
+@media(prefers-reduced-motion:reduce) { .public-app .record-directory-card { transition:none; } }
 /* Personal profiles share the artist header but keep their own music and identity. */
 .artwork-content .profile-redesigned { max-width:none; }
 .profile-redesigned .profile-overview { display:block;margin:0 calc(-1 * var(--app-gutter)) 30px; }
