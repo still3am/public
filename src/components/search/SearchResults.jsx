@@ -18,24 +18,24 @@ function SectionTitle({ children, count }) {
 /** @param {any} props */
 export default function SearchResults({ tracks = [], artists = [], people = [], playlists = [], dimmed }) {
   return (
-    <div className={`space-y-8 transition-opacity ${dimmed ? "opacity-60" : "opacity-100"}`}>
+    <div aria-busy={!!dimmed} className={`search-results-workspace space-y-8 transition-opacity ${dimmed ? "opacity-60" : "opacity-100"}`}>
       {artists.length > 0 &&
-      <div>
+      <section className="search-result-section search-result-artists" aria-label="Artists">
           <SectionTitle count={artists.length}>Artists</SectionTitle>
-          <div className="space-y-1">
+          <div className="search-result-rows space-y-1">
             {artists.map((a) =>
           <ArtistRow key={a.id} artist={a} />
           )}
           </div>
-        </div>
+        </section>
       }
 
       {people.length > 0 &&
-      <div>
+      <section className="search-result-section search-result-people" aria-label="People">
           <SectionTitle count={people.length}>
             <Users size={14} /> People
           </SectionTitle>
-          <div className="space-y-1">
+          <div className="search-result-rows space-y-1">
             {people.map((u) =>
           <Link
             key={u.id}
@@ -56,29 +56,29 @@ export default function SearchResults({ tracks = [], artists = [], people = [], 
               </Link>
           )}
           </div>
-        </div>
+        </section>
       }
 
       {playlists.length > 0 &&
-      <div>
+      <section className="search-result-section search-result-playlists" aria-label="Playlists">
           <SectionTitle count={playlists.length}>Playlists</SectionTitle>
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-1">
+          <div className="search-result-grid grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-1">
             {playlists.map((pl) =>
           <PlaylistCard key={pl.id} playlist={pl} />
           )}
           </div>
-        </div>
+        </section>
       }
 
       {tracks.length > 0 &&
-      <div>
+      <section className="search-result-section search-result-tracks" aria-label="Songs">
           <SectionTitle count={tracks.length}>Tracks</SectionTitle>
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-1">
+          <div className="search-result-grid grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-1">
             {tracks.map((t) =>
           <TrackCard key={t.id} track={t} queue={tracks} />
           )}
           </div>
-        </div>
+        </section>
       }
     </div>);
 
