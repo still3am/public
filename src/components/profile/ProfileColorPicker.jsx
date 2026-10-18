@@ -2,10 +2,12 @@ import {useRef,useState} from "react";
 import {Check,Loader2,Plus,X} from "lucide-react";
 import {Dialog,DialogContent,DialogHeader,DialogTitle,DialogDescription} from "@/components/ui/dialog";
 import MotionGradient from "@/components/MotionGradient";
+import {PUBLIC_GRADIENT_COLORS} from "@/components/BrandGradient";
 import ProfileColorWheel from "./ProfileColorWheel";
 import "./profile-colors.css";
 
 const PRESETS=[
+ {name:"PUBLIC",colors:[...PUBLIC_GRADIENT_COLORS]},
  {name:"Midnight",colors:["#172768","#9854ef","#56c9e2"]},
  {name:"Sunset",colors:["#f25340","#ffc179","#ae327d"]},
  {name:"Forest",colors:["#123f3c","#a9cd6b","#26a78c"]},
@@ -51,7 +53,7 @@ export default function ProfileColorPicker({coverUrl,colors,loading,value,onPrev
     <div className="profile-color-preview">
      {preview.length>0&&<MotionGradient colors={preview} motion={draft.motion} speed={draft.speed} className="absolute inset-0" style={{borderRadius:"inherit",zIndex:-2}}/>}
      {coverUrl&&<img src={coverUrl} alt="" onError={event=>{event.currentTarget.style.display="none";}}/>}
-     <div><strong>Make it yours</strong><span>Live profile preview</span></div>
+     <div><strong>Make it yours</strong><span>{draft.motion==="flow"?"PUBLIC Flow · Live preview":"Still · Live preview"}</span></div>
     </div>
     <div className="profile-color-modes" role="group" aria-label="Profile background mode">
      {[["auto","Automatic"],["custom","Custom"],["off","No color"]].map(([mode,label])=><button type="button" key={mode} disabled={saving} aria-pressed={draft.mode===mode} onClick={()=>update({...draft,mode,colors:mode==="custom"?customColors:draft.colors})}>{label}</button>)}
