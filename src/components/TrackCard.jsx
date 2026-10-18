@@ -1,3 +1,4 @@
+import OverflowText from "@/components/OverflowText";
 import {useLongPressMenu} from "@/hooks/useLongPressMenu";
 import { Play, Check } from "lucide-react";
 import TrackOptionsMenu from "@/components/track/TrackOptionsMenu";
@@ -140,7 +141,7 @@ function TrackCardMeta({ track, isCurrent }) {
     <>
       <div className="flex items-center gap-1.5">
         <span className={`truncate text-[13px] sm:text-sm font-semibold leading-5 ${isCurrent ? "text-foreground" : ""}`}>
-          {track.title}
+          <OverflowText text={track.title}/>
         </span>
         {track.explicit && (
           <span className="shrink-0 text-[8px] font-extrabold rounded bg-foreground/15 text-foreground/60 px-1 leading-none py-[1px]">
@@ -149,7 +150,7 @@ function TrackCardMeta({ track, isCurrent }) {
         )}
       </div>
       <div className="text-xs text-muted-foreground truncate mt-1">
-        {track.artist || track.uploader_name || "Unknown"}
+        <OverflowText text={track.artist || track.uploader_name || "Unknown"}/>
       </div>
     </>
   );

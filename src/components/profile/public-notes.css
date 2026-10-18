@@ -152,3 +152,5 @@
 .public-note-viewer .public-note-card:has(.public-note-copy):not(:has(.public-note-art)){grid-template-columns:minmax(0,1fr)}
 .public-note-viewer .public-note-card:not(:has(.public-note-art)) .public-note-bubble{font-size:22px;line-height:1.5}
 
+
+.public-note-mini-meta>strong,.public-note-mini-meta>small{width:100%;text-overflow:clip}.public-note-mini-meta .overflow-text{line-height:1.35}

@@ -1,3 +1,4 @@
+import OverflowText from "@/components/OverflowText";
 import { useEffect, useRef, useState } from "react";
 import "./public-notes.css";
 import { base44, publicNoteDatabase } from "@/api/base44Client";
@@ -22,7 +23,7 @@ function Cover({ url }) {
   return source && !failed ? <img src={source} alt="" onError={() => setFailed(true)} /> : <ImageIcon size={18} />;
 }
 function SongNoteContent({track,caption}) {
-  return <span className="public-note-song-content"><span className="public-note-mini-cover"><Cover url={track.cover_art_url} /></span><span className="public-note-mini-meta"><strong>{track.title}</strong><small>{track.artist || track.uploader_name || "PUBLIC artist"}</small>{caption && <span>{caption}</span>}</span></span>;
+  return <span className="public-note-song-content"><span className="public-note-mini-cover"><Cover url={track.cover_art_url} /></span><span className="public-note-mini-meta"><strong><OverflowText text={track.title}/></strong><small><OverflowText text={track.artist || track.uploader_name || "PUBLIC artist"}/></small>{caption && <span>{caption}</span>}</span></span>;
 }
 function bubbleInk(colors) {
   const values=colors.filter(color=>/^#[0-9a-f]{6}$/i.test(color)).slice(0,3);

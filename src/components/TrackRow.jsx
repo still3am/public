@@ -1,3 +1,4 @@
+import OverflowText from "@/components/OverflowText";
 import {useLongPressMenu} from '@/hooks/useLongPressMenu';
 import { Play, Pause } from "lucide-react";
 import { Link } from "react-router-dom";
@@ -59,7 +60,7 @@ export default function TrackRow({
           to={`/track/${track.id}`}
           className={`text-sm font-medium truncate block ${isCurrent ? "text-foreground" : ""}`}
         >
-          {track.title}
+          <OverflowText text={track.title}/>
         </Link>
         {(() => {
           const artist = albumArtist || track.artist;

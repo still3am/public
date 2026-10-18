@@ -15,7 +15,7 @@ const {requestPublicNote,savePublicNote,publicNoteError}=globalThis.__noteAction
 const React=globalThis.__React,useState=globalThis.__state,useEffect=()=>{},useRef=initial=>({current:initial});
 const publicNoteDatabase=undefined;
 const base44={functions:{invoke:(...args)=>globalThis.__api(...args)}},useAuth=()=>({user:globalThis.__user}),usePlayer=()=>globalThis.__player,useCoverUrl=x=>x,useCoverPalette=()=>({colors:[]});
-const NoteEmojiPicker="emoji-picker",MotionGradient="gradient",TrackPickerSheet="picker",Dialog="dialog",DialogContent="content",DialogHeader="header",DialogTitle="h1",DialogDescription="p";
+const OverflowText="overflow-text",NoteEmojiPicker="emoji-picker",MotionGradient="gradient",TrackPickerSheet="picker",Dialog="dialog",DialogContent="content",DialogHeader="header",DialogTitle="h1",DialogDescription="p";
 const Music2=()=>null,ImageIcon=Music2,Plus=Music2,Play=Music2,Pause=Music2,Loader2=Music2;
 `;
 const code=ts.transpileModule(stubs+fs.readFileSync("src/components/profile/PublicNotes.jsx","utf8").replace(/^import[^;]+;/gm,""),{compilerOptions:{jsx:ts.JsxEmit.React,target:ts.ScriptTarget.ES2022,module:ts.ModuleKind.ESNext}}).outputText;
@@ -68,7 +68,7 @@ assert.equal(find(tree,n=>n.props?.className==="public-note-avatar-bubble is-flo
 assert.equal(find(tree,n=>n.props?.className==="public-note-bubble-flow").length,1,"cover-flow note renders animated background");
 const metadata=find(tree,n=>typeof n.type==="function"&&n.type.name==="SongNoteContent")[0];
 const content=metadata.type(metadata.props);
-assert.equal(find(content,n=>n.type==="small")[0].props.children,"Artist","artist is visible in the avatar bubble");
+assert.equal(find(content,n=>n.type==="small")[0].props.children.props.text,"Artist","artist is visible in the avatar bubble");
 assert.equal(find(content,n=>typeof n.type==="function"&&n.type.name==="Cover")[0].props.url,"cover.jpg","bubble uses the song cover");
 tree=render([note,false,"",true,false,note.track,"",false,Date.now(),false,"classic"]);
 find(tree,n=>n.type==="button"&&n.props.children==="Cover Flow")[0].props.onClick();

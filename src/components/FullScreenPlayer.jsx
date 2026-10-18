@@ -1,3 +1,4 @@
+import OverflowText from "@/components/OverflowText";
 import { copyText } from '@/lib/shareLink';
 import { useState, useRef, useEffect, useCallback } from "react";
 import { usePlayer } from "@/context/PlayerContext";
@@ -284,8 +285,8 @@ export default function FullScreenPlayer({ onClose }) {
           {showingLyrics && <button type="button" onClick={() => setLyricsMode(false)} aria-label="Return to artwork and playback controls" title="Show artwork" className="xl:hidden flex items-center gap-3 min-w-0 w-full text-left bg-transparent rounded-lg">
             {coverUrl && !coverFailed && <img src={coverUrl} alt="" className="w-10 h-10 rounded-lg object-cover shrink-0" />}
             <div className="min-w-0 flex-1">
-              <p className="text-sm font-bold truncate">{t.title}</p>
-              <p className="text-xs text-white/60 truncate mt-0.5">{t.artist || t.uploader_name || "Unknown"}</p>
+              <p className="text-sm font-bold truncate"><OverflowText text={t.title}/></p>
+              <p className="text-xs text-white/60 truncate mt-0.5"><OverflowText text={t.artist || t.uploader_name || "Unknown"}/></p>
             </div>
 
           </button>}
@@ -349,13 +350,13 @@ export default function FullScreenPlayer({ onClose }) {
           {/* metadata */}
           <div className={`${showingLyrics ? "hidden xl:flex" : "flex"} items-start justify-between gap-3 mt-1 mb-4 shrink-0`}>
             <div className="min-w-0">
-              <h2 className="text-xl md:text-2xl xl:text-4xl font-extrabold tracking-tight truncate">{t.title}</h2>
+              <h2 className="text-xl md:text-2xl xl:text-4xl font-extrabold tracking-tight truncate"><OverflowText text={t.title}/></h2>
               <Link
                 to={`/track/${t.id}`}
                 onClick={onClose}
                 className="text-sm md:text-base opacity-70 hover:opacity-100 truncate block mt-1">
 
-                {t.artist || t.uploader_name || "Unknown"}
+                <OverflowText text={t.artist || t.uploader_name || "Unknown"}/>
               </Link>
             </div>
             {hasLyrics && !showLyricsPanel &&
