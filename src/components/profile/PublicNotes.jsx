@@ -37,6 +37,7 @@ export default function PublicNotes({ profileId, isOwn, active = true, userTrack
     setLoading(true); setError("");
     try {
       const saved = await request("readNote", [profileId]);
+      if (saved && (!saved.track?.id || !saved.track_id || !Number.isFinite(Date.parse(saved.expires_at)))) throw Error("Invalid note");
       if (alive.current && current === version.current) { setNote(saved); setNow(Date.now()); }
     } catch { if (alive.current && current === version.current) setError("Couldn’t load this note."); }
     finally { if (alive.current && current === version.current) setLoading(false); }
@@ -51,6 +52,10 @@ export default function PublicNotes({ profileId, isOwn, active = true, userTrack
     return () => { version.current++; clearInterval(timer); window.removeEventListener("focus", refresh); document.removeEventListener("visibilitychange", refresh); };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [profileId, user?.id, active]);
+  useEffect(() => {
+    if (!active || !valid) setViewing(false);
+    if (!active) { setEditing(false); setPicker(false); }
+  }, [active, valid]);
   function open() { setViewing(false); setDraft(valid ? note.track : null); setCaption(valid ? note.caption || "" : ""); setError(""); setEditing(true); }
   async function save(remove = false) {
     if (lock.current || !isOwn || !user?.id || user.id !== profileId || (!remove && !draft)) return;
@@ -63,13 +68,13 @@ export default function PublicNotes({ profileId, isOwn, active = true, userTrack
       if (alive.current) setError(e?.response?.status === 422 ? e.response.data?.error || "Check your note and try again." : remove ? "Couldn’t remove your note. Please retry." : "Couldn’t save your note. Please retry.");
     } finally { lock.current = false; if (alive.current) { setBusy(false); setLoading(false); } }
   }
-  if (!user?.id || (!isOwn && !valid && !error)) return null;
+  if (!user?.id || (!isOwn && !valid)) return null;
   const playing = valid && player.currentTrack?.id === note.track_id && player.isPlaying;
   return <div className="public-notes public-notes-on-avatar" aria-label="PUBLIC Notes">
     {valid ? <button type="button" className="public-note-avatar-bubble" aria-label={"View PUBLIC Note: " + note.track.title} onClick={() => setViewing(true)}>
       <strong><Music2 size={13} /><span>{note.track.title}</span></strong>
       <span>{note.caption || note.track.artist || "On my mind…"}</span>
-    </button> : isOwn ? <button type="button" className="public-note-avatar-bubble public-note-avatar-add" disabled={busy || loading} onClick={error ? load : open}>{loading ? <Loader2 size={16} className="animate-spin" /> : <Plus size={15} />}<span>{loading ? "Loading…" : error ? "Retry note" : "Add a note"}</span></button> : error ? <button type="button" className="public-note-avatar-bubble" onClick={load}>Retry note</button> : null}
+    </button> : isOwn ? <button type="button" className="public-note-avatar-bubble public-note-avatar-add" disabled={busy || loading} aria-label="Add a PUBLIC Note" onClick={open}>{loading ? <Loader2 size={16} className="animate-spin" /> : <Plus size={15} />}<span>{loading ? "Loading…" : "Add note"}</span></button> : null}
     {viewing && valid && <Dialog open onOpenChange={setViewing}><DialogContent className="public-note-dialog"><DialogHeader><DialogTitle>PUBLIC Note</DialogTitle><DialogDescription>{Math.max(1, Math.ceil((Date.parse(note.expires_at) - now) / 3600000))}h left · Shared on this profile</DialogDescription></DialogHeader>
       <div className="public-note-card">
         <div className="public-note-art"><MotionGradient className="public-note-flow" colors={colors.length ? colors : ["#111111","#eeeeee","#555555"]} active={active && viewing} /><div className="public-note-cover"><Cover url={note.track.cover_art_url} /></div></div>
@@ -78,7 +83,7 @@ export default function PublicNotes({ profileId, isOwn, active = true, userTrack
       </div>
       {isOwn && <button type="button" className="public-note-post" onClick={open}>Edit note</button>}
     </DialogContent></Dialog>}
-    {editing && <Dialog open onOpenChange={value => { if (!value && !busy) { setEditing(false); setPicker(false); } }}><DialogContent className="public-note-dialog"><DialogHeader><DialogTitle>{valid ? "Your PUBLIC Note" : "Leave a PUBLIC Note"}</DialogTitle><DialogDescription>One song. A little thought. Visible to members viewing your profile for 24 hours.</DialogDescription></DialogHeader>
+    {editing && <Dialog open={!picker} onOpenChange={value => { if (!value && !busy && !picker) { setEditing(false); setPicker(false); } }}><DialogContent className="public-note-dialog"><DialogHeader><DialogTitle>{valid ? "Your PUBLIC Note" : "Leave a PUBLIC Note"}</DialogTitle><DialogDescription>One song. A little thought. Visible to members viewing your profile for 24 hours.</DialogDescription></DialogHeader>
       <button type="button" className="public-note-song-choice" disabled={busy} onClick={() => setPicker(true)}><span className="public-note-choice-art"><Cover url={draft?.cover_art_url} /></span><span><strong>{draft?.title || "Choose a song"}</strong><small>{draft?.artist || "Find something that feels like you."}</small></span><span className="text-xs font-semibold">{draft ? "Change" : "Choose"}</span></button>
       <label className="public-note-label" htmlFor="public-note-caption">Add a thought <span>Optional</span></label><textarea id="public-note-caption" maxLength={80} rows={3} placeholder="This one’s on my mind…" value={caption} disabled={busy} onChange={e => setCaption(e.target.value)} /><div className="public-note-counter">{caption.length}/80</div>
       {error && <p role="alert" className="public-note-error">{error}</p>}
