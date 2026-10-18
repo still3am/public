@@ -412,7 +412,7 @@ html.dark {
 .public-app .directory-page [data-key] { margin-bottom:26px; }
 .public-app .directory-page [data-key]>div:last-child { gap:12px; }
 .public-app .directory-page [data-key] a.record-directory-card { display:flex;align-items:center;gap:16px;min-width:0;min-height:104px;padding:14px;border:1px solid hsl(var(--border));border-radius:22px;background:hsl(var(--card));text-decoration:none;transition:background-color .18s,border-color .18s; }
-.public-app .record-directory-card:hover { background:hsl(var(--accent));border-color:hsl(var(--foreground)/.25); }
+.public-app .directory-page [data-key] a.record-directory-card:hover { background:hsl(var(--accent));border-color:hsl(var(--foreground)/.25); }
 .public-app .record-directory-card:focus-visible { outline:2px solid hsl(var(--foreground));outline-offset:3px; }
 .public-app .record-artwork { width:76px;height:76px;flex:0 0 76px;display:grid;place-items:center;overflow:hidden;border-radius:18px;background:hsl(var(--muted)); }
 .public-app .record-artwork img { width:100%;height:100%;object-fit:cover; }
