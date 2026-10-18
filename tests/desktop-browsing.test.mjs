@@ -29,4 +29,25 @@ const TrackCard=({track,queue})=>React.createElement("p",{"data-queue-size":queu
 const html=renderToStaticMarkup(React.createElement(results.default,{dimmed:true,artists:[{id:"a",name:"Artist"}],people:[{id:"u",display_name:"Listener"}],playlists:[{id:"p",name:"Playlist"}],tracks:[{id:"t",title:"Song"},{id:"t2",title:"Another"}]}));
 for(const label of ["Artists","People","Playlists","Songs"])assert.ok(html.includes('aria-label="'+label+'"'));
 assert.match(html,/aria-busy="true"/);assert.match(html,/data-queue-size="2"/);assert.doesNotMatch(html,/<h[1-6]/,"removed result headings stay removed");
-console.log("PASS progressive library rendering, manual fallback, filter reset, stable queue indices, accessible result groups and preserved visual edits");
+const calls=[];
+globalThis.__collectionCalls=calls;
+globalThis.__collectionPlayer={queue:items.slice(0,2),currentTrack:items[1],isPlaying:true,togglePlay:()=>calls.push("toggle"),setShuffle:value=>calls.push(["shuffle",value]),playTrackAt:(queue,index)=>calls.push(["play",queue,index])};
+const spotlight=await load("src/components/CollectionSpotlight.jsx",`
+const React=globalThis.__React,usePlayer=()=>globalThis.__collectionPlayer,useCoverUrl=()=>null;
+const Play=()=>null,Pause=Play,Shuffle=Play,Music2=Play,Link="a";
+`);
+const collection=items.slice(0,2);
+const props={tracks:collection,title:"Test collection",description:"Description",eyebrow:"Music"};
+const buttons=tree=>tree.props.children[0].props.children[3].props.children;
+let hero=spotlight.default(props);
+assert.equal(buttons(hero)[0].props.children[1],"Pause");
+buttons(hero)[0].props.onClick();assert.deepEqual(calls,["toggle"],"active collection toggles without resetting the queue");
+globalThis.__collectionPlayer.isPlaying=false;
+hero=spotlight.default(props);assert.equal(buttons(hero)[0].props.children[1],"Resume");
+buttons(hero)[1].props.onClick();assert.deepEqual(calls.slice(1),[["shuffle",true],["play",collection,0]],"shuffle starts the complete visible collection");
+globalThis.__collectionPlayer.queue=[...collection].reverse();
+hero=spotlight.default(props);assert.equal(buttons(hero)[0].props.children[1],"Play","a different queue order is not treated as the active collection");
+buttons(hero)[0].props.onClick();assert.deepEqual(calls.slice(-2),[["shuffle",false],["play",collection,0]]);
+hero=spotlight.default({...props,tracks:[]});assert.equal(buttons(hero)[0].props.disabled,true);
+assert.equal(spotlight.default(props).props.children[1].props.to,"/track/t0","featured artwork opens track details");
+console.log("PASS progressive rendering, filter reset, stable queue indices, accessible search groups, preserved visual edits, collection pause/resume and complete shuffle queues");
