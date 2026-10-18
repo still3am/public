@@ -374,7 +374,10 @@ export default function Profile({ ownProfileTab = false }) {
         {/* Identity, stats, actions */}
         <div className="profile-details relative z-10 px-5 md:px-10 pb-5 md:pb-8 pt-5 md:pt-8">
           <div className="profile-identity-row flex flex-col items-center md:flex-row md:items-center md:justify-center gap-4 md:gap-8">
-            <ProfileAvatar user={{...profile,avatar_url:avatarUrl}} editing={editMode} busy={uploadingAvatar||saving} onUpload={uploadAvatar}/>
+            <div className="profile-avatar-notes">
+              {!editMode && <PublicNotes key={[targetId,me?.id].join(":")} profileId={targetId} isOwn={isOwn} active={isCurrentPage} userTracks={tracks} />}
+              <ProfileAvatar user={{...profile,avatar_url:avatarUrl}} editing={editMode} busy={uploadingAvatar||saving} onUpload={uploadAvatar}/>
+            </div>
 
             <div className="profile-info flex-1 min-w-0 w-full md:w-auto text-center md:text-left">
               <div className="flex items-baseline gap-2 flex-wrap justify-center md:justify-start">
@@ -577,7 +580,6 @@ export default function Profile({ ownProfileTab = false }) {
       </div>
       {sectionError&&<div className="flex items-center justify-between gap-3 text-xs text-muted-foreground mb-4"><span>Some profile details couldn’t refresh.</span><button type="button" disabled={followingBusy||loading||editMode||saving||uploadingAvatar} onClick={load} className="underline underline-offset-2">Retry</button></div>}
       <div className="profile-content"><section className="profile-music" aria-label="Profile music">
-      {!editMode && <PublicNotes key={[targetId,me?.id].join(":")} profileId={targetId} isOwn={isOwn} profile={profile} active={isCurrentPage} userTracks={tracks} />}
       <div className="profile-song-spotlight">
       <ProfileSong
             trackId={editMode ? form.featured_track_id : profile?.featured_track_id}
