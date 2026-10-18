@@ -35,6 +35,9 @@ export default function PublicNotes({ profileId, isOwn, active = true, userTrack
   const [busy, setBusy] = useState(false), [now, setNow] = useState(Date.now());
   const [viewing, setViewing] = useState(false);
   const [appearance, setAppearance] = useState("classic");
+  const [playbackError, setPlaybackError] = useState("");
+  const editingRef = useRef(false), playLock = useRef(false), noteRef = useRef(null);
+  editingRef.current = editing; noteRef.current = note;
   const version = useRef(0), lock = useRef(false), alive = useRef(true);
   const cover = useCoverUrl(note?.track?.cover_art_url), { colors } = useCoverPalette(cover);
   const draftCover = useCoverUrl(draft?.cover_art_url), { colors: draftColors } = useCoverPalette(draftCover);
@@ -43,7 +46,7 @@ export default function PublicNotes({ profileId, isOwn, active = true, userTrack
   const draftFlowColors = draftColors.length ? draftColors : ["#111111","#eeeeee","#555555"];
   useEffect(() => { alive.current = true; return () => { alive.current = false; version.current++; }; }, []);
   async function load() {
-    if (!profileId || !user?.id || !active || lock.current) { setLoading(false); return; }
+    if (!profileId || !user?.id || !active || lock.current || editingRef.current) { setLoading(false); return; }
     const current = ++version.current;
     setLoading(true); setError("");
     try {
@@ -67,6 +70,22 @@ export default function PublicNotes({ profileId, isOwn, active = true, userTrack
     if (!active || !valid) setViewing(false);
     if (!active) { setEditing(false); setPicker(false); }
   }, [active, valid]);
+  useEffect(() => {
+    if (!active || !note?.expires_at) return;
+    const remaining = Date.parse(note.expires_at) - Date.now();
+    if (!Number.isFinite(remaining)) return;
+    if (remaining <= 0) { setNow(Date.now()); return; }
+    const timer = setTimeout(() => setNow(Date.now()), Math.min(remaining + 20, 2147483647));
+    return () => clearTimeout(timer);
+  }, [active, note?.expires_at]);
+  async function playNote() {
+    if (!valid || !note.track || playLock.current) return;
+    const trackId = note.track.id;
+    playLock.current = true; setPlaybackError("");
+    try { await (player.currentTrack?.id === trackId ? player.togglePlay() : player.playTrackAt([note.track])); }
+    catch { if (alive.current && noteRef.current?.track_id === trackId) setPlaybackError("Couldn’t play this song. Check your connection and try again."); }
+    finally { playLock.current = false; }
+  }
   function open() { setViewing(false); setDraft(valid ? note.track : null); setCaption(valid ? note.caption || "" : ""); setAppearance(valid ? note.appearance || "classic" : "classic"); setError(""); setEditing(true); }
   async function save(remove = false, songOnly = false) {
     if (lock.current || !isOwn || !user?.id || user.id !== profileId || (!remove && !draft && !caption.trim())) return;
@@ -82,7 +101,7 @@ export default function PublicNotes({ profileId, isOwn, active = true, userTrack
   if (!user?.id || (!isOwn && !valid)) return null;
   const playing = valid && player.currentTrack?.id === note.track_id && player.isPlaying;
   return <div className={"public-notes public-notes-on-avatar" + (!valid ? " public-notes-empty" : "")} aria-label="PUBLIC Notes">
-    {valid ? <button type="button" className={"public-note-avatar-bubble" + (note.track && note.appearance === "cover_flow" ? " is-flow" : "")} style={note.track && note.appearance === "cover_flow" ? {color:bubbleInk(flowColors),"--note-tail":flowColors[0]} : undefined} aria-label={"View PUBLIC Note: " + (note.track ? note.track.title + " by " + (note.track.artist || note.track.uploader_name || "PUBLIC artist") : note.caption)} onClick={() => setViewing(true)}>
+    {valid ? <button type="button" className={"public-note-avatar-bubble" + (note.track && note.appearance === "cover_flow" ? " is-flow" : "")} style={note.track && note.appearance === "cover_flow" ? {color:bubbleInk(flowColors),"--note-tail":flowColors[0],"--note-shadow":bubbleInk(flowColors)==="#ffffff"?"#000b":"#fffb"} : undefined} aria-label={"View PUBLIC Note: " + (note.track ? note.track.title + " by " + (note.track.artist || note.track.uploader_name || "PUBLIC artist") : note.caption)} onClick={() => { setPlaybackError(""); setViewing(true); }}>
       {note.track && note.appearance === "cover_flow" && <MotionGradient className="public-note-bubble-flow" colors={flowColors} active={active && !viewing && !editing} />}
       {note.track ? <SongNoteContent track={note.track} caption={note.caption} /> : <span className="public-note-text-only">{note.caption}</span>}
     </button> : isOwn ? <button type="button" className="public-note-create-dot" disabled={busy || loading} aria-label="Add a PUBLIC Note" onClick={open}>{loading ? <Loader2 size={14} className="animate-spin" /> : <Plus size={16} />}</button> : null}
@@ -90,17 +109,18 @@ export default function PublicNotes({ profileId, isOwn, active = true, userTrack
       <div className="public-note-card">
         {note.track && <div className="public-note-art"><MotionGradient className="public-note-flow" colors={flowColors} motion={note.appearance === "cover_flow" ? "flow" : "still"} active={active && viewing} /><div className="public-note-cover"><Cover url={note.track.cover_art_url} /></div></div>}
         <div className="public-note-copy">{note.caption && <div className="public-note-bubble">{note.caption}</div>}{note.track && <><strong>{note.track.title}</strong><span>{note.track.artist || note.track.uploader_name}</span></>}</div>
-        {note.track && <button type="button" className="public-note-play" aria-label={(playing ? "Pause " : "Play ") + note.track.title} onClick={() => player.currentTrack?.id === note.track_id ? player.togglePlay() : player.playTrackAt([note.track])}>{playing ? <Pause size={20} fill="currentColor" /> : <Play size={20} fill="currentColor" />}</button>}
+        {note.track && <button type="button" className="public-note-play" aria-label={(playing ? "Pause " : "Play ") + note.track.title} onClick={playNote}>{playing ? <Pause size={20} fill="currentColor" /> : <Play size={20} fill="currentColor" />}</button>}
       </div>
+      {playbackError && <p className="public-note-error" role="alert">{playbackError}</p>}
       {isOwn && <button type="button" className="public-note-post" onClick={open}>Edit note</button>}
     </DialogContent></Dialog>}
     {editing && <Dialog open={!picker} onOpenChange={value => { if (!value && !busy && !picker) { setEditing(false); setPicker(false); } }}><DialogContent className="public-note-dialog"><DialogHeader><DialogTitle>{valid ? "Your PUBLIC Note" : "Leave a PUBLIC Note"}</DialogTitle><DialogDescription>Share a thought, a song, or both. Visible on your profile for 24 hours.</DialogDescription></DialogHeader>
       <button type="button" className="public-note-song-choice" disabled={busy} onClick={() => setPicker(true)}><span className="public-note-choice-art"><Cover url={draft?.cover_art_url} /></span><span><strong>{draft?.title || "Add a song (optional)"}</strong><small>{draft?.artist || "Find something that feels like you."}</small></span><span className="text-xs font-semibold">{draft ? "Change" : "Choose"}</span></button>
       {draft && <><button type="button" className="public-note-clear-song" disabled={busy} onClick={() => setDraft(null)}>Remove song</button>
         <fieldset className="public-note-appearance" disabled={busy}><legend>Song note style</legend><div role="group" aria-label="Song note appearance"><button type="button" aria-pressed={appearance === "classic"} onClick={() => setAppearance("classic")}>Classic</button><button type="button" aria-pressed={appearance === "cover_flow"} onClick={() => setAppearance("cover_flow")}>Cover Flow</button></div></fieldset>
-        <div className="public-note-preview-stage" aria-label="Song note preview"><div className={"public-note-avatar-bubble public-note-preview" + (appearance === "cover_flow" ? " is-flow" : "")} style={appearance === "cover_flow" ? {color:bubbleInk(draftFlowColors),"--note-tail":draftFlowColors[0]} : undefined}>{appearance === "cover_flow" && <MotionGradient className="public-note-bubble-flow" colors={draftFlowColors} active={active && editing && !picker} />}<SongNoteContent track={draft} caption={caption} /></div></div>
+        <div className="public-note-preview-stage" aria-label="Song note preview"><div className={"public-note-avatar-bubble public-note-preview" + (appearance === "cover_flow" ? " is-flow" : "")} style={appearance === "cover_flow" ? {color:bubbleInk(draftFlowColors),"--note-tail":draftFlowColors[0],"--note-shadow":bubbleInk(draftFlowColors)==="#ffffff"?"#000b":"#fffb"} : undefined}>{appearance === "cover_flow" && <MotionGradient className="public-note-bubble-flow" colors={draftFlowColors} active={active && editing && !picker} />}<SongNoteContent track={draft} caption={caption} /></div></div>
       </>}
-      <label className="public-note-label" htmlFor="public-note-caption">Add a thought <span>Optional</span></label><textarea id="public-note-caption" maxLength={80} rows={3} placeholder="This one’s on my mind…" value={caption} disabled={busy} onChange={e => setCaption(e.target.value)} /><div className="public-note-counter">{caption.length}/80</div>
+      <label className="public-note-label" htmlFor="public-note-caption">Add a thought <span>Optional</span></label><textarea id="public-note-caption" maxLength={80} rows={3} placeholder="This one’s on my mind…" value={caption} disabled={busy} onChange={e => setCaption(e.target.value)} onKeyDown={e => { if ((e.metaKey || e.ctrlKey) && e.key === "Enter") { e.preventDefault(); save(); } }} /><div className="public-note-counter">{caption.length}/80</div>
       {error && <p role="alert" className="public-note-error">{error}</p>}
       {error.includes("service limit") && draft && <button type="button" disabled={busy} className="public-note-post" onClick={() => save(false, true)}>Share just the song</button>}
       <div className="public-note-composer-actions">{valid && <button type="button" disabled={busy} onClick={() => save(true)}>Remove note</button>}<button type="button" className="public-note-post" disabled={busy || (!draft && !caption.trim())} onClick={() => save()}>{busy ? <Loader2 size={18} className="animate-spin" /> : valid ? "Replace note" : "Share note"}</button></div>
