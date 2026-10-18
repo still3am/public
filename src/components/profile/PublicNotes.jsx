@@ -7,6 +7,7 @@ import { usePlayer } from "@/context/PlayerContext";
 import { useCoverUrl } from "@/hooks/useCoverUrl";
 import { useCoverPalette } from "@/hooks/useCoverPalette";
 import MotionGradient from "@/components/MotionGradient";
+import NoteEmojiPicker from "./NoteEmojiPicker";
 import TrackPickerSheet from "@/components/profile/TrackPickerSheet";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Image as ImageIcon, Plus, Play, Pause, Loader2 } from "lucide-react";
@@ -36,6 +37,7 @@ export default function PublicNotes({ profileId, isOwn, active = true, userTrack
   const [viewing, setViewing] = useState(false);
   const [appearance, setAppearance] = useState("classic");
   const [playbackError, setPlaybackError] = useState("");
+  const [emoji,setEmoji]=useState(""),[emojiOpen,setEmojiOpen]=useState(false);
   const editingRef = useRef(false), playLock = useRef(false), noteRef = useRef(null);
   editingRef.current = editing; noteRef.current = note;
   const version = useRef(0), lock = useRef(false), alive = useRef(true);
@@ -86,12 +88,12 @@ export default function PublicNotes({ profileId, isOwn, active = true, userTrack
     catch { if (alive.current && noteRef.current?.track_id === trackId) setPlaybackError("Couldn’t play this song. Check your connection and try again."); }
     finally { playLock.current = false; }
   }
-  function open() { setViewing(false); setDraft(valid ? note.track : null); setCaption(valid ? note.caption || "" : ""); setAppearance(valid ? note.appearance || "classic" : "classic"); setError(""); setEditing(true); }
+  function open() { setEmoji(valid ? note.emoji || "" : ""); setEmojiOpen(false); setViewing(false); setDraft(valid ? note.track : null); setCaption(valid ? note.caption || "" : ""); setAppearance(valid ? note.appearance || "classic" : "classic"); setError(""); setEditing(true); }
   async function save(remove = false, songOnly = false) {
     if (lock.current || !isOwn || !user?.id || user.id !== profileId || (!remove && !draft && !caption.trim())) return;
     lock.current = true; version.current++; setBusy(true); setError("");
     try {
-      const saved = remove ? await request("removeNote", [profileId]) : await savePublicNote(base44, profileId, { track_id: draft?.id || "", caption: songOnly ? "" : caption, appearance: draft ? appearance : "classic" }, publicNoteDatabase);
+      const saved = remove ? await request("removeNote", [profileId]) : await savePublicNote(base44, profileId, { emoji, track_id: draft?.id || "", caption: songOnly ? "" : caption, appearance: draft ? appearance : "classic" }, publicNoteDatabase);
       if (!remove && (!saved?.id || (saved.track_id ? !saved.track : !saved.caption?.trim()) || !saved.expires_at)) throw Error("Note not confirmed");
       if (alive.current) { setNote(remove ? null : saved); setNow(Date.now()); setEditing(false); }
     } catch (e) {
@@ -103,12 +105,13 @@ export default function PublicNotes({ profileId, isOwn, active = true, userTrack
   return <div className={"public-notes public-notes-on-avatar" + (!valid ? " public-notes-empty" : "")} aria-label="PUBLIC Notes">
     {valid ? <button type="button" className={"public-note-avatar-bubble" + (note.track && note.appearance === "cover_flow" ? " is-flow" : "")} style={note.track && note.appearance === "cover_flow" ? {color:bubbleInk(flowColors),"--note-tail":flowColors[0],"--note-shadow":bubbleInk(flowColors)==="#ffffff"?"#000b":"#fffb"} : undefined} aria-label={"View PUBLIC Note: " + (note.track ? note.track.title + " by " + (note.track.artist || note.track.uploader_name || "PUBLIC artist") : note.caption)} onClick={() => { setPlaybackError(""); setViewing(true); }}>
       {note.track && note.appearance === "cover_flow" && <MotionGradient className="public-note-bubble-flow" colors={flowColors} active={active && !viewing && !editing} />}
+      {note.emoji && <span className="public-note-emoji-badge" aria-hidden="true">{note.emoji}</span>}
       {note.track ? <SongNoteContent track={note.track} caption={note.caption} /> : <span className="public-note-text-only">{note.caption}</span>}
     </button> : isOwn ? <button type="button" className="public-note-create-dot" disabled={busy || loading} aria-label="Add a PUBLIC Note" onClick={open}>{loading ? <Loader2 size={14} className="animate-spin" /> : <Plus size={16} />}</button> : null}
     {viewing && valid && <Dialog open onOpenChange={setViewing}><DialogContent className="public-note-dialog public-note-viewer"><div className="public-note-menu-eyebrow">PUBLIC NOTES</div><DialogHeader><DialogTitle>PUBLIC Note</DialogTitle><DialogDescription>{Math.max(1, Math.ceil((Date.parse(note.expires_at) - now) / 3600000))}h left · Shared on this profile</DialogDescription></DialogHeader>
       <div className="public-note-card">
         {note.track && <div className="public-note-art"><MotionGradient className="public-note-flow" colors={flowColors} motion={note.appearance === "cover_flow" ? "flow" : "still"} active={active && viewing} /><div className="public-note-cover"><Cover url={note.track.cover_art_url} /></div></div>}
-        <div className="public-note-copy">{note.caption && <div className="public-note-bubble">{note.caption}</div>}{note.track && <><strong>{note.track.title}</strong><span>{note.track.artist || note.track.uploader_name}</span></>}</div>
+        <div className="public-note-copy">{note.emoji && <span className="public-note-viewer-emoji">{note.emoji}</span>}{note.caption && <div className="public-note-bubble">{note.caption}</div>}{note.track && <><strong>{note.track.title}</strong><span>{note.track.artist || note.track.uploader_name}</span></>}</div>
         {note.track && <button type="button" className="public-note-play" aria-label={(playing ? "Pause " : "Play ") + note.track.title} onClick={playNote}>{playing ? <Pause size={20} fill="currentColor" /> : <Play size={20} fill="currentColor" />}</button>}
       </div>
       {playbackError && <p className="public-note-error" role="alert">{playbackError}</p>}
@@ -122,7 +125,8 @@ export default function PublicNotes({ profileId, isOwn, active = true, userTrack
 
       </>}
       <label className="public-note-label" htmlFor="public-note-caption">Add a thought <span>Optional</span></label><textarea id="public-note-caption" maxLength={80} rows={3} placeholder="This one’s on my mind…" value={caption} disabled={busy} onChange={e => setCaption(e.target.value)} onKeyDown={e => { if ((e.metaKey || e.ctrlKey) && e.key === "Enter") { e.preventDefault(); save(); } }} /><div className="public-note-counter">{caption.length}/80</div>
-      </div><aside className="public-note-preview-panel"><p className="public-note-preview-label">On your profile</p><div className="public-note-preview-stage" aria-label="Note preview"><div className={"public-note-avatar-bubble public-note-preview" + (draft && appearance === "cover_flow" ? " is-flow" : "")} style={draft && appearance === "cover_flow" ? {color:bubbleInk(draftFlowColors),"--note-tail":draftFlowColors[0],"--note-shadow":bubbleInk(draftFlowColors)==="#ffffff"?"#000b":"#fffb"} : undefined}>{draft && appearance === "cover_flow" && <MotionGradient className="public-note-bubble-flow" colors={draftFlowColors} active={active && editing && !picker} />}{draft ? <SongNoteContent track={draft} caption={caption} /> : <span className="public-note-text-only">{caption.trim() || "A little thought…"}</span>}</div></div><p className="public-note-preview-help">A small moment. Shared for a day.</p></aside></div>
+      <div className="public-note-emoji-controls"><button type="button" disabled={busy} aria-expanded={emojiOpen} onClick={()=>setEmojiOpen(!emojiOpen)}>{emoji ? emoji+" Change emoji" : "☺ Add emoji"}</button>{emoji && <button type="button" disabled={busy} onClick={()=>setEmoji("")}>Remove emoji</button>}</div>{emojiOpen && <NoteEmojiPicker selected={emoji} disabled={busy} onSelect={value=>{setEmoji(value);setEmojiOpen(false);}}/>}
+      </div><aside className="public-note-preview-panel"><p className="public-note-preview-label">On your profile</p><div className="public-note-preview-stage" aria-label="Note preview"><div className={"public-note-avatar-bubble public-note-preview" + (draft && appearance === "cover_flow" ? " is-flow" : "")} style={draft && appearance === "cover_flow" ? {color:bubbleInk(draftFlowColors),"--note-tail":draftFlowColors[0],"--note-shadow":bubbleInk(draftFlowColors)==="#ffffff"?"#000b":"#fffb"} : undefined}>{draft && appearance === "cover_flow" && <MotionGradient className="public-note-bubble-flow" colors={draftFlowColors} active={active && editing && !picker} />}{emoji && <span className="public-note-emoji-badge" aria-hidden="true">{emoji}</span>}{draft ? <SongNoteContent track={draft} caption={caption} /> : <span className="public-note-text-only">{caption.trim() || "A little thought…"}</span>}</div></div><p className="public-note-preview-help">A small moment. Shared for a day.</p></aside></div>
       {error && <p role="alert" className="public-note-error">{error}</p>}
       {error.includes("service limit") && draft && <button type="button" disabled={busy} className="public-note-post" onClick={() => save(false, true)}>Share just the song</button>}
       <div className="public-note-composer-actions">{valid ? <button type="button" className="public-note-remove" disabled={busy} onClick={() => save(true)}>Remove note</button> : <button type="button" className="public-note-cancel" disabled={busy} onClick={() => setEditing(false)}>Cancel</button>}<button type="button" className="public-note-post" disabled={busy || (!draft && !caption.trim())} onClick={() => save()}>{busy ? <Loader2 size={18} className="animate-spin" /> : valid ? "Replace note" : "Share note"}</button></div>
