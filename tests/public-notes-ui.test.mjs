@@ -62,6 +62,17 @@ globalThis.__api=async(_name,body)=>{assert.equal(body.args[0].track_id,"");retu
 tree=render([null,false,"",true,false,null,"Only my thought",false,Date.now()]);
 const post=find(tree,n=>n.props?.className==="public-note-post")[0];assert.equal(post.props.disabled,false);await post.props.onClick();
 assert.equal(values[0].caption,"Only my thought");assert.equal(values[3],false,"text-only save closes composer");
+const artNote={...note,appearance:"cover_flow",track:{...note.track,cover_art_url:"cover.jpg"}};
+tree=render([artNote,false,"",false,false,null,"",false,Date.now()]);
+assert.equal(find(tree,n=>n.props?.className==="public-note-avatar-bubble is-flow").length,1);
+assert.equal(find(tree,n=>n.props?.className==="public-note-bubble-flow").length,1,"cover-flow note renders animated background");
+const metadata=find(tree,n=>typeof n.type==="function"&&n.type.name==="SongNoteContent")[0];
+const content=metadata.type(metadata.props);
+assert.equal(find(content,n=>n.type==="small")[0].props.children,"Artist","artist is visible in the avatar bubble");
+assert.equal(find(content,n=>typeof n.type==="function"&&n.type.name==="Cover")[0].props.url,"cover.jpg","bubble uses the song cover");
+tree=render([note,false,"",true,false,note.track,"",false,Date.now(),false,"classic"]);
+find(tree,n=>n.type==="button"&&n.props.children==="Cover Flow")[0].props.onClick();
+assert.equal(values[10],"cover_flow","appearance switch updates the draft");
 globalThis.__user=null;
 assert.equal(render([note,false,""]),null,"signed-out session does not leak a previously loaded note");
 console.log("PASS PUBLIC Notes playback, expiry, failed-save draft preservation, confirmed posting and session isolation");
