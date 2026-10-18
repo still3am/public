@@ -6,7 +6,7 @@ export default function Avatar({user,size=40,className=""}){
  const [failed,setFailed]=useState(false);
  useEffect(()=>setFailed(false),[user?.avatar_url]);
  if(!user)return null;
- const style={width:size,height:size,flexShrink:0};
+ const style={width:size,height:size,flexShrink:0,aspectRatio:"1 / 1",borderRadius:"50%",overflow:"hidden"};
  const name=user.display_name||user.full_name||"?";
  if(user.avatar_url&&!failed)return <img src={user.avatar_url} alt="" onError={()=>setFailed(true)} style={{...style,objectFit:"cover"}} className={"rounded-full "+className}/>;
  return <div style={{...style,fontSize:Math.max(11,size*.4)}} className={"rounded-full bg-foreground/10 grid place-items-center font-semibold text-foreground/70 shrink-0 "+className}>{name.trim().charAt(0)||"?"}</div>;
