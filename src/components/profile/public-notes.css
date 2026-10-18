@@ -131,7 +131,8 @@
  .public-note-edit{padding:9px 12px}
 }
 
-.public-note-emoji-badge{position:absolute;top:-11px;left:-9px;z-index:3;font-size:25px;line-height:1.1;pointer-events:none;text-shadow:none}
+.public-note-avatar-bubble>.public-note-emoji-badge{position:absolute;top:-15px;left:-10px;z-index:3;display:grid;place-items:center;width:32px;height:32px;overflow:visible;-webkit-line-clamp:unset;font-size:29px;line-height:1;color:initial;transform:rotate(-14deg);transform-origin:50% 65%;pointer-events:none;text-shadow:none;filter:drop-shadow(0 2px 2px #0002);font-family:"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif}
+.public-note-copy>.public-note-viewer-emoji{align-self:flex-start;font-size:32px;line-height:1.2;transform:rotate(-14deg);color:initial}
 .public-note-viewer-emoji{font-size:30px;line-height:1.2}
 .public-note-emoji-controls{display:flex;gap:12px;flex-wrap:wrap}
 .public-note-emoji-controls button{min-height:44px;border:1px solid hsl(var(--border));border-radius:22px;padding:8px 14px;font-size:13px}
