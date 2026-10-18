@@ -33,6 +33,7 @@ export default function Layout() {
   const location = useLocation();
   const reducedMotion=useReducedMotion();
   const artworkPage = /^\/(?:track\/[^/]+|playlist\/[^/]+|mix\/[^/]+|records\/[^/]+|artist|profile(?:\/[^/]+)?)\/?$/.test(location.pathname);
+  const momentsRoute = /^\/moments(?:\/[^/]+)?\/?$/.test(location.pathname);
   const { user } = useAuth();
   const {currentTrack}=usePlayer();
   useScrollRestore();
@@ -45,7 +46,7 @@ export default function Layout() {
   if (activeTab) mountedTabs.current.add(activeTab.path);
 
   return (
-    <div className={`public-app flex min-h-screen bg-background text-foreground ${currentTrack?"has-player":""}`}>
+    <div className={`public-app flex min-h-screen bg-background text-foreground ${currentTrack?"has-player":""} ${momentsRoute?"moments-route":""}`}>
       <div aria-hidden="true" className="public-status-bar-shield" />
       <a href="#main-content" className="public-skip-link">Skip to content</a>
       <Sidebar />
