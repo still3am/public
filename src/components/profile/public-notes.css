@@ -57,6 +57,46 @@
 .public-note-avatar{width:54px;height:54px;flex:0 0 54px;display:grid;place-items:center;border-radius:50%;overflow:hidden;background:hsl(var(--muted))}
 .public-note-error{font-size:12px;color:hsl(var(--foreground));line-height:1.6;margin-top:12px}
 .public-note-dialog{max-width:460px!important;border-radius:28px!important;max-height:88dvh;overflow-y:auto;overscroll-behavior:contain}
+.public-note-menu-eyebrow{display:flex;align-items:center;gap:12px;padding-right:46px;font-size:10px;font-weight:650;letter-spacing:.16em;color:hsl(var(--muted-foreground))}
+.public-note-menu-eyebrow>span{padding:4px 8px;border-radius:999px;border:1px solid hsl(var(--border));font-size:9px;letter-spacing:0;text-transform:none}
+.public-note-dialog h2{font-size:28px;letter-spacing:-.045em;line-height:1.15}
+.public-note-compose-layout{display:grid;gap:24px;min-width:0}
+.public-note-fields{display:grid;align-content:start;gap:14px;min-width:0}
+.public-note-preview-panel{border:1px solid hsl(var(--border));border-radius:22px;background:hsl(var(--muted)/.25);padding:18px 14px;display:flex;flex-direction:column;align-items:center;justify-content:center;min-width:0}
+.public-note-preview-label{font-size:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:hsl(var(--muted-foreground))}
+.public-note-preview-panel .public-note-preview-stage{background:transparent;width:100%;min-height:125px;padding:20px 0}
+.public-note-preview-help{font-size:11px;line-height:1.6;text-align:center;color:hsl(var(--muted-foreground))}
+.public-note-cancel,.public-note-remove{padding-inline:10px;font-size:12px}
+.public-note-remove{color:hsl(var(--destructive))}
+.public-note-viewer .public-note-card{display:grid;grid-template-columns:minmax(0,1fr) auto;border:0;background:transparent;padding:8px 0 12px;gap:22px}
+.public-note-viewer .public-note-art{grid-column:1/-1;width:164px;height:164px;margin-inline:auto;border-radius:32px}
+.public-note-viewer .public-note-art>.public-note-cover{width:132px;height:132px;border-radius:24px}
+.public-note-viewer .public-note-copy>strong{font-size:21px;line-height:1.3}
+.public-note-viewer .public-note-copy>span{font-size:14px}
+.public-note-viewer .public-note-bubble{font-size:17px;line-height:1.6;border:0;background:transparent;padding:0;margin:0 0 10px}
+@media(min-width:768px){
+ .public-note-dialog.public-note-composer{max-width:760px!important;width:calc(100vw - 64px);padding:32px;gap:24px}
+ .public-note-composer .public-note-compose-layout{grid-template-columns:minmax(0,1.25fr) minmax(0,.85fr)}
+ .public-note-composer textarea{min-height:120px}
+ .public-note-composer .public-note-preview-panel{position:sticky;top:0;align-self:start;min-height:280px}
+ .public-note-dialog.public-note-viewer{max-width:500px!important;padding:32px;gap:20px}
+}
+@media(max-width:767px){
+ .public-note-dialog{left:0;right:0;top:auto;bottom:0;transform:none;width:100%;max-height:92dvh;padding:30px 20px calc(18px + env(safe-area-inset-bottom));border-radius:28px 28px 0 0!important;gap:18px}
+ .public-note-dialog::before{content:"";position:absolute;top:9px;left:calc(50% - 18px);width:36px;height:4px;border-radius:999px;background:hsl(var(--foreground)/.2)}
+ .public-note-dialog[data-state=open]{animation:public-note-sheet-in .24s ease!important}
+ .public-note-dialog[data-state=closed]{animation:public-note-sheet-out .18s ease!important}
+ .public-note-compose-layout{gap:18px}
+ .public-note-preview-panel{flex-direction:row;padding:12px 14px;gap:12px;border-radius:18px}
+ .public-note-preview-label{font-size:9px;max-width:65px;line-height:1.6}
+ .public-note-preview-panel .public-note-preview-stage{width:auto;flex:1;min-height:60px;padding:4px 0}
+ .public-note-preview-help{display:none}
+ .public-note-composer-actions{padding-bottom:4px}
+ .public-note-composer-actions .public-note-post{min-width:150px}
+}
+@keyframes public-note-sheet-in{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+@keyframes public-note-sheet-out{from{opacity:1;transform:translateY(0)}to{opacity:0;transform:translateY(24px)}}
+@media(prefers-reduced-motion:reduce){.public-note-dialog[data-state]{animation:none!important}}
 .public-note-song-choice{display:flex;align-items:center;gap:14px;width:100%;text-align:left;padding:14px;border:1px solid hsl(var(--border));border-radius:20px;background:hsl(var(--muted)/.4)}
 .public-note-choice-art{display:grid;place-items:center;width:58px;height:58px;flex:0 0 58px;border-radius:14px;overflow:hidden;background:hsl(var(--muted))}
 .public-note-song-choice>span:nth-child(2){flex:1;min-width:0}
