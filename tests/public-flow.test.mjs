@@ -1,0 +1,36 @@
+import assert from "node:assert/strict";
+import fs from "node:fs";
+import ts from "typescript";
+import * as React from "react";
+globalThis.__React=React;
+const source=fs.readFileSync("src/components/MotionGradient.jsx","utf8");
+let effects=[],refs=[],states=[],refIndex=0,stateIndex=0,frames=new Map(),nextFrame=0,draws=0,reduced=false,hidden=false,covered=false,intersection,canvasEvents={},deleted=0,available=true;
+const gl=new Proxy({getShaderParameter:()=>true,getProgramParameter:()=>true,getAttribLocation:()=>0,getUniformLocation:(_,name)=>name,drawArrays:()=>draws++,deleteBuffer:()=>deleted++,deleteProgram:()=>deleted++,deleteShader:()=>deleted++},{get:(target,key)=>target[key]||(()=>({}))});
+const element={width:0,height:0,getContext:()=>available?gl:null,getBoundingClientRect:()=>({width:1440,height:900}),closest:()=>null,addEventListener:(name,fn)=>canvasEvents[name]=fn,removeEventListener(){}};
+globalThis.__ref=initial=>refs[refIndex++] ||= {current:initial===null&&refIndex===1?element:initial};
+globalThis.__state=initial=>{const i=stateIndex++;if(!(i in states))states[i]=initial;return [states[i],next=>states[i]=typeof next==="function"?next(states[i]):next];};
+globalThis.__effect=fn=>effects.push(fn);
+globalThis.window={devicePixelRatio:2,matchMedia:()=>({get matches(){return reduced;},addEventListener(){},removeEventListener(){}})};
+globalThis.document={get hidden(){return hidden;},querySelector:()=>covered?{}:null,body:{},addEventListener(){},removeEventListener(){}};
+globalThis.requestAnimationFrame=fn=>{frames.set(++nextFrame,fn);return nextFrame;};
+globalThis.cancelAnimationFrame=id=>frames.delete(id);
+globalThis.IntersectionObserver=class{constructor(fn){intersection=fn;}observe(){}disconnect(){}};
+globalThis.ResizeObserver=class{observe(){}disconnect(){}};
+globalThis.MutationObserver=class{observe(){}disconnect(){}};
+const code=ts.transpileModule('const React=globalThis.__React,useRef=globalThis.__ref,useState=globalThis.__state,useEffect=globalThis.__effect;'+source.replace(/^import[^;]+;/gm,""),{compilerOptions:{jsx:ts.JsxEmit.React,target:ts.ScriptTarget.ES2022,module:ts.ModuleKind.ESNext}}).outputText;
+const {default:Flow}=await import("data:text/javascript;base64,"+Buffer.from(code).toString("base64"));
+function mount(props={}){effects=[];refs=[];states=[];refIndex=0;stateIndex=0;frames.clear();draws=0;const tree=Flow(props);const cleanup=effects[0]();effects[1]();return {tree,cleanup};}
+function frame(time){const entry=frames.entries().next().value;if(entry){frames.delete(entry[0]);entry[1](time);}}
+let mounted=mount();assert.equal(mounted.tree.props["data-gradient-motion"],"public-flow");assert.equal(mounted.tree.props.style.pointerEvents,"none");
+assert.equal(element.width,1100,"GPU resolution is bounded on large desktop displays");
+assert.equal(draws,1);frame(100);assert.equal(draws,2);assert.equal(frames.size,1,"visible flow schedules another frame");
+frame(110);assert.equal(draws,2,"sub-30fps frames do not repaint");
+hidden=true;frame(150);assert.equal(frames.size,0,"hidden documents stop animation");hidden=false;mounted.cleanup();assert.equal(deleted,4,"WebGL resources are released");
+reduced=true;mounted=mount();frame(100);assert.equal(frames.size,0,"reduced motion renders a still frame");mounted.cleanup();reduced=false;
+mounted=mount({motion:"still"});frame(100);assert.equal(frames.size,0,"user-selected still mode never loops");mounted.cleanup();
+mounted=mount({active:false});assert.equal(frames.size,0,"inactive tabs never animate");mounted.cleanup();
+covered=true;mounted=mount({pauseWhenCovered:true});assert.equal(frames.size,0,"covered backgrounds pause");mounted.cleanup();covered=false;
+mounted=mount();intersection([{isIntersecting:false}]);assert.equal(frames.size,0,"offscreen cards pause");intersection([{isIntersecting:true}]);assert.equal(frames.size,1,"visible cards resume");
+let prevented=false;canvasEvents.webglcontextlost({preventDefault(){prevented=true;}});assert.ok(prevented);assert.equal(frames.size,0,"context loss stops the loop");mounted.cleanup();
+available=false;mounted=mount({colors:["#ff0000","#00ff00","#0000ff"]});assert.equal(mounted.cleanup,undefined);assert.match(mounted.tree.props.children[0].props.style.backgroundImage,/#ff0000/,"a palette fallback remains without WebGL");
+console.log("PASS PUBLIC Flow lifecycle, frame limits, reduced motion, still mode, inactive/offscreen/covered pausing, resource cleanup and fallback");
