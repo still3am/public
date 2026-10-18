@@ -18,9 +18,9 @@ export async function requestPublicNote(client, action, args, database=client) {
   return rawRequest(client,action,args);
 }
 export async function savePublicNote(client, profileId, draft, database=client) {
-  const expected={track_id:draft.track_id||"",caption:String(draft.caption||"").trim()};
+  const expected={track_id:draft.track_id||"",caption:String(draft.caption||"").trim(),appearance:draft.appearance||"classic"};
   const native=hasNativeNotes(database);
-  if(native&&expected.track_id&&!expected.caption)return saveNativeSongNote(database,profileId,expected.track_id);
+  if(native&&expected.track_id&&!expected.caption)return saveNativeSongNote(database,profileId,expected.track_id,expected.appearance);
   const started=Date.now();
   async function confirmed(saved) {
     if(native)await setNativeNoteMode(database,profileId,"server");
@@ -34,7 +34,7 @@ export async function savePublicNote(client, profileId, draft, database=client) 
     if (!status || status>=500) {
       try {
         const saved=await rawRequest(client,"readNote",[profileId]);
-        if(saved?.id && (saved.track_id||"")===expected.track_id && (saved.caption||"")===expected.caption &&
+        if(saved?.id && (saved.track_id||"")===expected.track_id && (saved.caption||"")===expected.caption && (saved.appearance||"classic")===expected.appearance &&
           Date.parse(saved.expires_at)>=started+86400000-10000) return await confirmed(saved);
       } catch { /* Keep the original write error and the editable draft. */ }
     }
