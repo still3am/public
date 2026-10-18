@@ -98,6 +98,18 @@ find(tree,n=>n.type==="button"&&n.props.children==="Remove emoji")[0].props.onCl
 assert.equal(values[12],"");
 tree=render([{...note,emoji:"🎧"},false,"",false,false,null,"",false,Date.now()]);
 assert.equal(find(tree,n=>n.props?.className==="public-note-emoji-badge")[0].props.children,"🎧","saved badge appears on avatar note");
+let previewToggles=0;
+globalThis.__player.togglePlay=async()=>{previewToggles++;};
+tree=render([note,false,"",true,false,note.track,"",false,Date.now()]);
+await find(tree,n=>n.props?.className==="public-note-preview-play")[0].props.onClick();
+assert.equal(previewToggles,1,"draft song preview pauses/resumes an already playing song");
+globalThis.__player.togglePlay=async()=>{throw Error("offline");};
+tree=render([note,false,"",true,false,note.track,"",false,Date.now()]);
+await find(tree,n=>n.props?.className==="public-note-preview-play")[0].props.onClick();
+assert.match(values[14],/Couldn’t preview/,"preview failures preserve an editable draft");
+const nearExpiry={...note,expires_at:new Date(Date.now()+5*60000).toISOString()};
+tree=render([nearExpiry,false,"",false,false,null,"",false,Date.now(),true]);
+assert.ok(find(tree,n=>n.type==="p").some(n=>JSON.stringify(n.props.children).includes("5m left")),"final-hour expiry uses minutes");
 globalThis.__user=null;
 assert.equal(render([note,false,""]),null,"signed-out session does not leak a previously loaded note");
 console.log("PASS PUBLIC Notes playback, expiry, failed-save draft preservation, confirmed posting and session isolation");
