@@ -29,12 +29,12 @@ async function writeState(db,owner,state) {
  const user=await currentUser(db);
  if(user.id!==owner)fail("Your account changed. Reopen your profile.",409);
  const row=await profileRow(db,owner);
- if(!row)fail("Finish setting up your public profile before adding a song note.",409);
+ if(!row){if(state.mode!=="song")return null;fail("Finish setting up your public profile before adding a song note.",409);}
  let original;
  try{await db.entities.PublicProfile.update(row.id,{public_song_note:state});}catch(error){original=error;}
  // Read after write also recovers a response lost after the database committed.
  const confirmed=await profileRow(db,owner);
- if(!confirmed||JSON.stringify(confirmed.public_song_note)!==JSON.stringify(state)){
+ if(!confirmed||confirmed.public_song_note?.mode!==state.mode||confirmed.public_song_note?.track_id!==state.track_id||Date.parse(confirmed.public_song_note?.expires_at)!==Date.parse(state.expires_at)){
   if(original)throw original;fail("Song note was not confirmed. Please retry.",503);
  }
  if(state.mode==="song" && (!Number.isFinite(Date.parse(confirmed.updated_date)) && !Number.isFinite(Date.parse(confirmed.created_date))))fail("Song note time was not confirmed. Please retry.",503);
