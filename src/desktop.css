@@ -146,7 +146,7 @@
  .public-app .profile-desktop-editor p{font-size:12px;color:hsl(var(--muted-foreground));margin-top:4px}
  .public-app .profile-desktop-editor>div:last-child{display:flex;gap:10px;flex-shrink:0}
  .public-app .profile-is-editing .profile-actions{display:none}
- .public-app .profile-redesigned .profile-avatar{width:112px!important;height:112px!important}
+ .public-app .profile-redesigned .profile-desktop-avatar{width:112px!important;height:112px!important}
  .public-app .profile-pinned-section .song-menu-surface{border-radius:18px}
  .public-app .profile-pinned-section .song-menu-surface>.p-2{padding:12px}
  .public-app .profile-pinned-section .song-menu-surface>.p-2>div:first-child{font-size:13px}
