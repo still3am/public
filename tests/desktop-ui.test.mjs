@@ -27,7 +27,7 @@ for(const path of [...source("src/App.jsx").matchAll(/<Route path="([^"]+)"/g)].
  const key=path.split("/")[1];assert.ok(header.DESKTOP_PAGES[key],"desktop context covers "+path);
  globalThis.__pathname=path.replace(":id","example").replace(":code","test");
  const html=renderToStaticMarkup(React.createElement(header.default));
- assert.match(html,/Search PUBLIC/);assert.match(html,new RegExp(header.DESKTOP_PAGES[key].label));
+ assert.match(html,/Search PUBLIC/);assert.ok(html.includes(header.DESKTOP_PAGES[key].label.replaceAll("&","&amp;")));
 }
 effects.at(-1)();
 let prevented=false;events.keydown({metaKey:false,ctrlKey:true,key:"k",preventDefault(){prevented=true;}});
