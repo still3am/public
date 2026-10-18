@@ -1,9 +1,10 @@
 import {useEffect,useState} from "react";
 const KEY="sidebar_collapsed",EVENT="sidebar:collapsed";
-let memory=false;
+let memory=false,memoryOnly=false;
 function read(){
+ if(memoryOnly)return memory;
  try{const value=localStorage.getItem(KEY);if(value!==null)memory=value==="1";}
- catch{/* Storage may be unavailable; preserve this window's preference. */}
+ catch{memoryOnly=true;/* Preserve this window’s preference if storage is unavailable. */}
  return memory;
 }
 export function useSidebarCollapsed(){
@@ -21,7 +22,7 @@ export function useSidebarCollapsed(){
  },[]);
  const toggle=()=>{
   const next=!read();memory=next;
-  try{localStorage.setItem(KEY,next?"1":"0");}catch{}
+  try{localStorage.setItem(KEY,next?"1":"0");}catch{memoryOnly=true;}
   setCollapsed(next);
   window.dispatchEvent(new CustomEvent(EVENT,{detail:next}));
  };
