@@ -1,3 +1,4 @@
+import ScrollShelf from "@/components/ScrollShelf";
 import HomeWeather from '@/components/HomeWeather';
 import MadeForYou from '@/components/home/MadeForYou';
 import SharedWithYou from '@/components/home/SharedWithYou';
@@ -56,13 +57,13 @@ function Section({ title, icon: Icon, children, seeAllTo }) {
 function CardRow({ tracks }) {
   if (!tracks?.length) return null;
   return (
-    <div className="home-card-shelf flex gap-3 overflow-x-auto no-scrollbar pb-2 snap-x snap-mandatory">
+    <ScrollShelf label="Recommended music" className="home-card-shelf flex gap-3 overflow-x-auto no-scrollbar pb-2 snap-x snap-mandatory">
       {tracks.map((t) =>
       <div key={t.id} className="home-shelf-card snap-start shrink-0">
           <TrackCard track={t} queue={tracks} />
         </div>
       )}
-    </div>);
+    </ScrollShelf>);
 
 }
 
