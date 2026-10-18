@@ -50,4 +50,15 @@ hero=spotlight.default(props);assert.equal(buttons(hero)[0].props.children[1],"P
 buttons(hero)[0].props.onClick();assert.deepEqual(calls.slice(-2),[["shuffle",false],["play",collection,0]]);
 hero=spotlight.default({...props,tracks:[]});assert.equal(buttons(hero)[0].props.disabled,true);
 assert.equal(spotlight.default(props).props.children[1].props.to,"/track/t0","featured artwork opens track details");
-console.log("PASS progressive rendering, filter reset, stable queue indices, accessible search groups, preserved visual edits, collection pause/resume and complete shuffle queues");
+globalThis.__profilePlaylists={userId:"owner",rows:[{id:"mix",name:"My mix",track_ids:["song"]}]};
+const profilePlaylists=await load("src/components/profile/ProfilePlaylists.jsx",`
+const React=globalThis.__React,useEffect=()=>{},useState=()=>[globalThis.__profilePlaylists,()=>{}];
+const Link=({children,to,...props})=>React.createElement("a",{href:to,...props},children),ListMusic=()=>null;
+const usePlaylistCover=()=>"",useCoverUrl=()=>"",base44={};
+const ScrollShelf=({children,className,label})=>React.createElement("div",{className,role:"region","aria-label":label,tabIndex:0},children);
+`);
+let shelfHtml=renderToStaticMarkup(React.createElement(profilePlaylists.default,{userId:"owner",active:true}));
+assert.match(shelfHtml,/aria-label="Public playlists"/);assert.match(shelfHtml,/href="\/playlist\/mix"/);assert.match(shelfHtml,/My mix/);
+shelfHtml=renderToStaticMarkup(React.createElement(profilePlaylists.default,{userId:"another",active:true}));
+assert.equal(shelfHtml,"","a profile switch never shows the previous listener's playlists");
+console.log("PASS progressive rendering, queue controls, accessible search groups and profile playlist identity isolation");
