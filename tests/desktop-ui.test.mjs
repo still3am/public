@@ -37,7 +37,7 @@ window.matchMedia=()=>({matches:false});prevented=false;events.keydown({metaKey:
 const sidebar=await load("src/components/Sidebar.jsx",common+`
 const NavLink=({children,to,className,end,...props})=>React.createElement("a",{href:to,className:typeof className==="function"?className({isActive:to===globalThis.__pathname}):className,...props},children);
 const useMyPlaylists=()=>({playlists:[{id:"mine",name:"Late nights"}]}),useSidebarCollapsed=()=>({collapsed:!!globalThis.__collapsed,toggle(){}}),useUnreadCount=()=>3;
-const Avatar=()=>null,Logo=()=>null,ThemeToggle=()=>null;
+const Avatar=()=>null,Logo=()=>null,ThemeToggle=()=>null,publicMonogram="/public-monogram.svg";
 const Home=()=>null,Search=Home,TrendingUp=Home,Clock=Home,LibraryIcon=Home,Disc3=Home,Upload=Home,Bell=Home,ChevronsLeft=Home,ChevronsRight=Home,ListMusic=Home,CloudOff=Home,FolderOpen=Home,BarChart3=Home,Shield=Home,Lightbulb=Home,LifeBuoy=Home,Music2=Home;
 `);
 globalThis.__user=null;
