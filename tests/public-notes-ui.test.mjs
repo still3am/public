@@ -20,6 +20,11 @@ const find=(node,test)=>!node||typeof node!=="object"?[]:[...(test(node)?[node]:
 const note={id:"n",track_id:"song",expires_at:new Date(Date.now()+86400000).toISOString(),caption:"On repeat",track:{id:"song",title:"A song",artist:"Artist"}};
 function render(state,own=true){values=state;index=0;return Component({profileId:own?"me":"other",isOwn:own,profile:{},userTracks:[]});}
 let tree=render([note,false,"",false,false,null,"",false,Date.now()]);
+assert.equal(find(tree,n=>n.props?.className==="public-note-avatar-bubble").length,1,"note appears as an avatar bubble");
+assert.equal(find(tree,n=>n.props?.className==="public-note-card").length,0,"no standalone note card is rendered");
+find(tree,n=>n.props?.className==="public-note-avatar-bubble")[0].props.onClick();
+assert.equal(values[9],true,"avatar bubble opens the note viewer");
+tree=render([note,false,"",false,false,null,"",false,Date.now(),true]);
 find(tree,n=>n.props?.className==="public-note-play")[0].props.onClick();
 assert.deepEqual(calls,["toggle"],"note playback resumes/pauses without restarting");
 tree=render([{...note,expires_at:new Date(Date.now()-1).toISOString()},false,"",false,false,null,"",false,Date.now()],false);
