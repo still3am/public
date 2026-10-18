@@ -1,3 +1,4 @@
+import ScrollShelf from '@/components/ScrollShelf';
 import {Link} from 'react-router-dom';
 import {useRef} from 'react';
 import {Music2,ChevronRight,Play,Pause,Loader2} from 'lucide-react';
