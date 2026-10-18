@@ -20,7 +20,6 @@
   },
   "required": [
     "user_id",
-    "track_id",
     "expires_at"
   ],
   "rls": {
