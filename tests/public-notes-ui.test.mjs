@@ -16,7 +16,7 @@ const React=globalThis.__React,useState=globalThis.__state,useEffect=()=>{},useR
 const publicNoteDatabase=undefined;
 const base44={functions:{invoke:(...args)=>globalThis.__api(...args)}},useAuth=()=>({user:globalThis.__user}),usePlayer=()=>globalThis.__player,useCoverUrl=x=>x,useCoverPalette=()=>({colors:[]});
 const MotionGradient="gradient",TrackPickerSheet="picker",Dialog="dialog",DialogContent="content",DialogHeader="header",DialogTitle="h1",DialogDescription="p";
-const Music2=()=>null,Plus=Music2,Play=Music2,Pause=Music2,Loader2=Music2;
+const Music2=()=>null,ImageIcon=Music2,Plus=Music2,Play=Music2,Pause=Music2,Loader2=Music2;
 `;
 const code=ts.transpileModule(stubs+fs.readFileSync("src/components/profile/PublicNotes.jsx","utf8").replace(/^import[^;]+;/gm,""),{compilerOptions:{jsx:ts.JsxEmit.React,target:ts.ScriptTarget.ES2022,module:ts.ModuleKind.ESNext}}).outputText;
 const Component=(await import("data:text/javascript;base64,"+Buffer.from(code).toString("base64"))).default;
