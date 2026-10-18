@@ -1,0 +1,54 @@
+{
+  "name": "MomentComment",
+  "type": "object",
+  "properties": {
+    "moment_id": {
+      "type": "string"
+    },
+    "user_id": {
+      "type": "string"
+    },
+    "body": {
+      "type": "string"
+    },
+    "request_id": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "published",
+        "deleted"
+      ],
+      "default": "published"
+    }
+  },
+  "required": [
+    "moment_id",
+    "user_id",
+    "body",
+    "request_id"
+  ],
+  "rls": {
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}
