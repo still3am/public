@@ -89,14 +89,14 @@ export default function Notifications() {
 
       </aside>
       <section className="notifications-results" aria-label="Activity results">
-      <div className="notifications-search flex items-center gap-3 rounded-2xl border border-border bg-card px-3"><Search size={18} aria-hidden="true"/><input className="min-w-0 flex-1 py-3 bg-transparent border-0 text-sm outline-none" type="search" aria-label="Search loaded activity" placeholder="Search loaded activity" value={query} onChange={event=>setQuery(event.target.value)} onKeyDown={event=>{if(event.key==="Escape")setQuery("");}}/>{query&&<button type="button" className="w-10 h-10 grid place-items-center rounded-full shrink-0" aria-label="Clear activity search" onClick={()=>setQuery("")}><X size={16}/></button>}</div>
+      <div className="notifications-search focus-within:ring-2 focus-within:ring-ring flex items-center gap-3 rounded-2xl border border-border bg-card px-3"><Search size={18} aria-hidden="true"/><input className="min-w-0 flex-1 py-3 bg-transparent border-0 text-sm outline-none" type="search" aria-label="Search loaded activity" placeholder="Search loaded activity" value={query} onChange={event=>setQuery(event.target.value)} onKeyDown={event=>{if(event.key==="Escape")setQuery("");}}/>{query&&<button type="button" className="w-10 h-10 grid place-items-center rounded-full shrink-0" aria-label="Clear activity search" onClick={()=>setQuery("")}><X size={16}/></button>}</div>
       <p className="notifications-count text-xs text-muted-foreground my-4" role="status">{visibleNotifications.length} {visibleNotifications.length===1?"item":"items"} shown{hasMore?" · More activity available below":""}</p>
       {error&&<div role="alert" className="mb-4 text-sm text-muted-foreground">Couldn’t refresh activity. <button className="underline" onClick={reload}>Retry</button></div>}
       {visibleNotifications.length === 0 ?
       <EmptyState
         icon={Bell}
         title={query.trim()?"No matching activity":hasMore?"No matches in this activity":view==="unread"?"You’re all caught up":view==="shared"?"No shared songs here yet":view==="music"?"No music activity here yet":"No notifications yet"}
-        description={query.trim()?"Try another name, song or message, or load older activity.":"When someone follows you, likes your track, sends you a song, or comments on your profile, you’ll see it here."} /> :
+        description={query.trim()?(hasMore?"Try another name, song or message, or load older activity.":"Try another name, song or message."): "When someone follows you, likes your track, sends you a song, or comments on your profile, you’ll see it here."} /> :
 
 
       <div className="notifications-grid space-y-1.5" data-view={view} role="list">
