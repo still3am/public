@@ -97,7 +97,7 @@ export default async function handleRequest(req) {
         let track=null;
         if(note.track_id){try{track=await requireTrack(note.track_id,false);}catch(e){if([403,404].includes(e.status)){if(!note.caption?.trim())return Response.json({result:null});}else throw e;}}
         if(!track&&!note.caption?.trim())return Response.json({result:null});
-        return Response.json({result:{...pick(note,['id','user_id','caption','expires_at']),track_id:track?.id||'',track}});
+        return Response.json({result:{...pick(note,['id','user_id','caption','expires_at','appearance']),track_id:track?.id||'',track}});
       }
       if(action==='removeNote'){
         await handler.deleteMany({user_id:user.id});
@@ -106,6 +106,8 @@ export default async function handleRequest(req) {
       if(action==='saveNote'){
         const input=args[0]||{},caption=typeof input.caption==='string'?input.caption.trim():'';
         if(caption.length>80)fail('Keep your note to 80 characters',422);
+        const appearance=input.appearance??'classic';
+        if(!['classic','cover_flow'].includes(appearance))fail('Invalid note style',422);
         const trackId=input.track_id??'';
         if(typeof trackId!=='string'||trackId.length>100)fail('Invalid song',422);
         if(!trackId&&!caption)fail('Add a note, a song, or both',422);
@@ -116,9 +118,9 @@ export default async function handleRequest(req) {
         // Existing catalog audio/artwork is never sent to an integration.
         // Only a new, non-empty caption needs a content review.
         if(caption&&caption!==previous?.caption)await moderate(svc,caption);
-        const data={user_id:user.id,track_id:track?.id||'',caption,expires_at:new Date(Date.now()+24*60*60*1000).toISOString()};
+        const data={user_id:user.id,track_id:track?.id||'',caption,appearance:track?appearance:'classic',expires_at:new Date(Date.now()+24*60*60*1000).toISOString()};
         const saved=previous?await handler.update(previous.id,data):await handler.create(data);
-        return Response.json({result:{...pick(saved,['id','user_id','track_id','caption','expires_at']),track}});
+        return Response.json({result:{...pick(saved,['id','user_id','track_id','caption','expires_at','appearance']),track}});
       }
       fail('Unsupported note action',400);
     }
