@@ -30,7 +30,9 @@
         "annotation",
         "suggestion",
         "notification",
-        "artist"
+        "artist",
+        "moment",
+        "moment_comment"
       ]
     },
     "target_id": {
@@ -39,6 +41,9 @@
     "admin_notes": {
       "type": "string",
       "default": ""
+    },
+    "moment_id": {
+      "type": "string"
     }
   },
   "required": [

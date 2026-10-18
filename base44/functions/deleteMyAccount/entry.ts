@@ -51,7 +51,11 @@ export async function deleteAccountData(b,u){
  }
  // Owner-only collections use the caller's authenticated context, not a service identity.
  for(const name of ['LibraryItem','SavedPlaylist','UserGenre','OfflineSync','PlaybackState'])await erase(b,name,{user_id:id});
+ const moments=await collect(s,'Moment',{user_id:id});
+ for(let offset=0;offset<moments.length;offset+=100)await erase(s,'MomentComment',{moment_id:{$in:moments.slice(offset,offset+100).map(p=>p.id)}});
+ await s.entities.Moment.updateMany({liker_ids:{$in:[id]}},{$pull:{liker_ids:id}});
  const queries={
+  Moment:{user_id:id},MomentComment:{user_id:id},
   PlayEvent:{user_id:id},Lyrics:{uploader_id:id},Like:{user_id:id},
   PublicNote:{user_id:id},ProfileComment:{$or:[{author_id:id},{profile_id:id}]},TrackAnnotation:{author_id:id},
   Suggestion:{user_id:id},Follow:{$or:[{follower_id:id},{following_id:id}]},
