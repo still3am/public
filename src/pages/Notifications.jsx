@@ -1,3 +1,4 @@
+import {useState} from "react";
 import LoadError from '@/components/LoadError';
 import SafetyControls from '@/components/SafetyControls';
 import {useSafety} from '@/context/SafetyContext';
@@ -11,7 +12,7 @@ import {
   MessageCircle,
   CheckCheck,
   Send,
-  Loader2 } from
+  Loader2, Search, X } from
 "lucide-react";
 import { useNotifications } from "@/hooks/useNotifications";
 import Avatar from "@/components/Avatar";
@@ -43,13 +44,14 @@ function getMessage(n) {
 
 export default function Notifications() {
   const {blocked}=useSafety();
+  const [query,setQuery]=useState("");
   const [params,setParams]=useSearchParams();
   const view=["all","unread","music","shared"].includes(params.get("view"))?params.get("view"):"all";
   const setView=value=>setParams(previous=>{const next=new URLSearchParams(previous);if(value==="all")next.delete("view");else next.set("view",value);return next;},{replace:true});
   const { notifications, loading, error, hasMore, reload, loadMore, unreadCount, markAllAsRead, markAsRead } =
   useNotifications();
 
-  const visibleNotifications=notifications.filter(n=>!blocked.has(n.actor_id)&&(view!=="unread"||!n.read)&&(view!=="music"||n.type==="track_shared"||n.type==="new_upload_from_followed")&&(view!=="shared"||n.type==="track_shared"));
+  const visibleNotifications=notifications.filter(n=>!blocked.has(n.actor_id)&&(view!=="unread"||!n.read)&&(view!=="music"||n.type==="track_shared"||n.type==="new_upload_from_followed")&&(view!=="shared"||n.type==="track_shared")&&(!query.trim()||[actorName(n),n.track?.title,n.track?.artist,n.comment,getMessage(n)].some(value=>String(value||"").toLowerCase().includes(query.trim().toLowerCase()))));
 
   if (loading && !notifications.length) {
     return (
@@ -59,9 +61,12 @@ export default function Notifications() {
 
   }
 
+  if(error&&!notifications.length)return <LoadError onRetry={reload}/>;
   return (
     <div className="notifications-page max-w-2xl mx-auto">
       <header className="page-intro"><p className="eyebrow">Your community</p><h1>Activity</h1><p>New followers, shared songs, and conversations.</p></header>
+      <div className="notifications-workspace">
+      <aside className="notifications-toolbar" aria-label="Activity controls">
       <div className="view-switch mb-5" role="group" aria-label="Notification filter">{[["all","All"],["unread","Unread"],["music","Music"],["shared","Shared"]].map(([value,label])=><button key={value} aria-pressed={view===value} onClick={()=>setView(value)} className={view===value?"active":""}>{label}{value==="unread"&&unreadCount>0&&<span className="ml-2 tabular-nums">{unreadCount}</span>}</button>)}</div>
       <div className="flex items-center justify-between gap-3 mb-5">
         
@@ -82,15 +87,19 @@ export default function Notifications() {
         }
       </div>
 
-      {error&&!notifications.length&&<LoadError onRetry={reload}/>}
+      </aside>
+      <section className="notifications-results" aria-label="Activity results">
+      <div className="notifications-search"><Search size={18} aria-hidden="true"/><input type="search" aria-label="Search loaded activity" placeholder="Search loaded activity" value={query} onChange={event=>setQuery(event.target.value)} onKeyDown={event=>{if(event.key==="Escape")setQuery("");}}/>{query&&<button type="button" aria-label="Clear activity search" onClick={()=>setQuery("")}><X size={16}/></button>}</div>
+      <p className="notifications-count" role="status">{visibleNotifications.length} {visibleNotifications.length===1?"item":"items"} shown{hasMore?" · More activity available below":""}</p>
+      {error&&<div role="alert" className="mb-4 text-sm text-muted-foreground">Couldn’t refresh activity. <button className="underline" onClick={reload}>Retry</button></div>}
       {visibleNotifications.length === 0 ?
       <EmptyState
         icon={Bell}
-        title={hasMore?"No matches in this activity":view==="unread"?"You’re all caught up":view==="shared"?"No shared songs here yet":view==="music"?"No music activity here yet":"No notifications yet"}
-        description="When someone follows you, likes your track, sends you a song, or comments on your profile, you'll see it here." /> :
+        title={query.trim()?"No matching activity":hasMore?"No matches in this activity":view==="unread"?"You’re all caught up":view==="shared"?"No shared songs here yet":view==="music"?"No music activity here yet":"No notifications yet"}
+        description={query.trim()?"Try another name, song or message, or load older activity.":"When someone follows you, likes your track, sends you a song, or comments on your profile, you’ll see it here."} /> :
 
 
-      <div className="space-y-1.5">
+      <div className="notifications-grid space-y-1.5" data-view={view} role="list">
           {visibleNotifications.map((n) => {
           const Icon = ICONS[n.type] || Bell;
           const profileLink = n.actor_id ? `/profile/${encodeURIComponent(n.actor_id)}` : null;
@@ -146,12 +155,14 @@ export default function Notifications() {
             }
               </div>;
 
-          return <div className="notification-item" key={n.id}>{content}<SafetyControls type="notification" id={n.id} userId={n.actor_id} label="note"/></div>;
+          return <div className="notification-item" role="listitem" key={n.id}>{content}<SafetyControls type="notification" id={n.id} userId={n.actor_id} label="note"/></div>;
 
         })}
         </div>
       }
-      {hasMore&&<button disabled={loading} onClick={loadMore} className="border rounded-full px-4 py-2 mt-4">{loading?"Loading…":"Load older notifications"}</button>}
+      {hasMore&&<button className="notification-load-more border rounded-full px-4 py-2 mt-4" disabled={loading} onClick={loadMore}>{loading?"Loading…":"Load older notifications"}</button>}
+      </section>
+      </div>
     </div>);
 
 }
