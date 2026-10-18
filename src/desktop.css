@@ -110,6 +110,10 @@
  .public-app .collection-spotlight h1{font-size:clamp(36px,4vw,54px)}
  .public-app .collection-tools{display:flex;align-items:center;gap:12px}
  .public-app .collection-tools input{max-width:520px;flex:1 1 220px}
+ .public-app .collection-refined .collection-tools{position:sticky;top:12px;z-index:20;padding:12px;background:hsl(var(--background));border:1px solid hsl(var(--border));border-radius:16px}
+ .public-app .collection-spotlight-release{display:block;border-radius:18px;text-decoration:none;color:inherit}
+ .public-app .collection-spotlight-release:focus-visible{outline:2px solid hsl(var(--foreground));outline-offset:6px}
+ .public-app .collection-spotlight-release:hover p{text-decoration:underline;text-underline-offset:3px}
  .public-app .playlist-editorial{max-width:1240px;padding-top:0}
  .public-app .playlist-editorial .playlist-hero{grid-template-columns:clamp(210px,23vw,300px) minmax(0,1fr);padding:26px;gap:36px}
  .public-app .playlist-editorial .playlist-title{font-size:clamp(34px,4vw,56px)}
