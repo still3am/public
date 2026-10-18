@@ -1,3 +1,4 @@
+import ScrollShelf from "@/components/ScrollShelf";
 import LoadError from '@/components/LoadError';
 import {useRef} from 'react';
 import { useEffect, useState, useMemo } from "react";
@@ -30,7 +31,7 @@ import {
   MapPin,
   Disc3,
   Headphones,
-  Play,
+  Play, Pause,
   ExternalLink } from
 "lucide-react";
 
@@ -243,7 +244,10 @@ export default function PublicRecords({ id: propId, fallbackArtist = null }) {
   const latestTrack = [...mainTracks].sort((a,b) => (Date.parse(b.created_date)||0) - (Date.parse(a.created_date)||0))[0];
   const topTracks = [...mainTracks].sort((a,b) => (b.play_count||0) - (a.play_count||0)).slice(0,18);
   const isAdmin = !!user && user.role === "admin";
-  const playAll = () => p.playTrackAt(visibleTracks.length?visibleTracks:mainTracks.length?mainTracks:appearanceTracks);
+  const artistQueue=visibleTracks.length?visibleTracks:mainTracks.length?mainTracks:appearanceTracks;
+  const artistActive=artistQueue.length>0&&p.queue?.length===artistQueue.length&&artistQueue.every((track,index)=>p.queue[index]?.id===track.id)&&artistQueue.some(track=>track.id===p.currentTrack?.id);
+  const artistPlaying=artistActive&&p.isPlaying;
+  const playAll=()=>{if(artistActive)p.togglePlay();else p.playTrackAt(artistQueue);};
 
   return (
     <PullToRefresh onRefresh={load}>
@@ -258,12 +262,12 @@ export default function PublicRecords({ id: propId, fallbackArtist = null }) {
               <ArtistNameEditor artist={artist} canEdit={!!user && !!id} onSaved={name => setArtist(prev => prev ? {...prev,name} : prev)} />
               <p className="artist-track-count">{mainTracks.length} {mainTracks.length === 1 ? "song" : "songs"}{appearanceTracks.length > 0 && ` · ${appearanceTracks.length} appearances`}</p>
             </div>
-            {tracks.length > 0 && <button onClick={playAll} className="artist-play" aria-label={"Play " + artist.name}><Play size={26} fill="currentColor" /></button>}
+            {tracks.length > 0 && <button onClick={playAll} className="artist-play" aria-label={(artistPlaying?"Pause ":"Play ") + artist.name}>{artistPlaying?<Pause size={26} fill="currentColor"/>:<Play size={26} fill="currentColor"/>}</button>}
           </div>
         </section>
 
         {latestTrack && <section className="artist-latest">
-          <button className="artist-latest-cover" onClick={() => p.playTrackAt(mainTracks, mainTracks.findIndex(track => track.id === latestTrack.id))} aria-label={"Play " + latestTrack.title}><ArtistArtwork source={latestTrack.cover_art_url} className="w-full h-full object-cover" /></button>
+          <button className="artist-latest-cover" onClick={() => {if(p.currentTrack?.id===latestTrack.id)p.togglePlay();else p.playTrackAt(mainTracks, mainTracks.findIndex(track => track.id === latestTrack.id));}} aria-label={(p.currentTrack?.id===latestTrack.id&&p.isPlaying?"Pause ":"Play ") + latestTrack.title}><ArtistArtwork source={latestTrack.cover_art_url} className="w-full h-full object-cover" /></button>
           <div className="min-w-0 flex-1">
             <p className="eyebrow text-muted-foreground mb-2">Recently added to PUBLIC</p>
             <Link to={"/track/" + latestTrack.id} className="artist-latest-title">{latestTrack.title}</Link>
@@ -274,7 +278,7 @@ export default function PublicRecords({ id: propId, fallbackArtist = null }) {
 
         {topTracks.length > 0 && <section className="artist-top-songs">
           <SectionTitle icon={Music} right={<button className="text-xs text-muted-foreground px-2 py-2" onClick={() => {setSongsExpanded(true);requestAnimationFrame(() => document.getElementById("artist-discography")?.scrollIntoView({behavior:window.matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth"}));}}>All songs <ChevronRight size={14} className="inline" /></button>}>Top Songs</SectionTitle>
-          <div className="artist-top-list" tabIndex={0} role="region" aria-label="Swipe through top songs">{Array.from({length:Math.ceil(topTracks.length/3)},(_,column)=><div className="artist-top-column" key={column}>{topTracks.slice(column*3,column*3+3).map((track,index)=><TrackRow key={track.id} track={track} index={column*3+index} queue={topTracks} queueIndex={column*3+index} />)}</div>)}</div>
+          <ScrollShelf className="artist-top-list" label="Artist top songs">{Array.from({length:Math.ceil(topTracks.length/3)},(_,column)=><div className="artist-top-column" key={column}>{topTracks.slice(column*3,column*3+3).map((track,index)=><TrackRow key={track.id} track={track} index={column*3+index} queue={topTracks} queueIndex={column*3+index} />)}</div>)}</ScrollShelf>
         </section>}
 
         {/* Discography */}
@@ -310,9 +314,9 @@ export default function PublicRecords({ id: propId, fallbackArtist = null }) {
         </section>
         {appearanceTracks.length > 0 && <section className="artist-appears-on">
           <SectionTitle icon={Disc3}>Appears On</SectionTitle>
-          <div className="artist-appears-list" tabIndex={0} role="region" aria-label="Swipe through featured appearances">
+          <ScrollShelf className="artist-appears-list" label="Featured appearances">
             {appearanceTracks.map(track=><div className="artist-appears-card" key={track.id}><TrackCard track={track} queue={appearanceTracks} /></div>)}
-          </div>
+          </ScrollShelf>
         </section>}
         {(artist.bio || meta.length > 0 || socials.length > 0 || artist.history_text || tracks.some(track=>track.genre) || isAdmin) && <section className="artist-about">
           <SectionTitle icon={Mic2}>About {artist.name}</SectionTitle>
@@ -330,9 +334,9 @@ export default function PublicRecords({ id: propId, fallbackArtist = null }) {
         {similarArtists.length > 0 && <section className="artist-similar">
           <SectionTitle icon={Users}>Similar Artists</SectionTitle>
           <p className="text-xs text-muted-foreground mb-4">More artists in the same genres.</p>
-          <div className="artist-similar-list" tabIndex={0} role="region" aria-label="Similar artists">
+          <ScrollShelf className="artist-similar-list" label="Similar artists">
             {similarArtists.map(candidate=><Link className="artist-similar-card" key={candidate.id} to={"/records/"+candidate.id}><ArtistArtwork source={candidate.image} className="artist-similar-image" /><span>{candidate.name}</span></Link>)}
-          </div>
+          </ScrollShelf>
         </section>}
         {id && <SafetyControls type="artist" id={id} label="artist page" />}
       </div>
