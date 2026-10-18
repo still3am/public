@@ -4,6 +4,7 @@ import {prepareTrackShare} from "@/lib/trackShareUrl";
 import { getPublishedTracks } from "@/lib/catalogCache";
 import { splitArtistNames } from "@/lib/artistTracks";
 import TrackCard from "@/components/TrackCard";
+import ScrollShelf from "@/components/ScrollShelf";
 import LoadError from '@/components/LoadError';
 import { useRef } from 'react';
 import { useEffect, useState } from "react";
@@ -178,6 +179,7 @@ export default function TrackDetail() {
       <section className={"release-header release-header-full" + (coverUrl && !coverFailed ? " has-release-art" : "")}>
         {coverUrl&&!coverFailed&&<div aria-hidden="true" className="release-full-image"><img src={coverUrl} alt=""/></div>}
         <div className="release-art">{coverUrl && !coverFailed ? <img src={coverUrl} alt={track.title+" cover"} onError={() => setCoverFailed(true)} /> : <Music size={52} />}</div>
+        <p className="track-release-kicker hidden lg:block">Song on PUBLIC</p>
         <h1>{track.title}</h1>
         <div className="release-artist">{displayArtist ? <ArtistLinks artist={displayArtist} maxShown={8} linkClassName="hover:underline" /> : uploader && <Link to={"/profile/"+uploader.id}>{uploader.display_name || uploader.full_name || track.uploader_name}</Link>}</div>
         <p className="release-subtitle">{[track.genre,track.duration_seconds>0?formatTime(track.duration_seconds):null].filter(Boolean).join(" · ")}{track.explicit && <span className="release-explicit" aria-label="Explicit">E</span>}</p>
@@ -189,7 +191,9 @@ export default function TrackDetail() {
       <section className="release-song-list" aria-label="Song">
         <TrackRow track={track} index={0} showArt={false} queue={[track]} queueIndex={0} />
       </section>
+      <div className="track-detail-columns">
       <section className="release-credits">
+        <h2 className="track-details-title hidden lg:block">About this song</h2>
         {track.created_date && Number.isFinite(Date.parse(track.created_date)) && <p>Added to PUBLIC {new Intl.DateTimeFormat(undefined,{month:"long",day:"numeric",year:"numeric"}).format(new Date(track.created_date))}</p>}
         <p>1 song{track.duration_seconds>0?" · "+formatTime(track.duration_seconds):""}</p>
         {uploader && <p>Shared by <Link to={"/profile/"+uploader.id} className="hover:underline">{uploader.display_name || uploader.full_name || track.uploader_name || "PUBLIC member"}</Link></p>}
@@ -223,14 +227,15 @@ export default function TrackDetail() {
         </section>
       }
 
+      </div>
       {(track._has_music_video || track.music_video_file_uri) && <TrackMusicVideo key={track.id+":"+(track.music_video_file_uri||"")} track={track} />}
       {moreTracks.length > 0 && <section className="track-page-section">
         <h2>More by {track.artist}</h2>
-        <div className="release-shelf" tabIndex={0} role="region" aria-label="More songs by this artist">{moreTracks.map(row=><div key={row.id} className="release-shelf-card"><TrackCard track={row} queue={moreTracks} /></div>)}</div>
+        <ScrollShelf className="release-shelf" label="More songs by this artist">{moreTracks.map(row=><div key={row.id} className="release-shelf-card"><TrackCard track={row} queue={moreTracks} /></div>)}</ScrollShelf>
       </section>}
       {recommended.length > 0 && <section className="track-page-section">
         <h2>You Might Also Like</h2>
-        <div className="release-shelf" tabIndex={0} role="region" aria-label="Songs in the same genre">{recommended.map(row=><div key={row.id} className="release-shelf-card"><TrackCard track={row} queue={recommended} /></div>)}</div>
+        <ScrollShelf className="release-shelf" label="Songs in the same genre">{recommended.map(row=><div key={row.id} className="release-shelf-card"><TrackCard track={row} queue={recommended} /></div>)}</ScrollShelf>
       </section>}
 
       {editing &&
