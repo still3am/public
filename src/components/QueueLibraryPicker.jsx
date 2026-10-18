@@ -1,3 +1,4 @@
+import IncrementalList from "@/components/IncrementalList";
 import {readAllPages} from "@/lib/readPages";
 import {Image} from "@/components/ui/image";
 import { useCallback, useEffect, useMemo, useState, useRef } from "react";
@@ -14,12 +15,13 @@ export default function QueueLibraryPicker({ open, onClose }) {
   const p = usePlayer();
   const [tracks, setTracks] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [loadError,setLoadError]=useState(false);
   const [query, setQuery] = useState("");
   const [justAdded, setJustAdded] = useState(new Set());
   const addedRef=useRef(new Set()),loadVersion=useRef(0);
 
   const load = useCallback(async () => {
-    const request=++loadVersion.current;
+    const request=++loadVersion.current;setLoadError(false);
     if (!user?.id) {
       setTracks([]);setLoading(false);
       return;
@@ -39,7 +41,7 @@ export default function QueueLibraryPicker({ open, onClose }) {
         .sort((a, b) => (order.get(a.id) ?? 0) - (order.get(b.id) ?? 0));
       if(request===loadVersion.current)setTracks(sorted);
     } catch {
-      // Keep an already-loaded library available.
+      if(request===loadVersion.current)setLoadError(true);
     } finally {
       if(request===loadVersion.current)setLoading(false);
     }
@@ -71,7 +73,7 @@ export default function QueueLibraryPicker({ open, onClose }) {
   const addAll=()=>{const remaining=filtered.filter(track=>!addedRef.current.has(track.id));if(!remaining.length)return;remaining.forEach(track=>addedRef.current.add(track.id));p.addManyToQueue(remaining);setJustAdded(new Set(addedRef.current));};
 
   return (
-    <div role="dialog" aria-modal="true" aria-label="Add music from your library" data-public-dialog tabIndex={-1} className="queue-library-picker absolute inset-0 z-[60] bg-card text-foreground flex flex-col animate-[fadeIn_.2s_ease-out]">
+    <div role="dialog" aria-modal="true" aria-label="Add music from your library" onKeyDown={e=>{if(e.key==="Escape"){e.stopPropagation();onClose();}}} data-public-dialog tabIndex={-1} className="queue-library-picker absolute inset-0 z-[60] bg-card text-foreground flex flex-col animate-[fadeIn_.2s_ease-out]">
       <div className="flex items-center justify-between px-5 pt-8 pb-3 shrink-0">
         <div className="flex items-center gap-2 min-w-0">
           <ListMusic size={20} className="opacity-80 shrink-0" />
@@ -111,19 +113,19 @@ export default function QueueLibraryPicker({ open, onClose }) {
       </div>
 
       <div className="flex-1 min-h-0 overflow-y-auto px-3 pb-10">
-        {loading ? (
+        {loadError&&<div role="alert" className="px-3 py-4 text-sm"><p>Couldn’t load your library. Your saved music is still there.</p><button className="playlist-action mt-3" disabled={loading} onClick={load}>Retry</button></div>}
+        {loading && tracks===null ? (
           <div className="flex justify-center py-16">
             <Loader2 className="animate-spin text-muted-foreground" />
           </div>
-        ) : !filtered.length ? (
+        ) : loadError&&tracks===null ? null : !filtered.length ? (
           <div className="text-center py-16 px-6">
             <p className="text-sm text-muted-foreground">
               {query ? "No matches." : "Your library is empty."}
             </p>
           </div>
         ) : (
-          <div className="space-y-0.5">
-            {filtered.map((t) => {
+          <IncrementalList items={filtered} resetKey={query} className="space-y-0.5" renderItem={(t) => {
               const added = justAdded.has(t.id);
               return (
                 <div
@@ -155,8 +157,7 @@ export default function QueueLibraryPicker({ open, onClose }) {
                   </button>
                 </div>
               );
-            })}
-          </div>
+            }}/>
         )}
       </div>
     </div>
