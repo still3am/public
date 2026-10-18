@@ -57,7 +57,8 @@ export default function MobileMoreSheet({ onClose }) {
           <h2 className="text-lg font-extrabold tracking-tight">More</h2>
           <button
             onClick={onClose}
-            className="w-11 h-11 grid place-items-center rounded-full hover:bg-foreground/10"
+            type="button"
+            className="mobile-more-close w-11 h-11 grid place-items-center rounded-full hover:bg-foreground/10"
             aria-label="Close">
             
             <X size={18} />
