@@ -1,5 +1,5 @@
 import {NavLink} from "react-router-dom";
-import {Home,Search,TrendingUp,Clock,Library as LibraryIcon,Disc3,Upload,Bell,ChevronsLeft,ChevronsRight,ListMusic,CloudOff,FolderOpen,BarChart3,Shield,Lightbulb,LifeBuoy} from "lucide-react";
+import {Home,Clapperboard,Search,TrendingUp,Clock,Library as LibraryIcon,Disc3,Upload,Bell,ChevronsLeft,ChevronsRight,ListMusic,CloudOff,FolderOpen,BarChart3,Shield,Lightbulb,LifeBuoy} from "lucide-react";
 import {useMyPlaylists} from "@/hooks/useMyPlaylists";
 import {useSidebarCollapsed} from "@/hooks/useSidebarCollapsed";
 import {useAuth} from "@/lib/AuthContext";
@@ -12,7 +12,7 @@ import ThemeToggle from "@/components/ThemeToggle";
 export default function Sidebar(){
  const {user}=useAuth(),{collapsed,toggle}=useSidebarCollapsed(),unread=useUnreadCount(),{playlists}=useMyPlaylists();
  const groups=[
-  {label:"Discover",links:[["/","Home",Home,true],["/search","Search",Search],["/top","Top charts",TrendingUp],["/recent","Recently added",Clock],["/records","Artists",Disc3]]},
+  {label:"Discover",links:[["/","Home",Home,true],["/search","Search",Search],["/moments","Moments",Clapperboard],["/top","Top charts",TrendingUp],["/recent","Recently added",Clock],["/records","Artists",Disc3]]},
   ...(user?[{label:"Your music",links:[["/library","Library",LibraryIcon],["/downloads","Offline music",CloudOff],["/notifications","Notifications",Bell]]}]:[]),
   {label:"Create & connect",links:[["/upload","Upload music",Upload],...(user?[["/my-uploads","Your uploads",FolderOpen],...(user.is_artist?[["/artist-dashboard","Artist dashboard",BarChart3]]:[])]:[]),["/suggestions","Ideas",Lightbulb],...(user?.role==="admin"?[["/admin","Admin",Shield]]:[])]}
  ];
