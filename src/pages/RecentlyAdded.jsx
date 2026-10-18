@@ -55,6 +55,7 @@ export default function RecentlyAdded() {
         {!visible.length && <div className="collection-empty"><h2>No matching songs</h2><p>Try another title, artist, or genre.</p></div>}
       <div className="collection-results-heading"><h2>{query||genre?"Matching songs":"Explore the latest"}</h2><span>{visible.length} songs</span></div>
       <IncrementalList
+          resetKey={JSON.stringify([query,genre])}
           items={visible}
           className="collection-art-grid"
           renderItem={(track) => <TrackCard key={track.id} track={track} queue={visible} />} />
