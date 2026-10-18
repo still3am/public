@@ -1,3 +1,4 @@
+import ScrollShelf from "@/components/ScrollShelf";
 import {useEffect,useState} from "react";
 import {Link} from "react-router-dom";
 import {ListMusic} from "lucide-react";
@@ -23,5 +24,5 @@ export default function ProfilePlaylists({userId,active}){
  },[userId,active]);
  const rows=state.userId===userId?state.rows:[];
  if(!rows.length)return null;
- return <section className="profile-public-playlists"><h2>Public playlists</h2><div className="profile-playlist-shelf" role="region" tabIndex={0} aria-label="Public playlists">{rows.map(playlist=><PlaylistTile key={playlist.id} playlist={playlist}/>)}</div></section>;
+ return <section className="profile-public-playlists"><h2>Public playlists</h2><ScrollShelf className="profile-playlist-shelf" label="Public playlists">{rows.map(playlist=><PlaylistTile key={playlist.id} playlist={playlist}/>)}</ScrollShelf></section>;
 }
