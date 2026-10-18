@@ -89,8 +89,8 @@ export default function Notifications() {
 
       </aside>
       <section className="notifications-results" aria-label="Activity results">
-      <div className="notifications-search"><Search size={18} aria-hidden="true"/><input type="search" aria-label="Search loaded activity" placeholder="Search loaded activity" value={query} onChange={event=>setQuery(event.target.value)} onKeyDown={event=>{if(event.key==="Escape")setQuery("");}}/>{query&&<button type="button" aria-label="Clear activity search" onClick={()=>setQuery("")}><X size={16}/></button>}</div>
-      <p className="notifications-count" role="status">{visibleNotifications.length} {visibleNotifications.length===1?"item":"items"} shown{hasMore?" · More activity available below":""}</p>
+      <div className="notifications-search flex items-center gap-3 rounded-2xl border border-border bg-card px-3"><Search size={18} aria-hidden="true"/><input className="min-w-0 flex-1 py-3 bg-transparent border-0 text-sm outline-none" type="search" aria-label="Search loaded activity" placeholder="Search loaded activity" value={query} onChange={event=>setQuery(event.target.value)} onKeyDown={event=>{if(event.key==="Escape")setQuery("");}}/>{query&&<button type="button" className="w-10 h-10 grid place-items-center rounded-full shrink-0" aria-label="Clear activity search" onClick={()=>setQuery("")}><X size={16}/></button>}</div>
+      <p className="notifications-count text-xs text-muted-foreground my-4" role="status">{visibleNotifications.length} {visibleNotifications.length===1?"item":"items"} shown{hasMore?" · More activity available below":""}</p>
       {error&&<div role="alert" className="mb-4 text-sm text-muted-foreground">Couldn’t refresh activity. <button className="underline" onClick={reload}>Retry</button></div>}
       {visibleNotifications.length === 0 ?
       <EmptyState
