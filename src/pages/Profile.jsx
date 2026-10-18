@@ -359,6 +359,7 @@ export default function Profile({ ownProfileTab = false }) {
     {backgroundColors.length > 0 && <MotionGradient colors={backgroundColors} motion={currentBackground.motion} speed={currentBackground.speed} active={isCurrentPage && !showColors && !showSettings && !showQR && !showDelete && !followList} pauseWhenCovered className="profile-artwork-background fixed inset-0 pointer-events-none z-0" style={{ opacity: 1 }} />}
     {!backgroundColors.length && currentBackground.mode === "auto" && coverUrl && <div aria-hidden="true" className="profile-artwork-background fixed inset-0 pointer-events-none z-0" style={{ backgroundImage: `url(${JSON.stringify(coverUrl)})`, backgroundSize: "cover", backgroundPosition: "center", filter: "blur(45px) saturate(1.35)", transform: "scale(1.12)", opacity: 1 }} />}
     <div className={`profile-page profile-redesigned max-w-6xl mx-auto relative z-10 ${editMode ? "profile-is-editing" : ""}`}>
+      {editMode&&<div className="profile-desktop-editor" role="region" aria-label="Profile editing"><div><strong>Edit your profile</strong><p>Update your name, bio and favorite music.</p></div><div><button type="button" className="playlist-action" disabled={saving} onClick={cancelEdit}>Cancel</button><button type="button" className="chrome-button" disabled={saving||uploadingAvatar} onClick={saveProfile}>{saving?<Loader2 size={16} className="animate-spin"/>:<Save size={16}/>} {saving?"Saving…":"Save changes"}</button></div></div>}
 
       <div className="profile-overview flex flex-col md:flex-row gap-4 md:gap-6 mb-8">
       <div className="profile-identity relative rounded-2xl overflow-hidden ring-1 ring-inset ring-foreground/10 bg-card flex-1 min-w-0">
@@ -373,7 +374,7 @@ export default function Profile({ ownProfileTab = false }) {
         <div className="profile-details relative z-10 px-5 md:px-10 pb-5 md:pb-8 pt-5 md:pt-8">
           <div className="profile-identity-row flex flex-col items-center md:flex-row md:items-center md:justify-center gap-4 md:gap-8">
             <div className="relative shrink-0">
-              <Avatar user={{...profile,avatar_url:avatarUrl}} size={96}/>
+              <Avatar user={{...profile,avatar_url:avatarUrl}} size={96} className="profile-avatar"/>
               
 
 
@@ -405,6 +406,7 @@ export default function Profile({ ownProfileTab = false }) {
               <div className="flex items-baseline gap-2 flex-wrap justify-center md:justify-start">
                 {editMode ?
                     <input
+                      aria-label="Display name"
                       value={form.display_name}
                       onChange={(e) => setForm((f) => ({ ...f, display_name: e.target.value }))}
                       className="text-2xl md:text-4xl font-extrabold tracking-tight w-full max-w-2xl bg-transparent border-b border-border focus:outline-none pb-1"
@@ -454,6 +456,7 @@ export default function Profile({ ownProfileTab = false }) {
 
               {editMode ?
                   <textarea
+                    aria-label="Profile bio"
                     value={form.bio}
                     onChange={(e) => setForm((f) => ({ ...f, bio: e.target.value }))}
                     placeholder="Add a bio"
@@ -530,6 +533,7 @@ export default function Profile({ ownProfileTab = false }) {
                       </button>
                       <button
                         onClick={cancelEdit}
+                        disabled={saving}
                         title="Cancel"
                         aria-label="Cancel editing"
                         className="profile-primary-action playlist-action">
