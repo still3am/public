@@ -58,7 +58,7 @@ export default function TopCharts() {
         {!visible.length&&<div className="collection-empty"><h2>No matching songs</h2><p>Try another title, artist, or genre.</p></div>}
 
         <div className="collection-results-heading"><h2>{filtering?"Matching tracks":"The chart"}</h2><span>{visible.length} songs</span></div>
-        <IncrementalList items={visible} className="chart-ranked-list" renderItem={track=><div key={track.id} className="chart-ranked-row"><span className="chart-position">{ranks.get(track.id)}</span><div className="min-w-0 flex-1"><TrackRow track={track} queue={visible} queueIndex={visible.findIndex(t=>t.id===track.id)} showArt/></div></div>}/>
+        <IncrementalList resetKey={JSON.stringify([query,genre])} items={visible} className="chart-ranked-list" renderItem={(track,index)=><div key={track.id} className="chart-ranked-row"><span className="chart-position">{ranks.get(track.id)}</span><div className="min-w-0 flex-1"><TrackRow track={track} queue={visible} queueIndex={index} showArt/></div></div>}/>
 
       </div>
     </PullToRefresh>);
