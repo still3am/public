@@ -376,7 +376,7 @@ export default function Profile({ ownProfileTab = false }) {
           <div className="profile-identity-row flex flex-col items-center md:flex-row md:items-center md:justify-center gap-4 md:gap-8">
             <div className="profile-avatar-notes">
               {!editMode && <PublicNotes key={[targetId,me?.id].join(":")} profileId={targetId} isOwn={isOwn} active={isCurrentPage} userTracks={tracks} />}
-              <ProfileAvatar user={{...profile,avatar_url:avatarUrl}} editing={editMode} busy={uploadingAvatar||saving} onUpload={uploadAvatar}/>
+              <ProfileAvatar user={{...profile,avatar_url:avatarUrl}} editing={editMode} busy={uploadingAvatar||saving} onUpload={uploadAvatar} onSelect={url=>{if(!isOwn||uploadingAvatar||saving)return;avatarVersion.current++;setForm(previous=>({...previous,avatar_url:url}));}}/>
             </div>
 
             <div className="profile-info flex-1 min-w-0 w-full md:w-auto text-center md:text-left">
