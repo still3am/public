@@ -25,7 +25,7 @@ export default function MomentMedia({post,active,onActive}){
  useEffect(()=>{if(audio.current){audio.current.volume=Number(post.music_volume??.8);audio.current.muted=muted;}if(video.current){video.current.volume=Number(post.original_volume??0);video.current.muted=muted||Number(post.original_volume??0)===0;}},[muted,post.music_volume,post.original_volume]);
  async function play(){
   if(active){stop();onActive(false);return;}
-  if(!source&&Number(post.original_volume||0)===0){setError('The music is still loading. Please try again.');return;}
+  if(!source&&!isVideo){setError('The music is still loading. Please try again.');return;}
   setError('');playerRef.current.pausePlayback?.();onActive(true);const version=++request.current;
   try{
    const a=audio.current,v=video.current;if(a&&source){if(a.currentTime<start||a.currentTime>=start+length)a.currentTime=start;}
