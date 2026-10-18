@@ -89,3 +89,15 @@ console.log("PASS onboarding search handles accents, capitalization and extra sp
 
 f=flow(5,{mode:"auto"});await f.api.next();assert.equal(f.state.patches[0].profile_background_mode,"auto");assert.equal(f.state.step,6);assert.deepEqual(f.state.patches[0].profile_background_colors,["#000000","#ffffff","#303030"],"switching automatic must retain manual colors");
 console.log("PASS automatic mode saves while preserving the manual palette");
+
+const {AVATAR_PRESETS}=await import('../src/lib/avatarPresets.js');
+for(const avatar of AVATAR_PRESETS){
+ f=flow(1,{avatar:avatar.url,name:'New Listener'});await f.api.next();
+ assert.equal(f.state.step,2,'selected avatar advances only after confirmation');
+ assert.deepEqual(f.state.patches.at(-1),{avatar_url:avatar.url},'avatar is saved separately so the native preset route runs');
+ assert.equal(f.state.patches[0].display_name,'New Listener');
+}
+f=flow(1,{avatar:AVATAR_PRESETS[0].url,avatarFailure:true});await f.api.next();assert.equal(f.state.step,undefined);assert.equal(f.state.error,'avatar save failed');assert.equal(f.state.busy,false);
+f=flow(1,{avatar:AVATAR_PRESETS[0].url});await f.api.next(true);assert.equal(f.state.patches.length,0);assert.equal(f.state.step,2);
+f=flow(1,{avatar:AVATAR_PRESETS[0].url,ignored:true});await f.api.next();assert.equal(f.state.step,undefined);
+console.log('PASS onboarding avatar and name saves, gallery choices, failures, unconfirmed saves and skip');
