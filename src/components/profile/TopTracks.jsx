@@ -1,3 +1,4 @@
+import "./profile-edit-controls.css";
 import { useEffect, useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { usePlayer } from "@/context/PlayerContext";
@@ -55,7 +56,7 @@ function PinnedTrackCard({ track, onRemove, editMode }) {
         {editMode &&
         <button
           onClick={() => onRemove(track.id)}
-          className="absolute top-1.5 right-1.5 w-7 h-7 rounded-full bg-foreground/80 text-background grid place-items-center"
+          type="button" className="profile-edit-circle profile-edit-circle-small absolute top-1.5 right-1.5 bg-foreground/80 text-background"
           aria-label={`Remove ${track.title || "song"} from Top 8`}>
           
             <X size={14} />

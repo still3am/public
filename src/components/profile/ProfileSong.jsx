@@ -1,3 +1,4 @@
+import "./profile-edit-controls.css";
 import { useEffect, useRef, useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { usePlayer } from "@/context/PlayerContext";
@@ -79,7 +80,7 @@ export default function ProfileSong({
                 </button>
                 <button
                 onClick={() => onChange("")}
-                className="p-2 rounded-full hover:bg-foreground/10 text-foreground/50"
+                type="button" className="profile-edit-circle relative hover:bg-foreground/10 text-foreground/50"
                 aria-label="Remove profile song">
                 
                   <X size={16} />
@@ -158,7 +159,7 @@ export default function ProfileSong({
             </button>
             <button
             onClick={() => onChange("")}
-            className="p-2 rounded-full hover:bg-foreground/10 text-foreground/50"
+            type="button" className="profile-edit-circle relative hover:bg-foreground/10 text-foreground/50"
             aria-label="Remove profile song">
             
               <X size={16} />
