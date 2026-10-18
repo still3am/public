@@ -1,11 +1,12 @@
 import { useEffect, useRef, useState } from "react";
 import { flushSync } from "react-dom";
 import { NavLink, useLocation, useNavigate, useSearchParams } from "react-router-dom";
-import { Home, ArrowLeft, Search, X, User, MoreHorizontal, Library as LibraryIcon } from "lucide-react";
+import { Home, Clapperboard, ArrowLeft, Search, X, User, MoreHorizontal, Library as LibraryIcon } from "lucide-react";
 import MobileMoreSheet from "@/components/MobileMoreSheet";
 
 const TABS = [
   { to: "/", label: "Home", Icon: Home, end: true },
+  { to: "/moments", label: "Moments", Icon: Clapperboard },
   { to: "/library", label: "Library", Icon: LibraryIcon },
   { to: "/profile", label: "Me", Icon: User },
 ];
@@ -88,7 +89,7 @@ export default function MobileTabBar() {
     if (loc.state?.searchReturnTo === returnTo) nav(-1);
     else nav(returnTo, { replace: true });
   }
-  const moreActive = !["/", "/search", "/library", "/profile"].some(path => loc.pathname === path || (path !== "/" && loc.pathname.startsWith(path + "/")));
+  const moreActive = !["/", "/search", "/moments", "/library", "/profile"].some(path => loc.pathname === path || (path !== "/" && loc.pathname.startsWith(path + "/")));
   return <>
     <nav aria-label={expanded ? "Search navigation" : "Main navigation"} className={"mobile-tab-bar md:hidden" + (expanded ? " mobile-search-expanded" : "")}>
       {expanded ? <>
