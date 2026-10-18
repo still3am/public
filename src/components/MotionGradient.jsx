@@ -1,6 +1,7 @@
 import {useEffect,useRef,useState} from "react";
 
-// Original, lightweight WebGL surface. No video download or audio graph.
+// PUBLIC Flow: a shared ribbon field. Only this background canvas moves;
+// surrounding text, artwork and controls never inherit its animation.
 const VERTEX=`
 attribute vec2 a_position;
 varying vec2 v_uv;
@@ -15,23 +16,26 @@ uniform vec3 u_a;
 uniform vec3 u_b;
 uniform vec3 u_c;
 void main(){
- vec2 p=v_uv;
+ // A gently turning field carries two interwoven ribbons through the frame.
+ // Aspect correction keeps the folds broad on both portrait and desktop surfaces.
  float t=u_time;
- // Smooth domain warping gives broad, folding ribbons rather than zoom pulses.
- vec2 q=vec2(p.x*min(u_aspect,1.6),p.y);
- q+=.20*vec2(sin(q.y*3.8+t*.43),cos(q.x*3.4-t*.31));
- float wave=sin(q.x*3.2+q.y*2.1+t*.29);
- float fold=sin(q.y*4.1-q.x*1.8-t*.38+wave*.8);
- float ribbon=.5+.5*sin(q.x*2.9+fold*1.7+t*.22);
- vec3 color=mix(u_a,u_b,smoothstep(.12,.88,ribbon));
- float pool=.5+.5*sin(q.y*3.3+wave*1.6-t*.27);
- color=mix(color,u_c,smoothstep(.28,.92,pool)*.88);
- float light=.90+.10*sin(q.x*2.0+q.y*2.6+fold);
- color*=light;
+ vec2 p=(v_uv-.5)*vec2(clamp(u_aspect,.62,1.8),1.);
+ float angle=.24*sin(t*.16);
+ mat2 turn=mat2(cos(angle),-sin(angle),sin(angle),cos(angle));
+ vec2 q=turn*p;
+ q.x+=.24*sin(p.y*4.2-t*.38)+.12*sin(p.y*2.1+t*.26);
+ q.y+=.18*sin(p.x*3.5+t*.29);
+ float sweep=q.x*3.4+q.y*2.2+.85*sin(q.y*3.0-t*.31)+t*.42;
+ float returnFold=q.y*3.1-q.x*2.4+.90*sin(q.x*2.7+t*.23)-t*.34;
+ float ribbon=smoothstep(-.78,.78,sin(sweep));
+ float counterRibbon=smoothstep(-.60,.88,sin(returnFold));
+ // Palette-only mixing: no gray veil, brightness reduction or white overlay.
+ vec3 color=mix(u_a,u_b,ribbon);
+ color=mix(color,u_c,counterRibbon*.94);
  gl_FragColor=vec4(color,1.);
 }
 `;
-const DEFAULT=["#334c78","#70528c","#246c75"];
+const DEFAULT=["#000000","#ffffff","#303030"];
 function rgb(value){
  if(/^#[0-9a-f]{6}$/i.test(value||""))return [1,3,5].map(i=>parseInt(value.slice(i,i+2),16)/255);
  const m=/^rgb\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*\)$/.exec(value||"");
@@ -115,8 +119,8 @@ export default function MotionGradient({colors=DEFAULT,motion="flow",speed=1,act
   };
  },[version]);
  useEffect(()=>{wake.current?.();},[key,motion,speed,active,pauseWhenCovered]);
- return <div aria-hidden="true" className={className} style={{pointerEvents:"none",overflow:"hidden",...style}}>
-  <div style={{position:"absolute",inset:0,backgroundColor:palette[0],backgroundImage:`radial-gradient(ellipse at 15% 25%, ${palette[1]}, transparent 70%),radial-gradient(ellipse at 85% 80%, ${palette[2]}, transparent 75%)`}}/>
+ return <div aria-hidden="true" data-gradient-motion="public-flow" className={className} style={{pointerEvents:"none",overflow:"hidden",...style}}>
+  <div style={{position:"absolute",inset:0,backgroundColor:palette[0],backgroundImage:`linear-gradient(125deg, ${palette[0]} 0%, ${palette[1]} 42%, ${palette[2]} 78%, ${palette[0]} 100%)`}}/>
   <canvas ref={canvas} style={{position:"absolute",inset:0,width:"100%",height:"100%",display:"block",opacity:ready?1:0,transition:"opacity .5s ease"}}/>
  </div>;
 }
