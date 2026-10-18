@@ -148,6 +148,19 @@
  .public-app .policy-page h2{padding-top:12px}
  .public-app .policy-contents{padding:22px}
  .public-app .downloads-page{max-width:1040px}
+ .queue-panel .queue-body>.collection-tools{position:sticky;top:0;z-index:2;background:hsl(var(--card));padding-block:10px;margin-top:0}
+ .queue-panel .queue-upcoming-row:focus-within{background:hsl(var(--accent))}
+ .queue-panel .queue-upcoming-row:focus-within .song-menu-reveal{opacity:1}
+ .queue-library-picker>div:first-child{padding-top:24px}
+ .queue-library-picker .incremental-list-more{display:grid;justify-items:center;gap:12px;padding:20px 0}
+ .queue-library-picker .incremental-list-more>span{font-size:12px;color:hsl(var(--muted-foreground))}
+ .profile-settings-dialog .profile-settings-panel{max-width:640px}
+ .profile-settings-panel>header{padding:24px 28px}
+ .profile-settings-panel .profile-settings-groups{padding:24px 28px;scrollbar-width:thin}
+ .profile-settings-groups>section{min-width:0}
+ .profile-settings-groups>section>div>*{min-height:72px}
+ .public-app .support-page input,.public-app .support-page textarea{margin-top:8px}
+ .public-app .support-page textarea{min-height:180px;resize:vertical}
  .public-app .lounge-layout{max-width:1240px}
  .public-app .lounge-community{position:sticky;top:24px}
  .public-app .page-surface[data-page=settings]>div{max-width:960px}
@@ -172,6 +185,19 @@
  .public-app .music-card:focus-within{outline:2px solid hsl(var(--ring));outline-offset:4px;border-radius:14px}
 }
 @media(min-width:1024px){
+ .profile-settings-dialog .profile-settings-panel{max-width:880px}
+ .profile-settings-panel .profile-settings-groups{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));align-items:start;gap:28px 24px}
+ .profile-settings-panel .profile-settings-groups>*{margin-top:0}
+ .profile-settings-groups>p{grid-column:1/-1}
+ .public-app .page-surface[data-page=suggestions] .suggestions-page{max-width:1240px}
+ .public-app .suggestions-workspace{display:grid;grid-template-columns:minmax(280px,.85fr) minmax(0,1.5fr);gap:32px;align-items:start}
+ .public-app .suggestions-composer{position:sticky;top:24px;min-width:0}
+ .public-app .suggestions-composer form{padding:24px;margin-bottom:0}
+ .public-app .suggestions-composer textarea{min-height:150px;resize:vertical}
+ .public-app .suggestions-composer input{min-height:44px}
+ .public-app .suggestions-feed{min-width:0}
+ .public-app .suggestions-feed .collection-tools{flex-wrap:wrap}
+ .public-app .suggestions-feed .collection-tools input{min-width:0}
  .full-player-screen .full-player-main{width:100%;max-width:640px;margin-inline:auto}
  .full-player-screen .full-player-art{max-width:min(44vh,440px);max-height:46vh}
  .public-app .page-surface[data-page=track] .release-page{max-width:1240px}
