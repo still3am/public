@@ -2,7 +2,8 @@ import {usePlayer} from "@/context/PlayerContext";
 import { useRef } from "react";
 import { Outlet, useLocation } from "react-router-dom";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
-import PageHeading from "@/components/PageHeading";
+import DesktopHeader from "@/components/DesktopHeader";
+import "@/desktop.css";
 import Sidebar from "@/components/Sidebar";
 import MobileTabBar from "@/components/MobileTabBar";
 import ScrollingBanner from "@/components/ScrollingBanner";
@@ -48,10 +49,11 @@ export default function Layout() {
       <div aria-hidden="true" className="public-status-bar-shield" />
       <a href="#main-content" className="public-skip-link">Skip to content</a>
       <Sidebar />
-      <div className="flex-1 flex flex-col min-w-0">
+      <div className="desktop-workspace flex-1 flex flex-col min-w-0">
         <ScrollingBanner />
+        <DesktopHeader />
         <main id="main-content" tabIndex={-1} className={`flex-1 w-full mx-auto main-content app-content ${artworkPage ? "artwork-content" : ""} ${/^\/mix\/[^/]+\/?$/.test(location.pathname) ? "mix-content" : ""}`}>
-          <PageHeading />
+
           {TABS.map(({ path, Page, requiresAuth }) =>
           mountedTabs.current.has(path) && (!requiresAuth || user) ?
           <div key={`${path}:${requiresAuth?user?.id:"public"}`} data-page={path === "/" ? "home" : path.slice(1)} className={activeTab?.path === path ? "page-surface block public-page-enter" : "page-surface hidden"}>
