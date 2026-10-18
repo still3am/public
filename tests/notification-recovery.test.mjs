@@ -1,11 +1,12 @@
 import fs from 'node:fs';import assert from 'node:assert/strict';
+globalThis.window={dispatchEvent(){}};
 let slots=[],index=0,state={},failRead=false,failWrite=false,allAction='',failActors=false;
 const records=Array.from({length:120},(_,i)=>({id:String(i),user_id:'owner',actor_id:'actor',read:false}));
 const sdk={entities:{Notification:{filter:async(q,opts)=>{if(failRead)throw Error('Offline');const start=Number(opts.cursor)||0;return {items:records.slice(start,start+50),has_more:start+50<records.length,next_cursor:start+50<records.length?String(start+50):null};},count:async()=>records.filter(n=>!n.read).length,update:async()=>{if(failWrite)throw Error('Offline');},subscribe:()=>()=>{}},Track:{}},functions:{invoke:async(name,body)=>{allAction=body.action;if(body.action==='markAllRead')records.forEach(n=>n.read=true);return {data:{success:true}};}}};
 globalThis.__deps={base44:sdk,useAuth:()=>({user:{id:'owner'}}),getUsersByIds:async()=>{if(failActors)throw Error("Profile lookup unavailable");return [{id:"actor",display_name:"Sender"}];},coalesce:fn=>Object.assign(fn,{cancel(){}})};
 globalThis.__hooks={useRef:v=>{const i=index++;return slots[i]??=({current:v});},useState:v=>{const i=index++;if(!(i in state))state[i]=v;return [state[i],next=>state[i]=typeof next==='function'?next(state[i]):next];},useCallback:fn=>fn,useEffect:()=>{}};
 let code=fs.readFileSync('src/hooks/useNotifications.js','utf8').replace(/import[\s\S]*?from\s*["'][^"']+["'];?/g,'');
-code='const {useCallback,useEffect,useRef,useState}=globalThis.__hooks;const {base44,useAuth,getUsersByIds,coalesce}=globalThis.__deps;\n'+code;
+code='const reportActionError=()=>{};const {useCallback,useEffect,useRef,useState}=globalThis.__hooks;const {base44,useAuth,getUsersByIds,coalesce}=globalThis.__deps;\n'+code;
 const {useNotifications}=await import('data:text/javascript;base64,'+Buffer.from(code).toString('base64'));
 const render=()=>{index=0;return useNotifications();};
 let n=render();await n.reload();n=render();assert.equal(n.notifications.length,50);assert.equal(n.unreadCount,120);await n.loadMore();n=render();assert.equal(n.notifications.length,100);await n.loadMore();n=render();assert.equal(n.notifications.length,120);assert.equal(n.hasMore,false);
