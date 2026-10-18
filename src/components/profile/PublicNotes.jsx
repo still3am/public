@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import "./public-notes.css";
-import { base44 } from "@/api/base44Client";
+import { base44, publicNoteDatabase } from "@/api/base44Client";
 import { requestPublicNote, savePublicNote, publicNoteError } from "@/lib/publicNoteActions";
 import { useAuth } from "@/lib/AuthContext";
 import { usePlayer } from "@/context/PlayerContext";
@@ -12,7 +12,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 import { Music2, Plus, Play, Pause, Loader2 } from "lucide-react";
 
 async function request(action, args) {
-  return requestPublicNote(base44, action, args);
+  return requestPublicNote(base44, action, args, publicNoteDatabase);
 }
 function Cover({ url }) {
   const source = useCoverUrl(url);
@@ -60,7 +60,7 @@ export default function PublicNotes({ profileId, isOwn, active = true, userTrack
     if (lock.current || !isOwn || !user?.id || user.id !== profileId || (!remove && !draft && !caption.trim())) return;
     lock.current = true; version.current++; setBusy(true); setError("");
     try {
-      const saved = remove ? await request("removeNote", []) : await savePublicNote(base44, profileId, { track_id: draft?.id || "", caption });
+      const saved = remove ? await request("removeNote", [profileId]) : await savePublicNote(base44, profileId, { track_id: draft?.id || "", caption }, publicNoteDatabase);
       if (!remove && (!saved?.id || (saved.track_id ? !saved.track : !saved.caption?.trim()) || !saved.expires_at)) throw Error("Note not confirmed");
       if (alive.current) { setNote(remove ? null : saved); setNow(Date.now()); setEditing(false); }
     } catch (e) {
