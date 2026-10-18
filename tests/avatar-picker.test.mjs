@@ -1,0 +1,28 @@
+import assert from "node:assert/strict";
+import fs from "node:fs";
+import ts from "typescript";
+import * as React from "react";
+import {AVATAR_PRESETS} from "../src/lib/avatarPresets.js";
+globalThis.__React=React;globalThis.__presets=AVATAR_PRESETS;
+let selection="",saved=null,closed=0,uploads=0;
+globalThis.__state=initial=>[selection||initial,value=>{selection=value;}];
+const stub='const React=globalThis.__React,useState=globalThis.__state,AVATAR_PRESETS=globalThis.__presets,Avatar="avatar",Upload="upload",Check="check",Dialog="dialog",DialogContent="content",DialogHeader="header",DialogTitle="h1",DialogDescription="p";';
+const source=fs.readFileSync("src/components/profile/AvatarPicker.jsx","utf8").replace(/^import[^;]+;/gm,"");
+const code=ts.transpileModule(stub+source,{compilerOptions:{jsx:ts.JsxEmit.React,target:ts.ScriptTarget.ES2022,module:ts.ModuleKind.ESNext}}).outputText;
+const Picker=(await import("data:text/javascript;base64,"+Buffer.from(code).toString("base64"))).default;
+const find=(node,test)=>!node||typeof node!=="object"?[]:[...(test(node)?[node]:[]),...React.Children.toArray(node.props?.children).flatMap(child=>find(child,test))];
+const props={user:{avatar_url:""},onSelect:value=>{saved=value;},onClose:()=>closed++,onUpload:()=>uploads++};
+let tree=Picker(props);
+assert.equal(find(tree,node=>node.type==="button"&&node.props["aria-label"]?.startsWith("Choose ")).length,8);
+const target=AVATAR_PRESETS[2];
+find(tree,node=>node.props?.["aria-label"]==="Choose "+target.name+" avatar")[0].props.onClick();
+assert.equal(saved,null,"browsing only changes the preview");
+tree=Picker(props);
+assert.equal(find(tree,node=>node.type==="avatar")[0].props.user.avatar_url,target.url);
+find(tree,node=>node.props?.className==="avatar-picker-confirm")[0].props.onClick();
+assert.equal(saved,target.url);
+find(tree,node=>node.props?.className==="avatar-picker-upload")[0].props.onClick();assert.equal(uploads,1);
+tree=Picker({...props,busy:true});assert.equal(find(tree,node=>node.props?.className==="avatar-picker-confirm")[0].props.disabled,true);
+tree.props.onOpenChange(false);assert.equal(closed,0,"busy picker cannot dismiss");
+for(const preset of AVATAR_PRESETS){assert.ok(preset.url.startsWith("/avatars/public-"));const svg=fs.readFileSync("public"+preset.url,"utf8");assert.match(svg,/viewBox="0 0 512 512"/);assert.ok(!/<script|<foreignObject|href=/i.test(svg),"bundled avatars have no executable or external content");}
+console.log("PASS avatar catalog assets, draft-only selection, preview, explicit confirmation, upload option and busy-state controls");
