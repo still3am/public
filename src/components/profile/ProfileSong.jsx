@@ -3,7 +3,7 @@ import { base44 } from "@/api/base44Client";
 import { usePlayer } from "@/context/PlayerContext";
 import { useCoverUrl } from "@/hooks/useCoverUrl";
 import { Image } from "@/components/ui/image";
-import { Play, Pause, Music, X } from "lucide-react";
+import { Play, Pause, X } from "lucide-react";
 import TrackPickerSheet from "@/components/profile/TrackPickerSheet";
 import HoverTrackMenu from "@/components/track/HoverTrackMenu";
 import { useLongPressMenu } from "@/hooks/useLongPressMenu";
