@@ -10,10 +10,10 @@ The desktop stylesheet is loaded after the existing styles in main.jsx. Every la
 | Top charts / Recently added | Bounded editorial hero, linked featured artwork, correct collection pause/resume, adaptive grids and sticky desktop search controls |
 | Library | Three collection shortcuts across, adaptive artwork grid, two-column utility links, bounded tab controls |
 | Playlists | Larger side-by-side artwork and metadata, compact rows, focused editing tools |
-| Track detail | Square artwork beside title, credits and playback; bounded recommendation shelves |
+| Track detail | Rounded desktop artwork/title panel with clear playback controls; credits and lyrics in separate columns from 1024px, full-width credits when lyrics are absent, mouse/keyboard recommendation shelves |
 | Made for you | Persistent mix details beside the song list, full gradient preserved |
 | Profiles | Rounded 28px identity header with compact cover, inset desktop gutters, clearer stats and circular actions; profile song and adaptive music grid alongside a sticky rounded conversation pane; public playlists have mouse/keyboard shelf controls; persistent desktop Save/Cancel controls, roomier pinned cards and a single-column fallback on smaller laptops; consistent 120px avatar frame with centered image/initials, accessible upload control and same-file retry; aligned profile-song artwork and long-bio wrapping |
-| Artist records / Artist by name | Desktop hero proportions, bounded latest-release card, adaptive discography grid and mouse/keyboard controls for top songs, featured appearances and similar artists; artist and latest-song playback toggles preserve the active queue |
+| Artist records / Artist by name | Rounded desktop identity panel with square portrait beside artist details and playback; latest release alongside top songs on wide screens, adaptive discography grid and mouse/keyboard shelves; artist and latest-song playback preserve the active queue |
 | Artist directory | Sticky desktop search/alphabet toolbar with accessible letter buttons and unavailable letters disabled; filtered two-column name groups; original tap/drag alphabet remains mobile-only |
 | Offline / Downloads | Wider song workspace; mouse drag-and-drop remains available in reorder mode |
 | Upload / Your uploads / Unfinished uploads | Wider form/list workspace, sticky batch toolbar, comfortable editing rows and progressively rendered upload cards with full playback queues |
