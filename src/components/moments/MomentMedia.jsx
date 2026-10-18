@@ -19,6 +19,7 @@ export default function MomentMedia({post,active,onActive}){
   return()=>{cancelled=true;observer.disconnect();stop();};
  },[post.id,post.track?.id]);
  useEffect(()=>{if(!active)stop();},[active]);
+ useEffect(()=>{stop();onActive(false);setIndex(0);if(audio.current)audio.current.currentTime=start;if(video.current)video.current.currentTime=0;},[start,length]);
  useEffect(()=>{if(player.isPlaying){stop();onActive(false);}},[player.isPlaying]);
  useEffect(()=>{const hide=()=>{if(document.hidden){stop();onActive(false);}};document.addEventListener('visibilitychange',hide);return()=>document.removeEventListener('visibilitychange',hide);},[]);
  useEffect(()=>{if(audio.current){audio.current.volume=Number(post.music_volume??.8);audio.current.muted=muted;}if(video.current){video.current.volume=Number(post.original_volume??0);video.current.muted=muted||Number(post.original_volume??0)===0;}},[muted,post.music_volume,post.original_volume]);
