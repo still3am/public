@@ -2,7 +2,7 @@
 .desktop-header,.desktop-shelf-controls{display:none}
 @media(min-width:768px){
  body{-webkit-user-select:text;user-select:text}
- .public-app{--desktop-header-height:68px}
+ .public-app{--desktop-header-height:0px}
  .public-app .desktop-workspace{width:0}
  .public-app .desktop-workspace>.app-content{max-width:1440px;--app-gutter:clamp(24px,3vw,48px);padding-top:30px;padding-bottom:44px}
  .public-app.has-player .desktop-workspace>.app-content{padding-bottom:148px}
@@ -51,10 +51,10 @@
  .public-app .page-intro h1,.public-app .library-heading h1,.public-app .home-welcome h1{font-size:clamp(32px,3vw,44px);line-height:1.1}
  .public-app .page-intro{margin-bottom:28px}
  .public-app .page-intro>p:not(.eyebrow){font-size:14px;max-width:620px;line-height:1.7}
- .public-app .page-surface :is(input,select,textarea){scroll-margin-top:90px}
- .public-app .page-surface :is(section,[id]){scroll-margin-top:90px}
+ .public-app .page-surface :is(input,select,textarea){scroll-margin-top:32px}
+ .public-app .page-surface :is(section,[id]){scroll-margin-top:32px}
  .public-app .song-row{min-height:68px}
- .public-app .song-row :is(a,button){scroll-margin-top:100px}
+ .public-app .song-row :is(a,button){scroll-margin-top:32px}
  .public-app .desktop-card-grid{grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:22px}
  .public-app .desktop-card-grid>div{max-width:none;min-width:0}
  .public-app .home-redesigned .home-editorial{min-height:330px;padding:36px;grid-template-columns:minmax(0,1fr) minmax(220px,30%);gap:36px}
@@ -110,7 +110,7 @@
  .public-app .directory-page{max-width:1080px}
  .public-app .directory-page [data-key]>div:last-child{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:2px 24px}
  .public-app .directory-page [data-key] a{min-height:44px;padding:12px;font-size:14px}
- .public-app .directory-page [data-key]>.sticky{top:68px}
+ .public-app .directory-page [data-key]>.sticky{top:12px}
  .public-app .page-surface[data-page=notifications] .notifications-page{max-width:880px}
  .public-app .notifications-page .notification-content{padding:20px;gap:18px}
  .public-app .notifications-page .notification-track{max-width:540px}
@@ -118,12 +118,12 @@
  .public-app .page-surface[data-page=suggestions] .collection-page{max-width:960px;margin-inline:auto}
  .public-app .uploads-page,.public-app .page-surface[data-page=unfinished-uploads]>div{max-width:1240px}
  .public-app .upload-page{max-width:1000px}
- .public-app .upload-queue-toolbar{top:80px;padding:14px 18px}
+ .public-app .upload-queue-toolbar{top:12px;padding:14px 18px}
  .public-app .upload-item{padding:24px}
  .public-app .page-surface[data-page=artist-dashboard]>div{max-width:1240px}
  .public-app .page-surface[data-page=artist-dashboard] .recharts-responsive-container{min-height:300px}
  .public-app .page-surface[data-page=artist-dashboard] .bg-card{padding:24px}
- .public-app .page-surface[data-page=admin] .admin-section-nav{top:90px}
+ .public-app .page-surface[data-page=admin] .admin-section-nav{top:24px}
  .public-app .admin-workspace{max-width:1280px;margin-inline:auto}
  .public-app .admin-workspace-layout{grid-template-columns:160px minmax(0,1fr);gap:28px}
  .public-app .support-page{max-width:720px}
@@ -134,7 +134,7 @@
  .public-app .policy-contents{padding:22px}
  .public-app .downloads-page{max-width:1040px}
  .public-app .lounge-layout{max-width:1240px}
- .public-app .lounge-community{position:sticky;top:88px}
+ .public-app .lounge-community{position:sticky;top:24px}
  .public-app .page-surface[data-page=settings]>div{max-width:960px}
  .public-app .page-surface[data-page=settings]>.fixed>.top-bar-safe{padding:22px 24px}
  .public-app .page-surface[data-page=settings] h1{font-size:24px}
@@ -167,12 +167,12 @@
  .public-app .track-page .release-credits{max-width:800px}
  .public-app .track-page .release-shelf{gap:22px}
  .public-app .profile-content{grid-template-columns:minmax(0,1fr) 320px;gap:30px;align-items:start}
- .public-app .profile-conversation{position:sticky;top:92px;max-height:calc(100dvh - 210px);overflow-y:auto;scrollbar-width:thin}
+ .public-app .profile-conversation{position:sticky;top:24px;max-height:calc(100dvh - 210px);overflow-y:auto;scrollbar-width:thin}
  .public-app .profile-redesigned:not(.profile-is-editing) .profile-pinned-section>.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(145px,1fr));gap:18px;overflow:visible}
  .public-app .profile-redesigned:not(.profile-is-editing) .profile-pinned-section>.grid>div{min-width:0}
  .public-app .personal-mix-immersive{display:grid;grid-template-columns:minmax(260px,.85fr) minmax(0,1.4fr);column-gap:44px;align-items:start;min-height:calc(100dvh - 102px);padding-top:20px}
  .public-app .personal-mix-immersive>.release-toolbar{grid-column:1/-1;margin-bottom:24px;height:44px;min-height:44px;transform:none;align-items:center}
- .public-app .personal-mix-immersive .release-header-full{position:sticky;top:92px;margin:0;padding:32px 0;text-align:left;min-width:0}
+ .public-app .personal-mix-immersive .release-header-full{position:sticky;top:24px;margin:0;padding:32px 0;text-align:left;min-width:0}
  .public-app .personal-mix-immersive .personal-mix-open-art{height:90px}
  .public-app .personal-mix-immersive .release-header-full h1{margin:0;font-size:clamp(36px,4vw,58px)}
  .public-app .personal-mix-immersive .personal-mix-page-body{width:100%;max-width:none;padding-top:18px}
