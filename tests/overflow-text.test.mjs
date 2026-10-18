@@ -32,12 +32,12 @@ function render(){stateIndex=0;refIndex=0;effects=[];return Overflow({text:"Comp
 tree=render();const cleanup=effects[0]();tree=render();
 assert.ok(tree.props.className.includes("has-overflow"));
 assert.equal(tree.props.style["--text-travel"],"278px");
-const duplicate=find(tree,node=>node.props?.["aria-hidden"]===true)[0];
+const duplicate=find(tree,node=>node.props?.["aria-hidden"]==="true")[0];
 assert.equal(duplicate.props.children,"Complete long song title");
 assert.equal(find(duplicate,node=>node.type==="link").length,0,"visual copy never duplicates focusable links");
 assert.equal(tree.props.style["--text-play"],"running");
 content.scrollWidth=80;resize();tree=render();
 assert.ok(!tree.props.className.includes("has-overflow"),"short text does not animate");
-assert.equal(find(tree,node=>node.props?.["aria-hidden"]===true).length,0);
+assert.equal(find(tree,node=>node.props?.["aria-hidden"]==="true").length,0);
 cleanup();
 console.log("PASS full artist credits, overflow measurement, resize recovery, short-text stability and noninteractive visual copies");
