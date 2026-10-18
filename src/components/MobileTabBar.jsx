@@ -5,11 +5,11 @@ import { Home, Clapperboard, ArrowLeft, Search, X, User, MoreHorizontal, Library
 import MobileMoreSheet from "@/components/MobileMoreSheet";
 
 const TABS = [
-  { to: "/", label: "Home", Icon: Home, end: true },
-  { to: "/moments", label: "Moments", Icon: Clapperboard },
-  { to: "/library", label: "Library", Icon: LibraryIcon },
-  { to: "/profile", label: "Me", Icon: User },
-];
+{ to: "/", label: "Home", Icon: Home, end: true },
+{ to: "/moments", label: "Moments", Icon: Clapperboard },
+{ to: "/library", label: "Library", Icon: LibraryIcon },
+{ to: "/profile", label: "Me", Icon: User }];
+
 
 export default function MobileTabBar() {
   const [moreOpen, setMoreOpen] = useState(false);
@@ -76,7 +76,7 @@ export default function MobileTabBar() {
   function updateQuery(value) {
     const next = new URLSearchParams(onSearch ? params : undefined);
     next.delete("genre");
-    if (value) next.set("q", value); else next.delete("q");
+    if (value) next.set("q", value);else next.delete("q");
     nav({ pathname: "/search", search: next.toString() }, { replace: true, state: loc.state });
   }
   const returnTo = loc.state?.searchReturnTo?.startsWith("/") && !loc.state.searchReturnTo.startsWith("//") && !loc.state.searchReturnTo.startsWith("/search") ? loc.state.searchReturnTo : lastPage.current;
@@ -86,25 +86,25 @@ export default function MobileTabBar() {
   function returnFromSearch(event) {
     event.preventDefault();
     inputRef.current?.blur();
-    if (loc.state?.searchReturnTo === returnTo) nav(-1);
-    else nav(returnTo, { replace: true });
+    if (loc.state?.searchReturnTo === returnTo) nav(-1);else
+    nav(returnTo, { replace: true });
   }
-  const moreActive = !["/", "/search", "/moments", "/library", "/profile"].some(path => loc.pathname === path || (path !== "/" && loc.pathname.startsWith(path + "/")));
+  const moreActive = !["/", "/search", "/moments", "/library", "/profile"].some((path) => loc.pathname === path || path !== "/" && loc.pathname.startsWith(path + "/"));
   return <>
     <nav aria-label={expanded ? "Search navigation" : "Main navigation"} className={"mobile-tab-bar md:hidden" + (expanded ? " mobile-search-expanded" : "")}>
       {expanded ? <>
         <NavLink to={returnTo} onClick={returnFromSearch} className="mobile-search-home" aria-label={"Return to " + returnLabel} title={"Return to " + returnLabel}><ReturnIcon size={25} strokeWidth={1.9} aria-hidden="true" /></NavLink>
-        <form role="search" className="mobile-search-field" onSubmit={event => {event.preventDefault();inputRef.current?.blur();}}>
+        <form role="search" className="mobile-search-field" onSubmit={(event) => {event.preventDefault();inputRef.current?.blur();}}>
           <Search size={22} aria-hidden="true" className="shrink-0" />
-          <input ref={inputRef} type="search" value={query} onChange={event => updateQuery(event.target.value)} placeholder="Artists, songs, people…" aria-label={params.get("type") === "people" ? "Search people by name" : "Search songs, artists, playlists, and people"} autoComplete="off" autoCapitalize="none" spellCheck={false} enterKeyHint="search" />
-          {query && <button type="button" aria-label="Clear search" onClick={() => {updateQuery("");inputRef.current?.focus({preventScroll:true});}}><X size={18} /></button>}
+          <input ref={inputRef} type="search" value={query} onChange={(event) => updateQuery(event.target.value)} placeholder="Artists, songs, people…" aria-label={params.get("type") === "people" ? "Search people by name" : "Search songs, artists, playlists, and people"} autoComplete="off" autoCapitalize="none" spellCheck={false} enterKeyHint="search" />
+          {query && <button type="button" aria-label="Clear search" onClick={() => {updateQuery("");inputRef.current?.focus({ preventScroll: true });}}><X size={18} /></button>}
         </form>
       </> : <>
         <div className="mobile-nav-pill">
-          {TABS.map(({ to, label, Icon, end }) => <NavLink key={to} to={to} end={end} onClick={event => handleTab(to, event)} className={({ isActive }) => "mobile-nav-tab" + (isActive ? " is-active" : "")}>
-            <Icon size={23} strokeWidth={1.9} aria-hidden="true" /><span>{label}</span>
+          {TABS.map(({ to, label, Icon, end }) => <NavLink key={to} to={to} end={end} onClick={(event) => handleTab(to, event)} className={({ isActive }) => "mobile-nav-tab" + (isActive ? " is-active" : "")}>
+            <Icon size={23} strokeWidth={1.9} aria-hidden="true" /><span className="hidden">{label}</span>
           </NavLink>)}
-          <button type="button" onClick={() => setMoreOpen(true)} className={"mobile-nav-tab" + (moreOpen || moreActive ? " is-active" : "")} aria-label="More pages" aria-haspopup="dialog" aria-expanded={moreOpen}><MoreHorizontal size={23} strokeWidth={1.9} aria-hidden="true" /><span>More</span></button>
+          <button type="button" onClick={() => setMoreOpen(true)} className={"mobile-nav-tab" + (moreOpen || moreActive ? " is-active" : "")} aria-label="More pages" aria-haspopup="dialog" aria-expanded={moreOpen}><MoreHorizontal size={23} strokeWidth={1.9} aria-hidden="true" /><span className="hidden">More</span></button>
         </div>
         <NavLink to="/search" onClick={openSearch} className="mobile-nav-search" aria-label="Search music and people"><Search size={26} strokeWidth={2} aria-hidden="true" /></NavLink>
       </>}
