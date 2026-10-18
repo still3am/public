@@ -39,6 +39,7 @@ export default function PublicNotes({ profileId, isOwn, active = true, userTrack
   const [playbackError, setPlaybackError] = useState("");
   const [emoji,setEmoji]=useState(""),[emojiOpen,setEmojiOpen]=useState(false);
   const [draftPlaybackError,setDraftPlaybackError]=useState("");
+  const emojiTrigger = useRef(null);
   const editingRef = useRef(false), playLock = useRef(false), noteRef = useRef(null);
   editingRef.current = editing; noteRef.current = note;
   const version = useRef(0), lock = useRef(false), alive = useRef(true);
@@ -133,7 +134,7 @@ export default function PublicNotes({ profileId, isOwn, active = true, userTrack
 
       </>}
       <label className="public-note-label" htmlFor="public-note-caption">Add a thought <span>Optional</span></label><textarea id="public-note-caption" maxLength={80} rows={3} placeholder="This one’s on my mind…" value={caption} disabled={busy} aria-describedby="public-note-caption-count" onChange={e => setCaption(e.target.value)} onKeyDown={e => { if ((e.metaKey || e.ctrlKey) && e.key === "Enter") { e.preventDefault(); save(); } }} /><div id="public-note-caption-count" className="public-note-counter">{caption.length}/80</div>
-      <div className="public-note-emoji-controls"><button type="button" disabled={busy} aria-expanded={emojiOpen} onClick={()=>setEmojiOpen(!emojiOpen)}>{emoji ? emoji+" Change emoji" : "☺ Add emoji"}</button>{emoji && <button type="button" disabled={busy} onClick={()=>setEmoji("")}>Remove emoji</button>}</div>{emojiOpen && <NoteEmojiPicker selected={emoji} disabled={busy} onSelect={value=>{setEmoji(value);setEmojiOpen(false);}}/>}
+      <div className="public-note-emoji-controls"><button type="button" ref={emojiTrigger} disabled={busy} aria-expanded={emojiOpen} onClick={()=>setEmojiOpen(!emojiOpen)}>{emoji ? emoji+" Change emoji" : "☺ Add emoji"}</button>{emoji && <button type="button" disabled={busy} onClick={()=>setEmoji("")}>Remove emoji</button>}</div>{emojiOpen && <NoteEmojiPicker selected={emoji} disabled={busy} onSelect={value=>{setEmoji(value);setEmojiOpen(false);emojiTrigger.current?.focus();}}/>}
       </div><aside className="public-note-preview-panel"><p className="public-note-preview-label">On your profile</p><div className="public-note-preview-stage" aria-label="Note preview"><div className={"public-note-avatar-bubble public-note-preview" + (draft && appearance === "cover_flow" ? " is-flow" : "")} style={draft && appearance === "cover_flow" ? {color:bubbleInk(draftFlowColors),"--note-tail":draftFlowColors[0],"--note-shadow":bubbleInk(draftFlowColors)==="#ffffff"?"#000b":"#fffb"} : undefined}>{draft && appearance === "cover_flow" && <MotionGradient className="public-note-bubble-flow" colors={draftFlowColors} active={active && editing && !picker} />}{emoji && <span className="public-note-emoji-badge" aria-hidden="true">{emoji}</span>}{draft ? <SongNoteContent track={draft} caption={caption} /> : <span className="public-note-text-only">{caption.trim() || "A little thought…"}</span>}</div></div><p className="public-note-preview-help">A small moment. Shared for a day.</p></aside></div>
       {error && <p role="alert" className="public-note-error">{error}</p>}
       {error.includes("service limit") && draft && <button type="button" disabled={busy} className="public-note-post" onClick={() => save(false, true)}>Share just the song</button>}
