@@ -151,3 +151,5 @@
 .public-note-preview-play{display:flex;align-items:center;justify-self:start;gap:7px;min-height:44px;padding:8px 14px;border:1px solid hsl(var(--border));border-radius:999px;font-size:12px;font-weight:600}
 .public-note-viewer .public-note-card:has(.public-note-copy):not(:has(.public-note-art)){grid-template-columns:minmax(0,1fr)}
 .public-note-viewer .public-note-card:not(:has(.public-note-art)) .public-note-bubble{font-size:22px;line-height:1.5}
+
+.note-emoji-more{width:100%;min-height:44px;margin-top:8px;font-size:12px;font-weight:600;border:1px solid hsl(var(--border));border-radius:14px}
