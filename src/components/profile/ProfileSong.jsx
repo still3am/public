@@ -195,9 +195,9 @@ export default function ProfileSong({
 
   return (
     <div className="mb-6">
-      <h2 className="text-lg font-extrabold tracking-tight mb-3 flex items-center gap-2 hidden">
-         Profile Song
-      </h2>
+      
+
+      
       <div ref={lp.ref} {...lp.handlers} className="song-menu-surface group flex items-center gap-3 p-3 rounded-2xl border border-border bg-foreground/[0.02]">
         <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-xl overflow-hidden bg-foreground/10 shrink-0">
           {coverUrl && <Image src={coverUrl} fittingType="fill" alt="" className="w-full h-full" />}
