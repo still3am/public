@@ -59,14 +59,14 @@ export default function SettingsSheet({onClose,onDeleteAccount}){
   catch(error){reportActionError(error,"Couldn’t unblock this account.");}
   finally{blockedLock.current=false;setUnblocking("");}
  }
- return <div role="dialog" aria-modal="true" aria-label="Settings" data-public-dialog tabIndex={-1} onKeyDown={e=>{if(e.key==="Escape"){e.stopPropagation();onClose();}}} className="fixed inset-0 z-[80] flex items-end md:items-center justify-center md:p-5">
+ return <div role="dialog" aria-modal="true" aria-label="Settings" data-public-dialog tabIndex={-1} onKeyDown={e=>{if(e.key==="Escape"){e.stopPropagation();onClose();}}} className="profile-settings-dialog fixed inset-0 z-[80] flex items-end md:items-center justify-center md:p-5">
   <div className="absolute inset-0 bg-black/55 backdrop-blur-md" onClick={onClose}/>
-  <div className="relative w-full md:max-w-lg max-h-[92dvh] md:max-h-[86dvh] flex flex-col bg-background text-foreground border border-border/70 rounded-t-[28px] md:rounded-[28px] shadow-2xl overflow-hidden animate-in slide-in-from-bottom-4 duration-200">
+  <div className="profile-settings-panel relative w-full md:max-w-lg max-h-[92dvh] md:max-h-[86dvh] flex flex-col bg-background text-foreground border border-border/70 rounded-t-[28px] md:rounded-[28px] shadow-2xl overflow-hidden animate-in slide-in-from-bottom-4 duration-200">
    <header className="shrink-0 px-5 pt-3 pb-4 border-b border-border/60 bg-background">
     <div aria-hidden="true" className="md:hidden mx-auto w-9 h-1 rounded-full bg-foreground/20 mb-3"/>
     <div className="flex justify-between items-center gap-3"><div><h2 className="text-2xl font-bold tracking-tight">Settings</h2><p className="text-xs text-muted-foreground mt-1">Make PUBLIC feel right for you.</p></div><button type="button" onClick={onClose} className="w-11 h-11 rounded-full bg-foreground/[0.06] grid place-items-center hover:bg-foreground/10 shrink-0" aria-label="Close settings"><X size={20}/></button></div>
    </header>
-   <div className="min-h-0 overflow-y-auto overscroll-contain px-4 md:px-5 pt-5 pb-[calc(1.5rem+env(safe-area-inset-bottom))] space-y-6">
+   <div className="profile-settings-groups min-h-0 overflow-y-auto overscroll-contain px-4 md:px-5 pt-5 pb-[calc(1.5rem+env(safe-area-inset-bottom))] space-y-6">
     <SettingGroup title="Listening & appearance">
      {user&&!onboardingComplete(user)&&<SettingRow icon={Sparkles} title="Finish setting up PUBLIC" description="Your taste, people and profile colors" onClick={()=>{onClose();window.dispatchEvent(new Event("onboarding:open"));}}/>}
      <SettingRow icon={GitMerge} title="Song transitions" description="Crossfade and gapless playback" to="/settings/transitions" onClick={onClose}/>
