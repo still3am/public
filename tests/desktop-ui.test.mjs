@@ -19,7 +19,7 @@ globalThis.requestAnimationFrame=fn=>fn();
 const common=`const React=globalThis.__React;const Link=({children,to,...props})=>React.createElement("a",{href:to,...props},children);const useAuth=()=>({user:globalThis.__user});`;
 const header=await load("src/components/DesktopHeader.jsx",common+`
 const useLocation=()=>({pathname:globalThis.__pathname}),useNavigate=()=>globalThis.__nav;
-const useEffect=fn=>globalThis.__effects.push(fn);
+const useCallback=fn=>fn,useEffect=fn=>globalThis.__effects.push(fn);
 const ChevronLeft=()=>null,Search=ChevronLeft,ArrowUpRight=ChevronLeft;
 `);
 for(const path of [...source("src/App.jsx").matchAll(/<Route path="([^"]+)"/g)].map(m=>m[1])){
