@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
 import fs from "node:fs";
+import {NOTE_EMOJIS,NOTE_EMOJI_VALUES} from "../src/lib/noteEmojis.js";
 import {savePublicNote,requestPublicNote} from "../src/lib/publicNoteActions.js";
 let user={id:"me"},blocked=false,published=true,drop=false,lost=false,calls=0,backendMode="credits";
 let row={id:"profile",user_id:"me",visible:true,updated_date:new Date().toISOString()};
@@ -30,6 +31,16 @@ assert.equal(calls,0,"emoji badges require no integration call");
 await assert.rejects(savePublicNote(client,"me",{track_id:"song",emoji:"arbitrary text"},db),/picker/);
 await savePublicNote(client,"me",{track_id:"song",emoji:""},db);
 assert.equal((await requestPublicNote(client,"readNote",["me"],db)).emoji,"","emoji can be removed");
+for(const emoji of ["🇩🇴","👨‍👩‍👧‍👦","👍🏽","🍕","🦋"]){
+ await savePublicNote(client,"me",{track_id:"song",emoji},db);
+ assert.equal((await requestPublicNote(client,"readNote",["me"],db)).emoji,emoji);
+}
+assert.equal(calls,0,"full catalog notes still use no integrations");
+assert.ok(NOTE_EMOJIS.length>3900);
+for(const path of ["base44/entities/PublicNote.jsonc","base44/entities/PublicProfile.jsonc"]){
+ const props=JSON.parse(fs.readFileSync(path,"utf8")).properties;
+ assert.deepEqual((props.public_song_note?.properties||props).emoji.enum,NOTE_EMOJI_VALUES,"schema accepts every catalog emoji");
+}
 await requestPublicNote(client,"removeNote",["me"],db);
 assert.equal(await requestPublicNote(client,"readNote",["me"],db),null);
 assert.equal(row.public_song_note.mode,"none","removal masks an older gateway note so it cannot reappear");
