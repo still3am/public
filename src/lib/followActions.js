@@ -4,7 +4,7 @@ const pending=new Map();
 const rows=page=>{if(Array.isArray(page))return page;if(Array.isArray(page?.items))return page.items;throw Error('Could not confirm follow status.');};
 export function followError(error){
  const status=error?.response?.status??error?.status;
- if(status===402)return 'Following is unavailable because PUBLIC has reached its Base44 integration limit. Your follow change was not saved.';
+ if(status===402)return 'Couldn’t save this follow right now. Please try again later.';
  if(status===401)return 'Sign in again to follow this listener.';
  if(status===403)return 'This follow change is not allowed. The account may be unavailable or blocked.';
  return error?.message==='Follow change already in progress.'?error.message:'Your follow change could not be confirmed. Refresh the profile and try again.';
