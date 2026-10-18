@@ -34,10 +34,12 @@ void main(){
  float returnFold=q.y*3.1-q.x*2.4+.90*sin(q.x*2.7+t*.23)-t*.34;
  float radius=length(p);
  float swirl=atan(p.y,p.x)+t*.24+radius*4.8;
- float orbitBand=sin(swirl+sin(radius*3.5-t*.3));
+ float orbitFade=smoothstep(.05,.38,radius);
+ float orbitBand=mix(sin(radius*5.-t*.24),sin(swirl+sin(radius*3.5-t*.3)),orbitFade);
+ float orbitReturn=mix(cos(radius*4.+t*.21),cos(swirl+1.8),orbitFade);
  float tideBand=sin(q.y*4.6+.95*sin(q.x*2.6+t*.24)-t*.36);
  float field=u_motion.x*sin(sweep)+u_motion.y*orbitBand+u_motion.z*tideBand;
- float returnField=u_motion.x*sin(returnFold)+u_motion.y*cos(swirl+1.8)+u_motion.z*sin(tideBand*1.9+q.x*1.8);
+ float returnField=u_motion.x*sin(returnFold)+u_motion.y*orbitReturn+u_motion.z*sin(tideBand*1.9+q.x*1.8);
  float ribbon=smoothstep(-.72,.72,field);
  float counterRibbon=smoothstep(-.60,.88,returnField);
  // Palette-only mixing: no gray veil, brightness reduction or white overlay.
