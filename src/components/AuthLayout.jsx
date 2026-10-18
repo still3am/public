@@ -2,7 +2,7 @@ import React from "react";
 import Logo from "@/components/Logo";
 import BrandGradient from "@/components/BrandGradient";
 import "./auth-brand.css";
-import "@/desktop.css";
+
 
 /** @param {any} props */
 export default function AuthLayout({ icon: Icon, title, subtitle, footer, children, brandMotion = false }) {
