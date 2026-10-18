@@ -1,3 +1,4 @@
+import ScrollShelf from '@/components/ScrollShelf';
 import {useEffect,useMemo,useRef,useState} from 'react';
 import {Link} from 'react-router-dom';
 import {Play,Pause,Shuffle,Plus,Check,Loader2,ChevronLeft} from 'lucide-react';
@@ -56,5 +57,5 @@ export default function MadeForYou({catalog,genres,taste}){
  useEffect(()=>{const update=()=>setRecent(getRecentPlays());window.addEventListener('recentplays:change',update);return()=>window.removeEventListener('recentplays:change',update);},[]);
  const mixes=useMemo(()=>buildPersonalMixes(catalog.filter(t=>!blocked.has(t.uploader_id)),{recent,savedIds:ids,genres,favoriteTrackIds:taste?.favorite_track_ids||[],favoriteArtists:taste?.favorite_artists||[],uid:user?.id||''}),[catalog,recent,ids,genres,taste,user?.id,blocked]);
  if(!user?.id)return null;
- return <section className="home-section home-personal-section"><div className="personal-section-heading"><h2>Made for You</h2><span>Your music, remixed</span></div>{mixes.length?<div className="personal-mix-shelf">{mixes.map(mix=><Link key={mix.id} className="personal-mix-card" to={'/mix/'+mix.id} state={{owner:user.id,mixId:mix.id,trackIds:mix.tracks.map(t=>t.id)}} aria-label={'Open '+mix.title+' mix'}><MixArt mix={mix}/></Link>)}</div>:<p className="personal-mix-note">Save a few songs or choose genres to start shaping your mixes.</p>}</section>;
+ return <section className="home-section home-personal-section"><div className="personal-section-heading"><h2>Made for You</h2><span>Your music, remixed</span></div>{mixes.length?<ScrollShelf label="Made for you" className="personal-mix-shelf">{mixes.map(mix=><Link key={mix.id} className="personal-mix-card" to={'/mix/'+mix.id} state={{owner:user.id,mixId:mix.id,trackIds:mix.tracks.map(t=>t.id)}} aria-label={'Open '+mix.title+' mix'}><MixArt mix={mix}/></Link>)}</ScrollShelf>:<p className="personal-mix-note">Save a few songs or choose genres to start shaping your mixes.</p>}</section>;
 }
