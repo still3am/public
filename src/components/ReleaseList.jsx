@@ -1,3 +1,4 @@
+import ScrollShelf from "@/components/ScrollShelf";
 import {useLongPressMenu} from '@/hooks/useLongPressMenu';
 import { Link } from "react-router-dom";
 import { Play, Pause } from "lucide-react";
@@ -67,7 +68,7 @@ export default function ReleaseList({ tracks }) {
     chunks.push(tracks.slice(i, i + 4));
   }
   return (
-    <div role="region" aria-label="New releases, scroll horizontally" tabIndex={0} className="flex gap-3 overflow-x-auto no-scrollbar snap-x snap-mandatory overscroll-x-contain pb-2 -mx-4 px-4 sm:-mx-5 sm:px-5 md:mx-0 md:px-0">
+    <ScrollShelf label="New releases" className="flex gap-3 overflow-x-auto no-scrollbar snap-x snap-mandatory overscroll-x-contain pb-2 -mx-4 px-4 sm:-mx-5 sm:px-5 md:mx-0 md:px-0">
       {chunks.map((group, gi) => (
         <div
           key={gi}
@@ -77,6 +78,6 @@ export default function ReleaseList({ tracks }) {
           ))}
         </div>
       ))}
-    </div>
+    </ScrollShelf>
   );
 }
