@@ -195,7 +195,7 @@ export default function ProfileSong({
 
   return (
     <div className="mb-6">
-      <h2 className="text-lg font-extrabold tracking-tight mb-3 flex items-center gap-2">
+      <h2 className="text-lg font-extrabold tracking-tight mb-3 flex items-center gap-2 hidden">
          Profile Song
       </h2>
       <div ref={lp.ref} {...lp.handlers} className="song-menu-surface group flex items-center gap-3 p-3 rounded-2xl border border-border bg-foreground/[0.02]">
