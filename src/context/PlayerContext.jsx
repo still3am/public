@@ -1292,6 +1292,7 @@ export function PlayerProvider({ children }) {
     shuffle,
     currentTrack,
     togglePlay,
+    pausePlayback,
     seek,
     setVolume,
     prepareVolumeControl,
