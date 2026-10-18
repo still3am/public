@@ -1,6 +1,6 @@
 import { createClientFromRequest } from 'npm:@base44/sdk';
 const ADMIN = 'admin';
-const entities = ['Track','Lyrics','LoungeSession','LoungeMember','LoungeQueueItem','ProfileComment','TrackAnnotation','Suggestion','Notification','Message','Conversation','Follow','Playlist','User'];
+const entities = ['Track','Lyrics','LoungeSession','LoungeMember','LoungeQueueItem','ProfileComment','TrackAnnotation','Suggestion','Notification','Message','Conversation','Follow','Playlist','User','PublicNote'];
 const editableTrack = ['music_video_file_uri','audio_file_uri','title','artist','genre','description','lyrics_text','cover_art_url','audio_url','explicit','is_downloadable','duration_seconds','album_id','track_number'];
 const fail = (message, status=403) => { throw Object.assign(new Error(message), {status}); };
 const pick = (obj, fields) => Object.fromEntries(fields.filter(k => obj[k] !== undefined).map(k => [k,obj[k]]));
@@ -86,6 +86,37 @@ export default async function handleRequest(req) {
       if(!isAdmin && t.uploader_id!==user.id && !(t.is_published && t.approval_status==='approved')) fail('Track unavailable',404);
       return await hydrate(t,sign);
     };
+    if(entity==='PublicNote'){
+      if(action==='readNote'){
+        const owner=args[0];
+        if(typeof owner!=='string'||!owner||owner.length>100)fail('Invalid profile',400);
+        await relation(owner);
+        const rows=await handler.filter({user_id:owner,expires_at:{$gt:new Date().toISOString()}},'-updated_date',1);
+        const note=(Array.isArray(rows)?rows:rows?.items||[])[0];
+        if(!note)return Response.json({result:null});
+        let track;
+        try{track=await requireTrack(note.track_id,false);}catch(e){if([403,404].includes(e.status))return Response.json({result:null});throw e;}
+        return Response.json({result:{...pick(note,['id','user_id','track_id','caption','expires_at']),track}});
+      }
+      if(action==='removeNote'){
+        await handler.deleteMany({user_id:user.id});
+        return Response.json({result:true});
+      }
+      if(action==='saveNote'){
+        const input=args[0]||{},caption=typeof input.caption==='string'?input.caption.trim():'';
+        if(caption.length>80)fail('Keep your note to 80 characters',422);
+        if(typeof input.track_id!=='string'||!input.track_id||input.track_id.length>100)fail('Choose a song',422);
+        const track=await requireTrack(input.track_id,false);
+        if(!(track.is_published&&track.approval_status==='approved'))fail('Choose a published song for your note',422);
+        await moderate(svc,caption);
+        const rows=await handler.filter({user_id:user.id},'-updated_date',1);
+        const previous=(Array.isArray(rows)?rows:rows?.items||[])[0];
+        const data={user_id:user.id,track_id:track.id,caption,expires_at:new Date(Date.now()+24*60*60*1000).toISOString()};
+        const saved=previous?await handler.update(previous.id,data):await handler.create(data);
+        return Response.json({result:{...pick(saved,['id','user_id','track_id','caption','expires_at']),track}});
+      }
+      fail('Unsupported note action',400);
+    }
     if(entity==='Track' && action==='videoPlayback'){
       await requireTrack(args[0],false);
       const track=await svc.entities.Track.get(args[0]);
@@ -207,7 +238,7 @@ export default async function handleRequest(req) {
         if(old && !mine(old,'uploader_id')) fail('Only the owner can change this track');
         if(kind==='delete') {
           // Keep the track until cleanup succeeds so a failed request remains retryable.
-          for(const name of ['Like','Lyrics','TrackAnnotation','LibraryItem','PlayEvent','LoungeQueueItem','Notification'])await svc.entities[name].deleteMany({track_id:id});
+          for(const name of ['Like','Lyrics','TrackAnnotation','LibraryItem','PlayEvent','LoungeQueueItem','Notification','PublicNote'])await svc.entities[name].deleteMany({track_id:id});
           await svc.entities.Playlist.updateMany({track_ids:{$in:[id]}},{$pull:{track_ids:id}});
           await svc.entities.PublicProfile.updateMany({featured_track_id:id},{$set:{featured_track_id:''}});
           await svc.entities.PublicProfile.updateMany({top_track_ids:{$in:[id]}},{$pull:{top_track_ids:id}});
