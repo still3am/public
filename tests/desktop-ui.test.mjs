@@ -34,7 +34,7 @@ let prevented=false;events.keydown({metaKey:false,ctrlKey:true,key:"k",preventDe
 assert.ok(prevented);assert.equal(navigations.at(-1),"/search");assert.equal(focused,1);
 window.matchMedia=()=>({matches:false});prevented=false;events.keydown({metaKey:true,ctrlKey:false,key:"k",preventDefault(){prevented=true;}});assert.equal(prevented,false,"desktop shortcut leaves mobile untouched");
 const sidebar=await load("src/components/Sidebar.jsx",common+`
-const NavLink=({children,to,className,...props})=>React.createElement("a",{href:to,className:typeof className==="function"?className({isActive:to===globalThis.__pathname}):className,...props},children);
+const NavLink=({children,to,className,end,...props})=>React.createElement("a",{href:to,className:typeof className==="function"?className({isActive:to===globalThis.__pathname}):className,...props},children);
 const useMyPlaylists=()=>({playlists:[{id:"mine",name:"Late nights"}]}),useSidebarCollapsed=()=>({collapsed:!!globalThis.__collapsed,toggle(){}}),useUnreadCount=()=>3;
 const Avatar=()=>null,Logo=()=>null,ThemeToggle=()=>null;
 const Home=()=>null,Search=Home,TrendingUp=Home,Clock=Home,LibraryIcon=Home,Disc3=Home,Upload=Home,Bell=Home,ChevronsLeft=Home,ChevronsRight=Home,ListMusic=Home,CloudOff=Home,FolderOpen=Home,BarChart3=Home,Shield=Home,Lightbulb=Home,LifeBuoy=Home,Music2=Home;
@@ -61,5 +61,5 @@ globalThis.__shelf.current.scrollLeft=800;scrollListener();tree=shelf.default({c
 window.matchMedia=()=>({matches:true});tree.props.children[0].props.children[0].props.onClick();assert.equal(moved.behavior,"auto");
 globalThis.__shelf.current.scrollWidth=400;scrollListener();assert.equal(shelf.default({children:"Music"}).props.children[0].props.hidden,true);
 const css=postcss.parse(source("src/desktop.css"));
-for(const node of css.nodes){if(node.type==="comment")continue;if(node.type==="rule"){assert.ok(node.selector===".desktop-header,.desktop-shelf-controls","only desktop chrome can have unscoped declarations");continue;}assert.equal(node.name,"media");assert.match(node.params,/min-width:768px|min-width:1024px|min-width:1440px/);}
+for(const node of css.nodes){if(node.type==="comment")continue;if(node.type==="rule"){assert.ok(node.selector===".desktop-header,.desktop-shelf-controls","only desktop chrome can have unscoped declarations");continue;}assert.equal(node.name,"media");assert.match(node.params,/min-width:768px|min-width:1024px|min-width:1280px|min-width:1440px/);}
 console.log("PASS all desktop route contexts, keyboard search, mobile shortcut isolation, role-aware navigation, shelf boundaries/reduced motion, and desktop-only CSS scope");
