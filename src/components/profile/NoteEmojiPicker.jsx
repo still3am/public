@@ -3,7 +3,7 @@ import {NOTE_EMOJIS} from "@/lib/noteEmojis";
 const recentKey="public:note-recent-emojis";
 const catalogValues=new Set(NOTE_EMOJIS.map(row=>row[0]));
 function readRecent(){try{const saved=JSON.parse(localStorage.getItem(recentKey)||"[]");return Array.isArray(saved)?saved.filter(value=>catalogValues.has(value)).slice(0,12):[];}catch{return [];}}
-const categories=[...new Set(NOTE_EMOJIS.map(row=>row[2]))];
+const categories=["All emojis",...new Set(NOTE_EMOJIS.map(row=>row[2]))];
 const tones=["","🏻","🏼","🏽","🏾","🏿"];
 const toneNames=["Default","Light","Medium light","Medium","Medium dark","Dark"];
 function initialTone(selected){const selectedTone=tones.find(value=>value&&selected?.includes(value));if(selectedTone)return selectedTone;try{const saved=localStorage.getItem("public:note-emoji-tone");return tones.includes(saved)?saved:"";}catch{return "";}}
@@ -17,7 +17,7 @@ export default function NoteEmojiPicker({selected,onSelect,disabled=false}) {
  const term=query.trim().toLowerCase();
  const choices=NOTE_EMOJIS.filter(([emoji,label,group])=>{
   if(term)return emoji.includes(term)||label.toLowerCase().includes(term);
-  if(group!==category)return false;
+  if(category!=="All emojis"&&group!==category)return false;
   const family=variants.get(withoutTone(emoji));
   const preferred=tone&&family.find(([value])=>value.includes(tone));
   return preferred?emoji===preferred[0]:!/[\u{1F3FB}-\u{1F3FF}]/u.test(emoji);

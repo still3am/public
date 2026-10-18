@@ -32,7 +32,7 @@ export async function saveGlobeShare(db,country,trackId,remove=false){
  const state={country:remove?"":country,track_id:remove?"":trackId,expires_at:new Date(Date.now()+(remove?0:86400000)).toISOString()};
  let failure;try{await db.entities.PublicProfile.update(profile.id,{public_globe:state});}catch(error){failure=error;}
  const saved=rows(await db.entities.PublicProfile.filter({user_id:user.id,visible:true},"-updated_date",1))[0];
- if(JSON.stringify(saved?.public_globe)!==JSON.stringify(state)){
+ if(!saved||Object.keys(state).some(key=>saved.public_globe?.[key]!==state[key])){
   if(failure)throw failure;throw Error("Your share wasn’t confirmed. Please retry.");
  }
  return saved;

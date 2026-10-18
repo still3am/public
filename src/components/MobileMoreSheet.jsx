@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import {
+  Globe2,
   X,
   ChevronRight,
   Upload,
@@ -14,6 +15,7 @@ import { useAuth } from "@/lib/AuthContext";
 import { useUnreadCount } from "@/hooks/useNotifications";
 
 const ITEMS = [
+{ to: "/globe", icon: Globe2, label: "PUBLIC Globe" },
 { to: "/upload", icon: Upload, label: "Upload" },
 { to: "/top", icon: BarChart3, label: "Top Charts" },
 { to: "/recent", icon: Clock, label: "Recently Added" },
