@@ -1,3 +1,4 @@
+import IncrementalList from "@/components/IncrementalList";
 import Avatar from "@/components/Avatar";
 import LoadError from '@/components/LoadError';
 import { useRef } from 'react';
@@ -226,7 +227,7 @@ export default function Library() {
         <div className="library-search"><Search size={17} aria-hidden="true" /><input aria-label="Search your library" placeholder={libraryView === "playlists" ? "Search playlists" : "Search saved music"} value={search} onChange={(e) => setSearch(e.target.value)} onKeyDown={(e) => {if (e.key === "Escape") setSearch("");}} />{search && <button aria-label="Clear library search" onClick={() => setSearch("")}><X size={16} /></button>}</div>
         {libraryView === "songs" && <>
           <button className={`library-tool ${activeFilters ? "active" : ""}`} aria-label="Library filters" aria-expanded={showFilters} aria-controls="library-filters" onClick={() => setShowFilters((value) => !value)}><SlidersHorizontal size={17} /><span className="hidden sm:inline">Filters</span>{activeFilters && <span className="w-1.5 h-1.5 rounded-full bg-current" />}</button>
-          <button className="library-tool" aria-label={display === "list" ? "Show music as cards" : "Show music as a list"} onClick={() => setDisplay((value) => value === "list" ? "grid" : "list")}>{display === "list" ? <LayoutGrid size={17} /> : <ListMusic size={17} />}</button>
+          <button className="library-tool" aria-pressed={display==="list"} title={display==="list"?"Switch to cards":"Switch to song list"} aria-label={display === "list" ? "Show music as cards" : "Show music as a list"} onClick={() => setDisplay((value) => value === "list" ? "grid" : "list")}>{display === "list" ? <LayoutGrid size={17} /> : <ListMusic size={17} />}</button>
         </>}
       </div>
       {libraryView === "songs" && showFilters && <div id="library-filters" className="library-filters">
@@ -258,8 +259,8 @@ export default function Library() {
 
             
             {!visibleTracks.length ? <EmptyState icon={LibIcon} title={tracks?.length ? "No matching songs" : "Make this space yours"} description={tracks?.length ? "Try another search or reset your filters." : "Save songs from anywhere on PUBLIC to find them here."} action={tracks?.length ? <button className="playlist-action" onClick={() => {setSearch("");setFolder("");setTagQuery("");}}>Clear filters</button> : <Link className="chrome-button" to="/search">Find music</Link>} /> :
-            display === "grid" ? <div className="library-music-grid">{visibleTracks.map((t) => <TrackCard key={t.id} track={t} queue={visibleTracks} selectable={editMode} selected={selected.has(t.id)} onToggleSelect={toggleSelect} />)}</div> :
-            <div className="library-song-list">{visibleTracks.map((t, i) => <div key={t.id} className="library-song-item">{editMode && <input type="checkbox" aria-label={`Select ${t.title}`} checked={selected.has(t.id)} onChange={() => toggleSelect(t)} />}<div className="min-w-0 flex-1"><TrackRow track={t} index={i} queue={visibleTracks} queueIndex={i} /></div></div>)}</div>}
+            display === "grid" ? <IncrementalList items={visibleTracks} className="library-music-grid" renderItem={t=><TrackCard key={t.id} track={t} queue={visibleTracks} selectable={editMode} selected={selected.has(t.id)} onToggleSelect={toggleSelect}/>}/> :
+            <IncrementalList items={visibleTracks} className="library-song-list" renderItem={(t,i)=><div key={t.id} className="library-song-item">{editMode&&<input type="checkbox" aria-label={"Select "+t.title} checked={selected.has(t.id)} onChange={()=>toggleSelect(t)}/>}<div className="min-w-0 flex-1"><TrackRow track={t} index={i} queue={visibleTracks} queueIndex={i}/></div></div>}/>}
           </section>}
           {libraryView === "playlists" && <>
             <section className="mb-8"><div className="library-section-heading"><h2>Your playlists <span>{ownPlaylists.length}</span></h2></div>
