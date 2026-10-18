@@ -23,8 +23,8 @@ export default function DesktopHeader() {
     const key = (event) => {if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "k" && window.matchMedia("(min-width:768px)").matches) {event.preventDefault();search();}};
     window.addEventListener("keydown", key);return () => window.removeEventListener("keydown", key);
   }, [location.pathname, navigate]);
-  return <header className="desktop-header hidden">
-  <div className="desktop-header-context"><button type="button" className="desktop-header-back" aria-label="Back" onClick={() => window.history.state?.idx > 0 ? navigate(-1) : navigate("/")}><ChevronLeft size={19} /></button><span>{page.section}</span><span aria-hidden="true">/</span><strong>{page.label}</strong></div>
-  <div className="desktop-header-actions"><button type="button" className="desktop-search-trigger" onClick={search}><Search size={16} /><span>Search PUBLIC</span><kbd>⌘ / Ctrl K</kbd></button>{!user && <Link to="/register" className="desktop-join-link">Join PUBLIC<ArrowUpRight size={15} /></Link>}</div>
- </header>;
+  return null;
+
+
+
 }

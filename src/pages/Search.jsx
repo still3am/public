@@ -65,15 +65,15 @@ export default function Search() {
     setAllTracks((prev) => prev.filter((t) => t.id !== id));
   });
 
-  const catalogueRequest=useRef(0);
+  const catalogueRequest = useRef(0);
   async function loadCatalogue(fresh = false) {
-    const request=++catalogueRequest.current;
+    const request = ++catalogueRequest.current;
     setLoadingAll(true);setBrowseError("");
     try {
       const tracks = await getPublishedTracks(fresh);
-      if(request===catalogueRequest.current)setAllTracks(Array.isArray(tracks) ? tracks : []);
-    } catch {if(request===catalogueRequest.current)setBrowseError("The catalog is unavailable. Retry after checking your connection.");} finally {
-      if(request===catalogueRequest.current)setLoadingAll(false);
+      if (request === catalogueRequest.current) setAllTracks(Array.isArray(tracks) ? tracks : []);
+    } catch {if (request === catalogueRequest.current) setBrowseError("The catalog is unavailable. Retry after checking your connection.");} finally {
+      if (request === catalogueRequest.current) setLoadingAll(false);
     }
   }
 
@@ -88,7 +88,7 @@ export default function Search() {
     loadCatalogue();
   }, [hasQuery, peopleMode]);
 
-  useEffect(() => {const change = () => {setAllTracks([]);loadCatalogue();};window.addEventListener('catalog:invalidate', change);return () => {catalogueRequest.current+=1;window.removeEventListener('catalog:invalidate', change);};}, []);
+  useEffect(() => {const change = () => {setAllTracks([]);loadCatalogue();};window.addEventListener('catalog:invalidate', change);return () => {catalogueRequest.current += 1;window.removeEventListener('catalog:invalidate', change);};}, []);
 
   // Pulling down re-runs whatever the page is currently showing: the live
   // search when a term is typed, otherwise the genre crate.
@@ -165,8 +165,8 @@ export default function Search() {
           }
         </div>
 
-        <div className="desktop-search-scopes hidden md:flex" role="group" aria-label="Search category"><button type="button" aria-pressed={!peopleMode} onClick={()=>chooseScope("all")}>Music & artists</button><button type="button" aria-pressed={peopleMode} onClick={()=>chooseScope("people")}>People</button></div>
-        {!hasQuery&&!genre&&!peopleMode&&<div className="desktop-browse-label hidden md:flex"><h2>Browse by genre</h2><span>{genreList.length} genres to explore</span></div>}
+        
+        {!hasQuery && !genre && !peopleMode && <div className="desktop-browse-label hidden md:flex"><h2>Browse by genre</h2><span>{genreList.length} genres to explore</span></div>}
         {/* Body */}
         {hasQuery ?
         firstSearchInFlight ? loader :
