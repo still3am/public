@@ -253,7 +253,17 @@
         "/avatars/pills-and-flowers.webp",
         "/avatars/chromakopia.webp",
         "/avatars/born-to-die.webp",
-        "/avatars/ye-mountains.webp"
+        "/avatars/ye-mountains.webp",
+        "/avatars/bandage.webp",
+        "/avatars/olive-shadows.webp",
+        "/avatars/desert-palms.webp",
+        "/avatars/halo-horns.webp",
+        "/avatars/monochrome-plaid.webp",
+        "/avatars/red-portrait.webp",
+        "/avatars/rose-silhouette.webp",
+        "/avatars/stoney.webp",
+        "/avatars/whole-lotta-red.webp",
+        "/avatars/butterfly-lavender.webp"
       ],
       "default": "",
       "description": "Preinstalled gallery choice only. External uploads remain in avatar_url.",
