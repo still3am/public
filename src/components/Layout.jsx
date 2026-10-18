@@ -3,7 +3,7 @@ import { useRef } from "react";
 import { Outlet, useLocation } from "react-router-dom";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import DesktopHeader from "@/components/DesktopHeader";
-import "@/desktop.css";
+
 import Sidebar from "@/components/Sidebar";
 import MobileTabBar from "@/components/MobileTabBar";
 import ScrollingBanner from "@/components/ScrollingBanner";
