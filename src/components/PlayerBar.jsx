@@ -93,7 +93,7 @@ export default function PlayerBar() {
             className="absolute left-0 top-0 h-[3px] bg-foreground/80"
             style={{ width: `${pct}%` }} />
 
-          <input aria-label="Seek playback" type="range" min="0" max={p.duration||0} step="1" value={Math.min(p.position||0,p.duration||0)} disabled={!p.duration} onChange={e=>p.seek(Number(e.target.value))} className="hidden md:block absolute inset-0 opacity-0 w-full h-full cursor-pointer disabled:cursor-default"/>
+          <input aria-label="Seek playback" aria-valuetext={formatTime(p.position)+" of "+formatTime(p.duration)} type="range" min="0" max={p.duration||0} step="1" value={Math.min(p.position||0,p.duration||0)} disabled={!p.duration} onChange={e=>p.seek(Number(e.target.value))} className="hidden md:block absolute inset-0 opacity-0 w-full h-full cursor-pointer disabled:cursor-default"/>
         </div>
 
         <div className="desktop-player-content flex items-center gap-3 px-3 sm:px-5 py-3">
@@ -144,6 +144,7 @@ export default function PlayerBar() {
 
           {/* desktop controls */}
           <div className="desktop-player-controls hidden md:flex items-center gap-1 lg:gap-2 xl:gap-3 shrink-0">
+            <div className="desktop-player-transport">
             <button
               onClick={() => p.setRepeat(p.repeat === "off" ? "all" : p.repeat === "all" ? "one" : "off")}
               className={`hidden lg:inline-flex p-2 rounded-full hover:bg-foreground/5 active:scale-90 transition ${p.repeat !== "off" ? "text-foreground" : "text-foreground/40"}`}
@@ -171,11 +172,13 @@ export default function PlayerBar() {
             <button onClick={p.next} className="p-2 rounded-full hover:bg-foreground/5 active:scale-90 transition disabled:opacity-25 disabled:cursor-default" aria-label="Next">
               <SkipForward size={20} />
             </button>
+            </div>
+            <div className="desktop-player-tools">
             <button
               onClick={() => setMixerOpen(true)}
-              className={`hidden xl:inline-flex p-2 rounded-full hover:bg-foreground/5 active:scale-90 transition ${
+              className={`hidden lg:inline-flex p-2 rounded-full hover:bg-foreground/5 active:scale-90 transition ${
                 p.mixer.bass !== 0 || p.mixer.beat !== 0 || p.mixer.vocals !== 0 || p.mixer.treble !== 0 || p.mixer.boost !== 1 ? "text-foreground" : "text-foreground/40"}`}
-              aria-label="Mix">
+              title="Sound controls" aria-haspopup="dialog" aria-expanded={mixerOpen} aria-label="Mix">
               <SlidersHorizontal size={18} />
             </button>
             <button
@@ -183,7 +186,7 @@ export default function PlayerBar() {
               className={`relative p-2 rounded-full hover:bg-foreground/5 active:scale-90 transition ${
               p.queue.length - p.currentIndex - 1 > 0 ? "text-foreground" : "text-foreground/40"}`
               }
-              aria-label="Queue">
+              aria-expanded={queueOpen} aria-haspopup="dialog" title="Up next" aria-label="Queue">
 
               <ListMusic size={18} />
               {p.queue.length - p.currentIndex - 1 > 0 &&
@@ -192,8 +195,8 @@ export default function PlayerBar() {
                 </span>
               }
             </button>
-            <button onClick={p.clearQueue} className="xl:hidden p-2 rounded-full text-muted-foreground" aria-label="Close player"><X size={16}/></button>
-            <div className="hidden xl:flex items-center gap-2 pl-1">
+            <button onClick={p.clearQueue} className="lg:hidden p-2 rounded-full text-muted-foreground" aria-label="Close player"><X size={16}/></button>
+            <div className="desktop-player-volume hidden lg:flex items-center gap-2 pl-1">
               <button onClick={() => p.setMuted(!p.muted)} className="p-1 active:scale-90 transition" aria-pressed={p.muted} title={p.muted?"Unmute":"Mute"} aria-label={p.muted?"Unmute":"Mute"}>
                 {p.muted || p.volume === 0 ? <VolumeX size={18} /> : <Volume2 size={18} />}
               </button>
@@ -204,7 +207,7 @@ export default function PlayerBar() {
                 step="0.01"
                 value={p.muted ? 0 : p.volume}
                 onChange={(e) => p.setVolume(Number(e.target.value))}
-                className="w-24 accent-foreground"
+                className="w-16 xl:w-24 accent-foreground"
                 aria-label="Volume" />
               <button
                 onClick={p.clearQueue}
@@ -212,6 +215,7 @@ export default function PlayerBar() {
                 aria-label="Close player">
                 <X size={15} />
               </button>
+            </div>
             </div>
           </div>
         </div>
