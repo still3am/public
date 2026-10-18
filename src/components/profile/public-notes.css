@@ -1,13 +1,13 @@
-.profile-avatar-notes{display:flex;flex-direction:column;align-items:center;flex-shrink:0;min-width:0;width:180px}
+.profile-avatar-notes{display:flex;flex-direction:column;align-items:center;flex-shrink:0;min-width:0;width:120px}
 .public-app .profile-redesigned .profile-avatar-notes>.profile-avatar-frame{margin-top:0;align-self:center}
 .public-app .profile-redesigned .profile-avatar-notes>.public-notes{padding:0;box-shadow:none}
-.public-notes.public-notes-on-avatar{position:relative;z-index:3;width:180px;max-width:100%;margin:0 0 -6px;min-width:0}
-.public-note-avatar-bubble{position:relative;display:flex;flex-direction:column;justify-content:center;gap:5px;width:100%;min-height:48px;padding:12px 14px;border:1px solid hsl(var(--border));border-radius:22px;background:hsl(var(--card));color:hsl(var(--foreground));text-align:left}
-.public-note-avatar-bubble::after{content:"";position:absolute;bottom:-7px;left:37px;width:14px;height:14px;transform:rotate(45deg);background:hsl(var(--card));border-right:1px solid hsl(var(--border));border-bottom:1px solid hsl(var(--border));border-radius:0 0 4px 0}
-.public-note-avatar-bubble>strong{display:flex;align-items:center;gap:5px;font-size:12px;min-width:0}
+.public-notes.public-notes-on-avatar{position:relative;z-index:3;width:136px;max-width:calc(100vw - 48px);margin:0 0 -4px;flex-shrink:0;min-width:0}
+.public-note-avatar-bubble{position:relative;display:flex;flex-direction:column;justify-content:center;gap:3px;width:100%;min-height:44px;padding:8px 11px;border:1px solid hsl(var(--border));border-radius:16px;background:hsl(var(--card));color:hsl(var(--foreground));text-align:left}
+.public-note-avatar-bubble::after{content:"";position:absolute;bottom:-5px;left:27px;width:10px;height:10px;transform:rotate(45deg);background:hsl(var(--card));border-right:1px solid hsl(var(--border));border-bottom:1px solid hsl(var(--border));border-radius:0 0 4px 0}
+.public-note-avatar-bubble>strong{display:flex;align-items:center;gap:4px;font-size:11px;min-width:0}
 .public-note-avatar-bubble>strong>svg{flex-shrink:0}
 .public-note-avatar-bubble>strong>span{overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
-.public-note-avatar-bubble>span{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden;overflow-wrap:anywhere;font-size:12px;line-height:1.45;color:hsl(var(--muted-foreground))}
+.public-note-avatar-bubble>span{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:1;overflow:hidden;overflow-wrap:anywhere;font-size:11px;line-height:1.4;color:hsl(var(--muted-foreground))}
 .public-note-avatar-add{flex-direction:row;align-items:center;justify-content:center}
 .public-note-avatar-add>span{color:hsl(var(--foreground))}
 .public-notes{min-width:0}
