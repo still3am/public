@@ -13,6 +13,7 @@ globalThis.__api=async()=>{throw {response:{status:402}};};
 const stubs=`
 const {requestPublicNote,savePublicNote,publicNoteError}=globalThis.__noteActions;
 const React=globalThis.__React,useState=globalThis.__state,useEffect=()=>{},useRef=initial=>({current:initial});
+const publicNoteDatabase=undefined;
 const base44={functions:{invoke:(...args)=>globalThis.__api(...args)}},useAuth=()=>({user:globalThis.__user}),usePlayer=()=>globalThis.__player,useCoverUrl=x=>x,useCoverPalette=()=>({colors:[]});
 const MotionGradient="gradient",TrackPickerSheet="picker",Dialog="dialog",DialogContent="content",DialogHeader="header",DialogTitle="h1",DialogDescription="p";
 const Music2=()=>null,Plus=Music2,Play=Music2,Pause=Music2,Loader2=Music2;
