@@ -111,9 +111,11 @@ export default async function handleRequest(req) {
         if(!trackId&&!caption)fail('Add a note, a song, or both',422);
         const track=trackId?await requireTrack(trackId,false):null;
         if(track&&!(track.is_published&&track.approval_status==='approved'))fail('Choose a published song for your note',422);
-        await moderate(svc,caption);
         const rows=await handler.filter({user_id:user.id},'-updated_date',1);
         const previous=(Array.isArray(rows)?rows:rows?.items||[])[0];
+        // Existing catalog audio/artwork is never sent to an integration.
+        // Only a new, non-empty caption needs a content review.
+        if(caption&&caption!==previous?.caption)await moderate(svc,caption);
         const data={user_id:user.id,track_id:track?.id||'',caption,expires_at:new Date(Date.now()+24*60*60*1000).toISOString()};
         const saved=previous?await handler.update(previous.id,data):await handler.create(data);
         return Response.json({result:{...pick(saved,['id','user_id','track_id','caption','expires_at']),track}});
@@ -452,7 +454,7 @@ export default async function handleRequest(req) {
       result=[];for(const r of rows) result.push(await writeOne('delete',r.id,{}));
     } else fail('Unsupported action',400);
     return Response.json({result});
-  } catch(e) {return Response.json({error:e.message||'Request failed'},{status:e.status||500});}
+  } catch(e) {const code=Number(e.status??e.response?.status??e.statusCode);const status=Number.isInteger(code)&&code>=400&&code<=599?code:500;return Response.json({error:e.message||'Request failed'},{status});}
 }
 // Register the HTTP handler in Base44’s Deno runtime.
 if (typeof Deno !== "undefined") Deno.serve(handleRequest);
