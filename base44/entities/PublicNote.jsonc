@@ -8,6 +8,14 @@
     "track_id": {
       "type": "string"
     },
+    "appearance": {
+      "type": "string",
+      "enum": [
+        "classic",
+        "cover_flow"
+      ],
+      "default": "classic"
+    },
     "caption": {
       "type": "string",
       "maxLength": 80,
