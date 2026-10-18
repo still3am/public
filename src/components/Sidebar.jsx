@@ -1,120 +1,27 @@
-import { useMyPlaylists } from "@/hooks/useMyPlaylists";
-import { ListMusic } from "lucide-react";
-import { NavLink, useLocation } from "react-router-dom";
-import { useSidebarCollapsed } from "@/hooks/useSidebarCollapsed";
-
-import {
-  Home,
-  Upload,
-  TrendingUp,
-  Clock,
-  Library as LibraryIcon,
-  Shield,
-  Bell,
-  ChevronsLeft,
-  ChevronsRight } from
-"lucide-react";
+import {NavLink} from "react-router-dom";
+import {Home,Search,TrendingUp,Clock,Library as LibraryIcon,Disc3,Upload,Bell,ChevronsLeft,ChevronsRight,ListMusic,CloudOff,FolderOpen,BarChart3,Shield,Lightbulb,LifeBuoy,Music2} from "lucide-react";
+import {useMyPlaylists} from "@/hooks/useMyPlaylists";
+import {useSidebarCollapsed} from "@/hooks/useSidebarCollapsed";
+import {useAuth} from "@/lib/AuthContext";
+import {useUnreadCount} from "@/hooks/useNotifications";
 import Avatar from "@/components/Avatar";
 import Logo from "@/components/Logo";
-import SidebarSearchField from "@/components/search/SidebarSearchField";
 import ThemeToggle from "@/components/ThemeToggle";
-import { useAuth } from "@/lib/AuthContext";
-import { useUnreadCount } from "@/hooks/useNotifications";
 
-const NAV = [
-{ to: "/", label: "Home", icon: Home, end: true },
-{ to: "/upload", label: "Upload", icon: Upload },
-{ to: "/top", label: "Top Charts", icon: TrendingUp },
-{ to: "/recent", label: "Recently Added", icon: Clock },
-{ to: "/library", label: "Library", icon: LibraryIcon },
-{ to: "/notifications", label: "Notifications", icon: Bell }];
-
-
-const EASE = "transition-all duration-300 ease-out";
-
-export default function Sidebar() {
-  const { user } = useAuth();
-  const { collapsed, toggle } = useSidebarCollapsed();
-  const location = useLocation();
-  const unread = useUnreadCount();
-  const { playlists } = useMyPlaylists();
-
-  const links = [
-  ...NAV,
-  ...(user?.role === "admin" ?
-  [{ to: "/admin", label: "Admin", icon: Shield }] :
-  [])];
-
-
-  // Labels fade/slide but never unmount, so nothing pops during the width change.
-  const fadeCls = collapsed ?
-  "opacity-0 -translate-x-1 pointer-events-none" :
-  "opacity-100 translate-x-0";
-
-  const navLinkCls = ({ isActive }) =>
-  `flex items-center gap-3 rounded-xl text-[13px] font-semibold whitespace-nowrap overflow-hidden px-3 py-3 ${
-  isActive ?
-  "bg-foreground/[0.08] text-foreground ring-1 ring-inset ring-foreground/5" :
-  "text-foreground/60 hover:text-foreground hover:bg-foreground/[0.03]"}`;
-
-
-  return (
-    <aside
-      className={`hidden md:flex flex-col shrink-0 relative isolate z-10 border-r border-border sidebar-surface bg-background h-dvh sticky top-0 overflow-hidden transition-[width] duration-300 ease-out [will-change:width] ${
-      collapsed ? "w-[68px]" : "w-64"}`
-      }>
-      
-      <button
-        onClick={toggle}
-        className="absolute top-3 right-2 z-10 w-9 h-9 grid place-items-center rounded-full text-foreground/30 hover:text-foreground transition-colors"
-        aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
-        title={collapsed ? "Expand sidebar" : "Collapse sidebar"}>
-        
-        {collapsed ? <ChevronsRight size={15} /> : <ChevronsLeft size={15} />}
-      </button>
-
-      <div className="flex items-center py-6 px-3 h-[96px]">
-        <div className={`w-[184px] shrink-0 pl-3 ${EASE} ${fadeCls}`}>
-          <Logo width="100%" />
-        </div>
-      </div>
-
-      <div className="px-3 pb-2">
-        <SidebarSearchField collapsed={collapsed} />
-      </div>
-
-      <nav aria-label="Main navigation" className="flex-1 flex flex-col gap-1.5 overflow-y-auto overflow-x-hidden pb-2 px-3">
-        {links.map(({ to, label, icon: Icon, end }) =>
-        <NavLink key={to} to={to} className={navLinkCls} end={end} title={label}>
-            <div className="relative shrink-0">
-              <Icon size={18} />
-              {to === "/notifications" && unread > 0 &&
-            <span className="absolute -top-1.5 -right-1.5 min-w-[14px] h-[14px] px-1 rounded-full bg-foreground text-background font-bold grid place-items-center text-xs" style={{ minWidth: "14px" }}>
-                  {unread > 99 ? "99+" : unread}
-                </span>
-            }
-            </div>
-            <span className={`shrink-0 ${EASE} ${fadeCls}`}>{label}</span>
-          </NavLink>
-        )}
-        {user && !!playlists?.length && <div className="mt-5 pt-4 border-t border-border/60"><p className={`text-[10px] uppercase tracking-widest px-3 mb-2 text-muted-foreground ${fadeCls}`}>Your playlists</p>{playlists.slice(0, 6).map((pl) => <NavLink key={pl.id} to={`/playlist/${pl.id}`} title={pl.name} className={navLinkCls}>{collapsed&&<ListMusic size={18} className="shrink-0" />}<span className={`truncate text-xs ${fadeCls}`}>{pl.name}</span></NavLink>)}</div>}
-      </nav>
-
-      <div className="border-t border-border/60 space-y-2 pb-5 p-3 pt-4">
-        <ThemeToggle labelClassName={`shrink-0 ${EASE} ${fadeCls}`} />
-        <NavLink
-          to="/profile"
-          className="flex items-center gap-3 rounded-full px-2 py-2 hover:bg-foreground/[0.03]"
-          title={user?.display_name || user?.full_name || "You"}>
-          
-          <Avatar user={user} size={32} />
-          <div className={`min-w-0 shrink-0 ${EASE} ${fadeCls}`}>
-            <div className="text-sm font-semibold whitespace-nowrap">
-              {user?.display_name || user?.full_name || "You"}
-            </div>
-          </div>
-        </NavLink>
-      </div>
-    </aside>);
-
+export default function Sidebar(){
+ const {user}=useAuth(),{collapsed,toggle}=useSidebarCollapsed(),unread=useUnreadCount(),{playlists}=useMyPlaylists();
+ const groups=[
+  {label:"Discover",links:[["/","Home",Home,true],["/search","Search",Search],["/top","Top charts",TrendingUp],["/recent","Recently added",Clock],["/records","Artists",Disc3]]},
+  ...(user?[{label:"Your music",links:[["/library","Library",LibraryIcon],["/downloads","Offline music",CloudOff],["/notifications","Notifications",Bell]]}]:[]),
+  {label:"Create & connect",links:[["/upload","Upload music",Upload],...(user?[["/my-uploads","Your uploads",FolderOpen],...(user.is_artist?[["/artist-dashboard","Artist dashboard",BarChart3]]:[])]:[]),["/suggestions","Ideas",Lightbulb],...(user?.role==="admin"?[["/admin","Admin",Shield]]:[])]}
+ ];
+ const linkClass=({isActive})=>"desktop-nav-link "+(isActive?"is-active":"");
+ return <aside data-collapsed={collapsed} className={"desktop-sidebar hidden md:flex flex-col shrink-0 relative isolate z-10 border-r border-border sidebar-surface bg-background h-dvh sticky top-0 overflow-hidden transition-[width] duration-300 ease-out "+(collapsed?"w-[68px]":"w-64")}>
+  <div className="desktop-sidebar-brand"><NavLink to="/" aria-label="PUBLIC home" className="desktop-brand-link">{collapsed?<Music2 size={22}/>:<Logo width="146px"/>}</NavLink><button type="button" onClick={toggle} className="desktop-sidebar-toggle" aria-label={collapsed?"Expand sidebar":"Collapse sidebar"} title={collapsed?"Expand sidebar":"Collapse sidebar"}>{collapsed?<ChevronsRight size={15}/>:<ChevronsLeft size={15}/>}</button></div>
+  <nav aria-label="Main navigation" className="desktop-sidebar-nav">
+   {groups.map(group=><div className="desktop-nav-group" key={group.label}><p className="desktop-nav-label" aria-hidden={collapsed}>{group.label}</p>{group.links.map(([to,label,Icon,end])=><NavLink to={to} key={to} end={end} title={label} aria-label={label} className={linkClass}><span className="desktop-nav-icon"><Icon size={18}/>{to==="/notifications"&&unread>0&&<span className="desktop-unread-dot"/>}</span><span className="desktop-nav-text">{label}</span>{to==="/notifications"&&unread>0&&<span className="desktop-unread-count">{unread>99?"99+":unread}</span>}</NavLink>)}</div>)}
+   {user&&!!playlists?.length&&<div className="desktop-nav-group"><p className="desktop-nav-label" aria-hidden={collapsed}>Your playlists</p>{playlists.slice(0,8).map(pl=><NavLink to={"/playlist/"+pl.id} key={pl.id} title={pl.name} aria-label={pl.name} className={linkClass}><ListMusic size={17}/><span className="desktop-nav-text">{pl.name}</span></NavLink>)}</div>}
+  </nav>
+  <footer className="desktop-sidebar-footer"><NavLink to="/support" title="Help & support" aria-label="Help & support" className={linkClass}><LifeBuoy size={18}/><span className="desktop-nav-text">Help & support</span></NavLink><ThemeToggle labelClassName="desktop-nav-text"/><NavLink to={user?"/profile":"/login"} className="desktop-account-link" title={user?.display_name||user?.full_name||"Sign in"} aria-label={user?"Your profile":"Sign in"}><Avatar user={user} size={32}/><span className="desktop-nav-text"><strong>{user?.display_name||user?.full_name||"Sign in"}</strong><small>{user?"Your PUBLIC profile":"Make PUBLIC yours"}</small></span></NavLink></footer>
+ </aside>;
 }
