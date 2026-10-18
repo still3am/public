@@ -29,3 +29,15 @@ states=[];globalThis.__picker.rows=[];fail=true;render();const cleanup=effects[1
 const retryButton=nodes(tree,n=>n.type==='button'&&n.props.children==='Retry')[0];retryButton.props.onClick();assert.equal(states[8],1);cleanup();
 states=[];globalThis.__picker.rows=[first];fail=false;tree=render({onToggle:async()=>{throw Error('selection failed');}});await nodes(tree,n=>n.type==='button'&&n.props.className.includes('profile-picker-row'))[0].props.onClick();tree=render();assert.match(renderToStaticMarkup(tree),/song could not be selected/);
 console.log('PASS partial catalog retention, retry, account reset, automatic Uploads source, truthful load failure, retry control and song selection failure');
+// A platform routing restriction may use RLS-protected native reads; a real
+// permission denial, missing private audio authorization or support restriction may not.
+let status=403,message='Backend functions cannot be accessed from the platform domain. Use the app subdomain instead.',nativeReads=0,privateAudio=false;
+globalThis.__rawRead={auth:{me:async()=>null},functions:{invoke:async()=>{throw Object.assign(Error(message),{status,response:{status,data:{message}}});}},entities:{Track:{filter:async()=>{nativeReads++;return [first];},get:async()=>{nativeReads++;return privateAudio?{id:'private'}:{...first,audio_url:'https://media.base44.com/audio.mp3'};}}}};
+let clientSource=fs.readFileSync('src/api/base44Client.js','utf8').replace(/^import[^;]+;/gm,'');
+const client=(await importText('const AVATAR_PRESETS=[],withPresetAvatar=x=>x,savePresetAvatar=()=>{},createClient=()=>globalThis.__rawRead,appParams={};'+clientSource)).base44;
+assert.equal((await client.entities.Track.filter({is_published:true},{limit:2})).length,1);
+const reads=nativeReads;message='Forbidden';await assert.rejects(client.entities.Track.filter({}));assert.equal(nativeReads,reads,'real 403 denial cannot fall through');
+message='You need to access this app through the support panel first.';await assert.rejects(client.entities.Track.filter({}));assert.equal(nativeReads,reads,'support restriction cannot fall through');
+status=402;message='Integration credits exhausted';assert.equal((await client.entities.Track.filter({})).length,1);
+privateAudio=true;await assert.rejects(client.entities.Track.get('private'),'private audio still requires gateway authorization');
+console.log('PASS permitted native catalog fallback, genuine permission/support denial and private audio protection');
