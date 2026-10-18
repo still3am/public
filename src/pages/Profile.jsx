@@ -138,6 +138,7 @@ export default function Profile({ ownProfileTab = false }) {
   const loadVersion = useRef(0);
   const [loadError, setLoadError] = useState(false);
   const [sectionError, setSectionError] = useState("");
+  const [followMessage,setFollowMessage]=useState("");
   const [followingBusy, setFollowingBusy] = useState(false);
   const followBusyRef = useRef(false),followRevision=useRef(0);
   async function load() {
@@ -189,7 +190,7 @@ export default function Profile({ ownProfileTab = false }) {
   }
 
   useEffect(() => {
-    setProfile(null);setTracks([]);setTopTracks([]);setFollowing(false);setFollowReady(false);setStats({ followers: null, following: null, plays: 0, likes: 0 });
+    setFollowMessage("");setProfile(null);setTracks([]);setTopTracks([]);setFollowing(false);setFollowReady(false);setStats({ followers: null, following: null, plays: 0, likes: 0 });
     if (targetId) load();
     return () => {loadVersion.current++;};
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -230,7 +231,7 @@ export default function Profile({ ownProfileTab = false }) {
   async function toggleFollow() {
     if (!profile || !me?.id || !followReady || followBusyRef.current) return;
     followBusyRef.current = true;setFollowingBusy(true);const started = identity.current;
-    const wasFollowing = following;followRevision.current++;setSectionError("");
+    const wasFollowing = following;followRevision.current++;setFollowMessage("");
     try {
       const result=await setFollowState(base44,me.id,profile.id,!wasFollowing);
       if(identity.current!==started)return;
@@ -240,7 +241,7 @@ export default function Profile({ ownProfileTab = false }) {
       if (identity.current === started) window.dispatchEvent(new CustomEvent('follows:changed', { detail: { uid: me.id, followingId: profile.id, following: !wasFollowing } }));
     } catch(error) {
       if (identity.current !== started) return;
-      followRevision.current++;setSectionError(followError(error));
+      followRevision.current++;setFollowMessage(followError(error));
     } finally {followBusyRef.current = false;setFollowingBusy(false);}
   }
 
@@ -358,7 +359,7 @@ export default function Profile({ ownProfileTab = false }) {
     {backgroundColors.length > 0 && <MotionGradient colors={backgroundColors} motion={currentBackground.motion} speed={currentBackground.speed} active={isCurrentPage && !showColors && !showSettings && !showQR && !showDelete && !followList} pauseWhenCovered className="profile-artwork-background fixed inset-0 pointer-events-none z-0" style={{ opacity: 1 }} />}
     {!backgroundColors.length && currentBackground.mode === "auto" && coverUrl && <div aria-hidden="true" className="profile-artwork-background fixed inset-0 pointer-events-none z-0" style={{ backgroundImage: `url(${JSON.stringify(coverUrl)})`, backgroundSize: "cover", backgroundPosition: "center", filter: "blur(45px) saturate(1.35)", transform: "scale(1.12)", opacity: 1 }} />}
     <div className={`profile-page profile-redesigned max-w-6xl mx-auto relative z-10 ${editMode ? "profile-is-editing" : ""}`}>
-      {sectionError && <div role="status" className="border rounded-xl p-4 mb-4 text-sm"><p>{sectionError}</p><button disabled={followingBusy || loading || editMode || saving || uploadingAvatar} onClick={load} className="playlist-action text-xs mt-3">Refresh profile</button></div>}
+
       <div className="profile-overview flex flex-col md:flex-row gap-4 md:gap-6 mb-8">
       <div className="profile-identity relative rounded-2xl overflow-hidden ring-1 ring-inset ring-foreground/10 bg-card flex-1 min-w-0">
         <div className="profile-cover-stage" aria-hidden="true" style={backgroundColors.length ? { backgroundImage: profileGradient(backgroundColors) } : undefined}>
@@ -545,12 +546,14 @@ export default function Profile({ ownProfileTab = false }) {
                     <button
                       disabled={followingBusy || !followReady} onClick={toggleFollow}
                       title={following ? "Following (click to unfollow)" : "Follow"}
+                      aria-describedby={followMessage?"profile-follow-message":undefined}
                       aria-label={following ? "Unfollow" : "Follow"}
                       className={`profile-primary-action playlist-action transition ${
                       following ? "border border-border" : "bg-foreground text-background"}`}>
                     {followingBusy ? <Loader2 size={16} className="animate-spin" /> : following ? <UserCheck size={16} /> : <UserPlus size={16} />}<span>{followingBusy ? "Saving…" : following ? "Following" : "Follow"}</span>
                   </button>
                     }
+                {!isOwn&&followMessage&&<p id="profile-follow-message" role="status" className="basis-full text-xs text-muted-foreground leading-relaxed text-center">{followMessage} <button type="button" onClick={()=>setFollowMessage("")} className="underline underline-offset-2" aria-label="Dismiss follow message">Dismiss</button></p>}
                 {!editMode &&
                     <button
                       onClick={shareProfile}
@@ -594,6 +597,7 @@ export default function Profile({ ownProfileTab = false }) {
         </div>
       </div>
       </div>
+      {sectionError&&<div className="flex items-center justify-between gap-3 text-xs text-muted-foreground mb-4"><span>Some profile details couldn’t refresh.</span><button type="button" disabled={followingBusy||loading||editMode||saving||uploadingAvatar} onClick={load} className="underline underline-offset-2">Retry</button></div>}
       <div className="profile-song-spotlight">
       <ProfileSong
             trackId={editMode ? form.featured_track_id : profile?.featured_track_id}
