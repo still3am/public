@@ -57,7 +57,7 @@ export const getPublishedTracks=makeCache(async()=>{
   return page;
  }));
  if(startedGeneration===catalogGeneration){completePublished=all;publishSnapshot(all);}return all;
- }catch(error){if(startedGeneration===catalogGeneration)publishSnapshot(completePublished);throw error;}
+ }catch(error){if(startedGeneration===catalogGeneration)publishSnapshot(partial.length?[...new Map(partial.map(t=>[t.id,t])).values()]:completePublished);throw error;}
 });
 
 // Most played first — the same complete catalogue, ranked.
