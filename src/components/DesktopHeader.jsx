@@ -18,7 +18,7 @@ export default function DesktopHeader() {
     requestAnimationFrame(() => document.querySelector('[data-desktop-search]')?.focus());
   },[location.pathname,navigate]);
   useEffect(() => {
-    const key = (event) => {if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "k" && window.matchMedia("(min-width:768px)").matches) {event.preventDefault();search();}};
+    const key = (event) => {if(Array.from(document.querySelectorAll('[role="dialog"]')).some(dialog=>dialog.getClientRects().length))return;if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "k" && window.matchMedia("(min-width:768px)").matches) {event.preventDefault();search();}};
     window.addEventListener("keydown", key);return () => window.removeEventListener("keydown", key);
   }, [search]);
   return null;
