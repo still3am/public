@@ -82,7 +82,7 @@
  .public-note-dialog.public-note-viewer{max-width:500px!important;padding:32px;gap:20px}
 }
 @media(max-width:767px){
- .public-note-dialog{left:0;right:0;top:auto;bottom:0;transform:none;width:100%;max-height:92dvh;padding:30px 20px calc(18px + env(safe-area-inset-bottom));border-radius:28px 28px 0 0!important;gap:18px}
+ .public-note-dialog.public-note-composer,.public-note-dialog.public-note-viewer{max-width:none!important;left:0;right:0;top:auto;bottom:0;transform:none;width:100%;max-height:92dvh;padding:30px 20px calc(18px + env(safe-area-inset-bottom));border-radius:28px 28px 0 0!important;gap:18px}
  .public-note-dialog::before{content:"";position:absolute;top:9px;left:calc(50% - 18px);width:36px;height:4px;border-radius:999px;background:hsl(var(--foreground)/.2)}
  .public-note-dialog[data-state=open]{animation:public-note-sheet-in .24s ease!important}
  .public-note-dialog[data-state=closed]{animation:public-note-sheet-out .18s ease!important}
