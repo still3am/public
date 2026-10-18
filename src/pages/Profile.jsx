@@ -38,6 +38,7 @@ import {
 import SettingsSheet from "@/components/profile/SettingsSheet";
 import ProfilePlaylists from "@/components/profile/ProfilePlaylists";
 import ProfileSong from "@/components/profile/ProfileSong";
+import PublicNotes from "@/components/profile/PublicNotes";
 import TopTracks from "@/components/profile/TopTracks";
 import ProfileComments from "@/components/profile/ProfileComments";
 import FollowListModal from "@/components/profile/FollowListModal";
@@ -576,6 +577,7 @@ export default function Profile({ ownProfileTab = false }) {
       </div>
       {sectionError&&<div className="flex items-center justify-between gap-3 text-xs text-muted-foreground mb-4"><span>Some profile details couldn’t refresh.</span><button type="button" disabled={followingBusy||loading||editMode||saving||uploadingAvatar} onClick={load} className="underline underline-offset-2">Retry</button></div>}
       <div className="profile-content"><section className="profile-music" aria-label="Profile music">
+      {!editMode && <PublicNotes key={[targetId,me?.id].join(":")} profileId={targetId} isOwn={isOwn} profile={profile} active={isCurrentPage} userTracks={tracks} />}
       <div className="profile-song-spotlight">
       <ProfileSong
             trackId={editMode ? form.featured_track_id : profile?.featured_track_id}
