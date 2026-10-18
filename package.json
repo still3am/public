@@ -18,7 +18,8 @@
     "test:playlists": "node tests/playlist-transitions.test.mjs",
     "test:backend-registration": "node tests/backend-registration.test.mjs",
     "test:search": "node tests/search-recovery.test.mjs",
-    "test:follows": "node tests/follow-recovery.test.mjs"
+    "test:follows": "node tests/follow-recovery.test.mjs",
+    "test:moments": "node tests/moments.test.mjs && node tests/moments-ui.test.mjs && node tests/moments-playback.test.mjs"
   },
   "dependencies": {
     "@base44/sdk": "^0.8.54",

@@ -30,3 +30,15 @@ await call(me,{action:'delete',id:created.id});await rejects(null,{action:'get',
 reset();for(let i=0;i<16;i++)store.Moment.push({id:'post-'+i,user_id:'me',status:'published',media:input().media,track_id:'song',created_date:new Date(Date.now()-i*1000).toISOString(),liker_ids:[]});const first=await call(null,{action:'feed'}),second=await call(null,{action:'feed',offset:first.next_offset});assert.equal(first.items.length,12);assert.equal(first.has_more,true);assert.equal(second.items.length,4);assert.equal(second.has_more,false);assert.equal(new Set([...first.items,...second.items].map(x=>x.id)).size,16);
 for(const name of ['Moment','MomentComment']){const schema=JSON.parse(fs.readFileSync('base44/entities/'+name+'.jsonc','utf8'));for(const op of ['create','read','update','delete'])assert.deepEqual(schema.rls[op],{user_condition:{role:'admin'}});}
 console.log('PASS Moments publishing, authenticated ownership, media/audio bounds, retries, private-field exclusion, pagination, following, likes, comments, moderation, blocks, suspension, unavailable songs and deletion');
+
+store.Report=[];let actor=me;
+globalThis.__momentSafety={auth:{me:async()=>actor},asServiceRole:s,entities:s.entities};
+const safetySource=fs.readFileSync('base44/functions/safety/entry.ts','utf8').replace(/^import[^;]+;/gm,'');
+const safety=(await import('data:text/javascript;base64,'+Buffer.from('const createClientFromRequest=()=>globalThis.__momentSafety;'+safetySource).toString('base64'))).default;
+const safetyCall=async data=>{const response=await safety(new Request('https://test.invalid/safety',{method:'POST',body:JSON.stringify(data)}));return {status:response.status,data:await response.json()};};
+let result=await safetyCall({action:'report',target_type:'moment',target_id:'post-0',reason:'Unsafe content'});assert.equal(result.status,200);assert.equal(store.Report[0].target_type,'moment');
+result=await safetyCall({action:'moderate',id:store.Report[0].id,remove:true});assert.equal(result.status,403,'only admins can remove reported posts');
+actor={id:'admin',role:'admin'};result=await safetyCall({action:'moderate',id:store.Report[0].id,remove:true});assert.equal(result.status,200);assert.equal(store.Moment[0].status,'deleted');
+actor=other;store.MomentComment.push({id:'reported-comment',moment_id:'post-1',user_id:'third',body:'Reported text',status:'published'});
+result=await safetyCall({action:'report',target_type:'moment_comment',target_id:'reported-comment',reason:'Harassment'});assert.equal(result.status,200);const report=store.Report.at(-1);assert.equal(report.moment_id,'post-1');actor={id:'admin',role:'admin'};result=await safetyCall({action:'moderate',id:report.id,remove:true});assert.equal(result.status,200);assert.equal(store.MomentComment.at(-1).status,'deleted');
+console.log('PASS Moments reports enter the existing inbox, comment reports link to their parent, non-admin moderation is denied and admin removal hides posts/comments');
