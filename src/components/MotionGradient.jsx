@@ -56,7 +56,7 @@ export default function MotionGradient({colors=DEFAULT,motion="flow",speed=1,act
   const element=canvas.current;
   let gl,program,buffer,vertex,fragment,raf=0,last=0,painted=0,visible=true,disposed=false,lost=false;
   const reduced=window.matchMedia("(prefers-reduced-motion: reduce)");
-  let current=settings.current.palette.map(rgb);
+  let current=settings.current.palette.map(rgb),velocity=settings.current.speed,sizeDirty=true,width=1,height=1;
   setReady(false);
   const compile=(type,source)=>{
    const shader=gl.createShader(type);gl.shaderSource(shader,source);gl.compileShader(shader);
@@ -79,18 +79,23 @@ export default function MotionGradient({colors=DEFAULT,motion="flow",speed=1,act
    const {palette,speed}=settings.current;
    const target=palette.map(rgb),blend=animate?1-Math.exp(-dt/1100):1;
    current=current.map((c,i)=>c.map((v,j)=>v+(target[i][j]-v)*blend));
-   if(animate)phase.current+=dt*.001*speed;
-   const rect=element.getBoundingClientRect(),scale=Math.min(1.25,window.devicePixelRatio||1,1100/Math.max(1,rect.width,rect.height));
-   const w=Math.max(1,Math.round(rect.width*scale)),h=Math.max(1,Math.round(rect.height*scale));
-   if(element.width!==w||element.height!==h){element.width=w;element.height=h;}
-   gl.viewport(0,0,w,h);gl.uniform1f(uniforms.time,phase.current);gl.uniform1f(uniforms.aspect,w/h);
+   velocity+=(speed-velocity)*(animate?1-Math.exp(-dt/300):1);
+   if(animate)phase.current+=dt*.001*velocity;
+   // Cache layout measurements; only resizing/waking needs a new canvas size.
+   if(sizeDirty){
+    const rect=element.getBoundingClientRect(),scale=Math.min(1.25,window.devicePixelRatio||1,1100/Math.max(1,rect.width,rect.height));
+    width=Math.max(1,Math.round(rect.width*scale));height=Math.max(1,Math.round(rect.height*scale));sizeDirty=false;
+    if(element.width!==width||element.height!==height){element.width=width;element.height=height;}
+   }
+   gl.viewport(0,0,width,height);gl.uniform1f(uniforms.time,phase.current);gl.uniform1f(uniforms.aspect,width/height);
    ["a","b","c"].forEach((name,i)=>gl.uniform3fv(uniforms[name],current[i]));
    gl.drawArrays(gl.TRIANGLES,0,6);
   };
-  const covered=()=>settings.current.pauseWhenCovered&&!element.closest("[role=dialog]")&&!!document.querySelector("[data-public-dialog], [role=dialog][aria-modal=true]");
+  const covered=()=>settings.current.pauseWhenCovered&&!element.closest("[role=dialog]")&&Array.from(document.querySelectorAll("[data-public-dialog], [role=dialog][aria-modal=true]")).some(dialog=>dialog.getClientRects().length>0);
+  let wasCovered=covered();
   const tick=now=>{
    raf=0;
-   if(disposed||lost||document.hidden||!visible||!settings.current.active||covered())return;
+   if(disposed||lost||document.hidden||!visible||!settings.current.active||wasCovered)return;
    const animate=settings.current.motion==="flow"&&!reduced.matches;
    // Limit GPU work to 30fps while preserving continuous time.
    if(animate&&painted&&now-painted<32){raf=requestAnimationFrame(tick);return;}
@@ -98,7 +103,7 @@ export default function MotionGradient({colors=DEFAULT,motion="flow",speed=1,act
    draw(dt,animate);
    if(animate)raf=requestAnimationFrame(tick);
   };
-  const resume=()=>{stop();if(!disposed&&!lost&&!document.hidden&&visible&&settings.current.active&&!covered())raf=requestAnimationFrame(tick);};
+  const resume=()=>{stop();sizeDirty=true;wasCovered=covered();if(!disposed&&!lost&&!document.hidden&&visible&&settings.current.active&&!wasCovered)raf=requestAnimationFrame(tick);};
   wake.current=resume;
   const onLost=event=>{event.preventDefault();lost=true;stop();setReady(false);};
   const onRestored=()=>{if(!disposed)setVersion(v=>v+1);};
@@ -106,18 +111,18 @@ export default function MotionGradient({colors=DEFAULT,motion="flow",speed=1,act
   document.addEventListener("visibilitychange",resume);reduced.addEventListener("change",resume);
   const observer=typeof IntersectionObserver!=="undefined"?new IntersectionObserver(entries=>{visible=entries[0]?.isIntersecting??true;resume();}):null;
   observer?.observe(element);
-  let wasCovered=covered();
   const dialogs=new MutationObserver(()=>{const next=covered();if(next!==wasCovered){wasCovered=next;resume();}});
-  if(settings.current.pauseWhenCovered)dialogs.observe(document.body,{childList:true,subtree:true});
+  if(settings.current.pauseWhenCovered)dialogs.observe(document.body,{childList:true,subtree:true,attributes:true,attributeFilter:["hidden","aria-hidden","class","style"]});
   const resize=typeof ResizeObserver!=="undefined"?new ResizeObserver(resume):null;resize?.observe(element);
+  window.addEventListener("resize",resume);
   draw(0,false);setReady(true);resume();
   return()=>{
    disposed=true;stop();wake.current=null;observer?.disconnect();resize?.disconnect();dialogs.disconnect();
    element.removeEventListener("webglcontextlost",onLost);element.removeEventListener("webglcontextrestored",onRestored);
-   document.removeEventListener("visibilitychange",resume);reduced.removeEventListener("change",resume);
+   document.removeEventListener("visibilitychange",resume);reduced.removeEventListener("change",resume);window.removeEventListener("resize",resume);
    gl.deleteBuffer(buffer);gl.deleteProgram(program);gl.deleteShader(vertex);gl.deleteShader(fragment);
   };
- },[version]);
+ },[version,pauseWhenCovered]);
  useEffect(()=>{wake.current?.();},[key,motion,speed,active,pauseWhenCovered]);
  return <div aria-hidden="true" data-gradient-motion="public-flow" className={className} style={{pointerEvents:"none",overflow:"hidden",...style}}>
   <div style={{position:"absolute",inset:0,backgroundColor:palette[0],backgroundImage:`linear-gradient(125deg, ${palette[0]} 0%, ${palette[1]} 42%, ${palette[2]} 78%, ${palette[0]} 100%)`}}/>
