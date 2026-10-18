@@ -13,5 +13,10 @@ export default function ScrollShelf({children,className="",label="Music shelf"})
   return()=>{element.removeEventListener("scroll",update);observer?.disconnect();window.removeEventListener("resize",update);};
  },[children]);
  const move=direction=>{const element=rail.current;if(element)element.scrollBy({left:direction*element.clientWidth*.85,behavior:window.matchMedia("(prefers-reduced-motion:reduce)").matches?"auto":"smooth"});};
- return <div className="scroll-shelf"><div className="desktop-shelf-controls" hidden={!state.overflow}><button type="button" disabled={state.start} aria-label={"Scroll "+label+" left"} onClick={()=>move(-1)}><ChevronLeft size={16}/></button><button type="button" disabled={state.end} aria-label={"Scroll "+label+" right"} onClick={()=>move(1)}><ChevronRight size={16}/></button></div><div ref={rail} className={className} role="region" aria-label={label} tabIndex={0}>{children}</div></div>;
+ const onKeyDown=event=>{
+  if(event.target!==event.currentTarget||!state.overflow)return;
+  if(event.key==="ArrowLeft"||event.key==="ArrowRight"){event.preventDefault();move(event.key==="ArrowLeft"?-1:1);}
+  else if(event.key==="Home"||event.key==="End"){event.preventDefault();const element=rail.current;element?.scrollTo({left:event.key==="Home"?0:element.scrollWidth-element.clientWidth,behavior:window.matchMedia("(prefers-reduced-motion:reduce)").matches?"auto":"smooth"});}
+ };
+ return <div className="scroll-shelf"><div className="desktop-shelf-controls" hidden={!state.overflow}><button type="button" disabled={state.start} aria-label={"Scroll "+label+" left"} onClick={()=>move(-1)}><ChevronLeft size={16}/></button><button type="button" disabled={state.end} aria-label={"Scroll "+label+" right"} onClick={()=>move(1)}><ChevronRight size={16}/></button></div><div ref={rail} data-horizontal-scroll onKeyDown={onKeyDown} className={className} role="region" aria-label={label} tabIndex={0}>{children}</div></div>;
 }
