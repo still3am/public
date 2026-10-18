@@ -237,7 +237,7 @@ export default function FullScreenPlayer({ onClose }) {
 
   return (
     <div role="dialog" aria-modal="true" aria-label="Now playing" data-public-dialog tabIndex={-1} onKeyDown={(e) => {if (e.key === "Escape") {e.stopPropagation();onClose?.();}}}
-    className="fixed inset-0 z-50 text-white animate-[fadeIn_.25s_ease-out] flex flex-col overflow-hidden"
+    className="full-player-screen fixed inset-0 z-50 text-white animate-[fadeIn_.25s_ease-out] flex flex-col overflow-hidden"
     style={{
       background: "#101116",
       transform: `translateY(${dragY}px)`,
@@ -301,9 +301,9 @@ export default function FullScreenPlayer({ onClose }) {
       </div>
 
       {/* body */}
-      <div className="relative flex-1 flex flex-col xl:flex-row min-h-0 gap-4 xl:gap-16 xl:px-16 2xl:px-24 xl:pb-8">
+      <div className="full-player-layout relative flex-1 flex flex-col xl:flex-row min-h-0 gap-4 xl:gap-16 xl:px-16 2xl:px-24 xl:pb-8">
         {/* LEFT: artwork + controls */}
-        <div className="flex-1 flex flex-col px-6 md:px-10 xl:px-10 xl:max-w-[580px] xl:mx-auto xl:justify-center min-h-0 pb-[env(safe-area-inset-bottom)]">
+        <div className="full-player-main flex-1 flex flex-col px-6 md:px-10 xl:px-10 xl:max-w-[580px] xl:mx-auto xl:justify-center min-h-0 pb-[env(safe-area-inset-bottom)]">
           {/* artwork / mobile lyrics */}
           <div className="relative flex-1 xl:flex-none flex items-center justify-center min-h-0 py-4">
             {showingLyrics &&
@@ -317,7 +317,7 @@ export default function FullScreenPlayer({ onClose }) {
               onPointerUp={onVolPointerEnd}
               onPointerCancel={onVolPointerEnd}
               onLostPointerCapture={() => {volDrag.current.active = false;}}
-              className={`relative aspect-square w-full max-w-[min(38vh,80vw)] xl:max-w-[440px] 2xl:max-w-[480px] xl:max-h-[46vh] 2xl:max-h-[52vh] rounded-3xl overflow-hidden shadow-none bg-white/10 shrink-0 touch-none transition-transform duration-500 ${
+              className={`full-player-art relative aspect-square w-full max-w-[min(38vh,80vw)] xl:max-w-[440px] 2xl:max-w-[480px] xl:max-h-[46vh] 2xl:max-h-[52vh] rounded-3xl overflow-hidden shadow-none bg-white/10 shrink-0 touch-none transition-transform duration-500 ${
               p.isPlaying ? "scale-100" : "scale-[0.97]"} ${
               showingLyrics ? "hidden xl:flex" : "flex"}`}>
 
@@ -447,7 +447,7 @@ export default function FullScreenPlayer({ onClose }) {
         </div>
 
         {/* RIGHT (desktop): lyrics panel — only when this track has lyrics */}
-        <div className={`${hasLyrics && showLyricsPanel ? "hidden xl:flex" : "hidden"} flex-col min-h-0 w-[440px] 2xl:w-[480px] shrink-0 bg-white/[0.06] ring-1 ring-white/10 rounded-[2rem] overflow-hidden`}>
+        <div className={`${hasLyrics && showLyricsPanel ? "hidden xl:flex" : "hidden"} full-player-lyrics flex-col min-h-0 w-[440px] 2xl:w-[480px] shrink-0 bg-white/[0.06] ring-1 ring-white/10 rounded-[2rem] overflow-hidden`}>
           <div className="flex items-center justify-between px-5 pt-4 pb-1 shrink-0">
             <span className="text-[10px] uppercase tracking-[0.25em] opacity-50 flex items-center gap-2">
               <Mic2 size={13} /> Lyrics
