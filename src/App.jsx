@@ -29,7 +29,6 @@ import TopCharts from '@/pages/TopCharts';
 import RecentlyAdded from '@/pages/RecentlyAdded';
 import Profile from '@/pages/Profile';
 import TrackDetail from '@/pages/TrackDetail';
-import PublicGlobe from '@/pages/PublicGlobe';
 import PublicRecords from '@/pages/PublicRecords';
 import PublicRecordsIndex from '@/pages/PublicRecordsIndex';
 import ArtistByName from '@/pages/ArtistByName';
@@ -99,7 +98,6 @@ const AuthenticatedApp = () => {
 
         {/* Personal features — login required */}
         <Route element={<ProtectedRoute />}>
-          <Route path="/globe" element={<PublicGlobe />} />
           <Route path="/mix/:id" element={<PersonalMix />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/profile/:id" element={<Profile />} />
