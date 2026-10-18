@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "react-router-dom";
-import { ArrowLeft, CloudDownload, CloudOff, Play, Pause, Shuffle, Trash2, Loader2, GripVertical, Search, X, ArrowDownUp, Check, HardDrive } from "lucide-react";
+import { ArrowLeft, CloudDownload, CloudOff, Pause, Trash2, Loader2, GripVertical, Search, X, ArrowDownUp, Check } from "lucide-react";
 import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
 import { usePlayer } from "@/context/PlayerContext";
 import { useOfflineCache } from "@/hooks/useOfflineCache";

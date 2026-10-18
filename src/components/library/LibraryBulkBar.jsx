@@ -1,4 +1,4 @@
-import { CheckSquare, ListPlus, Trash2, FolderMinus, Loader2 } from "lucide-react";
+import { ListPlus, Trash2, FolderMinus, Loader2 } from "lucide-react";
 
 // Bulk edit toolbar for the library: toggles selection mode, then acts on
 // everything currently selected.

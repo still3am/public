@@ -1,7 +1,6 @@
 import { useEffect, useRef } from "react";
 import { ArrowLeft, Check, Wand2, GitMerge, AlignHorizontalJustifyCenter } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { resetTransitionSettings } from "@/lib/transitions";
 import { useAuth } from "@/lib/AuthContext";
 import { useTransitions } from "@/hooks/useTransitions";
 import {

@@ -8,7 +8,6 @@ import {
   Trash2,
   Play,
   Pause,
-  ListMusic,
   Plus,
   Music2,
   GripVertical,
