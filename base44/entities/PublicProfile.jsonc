@@ -137,6 +137,14 @@
       "type": "object",
       "description": "Native song-only note state. Contains no user-authored text.",
       "properties": {
+        "appearance": {
+          "type": "string",
+          "enum": [
+            "classic",
+            "cover_flow"
+          ],
+          "default": "classic"
+        },
         "mode": {
           "type": "string",
           "enum": [
