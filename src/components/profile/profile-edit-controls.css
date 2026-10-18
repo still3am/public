@@ -13,3 +13,7 @@
 .profile-edit-circle-small::before{content:"";position:absolute;inset:-6px;border-radius:50%}
 .profile-edit-circle>svg{display:block;flex-shrink:0}
 .profile-edit-circle:focus-visible{outline:2px solid hsl(var(--foreground));outline-offset:3px}
+
+/* The frame casts a shadow on mobile too; keep its outline circular in every theme. */
+.profile-avatar-frame{border-radius:50%}
+.profile-avatar-frame>.profile-desktop-avatar{border-radius:50%;aspect-ratio:1;object-fit:cover;overflow:hidden}
