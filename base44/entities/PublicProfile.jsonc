@@ -4342,6 +4342,38 @@
       "rls": {
         "write": false
       }
+    },
+    "avatar_preset": {
+      "type": "string",
+      "enum": [
+        "",
+        "initials",
+        "/avatars/antisocial.webp",
+        "/avatars/flower-boy.webp",
+        "/avatars/good-day.webp",
+        "/avatars/currents.webp",
+        "/avatars/underwater.webp",
+        "/avatars/acid-rap.webp",
+        "/avatars/crown.webp",
+        "/avatars/sky-room.webp",
+        "/avatars/pink-blue.webp"
+      ],
+      "default": "",
+      "description": "Preinstalled gallery choice only. External uploads remain in avatar_url.",
+      "rls": {
+        "write": {
+          "$or": [
+            {
+              "data.user_id": "{{user.id}}"
+            },
+            {
+              "user_condition": {
+                "role": "admin"
+              }
+            }
+          ]
+        }
+      }
     }
   },
   "required": [
