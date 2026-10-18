@@ -165,6 +165,8 @@ export default function Search() {
           }
         </div>
 
+        <div className="desktop-search-scopes hidden md:flex" role="group" aria-label="Search category"><button type="button" aria-pressed={!peopleMode} onClick={()=>chooseScope("all")}>Music & artists</button><button type="button" aria-pressed={peopleMode} onClick={()=>chooseScope("people")}>People</button></div>
+        {!hasQuery&&!genre&&!peopleMode&&<div className="desktop-browse-label hidden md:flex"><h2>Browse by genre</h2><span>{genreList.length} genres to explore</span></div>}
         {/* Body */}
         {hasQuery ?
         firstSearchInFlight ? loader :
