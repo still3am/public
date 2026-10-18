@@ -4,7 +4,8 @@ import { Link } from "react-router-dom";
 import { splitArtistNames } from "@/lib/artistTracks";
 import { getPublishedTracks, getArtists } from "@/lib/catalogCache";
 import PullToRefresh from "@/components/PullToRefresh";
-import { Loader2, Mic2 } from "lucide-react";
+import { Loader2, Mic2, ChevronRight } from "lucide-react";
+import { useCoverUrl } from "@/hooks/useCoverUrl";
 
 // Split a multi-artist string into individual names, preserving original
 // casing. A track credited "Drake feat. Future" counts toward both Drake and
@@ -55,6 +56,15 @@ function AzReveal({ children }) {
 
 }
 
+function RecordArtwork({ source, name }) {
+  const url = useCoverUrl(source);
+  const [failed, setFailed] = useState(false);
+  useEffect(() => setFailed(false), [url]);
+  return <span className="record-artwork">{url && !failed
+    ? <img src={url} alt="" loading="lazy" decoding="async" onError={() => setFailed(true)} />
+    : <span aria-hidden="true">{(name || "?").trim().slice(0,1).toUpperCase()}</span>}</span>;
+}
+
 export default function PublicRecordsIndex() {
   const [loadError,setLoadError]=useState(false);
   const [artists, setArtists] = useState(null); // null = loading
@@ -78,18 +88,24 @@ export default function PublicRecordsIndex() {
 
       // nameKey -> { display, record, count }
       const map = new Map();
-      const bump = (display, record) => {
+      const bump = (display, record, track) => {
         const key = norm(display);
         if (!key) return;
         const existing = map.get(key);
         if (existing) {
           existing.count += 1;
           if (!existing.record && record) existing.record = record;
+          if (track?.cover_art_url && (!existing.cover || (Number(track.play_count) || 0) > existing.coverPlays)) {
+            existing.cover = track.cover_art_url;
+            existing.coverPlays = Number(track.play_count) || 0;
+          }
         } else {
           map.set(key, {
             display: record ? record.name : display,
             record: record || null,
-            count: 1
+            count: 1,
+            cover: track?.cover_art_url || "",
+            coverPlays: Number(track?.play_count) || 0
           });
         }
       };
@@ -97,7 +113,7 @@ export default function PublicRecordsIndex() {
       (Array.isArray(tracks) ? tracks : []).forEach((t) => {
         const segs = splitNames(t.artist);
         if (!segs.length) return;
-        segs.forEach((seg) => bump(seg, recordByName.get(norm(seg)) || null));
+        segs.forEach((seg) => bump(seg, recordByName.get(norm(seg)) || null, t));
       });
 
       // Make sure Artist records with zero published tracks still appear.
@@ -217,7 +233,7 @@ export default function PublicRecordsIndex() {
   if(loadError&&artists===null)return <LoadError onRetry={()=>load(true)}/>;
   return (
     <div className="directory-page max-w-3xl mx-auto pb-10">
-      <header className="page-intro"><p className="eyebrow">Public Record</p><h1>The artist directory</h1><p>Explore the names behind the music.</p></header>
+      <header className="page-intro record-directory-intro"><p className="eyebrow">Public Record</p><h1>Behind the music.</h1><p>Your artists. Their songs. Every record.</p>{artists && <span className="record-directory-count">{artists.length} {artists.length === 1 ? "artist" : "artists"} in PUBLIC</span>}</header>
       
 
       
@@ -261,20 +277,19 @@ export default function PublicRecordsIndex() {
                     <Link
                       key={norm(a.display)}
                       to={href}
-                      className="flex items-center gap-2.5 px-2 py-1.5 rounded-lg hover:bg-foreground/[0.04] active:scale-[0.99] transition group">
+                      className="record-directory-card group">
                       
-                          <div className="min-w-0 flex-1 flex items-baseline gap-2">
-                            <span className="text-[13px] font-medium truncate">{a.display}</span>
+                          <RecordArtwork source={a.cover || a.record?.cover_art_url || a.record?.avatar_url} name={a.display} />
+                          <div className="record-directory-identity">
+                            <span className="record-directory-name">{a.display}</span>
+                            <span className="record-directory-meta">{a.count || 0} {a.count === 1 ? "song" : "songs"}</span>
                             
 
 
 
                         
                           </div>
-                          
-
-                      
-                      
+                          <ChevronRight className="record-directory-arrow" size={18} aria-hidden="true" />
                         </Link>);
 
                 })}
