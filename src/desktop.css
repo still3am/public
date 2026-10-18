@@ -68,6 +68,17 @@
  .public-app .personal-mix-art>strong{font-size:clamp(32px,3.1vw,44px)}
  .public-app .shared-song-shelf{grid-auto-columns:minmax(310px,calc(50% - 14px));gap:0 28px}
  .public-app .desktop-page-search{max-width:760px}
+ .public-app .search-results-workspace{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:32px 24px}
+ .public-app .search-results-workspace>.search-result-section{margin:0;min-width:0}
+ .public-app .search-result-section:only-child,.public-app .search-result-playlists,.public-app .search-result-tracks{grid-column:1/-1}
+ .public-app .search-result-rows{display:grid;gap:4px;align-content:start}
+ .public-app .search-result-rows>a{min-width:0;min-height:72px;padding:12px;background:hsl(var(--foreground)/.025);border-radius:14px}
+ .public-app .search-result-rows>a:hover{background:hsl(var(--accent))}
+ .public-app .search-result-grid{grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:24px 18px}
+ .public-app .search-result-grid .music-card,.public-app .search-result-grid .playlist-card{padding:0}
+ .public-app .incremental-list-more{display:flex;align-items:center;justify-content:center;gap:18px;margin-top:26px;padding:20px 0;border-top:1px solid hsl(var(--border)/.6)}
+ .public-app .incremental-list-more>span{font-size:12px;color:hsl(var(--muted-foreground))}
+ .public-app .library-tool[aria-pressed=true]{background:hsl(var(--foreground));color:hsl(var(--background))}
  .public-app .desktop-search-scopes{gap:6px;align-items:center;margin:-4px 0 30px}
  .desktop-search-scopes>button{padding:9px 17px;min-height:40px;border-radius:999px;font-size:12px;border:1px solid hsl(var(--border))}
  .desktop-search-scopes>button[aria-pressed=true]{background:hsl(var(--foreground));color:hsl(var(--background));border-color:transparent}
