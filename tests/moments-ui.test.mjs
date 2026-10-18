@@ -18,6 +18,16 @@ nodes(tree,n=>n.type==='button'&&n.props.className==='moment-use-song')[0].props
 reset([[],false]);user=null;tree=render(Moments);nodes(tree,n=>n.type==='button'&&n.props.className==='moment-primary')[0].props.onClick();assert.match(navigations[0],/^\/login\?returnTo=/);assert.equal(states[6],false);user={id:'me'};
 reset([[],false]);assert.match(renderToStaticMarkup(render(Moments)),/Every moment starts somewhere/);
 const css=fs.readFileSync('src/components/moments/moments.css','utf8');assert.doesNotMatch(css,/scroll-snap|touch-action: *none/);assert.match(fs.readFileSync('src/public-redesign.css','utf8'),/grid-template-columns:repeat\(5,minmax\(0,1fr\)\)/);
+// On mobile, opening comments keeps the reel in place and mounts a dismissible dialog.
+globalThis.window={matchMedia:()=>({matches:true})};
+reset([[sample],false]);tree=render(Moments);
+nodes(tree,n=>n.type==='button'&&n.props['aria-expanded']===false)[0].props.onClick();
+tree=render(Moments);
+assert.equal(nodes(tree,n=>n.props?.className==='moment-comments-sheet').length,1);
+const commentsDialog=nodes(tree,n=>n.props?.open===true&&typeof n.props?.onOpenChange==='function')[0];
+commentsDialog.props.onOpenChange(false);
+assert.equal(states[9].size,0,'dismissing mobile comments leaves no open comment state');
+delete globalThis.window;
 const composerPrelude=common.replace(',MomentComposer=Blank','');
 const {default:Composer}=await load('src/components/moments/MomentComposer.jsx',composerPrelude);
 reset();let completed=null,closed=0;const props={onClose:()=>closed++,onPublished:p=>completed=p};stateIndex=0;refIndex=0;tree=Composer(props);let submit=nodes(tree,n=>n.type==='button'&&n.props.className==='moment-primary')[0];assert.equal(submit.props.disabled,true,'posting requires media, song and rights');
