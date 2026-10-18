@@ -73,6 +73,17 @@ assert.equal(find(content,n=>typeof n.type==="function"&&n.type.name==="Cover")[
 tree=render([note,false,"",true,false,note.track,"",false,Date.now(),false,"classic"]);
 find(tree,n=>n.type==="button"&&n.props.children==="Cover Flow")[0].props.onClick();
 assert.equal(values[10],"cover_flow","appearance switch updates the draft");
+globalThis.__player.togglePlay=async()=>{throw Error("offline");};
+tree=render([note,false,"",false,false,null,"",false,Date.now(),true]);
+await find(tree,n=>n.props?.className==="public-note-play")[0].props.onClick();
+assert.match(values[11],/Couldn’t play/,"failed playback gives an actionable message");
+let finishPlayback,playStarts=0;
+globalThis.__player.togglePlay=()=>{playStarts++;return new Promise(resolve=>finishPlayback=resolve);};
+tree=render([note,false,"",false,false,null,"",false,Date.now(),true]);
+const play=find(tree,n=>n.props?.className==="public-note-play")[0];
+const pending=play.props.onClick();await play.props.onClick();
+assert.equal(playStarts,1,"rapid taps cannot issue duplicate playback requests");
+finishPlayback();await pending;
 globalThis.__user=null;
 assert.equal(render([note,false,""]),null,"signed-out session does not leak a previously loaded note");
 console.log("PASS PUBLIC Notes playback, expiry, failed-save draft preservation, confirmed posting and session isolation");
