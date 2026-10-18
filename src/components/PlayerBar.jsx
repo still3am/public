@@ -88,7 +88,7 @@ export default function PlayerBar() {
         collapsed ? "md:left-[68px]" : "md:left-64"}`
         }>
         {/* progress (mobile - thin top accent) */}
-        <div className="h-[3px] md:h-6 w-full bg-foreground/[0.06] relative overflow-hidden">
+        <div className="desktop-player-progress h-[3px] md:h-6 w-full bg-foreground/[0.06] relative overflow-hidden">
           <div
             className="absolute left-0 top-0 h-[3px] bg-foreground/80"
             style={{ width: `${pct}%` }} />
@@ -96,7 +96,7 @@ export default function PlayerBar() {
           <input aria-label="Seek playback" type="range" min="0" max={p.duration||0} step="1" value={Math.min(p.position||0,p.duration||0)} disabled={!p.duration} onChange={e=>p.seek(Number(e.target.value))} className="hidden md:block absolute inset-0 opacity-0 w-full h-full cursor-pointer disabled:cursor-default"/>
         </div>
 
-        <div className="flex items-center gap-3 px-3 sm:px-5 py-3">
+        <div className="desktop-player-content flex items-center gap-3 px-3 sm:px-5 py-3">
           {/* artwork + meta */}
           <button onClick={() => setFullOpen(true)} className="flex items-center gap-3 min-w-0 flex-1 text-left" aria-label="Open Now Playing">
             <div className="shrink-0 relative">
@@ -143,18 +143,18 @@ export default function PlayerBar() {
           </div>
 
           {/* desktop controls */}
-          <div className="hidden md:flex items-center gap-1 lg:gap-2 xl:gap-3 shrink-0">
+          <div className="desktop-player-controls hidden md:flex items-center gap-1 lg:gap-2 xl:gap-3 shrink-0">
             <button
               onClick={() => p.setRepeat(p.repeat === "off" ? "all" : p.repeat === "all" ? "one" : "off")}
               className={`hidden lg:inline-flex p-2 rounded-full hover:bg-foreground/5 active:scale-90 transition ${p.repeat !== "off" ? "text-foreground" : "text-foreground/40"}`}
-              aria-label="Repeat">
+              aria-pressed={p.repeat!=="off"} title={"Repeat: "+p.repeat} aria-label={"Repeat: "+p.repeat}>
 
               <RepeatIcon size={18} />
             </button>
             <button
               onClick={() => p.setShuffle(!p.shuffle)}
               className={`hidden lg:inline-flex p-2 rounded-full hover:bg-foreground/5 active:scale-90 transition ${p.shuffle ? "text-foreground" : "text-foreground/40"}`}
-              aria-label="Shuffle">
+              aria-pressed={p.shuffle} title="Shuffle" aria-label="Shuffle">
 
               <Shuffle size={18} />
             </button>
@@ -194,7 +194,7 @@ export default function PlayerBar() {
             </button>
             <button onClick={p.clearQueue} className="xl:hidden p-2 rounded-full text-muted-foreground" aria-label="Close player"><X size={16}/></button>
             <div className="hidden xl:flex items-center gap-2 pl-1">
-              <button onClick={() => p.setMuted(!p.muted)} className="p-1 active:scale-90 transition" aria-label="Mute">
+              <button onClick={() => p.setMuted(!p.muted)} className="p-1 active:scale-90 transition" aria-pressed={p.muted} title={p.muted?"Unmute":"Mute"} aria-label={p.muted?"Unmute":"Mute"}>
                 {p.muted || p.volume === 0 ? <VolumeX size={18} /> : <Volume2 size={18} />}
               </button>
               <input
