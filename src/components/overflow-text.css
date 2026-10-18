@@ -1,1 +1,10 @@
-.overflow-text{display:block;min-width:0;max-width:100%;width:100%;overflow:hidden;white-space:nowrap;text-overflow:clip}.overflow-text-track{display:inline-flex;align-items:baseline;width:max-content;max-width:none;gap:28px}.overflow-text-copy{display:inline-block;flex:none;white-space:nowrap}.overflow-text.has-overflow>.overflow-text-track{animation:public-text-scroll var(--text-duration,12s) linear infinite;animation-play-state:var(--text-play,paused)}.overflow-text:hover>.overflow-text-track,.overflow-text:focus-within>.overflow-text-track{animation-play-state:paused}.overflow-text.artist-credits .overflow-text-copy>a{display:inline}.overflow-text.artist-credits .overflow-text-copy>a:focus-visible{outline:1px solid currentColor;outline-offset:-1px}@keyframes public-text-scroll{0%,14%{transform:translateX(0)}90%,100%{transform:translateX(calc(-1 * var(--text-travel)))}}@media(prefers-reduced-motion:reduce){.overflow-text.has-overflow{overflow-x:auto;scrollbar-width:none}.overflow-text.has-overflow>.overflow-text-track{animation:none;transform:none}.overflow-text-duplicate{display:none}}
+.overflow-text{display:block;min-width:0;max-width:100%;width:100%;overflow:hidden;white-space:nowrap;text-overflow:clip}
+.overflow-text-track{display:inline-flex;align-items:baseline;width:max-content;max-width:none;gap:28px}
+.overflow-text-copy{display:inline-block;flex:none;white-space:nowrap}
+.overflow-text.has-overflow>.overflow-text-track{animation:public-text-scroll var(--text-duration,12s) linear 1.2s infinite;animation-play-state:var(--text-play,paused)}
+.overflow-text:focus-within>.overflow-text-track{animation-play-state:paused}
+@media(hover:hover) and (pointer:fine){.overflow-text:hover>.overflow-text-track{animation-play-state:paused}}
+.overflow-text.artist-credits .overflow-text-copy>a{display:inline}
+.overflow-text.artist-credits .overflow-text-copy>a:focus-visible{outline:1px solid currentColor;outline-offset:-1px}
+@keyframes public-text-scroll{from{transform:translate3d(0,0,0)}to{transform:translate3d(calc(-1 * var(--text-travel)),0,0)}}
+@media(prefers-reduced-motion:reduce){.overflow-text.has-overflow{overflow-x:auto;scrollbar-width:none}.overflow-text.has-overflow>.overflow-text-track{animation:none;transform:none}.overflow-text-duplicate{display:none}}
