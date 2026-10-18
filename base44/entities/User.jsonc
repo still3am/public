@@ -243,7 +243,17 @@
         "/avatars/acid-rap.webp",
         "/avatars/crown.webp",
         "/avatars/sky-room.webp",
-        "/avatars/pink-blue.webp"
+        "/avatars/pink-blue.webp",
+        "/avatars/blond.webp",
+        "/avatars/yeat.webp",
+        "/avatars/happier-than-ever.webp",
+        "/avatars/genesis.webp",
+        "/avatars/eternal-atake.webp",
+        "/avatars/cigarettes-after-sex.webp",
+        "/avatars/pills-and-flowers.webp",
+        "/avatars/chromakopia.webp",
+        "/avatars/born-to-die.webp",
+        "/avatars/ye-mountains.webp"
       ],
       "default": "",
       "description": "Preinstalled gallery choice only. External uploads remain in avatar_url.",
