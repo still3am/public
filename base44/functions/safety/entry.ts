@@ -66,24 +66,32 @@ export default async function handleRequest(req) {
    return Response.json({blocked:d.blocked!==false});
   }
   if(d.action==='report') {
-   const map={track:'Track',user:'User',comment:'ProfileComment',annotation:'TrackAnnotation',suggestion:'Suggestion',notification:'Notification',artist:'Artist'};
+   const map={track:'Track',user:'User',comment:'ProfileComment',annotation:'TrackAnnotation',suggestion:'Suggestion',notification:'Notification',artist:'Artist',moment:'Moment',moment_comment:'MomentComment'};
    if(!map[d.target_type]||!d.target_id)err('Choose content to report');
    const reason=String(d.reason||'').trim();
    if(reason.length<3||reason.length>2000)err('Explain the issue in 3–2000 characters');
-   const record=await (d.target_type==="user"?s:b).entities[map[d.target_type]].get(d.target_id);
+   const record=await (['user','moment','moment_comment'].includes(d.target_type)?s:b).entities[map[d.target_type]].get(d.target_id);
+   if(['moment','moment_comment'].includes(d.target_type)){
+    const parent=d.target_type==='moment'?record:await s.entities.Moment.get(record.moment_id);
+    if(record.status!=='published'||parent.status!=='published')err('Content unavailable',404);
+    const related=await s.entities.Block.filter({$or:[{user_id:u.id,blocked_user_id:{$in:[record.user_id,parent.user_id]}},{blocked_user_id:u.id,user_id:{$in:[record.user_id,parent.user_id]}}]},'-created_date',1);
+    if(related.length)err('Content unavailable',404);
+   }
    if(d.target_type==="notification" && record.user_id!==u.id && u.role!=="admin")err("Content access denied",403);
    if(!record)err('Content unavailable',404);
    const recent=await s.entities.Report.filter({reporter_id:u.id,created_date:{$gte:new Date(Date.now()-60000).toISOString()}},'-created_date',10);
    if(recent.length>=5)err('Please wait a minute before reporting again',429);
-   await s.entities.Report.create({reporter_id:u.id,target_type:d.target_type,target_id:d.target_id,...(d.target_type==='track'?{track_id:d.target_id}:{}),reason,status:'pending'});
+   await s.entities.Report.create({reporter_id:u.id,target_type:d.target_type,target_id:d.target_id,...(d.target_type==='track'?{track_id:d.target_id}:{}),...(d.target_type==='moment_comment'?{moment_id:record.moment_id}:{}),reason,status:'pending'});
    return Response.json({success:true});
   }
   if(d.action==='moderate') {
    admin();const r=await s.entities.Report.get(d.id);
    if(d.remove) {
-    const map={track:'Track',comment:'ProfileComment',annotation:'TrackAnnotation',suggestion:'Suggestion',notification:'Notification',artist:'Artist'};
+    const map={track:'Track',comment:'ProfileComment',annotation:'TrackAnnotation',suggestion:'Suggestion',notification:'Notification',artist:'Artist',moment:'Moment',moment_comment:'MomentComment'};
     const name=map[r.target_type||'track'],id=r.target_id||r.track_id;
     if(name==='Track')await s.entities.Track.update(id,{is_published:false,approval_status:'rejected'});
+    else if(name==='Moment')await s.entities.Moment.update(id,{status:'deleted',caption:'',media:[],liker_ids:[]});
+    else if(name==='MomentComment')await s.entities.MomentComment.update(id,{status:'deleted',body:''});
     else if(name)await s.entities[name].delete(id);
     else err('Use account suspension for user reports');
    }
