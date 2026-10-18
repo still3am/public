@@ -374,7 +374,7 @@ export default function Profile({ ownProfileTab = false }) {
         <div className="profile-details relative z-10 px-5 md:px-10 pb-5 md:pb-8 pt-5 md:pt-8">
           <div className="profile-identity-row flex flex-col items-center md:flex-row md:items-center md:justify-center gap-4 md:gap-8">
             <div className="relative shrink-0">
-              <Avatar user={{...profile,avatar_url:avatarUrl}} size={96} className="profile-avatar"/>
+              <Avatar user={{...profile,avatar_url:avatarUrl}} size={96} className="profile-desktop-avatar"/>
               
 
 
