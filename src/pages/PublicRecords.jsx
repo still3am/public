@@ -253,7 +253,7 @@ export default function PublicRecords({ id: propId, fallbackArtist = null }) {
     <PullToRefresh onRefresh={load}>
       <div className="artist-page max-w-5xl mx-auto pb-12">
         <section className="artist-hero">
-          <ArtistArtwork source={artist.cover_art_url || topCover} className="artist-hero-image" />
+          <ArtistArtwork source={topCover || artist.cover_art_url || artist.avatar_url} className="artist-hero-image" />
           <div className="artist-hero-shade" />
           <button onClick={() => window.history.state?.idx > 0 ? nav(-1) : nav("/search")} className="artist-back" aria-label="Back"><ChevronLeft size={25} /></button>
           <div className="artist-hero-bottom">
