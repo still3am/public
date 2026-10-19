@@ -1,7 +1,8 @@
-import {playlistDatabase} from '@/api/base44Client';
+import {base44,playlistDatabase} from '@/api/base44Client';
 import {savePlaylistTracks} from '@/lib/nativePlaylistTracks';
 export async function changePlaylist(id,action,ids,expected){
- const saved=await savePlaylistTracks(playlistDatabase,id,action,ids,expected);
+ const playlist=await base44.entities.Playlist.get(id);
+ const saved=playlist.collaboration_enabled?(await base44.functions.invoke('securityGateway',{entity:'Playlist',action,args:[id,ids,expected]})).data.result:await savePlaylistTracks(playlistDatabase,id,action,ids,expected);
  window.dispatchEvent(new Event('playlists:changed'));return saved;
 }
 export const addPlaylistTracks=(id,ids)=>changePlaylist(id,'playlistAdd',[...new Set(ids)]);
