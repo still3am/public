@@ -42,3 +42,13 @@ function fixture(){
  const pending=change({enabled:true});await change({enabled:false});reject(Error("blocked"));await pending;assert.equal(state.value.enabled,false);assert.equal(state.error,"");
 }
 console.log("PASS player activation, remote-playback restrictions, unavailable engines and stale resume failures preserve user intent");
+{
+ let compareExpression;const find=n=>{if(ts.isVariableDeclaration(n)&&n.name.getText(ast)==="comparePure")compareExpression=n.initializer.arguments[0].getText(ast);ts.forEachChild(n,find);};find(ast);
+ assert.ok(compareExpression);let comparing=false;const saved={...DEFAULT_PURE,enabled:true,clarity:73};
+ const pureRef={current:saved},pureRemoteRef={current:false},setPureComparing=value=>{comparing=value;};
+ const compare=new Function("pureRef","pureRemoteRef","setPureComparing","return ("+compareExpression+")")(pureRef,pureRemoteRef,setPureComparing);
+ compare(true);assert.equal(comparing,true);assert.equal(pureRef.current,saved);assert.equal(saved.enabled,true);assert.equal(saved.clarity,73);
+ compare(false);assert.equal(comparing,false);pureRemoteRef.current=true;compare(true);assert.equal(comparing,false);
+ pureRemoteRef.current=false;pureRef.current={...saved,enabled:false};compare(true);assert.equal(comparing,false);
+ console.log("PASS momentary comparison preserves saved tuning, restores on release, and cannot enable processing when unavailable");
+}
