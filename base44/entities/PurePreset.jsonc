@@ -1,0 +1,45 @@
+{
+  "name": "PurePreset",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "maxLength": 40
+    },
+    "clarity": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 100
+    },
+    "bass": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 100
+    },
+    "balance": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 100
+    }
+  },
+  "required": [
+    "name",
+    "clarity",
+    "bass",
+    "balance"
+  ],
+  "rls": {
+    "create": {
+      "created_by_id": "{{user.id}}"
+    },
+    "read": {
+      "created_by_id": "{{user.id}}"
+    },
+    "update": {
+      "created_by_id": "{{user.id}}"
+    },
+    "delete": {
+      "created_by_id": "{{user.id}}"
+    }
+  }
+}
