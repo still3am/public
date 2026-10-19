@@ -30,10 +30,5 @@
 .pure-controls button:focus-visible,.pure-controls input:focus-visible{outline:2px solid var(--pure-ink);outline-offset:3px}
 .pure-footnote{font-size:10px;line-height:1.6;opacity:.5;margin-top:16px}.pure-error{font-size:12px;line-height:1.5;margin-top:13px}
 .is-compact .pure-presets button{min-height:44px}.is-compact .pure-tuning{gap:12px}.is-compact .pure-control-header h3{font-size:17px}
-.pure-dialog{gap:18px!important;max-width:460px!important}.pure-dialog-title{font-size:42px!important;font-weight:850!important;letter-spacing:-.045em!important;line-height:1!important}
-.pure-source-details{border:1px solid hsl(var(--border));border-radius:18px;padding:15px}
-.pure-source-details summary{cursor:pointer;min-height:28px;font-size:12px;font-weight:600}.pure-source-details summary span{float:right;font-weight:400;font-size:11px;color:hsl(var(--muted-foreground))}
-.pure-source-details p{font-size:11px;line-height:1.65;color:hsl(var(--muted-foreground));margin-top:10px}
-.pure-source-details dl{display:grid;grid-template-columns:1fr 1fr;gap:14px;font-size:12px;margin-top:14px}.pure-source-details dt{font-size:10px;color:hsl(var(--muted-foreground))}.pure-source-details dd{margin-top:3px;font-weight:600}
-@media(max-width:390px){.pure-controls{padding:16px}.pure-presets small{font-size:8px}.pure-dialog{padding:20px!important}}
+@media(max-width:390px){.pure-controls{padding:16px}.pure-presets small{font-size:8px}}
 @media(prefers-reduced-motion:reduce){.pure-controls *{transition:none!important}}
