@@ -56,7 +56,7 @@ export default function Downloads() {
   <Link to="/library" className="inline-flex items-center gap-1.5 min-h-11 text-sm text-muted-foreground hover:text-foreground mb-3"><ArrowLeft size={18} />Library</Link>
   <header className="mb-7">
    <div className="flex items-center justify-between gap-4"><div><h1 className="text-4xl md:text-5xl font-bold tracking-tight">Offline</h1></div><div className="w-14 h-14 md:w-16 md:h-16 rounded-2xl bg-foreground/[0.05] border grid place-items-center hidden"><CloudDownload size={27} strokeWidth={1.5} /></div></div>
-   <p className="text-sm text-muted-foreground mt-3 leading-relaxed">Your music, ready wherever you go.</p>
+   <p className="text-sm text-muted-foreground mt-3 leading-relaxed">Your offline library follows your account. Connect each device to download its own copy.</p>
   </header>
   
 
@@ -66,6 +66,8 @@ export default function Downloads() {
 
     
   {(downloading > 0 || cache.syncing) && <div role="status" className="flex items-center gap-3 rounded-2xl bg-foreground/[0.04] border px-4 py-3 mb-5 text-sm"><Loader2 size={16} className="animate-spin shrink-0" /><span>{downloading ? "Saving " + downloading + " " + (downloading === 1 ? "song" : "songs") + " to this device…" : "Checking saved music…"}</span></div>}
+  {cache.syncError&&<div role="status" className="border rounded-2xl p-4 mb-5 text-sm"><p>Your offline library couldn’t sync. Music already saved on this device is still available.</p><button type="button" onClick={()=>cache.syncFromCloud()} disabled={cache.syncing} className="min-h-11 mt-2 underline">Retry sync</button></div>}
+  {cache.pendingCount>0&&!downloading&&!cache.syncing&&<div role="status" className="border rounded-2xl p-4 mb-5 text-sm"><p>{cache.pendingCount} {cache.pendingCount===1?"song is":"songs are"} waiting to download on this device.</p><button type="button" onClick={()=>cache.syncFromCloud()} className="min-h-11 mt-2 underline">Retry downloads</button></div>}
   {cache.storageAvailable === false && <div role="alert" className="border rounded-2xl p-4 mb-5"><p className="text-sm font-semibold">Couldn’t access offline storage</p><p className="text-xs text-muted-foreground mt-1">Retry without clearing your saved music.</p><button type="button" className="mt-3 min-h-11 px-4 rounded-full border text-sm font-semibold" onClick={() => cache.refresh()}>Retry storage</button></div>}
   {(tracks.length > 0 || query) && <>
    <div className="relative mb-4"><Search size={18} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground" /><input value={query} onChange={(e) => setQuery(e.target.value)} onKeyDown={(e) => {if (e.key === "Escape") setQuery("");}} aria-label="Search offline music" placeholder="Search your downloads" className="w-full h-12 rounded-2xl bg-foreground/[0.04] border pl-11 pr-12 text-sm" />{query && <button type="button" aria-label="Clear search" onClick={() => setQuery("")} className="absolute right-1 top-1/2 -translate-y-1/2 w-11 h-11 grid place-items-center"><X size={17} /></button>}</div>
