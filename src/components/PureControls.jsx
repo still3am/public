@@ -1,29 +1,36 @@
+import {useEffect} from "react";
 import {usePlayer} from "@/context/PlayerContext";
 import {PURE_PRESETS,DEFAULT_PURE} from "@/lib/pureAudio";
-import {Sparkles,RotateCcw} from "lucide-react";
+import {AudioLines,RotateCcw} from "lucide-react";
+import "./pure-controls.css";
 
 export default function PureControls({compact=false}){
- const p=usePlayer(),settings=p.pure||DEFAULT_PURE,active=settings.enabled&&!p.pureSuspended;
- const update=values=>p.setPureValues(values);
- return <section aria-label="PUBLIC Pure sound enhancement" className={"rounded-2xl border border-current/10 p-4 "+(compact?"mb-5":"")}>
-  <div className="flex items-center justify-between gap-4">
-   <div><h3 className="font-semibold tracking-tight flex items-center gap-2"><Sparkles size={16}/>PUBLIC. Pure</h3><p className="text-[11px] opacity-60 mt-1">{p.pureSuspended?"Paused for wireless playback":active?"Sound enhancement is on":"Your original sound, unchanged by Pure"}</p></div>
-   <button type="button" role="switch" aria-label="Enable PUBLIC Pure" aria-checked={active} disabled={p.pureSuspended} onClick={()=>update({enabled:!settings.enabled})} className={"relative w-12 h-7 rounded-full shrink-0 transition-colors disabled:opacity-40 "+(active?"bg-foreground text-background":"bg-foreground/15 text-foreground")}><span className={"absolute top-1 w-5 h-5 rounded-full transition-transform "+(active?"left-1 translate-x-5 bg-background":"left-1 bg-foreground")}/></button>
+ const p=usePlayer(),settings=p.pure||DEFAULT_PURE,enabled=settings.enabled,available=!p.pureSuspended,active=enabled&&available;
+ const selected=PURE_PRESETS.find(preset=>["clarity","bass","balance"].every(key=>settings[key]===preset[key]));
+ useEffect(()=>()=>p.comparePure(false),[p.comparePure]);
+ const update=values=>{p.comparePure(false);return p.setPureValues(values);};
+ const release=()=>p.comparePure(false);
+ const status=p.pureSuspended?"Paused for wireless playback":p.pureComparing?"Comparing · PURE bypassed":active?(selected?.name||"Custom tuning"):"Off · enable to start";
+ return <section aria-label="PURE sound enhancement" className={"pure-controls "+(compact?"is-compact":"")}>
+  <div className="pure-control-header">
+   <div><h3><AudioLines size={18} strokeWidth={1.6}/>PURE</h3><p role="status"><span className={"pure-status-dot "+(active&&!p.pureComparing?"is-active":"")}/>{status}</p></div>
+   <button type="button" role="switch" aria-label="Enable PURE" aria-checked={enabled} disabled={!available&&!enabled} onClick={()=>update({enabled:!enabled})} className={"pure-switch "+(enabled?"is-on":"")}><span/></button>
   </div>
-  <div role="group" aria-label="Pure sound presets" className="grid grid-cols-3 gap-2 mt-5">{PURE_PRESETS.map(preset=>{
-   const selected=active&&["clarity","bass","balance"].every(key=>settings[key]===preset[key]);
-   return <button key={preset.name} type="button" disabled={p.pureSuspended} aria-pressed={selected} onClick={()=>update({...preset,enabled:true})} className={"min-h-11 rounded-full text-xs font-semibold border border-current/10 transition disabled:opacity-40 "+(selected?"bg-foreground text-background":"hover:bg-foreground/5")}>{preset.name}</button>;
-  })}</div>
-  <div className="mt-5 space-y-3">{[
-   ["clarity","Vocal clarity","Lift presence and reduce muddy low mids."],
-   ["bass","Bass control","Add a gentle low-frequency lift."],
-   ["balance","Volume balance","Soften louder peaks with gentle compression."]
-  ].map(([key,title,description])=><label key={key} className={"block "+(!active?"opacity-45":"")}><span className="flex justify-between items-center gap-3 text-xs font-semibold"><span>{title}</span><span className="font-mono tabular-nums">{settings[key]}%</span></span><input type="range" min="0" max="100" step="1" aria-label={title} aria-valuetext={settings[key]+" percent"} value={settings[key]} disabled={!active} onChange={event=>update({[key]:Number(event.target.value)})} className="w-full h-9 accent-current cursor-pointer disabled:cursor-default"/>{!compact&&<span className="block text-[10px] opacity-60 -mt-1">{description}</span>}</label>)}</div>
-  <div className="flex items-center justify-between gap-3 mt-4">
-   <button type="button" disabled={p.pureSuspended} onClick={()=>update({enabled:!settings.enabled})} className="min-h-11 px-3 border border-current/15 rounded-full text-xs font-semibold disabled:opacity-40">{active?"Hear without Pure":"Hear with Pure"}</button>
-   <button type="button" onClick={()=>update({...DEFAULT_PURE})} className="min-h-11 px-2 inline-flex gap-1.5 items-center text-[11px] opacity-60 hover:opacity-100"><RotateCcw size={12}/>Reset</button>
+  <div role="group" aria-label="PURE sound presets" className="pure-presets">{PURE_PRESETS.map(preset=><button key={preset.name} type="button" disabled={!available||p.pureComparing} aria-pressed={active&&selected?.name===preset.name} onClick={()=>update({...preset,enabled:true})}><strong>{preset.name}</strong>{!compact&&<small>{preset.description}</small>}</button>)}</div>
+  <div className="pure-tuning">{[
+   ["clarity","Clarity","Bring voices forward without a sharp edge."],
+   ["bass","Body","Give the low end a little more weight."],
+   ["balance","Balance","Gently soften louder peaks."]
+  ].map(([key,title,description])=><label key={key} className={!active?"is-disabled":""}>
+   <span className="pure-slider-label"><span>{title}</span><output>{settings[key]}<small>%</small></output></span>
+   <input type="range" min="0" max="100" step="1" aria-label={"PURE "+title.toLowerCase()} aria-valuetext={settings[key]+" percent"} value={settings[key]} disabled={!active||p.pureComparing} style={{"--pure-fill":settings[key]+"%"}} onChange={event=>update({[key]:Number(event.target.value)})}/>
+   {!compact&&<span className="pure-slider-hint">{description}</span>}
+  </label>)}</div>
+  <div className="pure-actions">
+   <button type="button" className="pure-compare" disabled={!active} onPointerDown={event=>{if(event.button!==0)return;event.preventDefault();event.currentTarget.setPointerCapture?.(event.pointerId);p.comparePure(true);}} onPointerUp={release} onPointerCancel={release} onLostPointerCapture={release} onBlur={release} onKeyDown={event=>{if(event.key===" "||event.key==="Enter"){event.preventDefault();if(!event.repeat)p.comparePure(true);}}} onKeyUp={event=>{if(event.key===" "||event.key==="Enter"){event.preventDefault();release();}}} aria-pressed={!!p.pureComparing}>{p.pureComparing?"Release to hear PURE":"Hold to compare"}</button>
+   <button type="button" className="pure-reset" disabled={!available} onClick={()=>update({...DEFAULT_PURE,enabled})} aria-label="Reset PURE tuning"><RotateCcw size={13}/><span>Reset</span></button>
   </div>
-  {p.pureError&&<p role="status" className="text-xs mt-3">{p.pureError}</p>}
-  {!compact&&<p className="text-[10px] leading-relaxed opacity-60 mt-3">Works with existing songs, including MP3 and AAC, while they play in this browser. Settings are saved on this device. Pure shapes sound; it doesn’t restore missing audio detail or convert a song to lossless.</p>}
+  {p.pureError&&<p role="status" className="pure-error">{p.pureError}</p>}
+  {!compact&&<p className="pure-footnote">Saved on this device. PURE shapes playback without changing your uploaded files.</p>}
  </section>;
 }
