@@ -88,6 +88,51 @@ export default async function handleRequest(req) {
       return await hydrate(t,sign);
     };
     if(entity==='PublicNote'){
+
+      if(['noteReactions','reactNote'].includes(action)){
+        const [owner,key,emoji]=args;
+        if(typeof owner!=='string'||!owner||owner.length>100||typeof key!=='string'||key.length>350)fail('Invalid note',400);
+        await relation(owner);
+        const profiles=await svc.entities.PublicProfile.filter({user_id:owner,visible:true},'-updated_date',1);
+        const profile=(Array.isArray(profiles)?profiles:profiles?.items||[])[0],state=profile?.public_song_note;
+        let note;
+        if(state?.mode==='song'){
+          const until=Math.min(Date.parse(state.expires_at),Date.parse(profile.updated_date||profile.created_date)+86400000);
+          if(Number.isFinite(until)&&until>Date.now())note={id:'native:'+profile.id,track_id:state.track_id,caption:'',expires_at:new Date(until).toISOString()};
+        }else if(!state||state.mode==='server'){
+          const page=await handler.filter({user_id:owner,expires_at:{$gt:new Date().toISOString()}},'-updated_date',1);
+          note=(Array.isArray(page)?page:page?.items||[])[0];
+        }
+        if(!note||Date.parse(note.expires_at)<=Date.now())fail('This note has expired or was removed',404);
+        if(JSON.stringify([note.id,note.expires_at])!==key)fail('This note changed. Reopen it to react.',409);
+        if(note.track_id){try{const track=await requireTrack(note.track_id,false);if(!(track.is_published&&track.approval_status==='approved'))fail('Song unavailable',404);}catch(e){if(![403,404].includes(e.status)||!note.caption?.trim())throw e;}}
+        else if(!note.caption?.trim())fail('Note unavailable',404);
+        const reactions=svc.entities.NoteReaction,scope={profile_id:owner,note_key:key};
+        if(action==='reactNote'){
+          if(owner===user.id)fail('React to another person’s note',403);
+          if(typeof emoji!=='string'||!NOTE_EMOJIS.includes(emoji))fail('Choose an emoji from the picker',422);
+          const own=await all(reactions,{...scope,user_id:user.id});
+          if(!emoji)await reactions.deleteMany({...scope,user_id:user.id});
+          else{
+            const data={...scope,user_id:user.id,emoji,reacted_at:new Date().toISOString()};
+            if(own.length){await reactions.update(own[0].id,data);for(const duplicate of own.slice(1))await reactions.delete(duplicate.id);}
+            else await reactions.create(data);
+          }
+        }
+        const rows=await all(reactions,scope),blocks=await all(svc.entities.Block,{$or:[{user_id:user.id},{blocked_user_id:user.id}]});
+        const blockedIds=new Set(blocks.map(b=>b.user_id===user.id?b.blocked_user_id:b.user_id));
+        const ids=[...new Set(rows.map(r=>r.user_id))].filter(id=>!blockedIds.has(id));
+        const allowed=new Set();
+        for(let start=0;start<ids.length;start+=200){
+          const page=await svc.entities.User.filter({id:{$in:ids.slice(start,start+200)}},'-created_date',200,0,['id','is_blocked','disabled']);
+          for(const actor of Array.isArray(page)?page:page?.items||[])if(!actor.is_blocked&&!actor.disabled)allowed.add(actor.id);
+        }
+        const latest=new Map();
+        rows.sort((a,b)=>String(b.reacted_at||b.updated_date||'').localeCompare(String(a.reacted_at||a.updated_date||''))||String(b.id).localeCompare(String(a.id)));
+        for(const row of rows)if(allowed.has(row.user_id)&&NOTE_EMOJIS.includes(row.emoji)&&row.emoji&&!latest.has(row.user_id))latest.set(row.user_id,row.emoji);
+        const counts=new Map();for(const value of latest.values())counts.set(value,(counts.get(value)||0)+1);
+        return Response.json({result:{counts:[...counts].map(([emoji,count])=>({emoji,count})).sort((a,b)=>b.count-a.count||a.emoji.localeCompare(b.emoji)),mine:latest.get(user.id)||'',total:latest.size}});
+      }
       if(action==='readNote'){
         const owner=args[0];
         if(typeof owner!=='string'||!owner||owner.length>100)fail('Invalid profile',400);
