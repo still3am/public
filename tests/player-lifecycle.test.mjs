@@ -52,6 +52,16 @@ function fixture(){
  assert.equal(env.blobUrlRefs[0].current,null);assert.equal(env.sideReadyRef[0].current,false);assert.equal(env.sleepTimerRef.current,null);
  console.log('PASS playback cleanup releases artwork/audio URLs and sleep state');
 }
+{
+ const {env}=fixture(),pending=deferred(),blocked=new Set();
+ env.blockedRef={current:blocked};env.offlineAccountRef={current:'owner'};env.getRecord=()=>pending.promise;
+ env.navigator={onLine:true};
+ const resolve=callback('resolveUrl',env);
+ const request=resolve({id:'song',uploader_id:'uploader',audio_url:'https://test/song'},0);
+ blocked.add('uploader');pending.resolve(null);
+ await assert.rejects(request,/replaced/);assert.equal(env.sideLoadedIdRef[0].current,'old');
+ console.log('PASS blocking an uploader cancels a source lookup already in flight');
+}
 // Execute the actual offline-artwork hook with controlled async storage reads.
 let state,scheduled,cleanup,previousDeps,uid='first-user',pending=new Map(),revoked=[];
 const hooks={
