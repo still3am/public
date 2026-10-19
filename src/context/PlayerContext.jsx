@@ -647,12 +647,21 @@ export function PlayerProvider({ children }) {
         const track=queueRef.current[currentIndexRef.current],side=activeIdxRef.current,token=loadTokenRef.current;
         if(track && Date.now()-(retryRef.current.get(track.id)||0)>60000){
           retryRef.current.set(track.id,Date.now());
-          const at=a.currentTime||position;let url=null;
+          const at=a.currentTime||position;let url=null,retryBlob=null;
+          const valid=()=>token===loadTokenRef.current&&side===activeIdxRef.current&&queueRef.current[currentIndexRef.current]?.id===track.id&&!blockedRef.current.has(track.uploader_id);
           try{if(navigator.onLine&&track._private_audio)url=(await base44.entities.Track.get(track.id)).audio_url;
-            else{const rec=await getRecord(track.id,offlineAccountRef.current||null);if(rec?._blob){url=URL.createObjectURL(rec._blob);blobUrlRefs[side].current=url;}}
+            else{const rec=await getRecord(track.id,offlineAccountRef.current||null);if(rec?._blob){retryBlob=URL.createObjectURL(rec._blob);url=retryBlob;}}
           }catch{}
-          if(url&&token===loadTokenRef.current){pendingSeekRef.current={id:track.id,at};a.src=url;a.load();a.play().catch(()=>setIsPlaying(false));return;}
+          if(!valid()){if(retryBlob)URL.revokeObjectURL(retryBlob);return;}
+          if(url){
+            const previous=blobUrlRefs[side].current;
+            if(previous&&previous!==retryBlob)URL.revokeObjectURL(previous);
+            blobUrlRefs[side].current=retryBlob;
+            pendingSeekRef.current={id:track.id,at};a.src=url;a.load();
+            a.play().catch(()=>{if(valid())setIsPlaying(false);});return;
+          }
         }
+        if(token!==loadTokenRef.current||side!==activeIdxRef.current)return;
         setIsPlaying(false);window.dispatchEvent(new CustomEvent('player:error',{detail:'This track could not load. Check your connection or choose another song.'}));
       };
       a.addEventListener('error',onError);
