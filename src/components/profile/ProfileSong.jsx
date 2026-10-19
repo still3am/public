@@ -1,7 +1,11 @@
 import "./profile-edit-controls.css";
+import {Link} from "react-router-dom";
+import ArtistLinks from "@/components/ArtistLinks";
+import OverflowText from "@/components/OverflowText";
+import {useAuth} from "@/lib/AuthContext";
+import {useNotePreview} from "@/hooks/useNotePreview";
 import { useEffect, useRef, useState } from "react";
 import { base44 } from "@/api/base44Client";
-import { usePlayer } from "@/context/PlayerContext";
 import { useCoverUrl } from "@/hooks/useCoverUrl";
 import { Image } from "@/components/ui/image";
 import { Play, Pause, X } from "lucide-react";
@@ -15,9 +19,13 @@ export default function ProfileSong({
   editMode,
   userTracks,
   onChange,
+  active=true,
+  disabled=false,
   fillHeight = false
 }) {
-  const p = usePlayer();
+  const {user}=useAuth();
+  const preview=useNotePreview({active:active&&!editMode,accountId:user?.id,scope:trackId});
+  const [previewError,setPreviewError]=useState("");
   const [track, setTrack] = useState(null);
   const pickedTrack = useRef(null);
   const [pickerOpen, setPickerOpen] = useState(false);
@@ -43,14 +51,13 @@ export default function ProfileSong({
   }, [trackId, userTracks]);
 
   const coverUrl = useCoverUrl(track?.cover_art_url);
-  const isCurrent = p.currentTrack?.id === trackId;
-  const isPlaying = isCurrent && p.isPlaying;
+  const isPlaying = preview.trackId===trackId&&preview.playing;
 
-  function handlePlay() {
-    if (!track || lp.consumeLongPress()) return;
-    if (isCurrent) p.togglePlay();else
-    p.playTrackAt([track]);
+  async function handlePlay(){
+    if(!track||lp.consumeLongPress()||preview.loading)return;
+    setPreviewError('');try{await preview.play(track);}catch{setPreviewError('Couldn’t preview this song. Check your connection and try again.');}
   }
+  useEffect(()=>setPreviewError(''),[trackId]);
 
   // Nothing to show and nothing to pick: no card at all, so a profile whose
   // featured track was deleted doesn't leave an empty box next to it.
@@ -73,13 +80,13 @@ export default function ProfileSong({
               </div>
               <div className="flex items-center gap-2">
                 <button
-                onClick={() => setPickerOpen(true)}
+                disabled={disabled} onClick={() => setPickerOpen(true)}
                 className="px-3 py-1.5 rounded-full text-xs font-semibold border border-border hover:bg-foreground/5 transition">
                 
                   Change
                 </button>
                 <button
-                onClick={() => onChange("")}
+                disabled={disabled} onClick={() => onChange("")}
                 type="button" className="profile-edit-circle relative hover:bg-foreground/10 text-foreground/50"
                 aria-label="Remove profile song">
                 
@@ -90,7 +97,7 @@ export default function ProfileSong({
 
           <div className="flex-1 flex items-center justify-center p-4">
               <button
-              onClick={() => setPickerOpen(true)}
+              disabled={disabled} onClick={() => setPickerOpen(true)}
               className="w-full p-4 rounded-2xl border-2 border-dashed border-border text-sm text-foreground/50 hover:bg-foreground/[0.02] transition">
               
                 + Choose your profile song
@@ -152,13 +159,13 @@ export default function ProfileSong({
               <div className="text-xs text-foreground/50 truncate">{track.artist || track.uploader_name}</div>
             </div>
             <button
-            onClick={() => setPickerOpen(true)}
+            disabled={disabled} onClick={() => setPickerOpen(true)}
             className="px-3 py-1.5 rounded-full text-xs font-semibold border border-border hover:bg-foreground/5 transition">
             
               Change
             </button>
             <button
-            onClick={() => onChange("")}
+            disabled={disabled} onClick={() => onChange("")}
             type="button" className="profile-edit-circle relative hover:bg-foreground/10 text-foreground/50"
             aria-label="Remove profile song">
             
@@ -167,7 +174,7 @@ export default function ProfileSong({
           </div> :
 
         <button
-          onClick={() => setPickerOpen(true)}
+          disabled={disabled} onClick={() => setPickerOpen(true)}
           className="w-full p-4 rounded-2xl border-2 border-dashed border-border text-sm text-foreground/50 hover:bg-foreground/[0.02] transition">
           
             + Choose your profile song
@@ -194,28 +201,14 @@ export default function ProfileSong({
 
   if (!trackId || !track) return null;
 
-  return (
-    <div className="mb-6">
-      
-
-      
-      <div ref={lp.ref} {...lp.handlers} className="song-menu-surface group flex items-center gap-3 p-3 rounded-2xl border border-border bg-foreground/[0.02]">
-        <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-xl overflow-hidden bg-foreground/10 shrink-0">
-          {coverUrl && <Image src={coverUrl} fittingType="fill" alt="" className="w-full h-full" />}
-        </div>
-        <div className="flex-1 min-w-0">
-          <div className="text-sm sm:text-base font-semibold truncate">{track.title}</div>
-          <div className="text-xs sm:text-sm text-foreground/50 truncate">{track.artist || track.uploader_name}</div>
-        </div>
-        <button
-          onClick={handlePlay}
-          className="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-foreground text-background grid place-items-center shrink-0 active:scale-90 transition shadow-md"
-          aria-label={`${isPlaying ? "Pause" : "Play"} ${track.title || "profile song"}`}>
-          
-          {isPlaying ? <Pause size={20} fill="currentColor" /> : <Play size={20} fill="currentColor" className="ml-0.5" />}
-        </button>
-        <HoverTrackMenu track={track} lp={lp} size={18} />
-      </div>
-    </div>);
-
+  return <div className="mb-6">
+   <div ref={lp.ref} {...lp.handlers} className="profile-feature-song song-menu-surface group flex items-center gap-3 p-3 rounded-2xl border border-border bg-card">
+    <Link to={'/track/'+track.id} className="w-14 h-14 sm:w-20 sm:h-20 rounded-xl overflow-hidden shrink-0" aria-label={'Open '+track.title}>{coverUrl&&<Image src={coverUrl} fittingType="fill" alt="" className="w-full h-full"/>}</Link>
+    <div className="profile-feature-meta"><Link to={'/track/'+track.id}><OverflowText text={track.title}/></Link><ArtistLinks artist={track.artist||track.uploader_name} className="text-xs text-muted-foreground"/><span className="text-[10px] text-muted-foreground">Profile song</span></div>
+    <button type="button" disabled={preview.loading} onClick={handlePlay} className="profile-preview-button" aria-label={(isPlaying?'Pause preview of ':'Preview ')+track.title} aria-pressed={isPlaying}><span>{isPlaying?<Pause size={18} fill="currentColor"/>:<Play size={18} fill="currentColor"/>}</span><span>{preview.loading?'Loading…':'Preview'}</span></button>
+    <HoverTrackMenu track={track} lp={lp} size={18}/>
+   </div>
+   {preview.trackId===trackId&&<div className="flex items-center justify-between gap-3 text-[11px] text-muted-foreground mt-2"><span>Your music resumes when the preview ends.</span><button type="button" className="underline min-h-10" onClick={preview.stop}>End preview</button></div>}
+   {previewError&&<p role="alert" className="profile-editor-error">{previewError}</p>}
+  </div>;
 }
