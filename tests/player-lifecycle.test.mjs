@@ -103,3 +103,24 @@ assert.equal(useOfflineCoverUrl('two','second.jpg'),'second.jpg','late old-accou
 pending.get('second-user:two').resolve({_coverBlob:{id:'two'}});await Promise.resolve();
 assert.equal(useOfflineCoverUrl('two','second.jpg'),'blob:two');assert.ok(revoked.includes('blob:one'));cleanup();
 console.log('PASS offline artwork follows track/account identity and ignores stale storage reads');
+{
+ const {env,state,audio}=fixture();audio.paused=false;audio.currentTime=73;audio.pause=function(){this.paused=true;};
+ Object.assign(env,{activeEl:()=>audio,offlineAccountRef:{current:'account'},blockedRef:{current:new Set()},isPlayingRef:{current:true},notePreviewRef:{current:null},resumeAndPlay:a=>{a.paused=false;state.playing=true;},loadOnActive:()=>{throw Error('must not reload an unchanged source');}});
+ env.sideLoadedIdRef[0].current='song';env.cancelNotePreviewRef.current=()=>false;
+ const lease=callback('acquireNotePreview',env)(()=>{});
+ assert.equal(audio.paused,true);assert.equal(audio.currentTime,73);assert.equal(env.queueRef.current[0].id,'song');
+ lease.release();assert.equal(audio.paused,false);assert.equal(audio.currentTime,73);assert.equal(env.currentIndexRef.current,0);
+ audio.paused=true;
+ callback('acquireNotePreview',env)(()=>{}).release();assert.equal(audio.paused,true,'previously paused music stays paused');
+ audio.paused=false;const superseded=callback('acquireNotePreview',env)(()=>{});env.loadTokenRef.current++;superseded.release();assert.equal(audio.paused,true,'obsolete preview cannot resume over new playback');
+ console.log('PASS actual player preview lease preserves queue/time, paused state and newer playback intent');
+}
+{
+ const {env,audio}=fixture(),pending=deferred();let requests=0;
+ Object.assign(env,{inactiveIdx:()=>0,crossfadingRef:{current:false},preloadingRef:{current:null},preloadVersionRef:{current:0},preloadedTargetRef:{current:0},readyListenerRef:[{current:null}],resolveUrl:()=>{requests++;return pending.promise;}});
+ audio.addEventListener=()=>{};audio.removeEventListener=()=>{};audio.readyState=4;
+ const preload=callback('preloadSide',env),first=preload(0);await preload(0);await preload(0);
+ assert.equal(requests,1,'frequent transition ticks do not restart an in-flight download');
+ pending.resolve('buffered');await first;assert.equal(env.sideReadyRef[0].current,true);
+ console.log('PASS actual crossfade preloader deduplicates slow requests and reaches ready state');
+}
