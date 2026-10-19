@@ -253,7 +253,18 @@ export default function PublicRecords({ id: propId, fallbackArtist = null }) {
   const artistQueue=visibleTracks.length?visibleTracks:mainTracks.length?mainTracks:appearanceTracks;
   const artistActive=artistQueue.length>0&&p.queue?.length===artistQueue.length&&artistQueue.every((track,index)=>p.queue[index]?.id===track.id)&&artistQueue.some(track=>track.id===p.currentTrack?.id);
   const artistPlaying=artistActive&&p.isPlaying;
-  const playAll=()=>{if(artistActive)p.togglePlay();else p.playTrackAt(artistQueue);};
+  const playAll=()=>{if(artistActive)p.togglePlay();else {p.setShuffle(false);p.playTrackAt(artistQueue);}};
+  async function shuffleArtist(){
+    const queue=[...artistQueue];
+    for(let i=queue.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[queue[i],queue[j]]=[queue[j],queue[i]];}
+    try{p.setShuffle(false);await p.playTrackAt(queue,0);}catch{toast({title:"This artist’s music could not start. Please retry.",variant:"destructive"});}
+  }
+  async function shareArtist(){
+    try{const result=await shareLink({title:artist.name+" on PUBLIC",url:window.location.origin+(id?"/records/"+encodeURIComponent(id):"/artist?name="+encodeURIComponent(artist.name))});if(result==="copied")toast({title:"Artist link copied"});}
+    catch{toast({title:"This artist link could not be shared. Please retry.",variant:"destructive"});}
+  }
+  const aboutArtist=()=>document.getElementById("artist-about")?.scrollIntoView({behavior:window.matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth"});
+  const latestDate=latestTrack?.created_date&&Number.isFinite(Date.parse(latestTrack.created_date))?new Date(latestTrack.created_date).toLocaleDateString(undefined,{month:"short",day:"numeric",year:"numeric"}):"";
 
   return (
     <PullToRefresh onRefresh={load}>
