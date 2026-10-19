@@ -13,7 +13,8 @@ export function groupAlbums(tracks,records=[]){
   if(!groups.has(key))groups.set(key,{key,title,artist,cover_art_url:record?.cover_art_url||'',year:0,tracks:[]});
   const group=groups.get(key);
   if(!group.tracks.some(t=>t.id===track.id))group.tracks.push(track);
-  if(!group.cover_art_url&&track.cover_art_url)group.cover_art_url=track.cover_art_url;
+  if(record?.cover_art_url)group.cover_art_url=record.cover_art_url;
+  else if(!group.cover_art_url&&track.cover_art_url)group.cover_art_url=track.cover_art_url;
   const year=Number(track.release_year);if(year>=1900&&year<=2200)group.year=Math.max(group.year,year);
  }
  return [...groups.values()].map(group=>({...group,tracks:group.tracks.sort((a,b)=>(position(a.disc_number)||1)-(position(b.disc_number)||1)||(position(a.track_number)||10000)-(position(b.track_number)||10000)||String(a.title||'').localeCompare(String(b.title||''))),duration:group.tracks.reduce((n,t)=>n+Math.max(0,Number(t.duration_seconds)||0),0)})).sort((a,b)=>b.year-a.year||a.title.localeCompare(b.title));
