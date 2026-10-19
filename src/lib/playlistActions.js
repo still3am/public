@@ -1,8 +1,8 @@
-import {base44} from '@/api/base44Client';
+import {playlistDatabase} from '@/api/base44Client';
+import {savePlaylistTracks} from '@/lib/nativePlaylistTracks';
 export async function changePlaylist(id,action,ids,expected){
- const r=await base44.functions.invoke('securityGateway',{entity:'Playlist',action,args:[id,ids,expected]});
- if(!r.data?.result?.id)throw Error('Playlist update could not complete.');
- window.dispatchEvent(new Event('playlists:changed'));return r.data.result;
+ const saved=await savePlaylistTracks(playlistDatabase,id,action,ids,expected);
+ window.dispatchEvent(new Event('playlists:changed'));return saved;
 }
 export const addPlaylistTracks=(id,ids)=>changePlaylist(id,'playlistAdd',[...new Set(ids)]);
 export const removePlaylistTracks=(id,ids)=>changePlaylist(id,'playlistRemove',[...new Set(ids)]);

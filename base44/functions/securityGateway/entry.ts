@@ -144,7 +144,7 @@ export default async function handleRequest(req) {
       if(!Array.isArray(ids)||ids.length>5000||ids.some(id=>typeof id!=='string'||!id))fail('Invalid song selection',400);
       const unique=[...new Set(ids)],current=pl.track_ids||[];
       if(action==='playlistAdd'){
-        for(const tid of unique)if(!current.includes(tid))await requireTrack(tid);
+        for(const tid of unique)if(!current.includes(tid))await requireTrack(tid,false);
         await handler.updateMany({id},{$addToSet:{track_ids:{$each:unique}}});
       }else if(action==='playlistRemove'){
         await handler.updateMany({id},{$pull:{track_ids:{$in:unique}}});

@@ -3,29 +3,102 @@
   "type": "object",
   "properties": {
     "name": {
-      "type": "string"
+      "type": "string",
+      "rls": {
+        "read": true,
+        "write": {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      }
     },
     "cover_art_url": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "rls": {
+        "read": true,
+        "write": {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      }
     },
     "creator_id": {
-      "type": "string"
+      "type": "string",
+      "rls": {
+        "read": true,
+        "write": {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      }
     },
     "description": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "rls": {
+        "read": true,
+        "write": {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      }
     },
     "track_ids": {
       "type": "array",
       "items": {
         "type": "string"
       },
-      "default": []
+      "default": [],
+      "rls": {
+        "read": true,
+        "write": {
+          "$and": [
+            {
+              "$or": [
+                {
+                  "data.creator_id": "{{user.id}}"
+                },
+                {
+                  "user_condition": {
+                    "role": "admin"
+                  }
+                }
+              ]
+            },
+            {
+              "$nor": [
+                {
+                  "user_condition": {
+                    "is_blocked": true
+                  }
+                },
+                {
+                  "user_condition": {
+                    "disabled": true
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      }
     },
     "is_public": {
       "type": "boolean",
-      "default": true
+      "default": true,
+      "rls": {
+        "read": true,
+        "write": {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      }
     }
   },
   "required": [
@@ -54,9 +127,34 @@
       ]
     },
     "update": {
-      "user_condition": {
-        "role": "admin"
-      }
+      "$and": [
+        {
+          "$or": [
+            {
+              "data.creator_id": "{{user.id}}"
+            },
+            {
+              "user_condition": {
+                "role": "admin"
+              }
+            }
+          ]
+        },
+        {
+          "$nor": [
+            {
+              "user_condition": {
+                "is_blocked": true
+              }
+            },
+            {
+              "user_condition": {
+                "disabled": true
+              }
+            }
+          ]
+        }
+      ]
     },
     "delete": {
       "user_condition": {
