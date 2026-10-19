@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { base44 } from "@/api/base44Client";
+import {extractAlbumMetadata} from "@/lib/albumMetadata";
 import {
   getAudioDuration,
   deriveDefaultTitle,
@@ -61,7 +62,7 @@ export function useUploadQueue({ user, isAdmin }) {
  const updateItem=(id,data)=>setItems(prev=>prev.map(it=>it.id===id?{...it,...data}:it));
  const patch=(id,data)=>{
   const edited=metadataEdits.current.get(id)||{};
-  for(const key of ['title','artist','genre','explicit'])if(Object.hasOwn(data,key))edited[key]=true;
+  for(const key of ['title','artist','genre','explicit','album_name','album_artist','track_number','disc_number','release_year'])if(Object.hasOwn(data,key))edited[key]=true;
   metadataEdits.current.set(id,edited);updateItem(id,data);
  };
  async function refreshDuplicates(){
@@ -78,11 +79,11 @@ export function useUploadQueue({ user, isAdmin }) {
   if(!user?.id)return;const epoch=generation.current;
   const all=Array.from(fileList),files=all.filter(isAudioFile),coverFallback=all.find(f=>f.type.startsWith('image/')||IMAGE_EXT_RE.test(f.name||''));
   if(!files.length)return;
-  const batch=files.map(file=>({id:nextId(),file,title:deriveDefaultTitle(file),artist:'',genre:'',duration:0,explicit:false,aiLyrics:false,rightsConfirmed:false,allowDownloads:false,videoFile:null,coverFile:null,coverPreviewUrl:'',status:'analyzing',detecting:true,error:'',duplicateAcknowledged:false}));
+  const batch=files.map(file=>({id:nextId(),file,title:deriveDefaultTitle(file),artist:'',album_name:'',album_artist:'',track_number:0,disc_number:0,release_year:0,genre:'',duration:0,explicit:false,aiLyrics:false,rightsConfirmed:false,allowDownloads:false,videoFile:null,coverFile:null,coverPreviewUrl:'',status:'analyzing',detecting:true,error:'',duplicateAcknowledged:false}));
   setItems(prev=>[...prev,...batch]);await refreshDuplicates();if(epoch!==generation.current)return;
   let cursor=0;
   const worker=async()=>{while(cursor<batch.length){const item=batch[cursor++];try{
-   const [duration,tagTitle,tagArtist,embedded,sha]=await Promise.all([getAudioDuration(item.file),extractEmbeddedTitle(item.file),extractEmbeddedArtist(item.file),extractEmbeddedCover(item.file),hashAudioFile(item.file)]);
+   const [duration,tagTitle,tagArtist,embedded,sha,albumTags]=await Promise.all([getAudioDuration(item.file),extractEmbeddedTitle(item.file),extractEmbeddedArtist(item.file),extractEmbeddedCover(item.file),hashAudioFile(item.file),extractAlbumMetadata(item.file)]);
    if(epoch!==generation.current)return;if(!itemsRef.current.some(row=>row.id===item.id))continue;
    const title=tagTitle||item.title,artist=tagArtist||'',rawCover=embedded||coverFallback||null,cover=rawCover?await ensureHighResCover(rawCover):null;
    if(epoch!==generation.current)return;if(!itemsRef.current.some(row=>row.id===item.id))continue;
@@ -92,7 +93,7 @@ export function useUploadQueue({ user, isAdmin }) {
    setItems(prev=>prev.map(it=>{
     if(it.id!==item.id)return it;
     const edited=metadataEdits.current.get(item.id)||{};
-    return {...it,duration,audio_sha256:sha,
+    return {...it,...Object.fromEntries(Object.entries(albumTags).filter(([key])=>!edited[key])),duration,audio_sha256:sha,
      title:edited.title?it.title:title,artist:edited.artist?it.artist:artist,
      coverFile:it.coverFile||cover,coverPreviewUrl:it.coverPreviewUrl||coverPreviewUrl,
      status:'ready',detecting:true};
@@ -155,7 +156,7 @@ export function useUploadQueue({ user, isAdmin }) {
    }
    if(epoch!==generation.current)throw Error('Account changed. Start this upload again.');
    const ready=!!(item.artist.trim()&&item.genre&&memo.cover_art_url);
-   const track=await base44.entities.Track.create({title:item.title.trim(),audio_url:'',audio_file_uri:memo.file_uri,...(item.videoFile?{music_video_file_uri:memo.video_uri,video_rights_confirmed:true}:{}),audio_sha256:memo.sha,upload_request_id:item.id,cover_art_url:memo.cover_art_url||'',artist:item.artist.trim(),genre:item.genre||'Other',duration_seconds:item.duration,explicit:item.explicit,rights_confirmed:true,is_downloadable:item.allowDownloads===true,approval_status:ready?(isAdmin?'approved':'pending'):'private',is_published:isAdmin&&ready});
+   const track=await base44.entities.Track.create({title:item.title.trim(),audio_url:'',audio_file_uri:memo.file_uri,...(item.videoFile?{music_video_file_uri:memo.video_uri,video_rights_confirmed:true}:{}),audio_sha256:memo.sha,upload_request_id:item.id,cover_art_url:memo.cover_art_url||'',artist:item.artist.trim(),album_name:(item.album_name||'').trim(),album_artist:(item.album_artist||'').trim(),track_number:Number(item.track_number)||0,disc_number:Number(item.disc_number)||0,release_year:Number(item.release_year)||0,genre:item.genre||'Other',duration_seconds:item.duration,explicit:item.explicit,rights_confirmed:true,is_downloadable:item.allowDownloads===true,approval_status:ready?(isAdmin?'approved':'pending'):'private',is_published:isAdmin&&ready});
    memo.track=track;catalog.current.push({...track,audio_sha256:memo.sha});
    let warning='';
    if(item.aiLyrics){updateItem(item.id,{status:'enhancing'});try{const lyrics=(await base44.functions.invoke('generateLyrics',{track_id:track.id})).data?.lyrics;if(!lyrics)throw Error();await base44.entities.Track.update(track.id,{lyrics_text:lyrics});}catch{warning='Audio saved. Lyrics could not generate; retry from the song page.';}}
