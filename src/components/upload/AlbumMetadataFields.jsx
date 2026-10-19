@@ -1,0 +1,7 @@
+export default function AlbumMetadataFields({value,onChange,disabled=false}){
+ return <details className="rounded-xl border border-border p-3"><summary className="cursor-pointer text-xs font-semibold">Album details · optional{value.album_name?' · '+value.album_name:''}</summary><div className="space-y-3 mt-3">
+ <label className="block text-xs">Album name<input aria-label="Album name" maxLength={300} value={value.album_name||''} onChange={e=>onChange({album_name:e.target.value})} disabled={disabled} placeholder="From the song’s metadata" className="block w-full mt-1 rounded-lg border bg-background px-3 py-2 text-sm"/></label>
+ <label className="block text-xs">Album artist<input aria-label="Album artist" maxLength={300} value={value.album_artist||''} onChange={e=>onChange({album_artist:e.target.value})} disabled={disabled} placeholder="Defaults to the main artist" className="block w-full mt-1 rounded-lg border bg-background px-3 py-2 text-sm"/></label>
+ <div className="grid grid-cols-3 gap-2">{[['track_number','Track'],['disc_number','Disc'],['release_year','Year']].map(([key,label])=><label key={key} className="block text-xs">{label}<input aria-label={label==='Year'?'Release year':label+' number'} type="number" min={key==='release_year'?1900:1} max={key==='release_year'?2200:9999} step={1} value={value[key]||''} onChange={e=>onChange({[key]:Math.max(0,Math.min(9999,parseInt(e.target.value,10)||0))})} disabled={disabled} className="block w-full min-w-0 mt-1 rounded-lg border bg-background px-2 py-2 text-sm"/></label>)}</div>
+ </div></details>;
+}
