@@ -1,3 +1,4 @@
+import PureControls from "@/components/PureControls";
 import {useEffect,useState} from "react";
 import {AudioLines,Check,Loader2} from "lucide-react";
 import {Dialog,DialogContent,DialogTitle,DialogDescription} from "@/components/ui/dialog";
@@ -27,12 +28,14 @@ export default function AudioQuality(){
   return()=>{alive=false;controller.abort();};
  },[url,retry,trackId]);
  const current=result?.url===url?result:null,info=current?.info,lossless=info?.kind==="lossless",checking=current?.status==="checking";
- return <><button type="button" onClick={()=>setOpen(true)} className="inline-flex items-center gap-1.5 min-h-9 text-[10px] uppercase tracking-[.12em] opacity-70 hover:opacity-100 transition rounded-full focus-visible:outline focus-visible:outline-2 px-1" aria-label="Audio quality details" aria-haspopup="dialog" aria-expanded={open}><AudioLines size={14}/>{lossless?"PUBLIC. Lossless":"Audio quality"}</button>
+ return <><button type="button" onClick={()=>setOpen(true)} className="inline-flex items-center gap-1.5 min-h-9 text-[10px] uppercase tracking-[.12em] opacity-70 hover:opacity-100 transition rounded-full focus-visible:outline focus-visible:outline-2 px-1" aria-label="Audio quality details" aria-haspopup="dialog" aria-expanded={open}><AudioLines size={14}/>{p.pure?.enabled&&!p.pureSuspended?"PUBLIC. Pure":lossless?"PUBLIC. Lossless":"Audio quality"}</button>
  {open&&<Dialog open onOpenChange={value=>{if(!value)setOpen(false);}}><DialogContent data-public-dialog onKeyDown={event=>{if(event.key==="Escape")event.stopPropagation();}} onTouchStart={event=>event.stopPropagation()} onTouchMove={event=>event.stopPropagation()} onTouchEnd={event=>event.stopPropagation()}>
   <span className="text-[10px] tracking-[.18em] font-semibold text-muted-foreground">PUBLIC. / SOUND</span>
   <AudioLines size={35} strokeWidth={1.2} className="mt-2"/>
-  <DialogTitle className="text-3xl tracking-tight">{lossless?"PUBLIC. Lossless":"Original audio"}</DialogTitle>
-  <DialogDescription>{lossless?"A lossless source, played from the original uploaded file.":"Public plays the original uploaded file. Source quality depends on that file."}</DialogDescription>
+  <DialogTitle className="text-3xl tracking-tight">Your sound. Refined.</DialogTitle>
+  <DialogDescription>Make the music you already love feel more like you.</DialogDescription>
+  <PureControls/>
+  <h3 className="text-xs font-semibold tracking-wide">SOURCE AUDIO{lossless?" · LOSSLESS":""}</h3>
   <div className="rounded-2xl bg-muted/50 border p-4 text-sm">
    {checking?<span className="flex items-center gap-2"><Loader2 size={15} className="animate-spin"/>Checking source format…</span>:<><p className="font-semibold flex items-center gap-2">{lossless&&<Check size={16}/>} {qualityDescription(info)}</p><p className="text-xs text-muted-foreground mt-2">{lossless?"Identified from the audio header. This describes the file format, not the recording’s mastering history.":info?.kind==="lossy"?"This source uses lossy compression. A lossless source upload is needed for PUBLIC. Lossless.":"This source’s encoding could not be identified. It has not been labeled lossless."}</p></>}
   </div>
