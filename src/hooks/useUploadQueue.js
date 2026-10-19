@@ -57,7 +57,13 @@ export function useUploadQueue({ user, isAdmin }) {
  const itemsRef=useRef(items);itemsRef.current=items;
  const catalog=useRef([]),assets=useRef(new Map()),busy=useRef(new Set()),claimedHashes=useRef(new Map()),generation=useRef(0),batchBusy=useRef(false);
  useEffect(()=>{generation.current++;setItems([]);setDupes(null);setUploadedCount(0);setCatalogError('');catalog.current=[];assets.current.clear();claimedHashes.current.clear();busy.current.clear();batchBusy.current=false;return()=>{generation.current++;itemsRef.current.forEach(item=>{if(item.coverPreviewUrl)URL.revokeObjectURL(item.coverPreviewUrl);});};},[user?.id]);
- const patch=(id,data)=>setItems(prev=>prev.map(it=>it.id===id?{...it,...data}:it));
+ const metadataEdits=useRef(new Map());
+ const updateItem=(id,data)=>setItems(prev=>prev.map(it=>it.id===id?{...it,...data}:it));
+ const patch=(id,data)=>{
+  const edited=metadataEdits.current.get(id)||{};
+  for(const key of ['title','artist','genre','explicit'])if(Object.hasOwn(data,key))edited[key]=true;
+  metadataEdits.current.set(id,edited);updateItem(id,data);
+ };
  async function refreshDuplicates(){
   const epoch=generation.current;
   try{const next=await readAllPages(opts=>base44.entities.Track.filter({},{sort:'-created_date',fields:['id','title','artist','duration_seconds','uploader_id','uploader_name','audio_url'],...opts}));if(epoch===generation.current){catalog.current=next;setCatalogError('');}}
@@ -82,24 +88,42 @@ export function useUploadQueue({ user, isAdmin }) {
    if(epoch!==generation.current)return;if(!itemsRef.current.some(row=>row.id===item.id))continue;
    const coverPreviewUrl=cover?URL.createObjectURL(cover):'';
    const analyzed={...item,title,artist,duration,audio_sha256:sha,coverFile:cover,coverPreviewUrl,status:'ready'};
-   assets.current.set(item.id,{sha});patch(item.id,{...analyzed,detecting:true});
+   assets.current.set(item.id,{sha});
+   setItems(prev=>prev.map(it=>{
+    if(it.id!==item.id)return it;
+    const edited=metadataEdits.current.get(item.id)||{};
+    return {...it,duration,audio_sha256:sha,
+     title:edited.title?it.title:title,artist:edited.artist?it.artist:artist,
+     coverFile:it.coverFile||cover,coverPreviewUrl:it.coverPreviewUrl||coverPreviewUrl,
+     status:'ready',detecting:true};
+   }));
    // Include this batch in duplicate comparisons, not only persisted songs.
    const local=catalog.current.concat(batch.filter(t=>t.id!==item.id&&assets.current.get(t.id)?.sha).map(t=>({...t,audio_sha256:assets.current.get(t.id).sha})));
    const hits=findDuplicateTracks(local,analyzed);warn(analyzed,hits);
    const meta=await detectMeta(title,artist);
    if(epoch!==generation.current)return;
-   setItems(prev=>prev.map(it=>it.id!==item.id||it.status!=='ready'?it:{...it,detecting:false,explicit:it.explicit||!!meta?.explicit,title:it.title===title?(meta?.title?.trim()||it.title):it.title,artist:it.artist||meta?.artist?.trim()||'',genre:it.genre||(GENRES.includes(meta?.genre?.trim())?meta.genre.trim():'')}));
-  }catch(e){if(epoch===generation.current)patch(item.id,{status:'error',detecting:false,error:e.message||'File analysis failed. Remove this file and try again.'});}}};
+   setItems(prev=>prev.map(it=>{
+    if(it.id!==item.id)return it;
+    if(it.status!=='ready')return {...it,detecting:false};
+    const edited=metadataEdits.current.get(item.id)||{};
+    const text=key=>typeof meta?.[key]==='string'?meta[key].trim():'';
+    return {...it,detecting:false,
+     explicit:edited.explicit?it.explicit:it.explicit||meta?.explicit===true,
+     title:!edited.title&&it.title===title?(text('title')||it.title):it.title,
+     artist:edited.artist?it.artist:it.artist||text('artist'),
+     genre:edited.genre?it.genre:it.genre||(GENRES.includes(text('genre'))?text('genre'):'')};
+   }));
+  }catch(e){if(epoch===generation.current)updateItem(item.id,{status:'error',detecting:false,error:e.message||'File analysis failed. Remove this file and try again.'});}}};
   await Promise.all(Array.from({length:Math.min(2,batch.length)},worker));
  }
  function remove(id){
   const item=itemsRef.current.find(it=>it.id===id);if(item?.coverPreviewUrl)URL.revokeObjectURL(item.coverPreviewUrl);
-  assets.current.delete(id);setItems(prev=>prev.filter(it=>it.id!==id));setDupes(prev=>prev?.filter(it=>it.id!==id));
+  assets.current.delete(id);metadataEdits.current.delete(id);setItems(prev=>prev.filter(it=>it.id!==id));setDupes(prev=>prev?.filter(it=>it.id!==id));
  }
  async function uploadOne(given){
   const item=itemsRef.current.find(it=>it.id===given.id)||given;
   if(!user?.id||busy.current.has(item.id)||['done','analyzing','error'].includes(item.status))return;
-  busy.current.add(item.id);const epoch=generation.current;patch(item.id,{status:'uploading',error:''});
+  busy.current.add(item.id);const epoch=generation.current;updateItem(item.id,{status:'uploading',error:''});
   try{
    if(!item.rightsConfirmed)throw Error('Confirm your rights to this audio, artwork, lyrics and any attached video.');
    if(!item.title.trim())throw Error('Enter a song title.');
@@ -134,12 +158,12 @@ export function useUploadQueue({ user, isAdmin }) {
    const track=await base44.entities.Track.create({title:item.title.trim(),audio_url:'',audio_file_uri:memo.file_uri,...(item.videoFile?{music_video_file_uri:memo.video_uri,video_rights_confirmed:true}:{}),audio_sha256:memo.sha,upload_request_id:item.id,cover_art_url:memo.cover_art_url||'',artist:item.artist.trim(),genre:item.genre||'Other',duration_seconds:item.duration,explicit:item.explicit,rights_confirmed:true,is_downloadable:item.allowDownloads===true,approval_status:ready?(isAdmin?'approved':'pending'):'private',is_published:isAdmin&&ready});
    memo.track=track;catalog.current.push({...track,audio_sha256:memo.sha});
    let warning='';
-   if(item.aiLyrics){patch(item.id,{status:'enhancing'});try{const lyrics=(await base44.functions.invoke('generateLyrics',{track_id:track.id})).data?.lyrics;if(!lyrics)throw Error();await base44.entities.Track.update(track.id,{lyrics_text:lyrics});}catch{warning='Audio saved. Lyrics could not generate; retry from the song page.';}}
+   if(item.aiLyrics){updateItem(item.id,{status:'enhancing'});try{const lyrics=(await base44.functions.invoke('generateLyrics',{track_id:track.id})).data?.lyrics;if(!lyrics)throw Error();await base44.entities.Track.update(track.id,{lyrics_text:lyrics});}catch{warning='Audio saved. Lyrics could not generate; retry from the song page.';}}
    if(epoch!==generation.current)return;
-   patch(item.id,{status:'done',detecting:false,error:warning,releaseStatus:track.approval_status});setUploadedCount(n=>n+1);
+   updateItem(item.id,{status:'done',detecting:false,error:warning,releaseStatus:track.approval_status});setUploadedCount(n=>n+1);
   }catch(e){
    if(!assets.current.get(item.id)?.track&&claimedHashes.current.get(assets.current.get(item.id)?.sha)===item.id)claimedHashes.current.delete(assets.current.get(item.id)?.sha);
-   if(epoch===generation.current)patch(item.id,{status:'ready',error:Number(e?.response?.status||e?.status)===402?'Upload paused: the app needs available integration credits. Your file is still queued.':e?.response?.data?.error||e.message||'Upload did not finish. Retry to resume.'});
+   if(epoch===generation.current)updateItem(item.id,{status:'ready',error:Number(e?.response?.status||e?.status)===402?'Upload paused: the app needs available integration credits. Your file is still queued.':e?.response?.data?.error||e.message||'Upload did not finish. Retry to resume.'});
   }finally{busy.current.delete(item.id);}
  }
  async function uploadAll(){
