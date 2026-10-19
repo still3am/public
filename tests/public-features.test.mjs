@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import fs from "node:fs";
 import {buildRecap,recapBounds} from "../src/lib/recapModel.js";
-import {recapSelection,recapMix,RECAP_PALETTES} from "../src/lib/recapPresentation.js";
+import {recapSelection,recapMix,RECAP_PALETTES,MONTHLY_RECAP_PALETTES} from "../src/lib/recapPresentation.js";
 import {searchScore,scoreTrack,editDistance} from "../src/lib/searchMatching.js";
 import {releaseNotifications,artistKey} from "../src/lib/artistReleaseModel.js";
 import {rms,matchedComparisonGain,createPureGraph} from "../src/lib/pureAudio.js";
@@ -27,7 +27,16 @@ assert.equal(recapSelection("unknown","2026"),null);
 const monthlyMix=recapMix(recapSelection("month","2026-10",new Date("2026-10-19")),october);
 assert.equal(monthlyMix.kind,"recap");assert.equal(monthlyMix.tracks[0].id,"a");
 assert.equal(monthlyMix.title,"Your October Recap");
-assert.deepEqual(monthlyMix.palette,RECAP_PALETTES.month);
+assert.deepEqual(monthlyMix.palette,MONTHLY_RECAP_PALETTES[9]);
+assert.equal(monthlyMix.artTitle,"October\nRecap");
+assert.equal(MONTHLY_RECAP_PALETTES.length,12);
+assert.equal(new Set(MONTHLY_RECAP_PALETTES.map(p=>p.join(","))).size,12);
+for(let m=0;m<12;m++){
+ const selected=recapSelection("month","2025-"+String(m+1).padStart(2,"0"),new Date("2026-10-19"));
+ assert.deepEqual(recapMix(selected,october).palette,MONTHLY_RECAP_PALETTES[m]);
+ assert.ok(MONTHLY_RECAP_PALETTES[m].every(color=>/^#[0-9a-f]{6}$/i.test(color)));
+}
+assert.deepEqual(recapMix(recapSelection("year","2026"),october).palette,RECAP_PALETTES.year);
 assert.notDeepEqual(RECAP_PALETTES.month,RECAP_PALETTES.year);
 assert.equal(recapMix(recapSelection("all"),all).title,"Your All Time Recap");
 console.log("PASS all-time ranking, longest synced sessions, route validation and recap playlist metadata");
