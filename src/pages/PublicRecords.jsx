@@ -258,11 +258,11 @@ export default function PublicRecords({ id: propId, fallbackArtist = null }) {
           <ArtistArtwork source={topCover || artist.cover_art_url || artist.avatar_url} className="artist-hero-image" />
           <div className="artist-hero-shade" />
           <button onClick={() => window.history.state?.idx > 0 ? nav(-1) : nav("/search")} className="artist-back" aria-label="Back"><ChevronLeft size={25} /></button>
+          <ArtistReleaseFollow key={(user?.id||"guest")+":"+artist.name} name={artist.name}/>
           <div className="artist-hero-bottom">
             <div className="artist-hero-name min-w-0">
               <p className="artist-eyebrow">Artist on PUBLIC</p>
               <ArtistNameEditor artist={artist} canEdit={!!user && !!id} onSaved={name => setArtist(prev => prev ? {...prev,name} : prev)} />
-              <ArtistReleaseFollow name={artist.name}/>
               <p className="artist-track-count">{mainTracks.length} {mainTracks.length === 1 ? "song" : "songs"}{appearanceTracks.length > 0 && ` · ${appearanceTracks.length} appearances`}</p>
             </div>
             {tracks.length > 0 && <button onClick={playAll} className="artist-play" aria-label={(artistPlaying?"Pause ":"Play ") + artist.name}>{artistPlaying?<Pause size={26} fill="currentColor"/>:<Play size={26} fill="currentColor"/>}</button>}
