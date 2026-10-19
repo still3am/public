@@ -369,7 +369,7 @@ export function PlayerProvider({ children }) {
     if(!blobUrl && navigator.onLine && (track._private_audio || !url)){
       const fresh=await base44.entities.Track.get(track.id);url=fresh.audio_url;
     }
-    if(!valid()){if(blobUrl)URL.revokeObjectURL(blobUrl);throw Error("Playback request was replaced");}
+    if(!valid()||blockedRef.current.has(track.uploader_id)){if(blobUrl)URL.revokeObjectURL(blobUrl);throw Error("Playback request was replaced");}
     if(!blobUrl && (!url || typeof url!=="string"))throw Error("No playable audio source is available.");
     sideLoadedIdRef[side].current=track.id;
     if (blobUrlRefs[side].current && blobUrlRefs[side].current !== blobUrl) {
@@ -684,7 +684,7 @@ export function PlayerProvider({ children }) {
     return () => cleanups.forEach((c) => c());
   }, []);
 
-  useEffect(()=>{const t=queueRef.current[currentIndexRef.current];if(t&&blocked.has(t.uploader_id)){els().forEach(a=>a?.pause());setIsPlaying(false);window.dispatchEvent(new CustomEvent('player:error',{detail:'Playback stopped because this uploader is blocked.'}));}},[blocked]);
+  useEffect(()=>{const t=queueRef.current[currentIndexRef.current];if(t&&blocked.has(t.uploader_id)){loadTokenRef.current++;cancelCrossfade();els().forEach(a=>a?.pause());setIsPlaying(false);window.dispatchEvent(new CustomEvent('player:error',{detail:'Playback stopped because this uploader is blocked.'}));}},[blocked,cancelCrossfade]);
 
   // timeupdate logic (reads latest via ref)
   useEffect(() => {
