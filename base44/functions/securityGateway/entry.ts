@@ -140,8 +140,9 @@ export default async function handleRequest(req) {
     };
     if(entity==='Playlist' && ['collaborators','collaborationDetail','playlistAdd','playlistRemove','playlistReorder'].includes(action)){
       const [id,ids,expected]=args,pl=await handler.get(id),collabHandler=svc.entities.PlaylistCollaboration;
-      const matches=await collabHandler.filter({playlist_id:id},'-created_date',1);
-      let collab=matches[0]||null;
+      const mergeCollab=rows=>rows.length?{...rows[0],member_ids:[...new Set(rows.flatMap(row=>row.member_ids||[]))],track_contributors:Object.assign({},...rows.map(row=>row.track_contributors||{}))}:null;
+      const refreshCollab=async()=>mergeCollab(await all(collabHandler,{playlist_id:id}));
+      let collab=await refreshCollab();
       const owner=pl.creator_id===user.id||isAdmin;
       if(!owner&&!(collab?.member_ids||[]).includes(user.id))fail('Playlist editing access required',403);
       if(!owner)await relation(pl.creator_id);
@@ -155,28 +156,31 @@ export default async function handleRequest(req) {
         if(add)await relation(memberId);
         if(add&&(collab?.member_ids||[]).length>=30&&!(collab?.member_ids||[]).includes(memberId))fail('This playlist already has 30 collaborators',400);
         if(!collab)collab=await collabHandler.create({playlist_id:id,owner_id:pl.creator_id,member_ids:[],track_contributors:{}});
-        await collabHandler.updateMany({id:collab.id},add?{$addToSet:{member_ids:memberId}}:{$pull:{member_ids:memberId}});
-        collab=await collabHandler.get(collab.id);
+        await collabHandler.updateMany({playlist_id:id},add?{$addToSet:{member_ids:memberId}}:{$pull:{member_ids:memberId}});
+        collab=await refreshCollab();
         return Response.json({result:await result()});
       }
       if(!Array.isArray(ids)||ids.length>5000||ids.some(tid=>typeof tid!=='string'||!tid||tid.length>100||!/^[a-zA-Z0-9_-]+$/.test(tid)))fail('Invalid song selection',400);
       const unique=[...new Set(ids)],current=pl.track_ids||[];
+      const stillEditor=async()=>{if(!owner){const fresh=await refreshCollab();if(!(fresh?.member_ids||[]).includes(user.id))fail('Playlist editing access was removed',403);}};
       if(action==='playlistAdd'){
         for(const tid of unique)if(!current.includes(tid))await requireTrack(tid,false);
+        await stillEditor();
         await handler.updateMany({id},{$addToSet:{track_ids:{$each:unique}}});
         if(collab){
           const credits=Object.fromEntries(unique.filter(tid=>!current.includes(tid)).map(tid=>['track_contributors.'+tid,{name:user.display_name||user.full_name||'Listener'}]));
-          if(Object.keys(credits).length)await collabHandler.updateMany({id:collab.id},{$set:credits});
+          if(Object.keys(credits).length)await collabHandler.updateMany({playlist_id:id},{$set:credits});
         }
-      }else if(action==='playlistRemove')await handler.updateMany({id},{$pull:{track_ids:{$in:unique}}});
+      }else if(action==='playlistRemove'){await stillEditor();await handler.updateMany({id},{$pull:{track_ids:{$in:unique}}});}
       else {
+        await stillEditor();
         const sorted=v=>JSON.stringify([...v].sort());
         if(sorted(ids)!==sorted(current))fail('Reorder must retain every stored song',400);
         if(JSON.stringify(expected)!==JSON.stringify(current))fail('This playlist changed on another device. Refresh before reordering.',409);
         await handler.updateMany({id,track_ids:current},{$set:{track_ids:ids}});
         if(JSON.stringify((await handler.get(id)).track_ids)!==JSON.stringify(ids))fail('The playlist changed while saving. Refresh and retry.',409);
       }
-      if(collab)collab=await collabHandler.get(collab.id);
+      if(collab)collab=await refreshCollab();
       return Response.json({result:await result()});
     }
     if(action==='checkDuplicate' && entity==='Track'){
