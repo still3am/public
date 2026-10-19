@@ -32,3 +32,9 @@ function fixture(){
  const f=fixture();await f.controller.play({id:'note'});await f.controller.play({id:'note'});assert.equal(f.audios[0].paused,true);await f.controller.play({id:'note'});assert.equal(f.audios[0].paused,false);f.controller.stop();
 }
 console.log('PASS isolated note audio, queue preservation, paused-session restoration, switching previews, late startup cancellation and main-player takeover');
+{
+ let restored=0,audio;
+ const controller=createNotePreview({resumeOnEnd:true,acquire:()=>({isCurrent:()=>true,resolve:async()=>({url:'note',dispose(){}}),release(){restored++;}}),createAudio:()=>audio={paused:true,play:async function(){this.paused=false;},pause(){this.paused=true;},removeAttribute(){},load(){}}});
+ await controller.play({id:'song'});audio.onended();assert.equal(restored,1);controller.stop();assert.equal(restored,1,'ending and closing cannot resume twice');
+ console.log('PASS featured-song previews restore the original session automatically at the end');
+}
