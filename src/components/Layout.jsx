@@ -32,7 +32,7 @@ const TABS = [
 export default function Layout() {
   const location = useLocation();
   const reducedMotion=useReducedMotion();
-  const artworkPage = /^\/(?:track\/[^/]+|playlist\/[^/]+|mix\/[^/]+|records\/[^/]+|artist|profile(?:\/[^/]+)?)\/?$/.test(location.pathname);
+  const artworkPage = /^\/(?:track\/[^/]+|playlist\/[^/]+|mix\/[^/]+|recap\/[^/]+(?:\/[^/]+)?|records\/[^/]+|artist|profile(?:\/[^/]+)?)\/?$/.test(location.pathname);
   const { user } = useAuth();
   const momentsRoute = user?.role === "admin" && /^\/moments(?:\/[^/]+)?\/?$/.test(location.pathname);
   const {currentTrack}=usePlayer();
@@ -53,7 +53,7 @@ export default function Layout() {
       <div className="desktop-workspace flex-1 flex flex-col min-w-0">
         <ScrollingBanner />
         <DesktopHeader />
-        <main id="main-content" tabIndex={-1} className={`flex-1 w-full mx-auto main-content app-content ${artworkPage ? "artwork-content" : ""} ${/^\/mix\/[^/]+\/?$/.test(location.pathname) ? "mix-content" : ""}`}>
+        <main id="main-content" tabIndex={-1} className={`flex-1 w-full mx-auto main-content app-content ${artworkPage ? "artwork-content" : ""} ${/^\/(?:mix\/[^/]+|recap\/[^/]+(?:\/[^/]+)?)\/?$/.test(location.pathname) ? "mix-content" : ""}`}>
 
           {TABS.map(({ path, Page, requiresAuth }) =>
           mountedTabs.current.has(path) && (!requiresAuth || user) ?
