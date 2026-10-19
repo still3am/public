@@ -138,14 +138,28 @@ export default async function handleRequest(req) {
       const ms=await svc.entities.LoungeMember.filter({session_id:sid,user_id:user.id},'-created_date',1);
       return {s,m:ms[0],host:isAdmin||s.host_id===user.id};
     };
+    if(entity==='Playlist' && action==='collaborators'){
+      const [id,memberId,add]=args,pl=await handler.get(id);
+      if(pl.creator_id!==user.id&&!isAdmin)fail('Only the owner can invite collaborators');
+      if(typeof memberId!=='string'||!memberId||memberId.length>100||typeof add!=='boolean')fail('Choose a collaborator',400);
+      if(memberId===pl.creator_id)fail('The owner already has access',400);
+      if(add)await relation(memberId);
+      const members=pl.collaborator_ids||[];
+      if(add&&members.length>=30&&!members.includes(memberId))fail('This playlist already has 30 collaborators',400);
+      await handler.updateMany({id},add?{$set:{collaboration_enabled:true},$addToSet:{collaborator_ids:memberId}}:{$pull:{collaborator_ids:memberId}});
+      return Response.json({result:await handler.get(id)});
+    }
     if(entity==='Playlist' && ['playlistAdd','playlistRemove','playlistReorder'].includes(action)){
       const [id,ids,expected]=args,pl=await handler.get(id);
-      if(!mine(pl,'creator_id'))fail('Only the playlist owner can change its songs',403);
+      if(!mine(pl,'creator_id')&&!(pl.collaboration_enabled&&(pl.collaborator_ids||[]).includes(user.id)))fail('Playlist editing access required',403);
+      if(pl.creator_id!==user.id)await relation(pl.creator_id);
       if(!Array.isArray(ids)||ids.length>5000||ids.some(id=>typeof id!=='string'||!id))fail('Invalid song selection',400);
       const unique=[...new Set(ids)],current=pl.track_ids||[];
       if(action==='playlistAdd'){
         for(const tid of unique)if(!current.includes(tid))await requireTrack(tid,false);
-        await handler.updateMany({id},{$addToSet:{track_ids:{$each:unique}}});
+        const credits=Object.fromEntries(unique.filter(tid=>!current.includes(tid)).map(tid=>['track_contributors.'+tid,{user_id:user.id,name:user.display_name||user.full_name||'Listener'}]));
+        const permission={id,...(!mine(pl,'creator_id')?{collaboration_enabled:true,collaborator_ids:user.id}:{})};
+        await handler.updateMany(permission,{$addToSet:{track_ids:{$each:unique}},...(Object.keys(credits).length?{$set:credits}:{})});
       }else if(action==='playlistRemove'){
         await handler.updateMany({id},{$pull:{track_ids:{$in:unique}}});
       }else{
