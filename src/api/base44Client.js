@@ -60,6 +60,12 @@ const entities = new Proxy(raw.entities,{get(target,name) {
 }});
 // Narrow native database surface for public song-note metadata.
 // Track RLS/FLS still enforce publication and protect private audio.
+// Playlist membership only: native RLS/FLS permits the owner to change track_ids.
+// Names, ownership, artwork and visibility remain on the moderated gateway.
+export const playlistDatabase = {
+  auth:{me:()=>raw.auth.me()},
+  entities:{Playlist:raw.entities.Playlist,Track:raw.entities.Track,Block:raw.entities.Block}
+};
 export const publicNoteDatabase = {
   auth: {me:()=>raw.auth.me()},
   entities: {PublicProfile:raw.entities.PublicProfile,Block:raw.entities.Block,Track:raw.entities.Track}
