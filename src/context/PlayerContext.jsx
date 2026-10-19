@@ -88,6 +88,9 @@ export function PlayerProvider({ children }) {
   const crossfadeTimerRef = useRef(null);
   const preloadedTargetRef = useRef(null);
   const loadTokenRef = useRef(0);
+  const notePreviewRef = useRef(null);
+  const cancelNotePreviewRef = useRef(() => false);
+  cancelNotePreviewRef.current = () => { const lease=notePreviewRef.current;if(!lease)return false;notePreviewRef.current=null;lease.cancel();return lease.wasPlaying; };
   const handleTimeRef = useRef((/** @type {HTMLAudioElement} */ _audio) => {});
   const handleEndedRef = useRef(() => {});
 
@@ -460,6 +463,7 @@ export function PlayerProvider({ children }) {
   // Manual load on the active element (used for playTrackAt / next / prev).
   const loadOnActive = useCallback(
     async (track) => {
+      cancelNotePreviewRef.current();
       const side = activeIdxRef.current;
       const el = els()[side];
       if (!el) return;
@@ -525,6 +529,7 @@ export function PlayerProvider({ children }) {
     else if (repeatRef.current === "all" && q.length) n = 0;
     if (n === -1 || !q[n]) return;
     const side = inactiveIdx();
+    preloadedTargetRef.current = n;
     if (
       sideLoadedIdRef[side].current === q[n].id &&
       sideReadyRef[side].current
@@ -546,11 +551,18 @@ export function PlayerProvider({ children }) {
     crossfadingRef.current=true;
     try{if(ctx.state==='suspended'||ctx.state==='interrupted')await ctx.resume();}catch{if(valid())crossfadingRef.current=false;return false;}
     if(!valid())return false;
-    const fd=transitionDuration(cf,remaining,el.duration,activeEl()?.playbackRate||1);
+    const outgoing=els()[oldSide];
+    let fd=transitionDuration(cf,remaining,el.duration,outgoing?.playbackRate||1);
     if(!fd){crossfadingRef.current=false;return false;}
     setGainImmediate(side,0);mirrorPlayback(el);
     const ok=await commitAudioHandoff(el,valid,()=>{
+      // Recheck after play() resolves: slow decoding must not extend a fade past the outgoing song.
+      const left=Number.isFinite(outgoing?.duration)?Math.max(0,outgoing.duration-outgoing.currentTime):remaining;
+      fd=transitionDuration(cf,left,el.duration,outgoing?.playbackRate||1);
+      if(!fd){outgoing?.pause();setGainImmediate(oldSide,0);setGainImmediate(side,1);}
+      else {
       rampGainEqualPower(side,true,fd);rampGainEqualPower(oldSide,false,fd);
+      }
       activeIdxRef.current=side;sideReadyRef[side].current=false;preloadedTargetRef.current=null;
       setCurrentIndex(targetIndex);setPosition(el.currentTime||0);setDuration(el.duration||0);setIsPlaying(true);
       if(crossfadeTimerRef.current)clearTimeout(crossfadeTimerRef.current);
@@ -937,6 +949,7 @@ export function PlayerProvider({ children }) {
 
   const playTrackAt = useCallback((tracks, index = 0) => {
     if (!tracks || !tracks.length) return;
+    cancelNotePreviewRef.current();
     loadTokenRef.current++;
     countedRef.current = new Set();
     setDismissed(false);
@@ -950,6 +963,7 @@ export function PlayerProvider({ children }) {
   // that device left off, as soon as the media reports it's seekable.
   const resumeTrack = useCallback((track, atSeconds = 0, autoplay = true) => {
     if (!track) return;
+    cancelNotePreviewRef.current();
     loadTokenRef.current++;
     pendingSeekRef.current = { id: track.id, at: Math.max(0, atSeconds) };
     autoPlayOnLoadRef.current = autoplay;
@@ -1001,7 +1015,36 @@ export function PlayerProvider({ children }) {
     [setGainImmediate, syncPositionState]
   );
 
+  const acquireNotePreview = useCallback(cancel => {
+    cancelNotePreviewRef.current();
+    const a=activeEl(),side=activeIdxRef.current,track=queueRef.current[currentIndexRef.current],uid=offlineAccountRef.current;
+    const wasPlaying=!!a&&!a.paused;
+    cancelCrossfade();const token=++loadTokenRef.current;
+    els().forEach(el=>el?.pause());isPlayingRef.current=false;setIsPlaying(false);
+    const lease={cancel,wasPlaying};notePreviewRef.current=lease;
+    const valid=()=>notePreviewRef.current===lease&&offlineAccountRef.current===uid&&loadTokenRef.current===token&&activeIdxRef.current===side&&queueRef.current[currentIndexRef.current]?.id===track?.id;
+    return {
+      isCurrent:valid,
+      async resolve(song){
+        if(blockedRef.current.has(song.uploader_id))throw Error("Song unavailable");
+        let blob=null,url=song.audio_url;
+        try{const record=await getRecord(song.id,uid||null);if(record?._blob)blob=record._blob;}catch{}
+        if(!blob&&navigator.onLine){const fresh=await base44.entities.Track.get(song.id);url=fresh.audio_url;}
+        if(!valid()||blockedRef.current.has(song.uploader_id))throw Error("Preview cancelled");
+        if(blob){const value=URL.createObjectURL(blob);return {url:value,dispose:()=>URL.revokeObjectURL(value)};}
+        if(!url)throw Error("Song unavailable");return {url,dispose:()=>{}};
+      },
+      release(){
+        if(!valid())return;notePreviewRef.current=null;
+        if(!wasPlaying||!track)return;
+        if(sideLoadedIdRef[side].current!==track.id||!a?.src){autoPlayOnLoadRef.current=true;loadOnActive(track);return;}
+        isPlayingRef.current=true;resumeAndPlay(a);
+      }
+    };
+  },[cancelCrossfade,loadOnActive,resumeAndPlay]);
+
   const togglePlay = useCallback(() => {
+    cancelNotePreviewRef.current();
     const a = activeEl();
     if (!a || !currentTrack) return;
     if (a.paused) {
@@ -1015,7 +1058,7 @@ export function PlayerProvider({ children }) {
 
   const seek=useCallback(value=>{
     const time=Number(value);if(!Number.isFinite(time))return;
-    cancelCrossfade();
+    cancelNotePreviewRef.current();cancelCrossfade();
     const a=activeEl();if(!a)return;
     const track=queueRef.current[currentIndexRef.current];
     const known=Number.isFinite(a.duration)&&a.duration>0?a.duration:Number(track?.duration_seconds)||0;
@@ -1058,6 +1101,7 @@ export function PlayerProvider({ children }) {
   const transitionTo = useCallback(
     (targetIndex) => {
       if (targetIndex < 0 || targetIndex >= queueRef.current.length) return;
+      const previewWasPlaying=cancelNotePreviewRef.current();
       const s = getTransitionSettings();
       const side = inactiveIdx();
       const target = queueRef.current[targetIndex];
@@ -1075,7 +1119,7 @@ export function PlayerProvider({ children }) {
         const expected=currentIndexRef.current;
         beginCrossfade(targetIndex,s.mode===TRANSITION_MODES.AUTOMIX?1.5:s.crossfadeSeconds,remaining).then(ok=>{if(!ok&&currentIndexRef.current===expected&&!crossfadingRef.current)setCurrentIndex(targetIndex);});
       } else {
-        autoPlayOnLoadRef.current=!!activeEl()&&!activeEl().paused;
+        autoPlayOnLoadRef.current=previewWasPlaying||(!!activeEl()&&!activeEl().paused);
         if(currentIndexRef.current===targetIndex)loadOnActive(target);else setCurrentIndex(targetIndex);
       }
     },
@@ -1098,7 +1142,9 @@ export function PlayerProvider({ children }) {
   }, [nextIndex, transitionTo, currentTrack, extendWithGenreRadio, advanceOffline]);
 
   const prev = useCallback(() => {
+    const previewWasPlaying=cancelNotePreviewRef.current();
     cancelCrossfade();
+    if(previewWasPlaying)resumeAndPlay(activeEl());
     const a = activeEl();
     if (a && a.currentTime > 3) {
       a.currentTime = 0;
@@ -1107,7 +1153,7 @@ export function PlayerProvider({ children }) {
     }
     if (currentIndex - 1 >= 0) setCurrentIndex(currentIndex - 1);
     else if (repeat === "all") setCurrentIndex(queue.length - 1);
-  }, [currentIndex, queue.length, repeat,cancelCrossfade,currentTrack]);
+  }, [currentIndex, queue.length, repeat,cancelCrossfade,currentTrack,resumeAndPlay]);
 
   const getBars = useCallback((seed) => {
     let s = 0;
@@ -1185,6 +1231,7 @@ export function PlayerProvider({ children }) {
 
   const stopPlayback = useCallback(()=>{
     // Invalidate asynchronous loads before changing React state.
+    cancelNotePreviewRef.current();
     loadTokenRef.current++;cancelCrossfade();queueRef.current=[];currentIndexRef.current=-1;
     pendingSeekRef.current=null;autoPlayOnLoadRef.current=true;
     for(const audio of els()){try{audio?.pause();audio?.removeAttribute("src");audio?.load();}catch{}}
@@ -1238,6 +1285,7 @@ export function PlayerProvider({ children }) {
   // Dedicated resume / pause so the lock-screen "play" action always plays
   // (toggling on a "play" event could accidentally pause if iOS double-fires).
   const resumePlayback = useCallback(() => {
+    cancelNotePreviewRef.current();
     const a = activeEl();
     if (!a || !currentTrack) return;
     // The page may have been frozen by the OS while backgrounded, leaving the
@@ -1251,13 +1299,14 @@ export function PlayerProvider({ children }) {
   }, [currentTrack, ensureGraph, graphNeeded, loadOnActive, resumeAndPlay]);
 
   const pausePlayback = useCallback(() => {
+    cancelNotePreviewRef.current();cancelCrossfade();
     const a = activeEl();
     if (!a) return;
     els().forEach(el=>el?.pause());
     setIsPlaying(false);
     try{navigator.mediaSession.playbackState="paused";}catch{}
     syncPositionState(a);
-  }, [syncPositionState]);
+  }, [syncPositionState,cancelCrossfade]);
 
   // iOS suspends the AudioContext when a standalone PWA is backgrounded /
   // the screen locks, which silences Web-Audio-routed playback. On return to
@@ -1345,7 +1394,7 @@ export function PlayerProvider({ children }) {
     return()=>{for(const action of Object.keys(actions)){try{navigator.mediaSession.setActionHandler(action,null);}catch{}}};
   },[]);
 
-  useEffect(()=>()=>{els().forEach(a=>a?.pause());if(crossfadeTimerRef.current)clearTimeout(crossfadeTimerRef.current);if(sleepTimerRef.current)clearTimeout(sleepTimerRef.current);audioCtxRef.current?.close().catch(()=>{});},[]);
+  useEffect(()=>()=>{cancelNotePreviewRef.current();els().forEach(a=>a?.pause());if(crossfadeTimerRef.current)clearTimeout(crossfadeTimerRef.current);if(sleepTimerRef.current)clearTimeout(sleepTimerRef.current);audioCtxRef.current?.close().catch(()=>{});},[]);
 
   const value = {
     queue,
@@ -1362,6 +1411,7 @@ export function PlayerProvider({ children }) {
     currentTrack,
     togglePlay,
     pausePlayback,
+    acquireNotePreview,
     seek,
     setVolume,
     prepareVolumeControl,
