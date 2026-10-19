@@ -319,7 +319,7 @@ export default function PublicRecords({ id: propId, fallbackArtist = null }) {
           }>
             Songs
           </SectionTitle>
-          {mainTracks.length > 0 && <div className="collection-tools hidden"><input aria-label="Search artist discography" placeholder="Find a song" value={query} onChange={(e) => setQuery(e.target.value)} onKeyDown={(e) => {if (e.key === "Escape") setQuery("");}} /><select aria-label="Sort artist discography" value={sort} onChange={(e) => setSort(e.target.value)}><option value="recent">Newest</option><option value="popular">Most played</option><option value="title">Title A–Z</option></select></div>}
+          
           {mainTracks.length === 0 ?
           <div className="rounded-2xl border border-dashed border-border py-10 text-center px-6">
               <Music size={22} className="text-foreground/35 mx-auto mb-2" />
