@@ -15,7 +15,7 @@ const {requestPublicNote,savePublicNote,publicNoteError}=globalThis.__noteAction
 const React=globalThis.__React,useState=globalThis.__state,useEffect=()=>{},useRef=initial=>({current:initial});
 const publicNoteDatabase=undefined;
 const base44={functions:{invoke:(...args)=>globalThis.__api(...args)}},useAuth=()=>({user:globalThis.__user}),usePlayer=()=>globalThis.__player,useCoverUrl=x=>x,useCoverPalette=()=>({colors:[]});
-const OverflowText="overflow-text",NoteEmojiPicker="emoji-picker",MotionGradient="gradient",TrackPickerSheet="picker",Dialog="dialog",DialogContent="content",DialogHeader="header",DialogTitle="h1",DialogDescription="p";
+const OverflowText="overflow-text",NoteEmojiPicker="emoji-picker",NoteReactions="note-reactions",MotionGradient="gradient",TrackPickerSheet="picker",Dialog="dialog",DialogContent="content",DialogHeader="header",DialogTitle="h1",DialogDescription="p";
 const Music2=()=>null,ImageIcon=Music2,Plus=Music2,Play=Music2,Pause=Music2,Loader2=Music2;
 `;
 const code=ts.transpileModule(stubs+fs.readFileSync("src/components/profile/PublicNotes.jsx","utf8").replace(/^import[^;]+;/gm,""),{compilerOptions:{jsx:ts.JsxEmit.React,target:ts.ScriptTarget.ES2022,module:ts.ModuleKind.ESNext}}).outputText;
@@ -110,6 +110,23 @@ assert.match(values[14],/Couldn’t preview/,"preview failures preserve an edita
 const nearExpiry={...note,expires_at:new Date(Date.now()+5*60000).toISOString()};
 tree=render([nearExpiry,false,"",false,false,null,"",false,Date.now(),true]);
 assert.ok(find(tree,n=>n.type==="p").some(n=>JSON.stringify(n.props.children).includes("5m left")),"final-hour expiry uses minutes");
+
+globalThis.__player.isPlaying=true;globalThis.__player.currentTrack={id:"song"};
+let autoStarts=0;globalThis.__player.togglePlay=async()=>{autoStarts++;};globalThis.__player.playTrackAt=async()=>{autoStarts++;};
+tree=render([note,false,"",false,false,null,"",false,Date.now()],false);
+await find(tree,n=>n.props?.className==="public-note-avatar-bubble")[0].props.onClick();
+assert.equal(autoStarts,0,"opening an already-playing note never pauses or restarts it");
+globalThis.__player.isPlaying=false;
+tree=render([note,false,"",false,false,null,"",false,Date.now()],false);
+await find(tree,n=>n.props?.className==="public-note-avatar-bubble")[0].props.onClick();
+assert.equal(autoStarts,1,"opening another person's note resumes its paused song");
+globalThis.__player.currentTrack={id:"different"};
+tree=render([note,false,"",false,false,null,"",false,Date.now()],false);
+await find(tree,n=>n.props?.className==="public-note-avatar-bubble")[0].props.onClick();
+assert.equal(autoStarts,2,"opening a note starts its attached song");
+tree=render([textNote,false,"",false,false,null,"",false,Date.now()],false);
+await find(tree,n=>n.props?.className==="public-note-avatar-bubble")[0].props.onClick();
+assert.equal(autoStarts,2,"text-only notes never change playback");
 globalThis.__user=null;
 assert.equal(render([note,false,""]),null,"signed-out session does not leak a previously loaded note");
 console.log("PASS PUBLIC Notes playback, expiry, failed-save draft preservation, confirmed posting and session isolation");
