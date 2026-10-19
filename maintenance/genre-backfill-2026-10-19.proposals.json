@@ -5448,6 +5448,19 @@
       "match": "album-level inference: existing artist/album and consistent catalog labels"
     },
     {
+      "id": "6abf45021936588ab8b297cf",
+      "title": "Around the World (La La La La La)",
+      "artist": "A Touch Of Class, Pete Konemann",
+      "before": "Other",
+      "genre": "Pop",
+      "source_genre": "Pop",
+      "source_title": "Around the World (La La La La La)",
+      "source_artist": "A Touch of Class",
+      "source_album": "Around The World (La La La) - Single",
+      "source_url": "https://music.apple.com/us/album/around-the-world-la-la-la-la-la/1838739283?i=1838740398&uo=4",
+      "match": "exact artist and title"
+    },
+    {
       "id": "6abf45023655efd5d34eec87",
       "title": "As It Was",
       "artist": "Harry Styles",
@@ -5526,6 +5539,19 @@
       "match": "exact artist and title"
     },
     {
+      "id": "6abf4514e0f47bddf812acd8",
+      "title": "Asleep - 2011 Remaster",
+      "artist": "The Smiths",
+      "before": "Other",
+      "genre": "Alternative",
+      "source_genre": "Alternative",
+      "source_title": null,
+      "source_artist": "The Smiths",
+      "source_album": "Louder Than Bombs",
+      "source_url": "https://music.apple.com/us/album/please-please-please-let-me-get-what-i-want/802231063?i=802231085&uo=4",
+      "match": "album-level inference: existing artist/album and consistent catalog labels"
+    },
+    {
       "id": "6abf4514f3a7535658e4de4b",
       "title": "Así Soy Yo",
       "artist": "Anuel AA, Bad Bunny",
@@ -5591,6 +5617,19 @@
       "match": "exact artist and title"
     },
     {
+      "id": "6abf451fc2081354ecd45816",
+      "title": "Attachment Style",
+      "artist": "KAVARI",
+      "before": "Other",
+      "genre": "Electronic",
+      "source_genre": "Electronica",
+      "source_title": "Attachment Style",
+      "source_artist": "KAVARI",
+      "source_album": "Suture - EP",
+      "source_url": "https://music.apple.com/us/album/attachment-style/1634485681?i=1634485682&uo=4",
+      "match": "exact artist and title"
+    },
+    {
       "id": "6abf45217e8864afdb5697fe",
       "title": "ATTENTION!",
       "artist": "XXXTENTACION",
@@ -5617,6 +5656,19 @@
       "match": "exact artist and title"
     },
     {
+      "id": "6abf452a42f40a6faa4dfaaa",
+      "title": "Awful.",
+      "artist": "7ru7h",
+      "before": "Other",
+      "genre": "Pop",
+      "source_genre": "Pop",
+      "source_title": "Awful.",
+      "source_artist": "7ru7h",
+      "source_album": "Awful. - Single",
+      "source_url": "https://music.apple.com/us/album/awful/6774537894?i=6774537896&uo=4",
+      "match": "exact artist and title"
+    },
+    {
       "id": "6abf452bb82098649cf9e30e",
       "title": "Avisame",
       "artist": "Pahola Marino",
@@ -5627,6 +5679,19 @@
       "source_artist": "Pahola Marino",
       "source_album": "Vienen Por Tu Alma",
       "source_url": "https://music.apple.com/us/album/avisame/317529490?i=317529506&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6abf453163f085a5d49ae216",
+      "title": "Ay Hombe",
+      "artist": "Raulin Rodriguez",
+      "before": "Other",
+      "genre": "Latin",
+      "source_genre": "Música tropical",
+      "source_title": "Ay Hombe",
+      "source_artist": "Raulin Rodriguez",
+      "source_album": "Si No Te Tengo",
+      "source_url": "https://music.apple.com/us/album/ay-hombe/22330176?i=22330147&uo=4",
       "match": "exact artist and title"
     },
     {
@@ -5656,6 +5721,45 @@
       "match": "exact artist and title"
     },
     {
+      "id": "6abf454ae037a19d627b6508",
+      "title": "100 Días",
+      "artist": "RUGGERO",
+      "before": "Other",
+      "genre": "Latin Pop",
+      "source_genre": "Pop Latino",
+      "source_title": "100 Días",
+      "source_artist": "RUGGERO & Michael Ronda",
+      "source_album": "La Dolce Vita - EP",
+      "source_url": "https://music.apple.com/us/album/100-d%C3%ADas/6788459218?i=6788459298&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6abf454ea51d850010b1327e",
+      "title": "A Dios Le Pido",
+      "artist": "Juanes",
+      "before": "Other",
+      "genre": "Latin Pop",
+      "source_genre": "Pop Latino",
+      "source_title": "A Dios le Pido",
+      "source_artist": "Juanes",
+      "source_album": "Un Día Normal",
+      "source_url": "https://music.apple.com/us/album/a-dios-le-pido/1440785045?i=1440785264&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6abf454ef36baa0db85fc565",
+      "title": "A Couple Minutes",
+      "artist": "Olivia Dean",
+      "before": "Other",
+      "genre": "Pop",
+      "source_genre": "Pop",
+      "source_title": "A Couple Minutes",
+      "source_artist": "Olivia Dean",
+      "source_album": "The Art of Loving",
+      "source_url": "https://music.apple.com/us/album/a-couple-minutes/1817609404?i=1817609514&uo=4",
+      "match": "exact artist and title"
+    },
+    {
       "id": "6abf45514558c912a8055e9a",
       "title": "A GHETTO CHRISTMAS CAROL",
       "artist": "XXXTENTACION",
@@ -5679,6 +5783,19 @@
       "source_artist": "Sabrina Claudio",
       "source_album": "About Time",
       "source_url": "https://music.apple.com/us/album/about-time-intro/1291440782?i=1291440784&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6abf4552e037a19d627b650d",
+      "title": "A New Kind Of Love - Demo",
+      "artist": "Frou Frou, Imogen Heap, Guy Sigsworth",
+      "before": "Other",
+      "genre": "Pop",
+      "source_genre": "Pop",
+      "source_title": "A New Kind of Love (Demo)",
+      "source_artist": "Guy Sigsworth, Imogen Heap & Frou Frou",
+      "source_album": "A New Kind of Love (Demo) - Single",
+      "source_url": "https://music.apple.com/us/album/a-new-kind-of-love-demo/1614291410?i=1614291411&uo=4",
       "match": "exact artist and title"
     },
     {
@@ -13724,13 +13841,6 @@
       "album_name": "ARROZ CON POLLO"
     },
     {
-      "id": "6abf45021936588ab8b297cf",
-      "title": "Around the World (La La La La La)",
-      "artist": "A Touch Of Class, Pete Konemann",
-      "genre": "Other",
-      "album_name": "Planet Pop"
-    },
-    {
       "id": "6abf45060feb24b77be663ab",
       "title": "As The World Burns",
       "artist": "Children of Zeus",
@@ -13766,30 +13876,9 @@
       "album_name": "Unknown Album"
     },
     {
-      "id": "6abf4514e0f47bddf812acd8",
-      "title": "Asleep - 2011 Remaster",
-      "artist": "The Smiths",
-      "genre": "Other",
-      "album_name": "Louder Than Bombs"
-    },
-    {
       "id": "6abf451deba76b833f8ac0f6",
       "title": "Attached",
       "artist": "Jasmine Kiara",
-      "genre": "Other",
-      "album_name": "Unknown Album"
-    },
-    {
-      "id": "6abf451fc2081354ecd45816",
-      "title": "Attachment Style",
-      "artist": "KAVARI",
-      "genre": "Other",
-      "album_name": "Suture"
-    },
-    {
-      "id": "6abf452a42f40a6faa4dfaaa",
-      "title": "Awful.",
-      "artist": "7ru7h",
       "genre": "Other",
       "album_name": "Unknown Album"
     },
@@ -13805,7 +13894,13 @@
       "title": "Axel F",
       "artist": "Crazy Frog",
       "genre": "Other",
-      "album_name": ""
+      "album_name": "",
+      "review_reason": "conflicting catalog genres",
+      "candidate_genres": [
+        "Dance",
+        "Pop",
+        "Soundtrack"
+      ]
     },
     {
       "id": "6abf4530f3a7535658e4de66",
@@ -13813,13 +13908,6 @@
       "artist": "Sfera Ebbasta, DYSTINCT",
       "genre": "Other",
       "album_name": "AYAYAY"
-    },
-    {
-      "id": "6abf453163f085a5d49ae216",
-      "title": "Ay Hombe",
-      "artist": "Raulin Rodriguez",
-      "genre": "Other",
-      "album_name": "Si No Te Tengo"
     },
     {
       "id": "6abf45349c97b7d68277ad1f",
@@ -13855,39 +13943,11 @@
       "album_name": "105 Freestyle"
     },
     {
-      "id": "6abf454ae037a19d627b6508",
-      "title": "100 Días",
-      "artist": "RUGGERO",
-      "genre": "Other",
-      "album_name": "Unknown Album"
-    },
-    {
       "id": "6abf454de33c1c196b72308b",
       "title": "A Correr los Lakers",
       "artist": "El Alfa",
       "genre": "Other",
       "album_name": "El Androide"
-    },
-    {
-      "id": "6abf454ea51d850010b1327e",
-      "title": "A Dios Le Pido",
-      "artist": "Juanes",
-      "genre": "Other",
-      "album_name": "Un Día Normal"
-    },
-    {
-      "id": "6abf454ef36baa0db85fc565",
-      "title": "A Couple Minutes",
-      "artist": "Olivia Dean",
-      "genre": "Other",
-      "album_name": "The Art of Loving"
-    },
-    {
-      "id": "6abf4552e037a19d627b650d",
-      "title": "A New Kind Of Love - Demo",
-      "artist": "Frou Frou, Imogen Heap, Guy Sigsworth",
-      "genre": "Other",
-      "album_name": "A New Kind Of Love (Demo)"
     },
     {
       "id": "6abf45559f76cfeabbed5812",
@@ -18776,5 +18836,5 @@
       "album_name": ""
     }
   ],
-  "searched_terms": 325
+  "searched_terms": 340
 }
