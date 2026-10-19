@@ -6,7 +6,7 @@ const sdk={entities:{Notification:{filter:async(q,opts)=>{if(failRead)throw Erro
 globalThis.__deps={base44:sdk,useAuth:()=>({user:{id:'owner'}}),getUsersByIds:async()=>{if(failActors)throw Error("Profile lookup unavailable");return [{id:"actor",display_name:"Sender"}];},coalesce:fn=>Object.assign(fn,{cancel(){}})};
 globalThis.__hooks={useRef:v=>{const i=index++;return slots[i]??=({current:v});},useState:v=>{const i=index++;if(!(i in state))state[i]=v;return [state[i],next=>state[i]=typeof next==='function'?next(state[i]):next];},useCallback:fn=>fn,useEffect:()=>{}};
 let code=fs.readFileSync('src/hooks/useNotifications.js','utf8').replace(/import[\s\S]*?from\s*["'][^"']+["'];?/g,'');
-code='const reportActionError=()=>{};const {useCallback,useEffect,useRef,useState}=globalThis.__hooks;const {base44,useAuth,getUsersByIds,coalesce}=globalThis.__deps;\n'+code;
+code='const useArtistReleases=()=>({items:[],unread:0,error:false,markRead:async()=>{},refresh(){}});const reportActionError=()=>{};const {useCallback,useEffect,useRef,useState}=globalThis.__hooks;const {base44,useAuth,getUsersByIds,coalesce}=globalThis.__deps;\n'+code;
 const {useNotifications}=await import('data:text/javascript;base64,'+Buffer.from(code).toString('base64'));
 const render=()=>{index=0;return useNotifications();};
 let n=render();await n.reload();n=render();assert.equal(n.notifications.length,50);assert.equal(n.unreadCount,120);await n.loadMore();n=render();assert.equal(n.notifications.length,100);await n.loadMore();n=render();assert.equal(n.notifications.length,120);assert.equal(n.hasMore,false);
