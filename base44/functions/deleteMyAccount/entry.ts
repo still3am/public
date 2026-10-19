@@ -54,7 +54,9 @@ export async function deleteAccountData(b,u){
  const moments=await collect(s,'Moment',{user_id:id});
  for(let offset=0;offset<moments.length;offset+=100)await erase(s,'MomentComment',{moment_id:{$in:moments.slice(offset,offset+100).map(p=>p.id)}});
  await s.entities.Moment.updateMany({liker_ids:{$in:[id]}},{$pull:{liker_ids:id}});
+ await s.entities.PlaylistCollaboration.updateMany({member_ids:{$in:[id]}},{$pull:{member_ids:id}});
  const queries={
+  ListeningSession:{created_by_id:id},PurePreset:{created_by_id:id},ArtistSubscription:{created_by_id:id},PlaylistCollaboration:{owner_id:id},
   Moment:{user_id:id},MomentComment:{user_id:id},
   PlayEvent:{user_id:id},Lyrics:{uploader_id:id},Like:{user_id:id},
   PublicNote:{user_id:id},ProfileComment:{$or:[{author_id:id},{profile_id:id}]},TrackAnnotation:{author_id:id},
