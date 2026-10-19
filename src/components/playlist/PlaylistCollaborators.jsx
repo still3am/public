@@ -10,7 +10,7 @@ export default function PlaylistCollaborators({playlist,onSaved}){
  const [open,setOpen]=useState(false),[query,setQuery]=useState(""),[results,setResults]=useState([]),[members,setMembers]=useState([]),[busy,setBusy]=useState(false),[searching,setSearching]=useState(false),[failed,setFailed]=useState(false);
  const ids=JSON.stringify(playlist.collaborator_ids||[]);
  useEffect(()=>{let alive=true;getUsersByIds(JSON.parse(ids)).then(rows=>{if(alive)setMembers(rows);}).catch(()=>{});return()=>{alive=false;};},[ids]);
- useEffect(()=>{let alive=true;setResults([]);setFailed(false);if(query.trim().length<2)return;setSearching(true);const timer=setTimeout(()=>searchPeople(query).then(r=>{if(alive)setResults(r.data.results||[]);}).catch(()=>{if(alive)setFailed(true);}).finally(()=>{if(alive)setSearching(false);}),300);return()=>{alive=false;clearTimeout(timer);};},[query]);
+ useEffect(()=>{let alive=true;setResults([]);setFailed(false);if(query.trim().length<2){setSearching(false);return;}setSearching(true);const timer=setTimeout(()=>searchPeople(query).then(r=>{if(alive)setResults(r.data.results||[]);}).catch(()=>{if(alive)setFailed(true);}).finally(()=>{if(alive)setSearching(false);}),300);return()=>{alive=false;clearTimeout(timer);};},[query]);
  async function change(id,add){
   if(busy)return;setBusy(true);
   try{const r=await base44.functions.invoke("securityGateway",{entity:"Playlist",action:"collaborators",args:[playlist.id,id,add]});if(!r.data?.result)throw Error("Invitation was not saved");onSaved(r.data.result);window.dispatchEvent(new Event("playlists:changed"));setQuery("");}
