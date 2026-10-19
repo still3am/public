@@ -1,4 +1,3 @@
-import PureControls from "@/components/PureControls";
 import {EQ_PRESETS as PRESETS} from "@/lib/equalizer";
 import { useEffect, useState, useRef } from "react";
 import { usePlayer } from "@/context/PlayerContext";
@@ -161,7 +160,6 @@ export default function StemMixer({ onClose }) {
           </div>
         </div>
 
-        <PureControls compact/>
         {/* visualizer */}
         <div className="mb-5 rounded-2xl bg-white/[0.03] p-3">
           <MixerVisualizer />
