@@ -22,6 +22,7 @@ const entities = new Proxy(raw.entities,{get(target,name) {
   if(!guarded.has(name))return target[name];
   if(!handlers.has(name)) handlers.set(name,new Proxy(target[name],{get(h,method) {
     if(typeof method!=="string")return Reflect.get(h,method);
+    if(name==='Track'&&method==='update')return (id,patch)=>Object.keys(patch||{}).length===1&&Object.hasOwn(patch,"lyrics_text")?saveManualLyrics(raw,id,patch):gateway(name,method,[id,patch]);
     if(['create','update','delete','deleteMany','bulkUpdate'].includes(method)) return async (...args)=>{if(method==='bulkUpdate'&&Array.isArray(args[0])&&args[0].length>100){const results=[];for(let i=0;i<args[0].length;i+=100)results.push(...await gateway(name,method,[args[0].slice(i,i+100)]));return results;}return gateway(name,method,args);};
     if(name==='Track'&&['get','list','filter','count','aggregate'].includes(method)) return async (...args)=>{
       try { return recoveredAlbumResult(await gateway(name,'read',[method,...args]),recoveredAlbumMetadata); }
@@ -72,6 +73,22 @@ export const publicNoteDatabase = {
   auth: {me:()=>raw.auth.me()},
   entities: {PublicProfile:raw.entities.PublicProfile,Block:raw.entities.Block,Track:raw.entities.Track}
 };
+export async function saveManualLyrics(client,id,patch){
+  if(typeof id!=="string"||!id||Object.keys(patch||{}).length!==1||typeof patch.lyrics_text!=="string"||patch.lyrics_text.length>100000)throw Object.assign(new Error("Lyrics must be text under 100,000 characters."),{status:422});
+  const user=await client.auth.me();
+  if(!user?.id||user.is_blocked||user.disabled)throw Object.assign(new Error("Sign in with an active account before saving lyrics."),{status:403});
+  const track=await client.entities.Track.get(id);
+  if(!track?.id||user.role!=="admin"&&track.uploader_id!==user.id)throw Object.assign(new Error("Only the song owner or an administrator can edit lyrics."),{status:403});
+  if((await client.auth.me())?.id!==user.id)throw new Error("Your account changed. Reopen the song before saving.");
+  let failure;
+  try{await client.entities.Track.update(id,{lyrics_text:patch.lyrics_text});}catch(error){failure=error;}
+  const current=await client.auth.me();
+  if(current?.id!==user.id)throw new Error("Your account changed. Reopen the song to check the save.");
+  const confirmed=await client.entities.Track.get(id);
+  if(confirmed?.id!==id||confirmed.lyrics_text!==patch.lyrics_text)throw failure||new Error("Your lyrics were not confirmed. Your draft is still here.");
+  if(typeof window!=="undefined")window.dispatchEvent(new Event("catalog:invalidate"));
+  return confirmed;
+}
 export const base44 = new Proxy(raw,{get(target,name) {
   if(name==='entities') return entities;
   if(name==='auth') return {...target.auth,me:async()=>withPresetAvatar(await target.auth.me()),updateMe:async data=>{
