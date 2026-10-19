@@ -1,61 +1,78 @@
-import { useEffect, useState } from "react";
-import { Airplay, Bluetooth, Check, ChevronRight, Headphones, Monitor, Smartphone, Speaker, Volume2, VolumeX } from "lucide-react";
-import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
-import { usePlayer } from "@/context/PlayerContext";
+import {useEffect,useState} from "react";
+import {Airplay,Bluetooth,Check,ChevronRight,Headphones,Monitor,Smartphone,Speaker,Volume2,VolumeX,RefreshCw,Loader2} from "lucide-react";
+import {Dialog,DialogContent,DialogTitle,DialogDescription} from "@/components/ui/dialog";
+import {usePlayer} from "@/context/PlayerContext";
+import {useOfflineCoverUrl} from "@/hooks/useOfflineCoverUrl";
+import {useCoverUrl} from "@/hooks/useCoverUrl";
 import "./device-connect.css";
 
-function DeviceConnectPanel({ onClose }) {
-  const p = usePlayer(),{ state: s, controller } = p.audioOutput;
-  const [help, setHelp] = useState(false);
-  const wireless = s.remoteState === "connected",connecting = s.remoteState === "connecting";
-  useEffect(() => {controller.refresh();}, [controller]);
-  const thisDevice = /iPhone|iPad|iPod|Android/.test(navigator.userAgent) ? "This phone or tablet" : "This computer";
-  const DeviceIcon = /iPhone|iPad|iPod|Android/.test(navigator.userAgent) ? Smartphone : Monitor;
-  return <Dialog open onOpenChange={(open) => {if (!open) onClose();}}>
-  <DialogContent className="device-connect" data-public-dialog onKeyDown={(event) => {if (event.key === "Escape") event.stopPropagation();}} onTouchStart={(event) => event.stopPropagation()} onTouchMove={(event) => event.stopPropagation()} onTouchEnd={(event) => event.stopPropagation()}>
-   <div className="device-connect-heading">
-    <span className="device-connect-brand">PUBLIC.</span>
-    <div className="device-connect-art" aria-hidden="true"><Monitor strokeWidth={1.25} /><Speaker strokeWidth={1.25} /><Smartphone strokeWidth={1.25} /></div>
-    <DialogTitle className="device-connect-title">Connect to a device</DialogTitle>
-    <DialogDescription className="device-connect-subtitle">Your music. Wherever you listen.</DialogDescription>
-   </div>
-   <div className="device-connect-list" aria-label="Audio outputs">
-    <button type="button" className="device-connect-row" disabled={s.busy || !s.canRoute && !wireless} onClick={() => wireless ? controller.wireless() : controller.select({ deviceId: "", label: "System default" })}>
-     <span className="device-connect-icon"><DeviceIcon size={25} /></span>
-     <span className="device-connect-row-text"><strong>{thisDevice}</strong><small>{!s.sinkId && !wireless ? "Current system audio output" : "System default output"}</small></span>
-     {!s.sinkId && !wireless && <Check size={20} aria-label="Selected" />}
-    </button>
-    {s.sinkId && !s.outputs.some((d) => d.deviceId === s.sinkId) && <div className="device-connect-row"><span className="device-connect-icon"><Headphones size={25} /></span><span className="device-connect-row-text"><strong>{s.label}</strong><small>Selected output</small></span><Check size={20} /></div>}
-    {s.outputs.map((device) => <button type="button" className="device-connect-row" key={device.deviceId} disabled={s.busy || !s.canRoute} onClick={() => controller.select(device)}>
-     <span className="device-connect-icon"><Headphones size={25} /></span><span className="device-connect-row-text"><strong>{device.label}</strong><small>{s.sinkId === device.deviceId ? "Selected output" : "Available speaker"}</small></span>{s.sinkId === device.deviceId ? <Check size={20} aria-label="Selected" /> : <ChevronRight size={18} />}
-    </button>)}
-    {(s.airplay || s.remote) && <button type="button" className="device-connect-row" disabled={s.busy} onClick={() => controller.wireless()}>
-     <span className="device-connect-icon"><Airplay size={25} /></span><span className="device-connect-row-text"><strong>{s.airplay ? "AirPlay" : "Wireless playback"}</strong><small>{wireless ? "Connected · tap to change" : connecting ? "Connecting…" : "Choose a speaker or TV"}</small></span>{wireless ? <Check size={20} /> : <ChevronRight size={18} />}
-    </button>}
-    {s.canChoose && s.canRoute && <button type="button" className="device-connect-row" disabled={s.busy} onClick={() => controller.choose()}>
-     <span className="device-connect-icon"><Speaker size={25} /></span><span className="device-connect-row-text"><strong>Choose another speaker</strong><small>Open your browser’s device picker</small></span><ChevronRight size={18} />
-    </button>}
-    <button type="button" className="device-connect-row" aria-expanded={help} onClick={() => setHelp((value) => !value)}>
-     <span className="device-connect-icon"><Bluetooth size={25} /></span><span className="device-connect-row-text"><strong>Bluetooth & other devices</strong><small>Connect using your device’s audio controls</small></span><ChevronRight size={18} className={help ? "rotate-90" : ""} />
-    </button>
-   </div>
-   {help && <div className="device-connect-help"><p>Pair your speaker or headphones in Bluetooth settings. Public plays through the audio output selected on your device.</p><p>On iPhone or iPad, open Control Center, expand Now Playing, then tap the AirPlay icon. On a computer, choose an output in sound settings.</p></div>}
-   {!s.airplay && !s.remote && !s.canChoose && <p className="device-connect-note">Choose your speaker in system sound settings. This browser doesn’t provide an in-app device picker.</p>}
-   <p className="device-connect-status" role="status" aria-live="polite">{s.error || (s.busy ? "Opening connection…" : "")}</p>
-   <div className="device-connect-volume">
-    <div><span>Volume</span><small>{Math.round((p.muted ? 0 : p.volume) * 100)}%</small></div>
-    <div className="device-connect-volume-controls">
-     <button type="button" onClick={() => p.setMuted(!p.muted)} aria-label={p.muted ? "Unmute" : "Mute"} aria-pressed={p.muted}>{p.muted || p.volume === 0 ? <VolumeX size={22} /> : <Volume2 size={22} />}</button>
-     <input type="range" min="0" max="1" step="0.01" value={p.muted ? 0 : p.volume} aria-label="Playback volume" onPointerDown={() => p.prepareVolumeControl?.()} onChange={(event) => p.setVolume(Number(event.target.value))} />
+function DeviceConnectPanel({onClose}){
+ const p=usePlayer(),{state:s,controller}=p.audioOutput;
+ const [help,setHelp]=useState(false),[refreshing,setRefreshing]=useState(false),[coverFailed,setCoverFailed]=useState(false);
+ const offlineCover=useOfflineCoverUrl(p.currentTrack?.id,p.currentTrack?.cover_art_url),cover=useCoverUrl(offlineCover);
+ const wireless=s.remoteState==="connected",connecting=s.remoteState==="connecting";
+ useEffect(()=>{controller.refresh();},[controller]);
+ useEffect(()=>setCoverFailed(false),[cover]);
+ const agent=navigator.userAgent;
+ const thisDevice=/iPhone/.test(agent)?"This iPhone":/iPad/.test(agent)?"This iPad":/Android/.test(agent)?"This phone":"This computer";
+ const DeviceIcon=/iPhone|iPad|iPod|Android/.test(agent)?Smartphone:Monitor;
+ const CurrentIcon=wireless?Airplay:s.sinkId?Headphones:DeviceIcon;
+ const outputName=wireless?(s.airplay?"AirPlay":"Wireless speaker"):s.sinkId?s.label:thisDevice;
+ const available=s.outputs.filter(device=>device.deviceId!==s.sinkId);
+ const canPick=s.airplay||s.remote||s.canChoose&&s.canRoute;
+ const hasChoices=available.length>0||canPick;
+ async function refresh(){setRefreshing(true);try{await controller.refresh();}finally{setRefreshing(false);}}
+ const row=(icon,title,description,onClick,extra={})=>{
+  const Icon=icon;
+  return <button type="button" className="device-connect-row" onClick={onClick} {...extra}><span className="device-connect-icon"><Icon size={22} strokeWidth={1.7}/></span><span className="device-connect-row-text"><strong>{title}</strong><small>{description}</small></span><ChevronRight className="device-connect-chevron" size={17}/></button>;
+ };
+ return <Dialog open onOpenChange={open=>{if(!open)onClose();}}>
+  <DialogContent className="device-connect" data-public-dialog onKeyDown={event=>{if(event.key==="Escape")event.stopPropagation();}} onTouchStart={event=>event.stopPropagation()} onTouchMove={event=>event.stopPropagation()} onTouchEnd={event=>event.stopPropagation()}>
+   <div className="device-connect-handle" aria-hidden="true"/>
+   <header className="device-connect-heading">
+    <span className="device-connect-brand">PUBLIC. / CONNECT</span>
+    <DialogTitle className="device-connect-title">Where to listen.</DialogTitle>
+    <DialogDescription className="device-connect-subtitle">Choose where your music plays.</DialogDescription>
+   </header>
+   <section className="device-connect-current" aria-label="Current audio output">
+    <span className="device-connect-eyebrow">CURRENT OUTPUT</span>
+    <div className="device-connect-current-main">
+     <span className="device-connect-current-icon"><CurrentIcon size={29} strokeWidth={1.5}/></span>
+     <div className="device-connect-row-text"><strong>{outputName}</strong><small>{connecting?"Connecting…":wireless?"Wireless playback":s.sinkId?"Selected speaker":"Uses your system’s audio output"}</small></div>
+     <Check size={19} aria-label="Selected"/>
     </div>
-    <p>For wireless speakers, volume may also be controlled on the device.</p>
-   </div>
+    <div className="device-connect-now">
+     <div className="device-connect-cover">{cover&&!coverFailed?<img src={cover} alt="" onError={()=>setCoverFailed(true)}/>:<Speaker size={20}/>}</div>
+     <div className="device-connect-row-text"><strong>{p.currentTrack?.title||"Ready to listen"}</strong><small>{p.currentTrack?.artist||p.currentTrack?.uploader_name||"Choose a song on Public"}</small></div>
+     <span className={"device-connect-levels "+(p.isPlaying?"is-playing":"")} aria-label={p.isPlaying?"Playing":"Paused"}><i/><i/><i/></span>
+    </div>
+   </section>
+   <section className="device-connect-options" aria-label="Connection options">
+    <div className="device-connect-section-title"><h3>{hasChoices?"Listen on":"Connect a speaker"}</h3><button type="button" onClick={refresh} disabled={refreshing||s.busy} aria-label="Refresh available outputs" title="Refresh outputs"><RefreshCw size={16} className={refreshing?"animate-spin":""}/></button></div>
+    <div className="device-connect-list">
+     {s.sinkId&&s.canRoute&&row(DeviceIcon,thisDevice,"Return to system audio",()=>controller.select({deviceId:"",label:"System default"}),{disabled:s.busy})}
+     {available.map(device=><div key={device.deviceId}>{row(Headphones,device.label,"Available audio output",()=>controller.select(device),{disabled:s.busy||!s.canRoute})}</div>)}
+     {(s.airplay||s.remote)&&row(Airplay,s.airplay?"AirPlay":"Wireless playback",wireless?"Change your wireless device":connecting?"Connecting…":"Choose a speaker or TV",()=>controller.wireless(),{disabled:s.busy})}
+     {s.canChoose&&s.canRoute&&row(Speaker,"Choose a speaker","Show available audio devices",()=>controller.choose(),{disabled:s.busy})}
+     {row(Bluetooth,"Bluetooth & system audio","Connect headphones or a speaker",()=>setHelp(value=>!value),{"aria-expanded":help,"aria-controls":"public-connect-help"})}
+    </div>
+    {help&&<div id="public-connect-help" className="device-connect-help"><p>Pair your speaker in Bluetooth settings, then select it as your device’s audio output.</p><ol>{/iPhone|iPad|iPod/.test(agent)?<><li>Open Control Center.</li><li>Expand Now Playing and tap the AirPlay icon.</li><li>Choose your headphones, speaker, or TV.</li></>:<><li>Open your device’s sound settings.</li><li>Choose your speaker or headphones as the output.</li><li>Return to Public and press play.</li></>}</ol></div>}
+    {!hasChoices&&!help&&<p className="device-connect-note">Public follows the speaker selected in your device’s sound settings.</p>}
+   </section>
+   {(s.error||s.busy)&&<div className="device-connect-status" role="status" aria-live="polite">{s.busy&&<Loader2 size={15} className="animate-spin"/>}<span>{s.error||"Opening device picker…"}</span></div>}
+   <section className="device-connect-volume" aria-label="Playback volume">
+    <div><span>Volume</span><small>{Math.round((p.muted?0:p.volume)*100)}%</small></div>
+    <div className="device-connect-volume-controls">
+     <button type="button" onClick={()=>p.setMuted(!p.muted)} aria-label={p.muted?"Unmute":"Mute"} aria-pressed={p.muted}>{p.muted||p.volume===0?<VolumeX size={21}/>:<Volume2 size={21}/>}</button>
+     <input type="range" min="0" max="1" step="0.01" value={p.muted?0:p.volume} aria-label="Playback volume" style={{"--connect-volume":Math.round((p.muted?0:p.volume)*100)+"%"}} onPointerDown={()=>p.prepareVolumeControl?.()} onChange={event=>p.setVolume(Number(event.target.value))}/>
+    </div>
+    <p>Wireless volume can also be adjusted on the speaker.</p>
+   </section>
   </DialogContent>
  </Dialog>;
 }
-
-export default function DeviceConnect({ label = false, className = "" }) {
-  const p = usePlayer(),[open, setOpen] = useState(false);
-  const connected = !!p.audioOutput.state.sinkId || p.audioOutput.state.remoteState === "connected";
-  return <><button type="button" onClick={() => setOpen(true)} aria-label="Connect to a device" aria-haspopup="dialog" aria-expanded={open} title="Connect to a device" className={"device-connect-trigger " + (connected ? "is-connected " : "") + className}><Airplay size={20} />{label && <span className="hidden">{connected ? "Connected" : "Connect to a device"}</span>}</button>{open && <DeviceConnectPanel onClose={() => setOpen(false)} />}</>;
+export default function DeviceConnect({label=false,className=""}){
+ const p=usePlayer(),[open,setOpen]=useState(false);
+ const connected=!!p.audioOutput.state.sinkId||p.audioOutput.state.remoteState==="connected";
+ return <><button type="button" onClick={()=>setOpen(true)} aria-label={connected?"Connected output · change device":"Connect to a device"} aria-haspopup="dialog" aria-expanded={open} title="Connect to a device" className={"device-connect-trigger "+(connected?"is-connected ":"")+className}><Airplay size={20}/>{connected&&<span className="device-connect-trigger-dot" aria-hidden="true"/>}{label&&<span className="hidden">{connected?"Connected":"Connect to a device"}</span>}</button>{open&&<DeviceConnectPanel onClose={()=>setOpen(false)}/>}</>;
 }
