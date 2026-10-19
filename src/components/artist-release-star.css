@@ -1,0 +1,9 @@
+
+.public-app .artist-page .artist-hero .artist-release-star{position:absolute;top:22px;right:22px;z-index:2;display:grid;place-items:center;flex-shrink:0;width:44px;height:44px;min-height:44px;min-width:44px;padding:0;border-radius:50%;border:1px solid hsl(var(--border));background:hsl(var(--card));color:hsl(var(--foreground));box-shadow:0 2px 14px #0001;transition:transform .18s,background .18s}
+.public-app .artist-release-star[aria-pressed="true"]{color:#EAAF36!important}
+.public-app .artist-release-star:focus-visible{outline:2px solid hsl(var(--ring));outline-offset:4px}
+.public-app .artist-release-star:disabled{opacity:.55;cursor:wait}
+@media(max-width:767px){.public-app .artist-page .artist-hero .artist-release-star{top:14px;right:14px}}
+@media(min-width:1024px){.public-app .artist-page .artist-hero .artist-release-star{top:42px;right:42px}}
+@media(hover:hover){.public-app .artist-release-star:hover:not(:disabled){transform:scale(1.06)}}
+@media(prefers-reduced-motion:reduce){.public-app .artist-release-star{transition:none}}
