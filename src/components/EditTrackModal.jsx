@@ -56,7 +56,7 @@ export default function EditTrackModal({ track, onClose, onSaved, onDeleted }) {
     writeLock.current=true;setSaving(true);
     try {
       const normalized={...form,title:form.title.trim(),artist:(form.artist||'').trim()};
-      const payload=Object.fromEntries(Object.entries(normalized).filter(([key,value])=>value!==baseline.current[key]));
+      const payload=Object.fromEntries(Object.entries(normalized).filter(([key,value])=>value!==(key==='title'||key==='artist'?String(baseline.current[key]||'').trim():baseline.current[key])));
       if(cover){
         if(artwork.current?.file!==cover){const result=await base44.integrations.Core.UploadFile({file:cover});if(!result?.file_url)throw Error('Artwork did not upload');artwork.current={file:cover,url:result.file_url};}
         payload.cover_art_url=artwork.current.url;
