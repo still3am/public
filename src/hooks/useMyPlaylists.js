@@ -37,8 +37,9 @@ export function useMyPlaylists(){
  },[uid]);
  useEffect(()=>{
   owner.current=uid;setPlaylists(cache.get(uid)?.rows||null);reload(false);
-  const refresh=()=>reload(true);window.addEventListener('playlists:changed',refresh);
-  return()=>{version.current++;window.removeEventListener('playlists:changed',refresh);};
+  const refresh=()=>reload(true);window.addEventListener('playlists:changed',refresh);window.addEventListener('focus',refresh);
+  let stop=()=>{};try{if(uid)stop=base44.entities.PlaylistCollaboration.subscribe(refresh);}catch{}
+  return()=>{version.current++;stop();window.removeEventListener('playlists:changed',refresh);window.removeEventListener('focus',refresh);};
  },[uid,reload]);
  return {playlists:owner.current===uid?playlists:cache.get(uid)?.rows||null,error,loading,reload};
 }
