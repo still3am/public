@@ -2,11 +2,11 @@ import assert from "node:assert/strict";
 import fs from "node:fs";
 import {AVATAR_PRESETS} from "../src/lib/avatarPresets.js";
 import {savePresetAvatar,withPresetAvatar} from "../src/lib/nativeAvatar.js";
-let user,row,writes,reads,ignored=false,publicIgnored=false,fail=false;
-function reset(){user={id:"owner",top_track_ids:["a","gone","b","also-gone"]};row={id:"public",user_id:"owner",visible:true,top_track_ids:[...user.top_track_ids]};writes=[];reads=[];ignored=false;publicIgnored=false;fail=false;}
+let user,row,writes,reads,ignored=false,publicIgnored=false;
+function reset(){user={id:"owner",top_track_ids:["a","gone","b","also-gone"]};row={id:"public",user_id:"owner",visible:true,top_track_ids:[...user.top_track_ids]};writes=[];reads=[];ignored=false;publicIgnored=false;}
 reset();globalThis.window={dispatchEvent(){}};
 globalThis.__rotationRaw={auth:{me:async()=>structuredClone(user),updateMe:async patch=>{writes.push(patch);if(!ignored)Object.assign(user,structuredClone(patch));return structuredClone(user);}},
-entities:{PublicProfile:{filter:async()=>[structuredClone(row)],update:async(id,patch)=>{assert.equal(id,"public");if(!publicIgnored)Object.assign(row,structuredClone(patch));}}},
+entities:{Track:{},PublicProfile:{filter:async()=>[structuredClone(row)],update:async(id,patch)=>{assert.equal(id,"public");if(!publicIgnored)Object.assign(row,structuredClone(patch));}}},
 functions:{invoke:async(name,r)=>{if(r.entity==="Track"&&r.action==="read"){reads.push(r.args[1]);if(r.args[1]==="private")throw Object.assign(Error("Denied"),{status:403});return {data:{result:{id:r.args[1],audio_url:"https://audio.test/song"}}};}throw Error("Function unavailable");}}};
 globalThis.__rotationAvatars=AVATAR_PRESETS;globalThis.__rotationSave=savePresetAvatar;globalThis.__rotationWith=withPresetAvatar;
 const source=fs.readFileSync("src/api/base44Client.js","utf8").replace(/^import[^;]+;/gm,"");
