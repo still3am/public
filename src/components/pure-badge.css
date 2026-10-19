@@ -1,7 +1,63 @@
-.pure-badge{display:inline-flex;align-items:center;gap:4px;flex-shrink:0;vertical-align:middle;white-space:nowrap;color:inherit;line-height:1;font-size:10px;font-weight:800;letter-spacing:.11em}
-.pure-badge.is-compact{color:hsl(var(--foreground));font-size:9px;gap:3px;letter-spacing:.09em}
-.pure-badge svg{opacity:.7}
-.pure-badge-word{color:inherit;background:linear-gradient(110deg,color-mix(in srgb,currentColor 45%,transparent) 0%,color-mix(in srgb,currentColor 45%,transparent) 30%,currentColor 46%,currentColor 50%,color-mix(in srgb,currentColor 45%,transparent) 66%,color-mix(in srgb,currentColor 45%,transparent) 100%);background-size:260% 100%;background-position:100% 0;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;animation:pureShine 5s ease-in-out infinite;animation-play-state:paused}
-.pure-badge.is-playing .pure-badge-word{animation-play-state:running}
-@keyframes pureShine{0%,25%{background-position:100% 0}65%,100%{background-position:0 0}}
-@media(prefers-reduced-motion:reduce){.pure-badge-word{animation:none;background:none;-webkit-text-fill-color:currentColor}}
+.pure-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+  vertical-align: middle;
+  white-space: nowrap;
+  color: inherit;
+  line-height: 1;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: .11em;
+}
+.pure-badge.is-compact {
+  color: hsl(var(--foreground));
+  font-size: 9px;
+  gap: 3px;
+  letter-spacing: .09em;
+}
+.pure-badge-symbol { flex-shrink: 0; opacity: .85; }
+.pure-badge-symbol path {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: pureWave 2.4s ease-in-out infinite;
+  animation-play-state: paused;
+}
+.pure-badge-symbol path:nth-child(2) { animation-delay: -.3s; }
+.pure-badge-symbol path:nth-child(3) { animation-delay: -.6s; }
+.pure-badge-symbol path:nth-child(4) { animation-delay: -.9s; }
+.pure-badge-symbol path:nth-child(5) { animation-delay: -1.2s; }
+.pure-badge-word { color: inherit; }
+/* Keep a readable solid fallback when text clipping or color-mix is unavailable. */
+@supports ((background-clip: text) or (-webkit-background-clip: text)) and (color: color-mix(in srgb, white 75%, transparent)) {
+  .pure-badge-word {
+    background-image: linear-gradient(110deg,
+      color-mix(in srgb, currentColor 72%, transparent) 0%,
+      color-mix(in srgb, currentColor 72%, transparent) 40%,
+      currentColor 48%, currentColor 52%,
+      color-mix(in srgb, currentColor 72%, transparent) 60%,
+      color-mix(in srgb, currentColor 72%, transparent) 100%);
+    background-size: 300% 100%;
+    background-position: 100% 50%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: pureShine 6s cubic-bezier(.4, 0, .2, 1) infinite;
+    animation-play-state: paused;
+  }
+}
+.pure-badge.is-playing .pure-badge-word,
+.pure-badge.is-playing .pure-badge-symbol path { animation-play-state: running; }
+@keyframes pureShine {
+  0%, 12% { background-position: 100% 50%; }
+  48%, 100% { background-position: 0% 50%; }
+}
+@keyframes pureWave {
+  0%, 100% { transform: scaleY(1); }
+  50% { transform: scaleY(.6); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .pure-badge-symbol path { animation: none; transform: none; }
+  .pure-badge-word { animation: none; background: none; -webkit-text-fill-color: currentColor; }
+}
