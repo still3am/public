@@ -1,0 +1,55 @@
+{
+  "name": "NoteReaction",
+  "type": "object",
+  "properties": {
+    "profile_id": {
+      "type": "string",
+      "maxLength": 100
+    },
+    "note_key": {
+      "type": "string",
+      "maxLength": 350
+    },
+    "user_id": {
+      "type": "string",
+      "maxLength": 100
+    },
+    "emoji": {
+      "type": "string",
+      "maxLength": 32
+    },
+    "reacted_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "profile_id",
+    "note_key",
+    "user_id",
+    "emoji",
+    "reacted_at"
+  ],
+  "rls": {
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}
