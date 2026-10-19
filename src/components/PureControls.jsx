@@ -16,7 +16,7 @@ export default function PureControls({compact=false}){
  return <section onTouchStart={event=>event.stopPropagation()} onTouchMove={event=>event.stopPropagation()} onTouchEnd={event=>event.stopPropagation()} aria-label="PURE sound enhancement" className={"pure-controls "+(compact?"is-compact":"")}>
   <div className="pure-control-header">
    <div><h3><AudioLines size={18} strokeWidth={1.6}/>{compact?"PURE":"Sound profile"}</h3>{status&&<p role="status">{status}</p>}</div>
-   <button type="button" role="switch" aria-label="Enable PURE" aria-checked={enabled} disabled={!available&&!enabled} onClick={()=>update({enabled:!enabled})} className={"pure-switch "+(enabled?"is-on":"")}><span/></button>
+   <label className={"pure-switch "+(enabled?"is-on":"")}><input type="checkbox" role="switch" aria-label="Enable PURE" checked={enabled} disabled={!available&&!enabled} onChange={event=>update({enabled:event.target.checked})}/><span className="pure-switch-track" aria-hidden="true"><span className="pure-switch-thumb"/></span></label>
   </div>
   <div role="group" aria-label="PURE sound presets" className="pure-presets">{PURE_PRESETS.map(preset=><button key={preset.name} type="button" disabled={!available||p.pureComparing} aria-pressed={active&&selected?.name===preset.name} onClick={()=>update({...preset,enabled:true})}><strong>{preset.name}</strong></button>)}</div>
   <details className="pure-adjustments"><summary>Fine-tune <ChevronDown size={15}/></summary>
