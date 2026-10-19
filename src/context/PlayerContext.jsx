@@ -1,5 +1,6 @@
 import {DEFAULT_MIXER,normalizeMixer,mixerHeadroom,smoothAudioParam} from "@/lib/equalizer";
 import {commitAudioHandoff,transitionDuration} from "@/lib/audioHandoff";
+import {DEFAULT_PURE,normalizePure,readPure,createPureGraph} from "@/lib/pureAudio";
 import {useAudioOutput} from "@/hooks/useAudioOutput";
 import {useSafety} from '@/context/SafetyContext';
 import {
@@ -69,6 +70,11 @@ export function PlayerProvider({ children }) {
 
   const activeIdxRef = useRef(0);
   const audioOutput=useAudioOutput(audioRefs,activeIdxRef,audioCtxRef);
+  const [pure,setPureState]=useState(readPure),[pureError,setPureError]=useState("");
+  const pureRef=useRef(pure),pureGraphRef=useRef(null),pureRequestRef=useRef(0);
+  const pureRemote=audioOutput.state.remoteState==="connected";
+  const pureRemoteRef=useRef(pureRemote);pureRemoteRef.current=pureRemote;
+  useEffect(()=>{pureRef.current=pure;pureGraphRef.current?.apply(pureRemote?{...pure,enabled:false}:pure);try{localStorage.setItem("public:player_pure",JSON.stringify(pure));}catch{}},[pure,pureRemote]);
   const blobUrlRefs = [useRef(null), useRef(null)];
   const sideLoadedIdRef = [useRef(null), useRef(null)];
   const sideReadyRef = [useRef(false), useRef(false)];
@@ -261,7 +267,9 @@ export function PlayerProvider({ children }) {
       filterRefs.vocals[1].current = vocalsF2;
       filterRefs.vocals[2].current = vocalsF3;
       filterRefs.treble.current = trebleF;
-      master.connect(volumeGain);volumeGain.connect(ctx.destination);
+      const pureGraph=createPureGraph(ctx);pureGraphRef.current=pureGraph;
+      pureGraph.apply(pureRemoteRef.current?{...pureRef.current,enabled:false}:pureRef.current,true);
+      master.connect(pureGraph.input);pureGraph.output.connect(volumeGain);volumeGain.connect(ctx.destination);
       // Apply any mixer settings the user already chose to the new filters
       audioCtxRef.current = ctx;
       audioOutput.controller.attachGraph(ctx);
@@ -285,6 +293,7 @@ export function PlayerProvider({ children }) {
   // (Home-Screen) PWA. Transitions/visualizer opt back in via ensureGraph().
   const graphNeeded = useCallback(() => {
     const s = getTransitionSettings();
+    if(pureRef.current.enabled&&!pureRemoteRef.current)return true;
     if (isTransitionActive(s)||(isIOSDevice()&&volumeRef.current<1)) return true;
     // Mixer active (non-neutral) also needs the Web Audio graph
     const m = mixerRef.current;
@@ -322,6 +331,23 @@ export function PlayerProvider({ children }) {
   },[setMixerValues]);
   const resetMixer=useCallback(()=>setMixerValues({...DEFAULT_MIXER}),[setMixerValues]);
 
+  const setPureValues=useCallback(async values=>{
+    const next=normalizePure({...pureRef.current,...values}),request=++pureRequestRef.current;
+    setPureError("");
+    if(next.enabled&&pureRemoteRef.current){setPureError("Switch playback to this device to use Pure.");return false;}
+    const ctx=next.enabled?ensureGraph():audioCtxRef.current;
+    if(next.enabled&&(!ctx||!pureGraphRef.current)){setPureError("Audio processing could not start. Try again.");return false;}
+    pureRef.current=next;pureGraphRef.current?.apply(next);setPureState(next);
+    if(next.enabled&&(ctx.state==="suspended"||ctx.state==="interrupted")){
+      try{await ctx.resume();if(ctx.state!=="running")throw Error("Audio engine not running");}
+      catch{if(request===pureRequestRef.current){const off={...next,enabled:false};pureRef.current=off;pureGraphRef.current?.apply(off);setPureState(off);setPureError("Audio processing paused. Tap Pure to try again.");}return false;}
+    }
+    return true;
+  },[ensureGraph]);
+  useEffect(()=>{
+    const reset=()=>{pureRequestRef.current++;const off={...DEFAULT_PURE};pureRef.current=off;pureGraphRef.current?.apply(off);setPureState(off);setPureError("");};
+    window.addEventListener("account:cleared",reset);return()=>window.removeEventListener("account:cleared",reset);
+  },[]);
   // --- gain helpers ---
   const setGainImmediate = useCallback((side, v) => {
     const ctx = audioCtxRef.current;
@@ -1349,6 +1375,7 @@ export function PlayerProvider({ children }) {
     enableMixer,
     dismissed,
     audioOutput,
+    pure,pureError,setPureValues,pureSuspended:pureRemote,
     getAudioQualitySource:()=>{const side=activeIdxRef.current;return {id:sideLoadedIdRef[side].current,url:audioRefs[side].current?.src||"",outputSampleRate:audioCtxRef.current?.sampleRate||null};},
   };
 
