@@ -10,6 +10,7 @@ export default function PureControls({compact=false}){
  useEffect(()=>{const release=()=>p.comparePure(false),visibility=()=>{if(document.visibilityState==="hidden")release();};window.addEventListener("blur",release);document.addEventListener("visibilitychange",visibility);return()=>{window.removeEventListener("blur",release);document.removeEventListener("visibilitychange",visibility);release();};},[p.comparePure]);
  const update=values=>{p.comparePure(false);return p.setPureValues(values);};
  const release=()=>p.comparePure(false);
+ const canCompare=active&&!!p.currentTrack&&p.isPlaying;
  const status=p.pureSuspended?"Paused for wireless playback":p.pureComparing?"Comparing · PURE bypassed":active?(selected?.name||"Custom tuning"):"Off · enable to start";
  return <section onTouchStart={event=>event.stopPropagation()} onTouchMove={event=>event.stopPropagation()} onTouchEnd={event=>event.stopPropagation()} aria-label="PURE sound enhancement" className={"pure-controls "+(compact?"is-compact":"")}>
   <div className="pure-control-header">
@@ -27,10 +28,10 @@ export default function PureControls({compact=false}){
    {!compact&&<span className="pure-slider-hint">{description}</span>}
   </label>)}</div>
   <div className="pure-actions">
-   <button type="button" className="pure-compare" disabled={!active} onPointerDown={event=>{if(event.button!==0)return;event.preventDefault();event.currentTarget.setPointerCapture?.(event.pointerId);p.comparePure(true);}} onClick={event=>{if(event.detail===0)p.comparePure(!p.pureComparing);}} aria-label={p.pureComparing?"Restore PURE":"Compare without PURE. Hold or activate to compare"} onPointerUp={release} onPointerCancel={release} onLostPointerCapture={release} onBlur={release} onKeyDown={event=>{if(event.key===" "||event.key==="Enter"){event.preventDefault();if(!event.repeat)p.comparePure(true);}}} onKeyUp={event=>{if(event.key===" "||event.key==="Enter"){event.preventDefault();release();}}} aria-pressed={!!p.pureComparing}>{p.pureComparing?"Release to hear PURE":"Hold to compare"}</button>
+   <button type="button" className="pure-compare" disabled={!canCompare} onPointerDown={event=>{if(event.button!==0)return;event.preventDefault();event.currentTarget.setPointerCapture?.(event.pointerId);p.comparePure(true);}} onClick={event=>{if(event.detail===0)p.comparePure(!p.pureComparing);}} aria-label={p.pureComparing?"Restore PURE":"Compare without PURE. Hold or activate to compare"} onPointerUp={release} onPointerCancel={release} onLostPointerCapture={release} onBlur={release} onKeyDown={event=>{if(event.key===" "||event.key==="Enter"){event.preventDefault();if(!event.repeat)p.comparePure(true);}}} onKeyUp={event=>{if(event.key===" "||event.key==="Enter"){event.preventDefault();release();}}} aria-pressed={!!p.pureComparing}>{p.pureComparing?"Release to hear PURE":active&&!p.isPlaying?"Play a song to compare":"Hold to compare"}</button>
    <button type="button" className="pure-reset" disabled={!available} onClick={()=>update({...DEFAULT_PURE,enabled})} aria-label="Reset PURE tuning"><RotateCcw size={13}/><span>Reset</span></button>
   </div>
   {p.pureError&&<p role="status" className="pure-error">{p.pureError}</p>}
-  {!compact&&<p className="pure-footnote">Saved on this device. PURE shapes playback without changing your uploaded files.</p>}
+  {!compact&&<p className="pure-footnote">Your tuning applies to every song on this device. Uploaded files stay unchanged.</p>}
  </section>;
 }
