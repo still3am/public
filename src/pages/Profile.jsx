@@ -447,7 +447,7 @@ export default function Profile({ ownProfileTab = false }) {
                 <button onClick={() => setFollowList("following")} className="hover:underline transition">
                   <span className="font-bold">{stats.following === null ? "—" : formatNumber(stats.following)}</span> <span className="text-foreground/50">following</span>
                 </button>
-                {(profile.is_artist || stats.plays > 0) && <span><span className="font-bold">{formatNumber(stats.plays)}</span> <span className="text-foreground/50">song plays</span></span>}
+                {(profile.is_artist || stats.plays > 0) && <span><span className="font-bold">{formatNumber(stats.plays)}</span> <span className="text-foreground/50 text-center">song plays</span></span>}
                 {stats.likes > 0 && <span><span className="font-bold">{formatNumber(stats.likes)}</span> <span className="text-foreground/50">likes</span></span>}
               </div>
 

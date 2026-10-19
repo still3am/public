@@ -3043,6 +3043,19 @@
       "match": "exact artist and title"
     },
     {
+      "id": "6abf4400031f60be47f0ddb4",
+      "title": "Adónde Se Fue ?",
+      "artist": "Xtreme",
+      "before": "Other",
+      "genre": "Latin",
+      "source_genre": "Latin",
+      "source_title": "Adónde Se Fue ?",
+      "source_artist": "Xtreme",
+      "source_album": "Haciendo Historia",
+      "source_url": "https://music.apple.com/us/album/ad%C3%B3nde-se-fue/1444141504?i=1444142113&uo=4",
+      "match": "exact artist and title"
+    },
+    {
       "id": "6abf44077d9353965aa409fe",
       "title": "Adventure of a Lifetime",
       "artist": "Coldplay",
@@ -3082,6 +3095,19 @@
       "match": "exact artist and title"
     },
     {
+      "id": "6abf441e8844a64bfc483567",
+      "title": "Agony",
+      "artist": "Yung Lean",
+      "before": "Other",
+      "genre": "Alternative",
+      "source_genre": "Alternative",
+      "source_title": "Agony",
+      "source_artist": "Yung Lean",
+      "source_album": "Stranger",
+      "source_url": "https://music.apple.com/us/album/agony/1615762892?i=1615763033&uo=4",
+      "match": "exact artist and title"
+    },
+    {
       "id": "6abf441e95d02843adc70b6e",
       "title": "Against The Grain",
       "artist": "Akon, Ray Lavender",
@@ -3092,6 +3118,32 @@
       "source_artist": "Akon",
       "source_album": "Freedom",
       "source_url": "https://music.apple.com/us/album/against-the-grain-feat-ray-lavender/1440742168?i=1440742419&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6abf441f7af56d07892bc3f4",
+      "title": "AGORA",
+      "artist": "Maria Becerra",
+      "before": "Other",
+      "genre": "Latin",
+      "source_genre": "Latin",
+      "source_title": "AGORA",
+      "source_artist": "Maria Becerra",
+      "source_album": "AGORA - Single",
+      "source_url": "https://music.apple.com/us/album/agora/1766363224?i=1766363485&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6abf44277341deaa8063298b",
+      "title": "Ahora Vete",
+      "artist": "Xtreme",
+      "before": "Other",
+      "genre": "Latin",
+      "source_genre": "Urbano latino",
+      "source_title": "Ahora Vete",
+      "source_artist": "Xtreme",
+      "source_album": "Xtreme",
+      "source_url": "https://music.apple.com/us/album/ahora-vete/1443663575?i=1443663959&uo=4",
       "match": "exact artist and title"
     },
     {
@@ -3222,6 +3274,19 @@
       "source_artist": "Sabrina Claudio & Wale",
       "source_album": "All My Love - Single",
       "source_url": "https://music.apple.com/us/album/all-my-love/1468291113?i=1468291114&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6abf445cea1f3a50106f69cf",
+      "title": "ALL I SEE IS YOU.",
+      "artist": "Kameron Greene",
+      "before": "Other",
+      "genre": "R&B",
+      "source_genre": "R&B/Soul",
+      "source_title": "ALL I SEE IS YOU.",
+      "source_artist": "Kameron Greene",
+      "source_album": "ALL I SEE IS YOU. - Single",
+      "source_url": "https://music.apple.com/us/album/all-i-see-is-you/6811399578?i=6811399581&uo=4",
       "match": "exact artist and title"
     },
     {
@@ -3550,6 +3615,19 @@
       "match": "exact artist and title"
     },
     {
+      "id": "6abf44d54ae4e680f0548ee3",
+      "title": "Antología De Caricias",
+      "artist": "Anthony Santos",
+      "before": "Other",
+      "genre": "Latin",
+      "source_genre": "Latin",
+      "source_title": "Antología De Caricias",
+      "source_artist": "Anthony Santos",
+      "source_album": "La Batalla",
+      "source_url": "https://music.apple.com/us/album/antolog%C3%ADa-de-caricias/1517903419?i=1517903887&uo=4",
+      "match": "exact artist and title"
+    },
+    {
       "id": "6abf44d5a29e1eb9a02e3d23",
       "title": "Antes y Después",
       "artist": "El Chaval de la Bachata, Dalvin La Melodia",
@@ -3758,6 +3836,19 @@
       "match": "exact artist and title"
     },
     {
+      "id": "6abf4519464f7503880b0927",
+      "title": "ATLiens",
+      "artist": "Outkast",
+      "before": "Other",
+      "genre": "Hip-Hop",
+      "source_genre": "Hip-Hop/Rap",
+      "source_title": "ATLiens",
+      "source_artist": "Outkast",
+      "source_album": "ATLiens",
+      "source_url": "https://music.apple.com/us/album/atliens/298566410?i=298566420&uo=4",
+      "match": "exact artist and title"
+    },
+    {
       "id": "6abf451999b8e8384224798f",
       "title": "Assume The Position",
       "artist": "Bryson Tiller",
@@ -3836,6 +3927,19 @@
       "match": "exact artist and title"
     },
     {
+      "id": "6abf45382f9b7e902af74632",
+      "title": "Azul",
+      "artist": "J Balvin",
+      "before": "Other",
+      "genre": "Latin",
+      "source_genre": "Urbano latino",
+      "source_title": "Azul",
+      "source_artist": "J Balvin",
+      "source_album": "Colores",
+      "source_url": "https://music.apple.com/us/album/azul/1500490683?i=1500491200&uo=4",
+      "match": "exact artist and title"
+    },
+    {
       "id": "6abf454aa25447d6e28f2436",
       "title": "100 Gramos",
       "artist": "JHAYCO",
@@ -3859,6 +3963,19 @@
       "source_artist": "Sabrina Claudio",
       "source_album": "About Time",
       "source_url": "https://music.apple.com/us/album/about-time-intro/1291440782?i=1291440784&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6abf455508a755f086dc0ec7",
+      "title": "Abusadora",
+      "artist": "Wisin & Yandel",
+      "before": "Other",
+      "genre": "Latin",
+      "source_genre": "Urbano latino",
+      "source_title": "Abusadora",
+      "source_artist": "Wisin & Yandel",
+      "source_album": "La Revolución - Evolution",
+      "source_url": "https://music.apple.com/us/album/abusadora/1469556542?i=1469556885&uo=4",
       "match": "exact artist and title"
     },
     {
@@ -4145,6 +4262,19 @@
       "source_artist": "Harry Styles",
       "source_album": "Fine Line",
       "source_url": "https://music.apple.com/us/album/cherry/1485802965?i=1485802974&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6acc4334c91677ec5920c2a1",
+      "title": "Cherry-coloured Funk",
+      "artist": "Cocteau Twins",
+      "before": "Other",
+      "genre": "Rock",
+      "source_genre": "Rock",
+      "source_title": "Cherry-Coloured Funk",
+      "source_artist": "Cocteau Twins",
+      "source_album": "Heaven Or Las Vegas (Remastered)",
+      "source_url": "https://music.apple.com/us/album/cherry-coloured-funk/258198881?i=258198956&uo=4",
       "match": "exact artist and title"
     },
     {
@@ -4733,6 +4863,19 @@
       "match": "exact artist and title"
     },
     {
+      "id": "6acc44008c6898c9e61a2dce",
+      "title": "Corazón Culpable",
+      "artist": "Anthony Santos",
+      "before": "Other",
+      "genre": "Latin",
+      "source_genre": "Latin",
+      "source_title": "Corazón Culpable",
+      "source_artist": "Anthony Santos",
+      "source_album": "Greatest Hits",
+      "source_url": "https://music.apple.com/us/album/coraz%C3%B3n-culpable/1517903235?i=1517903469&uo=4",
+      "match": "exact artist and title"
+    },
+    {
       "id": "6acc4403951d0fb647b0d395",
       "title": "Cordero De Dios",
       "artist": "Pahola Marino",
@@ -5107,6 +5250,19 @@
       "source_artist": "Conscious Lacon",
       "source_album": "Digit viewing - Single",
       "source_url": "https://music.apple.com/us/album/digit-viewing/6799055837?i=6799055838&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6acc49c366816253bba187ce",
+      "title": "Dile A El",
+      "artist": "El Chaval de la Bachata",
+      "before": "Other",
+      "genre": "Latin",
+      "source_genre": "Latin",
+      "source_title": "Dile A El",
+      "source_artist": "El Chaval de la Bachata",
+      "source_album": "Fantastic Five - EP",
+      "source_url": "https://music.apple.com/us/album/dile-a-el/1860096682?i=1860096698&uo=4",
       "match": "exact artist and title"
     },
     {
@@ -6202,6 +6358,19 @@
       "match": "exact artist and title"
     },
     {
+      "id": "6acc4b7f06e0bec4dc6ffe8a",
+      "title": "El Verde de Tus Ojos",
+      "artist": "Kiko Rodriguez",
+      "before": "Other",
+      "genre": "Latin",
+      "source_genre": "Latin",
+      "source_title": "El Verde de Tus Ojos (feat. El Chaval de la Bachata)",
+      "source_artist": "Kiko Rodriguez",
+      "source_album": "El Verde de Tus Ojos (feat. El Chaval de la Bachata) - Single",
+      "source_url": "https://music.apple.com/us/album/el-verde-de-tus-ojos-feat-el-chaval-de-la-bachata/1446316073?i=1446316076&uo=4",
+      "match": "exact artist and title"
+    },
+    {
       "id": "6acc4b8629fc2d48cca9285b",
       "title": "Elastigirl",
       "artist": "LISA",
@@ -6605,6 +6774,19 @@
       "match": "exact artist and title"
     },
     {
+      "id": "6acc4c38ff9ac7cc4e1d4d95",
+      "title": "Estoy Enamorado",
+      "artist": "Wisin & Yandel",
+      "before": "Other",
+      "genre": "Latin",
+      "source_genre": "Urbano latino",
+      "source_title": "Estoy Enamorado",
+      "source_artist": "Wisin & Yandel",
+      "source_album": "Los Vaqueros, el Regreso (Deluxe Edition)",
+      "source_url": "https://music.apple.com/us/album/estoy-enamorado/1445837184?i=1445837288&uo=4",
+      "match": "exact artist and title"
+    },
+    {
       "id": "6acc4c395fe6853aef24b1ea",
       "title": "estrella fugaz",
       "artist": "Beéle",
@@ -6901,6 +7083,19 @@
       "source_artist": "Sheff G",
       "source_album": "The Unluccy Luccy Kid",
       "source_url": "https://music.apple.com/us/album/flows-pt-2-feat-sleepy-hallow/1479636315?i=1479636321&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6acc4f4c7407041e55aa38fe",
+      "title": "Fly Away",
+      "artist": "Lenny Kravitz",
+      "before": "Other",
+      "genre": "Rock",
+      "source_genre": "Rock",
+      "source_title": "Fly Away",
+      "source_artist": "Lenny Kravitz",
+      "source_album": "Greatest Hits",
+      "source_url": "https://music.apple.com/us/album/fly-away/723338099?i=723338326&uo=4",
       "match": "exact artist and title"
     },
     {
@@ -8581,6 +8776,19 @@
       "match": "exact artist and title"
     },
     {
+      "id": "6acc57364d638c495b1d0d94",
+      "title": "HACE CALOR",
+      "artist": "Maria Becerra, El Alfa, XROSS",
+      "before": "Other",
+      "genre": "Latin Pop",
+      "source_genre": "Pop Latino",
+      "source_title": "HACE CALOR",
+      "source_artist": "Maria Becerra, El Alfa & XROSS",
+      "source_album": "QUIMERA",
+      "source_url": "https://music.apple.com/us/album/hace-calor/1849982541?i=1849982849&uo=4",
+      "match": "exact artist and title"
+    },
+    {
       "id": "6acc573bb00f6bcbd60d7b0f",
       "title": "HACIA FALTA YO",
       "artist": "Kapo",
@@ -8630,6 +8838,19 @@
       "source_artist": "Natalie Taylor & Donovan Woods",
       "source_album": "Hang On To Me - Single",
       "source_url": "https://music.apple.com/us/album/hang-on-to-me/1636483366?i=1636483368&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6acc575c4f1ddc69f0862efe",
+      "title": "Happiness is a butterfly",
+      "artist": "Lana Del Rey",
+      "before": "Other",
+      "genre": "Alternative",
+      "source_genre": "Alternative",
+      "source_title": "Happiness is a butterfly",
+      "source_artist": "Lana Del Rey",
+      "source_album": "Norman Fucking Rockwell!",
+      "source_url": "https://music.apple.com/us/album/happiness-is-a-butterfly/1474669063?i=1474669295&uo=4",
       "match": "exact artist and title"
     },
     {
@@ -9166,6 +9387,19 @@
       "match": "exact artist and title"
     },
     {
+      "id": "6acc57f1686a325dcdffa398",
+      "title": "HER EYES",
+      "artist": "Kameron Greene",
+      "before": "Other",
+      "genre": "R&B",
+      "source_genre": "R&B/Soul",
+      "source_title": "HER EYES",
+      "source_artist": "Kameron Greene",
+      "source_album": "HER EYES - Single",
+      "source_url": "https://music.apple.com/us/album/her-eyes/6788038147?i=6788038150&uo=4",
+      "match": "exact artist and title"
+    },
+    {
       "id": "6acc57f81846aa6fb6dd5f89",
       "title": "Here You Come Again",
       "artist": "Dolly Parton",
@@ -9215,6 +9449,19 @@
       "source_artist": "J Balvin & Pitbull",
       "source_album": "The Fate of the Furious: The Album",
       "source_url": "https://music.apple.com/us/album/hey-ma-feat-camila-cabello/1210537086?i=1210538484&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6acc580a71a7fc2ae19ea26e",
+      "title": "Hey Ya!",
+      "artist": "Outkast",
+      "before": "Other",
+      "genre": "Hip-Hop",
+      "source_genre": "Hip-Hop/Rap",
+      "source_title": "Hey Ya!",
+      "source_artist": "Outkast",
+      "source_album": "Speakerboxxx/The Love Below",
+      "source_url": "https://music.apple.com/us/album/hey-ya/1774798661?i=1774799818&uo=4",
       "match": "exact artist and title"
     },
     {
@@ -11075,12 +11322,6 @@
       "genre": "Other"
     },
     {
-      "id": "6abf4400031f60be47f0ddb4",
-      "title": "Adónde Se Fue ?",
-      "artist": "Xtreme",
-      "genre": "Other"
-    },
-    {
       "id": "6abf4402d7ceb43893ed735a",
       "title": "adrenaline",
       "artist": "nafla",
@@ -11141,18 +11382,6 @@
       "genre": "Other"
     },
     {
-      "id": "6abf441e8844a64bfc483567",
-      "title": "Agony",
-      "artist": "Yung Lean",
-      "genre": "Other"
-    },
-    {
-      "id": "6abf441f7af56d07892bc3f4",
-      "title": "AGORA",
-      "artist": "Maria Becerra",
-      "genre": "Other"
-    },
-    {
       "id": "6abf442261ba23b2c1b7c1fb",
       "title": "Agradecido Estoy",
       "artist": "Elevation Español",
@@ -11179,12 +11408,6 @@
       "id": "6abf4426d361ed1aab0e4417",
       "title": "Ain't No Doubt",
       "artist": "PAGEFOURR",
-      "genre": "Other"
-    },
-    {
-      "id": "6abf44277341deaa8063298b",
-      "title": "Ahora Vete",
-      "artist": "Xtreme",
       "genre": "Other"
     },
     {
@@ -11298,12 +11521,6 @@
       "id": "6abf445ccc012b379ad33469",
       "title": "All Not Equal",
       "artist": "Hunxho",
-      "genre": "Other"
-    },
-    {
-      "id": "6abf445cea1f3a50106f69cf",
-      "title": "ALL I SEE IS YOU.",
-      "artist": "Kameron Greene",
       "genre": "Other"
     },
     {
@@ -11424,7 +11641,12 @@
       "id": "6abf44a04f9b53f21ddfbcb1",
       "title": "American Teenager",
       "artist": "Ethel Cain",
-      "genre": "Other"
+      "genre": "Other",
+      "review_reason": "conflicting catalog genres",
+      "candidate_genres": [
+        "Alternative",
+        "Pop"
+      ]
     },
     {
       "id": "6abf44a589e2514b21f472d0",
@@ -11529,12 +11751,6 @@
       "genre": "Other"
     },
     {
-      "id": "6abf44d54ae4e680f0548ee3",
-      "title": "Antología De Caricias",
-      "artist": "Anthony Santos",
-      "genre": "Other"
-    },
-    {
       "id": "6abf44e06f22ac5241ed6b7f",
       "title": "Apocalypto",
       "artist": "Bentley Robles",
@@ -11616,7 +11832,12 @@
       "id": "6abf450d6a46069717d654e6",
       "title": "Are You Gonna Go My Way",
       "artist": "Lenny Kravitz",
-      "genre": "Other"
+      "genre": "Other",
+      "review_reason": "conflicting catalog genres",
+      "candidate_genres": [
+        "Pop",
+        "Rock"
+      ]
     },
     {
       "id": "6abf4513a6381d05b973ae38",
@@ -11646,12 +11867,6 @@
       "id": "6abf4514f3a7535658e4de4b",
       "title": "Así Soy Yo",
       "artist": "Anuel AA, Bad Bunny",
-      "genre": "Other"
-    },
-    {
-      "id": "6abf4519464f7503880b0927",
-      "title": "ATLiens",
-      "artist": "Outkast",
       "genre": "Other"
     },
     {
@@ -11720,12 +11935,6 @@
       ]
     },
     {
-      "id": "6abf45382f9b7e902af74632",
-      "title": "Azul",
-      "artist": "J Balvin",
-      "genre": "Other"
-    },
-    {
       "id": "6abf454a65726d59aa19efae",
       "title": "105 Freestyle",
       "artist": "Young Miko, Caleb Calloway",
@@ -11765,12 +11974,6 @@
       "id": "6abf4552e037a19d627b650d",
       "title": "A New Kind Of Love - Demo",
       "artist": "Frou Frou, Imogen Heap, Guy Sigsworth",
-      "genre": "Other"
-    },
-    {
-      "id": "6abf455508a755f086dc0ec7",
-      "title": "Abusadora",
-      "artist": "Wisin & Yandel",
       "genre": "Other"
     },
     {
@@ -12020,12 +12223,6 @@
       "id": "6acc43347dfd3973326ee06a",
       "title": "Chica",
       "artist": "Little Loove",
-      "genre": "Other"
-    },
-    {
-      "id": "6acc4334c91677ec5920c2a1",
-      "title": "Cherry-coloured Funk",
-      "artist": "Cocteau Twins",
       "genre": "Other"
     },
     {
@@ -12424,12 +12621,6 @@
       "genre": "Other"
     },
     {
-      "id": "6acc44008c6898c9e61a2dce",
-      "title": "Corazón Culpable",
-      "artist": "Anthony Santos",
-      "genre": "Other"
-    },
-    {
       "id": "6acc4405e5532904aa6dd498",
       "title": "Coroné",
       "artist": "Eladio Carrion",
@@ -12807,12 +12998,6 @@
       "id": "6acc49c0540c42a5cdcb3d9d",
       "title": "Digits",
       "artist": "Young Thug",
-      "genre": "Other"
-    },
-    {
-      "id": "6acc49c366816253bba187ce",
-      "title": "Dile A El",
-      "artist": "El Chaval de la Bachata",
       "genre": "Other"
     },
     {
@@ -13621,7 +13806,12 @@
       "id": "6acc4b7882d1ce69ba5e3335",
       "title": "El Teléfono",
       "artist": "Héctor \"El Father\", Wisin & Yandel",
-      "genre": "Other"
+      "genre": "Other",
+      "review_reason": "conflicting catalog genres",
+      "candidate_genres": [
+        "Latin",
+        "Reggae"
+      ]
     },
     {
       "id": "6acc4b790d7155173c4d23a2",
@@ -13645,12 +13835,6 @@
       "id": "6acc4b7f014a2354a5309f33",
       "title": "EL TRUQUITO",
       "artist": "Criss & Ronny, Lil Silvio, Zaider, ANDY ALASKA, La Colectiva Élite",
-      "genre": "Other"
-    },
-    {
-      "id": "6acc4b7f06e0bec4dc6ffe8a",
-      "title": "El Verde de Tus Ojos",
-      "artist": "Kiko Rodriguez",
       "genre": "Other"
     },
     {
@@ -14030,12 +14214,6 @@
       "genre": "Other"
     },
     {
-      "id": "6acc4c38ff9ac7cc4e1d4d95",
-      "title": "Estoy Enamorado",
-      "artist": "Wisin & Yandel",
-      "genre": "Other"
-    },
-    {
       "id": "6acc4c3ad2ec8b217eb8ddd8",
       "title": "Estrechez De Corazón",
       "artist": "Los Prisioneros",
@@ -14345,12 +14523,6 @@
       "id": "6acc4f4935caf653ad7f5dd8",
       "title": "Fly (Someone You Love)",
       "artist": "Joyce Wrice",
-      "genre": "Other"
-    },
-    {
-      "id": "6acc4f4c7407041e55aa38fe",
-      "title": "Fly Away",
-      "artist": "Lenny Kravitz",
       "genre": "Other"
     },
     {
@@ -15713,12 +15885,6 @@
       "genre": "Other"
     },
     {
-      "id": "6acc57364d638c495b1d0d94",
-      "title": "HACE CALOR",
-      "artist": "Maria Becerra, El Alfa, XROSS",
-      "genre": "Other"
-    },
-    {
       "id": "6acc573bd0fe074695046e34",
       "title": "Haciendo Dinero",
       "artist": "Eladio Carrion",
@@ -15794,12 +15960,6 @@
       "id": "6acc57582ac964c0e1ce0251",
       "title": "Hanging Out To Dry",
       "artist": "Florence Road",
-      "genre": "Other"
-    },
-    {
-      "id": "6acc575c4f1ddc69f0862efe",
-      "title": "Happiness is a butterfly",
-      "artist": "Lana Del Rey",
       "genre": "Other"
     },
     {
@@ -15962,7 +16122,12 @@
       "id": "6acc57d089c07855bf40b572",
       "title": "Heaven or Las Vegas",
       "artist": "Cocteau Twins",
-      "genre": "Other"
+      "genre": "Other",
+      "review_reason": "conflicting catalog genres",
+      "candidate_genres": [
+        "Alternative",
+        "Rock"
+      ]
     },
     {
       "id": "6acc57dd8748a09112337970",
@@ -16025,12 +16190,6 @@
       "genre": "Other"
     },
     {
-      "id": "6acc57f1686a325dcdffa398",
-      "title": "HER EYES",
-      "artist": "Kameron Greene",
-      "genre": "Other"
-    },
-    {
       "id": "6acc57f3661aaf3711230cff",
       "title": "Her",
       "artist": "Leanna Crawford",
@@ -16064,12 +16223,6 @@
       "id": "6acc5804a82ea17536526b7e",
       "title": "Hey Lover!",
       "artist": "Wabie",
-      "genre": "Other"
-    },
-    {
-      "id": "6acc580a71a7fc2ae19ea26e",
-      "title": "Hey Ya!",
-      "artist": "Outkast",
       "genre": "Other"
     },
     {
@@ -16395,5 +16548,5 @@
       "genre": "Other"
     }
   ],
-  "searched_terms": 140
+  "searched_terms": 160
 }
