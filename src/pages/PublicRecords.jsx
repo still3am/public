@@ -272,7 +272,16 @@ export default function PublicRecords({ id: propId, fallbackArtist = null }) {
           <ArtistArtwork source={topCover || artist.cover_art_url || artist.avatar_url} className="artist-hero-image" />
           <div className="artist-hero-shade" />
           <button onClick={() => window.history.state?.idx > 0 ? nav(-1) : nav("/search")} className="artist-back" aria-label="Back"><ChevronLeft size={25} /></button>
-          <ArtistReleaseFollow key={(user?.id||"guest")+":"+artist.name} name={artist.name}/>
+          <div className="artist-hero-actions">
+            <ArtistReleaseFollow key={(user?.id||"guest")+":"+artist.name} name={artist.name}/>
+            <DropdownMenu><DropdownMenuTrigger asChild><button type="button" className="artist-more-button" aria-label={"More options for "+artist.name}><MoreHorizontal size={25}/></button></DropdownMenuTrigger>
+              <DropdownMenuContent align="end" sideOffset={10} className="rounded-2xl p-2 min-w-[220px]">
+                <DropdownMenuItem className="min-h-11 rounded-xl" onSelect={shareArtist}><Share2/>Share artist</DropdownMenuItem>
+                <DropdownMenuItem className="min-h-11 rounded-xl" disabled={!artistQueue.length} onSelect={shuffleArtist}><Shuffle/>Shuffle songs</DropdownMenuItem>
+                <DropdownMenuItem className="min-h-11 rounded-xl" onSelect={aboutArtist}><Info/>About {artist.name}</DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
           <div className="artist-hero-bottom">
             <div className="artist-hero-name min-w-0">
               <p className="artist-eyebrow">Artist on PUBLIC</p>
