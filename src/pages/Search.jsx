@@ -14,6 +14,7 @@ import TrackCard from "@/components/TrackCard";
 import VinylCrate from "@/components/search/VinylCrate";
 import SearchResults from "@/components/search/SearchResults";
 import PullToRefresh from "@/components/PullToRefresh";
+import LoadError from "@/components/LoadError";
 import EmptyState from "@/components/EmptyState";
 
 export default function Search() {
@@ -215,7 +216,7 @@ export default function Search() {
             description="No published tracks in this genre." />
           }
           </div> :
-        browseError ? <div className="p-6 text-center"><Button onClick={loadCatalogue}>Refresh music</Button></div> : loadingAll ? loader :
+        browseError ? <LoadError message={browseError} onRetry={()=>loadCatalogue(true)} /> : loadingAll ? loader :
         genreList.length ?
         <VinylCrate genres={genreList} onPick={chooseGenre} /> :
 
