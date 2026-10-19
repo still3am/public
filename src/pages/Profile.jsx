@@ -28,7 +28,6 @@ import {
   Pencil,
   Save,
   Music,
-  X,
   MapPin,
   Globe,
   AtSign,
@@ -200,7 +199,7 @@ export default function Profile({ ownProfileTab = false }) {
   }
 
   useEffect(() => {
-    setEditMode(false);bannerVersion.current++;bannerBusy.current=false;setUploadingBanner(false);
+    setEditMode(false);setSaving(false);bannerVersion.current++;bannerBusy.current=false;setUploadingBanner(false);
     setFollowMessage("");setProfile(null);setTracks([]);setTopTracks([]);setFollowing(false);setFollowReady(false);setStats({ followers: null, following: null, plays: 0, likes: 0 });
     if (targetId) load();
     return () => {loadVersion.current++;};
