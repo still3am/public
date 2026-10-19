@@ -14,7 +14,7 @@
     "test:duplicates": "node tests/duplicate-detection.test.mjs",
     "test:uploads": "node tests/upload-queue.test.mjs",
     "test:offline": "node tests/offline-sync.test.mjs",
-    "test": "npm run test:offline && npm run test:duplicates && npm run test:uploads && npm run test:notifications && npm run test:playlists && npm run test:player && npm run test:security && npm run test:backend-registration && npm run test:search && npm run test:follows",
+    "test": "npm run test:offline && npm run test:duplicates && npm run test:uploads && npm run test:notifications && npm run test:playlists && npm run test:player && npm run test:security && npm run test:backend-registration && npm run test:search && npm run test:follows && npm run test:features",
     "test:notifications": "node tests/notification-recovery.test.mjs",
     "test:playlists": "node tests/playlist-transitions.test.mjs",
     "test:player": "node tests/player-lifecycle.test.mjs && node tests/audio-output.test.mjs && node tests/pure-audio.test.mjs",
