@@ -1,9 +1,9 @@
 /** @param {any} props */
-export default function StatusMessage({ value, editMode, onChange }) {
+export default function StatusMessage({ value, editMode, onChange, disabled=false }) {
   if (editMode) {
     return (
       <div className="mt-3 w-full max-w-2xl mx-auto md:mx-0">
-        <input
+        <input disabled={disabled}
           value={value || ""}
           onChange={(e) => onChange(e.target.value)}
           placeholder="What's your current mood?"
