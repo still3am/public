@@ -2,7 +2,7 @@ import {base44} from "@/api/base44Client";
 const prefix="public:listening:";
 let current=null,busy=false;
 function read(uid){try{return JSON.parse(localStorage.getItem(prefix+uid)||"[]");}catch{return [];}}
-function save(uid,rows){try{localStorage.setItem(prefix+uid,JSON.stringify(rows.slice(-300)));}catch{}}
+function save(uid,rows){try{localStorage.setItem(prefix+uid,JSON.stringify(rows));}catch{}}
 export async function syncListeningHistory(uid){
  if(!uid||busy||!navigator.onLine)return;
  busy=true;
