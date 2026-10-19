@@ -6,6 +6,7 @@
 .recap-card-brand{display:flex;justify-content:space-between;align-items:center;opacity:.94}
 .recap-card-kicker{margin-top:auto;padding-top:30px;font-size:clamp(18px,3.7vw,23px);line-height:1.15;font-weight:550;letter-spacing:-.04em}
 .recap-card-title{font-size:clamp(44px,9vw,66px);font-weight:750;letter-spacing:-.065em;line-height:.98;overflow-wrap:anywhere;margin-top:12px}
+.recap-card-month .recap-card-title{font-size:clamp(38px,8vw,54px)}
 .recap-card-year .recap-card-title{font-size:clamp(78px,18vw,112px);font-weight:500}
 .recap-card-all .recap-card-title{max-width:4ch}
 .recap-card-footer{display:flex;flex-direction:column;gap:5px;margin-top:auto;padding-top:35px;font-size:14px;line-height:1.4}
