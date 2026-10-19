@@ -48,6 +48,7 @@ export class AudioOutput {
   const targets=[...this.elements().filter(Boolean),this.context()].filter(Boolean);
   // A Web Audio graph owns the final output after EQ or transitions are enabled.
   if(targets.some(target=>typeof target.setSinkId!=="function"))throw Error("Use your device’s sound settings to change the output in this browser.");
+  if(!targets.length)throw Error("Play a song first, then choose an output.");
   const previous=targets.map(target=>target.sinkId||"");
   const results=await Promise.allSettled(targets.map(target=>target.setSinkId(id)));
   const failed=results.find(result=>result.status==="rejected");
@@ -80,6 +81,7 @@ export class AudioOutput {
   finally{this.lock=false;this.emit({busy:false});}
  }
  async attachGraph(ctx){
+  this.emit({});
   if(!this.state.sinkId)return;
   try{
    if(typeof ctx.setSinkId!=="function")throw Error("This browser uses system output for sound effects. Select your speaker in system sound settings.");
