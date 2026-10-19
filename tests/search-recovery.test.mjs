@@ -14,6 +14,7 @@ globalThis.__searchMock={
  functions:{invoke:async(name)=>{if(peopleFail||(primaryFail&&name==='searchUsers'))throw Error('network');return name==='securityGateway'?{data:{result:[{id:'u1',display_name:'3AM'}]}}:{data:{results:[{id:'u1',display_name:'3AM'}]}}}}
 };
 let source=read('src/lib/globalSearch.js').replace(/import \{ base44 \}[^;]*;/,'const base44=globalThis.__searchMock;').replace(/import \{ splitArtistNames \}[^;]*;/,'const splitArtistNames=name=>[name];');
+source=source.replace(/import \{ peekPublishedTracks \}[^;]*;/,'const peekPublishedTracks=()=>[];');
 const {globalSearch}=await importSource(source);
 for(const mode of ['array','page']){
  shape=mode;const res=await globalSearch('Denzel '+mode,{fresh:true});
