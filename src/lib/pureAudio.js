@@ -1,8 +1,8 @@
 export const DEFAULT_PURE={enabled:false,clarity:50,bass:40,balance:40};
 export const PURE_PRESETS=[
- {name:"Balanced",clarity:50,bass:40,balance:40},
- {name:"Voice",clarity:80,bass:15,balance:50},
- {name:"Warm",clarity:30,bass:75,balance:25}
+ {name:"Balanced",description:"Everyday listening",clarity:50,bass:40,balance:40},
+ {name:"Voice",description:"Vocals up front",clarity:80,bass:15,balance:50},
+ {name:"Warm",description:"Fuller, softer tone",clarity:30,bass:75,balance:25}
 ];
 export function normalizePure(value){
  const result={...DEFAULT_PURE,enabled:value?.enabled===true};
