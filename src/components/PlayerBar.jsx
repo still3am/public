@@ -1,3 +1,4 @@
+import PureBadge from "@/components/PureBadge";
 import DeviceConnect from "@/components/DeviceConnect";
 import OverflowText from "@/components/OverflowText";
 import {useToast} from '@/components/ui/use-toast';
@@ -117,8 +118,9 @@ export default function PlayerBar() {
                 <span className="px-1 py-0.5 rounded bg-foreground/15 text-[9px] font-extrabold leading-none">E</span>
                 }
               </div>
-              <div className="text-xs text-foreground/50 truncate">
-                <OverflowText text={t.artist || t.uploader_name || "Unknown"}/>
+              <div className="text-xs text-foreground/50 flex items-center gap-2 min-w-0">
+                <span className="min-w-0 flex-1 truncate"><OverflowText text={t.artist || t.uploader_name || "Unknown"}/></span>
+                <PureBadge compact/>
               </div>
               <div className="text-[10px] text-foreground/40 mt-0.5 hidden sm:flex items-center gap-1">
                 <span>{formatTime(p.position)}</span>
