@@ -36,6 +36,22 @@
       "type": "string",
       "default": ""
     },
+    "album_name": {
+      "type": "string",
+      "default": ""
+    },
+    "album_artist": {
+      "type": "string",
+      "default": ""
+    },
+    "disc_number": {
+      "type": "integer",
+      "default": 0
+    },
+    "release_year": {
+      "type": "integer",
+      "default": 0
+    },
     "album_id": {
       "type": "string",
       "default": ""
