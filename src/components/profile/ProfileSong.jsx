@@ -24,7 +24,7 @@ export default function ProfileSong({
   fillHeight = false
 }) {
   const {user}=useAuth();
-  const preview=useNotePreview({active:active&&!editMode,accountId:user?.id,scope:trackId});
+  const preview=useNotePreview({active:active&&!editMode,accountId:user?.id,scope:trackId,resumeOnEnd:true});
   const [previewError,setPreviewError]=useState("");
   const [track, setTrack] = useState(null);
   const pickedTrack = useRef(null);
