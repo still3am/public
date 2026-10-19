@@ -1,7 +1,7 @@
 import {useEffect} from "react";
 import {usePlayer} from "@/context/PlayerContext";
 import {PURE_PRESETS,DEFAULT_PURE} from "@/lib/pureAudio";
-import {AudioLines,RotateCcw} from "lucide-react";
+import {AudioLines,RotateCcw,ChevronDown} from "lucide-react";
 import "./pure-controls.css";
 
 export default function PureControls({compact=false}){
@@ -12,13 +12,14 @@ export default function PureControls({compact=false}){
  const release=()=>p.comparePure(false);
  const canCompare=active&&!!p.currentTrack&&p.isPlaying;
  useEffect(()=>{if(!canCompare)p.comparePure(false);},[canCompare,p.comparePure]);
- const status=p.pureSuspended?"Paused for wireless playback":p.pureComparing?"Comparing · PURE bypassed":active?(selected?.name||"Custom tuning"):"Off · enable to start";
+ const status=p.pureSuspended?"Paused for wireless playback":p.pureComparing?"Comparing without PURE":"";
  return <section onTouchStart={event=>event.stopPropagation()} onTouchMove={event=>event.stopPropagation()} onTouchEnd={event=>event.stopPropagation()} aria-label="PURE sound enhancement" className={"pure-controls "+(compact?"is-compact":"")}>
   <div className="pure-control-header">
-   <div><h3><AudioLines size={18} strokeWidth={1.6}/>{compact?"PURE":"Sound profile"}</h3><p role="status"><span className={"pure-status-dot "+(active&&!p.pureComparing?"is-active":"")}/>{status}</p></div>
+   <div><h3><AudioLines size={18} strokeWidth={1.6}/>{compact?"PURE":"Sound profile"}</h3>{status&&<p role="status">{status}</p>}</div>
    <button type="button" role="switch" aria-label="Enable PURE" aria-checked={enabled} disabled={!available&&!enabled} onClick={()=>update({enabled:!enabled})} className={"pure-switch "+(enabled?"is-on":"")}><span/></button>
   </div>
-  <div role="group" aria-label="PURE sound presets" className="pure-presets">{PURE_PRESETS.map(preset=><button key={preset.name} type="button" disabled={!available||p.pureComparing} aria-pressed={active&&selected?.name===preset.name} onClick={()=>update({...preset,enabled:true})}><strong>{preset.name}</strong>{!compact&&<small>{preset.description}</small>}</button>)}</div>
+  <div role="group" aria-label="PURE sound presets" className="pure-presets">{PURE_PRESETS.map(preset=><button key={preset.name} type="button" disabled={!available||p.pureComparing} aria-pressed={active&&selected?.name===preset.name} onClick={()=>update({...preset,enabled:true})}><strong>{preset.name}</strong></button>)}</div>
+  <details className="pure-adjustments"><summary>Fine-tune <ChevronDown size={15}/></summary>
   <div className="pure-tuning">{[
    ["clarity","Clarity","Bring voices forward without a sharp edge."],
    ["bass","Body","Give the low end a little more weight."],
@@ -28,11 +29,12 @@ export default function PureControls({compact=false}){
    <input type="range" min="0" max="100" step="1" aria-label={"PURE "+title.toLowerCase()} aria-valuetext={settings[key]+" percent"} value={settings[key]} disabled={!active||p.pureComparing} style={{"--pure-fill":settings[key]+"%"}} onChange={event=>update({[key]:Number(event.target.value)})}/>
    {!compact&&<span className="pure-slider-hint">{description}</span>}
   </label>)}</div>
-  <div className="pure-actions">
-   <button type="button" className="pure-compare" disabled={!canCompare} onPointerDown={event=>{if(event.button!==0)return;event.preventDefault();event.currentTarget.setPointerCapture?.(event.pointerId);p.comparePure(true);}} onClick={event=>{if(event.detail===0)p.comparePure(!p.pureComparing);}} aria-label={p.pureComparing?"Restore PURE":"Compare without PURE. Hold or activate to compare"} onPointerUp={release} onPointerCancel={release} onLostPointerCapture={release} onBlur={release} onKeyDown={event=>{if(event.key===" "||event.key==="Enter"){event.preventDefault();if(!event.repeat)p.comparePure(true);}}} onKeyUp={event=>{if(event.key===" "||event.key==="Enter"){event.preventDefault();release();}}} aria-pressed={!!p.pureComparing}>{p.pureComparing?"Release to hear PURE":active&&!p.isPlaying?"Play a song to compare":"Hold to compare"}</button>
-   <button type="button" className="pure-reset" disabled={!available} onClick={()=>update({...DEFAULT_PURE,enabled})} aria-label="Reset PURE tuning"><RotateCcw size={13}/><span>Reset</span></button>
-  </div>
+  <button type="button" className="pure-reset" disabled={!available} onClick={()=>update({...DEFAULT_PURE,enabled})} aria-label="Reset PURE tuning"><RotateCcw size={13}/><span>Reset tuning</span></button>
+  </details>
+  {active&&!!p.currentTrack&&<div className="pure-actions">
+   <button type="button" className="pure-compare" disabled={!canCompare} onPointerDown={event=>{if(event.button!==0)return;event.preventDefault();event.currentTarget.setPointerCapture?.(event.pointerId);p.comparePure(true);}} onClick={event=>{if(event.detail===0)p.comparePure(!p.pureComparing);}} aria-label={p.pureComparing?"Restore PURE":"Compare without PURE. Hold or activate to compare"} onPointerUp={release} onPointerCancel={release} onLostPointerCapture={release} onBlur={release} onKeyDown={event=>{if(event.key===" "||event.key==="Enter"){event.preventDefault();if(!event.repeat)p.comparePure(true);}}} onKeyUp={event=>{if(event.key===" "||event.key==="Enter"){event.preventDefault();release();}}} aria-pressed={!!p.pureComparing}>{p.pureComparing?"Release to hear PURE":active&&!p.isPlaying?"Play to compare":"Hold to compare"}</button>
+  </div>}
   {p.pureError&&<p role="status" className="pure-error">{p.pureError}</p>}
-  {!compact&&<p className="pure-footnote">Your tuning applies to every song on this device. Uploaded files stay unchanged.</p>}
+
  </section>;
 }
