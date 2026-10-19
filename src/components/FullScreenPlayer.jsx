@@ -1,3 +1,4 @@
+import DeviceConnect from "@/components/DeviceConnect";
 import OverflowText from "@/components/OverflowText";
 import { copyText } from '@/lib/shareLink';
 import { useState, useRef, useEffect, useCallback } from "react";
@@ -412,7 +413,7 @@ export default function FullScreenPlayer({ onClose }) {
 
           </div>
 
-          {/* volume (desktop inline) */}
+          <div className="flex justify-center shrink-0 mb-2"><DeviceConnect label className="px-4" /></div>
 
 
 
