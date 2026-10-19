@@ -13,7 +13,7 @@ const deferred=()=>{let resolve,reject;const promise=new Promise((a,b)=>{resolve
 function fixture(){
  const calls=[],state={},audio={src:'old',pause(){calls.push('pause');},removeAttribute(){this.src='';},load(){calls.push('load');},play(){calls.push('play');return Promise.resolve();}};
  const ref=current=>({current});
- const env={loadTokenRef:ref(0),cancelCrossfade:()=>calls.push('cancel'),queueRef:ref([{id:'song'}]),currentIndexRef:ref(0),
+ const env={cancelNotePreviewRef:ref(()=>false),loadTokenRef:ref(0),cancelCrossfade:()=>calls.push('cancel'),queueRef:ref([{id:'song'}]),currentIndexRef:ref(0),
  pendingSeekRef:ref(null),autoPlayOnLoadRef:ref(true),els:()=>[audio],blobUrlRefs:[ref(null)],sideLoadedIdRef:[ref('old')],sideReadyRef:[ref(true)],
  sleepTimerRef:ref(null),clearTimeout:()=>calls.push('clearTimer'),URL:{revokeObjectURL:url=>calls.push('revoke:'+url)},
  setQueue:v=>state.queue=v,setCurrentIndex:v=>state.index=v,setIsPlaying:v=>state.playing=v,setPosition:v=>state.position=v,setDuration:v=>state.duration=v,setDismissed:v=>state.dismissed=v,setSleepTimerEndsAt:v=>state.sleep=v,
