@@ -33,7 +33,7 @@ export function createPureGraph(ctx){
  const headroom=ctx.createGain(),compressor=ctx.createDynamicsCompressor();
  bass.connect(mud);mud.connect(presence);presence.connect(air);air.connect(headroom);headroom.connect(compressor);
  let inputMeter=null,outputMeter=null,matchedGain=1,processing=false;
- if(ctx.createAnalyser){inputMeter=ctx.createAnalyser();outputMeter=ctx.createAnalyser();inputMeter.fftSize=2048;outputMeter.fftSize=2048;bass.connect(inputMeter);compressor.connect(outputMeter);}
+ if(ctx.createAnalyser){inputMeter=ctx.createAnalyser();outputMeter=ctx.createAnalyser();inputMeter.fftSize=2048;outputMeter.fftSize=2048;inputMeter.connect(bass);compressor.connect(outputMeter);}
  const inputSamples=new Float32Array(2048),outputSamples=new Float32Array(2048);
  const measure=()=>{if(!processing||!inputMeter||!outputMeter)return;inputMeter.getFloatTimeDomainData(inputSamples);outputMeter.getFloatTimeDomainData(outputSamples);matchedGain=.8*matchedGain+.2*matchedComparisonGain(rms(inputSamples),rms(outputSamples),matchedGain);};
  const apply=(settings,instant=false,comparison=false)=>{
@@ -44,7 +44,7 @@ export function createPureGraph(ctx){
   for(const key of ["threshold","knee","ratio","attack","release"])target(compressor[key],p[key],t,instant);
  };
  apply(DEFAULT_PURE,true);
- return {input:bass,output:compressor,apply,measure};
+ return {input:inputMeter||bass,output:compressor,apply,measure};
 }
 export function rms(samples){let sum=0;for(const value of samples)sum+=value*value;return Math.sqrt(sum/Math.max(1,samples.length));}
 export function matchedComparisonGain(inputLevel,outputLevel,previous=1){
