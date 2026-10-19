@@ -2,6 +2,15 @@
   "name": "Track",
   "type": "object",
   "properties": {
+    "published_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "First approved publication time for release notifications",
+      "rls": {
+        "read": true,
+        "write": false
+      }
+    },
     "title": {
       "type": "string"
     },
