@@ -295,7 +295,7 @@
  /* Backgrounds span the workspace; only their inner content is constrained. */
  .public-app .artwork-content .page-surface .track-page.track-editorial,
  .public-app .artwork-content .page-surface .personal-mix-immersive{
-  max-width:none;
+  max-width:none;border-radius:0;
   padding-inline:max(var(--app-gutter),calc((100% + 2 * var(--app-gutter) - 1240px) / 2));
  }
  .public-app .artwork-content .track-page .release-toolbar{position:relative;transform:none;height:44px;min-height:44px;margin:0 0 24px;align-items:center}
