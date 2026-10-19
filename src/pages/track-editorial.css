@@ -20,7 +20,8 @@
 .public-app .track-page.track-editorial .release-song-list .song-row{min-height:74px;border:0;border-radius:0;padding:14px 0;background:transparent}
 .public-app .track-page.track-editorial .track-detail-columns{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));align-items:start;gap:32px;margin-bottom:38px}
 .public-app .track-page.track-editorial .track-detail-columns>.track-page-section{min-width:0;width:100%;margin:0;padding:0;border:0;border-radius:0;background:transparent}
-.public-app .track-page.track-editorial .track-detail-columns>.track-page-section:only-of-type{grid-column:1/-1}
+.public-app .track-page.track-editorial .track-detail-columns:not(:has(.music-video-section))>.track-page-section{grid-column:1/-1;max-width:740px}
+.public-app .track-page.track-editorial .track-detail-columns>.music-video-section:first-child{grid-column:1/-1;max-width:800px}
 .public-app .track-page.track-editorial .track-detail-columns>.release-credits{grid-column:1/-1;min-width:0;width:100%;max-width:none;margin:0;padding:24px 0 0;border:0;border-top:1px solid hsl(var(--border)/.6);border-radius:0;background:transparent;font-size:12px;line-height:1.8}
 .public-app .track-page.track-editorial .track-details-title{display:block;font-size:18px;font-weight:650;letter-spacing:-.03em;color:hsl(var(--foreground));margin-bottom:10px}
 .public-app .track-page.track-editorial .track-page-section>h2{font-size:24px;font-weight:750;line-height:1.2;letter-spacing:-.035em;margin-bottom:16px}
