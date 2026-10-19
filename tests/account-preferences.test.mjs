@@ -16,6 +16,7 @@ globalThis.__raw={
 };
 let source=read('src/api/base44Client.js').replace(/import \{ createClient \}[^;]*;/,'const createClient=()=>globalThis.__raw;').replace(/import \{ appParams \}[^;]*;/,'const appParams={};');
 source=source.replace(/import \{AVATAR_PRESETS\}[^;]*;/,'const {AVATAR_PRESETS}=globalThis.__avatarDeps;').replace(/import \{savePresetAvatar,withPresetAvatar\}[^;]*;/,'const {savePresetAvatar,withPresetAvatar}=globalThis.__avatarDeps;');
+source=source.replace(/import recoveredAlbumMetadata[^;]*;/,'const recoveredAlbumMetadata={};').replace(/import \\{recoveredAlbumResult,withRecoveredAlbumMetadata\\}[^;]*;/,'const recoveredAlbumResult=x=>x,withRecoveredAlbumMetadata=x=>x;');
 const {base44}=await load(source);
 await assert.rejects(base44.auth.updateMe({show_explicit:true}),/18 or older/);
 assert.equal(updates,0);
