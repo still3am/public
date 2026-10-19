@@ -180,7 +180,7 @@ export default function TrackDetail() {
       <section className={"release-header release-header-full" + (coverUrl && !coverFailed ? " has-release-art" : "")}>
         <div className="release-art">{coverUrl && !coverFailed ? <img src={coverUrl} alt={track.title + " cover"} onError={() => setCoverFailed(true)} /> : <Music size={52} />}</div>
         <div className="track-release-info">
-        <p className="track-release-kicker hidden">Song on PUBLIC</p>
+        
         <h1>{track.title}</h1>
         <div className="release-artist">{displayArtist ? <ArtistLinks artist={displayArtist} maxShown={8} linkClassName="hover:underline" /> : uploader && <Link to={"/profile/" + uploader.id}>{uploader.display_name || uploader.full_name || track.uploader_name}</Link>}</div>
         <p className="release-subtitle">{[track.genre, track.duration_seconds > 0 ? formatTime(track.duration_seconds) : null].filter(Boolean).join(" · ")}{track.explicit && <span className="release-explicit" aria-label="Explicit">E</span>}</p>
