@@ -56,3 +56,7 @@
  .profile-stats>span>span:last-child{font-size:10px;max-width:70px;text-align:center}
  .profile-comments-composer{top:auto;position:relative}
 }
+
+.profile-redesigned .profile-cover-stage>picture,.profile-redesigned .profile-cover-stage>picture>img{display:block;width:100%;height:100%;object-fit:cover;object-position:center}
+.profile-feature-song .artist-credits{display:block;width:100%;margin-top:3px}
+.profile-preview-button:disabled{opacity:.5}
