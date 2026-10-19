@@ -10,13 +10,9 @@ export function prepareTrackShare(){
  }).catch(()=>false).then(ready=>{available=ready;expires=Date.now()+(ready?300000:60000);return ready;}).finally(()=>{clearTimeout(timer);inflight=null;});
  return inflight;
 }
-export function getDirectTrackUrl(track){
- if(!track?.id)throw Error('Song unavailable');
- return PUBLIC_ORIGIN+'/track/'+encodeURIComponent(track.id);
-}
 export function getTrackShareUrl(track){
  if(!track?.id)throw Error('Song unavailable');
  const id=encodeURIComponent(track.id);
  if(available&&track.is_published===true)return PUBLIC_ORIGIN+'/functions/share-track?id='+id;
- return getDirectTrackUrl(track);
+ return PUBLIC_ORIGIN+'/track/'+id;
 }
