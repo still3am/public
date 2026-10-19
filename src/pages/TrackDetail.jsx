@@ -1,6 +1,7 @@
 import TrackMusicVideo from "@/components/TrackMusicVideo";
 import "./track-editorial.css";
 import {useReleaseTheme} from "@/hooks/useReleaseTheme";
+import ReleaseAtmosphere from "@/components/ReleaseAtmosphere";
 import { shareTrack } from "@/lib/shareTrack";
 import { prepareTrackShare } from "@/lib/trackShareUrl";
 import { getPublishedTracks } from "@/lib/catalogCache";
@@ -173,6 +174,7 @@ export default function TrackDetail() {
 
   return (
     <div className="track-page track-editorial release-page mx-auto" style={releaseTheme}>
+      <ReleaseAtmosphere theme={releaseTheme}/>
       <div className="release-toolbar">
         <button onClick={() => window.history.state?.idx > 0 ? nav(-1) : nav("/search")} className="release-round" aria-label="Back"><ChevronLeft size={26} /></button>
         <div className="release-toolbar-actions">
