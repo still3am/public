@@ -38,6 +38,21 @@
         "write": false
       }
     },
+    "banner_mobile_url": {
+      "type": "string",
+      "default": "",
+      "rls": {
+        "write": false
+      }
+    },
+    "top_tracks_label": {
+      "type": "string",
+      "maxLength": 40,
+      "default": "",
+      "rls": {
+        "write": false
+      }
+    },
     "banner_url": {
       "type": "string",
       "default": "",
