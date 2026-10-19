@@ -2653,6 +2653,19 @@
       "match": "exact artist and title"
     },
     {
+      "id": "6a822ca97610cc4d992928fb",
+      "title": "Herman Miller",
+      "artist": "Andy Mineo",
+      "before": "Other",
+      "genre": "Hip-Hop",
+      "source_genre": "Hip-Hop/Rap",
+      "source_title": "Herman Miller",
+      "source_artist": "Andy Mineo",
+      "source_album": "Herman Miller - Single",
+      "source_url": "https://music.apple.com/us/album/herman-miller/1538228452?i=1538228458&uo=4",
+      "match": "exact artist and title"
+    },
+    {
       "id": "6abf42d9a41eab64cb8e1568",
       "title": "Door Vi",
       "artist": "Conscious Lacon",
@@ -2744,6 +2757,19 @@
       "match": "exact artist and title"
     },
     {
+      "id": "6abf4343b7f5cb676aab4b97",
+      "title": "5",
+      "artist": "Dean Blunt, Elias Rønnenfelt",
+      "before": "Other",
+      "genre": "Alternative",
+      "source_genre": "Alternative",
+      "source_title": "5",
+      "source_artist": "Dean Blunt & Elias Rønnenfelt",
+      "source_album": "lucre",
+      "source_url": "https://music.apple.com/us/album/5/6803960385?i=6803960528&uo=4",
+      "match": "exact artist and title"
+    },
+    {
       "id": "6abf4344583b76578a6d41fb",
       "title": "5MoreMinutes",
       "artist": "Leon Thomas",
@@ -2822,6 +2848,19 @@
       "match": "exact artist and title"
     },
     {
+      "id": "6abf4358206007551f34e0fa",
+      "title": "7AM in Lekki",
+      "artist": "BhadBoi OML",
+      "before": "Other",
+      "genre": "Afrobeats",
+      "source_genre": "Afrobeats",
+      "source_title": "7AM in Lekki",
+      "source_artist": "BhadBoi OML",
+      "source_album": "Bhadriyun",
+      "source_url": "https://music.apple.com/us/album/7am-in-lekki/1710626964?i=1710626967&uo=4",
+      "match": "exact artist and title"
+    },
+    {
       "id": "6abf435e8a506f11483eaaa3",
       "title": "9 to 5",
       "artist": "Dolly Parton",
@@ -2848,6 +2887,19 @@
       "match": "exact artist and title"
     },
     {
+      "id": "6abf43639568a03c4eed1b59",
+      "title": "11:11",
+      "artist": "poperulin",
+      "before": "Other",
+      "genre": "Latin",
+      "source_genre": "Urbano latino",
+      "source_title": "11:11",
+      "source_artist": "poperulin",
+      "source_album": "11:11 - Single",
+      "source_url": "https://music.apple.com/us/album/11-11/1741713296?i=1741713298&uo=4",
+      "match": "exact artist and title"
+    },
+    {
       "id": "6abf4368171a8026b6f7a9b3",
       "title": "13MOS",
       "artist": "Aminé",
@@ -2858,6 +2910,19 @@
       "source_artist": "Aminé",
       "source_album": "13 Months of Sunshine",
       "source_url": "https://music.apple.com/us/album/13mos/1814739334?i=1814739632&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6abf436afe24f3c4b841df1a",
+      "title": "17 more years",
+      "artist": "DDG",
+      "before": "Other",
+      "genre": "Hip-Hop",
+      "source_genre": "Hip-Hop/Rap",
+      "source_title": "17 more years",
+      "source_artist": "DDG",
+      "source_album": "moo",
+      "source_url": "https://music.apple.com/us/album/17-more-years/1848202387?i=1848202393&uo=4",
       "match": "exact artist and title"
     },
     {
@@ -2874,6 +2939,19 @@
       "match": "exact artist and title"
     },
     {
+      "id": "6abf4372df576e210544a536",
+      "title": "21 de agosto",
+      "artist": "Angela Torres",
+      "before": "Other",
+      "genre": "Latin Pop",
+      "source_genre": "Pop Latino",
+      "source_title": "21 de agosto",
+      "source_artist": "Angela Torres",
+      "source_album": "21 de agosto - Single",
+      "source_url": "https://music.apple.com/us/album/21-de-agosto/6802827700?i=6802827701&uo=4",
+      "match": "exact artist and title"
+    },
+    {
       "id": "6abf43770f510bd8ce5588c3",
       "title": "24 Bottles",
       "artist": "Conscious Lacon",
@@ -2887,6 +2965,19 @@
       "match": "exact artist and title"
     },
     {
+      "id": "6abf437b3362b714daaa6000",
+      "title": "24 Hours (feat. 2 Chainz)",
+      "artist": "TeeFLii, 2 Chainz",
+      "before": "Other",
+      "genre": "R&B",
+      "source_genre": "R&B/Soul",
+      "source_title": "24 Hours (feat. 2 Chainz)",
+      "source_artist": "TeeFLii",
+      "source_album": "Starr",
+      "source_url": "https://music.apple.com/us/album/24-hours-feat-2-chainz/941404969?i=941405019&uo=4",
+      "match": "exact artist and title"
+    },
+    {
       "id": "6abf437ce95aa2cc3372e148",
       "title": "24 Hours",
       "artist": "GASHI",
@@ -2897,6 +2988,19 @@
       "source_artist": "GASHI",
       "source_album": "24 Hours - Single",
       "source_url": "https://music.apple.com/us/album/24-hours/1274315145?i=1274315148&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6abf437e050c443f8135e145",
+      "title": "24/7, 365",
+      "artist": "elijah woods",
+      "before": "Other",
+      "genre": "Pop",
+      "source_genre": "Pop",
+      "source_title": "24/7, 365",
+      "source_artist": "elijah woods",
+      "source_album": "24/7, 365 - Single",
+      "source_url": "https://music.apple.com/us/album/24-7-365/1873405964?i=1873405969&uo=4",
       "match": "exact artist and title"
     },
     {
@@ -2975,6 +3079,19 @@
       "source_artist": "Loote",
       "source_album": "lost - EP",
       "source_url": "https://music.apple.com/us/album/85-feat-gnash/1467077266?i=1467077447&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6abf439126eed3a826572734",
+      "title": "96 Camry",
+      "artist": "RAAHiiM",
+      "before": "Other",
+      "genre": "R&B",
+      "source_genre": "R&B/Soul",
+      "source_title": "96 Camry",
+      "source_artist": "RAAHiiM",
+      "source_album": "PRAY FOR ME",
+      "source_url": "https://music.apple.com/us/album/96-camry/1867254562?i=1867254876&uo=4",
       "match": "exact artist and title"
     },
     {
@@ -3186,6 +3303,32 @@
       "match": "exact artist and title"
     },
     {
+      "id": "6abf43ccbd2d2afc568fe3f8",
+      "title": "A Sunday Kind Of Love",
+      "artist": "Etta James",
+      "before": "Other",
+      "genre": "Blues",
+      "source_genre": "Blues",
+      "source_title": "A Sunday Kind of Love",
+      "source_artist": "Etta James",
+      "source_album": "At Last!",
+      "source_url": "https://music.apple.com/us/album/a-sunday-kind-of-love/1440838775?i=1440839199&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6abf43cfb50a849b0b893ab9",
+      "title": "A Trophy Fathers Trophy Son",
+      "artist": "Sleeping With Sirens",
+      "before": "Other",
+      "genre": "Rock",
+      "source_genre": "Rock",
+      "source_title": "A Trophy Fathers Trophy Son",
+      "source_artist": "Sleeping With Sirens",
+      "source_album": "Let's Cheers To This",
+      "source_url": "https://music.apple.com/us/album/a-trophy-fathers-trophy-son/1675488719?i=1675488726&uo=4",
+      "match": "exact artist and title"
+    },
+    {
       "id": "6abf43d20e194d869287aa9a",
       "title": "A Vapor",
       "artist": "Sky Rompiendo, JHAYCO, Leebrian, Mora",
@@ -3225,6 +3368,19 @@
       "match": "exact artist and title"
     },
     {
+      "id": "6abf43dbf5d3ab320139d7cb",
+      "title": "ABC Song",
+      "artist": "Xavi",
+      "before": "Other",
+      "genre": "Pop",
+      "source_genre": "Pop",
+      "source_title": "ABC Song",
+      "source_artist": "Xavi",
+      "source_album": "ABC Song - Single",
+      "source_url": "https://music.apple.com/us/album/abc-song/1839868495?i=1839868497&uo=4",
+      "match": "exact artist and title"
+    },
+    {
       "id": "6abf43dfb7dde19cfa05bc81",
       "title": "Above (feat. Masego & West Banks)",
       "artist": "USERx",
@@ -3235,6 +3391,19 @@
       "source_artist": "USERx, Matt Maeson & Rozwell",
       "source_album": "USERx - EP",
       "source_url": "https://music.apple.com/us/album/above-feat-masego-west-banks/1555341433?i=1555341445&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6abf43dfd5257edb37438425",
+      "title": "Above The Clouds",
+      "artist": "Gang Starr, Inspectah Deck",
+      "before": "Other",
+      "genre": "Hip-Hop",
+      "source_genre": "Hip-Hop/Rap",
+      "source_title": "Above the Clouds (feat. Inspectah Deck)",
+      "source_artist": "Gang Starr",
+      "source_album": "Mass Appeal: The Best of Gang Starr",
+      "source_url": "https://music.apple.com/us/album/above-the-clouds-feat-inspectah-deck/720099358?i=720099603&uo=4",
       "match": "exact artist and title"
     },
     {
@@ -3261,6 +3430,19 @@
       "source_artist": "Yorghaki",
       "source_album": "ANTES DE QUE SEA TARDE",
       "source_url": "https://music.apple.com/us/album/abusadora-tambores-feat-be%C3%A9le/6810299720?i=6810299944&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6abf43ea2fdaba6fa77afc23",
+      "title": "Aceite Nuevo",
+      "artist": "Karen Espinosa",
+      "before": "Other",
+      "genre": "Latin",
+      "source_genre": "Latin",
+      "source_title": "Aceite Nuevo",
+      "source_artist": "Karen Espinosa",
+      "source_album": "Aceite Nuevo",
+      "source_url": "https://music.apple.com/us/album/aceite-nuevo/6801655080?i=6801655088&uo=4",
       "match": "exact artist and title"
     },
     {
@@ -7460,6 +7642,19 @@
       "source_artist": "Joony",
       "source_album": "Pretty In Black (Deluxe)",
       "source_url": "https://music.apple.com/us/album/everyday/1654258826?i=1654258827&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6acc4c63670d7ac6e31bf7c4",
+      "title": "Everybody Wants To Rule The World",
+      "artist": "Tears For Fears",
+      "before": "Other",
+      "genre": "Pop",
+      "source_genre": "Pop",
+      "source_title": "Everybody Wants To Rule The World",
+      "source_artist": "Tears for Fears",
+      "source_album": "Everybody Wants To Rule The World (Sped Up Version) - Single",
+      "source_url": "https://music.apple.com/us/album/everybody-wants-to-rule-the-world/1639371674?i=1639372553&uo=4",
       "match": "exact artist and title"
     },
     {
@@ -11918,13 +12113,6 @@
       "album_name": "Legends Never Die (Remix)"
     },
     {
-      "id": "6a822ca97610cc4d992928fb",
-      "title": "Herman Miller",
-      "artist": "Andy Mineo",
-      "genre": "Other",
-      "album_name": "Herman Miller"
-    },
-    {
       "id": "6a89470fd73b40da9956ee0c",
       "title": "Bloodhound",
       "artist": "Sk8star",
@@ -11981,13 +12169,6 @@
       "album_name": "SEN2 KBRN VOL. 1"
     },
     {
-      "id": "6abf4343b7f5cb676aab4b97",
-      "title": "5",
-      "artist": "Dean Blunt, Elias Rønnenfelt",
-      "genre": "Other",
-      "album_name": "lucre"
-    },
-    {
       "id": "6abf43490321791714b58b49",
       "title": "6PM IN LA",
       "artist": "R2R MOE",
@@ -12000,13 +12181,6 @@
       "artist": "sped up + nightcore, Lukas Graham",
       "genre": "Other",
       "album_name": "7 Years (feat. Lukas Graham) [Sped Up Version]"
-    },
-    {
-      "id": "6abf4358206007551f34e0fa",
-      "title": "7AM in Lekki",
-      "artist": "BhadBoi OML",
-      "genre": "Other",
-      "album_name": "Unknown Album"
     },
     {
       "id": "6abf435ceee7a1017d4b235d",
@@ -12030,13 +12204,6 @@
       "album_name": "Views"
     },
     {
-      "id": "6abf43639568a03c4eed1b59",
-      "title": "11:11",
-      "artist": "poperulin",
-      "genre": "Other",
-      "album_name": "11:11"
-    },
-    {
       "id": "6abf436682fcf28091d25347",
       "title": "12 Mandamientos 2020",
       "artist": "NFasisRD",
@@ -12051,25 +12218,11 @@
       "album_name": "ROAD 2 RICHES, VOL. 1"
     },
     {
-      "id": "6abf436afe24f3c4b841df1a",
-      "title": "17 more years",
-      "artist": "DDG",
-      "genre": "Other",
-      "album_name": "moo"
-    },
-    {
       "id": "6abf436d2bbe809dacae0ecd",
       "title": "20 Deep",
       "artist": "The Game, Mike & Keys, F.T. Hop Out",
       "genre": "Other",
       "album_name": "The Documentary III"
-    },
-    {
-      "id": "6abf4372df576e210544a536",
-      "title": "21 de agosto",
-      "artist": "Angela Torres",
-      "genre": "Other",
-      "album_name": "21 de agosto"
     },
     {
       "id": "6abf4372e1d81151fed74f23",
@@ -12091,20 +12244,6 @@
       "artist": "JHAYCO",
       "genre": "Other",
       "album_name": "24 Horas"
-    },
-    {
-      "id": "6abf437b3362b714daaa6000",
-      "title": "24 Hours (feat. 2 Chainz)",
-      "artist": "TeeFLii, 2 Chainz",
-      "genre": "Other",
-      "album_name": "Starr"
-    },
-    {
-      "id": "6abf437e050c443f8135e145",
-      "title": "24/7, 365",
-      "artist": "elijah woods",
-      "genre": "Other",
-      "album_name": "24/7, 365"
     },
     {
       "id": "6abf43846e6d26ade12e4a1a",
@@ -12132,13 +12271,6 @@
         "Dance",
         "R&B"
       ]
-    },
-    {
-      "id": "6abf439126eed3a826572734",
-      "title": "96 Camry",
-      "artist": "RAAHiiM",
-      "genre": "Other",
-      "album_name": "PRAY FOR ME"
     },
     {
       "id": "6abf4394a6fea3443e87d2d9",
@@ -12227,7 +12359,14 @@
       "title": "A Little Less Conversation - JXL Radio Edit Remix",
       "artist": "Elvis Presley, Junkie XL",
       "genre": "Other",
-      "album_name": "A Little Less Conversation: Elvis vs JXL"
+      "album_name": "A Little Less Conversation: Elvis vs JXL",
+      "review_reason": "conflicting catalog genres",
+      "candidate_genres": [
+        "Dance",
+        "Pop",
+        "Rock",
+        "Soundtrack"
+      ]
     },
     {
       "id": "6abf43bcf1a46d9ca9ea4522",
@@ -12255,21 +12394,12 @@
       "title": "A Thousand Miles",
       "artist": "Vanessa Carlton",
       "genre": "Other",
-      "album_name": "Best Of"
-    },
-    {
-      "id": "6abf43ccbd2d2afc568fe3f8",
-      "title": "A Sunday Kind Of Love",
-      "artist": "Etta James",
-      "genre": "Other",
-      "album_name": "At Last!"
-    },
-    {
-      "id": "6abf43cfb50a849b0b893ab9",
-      "title": "A Trophy Fathers Trophy Son",
-      "artist": "Sleeping With Sirens",
-      "genre": "Other",
-      "album_name": ""
+      "album_name": "Best Of",
+      "review_reason": "conflicting catalog genres",
+      "candidate_genres": [
+        "Pop",
+        "Singer/Songwriter"
+      ]
     },
     {
       "id": "6abf43d7dc98ccb9a701e5ae",
@@ -12293,20 +12423,6 @@
       "album_name": "ABAYARDE"
     },
     {
-      "id": "6abf43dbf5d3ab320139d7cb",
-      "title": "ABC Song",
-      "artist": "Xavi",
-      "genre": "Other",
-      "album_name": "Unknown Album"
-    },
-    {
-      "id": "6abf43dfd5257edb37438425",
-      "title": "Above The Clouds",
-      "artist": "Gang Starr, Inspectah Deck",
-      "genre": "Other",
-      "album_name": ""
-    },
-    {
       "id": "6abf43e369f687409f05891e",
       "title": "Absolutely (Story of a Girl) - Radio Mix",
       "artist": "Nine Days",
@@ -12326,13 +12442,6 @@
       "artist": "Young Miko",
       "genre": "Other",
       "album_name": "TRAP KITTY"
-    },
-    {
-      "id": "6abf43ea2fdaba6fa77afc23",
-      "title": "Aceite Nuevo",
-      "artist": "Karen Espinosa",
-      "genre": "Other",
-      "album_name": ""
     },
     {
       "id": "6abf43f1f8c00a72dc09b417",
@@ -15660,13 +15769,6 @@
       "album_name": ""
     },
     {
-      "id": "6acc4c63670d7ac6e31bf7c4",
-      "title": "Everybody Wants To Rule The World",
-      "artist": "Tears For Fears",
-      "genre": "Other",
-      "album_name": ""
-    },
-    {
       "id": "6acc4c63b2cad99745353a0e",
       "title": "Everyone Around Me Dancing",
       "artist": "Gia Margaret",
@@ -18052,5 +18154,5 @@
       "album_name": ""
     }
   ],
-  "searched_terms": 250
+  "searched_terms": 280
 }
