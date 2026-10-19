@@ -391,6 +391,19 @@
       "match": "exact artist and title"
     },
     {
+      "id": "6a65c73fde31f23656f7873b",
+      "title": "Desde Mis Ojos   Remix",
+      "artist": "Chris Lebron, Jay Wheeler, Sech",
+      "before": "Other",
+      "genre": "Latin",
+      "source_genre": "Latin",
+      "source_title": "Desde Mis Ojos (Remix)",
+      "source_artist": "Chris Lebron, Sech & Jay Wheeler",
+      "source_album": "Desde Mis Ojos (Remix) - Single",
+      "source_url": "https://music.apple.com/us/album/desde-mis-ojos-remix/1622645381?i=1622645400&uo=4",
+      "match": "exact artist and title"
+    },
+    {
       "id": "6a65c742f8058943cda8ba8d",
       "title": "Princess of China",
       "artist": "Coldplay, Rihanna",
@@ -401,6 +414,19 @@
       "source_artist": "Coldplay & Rihanna",
       "source_album": "Mylo Xyloto",
       "source_url": "https://music.apple.com/us/album/princess-of-china/726372830?i=726373202&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6a65c74bcf1d5f1bfb2cdb36",
+      "title": "Hola   Remix",
+      "artist": "Dalex, Lenny Tavárez, Chencho Corleone, Juhn, Dímelo Flow",
+      "before": "Other",
+      "genre": "Latin",
+      "source_genre": "Urbano latino",
+      "source_title": "Hola (feat. Juhn & Dímelo Flow) [Remix]",
+      "source_artist": "Dalex, Lenny Tavárez & Chencho Corleone",
+      "source_album": "Hola (feat. Juhn & Dímelo Flow) [Remix] - Single",
+      "source_url": "https://music.apple.com/us/album/hola-feat-juhn-d%C3%ADmelo-flow-remix/1484738139?i=1484738142&uo=4",
       "match": "exact artist and title"
     },
     {
@@ -716,6 +742,19 @@
       "match": "exact artist and title"
     },
     {
+      "id": "6a65c7eae72a51a620eb8e02",
+      "title": "Crack A Bottle (feat. Dr. Dre & 50 Cent)",
+      "artist": "Eminem, Dr. Dre, 50 Cent",
+      "before": "Other",
+      "genre": "Hip-Hop",
+      "source_genre": "Hip-Hop/Rap",
+      "source_title": "Crack a Bottle (feat. Dr. Dre & 50 Cent)",
+      "source_artist": "Eminem, Dr. Dre & 50 Cent",
+      "source_album": "Relapse: Refill",
+      "source_url": "https://music.apple.com/us/album/crack-a-bottle-feat-dr-dre-50-cent/1443265423?i=1443265746&uo=4",
+      "match": "exact artist and title"
+    },
+    {
       "id": "6a65c7f3647101e5569037ec",
       "title": "Love The Way You Lie",
       "artist": "Eminem, Rihanna",
@@ -726,6 +765,32 @@
       "source_artist": "Eminem",
       "source_album": "Recovery",
       "source_url": "https://music.apple.com/us/album/love-the-way-you-lie-feat-rihanna/1440781199?i=1440782199&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6a65c7ff7dc581ca0d3e021b",
+      "title": "La Curiosidad",
+      "artist": "Jay Wheeler, DJ Nelson, Myke Towers",
+      "before": "Other",
+      "genre": "Latin",
+      "source_genre": "Latin",
+      "source_title": "La Curiosidad",
+      "source_artist": "Jay Wheeler, DJ Nelson & Myke Towers",
+      "source_album": "De Mí Para Ti (Apple Music Edition)",
+      "source_url": "https://music.apple.com/us/album/la-curiosidad/1603931390?i=1603931587&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6a65c807023fa65377b46aaa",
+      "title": "DJ No Pare (feat. Zion, Dalex, Lenny Tavárez)   Remix",
+      "artist": "Justin Quiles, NATTI NATASHA, Farruko, Lenny Tavárez, Dalex, Zion",
+      "before": "Other",
+      "genre": "Latin",
+      "source_genre": "Urbano latino",
+      "source_title": "DJ No Pare (feat. Natti Natasha, Farruko, Zion, Dalex & Lenny Tavárez) [Remix]",
+      "source_artist": "Justin Quiles",
+      "source_album": "DJ No Pare (feat. Natti Natasha, Farruko, Zion, Dalex & Lenny Tavárez) [Remix] - Single",
+      "source_url": "https://music.apple.com/us/album/dj-no-pare-feat-natti-natasha-farruko-zion-dalex-lenny/1476461602?i=1476461828&uo=4",
       "match": "exact artist and title"
     },
     {
@@ -804,6 +869,32 @@
       "source_artist": "Kendrick Lamar",
       "source_album": "DAMN. COLLECTORS EDITION.",
       "source_url": "https://music.apple.com/us/album/loyalty-feat-rihanna/1440907513?i=1440907882&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6a65c8532c4b74fe089d70e3",
+      "title": "luther (with sza)",
+      "artist": "Kendrick Lamar, SZA",
+      "before": "Other",
+      "genre": "Hip-Hop",
+      "source_genre": "Hip-Hop/Rap",
+      "source_title": "luther",
+      "source_artist": "Kendrick Lamar",
+      "source_album": "GNX",
+      "source_url": "https://music.apple.com/us/album/luther/1781270319?i=1781270323&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6a65c856c0e7ff29ce3f86d6",
+      "title": "Bailemos",
+      "artist": "Manuel Turizo, Sech",
+      "before": "Other",
+      "genre": "Latin",
+      "source_genre": "Urbano latino",
+      "source_title": "Bailemos",
+      "source_artist": "Manuel Turizo & Sech",
+      "source_album": "ADN",
+      "source_url": "https://music.apple.com/us/album/bailemos/1473376798?i=1473376819&uo=4",
       "match": "exact artist and title"
     },
     {
@@ -1038,6 +1129,71 @@
       "source_artist": "Rihanna",
       "source_album": "ANTI",
       "source_url": "https://music.apple.com/us/album/consideration-feat-sza/1443230958?i=1443231104&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6a65c8c42e270ededefcd6cc",
+      "title": "X Ti",
+      "artist": "Sech",
+      "before": "Other",
+      "genre": "Latin",
+      "source_genre": "Urbano latino",
+      "source_title": "X Ti",
+      "source_artist": "Sech",
+      "source_album": "Sueños",
+      "source_url": "https://music.apple.com/us/album/x-ti/1459588220?i=1459588471&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6a65c8c9bc9d3171abcbba72",
+      "title": "Wao",
+      "artist": "Sech",
+      "before": "Other",
+      "genre": "Latin",
+      "source_genre": "Urbano latino",
+      "source_title": "Wao",
+      "source_artist": "Sech",
+      "source_album": "42",
+      "source_url": "https://music.apple.com/us/album/wao/1558956285?i=1558956400&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6a65c8cde9d7fcceb433d8f6",
+      "title": "Good Days",
+      "artist": "SZA",
+      "before": "Other",
+      "genre": "R&B",
+      "source_genre": "R&B/Soul",
+      "source_title": "Good Days",
+      "source_artist": "SZA",
+      "source_album": "Good Days - Single",
+      "source_url": "https://music.apple.com/us/album/good-days/1546390012?i=1546390013&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6a65c8d19854a0a6eb33e3e0",
+      "title": "Snooze",
+      "artist": "SZA",
+      "before": "Other",
+      "genre": "R&B",
+      "source_genre": "R&B/Soul",
+      "source_title": "Snooze",
+      "source_artist": "SZA",
+      "source_album": "Snooze - Single",
+      "source_url": "https://music.apple.com/us/album/snooze/1704183235?i=1704183239&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6a65c8d823586e3062f29d61",
+      "title": "TELEKINESIS (feat. SZA & Future)",
+      "artist": "Travis Scott, SZA, Future",
+      "before": "Other",
+      "genre": "Hip-Hop",
+      "source_genre": "Hip-Hop/Rap",
+      "source_title": "TELEKINESIS (feat. SZA & Future)",
+      "source_artist": "Travis Scott",
+      "source_album": "UTOPIA",
+      "source_url": "https://music.apple.com/us/album/telekinesis-feat-sza-future/1708274558?i=1708274801&uo=4",
       "match": "exact artist and title"
     },
     {
@@ -1298,6 +1454,19 @@
       "source_artist": "Black Eyed Peas",
       "source_album": "Elephunk",
       "source_url": "https://music.apple.com/us/album/anxiety-feat-papa-roach/1615142131?i=1615142632&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6a6c4987fcff5c47d0531468",
+      "title": "Chains & Whips",
+      "artist": "Clipse, Kendrick Lamar, Pharrell Williams, Pusha T, Malice",
+      "before": "Other",
+      "genre": "Hip-Hop",
+      "source_genre": "Hip-Hop/Rap",
+      "source_title": "Chains & Whips",
+      "source_artist": "Clipse, Kendrick Lamar, Pusha T & Malice",
+      "source_album": "Let God Sort Em Out",
+      "source_url": "https://music.apple.com/us/album/chains-whips/1825917340?i=1825917637&uo=4",
       "match": "exact artist and title"
     },
     {
@@ -1899,6 +2068,19 @@
       "match": "exact artist and title"
     },
     {
+      "id": "6a6d365f83bc0193e492575f",
+      "title": "Labels. (ft. Moneybagg Yo, BIA)",
+      "artist": "Kiana Ledé",
+      "before": "Other",
+      "genre": "R&B",
+      "source_genre": "R&B/Soul",
+      "source_title": "Labels. (feat. Moneybagg Yo & BIA)",
+      "source_artist": "Kiana Ledé",
+      "source_album": "KIKI",
+      "source_url": "https://music.apple.com/us/album/labels-feat-moneybagg-yo-bia/1501584611?i=1501584635&uo=4",
+      "match": "exact artist and title"
+    },
+    {
       "id": "6a6d366c5ef541d766167c03",
       "title": "Manifest",
       "artist": "Russ",
@@ -2016,6 +2198,45 @@
       "match": "exact artist and title"
     },
     {
+      "id": "6a6d36bd537aaf38754d470a",
+      "title": "VCRs (with Vince Staples)",
+      "artist": "JID, Vince Staples",
+      "before": "Other",
+      "genre": "Hip-Hop",
+      "source_genre": "Hip-Hop/Rap",
+      "source_title": "VCRs",
+      "source_artist": "JID & Vince Staples",
+      "source_album": "God Does Like Ugly",
+      "source_url": "https://music.apple.com/us/album/vcrs/1833088041?i=1833088047&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6a77c9121c56c1a72488a22a",
+      "title": "Hate Bein' Sober",
+      "artist": "Chief Keef, 50 Cent, Wiz Khalifa",
+      "before": "Other",
+      "genre": "Hip-Hop",
+      "source_genre": "Hip-Hop/Rap",
+      "source_title": "Hate Bein' Sober (feat. 50 Cent & Wiz Khalifa)",
+      "source_artist": "Chief Keef",
+      "source_album": "Finally Rich",
+      "source_url": "https://music.apple.com/us/album/hate-bein-sober-feat-50-cent-wiz-khalifa/1444005836?i=1444005849&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6abf42d9a41eab64cb8e1568",
+      "title": "Door Vi",
+      "artist": "Conscious Lacon",
+      "before": "Other",
+      "genre": "Alternative",
+      "source_genre": "Alternative",
+      "source_title": "£Door Vi",
+      "source_artist": "Conscious Lacon",
+      "source_album": "£Door Vi - Single",
+      "source_url": "https://music.apple.com/us/album/%C2%A3door-vi/6791910896?i=6791910897&uo=4",
+      "match": "exact artist and title"
+    },
+    {
       "id": "6abf431571de41f07e1d3d59",
       "title": "3D",
       "artist": "JHAYCO, Tivi Gunz, De La Rose",
@@ -2055,6 +2276,19 @@
       "match": "exact artist and title"
     },
     {
+      "id": "6abf433dce5e54eca6380b5c",
+      "title": "5 Estrellas - W Sound 23",
+      "artist": "W Sound, Myke Towers, Ovy On The Drums",
+      "before": "Other",
+      "genre": "Latin",
+      "source_genre": "Latin",
+      "source_title": "5 Estrellas - W Sound 23",
+      "source_artist": "W Sound, Myke Towers & Ovy On the Drums",
+      "source_album": "5 Estrellas - W Sound 23 - Single",
+      "source_url": "https://music.apple.com/us/album/5-estrellas-w-sound-23/1873055583?i=1873055584&uo=4",
+      "match": "exact artist and title"
+    },
+    {
       "id": "6abf4340b2b3aedefb0606ef",
       "title": "5/4",
       "artist": "Gorillaz",
@@ -2065,6 +2299,19 @@
       "source_artist": "Gorillaz",
       "source_album": "Gorillaz",
       "source_url": "https://music.apple.com/us/album/5-4/850576570?i=850576657&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6abf4344583b76578a6d41fb",
+      "title": "5MoreMinutes",
+      "artist": "Leon Thomas",
+      "before": "Other",
+      "genre": "R&B",
+      "source_genre": "R&B/Soul",
+      "source_title": "5MoreMinutes",
+      "source_artist": "Leon Thomas",
+      "source_album": "PHOLKS",
+      "source_url": "https://music.apple.com/us/album/5moreminutes/1847991335?i=1847991350&uo=4",
       "match": "exact artist and title"
     },
     {
@@ -2133,6 +2380,19 @@
       "match": "exact artist and title"
     },
     {
+      "id": "6abf435e8a506f11483eaaa3",
+      "title": "9 to 5",
+      "artist": "Dolly Parton",
+      "before": "Other",
+      "genre": "Country",
+      "source_genre": "Country",
+      "source_title": "9 to 5",
+      "source_artist": "Dolly Parton",
+      "source_album": "Ultimate Dolly Parton",
+      "source_url": "https://music.apple.com/us/album/9-to-5/282883573?i=282883590&uo=4",
+      "match": "exact artist and title"
+    },
+    {
       "id": "6abf4361411899468a2f4ead",
       "title": "10 F*CKS (with Mansa)",
       "artist": "Tory Lanez, Mansa Of The Hill",
@@ -2169,6 +2429,19 @@
       "source_artist": "Gorillaz",
       "source_album": "Gorillaz",
       "source_url": "https://music.apple.com/us/album/19-2000-soulchild-remix/850576570?i=850576766&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6abf43770f510bd8ce5588c3",
+      "title": "24 Bottles",
+      "artist": "Conscious Lacon",
+      "before": "Other",
+      "genre": "R&B",
+      "source_genre": "R&B/Soul",
+      "source_title": "24 Bottles",
+      "source_artist": "Conscious Lacon",
+      "source_album": "24 Bottles - Single",
+      "source_url": "https://music.apple.com/us/album/24-bottles/1474454634?i=1474454787&uo=4",
       "match": "exact artist and title"
     },
     {
@@ -2237,6 +2510,19 @@
       "match": "exact artist and title"
     },
     {
+      "id": "6abf438c99313c18d84de4ee",
+      "title": "85 Cutlass",
+      "artist": "Rylo Rodriguez",
+      "before": "Other",
+      "genre": "Hip-Hop",
+      "source_genre": "Hip-Hop/Rap",
+      "source_title": "85 Cutlass",
+      "source_artist": "Rylo Rodriguez",
+      "source_album": "85 Cutlass - Single",
+      "source_url": "https://music.apple.com/us/album/85-cutlass/1762908587?i=1762908781&uo=4",
+      "match": "exact artist and title"
+    },
+    {
       "id": "6abf438efa03dc3bed4d3c0e",
       "title": "85%",
       "artist": "Loote, gnash",
@@ -2263,6 +2549,45 @@
       "match": "exact artist and title"
     },
     {
+      "id": "6abf439a39efe0eec03e8a36",
+      "title": "305 LUV STORY",
+      "artist": "Gonzy",
+      "before": "Other",
+      "genre": "Latin",
+      "source_genre": "Urbano latino",
+      "source_title": "305 LUV STORY",
+      "source_artist": "Gonzy",
+      "source_album": "305 LUV STORY - Single",
+      "source_url": "https://music.apple.com/us/album/305-luv-story/1853973528?i=1853973529&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6abf439dbdf52633d6fe57d2",
+      "title": "333",
+      "artist": "Little Loove",
+      "before": "Other",
+      "genre": "Latin Pop",
+      "source_genre": "Pop Latino",
+      "source_title": "333",
+      "source_artist": "Little Loove",
+      "source_album": "GO! ZORRO - EP",
+      "source_url": "https://music.apple.com/us/album/333/1874011940?i=1874011944&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6abf43a46aeecf92ddba1a7d",
+      "title": "911",
+      "artist": "Little Loove",
+      "before": "Other",
+      "genre": "Latin Pop",
+      "source_genre": "Pop Latino",
+      "source_title": "911",
+      "source_artist": "Little Loove",
+      "source_album": "911 - Single",
+      "source_url": "https://music.apple.com/us/album/911/1893750408?i=1893750410&uo=4",
+      "match": "exact artist and title"
+    },
+    {
       "id": "6abf43ab6f54f585946d30b9",
       "title": "2093",
       "artist": "Yeat",
@@ -2273,6 +2598,45 @@
       "source_artist": "Yeat",
       "source_album": "2093 (P2)",
       "source_url": "https://music.apple.com/us/album/2093/1731490449?i=1731490605&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6abf43aff66dcd99134a26d4",
+      "title": "5500 Degrees (feat. Lil Baby, 42 Dugg & Rylo Rodriguez)",
+      "artist": "EST Gee, Lil Baby, 42 Dugg, Rylo Rodriguez",
+      "before": "Other",
+      "genre": "Hip-Hop",
+      "source_genre": "Hip-Hop/Rap",
+      "source_title": "5500 Degrees (feat. Lil Baby, 42 Dugg & Rylo Rodriguez)",
+      "source_artist": "EST Gee",
+      "source_album": "Bigger Than Life Or Death",
+      "source_url": "https://music.apple.com/us/album/5500-degrees-feat-lil-baby-42-dugg-rylo-rodriguez/1576449908?i=1576450213&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6abf43b5c0b8e707c5a0b06f",
+      "title": "20 Something",
+      "artist": "SZA",
+      "before": "Other",
+      "genre": "R&B",
+      "source_genre": "R&B/Soul",
+      "source_title": "20 Something",
+      "source_artist": "SZA",
+      "source_album": "Ctrl",
+      "source_url": "https://music.apple.com/us/album/20-something/1239977075?i=1239977726&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6abf43b7a6a40d6cd63d2752",
+      "title": "21 Questions",
+      "artist": "50 Cent, Nate Dogg",
+      "before": "Other",
+      "genre": "Hip-Hop",
+      "source_genre": "Hip-Hop/Rap",
+      "source_title": "21 Questions (feat. Nate Dogg)",
+      "source_artist": "50 Cent",
+      "source_album": "Get Rich or Die Tryin' (Bonus Track Version)",
+      "source_url": "https://music.apple.com/us/album/21-questions-feat-nate-dogg/1440907378?i=1440907566&uo=4",
       "match": "exact artist and title"
     },
     {
@@ -2367,6 +2731,19 @@
       "match": "exact artist and title"
     },
     {
+      "id": "6abf43c7e52074d80e2b78e9",
+      "title": "A Sky Full of Stars",
+      "artist": "Coldplay",
+      "before": "Other",
+      "genre": "Alternative",
+      "source_genre": "Alternative",
+      "source_title": "A Sky Full of Stars",
+      "source_artist": "Coldplay",
+      "source_album": "Ghost Stories",
+      "source_url": "https://music.apple.com/us/album/a-sky-full-of-stars/829909653?i=829910927&uo=4",
+      "match": "exact artist and title"
+    },
+    {
       "id": "6abf43d20e194d869287aa9a",
       "title": "A Vapor",
       "artist": "Sky Rompiendo, JHAYCO, Leebrian, Mora",
@@ -2393,6 +2770,32 @@
       "match": "exact artist and title"
     },
     {
+      "id": "6abf43d443fac57ad199821b",
+      "title": "A Veces A Besos - Remix",
+      "artist": "Greeicy, Kapo",
+      "before": "Other",
+      "genre": "Latin",
+      "source_genre": "Urbano latino",
+      "source_title": "A Veces A Besos (Remix)",
+      "source_artist": "Greeicy & Kapo",
+      "source_album": "A Veces A Besos (Remix) - Single",
+      "source_url": "https://music.apple.com/us/album/a-veces-a-besos-remix/1775816821?i=1775816824&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6abf43dfb7dde19cfa05bc81",
+      "title": "Above (feat. Masego & West Banks)",
+      "artist": "USERx",
+      "before": "Other",
+      "genre": "Alternative",
+      "source_genre": "Alternative",
+      "source_title": "Above (feat. Masego & West Banks)",
+      "source_artist": "USERx, Matt Maeson & Rozwell",
+      "source_album": "USERx - EP",
+      "source_url": "https://music.apple.com/us/album/above-feat-masego-west-banks/1555341433?i=1555341445&uo=4",
+      "match": "exact artist and title"
+    },
+    {
       "id": "6abf43e08844a64bfc483532",
       "title": "Above Water",
       "artist": "K CAMP",
@@ -2416,6 +2819,19 @@
       "source_artist": "Yorghaki & Beéle",
       "source_album": "abusadOra (tambores) - Single",
       "source_url": "https://music.apple.com/us/album/abusadora-tambores/6775599161?i=6775599170&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6abf43ebefb58a130f6a8a5f",
+      "title": "act xi: she ain’t no angel",
+      "artist": "4batz, Leon Thomas",
+      "before": "Other",
+      "genre": "R&B",
+      "source_genre": "R&B/Soul",
+      "source_title": "act xi: she ain’t no angel",
+      "source_artist": "4batz & Leon Thomas",
+      "source_album": "Still Shinin",
+      "source_url": "https://music.apple.com/us/album/act-xi-she-aint-no-angel/1834409258?i=1834409266&uo=4",
       "match": "exact artist and title"
     },
     {
@@ -2484,6 +2900,19 @@
       "match": "exact artist and title"
     },
     {
+      "id": "6abf44077d9353965aa409fe",
+      "title": "Adventure of a Lifetime",
+      "artist": "Coldplay",
+      "before": "Other",
+      "genre": "Alternative",
+      "source_genre": "Alternative",
+      "source_title": "Adventure of a Lifetime",
+      "source_artist": "Coldplay",
+      "source_album": "A Head Full of Dreams",
+      "source_url": "https://music.apple.com/us/album/adventure-of-a-lifetime/1053933969?i=1053934846&uo=4",
+      "match": "exact artist and title"
+    },
+    {
       "id": "6abf4407aa07e6df0bc8a232",
       "title": "Adore You",
       "artist": "Harry Styles",
@@ -2510,6 +2939,19 @@
       "match": "exact artist and title"
     },
     {
+      "id": "6abf441e95d02843adc70b6e",
+      "title": "Against The Grain",
+      "artist": "Akon, Ray Lavender",
+      "before": "Other",
+      "genre": "R&B",
+      "source_genre": "R&B/Soul",
+      "source_title": "Against the Grain (feat. Ray Lavender)",
+      "source_artist": "Akon",
+      "source_album": "Freedom",
+      "source_url": "https://music.apple.com/us/album/against-the-grain-feat-ray-lavender/1440742168?i=1440742419&uo=4",
+      "match": "exact artist and title"
+    },
+    {
       "id": "6abf44354e1bf29507cf428f",
       "title": "Alabare A Mi Senor",
       "artist": "Marino",
@@ -2520,6 +2962,19 @@
       "source_artist": "Marino",
       "source_album": "Adonde Va la Gente / El Recuento",
       "source_url": "https://music.apple.com/us/album/alabare-a-mi-se%C3%B1or/310328462?i=310328639&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6abf4437daec6541f0eeff49",
+      "title": "90s",
+      "artist": "Braxton Cook",
+      "before": "Other",
+      "genre": "Jazz",
+      "source_genre": "Jazz",
+      "source_title": "90s (feat. Masego)",
+      "source_artist": "Braxton Cook",
+      "source_album": "Who Are You When No One Is Watching?",
+      "source_url": "https://music.apple.com/us/album/90s-feat-masego/1668476230?i=1668476536&uo=4",
       "match": "exact artist and title"
     },
     {
@@ -2546,6 +3001,45 @@
       "source_artist": "Childish Gambino",
       "source_album": "Atavista",
       "source_url": "https://music.apple.com/us/album/algorhythm/1745756757?i=1745756761&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6abf44431408d509d83c6602",
+      "title": "All Dere (feat. Moneybagg Yo)",
+      "artist": "GloRilla, Moneybagg Yo",
+      "before": "Other",
+      "genre": "Hip-Hop",
+      "source_genre": "Hip-Hop/Rap",
+      "source_title": "All Dere (feat. Moneybagg Yo)",
+      "source_artist": "GloRilla",
+      "source_album": "Ehhthang Ehhthang",
+      "source_url": "https://music.apple.com/us/album/all-dere-feat-moneybagg-yo/1739255439?i=1739256018&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6abf444dd35399695d49a717",
+      "title": "All I Need",
+      "artist": "Radiohead",
+      "before": "Other",
+      "genre": "Alternative",
+      "source_genre": "Alternative",
+      "source_title": "All I Need",
+      "source_artist": "Radiohead",
+      "source_album": "In Rainbows",
+      "source_url": "https://music.apple.com/us/album/all-i-need/1109714933?i=1109715293&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6abf44512b21c1d6941dfcd7",
+      "title": "All Masks [Feat. Masego]",
+      "artist": "Robert Glasper",
+      "before": "Other",
+      "genre": "Jazz",
+      "source_genre": "Jazz",
+      "source_title": "All Masks (feat. Masego)",
+      "source_artist": "Robert Glasper",
+      "source_album": "All Masks (feat. Masego) - Single",
+      "source_url": "https://music.apple.com/us/album/all-masks-feat-masego/1634697601?i=1634697765&uo=4",
       "match": "exact artist and title"
     },
     {
@@ -2588,6 +3082,32 @@
       "match": "exact artist and title"
     },
     {
+      "id": "6abf445cf2188973d6ed8cfb",
+      "title": "All Of A Sudden",
+      "artist": "Lil Baby, Moneybagg Yo",
+      "before": "Other",
+      "genre": "Hip-Hop",
+      "source_genre": "Hip-Hop/Rap",
+      "source_title": "All of a Sudden (feat. Moneybagg Yo)",
+      "source_artist": "Lil Baby",
+      "source_album": "All of a Sudden (feat. Moneybagg Yo) - Single",
+      "source_url": "https://music.apple.com/us/album/all-of-a-sudden-feat-moneybagg-yo/1372225977?i=1372225979&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6abf445db362695937e95bd4",
+      "title": "All of Me",
+      "artist": "John Legend",
+      "before": "Other",
+      "genre": "R&B",
+      "source_genre": "R&B/Soul",
+      "source_title": "All of Me",
+      "source_artist": "John Legend",
+      "source_album": "Love in the Future (Expanded Edition)",
+      "source_url": "https://music.apple.com/us/album/all-of-me/1441844369?i=1441844542&uo=4",
+      "match": "exact artist and title"
+    },
+    {
       "id": "6abf4463b265bb13def6cfcc",
       "title": "All Of The Lights",
       "artist": "Kanye West",
@@ -2624,6 +3144,19 @@
       "source_artist": "Cisco Adler",
       "source_album": "All Right (feat. gnash) - Single",
       "source_url": "https://music.apple.com/us/album/all-right-feat-gnash/1436123312?i=1436123315&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6abf4473b94cbb242aecf6d4",
+      "title": "All That Matters (with Leon Thomas & AZ Chike)",
+      "artist": "6LACK, Leon Thomas, AZ Chike",
+      "before": "Other",
+      "genre": "R&B",
+      "source_genre": "R&B/Soul",
+      "source_title": "All That Matters",
+      "source_artist": "6LACK, Leon Thomas & AZ Chike",
+      "source_album": "Love is the New Gangsta",
+      "source_url": "https://music.apple.com/us/album/all-that-matters/6769897654?i=6769897660&uo=4",
       "match": "exact artist and title"
     },
     {
@@ -2757,6 +3290,19 @@
       "match": "exact artist and title"
     },
     {
+      "id": "6abf44a3bc87c12d7ad78cac",
+      "title": "ALREADY GOT ME",
+      "artist": "Stephen Sanchez",
+      "before": "Other",
+      "genre": "Pop",
+      "source_genre": "Pop",
+      "source_title": "ALREADY GOT ME",
+      "source_artist": "Stephen Sanchez",
+      "source_album": "LOVE, LOVE, LOVE",
+      "source_url": "https://music.apple.com/us/album/already-got-me/1880197844?i=1880198200&uo=4",
+      "match": "exact artist and title"
+    },
+    {
       "id": "6abf44b0a46bd5feb1dad973",
       "title": "Andromeda (feat. DRAM)",
       "artist": "Gorillaz, DRAM",
@@ -2796,6 +3342,32 @@
       "match": "exact artist and title"
     },
     {
+      "id": "6abf44cd4e8f9f670f27aabc",
+      "title": "Antes",
+      "artist": "Gonzy",
+      "before": "Other",
+      "genre": "Latin Pop",
+      "source_genre": "Pop Latino",
+      "source_title": "Antes",
+      "source_artist": "Gonzy",
+      "source_album": "Antes - Single",
+      "source_url": "https://music.apple.com/us/album/antes/1820287668?i=1820287827&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6abf44cd9c5c9d9d90cd5e03",
+      "title": "Antidote",
+      "artist": "Travis Scott",
+      "before": "Other",
+      "genre": "Hip-Hop",
+      "source_genre": "Hip-Hop/Rap",
+      "source_title": "Antidote",
+      "source_artist": "Travis Scott",
+      "source_album": "Rodeo",
+      "source_url": "https://music.apple.com/us/album/antidote/1456179762?i=1456179771&uo=4",
+      "match": "exact artist and title"
+    },
+    {
       "id": "6abf44d46705d39a2c84c9e8",
       "title": "Anxiety Freestyle",
       "artist": "Sleepy Hallow",
@@ -2832,6 +3404,19 @@
       "source_artist": "Passenger",
       "source_album": "Young as the Morning Old as the Sea (Deluxe)",
       "source_url": "https://music.apple.com/us/album/anywhere/1606606616?i=1606606992&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6abf44da5e538b8ecdd13bfd",
+      "title": "Another One Bites The Dust",
+      "artist": "Queen",
+      "before": "Other",
+      "genre": "Rock",
+      "source_genre": "Rock",
+      "source_title": "Another One Bites The Dust",
+      "source_artist": "Queen",
+      "source_album": "The Game (Deluxe Edition)",
+      "source_url": "https://music.apple.com/us/album/another-one-bites-the-dust/6781076388?i=6781076397&uo=4",
       "match": "exact artist and title"
     },
     {
@@ -3043,6 +3628,19 @@
       "match": "exact artist and title"
     },
     {
+      "id": "6abf45247e0fef8900c0cd7f",
+      "title": "ATTITUDE (FEAT. CHARLIE WILSON & CASH COBAIN)",
+      "artist": "Don Toliver, Charlie Wilson, Cash Cobain",
+      "before": "Other",
+      "genre": "Hip-Hop",
+      "source_genre": "Hip-Hop/Rap",
+      "source_title": "ATTITUDE (FEAT. CHARLIE WILSON & CASH COBAIN)",
+      "source_artist": "Don Toliver",
+      "source_album": "HARDSTONE PSYCHO",
+      "source_url": "https://music.apple.com/us/album/attitude-feat-charlie-wilson-cash-cobain/1752793935?i=1752794295&uo=4",
+      "match": "exact artist and title"
+    },
+    {
       "id": "6abf452bb82098649cf9e30e",
       "title": "Avisame",
       "artist": "Pahola Marino",
@@ -3095,6 +3693,19 @@
       "match": "exact artist and title"
     },
     {
+      "id": "6abf455a4cb53501331a0025",
+      "title": "Al Natural (feat. Yandel)",
+      "artist": "Tego Calderón, Yandel",
+      "before": "Other",
+      "genre": "Latin",
+      "source_genre": "Urbano latino",
+      "source_title": "Al Natural",
+      "source_artist": "Tego Calderón",
+      "source_album": "White Lion Hits Version Volumen I",
+      "source_url": "https://music.apple.com/us/album/al-natural/1477127763?i=1477127775&uo=4",
+      "match": "exact artist and title"
+    },
+    {
       "id": "6abf45683d0a31c7b7b67d43",
       "title": "all good (feat. Future)",
       "artist": "Roddy Ricch, Future",
@@ -3118,6 +3729,19 @@
       "source_artist": "Stevie Wonder",
       "source_album": "Hotter Than July",
       "source_url": "https://music.apple.com/us/album/all-i-do/1440820988?i=1440821233&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6abf4570d6858aabe63a2142",
+      "title": "Alma",
+      "artist": "Zaider, Kapo",
+      "before": "Other",
+      "genre": "Afrobeats",
+      "source_genre": "Afrobeats",
+      "source_title": "Alma",
+      "source_artist": "Zaider & Kapo",
+      "source_album": "Alma - Single",
+      "source_url": "https://music.apple.com/us/album/alma/1784828783?i=1784828802&uo=4",
       "match": "exact artist and title"
     },
     {
@@ -3160,6 +3784,19 @@
       "match": "exact artist and title"
     },
     {
+      "id": "6abf459783bbc347c6727e15",
+      "title": "ALMAS GEMELAS",
+      "artist": "Myke Towers",
+      "before": "Other",
+      "genre": "Latin",
+      "source_genre": "Latin",
+      "source_title": "ALMAS GEMELAS",
+      "source_artist": "Myke Towers",
+      "source_album": "ALMAS GEMELAS - Single",
+      "source_url": "https://music.apple.com/us/album/almas-gemelas/1577424372?i=1577424373&uo=4",
+      "match": "exact artist and title"
+    },
+    {
       "id": "6abf459c47b970b6c85a0bbd",
       "title": "ALONE, PART 3 - Instrumental",
       "artist": "XXXTENTACION",
@@ -3170,6 +3807,19 @@
       "source_artist": "XXXTENTACION",
       "source_album": "? (Deluxe)",
       "source_url": "https://music.apple.com/us/album/alone-part-3-instrumental/1474891456?i=1474891802&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6abf45a0e0d4df5b0b9a836d",
+      "title": "AMIMA",
+      "artist": "Nanpa Básico, Kapo",
+      "before": "Other",
+      "genre": "Latin Pop",
+      "source_genre": "Pop Latino",
+      "source_title": "AMIMA",
+      "source_artist": "Nanpa Básico & Kapo",
+      "source_album": "AMIMA - Single",
+      "source_url": "https://music.apple.com/us/album/amima/1840042339?i=1840042344&uo=4",
       "match": "exact artist and title"
     },
     {
@@ -3238,6 +3888,19 @@
       "match": "exact artist and title"
     },
     {
+      "id": "6abf45c127a8e7bd7c39fd47",
+      "title": "Awolowo - Remix",
+      "artist": "Fido, Kapo",
+      "before": "Other",
+      "genre": "Latin Rock",
+      "source_genre": "Rock y Alternativo",
+      "source_title": "Awolowo (Remix)",
+      "source_artist": "Fido & Kapo",
+      "source_album": "Awolowo (Remix) - Single",
+      "source_url": "https://music.apple.com/us/album/awolowo-remix/1780886663?i=1780886669&uo=4",
+      "match": "exact artist and title"
+    },
+    {
       "id": "6acc4303115d069c14d73606",
       "title": "Change",
       "artist": "K CAMP",
@@ -3303,6 +3966,19 @@
       "match": "exact artist and title"
     },
     {
+      "id": "6acc433db9c9b492e7b660b9",
+      "title": "Chill",
+      "artist": "LISA",
+      "before": "Other",
+      "genre": "Pop",
+      "source_genre": "Pop",
+      "source_title": "Chill",
+      "source_artist": "LISA",
+      "source_album": "Alter Ego",
+      "source_url": "https://music.apple.com/us/album/chill/1798585113?i=1798585530&uo=4",
+      "match": "exact artist and title"
+    },
+    {
       "id": "6acc433f5b9649304e9a099f",
       "title": "CHINGY",
       "artist": "Aminé",
@@ -3339,6 +4015,45 @@
       "source_artist": "Justin Timberlake",
       "source_album": "FutureSex/LoveSounds (Deluxe Edition)",
       "source_url": "https://music.apple.com/us/album/chop-me-up-feat-timbaland-three-6-mafia/400946401?i=400946487&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6acc434c67d8139a60545a25",
+      "title": "CHopstix (feat. Travis Scott)",
+      "artist": "ScHoolboy Q, Travis Scott",
+      "before": "Other",
+      "genre": "Hip-Hop",
+      "source_genre": "Hip-Hop/Rap",
+      "source_title": "CHopstix",
+      "source_artist": "ScHoolboy Q & Travis Scott",
+      "source_album": "CrasH Talk",
+      "source_url": "https://music.apple.com/us/album/chopstix/1460322275?i=1460322283&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6acc434ed788e55208579b9c",
+      "title": "chrome hearts don't break",
+      "artist": "Dame Atlas",
+      "before": "Other",
+      "genre": "R&B",
+      "source_genre": "R&B/Soul",
+      "source_title": "Chrome Hearts Don't Break",
+      "source_artist": "Dame Atlas",
+      "source_album": "Act I",
+      "source_url": "https://music.apple.com/us/album/chrome-hearts-dont-break/6808330740?i=6808330745&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6acc4350061058ab5be1b72c",
+      "title": "CHRONIC FLOAT",
+      "artist": "Gvlli3",
+      "before": "Other",
+      "genre": "R&B",
+      "source_genre": "R&B/Soul",
+      "source_title": "Chronic Float",
+      "source_artist": "On The Radar & Gvlli3",
+      "source_album": "The Gvlli3 Experience II (On The Radar) - EP",
+      "source_url": "https://music.apple.com/us/album/chronic-float/1854727961?i=1854727965&uo=4",
       "match": "exact artist and title"
     },
     {
@@ -3459,6 +4174,19 @@
       "match": "exact artist and title"
     },
     {
+      "id": "6acc43944f0978495a1adaed",
+      "title": "Coat of Many Colors",
+      "artist": "Dolly Parton",
+      "before": "Other",
+      "genre": "Country",
+      "source_genre": "Country",
+      "source_title": "Coat of Many Colors",
+      "source_artist": "Dolly Parton",
+      "source_album": "Ultimate Dolly Parton",
+      "source_url": "https://music.apple.com/us/album/coat-of-many-colors/282883573?i=282883577&uo=4",
+      "match": "exact artist and title"
+    },
+    {
       "id": "6acc4394e25ebea3698b081d",
       "title": "COBARDE",
       "artist": "Sofía Reyes, Beéle",
@@ -3495,6 +4223,19 @@
       "source_artist": "G Herbo",
       "source_album": "25",
       "source_url": "https://music.apple.com/us/album/cold-world-feat-yosohn/1573472036?i=1573472659&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6acc43a8048f1c810d4d8f27",
+      "title": "Coldplay",
+      "artist": "Coco & Clair Clair",
+      "before": "Other",
+      "genre": "Pop",
+      "source_genre": "Pop",
+      "source_title": "Coldplay",
+      "source_artist": "Coco & Clair Clair",
+      "source_album": "Coldplay - Single",
+      "source_url": "https://music.apple.com/us/album/coldplay/6785658303?i=6785658305&uo=4",
       "match": "exact artist and title"
     },
     {
@@ -3547,6 +4288,19 @@
       "source_artist": "Aminé",
       "source_album": "TWOPOINTFIVE",
       "source_url": "https://music.apple.com/us/album/colors/1594773145?i=1594773147&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6acc43b945a9b9f061fc181f",
+      "title": "come home'",
+      "artist": "Destin Laurel",
+      "before": "Other",
+      "genre": "Hip-Hop",
+      "source_genre": "Hip-Hop/Rap",
+      "source_title": "come home'",
+      "source_artist": "Destin Laurel & Seddy Hendrinx",
+      "source_album": "MERCY\"",
+      "source_url": "https://music.apple.com/us/album/come-home/1822983041?i=1822983296&uo=4",
       "match": "exact artist and title"
     },
     {
@@ -3784,6 +4538,19 @@
       "match": "exact artist and title"
     },
     {
+      "id": "6acc441eb3747639223dbcf9",
+      "title": "Crash & Burn",
+      "artist": "Leon Thomas",
+      "before": "Other",
+      "genre": "R&B",
+      "source_genre": "R&B/Soul",
+      "source_title": "Crash & Burn",
+      "source_artist": "Leon Thomas",
+      "source_album": "Crash & Burn - Single",
+      "source_url": "https://music.apple.com/us/album/crash-burn/1679752169?i=1679752181&uo=4",
+      "match": "exact artist and title"
+    },
+    {
       "id": "6acc44233d20180b3f82011f",
       "title": "crash the party",
       "artist": "Roddy Ricch",
@@ -3992,6 +4759,19 @@
       "match": "exact artist and title"
     },
     {
+      "id": "6acc4488918beff779900dec",
+      "title": "Cynthia",
+      "artist": "Maxwell Hunter",
+      "before": "Other",
+      "genre": "R&B",
+      "source_genre": "R&B/Soul",
+      "source_title": "Cynthia (feat. Masego & Dan Foster)",
+      "source_artist": "Maxwell Hunter",
+      "source_album": "Merlot",
+      "source_url": "https://music.apple.com/us/album/cynthia-feat-masego-dan-foster/1795129949?i=1795129953&uo=4",
+      "match": "exact artist and title"
+    },
+    {
       "id": "6acc4489a83c2b8a334619ac",
       "title": "Cycle",
       "artist": "Sabrina Claudio",
@@ -4057,6 +4837,45 @@
       "match": "exact artist and title"
     },
     {
+      "id": "6acc49b86f8579f44c982801",
+      "title": "Dificil",
+      "artist": "Little Loove",
+      "before": "Other",
+      "genre": "Latin",
+      "source_genre": "Latin",
+      "source_title": "Dificil",
+      "source_artist": "Little Loove",
+      "source_album": "Dificil - Single",
+      "source_url": "https://music.apple.com/us/album/dificil/6783956601?i=6783956603&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6acc49bc63b8c06ca6fee5ab",
+      "title": "Digit viewing",
+      "artist": "Conscious Lacon",
+      "before": "Other",
+      "genre": "New Age",
+      "source_genre": "New Age",
+      "source_title": "Digit viewing",
+      "source_artist": "Conscious Lacon",
+      "source_album": "Digit viewing - Single",
+      "source_url": "https://music.apple.com/us/album/digit-viewing/6799055837?i=6799055838&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6acc49c80c6cd9bd0f5b0661",
+      "title": "Dile",
+      "artist": "Don Omar",
+      "before": "Other",
+      "genre": "Latin",
+      "source_genre": "Urbano latino",
+      "source_title": "Dile",
+      "source_artist": "Don Omar",
+      "source_album": "The Last Don",
+      "source_url": "https://music.apple.com/us/album/dile/1467968644?i=1467968652&uo=4",
+      "match": "exact artist and title"
+    },
+    {
       "id": "6acc49c883074eb8c88db5b0",
       "title": "Dime A Ve",
       "artist": "JHAYCO",
@@ -4119,6 +4938,45 @@
       "source_artist": "Marino",
       "source_album": "La Gran Tribulacion - Es Tiempo Ya",
       "source_url": "https://music.apple.com/us/album/dios-no-te-ha-olvidado/310328709?i=310328882&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6acc49eeb335e6a31311fcca",
+      "title": "DIRT ON MY SHOES (feat. Kehlani)",
+      "artist": "Leon Thomas, Kehlani",
+      "before": "Other",
+      "genre": "R&B",
+      "source_genre": "R&B/Soul",
+      "source_title": "DIRT ON MY SHOES",
+      "source_artist": "Leon Thomas & Kehlani",
+      "source_album": "MUTT Deluxe: HEEL",
+      "source_url": "https://music.apple.com/us/album/dirt-on-my-shoes/1817502058?i=1817502485&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6acc49f755680615ca566015",
+      "title": "Disco Inferno",
+      "artist": "50 Cent",
+      "before": "Other",
+      "genre": "Hip-Hop",
+      "source_genre": "Hip-Hop/Rap",
+      "source_title": "Disco Inferno",
+      "source_artist": "50 Cent",
+      "source_album": "The Massacre",
+      "source_url": "https://music.apple.com/us/album/disco-inferno/1444007100?i=1444007314&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6acc49f7a64af274e0027be9",
+      "title": "Disconnected (Shorty from VA)",
+      "artist": "Masego",
+      "before": "Other",
+      "genre": "Hip-Hop",
+      "source_genre": "Hip-Hop/Rap",
+      "source_title": "Disconnected (Shorty from VA)",
+      "source_artist": "Masego",
+      "source_album": "Loose Thoughts",
+      "source_url": "https://music.apple.com/us/album/disconnected-shorty-from-va/1137300611?i=1137300619&uo=4",
       "match": "exact artist and title"
     },
     {
@@ -4265,6 +5123,19 @@
       "match": "exact artist and title"
     },
     {
+      "id": "6acc4a3c80177cf0bf63734b",
+      "title": "Dominicana",
+      "artist": "Tego Calderón",
+      "before": "Other",
+      "genre": "Latin",
+      "source_genre": "Urbano latino",
+      "source_title": "Dominicana (feat. Dj Nelson)",
+      "source_artist": "Tego Calderón",
+      "source_album": "Dj Nelson Presenta: Salsa Con Ton (Salsa Urbana)",
+      "source_url": "https://music.apple.com/us/album/dominicana-feat-dj-nelson/923096333?i=923096368&uo=4",
+      "match": "exact artist and title"
+    },
+    {
       "id": "6acc4a3f06e76d12e3a88d09",
       "title": "Don Life (feat. Lil Wayne)",
       "artist": "Big Sean, Lil Wayne",
@@ -4275,6 +5146,19 @@
       "source_artist": "Big Sean",
       "source_album": "Detroit 2",
       "source_url": "https://music.apple.com/us/album/don-life-feat-lil-wayne/1530239848?i=1530240029&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6acc4a44c557928e1acfc0fd",
+      "title": "Don't Care No More",
+      "artist": "Bay Swag, Cash Cobain",
+      "before": "Other",
+      "genre": "Hip-Hop",
+      "source_genre": "Hip-Hop/Rap",
+      "source_title": "Don't Care No More",
+      "source_artist": "Bay Swag & Cash Cobain",
+      "source_album": "Damaged Thoughts",
+      "source_url": "https://music.apple.com/us/album/dont-care-no-more/1828316985?i=1828316989&uo=4",
       "match": "exact artist and title"
     },
     {
@@ -4330,6 +5214,19 @@
       "match": "exact artist and title"
     },
     {
+      "id": "6acc4a6178a05da4451a8e8d",
+      "title": "Don't Kno",
+      "artist": "Moneybagg Yo",
+      "before": "Other",
+      "genre": "Hip-Hop",
+      "source_genre": "Hip-Hop/Rap",
+      "source_title": "Don't Kno",
+      "source_artist": "Moneybagg Yo",
+      "source_album": "Heartless",
+      "source_url": "https://music.apple.com/us/album/dont-kno/1206494518?i=1206494646&uo=4",
+      "match": "exact artist and title"
+    },
+    {
       "id": "6acc4a66d194a92b114a7d83",
       "title": "Don't Let Me Down (feat. Khalid)",
       "artist": "Sabrina Claudio, Khalid",
@@ -4353,6 +5250,19 @@
       "source_artist": "Sabrina Claudio",
       "source_album": "Based On A Feeling",
       "source_url": "https://music.apple.com/us/album/dont-make-me-wait/1615098416?i=1615098826&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6acc4a6b3d906968bb3f2e16",
+      "title": "Don't Matter",
+      "artist": "Akon",
+      "before": "Other",
+      "genre": "Hip-Hop",
+      "source_genre": "Hip-Hop/Rap",
+      "source_title": "Don't Matter",
+      "source_artist": "Akon",
+      "source_album": "Konvicted",
+      "source_url": "https://music.apple.com/us/album/dont-matter/1444055616?i=1444055876&uo=4",
       "match": "exact artist and title"
     },
     {
@@ -4418,6 +5328,19 @@
       "source_artist": "Bryson Tiller",
       "source_album": "T R A P S O U L",
       "source_url": "https://music.apple.com/us/album/dont/1031334412?i=1031334418&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6acc4a86968e74914eb66542",
+      "title": "Dónde Están Las Gatas",
+      "artist": "Nicky Jam, Daddy Yankee",
+      "before": "Other",
+      "genre": "Latin",
+      "source_genre": "Urbano latino",
+      "source_title": "Dónde Están las Gatas",
+      "source_artist": "Alex Gargolas, Daddy Yankee & Nicky Jam",
+      "source_album": "Gárgolas 3",
+      "source_url": "https://music.apple.com/us/album/d%C3%B3nde-est%C3%A1n-las-gatas/1569986301?i=1569986310&uo=4",
       "match": "exact artist and title"
     },
     {
@@ -4564,6 +5487,19 @@
       "match": "exact artist and title"
     },
     {
+      "id": "6acc4acd162ac9a5b7234617",
+      "title": "Dream",
+      "artist": "LISA",
+      "before": "Other",
+      "genre": "Pop",
+      "source_genre": "Pop",
+      "source_title": "Dream",
+      "source_artist": "LISA",
+      "source_album": "Alter Ego",
+      "source_url": "https://music.apple.com/us/album/dream/1798585113?i=1798585533&uo=4",
+      "match": "exact artist and title"
+    },
+    {
       "id": "6acc4ad7e4c79e00495764c8",
       "title": "Dreams (Interlude)",
       "artist": "A$AP Rocky",
@@ -4681,6 +5617,19 @@
       "match": "exact artist and title"
     },
     {
+      "id": "6acc4b0a47ec2c260357a0d1",
+      "title": "Drum Dummy",
+      "artist": "Sheff G",
+      "before": "Other",
+      "genre": "Hip-Hop",
+      "source_genre": "Hip-Hop/Rap",
+      "source_title": "Drum Dummy",
+      "source_artist": "Sheff G",
+      "source_album": "From The Can",
+      "source_url": "https://music.apple.com/us/album/drum-dummy/1634520454?i=1634520455&uo=4",
+      "match": "exact artist and title"
+    },
+    {
       "id": "6acc4b0ad70ef2f2e6aa60d2",
       "title": "Drunk In The Morning",
       "artist": "Lukas Graham",
@@ -4743,6 +5692,19 @@
       "source_artist": "FL Dusa",
       "source_album": "Fame Can’t Change Me",
       "source_url": "https://music.apple.com/us/album/dusa-feat-kevin-gates/1695235633?i=1695236364&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6acc4b2d14e89e09fff9f748",
+      "title": "Early Spring",
+      "artist": ".Sinh",
+      "before": "Other",
+      "genre": "Hip-Hop",
+      "source_genre": "Hip-Hop/Rap",
+      "source_title": "Early Spring (feat. Masego)",
+      "source_artist": ".Sinh",
+      "source_album": "Early Spring (feat. Masego) - Single",
+      "source_url": "https://music.apple.com/us/album/early-spring-feat-masego/1259496084?i=1259496085&uo=4",
       "match": "exact artist and title"
     },
     {
@@ -4902,6 +5864,19 @@
       "match": "exact artist and title"
     },
     {
+      "id": "6acc4b8629fc2d48cca9285b",
+      "title": "Elastigirl",
+      "artist": "LISA",
+      "before": "Other",
+      "genre": "Pop",
+      "source_genre": "Pop",
+      "source_title": "Elastigirl",
+      "source_artist": "LISA",
+      "source_album": "Alter Ego",
+      "source_url": "https://music.apple.com/us/album/elastigirl/1798585113?i=1798585127&uo=4",
+      "match": "exact artist and title"
+    },
+    {
       "id": "6acc4b878226855d27deaf60",
       "title": "Electric Body (feat. ScHoolboy Q)",
       "artist": "A$AP Rocky, ScHoolboy Q",
@@ -4941,6 +5916,19 @@
       "match": "exact artist and title"
     },
     {
+      "id": "6acc4b921541f25a8c624994",
+      "title": "Ella Me Levanto",
+      "artist": "Daddy Yankee",
+      "before": "Other",
+      "genre": "Latin",
+      "source_genre": "Urbano latino",
+      "source_title": "Ella Me Levantó",
+      "source_artist": "Daddy Yankee",
+      "source_album": "El Cartel: The Big Boss",
+      "source_url": "https://music.apple.com/us/album/ella-me-levant%C3%B3/1786000505?i=1786000517&uo=4",
+      "match": "exact artist and title"
+    },
+    {
       "id": "6acc4b9c6585721394ea4597",
       "title": "Embargo",
       "artist": "Jordan Ward, Joony",
@@ -4964,6 +5952,19 @@
       "source_artist": "Owl City",
       "source_album": "The Midsummer Station",
       "source_url": "https://music.apple.com/us/album/embers/1440806223?i=1440807036&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6acc4b9f4687ffa7ae3d75a5",
+      "title": "Emociones",
+      "artist": "Little Loove",
+      "before": "Other",
+      "genre": "Latin",
+      "source_genre": "Latin",
+      "source_title": "Emociones",
+      "source_artist": "Little Loove & Esequiel JS",
+      "source_album": "Emociones - Single",
+      "source_url": "https://music.apple.com/us/album/emociones/6775668559?i=6775668560&uo=4",
       "match": "exact artist and title"
     },
     {
@@ -5006,6 +6007,19 @@
       "match": "exact artist and title"
     },
     {
+      "id": "6acc4ba9e6179e1e5d64164f",
+      "title": "En La Cama",
+      "artist": "Nicky Jam, Daddy Yankee",
+      "before": "Other",
+      "genre": "Latin",
+      "source_genre": "Latin",
+      "source_title": "En la Cama (feat. Daddy Yankee)",
+      "source_artist": "Nicky Jam",
+      "source_album": "Pina All Star",
+      "source_url": "https://music.apple.com/us/album/en-la-cama-feat-daddy-yankee/1444159664?i=1444159992&uo=4",
+      "match": "exact artist and title"
+    },
+    {
       "id": "6acc4baf006af4e1e2121586",
       "title": "En La Mía",
       "artist": "JHAYCO",
@@ -5042,6 +6056,32 @@
       "source_artist": "Mora",
       "source_album": "PARAÍSO",
       "source_url": "https://music.apple.com/us/album/en-la-orilla/1651264307?i=1651265098&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6acc4bc5ae4bd4a123592c04",
+      "title": "En Todas Partes",
+      "artist": "ONIKX, Andy Rivera, Kapo",
+      "before": "Other",
+      "genre": "Latin",
+      "source_genre": "Urbano latino",
+      "source_title": "En Todas Partes",
+      "source_artist": "ONIKX, Andy Rivera & Kapo",
+      "source_album": "En Todas Partes - Single",
+      "source_url": "https://music.apple.com/us/album/en-todas-partes/1738663684?i=1738663685&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6acc4bd506e0bec4dc7000d8",
+      "title": "End of the Road",
+      "artist": "Rylo Rodriguez",
+      "before": "Other",
+      "genre": "Hip-Hop",
+      "source_genre": "Hip-Hop/Rap",
+      "source_title": "End of the Road",
+      "source_artist": "Rylo Rodriguez",
+      "source_album": "Been One",
+      "source_url": "https://music.apple.com/us/album/end-of-the-road/1694599943?i=1694600215&uo=4",
       "match": "exact artist and title"
     },
     {
@@ -5094,6 +6134,19 @@
       "source_artist": "Pahola Marino",
       "source_album": "Sigue Adelante / Le Canto a Mi Manera (Doble Album)",
       "source_url": "https://music.apple.com/us/album/ens%C3%A9%C3%B1ame/672191583?i=672191611&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6acc4bfc06e0bec4dc7000eb",
+      "title": "Equal Dirt",
+      "artist": "Rylo Rodriguez",
+      "before": "Other",
+      "genre": "Hip-Hop",
+      "source_genre": "Hip-Hop/Rap",
+      "source_title": "Equal Dirt",
+      "source_artist": "Rylo Rodriguez",
+      "source_album": "Been One",
+      "source_url": "https://music.apple.com/us/album/equal-dirt/1694599943?i=1694600211&uo=4",
       "match": "exact artist and title"
     },
     {
@@ -5175,6 +6228,19 @@
       "match": "exact artist and title"
     },
     {
+      "id": "6acc4c2c45dcf72ad08abc17",
+      "title": "ESTA ES TU CASA NENA",
+      "artist": "Kapo, Camilo",
+      "before": "Other",
+      "genre": "Latin",
+      "source_genre": "Latin",
+      "source_title": "ESTA ES TU CASA NENA",
+      "source_artist": "Kapo & Camilo",
+      "source_album": "ESTA ES TU CASA NENA - Single",
+      "source_url": "https://music.apple.com/us/album/esta-es-tu-casa-nena/1836248466?i=1836248476&uo=4",
+      "match": "exact artist and title"
+    },
+    {
       "id": "6acc4c34bcf1a8f8299c4581",
       "title": "Están Pa´ Mí",
       "artist": "JHAYCO, J Balvin",
@@ -5237,6 +6303,19 @@
       "source_artist": "Ariana Grande",
       "source_album": "eternal sunshine",
       "source_url": "https://music.apple.com/us/album/eternal-sunshine/1725877944?i=1725877964&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6acc4c4a507d3e203e6e1a0f",
+      "title": "Evangeline",
+      "artist": "Stephen Sanchez",
+      "before": "Other",
+      "genre": "Singer/Songwriter",
+      "source_genre": "Singer/Songwriter",
+      "source_title": "Evangeline",
+      "source_artist": "Stephen Sanchez",
+      "source_album": "Evangeline - Single",
+      "source_url": "https://music.apple.com/us/album/evangeline/1664326528?i=1664326850&uo=4",
       "match": "exact artist and title"
     },
     {
@@ -5383,6 +6462,19 @@
       "match": "exact artist and title"
     },
     {
+      "id": "6acc4f1308c2a699a0f38ff7",
+      "title": "Fisherrr - Remix",
+      "artist": "Cash Cobain, Ice Spice, Bay Swag",
+      "before": "Other",
+      "genre": "Hip-Hop",
+      "source_genre": "Hip-Hop/Rap",
+      "source_title": "Fisherrr (Remix)",
+      "source_artist": "Cash Cobain, Ice Spice & Bay Swag",
+      "source_album": "Fisherrr (Remix) - Single",
+      "source_url": "https://music.apple.com/us/album/fisherrr-remix/1743489654?i=1743489656&uo=4",
+      "match": "exact artist and title"
+    },
+    {
       "id": "6acc4f13a5027fea5363be36",
       "title": "First",
       "artist": "Tems",
@@ -5461,6 +6553,19 @@
       "match": "exact artist and title"
     },
     {
+      "id": "6acc4f51e941a3c375c7cb39",
+      "title": "Fly U Out",
+      "artist": "Lucky Daye",
+      "before": "Other",
+      "genre": "R&B",
+      "source_genre": "R&B/Soul",
+      "source_title": "Fly U Out",
+      "source_artist": "Lucky Daye & Leon Thomas",
+      "source_album": "Fly U Out - Single",
+      "source_url": "https://music.apple.com/us/album/fly-u-out/6800127959?i=6800127968&uo=4",
+      "match": "exact artist and title"
+    },
+    {
       "id": "6acc4f5576de3d1e0ab59eec",
       "title": "FLYTROOP",
       "artist": "Yeat",
@@ -5497,6 +6602,19 @@
       "source_artist": "Kanye West",
       "source_album": "JESUS IS KING",
       "source_url": "https://music.apple.com/us/album/follow-god/1484936940?i=1484937103&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6acc4f67c588bd818aaccc40",
+      "title": "FOOL ME ONCE (feat. Leon Thomas)",
+      "artist": "GIVĒON, Leon Thomas",
+      "before": "Other",
+      "genre": "R&B",
+      "source_genre": "R&B/Soul",
+      "source_title": "FOOL ME ONCE (feat. Leon Thomas)",
+      "source_artist": "GIVĒON",
+      "source_album": "BELOVED: ACT II",
+      "source_url": "https://music.apple.com/us/album/fool-me-once-feat-leon-thomas/1891467233?i=1891467239&uo=4",
       "match": "exact artist and title"
     },
     {
@@ -5604,6 +6722,32 @@
       "match": "exact artist and title"
     },
     {
+      "id": "6acc4f9645a9b9f061fc37ed",
+      "title": "Forget That (feat. Rylo Rodriguez)",
+      "artist": "Lil Baby, Rylo Rodriguez",
+      "before": "Other",
+      "genre": "Hip-Hop",
+      "source_genre": "Hip-Hop/Rap",
+      "source_title": "Forget That",
+      "source_artist": "Lil Baby & Rylo Rodriguez",
+      "source_album": "My Turn",
+      "source_url": "https://music.apple.com/us/album/forget-that/1499567361?i=1499567937&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6acc4f977b38ad426f4b064c",
+      "title": "FORGETTING YOUR KISS",
+      "artist": "Stephen Sanchez",
+      "before": "Other",
+      "genre": "Pop",
+      "source_genre": "Pop",
+      "source_title": "FORGETTING YOUR KISS",
+      "source_artist": "Stephen Sanchez",
+      "source_album": "LOVE, LOVE, LOVE",
+      "source_url": "https://music.apple.com/us/album/forgetting-your-kiss/1880197844?i=1880198214&uo=4",
+      "match": "exact artist and title"
+    },
+    {
       "id": "6acc4fa4e1d6393c6630088d",
       "title": "Fountains (with Tems)",
       "artist": "Drake, Tems",
@@ -5705,6 +6849,19 @@
       "source_artist": "K CAMP",
       "source_album": "Kiss 5",
       "source_url": "https://music.apple.com/us/album/friendly-feat-yung-bleu/1508605610?i=1508605966&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6acc4fe6f25e70c49e17e0ee",
+      "title": "Friends Again",
+      "artist": "Baby Rose, Leon Thomas",
+      "before": "Other",
+      "genre": "R&B",
+      "source_genre": "R&B/Soul",
+      "source_title": "Friends Again",
+      "source_artist": "Baby Rose & Leon Thomas",
+      "source_album": "Friends Again - Single",
+      "source_url": "https://music.apple.com/us/album/friends-again/1871211170?i=1871211171&uo=4",
       "match": "exact artist and title"
     },
     {
@@ -5838,6 +6995,32 @@
       "match": "exact artist and title"
     },
     {
+      "id": "6acc5032a82ea17536524baf",
+      "title": "g block baby",
+      "artist": "Astrobwoyy",
+      "before": "Other",
+      "genre": "Hip-Hop",
+      "source_genre": "Hip-Hop/Rap",
+      "source_title": "g block baby",
+      "source_artist": "Astrobwoyy & Dame Atlas",
+      "source_album": "g block baby - Single",
+      "source_url": "https://music.apple.com/us/album/g-block-baby/6815339278?i=6815339279&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6acc503381874338930f0848",
+      "title": "G-Lock On Me",
+      "artist": "Sheff G",
+      "before": "Other",
+      "genre": "Hip-Hop",
+      "source_genre": "Hip-Hop/Rap",
+      "source_title": "G-Lock On Me",
+      "source_artist": "Sheff G",
+      "source_album": "Proud Of Me Now",
+      "source_url": "https://music.apple.com/us/album/g-lock-on-me/1545981753?i=1545982097&uo=4",
+      "match": "exact artist and title"
+    },
+    {
       "id": "6acc5034295c5748945a6e3b",
       "title": "FYTB (FEAT. JOONY)",
       "artist": "Brent Faiyaz, Joony",
@@ -5900,6 +7083,32 @@
       "source_artist": "Free Nationals, A$AP Rocky & Anderson .Paak",
       "source_album": "Gangsta - Single",
       "source_url": "https://music.apple.com/us/album/gangsta/1731297441?i=1731297449&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6acc50521d9222fbe2637720",
+      "title": "Garden Party",
+      "artist": "Masego, Big Boi, JID",
+      "before": "Other",
+      "genre": "R&B",
+      "source_genre": "R&B/Soul",
+      "source_title": "Garden Party",
+      "source_artist": "Masego, Big Boi & JID",
+      "source_album": "Garden Party - Single",
+      "source_url": "https://music.apple.com/us/album/garden-party/1587754366?i=1587754370&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6acc505247a24c4170e54052",
+      "title": "Gasolina",
+      "artist": "Daddy Yankee",
+      "before": "Other",
+      "genre": "Latin",
+      "source_genre": "Urbano latino",
+      "source_title": "Gasolina",
+      "source_artist": "Daddy Yankee",
+      "source_album": "Gasolina - Single",
+      "source_url": "https://music.apple.com/us/album/gasolina/1785999523?i=1785999526&uo=4",
       "match": "exact artist and title"
     },
     {
@@ -5994,6 +7203,19 @@
       "match": "exact artist and title"
     },
     {
+      "id": "6acc5090cc226166cacdca01",
+      "title": "Get You Back (feat. Cash Cobain)",
+      "artist": "Big Sean, Cash Cobain",
+      "before": "Other",
+      "genre": "Hip-Hop",
+      "source_genre": "Hip-Hop/Rap",
+      "source_title": "Get You Back",
+      "source_artist": "Big Sean & Cash Cobain",
+      "source_album": "Better Me Than You",
+      "source_url": "https://music.apple.com/us/album/get-you-back/1765435793?i=1765435978&uo=4",
+      "match": "exact artist and title"
+    },
+    {
       "id": "6acc50938c2829684230fd2b",
       "title": "Ghetto Superstar (feat. G Herbo & Doe Boy)",
       "artist": "Roddy Ricch, G Herbo, Doe Boy",
@@ -6004,6 +7226,19 @@
       "source_artist": "Roddy Ricch",
       "source_album": "Ghetto Superstar (feat. G Herbo & Doe Boy) - Single",
       "source_url": "https://music.apple.com/us/album/ghetto-superstar-feat-g-herbo-doe-boy/1643795556?i=1643795557&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6acc50c69dc163131ed4c893",
+      "title": "Girls That Dance",
+      "artist": "Masego, Medasin",
+      "before": "Other",
+      "genre": "Hip-Hop",
+      "source_genre": "Hip-Hop/Rap",
+      "source_title": "Girls That Dance",
+      "source_artist": "Masego & Medasin",
+      "source_album": "The Pink Polo EP",
+      "source_url": "https://music.apple.com/us/album/girls-that-dance/1099376295?i=1099376359&uo=4",
       "match": "exact artist and title"
     },
     {
@@ -6056,6 +7291,19 @@
       "source_artist": "Young Thug",
       "source_album": "BUSINESS IS BUSINESS (Metro's Version)",
       "source_url": "https://music.apple.com/us/album/global-access-feat-nate-ruess/1694421465?i=1694423439&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6acc50e3866315dda4a9c445",
+      "title": "GLOCK",
+      "artist": "Don Toliver",
+      "before": "Other",
+      "genre": "Hip-Hop",
+      "source_genre": "Hip-Hop/Rap",
+      "source_title": "GLOCK",
+      "source_artist": "Don Toliver",
+      "source_album": "HARDSTONE PSYCHO",
+      "source_url": "https://music.apple.com/us/album/glock/1752793935?i=1752794419&uo=4",
       "match": "exact artist and title"
     },
     {
@@ -6241,6 +7489,58 @@
       "match": "exact artist and title"
     },
     {
+      "id": "6acc5133d068b35c017eb03e",
+      "title": "Good & Plenty",
+      "artist": "Alex Isley, Masego, Jack Dine",
+      "before": "Other",
+      "genre": "R&B",
+      "source_genre": "R&B/Soul",
+      "source_title": "Good & Plenty",
+      "source_artist": "Alex Isley, Masego & Jack Dine",
+      "source_album": "Good & Plenty - Single",
+      "source_url": "https://music.apple.com/us/album/good-plenty/1515958138?i=1515958140&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6acc51341ba761b0b2f6ae02",
+      "title": "Good & Plenty - Remix",
+      "artist": "Lucky Daye, Masego, Alex Isley, Jack Dine",
+      "before": "Other",
+      "genre": "R&B",
+      "source_genre": "R&B/Soul",
+      "source_title": "Good & Plenty (Remix)",
+      "source_artist": "Lucky Daye, Masego & Alex Isley",
+      "source_album": "Good & Plenty (Remix) - Single",
+      "source_url": "https://music.apple.com/us/album/good-plenty-remix/1554898316?i=1554898317&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6acc513c9cdf05ec8829086b",
+      "title": "Good Days",
+      "artist": "SZA",
+      "before": "Other",
+      "genre": "R&B",
+      "source_genre": "R&B/Soul",
+      "source_title": "Good Days",
+      "source_artist": "SZA",
+      "source_album": "Good Days - Single",
+      "source_url": "https://music.apple.com/us/album/good-days/1546390012?i=1546390013&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6acc513f563b6cd31b760db5",
+      "title": "Good Girl",
+      "artist": "Tiffany Gouché",
+      "before": "Other",
+      "genre": "R&B",
+      "source_genre": "R&B/Soul",
+      "source_title": "Good Girl (feat. Masego)",
+      "source_artist": "Tiffany Gouché",
+      "source_album": "Good Girl (feat. Masego) - Single",
+      "source_url": "https://music.apple.com/us/album/good-girl-feat-masego/1567025120?i=1567025132&uo=4",
+      "match": "exact artist and title"
+    },
+    {
       "id": "6acc51427b9a420bfb94e443",
       "title": "Good Life",
       "artist": "Kanye West, T-Pain",
@@ -6423,6 +7723,19 @@
       "match": "exact artist and title"
     },
     {
+      "id": "6acc5171af73ac563af5dca5",
+      "title": "grateful'",
+      "artist": "Destin Laurel",
+      "before": "Other",
+      "genre": "Afrobeat",
+      "source_genre": "Afro-Beat",
+      "source_title": "grateful'",
+      "source_artist": "Destin Laurel",
+      "source_album": "grateful' - Single",
+      "source_url": "https://music.apple.com/us/album/grateful/1779459527?i=1779459830&uo=4",
+      "match": "exact artist and title"
+    },
+    {
       "id": "6acc5176ac66e91420cd8158",
       "title": "Grecia",
       "artist": "JHAYCO",
@@ -6472,6 +7785,45 @@
       "source_artist": "Pahola Marino",
       "source_album": "Ahora Me Toca a Mi / Tiempo de Recordar",
       "source_url": "https://music.apple.com/us/album/guiame/394761148?i=394761239&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6acc56b938dc38f603170266",
+      "title": "Good & Plenty - Remix",
+      "artist": "Lucky Daye, Masego, Alex Isley, Jack Dine",
+      "before": "Other",
+      "genre": "R&B",
+      "source_genre": "R&B/Soul",
+      "source_title": "Good & Plenty (Remix)",
+      "source_artist": "Lucky Daye, Masego & Alex Isley",
+      "source_album": "Good & Plenty (Remix) - Single",
+      "source_url": "https://music.apple.com/us/album/good-plenty-remix/1554898316?i=1554898317&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6acc56c318c65445d5985b43",
+      "title": "Good Days",
+      "artist": "SZA",
+      "before": "Other",
+      "genre": "R&B",
+      "source_genre": "R&B/Soul",
+      "source_title": "Good Days",
+      "source_artist": "SZA",
+      "source_album": "Good Days - Single",
+      "source_url": "https://music.apple.com/us/album/good-days/1546390012?i=1546390013&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6acc56c7fadd5f69d0ce0fc4",
+      "title": "Good Girl",
+      "artist": "Tiffany Gouché",
+      "before": "Other",
+      "genre": "R&B",
+      "source_genre": "R&B/Soul",
+      "source_title": "Good Girl (feat. Masego)",
+      "source_artist": "Tiffany Gouché",
+      "source_album": "Good Girl (feat. Masego) - Single",
+      "source_url": "https://music.apple.com/us/album/good-girl-feat-masego/1567025120?i=1567025132&uo=4",
       "match": "exact artist and title"
     },
     {
@@ -6644,6 +7996,19 @@
       "match": "exact artist and title"
     },
     {
+      "id": "6acc56f925c61e75831c8093",
+      "title": "grateful'",
+      "artist": "Destin Laurel",
+      "before": "Other",
+      "genre": "Afrobeat",
+      "source_genre": "Afro-Beat",
+      "source_title": "grateful'",
+      "source_artist": "Destin Laurel",
+      "source_album": "grateful' - Single",
+      "source_url": "https://music.apple.com/us/album/grateful/1779459527?i=1779459830&uo=4",
+      "match": "exact artist and title"
+    },
+    {
       "id": "6acc56fa2482c446f742af19",
       "title": "Grapejuice",
       "artist": "Harry Styles",
@@ -6719,6 +8084,19 @@
       "source_artist": "JHAYCO",
       "source_album": "Le Clique: Vida Rockstar (X)",
       "source_url": "https://music.apple.com/us/album/habibi/1761909009?i=1761909214&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6acc573bb00f6bcbd60d7b0f",
+      "title": "HACIA FALTA YO",
+      "artist": "Kapo",
+      "before": "Other",
+      "genre": "Latin Pop",
+      "source_genre": "Pop Latino",
+      "source_title": "HACÍA FALTA YO",
+      "source_artist": "Kapo",
+      "source_album": "POR SI ALGUIEN NOS ESCUCHA",
+      "source_url": "https://music.apple.com/us/album/hac%C3%ADa-falta-yo/1821064917?i=1821064925&uo=4",
       "match": "exact artist and title"
     },
     {
@@ -6943,6 +8321,45 @@
       "match": "exact artist and title"
     },
     {
+      "id": "6acc578510b3dd58aaa7f762",
+      "title": "Hate It Or Love It",
+      "artist": "The Game, 50 Cent",
+      "before": "Other",
+      "genre": "Hip-Hop",
+      "source_genre": "Hip-Hop/Rap",
+      "source_title": "Hate It or Love It (feat. 50 Cent)",
+      "source_artist": "The Game",
+      "source_album": "The Documentary (Edited Version)",
+      "source_url": "https://music.apple.com/us/album/hate-it-or-love-it-feat-50-cent/1443202876?i=1443202892&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6acc5785e6d36388ded2db2a",
+      "title": "Hate Bein' Sober",
+      "artist": "Chief Keef, 50 Cent, Wiz Khalifa",
+      "before": "Other",
+      "genre": "Hip-Hop",
+      "source_genre": "Hip-Hop/Rap",
+      "source_title": "Hate Bein' Sober (feat. 50 Cent & Wiz Khalifa)",
+      "source_artist": "Chief Keef",
+      "source_album": "Finally Rich",
+      "source_url": "https://music.apple.com/us/album/hate-bein-sober-feat-50-cent-wiz-khalifa/1444005836?i=1444005849&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6acc578b706b830dee83e1f4",
+      "title": "Hate the Club (feat. Masego)",
+      "artist": "Kehlani, Masego",
+      "before": "Other",
+      "genre": "R&B",
+      "source_genre": "R&B/Soul",
+      "source_title": "Hate the Club (feat. Masego)",
+      "source_artist": "Kehlani",
+      "source_album": "It Was Good Until It Wasn't",
+      "source_url": "https://music.apple.com/us/album/hate-the-club-feat-masego/1516390483?i=1516390889&uo=4",
+      "match": "exact artist and title"
+    },
+    {
       "id": "6acc578b7d8175d46d40c360",
       "title": "Hate To Say",
       "artist": "Tory Lanez",
@@ -7060,6 +8477,19 @@
       "match": "exact artist and title"
     },
     {
+      "id": "6acc57bd87f28e01cb336886",
+      "title": "Hearing Damage",
+      "artist": "Thom Yorke",
+      "before": "Other",
+      "genre": "Alternative",
+      "source_genre": "Alternative",
+      "source_title": "Hearing Damage",
+      "source_artist": "Thom Yorke",
+      "source_album": "Hearing Damage - Single",
+      "source_url": "https://music.apple.com/us/album/hearing-damage/1491639343?i=1491639345&uo=4",
+      "match": "exact artist and title"
+    },
+    {
       "id": "6acc57be40c9612aa2ca141e",
       "title": "Heart's on Fire",
       "artist": "Passenger",
@@ -7083,6 +8513,19 @@
       "source_artist": "Kanye West",
       "source_album": "808s & Heartbreak",
       "source_url": "https://music.apple.com/us/album/heartless/1441410287?i=1441410309&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6acc57c3cd06416b09a3ef43",
+      "title": "Heatwave (feat. Akon)",
+      "artist": "Robin Schulz, Akon",
+      "before": "Other",
+      "genre": "Dance",
+      "source_genre": "Dance",
+      "source_title": "Heatwave (feat. Akon)",
+      "source_artist": "Robin Schulz",
+      "source_album": "Sugar",
+      "source_url": "https://music.apple.com/us/album/heatwave-feat-akon/1017003795?i=1017003802&uo=4",
       "match": "exact artist and title"
     },
     {
@@ -7135,6 +8578,19 @@
       "source_artist": "Aminé",
       "source_album": "Good For You",
       "source_url": "https://music.apple.com/us/album/heebiejeebies-feat-kehlani-bonus/1443107552?i=1443108601&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6acc57d770a835c0185c430c",
+      "title": "HEEL",
+      "artist": "Leon Thomas",
+      "before": "Other",
+      "genre": "R&B",
+      "source_genre": "R&B/Soul",
+      "source_title": "HEEL",
+      "source_artist": "Leon Thomas",
+      "source_album": "MUTT Deluxe: HEEL",
+      "source_url": "https://music.apple.com/us/album/heel/1812987941?i=1812988197&uo=4",
       "match": "exact artist and title"
     },
     {
@@ -7200,6 +8656,45 @@
       "source_artist": "Marino",
       "source_album": "Himnos y Coros Para Recordar, Vol. 1 & 2",
       "source_url": "https://music.apple.com/us/album/hemos-orado/310328159?i=310328302&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6acc57f81846aa6fb6dd5f89",
+      "title": "Here You Come Again",
+      "artist": "Dolly Parton",
+      "before": "Other",
+      "genre": "Country",
+      "source_genre": "Country",
+      "source_title": "Here You Come Again",
+      "source_artist": "Dolly Parton",
+      "source_album": "Here You Come Again",
+      "source_url": "https://music.apple.com/us/album/here-you-come-again/1062400365?i=1062401017&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6acc57f97d6f3921646ba170",
+      "title": "Here We Go (Uh Oh) [Remix] (feat. Leon Thomas)",
+      "artist": "Coco Jones, Leon Thomas",
+      "before": "Other",
+      "genre": "R&B",
+      "source_genre": "R&B/Soul",
+      "source_title": "Here We Go (Uh Oh) [Remix]",
+      "source_artist": "Coco Jones & Leon Thomas",
+      "source_album": "Here We Go (Uh Oh) [Remix] - Single",
+      "source_url": "https://music.apple.com/us/album/here-we-go-uh-oh-remix/1793424028?i=1793424031&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6acc57fe82d1ce69ba5e61de",
+      "title": "Hey Girl",
+      "artist": "Stephen Sanchez",
+      "before": "Other",
+      "genre": "Singer/Songwriter",
+      "source_genre": "Singer/Songwriter",
+      "source_title": "Hey Girl",
+      "source_artist": "Stephen Sanchez",
+      "source_album": "Easy On My Eyes",
+      "source_url": "https://music.apple.com/us/album/hey-girl/1638404210?i=1638404481&uo=4",
       "match": "exact artist and title"
     },
     {
@@ -7437,6 +8932,19 @@
       "match": "exact artist and title"
     },
     {
+      "id": "6acc584f0ae1022a24e7b8aa",
+      "title": "Holla Holla",
+      "artist": "Akon, T-Pain",
+      "before": "Other",
+      "genre": "R&B",
+      "source_genre": "R&B/Soul",
+      "source_title": "Holla Holla (feat. T-Pain)",
+      "source_artist": "Akon",
+      "source_album": "Freedom",
+      "source_url": "https://music.apple.com/us/album/holla-holla-feat-t-pain/1440742168?i=1440742416&uo=4",
+      "match": "exact artist and title"
+    },
+    {
       "id": "6acc58598492ad65338242a8",
       "title": "Holy Grail",
       "artist": "JAŸ-Z, Justin Timberlake",
@@ -7473,6 +8981,19 @@
       "source_artist": "Lukas Graham & Mickey Guyton",
       "source_album": "Home Movies (Acoustic) - Single",
       "source_url": "https://music.apple.com/us/album/home-movies/1672463346?i=1672463597&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6acc5864f040211873b3b3ae",
+      "title": "HOME TO MOTHER",
+      "artist": "Stephen Sanchez, Stephen Day",
+      "before": "Other",
+      "genre": "Pop",
+      "source_genre": "Pop",
+      "source_title": "HOME TO MOTHER",
+      "source_artist": "Stephen Sanchez & Stephen Day",
+      "source_album": "LOVE, LOVE, LOVE",
+      "source_url": "https://music.apple.com/us/album/home-to-mother/1880197844?i=1880198197&uo=4",
       "match": "exact artist and title"
     },
     {
@@ -7541,6 +9062,19 @@
       "match": "exact artist and title"
     },
     {
+      "id": "6acc587a723c9ffd35cbd9ab",
+      "title": "Hooka",
+      "artist": "Don Omar, Plan B",
+      "before": "Other",
+      "genre": "Latin",
+      "source_genre": "Urbano latino",
+      "source_title": "Hooka (feat. Plan B)",
+      "source_artist": "Don Omar",
+      "source_album": "Meet The Orphans (Deluxe Edition)",
+      "source_url": "https://music.apple.com/us/album/hooka-feat-plan-b/1440636324?i=1440636330&uo=4",
+      "match": "exact artist and title"
+    },
+    {
       "id": "6acc587e5fe6853aef24f4bf",
       "title": "Hope - Instrumental",
       "artist": "XXXTENTACION",
@@ -7606,6 +9140,19 @@
       "match": "exact artist and title"
     },
     {
+      "id": "6acc58a04a7c9e24599664fd",
+      "title": "House Of Cards",
+      "artist": "Radiohead",
+      "before": "Other",
+      "genre": "Alternative",
+      "source_genre": "Alternative",
+      "source_title": "House of Cards",
+      "source_artist": "Radiohead",
+      "source_album": "In Rainbows",
+      "source_url": "https://music.apple.com/us/album/house-of-cards/1109714933?i=1109715467&uo=4",
+      "match": "exact artist and title"
+    },
+    {
       "id": "6acc58a3ccd58213b63796ea",
       "title": "House Wren",
       "artist": "Owl City",
@@ -7665,21 +9212,9 @@
       "genre": "Other"
     },
     {
-      "id": "6a65c73fde31f23656f7873b",
-      "title": "Desde Mis Ojos   Remix",
-      "artist": "Chris Lebron, Jay Wheeler, Sech",
-      "genre": "Other"
-    },
-    {
       "id": "6a65c7487aa1126ad876a8d8",
       "title": "Bellaquita",
       "artist": "Dalex, Lenny Tavárez",
-      "genre": "Other"
-    },
-    {
-      "id": "6a65c74bcf1d5f1bfb2cdb36",
-      "title": "Hola   Remix",
-      "artist": "Dalex, Lenny Tavárez, Chencho Corleone, Juhn, Dímelo Flow",
       "genre": "Other"
     },
     {
@@ -7796,12 +9331,6 @@
       "genre": "Other"
     },
     {
-      "id": "6a65c7eae72a51a620eb8e02",
-      "title": "Crack A Bottle (feat. Dr. Dre & 50 Cent)",
-      "artist": "Eminem, Dr. Dre, 50 Cent",
-      "genre": "Other"
-    },
-    {
       "id": "6a65c7f03ea5a99b53fa1b1a",
       "title": "Bitch Please II",
       "artist": "Eminem, Dr. Dre, Snoop Dogg, Xzibit, Nate Dogg",
@@ -7826,21 +9355,9 @@
       "genre": "Other"
     },
     {
-      "id": "6a65c7ff7dc581ca0d3e021b",
-      "title": "La Curiosidad",
-      "artist": "Jay Wheeler, DJ Nelson, Myke Towers",
-      "genre": "Other"
-    },
-    {
       "id": "6a65c8038c66ce4dd6c104ee",
       "title": "Días Lluviosos (with Lenny Tavarez)",
       "artist": "Juhn, Lenny Tavarez",
-      "genre": "Other"
-    },
-    {
-      "id": "6a65c807023fa65377b46aaa",
-      "title": "DJ No Pare (feat. Zion, Dalex, Lenny Tavárez)   Remix",
-      "artist": "Justin Quiles, NATTI NATASHA, Farruko, Lenny Tavárez, Dalex, Zion",
       "genre": "Other"
     },
     {
@@ -7928,18 +9445,6 @@
       "genre": "Other"
     },
     {
-      "id": "6a65c8532c4b74fe089d70e3",
-      "title": "luther (with sza)",
-      "artist": "Kendrick Lamar, SZA",
-      "genre": "Other"
-    },
-    {
-      "id": "6a65c856c0e7ff29ce3f86d6",
-      "title": "Bailemos",
-      "artist": "Manuel Turizo, Sech",
-      "genre": "Other"
-    },
-    {
       "id": "6a65c85e08f8f95c0dd96674",
       "title": "Waiting For A Miracle",
       "artist": "Post Malone",
@@ -8012,39 +9517,9 @@
       "genre": "Other"
     },
     {
-      "id": "6a65c8c42e270ededefcd6cc",
-      "title": "X Ti",
-      "artist": "Sech",
-      "genre": "Other"
-    },
-    {
-      "id": "6a65c8c9bc9d3171abcbba72",
-      "title": "Wao",
-      "artist": "Sech",
-      "genre": "Other"
-    },
-    {
-      "id": "6a65c8cde9d7fcceb433d8f6",
-      "title": "Good Days",
-      "artist": "SZA",
-      "genre": "Other"
-    },
-    {
-      "id": "6a65c8d19854a0a6eb33e3e0",
-      "title": "Snooze",
-      "artist": "SZA",
-      "genre": "Other"
-    },
-    {
       "id": "6a65c8d4d472ee7e40dc638e",
       "title": "That's All She Wrote",
       "artist": "T.I., Eminem",
-      "genre": "Other"
-    },
-    {
-      "id": "6a65c8d823586e3062f29d61",
-      "title": "TELEKINESIS (feat. SZA & Future)",
-      "artist": "Travis Scott, SZA, Future",
       "genre": "Other"
     },
     {
@@ -8257,12 +9732,6 @@
       "genre": "Other"
     },
     {
-      "id": "6a6c4987fcff5c47d0531468",
-      "title": "Chains & Whips",
-      "artist": "Clipse, Kendrick Lamar, Pharrell Williams, Pusha T, Malice",
-      "genre": "Other"
-    },
-    {
       "id": "6a6c4a32b2e1f63b4825332a",
       "title": "imperfect for you",
       "artist": "Ariana Grande",
@@ -8325,12 +9794,6 @@
       "id": "6a6d365c64c2f7313a9c49de",
       "title": "JUMPIN (with Lil Uzi Vert)",
       "artist": "Playboi Carti, Lil Uzi Vert",
-      "genre": "Other"
-    },
-    {
-      "id": "6a6d365f83bc0193e492575f",
-      "title": "Labels. (ft. Moneybagg Yo, BIA)",
-      "artist": "Kiana Ledé",
       "genre": "Other"
     },
     {
@@ -8597,12 +10060,6 @@
       "genre": "Other"
     },
     {
-      "id": "6a6d36bd537aaf38754d470a",
-      "title": "VCRs (with Vince Staples)",
-      "artist": "JID, Vince Staples",
-      "genre": "Other"
-    },
-    {
       "id": "6a6d36c1990853ac03aa2dba",
       "title": "What They Want",
       "artist": "Russ",
@@ -8747,12 +10204,6 @@
       "genre": "Other"
     },
     {
-      "id": "6a77c9121c56c1a72488a22a",
-      "title": "Hate Bein' Sober",
-      "artist": "Chief Keef, 50 Cent, Wiz Khalifa",
-      "genre": "Other"
-    },
-    {
       "id": "6a80d0d7df3692799d300f6b",
       "title": "Songs About U",
       "artist": "Tink, Summer Walker",
@@ -8774,12 +10225,6 @@
       "id": "6a89470fd73b40da9956ee0c",
       "title": "Bloodhound",
       "artist": "Sk8star",
-      "genre": "Other"
-    },
-    {
-      "id": "6abf42d9a41eab64cb8e1568",
-      "title": "Door Vi",
-      "artist": "Conscious Lacon",
       "genre": "Other"
     },
     {
@@ -8825,12 +10270,6 @@
       "genre": "Other"
     },
     {
-      "id": "6abf433dce5e54eca6380b5c",
-      "title": "5 Estrellas - W Sound 23",
-      "artist": "W Sound, Myke Towers, Ovy On The Drums",
-      "genre": "Other"
-    },
-    {
       "id": "6abf433e845e29e140610be6",
       "title": "5 Star",
       "artist": "Eladio Carrion",
@@ -8840,12 +10279,6 @@
       "id": "6abf4343b7f5cb676aab4b97",
       "title": "5",
       "artist": "Dean Blunt, Elias Rønnenfelt",
-      "genre": "Other"
-    },
-    {
-      "id": "6abf4344583b76578a6d41fb",
-      "title": "5MoreMinutes",
-      "artist": "Leon Thomas",
       "genre": "Other"
     },
     {
@@ -8876,12 +10309,6 @@
       "id": "6abf435dde8d022461963f5c",
       "title": "9 LIVES",
       "artist": "R2R MOE",
-      "genre": "Other"
-    },
-    {
-      "id": "6abf435e8a506f11483eaaa3",
-      "title": "9 to 5",
-      "artist": "Dolly Parton",
       "genre": "Other"
     },
     {
@@ -8939,12 +10366,6 @@
       "genre": "Other"
     },
     {
-      "id": "6abf43770f510bd8ce5588c3",
-      "title": "24 Bottles",
-      "artist": "Conscious Lacon",
-      "genre": "Other"
-    },
-    {
       "id": "6abf4379fdea3b3dfd6b9c28",
       "title": "24 Horas",
       "artist": "JHAYCO",
@@ -8975,16 +10396,16 @@
       "genre": "Other"
     },
     {
-      "id": "6abf438c99313c18d84de4ee",
-      "title": "85 Cutlass",
-      "artist": "Rylo Rodriguez",
-      "genre": "Other"
-    },
-    {
       "id": "6abf438e66bcf3e8c69534bc",
       "title": "90s",
       "artist": "Little Loove",
-      "genre": "Other"
+      "genre": "Other",
+      "review_reason": "conflicting catalog genres",
+      "candidate_genres": [
+        "Bass",
+        "Dance",
+        "R&B"
+      ]
     },
     {
       "id": "6abf439126eed3a826572734",
@@ -9011,21 +10432,9 @@
       "genre": "Other"
     },
     {
-      "id": "6abf439a39efe0eec03e8a36",
-      "title": "305 LUV STORY",
-      "artist": "Gonzy",
-      "genre": "Other"
-    },
-    {
       "id": "6abf439d0e8d846b48f497d1",
       "title": "392",
       "artist": "Tory Lanez",
-      "genre": "Other"
-    },
-    {
-      "id": "6abf439dbdf52633d6fe57d2",
-      "title": "333",
-      "artist": "Little Loove",
       "genre": "Other"
     },
     {
@@ -9038,12 +10447,6 @@
       "id": "6abf43a3e9787d491154cbc7",
       "title": "911 (Remix)",
       "artist": "Sech, JHAYCO",
-      "genre": "Other"
-    },
-    {
-      "id": "6abf43a46aeecf92ddba1a7d",
-      "title": "911",
-      "artist": "Little Loove",
       "genre": "Other"
     },
     {
@@ -9071,12 +10474,6 @@
       "genre": "Other"
     },
     {
-      "id": "6abf43aff66dcd99134a26d4",
-      "title": "5500 Degrees (feat. Lil Baby, 42 Dugg & Rylo Rodriguez)",
-      "artist": "EST Gee, Lil Baby, 42 Dugg, Rylo Rodriguez",
-      "genre": "Other"
-    },
-    {
       "id": "6abf43b5871084367358021f",
       "title": "A El",
       "artist": "Pahola Marino",
@@ -9086,18 +10483,6 @@
         "Christian & Gospel",
         "Latin"
       ]
-    },
-    {
-      "id": "6abf43b5c0b8e707c5a0b06f",
-      "title": "20 Something",
-      "artist": "SZA",
-      "genre": "Other"
-    },
-    {
-      "id": "6abf43b7a6a40d6cd63d2752",
-      "title": "21 Questions",
-      "artist": "50 Cent, Nate Dogg",
-      "genre": "Other"
     },
     {
       "id": "6abf43bb64fb0e95c9e6da81",
@@ -9115,12 +10500,6 @@
       "id": "6abf43c0e8d014f176de2fb4",
       "title": "A Poem From Me 2 You",
       "artist": "Tory Lanez",
-      "genre": "Other"
-    },
-    {
-      "id": "6abf43c7e52074d80e2b78e9",
-      "title": "A Sky Full of Stars",
-      "artist": "Coldplay",
       "genre": "Other"
     },
     {
@@ -9148,12 +10527,6 @@
       "genre": "Other"
     },
     {
-      "id": "6abf43d443fac57ad199821b",
-      "title": "A Veces A Besos - Remix",
-      "artist": "Greeicy, Kapo",
-      "genre": "Other"
-    },
-    {
       "id": "6abf43d7dc98ccb9a701e5ae",
       "title": "A Woman",
       "artist": "Tory Lanez",
@@ -9175,12 +10548,6 @@
       "id": "6abf43dbf5d3ab320139d7cb",
       "title": "ABC Song",
       "artist": "Xavi",
-      "genre": "Other"
-    },
-    {
-      "id": "6abf43dfb7dde19cfa05bc81",
-      "title": "Above (feat. Masego & West Banks)",
-      "artist": "USERx",
       "genre": "Other"
     },
     {
@@ -9211,12 +10578,6 @@
       "id": "6abf43ea2fdaba6fa77afc23",
       "title": "Aceite Nuevo",
       "artist": "Karen Espinosa",
-      "genre": "Other"
-    },
-    {
-      "id": "6abf43ebefb58a130f6a8a5f",
-      "title": "act xi: she ain’t no angel",
-      "artist": "4batz, Leon Thomas",
       "genre": "Other"
     },
     {
@@ -9269,12 +10630,6 @@
       "id": "6abf4402d7ceb43893ed735a",
       "title": "adrenaline",
       "artist": "nafla",
-      "genre": "Other"
-    },
-    {
-      "id": "6abf44077d9353965aa409fe",
-      "title": "Adventure of a Lifetime",
-      "artist": "Coldplay",
       "genre": "Other"
     },
     {
@@ -9335,12 +10690,6 @@
       "id": "6abf441e8844a64bfc483567",
       "title": "Agony",
       "artist": "Yung Lean",
-      "genre": "Other"
-    },
-    {
-      "id": "6abf441e95d02843adc70b6e",
-      "title": "Against The Grain",
-      "artist": "Akon, Ray Lavender",
       "genre": "Other"
     },
     {
@@ -9433,12 +10782,6 @@
       "genre": "Other"
     },
     {
-      "id": "6abf4437daec6541f0eeff49",
-      "title": "90s",
-      "artist": "Braxton Cook",
-      "genre": "Other"
-    },
-    {
       "id": "6abf443c46244e0ff0f25283",
       "title": "Algo Nuevo Comienza",
       "artist": "Pahola Marino",
@@ -9462,12 +10805,6 @@
       "genre": "Other"
     },
     {
-      "id": "6abf44431408d509d83c6602",
-      "title": "All Dere (feat. Moneybagg Yo)",
-      "artist": "GloRilla, Moneybagg Yo",
-      "genre": "Other"
-    },
-    {
       "id": "6abf4445a7ff089ed9394444",
       "title": "All Eyez On Me",
       "artist": "2Pac",
@@ -9480,12 +10817,6 @@
       "genre": "Other"
     },
     {
-      "id": "6abf444dd35399695d49a717",
-      "title": "All I Need",
-      "artist": "Radiohead",
-      "genre": "Other"
-    },
-    {
       "id": "6abf4450a11df4b279b55990",
       "title": "All In Love Is Fair",
       "artist": "Stevie Wonder",
@@ -9495,12 +10826,6 @@
       "id": "6abf4450f745f92173d4528b",
       "title": "All I Want",
       "artist": "Kodaline",
-      "genre": "Other"
-    },
-    {
-      "id": "6abf44512b21c1d6941dfcd7",
-      "title": "All Masks [Feat. Masego]",
-      "artist": "Robert Glasper",
       "genre": "Other"
     },
     {
@@ -9528,18 +10853,6 @@
       "genre": "Other"
     },
     {
-      "id": "6abf445cf2188973d6ed8cfb",
-      "title": "All Of A Sudden",
-      "artist": "Lil Baby, Moneybagg Yo",
-      "genre": "Other"
-    },
-    {
-      "id": "6abf445db362695937e95bd4",
-      "title": "All of Me",
-      "artist": "John Legend",
-      "genre": "Other"
-    },
-    {
       "id": "6abf445f018ef1a0ea4e8da5",
       "title": "All I Needed",
       "artist": "K CAMP",
@@ -9561,12 +10874,6 @@
       "id": "6abf447394478b19684e6904",
       "title": "All The Girls",
       "artist": "Tory Lanez",
-      "genre": "Other"
-    },
-    {
-      "id": "6abf4473b94cbb242aecf6d4",
-      "title": "All That Matters (with Leon Thomas & AZ Chike)",
-      "artist": "6LACK, Leon Thomas, AZ Chike",
       "genre": "Other"
     },
     {
@@ -9672,12 +10979,6 @@
       "genre": "Other"
     },
     {
-      "id": "6abf44a3bc87c12d7ad78cac",
-      "title": "ALREADY GOT ME",
-      "artist": "Stephen Sanchez",
-      "genre": "Other"
-    },
-    {
       "id": "6abf44a589e2514b21f472d0",
       "title": "American Woman - 7\" Single Version",
       "artist": "The Guess Who",
@@ -9774,18 +11075,6 @@
       "genre": "Other"
     },
     {
-      "id": "6abf44cd4e8f9f670f27aabc",
-      "title": "Antes",
-      "artist": "Gonzy",
-      "genre": "Other"
-    },
-    {
-      "id": "6abf44cd9c5c9d9d90cd5e03",
-      "title": "Antidote",
-      "artist": "Travis Scott",
-      "genre": "Other"
-    },
-    {
       "id": "6abf44ce57a97f338014772b",
       "title": "Antes y Después",
       "artist": "Anuel AA, Kendo Kaponi, Yandel, Ñengo Flow",
@@ -9807,12 +11096,6 @@
       "id": "6abf44d5a29e1eb9a02e3d23",
       "title": "Antes y Después",
       "artist": "El Chaval de la Bachata, Dalvin La Melodia",
-      "genre": "Other"
-    },
-    {
-      "id": "6abf44da5e538b8ecdd13bfd",
-      "title": "Another One Bites The Dust",
-      "artist": "Queen",
       "genre": "Other"
     },
     {
@@ -9948,12 +11231,6 @@
       "genre": "Other"
     },
     {
-      "id": "6abf45247e0fef8900c0cd7f",
-      "title": "ATTITUDE (FEAT. CHARLIE WILSON & CASH COBAIN)",
-      "artist": "Don Toliver, Charlie Wilson, Cash Cobain",
-      "genre": "Other"
-    },
-    {
       "id": "6abf452a42f40a6faa4dfaaa",
       "title": "Awful.",
       "artist": "7ru7h",
@@ -10067,12 +11344,6 @@
       "genre": "Other"
     },
     {
-      "id": "6abf455a4cb53501331a0025",
-      "title": "Al Natural (feat. Yandel)",
-      "artist": "Tego Calderón, Yandel",
-      "genre": "Other"
-    },
-    {
       "id": "6abf455ab0077c9b7a369536",
       "title": "ALCOHOLyHOOKA",
       "artist": "Gonzy",
@@ -10150,12 +11421,6 @@
       "genre": "Other"
     },
     {
-      "id": "6abf4570d6858aabe63a2142",
-      "title": "Alma",
-      "artist": "Zaider, Kapo",
-      "genre": "Other"
-    },
-    {
       "id": "6abf45716fb0658169bdc902",
       "title": "Alo",
       "artist": "Alviin428",
@@ -10179,16 +11444,15 @@
       "genre": "Other"
     },
     {
-      "id": "6abf459783bbc347c6727e15",
-      "title": "ALMAS GEMELAS",
-      "artist": "Myke Towers",
-      "genre": "Other"
-    },
-    {
       "id": "6abf4597f90e797b87ff2187",
       "title": "ALOH ALOH",
       "artist": "Kapo",
-      "genre": "Other"
+      "genre": "Other",
+      "review_reason": "conflicting catalog genres",
+      "candidate_genres": [
+        "Latin",
+        "Latin Pop"
+      ]
     },
     {
       "id": "6abf459f48dd51e6d7a39485",
@@ -10200,12 +11464,6 @@
       "id": "6abf45a055e22b53395862b7",
       "title": "Amigo Fiel",
       "artist": "Marino",
-      "genre": "Other"
-    },
-    {
-      "id": "6abf45a0e0d4df5b0b9a836d",
-      "title": "AMIMA",
-      "artist": "Nanpa Básico, Kapo",
       "genre": "Other"
     },
     {
@@ -10266,12 +11524,6 @@
       "id": "6abf45be2a33910a036245ba",
       "title": "Aventura",
       "artist": "Luny Tunes, Noriega, Wisin & Yandel",
-      "genre": "Other"
-    },
-    {
-      "id": "6abf45c127a8e7bd7c39fd47",
-      "title": "Awolowo - Remix",
-      "artist": "Fido, Kapo",
       "genre": "Other"
     },
     {
@@ -10365,12 +11617,6 @@
       "genre": "Other"
     },
     {
-      "id": "6acc433db9c9b492e7b660b9",
-      "title": "Chill",
-      "artist": "LISA",
-      "genre": "Other"
-    },
-    {
       "id": "6acc433f1541f25a8c623550",
       "title": "Chingando",
       "artist": "Emi Wezka, Michael G, La Mente Galáctica, Dan Soberanis",
@@ -10395,27 +11641,9 @@
       "genre": "Other"
     },
     {
-      "id": "6acc434c67d8139a60545a25",
-      "title": "CHopstix (feat. Travis Scott)",
-      "artist": "ScHoolboy Q, Travis Scott",
-      "genre": "Other"
-    },
-    {
       "id": "6acc434da94aead98bd099fd",
       "title": "Chrome Heart",
       "artist": "JAHKOY",
-      "genre": "Other"
-    },
-    {
-      "id": "6acc434ed788e55208579b9c",
-      "title": "chrome hearts don't break",
-      "artist": "Dame Atlas",
-      "genre": "Other"
-    },
-    {
-      "id": "6acc4350061058ab5be1b72c",
-      "title": "CHRONIC FLOAT",
-      "artist": "Gvlli3",
       "genre": "Other"
     },
     {
@@ -10569,12 +11797,6 @@
       "genre": "Other"
     },
     {
-      "id": "6acc43944f0978495a1adaed",
-      "title": "Coat of Many Colors",
-      "artist": "Dolly Parton",
-      "genre": "Other"
-    },
-    {
       "id": "6acc43971540e0aecba7f448",
       "title": "COCAINE NOSE",
       "artist": "Playboi Carti",
@@ -10623,12 +11845,6 @@
       "genre": "Other"
     },
     {
-      "id": "6acc43a8048f1c810d4d8f27",
-      "title": "Coldplay",
-      "artist": "Coco & Clair Clair",
-      "genre": "Other"
-    },
-    {
       "id": "6acc43ad11c2765140614e72",
       "title": "Colors (My Baby)",
       "artist": "Magixx",
@@ -10650,12 +11866,6 @@
       "id": "6acc43b48edbcc26a97c0881",
       "title": "Come Along",
       "artist": "Vicci Martinez, CeeLo Green",
-      "genre": "Other"
-    },
-    {
-      "id": "6acc43b945a9b9f061fc181f",
-      "title": "come home'",
-      "artist": "Destin Laurel",
       "genre": "Other"
     },
     {
@@ -10880,12 +12090,6 @@
       "genre": "Other"
     },
     {
-      "id": "6acc441eb3747639223dbcf9",
-      "title": "Crash & Burn",
-      "artist": "Leon Thomas",
-      "genre": "Other"
-    },
-    {
       "id": "6acc441ee2c616ecdbfaaac4",
       "title": "Crash First (with mgk)",
       "artist": "honestav, mgk",
@@ -11049,7 +12253,12 @@
       "id": "6acc446e465258fb087a0537",
       "title": "Cuéntale",
       "artist": "Don Omar",
-      "genre": "Other"
+      "genre": "Other",
+      "review_reason": "conflicting catalog genres",
+      "candidate_genres": [
+        "Latin",
+        "Reggae"
+      ]
     },
     {
       "id": "6acc44733f6920eaf679a78b",
@@ -11097,12 +12306,6 @@
       "id": "6acc4484888196de0be19759",
       "title": "Cyber Sex",
       "artist": "Doja Cat",
-      "genre": "Other"
-    },
-    {
-      "id": "6acc4488918beff779900dec",
-      "title": "Cynthia",
-      "artist": "Maxwell Hunter",
       "genre": "Other"
     },
     {
@@ -11184,18 +12387,6 @@
       "genre": "Other"
     },
     {
-      "id": "6acc49b86f8579f44c982801",
-      "title": "Dificil",
-      "artist": "Little Loove",
-      "genre": "Other"
-    },
-    {
-      "id": "6acc49bc63b8c06ca6fee5ab",
-      "title": "Digit viewing",
-      "artist": "Conscious Lacon",
-      "genre": "Other"
-    },
-    {
       "id": "6acc49bf2ce874cc69d68ff5",
       "title": "Dilated",
       "artist": "Willowake",
@@ -11211,12 +12402,6 @@
       "id": "6acc49c366816253bba187ce",
       "title": "Dile A El",
       "artist": "El Chaval de la Bachata",
-      "genre": "Other"
-    },
-    {
-      "id": "6acc49c80c6cd9bd0f5b0661",
-      "title": "Dile",
-      "artist": "Don Omar",
       "genre": "Other"
     },
     {
@@ -11286,12 +12471,6 @@
       "genre": "Other"
     },
     {
-      "id": "6acc49eeb335e6a31311fcca",
-      "title": "DIRT ON MY SHOES (feat. Kehlani)",
-      "artist": "Leon Thomas, Kehlani",
-      "genre": "Other"
-    },
-    {
       "id": "6acc49efce8f3101ff1ef762",
       "title": "Dirty Money",
       "artist": "Tory Lanez",
@@ -11307,18 +12486,6 @@
       "id": "6acc49f4b5d2cb07755e9e7c",
       "title": "Disappoint Me",
       "artist": "Kevin Gates, Hurricane Wisdom",
-      "genre": "Other"
-    },
-    {
-      "id": "6acc49f755680615ca566015",
-      "title": "Disco Inferno",
-      "artist": "50 Cent",
-      "genre": "Other"
-    },
-    {
-      "id": "6acc49f7a64af274e0027be9",
-      "title": "Disconnected (Shorty from VA)",
-      "artist": "Masego",
       "genre": "Other"
     },
     {
@@ -11436,12 +12603,6 @@
       "genre": "Other"
     },
     {
-      "id": "6acc4a3c80177cf0bf63734b",
-      "title": "Dominicana",
-      "artist": "Tego Calderón",
-      "genre": "Other"
-    },
-    {
       "id": "6acc4a3f4c61afca76bd0873",
       "title": "DON'T BE DUMB / TRIP BABY",
       "artist": "A$AP Rocky",
@@ -11451,12 +12612,6 @@
       "id": "6acc4a40fdee6b79c1d031dd",
       "title": "Don't Blame Me",
       "artist": "Pardyalone",
-      "genre": "Other"
-    },
-    {
-      "id": "6acc4a44c557928e1acfc0fd",
-      "title": "Don't Care No More",
-      "artist": "Bay Swag, Cash Cobain",
       "genre": "Other"
     },
     {
@@ -11525,12 +12680,6 @@
       "genre": "Other"
     },
     {
-      "id": "6acc4a6178a05da4451a8e8d",
-      "title": "Don't Kno",
-      "artist": "Moneybagg Yo",
-      "genre": "Other"
-    },
-    {
       "id": "6acc4a6547a24c4170e52743",
       "title": "Don't Know What to Call It",
       "artist": "Kevin Gates",
@@ -11540,12 +12689,6 @@
       "id": "6acc4a68820b43eb6bc89e85",
       "title": "Don't Like.1",
       "artist": "Kanye West, Chief Keef, Pusha T, Big Sean, Jadakiss",
-      "genre": "Other"
-    },
-    {
-      "id": "6acc4a6b3d906968bb3f2e16",
-      "title": "Don't Matter",
-      "artist": "Akon",
       "genre": "Other"
     },
     {
@@ -11588,12 +12731,6 @@
       "id": "6acc4a81fa26e70f310c7cf7",
       "title": "Don't You Worry 'Bout a Thing - Remix",
       "artist": "Incognito, Stevie Wonder",
-      "genre": "Other"
-    },
-    {
-      "id": "6acc4a86968e74914eb66542",
-      "title": "Dónde Están Las Gatas",
-      "artist": "Nicky Jam, Daddy Yankee",
       "genre": "Other"
     },
     {
@@ -11753,12 +12890,6 @@
       "genre": "Other"
     },
     {
-      "id": "6acc4acd162ac9a5b7234617",
-      "title": "Dream",
-      "artist": "LISA",
-      "genre": "Other"
-    },
-    {
       "id": "6acc4acdaf2e89febbb542e4",
       "title": "Dream Team",
       "artist": "Young Miko, De La Rose",
@@ -11886,12 +13017,6 @@
       "genre": "Other"
     },
     {
-      "id": "6acc4b0a47ec2c260357a0d1",
-      "title": "Drum Dummy",
-      "artist": "Sheff G",
-      "genre": "Other"
-    },
-    {
       "id": "6acc4b10b46f7403ec42124f",
       "title": "Du ligner din mor",
       "artist": "Benjamin Hav, Lukas Graham",
@@ -11961,12 +13086,6 @@
       "id": "6acc4b296b2c241252427361",
       "title": "Dwat Pou W Vini",
       "artist": "Klass, Wyclef Jean",
-      "genre": "Other"
-    },
-    {
-      "id": "6acc4b2d14e89e09fff9f748",
-      "title": "Early Spring",
-      "artist": ".Sinh",
       "genre": "Other"
     },
     {
@@ -12167,12 +13286,6 @@
       "genre": "Other"
     },
     {
-      "id": "6acc4b8629fc2d48cca9285b",
-      "title": "Elastigirl",
-      "artist": "LISA",
-      "genre": "Other"
-    },
-    {
       "id": "6acc4b8697df4f6cd44da400",
       "title": "Electric Feel",
       "artist": "MGMT",
@@ -12194,12 +13307,6 @@
       "id": "6acc4b90d74e620ba5f94a52",
       "title": "Elktorn",
       "artist": "Loukeman",
-      "genre": "Other"
-    },
-    {
-      "id": "6acc4b921541f25a8c624994",
-      "title": "Ella Me Levanto",
-      "artist": "Daddy Yankee",
       "genre": "Other"
     },
     {
@@ -12233,12 +13340,6 @@
       "genre": "Other"
     },
     {
-      "id": "6acc4b9f4687ffa7ae3d75a5",
-      "title": "Emociones",
-      "artist": "Little Loove",
-      "genre": "Other"
-    },
-    {
       "id": "6acc4ba1f9c3bc7e6f69ded9",
       "title": "Empire Ants (feat. Little Dragon)",
       "artist": "Gorillaz, Little Dragon",
@@ -12253,12 +13354,6 @@
       "id": "6acc4ba253d875405e067159",
       "title": "En Bajita",
       "artist": "Young Martino, Mora",
-      "genre": "Other"
-    },
-    {
-      "id": "6acc4ba9e6179e1e5d64164f",
-      "title": "En La Cama",
-      "artist": "Nicky Jam, Daddy Yankee",
       "genre": "Other"
     },
     {
@@ -12300,13 +13395,12 @@
       "id": "6acc4bc341b5cccf9aaf3f21",
       "title": "En Su Nota",
       "artist": "Don Omar, Mackie Ranks",
-      "genre": "Other"
-    },
-    {
-      "id": "6acc4bc5ae4bd4a123592c04",
-      "title": "En Todas Partes",
-      "artist": "ONIKX, Andy Rivera, Kapo",
-      "genre": "Other"
+      "genre": "Other",
+      "review_reason": "conflicting catalog genres",
+      "candidate_genres": [
+        "Latin",
+        "Reggae"
+      ]
     },
     {
       "id": "6acc4bcb4ca7a7d7f3ca542a",
@@ -12336,12 +13430,6 @@
       "id": "6acc4bd29e86bfda5cf92fe0",
       "title": "End Of Beginning",
       "artist": "December 10",
-      "genre": "Other"
-    },
-    {
-      "id": "6acc4bd506e0bec4dc7000d8",
-      "title": "End of the Road",
-      "artist": "Rylo Rodriguez",
       "genre": "Other"
     },
     {
@@ -12426,12 +13514,6 @@
       "id": "6acc4bf98492ad65338207c0",
       "title": "EOS",
       "artist": "Yagi B, Set Da Trend, Dougie B",
-      "genre": "Other"
-    },
-    {
-      "id": "6acc4bfc06e0bec4dc7000eb",
-      "title": "Equal Dirt",
-      "artist": "Rylo Rodriguez",
       "genre": "Other"
     },
     {
@@ -12551,12 +13633,6 @@
       "genre": "Other"
     },
     {
-      "id": "6acc4c2c45dcf72ad08abc17",
-      "title": "ESTA ES TU CASA NENA",
-      "artist": "Kapo, Camilo",
-      "genre": "Other"
-    },
-    {
       "id": "6acc4c2d3613a0230744b336",
       "title": "Estaba Claro",
       "artist": "El Fragmento",
@@ -12614,12 +13690,6 @@
       "id": "6acc4c48eccaf8c345e1a39c",
       "title": "Euphoric",
       "artist": "Ice Spice",
-      "genre": "Other"
-    },
-    {
-      "id": "6acc4c4a507d3e203e6e1a0f",
-      "title": "Evangeline",
-      "artist": "Stephen Sanchez",
       "genre": "Other"
     },
     {
@@ -12803,12 +13873,6 @@
       "genre": "Other"
     },
     {
-      "id": "6acc4f1308c2a699a0f38ff7",
-      "title": "Fisherrr - Remix",
-      "artist": "Cash Cobain, Ice Spice, Bay Swag",
-      "genre": "Other"
-    },
-    {
       "id": "6acc4f132f2a1c6755102ddc",
       "title": "FISH N STEAK (WHAT IT IS) (feat. Tyler, The Creator & Jozzy)",
       "artist": "A$AP Rocky, Tyler, The Creator, Jozzy",
@@ -12929,12 +13993,6 @@
       "genre": "Other"
     },
     {
-      "id": "6acc4f51e941a3c375c7cb39",
-      "title": "Fly U Out",
-      "artist": "Lucky Daye",
-      "genre": "Other"
-    },
-    {
       "id": "6acc4f56b8ff68b04bfa33f8",
       "title": "Focus (skit)",
       "artist": "Big Sean",
@@ -12968,12 +14026,6 @@
       "id": "6acc4f64c3518d82607dd23a",
       "title": "FOOGAZY",
       "artist": "sosocamo, grayto, Deric",
-      "genre": "Other"
-    },
-    {
-      "id": "6acc4f67c588bd818aaccc40",
-      "title": "FOOL ME ONCE (feat. Leon Thomas)",
-      "artist": "GIVĒON, Leon Thomas",
       "genre": "Other"
     },
     {
@@ -13058,18 +14110,6 @@
       "id": "6acc4f92d02f54eba6995a6d",
       "title": "Forever",
       "artist": "Chris Brown",
-      "genre": "Other"
-    },
-    {
-      "id": "6acc4f9645a9b9f061fc37ed",
-      "title": "Forget That (feat. Rylo Rodriguez)",
-      "artist": "Lil Baby, Rylo Rodriguez",
-      "genre": "Other"
-    },
-    {
-      "id": "6acc4f977b38ad426f4b064c",
-      "title": "FORGETTING YOUR KISS",
-      "artist": "Stephen Sanchez",
       "genre": "Other"
     },
     {
@@ -13223,12 +14263,6 @@
       "genre": "Other"
     },
     {
-      "id": "6acc4fe6f25e70c49e17e0ee",
-      "title": "Friends Again",
-      "artist": "Baby Rose, Leon Thomas",
-      "genre": "Other"
-    },
-    {
       "id": "6acc4fe907c77d4dbb32d049",
       "title": "Friends With Benefits",
       "artist": "Tory Lanez",
@@ -13373,18 +14407,6 @@
       "genre": "Other"
     },
     {
-      "id": "6acc5032a82ea17536524baf",
-      "title": "g block baby",
-      "artist": "Astrobwoyy",
-      "genre": "Other"
-    },
-    {
-      "id": "6acc503381874338930f0848",
-      "title": "G-Lock On Me",
-      "artist": "Sheff G",
-      "genre": "Other"
-    },
-    {
       "id": "6acc5038d0fe0746950451b9",
       "title": "Gafas Pal Sol",
       "artist": "Sech, Eladio Carrion",
@@ -13430,18 +14452,6 @@
       "id": "6acc505019702a3bff650b45",
       "title": "Gas Pedal",
       "artist": "Sage The Gemini, Iamsu!",
-      "genre": "Other"
-    },
-    {
-      "id": "6acc50521d9222fbe2637720",
-      "title": "Garden Party",
-      "artist": "Masego, Big Boi, JID",
-      "genre": "Other"
-    },
-    {
-      "id": "6acc505247a24c4170e54052",
-      "title": "Gasolina",
-      "artist": "Daddy Yankee",
       "genre": "Other"
     },
     {
@@ -13583,12 +14593,6 @@
       "genre": "Other"
     },
     {
-      "id": "6acc5090cc226166cacdca01",
-      "title": "Get You Back (feat. Cash Cobain)",
-      "artist": "Big Sean, Cash Cobain",
-      "genre": "Other"
-    },
-    {
       "id": "6acc5093142017a1b5725fad",
       "title": "Ghost Town",
       "artist": "Dimension, Subsonic",
@@ -13598,7 +14602,12 @@
       "id": "6acc50952b91c1b5b6415b81",
       "title": "Ghetto",
       "artist": "Akon",
-      "genre": "Other"
+      "genre": "Other",
+      "review_reason": "conflicting catalog genres",
+      "candidate_genres": [
+        "Hip-Hop",
+        "R&B"
+      ]
     },
     {
       "id": "6acc509668dcaf4f83817c91",
@@ -13703,12 +14712,6 @@
       "genre": "Other"
     },
     {
-      "id": "6acc50c69dc163131ed4c893",
-      "title": "Girls That Dance",
-      "artist": "Masego, Medasin",
-      "genre": "Other"
-    },
-    {
       "id": "6acc50c78712a6e34bb6faf2",
       "title": "Ghost Town",
       "artist": "Dimension, Subsonic",
@@ -13718,7 +14721,12 @@
       "id": "6acc50c88712a6e34bb6faf5",
       "title": "Ghetto",
       "artist": "Akon",
-      "genre": "Other"
+      "genre": "Other",
+      "review_reason": "conflicting catalog genres",
+      "candidate_genres": [
+        "Hip-Hop",
+        "R&B"
+      ]
     },
     {
       "id": "6acc50c97388c2045a456bb3",
@@ -13782,12 +14790,6 @@
       "id": "6acc50e1a76adb646acff0fc",
       "title": "Globetrottin (feat. Masego, Shad & Rozwell)",
       "artist": "J.PERIOD",
-      "genre": "Other"
-    },
-    {
-      "id": "6acc50e3866315dda4a9c445",
-      "title": "GLOCK",
-      "artist": "Don Toliver",
       "genre": "Other"
     },
     {
@@ -13935,18 +14937,6 @@
       "genre": "Other"
     },
     {
-      "id": "6acc5133d068b35c017eb03e",
-      "title": "Good & Plenty",
-      "artist": "Alex Isley, Masego, Jack Dine",
-      "genre": "Other"
-    },
-    {
-      "id": "6acc51341ba761b0b2f6ae02",
-      "title": "Good & Plenty - Remix",
-      "artist": "Lucky Daye, Masego, Alex Isley, Jack Dine",
-      "genre": "Other"
-    },
-    {
       "id": "6acc51356d3d8c6ce97872a7",
       "title": "Good Beats, Ruined Life",
       "artist": "Sultan of the Disco",
@@ -13962,18 +14952,6 @@
       "id": "6acc513befb771ec3ea28b5d",
       "title": "GOOD CREDIT (with Kendrick Lamar)",
       "artist": "Playboi Carti, Kendrick Lamar",
-      "genre": "Other"
-    },
-    {
-      "id": "6acc513c9cdf05ec8829086b",
-      "title": "Good Days",
-      "artist": "SZA",
-      "genre": "Other"
-    },
-    {
-      "id": "6acc513f563b6cd31b760db5",
-      "title": "Good Girl",
-      "artist": "Tiffany Gouché",
       "genre": "Other"
     },
     {
@@ -14049,12 +15027,6 @@
       "genre": "Other"
     },
     {
-      "id": "6acc5171af73ac563af5dca5",
-      "title": "grateful'",
-      "artist": "Destin Laurel",
-      "genre": "Other"
-    },
-    {
       "id": "6acc5173ad90b369c35fce8d",
       "title": "Graxxx & QSJM",
       "artist": "JHAYCO",
@@ -14118,7 +15090,12 @@
       "id": "6acc5189fda333116ff2fba2",
       "title": "Guasa, Guasa",
       "artist": "Tego Calderón",
-      "genre": "Other"
+      "genre": "Other",
+      "review_reason": "conflicting catalog genres",
+      "candidate_genres": [
+        "Latin",
+        "Soundtrack"
+      ]
     },
     {
       "id": "6acc518a714bf87e027b9e84",
@@ -14186,12 +15163,6 @@
       "genre": "Other"
     },
     {
-      "id": "6acc56b938dc38f603170266",
-      "title": "Good & Plenty - Remix",
-      "artist": "Lucky Daye, Masego, Alex Isley, Jack Dine",
-      "genre": "Other"
-    },
-    {
       "id": "6acc56bd968e74914eb699c7",
       "title": "Good Beats, Ruined Life",
       "artist": "Sultan of the Disco",
@@ -14207,18 +15178,6 @@
       "id": "6acc56c21846aa6fb6dd568e",
       "title": "Good Enough for Me",
       "artist": "Thunderstorm Artis",
-      "genre": "Other"
-    },
-    {
-      "id": "6acc56c318c65445d5985b43",
-      "title": "Good Days",
-      "artist": "SZA",
-      "genre": "Other"
-    },
-    {
-      "id": "6acc56c7fadd5f69d0ce0fc4",
-      "title": "Good Girl",
-      "artist": "Tiffany Gouché",
       "genre": "Other"
     },
     {
@@ -14291,12 +15250,6 @@
       "id": "6acc56f54c3402836caeb66e",
       "title": "Grannys Baby",
       "artist": "Hurricane Wisdom",
-      "genre": "Other"
-    },
-    {
-      "id": "6acc56f925c61e75831c8093",
-      "title": "grateful'",
-      "artist": "Destin Laurel",
       "genre": "Other"
     },
     {
@@ -14374,7 +15327,12 @@
       "id": "6acc571799ba517cd9dc18e1",
       "title": "Guasa, Guasa",
       "artist": "Tego Calderón",
-      "genre": "Other"
+      "genre": "Other",
+      "review_reason": "conflicting catalog genres",
+      "candidate_genres": [
+        "Latin",
+        "Soundtrack"
+      ]
     },
     {
       "id": "6acc571ca779d3c7736d9358",
@@ -14451,12 +15409,6 @@
       "id": "6acc57364d638c495b1d0d94",
       "title": "HACE CALOR",
       "artist": "Maria Becerra, El Alfa, XROSS",
-      "genre": "Other"
-    },
-    {
-      "id": "6acc573bb00f6bcbd60d7b0f",
-      "title": "HACIA FALTA YO",
-      "artist": "Kapo",
       "genre": "Other"
     },
     {
@@ -14580,27 +15532,9 @@
       "genre": "Other"
     },
     {
-      "id": "6acc578510b3dd58aaa7f762",
-      "title": "Hate It Or Love It",
-      "artist": "The Game, 50 Cent",
-      "genre": "Other"
-    },
-    {
-      "id": "6acc5785e6d36388ded2db2a",
-      "title": "Hate Bein' Sober",
-      "artist": "Chief Keef, 50 Cent, Wiz Khalifa",
-      "genre": "Other"
-    },
-    {
       "id": "6acc578a4da8c4a76c85d60c",
       "title": "hate will never win",
       "artist": "XXXTENTACION",
-      "genre": "Other"
-    },
-    {
-      "id": "6acc578b706b830dee83e1f4",
-      "title": "Hate the Club (feat. Masego)",
-      "artist": "Kehlani, Masego",
       "genre": "Other"
     },
     {
@@ -14700,21 +15634,9 @@
       "genre": "Other"
     },
     {
-      "id": "6acc57bd87f28e01cb336886",
-      "title": "Hearing Damage",
-      "artist": "Thom Yorke",
-      "genre": "Other"
-    },
-    {
       "id": "6acc57c30ae1022a24e7b60b",
       "title": "Heartless - Live From LA",
       "artist": "Roddy Ricch",
-      "genre": "Other"
-    },
-    {
-      "id": "6acc57c3cd06416b09a3ef43",
-      "title": "Heatwave (feat. Akon)",
-      "artist": "Robin Schulz, Akon",
       "genre": "Other"
     },
     {
@@ -14739,12 +15661,6 @@
       "id": "6acc57d089c07855bf40b572",
       "title": "Heaven or Las Vegas",
       "artist": "Cocteau Twins",
-      "genre": "Other"
-    },
-    {
-      "id": "6acc57d770a835c0185c430c",
-      "title": "HEEL",
-      "artist": "Leon Thomas",
       "genre": "Other"
     },
     {
@@ -14820,27 +15736,9 @@
       "genre": "Other"
     },
     {
-      "id": "6acc57f81846aa6fb6dd5f89",
-      "title": "Here You Come Again",
-      "artist": "Dolly Parton",
-      "genre": "Other"
-    },
-    {
       "id": "6acc57f909c7e249376f25de",
       "title": "Here We Go Again",
       "artist": "Demi Lovato",
-      "genre": "Other"
-    },
-    {
-      "id": "6acc57f97d6f3921646ba170",
-      "title": "Here We Go (Uh Oh) [Remix] (feat. Leon Thomas)",
-      "artist": "Coco Jones, Leon Thomas",
-      "genre": "Other"
-    },
-    {
-      "id": "6acc57fe82d1ce69ba5e61de",
-      "title": "Hey Girl",
-      "artist": "Stephen Sanchez",
       "genre": "Other"
     },
     {
@@ -14993,12 +15891,6 @@
       "genre": "Other"
     },
     {
-      "id": "6acc584f0ae1022a24e7b8aa",
-      "title": "Holla Holla",
-      "artist": "Akon, T-Pain",
-      "genre": "Other"
-    },
-    {
       "id": "6acc5852ce0c51f82b25e3d4",
       "title": "Hollaback Girl",
       "artist": "Gwen Stefani",
@@ -15038,12 +15930,6 @@
       "id": "6acc5864c7f90837db1ead0f",
       "title": "Home",
       "artist": "Passenger",
-      "genre": "Other"
-    },
-    {
-      "id": "6acc5864f040211873b3b3ae",
-      "title": "HOME TO MOTHER",
-      "artist": "Stephen Sanchez, Stephen Day",
       "genre": "Other"
     },
     {
@@ -15091,12 +15977,6 @@
       "id": "6acc5874261e0b4501bb8ef9",
       "title": "HOODRAT",
       "artist": "Kanye West, Ty Dolla $ign",
-      "genre": "Other"
-    },
-    {
-      "id": "6acc587a723c9ffd35cbd9ab",
-      "title": "Hooka",
-      "artist": "Don Omar, Plan B",
       "genre": "Other"
     },
     {
@@ -15178,12 +16058,6 @@
       "genre": "Other"
     },
     {
-      "id": "6acc58a04a7c9e24599664fd",
-      "title": "House Of Cards",
-      "artist": "Radiohead",
-      "genre": "Other"
-    },
-    {
       "id": "6acc58a0ecf513eac1e52dfb",
       "title": "House Party",
       "artist": "Meek Mill, Young Chris",
@@ -15226,5 +16100,5 @@
       "genre": "Other"
     }
   ],
-  "searched_terms": 60
+  "searched_terms": 100
 }
