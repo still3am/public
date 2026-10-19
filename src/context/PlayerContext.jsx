@@ -206,6 +206,8 @@ export function PlayerProvider({ children }) {
       const AC = window.AudioContext || Reflect.get(window,"webkitAudioContext");
       if (!AC) return null;
       const ctx = new AC();
+      let pureGraph;
+      try{pureGraph=createPureGraph(ctx);}catch(error){ctx.close().catch(()=>{});throw error;}
       const analyser = ctx.createAnalyser();
       analyser.fftSize = 256;
       analyser.smoothingTimeConstant = 0.82;
@@ -267,7 +269,7 @@ export function PlayerProvider({ children }) {
       filterRefs.vocals[1].current = vocalsF2;
       filterRefs.vocals[2].current = vocalsF3;
       filterRefs.treble.current = trebleF;
-      const pureGraph=createPureGraph(ctx);pureGraphRef.current=pureGraph;
+      pureGraphRef.current=pureGraph;
       pureGraph.apply(pureRemoteRef.current?{...pureRef.current,enabled:false}:pureRef.current,true);
       master.connect(pureGraph.input);pureGraph.output.connect(volumeGain);volumeGain.connect(ctx.destination);
       // Apply any mixer settings the user already chose to the new filters
@@ -336,7 +338,7 @@ export function PlayerProvider({ children }) {
     setPureError("");
     if(next.enabled&&pureRemoteRef.current){setPureError("Switch playback to this device to use Pure.");return false;}
     const ctx=next.enabled?ensureGraph():audioCtxRef.current;
-    if(next.enabled&&(!ctx||!pureGraphRef.current)){setPureError("Audio processing could not start. Try again.");return false;}
+    if(next.enabled&&(!ctx||ctx.state==="closed"||!pureGraphRef.current)){setPureError("Audio processing could not start. Try again.");return false;}
     pureRef.current=next;pureGraphRef.current?.apply(next);setPureState(next);
     if(next.enabled&&(ctx.state==="suspended"||ctx.state==="interrupted")){
       try{await ctx.resume();if(ctx.state!=="running")throw Error("Audio engine not running");}
