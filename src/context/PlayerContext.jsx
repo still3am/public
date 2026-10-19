@@ -75,7 +75,7 @@ export function PlayerProvider({ children }) {
   const pureRef=useRef(pure),pureGraphRef=useRef(null),pureRequestRef=useRef(0);
   const pureRemote=audioOutput.state.remoteState==="connected";
   const pureRemoteRef=useRef(pureRemote);pureRemoteRef.current=pureRemote;
-  useEffect(()=>{pureRef.current=pure;pureGraphRef.current?.apply(pureRemote||pureComparing?{...pure,enabled:false}:pure);try{localStorage.setItem("public:player_pure",JSON.stringify(pure));}catch{}},[pure,pureRemote,pureComparing]);
+  useEffect(()=>{pureRef.current=pure;pureGraphRef.current?.apply(pureRemote||pureComparing?{...pure,enabled:false}:pure,false,pureComparing&&!pureRemote);try{localStorage.setItem("public:player_pure",JSON.stringify(pure));}catch{}},[pure,pureRemote,pureComparing]);
   const blobUrlRefs = [useRef(null), useRef(null)];
   const sideLoadedIdRef = [useRef(null), useRef(null)];
   const sideReadyRef = [useRef(false), useRef(false)];
@@ -335,6 +335,7 @@ export function PlayerProvider({ children }) {
   },[setMixerValues]);
   const resetMixer=useCallback(()=>setMixerValues({...DEFAULT_MIXER}),[setMixerValues]);
 
+  useEffect(()=>{if(!isPlaying||!pure.enabled||pureComparing||pureRemote)return;const timer=setInterval(()=>pureGraphRef.current?.measure(),200);return()=>clearInterval(timer);},[isPlaying,pure.enabled,pureComparing,pureRemote]);
   const comparePure=useCallback(value=>setPureComparing(value===true&&pureRef.current.enabled&&!pureRemoteRef.current),[]);
   const setPureValues=useCallback(async values=>{
     const next=normalizePure({...pureRef.current,...values}),request=++pureRequestRef.current;
