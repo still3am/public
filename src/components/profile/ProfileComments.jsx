@@ -20,6 +20,8 @@ export default function ProfileComments({ profileId, isOwn, active = true }) {
   const [error, setError] = useState(false);
   const [message, setMessage] = useState("");
   const [posting, setPosting] = useState(false);
+  const [visibleCount,setVisibleCount]=useState(10);
+  const composerRef=useRef(null);
   const commentRequest=useRef({text:"",key:"",id:""});
   const identity=useRef(null);
   if(!identity.current||identity.current.uid!==user?.id||identity.current.profileId!==profileId)identity.current={uid:user?.id,profileId};
@@ -45,7 +47,7 @@ export default function ProfileComments({ profileId, isOwn, active = true }) {
     }
   }, [profileId,user?.id]);
 
-  useEffect(()=>{requestVersion.current++;confirmed.current.clear();deleting.current.clear();setComments([]);setPosting(false);try{setMessage(user?.id?localStorage.getItem(draftKey)||"":"");}catch{setMessage("");}setLoading(true);},[profileId,user?.id]);
+  useEffect(()=>{requestVersion.current++;confirmed.current.clear();deleting.current.clear();setComments([]);setPosting(false);setVisibleCount(10);try{setMessage(user?.id?localStorage.getItem(draftKey)||"":"");}catch{setMessage("");}setLoading(true);},[profileId,user?.id]);
   useEffect(() => {
     if(!active)return;
     load();
@@ -79,7 +81,7 @@ export default function ProfileComments({ profileId, isOwn, active = true }) {
         confirmed.current.set(saved.id,saved);
         setComments(previous=>[saved,...previous.filter(row=>row.id!==saved.id)]);
         setLoading(false);setError(false);
-        setMessage(previous=>previous.trim()===text?'':previous);
+        setMessage(previous=>previous.trim()===text?'':previous);if(composerRef.current)composerRef.current.style.height="44px";
         try{if((localStorage.getItem(draftKey)||'').trim()===text)localStorage.removeItem(draftKey);}catch{}
         load();
       }
@@ -124,14 +126,14 @@ export default function ProfileComments({ profileId, isOwn, active = true }) {
         <MessageCircle size={18} /> Comments
       </h2>
 
-      <form onSubmit={postComment} className="flex mb-4 gap-2">
-        <input
+      <form onSubmit={postComment} className="profile-comments-composer">
+        <div><textarea ref={composerRef} rows={1} onInput={e=>{e.currentTarget.style.height="44px";e.currentTarget.style.height=Math.min(160,e.currentTarget.scrollHeight)+"px";}} onKeyDown={e=>{if((e.metaKey||e.ctrlKey)&&e.key==="Enter"){e.preventDefault();postComment(e);}}}
           aria-label="Leave a profile comment"
           value={message}
           onChange={(e) => {const value=e.target.value;setMessage(value);try{if(user?.id){if(value)localStorage.setItem(draftKey,value);else localStorage.removeItem(draftKey);}}catch{}}}
           placeholder="Leave a comment..."
           maxLength={500}
-          className="min-w-0 flex-1 py-2.5 rounded-full border border-border bg-background text-sm px-2.5" />
+          className="profile-comment-input" /><small>{message.length}/500</small></div>
         
         <button
           type="submit"
@@ -153,7 +155,7 @@ export default function ProfileComments({ profileId, isOwn, active = true }) {
         </p> :
 
       <div className="space-y-3">
-          {comments.filter((c) => !blocked.has(c.author_id)).map((c) =>
+          {comments.filter((c) => !blocked.has(c.author_id)).slice(0,visibleCount).map((c) =>
         <div key={c.id} className="flex gap-3 p-3 rounded-2xl bg-foreground/[0.02]">
               <Link to={`/profile/${c.author_id}`} aria-label={`View ${c.author_name || "user"} profile`} className="shrink-0"><Avatar user={{ avatar_url: c.author_avatar_url, full_name: c.author_name }} size={40} /></Link>
               <div className="flex-1 min-w-0">
@@ -178,6 +180,8 @@ export default function ProfileComments({ profileId, isOwn, active = true }) {
         )}
         </div>
       }
+      {!loading&&comments.filter(c=>!blocked.has(c.author_id)).length>visibleCount&&<button type="button" className="playlist-action mt-4 w-full" onClick={()=>setVisibleCount(n=>n+10)}>Show older comments</button>}
+      {visibleCount>10&&<button type="button" className="text-xs underline min-h-11 mt-2" onClick={e=>{setVisibleCount(10);e.currentTarget.closest('.profile-conversation')?.scrollTo({top:0,behavior:'smooth'});composerRef.current?.focus({preventScroll:true});}}>Back to latest comments</button>}
     </div>);
 
 }
