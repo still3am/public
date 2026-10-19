@@ -13,7 +13,7 @@ export function UploadAudioQuality({file}){
   return()=>{alive=false;};
  },[file]);
  if(!info||info.kind!=="lossless")return null;
- return <p className="flex items-center gap-1.5 text-xs text-muted-foreground"><AudioLines size={14}/><span>PUBLIC. Lossless · {qualityDescription(info)}</span></p>;
+ return <p className="flex items-center gap-1.5 text-xs text-muted-foreground"><AudioLines size={14}/><span>Lossless source · {qualityDescription(info)}</span></p>;
 }
 export default function AudioQuality(){
  const p=usePlayer(),trackId=p.currentTrack?.id,source=p.getAudioQualitySource?.(),url=source?.id===trackId?source?.url:"";
@@ -36,7 +36,7 @@ export default function AudioQuality(){
   <PureControls/>
   <details className="pure-source-details"><summary>Source audio <span>{lossless?"Lossless":info?.codec||"Details"}</span></summary>
   <div className="mt-3 text-sm">
-   {checking?<span className="flex items-center gap-2"><Loader2 size={15} className="animate-spin"/>Checking source format…</span>:<><p className="font-semibold flex items-center gap-2">{lossless&&<Check size={16}/>} {qualityDescription(info)}</p><p className="text-xs text-muted-foreground mt-2">{lossless?"Identified from the audio header. This describes the file format, not the recording’s mastering history.":info?.kind==="lossy"?"This source uses lossy compression. A lossless source upload is needed for PUBLIC. Lossless.":"This source’s encoding could not be identified. It has not been labeled lossless."}</p></>}
+   {checking?<span className="flex items-center gap-2"><Loader2 size={15} className="animate-spin"/>Checking source format…</span>:<><p className="font-semibold flex items-center gap-2">{lossless&&<Check size={16}/>} {qualityDescription(info)}</p><p className="text-xs text-muted-foreground mt-2">{lossless?"Identified from the audio header. This describes the file format, not the recording’s mastering history.":info?.kind==="lossy"?"This source uses lossy compression. PURE can still shape its playback.":"This source’s encoding could not be identified. It has not been labeled lossless."}</p></>}
   </div>
   {lossless&&<dl className="grid grid-cols-2 gap-4 text-sm"><div><dt className="text-xs text-muted-foreground">Bit depth</dt><dd className="font-semibold mt-1">{info.bitDepth}-bit</dd></div><div><dt className="text-xs text-muted-foreground">Source sample rate</dt><dd className="font-semibold mt-1">{info.sampleRate.toLocaleString()} Hz</dd></div></dl>}
   <p className="text-xs leading-relaxed text-muted-foreground">The browser, sound effects, volume processing, Bluetooth, and your output device can change what reaches your ears. A lossless source does not guarantee bit-perfect output.{source?.outputSampleRate?" The current audio engine runs at "+source.outputSampleRate.toLocaleString()+" Hz.":""}</p>
