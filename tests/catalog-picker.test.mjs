@@ -34,7 +34,7 @@ console.log('PASS partial catalog retention, retry, account reset, automatic Upl
 let status=403,message='Backend functions cannot be accessed from the platform domain. Use the app subdomain instead.',nativeReads=0,privateAudio=false;
 globalThis.__rawRead={auth:{me:async()=>null},functions:{invoke:async()=>{throw Object.assign(Error(message),{status,response:{status,data:{message}}});}},entities:{Track:{filter:async()=>{nativeReads++;return [first];},get:async()=>{nativeReads++;return privateAudio?{id:'private'}:{...first,audio_url:'https://media.base44.com/audio.mp3'};}}}};
 let clientSource=fs.readFileSync('src/api/base44Client.js','utf8').replace(/^import[^;]+;/gm,'');
-const client=(await importText('const AVATAR_PRESETS=[],withPresetAvatar=x=>x,savePresetAvatar=()=>{},createClient=()=>globalThis.__rawRead,appParams={};'+clientSource)).base44;
+const client=(await importText('const recoveredAlbumMetadata={},recoveredAlbumResult=x=>x,withRecoveredAlbumMetadata=x=>x;const AVATAR_PRESETS=[],withPresetAvatar=x=>x,savePresetAvatar=()=>{},createClient=()=>globalThis.__rawRead,appParams={};'+clientSource)).base44;
 assert.equal((await client.entities.Track.filter({is_published:true},{limit:2})).length,1);
 const reads=nativeReads;message='Forbidden';await assert.rejects(client.entities.Track.filter({}));assert.equal(nativeReads,reads,'real 403 denial cannot fall through');
 message='You need to access this app through the support panel first.';await assert.rejects(client.entities.Track.filter({}));assert.equal(nativeReads,reads,'support restriction cannot fall through');
