@@ -79,7 +79,7 @@
  .public-app .track-page.track-editorial .release-song-list .song-row>button:first-of-type{width:22px;min-width:22px;height:42px;font-size:13px;color:rgb(255 255 255 / .55)}
  .public-app .track-page.track-editorial .release-song-list .song-row>button:first-of-type>span{display:block}
  .public-app .track-page.track-editorial .release-song-list .song-row>button:first-of-type>svg.md\:hidden{display:none}
- .public-app .track-page.track-editorial .release-song-list .song-menu-reveal{opacity:1;visibility:visible;pointer-events:auto}
+ .public-app .track-page.track-editorial .release-song-list .song-menu-reveal{width:auto;min-width:36px;overflow:visible;opacity:1;visibility:visible;pointer-events:auto}
  .public-app .track-page.track-editorial .release-song-list .song-row>div.min-w-0>a{font-size:14px;line-height:1.5;font-weight:550}
  .public-app .track-page.track-editorial .track-detail-columns>.release-credits{border-color:rgb(255 255 255 / .15);color:rgb(255 255 255 / .6)}
  .public-app .track-page.track-editorial button:disabled{opacity:.45}
