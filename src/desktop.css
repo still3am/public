@@ -1,4 +1,12 @@
 /* Desktop refinements. Mobile rules and immersive gradients remain independent. */
+@media(min-width:768px) and (max-width:1100px){
+ .public-app .artwork-content .track-page.track-editorial .release-header-full{
+  grid-template-columns:minmax(160px,.8fr) minmax(0,1fr);gap:24px;
+ }
+ .public-app .personal-mix-immersive{
+  grid-template-columns:minmax(180px,.8fr) minmax(0,1fr);column-gap:24px;
+ }
+}
 .desktop-header,.desktop-shelf-controls{display:none}
 @media(min-width:768px){
  body{-webkit-user-select:text;user-select:text}
