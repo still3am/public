@@ -195,7 +195,7 @@ export default function TrackDetail() {
         </div>
       </section>
       <section className="release-song-list" aria-label="Song">
-        <TrackRow track={track} index={0} showArt={false} queue={[track]} queueIndex={0} />
+        <TrackRow track={track} index={0} showArt={false} compactRelease queue={[track]} queueIndex={0} />
       </section>
       <div className="track-detail-columns">
 
