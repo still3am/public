@@ -32,12 +32,23 @@ export function createPureGraph(ctx){
  const air=ctx.createBiquadFilter();air.type="highshelf";air.frequency.value=9000;
  const headroom=ctx.createGain(),compressor=ctx.createDynamicsCompressor();
  bass.connect(mud);mud.connect(presence);presence.connect(air);air.connect(headroom);headroom.connect(compressor);
- const apply=(settings,instant=false)=>{
+ let inputMeter=null,outputMeter=null,matchedGain=1,processing=false;
+ if(ctx.createAnalyser){inputMeter=ctx.createAnalyser();outputMeter=ctx.createAnalyser();inputMeter.fftSize=2048;outputMeter.fftSize=2048;bass.connect(inputMeter);compressor.connect(outputMeter);}
+ const inputSamples=new Float32Array(2048),outputSamples=new Float32Array(2048);
+ const measure=()=>{if(!processing||!inputMeter||!outputMeter)return;inputMeter.getFloatTimeDomainData(inputSamples);outputMeter.getFloatTimeDomainData(outputSamples);matchedGain=.8*matchedGain+.2*matchedComparisonGain(rms(inputSamples),rms(outputSamples),matchedGain);};
+ const apply=(settings,instant=false,comparison=false)=>{
+  processing=settings.enabled===true&&!comparison;
   const p=pureParameters(settings),t=ctx.currentTime;
   for(const [node,key] of [[bass,"bass"],[mud,"mud"],[presence,"presence"],[air,"air"]])target(node.gain,p[key],t,instant);
-  target(headroom.gain,p.headroom,t,instant);
+  target(headroom.gain,comparison?matchedGain:p.headroom,t,instant);
   for(const key of ["threshold","knee","ratio","attack","release"])target(compressor[key],p[key],t,instant);
  };
  apply(DEFAULT_PURE,true);
- return {input:bass,output:compressor,apply};
+ return {input:bass,output:compressor,apply,measure};
 }
+export function rms(samples){let sum=0;for(const value of samples)sum+=value*value;return Math.sqrt(sum/Math.max(1,samples.length));}
+export function matchedComparisonGain(inputLevel,outputLevel,previous=1){
+ if(!Number.isFinite(inputLevel)||!Number.isFinite(outputLevel)||inputLevel<.0005||outputLevel<.0001)return previous;
+ return Math.max(.05,Math.min(1,outputLevel/inputLevel));
+}
+
