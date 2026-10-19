@@ -86,6 +86,32 @@ export const base44 = new Proxy(raw,{get(target,name) {
       return savePresetAvatar(target,avatar_url);
     }
 
+    // Song associations use the signed-in account API; no new text or media is submitted.
+    if(Object.keys(data||{}).length===1&&Object.hasOwn(data,"top_track_ids")){
+      const ids=data.top_track_ids;
+      if(!Array.isArray(ids)||ids.length>8||new Set(ids).size!==ids.length||ids.some(id=>typeof id!=="string"||!id||id.length>100))throw new Error("Choose up to eight different songs.");
+      const current=await target.auth.me();
+      if(!current?.id||current.disabled||current.is_blocked)throw new Error("Account unavailable");
+      const old=new Set(current.top_track_ids||[]);
+      for(const id of ids.filter(id=>!old.has(id))){
+        const track=await entities.Track.get(id);
+        if(!track?.id)throw new Error("This song is unavailable. Choose another song.");
+      }
+      const page=await target.entities.PublicProfile.filter({user_id:current.id,visible:true},"-updated_date",1);
+      const row=(Array.isArray(page)?page:page?.items||[])[0];
+      if(!row)throw new Error("Your public profile could not be found. Please retry.");
+      if((await target.auth.me())?.id!==current.id)throw new Error("Your account changed. Reopen your profile.");
+      let failure;
+      try{await target.auth.updateMe({top_track_ids:ids});}catch(error){failure=error;}
+      const confirmed=await target.auth.me();
+      if(confirmed?.id!==current.id||JSON.stringify(confirmed.top_track_ids)!==JSON.stringify(ids))throw failure||new Error("Your songs were not confirmed. Please retry.");
+      failure=null;
+      try{await target.entities.PublicProfile.update(row.id,{top_track_ids:ids});}catch(error){failure=error;}
+      const result=await target.entities.PublicProfile.filter({user_id:current.id,visible:true},"-updated_date",1);
+      if(JSON.stringify((Array.isArray(result)?result:result?.items||[])[0]?.top_track_ids)!==JSON.stringify(ids))throw failure||new Error("Your public songs were not confirmed. Please retry.");
+      return confirmed;
+    }
+
     // Restoring existing default artwork does not upload or moderate new media.
     if(Object.keys(data||{}).length===1&&data.banner_use_default===true){
       const current=await target.auth.me();
