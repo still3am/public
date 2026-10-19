@@ -1,6 +1,7 @@
 import ArtistAliases from "@/components/ArtistAliases";
 import {DropdownMenu,DropdownMenuTrigger,DropdownMenuContent,DropdownMenuItem} from "@/components/ui/dropdown-menu";
 import {shareLink} from "@/lib/shareLink";
+import "./artist-editorial.css";
 import ArtistReleaseFollow from "@/components/ArtistReleaseFollow";
 import ScrollShelf from "@/components/ScrollShelf";
 import LoadError from '@/components/LoadError';
@@ -262,6 +263,7 @@ export default function PublicRecords({ id: propId, fallbackArtist = null }) {
     try{const result=await shareLink({title:artist.name+" on PUBLIC",url:window.location.origin+(id?"/records/"+encodeURIComponent(id):"/artist?name="+encodeURIComponent(artist.name))});if(result==="copied")toast({title:"Artist link copied"});}
     catch{toast({title:"This artist link could not be shared. Please retry.",variant:"destructive"});}
   }
+  const hasAbout=!!(artist.bio||meta.length||socials.length||artist.history_text||tracks.some(track=>track.genre)||isAdmin);
   const aboutArtist=()=>document.getElementById("artist-about")?.scrollIntoView({behavior:window.matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth"});
   const latestDate=latestTrack?.created_date&&Number.isFinite(Date.parse(latestTrack.created_date))?new Date(latestTrack.created_date).toLocaleDateString(undefined,{month:"short",day:"numeric",year:"numeric"}):"";
 
@@ -269,7 +271,7 @@ export default function PublicRecords({ id: propId, fallbackArtist = null }) {
     <PullToRefresh onRefresh={load}>
       <div className="artist-page artist-editorial mx-auto pb-12">
         <section className="artist-hero">
-          <ArtistArtwork source={topCover || artist.cover_art_url || artist.avatar_url} className="artist-hero-image" />
+          <ArtistArtwork source={artist.cover_art_url || artist.avatar_url || topCover} className="artist-hero-image" />
           <div className="artist-hero-shade" />
           <button onClick={() => window.history.state?.idx > 0 ? nav(-1) : nav("/search")} className="artist-back" aria-label="Back"><ChevronLeft size={25} /></button>
           <div className="artist-hero-actions">
@@ -278,13 +280,12 @@ export default function PublicRecords({ id: propId, fallbackArtist = null }) {
               <DropdownMenuContent align="end" sideOffset={10} className="rounded-2xl p-2 min-w-[220px]">
                 <DropdownMenuItem className="min-h-11 rounded-xl" onSelect={shareArtist}><Share2/>Share artist</DropdownMenuItem>
                 <DropdownMenuItem className="min-h-11 rounded-xl" disabled={!artistQueue.length} onSelect={shuffleArtist}><Shuffle/>Shuffle songs</DropdownMenuItem>
-                <DropdownMenuItem className="min-h-11 rounded-xl" onSelect={aboutArtist}><Info/>About {artist.name}</DropdownMenuItem>
+                <DropdownMenuItem className="min-h-11 rounded-xl" disabled={!hasAbout} onSelect={aboutArtist}><Info/>About {artist.name}</DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
           <div className="artist-hero-bottom">
             <div className="artist-hero-name min-w-0">
-              <p className="artist-eyebrow">Artist on PUBLIC</p>
               <ArtistNameEditor artist={artist} canEdit={!!user && !!id} onSaved={name => setArtist(prev => prev ? {...prev,name} : prev)} />
               <p className="artist-track-count">{mainTracks.length} {mainTracks.length === 1 ? "song" : "songs"}{appearanceTracks.length > 0 && ` · ${appearanceTracks.length} appearances`}</p>
             </div>
@@ -296,9 +297,9 @@ export default function PublicRecords({ id: propId, fallbackArtist = null }) {
         {latestTrack && <section className="artist-latest">
           <button className="artist-latest-cover" onClick={() => {if(p.currentTrack?.id===latestTrack.id)p.togglePlay();else p.playTrackAt(mainTracks, mainTracks.findIndex(track => track.id === latestTrack.id));}} aria-label={(p.currentTrack?.id===latestTrack.id&&p.isPlaying?"Pause ":"Play ") + latestTrack.title}><ArtistArtwork source={latestTrack.cover_art_url} className="w-full h-full object-cover" /></button>
           <div className="min-w-0 flex-1">
-            <p className="eyebrow text-muted-foreground mb-2">Recently added to PUBLIC</p>
+            <p className="eyebrow text-muted-foreground mb-2">{latestDate || "Latest on PUBLIC"}</p>
             <Link to={"/track/" + latestTrack.id} className="artist-latest-title">{latestTrack.title}</Link>
-            <p className="text-sm text-muted-foreground mt-1 truncate">{latestTrack.artist || artist.name}</p>
+            <p className="text-sm text-muted-foreground mt-1 truncate">Latest on PUBLIC · Song</p>
             <div className="mt-2"><LibraryButton track={latestTrack} /></div>
           </div>
         </section>}
@@ -346,7 +347,7 @@ export default function PublicRecords({ id: propId, fallbackArtist = null }) {
             {appearanceTracks.map(track=><div className="artist-appears-card" key={track.id}><TrackCard track={track} queue={appearanceTracks} /></div>)}
           </ScrollShelf>
         </section>}
-        {(artist.bio || meta.length > 0 || socials.length > 0 || artist.history_text || tracks.some(track=>track.genre) || isAdmin) && <section className="artist-about">
+        {hasAbout && <section id="artist-about" className="artist-about">
           <SectionTitle icon={Mic2}>About {artist.name}</SectionTitle>
           <ArtistAliases artist={artist} onSaved={aliases=>setArtist(previous=>({...previous,aliases}))}/>
           {artist.bio && <CollapsibleText text={artist.bio} className="artist-about-copy selectable-content leading-relaxed" clampClass="max-h-28" />}
