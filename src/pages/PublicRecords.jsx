@@ -1,3 +1,4 @@
+import ArtistReleaseFollow from "@/components/ArtistReleaseFollow";
 import ScrollShelf from "@/components/ScrollShelf";
 import LoadError from '@/components/LoadError';
 import {useRef} from 'react';
@@ -260,6 +261,7 @@ export default function PublicRecords({ id: propId, fallbackArtist = null }) {
             <div className="artist-hero-name min-w-0">
               <p className="artist-eyebrow">Artist on PUBLIC</p>
               <ArtistNameEditor artist={artist} canEdit={!!user && !!id} onSaved={name => setArtist(prev => prev ? {...prev,name} : prev)} />
+              <ArtistReleaseFollow name={artist.name}/>
               <p className="artist-track-count">{mainTracks.length} {mainTracks.length === 1 ? "song" : "songs"}{appearanceTracks.length > 0 && ` · ${appearanceTracks.length} appearances`}</p>
             </div>
             {tracks.length > 0 && <button onClick={playAll} className="artist-play" aria-label={(artistPlaying?"Pause ":"Play ") + artist.name}>{artistPlaying?<Pause size={26} fill="currentColor"/>:<Play size={26} fill="currentColor"/>}</button>}
