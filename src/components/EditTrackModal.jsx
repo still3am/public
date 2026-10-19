@@ -1,4 +1,5 @@
 import MusicVideoPicker from "@/components/upload/MusicVideoPicker";
+import AlbumMetadataFields from "@/components/upload/AlbumMetadataFields";
 import { useState, useEffect, useRef } from "react";
 import { base44 } from "@/api/base44Client";
 import {reportActionError} from "@/lib/actionError";
@@ -11,6 +12,7 @@ export default function EditTrackModal({ track, onClose, onSaved, onDeleted }) {
   const [form, setForm] = useState({
     title: track.title || "",
     artist: track.artist || "",
+    album_name:track.album_name||"",album_artist:track.album_artist||"",track_number:track.track_number||0,disc_number:track.disc_number||0,release_year:track.release_year||0,
     genre: track.genre || "Other",
     description: track.description || "",
     lyrics_text: track.lyrics_text || "",
@@ -142,6 +144,7 @@ export default function EditTrackModal({ track, onClose, onSaved, onDeleted }) {
             </div>
           </div>
 
+          <AlbumMetadataFields value={form} onChange={patch} disabled={saving||deleting}/>
           <BottomSheetSelect
             label="Genre" disabled={saving||deleting}
             value={form.genre}
