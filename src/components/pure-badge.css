@@ -1,5 +1,5 @@
 .pure-badge{display:inline-flex;align-items:center;gap:4px;flex-shrink:0;vertical-align:middle;white-space:nowrap;color:inherit;line-height:1;font-size:10px;font-weight:800;letter-spacing:.11em}
-.pure-badge.is-compact{font-size:8px;gap:3px;letter-spacing:.09em}
+.pure-badge.is-compact{color:hsl(var(--foreground));font-size:9px;gap:3px;letter-spacing:.09em}
 .pure-badge svg{opacity:.7}
 .pure-badge-word{color:inherit;background:linear-gradient(110deg,color-mix(in srgb,currentColor 45%,transparent) 0%,color-mix(in srgb,currentColor 45%,transparent) 30%,currentColor 46%,currentColor 50%,color-mix(in srgb,currentColor 45%,transparent) 66%,color-mix(in srgb,currentColor 45%,transparent) 100%);background-size:260% 100%;background-position:100% 0;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;animation:pureShine 5s ease-in-out infinite;animation-play-state:paused}
 .pure-badge.is-playing .pure-badge-word{animation-play-state:running}
