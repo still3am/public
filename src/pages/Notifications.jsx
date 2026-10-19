@@ -33,6 +33,7 @@ function actorName(n) {
   return n.actor?.display_name || n.actor?.full_name || n.actor_name || "PUBLIC member";
 }
 function getMessage(n) {
+  if(n.subscription_id)return "has new music on PUBLIC";
   return ({
     new_follower:"started following you",
     track_liked:"liked your track",
@@ -102,7 +103,7 @@ export default function Notifications() {
       <div className="notifications-grid space-y-1.5" data-view={view} role="list">
           {visibleNotifications.map((n) => {
           const Icon = ICONS[n.type] || Bell;
-          const profileLink = n.actor_id ? `/profile/${encodeURIComponent(n.actor_id)}` : null;
+          const profileLink = n.subscription_id ? `/artist?name=${encodeURIComponent(n.actor_name)}` : n.actor_id ? `/profile/${encodeURIComponent(n.actor_id)}` : null;
           const handle = () => {if (!n.read) markAsRead(n.id);};
           const content =
           <div
