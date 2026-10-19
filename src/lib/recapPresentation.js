@@ -7,7 +7,7 @@ export function recapSelection(period, value, now = new Date()) {
  if (period === 'all' && !value) return {period, value:'', date:now};
  if (period === 'month' && /^\d{4}-(0[1-9]|1[0-2])$/.test(value || '')) {
   const date = new Date(value + '-15T12:00:00');
-  if(date.getFullYear()>=2020 && date<=now) return {period,value,date};
+  if(date.getFullYear()>=2020 && value<=now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0')) return {period,value,date};
  }
  if (period === 'year' && /^\d{4}$/.test(value || '') && Number(value)>=2020 && Number(value)<=now.getFullYear())
   return {period,value,date:new Date(value+'-01-15T12:00:00')};
