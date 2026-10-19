@@ -86,6 +86,24 @@ export const base44 = new Proxy(raw,{get(target,name) {
       return savePresetAvatar(target,avatar_url);
     }
 
+    // Restoring existing default artwork does not upload or moderate new media.
+    if(Object.keys(data||{}).length===1&&data.banner_use_default===true){
+      const current=await target.auth.me();
+      if(!current?.id||current.disabled||current.is_blocked)throw new Error('Account unavailable');
+      const page=await target.entities.PublicProfile.filter({user_id:current.id,visible:true},'-updated_date',1);
+      const row=(Array.isArray(page)?page:page?.items||[])[0];
+      if(!row)throw new Error('Your public profile could not be found. Please retry.');
+      let failure;
+      try{await target.auth.updateMe({banner_use_default:true});}catch(error){failure=error;}
+      const confirmed=await target.auth.me();
+      if(confirmed?.id!==current.id||confirmed.banner_use_default!==true)throw failure||new Error('Your default banner was not confirmed. Please retry.');
+      if((await target.auth.me())?.id!==current.id)throw new Error('Your account changed. Reopen your profile.');
+      try{await target.entities.PublicProfile.update(row.id,{banner_use_default:true});}catch(error){failure=error;}
+      const check=await target.entities.PublicProfile.filter({user_id:current.id,visible:true},'-updated_date',1);
+      if((Array.isArray(check)?check:check?.items||[])[0]?.banner_use_default!==true)throw failure||new Error('Your public banner was not confirmed. Please retry.');
+      return confirmed;
+    }
+
     // Only these non-text own-account preferences use the SDK's own-account route.
     // All other profile fields keep the moderated security gateway.
     const preferenceKeys=['is_artist','show_explicit','adult_confirmed'];
