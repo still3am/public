@@ -45,4 +45,15 @@ function fixture(){
 {
  const f=fixture();f.env.avatarBusy.current=true;f.env.setForm({...f.form,bio:'Wait'});await fn('saveProfile',f.env)();assert.equal(f.writes.length,0);
 }
+{
+ const f=fixture();f.env.setProfile({...f.env.profile,banner_url:'https://test/custom.jpg',banner_mobile_url:'https://test/mobile.jpg'});
+ f.env.setForm({...formFromProfile(f.env.profile),banner_use_default:true});
+ await fn('saveProfile',f.env)();
+ assert.deepEqual(f.writes,[{banner_use_default:true}]);assert.equal(f.edit,false);
+ assert.equal(formFromProfile(f.env.profile).banner_use_default,true,'default survives reload');
+}
+{
+ const f=fixture();f.env.setForm({...f.form,banner_use_default:true});fn('cancelEdit',f.env)();
+ assert.equal(f.form.banner_use_default,false);assert.equal(f.writes.length,0);
+}
 console.log('PASS crop coverage through all rotations/positions; Top 8 ordering; safe links and limits; song drafts, Cancel, combined saves, ignored writes, failed-save recovery and upload guards');
