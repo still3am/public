@@ -26,6 +26,7 @@ import { useToast } from "@/components/ui/use-toast";
 import {
   ChevronLeft,
   ChevronRight,
+  MoreHorizontal, Share2, Shuffle, Info,
   Loader2,
   Music,
   Mic2,
