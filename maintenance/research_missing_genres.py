@@ -23,15 +23,20 @@ def match(t,r):
  if not r.get('trackName') or not genre(r.get('primaryGenreName')):return False
  a=norm((t.get('artist')or'').split(',')[0])
  b=norm(r.get('artistName'))
- if len(a)<3 or not b or a not in b:return False
+ artists={norm(part) for part in re.split(r',| & | and | feat\\.? | ft\\.? ',r.get('artistName')or'',flags=re.I)}
+ if len(a)<3 or not b or a!=b and a not in artists:return False
  if versions(t.get('title'))!=versions(r.get('trackName')):return False
  x,y=title(t.get('title')),title(r.get('trackName'))
  return x==y or min(len(x),len(y))>=12 and difflib.SequenceMatcher(None,x,y).ratio()>=.97
 def propose(tracks,cache):
  candidates=collections.defaultdict(list)
+ exact=collections.defaultdict(list);prefix=collections.defaultdict(list)
+ for t in tracks:
+  key=title(t.get('title'));exact[key].append(t);prefix[key[:8]].append(t)
  for entry in cache.values():
   for r in entry.get('results',[]):
-   for t in tracks:
+   key=title(r.get('trackName'));pool=exact.get(key,[]) or prefix.get(key[:8],[])
+   for t in pool:
     if match(t,r):candidates[t['id']].append(r)
  out=[];unmatched=[]
  for t in tracks:
