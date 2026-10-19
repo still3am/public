@@ -85,7 +85,7 @@ export default function GenerateLyricsModal({ track, onClose, onSaved }) {
       onSaved?.({ ...saved, lyrics_text: text }, { sync });
     } catch (error) {
       if (mounted.current) setNotice(Number(error?.response?.status || error?.status) === 402
-        ? "Saving needs available app integration credits. Your draft has been kept."
+        ? "Saving is unavailable right now. Your lyrics draft has been kept; try again."
         : "Lyrics haven't been saved. Your draft is still here; try saving again.");
     } finally {
       saveLock.current = false;
