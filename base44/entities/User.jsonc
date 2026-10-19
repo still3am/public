@@ -141,8 +141,10 @@
       "default": [],
       "description": "Up to 8 track ids pinned to the profile as the user's Top 8",
       "rls": {
-        "write": false
-      }
+        "write": true
+      },
+      "maxItems": 8,
+      "uniqueItems": true
     },
     "is_artist": {
       "type": "boolean",
