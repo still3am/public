@@ -372,7 +372,9 @@ export default async function handleRequest(req) {
         if(content.title?.length>300||content.description?.length>5000)fail('Track metadata is too long',422);
         for(const key of ['album_name','album_artist'])if(content[key]!==undefined){if(typeof content[key]!=='string'||content[key].length>300)fail('Invalid album metadata',422);content[key]=content[key].trim();}
         for(const key of ['track_number','disc_number','release_year'])if(content[key]!==undefined&&(!Number.isInteger(content[key])||content[key]<0||content[key]>9999))fail('Invalid album position',422);
-        if(Object.keys(content).length) await moderate(svc,[content.title,content.description,content.lyrics_text,content.album_name,content.album_artist].filter(Boolean).join('\n'));
+        if(content.lyrics_text!==undefined&&(typeof content.lyrics_text!=='string'||content.lyrics_text.length>100000))fail('Lyrics must be text under 100,000 characters',422);
+        const manualLyricsOnly=kind==='update'&&Object.keys(input).length===1&&typeof input.lyrics_text==='string';
+        if(Object.keys(content).length&&!manualLyricsOnly) await moderate(svc,[content.title,content.description,content.lyrics_text,content.album_name,content.album_artist].filter(Boolean).join('\n'));
         if(kind==='create') {
           data={...content,uploader_id:user.id,uploader_name:user.display_name||user.full_name||'',uploader_avatar_url:user.avatar_url||'',rights_confirmed:true,rights_confirmed_at:new Date().toISOString(),is_published:false,approval_status:'private',play_count:0,like_count:0};
         } else data=content;
