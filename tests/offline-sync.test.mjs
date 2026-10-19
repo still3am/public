@@ -56,7 +56,7 @@ for(const name of ['offline_track_ids','offline_migrated']){
  assert.equal(evaluate(rule.write,{id:'owner'},{id:'owner',is_blocked:true}),false);
  assert.equal(evaluate(rule.write,{id:'owner'},{id:'owner',disabled:true}),false);
 }
-assert.equal(schema.properties.role?.rls?.write,false);
+assert.equal(Object.hasOwn(schema.properties,'role'),false,'offline sync does not add an editable custom role field');
 console.log('PASS database field rules explicitly enforce same-user ownership and suspension protection');
 
 // Exercise the real offline hook with controlled storage and two account identities.
