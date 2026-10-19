@@ -1,3 +1,4 @@
+import {getPlaylist} from "@/lib/collaborativePlaylists";
 import PlaylistCollaborators from "@/components/playlist/PlaylistCollaborators";
 import PlaylistActionsSheet from '@/components/playlist/PlaylistActionsSheet';
 import {shareLink} from '@/lib/shareLink';
@@ -28,7 +29,7 @@ export default function PlaylistDetail(){
  const load=useCallback(async()=>{
   const v=++version.current;setLoading(true);setError(false);
   try{
-   const pl=await base44.entities.Playlist.get(id),ids=[...new Set(pl.track_ids||[])];let list=[];
+   const pl=await getPlaylist(id),ids=[...new Set(pl.track_ids||[])];let list=[];
    for(let start=0;start<ids.length;start+=200)list.push(...await readAllPages(opts=>base44.entities.Track.filter({id:{$in:ids.slice(start,start+200)}},{...opts})));
    if(v!==version.current)return;
    const order=new Map(ids.map((id,i)=>[id,i]));list.sort((a,b)=>order.get(a.id)-order.get(b.id));
