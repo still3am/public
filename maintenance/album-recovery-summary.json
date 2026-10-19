@@ -14,5 +14,8 @@
     "6abf42f8530a213aec66cc1f"
   ],
   "unreadable": [],
-  "updated": "2026-10-19T15:06:12.199Z"
+  "updated": "2026-10-19T15:06:12.199Z",
+  "albumGroups": 3816,
+  "multiSongAlbums": 942,
+  "source": "Embedded tags in existing published audio; explicit saved metadata takes precedence"
 }
