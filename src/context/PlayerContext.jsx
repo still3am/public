@@ -1379,7 +1379,6 @@ export function PlayerProvider({ children }) {
     dismissed,
     audioOutput,
     pure,pureError,setPureValues,pureComparing,comparePure,pureSuspended:pureRemote,
-    getAudioQualitySource:()=>{const side=activeIdxRef.current;return {id:sideLoadedIdRef[side].current,url:audioRefs[side].current?.src||"",outputSampleRate:audioCtxRef.current?.sampleRate||null};},
   };
 
   return (
