@@ -1,4 +1,5 @@
 import TrackMusicVideo from "@/components/TrackMusicVideo";
+import "./track-editorial.css";
 import { shareTrack } from "@/lib/shareTrack";
 import {prepareTrackShare} from "@/lib/trackShareUrl";
 import { getPublishedTracks } from "@/lib/catalogCache";
@@ -168,7 +169,7 @@ export default function TrackDetail() {
   [];
 
   return (
-    <div className="track-page release-page max-w-5xl mx-auto">
+    <div className="track-page track-editorial release-page mx-auto">
       <div className="release-toolbar">
         <button onClick={() => window.history.state?.idx > 0 ? nav(-1) : nav("/search")} className="release-round" aria-label="Back"><ChevronLeft size={26} /></button>
         <div className="release-toolbar-actions">
@@ -179,7 +180,8 @@ export default function TrackDetail() {
       <section className={"release-header release-header-full" + (coverUrl && !coverFailed ? " has-release-art" : "")}>
         {coverUrl&&!coverFailed&&<div aria-hidden="true" className="release-full-image"><img src={coverUrl} alt=""/></div>}
         <div className="release-art">{coverUrl && !coverFailed ? <img src={coverUrl} alt={track.title+" cover"} onError={() => setCoverFailed(true)} /> : <Music size={52} />}</div>
-        <p className="track-release-kicker hidden lg:block">Song on PUBLIC</p>
+        <div className="track-release-info">
+        <p className="track-release-kicker">Song on PUBLIC</p>
         <h1>{track.title}</h1>
         <div className="release-artist">{displayArtist ? <ArtistLinks artist={displayArtist} maxShown={8} linkClassName="hover:underline" /> : uploader && <Link to={"/profile/"+uploader.id}>{uploader.display_name || uploader.full_name || track.uploader_name}</Link>}</div>
         <p className="release-subtitle">{[track.genre,track.duration_seconds>0?formatTime(track.duration_seconds):null].filter(Boolean).join(" · ")}{track.explicit && <span className="release-explicit" aria-label="Explicit">E</span>}</p>
@@ -187,18 +189,13 @@ export default function TrackDetail() {
           <button className="release-play-button" onClick={() => isCurrent ? p.togglePlay() : p.playTrackAt([track])}>{isPlaying?<Pause size={22} fill="currentColor" />:<Play size={22} fill="currentColor" />}{isPlaying?"Pause":"Play"}</button>
           <LibraryButton track={track} size={24} className="release-add-button" />
         </div>
+        </div>
       </section>
       <section className="release-song-list" aria-label="Song">
         <TrackRow track={track} index={0} showArt={false} queue={[track]} queueIndex={0} />
       </section>
       <div className="track-detail-columns">
-      <section className="release-credits">
-        <h2 className="track-details-title hidden lg:block">About this song</h2>
-        {track.created_date && Number.isFinite(Date.parse(track.created_date)) && <p>Added to PUBLIC {new Intl.DateTimeFormat(undefined,{month:"long",day:"numeric",year:"numeric"}).format(new Date(track.created_date))}</p>}
-        <p>1 song{track.duration_seconds>0?" · "+formatTime(track.duration_seconds):""}</p>
-        {uploader && <p>Shared by <Link to={"/profile/"+uploader.id} className="hover:underline">{uploader.display_name || uploader.full_name || track.uploader_name || "PUBLIC member"}</Link></p>}
-        {track.description && <div className="mt-4"><CollapsibleText text={track.description} className="selectable-content leading-relaxed" /></div>}
-      </section>
+
 
       {track.lyrics_text && track.lyrics_text.trim() &&
       <section className="track-page-section">
@@ -227,8 +224,16 @@ export default function TrackDetail() {
         </section>
       }
 
-      </div>
       {(track._has_music_video || track.music_video_file_uri) && <TrackMusicVideo key={track.id+":"+(track.music_video_file_uri||"")} track={track} />}
+      <section className="release-credits">
+        <h2 className="track-details-title">About this song</h2>
+        {track.created_date && Number.isFinite(Date.parse(track.created_date)) && <p>Added to PUBLIC {new Intl.DateTimeFormat(undefined,{month:"long",day:"numeric",year:"numeric"}).format(new Date(track.created_date))}</p>}
+        <p>1 song{track.duration_seconds>0?" · "+formatTime(track.duration_seconds):""}</p>
+        {uploader && <p>Shared by <Link to={"/profile/"+uploader.id} className="hover:underline">{uploader.display_name || uploader.full_name || track.uploader_name || "PUBLIC member"}</Link></p>}
+        {track.description && <div className="mt-4"><CollapsibleText text={track.description} className="selectable-content leading-relaxed" /></div>}
+      </section>
+      </div>
+
       {moreTracks.length > 0 && <section className="track-page-section">
         <h2>More by {track.artist}</h2>
         <ScrollShelf className="release-shelf" label="More songs by this artist">{moreTracks.map(row=><div key={row.id} className="release-shelf-card"><TrackCard track={row} queue={moreTracks} /></div>)}</ScrollShelf>
