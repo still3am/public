@@ -1,3 +1,4 @@
+import {sampleListening} from "@/lib/listeningHistory";
 import {DEFAULT_MIXER,normalizeMixer,mixerHeadroom,smoothAudioParam} from "@/lib/equalizer";
 import {commitAudioHandoff,transitionDuration} from "@/lib/audioHandoff";
 import {DEFAULT_PURE,normalizePure,readPure,createPureGraph} from "@/lib/pureAudio";
@@ -730,6 +731,7 @@ export function PlayerProvider({ children }) {
   useEffect(() => {
     handleTimeRef.current = (a) => {
       const cur = a.currentTime || 0;
+      sampleListening(offlineAccountRef.current,queueRef.current[currentIndexRef.current],cur,!a.paused);
       setPosition(cur);
       syncPositionState(a);
       const s = getTransitionSettings();
