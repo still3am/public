@@ -92,7 +92,7 @@ export function useNotifications(){
  },[load,user?.id]);
  async function markAllAsRead(){
   try{await releases.markRead();}catch(error){reportActionError(error,"Release notifications couldn’t be marked read.");}
-  if(!user?.id||markingAll.current||readingIds.current.size)return;
+  if(!user?.id||!unreadCount||markingAll.current||readingIds.current.size)return;
   markingAll.current=true;const uid=user.id,count=unreadCount,unread=new Set(notifications.filter(n=>!n.read).map(n=>n.id));
   setNotifications(prev=>prev.map(n=>({...n,read:true})));setUnreadCount(0);
   try{const r=await base44.functions.invoke('safety',{action:'markAllRead'});if(r.data?.success!==true)throw Error();}
