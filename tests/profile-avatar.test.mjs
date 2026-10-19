@@ -3,25 +3,29 @@ import fs from "node:fs";
 import ts from "typescript";
 import * as React from "react";
 globalThis.__React=React;
-let clicked=0,files=[];
+let clicked=0,files=[];let states=[],stateIndex=0;
+globalThis.__avatarState=initial=>{const i=stateIndex++;if(!(i in states))states[i]=initial;return [states[i],value=>states[i]=value];};
 globalThis.__avatarInput={current:{click(){clicked++;}}};
 const load=async(path,stubs)=>import("data:text/javascript;base64,"+Buffer.from(ts.transpileModule(stubs+fs.readFileSync(path,"utf8").replace(/^import[^;]+;/gm,""),{compilerOptions:{jsx:ts.JsxEmit.React,target:ts.ScriptTarget.ES2022,module:ts.ModuleKind.ESNext}}).outputText).toString("base64"));
 const {default:ProfileAvatar}=await load("src/components/profile/ProfileAvatar.jsx",`
-const React=globalThis.__React,useRef=()=>globalThis.__avatarInput,useState=()=>[globalThis.__pickerOpen||false,value=>globalThis.__pickerOpen=value],Camera=()=>null,Loader2=Camera,Avatar=()=>null;
-const AvatarPicker=props=>React.createElement("section",props);
+const React=globalThis.__React,useRef=()=>globalThis.__avatarInput,useState=globalThis.__avatarState,useCoverUrl=url=>url,Camera=()=>null,Loader2=Camera,Avatar=()=>null;
+const AvatarPicker=props=>React.createElement("section",props),ProfileImageEditor=props=>React.createElement("article",props);
 `);
+function render(props){stateIndex=0;return ProfileAvatar(props);}
 function nodes(tree,type){if(!tree||typeof tree!=="object")return [];return [...(tree.type===type?[tree]:[]),...React.Children.toArray(tree.props?.children).flatMap(child=>nodes(child,type))];}
 const props={user:{id:"listener",avatar_url:"portrait.jpg"},editing:true,onUpload:file=>files.push(file)};
-let tree=ProfileAvatar(props);
+let tree=render(props);
 const button=nodes(tree,"button")[0],input=nodes(tree,"input")[0];
-assert.equal(button.props["aria-label"],"Choose profile image");button.props.onClick();assert.equal(globalThis.__pickerOpen,true,"keyboard/button activation opens the avatar gallery");
-tree=ProfileAvatar(props);const picker=nodes(tree,"section");const findPicker=n=>!n||typeof n!=="object"?null:typeof n.type==="function"&&n.props?.onSelect?n:React.Children.toArray(n.props?.children).map(findPicker).find(Boolean);
+assert.equal(button.props["aria-label"],"Choose profile image");button.props.onClick();assert.equal(states[0],true,"keyboard/button activation opens the avatar gallery");
+tree=render(props);const picker=nodes(tree,"section");const findPicker=n=>!n||typeof n!=="object"?null:typeof n.type==="function"&&n.props?.onSelect?n:React.Children.toArray(n.props?.children).map(findPicker).find(Boolean);
 findPicker(tree).props.onUpload();assert.equal(clicked,1,"gallery upload opens the native file picker");
 const file={name:"portrait.jpg",type:"image/jpeg"},target={files:[file],value:"portrait.jpg"};
-input.props.onChange({target});assert.equal(target.value,"","same-file retry is enabled");assert.equal(files[0],file);
+input.props.onChange({target});assert.equal(target.value,"","same-file retry is enabled");assert.equal(files.length,0,"selecting a file stages the crop before upload");
+tree=render(props);const findCrop=n=>!n||typeof n!=="object"?null:typeof n.type==="function"&&n.props?.onApply?n:React.Children.toArray(n.props?.children).map(findCrop).find(Boolean);
+assert.equal(findCrop(tree).props.file,file);const cropped={name:"profile-avatar.jpg",type:"image/jpeg"};findCrop(tree).props.onApply({avatar:cropped});assert.equal(files[0],cropped);
 input.props.onChange({target:{files:[],value:""}});assert.equal(files.length,1,"cancelled file selection never starts an upload");
-tree=ProfileAvatar({...props,busy:true});assert.equal(nodes(tree,"button")[0].props.disabled,true);assert.equal(nodes(tree,"input")[0].props.disabled,true);
-tree=ProfileAvatar({...props,editing:false});assert.equal(nodes(tree,"button").length,0,"upload controls are absent outside edit mode");
+tree=render({...props,busy:true});assert.equal(nodes(tree,"button")[0].props.disabled,true);assert.equal(nodes(tree,"input")[0].props.disabled,true);
+tree=render({...props,editing:false});assert.equal(nodes(tree,"button").length,0,"upload controls are absent outside edit mode");
 let failed=false;
 globalThis.__avatarFailure=()=>[failed,next=>failed=next];
 const {default:Avatar}=await load("src/components/Avatar.jsx",`
