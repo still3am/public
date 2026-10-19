@@ -151,9 +151,16 @@ export async function searchPeople(q) {
     results.sort((a,b)=>Number(b.display_name.toLowerCase()===term.toLowerCase())-Number(a.display_name.toLowerCase()===term.toLowerCase()));
     return {data:{results}};
   }catch(primary){
-    const response=await base44.functions.invoke("searchUsers",{q:term});
-    if(!Array.isArray(response?.data?.results))throw primary;
-    return {data:{results:response.data.results}};
+    try{
+      const response=await base44.functions.invoke("searchUsers",{q:term});
+      if(!Array.isArray(response?.data?.results))throw primary;
+      return {data:{results:response.data.results}};
+    }catch{
+      // Both server routes enforce the same authenticated public-profile policy.
+      const response=await base44.functions.invoke("securityGateway",{entity:"User",action:"searchPublic",args:[term]});
+      if(!Array.isArray(response?.data?.result))throw primary;
+      return {data:{results:response.data.result}};
+    }
   }
 }
 
