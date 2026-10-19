@@ -16,8 +16,8 @@ export function readPure(){
 }
 export function pureParameters(value){
  const p=normalizePure(value),amount=p.enabled?1:0,c=p.clarity/100*amount,b=p.bass/100*amount,d=p.balance/100*amount;
- const bass=2.4*b,presence=2*c,air=.8*c,mud=-1.8*c;
- return {bass,presence,air,mud,headroom:10**(-(bass+presence+air)/20),threshold:-18*d,knee:12*d,ratio:1+1.5*d,attack:.015,release:.25};
+ const bass=2.4*b,presence=2*c,air=.8*c,mud=c?-1.8*c:0;
+ return {bass,presence,air,mud,headroom:10**(-(bass+presence+air)/20),threshold:d?-18*d:0,knee:12*d,ratio:1+1.5*d,attack:.015,release:.25};
 }
 function target(param,value,time,instant){
  if(instant){param.value=value;return;}
