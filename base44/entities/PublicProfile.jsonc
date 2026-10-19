@@ -4309,11 +4309,20 @@
       "default": [],
       "rls": {
         "write": {
-          "user_condition": {
-            "role": "admin"
-          }
+          "$or": [
+            {
+              "data.user_id": "{{user.id}}"
+            },
+            {
+              "user_condition": {
+                "role": "admin"
+              }
+            }
+          ]
         }
-      }
+      },
+      "maxItems": 8,
+      "uniqueItems": true
     },
     "is_public_admin": {
       "type": "boolean",
