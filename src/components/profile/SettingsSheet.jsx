@@ -1,6 +1,8 @@
 import {useEffect,useRef,useState} from "react";
 import {Link} from "react-router-dom";
-import {X,Lightbulb,GitMerge,Trash2,ChevronRight,Sparkles,BarChart3,Loader2,LogOut,Sun,Moon,Shield,Headphones,FileText} from "lucide-react";
+import PureControls from "@/components/PureControls";
+import {usePlayer} from "@/context/PlayerContext";
+import {ArrowLeft,AudioLines,Play,Pause,X,Lightbulb,GitMerge,Trash2,ChevronRight,Sparkles,BarChart3,Loader2,LogOut,Sun,Moon,Shield,Headphones,FileText} from "lucide-react";
 import {reportActionError} from "@/lib/actionError";
 import {useTheme} from "@/lib/useTheme";
 import {useAuth} from "@/lib/AuthContext";
@@ -27,6 +29,8 @@ function SettingGroup({title,children}){
 }
 /** @param {any} props */
 export default function SettingsSheet({onClose,onDeleteAccount}){
+ const player=usePlayer();
+ const [pureOpen,setPureOpen]=useState(false);
  const safety=useSafety(),{user,checkUserAuth}=useAuth(),theme=useTheme();
  const [artist,setArtist]=useState(!!user?.is_artist);
  const [saving,setSaving]=useState(""),[unblocking,setUnblocking]=useState(""),[loggingOut,setLoggingOut]=useState(false);
@@ -59,16 +63,22 @@ export default function SettingsSheet({onClose,onDeleteAccount}){
   catch(error){reportActionError(error,"Couldn’t unblock this account.");}
   finally{blockedLock.current=false;setUnblocking("");}
  }
- return <div role="dialog" aria-modal="true" aria-label="Settings" data-public-dialog tabIndex={-1} onKeyDown={e=>{if(e.key==="Escape"){e.stopPropagation();onClose();}}} className="profile-settings-dialog fixed inset-0 z-[80] flex items-end md:items-center justify-center md:p-5">
+ return <div role="dialog" aria-modal="true" aria-label={pureOpen?"PURE settings":"Settings"} data-public-dialog tabIndex={-1} onKeyDown={e=>{if(e.key==="Escape"){e.stopPropagation();if(pureOpen)setPureOpen(false);else onClose();}}} className="profile-settings-dialog fixed inset-0 z-[80] flex items-end md:items-center justify-center md:p-5">
   <div className="absolute inset-0 bg-black/55 backdrop-blur-md" onClick={onClose}/>
   <div className="profile-settings-panel relative w-full md:max-w-lg max-h-[92dvh] md:max-h-[86dvh] flex flex-col bg-background text-foreground border border-border/70 rounded-t-[28px] md:rounded-[28px] shadow-2xl overflow-hidden animate-in slide-in-from-bottom-4 duration-200">
    <header className="shrink-0 px-5 pt-3 pb-4 border-b border-border/60 bg-background">
     <div aria-hidden="true" className="md:hidden mx-auto w-9 h-1 rounded-full bg-foreground/20 mb-3"/>
-    <div className="flex justify-between items-center gap-3"><div><h2 className="text-2xl font-bold tracking-tight">Settings</h2><p className="text-xs text-muted-foreground mt-1">Make PUBLIC feel right for you.</p></div><button type="button" onClick={onClose} className="w-11 h-11 rounded-full bg-foreground/[0.06] grid place-items-center hover:bg-foreground/10 shrink-0" aria-label="Close settings"><X size={20}/></button></div>
+    <div className="flex justify-between items-center gap-3"><div className="flex items-center gap-3">{pureOpen&&<button type="button" aria-label="Back to settings" onClick={()=>setPureOpen(false)} className="w-11 h-11 rounded-full bg-foreground/[0.06] grid place-items-center shrink-0"><ArrowLeft size={19}/></button>}<div><h2 className="text-2xl font-bold tracking-tight">{pureOpen?"PURE":"Settings"}</h2><p className="text-xs text-muted-foreground mt-1">{pureOpen?"Your sound, fine-tuned.":"Make PUBLIC feel right for you."}</p></div></div><button type="button" onClick={onClose} className="w-11 h-11 rounded-full bg-foreground/[0.06] grid place-items-center hover:bg-foreground/10 shrink-0" aria-label="Close settings"><X size={20}/></button></div>
    </header>
    <div className="profile-settings-groups min-h-0 overflow-y-auto overscroll-contain px-4 md:px-5 pt-5 pb-[calc(1.5rem+env(safe-area-inset-bottom))] space-y-6">
+    {pureOpen?<div className="space-y-5">
+     {player.currentTrack?<section aria-label="Listening preview" className="flex items-center gap-3 rounded-2xl border bg-card p-4"><span className="w-10 h-10 rounded-xl bg-foreground/5 grid place-items-center shrink-0"><AudioLines size={20}/></span><div className="flex-1 min-w-0"><p className="text-[9px] font-semibold tracking-[.14em] text-muted-foreground mb-1">LISTENING PREVIEW</p><p className="text-sm font-semibold truncate">{player.currentTrack.title}</p><p className="text-xs text-muted-foreground truncate mt-0.5">{player.currentTrack.artist||player.currentTrack.uploader_name}</p></div><button type="button" onClick={()=>player.togglePlay()} aria-label={player.isPlaying?"Pause preview":"Play preview"} className="w-11 h-11 rounded-full bg-foreground text-background grid place-items-center shrink-0">{player.isPlaying?<Pause size={18}/>:<Play size={18} className="ml-0.5"/>}</button></section>:<p className="text-xs text-muted-foreground leading-relaxed px-1">Start a song and return here to hear your adjustments as you make them.</p>}
+     <PureControls/>
+     <p className="text-[11px] text-muted-foreground leading-relaxed px-1">PURE applies to music playing on this device, including songs saved for offline listening.</p>
+    </div>:<>
     <SettingGroup title="Listening & appearance">
      {user&&!onboardingComplete(user)&&<SettingRow icon={Sparkles} title="Finish setting up PUBLIC" description="Your taste, people and profile colors" onClick={()=>{onClose();window.dispatchEvent(new Event("onboarding:open"));}}/>}
+     <SettingRow icon={AudioLines} title="PURE" description="Clarity, body and balanced sound" onClick={()=>setPureOpen(true)}><span className="text-[11px] text-muted-foreground">{player.pureSuspended?"Paused":player.pure?.enabled?"On":"Off"}</span><ChevronRight size={16} className="text-muted-foreground/60 shrink-0"/></SettingRow>
      <SettingRow icon={GitMerge} title="Song transitions" description="Crossfade and gapless playback" to="/settings/transitions" onClick={onClose}/>
      <SettingRow icon={theme.isDark?Moon:Sun} title="Dark appearance" description={theme.isDark?"Dark backgrounds, softer light":"Light backgrounds, clear contrast"}><SettingSwitch label="Dark appearance" checked={theme.isDark} onChange={theme.toggle}/></SettingRow>
     </SettingGroup>
@@ -88,6 +98,7 @@ export default function SettingsSheet({onClose,onDeleteAccount}){
      <SettingRow icon={Trash2} title="Delete account" description="Permanently remove your profile and uploads" danger disabled={loggingOut||!!saving||!!unblocking} onClick={()=>{onClose();onDeleteAccount();}}/>
     </SettingGroup>
     <p className="text-center text-[11px] tracking-[.18em] text-muted-foreground/60 font-semibold">PUBLIC.</p>
+    </>}
    </div>
   </div>
  </div>;
