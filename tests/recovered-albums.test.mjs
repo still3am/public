@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import fs from 'node:fs';
 import {withRecoveredAlbumMetadata,recoveredAlbumResult} from '../src/lib/recoveredAlbums.js';
 import {groupAlbums} from '../src/lib/albumModel.js';
 const index={song:{album_name:'Views',album_artist:'Drake',track_number:2,disc_number:1,release_year:2016}},track={id:'song',title:'Song',artist:'Drake',is_published:true,approval_status:'approved',track_number:0};
@@ -11,4 +12,10 @@ assert.equal(withRecoveredAlbumMetadata({...track,is_published:false},index).alb
 assert.equal(withRecoveredAlbumMetadata({...track,approval_status:'pending'},index).album_name,undefined);
 assert.equal(recoveredAlbumResult({items:[track],has_more:true,next_cursor:'page2'},index).next_cursor,'page2');
 assert.equal(recoveredAlbumResult([track],index)[0].album_name,'Views');assert.equal(recoveredAlbumResult(10,index),10);
+const catalogIndex=JSON.parse(fs.readFileSync(new URL('../src/data/recoveredAlbumMetadata.json',import.meta.url)));
+const joint=Object.entries(catalogIndex).filter(([,t])=>t.album_name.toLowerCase()==='$ome $exy $ongs 4 u').map(([id,t])=>({id,...t,is_published:true,approval_status:'approved'}));
+assert.equal(joint.length,16);assert.equal(groupAlbums(joint).length,1);assert.equal(groupAlbums(joint)[0].artist,'PARTYNEXTDOOR & Drake');
+const rain=['6a666a415a6176ad8b4e6f4b','6a666a4595d1f64cc245bf43'].map(id=>withRecoveredAlbumMetadata({id,is_published:true,approval_status:'approved'},catalogIndex));
+assert.equal(groupAlbums(rain).length,1);assert.equal(groupAlbums(rain)[0].tracks.length,2);
+assert.equal(catalogIndex['6a666a3d072774683e96ad68'],undefined);assert.equal(catalogIndex['6a66aa4cf2713b2ca1b6853d'],undefined);
 console.log('PASS recovered file tags group existing songs, preserve explicit manual edits and clearing, respect publication and retain pagination');
