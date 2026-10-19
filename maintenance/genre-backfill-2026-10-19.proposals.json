@@ -5851,6 +5851,32 @@
       "match": "album-level inference: existing artist/album and consistent catalog labels"
     },
     {
+      "id": "6abf4563dc51bd451b649aaf",
+      "title": "All Day and All of the Night",
+      "artist": "The Kinks",
+      "before": "Other",
+      "genre": "Rock",
+      "source_genre": "Rock",
+      "source_title": "All Day and All of the Night",
+      "source_artist": "The Kinks",
+      "source_album": "Kinks (Deluxe Edition)",
+      "source_url": "https://music.apple.com/us/album/all-day-and-all-of-the-night/1622186650?i=1622186673&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6abf4563ff736729efe5f7bb",
+      "title": "All Along the Watchtower",
+      "artist": "Jimi Hendrix",
+      "before": "Other",
+      "genre": "Rock",
+      "source_genre": "Rock",
+      "source_title": "All Along the Watchtower",
+      "source_artist": "Jimi Hendrix",
+      "source_album": "Voodoo Child: The Jimi Hendrix Collection",
+      "source_url": "https://music.apple.com/us/album/all-along-the-watchtower/344803075?i=344803162&uo=4",
+      "match": "exact artist and title"
+    },
+    {
       "id": "6abf45683d0a31c7b7b67d43",
       "title": "all good (feat. Future)",
       "artist": "Roddy Ricch, Future",
@@ -6072,6 +6098,19 @@
       "match": "exact artist and title"
     },
     {
+      "id": "6abf45b4582ef4f4226726e3",
+      "title": "Aufstehn! (feat. CeeLo Green)",
+      "artist": "Seeed, CeeLo Green",
+      "before": "Other",
+      "genre": "Reggae",
+      "source_genre": "Reggae",
+      "source_title": "Aufstehn! (feat. CeeLo Green)",
+      "source_artist": "Seeed",
+      "source_album": "Next!",
+      "source_url": "https://music.apple.com/us/album/aufstehn-feat-ceelo-green/1821908099?i=1821908107&uo=4",
+      "match": "exact artist and title"
+    },
+    {
       "id": "6abf45b503770e2d4bfc9376",
       "title": "As",
       "artist": "Stevie Wonder",
@@ -6111,6 +6150,19 @@
       "match": "exact artist and title"
     },
     {
+      "id": "6acc42e62ee9191ace6daf03",
+      "title": "cease & desist",
+      "artist": "Osé",
+      "before": "Other",
+      "genre": "Afrobeats",
+      "source_genre": "Afrobeats",
+      "source_title": "cease & desist",
+      "source_artist": "Osé",
+      "source_album": "Feels Like Home",
+      "source_url": "https://music.apple.com/us/album/cease-desist/6786027679?i=6786027681&uo=4",
+      "match": "exact artist and title"
+    },
+    {
       "id": "6acc4303115d069c14d73606",
       "title": "Change",
       "artist": "K CAMP",
@@ -6121,6 +6173,19 @@
       "source_artist": "K CAMP",
       "source_album": "Only Way Is Up (Deluxe)",
       "source_url": "https://music.apple.com/us/album/change-feat-jeremih/1442870813?i=1442870816&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6acc4317cf832068395c5451",
+      "title": "CHE MI AMOR",
+      "artist": "TOBIKA, Yami Safdie",
+      "before": "Other",
+      "genre": "Latin",
+      "source_genre": "Urbano latino",
+      "source_title": "CHE MI AMOR",
+      "source_artist": "TOBIKA & Yami Safdie",
+      "source_album": "CHE MI AMOR - Single",
+      "source_url": "https://music.apple.com/us/album/che-mi-amor/6800495140?i=6800495143&uo=4",
       "match": "exact artist and title"
     },
     {
@@ -6202,6 +6267,19 @@
       "match": "exact artist and title"
     },
     {
+      "id": "6acc433b82d1ce69ba5e15ee",
+      "title": "Chill Bill (feat. J. Davi$ & Spooks)",
+      "artist": "Rob $tone, J. Davi$, J Spooks",
+      "before": "Other",
+      "genre": "Hip-Hop",
+      "source_genre": "Hip-Hop/Rap",
+      "source_title": "Chill Bill (feat. J. Davi$ & Spooks)",
+      "source_artist": "Rob $tone",
+      "source_album": "Chill Bill (feat. J. Davi$ & Spooks) - Single",
+      "source_url": "https://music.apple.com/us/album/chill-bill-feat-j-davi%24-spooks/1124157804?i=1124158052&uo=4",
+      "match": "exact artist and title"
+    },
+    {
       "id": "6acc433db9c9b492e7b660b9",
       "title": "Chill",
       "artist": "LISA",
@@ -6267,6 +6345,19 @@
       "match": "exact artist and title"
     },
     {
+      "id": "6acc434da94aead98bd099fd",
+      "title": "Chrome Heart",
+      "artist": "JAHKOY",
+      "before": "Other",
+      "genre": "R&B",
+      "source_genre": "R&B/Soul",
+      "source_title": "Chrome Heart",
+      "source_artist": "JAHKOY",
+      "source_album": "Chrome Heart - Single",
+      "source_url": "https://music.apple.com/us/album/chrome-heart/1896348166?i=6767025901&uo=4",
+      "match": "exact artist and title"
+    },
+    {
       "id": "6acc434ed788e55208579b9c",
       "title": "chrome hearts don't break",
       "artist": "Dame Atlas",
@@ -6306,6 +6397,19 @@
       "match": "exact artist and title"
     },
     {
+      "id": "6acc435443c65d9a6f623937",
+      "title": "chuuuuurch",
+      "artist": "Dawn Richard",
+      "before": "Other",
+      "genre": "Pop",
+      "source_genre": "Pop",
+      "source_title": "chuuuuurch (feat. Anjelika Jelly Joseph)",
+      "source_artist": "Dawn Richard",
+      "source_album": "creole culture",
+      "source_url": "https://music.apple.com/us/album/chuuuuurch-feat-anjelika-jelly-joseph/6784811773?i=6784811786&uo=4",
+      "match": "exact artist and title"
+    },
+    {
       "id": "6acc43566154398391adf0d4",
       "title": "Ciao!",
       "artist": "Bryson Tiller",
@@ -6329,6 +6433,32 @@
       "source_artist": "JHEY PI & Neeus",
       "source_album": "Cielito Lindo (Remix) - Single",
       "source_url": "https://music.apple.com/us/album/cielito-lindo-remix/1895454236?i=6763717288&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6acc435bb9e0c787fdacce15",
+      "title": "Cinderella - Español",
+      "artist": "Steven Curtis Chapman",
+      "before": "Other",
+      "genre": "Christian & Gospel",
+      "source_genre": "Christian",
+      "source_title": "Cinderella (Español)",
+      "source_artist": "Steven Curtis Chapman & Miel San Marcos",
+      "source_album": "Cinderella (Español) - Single",
+      "source_url": "https://music.apple.com/us/album/cinderella-espa%C3%B1ol/1884750371?i=1884750373&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6acc43612da6788617f48db8",
+      "title": "Cintura - Rapida",
+      "artist": "Nfasis",
+      "before": "Other",
+      "genre": "Latin",
+      "source_genre": "Latin",
+      "source_title": "Cintura (feat. El Alfa) [Rapida]",
+      "source_artist": "Nfasis & Dj Human Star",
+      "source_album": "Cintura (feat. El Alfa) [Rapida] - Single",
+      "source_url": "https://music.apple.com/us/album/cintura-feat-el-alfa-rapida/6791183026?i=6791183032&uo=4",
       "match": "exact artist and title"
     },
     {
@@ -6397,6 +6527,32 @@
       "match": "exact artist and title"
     },
     {
+      "id": "6acc4373e601f7087cceb70f",
+      "title": "CLEAN",
+      "artist": "Jackie Hill Perry",
+      "before": "Other",
+      "genre": "Hip-Hop",
+      "source_genre": "Hip-Hop/Rap",
+      "source_title": "Clean",
+      "source_artist": "Jackie Hill Perry",
+      "source_album": "Clean - Single",
+      "source_url": "https://music.apple.com/us/album/clean/6797339751?i=6797339752&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6acc43764ab5ef405a1878ac",
+      "title": "clear blue!",
+      "artist": "Jahson Paynter",
+      "before": "Other",
+      "genre": "Alternative",
+      "source_genre": "Alternative",
+      "source_title": "clear blue!",
+      "source_artist": "Jahson Paynter",
+      "source_album": "is anybody home!? - EP",
+      "source_url": "https://music.apple.com/us/album/clear-blue/1892533365?i=1892533613&uo=4",
+      "match": "exact artist and title"
+    },
+    {
       "id": "6acc437d30a5dd70a91c037e",
       "title": "Clique",
       "artist": "Kanye West, JAŸ-Z, Big Sean",
@@ -6420,6 +6576,45 @@
       "source_artist": "Gorillaz",
       "source_album": "Gorillaz",
       "source_url": "https://music.apple.com/us/album/clint-eastwood-ed-case-sweetie-irie-refix/850576570?i=850576763&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6acc43832e36051f7d211701",
+      "title": "closing day",
+      "artist": "lustr",
+      "before": "Other",
+      "genre": "Electronic",
+      "source_genre": "Electronic",
+      "source_title": "closing day",
+      "source_artist": "lustr & Babe Dylan",
+      "source_album": "closing day - Single",
+      "source_url": "https://music.apple.com/us/album/closing-day/6790919963?i=6790919964&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6acc438337112793fd1a36fb",
+      "title": "Closer",
+      "artist": "Ne-Yo",
+      "before": "Other",
+      "genre": "R&B",
+      "source_genre": "R&B/Soul",
+      "source_title": "Closer",
+      "source_artist": "Ne-Yo",
+      "source_album": "Year of the Gentleman (Deluxe Edition)",
+      "source_url": "https://music.apple.com/us/album/closer/1445833884?i=1445834051&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6acc438785f4582ea969e498",
+      "title": "Closure",
+      "artist": "Eric Bellinger",
+      "before": "Other",
+      "genre": "R&B",
+      "source_genre": "R&B/Soul",
+      "source_title": "Closure",
+      "source_artist": "Eric Bellinger",
+      "source_album": "Eric Bellinger",
+      "source_url": "https://music.apple.com/us/album/closure/6776700986?i=6776701090&uo=4",
       "match": "exact artist and title"
     },
     {
@@ -13990,20 +14185,6 @@
       ]
     },
     {
-      "id": "6abf4563dc51bd451b649aaf",
-      "title": "All Day and All of the Night",
-      "artist": "The Kinks",
-      "genre": "Other",
-      "album_name": "Kinks (Deluxe)"
-    },
-    {
-      "id": "6abf4563ff736729efe5f7bb",
-      "title": "All Along the Watchtower",
-      "artist": "Jimi Hendrix",
-      "genre": "Other",
-      "album_name": "Electric Ladyland"
-    },
-    {
       "id": "6abf45655429d301682a3d50",
       "title": "All Eyez On Me",
       "artist": "Reality",
@@ -14107,13 +14288,6 @@
       "album_name": "Aquellos Días"
     },
     {
-      "id": "6abf45b4582ef4f4226726e3",
-      "title": "Aufstehn! (feat. CeeLo Green)",
-      "artist": "Seeed, CeeLo Green",
-      "genre": "Other",
-      "album_name": "Next!"
-    },
-    {
       "id": "6abf45be2a33910a036245ba",
       "title": "Aventura",
       "artist": "Luny Tunes, Noriega, Wisin & Yandel",
@@ -14135,13 +14309,6 @@
       "album_name": "Unknown Album"
     },
     {
-      "id": "6acc42e62ee9191ace6daf03",
-      "title": "cease & desist",
-      "artist": "Osé",
-      "genre": "Other",
-      "album_name": "Unknown Album"
-    },
-    {
       "id": "6acc43120a7b5290f13158b8",
       "title": "Chase tha Bag",
       "artist": "Roddy Ricch",
@@ -14152,13 +14319,6 @@
       "id": "6acc4317a318fd68aaf134b3",
       "title": "Chasing Gold",
       "artist": "Passenger",
-      "genre": "Other",
-      "album_name": ""
-    },
-    {
-      "id": "6acc4317cf832068395c5451",
-      "title": "CHE MI AMOR",
-      "artist": "TOBIKA, Yami Safdie",
       "genre": "Other",
       "album_name": ""
     },
@@ -14188,7 +14348,12 @@
       "title": "Cherry Wine",
       "artist": "grentperez",
       "genre": "Other",
-      "album_name": ""
+      "album_name": "",
+      "review_reason": "conflicting catalog genres",
+      "candidate_genres": [
+        "Alternative",
+        "Pop"
+      ]
     },
     {
       "id": "6acc43347dfd3973326ee06a",
@@ -14201,13 +14366,6 @@
       "id": "6acc43368fc0784124aac08d",
       "title": "Chi-Raq (with G Herbo)",
       "artist": "Nicki Minaj, G Herbo",
-      "genre": "Other",
-      "album_name": ""
-    },
-    {
-      "id": "6acc433b82d1ce69ba5e15ee",
-      "title": "Chill Bill (feat. J. Davi$ & Spooks)",
-      "artist": "Rob $tone, J. Davi$, J Spooks",
       "genre": "Other",
       "album_name": ""
     },
@@ -14240,23 +14398,9 @@
       "album_name": ""
     },
     {
-      "id": "6acc434da94aead98bd099fd",
-      "title": "Chrome Heart",
-      "artist": "JAHKOY",
-      "genre": "Other",
-      "album_name": ""
-    },
-    {
       "id": "6acc435226c692bbd85f0b98",
       "title": "chronic",
       "artist": "sosocamo",
-      "genre": "Other",
-      "album_name": ""
-    },
-    {
-      "id": "6acc435443c65d9a6f623937",
-      "title": "chuuuuurch",
-      "artist": "Dawn Richard",
       "genre": "Other",
       "album_name": ""
     },
@@ -14265,21 +14409,12 @@
       "title": "Ciega, Sordomuda",
       "artist": "Shakira",
       "genre": "Other",
-      "album_name": ""
-    },
-    {
-      "id": "6acc435bb9e0c787fdacce15",
-      "title": "Cinderella - Español",
-      "artist": "Steven Curtis Chapman",
-      "genre": "Other",
-      "album_name": ""
-    },
-    {
-      "id": "6acc43612da6788617f48db8",
-      "title": "Cintura - Rapida",
-      "artist": "Nfasis",
-      "genre": "Other",
-      "album_name": ""
+      "album_name": "",
+      "review_reason": "conflicting catalog genres",
+      "candidate_genres": [
+        "Latin",
+        "Latin Pop"
+      ]
     },
     {
       "id": "6acc4365f17d864211667057",
@@ -14310,23 +14445,9 @@
       "album_name": ""
     },
     {
-      "id": "6acc4373e601f7087cceb70f",
-      "title": "CLEAN",
-      "artist": "Jackie Hill Perry",
-      "genre": "Other",
-      "album_name": ""
-    },
-    {
       "id": "6acc4374ef76fbf786db7174",
       "title": "Clean Run",
       "artist": "J Hus",
-      "genre": "Other",
-      "album_name": ""
-    },
-    {
-      "id": "6acc43764ab5ef405a1878ac",
-      "title": "clear blue!",
-      "artist": "Jahson Paynter",
       "genre": "Other",
       "album_name": ""
     },
@@ -14345,30 +14466,9 @@
       "album_name": ""
     },
     {
-      "id": "6acc43832e36051f7d211701",
-      "title": "closing day",
-      "artist": "lustr",
-      "genre": "Other",
-      "album_name": ""
-    },
-    {
-      "id": "6acc438337112793fd1a36fb",
-      "title": "Closer",
-      "artist": "Ne-Yo",
-      "genre": "Other",
-      "album_name": ""
-    },
-    {
       "id": "6acc43847c1a8e84f7c473af",
       "title": "closure (fea.T Skizzy Mars)",
       "artist": "gnash",
-      "genre": "Other",
-      "album_name": ""
-    },
-    {
-      "id": "6acc438785f4582ea969e498",
-      "title": "Closure",
-      "artist": "Eric Bellinger",
       "genre": "Other",
       "album_name": ""
     },
@@ -18836,5 +18936,5 @@
       "album_name": ""
     }
   ],
-  "searched_terms": 340
+  "searched_terms": 370
 }
