@@ -197,6 +197,7 @@ async function runSearch(query,scope="all") {
         {
           $or: [
             contains("name", pattern),
+            contains("aliases", pattern),
             contains("bio", pattern),
             contains("location", pattern),
           ],
