@@ -6,7 +6,6 @@ import {
   AlertCircle,
   Sparkles } from
 "lucide-react";
-import {UploadAudioQuality} from "@/components/AudioQuality";
 import MusicVideoPicker from "@/components/upload/MusicVideoPicker";
 import GenrePicker from "@/components/GenrePicker";
 import ReleaseChecklist from "@/components/upload/ReleaseChecklist";
@@ -61,7 +60,6 @@ export default function UploadItem({
 
         {/* Fields */}
         <div className="w-full flex-1 min-w-0 space-y-2.5">
-          <UploadAudioQuality file={item.file}/>
           <div className="flex items-start gap-2">
             <div className="flex-1 min-w-0 space-y-2">
               <Input
