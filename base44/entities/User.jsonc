@@ -38,6 +38,13 @@
         "write": false
       }
     },
+    "banner_use_default": {
+      "type": "boolean",
+      "default": false,
+      "rls": {
+        "write": true
+      }
+    },
     "banner_mobile_url": {
       "type": "string",
       "default": "",
