@@ -411,10 +411,10 @@ export default function FullScreenPlayer({ onClose }) {
 
           <div className="full-player-actions flex items-center justify-center gap-6 shrink-0">
             {hasLyrics && <>
-              <button type="button" onClick={() => setLyricsMode(value => !value)} aria-label={showingLyrics ? "Hide lyrics" : "Show lyrics"} aria-pressed={showingLyrics} className="full-player-lyrics-toggle xl:hidden">
+              <button type="button" onClick={() => setLyricsMode(value => !value)} aria-label={showingLyrics ? "Hide lyrics" : "Show lyrics"} aria-pressed={showingLyrics} className="full-player-lyrics-toggle full-player-lyrics-mobile">
                 <MessageSquareText size={22} strokeWidth={1.8} aria-hidden="true"/>
               </button>
-              <button type="button" onClick={() => setShowLyricsPanel(value => !value)} aria-label={showLyricsPanel ? "Hide lyrics" : "Show lyrics"} aria-pressed={showLyricsPanel} className="full-player-lyrics-toggle hidden xl:inline-flex">
+              <button type="button" onClick={() => setShowLyricsPanel(value => !value)} aria-label={showLyricsPanel ? "Hide lyrics" : "Show lyrics"} aria-pressed={showLyricsPanel} className="full-player-lyrics-toggle full-player-lyrics-desktop">
                 <MessageSquareText size={22} strokeWidth={1.8} aria-hidden="true"/>
               </button>
             </>}
