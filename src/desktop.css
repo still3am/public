@@ -3,7 +3,7 @@
  .public-app .artwork-content .track-page.track-editorial .release-header-full{
   grid-template-columns:minmax(160px,.8fr) minmax(0,1fr);gap:24px;
  }
- .public-app .personal-mix-immersive{
+ .public-app .artwork-content .personal-mix-immersive{
   grid-template-columns:minmax(180px,.8fr) minmax(0,1fr);column-gap:24px;
  }
 }
