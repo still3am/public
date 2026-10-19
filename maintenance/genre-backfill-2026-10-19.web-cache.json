@@ -319743,5 +319743,1102 @@
         "trackId": 1361629113
       }
     ]
+  },
+  "mixTerm|Tivi Gunz Alplax": {
+    "query_url": "https://itunes.apple.com/search?term=Tivi+Gunz+Alplax&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": []
+  },
+  "mixTerm|Fcukers Anemone -  | Spotify RADAR": {
+    "query_url": "https://itunes.apple.com/search?term=Fcukers+Anemone+-++%7C+Spotify+RADAR&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": []
+  },
+  "mixTerm|Weyes Blood Andromeda": {
+    "query_url": "https://itunes.apple.com/search?term=Weyes+Blood+Andromeda&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": [
+      {
+        "trackName": "Andromeda",
+        "artistName": "Weyes Blood",
+        "collectionName": "Titanic Rising",
+        "primaryGenreName": "Alternative",
+        "trackViewUrl": "https://music.apple.com/us/album/andromeda/1450550344?i=1450550346&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/andromeda/1450550344?i=1450550346&uo=4",
+        "trackId": 1450550346
+      },
+      {
+        "trackName": "Andromeda",
+        "artistName": "Weyes Blood",
+        "collectionName": "Andromeda - Single",
+        "primaryGenreName": "Alternative",
+        "trackViewUrl": "https://music.apple.com/us/album/andromeda/1447557269?i=1447557270&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/andromeda/1447557269?i=1447557270&uo=4",
+        "trackId": 1447557270
+      }
+    ]
+  },
+  "mixTerm|Kodak Black Angel Pt. 1": {
+    "query_url": "https://itunes.apple.com/search?term=Kodak+Black+Angel+Pt.+1&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": [
+      {
+        "trackName": "Angel Pt. 1 (feat. Kodak Black, NLE Choppa, JVKE & Muni Long)",
+        "artistName": "Jimin & Fast & Furious: The Fast Saga",
+        "collectionName": "FAST X (Original Motion Picture Soundtrack)",
+        "primaryGenreName": "Hip-Hop/Rap",
+        "trackViewUrl": "https://music.apple.com/us/album/angel-pt-1-feat-kodak-black-nle-choppa-jvke-muni-long/1685731777?i=1685731980&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/angel-pt-1-feat-kodak-black-nle-choppa-jvke-muni-long/1685731777?i=1685731980&uo=4",
+        "trackId": 1685731980
+      },
+      {
+        "trackName": "Angel Pt. 1 (feat. Kodak Black, NLE Choppa, JVKE & Muni Long) [Sped Up]",
+        "artistName": "Jimin & Fast & Furious: The Fast Saga",
+        "collectionName": "FAST X (Sped Up / Original Motion Picture Soundtrack)",
+        "primaryGenreName": "Hip-Hop/Rap",
+        "trackViewUrl": "https://music.apple.com/us/album/angel-pt-1-feat-kodak-black-nle-choppa-jvke-muni-long-sped-up/1688436566?i=1688436876&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/angel-pt-1-feat-kodak-black-nle-choppa-jvke-muni-long-sped-up/1688436566?i=1688436876&uo=4",
+        "trackId": 1688436876
+      },
+      {
+        "trackName": "Angel Pt. 1 (feat. Kodak Black, NLE Choppa, JVKE & Muni Long)",
+        "artistName": "Jimin & Fast & Furious: The Fast Saga",
+        "collectionName": "FAST X (Original Motion Picture Soundtrack / Expanded Version)",
+        "primaryGenreName": "Hip-Hop/Rap",
+        "trackViewUrl": "https://music.apple.com/us/album/angel-pt-1-feat-kodak-black-nle-choppa-jvke-muni-long/1692454274?i=1692454464&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/angel-pt-1-feat-kodak-black-nle-choppa-jvke-muni-long/1692454274?i=1692454464&uo=4",
+        "trackId": 1692454464
+      },
+      {
+        "trackName": "Angel Pt. 1 (From Fast X) (Originally Performed by Jimin, Kodak Black, Nle Choppa, Jvke and Muni Long) [Instrumental]",
+        "artistName": "3 Dope Brothas",
+        "collectionName": "Angel Pt. 1 (From Fast X) (Originally Performed by Jimin, Kodak Black, Nle Choppa, Jvke and Muni Long) [Instrumental] - Single",
+        "primaryGenreName": "Karaoke",
+        "trackViewUrl": "https://music.apple.com/us/album/angel-pt-1-from-fast-x-originally-performed-by-jimin/1689435689?i=1689435690&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/angel-pt-1-from-fast-x-originally-performed-by-jimin/1689435689?i=1689435690&uo=4",
+        "trackId": 1689435690
+      },
+      {
+        "trackName": "Roll In Peace (feat. XXXTENTACION)",
+        "artistName": "Kodak Black",
+        "collectionName": "Project Baby 2: All Grown Up (Deluxe)",
+        "primaryGenreName": "Hip-Hop/Rap",
+        "trackViewUrl": "https://music.apple.com/us/album/roll-in-peace-feat-xxxtentacion/1315198132?i=1315198135&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/roll-in-peace-feat-xxxtentacion/1315198132?i=1315198135&uo=4",
+        "trackId": 1315198135
+      },
+      {
+        "trackName": "First Day Out",
+        "artistName": "Kodak Black",
+        "collectionName": "First Day Out - Single",
+        "primaryGenreName": "Hip-Hop",
+        "trackViewUrl": "https://music.apple.com/us/album/first-day-out/1248514779?i=1248514780&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/first-day-out/1248514779?i=1248514780&uo=4",
+        "trackId": 1248514780
+      },
+      {
+        "trackName": "Water (Drowning Pt. 2) [feat. Kodak Black]",
+        "artistName": "A Boogie wit da Hoodie",
+        "collectionName": "Me vs. Myself (Deluxe)",
+        "primaryGenreName": "Hip-Hop/Rap",
+        "trackViewUrl": "https://music.apple.com/us/album/water-drowning-pt-2-feat-kodak-black/1659165421?i=1659165716&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/water-drowning-pt-2-feat-kodak-black/1659165421?i=1659165716&uo=4",
+        "trackId": 1659165716
+      },
+      {
+        "trackName": "Angel, Pt. 1 (From \"FAST X\") [Originally Performed by NLE Choppa, Kodak Black, Jimin, JVKE, & Muni Long] [Karaoke Version]",
+        "artistName": "Backing Business",
+        "collectionName": "Pristine Karaoke, Vol. 105",
+        "primaryGenreName": "Instrumental",
+        "trackViewUrl": "https://music.apple.com/us/album/angel-pt-1-from-fast-x-originally-performed-by-nle/1690543617?i=1690543621&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/angel-pt-1-from-fast-x-originally-performed-by-nle/1690543617?i=1690543621&uo=4",
+        "trackId": 1690543621
+      },
+      {
+        "trackName": "Angel, Pt. 1 (Instrumental)",
+        "artistName": "Piano Dreamers",
+        "collectionName": "Top 20 Hits July 2023 (Instrumental)",
+        "primaryGenreName": "Instrumental",
+        "trackViewUrl": "https://music.apple.com/us/album/angel-pt-1-instrumental/1694590370?i=1694590371&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/angel-pt-1-instrumental/1694590370?i=1694590371&uo=4",
+        "trackId": 1694590371
+      },
+      {
+        "trackName": "Angel Pt. 1 (Originally Performed by Jimin, Kodak Black, NLE Choppa, JVKE and Muni Long) [Instrumental Version]",
+        "artistName": "Troy Tha Studio Rat",
+        "collectionName": "Angel Pt. 1 (Originally Performed by Jimin, Kodak Black, NLE Choppa, JVKE and Muni Long) [Instrumental Version] - Single",
+        "primaryGenreName": "Karaoke",
+        "trackViewUrl": "https://music.apple.com/us/album/angel-pt-1-originally-performed-by-jimin-kodak-black/1689838604?i=1689838605&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/angel-pt-1-originally-performed-by-jimin-kodak-black/1689838604?i=1689838605&uo=4",
+        "trackId": 1689838605
+      },
+      {
+        "trackName": "Angel Pt.1 (Soul Secured Reprise) (feat. Taylor P)",
+        "artistName": "Reelsoul",
+        "collectionName": "Angel Pt.1 (Soul Secured Remixes) (feat. Taylor P) - Single",
+        "primaryGenreName": "Dance",
+        "trackViewUrl": "https://music.apple.com/us/album/angel-pt-1-soul-secured-reprise-feat-taylor-p/563453532?i=563453541&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/angel-pt-1-soul-secured-reprise-feat-taylor-p/563453532?i=563453541&uo=4",
+        "trackId": 563453541
+      },
+      {
+        "trackName": "Angel Pt. 1 [lofi version]",
+        "artistName": "The Remix Station, Chill Bros Studios & 로피 뮤직",
+        "collectionName": "Fast & Furious [LoFi Edition]",
+        "primaryGenreName": "Hip-Hop/Rap",
+        "trackViewUrl": "https://music.apple.com/us/album/angel-pt-1-lofi-version/1713608121?i=1713608122&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/angel-pt-1-lofi-version/1713608121?i=1713608122&uo=4",
+        "trackId": 1713608122
+      },
+      {
+        "trackName": "Thank You (feat. Steffany Gretzinger & Chandler Moore)",
+        "artistName": "Maverick City Music",
+        "collectionName": "Maverick City Music, Vol. 3: Pt. 1",
+        "primaryGenreName": "Christian",
+        "trackViewUrl": "https://music.apple.com/us/album/thank-you-feat-steffany-gretzinger-chandler-moore/1571839845?i=1571840493&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/thank-you-feat-steffany-gretzinger-chandler-moore/1571839845?i=1571840493&uo=4",
+        "trackId": 1571840493
+      },
+      {
+        "trackName": "Straight Bars",
+        "artistName": "Young Pappy",
+        "collectionName": "2 Cups: Pt. 1",
+        "primaryGenreName": "Hip-Hop/Rap",
+        "trackViewUrl": "https://music.apple.com/us/album/straight-bars/1321711402?i=1321711434&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/straight-bars/1321711402?i=1321711434&uo=4",
+        "trackId": 1321711434
+      },
+      {
+        "trackName": "On The Radar, Pt. 1",
+        "artistName": "Kidwild",
+        "collectionName": "On The Radar Freestyle - Single",
+        "primaryGenreName": "Hip-Hop/Rap",
+        "trackViewUrl": "https://music.apple.com/us/album/on-the-radar-pt-1/1766339801?i=1766339802&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/on-the-radar-pt-1/1766339801?i=1766339802&uo=4",
+        "trackId": 1766339802
+      }
+    ]
+  },
+  "mixTerm|I Project ANGELS": {
+    "query_url": "https://itunes.apple.com/search?term=I+Project+ANGELS&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": [
+      {
+        "trackName": "ANGELS",
+        "artistName": "I Project & RUA YOUNG",
+        "collectionName": "ANGELS - Single",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/angels/6797090055?i=6797090056&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/angels/6797090055?i=6797090056&uo=4",
+        "trackId": 6797090056
+      },
+      {
+        "trackName": "ANGELS",
+        "artistName": "I Project & RUA YOUNG",
+        "collectionName": "I Project",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/angels/6800244745?i=6800244855&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/angels/6800244745?i=6800244855&uo=4",
+        "trackId": 6800244855
+      },
+      {
+        "trackName": "Get You the Moon (feat. Snøw)",
+        "artistName": "Kina",
+        "collectionName": "Get You the Moon (feat. Snøw) - Single",
+        "primaryGenreName": "Electronic",
+        "trackViewUrl": "https://music.apple.com/us/album/get-you-the-moon-feat-sn%C3%B8w/1438174578?i=1438174581&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/get-you-the-moon-feat-sn%C3%B8w/1438174578?i=1438174581&uo=4",
+        "trackId": 1438174581
+      },
+      {
+        "trackName": "I Don't Want to Miss a Thing",
+        "artistName": "Aerosmith",
+        "collectionName": "Armageddon - The Album",
+        "primaryGenreName": "Soundtrack",
+        "trackViewUrl": "https://music.apple.com/us/album/i-dont-want-to-miss-a-thing/217271260?i=217271368&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/i-dont-want-to-miss-a-thing/217271260?i=217271368&uo=4",
+        "trackId": 217271368
+      },
+      {
+        "trackName": "How Great (feat. Jay Electronica & My cousin Nicole)",
+        "artistName": "Chance the Rapper",
+        "collectionName": "Coloring Book",
+        "primaryGenreName": "Hip-Hop/Rap",
+        "trackViewUrl": "https://music.apple.com/us/album/how-great-feat-jay-electronica-my-cousin-nicole/1113239004?i=1113240258&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/how-great-feat-jay-electronica-my-cousin-nicole/1113239004?i=1113240258&uo=4",
+        "trackId": 1113240258
+      },
+      {
+        "trackName": "No, No, No, Pt. 2 (feat. Wyclef Jean)",
+        "artistName": "Destiny's Child",
+        "collectionName": "Destiny's Child",
+        "primaryGenreName": "R&B/Soul",
+        "trackViewUrl": "https://music.apple.com/us/album/no-no-no-pt-2-feat-wyclef-jean/153425563?i=153425795&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/no-no-no-pt-2-feat-wyclef-jean/153425563?i=153425795&uo=4",
+        "trackId": 153425795
+      },
+      {
+        "trackName": "Danger Zone",
+        "artistName": "Kenny Loggins",
+        "collectionName": "Top Gun (Original Motion Picture Soundtrack) [Special Expanded Edition]",
+        "primaryGenreName": "Soundtrack",
+        "trackViewUrl": "https://music.apple.com/us/album/danger-zone/387193895?i=387193955&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/danger-zone/387193895?i=387193955&uo=4",
+        "trackId": 387193955
+      },
+      {
+        "trackName": "Hallelujah",
+        "artistName": "Pentatonix",
+        "collectionName": "A Pentatonix Christmas (Deluxe)",
+        "primaryGenreName": "Holiday",
+        "trackViewUrl": "https://music.apple.com/us/album/hallelujah/1296454740?i=1296455325&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/hallelujah/1296454740?i=1296455325&uo=4",
+        "trackId": 1296455325
+      },
+      {
+        "trackName": "changes",
+        "artistName": "XXXTENTACION",
+        "collectionName": "?",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/changes/1359292515?i=1359294051&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/changes/1359292515?i=1359294051&uo=4",
+        "trackId": 1359294051
+      },
+      {
+        "trackName": "South of the Border (feat. Camila Cabello & Cardi B)",
+        "artistName": "Ed Sheeran",
+        "collectionName": "No.6 Collaborations Project",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/south-of-the-border-feat-camila-cabello-cardi-b/1464549183?i=1464549675&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/south-of-the-border-feat-camila-cabello-cardi-b/1464549183?i=1464549675&uo=4",
+        "trackId": 1464549675
+      },
+      {
+        "trackName": "Nobody Knows",
+        "artistName": "The Tony Rich Project",
+        "collectionName": "Words",
+        "primaryGenreName": "R&B/Soul",
+        "trackViewUrl": "https://music.apple.com/us/album/nobody-knows/308870330?i=308870332&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/nobody-knows/308870330?i=308870332&uo=4",
+        "trackId": 308870332
+      },
+      {
+        "trackName": "Someday",
+        "artistName": "Milo Manheim & Meg Donnelly",
+        "collectionName": "ZOMBIES (Original TV Movie Soundtrack)",
+        "primaryGenreName": "Musicals",
+        "trackViewUrl": "https://music.apple.com/us/album/someday/1440739123?i=1440739135&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/someday/1440739123?i=1440739135&uo=4",
+        "trackId": 1440739135
+      },
+      {
+        "trackName": "Bad Liar",
+        "artistName": "Imagine Dragons",
+        "collectionName": "Origins (Deluxe Edition)",
+        "primaryGenreName": "Alternative",
+        "trackViewUrl": "https://music.apple.com/us/album/bad-liar/1437948883?i=1437948987&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/bad-liar/1437948883?i=1437948987&uo=4",
+        "trackId": 1437948987
+      },
+      {
+        "trackName": "Angels",
+        "artistName": "Daryl Beebe",
+        "collectionName": "The Daryl Beebe Project: Seasons Change",
+        "primaryGenreName": "Jazz",
+        "trackViewUrl": "https://music.apple.com/us/album/angels/1334788587?i=1334788592&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/angels/1334788587?i=1334788592&uo=4",
+        "trackId": 1334788592
+      },
+      {
+        "trackName": "I Don't Care",
+        "artistName": "Ed Sheeran & Justin Bieber",
+        "collectionName": "No.6 Collaborations Project",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/i-dont-care/1471580171?i=1471580177&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/i-dont-care/1471580171?i=1471580177&uo=4",
+        "trackId": 1471580177
+      }
+    ]
+  },
+  "mixTerm|Massive Attack Angel": {
+    "query_url": "https://itunes.apple.com/search?term=Massive+Attack+Angel&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": [
+      {
+        "trackName": "Angel",
+        "artistName": "Massive Attack",
+        "collectionName": "Mezzanine",
+        "primaryGenreName": "Electronic",
+        "trackViewUrl": "https://music.apple.com/us/album/angel/724466069?i=724466660&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/angel/724466069?i=724466660&uo=4",
+        "trackId": 724466660
+      },
+      {
+        "trackName": "Angel (feat. Horace Andy) [Mad Professor Remix]",
+        "artistName": "Massive Attack",
+        "collectionName": "Angel",
+        "primaryGenreName": "Hip-Hop/Rap",
+        "trackViewUrl": "https://music.apple.com/us/album/angel-feat-horace-andy-mad-professor-remix/1814258488?i=1814258501&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/angel-feat-horace-andy-mad-professor-remix/1814258488?i=1814258501&uo=4",
+        "trackId": 1814258501
+      },
+      {
+        "trackName": "Angel (Radio Edit)",
+        "artistName": "Massive Attack",
+        "collectionName": "Singles Collection",
+        "primaryGenreName": "Electronic",
+        "trackViewUrl": "https://music.apple.com/us/album/angel-radio-edit/816331899?i=816332198&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/angel-radio-edit/816331899?i=816332198&uo=4",
+        "trackId": 816332198
+      },
+      {
+        "trackName": "Angel",
+        "artistName": "Massive Attack",
+        "collectionName": "Collected (Deluxe Edition)",
+        "primaryGenreName": "Electronic",
+        "trackViewUrl": "https://music.apple.com/us/album/angel/724338637?i=724339174&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/angel/724338637?i=724339174&uo=4",
+        "trackId": 724339174
+      },
+      {
+        "trackName": "Angel (Remix)",
+        "artistName": "Massive Attack",
+        "collectionName": "Mezzanine - The Remixes",
+        "primaryGenreName": "Electronic",
+        "trackViewUrl": "https://music.apple.com/us/album/angel-remix/724387079?i=724387670&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/angel-remix/724387079?i=724387670&uo=4",
+        "trackId": 724387670
+      },
+      {
+        "trackName": "Angel (Blur Remix)",
+        "artistName": "Massive Attack",
+        "collectionName": "Singles Collection",
+        "primaryGenreName": "Electronic",
+        "trackViewUrl": "https://music.apple.com/us/album/angel-blur-remix/816331899?i=816332202&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/angel-blur-remix/816331899?i=816332202&uo=4",
+        "trackId": 816332202
+      },
+      {
+        "trackName": "Angel (Angel Dust)",
+        "artistName": "Massive Attack",
+        "collectionName": "Mezzanine (Deluxe)",
+        "primaryGenreName": "Hip-Hop/Rap",
+        "trackViewUrl": "https://music.apple.com/us/album/angel-angel-dust/1428684976?i=1428690324&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/angel-angel-dust/1428684976?i=1428690324&uo=4",
+        "trackId": 1428690324
+      },
+      {
+        "trackName": "Angel (feat. Horace Andy)",
+        "artistName": "Massive Attack",
+        "collectionName": "Angel",
+        "primaryGenreName": "Hip-Hop/Rap",
+        "trackViewUrl": "https://music.apple.com/us/album/angel-feat-horace-andy/1814258488?i=1814258490&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/angel-feat-horace-andy/1814258488?i=1814258490&uo=4",
+        "trackId": 1814258490
+      },
+      {
+        "trackName": "Angel (Mad Professor Remix)",
+        "artistName": "Massive Attack",
+        "collectionName": "Singles Collection",
+        "primaryGenreName": "Electronic",
+        "trackViewUrl": "https://music.apple.com/us/album/angel-mad-professor-remix/816331899?i=816332228&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/angel-mad-professor-remix/816331899?i=816332228&uo=4",
+        "trackId": 816332228
+      },
+      {
+        "trackName": "Angel (feat. Horace Andy) [Radio Edit]",
+        "artistName": "Massive Attack",
+        "collectionName": "Angel",
+        "primaryGenreName": "Hip-Hop/Rap",
+        "trackViewUrl": "https://music.apple.com/us/album/angel-feat-horace-andy-radio-edit/1814258488?i=1814258502&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/angel-feat-horace-andy-radio-edit/1814258488?i=1814258502&uo=4",
+        "trackId": 1814258502
+      },
+      {
+        "trackName": "Angel (Remastered 2018)",
+        "artistName": "Massive Attack",
+        "collectionName": "Mezzanine (Deluxe)",
+        "primaryGenreName": "Hip-Hop/Rap",
+        "trackViewUrl": "https://music.apple.com/us/album/angel-remastered-2018/1428684976?i=1428687420&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/angel-remastered-2018/1428684976?i=1428687420&uo=4",
+        "trackId": 1428687420
+      },
+      {
+        "trackName": "Angel (Mad Professor Remix)",
+        "artistName": "Massive Attack",
+        "collectionName": "Mezzanine - The Remixes",
+        "primaryGenreName": "Electronic",
+        "trackViewUrl": "https://music.apple.com/us/album/angel-mad-professor-remix/724387079?i=724387672&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/angel-mad-professor-remix/724387079?i=724387672&uo=4",
+        "trackId": 724387672
+      },
+      {
+        "trackName": "Angel (2006 Remastered)",
+        "artistName": "Massive Attack",
+        "collectionName": "Collected (2006 Remastered)",
+        "primaryGenreName": "Electronic",
+        "trackViewUrl": "https://music.apple.com/us/album/angel-2006-remastered/725791316?i=725791394&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/angel-2006-remastered/725791316?i=725791394&uo=4",
+        "trackId": 725791394
+      },
+      {
+        "trackName": "Angel",
+        "artistName": "Massive Attack",
+        "collectionName": "Singles Collection",
+        "primaryGenreName": "Electronic",
+        "trackViewUrl": "https://music.apple.com/us/album/angel/816331899?i=816332194&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/angel/816331899?i=816332194&uo=4",
+        "trackId": 816332194
+      },
+      {
+        "trackName": "Angel (feat. Horace Andy) [Blur Remix]",
+        "artistName": "Massive Attack",
+        "collectionName": "Angel",
+        "primaryGenreName": "Hip-Hop/Rap",
+        "trackViewUrl": "https://music.apple.com/us/album/angel-feat-horace-andy-blur-remix/1814258488?i=1814258491&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/angel-feat-horace-andy-blur-remix/1814258488?i=1814258491&uo=4",
+        "trackId": 1814258491
+      }
+    ]
+  },
+  "mixTerm|Liim Another Chance": {
+    "query_url": "https://itunes.apple.com/search?term=Liim+Another+Chance&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": [
+      {
+        "trackName": "Another Chance",
+        "artistName": "Liim",
+        "collectionName": "A Sunflower Garden In Harlem Is Hard To Find",
+        "primaryGenreName": "Hip-Hop/Rap",
+        "trackViewUrl": "https://music.apple.com/us/album/another-chance/6794655731?i=6794655741&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/another-chance/6794655731?i=6794655741&uo=4",
+        "trackId": 6794655741
+      },
+      {
+        "trackName": "Buttas On",
+        "artistName": "Liim",
+        "collectionName": "A Sunflower Garden In Harlem Is Hard To Find",
+        "primaryGenreName": "Hip-Hop/Rap",
+        "trackViewUrl": "https://music.apple.com/us/album/buttas-on/6794655731?i=6794655740&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/buttas-on/6794655731?i=6794655740&uo=4",
+        "trackId": 6794655740
+      },
+      {
+        "trackName": "Just Another Sundown",
+        "artistName": "Toby Keith",
+        "collectionName": "Clancy's Tavern (Deluxe Edition)",
+        "primaryGenreName": "Country",
+        "trackViewUrl": "https://music.apple.com/us/album/just-another-sundown/1434739412?i=1434739769&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/just-another-sundown/1434739412?i=1434739769&uo=4",
+        "trackId": 1434739769
+      },
+      {
+        "trackName": "Just Another Day",
+        "artistName": "Vashawn Mitchell",
+        "collectionName": "Triumphant",
+        "primaryGenreName": "Christian",
+        "trackViewUrl": "https://music.apple.com/us/album/just-another-day/1462808870?i=1462808936&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/just-another-day/1462808870?i=1462808936&uo=4",
+        "trackId": 1462808936
+      },
+      {
+        "trackName": "We Wish You A Merry Christmas/It's Just Another New Year's Eve",
+        "artistName": "Barry Manilow",
+        "collectionName": "Because It's Christmas",
+        "primaryGenreName": "Christmas: Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/we-wish-you-a-merry-christmas-its-just-another-new-years-eve/262394464?i=262394720&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/we-wish-you-a-merry-christmas-its-just-another-new-years-eve/262394464?i=262394720&uo=4",
+        "trackId": 262394720
+      },
+      {
+        "trackName": "Another Chance (feat. Izzy Drai) [Remix]",
+        "artistName": "Zak Music",
+        "collectionName": "Another Chance (feat. Izzy Drai) [Remix] - Single",
+        "primaryGenreName": "House",
+        "trackViewUrl": "https://music.apple.com/us/album/another-chance-feat-izzy-drai-remix/1648326097?i=1648326098&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/another-chance-feat-izzy-drai-remix/1648326097?i=1648326098&uo=4",
+        "trackId": 1648326098
+      },
+      {
+        "trackName": "The God of Another Chance",
+        "artistName": "Chester D.T. Baldwin",
+        "collectionName": "Sing It on Sunday Morning 2: Just Having Church",
+        "primaryGenreName": "Christian",
+        "trackViewUrl": "https://music.apple.com/us/album/the-god-of-another-chance/969257097?i=969257719&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/the-god-of-another-chance/969257097?i=969257719&uo=4",
+        "trackId": 969257719
+      },
+      {
+        "trackName": "Another Chance (feat. Rhymastic)",
+        "artistName": "Tony TK",
+        "collectionName": "Another Chance (feat. Rhymastic) - Single",
+        "primaryGenreName": "R&B/Soul",
+        "trackViewUrl": "https://music.apple.com/us/album/another-chance-feat-rhymastic/1539349968?i=1539349969&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/another-chance-feat-rhymastic/1539349968?i=1539349969&uo=4",
+        "trackId": 1539349969
+      },
+      {
+        "trackName": "Another Chance",
+        "artistName": "Jimmy Goings",
+        "collectionName": "Analog Dinosaur Vol. I",
+        "primaryGenreName": "Singer/Songwriter",
+        "trackViewUrl": "https://music.apple.com/us/album/another-chance/1856277553?i=1856277556&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/another-chance/1856277553?i=1856277556&uo=4",
+        "trackId": 1856277556
+      },
+      {
+        "trackName": "Let's Give Adam and Eve Another Chance",
+        "artistName": "Gary Puckett & The Union Gap",
+        "collectionName": "I Just Don't Know What to Do With Myself",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/lets-give-adam-and-eve-another-chance/511447905?i=511448854&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/lets-give-adam-and-eve-another-chance/511447905?i=511448854&uo=4",
+        "trackId": 511448854
+      },
+      {
+        "trackName": "Another Chance (feat. Kirk Whalum)",
+        "artistName": "Michael Manson",
+        "collectionName": "Just Feelin' It",
+        "primaryGenreName": "Jazz",
+        "trackViewUrl": "https://music.apple.com/us/album/another-chance-feat-kirk-whalum/1637164519?i=1637164878&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/another-chance-feat-kirk-whalum/1637164519?i=1637164878&uo=4",
+        "trackId": 1637164878
+      },
+      {
+        "trackName": "Another Chance",
+        "artistName": "GloryBound Quartet & Heartland Baptist Bible College",
+        "collectionName": "Just Preach Jesus",
+        "primaryGenreName": "Christian",
+        "trackViewUrl": "https://music.apple.com/us/album/another-chance/6783774728?i=6783774729&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/another-chance/6783774728?i=6783774729&uo=4",
+        "trackId": 6783774729
+      },
+      {
+        "trackName": "Another Chance",
+        "artistName": "Just a Band",
+        "collectionName": "Sorry for the Delay",
+        "primaryGenreName": "Worldwide",
+        "trackViewUrl": "https://music.apple.com/us/album/another-chance/582902782?i=582902830&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/another-chance/582902782?i=582902830&uo=4",
+        "trackId": 582902830
+      },
+      {
+        "trackName": "Another Chance",
+        "artistName": "JustMax",
+        "collectionName": "Another Chance - Single",
+        "primaryGenreName": "House",
+        "trackViewUrl": "https://music.apple.com/us/album/another-chance/6802129364?i=6802129365&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/another-chance/6802129364?i=6802129365&uo=4",
+        "trackId": 6802129365
+      },
+      {
+        "trackName": "Another Chance",
+        "artistName": "Disco Lines",
+        "collectionName": "EDC Las Vegas 2023",
+        "primaryGenreName": "Dance",
+        "trackViewUrl": "https://music.apple.com/us/album/another-chance/1685950051?i=1685950064&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/another-chance/1685950051?i=1685950064&uo=4",
+        "trackId": 1685950064
+      }
+    ]
+  },
+  "mixTerm|Pink Floyd Another Brick in the Wall, Pt. 2": {
+    "query_url": "https://itunes.apple.com/search?term=Pink+Floyd+Another+Brick+in+the+Wall%2C+Pt.+2&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": [
+      {
+        "trackName": "Another Brick In the Wall, Pt. 2",
+        "artistName": "Pink Floyd",
+        "collectionName": "The Wall",
+        "primaryGenreName": "Rock",
+        "trackViewUrl": "https://music.apple.com/us/album/another-brick-in-the-wall-pt-2/1065975633?i=1065975638&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/another-brick-in-the-wall-pt-2/1065975633?i=1065975638&uo=4",
+        "trackId": 1065975638
+      },
+      {
+        "trackName": "Another Brick In the Wall, Pt. 1",
+        "artistName": "Pink Floyd",
+        "collectionName": "The Wall",
+        "primaryGenreName": "Rock",
+        "trackViewUrl": "https://music.apple.com/us/album/another-brick-in-the-wall-pt-1/1065975633?i=1065975636&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/another-brick-in-the-wall-pt-1/1065975633?i=1065975636&uo=4",
+        "trackId": 1065975636
+      },
+      {
+        "trackName": "Another Brick In the Wall, Pt. 2 (Remix)",
+        "artistName": "Pink Floyd",
+        "collectionName": "A Collection of Great Dance Songs",
+        "primaryGenreName": "Rock",
+        "trackViewUrl": "https://music.apple.com/us/album/another-brick-in-the-wall-pt-2-remix/1069036843?i=1069036964&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/another-brick-in-the-wall-pt-2-remix/1069036843?i=1069036964&uo=4",
+        "trackId": 1069036964
+      },
+      {
+        "trackName": "Another Brick In the Wall, Pt. 2 (Live)",
+        "artistName": "Pink Floyd",
+        "collectionName": "Pulse (Live)",
+        "primaryGenreName": "Rock",
+        "trackViewUrl": "https://music.apple.com/us/album/another-brick-in-the-wall-pt-2-live/1590001237?i=1590001249&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/another-brick-in-the-wall-pt-2-live/1590001237?i=1590001249&uo=4",
+        "trackId": 1590001249
+      },
+      {
+        "trackName": "Another Brick In the Wall, Pt. 2 (Live)",
+        "artistName": "Pink Floyd",
+        "collectionName": "Delicate Sound of Thunder (Live)",
+        "primaryGenreName": "Rock",
+        "trackViewUrl": "https://music.apple.com/us/album/another-brick-in-the-wall-pt-2-live/1065976276?i=1065976289&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/another-brick-in-the-wall-pt-2-live/1065976276?i=1065976289&uo=4",
+        "trackId": 1065976289
+      },
+      {
+        "trackName": "Another Brick in the Wall, Pt. 2",
+        "artistName": "Pink Floyd",
+        "collectionName": "8-Tracks",
+        "primaryGenreName": "Rock",
+        "trackViewUrl": "https://music.apple.com/us/album/another-brick-in-the-wall-pt-2/1890514281?i=1890514547&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/another-brick-in-the-wall-pt-2/1890514281?i=1890514547&uo=4",
+        "trackId": 1890514547
+      },
+      {
+        "trackName": "Another Brick In the Wall, Pt. 2",
+        "artistName": "Pink Floyd",
+        "collectionName": "A Foot In the Door: The Best of Pink Floyd",
+        "primaryGenreName": "Rock",
+        "trackViewUrl": "https://music.apple.com/us/album/another-brick-in-the-wall-pt-2/1067444712?i=1067444770&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/another-brick-in-the-wall-pt-2/1067444712?i=1067444770&uo=4",
+        "trackId": 1067444770
+      },
+      {
+        "trackName": "Another Brick In the Wall, Pt. 2 (Live, Delicate Sound of Thunder, 2019 Remix)",
+        "artistName": "Pink Floyd",
+        "collectionName": "The Later Years",
+        "primaryGenreName": "Rock",
+        "trackViewUrl": "https://music.apple.com/us/album/another-brick-in-the-wall-pt-2-live-delicate-sound/1490675340?i=1490675876&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/another-brick-in-the-wall-pt-2-live-delicate-sound/1490675340?i=1490675876&uo=4",
+        "trackId": 1490675876
+      },
+      {
+        "trackName": "Another Brick In the Wall, Pt. 2",
+        "artistName": "Pink Floyd",
+        "collectionName": "Echoes: The Best of Pink Floyd",
+        "primaryGenreName": "Rock",
+        "trackViewUrl": "https://music.apple.com/us/album/another-brick-in-the-wall-pt-2/1066497829?i=1066498019&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/another-brick-in-the-wall-pt-2/1066497829?i=1066498019&uo=4",
+        "trackId": 1066498019
+      },
+      {
+        "trackName": "Another Brick In the Wall, Pt. 2 (Live June 2000)",
+        "artistName": "Roger Waters",
+        "collectionName": "In the Flesh - Live",
+        "primaryGenreName": "Rock",
+        "trackViewUrl": "https://music.apple.com/us/album/another-brick-in-the-wall-pt-2-live-june-2000/1416495692?i=1416495968&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/another-brick-in-the-wall-pt-2-live-june-2000/1416495692?i=1416495968&uo=4",
+        "trackId": 1416495968
+      },
+      {
+        "trackName": "Another Brick In the Wall, Pt. 2 (2019 Remix) [Live]",
+        "artistName": "Pink Floyd",
+        "collectionName": "Delicate Sound of Thunder (2019 Remix) [Live]",
+        "primaryGenreName": "Rock",
+        "trackViewUrl": "https://music.apple.com/us/album/another-brick-in-the-wall-pt-2-2019-remix-live/1532571287?i=1532571519&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/another-brick-in-the-wall-pt-2-2019-remix-live/1532571287?i=1532571519&uo=4",
+        "trackId": 1532571519
+      },
+      {
+        "trackName": "Another Brick In the Wall, Pt. 2 (Live)",
+        "artistName": "Roger Waters",
+        "collectionName": "Roger Waters The Wall",
+        "primaryGenreName": "Rock",
+        "trackViewUrl": "https://music.apple.com/us/album/another-brick-in-the-wall-pt-2-live/1042853859?i=1042853864&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/another-brick-in-the-wall-pt-2-live/1042853859?i=1042853864&uo=4",
+        "trackId": 1042853864
+      },
+      {
+        "trackName": "Another Brick In the Wall, Pt. 2 (Live In Berlin, 1990)",
+        "artistName": "Roger Waters, Cyndi Lauper & The Bleeding Heart Band",
+        "collectionName": "The Wall: Live In Berlin",
+        "primaryGenreName": "Rock",
+        "trackViewUrl": "https://music.apple.com/us/album/another-brick-in-the-wall-pt-2-live-in-berlin-1990/1446745757?i=1446745768&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/another-brick-in-the-wall-pt-2-live-in-berlin-1990/1446745757?i=1446745768&uo=4",
+        "trackId": 1446745768
+      },
+      {
+        "trackName": "Another Brick In the Wall, Pt. 2 (Live in Amsterdam, June, 2018)",
+        "artistName": "Roger Waters",
+        "collectionName": "Us + Them",
+        "primaryGenreName": "Rock",
+        "trackViewUrl": "https://music.apple.com/us/album/another-brick-in-the-wall-pt-2-live-in-amsterdam-june-2018/1517099398?i=1517100379&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/another-brick-in-the-wall-pt-2-live-in-amsterdam-june-2018/1517099398?i=1517100379&uo=4",
+        "trackId": 1517100379
+      },
+      {
+        "trackName": "Another Brick in the Wall, Pt. 2 (Live From Prague May 2023)",
+        "artistName": "Roger Waters",
+        "collectionName": "Roger Waters: This Is Not A Drill - Live From Prague",
+        "primaryGenreName": "Rock",
+        "trackViewUrl": "https://music.apple.com/us/album/another-brick-in-the-wall-pt-2-live-from-prague-may-2023/1817470841?i=1817471162&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/another-brick-in-the-wall-pt-2-live-from-prague-may-2023/1817470841?i=1817471162&uo=4",
+        "trackId": 1817471162
+      }
+    ]
+  },
+  "mixTerm|Henny Hermes ANOTHER DRUG": {
+    "query_url": "https://itunes.apple.com/search?term=Henny+Hermes+ANOTHER+DRUG&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": [
+      {
+        "trackName": "SENSES",
+        "artistName": "Henny Hermes",
+        "collectionName": "SENSES - Single",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/senses/1643988702?i=1643988704&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/senses/1643988702?i=1643988704&uo=4",
+        "trackId": 1643988704
+      },
+      {
+        "trackName": "Another Drug",
+        "artistName": "Insanity",
+        "collectionName": "Psytrance & Progressive Trance, Vol. 1",
+        "primaryGenreName": "Trance",
+        "trackViewUrl": "https://music.apple.com/us/album/another-drug/1338876215?i=1338876326&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/another-drug/1338876215?i=1338876326&uo=4",
+        "trackId": 1338876326
+      },
+      {
+        "trackName": "Another Drug",
+        "artistName": "Colin Fowlie",
+        "collectionName": "Party Music",
+        "primaryGenreName": "Rock",
+        "trackViewUrl": "https://music.apple.com/us/album/another-drug/1457642662?i=1457642664&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/another-drug/1457642662?i=1457642664&uo=4",
+        "trackId": 1457642664
+      },
+      {
+        "trackName": "Another Drug",
+        "artistName": "Vvnine",
+        "collectionName": "Another Drug - Single",
+        "primaryGenreName": "Dance",
+        "trackViewUrl": "https://music.apple.com/us/album/another-drug/1533211781?i=1533211782&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/another-drug/1533211781?i=1533211782&uo=4",
+        "trackId": 1533211782
+      },
+      {
+        "trackName": "Another Drug",
+        "artistName": "DDJAM",
+        "collectionName": "Another Drug - Single",
+        "primaryGenreName": "Techno",
+        "trackViewUrl": "https://music.apple.com/us/album/another-drug/1502148582?i=1502148583&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/another-drug/1502148582?i=1502148583&uo=4",
+        "trackId": 1502148583
+      },
+      {
+        "trackName": "Another Drug (feat. Emileen)",
+        "artistName": "Sam Dizzy",
+        "collectionName": "Sam Dizzy - Single",
+        "primaryGenreName": "Hip-Hop/Rap",
+        "trackViewUrl": "https://music.apple.com/us/album/another-drug-feat-emileen/1515929477?i=1515929486&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/another-drug-feat-emileen/1515929477?i=1515929486&uo=4",
+        "trackId": 1515929486
+      },
+      {
+        "trackName": "Another Drug (Live at the Squatch Den)",
+        "artistName": "Racing the Rain",
+        "collectionName": "Another Drug (Live at the Squatch Den) - Single",
+        "primaryGenreName": "Punk",
+        "trackViewUrl": "https://music.apple.com/us/album/another-drug-live-at-the-squatch-den/1756712120?i=1756712123&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/another-drug-live-at-the-squatch-den/1756712120?i=1756712123&uo=4",
+        "trackId": 1756712123
+      }
+    ]
+  },
+  "mixTerm|Nou Nueve Another LV": {
+    "query_url": "https://itunes.apple.com/search?term=Nou+Nueve+Another+LV&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": [
+      {
+        "trackName": "Another LV",
+        "artistName": "Nou Nueve",
+        "collectionName": "Another LV - Single",
+        "primaryGenreName": "Hip-Hop/Rap",
+        "trackViewUrl": "https://music.apple.com/us/album/another-lv/1778985712?i=1778985713&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/another-lv/1778985712?i=1778985713&uo=4",
+        "trackId": 1778985713
+      }
+    ]
+  },
+  "mixTerm|K.Flay Ants": {
+    "query_url": "https://itunes.apple.com/search?term=K.Flay+Ants&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": []
+  },
+  "mixTerm|Bentley Robles Apocalypto": {
+    "query_url": "https://itunes.apple.com/search?term=Bentley+Robles+Apocalypto&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": [
+      {
+        "trackName": "Apocalypto",
+        "artistName": "Bentley Robles",
+        "collectionName": "Olympus",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/apocalypto/1863123058?i=1863123064&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/apocalypto/1863123058?i=1863123064&uo=4",
+        "trackId": 1863123064
+      }
+    ]
+  },
+  "mixTerm|Savannah Ré Another Heartbreak": {
+    "query_url": "https://itunes.apple.com/search?term=Savannah+R%C3%A9+Another+Heartbreak&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": []
+  },
+  "mixTerm|Aaliyah Are You That Somebody": {
+    "query_url": "https://itunes.apple.com/search?term=Aaliyah+Are+You+That+Somebody&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": [
+      {
+        "trackName": "Are You That Somebody?",
+        "artistName": "Aaliyah",
+        "collectionName": "Ultimate Aaliyah",
+        "primaryGenreName": "R&B/Soul",
+        "trackViewUrl": "https://music.apple.com/us/album/are-you-that-somebody/1816082814?i=1816083557&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/are-you-that-somebody/1816082814?i=1816083557&uo=4",
+        "trackId": 1816083557
+      },
+      {
+        "trackName": "Are You That Somebody?",
+        "artistName": "Aaliyah",
+        "collectionName": "I Care 4 U",
+        "primaryGenreName": "R&B/Soul",
+        "trackViewUrl": "https://music.apple.com/us/album/are-you-that-somebody/1816084075?i=1816084628&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/are-you-that-somebody/1816084075?i=1816084628&uo=4",
+        "trackId": 1816084628
+      },
+      {
+        "trackName": "Are You That Somebody - Aaliyah Tribute Version",
+        "artistName": "R&b Hit Collection",
+        "collectionName": "Are You That Somebody - Aaliyah Tribute Version - Single",
+        "primaryGenreName": "Tribute",
+        "trackViewUrl": "https://music.apple.com/us/album/are-you-that-somebody-aaliyah-tribute-version/370386389?i=370386396&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/are-you-that-somebody-aaliyah-tribute-version/370386389?i=370386396&uo=4",
+        "trackId": 370386396
+      },
+      {
+        "trackName": "Are You That Somebody?",
+        "artistName": "Aaliyah",
+        "collectionName": "Dr. Dolittle (Soundtrack from the Motion Picture)",
+        "primaryGenreName": "Soundtrack",
+        "trackViewUrl": "https://music.apple.com/us/album/are-you-that-somebody/321039020?i=321039139&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/are-you-that-somebody/321039020?i=321039139&uo=4",
+        "trackId": 321039139
+      },
+      {
+        "trackName": "Are You That Somebody",
+        "artistName": "Forms of Matter",
+        "collectionName": "Takin' it Back",
+        "primaryGenreName": "R&B/Soul",
+        "trackViewUrl": "https://music.apple.com/us/album/are-you-that-somebody/1060306976?i=1060306982&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/are-you-that-somebody/1060306976?i=1060306982&uo=4",
+        "trackId": 1060306982
+      },
+      {
+        "trackName": "Are You That Somebody?",
+        "artistName": "Sample Kulture",
+        "collectionName": "Upstairs Headroom",
+        "primaryGenreName": "R&B/Soul",
+        "trackViewUrl": "https://music.apple.com/us/album/are-you-that-somebody/1525507456?i=1525507462&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/are-you-that-somebody/1525507456?i=1525507462&uo=4",
+        "trackId": 1525507462
+      },
+      {
+        "trackName": "Are You That Somebody",
+        "artistName": "MALIKA",
+        "collectionName": "The 90's Made Me Mixtape",
+        "primaryGenreName": "R&B/Soul",
+        "trackViewUrl": "https://music.apple.com/us/album/are-you-that-somebody/1578018015?i=1578018028&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/are-you-that-somebody/1578018015?i=1578018028&uo=4",
+        "trackId": 1578018028
+      },
+      {
+        "trackName": "Are You That Somebody",
+        "artistName": "Lynn Olsen",
+        "collectionName": "Are You That Somebody - Single",
+        "primaryGenreName": "R&B/Soul",
+        "trackViewUrl": "https://music.apple.com/us/album/are-you-that-somebody/1130072354?i=1130072486&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/are-you-that-somebody/1130072354?i=1130072486&uo=4",
+        "trackId": 1130072486
+      },
+      {
+        "trackName": "Are You That Somebody?",
+        "artistName": "Mayyadda",
+        "collectionName": "Are You That Somebody? - Single",
+        "primaryGenreName": "R&B/Soul",
+        "trackViewUrl": "https://music.apple.com/us/album/are-you-that-somebody/1834882919?i=1834882922&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/are-you-that-somebody/1834882919?i=1834882922&uo=4",
+        "trackId": 1834882922
+      },
+      {
+        "trackName": "Are You That Somebody",
+        "artistName": "Cover Mac",
+        "collectionName": "Grooving' Back To the 80S",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/are-you-that-somebody/1067094536?i=1067094751&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/are-you-that-somebody/1067094536?i=1067094751&uo=4",
+        "trackId": 1067094751
+      },
+      {
+        "trackName": "Are You That Somebody",
+        "artistName": "Jo Childers",
+        "collectionName": "Something Borrowed",
+        "primaryGenreName": "Singer/Songwriter",
+        "trackViewUrl": "https://music.apple.com/us/album/are-you-that-somebody/1493260749?i=1493260752&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/are-you-that-somebody/1493260749?i=1493260752&uo=4",
+        "trackId": 1493260752
+      },
+      {
+        "trackName": "Are You That Somebody",
+        "artistName": "Lynn Olsen",
+        "collectionName": "Alright - EP",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/are-you-that-somebody/1221168102?i=1221168105&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/are-you-that-somebody/1221168102?i=1221168105&uo=4",
+        "trackId": 1221168105
+      },
+      {
+        "trackName": "Are You That Somebody",
+        "artistName": "Samiere",
+        "collectionName": "100% HER Contemporary Songs",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/are-you-that-somebody/1556452308?i=1556452425&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/are-you-that-somebody/1556452308?i=1556452425&uo=4",
+        "trackId": 1556452425
+      },
+      {
+        "trackName": "Are You That Somebody",
+        "artistName": "Faithe",
+        "collectionName": "Are You That Somebody - Single",
+        "primaryGenreName": "R&B/Soul",
+        "trackViewUrl": "https://music.apple.com/us/album/are-you-that-somebody/1448576501?i=1448576502&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/are-you-that-somebody/1448576501?i=1448576502&uo=4",
+        "trackId": 1448576502
+      },
+      {
+        "trackName": "Are You That Somebody?",
+        "artistName": "SKYLR",
+        "collectionName": "Are You That Somebody? - Single",
+        "primaryGenreName": "Alternative",
+        "trackViewUrl": "https://music.apple.com/us/album/are-you-that-somebody/1474426048?i=1474426049&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/are-you-that-somebody/1474426048?i=1474426049&uo=4",
+        "trackId": 1474426049
+      }
+    ]
+  },
+  "mixTerm|THE JAMN ARIES": {
+    "query_url": "https://itunes.apple.com/search?term=THE+JAMN+ARIES&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": [
+      {
+        "trackName": "Chocolate and Strawberries",
+        "artistName": "The Januaries",
+        "collectionName": "The Januaries",
+        "primaryGenreName": "Rock",
+        "trackViewUrl": "https://music.apple.com/us/album/chocolate-and-strawberries/932640853?i=932643939&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/chocolate-and-strawberries/932640853?i=932643939&uo=4",
+        "trackId": 932643939
+      },
+      {
+        "trackName": "The Girl's Insane",
+        "artistName": "The Januaries",
+        "collectionName": "The Januaries",
+        "primaryGenreName": "Rock",
+        "trackViewUrl": "https://music.apple.com/us/album/the-girls-insane/932640853?i=932643936&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/the-girls-insane/932640853?i=932643936&uo=4",
+        "trackId": 932643936
+      },
+      {
+        "trackName": "Juliette",
+        "artistName": "The Januaries",
+        "collectionName": "The Januaries",
+        "primaryGenreName": "Rock",
+        "trackViewUrl": "https://music.apple.com/us/album/juliette/932640853?i=932643923&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/juliette/932640853?i=932643923&uo=4",
+        "trackId": 932643923
+      },
+      {
+        "trackName": "Stare At the Sun",
+        "artistName": "The Januaries",
+        "collectionName": "The Januaries",
+        "primaryGenreName": "Rock",
+        "trackViewUrl": "https://music.apple.com/us/album/stare-at-the-sun/932640853?i=932643961&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/stare-at-the-sun/932640853?i=932643961&uo=4",
+        "trackId": 932643961
+      },
+      {
+        "trackName": "Black Transmission",
+        "artistName": "The Januaries",
+        "collectionName": "The Januaries",
+        "primaryGenreName": "Rock",
+        "trackViewUrl": "https://music.apple.com/us/album/black-transmission/932640853?i=932643932&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/black-transmission/932640853?i=932643932&uo=4",
+        "trackId": 932643932
+      },
+      {
+        "trackName": "Cinema Girl",
+        "artistName": "The Januaries",
+        "collectionName": "The Januaries",
+        "primaryGenreName": "Rock",
+        "trackViewUrl": "https://music.apple.com/us/album/cinema-girl/932640853?i=932643935&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/cinema-girl/932640853?i=932643935&uo=4",
+        "trackId": 932643935
+      },
+      {
+        "trackName": "Summer of Love",
+        "artistName": "The Januaries",
+        "collectionName": "The Januaries",
+        "primaryGenreName": "Rock",
+        "trackViewUrl": "https://music.apple.com/us/album/summer-of-love/932640853?i=932643942&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/summer-of-love/932640853?i=932643942&uo=4",
+        "trackId": 932643942
+      },
+      {
+        "trackName": "All Systems a GoGo",
+        "artistName": "The Januaries",
+        "collectionName": "The Januaries",
+        "primaryGenreName": "Rock",
+        "trackViewUrl": "https://music.apple.com/us/album/all-systems-a-gogo/932640853?i=932643940&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/all-systems-a-gogo/932640853?i=932643940&uo=4",
+        "trackId": 932643940
+      },
+      {
+        "trackName": "Love Has Flown",
+        "artistName": "The Januaries",
+        "collectionName": "The Januaries",
+        "primaryGenreName": "Rock",
+        "trackViewUrl": "https://music.apple.com/us/album/love-has-flown/932640853?i=932643937&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/love-has-flown/932640853?i=932643937&uo=4",
+        "trackId": 932643937
+      },
+      {
+        "trackName": "Love Met the Devil",
+        "artistName": "The Januaries",
+        "collectionName": "The Januaries",
+        "primaryGenreName": "Rock",
+        "trackViewUrl": "https://music.apple.com/us/album/love-met-the-devil/932640853?i=932643933&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/love-met-the-devil/932640853?i=932643933&uo=4",
+        "trackId": 932643933
+      },
+      {
+        "trackName": "U & Me",
+        "artistName": "The Januaries",
+        "collectionName": "The Januaries",
+        "primaryGenreName": "Rock",
+        "trackViewUrl": "https://music.apple.com/us/album/u-me/932640853?i=932643952&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/u-me/932640853?i=932643952&uo=4",
+        "trackId": 932643952
+      },
+      {
+        "trackName": "Jon Sings",
+        "artistName": "The Januaries",
+        "collectionName": "The Januaries",
+        "primaryGenreName": "Rock",
+        "trackViewUrl": "https://music.apple.com/us/album/jon-sings/932640853?i=932643951&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/jon-sings/932640853?i=932643951&uo=4",
+        "trackId": 932643951
+      },
+      {
+        "trackName": "Angel Eye",
+        "artistName": "The Januaries",
+        "collectionName": "The Januaries",
+        "primaryGenreName": "Rock",
+        "trackViewUrl": "https://music.apple.com/us/album/angel-eye/932640853?i=932643938&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/angel-eye/932640853?i=932643938&uo=4",
+        "trackId": 932643938
+      }
+    ]
   }
 }
