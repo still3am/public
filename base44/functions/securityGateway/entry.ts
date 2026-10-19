@@ -107,11 +107,22 @@ export default async function handleRequest(req) {
         if(JSON.stringify([note.id,note.expires_at])!==key)fail('This note changed. Reopen it to react.',409);
         if(note.track_id){try{const track=await requireTrack(note.track_id,false);if(!(track.is_published&&track.approval_status==='approved'))fail('Song unavailable',404);}catch(e){if(![403,404].includes(e.status)||!note.caption?.trim())throw e;}}
         else if(!note.caption?.trim())fail('Note unavailable',404);
+        // Use the SDK's sort/limit/skip signature; an options object here is interpreted as a sort value.
+        const reactionRows=async(table,query)=>{
+          const result=[];
+          for(let skip=0;skip<50000;skip+=500){
+            const page=await table.filter(query,'-created_date',500,skip);
+            const rows=Array.isArray(page)?page:page?.items||[];
+            result.push(...rows);
+            if(rows.length<500)return result;
+          }
+          fail('Too many reactions to load. Please retry later.',503);
+        };
         const reactions=svc.entities.NoteReaction,scope={profile_id:owner,note_key:key};
         if(action==='reactNote'){
           if(owner===user.id)fail('React to another person’s note',403);
           if(typeof emoji!=='string'||!NOTE_EMOJIS.includes(emoji))fail('Choose an emoji from the picker',422);
-          const own=await all(reactions,{...scope,user_id:user.id});
+          const own=await reactionRows(reactions,{...scope,user_id:user.id});
           if(!emoji)await reactions.deleteMany({...scope,user_id:user.id});
           else{
             const data={...scope,user_id:user.id,emoji,reacted_at:new Date().toISOString()};
@@ -119,7 +130,7 @@ export default async function handleRequest(req) {
             else await reactions.create(data);
           }
         }
-        const rows=await all(reactions,scope),blocks=await all(svc.entities.Block,{$or:[{user_id:user.id},{blocked_user_id:user.id}]});
+        const rows=await reactionRows(reactions,scope),blocks=await reactionRows(svc.entities.Block,{$or:[{user_id:user.id},{blocked_user_id:user.id}]});
         const blockedIds=new Set(blocks.map(b=>b.user_id===user.id?b.blocked_user_id:b.user_id));
         const ids=[...new Set(rows.map(r=>r.user_id))].filter(id=>!blockedIds.has(id));
         const allowed=new Set();
