@@ -21,6 +21,7 @@ import TrackCard from "@/components/TrackCard";
 import Avatar from "@/components/Avatar";
 import ReleaseList from "@/components/ReleaseList";
 import { usePlayer } from "@/context/PlayerContext";
+import LoadError from "@/components/LoadError";
 import EmptyState from "@/components/EmptyState";
 import { getRecentPlays } from "@/lib/recentPlays";
 import { getUserMusicPreferences, clearUserGenresCache } from "@/lib/userGenres";
@@ -199,7 +200,11 @@ export default function Home() {
         [pool[i], pool[j]] = [pool[j], pool[i]];
       }
       setDiscover(pool.slice(0, 12));
-    } catch {if (request === loadVersion.current) setLoadError("The music catalog could not load. Check your connection and retry.");} finally {
+    } catch {if (request === loadVersion.current) {
+      const available=peekPublishedTracks();
+      if(available.length){setNewReleases(available.slice(0,36));setTrending([...available].sort((a,b)=>(b.play_count||0)-(a.play_count||0)).slice(0,10));}
+      setLoadError("Music could not refresh. Please try again shortly.");
+    }} finally {
       if (request === loadVersion.current) setLoading(false);
     }
   }
@@ -217,7 +222,7 @@ export default function Home() {
   }, [user?.id]);
   useEffect(() => {const update = () => setRecent(getRecentPlays().slice(0, 8));window.addEventListener("recentplays:change", update);return () => window.removeEventListener("recentplays:change", update);}, []);
 
-  if (loadError && !trending.length) return <div className="p-8 text-center"><button className="playlist-action" onClick={() => load(true)}>Refresh music</button></div>;
+  if (loadError && !trending.length && !newReleases.length) return <LoadError message={loadError} onRetry={() => load(true)} />;
   if (loading && !trending.length) return <Skeleton />;
 
   const allEmpty =
