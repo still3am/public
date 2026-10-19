@@ -6,7 +6,7 @@
  .public-app .desktop-workspace{width:0}
  .public-app .desktop-workspace>.app-content{max-width:1440px;--app-gutter:clamp(24px,3vw,48px);padding-top:30px;padding-bottom:44px}
  .public-app.has-player .desktop-workspace>.app-content{padding-bottom:148px}
- .public-app .desktop-workspace>.app-content.artwork-content{max-width:1440px;padding-top:24px}
+ .public-app .desktop-workspace>.app-content.artwork-content{max-width:none;padding-top:0}
  .desktop-header{display:flex;align-items:center;justify-content:space-between;gap:20px;min-height:68px;padding:10px clamp(24px,3vw,48px);position:sticky;top:0;z-index:25;background:hsl(var(--background));border-bottom:1px solid hsl(var(--border)/.65)}
  .desktop-header-context,.desktop-header-actions{display:flex;align-items:center;gap:13px;min-width:0}
  .desktop-header-context{font-size:12px}
@@ -284,7 +284,12 @@
  .public-app .suggestions-feed .collection-tools input{min-width:0}
  .full-player-screen .full-player-main{width:100%;max-width:640px;margin-inline:auto}
  .full-player-screen .full-player-art{max-width:min(44vh,440px);max-height:46vh}
- .public-app .page-surface[data-page=track] .release-page{max-width:1240px}
+ /* Backgrounds span the workspace; only their inner content is constrained. */
+ .public-app .artwork-content .page-surface .track-page.track-editorial,
+ .public-app .artwork-content .page-surface .personal-mix-immersive{
+  max-width:none;
+  padding-inline:max(var(--app-gutter),calc((100% + 2 * var(--app-gutter) - 1240px) / 2));
+ }
  .public-app .artwork-content .track-page .release-toolbar{position:relative;transform:none;height:44px;min-height:44px;margin:0 0 24px;align-items:center}
  .public-app .track-page .release-header-full{display:grid;grid-template-columns:clamp(240px,26vw,340px) minmax(0,1fr);grid-template-rows:auto auto auto auto;column-gap:42px;align-content:center;max-width:none;min-height:340px;margin:0 0 36px;padding:0;text-align:left}
  .public-app .track-page .release-header-full .release-art{visibility:visible;width:100%;max-width:none;height:auto;aspect-ratio:1;margin:0;border-radius:22px;grid-column:1;grid-row:1/5}
