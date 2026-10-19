@@ -5,7 +5,7 @@ import {useAuth} from "@/lib/AuthContext";
 import {artistKey} from "@/lib/artistReleaseModel";
 import {useToast} from "@/components/ui/use-toast";
 import './artist-release-star.css';
-export default function ArtistReleaseFollow({name}){
+export default function ArtistReleaseFollow({name,variant="icon"}){
  const {user}=useAuth(),{toast}=useToast(),[followed,setFollowed]=useState(false),[busy,setBusy]=useState(false),[ready,setReady]=useState(false),[error,setError]=useState(false),lock=useRef(false),alive=useRef(true),readVersion=useRef(0),key=artistKey(name);
  async function read(){
   const version=++readVersion.current;
@@ -36,6 +36,10 @@ export default function ArtistReleaseFollow({name}){
   finally{lock.current=false;if(alive.current)setBusy(false);}
  }
  const label=error?"Retry notification setting for "+name:(followed?"Turn off":"Turn on")+" release notifications for "+name;
- return <button type="button" disabled={busy||!!user&&!ready} onClick={toggle} aria-pressed={followed} aria-label={label} title={label} className="artist-release-star">{busy||!!user&&!ready?<Loader2 size={21} className="animate-spin"/>:<Star size={23} fill={followed?"currentColor":"none"} strokeWidth={1.8}/>}</button>;
+ const menu=variant==="menu",loading=busy||!!user&&!ready;
+ return <button type="button" disabled={loading} onClick={toggle} role={menu?"menuitemcheckbox":undefined} aria-checked={menu?followed:undefined} aria-pressed={menu?undefined:followed} aria-label={label} title={label} className={menu?"artist-notification-menu-row w-full flex items-center gap-3 px-4 py-3 text-left text-sm text-popover-foreground hover:bg-accent focus-visible:bg-accent disabled:opacity-60":"artist-release-star"}>
+  {loading?<Loader2 size={menu?18:21} className="animate-spin shrink-0"/>:<Star size={menu?18:23} className="shrink-0" fill={followed?"currentColor":"none"} strokeWidth={1.8}/>}
+  {menu&&<span className="min-w-0 flex-1">{error?"Retry notifications":followed?"Notifications on":"Notify me"} · {name}</span>}
+ </button>;
 }
 
