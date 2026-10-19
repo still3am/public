@@ -62,6 +62,23 @@ function fixture(){
  await assert.rejects(request,/replaced/);assert.equal(env.sideLoadedIdRef[0].current,'old');
  console.log('PASS blocking an uploader cancels a source lookup already in flight');
 }
+{
+ const {env,state}=fixture(),pending=deferred();
+ env.autoQueueLoadingRef={current:false};env.offlineAccountRef={current:'owner'};
+ env.getUserGenres=async()=>[];env.buildAutoQueue=()=>pending.promise;
+ const extend=callback('extendWithGenreRadio',env),request=extend({id:'song'});
+ await Promise.resolve();await Promise.resolve();env.stopPlayback();
+ pending.resolve([{id:'next'}]);assert.equal(await request,false);assert.deepEqual(state.queue,[]);
+ console.log('PASS canceled recommendations cannot rebuild a dismissed queue');
+}
+{
+ const {env,state}=fixture(),pending=deferred();env.offlineAccountRef={current:'owner'};
+ env.getOfflineQueue=()=>pending.promise;env.currentTrack={id:'old'};env.countedRef={current:new Set()};env.loadOnActive=()=>{throw Error('Stale offline playback');};
+ const advance=callback('advanceOffline',env),request=advance();
+ env.stopPlayback();env.offlineAccountRef.current='new-owner';
+ pending.resolve([{id:'cached'}]);await request;assert.deepEqual(state.queue,[]);
+ console.log('PASS delayed offline advance cannot restart playback after account switching');
+}
 // Execute the actual offline-artwork hook with controlled async storage reads.
 let state,scheduled,cleanup,previousDeps,uid='first-user',pending=new Map(),revoked=[];
 const hooks={
