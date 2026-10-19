@@ -212,14 +212,19 @@ html.modal-open .mobile-tab-bar { display: none !important; }
   border: 0; border-radius: 12px; background: transparent; color: inherit;
   opacity: .65; transition: opacity .2s, background-color .2s;
 }
-.full-player-lyrics-toggle:not(.hidden) { display: inline-flex; }
+.full-player-lyrics-mobile { display: inline-flex; }
+.full-player-lyrics-desktop { display: none; }
+@media (min-width:1280px) {
+  .full-player-lyrics-mobile { display: none; }
+  .full-player-lyrics-desktop { display: inline-flex; }
+}
 .full-player-lyrics-toggle:hover { opacity: 1; background: rgba(255,255,255,.08); }
 .full-player-lyrics-toggle[aria-pressed=true] { opacity: 1; background: rgba(255,255,255,.18); }
 .full-player-lyrics-toggle:focus-visible { outline: 2px solid currentColor; outline-offset: 3px; }
 @media (max-width:1279px) {
   .full-player-main { padding-bottom: 0; }
   .full-player-visual { overflow: hidden; }
-  .full-player-art { max-width: min(38dvh, 80vw); max-height: 100%; width: auto; height: auto; }
+  .full-player-art { max-width: min(38dvh, 80vw); max-height: 100%; width: min(38dvh, 80vw); height: auto; }
 }
 @media (max-width:1279px) and (max-height:740px) {
   .full-player-visual { padding-block: 6px; }
