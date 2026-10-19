@@ -26,3 +26,4 @@ export default async function handler(req){
   return new Response(req.method==='HEAD'?null:html,{headers:{'Content-Type':'text/html; charset=utf-8','Cache-Control':'no-store','X-Content-Type-Options':'nosniff','Referrer-Policy':'no-referrer','Content-Security-Policy':`default-src 'none'; img-src https:; style-src 'unsafe-inline'; script-src 'nonce-${nonce}'; base-uri 'none'; frame-ancestors 'none'`}});
  }catch{return new Response('Song preview is temporarily unavailable. Please open PUBLIC.',{status:503,headers:{'Cache-Control':'no-store'}});}
 }
+if(typeof Deno!=="undefined")Deno.serve(handler);
