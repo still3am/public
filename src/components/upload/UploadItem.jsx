@@ -7,6 +7,7 @@ import {
   Sparkles } from
 "lucide-react";
 import MusicVideoPicker from "@/components/upload/MusicVideoPicker";
+import AlbumMetadataFields from "@/components/upload/AlbumMetadataFields";
 import GenrePicker from "@/components/GenrePicker";
 import ReleaseChecklist from "@/components/upload/ReleaseChecklist";
 import CoverPicker from "@/components/upload/CoverPicker";
@@ -89,6 +90,7 @@ export default function UploadItem({
             </button>
           </div>
 
+          <AlbumMetadataFields value={item} onChange={onChange} disabled={locked}/>
           <div className="flex items-center gap-3">
             <div className="w-full sm:max-w-[16rem] flex-1">
               <GenrePicker value={item.genre} onChange={(g) => onChange({ genre: g })} />
