@@ -24,5 +24,5 @@ export default function AlbumLibraryButton({tracks}){
   }catch{if(alive.current&&account.current===uid)toast({title:'Couldn’t finish saving the album. Please retry.',description:'Songs already saved will stay in your library.',variant:'destructive'});}
   finally{lock.current=false;if(alive.current)setBusy(false);}
  }
- return <button className="release-add-button" onClick={save} disabled={busy||saved} aria-busy={busy} aria-label={busy?'Saving album':saved?'Album in your library':'Add album to library'} title={saved?'Album in your library':'Add album to library'}>{busy?<Loader2 size={23} className="animate-spin"/>:saved?<Check size={24}/>:<Plus size={24}/>}</button>;
+ return <button className="release-add-button" onClick={save} disabled={busy||saved} aria-pressed={saved} aria-busy={busy} aria-label={busy?'Saving album':saved?'Album in your library':'Add album to library'} title={saved?'Album in your library':'Add album to library'}>{busy?<Loader2 size={23} className="animate-spin"/>:saved?<Check size={24}/>:<Plus size={24}/>}</button>;
 }
