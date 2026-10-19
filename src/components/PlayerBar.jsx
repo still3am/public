@@ -112,15 +112,15 @@ export default function PlayerBar() {
               }
             </div>
             <div className="min-w-0 flex-1">
-              <div className="text-sm font-semibold truncate flex items-center gap-1.5">
-                <span className="min-w-0 flex-1"><OverflowText text={t.title}/></span>
+              <div className="text-sm font-semibold flex items-center gap-2 min-w-0">
+                <span className="min-w-0 shrink"><OverflowText text={t.title}/></span>
                 {t.explicit &&
-                <span className="px-1 py-0.5 rounded bg-foreground/15 text-[9px] font-extrabold leading-none">E</span>
+                <span className="shrink-0 px-1 py-0.5 rounded bg-foreground/15 text-[9px] font-extrabold leading-none">E</span>
                 }
-              </div>
-              <div className="text-xs text-foreground/50 flex items-center gap-2 min-w-0">
-                <span className="min-w-0 flex-1 truncate"><OverflowText text={t.artist || t.uploader_name || "Unknown"}/></span>
                 <PureBadge compact/>
+              </div>
+              <div className="text-xs text-foreground/50 min-w-0">
+                <OverflowText text={t.artist || t.uploader_name || "Unknown"}/>
               </div>
               <div className="text-[10px] text-foreground/40 mt-0.5 hidden sm:flex items-center gap-1">
                 <span>{formatTime(p.position)}</span>
