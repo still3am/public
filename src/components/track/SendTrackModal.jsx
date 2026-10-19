@@ -1,3 +1,4 @@
+import {sharePublicSongLink} from "@/lib/shareTrack";
 import {reportActionError} from "@/lib/actionError";
 import {useSafety} from "@/context/SafetyContext";
 import {searchPeople} from "@/lib/globalSearch";
@@ -44,6 +45,9 @@ export default function SendTrackModal({ track, onClose }) {
   const [note, setNote] = useState("");
   const [sending, setSending] = useState(false);
   const [sent, setSent] = useState(null);
+  const [deliveryError,setDeliveryError]=useState("");
+  const [linkStatus,setLinkStatus]=useState(""),[sharingLink,setSharingLink]=useState(false);
+  const sharingLinkRef=useRef(false);
 
   useEffect(() => {
     const id=++request.current;setSearchFailed(false);
@@ -67,13 +71,13 @@ export default function SendTrackModal({ track, onClose }) {
     return () => {request.current++;clearTimeout(timer);};
   }, [query,retry,user?.id]);
 
-  useEffect(()=>{setPicked(null);setSent(null);setNote("");setQuery("");setResults([]);},[track?.id,user?.id]);
+  useEffect(()=>{setPicked(null);setSent(null);setNote("");setQuery("");setResults([]);setDeliveryError("");setLinkStatus("");},[track?.id,user?.id]);
 
   if (!track) return null;
 
   const send = async () => {
     if (!picked || !user?.id || sendingRef.current) return;
-    sendingRef.current=true;setSending(true);const started=seed.current;
+    sendingRef.current=true;setSending(true);setDeliveryError("");const started=seed.current;
     try {
       const saved=await base44.entities.Notification.create({
         user_id: picked.id,
@@ -85,10 +89,23 @@ export default function SendTrackModal({ track, onClose }) {
       if(!saved?.id)throw Error("Song delivery was not confirmed");
       if(alive.current&&seed.current===started)setSent({ person: picked, note: note.trim() });
     } catch(error) {
-      if(alive.current&&seed.current===started)reportActionError(error,"Couldn’t send this song. Your message is still here.");
+      if(alive.current&&seed.current===started){
+        if((error?.status??error?.response?.status)===402)setDeliveryError("In-app sending is temporarily unavailable. Your note is still here.");
+        else reportActionError(error,"Couldn’t send this song. Your message is still here.");
+      }
     } finally {
       sendingRef.current=false;if(alive.current)setSending(false);
     }
+  };
+
+  const shareSongLink=async()=>{
+    if(sharingLinkRef.current||sendingRef.current)return;
+    sharingLinkRef.current=true;setSharingLink(true);setLinkStatus("");const started=seed.current;
+    try{
+      const result=await sharePublicSongLink(track);
+      if(alive.current&&seed.current===started&&result!=="cancelled")setLinkStatus(result==="copied"?"Link copied. Paste it into a message.":"Link shared. No PUBLIC notification was created.");
+    }catch(error){if(alive.current&&seed.current===started)reportActionError(error,"The song link could not be shared. Please retry.");}
+    finally{sharingLinkRef.current=false;if(alive.current)setSharingLink(false);}
   };
 
   const sendElsewhere = () => {
@@ -226,6 +243,8 @@ export default function SendTrackModal({ track, onClose }) {
           </>
         )}
 
+        {deliveryError&&<p role="status" className="mt-3 text-sm text-foreground/60">{deliveryError}</p>}
+        {linkStatus&&<p role="status" className="mt-3 text-sm text-foreground/60">{linkStatus}</p>}
         {sent ? (
           <div className="mt-3 space-y-2">
             <button
@@ -244,7 +263,7 @@ export default function SendTrackModal({ track, onClose }) {
         ) : picked ? (
           <button
             onClick={send}
-            disabled={sending}
+            disabled={sending||sharingLink}
             className="mt-3 w-full py-3 rounded-2xl bg-foreground text-background text-sm font-bold active:scale-[0.99] transition disabled:opacity-60 inline-flex items-center justify-center gap-2"
           >
             {sending ? <Loader2 size={16} className="animate-spin" /> : <Send size={15} />}
@@ -258,6 +277,12 @@ export default function SendTrackModal({ track, onClose }) {
             Done
           </button>
         )}
+        {!sent&&track.is_published===true&&track.approval_status==="approved"&&<div className="mt-3 border-t border-border pt-3">
+          <button type="button" onClick={shareSongLink} disabled={sending||sharingLink} className="w-full min-h-11 rounded-full border border-border px-4 py-3 text-sm font-semibold disabled:opacity-60">
+            {sharingLink?"Opening share options…":"Share song link instead"}
+          </button>
+          <p className="mt-2 text-center text-xs text-foreground/50">Send through your phone’s share menu, or copy a link. This won’t send a notification inside PUBLIC.</p>
+        </div>}
       </div>
     </div>,
     document.body
