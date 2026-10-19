@@ -6,7 +6,7 @@ export function useNotePreview({active,accountId,scope}){
  latest.current=player;
  const [state,setState]=useState({trackId:null,playing:false,loading:false});
  const controller=useRef(null);
- if(!controller.current)controller.current=createNotePreview({acquire:cancel=>latest.current.acquireNotePreview(cancel),onChange:value=>{if(alive.current)setState(value);}});
+ if(!controller.current)controller.current=createNotePreview({acquire:cancel=>latest.current.acquireNotePreview(cancel),createAudio:()=>{const audio=new Audio();audio.volume=latest.current.volume;audio.muted=latest.current.muted;return audio;},onChange:value=>{if(alive.current)setState(value);}});
  useEffect(()=>{alive.current=true;return()=>{alive.current=false;controller.current.stop();};},[]);
  useEffect(()=>{if(!active)controller.current.stop();},[active]);
  useEffect(()=>()=>controller.current.stop(),[accountId,scope]);
