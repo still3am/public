@@ -10,9 +10,9 @@ await check('playback speed adjusts time remaining',async()=>assert.equal(transi
 await check('finished track cannot begin a fade',async()=>assert.equal(transitionDuration(4,0,100),0));
 const values=new Map();let quota=false;globalThis.localStorage={getItem:k=>values.get(k)||null,setItem:(k,v)=>{if(quota)throw Error('Quota');values.set(k,v);}};globalThis.CustomEvent=class{constructor(type,init){this.type=type;this.detail=init.detail;}};globalThis.window={addEventListener(){},dispatchEvent(){}};
 const prefs=await import('../src/lib/transitions.js');
-await check('preferences sanitize mode and duration',async()=>{assert.deepEqual(prefs.setTransitionSettings({mode:'invalid',crossfadeSeconds:500}),{mode:'off',crossfadeSeconds:12});assert.equal(prefs.setTransitionSettings({crossfadeSeconds:-1}).crossfadeSeconds,1);});
+await check('preferences sanitize mode and duration',async()=>{assert.deepEqual(prefs.setTransitionSettings({mode:'invalid',crossfadeSeconds:500}),{mode:'off',crossfadeSeconds:12,preserveAlbums:true});assert.equal(prefs.setTransitionSettings({crossfadeSeconds:-1}).crossfadeSeconds,1);});
 await check('storage failure retains transition choice for session',async()=>{quota=true;prefs.setTransitionSettings({mode:'gapless',crossfadeSeconds:6});assert.equal(prefs.getTransitionSettings().mode,'gapless');quota=false;});
-await check('reset restores safe defaults',async()=>assert.deepEqual(prefs.resetTransitionSettings(),{mode:'off',crossfadeSeconds:4}));
+await check('reset restores safe defaults',async()=>assert.deepEqual(prefs.resetTransitionSettings(),{mode:'off',crossfadeSeconds:4,preserveAlbums:true}));
 globalThis.__playlistSdk={functions:{invoke:async()=>({data:{result:{id:'playlist'}}})}};
 const code=fs.readFileSync('src/lib/playlistActions.js','utf8').replace(/^import[^;]+;/gm,'');
 const lib=await import('data:text/javascript;base64,'+Buffer.from(code).toString('base64'));
