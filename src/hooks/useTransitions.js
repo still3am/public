@@ -31,6 +31,8 @@ export function useTransitions() {
 
   return {
     mode: settings.mode,
+    preserveAlbums: settings.preserveAlbums,
+    setPreserveAlbums: preserveAlbums=>update({preserveAlbums}),
     crossfadeSeconds: settings.crossfadeSeconds,
     setMode: (mode) => update({ mode }),
     setCrossfadeSeconds: (crossfadeSeconds) => update({ crossfadeSeconds }),
