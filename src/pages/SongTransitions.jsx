@@ -186,6 +186,7 @@ export default function SongTransitions() {
           </p>
         </section>
 
+        <section className="rounded-2xl border bg-card p-4"><label className="flex items-center justify-between gap-4"><span><strong className="text-sm">Preserve album flow</strong><span className="block text-xs text-muted-foreground mt-1">Use gapless playback for consecutive tracks on the same album, even when crossfade is selected.</span></span><input type="checkbox" role="switch" aria-label="Preserve album flow" checked={t.preserveAlbums} onChange={e=>t.setPreserveAlbums(e.target.checked)} className="w-5 h-5 shrink-0 accent-foreground"/></label></section>
         {/* Crossfade duration */}
         <section>
           <h2 className="text-[13px] font-medium text-muted-foreground px-4 mb-2">
