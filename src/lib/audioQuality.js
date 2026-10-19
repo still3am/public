@@ -62,7 +62,8 @@ export async function inspectAudioSource(url,{signal,fetcher=fetch}={}){
  const controller=new AbortController(),abort=()=>controller.abort();
  if(signal?.aborted)throw new DOMException("Aborted","AbortError");
  signal?.addEventListener("abort",abort,{once:true});
- const timer=setTimeout(abort,12000);
+ let timedOut=false;
+ const timer=setTimeout(()=>{timedOut=true;abort();},12000);
  let reader;
  try{
   const response=await fetcher(url,{headers:{Range:"bytes=0-"+(AUDIO_HEADER_LIMIT-1)},signal:controller.signal});
@@ -79,7 +80,8 @@ export async function inspectAudioSource(url,{signal,fetcher=fetch}={}){
   const bytes=new Uint8Array(size);let offset=0;
   for(const chunk of chunks){bytes.set(chunk,offset);offset+=chunk.length;}
   return inspectAudioHeader(bytes);
- }finally{
+ }catch(error){if(timedOut&&!signal?.aborted)throw Error("Source inspection timed out");throw error;}
+ finally{
   clearTimeout(timer);signal?.removeEventListener("abort",abort);
   try{await reader?.cancel();}catch{}controller.abort();
  }
