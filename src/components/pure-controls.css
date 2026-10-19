@@ -4,9 +4,12 @@
 .pure-control-header h3{display:flex;align-items:center;gap:8px;font-size:20px;font-weight:800;letter-spacing:.06em}
 .pure-control-header p{display:flex;align-items:center;gap:6px;margin-top:5px;font-size:11px;opacity:.6;line-height:1.4}
 .pure-status-dot{width:4px;height:4px;border-radius:50%;background:currentColor;opacity:.35}.pure-status-dot.is-active{opacity:1}
-.pure-switch{position:relative;width:48px;height:28px;flex-shrink:0;border-radius:99px;background:color-mix(in srgb,var(--pure-ink) 14%,transparent);transition:background .2s}
-.pure-switch span{display:block;position:absolute;width:20px;height:20px;top:4px;left:4px;border-radius:50%;background:var(--pure-ink);transition:transform .2s,background .2s}
-.pure-switch.is-on{background:var(--pure-ink)}.pure-switch.is-on span{background:var(--pure-surface);transform:translateX(20px)}
+.pure-switch{position:relative;width:56px;height:44px;flex-shrink:0;display:grid;place-items:center;cursor:pointer;touch-action:manipulation}
+.pure-switch input{position:absolute;inset:0;width:100%;height:100%;margin:0;opacity:0;z-index:1;cursor:inherit}
+.pure-switch-track{position:relative;display:block;width:48px;height:28px;border-radius:99px;background:color-mix(in srgb,var(--pure-ink) 14%,transparent);transition:background .2s;pointer-events:none}
+.pure-switch-thumb{display:block;position:absolute;width:20px;height:20px;top:4px;left:4px;border-radius:50%;background:var(--pure-ink);transition:transform .2s,background .2s}
+.pure-switch.is-on .pure-switch-track{background:var(--pure-ink)}.pure-switch.is-on .pure-switch-thumb{background:var(--pure-surface);transform:translateX(20px)}
+.pure-switch input:focus-visible+.pure-switch-track{outline:2px solid var(--pure-ink);outline-offset:4px}.pure-switch input:disabled+.pure-switch-track{opacity:.4}
 .pure-presets{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;margin-top:23px}
 .pure-presets button{min-height:44px;padding:10px 5px;border-radius:15px;background:transparent;border:1px solid color-mix(in srgb,var(--pure-ink) 12%,transparent);transition:background .2s,color .2s}
 .pure-presets strong{display:block;font-size:12px;font-weight:650}.pure-presets small{display:block;font-size:9px;opacity:.6;line-height:1.35;margin-top:5px}
