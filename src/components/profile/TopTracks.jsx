@@ -1,4 +1,7 @@
 import "./profile-edit-controls.css";
+import {DragDropContext,Droppable,Draggable} from "@hello-pangea/dnd";
+import {GripVertical} from "lucide-react";
+import {reorderTopTracks} from "@/lib/profileEditing";
 import { useEffect, useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { usePlayer } from "@/context/PlayerContext";
@@ -10,7 +13,7 @@ import HoverTrackMenu from "@/components/track/HoverTrackMenu";
 import { useLongPressMenu } from "@/hooks/useLongPressMenu";
 
 /** @param {any} props */
-function PinnedTrackCard({ track, onRemove, editMode }) {
+function PinnedTrackCard({ track, onRemove, editMode,queue,index }) {
   const p = usePlayer();
   const coverUrl = useCoverUrl(track.cover_art_url);
   const isCurrent = p.currentTrack?.id === track.id;
@@ -21,7 +24,7 @@ function PinnedTrackCard({ track, onRemove, editMode }) {
     e.stopPropagation();
     if (lp.consumeLongPress()) return;
     if (isCurrent) p.togglePlay();else
-    p.playTrackAt([track]);
+    p.playTrackAt(queue,index);
   }
 
   return (
@@ -84,84 +87,26 @@ function PinnedTrackCard({ track, onRemove, editMode }) {
 
 }
 
-/** @param {any} props */
-export default function TopTracks({ trackIds, editMode, userTracks, onChange }) {
-  const [pinnedTracks, setPinnedTracks] = useState([]);
-  const [pickerOpen, setPickerOpen] = useState(false);
 
-  const idsKey = (trackIds || []).join(",");
-  useEffect(() => {
-    const ids = (trackIds || []).filter(Boolean);
-    if (!ids.length) {setPinnedTracks([]);return;}
-    let active=true;
-    Promise.all(ids.map((id) => base44.entities.Track.get(id).catch(() => null))).then(results=>{if(active)setPinnedTracks(results.filter(Boolean));});
-    return()=>{active=false;};
-  }, [idsKey]); // eslint-disable-line react-hooks/exhaustive-deps
-
-  function removeTrack(id) {
-    onChange((trackIds || []).filter((tid) => tid !== id));
-  }
-
-  function toggleTrack(id) {
-    const current = trackIds || [];
-    if (current.includes(id)) {
-      onChange(current.filter((tid) => tid !== id));
-    } else if (current.length < 8) {
-      onChange([...current, id]);
-    }
-  }
-
-  const showSection = editMode || pinnedTracks.length > 0;
-
-  if (!showSection) return null;
-
-  return (
-    <div className="profile-pinned-section mb-8">
-      <h2 className="text-xl font-bold tracking-tight mb-4">{editMode ? "Your Top 8" : "On repeat"}</h2>
-      
-
-      
-      {pinnedTracks.length > 0 ?
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-          {pinnedTracks.map((t) =>
-        <PinnedTrackCard key={t.id} track={t} onRemove={removeTrack} editMode={editMode} />
-        )}
-          {editMode && pinnedTracks.length < 8 &&
-        <button
-          onClick={() => setPickerOpen(true)}
-          className="aspect-square rounded-xl border-2 border-dashed border-border grid place-items-center text-foreground/40 hover:bg-foreground/[0.02] transition"
-          aria-label="Add track">
-          
-              <Plus size={24} />
-            </button>
-        }
-        </div> :
-      editMode ?
-      <button
-        onClick={() => setPickerOpen(true)}
-        className="w-full p-6 rounded-2xl border-2 border-dashed border-border text-sm text-foreground/50 hover:bg-foreground/[0.02] transition">
-        
-          + Pin your top 8 tracks
-        </button> :
-      null}
-      
-
-
-
-
-
-
-      
-      {pickerOpen &&
-      <TrackPickerSheet
-        title="Choose your Top 8"
-        selectedIds={trackIds || []}
-        max={8}
-        tracks={userTracks}
-        onToggle={toggleTrack}
-        onClose={() => setPickerOpen(false)} />
-
-      }
-    </div>);
-
+function EditCover({url}){const source=useCoverUrl(url);return source?<img className="profile-top8-edit-cover" src={source} alt=""/>:<span className="profile-top8-edit-cover bg-muted"/>;}
+export default function TopTracks({trackIds=[],editMode,userTracks,onChange,label,onLabelChange,disabled=false}){
+ const p=usePlayer(),[pinnedTracks,setPinnedTracks]=useState([]),[pickerOpen,setPickerOpen]=useState(false),[error,setError]=useState(''),[revision,setRevision]=useState(0);
+ const idsKey=trackIds.join(',');
+ useEffect(()=>{let active=true;if(!trackIds.length){setPinnedTracks([]);return;}
+ Promise.all(trackIds.map(id=>base44.entities.Track.get(id).catch(()=>null))).then(results=>{if(active)setPinnedTracks(results.filter(Boolean));});return()=>{active=false;};},[idsKey,revision]); // eslint-disable-line react-hooks/exhaustive-deps
+ const byId=new Map(pinnedTracks.map(t=>[t.id,t]));
+ function toggle(id){if(disabled)return;onChange(trackIds.includes(id)?trackIds.filter(t=>t!==id):trackIds.length<8?[...trackIds,id]:trackIds);}
+ if(!editMode&&!trackIds.length)return null;
+ async function playAll(){setError('');try{p.setShuffle(false);await p.playTrackAt(pinnedTracks,0);}catch{setError('Couldn’t play these songs. Please retry.');}}
+ return <section className="profile-pinned-section mb-8">
+ <div className="profile-top8-heading"><h2>{editMode?'Your Top 8':label||'My rotation'}</h2>{!editMode&&pinnedTracks.length>0&&<button type="button" onClick={playAll}><Play size={14} fill="currentColor"/>Play all</button>}</div>
+ {editMode&&<><label className="profile-top8-label">Section title<input aria-label="Top 8 section title" maxLength={40} disabled={disabled} placeholder="My rotation" value={label||''} onChange={e=>onLabelChange?.(e.target.value)}/></label><p className="text-xs text-muted-foreground mb-3">Choose up to eight songs. Drag a handle to reorder, or focus it and press Space to use the arrow keys.</p>
+ <DragDropContext onDragEnd={({source,destination})=>{if(destination&&!disabled)onChange(reorderTopTracks(trackIds,source.index,destination.index));}}>
+ <Droppable droppableId="profile-top-eight">{provided=><div className="profile-top8-edit-list" ref={provided.innerRef} {...provided.droppableProps}>{trackIds.map((id,index)=>{const t=byId.get(id);return <Draggable key={id} draggableId={id} index={index} isDragDisabled={disabled}>{drag=><div ref={drag.innerRef} {...drag.draggableProps} className="profile-top8-edit-row"><button type="button" className="profile-top8-handle" aria-label={'Move '+(t?.title||'unavailable song')} {...drag.dragHandleProps}><GripVertical size={19}/></button><EditCover url={t?.cover_art_url}/><div className="profile-top8-edit-meta"><strong>{index+1}. {t?.title||'Unavailable song'}</strong><small>{t?.artist||'Remove this song or try again later'}</small></div><button type="button" disabled={disabled} className="profile-edit-circle profile-edit-circle-small" aria-label={'Remove '+(t?.title||'unavailable song')} onClick={()=>onChange(trackIds.filter(tid=>tid!==id))}><X size={14}/></button></div>}</Draggable>;})}{provided.placeholder}</div>}</Droppable></DragDropContext>
+ <button type="button" disabled={disabled||trackIds.length>=8} onClick={()=>setPickerOpen(true)} className="playlist-action"><Plus size={16}/>Add songs · {trackIds.length}/8</button></>}
+ {!editMode&&<div className="grid grid-cols-2 sm:grid-cols-4 gap-3">{pinnedTracks.map((track,index)=><PinnedTrackCard key={track.id} track={track} queue={pinnedTracks} index={index}/>)}</div>}
+ {!editMode&&trackIds.length>pinnedTracks.length&&<p className="text-xs text-muted-foreground mt-3">Some selected songs are unavailable. <button type="button" className="underline" onClick={()=>setRevision(v=>v+1)}>Retry</button></p>}
+ {error&&<p role="alert" className="profile-editor-error">{error}</p>}
+ {pickerOpen&&<TrackPickerSheet title="Choose your Top 8" selectedIds={trackIds} max={8} tracks={userTracks} onToggle={toggle} onClose={()=>setPickerOpen(false)}/>}
+ </section>;
 }
