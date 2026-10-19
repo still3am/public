@@ -1,5 +1,6 @@
 import TrackMusicVideo from "@/components/TrackMusicVideo";
 import "./track-editorial.css";
+import {useReleaseTheme} from "@/hooks/useReleaseTheme";
 import { shareTrack } from "@/lib/shareTrack";
 import { prepareTrackShare } from "@/lib/trackShareUrl";
 import { getPublishedTracks } from "@/lib/catalogCache";
@@ -23,6 +24,7 @@ import ArtistLinks from "@/components/ArtistLinks";
 import {
   ChevronLeft,
   Share2,
+  Shuffle,
   Music,
   Loader2,
   Play,
@@ -48,6 +50,7 @@ export default function TrackDetail() {
   const p = usePlayer();
   const [track, setTrack] = useState(null);
   const coverUrl = useCoverUrl(track?.cover_art_url);
+  const releaseTheme = useReleaseTheme(coverUrl);
   const [coverFailed, setCoverFailed] = useState(false);
   useEffect(() => setCoverFailed(false), [coverUrl]);
   const [loading, setLoading] = useState(true);
@@ -169,7 +172,7 @@ export default function TrackDetail() {
   [];
 
   return (
-    <div className="track-page track-editorial release-page mx-auto">
+    <div className="track-page track-editorial release-page mx-auto" style={releaseTheme}>
       <div className="release-toolbar">
         <button onClick={() => window.history.state?.idx > 0 ? nav(-1) : nav("/search")} className="release-round" aria-label="Back"><ChevronLeft size={26} /></button>
         <div className="release-toolbar-actions">
@@ -183,8 +186,9 @@ export default function TrackDetail() {
         
         <h1>{track.title}</h1>
         <div className="release-artist">{displayArtist ? <ArtistLinks artist={displayArtist} maxShown={8} linkClassName="hover:underline" /> : uploader && <Link to={"/profile/" + uploader.id}>{uploader.display_name || uploader.full_name || track.uploader_name}</Link>}</div>
-        <p className="release-subtitle">{[track.genre, track.duration_seconds > 0 ? formatTime(track.duration_seconds) : null].filter(Boolean).join(" · ")}{track.explicit && <span className="release-explicit" aria-label="Explicit">E</span>}</p>
+        <p className="release-subtitle">{[track.genre, track.release_year || null, track.duration_seconds > 0 ? formatTime(track.duration_seconds) : null].filter(Boolean).join(" · ")}{track.explicit && <span className="release-explicit" aria-label="Explicit">E</span>}</p>
         <div className="release-play-controls">
+          <button className="release-add-button release-shuffle-button" aria-label="Shuffle playback" aria-pressed={p.shuffle} onClick={() => {p.setShuffle(!p.shuffle);if (!isCurrent) p.playTrackAt([track]);}}><Shuffle size={22}/></button>
           <button className="release-play-button" onClick={() => isCurrent ? p.togglePlay() : p.playTrackAt([track])}>{isPlaying ? <Pause size={22} fill="currentColor" /> : <Play size={22} fill="currentColor" />}{isPlaying ? "Pause" : "Play"}</button>
           <LibraryButton track={track} size={24} className="release-add-button" />
         </div>
