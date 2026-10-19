@@ -14,7 +14,7 @@ const stubs=`
 const {requestPublicNote,savePublicNote,publicNoteError}=globalThis.__noteActions;
 const React=globalThis.__React,useState=globalThis.__state,useEffect=()=>{},useRef=initial=>({current:initial});
 const publicNoteDatabase=undefined;
-const base44={functions:{invoke:(...args)=>globalThis.__api(...args)}},useAuth=()=>({user:globalThis.__user}),usePlayer=()=>globalThis.__player,useCoverUrl=x=>x,useCoverPalette=()=>({colors:[]});
+const base44={functions:{invoke:(...args)=>globalThis.__api(...args)}},useAuth=()=>({user:globalThis.__user}),useNotePreview=()=>({trackId:globalThis.__player.currentTrack?.id,playing:globalThis.__player.isPlaying,stop:()=>calls.push("stop"),play:(track,ensure)=>ensure&&globalThis.__player.currentTrack?.id===track.id&&globalThis.__player.isPlaying?undefined:globalThis.__player.currentTrack?.id===track.id?globalThis.__player.togglePlay():globalThis.__player.playTrackAt([track])}),useCoverUrl=x=>x,useCoverPalette=()=>({colors:[]});
 const OverflowText="overflow-text",NoteEmojiPicker="emoji-picker",NoteReactions="note-reactions",MotionGradient="gradient",TrackPickerSheet="picker",Dialog="dialog",DialogContent="content",DialogHeader="header",DialogTitle="h1",DialogDescription="p";
 const Music2=()=>null,ImageIcon=Music2,Plus=Music2,Play=Music2,Pause=Music2,Loader2=Music2;
 `;
