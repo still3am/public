@@ -316626,5 +316626,3122 @@
         "trackId": 1839087089
       }
     ]
+  },
+  "mixTerm|nafla adrenaline": {
+    "query_url": "https://itunes.apple.com/search?term=nafla+adrenaline&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": []
+  },
+  "mixTerm|Carly Rae Jepsen After All": {
+    "query_url": "https://itunes.apple.com/search?term=Carly+Rae+Jepsen+After+All&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": [
+      {
+        "trackName": "After All",
+        "artistName": "Carly Rae Jepsen",
+        "collectionName": "Day and Night",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/after-all/6781767022?i=6781767024&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/after-all/6781767022?i=6781767024&uo=4",
+        "trackId": 6781767024
+      },
+      {
+        "trackName": "After Last Night",
+        "artistName": "Carly Rae Jepsen",
+        "collectionName": "The Loveliest Time",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/after-last-night/1697646383?i=1697646386&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/after-last-night/1697646383?i=1697646386&uo=4",
+        "trackId": 1697646386
+      },
+      {
+        "trackName": "Run Away With Me (Rostam Remix)",
+        "artistName": "Carly Rae Jepsen",
+        "collectionName": "Emotion (10th Anniversary Edition)",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/run-away-with-me-rostam-remix/1833371779?i=1833372116&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/run-away-with-me-rostam-remix/1833371779?i=1833372116&uo=4",
+        "trackId": 1833372116
+      },
+      {
+        "trackName": "Bends",
+        "artistName": "Carly Rae Jepsen",
+        "collectionName": "The Loneliest Time",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/bends/1637009231?i=1637009718&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/bends/1637009231?i=1637009718&uo=4",
+        "trackId": 1637009718
+      },
+      {
+        "trackName": "After All",
+        "artistName": "Carly Rae Jepsen",
+        "collectionName": "Day and Night (Continued)",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/after-all/6813657190?i=6813657193&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/after-all/6813657190?i=6813657193&uo=4",
+        "trackId": 6813657193
+      },
+      {
+        "trackName": "Now I Don't Hate California After All",
+        "artistName": "Carly Rae Jepsen",
+        "collectionName": "Dedicated Side B",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/now-i-dont-hate-california-after-all/1512161132?i=1512162356&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/now-i-dont-hate-california-after-all/1512161132?i=1512162356&uo=4",
+        "trackId": 1512162356
+      },
+      {
+        "trackName": "After All (Instrumental)",
+        "artistName": "Piano Dreamers",
+        "collectionName": "Piano Dreamers Cover Carly Rae Jepsen (Instrumental)",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/after-all-instrumental/6815817009?i=6815817012&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/after-all-instrumental/6815817009?i=6815817012&uo=4",
+        "trackId": 6815817012
+      },
+      {
+        "trackName": "Cut To The Feeling",
+        "artistName": "Carly Rae Jepsen",
+        "collectionName": "Cut To The Feeling - Single",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/cut-to-the-feeling/1445304934?i=1445304939&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/cut-to-the-feeling/1445304934?i=1445304939&uo=4",
+        "trackId": 1445304939
+      },
+      {
+        "trackName": "I Really Like You",
+        "artistName": "Carly Rae Jepsen",
+        "collectionName": "Emotion (10th Anniversary Edition)",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/i-really-like-you/1833371779?i=1833371784&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/i-really-like-you/1833371779?i=1833371784&uo=4",
+        "trackId": 1833371784
+      },
+      {
+        "trackName": "Call Me Maybe",
+        "artistName": "Carly Rae Jepsen",
+        "collectionName": "Kiss",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/call-me-maybe/1442997662?i=1442997912&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/call-me-maybe/1442997662?i=1442997912&uo=4",
+        "trackId": 1442997912
+      },
+      {
+        "trackName": "Real Love",
+        "artistName": "Carly Rae Jepsen",
+        "collectionName": "Dedicated",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/real-love/1459935069?i=1459935323&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/real-love/1459935069?i=1459935323&uo=4",
+        "trackId": 1459935323
+      },
+      {
+        "trackName": "Party for One",
+        "artistName": "Carly Rae Jepsen",
+        "collectionName": "Dedicated",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/party-for-one/1459935069?i=1459935539&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/party-for-one/1459935069?i=1459935539&uo=4",
+        "trackId": 1459935539
+      },
+      {
+        "trackName": "Call Me Maybe",
+        "artistName": "Carly Rae Jepsen",
+        "collectionName": "Kiss (Deluxe Version)",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/call-me-maybe/1440873664?i=1440874008&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/call-me-maybe/1440873664?i=1440874008&uo=4",
+        "trackId": 1440874008
+      },
+      {
+        "trackName": "Bends",
+        "artistName": "Carly Rae Jepsen",
+        "collectionName": "The Loneliest Time",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/bends/1648431434?i=1648431857&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/bends/1648431434?i=1648431857&uo=4",
+        "trackId": 1648431857
+      },
+      {
+        "trackName": "Good Time",
+        "artistName": "Owl City & Carly Rae Jepsen",
+        "collectionName": "Good Time - Single",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/good-time/1444320049?i=1444320054&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/good-time/1444320049?i=1444320054&uo=4",
+        "trackId": 1444320054
+      }
+    ]
+  },
+  "mixTerm|Light Adam & Eve": {
+    "query_url": "https://itunes.apple.com/search?term=Light+Adam+%26+Eve&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": [
+      {
+        "trackName": "Adam & Eve",
+        "artistName": "Half Light Music",
+        "collectionName": "Creative Differences",
+        "primaryGenreName": "Alternative",
+        "trackViewUrl": "https://music.apple.com/us/album/adam-eve/1487533973?i=1487533975&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/adam-eve/1487533973?i=1487533975&uo=4",
+        "trackId": 1487533975
+      },
+      {
+        "trackName": "Adam & Eve",
+        "artistName": "Calboy",
+        "collectionName": "Wildboy",
+        "primaryGenreName": "Hip-Hop/Rap",
+        "trackViewUrl": "https://music.apple.com/us/album/adam-eve/1465151264?i=1465151266&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/adam-eve/1465151264?i=1465151266&uo=4",
+        "trackId": 1465151266
+      },
+      {
+        "trackName": "Adam & Eve",
+        "artistName": "October Project",
+        "collectionName": "Falling Farther In",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/adam-eve/283449869?i=283449873&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/adam-eve/283449869?i=283449873&uo=4",
+        "trackId": 283449873
+      },
+      {
+        "trackName": "Adam & Eve",
+        "artistName": "Stephanie Poetri",
+        "collectionName": "Adam & Eve - Single",
+        "primaryGenreName": "Indie Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/adam-eve/1779175026?i=1779175030&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/adam-eve/1779175026?i=1779175030&uo=4",
+        "trackId": 1779175030
+      },
+      {
+        "trackName": "Adam & Eve",
+        "artistName": "Emanuel Reggae",
+        "collectionName": "Israel Vibration II",
+        "primaryGenreName": "Reggae",
+        "trackViewUrl": "https://music.apple.com/us/album/adam-eve/6823864024?i=6823864029&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/adam-eve/6823864024?i=6823864029&uo=4",
+        "trackId": 6823864029
+      },
+      {
+        "trackName": "Adam & Eve",
+        "artistName": "Anna Miriam Brown",
+        "collectionName": "Adam & Eve - Single",
+        "primaryGenreName": "New Age",
+        "trackViewUrl": "https://music.apple.com/us/album/adam-eve/1690995002?i=1690995003&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/adam-eve/1690995002?i=1690995003&uo=4",
+        "trackId": 1690995003
+      },
+      {
+        "trackName": "Adam & Eve",
+        "artistName": "Bryan Elijah Smith",
+        "collectionName": "Adam & Eve - Single",
+        "primaryGenreName": "Singer/Songwriter",
+        "trackViewUrl": "https://music.apple.com/us/album/adam-eve/1767337625?i=1767337626&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/adam-eve/1767337625?i=1767337626&uo=4",
+        "trackId": 1767337626
+      },
+      {
+        "trackName": "Adam & Eve",
+        "artistName": "Izzy Bizu",
+        "collectionName": "A Moment of Madness (Deluxe)",
+        "primaryGenreName": "R&B/Soul",
+        "trackViewUrl": "https://music.apple.com/us/album/adam-eve/1173955629?i=1173956416&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/adam-eve/1173955629?i=1173956416&uo=4",
+        "trackId": 1173956416
+      },
+      {
+        "trackName": "Adam & Eve (feat. Ben Fagan)",
+        "artistName": "Will Evans",
+        "collectionName": "Rise",
+        "primaryGenreName": "Rock",
+        "trackViewUrl": "https://music.apple.com/us/album/adam-eve-feat-ben-fagan/1435232761?i=1435233107&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/adam-eve-feat-ben-fagan/1435232761?i=1435233107&uo=4",
+        "trackId": 1435233107
+      },
+      {
+        "trackName": "Adam & Eve",
+        "artistName": "JR.",
+        "collectionName": "Adam & Eve - Single",
+        "primaryGenreName": "Spoken Word",
+        "trackViewUrl": "https://music.apple.com/us/album/adam-eve/1801053144?i=1801053145&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/adam-eve/1801053144?i=1801053145&uo=4",
+        "trackId": 1801053145
+      },
+      {
+        "trackName": "Adam & Eve (Swindle Remix)",
+        "artistName": "Izzy Bizu",
+        "collectionName": "Adam & Eve (Remixes) - Single",
+        "primaryGenreName": "R&B/Soul",
+        "trackViewUrl": "https://music.apple.com/us/album/adam-eve-swindle-remix/1002327332?i=1002327334&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/adam-eve-swindle-remix/1002327332?i=1002327334&uo=4",
+        "trackId": 1002327334
+      },
+      {
+        "trackName": "Adam & Eve",
+        "artistName": "Wonderful World Music Consort",
+        "collectionName": "Art of Making Icons: Orthodox Religion Faith – Meditation Music, Christian Prayers, Protestant Tradition, Quiet, Bible Scenes Reading",
+        "primaryGenreName": "New Age",
+        "trackViewUrl": "https://music.apple.com/us/album/adam-eve/1278928866?i=1278929622&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/adam-eve/1278928866?i=1278929622&uo=4",
+        "trackId": 1278929622
+      },
+      {
+        "trackName": "Adam & Eve",
+        "artistName": "Cameron Graves",
+        "collectionName": "Planetary Prince",
+        "primaryGenreName": "Jazz",
+        "trackViewUrl": "https://music.apple.com/us/album/adam-eve/1850037862?i=1850037991&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/adam-eve/1850037862?i=1850037991&uo=4",
+        "trackId": 1850037991
+      },
+      {
+        "trackName": "Adam & Eve (Live at Sugarshack Sessions)",
+        "artistName": "Will Evans",
+        "collectionName": "Will Evans Live at Sugarshack Sessions",
+        "primaryGenreName": "Singer/Songwriter",
+        "trackViewUrl": "https://music.apple.com/us/album/adam-eve-live-at-sugarshack-sessions/1498102289?i=1498102290&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/adam-eve-live-at-sugarshack-sessions/1498102289?i=1498102290&uo=4",
+        "trackId": 1498102290
+      },
+      {
+        "trackName": "Eve",
+        "artistName": "Pan Tèrra",
+        "collectionName": "Eve - Single",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/eve/1739773102?i=1739773105&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/eve/1739773102?i=1739773105&uo=4",
+        "trackId": 1739773105
+      }
+    ]
+  },
+  "mixTerm|Pavvse Aftermath": {
+    "query_url": "https://itunes.apple.com/search?term=Pavvse+Aftermath&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": []
+  },
+  "mixTerm|Fetty Wap Again": {
+    "query_url": "https://itunes.apple.com/search?term=Fetty+Wap+Again&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": [
+      {
+        "trackName": "Again",
+        "artistName": "Fetty Wap",
+        "collectionName": "Fetty Wap",
+        "primaryGenreName": "Hip-Hop/Rap",
+        "trackViewUrl": "https://music.apple.com/us/album/again/1039540785?i=1039540882&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/again/1039540785?i=1039540882&uo=4",
+        "trackId": 1039540882
+      },
+      {
+        "trackName": "679 (feat. Monty)",
+        "artistName": "Fetty Wap",
+        "collectionName": "Fetty Wap (Deluxe Edition)",
+        "primaryGenreName": "Hip-Hop/Rap",
+        "trackViewUrl": "https://music.apple.com/us/album/679-feat-monty/1039447856?i=1039447863&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/679-feat-monty/1039447856?i=1039447863&uo=4",
+        "trackId": 1039447863
+      },
+      {
+        "trackName": "Again",
+        "artistName": "Fetty Wap",
+        "collectionName": "Fetty Wap (Deluxe Edition)",
+        "primaryGenreName": "Hip-Hop/Rap",
+        "trackViewUrl": "https://music.apple.com/us/album/again/1039447856?i=1039448771&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/again/1039447856?i=1039448771&uo=4",
+        "trackId": 1039448771
+      },
+      {
+        "trackName": "Again (Fetty Wap - Guitar Cover)",
+        "artistName": "RayKelcey",
+        "collectionName": "Again (Fetty Wap - Guitar Cover) - Single",
+        "primaryGenreName": "Alternative",
+        "trackViewUrl": "https://music.apple.com/us/album/again-fetty-wap-guitar-cover/1848830089?i=1848830090&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/again-fetty-wap-guitar-cover/1848830089?i=1848830090&uo=4",
+        "trackId": 1848830090
+      },
+      {
+        "trackName": "Again (Originally Performed by Fetty Wap) [Karaoke Instrumental]",
+        "artistName": "Karaoke Freaks",
+        "collectionName": "Again (Originally Performed by Fetty Wap) [Karaoke Instrumental] - Single",
+        "primaryGenreName": "Karaoke",
+        "trackViewUrl": "https://music.apple.com/us/album/again-originally-performed-by-fetty-wap-karaoke-instrumental/1029862788?i=1029862792&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/again-originally-performed-by-fetty-wap-karaoke-instrumental/1029862788?i=1029862792&uo=4",
+        "trackId": 1029862792
+      },
+      {
+        "trackName": "Trap Queen",
+        "artistName": "Fetty Wap",
+        "collectionName": "Fetty Wap",
+        "primaryGenreName": "Hip-Hop/Rap",
+        "trackViewUrl": "https://music.apple.com/us/album/trap-queen/1039540785?i=1039540875&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/trap-queen/1039540785?i=1039540875&uo=4",
+        "trackId": 1039540875
+      },
+      {
+        "trackName": "Trap Queen",
+        "artistName": "Fetty Wap",
+        "collectionName": "Fetty Wap (Deluxe Edition)",
+        "primaryGenreName": "Hip-Hop/Rap",
+        "trackViewUrl": "https://music.apple.com/us/album/trap-queen/1039447856?i=1039447859&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/trap-queen/1039447856?i=1039447859&uo=4",
+        "trackId": 1039447859
+      },
+      {
+        "trackName": "All In My Head (Flex) [feat. Fetty Wap]",
+        "artistName": "Fifth Harmony",
+        "collectionName": "7/27 (Deluxe)",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/all-in-my-head-flex-feat-fetty-wap/1087445205?i=1087445220&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/all-in-my-head-flex-feat-fetty-wap/1087445205?i=1087445220&uo=4",
+        "trackId": 1087445220
+      },
+      {
+        "trackName": "Bang My Head (feat. Sia & Fetty Wap)",
+        "artistName": "David Guetta",
+        "collectionName": "Listen Again",
+        "primaryGenreName": "Dance",
+        "trackViewUrl": "https://music.apple.com/us/album/bang-my-head-feat-sia-fetty-wap/1052705453?i=1052705836&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/bang-my-head-feat-sia-fetty-wap/1052705453?i=1052705836&uo=4",
+        "trackId": 1052705836
+      },
+      {
+        "trackName": "Sweet Yamz",
+        "artistName": "Fetty Wap",
+        "collectionName": "Sweet Yamz - Single",
+        "primaryGenreName": "Hip-Hop/Rap",
+        "trackViewUrl": "https://music.apple.com/us/album/sweet-yamz/1653701841?i=1653701848&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/sweet-yamz/1653701841?i=1653701848&uo=4",
+        "trackId": 1653701848
+      },
+      {
+        "trackName": "Again (feat. XXXTENTACION)",
+        "artistName": "Noah Cyrus",
+        "collectionName": "Again (feat. XXXTENTACION) - Single",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/again-feat-xxxtentacion/1286870860?i=1286871115&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/again-feat-xxxtentacion/1286870860?i=1286871115&uo=4",
+        "trackId": 1286871115
+      },
+      {
+        "trackName": "The Mack (feat. Mark Morrison & Fetty Wap)",
+        "artistName": "Nevada",
+        "collectionName": "The Mack (feat. Mark Morrison & Fetty Wap) - Single",
+        "primaryGenreName": "Dance",
+        "trackViewUrl": "https://music.apple.com/us/album/the-mack-feat-mark-morrison-fetty-wap/1445013670?i=1445014092&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/the-mack-feat-mark-morrison-fetty-wap/1445013670?i=1445014092&uo=4",
+        "trackId": 1445014092
+      },
+      {
+        "trackName": "Again",
+        "artistName": "Janet Jackson",
+        "collectionName": "Janet.",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/again/1388413681?i=1388414162&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/again/1388413681?i=1388414162&uo=4",
+        "trackId": 1388414162
+      },
+      {
+        "trackName": "Again",
+        "artistName": "Lenny Kravitz",
+        "collectionName": "Greatest Hits",
+        "primaryGenreName": "Rock",
+        "trackViewUrl": "https://music.apple.com/us/album/again/723338099?i=723338381&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/again/723338099?i=723338381&uo=4",
+        "trackId": 723338381
+      },
+      {
+        "trackName": "Again",
+        "artistName": "Flyleaf",
+        "collectionName": "Memento Mori (Expanded Version)",
+        "primaryGenreName": "Hard Rock",
+        "trackViewUrl": "https://music.apple.com/us/album/again/1440752628?i=1440752803&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/again/1440752628?i=1440752803&uo=4",
+        "trackId": 1440752803
+      }
+    ]
+  },
+  "mixTerm|Elevation Español Agradecido Estoy": {
+    "query_url": "https://itunes.apple.com/search?term=Elevation+Espa%C3%B1ol+Agradecido+Estoy&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": [
+      {
+        "trackName": "Agradecido Estoy",
+        "artistName": "Elevation Español",
+        "collectionName": "ASÍ SERÁ",
+        "primaryGenreName": "Christian",
+        "trackViewUrl": "https://music.apple.com/us/album/agradecido-estoy/1876354019?i=1876354213&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/agradecido-estoy/1876354019?i=1876354213&uo=4",
+        "trackId": 1876354213
+      },
+      {
+        "trackName": "Agradecido Estoy",
+        "artistName": "Elevation Español",
+        "collectionName": "El Nombre De Jesús - EP",
+        "primaryGenreName": "Christian",
+        "trackViewUrl": "https://music.apple.com/us/album/agradecido-estoy/1873032523?i=1873032528&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/agradecido-estoy/1873032523?i=1873032528&uo=4",
+        "trackId": 1873032528
+      }
+    ]
+  },
+  "mixTerm|Grupo Arraigado Aguas Frescas": {
+    "query_url": "https://itunes.apple.com/search?term=Grupo+Arraigado+Aguas+Frescas&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": [
+      {
+        "trackName": "Aguas Frescas",
+        "artistName": "Grupo Arraigado",
+        "collectionName": "El Juez",
+        "primaryGenreName": "Latin",
+        "trackViewUrl": "https://music.apple.com/us/album/aguas-frescas/6801647700?i=6801647932&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/aguas-frescas/6801647700?i=6801647932&uo=4",
+        "trackId": 6801647932
+      }
+    ]
+  },
+  "mixTerm|untitled (halo) aimee lou wood freestyle": {
+    "query_url": "https://itunes.apple.com/search?term=untitled+%28halo%29+aimee+lou+wood+freestyle&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": []
+  },
+  "mixTerm|Rufus Ain't Nobody": {
+    "query_url": "https://itunes.apple.com/search?term=Rufus+Ain%27t+Nobody&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": [
+      {
+        "trackName": "Ain't Nobody",
+        "artistName": "Chaka Khan",
+        "collectionName": "Epiphany: The Best of Chaka Khan, Vol. 1",
+        "primaryGenreName": "R&B/Soul",
+        "trackViewUrl": "https://music.apple.com/us/album/aint-nobody/266611641?i=266611666&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/aint-nobody/266611641?i=266611666&uo=4",
+        "trackId": 266611666
+      },
+      {
+        "trackName": "Ain't Nobody (Live)",
+        "artistName": "Rufus and Chaka Khan",
+        "collectionName": "Stompin' at The Savoy (Live)",
+        "primaryGenreName": "Funk",
+        "trackViewUrl": "https://music.apple.com/us/album/aint-nobody-live/281619446?i=281619543&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/aint-nobody-live/281619446?i=281619543&uo=4",
+        "trackId": 281619543
+      },
+      {
+        "trackName": "Ain't Nobody",
+        "artistName": "Rufus & Chaka Khan",
+        "collectionName": "Air (Amazon Original Motion Picture Soundtrack)",
+        "primaryGenreName": "R&B/Soul",
+        "trackViewUrl": "https://music.apple.com/us/album/aint-nobody/1680251125?i=1680251129&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/aint-nobody/1680251125?i=1680251129&uo=4",
+        "trackId": 1680251129
+      },
+      {
+        "trackName": "Ain't Nobody (Loves Me Better) [feat. Jasmine Thompson] [Extended Mix]",
+        "artistName": "felix jaehn",
+        "collectionName": "Ain't Nobody (Loves Me Better) [Remix] [feat. Jasmine Thompson] - EP",
+        "primaryGenreName": "Dance",
+        "trackViewUrl": "https://music.apple.com/us/album/aint-nobody-loves-me-better-feat-jasmine-thompson-extended/1444267485?i=1444267488&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/aint-nobody-loves-me-better-feat-jasmine-thompson-extended/1444267485?i=1444267488&uo=4",
+        "trackId": 1444267488
+      },
+      {
+        "trackName": "Ain't Nobody (Radio Version)",
+        "artistName": "Cody Carnes",
+        "collectionName": "God Is Good! (Live)",
+        "primaryGenreName": "Christian",
+        "trackViewUrl": "https://music.apple.com/us/album/aint-nobody-radio-version/1641712197?i=1641713219&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/aint-nobody-radio-version/1641712197?i=1641713219&uo=4",
+        "trackId": 1641713219
+      },
+      {
+        "trackName": "Ain't Nobody (Live)",
+        "artistName": "Cody Carnes",
+        "collectionName": "God Is Good! (Live)",
+        "primaryGenreName": "Christian",
+        "trackViewUrl": "https://music.apple.com/us/album/aint-nobody-live/1641712197?i=1641712417&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/aint-nobody-live/1641712197?i=1641712417&uo=4",
+        "trackId": 1641712417
+      },
+      {
+        "trackName": "Ain't Nobody (Loves Me Better) [feat. Jasmine Thompson] [Prince Fox Remix]",
+        "artistName": "felix jaehn",
+        "collectionName": "Felix Jaehn - EP",
+        "primaryGenreName": "Dance",
+        "trackViewUrl": "https://music.apple.com/us/album/aint-nobody-loves-me-better-feat-jasmine-thompson-prince/1445288513?i=1445288519&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/aint-nobody-loves-me-better-feat-jasmine-thompson-prince/1445288513?i=1445288519&uo=4",
+        "trackId": 1445288519
+      },
+      {
+        "trackName": "Ain't Nobody (Loves Me Better) [feat. Jasmine Thompson]",
+        "artistName": "felix jaehn",
+        "collectionName": "Felix Jaehn - EP",
+        "primaryGenreName": "Dance",
+        "trackViewUrl": "https://music.apple.com/us/album/aint-nobody-loves-me-better-feat-jasmine-thompson/1445288513?i=1445288514&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/aint-nobody-loves-me-better-feat-jasmine-thompson/1445288513?i=1445288514&uo=4",
+        "trackId": 1445288514
+      },
+      {
+        "trackName": "Ain't Nobody",
+        "artistName": "Chaka Khan",
+        "collectionName": "Life Is a Dance (The Remix Project)",
+        "primaryGenreName": "Rock",
+        "trackViewUrl": "https://music.apple.com/us/album/aint-nobody/157822445?i=157822499&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/aint-nobody/157822445?i=157822499&uo=4",
+        "trackId": 157822499
+      },
+      {
+        "trackName": "Ain't Nobody",
+        "artistName": "Chaka Khan",
+        "collectionName": "Ain't Nobody / Sweet Thing (Live) [Digital 45] - Single",
+        "primaryGenreName": "R&B/Soul",
+        "trackViewUrl": "https://music.apple.com/us/album/aint-nobody/539974192?i=539974200&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/aint-nobody/539974192?i=539974200&uo=4",
+        "trackId": 539974200
+      },
+      {
+        "trackName": "Ain't Nobody",
+        "artistName": "Mary J. Blige",
+        "collectionName": "My Life II...The Journey Continues (Act 1) [Deluxe]",
+        "primaryGenreName": "R&B/Soul",
+        "trackViewUrl": "https://music.apple.com/us/album/aint-nobody/1442988659?i=1442988670&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/aint-nobody/1442988659?i=1442988670&uo=4",
+        "trackId": 1442988670
+      },
+      {
+        "trackName": "Ain't Nobody",
+        "artistName": "Janine",
+        "collectionName": "Ain't Nobody - Single",
+        "primaryGenreName": "R&B/Soul",
+        "trackViewUrl": "https://music.apple.com/us/album/aint-nobody/1502365085?i=1502365326&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/aint-nobody/1502365085?i=1502365326&uo=4",
+        "trackId": 1502365326
+      },
+      {
+        "trackName": "Ain't Nobody",
+        "artistName": "KStewart",
+        "collectionName": "Ain't Nobody - Single",
+        "primaryGenreName": "Dance",
+        "trackViewUrl": "https://music.apple.com/us/album/aint-nobody/1037590296?i=1037590304&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/aint-nobody/1037590296?i=1037590304&uo=4",
+        "trackId": 1037590304
+      },
+      {
+        "trackName": "Ain't Nobody",
+        "artistName": "LL COOL J",
+        "collectionName": "Mr. Smith (Deluxe Edition)",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/aint-nobody/1444060671?i=1444062047&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/aint-nobody/1444060671?i=1444062047&uo=4",
+        "trackId": 1444062047
+      },
+      {
+        "trackName": "Ain't Nobody (feat. Naughty By Nature)",
+        "artistName": "Monica",
+        "collectionName": "The Nutty Professor (Soundtrack from the Motion Picture)",
+        "primaryGenreName": "Soundtrack",
+        "trackViewUrl": "https://music.apple.com/us/album/aint-nobody-feat-naughty-by-nature/1442789184?i=1442789200&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/aint-nobody-feat-naughty-by-nature/1442789184?i=1442789200&uo=4",
+        "trackId": 1442789200
+      }
+    ]
+  },
+  "mixTerm|Jonathan Napoles ALABALE": {
+    "query_url": "https://itunes.apple.com/search?term=Jonathan+Napoles+ALABALE&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": [
+      {
+        "trackName": "ALÁBALE",
+        "artistName": "Jonathan Napoles",
+        "collectionName": "NUEVA TEMPORADA",
+        "primaryGenreName": "Christian",
+        "trackViewUrl": "https://music.apple.com/us/album/al%C3%A1bale/6784553697?i=6784553700&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/al%C3%A1bale/6784553697?i=6784553700&uo=4",
+        "trackId": 6784553700
+      }
+    ]
+  },
+  "mixTerm|ECCOS Alabaré": {
+    "query_url": "https://itunes.apple.com/search?term=ECCOS+Alabar%C3%A9&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": [
+      {
+        "trackName": "Alabaré (feat. Joel Rocco)",
+        "artistName": "ECCOS",
+        "collectionName": "ECCLESIA",
+        "primaryGenreName": "Christian",
+        "trackViewUrl": "https://music.apple.com/us/album/alabar%C3%A9-feat-joel-rocco/1891501872?i=1891501974&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/alabar%C3%A9-feat-joel-rocco/1891501872?i=1891501974&uo=4",
+        "trackId": 1891501974
+      },
+      {
+        "trackName": "Alabaré",
+        "artistName": "ECCOS & Joel Rocco",
+        "collectionName": "Alabaré - Single",
+        "primaryGenreName": "Christian",
+        "trackViewUrl": "https://music.apple.com/us/album/alabar%C3%A9/6801219599?i=6801219603&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/alabar%C3%A9/6801219599?i=6801219603&uo=4",
+        "trackId": 6801219603
+      }
+    ]
+  },
+  "mixTerm|World Worship ALABEN A YAHWEH": {
+    "query_url": "https://itunes.apple.com/search?term=World+Worship+ALABEN+A+YAHWEH&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": [
+      {
+        "trackName": "ALABEN A YAHWEH",
+        "artistName": "World Worship",
+        "collectionName": "ALABEN A YAHWEH - Single",
+        "primaryGenreName": "CCM",
+        "trackViewUrl": "https://music.apple.com/us/album/alaben-a-yahweh/1893775777?i=1893775780&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/alaben-a-yahweh/1893775777?i=1893775780&uo=4",
+        "trackId": 1893775780
+      }
+    ]
+  },
+  "mixTerm|2Pac All Eyez On Me": {
+    "query_url": "https://itunes.apple.com/search?term=2Pac+All+Eyez+On+Me&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": [
+      {
+        "trackName": "All Eyez On Me (feat. Big Syke)",
+        "artistName": "2Pac",
+        "collectionName": "All Eyez On Me",
+        "primaryGenreName": "Hip-Hop/Rap",
+        "trackViewUrl": "https://music.apple.com/us/album/all-eyez-on-me-feat-big-syke/1588492978?i=1588494313&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/all-eyez-on-me-feat-big-syke/1588492978?i=1588494313&uo=4",
+        "trackId": 1588494313
+      },
+      {
+        "trackName": "California Love (feat. Dr. Dre & Roger Troutman) [Remix]",
+        "artistName": "2Pac",
+        "collectionName": "All Eyez On Me",
+        "primaryGenreName": "Hip-Hop/Rap",
+        "trackViewUrl": "https://music.apple.com/us/album/california-love-feat-dr-dre-roger-troutman-remix/1588492978?i=1588493576&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/california-love-feat-dr-dre-roger-troutman-remix/1588492978?i=1588493576&uo=4",
+        "trackId": 1588493576
+      },
+      {
+        "trackName": "Ambitionz Az A Ridah",
+        "artistName": "2Pac",
+        "collectionName": "All Eyez On Me",
+        "primaryGenreName": "Hip-Hop/Rap",
+        "trackViewUrl": "https://music.apple.com/us/album/ambitionz-az-a-ridah/1588492978?i=1588493080&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/ambitionz-az-a-ridah/1588492978?i=1588493080&uo=4",
+        "trackId": 1588493080
+      },
+      {
+        "trackName": "Can't C Me",
+        "artistName": "2Pac",
+        "collectionName": "All Eyez On Me",
+        "primaryGenreName": "Hip-Hop/Rap",
+        "trackViewUrl": "https://music.apple.com/us/album/cant-c-me/1588492978?i=1588493881&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/cant-c-me/1588492978?i=1588493881&uo=4",
+        "trackId": 1588493881
+      },
+      {
+        "trackName": "2 Of Amerikaz Most Wanted (feat. Snoop Dogg)",
+        "artistName": "2Pac",
+        "collectionName": "All Eyez On Me",
+        "primaryGenreName": "Hip-Hop/Rap",
+        "trackViewUrl": "https://music.apple.com/us/album/2-of-amerikaz-most-wanted-feat-snoop-dogg/1588492978?i=1588493354&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/2-of-amerikaz-most-wanted-feat-snoop-dogg/1588492978?i=1588493354&uo=4",
+        "trackId": 1588493354
+      },
+      {
+        "trackName": "How Do U Want It (feat. K-Ci & JoJo)",
+        "artistName": "2Pac",
+        "collectionName": "All Eyez On Me",
+        "primaryGenreName": "Hip-Hop/Rap",
+        "trackViewUrl": "https://music.apple.com/us/album/how-do-u-want-it-feat-k-ci-jojo/1588492978?i=1588493349&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/how-do-u-want-it-feat-k-ci-jojo/1588492978?i=1588493349&uo=4",
+        "trackId": 1588493349
+      },
+      {
+        "trackName": "Only God Can Judge Me (feat. Rappin' 4-Tay)",
+        "artistName": "2Pac",
+        "collectionName": "All Eyez On Me",
+        "primaryGenreName": "Hip-Hop/Rap",
+        "trackViewUrl": "https://music.apple.com/us/album/only-god-can-judge-me-feat-rappin-4-tay/1588492978?i=1588493567&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/only-god-can-judge-me-feat-rappin-4-tay/1588492978?i=1588493567&uo=4",
+        "trackId": 1588493567
+      },
+      {
+        "trackName": "Picture Me Rollin' (feat. Big Syke, CPO & Danny Boy)",
+        "artistName": "2Pac",
+        "collectionName": "All Eyez On Me",
+        "primaryGenreName": "Hip-Hop/Rap",
+        "trackViewUrl": "https://music.apple.com/us/album/picture-me-rollin-feat-big-syke-cpo-danny-boy/1588492978?i=1588494153&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/picture-me-rollin-feat-big-syke-cpo-danny-boy/1588492978?i=1588494153&uo=4",
+        "trackId": 1588494153
+      },
+      {
+        "trackName": "Ratha Be Ya N***a (feat. Richie Rich)",
+        "artistName": "2Pac",
+        "collectionName": "All Eyez On Me",
+        "primaryGenreName": "Hip-Hop/Rap",
+        "trackViewUrl": "https://music.apple.com/us/album/ratha-be-ya-n-a-feat-richie-rich/1588492978?i=1588494312&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/ratha-be-ya-n-a-feat-richie-rich/1588492978?i=1588494312&uo=4",
+        "trackId": 1588494312
+      },
+      {
+        "trackName": "I Ain't Mad At Cha (feat. Danny Boy)",
+        "artistName": "2Pac",
+        "collectionName": "All Eyez On Me",
+        "primaryGenreName": "Hip-Hop/Rap",
+        "trackViewUrl": "https://music.apple.com/us/album/i-aint-mad-at-cha-feat-danny-boy/1588492978?i=1588493580&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/i-aint-mad-at-cha-feat-danny-boy/1588492978?i=1588493580&uo=4",
+        "trackId": 1588493580
+      },
+      {
+        "trackName": "Run Tha Streetz (feat. Storm, Mutah & Michelle)",
+        "artistName": "2Pac",
+        "collectionName": "All Eyez On Me",
+        "primaryGenreName": "Hip-Hop/Rap",
+        "trackViewUrl": "https://music.apple.com/us/album/run-tha-streetz-feat-storm-mutah-michelle/1588492978?i=1588494315&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/run-tha-streetz-feat-storm-mutah-michelle/1588492978?i=1588494315&uo=4",
+        "trackId": 1588494315
+      },
+      {
+        "trackName": "All About U (feat. Yani Hadati, Snoop Doggy Dogg, Nate Dogg & Fatal)",
+        "artistName": "2Pac",
+        "collectionName": "All Eyez On Me",
+        "primaryGenreName": "Hip-Hop/Rap",
+        "trackViewUrl": "https://music.apple.com/us/album/all-about-u-feat-yani-hadati-snoop-doggy-dogg-nate-dogg-fatal/1588492978?i=1588493095&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/all-about-u-feat-yani-hadati-snoop-doggy-dogg-nate-dogg-fatal/1588492978?i=1588493095&uo=4",
+        "trackId": 1588493095
+      },
+      {
+        "trackName": "All Eyez on Me (Radio Edit &  [Urban Mix])",
+        "artistName": "Monica",
+        "collectionName": "All Eyez On Me EP",
+        "primaryGenreName": "R&B/Soul",
+        "trackViewUrl": "https://music.apple.com/us/album/all-eyez-on-me-radio-edit-urban-mix/1464238359?i=1464238361&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/all-eyez-on-me-radio-edit-urban-mix/1464238359?i=1464238361&uo=4",
+        "trackId": 1464238361
+      },
+      {
+        "trackName": "All Eyez on Me (Radio Edit Urban Mix)",
+        "artistName": "Monica",
+        "collectionName": "Totally R&B",
+        "primaryGenreName": "R&B/Soul",
+        "trackViewUrl": "https://music.apple.com/us/album/all-eyez-on-me-radio-edit-urban-mix/1308797959?i=1308797976&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/all-eyez-on-me-radio-edit-urban-mix/1308797959?i=1308797976&uo=4",
+        "trackId": 1308797976
+      },
+      {
+        "trackName": "All Eyez On Me (Radio Edit (T40/Rhythm Mix))",
+        "artistName": "Monica",
+        "collectionName": "All Eyez On Me EP",
+        "primaryGenreName": "R&B/Soul",
+        "trackViewUrl": "https://music.apple.com/us/album/all-eyez-on-me-radio-edit-t40-rhythm-mix/1464238359?i=1464238360&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/all-eyez-on-me-radio-edit-t40-rhythm-mix/1464238359?i=1464238360&uo=4",
+        "trackId": 1464238360
+      }
+    ]
+  },
+  "mixTerm|Kodaline All I Want": {
+    "query_url": "https://itunes.apple.com/search?term=Kodaline+All+I+Want&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": [
+      {
+        "trackName": "All I Want",
+        "artistName": "Kodaline",
+        "collectionName": "In a Perfect World (Expanded Edition)",
+        "primaryGenreName": "Alternative",
+        "trackViewUrl": "https://music.apple.com/us/album/all-i-want/610186727?i=610187010&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/all-i-want/610186727?i=610187010&uo=4",
+        "trackId": 610187010
+      },
+      {
+        "trackName": "All I Want (iTunes Session)",
+        "artistName": "Kodaline",
+        "collectionName": "iTunes Session - EP",
+        "primaryGenreName": "Alternative",
+        "trackViewUrl": "https://music.apple.com/us/album/all-i-want-itunes-session/997288881?i=997288882&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/all-i-want-itunes-session/997288881?i=997288882&uo=4",
+        "trackId": 997288882
+      },
+      {
+        "trackName": "All I Want (Live)",
+        "artistName": "Kodaline",
+        "collectionName": "Live and Ready - EP",
+        "primaryGenreName": "Alternative",
+        "trackViewUrl": "https://music.apple.com/us/album/all-i-want-live/1078707098?i=1078707534&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/all-i-want-live/1078707098?i=1078707534&uo=4",
+        "trackId": 1078707534
+      },
+      {
+        "trackName": "All I Want (Live from Irving Plaza, NYC, 4 Dec 2018)",
+        "artistName": "Kodaline",
+        "collectionName": "Live from Irving Plaza, NYC, 4 Dec 2018",
+        "primaryGenreName": "Alternative",
+        "trackViewUrl": "https://music.apple.com/us/album/all-i-want-live-from-irving-plaza-nyc-4-dec-2018/1491213117?i=1491213575&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/all-i-want-live-from-irving-plaza-nyc-4-dec-2018/1491213117?i=1491213575&uo=4",
+        "trackId": 1491213575
+      },
+      {
+        "trackName": "All I Want",
+        "artistName": "Emma Bale",
+        "collectionName": "My World Untouched",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/all-i-want/1031862669?i=1031862670&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/all-i-want/1031862669?i=1031862670&uo=4",
+        "trackId": 1031862670
+      },
+      {
+        "trackName": "All I Want (Live in Dublin / 2022)",
+        "artistName": "Kodaline",
+        "collectionName": "Our Roots Run Deep (Live)",
+        "primaryGenreName": "Alternative",
+        "trackViewUrl": "https://music.apple.com/us/album/all-i-want-live-in-dublin-2022/1627609071?i=1627610060&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/all-i-want-live-in-dublin-2022/1627609071?i=1627610060&uo=4",
+        "trackId": 1627610060
+      },
+      {
+        "trackName": "All I Want",
+        "artistName": "Lauren Spencer Smith",
+        "collectionName": "Mixed Emotions - EP",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/all-i-want/1503516626?i=1503516863&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/all-i-want/1503516626?i=1503516863&uo=4",
+        "trackId": 1503516863
+      },
+      {
+        "trackName": "All I Want (Love That Lasts Mix)",
+        "artistName": "Olivia Rodrigo",
+        "collectionName": "All I Want (Love That Lasts Mix) - Single",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/all-i-want-love-that-lasts-mix/1512826061?i=1512826085&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/all-i-want-love-that-lasts-mix/1512826061?i=1512826085&uo=4",
+        "trackId": 1512826085
+      },
+      {
+        "trackName": "All I Want (feat. Brittany O’Grady & Evan Ross) [From “Star” Season 2]",
+        "artistName": "Star Cast",
+        "collectionName": "All I Want (feat. Brittany O’Grady & Evan Ross) [From “Star” Season 2] - Single",
+        "primaryGenreName": "Soundtrack",
+        "trackViewUrl": "https://music.apple.com/us/album/all-i-want-feat-brittany-ogrady-evan-ross-from-star-season-2/1367714497?i=1367721846&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/all-i-want-feat-brittany-ogrady-evan-ross-from-star-season-2/1367714497?i=1367721846&uo=4",
+        "trackId": 1367721846
+      },
+      {
+        "trackName": "All I Want",
+        "artistName": "The Offspring",
+        "collectionName": "Ixnay on the Hombre",
+        "primaryGenreName": "Rock",
+        "trackViewUrl": "https://music.apple.com/us/album/all-i-want/1440901407?i=1440901683&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/all-i-want/1440901407?i=1440901683&uo=4",
+        "trackId": 1440901683
+      },
+      {
+        "trackName": "All I Want",
+        "artistName": "Joni Mitchell",
+        "collectionName": "Blue",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/all-i-want/1492263092?i=1492263093&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/all-i-want/1492263092?i=1492263093&uo=4",
+        "trackId": 1492263093
+      },
+      {
+        "trackName": "All I Want",
+        "artistName": "A Day to Remember",
+        "collectionName": "What Separates Me From You",
+        "primaryGenreName": "Rock",
+        "trackViewUrl": "https://music.apple.com/us/album/all-i-want/1558581450?i=1558582135&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/all-i-want/1558581450?i=1558582135&uo=4",
+        "trackId": 1558582135
+      },
+      {
+        "trackName": "All I Want",
+        "artistName": "Toad the Wet Sprocket",
+        "collectionName": "Fear",
+        "primaryGenreName": "Alternative",
+        "trackViewUrl": "https://music.apple.com/us/album/all-i-want/193524736?i=193525533&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/all-i-want/193524736?i=193525533&uo=4",
+        "trackId": 193525533
+      },
+      {
+        "trackName": "All I Want",
+        "artistName": "Brent Faiyaz",
+        "collectionName": "Sonder Son",
+        "primaryGenreName": "R&B/Soul",
+        "trackViewUrl": "https://music.apple.com/us/album/all-i-want/1287758285?i=1287758658&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/all-i-want/1287758285?i=1287758658&uo=4",
+        "trackId": 1287758658
+      }
+    ]
+  },
+  "mixTerm|Naïka ALL MY LIFE": {
+    "query_url": "https://itunes.apple.com/search?term=Na%C3%AFka+ALL+MY+LIFE&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": [
+      {
+        "trackName": "ALL MY LIFE",
+        "artistName": "Naïka",
+        "collectionName": "ECLESIA",
+        "primaryGenreName": "Indie Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/all-my-life/1852358411?i=1852358445&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/all-my-life/1852358411?i=1852358445&uo=4",
+        "trackId": 1852358445
+      },
+      {
+        "trackName": "1+1=3",
+        "artistName": "Naïka",
+        "collectionName": "1+1=3 - Single",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/1-1-3/1699482350?i=1699482361&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/1-1-3/1699482350?i=1699482361&uo=4",
+        "trackId": 1699482361
+      },
+      {
+        "trackName": "All My Life",
+        "artistName": "Maysa",
+        "collectionName": "All My Life",
+        "primaryGenreName": "R&B/Soul",
+        "trackViewUrl": "https://music.apple.com/us/album/all-my-life/346458519?i=346458528&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/all-my-life/346458519?i=346458528&uo=4",
+        "trackId": 346458528
+      },
+      {
+        "trackName": "Got to Be Strong",
+        "artistName": "Maysa",
+        "collectionName": "All My Life",
+        "primaryGenreName": "R&B/Soul",
+        "trackViewUrl": "https://music.apple.com/us/album/got-to-be-strong/346458519?i=346458521&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/got-to-be-strong/346458519?i=346458521&uo=4",
+        "trackId": 346458521
+      },
+      {
+        "trackName": "Butterflies, Pt. 2 (Wale Remix)",
+        "artistName": "Queen Naija & Wale",
+        "collectionName": "Butterflies, Pt. 2 (Wale Remix) - Single",
+        "primaryGenreName": "R&B/Soul",
+        "trackViewUrl": "https://music.apple.com/us/album/butterflies-pt-2-wale-remix/1520481160?i=1520481163&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/butterflies-pt-2-wale-remix/1520481160?i=1520481163&uo=4",
+        "trackId": 1520481163
+      },
+      {
+        "trackName": "Head in the Clouds",
+        "artistName": "Naïka",
+        "collectionName": "Lost in Paradïse, Pt. 1 (EP)",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/head-in-the-clouds/1517671880?i=1517671948&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/head-in-the-clouds/1517671880?i=1517671948&uo=4",
+        "trackId": 1517671948
+      },
+      {
+        "trackName": "Mirrors",
+        "artistName": "Maysa",
+        "collectionName": "All My Life",
+        "primaryGenreName": "R&B/Soul",
+        "trackViewUrl": "https://music.apple.com/us/album/mirrors/346458519?i=346458523&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/mirrors/346458519?i=346458523&uo=4",
+        "trackId": 346458523
+      },
+      {
+        "trackName": "Shadows and the Light",
+        "artistName": "Maysa",
+        "collectionName": "All My Life",
+        "primaryGenreName": "R&B/Soul",
+        "trackViewUrl": "https://music.apple.com/us/album/shadows-and-the-light/346458519?i=346458540&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/shadows-and-the-light/346458519?i=346458540&uo=4",
+        "trackId": 346458540
+      },
+      {
+        "trackName": "Blue Light",
+        "artistName": "Maysa",
+        "collectionName": "All My Life",
+        "primaryGenreName": "R&B/Soul",
+        "trackViewUrl": "https://music.apple.com/us/album/blue-light/346458519?i=346458534&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/blue-light/346458519?i=346458534&uo=4",
+        "trackId": 346458534
+      },
+      {
+        "trackName": "Enchanté (feat. Naïka)",
+        "artistName": "SACHI",
+        "collectionName": "Enchanté (feat. Naïka) - Single",
+        "primaryGenreName": "Electronic",
+        "trackViewUrl": "https://music.apple.com/us/album/enchant%C3%A9-feat-na%C3%AFka/1502672843?i=1502672847&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/enchant%C3%A9-feat-na%C3%AFka/1502672843?i=1502672847&uo=4",
+        "trackId": 1502672847
+      },
+      {
+        "trackName": "Butterflies Pt. 2 (Wale Remix)",
+        "artistName": "Queen Naija & Wale",
+        "collectionName": "missunderstood…still",
+        "primaryGenreName": "R&B/Soul",
+        "trackViewUrl": "https://music.apple.com/us/album/butterflies-pt-2-wale-remix/1561094772?i=1561094779&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/butterflies-pt-2-wale-remix/1561094772?i=1561094779&uo=4",
+        "trackId": 1561094779
+      },
+      {
+        "trackName": "BLOOM",
+        "artistName": "Naïka",
+        "collectionName": "ECLESIA",
+        "primaryGenreName": "Indie Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/bloom/1852358411?i=1852358416&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/bloom/1852358411?i=1852358416&uo=4",
+        "trackId": 1852358416
+      },
+      {
+        "trackName": "BLOOM",
+        "artistName": "Naïka",
+        "collectionName": "BLOOM - Single",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/bloom/1825426082?i=1825426100&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/bloom/1825426082?i=1825426100&uo=4",
+        "trackId": 1825426100
+      },
+      {
+        "trackName": "Enchanté",
+        "artistName": "SACHI & Naïka",
+        "collectionName": "Breakfast with Ella - EP",
+        "primaryGenreName": "Electronic",
+        "trackViewUrl": "https://music.apple.com/us/album/enchant%C3%A9/1593324592?i=1593325107&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/enchant%C3%A9/1593324592?i=1593325107&uo=4",
+        "trackId": 1593325107
+      },
+      {
+        "trackName": "1+1 (Acoustic Live)",
+        "artistName": "Naïka",
+        "collectionName": "1+1 (Acoustic Live) - Single",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/1-1-acoustic-live/1735706667?i=1735706685&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/1-1-acoustic-live/1735706667?i=1735706685&uo=4",
+        "trackId": 1735706685
+      }
+    ]
+  },
+  "mixTerm|Sammy Adams All Night Longer REMIX": {
+    "query_url": "https://itunes.apple.com/search?term=Sammy+Adams+All+Night+Longer+REMIX&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": [
+      {
+        "trackName": "All Night Longer Remix (feat. B.o.B)",
+        "artistName": "Sammy Adams",
+        "collectionName": "All Night Longer Remix (feat. B.o.B) - Single",
+        "primaryGenreName": "Hip-Hop/Rap",
+        "trackViewUrl": "https://music.apple.com/us/album/all-night-longer-remix-feat-b-o-b/890520565?i=890520677&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/all-night-longer-remix-feat-b-o-b/890520565?i=890520677&uo=4",
+        "trackId": 890520677
+      },
+      {
+        "trackName": "All Night Long",
+        "artistName": "Mary Jane Girls",
+        "collectionName": "Mary Jane Girls",
+        "primaryGenreName": "R&B/Soul",
+        "trackViewUrl": "https://music.apple.com/us/album/all-night-long/1443147650?i=1443147666&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/all-night-long/1443147650?i=1443147666&uo=4",
+        "trackId": 1443147666
+      },
+      {
+        "trackName": "All Night Longer (feat. B.o.B) [It's The Kue Remix!]",
+        "artistName": "Sammy Adams",
+        "collectionName": "All Night Longer (feat. B.o.B) [It's the Kue Remix!] - Single",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/all-night-longer-feat-b-o-b-its-the-kue-remix/913762634?i=913762696&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/all-night-longer-feat-b-o-b-its-the-kue-remix/913762634?i=913762696&uo=4",
+        "trackId": 913762696
+      },
+      {
+        "trackName": "All Night Longer",
+        "artistName": "Big Brother",
+        "collectionName": "The Hydration EP - EP",
+        "primaryGenreName": "Hip-Hop/Rap",
+        "trackViewUrl": "https://music.apple.com/us/album/all-night-longer/1454205050?i=1454205052&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/all-night-longer/1454205050?i=1454205052&uo=4",
+        "trackId": 1454205052
+      },
+      {
+        "trackName": "All Night Longer (feat. B.o.B) [It's The Kue Remix!] [Radio Edit]",
+        "artistName": "Sammy Adams",
+        "collectionName": "All Night Longer (feat. B.o.B) [It's the Kue Remix!] [Radio Edit] - Single",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/all-night-longer-feat-b-o-b-its-the-kue-remix-radio-edit/913763564?i=913763575&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/all-night-longer-feat-b-o-b-its-the-kue-remix-radio-edit/913763564?i=913763575&uo=4",
+        "trackId": 913763575
+      },
+      {
+        "trackName": "All Night Longer (House)",
+        "artistName": "Bibi Rum",
+        "collectionName": "All Night Longer (House) - Single",
+        "primaryGenreName": "Electronic",
+        "trackViewUrl": "https://music.apple.com/us/album/all-night-longer-house/6786458055?i=6786458056&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/all-night-longer-house/6786458055?i=6786458056&uo=4",
+        "trackId": 6786458056
+      },
+      {
+        "trackName": "All Night",
+        "artistName": "The Vamps & Matoma",
+        "collectionName": "Night & Day (Deluxe Version)",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/all-night/1445310466?i=1445310485&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/all-night/1445310466?i=1445310485&uo=4",
+        "trackId": 1445310485
+      },
+      {
+        "trackName": "All Night Longer (Extended Workout Mix)",
+        "artistName": "DJ DMX",
+        "collectionName": "All Night Longer - Single (Workout Mix)",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/all-night-longer-extended-workout-mix/593661357?i=593661359&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/all-night-longer-extended-workout-mix/593661357?i=593661359&uo=4",
+        "trackId": 593661359
+      },
+      {
+        "trackName": "All Night",
+        "artistName": "Icona Pop",
+        "collectionName": "This Is... Icona Pop",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/all-night/821408753?i=821408860&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/all-night/821408753?i=821408860&uo=4",
+        "trackId": 821408860
+      },
+      {
+        "trackName": "All Night Longer (Dynamix Music Workout Mix)",
+        "artistName": "DJ DMX",
+        "collectionName": "All Night Longer - Single (Workout Mix)",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/all-night-longer-dynamix-music-workout-mix/593661357?i=593661360&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/all-night-longer-dynamix-music-workout-mix/593661357?i=593661360&uo=4",
+        "trackId": 593661360
+      },
+      {
+        "trackName": "All Night (Nick Talos Remix)",
+        "artistName": "The Vamps & Matoma",
+        "collectionName": "All Night (Nick Talos Remix) - Single",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/all-night-nick-talos-remix/1445052694?i=1445053069&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/all-night-nick-talos-remix/1445052694?i=1445053069&uo=4",
+        "trackId": 1445053069
+      },
+      {
+        "trackName": "All Night Longer",
+        "artistName": "Matt Lang",
+        "collectionName": "All Night Longer - Single",
+        "primaryGenreName": "Honky Tonk",
+        "trackViewUrl": "https://music.apple.com/us/album/all-night-longer/1718985604?i=1718985605&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/all-night-longer/1718985604?i=1718985605&uo=4",
+        "trackId": 1718985605
+      },
+      {
+        "trackName": "All Night Longer (130 BPM Workout Mix)",
+        "artistName": "DJ DMX",
+        "collectionName": "20 Top Hits Vol 2 (Workout Mixes) [Unmixed Songs For Fitness & Workout]",
+        "primaryGenreName": "Fitness & Workout",
+        "trackViewUrl": "https://music.apple.com/us/album/all-night-longer-130-bpm-workout-mix/627682005?i=627682508&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/all-night-longer-130-bpm-workout-mix/627682005?i=627682508&uo=4",
+        "trackId": 627682508
+      },
+      {
+        "trackName": "All Night Longer",
+        "artistName": "Matt Lang",
+        "collectionName": "All Night Longer",
+        "primaryGenreName": "Country",
+        "trackViewUrl": "https://music.apple.com/us/album/all-night-longer/1735953108?i=1735953109&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/all-night-longer/1735953108?i=1735953109&uo=4",
+        "trackId": 1735953109
+      },
+      {
+        "trackName": "All Night Longer (Dubstep)",
+        "artistName": "Raisin",
+        "collectionName": "All Night Longer (Dubstep) - Single",
+        "primaryGenreName": "Electronic",
+        "trackViewUrl": "https://music.apple.com/us/album/all-night-longer-dubstep/6787331156?i=6787331158&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/all-night-longer-dubstep/6787331156?i=6787331158&uo=4",
+        "trackId": 6787331158
+      }
+    ]
+  },
+  "mixTerm|Girlfriend All Of The Above": {
+    "query_url": "https://itunes.apple.com/search?term=Girlfriend+All+Of+The+Above&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": [
+      {
+        "trackName": "All Of The Above",
+        "artistName": "Girlfriend",
+        "collectionName": "All Of The Above - Single",
+        "primaryGenreName": "R&B/Soul",
+        "trackViewUrl": "https://music.apple.com/us/album/all-of-the-above/6802429593?i=6802429594&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/all-of-the-above/6802429593?i=6802429594&uo=4",
+        "trackId": 6802429594
+      },
+      {
+        "trackName": "Lone Star",
+        "artistName": "The Front Bottoms",
+        "collectionName": "Talon of the Hawk",
+        "primaryGenreName": "Rock",
+        "trackViewUrl": "https://music.apple.com/us/album/lone-star/1518089263?i=1518089950&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/lone-star/1518089263?i=1518089950&uo=4",
+        "trackId": 1518089950
+      },
+      {
+        "trackName": "Bow Wow (That's My Name) [feat. Snoop Dogg]",
+        "artistName": "Bow Wow",
+        "collectionName": "Beware of Dog",
+        "primaryGenreName": "Hip-Hop/Rap",
+        "trackViewUrl": "https://music.apple.com/us/album/bow-wow-thats-my-name-feat-snoop-dogg/315027516?i=315027773&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/bow-wow-thats-my-name-feat-snoop-dogg/315027516?i=315027773&uo=4",
+        "trackId": 315027773
+      },
+      {
+        "trackName": "Your Love",
+        "artistName": "The Outfield",
+        "collectionName": "Big Innings: Best of The Outfield",
+        "primaryGenreName": "Rock",
+        "trackViewUrl": "https://music.apple.com/us/album/your-love/186345874?i=186346150&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/your-love/186345874?i=186346150&uo=4",
+        "trackId": 186346150
+      },
+      {
+        "trackName": "My Clingy Girlfriend",
+        "artistName": "Psychostick",
+        "collectionName": "Space Vampires VS Zombie Dinosaurs in 3-D",
+        "primaryGenreName": "Metal",
+        "trackViewUrl": "https://music.apple.com/us/album/my-clingy-girlfriend/1877655165?i=1877655425&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/my-clingy-girlfriend/1877655165?i=1877655425&uo=4",
+        "trackId": 1877655425
+      },
+      {
+        "trackName": "Crooked Ways (feat. Terence F. Clark)",
+        "artistName": "Propaganda",
+        "collectionName": "Crooked",
+        "primaryGenreName": "Hip-Hop",
+        "trackViewUrl": "https://music.apple.com/us/album/crooked-ways-feat-terence-f-clark/1545541062?i=1545541065&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/crooked-ways-feat-terence-f-clark/1545541062?i=1545541065&uo=4",
+        "trackId": 1545541065
+      },
+      {
+        "trackName": "You Ain't Down",
+        "artistName": "Skee-Lo",
+        "collectionName": "I Wish",
+        "primaryGenreName": "Hip-Hop/Rap",
+        "trackViewUrl": "https://music.apple.com/us/album/you-aint-down/426327008?i=426327034&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/you-aint-down/426327008?i=426327034&uo=4",
+        "trackId": 426327034
+      },
+      {
+        "trackName": "You Ain't Down",
+        "artistName": "Skee-Lo",
+        "collectionName": "I Wish",
+        "primaryGenreName": "Hip-Hop/Rap",
+        "trackViewUrl": "https://music.apple.com/us/album/you-aint-down/925659201?i=925659218&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/you-aint-down/925659201?i=925659218&uo=4",
+        "trackId": 925659218
+      },
+      {
+        "trackName": "So Appalled (feat. JAŸ-Z, Pusha T, Prynce Cy Hi, Swizz Beatz & RZA)",
+        "artistName": "Kanye West, JAŸ-Z, Pusha T, CyHi, Swizz Beatz & RZA",
+        "collectionName": "My Beautiful Dark Twisted Fantasy (Deluxe Edition)",
+        "primaryGenreName": "Hip-Hop/Rap",
+        "trackViewUrl": "https://music.apple.com/us/album/so-appalled-feat-ja%C3%BF-z-pusha-t-prynce-cy-hi-swizz-beatz-rza/1445865909?i=1445866460&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/so-appalled-feat-ja%C3%BF-z-pusha-t-prynce-cy-hi-swizz-beatz-rza/1445865909?i=1445866460&uo=4",
+        "trackId": 1445866460
+      },
+      {
+        "trackName": "Pretty Girl (feat. Jacob Latimore & Lil Twist)",
+        "artistName": "Mindless Behavior",
+        "collectionName": "All Around the World",
+        "primaryGenreName": "R&B/Soul",
+        "trackViewUrl": "https://music.apple.com/us/album/pretty-girl-feat-jacob-latimore-lil-twist/1446742585?i=1446742681&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/pretty-girl-feat-jacob-latimore-lil-twist/1446742585?i=1446742681&uo=4",
+        "trackId": 1446742681
+      },
+      {
+        "trackName": "All My Life",
+        "artistName": "K-Ci & JoJo",
+        "collectionName": "Love Always",
+        "primaryGenreName": "R&B/Soul",
+        "trackViewUrl": "https://music.apple.com/us/album/all-my-life/1440488994?i=1440489006&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/all-my-life/1440488994?i=1440489006&uo=4",
+        "trackId": 1440489006
+      },
+      {
+        "trackName": "Break Bread",
+        "artistName": "Paul Wall",
+        "collectionName": "Already Famous",
+        "primaryGenreName": "Hip-Hop/Rap",
+        "trackViewUrl": "https://music.apple.com/us/album/break-bread/284538034?i=284538152&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/break-bread/284538034?i=284538152&uo=4",
+        "trackId": 284538152
+      },
+      {
+        "trackName": "You're Crashing, But You're No Wave",
+        "artistName": "Fall Out Boy",
+        "collectionName": "Infinity On High",
+        "primaryGenreName": "Alternative",
+        "trackViewUrl": "https://music.apple.com/us/album/youre-crashing-but-youre-no-wave/1445734010?i=1445734528&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/youre-crashing-but-youre-no-wave/1445734010?i=1445734528&uo=4",
+        "trackId": 1445734528
+      },
+      {
+        "trackName": "SHINE (golden hour sample) [feat. Lil Man J, Arden Jones & Micah Palace]",
+        "artistName": "JVKE, Ali Gatie, Prinz & JNR CHOI",
+        "collectionName": "SHINE (golden hour sample) [feat. Lil Man J, Arden Jones & Micah Palace] - Single",
+        "primaryGenreName": "Hip-Hop",
+        "trackViewUrl": "https://music.apple.com/us/album/shine-golden-hour-sample-feat-lil-man-j-arden-jones/1765565605?i=1765565666&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/shine-golden-hour-sample-feat-lil-man-j-arden-jones/1765565605?i=1765565666&uo=4",
+        "trackId": 1765565666
+      },
+      {
+        "trackName": "East Side Rendezvous",
+        "artistName": "Bryce Mensah",
+        "collectionName": "East Side Rendezvous - Single",
+        "primaryGenreName": "R&B/Soul",
+        "trackViewUrl": "https://music.apple.com/us/album/east-side-rendezvous/1599335806?i=1599335807&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/east-side-rendezvous/1599335806?i=1599335807&uo=4",
+        "trackId": 1599335807
+      }
+    ]
+  },
+  "mixTerm|Free All Right Now": {
+    "query_url": "https://itunes.apple.com/search?term=Free+All+Right+Now&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": [
+      {
+        "trackName": "All Right Now",
+        "artistName": "Free",
+        "collectionName": "20th Century Masters - The Millennium Collection: The Best of Free",
+        "primaryGenreName": "Rock",
+        "trackViewUrl": "https://music.apple.com/us/album/all-right-now/1440913166?i=1440913662&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/all-right-now/1440913166?i=1440913662&uo=4",
+        "trackId": 1440913662
+      },
+      {
+        "trackName": "All Right Now",
+        "artistName": "Free",
+        "collectionName": "Fire and Water",
+        "primaryGenreName": "Rock",
+        "trackViewUrl": "https://music.apple.com/us/album/all-right-now/1440833369?i=1440833833&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/all-right-now/1440833369?i=1440833833&uo=4",
+        "trackId": 1440833833
+      },
+      {
+        "trackName": "All Right Now (Single Version)",
+        "artistName": "Free",
+        "collectionName": "Fire and Water (Deluxe Edition)",
+        "primaryGenreName": "Rock",
+        "trackViewUrl": "https://music.apple.com/us/album/all-right-now-single-version/1452856310?i=1452857919&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/all-right-now-single-version/1452856310?i=1452857919&uo=4",
+        "trackId": 1452857919
+      },
+      {
+        "trackName": "All Right Now (Single)",
+        "artistName": "Free",
+        "collectionName": "All Right Now / The Stealer - Single",
+        "primaryGenreName": "Rock",
+        "trackViewUrl": "https://music.apple.com/us/album/all-right-now-single/1445128244?i=1445128246&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/all-right-now-single/1445128244?i=1445128246&uo=4",
+        "trackId": 1445128246
+      },
+      {
+        "trackName": "All Right Now (Single Version)",
+        "artistName": "Free",
+        "collectionName": "The Free Story",
+        "primaryGenreName": "Rock",
+        "trackViewUrl": "https://music.apple.com/us/album/all-right-now-single-version/1443208300?i=1443208441&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/all-right-now-single-version/1443208300?i=1443208441&uo=4",
+        "trackId": 1443208441
+      },
+      {
+        "trackName": "All Right Now",
+        "artistName": "Free",
+        "collectionName": "Fire and Water (Deluxe Edition)",
+        "primaryGenreName": "Rock",
+        "trackViewUrl": "https://music.apple.com/us/album/all-right-now/1452856310?i=1452857252&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/all-right-now/1452856310?i=1452857252&uo=4",
+        "trackId": 1452857252
+      },
+      {
+        "trackName": "All Right Now (Single Version)",
+        "artistName": "Free",
+        "collectionName": "Chronicles",
+        "primaryGenreName": "Rock",
+        "trackViewUrl": "https://music.apple.com/us/album/all-right-now-single-version/1444193256?i=1444193972&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/all-right-now-single-version/1444193256?i=1444193972&uo=4",
+        "trackId": 1444193972
+      },
+      {
+        "trackName": "All Right Now",
+        "artistName": "Free",
+        "collectionName": "Free Live!",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/all-right-now/1443736293?i=1443736376&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/all-right-now/1443736293?i=1443736376&uo=4",
+        "trackId": 1443736376
+      },
+      {
+        "trackName": "All Right Now (BBC \"Sounds of the Seventies\" Sessions 23/06/1970)",
+        "artistName": "Free",
+        "collectionName": "Fire and Water (Deluxe Edition)",
+        "primaryGenreName": "Rock",
+        "trackViewUrl": "https://music.apple.com/us/album/all-right-now-bbc-sounds-of-the-seventies-sessions-23-06-1970/1452856310?i=1452857378&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/all-right-now-bbc-sounds-of-the-seventies-sessions-23-06-1970/1452856310?i=1452857378&uo=4",
+        "trackId": 1452857378
+      },
+      {
+        "trackName": "All Right Now",
+        "artistName": "Free",
+        "collectionName": "20 #1's: Classic Rock, Vol. 2",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/all-right-now/1440897235?i=1440897570&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/all-right-now/1440897235?i=1440897570&uo=4",
+        "trackId": 1440897570
+      },
+      {
+        "trackName": "All Right Now",
+        "artistName": "Free",
+        "collectionName": "Throwback Tunes: Classic Rock",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/all-right-now/1446015797?i=1446015925&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/all-right-now/1446015797?i=1446015925&uo=4",
+        "trackId": 1446015925
+      },
+      {
+        "trackName": "All Right Now (BBC \"John Peel Sunday Concert\" 2/7/1970)",
+        "artistName": "Free",
+        "collectionName": "Fire and Water (Deluxe Edition)",
+        "primaryGenreName": "Rock",
+        "trackViewUrl": "https://music.apple.com/us/album/all-right-now-bbc-john-peel-sunday-concert-2-7-1970/1452856310?i=1452857560&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/all-right-now-bbc-john-peel-sunday-concert-2-7-1970/1452856310?i=1452857560&uo=4",
+        "trackId": 1452857560
+      },
+      {
+        "trackName": "All Right Now (Songs of Yesterday Version)",
+        "artistName": "Free",
+        "collectionName": "Fire and Water (Deluxe Edition)",
+        "primaryGenreName": "Rock",
+        "trackViewUrl": "https://music.apple.com/us/album/all-right-now-songs-of-yesterday-version/1452856310?i=1452857912&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/all-right-now-songs-of-yesterday-version/1452856310?i=1452857912&uo=4",
+        "trackId": 1452857912
+      },
+      {
+        "trackName": "All Right Now (Video Mix 1)",
+        "artistName": "Free",
+        "collectionName": "Fire and Water (Deluxe Edition)",
+        "primaryGenreName": "Rock",
+        "trackViewUrl": "https://music.apple.com/us/album/all-right-now-video-mix-1/1452856310?i=1452858486&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/all-right-now-video-mix-1/1452856310?i=1452858486&uo=4",
+        "trackId": 1452858486
+      },
+      {
+        "trackName": "Right Now (Na Na Na)",
+        "artistName": "Akon",
+        "collectionName": "Freedom",
+        "primaryGenreName": "R&B/Soul",
+        "trackViewUrl": "https://music.apple.com/us/album/right-now-na-na-na/1440742168?i=1440742169&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/right-now-na-na-na/1440742168?i=1440742169&uo=4",
+        "trackId": 1440742169
+      }
+    ]
+  },
+  "mixTerm|Eli Derby ALL THE TIME": {
+    "query_url": "https://itunes.apple.com/search?term=Eli+Derby+ALL+THE+TIME&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": [
+      {
+        "trackName": "ALL THE TIME",
+        "artistName": "Eli Derby",
+        "collectionName": "ALL THE TIME - Single",
+        "primaryGenreName": "R&B/Soul",
+        "trackViewUrl": "https://music.apple.com/us/album/all-the-time/1757690713?i=1757690899&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/all-the-time/1757690713?i=1757690899&uo=4",
+        "trackId": 1757690899
+      },
+      {
+        "trackName": "up",
+        "artistName": "Eli Derby",
+        "collectionName": "More Than Friends - EP",
+        "primaryGenreName": "R&B/Soul",
+        "trackViewUrl": "https://music.apple.com/us/album/up/1649891540?i=1649891550&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/up/1649891540?i=1649891550&uo=4",
+        "trackId": 1649891550
+      },
+      {
+        "trackName": "Gaslight",
+        "artistName": "Eli Derby",
+        "collectionName": "Gaslight - Single",
+        "primaryGenreName": "R&B/Soul",
+        "trackViewUrl": "https://music.apple.com/us/album/gaslight/1586885864?i=1586885867&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/gaslight/1586885864?i=1586885867&uo=4",
+        "trackId": 1586885867
+      },
+      {
+        "trackName": "Go Home",
+        "artistName": "Eli Derby",
+        "collectionName": "Left on Read - EP",
+        "primaryGenreName": "R&B/Soul",
+        "trackViewUrl": "https://music.apple.com/us/album/go-home/1614540451?i=1614541006&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/go-home/1614540451?i=1614541006&uo=4",
+        "trackId": 1614541006
+      },
+      {
+        "trackName": "good time",
+        "artistName": "Eli Derby",
+        "collectionName": "More Than Friends",
+        "primaryGenreName": "R&B/Soul",
+        "trackViewUrl": "https://music.apple.com/us/album/good-time/1649888176?i=1649888182&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/good-time/1649888176?i=1649888182&uo=4",
+        "trackId": 1649888182
+      },
+      {
+        "trackName": "up",
+        "artistName": "Eli Derby",
+        "collectionName": "More Than Friends",
+        "primaryGenreName": "R&B/Soul",
+        "trackViewUrl": "https://music.apple.com/us/album/up/1649888176?i=1649888189&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/up/1649888176?i=1649888189&uo=4",
+        "trackId": 1649888189
+      },
+      {
+        "trackName": "jayla's interlude",
+        "artistName": "Eli Derby",
+        "collectionName": "More Than Friends - EP",
+        "primaryGenreName": "R&B/Soul",
+        "trackViewUrl": "https://music.apple.com/us/album/jaylas-interlude/1649891540?i=1649891562&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/jaylas-interlude/1649891540?i=1649891562&uo=4",
+        "trackId": 1649891562
+      },
+      {
+        "trackName": "This Christmas",
+        "artistName": "Love Renaissance (LVRN) & Eli Derby",
+        "collectionName": "Home for the Holidays - EP",
+        "primaryGenreName": "R&B/Soul",
+        "trackViewUrl": "https://music.apple.com/us/album/this-christmas/1539592344?i=1539592632&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/this-christmas/1539592344?i=1539592632&uo=4",
+        "trackId": 1539592632
+      },
+      {
+        "trackName": "Skyfall",
+        "artistName": "Eli Derby",
+        "collectionName": "Left on Read - EP",
+        "primaryGenreName": "R&B/Soul",
+        "trackViewUrl": "https://music.apple.com/us/album/skyfall/1614540451?i=1614541002&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/skyfall/1614540451?i=1614541002&uo=4",
+        "trackId": 1614541002
+      },
+      {
+        "trackName": "Gaslight",
+        "artistName": "Eli Derby",
+        "collectionName": "Left on Read - EP",
+        "primaryGenreName": "R&B/Soul",
+        "trackViewUrl": "https://music.apple.com/us/album/gaslight/1614540451?i=1614540794&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/gaslight/1614540451?i=1614540794&uo=4",
+        "trackId": 1614540794
+      },
+      {
+        "trackName": "wicked",
+        "artistName": "Eli Derby",
+        "collectionName": "More Than Friends - EP",
+        "primaryGenreName": "R&B/Soul",
+        "trackViewUrl": "https://music.apple.com/us/album/wicked/1649891540?i=1649891560&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/wicked/1649891540?i=1649891560&uo=4",
+        "trackId": 1649891560
+      },
+      {
+        "trackName": "I Want It",
+        "artistName": "Eli Derby",
+        "collectionName": "LOVESHY",
+        "primaryGenreName": "R&B/Soul",
+        "trackViewUrl": "https://music.apple.com/us/album/i-want-it/6804077609?i=6804077927&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/i-want-it/6804077609?i=6804077927&uo=4",
+        "trackId": 6804077927
+      },
+      {
+        "trackName": "YOU (Remix)",
+        "artistName": "Journey Montana & Eli Derby",
+        "collectionName": "YOU (Remix) - Single",
+        "primaryGenreName": "R&B/Soul",
+        "trackViewUrl": "https://music.apple.com/us/album/you-remix/1781367273?i=1781367279&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/you-remix/1781367273?i=1781367279&uo=4",
+        "trackId": 1781367279
+      },
+      {
+        "trackName": "Reassurance",
+        "artistName": "Eli Derby & J.O.N",
+        "collectionName": "Slow Burn - EP",
+        "primaryGenreName": "R&B/Soul",
+        "trackViewUrl": "https://music.apple.com/us/album/reassurance/1843713128?i=1843713498&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/reassurance/1843713128?i=1843713498&uo=4",
+        "trackId": 1843713498
+      },
+      {
+        "trackName": "Lately",
+        "artistName": "Eli Derby & 6LACK",
+        "collectionName": "Lately - Single",
+        "primaryGenreName": "R&B/Soul",
+        "trackViewUrl": "https://music.apple.com/us/album/lately/1612117895?i=1612118203&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/lately/1612117895?i=1612118203&uo=4",
+        "trackId": 1612118203
+      }
+    ]
+  },
+  "mixTerm|for KING & COUNTRY alle": {
+    "query_url": "https://itunes.apple.com/search?term=for+KING+%26+COUNTRY+alle&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": [
+      {
+        "trackName": "Who I Hope to Be",
+        "artistName": "for KING & COUNTRY, Lucas Leach, Beth Easdown, India Brown, Charles Esten & Angel",
+        "collectionName": "Drummer Boy (Original Motion Picture Soundtrack) [Original Motion Picture Soundtrack]",
+        "primaryGenreName": "Soundtrack",
+        "trackViewUrl": "https://music.apple.com/us/album/who-i-hope-to-be/6819036608?i=6819036611&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/who-i-hope-to-be/6819036608?i=6819036611&uo=4",
+        "trackId": 6819036611
+      },
+      {
+        "trackName": "God Only Knows",
+        "artistName": "for KING & COUNTRY",
+        "collectionName": "Burn The Ships",
+        "primaryGenreName": "Christian",
+        "trackViewUrl": "https://music.apple.com/us/album/god-only-knows/1398353335?i=1398353598&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/god-only-knows/1398353335?i=1398353598&uo=4",
+        "trackId": 1398353598
+      },
+      {
+        "trackName": "miracle",
+        "artistName": "for KING & COUNTRY",
+        "collectionName": "the most beautiful colours",
+        "primaryGenreName": "Christian",
+        "trackViewUrl": "https://music.apple.com/us/album/miracle/6766330701?i=6766330704&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/miracle/6766330701?i=6766330704&uo=4",
+        "trackId": 6766330704
+      },
+      {
+        "trackName": "what if i told you?",
+        "artistName": "for KING & COUNTRY",
+        "collectionName": "the most beautiful colours",
+        "primaryGenreName": "Christian",
+        "trackViewUrl": "https://music.apple.com/us/album/what-if-i-told-you/6766330701?i=6766330705&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/what-if-i-told-you/6766330701?i=6766330705&uo=4",
+        "trackId": 6766330705
+      },
+      {
+        "trackName": "The Proof of Your Love",
+        "artistName": "for KING & COUNTRY",
+        "collectionName": "Crave",
+        "primaryGenreName": "Christian",
+        "trackViewUrl": "https://music.apple.com/us/album/the-proof-of-your-love/1163435935?i=1163435938&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/the-proof-of-your-love/1163435935?i=1163435938&uo=4",
+        "trackId": 1163435938
+      },
+      {
+        "trackName": "alle",
+        "artistName": "for KING & COUNTRY",
+        "collectionName": "the most beautiful colours",
+        "primaryGenreName": "Christian",
+        "trackViewUrl": "https://music.apple.com/us/album/alle/6766330701?i=6766330706&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/alle/6766330701?i=6766330706&uo=4",
+        "trackId": 6766330706
+      },
+      {
+        "trackName": "Fix My Eyes",
+        "artistName": "for KING & COUNTRY",
+        "collectionName": "Run Wild. Live Free. Love Strong. (Deluxe Anniversary Edition)",
+        "primaryGenreName": "Christian",
+        "trackViewUrl": "https://music.apple.com/us/album/fix-my-eyes/1219039811?i=1219039818&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/fix-my-eyes/1219039811?i=1219039818&uo=4",
+        "trackId": 1219039818
+      },
+      {
+        "trackName": "Fight On, Fighter",
+        "artistName": "for KING & COUNTRY",
+        "collectionName": "Burn The Ships",
+        "primaryGenreName": "Christian",
+        "trackViewUrl": "https://music.apple.com/us/album/fight-on-fighter/1398353335?i=1398353606&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/fight-on-fighter/1398353335?i=1398353606&uo=4",
+        "trackId": 1398353606
+      },
+      {
+        "trackName": "alle",
+        "artistName": "for KING & COUNTRY",
+        "collectionName": "the most beautiful colours (bonus track version)",
+        "primaryGenreName": "Christian",
+        "trackViewUrl": "https://music.apple.com/us/album/alle/6766329579?i=6766329583&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/alle/6766329579?i=6766329583&uo=4",
+        "trackId": 6766329583
+      },
+      {
+        "trackName": "Priceless (The Film Ballad) [feat. Bianca Santos]",
+        "artistName": "for KING & COUNTRY & I WAS THE LION",
+        "collectionName": "Priceless (Original Motion Picture Soundtrack)",
+        "primaryGenreName": "Christian",
+        "trackViewUrl": "https://music.apple.com/us/album/priceless-the-film-ballad-feat-bianca-santos/1205642330?i=1205642342&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/priceless-the-film-ballad-feat-bianca-santos/1205642330?i=1205642342&uo=4",
+        "trackId": 1205642342
+      },
+      {
+        "trackName": "joy.",
+        "artistName": "for KING & COUNTRY",
+        "collectionName": "Burn The Ships",
+        "primaryGenreName": "Christian",
+        "trackViewUrl": "https://music.apple.com/us/album/joy/1398353335?i=1398353596&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/joy/1398353335?i=1398353596&uo=4",
+        "trackId": 1398353596
+      },
+      {
+        "trackName": "Shoulders",
+        "artistName": "for KING & COUNTRY",
+        "collectionName": "Run Wild. Live Free. Love Strong. (Deluxe Anniversary Edition)",
+        "primaryGenreName": "Christian",
+        "trackViewUrl": "https://music.apple.com/us/album/shoulders/1219039811?i=1219039820&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/shoulders/1219039811?i=1219039820&uo=4",
+        "trackId": 1219039820
+      },
+      {
+        "trackName": "Priceless",
+        "artistName": "for KING & COUNTRY",
+        "collectionName": "Run Wild. Live Free. Love Strong. (Deluxe Anniversary Edition)",
+        "primaryGenreName": "Christian",
+        "trackViewUrl": "https://music.apple.com/us/album/priceless/1219039811?i=1219039821&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/priceless/1219039811?i=1219039821&uo=4",
+        "trackId": 1219039821
+      },
+      {
+        "trackName": "Shoulders (The Live Room Sessions at Rca Studio A)",
+        "artistName": "for KING & COUNTRY",
+        "collectionName": "The Live Room Sessions at Rca Studio A - EP",
+        "primaryGenreName": "Inspirational",
+        "trackViewUrl": "https://music.apple.com/us/album/shoulders-the-live-room-sessions-at-rca-studio-a/1816767718?i=1816767722&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/shoulders-the-live-room-sessions-at-rca-studio-a/1816767718?i=1816767722&uo=4",
+        "trackId": 1816767722
+      },
+      {
+        "trackName": "Run Wild. (feat. Andy Mineo) [The Live Room Sessions at Rca Studio A]",
+        "artistName": "for KING & COUNTRY",
+        "collectionName": "The Live Room Sessions at Rca Studio A - EP",
+        "primaryGenreName": "Inspirational",
+        "trackViewUrl": "https://music.apple.com/us/album/run-wild-feat-andy-mineo-the-live-room-sessions-at/1816767718?i=1816767719&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/run-wild-feat-andy-mineo-the-live-room-sessions-at/1816767718?i=1816767719&uo=4",
+        "trackId": 1816767719
+      }
+    ]
+  },
+  "mixTerm|Stevie Rizo All Yours": {
+    "query_url": "https://itunes.apple.com/search?term=Stevie+Rizo+All+Yours&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": [
+      {
+        "trackName": "All Yours",
+        "artistName": "Stevie Rizo",
+        "collectionName": "All Yours - Single",
+        "primaryGenreName": "Christian",
+        "trackViewUrl": "https://music.apple.com/us/album/all-yours/6786111610?i=6786111611&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/all-yours/6786111610?i=6786111611&uo=4",
+        "trackId": 6786111611
+      },
+      {
+        "trackName": "Esther",
+        "artistName": "Stevie Rizo",
+        "collectionName": "Esther - Single",
+        "primaryGenreName": "Christian",
+        "trackViewUrl": "https://music.apple.com/us/album/esther/1648814228?i=1648814233&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/esther/1648814228?i=1648814233&uo=4",
+        "trackId": 1648814233
+      },
+      {
+        "trackName": "Do You Mind (feat. Stevie Rizo)",
+        "artistName": "Yung Kriss",
+        "collectionName": "Ready For It All",
+        "primaryGenreName": "Christian",
+        "trackViewUrl": "https://music.apple.com/us/album/do-you-mind-feat-stevie-rizo/1723596724?i=1723596725&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/do-you-mind-feat-stevie-rizo/1723596724?i=1723596725&uo=4",
+        "trackId": 1723596725
+      },
+      {
+        "trackName": "Balance",
+        "artistName": "Stevie Rizo",
+        "collectionName": "From HIM To Hymn",
+        "primaryGenreName": "Christian",
+        "trackViewUrl": "https://music.apple.com/us/album/balance/1644596519?i=1644596521&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/balance/1644596519?i=1644596521&uo=4",
+        "trackId": 1644596521
+      },
+      {
+        "trackName": "Thank You",
+        "artistName": "Stevie Rizo",
+        "collectionName": "Good News - EP",
+        "primaryGenreName": "Christian",
+        "trackViewUrl": "https://music.apple.com/us/album/thank-you/1484567105?i=1484567466&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/thank-you/1484567105?i=1484567466&uo=4",
+        "trackId": 1484567466
+      },
+      {
+        "trackName": "El Shaddai",
+        "artistName": "Stevie Rizo",
+        "collectionName": "From HIM To Hymn",
+        "primaryGenreName": "Christian",
+        "trackViewUrl": "https://music.apple.com/us/album/el-shaddai/1644596519?i=1644596525&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/el-shaddai/1644596519?i=1644596525&uo=4",
+        "trackId": 1644596525
+      },
+      {
+        "trackName": "Powerful",
+        "artistName": "Stevie Rizo",
+        "collectionName": "From HIM To Hymn",
+        "primaryGenreName": "Christian",
+        "trackViewUrl": "https://music.apple.com/us/album/powerful/1644596519?i=1644596527&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/powerful/1644596519?i=1644596527&uo=4",
+        "trackId": 1644596527
+      },
+      {
+        "trackName": "Proverbs 31",
+        "artistName": "Stevie Rizo",
+        "collectionName": "Proverbs 31 - Single",
+        "primaryGenreName": "Christian",
+        "trackViewUrl": "https://music.apple.com/us/album/proverbs-31/1672489766?i=1672489767&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/proverbs-31/1672489766?i=1672489767&uo=4",
+        "trackId": 1672489767
+      },
+      {
+        "trackName": "YHWH (feat. GED)",
+        "artistName": "Stevie Rizo",
+        "collectionName": "From HIM To Hymn",
+        "primaryGenreName": "Christian",
+        "trackViewUrl": "https://music.apple.com/us/album/yhwh-feat-ged/1644596519?i=1644596526&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/yhwh-feat-ged/1644596519?i=1644596526&uo=4",
+        "trackId": 1644596526
+      },
+      {
+        "trackName": "When We Ride (feat. A'sha)",
+        "artistName": "Stevie Rizo",
+        "collectionName": "From HIM To Hymn",
+        "primaryGenreName": "Christian",
+        "trackViewUrl": "https://music.apple.com/us/album/when-we-ride-feat-asha/1644596519?i=1644596524&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/when-we-ride-feat-asha/1644596519?i=1644596524&uo=4",
+        "trackId": 1644596524
+      },
+      {
+        "trackName": "Unequally Yoked (feat. Stevie Rizo)",
+        "artistName": "Franchesca",
+        "collectionName": "Unequally Yoked (feat. Stevie Rizo) - Single",
+        "primaryGenreName": "R&B/Soul",
+        "trackViewUrl": "https://music.apple.com/us/album/unequally-yoked-feat-stevie-rizo/1679835660?i=1679835662&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/unequally-yoked-feat-stevie-rizo/1679835660?i=1679835662&uo=4",
+        "trackId": 1679835662
+      },
+      {
+        "trackName": "A Million Ways (feat. Stevie Rizo)",
+        "artistName": "Anike",
+        "collectionName": "EXIT",
+        "primaryGenreName": "Hip-Hop/Rap",
+        "trackViewUrl": "https://music.apple.com/us/album/a-million-ways-feat-stevie-rizo/1504149474?i=1504149686&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/a-million-ways-feat-stevie-rizo/1504149474?i=1504149686&uo=4",
+        "trackId": 1504149686
+      },
+      {
+        "trackName": "Circumstance",
+        "artistName": "Stevie Rizo",
+        "collectionName": "From HIM To Hymn",
+        "primaryGenreName": "Christian",
+        "trackViewUrl": "https://music.apple.com/us/album/circumstance/1644596519?i=1644596522&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/circumstance/1644596519?i=1644596522&uo=4",
+        "trackId": 1644596522
+      },
+      {
+        "trackName": "GodSpeed",
+        "artistName": "Stevie Rizo",
+        "collectionName": "From HIM To Hymn",
+        "primaryGenreName": "Christian",
+        "trackViewUrl": "https://music.apple.com/us/album/godspeed/1644596519?i=1644596520&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/godspeed/1644596519?i=1644596520&uo=4",
+        "trackId": 1644596520
+      },
+      {
+        "trackName": "Gangsta's Paradise (feat. L.V.) [2023 Remaster]",
+        "artistName": "Coolio",
+        "collectionName": "Gangsta's Paradise (Deluxe Edition)",
+        "primaryGenreName": "Hip-Hop/Rap",
+        "trackViewUrl": "https://music.apple.com/us/album/gangstas-paradise-feat-l-v-2023-remaster/1605189366?i=1605189373&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/gangstas-paradise-feat-l-v-2023-remaster/1605189366?i=1605189373&uo=4",
+        "trackId": 1605189373
+      }
+    ]
+  },
+  "mixTerm|Dj Em D Always Knew": {
+    "query_url": "https://itunes.apple.com/search?term=Dj+Em+D+Always+Knew&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": [
+      {
+        "trackName": "Always Knew",
+        "artistName": "Dj Em D & Reyne L.",
+        "collectionName": "Always Knew - Single",
+        "primaryGenreName": "R&B/Soul",
+        "trackViewUrl": "https://music.apple.com/us/album/always-knew/6772249503?i=6772249504&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/always-knew/6772249503?i=6772249504&uo=4",
+        "trackId": 6772249504
+      },
+      {
+        "trackName": "Whiskey Glasses",
+        "artistName": "Morgan Wallen",
+        "collectionName": "If I Know Me",
+        "primaryGenreName": "Country",
+        "trackViewUrl": "https://music.apple.com/us/album/whiskey-glasses/1752597785?i=1752598138&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/whiskey-glasses/1752597785?i=1752598138&uo=4",
+        "trackId": 1752598138
+      },
+      {
+        "trackName": "Work from Home (feat. Ty Dolla $ign)",
+        "artistName": "Fifth Harmony",
+        "collectionName": "7/27 (Deluxe)",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/work-from-home-feat-ty-dolla-%24ign/1087445205?i=1087445213&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/work-from-home-feat-ty-dolla-%24ign/1087445205?i=1087445213&uo=4",
+        "trackId": 1087445213
+      },
+      {
+        "trackName": "Unholy",
+        "artistName": "Sam Smith & Kim Petras",
+        "collectionName": "Unholy - Single",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/unholy/1643168265?i=1643168566&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/unholy/1643168265?i=1643168566&uo=4",
+        "trackId": 1643168566
+      },
+      {
+        "trackName": "New Rules",
+        "artistName": "Dua Lipa",
+        "collectionName": "Dua Lipa (Deluxe)",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/new-rules/1228741898?i=1228742334&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/new-rules/1228741898?i=1228742334&uo=4",
+        "trackId": 1228742334
+      },
+      {
+        "trackName": "You Know You Like It",
+        "artistName": "DJ Snake & AlunaGeorge",
+        "collectionName": "You Know You Like It - Single",
+        "primaryGenreName": "Dance",
+        "trackViewUrl": "https://music.apple.com/us/album/you-know-you-like-it/1444320811?i=1444320814&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/you-know-you-like-it/1444320811?i=1444320814&uo=4",
+        "trackId": 1444320814
+      },
+      {
+        "trackName": "The Way I Are (feat. Keri Hilson & D.O.E.)",
+        "artistName": "Timbaland",
+        "collectionName": "Shock Value",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/the-way-i-are-feat-keri-hilson-d-o-e/1440748593?i=1440748894&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/the-way-i-are-feat-keri-hilson-d-o-e/1440748593?i=1440748894&uo=4",
+        "trackId": 1440748894
+      },
+      {
+        "trackName": "HandClap",
+        "artistName": "Fitz and The Tantrums",
+        "collectionName": "Fitz & the Tantrums (Deluxe)",
+        "primaryGenreName": "Alternative",
+        "trackViewUrl": "https://music.apple.com/us/album/handclap/1262462639?i=1262463311&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/handclap/1262462639?i=1262463311&uo=4",
+        "trackId": 1262463311
+      },
+      {
+        "trackName": "Bad Habits",
+        "artistName": "Ed Sheeran",
+        "collectionName": "Bad Habits - Single",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/bad-habits/1571330207?i=1571330212&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/bad-habits/1571330207?i=1571330212&uo=4",
+        "trackId": 1571330212
+      },
+      {
+        "trackName": "Wake Me Up",
+        "artistName": "Avicii",
+        "collectionName": "True",
+        "primaryGenreName": "House",
+        "trackViewUrl": "https://music.apple.com/us/album/wake-me-up/1440872730?i=1440872929&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/wake-me-up/1440872730?i=1440872929&uo=4",
+        "trackId": 1440872929
+      },
+      {
+        "trackName": "Beer Never Broke My Heart",
+        "artistName": "Luke Combs",
+        "collectionName": "What You See Ain't Always What You Get (Deluxe Edition)",
+        "primaryGenreName": "Country",
+        "trackViewUrl": "https://music.apple.com/us/album/beer-never-broke-my-heart/1527782144?i=1527782145&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/beer-never-broke-my-heart/1527782144?i=1527782145&uo=4",
+        "trackId": 1527782145
+      },
+      {
+        "trackName": "BbY WOW",
+        "artistName": "KAROL G, Judeline & rusowsky",
+        "collectionName": "NO ME ARREPIENTO DE SENTIR TANTO",
+        "primaryGenreName": "Urbano latino",
+        "trackViewUrl": "https://music.apple.com/us/album/bby-wow/6796864741?i=6796864754&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/bby-wow/6796864741?i=6796864754&uo=4",
+        "trackId": 6796864754
+      },
+      {
+        "trackName": "Firework",
+        "artistName": "Katy Perry",
+        "collectionName": "Teenage Dream",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/firework/716192216?i=716192625&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/firework/716192216?i=716192625&uo=4",
+        "trackId": 716192625
+      },
+      {
+        "trackName": "Run",
+        "artistName": "OneRepublic",
+        "collectionName": "Human (Deluxe)",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/run/1502298673?i=1502298674&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/run/1502298673?i=1502298674&uo=4",
+        "trackId": 1502298674
+      },
+      {
+        "trackName": "CAFé CON RON",
+        "artistName": "Bad Bunny & Los Pleneros de la Cresta",
+        "collectionName": "DeBÍ TiRAR MáS FOToS",
+        "primaryGenreName": "Latin",
+        "trackViewUrl": "https://music.apple.com/us/album/caf%C3%A9-con-ron/1787022393?i=1787023682&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/caf%C3%A9-con-ron/1787022393?i=1787023682&uo=4",
+        "trackId": 1787023682
+      }
+    ]
+  },
+  "mixTerm|Dress & Tie Always Been You": {
+    "query_url": "https://itunes.apple.com/search?term=Dress+%26+Tie+Always+Been+You&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": [
+      {
+        "trackName": "Always Been You",
+        "artistName": "Dress & Tie, Stephen Sanchez & Devi",
+        "collectionName": "Dress & Tie - Single",
+        "primaryGenreName": "Singer/Songwriter",
+        "trackViewUrl": "https://music.apple.com/us/album/always-been-you/1850028002?i=1850028008&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/always-been-you/1850028002?i=1850028008&uo=4",
+        "trackId": 1850028008
+      },
+      {
+        "trackName": "Me Without You",
+        "artistName": "Dress & Tie, Stephen Sanchez & Devi",
+        "collectionName": "Dress & Tie - Single",
+        "primaryGenreName": "Singer/Songwriter",
+        "trackViewUrl": "https://music.apple.com/us/album/me-without-you/1850028002?i=1850028004&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/me-without-you/1850028002?i=1850028004&uo=4",
+        "trackId": 1850028004
+      },
+      {
+        "trackName": "What Did I Do?",
+        "artistName": "Dress & Tie, Stephen Sanchez & Devi",
+        "collectionName": "Dress & Tie - Single",
+        "primaryGenreName": "Singer/Songwriter",
+        "trackViewUrl": "https://music.apple.com/us/album/what-did-i-do/1850028002?i=1850028007&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/what-did-i-do/1850028002?i=1850028007&uo=4",
+        "trackId": 1850028007
+      },
+      {
+        "trackName": "Suit & Tie featuring JAŸ-Z (Radio Edit)",
+        "artistName": "Justin Timberlake",
+        "collectionName": "Suit & Tie featuring JAŸ-Z (Radio Edit) - Single",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/suit-tie-featuring-ja%C3%BF-z-radio-edit/598779346?i=598779348&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/suit-tie-featuring-ja%C3%BF-z-radio-edit/598779346?i=598779348&uo=4",
+        "trackId": 598779348
+      },
+      {
+        "trackName": "Seniorita / My Love / Cry Me a River / What Goes Around / Lovestoned / I Think She Knows / Suit & Tie / Take Back the Night",
+        "artistName": "Anthem Lights",
+        "collectionName": "Anthem Lights Covers Part II",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/seniorita-my-love-cry-me-a-river-what-goes-around/6784608101?i=6784608365&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/seniorita-my-love-cry-me-a-river-what-goes-around/6784608101?i=6784608365&uo=4",
+        "trackId": 6784608365
+      },
+      {
+        "trackName": "Dress & Tie",
+        "artistName": "DOB",
+        "collectionName": "The Royal Family - Single",
+        "primaryGenreName": "Electronic",
+        "trackViewUrl": "https://music.apple.com/us/album/dress-tie/1051804048?i=1051804052&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/dress-tie/1051804048?i=1051804052&uo=4",
+        "trackId": 1051804052
+      },
+      {
+        "trackName": "It's Still Rock and Roll to Me",
+        "artistName": "Billy Joel",
+        "collectionName": "Glass Houses",
+        "primaryGenreName": "Rock",
+        "trackViewUrl": "https://music.apple.com/us/album/its-still-rock-and-roll-to-me/158618393?i=158618562&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/its-still-rock-and-roll-to-me/158618393?i=158618562&uo=4",
+        "trackId": 158618562
+      },
+      {
+        "trackName": "Suit & Tie",
+        "artistName": "Max Schneider",
+        "collectionName": "Suit & Tie - Single",
+        "primaryGenreName": "Singer/Songwriter",
+        "trackViewUrl": "https://music.apple.com/us/album/suit-tie/600970247?i=600970312&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/suit-tie/600970247?i=600970312&uo=4",
+        "trackId": 600970312
+      },
+      {
+        "trackName": "Suit & Tie (feat. Kabaka Pyramid)",
+        "artistName": "Stonebwoy",
+        "collectionName": "Epistles of Mama",
+        "primaryGenreName": "Afro-Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/suit-tie-feat-kabaka-pyramid/1853333157?i=1853333177&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/suit-tie-feat-kabaka-pyramid/1853333157?i=1853333177&uo=4",
+        "trackId": 1853333177
+      },
+      {
+        "trackName": "Suit & Tie",
+        "artistName": "KIDZ BOP Kids",
+        "collectionName": "Kidz Bop 24",
+        "primaryGenreName": "Children's Music",
+        "trackViewUrl": "https://music.apple.com/us/album/suit-tie/1443078691?i=1443079009&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/suit-tie/1443078691?i=1443079009&uo=4",
+        "trackId": 1443079009
+      },
+      {
+        "trackName": "Dress and Tie",
+        "artistName": "Charlene Kaye & Darren Criss",
+        "collectionName": "Dress and Tie - Single",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/dress-and-tie/1794757972?i=1794757976&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/dress-and-tie/1794757972?i=1794757976&uo=4",
+        "trackId": 1794757976
+      },
+      {
+        "trackName": "It's Still Rock and Roll to Me",
+        "artistName": "Billy Joel",
+        "collectionName": "Greatest Hits, Volume I & Volume II",
+        "primaryGenreName": "Rock",
+        "trackViewUrl": "https://music.apple.com/us/album/its-still-rock-and-roll-to-me/1461891971?i=1461893037&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/its-still-rock-and-roll-to-me/1461891971?i=1461893037&uo=4",
+        "trackId": 1461893037
+      },
+      {
+        "trackName": "It's Still Rock & Roll to Me (Live at Madison Square Garden, New York, NY - 2006)",
+        "artistName": "Billy Joel",
+        "collectionName": "12 Gardens Live",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/its-still-rock-roll-to-me-live-at-madison-square-garden/158625840?i=158626177&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/its-still-rock-roll-to-me-live-at-madison-square-garden/158625840?i=158626177&uo=4",
+        "trackId": 158626177
+      },
+      {
+        "trackName": "Best Dress",
+        "artistName": "19&YOU",
+        "collectionName": "Best Dress - Single",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/best-dress/1600993520?i=1600993525&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/best-dress/1600993520?i=1600993525&uo=4",
+        "trackId": 1600993525
+      },
+      {
+        "trackName": "Tie the Knot",
+        "artistName": "Jesse McCartney",
+        "collectionName": "In Technicolor",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/tie-the-knot/1524681921?i=1524681931&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/tie-the-knot/1524681921?i=1524681931&uo=4",
+        "trackId": 1524681931
+      }
+    ]
+  },
+  "mixTerm|Cults Always Forever": {
+    "query_url": "https://itunes.apple.com/search?term=Cults+Always+Forever&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": [
+      {
+        "trackName": "Always Forever",
+        "artistName": "Cults",
+        "collectionName": "Static",
+        "primaryGenreName": "Alternative",
+        "trackViewUrl": "https://music.apple.com/us/album/always-forever/692818113?i=692818120&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/always-forever/692818113?i=692818120&uo=4",
+        "trackId": 692818120
+      },
+      {
+        "trackName": "Always Forever (Slowed and Reverbed)",
+        "artistName": "Cults",
+        "collectionName": "Always Forever - EP",
+        "primaryGenreName": "Alternative",
+        "trackViewUrl": "https://music.apple.com/us/album/always-forever-slowed-and-reverbed/1706897869?i=1706897878&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/always-forever-slowed-and-reverbed/1706897869?i=1706897878&uo=4",
+        "trackId": 1706897878
+      },
+      {
+        "trackName": "Always Forever (Sped Up)",
+        "artistName": "Cults",
+        "collectionName": "Always Forever - EP",
+        "primaryGenreName": "Alternative",
+        "trackViewUrl": "https://music.apple.com/us/album/always-forever-sped-up/1706897869?i=1706897876&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/always-forever-sped-up/1706897869?i=1706897876&uo=4",
+        "trackId": 1706897876
+      },
+      {
+        "trackName": "Always Forever (Demo)",
+        "artistName": "Cults",
+        "collectionName": "Static (10th Anniversary Edition)",
+        "primaryGenreName": "Alternative",
+        "trackViewUrl": "https://music.apple.com/us/album/always-forever-demo/1710799402?i=1710799593&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/always-forever-demo/1710799402?i=1710799593&uo=4",
+        "trackId": 1710799593
+      },
+      {
+        "trackName": "Always Forever (Demo)",
+        "artistName": "Cults",
+        "collectionName": "Always Forever - EP",
+        "primaryGenreName": "Alternative",
+        "trackViewUrl": "https://music.apple.com/us/album/always-forever-demo/1706897869?i=1706897873&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/always-forever-demo/1706897869?i=1706897873&uo=4",
+        "trackId": 1706897873
+      },
+      {
+        "trackName": "Always Forever",
+        "artistName": "Cults",
+        "collectionName": "Always Forever - EP",
+        "primaryGenreName": "Alternative",
+        "trackViewUrl": "https://music.apple.com/us/album/always-forever/1706897869?i=1706897871&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/always-forever/1706897869?i=1706897871&uo=4",
+        "trackId": 1706897871
+      },
+      {
+        "trackName": "Always Forever",
+        "artistName": "Cults",
+        "collectionName": "Static (10th Anniversary Edition)",
+        "primaryGenreName": "Alternative",
+        "trackViewUrl": "https://music.apple.com/us/album/always-forever/1710799402?i=1710799409&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/always-forever/1710799402?i=1710799409&uo=4",
+        "trackId": 1710799409
+      },
+      {
+        "trackName": "Always Forever",
+        "artistName": "Bryson Tiller",
+        "collectionName": "A N N I V E R S A R Y",
+        "primaryGenreName": "R&B/Soul",
+        "trackViewUrl": "https://music.apple.com/us/album/always-forever/1533349969?i=1533349972&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/always-forever/1533349969?i=1533349972&uo=4",
+        "trackId": 1533349972
+      },
+      {
+        "trackName": "Always Forever",
+        "artistName": "Bryson Tiller",
+        "collectionName": "A N N I V E R S A R Y (Deluxe)",
+        "primaryGenreName": "R&B/Soul",
+        "trackViewUrl": "https://music.apple.com/us/album/always-forever/1555113191?i=1555113194&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/always-forever/1555113191?i=1555113194&uo=4",
+        "trackId": 1555113194
+      },
+      {
+        "trackName": "Always Forever",
+        "artistName": "Bryson Tiller",
+        "collectionName": "A N N I V E R S A R Y (Deluxe)",
+        "primaryGenreName": "R&B/Soul",
+        "trackViewUrl": "https://music.apple.com/us/album/always-forever/1555119414?i=1555119420&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/always-forever/1555119414?i=1555119420&uo=4",
+        "trackId": 1555119420
+      },
+      {
+        "trackName": "Always Forever",
+        "artistName": "Phil Wickham",
+        "collectionName": "Phil Wickham",
+        "primaryGenreName": "Christian",
+        "trackViewUrl": "https://music.apple.com/us/album/always-forever/1545617906?i=1545618428&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/always-forever/1545617906?i=1545618428&uo=4",
+        "trackId": 1545618428
+      },
+      {
+        "trackName": "Always Forever",
+        "artistName": "Aquilo",
+        "collectionName": "Always Forever - Single",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/always-forever/1512944045?i=1512944232&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/always-forever/1512944045?i=1512944232&uo=4",
+        "trackId": 1512944232
+      },
+      {
+        "trackName": "Always Forever",
+        "artistName": "Romy",
+        "collectionName": "Always Forever - Single",
+        "primaryGenreName": "Dance",
+        "trackViewUrl": "https://music.apple.com/us/album/always-forever/1744605529?i=1744605531&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/always-forever/1744605529?i=1744605531&uo=4",
+        "trackId": 1744605531
+      },
+      {
+        "trackName": "Always",
+        "artistName": "Atlantic Starr",
+        "collectionName": "All In The Name Of Love",
+        "primaryGenreName": "R&B/Soul",
+        "trackViewUrl": "https://music.apple.com/us/album/always/1625004475?i=1625004615&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/always/1625004475?i=1625004615&uo=4",
+        "trackId": 1625004615
+      },
+      {
+        "trackName": "Forever (From \"Euphoria: Season 1\" Soundtrack)",
+        "artistName": "Labrinth",
+        "collectionName": "Euphoria (Original Score from the HBO Series)",
+        "primaryGenreName": "Soundtrack",
+        "trackViewUrl": "https://music.apple.com/us/album/forever-from-euphoria-season-1-soundtrack/1481092579?i=1481092680&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/forever-from-euphoria-season-1-soundtrack/1481092579?i=1481092680&uo=4",
+        "trackId": 1481092680
+      }
+    ]
+  },
+  "mixTerm|Ja Rule Always On Time": {
+    "query_url": "https://itunes.apple.com/search?term=Ja+Rule+Always+On+Time&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": [
+      {
+        "trackName": "Always On Time (feat. Bella Cordero)",
+        "artistName": "Elevation Worship",
+        "collectionName": "When Wind Meets Fire",
+        "primaryGenreName": "Christian",
+        "trackViewUrl": "https://music.apple.com/us/album/always-on-time-feat-bella-cordero/1750583027?i=1750583640&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/always-on-time-feat-bella-cordero/1750583027?i=1750583640&uo=4",
+        "trackId": 1750583640
+      },
+      {
+        "trackName": "Always On Time (feat. Ashanti)",
+        "artistName": "Ja Rule",
+        "collectionName": "Pain Is Love",
+        "primaryGenreName": "Hip-Hop/Rap",
+        "trackViewUrl": "https://music.apple.com/us/album/always-on-time-feat-ashanti/1371596367?i=1371597594&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/always-on-time-feat-ashanti/1371596367?i=1371597594&uo=4",
+        "trackId": 1371597594
+      },
+      {
+        "trackName": "Always On Time (Worship Together Sessions)",
+        "artistName": "Pat Barrett & Worship Together",
+        "collectionName": "Burn In Us",
+        "primaryGenreName": "Christian",
+        "trackViewUrl": "https://music.apple.com/us/album/always-on-time-worship-together-sessions/6784375844?i=6784375847&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/always-on-time-worship-together-sessions/6784375844?i=6784375847&uo=4",
+        "trackId": 6784375847
+      },
+      {
+        "trackName": "Always On Time",
+        "artistName": "Indiana Bible College",
+        "collectionName": "Joy",
+        "primaryGenreName": "Christian",
+        "trackViewUrl": "https://music.apple.com/us/album/always-on-time/1820621854?i=1820621951&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/always-on-time/1820621854?i=1820621951&uo=4",
+        "trackId": 1820621951
+      },
+      {
+        "trackName": "Always On Time",
+        "artistName": "Pat Barrett",
+        "collectionName": "I've Got A Fire",
+        "primaryGenreName": "Christian",
+        "trackViewUrl": "https://music.apple.com/us/album/always-on-time/1834723422?i=1834723738&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/always-on-time/1834723422?i=1834723738&uo=4",
+        "trackId": 1834723738
+      },
+      {
+        "trackName": "Always On Time",
+        "artistName": "Lexi Elisha",
+        "collectionName": "Always On Time - Single",
+        "primaryGenreName": "Christian",
+        "trackViewUrl": "https://music.apple.com/us/album/always-on-time/1868793117?i=1868793126&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/always-on-time/1868793117?i=1868793126&uo=4",
+        "trackId": 1868793126
+      },
+      {
+        "trackName": "Always On Time (Live)",
+        "artistName": "Pat Barrett",
+        "collectionName": "Break Open (Live)",
+        "primaryGenreName": "Christian",
+        "trackViewUrl": "https://music.apple.com/us/album/always-on-time-live/1867671463?i=1867671473&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/always-on-time-live/1867671463?i=1867671473&uo=4",
+        "trackId": 1867671473
+      },
+      {
+        "trackName": "Always On Time (feat. Ashanti) [Edited]",
+        "artistName": "Ja Rule",
+        "collectionName": "#1 Spot",
+        "primaryGenreName": "Hip-Hop/Rap",
+        "trackViewUrl": "https://music.apple.com/us/album/always-on-time-feat-ashanti-edited/1443794478?i=1443795389&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/always-on-time-feat-ashanti-edited/1443794478?i=1443795389&uo=4",
+        "trackId": 1443795389
+      },
+      {
+        "trackName": "Always On Time",
+        "artistName": "The Lofi Christian",
+        "collectionName": "Our God",
+        "primaryGenreName": "Christian",
+        "trackViewUrl": "https://music.apple.com/us/album/always-on-time/1826201096?i=1826201110&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/always-on-time/1826201096?i=1826201110&uo=4",
+        "trackId": 1826201110
+      },
+      {
+        "trackName": "Always On Time",
+        "artistName": "Meshell Ndegeocello & Laura Lee",
+        "collectionName": "Synonym",
+        "primaryGenreName": "R&B/Soul",
+        "trackViewUrl": "https://music.apple.com/us/album/always-on-time/6789433556?i=6789433579&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/always-on-time/6789433556?i=6789433579&uo=4",
+        "trackId": 6789433579
+      },
+      {
+        "trackName": "Always On Time",
+        "artistName": "PJ Morton",
+        "collectionName": "Saturday Night / Sunday Morning",
+        "primaryGenreName": "Christian",
+        "trackViewUrl": "https://music.apple.com/us/album/always-on-time/1891124932?i=1891125076&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/always-on-time/1891124932?i=1891125076&uo=4",
+        "trackId": 1891125076
+      },
+      {
+        "trackName": "Always on Time",
+        "artistName": "Tim Bowman, Jr.",
+        "collectionName": "Listen",
+        "primaryGenreName": "Gospel",
+        "trackViewUrl": "https://music.apple.com/us/album/always-on-time/1443289813?i=1443290263&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/always-on-time/1443289813?i=1443290263&uo=4",
+        "trackId": 1443290263
+      },
+      {
+        "trackName": "Always On Time (feat. Patrice Rushen)",
+        "artistName": "Unwrapped",
+        "collectionName": "Hidden Beach Recordings Presents: Unwrapped, Vol. 2",
+        "primaryGenreName": "Jazz",
+        "trackViewUrl": "https://music.apple.com/us/album/always-on-time-feat-patrice-rushen/1415252540?i=1415253196&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/always-on-time-feat-patrice-rushen/1415252540?i=1415253196&uo=4",
+        "trackId": 1415253196
+      },
+      {
+        "trackName": "Always on Time (feat. Mid November)",
+        "artistName": "Imrsqd & Moflo Music",
+        "collectionName": "Guitars, Trumpets & the Gospel",
+        "primaryGenreName": "Christian",
+        "trackViewUrl": "https://music.apple.com/us/album/always-on-time-feat-mid-november/1525790479?i=1525790483&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/always-on-time-feat-mid-november/1525790479?i=1525790483&uo=4",
+        "trackId": 1525790483
+      },
+      {
+        "trackName": "Always On Time",
+        "artistName": "PJ Morton",
+        "collectionName": "Sunday Morning",
+        "primaryGenreName": "Christian",
+        "trackViewUrl": "https://music.apple.com/us/album/always-on-time/1891028928?i=1891028936&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/always-on-time/1891028928?i=1891028936&uo=4",
+        "trackId": 1891028936
+      }
+    ]
+  },
+  "mixTerm|Tiana Major9 alright!": {
+    "query_url": "https://itunes.apple.com/search?term=Tiana+Major9+alright%21&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": [
+      {
+        "trackName": "alright!",
+        "artistName": "Tiana Major9",
+        "collectionName": "November Scorpio (Deluxe)",
+        "primaryGenreName": "R&B/Soul",
+        "trackViewUrl": "https://music.apple.com/us/album/alright/6798346405?i=6798346682&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/alright/6798346405?i=6798346682&uo=4",
+        "trackId": 6798346682
+      },
+      {
+        "trackName": "Think About You (Notion Mix)",
+        "artistName": "Tiana Major9",
+        "collectionName": "Think About You (Notion Mix) - Single",
+        "primaryGenreName": "R&B/Soul",
+        "trackViewUrl": "https://music.apple.com/us/album/think-about-you-notion-mix/1507044894?i=1507044895&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/think-about-you-notion-mix/1507044894?i=1507044895&uo=4",
+        "trackId": 1507044895
+      },
+      {
+        "trackName": "Think About You (Notion Mix)",
+        "artistName": "Tiana Major9",
+        "collectionName": "At Sixes And Sevens",
+        "primaryGenreName": "R&B/Soul",
+        "trackViewUrl": "https://music.apple.com/us/album/think-about-you-notion-mix/1525004042?i=1525004319&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/think-about-you-notion-mix/1525004042?i=1525004319&uo=4",
+        "trackId": 1525004319
+      },
+      {
+        "trackName": "Think About You (Notion Mix)",
+        "artistName": "Tiana Major9",
+        "collectionName": "At Sixes And Sevens",
+        "primaryGenreName": "R&B/Soul",
+        "trackViewUrl": "https://music.apple.com/us/album/think-about-you-notion-mix/1557812418?i=1557812619&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/think-about-you-notion-mix/1557812418?i=1557812619&uo=4",
+        "trackId": 1557812619
+      },
+      {
+        "trackName": "Think About You (Notion Mix)",
+        "artistName": "Tiana Major9",
+        "collectionName": "Major Mantras",
+        "primaryGenreName": "R&B/Soul",
+        "trackViewUrl": "https://music.apple.com/us/album/think-about-you-notion-mix/1551897284?i=1551897399&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/think-about-you-notion-mix/1551897284?i=1551897399&uo=4",
+        "trackId": 1551897399
+      },
+      {
+        "trackName": "GRACE",
+        "artistName": "Tiana Major9",
+        "collectionName": "November Scorpio",
+        "primaryGenreName": "R&B/Soul",
+        "trackViewUrl": "https://music.apple.com/us/album/grace/1846170591?i=1846170904&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/grace/1846170591?i=1846170904&uo=4",
+        "trackId": 1846170904
+      },
+      {
+        "trackName": "Think About You (Acoustic)",
+        "artistName": "Tiana Major9",
+        "collectionName": "Back At Sixes And Sevens",
+        "primaryGenreName": "R&B/Soul",
+        "trackViewUrl": "https://music.apple.com/us/album/think-about-you-acoustic/1543303379?i=1543304656&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/think-about-you-acoustic/1543303379?i=1543304656&uo=4",
+        "trackId": 1543304656
+      },
+      {
+        "trackName": "Think About You (Notion Mix)",
+        "artistName": "Tiana Major9",
+        "collectionName": "At Sixes And Sevens",
+        "primaryGenreName": "R&B/Soul",
+        "trackViewUrl": "https://music.apple.com/us/album/think-about-you-notion-mix/1543303379?i=1543305100&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/think-about-you-notion-mix/1543303379?i=1543305100&uo=4",
+        "trackId": 1543305100
+      },
+      {
+        "trackName": "GRACE",
+        "artistName": "Tiana Major9",
+        "collectionName": "November Scorpio (Deluxe)",
+        "primaryGenreName": "R&B/Soul",
+        "trackViewUrl": "https://music.apple.com/us/album/grace/6798346405?i=6798346757&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/grace/6798346405?i=6798346757&uo=4",
+        "trackId": 6798346757
+      }
+    ]
+  },
+  "mixTerm|Jeezy Amazin'": {
+    "query_url": "https://itunes.apple.com/search?term=Jeezy+Amazin%27&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": [
+      {
+        "trackName": "Amazin'",
+        "artistName": "Young Jeezy",
+        "collectionName": "The Recession (Bonus Track Version)",
+        "primaryGenreName": "Hip-Hop/Rap",
+        "trackViewUrl": "https://music.apple.com/us/album/amazin/1442208759?i=1442208994&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/amazin/1442208759?i=1442208994&uo=4",
+        "trackId": 1442208994
+      },
+      {
+        "trackName": "Amazing (feat. Young Jeezy)",
+        "artistName": "Kanye West",
+        "collectionName": "808s & Heartbreak (Exclusive Edition)",
+        "primaryGenreName": "Hip-Hop/Rap",
+        "trackViewUrl": "https://music.apple.com/us/album/amazing-feat-young-jeezy/1609149054?i=1609149276&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/amazing-feat-young-jeezy/1609149054?i=1609149276&uo=4",
+        "trackId": 1609149276
+      },
+      {
+        "trackName": "Amazing (feat. Young Jeezy)",
+        "artistName": "Kanye West",
+        "collectionName": "808s & Heartbreak",
+        "primaryGenreName": "Hip-Hop/Rap",
+        "trackViewUrl": "https://music.apple.com/us/album/amazing-feat-young-jeezy/1441410287?i=1441410403&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/amazing-feat-young-jeezy/1441410287?i=1441410403&uo=4",
+        "trackId": 1441410403
+      },
+      {
+        "trackName": "Say I (feat. Young Jeezy)",
+        "artistName": "Christina Milian",
+        "collectionName": "So Amazin'",
+        "primaryGenreName": "R&B/Soul",
+        "trackViewUrl": "https://music.apple.com/us/album/say-i-feat-young-jeezy/1449754544?i=1449754622&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/say-i-feat-young-jeezy/1449754544?i=1449754622&uo=4",
+        "trackId": 1449754622
+      },
+      {
+        "trackName": "Standing Ovation",
+        "artistName": "Young Jeezy",
+        "collectionName": "Let's Get It - Thug Motivation 101",
+        "primaryGenreName": "Hip-Hop/Rap",
+        "trackViewUrl": "https://music.apple.com/us/album/standing-ovation/1443864907?i=1443865092&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/standing-ovation/1443864907?i=1443865092&uo=4",
+        "trackId": 1443865092
+      },
+      {
+        "trackName": "Amazing (feat. Young Jeezy)",
+        "artistName": "Kanye West",
+        "collectionName": "808s & Heartbreak",
+        "primaryGenreName": "Hip-Hop/Rap",
+        "trackViewUrl": "https://music.apple.com/us/album/amazing-feat-young-jeezy/1440895024?i=1440895167&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/amazing-feat-young-jeezy/1440895024?i=1440895167&uo=4",
+        "trackId": 1440895167
+      },
+      {
+        "trackName": "Say I (Clean) [feat. Young Jeezy]",
+        "artistName": "Christina Milian",
+        "collectionName": "So Amazin'",
+        "primaryGenreName": "R&B/Soul",
+        "trackViewUrl": "https://music.apple.com/us/album/say-i-clean-feat-young-jeezy/1444185985?i=1444186301&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/say-i-clean-feat-young-jeezy/1444185985?i=1444186301&uo=4",
+        "trackId": 1444186301
+      },
+      {
+        "trackName": "Amazing",
+        "artistName": "Yo-Jeezy",
+        "collectionName": "Amazing - Single",
+        "primaryGenreName": "Hip-Hop/Rap",
+        "trackViewUrl": "https://music.apple.com/us/album/amazing/1474017612?i=1474017614&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/amazing/1474017612?i=1474017614&uo=4",
+        "trackId": 1474017614
+      },
+      {
+        "trackName": "Put On (feat. Kanye West)",
+        "artistName": "Young Jeezy",
+        "collectionName": "The Recession (Bonus Track Version)",
+        "primaryGenreName": "Hip-Hop/Rap",
+        "trackViewUrl": "https://music.apple.com/us/album/put-on-feat-kanye-west/1442208759?i=1442209188&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/put-on-feat-kanye-west/1442208759?i=1442209188&uo=4",
+        "trackId": 1442209188
+      },
+      {
+        "trackName": "California Girl",
+        "artistName": "AJeezy27",
+        "collectionName": "Lost Dimensions 2",
+        "primaryGenreName": "Hip-Hop/Rap",
+        "trackViewUrl": "https://music.apple.com/us/album/california-girl/1734234845?i=1734234850&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/california-girl/1734234845?i=1734234850&uo=4",
+        "trackId": 1734234850
+      },
+      {
+        "trackName": "Aint Even Me (feat. Big Jeezy & IAM3AM)",
+        "artistName": "Zay4G",
+        "collectionName": "Aint Even Me (feat. Big Jeezy & IAM3AM) - Single",
+        "primaryGenreName": "Hip-Hop/Rap",
+        "trackViewUrl": "https://music.apple.com/us/album/aint-even-me-feat-big-jeezy-iam3am/1716216814?i=1716216816&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/aint-even-me-feat-big-jeezy-iam3am/1716216814?i=1716216816&uo=4",
+        "trackId": 1716216816
+      },
+      {
+        "trackName": "Love Me Now (feat. 360Jeezy)",
+        "artistName": "Coldest",
+        "collectionName": "Coldest Presents: Love Me Now",
+        "primaryGenreName": "Hip-Hop/Rap",
+        "trackViewUrl": "https://music.apple.com/us/album/love-me-now-feat-360jeezy/1724544459?i=1724544463&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/love-me-now-feat-360jeezy/1724544459?i=1724544463&uo=4",
+        "trackId": 1724544463
+      },
+      {
+        "trackName": "Bounce Riddim (feat. Mo' Jeezy)",
+        "artistName": "TY",
+        "collectionName": "Vibe Island: The Unsung Fables - EP",
+        "primaryGenreName": "Afro Soul",
+        "trackViewUrl": "https://music.apple.com/us/album/bounce-riddim-feat-mo-jeezy/1692247368?i=1692247663&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/bounce-riddim-feat-mo-jeezy/1692247368?i=1692247663&uo=4",
+        "trackId": 1692247663
+      },
+      {
+        "trackName": "HAPPINESS",
+        "artistName": "NATE JEEZY",
+        "collectionName": "FOUR TO NINE GRIND",
+        "primaryGenreName": "Hip-Hop/Rap",
+        "trackViewUrl": "https://music.apple.com/us/album/happiness/1871128751?i=1871128756&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/happiness/1871128751?i=1871128756&uo=4",
+        "trackId": 1871128756
+      },
+      {
+        "trackName": "3rd Heaven (feat. AB Amarii)",
+        "artistName": "Mo'jeezy",
+        "collectionName": "Failed Relationships - EP",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/3rd-heaven-feat-ab-amarii/1650788079?i=1650788084&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/3rd-heaven-feat-ab-amarii/1650788079?i=1650788084&uo=4",
+        "trackId": 1650788084
+      }
+    ]
+  },
+  "mixTerm|Estelle American Boy": {
+    "query_url": "https://itunes.apple.com/search?term=Estelle+American+Boy&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": [
+      {
+        "trackName": "American Boy (No Rap Version)",
+        "artistName": "Estelle",
+        "collectionName": "American Boy (Remixes 2024) - Single",
+        "primaryGenreName": "R&B/Soul",
+        "trackViewUrl": "https://music.apple.com/us/album/american-boy-no-rap-version/1742866514?i=1742867239&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/american-boy-no-rap-version/1742866514?i=1742867239&uo=4",
+        "trackId": 1742867239
+      },
+      {
+        "trackName": "American Boy (Live from Apple Music Studios)",
+        "artistName": "Estelle",
+        "collectionName": "American Boy (Live from Apple Music Studios)",
+        "primaryGenreName": "R&B/Soul",
+        "trackViewUrl": "https://music.apple.com/us/album/american-boy-live-from-apple-music-studios/1880385284?i=1880385285&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/american-boy-live-from-apple-music-studios/1880385284?i=1880385285&uo=4",
+        "trackId": 1880385285
+      },
+      {
+        "trackName": "American Boy (Soul Seekerz Radio Remix)",
+        "artistName": "Estelle",
+        "collectionName": "American Boy (Remixes) - EP",
+        "primaryGenreName": "R&B/Soul",
+        "trackViewUrl": "https://music.apple.com/us/album/american-boy-soul-seekerz-radio-remix/1349730147?i=1349730375&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/american-boy-soul-seekerz-radio-remix/1349730147?i=1349730375&uo=4",
+        "trackId": 1349730375
+      },
+      {
+        "trackName": "American Boy (feat. Estelle)",
+        "artistName": "Breaking Beattz",
+        "collectionName": "American Boy (feat. Estelle) - Single",
+        "primaryGenreName": "Electronic",
+        "trackViewUrl": "https://music.apple.com/us/album/american-boy-feat-estelle/1434711165?i=1434711169&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/american-boy-feat-estelle/1434711165?i=1434711169&uo=4",
+        "trackId": 1434711169
+      },
+      {
+        "trackName": "American Boy (feat. NASHUP) [NASHUP Remix 2024 - Radio Edit]",
+        "artistName": "Estelle",
+        "collectionName": "American Boy (Remixes 2024) - Single",
+        "primaryGenreName": "R&B/Soul",
+        "trackViewUrl": "https://music.apple.com/us/album/american-boy-feat-nashup-nashup-remix-2024-radio-edit/1742866514?i=1742866988&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/american-boy-feat-nashup-nashup-remix-2024-radio-edit/1742866514?i=1742866988&uo=4",
+        "trackId": 1742866988
+      },
+      {
+        "trackName": "American Boy (Soul Seekerz Club Remix)",
+        "artistName": "Estelle",
+        "collectionName": "American Boy (Remixes) - EP",
+        "primaryGenreName": "R&B/Soul",
+        "trackViewUrl": "https://music.apple.com/us/album/american-boy-soul-seekerz-club-remix/1349730147?i=1349730372&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/american-boy-soul-seekerz-club-remix/1349730147?i=1349730372&uo=4",
+        "trackId": 1349730372
+      },
+      {
+        "trackName": "American Boy (Live)",
+        "artistName": "Estelle",
+        "collectionName": "Essence Music Festival, Vol. 4: The Collection (Live)",
+        "primaryGenreName": "R&B/Soul",
+        "trackViewUrl": "https://music.apple.com/us/album/american-boy-live/1490633081?i=1490633085&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/american-boy-live/1490633081?i=1490633085&uo=4",
+        "trackId": 1490633085
+      },
+      {
+        "trackName": "American Boy (Arr. C. Wilson for Band)",
+        "artistName": "Florida State University Marching Chiefs & Patrick Dunnigan",
+        "collectionName": "Come Alive!",
+        "primaryGenreName": "Classical",
+        "trackViewUrl": "https://music.apple.com/us/album/american-boy-arr-c-wilson-for-band/1569094215?i=1569094400&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/american-boy-arr-c-wilson-for-band/1569094215?i=1569094400&uo=4",
+        "trackId": 1569094400
+      },
+      {
+        "trackName": "American Boy (Glee Cast Version)",
+        "artistName": "Glee Cast",
+        "collectionName": "Glee: The Music - The Untitled Rachel Berry Project - EP",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/american-boy-glee-cast-version/874999911?i=874999994&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/american-boy-glee-cast-version/874999911?i=874999994&uo=4",
+        "trackId": 874999994
+      },
+      {
+        "trackName": "American Boy (Benny Benassi Mix)",
+        "artistName": "Estelle",
+        "collectionName": "Ultra Dance 10",
+        "primaryGenreName": "Dance",
+        "trackViewUrl": "https://music.apple.com/us/album/american-boy-benny-benassi-mix/1712041673?i=1712041678&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/american-boy-benny-benassi-mix/1712041673?i=1712041678&uo=4",
+        "trackId": 1712041678
+      },
+      {
+        "trackName": "American Boy (Estelle) [long without rap]",
+        "artistName": "Lucky Voice Karaoke",
+        "collectionName": "American Boy - Single",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/american-boy-estelle-long-without-rap/383429968?i=383430070&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/american-boy-estelle-long-without-rap/383429968?i=383430070&uo=4",
+        "trackId": 383430070
+      },
+      {
+        "trackName": "American Boy (TS7 Remix) [Radio Edit]",
+        "artistName": "Estelle",
+        "collectionName": "American Boy (Remixes) - EP",
+        "primaryGenreName": "R&B/Soul",
+        "trackViewUrl": "https://music.apple.com/us/album/american-boy-ts7-remix-radio-edit/1349730147?i=1349730371&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/american-boy-ts7-remix-radio-edit/1349730147?i=1349730371&uo=4",
+        "trackId": 1349730371
+      },
+      {
+        "trackName": "American Boy (TS7 Remix)",
+        "artistName": "Estelle",
+        "collectionName": "American Boy (Remixes) - EP",
+        "primaryGenreName": "R&B/Soul",
+        "trackViewUrl": "https://music.apple.com/us/album/american-boy-ts7-remix/1349730147?i=1349730149&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/american-boy-ts7-remix/1349730147?i=1349730149&uo=4",
+        "trackId": 1349730149
+      },
+      {
+        "trackName": "American Boy (feat. NASHUP) [NASHUP Remix 2024]",
+        "artistName": "Estelle",
+        "collectionName": "American Boy (Remixes 2024) - Single",
+        "primaryGenreName": "R&B/Soul",
+        "trackViewUrl": "https://music.apple.com/us/album/american-boy-feat-nashup-nashup-remix-2024/1742866514?i=1742866968&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/american-boy-feat-nashup-nashup-remix-2024/1742866514?i=1742866968&uo=4",
+        "trackId": 1742866968
+      },
+      {
+        "trackName": "American Boy",
+        "artistName": "Little Mix",
+        "collectionName": "LM5 (Deluxe)",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/american-boy/1439137827?i=1439138003&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/american-boy/1439137827?i=1439138003&uo=4",
+        "trackId": 1439138003
+      }
+    ]
+  },
+  "mixTerm|The Guess Who American Woman - 7\" Single Version": {
+    "query_url": "https://itunes.apple.com/search?term=The+Guess+Who+American+Woman+-+7%22+Single+Version&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": [
+      {
+        "trackName": "American Woman (7\" Single Version)",
+        "artistName": "The Guess Who",
+        "collectionName": "American Woman (Expanded Edition)",
+        "primaryGenreName": "Rock",
+        "trackViewUrl": "https://music.apple.com/us/album/american-woman-7-single-version/1514641963?i=1514642238&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/american-woman-7-single-version/1514641963?i=1514642238&uo=4",
+        "trackId": 1514642238
+      },
+      {
+        "trackName": "No Sugar Tonight (7\" Single Version)",
+        "artistName": "The Guess Who",
+        "collectionName": "American Woman (Expanded Edition)",
+        "primaryGenreName": "Rock",
+        "trackViewUrl": "https://music.apple.com/us/album/no-sugar-tonight-7-single-version/1514641963?i=1514642240&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/no-sugar-tonight-7-single-version/1514641963?i=1514642240&uo=4",
+        "trackId": 1514642240
+      },
+      {
+        "trackName": "Rapper's Delight (7\" Single Version)",
+        "artistName": "The Sugarhill Gang",
+        "collectionName": "The Essentials: The Sugarhill Gang",
+        "primaryGenreName": "Hip-Hop/Rap",
+        "trackViewUrl": "https://music.apple.com/us/album/rappers-delight-7-single-version/51958106?i=51958108&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/rappers-delight-7-single-version/51958106?i=51958108&uo=4",
+        "trackId": 51958108
+      },
+      {
+        "trackName": "Take the Long Way Home (Outtake - 1970)",
+        "artistName": "The Guess Who",
+        "collectionName": "American Woman (Expanded Edition)",
+        "primaryGenreName": "Rock",
+        "trackViewUrl": "https://music.apple.com/us/album/take-the-long-way-home-outtake-1970/1514641963?i=1514642667&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/take-the-long-way-home-outtake-1970/1514641963?i=1514642667&uo=4",
+        "trackId": 1514642667
+      },
+      {
+        "trackName": "Hollywood Swinging (Single Version)",
+        "artistName": "Kool & The Gang",
+        "collectionName": "Wild and Peaceful",
+        "primaryGenreName": "R&B/Soul",
+        "trackViewUrl": "https://music.apple.com/us/album/hollywood-swinging-single-version/1442286038?i=1442286654&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/hollywood-swinging-single-version/1442286038?i=1442286654&uo=4",
+        "trackId": 1442286654
+      },
+      {
+        "trackName": "American Woman (In the Style of the Guess Who) [Karaoke Version]",
+        "artistName": "Ameritz Digital Karaoke",
+        "collectionName": "American Woman (In the Style of the Guess Who) [Karaoke Version] - Single",
+        "primaryGenreName": "Karaoke",
+        "trackViewUrl": "https://music.apple.com/us/album/american-woman-in-the-style-of-the-guess-who-karaoke-version/620233153?i=620233163&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/american-woman-in-the-style-of-the-guess-who-karaoke-version/620233153?i=620233163&uo=4",
+        "trackId": 620233163
+      },
+      {
+        "trackName": "Homecoming (Single Version)",
+        "artistName": "Tom T. Hall",
+        "collectionName": "Country Classics: American Legends Tom T. Hall (Expanded Edition)",
+        "primaryGenreName": "Country",
+        "trackViewUrl": "https://music.apple.com/us/album/homecoming-single-version/1484575931?i=1484575938&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/homecoming-single-version/1484575931?i=1484575938&uo=4",
+        "trackId": 1484575938
+      },
+      {
+        "trackName": "I Guess It Never Hurts to Hurt Sometimes (Single Version)",
+        "artistName": "The Oak Ridge Boys",
+        "collectionName": "The Definitive Collection",
+        "primaryGenreName": "Country",
+        "trackViewUrl": "https://music.apple.com/us/album/i-guess-it-never-hurts-to-hurt-sometimes-single-version/1440645307?i=1440646402&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/i-guess-it-never-hurts-to-hurt-sometimes-single-version/1440645307?i=1440646402&uo=4",
+        "trackId": 1440646402
+      },
+      {
+        "trackName": "Crimson and Clover (Single Version)",
+        "artistName": "Tommy James & The Shondells",
+        "collectionName": "The Essentials",
+        "primaryGenreName": "Rock",
+        "trackViewUrl": "https://music.apple.com/us/album/crimson-and-clover-single-version/298790620?i=298790640&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/crimson-and-clover-single-version/298790620?i=298790640&uo=4",
+        "trackId": 298790640
+      },
+      {
+        "trackName": "American Woman (The Voice Performance)",
+        "artistName": "Jozy Bernadette",
+        "collectionName": "American Woman (The Voice Performance) - Single",
+        "primaryGenreName": "Rock",
+        "trackViewUrl": "https://music.apple.com/us/album/american-woman-the-voice-performance/1444854242?i=1444854247&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/american-woman-the-voice-performance/1444854242?i=1444854247&uo=4",
+        "trackId": 1444854247
+      },
+      {
+        "trackName": "American Woman",
+        "artistName": "Muddy Magnolias",
+        "collectionName": "American Woman - Single",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/american-woman/1445058959?i=1445058960&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/american-woman/1445058959?i=1445058960&uo=4",
+        "trackId": 1445058960
+      },
+      {
+        "trackName": "American Woman (The Voice Performance)",
+        "artistName": "Moriah Formica & Shilo Gold",
+        "collectionName": "American Woman (The Voice Performance) - Single",
+        "primaryGenreName": "Rock",
+        "trackViewUrl": "https://music.apple.com/us/album/american-woman-the-voice-performance/1445038534?i=1445038536&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/american-woman-the-voice-performance/1445038534?i=1445038536&uo=4",
+        "trackId": 1445038536
+      },
+      {
+        "trackName": "So Tired (Single Version)",
+        "artistName": "Slowdive",
+        "collectionName": "Souvlaki",
+        "primaryGenreName": "Alternative",
+        "trackViewUrl": "https://music.apple.com/us/album/so-tired-single-version/399211729?i=399211878&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/so-tired-single-version/399211729?i=399211878&uo=4",
+        "trackId": 399211878
+      },
+      {
+        "trackName": "Here We Go Again, Pt. 1 (Single Version)",
+        "artistName": "The Isley Brothers",
+        "collectionName": "Go All the Way (Bonus Track Version)",
+        "primaryGenreName": "R&B/Soul",
+        "trackViewUrl": "https://music.apple.com/us/album/here-we-go-again-pt-1-single-version/1030462169?i=1030463145&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/here-we-go-again-pt-1-single-version/1030462169?i=1030463145&uo=4",
+        "trackId": 1030463145
+      },
+      {
+        "trackName": "You are Woman, I am Man (Glee Cast Version) [feat. Ioan Gruffudd]",
+        "artistName": "Glee Cast",
+        "collectionName": "You are Woman, I am Man (Glee Cast Version) [feat. Ioan Gruffudd] - Single",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/you-are-woman-i-am-man-glee-cast-version-feat-ioan-gruffudd/738143383?i=738143566&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/you-are-woman-i-am-man-glee-cast-version-feat-ioan-gruffudd/738143383?i=738143566&uo=4",
+        "trackId": 738143566
+      }
+    ]
+  },
+  "mixTerm|Reik Amigos Con Derechos": {
+    "query_url": "https://itunes.apple.com/search?term=Reik+Amigos+Con+Derechos&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": [
+      {
+        "trackName": "Amigos con Derechos",
+        "artistName": "Reik & Maluma",
+        "collectionName": "Ahora",
+        "primaryGenreName": "Pop Latino",
+        "trackViewUrl": "https://music.apple.com/us/album/amigos-con-derechos/1464573897?i=1464573899&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/amigos-con-derechos/1464573897?i=1464573899&uo=4",
+        "trackId": 1464573899
+      },
+      {
+        "trackName": "Amigos con Derechos (Versión Pop)",
+        "artistName": "Reik",
+        "collectionName": "Amigos con Derechos (Versión Pop) - Single",
+        "primaryGenreName": "Pop Latino",
+        "trackViewUrl": "https://music.apple.com/us/album/amigos-con-derechos-versi%C3%B3n-pop/1450655211?i=1450655212&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/amigos-con-derechos-versi%C3%B3n-pop/1450655211?i=1450655212&uo=4",
+        "trackId": 1450655212
+      },
+      {
+        "trackName": "Amigos Con Derechos (Versión Pop)",
+        "artistName": "Reik & Maluma",
+        "collectionName": "Amigos Con Derechos (Versión Pop) - Single",
+        "primaryGenreName": "Pop Latino",
+        "trackViewUrl": "https://music.apple.com/us/album/amigos-con-derechos-versi%C3%B3n-pop/1444941376?i=1444941377&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/amigos-con-derechos-versi%C3%B3n-pop/1444941376?i=1444941377&uo=4",
+        "trackId": 1444941377
+      },
+      {
+        "trackName": "Amigos Con Derechos (Live)",
+        "artistName": "Jhon Alex Castaño",
+        "collectionName": "Amigos Con Derechos (Live) - Single",
+        "primaryGenreName": "Música Mexicana",
+        "trackViewUrl": "https://music.apple.com/us/album/amigos-con-derechos-live/1739657718?i=1739657723&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/amigos-con-derechos-live/1739657718?i=1739657723&uo=4",
+        "trackId": 1739657723
+      },
+      {
+        "trackName": "Amigos Con Derechos",
+        "artistName": "Espinoza Paz",
+        "collectionName": "El Cantautor del Pueblo",
+        "primaryGenreName": "Latin",
+        "trackViewUrl": "https://music.apple.com/us/album/amigos-con-derechos/1721016469?i=1721016482&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/amigos-con-derechos/1721016469?i=1721016482&uo=4",
+        "trackId": 1721016482
+      },
+      {
+        "trackName": "Amigos Con Derechos",
+        "artistName": "Maycon Hyan Alves de Oliveira, MR. Don & Johandy",
+        "collectionName": "Amigos Con Derechos - Single",
+        "primaryGenreName": "Latin",
+        "trackViewUrl": "https://music.apple.com/us/album/amigos-con-derechos/1713960068?i=1713960075&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/amigos-con-derechos/1713960068?i=1713960075&uo=4",
+        "trackId": 1713960075
+      },
+      {
+        "trackName": "Amigos Con Derechos (Bonus Track)",
+        "artistName": "Espinoza Paz",
+        "collectionName": "El Cantautor del Pueblo",
+        "primaryGenreName": "Latin",
+        "trackViewUrl": "https://music.apple.com/us/album/amigos-con-derechos-bonus-track/1721016469?i=1721017226&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/amigos-con-derechos-bonus-track/1721016469?i=1721017226&uo=4",
+        "trackId": 1721017226
+      },
+      {
+        "trackName": "Amigos Con Derechos",
+        "artistName": "Big Metra",
+        "collectionName": "Amigos Con Derechos - Single",
+        "primaryGenreName": "Urbano latino",
+        "trackViewUrl": "https://music.apple.com/us/album/amigos-con-derechos/1256182700?i=1256182706&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/amigos-con-derechos/1256182700?i=1256182706&uo=4",
+        "trackId": 1256182706
+      },
+      {
+        "trackName": "Amigos con Derechos",
+        "artistName": "Jhon Alex Castaño",
+        "collectionName": "El Rey del Chupe",
+        "primaryGenreName": "Música Mexicana",
+        "trackViewUrl": "https://music.apple.com/us/album/amigos-con-derechos/1585195490?i=1585195660&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/amigos-con-derechos/1585195490?i=1585195660&uo=4",
+        "trackId": 1585195660
+      },
+      {
+        "trackName": "Amigos Con Derechos",
+        "artistName": "Charanga Habanera",
+        "collectionName": "Urbaneando",
+        "primaryGenreName": "Música tropical",
+        "trackViewUrl": "https://music.apple.com/us/album/amigos-con-derechos/1469376471?i=1469376783&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/amigos-con-derechos/1469376471?i=1469376783&uo=4",
+        "trackId": 1469376783
+      },
+      {
+        "trackName": "Amigos con Derechos",
+        "artistName": "Jhon Alex Castaño",
+        "collectionName": "Amigos con Derechos - Single",
+        "primaryGenreName": "Música Mexicana",
+        "trackViewUrl": "https://music.apple.com/us/album/amigos-con-derechos/1579914174?i=1579914177&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/amigos-con-derechos/1579914174?i=1579914177&uo=4",
+        "trackId": 1579914177
+      },
+      {
+        "trackName": "Amigos Con Derechos",
+        "artistName": "Romeo Beltran",
+        "collectionName": "Amigos Con Derechos - Single",
+        "primaryGenreName": "Latin",
+        "trackViewUrl": "https://music.apple.com/us/album/amigos-con-derechos/6811243950?i=6811243952&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/amigos-con-derechos/6811243950?i=6811243952&uo=4",
+        "trackId": 6811243952
+      },
+      {
+        "trackName": "Amigos Con Derechos",
+        "artistName": "Los Totora",
+        "collectionName": "Amigos Con Derechos - Single",
+        "primaryGenreName": "Pop Latino",
+        "trackViewUrl": "https://music.apple.com/us/album/amigos-con-derechos/1545680492?i=1545680987&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/amigos-con-derechos/1545680492?i=1545680987&uo=4",
+        "trackId": 1545680987
+      },
+      {
+        "trackName": "Amigos Con Derechos (En Vivo)",
+        "artistName": "Reynaldos De La Sierra",
+        "collectionName": "AJAJIIIA 57 (En Vivo)",
+        "primaryGenreName": "Música Mexicana",
+        "trackViewUrl": "https://music.apple.com/us/album/amigos-con-derechos-en-vivo/1849803464?i=1849803476&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/amigos-con-derechos-en-vivo/1849803464?i=1849803476&uo=4",
+        "trackId": 1849803476
+      },
+      {
+        "trackName": "Amigos Con Derechos",
+        "artistName": "JC Karo",
+        "collectionName": "Amigos Con Derechos - Single",
+        "primaryGenreName": "Urbano latino",
+        "trackViewUrl": "https://music.apple.com/us/album/amigos-con-derechos/1361628601?i=1361629113&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/amigos-con-derechos/1361628601?i=1361629113&uo=4",
+        "trackId": 1361629113
+      }
+    ]
   }
 }
