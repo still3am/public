@@ -311,7 +311,7 @@ export default function PublicRecords({ id: propId, fallbackArtist = null }) {
         </section>}
 
         </div>
-        <ArtistAlbums tracks={mainTracks}/>
+        <ArtistAlbums tracks={mainTracks} artistName={artist.name}/>
         {/* Discography */}
         <section id="artist-discography" className="artist-discography mb-8">
           <SectionTitle icon={Disc3} right={
