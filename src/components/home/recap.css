@@ -1,5 +1,7 @@
 /* Recaps share the Made for You card component and shelf dimensions. */
 .recap-mix-art>strong{white-space:pre-line}
+.recap-section .personal-section-heading{flex-wrap:wrap;gap:6px 16px}
+@media(max-width:399px){.recap-section .personal-section-heading>span{display:none}}
 .recap-mix-art .personal-mix-artists{font-weight:550}
 .personal-mix-shelf{overscroll-behavior-x:contain;-webkit-overflow-scrolling:touch}
 .personal-mix-shelf::-webkit-scrollbar{display:none}
