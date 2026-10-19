@@ -6,10 +6,11 @@ import {getCloudList,addCloudTrack,addCloudTracks} from "@/lib/offlineSync";
 
 const EVT="offlinecache:change",STATUS="offlinecache:downloads";
 const jobs=new Map(),autoQueued=new Set(),retryAfter=new Map(),removals=new Map(),cloudJobs=new Map(),storageReads=new Map(),cloudKnown=new Map();
-const downloadPause=new Map();
+const downloadPause=new Map(),syncResults=new Map();
 let generation=0;
 const emit=event=>window.dispatchEvent(new Event(event));
-const invalidate=()=>{generation++;jobs.clear();autoQueued.clear();retryAfter.clear();downloadPause.clear();removals.clear();cloudJobs.clear();cloudKnown.clear();storageReads.clear();emit(STATUS);};
+function reportSync(uid,patch){const next={uid,error:false,pending:0,...syncResults.get(uid),...patch};syncResults.set(uid,next);emit(STATUS);return next;}
+const invalidate=()=>{syncResults.clear();generation++;jobs.clear();autoQueued.clear();retryAfter.clear();downloadPause.clear();removals.clear();cloudJobs.clear();cloudKnown.clear();storageReads.clear();emit(STATUS);};
 // Track menus share one pending device read instead of loading every audio
 // blob again for each song card mounted on the page.
 window.addEventListener(EVT,()=>storageReads.clear());
@@ -47,7 +48,7 @@ export function useOfflineCache(){
  const {user}=useAuth(),uid=user?.id,account=useRef(uid);account.current=uid;
  const [cachedIds,setCachedIds]=useState(null),[records,setRecords]=useState([]),[storageAvailable,setStorageAvailable]=useState(null),[downloading,setDownloading]=useState({}),[syncing,setSyncing]=useState(false);
  const recordsRef=useRef(records);recordsRef.current=records;
- const [syncState,setSyncState]=useState({uid:null,error:false,pending:0});
+ const [syncState,setSyncState]=useState(()=>syncResults.get(uid)||{uid:null,error:false,pending:0});
  const refreshVersion=useRef(0),loadedFor=useRef(null),backfilled=useRef(new Set());
  const active=useCallback(()=>!!uid&&account.current===uid&&getOfflineAccount()===uid,[uid]);
  const applyOrder=useCallback((all,ids)=>{
@@ -77,7 +78,7 @@ export function useOfflineCache(){
  },[uid,active,applyOrder]);
  useEffect(()=>{loadedFor.current=null;backfilled.current.clear();setRecords([]);setCachedIds(null);setDownloading({});refresh();return()=>{refreshVersion.current++;};},[refresh]);
  useEffect(()=>{
-  const status=()=>{const next={};for(const job of jobs.values())if(job.uid===uid)next[job.id]=true;setDownloading(next);setSyncing(cloudJobs.has(uid));};
+  const status=()=>{const next={};for(const job of jobs.values())if(job.uid===uid)next[job.id]=true;setDownloading(next);setSyncing(cloudJobs.has(uid));setSyncState(syncResults.get(uid)||{uid:null,error:false,pending:0});};
   const changed=()=>{status();refresh();};
   window.addEventListener(EVT,changed);window.addEventListener(STATUS,status);window.addEventListener("offlinecache:account",changed);status();
   return()=>{window.removeEventListener(EVT,changed);window.removeEventListener(STATUS,status);window.removeEventListener("offlinecache:account",changed);};
@@ -109,7 +110,7 @@ export function useOfflineCache(){
    const order=await getOrderIds(uid).catch(()=>[]);if(!valid())return false;
    await setOrderIds([id,...(order||[]).filter(value=>value!==id)],uid).catch(()=>{});
    if(!automatic)suppress(uid,[id],true);
-   if(valid()&&!automatic)addCloudTrack(uid,track).catch(()=>{if(valid())setSyncState(state=>({...state,uid,error:true}));});
+   if(valid()&&!automatic)addCloudTrack(uid,track).catch(()=>{if(valid())setSyncState(reportSync(uid,{error:true}));});
    emit(EVT);return true;
   }catch(error){if((error?.status??error?.response?.status)===402)downloadPause.set(uid,Date.now()+60000);return false;}
   finally{if(jobs.get(key)===job){jobs.delete(key);emit(STATUS);}}
@@ -124,7 +125,7 @@ export function useOfflineCache(){
    const local=recordsRef.current.filter(row=>row._blob?.size&&!known.has(row.id)&&!suppressedFor(uid).has(row.id));
    if(local.length){cloud=await addCloudTracks(uid,local);if(started!==generation||!active())return;}
    cloudKnown.set(uid,new Set(cloud.map(track=>track?.id).filter(Boolean)));
-   setSyncState({uid,error:false,pending:cloud.filter(row=>!cachedIds.has(row.id)&&!suppressedFor(uid).has(row.id)).length});
+   setSyncState(reportSync(uid,{error:false,pending:cloud.filter(row=>!cachedIds.has(row.id)&&!suppressedFor(uid).has(row.id)).length}));
    let cursor=0;
    const worker=async()=>{while(cursor<cloud.length){
     if(started!==generation||!active()||(downloadPause.get(uid)||0)>Date.now())return;
@@ -140,8 +141,8 @@ export function useOfflineCache(){
    const [device]=await readDevice(uid);
    if(started!==generation||!active())return;
    const saved=new Set(device.filter(row=>row._blob?.size).map(row=>row.id));
-   setSyncState({uid,error:false,pending:cloud.filter(row=>!saved.has(row.id)&&!suppressedFor(uid).has(row.id)).length});
-  }catch{if(started===generation&&active())setSyncState(state=>({...state,uid,error:true}));/* Keep this device's files. */}
+   setSyncState(reportSync(uid,{error:false,pending:cloud.filter(row=>!saved.has(row.id)&&!suppressedFor(uid).has(row.id)).length}));
+  }catch{if(started===generation&&active())setSyncState(reportSync(uid,{error:true}));/* Keep this device's files. */}
   finally{if(cloudJobs.get(uid)===token){cloudJobs.delete(uid);emit(STATUS);}}
  },[uid,active,cachedIds,downloadTrack]);
  useEffect(()=>{syncFromCloud();},[syncFromCloud]);
