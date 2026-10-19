@@ -42,7 +42,9 @@ def propose(tracks,cache):
  for t in tracks:
   found=candidates[t['id']]
   if not found:unmatched.append(t);continue
-  ranked=sorted(found,key=lambda r:(title(t['title'])!=title(r.get('trackName')),norm(t.get('album_name'))!=norm(r.get('collectionName')),r.get('collectionName','').lower().endswith('single')==False))
+  album_matches=[r for r in found if t.get('album_name') and norm(t.get('album_name'))==norm(r.get('collectionName'))]
+  if album_matches:found=album_matches
+  ranked=sorted(found,key=lambda r:(norm(t['title'])!=norm(r.get('trackName')),title(t['title'])!=title(r.get('trackName')),norm(t.get('album_name'))!=norm(r.get('collectionName')),r.get('collectionName','').lower().endswith('single')==False))
   best=ranked[0];gs={genre(r.get('primaryGenreName')) for r in found if title(t['title'])==title(r.get('trackName'))}
   # Different editions may carry different primary labels. Defer these for manual review.
   if len(gs)>1:unmatched.append({**t,'review_reason':'conflicting catalog genres','candidate_genres':sorted(gs)});continue
@@ -51,9 +53,17 @@ def propose(tracks,cache):
 def main():
  args=argparse.ArgumentParser();args.add_argument('--batch',type=int,default=20);args.add_argument('--mode',default='artist');opts=args.parse_args()
  tracks=json.loads(BEFORE.read_text())['tracks'];cache=json.loads(CACHE.read_text()) if CACHE.exists() else {}
+ recovered=json.loads(pathlib.Path('/app/src/data/recoveredAlbumMetadata.json').read_text())
+ tracks=[{**t,'album_name':t.get('album_name') or recovered.get(t['id'],{}).get('album_name','')} for t in tracks]
  counts=collections.Counter((t.get('artist')or'').split(',')[0].strip() for t in tracks)
  state=propose(tracks,cache)
- if opts.mode=='artist':terms=[(a,'artistTerm') for a,n in counts.most_common() if a]
+ if opts.mode=='artist':
+  needed={t['artist'].split(',')[0].strip() for t in state['unmatched'] if not t.get('review_reason')}
+  terms=[]
+  for a,n in counts.most_common():
+   if not a or a not in needed or 'artistTerm|'+a in cache:continue
+   one=next(t for t in tracks if t['artist'].split(',')[0].strip()==a)
+   terms.append(((a+' '+re.sub(r'\([^)]*\)|\[[^]]*\]','',one['title'])).strip(),'mixTerm') if n==1 else (a,'artistTerm'))
  else:terms=[(((t.get('artist')or'').split(',')[0]+' '+re.sub(r'\([^)]*\)|\[[^]]*\]','',t['title'])).strip(),'mixTerm') for t in state['unmatched'] if not t.get('review_reason')]
  todo=[(term,attribute) for term,attribute in terms if attribute+'|'+term not in cache][:opts.batch]
  for term,attribute in todo:
@@ -74,5 +84,5 @@ def main():
   except Exception as error:print(json.dumps({'term':term,'error':str(error)}),flush=True)
   time.sleep(max(0,3.2-(time.monotonic()-started)))
  state=propose(tracks,cache);PROPOSALS.write_text(json.dumps(state,ensure_ascii=False,indent=2))
- print(json.dumps({'searched':len(cache),'proposed':len(state['proposals']),'unmatched':len(state['unmatched']),'remaining_artist_queries':sum('artistTerm|'+a not in cache for a in counts),'genre_counts':dict(collections.Counter(p['genre'] for p in state['proposals']))}),flush=True)
+ print(json.dumps({'searched':len(cache),'proposed':len(state['proposals']),'unmatched':len(state['unmatched']),'remaining_queries':sum(attribute+'|'+term not in cache for term,attribute in terms),'genre_counts':dict(collections.Counter(p['genre'] for p in state['proposals']))}),flush=True)
 if __name__=='__main__':main()
