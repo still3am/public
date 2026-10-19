@@ -1,0 +1,10 @@
+import {useEffect,useState} from "react";
+import {base44} from "@/api/base44Client";
+import {useAuth} from "@/lib/AuthContext";
+export default function ArtistAliases({artist,onSaved}){
+ const {user}=useAuth(),[value,setValue]=useState(""),[busy,setBusy]=useState(false),[status,setStatus]=useState("");
+ useEffect(()=>{setValue((artist.aliases||[]).join(", "));setStatus("");},[artist.id]);
+ if(user?.role!=="admin"||!artist.id)return null;
+ async function save(e){e.preventDefault();if(busy)return;setBusy(true);setStatus("");try{const aliases=[...new Set(value.split(",").map(v=>v.trim()).filter(Boolean))].slice(0,12);if(aliases.some(v=>v.length>100))throw Error("Keep each alternate name under 100 characters.");const saved=await base44.entities.Artist.update(artist.id,{aliases});onSaved(saved.aliases||aliases);window.dispatchEvent(new Event("catalog:invalidate"));setStatus("Alternate names saved.");}catch(error){setStatus(error.message||"Alternate names couldn’t save.");}finally{setBusy(false);}}
+ return <details className="mt-5 border rounded-2xl p-4"><summary className="text-sm font-semibold cursor-pointer">Search alternate names</summary><form className="mt-3 space-y-3" onSubmit={save}><p className="text-xs text-muted-foreground">Add alternate spellings or stage names, separated by commas.</p><input aria-label="Artist alternate names" className="w-full border rounded-xl bg-background px-3 py-3 text-sm" value={value} onChange={e=>setValue(e.target.value)} maxLength={1200}/><button type="submit" disabled={busy} className="playlist-action">{busy?"Saving…":"Save alternate names"}</button>{status&&<p role="status" className="text-xs text-muted-foreground">{status}</p>}</form></details>;
+}
