@@ -59,7 +59,7 @@ export async function deleteAccountData(b,u){
   ListeningSession:{created_by_id:id},PurePreset:{created_by_id:id},ArtistSubscription:{created_by_id:id},PlaylistCollaboration:{owner_id:id},
   Moment:{user_id:id},MomentComment:{user_id:id},
   PlayEvent:{user_id:id},Lyrics:{uploader_id:id},Like:{user_id:id},
-  PublicNote:{user_id:id},ProfileComment:{$or:[{author_id:id},{profile_id:id}]},TrackAnnotation:{author_id:id},
+  NoteReaction:{$or:[{user_id:id},{profile_id:id}]},PublicNote:{user_id:id},ProfileComment:{$or:[{author_id:id},{profile_id:id}]},TrackAnnotation:{author_id:id},
   Suggestion:{user_id:id},Follow:{$or:[{follower_id:id},{following_id:id}]},
   Notification:{$or:[{user_id:id},{actor_id:id}]},Report:{reporter_id:id},
   Message:{$or:[{sender_id:id},{recipient_id:id}]},Conversation:{participant_ids:{$in:[id]}},
