@@ -598,6 +598,7 @@ export default function Profile({ ownProfileTab = false }) {
       </div>
 
       <TopTracks
+              onEdit={isOwn ? () => setEditMode(true) : undefined}
               disabled={saving}
               label={editMode ? form.top_tracks_label : profile?.top_tracks_label}
               onLabelChange={(value) => setForm((old) => ({ ...old, top_tracks_label: value }))}
