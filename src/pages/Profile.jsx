@@ -1,8 +1,8 @@
 import ProfileBannerEditor from '@/components/profile/ProfileBannerEditor';
 import ProfileDetailsEditor from '@/components/profile/ProfileDetailsEditor';
-import {normalizeProfileDraft} from '@/lib/profileEditing';
+import { normalizeProfileDraft } from '@/lib/profileEditing';
 import '@/components/profile/profile-upgrades.css';
-import {setFollowState,followError} from '@/lib/followActions';
+import { setFollowState, followError } from '@/lib/followActions';
 import { shareLink } from '@/lib/shareLink';
 import { reportActionError } from '@/lib/actionError';
 import LoadError from '@/components/LoadError';
@@ -112,12 +112,12 @@ export default function Profile({ ownProfileTab = false }) {
   const [backgroundDraft, setBackgroundDraft] = useState(null);
   const [deleteConfirm, setDeleteConfirm] = useState("");
   const [deleting, setDeleting] = useState(false);
-  const [deleteError,setDeleteError]=useState("");
-  const deleteLock=useRef(false);
+  const [deleteError, setDeleteError] = useState("");
+  const deleteLock = useRef(false);
   const [saving, setSaving] = useState(false);
   const [uploadingAvatar, setUploadingAvatar] = useState(false);
-  const [uploadingBanner,setUploadingBanner]=useState(false);
-  const bannerVersion=useRef(0),bannerBusy=useRef(false),saveLock=useRef(false);
+  const [uploadingBanner, setUploadingBanner] = useState(false);
+  const bannerVersion = useRef(0),bannerBusy = useRef(false),saveLock = useRef(false);
   const avatarVersion = useRef(0),avatarBusy = useRef(false);
   useEffect(() => {avatarVersion.current++;avatarBusy.current = false;setUploadingAvatar(false);return () => {avatarVersion.current++;};}, [targetId]);
   const [followList, setFollowList] = useState(null);
@@ -126,9 +126,9 @@ export default function Profile({ ownProfileTab = false }) {
 
   const [featuredCoverUrl, setFeaturedCoverUrl] = useState("");
   const chosenProfileSong = useRef(null);
-  
+
   useEffect(() => {
-    const tid = editMode?form.featured_track_id:profile?.featured_track_id;
+    const tid = editMode ? form.featured_track_id : profile?.featured_track_id;
     if (!tid) {setFeaturedCoverUrl("");return;}
     if (chosenProfileSong.current?.id === tid) {setFeaturedCoverUrl(chosenProfileSong.current.cover_art_url || "");return;}
     setFeaturedCoverUrl("");
@@ -138,22 +138,22 @@ export default function Profile({ ownProfileTab = false }) {
       if (!cancelled) setFeaturedCoverUrl(rows[0]?.cover_art_url || "");
     }).catch(() => {if (!cancelled) setFeaturedCoverUrl("");});
     return () => {cancelled = true;};
-  }, [profile?.featured_track_id,form.featured_track_id,editMode]);
+  }, [profile?.featured_track_id, form.featured_track_id, editMode]);
 
   const coverUrl = useCoverUrl(featuredCoverUrl);
-  const useDefaultBanner=editMode?form.banner_use_default:profile?.banner_use_default;
-  const bannerUrl = useCoverUrl(useDefaultBanner?"":editMode?form.banner_url:profile?.banner_url);
-  const bannerMobileUrl=useCoverUrl(useDefaultBanner?"":editMode?form.banner_mobile_url:profile?.banner_mobile_url);
+  const useDefaultBanner = editMode ? form.banner_use_default : profile?.banner_use_default;
+  const bannerUrl = useCoverUrl(useDefaultBanner ? "" : editMode ? form.banner_url : profile?.banner_url);
+  const bannerMobileUrl = useCoverUrl(useDefaultBanner ? "" : editMode ? form.banner_mobile_url : profile?.banner_mobile_url);
   const { colors: coverColors, loading: colorsLoading } = useCoverPalette(coverUrl);
 
   const loadVersion = useRef(0);
   const [loadError, setLoadError] = useState(false);
   const [sectionError, setSectionError] = useState("");
-  const [followMessage,setFollowMessage]=useState("");
+  const [followMessage, setFollowMessage] = useState("");
   const [followingBusy, setFollowingBusy] = useState(false);
-  const followBusyRef = useRef(false),followRevision=useRef(0);
+  const followBusyRef = useRef(false),followRevision = useRef(0);
   async function load() {
-    const revision=followRevision.current;
+    const revision = followRevision.current;
     const request = ++loadVersion.current;request === loadVersion.current && setLoadError(false);setSectionError("");
     request === loadVersion.current && setLoading(true);
     try {
@@ -187,12 +187,12 @@ export default function Profile({ ownProfileTab = false }) {
       if (t) {setTracks(t);setTopTracks([...t].sort((a, b) => (b.play_count || 0) - (a.play_count || 0)).slice(0, 5));}
       const totalsRow = totals?.rows?.[0];
       setStats((previous) => ({
-        followers: revision===followRevision.current&&typeof followersCount === "number" ? followersCount : previous.followers,
-        following: revision===followRevision.current&&typeof followingCount === "number" ? followingCount : previous.following,
+        followers: revision === followRevision.current && typeof followersCount === "number" ? followersCount : previous.followers,
+        following: revision === followRevision.current && typeof followingCount === "number" ? followingCount : previous.following,
         plays: totalsRow ? totalsRow.sum_play_count || 0 : t ? t.reduce((sum, x) => sum + (x.play_count || 0), 0) : previous.plays,
         likes: totalsRow ? totalsRow.sum_like_count || 0 : t ? t.reduce((sum, x) => sum + (x.like_count || 0), 0) : previous.likes
       }));
-      if (relToUser&&revision===followRevision.current) {setFollowing((Array.isArray(relToUser) ? relToUser : relToUser.items || []).length > 0);setFollowReady(true);}
+      if (relToUser && revision === followRevision.current) {setFollowing((Array.isArray(relToUser) ? relToUser : relToUser.items || []).length > 0);setFollowReady(true);}
       if (responses.some((r, i) => i !== 1 && r.status === "rejected")) setSectionError("Some profile information could not refresh. Saved music and follows have not been removed.");
     } catch {request === loadVersion.current && setLoadError(true);
     } finally {
@@ -201,28 +201,28 @@ export default function Profile({ ownProfileTab = false }) {
   }
 
   useEffect(() => {
-    setEditMode(false);setSaving(false);bannerVersion.current++;bannerBusy.current=false;setUploadingBanner(false);
+    setEditMode(false);setSaving(false);bannerVersion.current++;bannerBusy.current = false;setUploadingBanner(false);
     setFollowMessage("");setProfile(null);setTracks([]);setTopTracks([]);setFollowing(false);setFollowReady(false);setStats({ followers: null, following: null, plays: 0, likes: 0 });
     if (targetId) load();
     return () => {loadVersion.current++;};
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [targetId,me?.id]);
+  }, [targetId, me?.id]);
 
   // Other entry points (song menus/onboarding) refresh mounted profile counts.
-  useEffect(()=>{
-    let alive=true,request=0;
-    const refresh=async event=>{
-      const change=event.detail;
-      if(!change||change.uid!==me?.id||![change.uid,change.followingId].includes(targetId))return;
-      const seq=++request,key=identity.current;followRevision.current++;
-      if(change.followingId===targetId&&!isOwn){setFollowing(!!change.following);setFollowReady(true);}
-      const counts=await Promise.allSettled([base44.entities.Follow.count({following_id:targetId}),base44.entities.Follow.count({follower_id:targetId})]);
-      if(!alive||request!==seq||identity.current!==key)return;
-      setStats(old=>({...old,...(counts[0].status==="fulfilled"&&typeof counts[0].value==="number"?{followers:counts[0].value}:{}),...(counts[1].status==="fulfilled"&&typeof counts[1].value==="number"?{following:counts[1].value}:{})}));
+  useEffect(() => {
+    let alive = true,request = 0;
+    const refresh = async (event) => {
+      const change = event.detail;
+      if (!change || change.uid !== me?.id || ![change.uid, change.followingId].includes(targetId)) return;
+      const seq = ++request,key = identity.current;followRevision.current++;
+      if (change.followingId === targetId && !isOwn) {setFollowing(!!change.following);setFollowReady(true);}
+      const counts = await Promise.allSettled([base44.entities.Follow.count({ following_id: targetId }), base44.entities.Follow.count({ follower_id: targetId })]);
+      if (!alive || request !== seq || identity.current !== key) return;
+      setStats((old) => ({ ...old, ...(counts[0].status === "fulfilled" && typeof counts[0].value === "number" ? { followers: counts[0].value } : {}), ...(counts[1].status === "fulfilled" && typeof counts[1].value === "number" ? { following: counts[1].value } : {}) }));
     };
-    window.addEventListener('follows:changed',refresh);
-    return()=>{alive=false;window.removeEventListener('follows:changed',refresh);};
-  },[me?.id,targetId,isOwn]);
+    window.addEventListener('follows:changed', refresh);
+    return () => {alive = false;window.removeEventListener('follows:changed', refresh);};
+  }, [me?.id, targetId, isOwn]);
 
   // Hide the mobile tab bar when any modal/sheet is open so it doesn't overlap
   // the bottom of the sheet content (z-index alone can't fix this because the
@@ -234,14 +234,14 @@ export default function Profile({ ownProfileTab = false }) {
     const anyModal = (editMode || showSettings || showDelete || showQR || showColors || !!followList) && isCurrentPage;
     if (anyModal) document.documentElement.classList.add("modal-open");
     return () => document.documentElement.classList.remove("modal-open");
-  }, [editMode,showSettings, showDelete, showQR, showColors, followList, isCurrentPage]);
-  useEffect(()=>{
-    if(!editMode||!isCurrentPage)return;
-    const viewport=window.visualViewport;
-    const update=()=>document.documentElement.style.setProperty('--profile-keyboard-offset',Math.max(0,window.innerHeight-(viewport?.height||window.innerHeight)-(viewport?.offsetTop||0))+'px');
-    update();viewport?.addEventListener('resize',update);viewport?.addEventListener('scroll',update);
-    return()=>{viewport?.removeEventListener('resize',update);viewport?.removeEventListener('scroll',update);document.documentElement.style.removeProperty('--profile-keyboard-offset');};
-  },[editMode,isCurrentPage]);
+  }, [editMode, showSettings, showDelete, showQR, showColors, followList, isCurrentPage]);
+  useEffect(() => {
+    if (!editMode || !isCurrentPage) return;
+    const viewport = window.visualViewport;
+    const update = () => document.documentElement.style.setProperty('--profile-keyboard-offset', Math.max(0, window.innerHeight - (viewport?.height || window.innerHeight) - (viewport?.offsetTop || 0)) + 'px');
+    update();viewport?.addEventListener('resize', update);viewport?.addEventListener('scroll', update);
+    return () => {viewport?.removeEventListener('resize', update);viewport?.removeEventListener('scroll', update);document.documentElement.style.removeProperty('--profile-keyboard-offset');};
+  }, [editMode, isCurrentPage]);
 
   useEffect(() => {
     if (isOwn && me?.id === targetId) setProfile((previous) => previous ? { ...previous, is_artist: !!me.is_artist } : previous);
@@ -252,13 +252,13 @@ export default function Profile({ ownProfileTab = false }) {
     followBusyRef.current = true;setFollowingBusy(true);const started = identity.current;
     const wasFollowing = following;followRevision.current++;setFollowMessage("");
     try {
-      const result=await setFollowState(base44,me.id,profile.id,!wasFollowing);
-      if(identity.current!==started)return;
+      const result = await setFollowState(base44, me.id, profile.id, !wasFollowing);
+      if (identity.current !== started) return;
       followRevision.current++;setFollowing(result.following);
-      if(result.changed)setStats(s=>({...s,followers:s.followers===null?null:Math.max(0,s.followers+(result.following?1:-1))}));
-      if(result.changed&&result.following)base44.entities.Notification.create({user_id:profile.id,type:"new_follower",actor_id:me.id}).catch(()=>{});
+      if (result.changed) setStats((s) => ({ ...s, followers: s.followers === null ? null : Math.max(0, s.followers + (result.following ? 1 : -1)) }));
+      if (result.changed && result.following) base44.entities.Notification.create({ user_id: profile.id, type: "new_follower", actor_id: me.id }).catch(() => {});
       if (identity.current === started) window.dispatchEvent(new CustomEvent('follows:changed', { detail: { uid: me.id, followingId: profile.id, following: !wasFollowing } }));
-    } catch(error) {
+    } catch (error) {
       if (identity.current !== started) return;
       followRevision.current++;setFollowMessage(followError(error));
     } finally {followBusyRef.current = false;setFollowingBusy(false);}
@@ -272,51 +272,51 @@ export default function Profile({ ownProfileTab = false }) {
     try {
       const { file_url } = await base44.integrations.Core.UploadFile({ file });
       if (!file_url) throw new Error("Your profile image did not upload. Please retry.");
-      if (version !== avatarVersion.current)return false;
+      if (version !== avatarVersion.current) return false;
       setForm((f) => ({ ...f, avatar_url: file_url }));return true;
     } catch (error) {
       if (version === avatarVersion.current) reportActionError(error, "Your profile image could not upload. Please retry.");return false;
     } finally {if (version === avatarVersion.current) {avatarBusy.current = false;setUploadingAvatar(false);}}
   }
 
-  async function uploadBanner(files){
-    if(bannerBusy.current||saving||!isOwn||!editMode)return false;
-    const version=++bannerVersion.current,key=identity.current;bannerBusy.current=true;setUploadingBanner(true);
-    try{
-      const [desktop,mobile]=await Promise.all([base44.integrations.Core.UploadFile({file:files.desktop}),base44.integrations.Core.UploadFile({file:files.mobile})]);
-      if(!desktop.file_url||!mobile.file_url)throw Error('Your banner did not upload.');
-      if(version!==bannerVersion.current||identity.current!==key)return false;
-      setForm(old=>({...old,banner_url:desktop.file_url,banner_mobile_url:mobile.file_url,banner_use_default:false}));return true;
-    }catch(error){if(version===bannerVersion.current)reportActionError(error,'Your banner could not upload. Please retry.');return false;}
-    finally{if(version===bannerVersion.current){bannerBusy.current=false;setUploadingBanner(false);}}
+  async function uploadBanner(files) {
+    if (bannerBusy.current || saving || !isOwn || !editMode) return false;
+    const version = ++bannerVersion.current,key = identity.current;bannerBusy.current = true;setUploadingBanner(true);
+    try {
+      const [desktop, mobile] = await Promise.all([base44.integrations.Core.UploadFile({ file: files.desktop }), base44.integrations.Core.UploadFile({ file: files.mobile })]);
+      if (!desktop.file_url || !mobile.file_url) throw Error('Your banner did not upload.');
+      if (version !== bannerVersion.current || identity.current !== key) return false;
+      setForm((old) => ({ ...old, banner_url: desktop.file_url, banner_mobile_url: mobile.file_url, banner_use_default: false }));return true;
+    } catch (error) {if (version === bannerVersion.current) reportActionError(error, 'Your banner could not upload. Please retry.');return false;} finally
+    {if (version === bannerVersion.current) {bannerBusy.current = false;setUploadingBanner(false);}}
   }
-  async function saveProfileSong(id,chosen){
-    if(!isOwn||!editMode||saving)return false;
-    chosenProfileSong.current=chosen?.id===id?chosen:null;
-    setForm(previous=>({...previous,featured_track_id:id}));
+  async function saveProfileSong(id, chosen) {
+    if (!isOwn || !editMode || saving) return false;
+    chosenProfileSong.current = chosen?.id === id ? chosen : null;
+    setForm((previous) => ({ ...previous, featured_track_id: id }));
     return true;
   }
-  async function saveProfile(){
-    if(saveLock.current||saving||avatarBusy.current||bannerBusy.current||uploadingAvatar||uploadingBanner||!isOwn||me?.id!==targetId)return;
-    let draft;try{draft=normalizeProfileDraft(form);}catch(error){reportActionError(error,error.message);return;}
-    const baseline=formFromProfile(profile),changes=Object.fromEntries(Object.entries(draft).filter(([key,value])=>JSON.stringify(value)!==JSON.stringify(baseline[key])));
-    if(!Object.keys(changes).length){setEditMode(false);return;}
-    const key=identity.current;saveLock.current=true;setSaving(true);
-    try{
+  async function saveProfile() {
+    if (saveLock.current || saving || avatarBusy.current || bannerBusy.current || uploadingAvatar || uploadingBanner || !isOwn || me?.id !== targetId) return;
+    let draft;try {draft = normalizeProfileDraft(form);} catch (error) {reportActionError(error, error.message);return;}
+    const baseline = formFromProfile(profile),changes = Object.fromEntries(Object.entries(draft).filter(([key, value]) => JSON.stringify(value) !== JSON.stringify(baseline[key])));
+    if (!Object.keys(changes).length) {setEditMode(false);return;}
+    const key = identity.current;saveLock.current = true;setSaving(true);
+    try {
       await base44.auth.updateMe(changes);
-      const confirmed=await base44.auth.me();
-      if(identity.current!==key||confirmed.id!==targetId)return;
-      const saved=formFromProfile(confirmed);
-      if(Object.entries(changes).some(([field,value])=>JSON.stringify(saved[field])!==JSON.stringify(value)))throw Error('Some changes were not confirmed. Your draft is still here.');
+      const confirmed = await base44.auth.me();
+      if (identity.current !== key || confirmed.id !== targetId) return;
+      const saved = formFromProfile(confirmed);
+      if (Object.entries(changes).some(([field, value]) => JSON.stringify(saved[field]) !== JSON.stringify(value))) throw Error('Some changes were not confirmed. Your draft is still here.');
       setProfile(confirmed);setForm(saved);setBackgroundDraft(null);setEditMode(false);
-      window.dispatchEvent(new Event('profiles:changed'));await checkUserAuth({silent:true});
-    }catch(error){if(identity.current===key)reportActionError(error,'Your profile changes could not save. Your draft is still here. Please retry.');}
-    finally{saveLock.current=false;if(identity.current===key)setSaving(false);}
+      window.dispatchEvent(new Event('profiles:changed'));await checkUserAuth({ silent: true });
+    } catch (error) {if (identity.current === key) reportActionError(error, 'Your profile changes could not save. Your draft is still here. Please retry.');} finally
+    {saveLock.current = false;if (identity.current === key) setSaving(false);}
   }
-  function cancelEdit(){
-    avatarVersion.current++;avatarBusy.current=false;setUploadingAvatar(false);
-    bannerVersion.current++;bannerBusy.current=false;setUploadingBanner(false);chosenProfileSong.current=null;setBackgroundDraft(null);
-    if(profile)setForm(formFromProfile(profile));setEditMode(false);
+  function cancelEdit() {
+    avatarVersion.current++;avatarBusy.current = false;setUploadingAvatar(false);
+    bannerVersion.current++;bannerBusy.current = false;setUploadingBanner(false);chosenProfileSong.current = null;setBackgroundDraft(null);
+    if (profile) setForm(formFromProfile(profile));setEditMode(false);
   }
 
   async function shareProfile() {
@@ -327,17 +327,17 @@ export default function Profile({ ownProfileTab = false }) {
   }
 
   async function confirmDelete() {
-    if(deleteLock.current||deleteConfirm.trim().toUpperCase()!=="DELETE")return;
-    deleteLock.current=true;setDeleting(true);setDeleteError("");
-    try{
-      const result=await base44.functions.invoke("deleteMyAccount",{confirmation:"DELETE"});
-      if(result.data?.deleted!==true)throw Error("Deletion was not confirmed");
-      await clearPersonalData({deleteOffline:true,userId:me?.id}).catch(()=>{});
-      base44.auth.logout(window.location.origin+"/login");
-    }catch(error){
-      const status=error?.status??error?.response?.status;
-      setDeleteError(status===402?"Account deletion is temporarily unavailable. Please contact PUBLIC support.":status===401?"Your session expired. Sign in again before deleting your account.":"Deletion didn’t finish. Please retry to complete it, or contact support.");
-      deleteLock.current=false;setDeleting(false);
+    if (deleteLock.current || deleteConfirm.trim().toUpperCase() !== "DELETE") return;
+    deleteLock.current = true;setDeleting(true);setDeleteError("");
+    try {
+      const result = await base44.functions.invoke("deleteMyAccount", { confirmation: "DELETE" });
+      if (result.data?.deleted !== true) throw Error("Deletion was not confirmed");
+      await clearPersonalData({ deleteOffline: true, userId: me?.id }).catch(() => {});
+      base44.auth.logout(window.location.origin + "/login");
+    } catch (error) {
+      const status = error?.status ?? error?.response?.status;
+      setDeleteError(status === 402 ? "Account deletion is temporarily unavailable. Please contact PUBLIC support." : status === 401 ? "Your session expired. Sign in again before deleting your account." : "Deletion didn’t finish. Please retry to complete it, or contact support.");
+      deleteLock.current = false;setDeleting(false);
     }
   }
 
@@ -378,15 +378,15 @@ export default function Profile({ ownProfileTab = false }) {
     {backgroundColors.length > 0 && <MotionGradient colors={backgroundColors} motion={currentBackground.motion} speed={currentBackground.speed} active={isCurrentPage && !showColors && !showSettings && !showQR && !showDelete && !followList} pauseWhenCovered className="profile-artwork-background fixed inset-0 pointer-events-none z-0" style={{ opacity: 1 }} />}
     {!backgroundColors.length && currentBackground.mode === "auto" && coverUrl && <div aria-hidden="true" className="profile-artwork-background fixed inset-0 pointer-events-none z-0" style={{ backgroundImage: `url(${JSON.stringify(coverUrl)})`, backgroundSize: "cover", backgroundPosition: "center", filter: "blur(45px) saturate(1.35)", transform: "scale(1.12)", opacity: 1 }} />}
     <div className={`profile-page profile-redesigned max-w-6xl mx-auto relative z-10 ${editMode ? "profile-is-editing" : ""}`}>
-      {editMode&&<div className="profile-edit-toolbar" role="region" aria-label="Profile editing"><div><strong>Edit profile</strong><p>Changes apply when you save.</p></div><div><button type="button" className="playlist-action" disabled={saving} onClick={cancelEdit}>Cancel</button><button type="button" className="chrome-button" disabled={saving||uploadingAvatar||uploadingBanner} onClick={saveProfile}>{saving?<Loader2 size={16} className="animate-spin"/>:<Save size={16}/>} {saving?'Saving…':'Save changes'}</button></div></div>}
+      {editMode && <div className="profile-edit-toolbar" role="region" aria-label="Profile editing"><div><strong>Edit profile</strong><p>Changes apply when you save.</p></div><div><button type="button" className="playlist-action" disabled={saving} onClick={cancelEdit}>Cancel</button><button type="button" className="chrome-button" disabled={saving || uploadingAvatar || uploadingBanner} onClick={saveProfile}>{saving ? <Loader2 size={16} className="animate-spin" /> : <Save size={16} />} {saving ? 'Saving…' : 'Save changes'}</button></div></div>}
 
       <div className="profile-overview flex flex-col md:flex-row gap-4 md:gap-6 mb-8">
       <div className="profile-identity relative rounded-2xl overflow-hidden ring-1 ring-inset ring-foreground/10 bg-card flex-1 min-w-0">
         <div className="profile-cover-stage" aria-hidden="true" style={backgroundColors.length ? { backgroundImage: profileGradient(backgroundColors) } : undefined}>
-          {(bannerUrl || currentBackground.mode === "auto" && coverUrl) && <picture>{bannerMobileUrl&&<source media="(max-width:767px)" srcSet={bannerMobileUrl}/>}<img key={bannerUrl||coverUrl} src={bannerUrl||coverUrl} alt="" onError={event=>{event.currentTarget.style.visibility="hidden";}}/></picture>}
+          {(bannerUrl || currentBackground.mode === "auto" && coverUrl) && <picture>{bannerMobileUrl && <source media="(max-width:767px)" srcSet={bannerMobileUrl} />}<img key={bannerUrl || coverUrl} src={bannerUrl || coverUrl} alt="" onError={(event) => {event.currentTarget.style.visibility = "hidden";}} /></picture>}
           <div className="profile-cover-fade" />
         </div>
-        {editMode&&<ProfileBannerEditor busy={uploadingBanner||saving} hasBanner={!!form.banner_url&&!form.banner_use_default} onApply={uploadBanner} onRemove={()=>setForm(old=>({...old,banner_use_default:true}))}/>}
+        {editMode && <ProfileBannerEditor busy={uploadingBanner || saving} hasBanner={!!form.banner_url && !form.banner_use_default} onApply={uploadBanner} onRemove={() => setForm((old) => ({ ...old, banner_use_default: true }))} />}
         {!editMode && isAdminProfile && <ProfileBadge variant="admin" />}
         {!editMode && !isAdminProfile && profile.is_artist && <ProfileBadge variant="artist" />}
         
@@ -394,8 +394,8 @@ export default function Profile({ ownProfileTab = false }) {
         <div className="profile-details relative z-10 px-5 md:px-10 pb-5 md:pb-8 pt-5 md:pt-8">
           <div className="profile-identity-row flex flex-col items-center md:flex-row md:items-center md:justify-center gap-4 md:gap-8">
             <div className="profile-avatar-notes">
-              {!editMode && <PublicNotes key={[targetId,me?.id].join(":")} profileId={targetId} isOwn={isOwn} active={isCurrentPage} userTracks={tracks} />}
-              <ProfileAvatar user={{...profile,avatar_url:avatarUrl,avatar_preset:editMode?"":profile.avatar_preset}} editing={editMode} busy={uploadingAvatar||saving} onUpload={uploadAvatar} onSelect={url=>{if(!isOwn||uploadingAvatar||saving)return;avatarVersion.current++;setForm(previous=>({...previous,avatar_url:url}));}}/>
+              {!editMode && <PublicNotes key={[targetId, me?.id].join(":")} profileId={targetId} isOwn={isOwn} active={isCurrentPage} userTracks={tracks} />}
+              <ProfileAvatar user={{ ...profile, avatar_url: avatarUrl, avatar_preset: editMode ? "" : profile.avatar_preset }} editing={editMode} busy={uploadingAvatar || saving} onUpload={uploadAvatar} onSelect={(url) => {if (!isOwn || uploadingAvatar || saving) return;avatarVersion.current++;setForm((previous) => ({ ...previous, avatar_url: url }));}} />
             </div>
 
             <div className="profile-info flex-1 min-w-0 w-full md:w-auto text-center md:text-left">
@@ -448,7 +448,7 @@ export default function Profile({ ownProfileTab = false }) {
                   <span className="font-bold">{stats.following === null ? "—" : formatNumber(stats.following)}</span> <span className="text-foreground/50">following</span>
                 </button>
                 {(profile.is_artist || stats.plays > 0) && <span><span className="font-bold">{formatNumber(stats.plays)}</span> <span className="text-foreground/50">song plays</span></span>}
-                {stats.likes > 0 && <span><span className="font-bold">{formatNumber(stats.likes)}</span> <span className="text-foreground/50">likes received</span></span>}
+                {stats.likes > 0 && <span><span className="font-bold">{formatNumber(stats.likes)}</span> <span className="text-foreground/50">likes</span></span>}
               </div>
 
               {editMode ?
@@ -519,7 +519,7 @@ export default function Profile({ ownProfileTab = false }) {
                 </div>
                   }
 
-              {editMode&&<ProfileDetailsEditor form={form} disabled={saving} onChange={(key,value)=>setForm(old=>({...old,[key]:value}))}/>}
+              {editMode && <ProfileDetailsEditor form={form} disabled={saving} onChange={(key, value) => setForm((old) => ({ ...old, [key]: value }))} />}
               <div className="profile-actions flex items-center gap-2 md:gap-3 mt-3 flex-wrap justify-center md:justify-start">
                 {isOwn ?
                     editMode ? null :
@@ -533,14 +533,14 @@ export default function Profile({ ownProfileTab = false }) {
                     <button
                       disabled={followingBusy || !followReady} onClick={toggleFollow}
                       title={following ? "Following (click to unfollow)" : "Follow"}
-                      aria-describedby={followMessage?"profile-follow-message":undefined}
+                      aria-describedby={followMessage ? "profile-follow-message" : undefined}
                       aria-label={following ? "Unfollow" : "Follow"}
                       className={`profile-primary-action playlist-action transition ${
                       following ? "border border-border" : "bg-foreground text-background"}`}>
                     {followingBusy ? <Loader2 size={16} className="animate-spin" /> : following ? <UserCheck size={16} /> : <UserPlus size={16} />}<span>{followingBusy ? "Saving…" : following ? "Following" : "Follow"}</span>
                   </button>
                     }
-                {!isOwn&&followMessage&&<p id="profile-follow-message" role="status" className="basis-full text-xs text-muted-foreground leading-relaxed text-center">{followMessage} <button type="button" onClick={()=>setFollowMessage("")} className="underline underline-offset-2" aria-label="Dismiss follow message">Dismiss</button></p>}
+                {!isOwn && followMessage && <p id="profile-follow-message" role="status" className="basis-full text-xs text-muted-foreground leading-relaxed text-center">{followMessage} <button type="button" onClick={() => setFollowMessage("")} className="underline underline-offset-2" aria-label="Dismiss follow message">Dismiss</button></p>}
                 {!editMode &&
                     <button
                       onClick={shareProfile}
@@ -584,23 +584,23 @@ export default function Profile({ ownProfileTab = false }) {
         </div>
       </div>
       </div>
-      {sectionError&&<div className="flex items-center justify-between gap-3 text-xs text-muted-foreground mb-4"><span>Some profile details couldn’t refresh.</span><button type="button" disabled={followingBusy||loading||editMode||saving||uploadingAvatar} onClick={load} className="underline underline-offset-2">Retry</button></div>}
+      {sectionError && <div className="flex items-center justify-between gap-3 text-xs text-muted-foreground mb-4"><span>Some profile details couldn’t refresh.</span><button type="button" disabled={followingBusy || loading || editMode || saving || uploadingAvatar} onClick={load} className="underline underline-offset-2">Retry</button></div>}
       <div className="profile-content"><section className="profile-music" aria-label="Profile music">
       <div className="profile-song-spotlight">
       <ProfileSong
-            trackId={editMode ? form.featured_track_id : profile?.featured_track_id}
-            editMode={editMode}
-            userTracks={tracks}
-            active={isCurrentPage}
-            disabled={saving}
-            onChange={saveProfileSong} />
+                trackId={editMode ? form.featured_track_id : profile?.featured_track_id}
+                editMode={editMode}
+                userTracks={tracks}
+                active={isCurrentPage}
+                disabled={saving}
+                onChange={saveProfileSong} />
           
       </div>
 
       <TopTracks
               disabled={saving}
-              label={editMode?form.top_tracks_label:profile?.top_tracks_label}
-              onLabelChange={value=>setForm(old=>({...old,top_tracks_label:value}))}
+              label={editMode ? form.top_tracks_label : profile?.top_tracks_label}
+              onLabelChange={(value) => setForm((old) => ({ ...old, top_tracks_label: value }))}
               trackIds={editMode ? form.top_track_ids : profile?.top_track_ids || []}
               editMode={editMode}
               userTracks={tracks}
@@ -646,7 +646,7 @@ export default function Profile({ ownProfileTab = false }) {
               placeholder="DELETE"
               className="w-full px-3 py-2 rounded-lg border border-border bg-background text-sm mb-3 font-mono uppercase tracking-widest" />
           
-            {deleteError&&<p role="alert" className="text-sm text-destructive mb-4">{deleteError} <Link to="/support" onClick={()=>setShowDelete(false)} className="underline">Support</Link></p>}
+            {deleteError && <p role="alert" className="text-sm text-destructive mb-4">{deleteError} <Link to="/support" onClick={() => setShowDelete(false)} className="underline">Support</Link></p>}
             <div className="flex flex-wrap justify-end gap-2">
               <button
                 onClick={() => {
