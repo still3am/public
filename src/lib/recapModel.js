@@ -11,5 +11,5 @@ export function buildRecap(sessions,events,catalog,period,value){
  const counts=new Map(),artists=new Map(),genres=new Map();
  for(const play of plays){const t=tracks.get(play.track_id);if(!t)continue;counts.set(t.id,(counts.get(t.id)||0)+1);const a=t.artist||t.uploader_name||"Unknown";artists.set(a,(artists.get(a)||0)+1);if(t.genre)genres.set(t.genre,(genres.get(t.genre)||0)+1);}
  const ranked=[...counts].sort((a,b)=>b[1]-a[1]).map(([id,count])=>({...tracks.get(id),recap_plays:count}));
- return {tracks:ranked,plays:ranked.reduce((n,t)=>n+t.recap_plays,0),artist:[...artists].sort((a,b)=>b[1]-a[1])[0]?.[0]||"",genre:[...genres].sort((a,b)=>b[1]-a[1])[0]?.[0]||"",unique:ranked.length};
+ return {seconds:plays.filter(p=>tracks.has(p.track_id)).reduce((n,p)=>n+(Number.isFinite(p.seconds)?Math.max(0,p.seconds):0),0),tracks:ranked,plays:ranked.reduce((n,t)=>n+t.recap_plays,0),artist:[...artists].sort((a,b)=>b[1]-a[1])[0]?.[0]||"",genre:[...genres].sort((a,b)=>b[1]-a[1])[0]?.[0]||"",unique:ranked.length};
 }
