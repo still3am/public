@@ -1,4 +1,6 @@
 import {AVATAR_PRESETS} from "@/lib/avatarPresets";
+import recoveredAlbumMetadata from "@/data/recoveredAlbumMetadata.json";
+import {recoveredAlbumResult,withRecoveredAlbumMetadata} from "@/lib/recoveredAlbums";
 import {savePresetAvatar,withPresetAvatar} from "@/lib/nativeAvatar";
 import { createClient } from '@base44/sdk';
 import { appParams } from '@/lib/app-params';
@@ -22,7 +24,7 @@ const entities = new Proxy(raw.entities,{get(target,name) {
     if(typeof method!=="string")return Reflect.get(h,method);
     if(['create','update','delete','deleteMany','bulkUpdate'].includes(method)) return async (...args)=>{if(method==='bulkUpdate'&&Array.isArray(args[0])&&args[0].length>100){const results=[];for(let i=0;i<args[0].length;i+=100)results.push(...await gateway(name,method,[args[0].slice(i,i+100)]));return results;}return gateway(name,method,args);};
     if(name==='Track'&&['get','list','filter','count','aggregate'].includes(method)) return async (...args)=>{
-      try { return await gateway(name,'read',[method,...args]); }
+      try { return recoveredAlbumResult(await gateway(name,'read',[method,...args]),recoveredAlbumMetadata); }
       catch(error) {
         // Function availability must not blank an otherwise accessible catalog.
         // The entity API independently enforces Track RLS and private-file FLS.
@@ -41,7 +43,7 @@ const entities = new Proxy(raw.entities,{get(target,name) {
         else if(method==='list')result=await h.filter(rule,...args);
         else result=await h.aggregate({...args[0],query:{$and:[args[0]?.query||{},rule]}});
 
-        const mark=t=>t&&!t.audio_url?{...t,_private_audio:true}:t;
+        const mark=t=>{const track=withRecoveredAlbumMetadata(t,recoveredAlbumMetadata);return track&&!track.audio_url?{...track,_private_audio:true}:track;};
         if(method==='get'){
           const track=mark(result);
           // Private audio still requires the gateway to authorize and sign it.
