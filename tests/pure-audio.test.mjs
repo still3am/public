@@ -51,6 +51,13 @@ function fixture(){
  await change({enabled:false});assert.equal(state.value.enabled,false);
  console.log("PASS idle/paused users can enable, tune and disable PURE without starting Web Audio");
 }
+{
+ let ensureExpression;const find=n=>{if(ts.isVariableDeclaration(n)&&n.name.getText(ast)==="ensureGraph")ensureExpression=n.initializer.arguments[0].getText(ast);ts.forEachChild(n,find);};find(ast);
+ const state={},pureRef={current:{...DEFAULT_PURE,enabled:true}};
+ const ensure=new Function("configurePlaybackSession","audioCtxRef","pureRef","setPureState","setPureError","window","return ("+ensureExpression+")")(()=>{},{current:null},pureRef,v=>{state.value=v;},v=>{state.error=v;},{});
+ assert.equal(ensure(),null);assert.equal(state.value.enabled,false);assert.match(state.error,/could not start/);
+ console.log("PASS a deferred activation failure disables PURE instead of showing a false active badge");
+}
 console.log("PASS player activation, remote-playback restrictions, unavailable engines and stale resume failures preserve user intent");
 {
  let compareExpression;const find=n=>{if(ts.isVariableDeclaration(n)&&n.name.getText(ast)==="comparePure")compareExpression=n.initializer.arguments[0].getText(ast);ts.forEachChild(n,find);};find(ast);
