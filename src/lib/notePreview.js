@@ -13,8 +13,9 @@ export function createNotePreview({acquire,createAudio=()=>new Audio(),onChange=
    if(!session.audio.paused){if(!ensure)session.audio.pause();notify();return;}
    try{await session.audio.play();notify();}catch(e){stop();throw e;}return;
   }
-  stop();const token=++version,audio=createAudio();
-  const lease=acquire(()=>stop(false));
+  const held=session?.lease;
+  stop(false);const token=++version,audio=createAudio();
+  const lease=held||acquire(()=>stop(false));
   const current={id:track.id,audio,lease,source:null,loading:true};session=current;notify();
   const valid=()=>session===current&&version===token&&lease.isCurrent();
   try{
