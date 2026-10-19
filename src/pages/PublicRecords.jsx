@@ -1,4 +1,7 @@
 import ArtistAliases from "@/components/ArtistAliases";
+import {DropdownMenu,DropdownMenuTrigger,DropdownMenuContent,DropdownMenuItem} from "@/components/ui/dropdown-menu";
+import {shareLink} from "@/lib/shareLink";
+import "./artist-editorial.css";
 import ArtistReleaseFollow from "@/components/ArtistReleaseFollow";
 import ScrollShelf from "@/components/ScrollShelf";
 import LoadError from '@/components/LoadError';
