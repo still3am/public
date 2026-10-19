@@ -1,7 +1,6 @@
 import {reportActionError} from "@/lib/actionError";
 import ArtistReleaseFollow from "@/components/ArtistReleaseFollow";
-import {splitArtistNames} from "@/lib/artistTracks";
-import {artistKey} from "@/lib/artistReleaseModel";
+import {artistKey,artistReleaseNames} from "@/lib/artistReleaseModel";
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { MoreHorizontal, Plus, Music2 } from "lucide-react";
@@ -127,7 +126,7 @@ export default function TrackOptionsMenu({
     try{await item.onClick?.();}catch(error){reportActionError(error,"Couldn’t complete this song action. Please try again.");}
   };
 
-  const artistNames=[...new Map(splitArtistNames(String(track.artist||"").replace(/\s+[\[(]?(?:feat(?:uring)?\.?|ft\.?)\s+/gi,", "),false).map(name=>[artistKey(name),name])).values()];
+  const artistNames=artistReleaseNames(track.artist);
   const list = (
     <TrackMenuList standard={standard} manage={manage} extras={items} onPick={pick} roomy={isMobile}>
       {artistNames.length>0&&artistNames.map(name=><ArtistReleaseFollow key={artistKey(name)} name={name} variant="menu"/>)}
