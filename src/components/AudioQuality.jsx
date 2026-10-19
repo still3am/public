@@ -28,7 +28,7 @@ export default function AudioQuality(){
   return()=>{alive=false;controller.abort();};
  },[url,retry,trackId]);
  const current=result?.url===url?result:null,info=current?.info,lossless=info?.kind==="lossless",checking=current?.status==="checking";
- return <><button type="button" onClick={()=>setOpen(true)} className="inline-flex items-center gap-1.5 min-h-9 text-[10px] uppercase tracking-[.12em] opacity-70 hover:opacity-100 transition rounded-full focus-visible:outline focus-visible:outline-2 px-1" aria-label="Audio quality details" aria-haspopup="dialog" aria-expanded={open}><AudioLines size={14}/>{p.pure?.enabled&&!p.pureSuspended?"PUBLIC. Pure":lossless?"PUBLIC. Lossless":"Audio quality"}</button>
+ return <><button type="button" onClick={()=>setOpen(true)} className="inline-flex items-center gap-1.5 min-h-9 text-[10px] uppercase tracking-[.12em] opacity-70 hover:opacity-100 transition rounded-full focus-visible:outline focus-visible:outline-2 px-1" aria-label="PUBLIC Pure and audio quality" aria-haspopup="dialog" aria-expanded={open}><AudioLines size={14}/>{p.pure?.enabled&&!p.pureSuspended?"PUBLIC. Pure · On":"PUBLIC. Pure"}</button>
  {open&&<Dialog open onOpenChange={value=>{if(!value)setOpen(false);}}><DialogContent data-public-dialog onKeyDown={event=>{if(event.key==="Escape")event.stopPropagation();}} onTouchStart={event=>event.stopPropagation()} onTouchMove={event=>event.stopPropagation()} onTouchEnd={event=>event.stopPropagation()}>
   <span className="text-[10px] tracking-[.18em] font-semibold text-muted-foreground">PUBLIC. / SOUND</span>
   <AudioLines size={35} strokeWidth={1.2} className="mt-2"/>
