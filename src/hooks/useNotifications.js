@@ -111,5 +111,5 @@ export function useNotifications(){
  }
  const releasedIds=new Set(releases.items.map(n=>n.track_id));
  const merged=[...notifications.filter(n=>n.type!=="new_upload_from_followed"||!releasedIds.has(n.track_id)),...releases.items].sort((a,b)=>new Date(b.created_date)-new Date(a.created_date));
- return {notifications:merged,loading,error:error||releases.error,hasMore,unreadCount:unreadCount+releases.unread,markAllAsRead,markAsRead,reload:()=>{load(true);releases.refresh();},loadMore:()=>load(false)};
+ return {notifications:merged,loading,error:error||releases.error,hasMore,unreadCount:unreadCount+releases.unread,markAllAsRead,markAsRead,reload:()=>{releases.refresh();return load(true);},loadMore:()=>load(false)};
 }
