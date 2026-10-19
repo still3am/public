@@ -79,6 +79,9 @@ export async function saveManualLyrics(client,id,patch){
   if(!user?.id||user.is_blocked||user.disabled)throw Object.assign(new Error("Sign in with an active account before saving lyrics."),{status:403});
   const track=await client.entities.Track.get(id);
   if(!track?.id||user.role!=="admin"&&track.uploader_id!==user.id)throw Object.assign(new Error("Only the song owner or an administrator can edit lyrics."),{status:403});
+  // Regular owners retain the existing server authorization and publication review.
+  // The native Track API remains administrator-only; its schema is unchanged.
+  if(user.role!=="admin")return gateway("Track","update",[id,{lyrics_text:patch.lyrics_text}]);
   if((await client.auth.me())?.id!==user.id)throw new Error("Your account changed. Reopen the song before saving.");
   let failure;
   try{await client.entities.Track.update(id,{lyrics_text:patch.lyrics_text});}catch(error){failure=error;}
