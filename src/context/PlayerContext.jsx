@@ -21,6 +21,7 @@ import {
   getTransitionSettings,
   isTransitionActive,
   isGapless,
+  shouldUseGapless,
   TRANSITION_MODES,
 } from "@/lib/transitions";
 import { useAuth } from "@/lib/AuthContext";
@@ -536,14 +537,14 @@ export function PlayerProvider({ children }) {
   // Real crossfade: start the next track on the inactive element and ramp the
   // two gains across one another, then promote the inactive element to active.
   const beginCrossfade = useCallback(async(targetIndex,cf,remaining)=>{
-    if(crossfadingRef.current)return false;
+    if(crossfadingRef.current||pureRemoteRef.current)return false;
     const oldSide=activeIdxRef.current,side=inactiveIdx(),el=els()[side],track=queueRef.current[targetIndex];
     if(!el||!track)return false;
     if(sideLoadedIdRef[side].current!==track.id||!sideReadyRef[side].current){preloadedTargetRef.current=targetIndex;preloadSide(targetIndex);return false;}
     const token=++transitionVersionRef.current,valid=()=>token===transitionVersionRef.current&&activeIdxRef.current===oldSide&&queueRef.current[targetIndex]?.id===track.id;
     const ctx=ensureGraph();if(!ctx)return false;
     crossfadingRef.current=true;
-    try{if(ctx.state==='suspended')await ctx.resume();}catch{if(valid())crossfadingRef.current=false;return false;}
+    try{if(ctx.state==='suspended'||ctx.state==='interrupted')await ctx.resume();}catch{if(valid())crossfadingRef.current=false;return false;}
     if(!valid())return false;
     const fd=transitionDuration(cf,remaining,el.duration,activeEl()?.playbackRate||1);
     if(!fd){crossfadingRef.current=false;return false;}
@@ -569,7 +570,7 @@ export function PlayerProvider({ children }) {
     if(!el||!track||sideLoadedIdRef[side].current!==track.id||!sideReadyRef[side].current)return false;
     const token=++transitionVersionRef.current,valid=()=>token===transitionVersionRef.current&&activeIdxRef.current===oldSide&&queueRef.current[targetIndex]?.id===track.id;
     crossfadingRef.current=true;
-    try{el.currentTime=0;const ctx=audioCtxRef.current;if(ctx?.state==='suspended')await ctx.resume();}catch{if(valid())crossfadingRef.current=false;return false;}
+    try{el.currentTime=0;const ctx=audioCtxRef.current;if(ctx?.state==='suspended'||ctx?.state==='interrupted')await ctx.resume();}catch{if(valid())crossfadingRef.current=false;return false;}
     mirrorPlayback(el);setGainImmediate(side,1);
     const ok=await commitAudioHandoff(el,valid,()=>{
       els()[oldSide]?.pause();setGainImmediate(oldSide,0);activeIdxRef.current=side;
@@ -751,7 +752,7 @@ export function PlayerProvider({ children }) {
         else if (repeatRef.current === "all" && qi.length) n = 0;
       }
       if (n == null || n === -1) return; // queue ends here — let the ended handler auto-radio
-      if (gapless) {
+      if (gapless||shouldUseGapless(s,qi[ci],qi[n])) {
         const side = inactiveIdx();
         if (remaining <= 6 && sideLoadedIdRef[side].current !== qi[n].id) {
           preloadedTargetRef.current = n;
@@ -772,6 +773,9 @@ export function PlayerProvider({ children }) {
       if (remaining/(a.playbackRate||1) <= cf && remaining > 0) beginCrossfade(n, cf, remaining);
     };
   }, [preloadSide, beginCrossfade, beginGapless]);
+
+  // A short foreground tick avoids waiting for coarse timeupdate events at a fade boundary.
+  useEffect(()=>{if(!isPlaying)return;const timer=setInterval(()=>{const a=activeEl();if(a&&!a.paused&&document.visibilityState!=="hidden"&&isTransitionActive(getTransitionSettings()))handleTimeRef.current(a);},100);return()=>clearInterval(timer);},[isPlaying]);
 
   // continued play counting
   const countPlay = useCallback((track) => {
@@ -908,7 +912,7 @@ export function PlayerProvider({ children }) {
       }
       const n = nextIndex();
       if (n !== -1) {
-        if(isGapless(getTransitionSettings())){const switched=await beginGapless(n);if(token!==loadTokenRef.current||switched)return;}
+        if(shouldUseGapless(getTransitionSettings(),currentTrack,queueRef.current[n])){const switched=await beginGapless(n);if(token!==loadTokenRef.current||switched)return;}
         autoPlayOnLoadRef.current=true;setCurrentIndex(n);
         return;
       }
