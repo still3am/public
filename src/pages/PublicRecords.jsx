@@ -1,7 +1,6 @@
 import ArtistAliases from "@/components/ArtistAliases";
 import {DropdownMenu,DropdownMenuTrigger,DropdownMenuContent,DropdownMenuItem} from "@/components/ui/dropdown-menu";
 import {shareLink} from "@/lib/shareLink";
-import "./artist-editorial.css";
 import ArtistReleaseFollow from "@/components/ArtistReleaseFollow";
 import ScrollShelf from "@/components/ScrollShelf";
 import LoadError from '@/components/LoadError';
@@ -270,7 +269,7 @@ export default function PublicRecords({ id: propId, fallbackArtist = null }) {
     <PullToRefresh onRefresh={load}>
       <div className="artist-page artist-editorial mx-auto pb-12">
         <section className="artist-hero">
-          <ArtistArtwork source={topCover || artist.cover_art_url || artist.avatar_url} className="artist-hero-image" />
+          <ArtistArtwork source={artist.cover_art_url || artist.avatar_url || topCover} className="artist-hero-image" />
           <div className="artist-hero-shade" />
           <button onClick={() => window.history.state?.idx > 0 ? nav(-1) : nav("/search")} className="artist-back" aria-label="Back"><ChevronLeft size={25} /></button>
           <ArtistReleaseFollow key={(user?.id||"guest")+":"+artist.name} name={artist.name}/>
