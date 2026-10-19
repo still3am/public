@@ -13,6 +13,7 @@ export default function TrackRow({
   track,
   index,
   showArt = true,
+  compactRelease = false,
   albumArtist,
   albumCover,
   queue,
@@ -31,7 +32,7 @@ export default function TrackRow({
   return (
     <div
       ref={lp.ref} {...lp.handlers} onClickCapture={event=>{if(!event.currentTarget.contains(event.target))return;if(lp.consumeLongPress()){event.preventDefault();event.stopPropagation();}}}
-      className="song-row song-menu-surface group flex items-center gap-3 sm:gap-4 px-2.5 sm:px-3 py-3 rounded-xl hover:bg-foreground/[0.04] transition"
+      className={`song-row song-menu-surface group flex items-center gap-3 sm:gap-4 px-2.5 sm:px-3 py-3 rounded-xl hover:bg-foreground/[0.04] transition ${compactRelease ? "release-compact-row" : ""}`}
       onDoubleClick={event=>{if(event.target instanceof Element&&event.target.closest("a,button,input,select,textarea"))return;play();}}
     >
       <button type="button"
@@ -39,7 +40,7 @@ export default function TrackRow({
         aria-label={isCurrent&&p.isPlaying?`Pause ${track.title}`:`Play ${track.title}`}
         onClick={()=>isCurrent?p.togglePlay():play()} onDoubleClick={e=>e.stopPropagation()}>
         {isCurrent ? (p.isPlaying?<Pause size={15}/>:<Play size={15}/>) :
-          <><span className="hidden md:block md:group-hover:hidden">{index!=null?index+1:""}</span><Play size={15} className="md:hidden md:group-hover:block"/></>}
+          <><span className="song-row-position hidden md:block md:group-hover:hidden">{index!=null?index+1:""}</span><Play size={15} className="song-row-idle-play md:hidden md:group-hover:block"/></>}
       </button>
 
       {showArt && (
@@ -60,9 +61,9 @@ export default function TrackRow({
           to={`/track/${track.id}`}
           className={`text-sm font-medium truncate block ${isCurrent ? "text-foreground" : ""}`}
         >
-          <OverflowText text={track.title}/>
+          <span className="song-row-name"><OverflowText text={track.title}/></span>{compactRelease&&track.explicit&&<span className="release-row-explicit" aria-label="Explicit">E</span>}
         </Link>
-        {(() => {
+        <div className="song-row-credit">{(() => {
           const artist = albumArtist || track.artist;
           if (artist) {
             return (
@@ -77,10 +78,10 @@ export default function TrackRow({
               {track.uploader_name || "Unknown"}
             </Link>
           );
-        })()}
+        })()}</div>
       </div>
 
-      {track.explicit && (
+      {track.explicit && !compactRelease && (
         <span className="text-[9px] font-extrabold rounded bg-foreground/15 text-foreground/70 shrink-0 px-1">
           E
         </span>
