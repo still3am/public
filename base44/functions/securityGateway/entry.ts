@@ -331,6 +331,7 @@ export default async function handleRequest(req) {
         } else if(old?.is_published && Object.keys(content).length) {
           data.approval_status=isAdmin?'approved':'pending';data.is_published=isAdmin;
         }
+        if(data.is_published===true&&!old?.published_at)data.published_at=new Date().toISOString();
         if(!isAdmin && input.is_published===true) fail('Only an administrator can publish a track');
       } else if(entity==='Lyrics') {
         const track=await requireTrack(data.track_id||old?.track_id);
