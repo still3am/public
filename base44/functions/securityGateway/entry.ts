@@ -381,7 +381,7 @@ export default async function handleRequest(req) {
         }
       } else if(entity==='Playlist') {
         if(old&&!mine(old,'creator_id'))fail('Playlist access denied');
-        if(kind==='delete'){await svc.entities.SavedPlaylist.deleteMany({playlist_id:id});return await handler.delete(id);}
+        if(kind==='delete'){await svc.entities.SavedPlaylist.deleteMany({playlist_id:id});await svc.entities.PlaylistCollaboration.deleteMany({playlist_id:id});return await handler.delete(id);}
         if(kind!=='delete'){
           data=pick(data,['name','description','cover_art_url','is_public','track_ids']);
           if(data.name!==undefined&&(typeof data.name!=='string'||!data.name.trim()||data.name.length>160))fail('Playlist name must be 1–160 characters',422);
