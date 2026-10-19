@@ -1,5 +1,6 @@
+import {scoreTrack,searchScore} from "@/lib/searchMatching";
 import { base44 } from "@/api/base44Client";
-import { peekPublishedTracks } from "@/lib/catalogCache";
+import { getPublishedTracks,getArtists,peekPublishedTracks } from "@/lib/catalogCache";
 import { splitArtistNames } from "@/lib/artistTracks";
 
 // Global search runs on the server so the whole catalogue is searchable without
@@ -185,6 +186,7 @@ async function runSearch(query,scope="all") {
             contains("title", pattern),
             contains("artist", pattern),
             contains("uploader_name", pattern),
+            ...(Q.length>=5?[contains("lyrics_text",pattern)]:[]),
           ],
         },
         { sort: "-play_count", limit: TRACK_LIMIT }
@@ -214,13 +216,15 @@ async function runSearch(query,scope="all") {
     ),
   ]);
 
-  const tracks = [...(rows(trackRes.value))].sort(
-    (a, b) =>
-      rank(b, lower) - rank(a, lower) ||
-      (b.play_count || 0) - (a.play_count || 0)
-  );
-
-  const found = pruneArtists(rows(artistRes.value), lower);
+  let catalog=[],artistCatalog=[],catalogOK=false;
+  if(Q.length>=3&&(rows(trackRes.value).length<8||rows(artistRes.value).length<3)){
+    const extra=await Promise.all([read(getPublishedTracks()),read(getArtists())]);
+    catalog=rows(extra[0].value);artistCatalog=rows(extra[1].value);catalogOK=extra[0].ok;
+  }
+  const candidates=[...new Map([...rows(trackRes.value),...catalog.filter(t=>scoreTrack(t,Q)>0)].map(t=>[t.id,t])).values()];
+  const tracks=candidates.sort((a,b)=>scoreTrack(b,Q)-scoreTrack(a,Q)||rank(b,lower)-rank(a,lower)||(b.play_count||0)-(a.play_count||0)).slice(0,TRACK_LIMIT);
+  const artistMatches=artistCatalog.filter(a=>Math.max(searchScore(a.name,Q),...(a.aliases||[]).map(alias=>searchScore(alias,Q)))>0);
+  const found=pruneArtists([...rows(artistRes.value),...artistMatches],lower).sort((a,b)=>searchScore(b.name,Q)-searchScore(a.name,Q));
   const covers = await artistCovers(found.map((a) => a.name).filter(Boolean));
   const artists = found.map((artist) => ({
     ...artist,
@@ -237,7 +241,7 @@ async function runSearch(query,scope="all") {
     artists,
     people: peopleRes.value?.data?.results || [],
     playlists,
-    failed: !trackRes.ok,
+    failed: !trackRes.ok&&!catalogOK,
     peopleFailed: !peopleRes.ok,
   };
 }
