@@ -1,4 +1,7 @@
 import assert from 'node:assert/strict';
+import {AVATAR_PRESETS} from '../src/lib/avatarPresets.js';
+import {savePresetAvatar,withPresetAvatar} from '../src/lib/nativeAvatar.js';
+globalThis.__avatarDeps={AVATAR_PRESETS,savePresetAvatar,withPresetAvatar};
 import {readFileSync} from 'node:fs';
 const read=p=>readFileSync(p,'utf8');
 const load=s=>import('data:text/javascript;base64,'+Buffer.from(s).toString('base64'));
@@ -12,6 +15,7 @@ globalThis.__raw={
  functions:{invoke:async()=>{gatewayCalls++;throw Error('function unavailable');}}
 };
 let source=read('src/api/base44Client.js').replace(/import \{ createClient \}[^;]*;/,'const createClient=()=>globalThis.__raw;').replace(/import \{ appParams \}[^;]*;/,'const appParams={};');
+source=source.replace(/import \{AVATAR_PRESETS\}[^;]*;/,'const {AVATAR_PRESETS}=globalThis.__avatarDeps;').replace(/import \{savePresetAvatar,withPresetAvatar\}[^;]*;/,'const {savePresetAvatar,withPresetAvatar}=globalThis.__avatarDeps;');
 const {base44}=await load(source);
 await assert.rejects(base44.auth.updateMe({show_explicit:true}),/18 or older/);
 assert.equal(updates,0);
