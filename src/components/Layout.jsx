@@ -32,7 +32,7 @@ const TABS = [
 export default function Layout() {
   const location = useLocation();
   const reducedMotion=useReducedMotion();
-  const artworkPage = /^\/(?:track\/[^/]+|playlist\/[^/]+|mix\/[^/]+|recap\/[^/]+(?:\/[^/]+)?|records\/[^/]+|artist|profile(?:\/[^/]+)?)\/?$/.test(location.pathname);
+  const artworkPage = /^\/(?:track\/[^/]+|album\/[^/]+|playlist\/[^/]+|mix\/[^/]+|recap\/[^/]+(?:\/[^/]+)?|records\/[^/]+|artist|profile(?:\/[^/]+)?)\/?$/.test(location.pathname);
   const { user } = useAuth();
   const momentsRoute = user?.role === "admin" && /^\/moments(?:\/[^/]+)?\/?$/.test(location.pathname);
   const {currentTrack}=usePlayer();
