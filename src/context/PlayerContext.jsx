@@ -443,8 +443,8 @@ export function PlayerProvider({ children }) {
         }
         el
           .play()
-          .then(() => setIsPlaying(true))
-          .catch(() => setIsPlaying(false));
+          .then(() => {if(token===loadTokenRef.current&&side===activeIdxRef.current)setIsPlaying(true);})
+          .catch(() => {if(token===loadTokenRef.current&&side===activeIdxRef.current)setIsPlaying(false);});
       } else {
         setIsPlaying(false);
       }
@@ -550,6 +550,7 @@ export function PlayerProvider({ children }) {
   useEffect(() => {
     const track = currentTrack;
     if (!track) {
+      loadTokenRef.current++;
       cancelCrossfade();
       const a = activeEl();
       if (a) {
@@ -1118,24 +1119,28 @@ export function PlayerProvider({ children }) {
     [queue.length]
   );
 
+  const stopPlayback = useCallback(()=>{
+    // Invalidate asynchronous loads before changing React state.
+    loadTokenRef.current++;cancelCrossfade();queueRef.current=[];currentIndexRef.current=-1;
+    pendingSeekRef.current=null;autoPlayOnLoadRef.current=true;
+    for(const audio of els()){try{audio?.pause();audio?.removeAttribute("src");audio?.load();}catch{}}
+    for(const ref of blobUrlRefs){if(ref.current)URL.revokeObjectURL(ref.current);ref.current=null;}
+    for(const ref of sideLoadedIdRef)ref.current=null;
+    for(const ref of sideReadyRef)ref.current=false;
+    if(sleepTimerRef.current)clearTimeout(sleepTimerRef.current);
+    sleepTimerRef.current=null;
+    setQueue([]);setCurrentIndex(-1);setIsPlaying(false);setPosition(0);setDuration(0);setDismissed(true);setSleepTimerEndsAt(null);
+  },[cancelCrossfade]);
+
   useEffect(()=>{
-    const clearSession=()=>{
-      loadTokenRef.current++;cancelCrossfade();queueRef.current=[];currentIndexRef.current=-1;
-      for(const audio of els()){try{audio?.pause();audio?.removeAttribute("src");audio?.load();}catch{}}
-      for(const ref of blobUrlRefs){if(ref.current)URL.revokeObjectURL(ref.current);ref.current=null;}
-      for(const ref of sideLoadedIdRef)ref.current=null;
-      if(sleepTimerRef.current)clearTimeout(sleepTimerRef.current);
-      setQueue([]);setCurrentIndex(-1);setIsPlaying(false);setPosition(0);setDuration(0);setDismissed(true);setSleepTimerEndsAt(null);
-    };
+    const clearSession=stopPlayback;
     window.addEventListener("account:cleared",clearSession);
     window.addEventListener("offlinecache:account",clearSession);
     return()=>{window.removeEventListener("account:cleared",clearSession);window.removeEventListener("offlinecache:account",clearSession);};
-  },[cancelCrossfade]);
+  },[stopPlayback]);
 
   const clearQueue = useCallback(() => {
-    setQueue([]);
-    setCurrentIndex(-1);
-    setDismissed(true);
+    stopPlayback();
     // Clear playback state across ALL of the user's devices so the song
     // doesn't auto-resume on another device after the user dismissed it here.
     if (user?.id) {
@@ -1144,7 +1149,7 @@ export function PlayerProvider({ children }) {
         { $set: { track_id: "", track: "", is_playing: false, position_seconds: 0, sampled_at: new Date().toISOString() } }
       ).catch(() => {});
     }
-  }, [user?.id]);
+  }, [user?.id,stopPlayback]);
 
   const setSleepTimer = useCallback((minutes) => {
     if (sleepTimerRef.current) {
@@ -1158,13 +1163,13 @@ export function PlayerProvider({ children }) {
     const ends = Date.now() + minutes * 60 * 1000;
     setSleepTimerEndsAt(ends);
     sleepTimerRef.current = setTimeout(() => {
-      const a = activeEl();
+      loadTokenRef.current++;cancelCrossfade();
       els().forEach(el=>el?.pause());
       setIsPlaying(false);
       setSleepTimerEndsAt(null);
       sleepTimerRef.current = null;
     }, minutes * 60 * 1000);
-  }, []);
+  }, [cancelCrossfade]);
 
   // Dedicated resume / pause so the lock-screen "play" action always plays
   // (toggling on a "play" event could accidentally pause if iOS double-fires).
