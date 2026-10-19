@@ -70,11 +70,11 @@ export function PlayerProvider({ children }) {
 
   const activeIdxRef = useRef(0);
   const audioOutput=useAudioOutput(audioRefs,activeIdxRef,audioCtxRef);
-  const [pure,setPureState]=useState(readPure),[pureError,setPureError]=useState("");
+  const [pure,setPureState]=useState(readPure),[pureError,setPureError]=useState(""),[pureComparing,setPureComparing]=useState(false);
   const pureRef=useRef(pure),pureGraphRef=useRef(null),pureRequestRef=useRef(0);
   const pureRemote=audioOutput.state.remoteState==="connected";
   const pureRemoteRef=useRef(pureRemote);pureRemoteRef.current=pureRemote;
-  useEffect(()=>{pureRef.current=pure;pureGraphRef.current?.apply(pureRemote?{...pure,enabled:false}:pure);try{localStorage.setItem("public:player_pure",JSON.stringify(pure));}catch{}},[pure,pureRemote]);
+  useEffect(()=>{pureRef.current=pure;pureGraphRef.current?.apply(pureRemote||pureComparing?{...pure,enabled:false}:pure);try{localStorage.setItem("public:player_pure",JSON.stringify(pure));}catch{}},[pure,pureRemote,pureComparing]);
   const blobUrlRefs = [useRef(null), useRef(null)];
   const sideLoadedIdRef = [useRef(null), useRef(null)];
   const sideReadyRef = [useRef(false), useRef(false)];
@@ -333,21 +333,22 @@ export function PlayerProvider({ children }) {
   },[setMixerValues]);
   const resetMixer=useCallback(()=>setMixerValues({...DEFAULT_MIXER}),[setMixerValues]);
 
+  const comparePure=useCallback(value=>setPureComparing(value===true&&pureRef.current.enabled&&!pureRemoteRef.current),[]);
   const setPureValues=useCallback(async values=>{
     const next=normalizePure({...pureRef.current,...values}),request=++pureRequestRef.current;
     setPureError("");
-    if(next.enabled&&pureRemoteRef.current){setPureError("Switch playback to this device to use Pure.");return false;}
+    if(next.enabled&&pureRemoteRef.current){setPureError("Switch playback to this device to use PURE.");return false;}
     const ctx=next.enabled?ensureGraph():audioCtxRef.current;
     if(next.enabled&&(!ctx||ctx.state==="closed"||!pureGraphRef.current)){setPureError("Audio processing could not start. Try again.");return false;}
     pureRef.current=next;pureGraphRef.current?.apply(next);setPureState(next);
     if(next.enabled&&(ctx.state==="suspended"||ctx.state==="interrupted")){
       try{await ctx.resume();if(ctx.state!=="running")throw Error("Audio engine not running");}
-      catch{if(request===pureRequestRef.current){const off={...next,enabled:false};pureRef.current=off;pureGraphRef.current?.apply(off);setPureState(off);setPureError("Audio processing paused. Tap Pure to try again.");}return false;}
+      catch{if(request===pureRequestRef.current){const off={...next,enabled:false};pureRef.current=off;pureGraphRef.current?.apply(off);setPureState(off);setPureError("Audio processing paused. Tap PURE to try again.");}return false;}
     }
     return true;
   },[ensureGraph]);
   useEffect(()=>{
-    const reset=()=>{pureRequestRef.current++;const off={...DEFAULT_PURE};pureRef.current=off;pureGraphRef.current?.apply(off);setPureState(off);setPureError("");};
+    const reset=()=>{setPureComparing(false);pureRequestRef.current++;const off={...DEFAULT_PURE};pureRef.current=off;pureGraphRef.current?.apply(off);setPureState(off);setPureError("");};
     window.addEventListener("account:cleared",reset);return()=>window.removeEventListener("account:cleared",reset);
   },[]);
   // --- gain helpers ---
@@ -1377,7 +1378,7 @@ export function PlayerProvider({ children }) {
     enableMixer,
     dismissed,
     audioOutput,
-    pure,pureError,setPureValues,pureSuspended:pureRemote,
+    pure,pureError,setPureValues,pureComparing,comparePure,pureSuspended:pureRemote,
     getAudioQualitySource:()=>{const side=activeIdxRef.current;return {id:sideLoadedIdRef[side].current,url:audioRefs[side].current?.src||"",outputSampleRate:audioCtxRef.current?.sampleRate||null};},
   };
 
