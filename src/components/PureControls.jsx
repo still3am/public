@@ -7,13 +7,13 @@ import "./pure-controls.css";
 export default function PureControls({compact=false}){
  const p=usePlayer(),settings=p.pure||DEFAULT_PURE,enabled=settings.enabled,available=!p.pureSuspended,active=enabled&&available;
  const selected=PURE_PRESETS.find(preset=>["clarity","bass","balance"].every(key=>settings[key]===preset[key]));
- useEffect(()=>()=>p.comparePure(false),[p.comparePure]);
+ useEffect(()=>{const release=()=>p.comparePure(false),visibility=()=>{if(document.visibilityState==="hidden")release();};window.addEventListener("blur",release);document.addEventListener("visibilitychange",visibility);return()=>{window.removeEventListener("blur",release);document.removeEventListener("visibilitychange",visibility);release();};},[p.comparePure]);
  const update=values=>{p.comparePure(false);return p.setPureValues(values);};
  const release=()=>p.comparePure(false);
  const status=p.pureSuspended?"Paused for wireless playback":p.pureComparing?"Comparing · PURE bypassed":active?(selected?.name||"Custom tuning"):"Off · enable to start";
  return <section aria-label="PURE sound enhancement" className={"pure-controls "+(compact?"is-compact":"")}>
   <div className="pure-control-header">
-   <div><h3><AudioLines size={18} strokeWidth={1.6}/>PURE</h3><p role="status"><span className={"pure-status-dot "+(active&&!p.pureComparing?"is-active":"")}/>{status}</p></div>
+   <div><h3><AudioLines size={18} strokeWidth={1.6}/>{compact?"PURE":"Sound profile"}</h3><p role="status"><span className={"pure-status-dot "+(active&&!p.pureComparing?"is-active":"")}/>{status}</p></div>
    <button type="button" role="switch" aria-label="Enable PURE" aria-checked={enabled} disabled={!available&&!enabled} onClick={()=>update({enabled:!enabled})} className={"pure-switch "+(enabled?"is-on":"")}><span/></button>
   </div>
   <div role="group" aria-label="PURE sound presets" className="pure-presets">{PURE_PRESETS.map(preset=><button key={preset.name} type="button" disabled={!available||p.pureComparing} aria-pressed={active&&selected?.name===preset.name} onClick={()=>update({...preset,enabled:true})}><strong>{preset.name}</strong>{!compact&&<small>{preset.description}</small>}</button>)}</div>
