@@ -87,6 +87,7 @@ export function PlayerProvider({ children }) {
   const autoPlayOnLoadRef = useRef(true);
   const crossfadeTimerRef = useRef(null);
   const preloadedTargetRef = useRef(null);
+  const preloadingRef = useRef(null);
   const loadTokenRef = useRef(0);
   const notePreviewRef = useRef(null);
   const cancelNotePreviewRef = useRef(() => false);
@@ -503,7 +504,10 @@ export function PlayerProvider({ children }) {
   const preloadSide = useCallback(async targetIndex=>{
     const side=inactiveIdx(),el=els()[side],track=queueRef.current[targetIndex];
     if(!el||!track||crossfadingRef.current)return;
+    const pending=preloadingRef.current;
+    if(pending?.id===track.id&&pending.side===side&&pending.token===preloadVersionRef.current&&Date.now()-pending.started<10000)return;
     const token=++preloadVersionRef.current;
+    preloadingRef.current={id:track.id,side,token,started:Date.now()};
     sideReadyRef[side].current=false;
     if(readyListenerRef[side].current){el.removeEventListener('canplay',readyListenerRef[side].current);readyListenerRef[side].current=null;}
     try{
@@ -1016,9 +1020,9 @@ export function PlayerProvider({ children }) {
   );
 
   const acquireNotePreview = useCallback(cancel => {
-    cancelNotePreviewRef.current();
+    const inheritedPlaying=cancelNotePreviewRef.current();
     const a=activeEl(),side=activeIdxRef.current,track=queueRef.current[currentIndexRef.current],uid=offlineAccountRef.current;
-    const wasPlaying=!!a&&!a.paused;
+    const wasPlaying=inheritedPlaying||(!!a&&!a.paused);
     cancelCrossfade();const token=++loadTokenRef.current;
     els().forEach(el=>el?.pause());isPlayingRef.current=false;setIsPlaying(false);
     const lease={cancel,wasPlaying};notePreviewRef.current=lease;
@@ -1274,7 +1278,7 @@ export function PlayerProvider({ children }) {
     const ends = Date.now() + minutes * 60 * 1000;
     setSleepTimerEndsAt(ends);
     sleepTimerRef.current = setTimeout(() => {
-      loadTokenRef.current++;cancelCrossfade();
+      cancelNotePreviewRef.current();loadTokenRef.current++;cancelCrossfade();
       els().forEach(el=>el?.pause());
       setIsPlaying(false);
       setSleepTimerEndsAt(null);
