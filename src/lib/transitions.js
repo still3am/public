@@ -17,11 +17,13 @@ export const CROSSFADE_MAX = 12;
 const DEFAULTS = {
   mode: TRANSITION_MODES.OFF,
   crossfadeSeconds: 4,
+  preserveAlbums: true,
 };
 
 let memory={...DEFAULTS},volatile=false;
 if(typeof window!=="undefined")window.addEventListener("account:cleared",()=>{memory={...DEFAULTS};volatile=false;});
 const normalize=v=>({
+ preserveAlbums:v?.preserveAlbums!==false,
  mode:Object.values(TRANSITION_MODES).includes(v?.mode)?v.mode:DEFAULTS.mode,
  crossfadeSeconds:Number.isFinite(Number(v?.crossfadeSeconds))?Math.min(CROSSFADE_MAX,Math.max(CROSSFADE_MIN,Number(v.crossfadeSeconds))):DEFAULTS.crossfadeSeconds
 });
@@ -50,4 +52,8 @@ export function isTransitionActive(settings = getTransitionSettings()) {
 // Gapless: no fade at all, the next track starts the instant this one ends.
 export function isGapless(settings = getTransitionSettings()) {
   return settings.mode === TRANSITION_MODES.GAPLESS;
+}
+export function shouldUseGapless(settings,current,next){
+ if(settings.mode===TRANSITION_MODES.GAPLESS)return true;
+ return settings.preserveAlbums!==false&&isTransitionActive(settings)&&!!current?.album_id&&current.album_id===next?.album_id&&Number(next.track_number)===Number(current.track_number)+1&&Number(current.track_number)>0;
 }
