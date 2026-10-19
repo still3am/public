@@ -1,4 +1,5 @@
 import ArtistAliases from "@/components/ArtistAliases";
+import ArtistAlbums from "@/components/ArtistAlbums";
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from "@/components/ui/dropdown-menu";
 import { shareLink } from "@/lib/shareLink";
 import "./artist-editorial.css";
@@ -310,6 +311,7 @@ export default function PublicRecords({ id: propId, fallbackArtist = null }) {
         </section>}
 
         </div>
+        <ArtistAlbums tracks={mainTracks}/>
         {/* Discography */}
         <section id="artist-discography" className="artist-discography mb-8">
           <SectionTitle icon={Disc3} right={
