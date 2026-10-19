@@ -14,7 +14,7 @@ await check('preferences sanitize mode and duration',async()=>{assert.deepEqual(
 await check('storage failure retains transition choice for session',async()=>{quota=true;prefs.setTransitionSettings({mode:'gapless',crossfadeSeconds:6});assert.equal(prefs.getTransitionSettings().mode,'gapless');quota=false;});
 await check('reset restores safe defaults',async()=>assert.deepEqual(prefs.resetTransitionSettings(),{mode:'off',crossfadeSeconds:4}));
 globalThis.__playlistSdk={functions:{invoke:async()=>({data:{result:{id:'playlist'}}})}};
-const code=fs.readFileSync('src/lib/playlistActions.js','utf8').replace(/import[^;]+;/,'const base44=globalThis.__playlistSdk;');
+const code=fs.readFileSync('src/lib/playlistActions.js','utf8').replace(/^import[^;]+;/gm,'');
 const lib=await import('data:text/javascript;base64,'+Buffer.from(code).toString('base64'));
 await check('reorder preserves hidden song IDs and original input',async()=>{const ids=['a','hidden','b'];assert.deepEqual(lib.movePlaylistTrack(ids,'b',-1),['a','b','hidden']);assert.deepEqual(ids,['a','hidden','b']);});
 await check('shuffle retains each song exactly once',async()=>{const tracks=[{id:'a'},{id:'b'},{id:'c'}],s=lib.shufflePlaylist(tracks,()=>0);assert.deepEqual(s.map(t=>t.id).sort(),['a','b','c']);assert.notDeepEqual(s,tracks);assert.deepEqual(tracks.map(t=>t.id),['a','b','c']);});
