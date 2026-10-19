@@ -13,7 +13,7 @@ async function readMine(uid,fresh=false){
  if(entry.inflight)return entry.inflight;
  const version=entry.version;
  let request;
- request=readAllPages(options=>base44.entities.Playlist.filter({creator_id:uid},{sort:'-created_date',...options})).then(rows=>{
+ request=readAllPages(options=>base44.entities.Playlist.filter({$or:[{creator_id:uid},{collaborator_ids:uid}]},{sort:'-created_date',...options})).then(rows=>{
   if(cache.get(uid)!==entry)throw Error('Account changed');
   if(version!==entry.version)return readMine(uid);
   entry.rows=rows;entry.expires=Date.now()+TTL;return rows;
