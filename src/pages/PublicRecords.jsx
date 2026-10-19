@@ -268,7 +268,7 @@ export default function PublicRecords({ id: propId, fallbackArtist = null }) {
 
   return (
     <PullToRefresh onRefresh={load}>
-      <div className="artist-page max-w-5xl mx-auto pb-12">
+      <div className="artist-page artist-editorial mx-auto pb-12">
         <section className="artist-hero">
           <ArtistArtwork source={topCover || artist.cover_art_url || artist.avatar_url} className="artist-hero-image" />
           <div className="artist-hero-shade" />
