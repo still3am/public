@@ -32,9 +32,9 @@ function ReportMoment({ target, onClose }) {
   return <Dialog open onOpenChange={(v) => {if (!v && !busy) onClose();}}><DialogContent className="moment-report"><DialogHeader><DialogTitle>{sent ? 'Report received' : 'Report this moment'}</DialogTitle><DialogDescription>{sent ? 'The PUBLIC team can review it in the moderation inbox.' : 'Tell us about unsafe content, harassment, copyright, or spam.'}</DialogDescription></DialogHeader>{sent ? <button className="moment-primary" type="button" onClick={onClose}>Done</button> : <><textarea aria-label="Report details" maxLength={2000} rows={4} value={reason} onChange={(e) => setReason(e.target.value)} />{error && <p role="alert">{error}</p>}<button className="moment-primary" type="button" disabled={busy || reason.trim().length < 3} onClick={send}>{busy ? 'Sending…' : 'Send report'}</button></>}</DialogContent></Dialog>;
 }
 export default function Moments() {
-  const {user}=useAuth();
-  if(user?.role==='admin'&&!user.disabled&&!user.is_blocked)return <MomentsExperience/>;
-  return <section className="moments-coming-soon" aria-labelledby="moments-coming-title"><div className="moments-coming-copy"><p className="moments-coming-label"><span aria-hidden="true"/>Coming soon</p><h1 id="moments-coming-title">Moments.</h1><p className="moments-coming-description">Your world, set to music.</p></div></section>;
+  const { user } = useAuth();
+  if (user?.role === 'admin' && !user.disabled && !user.is_blocked) return <MomentsExperience />;
+  return <section className="moments-coming-soon" aria-labelledby="moments-coming-title"><div className="moments-coming-copy"><p className="moments-coming-label"><span aria-hidden="true" className="hidden" />Coming soon</p><h1 id="moments-coming-title">Moments.</h1><p className="moments-coming-description">Your world, set to music.</p></div></section>;
 }
 export function MomentsExperience() {
   const { id } = useParams(),[params, setParams] = useSearchParams(),{ user } = useAuth(),safety = useSafety(),player = usePlayer(),nav = useNavigate();const scope = params.get('view') || 'discover',trackFilter = params.get('song') || '';
