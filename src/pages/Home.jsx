@@ -152,10 +152,10 @@ export default function Home() {
         if (!tr?.genre) continue;
         genrePlays[tr.genre] = (genrePlays[tr.genre] || 0) + (tr.play_count || 0);
       }
-      setGenreList(Object.entries(genrePlays).sort((a, b) => b[1] - a[1]).slice(0, 8).map(([name]) => name));
+      setGenreList(Object.entries(genrePlays).sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0])).map(([name]) => name));
       const genres = Object.entries(genrePlays).
       sort((a, b) => b[1] - a[1]).
-      slice(0, 3).
+      slice(0, 6).
       map(([g]) => g).
       filter(Boolean);
       const fallback = ["Electronic", "Hip-Hop", "Ambient"];
