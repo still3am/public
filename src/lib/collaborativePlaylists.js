@@ -1,8 +1,8 @@
 import {base44} from "@/api/base44Client";
 const rows=p=>Array.isArray(p)?p:p?.items||[];
 export async function collaborationInfo(id){
- const page=await base44.entities.PlaylistCollaboration.filter({playlist_id:id},"-created_date",1);
- return rows(page)[0]||null;
+ try{const page=await base44.entities.PlaylistCollaboration.filter({playlist_id:id},"-created_date",1);return rows(page)[0]||null;}
+ catch(error){if([401,403].includes(error.status??error.response?.status))return null;throw error;}
 }
 export function attachCollaboration(playlist,info){return info?{...playlist,collaboration_enabled:true,collaborator_ids:info.member_ids||[],track_contributors:info.track_contributors||{}}:playlist;}
 export async function getPlaylist(id){
