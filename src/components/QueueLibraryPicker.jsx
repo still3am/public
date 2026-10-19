@@ -76,7 +76,7 @@ export default function QueueLibraryPicker({ open, onClose }) {
     <div role="dialog" aria-modal="true" aria-label="Add music from your library" onKeyDown={(e) => {if (e.key === "Escape") {e.stopPropagation();onClose();}}} data-public-dialog tabIndex={-1} className="queue-library-picker absolute inset-0 z-[60] bg-card text-foreground flex flex-col animate-[fadeIn_.2s_ease-out]">
       <div className="flex items-center justify-between px-5 pt-8 pb-3 shrink-0">
         <div className="flex items-center gap-2 min-w-0">
-          <ListMusic size={20} className="opacity-80 shrink-0 hidden" />
+          
           <h2 className="text-lg font-bold truncate">Add to queue</h2>
         </div>
         <button
