@@ -22,6 +22,7 @@
     "test:search": "node tests/search-recovery.test.mjs",
     "test:follows": "node tests/follow-recovery.test.mjs",
     "test:features": "node tests/public-features.test.mjs && node tests/playlist-collaboration.test.mjs && node tests/albums.test.mjs && node tests/recovered-albums.test.mjs",
+    "test:notes": "node tests/public-notes.test.mjs && node tests/public-notes-ui.test.mjs && node tests/public-note-actions.test.mjs && node tests/native-song-notes.test.mjs",
     "test:moments": "node tests/moments.test.mjs && node tests/moments-ui.test.mjs && node tests/moments-playback.test.mjs"
   },
   "dependencies": {
