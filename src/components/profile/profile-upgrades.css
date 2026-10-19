@@ -60,3 +60,4 @@
 .profile-redesigned .profile-cover-stage>picture,.profile-redesigned .profile-cover-stage>picture>img{display:block;width:100%;height:100%;object-fit:cover;object-position:center}
 .profile-feature-song .artist-credits{display:block;width:100%;margin-top:3px}
 .profile-preview-button:disabled{opacity:.5}
+.public-app .profile-redesigned .profile-song-spotlight .song-menu-surface>button.profile-preview-button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;width:58px;min-width:58px;height:auto;min-height:66px;flex:0 0 58px;border:0;border-radius:0;background:transparent;color:hsl(var(--foreground));box-shadow:none;padding:0;font-size:10px;overflow:visible}
