@@ -1522,6 +1522,45 @@
       "match": "exact artist and title"
     },
     {
+      "id": "6a69d6fe3debdaa4aa373c2a",
+      "title": "How Much Is Weed?",
+      "artist": "Dominic Fike",
+      "before": "Other",
+      "genre": "Alternative",
+      "source_genre": "Alternative",
+      "source_title": "How Much Is Weed?",
+      "source_artist": "Dominic Fike",
+      "source_album": "Sunburn",
+      "source_url": "https://music.apple.com/us/album/how-much-is-weed/1695979461?i=1695979467&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6a6ae0347829fbe9a0b3b0c9",
+      "title": "Bloodline",
+      "artist": "Alex Warren, Jelly Roll",
+      "before": "Other",
+      "genre": "Pop",
+      "source_genre": "Pop",
+      "source_title": "Bloodline (with Jelly Roll)",
+      "source_artist": "Alex Warren",
+      "source_album": "You'll Be Alright, Kid",
+      "source_url": "https://music.apple.com/us/album/bloodline-with-jelly-roll/1817735146?i=1817735158&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6a6ae05975365d474ed13c27",
+      "title": "Fast Car",
+      "artist": "Luke Combs",
+      "before": "Other",
+      "genre": "Country",
+      "source_genre": "Country",
+      "source_title": "Fast Car",
+      "source_artist": "Luke Combs",
+      "source_album": "Gettin' Old",
+      "source_url": "https://music.apple.com/us/album/fast-car/1666738524?i=1666738585&uo=4",
+      "match": "exact artist and title"
+    },
+    {
       "id": "6a6c49513fa42fc2993d83eb",
       "title": "Anxiety",
       "artist": "Black Eyed Peas, Papa Roach",
@@ -2386,10 +2425,10 @@
       "before": "Other",
       "genre": "Alternative",
       "source_genre": "Alternative",
-      "source_title": "Irresistible (feat. Demi Lovato)",
+      "source_title": "Irresistible",
       "source_artist": "Fall Out Boy",
-      "source_album": "Irresistible (feat. Demi Lovato) - Single",
-      "source_url": "https://music.apple.com/us/album/irresistible-feat-demi-lovato/1444620385?i=1444620437&uo=4",
+      "source_album": "American Beauty / American Psycho",
+      "source_url": "https://music.apple.com/us/album/irresistible/1440826504?i=1440826601&uo=4",
       "match": "exact artist and title"
     },
     {
@@ -11202,13 +11241,6 @@
       "album_name": ""
     },
     {
-      "id": "6a69d6fe3debdaa4aa373c2a",
-      "title": "How Much Is Weed?",
-      "artist": "Dominic Fike",
-      "genre": "Other",
-      "album_name": "Sunburn"
-    },
-    {
       "id": "6a69fdba60a9a29c2c9fc6bb",
       "title": "Start",
       "artist": "01",
@@ -11284,20 +11316,6 @@
       "artist": "SOTONOTSODO",
       "genre": "Other",
       "album_name": "Unknown Album"
-    },
-    {
-      "id": "6a6ae0347829fbe9a0b3b0c9",
-      "title": "Bloodline",
-      "artist": "Alex Warren, Jelly Roll",
-      "genre": "Other",
-      "album_name": "You'll Be Alright, Kid"
-    },
-    {
-      "id": "6a6ae05975365d474ed13c27",
-      "title": "Fast Car",
-      "artist": "Luke Combs",
-      "genre": "Other",
-      "album_name": "Gettin' Old"
     },
     {
       "id": "6a6ae08bf80227c0d6202cef",
@@ -17950,5 +17968,5 @@
       "album_name": ""
     }
   ],
-  "searched_terms": 205
+  "searched_terms": 220
 }

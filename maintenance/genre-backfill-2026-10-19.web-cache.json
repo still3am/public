@@ -310920,5 +310920,1264 @@
         "trackId": 1379949801
       }
     ]
+  },
+  "mixTerm|Richie Rozay I C U": {
+    "query_url": "https://itunes.apple.com/search?term=Richie+Rozay+I+C+U&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": []
+  },
+  "mixTerm|T.I. That's All She Wrote": {
+    "query_url": "https://itunes.apple.com/search?term=T.I.+That%27s+All+She+Wrote&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": [
+      {
+        "trackName": "That's All She Wrote (feat. Eminem)",
+        "artistName": "T.I.",
+        "collectionName": "No Mercy (Deluxe Version)",
+        "primaryGenreName": "Rap",
+        "trackViewUrl": "https://music.apple.com/us/album/thats-all-she-wrote-feat-eminem/1260875156?i=1260875161&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/thats-all-she-wrote-feat-eminem/1260875156?i=1260875161&uo=4",
+        "trackId": 1260875161
+      },
+      {
+        "trackName": "That's All She Wrote (feat. Eminem)",
+        "artistName": "T.I.",
+        "collectionName": "No Mercy",
+        "primaryGenreName": "Rap",
+        "trackViewUrl": "https://music.apple.com/us/album/thats-all-she-wrote-feat-eminem/1258986016?i=1258986024&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/thats-all-she-wrote-feat-eminem/1258986016?i=1258986024&uo=4",
+        "trackId": 1258986024
+      },
+      {
+        "trackName": "All She Wrote (2024 Remaster)",
+        "artistName": "FireHouse",
+        "collectionName": "Firehouse (2024 Remaster)",
+        "primaryGenreName": "Metal",
+        "trackViewUrl": "https://music.apple.com/us/album/all-she-wrote-2024-remaster/193591736?i=193592374&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/all-she-wrote-2024-remaster/193591736?i=193592374&uo=4",
+        "trackId": 193592374
+      },
+      {
+        "trackName": "All She Wrote (feat. Brandon Love & Chandler Moore)",
+        "artistName": "Justin Bieber",
+        "collectionName": "Freedom. - EP",
+        "primaryGenreName": "Gospel",
+        "trackViewUrl": "https://music.apple.com/us/album/all-she-wrote-feat-brandon-love-chandler-moore/1561541743?i=1561541753&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/all-she-wrote-feat-brandon-love-chandler-moore/1561541743?i=1561541753&uo=4",
+        "trackId": 1561541753
+      },
+      {
+        "trackName": "That's All She Wrote",
+        "artistName": "Jordan Gray",
+        "collectionName": "Jordan Gray - EP",
+        "primaryGenreName": "Country",
+        "trackViewUrl": "https://music.apple.com/us/album/thats-all-she-wrote/1734034820?i=1734034842&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/thats-all-she-wrote/1734034820?i=1734034842&uo=4",
+        "trackId": 1734034842
+      },
+      {
+        "trackName": "All She Wrote (feat. Brandon Love & Chandler Moore)",
+        "artistName": "Justin Bieber",
+        "collectionName": "Freedom. - EP",
+        "primaryGenreName": "Gospel",
+        "trackViewUrl": "https://music.apple.com/us/album/all-she-wrote-feat-brandon-love-chandler-moore/1561535456?i=1561535459&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/all-she-wrote-feat-brandon-love-chandler-moore/1561535456?i=1561535459&uo=4",
+        "trackId": 1561535459
+      },
+      {
+        "trackName": "All She Wrote",
+        "artistName": "SIX60",
+        "collectionName": "All She Wrote - Single",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/all-she-wrote/1554147765?i=1554147766&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/all-she-wrote/1554147765?i=1554147766&uo=4",
+        "trackId": 1554147766
+      },
+      {
+        "trackName": "All She Wrote (feat. Killstation)",
+        "artistName": "Brennan Savage",
+        "collectionName": "Tragedy II",
+        "primaryGenreName": "Alternative",
+        "trackViewUrl": "https://music.apple.com/us/album/all-she-wrote-feat-killstation/1722754842?i=1722754845&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/all-she-wrote-feat-killstation/1722754842?i=1722754845&uo=4",
+        "trackId": 1722754845
+      },
+      {
+        "trackName": "That's All She Wrote",
+        "artistName": "Kalyn Beasley",
+        "collectionName": "That's All She Wrote - Single",
+        "primaryGenreName": "Country",
+        "trackViewUrl": "https://music.apple.com/us/album/thats-all-she-wrote/1704765296?i=1704765297&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/thats-all-she-wrote/1704765296?i=1704765297&uo=4",
+        "trackId": 1704765297
+      },
+      {
+        "trackName": "All She Wrote",
+        "artistName": "Ross Copperman",
+        "collectionName": "Welcome to Reality",
+        "primaryGenreName": "Rock",
+        "trackViewUrl": "https://music.apple.com/us/album/all-she-wrote/278016900?i=278016908&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/all-she-wrote/278016900?i=278016908&uo=4",
+        "trackId": 278016908
+      },
+      {
+        "trackName": "All She Wrote",
+        "artistName": "Sam Wills",
+        "collectionName": "Speak",
+        "primaryGenreName": "R&B/Soul",
+        "trackViewUrl": "https://music.apple.com/us/album/all-she-wrote/1831079401?i=1831079403&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/all-she-wrote/1831079401?i=1831079403&uo=4",
+        "trackId": 1831079403
+      },
+      {
+        "trackName": "All She Wrote",
+        "artistName": "CASS",
+        "collectionName": "Not for Sale",
+        "primaryGenreName": "R&B/Soul",
+        "trackViewUrl": "https://music.apple.com/us/album/all-she-wrote/1438787452?i=1438787453&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/all-she-wrote/1438787452?i=1438787453&uo=4",
+        "trackId": 1438787453
+      },
+      {
+        "trackName": "That's All She Wrote",
+        "artistName": "Heaven is Shining",
+        "collectionName": "Remember Me",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/thats-all-she-wrote/1671165569?i=1671166246&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/thats-all-she-wrote/1671165569?i=1671166246&uo=4",
+        "trackId": 1671166246
+      },
+      {
+        "trackName": "That's All She Wrote",
+        "artistName": "Mike Guldin",
+        "collectionName": "Tumblin'",
+        "primaryGenreName": "Blues",
+        "trackViewUrl": "https://music.apple.com/us/album/thats-all-she-wrote/1604666169?i=1604666410&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/thats-all-she-wrote/1604666169?i=1604666410&uo=4",
+        "trackId": 1604666410
+      },
+      {
+        "trackName": "She",
+        "artistName": "Harry Styles",
+        "collectionName": "Fine Line",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/she/1485802965?i=1485802977&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/she/1485802965?i=1485802977&uo=4",
+        "trackId": 1485802977
+      }
+    ]
+  },
+  "mixTerm|Arcángel Por Vos": {
+    "query_url": "https://itunes.apple.com/search?term=Arc%C3%A1ngel+Por+Vos&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": [
+      {
+        "trackName": "Por Vos (feat. Mike Bahía)",
+        "artistName": "JD Pantoja",
+        "collectionName": "Por Vos - Single",
+        "primaryGenreName": "Latin",
+        "trackViewUrl": "https://music.apple.com/us/album/por-vos-feat-mike-bah%C3%ADa/1474169577?i=1474169578&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/por-vos-feat-mike-bah%C3%ADa/1474169577?i=1474169578&uo=4",
+        "trackId": 1474169578
+      },
+      {
+        "trackName": "Por vos",
+        "artistName": "C.R.O",
+        "collectionName": "Otra vez en tus ruinas - EP",
+        "primaryGenreName": "Dubstep",
+        "trackViewUrl": "https://music.apple.com/us/album/por-vos/1847695010?i=1847695222&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/por-vos/1847695010?i=1847695222&uo=4",
+        "trackId": 1847695222
+      },
+      {
+        "trackName": "Por Vos",
+        "artistName": "Supertorpe",
+        "collectionName": "La Música de Supertorpe",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/por-vos/1727212649?i=1727212658&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/por-vos/1727212649?i=1727212658&uo=4",
+        "trackId": 1727212658
+      },
+      {
+        "trackName": "Sos Vos",
+        "artistName": "ARCANGEL",
+        "collectionName": "Al Amparo Del Infierno",
+        "primaryGenreName": "Rock",
+        "trackViewUrl": "https://music.apple.com/us/album/sos-vos/1499358292?i=1499358293&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/sos-vos/1499358292?i=1499358293&uo=4",
+        "trackId": 1499358293
+      },
+      {
+        "trackName": "Yo vos quién?",
+        "artistName": "ARCANGEL",
+        "collectionName": "Y lleve fortaleza",
+        "primaryGenreName": "Rock",
+        "trackViewUrl": "https://music.apple.com/us/album/yo-vos-qui%C3%A9n/1499374902?i=1499374905&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/yo-vos-qui%C3%A9n/1499374902?i=1499374905&uo=4",
+        "trackId": 1499374905
+      },
+      {
+        "trackName": "Señor Yo Creo En Vos",
+        "artistName": "ArcangelCorp",
+        "collectionName": "Pentagrama de Devoción 2023",
+        "primaryGenreName": "Worldwide",
+        "trackViewUrl": "https://music.apple.com/us/album/se%C3%B1or-yo-creo-en-vos/1678217866?i=1678217872&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/se%C3%B1or-yo-creo-en-vos/1678217866?i=1678217872&uo=4",
+        "trackId": 1678217872
+      },
+      {
+        "trackName": "Perdón y Llama Violeta: Sanación con Arcángel Zadquiel",
+        "artistName": "YO SOY EL YO SOY",
+        "collectionName": "Meditaciones para Volver a Vos",
+        "primaryGenreName": "New Age",
+        "trackViewUrl": "https://music.apple.com/us/album/perd%C3%B3n-y-llama-violeta-sanaci%C3%B3n-con-arc%C3%A1ngel-zadquiel/1824855211?i=1824855437&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/perd%C3%B3n-y-llama-violeta-sanaci%C3%B3n-con-arc%C3%A1ngel-zadquiel/1824855211?i=1824855437&uo=4",
+        "trackId": 1824855437
+      },
+      {
+        "trackName": "Tu Piel Me Quema (feat. Nicolás Yozía)",
+        "artistName": "Arcangel Rock Santa Fe",
+        "collectionName": "Tiempo de Reacción - EP",
+        "primaryGenreName": "Rock",
+        "trackViewUrl": "https://music.apple.com/us/album/tu-piel-me-quema-feat-nicol%C3%A1s-yoz%C3%ADa/1823134604?i=1823134761&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/tu-piel-me-quema-feat-nicol%C3%A1s-yoz%C3%ADa/1823134604?i=1823134761&uo=4",
+        "trackId": 1823134761
+      }
+    ]
+  },
+  "mixTerm|Cobuz & Bustta Una Noche Más": {
+    "query_url": "https://itunes.apple.com/search?term=Cobuz+%26+Bustta+Una+Noche+M%C3%A1s&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": [
+      {
+        "trackName": "Una Noche Más",
+        "artistName": "Cobuz & Bustta & Beéle",
+        "collectionName": "Una Noche Más - Single",
+        "primaryGenreName": "House",
+        "trackViewUrl": "https://music.apple.com/us/album/una-noche-m%C3%A1s/1786623563?i=1786623564&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/una-noche-m%C3%A1s/1786623563?i=1786623564&uo=4",
+        "trackId": 1786623564
+      },
+      {
+        "trackName": "bebe",
+        "artistName": "Cobuz & Bustta",
+        "collectionName": "bebe - Single",
+        "primaryGenreName": "Dance",
+        "trackViewUrl": "https://music.apple.com/us/album/bebe/1862929338?i=1862929339&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/bebe/1862929338?i=1862929339&uo=4",
+        "trackId": 1862929339
+      },
+      {
+        "trackName": "bebe",
+        "artistName": "Cobuz & Bustta",
+        "collectionName": "bebe - Single",
+        "primaryGenreName": "Dance",
+        "trackViewUrl": "https://music.apple.com/us/album/bebe/1870177402?i=1870177408&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/bebe/1870177402?i=1870177408&uo=4",
+        "trackId": 1870177408
+      },
+      {
+        "trackName": "bebe (Extended Mix)",
+        "artistName": "Cobuz & Bustta",
+        "collectionName": "bebe - Single",
+        "primaryGenreName": "Dance",
+        "trackViewUrl": "https://music.apple.com/us/album/bebe-extended-mix/1870177402?i=1870177563&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/bebe-extended-mix/1870177402?i=1870177563&uo=4",
+        "trackId": 1870177563
+      },
+      {
+        "trackName": "Ni Con Él, Ni Conmigo",
+        "artistName": "Juan Duque & Andy Rivera",
+        "collectionName": "Ni Con Él, Ni Conmigo - Single",
+        "primaryGenreName": "Música tropical",
+        "trackViewUrl": "https://music.apple.com/us/album/ni-con-%C3%A9l-ni-conmigo/1760205512?i=1760205514&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/ni-con-%C3%A9l-ni-conmigo/1760205512?i=1760205514&uo=4",
+        "trackId": 1760205514
+      },
+      {
+        "trackName": "Ni Con Él, Ni Conmigo",
+        "artistName": "Juan Duque & Andy Rivera",
+        "collectionName": "Mis Traumas, Mis Chistes",
+        "primaryGenreName": "Urbano latino",
+        "trackViewUrl": "https://music.apple.com/us/album/ni-con-%C3%A9l-ni-conmigo/1780386135?i=1780386719&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/ni-con-%C3%A9l-ni-conmigo/1780386135?i=1780386719&uo=4",
+        "trackId": 1780386719
+      },
+      {
+        "trackName": "Akapellah Hotline",
+        "artistName": "Hotline & Akapellah",
+        "collectionName": "Akapellah Hotline - Single",
+        "primaryGenreName": "Hip-Hop/Rap",
+        "trackViewUrl": "https://music.apple.com/us/album/akapellah-hotline/1692394153?i=1692394155&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/akapellah-hotline/1692394153?i=1692394155&uo=4",
+        "trackId": 1692394155
+      }
+    ]
+  },
+  "mixTerm|Crazy Point Adt": {
+    "query_url": "https://itunes.apple.com/search?term=Crazy+Point+Adt&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": []
+  },
+  "mixTerm|JRedie Accidental": {
+    "query_url": "https://itunes.apple.com/search?term=JRedie+Accidental&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": []
+  },
+  "mixTerm|Dominic Fike How Much Is Weed?": {
+    "query_url": "https://itunes.apple.com/search?term=Dominic+Fike+How+Much+Is+Weed%3F&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": [
+      {
+        "trackName": "How Much Is Weed?",
+        "artistName": "Dominic Fike",
+        "collectionName": "Sunburn",
+        "primaryGenreName": "Alternative",
+        "trackViewUrl": "https://music.apple.com/us/album/how-much-is-weed/1695979461?i=1695979467&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/how-much-is-weed/1695979461?i=1695979467&uo=4",
+        "trackId": 1695979467
+      },
+      {
+        "trackName": "How Much Is Weed? (Instrumental)",
+        "artistName": "Piano Dreamers",
+        "collectionName": "Piano Dreamers Play Dominic Fike (Instrumental)",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/how-much-is-weed-instrumental/1707215102?i=1707215111&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/how-much-is-weed-instrumental/1707215102?i=1707215111&uo=4",
+        "trackId": 1707215111
+      },
+      {
+        "trackName": "White Keys",
+        "artistName": "Dominic Fike",
+        "collectionName": "White Keys - Single",
+        "primaryGenreName": "Alternative",
+        "trackViewUrl": "https://music.apple.com/us/album/white-keys/1852536368?i=1852536738&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/white-keys/1852536368?i=1852536738&uo=4",
+        "trackId": 1852536738
+      },
+      {
+        "trackName": "Mama's Boy",
+        "artistName": "Dominic Fike",
+        "collectionName": "Sunburn",
+        "primaryGenreName": "Alternative",
+        "trackViewUrl": "https://music.apple.com/us/album/mamas-boy/1694067269?i=1694067451&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/mamas-boy/1694067269?i=1694067451&uo=4",
+        "trackId": 1694067451
+      },
+      {
+        "trackName": "Babydoll",
+        "artistName": "Dominic Fike",
+        "collectionName": "Don't Forget About Me, Demos - EP",
+        "primaryGenreName": "Alternative",
+        "trackViewUrl": "https://music.apple.com/us/album/babydoll/1438243719?i=1438243880&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/babydoll/1438243719?i=1438243880&uo=4",
+        "trackId": 1438243880
+      },
+      {
+        "trackName": "3 Nights",
+        "artistName": "Dominic Fike",
+        "collectionName": "Don't Forget About Me, Demos - EP",
+        "primaryGenreName": "Alternative",
+        "trackViewUrl": "https://music.apple.com/us/album/3-nights/1438243719?i=1438243871&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/3-nights/1438243719?i=1438243871&uo=4",
+        "trackId": 1438243871
+      },
+      {
+        "trackName": "misses",
+        "artistName": "Dominic Fike",
+        "collectionName": "14 minutes",
+        "primaryGenreName": "Alternative",
+        "trackViewUrl": "https://music.apple.com/us/album/misses/1744185197?i=1744185828&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/misses/1744185197?i=1744185828&uo=4",
+        "trackId": 1744185828
+      },
+      {
+        "trackName": "The Kiss Of Venus",
+        "artistName": "Paul McCartney & Dominic Fike",
+        "collectionName": "McCartney III Imagined",
+        "primaryGenreName": "Rock",
+        "trackViewUrl": "https://music.apple.com/us/album/the-kiss-of-venus/1557554388?i=1557554390&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/the-kiss-of-venus/1557554388?i=1557554390&uo=4",
+        "trackId": 1557554390
+      },
+      {
+        "trackName": "Chicken Tenders",
+        "artistName": "Dominic Fike",
+        "collectionName": "What Could Possibly Go Wrong",
+        "primaryGenreName": "Alternative",
+        "trackViewUrl": "https://music.apple.com/us/album/chicken-tenders/1521345121?i=1521345525&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/chicken-tenders/1521345121?i=1521345525&uo=4",
+        "trackId": 1521345525
+      },
+      {
+        "trackName": "Mona Lisa - Spider-Man: Across the Spider-Verse (Deluxe Edition)",
+        "artistName": "Dominic Fike",
+        "collectionName": "Mona Lisa - Spider-Man: Across the Spider-Verse (Deluxe Edition) - Single",
+        "primaryGenreName": "Alternative",
+        "trackViewUrl": "https://music.apple.com/us/album/mona-lisa-spider-man-across-the-spider-verse-deluxe-edition/1690407306?i=1690407308&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/mona-lisa-spider-man-across-the-spider-verse-deluxe-edition/1690407306?i=1690407308&uo=4",
+        "trackId": 1690407308
+      },
+      {
+        "trackName": "Vampire",
+        "artistName": "Dominic Fike",
+        "collectionName": "What Could Possibly Go Wrong",
+        "primaryGenreName": "Alternative",
+        "trackViewUrl": "https://music.apple.com/us/album/vampire/1521345121?i=1521345529&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/vampire/1521345121?i=1521345529&uo=4",
+        "trackId": 1521345529
+      },
+      {
+        "trackName": "Elliot's Song (From \"Euphoria\" An HBO Original Series)",
+        "artistName": "Dominic Fike & Zendaya",
+        "collectionName": "Elliot's Song (From \"Euphoria\" An HBO Original Series) - Single",
+        "primaryGenreName": "Alternative",
+        "trackViewUrl": "https://music.apple.com/us/album/elliots-song-from-euphoria-an-hbo-original-series/1612296489?i=1612296494&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/elliots-song-from-euphoria-an-hbo-original-series/1612296489?i=1612296494&uo=4",
+        "trackId": 1612296494
+      },
+      {
+        "trackName": "Think Fast",
+        "artistName": "Dominic Fike & Weezer",
+        "collectionName": "Sunburn",
+        "primaryGenreName": "Alternative",
+        "trackViewUrl": "https://music.apple.com/us/album/think-fast/1694067269?i=1694067279&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/think-fast/1694067269?i=1694067279&uo=4",
+        "trackId": 1694067279
+      },
+      {
+        "trackName": "Die For You (feat. Dominic Fike)",
+        "artistName": "Justin Bieber",
+        "collectionName": "Justice",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/die-for-you-feat-dominic-fike/1556175419?i=1556175846&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/die-for-you-feat-dominic-fike/1556175419?i=1556175846&uo=4",
+        "trackId": 1556175846
+      },
+      {
+        "trackName": "Westcoast Collective",
+        "artistName": "Dominic Fike",
+        "collectionName": "Don't Forget About Me, Demos - EP",
+        "primaryGenreName": "Alternative",
+        "trackViewUrl": "https://music.apple.com/us/album/westcoast-collective/1438243719?i=1438243882&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/westcoast-collective/1438243719?i=1438243882&uo=4",
+        "trackId": 1438243882
+      }
+    ]
+  },
+  "mixTerm|03 The Wolf": {
+    "query_url": "https://itunes.apple.com/search?term=03+The+Wolf&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": [
+      {
+        "trackName": "The Wolf",
+        "artistName": "The Spencer Lee Band",
+        "collectionName": "Fifty Shades Freed (Original Motion Picture Soundtrack)",
+        "primaryGenreName": "Soundtrack",
+        "trackViewUrl": "https://music.apple.com/us/album/the-wolf/1440899253?i=1440899781&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/the-wolf/1440899253?i=1440899781&uo=4",
+        "trackId": 1440899781
+      },
+      {
+        "trackName": "The Wolf",
+        "artistName": "Mumford & Sons",
+        "collectionName": "Wilder Mind (Deluxe)",
+        "primaryGenreName": "Alternative",
+        "trackViewUrl": "https://music.apple.com/us/album/the-wolf/1771722938?i=1771722941&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/the-wolf/1771722938?i=1771722941&uo=4",
+        "trackId": 1771722941
+      },
+      {
+        "trackName": "The Wolf",
+        "artistName": "Mumford & Sons",
+        "collectionName": "Wilder Mind",
+        "primaryGenreName": "Alternative",
+        "trackViewUrl": "https://music.apple.com/us/album/the-wolf/1771725527?i=1771725590&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/the-wolf/1771725527?i=1771725590&uo=4",
+        "trackId": 1771725590
+      },
+      {
+        "trackName": "The Wolf",
+        "artistName": "The Delta Bombers",
+        "collectionName": "Wolf",
+        "primaryGenreName": "Rock",
+        "trackViewUrl": "https://music.apple.com/us/album/the-wolf/1005843093?i=1005844010&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/the-wolf/1005843093?i=1005844010&uo=4",
+        "trackId": 1005844010
+      },
+      {
+        "trackName": "The Wolf (Live)",
+        "artistName": "Mumford & Sons",
+        "collectionName": "Wilder Mind (Deluxe)",
+        "primaryGenreName": "Alternative",
+        "trackViewUrl": "https://music.apple.com/us/album/the-wolf-live/1771722938?i=1771723223&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/the-wolf-live/1771722938?i=1771723223&uo=4",
+        "trackId": 1771723223
+      },
+      {
+        "trackName": "The Wolf",
+        "artistName": "Fever Ray",
+        "collectionName": "Red Riding Hood (Original Motion Picture Soundtrack)",
+        "primaryGenreName": "Soundtrack",
+        "trackViewUrl": "https://music.apple.com/us/album/the-wolf/1455159038?i=1455159211&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/the-wolf/1455159038?i=1455159211&uo=4",
+        "trackId": 1455159211
+      },
+      {
+        "trackName": "The Wolf",
+        "artistName": "Darondo",
+        "collectionName": "Listen to My Song: The Music City Sessions",
+        "primaryGenreName": "Funk",
+        "trackViewUrl": "https://music.apple.com/us/album/the-wolf/1621359898?i=1621360590&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/the-wolf/1621359898?i=1621360590&uo=4",
+        "trackId": 1621360590
+      },
+      {
+        "trackName": "The Wolf",
+        "artistName": "Kings of Leon",
+        "collectionName": "EP #2",
+        "primaryGenreName": "Alternative",
+        "trackViewUrl": "https://music.apple.com/us/album/the-wolf/1847372595?i=1847372607&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/the-wolf/1847372595?i=1847372607&uo=4",
+        "trackId": 1847372607
+      },
+      {
+        "trackName": "The Wolf",
+        "artistName": "SIAMES",
+        "collectionName": "Bounce Into The Music",
+        "primaryGenreName": "Indie Rock",
+        "trackViewUrl": "https://music.apple.com/us/album/the-wolf/1385954418?i=1385954423&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/the-wolf/1385954418?i=1385954423&uo=4",
+        "trackId": 1385954423
+      },
+      {
+        "trackName": "The Wolf",
+        "artistName": "Manchester Orchestra",
+        "collectionName": "A Black Mile To The Surface",
+        "primaryGenreName": "Alternative",
+        "trackViewUrl": "https://music.apple.com/us/album/the-wolf/1440945297?i=1440945403&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/the-wolf/1440945297?i=1440945403&uo=4",
+        "trackId": 1440945403
+      },
+      {
+        "trackName": "The Wolf",
+        "artistName": "Eddie Vedder",
+        "collectionName": "Into the Wild (Music For the Motion Picture)",
+        "primaryGenreName": "Rock",
+        "trackViewUrl": "https://music.apple.com/us/album/the-wolf/1440897227?i=1440897630&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/the-wolf/1440897227?i=1440897630&uo=4",
+        "trackId": 1440897630
+      },
+      {
+        "trackName": "The Wolf (feat. Cami-Cat & FamilyJules)",
+        "artistName": "CG5",
+        "collectionName": "The Wolf (feat. Cami-Cat & FamilyJules) - Single",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/the-wolf-feat-cami-cat-familyjules/1794420699?i=1794420707&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/the-wolf-feat-cami-cat-familyjules/1794420699?i=1794420707&uo=4",
+        "trackId": 1794420707
+      },
+      {
+        "trackName": "The Wolf",
+        "artistName": "PHILDEL",
+        "collectionName": "The Disappearance of the Girl",
+        "primaryGenreName": "Singer/Songwriter",
+        "trackViewUrl": "https://music.apple.com/us/album/the-wolf/815666880?i=815667910&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/the-wolf/815666880?i=815667910&uo=4",
+        "trackId": 815667910
+      },
+      {
+        "trackName": "The Wolf",
+        "artistName": "Miniature Tigers",
+        "collectionName": "Tell It to the Volcano",
+        "primaryGenreName": "Alternative",
+        "trackViewUrl": "https://music.apple.com/us/album/the-wolf/1653709674?i=1653709689&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/the-wolf/1653709674?i=1653709689&uo=4",
+        "trackId": 1653709689
+      },
+      {
+        "trackName": "The Wolf",
+        "artistName": "Simple Creatures",
+        "collectionName": "Everything Opposite - EP",
+        "primaryGenreName": "Alternative",
+        "trackViewUrl": "https://music.apple.com/us/album/the-wolf/1474413990?i=1474413994&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/the-wolf/1474413990?i=1474413994&uo=4",
+        "trackId": 1474413994
+      }
+    ]
+  },
+  "mixTerm|04 Returns A King": {
+    "query_url": "https://itunes.apple.com/search?term=04+Returns+A+King&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": [
+      {
+        "trackName": "YOSEMITE",
+        "artistName": "Travis Scott",
+        "collectionName": "ASTROWORLD",
+        "primaryGenreName": "Hip-Hop/Rap",
+        "trackViewUrl": "https://music.apple.com/us/album/yosemite/1421241217?i=1421243212&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/yosemite/1421241217?i=1421243212&uo=4",
+        "trackId": 1421243212
+      },
+      {
+        "trackName": "Returns a King (Based Upon Themes by Elliot Goldenthal)",
+        "artistName": "Tyler Bates",
+        "collectionName": "300 (Original Motion Picture Soundtrack)",
+        "primaryGenreName": "Soundtrack",
+        "trackViewUrl": "https://music.apple.com/us/album/returns-a-king-based-upon-themes-by-elliot-goldenthal/216653145?i=216653158&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/returns-a-king-based-upon-themes-by-elliot-goldenthal/216653145?i=216653158&uo=4",
+        "trackId": 216653158
+      },
+      {
+        "trackName": "Immortals",
+        "artistName": "Fall Out Boy",
+        "collectionName": "Big Hero 6 (Original Motion Picture Soundtrack)",
+        "primaryGenreName": "Soundtrack",
+        "trackViewUrl": "https://music.apple.com/us/album/immortals/1440806167?i=1440806447&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/immortals/1440806167?i=1440806447&uo=4",
+        "trackId": 1440806447
+      },
+      {
+        "trackName": "If Only",
+        "artistName": "Dove Cameron",
+        "collectionName": "Descendants (Original TV Movie Soundtrack)",
+        "primaryGenreName": "Soundtrack",
+        "trackViewUrl": "https://music.apple.com/us/album/if-only/1440633212?i=1440633802&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/if-only/1440633212?i=1440633802&uo=4",
+        "trackId": 1440633802
+      },
+      {
+        "trackName": "I'll Make a Man Out of You",
+        "artistName": "Donny Osmond",
+        "collectionName": "Mulan (Original Motion Picture Soundtrack)",
+        "primaryGenreName": "Musicals",
+        "trackViewUrl": "https://music.apple.com/us/album/ill-make-a-man-out-of-you/1440662312?i=1440662805&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/ill-make-a-man-out-of-you/1440662312?i=1440662805&uo=4",
+        "trackId": 1440662805
+      },
+      {
+        "trackName": "Run Wild. (feat. Andy Mineo)",
+        "artistName": "for KING & COUNTRY",
+        "collectionName": "Run Wild. Live Free. Love Strong. (Deluxe Anniversary Edition)",
+        "primaryGenreName": "Christian",
+        "trackViewUrl": "https://music.apple.com/us/album/run-wild-feat-andy-mineo/1219039811?i=1219039816&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/run-wild-feat-andy-mineo/1219039811?i=1219039816&uo=4",
+        "trackId": 1219039816
+      },
+      {
+        "trackName": "Returns a King (from 300)",
+        "artistName": "Global Stage Orchestra",
+        "collectionName": "Music from the Movies - Graphic Novels & Comic Books",
+        "primaryGenreName": "Soundtrack",
+        "trackViewUrl": "https://music.apple.com/us/album/returns-a-king-from-300/334526157?i=334526186&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/returns-a-king-from-300/334526157?i=334526186&uo=4",
+        "trackId": 334526186
+      },
+      {
+        "trackName": "Ronnie Rising Medley: A Light In the Black / Tarot Woman / Stargazer / Kill the King",
+        "artistName": "Metallica",
+        "collectionName": "Hardwired…To Self-Destruct (Deluxe Edition)",
+        "primaryGenreName": "Metal",
+        "trackViewUrl": "https://music.apple.com/us/album/ronnie-rising-medley-a-light-in-the-black-tarot/1145498274?i=1145498772&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/ronnie-rising-medley-a-light-in-the-black-tarot/1145498274?i=1145498772&uo=4",
+        "trackId": 1145498772
+      },
+      {
+        "trackName": "Returns a King",
+        "artistName": "Selma Güzel",
+        "collectionName": "Returns a King - Single",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/returns-a-king/1852995552?i=1852995553&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/returns-a-king/1852995552?i=1852995553&uo=4",
+        "trackId": 1852995553
+      },
+      {
+        "trackName": "Chitta Kurta (feat. Gurlej Akhtar)",
+        "artistName": "Karan Aujla",
+        "collectionName": "Chitta Kurta (feat. Gurlej Akhtar) - Single",
+        "primaryGenreName": "New Age",
+        "trackViewUrl": "https://music.apple.com/us/album/chitta-kurta-feat-gurlej-akhtar/1859536835?i=1859536837&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/chitta-kurta-feat-gurlej-akhtar/1859536835?i=1859536837&uo=4",
+        "trackId": 1859536837
+      },
+      {
+        "trackName": "MOOD 4 EVA (feat. Oumou Sangaré)",
+        "artistName": "Beyoncé, JAŸ-Z & Childish Gambino",
+        "collectionName": "The Lion King: The Gift",
+        "primaryGenreName": "Soundtrack",
+        "trackViewUrl": "https://music.apple.com/us/album/mood-4-eva-feat-oumou-sangar%C3%A9/1473486502?i=1473487253&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/mood-4-eva-feat-oumou-sangar%C3%A9/1473486502?i=1473487253&uo=4",
+        "trackId": 1473487253
+      },
+      {
+        "trackName": "Ronnie Rising Medley: A Light In the Black / Tarot Woman / Stargazer / Kill the King",
+        "artistName": "Metallica",
+        "collectionName": "Ronnie James Dio: This Is Your Life",
+        "primaryGenreName": "Metal",
+        "trackViewUrl": "https://music.apple.com/us/album/ronnie-rising-medley-a-light-in-the-black-tarot/894305150?i=894305178&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/ronnie-rising-medley-a-light-in-the-black-tarot/894305150?i=894305178&uo=4",
+        "trackId": 894305178
+      },
+      {
+        "trackName": "Sing About Me, I'm Dying of Thirst",
+        "artistName": "Kendrick Lamar",
+        "collectionName": "good kid, m.A.A.d city (Deluxe Version)",
+        "primaryGenreName": "Hip-Hop/Rap",
+        "trackViewUrl": "https://music.apple.com/us/album/sing-about-me-im-dying-of-thirst/1440860389?i=1440860410&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/sing-about-me-im-dying-of-thirst/1440860389?i=1440860410&uo=4",
+        "trackId": 1440860410
+      },
+      {
+        "trackName": "Sing About Me, I'm Dying of Thirst",
+        "artistName": "Kendrick Lamar",
+        "collectionName": "good kid, m.A.A.d city",
+        "primaryGenreName": "Hip-Hop/Rap",
+        "trackViewUrl": "https://music.apple.com/us/album/sing-about-me-im-dying-of-thirst/1471277623?i=1471277876&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/sing-about-me-im-dying-of-thirst/1471277623?i=1471277876&uo=4",
+        "trackId": 1471277876
+      }
+    ]
+  },
+  "mixTerm|10 No Sleep Tonight": {
+    "query_url": "https://itunes.apple.com/search?term=10+No+Sleep+Tonight&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": [
+      {
+        "trackName": "No Sleep Tonight",
+        "artistName": "Shinedown",
+        "collectionName": "Planet Zero",
+        "primaryGenreName": "Hard Rock",
+        "trackViewUrl": "https://music.apple.com/us/album/no-sleep-tonight/1606457044?i=1606457286&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/no-sleep-tonight/1606457044?i=1606457286&uo=4",
+        "trackId": 1606457286
+      },
+      {
+        "trackName": "No Sleep Tonight",
+        "artistName": "Kirk Franklin",
+        "collectionName": "Losing My Religion",
+        "primaryGenreName": "Christian",
+        "trackViewUrl": "https://music.apple.com/us/album/no-sleep-tonight/1143346655?i=1143346956&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/no-sleep-tonight/1143346655?i=1143346956&uo=4",
+        "trackId": 1143346956
+      },
+      {
+        "trackName": "No Sleep Tonight",
+        "artistName": "Mýa",
+        "collectionName": "Moodring (Deluxe)",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/no-sleep-tonight/1696375951?i=1696376103&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/no-sleep-tonight/1696375951?i=1696376103&uo=4",
+        "trackId": 1696376103
+      },
+      {
+        "trackName": "No Sleep Tonight",
+        "artistName": "Mýa",
+        "collectionName": "Moodring",
+        "primaryGenreName": "R&B/Soul",
+        "trackViewUrl": "https://music.apple.com/us/album/no-sleep-tonight/1443200771?i=1443200788&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/no-sleep-tonight/1443200771?i=1443200788&uo=4",
+        "trackId": 1443200788
+      },
+      {
+        "trackName": "No Sleep Tonight",
+        "artistName": "Tyler Bates",
+        "collectionName": "300 (Original Motion Picture Soundtrack)",
+        "primaryGenreName": "Soundtrack",
+        "trackViewUrl": "https://music.apple.com/us/album/no-sleep-tonight/216653145?i=216653190&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/no-sleep-tonight/216653145?i=216653190&uo=4",
+        "trackId": 216653190
+      },
+      {
+        "trackName": "No Sleep Tonight",
+        "artistName": "The Faders",
+        "collectionName": "Plug In + Play",
+        "primaryGenreName": "Pop/Rock",
+        "trackViewUrl": "https://music.apple.com/us/album/no-sleep-tonight/1719189892?i=1719189894&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/no-sleep-tonight/1719189892?i=1719189894&uo=4",
+        "trackId": 1719189894
+      },
+      {
+        "trackName": "No Sleep Tonight",
+        "artistName": "Imael Angel, Kendari & Amara Jaye",
+        "collectionName": "No Sleep Tonight - Single",
+        "primaryGenreName": "Afro-Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/no-sleep-tonight/6812149514?i=6812149515&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/no-sleep-tonight/6812149514?i=6812149515&uo=4",
+        "trackId": 6812149515
+      },
+      {
+        "trackName": "No Sleep Tonight",
+        "artistName": "Enter Shikari",
+        "collectionName": "Common Dreads",
+        "primaryGenreName": "Rock",
+        "trackViewUrl": "https://music.apple.com/us/album/no-sleep-tonight/1626321950?i=1626322266&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/no-sleep-tonight/1626321950?i=1626322266&uo=4",
+        "trackId": 1626322266
+      },
+      {
+        "trackName": "No Sleep Tonight",
+        "artistName": "Akihiko Kai",
+        "collectionName": "No Sleep Tonight - Single",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/no-sleep-tonight/1869319212?i=1869319215&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/no-sleep-tonight/1869319212?i=1869319215&uo=4",
+        "trackId": 1869319215
+      },
+      {
+        "trackName": "No Sleep Tonight",
+        "artistName": "KNEA",
+        "collectionName": "No Sleep Tonight - Single",
+        "primaryGenreName": "Jungle/Drum'n'bass",
+        "trackViewUrl": "https://music.apple.com/us/album/no-sleep-tonight/1847360844?i=1847360845&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/no-sleep-tonight/1847360844?i=1847360845&uo=4",
+        "trackId": 1847360845
+      },
+      {
+        "trackName": "No Sleep Tonight (Single Version)",
+        "artistName": "Mýa",
+        "collectionName": "My Love Is Like...Wo - Single",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/no-sleep-tonight-single-version/1445309751?i=1445309757&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/no-sleep-tonight-single-version/1445309751?i=1445309757&uo=4",
+        "trackId": 1445309757
+      },
+      {
+        "trackName": "No Sleep Tonight (Live)",
+        "artistName": "G.U.T.S",
+        "collectionName": "The Next Big Thing: G.U.T.S.",
+        "primaryGenreName": "Hip-Hop/Rap",
+        "trackViewUrl": "https://music.apple.com/us/album/no-sleep-tonight-live/1382519023?i=1382519414&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/no-sleep-tonight-live/1382519023?i=1382519414&uo=4",
+        "trackId": 1382519414
+      },
+      {
+        "trackName": "No Sleep Tonight",
+        "artistName": "Shanna Hustle",
+        "collectionName": "Glow Season",
+        "primaryGenreName": "Contemporary R&B",
+        "trackViewUrl": "https://music.apple.com/us/album/no-sleep-tonight/1852578796?i=1852579162&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/no-sleep-tonight/1852578796?i=1852579162&uo=4",
+        "trackId": 1852579162
+      },
+      {
+        "trackName": "No Sleep Tonight",
+        "artistName": "Mike Errico",
+        "collectionName": "Smoke & Whiskey",
+        "primaryGenreName": "Rock",
+        "trackViewUrl": "https://music.apple.com/us/album/no-sleep-tonight/907168434?i=907168456&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/no-sleep-tonight/907168434?i=907168456&uo=4",
+        "trackId": 907168456
+      },
+      {
+        "trackName": "No Sleep Tonight (feat. The Qemists) [The Qemists Remix]",
+        "artistName": "Enter Shikari",
+        "collectionName": "Tribalism",
+        "primaryGenreName": "Rock",
+        "trackViewUrl": "https://music.apple.com/us/album/no-sleep-tonight-feat-the-qemists-the-qemists-remix/1628130299?i=1628130526&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/no-sleep-tonight-feat-the-qemists-the-qemists-remix/1628130299?i=1628130526&uo=4",
+        "trackId": 1628130526
+      }
+    ]
+  },
+  "mixTerm|16 Immortals Battle": {
+    "query_url": "https://itunes.apple.com/search?term=16+Immortals+Battle&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": [
+      {
+        "trackName": "Immortals Battle",
+        "artistName": "Tyler Bates",
+        "collectionName": "300 (Original Motion Picture Soundtrack)",
+        "primaryGenreName": "Soundtrack",
+        "trackViewUrl": "https://music.apple.com/us/album/immortals-battle/216653145?i=216653331&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/immortals-battle/216653145?i=216653331&uo=4",
+        "trackId": 216653331
+      },
+      {
+        "trackName": "Immortals",
+        "artistName": "Fall Out Boy",
+        "collectionName": "Big Hero 6 (Original Motion Picture Soundtrack)",
+        "primaryGenreName": "Soundtrack",
+        "trackViewUrl": "https://music.apple.com/us/album/immortals/1440806167?i=1440806447&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/immortals/1440806167?i=1440806447&uo=4",
+        "trackId": 1440806447
+      },
+      {
+        "trackName": "Irresistible",
+        "artistName": "Fall Out Boy",
+        "collectionName": "American Beauty / American Psycho",
+        "primaryGenreName": "Alternative",
+        "trackViewUrl": "https://music.apple.com/us/album/irresistible/1440826504?i=1440826601&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/irresistible/1440826504?i=1440826601&uo=4",
+        "trackId": 1440826601
+      },
+      {
+        "trackName": "Irresistible (feat. Demi Lovato)",
+        "artistName": "Fall Out Boy",
+        "collectionName": "Irresistible (feat. Demi Lovato) - Single",
+        "primaryGenreName": "Alternative",
+        "trackViewUrl": "https://music.apple.com/us/album/irresistible-feat-demi-lovato/1444620385?i=1444620437&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/irresistible-feat-demi-lovato/1444620385?i=1444620437&uo=4",
+        "trackId": 1444620437
+      },
+      {
+        "trackName": "Heartbreak Feels So Good",
+        "artistName": "Fall Out Boy",
+        "collectionName": "So Much (For) Stardust",
+        "primaryGenreName": "Alternative",
+        "trackViewUrl": "https://music.apple.com/us/album/heartbreak-feels-so-good/1697584939?i=1697584947&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/heartbreak-feels-so-good/1697584939?i=1697584947&uo=4",
+        "trackId": 1697584947
+      },
+      {
+        "trackName": "Sugar, We're Goin Down",
+        "artistName": "Fall Out Boy",
+        "collectionName": "From Under the Cork Tree",
+        "primaryGenreName": "Alternative",
+        "trackViewUrl": "https://music.apple.com/us/album/sugar-were-goin-down/1440748840?i=1440749374&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/sugar-were-goin-down/1440748840?i=1440749374&uo=4",
+        "trackId": 1440749374
+      },
+      {
+        "trackName": "The Iliad (Book 12: So Goes The Wall)",
+        "artistName": "STORIES OF OUR PAST",
+        "collectionName": "The Iliad (Part Two: Books XI-XVI)",
+        "primaryGenreName": "Alternative",
+        "trackViewUrl": "https://music.apple.com/us/album/the-iliad-book-12-so-goes-the-wall/6772753065?i=6772753069&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/the-iliad-book-12-so-goes-the-wall/6772753065?i=6772753069&uo=4",
+        "trackId": 6772753069
+      },
+      {
+        "trackName": "Immortals (Battle)",
+        "artistName": "Gergely Buttinger",
+        "collectionName": "King Arthur the Roleplaying Wargame 2 Remastered, Pt. 2 (Original Game Soundtrack)",
+        "primaryGenreName": "Soundtrack",
+        "trackViewUrl": "https://music.apple.com/us/album/immortals-battle/1487342912?i=1487343254&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/immortals-battle/1487342912?i=1487343254&uo=4",
+        "trackId": 1487343254
+      },
+      {
+        "trackName": "The Immortals (Battle Prahaar)",
+        "artistName": "Shockwav",
+        "collectionName": "Culture Shock",
+        "primaryGenreName": "Jungle/Drum'n'bass",
+        "trackViewUrl": "https://music.apple.com/us/album/the-immortals-battle-prahaar/1555053997?i=1555054000&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/the-immortals-battle-prahaar/1555053997?i=1555054000&uo=4",
+        "trackId": 1555054000
+      },
+      {
+        "trackName": "Blodtörstig (The Battle)",
+        "artistName": "ROK10-16",
+        "collectionName": "Domestic Disturbance",
+        "primaryGenreName": "Rock",
+        "trackViewUrl": "https://music.apple.com/us/album/blodt%C3%B6rstig-the-battle/1562408871?i=1562408878&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/blodt%C3%B6rstig-the-battle/1562408871?i=1562408878&uo=4",
+        "trackId": 1562408878
+      },
+      {
+        "trackName": "Blodtorstig (The Battle)",
+        "artistName": "ROK10-16",
+        "collectionName": "Blodtorstig (The Battle) - Single",
+        "primaryGenreName": "Metal",
+        "trackViewUrl": "https://music.apple.com/us/album/blodtorstig-the-battle/1559843326?i=1559843330&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/blodtorstig-the-battle/1559843326?i=1559843330&uo=4",
+        "trackId": 1559843330
+      }
+    ]
+  },
+  "mixTerm|21 Xerxes' Final Offer": {
+    "query_url": "https://itunes.apple.com/search?term=21+Xerxes%27+Final+Offer&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": [
+      {
+        "trackName": "Xerxes' Final Offer (Based Upon Themes by Elliot Goldenthal)",
+        "artistName": "Tyler Bates",
+        "collectionName": "300 (Original Motion Picture Soundtrack)",
+        "primaryGenreName": "Soundtrack",
+        "trackViewUrl": "https://music.apple.com/us/album/xerxes-final-offer-based-upon-themes-by-elliot-goldenthal/216653145?i=216653418&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/xerxes-final-offer-based-upon-themes-by-elliot-goldenthal/216653145?i=216653418&uo=4",
+        "trackId": 216653418
+      },
+      {
+        "trackName": "The Thirteen Cryptical Prophecies of Mu",
+        "artistName": "Bal-Sagoth",
+        "collectionName": "The Power Cosmic",
+        "primaryGenreName": "Death Metal/Black Metal",
+        "trackViewUrl": "https://music.apple.com/us/album/the-thirteen-cryptical-prophecies-of-mu/1510610375?i=1510610808&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/the-thirteen-cryptical-prophecies-of-mu/1510610375?i=1510610808&uo=4",
+        "trackId": 1510610808
+      }
+    ]
+  },
+  "mixTerm|SOTONOTSODO Get This": {
+    "query_url": "https://itunes.apple.com/search?term=SOTONOTSODO+Get+This&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": []
+  },
+  "mixTerm|Alex Warren Bloodline": {
+    "query_url": "https://itunes.apple.com/search?term=Alex+Warren+Bloodline&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": [
+      {
+        "trackName": "Bloodline (with Jelly Roll)",
+        "artistName": "Alex Warren",
+        "collectionName": "You'll Be Alright, Kid",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/bloodline-with-jelly-roll/1817735146?i=1817735158&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/bloodline-with-jelly-roll/1817735146?i=1817735158&uo=4",
+        "trackId": 1817735158
+      },
+      {
+        "trackName": "Ordinary",
+        "artistName": "Alex Warren",
+        "collectionName": "You'll Be Alright, Kid (Chapter 1)",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/ordinary/1804419951?i=1804419953&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/ordinary/1804419951?i=1804419953&uo=4",
+        "trackId": 1804419953
+      },
+      {
+        "trackName": "Eternity",
+        "artistName": "Alex Warren",
+        "collectionName": "You'll Be Alright, Kid",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/eternity/1817735146?i=1817735147&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/eternity/1817735146?i=1817735147&uo=4",
+        "trackId": 1817735147
+      },
+      {
+        "trackName": "Carry You Home",
+        "artistName": "Alex Warren",
+        "collectionName": "Carry You Home - Single",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/carry-you-home/1745673597?i=1745673617&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/carry-you-home/1745673597?i=1745673617&uo=4",
+        "trackId": 1745673617
+      },
+      {
+        "trackName": "Burning Down",
+        "artistName": "Alex Warren",
+        "collectionName": "You'll Be Alright, Kid (Chapter 1)",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/burning-down/1768757362?i=1768757363&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/burning-down/1768757362?i=1768757363&uo=4",
+        "trackId": 1768757363
+      },
+      {
+        "trackName": "Bloodline",
+        "artistName": "Alex Warren & Jelly Roll",
+        "collectionName": "Bloodline - Single",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/bloodline/1816308123?i=1816308136&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/bloodline/1816308123?i=1816308136&uo=4",
+        "trackId": 1816308136
+      },
+      {
+        "trackName": "Save You a Seat",
+        "artistName": "Alex Warren",
+        "collectionName": "Save You a Seat - Single",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/save-you-a-seat/1737054848?i=1737055317&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/save-you-a-seat/1737054848?i=1737055317&uo=4",
+        "trackId": 1737055317
+      },
+      {
+        "trackName": "Before You Leave Me",
+        "artistName": "Alex Warren",
+        "collectionName": "Before You Leave Me - Single",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/before-you-leave-me/1730121081?i=1730121082&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/before-you-leave-me/1730121081?i=1730121082&uo=4",
+        "trackId": 1730121082
+      },
+      {
+        "trackName": "Carry You Home",
+        "artistName": "Alex Warren",
+        "collectionName": "You'll Be Alright, Kid (Chapter 1)",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/carry-you-home/1804419951?i=1804419961&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/carry-you-home/1804419951?i=1804419961&uo=4",
+        "trackId": 1804419961
+      },
+      {
+        "trackName": "Chasing Shadows",
+        "artistName": "Alex Warren",
+        "collectionName": "Chasing Shadows - Single",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/chasing-shadows/1655763031?i=1655763034&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/chasing-shadows/1655763031?i=1655763034&uo=4",
+        "trackId": 1655763034
+      },
+      {
+        "trackName": "Burning Down (with Joe Jonas)",
+        "artistName": "Alex Warren",
+        "collectionName": "Burning Down (with Joe Jonas) - Single",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/burning-down-with-joe-jonas/1781333279?i=1781333283&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/burning-down-with-joe-jonas/1781333279?i=1781333283&uo=4",
+        "trackId": 1781333283
+      },
+      {
+        "trackName": "Ordinary (Wedding Version)",
+        "artistName": "Alex Warren",
+        "collectionName": "Ordinary (Wedding Version) - Single",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/ordinary-wedding-version/1802894766?i=1802894994&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/ordinary-wedding-version/1802894766?i=1802894994&uo=4",
+        "trackId": 1802894994
+      },
+      {
+        "trackName": "Ordinary (Live from Lollapalooza)",
+        "artistName": "Alex Warren & Luke Combs",
+        "collectionName": "Ordinary (Live from Lollapalooza) - Single",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/ordinary-live-from-lollapalooza/1831835257?i=1831835259&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/ordinary-live-from-lollapalooza/1831835257?i=1831835259&uo=4",
+        "trackId": 1831835259
+      },
+      {
+        "trackName": "Bloodline",
+        "artistName": "Twinkle Twinkle Little Rock Star",
+        "collectionName": "Lullaby Versions of Alex Warren",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/bloodline/1852208899?i=1852208908&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/bloodline/1852208899?i=1852208908&uo=4",
+        "trackId": 1852208908
+      },
+      {
+        "trackName": "Bloodline (Instrumental)",
+        "artistName": "Piano Tribute Players",
+        "collectionName": "Piano Renditions of Alex Warren (Instrumental)",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/bloodline-instrumental/1832810026?i=1832810048&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/bloodline-instrumental/1832810026?i=1832810048&uo=4",
+        "trackId": 1832810048
+      }
+    ]
+  },
+  "mixTerm|Luke Combs Fast Car": {
+    "query_url": "https://itunes.apple.com/search?term=Luke+Combs+Fast+Car&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": [
+      {
+        "trackName": "Fast Car",
+        "artistName": "Luke Combs",
+        "collectionName": "Gettin' Old",
+        "primaryGenreName": "Country",
+        "trackViewUrl": "https://music.apple.com/us/album/fast-car/1666738524?i=1666738585&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/fast-car/1666738524?i=1666738585&uo=4",
+        "trackId": 1666738585
+      },
+      {
+        "trackName": "Fast Car",
+        "artistName": "Tracy Chapman",
+        "collectionName": "Tracy Chapman",
+        "primaryGenreName": "Singer/Songwriter",
+        "trackViewUrl": "https://music.apple.com/us/album/fast-car/79565550?i=79565507&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/fast-car/79565550?i=79565507&uo=4",
+        "trackId": 79565507
+      },
+      {
+        "trackName": "Fast Car (Live)",
+        "artistName": "Luke Combs",
+        "collectionName": "Fast Car (Live) - Single",
+        "primaryGenreName": "Country",
+        "trackViewUrl": "https://music.apple.com/us/album/fast-car-live/1702288525?i=1702288526&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/fast-car-live/1702288525?i=1702288526&uo=4",
+        "trackId": 1702288526
+      },
+      {
+        "trackName": "Beer Never Broke My Heart",
+        "artistName": "Luke Combs",
+        "collectionName": "What You See Ain't Always What You Get (Deluxe Edition)",
+        "primaryGenreName": "Country",
+        "trackViewUrl": "https://music.apple.com/us/album/beer-never-broke-my-heart/1527782144?i=1527782145&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/beer-never-broke-my-heart/1527782144?i=1527782145&uo=4",
+        "trackId": 1527782145
+      },
+      {
+        "trackName": "1, 2 Many",
+        "artistName": "Luke Combs & Brooks & Dunn",
+        "collectionName": "What You See Ain't Always What You Get (Deluxe Edition)",
+        "primaryGenreName": "Country",
+        "trackViewUrl": "https://music.apple.com/us/album/1-2-many/1527782144?i=1527782153&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/1-2-many/1527782144?i=1527782153&uo=4",
+        "trackId": 1527782153
+      },
+      {
+        "trackName": "Fast Car",
+        "artistName": "Jasmine Thompson",
+        "collectionName": "Fast Car - Single",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/fast-car/1069247955?i=1069247971&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/fast-car/1069247955?i=1069247971&uo=4",
+        "trackId": 1069247971
+      },
+      {
+        "trackName": "Must've Never Met You",
+        "artistName": "Luke Combs",
+        "collectionName": "This One’s for You Too (Deluxe Edition)",
+        "primaryGenreName": "Country",
+        "trackViewUrl": "https://music.apple.com/us/album/mustve-never-met-you/1376705241?i=1376707065&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/mustve-never-met-you/1376705241?i=1376707065&uo=4",
+        "trackId": 1376707065
+      },
+      {
+        "trackName": "Fast Car (2015 Remastered)",
+        "artistName": "Tracy Chapman",
+        "collectionName": "Greatest Hits",
+        "primaryGenreName": "Singer/Songwriter",
+        "trackViewUrl": "https://music.apple.com/us/album/fast-car-2015-remastered/1051106373?i=1051106565&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/fast-car-2015-remastered/1051106373?i=1051106565&uo=4",
+        "trackId": 1051106565
+      },
+      {
+        "trackName": "Fast Car",
+        "artistName": "Syd",
+        "collectionName": "Broken Hearts Club",
+        "primaryGenreName": "R&B/Soul",
+        "trackViewUrl": "https://music.apple.com/us/album/fast-car/1614393947?i=1614393953&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/fast-car/1614393947?i=1614393953&uo=4",
+        "trackId": 1614393953
+      },
+      {
+        "trackName": "Fast Car (feat. Kina Grannis)",
+        "artistName": "Boyce Avenue",
+        "collectionName": "Cover Sessions, Vol. 2",
+        "primaryGenreName": "Singer/Songwriter",
+        "trackViewUrl": "https://music.apple.com/us/album/fast-car-feat-kina-grannis/1365832942?i=1365833475&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/fast-car-feat-kina-grannis/1365832942?i=1365833475&uo=4",
+        "trackId": 1365833475
+      },
+      {
+        "trackName": "Fast Car (Cover)",
+        "artistName": "Passenger",
+        "collectionName": "Sunday Night Sessions",
+        "primaryGenreName": "Singer/Songwriter",
+        "trackViewUrl": "https://music.apple.com/us/album/fast-car-cover/1253047719?i=1253048175&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/fast-car-cover/1253047719?i=1253048175&uo=4",
+        "trackId": 1253048175
+      },
+      {
+        "trackName": "Fast Car (feat. Dakota) [Radio Edit]",
+        "artistName": "Jonas Blue",
+        "collectionName": "Fast Car (feat. Dakota) [Radio Edit] - Single",
+        "primaryGenreName": "Dance",
+        "trackViewUrl": "https://music.apple.com/us/album/fast-car-feat-dakota-radio-edit/1444631344?i=1444631345&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/fast-car-feat-dakota-radio-edit/1444631344?i=1444631345&uo=4",
+        "trackId": 1444631345
+      },
+      {
+        "trackName": "Fast Car",
+        "artistName": "LullaVibes",
+        "collectionName": "Lullaby Instrumentals: Pop Icons",
+        "primaryGenreName": "Children's Music",
+        "trackViewUrl": "https://music.apple.com/us/album/fast-car/1747013842?i=1747013846&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/fast-car/1747013842?i=1747013846&uo=4",
+        "trackId": 1747013846
+      },
+      {
+        "trackName": "Fast Car",
+        "artistName": "Twinkle Twinkle Little Rock Star",
+        "collectionName": "Lullaby Versions of Luke Combs",
+        "primaryGenreName": "Children's Music",
+        "trackViewUrl": "https://music.apple.com/us/album/fast-car/1696566333?i=1696566809&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/fast-car/1696566333?i=1696566809&uo=4",
+        "trackId": 1696566809
+      },
+      {
+        "trackName": "Fast Car (feat. Dakota)",
+        "artistName": "Jonas Blue",
+        "collectionName": "Blue",
+        "primaryGenreName": "Dance",
+        "trackViewUrl": "https://music.apple.com/us/album/fast-car-feat-dakota/1437811936?i=1437812225&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/fast-car-feat-dakota/1437811936?i=1437812225&uo=4",
+        "trackId": 1437812225
+      }
+    ]
   }
 }
