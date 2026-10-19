@@ -202,9 +202,10 @@ export function PlayerProvider({ children }) {
   const ensureGraph = useCallback(() => {
     configurePlaybackSession();
     if (audioCtxRef.current) return audioCtxRef.current;
+    const failPure=()=>{if(pureRef.current.enabled){const off={...pureRef.current,enabled:false};pureRef.current=off;setPureState(off);setPureError("PURE could not start in this browser. Tap the switch to try again.");}};
     try {
       const AC = window.AudioContext || Reflect.get(window,"webkitAudioContext");
-      if (!AC) return null;
+      if (!AC){failPure();return null;}
       const ctx = new AC();
       let pureGraph;
       try{pureGraph=createPureGraph(ctx);}catch(error){ctx.close().catch(()=>{});throw error;}
@@ -282,7 +283,7 @@ export function PlayerProvider({ children }) {
       applyMixerToGraph(mixerRef.current);
       return ctx;
     } catch {
-      return null;
+      failPure();return null;
     }
   }, [applyMixerToGraph]);
 
@@ -338,7 +339,14 @@ export function PlayerProvider({ children }) {
     const next=normalizePure({...pureRef.current,...values}),request=++pureRequestRef.current;
     setPureError("");
     if(next.enabled&&pureRemoteRef.current){setPureError("Switch playback to this device to use PURE.");return false;}
-    const ctx=next.enabled?ensureGraph():audioCtxRef.current;
+    // Saving a preference while idle must not depend on autoplay permission.
+    // Both play/resume paths already initialize graphNeeded() from pureRef.
+    if(!next.enabled||!isPlayingRef.current){
+      pureRef.current=next;
+      if(audioCtxRef.current?.state!=="closed")pureGraphRef.current?.apply(next);
+      setPureState(next);return true;
+    }
+    const ctx=ensureGraph();
     if(next.enabled&&(!ctx||ctx.state==="closed"||!pureGraphRef.current)){setPureError("Audio processing could not start. Try again.");return false;}
     pureRef.current=next;pureGraphRef.current?.apply(next);setPureState(next);
     if(next.enabled&&(ctx.state==="suspended"||ctx.state==="interrupted")){
