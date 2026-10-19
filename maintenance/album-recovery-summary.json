@@ -1,6 +1,6 @@
 {
   "scanned": 6239,
-  "recovered": 6229,
+  "recovered": 6237,
   "withoutAlbumTag": [
     "6a666a4595d1f64cc245bf43",
     "6a666a3d072774683e96ad68",
@@ -14,8 +14,96 @@
     "6abf42f8530a213aec66cc1f"
   ],
   "unreadable": [],
-  "updated": "2026-10-19T15:06:12.199Z",
-  "albumGroups": 3816,
+  "updated": "2026-10-19T15:13:10.144Z",
+  "albumGroups": 3820,
   "multiSongAlbums": 942,
-  "source": "Embedded tags in existing published audio; explicit saved metadata takes precedence"
+  "source": "Embedded file tags supplemented with eight verified release lookups and one verified joint-album correction; explicit saved metadata takes precedence",
+  "embeddedTagRecovered": 6229,
+  "verifiedLookups": [
+    {
+      "id": "6a666a415a6176ad8b4e6f4b",
+      "album_name": "The Rain",
+      "album_artist": "tendai",
+      "release_year": 2024,
+      "source": "https://music.amazon.ca/tracks/B0DB6FGHDW"
+    },
+    {
+      "id": "6a666a4595d1f64cc245bf43",
+      "album_name": "The Rain",
+      "album_artist": "tendai",
+      "release_year": 2024,
+      "source": "https://music.apple.com/us/song/1758314036"
+    },
+    {
+      "id": "6a666a486e6fee5e102d7c30",
+      "album_name": "Dichavate - Single",
+      "album_artist": "Ya Ice Dilan, Rey Tony, DJ Honda & Helabusador",
+      "release_year": 2025,
+      "source": "https://music.apple.com/us/album/dichavate-single/1865959222"
+    },
+    {
+      "id": "6a666a4b633c40d2407d4fce",
+      "album_name": "The Real Me",
+      "album_artist": "Future",
+      "release_year": 2026,
+      "source": "https://music.apple.com/us/song/6784327509"
+    },
+    {
+      "id": "6a666a4f507a7b423a62b46e",
+      "album_name": "SECHO GANG",
+      "album_artist": "Sech",
+      "release_year": 2026,
+      "source": "https://music.apple.com/us/song/6764879213"
+    },
+    {
+      "id": "6a666a5532cc246ccac95af2",
+      "album_name": "Love Rehab (Dun Dun) - Single",
+      "album_artist": "Issac Frank & Mae Hill",
+      "release_year": 2025,
+      "source": "https://music.apple.com/us/album/love-rehab-dun-dun-single/1817235380"
+    },
+    {
+      "id": "6abf42e025b8126864800e7a",
+      "album_name": "Turning My Money Over (Quadruple Album)",
+      "album_artist": "E-40",
+      "release_year": 2026,
+      "source": "https://music.apple.com/us/album/turning-my-money-over-quadruple-album/6792939537"
+    },
+    {
+      "id": "6abf42f8530a213aec66cc1f",
+      "album_name": "DILLAGENCE II",
+      "album_artist": "Busta Rhymes & J Dilla",
+      "release_year": 2026,
+      "source": "https://store.empi.re/products/busta-rhymes-j-dilla-dillagence-ii-cd"
+    }
+  ],
+  "unresolved": [
+    "6a666a3d072774683e96ad68",
+    "6a66aa4cf2713b2ca1b6853d"
+  ],
+  "jointAlbumCorrections": [
+    {
+      "album_name": "$ome $exy $ongs 4 U",
+      "album_artist": "PARTYNEXTDOOR & Drake",
+      "track_ids": [
+        "6a66faf89f545873b071c233",
+        "6a67cd41cbeab06d542795c3",
+        "6a77c94f86730f7717d1c3cf",
+        "6a77d2ca4c8ca399914032bb",
+        "6a77d2d179508a6be82c10e0",
+        "6a77d3834c10e4ff6ab87290",
+        "6a77d37f79c5df1b3703ec57",
+        "6a77d38433065e6a5c0079a8",
+        "6a795f5910c61d1dd7d6a8fe",
+        "6a795f5c2f61df016290eaad",
+        "6a795fbfbd4442918f0d257e",
+        "6a795fde5dae9e027fa6fc93",
+        "6a795fee9e48aa80499c4963",
+        "6a796009e5fd583a4359623d",
+        "6a79602c728713040670982d",
+        "6acc566201514414f7e7ff1b"
+      ],
+      "source": "https://www.sonymusic.ca/press_release/partynextdoor-drake-release-new-album-4u-ome-exy-ongs-4-u"
+    }
+  ]
 }
