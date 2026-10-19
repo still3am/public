@@ -1,6 +1,123 @@
 {
   "proposals": [
     {
+      "id": "6a65c6c8c9736bfd614784e8",
+      "title": "Three Little Birds",
+      "artist": "Bob Marley & The Wailers",
+      "before": "Other",
+      "genre": "Reggae",
+      "source_genre": "Reggae",
+      "source_title": "Three Little Birds",
+      "source_artist": "Bob Marley & The Wailers",
+      "source_album": "Legend – The Best Of Bob Marley & The Wailers",
+      "source_url": "https://music.apple.com/us/album/three-little-birds/1469575763?i=1469575900&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6a65c6cc7e304425a07cae07",
+      "title": "One Love   People Get Ready",
+      "artist": "Bob Marley & The Wailers",
+      "before": "Other",
+      "genre": "Reggae",
+      "source_genre": "Reggae",
+      "source_title": "One Love / People Get Ready",
+      "source_artist": "Bob Marley & The Wailers",
+      "source_album": "Legend – The Best Of Bob Marley & The Wailers",
+      "source_url": "https://music.apple.com/us/album/one-love-people-get-ready/1469575763?i=1469576015&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6a65c6cf8f75b5fa349eb7f2",
+      "title": "Turn Your Lights Down Low",
+      "artist": "Bob Marley & The Wailers",
+      "before": "Other",
+      "genre": "Reggae",
+      "source_genre": "Reggae",
+      "source_title": "Turn Your Lights Down Low",
+      "source_artist": "Bob Marley & The Wailers",
+      "source_album": "Exodus (Deluxe Edition)",
+      "source_url": "https://music.apple.com/us/album/turn-your-lights-down-low/1629115571?i=1629115756&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6a65c6d362e9a32776ca77c1",
+      "title": "Waiting In Vain",
+      "artist": "Bob Marley & The Wailers",
+      "before": "Other",
+      "genre": "Reggae",
+      "source_genre": "Reggae",
+      "source_title": "Waiting In Vain",
+      "source_artist": "Bob Marley & The Wailers",
+      "source_album": "Legend – The Best Of Bob Marley & The Wailers",
+      "source_url": "https://music.apple.com/us/album/waiting-in-vain/1469575763?i=1469576027&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6a65c6d6a09c979006c8a79d",
+      "title": "Jamming",
+      "artist": "Bob Marley & The Wailers",
+      "before": "Other",
+      "genre": "Reggae",
+      "source_genre": "Reggae",
+      "source_title": "Jamming",
+      "source_artist": "Bob Marley & The Wailers",
+      "source_album": "Legend – The Best Of Bob Marley & The Wailers",
+      "source_url": "https://music.apple.com/us/album/jamming/1469575763?i=1469576116&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6a65c6db4dde4b3791341478",
+      "title": "Natural Mystic",
+      "artist": "Bob Marley & The Wailers",
+      "before": "Other",
+      "genre": "Reggae",
+      "source_genre": "Reggae",
+      "source_title": "Natural Mystic",
+      "source_artist": "Bob Marley & The Wailers",
+      "source_album": "Natural Mystic: The Legend Lives On (The Definitive Remastered Edition)",
+      "source_url": "https://music.apple.com/us/album/natural-mystic/1440811176?i=1440811331&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6a65c6e16b82f0561863aa0c",
+      "title": "Exodus",
+      "artist": "Bob Marley & The Wailers",
+      "before": "Other",
+      "genre": "Reggae",
+      "source_genre": "Reggae",
+      "source_title": "Exodus",
+      "source_artist": "Bob Marley & The Wailers",
+      "source_album": "Legend – The Best Of Bob Marley & The Wailers",
+      "source_url": "https://music.apple.com/us/album/exodus/1469575763?i=1469576109&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6a65c6e47a2320f28f55b029",
+      "title": "So Much Things To Say",
+      "artist": "Bob Marley & The Wailers",
+      "before": "Other",
+      "genre": "Reggae",
+      "source_genre": "Reggae",
+      "source_title": "So Much Things To Say",
+      "source_artist": "Bob Marley & The Wailers",
+      "source_album": "Exodus (Deluxe Edition)",
+      "source_url": "https://music.apple.com/us/album/so-much-things-to-say/1629115571?i=1629115583&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6a65c6eda94e59c39ff72c3a",
+      "title": "Guiltiness",
+      "artist": "Bob Marley & The Wailers",
+      "before": "Other",
+      "genre": "Reggae",
+      "source_genre": "Reggae",
+      "source_title": "Guiltiness",
+      "source_artist": "Bob Marley & The Wailers",
+      "source_album": "Exodus (2013 Remaster)",
+      "source_url": "https://music.apple.com/us/album/guiltiness/1625213430?i=1625213797&uo=4",
+      "match": "exact artist and title"
+    },
+    {
       "id": "6a65c6ef2f0ef5d7c1358af3",
       "title": "Secrets",
       "artist": "A Boogie Wit da Hoodie",
@@ -378,6 +495,19 @@
       "match": "exact artist and title"
     },
     {
+      "id": "6a65c79223586e3062f29ce5",
+      "title": "Sacrifices",
+      "artist": "Drake, 2 Chainz, Young Thug",
+      "before": "Other",
+      "genre": "Hip-Hop",
+      "source_genre": "Hip-Hop/Rap",
+      "source_title": "Sacrifices (feat. 2 Chainz & Young Thug)",
+      "source_artist": "Drake",
+      "source_album": "More Life",
+      "source_url": "https://music.apple.com/us/album/sacrifices-feat-2-chainz-young-thug/1440891750?i=1440892620&uo=4",
+      "match": "exact artist and title"
+    },
+    {
       "id": "6a65c7a5c842139df4708ab2",
       "title": "Forever",
       "artist": "Drake, Kanye West, Lil Wayne, Eminem",
@@ -440,6 +570,19 @@
       "source_artist": "Drake",
       "source_album": "Take Care (Deluxe Version)",
       "source_url": "https://music.apple.com/us/album/take-care-feat-rihanna/1440745498?i=1440746117&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6a65c7b88dd5c725003d56c3",
+      "title": "Ice Melts",
+      "artist": "Drake, Young Thug",
+      "before": "Other",
+      "genre": "Hip-Hop",
+      "source_genre": "Hip-Hop/Rap",
+      "source_title": "Ice Melts (feat. Young Thug)",
+      "source_artist": "Drake",
+      "source_album": "More Life",
+      "source_url": "https://music.apple.com/us/album/ice-melts-feat-young-thug/1440891750?i=1440893108&uo=4",
       "match": "exact artist and title"
     },
     {
@@ -622,6 +765,19 @@
       "source_artist": "Kanye West",
       "source_album": "The College Dropout",
       "source_url": "https://music.apple.com/us/album/jesus-walks/1437467864?i=1437467881&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6a65c833e7fce8d774313943",
+      "title": "Never Let Me Down",
+      "artist": "Kanye West, JAŸ-Z, J. Ivy",
+      "before": "Other",
+      "genre": "Hip-Hop",
+      "source_genre": "Hip-Hop/Rap",
+      "source_title": "Never Let Me Down (feat. JAŸ-Z & J. Ivy)",
+      "source_artist": "Kanye West",
+      "source_album": "The College Dropout",
+      "source_url": "https://music.apple.com/us/album/never-let-me-down-feat-ja%C3%BF-z-j-ivy/1437467864?i=1437467882&uo=4",
       "match": "exact artist and title"
     },
     {
@@ -1132,6 +1288,19 @@
       "match": "exact artist and title"
     },
     {
+      "id": "6a6c49513fa42fc2993d83eb",
+      "title": "Anxiety",
+      "artist": "Black Eyed Peas, Papa Roach",
+      "before": "Other",
+      "genre": "R&B",
+      "source_genre": "R&B/Soul",
+      "source_title": "Anxiety (feat. Papa Roach)",
+      "source_artist": "Black Eyed Peas",
+      "source_album": "Elephunk",
+      "source_url": "https://music.apple.com/us/album/anxiety-feat-papa-roach/1615142131?i=1615142632&uo=4",
+      "match": "exact artist and title"
+    },
+    {
       "id": "6a6c4a37cd9bb4ca0820d5a9",
       "title": "in my head",
       "artist": "Ariana Grande",
@@ -1145,6 +1314,19 @@
       "match": "exact artist and title"
     },
     {
+      "id": "6a6c4a520f2f85ef5d7f259c",
+      "title": "Let's Get It Started - Spike Mix",
+      "artist": "Black Eyed Peas",
+      "before": "Other",
+      "genre": "Hip-Hop",
+      "source_genre": "Hip-Hop/Rap",
+      "source_title": "Let's Get It Started (Spike Mix)",
+      "source_artist": "Black Eyed Peas",
+      "source_album": "Elephunk",
+      "source_url": "https://music.apple.com/us/album/lets-get-it-started-spike-mix/1615142131?i=1615142480&uo=4",
+      "match": "exact artist and title"
+    },
+    {
       "id": "6a6c4a60c610035e47e16fba",
       "title": "LoveGame",
       "artist": "Lady Gaga",
@@ -1155,6 +1337,19 @@
       "source_artist": "Lady Gaga",
       "source_album": "The Fame",
       "source_url": "https://music.apple.com/us/album/lovegame/1440818588?i=1440818656&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6a6c4a74519e8e3e1d611bda",
+      "title": "Mas Que Nada",
+      "artist": "Sérgio Mendes, Black Eyed Peas",
+      "before": "Other",
+      "genre": "World",
+      "source_genre": "Brazilian",
+      "source_title": "Mas Que Nada (feat. The Black Eyed Peas)",
+      "source_artist": "Sergio Mendes",
+      "source_album": "Timeless",
+      "source_url": "https://music.apple.com/us/album/mas-que-nada-feat-the-black-eyed-peas/1440800263?i=1440800273&uo=4",
       "match": "exact artist and title"
     },
     {
@@ -1210,6 +1405,19 @@
       "match": "exact artist and title"
     },
     {
+      "id": "6a6c4aaa02ca5efd9bfe5d98",
+      "title": "Pump It Louder",
+      "artist": "Tiësto, Black Eyed Peas",
+      "before": "Other",
+      "genre": "Dance",
+      "source_genre": "Dance",
+      "source_title": "Pump It Louder",
+      "source_artist": "Tiësto & Black Eyed Peas",
+      "source_album": "DRIVE",
+      "source_url": "https://music.apple.com/us/album/pump-it-louder/1652508659?i=1652508873&uo=4",
+      "match": "exact artist and title"
+    },
+    {
       "id": "6a6c4ab3ba6184af0cb186df",
       "title": "Rain On Me (with Ariana Grande)",
       "artist": "Lady Gaga, Ariana Grande",
@@ -1220,6 +1428,45 @@
       "source_artist": "Lady Gaga & Ariana Grande",
       "source_album": "Chromatica",
       "source_url": "https://music.apple.com/us/album/rain-on-me/1500951604?i=1500952424&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6a6c4ad6ad6cecc8ec7e8c08",
+      "title": "Shake Ya Boom Boom",
+      "artist": "Static, Ben El Tavori, Black Eyed Peas",
+      "before": "Other",
+      "genre": "Pop",
+      "source_genre": "Pop",
+      "source_title": "Shake Ya Boom Boom",
+      "source_artist": "Static, BEN EL & Black Eyed Peas",
+      "source_album": "Shake Ya Boom Boom - Single",
+      "source_url": "https://music.apple.com/us/album/shake-ya-boom-boom/1536060413?i=1536060416&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6a6c4ae550c2a290100af6df",
+      "title": "SIMPLY THE BEST",
+      "artist": "Black Eyed Peas, Anitta, El Alfa",
+      "before": "Other",
+      "genre": "Pop",
+      "source_genre": "Pop",
+      "source_title": "SIMPLY THE BEST",
+      "source_artist": "Black Eyed Peas, Anitta & El Alfa",
+      "source_album": "ELEVATION",
+      "source_url": "https://music.apple.com/us/album/simply-the-best/1654234859?i=1654234861&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6a6c4aec19755c0d32893699",
+      "title": "Someday",
+      "artist": "Black Eyed Peas",
+      "before": "Other",
+      "genre": "Pop",
+      "source_genre": "Pop",
+      "source_title": "Someday",
+      "source_artist": "Black Eyed Peas",
+      "source_album": "The Beginning (Deluxe)",
+      "source_url": "https://music.apple.com/us/album/someday/1440771309?i=1440771851&uo=4",
       "match": "exact artist and title"
     },
     {
@@ -1327,6 +1574,19 @@
       "match": "exact artist and title"
     },
     {
+      "id": "6a6c4b0d6fada16f6fd8712d",
+      "title": "The Apl Song",
+      "artist": "Black Eyed Peas",
+      "before": "Other",
+      "genre": "R&B",
+      "source_genre": "R&B/Soul",
+      "source_title": "The Apl Song",
+      "source_artist": "Black Eyed Peas",
+      "source_album": "Elephunk",
+      "source_url": "https://music.apple.com/us/album/the-apl-song/1615142131?i=1615142630&uo=4",
+      "match": "exact artist and title"
+    },
+    {
       "id": "6a6c4b0e8a3e5b15ccccdf4d",
       "title": "The Cure",
       "artist": "Lady Gaga",
@@ -1363,6 +1623,19 @@
       "source_artist": "Lady Gaga",
       "source_album": "Born This Way (Special Edition)",
       "source_url": "https://music.apple.com/us/album/the-edge-of-glory/1440857161?i=1440858186&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6a6c4b16a565be6c868e8629",
+      "title": "The Time (Dirty Bit)",
+      "artist": "Black Eyed Peas",
+      "before": "Other",
+      "genre": "Pop",
+      "source_genre": "Pop",
+      "source_title": "The Time (Dirty Bit)",
+      "source_artist": "Black Eyed Peas",
+      "source_album": "The Beginning (Deluxe)",
+      "source_url": "https://music.apple.com/us/album/the-time-dirty-bit/1440771309?i=1440771526&uo=4",
       "match": "exact artist and title"
     },
     {
@@ -1431,6 +1704,19 @@
       "match": "exact artist and title"
     },
     {
+      "id": "6a6c4b2702ca54f1d26a67d9",
+      "title": "VIDA LOCA",
+      "artist": "Black Eyed Peas, Nicky Jam, Tyga",
+      "before": "Other",
+      "genre": "Pop",
+      "source_genre": "Pop",
+      "source_title": "VIDA LOCA",
+      "source_artist": "Black Eyed Peas, Nicky Jam & Tyga",
+      "source_album": "TRANSLATION",
+      "source_url": "https://music.apple.com/us/album/vida-loca/1517676907?i=1517676914&uo=4",
+      "match": "exact artist and title"
+    },
+    {
       "id": "6a6c4b274d6d14499910ee25",
       "title": "Vanish Into You",
       "artist": "Lady Gaga",
@@ -1480,6 +1766,19 @@
       "source_artist": "Ariana Grande",
       "source_album": "eternal sunshine",
       "source_url": "https://music.apple.com/us/album/we-cant-be-friends-wait-for-your-love/1725877944?i=1725878242&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6a6c4b33f2b543d2ce6ebe40",
+      "title": "Where Is The Love?",
+      "artist": "Black Eyed Peas",
+      "before": "Other",
+      "genre": "R&B",
+      "source_genre": "R&B/Soul",
+      "source_title": "Where Is The Love?",
+      "source_artist": "Black Eyed Peas",
+      "source_album": "Elephunk",
+      "source_url": "https://music.apple.com/us/album/where-is-the-love/1615142131?i=1615142635&uo=4",
       "match": "exact artist and title"
     },
     {
@@ -1730,6 +2029,32 @@
       "match": "exact artist and title"
     },
     {
+      "id": "6abf431d5094723634b71101",
+      "title": "4 Life",
+      "artist": "DJ Snake, GASHI",
+      "before": "Other",
+      "genre": "Dance",
+      "source_genre": "Dance",
+      "source_title": "4 Life (feat. GASHI)",
+      "source_artist": "DJ Snake",
+      "source_album": "Encore",
+      "source_url": "https://music.apple.com/us/album/4-life-feat-gashi/1443231191?i=1443231214&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6abf433688f7ac7b39a8130e",
+      "title": "4K",
+      "artist": "El Alfa, Darell, Noriel",
+      "before": "Other",
+      "genre": "Latin",
+      "source_genre": "Urbano latino",
+      "source_title": "4K",
+      "source_artist": "El Alfa, Darell & Noriel",
+      "source_album": "4K - Single",
+      "source_url": "https://music.apple.com/us/album/4k/1690659001?i=1690659015&uo=4",
+      "match": "exact artist and title"
+    },
+    {
       "id": "6abf4340b2b3aedefb0606ef",
       "title": "5/4",
       "artist": "Gorillaz",
@@ -1847,6 +2172,19 @@
       "match": "exact artist and title"
     },
     {
+      "id": "6abf437ce95aa2cc3372e148",
+      "title": "24 Hours",
+      "artist": "GASHI",
+      "before": "Other",
+      "genre": "Hip-Hop",
+      "source_genre": "Hip-Hop/Rap",
+      "source_title": "24 Hours",
+      "source_artist": "GASHI",
+      "source_album": "24 Hours - Single",
+      "source_url": "https://music.apple.com/us/album/24-hours/1274315145?i=1274315148&uo=4",
+      "match": "exact artist and title"
+    },
+    {
       "id": "6abf438120ff1b0982c9d85e",
       "title": "25 million",
       "artist": "Roddy Ricch",
@@ -1896,6 +2234,19 @@
       "source_artist": "JHAYCO & Dei V",
       "source_album": "Le Clique: Vida Rockstar (X)",
       "source_url": "https://music.apple.com/us/album/58/1761909009?i=1761909209&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6abf438efa03dc3bed4d3c0e",
+      "title": "85%",
+      "artist": "Loote, gnash",
+      "before": "Other",
+      "genre": "Pop",
+      "source_genre": "Pop",
+      "source_title": "85% (feat. gnash)",
+      "source_artist": "Loote",
+      "source_album": "lost - EP",
+      "source_url": "https://music.apple.com/us/album/85-feat-gnash/1467077266?i=1467077447&uo=4",
       "match": "exact artist and title"
     },
     {
@@ -1951,6 +2302,19 @@
       "match": "exact artist and title"
     },
     {
+      "id": "6abf43bcd988bf916cf0ee05",
+      "title": "33 Days (feat. gnash & Anna Clendening)",
+      "artist": "Keenan",
+      "before": "Other",
+      "genre": "Pop",
+      "source_genre": "Pop",
+      "source_title": "33 Days (feat. Anna Clendening & gnash)",
+      "source_artist": "Keenan",
+      "source_album": "33 Days (feat. gnash & Anna Clendening) - Single",
+      "source_url": "https://music.apple.com/us/album/33-days-feat-anna-clendening-gnash/1496328566?i=1496328756&uo=4",
+      "match": "exact artist and title"
+    },
+    {
       "id": "6abf43c044dc17e4f01e3eb9",
       "title": "A Place In The Sun",
       "artist": "Stevie Wonder",
@@ -1961,6 +2325,19 @@
       "source_artist": "Stevie Wonder",
       "source_album": "Down to Earth",
       "source_url": "https://music.apple.com/us/album/a-place-in-the-sun/1443256168?i=1443256335&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6abf43c152b5b57938e01fc3",
+      "title": "A Place Where Love Goes",
+      "artist": "Childish Gambino",
+      "before": "Other",
+      "genre": "Pop",
+      "source_genre": "Pop",
+      "source_title": "A Place Where Love Goes",
+      "source_artist": "Childish Gambino",
+      "source_album": "Bando Stone and The New World",
+      "source_url": "https://music.apple.com/us/album/a-place-where-love-goes/1757678472?i=1757679442&uo=4",
       "match": "exact artist and title"
     },
     {
@@ -2159,6 +2536,19 @@
       "match": "exact artist and title"
     },
     {
+      "id": "6abf443d09858362cb91bf82",
+      "title": "Algorhythm",
+      "artist": "Childish Gambino",
+      "before": "Other",
+      "genre": "Rap",
+      "source_genre": "Rap",
+      "source_title": "Algorhythm",
+      "source_artist": "Childish Gambino",
+      "source_album": "Atavista",
+      "source_url": "https://music.apple.com/us/album/algorhythm/1745756757?i=1745756761&uo=4",
+      "match": "exact artist and title"
+    },
+    {
       "id": "6abf4454b3b7de3faaca8482",
       "title": "All Me",
       "artist": "Drake, 2 Chainz, Big Sean",
@@ -2224,6 +2614,19 @@
       "match": "exact artist and title"
     },
     {
+      "id": "6abf446b272195d4ca1838b8",
+      "title": "All Right",
+      "artist": "Cisco Adler",
+      "before": "Other",
+      "genre": "Alternative",
+      "source_genre": "Alternative",
+      "source_title": "All Right (feat. gnash)",
+      "source_artist": "Cisco Adler",
+      "source_album": "All Right (feat. gnash) - Single",
+      "source_url": "https://music.apple.com/us/album/all-right-feat-gnash/1436123312?i=1436123315&uo=4",
+      "match": "exact artist and title"
+    },
+    {
       "id": "6abf44788322e134f0cbe29b",
       "title": "All the Little Lights",
       "artist": "Passenger",
@@ -2250,6 +2653,19 @@
       "match": "exact artist and title"
     },
     {
+      "id": "6abf447dc0b8e707c5a0b116",
+      "title": "All Thee Above (feat. Kevin Gates)",
+      "artist": "Plies, Kevin Gates",
+      "before": "Other",
+      "genre": "Hip-Hop",
+      "source_genre": "Hip-Hop/Rap",
+      "source_title": "All Thee Above (feat. Kevin Gates)",
+      "source_artist": "Plies",
+      "source_album": "All Thee Above (feat. Kevin Gates) - Single",
+      "source_url": "https://music.apple.com/us/album/all-thee-above-feat-kevin-gates/1438166890?i=1438167041&uo=4",
+      "match": "exact artist and title"
+    },
+    {
       "id": "6abf447e00dcf7d022c11e38",
       "title": "All Your Fault",
       "artist": "Big Sean, Kanye West",
@@ -2263,6 +2679,19 @@
       "match": "exact artist and title"
     },
     {
+      "id": "6abf44854859087057dc220e",
+      "title": "Alligator Sky",
+      "artist": "Owl City, Shawn Chrystopher",
+      "before": "Other",
+      "genre": "Electronic",
+      "source_genre": "Electronic",
+      "source_title": "Alligator Sky",
+      "source_artist": "Owl City",
+      "source_album": "All Things Bright and Beautiful (Bonus Track Version)",
+      "source_url": "https://music.apple.com/us/album/alligator-sky/1440747694?i=1440748336&uo=4",
+      "match": "exact artist and title"
+    },
+    {
       "id": "6abf448941de4b68e2cf8882",
       "title": "Alone - Bonus Track",
       "artist": "Halsey, Big Sean, Stefflon Don",
@@ -2273,6 +2702,19 @@
       "source_artist": "Halsey",
       "source_album": "hopeless fountain kingdom (Deluxe Plus)",
       "source_url": "https://music.apple.com/us/album/alone-feat-big-sean-stefflon-don-bonus-track/1358789952?i=1358791037&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6abf449876d72d07d292f3fd",
+      "title": "Ambulancia",
+      "artist": "Camilo, Camila Cabello",
+      "before": "Other",
+      "genre": "Latin Pop",
+      "source_genre": "Pop Latino",
+      "source_title": "Ambulancia",
+      "source_artist": "Camilo & Camila Cabello",
+      "source_album": "De Adentro Pa Afuera",
+      "source_url": "https://music.apple.com/us/album/ambulancia/1640520404?i=1640520857&uo=4",
       "match": "exact artist and title"
     },
     {
@@ -2328,6 +2770,19 @@
       "match": "exact artist and title"
     },
     {
+      "id": "6abf44b909bfeea912d29782",
+      "title": "angel numbers",
+      "artist": "TyFontaine, Joony",
+      "before": "Other",
+      "genre": "R&B",
+      "source_genre": "R&B/Soul",
+      "source_title": "angel numbers",
+      "source_artist": "TyFontaine & Joony",
+      "source_album": "heartstrings",
+      "source_url": "https://music.apple.com/us/album/angel-numbers/1868853016?i=1868853017&uo=4",
+      "match": "exact artist and title"
+    },
+    {
       "id": "6abf44bf8feb3c7d894fbe7f",
       "title": "anhélame",
       "artist": "Beéle",
@@ -2338,6 +2793,19 @@
       "source_artist": "Beéle",
       "source_album": "BORONDO",
       "source_url": "https://music.apple.com/us/album/anh%C3%A9lame/1812536829?i=1812536834&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6abf44d46705d39a2c84c9e8",
+      "title": "Anxiety Freestyle",
+      "artist": "Sleepy Hallow",
+      "before": "Other",
+      "genre": "Hip-Hop",
+      "source_genre": "Hip-Hop/Rap",
+      "source_title": "Anxiety Freestyle",
+      "source_artist": "Sleepy Hallow",
+      "source_album": "Sleepy Hallow Presents: Sleepy For President",
+      "source_url": "https://music.apple.com/us/album/anxiety-freestyle/1516420561?i=1516420638&uo=4",
       "match": "exact artist and title"
     },
     {
@@ -2679,6 +3147,19 @@
       "match": "exact artist and title"
     },
     {
+      "id": "6abf45950dccdd6d2350b91c",
+      "title": "Alone (feat. Travis Barker)",
+      "artist": "Pardyalone",
+      "before": "Other",
+      "genre": "Alternative",
+      "source_genre": "Alternative",
+      "source_title": "Alone (feat. Travis Barker)",
+      "source_artist": "Pardyalone",
+      "source_album": "Alone (feat. Travis Barker) - Single",
+      "source_url": "https://music.apple.com/us/album/alone-feat-travis-barker/1674273893?i=1674273894&uo=4",
+      "match": "exact artist and title"
+    },
+    {
       "id": "6abf459c47b970b6c85a0bbd",
       "title": "ALONE, PART 3 - Instrumental",
       "artist": "XXXTENTACION",
@@ -2689,6 +3170,19 @@
       "source_artist": "XXXTENTACION",
       "source_album": "? (Deluxe)",
       "source_url": "https://music.apple.com/us/album/alone-part-3-instrumental/1474891456?i=1474891802&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6abf45a43d381792109d83d6",
+      "title": "Amnesia (feat. GASHI)",
+      "artist": "Loud Luxury, Ship Wrek, GASHI",
+      "before": "Other",
+      "genre": "Dance",
+      "source_genre": "Dance",
+      "source_title": "Amnesia (feat. GASHI)",
+      "source_artist": "Loud Luxury & Ship Wrek",
+      "source_album": "Amnesia (feat. GASHI) - Single",
+      "source_url": "https://music.apple.com/us/album/amnesia-feat-gashi/1555165195?i=1555165199&uo=4",
       "match": "exact artist and title"
     },
     {
@@ -2848,6 +3342,19 @@
       "match": "exact artist and title"
     },
     {
+      "id": "6acc43535a09e8721ca92295",
+      "title": "Chu Chu Pamela",
+      "artist": "El Alfa",
+      "before": "Other",
+      "genre": "Latin",
+      "source_genre": "Urbano latino",
+      "source_title": "Chu Chu Pamela",
+      "source_artist": "El Alfa",
+      "source_album": "Chu Chu Pamela - Single",
+      "source_url": "https://music.apple.com/us/album/chu-chu-pamela/1690660711?i=1690660725&uo=4",
+      "match": "exact artist and title"
+    },
+    {
       "id": "6acc43566154398391adf0d4",
       "title": "Ciao!",
       "artist": "Bryson Tiller",
@@ -2858,6 +3365,19 @@
       "source_artist": "Bryson Tiller",
       "source_album": "Bryson Tiller",
       "source_url": "https://music.apple.com/us/album/ciao/1738927230?i=1738927236&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6acc4364223f9e8dd26b7e55",
+      "title": "Cinematic",
+      "artist": "Owl City",
+      "before": "Other",
+      "genre": "Pop",
+      "source_genre": "Pop",
+      "source_title": "Cinematic",
+      "source_artist": "Owl City",
+      "source_album": "Cinematic",
+      "source_url": "https://music.apple.com/us/album/cinematic/1296817295?i=1296817989&uo=4",
       "match": "exact artist and title"
     },
     {
@@ -2897,6 +3417,19 @@
       "source_artist": "Marino",
       "source_album": "Jehova Peleara Por Mi / Clamor de un Pueblo",
       "source_url": "https://music.apple.com/us/album/clamor-de-un-pueblo/310328257?i=310328514&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6acc437176de3d1e0ab56eba",
+      "title": "CLASSY (feat. Tony Shhnow)",
+      "artist": "Joony",
+      "before": "Other",
+      "genre": "Hip-Hop",
+      "source_genre": "Hip-Hop",
+      "source_title": "CLASSY (feat. Tony Shhnow)",
+      "source_artist": "Joony",
+      "source_album": "MEMENTO (DELUXE)",
+      "source_url": "https://music.apple.com/us/album/classy-feat-tony-shhnow/1734515668?i=1734516016&uo=4",
       "match": "exact artist and title"
     },
     {
@@ -2991,6 +3524,19 @@
       "match": "exact artist and title"
     },
     {
+      "id": "6acc43ad0f225851499fc5ec",
+      "title": "Colorblind",
+      "artist": "Pardyalone",
+      "before": "Other",
+      "genre": "Hip-Hop",
+      "source_genre": "Hip-Hop/Rap",
+      "source_title": "Colorblind",
+      "source_artist": "Pardyalone",
+      "source_album": "Colorblind - Single",
+      "source_url": "https://music.apple.com/us/album/colorblind/6772923940?i=6772923944&uo=4",
+      "match": "exact artist and title"
+    },
+    {
       "id": "6acc43ae5c13a6526db0faf6",
       "title": "Colors",
       "artist": "Aminé",
@@ -3030,6 +3576,19 @@
       "match": "exact artist and title"
     },
     {
+      "id": "6acc43c612bbaddb52f86b8f",
+      "title": "Come Show Me",
+      "artist": "Camila Cabello",
+      "before": "Other",
+      "genre": "Pop",
+      "source_genre": "Pop",
+      "source_title": "Come Show Me",
+      "source_artist": "Camila Cabello",
+      "source_album": "C,XOXO (Magic City Edition)",
+      "source_url": "https://music.apple.com/us/album/come-show-me/1765230815?i=1765231035&uo=4",
+      "match": "exact artist and title"
+    },
+    {
       "id": "6acc43cd322391e62bb8ec0a",
       "title": "Comfortable",
       "artist": "K CAMP",
@@ -3040,6 +3599,19 @@
       "source_artist": "K CAMP",
       "source_album": "Only Way Is Up (Deluxe)",
       "source_url": "https://music.apple.com/us/album/comfortable/1442870813?i=1442871077&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6acc43cfc1b710012fdc7ff2",
+      "title": "Coming Down",
+      "artist": "KIDDO, GASHI",
+      "before": "Other",
+      "genre": "Pop",
+      "source_genre": "Pop",
+      "source_title": "Coming Down",
+      "source_artist": "KIDDO & GASHI",
+      "source_album": "Coming Down - Single",
+      "source_url": "https://music.apple.com/us/album/coming-down/1457336035?i=1457336487&uo=4",
       "match": "exact artist and title"
     },
     {
@@ -3225,6 +3797,19 @@
       "match": "exact artist and title"
     },
     {
+      "id": "6acc442e1570e9de11e0a49e",
+      "title": "Creep On Me",
+      "artist": "GASHI, French Montana, DJ Snake",
+      "before": "Other",
+      "genre": "Hip-Hop",
+      "source_genre": "Hip-Hop/Rap",
+      "source_title": "Creep On Me (feat. French Montana & DJ Snake)",
+      "source_artist": "GASHI",
+      "source_album": "Creep On Me (feat. French Montana & DJ Snake) - Single",
+      "source_url": "https://music.apple.com/us/album/creep-on-me-feat-french-montana-dj-snake/1429978093?i=1429978106&uo=4",
+      "match": "exact artist and title"
+    },
+    {
       "id": "6acc442f47ec2c2603579a49",
       "title": "Creation",
       "artist": "Sabrina Claudio",
@@ -3287,6 +3872,19 @@
       "source_artist": "ARDN",
       "source_album": "Cry About - Single",
       "source_url": "https://music.apple.com/us/album/cry-about/1799929548?i=1799929549&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6acc44500caaa275687d4038",
+      "title": "Crying in the Club",
+      "artist": "Camila Cabello",
+      "before": "Other",
+      "genre": "Pop",
+      "source_genre": "Pop",
+      "source_title": "Crying in the Club",
+      "source_artist": "Camila Cabello",
+      "source_album": "Crying in the Club - Single",
+      "source_url": "https://music.apple.com/us/album/crying-in-the-club/1236882907?i=1236883400&uo=4",
       "match": "exact artist and title"
     },
     {
@@ -3368,6 +3966,19 @@
       "match": "exact artist and title"
     },
     {
+      "id": "6acc447b4caf75cf78a681c8",
+      "title": "Curazao",
+      "artist": "El Alfa, Farruko",
+      "before": "Other",
+      "genre": "Latin",
+      "source_genre": "Latin",
+      "source_title": "Curazao",
+      "source_artist": "El Alfa & Farruko",
+      "source_album": "Curazao - Single",
+      "source_url": "https://music.apple.com/us/album/curazao/1690663196?i=1690663197&uo=4",
+      "match": "exact artist and title"
+    },
+    {
       "id": "6acc447eae1a01772887102f",
       "title": "Cut Her Off",
       "artist": "K CAMP, 2 Chainz",
@@ -3430,6 +4041,19 @@
       "source_artist": "Roddy Ricch",
       "source_album": "Die Young - Single",
       "source_url": "https://music.apple.com/us/album/die-young/1412107389?i=1412107455&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6acc49b5c6780f0c0ac6514d",
+      "title": "Different",
+      "artist": "Sleepy Hallow, Jay Gwuapo",
+      "before": "Other",
+      "genre": "Hip-Hop",
+      "source_genre": "Hip-Hop/Rap",
+      "source_title": "DIfferent",
+      "source_artist": "Sleepy Hallow & Jay Gwuapo",
+      "source_album": "The Black House - EP",
+      "source_url": "https://music.apple.com/us/album/different/1525831658?i=1525831660&uo=4",
       "match": "exact artist and title"
     },
     {
@@ -3498,6 +4122,19 @@
       "match": "exact artist and title"
     },
     {
+      "id": "6acc49fb3bf2c6a908610d9e",
+      "title": "Disrespectful",
+      "artist": "GASHI",
+      "before": "Other",
+      "genre": "Hip-Hop",
+      "source_genre": "Hip-Hop/Rap",
+      "source_title": "Disrespectful",
+      "source_artist": "GASHI",
+      "source_album": "Disrespectful - Single",
+      "source_url": "https://music.apple.com/us/album/disrespectful/1274323435?i=1274323436&uo=4",
+      "match": "exact artist and title"
+    },
+    {
       "id": "6acc4a040e3303893f198de5",
       "title": "Dnt lië",
       "artist": "Yeat",
@@ -3550,6 +4187,19 @@
       "match": "exact artist and title"
     },
     {
+      "id": "6acc4a1ca779d3c7736d6f83",
+      "title": "Do U Love Me?",
+      "artist": "Aimee Vant, gnash",
+      "before": "Other",
+      "genre": "Pop",
+      "source_genre": "Pop",
+      "source_title": "Do U Love Me?",
+      "source_artist": "Aimee Vant & gnash",
+      "source_album": "Do U Love Me? - Single",
+      "source_url": "https://music.apple.com/us/album/do-u-love-me/1727736312?i=1727736315&uo=4",
+      "match": "exact artist and title"
+    },
+    {
       "id": "6acc4a2b942448d5cc0ce198",
       "title": "DOG HOUSE (feat. Julia Wolf & Yeat)",
       "artist": "Drake, Julia Wolf, Yeat",
@@ -3589,6 +4239,19 @@
       "match": "exact artist and title"
     },
     {
+      "id": "6acc4a38b335e6a31311fdf8",
+      "title": "DOLLAZ ON MY HEAD (feat. Young Thug)",
+      "artist": "Gunna, Young Thug",
+      "before": "Other",
+      "genre": "Hip-Hop",
+      "source_genre": "Hip-Hop/Rap",
+      "source_title": "DOLLAZ ON MY HEAD (feat. Young Thug)",
+      "source_artist": "Gunna",
+      "source_album": "WUNNA",
+      "source_url": "https://music.apple.com/us/album/dollaz-on-my-head-feat-young-thug/1514515498?i=1514515780&uo=4",
+      "match": "exact artist and title"
+    },
+    {
       "id": "6acc4a38ea92a110d919ea67",
       "title": "DOMINGO DE BOTE",
       "artist": "Mora",
@@ -3625,6 +4288,19 @@
       "source_artist": "Bryson Tiller",
       "source_album": "True to Self",
       "source_url": "https://music.apple.com/us/album/dont-get-too-high/1233821767?i=1233821770&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6acc4a5928393c6d7d6b704c",
+      "title": "Don't Go Yet",
+      "artist": "Camila Cabello",
+      "before": "Other",
+      "genre": "Pop",
+      "source_genre": "Pop",
+      "source_title": "Don't Go Yet",
+      "source_artist": "Camila Cabello",
+      "source_album": "Don't Go Yet - Single",
+      "source_url": "https://music.apple.com/us/album/dont-go-yet/1576806329?i=1576806330&uo=4",
       "match": "exact artist and title"
     },
     {
@@ -3680,6 +4356,32 @@
       "match": "exact artist and title"
     },
     {
+      "id": "6acc4a6d02a2191af77e7756",
+      "title": "Don't Panic 2",
+      "artist": "Sleepy Hallow, Sheff G",
+      "before": "Other",
+      "genre": "Hip-Hop",
+      "source_genre": "Hip-Hop/Rap",
+      "source_title": "Don't Panic 2",
+      "source_artist": "Sleepy Hallow & Sheff G",
+      "source_album": "The Black House - EP",
+      "source_url": "https://music.apple.com/us/album/dont-panic-2/1525831658?i=1525831662&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6acc4a700a4c25ed72d2195a",
+      "title": "Don't Pass On Love",
+      "artist": "GASHI",
+      "before": "Other",
+      "genre": "Dance",
+      "source_genre": "Dance",
+      "source_title": "Don't Pass On Love",
+      "source_artist": "GASHI",
+      "source_album": "ELEVATORS",
+      "source_url": "https://music.apple.com/us/album/dont-pass-on-love/1654766708?i=1654767553&uo=4",
+      "match": "exact artist and title"
+    },
+    {
       "id": "6acc4a758f7602d22c808997",
       "title": "Don't Play (feat. The 1975 & Big Sean)",
       "artist": "Travis Scott, The 1975, Big Sean",
@@ -3729,6 +4431,32 @@
       "source_artist": "JHAYCO, Jory Boy & Pusho",
       "source_album": "Donde No Se Vea - Single",
       "source_url": "https://music.apple.com/us/album/donde-no-se-vea/1649414054?i=1649414243&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6acc4a89048f1c810d4d99a5",
+      "title": "Donde Quiera Que Estés",
+      "artist": "Selena, Barrio Boyzz",
+      "before": "Other",
+      "genre": "Latin Pop",
+      "source_genre": "Pop Latino",
+      "source_title": "Donde Quiera Que Estés",
+      "source_artist": "Selena & Barrio Boyzz",
+      "source_album": "Amor Prohibido (Bonus Track Version)",
+      "source_url": "https://music.apple.com/us/album/donde-quiera-que-est%C3%A9s/1703307720?i=1703308508&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6acc4a97238f92140cc7d035",
+      "title": "Dopa(MINE)",
+      "artist": "Joony",
+      "before": "Other",
+      "genre": "R&B",
+      "source_genre": "R&B/Soul",
+      "source_title": "Dopa(MINE)",
+      "source_artist": "Joony",
+      "source_album": "Dopa(MINE) - Single",
+      "source_url": "https://music.apple.com/us/album/dopa-mine/1798768073?i=1798768076&uo=4",
       "match": "exact artist and title"
     },
     {
@@ -3836,6 +4564,19 @@
       "match": "exact artist and title"
     },
     {
+      "id": "6acc4ad7e4c79e00495764c8",
+      "title": "Dreams (Interlude)",
+      "artist": "A$AP Rocky",
+      "before": "Other",
+      "genre": "Hip-Hop",
+      "source_genre": "Hip-Hop/Rap",
+      "source_title": "Dreams (Interlude)",
+      "source_artist": "A$AP Rocky",
+      "source_album": "AT.LONG.LAST.A$AP",
+      "source_url": "https://music.apple.com/us/album/dreams-interlude/994721471?i=994721774&uo=4",
+      "match": "exact artist and title"
+    },
+    {
       "id": "6acc4ae1e5fbb936fb38a88e",
       "title": "Dress On",
       "artist": "Justin Timberlake",
@@ -3846,6 +4587,19 @@
       "source_artist": "Justin Timberlake",
       "source_album": "The 20/20 Experience (Deluxe Version)",
       "source_url": "https://music.apple.com/us/album/dress-on/1441493446?i=1441493612&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6acc4ae5b06cac6a221f2697",
+      "title": "DRIFTING IN TOKYO",
+      "artist": "Joony",
+      "before": "Other",
+      "genre": "Alternative",
+      "source_genre": "Alternative",
+      "source_title": "DRIFTING IN TOKYO",
+      "source_artist": "Joony",
+      "source_album": "Pretty In Black (Deluxe)",
+      "source_url": "https://music.apple.com/us/album/drifting-in-tokyo/1654258826?i=1654258840&uo=4",
       "match": "exact artist and title"
     },
     {
@@ -3888,6 +4642,19 @@
       "match": "exact artist and title"
     },
     {
+      "id": "6acc4afead2a09cc793c9eb1",
+      "title": "Droppin Jewels",
+      "artist": "Young Thug",
+      "before": "Other",
+      "genre": "Hip-Hop",
+      "source_genre": "Hip-Hop/Rap",
+      "source_title": "Droppin Jewels",
+      "source_artist": "Young Thug",
+      "source_album": "Punk",
+      "source_url": "https://music.apple.com/us/album/droppin-jewels/1590922823?i=1590923484&uo=4",
+      "match": "exact artist and title"
+    },
+    {
       "id": "6acc4b0177394a98e87a1503",
       "title": "Drown",
       "artist": "Justin Timberlake",
@@ -3898,6 +4665,19 @@
       "source_artist": "Justin Timberlake",
       "source_album": "Everything I Thought It Was",
       "source_url": "https://music.apple.com/us/album/drown/1727024213?i=1727024234&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6acc4b03e4415ac4e774395a",
+      "title": "DRUGS AND FASHION",
+      "artist": "Joony",
+      "before": "Other",
+      "genre": "Hip-Hop",
+      "source_genre": "Hip-Hop/Rap",
+      "source_title": "DRUGS AND FASHION",
+      "source_artist": "Joony",
+      "source_album": "Pretty In Black (Deluxe)",
+      "source_url": "https://music.apple.com/us/album/drugs-and-fashion/1654258826?i=1654258845&uo=4",
       "match": "exact artist and title"
     },
     {
@@ -3953,6 +4733,19 @@
       "match": "exact artist and title"
     },
     {
+      "id": "6acc4b1dd745a914b0861cce",
+      "title": "Dusa (feat. Kevin Gates)",
+      "artist": "FL Dusa, Kevin Gates",
+      "before": "Other",
+      "genre": "Hip-Hop",
+      "source_genre": "Hip-Hop/Rap",
+      "source_title": "Dusa (feat. Kevin Gates)",
+      "source_artist": "FL Dusa",
+      "source_album": "Fame Can’t Change Me",
+      "source_url": "https://music.apple.com/us/album/dusa-feat-kevin-gates/1695235633?i=1695236364&uo=4",
+      "match": "exact artist and title"
+    },
+    {
       "id": "6acc4b386cb22eedbec3dfb1",
       "title": "Easy - Remix",
       "artist": "JHAYCO, Ozuna",
@@ -3989,6 +4782,19 @@
       "source_artist": "Ellie Goulding",
       "source_album": "Easy Lover (feat. Big Sean) - Single",
       "source_url": "https://music.apple.com/us/album/easy-lover-feat-big-sean/1634316115?i=1634316120&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6acc4b3d4f0978495a1aec01",
+      "title": "Easy",
+      "artist": "Camila Cabello",
+      "before": "Other",
+      "genre": "Pop",
+      "source_genre": "Pop",
+      "source_title": "Easy",
+      "source_artist": "Camila Cabello",
+      "source_album": "Easy - Single",
+      "source_url": "https://music.apple.com/us/album/easy/1482838019?i=1482838030&uo=4",
       "match": "exact artist and title"
     },
     {
@@ -4096,6 +4902,19 @@
       "match": "exact artist and title"
     },
     {
+      "id": "6acc4b878226855d27deaf60",
+      "title": "Electric Body (feat. ScHoolboy Q)",
+      "artist": "A$AP Rocky, ScHoolboy Q",
+      "before": "Other",
+      "genre": "Hip-Hop",
+      "source_genre": "Hip-Hop/Rap",
+      "source_title": "Electric Body (feat. ScHoolboy Q)",
+      "source_artist": "A$AP Rocky",
+      "source_album": "AT.LONG.LAST.A$AP",
+      "source_url": "https://music.apple.com/us/album/electric-body-feat-schoolboy-q/994721471?i=994721766&uo=4",
+      "match": "exact artist and title"
+    },
+    {
       "id": "6acc4b8b40c9612aa2c9efed",
       "title": "ELIMINATË",
       "artist": "Yeat",
@@ -4119,6 +4938,45 @@
       "source_artist": "Justin Timberlake",
       "source_album": "The 20/20 Experience - 2 of 2 (Deluxe)",
       "source_url": "https://music.apple.com/us/album/electric-lady/1441493266?i=1441493438&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6acc4b9c6585721394ea4597",
+      "title": "Embargo",
+      "artist": "Jordan Ward, Joony",
+      "before": "Other",
+      "genre": "R&B",
+      "source_genre": "R&B/Soul",
+      "source_title": "Embargo",
+      "source_artist": "Jordan Ward & Joony",
+      "source_album": "JRNY - EP",
+      "source_url": "https://music.apple.com/us/album/embargo/1770852300?i=1770852676&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6acc4b9e82f8436781dd6c5c",
+      "title": "Embers",
+      "artist": "Owl City",
+      "before": "Other",
+      "genre": "Pop",
+      "source_genre": "Pop",
+      "source_title": "Embers",
+      "source_artist": "Owl City",
+      "source_album": "The Midsummer Station",
+      "source_url": "https://music.apple.com/us/album/embers/1440806223?i=1440807036&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6acc4ba48a3ba66e95596181",
+      "title": "Empire State Of Mind",
+      "artist": "JAŸ-Z, Alicia Keys",
+      "before": "Other",
+      "genre": "Hip-Hop",
+      "source_genre": "Hip-Hop/Rap",
+      "source_title": "Empire State Of Mind (feat. Alicia Keys)",
+      "source_artist": "JAŸ-Z",
+      "source_album": "The Blueprint 3",
+      "source_url": "https://music.apple.com/us/album/empire-state-of-mind-feat-alicia-keys/1440932009?i=1440932018&uo=4",
       "match": "exact artist and title"
     },
     {
@@ -4330,6 +5188,19 @@
       "match": "exact artist and title"
     },
     {
+      "id": "6acc4c367407041e55aa1aeb",
+      "title": "ESTE",
+      "artist": "El Alfa, Nfasis",
+      "before": "Other",
+      "genre": "Latin",
+      "source_genre": "Latin",
+      "source_title": "ESTE",
+      "source_artist": "El Alfa & Nfasis",
+      "source_album": "ESTE - Single",
+      "source_url": "https://music.apple.com/us/album/este/1753997310?i=1753997328&uo=4",
+      "match": "exact artist and title"
+    },
+    {
       "id": "6acc4c395fe6853aef24b1ea",
       "title": "estrella fugaz",
       "artist": "Beéle",
@@ -4395,6 +5266,19 @@
       "match": "exact artist and title"
     },
     {
+      "id": "6acc4c61d50b9e20f931cd9a",
+      "title": "EVERYDAY",
+      "artist": "Joony",
+      "before": "Other",
+      "genre": "Hip-Hop",
+      "source_genre": "Hip-Hop/Rap",
+      "source_title": "EVERYDAY",
+      "source_artist": "Joony",
+      "source_album": "Pretty In Black (Deluxe)",
+      "source_url": "https://music.apple.com/us/album/everyday/1654258826?i=1654258827&uo=4",
+      "match": "exact artist and title"
+    },
+    {
       "id": "6acc4c68eb0a8ffce80e628f",
       "title": "Everything That Isn't Me",
       "artist": "Lukas Graham",
@@ -4447,6 +5331,19 @@
       "match": "exact artist and title"
     },
     {
+      "id": "6acc4c6e8227df08462d6a84",
+      "title": "EVERYTHING",
+      "artist": "Joony",
+      "before": "Other",
+      "genre": "Hip-Hop",
+      "source_genre": "Hip-Hop/Rap",
+      "source_title": "EVERYTHING",
+      "source_artist": "Joony",
+      "source_album": "Pretty In Black (Deluxe)",
+      "source_url": "https://music.apple.com/us/album/everything/1654258826?i=1654258830&uo=4",
+      "match": "exact artist and title"
+    },
+    {
       "id": "6acc4c745b49f00260ff62ae",
       "title": "Evolved (feat. Roddy Ricch)",
       "artist": "PnB Rock",
@@ -4483,6 +5380,19 @@
       "source_artist": "Bryson Tiller",
       "source_album": "T R A P S O U L",
       "source_url": "https://music.apple.com/us/album/exchange/1031334412?i=1031334416&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6acc4f13a5027fea5363be36",
+      "title": "First",
+      "artist": "Tems",
+      "before": "Other",
+      "genre": "Afrobeats",
+      "source_genre": "Afrobeats",
+      "source_title": "First",
+      "source_artist": "Tems",
+      "source_album": "Love Is A Kingdom",
+      "source_url": "https://music.apple.com/us/album/first/1853635930?i=1853635931&uo=4",
       "match": "exact artist and title"
     },
     {
@@ -4535,6 +5445,19 @@
       "source_artist": "XXXTENTACION",
       "source_album": "? (Deluxe)",
       "source_url": "https://music.apple.com/us/album/floor-555-instrumental/1474891456?i=1474891819&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6acc4f49ce6bac98c661a7c3",
+      "title": "Flows, Pt. 2",
+      "artist": "Sheff G, Sleepy Hallow",
+      "before": "Other",
+      "genre": "Hip-Hop",
+      "source_genre": "Hip-Hop/Rap",
+      "source_title": "Flows, Pt. 2 (feat. Sleepy Hallow)",
+      "source_artist": "Sheff G",
+      "source_album": "The Unluccy Luccy Kid",
+      "source_url": "https://music.apple.com/us/album/flows-pt-2-feat-sleepy-hallow/1479636315?i=1479636321&uo=4",
       "match": "exact artist and title"
     },
     {
@@ -4668,6 +5591,32 @@
       "match": "exact artist and title"
     },
     {
+      "id": "6acc4f89bd33c86f2600cebc",
+      "title": "Forever & Always",
+      "artist": "Armin van Buuren, Gareth Emery, Owl City",
+      "before": "Other",
+      "genre": "Trance",
+      "source_genre": "Trance",
+      "source_title": "Forever & Always (feat. Owl City)",
+      "source_artist": "Armin van Buuren & Gareth Emery",
+      "source_album": "Forever & Always (feat. Owl City) - Single",
+      "source_url": "https://music.apple.com/us/album/forever-always-feat-owl-city/1635551421?i=1635551422&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6acc4fa4e1d6393c6630088d",
+      "title": "Fountains (with Tems)",
+      "artist": "Drake, Tems",
+      "before": "Other",
+      "genre": "Hip-Hop",
+      "source_genre": "Hip-Hop/Rap",
+      "source_title": "Fountains (feat. Tems)",
+      "source_artist": "Drake",
+      "source_album": "Certified Lover Boy",
+      "source_url": "https://music.apple.com/us/album/fountains-feat-tems/1584449196?i=1584449528&uo=4",
+      "match": "exact artist and title"
+    },
+    {
       "id": "6acc4faa84e271631c4b2203",
       "title": "FourFiveSeconds",
       "artist": "Rihanna, Kanye West, Paul McCartney",
@@ -4678,6 +5627,32 @@
       "source_artist": "Rihanna and Kanye West and Paul McCartney",
       "source_album": "FourFiveSeconds - Single",
       "source_url": "https://music.apple.com/us/album/fourfiveseconds/1445170915?i=1445170918&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6acc4fb140b909d98b6da043",
+      "title": "fragile (feat. WRENN)",
+      "artist": "gnash, WRENN",
+      "before": "Other",
+      "genre": "Alternative",
+      "source_genre": "Alternative",
+      "source_title": "fragile (feat. wrenn)",
+      "source_artist": "gnash",
+      "source_album": "us",
+      "source_url": "https://music.apple.com/us/album/fragile-feat-wrenn/1094931816?i=1094931868&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6acc4fbd9553eb2cac5c75a3",
+      "title": "FRANCHISE (feat. Young Thug & M.I.A.)",
+      "artist": "Travis Scott, Young Thug, M.I.A.",
+      "before": "Other",
+      "genre": "Hip-Hop",
+      "source_genre": "Hip-Hop/Rap",
+      "source_title": "FRANCHISE (feat. Young Thug & M.I.A.)",
+      "source_artist": "Travis Scott",
+      "source_album": "FRANCHISE (feat. Young Thug & M.I.A.) - Single",
+      "source_url": "https://music.apple.com/us/album/franchise-feat-young-thug-m-i-a/1533186578?i=1533186580&uo=4",
       "match": "exact artist and title"
     },
     {
@@ -4772,6 +5747,45 @@
       "match": "exact artist and title"
     },
     {
+      "id": "6acc500466c94d8af47d54e8",
+      "title": "FSU (feat. GASHI & Rich The Kid)",
+      "artist": "Jay Park, GASHI, Rich The Kid",
+      "before": "Other",
+      "genre": "Hip-Hop",
+      "source_genre": "Hip-Hop/Rap",
+      "source_title": "FSU (feat. GASHI & Rich The Kid)",
+      "source_artist": "Jay Park",
+      "source_album": "Ask Bout Me",
+      "source_url": "https://music.apple.com/us/album/fsu-feat-gashi-rich-the-kid/1411539376?i=1411539393&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6acc50203fe947567cf7f194",
+      "title": "FULANITO",
+      "artist": "Becky G, El Alfa",
+      "before": "Other",
+      "genre": "Latin",
+      "source_genre": "Latin",
+      "source_title": "FULANITO",
+      "source_artist": "Becky G & El Alfa",
+      "source_album": "FULANITO - Single",
+      "source_url": "https://music.apple.com/us/album/fulanito/1569483320?i=1569483327&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6acc502062a87f0cf61568dc",
+      "title": "Fumes",
+      "artist": "EDEN, gnash",
+      "before": "Other",
+      "genre": "Alternative",
+      "source_genre": "Alternative",
+      "source_title": "Fumes (feat. gnash)",
+      "source_artist": "EDEN",
+      "source_album": "i think you think too much of me",
+      "source_url": "https://music.apple.com/us/album/fumes-feat-gnash/1440840044?i=1440840472&uo=4",
+      "match": "exact artist and title"
+    },
+    {
       "id": "6acc50231b26106f60ad3dc3",
       "title": "FUMETEO - Remix",
       "artist": "Feid, Mora, Eladio Carrion",
@@ -4782,6 +5796,19 @@
       "source_artist": "Feid, Mora & Eladio Carrión",
       "source_album": "FUMETEO (Remix) - Single",
       "source_url": "https://music.apple.com/us/album/fumeteo-remix/1594970132?i=1594970135&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6acc502683074eb8c88dda15",
+      "title": "Funny How",
+      "artist": "Kevin Gates",
+      "before": "Other",
+      "genre": "Hip-Hop",
+      "source_genre": "Hip-Hop/Rap",
+      "source_title": "Funny How",
+      "source_artist": "Kevin Gates",
+      "source_album": "I'm Him",
+      "source_url": "https://music.apple.com/us/album/funny-how/1481399659?i=1481399919&uo=4",
       "match": "exact artist and title"
     },
     {
@@ -4811,6 +5838,45 @@
       "match": "exact artist and title"
     },
     {
+      "id": "6acc5034295c5748945a6e3b",
+      "title": "FYTB (FEAT. JOONY)",
+      "artist": "Brent Faiyaz, Joony",
+      "before": "Other",
+      "genre": "R&B",
+      "source_genre": "R&B/Soul",
+      "source_title": "FYTB (feat. Joony)",
+      "source_artist": "Brent Faiyaz",
+      "source_album": "WASTELAND",
+      "source_url": "https://music.apple.com/us/album/fytb-feat-joony/1631016123?i=1631016228&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6acc503ae4528c295ee5bedf",
+      "title": "Gabriela (with Young Miko) - Young Miko Remix",
+      "artist": "KATSEYE, Young Miko",
+      "before": "Other",
+      "genre": "Pop",
+      "source_genre": "Pop",
+      "source_title": "Gabriela (Young Miko Remix)",
+      "source_artist": "KATSEYE & Young Miko",
+      "source_album": "Gabriela (Young Miko Remix) - Single",
+      "source_url": "https://music.apple.com/us/album/gabriela-young-miko-remix/1831114663?i=1831114666&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6acc503d7407041e55aa39ed",
+      "title": "Galaxies",
+      "artist": "Owl City",
+      "before": "Other",
+      "genre": "Electronic",
+      "source_genre": "Electronic",
+      "source_title": "Galaxies",
+      "source_artist": "Owl City",
+      "source_album": "All Things Bright and Beautiful (Bonus Track Version)",
+      "source_url": "https://music.apple.com/us/album/galaxies/1440747694?i=1440748047&uo=4",
+      "match": "exact artist and title"
+    },
+    {
       "id": "6acc5044b0d419da4a0d503c",
       "title": "Game Ain't Free",
       "artist": "K CAMP",
@@ -4821,6 +5887,19 @@
       "source_artist": "K CAMP",
       "source_album": "FLOAT",
       "source_url": "https://music.apple.com/us/album/game-aint-free/1579607229?i=1579607235&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6acc504a31162870f9bf03f4",
+      "title": "Gangsta",
+      "artist": "Free Nationals, A$AP Rocky, Anderson .Paak",
+      "before": "Other",
+      "genre": "Hip-Hop",
+      "source_genre": "Hip-Hop/Rap",
+      "source_title": "Gangsta",
+      "source_artist": "Free Nationals, A$AP Rocky & Anderson .Paak",
+      "source_album": "Gangsta - Single",
+      "source_url": "https://music.apple.com/us/album/gangsta/1731297441?i=1731297449&uo=4",
       "match": "exact artist and title"
     },
     {
@@ -4863,6 +5942,19 @@
       "match": "exact artist and title"
     },
     {
+      "id": "6acc507e9dc163131ed4c866",
+      "title": "Get it Right (feat. Asake)",
+      "artist": "Tems, Asake",
+      "before": "Other",
+      "genre": "R&B",
+      "source_genre": "R&B/Soul",
+      "source_title": "Get it Right (feat. Asake)",
+      "source_artist": "Tems",
+      "source_album": "Born in the Wild",
+      "source_url": "https://music.apple.com/us/album/get-it-right-feat-asake/1750361972?i=1750361984&uo=4",
+      "match": "exact artist and title"
+    },
+    {
       "id": "6acc5086d3d671b7c0d943ab",
       "title": "Get On Your Knees",
       "artist": "Nicki Minaj, Ariana Grande",
@@ -4873,6 +5965,19 @@
       "source_artist": "Nicki Minaj",
       "source_album": "The Pinkprint (Deluxe Version)",
       "source_url": "https://music.apple.com/us/album/get-on-your-knees-feat-ariana-grande/1440956379?i=1440956566&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6acc5088ec1b425abac70d1e",
+      "title": "get well soon (feat. liphemra)",
+      "artist": "gnash",
+      "before": "Other",
+      "genre": "Alternative",
+      "source_genre": "Alternative",
+      "source_title": "get well soon (feat. Liphemra)",
+      "source_artist": "gnash",
+      "source_album": "us",
+      "source_url": "https://music.apple.com/us/album/get-well-soon-feat-liphemra/1099849061?i=1099849066&uo=4",
       "match": "exact artist and title"
     },
     {
@@ -4902,6 +6007,19 @@
       "match": "exact artist and title"
     },
     {
+      "id": "6acc50cbdc8340104a9d51cd",
+      "title": "Girls, Girls, Girls",
+      "artist": "JAŸ-Z",
+      "before": "Other",
+      "genre": "R&B",
+      "source_genre": "R&B/Soul",
+      "source_title": "Girls, Girls, Girls",
+      "source_artist": "JAŸ-Z",
+      "source_album": "The Blueprint",
+      "source_url": "https://music.apple.com/us/album/girls-girls-girls/1440933859?i=1440934007&uo=4",
+      "match": "exact artist and title"
+    },
+    {
       "id": "6acc50ccc7e0c69ca363183b",
       "title": "Girls",
       "artist": "Julia Wolf",
@@ -4925,6 +6043,19 @@
       "source_artist": "Timbaland",
       "source_album": "Shock Value",
       "source_url": "https://music.apple.com/us/album/give-it-to-me-feat-justin-timberlake-nelly-furtado/1443720487?i=1443720822&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6acc50e01570e9de11e0df81",
+      "title": "Global Access (feat. Nate Ruess)",
+      "artist": "Young Thug, Nate Ruess",
+      "before": "Other",
+      "genre": "Hip-Hop",
+      "source_genre": "Hip-Hop/Rap",
+      "source_title": "Global Access (feat. Nate Ruess)",
+      "source_artist": "Young Thug",
+      "source_album": "BUSINESS IS BUSINESS (Metro's Version)",
+      "source_url": "https://music.apple.com/us/album/global-access-feat-nate-ruess/1694421465?i=1694423439&uo=4",
       "match": "exact artist and title"
     },
     {
@@ -4964,6 +6095,19 @@
       "source_artist": "Yeat & Summrs",
       "source_album": "LYFESTYLE",
       "source_url": "https://music.apple.com/us/album/go2work/1775512093?i=1775512807&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6acc5101788f693e414ec174",
+      "title": "GOD DID (feat. Rick Ross, Lil Wayne, JAY-Z, John Legend & Fridayy)",
+      "artist": "DJ Khaled, Rick Ross, Lil Wayne, JAŸ-Z, John Legend, Fridayy",
+      "before": "Other",
+      "genre": "Hip-Hop",
+      "source_genre": "Hip-Hop/Rap",
+      "source_title": "GOD DID (feat. Rick Ross, Lil Wayne, JAŸ-Z, John Legend & Fridayy)",
+      "source_artist": "DJ Khaled",
+      "source_album": "GOD DID",
+      "source_url": "https://music.apple.com/us/album/god-did-feat-rick-ross-lil-wayne-ja%C3%BF-z-john-legend-fridayy/1641779917?i=1641779922&uo=4",
       "match": "exact artist and title"
     },
     {
@@ -5019,6 +6163,32 @@
       "match": "exact artist and title"
     },
     {
+      "id": "6acc510c42bbd7001c24d71a",
+      "title": "GODSPEED",
+      "artist": "Camila Cabello",
+      "before": "Other",
+      "genre": "Pop",
+      "source_genre": "Pop",
+      "source_title": "GODSPEED",
+      "source_artist": "Camila Cabello",
+      "source_album": "C,XOXO (Magic City Edition)",
+      "source_url": "https://music.apple.com/us/album/godspeed/1765230815?i=1765231220&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6acc510e2b91c1b5b6415bb0",
+      "title": "Gogo Dance",
+      "artist": "El Alfa, Chael Produciendo",
+      "before": "Other",
+      "genre": "Latin",
+      "source_genre": "Urbano latino",
+      "source_title": "Gogo Dance",
+      "source_artist": "El Alfa & Chael Produciendo",
+      "source_album": "SABIDURÍA",
+      "source_url": "https://music.apple.com/us/album/gogo-dance/1690668931?i=1690669944&uo=4",
+      "match": "exact artist and title"
+    },
+    {
       "id": "6acc5116b8e6ce235ef8f5f6",
       "title": "Gold Digger",
       "artist": "Kanye West, Jamie Foxx",
@@ -5029,6 +6199,19 @@
       "source_artist": "Kanye West",
       "source_album": "Late Registration",
       "source_url": "https://music.apple.com/us/album/gold-digger-feat-jamie-foxx/1440763821?i=1440763833&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6acc51177a96060eb6674581",
+      "title": "Gold",
+      "artist": "Owl City",
+      "before": "Other",
+      "genre": "Pop",
+      "source_genre": "Pop",
+      "source_title": "Gold",
+      "source_artist": "Owl City",
+      "source_album": "The Midsummer Station",
+      "source_url": "https://music.apple.com/us/album/gold/1440806223?i=1440806584&uo=4",
       "match": "exact artist and title"
     },
     {
@@ -5094,6 +6277,19 @@
       "source_artist": "Kanye West",
       "source_album": "Graduation",
       "source_url": "https://music.apple.com/us/album/good-morning/1442845779?i=1442846038&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6acc5147ca263593428234a1",
+      "title": "Good Time",
+      "artist": "Owl City, Carly Rae Jepsen",
+      "before": "Other",
+      "genre": "Pop",
+      "source_genre": "Pop",
+      "source_title": "Good Time",
+      "source_artist": "Owl City & Carly Rae Jepsen",
+      "source_album": "Good Time - Single",
+      "source_url": "https://music.apple.com/us/album/good-time/1444320049?i=1444320054&uo=4",
       "match": "exact artist and title"
     },
     {
@@ -5201,6 +6397,19 @@
       "match": "exact artist and title"
     },
     {
+      "id": "6acc516e91b7325a388e1518",
+      "title": "granola bars",
+      "artist": "gnash",
+      "before": "Other",
+      "genre": "Alternative",
+      "source_genre": "Alternative",
+      "source_title": "granola bars",
+      "source_artist": "gnash & Annika Wells",
+      "source_album": "granola bars - Single",
+      "source_url": "https://music.apple.com/us/album/granola-bars/1643054239?i=1643054241&uo=4",
+      "match": "exact artist and title"
+    },
+    {
       "id": "6acc5171a013110c365bb5c0",
       "title": "Grapejuice",
       "artist": "Harry Styles",
@@ -5237,6 +6446,19 @@
       "source_artist": "Big Sean",
       "source_album": "Detroit 2",
       "source_url": "https://music.apple.com/us/album/guard-your-heart-feat-anderson-paak-earlly-mac-wale/1530239848?i=1530240017&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6acc519190ad0fa4e6ab5ba7",
+      "title": "Gucci Grocery Bag",
+      "artist": "Young Thug",
+      "before": "Other",
+      "genre": "Hip-Hop",
+      "source_genre": "Hip-Hop/Rap",
+      "source_title": "Gucci Grocery Bag",
+      "source_artist": "Young Thug",
+      "source_album": "BUSINESS IS BUSINESS (Metro's Version)",
+      "source_url": "https://music.apple.com/us/album/gucci-grocery-bag/1694421465?i=1694423424&uo=4",
       "match": "exact artist and title"
     },
     {
@@ -5289,6 +6511,19 @@
       "source_artist": "Kanye West, Mos Def & Al Be Back",
       "source_album": "Graduation",
       "source_url": "https://music.apple.com/us/album/good-night/1442845779?i=1442846867&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6acc56d02a4794d3f84248ae",
+      "title": "Good Time",
+      "artist": "Owl City, Carly Rae Jepsen",
+      "before": "Other",
+      "genre": "Pop",
+      "source_genre": "Pop",
+      "source_title": "Good Time",
+      "source_artist": "Owl City & Carly Rae Jepsen",
+      "source_album": "Good Time - Single",
+      "source_url": "https://music.apple.com/us/album/good-time/1444320049?i=1444320054&uo=4",
       "match": "exact artist and title"
     },
     {
@@ -5396,6 +6631,19 @@
       "match": "exact artist and title"
     },
     {
+      "id": "6acc56f84d1661e9905063ce",
+      "title": "granola bars",
+      "artist": "gnash",
+      "before": "Other",
+      "genre": "Alternative",
+      "source_genre": "Alternative",
+      "source_title": "granola bars",
+      "source_artist": "gnash & Annika Wells",
+      "source_album": "granola bars - Single",
+      "source_url": "https://music.apple.com/us/album/granola-bars/1643054239?i=1643054241&uo=4",
+      "match": "exact artist and title"
+    },
+    {
       "id": "6acc56fa2482c446f742af19",
       "title": "Grapejuice",
       "artist": "Harry Styles",
@@ -5432,6 +6680,19 @@
       "source_artist": "Big Sean",
       "source_album": "Detroit 2",
       "source_url": "https://music.apple.com/us/album/guard-your-heart-feat-anderson-paak-earlly-mac-wale/1530239848?i=1530240017&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6acc57185cbc26b7692fbed2",
+      "title": "Gucci Grocery Bag",
+      "artist": "Young Thug",
+      "before": "Other",
+      "genre": "Hip-Hop",
+      "source_genre": "Hip-Hop/Rap",
+      "source_title": "Gucci Grocery Bag",
+      "source_artist": "Young Thug",
+      "source_album": "BUSINESS IS BUSINESS (Metro's Version)",
+      "source_url": "https://music.apple.com/us/album/gucci-grocery-bag/1694421465?i=1694423424&uo=4",
       "match": "exact artist and title"
     },
     {
@@ -5500,6 +6761,19 @@
       "match": "exact artist and title"
     },
     {
+      "id": "6acc576024d4a89fd64af0f5",
+      "title": "Happy Birthday",
+      "artist": "Tempo, El Alfa",
+      "before": "Other",
+      "genre": "Latin",
+      "source_genre": "Latin",
+      "source_title": "Happy Birthday",
+      "source_artist": "Tempo & El Alfa",
+      "source_album": "Happy Birthday - Single",
+      "source_url": "https://music.apple.com/us/album/happy-birthday/1619670328?i=1619670329&uo=4",
+      "match": "exact artist and title"
+    },
+    {
       "id": "6acc57631052124042c1762e",
       "title": "Happy For You",
       "artist": "Lukas Graham",
@@ -5536,6 +6810,32 @@
       "source_artist": "Lukas Graham",
       "source_album": "Lukas Graham",
       "source_url": "https://music.apple.com/us/album/happy-home/1081573096?i=1081573467&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6acc576b85dc2f9fcefa59da",
+      "title": "Happy Survival (feat. Khruangbin)",
+      "artist": "Childish Gambino, Khruangbin",
+      "before": "Other",
+      "genre": "Pop",
+      "source_genre": "Pop",
+      "source_title": "Happy Survival (feat. Khruangbin)",
+      "source_artist": "Childish Gambino",
+      "source_album": "Bando Stone and The New World",
+      "source_url": "https://music.apple.com/us/album/happy-survival-feat-khruangbin/1757678472?i=1757679439&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6acc576f968e74914eb69a58",
+      "title": "Hard Knock Life (Ghetto Anthem)",
+      "artist": "JAŸ-Z",
+      "before": "Other",
+      "genre": "Hip-Hop",
+      "source_genre": "Hip-Hop/Rap",
+      "source_title": "Hard Knock Life (Ghetto Anthem)",
+      "source_artist": "JAŸ-Z",
+      "source_album": "Vol.2... Hard Knock Life",
+      "source_url": "https://music.apple.com/us/album/hard-knock-life-ghetto-anthem/1440913253?i=1440913399&uo=4",
       "match": "exact artist and title"
     },
     {
@@ -5617,6 +6917,19 @@
       "match": "exact artist and title"
     },
     {
+      "id": "6acc577e3c7f31c6de065af8",
+      "title": "Hasta Los Dientes",
+      "artist": "Camila Cabello, Maria Becerra",
+      "before": "Other",
+      "genre": "Pop",
+      "source_genre": "Pop",
+      "source_title": "Hasta Los Dientes",
+      "source_artist": "Camila Cabello & Maria Becerra",
+      "source_album": "Familia",
+      "source_url": "https://music.apple.com/us/album/hasta-los-dientes/1610834866?i=1610834875&uo=4",
+      "match": "exact artist and title"
+    },
+    {
       "id": "6acc57843af5cd245aac1fe1",
       "title": "Hate That I Love You",
       "artist": "Rihanna, Ne-Yo",
@@ -5656,6 +6969,32 @@
       "match": "exact artist and title"
     },
     {
+      "id": "6acc579931162870f9bf1703",
+      "title": "Havana (feat. Young Thug)",
+      "artist": "Camila Cabello, Young Thug",
+      "before": "Other",
+      "genre": "Pop",
+      "source_genre": "Pop",
+      "source_title": "Havana (feat. Young Thug)",
+      "source_artist": "Camila Cabello",
+      "source_album": "Camila",
+      "source_url": "https://music.apple.com/us/album/havana-feat-young-thug/1321216767?i=1321217032&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6acc579940b909d98b6db69c",
+      "title": "Have Some Love",
+      "artist": "Childish Gambino",
+      "before": "Other",
+      "genre": "Hip-Hop",
+      "source_genre": "Hip-Hop/Rap",
+      "source_title": "Have Some Love",
+      "source_artist": "Childish Gambino",
+      "source_album": "\"Awaken, My Love!\"",
+      "source_url": "https://music.apple.com/us/album/have-some-love/1771719334?i=1771719340&uo=4",
+      "match": "exact artist and title"
+    },
+    {
       "id": "6acc57a48c8ac17d01dca328",
       "title": "Haz Obrado En Mi",
       "artist": "Pahola Marino",
@@ -5666,6 +7005,32 @@
       "source_artist": "Pahola Marino",
       "source_album": "Los Temores / La Rutina",
       "source_url": "https://music.apple.com/us/album/haz-obrado-en-mi/394760942?i=394760964&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6acc57a9dea17ff51fd42f8f",
+      "title": "HE KNOWS (feat. Lil Nas X)",
+      "artist": "Camila Cabello, Lil Nas X",
+      "before": "Other",
+      "genre": "Pop",
+      "source_genre": "Pop",
+      "source_title": "HE KNOWS",
+      "source_artist": "Camila Cabello & Lil Nas X",
+      "source_album": "C,XOXO (Magic City Edition)",
+      "source_url": "https://music.apple.com/us/album/he-knows/1765226650?i=1765227019&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6acc57b46db2d30e348cd243",
+      "title": "Heal You",
+      "artist": "Kevin Gates",
+      "before": "Other",
+      "genre": "Hip-Hop",
+      "source_genre": "Hip-Hop/Rap",
+      "source_title": "Heal You",
+      "source_artist": "Kevin Gates",
+      "source_album": "The Ceremony",
+      "source_url": "https://music.apple.com/us/album/heal-you/1727800708?i=1727801120&uo=4",
       "match": "exact artist and title"
     },
     {
@@ -5721,6 +7086,19 @@
       "match": "exact artist and title"
     },
     {
+      "id": "6acc57cd8227df08462d92b9",
+      "title": "Heaven",
+      "artist": "GASHI",
+      "before": "Other",
+      "genre": "Country",
+      "source_genre": "Country",
+      "source_title": "Heaven",
+      "source_artist": "GASHI",
+      "source_album": "Brooklyn Cowboy",
+      "source_url": "https://music.apple.com/us/album/heaven/1770201154?i=1770201165&uo=4",
+      "match": "exact artist and title"
+    },
+    {
       "id": "6acc57d2d1cdaf7e55630cd3",
       "title": "Heavy stunts (with Don Toliver)",
       "artist": "Yeat, Don Toliver",
@@ -5760,6 +7138,19 @@
       "match": "exact artist and title"
     },
     {
+      "id": "6acc57da29fc2d48cca942be",
+      "title": "Helicoptero",
+      "artist": "El Alfa",
+      "before": "Other",
+      "genre": "Latin",
+      "source_genre": "Urbano latino",
+      "source_title": "Helicóptero",
+      "source_artist": "El Alfa",
+      "source_album": "Helicóptero - Single",
+      "source_url": "https://music.apple.com/us/album/helic%C3%B3ptero/1690663078?i=1690663094&uo=4",
+      "match": "exact artist and title"
+    },
+    {
       "id": "6acc57e511af0d383a55c030",
       "title": "Hellcat Kenny (feat. Lil Uzi Vert)",
       "artist": "Young Thug, Lil Uzi Vert",
@@ -5773,6 +7164,32 @@
       "match": "exact artist and title"
     },
     {
+      "id": "6acc57e6ade8bd902decf59d",
+      "title": "HELLCAT",
+      "artist": "Joony",
+      "before": "Other",
+      "genre": "Hip-Hop",
+      "source_genre": "Hip-Hop/Rap",
+      "source_title": "HELLCAT",
+      "source_artist": "Joony",
+      "source_album": "Pretty In Black (Deluxe)",
+      "source_url": "https://music.apple.com/us/album/hellcat/1654258826?i=1654258829&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6acc57ec1a54cbaf96cbe9b1",
+      "title": "Hello Seattle",
+      "artist": "Owl City",
+      "before": "Other",
+      "genre": "Electronic",
+      "source_genre": "Electronic",
+      "source_title": "Hello Seattle",
+      "source_artist": "Owl City",
+      "source_album": "Ocean Eyes",
+      "source_url": "https://music.apple.com/us/album/hello-seattle/1440782380?i=1440783012&uo=4",
+      "match": "exact artist and title"
+    },
+    {
       "id": "6acc57f1162f341db954e7b3",
       "title": "Hemos Orado",
       "artist": "Marino",
@@ -5783,6 +7200,19 @@
       "source_artist": "Marino",
       "source_album": "Himnos y Coros Para Recordar, Vol. 1 & 2",
       "source_url": "https://music.apple.com/us/album/hemos-orado/310328159?i=310328302&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6acc5805ff566a5084e25ea8",
+      "title": "Hey Ma (with Pitbull & J Balvin feat. Camila Cabello)",
+      "artist": "Pitbull, J Balvin, Camila Cabello",
+      "before": "Other",
+      "genre": "Pop",
+      "source_genre": "Pop",
+      "source_title": "Hey Ma (feat. Camila Cabello)",
+      "source_artist": "J Balvin & Pitbull",
+      "source_album": "The Fate of the Furious: The Album",
+      "source_url": "https://music.apple.com/us/album/hey-ma-feat-camila-cabello/1210537086?i=1210538484&uo=4",
       "match": "exact artist and title"
     },
     {
@@ -5981,6 +7411,19 @@
       "match": "exact artist and title"
     },
     {
+      "id": "6acc584886ff0bbd12d8e6f5",
+      "title": "Hold On",
+      "artist": "Tems",
+      "before": "Other",
+      "genre": "R&B",
+      "source_genre": "R&B/Soul",
+      "source_title": "Hold On",
+      "source_artist": "Tems",
+      "source_album": "Born in the Wild",
+      "source_url": "https://music.apple.com/us/album/hold-on/1750361972?i=1750362212&uo=4",
+      "match": "exact artist and title"
+    },
+    {
       "id": "6acc584b616d2aaf3dd72315",
       "title": "Holding the Gun",
       "artist": "Sabrina Claudio",
@@ -6033,6 +7476,19 @@
       "match": "exact artist and title"
     },
     {
+      "id": "6acc5866dd12d9756e5c1485",
+      "title": "home",
+      "artist": "gnash",
+      "before": "Other",
+      "genre": "Pop",
+      "source_genre": "Pop",
+      "source_title": "home",
+      "source_artist": "gnash",
+      "source_album": "home - Single",
+      "source_url": "https://music.apple.com/us/album/home/1167695282?i=1167695315&uo=4",
+      "match": "exact artist and title"
+    },
+    {
       "id": "6acc58691705e4312ab2f350",
       "title": "Homecoming",
       "artist": "Kanye West, Chris Martin",
@@ -6043,6 +7499,32 @@
       "source_artist": "Kanye West",
       "source_album": "Graduation",
       "source_url": "https://music.apple.com/us/album/homecoming-feat-chris-martin/1442845779?i=1442846735&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6acc5869dd545b308ac1250f",
+      "title": "Homebody",
+      "artist": "Jordan Ward, Joony",
+      "before": "Other",
+      "genre": "R&B",
+      "source_genre": "R&B/Soul",
+      "source_title": "Homebody",
+      "source_artist": "Jordan Ward & Joony",
+      "source_album": "JRNY - EP",
+      "source_url": "https://music.apple.com/us/album/homebody/1770852300?i=1770852649&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6acc58795703d252760a9b11",
+      "title": "Hookah",
+      "artist": "Tyga, Young Thug",
+      "before": "Other",
+      "genre": "Hip-Hop",
+      "source_genre": "Hip-Hop/Rap",
+      "source_title": "Hookah (feat. Young Thug)",
+      "source_artist": "Tyga",
+      "source_album": "Hookah (feat. Young Thug) - Single",
+      "source_url": "https://music.apple.com/us/album/hookah-feat-young-thug/1445027575?i=1445027578&uo=4",
       "match": "exact artist and title"
     },
     {
@@ -6072,6 +7554,32 @@
       "match": "exact artist and title"
     },
     {
+      "id": "6acc58890ec11cc3e289c66e",
+      "title": "Hot Air Balloon",
+      "artist": "Owl City",
+      "before": "Other",
+      "genre": "Electronic",
+      "source_genre": "Electronic",
+      "source_title": "Hot Air Balloon",
+      "source_artist": "Owl City",
+      "source_album": "Ocean Eyes (Deluxe Version)",
+      "source_url": "https://music.apple.com/us/album/hot-air-balloon/1440770727?i=1440771020&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6acc588934dff2c40cc250e8",
+      "title": "Hot (Remix) [feat. Gunna and Travis Scott]",
+      "artist": "Young Thug, Travis Scott, Gunna",
+      "before": "Other",
+      "genre": "Hip-Hop",
+      "source_genre": "Hip-Hop/Rap",
+      "source_title": "Hot (Remix) [feat. Gunna and Travis Scott]",
+      "source_artist": "Young Thug",
+      "source_album": "Hot (Remix) [feat. Gunna and Travis Scott] - Single",
+      "source_url": "https://music.apple.com/us/album/hot-remix-feat-gunna-and-travis-scott/1485796296?i=1485796301&uo=4",
+      "match": "exact artist and title"
+    },
+    {
       "id": "6acc5890ce29a958c5e259e7",
       "title": "HOT UPTOWN (feat. Drake)",
       "artist": "Camila Cabello, Drake",
@@ -6095,6 +7603,19 @@
       "source_artist": "Drake",
       "source_album": "Views",
       "source_url": "https://music.apple.com/us/album/hotline-bling/1440842556?i=1440843974&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6acc58a3ccd58213b63796ea",
+      "title": "House Wren",
+      "artist": "Owl City",
+      "before": "Other",
+      "genre": "Pop",
+      "source_genre": "Pop",
+      "source_title": "House Wren",
+      "source_artist": "Owl City",
+      "source_album": "Cinematic",
+      "source_url": "https://music.apple.com/us/album/house-wren/1296817295?i=1296817968&uo=4",
       "match": "exact artist and title"
     },
     {
@@ -6135,60 +7656,6 @@
       "id": "6a65c6c43447f0fa4b036425",
       "title": "QUÍTENME EL TELÉFONO (feat. Yandel, Jay Wheeler)",
       "artist": "The Academy: Segunda Misión, Sech, Lenny Tavárez, Justin Quiles, Dalex, Dímelo Flow, Yandel, Jay Wheeler",
-      "genre": "Other"
-    },
-    {
-      "id": "6a65c6c8c9736bfd614784e8",
-      "title": "Three Little Birds",
-      "artist": "Bob Marley & The Wailers",
-      "genre": "Other"
-    },
-    {
-      "id": "6a65c6cc7e304425a07cae07",
-      "title": "One Love   People Get Ready",
-      "artist": "Bob Marley & The Wailers",
-      "genre": "Other"
-    },
-    {
-      "id": "6a65c6cf8f75b5fa349eb7f2",
-      "title": "Turn Your Lights Down Low",
-      "artist": "Bob Marley & The Wailers",
-      "genre": "Other"
-    },
-    {
-      "id": "6a65c6d362e9a32776ca77c1",
-      "title": "Waiting In Vain",
-      "artist": "Bob Marley & The Wailers",
-      "genre": "Other"
-    },
-    {
-      "id": "6a65c6d6a09c979006c8a79d",
-      "title": "Jamming",
-      "artist": "Bob Marley & The Wailers",
-      "genre": "Other"
-    },
-    {
-      "id": "6a65c6db4dde4b3791341478",
-      "title": "Natural Mystic",
-      "artist": "Bob Marley & The Wailers",
-      "genre": "Other"
-    },
-    {
-      "id": "6a65c6e16b82f0561863aa0c",
-      "title": "Exodus",
-      "artist": "Bob Marley & The Wailers",
-      "genre": "Other"
-    },
-    {
-      "id": "6a65c6e47a2320f28f55b029",
-      "title": "So Much Things To Say",
-      "artist": "Bob Marley & The Wailers",
-      "genre": "Other"
-    },
-    {
-      "id": "6a65c6eda94e59c39ff72c3a",
-      "title": "Guiltiness",
-      "artist": "Bob Marley & The Wailers",
       "genre": "Other"
     },
     {
@@ -6287,12 +7754,6 @@
       "genre": "Other"
     },
     {
-      "id": "6a65c79223586e3062f29ce5",
-      "title": "Sacrifices",
-      "artist": "Drake, 2 Chainz, Young Thug",
-      "genre": "Other"
-    },
-    {
       "id": "6a65c7951eb4cfabd21682c0",
       "title": "Get It Together",
       "artist": "Drake, Black Coffee, Jorja Smith",
@@ -6314,12 +7775,6 @@
       "id": "6a65c79f34a3440e7d3b4fba",
       "title": "Glow",
       "artist": "Drake, Kanye West",
-      "genre": "Other"
-    },
-    {
-      "id": "6a65c7b88dd5c725003d56c3",
-      "title": "Ice Melts",
-      "artist": "Drake, Young Thug",
       "genre": "Other"
     },
     {
@@ -6440,12 +7895,6 @@
       "id": "6a65c83056db8181329d8a2a",
       "title": "Spaceship",
       "artist": "Kanye West, GLC, Consequence",
-      "genre": "Other"
-    },
-    {
-      "id": "6a65c833e7fce8d774313943",
-      "title": "Never Let Me Down",
-      "artist": "Kanye West, JAŸ-Z, J. Ivy",
       "genre": "Other"
     },
     {
@@ -6808,12 +8257,6 @@
       "genre": "Other"
     },
     {
-      "id": "6a6c49513fa42fc2993d83eb",
-      "title": "Anxiety",
-      "artist": "Black Eyed Peas, Papa Roach",
-      "genre": "Other"
-    },
-    {
       "id": "6a6c4987fcff5c47d0531468",
       "title": "Chains & Whips",
       "artist": "Clipse, Kendrick Lamar, Pharrell Williams, Pusha T, Malice",
@@ -6829,18 +8272,6 @@
       "id": "6a6c4a47f8b273f3efe37bdb",
       "title": "just like magic",
       "artist": "Ariana Grande",
-      "genre": "Other"
-    },
-    {
-      "id": "6a6c4a520f2f85ef5d7f259c",
-      "title": "Let's Get It Started - Spike Mix",
-      "artist": "Black Eyed Peas",
-      "genre": "Other"
-    },
-    {
-      "id": "6a6c4a74519e8e3e1d611bda",
-      "title": "Mas Que Nada",
-      "artist": "Sérgio Mendes, Black Eyed Peas",
       "genre": "Other"
     },
     {
@@ -6874,42 +8305,6 @@
       "genre": "Other"
     },
     {
-      "id": "6a6c4aaa02ca5efd9bfe5d98",
-      "title": "Pump It Louder",
-      "artist": "Tiësto, Black Eyed Peas",
-      "genre": "Other"
-    },
-    {
-      "id": "6a6c4ad6ad6cecc8ec7e8c08",
-      "title": "Shake Ya Boom Boom",
-      "artist": "Static, Ben El Tavori, Black Eyed Peas",
-      "genre": "Other"
-    },
-    {
-      "id": "6a6c4ae550c2a290100af6df",
-      "title": "SIMPLY THE BEST",
-      "artist": "Black Eyed Peas, Anitta, El Alfa",
-      "genre": "Other"
-    },
-    {
-      "id": "6a6c4aec19755c0d32893699",
-      "title": "Someday",
-      "artist": "Black Eyed Peas",
-      "genre": "Other"
-    },
-    {
-      "id": "6a6c4b0d6fada16f6fd8712d",
-      "title": "The Apl Song",
-      "artist": "Black Eyed Peas",
-      "genre": "Other"
-    },
-    {
-      "id": "6a6c4b16a565be6c868e8629",
-      "title": "The Time (Dirty Bit)",
-      "artist": "Black Eyed Peas",
-      "genre": "Other"
-    },
-    {
       "id": "6a6c4b1d6d9fedc0d60314b9",
       "title": "They Don't Care About Us",
       "artist": "Michael Jackson",
@@ -6919,18 +8314,6 @@
         "Pop",
         "Soundtrack"
       ]
-    },
-    {
-      "id": "6a6c4b2702ca54f1d26a67d9",
-      "title": "VIDA LOCA",
-      "artist": "Black Eyed Peas, Nicky Jam, Tyga",
-      "genre": "Other"
-    },
-    {
-      "id": "6a6c4b33f2b543d2ce6ebe40",
-      "title": "Where Is The Love?",
-      "artist": "Black Eyed Peas",
-      "genre": "Other"
     },
     {
       "id": "6a6c4b429ae3b675d3da0d62",
@@ -7412,12 +8795,6 @@
       "genre": "Other"
     },
     {
-      "id": "6abf431d5094723634b71101",
-      "title": "4 Life",
-      "artist": "DJ Snake, GASHI",
-      "genre": "Other"
-    },
-    {
       "id": "6abf432ebe07c93bad3c4eaf",
       "title": "4am Flex",
       "artist": "Tory Lanez",
@@ -7433,12 +8810,6 @@
       "id": "6abf433347baeab1ad69e06f",
       "title": "4GET ABOUT ME",
       "artist": "sosocamo",
-      "genre": "Other"
-    },
-    {
-      "id": "6abf433688f7ac7b39a8130e",
-      "title": "4K",
-      "artist": "El Alfa, Darell, Noriel",
       "genre": "Other"
     },
     {
@@ -7586,12 +8957,6 @@
       "genre": "Other"
     },
     {
-      "id": "6abf437ce95aa2cc3372e148",
-      "title": "24 Hours",
-      "artist": "GASHI",
-      "genre": "Other"
-    },
-    {
       "id": "6abf437e050c443f8135e145",
       "title": "24/7, 365",
       "artist": "elijah woods",
@@ -7619,12 +8984,6 @@
       "id": "6abf438e66bcf3e8c69534bc",
       "title": "90s",
       "artist": "Little Loove",
-      "genre": "Other"
-    },
-    {
-      "id": "6abf438efa03dc3bed4d3c0e",
-      "title": "85%",
-      "artist": "Loote, gnash",
       "genre": "Other"
     },
     {
@@ -7747,12 +9106,6 @@
       "genre": "Other"
     },
     {
-      "id": "6abf43bcd988bf916cf0ee05",
-      "title": "33 Days (feat. gnash & Anna Clendening)",
-      "artist": "Keenan",
-      "genre": "Other"
-    },
-    {
       "id": "6abf43bcf1a46d9ca9ea4522",
       "title": "A Million Times",
       "artist": "T-Pain, O.T. Genasis",
@@ -7762,12 +9115,6 @@
       "id": "6abf43c0e8d014f176de2fb4",
       "title": "A Poem From Me 2 You",
       "artist": "Tory Lanez",
-      "genre": "Other"
-    },
-    {
-      "id": "6abf43c152b5b57938e01fc3",
-      "title": "A Place Where Love Goes",
-      "artist": "Childish Gambino",
       "genre": "Other"
     },
     {
@@ -8103,12 +9450,6 @@
       ]
     },
     {
-      "id": "6abf443d09858362cb91bf82",
-      "title": "Algorhythm",
-      "artist": "Childish Gambino",
-      "genre": "Other"
-    },
-    {
       "id": "6abf443ea5821c03c0a2cc23",
       "title": "Ali Bomaye",
       "artist": "The Game, 2 Chainz, Rick Ross",
@@ -8217,12 +9558,6 @@
       "genre": "Other"
     },
     {
-      "id": "6abf446b272195d4ca1838b8",
-      "title": "All Right",
-      "artist": "Cisco Adler",
-      "genre": "Other"
-    },
-    {
       "id": "6abf447394478b19684e6904",
       "title": "All The Girls",
       "artist": "Tory Lanez",
@@ -8253,12 +9588,6 @@
       "genre": "Other"
     },
     {
-      "id": "6abf447dc0b8e707c5a0b116",
-      "title": "All Thee Above (feat. Kevin Gates)",
-      "artist": "Plies, Kevin Gates",
-      "genre": "Other"
-    },
-    {
       "id": "6abf44814e2d207c345d320c",
       "title": "alle",
       "artist": "for KING & COUNTRY",
@@ -8274,12 +9603,6 @@
       "id": "6abf448389e4d2f7243f082a",
       "title": "All Your Time",
       "artist": "Young Thug",
-      "genre": "Other"
-    },
-    {
-      "id": "6abf44854859087057dc220e",
-      "title": "Alligator Sky",
-      "artist": "Owl City, Shawn Chrystopher",
       "genre": "Other"
     },
     {
@@ -8322,12 +9645,6 @@
       "id": "6abf4494ffe7dc165124c94f",
       "title": "alright!",
       "artist": "Tiana Major9",
-      "genre": "Other"
-    },
-    {
-      "id": "6abf449876d72d07d292f3fd",
-      "title": "Ambulancia",
-      "artist": "Camilo, Camila Cabello",
       "genre": "Other"
     },
     {
@@ -8409,12 +9726,6 @@
       "genre": "Other"
     },
     {
-      "id": "6abf44b909bfeea912d29782",
-      "title": "angel numbers",
-      "artist": "TyFontaine, Joony",
-      "genre": "Other"
-    },
-    {
       "id": "6abf44bb5c2b8a88aaa3e52c",
       "title": "Angel Pt. 1 (feat. Jimin of BTS, JVKE & Muni Long)",
       "artist": "Kodak Black, NLE Choppa, Jimin, JVKE, Muni Long, Fast & Furious: The Fast Saga",
@@ -8484,12 +9795,6 @@
       "id": "6abf44d3f2de564ade9dbaab",
       "title": "Ants",
       "artist": "K.Flay",
-      "genre": "Other"
-    },
-    {
-      "id": "6abf44d46705d39a2c84c9e8",
-      "title": "Anxiety Freestyle",
-      "artist": "Sleepy Hallow",
       "genre": "Other"
     },
     {
@@ -8795,7 +10100,12 @@
       "id": "6abf45611239a432f2b9a01a",
       "title": "All About Us",
       "artist": "He Is We, Owl City",
-      "genre": "Other"
+      "genre": "Other",
+      "review_reason": "conflicting catalog genres",
+      "candidate_genres": [
+        "Pop",
+        "Soundtrack"
+      ]
     },
     {
       "id": "6abf4563dc51bd451b649aaf",
@@ -8869,12 +10179,6 @@
       "genre": "Other"
     },
     {
-      "id": "6abf45950dccdd6d2350b91c",
-      "title": "Alone (feat. Travis Barker)",
-      "artist": "Pardyalone",
-      "genre": "Other"
-    },
-    {
       "id": "6abf459783bbc347c6727e15",
       "title": "ALMAS GEMELAS",
       "artist": "Myke Towers",
@@ -8908,12 +10212,6 @@
       "id": "6abf45a3c5e24c144afd102e",
       "title": "Amnesia (feat. Doe B)",
       "artist": "Kevin Gates, Doe B.",
-      "genre": "Other"
-    },
-    {
-      "id": "6abf45a43d381792109d83d6",
-      "title": "Amnesia (feat. GASHI)",
-      "artist": "Loud Luxury, Ship Wrek, GASHI",
       "genre": "Other"
     },
     {
@@ -9127,12 +10425,6 @@
       "genre": "Other"
     },
     {
-      "id": "6acc43535a09e8721ca92295",
-      "title": "Chu Chu Pamela",
-      "artist": "El Alfa",
-      "genre": "Other"
-    },
-    {
       "id": "6acc435443c65d9a6f623937",
       "title": "chuuuuurch",
       "artist": "Dawn Richard",
@@ -9163,12 +10455,6 @@
       "genre": "Other"
     },
     {
-      "id": "6acc4364223f9e8dd26b7e55",
-      "title": "Cinematic",
-      "artist": "Owl City",
-      "genre": "Other"
-    },
-    {
       "id": "6acc4365f17d864211667057",
       "title": "Circadian Rhythm",
       "artist": "Drake",
@@ -9190,12 +10476,6 @@
       "id": "6acc4370d3d671b7c0d90e91",
       "title": "Classic",
       "artist": "Drake",
-      "genre": "Other"
-    },
-    {
-      "id": "6acc437176de3d1e0ab56eba",
-      "title": "CLASSY (feat. Tony Shhnow)",
-      "artist": "Joony",
       "genre": "Other"
     },
     {
@@ -9349,12 +10629,6 @@
       "genre": "Other"
     },
     {
-      "id": "6acc43ad0f225851499fc5ec",
-      "title": "Colorblind",
-      "artist": "Pardyalone",
-      "genre": "Other"
-    },
-    {
       "id": "6acc43ad11c2765140614e72",
       "title": "Colors (My Baby)",
       "artist": "Magixx",
@@ -9403,12 +10677,6 @@
       "genre": "Other"
     },
     {
-      "id": "6acc43c612bbaddb52f86b8f",
-      "title": "Come Show Me",
-      "artist": "Camila Cabello",
-      "genre": "Other"
-    },
-    {
       "id": "6acc43c7db829a8bcd801239",
       "title": "Come Outside (So Sick)",
       "artist": "Real Boston Richey",
@@ -9430,12 +10698,6 @@
       "id": "6acc43cc8edbcc26a97c0891",
       "title": "Comiendo Helado",
       "artist": "Glory",
-      "genre": "Other"
-    },
-    {
-      "id": "6acc43cfc1b710012fdc7ff2",
-      "title": "Coming Down",
-      "artist": "KIDDO, GASHI",
       "genre": "Other"
     },
     {
@@ -9660,12 +10922,6 @@
       "genre": "Other"
     },
     {
-      "id": "6acc442e1570e9de11e0a49e",
-      "title": "Creep On Me",
-      "artist": "GASHI, French Montana, DJ Snake",
-      "genre": "Other"
-    },
-    {
       "id": "6acc443139a10a2a902a2838",
       "title": "Creation of The Spot",
       "artist": "Daniel Pemberton",
@@ -9738,12 +10994,6 @@
       "genre": "Other"
     },
     {
-      "id": "6acc44500caaa275687d4038",
-      "title": "Crying in the Club",
-      "artist": "Camila Cabello",
-      "genre": "Other"
-    },
-    {
       "id": "6acc44528929af617d533ca1",
       "title": "Cuál Es La Necesidad",
       "artist": "Yandel",
@@ -9811,12 +11061,6 @@
       "id": "6acc4479a73e9ea0030ddd15",
       "title": "Cupid",
       "artist": "Pardyalone",
-      "genre": "Other"
-    },
-    {
-      "id": "6acc447b4caf75cf78a681c8",
-      "title": "Curazao",
-      "artist": "El Alfa, Farruko",
       "genre": "Other"
     },
     {
@@ -9931,12 +11175,6 @@
       "id": "6acc49b1ebe19c2a9e3484b0",
       "title": "Different Breed",
       "artist": "Hurricane Wisdom",
-      "genre": "Other"
-    },
-    {
-      "id": "6acc49b5c6780f0c0ac6514d",
-      "title": "Different",
-      "artist": "Sleepy Hallow, Jay Gwuapo",
       "genre": "Other"
     },
     {
@@ -10084,12 +11322,6 @@
       "genre": "Other"
     },
     {
-      "id": "6acc49fb3bf2c6a908610d9e",
-      "title": "Disrespectful",
-      "artist": "GASHI",
-      "genre": "Other"
-    },
-    {
       "id": "6acc49fd187d7c17878b15d3",
       "title": "Distance",
       "artist": "Finn Askew",
@@ -10150,12 +11382,6 @@
       "genre": "Other"
     },
     {
-      "id": "6acc4a1ca779d3c7736d6f83",
-      "title": "Do U Love Me?",
-      "artist": "Aimee Vant, gnash",
-      "genre": "Other"
-    },
-    {
       "id": "6acc4a1f7dfd3973326ef620",
       "title": "Do Ya Thang",
       "artist": "Rihanna",
@@ -10207,12 +11433,6 @@
       "id": "6acc4a3546b11ebc871131a8",
       "title": "DOLCE",
       "artist": "Cazzu",
-      "genre": "Other"
-    },
-    {
-      "id": "6acc4a38b335e6a31311fdf8",
-      "title": "DOLLAZ ON MY HEAD (feat. Young Thug)",
-      "artist": "Gunna, Young Thug",
       "genre": "Other"
     },
     {
@@ -10299,12 +11519,6 @@
       "genre": "Other"
     },
     {
-      "id": "6acc4a5928393c6d7d6b704c",
-      "title": "Don't Go Yet",
-      "artist": "Camila Cabello",
-      "genre": "Other"
-    },
-    {
       "id": "6acc4a5c77db71dfb2c044b0",
       "title": "Don't Hurt Me This Way",
       "artist": "Lukas Graham",
@@ -10335,21 +11549,9 @@
       "genre": "Other"
     },
     {
-      "id": "6acc4a6d02a2191af77e7756",
-      "title": "Don't Panic 2",
-      "artist": "Sleepy Hallow, Sheff G",
-      "genre": "Other"
-    },
-    {
       "id": "6acc4a6fec9add7147abc1c5",
       "title": "don’t panic",
       "artist": "sosocamo",
-      "genre": "Other"
-    },
-    {
-      "id": "6acc4a700a4c25ed72d2195a",
-      "title": "Don't Pass On Love",
-      "artist": "GASHI",
       "genre": "Other"
     },
     {
@@ -10395,12 +11597,6 @@
       "genre": "Other"
     },
     {
-      "id": "6acc4a89048f1c810d4d99a5",
-      "title": "Donde Quiera Que Estés",
-      "artist": "Selena, Barrio Boyzz",
-      "genre": "Other"
-    },
-    {
       "id": "6acc4a8b86ff0bbd12d8b7cc",
       "title": "DÓNDE",
       "artist": "Kapo, Ryan Castro",
@@ -10434,12 +11630,6 @@
       "id": "6acc4a971d6bc07ea7f2f3bc",
       "title": "Dopamine",
       "artist": "JON VINYL",
-      "genre": "Other"
-    },
-    {
-      "id": "6acc4a97238f92140cc7d035",
-      "title": "Dopa(MINE)",
-      "artist": "Joony",
       "genre": "Other"
     },
     {
@@ -10596,18 +11786,19 @@
       "id": "6acc4ad405b6105854f64aa1",
       "title": "Dreaming Of You",
       "artist": "Selena",
-      "genre": "Other"
+      "genre": "Other",
+      "review_reason": "conflicting catalog genres",
+      "candidate_genres": [
+        "Latin",
+        "Latin Pop",
+        "Pop",
+        "Soundtrack"
+      ]
     },
     {
       "id": "6acc4ad64ca7a7d7f3ca5137",
       "title": "Dreams - 2004 Remaster",
       "artist": "Fleetwood Mac",
-      "genre": "Other"
-    },
-    {
-      "id": "6acc4ad7e4c79e00495764c8",
-      "title": "Dreams (Interlude)",
-      "artist": "A$AP Rocky",
       "genre": "Other"
     },
     {
@@ -10632,12 +11823,6 @@
       "id": "6acc4ae2356c568108dfd032",
       "title": "drift away",
       "artist": "Amelie Lens",
-      "genre": "Other"
-    },
-    {
-      "id": "6acc4ae5b06cac6a221f2697",
-      "title": "DRIFTING IN TOKYO",
-      "artist": "Joony",
       "genre": "Other"
     },
     {
@@ -10689,21 +11874,9 @@
       "genre": "Other"
     },
     {
-      "id": "6acc4afead2a09cc793c9eb1",
-      "title": "Droppin Jewels",
-      "artist": "Young Thug",
-      "genre": "Other"
-    },
-    {
       "id": "6acc4b0213960af54e667b6d",
       "title": "Drug Love",
       "artist": "Hurricane Wisdom",
-      "genre": "Other"
-    },
-    {
-      "id": "6acc4b03e4415ac4e774395a",
-      "title": "DRUGS AND FASHION",
-      "artist": "Joony",
       "genre": "Other"
     },
     {
@@ -10752,12 +11925,6 @@
       "id": "6acc4b1acef56c9dafa92218",
       "title": "Dunk Contest",
       "artist": "Cash Cobain",
-      "genre": "Other"
-    },
-    {
-      "id": "6acc4b1dd745a914b0861cce",
-      "title": "Dusa (feat. Kevin Gates)",
-      "artist": "FL Dusa, Kevin Gates",
       "genre": "Other"
     },
     {
@@ -10836,12 +12003,6 @@
       "id": "6acc4b36a94aead98bd0a846",
       "title": "Eastside",
       "artist": "G Herbo",
-      "genre": "Other"
-    },
-    {
-      "id": "6acc4b3d4f0978495a1aec01",
-      "title": "Easy",
-      "artist": "Camila Cabello",
       "genre": "Other"
     },
     {
@@ -11018,12 +12179,6 @@
       "genre": "Other"
     },
     {
-      "id": "6acc4b878226855d27deaf60",
-      "title": "Electric Body (feat. ScHoolboy Q)",
-      "artist": "A$AP Rocky, ScHoolboy Q",
-      "genre": "Other"
-    },
-    {
       "id": "6acc4b8bcb12ad1c15190aef",
       "title": "Electrica",
       "artist": "Tokischa, rosmailin wa",
@@ -11072,21 +12227,9 @@
       "genre": "Other"
     },
     {
-      "id": "6acc4b9c6585721394ea4597",
-      "title": "Embargo",
-      "artist": "Jordan Ward, Joony",
-      "genre": "Other"
-    },
-    {
       "id": "6acc4b9cb7ce85fccc4b6146",
       "title": "Ember (Remind Me)",
       "artist": "Kuzi Cee",
-      "genre": "Other"
-    },
-    {
-      "id": "6acc4b9e82f8436781dd6c5c",
-      "title": "Embers",
-      "artist": "Owl City",
       "genre": "Other"
     },
     {
@@ -11110,12 +12253,6 @@
       "id": "6acc4ba253d875405e067159",
       "title": "En Bajita",
       "artist": "Young Martino, Mora",
-      "genre": "Other"
-    },
-    {
-      "id": "6acc4ba48a3ba66e95596181",
-      "title": "Empire State Of Mind",
-      "artist": "JAŸ-Z, Alicia Keys",
       "genre": "Other"
     },
     {
@@ -11383,13 +12520,23 @@
       "id": "6acc4c21dc85525bc81f63c0",
       "title": "Essence (feat. Justin Bieber & Tems)",
       "artist": "Wizkid, Justin Bieber, Tems",
-      "genre": "Other"
+      "genre": "Other",
+      "review_reason": "conflicting catalog genres",
+      "candidate_genres": [
+        "Afrobeats",
+        "Pop"
+      ]
     },
     {
       "id": "6acc4c22ce0c51f82b25b06c",
       "title": "Essence (feat. Tems)",
       "artist": "Wizkid, Tems",
-      "genre": "Other"
+      "genre": "Other",
+      "review_reason": "conflicting catalog genres",
+      "candidate_genres": [
+        "Afrobeats",
+        "Pop"
+      ]
     },
     {
       "id": "6acc4c282a4794d3f84220cb",
@@ -11425,12 +12572,6 @@
       "id": "6acc4c3332fc54eb351e5267",
       "title": "esto no mueRE",
       "artist": "Remers",
-      "genre": "Other"
-    },
-    {
-      "id": "6acc4c367407041e55aa1aeb",
-      "title": "ESTE",
-      "artist": "El Alfa, Nfasis",
       "genre": "Other"
     },
     {
@@ -11542,12 +12683,6 @@
       "genre": "Other"
     },
     {
-      "id": "6acc4c61d50b9e20f931cd9a",
-      "title": "EVERYDAY",
-      "artist": "Joony",
-      "genre": "Other"
-    },
-    {
       "id": "6acc4c63670d7ac6e31bf7c4",
       "title": "Everybody Wants To Rule The World",
       "artist": "Tears For Fears",
@@ -11563,12 +12698,6 @@
       "id": "6acc4c65683464e30c3082b2",
       "title": "Everything At Once",
       "artist": "Dinosaur Jr.",
-      "genre": "Other"
-    },
-    {
-      "id": "6acc4c6e8227df08462d6a84",
-      "title": "EVERYTHING",
-      "artist": "Joony",
       "genre": "Other"
     },
     {
@@ -11686,12 +12815,6 @@
       "genre": "Other"
     },
     {
-      "id": "6acc4f13a5027fea5363be36",
-      "title": "First",
-      "artist": "Tems",
-      "genre": "Other"
-    },
-    {
       "id": "6acc4f1aca44e985594b890f",
       "title": "Flaka",
       "artist": "The Prodigiez, Maluma, Kapo, Maisak, Hamilton, Zaider",
@@ -11785,12 +12908,6 @@
       "id": "6acc4f4935caf653ad7f5dd8",
       "title": "Fly (Someone You Love)",
       "artist": "Joyce Wrice",
-      "genre": "Other"
-    },
-    {
-      "id": "6acc4f49ce6bac98c661a7c3",
-      "title": "Flows, Pt. 2",
-      "artist": "Sheff G, Sleepy Hallow",
       "genre": "Other"
     },
     {
@@ -11920,12 +13037,6 @@
       "genre": "Other"
     },
     {
-      "id": "6acc4f89bd33c86f2600cebc",
-      "title": "Forever & Always",
-      "artist": "Armin van Buuren, Gareth Emery, Owl City",
-      "genre": "Other"
-    },
-    {
       "id": "6acc4f8c17d1949362cfdf28",
       "title": "Forever and a Day",
       "artist": "Tamia",
@@ -11998,12 +13109,6 @@
       "genre": "Other"
     },
     {
-      "id": "6acc4fa4e1d6393c6630088d",
-      "title": "Fountains (with Tems)",
-      "artist": "Drake, Tems",
-      "genre": "Other"
-    },
-    {
       "id": "6acc4fa5f2e44337fbdc50b3",
       "title": "Found (feat. Brent Faiyaz)",
       "artist": "Tems, Brent Faiyaz",
@@ -12034,12 +13139,6 @@
       "genre": "Other"
     },
     {
-      "id": "6acc4fb140b909d98b6da043",
-      "title": "fragile (feat. WRENN)",
-      "artist": "gnash, WRENN",
-      "genre": "Other"
-    },
-    {
       "id": "6acc4fb4dfbb1269039b09e4",
       "title": "Fragile",
       "artist": "Madonna",
@@ -12055,12 +13154,6 @@
       "id": "6acc4fb877dbad35aceb1ad9",
       "title": "Fragments",
       "artist": "ILLENIUM, Natalie Taylor",
-      "genre": "Other"
-    },
-    {
-      "id": "6acc4fbd9553eb2cac5c75a3",
-      "title": "FRANCHISE (feat. Young Thug & M.I.A.)",
-      "artist": "Travis Scott, Young Thug, M.I.A.",
       "genre": "Other"
     },
     {
@@ -12184,12 +13277,6 @@
       "genre": "Other"
     },
     {
-      "id": "6acc500466c94d8af47d54e8",
-      "title": "FSU (feat. GASHI & Rich The Kid)",
-      "artist": "Jay Park, GASHI, Rich The Kid",
-      "genre": "Other"
-    },
-    {
       "id": "6acc500583074eb8c88dd9f3",
       "title": "fuck TMZ",
       "artist": "Young Miko",
@@ -12268,27 +13355,9 @@
       "genre": "Other"
     },
     {
-      "id": "6acc50203fe947567cf7f194",
-      "title": "FULANITO",
-      "artist": "Becky G, El Alfa",
-      "genre": "Other"
-    },
-    {
-      "id": "6acc502062a87f0cf61568dc",
-      "title": "Fumes",
-      "artist": "EDEN, gnash",
-      "genre": "Other"
-    },
-    {
       "id": "6acc502668b365d4be697eb5",
       "title": "Funhouse",
       "artist": "P!nk",
-      "genre": "Other"
-    },
-    {
-      "id": "6acc502683074eb8c88dda15",
-      "title": "Funny How",
-      "artist": "Kevin Gates",
       "genre": "Other"
     },
     {
@@ -12316,12 +13385,6 @@
       "genre": "Other"
     },
     {
-      "id": "6acc5034295c5748945a6e3b",
-      "title": "FYTB (FEAT. JOONY)",
-      "artist": "Brent Faiyaz, Joony",
-      "genre": "Other"
-    },
-    {
       "id": "6acc5038d0fe0746950451b9",
       "title": "Gafas Pal Sol",
       "artist": "Sech, Eladio Carrion",
@@ -12331,18 +13394,6 @@
       "id": "6acc5039bd45196ffe36e045",
       "title": "G4L",
       "artist": "Rihanna",
-      "genre": "Other"
-    },
-    {
-      "id": "6acc503ae4528c295ee5bedf",
-      "title": "Gabriela (with Young Miko) - Young Miko Remix",
-      "artist": "KATSEYE, Young Miko",
-      "genre": "Other"
-    },
-    {
-      "id": "6acc503d7407041e55aa39ed",
-      "title": "Galaxies",
-      "artist": "Owl City",
       "genre": "Other"
     },
     {
@@ -12361,12 +13412,6 @@
       "id": "6acc504883074eb8c88dddab",
       "title": "Gang (feat. Lil Bibby)",
       "artist": "G Herbo",
-      "genre": "Other"
-    },
-    {
-      "id": "6acc504a31162870f9bf03f4",
-      "title": "Gangsta",
-      "artist": "Free Nationals, A$AP Rocky, Anderson .Paak",
       "genre": "Other"
     },
     {
@@ -12496,12 +13541,6 @@
       "genre": "Other"
     },
     {
-      "id": "6acc507e9dc163131ed4c866",
-      "title": "Get it Right (feat. Asake)",
-      "artist": "Tems, Asake",
-      "genre": "Other"
-    },
-    {
       "id": "6acc507ec91677ec59210e01",
       "title": "Get It",
       "artist": "Stevie Wonder, Michael Jackson",
@@ -12529,12 +13568,6 @@
       "id": "6acc5088755912597e168df0",
       "title": "Get the Party Started",
       "artist": "P!nk",
-      "genre": "Other"
-    },
-    {
-      "id": "6acc5088ec1b425abac70d1e",
-      "title": "get well soon (feat. liphemra)",
-      "artist": "gnash",
       "genre": "Other"
     },
     {
@@ -12694,12 +13727,6 @@
       "genre": "Other"
     },
     {
-      "id": "6acc50cbdc8340104a9d51cd",
-      "title": "Girls, Girls, Girls",
-      "artist": "JAŸ-Z",
-      "genre": "Other"
-    },
-    {
       "id": "6acc50cd99217f827611b584",
       "title": "Give It Away",
       "artist": "Africaine, Nonso Amadi",
@@ -12749,12 +13776,6 @@
       "id": "6acc50df764e58aeba6850da",
       "title": "Glizzy Walk 2.5",
       "artist": "YOVNGCHIMI, Eladio Carrion, Hydro",
-      "genre": "Other"
-    },
-    {
-      "id": "6acc50e01570e9de11e0df81",
-      "title": "Global Access (feat. Nate Ruess)",
-      "artist": "Young Thug, Nate Ruess",
       "genre": "Other"
     },
     {
@@ -12836,12 +13857,6 @@
       "genre": "Other"
     },
     {
-      "id": "6acc5101788f693e414ec174",
-      "title": "GOD DID (feat. Rick Ross, Lil Wayne, JAY-Z, John Legend & Fridayy)",
-      "artist": "DJ Khaled, Rick Ross, Lil Wayne, JAŸ-Z, John Legend, Fridayy",
-      "genre": "Other"
-    },
-    {
       "id": "6acc5105ca4792dee0e1e8ce",
       "title": "God Loves Us",
       "artist": "Jor'dan Armstrong",
@@ -12851,18 +13866,6 @@
       "id": "6acc510a4cd392d5400f0fb6",
       "title": "God's Praises",
       "artist": "Holly Halliwell",
-      "genre": "Other"
-    },
-    {
-      "id": "6acc510c42bbd7001c24d71a",
-      "title": "GODSPEED",
-      "artist": "Camila Cabello",
-      "genre": "Other"
-    },
-    {
-      "id": "6acc510e2b91c1b5b6415bb0",
-      "title": "Gogo Dance",
-      "artist": "El Alfa, Chael Produciendo",
       "genre": "Other"
     },
     {
@@ -12881,12 +13884,6 @@
       "id": "6acc5114edb55e41a058a15d",
       "title": "Gold Diggers",
       "artist": "Natos y Waor, Al Safir",
-      "genre": "Other"
-    },
-    {
-      "id": "6acc51177a96060eb6674581",
-      "title": "Gold",
-      "artist": "Owl City",
       "genre": "Other"
     },
     {
@@ -12980,12 +13977,6 @@
       "genre": "Other"
     },
     {
-      "id": "6acc5147ca263593428234a1",
-      "title": "Good Time",
-      "artist": "Owl City, Carly Rae Jepsen",
-      "genre": "Other"
-    },
-    {
       "id": "6acc514b55ba18a957ca3365",
       "title": "Good Weed Bad B*tch",
       "artist": "K CAMP",
@@ -13055,12 +14046,6 @@
       "id": "6acc516da99bd07f20464dc1",
       "title": "GRANDMA TAUGHT ME",
       "artist": "Christopher Syncere",
-      "genre": "Other"
-    },
-    {
-      "id": "6acc516e91b7325a388e1518",
-      "title": "granola bars",
-      "artist": "gnash",
       "genre": "Other"
     },
     {
@@ -13153,12 +14138,6 @@
       "genre": "Other"
     },
     {
-      "id": "6acc519190ad0fa4e6ab5ba7",
-      "title": "Gucci Grocery Bag",
-      "artist": "Young Thug",
-      "genre": "Other"
-    },
-    {
       "id": "6acc51924abb389ef4a40fda",
       "title": "Guilty Pleasure",
       "artist": "KAYAM",
@@ -13243,12 +14222,6 @@
       "genre": "Other"
     },
     {
-      "id": "6acc56d02a4794d3f84248ae",
-      "title": "Good Time",
-      "artist": "Owl City, Carly Rae Jepsen",
-      "genre": "Other"
-    },
-    {
       "id": "6acc56d4524a6f283b2bdba4",
       "title": "Good To Know (feat. Masego, Kp & Ambriia)",
       "artist": "Ciscero, Masego, Ambriia, KP_",
@@ -13318,12 +14291,6 @@
       "id": "6acc56f54c3402836caeb66e",
       "title": "Grannys Baby",
       "artist": "Hurricane Wisdom",
-      "genre": "Other"
-    },
-    {
-      "id": "6acc56f84d1661e9905063ce",
-      "title": "granola bars",
-      "artist": "gnash",
       "genre": "Other"
     },
     {
@@ -13407,12 +14374,6 @@
       "id": "6acc571799ba517cd9dc18e1",
       "title": "Guasa, Guasa",
       "artist": "Tego Calderón",
-      "genre": "Other"
-    },
-    {
-      "id": "6acc57185cbc26b7692fbed2",
-      "title": "Gucci Grocery Bag",
-      "artist": "Young Thug",
       "genre": "Other"
     },
     {
@@ -13589,12 +14550,6 @@
       "genre": "Other"
     },
     {
-      "id": "6acc576024d4a89fd64af0f5",
-      "title": "Happy Birthday",
-      "artist": "Tempo, El Alfa",
-      "genre": "Other"
-    },
-    {
       "id": "6acc57665f46d2682bcec403",
       "title": "Happy Home",
       "artist": "HEDEGAARD, Lukas Graham",
@@ -13607,21 +14562,9 @@
       "genre": "Other"
     },
     {
-      "id": "6acc576b85dc2f9fcefa59da",
-      "title": "Happy Survival (feat. Khruangbin)",
-      "artist": "Childish Gambino, Khruangbin",
-      "genre": "Other"
-    },
-    {
       "id": "6acc576d434e4a907d5c2b49",
       "title": "Hard For",
       "artist": "Kevin Gates",
-      "genre": "Other"
-    },
-    {
-      "id": "6acc576f968e74914eb69a58",
-      "title": "Hard Knock Life (Ghetto Anthem)",
-      "artist": "JAŸ-Z",
       "genre": "Other"
     },
     {
@@ -13634,12 +14577,6 @@
       "id": "6acc5777360981d6a6e807f3",
       "title": "Hasta Abajo",
       "artist": "Don Omar",
-      "genre": "Other"
-    },
-    {
-      "id": "6acc577e3c7f31c6de065af8",
-      "title": "Hasta Los Dientes",
-      "artist": "Camila Cabello, Maria Becerra",
       "genre": "Other"
     },
     {
@@ -13685,18 +14622,6 @@
       "genre": "Other"
     },
     {
-      "id": "6acc579931162870f9bf1703",
-      "title": "Havana (feat. Young Thug)",
-      "artist": "Camila Cabello, Young Thug",
-      "genre": "Other"
-    },
-    {
-      "id": "6acc579940b909d98b6db69c",
-      "title": "Have Some Love",
-      "artist": "Childish Gambino",
-      "genre": "Other"
-    },
-    {
       "id": "6acc579f564f4429bfb170eb",
       "title": "Havin' Shit",
       "artist": "G Herbo",
@@ -13724,12 +14649,6 @@
       "id": "6acc57a649373a6bbcdd9acb",
       "title": "HBA",
       "artist": "Playboi Carti",
-      "genre": "Other"
-    },
-    {
-      "id": "6acc57a9dea17ff51fd42f8f",
-      "title": "HE KNOWS (feat. Lil Nas X)",
-      "artist": "Camila Cabello, Lil Nas X",
       "genre": "Other"
     },
     {
@@ -13766,12 +14685,6 @@
       "id": "6acc57b366944353298ace85",
       "title": "heal your heart",
       "artist": "R2R MOE",
-      "genre": "Other"
-    },
-    {
-      "id": "6acc57b46db2d30e348cd243",
-      "title": "Heal You",
-      "artist": "Kevin Gates",
       "genre": "Other"
     },
     {
@@ -13817,12 +14730,6 @@
       "genre": "Other"
     },
     {
-      "id": "6acc57cd8227df08462d92b9",
-      "title": "Heaven",
-      "artist": "GASHI",
-      "genre": "Other"
-    },
-    {
       "id": "6acc57d04bba10fed902b6d4",
       "title": "Heavenly Father",
       "artist": "Isaiah Rashad",
@@ -13838,12 +14745,6 @@
       "id": "6acc57d770a835c0185c430c",
       "title": "HEEL",
       "artist": "Leon Thomas",
-      "genre": "Other"
-    },
-    {
-      "id": "6acc57da29fc2d48cca942be",
-      "title": "Helicoptero",
-      "artist": "El Alfa",
       "genre": "Other"
     },
     {
@@ -13877,12 +14778,6 @@
       "genre": "Other"
     },
     {
-      "id": "6acc57e6ade8bd902decf59d",
-      "title": "HELLCAT",
-      "artist": "Joony",
-      "genre": "Other"
-    },
-    {
       "id": "6acc57e7086d7b9f31d9449d",
       "title": "HELLCAT",
       "artist": "Eladio Carrion, YOVNGCHIMI, Hydro",
@@ -13898,12 +14793,6 @@
       "id": "6acc57ea345f6d49983ea8af",
       "title": "Hello (feat. Dragonette)",
       "artist": "Martin Solveig, Dragonette",
-      "genre": "Other"
-    },
-    {
-      "id": "6acc57ec1a54cbaf96cbe9b1",
-      "title": "Hello Seattle",
-      "artist": "Owl City",
       "genre": "Other"
     },
     {
@@ -13976,12 +14865,6 @@
       "id": "6acc5804a82ea17536526b7e",
       "title": "Hey Lover!",
       "artist": "Wabie",
-      "genre": "Other"
-    },
-    {
-      "id": "6acc5805ff566a5084e25ea8",
-      "title": "Hey Ma (with Pitbull & J Balvin feat. Camila Cabello)",
-      "artist": "Pitbull, J Balvin, Camila Cabello",
       "genre": "Other"
     },
     {
@@ -14092,12 +14975,6 @@
       "genre": "Other"
     },
     {
-      "id": "6acc584886ff0bbd12d8e6f5",
-      "title": "Hold On",
-      "artist": "Tems",
-      "genre": "Other"
-    },
-    {
       "id": "6acc58494f0978495a1b1291",
       "title": "Hold On To Jesus",
       "artist": "Band Reeves",
@@ -14170,18 +15047,6 @@
       "genre": "Other"
     },
     {
-      "id": "6acc5866dd12d9756e5c1485",
-      "title": "home",
-      "artist": "gnash",
-      "genre": "Other"
-    },
-    {
-      "id": "6acc5869dd545b308ac1250f",
-      "title": "Homebody",
-      "artist": "Jordan Ward, Joony",
-      "genre": "Other"
-    },
-    {
       "id": "6acc586a4687ffa7ae3d95bb",
       "title": "Homie",
       "artist": "K CAMP",
@@ -14229,12 +15094,6 @@
       "genre": "Other"
     },
     {
-      "id": "6acc58795703d252760a9b11",
-      "title": "Hookah",
-      "artist": "Tyga, Young Thug",
-      "genre": "Other"
-    },
-    {
       "id": "6acc587a723c9ffd35cbd9ab",
       "title": "Hooka",
       "artist": "Don Omar, Plan B",
@@ -14268,18 +15127,6 @@
       "id": "6acc5887136b9cc45e8f6b92",
       "title": "Hope (feat. Cee-Lo)",
       "artist": "Twista, CeeLo Green",
-      "genre": "Other"
-    },
-    {
-      "id": "6acc58890ec11cc3e289c66e",
-      "title": "Hot Air Balloon",
-      "artist": "Owl City",
-      "genre": "Other"
-    },
-    {
-      "id": "6acc588934dff2c40cc250e8",
-      "title": "Hot (Remix) [feat. Gunna and Travis Scott]",
-      "artist": "Young Thug, Travis Scott, Gunna",
       "genre": "Other"
     },
     {
@@ -14349,12 +15196,6 @@
       "genre": "Other"
     },
     {
-      "id": "6acc58a3ccd58213b63796ea",
-      "title": "House Wren",
-      "artist": "Owl City",
-      "genre": "Other"
-    },
-    {
       "id": "6acc58a6ffe7dc47b76dd162",
       "title": "HOV Lane",
       "artist": "Nicki Minaj",
@@ -14385,5 +15226,5 @@
       "genre": "Other"
     }
   ],
-  "searched_terms": 40
+  "searched_terms": 60
 }
