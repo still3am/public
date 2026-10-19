@@ -12,7 +12,7 @@ function DeviceConnectPanel({onClose}){
  const thisDevice=/iPhone|iPad|iPod|Android/.test(navigator.userAgent)?"This phone or tablet":"This computer";
  const DeviceIcon=/iPhone|iPad|iPod|Android/.test(navigator.userAgent)?Smartphone:Monitor;
  return <Dialog open onOpenChange={open=>{if(!open)onClose();}}>
-  <DialogContent className="device-connect" data-public-dialog>
+  <DialogContent className="device-connect" data-public-dialog onKeyDown={event=>{if(event.key==="Escape")event.stopPropagation();}} onTouchStart={event=>event.stopPropagation()} onTouchMove={event=>event.stopPropagation()} onTouchEnd={event=>event.stopPropagation()}>
    <div className="device-connect-heading">
     <span className="device-connect-brand">PUBLIC.</span>
     <div className="device-connect-art" aria-hidden="true"><Monitor strokeWidth={1.25}/><Speaker strokeWidth={1.25}/><Smartphone strokeWidth={1.25}/></div>
@@ -22,7 +22,7 @@ function DeviceConnectPanel({onClose}){
    <div className="device-connect-list" aria-label="Audio outputs">
     <button type="button" className="device-connect-row" disabled={s.busy||(!s.canRoute&&!wireless)} onClick={()=>wireless?controller.wireless():controller.select({deviceId:"",label:"System default"})}>
      <span className="device-connect-icon"><DeviceIcon size={25}/></span>
-     <span className="device-connect-row-text"><strong>{thisDevice}</strong><small>{!s.sinkId&&!wireless?"Playing through your system audio":"System default output"}</small></span>
+     <span className="device-connect-row-text"><strong>{thisDevice}</strong><small>{!s.sinkId&&!wireless?"Current system audio output":"System default output"}</small></span>
      {!s.sinkId&&!wireless&&<Check size={20} aria-label="Selected"/>}
     </button>
     {s.sinkId&&!s.outputs.some(d=>d.deviceId===s.sinkId)&&<div className="device-connect-row"><span className="device-connect-icon"><Headphones size={25}/></span><span className="device-connect-row-text"><strong>{s.label}</strong><small>Selected output</small></span><Check size={20}/></div>}
