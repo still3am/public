@@ -24,7 +24,7 @@ function Row({ item, onPick, roomy }) {
 
 /** Standard actions, divided into groups, then any surface-specific extras. */
 /** @param {any} props */
-export default function TrackMenuList({ standard, manage, extras, onPick, roomy }) {
+export default function TrackMenuList({ standard, manage, extras, onPick, roomy, children }) {
   return (
     <div role="menu" className="py-1">
       {standard.map((item, i) => (
@@ -33,6 +33,7 @@ export default function TrackMenuList({ standard, manage, extras, onPick, roomy 
           <Row item={item} onPick={onPick} roomy={roomy} />
         </Fragment>
       ))}
+      {children&&<><div className="my-1 h-px bg-border"/>{children}</>}
       {[...extras, ...manage].length > 0 && <div className="my-1 h-px bg-border" />}
       {[...extras, ...manage].map((item) => (
         <Row key={item.label} item={item} onPick={onPick} roomy={roomy} />
