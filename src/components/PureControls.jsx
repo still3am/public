@@ -11,6 +11,7 @@ export default function PureControls({compact=false}){
  const update=values=>{p.comparePure(false);return p.setPureValues(values);};
  const release=()=>p.comparePure(false);
  const canCompare=active&&!!p.currentTrack&&p.isPlaying;
+ useEffect(()=>{if(!canCompare)p.comparePure(false);},[canCompare,p.comparePure]);
  const status=p.pureSuspended?"Paused for wireless playback":p.pureComparing?"Comparing · PURE bypassed":active?(selected?.name||"Custom tuning"):"Off · enable to start";
  return <section onTouchStart={event=>event.stopPropagation()} onTouchMove={event=>event.stopPropagation()} onTouchEnd={event=>event.stopPropagation()} aria-label="PURE sound enhancement" className={"pure-controls "+(compact?"is-compact":"")}>
   <div className="pure-control-header">
