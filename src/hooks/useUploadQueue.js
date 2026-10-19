@@ -19,7 +19,7 @@ import { ensureHighResCover } from "@/lib/coverImage";
 let uid = 0;
 const nextId = () => `u${Date.now()}_${uid++}`;
 
-// Optional, user-requested fallback. Local tags and manual details always take priority.
+// Auto-detects explicit flag + cleans up title/artist using AI (internet context).
 /** @returns {Promise<any>} */
 async function detectMeta(title, artist) {
   try {
@@ -58,32 +58,6 @@ export function useUploadQueue({ user, isAdmin }) {
  const catalog=useRef([]),assets=useRef(new Map()),busy=useRef(new Set()),claimedHashes=useRef(new Map()),generation=useRef(0),batchBusy=useRef(false);
  useEffect(()=>{generation.current++;setItems([]);setDupes(null);setUploadedCount(0);setCatalogError('');catalog.current=[];assets.current.clear();claimedHashes.current.clear();busy.current.clear();batchBusy.current=false;return()=>{generation.current++;itemsRef.current.forEach(item=>{if(item.coverPreviewUrl)URL.revokeObjectURL(item.coverPreviewUrl);});};},[user?.id]);
  const patch=(id,data)=>setItems(prev=>prev.map(it=>it.id===id?{...it,...data}:it));
- const metadataBusy=useRef(new Set()),metadataEdits=useRef(new Map());
- function editDetails(id,data){
-  const revisions=metadataEdits.current.get(id)||{};
-  for(const field of ['title','artist','genre','explicit'])if(Object.hasOwn(data,field))revisions[field]=(revisions[field]||0)+1;
-  metadataEdits.current.set(id,revisions);patch(id,data);
- }
- async function fillMissingDetails(id){
-  const item=itemsRef.current.find(it=>it.id===id);
-  if(!user?.id||!item||item.status!=='ready'||metadataBusy.current.has(id))return;
-  if([item.title,item.artist,item.genre].every(value=>value?.trim()))return;
-  const epoch=generation.current,revisions={...metadataEdits.current.get(id)};
-  metadataBusy.current.add(id);patch(id,{detecting:true,metadataError:''});
-  try{
-   const meta=await detectMeta(item.title,item.artist);
-   if(epoch!==generation.current)return;
-   setItems(prev=>prev.map(it=>{
-    if(it.id!==id||it.status!=='ready')return it;
-    const next={...it,detecting:false,metadataError:meta?'':'AI could not fill the details. You can enter them yourself.'};
-    for(const field of ['title','artist','genre']){
-     const value=typeof meta?.[field]==='string'?meta[field].trim():'';
-     if(!it[field]?.trim()&&value&&(metadataEdits.current.get(id)?.[field]||0)===(revisions[field]||0)&&(field!=='genre'||GENRES.includes(value)))next[field]=value.slice(0,200);
-    }
-    return next;
-   }));
-  }finally{metadataBusy.current.delete(id);}
- }
  async function refreshDuplicates(){
   const epoch=generation.current;
   try{const next=await readAllPages(opts=>base44.entities.Track.filter({},{sort:'-created_date',fields:['id','title','artist','duration_seconds','uploader_id','uploader_name','audio_url'],...opts}));if(epoch===generation.current){catalog.current=next;setCatalogError('');}}
@@ -108,19 +82,13 @@ export function useUploadQueue({ user, isAdmin }) {
    if(epoch!==generation.current)return;if(!itemsRef.current.some(row=>row.id===item.id))continue;
    const coverPreviewUrl=cover?URL.createObjectURL(cover):'';
    const analyzed={...item,title,artist,duration,audio_sha256:sha,coverFile:cover,coverPreviewUrl,status:'ready'};
-   assets.current.set(item.id,{sha});
-   setItems(prev=>prev.map(it=>{
-    if(it.id!==item.id)return it;
-    const edited=metadataEdits.current.get(item.id)||{};
-    return {...analyzed,...it,duration,audio_sha256:sha,
-     title:edited.title?it.title:title,artist:edited.artist?it.artist:artist,
-     coverFile:it.coverFile||cover,coverPreviewUrl:it.coverPreviewUrl||coverPreviewUrl,
-     status:'ready',detecting:false};
-   }));
+   assets.current.set(item.id,{sha});patch(item.id,{...analyzed,detecting:true});
    // Include this batch in duplicate comparisons, not only persisted songs.
    const local=catalog.current.concat(batch.filter(t=>t.id!==item.id&&assets.current.get(t.id)?.sha).map(t=>({...t,audio_sha256:assets.current.get(t.id).sha})));
    const hits=findDuplicateTracks(local,analyzed);warn(analyzed,hits);
-   // Missing fields remain editable; adding files never starts a paid AI request.
+   const meta=await detectMeta(title,artist);
+   if(epoch!==generation.current)return;
+   setItems(prev=>prev.map(it=>it.id!==item.id||it.status!=='ready'?it:{...it,detecting:false,explicit:it.explicit||!!meta?.explicit,title:it.title===title?(meta?.title?.trim()||it.title):it.title,artist:it.artist||meta?.artist?.trim()||'',genre:it.genre||(GENRES.includes(meta?.genre?.trim())?meta.genre.trim():'')}));
   }catch(e){if(epoch===generation.current)patch(item.id,{status:'error',detecting:false,error:e.message||'File analysis failed. Remove this file and try again.'});}}};
   await Promise.all(Array.from({length:Math.min(2,batch.length)},worker));
  }
@@ -130,7 +98,7 @@ export function useUploadQueue({ user, isAdmin }) {
  }
  async function uploadOne(given){
   const item=itemsRef.current.find(it=>it.id===given.id)||given;
-  if(!user?.id||busy.current.has(item.id)||metadataBusy.current.has(item.id)||['done','analyzing','error'].includes(item.status))return;
+  if(!user?.id||busy.current.has(item.id)||['done','analyzing','error'].includes(item.status))return;
   busy.current.add(item.id);const epoch=generation.current;patch(item.id,{status:'uploading',error:''});
   try{
    if(!item.rightsConfirmed)throw Error('Confirm your rights to this audio, artwork, lyrics and any attached video.');
@@ -180,5 +148,5 @@ export function useUploadQueue({ user, isAdmin }) {
   finally{if(epoch===generation.current)batchBusy.current=false;}
  }
  const clearFinished=()=>{itemsRef.current.filter(it=>it.status==='done').forEach(it=>remove(it.id));};
- return {items,addFiles,remove,uploadOne,uploadAll,patch,editDetails,fillMissingDetails,dupes,setDupes,uploadedCount,catalogError,refreshDuplicates,clearFinished};
+ return {items,addFiles,remove,uploadOne,uploadAll,patch,dupes,setDupes,uploadedCount,catalogError,refreshDuplicates,clearFinished};
 }

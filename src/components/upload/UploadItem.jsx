@@ -20,7 +20,6 @@ export default function UploadItem({
   onChange,
   onRemove,
   onUpload,
-  onFillMissingDetails,
   disabled,
   isAdmin = false
 }) {
@@ -99,14 +98,6 @@ export default function UploadItem({
             
           </div>
 
-          {!locked && onFillMissingDetails && (!item.title.trim() || !hasArtist || !hasGenre) && <div className="space-y-1">
-            <button type="button" onClick={onFillMissingDetails} disabled={disabled || item.detecting} className="inline-flex min-h-10 items-center gap-2 rounded-full border border-border px-3 text-xs font-semibold disabled:opacity-50">
-              {item.detecting ? <Loader2 size={13} className="animate-spin" /> : <Sparkles size={13} />}
-              {item.detecting ? 'Finding missing details…' : 'Fill missing details with AI'}
-            </button>
-            <p className="text-xs text-foreground/50">Optional · uses AI credits. Your existing details stay as entered.</p>
-          </div>}
-          {item.metadataError && <p role="status" className="text-xs text-foreground/60">{item.metadataError}</p>}
           <MusicVideoPicker file={item.videoFile} onChange={videoFile=>onChange({videoFile,rightsConfirmed:false})} disabled={locked || disabled} />
           <div className="grid grid-cols-2 gap-2">
             {toggles.map(({ key, label, icon: Icon }) =>
@@ -160,7 +151,7 @@ export default function UploadItem({
 
       <button
         onClick={onUpload}
-        disabled={uploading || enhancing || disabled || item.detecting || item.status==="error"}
+        disabled={uploading || enhancing || disabled || item.status==="error"}
         className="upload-item-action flex items-center justify-center gap-2 mx-3 mb-3 px-4 rounded-xl bg-foreground text-background text-xs sm:text-sm font-semibold disabled:opacity-50 active:opacity-80 transition">
         
           {uploading || enhancing ?
