@@ -1561,6 +1561,45 @@
       "match": "exact artist and title"
     },
     {
+      "id": "6a6ae08bf80227c0d6202cef",
+      "title": "I Know I Know",
+      "artist": "STELLA LEFTY",
+      "before": "Other",
+      "genre": "Country",
+      "source_genre": "Country",
+      "source_title": "I Know I Know",
+      "source_artist": "STELLA LEFTY",
+      "source_album": "I Know I Know - Single",
+      "source_url": "https://music.apple.com/us/album/i-know-i-know/1894354136?i=1894354139&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6a6ae097d842811f2ca1636a",
+      "title": "Last Night",
+      "artist": "Morgan Wallen",
+      "before": "Other",
+      "genre": "Country",
+      "source_genre": "Country",
+      "source_title": "Last Night",
+      "source_artist": "Morgan Wallen",
+      "source_album": "One Thing At A Time",
+      "source_url": "https://music.apple.com/us/album/last-night/1818408501?i=1818408858&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6a6ae0aa12b09871ac59c4ff",
+      "title": "Mad at You (with Gallant)",
+      "artist": "Noah Cyrus, Gallant",
+      "before": "Other",
+      "genre": "Pop",
+      "source_genre": "Pop",
+      "source_title": "Mad at You",
+      "source_artist": "Noah Cyrus & Gallant",
+      "source_album": "Mad at You - Single",
+      "source_url": "https://music.apple.com/us/album/mad-at-you/1435383841?i=1435384116&uo=4",
+      "match": "exact artist and title"
+    },
+    {
       "id": "6a6c49513fa42fc2993d83eb",
       "title": "Anxiety",
       "artist": "Black Eyed Peas, Papa Roach",
@@ -2250,6 +2289,19 @@
       "match": "exact artist and title"
     },
     {
+      "id": "6a6d367b86eaf52648532591",
+      "title": "Normal Struggles",
+      "artist": "La Reezy",
+      "before": "Other",
+      "genre": "Hip-Hop",
+      "source_genre": "Hip-Hop/Rap",
+      "source_title": "Normal Struggles",
+      "source_artist": "La Reezy",
+      "source_album": "Skiddle Bandana",
+      "source_url": "https://music.apple.com/us/album/normal-struggles/6775341860?i=6775342174&uo=4",
+      "match": "exact artist and title"
+    },
+    {
       "id": "6a6d367c8a9cc3c7e453f230",
       "title": "Overthink (feat. Elmiene)",
       "artist": "Wale",
@@ -2260,6 +2312,19 @@
       "source_artist": "Wale & Elmiene",
       "source_album": "Overthink - Single",
       "source_url": "https://music.apple.com/us/album/overthink/6793423256?i=6793423261&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6a6d367f316c461969d9c8f4",
+      "title": "PAPER LOW",
+      "artist": "DaBaby",
+      "before": "Other",
+      "genre": "Hip-Hop",
+      "source_genre": "Hip-Hop/Rap",
+      "source_title": "PAPER LOW",
+      "source_artist": "DaBaby",
+      "source_album": "PAPER LOW - Single",
+      "source_url": "https://music.apple.com/us/album/paper-low/1860506439?i=1860506580&uo=4",
       "match": "exact artist and title"
     },
     {
@@ -2354,6 +2419,19 @@
       "match": "exact artist and title"
     },
     {
+      "id": "6a6d369ff849dafc68945364",
+      "title": "Still Virgil",
+      "artist": "That Mexican OT",
+      "before": "Other",
+      "genre": "Hip-Hop",
+      "source_genre": "Hip-Hop/Rap",
+      "source_title": "Still Virgil",
+      "source_artist": "That Mexican OT",
+      "source_album": "Still Virgil - Single",
+      "source_url": "https://music.apple.com/us/album/still-virgil/1887882726?i=1887882728&uo=4",
+      "match": "exact artist and title"
+    },
+    {
       "id": "6a6d36a9cea4056d9cc8b7b6",
       "title": "Super Freaky Girl (with JT & BIA feat. Katie Got Bandz, Akbar V & Maliibu Mitch) - Queen Mix",
       "artist": "Nicki Minaj, JT, BIA, Katie Got Bandz, Akbar V, Maliibu Miitch",
@@ -2419,6 +2497,45 @@
       "match": "exact artist and title"
     },
     {
+      "id": "6a6db88a821627b54377f9cf",
+      "title": "Circulo Cerrado",
+      "artist": "Grupo Recluta",
+      "before": "Other",
+      "genre": "Regional Mexican",
+      "source_genre": "Música Mexicana",
+      "source_title": "Círculo Cerrado",
+      "source_artist": "Grupo Recluta & Efecto Elegante",
+      "source_album": "Círculo Cerrado - Single",
+      "source_url": "https://music.apple.com/us/album/c%C3%ADrculo-cerrado/6791209130?i=6791209141&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6a6db8a4531dfc7470cd98a3",
+      "title": "México Sigue De Pie",
+      "artist": "Los Tigres Del Norte",
+      "before": "Other",
+      "genre": "Regional Mexican",
+      "source_genre": "Música Mexicana",
+      "source_title": "México Sigue De Pie",
+      "source_artist": "Los Tigres del Norte",
+      "source_album": "México Sigue De Pie - Single",
+      "source_url": "https://music.apple.com/us/album/m%C3%A9xico-sigue-de-pie/6792109712?i=6792109934&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6a6db8c684ec099ea1f10664",
+      "title": "Todo El Año",
+      "artist": "Marca MP",
+      "before": "Other",
+      "genre": "Regional Mexican",
+      "source_genre": "Música Mexicana",
+      "source_title": "Todo El Año",
+      "source_artist": "Marca MP",
+      "source_album": "Todo El Año - Single",
+      "source_url": "https://music.apple.com/us/album/todo-el-a%C3%B1o/6793277057?i=6793277058&uo=4",
+      "match": "exact artist and title"
+    },
+    {
       "id": "6a6de1f2bf1ed39c441e3ea8",
       "title": "Irresistible",
       "artist": "Fall Out Boy, Demi Lovato",
@@ -2429,6 +2546,58 @@
       "source_artist": "Fall Out Boy",
       "source_album": "American Beauty / American Psycho",
       "source_url": "https://music.apple.com/us/album/irresistible/1440826504?i=1440826601&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6a6f17beea7046cf1b8310e3",
+      "title": "Fria",
+      "artist": "Salim Asencio",
+      "before": "Other",
+      "genre": "Latin",
+      "source_genre": "Latin",
+      "source_title": "Fria",
+      "source_artist": "Salim Asencio",
+      "source_album": "Fria - Single",
+      "source_url": "https://music.apple.com/us/album/fria/1896358062?i=6767048439&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6a6f18c7a43beffbc1a5a378",
+      "title": "Shorty Shorty (Steve's Version)",
+      "artist": "Steve Styles",
+      "before": "Other",
+      "genre": "Latin",
+      "source_genre": "Latin",
+      "source_title": "Shorty Shorty (Steve's Version)",
+      "source_artist": "Steve Styles",
+      "source_album": "Shorty Shorty (Steve's Version) - Single",
+      "source_url": "https://music.apple.com/us/album/shorty-shorty-steves-version/6788867395?i=6788867396&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6a7426f70d6925e4ad9e10e6",
+      "title": "São Paulo (feat. Anitta)",
+      "artist": "The Weeknd, Anitta",
+      "before": "Other",
+      "genre": "R&B",
+      "source_genre": "R&B/Soul",
+      "source_title": "São Paulo",
+      "source_artist": "The Weeknd & Anitta",
+      "source_album": "Hurry Up Tomorrow",
+      "source_url": "https://music.apple.com/us/album/s%C3%A3o-paulo/1793702595?i=1793702839&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6a768a975869b312ad603c26",
+      "title": "Trop tard",
+      "artist": "Nezar",
+      "before": "Other",
+      "genre": "Hip-Hop",
+      "source_genre": "Hip-Hop/Rap",
+      "source_title": "Trop tard",
+      "source_artist": "Nezar",
+      "source_album": "Trop tard - Single",
+      "source_url": "https://music.apple.com/us/album/trop-tard/1871705760?i=1871705761&uo=4",
       "match": "exact artist and title"
     },
     {
@@ -2468,6 +2637,19 @@
       "source_artist": "Chief Keef",
       "source_album": "Finally Rich",
       "source_url": "https://music.apple.com/us/album/hate-bein-sober-feat-50-cent-wiz-khalifa/1444005836?i=1444005849&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6a80d0d7df3692799d300f6b",
+      "title": "Songs About U",
+      "artist": "Tink, Summer Walker",
+      "before": "Other",
+      "genre": "R&B",
+      "source_genre": "R&B/Soul",
+      "source_title": "Songs About U",
+      "source_artist": "Tink & Summer Walker",
+      "source_album": "Winter's Diary 5",
+      "source_url": "https://music.apple.com/us/album/songs-about-u/1756397466?i=1756397716&uo=4",
       "match": "exact artist and title"
     },
     {
@@ -11318,27 +11500,6 @@
       "album_name": "Unknown Album"
     },
     {
-      "id": "6a6ae08bf80227c0d6202cef",
-      "title": "I Know I Know",
-      "artist": "STELLA LEFTY",
-      "genre": "Other",
-      "album_name": "I Know I Know"
-    },
-    {
-      "id": "6a6ae097d842811f2ca1636a",
-      "title": "Last Night",
-      "artist": "Morgan Wallen",
-      "genre": "Other",
-      "album_name": "One Thing At A Time"
-    },
-    {
-      "id": "6a6ae0aa12b09871ac59c4ff",
-      "title": "Mad at You (with Gallant)",
-      "artist": "Noah Cyrus, Gallant",
-      "genre": "Other",
-      "album_name": "Mad at You (with Gallant)"
-    },
-    {
       "id": "6a6ae60d0233a20428cbec92",
       "title": "Don't Blame Me (feat. Hunxho)",
       "artist": "Lithe, Hunxho",
@@ -11493,20 +11654,6 @@
       "album_name": "God Does Like Ugly"
     },
     {
-      "id": "6a6d367b86eaf52648532591",
-      "title": "Normal Struggles",
-      "artist": "La Reezy",
-      "genre": "Other",
-      "album_name": "Skiddle Bandana"
-    },
-    {
-      "id": "6a6d367f316c461969d9c8f4",
-      "title": "PAPER LOW",
-      "artist": "DaBaby",
-      "genre": "Other",
-      "album_name": "BE MORE GRATEFUL"
-    },
-    {
       "id": "6a6d367f7da023ee9ad8d2c1",
       "title": "On Your Own",
       "artist": "REASON, Deante' Hitchcock",
@@ -11587,13 +11734,6 @@
       "artist": "Peysoh",
       "genre": "Other",
       "album_name": "Unknown Album"
-    },
-    {
-      "id": "6a6d369ff849dafc68945364",
-      "title": "Still Virgil",
-      "artist": "That Mexican OT",
-      "genre": "Other",
-      "album_name": "Still Virgil"
     },
     {
       "id": "6a6d36a0724d1a8f5c7890de",
@@ -11743,44 +11883,9 @@
       "album_name": "Unknown Album"
     },
     {
-      "id": "6a6db88a821627b54377f9cf",
-      "title": "Circulo Cerrado",
-      "artist": "Grupo Recluta",
-      "genre": "Other",
-      "album_name": "Unknown Album"
-    },
-    {
-      "id": "6a6db8a4531dfc7470cd98a3",
-      "title": "México Sigue De Pie",
-      "artist": "Los Tigres Del Norte",
-      "genre": "Other",
-      "album_name": "Unknown Album"
-    },
-    {
-      "id": "6a6db8c684ec099ea1f10664",
-      "title": "Todo El Año",
-      "artist": "Marca MP",
-      "genre": "Other",
-      "album_name": "Unknown Album"
-    },
-    {
       "id": "6a6db8caa47935c2d1a10d7f",
       "title": "Todo Es Magia",
       "artist": "Agenda Ritual",
-      "genre": "Other",
-      "album_name": "Unknown Album"
-    },
-    {
-      "id": "6a6f17beea7046cf1b8310e3",
-      "title": "Fria",
-      "artist": "Salim Asencio",
-      "genre": "Other",
-      "album_name": ""
-    },
-    {
-      "id": "6a6f18c7a43beffbc1a5a378",
-      "title": "Shorty Shorty (Steve's Version)",
-      "artist": "Steve Styles",
       "genre": "Other",
       "album_name": "Unknown Album"
     },
@@ -11799,32 +11904,11 @@
       "album_name": "Unknown Album"
     },
     {
-      "id": "6a7426f70d6925e4ad9e10e6",
-      "title": "São Paulo (feat. Anitta)",
-      "artist": "The Weeknd, Anitta",
-      "genre": "Other",
-      "album_name": "Hurry Up Tomorrow"
-    },
-    {
-      "id": "6a768a975869b312ad603c26",
-      "title": "Trop tard",
-      "artist": "Nezar",
-      "genre": "Other",
-      "album_name": "Unknown Album"
-    },
-    {
       "id": "6a769bf6f0caf0ca0ee97a08",
       "title": "D & G (feat. Summer Walker)",
       "artist": "Davido, Summer Walker",
       "genre": "Other",
       "album_name": "A Good Time"
-    },
-    {
-      "id": "6a80d0d7df3692799d300f6b",
-      "title": "Songs About U",
-      "artist": "Tink, Summer Walker",
-      "genre": "Other",
-      "album_name": "Winter's Diary 5"
     },
     {
       "id": "6a80dbe1a8ef57760e0f5d4d",
@@ -17968,5 +18052,5 @@
       "album_name": ""
     }
   ],
-  "searched_terms": 220
+  "searched_terms": 250
 }
