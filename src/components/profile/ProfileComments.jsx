@@ -123,7 +123,7 @@ export default function ProfileComments({ profileId, isOwn, active = true }) {
     <div className="mb-8">
       {error && <div className="text-sm p-3 border rounded-xl mb-3"><button className="underline" onClick={load}>Refresh comments</button></div>}
       <h2 className="text-lg font-extrabold tracking-tight mb-4 flex items-center gap-2">
-        <MessageCircle size={18} className="hidden" /> Comments
+         Comments
       </h2>
 
       <form onSubmit={postComment} className="profile-comments-composer">
