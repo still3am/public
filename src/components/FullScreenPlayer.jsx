@@ -360,7 +360,7 @@ export default function FullScreenPlayer({ onClose }) {
 
                 <OverflowText text={t.artist || t.uploader_name || "Unknown"}/>
               </Link>
-              <div className="mt-2"><PureBadge/></div>
+              <PureBadge className="mt-2"/>
             </div>
             {hasLyrics && !showLyricsPanel &&
             <button
