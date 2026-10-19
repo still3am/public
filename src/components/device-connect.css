@@ -1,0 +1,32 @@
+.device-connect-trigger{display:inline-flex;align-items:center;justify-content:center;gap:.6rem;min-width:44px;min-height:44px;border-radius:999px;color:inherit;opacity:.65;transition:opacity .2s,background .2s}
+.device-connect-trigger:hover,.device-connect-trigger.is-connected{opacity:1;background:color-mix(in srgb,currentColor 7%,transparent)}
+.device-connect-trigger:focus-visible{outline:2px solid currentColor;outline-offset:3px}
+.device-connect-trigger span{font-size:12px;font-weight:600}
+.device-connect{display:flex!important;flex-direction:column;gap:0!important;padding:28px!important;max-width:460px!important;background:hsl(var(--background))!important;color:hsl(var(--foreground))!important;isolation:isolate}
+.device-connect-heading{text-align:center;padding:10px 0 26px}
+.device-connect-brand{font-size:11px;font-weight:800;letter-spacing:.16em;opacity:.5}
+.device-connect-art{display:flex;align-items:flex-end;justify-content:center;gap:12px;margin:32px auto 26px;opacity:.85}
+.device-connect-art svg:nth-child(1){width:88px;height:74px}.device-connect-art svg:nth-child(2){width:44px;height:60px}.device-connect-art svg:nth-child(3){width:29px;height:45px}
+.device-connect-title{font-size:27px!important;letter-spacing:-.045em;line-height:1.15!important;font-weight:750!important}
+.device-connect-subtitle{margin-top:10px!important;font-size:13px!important}
+.device-connect-list{display:flex;flex-direction:column;gap:5px}
+.device-connect-row{display:flex;align-items:center;gap:15px;min-height:80px;padding:13px 12px;border-radius:18px;width:100%;text-align:left;background:transparent}
+button.device-connect-row:hover{background:hsl(var(--foreground)/.05)}button.device-connect-row:focus-visible{outline:2px solid hsl(var(--ring));outline-offset:2px}
+.device-connect-row:disabled{cursor:default}.device-connect-row:disabled:hover{background:transparent}
+.device-connect-row:disabled .device-connect-row-text small{opacity:.8}
+.device-connect-icon{width:44px;flex-shrink:0;display:grid;place-items:center}
+.device-connect-row-text{flex:1;min-width:0}.device-connect-row-text strong{display:block;font-size:15px;font-weight:650;line-height:1.35;overflow-wrap:anywhere}
+.device-connect-row-text small{display:block;font-size:12px;color:hsl(var(--muted-foreground));line-height:1.5;margin-top:4px}
+.device-connect-help{padding:15px 18px;border-radius:18px;background:hsl(var(--muted)/.45);font-size:12px;line-height:1.7;color:hsl(var(--muted-foreground))}
+.device-connect-help p+p{margin-top:9px}
+.device-connect-note{font-size:12px;line-height:1.65;color:hsl(var(--muted-foreground));padding:10px 12px}
+.device-connect-status{font-size:12px;line-height:1.6;padding:0 12px;color:hsl(var(--muted-foreground))}.device-connect-status:not(:empty){padding-top:14px}
+.device-connect-volume{margin-top:28px;padding:22px 10px 0;border-top:1px solid hsl(var(--border))}
+.device-connect-volume>div:first-child{display:flex;justify-content:space-between;align-items:center;font-size:12px;font-weight:600}
+.device-connect-volume small{color:hsl(var(--muted-foreground));font-variant-numeric:tabular-nums}
+.device-connect-volume-controls{display:flex;align-items:center;gap:14px;margin-top:8px}
+.device-connect-volume-controls button{min-height:44px;min-width:32px;display:grid;place-items:center}
+.device-connect-volume-controls input{width:100%;height:44px;accent-color:hsl(var(--foreground));touch-action:pan-y}
+.device-connect-volume>p{font-size:11px;color:hsl(var(--muted-foreground));line-height:1.5;margin-top:8px}
+@media(max-width:639px){.device-connect{left:0!important;top:0!important;transform:none!important;translate:none!important;width:100%!important;max-width:none!important;height:100dvh!important;max-height:100dvh!important;border-radius:0!important;border:0!important;padding:calc(24px + env(safe-area-inset-top)) 22px calc(24px + env(safe-area-inset-bottom))!important;animation:none!important}.device-connect-heading{padding-top:40px}.device-connect-art{margin-top:40px;margin-bottom:30px}.device-connect-title{font-size:29px!important}.device-connect-volume{margin-top:auto;padding-top:22px}.device-connect-list{padding-bottom:18px}.device-connect-status:not(:empty){padding-bottom:16px}.device-connect>[data-state]{top:calc(8px + env(safe-area-inset-top))}}
+@media(prefers-reduced-motion:reduce){.device-connect-trigger{transition:none}}
