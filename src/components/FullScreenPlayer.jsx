@@ -17,7 +17,7 @@ import {
   SkipBack,
   SkipForward,
   ChevronDown,
-  Mic2,
+  MessageSquareText,
   Volume2,
   VolumeX,
   Volume1,
@@ -311,7 +311,7 @@ export default function FullScreenPlayer({ onClose }) {
         {/* LEFT: artwork + controls */}
         <div className="full-player-main flex-1 flex flex-col px-6 md:px-10 xl:px-10 xl:max-w-[580px] xl:mx-auto xl:justify-center min-h-0 pb-[env(safe-area-inset-bottom)]">
           {/* artwork / mobile lyrics */}
-          <div className="relative flex-1 xl:flex-none flex items-center justify-center min-h-0 py-4">
+          <div className="full-player-visual relative flex-1 xl:flex-none flex items-center justify-center min-h-0 py-4">
             {showingLyrics &&
             <div className="xl:hidden w-full h-full overflow-hidden flex flex-col min-h-0">
                 <SyncedLyrics key={t.id} trackId={t.id} position={p.position} fallbackText={t.lyrics_text} resolvedLyrics={lyricsAvailability} onSeek={p.seek} onUnavailable={handleLyricsUnavailable} />
@@ -362,17 +362,11 @@ export default function FullScreenPlayer({ onClose }) {
               </Link>
               <PureBadge className="mt-2"/>
             </div>
-            {hasLyrics && !showLyricsPanel &&
-            <button
-              onClick={() => setShowLyricsPanel(true)}
-              className="hidden xl:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full ring-1 ring-white/20 hover:bg-white/10 text-xs font-semibold shrink-0 transition">
-                Lyrics
-            </button>
-            }
+
           </div>
 
           {/* scrubber */}
-          <div className={`${showingLyrics ? "hidden xl:block" : "block"} mb-1.5 shrink-0`}>
+          <div className="mb-1.5 shrink-0">
             <div className="relative h-1.5 bg-white/20 rounded-full group">
               <div className="absolute left-0 top-0 h-1.5 bg-overlay-foreground rounded-full" style={{ width: `${progress}%` }} />
               <div
@@ -397,7 +391,7 @@ export default function FullScreenPlayer({ onClose }) {
           </div>
 
           {/* controls */}
-          <div className={`${showingLyrics ? "hidden xl:flex" : "flex"} items-center justify-between gap-2 my-4 shrink-0`}>
+          <div className="full-player-transport flex items-center justify-between gap-2 my-4 shrink-0">
             <IconButton icon={Shuffle} onClick={() => p.setShuffle(!p.shuffle)} active={p.shuffle} label="Shuffle" size={20} />
             <button onClick={() => p.prev()} className="p-2 active:scale-90 transition disabled:opacity-25 disabled:cursor-default" aria-label="Previous">
               <SkipBack size={30} fill="white" strokeWidth={1.5} />
@@ -415,49 +409,24 @@ export default function FullScreenPlayer({ onClose }) {
 
           </div>
 
-          <div className="flex justify-center shrink-0 mb-2"><DeviceConnect label className="px-4" /></div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-          {/* mobile artwork / lyrics toggle — only when this track has lyrics */}
-          {hasLyrics && !showingLyrics &&
-          <div className="now-playing-view-switch xl:hidden" role="group" aria-label="Now Playing view">
-              <button type="button" onClick={() => setLyricsMode(false)} aria-pressed={!showingLyrics}>
-                <Disc3 size={15} aria-hidden="true" /> Artwork
+          <div className="full-player-actions flex items-center justify-center gap-6 shrink-0">
+            {hasLyrics && <>
+              <button type="button" onClick={() => setLyricsMode(value => !value)} aria-label={showingLyrics ? "Hide lyrics" : "Show lyrics"} aria-pressed={showingLyrics} className="full-player-lyrics-toggle xl:hidden">
+                <MessageSquareText size={22} strokeWidth={1.8} aria-hidden="true"/>
               </button>
-              <button type="button" onClick={() => setLyricsMode(true)} aria-pressed={showingLyrics}>
-                <Mic2 size={15} aria-hidden="true" /> Lyrics
+              <button type="button" onClick={() => setShowLyricsPanel(value => !value)} aria-label={showLyricsPanel ? "Hide lyrics" : "Show lyrics"} aria-pressed={showLyricsPanel} className="full-player-lyrics-toggle hidden xl:inline-flex">
+                <MessageSquareText size={22} strokeWidth={1.8} aria-hidden="true"/>
               </button>
-            </div>
-          }
+            </>}
+            <DeviceConnect />
+          </div>
         </div>
 
         {/* RIGHT (desktop): lyrics panel — only when this track has lyrics */}
         <div className={`${hasLyrics && showLyricsPanel ? "hidden xl:flex" : "hidden"} full-player-lyrics flex-col min-h-0 w-[440px] 2xl:w-[480px] shrink-0 bg-white/[0.06] ring-1 ring-white/10 rounded-[2rem] overflow-hidden`}>
           <div className="flex items-center justify-between px-5 pt-4 pb-1 shrink-0">
             <span className="text-[10px] uppercase tracking-[0.25em] opacity-50 flex items-center gap-2">
-              <Mic2 size={13} /> Lyrics
+              <MessageSquareText size={18} aria-hidden="true" />
             </span>
             <button
               onClick={() => setShowLyricsPanel(false)}
