@@ -264,7 +264,7 @@ export default function Profile({ ownProfileTab = false }) {
   }
 
   async function uploadAvatar(file) {
-    if (avatarBusy.current || !isOwn || !file) return;
+    if (avatarBusy.current || saving || !isOwn || !file) return false;
     if (!file.type.startsWith("image/") || file.size > 10 * 1024 * 1024) {reportActionError(null, "Choose an image under 10 MB.");return;}
     avatarBusy.current = true;const version = ++avatarVersion.current;
     setUploadingAvatar(true);
@@ -401,6 +401,7 @@ export default function Profile({ ownProfileTab = false }) {
               <div className="flex items-baseline gap-2 flex-wrap justify-center md:justify-start">
                 {editMode ?
                     <input
+                      disabled={saving}
                       aria-label="Display name"
                       value={form.display_name}
                       onChange={(e) => setForm((f) => ({ ...f, display_name: e.target.value }))}
@@ -451,6 +452,8 @@ export default function Profile({ ownProfileTab = false }) {
 
               {editMode ?
                   <textarea
+                    disabled={saving}
+                    maxLength={1000}
                     aria-label="Profile bio"
                     value={form.bio}
                     onChange={(e) => setForm((f) => ({ ...f, bio: e.target.value }))}
@@ -468,6 +471,7 @@ export default function Profile({ ownProfileTab = false }) {
 
               {editMode ?
                   <StatusMessage
+                    disabled={saving}
                     value={form.status_message}
                     editMode
                     onChange={(v) => setForm((f) => ({ ...f, status_message: v }))} /> :
@@ -587,11 +591,13 @@ export default function Profile({ ownProfileTab = false }) {
             editMode={editMode}
             userTracks={tracks}
             active={isCurrentPage}
+            disabled={saving}
             onChange={saveProfileSong} />
           
       </div>
 
       <TopTracks
+              disabled={saving}
               label={editMode?form.top_tracks_label:profile?.top_tracks_label}
               onLabelChange={value=>setForm(old=>({...old,top_tracks_label:value}))}
               trackIds={editMode ? form.top_track_ids : profile?.top_track_ids || []}
