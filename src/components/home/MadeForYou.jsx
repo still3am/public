@@ -15,8 +15,8 @@ import TrackRow from '@/components/TrackRow';
 import Logo from '@/components/Logo';
 import './home-personal.css';
 
-function MixArt({ mix, className = '', children }) {
-  return <div className={'personal-mix-art ' + className}><MotionGradient colors={mix.palette} speed={.9} pauseWhenCovered className="personal-mix-gradient" /><span className="personal-mix-brand"><Logo width="72px" className="personal-mix-logo" /></span><strong>{mix.title}</strong><span className="personal-mix-artists">{mix.artists}</span>{children}</div>;
+export function MixArt({ mix, className = '', children }) {
+  return <div className={'personal-mix-art ' + className}><MotionGradient colors={mix.palette} speed={.9} pauseWhenCovered className="personal-mix-gradient" /><span className="personal-mix-brand"><Logo width="72px" className="personal-mix-logo" /></span><strong>{mix.artTitle || mix.title}</strong><span className="personal-mix-artists">{mix.artists}</span>{children}</div>;
 }
 export function PersonalMixContent({ mix, uid, onBack, headerExtra }) {
   const p = usePlayer(),{ blocked } = useSafety(),[busy, setBusy] = useState(false),[saving, setSaving] = useState(false),[saved, setSaved] = useState(null),[saveError, setSaveError] = useState('');
