@@ -151,20 +151,66 @@
     "offline_track_ids": {
       "type": "array",
       "items": {
-        "type": "string"
+        "type": "string",
+        "maxLength": 100
       },
       "default": [],
+      "description": "Own-account offline song selections; playback is authorized separately.",
       "rls": {
-        "read": false,
-        "write": false
+        "read": {
+          "data.id": "{{user.id}}"
+        },
+        "write": {
+          "$and": [
+            {
+              "data.id": "{{user.id}}"
+            },
+            {
+              "$nor": [
+                {
+                  "user_condition": {
+                    "is_blocked": true
+                  }
+                },
+                {
+                  "user_condition": {
+                    "disabled": true
+                  }
+                }
+              ]
+            }
+          ]
+        }
       }
     },
     "offline_migrated": {
       "type": "boolean",
       "default": false,
       "rls": {
-        "read": false,
-        "write": false
+        "read": {
+          "data.id": "{{user.id}}"
+        },
+        "write": {
+          "$and": [
+            {
+              "data.id": "{{user.id}}"
+            },
+            {
+              "$nor": [
+                {
+                  "user_condition": {
+                    "is_blocked": true
+                  }
+                },
+                {
+                  "user_condition": {
+                    "disabled": true
+                  }
+                }
+              ]
+            }
+          ]
+        }
       }
     },
     "onboarding_completed": {
