@@ -1,4 +1,3 @@
-import AudioQuality from "@/components/AudioQuality";
 import DeviceConnect from "@/components/DeviceConnect";
 import OverflowText from "@/components/OverflowText";
 import { copyText } from '@/lib/shareLink';
@@ -370,7 +369,6 @@ export default function FullScreenPlayer({ onClose }) {
             }
           </div>
 
-          <div className={showingLyrics?"hidden xl:block":"block"}><AudioQuality /></div>
           {/* scrubber */}
           <div className={`${showingLyrics ? "hidden xl:block" : "block"} mb-1.5 shrink-0`}>
             <div className="relative h-1.5 bg-white/20 rounded-full group">
