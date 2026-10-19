@@ -2,13 +2,14 @@ import {useCallback,useEffect,useRef,useState} from "react";
 import {requestPersistentStorage,putTrack,getRecord,putCoverArt,listRecords,deleteRecord,clearAll,getOrderIds,setOrderIds,clearMeta,getOfflineAccount} from "@/lib/offlineCache";
 import {base44} from "@/api/base44Client";
 import {useAuth} from "@/lib/AuthContext";
-import {getCloudList,addCloudTrack} from "@/lib/offlineSync";
+import {getCloudList,addCloudTrack,addCloudTracks} from "@/lib/offlineSync";
 
 const EVT="offlinecache:change",STATUS="offlinecache:downloads";
 const jobs=new Map(),autoQueued=new Set(),retryAfter=new Map(),removals=new Map(),cloudJobs=new Map(),storageReads=new Map(),cloudKnown=new Map();
+const downloadPause=new Map();
 let generation=0;
 const emit=event=>window.dispatchEvent(new Event(event));
-const invalidate=()=>{generation++;jobs.clear();autoQueued.clear();retryAfter.clear();removals.clear();cloudJobs.clear();cloudKnown.clear();storageReads.clear();emit(STATUS);};
+const invalidate=()=>{generation++;jobs.clear();autoQueued.clear();retryAfter.clear();downloadPause.clear();removals.clear();cloudJobs.clear();cloudKnown.clear();storageReads.clear();emit(STATUS);};
 // Track menus share one pending device read instead of loading every audio
 // blob again for each song card mounted on the page.
 window.addEventListener(EVT,()=>storageReads.clear());
@@ -45,6 +46,8 @@ async function toImageBlob(res) {
 export function useOfflineCache(){
  const {user}=useAuth(),uid=user?.id,account=useRef(uid);account.current=uid;
  const [cachedIds,setCachedIds]=useState(null),[records,setRecords]=useState([]),[storageAvailable,setStorageAvailable]=useState(null),[downloading,setDownloading]=useState({}),[syncing,setSyncing]=useState(false);
+ const recordsRef=useRef(records);recordsRef.current=records;
+ const [syncState,setSyncState]=useState({uid:null,error:false,pending:0});
  const refreshVersion=useRef(0),loadedFor=useRef(null),backfilled=useRef(new Set());
  const active=useCallback(()=>!!uid&&account.current===uid&&getOfflineAccount()===uid,[uid]);
  const applyOrder=useCallback((all,ids)=>{
@@ -106,9 +109,9 @@ export function useOfflineCache(){
    const order=await getOrderIds(uid).catch(()=>[]);if(!valid())return false;
    await setOrderIds([id,...(order||[]).filter(value=>value!==id)],uid).catch(()=>{});
    if(!automatic)suppress(uid,[id],true);
-   if(valid())addCloudTrack(uid,track).catch(()=>{});
+   if(valid()&&!automatic)addCloudTrack(uid,track).catch(()=>{if(valid())setSyncState(state=>({...state,uid,error:true}));});
    emit(EVT);return true;
-  }catch{return false;}
+  }catch(error){if((error?.status??error?.response?.status)===402)downloadPause.set(uid,Date.now()+60000);return false;}
   finally{if(jobs.get(key)===job){jobs.delete(key);emit(STATUS);}}
  },[uid,active]);
 
@@ -116,9 +119,15 @@ export function useOfflineCache(){
   if(!active()||loadedFor.current!==uid||!cachedIds||cloudJobs.has(uid)||!navigator.onLine)return;
   const token=Symbol(uid),started=generation;cloudJobs.set(uid,token);emit(STATUS);
   try{
-   const cloud=await getCloudList(uid);if(started!==generation||!active())return;cloudKnown.set(uid,new Set(cloud.map(track=>track?.id).filter(Boolean)));let cursor=0;
+   let cloud=await getCloudList(uid);if(started!==generation||!active())return;
+   const known=new Set(cloud.map(track=>track?.id).filter(Boolean));
+   const local=recordsRef.current.filter(row=>row._blob?.size&&!known.has(row.id)&&!suppressedFor(uid).has(row.id));
+   if(local.length){cloud=await addCloudTracks(uid,local);if(started!==generation||!active())return;}
+   cloudKnown.set(uid,new Set(cloud.map(track=>track?.id).filter(Boolean)));
+   setSyncState({uid,error:false,pending:cloud.filter(row=>!cachedIds.has(row.id)&&!suppressedFor(uid).has(row.id)).length});
+   let cursor=0;
    const worker=async()=>{while(cursor<cloud.length){
-    if(started!==generation||!active())return;
+    if(started!==generation||!active()||(downloadPause.get(uid)||0)>Date.now())return;
     const track=cloud[cursor++],id=track?.id,key=uid+":"+id;
     if(!id||cachedIds.has(id)||autoQueued.has(key)||suppressedFor(uid).has(id)||(retryAfter.get(key)||0)>Date.now())continue;
     autoQueued.add(key);
@@ -127,15 +136,15 @@ export function useOfflineCache(){
     }finally{if(started===generation)autoQueued.delete(key);}
    }};
    await Promise.all([worker(),worker()]);
-  }catch{/* Cloud availability never removes this device's files. */}
+   if(started!==generation||!active())return;
+   const [device]=await readDevice(uid);
+   if(started!==generation||!active())return;
+   const saved=new Set(device.filter(row=>row._blob?.size).map(row=>row.id));
+   setSyncState({uid,error:false,pending:cloud.filter(row=>!saved.has(row.id)&&!suppressedFor(uid).has(row.id)).length});
+  }catch{if(started===generation&&active())setSyncState(state=>({...state,uid,error:true}));/* Keep this device's files. */}
   finally{if(cloudJobs.get(uid)===token){cloudJobs.delete(uid);emit(STATUS);}}
  },[uid,active,cachedIds,downloadTrack]);
  useEffect(()=>{syncFromCloud();},[syncFromCloud]);
- useEffect(()=>{
-  if(!uid)return;
-  let unsubscribe=()=>{};try{unsubscribe=base44.entities.OfflineSync.subscribe(()=>syncFromCloud());}catch{}
-  return unsubscribe;
- },[uid,syncFromCloud]);
  useEffect(()=>{
   const recover=()=>{if(document.visibilityState!=="hidden"){refresh();syncFromCloud();}};
   window.addEventListener("online",recover);window.addEventListener("focus",recover);document.addEventListener("visibilitychange",recover);
@@ -159,5 +168,5 @@ export function useOfflineCache(){
   try{await clearAll(uid);suppress(uid,ids);await clearMeta(uid).catch(()=>{});emit(EVT);return true;}catch{return false;}
  },[uid,active,records]);
  const visible=active()&&loadedFor.current===uid;
- return {cachedIds:visible&&cachedIds?cachedIds:new Set(),records:visible?records:[],storageAvailable,downloading:active()?downloading:{},syncing:active()&&syncing,loading:active()&&cachedIds===null,refresh,syncFromCloud,isCached:id=>visible&&!!cachedIds?.has(id),downloadTrack,saveForOffline:downloadTrack,removeTrack,reorder,clearAllCache};
+ return {cachedIds:visible&&cachedIds?cachedIds:new Set(),records:visible?records:[],storageAvailable,downloading:active()?downloading:{},syncing:active()&&syncing,syncError:active()&&syncState.uid===uid&&syncState.error,pendingCount:active()&&syncState.uid===uid?syncState.pending:0,loading:active()&&cachedIds===null,refresh,syncFromCloud,isCached:id=>visible&&!!cachedIds?.has(id),downloadTrack,saveForOffline:downloadTrack,removeTrack,reorder,clearAllCache};
 }
