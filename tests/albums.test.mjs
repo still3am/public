@@ -11,6 +11,7 @@ const groups=groupAlbums([
  song('legacy',{album_name:'',album_id:'old',track_number:1})
 ],[{id:'old',title:'Views',artisan:'Drake',cover_art_url:'https://example.com/cover.jpg'}]);
 assert.equal(groups.length,3);
+const compilation=groupAlbums([song('lead',{track_number:1,album_artist:'Drake'}),song('guest',{artist:'Guest',album_artist:'Drake',track_number:2})]);assert.equal(compilation.length,1);assert.deepEqual(compilation[0].tracks.map(t=>t.id),['lead','guest']);
 const views=groups.find(g=>g.key===albumKey('DRAKE',' views '));
 assert.deepEqual(views.tracks.map(t=>t.id),['legacy','two','ten','unknown','disc2']);
 assert.equal(views.duration,300);assert.equal(views.cover_art_url,'https://example.com/cover.jpg');
