@@ -138,47 +138,48 @@ export default async function handleRequest(req) {
       const ms=await svc.entities.LoungeMember.filter({session_id:sid,user_id:user.id},'-created_date',1);
       return {s,m:ms[0],host:isAdmin||s.host_id===user.id};
     };
-    if(entity==='Playlist' && action==='collaborators'){
-      const [id,memberId,add]=args,pl=await handler.get(id);
-      if(pl.creator_id!==user.id&&!isAdmin)fail('Only the owner can invite collaborators');
-      if(typeof memberId!=='string'||!memberId||memberId.length>100||typeof add!=='boolean')fail('Choose a collaborator',400);
-      if(memberId===pl.creator_id)fail('The owner already has access',400);
-      if(add)await relation(memberId);
-      const members=pl.collaborator_ids||[];
-      if(add&&members.length>=30&&!members.includes(memberId))fail('This playlist already has 30 collaborators',400);
-      await handler.updateMany({id},add?{$set:{collaboration_enabled:true},$addToSet:{collaborator_ids:memberId}}:{$pull:{collaborator_ids:memberId}});
-      return Response.json({result:await handler.get(id)});
-    }
-    if(entity==='Playlist' && ['playlistAdd','playlistRemove','playlistReorder'].includes(action)){
-      const [id,ids,expected]=args,pl=await handler.get(id);
-      if(!mine(pl,'creator_id')&&!(pl.collaboration_enabled&&(pl.collaborator_ids||[]).includes(user.id)))fail('Playlist editing access required',403);
-      if(pl.creator_id!==user.id)await relation(pl.creator_id);
-      if(!Array.isArray(ids)||ids.length>5000||ids.some(id=>typeof id!=='string'||!id))fail('Invalid song selection',400);
+    if(entity==='Playlist' && ['collaborators','collaborationDetail','playlistAdd','playlistRemove','playlistReorder'].includes(action)){
+      const [id,ids,expected]=args,pl=await handler.get(id),collabHandler=svc.entities.PlaylistCollaboration;
+      const matches=await collabHandler.filter({playlist_id:id},'-created_date',1);
+      let collab=matches[0]||null;
+      const owner=pl.creator_id===user.id||isAdmin;
+      if(!owner&&!(collab?.member_ids||[]).includes(user.id))fail('Playlist editing access required',403);
+      if(!owner)await relation(pl.creator_id);
+      const result=async()=>({...await handler.get(id),collaboration_enabled:!!collab,collaborator_ids:collab?.member_ids||[],track_contributors:collab?.track_contributors||{}});
+      if(action==='collaborationDetail')return Response.json({result:await result()});
+      if(action==='collaborators'){
+        const memberId=ids,add=expected;
+        if(!owner)fail('Only the owner can invite collaborators');
+        if(typeof memberId!=='string'||!memberId||memberId.length>100||typeof add!=='boolean')fail('Choose a collaborator',400);
+        if(memberId===pl.creator_id)fail('The owner already has access',400);
+        if(add)await relation(memberId);
+        if(add&&(collab?.member_ids||[]).length>=30&&!(collab?.member_ids||[]).includes(memberId))fail('This playlist already has 30 collaborators',400);
+        if(!collab)collab=await collabHandler.create({playlist_id:id,owner_id:pl.creator_id,member_ids:[],track_contributors:{}});
+        await collabHandler.updateMany({id:collab.id},add?{$addToSet:{member_ids:memberId}}:{$pull:{member_ids:memberId}});
+        collab=await collabHandler.get(collab.id);
+        return Response.json({result:await result()});
+      }
+      if(!Array.isArray(ids)||ids.length>5000||ids.some(tid=>typeof tid!=='string'||!tid||tid.length>100||!/^[a-zA-Z0-9_-]+$/.test(tid)))fail('Invalid song selection',400);
       const unique=[...new Set(ids)],current=pl.track_ids||[];
       if(action==='playlistAdd'){
         for(const tid of unique)if(!current.includes(tid))await requireTrack(tid,false);
-        const credits=Object.fromEntries(unique.filter(tid=>!current.includes(tid)).map(tid=>['track_contributors.'+tid,{user_id:user.id,name:user.display_name||user.full_name||'Listener'}]));
-        const permission={id,...(!mine(pl,'creator_id')?{collaboration_enabled:true,collaborator_ids:user.id}:{})};
-        await handler.updateMany(permission,{$addToSet:{track_ids:{$each:unique}},...(Object.keys(credits).length?{$set:credits}:{})});
-      }else if(action==='playlistRemove'){
-        await handler.updateMany({id},{$pull:{track_ids:{$in:unique}}});
-      }else{
-        const frequencies=values=>{const result=new Map();for(const value of values)result.set(value,(result.get(value)||0)+1);return result;};
-        const before=frequencies(current),after=frequencies(ids);
-        if(ids.length!==current.length||before.size!==after.size||[...before].some(([id,count])=>after.get(id)!==count))fail('Reorder must retain every stored song',400);
+        await handler.updateMany({id},{$addToSet:{track_ids:{$each:unique}}});
+        if(collab){
+          const credits=Object.fromEntries(unique.filter(tid=>!current.includes(tid)).map(tid=>['track_contributors.'+tid,{name:user.display_name||user.full_name||'Listener'}]));
+          if(Object.keys(credits).length)await collabHandler.updateMany({id:collab.id},{$set:credits});
+        }
+      }else if(action==='playlistRemove')await handler.updateMany({id},{$pull:{track_ids:{$in:unique}}});
+      else {
+        const sorted=v=>JSON.stringify([...v].sort());
+        if(sorted(ids)!==sorted(current))fail('Reorder must retain every stored song',400);
         if(JSON.stringify(expected)!==JSON.stringify(current))fail('This playlist changed on another device. Refresh before reordering.',409);
         await handler.updateMany({id,track_ids:current},{$set:{track_ids:ids}});
-        const updated=await handler.get(id);
-        if(JSON.stringify(updated.track_ids)!==JSON.stringify(ids))fail('The playlist changed while saving. Refresh and retry.',409);
+        if(JSON.stringify((await handler.get(id)).track_ids)!==JSON.stringify(ids))fail('The playlist changed while saving. Refresh and retry.',409);
       }
-      return Response.json({result:await handler.get(id)});
+      if(collab)collab=await collabHandler.get(collab.id);
+      return Response.json({result:await result()});
     }
-    if(action==='checkDuplicate' && entity==='Track'){
-      const input=args[0]||{};
-      if(!/^[a-f0-9]{64}$/.test(input.audio_sha256||''))fail('Invalid file checksum',400);
-      if(input.upload_request_id){
-        const own=await handler.filter({uploader_id:user.id,upload_request_id:input.upload_request_id},'-created_date',1);
-        if(own.length)return Response.json({result:{duplicate:false,resumable:true}});
+
       }
       const rows=await handler.filter({audio_sha256:input.audio_sha256,$or:[{uploader_id:user.id},{is_published:true,approval_status:'approved'}]},'-created_date',1);
       return Response.json({result:{duplicate:rows.length>0}});
