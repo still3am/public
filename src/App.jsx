@@ -26,6 +26,7 @@ import ResetPassword from '@/pages/ResetPassword';
 import Home from '@/pages/Home';
 import Moments from '@/pages/Moments';
 import PersonalMix from '@/pages/PersonalMix';
+import RecapPlaylist from '@/pages/RecapPlaylist';
 import Search from '@/pages/Search';
 import TopCharts from '@/pages/TopCharts';
 import RecentlyAdded from '@/pages/RecentlyAdded';
@@ -103,6 +104,7 @@ const AuthenticatedApp = () => {
         {/* Personal features — login required */}
         <Route element={<ProtectedRoute />}>
           <Route path="/mix/:id" element={<PersonalMix />} />
+          <Route path="/recap/:period/:value?" element={<RecapPlaylist />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/profile/:id" element={<Profile />} />
           <Route path="/upload" element={<Upload />} />
