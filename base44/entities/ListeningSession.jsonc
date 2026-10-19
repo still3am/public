@@ -3,23 +3,14 @@
   "type": "object",
   "properties": {
     "session_key": {
-      "type": "string",
-      "rls": {
-        "write": false
-      }
+      "type": "string"
     },
     "track_id": {
-      "type": "string",
-      "rls": {
-        "write": false
-      }
+      "type": "string"
     },
     "started_at": {
       "type": "string",
-      "format": "date-time",
-      "rls": {
-        "write": false
-      }
+      "format": "date-time"
     },
     "listened_seconds": {
       "type": "number",
