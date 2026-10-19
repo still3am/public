@@ -2,6 +2,23 @@
   "name": "Artist",
   "type": "object",
   "properties": {
+    "aliases": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "maxLength": 100
+      },
+      "maxItems": 12,
+      "default": [],
+      "rls": {
+        "read": true,
+        "write": {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      }
+    },
     "name": {
       "type": "string",
       "description": "Display / canonical name of the artist"
