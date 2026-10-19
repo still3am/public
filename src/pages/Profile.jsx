@@ -69,6 +69,7 @@ function formFromProfile(prof) {
     display_name: prof.display_name || prof.full_name || "",
     bio: prof.bio || "",
     avatar_url: prof.avatar_url || "",
+    banner_use_default: prof.banner_use_default === true,
     banner_url: prof.banner_url || "",
     banner_mobile_url: prof.banner_mobile_url || "",
     top_tracks_label: prof.top_tracks_label || "",
@@ -140,8 +141,9 @@ export default function Profile({ ownProfileTab = false }) {
   }, [profile?.featured_track_id,form.featured_track_id,editMode]);
 
   const coverUrl = useCoverUrl(featuredCoverUrl);
-  const bannerUrl = useCoverUrl(editMode?form.banner_url:profile?.banner_url);
-  const bannerMobileUrl=useCoverUrl(editMode?form.banner_mobile_url:profile?.banner_mobile_url);
+  const useDefaultBanner=editMode?form.banner_use_default:profile?.banner_use_default;
+  const bannerUrl = useCoverUrl(useDefaultBanner?"":editMode?form.banner_url:profile?.banner_url);
+  const bannerMobileUrl=useCoverUrl(useDefaultBanner?"":editMode?form.banner_mobile_url:profile?.banner_mobile_url);
   const { colors: coverColors, loading: colorsLoading } = useCoverPalette(coverUrl);
 
   const loadVersion = useRef(0);
@@ -284,7 +286,7 @@ export default function Profile({ ownProfileTab = false }) {
       const [desktop,mobile]=await Promise.all([base44.integrations.Core.UploadFile({file:files.desktop}),base44.integrations.Core.UploadFile({file:files.mobile})]);
       if(!desktop.file_url||!mobile.file_url)throw Error('Your banner did not upload.');
       if(version!==bannerVersion.current||identity.current!==key)return false;
-      setForm(old=>({...old,banner_url:desktop.file_url,banner_mobile_url:mobile.file_url}));return true;
+      setForm(old=>({...old,banner_url:desktop.file_url,banner_mobile_url:mobile.file_url,banner_use_default:false}));return true;
     }catch(error){if(version===bannerVersion.current)reportActionError(error,'Your banner could not upload. Please retry.');return false;}
     finally{if(version===bannerVersion.current){bannerBusy.current=false;setUploadingBanner(false);}}
   }
@@ -384,7 +386,7 @@ export default function Profile({ ownProfileTab = false }) {
           {(bannerUrl || currentBackground.mode === "auto" && coverUrl) && <picture>{bannerMobileUrl&&<source media="(max-width:767px)" srcSet={bannerMobileUrl}/>}<img key={bannerUrl||coverUrl} src={bannerUrl||coverUrl} alt="" onError={event=>{event.currentTarget.style.visibility="hidden";}}/></picture>}
           <div className="profile-cover-fade" />
         </div>
-        {editMode&&<ProfileBannerEditor busy={uploadingBanner||saving} hasBanner={!!form.banner_url} onApply={uploadBanner} onRemove={()=>setForm(old=>({...old,banner_url:'',banner_mobile_url:''}))}/>}
+        {editMode&&<ProfileBannerEditor busy={uploadingBanner||saving} hasBanner={!!form.banner_url&&!form.banner_use_default} onApply={uploadBanner} onRemove={()=>setForm(old=>({...old,banner_use_default:true}))}/>}
         {!editMode && isAdminProfile && <ProfileBadge variant="admin" />}
         {!editMode && !isAdminProfile && profile.is_artist && <ProfileBadge variant="artist" />}
         
