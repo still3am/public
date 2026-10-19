@@ -780,15 +780,18 @@ export function PlayerProvider({ children }) {
   const extendWithGenreRadio = useCallback(async (track) => {
     if (!track?.id || autoQueueLoadingRef.current) return false;
     autoQueueLoadingRef.current = true;
+    const token=loadTokenRef.current,owner=offlineAccountRef.current;
+    const valid=()=>token===loadTokenRef.current&&owner===offlineAccountRef.current;
     try {
       const userGenres = await getUserGenres().catch(() => []);
+      if(!valid())return false;
       const picks = await buildAutoQueue(
         track,
         queueRef.current.map((t) => t.id),
         15,
         userGenres
       );
-      if (!picks.length) return false;
+      if (!valid() || !picks.length) return false;
       const start = queueRef.current.length;
       setQueue((prev) => [...prev, ...picks]);
       setCurrentIndex(start);
@@ -826,7 +829,9 @@ export function PlayerProvider({ children }) {
   }, []);
 
   const advanceOffline = useCallback(async () => {
+    const token=loadTokenRef.current,owner=offlineAccountRef.current;
     const tracks = await getOfflineQueue();
+    if(token!==loadTokenRef.current||owner!==offlineAccountRef.current)return;
     if (!tracks || !tracks.length) {
       setIsPlaying(false);
       return;
@@ -844,6 +849,7 @@ export function PlayerProvider({ children }) {
   useEffect(() => {
     handleEndedRef.current = async () => {
       if (crossfadingRef.current) return;
+      const token=loadTokenRef.current;
       if (repeat === "one") {
         const a = activeEl();
         if (a) {
@@ -859,13 +865,13 @@ export function PlayerProvider({ children }) {
       }
       const n = nextIndex();
       if (n !== -1) {
-        if(isGapless(getTransitionSettings())&&await beginGapless(n))return;
+        if(isGapless(getTransitionSettings())){const switched=await beginGapless(n);if(token!==loadTokenRef.current||switched)return;}
         autoPlayOnLoadRef.current=true;setCurrentIndex(n);
         return;
       }
       if (repeat === "off" && currentTrack) {
         const ok = await extendWithGenreRadio(currentTrack);
-        if (ok) return;
+        if (token!==loadTokenRef.current||ok) return;
       }
       setIsPlaying(false);
     };
@@ -884,6 +890,7 @@ export function PlayerProvider({ children }) {
 
   const playTrackAt = useCallback((tracks, index = 0) => {
     if (!tracks || !tracks.length) return;
+    loadTokenRef.current++;
     countedRef.current = new Set();
     setDismissed(false);
     setQueue(tracks);
@@ -896,6 +903,7 @@ export function PlayerProvider({ children }) {
   // that device left off, as soon as the media reports it's seekable.
   const resumeTrack = useCallback((track, atSeconds = 0, autoplay = true) => {
     if (!track) return;
+    loadTokenRef.current++;
     pendingSeekRef.current = { id: track.id, at: Math.max(0, atSeconds) };
     autoPlayOnLoadRef.current = autoplay;
     countedRef.current = new Set();
