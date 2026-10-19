@@ -1,0 +1,51 @@
+/* Immersive artist header, scoped above the older desktop and mobile layouts. */
+.public-app .artwork-content .artist-page.artist-editorial{max-width:none;min-width:0}
+.public-app .artwork-content .artist-page.artist-editorial .artist-hero{position:relative;display:block;isolation:isolate;grid-template-columns:none;min-height:360px;height:clamp(420px,46vw,640px);padding:0;gap:0;margin:0 calc(-1 * var(--app-gutter)) 34px;border:0;border-radius:0;background:#17171a;color:white;overflow:hidden}
+.public-app .artwork-content .artist-page.artist-editorial .artist-hero .artist-hero-image{position:absolute;inset:0;width:100%;height:100%;max-height:none;aspect-ratio:auto;object-fit:cover;object-position:center 30%;border-radius:0}
+.public-app .artwork-content .artist-page.artist-editorial .artist-hero .artist-art-fallback{display:grid;place-items:center;background:radial-gradient(ellipse at 20% 0%,#686174,transparent 65%),linear-gradient(140deg,#393846,#111114);color:#ffffff40}
+.public-app .artwork-content .artist-page.artist-editorial .artist-hero .artist-hero-shade{display:block;position:absolute;inset:0;background:linear-gradient(180deg,#0003,transparent 35%,#0003 65%,#000b);pointer-events:none}
+.public-app .artwork-content .artist-page.artist-editorial .artist-hero .artist-back{position:absolute;top:22px;left:24px;z-index:2;display:grid;place-items:center;width:44px;height:44px;min-height:44px;border-radius:50%;border:1px solid #ffffff30;background:#22222540;color:#fff;backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px)}
+.public-app .artist-page.artist-editorial .artist-hero-actions{position:absolute;z-index:2;top:22px;right:24px;display:flex;gap:3px;align-items:center;padding:3px;border:1px solid #ffffff30;border-radius:999px;background:#22222540;backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px)}
+.public-app .artist-page.artist-editorial .artist-hero .artist-hero-actions .artist-release-star,.public-app .artist-page.artist-editorial .artist-hero-actions .artist-more-button{position:static;display:grid;place-items:center;width:44px;height:44px;min-width:44px;min-height:44px;padding:0;border:0;border-radius:50%;background:transparent;color:white;box-shadow:none}
+.public-app .artwork-content .artist-page.artist-editorial .artist-hero .artist-hero-bottom{position:absolute;left:clamp(24px,4vw,56px);right:clamp(24px,4vw,56px);bottom:32px;width:auto;display:flex;flex-direction:row;align-items:flex-end;justify-content:space-between;gap:22px;padding:0}
+.public-app .artwork-content .artist-page.artist-editorial .artist-hero .artist-hero-name{min-width:0;flex:1}
+.public-app .artwork-content .artist-page.artist-editorial .artist-hero .artist-hero-name h1{font-size:clamp(40px,5.5vw,76px);font-weight:750;letter-spacing:-.055em;line-height:1.04;color:white;text-shadow:0 2px 20px #0004}
+.public-app .artwork-content .artist-page.artist-editorial .artist-hero .artist-track-count{font-size:12px;font-weight:500;line-height:1.45;margin-top:12px;color:#ffffffbf}
+.public-app .artwork-content .artist-page.artist-editorial .artist-hero .artist-play{display:grid;place-items:center;flex-shrink:0;width:64px;height:64px;min-width:64px;min-height:64px;border:0;border-radius:50%;background:white;color:#121214;box-shadow:0 6px 28px #0003}
+.public-app .artist-page.artist-editorial .artist-feature-grid{display:block;grid-template-columns:none;margin:0 auto 38px;max-width:1120px}
+.public-app .artist-page.artist-editorial .artist-feature-grid>.artist-latest{display:flex;flex-direction:row;align-items:center;gap:22px;width:100%;max-width:680px;padding:0;margin:0 0 32px;border:0;border-radius:0;background:transparent}
+.public-app .artist-page.artist-editorial .artist-feature-grid .artist-latest-cover{display:block;flex:0 0 128px;width:128px;height:128px;aspect-ratio:1;border-radius:12px;border:1px solid hsl(var(--border)/.5);overflow:hidden}
+.public-app .artist-page.artist-editorial .artist-feature-grid .artist-latest-title{font-size:23px;line-height:1.18;letter-spacing:-.035em;font-weight:650}
+.public-app .artist-page.artist-editorial .artist-latest .eyebrow{font-size:11px;letter-spacing:.045em;font-weight:700;text-transform:uppercase;margin-bottom:7px}
+.public-app .artist-page.artist-editorial .artist-section-heading{margin-bottom:15px}
+.public-app .artist-page.artist-editorial .artist-section-heading h2{font-size:25px;line-height:1.2;font-weight:750;letter-spacing:-.035em}
+.public-app .artist-page.artist-editorial .artist-top-column{flex:0 0 calc(50% - 14px);min-width:0}
+.public-app .artist-page.artist-editorial .artist-top-list{display:flex;gap:28px;overflow-x:auto;scrollbar-width:none;scroll-snap-type:x proximity;padding:0 0 8px}
+.public-app .artist-page.artist-editorial .artist-top-list::-webkit-scrollbar{display:none}
+.public-app .artist-page.artist-editorial .artist-top-list .song-row{min-height:80px;padding:10px 0;border-bottom:1px solid hsl(var(--border)/.55);border-radius:0;background:transparent}
+.public-app .artist-page.artist-editorial .artist-top-list .song-row>button:first-child{display:none}
+.public-app .artist-page.artist-editorial .artist-top-list .song-row>button:nth-child(2){width:54px;height:54px;border-radius:8px}
+.public-app .artist-page.artist-editorial :is(.artist-discography,.artist-appears-on,.artist-about,.artist-similar){max-width:1120px;margin-inline:auto;margin-bottom:38px}
+.public-app .artist-page.artist-editorial .artist-about{border:0;border-radius:0;background:transparent;padding:28px 0 0;border-top:1px solid hsl(var(--border));scroll-margin-top:30px}
+.public-app .artist-page.artist-editorial .artist-about-copy{font-size:16px;line-height:1.75;max-width:75ch}
+.public-app .artist-page.artist-editorial button:focus-visible{outline:2px solid hsl(var(--ring));outline-offset:4px}
+@media(max-width:767px){
+.public-app .artwork-content .artist-page.artist-editorial .artist-hero{min-height:340px;height:100vw;max-height:600px;margin-bottom:26px}
+.public-app .artwork-content .artist-page.artist-editorial .artist-hero .artist-back{top:18px;left:18px}
+.public-app .artist-page.artist-editorial .artist-hero-actions{top:18px;right:18px}
+.public-app .artwork-content .artist-page.artist-editorial .artist-hero .artist-hero-bottom{left:20px;right:20px;bottom:24px;gap:16px}
+.public-app .artwork-content .artist-page.artist-editorial .artist-hero .artist-hero-name h1{font-size:clamp(36px,9vw,56px)}
+.public-app .artwork-content .artist-page.artist-editorial .artist-hero .artist-play{width:56px;height:56px;min-width:56px;min-height:56px}
+.public-app .artwork-content .artist-page.artist-editorial .artist-hero .artist-track-count{font-size:11px;margin-top:9px}
+.public-app .artist-page.artist-editorial .artist-feature-grid>.artist-latest{gap:17px;margin-bottom:28px}
+.public-app .artist-page.artist-editorial .artist-feature-grid .artist-latest-cover{flex-basis:100px;width:100px;height:100px}
+.public-app .artist-page.artist-editorial .artist-feature-grid .artist-latest-title{font-size:20px}
+.public-app .artist-page.artist-editorial .artist-section-heading h2{font-size:23px}
+.public-app .artist-page.artist-editorial .artist-top-column{flex-basis:88%}
+.public-app .artist-page.artist-editorial .artist-top-list{gap:22px}
+.public-app .artist-page.artist-editorial .artist-top-list .song-row{min-height:76px}
+.public-app .artist-page.artist-editorial .artist-top-list .song-row>button:nth-child(2){width:46px;height:46px}
+}
+@media(min-width:1440px){.public-app .artwork-content .artist-page.artist-editorial .artist-hero .artist-hero-bottom{left:max(56px,calc((100% - 1120px)/2));right:max(56px,calc((100% - 1120px)/2))}}
+@media(hover:hover){.public-app .artist-page.artist-editorial .artist-more-button:hover{background:#ffffff18}}
+@media(prefers-reduced-motion:reduce){.public-app .artist-page.artist-editorial .artist-release-star{transition:none}}
