@@ -1,3 +1,4 @@
+import {getPlaylist} from "@/lib/collaborativePlaylists";
 import {readAllPages} from '@/lib/readPages';
 import {useCallback,useEffect,useRef,useState} from 'react';
 import {base44} from '@/api/base44Client';
@@ -13,7 +14,9 @@ async function readMine(uid,fresh=false){
  if(entry.inflight)return entry.inflight;
  const version=entry.version;
  let request;
- request=readAllPages(options=>base44.entities.Playlist.filter({$or:[{creator_id:uid},{collaborator_ids:uid}]},{sort:'-created_date',...options})).then(rows=>{
+ request=Promise.all([readAllPages(options=>base44.entities.Playlist.filter({creator_id:uid},{sort:'-created_date',...options})),readAllPages(options=>base44.entities.PlaylistCollaboration.filter({member_ids:uid},{...options}))]).then(async([owned,joined])=>{
+  const ids=[...new Set(joined.map(r=>r.playlist_id))].filter(id=>!owned.some(p=>p.id===id));
+  const rows=[...owned,...await Promise.all(ids.map(id=>getPlaylist(id)))];
   if(cache.get(uid)!==entry)throw Error('Account changed');
   if(version!==entry.version)return readMine(uid);
   entry.rows=rows;entry.expires=Date.now()+TTL;return rows;
