@@ -36,7 +36,7 @@ export default function Upload() {
 
   return (
     <div className="upload-page max-w-3xl mx-auto">
-      <header className="page-intro"><h1>Upload music</h1><p>Add your audio, review its details, and publish to PUBLIC.</p></header>
+      <header className="page-intro"><h1>Upload music</h1><p>Add your audio, review its details, and publish to PUBLIC.</p><p className="text-sm text-foreground/50 mt-2">Song details come from your file first. Edit them yourself, or choose AI to fill anything missing.</p></header>
       <Link to="/unfinished-uploads" className="playlist-action mb-5">Finish saved uploads</Link>
       
 
@@ -101,7 +101,8 @@ export default function Upload() {
                 <UploadItem
               item={item}
               isAdmin={isAdmin}
-              onChange={(data) => q.patch(item.id, data)}
+              onChange={(data) => q.editDetails(item.id, data)}
+              onFillMissingDetails={() => q.fillMissingDetails(item.id)}
               onRemove={() => q.remove(item.id)}
               onUpload={() => q.uploadOne(item)}
               disabled={item.status === "analyzing"} />
