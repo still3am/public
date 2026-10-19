@@ -1,5 +1,6 @@
 import {DEFAULT_MIXER,normalizeMixer,mixerHeadroom,smoothAudioParam} from "@/lib/equalizer";
 import {commitAudioHandoff,transitionDuration} from "@/lib/audioHandoff";
+import {useAudioOutput} from "@/hooks/useAudioOutput";
 import {useSafety} from '@/context/SafetyContext';
 import {
   createContext,
@@ -67,6 +68,7 @@ export function PlayerProvider({ children }) {
   const sourceRefs = [useRef(null), useRef(null)];
 
   const activeIdxRef = useRef(0);
+  const audioOutput=useAudioOutput(audioRefs,activeIdxRef,audioCtxRef);
   const blobUrlRefs = [useRef(null), useRef(null)];
   const sideLoadedIdRef = [useRef(null), useRef(null)];
   const sideReadyRef = [useRef(false), useRef(false)];
@@ -262,6 +264,7 @@ export function PlayerProvider({ children }) {
       master.connect(volumeGain);volumeGain.connect(ctx.destination);
       // Apply any mixer settings the user already chose to the new filters
       audioCtxRef.current = ctx;
+      audioOutput.controller.attachGraph(ctx);
       analyserRef.current = analyser;
       masterGainRef.current = master;
       volumeGainRef.current=volumeGain;
@@ -1345,6 +1348,7 @@ export function PlayerProvider({ children }) {
     resetMixer,
     enableMixer,
     dismissed,
+    audioOutput,
   };
 
   return (
