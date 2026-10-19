@@ -1349,6 +1349,7 @@ export function PlayerProvider({ children }) {
     enableMixer,
     dismissed,
     audioOutput,
+    getAudioQualitySource:()=>{const side=activeIdxRef.current;return {id:sideLoadedIdRef[side].current,url:audioRefs[side].current?.src||"",outputSampleRate:audioCtxRef.current?.sampleRate||null};},
   };
 
   return (
