@@ -7,10 +7,12 @@ import { getRecord } from "@/lib/offlineCache";
 // the remote URL (or whatever was passed in) when nothing is cached.
 export function useOfflineCoverUrl(trackId, fallbackUrl) {
   const {user}=useAuth();
-  const [url, setUrl] = useState(fallbackUrl || "");
+  const source=JSON.stringify([user?.id||null,trackId||null,fallbackUrl||""]);
+  const [resolved, setResolved] = useState(()=>({source,value:fallbackUrl||""}));
 
   useEffect(() => {
     let blobUrl = null;
+    const setUrl=value=>{if(!cancelled)setResolved({source,value});};
     let cancelled = false;
 
     (async () => {
@@ -38,5 +40,5 @@ export function useOfflineCoverUrl(trackId, fallbackUrl) {
     };
   }, [trackId, fallbackUrl,user?.id]);
 
-  return url;
+  return resolved.source===source?resolved.value:fallbackUrl||"";
 }
