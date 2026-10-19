@@ -1,3 +1,4 @@
+import {useArtistReleases} from "@/hooks/useArtistReleases";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { useAuth } from "@/lib/AuthContext";
@@ -7,6 +8,7 @@ import { reportActionError } from "@/lib/actionError";
 
 // Lightweight unread-count badge for nav surfaces.
 export function useUnreadCount() {
+  const releases=useArtistReleases();
   const { user } = useAuth();
   const [badge, setBadge] = useState({uid:null,count:0});
 
@@ -40,11 +42,12 @@ export function useUnreadCount() {
     };
   }, [user?.id]);
 
-  return badge.uid===user?.id?badge.count:0;
+  return (badge.uid===user?.id?badge.count:0)+releases.unread;
 }
 
 // Notifications load in pages; mark-all is scoped to the current user on the server.
 export function useNotifications(){
+ const releases=useArtistReleases();
  const {user}=useAuth();
  const [notifications,setNotifications]=useState([]),[loading,setLoading]=useState(true),[error,setError]=useState(false),[hasMore,setHasMore]=useState(false),[unreadCount,setUnreadCount]=useState(0);
  const paging=useRef({pages:0,hasMore:false});
@@ -88,6 +91,7 @@ export function useNotifications(){
   return()=>{epoch.current++;clearInterval(timer);reload.cancel();unsub();};
  },[load,user?.id]);
  async function markAllAsRead(){
+  try{await releases.markRead();}catch(error){reportActionError(error,"Release notifications couldn’t be marked read.");}
   if(!user?.id||markingAll.current||readingIds.current.size)return;
   markingAll.current=true;const uid=user.id,count=unreadCount,unread=new Set(notifications.filter(n=>!n.read).map(n=>n.id));
   setNotifications(prev=>prev.map(n=>({...n,read:true})));setUnreadCount(0);
@@ -96,6 +100,7 @@ export function useNotifications(){
   finally{if(account.current===uid){markingAll.current=false;window.dispatchEvent(new Event("notifications:changed"));load(true);}}
  }
  async function markAsRead(id){
+  if(id.startsWith("release:")){try{await releases.markRead(id);}catch(error){reportActionError(error,"Couldn’t mark this release as read.");}return;}
   const uid=user?.id,wasUnread=notifications.some(n=>n.id===id&&!n.read);
   if(!uid||!wasUnread||markingAll.current||readingIds.current.has(id))return;
   readingIds.current.add(id);
@@ -104,5 +109,7 @@ export function useNotifications(){
   catch(error){if(account.current===uid){setNotifications(prev=>prev.map(n=>n.id===id?{...n,read:false}:n));setUnreadCount(n=>n+1);reportActionError(error,"This notification could not be marked as read. Please retry.");}}
   finally{if(account.current===uid){readingIds.current.delete(id);window.dispatchEvent(new Event("notifications:changed"));}}
  }
- return {notifications,loading,error,hasMore,unreadCount,markAllAsRead,markAsRead,reload:()=>load(true),loadMore:()=>load(false)};
+ const releasedIds=new Set(releases.items.map(n=>n.track_id));
+ const merged=[...notifications.filter(n=>n.type!=="new_upload_from_followed"||!releasedIds.has(n.track_id)),...releases.items].sort((a,b)=>new Date(b.created_date)-new Date(a.created_date));
+ return {notifications:merged,loading,error:error||releases.error,hasMore,unreadCount:unreadCount+releases.unread,markAllAsRead,markAsRead,reload:()=>{load(true);releases.refresh();},loadMore:()=>load(false)};
 }
