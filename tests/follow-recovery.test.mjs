@@ -1,4 +1,6 @@
 import fs from 'node:fs';
+import {withPresetAvatar} from '../src/lib/nativeAvatar.js';
+globalThis.__withPreset=withPresetAvatar;
 import assert from 'node:assert/strict';
 const source=p=>fs.readFileSync(p,'utf8');
 const load=async(code)=>import('data:text/javascript;base64,'+Buffer.from(code).toString('base64'));
@@ -26,7 +28,7 @@ caller=null;assert.equal((await gateway(req({entity:'Follow',action:'read',args:
 globalThis.window={addEventListener(){}};
 let failPrimary=true,calls=0;
 globalThis.__lookupSDK={functions:{invoke:async(name)=>{calls++;if(name==='usersByIds'&&failPrimary)throw Error('offline');return name==='usersByIds'?{data:{users:[{id:'u1',display_name:'One'}]}}:{data:{result:[{id:'u1',display_name:'One'}]}};}}};
-const lookup=(await load(source('src/lib/userLookup.js').replace(/import \{ base44 \}[^;]*;/,'const base44=globalThis.__lookupSDK;'))).getUsersByIds;
+const lookup=(await load(source('src/lib/userLookup.js').replace(/import \{ base44 \}[^;]*;/,'const base44=globalThis.__lookupSDK;').replace(/import \{withPresetAvatar\}[^;]*;/,'const withPresetAvatar=globalThis.__withPreset;'))).getUsersByIds;
 assert.equal((await lookup(['u1','u1']))[0].display_name,'One');assert.equal(calls,2);
 await lookup(['u1']);assert.equal(calls,2,'cached names avoid duplicate lookups');
 console.log('PASS followers/following reads, count fallback, scoped access, full 100-user page hydration, no email disclosure, lookup failure signaling and gateway recovery');
