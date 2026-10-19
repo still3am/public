@@ -1,3 +1,4 @@
+import PureBadge from "@/components/PureBadge";
 import DeviceConnect from "@/components/DeviceConnect";
 import OverflowText from "@/components/OverflowText";
 import { copyText } from '@/lib/shareLink';
@@ -359,6 +360,7 @@ export default function FullScreenPlayer({ onClose }) {
 
                 <OverflowText text={t.artist || t.uploader_name || "Unknown"}/>
               </Link>
+              <div className="mt-2"><PureBadge/></div>
             </div>
             {hasLyrics && !showLyricsPanel &&
             <button
