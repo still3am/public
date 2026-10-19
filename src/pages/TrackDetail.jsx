@@ -1,7 +1,7 @@
 import TrackMusicVideo from "@/components/TrackMusicVideo";
 import "./track-editorial.css";
 import { shareTrack } from "@/lib/shareTrack";
-import {prepareTrackShare} from "@/lib/trackShareUrl";
+import { prepareTrackShare } from "@/lib/trackShareUrl";
 import { getPublishedTracks } from "@/lib/catalogCache";
 import { splitArtistNames } from "@/lib/artistTracks";
 import TrackCard from "@/components/TrackCard";
@@ -42,13 +42,13 @@ import { getUsersByIds } from "@/lib/userLookup";
 
 export default function TrackDetail() {
   const { id } = useParams();
-  useEffect(()=>{prepareTrackShare();},[id]);
+  useEffect(() => {prepareTrackShare();}, [id]);
   const nav = useNavigate();
   const { user } = useAuth();
   const p = usePlayer();
   const [track, setTrack] = useState(null);
   const coverUrl = useCoverUrl(track?.cover_art_url);
-  const [coverFailed,setCoverFailed] = useState(false);
+  const [coverFailed, setCoverFailed] = useState(false);
   useEffect(() => setCoverFailed(false), [coverUrl]);
   const [loading, setLoading] = useState(true);
   const [uploader, setUploader] = useState(null);
@@ -57,18 +57,18 @@ export default function TrackDetail() {
   const [detecting, setDetecting] = useState(false);
   const [syncing, setSyncing] = useState(false);
   const [moreTracks, setMoreTracks] = useState([]);
-  const [recommended,setRecommended] = useState([]);
+  const [recommended, setRecommended] = useState([]);
   useEffect(() => {
-    let active=true;setRecommended([]);
-    if(!track?.genre || track.genre==="Other")return;
-    const names=new Set(splitArtistNames(track.artist));
-    getPublishedTracks().then(rows=>{
-      const picks=rows.filter(row=>row.id!==track.id && row.genre===track.genre && !splitArtistNames(row.artist).some(name=>names.has(name)));
-      picks.sort((a,b)=>(b.play_count||0)-(a.play_count||0));
-      if(active)setRecommended(picks.slice(0,10));
-    }).catch(()=>{});
-    return()=>{active=false;};
-  },[track?.id,track?.genre,track?.artist]);
+    let active = true;setRecommended([]);
+    if (!track?.genre || track.genre === "Other") return;
+    const names = new Set(splitArtistNames(track.artist));
+    getPublishedTracks().then((rows) => {
+      const picks = rows.filter((row) => row.id !== track.id && row.genre === track.genre && !splitArtistNames(row.artist).some((name) => names.has(name)));
+      picks.sort((a, b) => (b.play_count || 0) - (a.play_count || 0));
+      if (active) setRecommended(picks.slice(0, 10));
+    }).catch(() => {});
+    return () => {active = false;};
+  }, [track?.id, track?.genre, track?.artist]);
   const { toast } = useToast();
 
   const loadVersion = useRef(0),detectVersion = useRef(0);
@@ -173,19 +173,19 @@ export default function TrackDetail() {
       <div className="release-toolbar">
         <button onClick={() => window.history.state?.idx > 0 ? nav(-1) : nav("/search")} className="release-round" aria-label="Back"><ChevronLeft size={26} /></button>
         <div className="release-toolbar-actions">
-          <button className="release-round" aria-label="Share song" onClick={async () => {try {const result=await shareTrack(track);if(result==="copied")toast({title:"Song link copied"});} catch {toast({title:"Couldn’t share this song. Please try again.",variant:"destructive"});}}}><Share2 size={21} /></button>
+          <button className="release-round" aria-label="Share song" onClick={async () => {try {const result = await shareTrack(track);if (result === "copied") toast({ title: "Song link copied" });} catch {toast({ title: "Couldn’t share this song. Please try again.", variant: "destructive" });}}}><Share2 size={21} /></button>
           <TrackOptionsMenu track={track} size={22} buttonClassName="release-round" items={ownerItems} />
         </div>
       </div>
       <section className={"release-header release-header-full" + (coverUrl && !coverFailed ? " has-release-art" : "")}>
-        <div className="release-art">{coverUrl && !coverFailed ? <img src={coverUrl} alt={track.title+" cover"} onError={() => setCoverFailed(true)} /> : <Music size={52} />}</div>
+        <div className="release-art">{coverUrl && !coverFailed ? <img src={coverUrl} alt={track.title + " cover"} onError={() => setCoverFailed(true)} /> : <Music size={52} />}</div>
         <div className="track-release-info">
-        <p className="track-release-kicker">Song on PUBLIC</p>
+        <p className="track-release-kicker hidden">Song on PUBLIC</p>
         <h1>{track.title}</h1>
-        <div className="release-artist">{displayArtist ? <ArtistLinks artist={displayArtist} maxShown={8} linkClassName="hover:underline" /> : uploader && <Link to={"/profile/"+uploader.id}>{uploader.display_name || uploader.full_name || track.uploader_name}</Link>}</div>
-        <p className="release-subtitle">{[track.genre,track.duration_seconds>0?formatTime(track.duration_seconds):null].filter(Boolean).join(" · ")}{track.explicit && <span className="release-explicit" aria-label="Explicit">E</span>}</p>
+        <div className="release-artist">{displayArtist ? <ArtistLinks artist={displayArtist} maxShown={8} linkClassName="hover:underline" /> : uploader && <Link to={"/profile/" + uploader.id}>{uploader.display_name || uploader.full_name || track.uploader_name}</Link>}</div>
+        <p className="release-subtitle">{[track.genre, track.duration_seconds > 0 ? formatTime(track.duration_seconds) : null].filter(Boolean).join(" · ")}{track.explicit && <span className="release-explicit" aria-label="Explicit">E</span>}</p>
         <div className="release-play-controls">
-          <button className="release-play-button" onClick={() => isCurrent ? p.togglePlay() : p.playTrackAt([track])}>{isPlaying?<Pause size={22} fill="currentColor" />:<Play size={22} fill="currentColor" />}{isPlaying?"Pause":"Play"}</button>
+          <button className="release-play-button" onClick={() => isCurrent ? p.togglePlay() : p.playTrackAt([track])}>{isPlaying ? <Pause size={22} fill="currentColor" /> : <Play size={22} fill="currentColor" />}{isPlaying ? "Pause" : "Play"}</button>
           <LibraryButton track={track} size={24} className="release-add-button" />
         </div>
         </div>
@@ -197,49 +197,49 @@ export default function TrackDetail() {
 
 
       {track.lyrics_text && track.lyrics_text.trim() &&
-      <section className="track-page-section">
+        <section className="track-page-section">
           <h2 className="text-lg font-extrabold tracking-tight mb-3 flex items-center gap-2">
              Lyrics
           </h2>
           <CollapsibleText text={track.lyrics_text} className="track-page-lyrics selectable-content whitespace-pre-line leading-relaxed" clampClass="max-h-64" />
           {isOwner && hasLyricsAudio &&
-        <button
-          onClick={() => setGenerating(true)}
-          className="mt-3 inline-flex items-center gap-2 text-xs font-semibold text-foreground/60 hover:text-foreground">
+          <button
+            onClick={() => setGenerating(true)}
+            className="mt-3 inline-flex items-center gap-2 text-xs font-semibold text-foreground/60 hover:text-foreground">
              Regenerate with AI
           </button>}
         </section>
-      }
+        }
 
       {isOwner && !track.lyrics_text?.trim() && hasLyricsAudio &&
-      <section className="track-page-section rounded-2xl border border-dashed border-border p-5 text-center">
+        <section className="track-page-section rounded-2xl border border-dashed border-border p-5 text-center">
           <Sparkles size={20} className="mx-auto text-foreground/40 mb-2" />
           <p className="text-sm text-foreground/60 mb-3">No lyrics yet. Let AI transcribe them from this track's audio.</p>
           <button
-          onClick={() => setGenerating(true)}
-          className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-foreground text-background text-sm font-semibold">
+            onClick={() => setGenerating(true)}
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-foreground text-background text-sm font-semibold">
             <Sparkles size={14} /> Generate lyrics
           </button>
         </section>
-      }
+        }
 
-      {(track._has_music_video || track.music_video_file_uri) && <TrackMusicVideo key={track.id+":"+(track.music_video_file_uri||"")} track={track} />}
+      {(track._has_music_video || track.music_video_file_uri) && <TrackMusicVideo key={track.id + ":" + (track.music_video_file_uri || "")} track={track} />}
       <section className="release-credits">
         <h2 className="track-details-title">About this song</h2>
-        {track.created_date && Number.isFinite(Date.parse(track.created_date)) && <p>Added to PUBLIC {new Intl.DateTimeFormat(undefined,{month:"long",day:"numeric",year:"numeric"}).format(new Date(track.created_date))}</p>}
-        <p>1 song{track.duration_seconds>0?" · "+formatTime(track.duration_seconds):""}</p>
-        {uploader && <p>Shared by <Link to={"/profile/"+uploader.id} className="hover:underline">{uploader.display_name || uploader.full_name || track.uploader_name || "PUBLIC member"}</Link></p>}
+        {track.created_date && Number.isFinite(Date.parse(track.created_date)) && <p>Added to PUBLIC {new Intl.DateTimeFormat(undefined, { month: "long", day: "numeric", year: "numeric" }).format(new Date(track.created_date))}</p>}
+        <p>1 song{track.duration_seconds > 0 ? " · " + formatTime(track.duration_seconds) : ""}</p>
+        {uploader && <p>Shared by <Link to={"/profile/" + uploader.id} className="hover:underline">{uploader.display_name || uploader.full_name || track.uploader_name || "PUBLIC member"}</Link></p>}
         {track.description && <div className="mt-4"><CollapsibleText text={track.description} className="selectable-content leading-relaxed" /></div>}
       </section>
       </div>
 
       {moreTracks.length > 0 && <section className="track-page-section">
         <h2>More by {track.artist}</h2>
-        <ScrollShelf className="release-shelf" label="More songs by this artist">{moreTracks.map(row=><div key={row.id} className="release-shelf-card"><TrackCard track={row} queue={moreTracks} /></div>)}</ScrollShelf>
+        <ScrollShelf className="release-shelf" label="More songs by this artist">{moreTracks.map((row) => <div key={row.id} className="release-shelf-card"><TrackCard track={row} queue={moreTracks} /></div>)}</ScrollShelf>
       </section>}
       {recommended.length > 0 && <section className="track-page-section">
         <h2>You Might Also Like</h2>
-        <ScrollShelf className="release-shelf" label="Songs in the same genre">{recommended.map(row=><div key={row.id} className="release-shelf-card"><TrackCard track={row} queue={recommended} /></div>)}</ScrollShelf>
+        <ScrollShelf className="release-shelf" label="Songs in the same genre">{recommended.map((row) => <div key={row.id} className="release-shelf-card"><TrackCard track={row} queue={recommended} /></div>)}</ScrollShelf>
       </section>}
 
       {editing &&
