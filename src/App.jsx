@@ -13,6 +13,7 @@ import { LoungeHostProvider } from '@/hooks/useLoungeHost';
 import Layout from '@/components/Layout';
 import DialogFocusManager from '@/components/DialogFocusManager';
 import GlobalStatus from '@/components/GlobalStatus';
+import OfflineSyncManager from '@/components/OfflineSyncManager';
 import Support from '@/pages/Support';
 import Policies from '@/pages/Policies';
 import ErrorBoundary from '@/components/ErrorBoundary';
@@ -128,7 +129,7 @@ function App() {
     <AuthProvider>
       <QueryClientProvider client={queryClientInstance}>
         <Router>
-          <ErrorBoundary><GlobalStatus/><DialogFocusManager/><SafetyProvider><PlayerProvider>
+          <ErrorBoundary><GlobalStatus/><DialogFocusManager/><SafetyProvider><PlayerProvider><OfflineSyncManager/>
             <LibraryProvider>
               <UploadProvider>
                 <LoungeHostProvider><AuthenticatedApp /></LoungeHostProvider>
