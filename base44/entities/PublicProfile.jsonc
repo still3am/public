@@ -34,6 +34,24 @@
         }
       }
     },
+    "banner_use_default": {
+      "type": "boolean",
+      "default": false,
+      "rls": {
+        "write": {
+          "$or": [
+            {
+              "data.user_id": "{{user.id}}"
+            },
+            {
+              "user_condition": {
+                "role": "admin"
+              }
+            }
+          ]
+        }
+      }
+    },
     "banner_mobile_url": {
       "type": "string",
       "default": "",
