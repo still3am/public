@@ -1,3 +1,4 @@
+import ArtistAliases from "@/components/ArtistAliases";
 import ArtistReleaseFollow from "@/components/ArtistReleaseFollow";
 import ScrollShelf from "@/components/ScrollShelf";
 import LoadError from '@/components/LoadError';
@@ -324,6 +325,7 @@ export default function PublicRecords({ id: propId, fallbackArtist = null }) {
         </section>}
         {(artist.bio || meta.length > 0 || socials.length > 0 || artist.history_text || tracks.some(track=>track.genre) || isAdmin) && <section className="artist-about">
           <SectionTitle icon={Mic2}>About {artist.name}</SectionTitle>
+          <ArtistAliases artist={artist} onSaved={aliases=>setArtist(previous=>({...previous,aliases}))}/>
           {artist.bio && <CollapsibleText text={artist.bio} className="artist-about-copy selectable-content leading-relaxed" clampClass="max-h-28" />}
           <dl className="artist-facts">
             {artist.location && <div><dt>From</dt><dd>{artist.location}</dd></div>}
