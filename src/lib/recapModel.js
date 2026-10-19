@@ -1,11 +1,14 @@
 export function recapBounds(period,value){
+ if(period==="all")return {start:new Date(0),end:new Date(8640000000000000)};
  const date=new Date(value||Date.now()),year=date.getFullYear(),month=date.getMonth();
  return {start:new Date(year,period==="year"?0:month,1),end:new Date(period==="year"?year+1:year,period==="year"?0:month+1,1)};
 }
 export function buildRecap(sessions,events,catalog,period,value){
  const {start,end}=recapBounds(period,value),tracks=new Map(catalog.map(t=>[t.id,t]));
  const inPeriod=value=>{const d=new Date(value);return d>=start&&d<end;};
- const seen=new Set(),valid=sessions.filter(s=>{if(seen.has(s.session_key))return false;seen.add(s.session_key);return inPeriod(s.started_at)&&s.listened_seconds>=5;});
+ const deduped=new Map();
+ for(const s of sessions){if(!s.session_key)continue;const old=deduped.get(s.session_key);if(!old||s.listened_seconds>old.listened_seconds)deduped.set(s.session_key,s);}
+ const valid=[...deduped.values()].filter(s=>inPeriod(s.started_at)&&s.listened_seconds>=5);
  const plays=valid.map(s=>({track_id:s.track_id,date:s.started_at,seconds:s.listened_seconds}));
  for(const event of events)if(inPeriod(event.created_date)&&!valid.some(s=>s.track_id===event.track_id&&Math.abs(new Date(s.started_at)-new Date(event.created_date))<120000))plays.push({track_id:event.track_id,date:event.created_date,seconds:0});
  const counts=new Map(),artists=new Map(),genres=new Map();
