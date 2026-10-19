@@ -23,7 +23,7 @@ console.log("PASS the real graph is one serial chain; settings schedule actual f
 const source=fs.readFileSync("src/context/PlayerContext.jsx","utf8"),ast=ts.createSourceFile("player.jsx",source,ts.ScriptTarget.Latest,true,ts.ScriptKind.JSX);
 let expression;const walk=n=>{if(ts.isVariableDeclaration(n)&&n.name.getText(ast)==="setPureValues")expression=n.initializer.arguments[0].getText(ast);ts.forEachChild(n,walk);};walk(ast);assert.ok(expression);
 function fixture(){
- const state={},env={normalizePure,pureRef:{current:{...DEFAULT_PURE}},pureRequestRef:{current:0},pureRemoteRef:{current:false},pureGraphRef:{current:graph},audioCtxRef:{current:ctx},ensureGraph:()=>ctx,setPureError:v=>state.error=v,setPureState:v=>state.value=v};
+ const state={},env={isPlayingRef:{current:true},normalizePure,pureRef:{current:{...DEFAULT_PURE}},pureRequestRef:{current:0},pureRemoteRef:{current:false},pureGraphRef:{current:graph},audioCtxRef:{current:ctx},ensureGraph:()=>ctx,setPureError:v=>state.error=v,setPureState:v=>state.value=v};
  const change=new Function(...Object.keys(env),"return ("+expression+")")(...Object.values(env));return {state,env,change};
 }
 {
@@ -40,6 +40,16 @@ function fixture(){
  const {state,env}=fixture();let reject;const suspended={...ctx,state:"suspended",resume:()=>new Promise((_,r)=>{reject=r;})};env.ensureGraph=()=>suspended;
  const change=new Function(...Object.keys(env),"return ("+expression+")")(...Object.values(env));
  const pending=change({enabled:true});await change({enabled:false});reject(Error("blocked"));await pending;assert.equal(state.value.enabled,false);assert.equal(state.error,"");
+}
+{
+ const {state,env}=fixture();env.isPlayingRef.current=false;env.audioCtxRef.current=null;env.pureGraphRef.current=null;let starts=0;
+ env.ensureGraph=()=>{starts++;return null;};
+ const change=new Function(...Object.keys(env),"return ("+expression+")")(...Object.values(env));
+ assert.equal(await change({enabled:true}),true,"PURE can be selected before any music is playing");
+ assert.equal(state.value.enabled,true);assert.equal(starts,0,"saving idle preferences must not require an audio engine");
+ await change({clarity:72});assert.equal(state.value.clarity,72);assert.equal(state.value.enabled,true);
+ await change({enabled:false});assert.equal(state.value.enabled,false);
+ console.log("PASS idle/paused users can enable, tune and disable PURE without starting Web Audio");
 }
 console.log("PASS player activation, remote-playback restrictions, unavailable engines and stale resume failures preserve user intent");
 {
