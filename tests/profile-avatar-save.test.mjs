@@ -41,5 +41,6 @@ await assert.rejects(base44.auth.updateMe({banner_use_default:true,bio:"Changed"
 assert.equal(nativeWrites.length,0,"mixed text edits must still pass moderation");
 reset();failText=true;
 await assert.rejects(base44.auth.updateMe({banner_use_default:false}),/Text rejected/);
+reset();user.avatar_video_url="https://test/old.mp4";await base44.auth.updateMe({avatar_url:AVATAR_PRESETS[0].url,avatar_video_url:"",avatar_gif_url:""});assert.equal(requests.length,0);assert.equal((await base44.auth.me()).avatar_video_url,"");
 console.log("PASS default banner restore persists for owner and visitors without functions; ignored writes, blocked accounts and mixed moderation guarded");
 console.log("PASS all gallery avatars save alongside profile edits, public persistence, removal, moderation failures, ignored writes and account changes");
