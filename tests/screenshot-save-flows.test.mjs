@@ -23,7 +23,7 @@ const save=input=>saveTimedLyrics(client,{trackId:"song",lines,...input},protect
 reset();let saved=await save();assert.equal(saved.lines.length,2);assert.equal(calls.length,0);assert.equal(db.Lyrics.length,1);
 await save();assert.equal(db.Lyrics.length,1,"reopened sync edits update the same record");
 reset();lost=true;saved=await save();assert.equal(saved.lines[0].text,"First line");assert.equal(db.Lyrics.length,1,"lost create response is reconciled without duplicates");
-reset();ignore=true;await assert.rejects(save(),/not confirmed/);
+reset();ignore=true;await assert.rejects(save(),/not (?:be )?confirmed/);
 reset();swap=true;await assert.rejects(save(),/account changed/);
 reset();user.role="user";user.id="owner";await assert.rejects(save(),/Service unavailable/);assert.equal(writes.length,0);assert.equal(calls[0][0],"create");
 reset();user.role="user";user.id="intruder";await assert.rejects(save(),/Only the song owner/);assert.equal(calls.length,0);
@@ -39,7 +39,7 @@ room=await act("LoungeSession","update",room.id,{current_track_id:"song",current
 assert.equal((await act("LoungeSession","filter",{host_id:"admin",is_active:true})).length,1);
 await act("LoungeSession","update",room.id,{is_active:false});assert.equal(db.LoungeSession[0].is_active,false);
 reset();lost=true;room=await act("LoungeSession","create",{code:"ABCDE",is_active:true});assert.ok(room.id);assert.equal(db.LoungeSession.length,1);
-reset();ignore=true;await assert.rejects(act("LoungeSession","create",{code:"ABCDE",is_active:true}),/not confirmed/);
+reset();ignore=true;await assert.rejects(act("LoungeSession","create",{code:"ABCDE",is_active:true}),/not (?:be )?confirmed/);
 reset();user.role="user";await assert.rejects(act("LoungeSession","create",{code:"ABCDE"}),/Service unavailable/);assert.equal(writes.length,0);
 reset();db.LoungeSession=[{id:"foreign",host_id:"other",is_active:true}];await assert.rejects(act("LoungeSession","update","foreign",{is_active:false}),/Service unavailable/);assert.equal(writes.length,0);
 reset();user.disabled=true;await assert.rejects(act("LoungeSession","create",{code:"ABCDE"}),/active account/);
