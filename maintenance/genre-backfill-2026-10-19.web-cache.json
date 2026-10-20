@@ -330025,5 +330025,1167 @@
         "trackId": 1789604366
       }
     ]
+  },
+  "mixTerm|Night Tapes drifting": {
+    "query_url": "https://itunes.apple.com/search?term=Night+Tapes+drifting&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": [
+      {
+        "trackName": "drifting (Laurence Guy Remix)",
+        "artistName": "Night Tapes",
+        "collectionName": "drifting (Laurence Guy Remix) - Single",
+        "primaryGenreName": "Dance",
+        "trackViewUrl": "https://music.apple.com/us/album/drifting-laurence-guy-remix/1754714238?i=1754714570&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/drifting-laurence-guy-remix/1754714238?i=1754714570&uo=4",
+        "trackId": 1754714570
+      },
+      {
+        "trackName": "Dream",
+        "artistName": "Night Tapes",
+        "collectionName": "Dream Forever in Glorious Stereo - Single",
+        "primaryGenreName": "Soft Rock",
+        "trackViewUrl": "https://music.apple.com/us/album/dream/1778443181?i=1778443182&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/dream/1778443181?i=1778443182&uo=4",
+        "trackId": 1778443182
+      },
+      {
+        "trackName": "but me",
+        "artistName": "Rosie Carney",
+        "collectionName": "doomsday night tapes",
+        "primaryGenreName": "Alternative",
+        "trackViewUrl": "https://music.apple.com/us/album/but-me/1895978170?i=6765520948&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/but-me/1895978170?i=6765520948&uo=4",
+        "trackId": 6765520948
+      },
+      {
+        "trackName": "but me",
+        "artistName": "Rosie Carney",
+        "collectionName": "doomsday night tapes",
+        "primaryGenreName": "Alternative",
+        "trackViewUrl": "https://music.apple.com/us/album/but-me/1895978108?i=6765520615&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/but-me/1895978108?i=6765520615&uo=4",
+        "trackId": 6765520615
+      },
+      {
+        "trackName": "Night Drive Romance",
+        "artistName": "Velario",
+        "collectionName": "Midnight Tapes",
+        "primaryGenreName": "R&B/Soul",
+        "trackViewUrl": "https://music.apple.com/us/album/night-drive-romance/1858114663?i=1858114676&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/night-drive-romance/1858114663?i=1858114676&uo=4",
+        "trackId": 1858114676
+      },
+      {
+        "trackName": "Drifting Night",
+        "artistName": "Aleutian Arc",
+        "collectionName": "The Berlin Tapestry Tapes - EP",
+        "primaryGenreName": "Indie Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/drifting-night/1463486538?i=1463486543&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/drifting-night/1463486538?i=1463486543&uo=4",
+        "trackId": 1463486543
+      },
+      {
+        "trackName": "Neon Drifting (Late Night LoFi for Deep Focus and Chill)",
+        "artistName": "Nora Greene",
+        "collectionName": "Echoes of the 4th Floor (LoFi Beats for Late Night Study and Sleep)",
+        "primaryGenreName": "Downtempo",
+        "trackViewUrl": "https://music.apple.com/us/album/neon-drifting-late-night-lofi-for-deep-focus-and-chill/1893518778?i=1893518780&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/neon-drifting-late-night-lofi-for-deep-focus-and-chill/1893518778?i=1893518780&uo=4",
+        "trackId": 1893518780
+      },
+      {
+        "trackName": "Night on Tape",
+        "artistName": "Muse Petal",
+        "collectionName": "Daydream",
+        "primaryGenreName": "R&B/Soul",
+        "trackViewUrl": "https://music.apple.com/us/album/night-on-tape/1841050961?i=1841050965&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/night-on-tape/1841050961?i=1841050965&uo=4",
+        "trackId": 1841050965
+      },
+      {
+        "trackName": "The Ocean at Night",
+        "artistName": "Lucy Kruger & The Lost Boys",
+        "collectionName": "Sleeping Tapes for Some Girls",
+        "primaryGenreName": "Goth Rock",
+        "trackViewUrl": "https://music.apple.com/us/album/the-ocean-at-night/1459669611?i=1459669631&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/the-ocean-at-night/1459669611?i=1459669631&uo=4",
+        "trackId": 1459669631
+      },
+      {
+        "trackName": "Mean Streets",
+        "artistName": "Rob Ross",
+        "collectionName": "The Lockdown Tapes Part One",
+        "primaryGenreName": "Rock",
+        "trackViewUrl": "https://music.apple.com/us/album/mean-streets/1686769243?i=1686769370&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/mean-streets/1686769243?i=1686769370&uo=4",
+        "trackId": 1686769370
+      },
+      {
+        "trackName": "Drift",
+        "artistName": "Kdm",
+        "collectionName": "Sleepy R&B Tapes - EP",
+        "primaryGenreName": "R&B/Soul",
+        "trackViewUrl": "https://music.apple.com/us/album/drift/1802970060?i=1802970062&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/drift/1802970060?i=1802970062&uo=4",
+        "trackId": 1802970062
+      }
+    ]
+  },
+  "mixTerm|Adria Kain Driving Miss Daisy": {
+    "query_url": "https://itunes.apple.com/search?term=Adria+Kain+Driving+Miss+Daisy&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": [
+      {
+        "trackName": "Driving Miss Daisy",
+        "artistName": "Adria Kain",
+        "collectionName": "This Feels Like Home",
+        "primaryGenreName": "R&B/Soul",
+        "trackViewUrl": "https://music.apple.com/us/album/driving-miss-daisy/1894802655?i=1894802660&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/driving-miss-daisy/1894802655?i=1894802660&uo=4",
+        "trackId": 1894802660
+      }
+    ]
+  },
+  "mixTerm|Snoop Dogg Drop It Like It's Hot": {
+    "query_url": "https://itunes.apple.com/search?term=Snoop+Dogg+Drop+It+Like+It%27s+Hot&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": [
+      {
+        "trackName": "Drop It Like It's Hot (feat. Pharrell Williams)",
+        "artistName": "Snoop Dogg",
+        "collectionName": "R&G (Rhythm & Gangsta) - The Masterpiece",
+        "primaryGenreName": "Hip-Hop/Rap",
+        "trackViewUrl": "https://music.apple.com/us/album/drop-it-like-its-hot-feat-pharrell-williams/1443395920?i=1443396469&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/drop-it-like-its-hot-feat-pharrell-williams/1443395920?i=1443396469&uo=4",
+        "trackId": 1443396469
+      },
+      {
+        "trackName": "Drop It Like It's Hot (Radio Edit)",
+        "artistName": "Pharrell Williams & Snoop Dogg",
+        "collectionName": "Drop It Like It's Hot - EP",
+        "primaryGenreName": "Hip-Hop/Rap",
+        "trackViewUrl": "https://music.apple.com/us/album/drop-it-like-its-hot-radio-edit/1445287603?i=1445287607&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/drop-it-like-its-hot-radio-edit/1445287603?i=1445287607&uo=4",
+        "trackId": 1445287607
+      },
+      {
+        "trackName": "Drop It Like It's Hot (feat. Pharrell Williams)",
+        "artistName": "Snoop Dogg",
+        "collectionName": "Turbo (Music From the Motion Picture)",
+        "primaryGenreName": "Soundtrack",
+        "trackViewUrl": "https://music.apple.com/us/album/drop-it-like-its-hot-feat-pharrell-williams/1443092376?i=1443092786&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/drop-it-like-its-hot-feat-pharrell-williams/1443092376?i=1443092786&uo=4",
+        "trackId": 1443092786
+      },
+      {
+        "trackName": "Drop It Like It's Hot (feat. Pharrell Williams) [Radio Edit]",
+        "artistName": "Snoop Dogg",
+        "collectionName": "Turbo (Music from the Motion Picture) [Deluxe Edition]",
+        "primaryGenreName": "Soundtrack",
+        "trackViewUrl": "https://music.apple.com/us/album/drop-it-like-its-hot-feat-pharrell-williams-radio-edit/1443181335?i=1443181352&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/drop-it-like-its-hot-feat-pharrell-williams-radio-edit/1443181335?i=1443181352&uo=4",
+        "trackId": 1443181352
+      },
+      {
+        "trackName": "Drop It Like It's Hot (Instrumental)",
+        "artistName": "Pharrell Williams & Snoop Dogg",
+        "collectionName": "Drop It Like It's Hot - EP",
+        "primaryGenreName": "Hip-Hop/Rap",
+        "trackViewUrl": "https://music.apple.com/us/album/drop-it-like-its-hot-instrumental/1445287603?i=1445287613&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/drop-it-like-its-hot-instrumental/1445287603?i=1445287613&uo=4",
+        "trackId": 1445287613
+      },
+      {
+        "trackName": "Drop It Like It's Hot (Extra Clean Radio Edit)",
+        "artistName": "Pharrell Williams & Snoop Dogg",
+        "collectionName": "Drop It Like It's Hot - EP",
+        "primaryGenreName": "Hip-Hop/Rap",
+        "trackViewUrl": "https://music.apple.com/us/album/drop-it-like-its-hot-extra-clean-radio-edit/1445287603?i=1445287608&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/drop-it-like-its-hot-extra-clean-radio-edit/1445287603?i=1445287608&uo=4",
+        "trackId": 1445287608
+      },
+      {
+        "trackName": "Drop It Like It's Hot (feat. Pharrell Williams)",
+        "artistName": "Snoop Dogg",
+        "collectionName": "Sensual Seduction - Single (Hit Pack) - Single",
+        "primaryGenreName": "Hip-Hop/Rap",
+        "trackViewUrl": "https://music.apple.com/us/album/drop-it-like-its-hot-feat-pharrell-williams/1445139408?i=1445139430&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/drop-it-like-its-hot-feat-pharrell-williams/1445139408?i=1445139430&uo=4",
+        "trackId": 1445139430
+      },
+      {
+        "trackName": "Drop It Like It's Hot",
+        "artistName": "Rockabye Baby!",
+        "collectionName": "Lullaby Renditions of Snoop Dogg",
+        "primaryGenreName": "Hip-Hop/Rap",
+        "trackViewUrl": "https://music.apple.com/us/album/drop-it-like-its-hot/1485489104?i=1485489109&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/drop-it-like-its-hot/1485489104?i=1485489109&uo=4",
+        "trackId": 1485489109
+      },
+      {
+        "trackName": "Drop It Like It's Hot",
+        "artistName": "Lil Wayne, BG, & Mannie Fresh",
+        "collectionName": "Tha Block Is Hot",
+        "primaryGenreName": "Hip-Hop/Rap",
+        "trackViewUrl": "https://music.apple.com/us/album/drop-it-like-its-hot/1443776878?i=1443777825&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/drop-it-like-its-hot/1443776878?i=1443777825&uo=4",
+        "trackId": 1443777825
+      },
+      {
+        "trackName": "Drop It Like It's Hot",
+        "artistName": "White Coffin",
+        "collectionName": "Psychobilly Goes Pop",
+        "primaryGenreName": "Rock",
+        "trackViewUrl": "https://music.apple.com/us/album/drop-it-like-its-hot/490832626?i=490833720&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/drop-it-like-its-hot/490832626?i=490833720&uo=4",
+        "trackId": 490833720
+      },
+      {
+        "trackName": "Drop It Like It's Hot",
+        "artistName": "Behindtupfers",
+        "collectionName": "Just Wondering",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/drop-it-like-its-hot/875288267?i=875288350&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/drop-it-like-its-hot/875288267?i=875288350&uo=4",
+        "trackId": 875288350
+      },
+      {
+        "trackName": "Drop It Like It's Hot",
+        "artistName": "DCCM & Ruby Chase",
+        "collectionName": "Drop It Like It's Hot - Single",
+        "primaryGenreName": "Hip-Hop/Rap",
+        "trackViewUrl": "https://music.apple.com/us/album/drop-it-like-its-hot/1535034786?i=1535034788&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/drop-it-like-its-hot/1535034786?i=1535034788&uo=4",
+        "trackId": 1535034788
+      },
+      {
+        "trackName": "Drop It Like It's Hot",
+        "artistName": "Heaven is Shining",
+        "collectionName": "Drop It Like It's Hot",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/drop-it-like-its-hot/1632279775?i=1632280128&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/drop-it-like-its-hot/1632279775?i=1632280128&uo=4",
+        "trackId": 1632280128
+      },
+      {
+        "trackName": "Drop It Like It's Hot",
+        "artistName": "JB Saxx",
+        "collectionName": "Collector's Series #1",
+        "primaryGenreName": "R&B/Soul",
+        "trackViewUrl": "https://music.apple.com/us/album/drop-it-like-its-hot/141890329?i=141891066&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/drop-it-like-its-hot/141890329?i=141891066&uo=4",
+        "trackId": 141891066
+      },
+      {
+        "trackName": "Drop It Like It's Hot",
+        "artistName": "Ultra Band",
+        "collectionName": "Black Sessions",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/drop-it-like-its-hot/1744954894?i=1744954900&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/drop-it-like-its-hot/1744954894?i=1744954900&uo=4",
+        "trackId": 1744954900
+      }
+    ]
+  },
+  "mixTerm|SugarHill Keem Drop My O": {
+    "query_url": "https://itunes.apple.com/search?term=SugarHill+Keem+Drop+My+O&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": [
+      {
+        "trackName": "ICE CREAM TRUCK",
+        "artistName": "SugarHill Keem",
+        "collectionName": "KING OF DRILL (DELUXE)",
+        "primaryGenreName": "Hip-Hop/Rap",
+        "trackViewUrl": "https://music.apple.com/us/album/ice-cream-truck/1689640469?i=1689641120&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/ice-cream-truck/1689640469?i=1689641120&uo=4",
+        "trackId": 1689641120
+      },
+      {
+        "trackName": "FLOCK AT THE FLOCKAS",
+        "artistName": "SugarHill Keem",
+        "collectionName": "KING OF DRILL (DELUXE)",
+        "primaryGenreName": "Hip-Hop/Rap",
+        "trackViewUrl": "https://music.apple.com/us/album/flock-at-the-flockas/1689640469?i=1689640610&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/flock-at-the-flockas/1689640469?i=1689640610&uo=4",
+        "trackId": 1689640610
+      },
+      {
+        "trackName": "MOVELOOK",
+        "artistName": "SugarHill Keem",
+        "collectionName": "KING OF DRILL (DELUXE)",
+        "primaryGenreName": "Hip-Hop/Rap",
+        "trackViewUrl": "https://music.apple.com/us/album/movelook/1689640469?i=1689640475&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/movelook/1689640469?i=1689640475&uo=4",
+        "trackId": 1689640475
+      },
+      {
+        "trackName": "WTF",
+        "artistName": "SugarHill Keem",
+        "collectionName": "KING OF DRILL (DELUXE)",
+        "primaryGenreName": "Hip-Hop/Rap",
+        "trackViewUrl": "https://music.apple.com/us/album/wtf/1689640469?i=1689640786&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/wtf/1689640469?i=1689640786&uo=4",
+        "trackId": 1689640786
+      },
+      {
+        "trackName": "BEEN READY",
+        "artistName": "SugarHill Keem",
+        "collectionName": "KING OF DRILL (DELUXE)",
+        "primaryGenreName": "Hip-Hop/Rap",
+        "trackViewUrl": "https://music.apple.com/us/album/been-ready/1689640469?i=1689641142&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/been-ready/1689640469?i=1689641142&uo=4",
+        "trackId": 1689641142
+      },
+      {
+        "trackName": "CAN'T WAIT",
+        "artistName": "SugarHill Keem",
+        "collectionName": "KING OF DRILL (DELUXE)",
+        "primaryGenreName": "Hip-Hop/Rap",
+        "trackViewUrl": "https://music.apple.com/us/album/cant-wait/1689640469?i=1689640811&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/cant-wait/1689640469?i=1689640811&uo=4",
+        "trackId": 1689640811
+      },
+      {
+        "trackName": "SEXY & I KNOW IT",
+        "artistName": "SugarHill Keem",
+        "collectionName": "KING OF DRILL (DELUXE)",
+        "primaryGenreName": "Hip-Hop/Rap",
+        "trackViewUrl": "https://music.apple.com/us/album/sexy-i-know-it/1689640469?i=1689640797&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/sexy-i-know-it/1689640469?i=1689640797&uo=4",
+        "trackId": 1689640797
+      },
+      {
+        "trackName": "PSA",
+        "artistName": "SugarHill Keem",
+        "collectionName": "KING OF DRILL (DELUXE)",
+        "primaryGenreName": "Hip-Hop/Rap",
+        "trackViewUrl": "https://music.apple.com/us/album/psa/1689640469?i=1689640621&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/psa/1689640469?i=1689640621&uo=4",
+        "trackId": 1689640621
+      },
+      {
+        "trackName": "EVIL TWINS (feat. Oy Quan)",
+        "artistName": "SugarHill Keem",
+        "collectionName": "KING OF DRILL (DELUXE)",
+        "primaryGenreName": "Hip-Hop/Rap",
+        "trackViewUrl": "https://music.apple.com/us/album/evil-twins-feat-oy-quan/1689640469?i=1689640802&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/evil-twins-feat-oy-quan/1689640469?i=1689640802&uo=4",
+        "trackId": 1689640802
+      },
+      {
+        "trackName": "OH SHIT (feat. Oy Quan)",
+        "artistName": "SugarHill Keem",
+        "collectionName": "KING OF DRILL (DELUXE)",
+        "primaryGenreName": "Hip-Hop/Rap",
+        "trackViewUrl": "https://music.apple.com/us/album/oh-shit-feat-oy-quan/1689640469?i=1689641307&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/oh-shit-feat-oy-quan/1689640469?i=1689641307&uo=4",
+        "trackId": 1689641307
+      },
+      {
+        "trackName": "AYO BRI (REMIX) [feat. Oy Quan]",
+        "artistName": "SugarHill Keem",
+        "collectionName": "KING OF DRILL (DELUXE)",
+        "primaryGenreName": "Hip-Hop/Rap",
+        "trackViewUrl": "https://music.apple.com/us/album/ayo-bri-remix-feat-oy-quan/1689640469?i=1689641299&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/ayo-bri-remix-feat-oy-quan/1689640469?i=1689641299&uo=4",
+        "trackId": 1689641299
+      }
+    ]
+  },
+  "mixTerm|Benjamin Hav Du ligner din mor": {
+    "query_url": "https://itunes.apple.com/search?term=Benjamin+Hav+Du+ligner+din+mor&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": [
+      {
+        "trackName": "Bo og Lis",
+        "artistName": "Benjamin Hav",
+        "collectionName": "Jeg vil bare gerne være et godt menneske, men det er ikke let.",
+        "primaryGenreName": "Hip-Hop/Rap",
+        "trackViewUrl": "https://music.apple.com/us/album/bo-og-lis/1793726199?i=1793726201&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/bo-og-lis/1793726199?i=1793726201&uo=4",
+        "trackId": 1793726201
+      },
+      {
+        "trackName": "Du ska' med",
+        "artistName": "Benjamin Hav",
+        "collectionName": "Jeg vil bare gerne være et godt menneske, men det er ikke let.",
+        "primaryGenreName": "Hip-Hop/Rap",
+        "trackViewUrl": "https://music.apple.com/us/album/du-ska-med/1793726199?i=1793726202&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/du-ska-med/1793726199?i=1793726202&uo=4",
+        "trackId": 1793726202
+      }
+    ]
+  },
+  "mixTerm|FRENKIE dua lipa": {
+    "query_url": "https://itunes.apple.com/search?term=FRENKIE+dua+lipa&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": [
+      {
+        "trackName": "dua lipa",
+        "artistName": "FRENKIE",
+        "collectionName": "dua lipa - Single",
+        "primaryGenreName": "German Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/dua-lipa/1845286208?i=1845286209&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/dua-lipa/1845286208?i=1845286209&uo=4",
+        "trackId": 1845286209
+      }
+    ]
+  },
+  "mixTerm|Puma June Dupe": {
+    "query_url": "https://itunes.apple.com/search?term=Puma+June+Dupe&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": []
+  },
+  "mixTerm|Kansas Dust in the Wind": {
+    "query_url": "https://itunes.apple.com/search?term=Kansas+Dust+in+the+Wind&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": [
+      {
+        "trackName": "Dust In the Wind",
+        "artistName": "Kansas",
+        "collectionName": "Point of Know Return (Expanded Edition)",
+        "primaryGenreName": "Rock",
+        "trackViewUrl": "https://music.apple.com/us/album/dust-in-the-wind/193730141?i=193730684&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/dust-in-the-wind/193730141?i=193730684&uo=4",
+        "trackId": 193730684
+      },
+      {
+        "trackName": "Dust in the Wind (Acoustic Guitar Solo) [Live 1977-1978]",
+        "artistName": "Kansas",
+        "collectionName": "Two For The Show (30th Anniversary Edition)",
+        "primaryGenreName": "Rock",
+        "trackViewUrl": "https://music.apple.com/us/album/dust-in-the-wind-acoustic-guitar-solo-live-1977-1978/1563094404?i=1563095062&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/dust-in-the-wind-acoustic-guitar-solo-live-1977-1978/1563094404?i=1563095062&uo=4",
+        "trackId": 1563095062
+      },
+      {
+        "trackName": "Dust In the Wind (feat. London Symphony Orchestra)",
+        "artistName": "Kansas",
+        "collectionName": "Always Never the Same (feat. London Symphony Orchestra)",
+        "primaryGenreName": "Rock",
+        "trackViewUrl": "https://music.apple.com/us/album/dust-in-the-wind-feat-london-symphony-orchestra/437843402?i=437843415&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/dust-in-the-wind-feat-london-symphony-orchestra/437843402?i=437843415&uo=4",
+        "trackId": 437843415
+      },
+      {
+        "trackName": "Dust In the Wind (Live 2017)",
+        "artistName": "Kansas",
+        "collectionName": "Leftoverture: Live & Beyond",
+        "primaryGenreName": "Rock",
+        "trackViewUrl": "https://music.apple.com/us/album/dust-in-the-wind-live-2017/1289139866?i=1289139877&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/dust-in-the-wind-live-2017/1289139866?i=1289139877&uo=4",
+        "trackId": 1289139877
+      },
+      {
+        "trackName": "Dust In the Wind (Live)",
+        "artistName": "Kansas",
+        "collectionName": "There's Know Place Like Home (Live)",
+        "primaryGenreName": "Rock",
+        "trackViewUrl": "https://music.apple.com/us/album/dust-in-the-wind-live/932567796?i=932571901&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/dust-in-the-wind-live/932567796?i=932571901&uo=4",
+        "trackId": 932571901
+      },
+      {
+        "trackName": "Dust In the Wind",
+        "artistName": "Sarah Brightman",
+        "collectionName": "Eden",
+        "primaryGenreName": "Vocal",
+        "trackViewUrl": "https://music.apple.com/us/album/dust-in-the-wind/715482649?i=715483957&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/dust-in-the-wind/715482649?i=715483957&uo=4",
+        "trackId": 715483957
+      },
+      {
+        "trackName": "Dust In The Wind (The Voice Performance)",
+        "artistName": "Girl Named Tom",
+        "collectionName": "Dust In The Wind (The Voice Performance) - Single",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/dust-in-the-wind-the-voice-performance/1595487564?i=1595487565&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/dust-in-the-wind-the-voice-performance/1595487564?i=1595487565&uo=4",
+        "trackId": 1595487565
+      },
+      {
+        "trackName": "Dust in the Wind",
+        "artistName": "Kansas",
+        "collectionName": "Pop Internacional 2023",
+        "primaryGenreName": "Rock",
+        "trackViewUrl": "https://music.apple.com/us/album/dust-in-the-wind/1692259210?i=1692261356&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/dust-in-the-wind/1692259210?i=1692261356&uo=4",
+        "trackId": 1692261356
+      },
+      {
+        "trackName": "Dust In the Wind",
+        "artistName": "Kansas",
+        "collectionName": "'70s Greatest Hits",
+        "primaryGenreName": "Rock",
+        "trackViewUrl": "https://music.apple.com/us/album/dust-in-the-wind/260302031?i=260302555&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/dust-in-the-wind/260302031?i=260302555&uo=4",
+        "trackId": 260302555
+      },
+      {
+        "trackName": "Dust In the Wind",
+        "artistName": "Kansas",
+        "collectionName": "Mullets Rock! Too! - Mullets In Love",
+        "primaryGenreName": "Rock",
+        "trackViewUrl": "https://music.apple.com/us/album/dust-in-the-wind/250249489?i=250250543&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/dust-in-the-wind/250249489?i=250250543&uo=4",
+        "trackId": 250250543
+      },
+      {
+        "trackName": "Dust In the Wind",
+        "artistName": "Kansas",
+        "collectionName": "The Essential Kansas",
+        "primaryGenreName": "Rock",
+        "trackViewUrl": "https://music.apple.com/us/album/dust-in-the-wind/399052667?i=399052945&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/dust-in-the-wind/399052667?i=399052945&uo=4",
+        "trackId": 399052945
+      },
+      {
+        "trackName": "Dust In the Wind",
+        "artistName": "Kansas",
+        "collectionName": "The Best of Kansas",
+        "primaryGenreName": "Rock",
+        "trackViewUrl": "https://music.apple.com/us/album/dust-in-the-wind/158580313?i=158580601&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/dust-in-the-wind/158580313?i=158580601&uo=4",
+        "trackId": 158580601
+      },
+      {
+        "trackName": "Dust In the Wind (Live at the Uptown Theatre, Chicago, IL, October 1980)",
+        "artistName": "Kansas",
+        "collectionName": "Wheels and Other Rarities",
+        "primaryGenreName": "Rock",
+        "trackViewUrl": "https://music.apple.com/us/album/dust-in-the-wind-live-at-the-uptown-theatre/1442148385?i=1442148674&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/dust-in-the-wind-live-at-the-uptown-theatre/1442148385?i=1442148674&uo=4",
+        "trackId": 1442148674
+      },
+      {
+        "trackName": "Dust in the Wind",
+        "artistName": "Kansas",
+        "collectionName": "70's Pop Hits",
+        "primaryGenreName": "Rock",
+        "trackViewUrl": "https://music.apple.com/us/album/dust-in-the-wind/1719203403?i=1719203410&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/dust-in-the-wind/1719203403?i=1719203410&uo=4",
+        "trackId": 1719203410
+      },
+      {
+        "trackName": "Dust In the Wind",
+        "artistName": "Kansas",
+        "collectionName": "Miracles Out of Nowhere",
+        "primaryGenreName": "Rock",
+        "trackViewUrl": "https://music.apple.com/us/album/dust-in-the-wind/949584861?i=949584887&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/dust-in-the-wind/949584861?i=949584887&uo=4",
+        "trackId": 949584887
+      }
+    ]
+  },
+  "mixTerm|Jessie Reyez DUSTY": {
+    "query_url": "https://itunes.apple.com/search?term=Jessie+Reyez+DUSTY&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": [
+      {
+        "trackName": "Gimme",
+        "artistName": "Sam Smith, Koffee & Jessie Reyez",
+        "collectionName": "Gloria",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/gimme/1649325651?i=1649325663&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/gimme/1649325651?i=1649325663&uo=4",
+        "trackId": 1649325663
+      },
+      {
+        "trackName": "On The Radar Freestyle",
+        "artistName": "Drake & Central Cee",
+        "collectionName": "On The Radar Freestyle - Single",
+        "primaryGenreName": "Hip-Hop",
+        "trackViewUrl": "https://music.apple.com/us/album/on-the-radar-freestyle/6814091129?i=6814091160&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/on-the-radar-freestyle/6814091129?i=6814091160&uo=4",
+        "trackId": 6814091160
+      },
+      {
+        "trackName": "On The Radar Freestyle",
+        "artistName": "Dina Ayada",
+        "collectionName": "On The Radar Freestyle - Single",
+        "primaryGenreName": "Hip-Hop/Rap",
+        "trackViewUrl": "https://music.apple.com/us/album/on-the-radar-freestyle/1702799152?i=1702799153&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/on-the-radar-freestyle/1702799152?i=1702799153&uo=4",
+        "trackId": 1702799153
+      },
+      {
+        "trackName": "ON THE RADAR FREESTYLE",
+        "artistName": "nobigdyl.",
+        "collectionName": "ON THE RADAR - Single",
+        "primaryGenreName": "Hip-Hop/Rap",
+        "trackViewUrl": "https://music.apple.com/us/album/on-the-radar-freestyle/1763052009?i=1763052010&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/on-the-radar-freestyle/1763052009?i=1763052010&uo=4",
+        "trackId": 1763052010
+      },
+      {
+        "trackName": "ON THE RADAR FREESTYLE",
+        "artistName": "Lil Mabu",
+        "collectionName": "YOUNG GENIUS",
+        "primaryGenreName": "Hip-Hop/Rap",
+        "trackViewUrl": "https://music.apple.com/us/album/on-the-radar-freestyle/1739726363?i=1739726375&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/on-the-radar-freestyle/1739726363?i=1739726375&uo=4",
+        "trackId": 1739726375
+      },
+      {
+        "trackName": "On The Radar, Pt. 1",
+        "artistName": "Kidwild",
+        "collectionName": "On The Radar Freestyle - Single",
+        "primaryGenreName": "Hip-Hop/Rap",
+        "trackViewUrl": "https://music.apple.com/us/album/on-the-radar-pt-1/1766339801?i=1766339802&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/on-the-radar-pt-1/1766339801?i=1766339802&uo=4",
+        "trackId": 1766339802
+      },
+      {
+        "trackName": "On The Radar Freestyle (Radio Edit)",
+        "artistName": "Iamsu!",
+        "collectionName": "On The Radar Freestyle (Clean, Instrumental, A Capella) - Single",
+        "primaryGenreName": "Hip-Hop/Rap",
+        "trackViewUrl": "https://music.apple.com/us/album/on-the-radar-freestyle-radio-edit/1835614351?i=1835614352&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/on-the-radar-freestyle-radio-edit/1835614351?i=1835614352&uo=4",
+        "trackId": 1835614352
+      },
+      {
+        "trackName": "On The Radar Freestyle (unplugged)",
+        "artistName": "nobigdyl.",
+        "collectionName": "unplugged, vol.2",
+        "primaryGenreName": "Christian",
+        "trackViewUrl": "https://music.apple.com/us/album/on-the-radar-freestyle-unplugged/1853896647?i=1853896657&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/on-the-radar-freestyle-unplugged/1853896647?i=1853896657&uo=4",
+        "trackId": 1853896657
+      },
+      {
+        "trackName": "On The Radar Freestyle (unplugged)",
+        "artistName": "nobigdyl.",
+        "collectionName": "unplugged vol.2 (deluxe)",
+        "primaryGenreName": "Christian",
+        "trackViewUrl": "https://music.apple.com/us/album/on-the-radar-freestyle-unplugged/1867503813?i=1867504096&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/on-the-radar-freestyle-unplugged/1867503813?i=1867504096&uo=4",
+        "trackId": 1867504096
+      },
+      {
+        "trackName": "On the Radar Freestyle - Sped Up",
+        "artistName": "bbygirl",
+        "collectionName": "On the Radar Freestyle - Sped Up - Single",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/on-the-radar-freestyle-sped-up/1702744083?i=1702744084&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/on-the-radar-freestyle-sped-up/1702744083?i=1702744084&uo=4",
+        "trackId": 1702744084
+      }
+    ]
+  },
+  "mixTerm|BTS Dynamite": {
+    "query_url": "https://itunes.apple.com/search?term=BTS+Dynamite&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": [
+      {
+        "trackName": "Dynamite (Live)",
+        "artistName": "BTS",
+        "collectionName": "PERMISSION TO DANCE ON STAGE (LIVE)",
+        "primaryGenreName": "K-Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/dynamite-live/1823627665?i=1823627863&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/dynamite-live/1823627665?i=1823627863&uo=4",
+        "trackId": 1823627863
+      },
+      {
+        "trackName": "Dynamite (Holiday Remix)",
+        "artistName": "BTS",
+        "collectionName": "Dynamite (Holiday Remix) - Single",
+        "primaryGenreName": "K-Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/dynamite-holiday-remix/1597016134?i=1597016441&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/dynamite-holiday-remix/1597016134?i=1597016441&uo=4",
+        "trackId": 1597016441
+      },
+      {
+        "trackName": "Dynamite",
+        "artistName": "BTS",
+        "collectionName": "Proof",
+        "primaryGenreName": "K-Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/dynamite/1627573936?i=1627575419&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/dynamite/1627573936?i=1627575419&uo=4",
+        "trackId": 1627575419
+      },
+      {
+        "trackName": "Dynamite",
+        "artistName": "BTS",
+        "collectionName": "BE",
+        "primaryGenreName": "K-Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/dynamite/1596532185?i=1596532400&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/dynamite/1596532185?i=1596532400&uo=4",
+        "trackId": 1596532400
+      },
+      {
+        "trackName": "Dynamite",
+        "artistName": "KIDZ BOP Kids",
+        "collectionName": "KIDZ BOP 2022",
+        "primaryGenreName": "Children's Music",
+        "trackViewUrl": "https://music.apple.com/us/album/dynamite/1585072918?i=1585073716&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/dynamite/1585072918?i=1585073716&uo=4",
+        "trackId": 1585073716
+      },
+      {
+        "trackName": "BTS Dynamite (Afro-Funk Remix Instrumental)",
+        "artistName": "Steveey Wandia",
+        "collectionName": "BTS Dynamite (Afro-Funk Remix Instrumental) - Single",
+        "primaryGenreName": "Afro-Beat",
+        "trackViewUrl": "https://music.apple.com/us/album/bts-dynamite-afro-funk-remix-instrumental/1655338143?i=1655338146&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/bts-dynamite-afro-funk-remix-instrumental/1655338143?i=1655338146&uo=4",
+        "trackId": 1655338146
+      },
+      {
+        "trackName": "Dynamite (Stonebridge Remix Dub)",
+        "artistName": "Taio Cruz",
+        "collectionName": "Dynamite (The Remixes)",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/dynamite-stonebridge-remix-dub/1444405056?i=1444405221&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/dynamite-stonebridge-remix-dub/1444405056?i=1444405221&uo=4",
+        "trackId": 1444405221
+      },
+      {
+        "trackName": "Dynamite",
+        "artistName": "China Anne McClain",
+        "collectionName": "A.N.T. Farm",
+        "primaryGenreName": "Soundtrack",
+        "trackViewUrl": "https://music.apple.com/us/album/dynamite/1443640682?i=1443641084&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/dynamite/1443640682?i=1443641084&uo=4",
+        "trackId": 1443641084
+      },
+      {
+        "trackName": "Dynamite",
+        "artistName": "Sigrid",
+        "collectionName": "Don't Kill My Vibe - EP",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/dynamite/1447665211?i=1447665215&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/dynamite/1447665211?i=1447665215&uo=4",
+        "trackId": 1447665215
+      },
+      {
+        "trackName": "Dynamite",
+        "artistName": "Sigrid",
+        "collectionName": "Sucker Punch",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/dynamite/1442310677?i=1442311631&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/dynamite/1442310677?i=1442311631&uo=4",
+        "trackId": 1442311631
+      },
+      {
+        "trackName": "DYNAMITE",
+        "artistName": "Tyla & Wizkid",
+        "collectionName": "WWP - Single",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/dynamite/1828459830?i=1828459839&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/dynamite/1828459830?i=1828459839&uo=4",
+        "trackId": 1828459839
+      },
+      {
+        "trackName": "Dynamite (feat. Pretty Sister)",
+        "artistName": "Nause",
+        "collectionName": "Dynamite (feat. Pretty Sister) - Single",
+        "primaryGenreName": "Dance",
+        "trackViewUrl": "https://music.apple.com/us/album/dynamite-feat-pretty-sister/1143562317?i=1143562383&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/dynamite-feat-pretty-sister/1143562317?i=1143562383&uo=4",
+        "trackId": 1143562383
+      },
+      {
+        "trackName": "Dynamite",
+        "artistName": "Taio Cruz",
+        "collectionName": "Rokstarr",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/dynamite/1442896998?i=1442897002&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/dynamite/1442896998?i=1442897002&uo=4",
+        "trackId": 1442897002
+      },
+      {
+        "trackName": "Dynamite",
+        "artistName": "Any Given Sin",
+        "collectionName": "Dynamite - Single",
+        "primaryGenreName": "Hard Rock",
+        "trackViewUrl": "https://music.apple.com/us/album/dynamite/1600451996?i=1600451997&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/dynamite/1600451996?i=1600451997&uo=4",
+        "trackId": 1600451997
+      },
+      {
+        "trackName": "Dynamite (BTS Cover)",
+        "artistName": "Wiplash",
+        "collectionName": "Dynamite (BTS Cover) - Single",
+        "primaryGenreName": "Rock y Alternativo",
+        "trackViewUrl": "https://music.apple.com/us/album/dynamite-bts-cover/1690472721?i=1690472723&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/dynamite-bts-cover/1690472721?i=1690472723&uo=4",
+        "trackId": 1690472723
+      }
+    ]
+  },
+  "mixTerm|Klass Dwat Pou W Vini": {
+    "query_url": "https://itunes.apple.com/search?term=Klass+Dwat+Pou+W+Vini&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": [
+      {
+        "trackName": "Dwat Pou W Vini (feat. Wyclef Jean)",
+        "artistName": "Klass",
+        "collectionName": "My Pain Killer",
+        "primaryGenreName": "Worldwide",
+        "trackViewUrl": "https://music.apple.com/us/album/dwat-pou-w-vini-feat-wyclef-jean/1777475137?i=1777475139&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/dwat-pou-w-vini-feat-wyclef-jean/1777475137?i=1777475139&uo=4",
+        "trackId": 1777475139
+      }
+    ]
+  },
+  "mixTerm|Hannah Cohen Earthstar": {
+    "query_url": "https://itunes.apple.com/search?term=Hannah+Cohen+Earthstar&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": [
+      {
+        "trackName": "Earthstar",
+        "artistName": "Hannah Cohen",
+        "collectionName": "Earthstar Mountain",
+        "primaryGenreName": "Alternative",
+        "trackViewUrl": "https://music.apple.com/us/album/earthstar/1786587477?i=1786587486&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/earthstar/1786587477?i=1786587486&uo=4",
+        "trackId": 1786587486
+      },
+      {
+        "trackName": "Dog Years",
+        "artistName": "Hannah Cohen",
+        "collectionName": "Earthstar Mountain",
+        "primaryGenreName": "Alternative",
+        "trackViewUrl": "https://music.apple.com/us/album/dog-years/1786587477?i=1786587494&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/dog-years/1786587477?i=1786587494&uo=4",
+        "trackId": 1786587494
+      },
+      {
+        "trackName": "Rag",
+        "artistName": "Hannah Cohen",
+        "collectionName": "Earthstar Mountain",
+        "primaryGenreName": "Alternative",
+        "trackViewUrl": "https://music.apple.com/us/album/rag/1786587477?i=1786587487&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/rag/1786587477?i=1786587487&uo=4",
+        "trackId": 1786587487
+      },
+      {
+        "trackName": "Baby You're Lying",
+        "artistName": "Hannah Cohen",
+        "collectionName": "Earthstar Mountain",
+        "primaryGenreName": "Alternative",
+        "trackViewUrl": "https://music.apple.com/us/album/baby-youre-lying/1786587477?i=1786587491&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/baby-youre-lying/1786587477?i=1786587491&uo=4",
+        "trackId": 1786587491
+      },
+      {
+        "trackName": "Summer Sweat",
+        "artistName": "Hannah Cohen",
+        "collectionName": "Earthstar Mountain",
+        "primaryGenreName": "Alternative",
+        "trackViewUrl": "https://music.apple.com/us/album/summer-sweat/1786587477?i=1786587489&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/summer-sweat/1786587477?i=1786587489&uo=4",
+        "trackId": 1786587489
+      },
+      {
+        "trackName": "Mountain",
+        "artistName": "Hannah Cohen",
+        "collectionName": "Earthstar Mountain",
+        "primaryGenreName": "Alternative",
+        "trackViewUrl": "https://music.apple.com/us/album/mountain/1786587477?i=1786587484&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/mountain/1786587477?i=1786587484&uo=4",
+        "trackId": 1786587484
+      },
+      {
+        "trackName": "Dusty",
+        "artistName": "Hannah Cohen",
+        "collectionName": "Earthstar Mountain",
+        "primaryGenreName": "Alternative",
+        "trackViewUrl": "https://music.apple.com/us/album/dusty/1786587477?i=1786587481&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/dusty/1786587477?i=1786587481&uo=4",
+        "trackId": 1786587481
+      },
+      {
+        "trackName": "Draggin'",
+        "artistName": "Hannah Cohen",
+        "collectionName": "Earthstar Mountain",
+        "primaryGenreName": "Alternative",
+        "trackViewUrl": "https://music.apple.com/us/album/draggin/1786587477?i=1786587483&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/draggin/1786587477?i=1786587483&uo=4",
+        "trackId": 1786587483
+      },
+      {
+        "trackName": "Una Spiaggia",
+        "artistName": "Hannah Cohen",
+        "collectionName": "Earthstar Mountain",
+        "primaryGenreName": "Alternative",
+        "trackViewUrl": "https://music.apple.com/us/album/una-spiaggia/1786587477?i=1786587488&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/una-spiaggia/1786587477?i=1786587488&uo=4",
+        "trackId": 1786587488
+      }
+    ]
+  },
+  "mixTerm|Malcolm Todd Earrings": {
+    "query_url": "https://itunes.apple.com/search?term=Malcolm+Todd+Earrings&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": [
+      {
+        "trackName": "Earrings",
+        "artistName": "Malcolm Todd",
+        "collectionName": "Sweet Boy",
+        "primaryGenreName": "Alternative",
+        "trackViewUrl": "https://music.apple.com/us/album/earrings/1738257523?i=1738257931&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/earrings/1738257523?i=1738257931&uo=4",
+        "trackId": 1738257931
+      },
+      {
+        "trackName": "Earrings (Originally Performed by Malcolm Todd) [Acoustic Guitar Karaoke]",
+        "artistName": "Sing2Guitar",
+        "collectionName": "Earrings (Originally Performed by Malcolm Todd) [Acoustic Guitar Karaoke] - Single",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/earrings-originally-performed-by-malcolm-todd-acoustic/6791067319?i=6791067320&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/earrings-originally-performed-by-malcolm-todd-acoustic/6791067319?i=6791067320&uo=4",
+        "trackId": 6791067320
+      },
+      {
+        "trackName": "Chest Pain (I Love)",
+        "artistName": "Malcolm Todd",
+        "collectionName": "Chest Pain (I Love) - Single",
+        "primaryGenreName": "Alternative",
+        "trackViewUrl": "https://music.apple.com/us/album/chest-pain-i-love/1782985639?i=1782985658&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/chest-pain-i-love/1782985639?i=1782985658&uo=4",
+        "trackId": 1782985658
+      },
+      {
+        "trackName": "Accutane",
+        "artistName": "Malcolm Todd",
+        "collectionName": "Sweet Boy",
+        "primaryGenreName": "Alternative",
+        "trackViewUrl": "https://music.apple.com/us/album/accutane/1738257523?i=1738258803&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/accutane/1738257523?i=1738258803&uo=4",
+        "trackId": 1738258803
+      },
+      {
+        "trackName": "Bleed",
+        "artistName": "Malcolm Todd & Omar Apollo",
+        "collectionName": "Malcolm Todd",
+        "primaryGenreName": "Alternative",
+        "trackViewUrl": "https://music.apple.com/us/album/bleed/1797866833?i=1797867062&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/bleed/1797866833?i=1797867062&uo=4",
+        "trackId": 1797867062
+      },
+      {
+        "trackName": "Pillow",
+        "artistName": "Malcolm Todd",
+        "collectionName": "Sweet Boy",
+        "primaryGenreName": "Alternative",
+        "trackViewUrl": "https://music.apple.com/us/album/pillow/1738257523?i=1738259087&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/pillow/1738257523?i=1738259087&uo=4",
+        "trackId": 1738259087
+      },
+      {
+        "trackName": "Earrings (live)",
+        "artistName": "Malcolm Todd",
+        "collectionName": "Earrings (live) - Single",
+        "primaryGenreName": "Alternative",
+        "trackViewUrl": "https://music.apple.com/us/album/earrings-live/6803257661?i=6803257853&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/earrings-live/6803257661?i=6803257853&uo=4",
+        "trackId": 6803257853
+      },
+      {
+        "trackName": "You Owe Me (feat. Ginuwine)",
+        "artistName": "Nas",
+        "collectionName": "Nastradamus",
+        "primaryGenreName": "Hip-Hop/Rap",
+        "trackViewUrl": "https://music.apple.com/us/album/you-owe-me-feat-ginuwine/158683022?i=158684792&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/you-owe-me-feat-ginuwine/158683022?i=158684792&uo=4",
+        "trackId": 158684792
+      },
+      {
+        "trackName": "Earrings",
+        "artistName": "Omni",
+        "collectionName": "Deluxe",
+        "primaryGenreName": "Indie Rock",
+        "trackViewUrl": "https://music.apple.com/us/album/earrings/1104449245?i=1104449395&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/earrings/1104449245?i=1104449395&uo=4",
+        "trackId": 1104449395
+      },
+      {
+        "trackName": "Earrings",
+        "artistName": "CHEETAH",
+        "collectionName": "28 Identity",
+        "primaryGenreName": "K-Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/earrings/1354767297?i=1354767525&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/earrings/1354767297?i=1354767525&uo=4",
+        "trackId": 1354767525
+      },
+      {
+        "trackName": "Earrings",
+        "artistName": "ACE",
+        "collectionName": "Earrings - Single",
+        "primaryGenreName": "Punjabi",
+        "trackViewUrl": "https://music.apple.com/us/album/earrings/1749108710?i=1749108719&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/earrings/1749108710?i=1749108719&uo=4",
+        "trackId": 1749108719
+      },
+      {
+        "trackName": "You Owe Me (feat. Ginuwine)",
+        "artistName": "Nas",
+        "collectionName": "Twice as Nice: Sexy & Stylish",
+        "primaryGenreName": "Dance",
+        "trackViewUrl": "https://music.apple.com/us/album/you-owe-me-feat-ginuwine/1244760008?i=1244760948&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/you-owe-me-feat-ginuwine/1244760008?i=1244760948&uo=4",
+        "trackId": 1244760948
+      },
+      {
+        "trackName": "You Owe Me (feat. Ginuwine)",
+        "artistName": "Nas",
+        "collectionName": "The Essential Nas",
+        "primaryGenreName": "Hip-Hop/Rap",
+        "trackViewUrl": "https://music.apple.com/us/album/you-owe-me-feat-ginuwine/858268019?i=858268068&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/you-owe-me-feat-ginuwine/858268019?i=858268068&uo=4",
+        "trackId": 858268068
+      },
+      {
+        "trackName": "Extra Extra",
+        "artistName": "Michael Shynes",
+        "collectionName": "Cinematic Love",
+        "primaryGenreName": "Soul",
+        "trackViewUrl": "https://music.apple.com/us/album/extra-extra/1813629816?i=1813630238&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/extra-extra/1813629816?i=1813630238&uo=4",
+        "trackId": 1813630238
+      },
+      {
+        "trackName": "Extra!",
+        "artistName": "Daisha McBride",
+        "collectionName": "Extra! - Single",
+        "primaryGenreName": "Hip-Hop/Rap",
+        "trackViewUrl": "https://music.apple.com/us/album/extra/1468979901?i=1468979902&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/extra/1468979901?i=1468979902&uo=4",
+        "trackId": 1468979902
+      }
+    ]
+  },
+  "mixTerm|fakemink Easter Pink": {
+    "query_url": "https://itunes.apple.com/search?term=fakemink+Easter+Pink&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": []
+  },
+  "mixTerm|Sainté East": {
+    "query_url": "https://itunes.apple.com/search?term=Saint%C3%A9+East&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": [
+      {
+        "trackName": "4 Petite prières de Saint François d'Assise, FP 142 (Excerpts): No. 1, Salut, Dame Sainte",
+        "artistName": "East Carolina University Chamber Singers & James Franklin",
+        "collectionName": "Appear and Inspire",
+        "primaryGenreName": "Classical",
+        "trackViewUrl": "https://music.apple.com/us/album/4-petite-pri%C3%A8res-de-saint-fran%C3%A7ois-dassise-fp-142/1581666077?i=1581666089&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/4-petite-pri%C3%A8res-de-saint-fran%C3%A7ois-dassise-fp-142/1581666077?i=1581666089&uo=4",
+        "trackId": 1581666089
+      },
+      {
+        "trackName": "03'",
+        "artistName": "Sainté",
+        "collectionName": "Out the Blue",
+        "primaryGenreName": "UK Hip-Hop",
+        "trackViewUrl": "https://music.apple.com/us/album/03/1586662013?i=1586662020&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/03/1586662013?i=1586662020&uo=4",
+        "trackId": 1586662020
+      },
+      {
+        "trackName": "Lowkey",
+        "artistName": "Sainté & oakland",
+        "collectionName": "4L - EP",
+        "primaryGenreName": "Hip-Hop/Rap",
+        "trackViewUrl": "https://music.apple.com/us/album/lowkey/1821561102?i=1821561104&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/lowkey/1821561102?i=1821561104&uo=4",
+        "trackId": 1821561104
+      },
+      {
+        "trackName": "Fit ID",
+        "artistName": "Sainté",
+        "collectionName": "Fit ID - Single",
+        "primaryGenreName": "Hip-Hop/Rap",
+        "trackViewUrl": "https://music.apple.com/us/album/fit-id/1774470352?i=1774470362&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/fit-id/1774470352?i=1774470362&uo=4",
+        "trackId": 1774470362
+      },
+      {
+        "trackName": "Love Is Deep",
+        "artistName": "Sainté",
+        "collectionName": "Still Local",
+        "primaryGenreName": "Hip-Hop/Rap",
+        "trackViewUrl": "https://music.apple.com/us/album/love-is-deep/1732961232?i=1732961734&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/love-is-deep/1732961232?i=1732961734&uo=4",
+        "trackId": 1732961734
+      },
+      {
+        "trackName": "Méditation",
+        "artistName": "Isabella Li Lao & Leszek Maria Wojcik",
+        "collectionName": "Sound From East To West - Isabella Li Lao",
+        "primaryGenreName": "Classical",
+        "trackViewUrl": "https://music.apple.com/us/album/m%C3%A9ditation/1823834276?i=1823834280&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/m%C3%A9ditation/1823834276?i=1823834280&uo=4",
+        "trackId": 1823834280
+      },
+      {
+        "trackName": "Stille Nacht",
+        "artistName": "Orchestre d'Auvergne",
+        "collectionName": "Sacred Songs from East and West",
+        "primaryGenreName": "Classical",
+        "trackViewUrl": "https://music.apple.com/us/album/stille-nacht/691883666?i=691884629&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/stille-nacht/691883666?i=691884629&uo=4",
+        "trackId": 691884629
+      },
+      {
+        "trackName": "Can't Keep from Falling in Love",
+        "artistName": "Sainte Jane",
+        "collectionName": "Marriage - EP",
+        "primaryGenreName": "Country",
+        "trackViewUrl": "https://music.apple.com/us/album/cant-keep-from-falling-in-love/1889554332?i=1889554502&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/cant-keep-from-falling-in-love/1889554332?i=1889554502&uo=4",
+        "trackId": 1889554502
+      },
+      {
+        "trackName": "Yellow Brick Road",
+        "artistName": "Ayren Sainté",
+        "collectionName": "Ghost",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/yellow-brick-road/6803590336?i=6803590342&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/yellow-brick-road/6803590336?i=6803590342&uo=4",
+        "trackId": 6803590342
+      },
+      {
+        "trackName": "Hail to thee",
+        "artistName": "Sainte Wave",
+        "collectionName": "The Blessed Crusade - Single",
+        "primaryGenreName": "Alternative",
+        "trackViewUrl": "https://music.apple.com/us/album/hail-to-thee/1845266888?i=1845266889&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/hail-to-thee/1845266888?i=1845266889&uo=4",
+        "trackId": 1845266889
+      },
+      {
+        "trackName": "Tall Trees In Georgia",
+        "artistName": "Buffy Sainte-Marie",
+        "collectionName": "I'm Gonna Be a Country Girl Again",
+        "primaryGenreName": "Singer/Songwriter",
+        "trackViewUrl": "https://music.apple.com/us/album/tall-trees-in-georgia/712030215?i=712030646&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/tall-trees-in-georgia/712030215?i=712030646&uo=4",
+        "trackId": 712030646
+      },
+      {
+        "trackName": "Tall Trees In Georgia",
+        "artistName": "Buffy Sainte-Marie",
+        "collectionName": "The Best of Buffy Sainte-Marie, Vol. 2",
+        "primaryGenreName": "Singer/Songwriter",
+        "trackViewUrl": "https://music.apple.com/us/album/tall-trees-in-georgia/713723772?i=713723784&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/tall-trees-in-georgia/713723772?i=713723784&uo=4",
+        "trackId": 713723784
+      },
+      {
+        "trackName": "Drrlà",
+        "artistName": "KNLO",
+        "collectionName": "Sainte-Foy",
+        "primaryGenreName": "French Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/drrl%C3%A0/1462789869?i=1462790338&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/drrl%C3%A0/1462789869?i=1462790338&uo=4",
+        "trackId": 1462790338
+      },
+      {
+        "trackName": "Cool cool",
+        "artistName": "KNLO",
+        "collectionName": "Sainte-Foy",
+        "primaryGenreName": "French Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/cool-cool/1462789869?i=1462790075&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/cool-cool/1462789869?i=1462790075&uo=4",
+        "trackId": 1462790075
+      },
+      {
+        "trackName": "Shorebound to Sainte-Marie",
+        "artistName": "Brewing Chaos",
+        "collectionName": "Tides of Plunder",
+        "primaryGenreName": "Metal",
+        "trackViewUrl": "https://music.apple.com/us/album/shorebound-to-sainte-marie/1800266645?i=1800266650&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/shorebound-to-sainte-marie/1800266645?i=1800266650&uo=4",
+        "trackId": 1800266650
+      }
+    ]
   }
 }
