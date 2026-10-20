@@ -7476,6 +7476,19 @@
       "match": "exact artist and title"
     },
     {
+      "id": "6acc447b81874338930edcda",
+      "title": "Curious Subject",
+      "artist": "Chaka Khan",
+      "before": "Other",
+      "genre": "Pop",
+      "source_genre": "Pop",
+      "source_title": "Curious Subject",
+      "source_artist": "Chaka Khan",
+      "source_album": "Chakzilla",
+      "source_url": "https://music.apple.com/us/album/curious-subject/6774651333?i=6774651644&uo=4",
+      "match": "exact artist and title"
+    },
+    {
       "id": "6acc447eae1a01772887102f",
       "title": "Cut Her Off",
       "artist": "K CAMP, 2 Chainz",
@@ -7486,6 +7499,32 @@
       "source_artist": "K CAMP",
       "source_album": "In Due Time",
       "source_url": "https://music.apple.com/us/album/cut-her-off-feat-2-chainz/1445302810?i=1445302942&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6acc448344b2a9e4dbed7220",
+      "title": "Cut",
+      "artist": "Sweet Pill",
+      "before": "Other",
+      "genre": "Rock",
+      "source_genre": "Rock",
+      "source_title": "Cut",
+      "source_artist": "Sweet Pill",
+      "source_album": "Where the Heart Is",
+      "source_url": "https://music.apple.com/us/album/cut/1610838118?i=1610838398&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6acc4484888196de0be19759",
+      "title": "Cyber Sex",
+      "artist": "Doja Cat",
+      "before": "Other",
+      "genre": "R&B",
+      "source_genre": "R&B/Soul",
+      "source_title": "Cyber Sex",
+      "source_artist": "Doja Cat",
+      "source_album": "Hot Pink",
+      "source_url": "https://music.apple.com/us/album/cyber-sex/1486465096?i=1486465097&uo=4",
       "match": "exact artist and title"
     },
     {
@@ -7512,6 +7551,19 @@
       "source_artist": "Sabrina Claudio",
       "source_album": "No Rain, No Flowers",
       "source_url": "https://music.apple.com/us/album/cycle/1424393374?i=1424393624&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6acc49593dee05314eb2f8c9",
+      "title": "Destiny",
+      "artist": "Rybeena, BhadBoi OML",
+      "before": "Other",
+      "genre": "Afrobeats",
+      "source_genre": "Afrobeats",
+      "source_title": "Destiny (feat. BhadBoi OML)",
+      "source_artist": "Rybeena",
+      "source_album": "Rybeena - EP",
+      "source_url": "https://music.apple.com/us/album/destiny-feat-bhadboi-oml/1717405416?i=1717405642&uo=4",
       "match": "exact artist and title"
     },
     {
@@ -7619,6 +7671,19 @@
       "match": "exact artist and title"
     },
     {
+      "id": "6acc49bf2ce874cc69d68ff5",
+      "title": "Dilated",
+      "artist": "Willowake",
+      "before": "Other",
+      "genre": "Alternative",
+      "source_genre": "Alternative",
+      "source_title": "Dilated",
+      "source_artist": "Willowake",
+      "source_album": "Dilated - Single",
+      "source_url": "https://music.apple.com/us/album/dilated/6784000277?i=6784000519&uo=4",
+      "match": "exact artist and title"
+    },
+    {
       "id": "6acc49c366816253bba187ce",
       "title": "Dile A El",
       "artist": "El Chaval de la Bachata",
@@ -7671,6 +7736,19 @@
       "match": "exact artist and title"
     },
     {
+      "id": "6acc49cf470bd98b3e07d357",
+      "title": "Din Don Dan",
+      "artist": "Aron xxx",
+      "before": "Other",
+      "genre": "Latin",
+      "source_genre": "Urbano latino",
+      "source_title": "Din Don Dan",
+      "source_artist": "Aron xxx",
+      "source_album": "Din Don Dan - Single",
+      "source_url": "https://music.apple.com/us/album/din-don-dan/6818178651?i=6818178963&uo=4",
+      "match": "exact artist and title"
+    },
+    {
       "id": "6acc49d71daf207918005d49",
       "title": "Dior (Remix)",
       "artist": "Pop Smoke, Gunna",
@@ -7710,6 +7788,32 @@
       "match": "exact artist and title"
     },
     {
+      "id": "6acc49dfb846dc09cb77ea2e",
+      "title": "Dios de Poder - Acústico",
+      "artist": "Johan y Sofi",
+      "before": "Other",
+      "genre": "Christian & Gospel",
+      "source_genre": "Christian",
+      "source_title": "Dios de Poder (Acústico)",
+      "source_artist": "Johan y Sofi, Johan Manjarrés & Sofía Mancipe",
+      "source_album": "PUESTOS LOS OJOS EN JESÚS (Acústico) - Single",
+      "source_url": "https://music.apple.com/us/album/dios-de-poder-ac%C3%BAstico/6765482172?i=6765482173&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6acc49dfccd63a8a291244da",
+      "title": "Dios De Milagros - En Vivo Desde México",
+      "artist": "Miel San Marcos",
+      "before": "Other",
+      "genre": "Latin",
+      "source_genre": "Latin",
+      "source_title": "Dios De Milagros (En Vivo Desde México)",
+      "source_artist": "Miel San Marcos & Kim Richards",
+      "source_album": "Dios De Milagros (En Vivo Desde México) - Single",
+      "source_url": "https://music.apple.com/us/album/dios-de-milagros-en-vivo-desde-m%C3%A9xico/6799307691?i=6799307692&uo=4",
+      "match": "exact artist and title"
+    },
+    {
       "id": "6acc49e3cf08f29dee400e7d",
       "title": "Dios No Te Ha Olvidado",
       "artist": "Marino",
@@ -7720,6 +7824,32 @@
       "source_artist": "Marino",
       "source_album": "La Gran Tribulacion - Es Tiempo Ya",
       "source_url": "https://music.apple.com/us/album/dios-no-te-ha-olvidado/310328709?i=310328882&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6acc49e5835a0c4fec0e20d2",
+      "title": "Dios Peleará Por Ti",
+      "artist": "Haury",
+      "before": "Other",
+      "genre": "Latin",
+      "source_genre": "Latin",
+      "source_title": "Dios Peleará Por Ti",
+      "source_artist": "Haury & TWICE",
+      "source_album": "Dios Peleará Por Ti - Single",
+      "source_url": "https://music.apple.com/us/album/dios-pelear%C3%A1-por-ti/6800994359?i=6800994584&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6acc49e9fddb56cd5e7ac454",
+      "title": "Dip",
+      "artist": "Trinidad Cardona",
+      "before": "Other",
+      "genre": "R&B",
+      "source_genre": "R&B/Soul",
+      "source_title": "Dip",
+      "source_artist": "Trinidad Cardona",
+      "source_album": "Dip - Single",
+      "source_url": "https://music.apple.com/us/album/dip/1757001102?i=1757001103&uo=4",
       "match": "exact artist and title"
     },
     {
@@ -7788,6 +7918,19 @@
       "match": "exact artist and title"
     },
     {
+      "id": "6acc49fd2f320078c121dd3b",
+      "title": "Distraught",
+      "artist": "hoodtrophy bino",
+      "before": "Other",
+      "genre": "Hip-Hop",
+      "source_genre": "Hip-Hop/Rap",
+      "source_title": "Distraught",
+      "source_artist": "HoodTrophy Bino & Joe Moses",
+      "source_album": "Still Here",
+      "source_url": "https://music.apple.com/us/album/distraught/6815854535?i=6815854827&uo=4",
+      "match": "exact artist and title"
+    },
+    {
       "id": "6acc4a040e3303893f198de5",
       "title": "Dnt lië",
       "artist": "Yeat",
@@ -7824,6 +7967,32 @@
       "source_artist": "Rihanna",
       "source_album": "Good Girl Gone Bad: Reloaded",
       "source_url": "https://music.apple.com/us/album/disturbia/1441154435?i=1441154571&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6acc4a0aea92a110d919ea4d",
+      "title": "DO 4 LOVE",
+      "artist": "Snoh Aalegra",
+      "before": "Other",
+      "genre": "R&B",
+      "source_genre": "R&B/Soul",
+      "source_title": "DO 4 LOVE",
+      "source_artist": "Snoh Aalegra",
+      "source_album": "DO 4 LOVE - Single",
+      "source_url": "https://music.apple.com/us/album/do-4-love/1638812898?i=1638812900&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6acc4a0bed5aa04588c20077",
+      "title": "Do I keep you up",
+      "artist": "kmoe",
+      "before": "Other",
+      "genre": "Alternative",
+      "source_genre": "Alternative",
+      "source_title": "Do I keep you up",
+      "source_artist": "kmoe",
+      "source_album": "Do I keep you up - Single",
+      "source_url": "https://music.apple.com/us/album/do-i-keep-you-up/1803385505?i=1803385506&uo=4",
       "match": "exact artist and title"
     },
     {
@@ -7889,6 +8058,45 @@
       "source_artist": "Santana",
       "source_album": "Supernatural (Remastered) [Bonus Track Version]",
       "source_url": "https://music.apple.com/us/album/do-you-like-the-way-feat-lauryn-hill-cee-lo/354579273?i=354579341&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6acc4a25914947da3a07c2e9",
+      "title": "Doble Lavado",
+      "artist": "Omar Ruiz",
+      "before": "Other",
+      "genre": "Latin",
+      "source_genre": "Latin",
+      "source_title": "Doble Lavado",
+      "source_artist": "Omar Ruiz & Esteban Gabriel",
+      "source_album": "Doble Lavado - Single",
+      "source_url": "https://music.apple.com/us/album/doble-lavado/6801856933?i=6801856936&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6acc4a283682da0a378220b1",
+      "title": "Does It Ever Cross Your Mind?",
+      "artist": "Brandon Flowers",
+      "before": "Other",
+      "genre": "Alternative",
+      "source_genre": "Alternative",
+      "source_title": "Does It Ever Cross Your Mind?",
+      "source_artist": "Brandon Flowers",
+      "source_album": "THRASHER",
+      "source_url": "https://music.apple.com/us/album/does-it-ever-cross-your-mind/6781078037?i=6781078046&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6acc4a28751bdfc105b03d74",
+      "title": "dog eyed",
+      "artist": "Chris LaRocca",
+      "before": "Other",
+      "genre": "Alternative",
+      "source_genre": "Alternative",
+      "source_title": "dog eyed",
+      "source_artist": "Chris LaRocca",
+      "source_album": "dog eyed - Single",
+      "source_url": "https://music.apple.com/us/album/dog-eyed/1891983231?i=1891983640&uo=4",
       "match": "exact artist and title"
     },
     {
@@ -8022,6 +8230,19 @@
       "match": "exact artist and title"
     },
     {
+      "id": "6acc4a567a12ca3f1801db54",
+      "title": "Don't Go Far",
+      "artist": "Falana",
+      "before": "Other",
+      "genre": "Pop",
+      "source_genre": "Pop",
+      "source_title": "Don't Go Far",
+      "source_artist": "Falana",
+      "source_album": "Don't Go Far - Single",
+      "source_url": "https://music.apple.com/us/album/dont-go-far/1891020697?i=1891020863&uo=4",
+      "match": "exact artist and title"
+    },
+    {
       "id": "6acc4a5928393c6d7d6b704c",
       "title": "Don't Go Yet",
       "artist": "Camila Cabello",
@@ -8149,6 +8370,32 @@
       "source_artist": "Travis Scott",
       "source_album": "DAYS BEFORE RODEO",
       "source_url": "https://music.apple.com/us/album/dont-play-feat-the-1975-big-sean/1764164178?i=1764164646&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6acc4a7940c9612aa2c9ea54",
+      "title": "Don't Stop Believin'",
+      "artist": "Journey",
+      "before": "Other",
+      "genre": "Rock",
+      "source_genre": "Rock",
+      "source_title": "Don't Stop Believin'",
+      "source_artist": "Journey",
+      "source_album": "The Essential Journey",
+      "source_url": "https://music.apple.com/us/album/dont-stop-believin/160024077?i=160024096&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6acc4a7a8c8ac17d01dc691d",
+      "title": "DON'T WAKE ME UP",
+      "artist": "Tkandz",
+      "before": "Other",
+      "genre": "Hip-Hop",
+      "source_genre": "Hip-Hop/Rap",
+      "source_title": "DON'T WAKE ME UP",
+      "source_artist": "Tkandz",
+      "source_album": "PRODIGY",
+      "source_url": "https://music.apple.com/us/album/dont-wake-me-up/1891439309?i=1891439311&uo=4",
       "match": "exact artist and title"
     },
     {
@@ -15118,13 +15365,6 @@
       "album_name": ""
     },
     {
-      "id": "6acc447b81874338930edcda",
-      "title": "Curious Subject",
-      "artist": "Chaka Khan",
-      "genre": "Other",
-      "album_name": ""
-    },
-    {
       "id": "6acc448053d875405e066332",
       "title": "Cut Ties (feat. BossMan Dlow)",
       "artist": "Bryson Tiller, BossMan Dlow",
@@ -15139,23 +15379,9 @@
       "album_name": ""
     },
     {
-      "id": "6acc448344b2a9e4dbed7220",
-      "title": "Cut",
-      "artist": "Sweet Pill",
-      "genre": "Other",
-      "album_name": ""
-    },
-    {
       "id": "6acc4483d9cb380ca68175d6",
       "title": "cute af",
       "artist": "gnash",
-      "genre": "Other",
-      "album_name": ""
-    },
-    {
-      "id": "6acc4484888196de0be19759",
-      "title": "Cyber Sex",
-      "artist": "Doja Cat",
       "genre": "Other",
       "album_name": ""
     },
@@ -15165,13 +15391,6 @@
       "artist": "Young Jonn, Davido",
       "genre": "Other",
       "album_name": "Dada (feat. Davido) [Remix]"
-    },
-    {
-      "id": "6acc49593dee05314eb2f8c9",
-      "title": "Destiny",
-      "artist": "Rybeena, BhadBoi OML",
-      "genre": "Other",
-      "album_name": "Rybeena"
     },
     {
       "id": "6acc4995fadd5f69d0cdea45",
@@ -15237,13 +15456,6 @@
       "album_name": ""
     },
     {
-      "id": "6acc49bf2ce874cc69d68ff5",
-      "title": "Dilated",
-      "artist": "Willowake",
-      "genre": "Other",
-      "album_name": ""
-    },
-    {
       "id": "6acc49c0540c42a5cdcb3d9d",
       "title": "Digits",
       "artist": "Young Thug",
@@ -15254,13 +15466,6 @@
       "id": "6acc49cea48187651a596282",
       "title": "Dinero Chueco",
       "artist": "Linea Personal",
-      "genre": "Other",
-      "album_name": ""
-    },
-    {
-      "id": "6acc49cf470bd98b3e07d357",
-      "title": "Din Don Dan",
-      "artist": "Aron xxx",
       "genre": "Other",
       "album_name": ""
     },
@@ -15279,39 +15484,16 @@
       "album_name": ""
     },
     {
-      "id": "6acc49dfb846dc09cb77ea2e",
-      "title": "Dios de Poder - Acústico",
-      "artist": "Johan y Sofi",
-      "genre": "Other",
-      "album_name": ""
-    },
-    {
-      "id": "6acc49dfccd63a8a291244da",
-      "title": "Dios De Milagros - En Vivo Desde México",
-      "artist": "Miel San Marcos",
-      "genre": "Other",
-      "album_name": ""
-    },
-    {
-      "id": "6acc49e5835a0c4fec0e20d2",
-      "title": "Dios Peleará Por Ti",
-      "artist": "Haury",
-      "genre": "Other",
-      "album_name": ""
-    },
-    {
       "id": "6acc49e691e72e726db54044",
       "title": "DIOS nunca abandona",
       "artist": "Madiel Lara",
       "genre": "Other",
-      "album_name": ""
-    },
-    {
-      "id": "6acc49e9fddb56cd5e7ac454",
-      "title": "Dip",
-      "artist": "Trinidad Cardona",
-      "genre": "Other",
-      "album_name": ""
+      "album_name": "",
+      "review_reason": "conflicting catalog genres",
+      "candidate_genres": [
+        "Afrobeat",
+        "Christian & Gospel"
+      ]
     },
     {
       "id": "6acc49ebbfbed26d9fb7c5cd",
@@ -15338,27 +15520,6 @@
       "id": "6acc49f4b5d2cb07755e9e7c",
       "title": "Disappoint Me",
       "artist": "Kevin Gates, Hurricane Wisdom",
-      "genre": "Other",
-      "album_name": ""
-    },
-    {
-      "id": "6acc49fd2f320078c121dd3b",
-      "title": "Distraught",
-      "artist": "hoodtrophy bino",
-      "genre": "Other",
-      "album_name": ""
-    },
-    {
-      "id": "6acc4a0aea92a110d919ea4d",
-      "title": "DO 4 LOVE",
-      "artist": "Snoh Aalegra",
-      "genre": "Other",
-      "album_name": ""
-    },
-    {
-      "id": "6acc4a0bed5aa04588c20077",
-      "title": "Do I keep you up",
-      "artist": "kmoe",
       "genre": "Other",
       "album_name": ""
     },
@@ -15405,27 +15566,6 @@
       "album_name": ""
     },
     {
-      "id": "6acc4a25914947da3a07c2e9",
-      "title": "Doble Lavado",
-      "artist": "Omar Ruiz",
-      "genre": "Other",
-      "album_name": ""
-    },
-    {
-      "id": "6acc4a283682da0a378220b1",
-      "title": "Does It Ever Cross Your Mind?",
-      "artist": "Brandon Flowers",
-      "genre": "Other",
-      "album_name": ""
-    },
-    {
-      "id": "6acc4a28751bdfc105b03d74",
-      "title": "dog eyed",
-      "artist": "Chris LaRocca",
-      "genre": "Other",
-      "album_name": ""
-    },
-    {
       "id": "6acc4a2ea318fd68aaf14828",
       "title": "Doin 2 Much",
       "artist": "Moneybagg Yo, Yo Gotti",
@@ -15444,7 +15584,12 @@
       "title": "DOLCE",
       "artist": "Cazzu",
       "genre": "Other",
-      "album_name": ""
+      "album_name": "",
+      "review_reason": "conflicting catalog genres",
+      "candidate_genres": [
+        "Latin Rock",
+        "Regional Mexican"
+      ]
     },
     {
       "id": "6acc4a3f4c61afca76bd0873",
@@ -15472,7 +15617,12 @@
       "title": "Don't Cha",
       "artist": "The Pussycat Dolls, Busta Rhymes",
       "genre": "Other",
-      "album_name": ""
+      "album_name": "",
+      "review_reason": "conflicting catalog genres",
+      "candidate_genres": [
+        "Dance",
+        "Pop"
+      ]
     },
     {
       "id": "6acc4a4945af82854c85113b",
@@ -15515,13 +15665,6 @@
       "album_name": ""
     },
     {
-      "id": "6acc4a567a12ca3f1801db54",
-      "title": "Don't Go Far",
-      "artist": "Falana",
-      "genre": "Other",
-      "album_name": ""
-    },
-    {
       "id": "6acc4a5c77db71dfb2c044b0",
       "title": "Don't Hurt Me This Way",
       "artist": "Lukas Graham",
@@ -15560,20 +15703,6 @@
       "id": "6acc4a756a9cc26e9bf158c8",
       "title": "Don't Slack (from Trolls World Tour)",
       "artist": "Anderson .Paak, Justin Timberlake",
-      "genre": "Other",
-      "album_name": ""
-    },
-    {
-      "id": "6acc4a7940c9612aa2c9ea54",
-      "title": "Don't Stop Believin'",
-      "artist": "Journey",
-      "genre": "Other",
-      "album_name": ""
-    },
-    {
-      "id": "6acc4a7a8c8ac17d01dc691d",
-      "title": "DON'T WAKE ME UP",
-      "artist": "Tkandz",
       "genre": "Other",
       "album_name": ""
     },
@@ -19031,5 +19160,5 @@
       "album_name": ""
     }
   ],
-  "searched_terms": 400
+  "searched_terms": 430
 }
