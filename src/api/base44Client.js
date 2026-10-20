@@ -1,3 +1,4 @@
+import {saveTimedLyrics} from "@/lib/saveTimedLyrics";
 import {AVATAR_PRESETS} from "@/lib/avatarPresets";
 import recoveredAlbumMetadata from "@/data/recoveredAlbumMetadata.json";
 import {recoveredAlbumResult,withRecoveredAlbumMetadata} from "@/lib/recoveredAlbums";
@@ -73,6 +74,7 @@ export const publicNoteDatabase = {
   auth: {me:()=>raw.auth.me()},
   entities: {PublicProfile:raw.entities.PublicProfile,Block:raw.entities.Block,Track:raw.entities.Track}
 };
+export const saveSyncedLyrics = input => saveTimedLyrics(raw, input, (action,args) => gateway("Lyrics",action,args));
 export async function saveManualLyrics(client,id,patch){
   if(typeof id!=="string"||!id||Object.keys(patch||{}).length!==1||typeof patch.lyrics_text!=="string"||patch.lyrics_text.length>100000)throw Object.assign(new Error("Lyrics must be text under 100,000 characters."),{status:422});
   const user=await client.auth.me();
