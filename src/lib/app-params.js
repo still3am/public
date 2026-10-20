@@ -1,6 +1,11 @@
 const isNode = typeof window === 'undefined';
 const memory=new Map();
-const storage=isNode?{getItem:key=>memory.get(key)||null,setItem:(key,value)=>memory.set(key,value),removeItem:key=>memory.delete(key)}:window.localStorage;
+// Restricted browser storage must not prevent the entire app from starting.
+const storage={
+ getItem(key){try{return !isNode?window.localStorage.getItem(key)??memory.get(key)??null:memory.get(key)??null;}catch{return memory.get(key)??null;}},
+ setItem(key,value){memory.set(key,value);try{if(!isNode)window.localStorage.setItem(key,value);}catch{}},
+ removeItem(key){memory.delete(key);try{if(!isNode)window.localStorage.removeItem(key);}catch{}}
+};
 
 const toSnakeCase = (str) => {
 	return str.replace(/([A-Z])/g, '_$1').toLowerCase();
@@ -42,7 +47,7 @@ const getAppParams = () => {
 	return {
 		appId: getAppParamValue("app_id", { defaultValue: import.meta.env.VITE_BASE44_APP_ID || "6a5676aa61ea8a51237aa4ee" }),
 		token: getAppParamValue("access_token", { removeFromUrl: true }),
-		fromUrl: getAppParamValue("from_url", { defaultValue: window.location.href }),
+		fromUrl: getAppParamValue("from_url", { defaultValue: isNode ? undefined : window.location.href }),
 		functionsVersion: getAppParamValue("functions_version", { defaultValue: import.meta.env.VITE_BASE44_FUNCTIONS_VERSION }),
 		appBaseUrl: getAppParamValue("app_base_url", { defaultValue: import.meta.env.VITE_BASE44_APP_BASE_URL }),
 	}
