@@ -197,7 +197,7 @@ export default async function handleRequest(req) {
     if(entity==='Playlist' && ['collaborators','collaborationDetail','playlistAdd','playlistRemove','playlistReorder'].includes(action)){
       const [id,ids,expected]=args,pl=await handler.get(id),collabHandler=svc.entities.PlaylistCollaboration;
       const mergeCollab=rows=>rows.length?{...rows[0],member_ids:[...new Set(rows.flatMap(row=>row.member_ids||[]))],track_contributors:Object.assign({},...rows.map(row=>row.track_contributors||{}))}:null;
-      const refreshCollab=async()=>mergeCollab(await all(collabHandler,{playlist_id:id}));
+      const refreshCollab=async()=>{const legacy=mergeCollab(await all(collabHandler,{playlist_id:id})),fresh=await handler.get(id);return Array.isArray(fresh.collaborator_ids)?{...legacy,member_ids:fresh.collaborator_ids,track_contributors:legacy?.track_contributors||{}}:legacy;};
       let collab=await refreshCollab();
       const owner=pl.creator_id===user.id||isAdmin;
       if(!owner&&!(collab?.member_ids||[]).includes(user.id))fail('Playlist editing access required',403);
@@ -211,8 +211,8 @@ export default async function handleRequest(req) {
         if(memberId===pl.creator_id)fail('The owner already has access',400);
         if(add)await relation(memberId);
         if(add&&(collab?.member_ids||[]).length>=30&&!(collab?.member_ids||[]).includes(memberId))fail('This playlist already has 30 collaborators',400);
-        if(!collab)collab=await collabHandler.create({playlist_id:id,owner_id:pl.creator_id,member_ids:[],track_contributors:{}});
-        await collabHandler.updateMany({playlist_id:id},add?{$addToSet:{member_ids:memberId}}:{$pull:{member_ids:memberId}});
+        if(!Array.isArray(pl.collaborator_ids))await handler.updateMany({id,collaborator_ids:{$exists:false}},{$set:{collaborator_ids:collab?.member_ids||[]}});
+        await handler.updateMany({id},add?{$addToSet:{collaborator_ids:memberId}}:{$pull:{collaborator_ids:memberId}});
         collab=await refreshCollab();
         return Response.json({result:await result()});
       }
@@ -224,6 +224,7 @@ export default async function handleRequest(req) {
         await stillEditor();
         await handler.updateMany({id},{$addToSet:{track_ids:{$each:unique}}});
         if(collab){
+          if(!collab.id)await collabHandler.create({playlist_id:id,owner_id:pl.creator_id,member_ids:[],track_contributors:{}});
           const credits=Object.fromEntries(unique.filter(tid=>!current.includes(tid)).map(tid=>['track_contributors.'+tid,{name:user.display_name||user.full_name||'Listener'}]));
           if(Object.keys(credits).length)await collabHandler.updateMany({playlist_id:id},{$set:credits});
         }
