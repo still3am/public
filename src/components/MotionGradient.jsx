@@ -43,7 +43,7 @@ function paletteOf(colors){
  const shade=(color,factor)=>"rgb("+rgb(color).map(v=>Math.round(Math.min(255,v*255*factor))).join(", ")+")";
  return [values[0],values[1]||shade(values[0],.62),values[2]||values[1]||shade(values[0],1.3)];
 }
-export default function MotionGradient({colors=DEFAULT,motion="flow",speed=1,active=true,pauseWhenCovered=false,className="",style}){
+export default function MotionGradient({colors=DEFAULT,motion="flow",speed=1,active=true,pauseWhenCovered=false,className="",style={}}){
  const canvas=useRef(null),settings=useRef(null),wake=useRef(null),phase=useRef(4.6);
  const [ready,setReady]=useState(false),[version,setVersion]=useState(0);
  const palette=paletteOf(colors),key=palette.join("|");
