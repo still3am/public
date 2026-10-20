@@ -70,7 +70,7 @@ const entities = new Proxy(raw.entities,{get(target,name) {
 // Names, ownership, artwork and visibility remain on the moderated gateway.
 export const playlistDatabase = {
   auth:{me:()=>raw.auth.me()},
-  entities:{Playlist:raw.entities.Playlist,Track:raw.entities.Track,Block:raw.entities.Block}
+  entities:{Playlist:raw.entities.Playlist,Track:raw.entities.Track,Block:raw.entities.Block,PlaylistCollaboration:raw.entities.PlaylistCollaboration,PublicProfile:raw.entities.PublicProfile}
 };
 export const publicNoteDatabase = {
   auth: {me:()=>raw.auth.me()},
