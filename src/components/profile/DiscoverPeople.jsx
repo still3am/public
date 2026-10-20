@@ -25,7 +25,7 @@ export default function DiscoverPeople({profileId,active=true}){
   if(!active)return;
   let cancelled=false;
   setLimit(5);setState(old=>({scope,people:old.scope===scope?old.people:[],loading:true,error:false}));
-  setChanges({scope,following:{},busy:{},errors:{}});
+  setChanges(old=>old.scope===scope?old:{scope,following:{},busy:{},errors:{}});
   (async()=>{
    try{
     const [page,follows]=await Promise.all([
@@ -74,7 +74,7 @@ export default function DiscoverPeople({profileId,active=true}){
     const following=!!local.following[person.id],busy=!!local.busy[person.id];
     return <li key={person.id} className={following?"is-following":""}><div className="profile-discover-row">
      <Link to={"/profile/"+encodeURIComponent(person.id)} className="profile-discover-person"><Avatar user={person} size={48}/><span><strong title={name}>{name}</strong><small className={person.shared?"is-shared":""}>{person.reason}</small></span></Link>
-     {uid&&<button type="button" className="profile-discover-follow" aria-label={(following?"Unfollow ":"Follow ")+name} aria-pressed={following} disabled={busy} onClick={()=>follow(person)}>{busy?<Loader2 size={16} className="animate-spin"/>:following?<UserCheck size={15}/>:null}<span>{busy?"Saving":following?"Following":"Follow"}</span></button>}
+     {uid&&<button type="button" className="profile-discover-follow" aria-label={(following?"Unfollow ":"Follow ")+name} aria-pressed={following} disabled={busy||state.loading} onClick={()=>follow(person)}>{busy?<Loader2 size={16} className="animate-spin"/>:following?<UserCheck size={15}/>:null}<span>{busy?"Saving":following?"Following":"Follow"}</span></button>}
     </div>{local.errors[person.id]&&<p className="profile-discover-error" role="alert">{local.errors[person.id]}</p>}</li>;
    })}</ul>}
   <p className="sr-only" role="status" aria-live="polite">{Object.values(local.following).filter(Boolean).length?Object.values(local.following).filter(Boolean).length+" new people followed.":""}</p>
