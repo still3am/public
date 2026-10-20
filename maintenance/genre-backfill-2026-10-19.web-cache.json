@@ -336039,5 +336039,1201 @@
         "trackId": 271868836
       }
     ]
+  },
+  "mixTerm|KAYTRAMINÉ EYE": {
+    "query_url": "https://itunes.apple.com/search?term=KAYTRAMIN%C3%89+EYE&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": []
+  },
+  "mixTerm|PRETTYMUCH Eyes Off You": {
+    "query_url": "https://itunes.apple.com/search?term=PRETTYMUCH+Eyes+Off+You&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": [
+      {
+        "trackName": "Eyes Off You",
+        "artistName": "PRETTYMUCH",
+        "collectionName": "Phases - EP",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/eyes-off-you/1464006253?i=1464006257&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/eyes-off-you/1464006253?i=1464006257&uo=4",
+        "trackId": 1464006257
+      },
+      {
+        "trackName": "Can't Take My Eyes Off You",
+        "artistName": "Frankie Valli",
+        "collectionName": "The Very Best of Frankie Valli and the Four Seasons",
+        "primaryGenreName": "Rock",
+        "trackViewUrl": "https://music.apple.com/us/album/cant-take-my-eyes-off-you/40454248?i=40454283&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/cant-take-my-eyes-off-you/40454248?i=40454283&uo=4",
+        "trackId": 40454283
+      },
+      {
+        "trackName": "I Can't Take My Eyes off You",
+        "artistName": "Jon Wolfe",
+        "collectionName": "It All Happened in a Honky Tonk (Deluxe Edition)",
+        "primaryGenreName": "Country",
+        "trackViewUrl": "https://music.apple.com/us/album/i-cant-take-my-eyes-off-you/903442205?i=903442268&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/i-cant-take-my-eyes-off-you/903442205?i=903442268&uo=4",
+        "trackId": 903442268
+      },
+      {
+        "trackName": "Can't Take My Eyes Off You",
+        "artistName": "Frankie Valli",
+        "collectionName": "Frankie Valli Solo",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/cant-take-my-eyes-off-you/360749303?i=360749423&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/cant-take-my-eyes-off-you/360749303?i=360749423&uo=4",
+        "trackId": 360749423
+      },
+      {
+        "trackName": "Can't Take My Eyes Off You",
+        "artistName": "Lady A",
+        "collectionName": "Lady Antebellum",
+        "primaryGenreName": "Country",
+        "trackViewUrl": "https://music.apple.com/us/album/cant-take-my-eyes-off-you/721239283?i=721239613&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/cant-take-my-eyes-off-you/721239283?i=721239613&uo=4",
+        "trackId": 721239613
+      },
+      {
+        "trackName": "Can't Take My Eyes Off You",
+        "artistName": "Engelbert Humperdinck",
+        "collectionName": "A Man Without Love",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/cant-take-my-eyes-off-you/1443157369?i=1443157760&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/cant-take-my-eyes-off-you/1443157369?i=1443157760&uo=4",
+        "trackId": 1443157760
+      },
+      {
+        "trackName": "Can't Take My Eyes Off You",
+        "artistName": "Andy Williams",
+        "collectionName": "Love, Andy",
+        "primaryGenreName": "Christmas: Classic",
+        "trackViewUrl": "https://music.apple.com/us/album/cant-take-my-eyes-off-you/1282217913?i=1282218612&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/cant-take-my-eyes-off-you/1282217913?i=1282218612&uo=4",
+        "trackId": 1282218612
+      },
+      {
+        "trackName": "Can't Take My Eyes Off You",
+        "artistName": "Joseph Vincent",
+        "collectionName": "Can't Take My Eyes Off You - Single",
+        "primaryGenreName": "Singer/Songwriter",
+        "trackViewUrl": "https://music.apple.com/us/album/cant-take-my-eyes-off-you/1153736142?i=1153736153&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/cant-take-my-eyes-off-you/1153736142?i=1153736153&uo=4",
+        "trackId": 1153736153
+      },
+      {
+        "trackName": "Can't Take My Eyes off You",
+        "artistName": "Craymer & Aiivawn",
+        "collectionName": "Can't Take My Eyes off You - Single",
+        "primaryGenreName": "Jazz",
+        "trackViewUrl": "https://music.apple.com/us/album/cant-take-my-eyes-off-you/1772834961?i=1772834962&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/cant-take-my-eyes-off-you/1772834961?i=1772834962&uo=4",
+        "trackId": 1772834962
+      },
+      {
+        "trackName": "Can't Take My Eyes off You (Original Extended Version)",
+        "artistName": "Boys Town Gang",
+        "collectionName": "Disc Charge",
+        "primaryGenreName": "Dance",
+        "trackViewUrl": "https://music.apple.com/us/album/cant-take-my-eyes-off-you-original-extended-version/926843987?i=926844014&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/cant-take-my-eyes-off-you-original-extended-version/926843987?i=926844014&uo=4",
+        "trackId": 926844014
+      },
+      {
+        "trackName": "Can't Take My Eyes Off You",
+        "artistName": "John Lloyd Young",
+        "collectionName": "Jersey Boys (Music From the Motion Picture and Broadway Musical)",
+        "primaryGenreName": "Rock",
+        "trackViewUrl": "https://music.apple.com/us/album/cant-take-my-eyes-off-you/885814126?i=885814205&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/cant-take-my-eyes-off-you/885814126?i=885814205&uo=4",
+        "trackId": 885814205
+      },
+      {
+        "trackName": "I Can't Take My Eyes Off of You",
+        "artistName": "Troy, Lucas Grabeel, Sharpay & Gabriella",
+        "collectionName": "High School Musical",
+        "primaryGenreName": "Soundtrack",
+        "trackViewUrl": "https://music.apple.com/us/album/i-cant-take-my-eyes-off-of-you/1440746457?i=1440747362&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/i-cant-take-my-eyes-off-of-you/1440746457?i=1440747362&uo=4",
+        "trackId": 1440747362
+      },
+      {
+        "trackName": "Can't Take My Eyes Off of You (I Love You Baby)",
+        "artistName": "Lauryn Hill",
+        "collectionName": "The Miseducation of Lauryn Hill",
+        "primaryGenreName": "R&B/Soul",
+        "trackViewUrl": "https://music.apple.com/us/album/cant-take-my-eyes-off-of-you-i-love-you-baby/1276760743?i=1276760758&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/cant-take-my-eyes-off-of-you-i-love-you-baby/1276760743?i=1276760758&uo=4",
+        "trackId": 1276760758
+      },
+      {
+        "trackName": "Can't Take My Eyes Off of You",
+        "artistName": "John Lloyd Young",
+        "collectionName": "Jersey Boys (Original Broadway Cast Recording)",
+        "primaryGenreName": "Soundtrack",
+        "trackViewUrl": "https://music.apple.com/us/album/cant-take-my-eyes-off-of-you/89320673?i=89320106&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/cant-take-my-eyes-off-of-you/89320673?i=89320106&uo=4",
+        "trackId": 89320106
+      },
+      {
+        "trackName": "Jello",
+        "artistName": "PRETTYMUCH",
+        "collectionName": "Jello - Single",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/jello/1445718198?i=1445718200&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/jello/1445718198?i=1445718200&uo=4",
+        "trackId": 1445718200
+      }
+    ]
+  },
+  "mixTerm|The Prodigiez Flaka": {
+    "query_url": "https://itunes.apple.com/search?term=The+Prodigiez+Flaka&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": []
+  },
+  "mixTerm|Andrés Calamaro Flaca": {
+    "query_url": "https://itunes.apple.com/search?term=Andr%C3%A9s+Calamaro+Flaca&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": [
+      {
+        "trackName": "Flaca",
+        "artistName": "Andrés Calamaro",
+        "collectionName": "Alta Suciedad",
+        "primaryGenreName": "Rock y Alternativo",
+        "trackViewUrl": "https://music.apple.com/us/album/flaca/101375497?i=101374818&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/flaca/101375497?i=101374818&uo=4",
+        "trackId": 101374818
+      },
+      {
+        "trackName": "Flaca (En Directo 2005)",
+        "artistName": "Andrés Calamaro",
+        "collectionName": "El Regreso",
+        "primaryGenreName": "Rock y Alternativo",
+        "trackViewUrl": "https://music.apple.com/us/album/flaca-en-directo-2005/89605475?i=89605083&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/flaca-en-directo-2005/89605475?i=89605083&uo=4",
+        "trackId": 89605083
+      },
+      {
+        "trackName": "Flaca",
+        "artistName": "Andrés Calamaro",
+        "collectionName": "Andrés: Obras Incompletas",
+        "primaryGenreName": "Rock y Alternativo",
+        "trackViewUrl": "https://music.apple.com/us/album/flaca/316153720?i=316153753&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/flaca/316153720?i=316153753&uo=4",
+        "trackId": 316153753
+      },
+      {
+        "trackName": "Flaca",
+        "artistName": "Andrés Calamaro",
+        "collectionName": "Top 5 Hits: Andrés Calamaro - EP",
+        "primaryGenreName": "Pop Latino",
+        "trackViewUrl": "https://music.apple.com/us/album/flaca/363581547?i=363581573&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/flaca/363581547?i=363581573&uo=4",
+        "trackId": 363581573
+      },
+      {
+        "trackName": "Flaca",
+        "artistName": "Andrés Calamaro",
+        "collectionName": "El mejor pop español de los 90 - Memory Park",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/flaca/1400317595?i=1400318237&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/flaca/1400317595?i=1400318237&uo=4",
+        "trackId": 1400318237
+      },
+      {
+        "trackName": "Loco",
+        "artistName": "Andrés Calamaro",
+        "collectionName": "Alta Suciedad",
+        "primaryGenreName": "Rock y Alternativo",
+        "trackViewUrl": "https://music.apple.com/us/album/loco/101375497?i=101374705&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/loco/101375497?i=101374705&uo=4",
+        "trackId": 101374705
+      },
+      {
+        "trackName": "Aunque no sea conmigo (En Directo)",
+        "artistName": "Bunbury & Andrés Calamaro",
+        "collectionName": "Hijos del pueblo (En Directo)",
+        "primaryGenreName": "Rock",
+        "trackViewUrl": "https://music.apple.com/us/album/aunque-no-sea-conmigo-en-directo/970704775?i=970705625&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/aunque-no-sea-conmigo-en-directo/970704775?i=970705625&uo=4",
+        "trackId": 970705625
+      },
+      {
+        "trackName": "Estadio Azteca",
+        "artistName": "Andrés Calamaro",
+        "collectionName": "El Cantante",
+        "primaryGenreName": "Latin",
+        "trackViewUrl": "https://music.apple.com/us/album/estadio-azteca/101256642?i=101255701&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/estadio-azteca/101256642?i=101255701&uo=4",
+        "trackId": 101255701
+      },
+      {
+        "trackName": "Tuyo Siempre (en directo 2005)",
+        "artistName": "Andrés Calamaro",
+        "collectionName": "El Regreso",
+        "primaryGenreName": "Rock y Alternativo",
+        "trackViewUrl": "https://music.apple.com/us/album/tuyo-siempre-en-directo-2005/89605475?i=89603398&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/tuyo-siempre-en-directo-2005/89605475?i=89603398&uo=4",
+        "trackId": 89603398
+      },
+      {
+        "trackName": "Hong Kong",
+        "artistName": "C. Tangana & Andrés Calamaro",
+        "collectionName": "El Madrileño",
+        "primaryGenreName": "Urbano latino",
+        "trackViewUrl": "https://music.apple.com/us/album/hong-kong/1548535189?i=1548535967&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/hong-kong/1548535189?i=1548535967&uo=4",
+        "trackId": 1548535967
+      },
+      {
+        "trackName": "Crimenes Perfectos",
+        "artistName": "Andrés Calamaro",
+        "collectionName": "Alta Suciedad",
+        "primaryGenreName": "Rock y Alternativo",
+        "trackViewUrl": "https://music.apple.com/us/album/crimenes-perfectos/101375497?i=101375334&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/crimenes-perfectos/101375497?i=101375334&uo=4",
+        "trackId": 101375334
+      },
+      {
+        "trackName": "Flaca",
+        "artistName": "Andrés Calamaro",
+        "collectionName": "CD1",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/flaca/1686943890?i=1686946012&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/flaca/1686943890?i=1686946012&uo=4",
+        "trackId": 1686946012
+      },
+      {
+        "trackName": "Flaca",
+        "artistName": "Andrés Calamaro",
+        "collectionName": "Flaca - EP",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/flaca/6771094736?i=6771094737&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/flaca/6771094736?i=6771094737&uo=4",
+        "trackId": 6771094737
+      },
+      {
+        "trackName": "Te Recuerdo Dulcemente",
+        "artistName": "Juan Gabriel & Andrés Calamaro",
+        "collectionName": "Los Dúo 2",
+        "primaryGenreName": "Música Mexicana",
+        "trackViewUrl": "https://music.apple.com/us/album/te-recuerdo-dulcemente/1846461838?i=1846462179&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/te-recuerdo-dulcemente/1846461838?i=1846462179&uo=4",
+        "trackId": 1846462179
+      },
+      {
+        "trackName": "Flaca",
+        "artistName": "Gonzalo Ferrer",
+        "collectionName": "Babies & Kids: Las Canciones de Andrés Calamaro & Soda Stereo",
+        "primaryGenreName": "Children's Music",
+        "trackViewUrl": "https://music.apple.com/us/album/flaca/348756161?i=348756169&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/flaca/348756161?i=348756169&uo=4",
+        "trackId": 348756169
+      }
+    ]
+  },
+  "mixTerm|Rels B FLEXXX": {
+    "query_url": "https://itunes.apple.com/search?term=Rels+B+FLEXXX&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": []
+  },
+  "mixTerm|Aphex Twin Flim": {
+    "query_url": "https://itunes.apple.com/search?term=Aphex+Twin+Flim&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": [
+      {
+        "trackName": "Flim",
+        "artistName": "Aphex Twin",
+        "collectionName": "Come to Daddy",
+        "primaryGenreName": "Electronic",
+        "trackViewUrl": "https://music.apple.com/us/album/flim/282478739?i=282478754&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/flim/282478739?i=282478754&uo=4",
+        "trackId": 282478754
+      },
+      {
+        "trackName": "Avril 14th",
+        "artistName": "Aphex Twin",
+        "collectionName": "Drukqs",
+        "primaryGenreName": "Electronic",
+        "trackViewUrl": "https://music.apple.com/us/album/avril-14th/282559693?i=282559791&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/avril-14th/282559693?i=282559791&uo=4",
+        "trackId": 282559791
+      },
+      {
+        "trackName": "Xtal",
+        "artistName": "Aphex Twin",
+        "collectionName": "Selected Ambient Works 85-92",
+        "primaryGenreName": "Electronic",
+        "trackViewUrl": "https://music.apple.com/us/album/xtal/1668862636?i=1668862649&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/xtal/1668862636?i=1668862649&uo=4",
+        "trackId": 1668862649
+      },
+      {
+        "trackName": "Windowlicker",
+        "artistName": "Aphex Twin",
+        "collectionName": "Windowlicker - EP",
+        "primaryGenreName": "Electronic",
+        "trackViewUrl": "https://music.apple.com/us/album/windowlicker/281953326?i=281953327&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/windowlicker/281953326?i=281953327&uo=4",
+        "trackId": 281953327
+      },
+      {
+        "trackName": "Pulsewidth",
+        "artistName": "Aphex Twin",
+        "collectionName": "Selected Ambient Works 85-92",
+        "primaryGenreName": "Electronic",
+        "trackViewUrl": "https://music.apple.com/us/album/pulsewidth/1668862636?i=1668862662&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/pulsewidth/1668862636?i=1668862662&uo=4",
+        "trackId": 1668862662
+      },
+      {
+        "trackName": "#3",
+        "artistName": "Aphex Twin",
+        "collectionName": "Selected Ambient Works, Vol. II",
+        "primaryGenreName": "Electronic",
+        "trackViewUrl": "https://music.apple.com/us/album/3/280649372?i=280649444&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/3/280649372?i=280649444&uo=4",
+        "trackId": 280649444
+      },
+      {
+        "trackName": "Alberto Balsalm (1994)",
+        "artistName": "Aphex Twin",
+        "collectionName": "...I Care Because You Do",
+        "primaryGenreName": "Electronic",
+        "trackViewUrl": "https://music.apple.com/us/album/alberto-balsalm-1994/281829991?i=281830075&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/alberto-balsalm-1994/281829991?i=281830075&uo=4",
+        "trackId": 281830075
+      },
+      {
+        "trackName": "Ageispolis",
+        "artistName": "Aphex Twin",
+        "collectionName": "Selected Ambient Works 85-92",
+        "primaryGenreName": "Electronic",
+        "trackViewUrl": "https://music.apple.com/us/album/ageispolis/1668862636?i=1668863098&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/ageispolis/1668862636?i=1668863098&uo=4",
+        "trackId": 1668863098
+      },
+      {
+        "trackName": "180Db_ [130]",
+        "artistName": "Aphex Twin",
+        "collectionName": "Syro",
+        "primaryGenreName": "Electronic",
+        "trackViewUrl": "https://music.apple.com/us/album/180db-130/911319255?i=911319278&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/180db-130/911319255?i=911319278&uo=4",
+        "trackId": 911319278
+      },
+      {
+        "trackName": "Iz - Us",
+        "artistName": "Aphex Twin",
+        "collectionName": "Come to Daddy",
+        "primaryGenreName": "Electronic",
+        "trackViewUrl": "https://music.apple.com/us/album/iz-us/282478739?i=282478837&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/iz-us/282478739?i=282478837&uo=4",
+        "trackId": 282478837
+      },
+      {
+        "trackName": "Tha",
+        "artistName": "Aphex Twin",
+        "collectionName": "Selected Ambient Works 85-92",
+        "primaryGenreName": "Electronic",
+        "trackViewUrl": "https://music.apple.com/us/album/tha/1668862636?i=1668862659&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/tha/1668862636?i=1668862659&uo=4",
+        "trackId": 1668862659
+      },
+      {
+        "trackName": "Blue Calx",
+        "artistName": "Aphex Twin",
+        "collectionName": "Selected Ambient Works, Vol. II",
+        "primaryGenreName": "Electronic",
+        "trackViewUrl": "https://music.apple.com/us/album/blue-calx/280649372?i=280649582&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/blue-calx/280649372?i=280649582&uo=4",
+        "trackId": 280649582
+      },
+      {
+        "trackName": "QKThr",
+        "artistName": "Aphex Twin",
+        "collectionName": "Drukqs",
+        "primaryGenreName": "Electronic",
+        "trackViewUrl": "https://music.apple.com/us/album/qkthr/282559693?i=282559931&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/qkthr/282559693?i=282559931&uo=4",
+        "trackId": 282559931
+      },
+      {
+        "trackName": "Aisatsana [102]",
+        "artistName": "Aphex Twin",
+        "collectionName": "Syro",
+        "primaryGenreName": "Electronic",
+        "trackViewUrl": "https://music.apple.com/us/album/aisatsana-102/911319255?i=911319352&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/aisatsana-102/911319255?i=911319352&uo=4",
+        "trackId": 911319352
+      },
+      {
+        "trackName": "Flim",
+        "artistName": "Simon Farintosh",
+        "collectionName": "Aphex Twin for Guitar - EP",
+        "primaryGenreName": "Electronic",
+        "trackViewUrl": "https://music.apple.com/us/album/flim/1610633074?i=1610633075&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/flim/1610633074?i=1610633075&uo=4",
+        "trackId": 1610633075
+      }
+    ]
+  },
+  "mixTerm|Oliver Tree Flowers": {
+    "query_url": "https://itunes.apple.com/search?term=Oliver+Tree+Flowers&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": [
+      {
+        "trackName": "Life Goes On",
+        "artistName": "Oliver Tree",
+        "collectionName": "Ugly is Beautiful: Shorter, Thicker & Uglier (Deluxe)",
+        "primaryGenreName": "Alternative",
+        "trackViewUrl": "https://music.apple.com/us/album/life-goes-on/1569456892?i=1569456896&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/life-goes-on/1569456892?i=1569456896&uo=4",
+        "trackId": 1569456896
+      },
+      {
+        "trackName": "Cowboys Don’t Cry",
+        "artistName": "Oliver Tree",
+        "collectionName": "Cowboy Tears",
+        "primaryGenreName": "Alternative",
+        "trackViewUrl": "https://music.apple.com/us/album/cowboys-dont-cry/1603620507?i=1603620908&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/cowboys-dont-cry/1603620507?i=1603620908&uo=4",
+        "trackId": 1603620908
+      },
+      {
+        "trackName": "Burn, Burn, Burn",
+        "artistName": "Zach Bryan",
+        "collectionName": "Burn, Burn, Burn - Single",
+        "primaryGenreName": "Country",
+        "trackViewUrl": "https://music.apple.com/us/album/burn-burn-burn/1643975591?i=1643976264&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/burn-burn-burn/1643975591?i=1643976264&uo=4",
+        "trackId": 1643976264
+      },
+      {
+        "trackName": "Alien Boy",
+        "artistName": "Oliver Tree",
+        "collectionName": "Ugly is Beautiful",
+        "primaryGenreName": "Alternative",
+        "trackViewUrl": "https://music.apple.com/us/album/alien-boy/1530079284?i=1530079453&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/alien-boy/1530079284?i=1530079453&uo=4",
+        "trackId": 1530079453
+      },
+      {
+        "trackName": "Cash Machine",
+        "artistName": "Oliver Tree",
+        "collectionName": "Ugly is Beautiful",
+        "primaryGenreName": "Alternative",
+        "trackViewUrl": "https://music.apple.com/us/album/cash-machine/1514394064?i=1514394489&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/cash-machine/1514394064?i=1514394489&uo=4",
+        "trackId": 1514394489
+      },
+      {
+        "trackName": "WORTH NOTHING (feat. Oliver Tree)",
+        "artistName": "TWISTED & Fast & Furious: The Fast Saga",
+        "collectionName": "WORTH NOTHING (Fast & Furious: Drift Tape) [feat. Oliver Tree] - Single",
+        "primaryGenreName": "Electronic",
+        "trackViewUrl": "https://music.apple.com/us/album/worth-nothing-feat-oliver-tree/1666412364?i=1666412368&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/worth-nothing-feat-oliver-tree/1666412364?i=1666412368&uo=4",
+        "trackId": 1666412368
+      },
+      {
+        "trackName": "I'm Gone",
+        "artistName": "Oliver Tree",
+        "collectionName": "Ugly is Beautiful",
+        "primaryGenreName": "Alternative",
+        "trackViewUrl": "https://music.apple.com/us/album/im-gone/1514394064?i=1514394509&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/im-gone/1514394064?i=1514394509&uo=4",
+        "trackId": 1514394509
+      },
+      {
+        "trackName": "Freaks & Geeks",
+        "artistName": "Oliver Tree",
+        "collectionName": "Cowboy Tears",
+        "primaryGenreName": "Alternative",
+        "trackViewUrl": "https://music.apple.com/us/album/freaks-geeks/1603620507?i=1603620920&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/freaks-geeks/1603620507?i=1603620920&uo=4",
+        "trackId": 1603620920
+      },
+      {
+        "trackName": "Voices (feat. Oliver Tree)",
+        "artistName": "KSI",
+        "collectionName": "Voices (feat. Oliver Tree)",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/voices-feat-oliver-tree/1664840529?i=1664840530&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/voices-feat-oliver-tree/1664840529?i=1664840530&uo=4",
+        "trackId": 1664840530
+      },
+      {
+        "trackName": "All You Ever Talk About",
+        "artistName": "Whethan & Oliver Tree",
+        "collectionName": "All You Ever Talk About - Single",
+        "primaryGenreName": "Electronic",
+        "trackViewUrl": "https://music.apple.com/us/album/all-you-ever-talk-about/1199601819?i=1199602318&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/all-you-ever-talk-about/1199601819?i=1199602318&uo=4",
+        "trackId": 1199602318
+      },
+      {
+        "trackName": "Placeholder",
+        "artistName": "Oliver Tree",
+        "collectionName": "Placeholder - Single",
+        "primaryGenreName": "Alternative",
+        "trackViewUrl": "https://music.apple.com/us/album/placeholder/1633345531?i=1633345793&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/placeholder/1633345531?i=1633345793&uo=4",
+        "trackId": 1633345793
+      },
+      {
+        "trackName": "Cash Machine",
+        "artistName": "Oliver Tree",
+        "collectionName": "Ugly is Beautiful: Shorter, Thicker & Uglier (Deluxe)",
+        "primaryGenreName": "Alternative",
+        "trackViewUrl": "https://music.apple.com/us/album/cash-machine/1569456892?i=1569456944&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/cash-machine/1569456892?i=1569456944&uo=4",
+        "trackId": 1569456944
+      },
+      {
+        "trackName": "Here We Go Again",
+        "artistName": "Oliver Tree & David Guetta",
+        "collectionName": "Here We Go Again - Single",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/here-we-go-again/1675169673?i=1675169677&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/here-we-go-again/1675169673?i=1675169677&uo=4",
+        "trackId": 1675169677
+      },
+      {
+        "trackName": "Turn It Up (feat. Tommy Cash)",
+        "artistName": "Oliver Tree & Little Big",
+        "collectionName": "Welcome To The Internet - EP",
+        "primaryGenreName": "Dance",
+        "trackViewUrl": "https://music.apple.com/us/album/turn-it-up-feat-tommy-cash/1583584053?i=1583584055&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/turn-it-up-feat-tommy-cash/1583584053?i=1583584055&uo=4",
+        "trackId": 1583584055
+      },
+      {
+        "trackName": "Adore You",
+        "artistName": "Miley Cyrus",
+        "collectionName": "Bangerz (Deluxe Version)",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/adore-you/1460315055?i=1460315064&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/adore-you/1460315055?i=1460315064&uo=4",
+        "trackId": 1460315064
+      }
+    ]
+  },
+  "mixTerm|Joyce Wrice Fly": {
+    "query_url": "https://itunes.apple.com/search?term=Joyce+Wrice+Fly&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": [
+      {
+        "trackName": "BUTTERFLIES",
+        "artistName": "Isaiah Falls & Joyce Wrice",
+        "collectionName": "LUCKY ME - Single",
+        "primaryGenreName": "R&B/Soul",
+        "trackViewUrl": "https://music.apple.com/us/album/butterflies/1834260636?i=1834260637&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/butterflies/1834260636?i=1834260637&uo=4",
+        "trackId": 1834260637
+      },
+      {
+        "trackName": "With You (Instrumental) [feat. Joyce Wrice]",
+        "artistName": "Devin Morrison",
+        "collectionName": "Bussin' (Instrumentals)",
+        "primaryGenreName": "R&B/Soul",
+        "trackViewUrl": "https://music.apple.com/us/album/with-you-instrumental-feat-joyce-wrice/1882127207?i=1882127209&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/with-you-instrumental-feat-joyce-wrice/1882127207?i=1882127209&uo=4",
+        "trackId": 1882127209
+      },
+      {
+        "trackName": "Lookin 4 (feat. Devin Morrison & Joyce Wrice)",
+        "artistName": "Crush",
+        "collectionName": "NAPPA - Single",
+        "primaryGenreName": "R&B/Soul",
+        "trackViewUrl": "https://music.apple.com/us/album/lookin-4-feat-devin-morrison-joyce-wrice/1477713319?i=1477713321&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/lookin-4-feat-devin-morrison-joyce-wrice/1477713319?i=1477713321&uo=4",
+        "trackId": 1477713321
+      },
+      {
+        "trackName": "BUTTERFLIES",
+        "artistName": "Isaiah Falls & Joyce Wrice",
+        "collectionName": "LVRS PARADISE (SIDE A)",
+        "primaryGenreName": "R&B/Soul",
+        "trackViewUrl": "https://music.apple.com/us/album/butterflies/1834261342?i=1834261361&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/butterflies/1834261342?i=1834261361&uo=4",
+        "trackId": 1834261361
+      },
+      {
+        "trackName": "With You",
+        "artistName": "Devin Morrison & Joyce Wrice",
+        "collectionName": "Bussin'",
+        "primaryGenreName": "R&B/Soul",
+        "trackViewUrl": "https://music.apple.com/us/album/with-you/1741620174?i=1741620177&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/with-you/1741620174?i=1741620177&uo=4",
+        "trackId": 1741620177
+      },
+      {
+        "trackName": "Hot Minute Interlude (feat. Devin Morrison & Mndsgn)",
+        "artistName": "Joyce Wrice",
+        "collectionName": "Overgrown",
+        "primaryGenreName": "R&B/Soul",
+        "trackViewUrl": "https://music.apple.com/us/album/hot-minute-interlude-feat-devin-morrison-mndsgn/1554528971?i=1554530023&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/hot-minute-interlude-feat-devin-morrison-mndsgn/1554528971?i=1554530023&uo=4",
+        "trackId": 1554530023
+      },
+      {
+        "trackName": "BUTTERFLIES",
+        "artistName": "Isaiah Falls & Joyce Wrice",
+        "collectionName": "LUCKY YOU - EP",
+        "primaryGenreName": "R&B/Soul",
+        "trackViewUrl": "https://music.apple.com/us/album/butterflies/1842460897?i=1842460909&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/butterflies/1842460897?i=1842460909&uo=4",
+        "trackId": 1842460909
+      },
+      {
+        "trackName": "OISHISOU",
+        "artistName": "Devin Morrison & Joyce Wrice",
+        "collectionName": "SAKURA",
+        "primaryGenreName": "R&B/Soul",
+        "trackViewUrl": "https://music.apple.com/us/album/oishisou/6775949283?i=6775949289&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/oishisou/6775949283?i=6775949289&uo=4",
+        "trackId": 6775949289
+      }
+    ]
+  },
+  "mixTerm|Hot Mulligan Fly Move": {
+    "query_url": "https://itunes.apple.com/search?term=Hot+Mulligan+Fly+Move&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": [
+      {
+        "trackName": "Fly Move (The Whole Time)",
+        "artistName": "Hot Mulligan",
+        "collectionName": "Warmer Weather - Single",
+        "primaryGenreName": "Alternative",
+        "trackViewUrl": "https://music.apple.com/us/album/fly-move-the-whole-time/1760793847?i=1760793848&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/fly-move-the-whole-time/1760793847?i=1760793848&uo=4",
+        "trackId": 1760793848
+      },
+      {
+        "trackName": "And I Smoke",
+        "artistName": "Hot Mulligan",
+        "collectionName": "Why Would I Watch",
+        "primaryGenreName": "Alternative",
+        "trackViewUrl": "https://music.apple.com/us/album/and-i-smoke/1657848490?i=1657848495&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/and-i-smoke/1657848490?i=1657848495&uo=4",
+        "trackId": 1657848495
+      },
+      {
+        "trackName": "This Song Is Called It’s Called What’s It Called",
+        "artistName": "Hot Mulligan",
+        "collectionName": "Why Would I Watch",
+        "primaryGenreName": "Alternative",
+        "trackViewUrl": "https://music.apple.com/us/album/this-song-is-called-its-called-whats-it-called/1657848490?i=1657848616&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/this-song-is-called-its-called-whats-it-called/1657848490?i=1657848616&uo=4",
+        "trackId": 1657848616
+      },
+      {
+        "trackName": "Smahccked My Head Awf",
+        "artistName": "Hot Mulligan",
+        "collectionName": "Why Would I Watch",
+        "primaryGenreName": "Alternative",
+        "trackViewUrl": "https://music.apple.com/us/album/smahccked-my-head-awf/1657848490?i=1657848625&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/smahccked-my-head-awf/1657848490?i=1657848625&uo=4",
+        "trackId": 1657848625
+      },
+      {
+        "trackName": "Island in the Sun (feat. Cory Castro of Free Throw)",
+        "artistName": "Hot Mulligan, Cory Castro & Free Throw",
+        "collectionName": "The Sound a Body Makes When It's Still",
+        "primaryGenreName": "Alternative",
+        "trackViewUrl": "https://music.apple.com/us/album/island-in-the-sun-feat-cory-castro-of-free-throw/1812498358?i=1812498362&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/island-in-the-sun-feat-cory-castro-of-free-throw/1812498358?i=1812498362&uo=4",
+        "trackId": 1812498362
+      }
+    ]
+  },
+  "mixTerm|Terrian Focus": {
+    "query_url": "https://itunes.apple.com/search?term=Terrian+Focus&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": [
+      {
+        "trackName": "Focus",
+        "artistName": "Terrian",
+        "collectionName": "Mad Big World",
+        "primaryGenreName": "Christian",
+        "trackViewUrl": "https://music.apple.com/us/album/focus/6776392032?i=6776392044&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/focus/6776392032?i=6776392044&uo=4",
+        "trackId": 6776392044
+      },
+      {
+        "trackName": "THANK GOD I'M FREE",
+        "artistName": "ELEVATION RHYTHM & Lizzie Morgan",
+        "collectionName": "THANK GOD I'M FREE - Single",
+        "primaryGenreName": "Christian",
+        "trackViewUrl": "https://music.apple.com/us/album/thank-god-im-free/1857992259?i=1857992266&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/thank-god-im-free/1857992259?i=1857992266&uo=4",
+        "trackId": 1857992266
+      },
+      {
+        "trackName": "Making Room",
+        "artistName": "Tauren Wells",
+        "collectionName": "Making Room - Single",
+        "primaryGenreName": "Christian",
+        "trackViewUrl": "https://music.apple.com/us/album/making-room/1773345980?i=1773345983&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/making-room/1773345980?i=1773345983&uo=4",
+        "trackId": 1773345983
+      },
+      {
+        "trackName": "Thank You For The Cross",
+        "artistName": "Tauren Wells",
+        "collectionName": "Let The Church Sing - EP",
+        "primaryGenreName": "Christian",
+        "trackViewUrl": "https://music.apple.com/us/album/thank-you-for-the-cross/1799076278?i=1799076280&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/thank-you-for-the-cross/1799076278?i=1799076280&uo=4",
+        "trackId": 1799076280
+      },
+      {
+        "trackName": "In Your Arms (feat. Yuichiro Kato)",
+        "artistName": "SHIN-SKI",
+        "collectionName": "Chillhop Timezones Japan",
+        "primaryGenreName": "Hip-Hop/Rap",
+        "trackViewUrl": "https://music.apple.com/us/album/in-your-arms-feat-yuichiro-kato/1847445576?i=1847445613&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/in-your-arms-feat-yuichiro-kato/1847445576?i=1847445613&uo=4",
+        "trackId": 1847445613
+      },
+      {
+        "trackName": "Solid Rock",
+        "artistName": "Liberty Worship Collective",
+        "collectionName": "In the Wilderness EP - Single",
+        "primaryGenreName": "Christian",
+        "trackViewUrl": "https://music.apple.com/us/album/solid-rock/1808787549?i=1808787551&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/solid-rock/1808787549?i=1808787551&uo=4",
+        "trackId": 1808787551
+      },
+      {
+        "trackName": "Solid Rock",
+        "artistName": "Liberty Worship Collective",
+        "collectionName": "To The One",
+        "primaryGenreName": "Christian",
+        "trackViewUrl": "https://music.apple.com/us/album/solid-rock/1852480740?i=1852480747&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/solid-rock/1852480740?i=1852480747&uo=4",
+        "trackId": 1852480747
+      }
+    ]
+  },
+  "mixTerm|Ashanti Foolish": {
+    "query_url": "https://itunes.apple.com/search?term=Ashanti+Foolish&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": [
+      {
+        "trackName": "Foolish",
+        "artistName": "Ashanti",
+        "collectionName": "Ashanti",
+        "primaryGenreName": "R&B/Soul",
+        "trackViewUrl": "https://music.apple.com/us/album/foolish/1444119785?i=1444119831&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/foolish/1444119785?i=1444119831&uo=4",
+        "trackId": 1444119831
+      },
+      {
+        "trackName": "Rock Wit U (Awww Baby)",
+        "artistName": "Ashanti",
+        "collectionName": "Chapter II",
+        "primaryGenreName": "R&B/Soul",
+        "trackViewUrl": "https://music.apple.com/us/album/rock-wit-u-awww-baby/1440661034?i=1440661039&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/rock-wit-u-awww-baby/1440661034?i=1440661039&uo=4",
+        "trackId": 1440661039
+      },
+      {
+        "trackName": "Foolish (Instrumental)",
+        "artistName": "Ashanti",
+        "collectionName": "Ashanti (Deluxe Edition)",
+        "primaryGenreName": "R&B/Soul",
+        "trackViewUrl": "https://music.apple.com/us/album/foolish-instrumental/1677667992?i=1677669411&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/foolish-instrumental/1677667992?i=1677669411&uo=4",
+        "trackId": 1677669411
+      },
+      {
+        "trackName": "Foolish (Instrumental)",
+        "artistName": "Smooth Jazz All Stars",
+        "collectionName": "Smooth Jazz Renditions of Ashanti (Instrumental)",
+        "primaryGenreName": "Jazz",
+        "trackViewUrl": "https://music.apple.com/us/album/foolish-instrumental/1783159930?i=1783159934&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/foolish-instrumental/1783159930?i=1783159934&uo=4",
+        "trackId": 1783159934
+      },
+      {
+        "trackName": "Foolish",
+        "artistName": "Ashanti",
+        "collectionName": "Premium R&B",
+        "primaryGenreName": "R&B/Soul",
+        "trackViewUrl": "https://music.apple.com/us/album/foolish/1064327153?i=1064327199&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/foolish/1064327153?i=1064327199&uo=4",
+        "trackId": 1064327199
+      },
+      {
+        "trackName": "Foolish",
+        "artistName": "Ashanti",
+        "collectionName": "Reminisce R&B, Vol. 3",
+        "primaryGenreName": "R&B/Soul",
+        "trackViewUrl": "https://music.apple.com/us/album/foolish/1063539427?i=1063539644&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/foolish/1063539427?i=1063539644&uo=4",
+        "trackId": 1063539644
+      },
+      {
+        "trackName": "Foolish (Edited)",
+        "artistName": "Ashanti",
+        "collectionName": "#1 Spot",
+        "primaryGenreName": "Hip-Hop/Rap",
+        "trackViewUrl": "https://music.apple.com/us/album/foolish-edited/1443794478?i=1443795399&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/foolish-edited/1443794478?i=1443795399&uo=4",
+        "trackId": 1443795399
+      },
+      {
+        "trackName": "Unfoolish",
+        "artistName": "Ashanti",
+        "collectionName": "Ashanti",
+        "primaryGenreName": "R&B/Soul",
+        "trackViewUrl": "https://music.apple.com/us/album/unfoolish/1444119785?i=1444119993&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/unfoolish/1444119785?i=1444119993&uo=4",
+        "trackId": 1444119993
+      },
+      {
+        "trackName": "Foolish",
+        "artistName": "Jazz Fruits Music",
+        "collectionName": "Rush Hour",
+        "primaryGenreName": "Easy Listening",
+        "trackViewUrl": "https://music.apple.com/us/album/foolish/1647412837?i=1647413541&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/foolish/1647412837?i=1647413541&uo=4",
+        "trackId": 1647413541
+      },
+      {
+        "trackName": "Intro",
+        "artistName": "Ashanti",
+        "collectionName": "Chapter II",
+        "primaryGenreName": "R&B/Soul",
+        "trackViewUrl": "https://music.apple.com/us/album/intro/1440661034?i=1440661035&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/intro/1440661034?i=1440661035&uo=4",
+        "trackId": 1440661035
+      },
+      {
+        "trackName": "Intro",
+        "artistName": "Ashanti",
+        "collectionName": "Ashanti",
+        "primaryGenreName": "R&B/Soul",
+        "trackViewUrl": "https://music.apple.com/us/album/intro/1444119785?i=1444119824&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/intro/1444119785?i=1444119824&uo=4",
+        "trackId": 1444119824
+      },
+      {
+        "trackName": "Foolish (Instrumental In The Style Of Ashanti)",
+        "artistName": "The Hit Beat Makers",
+        "collectionName": "Instrumental Hip-Hop Beats Vol. 2 - Instrumental Versions of Hip-Hops Greatest Hits",
+        "primaryGenreName": "Hip-Hop/Rap",
+        "trackViewUrl": "https://music.apple.com/us/album/foolish-instrumental-in-the-style-of-ashanti/366935733?i=366935761&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/foolish-instrumental-in-the-style-of-ashanti/366935733?i=366935761&uo=4",
+        "trackId": 366935761
+      },
+      {
+        "trackName": "Foolish (Karaoke Instrumental Track) [In the Style of Ashanti]",
+        "artistName": "ProSound Karaoke Band",
+        "collectionName": "Sing Soprano - R&B, Vol. 26 (Karaoke Performance Tracks)",
+        "primaryGenreName": "Karaoke",
+        "trackViewUrl": "https://music.apple.com/us/album/foolish-karaoke-instrumental-track-in-the-style-of-ashanti/280645500?i=280645505&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/foolish-karaoke-instrumental-track-in-the-style-of-ashanti/280645500?i=280645505&uo=4",
+        "trackId": 280645505
+      },
+      {
+        "trackName": "Foolish (Radio Edit) (Karaoke Instrumental Track) [In the Style of Ashanti]",
+        "artistName": "ProSound Karaoke Band",
+        "collectionName": "Sing Soprano: R&B, Vol. 26 (Karaoke Performance Tracks)",
+        "primaryGenreName": "Karaoke",
+        "trackViewUrl": "https://music.apple.com/us/album/foolish-radio-edit-karaoke-instrumental-track-in-the/390407640?i=390407675&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/foolish-radio-edit-karaoke-instrumental-track-in-the/390407640?i=390407675&uo=4",
+        "trackId": 390407675
+      },
+      {
+        "trackName": "Foolish",
+        "artistName": "Cover Love",
+        "collectionName": "R&B Party Playlists: Covers of the 00s",
+        "primaryGenreName": "R&B/Soul",
+        "trackViewUrl": "https://music.apple.com/us/album/foolish/677189034?i=677189145&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/foolish/677189034?i=677189145&uo=4",
+        "trackId": 677189145
+      }
+    ]
+  },
+  "mixTerm|glaive For God and Country": {
+    "query_url": "https://itunes.apple.com/search?term=glaive+For+God+and+Country&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": []
+  },
+  "mixTerm|Tyler Ballgame For The First Time, Again": {
+    "query_url": "https://itunes.apple.com/search?term=Tyler+Ballgame+For+The+First+Time%2C+Again&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": [
+      {
+        "trackName": "For The First Time, Again",
+        "artistName": "Tyler Ballgame",
+        "collectionName": "For The First Time, Again",
+        "primaryGenreName": "Alternative",
+        "trackViewUrl": "https://music.apple.com/us/album/for-the-first-time-again/1834736717?i=1834736723&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/for-the-first-time-again/1834736717?i=1834736723&uo=4",
+        "trackId": 1834736723
+      },
+      {
+        "trackName": "Got a New Car",
+        "artistName": "Tyler Ballgame",
+        "collectionName": "For The First Time, Again",
+        "primaryGenreName": "Alternative",
+        "trackViewUrl": "https://music.apple.com/us/album/got-a-new-car/1834736717?i=1834736738&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/got-a-new-car/1834736717?i=1834736738&uo=4",
+        "trackId": 1834736738
+      },
+      {
+        "trackName": "Down So Bad",
+        "artistName": "Tyler Ballgame",
+        "collectionName": "For The First Time, Again",
+        "primaryGenreName": "Alternative",
+        "trackViewUrl": "https://music.apple.com/us/album/down-so-bad/1834736717?i=1834736986&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/down-so-bad/1834736717?i=1834736986&uo=4",
+        "trackId": 1834736986
+      },
+      {
+        "trackName": "Goodbye My Love",
+        "artistName": "Tyler Ballgame",
+        "collectionName": "For The First Time, Again",
+        "primaryGenreName": "Alternative",
+        "trackViewUrl": "https://music.apple.com/us/album/goodbye-my-love/1834736717?i=1834736734&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/goodbye-my-love/1834736717?i=1834736734&uo=4",
+        "trackId": 1834736734
+      },
+      {
+        "trackName": "You're Not My Baby Tonight",
+        "artistName": "Tyler Ballgame",
+        "collectionName": "For The First Time, Again",
+        "primaryGenreName": "Alternative",
+        "trackViewUrl": "https://music.apple.com/us/album/youre-not-my-baby-tonight/1834736717?i=1834736726&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/youre-not-my-baby-tonight/1834736717?i=1834736726&uo=4",
+        "trackId": 1834736726
+      },
+      {
+        "trackName": "Sing How I Feel",
+        "artistName": "Tyler Ballgame",
+        "collectionName": "For The First Time, Again",
+        "primaryGenreName": "Alternative",
+        "trackViewUrl": "https://music.apple.com/us/album/sing-how-i-feel/1834736717?i=1834736730&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/sing-how-i-feel/1834736717?i=1834736730&uo=4",
+        "trackId": 1834736730
+      },
+      {
+        "trackName": "Ooh",
+        "artistName": "Tyler Ballgame",
+        "collectionName": "For The First Time, Again",
+        "primaryGenreName": "Alternative",
+        "trackViewUrl": "https://music.apple.com/us/album/ooh/1834736717?i=1834736740&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/ooh/1834736717?i=1834736740&uo=4",
+        "trackId": 1834736740
+      },
+      {
+        "trackName": "Waiting So Long",
+        "artistName": "Tyler Ballgame",
+        "collectionName": "For The First Time, Again",
+        "primaryGenreName": "Alternative",
+        "trackViewUrl": "https://music.apple.com/us/album/waiting-so-long/1834736717?i=1834736993&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/waiting-so-long/1834736717?i=1834736993&uo=4",
+        "trackId": 1834736993
+      },
+      {
+        "trackName": "I Know",
+        "artistName": "Tyler Ballgame",
+        "collectionName": "For The First Time, Again",
+        "primaryGenreName": "Alternative",
+        "trackViewUrl": "https://music.apple.com/us/album/i-know/1834736717?i=1834736988&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/i-know/1834736717?i=1834736988&uo=4",
+        "trackId": 1834736988
+      },
+      {
+        "trackName": "Matter of Taste",
+        "artistName": "Tyler Ballgame",
+        "collectionName": "For The First Time, Again",
+        "primaryGenreName": "Alternative",
+        "trackViewUrl": "https://music.apple.com/us/album/matter-of-taste/1834736717?i=1834736727&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/matter-of-taste/1834736717?i=1834736727&uo=4",
+        "trackId": 1834736727
+      },
+      {
+        "trackName": "I Believe In Love",
+        "artistName": "Tyler Ballgame",
+        "collectionName": "For The First Time, Again",
+        "primaryGenreName": "Alternative",
+        "trackViewUrl": "https://music.apple.com/us/album/i-believe-in-love/1834736717?i=1834736724&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/i-believe-in-love/1834736717?i=1834736724&uo=4",
+        "trackId": 1834736724
+      },
+      {
+        "trackName": "Circles (feat. Tyler Ballgame)",
+        "artistName": "Johanna Samuels",
+        "collectionName": "Sorry, Kid",
+        "primaryGenreName": "Folk",
+        "trackViewUrl": "https://music.apple.com/us/album/circles-feat-tyler-ballgame/1890274561?i=1890274565&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/circles-feat-tyler-ballgame/1890274561?i=1890274565&uo=4",
+        "trackId": 1890274565
+      },
+      {
+        "trackName": "Circles (feat. Tyler Ballgame)",
+        "artistName": "Johanna Samuels",
+        "collectionName": "Sorry, Kid (Deluxe Edition)",
+        "primaryGenreName": "Folk",
+        "trackViewUrl": "https://music.apple.com/us/album/circles-feat-tyler-ballgame/6800429344?i=6800429350&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/circles-feat-tyler-ballgame/6800429344?i=6800429350&uo=4",
+        "trackId": 6800429350
+      },
+      {
+        "trackName": "Live It Down",
+        "artistName": "Tyler Ballgame",
+        "collectionName": "Live It Down - Single",
+        "primaryGenreName": "Alternative",
+        "trackViewUrl": "https://music.apple.com/us/album/live-it-down/6782981892?i=6782981893&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/live-it-down/6782981892?i=6782981893&uo=4",
+        "trackId": 6782981893
+      }
+    ]
+  },
+  "mixTerm|Vontee the Singer For Us": {
+    "query_url": "https://itunes.apple.com/search?term=Vontee+the+Singer+For+Us&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": [
+      {
+        "trackName": "For Us",
+        "artistName": "Pete Yorn",
+        "collectionName": "Nightcrawler (Bonus Track)",
+        "primaryGenreName": "Rock",
+        "trackViewUrl": "https://music.apple.com/us/album/for-us/184063201?i=184063295&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/for-us/184063201?i=184063295&uo=4",
+        "trackId": 184063295
+      }
+    ]
+  },
+  "mixTerm|Tamia Forever and a Day": {
+    "query_url": "https://itunes.apple.com/search?term=Tamia+Forever+and+a+Day&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": [
+      {
+        "trackName": "Forever and a Day",
+        "artistName": "Tamia",
+        "collectionName": "Forever and a Day - Single",
+        "primaryGenreName": "R&B/Soul",
+        "trackViewUrl": "https://music.apple.com/us/album/forever-and-a-day/6804775124?i=6804775305&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/forever-and-a-day/6804775124?i=6804775305&uo=4",
+        "trackId": 6804775305
+      },
+      {
+        "trackName": "Still",
+        "artistName": "Tamia",
+        "collectionName": "More",
+        "primaryGenreName": "R&B/Soul",
+        "trackViewUrl": "https://music.apple.com/us/album/still/6595362?i=6595443&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/still/6595362?i=6595443&uo=4",
+        "trackId": 6595443
+      },
+      {
+        "trackName": "Forever",
+        "artistName": "R. Kelly",
+        "collectionName": "Chocolate Factory",
+        "primaryGenreName": "R&B/Soul",
+        "trackViewUrl": "https://music.apple.com/us/album/forever/283567680?i=283567743&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/forever/283567680?i=283567743&uo=4",
+        "trackId": 283567743
+      },
+      {
+        "trackName": "Forever and a Day",
+        "artistName": "Benson Boone",
+        "collectionName": "Fireworks & Rollerblades",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/forever-and-a-day/1736051351?i=1736051626&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/forever-and-a-day/1736051351?i=1736051626&uo=4",
+        "trackId": 1736051626
+      },
+      {
+        "trackName": "Can't Get Enough",
+        "artistName": "Tamia",
+        "collectionName": "Between Friends",
+        "primaryGenreName": "R&B/Soul",
+        "trackViewUrl": "https://music.apple.com/us/album/cant-get-enough/599214097?i=599214104&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/cant-get-enough/599214097?i=599214104&uo=4",
+        "trackId": 599214104
+      },
+      {
+        "trackName": "Always and Forever",
+        "artistName": "Heatwave",
+        "collectionName": "The Best of Heatwave: Always and Forever",
+        "primaryGenreName": "R&B/Soul",
+        "trackViewUrl": "https://music.apple.com/us/album/always-and-forever/153421868?i=153422067&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/always-and-forever/153421868?i=153422067&uo=4",
+        "trackId": 153422067
+      },
+      {
+        "trackName": "Forever and a Day",
+        "artistName": "DRAMA",
+        "collectionName": "Dance Without Me",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/forever-and-a-day/1483995266?i=1483995269&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/forever-and-a-day/1483995266?i=1483995269&uo=4",
+        "trackId": 1483995269
+      },
+      {
+        "trackName": "You Know How to Love Me",
+        "artistName": "Phyllis Hyman",
+        "collectionName": "The Legacy of Phyllis Hyman (Remastered)",
+        "primaryGenreName": "R&B/Soul",
+        "trackViewUrl": "https://music.apple.com/us/album/you-know-how-to-love-me/304765046?i=304765064&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/you-know-how-to-love-me/304765046?i=304765064&uo=4",
+        "trackId": 304765064
+      },
+      {
+        "trackName": "Never Knew Love Like This",
+        "artistName": "Alexander O'Neal",
+        "collectionName": "Hearsay",
+        "primaryGenreName": "R&B/Soul",
+        "trackViewUrl": "https://music.apple.com/us/album/never-knew-love-like-this/1425171863?i=1425173096&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/never-knew-love-like-this/1425171863?i=1425173096&uo=4",
+        "trackId": 1425173096
+      },
+      {
+        "trackName": "Never Let You Go",
+        "artistName": "Sir Charles Jones",
+        "collectionName": "The Best of Sir Charles Jones - For Your Love",
+        "primaryGenreName": "R&B/Soul",
+        "trackViewUrl": "https://music.apple.com/us/album/never-let-you-go/301564070?i=301564076&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/never-let-you-go/301564070?i=301564076&uo=4",
+        "trackId": 301564076
+      },
+      {
+        "trackName": "Behind the Groove",
+        "artistName": "Teena Marie",
+        "collectionName": "Lady T (Expanded Edition)",
+        "primaryGenreName": "R&B/Soul",
+        "trackViewUrl": "https://music.apple.com/us/album/behind-the-groove/1444083463?i=1444083477&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/behind-the-groove/1444083463?i=1444083477&uo=4",
+        "trackId": 1444083477
+      },
+      {
+        "trackName": "Never Knew Love Like This",
+        "artistName": "Alexander O'Neal",
+        "collectionName": "Best Of",
+        "primaryGenreName": "R&B/Soul",
+        "trackViewUrl": "https://music.apple.com/us/album/never-knew-love-like-this/1472659333?i=1472659529&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/never-knew-love-like-this/1472659333?i=1472659529&uo=4",
+        "trackId": 1472659529
+      },
+      {
+        "trackName": "You're the One for Me",
+        "artistName": "D Train",
+        "collectionName": "You're the One for Me",
+        "primaryGenreName": "R&B/Soul",
+        "trackViewUrl": "https://music.apple.com/us/album/youre-the-one-for-me/280459028?i=280459068&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/youre-the-one-for-me/280459028?i=280459068&uo=4",
+        "trackId": 280459068
+      },
+      {
+        "trackName": "Forever and a Day",
+        "artistName": "DRAMA",
+        "collectionName": "Dance Without Me",
+        "primaryGenreName": "R&B/Soul",
+        "trackViewUrl": "https://music.apple.com/us/album/forever-and-a-day/6791164617?i=6791164620&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/forever-and-a-day/6791164617?i=6791164620&uo=4",
+        "trackId": 6791164620
+      },
+      {
+        "trackName": "Forever and a Day",
+        "artistName": "Indoorsmen",
+        "collectionName": "Withdrawn and Quartered",
+        "primaryGenreName": "Alternative",
+        "trackViewUrl": "https://music.apple.com/us/album/forever-and-a-day/1701467145?i=1701467635&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/forever-and-a-day/1701467145?i=1701467635&uo=4",
+        "trackId": 1701467635
+      }
+    ]
   }
 }
