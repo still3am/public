@@ -1,12 +1,12 @@
 import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
-import { Loader2, UserCheck, RefreshCw, ArrowRight } from "lucide-react";
+import { Loader2, UserCheck, ChevronLeft, ChevronRight } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 import { useAuth } from "@/lib/AuthContext";
 import { useSafety } from "@/context/SafetyContext";
 import { readAllPages } from "@/lib/readPages";
 import { setFollowState, followError } from "@/lib/followActions";
-import Avatar from "@/components/Avatar";
+import DiscoverProfileCard from "./DiscoverProfileCard";
 import { rankDiscoverPeople } from "@/lib/discoverPeople";
 import "./discover-people.css";
 
@@ -18,18 +18,20 @@ export default function DiscoverPeople({ profileId, active = true }) {
   const locks = useRef(new Set());
   const mounted = useRef(false);
   useEffect(() => {mounted.current = true;return () => {mounted.current = false;};}, []);
-  const [retry, setRetry] = useState(0),[limit, setLimit] = useState(5);
+  const [retry, setRetry] = useState(0),[selectedId,setSelectedId]=useState("");
+  const [direction,setDirection]=useState(1),[drag,setDrag]=useState(0);
+  const gesture=useRef(null);
   const [state, setState] = useState({ scope: "", people: [], loading: true, error: false });
   const [changes, setChanges] = useState({ scope: "", following: {}, busy: {}, errors: {} });
   useEffect(() => {
     if (!active) return;
     let cancelled = false;
-    setLimit(5);setState((old) => ({ scope, people: old.scope === scope ? old.people : [], loading: true, error: false }));
+    setSelectedId("");setState((old) => ({ scope, people: old.scope === scope ? old.people : [], loading: true, error: false }));
     setChanges((old) => old.scope === scope ? old : { scope, following: {}, busy: {}, errors: {} });
     (async () => {
       try {
         const [page, follows] = await Promise.all([
-        base44.entities.PublicProfile.filter({ visible: true }, { sort: "-updated_date", limit: 80, fields: ["user_id", "display_name", "full_name", "username", "avatar_url", "bio", "is_artist", "top_track_ids", "featured_track_id"] }),
+        base44.entities.PublicProfile.filter({ visible: true }, { sort: "-updated_date", limit: 80, fields: ["user_id", "display_name", "full_name", "username", "avatar_url", "bio", "is_artist", "top_track_ids", "featured_track_id", "banner_url", "banner_mobile_url", "banner_use_default", "banner_video_url", "banner_gif_url", "avatar_video_url", "avatar_gif_url", "location", "pronouns", "top_tracks_label"] }),
         uid ? readAllPages((options) => base44.entities.Follow.filter({ follower_id: uid }, { sort: "-created_date", ...options })) : Promise.resolve([])]
         );
         const profiles = Array.isArray(page) ? page : page?.items;
@@ -63,21 +65,54 @@ export default function DiscoverPeople({ profileId, active = true }) {
   }
   const ready = state.scope === scope,people = ready ? rankDiscoverPeople(state.people.filter((p) => !blocked.has(p.id)), user) : [];
   const local = changes.scope === scope ? changes : { following: {}, busy: {}, errors: {} };
-  return <section className="profile-discover" aria-label="Discover people">
-  <header><div><h2>Discover People</h2><p>A shared song. A new connection.</p></div><button type="button" className="profile-discover-refresh hidden" aria-label="Refresh people" title="Refresh suggestions" disabled={state.loading || Object.values(local.busy).some(Boolean)} onClick={() => setRetry((n) => n + 1)}><RefreshCw size={17} className={state.loading ? "animate-spin" : ""} /></button></header>
-  {state.error && people.length > 0 && <div className="profile-discover-status" role="status">Couldn’t refresh suggestions. Your current list is still here.</div>}
-  {!ready || state.loading && !people.length ? <div className="profile-discover-loading" role="status" aria-label="Finding listeners">{[1, 2, 3].map((n) => <div key={n}><i /><span><i /><i /></span></div>)}</div> :
-    state.error && !people.length ? <div className="profile-discover-status"><p>Couldn’t load people.</p><button type="button" onClick={() => setRetry((n) => n + 1)}>Try again</button></div> :
-    !people.length ? <div className="profile-discover-status"><p>You’re all caught up. Check back for new people.</p></div> :
-    <ul>{people.slice(0, limit).map((person) => {
-        const name = person.display_name || person.full_name || person.username || "PUBLIC listener";
-        const following = !!local.following[person.id],busy = !!local.busy[person.id];
-        return <li key={person.id} className={following ? "is-following" : ""}><div className="profile-discover-row">
-     <Link to={"/profile/" + encodeURIComponent(person.id)} className="profile-discover-person"><Avatar user={person} size={48} /><span><strong title={name}>{name}</strong><small className={person.shared ? "is-shared" : ""}>{person.reason}</small></span></Link>
-     {uid && <button type="button" className="profile-discover-follow" aria-label={(following ? "Unfollow " : "Follow ") + name} aria-pressed={following} disabled={busy || state.loading} onClick={() => follow(person)}>{busy ? <Loader2 size={16} className="animate-spin" /> : following ? <UserCheck size={15} /> : null}<span>{busy ? "Saving" : following ? "Following" : "Follow"}</span></button>}
-    </div>{local.errors[person.id] && <p className="profile-discover-error" role="alert">{local.errors[person.id]}</p>}</li>;
-      })}</ul>}
-  <p className="sr-only" role="status" aria-live="polite">{Object.values(local.following).filter(Boolean).length ? Object.values(local.following).filter(Boolean).length + " new people followed." : ""}</p>
-  {people.length > limit && <button type="button" className="profile-discover-more" onClick={() => setLimit((n) => n + 5)}>Show more people <ArrowRight size={15} /></button>}
- </section>;
+  const position=Math.max(0,people.findIndex(person=>person.id===selectedId));
+  const person=people[position];
+  function navigate(step){
+    if(people.length<2)return;
+    setDirection(step);setSelectedId(people[(position+step+people.length)%people.length].id);setDrag(0);
+  }
+  function pointerDown(event){
+    if(event.pointerType!=="touch"||!event.isPrimary||event.target.closest("a,button,input,textarea"))return;
+    gesture.current={id:event.pointerId,x:event.clientX,y:event.clientY};
+    event.currentTarget.setPointerCapture(event.pointerId);
+  }
+  function pointerMove(event){
+    const start=gesture.current;if(!start||start.id!==event.pointerId)return;
+    const dx=event.clientX-start.x,dy=event.clientY-start.y;
+    if(Math.abs(dy)>Math.abs(dx)&&Math.abs(dy)>14){gesture.current=null;setDrag(0);return;}
+    if(Math.abs(dx)>12)setDrag(Math.max(-90,Math.min(90,dx)));
+  }
+  function pointerEnd(event){
+    const start=gesture.current;gesture.current=null;setDrag(0);
+    if(!start||start.id!==event.pointerId||event.type==="pointercancel")return;
+    const dx=event.clientX-start.x,dy=event.clientY-start.y;
+    if(Math.abs(dx)>=60&&Math.abs(dx)>Math.abs(dy)*1.3)navigate(dx<0?1:-1);
+  }
+  const following=!!local.following[person?.id],busy=!!local.busy[person?.id];
+  const name=person?.display_name||person?.full_name||person?.username||"PUBLIC listener";
+  return <section className="profile-discover profile-discover-deck" aria-label="Discover people">
+    <header><div><h2>Discover People</h2><p>Different lives. Shared soundtracks.</p></div></header>
+    {state.error&&people.length>0&&<p className="profile-discover-status" role="status">Couldn’t refresh suggestions. Your current list is still here.</p>}
+    {!ready||state.loading&&!people.length?<div className="profile-discover-loading" role="status" aria-label="Finding listeners"><div className="discover-skeleton-cover"/><div><i/><span><i/><i/></span></div></div>:
+     state.error&&!people.length?<div className="profile-discover-status"><p>Couldn’t load people.</p><button type="button" onClick={()=>setRetry(n=>n+1)}>Try again</button></div>:
+     !person?<div className="profile-discover-status"><p>You’re all caught up. Check back for new people.</p><button type="button" onClick={()=>setRetry(n=>n+1)}>Check again</button></div>:
+     <>
+      <div className="discover-swipe-area" tabIndex={0} aria-label="Suggested profile. Use left and right arrows to explore." onKeyDown={event=>{if(event.target!==event.currentTarget)return;if(event.key==="ArrowRight"||event.key==="ArrowLeft"){event.preventDefault();navigate(event.key==="ArrowRight"?1:-1);}}} onPointerDown={pointerDown} onPointerMove={pointerMove} onPointerUp={pointerEnd} onPointerCancel={pointerEnd}>
+       <div style={{transform:drag?"translateX("+drag+"px) rotate("+drag/35+"deg)":undefined,opacity:drag?1-Math.abs(drag)/350:1}} className="discover-drag-frame">
+        <DiscoverProfileCard key={scope+":"+person.id} person={person} active={active} direction={direction}>
+         <div className="discover-profile-actions">
+          <Link className="discover-view-profile" to={"/profile/"+encodeURIComponent(person.id)}>View profile</Link>
+          {uid&&<button type="button" className="profile-discover-follow" aria-label={(following?"Unfollow ":"Follow ")+name} aria-pressed={following} disabled={busy||state.loading} onClick={()=>follow(person)}>{busy?<Loader2 size={16} className="animate-spin"/>:following?<UserCheck size={16}/>:null}{busy?"Saving…":following?"Following":"Follow"}</button>}
+         </div>
+         {local.errors[person.id]&&<p className="profile-discover-error" role="alert">{local.errors[person.id]}</p>}
+        </DiscoverProfileCard>
+       </div>
+      </div>
+      <footer className="discover-deck-controls">
+       <button type="button" disabled={people.length<2} onClick={()=>navigate(-1)} aria-label="Previous person"><ChevronLeft size={18}/></button>
+       <div role="status" aria-live="polite" aria-atomic="true"><strong>{position+1} <span>/ {people.length}</span></strong><small className="discover-mobile-hint">Swipe to discover</small><small className="discover-desktop-hint">Find your people</small></div>
+       <button type="button" disabled={people.length<2} onClick={()=>navigate(1)} aria-label="Next person"><span>Next</span><ChevronRight size={18}/></button>
+      </footer>
+     </>}
+  </section>;
 }
