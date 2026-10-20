@@ -46,7 +46,6 @@ import ProfileSong from "@/components/profile/ProfileSong";
 import PublicNotes from "@/components/profile/PublicNotes";
 import TopTracks from "@/components/profile/TopTracks";
 import ProfileComments from "@/components/profile/ProfileComments";
-import DiscoverPeople from "@/components/profile/DiscoverPeople";
 import FollowListModal from "@/components/profile/FollowListModal";
 import StatusMessage from "@/components/profile/StatusMessage";
 import { useCoverPalette, profileGradient } from "@/hooks/useCoverPalette";
@@ -412,7 +411,7 @@ export default function Profile({ ownProfileTab = false }) {
           {(bannerUrl || currentBackground.mode === "auto" && coverUrl) && <ProfileMedia key={bannerUrl || coverUrl} src={bannerUrl || coverUrl} mobileSrc={bannerMobileUrl} videoSrc={!useDefaultBanner ? (editMode ? form.banner_video_url : profile?.banner_video_url) : ""} gifSrc={!useDefaultBanner ? (editMode ? form.banner_gif_url : profile?.banner_gif_url) : ""} active={isCurrentPage} style={{width:"100%",height:"100%"}}/>}
           <div className="profile-cover-fade" />
         </div>
-        {editMode && <ProfileBannerEditor busy={uploadingBanner || saving} hasBanner={!!form.banner_url && !form.banner_use_default} current={{url:form.banner_use_default?"":form.banner_url,mobileUrl:form.banner_mobile_url,videoUrl:form.banner_video_url,gifUrl:form.banner_gif_url}} onSelect={item=>{if(!saving&&!uploadingBanner)setForm(old=>({...old,banner_url:item.url,banner_mobile_url:item.url,banner_video_url:item.videoUrl||"",banner_gif_url:item.gifUrl||"",banner_use_default:false}));}} onApply={uploadBanner} onMotionApply={media=>uploadProfileMotion("banner",media)} onRemove={() => setForm((old) => ({ ...old, banner_use_default: true }))} />}
+        {editMode && <ProfileBannerEditor busy={uploadingBanner || saving} hasBanner={!!form.banner_url && !form.banner_use_default} onApply={uploadBanner} onMotionApply={media=>uploadProfileMotion("banner",media)} onRemove={() => setForm((old) => ({ ...old, banner_use_default: true }))} />}
         {!editMode && isAdminProfile && <ProfileBadge variant="admin" />}
         {!editMode && !isAdminProfile && profile.is_artist && <ProfileBadge variant="artist" />}
         
@@ -648,7 +647,7 @@ export default function Profile({ ownProfileTab = false }) {
             }
 
       <ProfilePlaylists userId={targetId} active={isCurrentPage} />
-      </section><div className="profile-community-column"><DiscoverPeople key={targetId} profileId={targetId} active={isCurrentPage} /><aside className="profile-conversation" aria-label="Profile conversation"><ProfileComments profileId={targetId} isOwn={isOwn} active={isCurrentPage} /><SafetyControls type="user" id={targetId} userId={targetId} label="profile" /></aside></div></div>
+      </section><div className="profile-community-column"><aside className="profile-conversation" aria-label="Profile conversation"><ProfileComments profileId={targetId} isOwn={isOwn} active={isCurrentPage} /><SafetyControls type="user" id={targetId} userId={targetId} label="profile" /></aside></div></div>
 
       {showColors && isOwn && <ProfileColorPicker coverUrl={coverUrl} colors={coverColors} loading={colorsLoading} value={backgroundValue} onPreview={setBackgroundDraft} onSave={saveColors} onClose={closeColors} />}
 
