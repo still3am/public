@@ -11,7 +11,8 @@ const database={auth:{me:async()=>clone(user)},entities:{Playlist:{get:async()=>
  assert.equal(query.creator_id,playlist.creator_id);
  assert.ok(permitted(schema.rls.update,playlist,user),'native row update must pass owner RLS');
  for(const changes of Object.values(patch))for(const key of Object.keys(changes))assert.ok(permitted(schema.properties[key].rls.write,playlist,user),'every modified field must pass FLS');
- if(query.track_ids&&JSON.stringify(query.track_ids)!==JSON.stringify(playlist.track_ids))return {modified_count:0};
+ if(query.track_ids){assert.equal(Array.isArray(query.track_ids),false,'never use match-any shorthand for order checks');if(JSON.stringify(query.track_ids.$eq)!==JSON.stringify(playlist.track_ids))return {modified_count:0};}
+ if(query.updated_date&&query.updated_date!==playlist.updated_date)return {modified_count:0};
  if(patch.$addToSet)playlist.track_ids=[...new Set([...playlist.track_ids,...patch.$addToSet.track_ids.$each])];
  if(patch.$pull)playlist.track_ids=playlist.track_ids.filter(id=>!patch.$pull.track_ids.$in.includes(id));
  if(patch.$set)playlist.track_ids=[...patch.$set.track_ids];
