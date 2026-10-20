@@ -102,7 +102,8 @@ export const base44 = new Proxy(raw,{get(target,name) {
     if(Object.prototype.hasOwnProperty.call(data||{},"avatar_url")&&(data.avatar_url===""||AVATAR_PRESETS.some(item=>item.url===data.avatar_url))){
       const current=await target.auth.me();
       if(!current?.id||current.is_blocked||current.disabled)throw new Error('Account unavailable');
-      const {avatar_url,...profileChanges}=data;
+      const {avatar_url,avatar_video_url,avatar_gif_url,...profileChanges}=data;
+      if(avatar_video_url || avatar_gif_url)throw new Error("Choose a gallery avatar or uploaded media, not both.");
       // Text still uses moderation; built-in artwork uses the confirmed native preset save.
       if(Object.keys(profileChanges).length)await base44.auth.updateMe(profileChanges);
       const owner=await target.auth.me();
