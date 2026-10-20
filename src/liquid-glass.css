@@ -10,7 +10,8 @@ html:is([data-liquid-glass=clear],[data-liquid-glass=tinted]) :is(
  .public-app .mobile-nav-pill,.public-app .mobile-nav-search,.public-app .mobile-search-home,.public-app .mobile-search-field,
  .public-app .player-surface,.public-app .sidebar-surface,
  .profile-settings-panel,.profile-settings-groups>section>div,
- .mobile-more-panel,.mobile-more-sheet,.public-avatar-picker,
+ .mobile-more-panel,.mobile-more-sheet,.public-avatar-picker,.public-banner-picker,
+ .public-app .profile-edit-toolbar,.public-app .profile-playlist-status,.public-app .profile-top8-edit-row,
  [role=menu].bg-popover,[data-radix-popper-content-wrapper] .bg-popover,[role=dialog].bg-background,[role=dialog].bg-card,[role=dialog] .bg-card,
  [data-glass-surface]
 ){
@@ -28,6 +29,12 @@ html:is([data-liquid-glass=clear],[data-liquid-glass=tinted]) .profile-discover 
 html[data-liquid-glass=clear] .has-profile-gradient .discover-mini-body{--public-glass-opacity:.64}
 html[data-liquid-glass=tinted] .has-profile-gradient .discover-mini-body{--public-glass-opacity:.86}
 html:is([data-liquid-glass=clear],[data-liquid-glass=tinted]) .discover-deck-controls{background-color:hsl(var(--card)/var(--public-glass-opacity))!important;background-image:none}
+/* Inner surfaces use a single translucent layer; stacking blur makes cards opaque. */
+html:is([data-liquid-glass=clear],[data-liquid-glass=tinted]) :is(.profile-comments-composer,.avatar-picker-footer,.banner-picker-footer){background:hsl(var(--card)/var(--public-glass-opacity));-webkit-backdrop-filter:blur(var(--public-glass-blur));backdrop-filter:blur(var(--public-glass-blur));border-radius:16px}
+html:is([data-liquid-glass=clear],[data-liquid-glass=tinted]) .profile-comments-composer{padding:10px;margin-inline:-4px}
+html:is([data-liquid-glass=clear],[data-liquid-glass=tinted]) .profile-comments-composer textarea{background:hsl(var(--foreground)/.045);border-color:hsl(var(--foreground)/.18)}
+html:is([data-liquid-glass=clear],[data-liquid-glass=tinted]) :is(.profile-conversation,.profile-identity,.profile-rotation) .bg-card{background-color:hsl(var(--foreground)/.035)!important;background-image:none!important;-webkit-backdrop-filter:none!important;backdrop-filter:none!important;box-shadow:none!important}
+html:is([data-liquid-glass=clear],[data-liquid-glass=tinted]) :is(.profile-settings-panel,.public-avatar-picker,.public-banner-picker) :is(input:not([type=checkbox]):not([type=radio]):not([type=range]),textarea){background-color:hsl(var(--foreground)/.04);border-color:hsl(var(--foreground)/.18)}
 .profile-settings-panel .profile-settings-groups.settings-detail{display:block}
 .liquid-glass-settings{display:grid;gap:16px;max-width:680px;margin-inline:auto}
 .liquid-glass-demo{height:290px;position:relative;overflow:hidden;border-radius:24px;background:radial-gradient(ellipse at 15% 90%,#13978d,transparent 68%),radial-gradient(ellipse at 90% 0%,#5946e5,transparent 66%),linear-gradient(135deg,#154570,#073f64);color:white;display:grid;align-content:end;justify-items:center;gap:14px;padding:24px;isolation:isolate}
