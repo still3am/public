@@ -2,7 +2,7 @@ import {useEffect,useRef,useState} from "react";
 import {useCoverUrl} from "@/hooks/useCoverUrl";
 
 // Static posters remain visible when autoplay is unavailable or motion is reduced.
-export default function ProfileMedia({src,videoSrc="",gifSrc="",mobileSrc="",motion=true,active=true,className="",style,onError,alt=""}) {
+export default function ProfileMedia({src,videoSrc="",gifSrc="",mobileSrc="",motion=true,active=true,className="",style={},onError=undefined,alt=""}) {
   const host=useRef(null),video=useRef(null),[visible,setVisible]=useState(false),[reduced,setReduced]=useState(true),[failed,setFailed]=useState(false);
   const poster=useCoverUrl(src),mobile=useCoverUrl(mobileSrc);
   useEffect(()=>{setFailed(false);},[videoSrc,gifSrc,src]);
