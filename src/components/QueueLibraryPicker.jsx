@@ -6,7 +6,7 @@ import { base44 } from "@/api/base44Client";
 import { useAuth } from "@/lib/AuthContext";
 import { useLibrary } from "@/context/LibraryContext";
 import { usePlayer } from "@/context/PlayerContext";
-import { X, Plus, Check, Loader2, Search, ListMusic } from "lucide-react";
+import { X, Plus, Check, Loader2, Search } from "lucide-react";
 
 /** @param {any} props */
 export default function QueueLibraryPicker({ open, onClose }) {
