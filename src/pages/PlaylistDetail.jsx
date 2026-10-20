@@ -1,3 +1,4 @@
+import {DragDropContext,Droppable,Draggable} from '@hello-pangea/dnd';
 import './track-editorial.css';
 import { useReleaseTheme } from '@/hooks/useReleaseTheme';
 import ReleaseAtmosphere from '@/components/ReleaseAtmosphere';
@@ -11,8 +12,8 @@ import { base44 } from '@/api/base44Client';
 import { useAuth } from '@/lib/AuthContext';
 import { usePlayer } from '@/context/PlayerContext';
 import { readAllPages } from '@/lib/readPages';
-import { removePlaylistTracks, reorderPlaylistTracks, movePlaylistTrack, shufflePlaylist } from '@/lib/playlistActions';
-import { Play, Pause, Shuffle, Plus, Pencil, Trash2, Share2, ListMusic, Search, ArrowUp, ArrowDown, X, Check, Loader2, ImagePlus, ChevronLeft, MoreHorizontal, Copy } from 'lucide-react';
+import { removePlaylistTracks, movePlaylistSong, shufflePlaylist } from '@/lib/playlistActions';
+import { Play, Pause, Shuffle, Plus, Pencil, Trash2, Share2, ListMusic, Search, GripVertical, Users, X, Check, Loader2, ImagePlus, ChevronLeft, MoreHorizontal, Copy } from 'lucide-react';
 import TrackRow from '@/components/TrackRow';
 import AddToPlaylistPicker from '@/components/playlist/AddToPlaylistPicker';
 import EmptyState from '@/components/EmptyState';
@@ -26,10 +27,11 @@ export default function PlaylistDetail() {
   const { id } = useParams(),nav = useNavigate(),{ user } = useAuth(),p = usePlayer(),{ toast } = useToast();
   const [playlist, setPlaylist] = useState(null),[tracks, setTracks] = useState([]),[loading, setLoading] = useState(true),[error, setError] = useState(false);
   const [showMore, setShowMore] = useState(false),[managing, setManaging] = useState(false);
+  const [showCollaborators,setShowCollaborators]=useState(false);
   const [editing, setEditing] = useState(false),[showAdd, setShowAdd] = useState(false),[busy, setBusy] = useState(false),[saved, setSaved] = useState(false);
   const [query, setQuery] = useState(''),[sort, setSort] = useState('custom'),[selected, setSelected] = useState(new Set());
   const [form, setForm] = useState({ name: '', description: '', is_public: true }),[coverFile, setCoverFile] = useState(null),[preview, setPreview] = useState('');
-  const version = useRef(0),writeLock = useRef(false),imageMemo = useRef(null),baseline = useRef(null),savedRead = useRef(0);
+  const version = useRef(0),writeLock = useRef(false),imageMemo = useRef(null),baseline = useRef(null),savedRead = useRef(0),dragSnapshot=useRef(null);
   const load = useCallback(async () => {
     const v = ++version.current;setLoading(true);setError(false);
     try {
@@ -40,9 +42,9 @@ export default function PlaylistDetail() {
       setPlaylist(pl);setTracks(list);baseline.current = pl;setForm({ name: pl.name || '', description: pl.description || '', is_public: !!pl.is_public });
     } catch {if (v === version.current) setError(true);} finally {if (v === version.current) setLoading(false);}
   }, [id]);
-  useEffect(() => {setSelected(new Set());setManaging(false);setEditing(false);setShowAdd(false);setCoverFile(null);setPreview('');setQuery('');setSort('custom');setSaved(false);setShowMore(false);load();return () => {version.current++;};}, [load]);
+  useEffect(() => {setSelected(new Set());setManaging(false);setEditing(false);setShowAdd(false);setCoverFile(null);setPreview('');setQuery('');setSort('custom');setSaved(false);setShowMore(false);setShowCollaborators(false);dragSnapshot.current=null;load();return () => {version.current++;};}, [load]);
   useEffect(() => {let alive = true;const request = ++savedRead.current;if (user?.id) base44.entities.SavedPlaylist.filter({ user_id: user.id, playlist_id: id }, '-created_date', 1).then((rows) => {if (alive && request === savedRead.current) setSaved((Array.isArray(rows) ? rows : rows?.items || []).length > 0);}).catch(() => {});return () => {alive = false;};}, [id, user?.id]);
-  useEffect(() => {if (!user?.id) return;let stop = () => {};try {stop = base44.entities.Playlist.subscribe((event) => {if (event.id === id && !writeLock.current) load();});} catch {}return () => stop();}, [id, user?.id, load]);
+  useEffect(() => {if (!user?.id) return;let stop = () => {};try {stop = base44.entities.Playlist.subscribe((event) => {if (event.id === id && !writeLock.current && !dragSnapshot.current) load();});} catch {}return () => stop();}, [id, user?.id, load]);
   useEffect(() => () => {if (preview) URL.revokeObjectURL(preview);}, [preview]);
   const isOwn = !!user && playlist?.creator_id === user.id;
   const canEditSongs = isOwn || !!user && playlist?.collaboration_enabled && (playlist.collaborator_ids || []).includes(user.id);
@@ -84,10 +86,22 @@ export default function PlaylistDetail() {
       baseline.current = result;setPlaylist(result);setEditing(false);setPreview('');setCoverFile(null);toast({ title: 'Playlist updated' });
     });
   }
-  async function move(t, delta) {
-    const original = playlist.track_ids || [],next = movePlaylistTrack(original, t.id, delta, tracks.map((row) => row.id));
-    if (next.every((id, i) => id === original[i])) return;
-    await write(async () => {const updated = await reorderPlaylistTracks(id, next, original);setPlaylist(updated);const order = new Map([...new Set(next)].map((id, i) => [id, i]));setTracks((prev) => [...prev].sort((a, b) => order.get(a.id) - order.get(b.id)));});
+  function editSongs(){setEditing(false);setManaging(true);setSelected(new Set());setQuery('');setSort('custom');}
+  async function finishDrag(result){
+    const snapshot=dragSnapshot.current;dragSnapshot.current=null;
+    if(!snapshot||snapshot.version!==version.current||!result.destination||result.source.index===result.destination.index||!canEditSongs||writeLock.current)return;
+    const moving=snapshot.rows[result.source.index],target=snapshot.rows[result.destination.index];
+    if(!moving||!target)return;
+    const epoch=version.current;
+    await write(async()=>{
+      let updated;
+      try{updated=await movePlaylistSong(id,moving.id,target.id,result.source.index<result.destination.index);}
+      catch(error){if((error.status??error.response?.status)===409)await load();throw error;}
+      if(epoch!==version.current)return;
+      setPlaylist(updated);
+      const order=new Map([...new Set(updated.track_ids||[])].map((value,i)=>[value,i]));
+      setTracks(previous=>[...previous].sort((a,b)=>order.get(a.id)-order.get(b.id)));
+    });
   }
   async function remove(ids) {
     if (!ids.length || !window.confirm('Remove ' + ids.length + ' song' + (ids.length === 1 ? '' : 's') + ' from this playlist? The songs will stay on PUBLIC.')) return;
@@ -133,9 +147,9 @@ export default function PlaylistDetail() {
     {!playlist.is_public && <p className="text-xs text-muted-foreground mt-3">Sharing the link does not give other accounts access to a private playlist.</p>}
    </div>
   </section>
-  <PlaylistCollaborators playlist={playlist} onSaved={setPlaylist} />
-  <div className="playlist-section-title"><div><h2>{managing && canEditSongs ? 'Edit songs' : 'Songs'}</h2></div></div>
-  {canEditSongs && managing && <p className="playlist-edit-hint" role="status">{filtered || sort !== 'custom' ? 'Clear search and choose Playlist order to rearrange songs.' : 'Select songs to remove together, or use the arrows to change their order.'}</p>}
+
+  <div className="playlist-section-title"><div><h2>{managing && canEditSongs ? 'Edit songs' : 'Songs'}</h2>{busy&&<span role="status">Saving…</span>}</div>{managing&&canEditSongs&&<button type="button" className="playlist-action" disabled={busy} onClick={()=>{setManaging(false);setSelected(new Set());}}><Check size={16}/>Done</button>}</div>
+  {canEditSongs && managing && <p className="playlist-edit-hint" role="status">{filtered || sort !== 'custom' ? 'Clear search and choose Playlist order to rearrange songs.' : 'Hold the handle and drag a song to change its order. Changes save automatically.'}</p>}
   
 
 
@@ -148,23 +162,30 @@ export default function PlaylistDetail() {
   </div>}
   {selected.size > 0 && canEditSongs && managing && <div className="flex items-center justify-between border rounded-xl p-3 mb-3 text-sm"><div className="flex flex-wrap items-center gap-3"><span>{selected.size} selected</span><button type="button" disabled={busy} onClick={() => setSelected(new Set())} className="text-xs text-muted-foreground hover:text-foreground underline underline-offset-4">Clear selection</button></div><button disabled={busy} onClick={() => remove([...selected])} className="text-destructive inline-flex gap-2 items-center"><Trash2 size={15} />Remove selected</button></div>}
   {!view.length ? <div className="playlist-empty"><EmptyState icon={ListMusic} title={filtered ? 'No matching songs' : 'Your next favorite starts here'} description={filtered ? 'Try a different title or artist.' : canEditSongs ? 'Add songs and make this playlist your own.' : 'Check back when new music is added.'} />{filtered ? <button type="button" className="playlist-action" onClick={() => setQuery('')}>Clear search</button> : canEditSongs && <button type="button" className="chrome-button" disabled={busy} onClick={() => setShowAdd(true)}><Plus size={17} />Add your first songs</button>}</div> :
-    <div className="playlist-song-list">{view.map((t, i) => <div key={t.id} className={"playlist-song-item " + (managing && canEditSongs ? "has-edit-controls" : "")} data-current={p.currentTrack?.id === t.id} aria-current={p.currentTrack?.id === t.id ? "true" : undefined}>
+    <DragDropContext onDragStart={()=>{dragSnapshot.current={rows:view,version:version.current};}} onDragEnd={finishDrag}>
+    <Droppable droppableId={"playlist:"+id}>{drop=><div ref={drop.innerRef} {...drop.droppableProps} className="playlist-song-list">
+    {view.map((t,i)=><Draggable key={t.id} draggableId={"playlist-song:"+t.id} index={i} isDragDisabled={!managing||!canEditSongs||busy||editing||sort!=='custom'||filtered}>{(provided,snapshot)=><div ref={provided.innerRef} {...provided.draggableProps} style={provided.draggableProps.style} data-reordering={snapshot.isDragging} className={"playlist-song-item " + (managing && canEditSongs ? "has-edit-controls" : "")} data-current={p.currentTrack?.id === t.id} aria-current={p.currentTrack?.id === t.id ? "true" : undefined}>
     {canEditSongs && managing && <input disabled={busy} aria-label={'Select ' + t.title} type="checkbox" checked={selected.has(t.id)} onChange={() => setSelected((prev) => {const next = new Set(prev);next.has(t.id) ? next.delete(t.id) : next.add(t.id);return next;})} />}
     <div className="flex-1 min-w-0"><TrackRow track={t} index={i} queue={tracks} queueIndex={tracks.findIndex((row) => row.id === t.id)} showArt />{playlist.track_contributors?.[t.id] && <p className="text-[11px] text-muted-foreground pl-3 pb-2">Added by {playlist.track_contributors[t.id].name || "a collaborator"}</p>}</div>
-    {canEditSongs && managing && <div className="playlist-row-actions"><button disabled={busy || sort !== 'custom' || !!query || tracks.findIndex((row) => row.id === t.id) === 0} onClick={() => move(t, -1)} aria-label={'Move ' + t.title + ' up'}><ArrowUp size={15} /></button><button disabled={busy || sort !== 'custom' || !!query || tracks.findIndex((row) => row.id === t.id) === tracks.length - 1} onClick={() => move(t, 1)} aria-label={'Move ' + t.title + ' down'}><ArrowDown size={15} /></button><button disabled={busy} onClick={() => remove([t.id])} aria-label={'Remove ' + t.title + ' from playlist'}><X size={15} /></button></div>}
-   </div>)}</div>}
+    {canEditSongs&&managing&&<div className="playlist-row-actions">
+     <div {...provided.dragHandleProps} className="playlist-drag-handle" aria-label={"Reorder "+t.title} title="Hold and drag to reorder"><GripVertical size={19}/></div>
+     <button type="button" disabled={busy} onClick={()=>remove([t.id])} aria-label={'Remove '+t.title+' from playlist'}><X size={15}/></button>
+    </div>}
+   </div>}</Draggable>)}{drop.placeholder}</div>}</Droppable></DragDropContext>}
   
   {showMore && <PlaylistActionsSheet name={playlist.name} cover={cover} subtitle={tracks.length + ' songs · ' + (playlist.is_public ? 'Public playlist' : 'Private playlist')} onClose={() => setShowMore(false)} actions={[
     { label: 'Add to queue', description: 'Play after your current queue', icon: ListMusic, disabled: !tracks.length, onClick: () => {p.addManyToQueue(tracks);toast({ title: 'Playlist added to queue' });} },
     { label: 'Share playlist', description: playlist.is_public ? 'Send a link to this playlist' : 'Copy your private playlist link', icon: Share2, onClick: share },
-    ...(!isOwn && canEditSongs ? [{ label: 'Add songs', icon: Plus, disabled: busy, onClick: () => setShowAdd(true) }, { label: 'Edit songs', icon: ListMusic, disabled: busy, onClick: () => setManaging(true) }] : []),
+    ...(!isOwn && canEditSongs ? [{ label: 'Add songs', icon: Plus, disabled: busy, onClick: () => setShowAdd(true) }, { label: 'Edit songs', icon: ListMusic, disabled: busy, onClick: editSongs }] : []),
     ...(isOwn ? [
     { label: 'Add songs', icon: Plus, disabled: busy, onClick: () => setShowAdd(true) },
-    { label: 'Edit songs', description: 'Select, reorder and remove songs', icon: ListMusic, disabled: busy, onClick: () => {setEditing(false);setManaging(true);} },
+    { label: 'Edit songs', description: 'Hold and drag to reorder songs', icon: GripVertical, disabled: busy, onClick: editSongs },
+    { label: playlist.collaboration_enabled?'Manage collaborators':'Invite collaborators', description:'Choose who can edit this playlist', icon: Users, disabled:busy, onClick:()=>setShowCollaborators(true) },
     { label: 'Edit playlist details', description: 'Artwork, name and privacy', icon: Pencil, disabled: busy, onClick: () => {setManaging(false);setSelected(new Set());setEditing(true);} }] :
     [{ label: saved ? 'Remove from library' : 'Save to library', icon: saved ? Check : Plus, disabled: busy, onClick: toggleSaved }]),
     { label: 'Make a copy', description: 'Create your own private version', icon: Copy, disabled: busy, onClick: duplicate }]
     } />}
+  {showCollaborators&&isOwn&&<PlaylistCollaborators playlist={playlist} onSaved={setPlaylist} onClose={()=>setShowCollaborators(false)}/>}
   {showAdd && <AddToPlaylistPicker playlist={playlist} onClose={() => {setShowAdd(false);load();}} />}
  </div>;
 }
