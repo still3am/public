@@ -476,7 +476,7 @@ export default async function handleRequest(req) {
         for(const [key,max]of Object.entries(profileLimits))if(data[key]!==undefined&&(typeof data[key]!=='string'||data[key].length>max))fail('Invalid '+key.replaceAll('_',' '),422);
         for(const key of ['website','soundcloud'])if(data[key]){try{const u=new URL(data[key]);if(!['http:','https:'].includes(u.protocol))throw Error();}catch{fail('Use a valid http or https link',422);}}
         if(data.banner_use_default!==undefined&&typeof data.banner_use_default!=='boolean')fail('Invalid banner preference',422);
-        for(const key of ['banner_url','banner_mobile_url'])if(data[key]!==undefined&&(typeof data[key]!=='string'||data[key].length>4096||(data[key]&&!/^(https?:\/\/|\/(?!\/))/.test(data[key]))))fail('Invalid banner image',422);
+        for(const key of ['avatar_url','banner_url','banner_mobile_url'])if(data[key]!==undefined&&(typeof data[key]!=='string'||data[key].length>4096||(data[key]&&!/^(https?:\/\/|\/(?!\/))/.test(data[key]))))fail('Invalid banner image',422);
         if(data.top_track_ids!==undefined&&(!Array.isArray(data.top_track_ids)||data.top_track_ids.length>8||data.top_track_ids.some(id=>typeof id!=='string'||!id)||new Set(data.top_track_ids).size!==data.top_track_ids.length))fail('Choose up to eight different songs',422);
         if(data.display_name!==undefined&&(typeof data.display_name!=='string'||data.display_name.trim().length<2||data.display_name.trim().length>60))fail('Use a display name between 2 and 60 characters',422);
         if(data.username!==undefined){
