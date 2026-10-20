@@ -2,6 +2,42 @@
   "name": "User",
   "type": "object",
   "properties": {
+    "avatar_video_url": {
+      "type": "string",
+      "default": "",
+      "maxLength": 4096,
+      "description": "Uploaded profile motion source; poster is stored in the existing image field.",
+      "rls": {
+        "write": false
+      }
+    },
+    "avatar_gif_url": {
+      "type": "string",
+      "default": "",
+      "maxLength": 4096,
+      "description": "Uploaded profile motion source; poster is stored in the existing image field.",
+      "rls": {
+        "write": false
+      }
+    },
+    "banner_video_url": {
+      "type": "string",
+      "default": "",
+      "maxLength": 4096,
+      "description": "Uploaded profile motion source; poster is stored in the existing image field.",
+      "rls": {
+        "write": false
+      }
+    },
+    "banner_gif_url": {
+      "type": "string",
+      "default": "",
+      "maxLength": 4096,
+      "description": "Uploaded profile motion source; poster is stored in the existing image field.",
+      "rls": {
+        "write": false
+      }
+    },
     "is_blocked": {
       "type": "boolean",
       "default": false,
