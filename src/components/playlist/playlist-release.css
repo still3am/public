@@ -1,4 +1,13 @@
 /* Playlists share the track page atmosphere and responsive artwork layout. */
+.public-app .playlist-page.playlist-editorial .playlist-song-item.has-edit-controls{display:grid;grid-template-columns:24px minmax(0,1fr) auto;gap:8px}
+.public-app .playlist-page.playlist-editorial .playlist-row-actions{grid-column:3;grid-row:1;align-items:center;margin:0;gap:0}
+.public-app .playlist-page.playlist-editorial .playlist-drag-handle{display:grid;place-items:center;width:44px;height:44px;flex-shrink:0;cursor:grab;color:rgb(255 255 255/.72);touch-action:manipulation;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;border-radius:50%}
+.public-app .playlist-page.playlist-editorial .playlist-drag-handle:active{cursor:grabbing}
+.public-app .playlist-page.playlist-editorial .playlist-drag-handle:focus-visible{outline:2px solid #fff;outline-offset:-3px}
+.public-app .playlist-page.playlist-editorial .playlist-song-item[data-reordering=true]{background:#292934!important;box-shadow:0 12px 36px #0006;border-radius:14px;color:#fff}
+.playlist-collaborators-dialog{max-height:85dvh;overflow-y:auto;overscroll-behavior:contain}
+.playlist-collaborators-dialog .playlist-collaborator-panel{padding-top:8px}
+
 .public-app .artwork-content .playlist-page.playlist-editorial .playlist-song-list,
 .public-app .artwork-content .playlist-page.playlist-editorial .playlist-song-item,
 .public-app .artwork-content .playlist-page.playlist-editorial .playlist-song-item .song-row{background:transparent!important}
