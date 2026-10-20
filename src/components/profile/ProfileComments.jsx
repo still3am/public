@@ -8,7 +8,7 @@ import SafetyControls from '@/components/SafetyControls';
 import { useSafety } from '@/context/SafetyContext';
 import { Link } from "react-router-dom";
 import Avatar from "@/components/Avatar";
-import { Loader2, Send, Trash2, MessageCircle } from "lucide-react";
+import { Loader2, Send, Trash2 } from "lucide-react";
 
 /** @param {any} props */
 export default function ProfileComments({ profileId, isOwn, active = true }) {
