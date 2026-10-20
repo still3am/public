@@ -1,4 +1,5 @@
 import {useEffect,useRef,useState} from "react";
+import {createPortal} from "react-dom";
 import {Link} from "react-router-dom";
 import PureControls from "@/components/PureControls";
 import LiquidGlassControls from "./LiquidGlassControls";
@@ -66,7 +67,7 @@ export default function SettingsSheet({onClose,onDeleteAccount}){
   catch(error){reportActionError(error,"Couldn’t unblock this account.");}
   finally{blockedLock.current=false;setUnblocking("");}
  }
- return <div role="dialog" aria-modal="true" aria-label={glassOpen?"Liquid Glass settings":pureOpen?"PURE settings":"Settings"} data-public-dialog tabIndex={-1} onKeyDown={e=>{if(e.key==="Escape"){e.stopPropagation();if(glassOpen)setGlassOpen(false);else if(pureOpen)setPureOpen(false);else onClose();}}} className="profile-settings-dialog fixed inset-0 z-[80] flex items-end md:items-center justify-center md:p-5">
+ const dialog=<div role="dialog" aria-modal="true" aria-label={glassOpen?"Liquid Glass settings":pureOpen?"PURE settings":"Settings"} data-public-dialog tabIndex={-1} onKeyDown={e=>{if(e.key==="Escape"){e.stopPropagation();if(glassOpen)setGlassOpen(false);else if(pureOpen)setPureOpen(false);else onClose();}}} className="profile-settings-dialog fixed inset-0 z-[80] flex items-end md:items-center justify-center md:p-5">
   <div className="absolute inset-0 bg-black/55 backdrop-blur-md" onClick={onClose}/>
   <div className="profile-settings-panel relative w-full md:max-w-lg max-h-[92dvh] md:max-h-[86dvh] flex flex-col bg-background text-foreground border border-border/70 rounded-t-[28px] md:rounded-[28px] shadow-2xl overflow-hidden animate-in slide-in-from-bottom-4 duration-200">
    <header className="shrink-0 px-5 pt-3 pb-4 border-b border-border/60 bg-background">
@@ -106,4 +107,5 @@ export default function SettingsSheet({onClose,onDeleteAccount}){
    </div>
   </div>
  </div>;
+ return typeof document!=="undefined"?createPortal(dialog,document.body):dialog;
 }
