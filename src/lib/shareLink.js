@@ -9,7 +9,7 @@ export async function copyText(text) {
   document.body.appendChild(input);
   let copied=false;
   try{input.select();input.setSelectionRange(0,input.value.length);copied=document.execCommand('copy');}
-  finally{input.remove();if(active?.isConnected)active.focus?.({preventScroll:true});}
+  finally{input.remove();if(active instanceof HTMLElement && active.isConnected)active.focus({preventScroll:true});}
   if(!copied)throw Error('Clipboard unavailable');
 }
 export async function shareLink(data) {
