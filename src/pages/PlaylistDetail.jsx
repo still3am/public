@@ -9,7 +9,7 @@ import { useAuth } from '@/lib/AuthContext';
 import { usePlayer } from '@/context/PlayerContext';
 import { readAllPages } from '@/lib/readPages';
 import { removePlaylistTracks, reorderPlaylistTracks, movePlaylistTrack, shufflePlaylist } from '@/lib/playlistActions';
-import { Play, Pause, Shuffle, Plus, Pencil, Trash2, Share2, ListMusic, ArrowUp, ArrowDown, X, Check, Loader2, ImagePlus, ChevronLeft, MoreHorizontal, Copy } from 'lucide-react';
+import { Play, Pause, Shuffle, Plus, Pencil, Trash2, Share2, ListMusic, Search, ArrowUp, ArrowDown, X, Check, Loader2, ImagePlus, ChevronLeft, MoreHorizontal, Copy } from 'lucide-react';
 import TrackRow from '@/components/TrackRow';
 import AddToPlaylistPicker from '@/components/playlist/AddToPlaylistPicker';
 import EmptyState from '@/components/EmptyState';
@@ -135,6 +135,11 @@ export default function PlaylistDetail() {
 
 
     
+  {tracks.length>0&&<div className="flex flex-wrap items-center gap-3 mb-4">
+   <label className="flex items-center gap-2 border border-border rounded-xl px-3 min-h-11 flex-1 min-w-0"><Search size={17} className="shrink-0 text-muted-foreground"/><input aria-label="Find songs in playlist" type="search" value={query} onChange={e=>setQuery(e.target.value)} placeholder="Find a song" className="w-full min-w-0 bg-transparent outline-none text-sm py-2"/></label>
+   <select aria-label="Sort playlist songs" value={sort} onChange={e=>setSort(e.target.value)} className="min-h-11 max-w-full rounded-xl border border-border bg-background px-3 text-sm"><option value="custom">Playlist order</option><option value="title">Song title</option><option value="artist">Artist</option><option value="duration">Longest first</option><option value="shortest">Shortest first</option></select>
+   {canEditSongs&&managing&&view.length>0&&<button type="button" disabled={busy} className="playlist-action" onClick={()=>setSelected(prev=>new Set([...prev,...view.map(t=>t.id)]))}>Select visible</button>}
+  </div>}
   {selected.size > 0 && canEditSongs && managing && <div className="flex items-center justify-between border rounded-xl p-3 mb-3 text-sm"><div className="flex flex-wrap items-center gap-3"><span>{selected.size} selected</span><button type="button" disabled={busy} onClick={() => setSelected(new Set())} className="text-xs text-muted-foreground hover:text-foreground underline underline-offset-4">Clear selection</button></div><button disabled={busy} onClick={() => remove([...selected])} className="text-destructive inline-flex gap-2 items-center"><Trash2 size={15} />Remove selected</button></div>}
   {!view.length ? <div className="playlist-empty"><EmptyState icon={ListMusic} title={filtered ? 'No matching songs' : 'Your next favorite starts here'} description={filtered ? 'Try a different title or artist.' : canEditSongs ? 'Add songs and make this playlist your own.' : 'Check back when new music is added.'} />{filtered ? <button type="button" className="playlist-action" onClick={() => setQuery('')}>Clear search</button> : canEditSongs && <button type="button" className="chrome-button" disabled={busy} onClick={() => setShowAdd(true)}><Plus size={17} />Add your first songs</button>}</div> :
     <div className="playlist-song-list">{view.map((t, i) => <div key={t.id} className={"playlist-song-item " + (managing && canEditSongs ? "has-edit-controls" : "")} data-current={p.currentTrack?.id === t.id} aria-current={p.currentTrack?.id === t.id ? "true" : undefined}>
