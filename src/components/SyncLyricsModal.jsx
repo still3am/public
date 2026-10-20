@@ -1,7 +1,7 @@
 import WordTimingEditor from '@/components/WordTimingEditor';
 import { useEffect, useRef, useState } from "react";
 import { Loader2, X, Pause, Play, Save, Timer, RotateCcw, Undo2 } from "lucide-react";
-import { base44 } from "@/api/base44Client";
+import { base44, saveSyncedLyrics } from "@/api/base44Client";
 import { useAuth } from "@/lib/AuthContext";
 import { usePlayer } from "@/context/PlayerContext";
 import { useToast } from "@/components/ui/use-toast";
@@ -23,6 +23,8 @@ export default function SyncLyricsModal({ track, onClose, onSaved, preferTrackLy
   const [cursor, setCursor] = useState(0);
   const [language,setLanguage]=useState("en");
   const [saving, setSaving] = useState(false);
+  const [saveError, setSaveError] = useState("");
+  const saveLock = useRef(false);
   const rowRefs = useRef([]);
 
   useEffect(() => {
@@ -93,7 +95,8 @@ export default function SyncLyricsModal({ track, onClose, onSaved, preferTrackLy
   };
 
   const save = async () => {
-    setSaving(true);
+    if (saveLock.current) return;
+    saveLock.current = true;setSaveError("");setSaving(true);
     try {
       if(rows.some((r,i)=>r.start_ms==null || (i>0&&r.start_ms<rows[i-1].start_ms))) throw new Error("Time every line in order before saving");
       const durationMs = Math.round((p.duration || track.duration_seconds || 0) * 1000);
@@ -104,23 +107,16 @@ export default function SyncLyricsModal({ track, onClose, onSaved, preferTrackLy
         const end = nextStart ?? (durationMs > start ? durationMs : start + 4000);
         return { text: r.text, start_time_ms: start, end_time_ms: end };
       });
-      const payload = {
-        track_id: track.id,
-        uploader_id: user.id,
-        language_code: language,
-        lines,
-        status: "approved",
-        out_of_sync: false,
-      };
-      const saved = existingId
-        ? await base44.entities.Lyrics.update(existingId, payload)
-        : await base44.entities.Lyrics.create(payload);
+      const saved = await saveSyncedLyrics({trackId: track.id, recordId: existingId, language, lines});
+      setExistingId(saved.id);
       toast({ title: "Synced lyrics saved" });
       onSaved?.(saved);
-    } catch {
-      toast({ title: "Couldn't save synced lyrics", variant: "destructive" });
+    } catch (error) {
+      const message = error?.status === 402 || error?.response?.status === 402 ? "Lyrics could not reach the server. Your timing is still here; please retry when service is available." : error?.response?.data?.error || error?.message || "Could not save timing. Your draft is still here.";
+      setSaveError(message);
+      toast({ title: "Couldn't save synced lyrics", description: message, variant: "destructive" });
     } finally {
-      setSaving(false);
+      saveLock.current = false;setSaving(false);
     }
   };
 
@@ -231,6 +227,7 @@ export default function SyncLyricsModal({ track, onClose, onSaved, preferTrackLy
             </div>
 
             <div className="p-4 border-t border-border space-y-2 shrink-0">
+              {saveError && <p role="alert" className="text-sm text-destructive">{saveError}</p>}
               <div className="flex items-center gap-2">
                 <button
                   onClick={undo}
