@@ -333764,5 +333764,2280 @@
         "trackId": 966202389
       }
     ]
+  },
+  "mixTerm|Yk It’s Junaa Envenenau": {
+    "query_url": "https://itunes.apple.com/search?term=Yk+It%E2%80%99s+Junaa+Envenenau&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": []
+  },
+  "mixTerm|Unotopic Entre Todas": {
+    "query_url": "https://itunes.apple.com/search?term=Unotopic+Entre+Todas&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": []
+  },
+  "mixTerm|Yagi B EOS": {
+    "query_url": "https://itunes.apple.com/search?term=Yagi+B+EOS&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": []
+  },
+  "mixTerm|Kid Cudi Erase Me - Main": {
+    "query_url": "https://itunes.apple.com/search?term=Kid+Cudi+Erase+Me+-+Main&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": [
+      {
+        "trackName": "Erase Me (feat. Kanye West)",
+        "artistName": "Kid Cudi & Kanye West",
+        "collectionName": "Man On the Moon, Vol. II: The Legend of Mr. Rager (Bonus Track Version)",
+        "primaryGenreName": "Hip-Hop/Rap",
+        "trackViewUrl": "https://music.apple.com/us/album/erase-me-feat-kanye-west/1442990188?i=1442990329&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/erase-me-feat-kanye-west/1442990188?i=1442990329&uo=4",
+        "trackId": 1442990329
+      },
+      {
+        "trackName": "Mr. Rager",
+        "artistName": "Kid Cudi",
+        "collectionName": "Man On The Moon II: The Legend Of Mr. Rager (Deluxe Edition)",
+        "primaryGenreName": "Hip-Hop/Rap",
+        "trackViewUrl": "https://music.apple.com/us/album/mr-rager/1452877009?i=1452877474&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/mr-rager/1452877009?i=1452877474&uo=4",
+        "trackId": 1452877474
+      },
+      {
+        "trackName": "erase me (feat. Jacob Collier)",
+        "artistName": "Lizzy McAlpine",
+        "collectionName": "five seconds flat",
+        "primaryGenreName": "Alternative",
+        "trackViewUrl": "https://music.apple.com/us/album/erase-me-feat-jacob-collier/1604657567?i=1604657777&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/erase-me-feat-jacob-collier/1604657567?i=1604657777&uo=4",
+        "trackId": 1604657777
+      },
+      {
+        "trackName": "Erase Me",
+        "artistName": "Make Them Suffer",
+        "collectionName": "How To Survive a Funeral",
+        "primaryGenreName": "Metal",
+        "trackViewUrl": "https://music.apple.com/us/album/erase-me/1499687818?i=1499688038&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/erase-me/1499687818?i=1499688038&uo=4",
+        "trackId": 1499688038
+      },
+      {
+        "trackName": "Erase Me (Live)",
+        "artistName": "The Harvard Opportunes",
+        "collectionName": "The Harvard Opportunes: Live From Sanders",
+        "primaryGenreName": "Vocal",
+        "trackViewUrl": "https://music.apple.com/us/album/erase-me-live/1860757502?i=1860757504&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/erase-me-live/1860757502?i=1860757504&uo=4",
+        "trackId": 1860757504
+      },
+      {
+        "trackName": "Erase Me",
+        "artistName": "Lecrae & Hollyn",
+        "collectionName": "Reconstruction",
+        "primaryGenreName": "Christian",
+        "trackViewUrl": "https://music.apple.com/us/album/erase-me/1828052699?i=1828052980&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/erase-me/1828052699?i=1828052980&uo=4",
+        "trackId": 1828052980
+      },
+      {
+        "trackName": "Erase Me",
+        "artistName": "Our Last Night",
+        "collectionName": "Left Alone",
+        "primaryGenreName": "Alternative",
+        "trackViewUrl": "https://music.apple.com/us/album/erase-me/6813697893?i=6813697903&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/erase-me/6813697893?i=6813697903&uo=4",
+        "trackId": 6813697903
+      },
+      {
+        "trackName": "Erase Me",
+        "artistName": "Lecrae & Hollyn",
+        "collectionName": "Reconstruction: Second Story",
+        "primaryGenreName": "Christian",
+        "trackViewUrl": "https://music.apple.com/us/album/erase-me/1871564892?i=1871565554&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/erase-me/1871564892?i=1871565554&uo=4",
+        "trackId": 1871565554
+      },
+      {
+        "trackName": "Erase Me (feat. NÉONHÈART)",
+        "artistName": "Said The Sky",
+        "collectionName": "Wide - Eyed",
+        "primaryGenreName": "Electronic",
+        "trackViewUrl": "https://music.apple.com/us/album/erase-me-feat-n%C3%A9onh%C3%A8art/1701059429?i=1701059440&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/erase-me-feat-n%C3%A9onh%C3%A8art/1701059429?i=1701059440&uo=4",
+        "trackId": 1701059440
+      },
+      {
+        "trackName": "Erase Me",
+        "artistName": "Ben Hemsley",
+        "collectionName": "Erase Me (Creamfields Sunset Mix) - Single",
+        "primaryGenreName": "Trance",
+        "trackViewUrl": "https://music.apple.com/us/album/erase-me/1649520746?i=1649520749&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/erase-me/1649520746?i=1649520749&uo=4",
+        "trackId": 1649520749
+      },
+      {
+        "trackName": "ERASE ME",
+        "artistName": "ONEUS",
+        "collectionName": "PYGMALION - EP",
+        "primaryGenreName": "K-Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/erase-me/1685522857?i=1685522859&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/erase-me/1685522857?i=1685522859&uo=4",
+        "trackId": 1685522859
+      },
+      {
+        "trackName": "Erase Me",
+        "artistName": "Kelsey Woods & Distant Cowboy",
+        "collectionName": "Erase Me - Single",
+        "primaryGenreName": "Ambient",
+        "trackViewUrl": "https://music.apple.com/us/album/erase-me/1773857164?i=1773857165&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/erase-me/1773857164?i=1773857165&uo=4",
+        "trackId": 1773857165
+      },
+      {
+        "trackName": "Erase Me",
+        "artistName": "Elysion",
+        "collectionName": "Silent Scream",
+        "primaryGenreName": "Metal",
+        "trackViewUrl": "https://music.apple.com/us/album/erase-me/1222087949?i=1222089981&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/erase-me/1222087949?i=1222089981&uo=4",
+        "trackId": 1222089981
+      },
+      {
+        "trackName": "Erase Me",
+        "artistName": "Ben Hemsley",
+        "collectionName": "Erase Me - Single",
+        "primaryGenreName": "Trance",
+        "trackViewUrl": "https://music.apple.com/us/album/erase-me/1631836569?i=1631836570&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/erase-me/1631836569?i=1631836570&uo=4",
+        "trackId": 1631836570
+      },
+      {
+        "trackName": "Erase Me",
+        "artistName": "Remo Drive",
+        "collectionName": "Early Works",
+        "primaryGenreName": "Alternative",
+        "trackViewUrl": "https://music.apple.com/us/album/erase-me/1781786332?i=1781786337&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/erase-me/1781786332?i=1781786337&uo=4",
+        "trackId": 1781786337
+      }
+    ]
+  },
+  "mixTerm|fhop music Eres - Ao Vivo": {
+    "query_url": "https://itunes.apple.com/search?term=fhop+music+Eres+-+Ao+Vivo&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": [
+      {
+        "trackName": "Eres (Ao Vivo)",
+        "artistName": "fhop music & Marcos Brunet",
+        "collectionName": "La Buena Parte (Ao Vivo)",
+        "primaryGenreName": "Christian",
+        "trackViewUrl": "https://music.apple.com/us/album/eres-ao-vivo/1830606173?i=1830606422&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/eres-ao-vivo/1830606173?i=1830606422&uo=4",
+        "trackId": 1830606422
+      },
+      {
+        "trackName": "Eres - Ao Vivo",
+        "artistName": "fhop music & Marcos Brunet",
+        "collectionName": "La Buena Parte (Ao Vivo)",
+        "primaryGenreName": "Contemporary Gospel",
+        "trackViewUrl": "https://music.apple.com/us/album/eres-ao-vivo/6807169705?i=6807170024&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/eres-ao-vivo/6807169705?i=6807170024&uo=4",
+        "trackId": 6807170024
+      },
+      {
+        "trackName": "La Buena Parte (Ao Vivo)",
+        "artistName": "fhop music & Marcos Brunet",
+        "collectionName": "La Buena Parte (Ao Vivo)",
+        "primaryGenreName": "Christian",
+        "trackViewUrl": "https://music.apple.com/us/album/la-buena-parte-ao-vivo/1830606173?i=1830606174&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/la-buena-parte-ao-vivo/1830606173?i=1830606174&uo=4",
+        "trackId": 1830606174
+      },
+      {
+        "trackName": "La Buena Parte - Ao Vivo",
+        "artistName": "fhop music & Marcos Brunet",
+        "collectionName": "La Buena Parte (Ao Vivo)",
+        "primaryGenreName": "Contemporary Gospel",
+        "trackViewUrl": "https://music.apple.com/us/album/la-buena-parte-ao-vivo/6807169705?i=6807170011&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/la-buena-parte-ao-vivo/6807169705?i=6807170011&uo=4",
+        "trackId": 6807170011
+      }
+    ]
+  },
+  "mixTerm|Zacarias Ferreira Es Tan Difícil": {
+    "query_url": "https://itunes.apple.com/search?term=Zacarias+Ferreira+Es+Tan+Dif%C3%ADcil&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": [
+      {
+        "trackName": "Es Tan Difícil",
+        "artistName": "Zacarías Ferreira",
+        "collectionName": "Dime Que Falto",
+        "primaryGenreName": "Música tropical",
+        "trackViewUrl": "https://music.apple.com/us/album/es-tan-dif%C3%ADcil/216195141?i=216196834&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/es-tan-dif%C3%ADcil/216195141?i=216196834&uo=4",
+        "trackId": 216196834
+      },
+      {
+        "trackName": "Es Tan Difícil",
+        "artistName": "Zacarías Ferreira",
+        "collectionName": "Es Tan Difícil",
+        "primaryGenreName": "Música tropical",
+        "trackViewUrl": "https://music.apple.com/us/album/es-tan-dif%C3%ADcil/1469061430?i=1469061431&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/es-tan-dif%C3%ADcil/1469061430?i=1469061431&uo=4",
+        "trackId": 1469061431
+      },
+      {
+        "trackName": "Es Tan Difícil (Mega MixHits)",
+        "artistName": "Zacarías Ferreira",
+        "collectionName": "Mega MixHits",
+        "primaryGenreName": "Música tropical",
+        "trackViewUrl": "https://music.apple.com/us/album/es-tan-dif%C3%ADcil-mega-mixhits/524423930?i=524424356&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/es-tan-dif%C3%ADcil-mega-mixhits/524423930?i=524424356&uo=4",
+        "trackId": 524424356
+      },
+      {
+        "trackName": "Es Tan Difícil",
+        "artistName": "Zacarías Ferreira",
+        "collectionName": "Bacha Trap Dance Hits",
+        "primaryGenreName": "Música tropical",
+        "trackViewUrl": "https://music.apple.com/us/album/es-tan-difi-cil/1496047883?i=1496047894&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/es-tan-difi-cil/1496047883?i=1496047894&uo=4",
+        "trackId": 1496047894
+      },
+      {
+        "trackName": "Es Tan Difícil",
+        "artistName": "Zacarías Ferreira",
+        "collectionName": "BachataHits 2008",
+        "primaryGenreName": "Música tropical",
+        "trackViewUrl": "https://music.apple.com/us/album/es-tan-dif%C3%ADcil/270839408?i=270839510&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/es-tan-dif%C3%ADcil/270839408?i=270839510&uo=4",
+        "trackId": 270839510
+      },
+      {
+        "trackName": "Es Tan Difícil",
+        "artistName": "Zacarías Ferreira",
+        "collectionName": "Dos x Uno",
+        "primaryGenreName": "Música tropical",
+        "trackViewUrl": "https://music.apple.com/us/album/es-tan-dif%C3%ADcil/1208720796?i=1208722098&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/es-tan-dif%C3%ADcil/1208720796?i=1208722098&uo=4",
+        "trackId": 1208722098
+      },
+      {
+        "trackName": "Es Tan Difícil",
+        "artistName": "Zacarías Ferreira",
+        "collectionName": "2008 Año de Éxitos Bachata y Merengue",
+        "primaryGenreName": "Música tropical",
+        "trackViewUrl": "https://music.apple.com/us/album/es-tan-dif%C3%ADcil/1444080238?i=1444080564&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/es-tan-dif%C3%ADcil/1444080238?i=1444080564&uo=4",
+        "trackId": 1444080564
+      },
+      {
+        "trackName": "Es Tan Difícil",
+        "artistName": "Zacarías Ferreira",
+        "collectionName": "Bachata de Amor, Vol. 8",
+        "primaryGenreName": "Música tropical",
+        "trackViewUrl": "https://music.apple.com/us/album/es-tan-difi-cil/1449629390?i=1449629395&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/es-tan-difi-cil/1449629390?i=1449629395&uo=4",
+        "trackId": 1449629395
+      },
+      {
+        "trackName": "Es Tan Difícil",
+        "artistName": "Zacarías Ferreira",
+        "collectionName": "Mega Bachatamix 2010",
+        "primaryGenreName": "Música tropical",
+        "trackViewUrl": "https://music.apple.com/us/album/es-tan-dif%C3%ADcil/331807882?i=331808478&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/es-tan-dif%C3%ADcil/331807882?i=331808478&uo=4",
+        "trackId": 331808478
+      },
+      {
+        "trackName": "Es Tan Difícil",
+        "artistName": "Zacarías Ferreira",
+        "collectionName": "1",
+        "primaryGenreName": "Música tropical",
+        "trackViewUrl": "https://music.apple.com/us/album/es-tan-dif%C3%ADcil/975563042?i=975564973&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/es-tan-dif%C3%ADcil/975563042?i=975564973&uo=4",
+        "trackId": 975564973
+      },
+      {
+        "trackName": "Es Tan Difícil",
+        "artistName": "Zacarías Ferreira",
+        "collectionName": "Vallenatos en Bachata 2008",
+        "primaryGenreName": "Latin",
+        "trackViewUrl": "https://music.apple.com/us/album/es-tan-dif%C3%ADcil/277594931?i=277594948&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/es-tan-dif%C3%ADcil/277594931?i=277594948&uo=4",
+        "trackId": 277594948
+      },
+      {
+        "trackName": "Es Tan Difícil (No Es Igual)",
+        "artistName": "Zacarías Ferreira",
+        "collectionName": "Bachata Fest Vol. 1",
+        "primaryGenreName": "Música tropical",
+        "trackViewUrl": "https://music.apple.com/us/album/es-tan-difi-cil-no-es-igual/1521862054?i=1521862307&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/es-tan-difi-cil-no-es-igual/1521862054?i=1521862307&uo=4",
+        "trackId": 1521862307
+      },
+      {
+        "trackName": "Es Tan Difícil",
+        "artistName": "Zacarías Ferreira",
+        "collectionName": "Juan y Nelson Entertainment 35 Aniversario Éxitos",
+        "primaryGenreName": "Música tropical",
+        "trackViewUrl": "https://music.apple.com/us/album/es-tan-dif%C3%ADcil/1233275727?i=1233276569&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/es-tan-dif%C3%ADcil/1233275727?i=1233276569&uo=4",
+        "trackId": 1233276569
+      },
+      {
+        "trackName": "Es Tan Difícil",
+        "artistName": "Zacarías Ferreira",
+        "collectionName": "Bachata De Colmado, Vol. 1",
+        "primaryGenreName": "Música tropical",
+        "trackViewUrl": "https://music.apple.com/us/album/es-tan-difi-cil/1458906218?i=1458906220&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/es-tan-difi-cil/1458906218?i=1458906220&uo=4",
+        "trackId": 1458906220
+      },
+      {
+        "trackName": "Es Tan Difícil (Nada Es Igual)",
+        "artistName": "Zacarías Ferreira",
+        "collectionName": "Hot Latin Tracks",
+        "primaryGenreName": "Música tropical",
+        "trackViewUrl": "https://music.apple.com/us/album/es-tan-difi-cil-nada-es-igual/1467789176?i=1467789199&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/es-tan-difi-cil-nada-es-igual/1467789176?i=1467789199&uo=4",
+        "trackId": 1467789199
+      }
+    ]
+  },
+  "mixTerm|BRKN Es tut nicht mehr weh": {
+    "query_url": "https://itunes.apple.com/search?term=BRKN+Es+tut+nicht+mehr+weh&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": [
+      {
+        "trackName": "Es tut nicht mehr weh",
+        "artistName": "BRKN",
+        "collectionName": "Lösch meine Nummer",
+        "primaryGenreName": "Hip-Hop/Rap",
+        "trackViewUrl": "https://music.apple.com/us/album/es-tut-nicht-mehr-weh/1891735887?i=1891735892&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/es-tut-nicht-mehr-weh/1891735887?i=1891735892&uo=4",
+        "trackId": 1891735892
+      },
+      {
+        "trackName": "Es tut nicht mehr weh",
+        "artistName": "BRKN",
+        "collectionName": "Es tut nicht mehr weh - Single",
+        "primaryGenreName": "Hip-Hop/Rap",
+        "trackViewUrl": "https://music.apple.com/us/album/es-tut-nicht-mehr-weh/1891723063?i=1891723272&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/es-tut-nicht-mehr-weh/1891723063?i=1891723272&uo=4",
+        "trackId": 1891723272
+      },
+      {
+        "trackName": "Tattoos",
+        "artistName": "BRKN",
+        "collectionName": "Lösch meine Nummer",
+        "primaryGenreName": "Hip-Hop/Rap",
+        "trackViewUrl": "https://music.apple.com/us/album/tattoos/1891735887?i=1891735896&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/tattoos/1891735887?i=1891735896&uo=4",
+        "trackId": 1891735896
+      },
+      {
+        "trackName": "Die ganze Geschichte",
+        "artistName": "BRKN",
+        "collectionName": "Lösch meine Nummer",
+        "primaryGenreName": "Hip-Hop/Rap",
+        "trackViewUrl": "https://music.apple.com/us/album/die-ganze-geschichte/1891735887?i=1891735900&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/die-ganze-geschichte/1891735887?i=1891735900&uo=4",
+        "trackId": 1891735900
+      }
+    ]
+  },
+  "mixTerm|Luis Vargas Esa Mujer": {
+    "query_url": "https://itunes.apple.com/search?term=Luis+Vargas+Esa+Mujer&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": [
+      {
+        "trackName": "Esa Mujer",
+        "artistName": "Luis Vargas",
+        "collectionName": "El Tomate",
+        "primaryGenreName": "Latin",
+        "trackViewUrl": "https://music.apple.com/us/album/esa-mujer/396468880?i=396468991&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/esa-mujer/396468880?i=396468991&uo=4",
+        "trackId": 396468991
+      },
+      {
+        "trackName": "Esa Mujer",
+        "artistName": "Luis Vargas",
+        "collectionName": "Disco de Oro",
+        "primaryGenreName": "Música tropical",
+        "trackViewUrl": "https://music.apple.com/us/album/esa-mujer/293343813?i=293343840&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/esa-mujer/293343813?i=293343840&uo=4",
+        "trackId": 293343840
+      },
+      {
+        "trackName": "Esa Mujer",
+        "artistName": "Luis Vargas",
+        "collectionName": "Disco De Oro",
+        "primaryGenreName": "Música tropical",
+        "trackViewUrl": "https://music.apple.com/us/album/esa-mujer/429007545?i=429007576&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/esa-mujer/429007545?i=429007576&uo=4",
+        "trackId": 429007576
+      },
+      {
+        "trackName": "Esa Mujer",
+        "artistName": "Luis Vargas",
+        "collectionName": "1",
+        "primaryGenreName": "Música tropical",
+        "trackViewUrl": "https://music.apple.com/us/album/esa-mujer/978055862?i=978056241&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/esa-mujer/978055862?i=978056241&uo=4",
+        "trackId": 978056241
+      },
+      {
+        "trackName": "Esa Mujer",
+        "artistName": "Luis Vargas",
+        "collectionName": "40 Años De Trayectoria \"Desde El Principio\" Vol. 1",
+        "primaryGenreName": "Música tropical",
+        "trackViewUrl": "https://music.apple.com/us/album/esa-mujer/1613351131?i=1613351376&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/esa-mujer/1613351131?i=1613351376&uo=4",
+        "trackId": 1613351376
+      },
+      {
+        "trackName": "Esa Mujer",
+        "artistName": "Luis Vargas",
+        "collectionName": "Dobletazo Vol.1",
+        "primaryGenreName": "Música tropical",
+        "trackViewUrl": "https://music.apple.com/us/album/esa-mujer/396930609?i=396930657&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/esa-mujer/396930609?i=396930657&uo=4",
+        "trackId": 396930657
+      },
+      {
+        "trackName": "Esa Mujer",
+        "artistName": "Luis Vargas",
+        "collectionName": "JN Music Group 40 Años De Bachata",
+        "primaryGenreName": "Música tropical",
+        "trackViewUrl": "https://music.apple.com/us/album/esa-mujer/1591066008?i=1591066021&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/esa-mujer/1591066008?i=1591066021&uo=4",
+        "trackId": 1591066021
+      },
+      {
+        "trackName": "Esa Mujer",
+        "artistName": "Luis Vargas",
+        "collectionName": "Bachata De Amor, Vol 10",
+        "primaryGenreName": "Música tropical",
+        "trackViewUrl": "https://music.apple.com/us/album/esa-mujer/1606948917?i=1606948920&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/esa-mujer/1606948917?i=1606948920&uo=4",
+        "trackId": 1606948920
+      },
+      {
+        "trackName": "Esa Mujer",
+        "artistName": "Luis Vargas",
+        "collectionName": "Solo Bachata De Colección, Vol. 1",
+        "primaryGenreName": "Música tropical",
+        "trackViewUrl": "https://music.apple.com/us/album/esa-mujer/1243720693?i=1243721023&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/esa-mujer/1243720693?i=1243721023&uo=4",
+        "trackId": 1243721023
+      },
+      {
+        "trackName": "Esa Mujer",
+        "artistName": "Tony Vega",
+        "collectionName": "Pura Salsa",
+        "primaryGenreName": "Música tropical",
+        "trackViewUrl": "https://music.apple.com/us/album/esa-mujer/1443808651?i=1443808963&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/esa-mujer/1443808651?i=1443808963&uo=4",
+        "trackId": 1443808963
+      },
+      {
+        "trackName": "Debate de 4",
+        "artistName": "Luis Vargas, Anthony \"El Mayimbe\" Santos, Raulin Rodriguez & Romeo Santos",
+        "collectionName": "Fórmula, Vol. 1",
+        "primaryGenreName": "Música tropical",
+        "trackViewUrl": "https://music.apple.com/us/album/debate-de-4/471342193?i=471342606&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/debate-de-4/471342193?i=471342606&uo=4",
+        "trackId": 471342606
+      },
+      {
+        "trackName": "Esa Mujer",
+        "artistName": "Tony Vega",
+        "collectionName": "Uno Mismo",
+        "primaryGenreName": "Música tropical",
+        "trackViewUrl": "https://music.apple.com/us/album/esa-mujer/1569226983?i=1569226984&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/esa-mujer/1569226983?i=1569226984&uo=4",
+        "trackId": 1569226984
+      },
+      {
+        "trackName": "Esa Mujer (En Vivo)",
+        "artistName": "Tony Vega",
+        "collectionName": "Intimo (En Vivo)",
+        "primaryGenreName": "Música tropical",
+        "trackViewUrl": "https://music.apple.com/us/album/esa-mujer-en-vivo/1739684549?i=1739684717&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/esa-mujer-en-vivo/1739684549?i=1739684717&uo=4",
+        "trackId": 1739684717
+      },
+      {
+        "trackName": "Esa Mujer",
+        "artistName": "Tony Vega",
+        "collectionName": "Uno Mismo",
+        "primaryGenreName": "Música tropical",
+        "trackViewUrl": "https://music.apple.com/us/album/esa-mujer/1443896837?i=1443896843&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/esa-mujer/1443896837?i=1443896843&uo=4",
+        "trackId": 1443896843
+      },
+      {
+        "trackName": "Esa Mujer",
+        "artistName": "Tony Vega",
+        "collectionName": "Salsa Legends",
+        "primaryGenreName": "Latin",
+        "trackViewUrl": "https://music.apple.com/us/album/esa-mujer/1443870770?i=1443870855&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/esa-mujer/1443870770?i=1443870855&uo=4",
+        "trackId": 1443870855
+      }
+    ]
+  },
+  "mixTerm|Ye Ali EST or PST": {
+    "query_url": "https://itunes.apple.com/search?term=Ye+Ali+EST+or+PST&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": []
+  },
+  "mixTerm|El Fragmento Estaba Claro": {
+    "query_url": "https://itunes.apple.com/search?term=El+Fragmento+Estaba+Claro&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": [
+      {
+        "trackName": "Romancero Dios Rogando (Fragmento) [En Vivo]",
+        "artistName": "Agarrate Catalina",
+        "collectionName": "El Corso del Ser Humano (En Vivo)",
+        "primaryGenreName": "Folk",
+        "trackViewUrl": "https://music.apple.com/us/album/romancero-dios-rogando-fragmento-en-vivo/1086932202?i=1086932223&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/romancero-dios-rogando-fragmento-en-vivo/1086932202?i=1086932223&uo=4",
+        "trackId": 1086932223
+      }
+    ]
+  },
+  "mixTerm|Remers esto no mueRE": {
+    "query_url": "https://itunes.apple.com/search?term=Remers+esto+no+mueRE&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": []
+  },
+  "mixTerm|Los Prisioneros Estrechez De Corazón": {
+    "query_url": "https://itunes.apple.com/search?term=Los+Prisioneros+Estrechez+De+Coraz%C3%B3n&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": [
+      {
+        "trackName": "Estrechez de Corazón (Version Edit)",
+        "artistName": "Los Prisioneros",
+        "collectionName": "Los Prisioneros - Su Historia y Sus Éxitos",
+        "primaryGenreName": "Rock y Alternativo",
+        "trackViewUrl": "https://music.apple.com/us/album/estrechez-de-coraz%C3%B3n-version-edit/724066482?i=724066755&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/estrechez-de-coraz%C3%B3n-version-edit/724066482?i=724066755&uo=4",
+        "trackId": 724066755
+      },
+      {
+        "trackName": "Estrechez de Corazón",
+        "artistName": "Los Prisioneros",
+        "collectionName": "Corazones",
+        "primaryGenreName": "Pop Latino",
+        "trackViewUrl": "https://music.apple.com/us/album/estrechez-de-coraz%C3%B3n/723798638?i=723798868&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/estrechez-de-coraz%C3%B3n/723798638?i=723798868&uo=4",
+        "trackId": 723798868
+      },
+      {
+        "trackName": "Estrechez de Corazón",
+        "artistName": "Los Prisioneros",
+        "collectionName": "Los Prisioneros - Su Historia y Sus Éxitos",
+        "primaryGenreName": "Rock y Alternativo",
+        "trackViewUrl": "https://music.apple.com/us/album/estrechez-de-coraz%C3%B3n/724066482?i=724066723&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/estrechez-de-coraz%C3%B3n/724066482?i=724066723&uo=4",
+        "trackId": 724066723
+      },
+      {
+        "trackName": "Estrechez de Corazón",
+        "artistName": "Los Prisioneros",
+        "collectionName": "Los Prisioneros - Grandes Éxitos",
+        "primaryGenreName": "Rock y Alternativo",
+        "trackViewUrl": "https://music.apple.com/us/album/estrechez-de-coraz%C3%B3n/723428496?i=723429489&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/estrechez-de-coraz%C3%B3n/723428496?i=723429489&uo=4",
+        "trackId": 723429489
+      },
+      {
+        "trackName": "Estrechez de Corazón",
+        "artistName": "Los Prisioneros",
+        "collectionName": "Colección Suprema",
+        "primaryGenreName": "Rock y Alternativo",
+        "trackViewUrl": "https://music.apple.com/us/album/estrechez-de-coraz%C3%B3n/714652599?i=714653017&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/estrechez-de-coraz%C3%B3n/714652599?i=714653017&uo=4",
+        "trackId": 714653017
+      },
+      {
+        "trackName": "Estrechez de Corazón",
+        "artistName": "Los Prisioneros",
+        "collectionName": "La Vida Inmoral de La Pareja Ideal (Soundtrack)",
+        "primaryGenreName": "Soundtrack",
+        "trackViewUrl": "https://music.apple.com/us/album/estrechez-de-coraz%C3%B3n/1162986911?i=1162987290&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/estrechez-de-coraz%C3%B3n/1162986911?i=1162987290&uo=4",
+        "trackId": 1162987290
+      },
+      {
+        "trackName": "Estrechez de Corazón",
+        "artistName": "Los Prisioneros",
+        "collectionName": "El Caset Pirata",
+        "primaryGenreName": "Latin",
+        "trackViewUrl": "https://music.apple.com/us/album/estrechez-de-coraz%C3%B3n/723461138?i=723461419&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/estrechez-de-coraz%C3%B3n/723461138?i=723461419&uo=4",
+        "trackId": 723461419
+      },
+      {
+        "trackName": "Estrechez de Corazón (En Vivo)",
+        "artistName": "Los Prisioneros",
+        "collectionName": "Quinta Vergara + (EP en Vivo) - EP",
+        "primaryGenreName": "Pop/Rock",
+        "trackViewUrl": "https://music.apple.com/us/album/estrechez-de-coraz%C3%B3n-en-vivo/1514045034?i=1514045171&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/estrechez-de-coraz%C3%B3n-en-vivo/1514045034?i=1514045171&uo=4",
+        "trackId": 1514045171
+      },
+      {
+        "trackName": "Estrechez de Corazón (En Vivo)",
+        "artistName": "Los Prisioneros",
+        "collectionName": "Estrechez de Corazón (En Vivo) - Single",
+        "primaryGenreName": "Pop/Rock",
+        "trackViewUrl": "https://music.apple.com/us/album/estrechez-de-coraz%C3%B3n-en-vivo/1513948871?i=1513948884&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/estrechez-de-coraz%C3%B3n-en-vivo/1513948871?i=1513948884&uo=4",
+        "trackId": 1513948884
+      },
+      {
+        "trackName": "Estrechez De Corazón",
+        "artistName": "Los Prisioneros",
+        "collectionName": "Original Masters",
+        "primaryGenreName": "Latin",
+        "trackViewUrl": "https://music.apple.com/us/album/estrechez-de-coraz%C3%B3n/1021627294?i=1021627663&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/estrechez-de-coraz%C3%B3n/1021627294?i=1021627663&uo=4",
+        "trackId": 1021627663
+      },
+      {
+        "trackName": "Estrechez de Corazon",
+        "artistName": "Californian Group",
+        "collectionName": "Cantar Como - Sing Along: Los Prisioneros",
+        "primaryGenreName": "Latin",
+        "trackViewUrl": "https://music.apple.com/us/album/estrechez-de-corazon/159892020?i=159892335&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/estrechez-de-corazon/159892020?i=159892335&uo=4",
+        "trackId": 159892335
+      },
+      {
+        "trackName": "Estrechez De Corazón (Karaoke Version)",
+        "artistName": "Agrupacion LatinHits",
+        "collectionName": "Instrumental Karaoke Series: Los Prisioneros (Karaoke Version)",
+        "primaryGenreName": "Latin",
+        "trackViewUrl": "https://music.apple.com/us/album/estrechez-de-coraz%C3%B3n-karaoke-version/957149741?i=957149743&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/estrechez-de-coraz%C3%B3n-karaoke-version/957149741?i=957149743&uo=4",
+        "trackId": 957149743
+      },
+      {
+        "trackName": "Reggaetonto",
+        "artistName": "Trez3",
+        "collectionName": "Reggaetonto - Single",
+        "primaryGenreName": "Urbano latino",
+        "trackViewUrl": "https://music.apple.com/us/album/reggaetonto/1465325883?i=1465325887&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/reggaetonto/1465325883?i=1465325887&uo=4",
+        "trackId": 1465325887
+      }
+    ]
+  },
+  "mixTerm|Nas Ether": {
+    "query_url": "https://itunes.apple.com/search?term=Nas+Ether&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": [
+      {
+        "trackName": "Ether",
+        "artistName": "Nas",
+        "collectionName": "Stillmatic",
+        "primaryGenreName": "Hip-Hop/Rap",
+        "trackViewUrl": "https://music.apple.com/us/album/ether/265104376?i=265104395&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/ether/265104376?i=265104395&uo=4",
+        "trackId": 265104395
+      },
+      {
+        "trackName": "Nas",
+        "artistName": "Ether",
+        "collectionName": "Redisappearing 3",
+        "primaryGenreName": "Electronica",
+        "trackViewUrl": "https://music.apple.com/us/album/nas/1765418609?i=1765418616&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/nas/1765418609?i=1765418616&uo=4",
+        "trackId": 1765418616
+      },
+      {
+        "trackName": "Ether (Instrumental)",
+        "artistName": "Black Intelligence",
+        "collectionName": "Time Is Illmatic Instrumentals (Intel's Laid Back Nas Remixes) [Instrumental]",
+        "primaryGenreName": "Hip-Hop/Rap",
+        "trackViewUrl": "https://music.apple.com/us/album/ether-instrumental/1633120666?i=1633120667&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/ether-instrumental/1633120666?i=1633120667&uo=4",
+        "trackId": 1633120667
+      },
+      {
+        "trackName": "Ether",
+        "artistName": "Make Them Suffer",
+        "collectionName": "Old Souls & Lord of Woe",
+        "primaryGenreName": "Rock",
+        "trackViewUrl": "https://music.apple.com/us/album/ether/1709497158?i=1709497182&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/ether/1709497158?i=1709497182&uo=4",
+        "trackId": 1709497182
+      },
+      {
+        "trackName": "Ether",
+        "artistName": "At Dusk",
+        "collectionName": "Ether",
+        "primaryGenreName": "New Age",
+        "trackViewUrl": "https://music.apple.com/us/album/ether/1624955614?i=1624955615&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/ether/1624955614?i=1624955615&uo=4",
+        "trackId": 1624955615
+      },
+      {
+        "trackName": "Ether",
+        "artistName": "Simple Creatures",
+        "collectionName": "Strange Love - EP",
+        "primaryGenreName": "Alternative",
+        "trackViewUrl": "https://music.apple.com/us/album/ether/1451370784?i=1451370789&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/ether/1451370784?i=1451370789&uo=4",
+        "trackId": 1451370789
+      },
+      {
+        "trackName": "Ether",
+        "artistName": "Zeds Dead & Deathpact",
+        "collectionName": "We Are Deadbeats (Vol. 4)",
+        "primaryGenreName": "Dance",
+        "trackViewUrl": "https://music.apple.com/us/album/ether/1489395623?i=1489395967&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/ether/1489395623?i=1489395967&uo=4",
+        "trackId": 1489395967
+      },
+      {
+        "trackName": "Ether",
+        "artistName": "Gang of Four",
+        "collectionName": "Entertainment! (Remastered)",
+        "primaryGenreName": "Alternative",
+        "trackViewUrl": "https://music.apple.com/us/album/ether/1586472605?i=1586473194&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/ether/1586472605?i=1586473194&uo=4",
+        "trackId": 1586473194
+      },
+      {
+        "trackName": "Ether",
+        "artistName": "Puma Blue",
+        "collectionName": "Blood Loss",
+        "primaryGenreName": "Alternative",
+        "trackViewUrl": "https://music.apple.com/us/album/ether/6783499562?i=6783499881&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/ether/6783499562?i=6783499881&uo=4",
+        "trackId": 6783499881
+      },
+      {
+        "trackName": "Ether",
+        "artistName": "The Hellp",
+        "collectionName": "LL",
+        "primaryGenreName": "Electronic",
+        "trackViewUrl": "https://music.apple.com/us/album/ether/1775286036?i=1775287682&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/ether/1775286036?i=1775287682&uo=4",
+        "trackId": 1775287682
+      },
+      {
+        "trackName": "Ether",
+        "artistName": "Parkbench Epiphany",
+        "collectionName": "Chillhop Essentials Winter 2022",
+        "primaryGenreName": "Hip-Hop/Rap",
+        "trackViewUrl": "https://music.apple.com/us/album/ether/1652509231?i=1652509400&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/ether/1652509231?i=1652509400&uo=4",
+        "trackId": 1652509400
+      },
+      {
+        "trackName": "Ether",
+        "artistName": "Mogwai",
+        "collectionName": "Atomic",
+        "primaryGenreName": "Alternative",
+        "trackViewUrl": "https://music.apple.com/us/album/ether/1074981097?i=1074982016&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/ether/1074981097?i=1074982016&uo=4",
+        "trackId": 1074982016
+      },
+      {
+        "trackName": "Ether",
+        "artistName": "Make Them Suffer",
+        "collectionName": "Ether - Single",
+        "primaryGenreName": "Rock",
+        "trackViewUrl": "https://music.apple.com/us/album/ether/1714650070?i=1714650073&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/ether/1714650070?i=1714650073&uo=4",
+        "trackId": 1714650073
+      },
+      {
+        "trackName": "Ether",
+        "artistName": "Citizen",
+        "collectionName": "Halcyon Blues",
+        "primaryGenreName": "Alternative",
+        "trackViewUrl": "https://music.apple.com/us/album/ether/1887676929?i=1887676951&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/ether/1887676929?i=1887676951&uo=4",
+        "trackId": 1887676951
+      },
+      {
+        "trackName": "Ether (Eprom Old School Deconstruction)",
+        "artistName": "Zeds Dead & Deathpact",
+        "collectionName": "We Are Deadbeats, Vol. 4 (Deluxe)",
+        "primaryGenreName": "Dance",
+        "trackViewUrl": "https://music.apple.com/us/album/ether-eprom-old-school-deconstruction/1523668286?i=1523668579&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/ether-eprom-old-school-deconstruction/1523668286?i=1523668579&uo=4",
+        "trackId": 1523668579
+      }
+    ]
+  },
+  "mixTerm|Park So Eun Ethics and Thought": {
+    "query_url": "https://itunes.apple.com/search?term=Park+So+Eun+Ethics+and+Thought&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": []
+  },
+  "mixTerm|Cascada Evacuate The Dancefloor - Radio Edit": {
+    "query_url": "https://itunes.apple.com/search?term=Cascada+Evacuate+The+Dancefloor+-+Radio+Edit&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": [
+      {
+        "trackName": "Evacuate the Dancefloor (Radio Edit)",
+        "artistName": "Cascada",
+        "collectionName": "Evacuate the Dancefloor",
+        "primaryGenreName": "Dance",
+        "trackViewUrl": "https://music.apple.com/us/album/evacuate-the-dancefloor-radio-edit/454172809?i=454172821&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/evacuate-the-dancefloor-radio-edit/454172809?i=454172821&uo=4",
+        "trackId": 454172821
+      },
+      {
+        "trackName": "Evacuate the Dancefloor (Wideboys Radio Edit)",
+        "artistName": "Cascada",
+        "collectionName": "Evacuate the Dancefloor",
+        "primaryGenreName": "Dance",
+        "trackViewUrl": "https://music.apple.com/us/album/evacuate-the-dancefloor-wideboys-radio-edit/454172809?i=454172926&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/evacuate-the-dancefloor-wideboys-radio-edit/454172809?i=454172926&uo=4",
+        "trackId": 454172926
+      },
+      {
+        "trackName": "Evacuate the Dancefloor (Cahill Radio Edit)",
+        "artistName": "Cascada",
+        "collectionName": "Evacuate the Dancefloor",
+        "primaryGenreName": "Dance",
+        "trackViewUrl": "https://music.apple.com/us/album/evacuate-the-dancefloor-cahill-radio-edit/454172809?i=454172904&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/evacuate-the-dancefloor-cahill-radio-edit/454172809?i=454172904&uo=4",
+        "trackId": 454172904
+      },
+      {
+        "trackName": "Evacuate the Dancefloor (PH Electro Radio Edit)",
+        "artistName": "Cascada",
+        "collectionName": "Evacuate the Dancefloor",
+        "primaryGenreName": "Dance",
+        "trackViewUrl": "https://music.apple.com/us/album/evacuate-the-dancefloor-ph-electro-radio-edit/454172809?i=454172908&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/evacuate-the-dancefloor-ph-electro-radio-edit/454172809?i=454172908&uo=4",
+        "trackId": 454172908
+      },
+      {
+        "trackName": "Evacuate the Dancefloor (Rob Mayth Radio Edit)",
+        "artistName": "Cascada",
+        "collectionName": "Back On the Dancefloor",
+        "primaryGenreName": "Dance",
+        "trackViewUrl": "https://music.apple.com/us/album/evacuate-the-dancefloor-rob-mayth-radio-edit/522361175?i=522361408&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/evacuate-the-dancefloor-rob-mayth-radio-edit/522361175?i=522361408&uo=4",
+        "trackId": 522361408
+      },
+      {
+        "trackName": "Evacuate the Dancefloor",
+        "artistName": "Cascada",
+        "collectionName": "Evacuate the Dancefloor",
+        "primaryGenreName": "Dance",
+        "trackViewUrl": "https://music.apple.com/us/album/evacuate-the-dancefloor/413632187?i=413632188&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/evacuate-the-dancefloor/413632187?i=413632188&uo=4",
+        "trackId": 413632188
+      },
+      {
+        "trackName": "Evacuate the Dancefloor (Buena Vista Mix)",
+        "artistName": "Cascada",
+        "collectionName": "Acoustic Sessions",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/evacuate-the-dancefloor-buena-vista-mix/725563965?i=725564190&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/evacuate-the-dancefloor-buena-vista-mix/725563965?i=725564190&uo=4",
+        "trackId": 725564190
+      },
+      {
+        "trackName": "Evacuate the Dancefloor",
+        "artistName": "Cascada",
+        "collectionName": "3D (Special Edition)",
+        "primaryGenreName": "Dance",
+        "trackViewUrl": "https://music.apple.com/us/album/evacuate-the-dancefloor/413633214?i=413633229&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/evacuate-the-dancefloor/413633214?i=413633229&uo=4",
+        "trackId": 413633229
+      },
+      {
+        "trackName": "Evacuate the Dancefloor",
+        "artistName": "Cascada",
+        "collectionName": "Back On the Dancefloor",
+        "primaryGenreName": "Dance",
+        "trackViewUrl": "https://music.apple.com/us/album/evacuate-the-dancefloor/522361175?i=522361183&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/evacuate-the-dancefloor/522361175?i=522361183&uo=4",
+        "trackId": 522361183
+      },
+      {
+        "trackName": "Evacuate the Dancefloor (Cahill Remix)",
+        "artistName": "Cascada",
+        "collectionName": "Evacuate the Dancefloor",
+        "primaryGenreName": "Dance",
+        "trackViewUrl": "https://music.apple.com/us/album/evacuate-the-dancefloor-cahill-remix/454172809?i=454172902&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/evacuate-the-dancefloor-cahill-remix/454172809?i=454172902&uo=4",
+        "trackId": 454172902
+      },
+      {
+        "trackName": "Evacuate the Dancefloor (Acoustic Edit)",
+        "artistName": "Cascada",
+        "collectionName": "Acoustic Sessions",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/evacuate-the-dancefloor-acoustic-edit/725563965?i=725564099&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/evacuate-the-dancefloor-acoustic-edit/725563965?i=725564099&uo=4",
+        "trackId": 725564099
+      },
+      {
+        "trackName": "Evacuate the Dancefloor (Wideboys Remix)",
+        "artistName": "Cascada",
+        "collectionName": "Evacuate the Dancefloor",
+        "primaryGenreName": "Dance",
+        "trackViewUrl": "https://music.apple.com/us/album/evacuate-the-dancefloor-wideboys-remix/454172809?i=454172923&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/evacuate-the-dancefloor-wideboys-remix/454172809?i=454172923&uo=4",
+        "trackId": 454172923
+      },
+      {
+        "trackName": "Evacuate the Dancefloor (Cahill Remix)",
+        "artistName": "Cascada",
+        "collectionName": "ThriveMix Presents: Dance Nation",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/evacuate-the-dancefloor-cahill-remix/1472489883?i=1472489987&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/evacuate-the-dancefloor-cahill-remix/1472489883?i=1472489987&uo=4",
+        "trackId": 1472489987
+      },
+      {
+        "trackName": "Evacuate the Dancefloor",
+        "artistName": "KIDZ BOP Kids",
+        "collectionName": "Kidz Bop Dance Party!",
+        "primaryGenreName": "Children's Music",
+        "trackViewUrl": "https://music.apple.com/us/album/evacuate-the-dancefloor/1440926556?i=1440926899&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/evacuate-the-dancefloor/1440926556?i=1440926899&uo=4",
+        "trackId": 1440926899
+      },
+      {
+        "trackName": "Evacuate the Dancefloor",
+        "artistName": "KIDZ BOP Kids",
+        "collectionName": "Kidz Bop 18",
+        "primaryGenreName": "Children's Music",
+        "trackViewUrl": "https://music.apple.com/us/album/evacuate-the-dancefloor/1442230986?i=1442231523&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/evacuate-the-dancefloor/1442230986?i=1442231523&uo=4",
+        "trackId": 1442231523
+      }
+    ]
+  },
+  "mixTerm|Briston Maroney Even If You Are Not Mine": {
+    "query_url": "https://itunes.apple.com/search?term=Briston+Maroney+Even+If+You+Are+Not+Mine&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": [
+      {
+        "trackName": "Even If You Are Not Mine",
+        "artistName": "Briston Maroney",
+        "collectionName": "Normal Heights - EP",
+        "primaryGenreName": "Alternative",
+        "trackViewUrl": "https://music.apple.com/us/album/even-if-you-are-not-mine/6803768090?i=6803768092&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/even-if-you-are-not-mine/6803768090?i=6803768092&uo=4",
+        "trackId": 6803768092
+      },
+      {
+        "trackName": "The Garden",
+        "artistName": "Briston Maroney",
+        "collectionName": "Miracle - Single",
+        "primaryGenreName": "Alternative",
+        "trackViewUrl": "https://music.apple.com/us/album/the-garden/1497680387?i=1497680399&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/the-garden/1497680387?i=1497680399&uo=4",
+        "trackId": 1497680399
+      },
+      {
+        "trackName": "Freakin' out on the Interstate",
+        "artistName": "Briston Maroney",
+        "collectionName": "Carnival - EP",
+        "primaryGenreName": "Alternative",
+        "trackViewUrl": "https://music.apple.com/us/album/freakin-out-on-the-interstate/1441691422?i=1441691693&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/freakin-out-on-the-interstate/1441691422?i=1441691693&uo=4",
+        "trackId": 1441691693
+      },
+      {
+        "trackName": "Freakin' Out On the Interstate",
+        "artistName": "Briston Maroney",
+        "collectionName": "Freakin' Out On The Interstate (Live From Alex The Great) - Single",
+        "primaryGenreName": "Alternative",
+        "trackViewUrl": "https://music.apple.com/us/album/freakin-out-on-the-interstate/1523692973?i=1523692978&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/freakin-out-on-the-interstate/1523692973?i=1523692978&uo=4",
+        "trackId": 1523692978
+      },
+      {
+        "trackName": "Freakin' Out On The Interstate (Live)",
+        "artistName": "Briston Maroney",
+        "collectionName": "Freakin' Out On The Interstate (Live From Alex The Great) - Single",
+        "primaryGenreName": "Alternative",
+        "trackViewUrl": "https://music.apple.com/us/album/freakin-out-on-the-interstate-live/1523692973?i=1523692975&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/freakin-out-on-the-interstate-live/1523692973?i=1523692975&uo=4",
+        "trackId": 1523692975
+      },
+      {
+        "trackName": "Freakin' Out On The Interstate (Acoustic Version) [Live]",
+        "artistName": "Briston Maroney",
+        "collectionName": "Freakin' Out On The Interstate (Live From Alex The Great) - Single",
+        "primaryGenreName": "Alternative",
+        "trackViewUrl": "https://music.apple.com/us/album/freakin-out-on-the-interstate-acoustic-version-live/1523692973?i=1523692976&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/freakin-out-on-the-interstate-acoustic-version-live/1523692973?i=1523692976&uo=4",
+        "trackId": 1523692976
+      },
+      {
+        "trackName": "Ultrapure",
+        "artistName": "Briston Maroney",
+        "collectionName": "Ultrapure",
+        "primaryGenreName": "Alternative",
+        "trackViewUrl": "https://music.apple.com/us/album/ultrapure/1683899965?i=1683901400&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/ultrapure/1683899965?i=1683901400&uo=4",
+        "trackId": 1683901400
+      },
+      {
+        "trackName": "Land of Light (Live At Red Rocks)",
+        "artistName": "Briston Maroney",
+        "collectionName": "Live At Red Rocks",
+        "primaryGenreName": "Alternative",
+        "trackViewUrl": "https://music.apple.com/us/album/land-of-light-live-at-red-rocks/1844961681?i=1844962415&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/land-of-light-live-at-red-rocks/1844961681?i=1844962415&uo=4",
+        "trackId": 1844962415
+      },
+      {
+        "trackName": "Land of Light",
+        "artistName": "Briston Maroney",
+        "collectionName": "JIMMY",
+        "primaryGenreName": "Alternative",
+        "trackViewUrl": "https://music.apple.com/us/album/land-of-light/1801610220?i=1801610438&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/land-of-light/1801610220?i=1801610438&uo=4",
+        "trackId": 1801610438
+      },
+      {
+        "trackName": "Land of Light",
+        "artistName": "Briston Maroney",
+        "collectionName": "JIMMY",
+        "primaryGenreName": "Alternative",
+        "trackViewUrl": "https://music.apple.com/us/album/land-of-light/1807593861?i=1807594324&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/land-of-light/1807593861?i=1807594324&uo=4",
+        "trackId": 1807594324
+      },
+      {
+        "trackName": "Freakin' Out On the Interstate (Live At Red Rocks)",
+        "artistName": "Briston Maroney",
+        "collectionName": "Live At Red Rocks",
+        "primaryGenreName": "Alternative",
+        "trackViewUrl": "https://music.apple.com/us/album/freakin-out-on-the-interstate-live-at-red-rocks/1844961681?i=1844962429&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/freakin-out-on-the-interstate-live-at-red-rocks/1844961681?i=1844962429&uo=4",
+        "trackId": 1844962429
+      },
+      {
+        "trackName": "Better Than You",
+        "artistName": "Briston Maroney",
+        "collectionName": "JIMMY",
+        "primaryGenreName": "Alternative",
+        "trackViewUrl": "https://music.apple.com/us/album/better-than-you/1807593861?i=1807593993&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/better-than-you/1807593861?i=1807593993&uo=4",
+        "trackId": 1807593993
+      }
+    ]
+  },
+  "mixTerm|Pearl Jam Even Flow": {
+    "query_url": "https://itunes.apple.com/search?term=Pearl+Jam+Even+Flow&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": [
+      {
+        "trackName": "Even Flow",
+        "artistName": "Pearl Jam",
+        "collectionName": "Only the Brave (Music From and Inspired By the Film)",
+        "primaryGenreName": "Soundtrack",
+        "trackViewUrl": "https://music.apple.com/us/album/even-flow/1440902211?i=1440902613&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/even-flow/1440902211?i=1440902613&uo=4",
+        "trackId": 1440902613
+      },
+      {
+        "trackName": "Even Flow (Brendan O'Brien Mix)",
+        "artistName": "Pearl Jam",
+        "collectionName": "Ten Redux",
+        "primaryGenreName": "Alternative",
+        "trackViewUrl": "https://music.apple.com/us/album/even-flow-brendan-obrien-mix/685575665?i=685576007&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/even-flow-brendan-obrien-mix/685575665?i=685576007&uo=4",
+        "trackId": 685576007
+      },
+      {
+        "trackName": "Even Flow (Live MTV Unplugged)",
+        "artistName": "Pearl Jam",
+        "collectionName": "MTV Unplugged (Live)",
+        "primaryGenreName": "Rock",
+        "trackViewUrl": "https://music.apple.com/us/album/even-flow-live-mtv-unplugged/1530957891?i=1530958228&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/even-flow-live-mtv-unplugged/1530957891?i=1530958228&uo=4",
+        "trackId": 1530958228
+      },
+      {
+        "trackName": "Even Flow (Live) [Live]",
+        "artistName": "Pearl Jam",
+        "collectionName": "Live In Chicago 05.16.2006 (Live)",
+        "primaryGenreName": "Alternative",
+        "trackViewUrl": "https://music.apple.com/us/album/even-flow-live-live/336854270?i=336854450&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/even-flow-live-live/336854270?i=336854450&uo=4",
+        "trackId": 336854450
+      },
+      {
+        "trackName": "Even Flow",
+        "artistName": "Pearl Jam",
+        "collectionName": "Even Flow - Single",
+        "primaryGenreName": "Rock",
+        "trackViewUrl": "https://music.apple.com/us/album/even-flow/730171944?i=730171946&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/even-flow/730171944?i=730171946&uo=4",
+        "trackId": 730171946
+      },
+      {
+        "trackName": "Even Flow (Live at Melbourne Park, Melbourne, Australia - March 5, 1998)",
+        "artistName": "Pearl Jam",
+        "collectionName": "Give Way (Live)",
+        "primaryGenreName": "Rock",
+        "trackViewUrl": "https://music.apple.com/us/album/even-flow-live-at-melbourne-park-melbourne-australia/1682941954?i=1682941963&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/even-flow-live-at-melbourne-park-melbourne-australia/1682941954?i=1682941963&uo=4",
+        "trackId": 1682941963
+      },
+      {
+        "trackName": "Even Flow (Live)",
+        "artistName": "Pearl Jam",
+        "collectionName": "New York, NY 31-December-1992 (Live)",
+        "primaryGenreName": "Rock",
+        "trackViewUrl": "https://music.apple.com/us/album/even-flow-live/688119722?i=688119761&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/even-flow-live/688119722?i=688119761&uo=4",
+        "trackId": 688119761
+      },
+      {
+        "trackName": "Even Flow (Live)",
+        "artistName": "Pearl Jam",
+        "collectionName": "Seattle, WA 17-January-1992 (Live)",
+        "primaryGenreName": "Rock",
+        "trackViewUrl": "https://music.apple.com/us/album/even-flow-live/688139049?i=688139052&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/even-flow-live/688139049?i=688139052&uo=4",
+        "trackId": 688139052
+      },
+      {
+        "trackName": "Even Flow (Live)",
+        "artistName": "Pearl Jam",
+        "collectionName": "Vault 9: Live in Seattle 12/8/93",
+        "primaryGenreName": "Rock",
+        "trackViewUrl": "https://music.apple.com/us/album/even-flow-live/1490337096?i=1490337276&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/even-flow-live/1490337096?i=1490337276&uo=4",
+        "trackId": 1490337276
+      },
+      {
+        "trackName": "Even Flow (Live at Star Lake Amphitheatre, Burgettstown, PA - August 1998)",
+        "artistName": "Pearl Jam",
+        "collectionName": "Live On Two Legs",
+        "primaryGenreName": "Alternative",
+        "trackViewUrl": "https://music.apple.com/us/album/even-flow-live-at-star-lake-amphitheatre-burgettstown/190443774?i=190444797&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/even-flow-live-at-star-lake-amphitheatre-burgettstown/190443774?i=190444797&uo=4",
+        "trackId": 190444797
+      },
+      {
+        "trackName": "Even Flow (Live in Ft. Worth, 9/13/2023",
+        "artistName": "Pearl Jam",
+        "collectionName": "Live (Josh's Picks 2023) - EP",
+        "primaryGenreName": "Rock",
+        "trackViewUrl": "https://music.apple.com/us/album/even-flow-live-in-ft-worth-9-13-2023/1713582898?i=1713583185&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/even-flow-live-in-ft-worth-9-13-2023/1713582898?i=1713583185&uo=4",
+        "trackId": 1713583185
+      },
+      {
+        "trackName": "Even Flow (Live)",
+        "artistName": "Pearl Jam",
+        "collectionName": "Live In Boston 05.24.2006 (Live)",
+        "primaryGenreName": "Alternative",
+        "trackViewUrl": "https://music.apple.com/us/album/even-flow-live/337612347?i=337612542&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/even-flow-live/337612347?i=337612542&uo=4",
+        "trackId": 337612542
+      },
+      {
+        "trackName": "Even Flow (Live)",
+        "artistName": "Pearl Jam",
+        "collectionName": "Live In Pittsburgh, PA 06.23.2006 (Live)",
+        "primaryGenreName": "Alternative",
+        "trackViewUrl": "https://music.apple.com/us/album/even-flow-live/337569839?i=337570320&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/even-flow-live/337569839?i=337570320&uo=4",
+        "trackId": 337570320
+      },
+      {
+        "trackName": "Even Flow (Live) [Live]",
+        "artistName": "Pearl Jam",
+        "collectionName": "Live In Boston 05.25.2006 (Live)",
+        "primaryGenreName": "Alternative",
+        "trackViewUrl": "https://music.apple.com/us/album/even-flow-live-live/335620487?i=335620743&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/even-flow-live-live/335620487?i=335620743&uo=4",
+        "trackId": 335620743
+      },
+      {
+        "trackName": "Even Flow",
+        "artistName": "Rockabye Baby!",
+        "collectionName": "Lullaby Renditions of Pearl Jam",
+        "primaryGenreName": "Children's Music",
+        "trackViewUrl": "https://music.apple.com/us/album/even-flow/399321777?i=399321809&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/even-flow/399321777?i=399321809&uo=4",
+        "trackId": 399321809
+      }
+    ]
+  },
+  "mixTerm|AZIEDOESNTEXIST Everglades": {
+    "query_url": "https://itunes.apple.com/search?term=AZIEDOESNTEXIST+Everglades&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": []
+  },
+  "mixTerm|Richy Mitch & The Coal Miners Evergreen": {
+    "query_url": "https://itunes.apple.com/search?term=Richy+Mitch+%26+The+Coal+Miners+Evergreen&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": [
+      {
+        "trackName": "Evergreen",
+        "artistName": "Richy Mitch & The Coal Miners",
+        "collectionName": "Rmcm (feat. Noah Watts)",
+        "primaryGenreName": "Singer/Songwriter",
+        "trackViewUrl": "https://music.apple.com/us/album/evergreen/1233681655?i=1233681662&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/evergreen/1233681655?i=1233681662&uo=4",
+        "trackId": 1233681662
+      },
+      {
+        "trackName": "Evergreen (feat. Caamp)",
+        "artistName": "Richy Mitch & The Coal Miners",
+        "collectionName": "Evergreen (feat. Caamp) - Single",
+        "primaryGenreName": "Singer/Songwriter",
+        "trackViewUrl": "https://music.apple.com/us/album/evergreen-feat-caamp/1756386291?i=1756386293&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/evergreen-feat-caamp/1756386291?i=1756386293&uo=4",
+        "trackId": 1756386293
+      },
+      {
+        "trackName": "Evergreen",
+        "artistName": "Richy Mitch & The Coal Miners",
+        "collectionName": "Rmcm",
+        "primaryGenreName": "Folk",
+        "trackViewUrl": "https://music.apple.com/us/album/evergreen/1663060232?i=1663060233&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/evergreen/1663060232?i=1663060233&uo=4",
+        "trackId": 1663060233
+      },
+      {
+        "trackName": "Evergreen (Live at Mission Ballroom, Denver - Nov 20, 2025)",
+        "artistName": "Richy Mitch & The Coal Miners",
+        "collectionName": "Colorado’s On Fire Again Live ‘25",
+        "primaryGenreName": "Folk",
+        "trackViewUrl": "https://music.apple.com/us/album/evergreen-live-at-mission-ballroom-denver-nov-20-2025/1884096383?i=1884096398&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/evergreen-live-at-mission-ballroom-denver-nov-20-2025/1884096383?i=1884096398&uo=4",
+        "trackId": 1884096398
+      },
+      {
+        "trackName": "Lake Missoula",
+        "artistName": "Richy Mitch & The Coal Miners",
+        "collectionName": "Rmcm (feat. Noah Watts)",
+        "primaryGenreName": "Singer/Songwriter",
+        "trackViewUrl": "https://music.apple.com/us/album/lake-missoula/1233681655?i=1233681663&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/lake-missoula/1233681655?i=1233681663&uo=4",
+        "trackId": 1233681663
+      },
+      {
+        "trackName": "Signal Sender",
+        "artistName": "Richy Mitch & The Coal Miners",
+        "collectionName": "Signal Sender - Single",
+        "primaryGenreName": "Folk",
+        "trackViewUrl": "https://music.apple.com/us/album/signal-sender/1695127100?i=1695127101&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/signal-sender/1695127100?i=1695127101&uo=4",
+        "trackId": 1695127101
+      },
+      {
+        "trackName": "Lucerne",
+        "artistName": "Richy Mitch & The Coal Miners",
+        "collectionName": "Rmcm (feat. Noah Watts)",
+        "primaryGenreName": "Singer/Songwriter",
+        "trackViewUrl": "https://music.apple.com/us/album/lucerne/1233681655?i=1233681664&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/lucerne/1233681655?i=1233681664&uo=4",
+        "trackId": 1233681664
+      },
+      {
+        "trackName": "Wet Socks",
+        "artistName": "Richy Mitch & The Coal Miners",
+        "collectionName": "Subliming",
+        "primaryGenreName": "Alternative",
+        "trackViewUrl": "https://music.apple.com/us/album/wet-socks/1663065233?i=1663065234&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/wet-socks/1663065233?i=1663065234&uo=4",
+        "trackId": 1663065234
+      },
+      {
+        "trackName": "Subliming",
+        "artistName": "Richy Mitch & The Coal Miners",
+        "collectionName": "Subliming",
+        "primaryGenreName": "Alternative",
+        "trackViewUrl": "https://music.apple.com/us/album/subliming/1663065233?i=1663065243&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/subliming/1663065233?i=1663065243&uo=4",
+        "trackId": 1663065243
+      },
+      {
+        "trackName": "Thunderhead",
+        "artistName": "Richy Mitch & The Coal Miners",
+        "collectionName": "Thunderhead - Single",
+        "primaryGenreName": "Alternative",
+        "trackViewUrl": "https://music.apple.com/us/album/thunderhead/1669780460?i=1669780461&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/thunderhead/1669780460?i=1669780461&uo=4",
+        "trackId": 1669780461
+      },
+      {
+        "trackName": "Lucerne",
+        "artistName": "Richy Mitch & The Coal Miners",
+        "collectionName": "Rmcm",
+        "primaryGenreName": "Folk",
+        "trackViewUrl": "https://music.apple.com/us/album/lucerne/1663060232?i=1663060235&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/lucerne/1663060232?i=1663060235&uo=4",
+        "trackId": 1663060235
+      },
+      {
+        "trackName": "Lake Missoula",
+        "artistName": "Richy Mitch & The Coal Miners & Mt. Joy",
+        "collectionName": "Lake Missoula - Single",
+        "primaryGenreName": "Singer/Songwriter",
+        "trackViewUrl": "https://music.apple.com/us/album/lake-missoula/1688485411?i=1688485412&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/lake-missoula/1688485411?i=1688485412&uo=4",
+        "trackId": 1688485412
+      },
+      {
+        "trackName": "Northstar",
+        "artistName": "Richy Mitch & The Coal Miners",
+        "collectionName": "Northstar - Single",
+        "primaryGenreName": "Folk",
+        "trackViewUrl": "https://music.apple.com/us/album/northstar/1726012744?i=1726012745&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/northstar/1726012744?i=1726012745&uo=4",
+        "trackId": 1726012745
+      },
+      {
+        "trackName": "St.Paul",
+        "artistName": "Richy Mitch & The Coal Miners",
+        "collectionName": "Rmcm (feat. Noah Watts)",
+        "primaryGenreName": "Singer/Songwriter",
+        "trackViewUrl": "https://music.apple.com/us/album/st-paul/1233681655?i=1233681668&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/st-paul/1233681655?i=1233681668&uo=4",
+        "trackId": 1233681668
+      },
+      {
+        "trackName": "Sierra Vista",
+        "artistName": "Richy Mitch & The Coal Miners",
+        "collectionName": "Sierra Vista - Single",
+        "primaryGenreName": "Folk",
+        "trackViewUrl": "https://music.apple.com/us/album/sierra-vista/1732327628?i=1732327629&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/sierra-vista/1732327628?i=1732327629&uo=4",
+        "trackId": 1732327629
+      }
+    ]
+  },
+  "mixTerm|Foo Fighters Everlong": {
+    "query_url": "https://itunes.apple.com/search?term=Foo+Fighters+Everlong&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": [
+      {
+        "trackName": "Everlong",
+        "artistName": "Foo Fighters",
+        "collectionName": "The Colour And The Shape",
+        "primaryGenreName": "Rock",
+        "trackViewUrl": "https://music.apple.com/us/album/everlong/362133451?i=362133505&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/everlong/362133451?i=362133505&uo=4",
+        "trackId": 362133505
+      },
+      {
+        "trackName": "Everlong (Acoustic Version)",
+        "artistName": "Foo Fighters",
+        "collectionName": "Greatest Hits",
+        "primaryGenreName": "Rock",
+        "trackViewUrl": "https://music.apple.com/us/album/everlong-acoustic-version/334811953?i=334812065&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/everlong-acoustic-version/334811953?i=334812065&uo=4",
+        "trackId": 334812065
+      },
+      {
+        "trackName": "My Hero",
+        "artistName": "Foo Fighters",
+        "collectionName": "The Colour And The Shape",
+        "primaryGenreName": "Rock",
+        "trackViewUrl": "https://music.apple.com/us/album/my-hero/362133451?i=362133488&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/my-hero/362133451?i=362133488&uo=4",
+        "trackId": 362133488
+      },
+      {
+        "trackName": "Everlong (Live Acoustic 2006)",
+        "artistName": "Foo Fighters",
+        "collectionName": "Skin and Bones (Live Acoustic)",
+        "primaryGenreName": "Alternative",
+        "trackViewUrl": "https://music.apple.com/us/album/everlong-live-acoustic-2006/203516964?i=203520550&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/everlong-live-acoustic-2006/203516964?i=203520550&uo=4",
+        "trackId": 203520550
+      },
+      {
+        "trackName": "Everlong",
+        "artistName": "Foo Fighters",
+        "collectionName": "Greatest Hits",
+        "primaryGenreName": "Rock",
+        "trackViewUrl": "https://music.apple.com/us/album/everlong/334811953?i=334812013&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/everlong/334811953?i=334812013&uo=4",
+        "trackId": 334812013
+      },
+      {
+        "trackName": "Learn to Fly",
+        "artistName": "Foo Fighters",
+        "collectionName": "There Is Nothing Left to Lose",
+        "primaryGenreName": "Rock",
+        "trackViewUrl": "https://music.apple.com/us/album/learn-to-fly/278229648?i=278229654&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/learn-to-fly/278229648?i=278229654&uo=4",
+        "trackId": 278229654
+      },
+      {
+        "trackName": "Everlong (Acoustic Version)",
+        "artistName": "Foo Fighters",
+        "collectionName": "The Essential Foo Fighters",
+        "primaryGenreName": "Rock",
+        "trackViewUrl": "https://music.apple.com/us/album/everlong-acoustic-version/1650513636?i=1650514565&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/everlong-acoustic-version/1650513636?i=1650514565&uo=4",
+        "trackId": 1650514565
+      },
+      {
+        "trackName": "Everlong",
+        "artistName": "Foo Fighters",
+        "collectionName": "The Essential Foo Fighters",
+        "primaryGenreName": "Rock",
+        "trackViewUrl": "https://music.apple.com/us/album/everlong/1650513636?i=1650513642&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/everlong/1650513636?i=1650513642&uo=4",
+        "trackId": 1650513642
+      },
+      {
+        "trackName": "All My Life",
+        "artistName": "Foo Fighters",
+        "collectionName": "One By One (Deluxe Edition)",
+        "primaryGenreName": "Alternative",
+        "trackViewUrl": "https://music.apple.com/us/album/all-my-life/538257183?i=538257185&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/all-my-life/538257183?i=538257185&uo=4",
+        "trackId": 538257185
+      },
+      {
+        "trackName": "Best of You",
+        "artistName": "Foo Fighters",
+        "collectionName": "In Your Honor",
+        "primaryGenreName": "Alternative",
+        "trackViewUrl": "https://music.apple.com/us/album/best-of-you/300855107?i=300855110&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/best-of-you/300855107?i=300855110&uo=4",
+        "trackId": 300855110
+      },
+      {
+        "trackName": "The Pretender",
+        "artistName": "Foo Fighters",
+        "collectionName": "Echoes, Silence, Patience & Grace",
+        "primaryGenreName": "Alternative",
+        "trackViewUrl": "https://music.apple.com/us/album/the-pretender/262743410?i=262743414&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/the-pretender/262743410?i=262743414&uo=4",
+        "trackId": 262743414
+      },
+      {
+        "trackName": "Everlong",
+        "artistName": "Twinkle Twinkle Little Rock Star",
+        "collectionName": "Lullaby Versions of Foo Fighters",
+        "primaryGenreName": "Children's Music",
+        "trackViewUrl": "https://music.apple.com/us/album/everlong/314342614?i=314342619&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/everlong/314342614?i=314342619&uo=4",
+        "trackId": 314342619
+      },
+      {
+        "trackName": "Everlong",
+        "artistName": "Vitamin String Quartet",
+        "collectionName": "VSQ Performs Foo Fighters: The Shape & Colour of My Heart",
+        "primaryGenreName": "Alternative",
+        "trackViewUrl": "https://music.apple.com/us/album/everlong/987708790?i=987709631&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/everlong/987708790?i=987709631&uo=4",
+        "trackId": 987709631
+      },
+      {
+        "trackName": "Everlong",
+        "artistName": "Rockabye Baby!",
+        "collectionName": "Lullaby Renditions of Foo Fighters",
+        "primaryGenreName": "Children's Music",
+        "trackViewUrl": "https://music.apple.com/us/album/everlong/527663455?i=527663457&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/everlong/527663455?i=527663457&uo=4",
+        "trackId": 527663457
+      },
+      {
+        "trackName": "Everlong",
+        "artistName": "Lullaby Baby Trio",
+        "collectionName": "Lullaby Renditions of Foo Fighters",
+        "primaryGenreName": "Children's Music",
+        "trackViewUrl": "https://music.apple.com/us/album/everlong/1293419380?i=1293419944&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/everlong/1293419380?i=1293419944&uo=4",
+        "trackId": 1293419944
+      }
+    ]
+  },
+  "mixTerm|The Police Every Breath You Take": {
+    "query_url": "https://itunes.apple.com/search?term=The+Police+Every+Breath+You+Take&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": [
+      {
+        "trackName": "Every Breath You Take",
+        "artistName": "The Police",
+        "collectionName": "The Very Best of Sting & The Police",
+        "primaryGenreName": "Rock",
+        "trackViewUrl": "https://music.apple.com/us/album/every-breath-you-take/1440882817?i=1440882897&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/every-breath-you-take/1440882817?i=1440882897&uo=4",
+        "trackId": 1440882897
+      },
+      {
+        "trackName": "Every Breath You Take (Alternate Mix)",
+        "artistName": "The Police",
+        "collectionName": "Synchronicity (Super Deluxe Edition)",
+        "primaryGenreName": "Rock",
+        "trackViewUrl": "https://music.apple.com/us/album/every-breath-you-take-alternate-mix/1744158559?i=1744159715&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/every-breath-you-take-alternate-mix/1744158559?i=1744159715&uo=4",
+        "trackId": 1744159715
+      },
+      {
+        "trackName": "Every Breath You Take (My Songs Version)",
+        "artistName": "Sting",
+        "collectionName": "My Songs (Deluxe)",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/every-breath-you-take-my-songs-version/1457221745?i=1457221893&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/every-breath-you-take-my-songs-version/1457221745?i=1457221893&uo=4",
+        "trackId": 1457221893
+      },
+      {
+        "trackName": "Every Breath You Take (Remastered 2003)",
+        "artistName": "The Police",
+        "collectionName": "Synchronicity (Remastered 2003)",
+        "primaryGenreName": "Rock",
+        "trackViewUrl": "https://music.apple.com/us/album/every-breath-you-take-remastered-2003/1440673959?i=1440674160&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/every-breath-you-take-remastered-2003/1440673959?i=1440674160&uo=4",
+        "trackId": 1440674160
+      },
+      {
+        "trackName": "Every Breath You Take (feat. Sting)",
+        "artistName": "Dolly Parton",
+        "collectionName": "Rockstar",
+        "primaryGenreName": "Rock",
+        "trackViewUrl": "https://music.apple.com/us/album/every-breath-you-take-feat-sting/1685950271?i=1685950918&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/every-breath-you-take-feat-sting/1685950271?i=1685950918&uo=4",
+        "trackId": 1685950918
+      },
+      {
+        "trackName": "Every Breath You Take (Remastered 2023)",
+        "artistName": "The Police",
+        "collectionName": "Synchronicity (Super Deluxe Edition)",
+        "primaryGenreName": "Rock",
+        "trackViewUrl": "https://music.apple.com/us/album/every-breath-you-take-remastered-2023/1744158559?i=1744158568&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/every-breath-you-take-remastered-2023/1744158559?i=1744158568&uo=4",
+        "trackId": 1744158568
+      },
+      {
+        "trackName": "Every Breath You Take (Live 1983)",
+        "artistName": "The Police",
+        "collectionName": "Live! (Remastered)",
+        "primaryGenreName": "Rock",
+        "trackViewUrl": "https://music.apple.com/us/album/every-breath-you-take-live-1983/1452877497?i=1452878401&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/every-breath-you-take-live-1983/1452877497?i=1452878401&uo=4",
+        "trackId": 1452878401
+      },
+      {
+        "trackName": "Every Breath You Take (Live In Buenos Aires, December 2007)",
+        "artistName": "The Police",
+        "collectionName": "Certifiable (Live In Buenos Aires)",
+        "primaryGenreName": "Rock",
+        "trackViewUrl": "https://music.apple.com/us/album/every-breath-you-take-live-in-buenos-aires-december-2007/1440767131?i=1440768227&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/every-breath-you-take-live-in-buenos-aires-december-2007/1440767131?i=1440768227&uo=4",
+        "trackId": 1440768227
+      },
+      {
+        "trackName": "Every Breath You Take",
+        "artistName": "The Police",
+        "collectionName": "Greatest Hits",
+        "primaryGenreName": "Rock",
+        "trackViewUrl": "https://music.apple.com/us/album/every-breath-you-take/1440866395?i=1440866486&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/every-breath-you-take/1440866395?i=1440866486&uo=4",
+        "trackId": 1440866486
+      },
+      {
+        "trackName": "Every Breath You Take",
+        "artistName": "Joan Osborne",
+        "collectionName": "Spirits in the Material World: A Reggae Tribute to The Police",
+        "primaryGenreName": "Reggae",
+        "trackViewUrl": "https://music.apple.com/us/album/every-breath-you-take/1574537278?i=1574537511&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/every-breath-you-take/1574537278?i=1574537511&uo=4",
+        "trackId": 1574537511
+      },
+      {
+        "trackName": "Every Breath You Take",
+        "artistName": "The Police",
+        "collectionName": "The Very Best of Sting & The Police",
+        "primaryGenreName": "Rock",
+        "trackViewUrl": "https://music.apple.com/us/album/every-breath-you-take/1471250056?i=1471250296&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/every-breath-you-take/1471250056?i=1471250296&uo=4",
+        "trackId": 1471250296
+      },
+      {
+        "trackName": "Every Breath You Take",
+        "artistName": "The Police",
+        "collectionName": "Every Breath You Take: The Classics",
+        "primaryGenreName": "Rock",
+        "trackViewUrl": "https://music.apple.com/us/album/every-breath-you-take/1440868517?i=1440869231&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/every-breath-you-take/1440868517?i=1440869231&uo=4",
+        "trackId": 1440869231
+      },
+      {
+        "trackName": "Every Breath You Take",
+        "artistName": "Martin Miller",
+        "collectionName": "The Ultimate Police Medley",
+        "primaryGenreName": "Rock",
+        "trackViewUrl": "https://music.apple.com/us/album/every-breath-you-take/1636841766?i=1636841977&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/every-breath-you-take/1636841766?i=1636841977&uo=4",
+        "trackId": 1636841977
+      },
+      {
+        "trackName": "Every Breath You Take (feat. Sting)",
+        "artistName": "Dolly Parton",
+        "collectionName": "Rockstar (Deluxe)",
+        "primaryGenreName": "Rock",
+        "trackViewUrl": "https://music.apple.com/us/album/every-breath-you-take-feat-sting/1725513450?i=1725514040&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/every-breath-you-take-feat-sting/1725513450?i=1725514040&uo=4",
+        "trackId": 1725514040
+      },
+      {
+        "trackName": "Every Breath You Take",
+        "artistName": "The Police",
+        "collectionName": "The Police (Remastered)",
+        "primaryGenreName": "Rock",
+        "trackViewUrl": "https://music.apple.com/us/album/every-breath-you-take/1452859259?i=1452859708&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/every-breath-you-take/1452859259?i=1452859708&uo=4",
+        "trackId": 1452859708
+      }
+    ]
+  },
+  "mixTerm|Jungle Every Night": {
+    "query_url": "https://itunes.apple.com/search?term=Jungle+Every+Night&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": [
+      {
+        "trackName": "Every Night",
+        "artistName": "Jungle",
+        "collectionName": "Volcano",
+        "primaryGenreName": "Dance",
+        "trackViewUrl": "https://music.apple.com/us/album/every-night/1676151993?i=1676152499&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/every-night/1676151993?i=1676152499&uo=4",
+        "trackId": 1676152499
+      },
+      {
+        "trackName": "Every Night",
+        "artistName": "Evalution",
+        "collectionName": "Locked In - EP",
+        "primaryGenreName": "Dance",
+        "trackViewUrl": "https://music.apple.com/us/album/every-night/1767513465?i=1767513534&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/every-night/1767513465?i=1767513534&uo=4",
+        "trackId": 1767513534
+      },
+      {
+        "trackName": "Every Night",
+        "artistName": "DJ Kuroneko",
+        "collectionName": "Every Night - Single",
+        "primaryGenreName": "Dance",
+        "trackViewUrl": "https://music.apple.com/us/album/every-night/1567611825?i=1567611826&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/every-night/1567611825?i=1567611826&uo=4",
+        "trackId": 1567611826
+      },
+      {
+        "trackName": "Jungle Juice",
+        "artistName": "Ganja White Night & Liquid Stranger",
+        "collectionName": "Jungle Juice - Single",
+        "primaryGenreName": "Electronic",
+        "trackViewUrl": "https://music.apple.com/us/album/jungle-juice/1477701408?i=1477701410&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/jungle-juice/1477701408?i=1477701410&uo=4",
+        "trackId": 1477701410
+      },
+      {
+        "trackName": "Pray",
+        "artistName": "Jungle",
+        "collectionName": "For Ever",
+        "primaryGenreName": "Electronic",
+        "trackViewUrl": "https://music.apple.com/us/album/pray/1409552051?i=1409552847&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/pray/1409552051?i=1409552847&uo=4",
+        "trackId": 1409552847
+      },
+      {
+        "trackName": "Lemonade Lake",
+        "artistName": "Jungle",
+        "collectionName": "Jungle",
+        "primaryGenreName": "Electronic",
+        "trackViewUrl": "https://music.apple.com/us/album/lemonade-lake/872853887?i=872853975&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/lemonade-lake/872853887?i=872853975&uo=4",
+        "trackId": 872853975
+      },
+      {
+        "trackName": "Every Night",
+        "artistName": "Clank & Maider",
+        "collectionName": "Every Night - Single",
+        "primaryGenreName": "Jungle/Drum'n'bass",
+        "trackViewUrl": "https://music.apple.com/us/album/every-night/1720947444?i=1720947447&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/every-night/1720947444?i=1720947447&uo=4",
+        "trackId": 1720947447
+      },
+      {
+        "trackName": "Every Night (feat. T.E.N)",
+        "artistName": "a.tee",
+        "collectionName": "Jungle Summer Jam 2015",
+        "primaryGenreName": "Worldwide",
+        "trackViewUrl": "https://music.apple.com/us/album/every-night-feat-t-e-n/1029126465?i=1029130147&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/every-night-feat-t-e-n/1029126465?i=1029130147&uo=4",
+        "trackId": 1029130147
+      },
+      {
+        "trackName": "Every Night",
+        "artistName": "99 Hertz",
+        "collectionName": "Every Night - Single",
+        "primaryGenreName": "House",
+        "trackViewUrl": "https://music.apple.com/us/album/every-night/1883828652?i=1883828655&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/every-night/1883828652?i=1883828655&uo=4",
+        "trackId": 1883828655
+      },
+      {
+        "trackName": "Every Night",
+        "artistName": "Slyzexx",
+        "collectionName": "Every Night - Single",
+        "primaryGenreName": "Jungle/Drum'n'bass",
+        "trackViewUrl": "https://music.apple.com/us/album/every-night/1724138739?i=1724138740&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/every-night/1724138739?i=1724138740&uo=4",
+        "trackId": 1724138740
+      },
+      {
+        "trackName": "Every Kind of Way",
+        "artistName": "H.E.R.",
+        "collectionName": "H.E.R.",
+        "primaryGenreName": "R&B/Soul",
+        "trackViewUrl": "https://music.apple.com/us/album/every-kind-of-way/1294890052?i=1294890949&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/every-kind-of-way/1294890052?i=1294890949&uo=4",
+        "trackId": 1294890949
+      },
+      {
+        "trackName": "Every Night",
+        "artistName": "KARRAK",
+        "collectionName": "Every Night - Single",
+        "primaryGenreName": "Dance",
+        "trackViewUrl": "https://music.apple.com/us/album/every-night/1707563893?i=1707563894&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/every-night/1707563893?i=1707563894&uo=4",
+        "trackId": 1707563894
+      },
+      {
+        "trackName": "Every Night",
+        "artistName": "Wojavelli",
+        "collectionName": "All Conditions",
+        "primaryGenreName": "Jungle/Drum'n'bass",
+        "trackViewUrl": "https://music.apple.com/us/album/every-night/1618134204?i=1618134205&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/every-night/1618134204?i=1618134205&uo=4",
+        "trackId": 1618134205
+      },
+      {
+        "trackName": "Every Night",
+        "artistName": "SUBLMNL",
+        "collectionName": "Every Night - Single",
+        "primaryGenreName": "Jungle/Drum'n'bass",
+        "trackViewUrl": "https://music.apple.com/us/album/every-night/1748320186?i=1748320187&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/every-night/1748320186?i=1748320187&uo=4",
+        "trackId": 1748320187
+      },
+      {
+        "trackName": "Jungle (feat. RealBigBeezy)",
+        "artistName": "Riah Lena",
+        "collectionName": "I Love You - EP",
+        "primaryGenreName": "R&B/Soul",
+        "trackViewUrl": "https://music.apple.com/us/album/jungle-feat-realbigbeezy/1559402640?i=1559402643&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/jungle-feat-realbigbeezy/1559402640?i=1559402643&uo=4",
+        "trackId": 1559402643
+      }
+    ]
+  },
+  "mixTerm|Bear Bando Everybody Shot": {
+    "query_url": "https://itunes.apple.com/search?term=Bear+Bando+Everybody+Shot&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": []
+  },
+  "mixTerm|Gia Margaret Everyone Around Me Dancing": {
+    "query_url": "https://itunes.apple.com/search?term=Gia+Margaret+Everyone+Around+Me+Dancing&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": [
+      {
+        "trackName": "Everyone Around Me Dancing",
+        "artistName": "Gia Margaret",
+        "collectionName": "Singing",
+        "primaryGenreName": "Alternative",
+        "trackViewUrl": "https://music.apple.com/us/album/everyone-around-me-dancing/1869047383?i=1869047384&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/everyone-around-me-dancing/1869047383?i=1869047384&uo=4",
+        "trackId": 1869047384
+      },
+      {
+        "trackName": "One Way Ticket (Because I Can)",
+        "artistName": "LeAnn Rimes",
+        "collectionName": "Blue",
+        "primaryGenreName": "Country",
+        "trackViewUrl": "https://music.apple.com/us/album/one-way-ticket-because-i-can/68870764?i=68870056&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/one-way-ticket-because-i-can/68870764?i=68870056&uo=4",
+        "trackId": 68870056
+      },
+      {
+        "trackName": "Rockin' Around the Christmas Tree",
+        "artistName": "LeAnn Rimes",
+        "collectionName": "What a Wonderful World",
+        "primaryGenreName": "Country",
+        "trackViewUrl": "https://music.apple.com/us/album/rockin-around-the-christmas-tree/79633532?i=79633319&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/rockin-around-the-christmas-tree/79633532?i=79633319&uo=4",
+        "trackId": 79633319
+      },
+      {
+        "trackName": "One Way Ticket (Because I Can)",
+        "artistName": "LeAnn Rimes",
+        "collectionName": "Greatest Hits",
+        "primaryGenreName": "Country",
+        "trackViewUrl": "https://music.apple.com/us/album/one-way-ticket-because-i-can/79590636?i=79590500&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/one-way-ticket-because-i-can/79590636?i=79590500&uo=4",
+        "trackId": 79590500
+      },
+      {
+        "trackName": "One Way Ticket (Because I Can)",
+        "artistName": "LeAnn Rimes",
+        "collectionName": "All-Time Greatest Hits",
+        "primaryGenreName": "Country",
+        "trackViewUrl": "https://music.apple.com/us/album/one-way-ticket-because-i-can/949991862?i=949991872&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/one-way-ticket-because-i-can/949991862?i=949991872&uo=4",
+        "trackId": 949991872
+      },
+      {
+        "trackName": "You and Me and Christmas",
+        "artistName": "LeAnn Rimes",
+        "collectionName": "It's Christmas, Eve (Original Motion Picture Soundtrack)",
+        "primaryGenreName": "Soundtrack",
+        "trackViewUrl": "https://music.apple.com/us/album/you-and-me-and-christmas/1428116178?i=1428116199&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/you-and-me-and-christmas/1428116178?i=1428116199&uo=4",
+        "trackId": 1428116199
+      },
+      {
+        "trackName": "One Way Ticket (Because I Can)",
+        "artistName": "LeAnn Rimes",
+        "collectionName": "The Best Of",
+        "primaryGenreName": "Country",
+        "trackViewUrl": "https://music.apple.com/us/album/one-way-ticket-because-i-can/1817066388?i=1817066406&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/one-way-ticket-because-i-can/1817066388?i=1817066406&uo=4",
+        "trackId": 1817066406
+      },
+      {
+        "trackName": "One Way Ticket (Re-Imagined)",
+        "artistName": "LeAnn Rimes",
+        "collectionName": "One Way Ticket (Re-Imagined) - Single",
+        "primaryGenreName": "Country",
+        "trackViewUrl": "https://music.apple.com/us/album/one-way-ticket-re-imagined/1358981176?i=1358981276&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/one-way-ticket-re-imagined/1358981176?i=1358981276&uo=4",
+        "trackId": 1358981276
+      },
+      {
+        "trackName": "One Way Ticket (Because I Can)",
+        "artistName": "LeAnn Rimes",
+        "collectionName": "The Best of LeAnn Rimes",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/one-way-ticket-because-i-can/136956891?i=136957456&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/one-way-ticket-because-i-can/136956891?i=136957456&uo=4",
+        "trackId": 136957456
+      },
+      {
+        "trackName": "You Take Me Home",
+        "artistName": "LeAnn Rimes",
+        "collectionName": "This Woman",
+        "primaryGenreName": "Country",
+        "trackViewUrl": "https://music.apple.com/us/album/you-take-me-home/68893612?i=68892938&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/you-take-me-home/68893612?i=68892938&uo=4",
+        "trackId": 68892938
+      },
+      {
+        "trackName": "Rockin' Around the Christmas Tree",
+        "artistName": "LeAnn Rimes",
+        "collectionName": "Today's Country Christmas",
+        "primaryGenreName": "Holiday",
+        "trackViewUrl": "https://music.apple.com/us/album/rockin-around-the-christmas-tree/1041461036?i=1041461041&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/rockin-around-the-christmas-tree/1041461036?i=1041461041&uo=4",
+        "trackId": 1041461041
+      }
+    ]
+  },
+  "mixTerm|Dinosaur Jr. Everything At Once": {
+    "query_url": "https://itunes.apple.com/search?term=Dinosaur+Jr.+Everything+At+Once&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": [
+      {
+        "trackName": "Everything At Once",
+        "artistName": "Dinosaur Jr.",
+        "collectionName": "There Near",
+        "primaryGenreName": "Alternative",
+        "trackViewUrl": "https://music.apple.com/us/album/everything-at-once/6776004209?i=6776004215&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/everything-at-once/6776004209?i=6776004215&uo=4",
+        "trackId": 6776004215
+      },
+      {
+        "trackName": "Watch the Corners",
+        "artistName": "Dinosaur Jr.",
+        "collectionName": "I Bet On Sky (Bonus Track Version)",
+        "primaryGenreName": "Alternative",
+        "trackViewUrl": "https://music.apple.com/us/album/watch-the-corners/543995391?i=543995404&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/watch-the-corners/543995391?i=543995404&uo=4",
+        "trackId": 543995404
+      },
+      {
+        "trackName": "Watch the Corners",
+        "artistName": "Dinosaur Jr.",
+        "collectionName": "Watch the Corners - Single",
+        "primaryGenreName": "Alternative",
+        "trackViewUrl": "https://music.apple.com/us/album/watch-the-corners/546790566?i=546791511&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/watch-the-corners/546790566?i=546791511&uo=4",
+        "trackId": 546791511
+      },
+      {
+        "trackName": "Drawerings",
+        "artistName": "Dinosaur Jr.",
+        "collectionName": "Where You Been",
+        "primaryGenreName": "Rock",
+        "trackViewUrl": "https://music.apple.com/us/album/drawerings/1765551992?i=1765552299&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/drawerings/1765551992?i=1765552299&uo=4",
+        "trackId": 1765552299
+      },
+      {
+        "trackName": "Drawerings (2019 Remaster)",
+        "artistName": "Dinosaur Jr.",
+        "collectionName": "Where You Been (2019 Expanded & Remastered Edition)",
+        "primaryGenreName": "Rock",
+        "trackViewUrl": "https://music.apple.com/us/album/drawerings-2019-remaster/1765554775?i=1765555339&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/drawerings-2019-remaster/1765554775?i=1765555339&uo=4",
+        "trackId": 1765555339
+      },
+      {
+        "trackName": "Drawerings (Live, St Paul Civic Center, MN, 29 June 1993)",
+        "artistName": "Dinosaur Jr.",
+        "collectionName": "Where You Been (2019 Expanded & Remastered Edition)",
+        "primaryGenreName": "Rock",
+        "trackViewUrl": "https://music.apple.com/us/album/drawerings-live-st-paul-civic-center-mn-29-june-1993/1765554775?i=1765556208&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/drawerings-live-st-paul-civic-center-mn-29-june-1993/1765554775?i=1765556208&uo=4",
+        "trackId": 1765556208
+      },
+      {
+        "trackName": "Gargoyle (Live 1987)",
+        "artistName": "Dinosaur Jr.",
+        "collectionName": "Chocomel Daze (Live)",
+        "primaryGenreName": "Alternative",
+        "trackViewUrl": "https://music.apple.com/us/album/gargoyle-live-1987/1504668109?i=1504668449&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/gargoyle-live-1987/1504668109?i=1504668449&uo=4",
+        "trackId": 1504668449
+      },
+      {
+        "trackName": "Drawerings (2019 Remaster)",
+        "artistName": "Dinosaur Jr.",
+        "collectionName": "Puke + Cry: The Sire Years 1990-1997",
+        "primaryGenreName": "Rock",
+        "trackViewUrl": "https://music.apple.com/us/album/drawerings-2019-remaster/1773370999?i=1773371822&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/drawerings-2019-remaster/1773370999?i=1773371822&uo=4",
+        "trackId": 1773371822
+      },
+      {
+        "trackName": "Love Is...",
+        "artistName": "Dinosaur Jr.",
+        "collectionName": "Give a Glimpse of What Yer Not",
+        "primaryGenreName": "Alternative",
+        "trackViewUrl": "https://music.apple.com/us/album/love-is/1113086895?i=1113086991&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/love-is/1113086895?i=1113086991&uo=4",
+        "trackId": 1113086991
+      },
+      {
+        "trackName": "No One's Ready",
+        "artistName": "Dinosaur Jr.",
+        "collectionName": "There Near",
+        "primaryGenreName": "Alternative",
+        "trackViewUrl": "https://music.apple.com/us/album/no-ones-ready/6776004209?i=6776004522&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/no-ones-ready/6776004209?i=6776004522&uo=4",
+        "trackId": 6776004522
+      }
+    ]
+  },
+  "mixTerm|Niall Horan Everywhere": {
+    "query_url": "https://itunes.apple.com/search?term=Niall+Horan+Everywhere&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": [
+      {
+        "trackName": "Everywhere",
+        "artistName": "Niall Horan",
+        "collectionName": "Heartbreak Weather",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/everywhere/1497607470?i=1497608069&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/everywhere/1497607470?i=1497608069&uo=4",
+        "trackId": 1497608069
+      },
+      {
+        "trackName": "Everywhere (BBC Children In Need)",
+        "artistName": "Niall Horan & Anne-Marie",
+        "collectionName": "Everywhere (BBC Children In Need) - Single",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/everywhere-bbc-children-in-need/1595136544?i=1595136907&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/everywhere-bbc-children-in-need/1595136544?i=1595136907&uo=4",
+        "trackId": 1595136907
+      },
+      {
+        "trackName": "Everywhere",
+        "artistName": "Niall Horan",
+        "collectionName": "Heartbreak Weather (5 Year Anniversary Edition)",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/everywhere/1804522249?i=1804522441&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/everywhere/1804522249?i=1804522441&uo=4",
+        "trackId": 1804522441
+      },
+      {
+        "trackName": "Back for You",
+        "artistName": "One Direction",
+        "collectionName": "Take Me Home (Yearbook Edition)",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/back-for-you/574406654?i=574407090&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/back-for-you/574406654?i=574407090&uo=4",
+        "trackId": 574407090
+      },
+      {
+        "trackName": "Back for You",
+        "artistName": "One Direction",
+        "collectionName": "Take Me Home",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/back-for-you/572141438?i=572141837&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/back-for-you/572141438?i=572141837&uo=4",
+        "trackId": 572141837
+      },
+      {
+        "trackName": "Live While We're Young",
+        "artistName": "One Direction",
+        "collectionName": "Take Me Home (Yearbook Edition)",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/live-while-were-young/574406654?i=574406657&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/live-while-were-young/574406654?i=574406657&uo=4",
+        "trackId": 574406657
+      },
+      {
+        "trackName": "Everywhere",
+        "artistName": "The Cat and Owl",
+        "collectionName": "Lullaby Versions of Niall Horan",
+        "primaryGenreName": "Lullabies",
+        "trackViewUrl": "https://music.apple.com/us/album/everywhere/1812181258?i=1812181261&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/everywhere/1812181258?i=1812181261&uo=4",
+        "trackId": 1812181261
+      }
+    ]
+  },
+  "mixTerm|Jaisua everywhere": {
+    "query_url": "https://itunes.apple.com/search?term=Jaisua+everywhere&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": [
+      {
+        "trackName": "everywhere",
+        "artistName": "Jaisua & Stephen Willo",
+        "collectionName": "everywhere - Single",
+        "primaryGenreName": "Dance",
+        "trackViewUrl": "https://music.apple.com/us/album/everywhere/6799251545?i=6799251552&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/everywhere/6799251545?i=6799251552&uo=4",
+        "trackId": 6799251552
+      }
+    ]
+  },
+  "mixTerm|Sugarhill Ddot Evil Twins, Pt. 2": {
+    "query_url": "https://itunes.apple.com/search?term=Sugarhill+Ddot+Evil+Twins%2C+Pt.+2&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": [
+      {
+        "trackName": "Like This",
+        "artistName": "Sugarhill Ddot",
+        "collectionName": "2 Sides of the Story",
+        "primaryGenreName": "Hip-Hop/Rap",
+        "trackViewUrl": "https://music.apple.com/us/album/like-this/1759657321?i=1759657557&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/like-this/1759657321?i=1759657557&uo=4",
+        "trackId": 1759657557
+      },
+      {
+        "trackName": "Like This",
+        "artistName": "Sugarhill Ddot",
+        "collectionName": "2 Sides of the Story (Deluxe)",
+        "primaryGenreName": "Hip-Hop/Rap",
+        "trackViewUrl": "https://music.apple.com/us/album/like-this/1783025737?i=1783026131&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/like-this/1783025737?i=1783026131&uo=4",
+        "trackId": 1783026131
+      },
+      {
+        "trackName": "EVIL TWINS (feat. Oy Quan)",
+        "artistName": "SugarHill Keem",
+        "collectionName": "KING OF DRILL (DELUXE)",
+        "primaryGenreName": "Hip-Hop/Rap",
+        "trackViewUrl": "https://music.apple.com/us/album/evil-twins-feat-oy-quan/1689640469?i=1689640802&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/evil-twins-feat-oy-quan/1689640469?i=1689640802&uo=4",
+        "trackId": 1689640802
+      },
+      {
+        "trackName": "Like This (Remix)",
+        "artistName": "Sugarhill Ddot, Bay Swag & wolfacejoeyy",
+        "collectionName": "2 Sides of the Story (Deluxe)",
+        "primaryGenreName": "Hip-Hop/Rap",
+        "trackViewUrl": "https://music.apple.com/us/album/like-this-remix/1783025737?i=1783026110&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/like-this-remix/1783025737?i=1783026110&uo=4",
+        "trackId": 1783026110
+      },
+      {
+        "trackName": "Evil Twins (feat. AJ Wvtts)",
+        "artistName": "SUGARHILL GLITCHH",
+        "collectionName": "Evil Twins (feat. AJ Wvtts) - Single",
+        "primaryGenreName": "New Age",
+        "trackViewUrl": "https://music.apple.com/us/album/evil-twins-feat-aj-wvtts/1732313352?i=1732313353&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/evil-twins-feat-aj-wvtts/1732313352?i=1732313353&uo=4",
+        "trackId": 1732313353
+      },
+      {
+        "trackName": "Like This",
+        "artistName": "Sugarhill Ddot",
+        "collectionName": "Like This - Single",
+        "primaryGenreName": "Hip-Hop/Rap",
+        "trackViewUrl": "https://music.apple.com/us/album/like-this/1746354028?i=1746354044&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/like-this/1746354028?i=1746354044&uo=4",
+        "trackId": 1746354044
+      },
+      {
+        "trackName": "Confessions",
+        "artistName": "Sugarhill Ddot",
+        "collectionName": "Confessions - Single",
+        "primaryGenreName": "Hip-Hop/Rap",
+        "trackViewUrl": "https://music.apple.com/us/album/confessions/1868476462?i=1868476464&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/confessions/1868476462?i=1868476464&uo=4",
+        "trackId": 1868476464
+      }
+    ]
+  },
+  "mixTerm|dvsn Excited": {
+    "query_url": "https://itunes.apple.com/search?term=dvsn+Excited&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": [
+      {
+        "trackName": "Excited",
+        "artistName": "dvsn",
+        "collectionName": "÷ - Single",
+        "primaryGenreName": "R&B/Soul",
+        "trackViewUrl": "https://music.apple.com/us/album/excited/1835551638?i=1835551639&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/excited/1835551638?i=1835551639&uo=4",
+        "trackId": 1835551639
+      },
+      {
+        "trackName": "Euniq (Original Song from XO, Kitty, Season 3) [feat. HanBi Ryu]",
+        "artistName": "dv/sn",
+        "collectionName": "Euniq (Original Song from XO, Kitty, Season 3) [feat. HanBi Ryu] - Single",
+        "primaryGenreName": "Soundtrack",
+        "trackViewUrl": "https://music.apple.com/us/album/euniq-original-song-from-xo-kitty-season-3-feat-hanbi-ryu/1886753660?i=1886753906&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/euniq-original-song-from-xo-kitty-season-3-feat-hanbi-ryu/1886753660?i=1886753906&uo=4",
+        "trackId": 1886753906
+      }
+    ]
+  },
+  "mixTerm|Survivor Eye of the Tiger": {
+    "query_url": "https://itunes.apple.com/search?term=Survivor+Eye+of+the+Tiger&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": [
+      {
+        "trackName": "Eye of the Tiger",
+        "artistName": "Survivor",
+        "collectionName": "Eye of the Tiger (Remastered)",
+        "primaryGenreName": "Rock",
+        "trackViewUrl": "https://music.apple.com/us/album/eye-of-the-tiger/254685010?i=254685026&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/eye-of-the-tiger/254685010?i=254685026&uo=4",
+        "trackId": 254685026
+      },
+      {
+        "trackName": "Eye Of The Tiger",
+        "artistName": "Great White",
+        "collectionName": "The Essential Great White",
+        "primaryGenreName": "Hard Rock",
+        "trackViewUrl": "https://music.apple.com/us/album/eye-of-the-tiger/462495051?i=462495962&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/eye-of-the-tiger/462495051?i=462495962&uo=4",
+        "trackId": 462495962
+      },
+      {
+        "trackName": "Eye of the Tiger",
+        "artistName": "Survivor",
+        "collectionName": "The Essential Survivor",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/eye-of-the-tiger/931580917?i=931580986&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/eye-of-the-tiger/931580917?i=931580986&uo=4",
+        "trackId": 931580986
+      },
+      {
+        "trackName": "Eye of the Tiger (feat. FJØRA)",
+        "artistName": "Tommee Profitt",
+        "collectionName": "Covers, Vol. 1",
+        "primaryGenreName": "Alternative",
+        "trackViewUrl": "https://music.apple.com/us/album/eye-of-the-tiger-feat-fj%C3%B8ra/1508634284?i=1508634288&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/eye-of-the-tiger-feat-fj%C3%B8ra/1508634284?i=1508634288&uo=4",
+        "trackId": 1508634288
+      },
+      {
+        "trackName": "Eye of the Tiger",
+        "artistName": "Survivor",
+        "collectionName": "30 Todo Dia, Vol. 2",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/eye-of-the-tiger/1027168551?i=1027168553&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/eye-of-the-tiger/1027168551?i=1027168553&uo=4",
+        "trackId": 1027168553
+      },
+      {
+        "trackName": "Eye of the Tiger",
+        "artistName": "Devil You Know",
+        "collectionName": "They Bleed Red",
+        "primaryGenreName": "Metal",
+        "trackViewUrl": "https://music.apple.com/us/album/eye-of-the-tiger/1458727688?i=1458727835&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/eye-of-the-tiger/1458727688?i=1458727835&uo=4",
+        "trackId": 1458727835
+      },
+      {
+        "trackName": "Eye of the Tiger",
+        "artistName": "New Found Glory",
+        "collectionName": "From the Screen to Your Stereo 3",
+        "primaryGenreName": "Rock",
+        "trackViewUrl": "https://music.apple.com/us/album/eye-of-the-tiger/1451874338?i=1451874345&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/eye-of-the-tiger/1451874338?i=1451874345&uo=4",
+        "trackId": 1451874345
+      },
+      {
+        "trackName": "Eye of the Tiger (Sher Gunn Remix)",
+        "artistName": "Survivor",
+        "collectionName": "Turbo (Music from the Motion Picture) [Deluxe Edition]",
+        "primaryGenreName": "Soundtrack",
+        "trackViewUrl": "https://music.apple.com/us/album/eye-of-the-tiger-sher-gunn-remix/1443181335?i=1443181511&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/eye-of-the-tiger-sher-gunn-remix/1443181335?i=1443181511&uo=4",
+        "trackId": 1443181511
+      },
+      {
+        "trackName": "Eye of the Tiger (feat. Rob Lundgren) [Metal Cover]",
+        "artistName": "Leo",
+        "collectionName": "Leo Metal Covers Volume 8",
+        "primaryGenreName": "Rock",
+        "trackViewUrl": "https://music.apple.com/us/album/eye-of-the-tiger-feat-rob-lundgren-metal-cover/1111613018?i=1111613338&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/eye-of-the-tiger-feat-rob-lundgren-metal-cover/1111613018?i=1111613338&uo=4",
+        "trackId": 1111613338
+      },
+      {
+        "trackName": "Eye of the Tiger",
+        "artistName": "Survivor",
+        "collectionName": "Rocky IV (Original Motion Picture Soundtrack)",
+        "primaryGenreName": "Soundtrack",
+        "trackViewUrl": "https://music.apple.com/us/album/eye-of-the-tiger/207443884?i=207445080&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/eye-of-the-tiger/207443884?i=207445080&uo=4",
+        "trackId": 207445080
+      },
+      {
+        "trackName": "Eye Of The Tiger",
+        "artistName": "Survivor",
+        "collectionName": "The Rocky Story",
+        "primaryGenreName": "Soundtrack",
+        "trackViewUrl": "https://music.apple.com/us/album/eye-of-the-tiger/267725673?i=267725692&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/eye-of-the-tiger/267725673?i=267725692&uo=4",
+        "trackId": 267725692
+      },
+      {
+        "trackName": "Eye of the Tiger",
+        "artistName": "Survivor",
+        "collectionName": "The Best of Survivor",
+        "primaryGenreName": "Rock",
+        "trackViewUrl": "https://music.apple.com/us/album/eye-of-the-tiger/251170285?i=251170290&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/eye-of-the-tiger/251170285?i=251170290&uo=4",
+        "trackId": 251170290
+      },
+      {
+        "trackName": "Eye of the Tiger",
+        "artistName": "Survivor",
+        "collectionName": "Rocky III: (Original Motion Picture Score)",
+        "primaryGenreName": "Soundtrack",
+        "trackViewUrl": "https://music.apple.com/us/album/eye-of-the-tiger/715581499?i=715581619&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/eye-of-the-tiger/715581499?i=715581619&uo=4",
+        "trackId": 715581619
+      },
+      {
+        "trackName": "Eye of the Tiger",
+        "artistName": "Survivor",
+        "collectionName": "Survivor: Greatest Hits",
+        "primaryGenreName": "Rock",
+        "trackViewUrl": "https://music.apple.com/us/album/eye-of-the-tiger/254347536?i=254347614&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/eye-of-the-tiger/254347536?i=254347614&uo=4",
+        "trackId": 254347614
+      },
+      {
+        "trackName": "Eye of the Tiger",
+        "artistName": "Survivor",
+        "collectionName": "Ultimate Survivor",
+        "primaryGenreName": "Rock",
+        "trackViewUrl": "https://music.apple.com/us/album/eye-of-the-tiger/271868835?i=271868836&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/eye-of-the-tiger/271868835?i=271868836&uo=4",
+        "trackId": 271868836
+      }
+    ]
   }
 }
