@@ -9,17 +9,17 @@ html:is([data-liquid-glass=clear],[data-liquid-glass=tinted]) :is(
  .public-app .profile-song-spotlight .song-menu-surface,.public-app .profile-rotation,
  .public-app .mobile-nav-pill,.public-app .mobile-nav-search,.public-app .mobile-search-home,.public-app .mobile-search-field,
  .public-app .player-surface,.public-app .sidebar-surface,
- .profile-settings-panel,.profile-settings-panel>header,.profile-settings-groups>section>div,
+ .profile-settings-panel,.profile-settings-groups>section>div,
  .mobile-more-panel,.mobile-more-sheet,.public-avatar-picker,
  [role=menu].bg-popover,[data-radix-popper-content-wrapper] .bg-popover,[role=dialog].bg-background,[role=dialog].bg-card,[role=dialog] .bg-card,
  [data-glass-surface]
 ){
  background-color:hsl(var(--card)/var(--public-glass-opacity))!important;
- background-image:linear-gradient(145deg,rgb(255 255 255/.13),transparent 38%,rgb(255 255 255/.025))!important;
+ background-image:linear-gradient(145deg,rgb(255 255 255/.065),transparent 38%,rgb(255 255 255/.015))!important;
  -webkit-backdrop-filter:blur(var(--public-glass-blur)) saturate(1.45)!important;
  backdrop-filter:blur(var(--public-glass-blur)) saturate(1.45)!important;
  border-color:hsl(var(--foreground)/.16)!important;
- box-shadow:inset 0 1px 0 rgb(255 255 255/.2),inset 0 -1px 0 rgb(255 255 255/.045),0 8px 24px rgb(0 0 0/.08)!important;
+ box-shadow:inset 0 1px 0 rgb(255 255 255/.12),inset 0 -1px 0 rgb(255 255 255/.025),0 8px 24px rgb(0 0 0/.07)!important;
 }
 html:is([data-liquid-glass=clear],[data-liquid-glass=tinted]) .profile-discover .discover-mini-body{
  background-color:hsl(var(--card)/var(--public-glass-opacity))!important;
@@ -59,7 +59,17 @@ html:is([data-liquid-glass=clear],[data-liquid-glass=tinted]) .discover-deck-con
 .glass-mode-description{font-size:12px;line-height:1.6;color:hsl(var(--muted-foreground));text-align:center;min-height:20px;margin-top:-4px}
 .glass-applies{display:flex;flex-wrap:wrap;justify-content:center;gap:6px}.glass-applies span{font-size:10px;padding:5px 9px;border:1px solid hsl(var(--border));border-radius:999px;color:hsl(var(--muted-foreground))}
 .glass-settings-note{border-top:1px solid hsl(var(--border));padding-top:13px;font-size:11px;text-align:center}
-@media(prefers-reduced-motion:reduce){.glass-demo-surface,.glass-demo-tools,.glass-mode-options>button{transition:none}}
+/* Motion stays in the demonstration rather than animating every app surface. */
+.glass-demo-orb{animation:glass-preview-drift 14s ease-in-out infinite alternate;will-change:transform}
+@keyframes glass-preview-drift{from{transform:translate(-12px,6px) rotate(-35deg)}to{transform:translate(80px,-25px) rotate(-15deg)}}
+@media(hover:hover){.glass-mode-options>button:hover .glass-mode-swatch{filter:brightness(1.1)}}
+@media(prefers-reduced-motion:reduce){.glass-demo-surface,.glass-demo-tools,.glass-mode-options>button{transition:none}.glass-demo-orb{animation:none;will-change:auto}}
+@media(prefers-reduced-transparency:reduce),(prefers-contrast:more){
+ html:is([data-liquid-glass=clear],[data-liquid-glass=tinted]) .profile-discover .discover-mini-body{backdrop-filter:none;-webkit-backdrop-filter:none}
+ .glass-demo-surface,.glass-demo-tools{background:#17171d!important;backdrop-filter:none;-webkit-backdrop-filter:none}
+}
+@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){.glass-demo-surface,.glass-demo-tools{background:#17171d}}
+@media(max-height:740px) and (max-width:767px){.liquid-glass-demo{height:216px!important}.glass-demo-heading{top:45px!important}.glass-demo-heading small{display:none}.glass-demo-tools{padding:9px 20px}.glass-mode-options>button{min-height:90px!important}.liquid-glass-settings{gap:12px!important}}
 @supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){
  html:is([data-liquid-glass=clear],[data-liquid-glass=tinted]){--public-glass-opacity:1!important}
  html:is([data-liquid-glass=clear],[data-liquid-glass=tinted]) .has-profile-gradient .discover-mini-body{--public-glass-opacity:1!important}
