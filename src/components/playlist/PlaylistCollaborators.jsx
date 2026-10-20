@@ -10,17 +10,18 @@ import {useToast} from "@/components/ui/use-toast";
 export default function PlaylistCollaborators({playlist,onSaved}){
  const {user}=useAuth(),{toast}=useToast(),owner=playlist.creator_id===user?.id;
  const [open,setOpen]=useState(false),[query,setQuery]=useState(""),[results,setResults]=useState([]),[members,setMembers]=useState([]),[busy,setBusy]=useState(false),[searching,setSearching]=useState(false),[failed,setFailed]=useState(false);
- const lock=useRef(false),identity=useRef("");identity.current=playlist.id+":"+user?.id;
+ const lock=useRef(false),live=useRef(true),identity=useRef("");identity.current=playlist.id+":"+user?.id;
  const [saveError,setSaveError]=useState("");
  const ids=JSON.stringify(playlist.collaborator_ids||[]);
- useEffect(()=>{setOpen(false);setQuery("");setMembers([]);setSaveError("");},[playlist.id,user?.id]);
+ useEffect(()=>{live.current=true;return()=>{live.current=false;};},[]);
+ useEffect(()=>{setOpen(false);setQuery("");setMembers([]);setSaveError("");setBusy(false);},[playlist.id,user?.id]);
  useEffect(()=>{let alive=true;getUsersByIds(JSON.parse(ids)).then(rows=>{if(alive)setMembers(rows);}).catch(()=>{});return()=>{alive=false;};},[ids]);
  useEffect(()=>{let alive=true;setResults([]);setFailed(false);if(query.trim().length<2){setSearching(false);return;}setSearching(true);const timer=setTimeout(()=>searchPeople(query).then(r=>{if(alive)setResults(r.data.results||[]);}).catch(()=>{if(alive)setFailed(true);}).finally(()=>{if(alive)setSearching(false);}),300);return()=>{alive=false;clearTimeout(timer);};},[query]);
  async function change(id,add){
   if(lock.current||!owner)return;lock.current=true;setBusy(true);setSaveError("");const key=identity.current;
-  try{const saved=await savePlaylistInvitation(playlistDatabase,playlist.id,id,add);if(identity.current!==key)return;onSaved({...playlist,...saved});window.dispatchEvent(new Event("playlists:changed"));setQuery("");toast({title:add?"Collaborator added":"Collaborator removed"});}
-  catch(e){if(identity.current===key)setSaveError(e.response?.data?.error||e.message||"Couldn’t update collaborators. Please retry.");}
-  finally{lock.current=false;if(identity.current===key)setBusy(false);}
+  try{const saved=await savePlaylistInvitation(playlistDatabase,playlist.id,id,add);if(!live.current||identity.current!==key)return;onSaved({...playlist,...saved});window.dispatchEvent(new Event("playlists:changed"));setQuery("");toast({title:add?"Collaborator added":"Collaborator removed"});}
+  catch(e){if(live.current&&identity.current===key)setSaveError(e.response?.data?.error||e.message||"Couldn’t update collaborators. Please retry.");}
+  finally{lock.current=false;if(live.current&&identity.current===key)setBusy(false);}
  }
  return <section className="playlist-collaboration" aria-label="Playlist collaborators">
   <div className="flex items-center gap-3 flex-wrap">{owner?<button type="button" className="playlist-action" disabled={busy} onClick={()=>setOpen(v=>!v)} aria-expanded={open}><Users size={17}/>{playlist.collaboration_enabled?"Manage collaborators":"Invite collaborators"}</button>:playlist.collaboration_enabled?<p className="text-sm text-muted-foreground flex gap-2 items-center"><Users size={16}/>Collaborative playlist</p>:null}
