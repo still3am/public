@@ -14,7 +14,7 @@ export default function LiquidGlassControls(){
    <div className="glass-demo-tools"><Layers size={18}/><SlidersHorizontal size={18}/><Music size={18}/></div>
   </div>
   <p className="glass-settings-intro">A softer, translucent look for cards, the player and menus—including Discover People.</p>
-  <div role="radiogroup" aria-label="Liquid Glass appearance" className="glass-mode-options">{modes.map(option=><button key={option.id} type="button" role="radio" aria-checked={mode===option.id} onClick={()=>setMode(option.id)}>
+  <div role="radiogroup" aria-label="Liquid Glass appearance" className="glass-mode-options" onKeyDown={event=>{if(!["ArrowLeft","ArrowRight","ArrowUp","ArrowDown","Home","End"].includes(event.key))return;event.preventDefault();const current=modes.findIndex(option=>option.id===mode),step=["ArrowLeft","ArrowUp"].includes(event.key)?-1:1,index=event.key==="Home"?0:event.key==="End"?modes.length-1:(current+step+modes.length)%modes.length;setMode(modes[index].id);event.currentTarget.querySelectorAll("[role=radio]")[index]?.focus();}}>{modes.map(option=><button key={option.id} type="button" role="radio" tabIndex={mode===option.id?0:-1} aria-checked={mode===option.id} onClick={()=>setMode(option.id)}>
    <span><strong>{option.label}</strong><small>{option.description}</small></span><span className="glass-option-check">{mode===option.id&&<Check size={19}/>}</span>
   </button>)}</div>
   <p className="glass-settings-note" role="status">{persisted?"Applies instantly. Saved for your account on this device.":"Applied for this session. Your browser couldn’t save this preference."}</p>
