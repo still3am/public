@@ -28,7 +28,7 @@ export default function SyncedLyrics({ trackId, position, fallbackText = "", res
     setLyrics(null);
     setTrackLyrics("");
     Promise.all([
-      base44.entities.Lyrics.filter({ track_id: trackId, status: "approved" }, "-created_date", 5).catch(() => []),
+      base44.entities.Lyrics.filter({ track_id: trackId, status: "approved" }, "-updated_date", 5).catch(() => []),
       base44.entities.Track.get(trackId).catch(() => null),
     ]).then(([records, track]) => {
       if (!alive) return;
