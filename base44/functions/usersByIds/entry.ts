@@ -47,6 +47,7 @@ export default async function handleRequest(req) {
       banner_video_url: u.banner_video_url || '',
       banner_gif_url: u.banner_gif_url || '',
       banner_use_default: u.banner_use_default === true,
+      banner_preset: u.banner_preset || '',
       banner_url: u.banner_url || '',
       banner_mobile_url: u.banner_mobile_url || '',
       top_tracks_label: u.top_tracks_label || '',
