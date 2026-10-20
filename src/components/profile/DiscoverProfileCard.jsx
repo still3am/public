@@ -64,7 +64,7 @@ export default function DiscoverProfileCard({ person, active, direction, childre
    <Link className="discover-mini-avatar" to={"/profile/" + encodeURIComponent(person.id)} aria-label={"Open " + name + " profile"}><Avatar user={person} size={76} motion active={active} /></Link>
    {person.shared > 0 && <span className="discover-shared"><Music size={12} />{person.reason}</span>}
    <h3><Link to={"/profile/" + encodeURIComponent(person.id)}>{name}</Link></h3>
-   <p className="discover-mini-handle hidden">{person.username ? "@" + person.username : person.is_artist ? "Artist on PUBLIC" : "Listener on PUBLIC"}{person.pronouns && <span> · {person.pronouns}</span>}</p>
+   
    {person.location && <p className="discover-mini-location"><MapPin size={12} />{person.location}</p>}
    {person.bio && <p className="discover-mini-bio">{person.bio}</p>}
    {children}
