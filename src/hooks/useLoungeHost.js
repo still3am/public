@@ -1,4 +1,4 @@
-import {reportActionError} from "@/lib/actionError";
+import {actionError,reportActionError} from "@/lib/actionError";
 import {readAllPages} from "@/lib/readPages";
 import {coalesce} from "@/lib/coalesce";
 import { useEffect, useState, useRef, useCallback, createContext, useContext, createElement } from "react";
@@ -28,10 +28,11 @@ function useLoungeHostState() {
   const [session, setSession] = useState(null);
   const [members, setMembers] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
   const memberLocks=useRef(new Set());
   const startingRef=useRef(null),accountRef=useRef(user?.id),sessionKey=useRef(null);accountRef.current=user?.id;
-  useEffect(()=>{startingRef.current=null;sessionKey.current=null;setSession(null);setMembers([]);setLoading(false);},[user?.id]);
+  useEffect(()=>{startingRef.current=null;sessionKey.current=null;setSession(null);setMembers([]);setLoading(false);setError("");},[user?.id]);
   const addedRef = useRef(null);
   if (addedRef.current === null) addedRef.current = loadAddedSet();
   const pRef = useRef(p);
@@ -66,7 +67,7 @@ function useLoungeHostState() {
     if(startingRef.current)return startingRef.current;
     const uid=user.id;
     const request=(async()=>{
-    setLoading(true);
+    setLoading(true);setError("");
     try {
       // Reuse an active session this host already created (e.g. reopened).
       const own = await base44.entities.LoungeSession.filter(
@@ -107,7 +108,7 @@ function useLoungeHostState() {
       refreshMembers(active.id);
       return active;
     } catch (e) {
-      if(accountRef.current===uid)reportActionError(e,"Your lounge could not start. Please retry.");
+      if(accountRef.current===uid)setError(actionError(e,e?.message || "Your lounge could not start. Please retry."));
       return null;
     } finally {
       if(accountRef.current===uid)setLoading(false);
@@ -208,6 +209,7 @@ function useLoungeHostState() {
     session,
     members,
     loading,
+    error,
     ensureSession,
     approve,
     reject,
