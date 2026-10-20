@@ -1,0 +1,41 @@
+/* Playlists share the track page atmosphere and responsive artwork layout. */
+.public-app .artwork-content .playlist-page.playlist-editorial{--border:0 0% 100%;padding-top:18px}
+.public-app .playlist-page.playlist-editorial .playlist-page-nav{justify-content:space-between}
+.public-app .artwork-content .playlist-page.playlist-editorial .playlist-hero{grid-template-columns:minmax(240px,340px) minmax(0,1fr);gap:44px;padding:0;border:0;border-radius:0;background:transparent;box-shadow:none;animation:none}
+.public-app .playlist-page.playlist-editorial .playlist-info .playlist-title{color:#fff}
+.public-app .playlist-page.playlist-editorial .playlist-info>.eyebrow{color:rgb(255 255 255/.65)}
+.public-app .playlist-page.playlist-editorial .playlist-info>p{color:rgb(255 255 255/.74)}
+.public-app .playlist-page.playlist-editorial .playlist-controls{flex-wrap:nowrap}
+.public-app .playlist-page.playlist-editorial .playlist-primary-play{display:flex;min-width:0;max-width:none;box-shadow:none}
+.public-app .playlist-page.playlist-editorial .release-add-button{background:rgb(255 255 255/.13);color:#fff;border:0}
+.public-app .playlist-page.playlist-editorial .playlist-action{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:10px 16px;border-radius:999px;border:1px solid rgb(255 255 255/.16);background:rgb(255 255 255/.07);color:#fff}
+.public-app .playlist-page.playlist-editorial .playlist-circle{background:rgb(255 255 255/.1);border-color:rgb(255 255 255/.14);color:#fff}
+.public-app .playlist-page.playlist-editorial .playlist-collaboration{margin:0 0 24px}
+.public-app .playlist-page.playlist-editorial .playlist-collaborator-panel{max-width:620px;background:rgb(15 15 20/.28);border-color:rgb(255 255 255/.16)}
+.public-app .playlist-page.playlist-editorial .playlist-collaborator-error{padding:12px;border-radius:12px;background:rgb(140 20 25/.4);color:#fff;font-size:13px}
+.public-app .playlist-page.playlist-editorial .playlist-section-title{margin-bottom:12px}
+.public-app .playlist-page.playlist-editorial .playlist-section-title h2{font-size:22px}
+.public-app .playlist-page.playlist-editorial .playlist-search-tools{margin-bottom:18px}
+.public-app .playlist-page.playlist-editorial .playlist-search-tools>label{border-color:rgb(255 255 255/.18);background:rgb(255 255 255/.05)}
+.public-app .playlist-page.playlist-editorial .playlist-search-tools input{background:transparent;color:#fff}
+.public-app .playlist-page.playlist-editorial .playlist-search-tools select{background:#25252b;color:#fff;border-color:rgb(255 255 255/.18)}
+.public-app .playlist-page.playlist-editorial .playlist-song-list{border-top:1px solid rgb(255 255 255/.18)}
+.public-app .playlist-page.playlist-editorial .playlist-song-item{min-height:64px;border-color:rgb(255 255 255/.15)}
+.public-app .playlist-page.playlist-editorial .playlist-song-item .song-row{min-height:64px;border-radius:0;padding:9px 0}
+.public-app .playlist-page.playlist-editorial .playlist-song-item[data-current=true]{border-radius:0;background:rgb(255 255 255/.07)}
+.public-app .playlist-page.playlist-editorial .playlist-controls:has(.chrome-button){flex-wrap:wrap;max-width:none}
+@media(max-width:767px){
+.public-app .artwork-content .playlist-page.playlist-editorial{padding-top:0}
+.public-app .artwork-content .playlist-page.playlist-editorial .playlist-hero{gap:0;margin-bottom:24px}
+.public-app .playlist-page.playlist-editorial .playlist-info>.eyebrow{display:none}
+.public-app .playlist-page.playlist-editorial .playlist-info>p.mt-4{margin:10px auto 0;font-size:12px;line-height:1.6;max-width:34rem}
+.public-app .playlist-page.playlist-editorial .playlist-info>p.text-muted-foreground:not(.mt-4){font-size:11px}
+.public-app .playlist-page.playlist-editorial .playlist-title{font-size:clamp(23px,6vw,32px);line-height:1.15;letter-spacing:-.025em}
+.public-app .playlist-page.playlist-editorial .playlist-controls{margin-top:18px;gap:14px}
+.public-app .playlist-page.playlist-editorial .playlist-collaboration{margin-bottom:22px}
+.public-app .playlist-page.playlist-editorial .playlist-section-title h2{font-size:20px}
+.public-app .playlist-page.playlist-editorial .playlist-search-tools{gap:8px}
+.public-app .playlist-page.playlist-editorial .playlist-search-tools select{max-width:135px;padding-inline:8px;font-size:12px}
+.public-app .playlist-page.playlist-editorial .playlist-song-item .song-row{gap:9px}
+.public-app .playlist-page.playlist-editorial .playlist-list-tools>.playlist-action{font-size:12px}
+}
