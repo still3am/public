@@ -963,6 +963,32 @@
       "match": "exact artist and title"
     },
     {
+      "id": "6a65c7f9c081fe0f6aab861e",
+      "title": "Money Over Everything",
+      "artist": "Future",
+      "before": "Other",
+      "genre": "Hip-Hop",
+      "source_genre": "Hip-Hop/Rap",
+      "source_title": "Money Over Everything",
+      "source_artist": "Future",
+      "source_album": "The Real Me",
+      "source_url": "https://music.apple.com/us/album/money-over-everything/6790487991?i=6790488205&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6a65c7fc9e5e6379ce48420c",
+      "title": "One Two",
+      "artist": "Future",
+      "before": "Other",
+      "genre": "Hip-Hop",
+      "source_genre": "Hip-Hop/Rap",
+      "source_title": "One Two",
+      "source_artist": "Future",
+      "source_album": "The Real Me",
+      "source_url": "https://music.apple.com/us/album/one-two/6790487991?i=6790488176&uo=4",
+      "match": "exact artist and title"
+    },
+    {
       "id": "6a65c7ff7dc581ca0d3e021b",
       "title": "La Curiosidad",
       "artist": "Jay Wheeler, DJ Nelson, Myke Towers",
@@ -1870,6 +1896,19 @@
       "source_artist": "Manuel Turizo & Beéle",
       "source_album": "2000",
       "source_url": "https://music.apple.com/us/album/jamaica/1674688983?i=1674688987&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6a665096b28fc87dd756b7c8",
+      "title": "Pikito",
+      "artist": "Ozuna, Beéle",
+      "before": "Other",
+      "genre": "Latin",
+      "source_genre": "Urbano latino",
+      "source_title": "Pikito",
+      "source_artist": "Ozuna & Beéle",
+      "source_album": "Stendhal",
+      "source_url": "https://music.apple.com/us/album/pikito/1849747469?i=1849747471&uo=4",
       "match": "exact artist and title"
     },
     {
@@ -14847,20 +14886,6 @@
       "album_name": "Killshot"
     },
     {
-      "id": "6a65c7f9c081fe0f6aab861e",
-      "title": "Money Over Everything",
-      "artist": "Future",
-      "genre": "Other",
-      "album_name": "The Real Me"
-    },
-    {
-      "id": "6a65c7fc9e5e6379ce48420c",
-      "title": "One Two",
-      "artist": "Future",
-      "genre": "Other",
-      "album_name": "The Real Me"
-    },
-    {
       "id": "6a65c8038c66ce4dd6c104ee",
       "title": "Días Lluviosos (with Lenny Tavarez)",
       "artist": "Juhn, Lenny Tavarez",
@@ -14915,13 +14940,6 @@
       "artist": "Ozuna, Beéle",
       "genre": "Other",
       "album_name": "Stendhal"
-    },
-    {
-      "id": "6a665096b28fc87dd756b7c8",
-      "title": "Pikito",
-      "artist": "Ozuna, Beéle",
-      "genre": "Other",
-      "album_name": "Pikito"
     },
     {
       "id": "6a66509af4773cff4b31f8d7",
@@ -19938,5 +19956,5 @@
       "album_name": ""
     }
   ],
-  "searched_terms": 640
+  "searched_terms": 668
 }
