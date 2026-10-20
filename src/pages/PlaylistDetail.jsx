@@ -1,3 +1,6 @@
+import './track-editorial.css';
+import {useReleaseTheme} from '@/hooks/useReleaseTheme';
+import ReleaseAtmosphere from '@/components/ReleaseAtmosphere';
 import { getPlaylist } from "@/lib/collaborativePlaylists";
 import PlaylistCollaborators from "@/components/playlist/PlaylistCollaborators";
 import PlaylistActionsSheet from '@/components/playlist/PlaylistActionsSheet';
@@ -43,6 +46,7 @@ export default function PlaylistDetail() {
   const isOwn = !!user && playlist?.creator_id === user.id;
   const canEditSongs = isOwn || !!user && playlist?.collaboration_enabled && (playlist.collaborator_ids || []).includes(user.id);
   const cover = useCoverUrl(preview || playlist?.cover_art_url || tracks.find((t) => t.cover_art_url)?.cover_art_url || '');
+  const releaseTheme=useReleaseTheme(cover);
   const collage = useMemo(() => [...new Set(tracks.map((t) => t.cover_art_url).filter(Boolean))].slice(0, 4), [tracks]);
   const useCollage = !preview && !playlist?.cover_art_url && collage.length === 4;
   const sameQueue = tracks.length > 0 && p.queue?.length === tracks.length && tracks.every((t, i) => p.queue[i]?.id === t.id);
@@ -107,20 +111,21 @@ export default function PlaylistDetail() {
   if (error && !playlist) return <LoadError onRetry={load} />;
   if (loading && !playlist) return <div className="py-16 grid place-items-center"><Loader2 className="animate-spin" /></div>;
   if (!playlist) return <EmptyState title="Playlist unavailable" />;
-  return <div className="playlist-page playlist-editorial mx-auto pb-8" data-managing={managing && canEditSongs}>
-  <nav className="playlist-page-nav" aria-label="Playlist navigation"><button type="button" disabled={busy} onClick={() => nav('/library')} className="playlist-circle" aria-label="Back to Library"><ChevronLeft size={23} /></button><span>YOUR PUBLIC · PLAYLIST</span><div><button type="button" onClick={share} className="playlist-circle" aria-label="Share playlist"><Share2 size={19} /></button><button type="button" disabled={busy} onClick={() => setShowMore(true)} className="playlist-circle" aria-label="More playlist options" aria-haspopup="dialog" aria-expanded={showMore}><MoreHorizontal size={21} /></button></div></nav>
+  return <div className="playlist-page playlist-editorial track-page track-editorial" style={releaseTheme} data-managing={managing && canEditSongs}>
+  <ReleaseAtmosphere theme={releaseTheme}/>
+  <nav className="playlist-page-nav release-toolbar" aria-label="Playlist navigation"><button type="button" disabled={busy} onClick={() => nav('/library')} className="playlist-circle release-round" aria-label="Back to Library"><ChevronLeft size={23} /></button><span className="sr-only">Playlist</span><div className="release-toolbar-actions"><button type="button" onClick={share} className="playlist-circle release-round" aria-label="Share playlist"><Share2 size={19} /></button><button type="button" disabled={busy} onClick={() => setShowMore(true)} className="playlist-circle release-round" aria-label="More playlist options" aria-haspopup="dialog" aria-expanded={showMore}><MoreHorizontal size={21} /></button></div></nav>
   {error && <button disabled={loading || busy || editing} onClick={load} className="playlist-action mb-4">Refresh playlist</button>}
-  <section className="playlist-hero">
-   <div className={"playlist-cover " + (useCollage ? "playlist-collage" : "")} role="img" aria-label={playlist.name + " playlist artwork"}>{useCollage ? collage.map((url) => <PlaylistArtwork key={url} url={url} />) : cover ? <img src={cover} alt="Playlist cover" className="w-full h-full object-cover" /> : <div className="playlist-art-placeholder"><ListMusic size={52} /><span>PUBLIC.</span></div>}
+  <section className="playlist-hero release-header-full">
+   <div className={"playlist-cover release-art " + (useCollage ? "playlist-collage" : "")} role="img" aria-label={playlist.name + " playlist artwork"}>{useCollage ? collage.map((url) => <PlaylistArtwork key={url} url={url} />) : cover ? <img src={cover} alt="Playlist cover" className="w-full h-full object-cover" /> : <div className="playlist-art-placeholder"><ListMusic size={52} /><span>PUBLIC.</span></div>}
     {isOwn && editing && <label className="absolute bottom-3 inset-x-3 bg-background/90 border rounded-full px-3 py-2 flex items-center justify-center gap-2 text-xs cursor-pointer"><ImagePlus size={15} />Change cover<input aria-label="Playlist cover" disabled={busy} type="file" accept="image/jpeg,image/png,image/webp" className="hidden" onChange={(e) => {const f = e.target.files?.[0];e.target.value = '';if (!f || writeLock.current) return;if (!['image/jpeg', 'image/png', 'image/webp'].includes(f.type) || f.size > 10 * 1024 * 1024) {toast({ title: 'Choose a JPEG, PNG or WebP image under 10 MB', variant: 'destructive' });return;}setCoverFile(f);setPreview(URL.createObjectURL(f));}} /></label>}
    </div>
-   <div className="playlist-info min-w-0 flex-1">
-    <p className="eyebrow mb-3">{playlist.is_public ? 'Public playlist' : 'Private playlist'}</p>
+   <div className="playlist-info track-release-info min-w-0 flex-1">
+    <p className="eyebrow track-release-kicker mb-3">{playlist.is_public ? 'Public playlist' : 'Private playlist'}</p>
     {editing ? <input aria-label="Playlist name" disabled={busy} maxLength={160} className="playlist-title bg-transparent border-b w-full" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} /> : <h1 className="playlist-title break-words">{playlist.name}</h1>}
     {editing ? <><textarea aria-label="Playlist description" disabled={busy} maxLength={2000} rows={3} className="w-full mt-4 bg-background border rounded-xl p-3 text-sm" value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} /><label className="flex gap-2 items-center text-sm my-4"><input type="checkbox" disabled={busy} checked={form.is_public} onChange={(e) => setForm({ ...form, is_public: e.target.checked })} />Public — anyone can find this playlist</label></> : playlist.description && <p className="text-muted-foreground text-sm leading-relaxed max-w-xl mt-4 whitespace-pre-wrap">{playlist.description}</p>}
     <p className="text-sm text-muted-foreground mt-4 mb-5">{tracks.length} songs · {Math.floor(total / 3600) > 0 ? Math.floor(total / 3600) + ' hr ' : ''}{Math.floor(total / 60) % 60} min{missing > 0 ? ' · ' + missing + ' unavailable' : ''}</p>
-    <div className="playlist-controls">
-     {!editing && <><button type="button" disabled={!tracks.length} onClick={() => playlistActive ? p.togglePlay() : playAll(false)} className="chrome-button playlist-primary-play" aria-label={(playlistPlaying ? "Pause " : playlistActive ? "Resume " : "Play ") + playlist.name}>{playlistPlaying ? <Pause size={19} fill="currentColor" /> : <Play size={19} fill="currentColor" />}{playlistPlaying ? "Pause" : playlistActive ? "Resume" : "Play"}</button><button type="button" disabled={!tracks.length} onClick={() => playAll(true)} className="playlist-action playlist-shuffle"><Shuffle size={19} />Shuffle</button>{!isOwn && <button type="button" disabled={busy} onClick={toggleSaved} className="playlist-circle playlist-save" aria-label={saved ? "Remove playlist from library" : "Save playlist to library"} aria-pressed={saved}>{saved ? <Check size={20} /> : <Plus size={20} />}</button>}</>}
+    <div className="playlist-controls release-play-controls">
+     {!editing && <><button type="button" disabled={!tracks.length} onClick={()=>playAll(true)} className="playlist-circle release-add-button playlist-shuffle-icon" aria-label="Shuffle playlist"><Shuffle size={21}/></button><button type="button" disabled={!tracks.length} onClick={() => playlistActive ? p.togglePlay() : playAll(false)} className="playlist-primary-play release-play-button" aria-label={(playlistPlaying ? "Pause " : playlistActive ? "Resume " : "Play ") + playlist.name}>{playlistPlaying ? <Pause size={19} fill="currentColor" /> : <Play size={19} fill="currentColor" />}{playlistPlaying ? "Pause" : playlistActive ? "Resume" : "Play"}</button>{isOwn?<button type="button" disabled={busy||editing} onClick={()=>setShowAdd(true)} className="playlist-circle release-add-button" aria-label="Add songs to playlist"><Plus size={21}/></button>:  <button type="button" disabled={busy} onClick={toggleSaved} className="playlist-circle playlist-save release-add-button" aria-label={saved ? "Remove playlist from library" : "Save playlist to library"} aria-pressed={saved}>{saved ? <Check size={20} /> : <Plus size={20} />}</button>}</>}
      {editing && <><button type="button" disabled={busy || !form.name.trim()} onClick={saveEdit} className="chrome-button">{busy ? 'Saving…' : 'Save changes'}</button><button type="button" disabled={busy} onClick={() => {setEditing(false);setCoverFile(null);setPreview('');setForm({ name: playlist.name, description: playlist.description || '', is_public: !!playlist.is_public });}} className="playlist-action">Cancel</button><button type="button" disabled={busy} className="playlist-action text-destructive" onClick={() => {if (confirm('Delete this playlist? Your songs will remain on PUBLIC.')) write(async () => {await base44.entities.Playlist.delete(id);nav('/library');});}}><Trash2 size={16} />Delete playlist</button></>}
     </div>
     {playlist.is_public && tracks.some((t) => !t.is_published) && <p className="text-xs text-muted-foreground mt-3">Private or pending songs are only playable by their owner until published.</p>}
@@ -135,7 +140,7 @@ export default function PlaylistDetail() {
 
 
     
-  {tracks.length>0&&<div className="flex flex-wrap items-center gap-3 mb-4">
+  {tracks.length>0&&<div className="playlist-search-tools flex flex-wrap items-center gap-3 mb-4">
    <label className="flex items-center gap-2 border border-border rounded-xl px-3 min-h-11 flex-1 min-w-0"><Search size={17} className="shrink-0 text-muted-foreground"/><input aria-label="Find songs in playlist" type="search" value={query} onChange={e=>setQuery(e.target.value)} placeholder="Find a song" className="w-full min-w-0 bg-transparent outline-none text-sm py-2"/></label>
    <select aria-label="Sort playlist songs" value={sort} onChange={e=>setSort(e.target.value)} className="min-h-11 max-w-full rounded-xl border border-border bg-background px-3 text-sm"><option value="custom">Playlist order</option><option value="title">Song title</option><option value="artist">Artist</option><option value="duration">Longest first</option><option value="shortest">Shortest first</option></select>
    {canEditSongs&&managing&&view.length>0&&<button type="button" disabled={busy} className="playlist-action" onClick={()=>setSelected(prev=>new Set([...prev,...view.map(t=>t.id)]))}>Select visible</button>}
