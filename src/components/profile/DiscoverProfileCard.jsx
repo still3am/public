@@ -52,10 +52,10 @@ export default function DiscoverProfileCard({person,active,direction,children}){
  const cover=useCoverUrl(automatic?featured?.cover_art_url:"");
  const {colors:coverColors}=useCoverPalette(cover);
  const palette=person.profile_background_mode==="off"?[]:automatic?coverColors.slice(0,3):(Array.isArray(person.profile_background_colors)?person.profile_background_colors:[]).filter(color=>/^#[0-9a-f]{6}$/i.test(color)).slice(0,3);
- const hasGradient=palette.length>0;
+ const hasGradient=palette.length>0||automatic&&!!cover;
  const gradientStyle=hasGradient?{"--foreground":"0 0% 100%","--background":"240 6% 8%","--card":"240 6% 8%","--muted-foreground":"0 0% 88%","--border":"0 0% 100% / .22"}:undefined;
  return <article style={gradientStyle} className={"discover-mini-profile "+(hasGradient?"has-profile-gradient ":"")+(direction<0?"from-previous":"from-next")} aria-label={"Suggested profile: "+name}>
-  {hasGradient&&<MotionGradient className="discover-profile-gradient" colors={palette} motion={person.profile_background_motion==="still"?"still":"flow"} speed={Math.max(.35,Math.min(1.6,Number(person.profile_background_speed)||1))} active={active} pauseWhenCovered/>}
+  {palette.length>0?<MotionGradient className="discover-profile-gradient" colors={palette} motion={person.profile_background_motion==="still"?"still":"flow"} speed={Math.max(.35,Math.min(1.6,Number(person.profile_background_speed)||1))} active={active} pauseWhenCovered/>:automatic&&cover?<div aria-hidden="true" className="discover-profile-gradient" style={{backgroundImage:`url(${JSON.stringify(cover)})`,backgroundSize:"cover",backgroundPosition:"center",filter:"blur(35px) saturate(1.35)",transform:"scale(1.12)"}}/>:null}
   <div className={"discover-mini-banner "+(!hasBanner?"is-default":"")}>
    {hasBanner?<ProfileMedia src={person.banner_url} mobileSrc={person.banner_mobile_url} videoSrc={person.banner_video_url} gifSrc={person.banner_gif_url} active={active}/>:<Music size={48} strokeWidth={1} aria-hidden="true"/>}
   </div>
