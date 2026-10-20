@@ -344317,5 +344317,1211 @@
         "trackId": 1403493452
       }
     ]
+  },
+  "mixTerm|Delta Goodrem Hologram": {
+    "query_url": "https://itunes.apple.com/search?term=Delta+Goodrem+Hologram&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": [
+      {
+        "trackName": "Hold On",
+        "artistName": "Delta Goodrem",
+        "collectionName": "Wings of the Wild",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/hold-on/1126253822?i=1126254125&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/hold-on/1126253822?i=1126254125&uo=4",
+        "trackId": 1126254125
+      }
+    ]
+  },
+  "mixTerm|Stephanie Haavik Holy Moment": {
+    "query_url": "https://itunes.apple.com/search?term=Stephanie+Haavik+Holy+Moment&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": []
+  },
+  "mixTerm|Steven Malcolm Holy Water": {
+    "query_url": "https://itunes.apple.com/search?term=Steven+Malcolm+Holy+Water&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": [
+      {
+        "trackName": "Holy Water",
+        "artistName": "Steven Malcolm & Soul-Rebel Marley",
+        "collectionName": "Holy Water - Single",
+        "primaryGenreName": "Hip-Hop/Rap",
+        "trackViewUrl": "https://music.apple.com/us/album/holy-water/6788507700?i=6788507702&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/holy-water/6788507700?i=6788507702&uo=4",
+        "trackId": 6788507702
+      },
+      {
+        "trackName": "Activate (feat. Steven Malcolm)",
+        "artistName": "Tedashii",
+        "collectionName": "Activate - Single",
+        "primaryGenreName": "Hip-Hop/Rap",
+        "trackViewUrl": "https://music.apple.com/us/album/activate-feat-steven-malcolm/1472671538?i=1472671554&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/activate-feat-steven-malcolm/1472671538?i=1472671554&uo=4",
+        "trackId": 1472671554
+      },
+      {
+        "trackName": "Fuego",
+        "artistName": "Steven Malcolm & Anderson Michael",
+        "collectionName": "The Second City",
+        "primaryGenreName": "Hip-Hop/Rap",
+        "trackViewUrl": "https://music.apple.com/us/album/fuego/1448039096?i=1448039106&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/fuego/1448039096?i=1448039106&uo=4",
+        "trackId": 1448039106
+      },
+      {
+        "trackName": "Party in the Hills (feat. Steven Malcolm & Andy Mineo)",
+        "artistName": "Hollyn",
+        "collectionName": "One-Way Conversations",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/party-in-the-hills-feat-steven-malcolm-andy-mineo/1533133449?i=1533133587&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/party-in-the-hills-feat-steven-malcolm-andy-mineo/1533133449?i=1533133587&uo=4",
+        "trackId": 1533133587
+      },
+      {
+        "trackName": "Ohh Yea (feat. Steven Malcolm)",
+        "artistName": "Json",
+        "collectionName": "Foreign, Vol. 1",
+        "primaryGenreName": "Hip-Hop/Rap",
+        "trackViewUrl": "https://music.apple.com/us/album/ohh-yea-feat-steven-malcolm/1123264592?i=1123264649&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/ohh-yea-feat-steven-malcolm/1123264592?i=1123264649&uo=4",
+        "trackId": 1123264649
+      },
+      {
+        "trackName": "Devil Is a Liar",
+        "artistName": "Steven Malcolm",
+        "collectionName": "The Second City",
+        "primaryGenreName": "Hip-Hop/Rap",
+        "trackViewUrl": "https://music.apple.com/us/album/devil-is-a-liar/1448039096?i=1448039175&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/devil-is-a-liar/1448039096?i=1448039175&uo=4",
+        "trackId": 1448039175
+      },
+      {
+        "trackName": "RESPECT",
+        "artistName": "Steven Malcolm",
+        "collectionName": "Tree",
+        "primaryGenreName": "Hip-Hop/Rap",
+        "trackViewUrl": "https://music.apple.com/us/album/respect/1604260756?i=1604260769&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/respect/1604260756?i=1604260769&uo=4",
+        "trackId": 1604260769
+      },
+      {
+        "trackName": "Ain't Playin'",
+        "artistName": "Steven Malcolm & Social Club Misfits",
+        "collectionName": "Tree",
+        "primaryGenreName": "Hip-Hop/Rap",
+        "trackViewUrl": "https://music.apple.com/us/album/aint-playin/1604260756?i=1604260766&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/aint-playin/1604260756?i=1604260766&uo=4",
+        "trackId": 1604260766
+      },
+      {
+        "trackName": "Rooftop Freestyle",
+        "artistName": "Steven Malcolm & Derek Minor",
+        "collectionName": "Rooftop Freestyle - Single",
+        "primaryGenreName": "Hip-Hop/Rap",
+        "trackViewUrl": "https://music.apple.com/us/album/rooftop-freestyle/1594406366?i=1594406367&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/rooftop-freestyle/1594406366?i=1594406367&uo=4",
+        "trackId": 1594406367
+      },
+      {
+        "trackName": "Not to Us / Good Love",
+        "artistName": "Steven Malcolm, Taylor Hill & Anderson Michael",
+        "collectionName": "The Second City",
+        "primaryGenreName": "Hip-Hop/Rap",
+        "trackViewUrl": "https://music.apple.com/us/album/not-to-us-good-love/1448039096?i=1448039097&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/not-to-us-good-love/1448039096?i=1448039097&uo=4",
+        "trackId": 1448039097
+      },
+      {
+        "trackName": "Be Alright (feat. Steven Malcolm)",
+        "artistName": "Evan and Eris",
+        "collectionName": "Seasons",
+        "primaryGenreName": "Christian",
+        "trackViewUrl": "https://music.apple.com/us/album/be-alright-feat-steven-malcolm/1764562243?i=1764562656&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/be-alright-feat-steven-malcolm/1764562243?i=1764562656&uo=4",
+        "trackId": 1764562656
+      },
+      {
+        "trackName": "Glory on Me",
+        "artistName": "Steven Malcolm, Childish Major & Taylor Hill",
+        "collectionName": "Glory on Me - Single",
+        "primaryGenreName": "Hip-Hop/Rap",
+        "trackViewUrl": "https://music.apple.com/us/album/glory-on-me/1559102093?i=1559102094&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/glory-on-me/1559102093?i=1559102094&uo=4",
+        "trackId": 1559102094
+      },
+      {
+        "trackName": "On Point",
+        "artistName": "Steven Malcolm & KB",
+        "collectionName": "On Point - Single",
+        "primaryGenreName": "Hip-Hop/Rap",
+        "trackViewUrl": "https://music.apple.com/us/album/on-point/1583859873?i=1583859874&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/on-point/1583859873?i=1583859874&uo=4",
+        "trackId": 1583859874
+      },
+      {
+        "trackName": "Even Louder",
+        "artistName": "Steven Malcolm & Natalie Grant",
+        "collectionName": "Even Louder - Single",
+        "primaryGenreName": "Christian",
+        "trackViewUrl": "https://music.apple.com/us/album/even-louder/1459314532?i=1459314533&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/even-louder/1459314532?i=1459314533&uo=4",
+        "trackId": 1459314533
+      },
+      {
+        "trackName": "Yes",
+        "artistName": "Steven Malcolm, for KING & COUNTRY & KB",
+        "collectionName": "Yes - Single",
+        "primaryGenreName": "Christian",
+        "trackViewUrl": "https://music.apple.com/us/album/yes/1817532315?i=1817532316&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/yes/1817532315?i=1817532316&uo=4",
+        "trackId": 1817532316
+      }
+    ]
+  },
+  "mixTerm|Ericson Alexander Molano Hombres De Valor": {
+    "query_url": "https://itunes.apple.com/search?term=Ericson+Alexander+Molano+Hombres+De+Valor&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": [
+      {
+        "trackName": "Hombres De Valor (feat. David Scarpeta)",
+        "artistName": "Ericson Alexander Molano, Daniel Calveti & Josh Morales",
+        "collectionName": "Hombres De Valor (feat. David Scarpeta) - Single",
+        "primaryGenreName": "Latin",
+        "trackViewUrl": "https://music.apple.com/us/album/hombres-de-valor-feat-david-scarpeta/1888003160?i=1888003161&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/hombres-de-valor-feat-david-scarpeta/1888003160?i=1888003161&uo=4",
+        "trackId": 1888003161
+      },
+      {
+        "trackName": "Hombres de Valor (Pista)",
+        "artistName": "Ericson Alexander Molano",
+        "collectionName": "Hombres de Valor (Pista) - Single",
+        "primaryGenreName": "Latin",
+        "trackViewUrl": "https://music.apple.com/us/album/hombres-de-valor-pista/6810308575?i=6810308583&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/hombres-de-valor-pista/6810308575?i=6810308583&uo=4",
+        "trackId": 6810308583
+      },
+      {
+        "trackName": "Hombres De Valor (Oración) [feat. David Scarpeta]",
+        "artistName": "Ericson Alexander Molano, Daniel Calveti & Josh Morales",
+        "collectionName": "Hombres De Valor (feat. David Scarpeta) - Single",
+        "primaryGenreName": "Latin",
+        "trackViewUrl": "https://music.apple.com/us/album/hombres-de-valor-oracio-n-feat-david-scarpeta/1888003160?i=1888003162&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/hombres-de-valor-oracio-n-feat-david-scarpeta/1888003160?i=1888003162&uo=4",
+        "trackId": 1888003162
+      },
+      {
+        "trackName": "Dios manda Lluvia",
+        "artistName": "Ericson Alexander Molano",
+        "collectionName": "Lo mejor de Ericson Alexander Molano en vivo desde México",
+        "primaryGenreName": "Latin",
+        "trackViewUrl": "https://music.apple.com/us/album/dios-manda-lluvia/6801408694?i=6801408881&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/dios-manda-lluvia/6801408694?i=6801408881&uo=4",
+        "trackId": 6801408881
+      }
+    ]
+  },
+  "mixTerm|Parisalexa HONEYMOON": {
+    "query_url": "https://itunes.apple.com/search?term=Parisalexa+HONEYMOON&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": []
+  },
+  "mixTerm|Friyie Hop In": {
+    "query_url": "https://itunes.apple.com/search?term=Friyie+Hop+In&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": [
+      {
+        "trackName": "Hop In (feat. Hwa Sa & DPR LIVE)",
+        "artistName": "Uhm Jung Hwa",
+        "collectionName": "Hop In (feat. Hwa Sa & DPR LIVE) - Single",
+        "primaryGenreName": "K-Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/hop-in-feat-hwa-sa-dpr-live/1544944431?i=1544944432&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/hop-in-feat-hwa-sa-dpr-live/1544944431?i=1544944432&uo=4",
+        "trackId": 1544944432
+      },
+      {
+        "trackName": "Hop in (feat. DPR LIVE)",
+        "artistName": "MINO",
+        "collectionName": "TAKE",
+        "primaryGenreName": "K-Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/hop-in-feat-dpr-live/1536957716?i=1536957724&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/hop-in-feat-dpr-live/1536957716?i=1536957724&uo=4",
+        "trackId": 1536957724
+      },
+      {
+        "trackName": "Hop-in",
+        "artistName": "BLITZERS",
+        "collectionName": "SEAT-BELT - EP",
+        "primaryGenreName": "K-Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/hop-in/1878911442?i=1878911446&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/hop-in/1878911442?i=1878911446&uo=4",
+        "trackId": 1878911446
+      },
+      {
+        "trackName": "Flawless",
+        "artistName": "Friyie",
+        "collectionName": "Flawless - Single",
+        "primaryGenreName": "Hip-Hop/Rap",
+        "trackViewUrl": "https://music.apple.com/us/album/flawless/1488046555?i=1488046556&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/flawless/1488046555?i=1488046556&uo=4",
+        "trackId": 1488046556
+      },
+      {
+        "trackName": "Hop In",
+        "artistName": "ISO Indies",
+        "collectionName": "Iso Universal",
+        "primaryGenreName": "Hip-Hop",
+        "trackViewUrl": "https://music.apple.com/us/album/hop-in/1581760140?i=1581760145&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/hop-in/1581760140?i=1581760145&uo=4",
+        "trackId": 1581760145
+      }
+    ]
+  },
+  "mixTerm|Mikey Jose HOPE THIS FINDS U WELL": {
+    "query_url": "https://itunes.apple.com/search?term=Mikey+Jose+HOPE+THIS+FINDS+U+WELL&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": [
+      {
+        "trackName": "HOPE THIS FINDS U WELL",
+        "artistName": "Mikey Jose",
+        "collectionName": "HOPE THIS FINDS U WELL - EP",
+        "primaryGenreName": "R&B/Soul",
+        "trackViewUrl": "https://music.apple.com/us/album/hope-this-finds-u-well/6777045736?i=6777045738&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/hope-this-finds-u-well/6777045736?i=6777045738&uo=4",
+        "trackId": 6777045738
+      },
+      {
+        "trackName": "HOPE THIS FINDS U WELL",
+        "artistName": "Mikey Jose",
+        "collectionName": "CHASING / STILL",
+        "primaryGenreName": "R&B/Soul",
+        "trackViewUrl": "https://music.apple.com/us/album/hope-this-finds-u-well/6782627296?i=6782627307&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/hope-this-finds-u-well/6782627296?i=6782627307&uo=4",
+        "trackId": 6782627307
+      },
+      {
+        "trackName": "AY NAKO!",
+        "artistName": "Mikey Jose",
+        "collectionName": "HOPE THIS FINDS U WELL - EP",
+        "primaryGenreName": "R&B/Soul",
+        "trackViewUrl": "https://music.apple.com/us/album/ay-nako/6777045736?i=6777045741&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/ay-nako/6777045736?i=6777045741&uo=4",
+        "trackId": 6777045741
+      },
+      {
+        "trackName": "DENIAL (feat. Marie Dresselhuis)",
+        "artistName": "Mikey Jose",
+        "collectionName": "HOPE THIS FINDS U WELL - EP",
+        "primaryGenreName": "R&B/Soul",
+        "trackViewUrl": "https://music.apple.com/us/album/denial-feat-marie-dresselhuis/6777045736?i=6777045743&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/denial-feat-marie-dresselhuis/6777045736?i=6777045743&uo=4",
+        "trackId": 6777045743
+      },
+      {
+        "trackName": "BITING MY TONGUE",
+        "artistName": "Mikey Jose",
+        "collectionName": "HOPE THIS FINDS U WELL - EP",
+        "primaryGenreName": "R&B/Soul",
+        "trackViewUrl": "https://music.apple.com/us/album/biting-my-tongue/6777045736?i=6777045740&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/biting-my-tongue/6777045736?i=6777045740&uo=4",
+        "trackId": 6777045740
+      },
+      {
+        "trackName": "Wait (Remix)",
+        "artistName": "Francis Arevalo & Mikey Jose",
+        "collectionName": "Wait (Remix) - Single",
+        "primaryGenreName": "Hip-Hop/Rap",
+        "trackViewUrl": "https://music.apple.com/us/album/wait-remix/1861436115?i=1861436117&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/wait-remix/1861436115?i=1861436117&uo=4",
+        "trackId": 1861436117
+      },
+      {
+        "trackName": "Wait",
+        "artistName": "Mikey Jose",
+        "collectionName": "Wait - Single",
+        "primaryGenreName": "R&B/Soul",
+        "trackViewUrl": "https://music.apple.com/us/album/wait/1522823354?i=1522823355&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/wait/1522823354?i=1522823355&uo=4",
+        "trackId": 1522823355
+      },
+      {
+        "trackName": "Wait",
+        "artistName": "Mikey Jose",
+        "collectionName": "Hindsight",
+        "primaryGenreName": "R&B/Soul",
+        "trackViewUrl": "https://music.apple.com/us/album/wait/1530654855?i=1530654862&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/wait/1530654855?i=1530654862&uo=4",
+        "trackId": 1530654862
+      }
+    ]
+  },
+  "mixTerm|Latto Hostage": {
+    "query_url": "https://itunes.apple.com/search?term=Latto+Hostage&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": [
+      {
+        "trackName": "My Last Hostage",
+        "artistName": "The Life and Times",
+        "collectionName": "Suburban Hymns",
+        "primaryGenreName": "Rock",
+        "trackViewUrl": "https://music.apple.com/us/album/my-last-hostage/74263572?i=74263505&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/my-last-hostage/74263572?i=74263505&uo=4",
+        "trackId": 74263505
+      },
+      {
+        "trackName": "Hostage (feat. 21 Savage)",
+        "artistName": "Latto",
+        "collectionName": "Big Mama",
+        "primaryGenreName": "Rap",
+        "trackViewUrl": "https://music.apple.com/us/album/hostage-feat-21-savage/6776266526?i=6776266855&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/hostage-feat-21-savage/6776266526?i=6776266855&uo=4",
+        "trackId": 6776266855
+      },
+      {
+        "trackName": "Out of Options, I'm Killing My Last Hostage",
+        "artistName": "Herb Broadway",
+        "collectionName": "The Sheets at the Snooty Fox",
+        "primaryGenreName": "Hip-Hop/Rap",
+        "trackViewUrl": "https://music.apple.com/us/album/out-of-options-im-killing-my-last-hostage/1492854302?i=1492854885&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/out-of-options-im-killing-my-last-hostage/1492854302?i=1492854885&uo=4",
+        "trackId": 1492854885
+      }
+    ]
+  },
+  "mixTerm|Eagles Hotel California - 2013 Remaster": {
+    "query_url": "https://itunes.apple.com/search?term=Eagles+Hotel+California+-+2013+Remaster&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": [
+      {
+        "trackName": "Hotel California (2013 Remaster)",
+        "artistName": "Eagles",
+        "collectionName": "To the Limit: The Essential Collection",
+        "primaryGenreName": "Rock",
+        "trackViewUrl": "https://music.apple.com/us/album/hotel-california-2013-remaster/1729268430?i=1729270889&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/hotel-california-2013-remaster/1729268430?i=1729270889&uo=4",
+        "trackId": 1729270889
+      },
+      {
+        "trackName": "Hotel California (Remastered)",
+        "artistName": "Eagles",
+        "collectionName": "Hotel California (40th Anniversary Expanded Edition)",
+        "primaryGenreName": "Rock",
+        "trackViewUrl": "https://music.apple.com/us/album/hotel-california-remastered/1293903288?i=1293903289&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/hotel-california-remastered/1293903288?i=1293903289&uo=4",
+        "trackId": 1293903289
+      },
+      {
+        "trackName": "Hotel California (Live On MTV, 1994)",
+        "artistName": "Eagles",
+        "collectionName": "Hell Freezes Over (Remastered) [Live]",
+        "primaryGenreName": "Rock",
+        "trackViewUrl": "https://music.apple.com/us/album/hotel-california-live-on-mtv-1994/1453924216?i=1453925093&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/hotel-california-live-on-mtv-1994/1453924216?i=1453925093&uo=4",
+        "trackId": 1453925093
+      },
+      {
+        "trackName": "Hotel California",
+        "artistName": "Eagles",
+        "collectionName": "The Very Best of Eagles",
+        "primaryGenreName": "Rock",
+        "trackViewUrl": "https://music.apple.com/us/album/hotel-california/636866317?i=636867072&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/hotel-california/636866317?i=636867072&uo=4",
+        "trackId": 636867072
+      },
+      {
+        "trackName": "Hotel California",
+        "artistName": "Eagles",
+        "collectionName": "Eagles Greatest Hits, Vol. 2",
+        "primaryGenreName": "Rock",
+        "trackViewUrl": "https://music.apple.com/us/album/hotel-california/635807463?i=635807597&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/hotel-california/635807463?i=635807597&uo=4",
+        "trackId": 635807597
+      },
+      {
+        "trackName": "Hotel California (Live at the Los Angeles Forum, 10/20-22/76)",
+        "artistName": "Eagles",
+        "collectionName": "Hotel California (40th Anniversary Expanded Edition)",
+        "primaryGenreName": "Rock",
+        "trackViewUrl": "https://music.apple.com/us/album/hotel-california-live-at-the-los-angeles-forum-10-20-22-76/1293903288?i=1293903310&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/hotel-california-live-at-the-los-angeles-forum-10-20-22-76/1293903288?i=1293903310&uo=4",
+        "trackId": 1293903310
+      },
+      {
+        "trackName": "Hotel California (Live)",
+        "artistName": "Eagles",
+        "collectionName": "Eagles Live",
+        "primaryGenreName": "Rock",
+        "trackViewUrl": "https://music.apple.com/us/album/hotel-california-live/193434857?i=193434880&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/hotel-california-live/193434857?i=193434880&uo=4",
+        "trackId": 193434880
+      },
+      {
+        "trackName": "Hotel California",
+        "artistName": "Eagles",
+        "collectionName": "Hotel California",
+        "primaryGenreName": "Rock",
+        "trackViewUrl": "https://music.apple.com/us/album/hotel-california/635788137?i=635788944&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/hotel-california/635788137?i=635788944&uo=4",
+        "trackId": 635788944
+      },
+      {
+        "trackName": "Hotel California",
+        "artistName": "Eagles",
+        "collectionName": "Selected Works 1972-1999",
+        "primaryGenreName": "Rock",
+        "trackViewUrl": "https://music.apple.com/us/album/hotel-california/779290454?i=779290515&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/hotel-california/779290454?i=779290515&uo=4",
+        "trackId": 779290515
+      },
+      {
+        "trackName": "Hotel California (Live at the Forum, Inglewood, CA, 2018)",
+        "artistName": "Eagles",
+        "collectionName": "Live from the Forum MMXVIII",
+        "primaryGenreName": "Rock",
+        "trackViewUrl": "https://music.apple.com/us/album/hotel-california-live-at-the-forum-inglewood-ca-2018/1521729134?i=1521729317&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/hotel-california-live-at-the-forum-inglewood-ca-2018/1521729134?i=1521729317&uo=4",
+        "trackId": 1521729317
+      },
+      {
+        "trackName": "Hotel California (Spanish Mix)",
+        "artistName": "Gipsy Kings",
+        "collectionName": "¡Volaré! The Very Best of the Gipsy Kings",
+        "primaryGenreName": "Latin",
+        "trackViewUrl": "https://music.apple.com/us/album/hotel-california-spanish-mix/31739281?i=31739384&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/hotel-california-spanish-mix/31739281?i=31739384&uo=4",
+        "trackId": 31739384
+      },
+      {
+        "trackName": "Hotel California",
+        "artistName": "Rockabye Baby!",
+        "collectionName": "Lullaby Renditions of the Eagles",
+        "primaryGenreName": "Lullabies",
+        "trackViewUrl": "https://music.apple.com/us/album/hotel-california/982705045?i=982705046&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/hotel-california/982705045?i=982705046&uo=4",
+        "trackId": 982705046
+      },
+      {
+        "trackName": "Hotel California (Remastered)",
+        "artistName": "Eagles",
+        "collectionName": "Hotel California",
+        "primaryGenreName": "Rock",
+        "trackViewUrl": "https://music.apple.com/us/album/hotel-california-remastered/1440199153?i=1440200257&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/hotel-california-remastered/1440199153?i=1440200257&uo=4",
+        "trackId": 1440200257
+      },
+      {
+        "trackName": "Hotel California (Live at Staples Center, Los Angeles, CA, 12/31/1999) [Remastered]",
+        "artistName": "Eagles",
+        "collectionName": "The Milennium Concert",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/hotel-california-live-at-staples-center-los-angeles/1440199153?i=1440202920&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/hotel-california-live-at-staples-center-los-angeles/1440199153?i=1440202920&uo=4",
+        "trackId": 1440202920
+      },
+      {
+        "trackName": "Hotel California (Live in Santa Monica, 7/29/1980) [Remastered]",
+        "artistName": "Eagles",
+        "collectionName": "Eagles Live",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/hotel-california-live-in-santa-monica-7-29-1980-remastered/1440199153?i=1440201513&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/hotel-california-live-in-santa-monica-7-29-1980-remastered/1440199153?i=1440201513&uo=4",
+        "trackId": 1440201513
+      }
+    ]
+  },
+  "mixTerm|hey Hound": {
+    "query_url": "https://itunes.apple.com/search?term=hey+Hound&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": [
+      {
+        "trackName": "Hey Hound",
+        "artistName": "Aaron LaVigne",
+        "collectionName": "The DownTown Crowd",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/hey-hound/398815113?i=398815114&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/hey-hound/398815113?i=398815114&uo=4",
+        "trackId": 398815114
+      },
+      {
+        "trackName": "Hey, Hound Dog!",
+        "artistName": "Ken Lonnquist",
+        "collectionName": "Vicious Fishes",
+        "primaryGenreName": "Children's Music",
+        "trackViewUrl": "https://music.apple.com/us/album/hey-hound-dog/388318922?i=388319293&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/hey-hound-dog/388318922?i=388319293&uo=4",
+        "trackId": 388319293
+      },
+      {
+        "trackName": "Hound",
+        "artistName": "hey, nothing",
+        "collectionName": "Hound",
+        "primaryGenreName": "Rock",
+        "trackViewUrl": "https://music.apple.com/us/album/hound/6773501948?i=6773501949&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/hound/6773501948?i=6773501949&uo=4",
+        "trackId": 6773501949
+      },
+      {
+        "trackName": "Hey Daddy (Daddy's Home) [feat. Plies]",
+        "artistName": "USHER",
+        "collectionName": "Hey Daddy (Daddy's Home) [feat. Plies] - Single",
+        "primaryGenreName": "R&B/Soul",
+        "trackViewUrl": "https://music.apple.com/us/album/hey-daddy-daddys-home-feat-plies/344673511?i=344673600&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/hey-daddy-daddys-home-feat-plies/344673511?i=344673600&uo=4",
+        "trackId": 344673600
+      },
+      {
+        "trackName": "Hey Driver (feat. The War and Treaty)",
+        "artistName": "Zach Bryan",
+        "collectionName": "Zach Bryan",
+        "primaryGenreName": "Country",
+        "trackViewUrl": "https://music.apple.com/us/album/hey-driver-feat-the-war-and-treaty/1703216858?i=1703217238&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/hey-driver-feat-the-war-and-treaty/1703216858?i=1703217238&uo=4",
+        "trackId": 1703217238
+      },
+      {
+        "trackName": "Hey, Hound Dog!",
+        "artistName": "Ken Lonnquist",
+        "collectionName": "Vicious Fishes",
+        "primaryGenreName": "Children's Music",
+        "trackViewUrl": "https://music.apple.com/us/album/hey-hound-dog/1466823714?i=1466823788&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/hey-hound-dog/1466823714?i=1466823788&uo=4",
+        "trackId": 1466823788
+      },
+      {
+        "trackName": "Arteries",
+        "artistName": "hey, nothing",
+        "collectionName": "Hound",
+        "primaryGenreName": "Rock",
+        "trackViewUrl": "https://music.apple.com/us/album/arteries/6773501948?i=6773501965&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/arteries/6773501948?i=6773501965&uo=4",
+        "trackId": 6773501965
+      },
+      {
+        "trackName": "Beluga Whale (Call Again)",
+        "artistName": "hey, nothing",
+        "collectionName": "Hound",
+        "primaryGenreName": "Rock",
+        "trackViewUrl": "https://music.apple.com/us/album/beluga-whale-call-again/6773501948?i=6773501953&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/beluga-whale-call-again/6773501948?i=6773501953&uo=4",
+        "trackId": 6773501953
+      },
+      {
+        "trackName": "Drywall",
+        "artistName": "hey, nothing",
+        "collectionName": "Hound",
+        "primaryGenreName": "Alternative",
+        "trackViewUrl": "https://music.apple.com/us/album/drywall/6773501948?i=6773501954&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/drywall/6773501948?i=6773501954&uo=4",
+        "trackId": 6773501954
+      },
+      {
+        "trackName": "Black Bear",
+        "artistName": "hey, nothing",
+        "collectionName": "Hound",
+        "primaryGenreName": "Alternative",
+        "trackViewUrl": "https://music.apple.com/us/album/black-bear/6773501948?i=6773501950&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/black-bear/6773501948?i=6773501950&uo=4",
+        "trackId": 6773501950
+      },
+      {
+        "trackName": "Hey Ladies",
+        "artistName": "Destiny's Child",
+        "collectionName": "The Writing's On the Wall",
+        "primaryGenreName": "R&B/Soul",
+        "trackViewUrl": "https://music.apple.com/us/album/hey-ladies/266809606?i=266809738&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/hey-ladies/266809606?i=266809738&uo=4",
+        "trackId": 266809738
+      },
+      {
+        "trackName": "Long Time Leaver (feat. Bea Porges)",
+        "artistName": "hey, nothing",
+        "collectionName": "Hound",
+        "primaryGenreName": "Rock",
+        "trackViewUrl": "https://music.apple.com/us/album/long-time-leaver-feat-bea-porges/6773501948?i=6773501952&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/long-time-leaver-feat-bea-porges/6773501948?i=6773501952&uo=4",
+        "trackId": 6773501952
+      },
+      {
+        "trackName": "Hound Dog",
+        "artistName": "Shonka Dukureh",
+        "collectionName": "ELVIS (Original Motion Picture Soundtrack)",
+        "primaryGenreName": "Soundtrack",
+        "trackViewUrl": "https://music.apple.com/us/album/hound-dog/1628655047?i=1628655428&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/hound-dog/1628655047?i=1628655428&uo=4",
+        "trackId": 1628655428
+      },
+      {
+        "trackName": "Your Idol (CG5 Version)",
+        "artistName": "CG5 & Silva Hound",
+        "collectionName": "Your Idol (CG5 Version) - Single",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/your-idol-cg5-version/1824020996?i=1824021001&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/your-idol-cg5-version/1824020996?i=1824021001&uo=4",
+        "trackId": 1824021001
+      },
+      {
+        "trackName": "Hey Mr. D.J.",
+        "artistName": "Zhané",
+        "collectionName": "Pronounced Jah-Nay",
+        "primaryGenreName": "R&B/Soul",
+        "trackViewUrl": "https://music.apple.com/us/album/hey-mr-d-j/1443120621?i=1443120626&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/hey-mr-d-j/1443120621?i=1443120626&uo=4",
+        "trackId": 1443120626
+      }
+    ]
+  },
+  "mixTerm|The Animals House Of The Rising Sun": {
+    "query_url": "https://itunes.apple.com/search?term=The+Animals+House+Of+The+Rising+Sun&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": [
+      {
+        "trackName": "House of the Rising Sun",
+        "artistName": "The Animals",
+        "collectionName": "Retrospective",
+        "primaryGenreName": "British Invasion",
+        "trackViewUrl": "https://music.apple.com/us/album/house-of-the-rising-sun/1440743736?i=1440743961&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/house-of-the-rising-sun/1440743736?i=1440743961&uo=4",
+        "trackId": 1440743961
+      },
+      {
+        "trackName": "House of the Rising Sun",
+        "artistName": "Five Finger Death Punch",
+        "collectionName": "A Decade of Destruction",
+        "primaryGenreName": "Rock",
+        "trackViewUrl": "https://music.apple.com/us/album/house-of-the-rising-sun/1853963122?i=1853963256&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/house-of-the-rising-sun/1853963122?i=1853963256&uo=4",
+        "trackId": 1853963256
+      },
+      {
+        "trackName": "House of the Rising Sun",
+        "artistName": "The Animals",
+        "collectionName": "The Animals (Bonus Track)",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/house-of-the-rising-sun/1440781967?i=1440781975&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/house-of-the-rising-sun/1440781967?i=1440781975&uo=4",
+        "trackId": 1440781975
+      },
+      {
+        "trackName": "House of the Rising Sun",
+        "artistName": "Sinéad O'Connor",
+        "collectionName": "Thank You for Hearing Me",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/house-of-the-rising-sun/1629188077?i=1629188084&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/house-of-the-rising-sun/1629188077?i=1629188084&uo=4",
+        "trackId": 1629188084
+      },
+      {
+        "trackName": "House of the Rising Sun",
+        "artistName": "The Animals",
+        "collectionName": "The Best of The Animals",
+        "primaryGenreName": "British Invasion",
+        "trackViewUrl": "https://music.apple.com/us/album/house-of-the-rising-sun/1452866826?i=1452866831&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/house-of-the-rising-sun/1452866826?i=1452866831&uo=4",
+        "trackId": 1452866831
+      },
+      {
+        "trackName": "House of the Rising Sun (American Idol Performance)",
+        "artistName": "Haley Reinhart",
+        "collectionName": "House of the Rising Sun (American Idol Performance) - Single",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/house-of-the-rising-sun-american-idol-performance/1445277459?i=1445277702&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/house-of-the-rising-sun-american-idol-performance/1445277459?i=1445277702&uo=4",
+        "trackId": 1445277702
+      },
+      {
+        "trackName": "House of the Rising Sun",
+        "artistName": "Odetta",
+        "collectionName": "Vanguard Visionaries",
+        "primaryGenreName": "Singer/Songwriter",
+        "trackViewUrl": "https://music.apple.com/us/album/house-of-the-rising-sun/711611777?i=711613071&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/house-of-the-rising-sun/711611777?i=711613071&uo=4",
+        "trackId": 711613071
+      },
+      {
+        "trackName": "House of the Rising Sun",
+        "artistName": "The Animals",
+        "collectionName": "The Animals",
+        "primaryGenreName": "British Invasion",
+        "trackViewUrl": "https://music.apple.com/us/album/house-of-the-rising-sun/1453153976?i=1453153998&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/house-of-the-rising-sun/1453153976?i=1453153998&uo=4",
+        "trackId": 1453153998
+      },
+      {
+        "trackName": "House of the Rising Sun",
+        "artistName": "Five Finger Death Punch",
+        "collectionName": "The Wrong Side of Heaven and the Righteous Side of Hell, Vol. 2",
+        "primaryGenreName": "Rock",
+        "trackViewUrl": "https://music.apple.com/us/album/house-of-the-rising-sun/1849801244?i=1849801925&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/house-of-the-rising-sun/1849801244?i=1849801925&uo=4",
+        "trackId": 1849801925
+      },
+      {
+        "trackName": "House of the Rising Sun (feat. Hildegard von Blingin')",
+        "artistName": "Algal",
+        "collectionName": "House of the Rising Sun (feat. Hildegard von Blingin') - Single",
+        "primaryGenreName": "Folk",
+        "trackViewUrl": "https://music.apple.com/us/album/house-of-the-rising-sun-feat-hildegard-von-blingin/1629852357?i=1629852360&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/house-of-the-rising-sun-feat-hildegard-von-blingin/1629852357?i=1629852360&uo=4",
+        "trackId": 1629852360
+      },
+      {
+        "trackName": "House of the Rising Sun",
+        "artistName": "Jeremy Renner",
+        "collectionName": "House of the Rising Sun - Single",
+        "primaryGenreName": "Rock",
+        "trackViewUrl": "https://music.apple.com/us/album/house-of-the-rising-sun/1470085638?i=1470085645&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/house-of-the-rising-sun/1470085638?i=1470085645&uo=4",
+        "trackId": 1470085645
+      },
+      {
+        "trackName": "House of the Rising Sun",
+        "artistName": "The Dead South",
+        "collectionName": "This Little Light of Mine / House of the Rising Sun - Single",
+        "primaryGenreName": "Folk",
+        "trackViewUrl": "https://music.apple.com/us/album/house-of-the-rising-sun/1500698892?i=1500699480&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/house-of-the-rising-sun/1500698892?i=1500699480&uo=4",
+        "trackId": 1500699480
+      },
+      {
+        "trackName": "House of the Rising Sun",
+        "artistName": "Audiomachine",
+        "collectionName": "Trailerized: Covers and Originals",
+        "primaryGenreName": "Rock",
+        "trackViewUrl": "https://music.apple.com/us/album/house-of-the-rising-sun/1492572438?i=1492572443&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/house-of-the-rising-sun/1492572438?i=1492572443&uo=4",
+        "trackId": 1492572443
+      },
+      {
+        "trackName": "House of the Rising Sun",
+        "artistName": "J.R. Richards",
+        "collectionName": "Under the Cover",
+        "primaryGenreName": "Alternative",
+        "trackViewUrl": "https://music.apple.com/us/album/house-of-the-rising-sun/1443018222?i=1443018230&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/house-of-the-rising-sun/1443018222?i=1443018230&uo=4",
+        "trackId": 1443018230
+      },
+      {
+        "trackName": "House of the Rising Sun",
+        "artistName": "Geoff Castellucci",
+        "collectionName": "House of the Rising Sun - Single",
+        "primaryGenreName": "Blues",
+        "trackViewUrl": "https://music.apple.com/us/album/house-of-the-rising-sun/1584159502?i=1584159509&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/house-of-the-rising-sun/1584159502?i=1584159509&uo=4",
+        "trackId": 1584159509
+      }
+    ]
+  },
+  "mixTerm|Meek Mill House Party": {
+    "query_url": "https://itunes.apple.com/search?term=Meek+Mill+House+Party&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": [
+      {
+        "trackName": "House Party (feat. Young Chris)",
+        "artistName": "Meek Mill",
+        "collectionName": "House Party (feat. Young Chris) - Single",
+        "primaryGenreName": "Hip-Hop/Rap",
+        "trackViewUrl": "https://music.apple.com/us/album/house-party-feat-young-chris/473148913?i=473148969&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/house-party-feat-young-chris/473148913?i=473148969&uo=4",
+        "trackId": 473148969
+      },
+      {
+        "trackName": "Going Bad (feat. Drake)",
+        "artistName": "Meek Mill",
+        "collectionName": "Championships",
+        "primaryGenreName": "Hip-Hop/Rap",
+        "trackViewUrl": "https://music.apple.com/us/album/going-bad-feat-drake/1445101949?i=1445101958&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/going-bad-feat-drake/1445101949?i=1445101958&uo=4",
+        "trackId": 1445101958
+      },
+      {
+        "trackName": "1000 Nights (feat. Meek Mill & A Boogie wit da Hoodie)",
+        "artistName": "Ed Sheeran",
+        "collectionName": "No.6 Collaborations Project",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/1000-nights-feat-meek-mill-a-boogie-wit-da-hoodie/1464549183?i=1464550038&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/1000-nights-feat-meek-mill-a-boogie-wit-da-hoodie/1464549183?i=1464550038&uo=4",
+        "trackId": 1464550038
+      },
+      {
+        "trackName": "Believe (feat. Justin Timberlake)",
+        "artistName": "Meek Mill",
+        "collectionName": "Believe (feat. Justin Timberlake) - Single",
+        "primaryGenreName": "Hip-Hop/Rap",
+        "trackViewUrl": "https://music.apple.com/us/album/believe-feat-justin-timberlake/1498131421?i=1498131422&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/believe-feat-justin-timberlake/1498131421?i=1498131422&uo=4",
+        "trackId": 1498131422
+      },
+      {
+        "trackName": "24/7 (feat. Ella Mai)",
+        "artistName": "Meek Mill",
+        "collectionName": "Championships",
+        "primaryGenreName": "Hip-Hop/Rap",
+        "trackViewUrl": "https://music.apple.com/us/album/24-7-feat-ella-mai/1445101949?i=1445102084&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/24-7-feat-ella-mai/1445101949?i=1445102084&uo=4",
+        "trackId": 1445102084
+      },
+      {
+        "trackName": "Party (feat. André 3000)",
+        "artistName": "Beyoncé",
+        "collectionName": "4 (Expanded Edition)",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/party-feat-andr%C3%A9-3000/626204707?i=626205217&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/party-feat-andr%C3%A9-3000/626204707?i=626205217&uo=4",
+        "trackId": 626205217
+      },
+      {
+        "trackName": "House Party",
+        "artistName": "Sam Hunt",
+        "collectionName": "Montevallo",
+        "primaryGenreName": "Country",
+        "trackViewUrl": "https://music.apple.com/us/album/house-party/1440858319?i=1440858336&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/house-party/1440858319?i=1440858336&uo=4",
+        "trackId": 1440858336
+      },
+      {
+        "trackName": "Closer (feat. Halsey)",
+        "artistName": "The Chainsmokers",
+        "collectionName": "Collage - EP",
+        "primaryGenreName": "Dance",
+        "trackViewUrl": "https://music.apple.com/us/album/closer-feat-halsey/1170699510?i=1170699703&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/closer-feat-halsey/1170699510?i=1170699703&uo=4",
+        "trackId": 1170699703
+      },
+      {
+        "trackName": "Wonder",
+        "artistName": "Shawn Mendes",
+        "collectionName": "Wonder",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/wonder/1533345318?i=1533345325&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/wonder/1533345318?i=1533345325&uo=4",
+        "trackId": 1533345325
+      },
+      {
+        "trackName": "This Girl",
+        "artistName": "Kungs & Cookin' On 3 Burners",
+        "collectionName": "Layers",
+        "primaryGenreName": "Dance",
+        "trackViewUrl": "https://music.apple.com/us/album/this-girl/1440894912?i=1440894921&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/this-girl/1440894912?i=1440894921&uo=4",
+        "trackId": 1440894921
+      },
+      {
+        "trackName": "BbY WOW",
+        "artistName": "KAROL G, Judeline & rusowsky",
+        "collectionName": "NO ME ARREPIENTO DE SENTIR TANTO",
+        "primaryGenreName": "Urbano latino",
+        "trackViewUrl": "https://music.apple.com/us/album/bby-wow/6796864741?i=6796864754&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/bby-wow/6796864741?i=6796864754&uo=4",
+        "trackId": 6796864754
+      },
+      {
+        "trackName": "Easy On Me",
+        "artistName": "Adele",
+        "collectionName": "30",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/easy-on-me/1590035691?i=1590036021&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/easy-on-me/1590035691?i=1590036021&uo=4",
+        "trackId": 1590036021
+      },
+      {
+        "trackName": "Party (feat. J Cole)",
+        "artistName": "Beyoncé",
+        "collectionName": "Party (feat. J Cole) - Single",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/party-feat-j-cole/473768149?i=473768175&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/party-feat-j-cole/473768149?i=473768175&uo=4",
+        "trackId": 473768175
+      },
+      {
+        "trackName": "Young Dumb & Broke",
+        "artistName": "Khalid",
+        "collectionName": "American Teen",
+        "primaryGenreName": "R&B/Soul",
+        "trackViewUrl": "https://music.apple.com/us/album/young-dumb-broke/1200868601?i=1200868874&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/young-dumb-broke/1200868601?i=1200868874&uo=4",
+        "trackId": 1200868874
+      },
+      {
+        "trackName": "Back In Black",
+        "artistName": "AC/DC",
+        "collectionName": "Back In Black",
+        "primaryGenreName": "Hard Rock",
+        "trackViewUrl": "https://music.apple.com/us/album/back-in-black/574050396?i=574050602&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/back-in-black/574050396?i=574050602&uo=4",
+        "trackId": 574050602
+      }
+    ]
+  },
+  "mixTerm|Zara Larsson How Deep Is Your Love  - Spotify Live Room": {
+    "query_url": "https://itunes.apple.com/search?term=Zara+Larsson+How+Deep+Is+Your+Love++-+Spotify+Live+Room&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": []
+  },
+  "mixTerm|Sylo How Sweet": {
+    "query_url": "https://itunes.apple.com/search?term=Sylo+How+Sweet&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": [
+      {
+        "trackName": "How Sweet",
+        "artistName": "Sylo",
+        "collectionName": "How Sweet - Single",
+        "primaryGenreName": "R&B/Soul",
+        "trackViewUrl": "https://music.apple.com/us/album/how-sweet/6768468774?i=6768468777&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/how-sweet/6768468774?i=6768468777&uo=4",
+        "trackId": 6768468777
+      },
+      {
+        "trackName": "How Sweet It Is (To Be Loved By You)",
+        "artistName": "James Taylor",
+        "collectionName": "Gorilla (Remastered)",
+        "primaryGenreName": "Singer/Songwriter",
+        "trackViewUrl": "https://music.apple.com/us/album/how-sweet-it-is-to-be-loved-by-you/1485664492?i=1485664495&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/how-sweet-it-is-to-be-loved-by-you/1485664492?i=1485664495&uo=4",
+        "trackId": 1485664495
+      },
+      {
+        "trackName": "How Sweet It Is (To Be Loved By You)",
+        "artistName": "James Taylor",
+        "collectionName": "Greatest Hits, Vol. 1",
+        "primaryGenreName": "Singer/Songwriter",
+        "trackViewUrl": "https://music.apple.com/us/album/how-sweet-it-is-to-be-loved-by-you/320083830?i=320084024&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/how-sweet-it-is-to-be-loved-by-you/320083830?i=320084024&uo=4",
+        "trackId": 320084024
+      },
+      {
+        "trackName": "How Sweet It Is (Live)",
+        "artistName": "James Taylor",
+        "collectionName": "Live",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/how-sweet-it-is-live/169629332?i=169631442&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/how-sweet-it-is-live/169629332?i=169631442&uo=4",
+        "trackId": 169631442
+      },
+      {
+        "trackName": "How Sweet It Is (To Be Loved By You)",
+        "artistName": "James Taylor",
+        "collectionName": "Greatest Hits, Vol. 1 (Remastered)",
+        "primaryGenreName": "Singer/Songwriter",
+        "trackViewUrl": "https://music.apple.com/us/album/how-sweet-it-is-to-be-loved-by-you/1502475452?i=1502475761&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/how-sweet-it-is-to-be-loved-by-you/1502475452?i=1502475761&uo=4",
+        "trackId": 1502475761
+      },
+      {
+        "trackName": "How Sweet It Is (To Be Loved By You)",
+        "artistName": "Marvin Gaye",
+        "collectionName": "How Sweet It Is to Be Loved By You",
+        "primaryGenreName": "R&B/Soul",
+        "trackViewUrl": "https://music.apple.com/us/album/how-sweet-it-is-to-be-loved-by-you/1443278309?i=1443278819&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/how-sweet-it-is-to-be-loved-by-you/1443278309?i=1443278819&uo=4",
+        "trackId": 1443278819
+      },
+      {
+        "trackName": "How Sweet It Is",
+        "artistName": "Michael Bublé",
+        "collectionName": "It's Time",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/how-sweet-it-is/668403225?i=668403676&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/how-sweet-it-is/668403225?i=668403676&uo=4",
+        "trackId": 668403676
+      },
+      {
+        "trackName": "How Sweet It Is",
+        "artistName": "Michael Bublé",
+        "collectionName": "It's Time (Deluxe Version)",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/how-sweet-it-is/668403538?i=668403550&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/how-sweet-it-is/668403538?i=668403550&uo=4",
+        "trackId": 668403550
+      },
+      {
+        "trackName": "How Sweet It Is (feat. Pat Barrett)",
+        "artistName": "Chris Tomlin",
+        "collectionName": "Holy Roar",
+        "primaryGenreName": "Christian",
+        "trackViewUrl": "https://music.apple.com/us/album/how-sweet-it-is-feat-pat-barrett/1434899101?i=1434899465&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/how-sweet-it-is-feat-pat-barrett/1434899101?i=1434899465&uo=4",
+        "trackId": 1434899465
+      },
+      {
+        "trackName": "How Sweet It Is (To Be Loved By You) [Live]",
+        "artistName": "Jerry Garcia Band",
+        "collectionName": "GarciaLive Vol. One: March 1st, 1980 Capitol Theatre (Live)",
+        "primaryGenreName": "Rock",
+        "trackViewUrl": "https://music.apple.com/us/album/how-sweet-it-is-to-be-loved-by-you-live/601467867?i=601468020&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/how-sweet-it-is-to-be-loved-by-you-live/601467867?i=601468020&uo=4",
+        "trackId": 601468020
+      },
+      {
+        "trackName": "How Sweet It Is (To Be Loved By You)",
+        "artistName": "Marvin Gaye",
+        "collectionName": "Every Great Motown Hit of Marvin Gaye",
+        "primaryGenreName": "R&B/Soul",
+        "trackViewUrl": "https://music.apple.com/us/album/how-sweet-it-is-to-be-loved-by-you/1426017031?i=1426017032&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/how-sweet-it-is-to-be-loved-by-you/1426017031?i=1426017032&uo=4",
+        "trackId": 1426017032
+      },
+      {
+        "trackName": "How Sweet It Is",
+        "artistName": "John Holt",
+        "collectionName": "The Very Best of John Holt Gold",
+        "primaryGenreName": "Reggae",
+        "trackViewUrl": "https://music.apple.com/us/album/how-sweet-it-is/295123740?i=295123901&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/how-sweet-it-is/295123740?i=295123901&uo=4",
+        "trackId": 295123901
+      },
+      {
+        "trackName": "How Sweet It Is (To Be Loved By You)",
+        "artistName": "Junior Walker & The All Stars",
+        "collectionName": "Road Runner",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/how-sweet-it-is-to-be-loved-by-you/1444098826?i=1444098839&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/how-sweet-it-is-to-be-loved-by-you/1444098826?i=1444098839&uo=4",
+        "trackId": 1444098839
+      },
+      {
+        "trackName": "How Sweet It Is (To Be Loved by You)",
+        "artistName": "Michael McDonald",
+        "collectionName": "Motown",
+        "primaryGenreName": "Rock",
+        "trackViewUrl": "https://music.apple.com/us/album/how-sweet-it-is-to-be-loved-by-you/1440779077?i=1440779316&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/how-sweet-it-is-to-be-loved-by-you/1440779077?i=1440779316&uo=4",
+        "trackId": 1440779316
+      },
+      {
+        "trackName": "How Sweet It Is (To Be Loved By You)",
+        "artistName": "Jerry Garcia Band",
+        "collectionName": "How Sweet It Is",
+        "primaryGenreName": "Rock",
+        "trackViewUrl": "https://music.apple.com/us/album/how-sweet-it-is-to-be-loved-by-you/1139035809?i=1139035996&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/how-sweet-it-is-to-be-loved-by-you/1139035809?i=1139035996&uo=4",
+        "trackId": 1139035996
+      }
+    ]
+  },
+  "mixTerm|The Plug How It Is": {
+    "query_url": "https://itunes.apple.com/search?term=The+Plug+How+It+Is&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": [
+      {
+        "trackName": "Is This How It Is",
+        "artistName": "Luke Bower",
+        "collectionName": "Dopamine and Jesus",
+        "primaryGenreName": "Christian",
+        "trackViewUrl": "https://music.apple.com/us/album/is-this-how-it-is/1799245173?i=1799245179&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/is-this-how-it-is/1799245173?i=1799245179&uo=4",
+        "trackId": 1799245179
+      },
+      {
+        "trackName": "How It Is",
+        "artistName": "Rush",
+        "collectionName": "Vapor Trails (Remixed)",
+        "primaryGenreName": "Hard Rock",
+        "trackViewUrl": "https://music.apple.com/us/album/how-it-is/708140941?i=708140948&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/how-it-is/708140941?i=708140948&uo=4",
+        "trackId": 708140948
+      },
+      {
+        "trackName": "How it is",
+        "artistName": "Malaa",
+        "collectionName": "How it is - Single",
+        "primaryGenreName": "Electronic",
+        "trackViewUrl": "https://music.apple.com/us/album/how-it-is/1626998608?i=1626998888&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/how-it-is/1626998608?i=1626998888&uo=4",
+        "trackId": 1626998888
+      },
+      {
+        "trackName": "How it is",
+        "artistName": "Walk Off the Earth",
+        "collectionName": "Meet You There",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/how-it-is/1575641577?i=1575642377&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/how-it-is/1575641577?i=1575642377&uo=4",
+        "trackId": 1575642377
+      },
+      {
+        "trackName": "How it is",
+        "artistName": "Walk Off the Earth",
+        "collectionName": "How it is - Single",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/how-it-is/1554128811?i=1554128822&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/how-it-is/1554128811?i=1554128822&uo=4",
+        "trackId": 1554128822
+      },
+      {
+        "trackName": "Like It Is - A COLOR SHOW",
+        "artistName": "Benny the Butcher & Fuego Base",
+        "collectionName": "Like It Is - A COLOR SHOW - Single",
+        "primaryGenreName": "Hip-Hop/Rap",
+        "trackViewUrl": "https://music.apple.com/us/album/like-it-is-a-color-show/6798294154?i=6798294158&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/like-it-is-a-color-show/6798294154?i=6798294158&uo=4",
+        "trackId": 6798294158
+      },
+      {
+        "trackName": "How It Is",
+        "artistName": "Allison Eide",
+        "collectionName": "How It Is - Single",
+        "primaryGenreName": "Christian",
+        "trackViewUrl": "https://music.apple.com/us/album/how-it-is/1755869158?i=1755869160&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/how-it-is/1755869158?i=1755869160&uo=4",
+        "trackId": 1755869160
+      },
+      {
+        "trackName": "How it Is",
+        "artistName": "Walk Off the Earth",
+        "collectionName": "Meet You There",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/how-it-is/1768115718?i=1768116709&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/how-it-is/1768115718?i=1768116709&uo=4",
+        "trackId": 1768116709
+      },
+      {
+        "trackName": "How It Is",
+        "artistName": "Rush",
+        "collectionName": "Vapor Trails",
+        "primaryGenreName": "Hard Rock",
+        "trackViewUrl": "https://music.apple.com/us/album/how-it-is/710031891?i=710036897&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/how-it-is/710031891?i=710036897&uo=4",
+        "trackId": 710036897
+      },
+      {
+        "trackName": "The Plug (feat. 2 Chainz)",
+        "artistName": "Ronald Isley & The Isley Brothers",
+        "collectionName": "Make Me Say It Again, Girl",
+        "primaryGenreName": "R&B/Soul",
+        "trackViewUrl": "https://music.apple.com/us/album/the-plug-feat-2-chainz/1642624606?i=1642624613&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/the-plug-feat-2-chainz/1642624606?i=1642624613&uo=4",
+        "trackId": 1642624613
+      },
+      {
+        "trackName": "How It Is",
+        "artistName": "temcandoanything, Kasane Teto & GUMI",
+        "collectionName": "Chances - Single",
+        "primaryGenreName": "Dance",
+        "trackViewUrl": "https://music.apple.com/us/album/how-it-is/1864541367?i=1864541370&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/how-it-is/1864541367?i=1864541370&uo=4",
+        "trackId": 1864541370
+      },
+      {
+        "trackName": "It Is What It Is",
+        "artistName": "Lifehouse",
+        "collectionName": "Smoke & Mirrors (Deluxe Version)",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/it-is-what-it-is/1440802906?i=1440802922&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/it-is-what-it-is/1440802906?i=1440802922&uo=4",
+        "trackId": 1440802922
+      },
+      {
+        "trackName": "How It Is",
+        "artistName": "Portico Blue",
+        "collectionName": "How It Is - Single",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/how-it-is/1813657473?i=1813657474&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/how-it-is/1813657473?i=1813657474&uo=4",
+        "trackId": 1813657474
+      },
+      {
+        "trackName": "How It Is",
+        "artistName": "Portico Blue",
+        "collectionName": "Thinking About You - EP",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/how-it-is/1825837850?i=1825837853&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/how-it-is/1825837850?i=1825837853&uo=4",
+        "trackId": 1825837853
+      },
+      {
+        "trackName": "It Is What It Is",
+        "artistName": "Lifehouse",
+        "collectionName": "Greatest Hits",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/it-is-what-it-is/1440895067?i=1440895238&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/it-is-what-it-is/1440895067?i=1440895238&uo=4",
+        "trackId": 1440895238
+      }
+    ]
   }
 }
