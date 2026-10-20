@@ -7,7 +7,7 @@ import { useToast } from "@/components/ui/use-toast";
 
 /** @param {any} props */
 export default function LoungeHostModal({ lounge, onClose }) {
-  const { session, members, loading, ensureSession, approve, reject, endSession, updateName } = lounge;
+  const { session, members, loading, error, ensureSession, approve, reject, endSession, updateName } = lounge;
   const { toast } = useToast();
   const [copied, setCopied] = useState(false);
   const [scanning, setScanning] = useState(false);
@@ -56,7 +56,11 @@ export default function LoungeHostModal({ lounge, onClose }) {
     return (
       <div role="dialog" aria-modal="true" aria-label="Start your lounge" data-public-dialog tabIndex={-1} onKeyDown={event=>{if(event.key==="Escape"){event.stopPropagation();onClose();}}} className="fixed inset-0 z-[110] bg-black/70 backdrop-blur-sm grid place-items-center p-4" onClick={onClose}>
         <div className="bg-card rounded-3xl w-full max-w-sm p-8 text-center" onClick={(e) => e.stopPropagation()}>
-          <h2 className="text-lg font-semibold mb-4">Your Lounge</h2><div className="flex justify-center gap-2"><button className="chrome-button" onClick={()=>ensureSession()}>Start lounge</button><button className="playlist-action" onClick={onClose}>Close</button></div>
+          <Users size={28} className="mx-auto mb-4 text-foreground/60" />
+          <h2 className="text-xl font-semibold mb-2">Your Lounge</h2>
+          <p className="text-sm text-foreground/60 mb-5">Listen together and let friends add songs to your queue.</p>
+          {error && <p role="alert" className="text-sm text-destructive mb-5">{error}</p>}
+          <div className="flex justify-center gap-2"><button className="chrome-button" disabled={loading} onClick={()=>ensureSession()}>{error ? "Try again" : "Start lounge"}</button><button className="playlist-action" onClick={onClose}>Close</button></div>
         </div>
       </div>);
 
