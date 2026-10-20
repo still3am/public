@@ -27,7 +27,7 @@ const React=globalThis.__React,{useState,useRef,useEffect}=React,usePlayer=()=>g
 const useOfflineCoverUrl=(id,url)=>url,useCoverUrl=url=>url,formatTime=value=>Math.floor((value||0)/60)+":"+String(Math.floor((value||0)%60)).padStart(2,"0");
 const Play=()=>null,Pause=Play,SkipBack=Play,SkipForward=Play,Volume2=Play,VolumeX=Play,Repeat=Play,Repeat1=Play,Shuffle=Play,ListMusic=Play,X=Play,SlidersHorizontal=Play;
 const OverflowText=({text})=>React.createElement("span",null,text);
-const FullScreenPlayer=()=>null,QueuePanel=FullScreenPlayer,TrackOptionsMenu=FullScreenPlayer,StemMixer=FullScreenPlayer;
+const PureBadge=()=>null,FullScreenPlayer=()=>null,QueuePanel=FullScreenPlayer,TrackOptionsMenu=FullScreenPlayer,StemMixer=FullScreenPlayer;
 `);
 const html=renderToStaticMarkup(React.createElement(bar.default));
 assert.match(html,/desktop-player-transport/);assert.match(html,/desktop-player-tools/);
