@@ -23,7 +23,7 @@ export default function DiscoverProfileCard({ person, active, direction, childre
   const { user } = useAuth();
   const preview = useNotePreview({ active, accountId: user?.id, scope: person.id, resumeOnEnd: true });
   const [songs, setSongs] = useState([]),[loading, setLoading] = useState(true),[failed, setFailed] = useState(false),[retry, setRetry] = useState(0),[playError, setPlayError] = useState("");
-  const [showMusic,setShowMusic]=useState(false);
+  const [showMusic, setShowMusic] = useState(false);
   const name = person.display_name || person.full_name || person.username || "PUBLIC listener";
   const ids = [...new Set([person.featured_track_id, ...(Array.isArray(person.top_track_ids) ? person.top_track_ids : [])].filter(Boolean))].slice(0, 3);
   const songKey = ids.join("|");
@@ -64,14 +64,14 @@ export default function DiscoverProfileCard({ person, active, direction, childre
    <Link className="discover-mini-avatar" to={"/profile/" + encodeURIComponent(person.id)} aria-label={"Open " + name + " profile"}><Avatar user={person} size={76} motion active={active} /></Link>
    {person.shared > 0 && <span className="discover-shared"><Music size={12} />{person.reason}</span>}
    <h3><Link to={"/profile/" + encodeURIComponent(person.id)}>{name}</Link></h3>
-   <p className="discover-mini-handle">{person.username ? "@" + person.username : person.is_artist ? "Artist on PUBLIC" : "Listener on PUBLIC"}{person.pronouns && <span> · {person.pronouns}</span>}</p>
+   <p className="discover-mini-handle hidden">{person.username ? "@" + person.username : person.is_artist ? "Artist on PUBLIC" : "Listener on PUBLIC"}{person.pronouns && <span> · {person.pronouns}</span>}</p>
    {person.location && <p className="discover-mini-location"><MapPin size={12} />{person.location}</p>}
    {person.bio && <p className="discover-mini-bio">{person.bio}</p>}
    {children}
-   <div className={"discover-mini-music "+(showMusic?"is-music-expanded":"")}>
+   <div className={"discover-mini-music " + (showMusic ? "is-music-expanded" : "")}>
     <h4>{person.top_tracks_label || "Their soundtrack"}</h4>
     {loading ? <p className="discover-music-status" role="status"><Loader2 size={14} className="animate-spin" /> Loading music…</p> : failed ? <p className="discover-music-status">Couldn’t load music. <button type="button" onClick={() => setRetry((n) => n + 1)}>Retry</button></p> : songs.length ? songs.map((track) => <Song key={track.id} track={track} preview={preview} onPlay={play} />) : <p className="discover-music-status"><Music size={15} /> Still finding their soundtrack.</p>}
-    {songs.length>1&&<button type="button" className="discover-more-music" aria-expanded={showMusic} onClick={()=>setShowMusic(value=>!value)}>{showMusic?"Show less music":"Explore "+(songs.length-1)+" more "+(songs.length===2?"song":"songs")}</button>}
+    {songs.length > 1 && <button type="button" className="discover-more-music" aria-expanded={showMusic} onClick={() => setShowMusic((value) => !value)}>{showMusic ? "Show less music" : "Explore " + (songs.length - 1) + " more " + (songs.length === 2 ? "song" : "songs")}</button>}
     {preview.trackId && <button type="button" className="discover-end-preview" onClick={preview.stop}>End preview · Return to your music</button>}
     {playError && <p className="profile-discover-error" role="alert">{playError}</p>}
    </div>
