@@ -6,12 +6,12 @@ html.dark[data-liquid-glass=tinted]{--public-glass-opacity:.86}
 html:is([data-liquid-glass=clear],[data-liquid-glass=tinted]) :is(
  .public-app .bg-card,.public-app .bg-popover,
  .public-app .profile-identity,.public-app .profile-conversation,.public-app .profile-discover,
- .public-app .profile-song-spotlight .song-menu-surface,.public-app .profile-top8-section,
+ .public-app .profile-song-spotlight .song-menu-surface,.public-app .profile-rotation,
  .public-app .mobile-nav-pill,.public-app .mobile-nav-search,.public-app .mobile-search-home,.public-app .mobile-search-field,
  .public-app .player-surface,.public-app .sidebar-surface,
  .profile-settings-panel,.profile-settings-panel>header,.profile-settings-groups>section>div,
  .mobile-more-panel,.mobile-more-sheet,.public-avatar-picker,
- [role=menu].bg-popover,[role=dialog].bg-background,[role=dialog].bg-card,
+ [role=menu].bg-popover,[data-radix-popper-content-wrapper] .bg-popover,[role=dialog].bg-background,[role=dialog].bg-card,[role=dialog] .bg-card,
  [data-glass-surface]
 ){
  background-color:hsl(var(--card)/var(--public-glass-opacity))!important;
