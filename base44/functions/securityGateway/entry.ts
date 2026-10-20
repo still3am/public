@@ -214,6 +214,7 @@ export default async function handleRequest(req) {
         if(!Array.isArray(pl.collaborator_ids))await handler.updateMany({id,collaborator_ids:{$exists:false}},{$set:{collaborator_ids:collab?.member_ids||[]}});
         await handler.updateMany({id},add?{$addToSet:{collaborator_ids:memberId}}:{$pull:{collaborator_ids:memberId}});
         collab=await refreshCollab();
+        if((collab?.member_ids||[]).includes(memberId)!==add)fail('Invitation was not saved. Please retry.',503);
         return Response.json({result:await result()});
       }
       if(!Array.isArray(ids)||ids.length>5000||ids.some(tid=>typeof tid!=='string'||!tid||tid.length>100||!/^[a-zA-Z0-9_-]+$/.test(tid)))fail('Invalid song selection',400);
