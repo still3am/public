@@ -29,26 +29,37 @@ html[data-liquid-glass=clear] .has-profile-gradient .discover-mini-body{--public
 html[data-liquid-glass=tinted] .has-profile-gradient .discover-mini-body{--public-glass-opacity:.86}
 html:is([data-liquid-glass=clear],[data-liquid-glass=tinted]) .discover-deck-controls{background-color:hsl(var(--card)/var(--public-glass-opacity))!important;background-image:none}
 .profile-settings-panel .profile-settings-groups.settings-detail{display:block}
-.liquid-glass-settings{display:grid;gap:20px}
-.liquid-glass-demo{height:228px;position:relative;overflow:hidden;border-radius:22px;background:radial-gradient(ellipse at 15% 90%,#13978d,transparent 68%),radial-gradient(ellipse at 90% 0%,#5946e5,transparent 66%),linear-gradient(135deg,#154570,#073f64);color:white;display:grid;align-content:center;justify-items:center;gap:16px;padding:24px;isolation:isolate}
-.glass-demo-orb{position:absolute;width:240px;height:240px;border-radius:50%;background:linear-gradient(145deg,#32c3b2,#1a437c);top:40px;left:-90px;z-index:-1;transform:rotate(-35deg)}
-.glass-demo-brand{position:absolute;top:18px;left:20px;font-size:10px;font-weight:750;letter-spacing:.14em;color:#ffffffb0}
-.glass-demo-surface,.glass-demo-tools{border:1px solid #ffffff40;background:#10101666;-webkit-backdrop-filter:blur(18px) saturate(1.6);backdrop-filter:blur(18px) saturate(1.6);box-shadow:inset 0 1px 0 #ffffff55,0 8px 24px #0002}
-.glass-demo-surface{display:flex;align-items:center;gap:12px;width:min(100%,340px);border-radius:22px;padding:15px}
-.glass-demo-cover{display:grid;place-items:center;width:42px;height:42px;flex-shrink:0;border-radius:12px;background:#ffffff1f}
+.liquid-glass-settings{display:grid;gap:16px;max-width:680px;margin-inline:auto}
+.liquid-glass-demo{height:290px;position:relative;overflow:hidden;border-radius:24px;background:radial-gradient(ellipse at 15% 90%,#13978d,transparent 68%),radial-gradient(ellipse at 90% 0%,#5946e5,transparent 66%),linear-gradient(135deg,#154570,#073f64);color:white;display:grid;align-content:end;justify-items:center;gap:14px;padding:24px;isolation:isolate}
+.glass-demo-orb{position:absolute;width:340px;height:340px;border-radius:50%;background:linear-gradient(145deg,#32c3b2,#1a437c);top:70px;left:-90px;z-index:-1;transform:rotate(-35deg)}
+.glass-demo-brand,.glass-demo-live{position:absolute;top:20px;font-size:9px;font-weight:750;letter-spacing:.14em;color:#ffffffbd}
+.glass-demo-brand{left:22px}.glass-demo-live{right:22px;letter-spacing:.1em}
+.glass-demo-heading{position:absolute;top:64px;left:26px;right:26px;text-align:center}.glass-demo-heading small{display:block;font-size:12px;color:#ffffffbc;margin-bottom:5px}.glass-demo-heading strong{font-size:clamp(20px,4vw,30px);font-weight:650;letter-spacing:-.045em;line-height:1.15}
+.glass-demo-surface,.glass-demo-tools{border:1px solid #ffffff40;background:#10101666;-webkit-backdrop-filter:blur(18px) saturate(1.6);backdrop-filter:blur(18px) saturate(1.6);box-shadow:inset 0 1px 0 #ffffff40,0 8px 24px #0002;transition:background-color .25s,box-shadow .25s}
+.glass-demo-surface{display:flex;align-items:center;gap:12px;width:min(100%,340px);border-radius:20px;padding:14px}
+.glass-demo-cover{display:grid;place-items:center;width:42px;height:42px;flex-shrink:0;border-radius:12px;background:linear-gradient(145deg,#96e2c8,#4a39a8)}
 .glass-demo-surface>span:nth-child(2){flex:1;min-width:0}
 .glass-demo-surface strong{display:block;font-size:15px;letter-spacing:-.025em;color:white}.glass-demo-surface small{display:block;font-size:10px;color:#ffffffbf;margin-top:3px}
-.glass-demo-tools{display:flex;gap:30px;border-radius:999px;padding:14px 22px}
+.glass-demo-tools{display:flex;gap:30px;border-radius:999px;padding:12px 22px}
 .glass-demo-tinted .glass-demo-surface,.glass-demo-tinted .glass-demo-tools{background:#111118d9}
 .glass-demo-off .glass-demo-surface,.glass-demo-off .glass-demo-tools{background:#17171d;backdrop-filter:none;-webkit-backdrop-filter:none;border-color:#ffffff18;box-shadow:none}
+.glass-appearance-heading{margin-top:5px}.glass-appearance-heading h3{font-size:17px;font-weight:650;letter-spacing:-.025em;margin-bottom:3px}
 .glass-settings-intro,.glass-settings-note{font-size:12px;line-height:1.65;color:hsl(var(--muted-foreground))}
-.glass-mode-options{border:1px solid hsl(var(--border));border-radius:20px;overflow:hidden;background:hsl(var(--card)/.65)}
-.glass-mode-options>button{display:flex;align-items:center;justify-content:space-between;gap:16px;width:100%;min-height:76px;text-align:left;padding:16px 18px}
-.glass-mode-options>button+button{border-top:1px solid hsl(var(--border))}
-.glass-mode-options strong{display:block;font-size:15px;font-weight:650}.glass-mode-options small{display:block;font-size:12px;line-height:1.45;color:hsl(var(--muted-foreground));margin-top:4px}
-.glass-option-check{width:26px;height:26px;display:grid;place-items:center;flex-shrink:0;border-radius:50%}
+.glass-mode-options{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.glass-mode-options>button{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;min-width:0;min-height:112px;padding:14px 6px;border:1px solid hsl(var(--border));border-radius:18px;background:hsl(var(--foreground)/.025);transition:background-color .2s,border-color .2s}
+.glass-mode-options>button:hover{background:hsl(var(--foreground)/.06)}
+.glass-mode-options>button[aria-checked=true]{border-color:hsl(var(--foreground)/.65);background:hsl(var(--foreground)/.07)}
+.glass-mode-options strong{display:block;font-size:13px;font-weight:650}
+.glass-mode-swatch{display:grid;place-items:center;width:54px;height:38px;border-radius:10px;background:linear-gradient(120deg,#6ac6ac,#4846ac);overflow:hidden}
+.glass-mode-swatch>span{width:34px;height:23px;border-radius:7px;background:#ffffff25;border:1px solid #ffffff60;backdrop-filter:blur(3px)}
+.swatch-tinted>span{background:#161923b8}.swatch-off>span{background:#17171d;border-color:#ffffff20;backdrop-filter:none}
+.glass-option-check{position:absolute;right:7px;top:7px;width:17px;height:17px;display:grid;place-items:center;border-radius:50%}.glass-option-check svg{width:12px;height:12px}
 .glass-mode-options>button[aria-checked=true] .glass-option-check{background:hsl(var(--foreground));color:hsl(var(--background))}
-.glass-mode-options>button:focus-visible{outline:2px solid hsl(var(--foreground));outline-offset:-4px}
+.glass-mode-options>button:focus-visible{outline:2px solid hsl(var(--foreground));outline-offset:3px}
+.glass-mode-description{font-size:12px;line-height:1.6;color:hsl(var(--muted-foreground));text-align:center;min-height:20px;margin-top:-4px}
+.glass-applies{display:flex;flex-wrap:wrap;justify-content:center;gap:6px}.glass-applies span{font-size:10px;padding:5px 9px;border:1px solid hsl(var(--border));border-radius:999px;color:hsl(var(--muted-foreground))}
+.glass-settings-note{border-top:1px solid hsl(var(--border));padding-top:13px;font-size:11px;text-align:center}
+@media(prefers-reduced-motion:reduce){.glass-demo-surface,.glass-demo-tools,.glass-mode-options>button{transition:none}}
 @supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){
  html:is([data-liquid-glass=clear],[data-liquid-glass=tinted]){--public-glass-opacity:1!important}
  html:is([data-liquid-glass=clear],[data-liquid-glass=tinted]) .has-profile-gradient .discover-mini-body{--public-glass-opacity:1!important}
@@ -57,4 +68,4 @@ html:is([data-liquid-glass=clear],[data-liquid-glass=tinted]) .discover-deck-con
  html:is([data-liquid-glass=clear],[data-liquid-glass=tinted]){--public-glass-opacity:.97!important;--public-glass-blur:0px}
  html:is([data-liquid-glass=clear],[data-liquid-glass=tinted]) .has-profile-gradient .discover-mini-body{--public-glass-opacity:.97!important}
 }
-@media(max-width:767px){.liquid-glass-demo{height:202px;padding:18px}.glass-demo-surface{padding:12px;gap:9px}.glass-mode-options>button{padding:14px 16px}.liquid-glass-settings{gap:18px}}
+@media(max-width:767px){.liquid-glass-demo{height:256px;padding:18px}.glass-demo-heading{top:57px}.glass-demo-surface{padding:12px;gap:9px}.liquid-glass-settings{gap:14px}.glass-mode-options{gap:8px}.glass-mode-options>button{min-height:104px}}
