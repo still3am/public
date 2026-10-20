@@ -22,6 +22,8 @@ const React=globalThis.__React;
 const {useState,useEffect,useMemo,useCallback,useRef}=React;
 const useParams=()=>({id:globalThis.__route||'p1'}),useNavigate=()=>()=>{},useAuth=()=>({user:{id:globalThis.__viewer||'owner'}}),usePlayer=()=>globalThis.__player||({}),useToast=()=>({toast(){}}),useCoverUrl=v=>v;
 const base44={},readAllPages=()=>{},shareLink=()=>{},removePlaylistTracks=()=>{},reorderPlaylistTracks=()=>{},movePlaylistTrack=()=>{},shufflePlaylist=v=>v;
+const GripVertical=()=>null,Users=GripVertical;
+const DragDropContext=({children})=>children,Droppable=({children})=>children({innerRef(){},droppableProps:{},placeholder:null}),Draggable=({children})=>children({innerRef(){},draggableProps:{style:{}},dragHandleProps:{role:'button',tabIndex:0}},{isDragging:false});
 const Play=()=>null,Pause=Play,Shuffle=Play,Plus=Play,Pencil=Play,Trash2=Play,Share2=Play,ListMusic=Play,Search=Play,ArrowUp=Play,ArrowDown=Play,X=Play,Check=Play,Loader2=Play,ImagePlus=Play,ChevronLeft=Play,MoreHorizontal=Play,Copy=Play;
 const useReleaseTheme=()=>({}),ReleaseAtmosphere=()=>null,PlaylistCollaborators=()=>null,PlaylistActionsSheet=()=>null,AddToPlaylistPicker=()=>null,EmptyState=({title})=>React.createElement('p',null,title),LoadError=()=>React.createElement('p',null,'Retry loading');
 const TrackRow=({track,queue,queueIndex})=>{globalThis.__rows.push({id:track.id,queue:queue.map(t=>t.id),queueIndex});return React.createElement('p',null,track.title);};
@@ -30,10 +32,10 @@ const code=ts.transpileModule(stubs+source,{compilerOptions:{jsx:ts.JsxEmit.Reac
 const ui=await import('data:text/javascript;base64,'+Buffer.from(code).toString('base64'));
 function render(){globalThis.__rows=[];return renderToStaticMarkup(React.createElement(ui.default));}
 let html=render();
-assert.match(html,/Night drive/);assert.match(html,/Edit songs/);
+assert.match(html,/Night drive/);assert.match(html,/>Songs</);assert.doesNotMatch(html,/Invite collaborators|playlist-collaboration/,'collaboration controls stay in the options menu');
 assert.doesNotMatch(html,/aria-label="Select First song"|Move First song|Remove First song|Select visible/);
 globalThis.__managing=true;html=render();
-assert.match(html,/aria-label="Select First song"/);assert.match(html,/Move First song up/);assert.match(html,/Remove First song from playlist/);assert.match(html,/Select visible/);
+assert.match(html,/aria-label="Select First song"/);assert.match(html,/Reorder First song/);assert.doesNotMatch(html,/Move First song up|Move First song down/);assert.match(html,/Remove First song from playlist/);assert.match(html,/Select visible/);
 globalThis.__viewer='visitor';html=render();
 assert.doesNotMatch(html,/aria-label="Select First song"|Move First song|Remove First song|Edit songs/);
 assert.match(html,/Save playlist to library/);
