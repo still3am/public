@@ -14,8 +14,7 @@ async function json(url,signal){
  catch(error){if(error?.name==='AbortError'&&!signal?.aborted)throw Error('Weather took too long to respond. Please retry.');throw error;}
  finally{clearTimeout(timer);signal?.removeEventListener('abort',abort);}
 }
-/** @param {{ signal?: AbortSignal, fresh?: boolean }} [options] */
-export async function fetchWeather(city,{signal,fresh=false}={}){
+export async function fetchWeather(city,/** @type {{ signal?: AbortSignal, fresh?: boolean }} */ {signal,fresh=false}={}){
  const point=normalizeWeatherCity(city);if(!point)throw Error('Choose a city to see its weather.');
  const key=point.id,previous=cache.get(key);
  if(!fresh&&previous&&Date.now()-previous.fetchedAt<WEATHER_TTL)return previous;
