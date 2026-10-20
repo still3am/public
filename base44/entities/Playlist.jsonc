@@ -99,6 +99,48 @@
           }
         }
       }
+    },
+    "collaborator_ids": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "maxLength": 100
+      },
+      "maxItems": 30,
+      "description": "Owner-managed collaborator IDs. When present, replaces legacy membership.",
+      "rls": {
+        "read": true,
+        "write": {
+          "$and": [
+            {
+              "$or": [
+                {
+                  "data.creator_id": "{{user.id}}"
+                },
+                {
+                  "user_condition": {
+                    "role": "admin"
+                  }
+                }
+              ]
+            },
+            {
+              "$nor": [
+                {
+                  "user_condition": {
+                    "is_blocked": true
+                  }
+                },
+                {
+                  "user_condition": {
+                    "disabled": true
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      }
     }
   },
   "required": [
