@@ -51,8 +51,10 @@ export async function saveTimedLyrics(client, input, protectedWrite) {
   } catch (error) { failure = error; }
   if ((await client.auth.me())?.id !== user.id) throw new Error("Your account changed. Reopen the lyrics to check the save.");
   let confirmed;
+  try {
   if (existing?.id || saved?.id) confirmed = await client.entities.Lyrics.get(existing?.id || saved.id);
   else confirmed = rows(await client.entities.Lyrics.filter({track_id: trackId, uploader_id: user.id}, "-updated_date", 100)).find(same);
+  } catch (error) { throw failure || new Error("The save could not be confirmed. Your changes are still here; please retry.", {cause:error}); }
   if (!same(confirmed)) throw failure || new Error("Your timing was not confirmed. Your draft is still here; please retry.");
   if (typeof window !== "undefined") window.dispatchEvent(new CustomEvent("lyrics:changed", {detail: {trackId}}));
   return confirmed;
