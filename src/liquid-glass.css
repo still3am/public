@@ -6,7 +6,7 @@ html[data-liquid-glass=clear]{--public-glass-opacity:.68;--public-glass-blur:20p
 html.dark[data-liquid-glass=clear]{--public-glass-opacity:.60}
 html[data-liquid-glass=tinted]{--public-glass-opacity:.91;--public-glass-blur:26px}
 html.dark[data-liquid-glass=tinted]{--public-glass-opacity:.86}
-html:is([data-liquid-glass=clear],[data-liquid-glass=tinted]) :is(
+html:is([data-liquid-glass=clear],[data-liquid-glass=tinted]) :where(
  .public-app .bg-card,.public-app .bg-popover,.public-app .music-card,
  [data-public-menu] .bg-popover,[data-public-dialog]>.bg-card,[data-public-dialog]>.bg-background,
  .public-app .profile-identity,.public-app .profile-conversation,
