@@ -20,6 +20,7 @@ import LoadError from '@/components/LoadError';
 import { useToast } from '@/components/ui/use-toast';
 import { useCoverUrl } from '@/hooks/useCoverUrl';
 import '@/components/playlist/playlist-detail.css';
+import '@/components/playlist/playlist-release.css';
 function PlaylistArtwork({ url }) {const src = useCoverUrl(url);return src ? <img src={src} alt="" className="playlist-collage-tile" /> : <span className="playlist-collage-tile" />;}
 export default function PlaylistDetail() {
   const { id } = useParams(),nav = useNavigate(),{ user } = useAuth(),p = usePlayer(),{ toast } = useToast();
