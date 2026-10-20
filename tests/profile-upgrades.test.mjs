@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';import fs from 'node:fs';import ts from 'typescript';
 import {cropGeometry} from '../src/lib/profileCrop.js';
+import {validateMotionFile} from "../src/lib/profileMotion.js";
 import {normalizeProfileDraft,reorderTopTracks} from '../src/lib/profileEditing.js';
 const source=fs.readFileSync('src/pages/Profile.jsx','utf8'),ast=ts.createSourceFile('profile.jsx',source,ts.ScriptTarget.Latest,true,ts.ScriptKind.JSX);
 function fn(name,env={}){let code;function visit(n){if(ts.isFunctionDeclaration(n)&&n.name?.text===name)code=n.getText(ast);ts.forEachChild(n,visit);}visit(ast);assert.ok(code);return new Function(...Object.keys(env),code+';return '+name)(...Object.values(env));}
@@ -66,5 +67,24 @@ function fixture(){
  const f=fixture();const legacy={...f.env.profile,bio:' My saved bio ',website:'example.com'};
  f.env.setProfile(legacy);f.env.setForm(formFromProfile(legacy));await fn('saveProfile',f.env)();
  assert.equal(f.writes.length,0,"unchanged Save must never request moderation");assert.equal(f.edit,false);
+}
+{
+ const f=fixture();let uploads=0;
+ Object.assign(f.env,{validateMotionFile,avatarBusy:{current:false},bannerBusy:{current:false},avatarVersion:{current:0},bannerVersion:{current:0}});
+ f.env.base44.integrations={Core:{UploadFile:async({file})=>({file_url:++uploads%2?'https://test/'+file.name:'https://test/poster.jpg'})}};
+ const media={file:{name:'clip.mp4',type:'video/mp4',size:100},poster:{name:'poster.jpg'},type:'video',duration:2};
+ await fn('uploadProfileMotion',f.env)('avatar',media);
+ assert.equal(f.form.avatar_video_url,'https://test/clip.mp4');assert.equal(f.form.avatar_gif_url,'');assert.equal(f.writes.length,0,'upload only changes the draft');
+ await fn('saveProfile',f.env)();assert.equal(f.writes[0].avatar_video_url,'https://test/clip.mp4');
+}
+{
+ const f=fixture();Object.assign(f.env,{validateMotionFile,avatarBusy:{current:false},bannerBusy:{current:false},avatarVersion:{current:0},bannerVersion:{current:0}});
+ f.env.base44.integrations={Core:{UploadFile:async()=>{throw Error('Upload failed');}}};
+ const ok=await fn('uploadProfileMotion',f.env)('banner',{file:{name:'loop.gif',type:'image/gif',size:100},poster:{},type:'gif',duration:1});
+ assert.equal(ok,false);assert.equal(f.form.banner_gif_url,'');assert.equal(f.writes.length,0);
+}
+{
+ const f=fixture();f.env.setForm({...f.form,avatar_video_url:'https://test/draft.mp4',banner_gif_url:'https://test/draft.gif'});fn('cancelEdit',f.env)();
+ assert.equal(f.form.avatar_video_url,'');assert.equal(f.form.banner_gif_url,'');assert.equal(f.writes.length,0);
 }
 console.log('PASS crop coverage through all rotations/positions; Top 8 ordering; safe links and limits; song drafts, Cancel, combined saves, ignored writes, failed-save recovery and upload guards');
