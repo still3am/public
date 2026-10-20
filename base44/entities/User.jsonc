@@ -393,23 +393,6 @@
       "rls": {
         "write": true
       }
-    },
-    "banner_preset": {
-      "type": "string",
-      "default": "",
-      "enum": [
-        "",
-        "/banners/chrome.svg",
-        "/banners/aurora.svg",
-        "/banners/afterglow.svg",
-        "/banners/blue-hour.svg",
-        "/banners/moss.svg",
-        "/banners/rose.svg"
-      ],
-      "description": "Built-in PUBLIC banner; uploaded media remains in moderated banner fields.",
-      "rls": {
-        "write": true
-      }
     }
   },
   "required": []
