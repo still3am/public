@@ -1,4 +1,10 @@
 /* Playlists share the track page atmosphere and responsive artwork layout. */
+.public-app .artwork-content .playlist-page.playlist-editorial .playlist-song-list,
+.public-app .artwork-content .playlist-page.playlist-editorial .playlist-song-item,
+.public-app .artwork-content .playlist-page.playlist-editorial .playlist-song-item .song-row{background:transparent!important}
+.public-app .artwork-content .playlist-page.playlist-editorial .playlist-song-item[data-current=true]{background:rgb(255 255 255/.08)!important}
+.public-app .artwork-content .playlist-page.playlist-editorial .playlist-search-tools input{background:transparent!important;border:0;box-shadow:none}
+.public-app .artwork-content .playlist-page.playlist-editorial :is(h1,h2,p,.song-row a){text-shadow:none}
 .public-app .artwork-content .playlist-page.playlist-editorial{--border:0 0% 100%;padding-top:18px}
 .public-app .playlist-page.playlist-editorial .playlist-page-nav{justify-content:space-between}
 .public-app .artwork-content .playlist-page.playlist-editorial .playlist-hero{grid-template-columns:minmax(240px,340px) minmax(0,1fr);gap:44px;padding:0;border:0;border-radius:0;background:transparent;box-shadow:none;animation:none}
