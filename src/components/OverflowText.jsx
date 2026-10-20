@@ -1,7 +1,7 @@
 import {useEffect,useRef,useState} from "react";
 import "./overflow-text.css";
 // The second copy is visual text only: artist links remain a single accessible set.
-export default function OverflowText({text="",children,className=""}){
+export default function OverflowText({text="",children=null,className=""}){
  const root=useRef(null),content=useRef(null),[distance,setDistance]=useState(0),[visible,setVisible]=useState(false);
  useEffect(()=>{
   const element=root.current,line=content.current;if(!element||!line)return;
