@@ -17,10 +17,10 @@ const current={id:"listener",display_name:"Listener",created_date:"2026-10-17",o
 globalThis.__user=current;
 const common=`const React=globalThis.__React;const {useEffect,useRef,useState,useMemo,useDeferredValue}=React;const useAuth=()=>({user:globalThis.__user,checkUserAuth:async()=>{}});const useSafety=()=>({blocked:globalThis.__blocked||new Set(),own:[]});`;
 const settings=await load(fs.readFileSync("src/components/profile/SettingsSheet.jsx","utf8"),common+`
-const usePlayer=()=>({}),PureControls=()=>null,ArrowLeft=()=>null,AudioLines=ArrowLeft,Play=ArrowLeft,Pause=ArrowLeft;
+const usePlayer=()=>({}),PureControls=()=>null,useLiquidGlass=()=>({mode:"off"}),LiquidGlassControls=()=>null,ArrowLeft=()=>null,AudioLines=ArrowLeft,Play=ArrowLeft,Pause=ArrowLeft;
 const {onboardingComplete}=globalThis.__model;
 const Link=({children,...props})=>React.createElement("a",props,children);
-const X=()=>null,Lightbulb=X,GitMerge=X,Trash2=X,ChevronRight=X,Sparkles=X,BarChart3=X,Loader2=X,LogOut=X,Sun=X,Moon=X,Shield=X,Headphones=X,FileText=X;
+const X=()=>null,Droplets=X,Lightbulb=X,GitMerge=X,Trash2=X,ChevronRight=X,Sparkles=X,BarChart3=X,Loader2=X,LogOut=X,Sun=X,Moon=X,Shield=X,Headphones=X,FileText=X;
 const useTheme=()=>({isDark:true,toggle(){}}),reportActionError=()=>{},clearPersonalData=async()=>{},base44={};
 `);
 const settingsMarkup=()=>renderToStaticMarkup(React.createElement(settings.default,{onClose(){},onDeleteAccount(){}}));
