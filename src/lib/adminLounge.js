@@ -69,9 +69,11 @@ export async function loungeAction(client, entity, method, args, protectedCall) 
   try { saved = old ? await handler.update(old.id, data) : await handler.create(data); } catch (error) { failure = error; }
   await checkAccount();
   let confirmed;
+  try {
   if (old?.id || saved?.id) confirmed = await handler.get(old?.id || saved.id);
   else if (entity === "LoungeSession") confirmed = page(await handler.filter({host_id: user.id, code: data.code, is_active: true}, "-created_date", 1))[0];
   else if (entity === "LoungeMember") confirmed = page(await handler.filter({session_id: data.session_id, user_id: user.id}, "-created_date", 1))[0];
+  } catch (error) { throw failure || new Error("The save could not be confirmed. Your changes are still here; please retry.", {cause:error}); }
   if (!confirmed || Object.entries(data).some(([key,value]) => JSON.stringify(confirmed[key]) !== JSON.stringify(value))) throw failure || new Error("The lounge change was not confirmed. Please retry.");
   return confirmed;
 }
