@@ -9,7 +9,7 @@ import { useAuth } from '@/lib/AuthContext';
 import { usePlayer } from '@/context/PlayerContext';
 import { readAllPages } from '@/lib/readPages';
 import { removePlaylistTracks, reorderPlaylistTracks, movePlaylistTrack, shufflePlaylist } from '@/lib/playlistActions';
-import { Play, Pause, Shuffle, Plus, Pencil, Trash2, Share2, ListMusic, Search, ArrowUp, ArrowDown, X, Check, Loader2, ImagePlus, ChevronLeft, MoreHorizontal, Copy } from 'lucide-react';
+import { Play, Pause, Shuffle, Plus, Pencil, Trash2, Share2, ListMusic, ArrowUp, ArrowDown, X, Check, Loader2, ImagePlus, ChevronLeft, MoreHorizontal, Copy } from 'lucide-react';
 import TrackRow from '@/components/TrackRow';
 import AddToPlaylistPicker from '@/components/playlist/AddToPlaylistPicker';
 import EmptyState from '@/components/EmptyState';
