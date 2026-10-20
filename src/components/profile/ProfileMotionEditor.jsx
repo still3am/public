@@ -20,7 +20,7 @@ export default function ProfileMotionEditor({file,kind="avatar",onApply,onClose}
     <DialogHeader><DialogTitle>{kind==="banner"?"Bring your banner to life":"A little motion. All you."}</DialogTitle><DialogDescription>Videos and GIF loops up to 10 seconds. Videos play silently. Apply here, then save your profile.</DialogDescription></DialogHeader>
     {kind==="banner"&&<div className="profile-crop-tabs" aria-label="Banner preview">{["mobile","desktop"].map(value=><button key={value} type="button" aria-pressed={tab===value} onClick={()=>setTab(value)}>{value==="mobile"?"Mobile":"Desktop"}</button>)}</div>}
     <div className={"profile-crop-stage "+(kind==="avatar"?"is-circle":"")} style={{aspectRatio:kind==="avatar"?1:tab==="desktop"?4.5:1.85}}>
-      {prepared&&urls?<ProfileMedia src={prepared.type==="gif"?urls.source:urls.poster} videoSrc={prepared.type==="video"?urls.source:""} style={{width:"100%",height:"100%"}}/>:!error?<Loader2 className="animate-spin"/>:null}
+      {prepared&&urls?<ProfileMedia src={urls.poster} gifSrc={prepared.type==="gif"?urls.source:""} videoSrc={prepared.type==="video"?urls.source:""} style={{width:"100%",height:"100%"}}/>:!error?<Loader2 className="animate-spin"/>:null}
     </div>
     {prepared&&<p className="text-xs text-muted-foreground">{prepared.type==="gif"?"Animated GIF":"Muted video"} · {prepared.duration.toFixed(1)} sec · {(file.size/1024/1024).toFixed(1)} MB</p>}
     {error&&<p role="alert" className="profile-editor-error">{error}</p>}
