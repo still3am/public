@@ -10,3 +10,4 @@ export default function ProfileBannerEditor({busy,onApply,onMotionApply,onRemove
  {hasBanner&&<button type="button" disabled={busy} onClick={onRemove}>Use default banner</button>}
  {file&&(isMotionFile(file)?<ProfileMotionEditor file={file} kind="banner" onClose={()=>setFile(null)} onApply={onMotionApply}/>:<ProfileImageEditor file={file} kind="banner" onClose={()=>setFile(null)} onApply={onApply}/>)}</div>;
 }
+
