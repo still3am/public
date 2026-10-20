@@ -11,7 +11,7 @@ export default function WordTimingEditor({ track, text, onSaved, onCancel }) {
   const mark = () => {if (p.currentTrack?.id !== track.id || !p.isPlaying) {setError('Start this track before timing words.');return;}const at = Math.round(p.position * 1000);if (marks.length && at < marks[marks.length - 1]) {setError('Restart timing or continue after the last marked word.');return;}setError('');setMarks([...marks, at]);};
   const save = async () => {if(saveLock.current)return;saveLock.current=true;setBusy(true);setError('');try {
       if(marks.length!==units.length || !units.length)throw Error('Time every word before saving.');
-      const duration = Math.round((p.duration || track.duration_seconds || 0) * 1000);
+      const duration = Math.round(((p.currentTrack?.id === track.id ? p.duration : 0) || track.duration_seconds || 0) * 1000);
       const lines = [];
       units.forEach((w, i) => {if (!lines[w.line]) lines[w.line] = { text: '', start_time_ms: marks[i], end_time_ms: 0, words: [] };
         const end = marks[i + 1] ?? Math.max(marks[i] + 300, duration);
