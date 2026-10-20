@@ -52,7 +52,7 @@ hero=spotlight.default({...props,tracks:[]});assert.equal(buttons(hero)[0].props
 assert.equal(spotlight.default(props).props.children[1].props.to,"/track/t0","featured artwork opens track details");
 globalThis.__profilePlaylists={userId:"owner",rows:[{id:"mix",name:"My mix",track_ids:["song"]}]};
 const profilePlaylists=await load("src/components/profile/ProfilePlaylists.jsx",`
-const React=globalThis.__React,useEffect=()=>{},useState=()=>[globalThis.__profilePlaylists,()=>{}];
+const React=globalThis.__React,useEffect=()=>{},useRef=value=>({current:value}),useState=()=>[globalThis.__profilePlaylists,()=>{}];
 const Link=({children,to,...props})=>React.createElement("a",{href:to,...props},children),ListMusic=()=>null;
 const usePlaylistCover=()=>"",useCoverUrl=()=>"",base44={};
 const ScrollShelf=({children,className,label})=>React.createElement("div",{className,role:"region","aria-label":label,tabIndex:0},children);
