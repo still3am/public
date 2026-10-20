@@ -11571,6 +11571,19 @@
       "match": "exact artist and title"
     },
     {
+      "id": "6acc50854b5211c91f368190",
+      "title": "Get Me Home",
+      "artist": "Foxy Brown, Blackstreet",
+      "before": "Other",
+      "genre": "R&B",
+      "source_genre": "R&B/Soul",
+      "source_title": "Get Me Home (feat. Blackstreet)",
+      "source_artist": "Foxy Brown",
+      "source_album": "No Diggity' - The Very Best of Blackstreet",
+      "source_url": "https://music.apple.com/us/album/get-me-home-feat-blackstreet/1445663051?i=1445663080&uo=4",
+      "match": "exact artist and title"
+    },
+    {
       "id": "6acc5086d3d671b7c0d943ab",
       "title": "Get On Your Knees",
       "artist": "Nicki Minaj, Ariana Grande",
@@ -11636,6 +11649,19 @@
       "match": "exact artist and title"
     },
     {
+      "id": "6acc508f431edbe7ea9a16c6",
+      "title": "Ghetto Love Story",
+      "artist": "BabyChiefDoit",
+      "before": "Other",
+      "genre": "Hip-Hop",
+      "source_genre": "Hip-Hop/Rap",
+      "source_title": "Ghetto Love Story",
+      "source_artist": "BabyChiefDoit",
+      "source_album": "Rise Against My Broken Odds",
+      "source_url": "https://music.apple.com/us/album/ghetto-love-story/6804864942?i=6804864950&uo=4",
+      "match": "exact artist and title"
+    },
+    {
       "id": "6acc5090cc226166cacdca01",
       "title": "Get You Back (feat. Cash Cobain)",
       "artist": "Big Sean, Cash Cobain",
@@ -11662,6 +11688,45 @@
       "match": "exact artist and title"
     },
     {
+      "id": "6acc50ac5e2ff65bb56b981f",
+      "title": "GHOST.",
+      "artist": "YFN Lucci",
+      "before": "Other",
+      "genre": "Hip-Hop",
+      "source_genre": "Hip-Hop/Rap",
+      "source_title": "GHOST.",
+      "source_artist": "YFN Lucci",
+      "source_album": "ALREADY LEGEND.",
+      "source_url": "https://music.apple.com/us/album/ghost/1841498228?i=1841498448&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6acc50ad27f86feb0b465060",
+      "title": "Ghostface",
+      "artist": "El Jhota",
+      "before": "Other",
+      "genre": "Latin",
+      "source_genre": "Latin",
+      "source_title": "Ghostface",
+      "source_artist": "El Jhota & Reality",
+      "source_album": "Ghostface - Single",
+      "source_url": "https://music.apple.com/us/album/ghostface/1843421997?i=1843421999&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6acc50ae8d3d2d15735fa199",
+      "title": "Ghostride",
+      "artist": "Crumb",
+      "before": "Other",
+      "genre": "Indie Rock",
+      "source_genre": "Indie Rock",
+      "source_title": "Ghostride",
+      "source_artist": "Crumb",
+      "source_album": "Jinx",
+      "source_url": "https://music.apple.com/us/album/ghostride/1456789832?i=1456789839&uo=4",
+      "match": "exact artist and title"
+    },
+    {
       "id": "6acc50b2d745a914b0862755",
       "title": "GIA",
       "artist": "Kuzi Cee",
@@ -11672,6 +11737,32 @@
       "source_artist": "Kuzi Cee",
       "source_album": "GIA - Single",
       "source_url": "https://music.apple.com/us/album/gia/6774396546?i=6774396555&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6acc50b8bd45196ffe36e163",
+      "title": "Gimme More",
+      "artist": "Britney Spears",
+      "before": "Other",
+      "genre": "Pop",
+      "source_genre": "Pop",
+      "source_title": "Gimme More",
+      "source_artist": "Britney Spears",
+      "source_album": "O Melhor do Pop Internacional",
+      "source_url": "https://music.apple.com/us/album/gimme-more/1635636172?i=1635637376&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6acc50c1bcc4c203a1c4b1ce",
+      "title": "Girl On TV",
+      "artist": "LFO",
+      "before": "Other",
+      "genre": "Pop",
+      "source_genre": "Pop",
+      "source_title": "Girl On TV",
+      "source_artist": "LFO",
+      "source_album": "Lfo",
+      "source_url": "https://music.apple.com/us/album/girl-on-tv/254823974?i=254824180&uo=4",
       "match": "exact artist and title"
     },
     {
@@ -11789,6 +11880,19 @@
       "source_artist": "BNYX® & Yeat",
       "source_album": "GO AGAIN (feat. Superheaven) - Single",
       "source_url": "https://music.apple.com/us/album/go-again-feat-superheaven/1764126314?i=1764126471&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6acc50ed52140f5080f870a5",
+      "title": "Go Hard or Go Home",
+      "artist": "Wiz Khalifa, Iggy Azalea",
+      "before": "Other",
+      "genre": "Hip-Hop",
+      "source_genre": "Hip-Hop/Rap",
+      "source_title": "Go Hard Or Go Home",
+      "source_artist": "Wiz Khalifa & Iggy Azalea",
+      "source_album": "Furious 7 (Original Motion Picture Soundtrack)",
+      "source_url": "https://music.apple.com/us/album/go-hard-or-go-home/966411595?i=966411600&uo=4",
       "match": "exact artist and title"
     },
     {
@@ -18092,20 +18196,6 @@
       "album_name": ""
     },
     {
-      "id": "6acc50854b5211c91f368190",
-      "title": "Get Me Home",
-      "artist": "Foxy Brown, Blackstreet",
-      "genre": "Other",
-      "album_name": ""
-    },
-    {
-      "id": "6acc508f431edbe7ea9a16c6",
-      "title": "Ghetto Love Story",
-      "artist": "BabyChiefDoit",
-      "genre": "Other",
-      "album_name": ""
-    },
-    {
       "id": "6acc5093142017a1b5725fad",
       "title": "Ghost Town",
       "artist": "Dimension, Subsonic",
@@ -18132,27 +18222,6 @@
       "album_name": ""
     },
     {
-      "id": "6acc50ac5e2ff65bb56b981f",
-      "title": "GHOST.",
-      "artist": "YFN Lucci",
-      "genre": "Other",
-      "album_name": ""
-    },
-    {
-      "id": "6acc50ad27f86feb0b465060",
-      "title": "Ghostface",
-      "artist": "El Jhota",
-      "genre": "Other",
-      "album_name": ""
-    },
-    {
-      "id": "6acc50ae8d3d2d15735fa199",
-      "title": "Ghostride",
-      "artist": "Crumb",
-      "genre": "Other",
-      "album_name": ""
-    },
-    {
       "id": "6acc50b2eaf5f34efb7d043e",
       "title": "Ghosts",
       "artist": "Yung Lean, Bladee",
@@ -18170,13 +18239,6 @@
       "id": "6acc50b8898858fa4a7eb89e",
       "title": "Giannis",
       "artist": "Hurricane Wisdom",
-      "genre": "Other",
-      "album_name": ""
-    },
-    {
-      "id": "6acc50b8bd45196ffe36e163",
-      "title": "Gimme More",
-      "artist": "Britney Spears",
       "genre": "Other",
       "album_name": ""
     },
@@ -18206,19 +18268,18 @@
       "title": "Girl",
       "artist": "Olswel",
       "genre": "Other",
-      "album_name": ""
+      "album_name": "",
+      "review_reason": "conflicting catalog genres",
+      "candidate_genres": [
+        "Downtempo",
+        "Indie Rock",
+        "R&B"
+      ]
     },
     {
       "id": "6acc50c1af5281180abafd3b",
       "title": "Girl Like Me",
       "artist": "Pardyalone",
-      "genre": "Other",
-      "album_name": ""
-    },
-    {
-      "id": "6acc50c1bcc4c203a1c4b1ce",
-      "title": "Girl On TV",
-      "artist": "LFO",
       "genre": "Other",
       "album_name": ""
     },
@@ -18339,13 +18400,6 @@
       "id": "6acc50e8135051fc11070fa3",
       "title": "Gnarly - Ice Spice Remix",
       "artist": "KATSEYE, Ice Spice",
-      "genre": "Other",
-      "album_name": ""
-    },
-    {
-      "id": "6acc50ed52140f5080f870a5",
-      "title": "Go Hard or Go Home",
-      "artist": "Wiz Khalifa, Iggy Azalea",
       "genre": "Other",
       "album_name": ""
     },
@@ -19621,5 +19675,5 @@
       "album_name": ""
     }
   ],
-  "searched_terms": 565
+  "searched_terms": 580
 }
