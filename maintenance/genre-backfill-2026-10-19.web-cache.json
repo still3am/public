@@ -350363,5 +350363,803 @@
         "trackId": 6803268949
       }
     ]
+  },
+  "mixTerm|sosocamo 4GET ABOUT ME": {
+    "query_url": "https://itunes.apple.com/search?term=sosocamo+4GET+ABOUT+ME&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": []
+  },
+  "mixTerm|Eladio Carrion 5 Star": {
+    "query_url": "https://itunes.apple.com/search?term=Eladio+Carrion+5+Star&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": [
+      {
+        "trackName": "FUMETEO (Remix)",
+        "artistName": "Feid, Mora & Eladio Carrión",
+        "collectionName": "FUMETEO (Remix) - Single",
+        "primaryGenreName": "Urbano latino",
+        "trackViewUrl": "https://music.apple.com/us/album/fumeteo-remix/1594970132?i=1594970135&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/fumeteo-remix/1594970132?i=1594970135&uo=4",
+        "trackId": 1594970135
+      },
+      {
+        "trackName": "FUMETEO (Remix)",
+        "artistName": "Feid, Mora & Eladio Carrión",
+        "collectionName": "INTER SHIBUYA (FERXXO EDITION)",
+        "primaryGenreName": "Urbano latino",
+        "trackViewUrl": "https://music.apple.com/us/album/fumeteo-remix/1600797285?i=1600797548&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/fumeteo-remix/1600797285?i=1600797548&uo=4",
+        "trackId": 1600797548
+      },
+      {
+        "trackName": "Super Gremlin (El Diablo Mix)",
+        "artistName": "Kodak Black, Myke Towers & Eladio Carrión",
+        "collectionName": "Super Gremlin (El Diablo Mix) - Single",
+        "primaryGenreName": "Hip-Hop/Rap",
+        "trackViewUrl": "https://music.apple.com/us/album/super-gremlin-el-diablo-mix/1612364400?i=1612364736&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/super-gremlin-el-diablo-mix/1612364400?i=1612364736&uo=4",
+        "trackId": 1612364736
+      },
+      {
+        "trackName": "Periódico de Ayer",
+        "artistName": "Ñejo & Eladio Carrión",
+        "collectionName": "Periódico de Ayer - Single",
+        "primaryGenreName": "Latin",
+        "trackViewUrl": "https://music.apple.com/us/album/peri%C3%B3dico-de-ayer/1849869071?i=1849869432&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/peri%C3%B3dico-de-ayer/1849869071?i=1849869432&uo=4",
+        "trackId": 1849869432
+      }
+    ]
+  },
+  "mixTerm|R2R MOE 6PM IN LA": {
+    "query_url": "https://itunes.apple.com/search?term=R2R+MOE+6PM+IN+LA&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": []
+  },
+  "mixTerm|R2R MOE 9 LIVES": {
+    "query_url": "https://itunes.apple.com/search?term=R2R+MOE+9+LIVES&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": [
+      {
+        "trackName": "FALL BACK",
+        "artistName": "R2R Moe",
+        "collectionName": "ROAD 2 RICHES, VOL. 1",
+        "primaryGenreName": "Hip-Hop/Rap",
+        "trackViewUrl": "https://music.apple.com/us/album/fall-back/1804660422?i=1804660429&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/fall-back/1804660422?i=1804660429&uo=4",
+        "trackId": 1804660429
+      }
+    ]
+  },
+  "mixTerm|R2R MOE 12AM IN HOUSTON": {
+    "query_url": "https://itunes.apple.com/search?term=R2R+MOE+12AM+IN+HOUSTON&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": []
+  },
+  "mixTerm|The Game 20 Deep": {
+    "query_url": "https://itunes.apple.com/search?term=The+Game+20+Deep&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": [
+      {
+        "trackName": "Shut Up and Dance",
+        "artistName": "WALK THE MOON",
+        "collectionName": "TALKING IS HARD (Expanded Edition)",
+        "primaryGenreName": "Alternative",
+        "trackViewUrl": "https://music.apple.com/us/album/shut-up-and-dance/961298415?i=961298418&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/shut-up-and-dance/961298415?i=961298418&uo=4",
+        "trackId": 961298418
+      },
+      {
+        "trackName": "Dog Days Are Over",
+        "artistName": "Florence + the Machine",
+        "collectionName": "Lungs",
+        "primaryGenreName": "Alternative",
+        "trackViewUrl": "https://music.apple.com/us/album/dog-days-are-over/1440729743?i=1440729744&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/dog-days-are-over/1440729743?i=1440729744&uo=4",
+        "trackId": 1440729744
+      },
+      {
+        "trackName": "The A Team",
+        "artistName": "Ed Sheeran",
+        "collectionName": "+ (Deluxe Version)",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/the-a-team/448213992?i=448213995&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/the-a-team/448213992?i=448213995&uo=4",
+        "trackId": 448213995
+      },
+      {
+        "trackName": "Free Mind",
+        "artistName": "Tems",
+        "collectionName": "For Broken Ears",
+        "primaryGenreName": "Alte",
+        "trackViewUrl": "https://music.apple.com/us/album/free-mind/1532252592?i=1532252603&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/free-mind/1532252592?i=1532252603&uo=4",
+        "trackId": 1532252603
+      },
+      {
+        "trackName": "Where the Wild Things Are",
+        "artistName": "Luke Combs",
+        "collectionName": "Gettin' Old",
+        "primaryGenreName": "Country",
+        "trackViewUrl": "https://music.apple.com/us/album/where-the-wild-things-are/1666738524?i=1666738581&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/where-the-wild-things-are/1666738524?i=1666738581&uo=4",
+        "trackId": 1666738581
+      },
+      {
+        "trackName": "Someone You Loved",
+        "artistName": "Lewis Capaldi",
+        "collectionName": "Breach - EP",
+        "primaryGenreName": "Alternative",
+        "trackViewUrl": "https://music.apple.com/us/album/someone-you-loved/1441539148?i=1441539154&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/someone-you-loved/1441539148?i=1441539154&uo=4",
+        "trackId": 1441539154
+      },
+      {
+        "trackName": "Blinding Lights",
+        "artistName": "The Weeknd",
+        "collectionName": "After Hours",
+        "primaryGenreName": "R&B/Soul",
+        "trackViewUrl": "https://music.apple.com/us/album/blinding-lights/1499378108?i=1499378607&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/blinding-lights/1499378108?i=1499378607&uo=4",
+        "trackId": 1499378607
+      },
+      {
+        "trackName": "Deep (feat. Lil Wayne)",
+        "artistName": "Big Sean",
+        "collectionName": "Dark Sky Paradise (Deluxe)",
+        "primaryGenreName": "Hip-Hop/Rap",
+        "trackViewUrl": "https://music.apple.com/us/album/deep-feat-lil-wayne/1446743910?i=1446744669&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/deep-feat-lil-wayne/1446743910?i=1446744669&uo=4",
+        "trackId": 1446744669
+      },
+      {
+        "trackName": "End Game (feat. Ed Sheeran & Future)",
+        "artistName": "Taylor Swift",
+        "collectionName": "reputation",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/end-game-feat-ed-sheeran-future/1440933849?i=1440934249&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/end-game-feat-ed-sheeran-future/1440933849?i=1440934249&uo=4",
+        "trackId": 1440934249
+      },
+      {
+        "trackName": "Deep (feat. Lil Wayne)",
+        "artistName": "Big Sean",
+        "collectionName": "Dark Sky Paradise",
+        "primaryGenreName": "Hip-Hop/Rap",
+        "trackViewUrl": "https://music.apple.com/us/album/deep-feat-lil-wayne/1442857082?i=1442857800&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/deep-feat-lil-wayne/1442857082?i=1442857800&uo=4",
+        "trackId": 1442857800
+      },
+      {
+        "trackName": "ONE BEER (feat. Lauren Alaina & Devin Dawson)",
+        "artistName": "HARDY",
+        "collectionName": "HIXTAPE: Vol. 1",
+        "primaryGenreName": "Country",
+        "trackViewUrl": "https://music.apple.com/us/album/one-beer-feat-lauren-alaina-devin-dawson/1752599380?i=1752599781&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/one-beer-feat-lauren-alaina-devin-dawson/1752599380?i=1752599781&uo=4",
+        "trackId": 1752599781
+      },
+      {
+        "trackName": "Cake By the Ocean",
+        "artistName": "DNCE",
+        "collectionName": "DNCE",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/cake-by-the-ocean/1440867688?i=1440867865&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/cake-by-the-ocean/1440867688?i=1440867865&uo=4",
+        "trackId": 1440867865
+      },
+      {
+        "trackName": "Wild Ones (feat. Sia)",
+        "artistName": "Flo Rida",
+        "collectionName": "Wild Ones",
+        "primaryGenreName": "Hip-Hop/Rap",
+        "trackViewUrl": "https://music.apple.com/us/album/wild-ones-feat-sia/613867183?i=613867347&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/wild-ones-feat-sia/613867183?i=613867347&uo=4",
+        "trackId": 613867347
+      },
+      {
+        "trackName": "Get Busy",
+        "artistName": "Sean Paul",
+        "collectionName": "Dutty Rock (20th Anniversary)",
+        "primaryGenreName": "Electronic",
+        "trackViewUrl": "https://music.apple.com/us/album/get-busy/1652781992?i=1652782418&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/get-busy/1652781992?i=1652782418&uo=4",
+        "trackId": 1652782418
+      },
+      {
+        "trackName": "Ain't No Love In Oklahoma",
+        "artistName": "Luke Combs",
+        "collectionName": "Twisters: The Album",
+        "primaryGenreName": "Country",
+        "trackViewUrl": "https://music.apple.com/us/album/aint-no-love-in-oklahoma/1746560124?i=1746560129&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/aint-no-love-in-oklahoma/1746560124?i=1746560129&uo=4",
+        "trackId": 1746560129
+      }
+    ]
+  },
+  "mixTerm|Anuel AA 23 Preguntas": {
+    "query_url": "https://itunes.apple.com/search?term=Anuel+AA+23+Preguntas&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": [
+      {
+        "trackName": "Pensando en Ti (feat. Wisin)",
+        "artistName": "Anuel AA",
+        "collectionName": "Real Hasta la Muerte",
+        "primaryGenreName": "Urbano latino",
+        "trackViewUrl": "https://music.apple.com/us/album/pensando-en-ti-feat-wisin/1453888864?i=1453889260&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/pensando-en-ti-feat-wisin/1453888864?i=1453889260&uo=4",
+        "trackId": 1453889260
+      },
+      {
+        "trackName": "23 Preguntas (Originally Performed by Anuel AA) [Instrumental Version]",
+        "artistName": "Backing Business",
+        "collectionName": "Pristine Karaoke, Vol. 46",
+        "primaryGenreName": "Instrumental",
+        "trackViewUrl": "https://music.apple.com/us/album/23-preguntas-originally-performed-by-anuel-aa-instrumental/1586109430?i=1586109431&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/23-preguntas-originally-performed-by-anuel-aa-instrumental/1586109430?i=1586109431&uo=4",
+        "trackId": 1586109431
+      },
+      {
+        "trackName": "ANUEL AA TU Y YO",
+        "artistName": "VARIOS ARTISTA SONG",
+        "collectionName": "ANUEL AA TU Y YO - Single",
+        "primaryGenreName": "Urbano latino",
+        "trackViewUrl": "https://music.apple.com/us/album/anuel-aa-tu-y-yo/1837247088?i=1837247089&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/anuel-aa-tu-y-yo/1837247088?i=1837247089&uo=4",
+        "trackId": 1837247089
+      }
+    ]
+  },
+  "mixTerm|JHAYCO 24 Horas": {
+    "query_url": "https://itunes.apple.com/search?term=JHAYCO+24+Horas&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": []
+  },
+  "mixTerm|Anuel AA 47 - Remix": {
+    "query_url": "https://itunes.apple.com/search?term=Anuel+AA+47+-+Remix&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": [
+      {
+        "trackName": "Fantasías (feat. Farruko & Lunay) [Remix]",
+        "artistName": "Rauw Alejandro, Anuel AA & NATTI NATASHA",
+        "collectionName": "Fantasías (Remix) [feat. Farruko & Lunay] - Single",
+        "primaryGenreName": "Urbano latino",
+        "trackViewUrl": "https://music.apple.com/us/album/fantas%C3%ADas-feat-farruko-lunay-remix/1501250703?i=1501250888&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/fantas%C3%ADas-feat-farruko-lunay-remix/1501250703?i=1501250888&uo=4",
+        "trackId": 1501250888
+      },
+      {
+        "trackName": "Bebé (feat. Anuel AA)",
+        "artistName": "Ozuna",
+        "collectionName": "Odisea",
+        "primaryGenreName": "Urbano latino",
+        "trackViewUrl": "https://music.apple.com/us/album/beb%C3%A9-feat-anuel-aa/1269285897?i=1269287605&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/beb%C3%A9-feat-anuel-aa/1269285897?i=1269287605&uo=4",
+        "trackId": 1269287605
+      },
+      {
+        "trackName": "A Solas (feat. Brytiago & Alex Rose) [Remix]",
+        "artistName": "Lunay, Lyanno & Anuel AA",
+        "collectionName": "A Solas (Remix) [feat. Brytiago & Alex Rose] - Single",
+        "primaryGenreName": "Urbano latino",
+        "trackViewUrl": "https://music.apple.com/us/album/a-solas-feat-brytiago-alex-rose-remix/1468235343?i=1468235344&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/a-solas-feat-brytiago-alex-rose-remix/1468235343?i=1468235344&uo=4",
+        "trackId": 1468235344
+      },
+      {
+        "trackName": "Adicto",
+        "artistName": "Tainy, Anuel AA & Ozuna",
+        "collectionName": "Adicto - Single",
+        "primaryGenreName": "Latin",
+        "trackViewUrl": "https://music.apple.com/us/album/adicto/1473148903?i=1473148905&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/adicto/1473148903?i=1473148905&uo=4",
+        "trackId": 1473148905
+      },
+      {
+        "trackName": "Quiere Beber",
+        "artistName": "Anuel AA",
+        "collectionName": "Real Hasta la Muerte",
+        "primaryGenreName": "Urbano latino",
+        "trackViewUrl": "https://music.apple.com/us/album/quiere-beber/1453888864?i=1453889019&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/quiere-beber/1453888864?i=1453889019&uo=4",
+        "trackId": 1453889019
+      },
+      {
+        "trackName": "La Ocasión (feat. Arcángel, Ozuna & Anuel AA)",
+        "artistName": "DJ Luian, Mambo Kingz & De La Ghetto",
+        "collectionName": "La Ocasión (feat. Arcángel, Ozuna & Anuel AA) - Single",
+        "primaryGenreName": "Urbano latino",
+        "trackViewUrl": "https://music.apple.com/us/album/la-ocasi%C3%B3n-feat-arc%C3%A1ngel-ozuna-anuel-aa/1359506941?i=1359506944&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/la-ocasi%C3%B3n-feat-arc%C3%A1ngel-ozuna-anuel-aa/1359506941?i=1359506944&uo=4",
+        "trackId": 1359506944
+      },
+      {
+        "trackName": "Baila Baila Baila (feat. Daddy Yankee, J Balvin, Farruko & Anuel AA) [Remix]",
+        "artistName": "Ozuna, Daddy Yankee & J Balvin",
+        "collectionName": "Baila Baila Baila (feat. Farruko, Anuel AA) [Remix] - Single",
+        "primaryGenreName": "Urbano latino",
+        "trackViewUrl": "https://music.apple.com/us/album/baila-baila-baila-feat-daddy-yankee-j-balvin-farruko/1460707396?i=1460707404&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/baila-baila-baila-feat-daddy-yankee-j-balvin-farruko/1460707396?i=1460707404&uo=4",
+        "trackId": 1460707404
+      },
+      {
+        "trackName": "Ella Quiere Beber (Remix)",
+        "artistName": "Anuel AA & Romeo Santos",
+        "collectionName": "Ella Quiere Beber (Remix) - Single",
+        "primaryGenreName": "Urbano latino",
+        "trackViewUrl": "https://music.apple.com/us/album/ella-quiere-beber-remix/1453886767?i=1453886770&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/ella-quiere-beber-remix/1453886767?i=1453886770&uo=4",
+        "trackId": 1453886770
+      },
+      {
+        "trackName": "Culpables",
+        "artistName": "KAROL G & Anuel AA",
+        "collectionName": "OCEAN",
+        "primaryGenreName": "Urbano latino",
+        "trackViewUrl": "https://music.apple.com/us/album/culpables/1460193253?i=1460193589&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/culpables/1460193253?i=1460193589&uo=4",
+        "trackId": 1460193589
+      },
+      {
+        "trackName": "Verte Ir (feat. Nicky Jam, Darell & Brytiago)",
+        "artistName": "DJ Luian, Mambo Kingz & Anuel AA",
+        "collectionName": "Verte Ir (feat. Nicky Jam, Darell & Brytiago) - Single",
+        "primaryGenreName": "Urbano latino",
+        "trackViewUrl": "https://music.apple.com/us/album/verte-ir-feat-nicky-jam-darell-brytiago/1456308569?i=1456308572&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/verte-ir-feat-nicky-jam-darell-brytiago/1456308569?i=1456308572&uo=4",
+        "trackId": 1456308572
+      },
+      {
+        "trackName": "Adictiva",
+        "artistName": "Daddy Yankee & Anuel AA",
+        "collectionName": "Adictiva - Single",
+        "primaryGenreName": "Urbano latino",
+        "trackViewUrl": "https://music.apple.com/us/album/adictiva/1440970965?i=1440970969&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/adictiva/1440970965?i=1440970969&uo=4",
+        "trackId": 1440970969
+      },
+      {
+        "trackName": "Bubalú (feat. Becky G & Prince Royce)",
+        "artistName": "DJ Luian, Mambo Kingz & Anuel AA",
+        "collectionName": "Bubalu (feat. Becky G & Prince Royce) - Single",
+        "primaryGenreName": "Urbano latino",
+        "trackViewUrl": "https://music.apple.com/us/album/bubal%C3%BA-feat-becky-g-prince-royce/1439267941?i=1439267949&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/bubal%C3%BA-feat-becky-g-prince-royce/1439267941?i=1439267949&uo=4",
+        "trackId": 1439267949
+      },
+      {
+        "trackName": "Secreto",
+        "artistName": "Anuel AA & KAROL G",
+        "collectionName": "Secreto - Single",
+        "primaryGenreName": "Urbano latino",
+        "trackViewUrl": "https://music.apple.com/us/album/secreto/1449291376?i=1449291388&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/secreto/1449291376?i=1449291388&uo=4",
+        "trackId": 1449291388
+      },
+      {
+        "trackName": "Sola (Remix) [feat. Daddy Yankee, Wisin, Farruko & Zion & Lennox]",
+        "artistName": "Anuel AA",
+        "collectionName": "Sola (Remix) [feat. Daddy Yankee, Wisin, Farruko & Zion & Lennox] - Single",
+        "primaryGenreName": "Urbano latino",
+        "trackViewUrl": "https://music.apple.com/us/album/sola-remix-feat-daddy-yankee-wisin-farruko-zion-lennox/1183214926?i=1183215242&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/sola-remix-feat-daddy-yankee-wisin-farruko-zion-lennox/1183214926?i=1183215242&uo=4",
+        "trackId": 1183215242
+      },
+      {
+        "trackName": "China (feat. J Balvin & Ozuna)",
+        "artistName": "Anuel AA, Daddy Yankee & KAROL G",
+        "collectionName": "China (feat. J Balvin & Ozuna) - Single",
+        "primaryGenreName": "Urbano latino",
+        "trackViewUrl": "https://music.apple.com/us/album/china-feat-j-balvin-ozuna/1473307002?i=1473307010&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/china-feat-j-balvin-ozuna/1473307002?i=1473307010&uo=4",
+        "trackId": 1473307010
+      }
+    ]
+  },
+  "mixTerm|Moneybagg Yo 50/50": {
+    "query_url": "https://itunes.apple.com/search?term=Moneybagg+Yo+50%2F50&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": [
+      {
+        "trackName": "50/50",
+        "artistName": "Moneybagg Yo & CMG The Label",
+        "collectionName": "Gangsta Art 2",
+        "primaryGenreName": "Hip-Hop/Rap",
+        "trackViewUrl": "https://music.apple.com/us/album/50-50/1709189522?i=1709189660&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/50-50/1709189522?i=1709189660&uo=4",
+        "trackId": 1709189660
+      },
+      {
+        "trackName": "50/50",
+        "artistName": "Moneybagg Yo & CMG The Label",
+        "collectionName": "Gangsta Art 2: Reloaded",
+        "primaryGenreName": "Hip-Hop/Rap",
+        "trackViewUrl": "https://music.apple.com/us/album/50-50/1710324196?i=1710324201&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/50-50/1710324196?i=1710324201&uo=4",
+        "trackId": 1710324201
+      }
+    ]
+  },
+  "mixTerm|G Herbo 100 Days 100 Nights": {
+    "query_url": "https://itunes.apple.com/search?term=G+Herbo+100+Days+100+Nights&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": [
+      {
+        "trackName": "Sleeping On the Floor (feat. G Herbo)",
+        "artistName": "Lil Bibby",
+        "collectionName": "FC3 the Epilogue - EP",
+        "primaryGenreName": "Hip-Hop/Rap",
+        "trackViewUrl": "https://music.apple.com/us/album/sleeping-on-the-floor-feat-g-herbo/1213560056?i=1213560195&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/sleeping-on-the-floor-feat-g-herbo/1213560056?i=1213560195&uo=4",
+        "trackId": 1213560195
+      },
+      {
+        "trackName": "Flashbacks (feat. Jeremih)",
+        "artistName": "G Herbo",
+        "collectionName": "Survivor's Remorse: A Side & B Side",
+        "primaryGenreName": "Hip-Hop/Rap",
+        "trackViewUrl": "https://music.apple.com/us/album/flashbacks-feat-jeremih/1648379755?i=1648379980&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/flashbacks-feat-jeremih/1648379755?i=1648379980&uo=4",
+        "trackId": 1648379980
+      },
+      {
+        "trackName": "Flashbacks (feat. Jeremih)",
+        "artistName": "G Herbo",
+        "collectionName": "Survivor’s Remorse: A Side",
+        "primaryGenreName": "Hip-Hop/Rap",
+        "trackViewUrl": "https://music.apple.com/us/album/flashbacks-feat-jeremih/1647893610?i=1647893806&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/flashbacks-feat-jeremih/1647893610?i=1647893806&uo=4",
+        "trackId": 1647893806
+      },
+      {
+        "trackName": "100 Days, 100 Nights",
+        "artistName": "Sharon Jones & The Dap-Kings",
+        "collectionName": "Miss Sharon Jones! (Original Motion Picture Soundtrack)",
+        "primaryGenreName": "R&B/Soul",
+        "trackViewUrl": "https://music.apple.com/us/album/100-days-100-nights/1488038920?i=1488038926&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/100-days-100-nights/1488038920?i=1488038926&uo=4",
+        "trackId": 1488038926
+      },
+      {
+        "trackName": "100 Days, 100 Nights",
+        "artistName": "Sharon Jones & The Dap-Kings",
+        "collectionName": "100 Days, 100 Nights",
+        "primaryGenreName": "R&B/Soul",
+        "trackViewUrl": "https://music.apple.com/us/album/100-days-100-nights/1485044241?i=1485044242&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/100-days-100-nights/1485044241?i=1485044242&uo=4",
+        "trackId": 1485044242
+      },
+      {
+        "trackName": "My City (feat. G Herbo)",
+        "artistName": "24kGoldn, Kane Brown & Fast & Furious: The Fast Saga",
+        "collectionName": "FAST X (Original Motion Picture Soundtrack)",
+        "primaryGenreName": "Hip-Hop/Rap",
+        "trackViewUrl": "https://music.apple.com/us/album/my-city-feat-g-herbo/1685731777?i=1685731986&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/my-city-feat-g-herbo/1685731777?i=1685731986&uo=4",
+        "trackId": 1685731986
+      },
+      {
+        "trackName": "Some Nights",
+        "artistName": "G Herbo & Southside",
+        "collectionName": "Swervo",
+        "primaryGenreName": "Hip-Hop/Rap",
+        "trackViewUrl": "https://music.apple.com/us/album/some-nights/6804009393?i=6804009394&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/some-nights/6804009393?i=6804009394&uo=4",
+        "trackId": 6804009394
+      },
+      {
+        "trackName": "Gangbangin'",
+        "artistName": "G Herbo",
+        "collectionName": "PTSD",
+        "primaryGenreName": "Hip-Hop/Rap",
+        "trackViewUrl": "https://music.apple.com/us/album/gangbangin/6803239294?i=6803239312&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/gangbangin/6803239294?i=6803239312&uo=4",
+        "trackId": 6803239312
+      },
+      {
+        "trackName": "Flashbacks (feat. Jeremih)",
+        "artistName": "G Herbo",
+        "collectionName": "Survivor’s Remorse: A Side",
+        "primaryGenreName": "Hip-Hop/Rap",
+        "trackViewUrl": "https://music.apple.com/us/album/flashbacks-feat-jeremih/1647886669?i=1647886676&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/flashbacks-feat-jeremih/1647886669?i=1647886676&uo=4",
+        "trackId": 1647886676
+      },
+      {
+        "trackName": "Went Legit",
+        "artistName": "G Herbo",
+        "collectionName": "Went Legit - Single",
+        "primaryGenreName": "Hip-Hop/Rap",
+        "trackViewUrl": "https://music.apple.com/us/album/went-legit/1836071703?i=1836071704&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/went-legit/1836071703?i=1836071704&uo=4",
+        "trackId": 1836071704
+      },
+      {
+        "trackName": "PTSD (feat. Juice WRLD, Lil Uzi Vert & Chance the Rapper)",
+        "artistName": "G Herbo",
+        "collectionName": "PTSD",
+        "primaryGenreName": "Hip-Hop/Rap",
+        "trackViewUrl": "https://music.apple.com/us/album/ptsd-feat-juice-wrld-lil-uzi-vert-chance-the-rapper/6803239294?i=6803239306&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/ptsd-feat-juice-wrld-lil-uzi-vert-chance-the-rapper/6803239294?i=6803239306&uo=4",
+        "trackId": 6803239306
+      },
+      {
+        "trackName": "100 Days, 100 Nights",
+        "artistName": "Sharon Jones & The Dap-Kings",
+        "collectionName": "Daptone Records Singles Collection: Vol. 3",
+        "primaryGenreName": "R&B/Soul",
+        "trackViewUrl": "https://music.apple.com/us/album/100-days-100-nights/1485050622?i=1485051227&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/100-days-100-nights/1485050622?i=1485051227&uo=4",
+        "trackId": 1485051227
+      },
+      {
+        "trackName": "100 Days, 100 Nights (Live)",
+        "artistName": "The Osmonds",
+        "collectionName": "Live By Request",
+        "primaryGenreName": "Traditional Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/100-days-100-nights-live/1126772253?i=1126773236&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/100-days-100-nights-live/1126772253?i=1126773236&uo=4",
+        "trackId": 1126773236
+      },
+      {
+        "trackName": "100 Days, 100 Nights",
+        "artistName": "Rachelle Garniez",
+        "collectionName": "Gone to Glory",
+        "primaryGenreName": "Indie Rock",
+        "trackViewUrl": "https://music.apple.com/us/album/100-days-100-nights/1493225738?i=1493225800&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/100-days-100-nights/1493225738?i=1493225800&uo=4",
+        "trackId": 1493225800
+      },
+      {
+        "trackName": "100 Days, 100 Nights (And the Dap-Kings)",
+        "artistName": "Soul Deep",
+        "collectionName": "Everyday People: Classic Soul",
+        "primaryGenreName": "R&B/Soul",
+        "trackViewUrl": "https://music.apple.com/us/album/100-days-100-nights-and-the-dap-kings/574644650?i=574644817&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/100-days-100-nights-and-the-dap-kings/574644650?i=574644817&uo=4",
+        "trackId": 574644817
+      }
+    ]
+  },
+  "mixTerm|sosocamo 200": {
+    "query_url": "https://itunes.apple.com/search?term=sosocamo+200&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": []
+  },
+  "mixTerm|Tory Lanez 392": {
+    "query_url": "https://itunes.apple.com/search?term=Tory+Lanez+392&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": []
+  },
+  "mixTerm|Mora 512": {
+    "query_url": "https://itunes.apple.com/search?term=Mora+512&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": [
+      {
+        "trackName": "FUMETEO (Remix)",
+        "artistName": "Feid, Mora & Eladio Carrión",
+        "collectionName": "FUMETEO (Remix) - Single",
+        "primaryGenreName": "Urbano latino",
+        "trackViewUrl": "https://music.apple.com/us/album/fumeteo-remix/1594970132?i=1594970135&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/fumeteo-remix/1594970132?i=1594970135&uo=4",
+        "trackId": 1594970135
+      },
+      {
+        "trackName": "512 (feat. Mora Sg)",
+        "artistName": "Aese",
+        "collectionName": "512 (feat. Mora Sg) - Single",
+        "primaryGenreName": "Urbano latino",
+        "trackViewUrl": "https://music.apple.com/us/album/512-feat-mora-sg/1686348985?i=1686348998&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/512-feat-mora-sg/1686348985?i=1686348998&uo=4",
+        "trackId": 1686348998
+      },
+      {
+        "trackName": "FUMETEO (Remix)",
+        "artistName": "Feid, Mora & Eladio Carrión",
+        "collectionName": "INTER SHIBUYA (FERXXO EDITION)",
+        "primaryGenreName": "Urbano latino",
+        "trackViewUrl": "https://music.apple.com/us/album/fumeteo-remix/1600797285?i=1600797548&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/fumeteo-remix/1600797285?i=1600797548&uo=4",
+        "trackId": 1600797548
+      },
+      {
+        "trackName": "AIRBNB",
+        "artistName": "Mora & De La Ghetto",
+        "collectionName": "PARAÍSO",
+        "primaryGenreName": "Urbano latino",
+        "trackViewUrl": "https://music.apple.com/us/album/airbnb/1651264307?i=1651265369&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/airbnb/1651264307?i=1651265369&uo=4",
+        "trackId": 1651265369
+      },
+      {
+        "trackName": "Corolla",
+        "artistName": "Black Simpson",
+        "collectionName": "Corolla - Single",
+        "primaryGenreName": "Afro-Beat",
+        "trackViewUrl": "https://music.apple.com/us/album/corolla/1853905922?i=1853905926&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/corolla/1853905922?i=1853905926&uo=4",
+        "trackId": 1853905926
+      },
+      {
+        "trackName": "EN EL PARTY",
+        "artistName": "Luxxo",
+        "collectionName": "EN EL PARTY - Single",
+        "primaryGenreName": "Urbano latino",
+        "trackViewUrl": "https://music.apple.com/us/album/en-el-party/1718305185?i=1718305316&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/en-el-party/1718305185?i=1718305316&uo=4",
+        "trackId": 1718305316
+      },
+      {
+        "trackName": "¿Baby Dónde Estás?",
+        "artistName": "Daniello",
+        "collectionName": "¿Baby Dónde Estás? - Single",
+        "primaryGenreName": "Modern Dancehall",
+        "trackViewUrl": "https://music.apple.com/us/album/baby-d%C3%B3nde-est%C3%A1s/1721361413?i=1721361414&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/baby-d%C3%B3nde-est%C3%A1s/1721361413?i=1721361414&uo=4",
+        "trackId": 1721361414
+      },
+      {
+        "trackName": "Porque Rap Mora Aqui",
+        "artistName": "Ace One 512",
+        "collectionName": "512 The Imigrante",
+        "primaryGenreName": "Gangsta Rap",
+        "trackViewUrl": "https://music.apple.com/us/album/porque-rap-mora-aqui/1754420709?i=1754420714&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/porque-rap-mora-aqui/1754420709?i=1754420714&uo=4",
+        "trackId": 1754420714
+      },
+      {
+        "trackName": "Dolce",
+        "artistName": "Casta",
+        "collectionName": "Mary Jane Dreams",
+        "primaryGenreName": "Urbano latino",
+        "trackViewUrl": "https://music.apple.com/us/album/dolce/1660051584?i=1660051594&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/dolce/1660051584?i=1660051594&uo=4",
+        "trackId": 1660051594
+      },
+      {
+        "trackName": "No Sé",
+        "artistName": "Frank Noisse",
+        "collectionName": "No Sé - Single",
+        "primaryGenreName": "Urbano latino",
+        "trackViewUrl": "https://music.apple.com/us/album/no-s%C3%A9/1620105602?i=1620105603&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/no-s%C3%A9/1620105602?i=1620105603&uo=4",
+        "trackId": 1620105603
+      },
+      {
+        "trackName": "Triple S",
+        "artistName": "J Balvin, Jowell & Randy & De La Ghetto",
+        "collectionName": "Triple S - Single",
+        "primaryGenreName": "Urbano latino",
+        "trackViewUrl": "https://music.apple.com/us/album/triple-s/1733114832?i=1733115228&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/triple-s/1733114832?i=1733115228&uo=4",
+        "trackId": 1733115228
+      }
+    ]
+  },
+  "mixTerm|Sech 911": {
+    "query_url": "https://itunes.apple.com/search?term=Sech+911&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": [
+      {
+        "trackName": "Sigues Con Él",
+        "artistName": "Dímelo Flow, Arcángel & Sech",
+        "collectionName": "Historias de un Capricornio",
+        "primaryGenreName": "Hip-Hop/Rap",
+        "trackViewUrl": "https://music.apple.com/us/album/sigues-con-%C3%A9l/1492331497?i=1492331976&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/sigues-con-%C3%A9l/1492331497?i=1492331976&uo=4",
+        "trackId": 1492331976
+      },
+      {
+        "trackName": "Relación",
+        "artistName": "Sech",
+        "collectionName": "1 of 1",
+        "primaryGenreName": "Latin",
+        "trackViewUrl": "https://music.apple.com/us/album/relaci%C3%B3n/1510778463?i=1510779525&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/relaci%C3%B3n/1510778463?i=1510779525&uo=4",
+        "trackId": 1510779525
+      },
+      {
+        "trackName": "En La De Ella",
+        "artistName": "JHAYCO, Feid & Sech",
+        "collectionName": "En La De Ella - Single",
+        "primaryGenreName": "Urbano latino",
+        "trackViewUrl": "https://music.apple.com/us/album/en-la-de-ella/1650324348?i=1650324372&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/en-la-de-ella/1650324348?i=1650324372&uo=4",
+        "trackId": 1650324372
+      },
+      {
+        "trackName": "Relación (Remix) [feat. ROSALÍA & Farruko]",
+        "artistName": "Sech, Daddy Yankee & J Balvin",
+        "collectionName": "Relación (Remix) [feat. ROSALÍA & Farruko] - Single",
+        "primaryGenreName": "Latin",
+        "trackViewUrl": "https://music.apple.com/us/album/relaci%C3%B3n-remix-feat-rosal%C3%ADa-farruko/1529959307?i=1529959308&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/relaci%C3%B3n-remix-feat-rosal%C3%ADa-farruko/1529959307?i=1529959308&uo=4",
+        "trackId": 1529959308
+      },
+      {
+        "trackName": "Sal y Perrea (Remix)",
+        "artistName": "Sech, Daddy Yankee & J Balvin",
+        "collectionName": "Sal y Perrea (Remix) - Single",
+        "primaryGenreName": "Urbano latino",
+        "trackViewUrl": "https://music.apple.com/us/album/sal-y-perrea-remix/1587073232?i=1587073235&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/sal-y-perrea-remix/1587073232?i=1587073235&uo=4",
+        "trackId": 1587073235
+      },
+      {
+        "trackName": "911 (En Vivo)",
+        "artistName": "Fuerza Regida & Grupo Frontera",
+        "collectionName": "911 (En Vivo) - Single",
+        "primaryGenreName": "Música Mexicana",
+        "trackViewUrl": "https://music.apple.com/us/album/911-en-vivo/1656860278?i=1656860283&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/911-en-vivo/1656860278?i=1656860283&uo=4",
+        "trackId": 1656860283
+      },
+      {
+        "trackName": "Desde Mis Ojos (Remix)",
+        "artistName": "Chris Lebron, Sech & Jay Wheeler",
+        "collectionName": "Desde Mis Ojos (Remix) - Single",
+        "primaryGenreName": "Latin",
+        "trackViewUrl": "https://music.apple.com/us/album/desde-mis-ojos-remix/1622645381?i=1622645400&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/desde-mis-ojos-remix/1622645381?i=1622645400&uo=4",
+        "trackId": 1622645400
+      },
+      {
+        "trackName": "PARA SIEMPRE",
+        "artistName": "Daddy Yankee & Sech",
+        "collectionName": "LEGENDADDY",
+        "primaryGenreName": "Urbano latino",
+        "trackViewUrl": "https://music.apple.com/us/album/para-siempre/1614983552?i=1614983839&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/para-siempre/1614983552?i=1614983839&uo=4",
+        "trackId": 1614983839
+      },
+      {
+        "trackName": "Llueve",
+        "artistName": "Wisin & Yandel, JHAYCO & Sech",
+        "collectionName": "Llueve - Single",
+        "primaryGenreName": "Urbano latino",
+        "trackViewUrl": "https://music.apple.com/us/album/llueve/1622642386?i=1622642388&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/llueve/1622642386?i=1622642388&uo=4",
+        "trackId": 1622642388
+      },
+      {
+        "trackName": "Ley Seca",
+        "artistName": "JHAYCO & Anuel AA",
+        "collectionName": "Timelezz (Apple Music Edition)",
+        "primaryGenreName": "Urbano latino",
+        "trackViewUrl": "https://music.apple.com/us/album/ley-seca/1584218327?i=1584218623&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/ley-seca/1584218327?i=1584218623&uo=4",
+        "trackId": 1584218623
+      },
+      {
+        "trackName": "911",
+        "artistName": "Lady Gaga",
+        "collectionName": "Chromatica",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/911/1500951604?i=1500952435&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/911/1500951604?i=1500952435&uo=4",
+        "trackId": 1500952435
+      },
+      {
+        "trackName": "911 (feat. Mary J. Blige)",
+        "artistName": "Wyclef Jean",
+        "collectionName": "The Ecleftic -2 Sides II A Book",
+        "primaryGenreName": "R&B/Soul",
+        "trackViewUrl": "https://music.apple.com/us/album/911-feat-mary-j-blige/203303442?i=203304384&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/911-feat-mary-j-blige/203303442?i=203304384&uo=4",
+        "trackId": 203304384
+      },
+      {
+        "trackName": "911 (Charli XCX & A. G. Cook Remix)",
+        "artistName": "Lady Gaga, Charli xcx & A. G. Cook",
+        "collectionName": "Dawn Of Chromatica",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/911-charli-xcx-a-g-cook-remix/1583876941?i=1583877264&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/911-charli-xcx-a-g-cook-remix/1583876941?i=1583877264&uo=4",
+        "trackId": 1583877264
+      },
+      {
+        "trackName": "911 (Sofi Tukker Remix)",
+        "artistName": "Lady Gaga & SOFI TUKKER",
+        "collectionName": "911 (Sofi Tukker Remix) - Single",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/911-sofi-tukker-remix/1541580273?i=1541580275&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/911-sofi-tukker-remix/1541580273?i=1541580275&uo=4",
+        "trackId": 1541580275
+      },
+      {
+        "trackName": "911 (Bruno Martini Remix)",
+        "artistName": "Lady Gaga & Bruno Martini",
+        "collectionName": "911 (Bruno Martini Remix) - Single",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/911-bruno-martini-remix/1541580402?i=1541580403&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/911-bruno-martini-remix/1541580402?i=1541580403&uo=4",
+        "trackId": 1541580403
+      }
+    ]
   }
 }
