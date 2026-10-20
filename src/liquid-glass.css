@@ -1,16 +1,20 @@
+html[data-liquid-glass=clear]{--public-glass-overlay-opacity:.84}
+html.dark[data-liquid-glass=clear]{--public-glass-overlay-opacity:.80}
+html[data-liquid-glass=tinted]{--public-glass-overlay-opacity:.96}
 /* Appearance is opt-in. Images and authored artwork keep their original colors. */
 html[data-liquid-glass=clear]{--public-glass-opacity:.68;--public-glass-blur:20px}
 html.dark[data-liquid-glass=clear]{--public-glass-opacity:.60}
 html[data-liquid-glass=tinted]{--public-glass-opacity:.91;--public-glass-blur:26px}
 html.dark[data-liquid-glass=tinted]{--public-glass-opacity:.86}
 html:is([data-liquid-glass=clear],[data-liquid-glass=tinted]) :is(
- .public-app .bg-card,.public-app .bg-popover,
- .public-app .profile-identity,.public-app .profile-conversation,.public-app .profile-discover,
+ .public-app .bg-card,.public-app .bg-popover,.public-app .music-card,
+ [data-public-menu] .bg-popover,[data-public-dialog]>.bg-card,[data-public-dialog]>.bg-background,
+ .public-app .profile-identity,.public-app .profile-conversation,
  .public-app .profile-song-spotlight .song-menu-surface,.public-app .profile-rotation,
  .public-app .mobile-nav-pill,.public-app .mobile-nav-search,.public-app .mobile-search-home,.public-app .mobile-search-field,
  .public-app .player-surface,.public-app .sidebar-surface,
  .profile-settings-panel,.profile-settings-groups>section>div,
- .mobile-more-panel,.mobile-more-sheet,.public-avatar-picker,.public-banner-picker,
+ .mobile-more-panel,.mobile-more-sheet,.public-avatar-picker,
  .public-app .profile-edit-toolbar,.public-app .profile-playlist-status,.public-app .profile-top8-edit-row,
  [role=menu].bg-popover,[data-radix-popper-content-wrapper] .bg-popover,[role=dialog].bg-background,[role=dialog].bg-card,[role=dialog] .bg-card,
  [data-glass-surface]
@@ -22,19 +26,44 @@ html:is([data-liquid-glass=clear],[data-liquid-glass=tinted]) :is(
  border-color:hsl(var(--foreground)/.16)!important;
  box-shadow:inset 0 1px 0 rgb(255 255 255/.12),inset 0 -1px 0 rgb(255 255 255/.025),0 8px 24px rgb(0 0 0/.07)!important;
 }
-html:is([data-liquid-glass=clear],[data-liquid-glass=tinted]) .profile-discover .discover-mini-body{
- background-color:hsl(var(--card)/var(--public-glass-opacity))!important;
- -webkit-backdrop-filter:blur(16px) saturate(1.3);backdrop-filter:blur(16px) saturate(1.3);
-}
-html[data-liquid-glass=clear] .has-profile-gradient .discover-mini-body{--public-glass-opacity:.64}
-html[data-liquid-glass=tinted] .has-profile-gradient .discover-mini-body{--public-glass-opacity:.86}
-html:is([data-liquid-glass=clear],[data-liquid-glass=tinted]) .discover-deck-controls{background-color:hsl(var(--card)/var(--public-glass-opacity))!important;background-image:none}
 /* Inner surfaces use a single translucent layer; stacking blur makes cards opaque. */
-html:is([data-liquid-glass=clear],[data-liquid-glass=tinted]) :is(.profile-comments-composer,.avatar-picker-footer,.banner-picker-footer){background:hsl(var(--card)/var(--public-glass-opacity));-webkit-backdrop-filter:blur(var(--public-glass-blur));backdrop-filter:blur(var(--public-glass-blur));border-radius:16px}
-html:is([data-liquid-glass=clear],[data-liquid-glass=tinted]) .profile-comments-composer{padding:10px;margin-inline:-4px}
+html:is([data-liquid-glass=clear],[data-liquid-glass=tinted]) :is(.profile-comments-composer,.avatar-picker-footer){background:hsl(var(--card)/var(--public-glass-opacity));-webkit-backdrop-filter:blur(var(--public-glass-blur));backdrop-filter:blur(var(--public-glass-blur));border-radius:16px}
+html:is([data-liquid-glass=clear],[data-liquid-glass=tinted]) .profile-comments-composer{padding:0;position:relative;background:transparent;-webkit-backdrop-filter:none;backdrop-filter:none}
 html:is([data-liquid-glass=clear],[data-liquid-glass=tinted]) .profile-comments-composer textarea{background:hsl(var(--foreground)/.045);border-color:hsl(var(--foreground)/.18)}
 html:is([data-liquid-glass=clear],[data-liquid-glass=tinted]) :is(.profile-conversation,.profile-identity,.profile-rotation) .bg-card{background-color:hsl(var(--foreground)/.035)!important;background-image:none!important;-webkit-backdrop-filter:none!important;backdrop-filter:none!important;box-shadow:none!important}
-html:is([data-liquid-glass=clear],[data-liquid-glass=tinted]) :is(.profile-settings-panel,.public-avatar-picker,.public-banner-picker) :is(input:not([type=checkbox]):not([type=radio]):not([type=range]),textarea){background-color:hsl(var(--foreground)/.04);border-color:hsl(var(--foreground)/.18)}
+html:is([data-liquid-glass=clear],[data-liquid-glass=tinted]) :is(.profile-settings-panel,.public-avatar-picker) :is(input:not([type=checkbox]):not([type=radio]):not([type=range]),textarea){background-color:hsl(var(--foreground)/.04);border-color:hsl(var(--foreground)/.18)}
+/* Floating controls need more contrast than cards on a page. */
+html:is([data-liquid-glass=clear],[data-liquid-glass=tinted]) :is(
+ .profile-settings-panel,.mobile-more-panel,.mobile-more-sheet,.public-avatar-picker,
+ [role=dialog].bg-card,[role=dialog].bg-background,
+ [data-public-dialog]>.bg-card,[data-public-dialog]>.bg-background,
+ [data-public-menu] .bg-popover,[data-radix-popper-content-wrapper] .bg-popover
+){background-color:hsl(var(--card)/var(--public-glass-overlay-opacity))!important}
+html:is([data-liquid-glass=clear],[data-liquid-glass=tinted]) :is(
+ .public-app .bg-card .bg-card,.profile-settings-groups>section>div,[role=dialog] .bg-card .bg-card
+){background-color:hsl(var(--foreground)/.035)!important;background-image:none!important;-webkit-backdrop-filter:none!important;backdrop-filter:none!important;box-shadow:none!important}
+html:is([data-liquid-glass=clear],[data-liquid-glass=tinted]) :is(
+ [data-public-dialog],[role=dialog],.profile-settings-panel
+) :is(input[type=text],input[type=search],input[type=url],textarea){
+ background-color:hsl(var(--foreground)/.045);border-color:hsl(var(--foreground)/.18)
+}
+html:is([data-liquid-glass=clear],[data-liquid-glass=tinted]) :is(
+ [data-public-menu] .bg-popover,[data-radix-popper-content-wrapper] .bg-popover
+){border-radius:20px}
+html:is([data-liquid-glass=clear],[data-liquid-glass=tinted]) :is(
+ [role=menuitem],[role=menuitemcheckbox],[role=menuitemradio]
+){border-radius:12px}
+html:is([data-liquid-glass=clear],[data-liquid-glass=tinted]) .music-card{
+ border:1px solid hsl(var(--foreground)/.08);background-image:none!important;
+ -webkit-backdrop-filter:blur(10px) saturate(1.15)!important;backdrop-filter:blur(10px) saturate(1.15)!important;
+ box-shadow:inset 0 1px 0 hsl(var(--foreground)/.035)!important
+}
+@media(hover:hover){
+ html:is([data-liquid-glass=clear],[data-liquid-glass=tinted]) .music-card:hover{border-color:hsl(var(--foreground)/.22)!important}
+}
+html:is([data-liquid-glass=clear],[data-liquid-glass=tinted]) :is(.profile-comments-composer textarea,[role=menuitem],.music-card):focus-visible{
+ outline:2px solid hsl(var(--foreground)/.65);outline-offset:3px
+}
 .profile-settings-panel .profile-settings-groups.settings-detail{display:block}
 .liquid-glass-settings{display:grid;gap:16px;max-width:680px;margin-inline:auto}
 .liquid-glass-demo{height:290px;position:relative;overflow:hidden;border-radius:24px;background:radial-gradient(ellipse at 15% 90%,#13978d,transparent 68%),radial-gradient(ellipse at 90% 0%,#5946e5,transparent 66%),linear-gradient(135deg,#154570,#073f64);color:white;display:grid;align-content:end;justify-items:center;gap:14px;padding:24px;isolation:isolate}
@@ -72,17 +101,18 @@ html:is([data-liquid-glass=clear],[data-liquid-glass=tinted]) :is(.profile-setti
 @media(hover:hover){.glass-mode-options>button:hover .glass-mode-swatch{filter:brightness(1.1)}}
 @media(prefers-reduced-motion:reduce){.glass-demo-surface,.glass-demo-tools,.glass-mode-options>button{transition:none}.glass-demo-orb{animation:none;will-change:auto}}
 @media(prefers-reduced-transparency:reduce),(prefers-contrast:more){
- html:is([data-liquid-glass=clear],[data-liquid-glass=tinted]) .profile-discover .discover-mini-body{backdrop-filter:none;-webkit-backdrop-filter:none}
  .glass-demo-surface,.glass-demo-tools{background:#17171d!important;backdrop-filter:none;-webkit-backdrop-filter:none}
 }
 @supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){.glass-demo-surface,.glass-demo-tools{background:#17171d}}
 @media(max-height:740px) and (max-width:767px){.liquid-glass-demo{height:216px!important}.glass-demo-heading{top:45px!important}.glass-demo-heading small{display:none}.glass-demo-tools{padding:9px 20px}.glass-mode-options>button{min-height:90px!important}.liquid-glass-settings{gap:12px!important}}
 @supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){
- html:is([data-liquid-glass=clear],[data-liquid-glass=tinted]){--public-glass-opacity:1!important}
- html:is([data-liquid-glass=clear],[data-liquid-glass=tinted]) .has-profile-gradient .discover-mini-body{--public-glass-opacity:1!important}
+ html:is([data-liquid-glass=clear],[data-liquid-glass=tinted]){--public-glass-opacity:1!important;--public-glass-overlay-opacity:1!important}
 }
 @media(prefers-reduced-transparency:reduce),(prefers-contrast:more){
- html:is([data-liquid-glass=clear],[data-liquid-glass=tinted]){--public-glass-opacity:.97!important;--public-glass-blur:0px}
- html:is([data-liquid-glass=clear],[data-liquid-glass=tinted]) .has-profile-gradient .discover-mini-body{--public-glass-opacity:.97!important}
+ html:is([data-liquid-glass=clear],[data-liquid-glass=tinted]){--public-glass-opacity:.97!important;--public-glass-overlay-opacity:.98!important;--public-glass-blur:0px}
 }
 @media(max-width:767px){.liquid-glass-demo{height:256px;padding:18px}.glass-demo-heading{top:57px}.glass-demo-surface{padding:12px;gap:9px}.liquid-glass-settings{gap:14px}.glass-mode-options{gap:8px}.glass-mode-options>button{min-height:104px}}
+@media(prefers-reduced-transparency:reduce),(prefers-contrast:more){
+ html:is([data-liquid-glass=clear],[data-liquid-glass=tinted]) .music-card{-webkit-backdrop-filter:none!important;backdrop-filter:none!important}
+}
+
