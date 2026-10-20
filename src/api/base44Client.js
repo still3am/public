@@ -1,4 +1,3 @@
-import {BANNER_PRESETS,savePresetBanner} from "@/lib/bannerPresets";
 import {loungeAction} from "@/lib/adminLounge";
 import {saveTimedLyrics} from "@/lib/saveTimedLyrics";
 import {AVATAR_PRESETS} from "@/lib/avatarPresets";
@@ -17,7 +16,7 @@ const entities = new Proxy(raw.entities,{get(target,name) {
   if(typeof name!=='string')return Reflect.get(target,name);
   if(name==="PublicProfile"){
    if(!handlers.has(name))handlers.set(name,new Proxy(target[name],{get(h,method){
-    if(["get","list","filter"].includes(method))return async(...args)=>{const readArgs=args.map(arg=>arg&&typeof arg==="object"&&!Array.isArray(arg)&&Array.isArray(arg.fields)&&(arg.fields.includes("avatar_url")||arg.fields.includes("banner_url"))?{...arg,fields:[...new Set([...arg.fields,"avatar_preset","banner_preset"])]}:arg);const page=await h[method](...readArgs);return Array.isArray(page)?page.map(withPresetAvatar):Array.isArray(page?.items)?{...page,items:page.items.map(withPresetAvatar)}:withPresetAvatar(page);};
+    if(["get","list","filter"].includes(method))return async(...args)=>{const readArgs=args.map(arg=>arg&&typeof arg==="object"&&!Array.isArray(arg)&&Array.isArray(arg.fields)&&arg.fields.includes("avatar_url")?{...arg,fields:[...new Set([...arg.fields,"avatar_preset"])]}:arg);const page=await h[method](...readArgs);return Array.isArray(page)?page.map(withPresetAvatar):Array.isArray(page?.items)?{...page,items:page.items.map(withPresetAvatar)}:withPresetAvatar(page);};
     return h[method];
    }}));
    return handlers.get(name);
@@ -112,15 +111,6 @@ export const base44 = new Proxy(raw,{get(target,name) {
       return savePresetAvatar(target,avatar_url);
     }
 
-    if(Object.hasOwn(data||{},"banner_url")&&BANNER_PRESETS.some(item=>item.url===data.banner_url)){
-      const preset=BANNER_PRESETS.find(item=>item.url===data.banner_url);
-      const {banner_url,banner_mobile_url,banner_video_url,banner_gif_url,banner_use_default,...other}=data;
-      if(banner_use_default===true||banner_video_url&&banner_video_url!==preset.videoUrl||banner_gif_url&&banner_gif_url!==preset.gifUrl||banner_mobile_url&&banner_mobile_url!==preset.url)throw Error("Choose one gallery banner or uploaded media.");
-      const owner=await target.auth.me();
-      if(Object.keys(other).length)await base44.auth.updateMe(other);
-      if((await target.auth.me())?.id!==owner?.id)throw Error("Your account changed. Reopen your profile.");
-      return savePresetBanner(target,banner_url);
-    }
     // Song associations use the signed-in account API; no new text or media is submitted.
     if(Object.keys(data||{}).length===1&&Object.hasOwn(data,"top_track_ids")){
       const ids=data.top_track_ids;
@@ -147,10 +137,6 @@ export const base44 = new Proxy(raw,{get(target,name) {
       return confirmed;
     }
 
-    if(Object.keys(data||{}).length===1&&data.banner_use_default===false){
-      const current=await target.auth.me();
-      if(BANNER_PRESETS.some(item=>item.url===current?.banner_preset))return savePresetBanner(target,current.banner_preset);
-    }
     // Restoring existing default artwork does not upload or moderate new media.
     if(Object.keys(data||{}).length===1&&data.banner_use_default===true){
       const current=await target.auth.me();
@@ -223,3 +209,4 @@ export const base44 = new Proxy(raw,{get(target,name) {
   }};
   return target[name];
 }});
+
