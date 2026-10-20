@@ -1,3 +1,4 @@
+.profile-community-column{display:grid;align-content:start;min-width:0;gap:20px}
 .profile-image-editor{max-width:620px!important;width:calc(100vw - 32px)!important;max-height:92dvh;overflow-y:auto;border-radius:24px!important;padding:26px;gap:18px}
 .profile-image-editor h2{font-size:24px;letter-spacing:-.035em}
 .profile-crop-stage{position:relative;width:100%;display:grid;place-items:center;overflow:hidden;background:#161619;touch-action:none;border-radius:14px}
