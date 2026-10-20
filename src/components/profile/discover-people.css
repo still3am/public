@@ -61,3 +61,39 @@
 @media(prefers-reduced-motion:no-preference){.profile-discover-loading{animation:discover-breathe 1.5s ease-in-out infinite}.discover-mini-profile.from-next{animation:discover-next .24s ease both}.discover-mini-profile.from-previous{animation:discover-previous .24s ease both}}
 @keyframes discover-breathe{50%{opacity:.45}}@keyframes discover-next{from{opacity:.4;transform:translateX(28px)}to{opacity:1;transform:translateX(0)}}@keyframes discover-previous{from{opacity:.4;transform:translateX(-28px)}to{opacity:1;transform:translateX(0)}}
 
+/* Keep the mobile deck within the space above the fixed app controls.
+   The mini profile scrolls vertically; its browse controls stay in reach. */
+.discover-more-music{display:none}
+.discover-profile-actions{margin-bottom:16px}
+.public-app .profile-redesigned .profile-discover .discover-mini-profile h3{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+@media(max-width:767px){
+ .profile-discover-deck{height:min(670px,calc(100svh - 130px - env(safe-area-inset-bottom)));max-height:calc(100svh - 130px - env(safe-area-inset-bottom));display:flex;flex-direction:column}
+ .profile-discover-deck>header{flex:0 0 auto;padding:15px 16px 12px}
+ .profile-discover-deck>header h2{font-size:19px}
+ .profile-discover-deck>header p{margin-top:4px;font-size:11px}
+ .profile-discover-deck .discover-swipe-area{flex:1;min-height:0;overflow:hidden}
+ .profile-discover-deck .discover-drag-frame{height:100%}
+ .profile-discover-deck .discover-mini-profile{height:100%;display:flex;flex-direction:column}
+ .profile-discover-deck .discover-mini-banner{height:106px;min-height:106px;flex:0 0 106px}
+ .profile-discover-deck .discover-mini-body{flex:1;min-height:0;margin-top:-24px;padding:0 16px 16px;overflow-y:auto;overscroll-behavior-y:contain;scrollbar-width:thin;scroll-padding-block:12px}
+ .profile-discover-deck .discover-mini-avatar{margin-top:0;margin-bottom:9px;width:68px;padding:4px}
+ .profile-discover-deck .discover-mini-avatar>img,.profile-discover-deck .discover-mini-avatar>div,.profile-discover-deck .discover-mini-avatar>.public-profile-media{width:60px!important;height:60px!important}
+ .public-app .profile-redesigned .profile-discover-deck .discover-mini-profile h3{font-size:21px;line-height:1.15}
+ .profile-discover-deck .discover-shared{margin-bottom:6px}
+ .profile-discover-deck .discover-mini-handle{margin-top:5px;font-size:11px}
+ .profile-discover-deck .discover-mini-location{margin-top:4px}
+ .profile-discover-deck .discover-mini-bio{font-size:12px;line-height:1.5;margin-top:9px;-webkit-line-clamp:2}
+ .profile-discover-deck .discover-profile-actions{gap:8px;margin-top:12px;margin-bottom:12px}
+ .profile-discover-deck .discover-mini-music{margin-top:12px;padding-top:12px;min-height:76px}
+ .profile-discover-deck .discover-mini-music h4{margin-bottom:6px}
+ .profile-discover-deck .discover-mini-music:not(.is-music-expanded) .discover-mini-song~.discover-mini-song{display:none}
+ .discover-more-music{display:block;min-height:44px;font-size:11px;font-weight:600;text-align:left;text-decoration:underline;text-underline-offset:3px}
+ .profile-discover-deck .discover-deck-controls{flex:0 0 auto;padding:8px 16px;min-height:60px;background:hsl(var(--card))}
+ .profile-discover-deck .discover-deck-controls>button:last-child{min-width:78px}
+ .profile-discover-deck .profile-discover-loading{flex:1;min-height:0;overflow:hidden}
+}
+@media(max-width:360px),(max-height:640px) and (max-width:767px){
+ .profile-discover-deck .discover-mini-banner{height:78px;min-height:78px;flex-basis:78px}
+ .profile-discover-deck>header p{display:none}
+}
+
