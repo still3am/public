@@ -7,7 +7,12 @@ globalThis.__React=React;
 globalThis.__playlist={id:'p1',creator_id:'owner',name:'Night drive',is_public:true,track_ids:['a','b']};
 globalThis.__tracks=[{id:'a',title:'First song',artist:'One',duration_seconds:120},{id:'b',title:'Second song',artist:'Two',duration_seconds:180}];
 const source=fs.readFileSync('src/pages/PlaylistDetail.jsx','utf8').replace(/^import[^;]+;/gm,'')
- .replace('[playlist,setPlaylist]=useState(null)','[playlist,setPlaylist]=useState(globalThis.__playlist)')
+ .replace('[playlist, setPlaylist] = useState(null)','[playlist, setPlaylist] = useState(globalThis.__playlist)')
+ .replace('[loading, setLoading] = useState(true)','[loading, setLoading] = useState(false)')
+ .replace('[tracks, setTracks] = useState([])','[tracks, setTracks] = useState(globalThis.__tracks)')
+ .replace('[managing, setManaging] = useState(false)','[managing, setManaging] = useState(globalThis.__managing||false)')
+ .replace("[query, setQuery] = useState('')","[query, setQuery] = useState(globalThis.__query||'')")
+ .replace('[error, setError] = useState(false)','[error, setError] = useState(globalThis.__error||false)')
  .replace('[tracks,setTracks]=useState([])','[tracks,setTracks]=useState(globalThis.__tracks)')
  .replace('[managing,setManaging]=useState(false)','[managing,setManaging]=useState(globalThis.__managing||false)')
  .replace("[query,setQuery]=useState('')","[query,setQuery]=useState(globalThis.__query||'')")
@@ -18,7 +23,7 @@ const {useState,useEffect,useMemo,useCallback,useRef}=React;
 const useParams=()=>({id:globalThis.__route||'p1'}),useNavigate=()=>()=>{},useAuth=()=>({user:{id:globalThis.__viewer||'owner'}}),usePlayer=()=>globalThis.__player||({}),useToast=()=>({toast(){}}),useCoverUrl=v=>v;
 const base44={},readAllPages=()=>{},shareLink=()=>{},removePlaylistTracks=()=>{},reorderPlaylistTracks=()=>{},movePlaylistTrack=()=>{},shufflePlaylist=v=>v;
 const Play=()=>null,Pause=Play,Shuffle=Play,Plus=Play,Pencil=Play,Trash2=Play,Share2=Play,ListMusic=Play,Search=Play,ArrowUp=Play,ArrowDown=Play,X=Play,Check=Play,Loader2=Play,ImagePlus=Play,ChevronLeft=Play,MoreHorizontal=Play,Copy=Play;
-const PlaylistActionsSheet=()=>null,AddToPlaylistPicker=()=>null,EmptyState=({title})=>React.createElement('p',null,title),LoadError=()=>React.createElement('p',null,'Retry loading');
+const PlaylistCollaborators=()=>null,PlaylistActionsSheet=()=>null,AddToPlaylistPicker=()=>null,EmptyState=({title})=>React.createElement('p',null,title),LoadError=()=>React.createElement('p',null,'Retry loading');
 const TrackRow=({track,queue,queueIndex})=>{globalThis.__rows.push({id:track.id,queue:queue.map(t=>t.id),queueIndex});return React.createElement('p',null,track.title);};
 `;
 const code=ts.transpileModule(stubs+source,{compilerOptions:{jsx:ts.JsxEmit.React,target:ts.ScriptTarget.ES2022,module:ts.ModuleKind.ESNext}}).outputText;
