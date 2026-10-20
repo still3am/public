@@ -17,7 +17,7 @@ const entities = new Proxy(raw.entities,{get(target,name) {
   if(typeof name!=='string')return Reflect.get(target,name);
   if(name==="PublicProfile"){
    if(!handlers.has(name))handlers.set(name,new Proxy(target[name],{get(h,method){
-    if(["get","list","filter"].includes(method))return async(...args)=>{const readArgs=args.map(arg=>arg&&typeof arg==="object"&&!Array.isArray(arg)&&Array.isArray(arg.fields)&&arg.fields.includes("avatar_url")?{...arg,fields:[...new Set([...arg.fields,"avatar_preset","banner_preset"])]}:arg);const page=await h[method](...readArgs);return Array.isArray(page)?page.map(withPresetAvatar):Array.isArray(page?.items)?{...page,items:page.items.map(withPresetAvatar)}:withPresetAvatar(page);};
+    if(["get","list","filter"].includes(method))return async(...args)=>{const readArgs=args.map(arg=>arg&&typeof arg==="object"&&!Array.isArray(arg)&&Array.isArray(arg.fields)&&(arg.fields.includes("avatar_url")||arg.fields.includes("banner_url"))?{...arg,fields:[...new Set([...arg.fields,"avatar_preset","banner_preset"])]}:arg);const page=await h[method](...readArgs);return Array.isArray(page)?page.map(withPresetAvatar):Array.isArray(page?.items)?{...page,items:page.items.map(withPresetAvatar)}:withPresetAvatar(page);};
     return h[method];
    }}));
    return handlers.get(name);
@@ -147,6 +147,10 @@ export const base44 = new Proxy(raw,{get(target,name) {
       return confirmed;
     }
 
+    if(Object.keys(data||{}).length===1&&data.banner_use_default===false){
+      const current=await target.auth.me();
+      if(BANNER_PRESETS.some(item=>item.url===current?.banner_preset))return savePresetBanner(target,current.banner_preset);
+    }
     // Restoring existing default artwork does not upload or moderate new media.
     if(Object.keys(data||{}).length===1&&data.banner_use_default===true){
       const current=await target.auth.me();
