@@ -6,7 +6,7 @@ const matches=(r,q)=>Object.entries(q||{}).every(([k,v])=>{
  if(k==='$and')return v.every(x=>matches(r,x));if(k==='$or')return v.some(x=>matches(r,x));
  const value=r[k];
  if(Array.isArray(v))return JSON.stringify(value)===JSON.stringify(v);
- if(v&&typeof v==='object'){if('$in'in v)return Array.isArray(value)?value.some(x=>v.$in.includes(x)):v.$in.includes(value);if('$nin'in v)return !v.$nin.includes(value);if('$ne'in v)return value!==v.$ne;if('$gte'in v)return value>=v.$gte;}
+ if(v&&typeof v==='object'){if('$eq'in v)return JSON.stringify(value)===JSON.stringify(v.$eq);if('$exists'in v)return (value!==undefined)===v.$exists;if('$in'in v)return Array.isArray(value)?value.some(x=>v.$in.includes(x)):v.$in.includes(value);if('$nin'in v)return !v.$nin.includes(value);if('$ne'in v)return value!==v.$ne;if('$gte'in v)return value>=v.$gte;}
  return value===v;
 });
 let db={},writes=[],user={id:'owner',role:'user',is_blocked:false},deleted=false,failCleanup=false;
