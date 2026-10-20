@@ -10921,6 +10921,19 @@
       "match": "exact artist and title"
     },
     {
+      "id": "6acc4f9ee1f746eca6ce6571",
+      "title": "Forward",
+      "artist": "Lee Vasi",
+      "before": "Other",
+      "genre": "R&B",
+      "source_genre": "R&B/Soul",
+      "source_title": "Forward",
+      "source_artist": "Lee Vasi",
+      "source_album": "Forward - Single",
+      "source_url": "https://music.apple.com/us/album/forward/6780694394?i=6780694395&uo=4",
+      "match": "exact artist and title"
+    },
+    {
       "id": "6acc4f9ef8d7d5271b617597",
       "title": "Fortworth (feat. PARTYNEXTDOOR)",
       "artist": "Drake, PARTYNEXTDOOR",
@@ -10960,6 +10973,19 @@
       "match": "exact artist and title"
     },
     {
+      "id": "6acc4fb063f28d9786406231",
+      "title": "fractures",
+      "artist": "Scro, Andy Cizek",
+      "before": "Other",
+      "genre": "Alternative",
+      "source_genre": "Alternative",
+      "source_title": "fractures",
+      "source_artist": "Scro & Andy Cizek",
+      "source_album": "fractures - Single",
+      "source_url": "https://music.apple.com/us/album/fractures/1809263598?i=1809263599&uo=4",
+      "match": "exact artist and title"
+    },
+    {
       "id": "6acc4fb140b909d98b6da043",
       "title": "fragile (feat. WRENN)",
       "artist": "gnash, WRENN",
@@ -10970,6 +10996,19 @@
       "source_artist": "gnash",
       "source_album": "us",
       "source_url": "https://music.apple.com/us/album/fragile-feat-wrenn/1094931816?i=1094931868&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6acc4fb4dfbb1269039b09e4",
+      "title": "Fragile",
+      "artist": "Madonna",
+      "before": "Other",
+      "genre": "Pop",
+      "source_genre": "Pop",
+      "source_title": "Fragile",
+      "source_artist": "Madonna",
+      "source_album": "CONFESSIONS II",
+      "source_url": "https://music.apple.com/us/album/fragile/1892545087?i=1892545251&uo=4",
       "match": "exact artist and title"
     },
     {
@@ -11012,6 +11051,19 @@
       "match": "exact artist and title"
     },
     {
+      "id": "6acc4fbfccd63a8a2912690e",
+      "title": "Freaky Attitude",
+      "artist": "J.P.",
+      "before": "Other",
+      "genre": "Hip-Hop",
+      "source_genre": "Hip-Hop/Rap",
+      "source_title": "Freaky Attitude",
+      "source_artist": "J.P. & Baby Osamaa",
+      "source_album": "School Dance",
+      "source_url": "https://music.apple.com/us/album/freaky-attitude/1834296759?i=1834296765&uo=4",
+      "match": "exact artist and title"
+    },
+    {
       "id": "6acc4fc1a5027fea5363c13a",
       "title": "Frat Rules (feat. A$AP Rocky, Playboi Carti & Big Sean)",
       "artist": "A$AP Mob, A$AP Rocky, Playboi Carti, Big Sean",
@@ -11035,6 +11087,32 @@
       "source_artist": "Tory Lanez",
       "source_album": "Freaky - Single",
       "source_url": "https://music.apple.com/us/album/freaky/1456985462?i=1456985464&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6acc4fcdb2cad99745355245",
+      "title": "Free Bird",
+      "artist": "Lynyrd Skynyrd",
+      "before": "Other",
+      "genre": "Rock",
+      "source_genre": "Rock",
+      "source_title": "Free Bird",
+      "source_artist": "Lynyrd Skynyrd",
+      "source_album": "20th Century Masters: The Millennium Collection: Best Of Lynyrd Skynyrd",
+      "source_url": "https://music.apple.com/us/album/free-bird/1423285451?i=1423285462&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6acc4fd4367595f4e3e5d95d",
+      "title": "Free",
+      "artist": "Hamilton",
+      "before": "Other",
+      "genre": "Latin",
+      "source_genre": "Urbano latino",
+      "source_title": "Free",
+      "source_artist": "Hamilton",
+      "source_album": "Los Reyes Del Mar",
+      "source_url": "https://music.apple.com/us/album/free/1737992989?i=1737993006&uo=4",
       "match": "exact artist and title"
     },
     {
@@ -11090,6 +11168,19 @@
       "match": "exact artist and title"
     },
     {
+      "id": "6acc4ff059da5d555eaf50b6",
+      "title": "From Down Here",
+      "artist": "Lola Young",
+      "before": "Other",
+      "genre": "Alternative",
+      "source_genre": "Alternative",
+      "source_title": "From Down Here",
+      "source_artist": "Lola Young",
+      "source_album": "From Down Here - Single",
+      "source_url": "https://music.apple.com/us/album/from-down-here/6768357139?i=6768357142&uo=4",
+      "match": "exact artist and title"
+    },
+    {
       "id": "6acc4ff091e72e726db54eaf",
       "title": "From the Dining Table",
       "artist": "Harry Styles",
@@ -11139,6 +11230,32 @@
       "source_artist": "Dalvin La Melodia",
       "source_album": "Fue de los Dos (En Vivo) - Single",
       "source_url": "https://music.apple.com/us/album/fue-de-los-dos-en-vivo/1820317346?i=1820317349&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6acc5011d930bf2f8fc31f67",
+      "title": "Fuct",
+      "artist": "Money",
+      "before": "Other",
+      "genre": "Alternative",
+      "source_genre": "Alternative",
+      "source_title": "Fuct",
+      "source_artist": "Money",
+      "source_album": "Money - EP",
+      "source_url": "https://music.apple.com/us/album/fuct/1589970833?i=1589970834&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6acc501525c61e75831c711c",
+      "title": "Fuimos Paralelos",
+      "artist": "Alex Campos",
+      "before": "Other",
+      "genre": "Latin",
+      "source_genre": "Latin",
+      "source_title": "Fuimos Paralelos",
+      "source_artist": "Alex Campos",
+      "source_album": "Fuimos Paralelos - Single",
+      "source_url": "https://music.apple.com/us/album/fuimos-paralelos/6788515978?i=6788515979&uo=4",
       "match": "exact artist and title"
     },
     {
@@ -11311,6 +11428,19 @@
       "match": "exact artist and title"
     },
     {
+      "id": "6acc505019702a3bff650b45",
+      "title": "Gas Pedal",
+      "artist": "Sage The Gemini, Iamsu!",
+      "before": "Other",
+      "genre": "Hip-Hop",
+      "source_genre": "Hip-Hop/Rap",
+      "source_title": "Gas Pedal (feat. Iamsu!)",
+      "source_artist": "Sage the Gemini",
+      "source_album": "Remember Me (Deluxe Booklet Version)",
+      "source_url": "https://music.apple.com/us/album/gas-pedal-feat-iamsu/1434890788?i=1434891098&uo=4",
+      "match": "exact artist and title"
+    },
+    {
       "id": "6acc50521d9222fbe2637720",
       "title": "Garden Party",
       "artist": "Masego, Big Boi, JID",
@@ -11334,6 +11464,19 @@
       "source_artist": "Daddy Yankee",
       "source_album": "Gasolina - Single",
       "source_url": "https://music.apple.com/us/album/gasolina/1785999523?i=1785999526&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6acc505703623a234368c5ce",
+      "title": "Gassed Up",
+      "artist": "Nebu Kiniza",
+      "before": "Other",
+      "genre": "Rap",
+      "source_genre": "Rap",
+      "source_title": "Gassed Up",
+      "source_artist": "Nebu Kiniza",
+      "source_album": "Gassed Up - Single",
+      "source_url": "https://music.apple.com/us/album/gassed-up/1146967484?i=1146967489&uo=4",
       "match": "exact artist and title"
     },
     {
@@ -11399,6 +11542,19 @@
       "source_artist": "Drake",
       "source_album": "For All The Dogs",
       "source_url": "https://music.apple.com/us/album/gently-feat-bad-bunny/1710694554?i=1710694756&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6acc5078e5db9213429c6c1f",
+      "title": "Get Hit",
+      "artist": "Trim",
+      "before": "Other",
+      "genre": "Hip-Hop",
+      "source_genre": "Hip-Hop/Rap",
+      "source_title": "Get Hit",
+      "source_artist": "Trim",
+      "source_album": "Get Hit - Single",
+      "source_url": "https://music.apple.com/us/album/get-hit/6806000905?i=6806001152&uo=4",
       "match": "exact artist and title"
     },
     {
@@ -17541,13 +17697,6 @@
       "album_name": ""
     },
     {
-      "id": "6acc4f9ee1f746eca6ce6571",
-      "title": "Forward",
-      "artist": "Lee Vasi",
-      "genre": "Other",
-      "album_name": ""
-    },
-    {
       "id": "6acc4fa42a4794d3f842292e",
       "title": "Foul Life",
       "artist": "Hurricane Wisdom",
@@ -17583,27 +17732,6 @@
       "album_name": ""
     },
     {
-      "id": "6acc4fb063f28d9786406231",
-      "title": "fractures",
-      "artist": "Scro, Andy Cizek",
-      "genre": "Other",
-      "album_name": ""
-    },
-    {
-      "id": "6acc4fb4dfbb1269039b09e4",
-      "title": "Fragile",
-      "artist": "Madonna",
-      "genre": "Other",
-      "album_name": ""
-    },
-    {
-      "id": "6acc4fbfccd63a8a2912690e",
-      "title": "Freaky Attitude",
-      "artist": "J.P.",
-      "genre": "Other",
-      "album_name": ""
-    },
-    {
       "id": "6acc4fc6c209b610f6595b82",
       "title": "Free Blitz",
       "artist": "Jay5ive",
@@ -17614,13 +17742,6 @@
       "id": "6acc4fc92a4794d3f842295a",
       "title": "Free Fall (feat. J. Cole)",
       "artist": "Tems, J. Cole",
-      "genre": "Other",
-      "album_name": ""
-    },
-    {
-      "id": "6acc4fcdb2cad99745355245",
-      "title": "Free Bird",
-      "artist": "Lynyrd Skynyrd",
       "genre": "Other",
       "album_name": ""
     },
@@ -17653,13 +17774,6 @@
       "album_name": ""
     },
     {
-      "id": "6acc4fd4367595f4e3e5d95d",
-      "title": "Free",
-      "artist": "Hamilton",
-      "genre": "Other",
-      "album_name": ""
-    },
-    {
       "id": "6acc4fda8d2143bc4742e07f",
       "title": "Freedom",
       "artist": "Nicki Minaj",
@@ -17684,13 +17798,6 @@
       "id": "6acc4feb4f6c1cc18f4d95f4",
       "title": "Friends",
       "artist": "Eladio Carrion",
-      "genre": "Other",
-      "album_name": ""
-    },
-    {
-      "id": "6acc4ff059da5d555eaf50b6",
-      "title": "From Down Here",
-      "artist": "Lola Young",
       "genre": "Other",
       "album_name": ""
     },
@@ -17720,7 +17827,12 @@
       "title": "Fu-Gee-La",
       "artist": "Fugees, Ms. Lauryn Hill, Wyclef Jean, Pras",
       "genre": "Other",
-      "album_name": ""
+      "album_name": "",
+      "review_reason": "conflicting catalog genres",
+      "candidate_genres": [
+        "Pop",
+        "R&B"
+      ]
     },
     {
       "id": "6acc5002f4505c245f3f3030",
@@ -17765,23 +17877,9 @@
       "album_name": ""
     },
     {
-      "id": "6acc5011d930bf2f8fc31f67",
-      "title": "Fuct",
-      "artist": "Money",
-      "genre": "Other",
-      "album_name": ""
-    },
-    {
       "id": "6acc501207c77d4dbb32d071",
       "title": "Fue De Los Dos - Ensamble etéreo",
       "artist": "Ensamble etéreo, Dalvin La Melodia, Leonardo Paniagua",
-      "genre": "Other",
-      "album_name": ""
-    },
-    {
-      "id": "6acc501525c61e75831c711c",
-      "title": "Fuimos Paralelos",
-      "artist": "Alex Campos",
       "genre": "Other",
       "album_name": ""
     },
@@ -17881,26 +17979,17 @@
       "title": "Garamond",
       "artist": "Arm's Length",
       "genre": "Other",
-      "album_name": ""
-    },
-    {
-      "id": "6acc505019702a3bff650b45",
-      "title": "Gas Pedal",
-      "artist": "Sage The Gemini, Iamsu!",
-      "genre": "Other",
-      "album_name": ""
+      "album_name": "",
+      "review_reason": "conflicting catalog genres",
+      "candidate_genres": [
+        "Alternative",
+        "Rock"
+      ]
     },
     {
       "id": "6acc50550caaa275687d6dca",
       "title": "Gasoline",
       "artist": "Cigarettes @ Sunset",
-      "genre": "Other",
-      "album_name": ""
-    },
-    {
-      "id": "6acc505703623a234368c5ce",
-      "title": "Gassed Up",
-      "artist": "Nebu Kiniza",
       "genre": "Other",
       "album_name": ""
     },
@@ -17971,13 +18060,6 @@
       "id": "6acc50785165e995b0318f3e",
       "title": "Get It Over With",
       "artist": "Rihanna",
-      "genre": "Other",
-      "album_name": ""
-    },
-    {
-      "id": "6acc5078e5db9213429c6c1f",
-      "title": "Get Hit",
-      "artist": "Trim",
       "genre": "Other",
       "album_name": ""
     },
@@ -19539,5 +19621,5 @@
       "album_name": ""
     }
   ],
-  "searched_terms": 535
+  "searched_terms": 565
 }
