@@ -341413,5 +341413,1457 @@
         "trackId": 6799106640
       }
     ]
+  },
+  "mixTerm|Olivia Rodrigo happier": {
+    "query_url": "https://itunes.apple.com/search?term=Olivia+Rodrigo+happier&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": [
+      {
+        "trackName": "happier",
+        "artistName": "Olivia Rodrigo",
+        "collectionName": "SOUR",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/happier/1560734944?i=1560735859&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/happier/1560734944?i=1560735859&uo=4",
+        "trackId": 1560735859
+      },
+      {
+        "trackName": "brutal",
+        "artistName": "Olivia Rodrigo",
+        "collectionName": "SOUR",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/brutal/1560734944?i=1560735471&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/brutal/1560734944?i=1560735471&uo=4",
+        "trackId": 1560735471
+      },
+      {
+        "trackName": "traitor",
+        "artistName": "Olivia Rodrigo",
+        "collectionName": "SOUR",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/traitor/1560735414?i=1560735421&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/traitor/1560735414?i=1560735421&uo=4",
+        "trackId": 1560735421
+      },
+      {
+        "trackName": "favorite crime",
+        "artistName": "Olivia Rodrigo",
+        "collectionName": "SOUR",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/favorite-crime/1560735414?i=1560735563&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/favorite-crime/1560735414?i=1560735563&uo=4",
+        "trackId": 1560735563
+      },
+      {
+        "trackName": "enough for you",
+        "artistName": "Olivia Rodrigo",
+        "collectionName": "SOUR",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/enough-for-you/1560735414?i=1560735555&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/enough-for-you/1560735414?i=1560735555&uo=4",
+        "trackId": 1560735555
+      },
+      {
+        "trackName": "hope ur ok",
+        "artistName": "Olivia Rodrigo",
+        "collectionName": "SOUR",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/hope-ur-ok/1560735414?i=1560735566&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/hope-ur-ok/1560735414?i=1560735566&uo=4",
+        "trackId": 1560735566
+      },
+      {
+        "trackName": "good 4 u",
+        "artistName": "Olivia Rodrigo",
+        "collectionName": "SOUR",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/good-4-u/1560734944?i=1560735856&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/good-4-u/1560734944?i=1560735856&uo=4",
+        "trackId": 1560735856
+      },
+      {
+        "trackName": "happier",
+        "artistName": "Olivia Rodrigo",
+        "collectionName": "SOUR (Video Version)",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/happier/1582277315?i=1582277654&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/happier/1582277315?i=1582277654&uo=4",
+        "trackId": 1582277654
+      },
+      {
+        "trackName": "jealousy, jealousy",
+        "artistName": "Olivia Rodrigo",
+        "collectionName": "SOUR",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/jealousy-jealousy/1560735414?i=1560735561&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/jealousy-jealousy/1560735414?i=1560735561&uo=4",
+        "trackId": 1560735561
+      },
+      {
+        "trackName": "Happier (Instrumental)",
+        "artistName": "Piano Dreamers",
+        "collectionName": "Piano Dreamers Cover Olivia Rodrigo (Instrumental)",
+        "primaryGenreName": "Instrumental",
+        "trackViewUrl": "https://music.apple.com/us/album/happier-instrumental/1572749818?i=1572750037&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/happier-instrumental/1572749818?i=1572750037&uo=4",
+        "trackId": 1572750037
+      },
+      {
+        "trackName": "Happier",
+        "artistName": "Sparrow Sleeps",
+        "collectionName": "goodnight 4 u: Lullaby renditions of Olivia Rodrigo songs",
+        "primaryGenreName": "Children's Music",
+        "trackViewUrl": "https://music.apple.com/us/album/happier/1574405654?i=1574405664&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/happier/1574405654?i=1574405664&uo=4",
+        "trackId": 1574405664
+      },
+      {
+        "trackName": "Happier",
+        "artistName": "Ed Sheeran",
+        "collectionName": "÷ (Deluxe)",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/happier/1193701079?i=1193701439&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/happier/1193701079?i=1193701439&uo=4",
+        "trackId": 1193701439
+      },
+      {
+        "trackName": "Happier",
+        "artistName": "Marshmello & Bastille",
+        "collectionName": "Happier - Single",
+        "primaryGenreName": "Dance",
+        "trackViewUrl": "https://music.apple.com/us/album/happier/1711849512?i=1711849667&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/happier/1711849512?i=1711849667&uo=4",
+        "trackId": 1711849667
+      },
+      {
+        "trackName": "Olivia",
+        "artistName": "One Direction",
+        "collectionName": "Made In The A.M. (Deluxe Edition)",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/olivia/1040170924?i=1040171623&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/olivia/1040170924?i=1040171623&uo=4",
+        "trackId": 1040171623
+      },
+      {
+        "trackName": "Happier (feat. Bastille) [Breathe Carolina Remix]",
+        "artistName": "Marshmello",
+        "collectionName": "Happier (feat. Bastille) [Remixes] - EP",
+        "primaryGenreName": "Dance",
+        "trackViewUrl": "https://music.apple.com/us/album/happier-feat-bastille-breathe-carolina-remix/1706199729?i=1706200038&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/happier-feat-bastille-breathe-carolina-remix/1706199729?i=1706200038&uo=4",
+        "trackId": 1706200038
+      }
+    ]
+  },
+  "mixTerm|Florence Road Hanging Out To Dry": {
+    "query_url": "https://itunes.apple.com/search?term=Florence+Road+Hanging+Out+To+Dry&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": [
+      {
+        "trackName": "Hanging Out To Dry",
+        "artistName": "Florence Road",
+        "collectionName": "Spring Forward - EP",
+        "primaryGenreName": "Indie Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/hanging-out-to-dry/1884602016?i=1884602113&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/hanging-out-to-dry/1884602016?i=1884602113&uo=4",
+        "trackId": 1884602113
+      },
+      {
+        "trackName": "Hanging Out To Dry (Lonely version)",
+        "artistName": "Florence Road",
+        "collectionName": "Hanging Out To Dry - EP",
+        "primaryGenreName": "Indie Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/hanging-out-to-dry-lonely-version/6779736626?i=6779736635&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/hanging-out-to-dry-lonely-version/6779736626?i=6779736635&uo=4",
+        "trackId": 6779736635
+      },
+      {
+        "trackName": "Hanging Out To Dry",
+        "artistName": "Florence Road",
+        "collectionName": "Hanging Out To Dry - EP",
+        "primaryGenreName": "Indie Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/hanging-out-to-dry/6779736626?i=6779736630&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/hanging-out-to-dry/6779736626?i=6779736630&uo=4",
+        "trackId": 6779736630
+      },
+      {
+        "trackName": "Hanging Out To Dry (Dublin Version)",
+        "artistName": "Florence Road",
+        "collectionName": "Hanging Out To Dry - EP",
+        "primaryGenreName": "Indie Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/hanging-out-to-dry-dublin-version/6779736626?i=6779736637&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/hanging-out-to-dry-dublin-version/6779736626?i=6779736637&uo=4",
+        "trackId": 6779736637
+      },
+      {
+        "trackName": "Hanging Out To Dry (Instrumental)",
+        "artistName": "Florence Road",
+        "collectionName": "Hanging Out To Dry - EP",
+        "primaryGenreName": "Indie Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/hanging-out-to-dry-instrumental/6779736626?i=6779736639&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/hanging-out-to-dry-instrumental/6779736626?i=6779736639&uo=4",
+        "trackId": 6779736639
+      },
+      {
+        "trackName": "Stand By You",
+        "artistName": "Rachel Platten",
+        "collectionName": "Wildfire",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/stand-by-you/1061182666?i=1061182677&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/stand-by-you/1061182666?i=1061182677&uo=4",
+        "trackId": 1061182677
+      },
+      {
+        "trackName": "Hanging Out To Dry",
+        "artistName": "Violet Wolf",
+        "collectionName": "Hanging Out To Dry - Single",
+        "primaryGenreName": "Blues",
+        "trackViewUrl": "https://music.apple.com/us/album/hanging-out-to-dry/1655001862?i=1655001863&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/hanging-out-to-dry/1655001862?i=1655001863&uo=4",
+        "trackId": 1655001863
+      },
+      {
+        "trackName": "Hanging Out To Dry (feat. Brandon Santini)",
+        "artistName": "Joel Gragg & The Filaments",
+        "collectionName": "Joel Gragg & The Filaments",
+        "primaryGenreName": "Rock",
+        "trackViewUrl": "https://music.apple.com/us/album/hanging-out-to-dry-feat-brandon-santini/1836568568?i=1836569148&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/hanging-out-to-dry-feat-brandon-santini/1836568568?i=1836569148&uo=4",
+        "trackId": 1836569148
+      },
+      {
+        "trackName": "Hang Me Out To Dry",
+        "artistName": "Jude Barclay",
+        "collectionName": "About This Year....",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/hang-me-out-to-dry/1737549268?i=1737549270&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/hang-me-out-to-dry/1737549268?i=1737549270&uo=4",
+        "trackId": 1737549270
+      },
+      {
+        "trackName": "On Florence Street",
+        "artistName": "The Tragic Thrills",
+        "collectionName": "On Florence Street",
+        "primaryGenreName": "Traditional Folk",
+        "trackViewUrl": "https://music.apple.com/us/album/on-florence-street/1192123191?i=1192123517&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/on-florence-street/1192123191?i=1192123517&uo=4",
+        "trackId": 1192123517
+      }
+    ]
+  },
+  "mixTerm|HEDEGAARD Happy Home": {
+    "query_url": "https://itunes.apple.com/search?term=HEDEGAARD+Happy+Home&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": [
+      {
+        "trackName": "Happy Home",
+        "artistName": "HEDEGAARD",
+        "collectionName": "Happy Home - Single",
+        "primaryGenreName": "Electronic",
+        "trackViewUrl": "https://music.apple.com/us/album/happy-home/1444267282?i=1444267292&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/happy-home/1444267282?i=1444267292&uo=4",
+        "trackId": 1444267292
+      },
+      {
+        "trackName": "Happy Home (feat. Lukas Graham) [Sam Feldt Remix]",
+        "artistName": "HEDEGAARD",
+        "collectionName": "Happy Home (feat. Lukas Graham) [Sam Feldt Remix] - Single",
+        "primaryGenreName": "Electronic",
+        "trackViewUrl": "https://music.apple.com/us/album/happy-home-feat-lukas-graham-sam-feldt-remix/1444622255?i=1444622256&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/happy-home-feat-lukas-graham-sam-feldt-remix/1444622255?i=1444622256&uo=4",
+        "trackId": 1444622256
+      }
+    ]
+  },
+  "mixTerm|TV On The Radio Happy Idiot": {
+    "query_url": "https://itunes.apple.com/search?term=TV+On+The+Radio+Happy+Idiot&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": [
+      {
+        "trackName": "Happy Idiot",
+        "artistName": "TV on the Radio",
+        "collectionName": "Seeds",
+        "primaryGenreName": "Alternative",
+        "trackViewUrl": "https://music.apple.com/us/album/happy-idiot/6795200102?i=6795200106&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/happy-idiot/6795200102?i=6795200106&uo=4",
+        "trackId": 6795200106
+      },
+      {
+        "trackName": "Dlz",
+        "artistName": "TV on the Radio",
+        "collectionName": "Dear Science (Bonus Track Version)",
+        "primaryGenreName": "Alternative",
+        "trackViewUrl": "https://music.apple.com/us/album/dlz/1437099502?i=1437099591&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/dlz/1437099502?i=1437099591&uo=4",
+        "trackId": 1437099591
+      },
+      {
+        "trackName": "Radio",
+        "artistName": "Emily Roberts",
+        "collectionName": "thank you for leaving. - EP",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/radio/1609057627?i=1609057629&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/radio/1609057627?i=1609057629&uo=4",
+        "trackId": 1609057629
+      },
+      {
+        "trackName": "keep the idiots happy",
+        "artistName": "bob j cat and the aardvarks",
+        "collectionName": "radio static",
+        "primaryGenreName": "Alternative",
+        "trackViewUrl": "https://music.apple.com/us/album/keep-the-idiots-happy/1891185532?i=1891185536&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/keep-the-idiots-happy/1891185532?i=1891185536&uo=4",
+        "trackId": 1891185536
+      }
+    ]
+  },
+  "mixTerm|POiSON GiRL FRiEND HARDLY EVER SMILE": {
+    "query_url": "https://itunes.apple.com/search?term=POiSON+GiRL+FRiEND+HARDLY+EVER+SMILE&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": [
+      {
+        "trackName": "Hardly Ever Smile (Without You)",
+        "artistName": "Poison Girl Friend",
+        "collectionName": "Melting Moment",
+        "primaryGenreName": "Dance",
+        "trackViewUrl": "https://music.apple.com/us/album/hardly-ever-smile-without-you/1547970477?i=1547970478&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/hardly-ever-smile-without-you/1547970477?i=1547970478&uo=4",
+        "trackId": 1547970478
+      },
+      {
+        "trackName": "Hardly Ever Smile Without You (Alternative Guitar Version)",
+        "artistName": "Poison Girl Friend",
+        "collectionName": "POiSON GiRL FRiENDS - EP",
+        "primaryGenreName": "Electronic",
+        "trackViewUrl": "https://music.apple.com/us/album/hardly-ever-smile-without-you-alternative-guitar-version/1636800947?i=1636800951&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/hardly-ever-smile-without-you-alternative-guitar-version/1636800947?i=1636800951&uo=4",
+        "trackId": 1636800951
+      }
+    ]
+  },
+  "mixTerm|Beyoncé Haunted": {
+    "query_url": "https://itunes.apple.com/search?term=Beyonc%C3%A9+Haunted&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": [
+      {
+        "trackName": "Haunted",
+        "artistName": "Beyoncé",
+        "collectionName": "Beyoncé (Deluxe)",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/haunted/780519939?i=780519959&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/haunted/780519939?i=780519959&uo=4",
+        "trackId": 780519959
+      },
+      {
+        "trackName": "Haunted",
+        "artistName": "Beyoncé",
+        "collectionName": "BEYONCÉ",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/haunted/939780957?i=939780997&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/haunted/939780957?i=939780997&uo=4",
+        "trackId": 939780997
+      },
+      {
+        "trackName": "Haunted",
+        "artistName": "Beyoncé",
+        "collectionName": "BEYONCÉ [Platinum Edition]",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/haunted/939780552?i=939780564&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/haunted/939780552?i=939780564&uo=4",
+        "trackId": 939780564
+      },
+      {
+        "trackName": "Haunted (Michael Diamond Remix)",
+        "artistName": "Beyoncé",
+        "collectionName": "Fifty Shades of Grey (Original Motion Picture Soundtrack)",
+        "primaryGenreName": "Soundtrack",
+        "trackViewUrl": "https://music.apple.com/us/album/haunted-michael-diamond-remix/1440845197?i=1440845817&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/haunted-michael-diamond-remix/1440845197?i=1440845817&uo=4",
+        "trackId": 1440845817
+      },
+      {
+        "trackName": "Haunted",
+        "artistName": "Diamond String Orchestra",
+        "collectionName": "Orchestral String Versions of Beyonce",
+        "primaryGenreName": "Orchestral",
+        "trackViewUrl": "https://music.apple.com/us/album/haunted/1879517441?i=1879517449&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/haunted/1879517441?i=1879517449&uo=4",
+        "trackId": 1879517449
+      },
+      {
+        "trackName": "Haunted (Originally Performed by Beyoncé) [Instrumental Version]",
+        "artistName": "Backing Business",
+        "collectionName": "Pristine Karaoke, Vol. 49",
+        "primaryGenreName": "Instrumental",
+        "trackViewUrl": "https://music.apple.com/us/album/haunted-originally-performed-by-beyonc%C3%A9-instrumental/1592436431?i=1592436693&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/haunted-originally-performed-by-beyonc%C3%A9-instrumental/1592436431?i=1592436693&uo=4",
+        "trackId": 1592436693
+      }
+    ]
+  },
+  "mixTerm|Averly Morillo Hay Poder  - Live": {
+    "query_url": "https://itunes.apple.com/search?term=Averly+Morillo+Hay+Poder++-+Live&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": [
+      {
+        "trackName": "Hay Poder (YESHUA) [Live]",
+        "artistName": "Averly Morillo",
+        "collectionName": "Hay Poder (YESHUA) [Live] - EP",
+        "primaryGenreName": "Christian",
+        "trackViewUrl": "https://music.apple.com/us/album/hay-poder-yeshua-live/6775641024?i=6775641026&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/hay-poder-yeshua-live/6775641024?i=6775641026&uo=4",
+        "trackId": 6775641026
+      },
+      {
+        "trackName": "Hay Poder (YESHUA) [Live]",
+        "artistName": "Averly Morillo",
+        "collectionName": "Jesucristo (Live) - EP",
+        "primaryGenreName": "Christian",
+        "trackViewUrl": "https://music.apple.com/us/album/hay-poder-yeshua-live/6797932141?i=6797932144&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/hay-poder-yeshua-live/6797932141?i=6797932144&uo=4",
+        "trackId": 6797932144
+      },
+      {
+        "trackName": "Por Tus Llagas (feat. Averly Morillo) [En Vivo]",
+        "artistName": "Barak",
+        "collectionName": "Fuego & Poder (Live)",
+        "primaryGenreName": "Christian",
+        "trackViewUrl": "https://music.apple.com/us/album/por-tus-llagas-feat-averly-morillo-en-vivo/1783806472?i=1783806478&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/por-tus-llagas-feat-averly-morillo-en-vivo/1783806472?i=1783806478&uo=4",
+        "trackId": 1783806478
+      },
+      {
+        "trackName": "Mesías (Live)",
+        "artistName": "Averly Morillo",
+        "collectionName": "Mesías (Live) - EP",
+        "primaryGenreName": "Christian",
+        "trackViewUrl": "https://music.apple.com/us/album/mes%C3%ADas-live/1730487417?i=1730487418&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/mes%C3%ADas-live/1730487417?i=1730487418&uo=4",
+        "trackId": 1730487418
+      },
+      {
+        "trackName": "Victoria (Live)",
+        "artistName": "Averly Morillo",
+        "collectionName": "Hay Poder (YESHUA) [Live] - EP",
+        "primaryGenreName": "Christian",
+        "trackViewUrl": "https://music.apple.com/us/album/victoria-live/6775641024?i=6775641027&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/victoria-live/6775641024?i=6775641027&uo=4",
+        "trackId": 6775641027
+      },
+      {
+        "trackName": "Derramo el Perfume (feat. Averly Morillo)",
+        "artistName": "Montesanto",
+        "collectionName": "Derramo el Perfume (feat. Averly Morillo) - Single",
+        "primaryGenreName": "Christian",
+        "trackViewUrl": "https://music.apple.com/us/album/derramo-el-perfume-feat-averly-morillo/1800001003?i=1800001163&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/derramo-el-perfume-feat-averly-morillo/1800001003?i=1800001163&uo=4",
+        "trackId": 1800001163
+      },
+      {
+        "trackName": "Derramo el Perfume (feat. Averly Morillo) [Live]",
+        "artistName": "Montesanto",
+        "collectionName": "Bautizados En Fuego (LIVE)",
+        "primaryGenreName": "Christian",
+        "trackViewUrl": "https://music.apple.com/us/album/derramo-el-perfume-feat-averly-morillo-live/1799833331?i=1799833610&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/derramo-el-perfume-feat-averly-morillo-live/1799833331?i=1799833610&uo=4",
+        "trackId": 1799833610
+      },
+      {
+        "trackName": "Tuyo Es El Reino (feat. Yesenia Then) [Live]",
+        "artistName": "Averly Morillo",
+        "collectionName": "Tuyo Es El Reino (feat. Yesenia Then) [Live] - Single",
+        "primaryGenreName": "Christian",
+        "trackViewUrl": "https://music.apple.com/us/album/tuyo-es-el-reino-feat-yesenia-then-live/1667002893?i=1667002894&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/tuyo-es-el-reino-feat-yesenia-then-live/1667002893?i=1667002894&uo=4",
+        "trackId": 1667002894
+      },
+      {
+        "trackName": "Tuyo Es El Reino (Acústico)",
+        "artistName": "Averly Morillo",
+        "collectionName": "Mas intimo (Acústico) - EP",
+        "primaryGenreName": "Christian",
+        "trackViewUrl": "https://music.apple.com/us/album/tuyo-es-el-reino-ac%C3%BAstico/1716365611?i=1716365612&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/tuyo-es-el-reino-ac%C3%BAstico/1716365611?i=1716365612&uo=4",
+        "trackId": 1716365612
+      },
+      {
+        "trackName": "Mesias - Live (Live)",
+        "artistName": "Averly Morillo",
+        "collectionName": "Mesias - Live (Live) - EP",
+        "primaryGenreName": "Christian",
+        "trackViewUrl": "https://music.apple.com/us/album/mesias-live-live/1753498805?i=1753498806&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/mesias-live-live/1753498805?i=1753498806&uo=4",
+        "trackId": 1753498806
+      },
+      {
+        "trackName": "Pentecostés",
+        "artistName": "Karen Espinosa & Averly Morillo",
+        "collectionName": "Pentecostés - EP",
+        "primaryGenreName": "Latin",
+        "trackViewUrl": "https://music.apple.com/us/album/pentecost%C3%A9s/6801654186?i=6801654187&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/pentecost%C3%A9s/6801654186?i=6801654187&uo=4",
+        "trackId": 6801654187
+      },
+      {
+        "trackName": "Tuyo Es El Reino (feat. Yesenia Then) [Live]",
+        "artistName": "Averly Morillo",
+        "collectionName": "Tuyo Es El Reino (feat. Yesenia Then) [Live] - Single",
+        "primaryGenreName": "Christian",
+        "trackViewUrl": "https://music.apple.com/us/album/tuyo-es-el-reino-feat-yesenia-then-live/1754376600?i=1754376602&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/tuyo-es-el-reino-feat-yesenia-then-live/1754376600?i=1754376602&uo=4",
+        "trackId": 1754376602
+      },
+      {
+        "trackName": "Pentecostés",
+        "artistName": "Karen Espinosa & Averly Morillo",
+        "collectionName": "Aceite Nuevo",
+        "primaryGenreName": "Latin",
+        "trackViewUrl": "https://music.apple.com/us/album/pentecost%C3%A9s/6801655080?i=6801655343&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/pentecost%C3%A9s/6801655080?i=6801655343&uo=4",
+        "trackId": 6801655343
+      },
+      {
+        "trackName": "Tuyo Es El Reino (feat. Pastora Yesenia Then) [Live]",
+        "artistName": "Averly Morillo",
+        "collectionName": "Ante Tu Altar (Tour Edition) [Live]",
+        "primaryGenreName": "Christian",
+        "trackViewUrl": "https://music.apple.com/us/album/tuyo-es-el-reino-feat-pastora-yesenia-then-live/1716759523?i=1716759769&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/tuyo-es-el-reino-feat-pastora-yesenia-then-live/1716759523?i=1716759769&uo=4",
+        "trackId": 1716759769
+      },
+      {
+        "trackName": "Milagroso Eres Señor",
+        "artistName": "Christ For The Nations Worship, Averly Morillo & Waleska Morales",
+        "collectionName": "Sonido De Las Naciones",
+        "primaryGenreName": "Latin",
+        "trackViewUrl": "https://music.apple.com/us/album/milagroso-eres-sen-or/6799289509?i=6799289731&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/milagroso-eres-sen-or/6799289509?i=6799289731&uo=4",
+        "trackId": 6799289731
+      }
+    ]
+  },
+  "mixTerm|DOE He Is King": {
+    "query_url": "https://itunes.apple.com/search?term=DOE+He+Is+King&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": [
+      {
+        "trackName": "He Is King (Live)",
+        "artistName": "DOE & Lizzie Morgan",
+        "collectionName": "Shiloh (Live)",
+        "primaryGenreName": "Christian",
+        "trackViewUrl": "https://music.apple.com/us/album/he-is-king-live/6790844174?i=6790844186&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/he-is-king-live/6790844174?i=6790844186&uo=4",
+        "trackId": 6790844186
+      },
+      {
+        "trackName": "He Is King (Song Session)",
+        "artistName": "DOE, Lizzie Morgan & Essential Worship",
+        "collectionName": "DOE Song Sessions - EP",
+        "primaryGenreName": "Christian",
+        "trackViewUrl": "https://music.apple.com/us/album/he-is-king-song-session/6809928640?i=6809928650&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/he-is-king-song-session/6809928640?i=6809928650&uo=4",
+        "trackId": 6809928650
+      },
+      {
+        "trackName": "Back To Jesus",
+        "artistName": "Matthew West",
+        "collectionName": "Jesus Is King",
+        "primaryGenreName": "Christian",
+        "trackViewUrl": "https://music.apple.com/us/album/back-to-jesus/6787940294?i=6787940298&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/back-to-jesus/6787940294?i=6787940298&uo=4",
+        "trackId": 6787940298
+      },
+      {
+        "trackName": "How Does It Feel",
+        "artistName": "Toosii",
+        "collectionName": "Boys Don’t Cry: Men Do",
+        "primaryGenreName": "R&B/Soul",
+        "trackViewUrl": "https://music.apple.com/us/album/how-does-it-feel/1653208408?i=1653208417&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/how-does-it-feel/1653208408?i=1653208417&uo=4",
+        "trackId": 1653208417
+      },
+      {
+        "trackName": "He Is Born (Reprise) [feat. Chris Tomlin]",
+        "artistName": "Tommee Profitt & Fleurie",
+        "collectionName": "The Birth of a King",
+        "primaryGenreName": "Christian",
+        "trackViewUrl": "https://music.apple.com/us/album/he-is-born-reprise-feat-chris-tomlin/1532132823?i=1532133171&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/he-is-born-reprise-feat-chris-tomlin/1532132823?i=1532133171&uo=4",
+        "trackId": 1532133171
+      },
+      {
+        "trackName": "Christ Is Lower Still (feat. Matt Maher & DOE)",
+        "artistName": "The Porter's Gate",
+        "collectionName": "Sanctuary Songs",
+        "primaryGenreName": "Christian",
+        "trackViewUrl": "https://music.apple.com/us/album/christ-is-lower-still-feat-matt-maher-doe/6806093493?i=6806093494&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/christ-is-lower-still-feat-matt-maher-doe/6806093493?i=6806093494&uo=4",
+        "trackId": 6806093494
+      },
+      {
+        "trackName": "Christ is Lower Still (feat. Matt Maher & DOE)",
+        "artistName": "The Porter's Gate",
+        "collectionName": "Christ is Lower Still (feat. Matt Maher & DOE) - Single",
+        "primaryGenreName": "Christian",
+        "trackViewUrl": "https://music.apple.com/us/album/christ-is-lower-still-feat-matt-maher-doe/6794132409?i=6794132410&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/christ-is-lower-still-feat-matt-maher-doe/6794132409?i=6794132410&uo=4",
+        "trackId": 6794132410
+      },
+      {
+        "trackName": "King is Alive (feat. Elizabeth Rosa, Roosevelt Stewart & Christian Spaulding)",
+        "artistName": "Transformation Worship",
+        "collectionName": "King is Alive (feat. Elizabeth Rosa, Roosevelt Stewart & Christian Spaulding) - Single",
+        "primaryGenreName": "Christian",
+        "trackViewUrl": "https://music.apple.com/us/album/king-is-alive-feat-elizabeth-rosa-roosevelt-stewart/1797657522?i=1797657915&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/king-is-alive-feat-elizabeth-rosa-roosevelt-stewart/1797657522?i=1797657915&uo=4",
+        "trackId": 1797657915
+      },
+      {
+        "trackName": "He Is",
+        "artistName": "Joshua Rogers",
+        "collectionName": "Unconditional",
+        "primaryGenreName": "Christian",
+        "trackViewUrl": "https://music.apple.com/us/album/he-is/697092564?i=697093459&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/he-is/697092564?i=697093459&uo=4",
+        "trackId": 697093459
+      },
+      {
+        "trackName": "Keep Praying (feat. DOE, Ryan Ofei & Mav City Gospel Choir)",
+        "artistName": "Maverick City Music",
+        "collectionName": "Jubilee: Juneteenth Edition",
+        "primaryGenreName": "Christian",
+        "trackViewUrl": "https://music.apple.com/us/album/keep-praying-feat-doe-ryan-ofei-mav-city-gospel-choir/1572868005?i=1572868629&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/keep-praying-feat-doe-ryan-ofei-mav-city-gospel-choir/1572868005?i=1572868629&uo=4",
+        "trackId": 1572868629
+      },
+      {
+        "trackName": "Hark! The Herald Angels Sing (Live)",
+        "artistName": "Tommee Profitt & DOE",
+        "collectionName": "The Birth Of A King: Live In Concert",
+        "primaryGenreName": "Holiday",
+        "trackViewUrl": "https://music.apple.com/us/album/hark-the-herald-angels-sing-live/1714944587?i=1714945370&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/hark-the-herald-angels-sing-live/1714944587?i=1714945370&uo=4",
+        "trackId": 1714945370
+      },
+      {
+        "trackName": "How He Loves (Radio Version)",
+        "artistName": "David Crowder Band",
+        "collectionName": "All This for a King: The Essential Collection",
+        "primaryGenreName": "Christian",
+        "trackViewUrl": "https://music.apple.com/us/album/how-he-loves-radio-version/1440953947?i=1440954018&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/how-he-loves-radio-version/1440953947?i=1440954018&uo=4",
+        "trackId": 1440954018
+      },
+      {
+        "trackName": "Bloom",
+        "artistName": "Radiohead",
+        "collectionName": "The King of Limbs",
+        "primaryGenreName": "Alternative",
+        "trackViewUrl": "https://music.apple.com/us/album/bloom/1109714965?i=1109715099&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/bloom/1109714965?i=1109715099&uo=4",
+        "trackId": 1109715099
+      },
+      {
+        "trackName": "Is He Worthy?",
+        "artistName": "Chris Tomlin",
+        "collectionName": "Holy Roar",
+        "primaryGenreName": "Christian",
+        "trackViewUrl": "https://music.apple.com/us/album/is-he-worthy/1434899101?i=1434899458&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/is-he-worthy/1434899101?i=1434899458&uo=4",
+        "trackId": 1434899458
+      },
+      {
+        "trackName": "Is He Worthy/ Agnus Dei / We Fall Down (feat. Nate Moore)",
+        "artistName": "Maverick City Music & Chandler Moore",
+        "collectionName": "Maverick City Christmas",
+        "primaryGenreName": "Christian",
+        "trackViewUrl": "https://music.apple.com/us/album/is-he-worthy-agnus-dei-we-fall-down-feat-nate-moore/1571979029?i=1571979178&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/is-he-worthy-agnus-dei-we-fall-down-feat-nate-moore/1571979029?i=1571979178&uo=4",
+        "trackId": 1571979178
+      }
+    ]
+  },
+  "mixTerm|Kodoku He Lives": {
+    "query_url": "https://itunes.apple.com/search?term=Kodoku+He+Lives&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": [
+      {
+        "trackName": "He Lives",
+        "artistName": "Kodoku",
+        "collectionName": "He Lives - Single",
+        "primaryGenreName": "Christian",
+        "trackViewUrl": "https://music.apple.com/us/album/he-lives/6791256894?i=6791256907&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/he-lives/6791256894?i=6791256907&uo=4",
+        "trackId": 6791256907
+      },
+      {
+        "trackName": "WATERWALKIN (feat. Hulvey)",
+        "artistName": "Kodoku",
+        "collectionName": "WATERWALKIN (feat. Hulvey) - Single",
+        "primaryGenreName": "Christian",
+        "trackViewUrl": "https://music.apple.com/us/album/waterwalkin-feat-hulvey/1827499771?i=1827499772&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/waterwalkin-feat-hulvey/1827499771?i=1827499772&uo=4",
+        "trackId": 1827499772
+      },
+      {
+        "trackName": "Fire",
+        "artistName": "Kodoku",
+        "collectionName": "Fire - Single",
+        "primaryGenreName": "Christian",
+        "trackViewUrl": "https://music.apple.com/us/album/fire/1797168282?i=1797168283&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/fire/1797168282?i=1797168283&uo=4",
+        "trackId": 1797168283
+      },
+      {
+        "trackName": "It Is Well (Because He Lives)",
+        "artistName": "Tommee Profitt & Bay Turner",
+        "collectionName": "The Resurrection Of A King",
+        "primaryGenreName": "Christian",
+        "trackViewUrl": "https://music.apple.com/us/album/it-is-well-because-he-lives/1874142349?i=1874142608&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/it-is-well-because-he-lives/1874142349?i=1874142608&uo=4",
+        "trackId": 1874142608
+      },
+      {
+        "trackName": "Because He Lives (Amen)",
+        "artistName": "Matt Maher",
+        "collectionName": "Saints and Sinners",
+        "primaryGenreName": "Christian",
+        "trackViewUrl": "https://music.apple.com/us/album/because-he-lives-amen/971414947?i=971414961&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/because-he-lives-amen/971414947?i=971414961&uo=4",
+        "trackId": 971414961
+      },
+      {
+        "trackName": "Because He Lives (Moment)",
+        "artistName": "Phil Wickham",
+        "collectionName": "Song Of The Saints",
+        "primaryGenreName": "Christian",
+        "trackViewUrl": "https://music.apple.com/us/album/because-he-lives-moment/1825427371?i=1825427622&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/because-he-lives-moment/1825427371?i=1825427622&uo=4",
+        "trackId": 1825427622
+      },
+      {
+        "trackName": "Because He Lives (feat. Bill Gaither) [Remix]",
+        "artistName": "Crowder",
+        "collectionName": "Neon Steeple (Deluxe Edition)",
+        "primaryGenreName": "CCM",
+        "trackViewUrl": "https://music.apple.com/us/album/because-he-lives-feat-bill-gaither-remix/1440862747?i=1440863605&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/because-he-lives-feat-bill-gaither-remix/1440862747?i=1440863605&uo=4",
+        "trackId": 1440863605
+      },
+      {
+        "trackName": "Rolling Away, Zuicho End of Life",
+        "artistName": "Kodoku",
+        "collectionName": "Good, Evil, Neither Good nor Evil, and Those Swords. ~Whether Good or Bad Deeds, Retribution Is Inevitable If We Follow the Shadows.~ [Zenakumuki Zenakunomukui Kagenishitagaugagotoshi]",
+        "primaryGenreName": "Metal",
+        "trackViewUrl": "https://music.apple.com/us/album/rolling-away-zuicho-end-of-life/1737672769?i=1737673040&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/rolling-away-zuicho-end-of-life/1737672769?i=1737673040&uo=4",
+        "trackId": 1737673040
+      },
+      {
+        "trackName": "Kodoku Na Ikimono (Lonely Life)",
+        "artistName": "KOKIA",
+        "collectionName": "Real World",
+        "primaryGenreName": "J-Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/kodoku-na-ikimono-lonely-life/361119275?i=361119428&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/kodoku-na-ikimono-lonely-life/361119275?i=361119428&uo=4",
+        "trackId": 361119428
+      },
+      {
+        "trackName": "Kodoku Na Heaven 【Love Live / Character Song】 – Music Box",
+        "artistName": "Lullaby Lemon",
+        "collectionName": "Anime Songs and Lullabies – Music Box, Vol.31",
+        "primaryGenreName": "Anime",
+        "trackViewUrl": "https://music.apple.com/us/album/kodoku-na-heaven-love-live-character-song-music-box/6788134296?i=6788134458&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/kodoku-na-heaven-love-live-character-song-music-box/6788134296?i=6788134458&uo=4",
+        "trackId": 6788134458
+      },
+      {
+        "trackName": "Kodoku no Kairo",
+        "artistName": "Neliel Tojo (CV: Hanayo Koizumi (Yurika Kubo))",
+        "collectionName": "Tenshitachi no Fukuin: feat.μ's <LoveLive!>",
+        "primaryGenreName": "Anime",
+        "trackViewUrl": "https://music.apple.com/us/album/kodoku-no-kairo/1765297203?i=1765297209&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/kodoku-no-kairo/1765297203?i=1765297209&uo=4",
+        "trackId": 1765297209
+      },
+      {
+        "trackName": "Life Is Xxxx (feat. Manako)",
+        "artistName": "Sisido",
+        "collectionName": "Kodoku - EP",
+        "primaryGenreName": "Hip-Hop/Rap",
+        "trackViewUrl": "https://music.apple.com/us/album/life-is-xxxx-feat-manako/1697667831?i=1697667836&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/life-is-xxxx-feat-manako/1697667831?i=1697667836&uo=4",
+        "trackId": 1697667836
+      }
+    ]
+  },
+  "mixTerm|Marvin Sapp He's Not Finished": {
+    "query_url": "https://itunes.apple.com/search?term=Marvin+Sapp+He%27s+Not+Finished&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": [
+      {
+        "trackName": "He's Not Finished",
+        "artistName": "Marvin Sapp",
+        "collectionName": "He's Not Finished - Single",
+        "primaryGenreName": "Gospel",
+        "trackViewUrl": "https://music.apple.com/us/album/hes-not-finished/6793328064?i=6793328067&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/hes-not-finished/6793328064?i=6793328067&uo=4",
+        "trackId": 6793328067
+      },
+      {
+        "trackName": "He's Not Finished",
+        "artistName": "Marvin Sapp",
+        "collectionName": "Restoration",
+        "primaryGenreName": "Gospel",
+        "trackViewUrl": "https://music.apple.com/us/album/hes-not-finished/6817937925?i=6817938425&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/hes-not-finished/6817937925?i=6817938425&uo=4",
+        "trackId": 6817938425
+      },
+      {
+        "trackName": "Not the Time, Not the Place",
+        "artistName": "Marvin Sapp",
+        "collectionName": "Grace and Mercy",
+        "primaryGenreName": "Contemporary Gospel",
+        "trackViewUrl": "https://music.apple.com/us/album/not-the-time-not-the-place/1165999255?i=1165999274&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/not-the-time-not-the-place/1165999255?i=1165999274&uo=4",
+        "trackId": 1165999274
+      },
+      {
+        "trackName": "Never Would Have Made It",
+        "artistName": "Marvin Sapp",
+        "collectionName": "Thirsty",
+        "primaryGenreName": "Christian",
+        "trackViewUrl": "https://music.apple.com/us/album/never-would-have-made-it/258502925?i=258503371&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/never-would-have-made-it/258502925?i=258503371&uo=4",
+        "trackId": 258503371
+      },
+      {
+        "trackName": "The Best In Me",
+        "artistName": "Marvin Sapp",
+        "collectionName": "Here I Am (Deluxe Version)",
+        "primaryGenreName": "Christian",
+        "trackViewUrl": "https://music.apple.com/us/album/the-best-in-me/353177025?i=353177133&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/the-best-in-me/353177025?i=353177133&uo=4",
+        "trackId": 353177133
+      },
+      {
+        "trackName": "Praise Him In Advance",
+        "artistName": "Marvin Sapp",
+        "collectionName": "Thirsty",
+        "primaryGenreName": "Christian",
+        "trackViewUrl": "https://music.apple.com/us/album/praise-him-in-advance/258502925?i=258503097&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/praise-him-in-advance/258502925?i=258503097&uo=4",
+        "trackId": 258503097
+      },
+      {
+        "trackName": "My Testimony",
+        "artistName": "Marvin Sapp",
+        "collectionName": "My Testimony",
+        "primaryGenreName": "Christian",
+        "trackViewUrl": "https://music.apple.com/us/album/my-testimony/496695942?i=496695945&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/my-testimony/496695942?i=496695945&uo=4",
+        "trackId": 496695945
+      },
+      {
+        "trackName": "Undefeated",
+        "artistName": "Marvin Sapp",
+        "collectionName": "Chosen Vessel",
+        "primaryGenreName": "Christian",
+        "trackViewUrl": "https://music.apple.com/us/album/undefeated/1527603934?i=1527604787&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/undefeated/1527603934?i=1527604787&uo=4",
+        "trackId": 1527604787
+      },
+      {
+        "trackName": "Listen",
+        "artistName": "Marvin Sapp",
+        "collectionName": "Close",
+        "primaryGenreName": "Christian",
+        "trackViewUrl": "https://music.apple.com/us/album/listen/1276782091?i=1276783185&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/listen/1276782091?i=1276783185&uo=4",
+        "trackId": 1276783185
+      },
+      {
+        "trackName": "He Has His Hands On You",
+        "artistName": "Marvin Sapp",
+        "collectionName": "Here I Am (Deluxe Version)",
+        "primaryGenreName": "Christian",
+        "trackViewUrl": "https://music.apple.com/us/album/he-has-his-hands-on-you/353177025?i=353177107&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/he-has-his-hands-on-you/353177025?i=353177107&uo=4",
+        "trackId": 353177107
+      },
+      {
+        "trackName": "Perfect Peace",
+        "artistName": "Marvin Sapp",
+        "collectionName": "Be Exalted",
+        "primaryGenreName": "Christian",
+        "trackViewUrl": "https://music.apple.com/us/album/perfect-peace/304820935?i=304820945&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/perfect-peace/304820935?i=304820945&uo=4",
+        "trackId": 304820945
+      },
+      {
+        "trackName": "The Altar (feat. Marvin Sapp & Beverly Crawford)",
+        "artistName": "Kirk Franklin",
+        "collectionName": "Hello Fear",
+        "primaryGenreName": "Christian",
+        "trackViewUrl": "https://music.apple.com/us/album/the-altar-feat-marvin-sapp-beverly-crawford/421399122?i=421399140&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/the-altar-feat-marvin-sapp-beverly-crawford/421399122?i=421399140&uo=4",
+        "trackId": 421399140
+      },
+      {
+        "trackName": "You Are God Alone",
+        "artistName": "Marvin Sapp",
+        "collectionName": "Diary of a Psalmist",
+        "primaryGenreName": "Christian",
+        "trackViewUrl": "https://music.apple.com/us/album/you-are-god-alone/303182975?i=303182988&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/you-are-god-alone/303182975?i=303182988&uo=4",
+        "trackId": 303182988
+      },
+      {
+        "trackName": "I Believe",
+        "artistName": "Marvin Sapp",
+        "collectionName": "I Believe",
+        "primaryGenreName": "Christian",
+        "trackViewUrl": "https://music.apple.com/us/album/i-believe/400932851?i=400932857&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/i-believe/400932851?i=400932857&uo=4",
+        "trackId": 400932857
+      },
+      {
+        "trackName": "Thank You for It All",
+        "artistName": "Marvin Sapp",
+        "collectionName": "Chosen Vessel",
+        "primaryGenreName": "Christian",
+        "trackViewUrl": "https://music.apple.com/us/album/thank-you-for-it-all/1527603934?i=1527604210&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/thank-you-for-it-all/1527603934?i=1527604210&uo=4",
+        "trackId": 1527604210
+      }
+    ]
+  },
+  "mixTerm|Luvcat He's My Man": {
+    "query_url": "https://itunes.apple.com/search?term=Luvcat+He%27s+My+Man&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": [
+      {
+        "trackName": "He's My Man",
+        "artistName": "Luvcat",
+        "collectionName": "He's My Man - Single",
+        "primaryGenreName": "Alternative",
+        "trackViewUrl": "https://music.apple.com/us/album/hes-my-man/1767394138?i=1767394147&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/hes-my-man/1767394138?i=1767394147&uo=4",
+        "trackId": 1767394147
+      },
+      {
+        "trackName": "He's My Man",
+        "artistName": "Luvcat",
+        "collectionName": "Vicious Delicious",
+        "primaryGenreName": "Alternative",
+        "trackViewUrl": "https://music.apple.com/us/album/hes-my-man/1824452237?i=1824452588&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/hes-my-man/1824452237?i=1824452588&uo=4",
+        "trackId": 1824452588
+      },
+      {
+        "trackName": "He's My Man",
+        "artistName": "Luvcat",
+        "collectionName": "Dinner @ Brasserie Zédel - Single",
+        "primaryGenreName": "Alternative",
+        "trackViewUrl": "https://music.apple.com/us/album/hes-my-man/1777294125?i=1777294128&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/hes-my-man/1777294125?i=1777294128&uo=4",
+        "trackId": 1777294128
+      },
+      {
+        "trackName": "He's My Man (The Anniversary)",
+        "artistName": "Luvcat & John Cooper Clarke",
+        "collectionName": "He's My Man (The Anniversary) - Single",
+        "primaryGenreName": "Alternative",
+        "trackViewUrl": "https://music.apple.com/us/album/hes-my-man-the-anniversary/1839954097?i=1839954098&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/hes-my-man-the-anniversary/1839954097?i=1839954098&uo=4",
+        "trackId": 1839954098
+      },
+      {
+        "trackName": "He's My Man (The Anniversary)",
+        "artistName": "Luvcat & John Cooper Clarke",
+        "collectionName": "Lovebites - EP",
+        "primaryGenreName": "Alternative",
+        "trackViewUrl": "https://music.apple.com/us/album/hes-my-man-the-anniversary/1891772758?i=1891772764&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/hes-my-man-the-anniversary/1891772758?i=1891772764&uo=4",
+        "trackId": 1891772764
+      }
+    ]
+  },
+  "mixTerm|Imogen Heap Headlock": {
+    "query_url": "https://itunes.apple.com/search?term=Imogen+Heap+Headlock&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": [
+      {
+        "trackName": "Headlock",
+        "artistName": "Imogen Heap",
+        "collectionName": "Speak for Yourself",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/headlock/1785686643?i=1785686644&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/headlock/1785686643?i=1785686644&uo=4",
+        "trackId": 1785686644
+      },
+      {
+        "trackName": "Headlock (Immi's Radio Mix)",
+        "artistName": "Imogen Heap",
+        "collectionName": "Headlock - Single",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/headlock-immis-radio-mix/1785311117?i=1785311118&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/headlock-immis-radio-mix/1785311117?i=1785311118&uo=4",
+        "trackId": 1785311118
+      },
+      {
+        "trackName": "Headlock (Instrumental)",
+        "artistName": "Imogen Heap",
+        "collectionName": "Speak for Yourself (Deluxe Version)",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/headlock-instrumental/1785655348?i=1785655361&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/headlock-instrumental/1785655348?i=1785655361&uo=4",
+        "trackId": 1785655361
+      },
+      {
+        "trackName": "Headlock",
+        "artistName": "Imogen Heap",
+        "collectionName": "Speak for Yourself (Deluxe Version)",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/headlock/1785655348?i=1785655349&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/headlock/1785655348?i=1785655349&uo=4",
+        "trackId": 1785655349
+      },
+      {
+        "trackName": "Headlock (20th Anniversary Remaster)",
+        "artistName": "Imogen Heap",
+        "collectionName": "Speak for Yourself (20th Anniversary Remaster)",
+        "primaryGenreName": "Electronica",
+        "trackViewUrl": "https://music.apple.com/us/album/headlock-20th-anniversary-remaster/1841923193?i=1841923194&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/headlock-20th-anniversary-remaster/1841923193?i=1841923194&uo=4",
+        "trackId": 1841923194
+      },
+      {
+        "trackName": "Headlock Imogen Heap (Hardstyle)",
+        "artistName": "Bxrning deep",
+        "collectionName": "Headlock (Remix) - Single",
+        "primaryGenreName": "Hardcore",
+        "trackViewUrl": "https://music.apple.com/us/album/headlock-imogen-heap-hardstyle/1853351233?i=1853351234&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/headlock-imogen-heap-hardstyle/1853351233?i=1853351234&uo=4",
+        "trackId": 1853351234
+      },
+      {
+        "trackName": "Headlock (Ron van den Beuken Mix) [feat. Imogen Heap]",
+        "artistName": "Ron van den Beuken",
+        "collectionName": "Headlock (feat. Imogen Heap) - EP",
+        "primaryGenreName": "Dance",
+        "trackViewUrl": "https://music.apple.com/us/album/headlock-ron-van-den-beuken-mix-feat-imogen-heap/942631486?i=942631525&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/headlock-ron-van-den-beuken-mix-feat-imogen-heap/942631486?i=942631525&uo=4",
+        "trackId": 942631525
+      },
+      {
+        "trackName": "Headlock (Maarten de Jong Remix) [feat. Imogen Heap]",
+        "artistName": "Ron van den Beuken",
+        "collectionName": "Headlock (feat. Imogen Heap) - Single",
+        "primaryGenreName": "House",
+        "trackViewUrl": "https://music.apple.com/us/album/headlock-maarten-de-jong-remix-feat-imogen-heap/796440322?i=796440331&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/headlock-maarten-de-jong-remix-feat-imogen-heap/796440322?i=796440331&uo=4",
+        "trackId": 796440331
+      },
+      {
+        "trackName": "Headlock (feat. Imogen Heap) [Radio Edit]",
+        "artistName": "Ron van den Beuken",
+        "collectionName": "Vocal Trance Hits 2015",
+        "primaryGenreName": "Trance",
+        "trackViewUrl": "https://music.apple.com/us/album/headlock-feat-imogen-heap-radio-edit/966189508?i=966189914&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/headlock-feat-imogen-heap-radio-edit/966189508?i=966189914&uo=4",
+        "trackId": 966189914
+      },
+      {
+        "trackName": "Headlock (feat. Imogen Heap) [Radio Edit]",
+        "artistName": "Ron van den Beuken",
+        "collectionName": "Trance Hits Top 20 - 2015-01",
+        "primaryGenreName": "Trance",
+        "trackViewUrl": "https://music.apple.com/us/album/headlock-feat-imogen-heap-radio-edit/953843177?i=953843178&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/headlock-feat-imogen-heap-radio-edit/953843177?i=953843178&uo=4",
+        "trackId": 953843178
+      },
+      {
+        "trackName": "Headlock (Ron van den Beuken Radio edit) [feat. Imogen Heap]",
+        "artistName": "Ron van den Beuken",
+        "collectionName": "Headlock (feat. Imogen Heap) - EP",
+        "primaryGenreName": "Dance",
+        "trackViewUrl": "https://music.apple.com/us/album/headlock-ron-van-den-beuken-radio-edit-feat-imogen-heap/942631486?i=942631528&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/headlock-ron-van-den-beuken-radio-edit-feat-imogen-heap/942631486?i=942631528&uo=4",
+        "trackId": 942631528
+      },
+      {
+        "trackName": "Headlock (Maarten de Jong Remix) [feat. Imogen Heap]",
+        "artistName": "Ron van den Beuken",
+        "collectionName": "Headlock (feat. Imogen Heap) - EP",
+        "primaryGenreName": "Dance",
+        "trackViewUrl": "https://music.apple.com/us/album/headlock-maarten-de-jong-remix-feat-imogen-heap/942631486?i=942631527&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/headlock-maarten-de-jong-remix-feat-imogen-heap/942631486?i=942631527&uo=4",
+        "trackId": 942631527
+      },
+      {
+        "trackName": "Headlock (Clokx Rework mix) [feat. Imogen Heap]",
+        "artistName": "Ron van den Beuken",
+        "collectionName": "Headlock (feat. Imogen Heap) - EP",
+        "primaryGenreName": "Dance",
+        "trackViewUrl": "https://music.apple.com/us/album/headlock-clokx-rework-mix-feat-imogen-heap/942631486?i=942631526&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/headlock-clokx-rework-mix-feat-imogen-heap/942631486?i=942631526&uo=4",
+        "trackId": 942631526
+      },
+      {
+        "trackName": "Headlock (Ron van den Beuken Club Mix) [feat. Imogen Heap]",
+        "artistName": "Ron van den Beuken",
+        "collectionName": "Headlock (feat. Imogen Heap) - Single",
+        "primaryGenreName": "House",
+        "trackViewUrl": "https://music.apple.com/us/album/headlock-ron-van-den-beuken-club-mix-feat-imogen-heap/796440322?i=796440330&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/headlock-ron-van-den-beuken-club-mix-feat-imogen-heap/796440322?i=796440330&uo=4",
+        "trackId": 796440330
+      },
+      {
+        "trackName": "Headlock",
+        "artistName": "Vitamin String Quartet",
+        "collectionName": "Vitamin String Quartet Performs Imogen Heap",
+        "primaryGenreName": "Alternative",
+        "trackViewUrl": "https://music.apple.com/us/album/headlock/479402345?i=479402346&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/headlock/479402345?i=479402346&uo=4",
+        "trackId": 479402346
+      }
+    ]
+  },
+  "mixTerm|Sunshine Anderson Heard It All Before": {
+    "query_url": "https://itunes.apple.com/search?term=Sunshine+Anderson+Heard+It+All+Before&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": [
+      {
+        "trackName": "Heard It All Before",
+        "artistName": "Sunshine Anderson",
+        "collectionName": "Your Woman",
+        "primaryGenreName": "R&B/Soul",
+        "trackViewUrl": "https://music.apple.com/us/album/heard-it-all-before/288790096?i=288790167&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/heard-it-all-before/288790096?i=288790167&uo=4",
+        "trackId": 288790167
+      },
+      {
+        "trackName": "Heard It All Before (Radio Edit)",
+        "artistName": "Sunshine Anderson",
+        "collectionName": "Heard It All Before - EP",
+        "primaryGenreName": "R&B/Soul",
+        "trackViewUrl": "https://music.apple.com/us/album/heard-it-all-before-radio-edit/1673443192?i=1673443197&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/heard-it-all-before-radio-edit/1673443192?i=1673443197&uo=4",
+        "trackId": 1673443197
+      },
+      {
+        "trackName": "Heard It All Before (Gut Feeling Remix)",
+        "artistName": "Sunshine Anderson",
+        "collectionName": "Paradise Garage: Inspirations",
+        "primaryGenreName": "Electronic",
+        "trackViewUrl": "https://music.apple.com/us/album/heard-it-all-before-gut-feeling-remix/1436962516?i=1436962550&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/heard-it-all-before-gut-feeling-remix/1436962516?i=1436962550&uo=4",
+        "trackId": 1436962550
+      },
+      {
+        "trackName": "Heard It All Before (Extended Mix) [feat. Sunshine Anderson]",
+        "artistName": "Dakar",
+        "collectionName": "Heard It All Before (Extended Mix) [feat. Sunshine Anderson] - Single",
+        "primaryGenreName": "House",
+        "trackViewUrl": "https://music.apple.com/us/album/heard-it-all-before-extended-mix-feat-sunshine-anderson/1499355243?i=1499355244&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/heard-it-all-before-extended-mix-feat-sunshine-anderson/1499355243?i=1499355244&uo=4",
+        "trackId": 1499355244
+      },
+      {
+        "trackName": "Heard It All Before (E-Smoove House Filter Mix)",
+        "artistName": "Sunshine Anderson",
+        "collectionName": "Heard It All Before - EP",
+        "primaryGenreName": "R&B/Soul",
+        "trackViewUrl": "https://music.apple.com/us/album/heard-it-all-before-e-smoove-house-filter-mix/1673443192?i=1673443200&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/heard-it-all-before-e-smoove-house-filter-mix/1673443192?i=1673443200&uo=4",
+        "trackId": 1673443200
+      },
+      {
+        "trackName": "Heard It All Before",
+        "artistName": "Sunshine Anderson",
+        "collectionName": "Heard It All Before - EP",
+        "primaryGenreName": "R&B/Soul",
+        "trackViewUrl": "https://music.apple.com/us/album/heard-it-all-before/1673443192?i=1673443877&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/heard-it-all-before/1673443192?i=1673443877&uo=4",
+        "trackId": 1673443877
+      },
+      {
+        "trackName": "Heard It All Before",
+        "artistName": "Sunshine Anderson",
+        "collectionName": "Reminisce R&B, Vol. 3",
+        "primaryGenreName": "R&B/Soul",
+        "trackViewUrl": "https://music.apple.com/us/album/heard-it-all-before/1063539427?i=1063539649&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/heard-it-all-before/1063539427?i=1063539649&uo=4",
+        "trackId": 1063539649
+      },
+      {
+        "trackName": "Heard It All Before",
+        "artistName": "Sunshine Anderson",
+        "collectionName": "Premium R&B",
+        "primaryGenreName": "R&B/Soul",
+        "trackViewUrl": "https://music.apple.com/us/album/heard-it-all-before/1064327153?i=1064327261&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/heard-it-all-before/1064327153?i=1064327261&uo=4",
+        "trackId": 1064327261
+      },
+      {
+        "trackName": "Heard It All Before (feat. Sunshine Anderson)",
+        "artistName": "Dakar",
+        "collectionName": "Heard It All Before (feat. Sunshine Anderson) - Single",
+        "primaryGenreName": "Dance",
+        "trackViewUrl": "https://music.apple.com/us/album/heard-it-all-before-feat-sunshine-anderson/1499347364?i=1499347366&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/heard-it-all-before-feat-sunshine-anderson/1499347364?i=1499347366&uo=4",
+        "trackId": 1499347366
+      },
+      {
+        "trackName": "Heard It All Before (Ben Watt Lazy Dog Mix)",
+        "artistName": "Sunshine Anderson",
+        "collectionName": "Heard It All Before - EP",
+        "primaryGenreName": "Electronic",
+        "trackViewUrl": "https://music.apple.com/us/album/heard-it-all-before-ben-watt-lazy-dog-mix/1673443192?i=1673443807&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/heard-it-all-before-ben-watt-lazy-dog-mix/1673443192?i=1673443807&uo=4",
+        "trackId": 1673443807
+      },
+      {
+        "trackName": "Heard It All Before (Dommix Remix)",
+        "artistName": "Low Steppa",
+        "collectionName": "Heard It All Before (Dommix Remix) - Single",
+        "primaryGenreName": "House",
+        "trackViewUrl": "https://music.apple.com/us/album/heard-it-all-before-dommix-remix/1445927444?i=1445927445&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/heard-it-all-before-dommix-remix/1445927444?i=1445927445&uo=4",
+        "trackId": 1445927445
+      },
+      {
+        "trackName": "Heard It All Before (Extended Mix)",
+        "artistName": "Low Steppa",
+        "collectionName": "Heard It All Before - Single",
+        "primaryGenreName": "House",
+        "trackViewUrl": "https://music.apple.com/us/album/heard-it-all-before-extended-mix/1435852266?i=1435852571&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/heard-it-all-before-extended-mix/1435852266?i=1435852571&uo=4",
+        "trackId": 1435852571
+      },
+      {
+        "trackName": "Heard It All Before (feat. Krysten Cummings) [Funkatomic remix]",
+        "artistName": "Soul Avengerz",
+        "collectionName": "Heard It All Before (feat. Krysten Cummings) [Funkatomic remix] - Single",
+        "primaryGenreName": "Funk",
+        "trackViewUrl": "https://music.apple.com/us/album/heard-it-all-before-feat-krysten-cummings-funkatomic-remix/1540578073?i=1540578142&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/heard-it-all-before-feat-krysten-cummings-funkatomic-remix/1540578073?i=1540578142&uo=4",
+        "trackId": 1540578142
+      },
+      {
+        "trackName": "Heard It All Before (Boiling Point Mix)",
+        "artistName": "Low Steppa",
+        "collectionName": "Boiling Point",
+        "primaryGenreName": "House",
+        "trackViewUrl": "https://music.apple.com/us/album/heard-it-all-before-boiling-point-mix/1501731131?i=1501731148&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/heard-it-all-before-boiling-point-mix/1501731131?i=1501731148&uo=4",
+        "trackId": 1501731148
+      },
+      {
+        "trackName": "Heard It All Before (Low Steppa Boiling Point Mix)",
+        "artistName": "Low Steppa",
+        "collectionName": "Heard It All Before - Single",
+        "primaryGenreName": "House",
+        "trackViewUrl": "https://music.apple.com/us/album/heard-it-all-before-low-steppa-boiling-point-mix/1435852266?i=1435852270&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/heard-it-all-before-low-steppa-boiling-point-mix/1435852266?i=1435852270&uo=4",
+        "trackId": 1435852270
+      }
+    ]
+  },
+  "mixTerm|Ayra Starr Heaven Baby": {
+    "query_url": "https://itunes.apple.com/search?term=Ayra+Starr+Heaven+Baby&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": [
+      {
+        "trackName": "Heaven Baby (feat. ZAYN)",
+        "artistName": "Ayra Starr",
+        "collectionName": "Starrgirl",
+        "primaryGenreName": "Afrobeats",
+        "trackViewUrl": "https://music.apple.com/us/album/heaven-baby-feat-zayn/6796539188?i=6796539210&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/heaven-baby-feat-zayn/6796539188?i=6796539210&uo=4",
+        "trackId": 6796539210
+      },
+      {
+        "trackName": "Heaven Baby",
+        "artistName": "CimaVibes",
+        "collectionName": "Heaven Baby - Single",
+        "primaryGenreName": "Afro-Beat",
+        "trackViewUrl": "https://music.apple.com/us/album/heaven-baby/6807207829?i=6807207830&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/heaven-baby/6807207829?i=6807207830&uo=4",
+        "trackId": 6807207830
+      },
+      {
+        "trackName": "Heaven Baby (feat. DT Keyz) [Version Kompa]",
+        "artistName": "Colmix",
+        "collectionName": "Heaven Baby (feat. DT Keyz) [Version Kompa] - Single",
+        "primaryGenreName": "Worldwide",
+        "trackViewUrl": "https://music.apple.com/us/album/heaven-baby-feat-dt-keyz-version-kompa/6807106991?i=6807106992&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/heaven-baby-feat-dt-keyz-version-kompa/6807106991?i=6807106992&uo=4",
+        "trackId": 6807106992
+      },
+      {
+        "trackName": "Heaven Baby (feat. ZAYN)",
+        "artistName": "Ayra Starr",
+        "collectionName": "Starrgirl",
+        "primaryGenreName": "Afrobeats",
+        "trackViewUrl": "https://music.apple.com/us/album/heaven-baby-feat-zayn/6796539614?i=6796539753&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/heaven-baby-feat-zayn/6796539614?i=6796539753&uo=4",
+        "trackId": 6796539753
+      },
+      {
+        "trackName": "Lonely",
+        "artistName": "Ayra Starr",
+        "collectionName": "19 & Dangerous",
+        "primaryGenreName": "Afrobeats",
+        "trackViewUrl": "https://music.apple.com/us/album/lonely/1576666385?i=1576666661&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/lonely/1576666385?i=1576666661&uo=4",
+        "trackId": 1576666661
+      },
+      {
+        "trackName": "Rush",
+        "artistName": "Ayra Starr",
+        "collectionName": "19 & Dangerous (Deluxe)",
+        "primaryGenreName": "Afrobeats",
+        "trackViewUrl": "https://music.apple.com/us/album/rush/1642898371?i=1642898573&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/rush/1642898371?i=1642898573&uo=4",
+        "trackId": 1642898573
+      },
+      {
+        "trackName": "Ngozi",
+        "artistName": "Crayon & Ayra Starr",
+        "collectionName": "Trench to Triumph",
+        "primaryGenreName": "Afrobeats",
+        "trackViewUrl": "https://music.apple.com/us/album/ngozi/1696606132?i=1696606135&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/ngozi/1696606132?i=1696606135&uo=4",
+        "trackId": 1696606135
+      },
+      {
+        "trackName": "Lonely Refix",
+        "artistName": "Ayra Starr & Zinoleesky",
+        "collectionName": "19 & Dangerous (Deluxe)",
+        "primaryGenreName": "Afrobeats",
+        "trackViewUrl": "https://music.apple.com/us/album/lonely-refix/1642898371?i=1642898376&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/lonely-refix/1642898371?i=1642898376&uo=4",
+        "trackId": 1642898376
+      },
+      {
+        "trackName": "Letter To God",
+        "artistName": "Ayra Starr",
+        "collectionName": "Starrgirl",
+        "primaryGenreName": "Afrobeats",
+        "trackViewUrl": "https://music.apple.com/us/album/letter-to-god/6796539188?i=6796539209&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/letter-to-god/6796539188?i=6796539209&uo=4",
+        "trackId": 6796539209
+      },
+      {
+        "trackName": "The Kids Are Alright",
+        "artistName": "Ayra Starr",
+        "collectionName": "The Year I Turned 21",
+        "primaryGenreName": "Afrobeats",
+        "trackViewUrl": "https://music.apple.com/us/album/the-kids-are-alright/1745016086?i=1745016397&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/the-kids-are-alright/1745016086?i=1745016397&uo=4",
+        "trackId": 1745016397
+      },
+      {
+        "trackName": "I'm Still In Love with You",
+        "artistName": "Al Green",
+        "collectionName": "I'm Still In Love with You",
+        "primaryGenreName": "Soul",
+        "trackViewUrl": "https://music.apple.com/us/album/im-still-in-love-with-you/1133378411?i=1133378525&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/im-still-in-love-with-you/1133378411?i=1133378525&uo=4",
+        "trackId": 1133378525
+      },
+      {
+        "trackName": "Heaven Baby (Kompa Version)",
+        "artistName": "OberdMusic",
+        "collectionName": "Heaven Baby (Kompa Version) - Single",
+        "primaryGenreName": "Afro-Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/heaven-baby-kompa-version/6812940290?i=6812940291&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/heaven-baby-kompa-version/6812940290?i=6812940291&uo=4",
+        "trackId": 6812940291
+      },
+      {
+        "trackName": "Heaven Baby",
+        "artistName": "Brooke Hogan",
+        "collectionName": "Undiscovered",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/heaven-baby/715327989?i=715328009&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/heaven-baby/715327989?i=715328009&uo=4",
+        "trackId": 715328009
+      },
+      {
+        "trackName": "Heaven (Baby You're All That I Want) [Slowed]",
+        "artistName": "SADDESIGN'",
+        "collectionName": "Heaven (Baby You're All That I Want) - EP",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/heaven-baby-youre-all-that-i-want-slowed/1803775502?i=1803775506&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/heaven-baby-youre-all-that-i-want-slowed/1803775502?i=1803775506&uo=4",
+        "trackId": 1803775506
+      },
+      {
+        "trackName": "Heaven Baby (Originally Performed by Ayra Starr & ZAYN) [Karaoke Version]",
+        "artistName": "karaoke SESH",
+        "collectionName": "Heaven Baby (Originally Performed by Ayra Starr & ZAYN) [Karaoke Version] - Single",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/heaven-baby-originally-performed-by-ayra-starr-zayn/6821798195?i=6821798196&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/heaven-baby-originally-performed-by-ayra-starr-zayn/6821798195?i=6821798196&uo=4",
+        "trackId": 6821798196
+      }
+    ]
+  },
+  "mixTerm|Only The Family Hellcats & Trackhawks": {
+    "query_url": "https://itunes.apple.com/search?term=Only+The+Family+Hellcats+%26+Trackhawks&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": [
+      {
+        "trackName": "Crazy Story 2.0 (feat. Lil Durk)",
+        "artistName": "King Von",
+        "collectionName": "Crazy Story 2.0 (feat. Lil Durk) - Single",
+        "primaryGenreName": "Hip-Hop/Rap",
+        "trackViewUrl": "https://music.apple.com/us/album/crazy-story-2-0-feat-lil-durk/1461798911?i=1461798912&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/crazy-story-2-0-feat-lil-durk/1461798911?i=1461798912&uo=4",
+        "trackId": 1461798912
+      },
+      {
+        "trackName": "All My Life (feat. J. Cole)",
+        "artistName": "Lil Durk",
+        "collectionName": "All My Life (feat. J. Cole) - Single",
+        "primaryGenreName": "Rap",
+        "trackViewUrl": "https://music.apple.com/us/album/all-my-life-feat-j-cole/1688638972?i=1688638981&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/all-my-life-feat-j-cole/1688638972?i=1688638981&uo=4",
+        "trackId": 1688638981
+      },
+      {
+        "trackName": "Like That (feat. King Von)",
+        "artistName": "Lil Durk",
+        "collectionName": "Love Songs 4 the Streets 2",
+        "primaryGenreName": "Hip-Hop/Rap",
+        "trackViewUrl": "https://music.apple.com/us/album/like-that-feat-king-von/1574560237?i=1574560249&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/like-that-feat-king-von/1574560237?i=1574560249&uo=4",
+        "trackId": 1574560249
+      },
+      {
+        "trackName": "Hellcats & Trackhawks",
+        "artistName": "Bos Bo",
+        "collectionName": "Hellcats & Trackhawks - Single",
+        "primaryGenreName": "Hip-Hop/Rap",
+        "trackViewUrl": "https://music.apple.com/us/album/hellcats-trackhawks/1577841903?i=1577841904&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/hellcats-trackhawks/1577841903?i=1577841904&uo=4",
+        "trackId": 1577841904
+      },
+      {
+        "trackName": "Hellcats & Trackhawks",
+        "artistName": "DTF Trigga",
+        "collectionName": "Myuzeem",
+        "primaryGenreName": "Hip-Hop/Rap",
+        "trackViewUrl": "https://music.apple.com/us/album/hellcats-trackhawks/1800826806?i=1800826816&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/hellcats-trackhawks/1800826806?i=1800826816&uo=4",
+        "trackId": 1800826816
+      },
+      {
+        "trackName": "HELLCATS & TRACKHAWKS",
+        "artistName": "Lil Fendi",
+        "collectionName": "Two For One\"+**** - Single",
+        "primaryGenreName": "Worldwide",
+        "trackViewUrl": "https://music.apple.com/us/album/hellcats-trackhawks/1590600455?i=1590600606&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/hellcats-trackhawks/1590600455?i=1590600606&uo=4",
+        "trackId": 1590600606
+      },
+      {
+        "trackName": "Hellcats & Trackhawks",
+        "artistName": "Ill-L3gal",
+        "collectionName": "Bombing On Beats",
+        "primaryGenreName": "Hip-Hop/Rap",
+        "trackViewUrl": "https://music.apple.com/us/album/hellcats-trackhawks/1580286034?i=1580286316&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/hellcats-trackhawks/1580286034?i=1580286316&uo=4",
+        "trackId": 1580286316
+      }
+    ]
   }
 }
