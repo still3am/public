@@ -39,8 +39,11 @@ export default function SyncLyricsModal({ track, onClose, onSaved, preferTrackLy
         text = mine.lines.map((l) => l.text || "").join("\n");
       }
       if (!text.trim()) {
-        const t = await base44.entities.Track.get(track.id).catch(() => null);
-        text = t?.lyrics_text || track.lyrics_text || "";
+        text = track.lyrics_text || "";
+        if (typeof track.lyrics_text !== "string") {
+          const t = await base44.entities.Track.get(track.id).catch(() => null);
+          text = t?.lyrics_text || "";
+        }
       }
       if (!alive) return;
       setExistingId(mine?.id || null);
@@ -99,7 +102,7 @@ export default function SyncLyricsModal({ track, onClose, onSaved, preferTrackLy
     saveLock.current = true;setSaveError("");setSaving(true);
     try {
       if(rows.some((r,i)=>r.start_ms==null || (i>0&&r.start_ms<rows[i-1].start_ms))) throw new Error("Time every line in order before saving");
-      const durationMs = Math.round((p.duration || track.duration_seconds || 0) * 1000);
+      const durationMs = Math.round(((p.currentTrack?.id === track.id ? p.duration : 0) || track.duration_seconds || 0) * 1000);
       const lines = rows.map((r, i) => {
         const start = r.start_ms || 0;
         const nextStart = rows[i + 1]?.start_ms;
