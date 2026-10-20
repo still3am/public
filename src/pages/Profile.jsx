@@ -298,8 +298,9 @@ export default function Profile({ ownProfileTab = false }) {
   }
   async function saveProfile() {
     if (saveLock.current || saving || avatarBusy.current || bannerBusy.current || uploadingAvatar || uploadingBanner || !isOwn || me?.id !== targetId) return;
-    let draft;try {draft = normalizeProfileDraft(form);} catch (error) {reportActionError(error, error.message);return;}
-    const baseline = formFromProfile(profile),changes = Object.fromEntries(Object.entries(draft).filter(([key, value]) => JSON.stringify(value) !== JSON.stringify(baseline[key])));
+    const baseline = formFromProfile(profile);
+    let draft;try {draft = normalizeProfileDraft(form,baseline);} catch (error) {reportActionError(error, error.message);return;}
+    const changes = Object.fromEntries(Object.entries(draft).filter(([key, value]) => JSON.stringify(value) !== JSON.stringify(baseline[key])));
     if (!Object.keys(changes).length) {setEditMode(false);return;}
     const key = identity.current;saveLock.current = true;setSaving(true);
     try {
