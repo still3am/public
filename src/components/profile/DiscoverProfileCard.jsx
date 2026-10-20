@@ -3,6 +3,8 @@ import {Link} from "react-router-dom";
 import {Music,Play,Pause,Loader2,MapPin} from "lucide-react";
 import Avatar from "@/components/Avatar";
 import ProfileMedia from "@/components/ProfileMedia";
+import MotionGradient from "@/components/MotionGradient";
+import {useCoverPalette} from "@/hooks/useCoverPalette";
 import {base44} from "@/api/base44Client";
 import {useAuth} from "@/lib/AuthContext";
 import {useNotePreview} from "@/hooks/useNotePreview";
@@ -45,7 +47,15 @@ export default function DiscoverProfileCard({person,active,direction,children}){
   setPlayError("");try{await preview.play(track);}catch{setPlayError("Couldn’t preview this song. Try again.");}
  }
  const hasBanner=!person.banner_use_default&&!!person.banner_url;
- return <article className={"discover-mini-profile "+(direction<0?"from-previous":"from-next")} aria-label={"Suggested profile: "+name}>
+ const automatic=!(["custom","off"].includes(person.profile_background_mode));
+ const featured=songs.find(song=>song.id===person.featured_track_id);
+ const cover=useCoverUrl(automatic?featured?.cover_art_url:"");
+ const {colors:coverColors}=useCoverPalette(cover);
+ const palette=person.profile_background_mode==="off"?[]:automatic?coverColors.slice(0,3):(Array.isArray(person.profile_background_colors)?person.profile_background_colors:[]).filter(color=>/^#[0-9a-f]{6}$/i.test(color)).slice(0,3);
+ const hasGradient=palette.length>0;
+ const gradientStyle=hasGradient?{"--foreground":"0 0% 100%","--background":"240 6% 8%","--card":"240 6% 8%","--muted-foreground":"0 0% 88%","--border":"0 0% 100% / .22"}:undefined;
+ return <article style={gradientStyle} className={"discover-mini-profile "+(hasGradient?"has-profile-gradient ":"")+(direction<0?"from-previous":"from-next")} aria-label={"Suggested profile: "+name}>
+  {hasGradient&&<MotionGradient className="discover-profile-gradient" colors={palette} motion={person.profile_background_motion==="still"?"still":"flow"} speed={Math.max(.35,Math.min(1.6,Number(person.profile_background_speed)||1))} active={active} pauseWhenCovered/>}
   <div className={"discover-mini-banner "+(!hasBanner?"is-default":"")}>
    {hasBanner?<ProfileMedia src={person.banner_url} mobileSrc={person.banner_mobile_url} videoSrc={person.banner_video_url} gifSrc={person.banner_gif_url} active={active}/>:<Music size={48} strokeWidth={1} aria-hidden="true"/>}
   </div>
