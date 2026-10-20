@@ -1,3 +1,4 @@
+import {savePlaylistMove} from "@/lib/playlistOrder";
 import {getPlaylist} from "@/lib/collaborativePlaylists";
 import {base44,playlistDatabase} from '@/api/base44Client';
 import {savePlaylistTracks} from '@/lib/nativePlaylistTracks';
@@ -10,6 +11,7 @@ export async function changePlaylist(id,action,ids,expected){
 export const addPlaylistTracks=(id,ids)=>changePlaylist(id,'playlistAdd',[...new Set(ids)]);
 export const removePlaylistTracks=(id,ids)=>changePlaylist(id,'playlistRemove',[...new Set(ids)]);
 export const reorderPlaylistTracks=(id,ids,expected)=>changePlaylist(id,'playlistReorder',ids,expected);
+export const movePlaylistSong=(id,moving,target,after)=>savePlaylistMove({load:()=>getPlaylist(id),save:(ids,expected)=>reorderPlaylistTracks(id,ids,expected)},moving,target,after);
 export function movePlaylistTrack(ids,id,delta,visibleIds=[...new Set(ids)]){
  const position=visibleIds.indexOf(id),neighbor=visibleIds[position+delta];
  if(position<0||!neighbor)return [...ids];
