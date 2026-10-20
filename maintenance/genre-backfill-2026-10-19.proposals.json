@@ -3355,6 +3355,19 @@
       "match": "exact artist and title"
     },
     {
+      "id": "6abf432ebe07c93bad3c4eaf",
+      "title": "4am Flex",
+      "artist": "Tory Lanez",
+      "before": "Other",
+      "genre": "Hip-Hop",
+      "source_genre": "Hip-Hop/Rap",
+      "source_title": "4am Flex",
+      "source_artist": "Tory Lanez",
+      "source_album": "I Told You",
+      "source_url": "https://music.apple.com/us/album/4am-flex/1443125785?i=1443126239&uo=4",
+      "match": "exact artist and title"
+    },
+    {
       "id": "6abf433688f7ac7b39a8130e",
       "title": "4K",
       "artist": "El Alfa, Darell, Noriel",
@@ -10570,6 +10583,19 @@
       "match": "exact artist and title"
     },
     {
+      "id": "6acc4f2eecf513eac1e5167c",
+      "title": "Flex",
+      "artist": "Tory Lanez",
+      "before": "Other",
+      "genre": "Hip-Hop",
+      "source_genre": "Hip-Hop/Rap",
+      "source_title": "Flex",
+      "source_artist": "Tory Lanez",
+      "source_album": "I Told You",
+      "source_url": "https://music.apple.com/us/album/flex/1443125785?i=1443126038&uo=4",
+      "match": "exact artist and title"
+    },
+    {
       "id": "6acc4f3983e35b2de0ac5213",
       "title": "Flim",
       "artist": "Aphex Twin",
@@ -15437,18 +15463,16 @@
       "album_name": "3 Doritos Despues"
     },
     {
-      "id": "6abf432ebe07c93bad3c4eaf",
-      "title": "4am Flex",
-      "artist": "Tory Lanez",
-      "genre": "Other",
-      "album_name": "Unknown Album"
-    },
-    {
       "id": "6abf433044dc17e4f01e3e55",
       "title": "4am to 8am",
       "artist": "G Herbo",
       "genre": "Other",
-      "album_name": "Unknown Album"
+      "album_name": "Unknown Album",
+      "review_reason": "conflicting catalog genres",
+      "candidate_genres": [
+        "Hip-Hop",
+        "Rap"
+      ]
     },
     {
       "id": "6abf433347baeab1ad69e06f",
@@ -18189,13 +18213,6 @@
       "album_name": ""
     },
     {
-      "id": "6acc4f2eecf513eac1e5167c",
-      "title": "Flex",
-      "artist": "Tory Lanez",
-      "genre": "Other",
-      "album_name": ""
-    },
-    {
       "id": "6acc4f30babb2f0e067d20a8",
       "title": "FlEXiBle (feat. Chris Brown & Lil Baby)",
       "artist": "Tory Lanez, Chris Brown, Lil Baby",
@@ -19956,5 +19973,5 @@
       "album_name": ""
     }
   ],
-  "searched_terms": 683
+  "searched_terms": 698
 }
