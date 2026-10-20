@@ -28,7 +28,7 @@ export default function ProfilePlaylists({userId,active}){
    if(current!==version.current||owner.current!==uid)return;
    setState({userId:uid,rows:[...new Map([...(more&&same?old.rows:[]),...rows.slice(0,limit)].map(r=>[r.id,r])).values()],loading:false,error:false,more:rows.length>limit});
   }catch{if(current===version.current&&owner.current===uid)setState(s=>({...s,userId:uid,rows:s.userId===uid?s.rows:[],loading:false,error:true}));}
-  finally{lock.current=false;}
+  finally{if(current===version.current)lock.current=false;}
  }
  useEffect(()=>{
   if(!active||!userId)return;
