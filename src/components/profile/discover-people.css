@@ -1,0 +1,22 @@
+.profile-community-column{display:grid;align-content:start;gap:20px;min-width:0}
+.profile-discover{min-width:0;padding:22px;border:1px solid hsl(var(--border));border-radius:20px;background:hsl(var(--card));color:hsl(var(--foreground))}
+.profile-discover header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:20px}
+.profile-discover h2{font-size:22px;font-weight:700;letter-spacing:-.035em;line-height:1.2;margin:0}
+.profile-discover header p{font-size:12px;line-height:1.5;margin-top:6px;color:hsl(var(--muted-foreground))}
+.profile-discover header>svg{flex-shrink:0;color:hsl(var(--muted-foreground))}
+.profile-discover ul{list-style:none;padding:0;margin:0}
+.profile-discover li+li{border-top:1px solid hsl(var(--border))}
+.profile-discover-row{display:flex;align-items:center;gap:10px;padding:13px 0;min-width:0}
+.profile-discover-person{display:flex;align-items:center;gap:12px;flex:1;min-width:0}
+.profile-discover-person>span{min-width:0}.profile-discover-person strong,.profile-discover-person small{display:block;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.profile-discover-person strong{font-size:14px;font-weight:650}.profile-discover-person small{font-size:12px;color:hsl(var(--muted-foreground));margin-top:3px}
+.profile-discover-follow{display:flex;justify-content:center;align-items:center;gap:6px;flex-shrink:0;min-height:44px;padding:9px 12px;border:1px solid hsl(var(--border));border-radius:999px;font-size:12px;font-weight:600;background:hsl(var(--foreground)/.05)}
+.profile-discover-follow[aria-pressed=true]{background:transparent;color:hsl(var(--muted-foreground))}
+.profile-discover button:disabled{opacity:.55;cursor:wait}.profile-discover button:hover:not(:disabled){background:hsl(var(--foreground)/.09)}
+.profile-discover button:focus-visible,.profile-discover a:focus-visible{outline:2px solid currentColor;outline-offset:4px;border-radius:12px}
+.profile-discover-status{display:flex;align-items:center;flex-wrap:wrap;gap:10px;padding:16px 0;font-size:13px;line-height:1.6;color:hsl(var(--muted-foreground))}
+.profile-discover-status button{text-decoration:underline;min-height:44px}
+.profile-discover-error{font-size:12px;line-height:1.5;color:hsl(var(--destructive));padding:0 0 12px}
+.profile-discover-more{width:100%;min-height:44px;margin-top:10px;border-radius:12px;font-size:12px;font-weight:600}
+@media(max-width:767px){.profile-community-column{gap:16px}.profile-discover{padding:18px;border-radius:18px}.profile-discover h2{font-size:20px}.profile-discover-person{gap:10px}.profile-discover-follow{padding-inline:10px}}
+@media(min-width:1101px){.public-app .profile-redesigned .profile-community-column .profile-conversation{position:static;max-height:65dvh;overflow-y:auto}}
