@@ -412,7 +412,7 @@ export default function Profile({ ownProfileTab = false }) {
           {(bannerUrl || currentBackground.mode === "auto" && coverUrl) && <ProfileMedia key={bannerUrl || coverUrl} src={bannerUrl || coverUrl} mobileSrc={bannerMobileUrl} videoSrc={!useDefaultBanner ? (editMode ? form.banner_video_url : profile?.banner_video_url) : ""} gifSrc={!useDefaultBanner ? (editMode ? form.banner_gif_url : profile?.banner_gif_url) : ""} active={isCurrentPage} style={{width:"100%",height:"100%"}}/>}
           <div className="profile-cover-fade" />
         </div>
-        {editMode && <ProfileBannerEditor busy={uploadingBanner || saving} hasBanner={!!form.banner_url && !form.banner_use_default} onApply={uploadBanner} onMotionApply={media=>uploadProfileMotion("banner",media)} onRemove={() => setForm((old) => ({ ...old, banner_use_default: true }))} />}
+        {editMode && <ProfileBannerEditor busy={uploadingBanner || saving} hasBanner={!!form.banner_url && !form.banner_use_default} current={{url:form.banner_use_default?"":form.banner_url,mobileUrl:form.banner_mobile_url,videoUrl:form.banner_video_url,gifUrl:form.banner_gif_url}} onSelect={item=>{if(!saving&&!uploadingBanner)setForm(old=>({...old,banner_url:item.url,banner_mobile_url:item.url,banner_video_url:item.videoUrl||"",banner_gif_url:item.gifUrl||"",banner_use_default:false}));}} onApply={uploadBanner} onMotionApply={media=>uploadProfileMotion("banner",media)} onRemove={() => setForm((old) => ({ ...old, banner_use_default: true }))} />}
         {!editMode && isAdminProfile && <ProfileBadge variant="admin" />}
         {!editMode && !isAdminProfile && profile.is_artist && <ProfileBadge variant="artist" />}
         
