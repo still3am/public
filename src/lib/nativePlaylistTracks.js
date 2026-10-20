@@ -42,7 +42,10 @@ export async function savePlaylistTracks(database,id,action,ids,expected){
   if(current.length!==ids.length||before.size!==after.size||[...before].some(([id,n])=>after.get(id)!==n))fail('Reorder must retain every stored song.');
  }
  await owner();
- const query={id,creator_id:playlist.creator_id,...(action==='playlistReorder'?{track_ids:current}:{})};
+ // A plain array is a match-any shorthand in the entity query API. Use a
+ // scalar revision, or explicit array equality, for the atomic order check.
+ const revision=playlist.updated_date?{updated_date:playlist.updated_date}:{track_ids:{$eq:current}};
+ const query={id,creator_id:playlist.creator_id,...(action==='playlistReorder'?revision:{})};
  const patch=action==='playlistAdd'?{$addToSet:{track_ids:{$each:unique}}}:action==='playlistRemove'?{$pull:{track_ids:{$in:unique}}}:{$set:{track_ids:ids}};
  let writeError;
  try{const result=await Playlist.updateMany(query,patch);if(result?.success===false)throw Error('Playlist save was not confirmed.');}catch(error){writeError=error;}
