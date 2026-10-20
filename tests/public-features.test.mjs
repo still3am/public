@@ -59,6 +59,6 @@ let nodes=[],meters=0;const param=()=>({value:0,cancelScheduledValues(){},setTar
 const ctx={currentTime:0,createBiquadFilter:node,createGain:node,createDynamicsCompressor:node,createAnalyser(){const n=node(),level=++meters===1?.5:.25;n.getFloatTimeDomainData=a=>a.fill(level);return n;}};
 const graph=createPureGraph(ctx);graph.apply({enabled:true,clarity:50,bass:40,balance:40});for(let i=0;i<30;i++)graph.measure();graph.apply({enabled:false},false,true);assert.ok(Math.abs(nodes[4].gain.value-.5)<.001);assert.equal(nodes[5].ratio.value,1);assert.equal(graph.input,nodes[6]);assert.ok(nodes[6].connections.includes(nodes[0]));
 console.log("PASS PURE meters compare pre-processing and output levels and apply matched dry gain");
-const schema=JSON.parse(fs.readFileSync("base44/entities/Playlist.jsonc","utf8"));assert.equal(schema.properties.collaborator_ids,undefined);
+const schema=JSON.parse(fs.readFileSync("base44/entities/Playlist.jsonc","utf8"));assert.notEqual(schema.properties.collaborator_ids.rls.read,true);assert.deepEqual(schema.properties.collaborator_ids.rls.read.$or,[{"data.creator_id":"{{user.id}}"},{"data.collaborator_ids":{$in:["{{user.id}}"]}},{user_condition:{role:"admin"}}]);
 for(const name of ["ListeningSession","PurePreset","ArtistSubscription"]){const s=JSON.parse(fs.readFileSync("base44/entities/"+name+".jsonc","utf8"));assert.deepEqual(s.rls.read,{created_by_id:"{{user.id}}"});}
 console.log("PASS personal features are account-private and public playlists expose no collaboration membership");
