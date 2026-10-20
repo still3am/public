@@ -92,11 +92,13 @@ export default function PlaylistDetail() {
     if(!snapshot||snapshot.version!==version.current||!result.destination||result.source.index===result.destination.index||!canEditSongs||writeLock.current)return;
     const moving=snapshot.rows[result.source.index],target=snapshot.rows[result.destination.index];
     if(!moving||!target)return;
-    const epoch=version.current;
+    const epoch=version.current,previous=tracks,optimistic=[...tracks];
+    const from=optimistic.findIndex(t=>t.id===moving.id),to=optimistic.findIndex(t=>t.id===target.id);
+    optimistic.splice(to,0,...optimistic.splice(from,1));setTracks(optimistic);
     await write(async()=>{
       let updated;
       try{updated=await movePlaylistSong(id,moving.id,target.id,result.source.index<result.destination.index);}
-      catch(error){if((error.status??error.response?.status)===409)await load();throw error;}
+      catch(error){if(epoch===version.current)setTracks(previous);if((error.status??error.response?.status)===409)await load();throw error;}
       if(epoch!==version.current)return;
       setPlaylist(updated);
       const order=new Map([...new Set(updated.track_ids||[])].map((value,i)=>[value,i]));
