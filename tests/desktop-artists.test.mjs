@@ -15,6 +15,7 @@ const Link="a",Loader2=()=>null,Mic2=Loader2,LoadError=Loader2,PullToRefresh="di
 const artist=await load("src/pages/PublicRecords.jsx",common+`
 const useParams=()=>({id:"artist"}),useNavigate=()=>()=>{},useToast=()=>({toast(){}}),usePlayer=()=>globalThis.__player,useAuth=()=>({user:null});
 const base44={},getArtists=async()=>[],getPublishedTracks=async()=>[],fetchArtistTracks=async()=>[],artistTrackRole=t=>t.artist==="Artist"?"lead":"appearance",useCoverUrl=url=>url;
+const ArtistReleaseFollow=()=>null,ArtistAliases=()=>null,ArtistAlbums=()=>null,DropdownMenu="div",DropdownMenuTrigger="button",DropdownMenuContent="div",DropdownMenuItem="button",MoreHorizontal=()=>null,Share2=MoreHorizontal,Shuffle=MoreHorizontal,Info=MoreHorizontal;
 const SafetyControls=()=>null,TrackCard=SafetyControls,TrackRow=SafetyControls,ArtistNameEditor=SafetyControls,CollapsibleText=SafetyControls,LibraryButton=SafetyControls,ScrollShelf="section";
 const ChevronLeft=Mic2,ChevronRight=Mic2,Music=Mic2,Sparkles=Mic2,Globe=Mic2,Calendar=Mic2,Users=Mic2,MapPin=Mic2,Disc3=Mic2,Headphones=Mic2,Play=Mic2,Pause=Mic2,ExternalLink=Mic2;
 `);
@@ -33,6 +34,7 @@ tree=renderDirectory("zeta");letters=all(tree,n=>n.type==="button"&&n.props["ari
 const detail=await load("src/pages/TrackDetail.jsx",common+`
 const useParams=()=>({id:"song1"}),useNavigate=()=>()=>{},useAuth=()=>({user:null}),usePlayer=()=>globalThis.__player,useCoverUrl=url=>url,useToast=()=>({toast(){}});
 const base44={},formatTime=n=>String(n),prepareTrackShare=()=>{},shareTrack=async()=>{},getPublishedTracks=async()=>[],splitArtistNames=s=>[s],fetchArtistTracks=async()=>[],getUsersByIds=async()=>[];
+const useReleaseTheme=()=>({style:{},colors:[]}),ReleaseAtmosphere=()=>null,Link="a",Shuffle=()=>null;
 const TrackMusicVideo="video",TrackCard="track-card",ScrollShelf="shelf",LibraryButton="library-button",CollapsibleText="copy",EmptyState="empty",EditTrackModal="edit",ArtistLinks="artist",TrackRow="track-row",TrackOptionsMenu="options",SyncLyricsModal="sync",GenerateLyricsModal="generate";
 const ChevronLeft=Loader2,Share2=Loader2,Music=Loader2,Play=Loader2,Pause=Loader2,Pencil=Loader2,Sparkles=Loader2,Timer=Loader2,Wand2=Loader2;
 `);
