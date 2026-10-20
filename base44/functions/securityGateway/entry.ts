@@ -406,7 +406,7 @@ export default async function handleRequest(req) {
           if(!Array.isArray(lines)||lines.length>2000) fail('Invalid lyrics',400);
           let last=-1;
           for(const line of lines) {
-            if(!Number.isFinite(line.start_time_ms)||line.start_time_ms<last||line.end_time_ms<line.start_time_ms) fail('Lyrics timing must be complete and in order',422);
+            if(typeof line.text!=='string'||!line.text.trim()||!Number.isSafeInteger(line.start_time_ms)||!Number.isSafeInteger(line.end_time_ms)||line.start_time_ms<0||line.start_time_ms<last||line.end_time_ms<line.start_time_ms) fail('Lyrics timing must be complete and in order',422);
             last=line.start_time_ms;
             let wlast=line.start_time_ms;
             for(const w of line.words||[]) {
@@ -414,7 +414,12 @@ export default async function handleRequest(req) {
               wlast=w.end_time_ms;
             }
           }
-          await moderate(svc,lines.map(l=>l.text).join('\n'));
+          const lyricText=lines.map(l=>l.text).join('\n');
+          if(lyricText.length>100000)fail('Lyrics must be under 100,000 characters',422);
+          const normalizedText=text=>String(text||'').split('\n').map(line=>line.trim().replace(/\s+/g,' ')).filter(Boolean).join('\n');
+          // Timing existing approved text adds no new content to moderate.
+          const timingOnly=track.is_published&&track.approval_status==='approved'&&normalizedText(lyricText)===normalizedText(track.lyrics_text);
+          if(!timingOnly)await moderate(svc,lyricText);
           data={...pick(data,['track_id','language_code','lines','out_of_sync']),uploader_id:user.id,status:'approved'};
         }
       } else if(entity==='LoungeSession') {
