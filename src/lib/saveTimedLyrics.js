@@ -38,7 +38,10 @@ export async function saveTimedLyrics(client, input, protectedWrite) {
   const existing = recordId ? await client.entities.Lyrics.get(recordId) : records[0];
   if (existing && (existing.track_id !== trackId || user.role !== "admin" && existing.uploader_id !== user.id)) throw new Error("These lyrics belong to another song or account.");
   const payload = {track_id: trackId, uploader_id: user.id, language_code: language, lines, status: "approved", out_of_sync: false};
-  const same = row => row?.track_id === trackId && row.language_code === language && row.status === "approved" && row.out_of_sync === false && JSON.stringify(row.lines) === JSON.stringify(lines);
+  const same = row => {
+    try { return row?.track_id === trackId && row.language_code === language && row.status === "approved" && row.out_of_sync === false && JSON.stringify(validateTimedLyrics(row.lines)) === JSON.stringify(lines); }
+    catch { return false; }
+  };
   if ((await client.auth.me())?.id !== user.id) throw new Error("Your account changed. Reopen the lyrics before saving.");
   let saved, failure;
   try {
