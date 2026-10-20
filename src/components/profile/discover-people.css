@@ -8,7 +8,8 @@
 .discover-mini-profile{min-width:0;position:relative;isolation:isolate}
 .discover-profile-gradient{position:absolute;inset:0;z-index:-1}
 .has-profile-gradient .discover-mini-banner.is-default{background:transparent;color:#ffffff80}
-.has-profile-gradient .discover-mini-body{background:rgb(0 0 0 / .64);padding-top:1px}
+.has-profile-gradient .discover-mini-body{background:rgb(0 0 0 / .64);padding-top:1px;color:hsl(var(--foreground))}
+.has-profile-gradient .discover-mini-song>button{color:hsl(var(--foreground))}
 .has-profile-gradient .discover-mini-avatar{background:transparent;padding:4px}
 .has-profile-gradient .discover-mini-bio{color:hsl(var(--foreground))}
 .discover-mini-banner{height:154px;background:hsl(var(--foreground)/.06);overflow:hidden}
