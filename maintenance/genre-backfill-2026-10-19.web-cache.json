@@ -353627,5 +353627,830 @@
         "trackId": 1718282005
       }
     ]
+  },
+  "mixTerm|ARDN Aristotle": {
+    "query_url": "https://itunes.apple.com/search?term=ARDN+Aristotle&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": []
+  },
+  "mixTerm|Roddy Ricch Area Codes": {
+    "query_url": "https://itunes.apple.com/search?term=Roddy+Ricch+Area+Codes&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": [
+      {
+        "trackName": "dodger blue (feat. Wallie the Sensei, Siete7x & Roddy Ricch)",
+        "artistName": "Kendrick Lamar",
+        "collectionName": "GNX",
+        "primaryGenreName": "Hip-Hop/Rap",
+        "trackViewUrl": "https://music.apple.com/us/album/dodger-blue-feat-wallie-the-sensei-siete7x-roddy-ricch/1781316864?i=1781316953&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/dodger-blue-feat-wallie-the-sensei-siete7x-roddy-ricch/1781316864?i=1781316953&uo=4",
+        "trackId": 1781316953
+      },
+      {
+        "trackName": "Aston Martin Truck",
+        "artistName": "Roddy Ricch",
+        "collectionName": "Feed Tha Streets III",
+        "primaryGenreName": "Hip-Hop/Rap",
+        "trackViewUrl": "https://music.apple.com/us/album/aston-martin-truck/1655269454?i=1655270179&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/aston-martin-truck/1655269454?i=1655270179&uo=4",
+        "trackId": 1655270179
+      },
+      {
+        "trackName": "Area Codes (feat. Nate Dogg)",
+        "artistName": "Ludacris",
+        "collectionName": "Word of Mouf",
+        "primaryGenreName": "Hip-Hop/Rap",
+        "trackViewUrl": "https://music.apple.com/us/album/area-codes-feat-nate-dogg/1456413816?i=1456413826&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/area-codes-feat-nate-dogg/1456413816?i=1456413826&uo=4",
+        "trackId": 1456413826
+      },
+      {
+        "trackName": "Area Codes",
+        "artistName": "Kaliii",
+        "collectionName": "Area Codes - Single",
+        "primaryGenreName": "Hip-Hop/Rap",
+        "trackViewUrl": "https://music.apple.com/us/album/area-codes/1675853078?i=1675853081&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/area-codes/1675853078?i=1675853081&uo=4",
+        "trackId": 1675853081
+      },
+      {
+        "trackName": "Area Codes",
+        "artistName": "Kaliii",
+        "collectionName": "Toxic Chocolate: Area Codes Edition",
+        "primaryGenreName": "Hip-Hop/Rap",
+        "trackViewUrl": "https://music.apple.com/us/album/area-codes/1694904527?i=1694904747&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/area-codes/1694904527?i=1694904747&uo=4",
+        "trackId": 1694904747
+      },
+      {
+        "trackName": "Area Codes (850 Remix) [feat. Luh Tyler]",
+        "artistName": "Kaliii",
+        "collectionName": "Area Codes: The Remixes - EP",
+        "primaryGenreName": "Hip-Hop/Rap",
+        "trackViewUrl": "https://music.apple.com/us/album/area-codes-850-remix-feat-luh-tyler/1691430900?i=1691431204&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/area-codes-850-remix-feat-luh-tyler/1691430900?i=1691431204&uo=4",
+        "trackId": 1691431204
+      }
+    ]
+  },
+  "mixTerm|Brytiago Asesina - Remix": {
+    "query_url": "https://itunes.apple.com/search?term=Brytiago+Asesina+-+Remix&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": [
+      {
+        "trackName": "Asesina (Remix) [feat. Dheiking, Kid Satoshi, MC Dealer, Ty Ruzz & NVRS]",
+        "artistName": "Pikete Fireboy",
+        "collectionName": "Asesina (Remix) [feat. Dheiking, Kid Satoshi, MC Dealer, Ty Ruzz & NVRS] - Single",
+        "primaryGenreName": "Urbano latino",
+        "trackViewUrl": "https://music.apple.com/us/album/asesina-remix-feat-dheiking-kid-satoshi-mc-dealer-ty/1561790171?i=1561790176&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/asesina-remix-feat-dheiking-kid-satoshi-mc-dealer-ty/1561790171?i=1561790176&uo=4",
+        "trackId": 1561790176
+      },
+      {
+        "trackName": "Asesina (Remix)",
+        "artistName": "Nenyx Pereira",
+        "collectionName": "Asesina (Remix) - Single",
+        "primaryGenreName": "Electronica",
+        "trackViewUrl": "https://music.apple.com/us/album/asesina-remix/1794796030?i=1794796031&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/asesina-remix/1794796030?i=1794796031&uo=4",
+        "trackId": 1794796031
+      }
+    ]
+  },
+  "mixTerm|Young Miko arcoíris": {
+    "query_url": "https://itunes.apple.com/search?term=Young+Miko+arco%C3%ADris&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": []
+  },
+  "mixTerm|Pardyalone Ashin' Blunts - feat. Arden Jones": {
+    "query_url": "https://itunes.apple.com/search?term=Pardyalone+Ashin%27+Blunts+-+feat.+Arden+Jones&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": []
+  },
+  "mixTerm|Tems Avoid Things": {
+    "query_url": "https://itunes.apple.com/search?term=Tems+Avoid+Things&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": [
+      {
+        "trackName": "Avoid Things",
+        "artistName": "Tems",
+        "collectionName": "If Orange Was A Place - EP",
+        "primaryGenreName": "Alte",
+        "trackViewUrl": "https://music.apple.com/us/album/avoid-things/1585255060?i=1585255064&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/avoid-things/1585255060?i=1585255064&uo=4",
+        "trackId": 1585255064
+      }
+    ]
+  },
+  "mixTerm|Sfera Ebbasta AYAYAY": {
+    "query_url": "https://itunes.apple.com/search?term=Sfera+Ebbasta+AYAYAY&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": [
+      {
+        "trackName": "NO NO NO (feat. Sfera Ebbasta)",
+        "artistName": "Gordo & Draxx (ITA)",
+        "collectionName": "NO HAY VERANO SIN GORDO - EP",
+        "primaryGenreName": "Dance",
+        "trackViewUrl": "https://music.apple.com/us/album/no-no-no-feat-sfera-ebbasta/1783418850?i=1783418856&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/no-no-no-feat-sfera-ebbasta/1783418850?i=1783418856&uo=4",
+        "trackId": 1783418856
+      },
+      {
+        "trackName": "Hace Calor (feat. Omar Varela) [Remix]",
+        "artistName": "Kaleb Di Masi, Sfera Ebbasta & Rvfv",
+        "collectionName": "Hace Calor (feat. Omar Varela) [Remix] - Single",
+        "primaryGenreName": "Latin",
+        "trackViewUrl": "https://music.apple.com/us/album/hace-calor-feat-omar-varela-remix/1628090767?i=1628090768&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/hace-calor-feat-omar-varela-remix/1628090767?i=1628090768&uo=4",
+        "trackId": 1628090768
+      },
+      {
+        "trackName": "Soldi in nero",
+        "artistName": "Shiva & Sfera Ebbasta",
+        "collectionName": "Soldi in nero - Single",
+        "primaryGenreName": "Hip-Hop/Rap",
+        "trackViewUrl": "https://music.apple.com/us/album/soldi-in-nero/1488937633?i=1488937634&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/soldi-in-nero/1488937633?i=1488937634&uo=4",
+        "trackId": 1488937634
+      },
+      {
+        "trackName": "Figli Di Papà",
+        "artistName": "Sfera Ebbasta",
+        "collectionName": "Sfera Ebbasta",
+        "primaryGenreName": "Hip-Hop/Rap",
+        "trackViewUrl": "https://music.apple.com/us/album/figli-di-pap%C3%A0/1440864547?i=1440864926&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/figli-di-pap%C3%A0/1440864547?i=1440864926&uo=4",
+        "trackId": 1440864926
+      },
+      {
+        "trackName": "Alleluia (feat. Sfera Ebbasta)",
+        "artistName": "Shiva",
+        "collectionName": "Milano Demons",
+        "primaryGenreName": "Hip-Hop/Rap",
+        "trackViewUrl": "https://music.apple.com/us/album/alleluia-feat-sfera-ebbasta/1654187943?i=1654188258&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/alleluia-feat-sfera-ebbasta/1654187943?i=1654188258&uo=4",
+        "trackId": 1654188258
+      },
+      {
+        "trackName": "Bang Bang",
+        "artistName": "Sfera Ebbasta",
+        "collectionName": "Sfera Ebbasta",
+        "primaryGenreName": "Hip-Hop/Rap",
+        "trackViewUrl": "https://music.apple.com/us/album/bang-bang/1440864547?i=1440865243&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/bang-bang/1440864547?i=1440865243&uo=4",
+        "trackId": 1440865243
+      }
+    ]
+  },
+  "mixTerm|Anuel AA Ayer 2": {
+    "query_url": "https://itunes.apple.com/search?term=Anuel+AA+Ayer+2&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": [
+      {
+        "trackName": "Ayer (Remix) [feat. Anuel AA & Farruko]",
+        "artistName": "DJ Nelson",
+        "collectionName": "Ayer (Remix) [feat. Anuel AA & Farruko] - Single",
+        "primaryGenreName": "Urbano latino",
+        "trackViewUrl": "https://music.apple.com/us/album/ayer-remix-feat-anuel-aa-farruko/1089000525?i=1089000547&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/ayer-remix-feat-anuel-aa-farruko/1089000525?i=1089000547&uo=4",
+        "trackId": 1089000547
+      },
+      {
+        "trackName": "Hipócrita (feat. Zion)",
+        "artistName": "Anuel AA",
+        "collectionName": "Real Hasta la Muerte",
+        "primaryGenreName": "Urbano latino",
+        "trackViewUrl": "https://music.apple.com/us/album/hip%C3%B3crita-feat-zion/1453888864?i=1453889031&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/hip%C3%B3crita-feat-zion/1453888864?i=1453889031&uo=4",
+        "trackId": 1453889031
+      },
+      {
+        "trackName": "Verte Ir (feat. Nicky Jam, Darell & Brytiago)",
+        "artistName": "DJ Luian, Mambo Kingz & Anuel AA",
+        "collectionName": "Verte Ir (feat. Nicky Jam, Darell & Brytiago) - Single",
+        "primaryGenreName": "Urbano latino",
+        "trackViewUrl": "https://music.apple.com/us/album/verte-ir-feat-nicky-jam-darell-brytiago/1456308569?i=1456308572&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/verte-ir-feat-nicky-jam-darell-brytiago/1456308569?i=1456308572&uo=4",
+        "trackId": 1456308572
+      },
+      {
+        "trackName": "La Ocasión (feat. Arcángel, Ozuna & Anuel AA)",
+        "artistName": "DJ Luian, Mambo Kingz & De La Ghetto",
+        "collectionName": "La Ocasión (feat. Arcángel, Ozuna & Anuel AA) - Single",
+        "primaryGenreName": "Urbano latino",
+        "trackViewUrl": "https://music.apple.com/us/album/la-ocasi%C3%B3n-feat-arc%C3%A1ngel-ozuna-anuel-aa/1359506941?i=1359506944&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/la-ocasi%C3%B3n-feat-arc%C3%A1ngel-ozuna-anuel-aa/1359506941?i=1359506944&uo=4",
+        "trackId": 1359506944
+      },
+      {
+        "trackName": "Keii",
+        "artistName": "Anuel AA",
+        "collectionName": "Keii - Single",
+        "primaryGenreName": "Urbano latino",
+        "trackViewUrl": "https://music.apple.com/us/album/keii/1497391019?i=1497391057&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/keii/1497391019?i=1497391057&uo=4",
+        "trackId": 1497391057
+      },
+      {
+        "trackName": "Quiere Beber",
+        "artistName": "Anuel AA",
+        "collectionName": "Real Hasta la Muerte",
+        "primaryGenreName": "Urbano latino",
+        "trackViewUrl": "https://music.apple.com/us/album/quiere-beber/1453888864?i=1453889019&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/quiere-beber/1453888864?i=1453889019&uo=4",
+        "trackId": 1453889019
+      },
+      {
+        "trackName": "Bebé (feat. Anuel AA)",
+        "artistName": "Ozuna",
+        "collectionName": "Odisea",
+        "primaryGenreName": "Urbano latino",
+        "trackViewUrl": "https://music.apple.com/us/album/beb%C3%A9-feat-anuel-aa/1269285897?i=1269287605&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/beb%C3%A9-feat-anuel-aa/1269285897?i=1269287605&uo=4",
+        "trackId": 1269287605
+      },
+      {
+        "trackName": "Ley Seca",
+        "artistName": "JHAYCO & Anuel AA",
+        "collectionName": "Timelezz (Apple Music Edition)",
+        "primaryGenreName": "Urbano latino",
+        "trackViewUrl": "https://music.apple.com/us/album/ley-seca/1584218327?i=1584218623&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/ley-seca/1584218327?i=1584218623&uo=4",
+        "trackId": 1584218623
+      },
+      {
+        "trackName": "Secreto",
+        "artistName": "Anuel AA & KAROL G",
+        "collectionName": "Secreto - Single",
+        "primaryGenreName": "Urbano latino",
+        "trackViewUrl": "https://music.apple.com/us/album/secreto/1449291376?i=1449291388&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/secreto/1449291376?i=1449291388&uo=4",
+        "trackId": 1449291388
+      },
+      {
+        "trackName": "Adicto",
+        "artistName": "Tainy, Anuel AA & Ozuna",
+        "collectionName": "Adicto - Single",
+        "primaryGenreName": "Latin",
+        "trackViewUrl": "https://music.apple.com/us/album/adicto/1473148903?i=1473148905&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/adicto/1473148903?i=1473148905&uo=4",
+        "trackId": 1473148905
+      },
+      {
+        "trackName": "Ella Quiere Beber (Remix)",
+        "artistName": "Anuel AA & Romeo Santos",
+        "collectionName": "Ella Quiere Beber (Remix) - Single",
+        "primaryGenreName": "Urbano latino",
+        "trackViewUrl": "https://music.apple.com/us/album/ella-quiere-beber-remix/1453886767?i=1453886770&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/ella-quiere-beber-remix/1453886767?i=1453886770&uo=4",
+        "trackId": 1453886770
+      },
+      {
+        "trackName": "Culpables",
+        "artistName": "KAROL G & Anuel AA",
+        "collectionName": "OCEAN",
+        "primaryGenreName": "Urbano latino",
+        "trackViewUrl": "https://music.apple.com/us/album/culpables/1460193253?i=1460193589&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/culpables/1460193253?i=1460193589&uo=4",
+        "trackId": 1460193589
+      },
+      {
+        "trackName": "Baila Baila Baila (feat. Daddy Yankee, J Balvin, Farruko & Anuel AA) [Remix]",
+        "artistName": "Ozuna, Daddy Yankee & J Balvin",
+        "collectionName": "Baila Baila Baila (feat. Farruko, Anuel AA) [Remix] - Single",
+        "primaryGenreName": "Urbano latino",
+        "trackViewUrl": "https://music.apple.com/us/album/baila-baila-baila-feat-daddy-yankee-j-balvin-farruko/1460707396?i=1460707404&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/baila-baila-baila-feat-daddy-yankee-j-balvin-farruko/1460707396?i=1460707404&uo=4",
+        "trackId": 1460707404
+      },
+      {
+        "trackName": "Bubalú (feat. Becky G & Prince Royce)",
+        "artistName": "DJ Luian, Mambo Kingz & Anuel AA",
+        "collectionName": "Bubalu (feat. Becky G & Prince Royce) - Single",
+        "primaryGenreName": "Urbano latino",
+        "trackViewUrl": "https://music.apple.com/us/album/bubal%C3%BA-feat-becky-g-prince-royce/1439267941?i=1439267949&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/bubal%C3%BA-feat-becky-g-prince-royce/1439267941?i=1439267949&uo=4",
+        "trackId": 1439267949
+      },
+      {
+        "trackName": "Ayer",
+        "artistName": "Luis Miguel",
+        "collectionName": "Aries",
+        "primaryGenreName": "Latin",
+        "trackViewUrl": "https://music.apple.com/us/album/ayer/100986900?i=100986835&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/ayer/100986900?i=100986835&uo=4",
+        "trackId": 100986835
+      }
+    ]
+  },
+  "mixTerm|Young Miko 105 Freestyle": {
+    "query_url": "https://itunes.apple.com/search?term=Young+Miko+105+Freestyle&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": []
+  },
+  "mixTerm|El Alfa A Correr los Lakers": {
+    "query_url": "https://itunes.apple.com/search?term=El+Alfa+A+Correr+los+Lakers&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": [
+      {
+        "trackName": "A Correr Los Lakers (feat. Arcángel & Secreto El Famoso Biberón) [Remix]",
+        "artistName": "El Alfa, Nicky Jam & Ozuna",
+        "collectionName": "A Correr Los Lakers (Remix) [feat. Arcángel & Secreto El Famoso Biberón] - Single",
+        "primaryGenreName": "Latin",
+        "trackViewUrl": "https://music.apple.com/us/album/a-correr-los-lakers-feat-arc%C3%A1ngel-secreto-el/1690659076?i=1690659105&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/a-correr-los-lakers-feat-arc%C3%A1ngel-secreto-el/1690659076?i=1690659105&uo=4",
+        "trackId": 1690659105
+      },
+      {
+        "trackName": "A Correr los Lakers (feat. El Alfa) [Remix]",
+        "artistName": "DJ Scuff",
+        "collectionName": "A Correr los Lakers (feat. El Alfa) [Remix] - Single",
+        "primaryGenreName": "Electronic",
+        "trackViewUrl": "https://music.apple.com/us/album/a-correr-los-lakers-feat-el-alfa-remix/1558995233?i=1558995234&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/a-correr-los-lakers-feat-el-alfa-remix/1558995233?i=1558995234&uo=4",
+        "trackId": 1558995234
+      },
+      {
+        "trackName": "A Correr Los Lakers",
+        "artistName": "Kapuchino",
+        "collectionName": "A Correr Los Lakers - Single",
+        "primaryGenreName": "Latin",
+        "trackViewUrl": "https://music.apple.com/us/album/a-correr-los-lakers/1518233982?i=1518233991&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/a-correr-los-lakers/1518233982?i=1518233991&uo=4",
+        "trackId": 1518233991
+      },
+      {
+        "trackName": "A correr los Lakers",
+        "artistName": "jabiel el oficial",
+        "collectionName": "A correr los Lakers - Single",
+        "primaryGenreName": "Urbano latino",
+        "trackViewUrl": "https://music.apple.com/us/album/a-correr-los-lakers/1542842127?i=1542842129&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/a-correr-los-lakers/1542842127?i=1542842129&uo=4",
+        "trackId": 1542842129
+      },
+      {
+        "trackName": "A Correr Los Lakers (Freestyle)",
+        "artistName": "Tencho & Kail",
+        "collectionName": "A Correr Los Lakers (Freestyle) - Single",
+        "primaryGenreName": "Hip-Hop/Rap",
+        "trackViewUrl": "https://music.apple.com/us/album/a-correr-los-lakers-freestyle/1518474412?i=1518474416&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/a-correr-los-lakers-freestyle/1518474412?i=1518474416&uo=4",
+        "trackId": 1518474416
+      },
+      {
+        "trackName": "Glock, Glock, Glock",
+        "artistName": "Anuel AA",
+        "collectionName": "Glock, Glock, Glock - EP",
+        "primaryGenreName": "Urbano latino",
+        "trackViewUrl": "https://music.apple.com/us/album/glock-glock-glock/1721822824?i=1721822826&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/glock-glock-glock/1721822824?i=1721822826&uo=4",
+        "trackId": 1721822826
+      },
+      {
+        "trackName": "A Correr Los Lakers (Legend Version)",
+        "artistName": "Gabriel Emil",
+        "collectionName": "A Correr Los Lakers (Legend Version) - Single",
+        "primaryGenreName": "Urbano latino",
+        "trackViewUrl": "https://music.apple.com/us/album/a-correr-los-lakers-legend-version/1522539572?i=1522539573&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/a-correr-los-lakers-legend-version/1522539572?i=1522539573&uo=4",
+        "trackId": 1522539573
+      },
+      {
+        "trackName": "A Correr Los Lakers",
+        "artistName": "Jc Diamond",
+        "collectionName": "A Correr Los Lakers - Single",
+        "primaryGenreName": "Hip-Hop/Rap",
+        "trackViewUrl": "https://music.apple.com/us/album/a-correr-los-lakers/1529801801?i=1529801802&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/a-correr-los-lakers/1529801801?i=1529801802&uo=4",
+        "trackId": 1529801802
+      },
+      {
+        "trackName": "A Correr Los Lakers",
+        "artistName": "Kaemeprod",
+        "collectionName": "A Correr Los Lakers - Single",
+        "primaryGenreName": "Latin Rap",
+        "trackViewUrl": "https://music.apple.com/us/album/a-correr-los-lakers/6783440923?i=6783440927&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/a-correr-los-lakers/6783440923?i=6783440927&uo=4",
+        "trackId": 6783440927
+      }
+    ]
+  },
+  "mixTerm|ARDN Ain't Reason": {
+    "query_url": "https://itunes.apple.com/search?term=ARDN+Ain%27t+Reason&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": [
+      {
+        "trackName": "slow it down (u ain’t gotta move like that)",
+        "artistName": "Arden Jones",
+        "collectionName": "age tape 7 - Single",
+        "primaryGenreName": "Alternative",
+        "trackViewUrl": "https://music.apple.com/us/album/slow-it-down-u-aint-gotta-move-like-that/1636948504?i=1636948509&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/slow-it-down-u-aint-gotta-move-like-that/1636948504?i=1636948509&uo=4",
+        "trackId": 1636948509
+      },
+      {
+        "trackName": "Til The Morning",
+        "artistName": "Royel Otis",
+        "collectionName": "PRATTS & PAIN (It Ain't Over Til It Ends Edition)",
+        "primaryGenreName": "Indie Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/til-the-morning/1767985858?i=1767987064&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/til-the-morning/1767985858?i=1767987064&uo=4",
+        "trackId": 1767987064
+      },
+      {
+        "trackName": "Oxygen Tank",
+        "artistName": "ARDN",
+        "collectionName": "Goodwill",
+        "primaryGenreName": "Hip-Hop/Rap",
+        "trackViewUrl": "https://music.apple.com/us/album/oxygen-tank/1797494281?i=1797494282&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/oxygen-tank/1797494281?i=1797494282&uo=4",
+        "trackId": 1797494282
+      },
+      {
+        "trackName": "SHINE",
+        "artistName": "ARDN & SiR",
+        "collectionName": "SHINE - Single",
+        "primaryGenreName": "Hip-Hop/Rap",
+        "trackViewUrl": "https://music.apple.com/us/album/shine/1718976900?i=1718976913&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/shine/1718976900?i=1718976913&uo=4",
+        "trackId": 1718976913
+      },
+      {
+        "trackName": "ARE U KIDDING",
+        "artistName": "ARDN & femdot.",
+        "collectionName": "ARE U KIDDING - Single",
+        "primaryGenreName": "Hip-Hop",
+        "trackViewUrl": "https://music.apple.com/us/album/are-u-kidding/1688806300?i=1688806301&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/are-u-kidding/1688806300?i=1688806301&uo=4",
+        "trackId": 1688806301
+      },
+      {
+        "trackName": "Cry About",
+        "artistName": "ARDN",
+        "collectionName": "She. - EP",
+        "primaryGenreName": "Hip-Hop/Rap",
+        "trackViewUrl": "https://music.apple.com/us/album/cry-about/1797493908?i=1797494215&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/cry-about/1797493908?i=1797494215&uo=4",
+        "trackId": 1797494215
+      },
+      {
+        "trackName": "MAN DOWN",
+        "artistName": "ARDN",
+        "collectionName": "MAN DOWN - Single",
+        "primaryGenreName": "Hip-Hop",
+        "trackViewUrl": "https://music.apple.com/us/album/man-down/1699668307?i=1699668407&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/man-down/1699668307?i=1699668407&uo=4",
+        "trackId": 1699668407
+      },
+      {
+        "trackName": "Cry About",
+        "artistName": "ARDN",
+        "collectionName": "Cry About - Single",
+        "primaryGenreName": "Hip-Hop/Rap",
+        "trackViewUrl": "https://music.apple.com/us/album/cry-about/1799929548?i=1799929549&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/cry-about/1799929548?i=1799929549&uo=4",
+        "trackId": 1799929549
+      },
+      {
+        "trackName": "BULLSEYE",
+        "artistName": "ARDN",
+        "collectionName": "BULLSEYE - Single",
+        "primaryGenreName": "Hip-Hop",
+        "trackViewUrl": "https://music.apple.com/us/album/bullseye/1726272474?i=1726272487&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/bullseye/1726272474?i=1726272487&uo=4",
+        "trackId": 1726272487
+      },
+      {
+        "trackName": "PLAIN JANE",
+        "artistName": "ARDN",
+        "collectionName": "PLAIN JANE - Single",
+        "primaryGenreName": "Hip-Hop",
+        "trackViewUrl": "https://music.apple.com/us/album/plain-jane/1672483094?i=1672483095&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/plain-jane/1672483094?i=1672483095&uo=4",
+        "trackId": 1672483095
+      },
+      {
+        "trackName": "Salad",
+        "artistName": "Oblé Reed & ARDN",
+        "collectionName": "Retrovision",
+        "primaryGenreName": "Hip-Hop/Rap",
+        "trackViewUrl": "https://music.apple.com/us/album/salad/1748007290?i=1748007303&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/salad/1748007290?i=1748007303&uo=4",
+        "trackId": 1748007303
+      },
+      {
+        "trackName": "RUNNER UP",
+        "artistName": "ARDN",
+        "collectionName": "RUNNER UP - Single",
+        "primaryGenreName": "Hip-Hop",
+        "trackViewUrl": "https://music.apple.com/us/album/runner-up/1679425962?i=1679426224&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/runner-up/1679425962?i=1679426224&uo=4",
+        "trackId": 1679426224
+      },
+      {
+        "trackName": "WE CAME TO BLEED",
+        "artistName": "Zeds Dead, ARDN, Boi-1da & Canada Soccer",
+        "collectionName": "WE CAME TO BLEED - Single",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/we-came-to-bleed/1895117251?i=6763006037&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/we-came-to-bleed/1895117251?i=6763006037&uo=4",
+        "trackId": 6763006037
+      },
+      {
+        "trackName": "WE CAME TO BLEED",
+        "artistName": "Zeds Dead, ARDN, Boi-1da & Canada Soccer",
+        "collectionName": "WHAT IF IT ALL GOES RIGHT?",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/we-came-to-bleed/6779112697?i=6779112699&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/we-came-to-bleed/6779112697?i=6779112699&uo=4",
+        "trackId": 6779112699
+      },
+      {
+        "trackName": "WE CAME TO BLEED",
+        "artistName": "Zeds Dead, ARDN, Boi-1da & Canada Soccer",
+        "collectionName": "WHAT IF IT ALL GOES RIGHT?",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/we-came-to-bleed/6776004786?i=6776004787&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/we-came-to-bleed/6776004786?i=6776004787&uo=4",
+        "trackId": 6776004787
+      }
+    ]
+  },
+  "mixTerm|Kapo ALGARETE": {
+    "query_url": "https://itunes.apple.com/search?term=Kapo+ALGARETE&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": []
+  },
+  "mixTerm|Young Miko Algo casual": {
+    "query_url": "https://itunes.apple.com/search?term=Young+Miko+Algo+casual&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": []
+  },
+  "mixTerm|Reality All Eyez On Me": {
+    "query_url": "https://itunes.apple.com/search?term=Reality+All+Eyez+On+Me&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": [
+      {
+        "trackName": "All Eyez On Me",
+        "artistName": "Reality",
+        "collectionName": "All Eyez On Me - Single",
+        "primaryGenreName": "Alternative Rap",
+        "trackViewUrl": "https://music.apple.com/us/album/all-eyez-on-me/1688525753?i=1688525758&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/all-eyez-on-me/1688525753?i=1688525758&uo=4",
+        "trackId": 1688525758
+      },
+      {
+        "trackName": "Dreams",
+        "artistName": "The Game",
+        "collectionName": "The Documentary (Edited Version)",
+        "primaryGenreName": "Hip-Hop/Rap",
+        "trackViewUrl": "https://music.apple.com/us/album/dreams/1443202876?i=1443202889&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/dreams/1443202876?i=1443202889&uo=4",
+        "trackId": 1443202889
+      },
+      {
+        "trackName": "De Donde Vengo",
+        "artistName": "Reality",
+        "collectionName": "De Donde Vengo - Single",
+        "primaryGenreName": "Alternative Rap",
+        "trackViewUrl": "https://music.apple.com/us/album/de-donde-vengo/1781025448?i=1781025453&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/de-donde-vengo/1781025448?i=1781025453&uo=4",
+        "trackId": 1781025453
+      },
+      {
+        "trackName": "Federal Reality",
+        "artistName": "Pooh Shiesty",
+        "collectionName": "All Eyes on Shiest",
+        "primaryGenreName": "Hip-Hop/Rap",
+        "trackViewUrl": "https://music.apple.com/us/album/federal-reality/6798859418?i=6798859420&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/federal-reality/6798859418?i=6798859420&uo=4",
+        "trackId": 6798859420
+      },
+      {
+        "trackName": "Wasted on Me",
+        "artistName": "Angrybaby",
+        "collectionName": "Wasted on Me - Single",
+        "primaryGenreName": "Electronic",
+        "trackViewUrl": "https://music.apple.com/us/album/wasted-on-me/1675905842?i=1675905843&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/wasted-on-me/1675905842?i=1675905843&uo=4",
+        "trackId": 1675905843
+      },
+      {
+        "trackName": "All I Wanted",
+        "artistName": "Paramore",
+        "collectionName": "Brand New Eyes (Deluxe Version)",
+        "primaryGenreName": "Alternative",
+        "trackViewUrl": "https://music.apple.com/us/album/all-i-wanted/607337417?i=607338170&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/all-i-wanted/607337417?i=607338170&uo=4",
+        "trackId": 607338170
+      },
+      {
+        "trackName": "Blame on Me",
+        "artistName": "Layton Greene",
+        "collectionName": "Tell Ya Story",
+        "primaryGenreName": "R&B/Soul",
+        "trackViewUrl": "https://music.apple.com/us/album/blame-on-me/1480769663?i=1480769821&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/blame-on-me/1480769663?i=1480769821&uo=4",
+        "trackId": 1480769821
+      },
+      {
+        "trackName": "Infamous (feat. Prodigy)",
+        "artistName": "Big Twins",
+        "collectionName": "The Infamous QB - Still Cooking (Bonus Track Version)",
+        "primaryGenreName": "Hip-Hop/Rap",
+        "trackViewUrl": "https://music.apple.com/us/album/infamous-feat-prodigy/499233806?i=499233810&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/infamous-feat-prodigy/499233806?i=499233810&uo=4",
+        "trackId": 499233810
+      },
+      {
+        "trackName": "Through the Fire and Flames",
+        "artistName": "DragonForce",
+        "collectionName": "Inhuman Rampage",
+        "primaryGenreName": "Rock",
+        "trackViewUrl": "https://music.apple.com/us/album/through-the-fire-and-flames/1679612960?i=1679612971&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/through-the-fire-and-flames/1679612960?i=1679612971&uo=4",
+        "trackId": 1679612971
+      },
+      {
+        "trackName": "Looking Through Patient Eyes",
+        "artistName": "P.M. Dawn",
+        "collectionName": "The Best of P.M. Dawn",
+        "primaryGenreName": "Hip-Hop/Rap",
+        "trackViewUrl": "https://music.apple.com/us/album/looking-through-patient-eyes/260327225?i=260327315&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/looking-through-patient-eyes/260327225?i=260327315&uo=4",
+        "trackId": 260327315
+      },
+      {
+        "trackName": "I Want You to Need Me",
+        "artistName": "Céline Dion",
+        "collectionName": "The Best of Celine Dion",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/i-want-you-to-need-me/1450020510?i=1450020924&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/i-want-you-to-need-me/1450020510?i=1450020924&uo=4",
+        "trackId": 1450020924
+      },
+      {
+        "trackName": "Some Seek Stardom",
+        "artistName": "Fugees",
+        "collectionName": "Blunted on Reality",
+        "primaryGenreName": "Hip-Hop/Rap",
+        "trackViewUrl": "https://music.apple.com/us/album/some-seek-stardom/169704381?i=169704802&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/some-seek-stardom/169704381?i=169704802&uo=4",
+        "trackId": 169704802
+      },
+      {
+        "trackName": "Love Me",
+        "artistName": "RealestK",
+        "collectionName": "Dreams 2 Reality",
+        "primaryGenreName": "R&B/Soul",
+        "trackViewUrl": "https://music.apple.com/us/album/love-me/1650850229?i=1650850466&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/love-me/1650850229?i=1650850466&uo=4",
+        "trackId": 1650850466
+      },
+      {
+        "trackName": "I Want You to Need Me",
+        "artistName": "Céline Dion",
+        "collectionName": "All the Way...A Decade of Song",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/i-want-you-to-need-me/1450015795?i=1450016082&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/i-want-you-to-need-me/1450015795?i=1450016082&uo=4",
+        "trackId": 1450016082
+      },
+      {
+        "trackName": "All of Me (feat. Emanny)",
+        "artistName": "Joe Budden",
+        "collectionName": "Mood Muzik 3 (The Album)",
+        "primaryGenreName": "Rap",
+        "trackViewUrl": "https://music.apple.com/us/album/all-of-me-feat-emanny/1042413826?i=1042414141&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/all-of-me-feat-emanny/1042413826?i=1042414141&uo=4",
+        "trackId": 1042414141
+      }
+    ]
+  },
+  "mixTerm|Chris Brown Ayo": {
+    "query_url": "https://itunes.apple.com/search?term=Chris+Brown+Ayo&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": [
+      {
+        "trackName": "Ayo (Jason Nevins Remix)",
+        "artistName": "Chris Brown & Tyga",
+        "collectionName": "Ayo (Jason Nevins Remix) - Single",
+        "primaryGenreName": "Hip-Hop/Rap",
+        "trackViewUrl": "https://music.apple.com/us/album/ayo-jason-nevins-remix/968844579?i=968844581&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/ayo-jason-nevins-remix/968844579?i=968844581&uo=4",
+        "trackId": 968844581
+      },
+      {
+        "trackName": "Poppin' (Main)",
+        "artistName": "Chris Brown",
+        "collectionName": "Chris Brown (Expanded Edition)",
+        "primaryGenreName": "R&B/Soul",
+        "trackViewUrl": "https://music.apple.com/us/album/poppin-main/323098604?i=323098615&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/poppin-main/323098604?i=323098615&uo=4",
+        "trackId": 323098615
+      },
+      {
+        "trackName": "Wall To Wall",
+        "artistName": "Chris Brown",
+        "collectionName": "Exclusive (Expanded Edition)",
+        "primaryGenreName": "R&B/Soul",
+        "trackViewUrl": "https://music.apple.com/us/album/wall-to-wall/267264811?i=267265040&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/wall-to-wall/267264811?i=267265040&uo=4",
+        "trackId": 267265040
+      },
+      {
+        "trackName": "Don't Wake Me Up",
+        "artistName": "Chris Brown",
+        "collectionName": "Fortune (Expanded Edition)",
+        "primaryGenreName": "R&B/Soul",
+        "trackViewUrl": "https://music.apple.com/us/album/dont-wake-me-up/1456143496?i=1456144036&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/dont-wake-me-up/1456143496?i=1456144036&uo=4",
+        "trackId": 1456144036
+      },
+      {
+        "trackName": "Best Love Song (feat. Chris Brown)",
+        "artistName": "T-Pain",
+        "collectionName": "Revolver (Expanded Edition)",
+        "primaryGenreName": "Hip-Hop/Rap",
+        "trackViewUrl": "https://music.apple.com/us/album/best-love-song-feat-chris-brown/1559297917?i=1559298082&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/best-love-song-feat-chris-brown/1559297917?i=1559298082&uo=4",
+        "trackId": 1559298082
+      },
+      {
+        "trackName": "Ayo (In the Style of Chris Brown x Tyga) [Instrumental Version]",
+        "artistName": "BeatRunnaz",
+        "collectionName": "Ayo (In the Style of Chris Brown x Tyga) [Instrumental Version] - Single",
+        "primaryGenreName": "Karaoke",
+        "trackViewUrl": "https://music.apple.com/us/album/ayo-in-the-style-of-chris-brown-x-tyga-instrumental-version/960085710?i=960086112&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/ayo-in-the-style-of-chris-brown-x-tyga-instrumental-version/960085710?i=960086112&uo=4",
+        "trackId": 960086112
+      },
+      {
+        "trackName": "International Love (feat. Chris Brown)",
+        "artistName": "Pitbull",
+        "collectionName": "Planet Pit (Deluxe Version)",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/international-love-feat-chris-brown/440733026?i=440733046&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/international-love-feat-chris-brown/440733026?i=440733046&uo=4",
+        "trackId": 440733046
+      },
+      {
+        "trackName": "Fine China",
+        "artistName": "Chris Brown",
+        "collectionName": "X (Expanded Edition)",
+        "primaryGenreName": "R&B/Soul",
+        "trackViewUrl": "https://music.apple.com/us/album/fine-china/920685975?i=920686030&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/fine-china/920685975?i=920686030&uo=4",
+        "trackId": 920686030
+      },
+      {
+        "trackName": "See A Victory (Live)",
+        "artistName": "Red Rocks Worship, Chris Brown, Tyler Roberts & Kendra Benay",
+        "collectionName": "Promised Land (Deluxe) [Live]",
+        "primaryGenreName": "Christian",
+        "trackViewUrl": "https://music.apple.com/us/album/see-a-victory-live/6813232605?i=6813232813&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/see-a-victory-live/6813232605?i=6813232813&uo=4",
+        "trackId": 6813232813
+      },
+      {
+        "trackName": "Call Me Every Day (feat. Wizkid)",
+        "artistName": "Chris Brown",
+        "collectionName": "Breezy",
+        "primaryGenreName": "R&B/Soul",
+        "trackViewUrl": "https://music.apple.com/us/album/call-me-every-day-feat-wizkid/1631172418?i=1631172716&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/call-me-every-day-feat-wizkid/1631172418?i=1631172716&uo=4",
+        "trackId": 1631172716
+      },
+      {
+        "trackName": "Come Together (feat. H.E.R.)",
+        "artistName": "Chris Brown",
+        "collectionName": "Indigo",
+        "primaryGenreName": "R&B/Soul",
+        "trackViewUrl": "https://music.apple.com/us/album/come-together-feat-h-e-r/1466876988?i=1466877315&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/come-together-feat-h-e-r/1466876988?i=1466877315&uo=4",
+        "trackId": 1466877315
+      },
+      {
+        "trackName": "Shortie Like Mine (feat. Chris Brown & Johntá Austin)",
+        "artistName": "Bow Wow",
+        "collectionName": "The Price of Fame",
+        "primaryGenreName": "Hip-Hop/Rap",
+        "trackViewUrl": "https://music.apple.com/us/album/shortie-like-mine-feat-chris-brown-johnt%C3%A1-austin/208141142?i=208141801&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/shortie-like-mine-feat-chris-brown-johnt%C3%A1-austin/208141142?i=208141801&uo=4",
+        "trackId": 208141801
+      },
+      {
+        "trackName": "Say Goodbye",
+        "artistName": "Chris Brown",
+        "collectionName": "Chris Brown (Expanded Edition)",
+        "primaryGenreName": "R&B/Soul",
+        "trackViewUrl": "https://music.apple.com/us/album/say-goodbye/323098604?i=323098618&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/say-goodbye/323098604?i=323098618&uo=4",
+        "trackId": 323098618
+      },
+      {
+        "trackName": "Don't Think They Know (feat. Aaliyah)",
+        "artistName": "Chris Brown",
+        "collectionName": "X (Expanded Edition)",
+        "primaryGenreName": "R&B/Soul",
+        "trackViewUrl": "https://music.apple.com/us/album/dont-think-they-know-feat-aaliyah/920685975?i=920686029&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/dont-think-they-know-feat-aaliyah/920685975?i=920686029&uo=4",
+        "trackId": 920686029
+      },
+      {
+        "trackName": "Call Me Every Day (feat. Wizkid)",
+        "artistName": "Chris Brown",
+        "collectionName": "Call Me Every Day (feat. Wizkid) - Single",
+        "primaryGenreName": "R&B/Soul",
+        "trackViewUrl": "https://music.apple.com/us/album/call-me-every-day-feat-wizkid/1630000039?i=1630000040&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/call-me-every-day-feat-wizkid/1630000039?i=1630000040&uo=4",
+        "trackId": 1630000040
+      }
+    ]
   }
 }
