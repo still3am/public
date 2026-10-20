@@ -1,3 +1,5 @@
+import ProfileMedia from "@/components/ProfileMedia";
+import {validateMotionFile} from "@/lib/profileMotion";
 import ProfileBannerEditor from '@/components/profile/ProfileBannerEditor';
 import ProfileDetailsEditor from '@/components/profile/ProfileDetailsEditor';
 import { normalizeProfileDraft } from '@/lib/profileEditing';
@@ -69,6 +71,10 @@ function formFromProfile(prof) {
     display_name: prof.display_name || prof.full_name || "",
     bio: prof.bio || "",
     avatar_url: prof.avatar_url || "",
+    avatar_video_url: prof.avatar_video_url || "",
+    avatar_gif_url: prof.avatar_gif_url || "",
+    banner_video_url: prof.banner_video_url || "",
+    banner_gif_url: prof.banner_gif_url || "",
     banner_use_default: prof.banner_use_default === true,
     banner_url: prof.banner_url || "",
     banner_mobile_url: prof.banner_mobile_url || "",
@@ -273,7 +279,7 @@ export default function Profile({ ownProfileTab = false }) {
       const { file_url } = await base44.integrations.Core.UploadFile({ file });
       if (!file_url) throw new Error("Your profile image did not upload. Please retry.");
       if (version !== avatarVersion.current) return false;
-      setForm((f) => ({ ...f, avatar_url: file_url }));return true;
+      setForm((f) => ({ ...f, avatar_url: file_url, avatar_video_url: "", avatar_gif_url: "" }));return true;
     } catch (error) {
       if (version === avatarVersion.current) reportActionError(error, "Your profile image could not upload. Please retry.");return false;
     } finally {if (version === avatarVersion.current) {avatarBusy.current = false;setUploadingAvatar(false);}}
@@ -286,9 +292,27 @@ export default function Profile({ ownProfileTab = false }) {
       const [desktop, mobile] = await Promise.all([base44.integrations.Core.UploadFile({ file: files.desktop }), base44.integrations.Core.UploadFile({ file: files.mobile })]);
       if (!desktop.file_url || !mobile.file_url) throw Error('Your banner did not upload.');
       if (version !== bannerVersion.current || identity.current !== key) return false;
-      setForm((old) => ({ ...old, banner_url: desktop.file_url, banner_mobile_url: mobile.file_url, banner_use_default: false }));return true;
+      setForm((old) => ({ ...old, banner_url: desktop.file_url, banner_mobile_url: mobile.file_url, banner_use_default: false, banner_video_url: "", banner_gif_url: "" }));return true;
     } catch (error) {if (version === bannerVersion.current) reportActionError(error, 'Your banner could not upload. Please retry.');return false;} finally
     {if (version === bannerVersion.current) {bannerBusy.current = false;setUploadingBanner(false);}}
+  }
+  async function uploadProfileMotion(kind, media) {
+    const avatar = kind === "avatar", lock = avatar ? avatarBusy : bannerBusy, versionRef = avatar ? avatarVersion : bannerVersion;
+    if (!isOwn || !editMode || saving || lock.current) return false;
+    const version = ++versionRef.current, key = identity.current;lock.current = true;
+    const setBusy = avatar ? setUploadingAvatar : setUploadingBanner;setBusy(true);
+    try {
+      const type = validateMotionFile(media.file);
+      if (type !== media.type || !media.poster || !Number.isFinite(media.duration) || media.duration > 10.05) throw Error("Choose a video or GIF loop of 10 seconds or less.");
+      const [source, poster] = await Promise.all([base44.integrations.Core.UploadFile({file:media.file}),base44.integrations.Core.UploadFile({file:media.poster})]);
+      if (!source.file_url || !poster.file_url) throw Error("Your media did not upload. Please retry.");
+      if (version !== versionRef.current || identity.current !== key) return false;
+      setForm(previous => ({...previous,...(avatar
+        ? {avatar_url:poster.file_url,avatar_video_url:type==="video"?source.file_url:"",avatar_gif_url:type==="gif"?source.file_url:""}
+        : {banner_url:poster.file_url,banner_mobile_url:poster.file_url,banner_use_default:false,banner_video_url:type==="video"?source.file_url:"",banner_gif_url:type==="gif"?source.file_url:""})}));
+      return true;
+    } catch (error) {if (version === versionRef.current && identity.current === key) reportActionError(error,error.message || "Your media could not upload. Please retry.");return false;}
+    finally {if (version === versionRef.current) {lock.current=false;setBusy(false);}}
   }
   async function saveProfileSong(id, chosen) {
     if (!isOwn || !editMode || saving) return false;
@@ -384,10 +408,10 @@ export default function Profile({ ownProfileTab = false }) {
       <div className="profile-overview flex flex-col md:flex-row gap-4 md:gap-6 mb-8">
       <div className="profile-identity relative rounded-2xl overflow-hidden ring-1 ring-inset ring-foreground/10 bg-card flex-1 min-w-0">
         <div className="profile-cover-stage" aria-hidden="true" style={backgroundColors.length ? { backgroundImage: profileGradient(backgroundColors) } : undefined}>
-          {(bannerUrl || currentBackground.mode === "auto" && coverUrl) && <picture>{bannerMobileUrl && <source media="(max-width:767px)" srcSet={bannerMobileUrl} />}<img key={bannerUrl || coverUrl} src={bannerUrl || coverUrl} alt="" onError={(event) => {event.currentTarget.style.visibility = "hidden";}} /></picture>}
+          {(bannerUrl || currentBackground.mode === "auto" && coverUrl) && <ProfileMedia key={bannerUrl || coverUrl} src={bannerUrl || coverUrl} mobileSrc={bannerMobileUrl} videoSrc={!useDefaultBanner ? (editMode ? form.banner_video_url : profile?.banner_video_url) : ""} gifSrc={!useDefaultBanner ? (editMode ? form.banner_gif_url : profile?.banner_gif_url) : ""} active={isCurrentPage} style={{width:"100%",height:"100%"}}/>}
           <div className="profile-cover-fade" />
         </div>
-        {editMode && <ProfileBannerEditor busy={uploadingBanner || saving} hasBanner={!!form.banner_url && !form.banner_use_default} onApply={uploadBanner} onRemove={() => setForm((old) => ({ ...old, banner_use_default: true }))} />}
+        {editMode && <ProfileBannerEditor busy={uploadingBanner || saving} hasBanner={!!form.banner_url && !form.banner_use_default} onApply={uploadBanner} onMotionApply={media=>uploadProfileMotion("banner",media)} onRemove={() => setForm((old) => ({ ...old, banner_use_default: true }))} />}
         {!editMode && isAdminProfile && <ProfileBadge variant="admin" />}
         {!editMode && !isAdminProfile && profile.is_artist && <ProfileBadge variant="artist" />}
         
@@ -396,7 +420,7 @@ export default function Profile({ ownProfileTab = false }) {
           <div className="profile-identity-row flex flex-col items-center md:flex-row md:items-center md:justify-center gap-4 md:gap-8">
             <div className="profile-avatar-notes">
               {!editMode && <PublicNotes key={[targetId, me?.id].join(":")} profileId={targetId} isOwn={isOwn} active={isCurrentPage} userTracks={tracks} />}
-              <ProfileAvatar user={{ ...profile, avatar_url: avatarUrl, avatar_preset: editMode ? "" : profile.avatar_preset }} editing={editMode} busy={uploadingAvatar || saving} onUpload={uploadAvatar} onSelect={(url) => {if (!isOwn || uploadingAvatar || saving) return;avatarVersion.current++;setForm((previous) => ({ ...previous, avatar_url: url }));}} />
+              <ProfileAvatar user={{ ...profile, ...(editMode ? {avatar_video_url:form.avatar_video_url,avatar_gif_url:form.avatar_gif_url} : {}), avatar_url: avatarUrl, avatar_preset: editMode ? "" : profile.avatar_preset }} active={isCurrentPage} editing={editMode} busy={uploadingAvatar || saving} onUpload={uploadAvatar} onMotionUpload={media=>uploadProfileMotion("avatar",media)} onSelect={(url) => {if (!isOwn || uploadingAvatar || saving) return;avatarVersion.current++;setForm((previous) => ({ ...previous, avatar_url: url, ...(url!==previous.avatar_url || !url ? {avatar_video_url:"",avatar_gif_url:""} : {}) }));}} />
             </div>
 
             <div className="profile-info flex-1 min-w-0 w-full md:w-auto text-center md:text-left">
