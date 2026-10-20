@@ -2,8 +2,8 @@ import {AVATAR_PRESETS} from "./avatarPresets.js";
 export const PRESET_AVATAR_VALUES=["","initials",...AVATAR_PRESETS.map(item=>item.url)];
 export function withPresetAvatar(row){
  if(!row)return row;
- if(row.avatar_preset==="initials")return {...row,avatar_url:""};
- if(AVATAR_PRESETS.some(item=>item.url===row.avatar_preset))return {...row,avatar_url:row.avatar_preset};
+ if(row.avatar_preset==="initials")return {...row,avatar_url:"",avatar_video_url:"",avatar_gif_url:""};
+ if(AVATAR_PRESETS.some(item=>item.url===row.avatar_preset))return {...row,avatar_url:row.avatar_preset,avatar_video_url:"",avatar_gif_url:""};
  return row;
 }
 const rows=value=>Array.isArray(value)?value:value?.items||[];
