@@ -23,4 +23,12 @@ const old=make('old')();version.current++;owner.current='new';lock.current=false
 const current=make('new')();assert.equal(lock.current,true);
 first.resolve([{id:'old-playlist'}]);await old;assert.equal(lock.current,true,'obsolete completion must not release the new request lock');
 second.resolve([{id:'new-playlist'}]);await current;assert.equal(lock.current,false);assert.equal(states.at(-1).rows[0].id,'new-playlist');
-console.log('PASS blocked-storage startup, Node imports and profile playlist request isolation');
+let response={result:[]};
+globalThis.__moments={functions:{invoke:async()=>({data:response})}};
+const momentSource=fs.readFileSync('src/lib/momentsApi.js','utf8').replace(/^import[^;]+;/gm,'const base44=globalThis.__moments;');
+const {momentsApi}=await import('data:text/javascript;base64,'+Buffer.from(momentSource).toString('base64'));
+for(const action of ['feed','get','publish','comments'])await assert.rejects(momentsApi(action),/incomplete response/);
+response={items:[]};assert.deepEqual((await momentsApi('feed')).items,[]);
+response={post:{id:'post',user_id:'creator'}};assert.equal((await momentsApi('get')).post.id,'post');
+response={items:[{id:'comment',author:{user_id:'creator'}}]};assert.equal((await momentsApi('comments')).items.length,1);
+console.log('PASS blocked-storage startup, Node imports, profile playlist request isolation and malformed Moments responses');
