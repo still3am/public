@@ -1,33 +1,6 @@
 {
   "type": "object",
   "properties": {
-    "banner_preset": {
-      "type": "string",
-      "default": "",
-      "enum": [
-        "",
-        "/banners/chrome.svg",
-        "/banners/aurora.svg",
-        "/banners/afterglow.svg",
-        "/banners/blue-hour.svg",
-        "/banners/moss.svg",
-        "/banners/rose.svg"
-      ],
-      "rls": {
-        "write": {
-          "$or": [
-            {
-              "data.user_id": "{{user.id}}"
-            },
-            {
-              "user_condition": {
-                "role": "admin"
-              }
-            }
-          ]
-        }
-      }
-    },
     "avatar_video_url": {
       "type": "string",
       "default": "",
