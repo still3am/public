@@ -5,7 +5,12 @@
 .profile-discover header p{font-size:12px;line-height:1.5;margin-top:6px;color:hsl(var(--muted-foreground))}
 .discover-swipe-area{touch-action:pan-y;outline-offset:-3px;overflow:hidden}
 .discover-drag-frame{will-change:transform;transform-origin:50% 75%}
-.discover-mini-profile{min-width:0}
+.discover-mini-profile{min-width:0;position:relative;isolation:isolate}
+.discover-profile-gradient{position:absolute;inset:0;z-index:-1}
+.has-profile-gradient .discover-mini-banner.is-default{background:transparent;color:#ffffff80}
+.has-profile-gradient .discover-mini-body{background:rgb(0 0 0 / .64);padding-top:1px}
+.has-profile-gradient .discover-mini-avatar{background:transparent;padding:4px}
+.has-profile-gradient .discover-mini-bio{color:hsl(var(--foreground))}
 .discover-mini-banner{height:154px;background:hsl(var(--foreground)/.06);overflow:hidden}
 .discover-mini-banner>.public-profile-media{width:100%;height:100%}
 .discover-mini-banner.is-default{display:grid;place-items:center;background:radial-gradient(ellipse at 15% 15%,#8e93a32e,transparent 65%),linear-gradient(125deg,#16161e,#4a4b59);color:#ffffff50}
