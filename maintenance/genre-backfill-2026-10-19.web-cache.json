@@ -342865,5 +342865,1457 @@
         "trackId": 1580286316
       }
     ]
+  },
+  "mixTerm|Martin Solveig Hello": {
+    "query_url": "https://itunes.apple.com/search?term=Martin+Solveig+Hello&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": [
+      {
+        "trackName": "Hello (Single Edit)",
+        "artistName": "Martin Solveig & Dragonette",
+        "collectionName": "Smash (Deluxe Edition)",
+        "primaryGenreName": "Dance",
+        "trackViewUrl": "https://music.apple.com/us/album/hello-single-edit/551901355?i=551901361&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/hello-single-edit/551901355?i=551901361&uo=4",
+        "trackId": 551901361
+      },
+      {
+        "trackName": "Hello (Dance Version)",
+        "artistName": "Martin Solveig & Dragonette",
+        "collectionName": "Hello (Dance Version) - Single",
+        "primaryGenreName": "Electronic",
+        "trackViewUrl": "https://music.apple.com/us/album/hello-dance-version/1746898519?i=1746898806&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/hello-dance-version/1746898519?i=1746898806&uo=4",
+        "trackId": 1746898806
+      },
+      {
+        "trackName": "Hello (Official Karaoke Version)",
+        "artistName": "Martin Solveig & Dragonette",
+        "collectionName": "Hello (Official Karaoke Version) - Single",
+        "primaryGenreName": "Dance",
+        "trackViewUrl": "https://music.apple.com/us/album/hello-official-karaoke-version/432807322?i=432807323&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/hello-official-karaoke-version/432807322?i=432807323&uo=4",
+        "trackId": 432807323
+      },
+      {
+        "trackName": "Hello (Super Edit)",
+        "artistName": "Martin Solveig & Dragonette",
+        "collectionName": "Hello (Super Edit) - Single",
+        "primaryGenreName": "Electronic",
+        "trackViewUrl": "https://music.apple.com/us/album/hello-super-edit/1746897951?i=1746897967&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/hello-super-edit/1746897951?i=1746897967&uo=4",
+        "trackId": 1746897967
+      },
+      {
+        "trackName": "Hello (Why Are We Whispering Remix)",
+        "artistName": "Martin Solveig & Dragonette",
+        "collectionName": "The Night Out",
+        "primaryGenreName": "Dance",
+        "trackViewUrl": "https://music.apple.com/us/album/hello-why-are-we-whispering-remix/513030933?i=513030944&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/hello-why-are-we-whispering-remix/513030933?i=513030944&uo=4",
+        "trackId": 513030944
+      },
+      {
+        "trackName": "Hello (Dada Life Remix)",
+        "artistName": "Martin Solveig & Dragonette",
+        "collectionName": "Hello - EP",
+        "primaryGenreName": "Dance",
+        "trackViewUrl": "https://music.apple.com/us/album/hello-dada-life-remix/417872189?i=417872234&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/hello-dada-life-remix/417872189?i=417872234&uo=4",
+        "trackId": 417872234
+      },
+      {
+        "trackName": "Hello",
+        "artistName": "Martin Solveig & Dragonette",
+        "collectionName": "Smash",
+        "primaryGenreName": "Electronic",
+        "trackViewUrl": "https://music.apple.com/us/album/hello/1715305745?i=1715305997&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/hello/1715305745?i=1715305997&uo=4",
+        "trackId": 1715305997
+      },
+      {
+        "trackName": "Hello (Sidney Samson Remix)",
+        "artistName": "Martin Solveig & Dragonette",
+        "collectionName": "Hello - EP",
+        "primaryGenreName": "Dance",
+        "trackViewUrl": "https://music.apple.com/us/album/hello-sidney-samson-remix/417872189?i=417872194&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/hello-sidney-samson-remix/417872189?i=417872194&uo=4",
+        "trackId": 417872194
+      },
+      {
+        "trackName": "Hello",
+        "artistName": "Martin Solveig & Dragonette",
+        "collectionName": "Hello - Single",
+        "primaryGenreName": "Electronic",
+        "trackViewUrl": "https://music.apple.com/us/album/hello/1717182903?i=1717182909&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/hello/1717182903?i=1717182909&uo=4",
+        "trackId": 1717182909
+      },
+      {
+        "trackName": "Hello (Michael Woods Remix)",
+        "artistName": "Martin Solveig & Dragonette",
+        "collectionName": "Hello - EP",
+        "primaryGenreName": "Dance",
+        "trackViewUrl": "https://music.apple.com/us/album/hello-michael-woods-remix/417872189?i=417872225&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/hello-michael-woods-remix/417872189?i=417872225&uo=4",
+        "trackId": 417872225
+      },
+      {
+        "trackName": "Hello (Bassjackers Remix)",
+        "artistName": "Martin Solveig & Dragonette",
+        "collectionName": "Hello - EP",
+        "primaryGenreName": "Dance",
+        "trackViewUrl": "https://music.apple.com/us/album/hello-bassjackers-remix/417872189?i=417872202&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/hello-bassjackers-remix/417872189?i=417872202&uo=4",
+        "trackId": 417872202
+      },
+      {
+        "trackName": "Hello (Dada Life Remix)",
+        "artistName": "Martin Solveig & Dragonette",
+        "collectionName": "Smash (Deluxe Edition)",
+        "primaryGenreName": "Dance",
+        "trackViewUrl": "https://music.apple.com/us/album/hello-dada-life-remix/551901355?i=551901373&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/hello-dada-life-remix/551901355?i=551901373&uo=4",
+        "trackId": 551901373
+      },
+      {
+        "trackName": "Hello (Sidney Samson Remix) [Bonus Track]",
+        "artistName": "Martin Solveig & Dragonette",
+        "collectionName": "Smash (Deluxe Edition)",
+        "primaryGenreName": "Dance",
+        "trackViewUrl": "https://music.apple.com/us/album/hello-sidney-samson-remix-bonus-track/551901355?i=551901376&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/hello-sidney-samson-remix-bonus-track/551901355?i=551901376&uo=4",
+        "trackId": 551901376
+      },
+      {
+        "trackName": "Hello (Michael Woods Dub)",
+        "artistName": "Martin Solveig & Dragonette",
+        "collectionName": "Hello - EP",
+        "primaryGenreName": "Dance",
+        "trackViewUrl": "https://music.apple.com/us/album/hello-michael-woods-dub/417872189?i=417872229&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/hello-michael-woods-dub/417872189?i=417872229&uo=4",
+        "trackId": 417872229
+      }
+    ]
+  },
+  "mixTerm|Tonio Armani Help Me Find My Drawls": {
+    "query_url": "https://itunes.apple.com/search?term=Tonio+Armani+Help+Me+Find+My+Drawls&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": [
+      {
+        "trackName": "Help Me Find My Drawls",
+        "artistName": "Tonio Armani",
+        "collectionName": "Help Me Find My Drawls - Single",
+        "primaryGenreName": "Blues",
+        "trackViewUrl": "https://music.apple.com/us/album/help-me-find-my-drawls/1801746276?i=1801746277&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/help-me-find-my-drawls/1801746276?i=1801746277&uo=4",
+        "trackId": 1801746277
+      },
+      {
+        "trackName": "Lord Help Me Find My Way",
+        "artistName": "Ralph Stanley II & The Clinch Mountain Boys",
+        "collectionName": "Lord Help Me Find the Way",
+        "primaryGenreName": "Folk",
+        "trackViewUrl": "https://music.apple.com/us/album/lord-help-me-find-my-way/1467086428?i=1467086659&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/lord-help-me-find-my-way/1467086428?i=1467086659&uo=4",
+        "trackId": 1467086659
+      },
+      {
+        "trackName": "Help Me",
+        "artistName": "Darrell McFadden and the Disciples",
+        "collectionName": "Chronicles - Book of Songs, Vol. 1-3",
+        "primaryGenreName": "Christian",
+        "trackViewUrl": "https://music.apple.com/us/album/help-me/208958253?i=208959169&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/help-me/208958253?i=208959169&uo=4",
+        "trackId": 208959169
+      }
+    ]
+  },
+  "mixTerm|Leanna Crawford Her": {
+    "query_url": "https://itunes.apple.com/search?term=Leanna+Crawford+Her&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": [
+      {
+        "trackName": "Her",
+        "artistName": "Leanna Crawford",
+        "collectionName": "Thank God",
+        "primaryGenreName": "Christian",
+        "trackViewUrl": "https://music.apple.com/us/album/her/1894896957?i=1894897182&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/her/1894896957?i=1894897182&uo=4",
+        "trackId": 1894897182
+      },
+      {
+        "trackName": "Honest",
+        "artistName": "Leanna Crawford",
+        "collectionName": "Still Waters",
+        "primaryGenreName": "Christian",
+        "trackViewUrl": "https://music.apple.com/us/album/honest/1743476654?i=1743477102&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/honest/1743476654?i=1743477102&uo=4",
+        "trackId": 1743477102
+      },
+      {
+        "trackName": "Still Waters (Psalm 23)",
+        "artistName": "Leanna Crawford",
+        "collectionName": "Still Waters",
+        "primaryGenreName": "Christian",
+        "trackViewUrl": "https://music.apple.com/us/album/still-waters-psalm-23/1743476654?i=1743477089&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/still-waters-psalm-23/1743476654?i=1743477089&uo=4",
+        "trackId": 1743477089
+      },
+      {
+        "trackName": "Thank God",
+        "artistName": "Leanna Crawford",
+        "collectionName": "Thank God",
+        "primaryGenreName": "Christian",
+        "trackViewUrl": "https://music.apple.com/us/album/thank-god/1894896957?i=1894897163&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/thank-god/1894896957?i=1894897163&uo=4",
+        "trackId": 1894897163
+      },
+      {
+        "trackName": "Mean Girls",
+        "artistName": "Leanna Crawford",
+        "collectionName": "Leanna Crawford - EP",
+        "primaryGenreName": "Christian",
+        "trackViewUrl": "https://music.apple.com/us/album/mean-girls/1505803026?i=1505803384&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/mean-girls/1505803026?i=1505803384&uo=4",
+        "trackId": 1505803384
+      },
+      {
+        "trackName": "Make It Through",
+        "artistName": "Leanna Crawford",
+        "collectionName": "Make It Through - Single",
+        "primaryGenreName": "Christian",
+        "trackViewUrl": "https://music.apple.com/us/album/make-it-through/1670193803?i=1670193807&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/make-it-through/1670193803?i=1670193807&uo=4",
+        "trackId": 1670193807
+      },
+      {
+        "trackName": "Rest",
+        "artistName": "Leanna Crawford",
+        "collectionName": "Still Waters",
+        "primaryGenreName": "Christian",
+        "trackViewUrl": "https://music.apple.com/us/album/rest/1743476654?i=1743477166&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/rest/1743476654?i=1743477166&uo=4",
+        "trackId": 1743477166
+      },
+      {
+        "trackName": "Honest",
+        "artistName": "Leanna Crawford",
+        "collectionName": "Still Waters (Deluxe)",
+        "primaryGenreName": "Christian",
+        "trackViewUrl": "https://music.apple.com/us/album/honest/1790483812?i=1790483909&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/honest/1790483812?i=1790483909&uo=4",
+        "trackId": 1790483909
+      },
+      {
+        "trackName": "How Can You Not",
+        "artistName": "Leanna Crawford",
+        "collectionName": "How Can You Not - Single",
+        "primaryGenreName": "Christian",
+        "trackViewUrl": "https://music.apple.com/us/album/how-can-you-not/1642771730?i=1642771731&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/how-can-you-not/1642771730?i=1642771731&uo=4",
+        "trackId": 1642771731
+      },
+      {
+        "trackName": "Truth I'm Standing on",
+        "artistName": "Leanna Crawford",
+        "collectionName": "Truth I'm Standing on - Single",
+        "primaryGenreName": "Christian",
+        "trackViewUrl": "https://music.apple.com/us/album/truth-im-standing-on/1504496756?i=1504496757&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/truth-im-standing-on/1504496756?i=1504496757&uo=4",
+        "trackId": 1504496757
+      },
+      {
+        "trackName": "Borrow Mine",
+        "artistName": "Leanna Crawford",
+        "collectionName": "Borrow Mine - Single",
+        "primaryGenreName": "Christian",
+        "trackViewUrl": "https://music.apple.com/us/album/borrow-mine/1827342554?i=1827342736&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/borrow-mine/1827342554?i=1827342736&uo=4",
+        "trackId": 1827342736
+      },
+      {
+        "trackName": "Better Yet",
+        "artistName": "Leanna Crawford",
+        "collectionName": "Still Waters (Deluxe)",
+        "primaryGenreName": "Christian",
+        "trackViewUrl": "https://music.apple.com/us/album/better-yet/1790483812?i=1790484134&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/better-yet/1790483812?i=1790484134&uo=4",
+        "trackId": 1790484134
+      },
+      {
+        "trackName": "Still Waters (Psalm 23)",
+        "artistName": "Leanna Crawford",
+        "collectionName": "Still Waters (Deluxe)",
+        "primaryGenreName": "Christian",
+        "trackViewUrl": "https://music.apple.com/us/album/still-waters-psalm-23/1790483812?i=1790483815&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/still-waters-psalm-23/1790483812?i=1790483815&uo=4",
+        "trackId": 1790483815
+      },
+      {
+        "trackName": "Truth I'm Standing on",
+        "artistName": "Leanna Crawford",
+        "collectionName": "Leanna Crawford - EP",
+        "primaryGenreName": "Christian",
+        "trackViewUrl": "https://music.apple.com/us/album/truth-im-standing-on/1505803026?i=1505803596&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/truth-im-standing-on/1505803026?i=1505803596&uo=4",
+        "trackId": 1505803596
+      },
+      {
+        "trackName": "Fragile Heart",
+        "artistName": "Leanna Crawford",
+        "collectionName": "Crazy Beautiful You (Deluxe) - EP",
+        "primaryGenreName": "Christian",
+        "trackViewUrl": "https://music.apple.com/us/album/fragile-heart/1335111652?i=1335111668&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/fragile-heart/1335111652?i=1335111668&uo=4",
+        "trackId": 1335111668
+      }
+    ]
+  },
+  "mixTerm|Christopher Wilde Hero": {
+    "query_url": "https://itunes.apple.com/search?term=Christopher+Wilde+Hero&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": [
+      {
+        "trackName": "Hero",
+        "artistName": "Sterling Knight & Stubby",
+        "collectionName": "StarStruck (Original Soundtrack)",
+        "primaryGenreName": "Soundtrack",
+        "trackViewUrl": "https://music.apple.com/us/album/hero/1440624404?i=1440624407&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/hero/1440624404?i=1440624407&uo=4",
+        "trackId": 1440624407
+      },
+      {
+        "trackName": "Hero (Unplugged)",
+        "artistName": "Sterling Knight & Stubby",
+        "collectionName": "StarStruck (Original Soundtrack)",
+        "primaryGenreName": "Soundtrack",
+        "trackViewUrl": "https://music.apple.com/us/album/hero-unplugged/1440624404?i=1440624416&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/hero-unplugged/1440624404?i=1440624416&uo=4",
+        "trackId": 1440624416
+      },
+      {
+        "trackName": "Starstruck",
+        "artistName": "Sterling Knight",
+        "collectionName": "StarStruck (Original Soundtrack)",
+        "primaryGenreName": "Soundtrack",
+        "trackViewUrl": "https://music.apple.com/us/album/starstruck/1440624404?i=1440624405&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/starstruck/1440624404?i=1440624405&uo=4",
+        "trackId": 1440624405
+      },
+      {
+        "trackName": "Something About the Sunshine",
+        "artistName": "Anna Margaret & Sterling Knight",
+        "collectionName": "StarStruck (Original Soundtrack)",
+        "primaryGenreName": "Soundtrack",
+        "trackViewUrl": "https://music.apple.com/us/album/something-about-the-sunshine/1440624404?i=1440624408&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/something-about-the-sunshine/1440624404?i=1440624408&uo=4",
+        "trackId": 1440624408
+      },
+      {
+        "trackName": "What You Mean to Me",
+        "artistName": "Sterling Knight",
+        "collectionName": "StarStruck (Original Soundtrack)",
+        "primaryGenreName": "Soundtrack",
+        "trackViewUrl": "https://music.apple.com/us/album/what-you-mean-to-me/1440624404?i=1440624411&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/what-you-mean-to-me/1440624404?i=1440624411&uo=4",
+        "trackId": 1440624411
+      },
+      {
+        "trackName": "Shades",
+        "artistName": "Sterling Knight",
+        "collectionName": "StarStruck (Original Soundtrack)",
+        "primaryGenreName": "Soundtrack",
+        "trackViewUrl": "https://music.apple.com/us/album/shades/1440624404?i=1440624406&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/shades/1440624404?i=1440624406&uo=4",
+        "trackId": 1440624406
+      },
+      {
+        "trackName": "Got to Believe",
+        "artistName": "Sterling Knight",
+        "collectionName": "StarStruck (Original Soundtrack)",
+        "primaryGenreName": "Soundtrack",
+        "trackViewUrl": "https://music.apple.com/us/album/got-to-believe/1440624404?i=1440624413&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/got-to-believe/1440624404?i=1440624413&uo=4",
+        "trackId": 1440624413
+      },
+      {
+        "trackName": "Hanging",
+        "artistName": "Sterling Knight",
+        "collectionName": "Sonny With a Chance (Soundtrack from the TV Series)",
+        "primaryGenreName": "Soundtrack",
+        "trackViewUrl": "https://music.apple.com/us/album/hanging/1443917355?i=1443917568&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/hanging/1443917355?i=1443917568&uo=4",
+        "trackId": 1443917568
+      },
+      {
+        "trackName": "How We Do This",
+        "artistName": "Sterling Knight",
+        "collectionName": "Sonny With a Chance (Soundtrack from the TV Series)",
+        "primaryGenreName": "Soundtrack",
+        "trackViewUrl": "https://music.apple.com/us/album/how-we-do-this/1443917355?i=1443917660&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/how-we-do-this/1443917355?i=1443917660&uo=4",
+        "trackId": 1443917660
+      },
+      {
+        "trackName": "Wild Chase",
+        "artistName": "Christopher Carr",
+        "collectionName": "The Music Package Collection: Epic & Heroic",
+        "primaryGenreName": "Soundtrack",
+        "trackViewUrl": "https://music.apple.com/us/album/wild-chase/1434293950?i=1434294367&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/wild-chase/1434293950?i=1434294367&uo=4",
+        "trackId": 1434294367
+      }
+    ]
+  },
+  "mixTerm|Yadah Herencia": {
+    "query_url": "https://itunes.apple.com/search?term=Yadah+Herencia&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": [
+      {
+        "trackName": "Herencia (feat. Montesanto)",
+        "artistName": "Yadah",
+        "collectionName": "Herencia (feat. Montesanto) - Single",
+        "primaryGenreName": "Christian",
+        "trackViewUrl": "https://music.apple.com/us/album/herencia-feat-montesanto/1874116572?i=1874116574&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/herencia-feat-montesanto/1874116572?i=1874116574&uo=4",
+        "trackId": 1874116574
+      },
+      {
+        "trackName": "Herencia (feat. Montesanto)",
+        "artistName": "Yadah",
+        "collectionName": "El Estanque (Album En Vivo)",
+        "primaryGenreName": "Latin",
+        "trackViewUrl": "https://music.apple.com/us/album/herencia-feat-montesanto/1871309440?i=1871309442&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/herencia-feat-montesanto/1871309440?i=1871309442&uo=4",
+        "trackId": 1871309442
+      }
+    ]
+  },
+  "mixTerm|Panic! At The Disco Hey Look Ma, I Made It": {
+    "query_url": "https://itunes.apple.com/search?term=Panic%21+At+The+Disco+Hey+Look+Ma%2C+I+Made+It&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": [
+      {
+        "trackName": "Hey Look Ma, I Made It",
+        "artistName": "Panic! At the Disco",
+        "collectionName": "Pray for the Wicked",
+        "primaryGenreName": "Alternative",
+        "trackViewUrl": "https://music.apple.com/us/album/hey-look-ma-i-made-it/1361152002?i=1361152140&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/hey-look-ma-i-made-it/1361152002?i=1361152140&uo=4",
+        "trackId": 1361152140
+      },
+      {
+        "trackName": "High Hopes",
+        "artistName": "Panic! At the Disco",
+        "collectionName": "Pray for the Wicked",
+        "primaryGenreName": "Alternative",
+        "trackViewUrl": "https://music.apple.com/us/album/high-hopes/1361152002?i=1361152303&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/high-hopes/1361152002?i=1361152303&uo=4",
+        "trackId": 1361152303
+      },
+      {
+        "trackName": "Hey Look Ma I Made It",
+        "artistName": "Sparrow Sleeps",
+        "collectionName": "Pray For the Restless: Lullaby renditions of Panic! At the Disco songs",
+        "primaryGenreName": "Children's Music",
+        "trackViewUrl": "https://music.apple.com/us/album/hey-look-ma-i-made-it/1500249713?i=1500249717&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/hey-look-ma-i-made-it/1500249713?i=1500249717&uo=4",
+        "trackId": 1500249717
+      },
+      {
+        "trackName": "Hey Look Ma, I Made It",
+        "artistName": "Twinkle Twinkle Little Rock Star",
+        "collectionName": "Lullaby Versions of Panic! at the Disco",
+        "primaryGenreName": "Children's Music",
+        "trackViewUrl": "https://music.apple.com/us/album/hey-look-ma-i-made-it/1421951259?i=1421952440&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/hey-look-ma-i-made-it/1421951259?i=1421952440&uo=4",
+        "trackId": 1421952440
+      },
+      {
+        "trackName": "Death of a Bachelor",
+        "artistName": "Panic! At the Disco",
+        "collectionName": "Death of a Bachelor",
+        "primaryGenreName": "Alternative",
+        "trackViewUrl": "https://music.apple.com/us/album/death-of-a-bachelor/1050385369?i=1050385382&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/death-of-a-bachelor/1050385369?i=1050385382&uo=4",
+        "trackId": 1050385382
+      },
+      {
+        "trackName": "Hey Look Ma I Made It",
+        "artistName": "Rockabye Baby!",
+        "collectionName": "Lullaby Renditions of Panic! At the Disco",
+        "primaryGenreName": "Children's Music",
+        "trackViewUrl": "https://music.apple.com/us/album/hey-look-ma-i-made-it/1586221933?i=1586221934&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/hey-look-ma-i-made-it/1586221933?i=1586221934&uo=4",
+        "trackId": 1586221934
+      },
+      {
+        "trackName": "Don't Threaten Me with a Good Time",
+        "artistName": "Panic! At the Disco",
+        "collectionName": "Death of a Bachelor",
+        "primaryGenreName": "Alternative",
+        "trackViewUrl": "https://music.apple.com/us/album/dont-threaten-me-with-a-good-time/1050385369?i=1050385378&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/dont-threaten-me-with-a-good-time/1050385369?i=1050385378&uo=4",
+        "trackId": 1050385378
+      },
+      {
+        "trackName": "Say Amen (Saturday Night)",
+        "artistName": "Panic! At the Disco",
+        "collectionName": "Pray for the Wicked",
+        "primaryGenreName": "Alternative",
+        "trackViewUrl": "https://music.apple.com/us/album/say-amen-saturday-night/1361152002?i=1361152138&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/say-amen-saturday-night/1361152002?i=1361152138&uo=4",
+        "trackId": 1361152138
+      },
+      {
+        "trackName": "House of Memories",
+        "artistName": "Panic! At the Disco",
+        "collectionName": "Death of a Bachelor",
+        "primaryGenreName": "Alternative",
+        "trackViewUrl": "https://music.apple.com/us/album/house-of-memories/1050385369?i=1050385387&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/house-of-memories/1050385369?i=1050385387&uo=4",
+        "trackId": 1050385387
+      },
+      {
+        "trackName": "Hey Look Ma, I Made It",
+        "artistName": "Roma Symphony Orchestra",
+        "collectionName": "RSO Performs Panic! At The Disco",
+        "primaryGenreName": "Modern Era",
+        "trackViewUrl": "https://music.apple.com/us/album/hey-look-ma-i-made-it/1701877877?i=1701878072&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/hey-look-ma-i-made-it/1701877877?i=1701878072&uo=4",
+        "trackId": 1701878072
+      },
+      {
+        "trackName": "Hey Look Ma, I Made It",
+        "artistName": "Young Dice & Justin Demers",
+        "collectionName": "Hey Look Ma, I Made It - Single",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/hey-look-ma-i-made-it/1454530030?i=1454530031&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/hey-look-ma-i-made-it/1454530030?i=1454530031&uo=4",
+        "trackId": 1454530031
+      },
+      {
+        "trackName": "Hey Look Ma, I Made It (Workout Remix 130 BPM)",
+        "artistName": "Power Music Workout",
+        "collectionName": "HIIT Running, Vol. 2 (High Intensity Interval Training Mix 1 Min Work and 2 Min Rest Cycles)",
+        "primaryGenreName": "Fitness & Workout",
+        "trackViewUrl": "https://music.apple.com/us/album/hey-look-ma-i-made-it-workout-remix-130-bpm/1464241666?i=1464241827&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/hey-look-ma-i-made-it-workout-remix-130-bpm/1464241666?i=1464241827&uo=4",
+        "trackId": 1464241827
+      },
+      {
+        "trackName": "Hey Look Ma, I Made It",
+        "artistName": "Autumn Academy",
+        "collectionName": "Hey Look Ma, I Made It - Single",
+        "primaryGenreName": "Alternative",
+        "trackViewUrl": "https://music.apple.com/us/album/hey-look-ma-i-made-it/1481651039?i=1481651040&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/hey-look-ma-i-made-it/1481651039?i=1481651040&uo=4",
+        "trackId": 1481651040
+      },
+      {
+        "trackName": "Panic",
+        "artistName": "The Smiths",
+        "collectionName": "Louder Than Bombs",
+        "primaryGenreName": "Alternative",
+        "trackViewUrl": "https://music.apple.com/us/album/panic/802231063?i=802231070&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/panic/802231063?i=802231070&uo=4",
+        "trackId": 802231070
+      }
+    ]
+  },
+  "mixTerm|Wabie Hey Lover!": {
+    "query_url": "https://itunes.apple.com/search?term=Wabie+Hey+Lover%21&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": [
+      {
+        "trackName": "Hey Lover!",
+        "artistName": "Wabie",
+        "collectionName": "Cyclones and Hey Lover - Single",
+        "primaryGenreName": "Rock",
+        "trackViewUrl": "https://music.apple.com/us/album/hey-lover/1470149266?i=1470149271&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/hey-lover/1470149266?i=1470149271&uo=4",
+        "trackId": 1470149271
+      },
+      {
+        "trackName": "Cyclones",
+        "artistName": "Wabie",
+        "collectionName": "Cyclones and Hey Lover - Single",
+        "primaryGenreName": "Rock",
+        "trackViewUrl": "https://music.apple.com/us/album/cyclones/1470149266?i=1470149270&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/cyclones/1470149266?i=1470149270&uo=4",
+        "trackId": 1470149270
+      }
+    ]
+  },
+  "mixTerm|James Savage Higher Power": {
+    "query_url": "https://itunes.apple.com/search?term=James+Savage+Higher+Power&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": [
+      {
+        "trackName": "Higher Power",
+        "artistName": "James Savage",
+        "collectionName": "Higher Power - Single",
+        "primaryGenreName": "R&B/Soul",
+        "trackViewUrl": "https://music.apple.com/us/album/higher-power/1891869319?i=1891869322&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/higher-power/1891869319?i=1891869322&uo=4",
+        "trackId": 1891869322
+      },
+      {
+        "trackName": "Higher Power",
+        "artistName": "James Savage",
+        "collectionName": "PINE",
+        "primaryGenreName": "R&B/Soul",
+        "trackViewUrl": "https://music.apple.com/us/album/higher-power/1889767255?i=1889767261&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/higher-power/1889767255?i=1889767261&uo=4",
+        "trackId": 1889767261
+      }
+    ]
+  },
+  "mixTerm|DEBBY FRIDAY Higher": {
+    "query_url": "https://itunes.apple.com/search?term=DEBBY+FRIDAY+Higher&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": [
+      {
+        "trackName": "Higher",
+        "artistName": "DEBBY FRIDAY",
+        "collectionName": "The Starrr Of The Queen Of Life",
+        "primaryGenreName": "Alternative",
+        "trackViewUrl": "https://music.apple.com/us/album/higher/1790987365?i=1790987372&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/higher/1790987365?i=1790987372&uo=4",
+        "trackId": 1790987372
+      },
+      {
+        "trackName": "FATAL",
+        "artistName": "DEBBY FRIDAY",
+        "collectionName": "DEATH DRIVE - EP",
+        "primaryGenreName": "Electronic",
+        "trackViewUrl": "https://music.apple.com/us/album/fatal/1823127212?i=1823127214&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/fatal/1823127212?i=1823127214&uo=4",
+        "trackId": 1823127214
+      },
+      {
+        "trackName": "FATAL",
+        "artistName": "DEBBY FRIDAY",
+        "collectionName": "FATAL - Single",
+        "primaryGenreName": "Electronic",
+        "trackViewUrl": "https://music.apple.com/us/album/fatal/1823146577?i=1823146780&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/fatal/1823146577?i=1823146780&uo=4",
+        "trackId": 1823146780
+      }
+    ]
+  },
+  "mixTerm|AC/DC Highway to Hell": {
+    "query_url": "https://itunes.apple.com/search?term=AC%2FDC+Highway+to+Hell&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": [
+      {
+        "trackName": "Highway to Hell",
+        "artistName": "AC/DC",
+        "collectionName": "Highway to Hell",
+        "primaryGenreName": "Hard Rock",
+        "trackViewUrl": "https://music.apple.com/us/album/highway-to-hell/574043989?i=574044008&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/highway-to-hell/574043989?i=574044008&uo=4",
+        "trackId": 574044008
+      },
+      {
+        "trackName": "Highway to Hell",
+        "artistName": "AC/DC",
+        "collectionName": "Iron Man 2",
+        "primaryGenreName": "Hard Rock",
+        "trackViewUrl": "https://music.apple.com/us/album/highway-to-hell/575998519?i=575998831&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/highway-to-hell/575998519?i=575998831&uo=4",
+        "trackId": 575998831
+      },
+      {
+        "trackName": "Highway to Hell (Live In Paris)",
+        "artistName": "AC/DC",
+        "collectionName": "Bonfire",
+        "primaryGenreName": "Hard Rock",
+        "trackViewUrl": "https://music.apple.com/us/album/highway-to-hell-live-in-paris/576002403?i=576002972&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/highway-to-hell-live-in-paris/576002403?i=576002972&uo=4",
+        "trackId": 576002972
+      },
+      {
+        "trackName": "Highway to Hell (Live)",
+        "artistName": "AC/DC",
+        "collectionName": "Live at River Plate",
+        "primaryGenreName": "Hard Rock",
+        "trackViewUrl": "https://music.apple.com/us/album/highway-to-hell-live/575663793?i=575663815&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/highway-to-hell-live/575663793?i=575663815&uo=4",
+        "trackId": 575663815
+      },
+      {
+        "trackName": "Shot Down In Flames",
+        "artistName": "AC/DC",
+        "collectionName": "Highway to Hell",
+        "primaryGenreName": "Hard Rock",
+        "trackViewUrl": "https://music.apple.com/us/album/shot-down-in-flames/574043989?i=574044252&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/shot-down-in-flames/574043989?i=574044252&uo=4",
+        "trackId": 574044252
+      },
+      {
+        "trackName": "Highway to Hell (Live)",
+        "artistName": "AC/DC",
+        "collectionName": "Live (Collector's Edition)",
+        "primaryGenreName": "Hard Rock",
+        "trackViewUrl": "https://music.apple.com/us/album/highway-to-hell-live/575997666?i=575998098&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/highway-to-hell-live/575997666?i=575998098&uo=4",
+        "trackId": 575998098
+      },
+      {
+        "trackName": "Highway to Hell (Live Tushino Airfield, Moscow, Sept. 28, 1991)",
+        "artistName": "AC/DC",
+        "collectionName": "Backtracks (Deluxe Edition)",
+        "primaryGenreName": "Hard Rock",
+        "trackViewUrl": "https://music.apple.com/us/album/highway-to-hell-live-tushino-airfield-moscow-sept-28-1991/576003045?i=576003940&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/highway-to-hell-live-tushino-airfield-moscow-sept-28-1991/576003045?i=576003940&uo=4",
+        "trackId": 576003940
+      },
+      {
+        "trackName": "If You Want Blood (You've Got It)",
+        "artistName": "AC/DC",
+        "collectionName": "Highway to Hell",
+        "primaryGenreName": "Hard Rock",
+        "trackViewUrl": "https://music.apple.com/us/album/if-you-want-blood-youve-got-it/574043989?i=574044360&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/if-you-want-blood-youve-got-it/574043989?i=574044360&uo=4",
+        "trackId": 574044360
+      },
+      {
+        "trackName": "Highway to Hell (Live)",
+        "artistName": "AC/DC",
+        "collectionName": "Live",
+        "primaryGenreName": "Hard Rock",
+        "trackViewUrl": "https://music.apple.com/us/album/highway-to-hell-live/575992075?i=575992453&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/highway-to-hell-live/575992075?i=575992453&uo=4",
+        "trackId": 575992453
+      },
+      {
+        "trackName": "Girls Got Rhythm",
+        "artistName": "AC/DC",
+        "collectionName": "Highway to Hell",
+        "primaryGenreName": "Hard Rock",
+        "trackViewUrl": "https://music.apple.com/us/album/girls-got-rhythm/574043989?i=574044171&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/girls-got-rhythm/574043989?i=574044171&uo=4",
+        "trackId": 574044171
+      },
+      {
+        "trackName": "Highway to Hell",
+        "artistName": "Down Under Devils",
+        "collectionName": "All the Hits, Vol. 2: Greatest Tribute to AC/DC",
+        "primaryGenreName": "Rock",
+        "trackViewUrl": "https://music.apple.com/us/album/highway-to-hell/935464511?i=935464534&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/highway-to-hell/935464511?i=935464534&uo=4",
+        "trackId": 935464534
+      },
+      {
+        "trackName": "Highway To Hell",
+        "artistName": "AC/DC Jam",
+        "collectionName": "Live - Gothenburg",
+        "primaryGenreName": "Rock",
+        "trackViewUrl": "https://music.apple.com/us/album/highway-to-hell/880547964?i=880548009&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/highway-to-hell/880547964?i=880548009&uo=4",
+        "trackId": 880548009
+      },
+      {
+        "trackName": "Highway to Hell",
+        "artistName": "Rockabye Baby!",
+        "collectionName": "Lullaby Renditions of AC/DC",
+        "primaryGenreName": "Lullabies",
+        "trackViewUrl": "https://music.apple.com/us/album/highway-to-hell/983429012?i=983429107&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/highway-to-hell/983429012?i=983429107&uo=4",
+        "trackId": 983429107
+      },
+      {
+        "trackName": "Highway to Hell",
+        "artistName": "Lullaby Baby Trio",
+        "collectionName": "Lullaby Renditions of AC/DC",
+        "primaryGenreName": "Children's Music",
+        "trackViewUrl": "https://music.apple.com/us/album/highway-to-hell/1456012693?i=1456013193&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/highway-to-hell/1456012693?i=1456013193&uo=4",
+        "trackId": 1456013193
+      },
+      {
+        "trackName": "Highway to Hell",
+        "artistName": "Quiet Riot",
+        "collectionName": "High Voltage Box: The Ultimate AC/DC Tribute",
+        "primaryGenreName": "Rock",
+        "trackViewUrl": "https://music.apple.com/us/album/highway-to-hell/269354402?i=269356954&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/highway-to-hell/269354402?i=269356954&uo=4",
+        "trackId": 269356954
+      }
+    ]
+  },
+  "mixTerm|Knocked Loose Hive Mind": {
+    "query_url": "https://itunes.apple.com/search?term=Knocked+Loose+Hive+Mind&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": [
+      {
+        "trackName": "Hive Mind",
+        "artistName": "Deadcrow",
+        "collectionName": "This Is Cyberpunk",
+        "primaryGenreName": "Dance",
+        "trackViewUrl": "https://music.apple.com/us/album/hive-mind/1538480732?i=1538481193&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/hive-mind/1538480732?i=1538481193&uo=4",
+        "trackId": 1538481193
+      },
+      {
+        "trackName": "Hive Mind",
+        "artistName": "Blanck Mass",
+        "collectionName": "World Eater",
+        "primaryGenreName": "Electronic",
+        "trackViewUrl": "https://music.apple.com/us/album/hive-mind/1191862517?i=1191862647&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/hive-mind/1191862517?i=1191862647&uo=4",
+        "trackId": 1191862647
+      },
+      {
+        "trackName": "Hive Mind",
+        "artistName": "Aversions Crown",
+        "collectionName": "Servitude",
+        "primaryGenreName": "Rock",
+        "trackViewUrl": "https://music.apple.com/us/album/hive-mind/484823015?i=484823023&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/hive-mind/484823015?i=484823023&uo=4",
+        "trackId": 484823023
+      },
+      {
+        "trackName": "Hive Mind",
+        "artistName": "Circle of Dust & Celldweller",
+        "collectionName": "Machines of Our Disgrace",
+        "primaryGenreName": "Metal",
+        "trackViewUrl": "https://music.apple.com/us/album/hive-mind/1523978878?i=1523979096&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/hive-mind/1523978878?i=1523979096&uo=4",
+        "trackId": 1523979096
+      },
+      {
+        "trackName": "Hive Mind (The Anix Remix)",
+        "artistName": "Circle of Dust & Celldweller",
+        "collectionName": "Machines of Our Disgrace (Definitive Edition)",
+        "primaryGenreName": "Metal",
+        "trackViewUrl": "https://music.apple.com/us/album/hive-mind-the-anix-remix/1831774147?i=1831774382&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/hive-mind-the-anix-remix/1831774147?i=1831774382&uo=4",
+        "trackId": 1831774382
+      },
+      {
+        "trackName": "Hive Mind (feat. Coby Sey)",
+        "artistName": "Tirzah",
+        "collectionName": "Colourgrade",
+        "primaryGenreName": "Alternative",
+        "trackViewUrl": "https://music.apple.com/us/album/hive-mind-feat-coby-sey/1572300366?i=1572300375&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/hive-mind-feat-coby-sey/1572300366?i=1572300375&uo=4",
+        "trackId": 1572300375
+      },
+      {
+        "trackName": "Hive Mind",
+        "artistName": "Dark Divine",
+        "collectionName": "Deadly Fun (Deluxe Edition)",
+        "primaryGenreName": "Metal",
+        "trackViewUrl": "https://music.apple.com/us/album/hive-mind/1759627995?i=1759628306&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/hive-mind/1759627995?i=1759628306&uo=4",
+        "trackId": 1759628306
+      },
+      {
+        "trackName": "Hive Mind",
+        "artistName": "False Plaintiff",
+        "collectionName": "Hive Mind - Single",
+        "primaryGenreName": "Alternative",
+        "trackViewUrl": "https://music.apple.com/us/album/hive-mind/1247283854?i=1247283865&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/hive-mind/1247283854?i=1247283865&uo=4",
+        "trackId": 1247283865
+      },
+      {
+        "trackName": "Hive Mind",
+        "artistName": "Gustavo Santaolalla & Jake Staley",
+        "collectionName": "The Last of Us: Season 1 (Soundtrack from the HBO Original Series)",
+        "primaryGenreName": "Soundtrack",
+        "trackViewUrl": "https://music.apple.com/us/album/hive-mind/1673140222?i=1673140243&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/hive-mind/1673140222?i=1673140243&uo=4",
+        "trackId": 1673140243
+      },
+      {
+        "trackName": "Hive Mind (The Anix Remix) [Instrumental]",
+        "artistName": "Circle of Dust",
+        "collectionName": "Alt_machines (Instrumentals)",
+        "primaryGenreName": "Metal",
+        "trackViewUrl": "https://music.apple.com/us/album/hive-mind-the-anix-remix-instrumental/1524069422?i=1524069487&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/hive-mind-the-anix-remix-instrumental/1524069422?i=1524069487&uo=4",
+        "trackId": 1524069487
+      },
+      {
+        "trackName": "hive mind",
+        "artistName": "ckwrld",
+        "collectionName": "hive mind - Single",
+        "primaryGenreName": "R&B/Soul",
+        "trackViewUrl": "https://music.apple.com/us/album/hive-mind/1777668217?i=1777668218&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/hive-mind/1777668217?i=1777668218&uo=4",
+        "trackId": 1777668218
+      },
+      {
+        "trackName": "Hold On",
+        "artistName": "The Internet",
+        "collectionName": "Hive Mind",
+        "primaryGenreName": "R&B/Soul",
+        "trackViewUrl": "https://music.apple.com/us/album/hold-on/1388571796?i=1388572628&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/hold-on/1388571796?i=1388572628&uo=4",
+        "trackId": 1388572628
+      },
+      {
+        "trackName": "Hive Mind",
+        "artistName": "Dark Divine",
+        "collectionName": "Deadly Fun",
+        "primaryGenreName": "Metal",
+        "trackViewUrl": "https://music.apple.com/us/album/hive-mind/1734446506?i=1734447115&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/hive-mind/1734446506?i=1734447115&uo=4",
+        "trackId": 1734447115
+      },
+      {
+        "trackName": "Hive Mind (The Anix Remix)",
+        "artistName": "Circle of Dust",
+        "collectionName": "Alt_machines",
+        "primaryGenreName": "Metal",
+        "trackViewUrl": "https://music.apple.com/us/album/hive-mind-the-anix-remix/1524061975?i=1524061979&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/hive-mind-the-anix-remix/1524061975?i=1524061979&uo=4",
+        "trackId": 1524061979
+      },
+      {
+        "trackName": "Hive Mind (Speakers Corner Quartet Remix)",
+        "artistName": "Tirzah",
+        "collectionName": "Highgrade",
+        "primaryGenreName": "Electronic",
+        "trackViewUrl": "https://music.apple.com/us/album/hive-mind-speakers-corner-quartet-remix/1621273097?i=1621273101&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/hive-mind-speakers-corner-quartet-remix/1621273097?i=1621273101&uo=4",
+        "trackId": 1621273101
+      }
+    ]
+  },
+  "mixTerm|Blu Cantrell Hit 'Em Up Style": {
+    "query_url": "https://itunes.apple.com/search?term=Blu+Cantrell+Hit+%27Em+Up+Style&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": [
+      {
+        "trackName": "Hit 'Em Up Style (Oops!)",
+        "artistName": "Blu Cantrell",
+        "collectionName": "So Blu",
+        "primaryGenreName": "R&B/Soul",
+        "trackViewUrl": "https://music.apple.com/us/album/hit-em-up-style-oops/255286828?i=255286939&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/hit-em-up-style-oops/255286828?i=255286939&uo=4",
+        "trackId": 255286939
+      },
+      {
+        "trackName": "Hit 'Em up Style (Oops!)",
+        "artistName": "Blu Cantrell",
+        "collectionName": "Bittersweet",
+        "primaryGenreName": "R&B/Soul",
+        "trackViewUrl": "https://music.apple.com/us/album/hit-em-up-style-oops/311538851?i=311539115&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/hit-em-up-style-oops/311538851?i=311539115&uo=4",
+        "trackId": 311539115
+      },
+      {
+        "trackName": "Hit 'Em Up Style (Oops!)",
+        "artistName": "Blu Cantrell",
+        "collectionName": "Shades of Blu (The Definitive Collection: Complete Edition)",
+        "primaryGenreName": "R&B/Soul",
+        "trackViewUrl": "https://music.apple.com/us/album/hit-em-up-style-oops/1750808141?i=1750808144&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/hit-em-up-style-oops/1750808141?i=1750808144&uo=4",
+        "trackId": 1750808144
+      },
+      {
+        "trackName": "Hit 'Em Up Style (Oops!) [Trackmasters Remix]",
+        "artistName": "Blu Cantrell & Foxy Brown",
+        "collectionName": "Shades of Blu (The Definitive Collection: Complete Edition)",
+        "primaryGenreName": "R&B/Soul",
+        "trackViewUrl": "https://music.apple.com/us/album/hit-em-up-style-oops-trackmasters-remix/1750808141?i=1750809015&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/hit-em-up-style-oops-trackmasters-remix/1750808141?i=1750809015&uo=4",
+        "trackId": 1750809015
+      },
+      {
+        "trackName": "Hit 'Em Up Style (Oops!) [Radio Mix]",
+        "artistName": "Blu Cantrell",
+        "collectionName": "20 R&B Gems",
+        "primaryGenreName": "R&B/Soul",
+        "trackViewUrl": "https://music.apple.com/us/album/hit-em-up-style-oops-radio-mix/318568722?i=318568734&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/hit-em-up-style-oops-radio-mix/318568722?i=318568734&uo=4",
+        "trackId": 318568734
+      },
+      {
+        "trackName": "Hit 'Em Up Style (Oops!)",
+        "artistName": "Blu Cantrell",
+        "collectionName": "Masters Series: R&B Party Jams",
+        "primaryGenreName": "R&B/Soul",
+        "trackViewUrl": "https://music.apple.com/us/album/hit-em-up-style-oops/338236136?i=338236191&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/hit-em-up-style-oops/338236136?i=338236191&uo=4",
+        "trackId": 338236191
+      },
+      {
+        "trackName": "Hit 'Em Up Style (Oops!) [Jazze Pha Remix]",
+        "artistName": "Blu Cantrell, Jazze Pha & L.O.",
+        "collectionName": "Shades of Blu (The Definitive Collection: Complete Edition)",
+        "primaryGenreName": "R&B/Soul",
+        "trackViewUrl": "https://music.apple.com/us/album/hit-em-up-style-oops-jazze-pha-remix/1750808141?i=1750809459&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/hit-em-up-style-oops-jazze-pha-remix/1750808141?i=1750809459&uo=4",
+        "trackId": 1750809459
+      },
+      {
+        "trackName": "Hit 'Em Up Style (Oops!) [Radio Mix]",
+        "artistName": "Blu Cantrell",
+        "collectionName": "Nu Divas",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/hit-em-up-style-oops-radio-mix/401387882?i=401387910&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/hit-em-up-style-oops-radio-mix/401387882?i=401387910&uo=4",
+        "trackId": 401387910
+      },
+      {
+        "trackName": "Hit 'Em Up Style",
+        "artistName": "Carolina Chocolate Drops",
+        "collectionName": "Genuine Negro Jig",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/hit-em-up-style/353602905?i=353602909&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/hit-em-up-style/353602905?i=353602909&uo=4",
+        "trackId": 353602909
+      },
+      {
+        "trackName": "Hit 'Em Up Style (Oops!)",
+        "artistName": "ESSEL & James Hurr",
+        "collectionName": "Hit 'Em Up Style (Oops!) - Single",
+        "primaryGenreName": "Dance",
+        "trackViewUrl": "https://music.apple.com/us/album/hit-em-up-style-oops/1666740633?i=1666740831&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/hit-em-up-style-oops/1666740633?i=1666740831&uo=4",
+        "trackId": 1666740831
+      },
+      {
+        "trackName": "Hit ‘Em Up Style (Oops!) [The Voice Performance]",
+        "artistName": "Reagan James",
+        "collectionName": "Hit ‘Em Up Style (Oops!) [The Voice Performance] - Single",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/hit-em-up-style-oops-the-voice-performance/1444888145?i=1444888242&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/hit-em-up-style-oops-the-voice-performance/1444888145?i=1444888242&uo=4",
+        "trackId": 1444888242
+      },
+      {
+        "trackName": "Hit ‘Em Up Style (Oops!) [The Voice Performance]",
+        "artistName": "Nic Hawk",
+        "collectionName": "Hit ‘Em Up Style (Oops!) [The Voice Performance] - Single",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/hit-em-up-style-oops-the-voice-performance/1445025662?i=1445025921&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/hit-em-up-style-oops-the-voice-performance/1445025662?i=1445025921&uo=4",
+        "trackId": 1445025921
+      },
+      {
+        "trackName": "Hit 'Em Up Style (Oops!)",
+        "artistName": "Scott Bradlee's Postmodern Jukebox & Postmodern Jukebox",
+        "collectionName": "Throwback Clapback",
+        "primaryGenreName": "Jazz",
+        "trackViewUrl": "https://music.apple.com/us/album/hit-em-up-style-oops/1483598970?i=1483598972&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/hit-em-up-style-oops/1483598970?i=1483598972&uo=4",
+        "trackId": 1483598972
+      },
+      {
+        "trackName": "Hit 'Em Up Style",
+        "artistName": "Carolina Chocolate Drops & Luminescent Orchestrii",
+        "collectionName": "Carolina Chocolate Drops / Luminescent Orchestrii - EP",
+        "primaryGenreName": "Blues",
+        "trackViewUrl": "https://music.apple.com/us/album/hit-em-up-style/413923243?i=413923264&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/hit-em-up-style/413923243?i=413923264&uo=4",
+        "trackId": 413923264
+      },
+      {
+        "trackName": "Hit'em Up Style",
+        "artistName": "Cover Love",
+        "collectionName": "R&B Party Playlists: Covers of the 00s",
+        "primaryGenreName": "R&B/Soul",
+        "trackViewUrl": "https://music.apple.com/us/album/hitem-up-style/677189034?i=677189147&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/hitem-up-style/677189034?i=677189147&uo=4",
+        "trackId": 677189147
+      }
+    ]
+  },
+  "mixTerm|Monchy & Alexandra Hoja En Blanco": {
+    "query_url": "https://itunes.apple.com/search?term=Monchy+%26+Alexandra+Hoja+En+Blanco&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": [
+      {
+        "trackName": "Hoja en Blanco",
+        "artistName": "Monchy & Alexandra",
+        "collectionName": "Hoja en Blanco",
+        "primaryGenreName": "Música tropical",
+        "trackViewUrl": "https://music.apple.com/us/album/hoja-en-blanco/27064339?i=27064315&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/hoja-en-blanco/27064339?i=27064315&uo=4",
+        "trackId": 27064315
+      },
+      {
+        "trackName": "Hoja en Blanco (En Vivo)",
+        "artistName": "Monchy & Alexandra",
+        "collectionName": "Unplugged",
+        "primaryGenreName": "Música tropical",
+        "trackViewUrl": "https://music.apple.com/us/album/hoja-en-blanco-en-vivo/48698859?i=48698769&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/hoja-en-blanco-en-vivo/48698859?i=48698769&uo=4",
+        "trackId": 48698769
+      },
+      {
+        "trackName": "Hoja En Blanco",
+        "artistName": "Monchy & Alexandra",
+        "collectionName": "Vallenatos En Bachata 2001",
+        "primaryGenreName": "Música tropical",
+        "trackViewUrl": "https://music.apple.com/us/album/hoja-en-blanco/428926415?i=428926416&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/hoja-en-blanco/428926415?i=428926416&uo=4",
+        "trackId": 428926416
+      },
+      {
+        "trackName": "Hoja en Blanco",
+        "artistName": "Monchy & Alexandra",
+        "collectionName": "1",
+        "primaryGenreName": "Música tropical",
+        "trackViewUrl": "https://music.apple.com/us/album/hoja-en-blanco/977783293?i=977783296&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/hoja-en-blanco/977783293?i=977783296&uo=4",
+        "trackId": 977783296
+      },
+      {
+        "trackName": "Hoja En Blanco",
+        "artistName": "Monchy & Alexandra",
+        "collectionName": "Dos Locos",
+        "primaryGenreName": "Música tropical",
+        "trackViewUrl": "https://music.apple.com/us/album/hoja-en-blanco/1467751345?i=1467751590&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/hoja-en-blanco/1467751345?i=1467751590&uo=4",
+        "trackId": 1467751590
+      },
+      {
+        "trackName": "Hoja En Blanco",
+        "artistName": "Monchy & Alexandra",
+        "collectionName": "Exitos y Mas",
+        "primaryGenreName": "Música tropical",
+        "trackViewUrl": "https://music.apple.com/us/album/hoja-en-blanco/136773087?i=136773263&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/hoja-en-blanco/136773087?i=136773263&uo=4",
+        "trackId": 136773263
+      },
+      {
+        "trackName": "Hoja en Blanco (Reggaeton)",
+        "artistName": "Monchy & Alexandra",
+        "collectionName": "The Mix",
+        "primaryGenreName": "Música tropical",
+        "trackViewUrl": "https://music.apple.com/us/album/hoja-en-blanco-reggaeton/27044901?i=27044895&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/hoja-en-blanco-reggaeton/27044901?i=27044895&uo=4",
+        "trackId": 27044895
+      },
+      {
+        "trackName": "Hoja en Blanco",
+        "artistName": "Monchy & Alexandra",
+        "collectionName": "20/4 Bachata, Vol. 1",
+        "primaryGenreName": "Música tropical",
+        "trackViewUrl": "https://music.apple.com/us/album/hoja-en-blanco/288177061?i=288177422&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/hoja-en-blanco/288177061?i=288177422&uo=4",
+        "trackId": 288177422
+      },
+      {
+        "trackName": "Hoja en Blanco (En Vivo - Bellas Artes)",
+        "artistName": "Monchy & Alexandra",
+        "collectionName": "Monchy & Alexandra: En Vivo Desde Bellas Artes",
+        "primaryGenreName": "Música tropical",
+        "trackViewUrl": "https://music.apple.com/us/album/hoja-en-blanco-en-vivo-bellas-artes/278417127?i=278417746&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/hoja-en-blanco-en-vivo-bellas-artes/278417127?i=278417746&uo=4",
+        "trackId": 278417746
+      },
+      {
+        "trackName": "Hoja En Blanco",
+        "artistName": "Monchy & Alexandra",
+        "collectionName": "Música Instrumental Para Almorzar",
+        "primaryGenreName": "Música tropical",
+        "trackViewUrl": "https://music.apple.com/us/album/hoja-en-blanco/1433615050?i=1433615501&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/hoja-en-blanco/1433615050?i=1433615501&uo=4",
+        "trackId": 1433615501
+      },
+      {
+        "trackName": "Hoja en Blanco",
+        "artistName": "Monchy & Alexandra",
+        "collectionName": "Exitos",
+        "primaryGenreName": "Música tropical",
+        "trackViewUrl": "https://music.apple.com/us/album/hoja-en-blanco/178470327?i=178470724&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/hoja-en-blanco/178470327?i=178470724&uo=4",
+        "trackId": 178470724
+      },
+      {
+        "trackName": "Hoja en Blanco",
+        "artistName": "Monchy & Alexandra",
+        "collectionName": "BachataHits 2001",
+        "primaryGenreName": "Música tropical",
+        "trackViewUrl": "https://music.apple.com/us/album/hoja-en-blanco/460075862?i=460075864&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/hoja-en-blanco/460075862?i=460075864&uo=4",
+        "trackId": 460075864
+      },
+      {
+        "trackName": "Hoja En Blanco",
+        "artistName": "Monchy & Alexandra",
+        "collectionName": "Super Bachatazos 98",
+        "primaryGenreName": "Latin",
+        "trackViewUrl": "https://music.apple.com/us/album/hoja-en-blanco/430345058?i=430345076&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/hoja-en-blanco/430345058?i=430345076&uo=4",
+        "trackId": 430345076
+      },
+      {
+        "trackName": "Hoja En Blanco",
+        "artistName": "Monchy & Alexandra",
+        "collectionName": "4x4 En Bachata, Vol. 2",
+        "primaryGenreName": "Música tropical",
+        "trackViewUrl": "https://music.apple.com/us/album/hoja-en-blanco/1453867463?i=1453867648&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/hoja-en-blanco/1453867463?i=1453867648&uo=4",
+        "trackId": 1453867648
+      },
+      {
+        "trackName": "Hoja en Blanco [Reggaeton]",
+        "artistName": "Monchy & Alexandra",
+        "collectionName": "1",
+        "primaryGenreName": "Música tropical",
+        "trackViewUrl": "https://music.apple.com/us/album/hoja-en-blanco-reggaeton/977783293?i=977783437&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/hoja-en-blanco-reggaeton/977783293?i=977783437&uo=4",
+        "trackId": 977783437
+      }
+    ]
+  },
+  "mixTerm|Band Reeves Hold On To Jesus": {
+    "query_url": "https://itunes.apple.com/search?term=Band+Reeves+Hold+On+To+Jesus&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": [
+      {
+        "trackName": "Hold On To Jesus",
+        "artistName": "Band Reeves",
+        "collectionName": "How To Forgive",
+        "primaryGenreName": "Christian",
+        "trackViewUrl": "https://music.apple.com/us/album/hold-on-to-jesus/6779409281?i=6779409446&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/hold-on-to-jesus/6779409281?i=6779409446&uo=4",
+        "trackId": 6779409446
+      },
+      {
+        "trackName": "Hold on Job",
+        "artistName": "Band Reeves",
+        "collectionName": "We All Need Jesus",
+        "primaryGenreName": "Christian",
+        "trackViewUrl": "https://music.apple.com/us/album/hold-on-job/6774768904?i=6774769126&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/hold-on-job/6774768904?i=6774769126&uo=4",
+        "trackId": 6774769126
+      },
+      {
+        "trackName": "How To Forgive",
+        "artistName": "Band Reeves",
+        "collectionName": "How To Forgive",
+        "primaryGenreName": "Christian",
+        "trackViewUrl": "https://music.apple.com/us/album/how-to-forgive/6779409281?i=6779409292&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/how-to-forgive/6779409281?i=6779409292&uo=4",
+        "trackId": 6779409292
+      },
+      {
+        "trackName": "Man on Monday",
+        "artistName": "Band Reeves",
+        "collectionName": "We All Need Jesus",
+        "primaryGenreName": "Christian",
+        "trackViewUrl": "https://music.apple.com/us/album/man-on-monday/6774768904?i=6774768908&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/man-on-monday/6774768904?i=6774768908&uo=4",
+        "trackId": 6774768908
+      },
+      {
+        "trackName": "Jesus Won't",
+        "artistName": "Band Reeves",
+        "collectionName": "My Country - EP",
+        "primaryGenreName": "Christian",
+        "trackViewUrl": "https://music.apple.com/us/album/jesus-wont/1871022448?i=1871022456&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/jesus-wont/1871022448?i=1871022456&uo=4",
+        "trackId": 1871022456
+      },
+      {
+        "trackName": "Come to Me",
+        "artistName": "Band Reeves",
+        "collectionName": "We All Need Jesus",
+        "primaryGenreName": "Christian",
+        "trackViewUrl": "https://music.apple.com/us/album/come-to-me/6774768904?i=6774768912&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/come-to-me/6774768904?i=6774768912&uo=4",
+        "trackId": 6774768912
+      },
+      {
+        "trackName": "Jesus Won't",
+        "artistName": "Band Reeves",
+        "collectionName": "How To Forgive",
+        "primaryGenreName": "Christian",
+        "trackViewUrl": "https://music.apple.com/us/album/jesus-wont/6779409281?i=6779409420&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/jesus-wont/6779409281?i=6779409420&uo=4",
+        "trackId": 6779409420
+      },
+      {
+        "trackName": "Back to My Roots",
+        "artistName": "Band Reeves",
+        "collectionName": "We All Need Jesus",
+        "primaryGenreName": "Christian",
+        "trackViewUrl": "https://music.apple.com/us/album/back-to-my-roots/6774768904?i=6774768911&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/back-to-my-roots/6774768904?i=6774768911&uo=4",
+        "trackId": 6774768911
+      },
+      {
+        "trackName": "Holy",
+        "artistName": "Band Reeves",
+        "collectionName": "We All Need Jesus",
+        "primaryGenreName": "Christian",
+        "trackViewUrl": "https://music.apple.com/us/album/holy/6774768904?i=6774769125&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/holy/6774768904?i=6774769125&uo=4",
+        "trackId": 6774769125
+      },
+      {
+        "trackName": "We All Need Jesus",
+        "artistName": "Band Reeves",
+        "collectionName": "We All Need Jesus",
+        "primaryGenreName": "Christian",
+        "trackViewUrl": "https://music.apple.com/us/album/we-all-need-jesus/6774768904?i=6774768905&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/we-all-need-jesus/6774768904?i=6774768905&uo=4",
+        "trackId": 6774768905
+      },
+      {
+        "trackName": "If I Didn't Have You",
+        "artistName": "Band Reeves",
+        "collectionName": "How To Forgive",
+        "primaryGenreName": "Christian",
+        "trackViewUrl": "https://music.apple.com/us/album/if-i-didnt-have-you/6779409281?i=6779409282&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/if-i-didnt-have-you/6779409281?i=6779409282&uo=4",
+        "trackId": 6779409282
+      },
+      {
+        "trackName": "Ever on You",
+        "artistName": "Band Reeves",
+        "collectionName": "We All Need Jesus",
+        "primaryGenreName": "Christian",
+        "trackViewUrl": "https://music.apple.com/us/album/ever-on-you/6774768904?i=6774769124&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/ever-on-you/6774768904?i=6774769124&uo=4",
+        "trackId": 6774769124
+      },
+      {
+        "trackName": "Come Rest",
+        "artistName": "Band Reeves",
+        "collectionName": "We All Need Jesus",
+        "primaryGenreName": "Christian",
+        "trackViewUrl": "https://music.apple.com/us/album/come-rest/6774768904?i=6774768910&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/come-rest/6774768904?i=6774768910&uo=4",
+        "trackId": 6774768910
+      },
+      {
+        "trackName": "Heaven's Soldiers",
+        "artistName": "Band Reeves",
+        "collectionName": "We All Need Jesus",
+        "primaryGenreName": "Christian",
+        "trackViewUrl": "https://music.apple.com/us/album/heavens-soldiers/6774768904?i=6774768909&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/heavens-soldiers/6774768904?i=6774768909&uo=4",
+        "trackId": 6774768909
+      },
+      {
+        "trackName": "Higher Than the Heavens",
+        "artistName": "Band Reeves",
+        "collectionName": "We All Need Jesus",
+        "primaryGenreName": "Christian",
+        "trackViewUrl": "https://music.apple.com/us/album/higher-than-the-heavens/6774768904?i=6774768907&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/higher-than-the-heavens/6774768904?i=6774768907&uo=4",
+        "trackId": 6774768907
+      }
+    ]
+  },
+  "mixTerm|Gwen Stefani Hollaback Girl": {
+    "query_url": "https://itunes.apple.com/search?term=Gwen+Stefani+Hollaback+Girl&entity=song&media=music&limit=15&country=US&explicit=Yes",
+    "results": [
+      {
+        "trackName": "Hollaback Girl",
+        "artistName": "Gwen Stefani",
+        "collectionName": "Hollaback Girl - Single",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/hollaback-girl/1491226765?i=1491226770&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/hollaback-girl/1491226765?i=1491226770&uo=4",
+        "trackId": 1491226770
+      },
+      {
+        "trackName": "Hollaback Girl (Dancehollaback Remix by Tony Kanal) [Featuring Elan]",
+        "artistName": "Gwen Stefani",
+        "collectionName": "Love Angel Music Baby (The Remixes) - EP",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/hollaback-girl-dancehollaback-remix-by-tony-kanal-featuring/1444855653?i=1444855934&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/hollaback-girl-dancehollaback-remix-by-tony-kanal-featuring/1444855653?i=1444855934&uo=4",
+        "trackId": 1444855934
+      },
+      {
+        "trackName": "Rich Girl (feat. Eve)",
+        "artistName": "Gwen Stefani",
+        "collectionName": "Love. Angel. Music. Baby (Deluxe Version)",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/rich-girl-feat-eve/1452869898?i=1452870036&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/rich-girl-feat-eve/1452869898?i=1452870036&uo=4",
+        "trackId": 1452870036
+      },
+      {
+        "trackName": "Hollaback Girl",
+        "artistName": "Twinkle Twinkle Little Rock Star",
+        "collectionName": "Lullaby Versions of Gwen Stefani & No Doubt",
+        "primaryGenreName": "Children's Music",
+        "trackViewUrl": "https://music.apple.com/us/album/hollaback-girl/432229844?i=432229997&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/hollaback-girl/432229844?i=432229997&uo=4",
+        "trackId": 432229997
+      },
+      {
+        "trackName": "The Sweet Escape (feat. Akon)",
+        "artistName": "Gwen Stefani",
+        "collectionName": "The Sweet Escape",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/the-sweet-escape-feat-akon/1455389985?i=1455390118&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/the-sweet-escape-feat-akon/1455389985?i=1455390118&uo=4",
+        "trackId": 1455390118
+      },
+      {
+        "trackName": "Hollaback Girl",
+        "artistName": "Girl Authority",
+        "collectionName": "Girl Authority",
+        "primaryGenreName": "Children's Music",
+        "trackViewUrl": "https://music.apple.com/us/album/hollaback-girl/1485628406?i=1485628412&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/hollaback-girl/1485628406?i=1485628412&uo=4",
+        "trackId": 1485628412
+      },
+      {
+        "trackName": "Hollaback Girl (In the Style of Gwen Stefani) [Karaoke Version]",
+        "artistName": "Instrumental King",
+        "collectionName": "Hollaback Girl (In the Style of Gwen Stefani) [Karaoke Version] - Single",
+        "primaryGenreName": "Karaoke",
+        "trackViewUrl": "https://music.apple.com/us/album/hollaback-girl-in-the-style-of-gwen-stefani-karaoke-version/1270489155?i=1270489378&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/hollaback-girl-in-the-style-of-gwen-stefani-karaoke-version/1270489155?i=1270489378&uo=4",
+        "trackId": 1270489378
+      },
+      {
+        "trackName": "Hollaback Girl",
+        "artistName": "Midnite String Quartet",
+        "collectionName": "MSQ Performs Gwen Stefani & No Doubt",
+        "primaryGenreName": "Classical Crossover",
+        "trackViewUrl": "https://music.apple.com/us/album/hollaback-girl/1663008685?i=1663010109&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/hollaback-girl/1663008685?i=1663010109&uo=4",
+        "trackId": 1663010109
+      },
+      {
+        "trackName": "Hollaback Girl",
+        "artistName": "Piano Tribute Players",
+        "collectionName": "Piano Tribute to Gwen Stefani",
+        "primaryGenreName": "Pop",
+        "trackViewUrl": "https://music.apple.com/us/album/hollaback-girl/262121766?i=262122439&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/hollaback-girl/262121766?i=262122439&uo=4",
+        "trackId": 262122439
+      },
+      {
+        "trackName": "Hollaback Girl",
+        "artistName": "White Knight Instrumental",
+        "collectionName": "Instrumental Covers of Gwen Stefani",
+        "primaryGenreName": "Instrumental",
+        "trackViewUrl": "https://music.apple.com/us/album/hollaback-girl/1521903436?i=1521903444&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/hollaback-girl/1521903436?i=1521903444&uo=4",
+        "trackId": 1521903444
+      },
+      {
+        "trackName": "Hollaback Girl (feat. Chani) [Power Remix]",
+        "artistName": "Power Music Workout",
+        "collectionName": "Best of 2000's Workout Mix #1 Hits From the Decade (60 Min Non-Stop Workout Mix) [135 BPM]",
+        "primaryGenreName": "Fitness & Workout",
+        "trackViewUrl": "https://music.apple.com/us/album/hollaback-girl-feat-chani-power-remix/434730006?i=434730031&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/hollaback-girl-feat-chani-power-remix/434730006?i=434730031&uo=4",
+        "trackId": 434730031
+      },
+      {
+        "trackName": "Hollaback Girl",
+        "artistName": "KATO",
+        "collectionName": "Hollaback Girl - Single",
+        "primaryGenreName": "Dance",
+        "trackViewUrl": "https://music.apple.com/us/album/hollaback-girl/1625875427?i=1625875429&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/hollaback-girl/1625875427?i=1625875429&uo=4",
+        "trackId": 1625875429
+      },
+      {
+        "trackName": "Hollaback Girl",
+        "artistName": "Rockabye Baby!",
+        "collectionName": "Who Runs the World",
+        "primaryGenreName": "Lullabies",
+        "trackViewUrl": "https://music.apple.com/us/album/hollaback-girl/1403493443?i=1403493452&uo=4",
+        "collectionViewUrl": "https://music.apple.com/us/album/hollaback-girl/1403493443?i=1403493452&uo=4",
+        "trackId": 1403493452
+      }
+    ]
   }
 }

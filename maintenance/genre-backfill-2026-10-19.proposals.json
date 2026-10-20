@@ -13872,6 +13872,19 @@
       "match": "exact artist and title"
     },
     {
+      "id": "6acc57ea345f6d49983ea8af",
+      "title": "Hello (feat. Dragonette)",
+      "artist": "Martin Solveig, Dragonette",
+      "before": "Other",
+      "genre": "Electronic",
+      "source_genre": "Electronic",
+      "source_title": "Hello",
+      "source_artist": "Martin Solveig & Dragonette",
+      "source_album": "Hello - Single",
+      "source_url": "https://music.apple.com/us/album/hello/1717182903?i=1717182909&uo=4",
+      "match": "exact artist and title"
+    },
+    {
       "id": "6acc57ec1a54cbaf96cbe9b1",
       "title": "Hello Seattle",
       "artist": "Owl City",
@@ -13882,6 +13895,19 @@
       "source_artist": "Owl City",
       "source_album": "Ocean Eyes",
       "source_url": "https://music.apple.com/us/album/hello-seattle/1440782380?i=1440783012&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6acc57eecf9f42bae6ca8a44",
+      "title": "Help Me Find My Drawls",
+      "artist": "Tonio Armani",
+      "before": "Other",
+      "genre": "Blues",
+      "source_genre": "Blues",
+      "source_title": "Help Me Find My Drawls",
+      "source_artist": "Tonio Armani",
+      "source_album": "Help Me Find My Drawls - Single",
+      "source_url": "https://music.apple.com/us/album/help-me-find-my-drawls/1801746276?i=1801746277&uo=4",
       "match": "exact artist and title"
     },
     {
@@ -13908,6 +13934,19 @@
       "source_artist": "Kameron Greene",
       "source_album": "HER EYES - Single",
       "source_url": "https://music.apple.com/us/album/her-eyes/6788038147?i=6788038150&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6acc57f3661aaf3711230cff",
+      "title": "Her",
+      "artist": "Leanna Crawford",
+      "before": "Other",
+      "genre": "Christian & Gospel",
+      "source_genre": "Christian",
+      "source_title": "Her",
+      "source_artist": "Leanna Crawford",
+      "source_album": "Thank God",
+      "source_url": "https://music.apple.com/us/album/her/1894896957?i=1894897182&uo=4",
       "match": "exact artist and title"
     },
     {
@@ -13960,6 +13999,32 @@
       "source_artist": "Stephen Sanchez",
       "source_album": "Easy On My Eyes",
       "source_url": "https://music.apple.com/us/album/hey-girl/1638404210?i=1638404481&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6acc5803acd2a946f6a49f62",
+      "title": "Hey Look Ma, I Made It",
+      "artist": "Panic! At The Disco",
+      "before": "Other",
+      "genre": "Alternative",
+      "source_genre": "Alternative",
+      "source_title": "Hey Look Ma, I Made It",
+      "source_artist": "Panic! At the Disco",
+      "source_album": "Pray for the Wicked",
+      "source_url": "https://music.apple.com/us/album/hey-look-ma-i-made-it/1361152002?i=1361152140&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6acc5804a82ea17536526b7e",
+      "title": "Hey Lover!",
+      "artist": "Wabie",
+      "before": "Other",
+      "genre": "Rock",
+      "source_genre": "Rock",
+      "source_title": "Hey Lover!",
+      "source_artist": "Wabie",
+      "source_album": "Cyclones and Hey Lover - Single",
+      "source_url": "https://music.apple.com/us/album/hey-lover/1470149266?i=1470149271&uo=4",
       "match": "exact artist and title"
     },
     {
@@ -14067,6 +14132,32 @@
       "match": "exact artist and title"
     },
     {
+      "id": "6acc581d5c70d878ff6db225",
+      "title": "Higher Power",
+      "artist": "James Savage",
+      "before": "Other",
+      "genre": "R&B",
+      "source_genre": "R&B/Soul",
+      "source_title": "Higher Power",
+      "source_artist": "James Savage",
+      "source_album": "Higher Power - Single",
+      "source_url": "https://music.apple.com/us/album/higher-power/1891869319?i=1891869322&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6acc581f68b365d4be698a55",
+      "title": "Higher",
+      "artist": "DEBBY FRIDAY",
+      "before": "Other",
+      "genre": "Alternative",
+      "source_genre": "Alternative",
+      "source_title": "Higher",
+      "source_artist": "DEBBY FRIDAY",
+      "source_album": "The Starrr Of The Queen Of Life",
+      "source_url": "https://music.apple.com/us/album/higher/1790987365?i=1790987372&uo=4",
+      "match": "exact artist and title"
+    },
+    {
       "id": "6acc582065aacc5dc63a9633",
       "title": "Higher Higher",
       "artist": "Justin Timberlake",
@@ -14090,6 +14181,19 @@
       "source_artist": "Rihanna",
       "source_album": "ANTI (Deluxe)",
       "source_url": "https://music.apple.com/us/album/higher/1440924615?i=1440925290&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6acc58277d50ba122f0f7836",
+      "title": "Highway to Hell",
+      "artist": "AC/DC",
+      "before": "Other",
+      "genre": "Hard Rock",
+      "source_genre": "Hard Rock",
+      "source_title": "Highway to Hell",
+      "source_artist": "AC/DC",
+      "source_album": "Highway to Hell",
+      "source_url": "https://music.apple.com/us/album/highway-to-hell/574043989?i=574044008&uo=4",
       "match": "exact artist and title"
     },
     {
@@ -14171,6 +14275,19 @@
       "match": "exact artist and title"
     },
     {
+      "id": "6acc5839e4415ac4e7745dbe",
+      "title": "Hit 'Em Up Style (Oops!)",
+      "artist": "Blu Cantrell",
+      "before": "Other",
+      "genre": "R&B",
+      "source_genre": "R&B/Soul",
+      "source_title": "Hit 'Em Up Style (Oops!)",
+      "source_artist": "Blu Cantrell",
+      "source_album": "So Blu",
+      "source_url": "https://music.apple.com/us/album/hit-em-up-style-oops/255286828?i=255286939&uo=4",
+      "match": "exact artist and title"
+    },
+    {
       "id": "6acc5840ea6083f244b39778",
       "title": "Hold My Hand (with Akon)",
       "artist": "Michael Jackson, Akon",
@@ -14184,6 +14301,19 @@
       "match": "exact artist and title"
     },
     {
+      "id": "6acc5841e1555d98eb4923f3",
+      "title": "Hoja En Blanco",
+      "artist": "Monchy & Alexandra",
+      "before": "Other",
+      "genre": "Latin",
+      "source_genre": "Música tropical",
+      "source_title": "Hoja en Blanco",
+      "source_artist": "Monchy & Alexandra",
+      "source_album": "Hoja en Blanco",
+      "source_url": "https://music.apple.com/us/album/hoja-en-blanco/27064339?i=27064315&uo=4",
+      "match": "exact artist and title"
+    },
+    {
       "id": "6acc584886ff0bbd12d8e6f5",
       "title": "Hold On",
       "artist": "Tems",
@@ -14194,6 +14324,19 @@
       "source_artist": "Tems",
       "source_album": "Born in the Wild",
       "source_url": "https://music.apple.com/us/album/hold-on/1750361972?i=1750362212&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6acc58494f0978495a1b1291",
+      "title": "Hold On To Jesus",
+      "artist": "Band Reeves",
+      "before": "Other",
+      "genre": "Christian & Gospel",
+      "source_genre": "Christian",
+      "source_title": "Hold On To Jesus",
+      "source_artist": "Band Reeves",
+      "source_album": "How To Forgive",
+      "source_url": "https://music.apple.com/us/album/hold-on-to-jesus/6779409281?i=6779409446&uo=4",
       "match": "exact artist and title"
     },
     {
@@ -14220,6 +14363,19 @@
       "source_artist": "Akon",
       "source_album": "Freedom",
       "source_url": "https://music.apple.com/us/album/holla-holla-feat-t-pain/1440742168?i=1440742416&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6acc5852ce0c51f82b25e3d4",
+      "title": "Hollaback Girl",
+      "artist": "Gwen Stefani",
+      "before": "Other",
+      "genre": "Pop",
+      "source_genre": "Pop",
+      "source_title": "Hollaback Girl",
+      "source_artist": "Gwen Stefani",
+      "source_album": "Hollaback Girl - Single",
+      "source_url": "https://music.apple.com/us/album/hollaback-girl/1491226765?i=1491226770&uo=4",
       "match": "exact artist and title"
     },
     {
@@ -19381,30 +19537,9 @@
       "album_name": ""
     },
     {
-      "id": "6acc57ea345f6d49983ea8af",
-      "title": "Hello (feat. Dragonette)",
-      "artist": "Martin Solveig, Dragonette",
-      "genre": "Other",
-      "album_name": ""
-    },
-    {
-      "id": "6acc57eecf9f42bae6ca8a44",
-      "title": "Help Me Find My Drawls",
-      "artist": "Tonio Armani",
-      "genre": "Other",
-      "album_name": ""
-    },
-    {
       "id": "6acc57efd81adf0b724b4af6",
       "title": "Helplessly Lost",
       "artist": "Passenger",
-      "genre": "Other",
-      "album_name": ""
-    },
-    {
-      "id": "6acc57f3661aaf3711230cff",
-      "title": "Her",
-      "artist": "Leanna Crawford",
       "genre": "Other",
       "album_name": ""
     },
@@ -19420,21 +19555,12 @@
       "title": "Herencia",
       "artist": "Yadah, Montesanto",
       "genre": "Other",
-      "album_name": ""
-    },
-    {
-      "id": "6acc5803acd2a946f6a49f62",
-      "title": "Hey Look Ma, I Made It",
-      "artist": "Panic! At The Disco",
-      "genre": "Other",
-      "album_name": ""
-    },
-    {
-      "id": "6acc5804a82ea17536526b7e",
-      "title": "Hey Lover!",
-      "artist": "Wabie",
-      "genre": "Other",
-      "album_name": ""
+      "album_name": "",
+      "review_reason": "conflicting catalog genres",
+      "candidate_genres": [
+        "Christian & Gospel",
+        "Latin"
+      ]
     },
     {
       "id": "6acc5811e6846bf3c551421e",
@@ -19482,20 +19608,6 @@
       ]
     },
     {
-      "id": "6acc581d5c70d878ff6db225",
-      "title": "Higher Power",
-      "artist": "James Savage",
-      "genre": "Other",
-      "album_name": ""
-    },
-    {
-      "id": "6acc581f68b365d4be698a55",
-      "title": "Higher",
-      "artist": "DEBBY FRIDAY",
-      "genre": "Other",
-      "album_name": ""
-    },
-    {
       "id": "6acc582646996a55485cf961",
       "title": "Highly Performing",
       "artist": "Hunxho",
@@ -19506,13 +19618,6 @@
       "id": "6acc5826c42df545cfe68c6e",
       "title": "HIIKU FLOAT",
       "artist": "Gvlli3",
-      "genre": "Other",
-      "album_name": ""
-    },
-    {
-      "id": "6acc58277d50ba122f0f7836",
-      "title": "Highway to Hell",
-      "artist": "AC/DC",
       "genre": "Other",
       "album_name": ""
     },
@@ -19531,20 +19636,6 @@
       "album_name": ""
     },
     {
-      "id": "6acc5839e4415ac4e7745dbe",
-      "title": "Hit 'Em Up Style (Oops!)",
-      "artist": "Blu Cantrell",
-      "genre": "Other",
-      "album_name": ""
-    },
-    {
-      "id": "6acc5841e1555d98eb4923f3",
-      "title": "Hoja En Blanco",
-      "artist": "Monchy & Alexandra",
-      "genre": "Other",
-      "album_name": ""
-    },
-    {
       "id": "6acc5841eccaf8c345e1d8ba",
       "title": "Hoe Sh!t",
       "artist": "Young Miko",
@@ -19559,13 +19650,6 @@
       "album_name": ""
     },
     {
-      "id": "6acc58494f0978495a1b1291",
-      "title": "Hold On To Jesus",
-      "artist": "Band Reeves",
-      "genre": "Other",
-      "album_name": ""
-    },
-    {
       "id": "6acc584de6f4d46d52e77f2d",
       "title": "Holiday Inn",
       "artist": "Pardyalone, JOY.",
@@ -19576,13 +19660,6 @@
       "id": "6acc584e4e71cb8d364e4f8c",
       "title": "Holes",
       "artist": "Passenger",
-      "genre": "Other",
-      "album_name": ""
-    },
-    {
-      "id": "6acc5852ce0c51f82b25e3d4",
-      "title": "Hollaback Girl",
-      "artist": "Gwen Stefani",
       "genre": "Other",
       "album_name": ""
     },
@@ -19807,5 +19884,5 @@
       "album_name": ""
     }
   ],
-  "searched_terms": 610
+  "searched_terms": 625
 }
