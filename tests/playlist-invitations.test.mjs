@@ -42,4 +42,9 @@ assert.deepEqual(schema.properties.collaborator_ids.rls.write,schema.properties.
 assert.equal(schema.properties.collaborator_ids.maxItems,30);assert.equal(schema.properties.collaborator_ids.default,undefined,'legacy playlists remain distinguishable');
 for(const key of ['creator_id','is_public','name','cover_art_url'])assert.deepEqual(schema.properties[key].rls.write,{user_condition:{role:'admin'}});
 assert.equal(schema.rls.read.$or.some(rule=>rule['data.collaborator_ids']),false,'private membership reads retain server block checks');
+let reads=0;
+globalThis.__playlistRead={entities:{Playlist:{get:async()=>({id:'public',creator_id:'owner',is_public:true})},PlaylistCollaboration:{filter:async()=>[{id:'old',member_ids:['removed']}]}},auth:{me:async()=>({id:'removed',role:'user'})},functions:{invoke:async()=>{reads++;throw Object.assign(Error('Access removed'),{status:403});}}};
+const readSource=fs.readFileSync('src/lib/collaborativePlaylists.js','utf8').replace(/^import[^;]+;/gm,'const base44=globalThis.__playlistRead;');
+const {getPlaylist}=await import('data:text/javascript;base64,'+Buffer.from(readSource).toString('base64'));
+const revoked=await getPlaylist('public');assert.equal(revoked.collaboration_enabled,undefined);assert.equal(reads,1,'stale legacy membership must be checked before showing edit access');
 console.log('PASS native owner invitations, legacy migration, removal, lost responses, rejected writes, blocks, limits, concurrent saves, identity changes and protected fields');
