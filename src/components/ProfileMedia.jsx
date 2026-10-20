@@ -7,7 +7,7 @@ export default function ProfileMedia({src,videoSrc="",gifSrc="",mobileSrc="",mot
   const poster=useCoverUrl(src),mobile=useCoverUrl(mobileSrc);
   useEffect(()=>{setFailed(false);},[videoSrc,gifSrc,src]);
   useEffect(()=>{
-    const query=window.matchMedia("(prefers-reduced-motion: reduce)"),connection=navigator.connection;
+    const query=window.matchMedia("(prefers-reduced-motion: reduce)"),connection=/** @type {Navigator & {connection?: {saveData?: boolean,addEventListener?: Function,removeEventListener?: Function}}} */ (navigator).connection;
     const update=()=>setReduced(query.matches||!!connection?.saveData);
     update();query.addEventListener?.("change",update);connection?.addEventListener?.("change",update);
     return()=>{query.removeEventListener?.("change",update);connection?.removeEventListener?.("change",update);};
