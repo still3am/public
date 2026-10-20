@@ -11935,6 +11935,19 @@
       "match": "exact artist and title"
     },
     {
+      "id": "6acc50fd6bf385e5d79197a2",
+      "title": "GOD DID THAT",
+      "artist": "REECE",
+      "before": "Other",
+      "genre": "Christian & Gospel",
+      "source_genre": "Christian",
+      "source_title": "GOD DID THAT",
+      "source_artist": "REECE, Alex Jean & Yung Kriss",
+      "source_album": "GOD DID THAT - Single",
+      "source_url": "https://music.apple.com/us/album/god-did-that/6800883397?i=6800883399&uo=4",
+      "match": "exact artist and title"
+    },
+    {
       "id": "6acc5101788f693e414ec174",
       "title": "GOD DID (feat. Rick Ross, Lil Wayne, JAY-Z, John Legend & Fridayy)",
       "artist": "DJ Khaled, Rick Ross, Lil Wayne, JAŸ-Z, John Legend, Fridayy",
@@ -11971,6 +11984,19 @@
       "source_artist": "Pahola Marino",
       "source_album": "La Verdad Es Jesus",
       "source_url": "https://music.apple.com/us/album/god-is-good/317417750?i=317417787&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6acc5105ca4792dee0e1e8ce",
+      "title": "God Loves Us",
+      "artist": "Jor'dan Armstrong",
+      "before": "Other",
+      "genre": "Christian & Gospel",
+      "source_genre": "Christian",
+      "source_title": "God Loves Us",
+      "source_artist": "Jor'dan Armstrong",
+      "source_album": "God Loves Us - Single",
+      "source_url": "https://music.apple.com/us/album/god-loves-us/6776906756?i=6776906760&uo=4",
       "match": "exact artist and title"
     },
     {
@@ -12039,6 +12065,19 @@
       "match": "exact artist and title"
     },
     {
+      "id": "6acc5114edb55e41a058a15d",
+      "title": "Gold Diggers",
+      "artist": "Natos y Waor, Al Safir",
+      "before": "Other",
+      "genre": "Hip-Hop",
+      "source_genre": "Hip-Hop/Rap",
+      "source_title": "Gold Diggers",
+      "source_artist": "Natos y Waor & Al Safir",
+      "source_album": "Gold Diggers - Single",
+      "source_url": "https://music.apple.com/us/album/gold-diggers/1670892330?i=1670892334&uo=4",
+      "match": "exact artist and title"
+    },
+    {
       "id": "6acc5116b8e6ce235ef8f5f6",
       "title": "Gold Digger",
       "artist": "Kanye West, Jamie Foxx",
@@ -12078,6 +12117,19 @@
       "match": "exact artist and title"
     },
     {
+      "id": "6acc511ce50da04d6da6cad1",
+      "title": "Golden Years - 2016 Remaster",
+      "artist": "David Bowie",
+      "before": "Other",
+      "genre": "Pop",
+      "source_genre": "Pop",
+      "source_title": "Golden Years",
+      "source_artist": "David Bowie",
+      "source_album": "Station to Station (2016 Remaster)",
+      "source_url": "https://music.apple.com/us/album/golden-years/1195104858?i=1195105202&uo=4",
+      "match": "exact artist and title"
+    },
+    {
       "id": "6acc511d7b9a420bfb94dc35",
       "title": "Golden Lady",
       "artist": "Stevie Wonder",
@@ -12114,6 +12166,19 @@
       "source_artist": "Lennon Stella",
       "source_album": "Three. Two. One.",
       "source_url": "https://music.apple.com/us/album/golf-on-tv/1501262697?i=1501262704&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6acc512cf757878be1296992",
+      "title": "Gone Away",
+      "artist": "Wyatt Waddell",
+      "before": "Other",
+      "genre": "Alternative",
+      "source_genre": "Alternative",
+      "source_title": "Gone Away",
+      "source_artist": "Wyatt Waddell",
+      "source_album": "The Understudy",
+      "source_url": "https://music.apple.com/us/album/gone-away/1869773062?i=1869773070&uo=4",
       "match": "exact artist and title"
     },
     {
@@ -13027,6 +13092,19 @@
       "match": "exact artist and title"
     },
     {
+      "id": "6acc5746a5782973c61927c2",
+      "title": "Half Woman, Half Cosmic Horror (Disco Disco)",
+      "artist": "Abbie Callahan",
+      "before": "Other",
+      "genre": "Country",
+      "source_genre": "Country",
+      "source_title": "Half Woman, Half Cosmic Horror (Disco Disco)",
+      "source_artist": "Abbie Callahan",
+      "source_album": "And For My Next Trick...",
+      "source_url": "https://music.apple.com/us/album/half-woman-half-cosmic-horror-disco-disco/6797663635?i=6797664217&uo=4",
+      "match": "exact artist and title"
+    },
+    {
       "id": "6acc5749d2ec8b217eb8f98e",
       "title": "Hallelujah Money (feat. Benjamin Clementine)",
       "artist": "Gorillaz, Benjamin Clementine",
@@ -13050,6 +13128,45 @@
       "source_artist": "K CAMP",
       "source_album": "This For You - EP",
       "source_url": "https://music.apple.com/us/album/handful/1435534434?i=1435534439&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6acc574f7edbf4823885022a",
+      "title": "Hallelujah",
+      "artist": "Shawn Mendes",
+      "before": "Other",
+      "genre": "Pop",
+      "source_genre": "Pop",
+      "source_title": "Hallelujah",
+      "source_artist": "Shawn Mendes",
+      "source_album": "Shawn",
+      "source_url": "https://music.apple.com/us/album/hallelujah/1761182577?i=1761183114&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6acc57510bd533b468d4c6d1",
+      "title": "Hands In The Air",
+      "artist": "8Ball",
+      "before": "Other",
+      "genre": "Soundtrack",
+      "source_genre": "Soundtrack",
+      "source_title": "Hands in the Air",
+      "source_artist": "8Ball & MJG",
+      "source_album": "2 Fast 2 Furious",
+      "source_url": "https://music.apple.com/us/album/hands-in-the-air/1434543677?i=1434544724&uo=4",
+      "match": "exact artist and title"
+    },
+    {
+      "id": "6acc5751ef940b83fe3c148f",
+      "title": "HandsOn",
+      "artist": "Empress Of",
+      "before": "Other",
+      "genre": "Alternative",
+      "source_genre": "Alternative",
+      "source_title": "HandsOn",
+      "source_artist": "Empress Of",
+      "source_album": "HandsOn - EP",
+      "source_url": "https://music.apple.com/us/album/handson/6799106357?i=6799106358&uo=4",
       "match": "exact artist and title"
     },
     {
@@ -18425,23 +18542,9 @@
       "album_name": ""
     },
     {
-      "id": "6acc50fd6bf385e5d79197a2",
-      "title": "GOD DID THAT",
-      "artist": "REECE",
-      "genre": "Other",
-      "album_name": ""
-    },
-    {
       "id": "6acc50fe30a5dd70a91c1983",
       "title": "God Is A Woman",
       "artist": "Kofi",
-      "genre": "Other",
-      "album_name": ""
-    },
-    {
-      "id": "6acc5105ca4792dee0e1e8ce",
-      "title": "God Loves Us",
-      "artist": "Jor'dan Armstrong",
       "genre": "Other",
       "album_name": ""
     },
@@ -18460,20 +18563,6 @@
       "album_name": ""
     },
     {
-      "id": "6acc5114edb55e41a058a15d",
-      "title": "Gold Diggers",
-      "artist": "Natos y Waor, Al Safir",
-      "genre": "Other",
-      "album_name": ""
-    },
-    {
-      "id": "6acc511ce50da04d6da6cad1",
-      "title": "Golden Years - 2016 Remaster",
-      "artist": "David Bowie",
-      "genre": "Other",
-      "album_name": ""
-    },
-    {
       "id": "6acc5128e5db9213429c7093",
       "title": "Gone (Owl City Version)",
       "artist": "Switchfoot, Owl City",
@@ -18484,13 +18573,6 @@
       "id": "6acc512c2ce874cc69d6a2e5",
       "title": "GONE FISHING",
       "artist": "Denzel Curry, Kenny Beats",
-      "genre": "Other",
-      "album_name": ""
-    },
-    {
-      "id": "6acc512cf757878be1296992",
-      "title": "Gone Away",
-      "artist": "Wyatt Waddell",
       "genre": "Other",
       "album_name": ""
     },
@@ -18948,34 +19030,6 @@
       "id": "6acc574665bf5d9772b8696c",
       "title": "Half Of Me",
       "artist": "Rihanna",
-      "genre": "Other",
-      "album_name": ""
-    },
-    {
-      "id": "6acc5746a5782973c61927c2",
-      "title": "Half Woman, Half Cosmic Horror (Disco Disco)",
-      "artist": "Abbie Callahan",
-      "genre": "Other",
-      "album_name": ""
-    },
-    {
-      "id": "6acc574f7edbf4823885022a",
-      "title": "Hallelujah",
-      "artist": "Shawn Mendes",
-      "genre": "Other",
-      "album_name": ""
-    },
-    {
-      "id": "6acc57510bd533b468d4c6d1",
-      "title": "Hands In The Air",
-      "artist": "8Ball",
-      "genre": "Other",
-      "album_name": ""
-    },
-    {
-      "id": "6acc5751ef940b83fe3c148f",
-      "title": "HandsOn",
-      "artist": "Empress Of",
       "genre": "Other",
       "album_name": ""
     },
@@ -19675,5 +19729,5 @@
       "album_name": ""
     }
   ],
-  "searched_terms": 580
+  "searched_terms": 595
 }
