@@ -235,7 +235,7 @@ export default async function handleRequest(req) {
         const sorted=v=>JSON.stringify([...v].sort());
         if(sorted(ids)!==sorted(current))fail('Reorder must retain every stored song',400);
         if(JSON.stringify(expected)!==JSON.stringify(current))fail('This playlist changed on another device. Refresh before reordering.',409);
-        await handler.updateMany({id,track_ids:current},{$set:{track_ids:ids}});
+        await handler.updateMany({id,...(pl.updated_date?{updated_date:pl.updated_date}:{track_ids:{$eq:current}})},{$set:{track_ids:ids}});
         if(JSON.stringify((await handler.get(id)).track_ids)!==JSON.stringify(ids))fail('The playlist changed while saving. Refresh and retry.',409);
       }
       if(collab)collab=await refreshCollab();
