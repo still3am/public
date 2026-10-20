@@ -110,7 +110,7 @@ export default function FullScreenPlayer({ onClose }) {
     setLyricsAvailability({ trackId: t.id, available: !!fallbackText, record: null, text: fallbackText });
     Promise.all([
     base44.entities.Lyrics.
-    filter({ track_id: t.id, status: "approved" }, "-created_date", 5).
+    filter({ track_id: t.id, status: "approved" }, "-updated_date", 5).
     catch(() => []),
     base44.entities.Track.get(t.id).catch(() => null)]
     ).then(([lyricsRes, track]) => {
