@@ -209,7 +209,7 @@ export default function ProfileSong({
     <button type="button" disabled={preview.loading} onClick={handlePlay} className="profile-preview-button" aria-label={(isPlaying ? 'Pause preview of ' : 'Preview ') + track.title} aria-pressed={isPlaying}><span>{isPlaying ? <Pause size={18} fill="currentColor" /> : <Play size={18} fill="currentColor" />}</span><span className="hidden">{preview.loading ? 'Loading…' : 'Preview'}</span></button>
     <HoverTrackMenu track={track} lp={lp} size={18} />
    </div>
-   {preview.trackId === trackId && <div className="flex items-center justify-between gap-3 text-[11px] text-muted-foreground mt-2"><span>Your music resumes when the preview ends.</span><button type="button" className="underline min-h-10" onClick={preview.stop}>End preview</button></div>}
+   {preview.trackId === trackId && <div className="flex items-center justify-end text-[11px] text-muted-foreground mt-2"><button type="button" className="underline min-h-10" onClick={preview.stop}>End preview</button></div>}
    {previewError && <p role="alert" className="profile-editor-error">{previewError}</p>}
   </div>;
 }
