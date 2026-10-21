@@ -175,3 +175,23 @@
 
 /* A completed discovery shelf leaves no empty panel or spacing behind. */
 .public-app .profile-redesigned .profile-discover-section:empty{display:none}
+
+/* Discovery and collections share the right column, one item per desktop swipe. */
+.public-app .profile-redesigned .profile-community-column>.profile-public-playlists{margin-top:0}
+.public-app .profile-redesigned .profile-community-column .profile-people-shelf>.scroll-shelf{min-width:0}
+.public-app .profile-redesigned .profile-community-column .profile-people-shelf .desktop-shelf-controls{padding-inline:20px}
+@media(min-width:768px){
+ .public-app .profile-redesigned .profile-community-column .profile-people-shelf h2{font-size:24px;max-width:none}
+ .public-app .profile-redesigned .profile-community-column .profile-people-track{display:grid;grid-template-columns:none;grid-template-rows:auto;grid-auto-flow:column;grid-auto-columns:100%;gap:40px;width:100%;box-sizing:border-box;overflow-x:auto;overflow-y:hidden;padding:4px 20px 16px;scroll-padding-inline:20px;scroll-snap-type:x mandatory;overscroll-behavior-x:contain;scrollbar-width:none;touch-action:pan-x pan-y pinch-zoom}
+ .public-app .profile-redesigned .profile-community-column .profile-people-track>.profile-person-tile{scroll-snap-align:start;scroll-snap-stop:always;align-items:center}
+ .public-app .profile-redesigned .profile-community-column .profile-person-portrait{max-width:200px}
+ .public-app .profile-redesigned .profile-community-column .profile-person-tile .profile-discover-follow{max-width:180px}
+ .public-app .profile-redesigned .profile-community-column .profile-playlist-shelf{gap:40px;scroll-snap-type:x mandatory;scrollbar-width:none}
+ .public-app .profile-redesigned .profile-community-column .profile-playlist-tile{flex:0 0 100%;scroll-snap-stop:always}
+ .public-app .profile-redesigned .profile-community-column .profile-playlist-art{max-width:240px;margin-inline:auto}
+ .public-app .profile-redesigned .profile-community-column .profile-playlist-caption{text-align:center;max-width:240px;margin-inline:auto}
+ .public-app .profile-redesigned .profile-community-column :is(.profile-people-track,.profile-playlist-shelf)::-webkit-scrollbar{display:none}
+}
+@media(max-width:1023px){
+ .public-app .profile-redesigned .profile-community-column>.profile-public-playlists{order:1}
+}
