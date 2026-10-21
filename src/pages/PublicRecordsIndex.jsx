@@ -274,7 +274,7 @@ export default function PublicRecordsIndex() {
             </p>
           </div> :
 
-        <div className="pr-5 md:pr-8">
+        <div className="directory-results pr-5 md:pr-8">
             {!groups.length&&<div className="collection-empty"><h2>No matching artists</h2><p>Try another name.</p></div>}
             {groups.map((g) =>
           <AzReveal key={g.key}>
