@@ -124,7 +124,7 @@ export default function DiscoverPeople({ profileId, active = true, layout = "dec
           const label = candidate.display_name || candidate.full_name || candidate.username || "PUBLIC listener";
           const isFollowing = !!local.following[candidate.id],pending = !!local.busy[candidate.id];
           return <article className="profile-person-tile" key={scope + ":" + candidate.id}>
-        <Link to={"/profile/" + encodeURIComponent(candidate.id)} className="profile-person-identity" aria-label={"Open " + label + " profile"}><DiscoverAvatar person={candidate} active={active} /><strong>{candidate.username ? "@" + candidate.username.replace(/^@/, "") : label}</strong><small className="hidden">{candidate.is_artist ? "Artist" : "Listener"}</small></Link>
+        <Link to={"/profile/" + encodeURIComponent(candidate.id)} className="profile-person-identity" aria-label={"Open " + label + " profile"}><DiscoverAvatar person={candidate} active={active} /><strong>{candidate.username ? "@" + candidate.username.replace(/^@/, "") : label}</strong></Link>
         {uid ? <button type="button" className="profile-discover-follow" disabled={pending || state.loading} aria-label={(isFollowing ? "Unfollow " : "Follow ") + label} aria-pressed={isFollowing} onClick={() => follow(candidate)}>{pending ? <Loader2 size={14} className="animate-spin" /> : isFollowing ? <UserCheck size={14} /> : null}{pending ? "Saving…" : isFollowing ? "Following" : "Follow"}</button> : <Link className="profile-discover-follow" to="/login">Sign in to follow</Link>}
         {local.errors[candidate.id] && <p className="profile-discover-error" role="alert">{local.errors[candidate.id]}</p>}
        </article>;
