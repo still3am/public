@@ -653,8 +653,9 @@ export default function Profile({ ownProfileTab = false }) {
             }
 
       <ProfilePlaylists userId={targetId} active={isCurrentPage} />
-      </section><div id="profile-community" className="profile-community-column"><aside className="profile-conversation" aria-label="Profile conversation"><ProfileComments profileId={targetId} isOwn={isOwn} active={isCurrentPage} /><SafetyControls type="user" id={targetId} userId={targetId} label="profile" /></aside></div></div>
+      </section><div id="profile-community" className="profile-community-column"><aside className="profile-conversation" aria-label="Profile conversation"><ProfileComments profileId={targetId} isOwn={isOwn} active={isCurrentPage} /><SafetyControls type="user" id={targetId} userId={targetId} label="profile" /></aside>
       {!editMode && <div id="profile-discover" className="profile-discover-section"><DiscoverPeople profileId={targetId} active={isCurrentPage} layout="shelf" /></div>}
+      </div></div>
 
       {showColors && isOwn && <ProfileColorPicker coverUrl={coverUrl} colors={coverColors} loading={colorsLoading} value={backgroundValue} onPreview={setBackgroundDraft} onSave={saveColors} onClose={closeColors} />}
 
