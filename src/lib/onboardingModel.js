@@ -9,7 +9,7 @@ export const ONBOARDING_PALETTES=[
 export const cleanHandle=value=>String(value||"").trim().toLowerCase().replace(/^@/,"");
 export const validHandle=value=>!value||/^[a-z0-9_]{3,24}$/.test(cleanHandle(value));
 export const credits=track=>String(track?.artist||"").split(/\s*(?:,|&| feat\.| ft\.|;|\/)\s*/i).map(s=>s.trim()).filter(Boolean);
-export function recommendPeople(profiles,catalog,{uid,blocked=new Set(),genres=[],artists=[],trackIds=[]}={}){
+export function recommendPeople(profiles,catalog,{uid=undefined,blocked=new Set(),genres=[],artists=[],trackIds=[]}={}){
  const wanted=new Set(artists.map(s=>s.toLowerCase())),selected=new Set(trackIds),byId=new Map(catalog.map(t=>[t.id,t]));
  return profiles.filter(p=>p.user_id&&p.user_id!==uid&&p.visible!==false&&!blocked.has(p.user_id)).map(p=>{
   const publicSongs=(p.top_track_ids||[]).map(id=>byId.get(id)).filter(Boolean);
@@ -25,7 +25,7 @@ export function readOnboardingDraft(uid){
   const raw=JSON.parse(localStorage.getItem(draftKey(uid))||"null");if(raw?.uid!==uid)return null;
   const clean={step:Math.max(0,Math.min(6,Math.floor(Number(raw.step)||0)))};
   for(const key of ["name","username","avatar","profileTrack"])if(typeof raw[key]==="string")clean[key]=raw[key].slice(0,key==="avatar"?2048:160);
-  for(const [key,max] of [["genres",300],["artists",5],["trackIds",8]])if(Array.isArray(raw[key]))clean[key]=[...new Set(raw[key].filter(v=>typeof v==="string"&&v.length<=160))].slice(0,max);
+  for(const [key,max] of [["genres",300],["artists",5],["trackIds",8]])if(Array.isArray(raw[key]))clean[key]=[...new Set(raw[key].filter(v=>typeof v==="string"&&v.length<=160))].slice(0,Number(max));
   if(["auto","custom","off"].includes(raw.mode))clean.mode=raw.mode;
   if(Array.isArray(raw.colors)&&raw.colors.length===3&&raw.colors.every(c=>/^#[0-9a-f]{6}$/i.test(c)))clean.colors=raw.colors;
   for(const key of ["shareFavorites","sharingChanged"])if(typeof raw[key]==="boolean")clean[key]=raw[key];

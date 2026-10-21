@@ -59,7 +59,7 @@ export async function prepareProfileMotion(file,kind="avatar") {
     return {file,poster,type,...info};
   } finally {
     clearTimeout(timer);
-    if(type==="video"&&element){element.pause();element.removeAttribute("src");element.load();}
+    if(type==="video"&&element instanceof HTMLVideoElement){element.pause();element.removeAttribute("src");element.load();}
     if(type==="gif"&&element)element.src="";
     URL.revokeObjectURL(url);
   }

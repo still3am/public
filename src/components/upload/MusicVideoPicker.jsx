@@ -1,7 +1,7 @@
 import {useEffect,useState} from "react";
 import {usePlayer} from "@/context/PlayerContext";
 import {Video,X} from "lucide-react";
-export default function MusicVideoPicker({file,onChange,disabled=false,existing=false,onRemoveExisting}){
+export default function MusicVideoPicker({file,onChange,disabled=false,existing=false,onRemoveExisting=undefined}){
  const p=usePlayer();
  const [notice,setNotice]=useState("");
  const [preview,setPreview]=useState("");

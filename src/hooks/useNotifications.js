@@ -110,6 +110,6 @@ export function useNotifications(){
   finally{if(account.current===uid){readingIds.current.delete(id);window.dispatchEvent(new Event("notifications:changed"));}}
  }
  const releasedIds=new Set(releases.items.map(n=>n.track_id));
- const merged=[...notifications.filter(n=>n.type!=="new_upload_from_followed"||!releasedIds.has(n.track_id)),...releases.items].sort((a,b)=>new Date(b.created_date)-new Date(a.created_date));
+ const merged=[...notifications.filter(n=>n.type!=="new_upload_from_followed"||!releasedIds.has(n.track_id)),...releases.items].sort((a,b)=>new Date(b.created_date).getTime()-new Date(a.created_date).getTime());
  return {notifications:merged,loading,error:error||releases.error,hasMore,unreadCount:unreadCount+releases.unread,markAllAsRead,markAsRead,reload:()=>{releases.refresh();return load(true);},loadMore:()=>load(false)};
 }

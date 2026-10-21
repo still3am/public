@@ -11,7 +11,7 @@ import TrackPickerSheet from "./TrackPickerSheet";
 import HoverTrackMenu from "@/components/track/HoverTrackMenu";
 import { useLongPressMenu } from "@/hooks/useLongPressMenu";
 
-function Cover({ url, className = "" }) {
+function Cover({ url = "", className = "" }) {
   const source = useCoverUrl(url),[broken, setBroken] = useState("");
   return <div className={"rotation-cover " + className}>{source && broken !== source ? <img src={source} alt="" loading="lazy" onError={() => setBroken(source)} /> : <Music2 size={26} aria-hidden="true" />}</div>;
 }

@@ -106,7 +106,7 @@ export default function Home() {
   const [fromFollowing, setFromFollowing] = useState([]);
   const [discover, setDiscover] = useState([]);
 
-  const [personal,setPersonal]=useState({uid:null,catalog:[],genres:[]});
+  const [personal,setPersonal]=useState({uid:null,catalog:[],genres:[],taste:null});
   const personalCatalog=personal.uid===user?.id?personal.catalog:[];
   const personalGenres=personal.uid===user?.id?personal.genres:[];
   const greeting = greetingByHour();

@@ -14,5 +14,5 @@ export function releaseNotifications(subscriptions,tracks){
   const key=s.id+":"+t.id;if(seen.has(key))continue;seen.add(key);
   result.push({id:"release:"+key,subscription_id:s.id,user_id:s.created_by_id,type:"new_upload_from_followed",actor_id:t.uploader_id,actor_name:s.artist_name,actor:{id:t.uploader_id,display_name:s.artist_name},track_id:t.id,track:t,read:(s.read_track_ids||[]).includes(t.id),created_date:released});
  }
- return result.sort((a,b)=>new Date(b.created_date)-new Date(a.created_date));
+ return result.sort((a,b)=>new Date(b.created_date).getTime()-new Date(a.created_date).getTime());
 }

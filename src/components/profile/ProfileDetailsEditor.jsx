@@ -1,4 +1,5 @@
 export default function ProfileDetailsEditor({form,onChange,disabled}){
+ /** @type {Array<[string, string, string, number]>} */
  const fields=[['location','Location','City or region',100],['pronouns','Pronouns','Your pronouns',60],['website','Website','https://example.com',2048],['instagram','Instagram','Username without @',100],['twitter','X / Twitter','Username without @',100],['soundcloud','SoundCloud','https://soundcloud.com/you',2048]];
  return <fieldset disabled={disabled} className="profile-details-editor"><legend>About & links</legend><div>{fields.map(([key,label,placeholder,max])=><label key={key} htmlFor={'profile-'+key}>{label}<input id={'profile-'+key} type="text" inputMode={['website','soundcloud'].includes(key)?'url':'text'} maxLength={max} value={form[key]||''} placeholder={placeholder} autoCapitalize="none" onChange={e=>onChange(key,e.target.value)}/></label>)}</div></fieldset>;
 }
