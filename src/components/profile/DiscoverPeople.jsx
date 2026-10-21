@@ -8,6 +8,7 @@ import { readAllPages } from "@/lib/readPages";
 import { setFollowState, followError } from "@/lib/followActions";
 import DiscoverProfileCard from "./DiscoverProfileCard";
 import Avatar from "@/components/Avatar";
+import ScrollShelf from "@/components/ScrollShelf";
 import { rankDiscoverPeople } from "@/lib/discoverPeople";
 import "./discover-people.css";
 
@@ -96,7 +97,7 @@ export default function DiscoverPeople({ profileId, active = true, layout = "dec
     <header><div><h2>Discover People</h2><p>Find people through the music they love.</p></div><Link to="/search?type=people" aria-label="Find people" title="Find people" className="profile-people-search"><Search size={20} aria-hidden="true" /></Link></header>
     {!ready || state.loading && !people.length ? <div className="profile-people-skeleton" role="status" aria-label="Finding listeners">{[0, 1, 2, 3].map((item) => <div key={item} aria-hidden="true"><i /><span /><small /></div>)}</div> :
     state.error && !people.length ? <div className="profile-discover-status" role="status"><p>People couldn’t load.</p><button type="button" onClick={() => setRetry((n) => n + 1)}>Try again</button></div> :
-    <><div className="profile-people-track" role="region" aria-label="Suggested listeners. Swipe to explore." tabIndex={0}>
+    <><ScrollShelf className="profile-people-track" label="Suggested listeners">
       {people.slice(0, 6).map((candidate) => {
           const label = candidate.display_name || candidate.full_name || candidate.username || "PUBLIC listener";
           const isFollowing = !!local.following[candidate.id],pending = !!local.busy[candidate.id];
@@ -106,7 +107,7 @@ export default function DiscoverPeople({ profileId, active = true, layout = "dec
         {local.errors[candidate.id] && <p className="profile-discover-error" role="alert">{local.errors[candidate.id]}</p>}
        </article>;
         })}
-     </div>{state.error && <p className="profile-discover-status" role="status">Couldn’t refresh suggestions. Your current list is still here.</p>}</>}
+     </ScrollShelf>{state.error && <p className="profile-discover-status" role="status">Couldn’t refresh suggestions. Your current list is still here.</p>}</>}
    </section>;
   return <section className="profile-discover profile-discover-deck" aria-label="Discover people">
     <header><div><h2>Discover People</h2><p>Different lives. Shared soundtracks.</p></div></header>
