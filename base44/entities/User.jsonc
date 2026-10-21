@@ -2,6 +2,14 @@
   "name": "User",
   "type": "object",
   "properties": {
+    "public_follow_initialized": {
+      "type": "boolean",
+      "default": false,
+      "description": "Server-managed one-time official Public follow enrollment; preserves later unfollows.",
+      "rls": {
+        "write": false
+      }
+    },
     "avatar_video_url": {
       "type": "string",
       "default": "",
