@@ -173,3 +173,6 @@
  .profile-comments-heading{margin-bottom:18px}
  .public-app .profile-redesigned .profile-conversation .profile-comments-composer{gap:10px}
 }
+
+/* A completed discovery shelf leaves no empty panel or spacing behind. */
+.public-app .profile-redesigned .profile-discover-section:empty{display:none}
