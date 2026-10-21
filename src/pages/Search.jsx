@@ -26,7 +26,9 @@ export default function Search() {
   useEffect(()=>setHistory(readSearchHistory(user?.id)),[user?.id]);
   const [searchParams, setSearchParams] = useSearchParams();
   const urlQ = searchParams.get("q") || "";
-  const scope = searchParams.get("type") === "people" ? "people" : "all";
+  const lastScope=useRef("all");
+  const scope = active?(searchParams.get("type") === "people" ? "people" : "all"):lastScope.current;
+  if(active)lastScope.current=scope;
   const peopleMode = scope === "people";
   function chooseScope(next) {const params = new URLSearchParams(searchParams);params.delete("genre");if (next === "people") params.set("type", "people");else params.delete("type");setSearchParams(params, { replace: true });setGenre(null);}
   const [q, setQ] = useState(urlQ);

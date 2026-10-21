@@ -46,7 +46,7 @@ export default function ArtistDashboard() {
   const [totals, setTotals] = useState(null);
   const [followers, setFollowers] = useState(null);
   const [query,setQuery]=useState(""),[sort,setSort]=useState("plays");
-  const visibleTracks=useMemo(()=>{const term=query.trim().toLowerCase();const rows=tracks.filter(t=>!term||[t.title,t.genre,t.artist].some(value=>(value||"").toLowerCase().includes(term)));rows.sort((a,b)=>sort==="likes"?(b.like_count||0)-(a.like_count||0):sort==="title"?(a.title||"").localeCompare(b.title||""):(b.play_count||0)-(a.play_count||0));return rows;},[tracks,query,sort]);
+  const visibleTracks=useMemo(()=>{const term=query.trim().toLowerCase();const rows=tracks.filter(t=>!term||[t.title,t.genre,t.artist].some(value=>(value||"").toLowerCase().includes(term)));rows.sort((a,b)=>sort==="likes"?(b.like_count||0)-(a.like_count||0):sort==="title"?(a.title||"").localeCompare(b.title||""):(metrics?.tracks.find(row=>row.track_id===b.id)?.plays||0)-(metrics?.tracks.find(row=>row.track_id===a.id)?.plays||0));return rows;},[tracks,query,sort,metrics]);
   const [error,setError]=useState(false),[retry,setRetry]=useState(0);
 
   useEffect(() => {
@@ -200,7 +200,7 @@ export default function ArtistDashboard() {
 
       {/* Track breakdown */}
       <div className="rounded-2xl bg-card ring-1 ring-inset ring-border p-4">
-        <h2 className="text-sm font-bold mb-3">Track Breakdown</h2><div className="collection-tools"><input aria-label="Search track analytics" placeholder="Search your tracks" value={query} onChange={e=>setQuery(e.target.value)}/><select aria-label="Sort track analytics" value={sort} onChange={e=>setSort(e.target.value)}><option value="plays">Most played</option><option value="likes">Most liked</option><option value="title">Title A–Z</option></select></div>
+        <h2 className="text-sm font-bold mb-3">Track Breakdown</h2><div className="collection-tools"><input aria-label="Search track analytics" placeholder="Search your tracks" value={query} onChange={e=>setQuery(e.target.value)}/><select aria-label="Sort track analytics" value={sort} onChange={e=>setSort(e.target.value)}><option value="plays">Most played</option><option value="likes">All-time likes</option><option value="title">Title A–Z</option></select></div>
         {tracks.length === 0 ?
         <p className="text-sm text-foreground/50 text-center py-8">
             No tracks uploaded yet. Upload your first track to see analytics.

@@ -90,16 +90,21 @@ export default function PublicRecordsIndex() {
       user?.id ? readAllPages(opts=>base44.entities.ArtistSubscription.filter({created_by_id:user.id},{...opts})) : Promise.resolve([])]
       );
       const tracks=catalog.filter(track=>ids.has(track.id));
+      const known=new Set(tracks.map(track=>track.id)),missing=[...ids].filter(id=>!known.has(id));
+      for(let offset=0;offset<missing.length;offset+=200){
+       const extra=await readAllPages(opts=>base44.entities.Track.filter({id:{$in:missing.slice(offset,offset+200)}},{...opts}));tracks.push(...extra);
+      }
       const recordByName = new Map();
       (Array.isArray(records) ? records : []).forEach((a) => {
         const k = norm(a.name);
         if (k && !recordByName.has(k)) recordByName.set(k, a);
+        for(const alias of Array.isArray(a.aliases)?a.aliases:[])if(!recordByName.has(norm(alias)))recordByName.set(norm(alias),a);
       });
 
       // nameKey -> { display, record, count }
       const map = new Map();
       const bump = (display, record, track) => {
-        const key = norm(display);
+        const key = norm(record?.name||display);
         if (!key) return;
         const existing = map.get(key);
         if (existing) {
@@ -187,10 +192,11 @@ export default function PublicRecordsIndex() {
     return () => obs.disconnect();
   }, [groups]);
 
+  const draggingRef=useRef(false);
   const scrollToLetter = (key) => {
     const el = groupRefs.current[key];
     if (!el) return;
-    el.scrollIntoView({ behavior: dragging||window.matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth", block: "start" });
+    el.scrollIntoView({ behavior: draggingRef.current||window.matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth", block: "start" });
     setActiveKey(key);
   };
 
@@ -224,7 +230,7 @@ export default function PublicRecordsIndex() {
 
   const startDrag = (e) => {
     e.preventDefault();
-    setDragging(true);
+    draggingRef.current=true;setDragging(true);
     try {
       e.currentTarget.setPointerCapture(e.pointerId);
     } catch (_) {}
@@ -234,7 +240,7 @@ export default function PublicRecordsIndex() {
     if (dragging) onPick(e.clientY);
   };
   const endDrag = () => {
-    setDragging(false);
+    draggingRef.current=false;setDragging(false);
     setDragLetter("");
   };
 

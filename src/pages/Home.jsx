@@ -279,7 +279,7 @@ export default function Home() {
         <Section title="Discover" icon={Sparkles}>
             <CardRow tracks={visibleDiscover} onHide={user?.id?dismissed.hide:null} hideBusy={dismissed.busy}/>
             {dismissed.last&&<p className="text-sm mt-3" role="status">Recommendation hidden. <button className="underline" disabled={dismissed.busy} onClick={dismissed.undo}>Undo</button></p>}
-            {dismissed.error&&<p role="alert" className="text-sm mt-3">{dismissed.error}</p>}
+            {dismissed.error&&<p role="alert" className="text-sm mt-3">{dismissed.error} <button className="underline" onClick={dismissed.retry}>Retry</button></p>}
           </Section>
         }
         {fromFollowing.length > 0 &&
