@@ -1,9 +1,9 @@
 import "@/components/profile/profile-card.css";
 import "@/components/profile/profile-page-layout.css";
 import DiscoverPeople from "@/components/profile/DiscoverPeople";
-import {entityRows} from "@/lib/entityRows";
+import { entityRows } from "@/lib/entityRows";
 import ProfileMedia from "@/components/ProfileMedia";
-import {validateMotionFile} from "@/lib/profileMotion";
+import { validateMotionFile } from "@/lib/profileMotion";
 import ProfileBannerEditor from '@/components/profile/ProfileBannerEditor';
 import ProfileDetailsEditor from '@/components/profile/ProfileDetailsEditor';
 import { normalizeProfileDraft } from '@/lib/profileEditing';
@@ -301,22 +301,22 @@ export default function Profile({ ownProfileTab = false }) {
     {if (version === bannerVersion.current) {bannerBusy.current = false;setUploadingBanner(false);}}
   }
   async function uploadProfileMotion(kind, media) {
-    const avatar = kind === "avatar", lock = avatar ? avatarBusy : bannerBusy, versionRef = avatar ? avatarVersion : bannerVersion;
+    const avatar = kind === "avatar",lock = avatar ? avatarBusy : bannerBusy,versionRef = avatar ? avatarVersion : bannerVersion;
     if (!isOwn || !editMode || saving || lock.current) return false;
-    const version = ++versionRef.current, key = identity.current;lock.current = true;
+    const version = ++versionRef.current,key = identity.current;lock.current = true;
     const setBusy = avatar ? setUploadingAvatar : setUploadingBanner;setBusy(true);
     try {
       const type = validateMotionFile(media.file);
       if (type !== media.type || !media.poster || !Number.isFinite(media.duration) || media.duration > 10.05) throw Error("Choose a video or GIF loop of 10 seconds or less.");
-      const [source, poster] = await Promise.all([base44.integrations.Core.UploadFile({file:media.file}),base44.integrations.Core.UploadFile({file:media.poster})]);
+      const [source, poster] = await Promise.all([base44.integrations.Core.UploadFile({ file: media.file }), base44.integrations.Core.UploadFile({ file: media.poster })]);
       if (!source.file_url || !poster.file_url) throw Error("Your media did not upload. Please retry.");
       if (version !== versionRef.current || identity.current !== key) return false;
-      setForm(previous => ({...previous,...(avatar
-        ? {avatar_url:poster.file_url,avatar_video_url:type==="video"?source.file_url:"",avatar_gif_url:type==="gif"?source.file_url:""}
-        : {banner_url:poster.file_url,banner_mobile_url:poster.file_url,banner_use_default:false,banner_video_url:type==="video"?source.file_url:"",banner_gif_url:type==="gif"?source.file_url:""})}));
+      setForm((previous) => ({ ...previous, ...(avatar ?
+        { avatar_url: poster.file_url, avatar_video_url: type === "video" ? source.file_url : "", avatar_gif_url: type === "gif" ? source.file_url : "" } :
+        { banner_url: poster.file_url, banner_mobile_url: poster.file_url, banner_use_default: false, banner_video_url: type === "video" ? source.file_url : "", banner_gif_url: type === "gif" ? source.file_url : "" }) }));
       return true;
-    } catch (error) {if (version === versionRef.current && identity.current === key) reportActionError(error,error.message || "Your media could not upload. Please retry.");return false;}
-    finally {if (version === versionRef.current) {lock.current=false;setBusy(false);}}
+    } catch (error) {if (version === versionRef.current && identity.current === key) reportActionError(error, error.message || "Your media could not upload. Please retry.");return false;} finally
+    {if (version === versionRef.current) {lock.current = false;setBusy(false);}}
   }
   async function saveProfileSong(id, chosen) {
     if (!isOwn || !editMode || saving) return false;
@@ -327,7 +327,7 @@ export default function Profile({ ownProfileTab = false }) {
   async function saveProfile() {
     if (saveLock.current || saving || avatarBusy.current || bannerBusy.current || uploadingAvatar || uploadingBanner || !isOwn || me?.id !== targetId) return;
     const baseline = formFromProfile(profile);
-    let draft;try {draft = normalizeProfileDraft(form,baseline);} catch (error) {reportActionError(error, error.message);return;}
+    let draft;try {draft = normalizeProfileDraft(form, baseline);} catch (error) {reportActionError(error, error.message);return;}
     const changes = Object.fromEntries(Object.entries(draft).filter(([key, value]) => JSON.stringify(value) !== JSON.stringify(baseline[key])));
     if (!Object.keys(changes).length) {setEditMode(false);return;}
     const key = identity.current;saveLock.current = true;setSaving(true);
@@ -412,10 +412,10 @@ export default function Profile({ ownProfileTab = false }) {
       <div className="profile-overview flex flex-col md:flex-row gap-4 md:gap-6 mb-8">
       <div className="profile-identity relative rounded-2xl overflow-hidden ring-1 ring-inset ring-foreground/10 bg-card flex-1 min-w-0">
         <div className="profile-cover-stage" aria-hidden="true" style={backgroundColors.length ? { backgroundImage: profileGradient(backgroundColors) } : undefined}>
-          {(bannerUrl || currentBackground.mode === "auto" && coverUrl) && <ProfileMedia key={bannerUrl || coverUrl} src={bannerUrl || coverUrl} mobileSrc={bannerMobileUrl} videoSrc={!useDefaultBanner ? (editMode ? form.banner_video_url : profile?.banner_video_url) : ""} gifSrc={!useDefaultBanner ? (editMode ? form.banner_gif_url : profile?.banner_gif_url) : ""} active={isCurrentPage} style={{width:"100%",height:"100%"}}/>}
+          {(bannerUrl || currentBackground.mode === "auto" && coverUrl) && <ProfileMedia key={bannerUrl || coverUrl} src={bannerUrl || coverUrl} mobileSrc={bannerMobileUrl} videoSrc={!useDefaultBanner ? editMode ? form.banner_video_url : profile?.banner_video_url : ""} gifSrc={!useDefaultBanner ? editMode ? form.banner_gif_url : profile?.banner_gif_url : ""} active={isCurrentPage} style={{ width: "100%", height: "100%" }} />}
           <div className="profile-cover-fade" />
         </div>
-        {editMode && <ProfileBannerEditor busy={uploadingBanner || saving} hasBanner={!!form.banner_url && !form.banner_use_default} onApply={uploadBanner} onMotionApply={media=>uploadProfileMotion("banner",media)} onRemove={() => setForm((old) => ({ ...old, banner_use_default: true }))} />}
+        {editMode && <ProfileBannerEditor busy={uploadingBanner || saving} hasBanner={!!form.banner_url && !form.banner_use_default} onApply={uploadBanner} onMotionApply={(media) => uploadProfileMotion("banner", media)} onRemove={() => setForm((old) => ({ ...old, banner_use_default: true }))} />}
         {!editMode && isAdminProfile && <ProfileBadge variant="admin" />}
         {!editMode && !isAdminProfile && profile.is_artist && <ProfileBadge variant="artist" />}
         
@@ -424,7 +424,7 @@ export default function Profile({ ownProfileTab = false }) {
           <div className="profile-identity-row flex flex-col items-center md:flex-row md:items-center md:justify-center gap-4 md:gap-8">
             <div className="profile-avatar-notes">
               {!editMode && <PublicNotes key={[targetId, me?.id].join(":")} profileId={targetId} isOwn={isOwn} active={isCurrentPage} userTracks={tracks} />}
-              <ProfileAvatar user={{ ...profile, ...(editMode ? {avatar_video_url:form.avatar_video_url,avatar_gif_url:form.avatar_gif_url} : {}), avatar_url: avatarUrl, avatar_preset: editMode ? "" : profile.avatar_preset }} active={isCurrentPage} editing={editMode} busy={uploadingAvatar || saving} onUpload={uploadAvatar} onMotionUpload={media=>uploadProfileMotion("avatar",media)} onSelect={(url) => {if (!isOwn || uploadingAvatar || saving) return;avatarVersion.current++;setForm((previous) => ({ ...previous, avatar_url: url, ...(url!==previous.avatar_url || !url ? {avatar_video_url:"",avatar_gif_url:""} : {}) }));}} />
+              <ProfileAvatar user={{ ...profile, ...(editMode ? { avatar_video_url: form.avatar_video_url, avatar_gif_url: form.avatar_gif_url } : {}), avatar_url: avatarUrl, avatar_preset: editMode ? "" : profile.avatar_preset }} active={isCurrentPage} editing={editMode} busy={uploadingAvatar || saving} onUpload={uploadAvatar} onMotionUpload={(media) => uploadProfileMotion("avatar", media)} onSelect={(url) => {if (!isOwn || uploadingAvatar || saving) return;avatarVersion.current++;setForm((previous) => ({ ...previous, avatar_url: url, ...(url !== previous.avatar_url || !url ? { avatar_video_url: "", avatar_gif_url: "" } : {}) }));}} />
             </div>
 
             <div className="profile-info flex-1 min-w-0 w-full md:w-auto text-center md:text-left">
@@ -614,9 +614,9 @@ export default function Profile({ ownProfileTab = false }) {
       </div>
       </div>
       {sectionError && <div className="flex items-center justify-between gap-3 text-xs text-muted-foreground mb-4"><span>Some profile details couldn’t refresh.</span><button type="button" disabled={followingBusy || loading || editMode || saving || uploadingAvatar} onClick={load} className="underline underline-offset-2">Retry</button></div>}
-      {!editMode && <nav className="profile-section-nav" aria-label="Profile sections"><a href="#profile-music">Music</a><a href="#profile-community">Community</a><a href="#profile-discover">Discover people</a></nav>}
+      {!editMode && <nav className="profile-section-nav hidden" aria-label="Profile sections"><a href="#profile-music">Music</a><a href="#profile-community">Community</a><a href="#profile-discover">Discover people</a></nav>}
       <div className="profile-content"><section id="profile-music" className="profile-music" aria-label="Profile music">
-      <header className="profile-section-heading"><div><span className="profile-section-eyebrow">A little more personal</span><h2>{isOwn ? "Your soundtrack" : "Their soundtrack"}</h2><p>The songs and playlists that say it best.</p></div></header>
+      <header className="profile-section-heading hidden"><div><span className="profile-section-eyebrow hidden">A little more personal</span><h2>{isOwn ? "Your soundtrack" : "Their soundtrack"}</h2><p className="hidden">The songs and playlists that say it best.</p></div></header>
       <div className="profile-song-spotlight">
       <ProfileSong
                 trackId={editMode ? form.featured_track_id : profile?.featured_track_id}
