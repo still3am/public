@@ -12,7 +12,7 @@ export async function clearPersonalData({deleteOffline=false,userId=getOfflineAc
    if(!key.startsWith('public:')||key==='public:device_id')continue;
    if(key.startsWith('public:listening:')){if(deleteOffline&&key==='public:listening:'+userId)localStorage.removeItem(key);continue;}
    if(key.startsWith('public:offline:')){
-    if(deleteOffline&&(key==="public:offline:suppressed:"+userId||(key==="public:offline:legacy-owner"&&localStorage.getItem(key)===userId)))localStorage.removeItem(key);
+    if(deleteOffline&&(key==="public:offline:likes:"+encodeURIComponent(userId)||key==="public:offline:suppressed:"+userId||(key==="public:offline:legacy-owner"&&localStorage.getItem(key)===userId)))localStorage.removeItem(key);
     continue;
    }
    localStorage.removeItem(key);
