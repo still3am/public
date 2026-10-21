@@ -64,7 +64,7 @@ export default function DiscoverPeople({ profileId, active = true, layout = "dec
       if (mounted.current && current.current === scope) setChanges((old) => ({ ...old, busy: { ...old.busy, [person.id]: false } }));
     }
   }
-  const ready = state.scope === scope,people = ready ? rankDiscoverPeople(state.people.filter((p) => !blocked.has(p.id)), user) : [];
+  const ready = state.scope === scope,people = ready ? rankDiscoverPeople(state.people.filter((p) => !blocked.has(p.id) && !(changes.scope === scope && changes.following[p.id])), user) : [];
   const local = changes.scope === scope ? changes : { following: {}, busy: {}, errors: {} };
   const position = Math.max(0, people.findIndex((person) => person.id === selectedId));
   const person = people[position];
@@ -91,11 +91,11 @@ export default function DiscoverPeople({ profileId, active = true, layout = "dec
   }
   const following = !!local.following[person?.id],busy = !!local.busy[person?.id];
   const name = person?.display_name || person?.full_name || person?.username || "PUBLIC listener";
+  if (ready && !state.loading && !state.error && !people.length) return null;
   if (layout === "shelf") return <section className="profile-people-shelf" aria-label="Discover people">
     <header><div><h2>Discover People</h2><p>Find people through the music they love.</p></div><Link to="/search?type=people" aria-label="Find people" title="Find people" className="profile-people-search"><Search size={20} aria-hidden="true" /></Link></header>
     {!ready || state.loading && !people.length ? <div className="profile-people-skeleton" role="status" aria-label="Finding listeners">{[0, 1, 2, 3].map((item) => <div key={item} aria-hidden="true"><i /><span /><small /></div>)}</div> :
     state.error && !people.length ? <div className="profile-discover-status" role="status"><p>People couldn’t load.</p><button type="button" onClick={() => setRetry((n) => n + 1)}>Try again</button></div> :
-    !people.length ? <div className="profile-discover-status"><p>You’re all caught up. Search for someone you know.</p><Link to="/search?type=people">Search people</Link></div> :
     <><div className="profile-people-track" role="region" aria-label="Suggested listeners. Swipe to explore." tabIndex={0}>
       {people.slice(0, 6).map((candidate) => {
           const label = candidate.display_name || candidate.full_name || candidate.username || "PUBLIC listener";
@@ -113,7 +113,6 @@ export default function DiscoverPeople({ profileId, active = true, layout = "dec
     {state.error && people.length > 0 && <p className="profile-discover-status" role="status">Couldn’t refresh suggestions. Your current list is still here.</p>}
     {!ready || state.loading && !people.length ? <div className="profile-discover-loading" role="status" aria-label="Finding listeners"><div className="discover-skeleton-cover" /><div><i /><span><i /><i /></span></div></div> :
     state.error && !people.length ? <div className="profile-discover-status"><p>Couldn’t load people.</p><button type="button" onClick={() => setRetry((n) => n + 1)}>Try again</button></div> :
-    !person ? <div className="profile-discover-status"><p>You’re all caught up. Check back for new people.</p><button type="button" onClick={() => setRetry((n) => n + 1)}>Check again</button></div> :
     <>
       <div className="discover-swipe-area" tabIndex={0} aria-label="Suggested profile. Use left and right arrows to explore." onKeyDown={(event) => {if (event.target !== event.currentTarget) return;if (event.key === "ArrowRight" || event.key === "ArrowLeft") {event.preventDefault();navigate(event.key === "ArrowRight" ? 1 : -1);}}} onPointerDown={pointerDown} onPointerMove={pointerMove} onPointerUp={pointerEnd} onPointerCancel={pointerEnd}>
        <div style={{ transform: drag ? "translateX(" + drag + "px) rotate(" + drag / 35 + "deg)" : undefined, opacity: drag ? 1 - Math.abs(drag) / 350 : 1 }} className="discover-drag-frame">
