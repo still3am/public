@@ -614,9 +614,9 @@ export default function Profile({ ownProfileTab = false }) {
       </div>
       </div>
       {sectionError && <div className="flex items-center justify-between gap-3 text-xs text-muted-foreground mb-4"><span>Some profile details couldn’t refresh.</span><button type="button" disabled={followingBusy || loading || editMode || saving || uploadingAvatar} onClick={load} className="underline underline-offset-2">Retry</button></div>}
-      {!editMode && <nav className="profile-section-nav hidden" aria-label="Profile sections"><a href="#profile-music">Music</a><a href="#profile-community">Community</a><a href="#profile-discover">Discover people</a></nav>}
+      
       <div className="profile-content"><section id="profile-music" className="profile-music" aria-label="Profile music">
-      <header className="profile-section-heading hidden"><div><span className="profile-section-eyebrow hidden">A little more personal</span><h2>{isOwn ? "Your soundtrack" : "Their soundtrack"}</h2><p className="hidden">The songs and playlists that say it best.</p></div></header>
+      
       <div className="profile-song-spotlight">
       <ProfileSong
                 trackId={editMode ? form.featured_track_id : profile?.featured_track_id}
@@ -653,7 +653,7 @@ export default function Profile({ ownProfileTab = false }) {
             }
 
       <ProfilePlaylists userId={targetId} active={isCurrentPage} />
-      </section><div id="profile-community" className="profile-community-column"><div className="profile-community-heading hidden"><span className="profile-section-eyebrow">Leave a little love</span><h2>Community</h2><p>A place to connect, one message at a time.</p></div><aside className="profile-conversation" aria-label="Profile conversation"><ProfileComments profileId={targetId} isOwn={isOwn} active={isCurrentPage} /><SafetyControls type="user" id={targetId} userId={targetId} label="profile" /></aside></div></div>
+      </section><div id="profile-community" className="profile-community-column"><aside className="profile-conversation" aria-label="Profile conversation"><ProfileComments profileId={targetId} isOwn={isOwn} active={isCurrentPage} /><SafetyControls type="user" id={targetId} userId={targetId} label="profile" /></aside></div></div>
       {!editMode && <div id="profile-discover" className="profile-discover-section"><DiscoverPeople profileId={targetId} active={isCurrentPage} layout="shelf" /></div>}
 
       {showColors && isOwn && <ProfileColorPicker coverUrl={coverUrl} colors={coverColors} loading={colorsLoading} value={backgroundValue} onPreview={setBackgroundDraft} onSave={saveColors} onClose={closeColors} />}
