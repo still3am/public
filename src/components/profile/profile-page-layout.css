@@ -148,7 +148,7 @@
 
 /* A calmer conversation panel beneath the music. */
 .public-app .profile-redesigned .profile-comments-body{margin:0}
-.profile-comments-heading{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:20px}
+.profile-comments-heading{display:flex;align-items:center;justify-content:center;text-align:center;gap:16px;margin-bottom:20px;width:100%}
 .public-app .profile-redesigned .profile-comments-heading h2{font-size:24px;font-weight:650;letter-spacing:-.04em;line-height:1.2;margin:0}
 .profile-comments-heading p{font-size:12px;color:hsl(var(--muted-foreground));line-height:1.5;margin-top:6px}
 .public-app .profile-redesigned .profile-conversation .profile-comments-composer{display:flex;align-items:flex-end;gap:12px;margin-bottom:18px;position:static;background:transparent!important;background-image:none;box-shadow:none;padding:0}
