@@ -653,7 +653,7 @@ export default function Profile({ ownProfileTab = false }) {
             }
 
       <ProfilePlaylists userId={targetId} active={isCurrentPage} />
-      </section><div id="profile-community" className="profile-community-column"><div className="profile-community-heading"><span className="profile-section-eyebrow">Leave a little love</span><h2>Community</h2><p>A place to connect, one message at a time.</p></div><aside className="profile-conversation" aria-label="Profile conversation"><ProfileComments profileId={targetId} isOwn={isOwn} active={isCurrentPage} /><SafetyControls type="user" id={targetId} userId={targetId} label="profile" /></aside></div></div>
+      </section><div id="profile-community" className="profile-community-column"><div className="profile-community-heading hidden"><span className="profile-section-eyebrow">Leave a little love</span><h2>Community</h2><p>A place to connect, one message at a time.</p></div><aside className="profile-conversation" aria-label="Profile conversation"><ProfileComments profileId={targetId} isOwn={isOwn} active={isCurrentPage} /><SafetyControls type="user" id={targetId} userId={targetId} label="profile" /></aside></div></div>
       {!editMode && <div id="profile-discover" className="profile-discover-section"><DiscoverPeople profileId={targetId} active={isCurrentPage} layout="shelf" /></div>}
 
       {showColors && isOwn && <ProfileColorPicker coverUrl={coverUrl} colors={coverColors} loading={colorsLoading} value={backgroundValue} onPreview={setBackgroundDraft} onSave={saveColors} onClose={closeColors} />}
