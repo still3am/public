@@ -48,7 +48,7 @@ await check('automatic Public follow is caller scoped and runs once',async()=>{
  assert.equal(db.Follow[0].follower_id,'owner');assert.equal(db.Follow[0].following_id,publicId);
  assert.equal(db.User[0].public_follow_initialized,true);
  db.Follow=[];await enroll();assert.equal(db.Follow.length,0,'later unfollow is preserved');
- assert.equal(db.Notification,undefined===db.Notification?undefined:db.Notification);
+ assert.equal(db.Notification.length,1,'automatic enrollment sends no notifications');
 });
 await check('existing Public follow is not duplicated',async()=>{
  official();db.Follow=[{id:'existing',follower_id:'owner',following_id:publicId}];
