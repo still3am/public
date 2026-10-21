@@ -92,7 +92,7 @@ export default function ArtistDashboard() {
    base44.functions.invoke("musicInsights",{action:"artist",period}).then(response=>{if(!response?.data?.metrics)throw Error("Invalid analytics");if(alive)setMetrics(response.data.metrics);}).catch(()=>{if(alive)setMetricsError(true);}).finally(()=>{if(alive)setMetricsLoading(false);});
    return()=>{alive=false;};
   },[period,user?.id,user?.is_artist,retry]);
-  if(error&&!loaded)return <LoadError onRetry={()=>setRetry(n=>n+1)}/>;
+  if(error&&(!loaded||loadedUid!==user?.id))return <LoadError onRetry={()=>setRetry(n=>n+1)}/>;
   if (user?.is_artist&&loadedUid!==user.id||loading&&!loaded) {
     return (
       <div className="py-20 grid place-items-center">
