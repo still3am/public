@@ -128,6 +128,26 @@ export const AuthProvider = ({ children }) => {
   },[authChecked,isAuthenticated]);
   useEffect(()=>{window.dispatchEvent(new Event("catalog:invalidate"));},[user?.id,user?.show_explicit,user?.adult_confirmed]);
 
+  useEffect(() => {
+    if (!user?.id || user.public_follow_initialized) return;
+    let stopped = false, timer, attempts = 0, busy = false, complete = false;
+    const initialize = async () => {
+      if (stopped || busy || complete) return;
+      busy = true;
+      try {
+        const response = await base44.functions.invoke("securityGateway", {entity:"User",action:"initializePublicFollow",args:[]});
+        if (response?.data?.result?.initialized !== true) throw Error("Follow enrollment was not confirmed");
+        complete = true;
+        if (!stopped && response.data.result.changed) window.dispatchEvent(new Event("follows:changed"));
+      } catch {
+        if (!stopped && ++attempts < 3) timer = setTimeout(initialize, attempts * 5000);
+      } finally {busy = false;}
+    };
+    initialize();
+    window.addEventListener("online", initialize);
+    return () => {stopped = true;clearTimeout(timer);window.removeEventListener("online", initialize);};
+  }, [user?.id, user?.public_follow_initialized]);
+
   const logout = async (shouldRedirect = true) => {
     await clearPersonalData();
     setUser(null);
