@@ -23,7 +23,7 @@ export default async function handleRequest(req) {
   if(d.action==='ticket') {
    if(typeof d.id!=='string')err('Ticket reference required');
    const t=await s.entities.SupportTicket.get(d.id);
-   if(!(u&&!u.disabled&&!u.is_blocked&&t.user_id===u.id)&&!(typeof d.token==='string'&&t.access_hash===await hash(d.token)))err('Ticket access denied',403);
+   if(typeof d.token==='string'?t.access_hash!==await hash(d.token):!(u&&!u.disabled&&!u.is_blocked&&t.user_id===u.id))err('Ticket access denied',403);
    return Response.json({ticket:{id:t.id,subject:t.subject,message:t.message,status:t.status,reply:t.reply,created_date:t.created_date}});
   }
   if(d.action==='reply') {

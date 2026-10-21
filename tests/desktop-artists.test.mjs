@@ -25,9 +25,10 @@ const latest=all(tree,n=>n.props?.className==="artist-latest-cover")[0];latest.p
 globalThis.__player.currentTrack=tracks[2];index=0;tree=artist.default({});all(tree,n=>n.props?.className==="artist-latest-cover")[0].props.onClick();assert.equal(calls.at(-1),"toggle","latest-song control resumes/pauses the current song");
 assert.equal(all(tree,n=>n.props?.label==="Artist top songs").length,1,"top songs use the shared mouse/keyboard shelf");
 const directory=await load("src/pages/PublicRecordsIndex.jsx",common+`
+const useAuth=()=>({user:{id:"me"}}),useLibrary=()=>({ids:new Set(),revision:0}),base44={},readAllPages=async()=>[],artistKey=value=>value.toLowerCase();
 const splitArtistNames=value=>[value],getPublishedTracks=async()=>[],getArtists=async()=>[],ChevronRight=Loader2,useCoverUrl=url=>url;
 `);
-const renderDirectory=query=>{values=[false,[{display:"Aster",record:{id:"a"}},{display:"Zeta",record:{id:"z"}}],"A",query,false,"",0];index=0;return directory.default();};
+const renderDirectory=query=>{values=["library",[],false,[{display:"Aster",record:{id:"a"}},{display:"Zeta",record:{id:"z"}}],"A",query,false,"",0];index=0;return directory.default();};
 tree=renderDirectory("");let letters=all(tree,n=>n.type==="button"&&n.props["aria-label"]?.startsWith("Artists starting"));
 assert.equal(letters.length,26);assert.equal(letters.find(n=>n.props.children==="A").props.disabled,false);assert.equal(letters.find(n=>n.props.children==="B").props.disabled,true);assert.equal(letters.find(n=>n.props.children==="A").props["aria-current"],"location");
 tree=renderDirectory("zeta");letters=all(tree,n=>n.type==="button"&&n.props["aria-label"]?.startsWith("Artists starting"));assert.equal(letters.find(n=>n.props.children==="A").props.disabled,true);assert.equal(letters.find(n=>n.props.children==="Z").props.disabled,false);

@@ -15,7 +15,7 @@ globalThis.window={addEventListener:(...a)=>events.addEventListener(...a),remove
 globalThis.__globalSearch=()=>new Promise(resolve=>searches.push(resolve));
 let source=readFileSync('src/hooks/useGlobalSearch.js','utf8')
  .replace(/import \{ useCallback, useEffect, useRef, useState \}[^;]*;/,'const {useCallback,useEffect,useRef,useState}=globalThis.__hooks;')
- .replace(/import \{ globalSearch \}[^;]*;/,'const globalSearch=globalThis.__globalSearch;')
+ .replace(/import \{ globalSearch,peekSearch \}[^;]*;/,'const globalSearch=globalThis.__globalSearch,peekSearch=()=>null;')
  .replace(/import \{ useUnpublishedSync \}[^;]*;/,'const useUnpublishedSync=()=>{};');
 const {useGlobalSearch}=await import('data:text/javascript;base64,'+Buffer.from(source).toString('base64'));
 const realSet=globalThis.setTimeout,realClear=globalThis.clearTimeout;
