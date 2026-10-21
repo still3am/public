@@ -32,7 +32,7 @@ export default function DiscoverPeople({ profileId, active = true, layout = "dec
     (async () => {
       try {
         const [page, follows] = await Promise.all([
-        base44.entities.PublicProfile.filter({ visible: true }, { sort: "-updated_date", limit: 80, fields: ["user_id", "display_name", "full_name", "username", "avatar_url", "bio", "is_artist", "top_track_ids", "featured_track_id", "banner_url", "banner_mobile_url", "banner_use_default", "banner_video_url", "banner_gif_url", "avatar_video_url", "avatar_gif_url", "location", "pronouns", "top_tracks_label", "profile_background_mode", "profile_background_colors", "profile_background_motion", "profile_background_speed"] }),
+        base44.entities.PublicProfile.filter({ visible: true }, { sort: "-updated_date", limit: 80, fields: ["visible", "user_id", "display_name", "full_name", "username", "avatar_url", "bio", "is_artist", "top_track_ids", "featured_track_id", "banner_url", "banner_mobile_url", "banner_use_default", "banner_video_url", "banner_gif_url", "avatar_video_url", "avatar_gif_url", "location", "pronouns", "top_tracks_label", "profile_background_mode", "profile_background_colors", "profile_background_motion", "profile_background_speed"] }),
         uid ? readAllPages((options) => base44.entities.Follow.filter({ follower_id: uid }, { sort: "-created_date", ...options })) : Promise.resolve([])]
         );
         const profiles = Array.isArray(page) ? page : page?.items;
