@@ -65,20 +65,6 @@ export function useTrackActions(track, menuState, ui) {
     } finally{likeLock.current=false;}
   };
 
-  const toggleFollow = async () => {
-    if (!requireAuth()||!menuState.followReady||followLock.current) return;
-    followLock.current=true;const started=actionKey;
-    try {
-      const result=await setFollowState(base44,user.id,track.uploader_id,!following);
-      if(!alive.current||latestAction.current!==started)return;
-      menuState.setFollowing(result.following);
-      if(result.changed&&result.following)base44.entities.Notification.create({user_id:track.uploader_id,type:"new_follower",actor_id:user.id}).catch(()=>{});
-      if(alive.current&&latestAction.current===started){window.dispatchEvent(new CustomEvent("follows:changed",{detail:{uid:user.id,followingId:track.uploader_id,following:!following}}));toast({ title: following ? `Unfollowed ${artistName}` : `Following ${artistName}` });}
-    } catch(error) {
-      if(alive.current&&latestAction.current===started)toast({title:followError(error),variant:"destructive"});
-    } finally{followLock.current=false;}
-  };
-
   const toggleOffline = async () => {
     if(!requireAuth()) return;
     if (offline) {
@@ -177,14 +163,7 @@ export function useTrackActions(track, menuState, ui) {
     },
     { icon: Music2, label: "Go to track", onClick: () => nav(`/track/${track.id}`) },
     { icon: User, label: "Go to artist", onClick: () => nav(artistPath) },
-    canFollow && {
-      icon: following ? UserCheck : UserPlus,
-      label: following ? `Unfollow ${artistName}` : `Follow ${artistName}`,
-      active: following,
-      disabled:!!user&&!menuState.followReady,
-      onClick: toggleFollow,
-    },
-    user&&(!menuState.likeReady||(canFollow&&!menuState.followReady))&&{icon:RefreshCw,label:"Refresh song actions",keepOpen:true,onClick:menuState.reload},
+    user&&!menuState.likeReady&&{icon:RefreshCw,label:"Refresh song actions",keepOpen:true,onClick:menuState.reload},
     { icon: Radio, label: "Mix", onClick: startMix },
     { icon: Smartphone, label: "Lounge", onClick: () => requireAuth() && ui.openLounge() },
     { icon: Share2, label: "Share", onClick: share },
