@@ -1,0 +1,28 @@
+{
+  "name": "RecommendationDismissal",
+  "type": "object",
+  "properties": {
+    "user_id": {
+      "type": "string"
+    },
+    "track_id": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "user_id",
+    "track_id"
+  ],
+  "rls": {
+    "create": {
+      "data.user_id": "{{user.id}}"
+    },
+    "read": {
+      "data.user_id": "{{user.id}}"
+    },
+    "update": false,
+    "delete": {
+      "data.user_id": "{{user.id}}"
+    }
+  }
+}

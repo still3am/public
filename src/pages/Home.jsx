@@ -1,3 +1,5 @@
+import FollowingReleases from "@/components/home/FollowingReleases";
+import {useDismissedRecommendations} from "@/hooks/useDismissedRecommendations";
 import ListeningRecap from "@/components/home/ListeningRecap";
 import ScrollShelf from "@/components/ScrollShelf";
 import HomeWeather from '@/components/HomeWeather';
@@ -56,13 +58,14 @@ function Section({ title, icon: Icon, children, seeAllTo }) {
 }
 
 /** @param {any} props */
-function CardRow({ tracks }) {
+function CardRow({ tracks, onHide = null, hideBusy = false }) {
   if (!tracks?.length) return null;
   return (
     <ScrollShelf label="Recommended music" className="home-card-shelf flex gap-3 overflow-x-auto no-scrollbar pb-2 snap-x snap-mandatory">
       {tracks.map((t) =>
       <div key={t.id} className="home-shelf-card snap-start shrink-0">
           <TrackCard track={t} queue={tracks} />
+          {onHide&&<button type="button" disabled={hideBusy} className="recommendation-hide" aria-label={"Hide recommendation "+t.title} onClick={()=>onHide(t)}>Not for me</button>}
         </div>
       )}
     </ScrollShelf>);
@@ -93,6 +96,7 @@ function Skeleton() {
 export default function Home() {
   const { user } = useAuth();
   const p = usePlayer();
+  const dismissed=useDismissedRecommendations(user?.id);
   const loadVersion = useRef(0);
   const followedIds = useRef({ uid: user?.id, ids: new Set() });
   const [recent, setRecent] = useState(() => getRecentPlays().slice(0, 8));
@@ -248,7 +252,8 @@ export default function Home() {
   }
 
   const featured = newReleases[0] || trending[0] || byGenre.find((section) => section.tracks.length)?.tracks[0];
-  const discoveryQueue = discover.length ? discover : trending;
+  const visibleDiscover=discover.filter(track=>!dismissed.ids.has(track.id));
+  const discoveryQueue = (visibleDiscover.length ? visibleDiscover : trending.filter(track=>!dismissed.ids.has(track.id)));
   const featuredPlaying = p.currentTrack?.id === featured?.id && p.isPlaying;
   const playFeatured = () => {if (!featured) return;if (p.currentTrack?.id === featured.id) p.togglePlay();else {p.setShuffle(false);p.playTrackAt(newReleases.length ? newReleases : [featured], 0);}};
   return (
@@ -258,20 +263,23 @@ export default function Home() {
         
         
         {(loadError||preferencesError)&&<div role="alert" className="border border-border rounded-2xl p-4 mb-4 text-sm"><p>{loadError||"Your music preferences could not load. Discovery is using your listening history for now."}</p><button disabled={loading} className="playlist-action mt-2" onClick={()=>load(true)}>Retry</button></div>}
+        {recent.length>0&&<Section title="Continue Listening"><CardRow tracks={recent}/></Section>}
         <HomeSpotlight track={featured} playing={featuredPlaying} onPlay={playFeatured} discoveryQueue={discoveryQueue} onDiscover={()=>{p.setShuffle(false);p.playTrackAt(discoveryQueue,0);}}/>
         
         
         {genreList.length > 0 && <nav className="home-genre-links" aria-label="Browse genres">{genreList.map((genre) => <Link key={genre} to={`/search?genre=${encodeURIComponent(genre)}`}>{genre}</Link>)}</nav>}
         <Section title="New on PUBLIC" icon={Sparkles} seeAllTo="/recent"><ReleaseList tracks={newReleases} /></Section>
         <MadeForYou key={"mixes:"+user?.id} catalog={personalCatalog} genres={personalGenres} taste={personal.uid===user?.id?personal.taste:null}/>
-        {recent.length > 0 && <Section title="Recently played"><CardRow tracks={recent} /></Section>}
+        <FollowingReleases/>
         <Section title="Trending" icon={TrendingUp} seeAllTo="/top">
           <CardRow tracks={trending} />
         </Section>
 
-        {discover.length > 0 &&
+        {(visibleDiscover.length > 0||dismissed.last||dismissed.error) &&
         <Section title="Discover" icon={Sparkles}>
-            <CardRow tracks={discover} />
+            <CardRow tracks={visibleDiscover} onHide={user?.id?dismissed.hide:null} hideBusy={dismissed.busy}/>
+            {dismissed.last&&<p className="text-sm mt-3" role="status">Recommendation hidden. <button className="underline" disabled={dismissed.busy} onClick={dismissed.undo}>Undo</button></p>}
+            {dismissed.error&&<p role="alert" className="text-sm mt-3">{dismissed.error}</p>}
           </Section>
         }
         {fromFollowing.length > 0 &&
