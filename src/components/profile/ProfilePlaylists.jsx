@@ -43,7 +43,7 @@ export default function ProfilePlaylists({userId,active}){
  },[userId,active]);
  const rows=state.userId===userId?state.rows:[];
  if(!rows.length&&!state.loading&&!state.error)return null;
- return <section className="profile-public-playlists" aria-label="Public playlists"><header className="profile-playlists-heading"><h2>Public playlists</h2></header>
+ return <section className="profile-public-playlists" aria-label="Public playlists"><header className="profile-playlists-heading"><h2>Playlists</h2></header>
  {rows.length>0&&<ScrollShelf className="profile-playlist-shelf" label="Public playlists">{rows.map(playlist=><PlaylistTile key={playlist.id} playlist={playlist}/>)}</ScrollShelf>}
  {state.error&&<div className="profile-playlist-status" role="status"><span>Playlists couldn’t refresh. Previously loaded playlists are still here.</span><button type="button" onClick={()=>load()}>Retry</button></div>}
  {state.loading&&!rows.length&&<div className="profile-playlist-loading" role="status" aria-label="Loading playlists">{[0,1,2].map(index=><div key={index} aria-hidden="true"><i/><span/><small/></div>)}</div>}
