@@ -1,9 +1,9 @@
-html[data-liquid-glass=clear]{--public-glass-overlay-opacity:.94}
-html.dark[data-liquid-glass=clear]{--public-glass-overlay-opacity:.91}
+html[data-liquid-glass=clear]{--public-glass-overlay-opacity:.78}
+html.dark[data-liquid-glass=clear]{--public-glass-overlay-opacity:.76}
 html[data-liquid-glass=tinted]{--public-glass-overlay-opacity:.96}
 /* Appearance is opt-in. Images and authored artwork keep their original colors. */
-html[data-liquid-glass=clear]{--public-glass-opacity:.78;--public-glass-blur:24px}
-html.dark[data-liquid-glass=clear]{--public-glass-opacity:.72}
+html[data-liquid-glass=clear]{--public-glass-opacity:.42;--public-glass-blur:28px}
+html.dark[data-liquid-glass=clear]{--public-glass-opacity:.44}
 html[data-liquid-glass=tinted]{--public-glass-opacity:.94;--public-glass-blur:28px}
 html.dark[data-liquid-glass=tinted]{--public-glass-opacity:.90}
 html:is([data-liquid-glass=clear],[data-liquid-glass=tinted]) :where(
@@ -123,7 +123,7 @@ html:is([data-liquid-glass=clear],[data-liquid-glass=tinted]) :is(.profile-comme
 .glass-demo-heading{top:48px}
 .glass-demo-heading strong{font-size:clamp(22px,4vw,30px);font-weight:600;text-shadow:0 2px 18px #151d4140}
 .glass-demo-surface,.glass-demo-tools{
- background:linear-gradient(145deg,#ffffff35,#ffffff12 55%,#ffffff20);
+ background:linear-gradient(145deg,#ffffff24,#ffffff08 55%,#ffffff14);
  border:1px solid #ffffff55;
  -webkit-backdrop-filter:blur(22px) saturate(1.35);backdrop-filter:blur(22px) saturate(1.35);
  box-shadow:inset 0 1px 0 #ffffff66,inset 0 -1px 0 #ffffff14,0 12px 28px -12px #161e4b66;

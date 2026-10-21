@@ -130,3 +130,20 @@ html.dark[data-liquid-glass=tinted] .public-app .profile-redesigned :is(.profile
  html:is([data-liquid-glass=clear],[data-liquid-glass=tinted]) .public-app .profile-redesigned :is(.profile-conversation,.profile-rotation,.profile-feature-song){background:#f6f7f9!important}
  html.dark:is([data-liquid-glass=clear],[data-liquid-glass=tinted]) .public-app .profile-redesigned :is(.profile-conversation,.profile-rotation,.profile-feature-song){background:#191c22!important}
 }
+
+/* Clear uses the moving artwork as its material, with just enough tint for text. */
+@supports ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){
+ @media (prefers-reduced-transparency:no-preference) and (prefers-contrast:no-preference){
+  html[data-liquid-glass=clear] .public-app .profile-redesigned :is(.profile-identity,.profile-conversation,.profile-rotation,.profile-feature-song){
+   background:rgb(248 250 255/.48)!important;
+   background-image:linear-gradient(145deg,#ffffff20,transparent 44%,#ffffff08)!important;
+   -webkit-backdrop-filter:blur(32px) saturate(1.12)!important;backdrop-filter:blur(32px) saturate(1.12)!important;
+   border:1px solid #ffffff60!important;
+   box-shadow:inset 0 1px 0 #ffffff90,inset 0 -1px 0 #ffffff20,0 12px 32px -18px #10182944!important;
+  }
+  html.dark[data-liquid-glass=clear] .public-app .profile-redesigned :is(.profile-identity,.profile-conversation,.profile-rotation,.profile-feature-song){
+   background-color:rgb(14 19 29/.48)!important;border-color:#ffffff30!important;
+   box-shadow:inset 0 1px 0 #ffffff40,inset 0 -1px 0 #ffffff10,0 12px 32px -18px #0008!important;
+  }
+ }
+}
