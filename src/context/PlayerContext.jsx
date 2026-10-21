@@ -768,7 +768,7 @@ export function PlayerProvider({ children }) {
         else if (repeatRef.current === "all" && qi.length) n = 0;
       }
       if (n == null || n === -1) return; // queue ends here — let the ended handler auto-radio
-      if (gapless||shouldUseGapless(s,qi[ci],qi[n])) {
+      if (gapless||shouldUseGapless(s)) {
         const side = inactiveIdx();
         if (remaining <= 6 && sideLoadedIdRef[side].current !== qi[n].id) {
           preloadedTargetRef.current = n;
@@ -928,7 +928,7 @@ export function PlayerProvider({ children }) {
       }
       const n = nextIndex();
       if (n !== -1) {
-        if(shouldUseGapless(getTransitionSettings(),currentTrack,queueRef.current[n])){const switched=await beginGapless(n);if(token!==loadTokenRef.current||switched)return;}
+        if(shouldUseGapless(getTransitionSettings())){const switched=await beginGapless(n);if(token!==loadTokenRef.current||switched)return;}
         autoPlayOnLoadRef.current=true;setCurrentIndex(n);
         return;
       }
@@ -1394,8 +1394,8 @@ export function PlayerProvider({ children }) {
       seekforward:details=>invoke("skipBy",offset(details)),
       stop:()=>{invoke("pausePlayback");invoke("seek",0);},
     };
-    for(const [action,handler] of Object.entries(actions)){try{navigator.mediaSession.setActionHandler(action,handler);}catch{}}
-    return()=>{for(const action of Object.keys(actions)){try{navigator.mediaSession.setActionHandler(action,null);}catch{}}};
+    for(const [action,handler] of Object.entries(actions)){try{navigator.mediaSession.setActionHandler(/** @type {MediaSessionAction} */ (action),handler);}catch{}}
+    return()=>{for(const action of Object.keys(actions)){try{navigator.mediaSession.setActionHandler(/** @type {MediaSessionAction} */ (action),null);}catch{}}};
   },[]);
 
   useEffect(()=>()=>{cancelNotePreviewRef.current();els().forEach(a=>a?.pause());if(crossfadeTimerRef.current)clearTimeout(crossfadeTimerRef.current);if(sleepTimerRef.current)clearTimeout(sleepTimerRef.current);audioCtxRef.current?.close().catch(()=>{});},[]);

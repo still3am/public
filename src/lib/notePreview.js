@@ -1,5 +1,5 @@
 // A preview owns its audio and a lease on the unchanged main session.
-export function createNotePreview({acquire,createAudio=()=>new Audio(),onChange=()=>{},resumeOnEnd=false}){
+export function createNotePreview({acquire,createAudio=()=>new Audio(),onChange=(_state)=>{},resumeOnEnd=false}){
  let session=null,version=0;
  const notify=()=>onChange(session?{trackId:session.id,playing:!session.audio.paused,loading:session.loading}:{trackId:null,playing:false,loading:false});
  function stop(resume=true){

@@ -25,6 +25,7 @@
     ]
   },
   "include": [
+    "src/types/**/*.d.ts",
     "src/components/**/*.js",
     "src/pages/**/*.jsx",
     "src/Layout.jsx"

@@ -1,7 +1,7 @@
 import {createContext,useContext,useEffect,useLayoutEffect,useState} from "react";
 import {useAuth} from "@/lib/AuthContext";
 import {glassKey,normalizeGlass,readGlass,saveGlass} from "@/lib/liquidGlass";
-const Context=createContext({mode:"off",persisted:true,setMode:()=>{}});
+const Context=createContext({mode:"off",persisted:true,setMode:(_value)=>{}});
 function storage(){try{return window.localStorage;}catch{return null;}}
 export function LiquidGlassProvider({children}){
  const {user}=useAuth(),uid=user?.id||"guest";

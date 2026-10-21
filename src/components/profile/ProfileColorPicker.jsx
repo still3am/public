@@ -20,6 +20,7 @@ const PRESETS=[
  {name:"Dune",colors:["#92604d","#edc79a","#849c91"]}
 ];
 // Broad color pools keep every palette legible at thumbnail size without extra WebGL canvases.
+/** @param {string[]} colors */
 const presetGradient=([a,b,c])=>
  `radial-gradient(ellipse at 12% 12%, ${b} 0%, ${b}00 64%),radial-gradient(ellipse at 90% 85%, ${c} 0%, ${c}00 68%),linear-gradient(135deg, ${a} 15%, ${a} 55%, ${c} 100%)`;
 const valid=color=>/^#[0-9a-f]{6}$/i.test(color);
