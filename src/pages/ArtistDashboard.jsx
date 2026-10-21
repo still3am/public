@@ -95,7 +95,7 @@ export default function ArtistDashboard() {
   if(error&&(!loaded||loadedUid!==user?.id))return <LoadError onRetry={()=>setRetry(n=>n+1)}/>;
   if (user?.is_artist&&loadedUid!==user.id||loading&&!loaded) {
     return (
-      <div className="py-20 grid place-items-center">
+      <div role="status" aria-label="Loading page" className="py-20 grid place-items-center">
         <Loader2 className="animate-spin" />
       </div>);
 

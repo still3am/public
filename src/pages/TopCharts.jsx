@@ -50,7 +50,7 @@ export default function TopCharts() {
 
   if (loading && !tracks.length)
   return (
-    <div className="py-20 grid place-items-center">
+    <div role="status" aria-label="Loading page" className="py-20 grid place-items-center">
         <Loader2 className="animate-spin" />
       </div>);
 

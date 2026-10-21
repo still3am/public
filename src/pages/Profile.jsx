@@ -374,7 +374,7 @@ export default function Profile({ ownProfileTab = false }) {
   if (loadError && !profile) return <LoadError onRetry={load} />;
   if (loading && !profile)
   return (
-    <div className="py-20 grid place-items-center">
+    <div role="status" aria-label="Loading page" className="py-20 grid place-items-center">
         <Loader2 className="animate-spin" />
       </div>);
 

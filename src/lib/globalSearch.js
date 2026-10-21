@@ -49,6 +49,10 @@ function rank(track, lower) {
   return 0;
 }
 
+function scoreArtist(artist,query){
+ const aliases=Array.isArray(artist.aliases)?artist.aliases:typeof artist.aliases==='string'?artist.aliases.split(/[,;|]/):[];
+ return Math.max(searchScore(artist.name,query),...aliases.map(alias=>searchScore(alias,query)));
+}
 // Name matches outrank bio / location matches, so the artist the user is
 // actually typing sits first instead of wherever the record was last touched.
 function rankArtist(artist, lower) {
@@ -82,7 +86,7 @@ function pruneArtists(artists, lower) {
     }
   }
   return [...byName.values()]
-    .sort((a, b) => rankArtist(b, lower) - rankArtist(a, lower))
+    .sort((a, b) => scoreArtist(b,lower)-scoreArtist(a,lower)||rankArtist(b, lower) - rankArtist(a, lower))
     .slice(0, ARTIST_SHOWN);
 }
 
@@ -230,8 +234,8 @@ async function runSearch(query,scope="all") {
   }
   const candidates=[...new Map([...rows(trackRes.value),...catalog.filter(t=>scoreTrack(t,Q)>0)].map(t=>[t.id,t])).values()];
   const tracks=candidates.sort((a,b)=>scoreTrack(b,Q)-scoreTrack(a,Q)||rank(b,lower)-rank(a,lower)||(b.play_count||0)-(a.play_count||0)).slice(0,TRACK_LIMIT);
-  const artistMatches=artistCatalog.filter(a=>Math.max(searchScore(a.name,Q),...(a.aliases||[]).map(alias=>searchScore(alias,Q)))>0);
-  const found=pruneArtists([...rows(artistRes.value),...artistMatches],lower).sort((a,b)=>searchScore(b.name,Q)-searchScore(a.name,Q));
+  const artistMatches=artistCatalog.filter(a=>scoreArtist(a,Q)>0);
+  const found=pruneArtists([...rows(artistRes.value),...artistMatches],lower).sort((a,b)=>scoreArtist(b,Q)-scoreArtist(a,Q));
   const covers = await artistCovers(found.map((a) => a.name).filter(Boolean));
   const artists = found.map((artist) => ({
     ...artist,

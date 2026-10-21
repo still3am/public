@@ -134,7 +134,7 @@ export default function TrackDetail() {
   if (loadError && !track) return <LoadError onRetry={load} />;
   if (loading) {
     return (
-      <div className="py-20 grid place-items-center">
+      <div role="status" aria-label="Loading page" className="py-20 grid place-items-center">
         <Loader2 className="animate-spin" />
       </div>);
 
