@@ -951,3 +951,6 @@ html:not(.dark) .profile-page .profile-identity,html:not(.dark) .profile-page .p
 @media(min-width:768px){:root{--public-content-clearance:calc(8rem + env(safe-area-inset-bottom,0px));}}
 @media(max-width:767px){.support-page input,.support-page textarea,.collection-tools input,.collection-tools select{font-size:16px;}.collection-tools>label{width:100%;}.directory-page{padding-right:12px;}.directory-page .record-directory-card{min-height:72px;}}
 @media(prefers-reduced-motion:reduce){.page-surface [class*="scroll-smooth"]{scroll-behavior:auto;}}
+
+.main-content{padding-bottom:max(var(--public-content-clearance),var(--public-measured-clearance,0px));}
+@media(max-width:767px){html[data-public-editing-keyboard]:not([data-mobile-search-keyboard]) .public-app .mobile-tab-bar,html[data-public-editing-keyboard] .public-app .player-surface{visibility:hidden;pointer-events:none;}}

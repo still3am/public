@@ -1,3 +1,4 @@
+import {useContentClearance} from "@/hooks/useContentClearance";
 import {usePlayer} from "@/context/PlayerContext";
 import { useRef } from "react";
 import { Outlet, useLocation } from "react-router-dom";
@@ -37,6 +38,7 @@ export default function Layout() {
   const momentsRoute = user?.role === "admin" && /^\/moments(?:\/[^/]+)?\/?$/.test(location.pathname);
   const {currentTrack}=usePlayer();
   useScrollRestore();
+  useContentClearance(currentTrack?.id,location.pathname);
 
   const match = TABS.find((t) => t.path === location.pathname);
   const activeTab = match && (!match.requiresAuth || user) ? match : null;
