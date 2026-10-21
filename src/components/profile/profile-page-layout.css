@@ -90,13 +90,13 @@
 
 /* Portrait-led discovery, inspired by the reference profile selector. */
 .public-app .profile-redesigned .profile-community-column .profile-people-shelf{padding:24px 0 18px;border-radius:26px}
-.public-app .profile-redesigned .profile-community-column .profile-people-shelf>header{padding-inline:20px;margin-bottom:26px;align-items:flex-start}
+.public-app .profile-redesigned .profile-community-column .profile-people-shelf>header{padding-inline:22px;margin-bottom:28px;align-items:center;flex-wrap:nowrap;gap:16px}
 .public-app .profile-redesigned .profile-community-column .profile-people-shelf h2{font-size:34px;line-height:1;letter-spacing:-.055em;font-weight:700;max-width:6ch}
 .public-app .profile-redesigned .profile-community-column .profile-people-shelf header p{display:none}
 .public-app .profile-redesigned .profile-community-column .profile-people-track{grid-auto-flow:row;grid-template-columns:repeat(2,minmax(0,1fr));grid-auto-columns:auto;gap:26px 14px;padding:0 16px 8px;overflow:visible;scroll-snap-type:none}
 .public-app .profile-redesigned .profile-person-tile{padding:0;border:0;border-radius:0;background:transparent;align-items:center}
 .public-app .profile-redesigned .profile-person-identity{width:100%;gap:7px}
-.public-app .profile-redesigned .profile-person-portrait{display:block;width:100%;max-width:180px;aspect-ratio:1;border-radius:50%;overflow:hidden;background:hsl(var(--foreground)/.05)}
+.public-app .profile-redesigned .profile-person-portrait{display:block;width:100%;max-width:180px;aspect-ratio:1;border-radius:50%;overflow:hidden;background:hsl(var(--foreground)/.05);box-shadow:0 8px 22px -14px #0008,0 0 0 1px hsl(var(--foreground)/.1)}
 .public-app .profile-redesigned .profile-person-portrait>*{width:100%!important;height:100%!important;max-width:none;border-radius:50%!important;object-fit:cover}
 .public-app .profile-redesigned .profile-person-identity>strong{font-size:14px;font-weight:550;letter-spacing:-.025em;margin-top:4px;line-height:1.35}
 .public-app .profile-redesigned .profile-person-identity>small{min-height:0;padding:3px 6px;border-radius:4px;background:hsl(var(--foreground)/.055);font-size:9px;letter-spacing:.08em;text-transform:uppercase;line-height:1.35}
