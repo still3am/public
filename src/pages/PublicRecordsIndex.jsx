@@ -75,6 +75,7 @@ export default function PublicRecordsIndex() {
   const [view,setView]=useState("library"),[subscriptions,setSubscriptions]=useState([]);
   const [loadError,setLoadError]=useState(false);
   const [artists, setArtists] = useState(null); // null = loading
+  const [owner,setOwner]=useState(user?.id);
   const [activeKey, setActiveKey] = useState("");
   const [query,setQuery]=useState("");
   const requestVersion=useRef(0);
@@ -136,7 +137,7 @@ export default function PublicRecordsIndex() {
       const list = [...map.values()].sort((a, b) =>
       norm(a.display).localeCompare(norm(b.display))
       );
-      if(request===requestVersion.current)setArtists(list);
+      if(request===requestVersion.current){setArtists(list);setOwner(user?.id);}
     } catch {if(request===requestVersion.current)setLoadError(true);}
   };
 
@@ -147,7 +148,7 @@ export default function PublicRecordsIndex() {
 
   const groups = useMemo(() => {
     const map = {};
-    (artists || []).filter(a=>!query.trim()||norm(a.display).includes(norm(query))).forEach((a) => {
+    (owner===user?.id?artists||[]:[]).filter(a=>!query.trim()||norm(a.display).includes(norm(query))).forEach((a) => {
       const key = letterOf(a.display);
       if (!map[key]) map[key] = [];
       map[key].push(a);
@@ -155,7 +156,7 @@ export default function PublicRecordsIndex() {
     return Object.keys(map).
     sort((x, y) => x === "#" ? 1 : y === "#" ? -1 : x.localeCompare(y)).
     map((key) => ({ key, items: map[key] }));
-  }, [artists,query]);
+  }, [artists,query,owner,user?.id]);
 
   const letters = groups.map((g) => g.key);
   const allLetters = useMemo(
@@ -252,7 +253,7 @@ export default function PublicRecordsIndex() {
       {!!groups.length&&<nav className="directory-desktop-alphabet hidden md:flex" aria-label="Jump to artist letter">{allLetters.map(letter=><button type="button" key={letter} disabled={!letters.includes(letter)} aria-label={`Artists starting with ${letter}`} aria-current={activeKey===letter&&letters.includes(letter)?"location":undefined} onClick={()=>scrollToLetter(letter)}>{letter}</button>)}</nav>}
       </div>
       <PullToRefresh onRefresh={()=>load(true)}>
-        {artists === null ?
+        {artists === null||owner!==user?.id ?
         <div className="flex justify-center py-20">
             <Loader2 className="animate-spin text-foreground/40" />
           </div> :

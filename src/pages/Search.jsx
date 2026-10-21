@@ -7,7 +7,7 @@ import {
   X,
   ArrowLeft } from
 "lucide-react";
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams,useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { getPublishedTracks, peekPublishedTracks } from "@/lib/catalogCache";
 import { useGlobalSearch } from "@/hooks/useGlobalSearch";
@@ -21,6 +21,7 @@ import EmptyState from "@/components/EmptyState";
 
 export default function Search() {
   const {user}=useAuth();
+  const location=useLocation(),active=location.pathname==="/search";
   const [history,setHistory]=useState(()=>readSearchHistory(user?.id));
   useEffect(()=>setHistory(readSearchHistory(user?.id)),[user?.id]);
   const [searchParams, setSearchParams] = useSearchParams();
@@ -37,9 +38,9 @@ export default function Search() {
   // The desktop sidebar field drives this page through the same ?q= parameter,
   // so results follow it as the user types there.
   useEffect(() => {
-    setQ(urlQ);
-  }, [urlQ]);
-  useEffect(() => setGenre(searchParams.get("genre") || null), [searchParams]);
+    if(active)setQ(urlQ);
+  }, [urlQ,active]);
+  useEffect(() => {if(active)setGenre(searchParams.get("genre") || null);}, [searchParams,active]);
 
   const updateQuery = (next) => {
     setQ(next);
@@ -67,16 +68,10 @@ export default function Search() {
   useGlobalSearch(q, scope);
 
   useEffect(()=>{
-    if(!hasQuery||searching||failed||peopleFailed)return;
+    if(!active||!hasQuery||searching||failed||peopleFailed)return;
     const timer=setTimeout(()=>setHistory(rememberSearch(user?.id,q)),1400);
     return()=>clearTimeout(timer);
-  },[q,hasQuery,searching,failed,peopleFailed,user?.id]);
-  useEffect(()=>{
-    const key="public:search-scroll:"+(user?.id||"guest");
-    let frame=0;try{const saved=JSON.parse(sessionStorage.getItem(key)||"null");if(saved?.query===window.location.search)frame=requestAnimationFrame(()=>window.scrollTo(0,saved.y));}catch{}
-    const save=()=>{try{sessionStorage.setItem(key,JSON.stringify({query:window.location.search,y:window.scrollY}));}catch{}};
-    window.addEventListener("scroll",save,{passive:true});return()=>{cancelAnimationFrame(frame);window.removeEventListener("scroll",save);};
-  },[user?.id]);
+  },[q,hasQuery,searching,failed,peopleFailed,user?.id,active]);
   // Keep the browse crate honest if an admin unpublishes a track mid-session.
   useUnpublishedSync((id) => {
     setAllTracks((prev) => prev.filter((t) => t.id !== id));
