@@ -5,7 +5,7 @@ import {readAllPages} from "@/lib/readPages";
 export function useDismissedRecommendations(uid){
  const [revision,setRevision]=useState(0);
  const [state,setState]=useState({uid:null,rows:[],last:null}),[error,setError]=useState(""),[busy,setBusy]=useState(false);
- const account=useRef(uid),lock=useRef(false);account.current=uid;
+ const account=useRef(uid),lock=useRef(null);account.current=uid;
  useEffect(()=>{let alive=true;setError("");setBusy(false);lock.current=null;if(!uid){setState({uid:null,rows:[],last:null});return;}
  readAllPages(opts=>base44.entities.RecommendationDismissal.filter({user_id:uid},{...opts})).then(rows=>{if(alive)setState({uid,rows,last:null});}).catch(()=>{if(alive)setError("Hidden recommendations could not load. Refresh to retry.");});return()=>{alive=false;};},[uid,revision]);
  async function hide(track){if(!uid||lock.current)return;const token={};lock.current=token;setBusy(true);setError("");try{

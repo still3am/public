@@ -28,7 +28,7 @@ const directory=await load("src/pages/PublicRecordsIndex.jsx",common+`
 const useAuth=()=>({user:{id:"me"}}),useLibrary=()=>({ids:new Set(),revision:0}),base44={},readAllPages=async()=>[],artistKey=value=>value.toLowerCase();
 const splitArtistNames=value=>[value],getPublishedTracks=async()=>[],getArtists=async()=>[],ChevronRight=Loader2,useCoverUrl=url=>url;
 `);
-const renderDirectory=query=>{values=["library",[],false,[{display:"Aster",record:{id:"a"}},{display:"Zeta",record:{id:"z"}}],"A",query,false,"",0];index=0;return directory.default();};
+const renderDirectory=query=>{values=["library",[],false,[{display:"Aster",record:{id:"a"}},{display:"Zeta",record:{id:"z"}}],"me","A",query,false,"",0];index=0;return directory.default();};
 tree=renderDirectory("");let letters=all(tree,n=>n.type==="button"&&n.props["aria-label"]?.startsWith("Artists starting"));
 assert.equal(letters.length,26);assert.equal(letters.find(n=>n.props.children==="A").props.disabled,false);assert.equal(letters.find(n=>n.props.children==="B").props.disabled,true);assert.equal(letters.find(n=>n.props.children==="A").props["aria-current"],"location");
 tree=renderDirectory("zeta");letters=all(tree,n=>n.type==="button"&&n.props["aria-label"]?.startsWith("Artists starting"));assert.equal(letters.find(n=>n.props.children==="A").props.disabled,true);assert.equal(letters.find(n=>n.props.children==="Z").props.disabled,false);
