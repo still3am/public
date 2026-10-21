@@ -406,7 +406,7 @@ export default function Profile({ ownProfileTab = false }) {
 
     {backgroundColors.length > 0 && <MotionGradient colors={backgroundColors} motion={currentBackground.motion} speed={currentBackground.speed} active={isCurrentPage && !showColors && !showSettings && !showQR && !showDelete && !followList} pauseWhenCovered className="profile-artwork-background fixed inset-0 pointer-events-none z-0" style={{ opacity: 1 }} />}
     {!backgroundColors.length && currentBackground.mode === "auto" && coverUrl && <div aria-hidden="true" className="profile-artwork-background fixed inset-0 pointer-events-none z-0" style={{ backgroundImage: `url(${JSON.stringify(coverUrl)})`, backgroundSize: "cover", backgroundPosition: "center", filter: "blur(45px) saturate(1.35)", transform: "scale(1.12)", opacity: 1 }} />}
-    <div className={`profile-page profile-redesigned max-w-6xl mx-auto relative z-10 ${editMode ? "profile-is-editing" : ""}`}>
+    <div className={`profile-page profile-redesigned profile-track-inspired max-w-6xl mx-auto relative z-10 ${editMode ? "profile-is-editing" : ""}`}>
       {editMode && <div className="profile-edit-toolbar" role="region" aria-label="Profile editing"><div><strong>Edit profile</strong><p>Changes apply when you save.</p></div><div><button type="button" className="playlist-action" disabled={saving} onClick={cancelEdit}>Cancel</button><button type="button" className="chrome-button" disabled={saving || uploadingAvatar || uploadingBanner} onClick={saveProfile}>{saving ? <Loader2 size={16} className="animate-spin" /> : <Save size={16} />} {saving ? 'Saving…' : 'Save changes'}</button></div></div>}
 
       <div className="profile-overview flex flex-col md:flex-row gap-4 md:gap-6 mb-8">
