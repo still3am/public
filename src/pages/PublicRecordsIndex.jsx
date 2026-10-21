@@ -1,3 +1,8 @@
+import {useAuth} from "@/lib/AuthContext";
+import {useLibrary} from "@/context/LibraryContext";
+import {base44} from "@/api/base44Client";
+import {readAllPages} from "@/lib/readPages";
+import {artistKey} from "@/lib/artistReleaseModel";
 import LoadError from '@/components/LoadError';
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "react-router-dom";
@@ -66,6 +71,8 @@ function RecordArtwork({ source, name }) {
 }
 
 export default function PublicRecordsIndex() {
+  const {user}=useAuth(),{ids,revision}=useLibrary();
+  const [view,setView]=useState("library"),[subscriptions,setSubscriptions]=useState([]);
   const [loadError,setLoadError]=useState(false);
   const [artists, setArtists] = useState(null); // null = loading
   const [activeKey, setActiveKey] = useState("");
@@ -76,10 +83,12 @@ export default function PublicRecordsIndex() {
   const load = async (fresh=false) => {
     const request=++requestVersion.current;setLoadError(false);
     try {
-      const [records, tracks] = await Promise.all([
+      const [records, catalog, followed] = await Promise.all([
       getArtists(fresh),
-      getPublishedTracks(fresh)]
+      getPublishedTracks(fresh),
+      user?.id ? readAllPages(opts=>base44.entities.ArtistSubscription.filter({created_by_id:user.id},{...opts})) : Promise.resolve([])]
       );
+      const tracks=catalog.filter(track=>ids.has(track.id));
       const recordByName = new Map();
       (Array.isArray(records) ? records : []).forEach((a) => {
         const k = norm(a.name);
@@ -116,17 +125,14 @@ export default function PublicRecordsIndex() {
         segs.forEach((seg) => bump(seg, recordByName.get(norm(seg)) || null, t));
       });
 
-      // Make sure Artist records with zero published tracks still appear.
-      recordByName.forEach((rec, key) => {
-        if (!map.has(key)) {
-          map.set(key, { display: rec.name, record: rec, count: 0 });
-        } else {
-          // prefer the canonical record name/casing
-          map.get(key).display = rec.name;
-          map.get(key).record = rec;
+      if(view==="followed"){
+        map.clear();
+        for(const subscription of followed){
+          const record=recordByName.get(artistKey(subscription.artist_name));
+          map.set(subscription.artist_key,{display:record?.name||subscription.artist_name,record:record||null,count:catalog.filter(t=>splitNames(t.artist).some(name=>artistKey(name)===subscription.artist_key)).length});
         }
-      });
-
+      }
+      if(request===requestVersion.current)setSubscriptions(followed);
       const list = [...map.values()].sort((a, b) =>
       norm(a.display).localeCompare(norm(b.display))
       );
@@ -136,7 +142,8 @@ export default function PublicRecordsIndex() {
 
   useEffect(() => {
     load();return()=>{requestVersion.current++;};
-  }, []);
+  }, [user?.id,ids,revision,view]);
+  useEffect(()=>{const refresh=()=>load(true);window.addEventListener("artist-follows:changed",refresh);return()=>window.removeEventListener("artist-follows:changed",refresh);},[user?.id,ids,view]);
 
   const groups = useMemo(() => {
     const map = {};
@@ -233,11 +240,13 @@ export default function PublicRecordsIndex() {
   if(loadError&&artists===null)return <LoadError onRetry={()=>load(true)}/>;
   return (
     <div className="directory-page max-w-3xl mx-auto pb-10">
-      <header className="page-intro record-directory-intro"><p className="eyebrow">Public Record</p><h1>Behind the music.</h1><p>Your artists. Their songs. Every record.</p>{artists && <span className="record-directory-count">{artists.length} {artists.length === 1 ? "artist" : "artists"} in PUBLIC</span>}</header>
+      <header className="page-intro record-directory-intro"><p className="eyebrow">Public Record</p><h1>Behind the music.</h1><p>Artists from your saved music, together in one place.</p>{artists && <span className="record-directory-count">{artists.length} {artists.length === 1 ? "artist" : "artists"} {view==="library"?"in your library":"followed"}</span>}</header>
       
 
       
 
+      <div className="view-switch mb-5" role="group" aria-label="Your artists"><button aria-pressed={view==="library"} onClick={()=>setView("library")}>Library</button><button aria-pressed={view==="followed"} onClick={()=>setView("followed")}>Followed{ subscriptions.length ? " · "+subscriptions.length : ""}</button></div>
+      {loadError&&artists!==null&&<LoadError onRetry={()=>load(true)}/>}
       <div className="directory-toolbar">
       <div className="collection-tools"><input aria-label="Search the artist directory" placeholder="Find an artist" value={query} onChange={e=>setQuery(e.target.value)} onKeyDown={e=>{if(e.key==="Escape")setQuery("");}}/>{query&&<button className="playlist-action" onClick={()=>setQuery("")}>Clear search</button>}</div>
       {!!groups.length&&<nav className="directory-desktop-alphabet hidden md:flex" aria-label="Jump to artist letter">{allLetters.map(letter=><button type="button" key={letter} disabled={!letters.includes(letter)} aria-label={`Artists starting with ${letter}`} aria-current={activeKey===letter&&letters.includes(letter)?"location":undefined} onClick={()=>scrollToLetter(letter)}>{letter}</button>)}</nav>}
@@ -252,9 +261,9 @@ export default function PublicRecordsIndex() {
             <div className="w-16 h-16 rounded-full bg-foreground/[0.05] grid place-items-center mx-auto mb-4">
               <Mic2 size={28} className="text-foreground/40" />
             </div>
-            <h2 className="text-lg font-extrabold tracking-tight mb-1">No records yet</h2>
+            <h2 className="text-lg font-extrabold tracking-tight mb-1">No artists here yet</h2>
             <p className="text-sm text-foreground/50 max-w-xs mx-auto">
-              Artists show up here once a track names them in its credits.
+              {view==="library"?"Save songs to your library to see their artists here.":"Follow an artist from their page to keep them here."} <Link to="/search" className="block underline mt-3">Find music</Link>
             </p>
           </div> :
 
@@ -311,7 +320,7 @@ export default function PublicRecordsIndex() {
           onPointerMove={moveDrag}
           onPointerUp={endDrag}
           onPointerCancel={endDrag}
-          className="md:hidden fixed right-1 md:right-2 top-1/2 -translate-y-1/2 z-30 touch-none select-none px-0.5 md:px-1 py-1 md:py-1.5 rounded-full bg-foreground/[0.05] backdrop-blur-md border border-foreground/[0.06] flex flex-col items-center max-h-[78vh] overflow-hidden">
+          className="md:hidden fixed right-1 md:right-2 top-1/2 -translate-y-1/2 z-30 touch-none select-none px-0.5 md:px-1 py-1 md:py-1.5 rounded-full bg-foreground/[0.05] backdrop-blur-md border border-foreground/[0.06] flex flex-col items-center max-h-[50dvh] overflow-hidden">
 
           {allLetters.map((L) => {
           const has = letters.includes(L);
@@ -319,7 +328,7 @@ export default function PublicRecordsIndex() {
           return (
             <span
               key={L}
-              className={`font-semibold leading-none w-3 h-3 md:w-4 md:h-4 grid place-items-center transition-colors duration-150 text-[8px] md:text-[10px] ${
+              className={`font-semibold leading-none w-5 h-4 md:w-4 md:h-4 grid place-items-center transition-colors duration-150 text-[8px] md:text-[10px] ${
               has ? "text-foreground/55" : "text-foreground/20"} ${
               isActive || dragLetter === L ? "text-foreground" : ""}`}>
                 

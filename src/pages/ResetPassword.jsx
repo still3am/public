@@ -15,6 +15,7 @@ export default function ResetPassword() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [expired,setExpired]=useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -27,9 +28,13 @@ export default function ResetPassword() {
     setLoading(true);
     try {
       await base44.auth.resetPassword({ resetToken, newPassword });
+      try{sessionStorage.removeItem("public:reset-email");}catch{}
       window.location.href = "/login";
     } catch (err) {
-      setError(err.message || "Failed to reset password");
+      const status=err.status??err.response?.status;
+      const invalid=[400,401,404,410,422].includes(status)&&!/password.*(?:weak|short|length|character)/i.test(err.message||"");
+      setExpired(invalid);
+      setError(invalid?"This reset link has expired or has already been used. Request a new link and open the newest email.":"Your password could not reset. Check your connection and try again.");
     } finally {
       setLoading(false);
     }
@@ -62,7 +67,7 @@ export default function ResetPassword() {
     >
       {error && (
         <div className="mb-4 p-3 rounded-lg bg-destructive/10 text-destructive text-sm">
-          {error}
+          {error}{expired&&<Link to="/forgot-password" className="block mt-3 underline font-semibold">Request a new reset link</Link>}
         </div>
       )}
       <form onSubmit={handleSubmit} className="space-y-4">

@@ -9,7 +9,7 @@ import { Mail, ArrowLeft, Loader2 } from "lucide-react";
 import AuthLayout from "@/components/AuthLayout";
 
 export default function ForgotPassword() {
-  const [email, setEmail] = useState("");
+  const [email, setEmail] = useState(()=>{try{return sessionStorage.getItem("public:reset-email")||"";}catch{return "";}});
   const [loading, setLoading] = useState(false);
   const [sent, setSent] = useState(false);
   const [error,setError]=useState("");
@@ -17,6 +17,7 @@ export default function ForgotPassword() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if(loading)return;
+    try{sessionStorage.setItem("public:reset-email",email.trim());}catch{}
     setLoading(true);setError("");
     try {
       await base44.auth.resetPasswordRequest(email.trim());setSent(true);
@@ -42,7 +43,8 @@ export default function ForgotPassword() {
       {error&&<p role="alert" className="text-sm text-destructive mb-3">{error}</p>}
       {sent ? (
         <p className="text-sm text-foreground text-center">
-          If an account exists with that email, you'll receive a password reset link shortly.
+          If an account exists with that email, you'll receive a password reset link shortly. Use the newest email; older links may expire.
+          <button type="button" className="block mx-auto mt-4 underline" onClick={()=>setSent(false)}>Check email or request another link</button>
         </p>
       ) : (
         <form onSubmit={handleSubmit} className="space-y-4">
