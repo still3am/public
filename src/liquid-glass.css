@@ -116,3 +116,30 @@ html:is([data-liquid-glass=clear],[data-liquid-glass=tinted]) :is(.profile-comme
  html:is([data-liquid-glass=clear],[data-liquid-glass=tinted]) .music-card{-webkit-backdrop-filter:none!important;backdrop-filter:none!important}
 }
 
+
+/* Flowing color behind a single optical layer replaces the opaque demo backdrop. */
+.liquid-glass-demo{background:#303754;border:1px solid #ffffff18;box-shadow:0 12px 36px -24px #0008}
+.glass-demo-gradient{position:absolute!important;inset:0;z-index:-1;pointer-events:none}
+.glass-demo-heading{top:48px}
+.glass-demo-heading strong{font-size:clamp(22px,4vw,30px);font-weight:600;text-shadow:0 2px 18px #151d4140}
+.glass-demo-surface,.glass-demo-tools{
+ background:linear-gradient(145deg,#ffffff35,#ffffff12 55%,#ffffff20);
+ border:1px solid #ffffff55;
+ -webkit-backdrop-filter:blur(22px) saturate(1.35);backdrop-filter:blur(22px) saturate(1.35);
+ box-shadow:inset 0 1px 0 #ffffff66,inset 0 -1px 0 #ffffff14,0 12px 28px -12px #161e4b66;
+}
+.glass-demo-surface{border-radius:24px;padding:16px}
+.glass-demo-tools{padding:13px 24px;gap:28px}
+.glass-demo-cover{background:linear-gradient(145deg,#ffffffb0,#ffffff25);border:1px solid #ffffff55;color:#fff;box-shadow:inset 0 1px 0 #ffffff66}
+.glass-demo-tinted .glass-demo-surface,.glass-demo-tinted .glass-demo-tools{background:linear-gradient(145deg,#252d4dbf,#1a2039a8);border-color:#ffffff30}
+.glass-demo-off .glass-demo-surface,.glass-demo-off .glass-demo-tools{background:#20232e;border-color:#ffffff18;box-shadow:none;-webkit-backdrop-filter:none;backdrop-filter:none}
+.glass-mode-options>button{border-radius:20px;background:hsl(var(--foreground)/.02);min-height:104px}
+.glass-mode-options>button[aria-checked=true]{background:hsl(var(--foreground)/.055);border-color:hsl(var(--foreground)/.30);box-shadow:inset 0 1px 0 hsl(var(--foreground)/.06)}
+.glass-mode-swatch{background:linear-gradient(125deg,#5477b8,#b98db8 55%,#81b8b0);width:58px;height:42px;border-radius:12px}
+.glass-mode-swatch>span{background:#ffffff28;border-color:#ffffff8a;box-shadow:inset 0 1px 0 #ffffff66,0 4px 8px #0002}
+.swatch-tinted>span{background:#202842ba;border-color:#ffffff40}
+.swatch-off>span{background:#20232e;border-color:#ffffff20;box-shadow:none}
+@media(max-width:767px){.glass-demo-heading{top:34px}.glass-demo-surface{padding:13px;border-radius:20px}.glass-demo-tools{padding:11px 22px}.glass-demo-heading small{font-size:11px}.glass-mode-options>button{min-height:98px}}
+@media(max-height:740px) and (max-width:767px){.glass-demo-heading{top:24px!important}.glass-demo-heading strong{font-size:22px}.glass-demo-surface{padding:11px}}
+@media(prefers-reduced-transparency:reduce),(prefers-contrast:more){.glass-demo-surface,.glass-demo-tools{background:#20232e!important;-webkit-backdrop-filter:none;backdrop-filter:none}}
+@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){.glass-demo-surface,.glass-demo-tools{background:#20232e}}
