@@ -1,5 +1,6 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
+import {syncPendingLikes} from "@/lib/likeActions";
 import {clearPersonalData} from '@/lib/clearPersonalData';
 import {setOfflineAccount,migrateLegacyOffline} from '@/lib/offlineCache';
 import { appParams } from '@/lib/app-params';
@@ -147,6 +148,14 @@ export const AuthProvider = ({ children }) => {
     window.addEventListener("online", initialize);
     return () => {stopped = true;clearTimeout(timer);window.removeEventListener("online", initialize);};
   }, [user?.id, user?.public_follow_initialized]);
+
+  useEffect(()=>{
+    if(!user?.id)return;
+    let running=false,stopped=false;
+    const sync=async()=>{if(running||stopped)return;running=true;try{await syncPendingLikes(base44,user.id);}catch{}finally{running=false;}};
+    sync();window.addEventListener("online",sync);window.addEventListener("focus",sync);
+    return()=>{stopped=true;window.removeEventListener("online",sync);window.removeEventListener("focus",sync);};
+  },[user?.id]);
 
   const logout = async (shouldRedirect = true) => {
     await clearPersonalData();
