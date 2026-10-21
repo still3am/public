@@ -2,6 +2,11 @@ import "csstype";
 
 declare module "csstype" {
   interface Properties {
+    "--foreground"?: string;
+    "--background"?: string;
+    "--card"?: string;
+    "--muted-foreground"?: string;
+    "--border"?: string;
     "--text-travel"?: string | number;
     "--text-duration"?: string | number;
     "--text-play"?: string | number;
