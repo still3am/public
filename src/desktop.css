@@ -178,10 +178,15 @@
  .public-app .profile-is-editing .profile-content,.public-app .profile-is-editing .profile-pinned-section{scroll-margin-top:110px}
  .public-app .artist-page{max-width:1240px}
  .public-app .artwork-content .artist-hero{margin:0 0 32px;border-radius:24px;height:clamp(340px,32vw,470px);min-height:340px}
- .public-app .directory-page{max-width:1080px}
+ .public-app .directory-page{width:100%;max-width:1240px}
+ .public-app .directory-page>.record-directory-intro{max-width:none}
+ .public-app .directory-page>.view-switch{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));width:100%}
+ .public-app .directory-page>.view-switch button[aria-pressed=true]{background:hsl(var(--card));color:hsl(var(--foreground));box-shadow:0 1px 4px rgb(0 0 0/.06)}
+ .public-app .directory-results{padding-right:0}
  .public-app .directory-toolbar{position:sticky;top:12px;z-index:20;background:hsl(var(--background));padding:14px;border:1px solid hsl(var(--border));border-radius:20px;margin-bottom:24px}
- .public-app .directory-toolbar .collection-tools{margin-bottom:12px}
- .public-app .directory-desktop-alphabet{flex-wrap:wrap;gap:4px}
+ .public-app .directory-toolbar .collection-tools{width:100%;margin-bottom:12px}
+ .public-app .directory-toolbar .collection-tools input{width:100%;max-width:none;min-width:0;flex:1 1 0%}
+ .public-app .directory-desktop-alphabet{width:100%;flex-wrap:wrap;gap:4px}
  .public-app .directory-desktop-alphabet button{display:grid;place-items:center;width:30px;min-height:34px;border-radius:8px;font-size:12px;font-weight:600}
  .public-app .directory-desktop-alphabet button:disabled{opacity:.25;cursor:default}
  .public-app .directory-desktop-alphabet button[aria-current=location]{background:hsl(var(--foreground));color:hsl(var(--background))}
