@@ -18,7 +18,6 @@ import Support from '@/pages/Support';
 import Policies from '@/pages/Policies';
 import ErrorBoundary from '@/components/ErrorBoundary';
 import {SafetyProvider} from '@/context/SafetyContext';
-import {LiquidGlassProvider} from '@/context/LiquidGlassContext';
 import OAuthConsent from '@/pages/OAuthConsent';
 import Login from '@/pages/Login';
 import Register from '@/pages/Register';
@@ -137,7 +136,7 @@ function App() {
           <ErrorBoundary><GlobalStatus/><DialogFocusManager/><SafetyProvider><PlayerProvider><OfflineSyncManager/>
             <LibraryProvider>
               <UploadProvider>
-                <LoungeHostProvider><LiquidGlassProvider><AuthenticatedApp /></LiquidGlassProvider></LoungeHostProvider>
+                <LoungeHostProvider><AuthenticatedApp /></LoungeHostProvider>
               </UploadProvider>
             </LibraryProvider>
           </PlayerProvider></SafetyProvider></ErrorBoundary>

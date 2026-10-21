@@ -5,7 +5,6 @@ import '@/index.css'
 import '@/public-redesign.css'
 import '@/desktop.css'
 import '@/mobile-music.css'
-import '@/liquid-glass.css'
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <App />
