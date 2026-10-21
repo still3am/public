@@ -2,17 +2,21 @@ import {entityRows} from "@/lib/entityRows";
 import ScrollShelf from "@/components/ScrollShelf";
 import {useEffect,useState,useRef} from "react";
 import {Link} from "react-router-dom";
-import {ListMusic} from "lucide-react";
+import {ListMusic,ArrowUpRight} from "lucide-react";
 import {base44} from "@/api/base44Client";
 import {useCoverUrl} from "@/hooks/useCoverUrl";
 import {usePlaylistCover} from "@/hooks/usePlaylistCover";
+import "./profile-playlists.css";
 function PlaylistTile({playlist}){
  const source=usePlaylistCover(playlist);
  const cover=useCoverUrl(source),[failed,setFailed]=useState(false);
  useEffect(()=>setFailed(false),[cover]);
- return <Link to={"/playlist/"+playlist.id} className="profile-playlist-tile">
-  <div className="profile-playlist-art">{cover&&!failed?<img src={cover} alt="" loading="lazy" onError={()=>setFailed(true)}/>:<ListMusic size={30}/>}</div>
-  <h3>{playlist.name}</h3><p>{playlist.track_ids?.length||0} songs</p>
+ const name=playlist.name||"Untitled playlist";
+ const count=new Set((Array.isArray(playlist.track_ids)?playlist.track_ids:[]).filter(Boolean)).size;
+ const hue=[...name].reduce((value,char)=>(value*31+char.charCodeAt(0))%360,0);
+ return <Link to={"/playlist/"+encodeURIComponent(playlist.id)} className="profile-playlist-tile" aria-label={"Open "+name}>
+  <div className="profile-playlist-art" style={!cover||failed?{backgroundImage:"linear-gradient(145deg,hsl("+hue+" 22% 38%),hsl("+((hue+45)%360)+" 18% 15%))"}:undefined}>{cover&&!failed?<img src={cover} alt="" loading="lazy" onError={()=>setFailed(true)}/>:<span className="profile-playlist-fallback"><ListMusic size={44} aria-hidden="true"/><span>PUBLIC</span></span>}<span className="profile-playlist-open" aria-hidden="true"><ArrowUpRight size={18}/></span></div>
+  <div className="profile-playlist-caption"><h3>{name}</h3><p>{count} {count===1?"song":"songs"}</p></div>
  </Link>;
 }
 
@@ -39,10 +43,10 @@ export default function ProfilePlaylists({userId,active}){
  },[userId,active]);
  const rows=state.userId===userId?state.rows:[];
  if(!rows.length&&!state.loading&&!state.error)return null;
- return <section className="profile-public-playlists"><h2>Public playlists</h2>
+ return <section className="profile-public-playlists" aria-label="Public playlists"><header className="profile-playlists-heading"><h2>Public playlists</h2><ListMusic size={20} aria-hidden="true"/></header>
  {rows.length>0&&<ScrollShelf className="profile-playlist-shelf" label="Public playlists">{rows.map(playlist=><PlaylistTile key={playlist.id} playlist={playlist}/>)}</ScrollShelf>}
  {state.error&&<div className="profile-playlist-status" role="status"><span>Playlists couldn’t refresh. Previously loaded playlists are still here.</span><button type="button" onClick={()=>load()}>Retry</button></div>}
- {state.loading&&<p role="status" className="text-xs text-muted-foreground py-3">Loading playlists…</p>}
+ {state.loading&&!rows.length&&<div className="profile-playlist-loading" role="status" aria-label="Loading playlists">{[0,1,2].map(index=><div key={index} aria-hidden="true"><i/><span/><small/></div>)}</div>}
  {state.more&&!state.error&&<button type="button" disabled={state.loading} className="profile-playlists-more" onClick={()=>load(true)}>Show more playlists</button>}
  </section>;
 }
