@@ -1,3 +1,4 @@
+import {entityRows} from "@/lib/entityRows";
 import TrackMusicVideo from "@/components/TrackMusicVideo";
 import "./track-editorial.css";
 import {useReleaseTheme} from "@/hooks/useReleaseTheme";
@@ -86,7 +87,7 @@ export default function TrackDetail() {
         const status = original?.status ?? original?.response?.status;
         if (status === 403 || status === 404) throw original;
         const rows = await base44.entities.Track.filter({ id }, "-created_date", 1);
-        t = (Array.isArray(rows) ? rows : rows?.items || [])[0];if (!t) throw original;
+        t = (Array.isArray(rows) ? rows : entityRows(rows) || [])[0];if (!t) throw original;
       }
       if (request !== loadVersion.current) return;
       setTrack(t);setLoading(false);

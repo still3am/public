@@ -1,3 +1,4 @@
+import {entityRows} from "@/lib/entityRows";
 import "./profile-edit-controls.css";
 import { Link } from "react-router-dom";
 import ArtistLinks from "@/components/ArtistLinks";
@@ -43,7 +44,7 @@ export default function ProfileSong({
         let song;
         try {song = await base44.entities.Track.get(trackId);} catch (error) {
           const status = error?.status ?? error?.response?.status;if (status === 403 || status === 404) throw error;
-          const page = await base44.entities.Track.filter({ id: trackId }, '-created_date', 1);song = (Array.isArray(page) ? page : page?.items || [])[0];
+          const page = await base44.entities.Track.filter({ id: trackId }, '-created_date', 1);song = (Array.isArray(page) ? page : entityRows(page) || [])[0];
         }
         if (active && song) setTrack(song);
       } catch (error) {const status = error?.status ?? error?.response?.status;if (active && (status === 403 || status === 404)) setTrack(null);}})();

@@ -1,3 +1,4 @@
+import {entityRows} from "@/lib/entityRows";
 import {base44} from '@/api/base44Client';
 let cached=null,loaded=false,expires=0,inflight=null,revision=0;
 let writes=Promise.resolve();
@@ -12,7 +13,7 @@ export async function readAppSetting(fresh=false){
  const version=revision;
  let request;
  request=base44.entities.AppSetting.list('-created_date',1).then(page=>{
-  const rows=Array.isArray(page)?page:page?.items;
+  const rows=Array.isArray(page)?page:entityRows(page);
   if(!Array.isArray(rows)||rows.some(row=>!row?.id))throw Error('App settings returned an invalid response. Please retry.');
   if(version!==revision)return loaded?cached:readAppSetting(true);
   const next=rows[0]||null,changed=JSON.stringify(next)!==JSON.stringify(cached);

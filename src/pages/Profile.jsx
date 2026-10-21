@@ -1,3 +1,4 @@
+import {entityRows} from "@/lib/entityRows";
 import ProfileMedia from "@/components/ProfileMedia";
 import {validateMotionFile} from "@/lib/profileMotion";
 import ProfileBannerEditor from '@/components/profile/ProfileBannerEditor';
@@ -140,7 +141,7 @@ export default function Profile({ ownProfileTab = false }) {
     setFeaturedCoverUrl("");
     let cancelled = false;
     base44.entities.Track.filter({ id: tid }, "-created_date", 1).then((page) => {
-      const rows = Array.isArray(page) ? page : page?.items || [];
+      const rows = Array.isArray(page) ? page : entityRows(page) || [];
       if (!cancelled) setFeaturedCoverUrl(rows[0]?.cover_art_url || "");
     }).catch(() => {if (!cancelled) setFeaturedCoverUrl("");});
     return () => {cancelled = true;};

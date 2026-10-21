@@ -1,3 +1,4 @@
+import {entityRows} from "@/lib/entityRows";
 import {DragDropContext,Droppable,Draggable} from '@hello-pangea/dnd';
 import './track-editorial.css';
 import { useReleaseTheme } from '@/hooks/useReleaseTheme';
@@ -43,7 +44,7 @@ export default function PlaylistDetail() {
     } catch {if (v === version.current) setError(true);} finally {if (v === version.current) setLoading(false);}
   }, [id]);
   useEffect(() => {setSelected(new Set());setManaging(false);setEditing(false);setShowAdd(false);setCoverFile(null);setPreview('');setQuery('');setSort('custom');setSaved(false);setShowMore(false);setShowCollaborators(false);dragSnapshot.current=null;load();return () => {version.current++;};}, [load]);
-  useEffect(() => {let alive = true;const request = ++savedRead.current;if (user?.id) base44.entities.SavedPlaylist.filter({ user_id: user.id, playlist_id: id }, '-created_date', 1).then((rows) => {if (alive && request === savedRead.current) setSaved((Array.isArray(rows) ? rows : rows?.items || []).length > 0);}).catch(() => {});return () => {alive = false;};}, [id, user?.id]);
+  useEffect(() => {let alive = true;const request = ++savedRead.current;if (user?.id) base44.entities.SavedPlaylist.filter({ user_id: user.id, playlist_id: id }, '-created_date', 1).then((rows) => {if (alive && request === savedRead.current) setSaved((Array.isArray(rows) ? rows : entityRows(rows) || []).length > 0);}).catch(() => {});return () => {alive = false;};}, [id, user?.id]);
   useEffect(() => {if (!user?.id) return;let stop = () => {};try {stop = base44.entities.Playlist.subscribe((event) => {if (event.id === id && !writeLock.current && !dragSnapshot.current) load();});} catch {}return () => stop();}, [id, user?.id, load]);
   useEffect(() => () => {if (preview) URL.revokeObjectURL(preview);}, [preview]);
   const isOwn = !!user && playlist?.creator_id === user.id;
@@ -121,7 +122,7 @@ export default function PlaylistDetail() {
   async function toggleSaved() {
     if (!user) {nav('/login?returnTo=' + encodeURIComponent(window.location.pathname));return;}
     savedRead.current++;
-    await write(async () => {const result = await base44.entities.SavedPlaylist.filter({ user_id: user.id, playlist_id: id }, { sort: '-created_date', limit: 1 });if (!Array.isArray(result) && !Array.isArray(result?.items)) throw Error('Could not check saved playlists. Please retry.');const wasSaved = (Array.isArray(result) ? result : result.items).length > 0;if (wasSaved) await base44.entities.SavedPlaylist.deleteMany({ user_id: user.id, playlist_id: id });else await base44.entities.SavedPlaylist.create({ user_id: user.id, playlist_id: id });setSaved(!wasSaved);toast({ title: wasSaved ? 'Removed from your library' : 'Added to your library' });});
+    await write(async () => {const result = await base44.entities.SavedPlaylist.filter({ user_id: user.id, playlist_id: id }, { sort: '-created_date', limit: 1 });if (!Array.isArray(result) && !Array.isArray(entityRows(result))) throw Error('Could not check saved playlists. Please retry.');const wasSaved = (Array.isArray(result) ? result : result.items).length > 0;if (wasSaved) await base44.entities.SavedPlaylist.deleteMany({ user_id: user.id, playlist_id: id });else await base44.entities.SavedPlaylist.create({ user_id: user.id, playlist_id: id });setSaved(!wasSaved);toast({ title: wasSaved ? 'Removed from your library' : 'Added to your library' });});
   }
   const playAll = (shuffle) => {if (!tracks.length) return;p.setShuffle(false);p.playTrackAt(shuffle ? shufflePlaylist(tracks) : tracks, 0);};
   if (playlist && playlist.id !== id) return error ? <LoadError onRetry={load} /> : <div className="py-16 grid place-items-center"><Loader2 className="animate-spin" /></div>;

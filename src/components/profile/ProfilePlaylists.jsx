@@ -1,3 +1,4 @@
+import {entityRows} from "@/lib/entityRows";
 import ScrollShelf from "@/components/ScrollShelf";
 import {useEffect,useState,useRef} from "react";
 import {Link} from "react-router-dom";
@@ -24,7 +25,7 @@ export default function ProfilePlaylists({userId,active}){
   lock.current=true;setState(s=>({...s,loading:true,error:false}));
   try{
    const page=await base44.entities.Playlist.filter({creator_id:uid,is_public:true},'-updated_date',limit+1,offset);
-   const rows=Array.isArray(page)?page:page?.items||[];
+   const rows=Array.isArray(page)?page:entityRows(page)||[];
    if(current!==version.current||owner.current!==uid)return;
    setState({userId:uid,rows:[...new Map([...(more&&same?old.rows:[]),...rows.slice(0,limit)].map(r=>[r.id,r])).values()],loading:false,error:false,more:rows.length>limit});
   }catch{if(current===version.current&&owner.current===uid)setState(s=>({...s,userId:uid,rows:s.userId===uid?s.rows:[],loading:false,error:true}));}

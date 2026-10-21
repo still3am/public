@@ -1,3 +1,4 @@
+import {entityRows} from "@/lib/entityRows";
 import {useEffect,useRef,useState} from "react";
 import {Star,Loader2} from "lucide-react";
 import {base44} from "@/api/base44Client";
@@ -12,7 +13,7 @@ export default function ArtistReleaseFollow({name,variant="icon"}){
   setError(false);setReady(false);
   try{
    const page=await base44.entities.ArtistSubscription.filter({artist_key:key,created_by_id:user.id},"-created_date",1);
-   if(alive.current&&version===readVersion.current){setFollowed((Array.isArray(page)?page:page?.items||[]).length>0);setReady(true);}
+   if(alive.current&&version===readVersion.current){setFollowed((Array.isArray(page)?page:entityRows(page)||[]).length>0);setReady(true);}
   }catch{if(alive.current&&version===readVersion.current){setError(true);setReady(true);}}
  }
  useEffect(()=>{

@@ -1,3 +1,4 @@
+import {entityRows} from "@/lib/entityRows";
 import {base44} from "@/api/base44Client";
 const prefix="public:listening:";
 let current=null,busy=false;
@@ -10,7 +11,7 @@ export async function syncListeningHistory(uid){
   if((await base44.auth.me())?.id!==uid)return;
   for(const row of read(uid)){
    const page=await base44.entities.ListeningSession.filter({session_key:row.session_key},"-created_date",1);
-   const found=(Array.isArray(page)?page:page?.items||[])[0];
+   const found=(Array.isArray(page)?page:entityRows(page)||[])[0];
    if((await base44.auth.me())?.id!==uid)return;
    if(found)await base44.entities.ListeningSession.update(found.id,{listened_seconds:Math.max(found.listened_seconds||0,row.listened_seconds)});
    else await base44.entities.ListeningSession.create(row);

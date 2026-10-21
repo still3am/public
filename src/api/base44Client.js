@@ -1,3 +1,4 @@
+import {entityRows} from "@/lib/entityRows";
 import {loungeAction} from "@/lib/adminLounge";
 import {saveTimedLyrics} from "@/lib/saveTimedLyrics";
 import {AVATAR_PRESETS} from "@/lib/avatarPresets";
@@ -16,7 +17,7 @@ const entities = new Proxy(raw.entities,{get(target,name) {
   if(typeof name!=='string')return Reflect.get(target,name);
   if(name==="PublicProfile"){
    if(!handlers.has(name))handlers.set(name,new Proxy(target[name],{get(h,method){
-    if(typeof method==="string" && ["get","list","filter"].includes(method))return async(...args)=>{const readArgs=args.map(arg=>arg&&typeof arg==="object"&&!Array.isArray(arg)&&Array.isArray(arg.fields)&&arg.fields.includes("avatar_url")?{...arg,fields:[...new Set([...arg.fields,"avatar_preset"])]}:arg);const page=await h[method](...readArgs);return Array.isArray(page)?page.map(withPresetAvatar):Array.isArray(page?.items)?{...page,items:page.items.map(withPresetAvatar)}:withPresetAvatar(page);};
+    if(typeof method==="string" && ["get","list","filter"].includes(method))return async(...args)=>{const readArgs=args.map(arg=>arg&&typeof arg==="object"&&!Array.isArray(arg)&&Array.isArray(arg.fields)&&arg.fields.includes("avatar_url")?{...arg,fields:[...new Set([...arg.fields,"avatar_preset"])]}:arg);const page=await h[method](...readArgs);return Array.isArray(page)?page.map(withPresetAvatar):Array.isArray(entityRows(page))?{...page,items:page.items.map(withPresetAvatar)}:withPresetAvatar(page);};
     return h[method];
    }}));
    return handlers.get(name);
@@ -55,7 +56,7 @@ const entities = new Proxy(raw.entities,{get(target,name) {
           return track;
         }
         if(Array.isArray(result))return result.map(mark);
-        if(Array.isArray(result?.items))return {...result,items:result.items.map(mark)};
+        if(Array.isArray(entityRows(result)))return {...result,items:result.items.map(mark)};
         return result;
       }
     };
@@ -123,7 +124,7 @@ export const base44 = new Proxy(raw,{get(target,name) {
         if(!track?.id)throw new Error("This song is unavailable. Choose another song.");
       }
       const page=await target.entities.PublicProfile.filter({user_id:current.id,visible:true},"-updated_date",1);
-      const row=(Array.isArray(page)?page:page?.items||[])[0];
+      const row=(Array.isArray(page)?page:entityRows(page)||[])[0];
       if(!row)throw new Error("Your public profile could not be found. Please retry.");
       if((await target.auth.me())?.id!==current.id)throw new Error("Your account changed. Reopen your profile.");
       let failure;
@@ -133,7 +134,7 @@ export const base44 = new Proxy(raw,{get(target,name) {
       failure=null;
       try{await target.entities.PublicProfile.update(row.id,{top_track_ids:ids});}catch(error){failure=error;}
       const result=await target.entities.PublicProfile.filter({user_id:current.id,visible:true},"-updated_date",1);
-      if(JSON.stringify((Array.isArray(result)?result:result?.items||[])[0]?.top_track_ids)!==JSON.stringify(ids))throw failure||new Error("Your public songs were not confirmed. Please retry.");
+      if(JSON.stringify((Array.isArray(result)?result:entityRows(result)||[])[0]?.top_track_ids)!==JSON.stringify(ids))throw failure||new Error("Your public songs were not confirmed. Please retry.");
       return confirmed;
     }
 
@@ -142,7 +143,7 @@ export const base44 = new Proxy(raw,{get(target,name) {
       const current=await target.auth.me();
       if(!current?.id||current.disabled||current.is_blocked)throw new Error('Account unavailable');
       const page=await target.entities.PublicProfile.filter({user_id:current.id,visible:true},'-updated_date',1);
-      const row=(Array.isArray(page)?page:page?.items||[])[0];
+      const row=(Array.isArray(page)?page:entityRows(page)||[])[0];
       if(!row)throw new Error('Your public profile could not be found. Please retry.');
       let failure;
       try{await target.auth.updateMe({banner_use_default:true});}catch(error){failure=error;}
@@ -151,7 +152,7 @@ export const base44 = new Proxy(raw,{get(target,name) {
       if((await target.auth.me())?.id!==current.id)throw new Error('Your account changed. Reopen your profile.');
       try{await target.entities.PublicProfile.update(row.id,{banner_use_default:true});}catch(error){failure=error;}
       const check=await target.entities.PublicProfile.filter({user_id:current.id,visible:true},'-updated_date',1);
-      if((Array.isArray(check)?check:check?.items||[])[0]?.banner_use_default!==true)throw failure||new Error('Your public banner was not confirmed. Please retry.');
+      if((Array.isArray(check)?check:entityRows(check)||[])[0]?.banner_use_default!==true)throw failure||new Error('Your public banner was not confirmed. Please retry.');
       return confirmed;
     }
 
@@ -173,7 +174,7 @@ export const base44 = new Proxy(raw,{get(target,name) {
       if(data.is_artist!==undefined){
         try{
           const page=await target.entities.PublicProfile.filter({user_id:current.id},'-updated_date',1);
-          const row=(Array.isArray(page)?page:page?.items||[])[0];
+          const row=(Array.isArray(page)?page:entityRows(page)||[])[0];
           if(row)await target.entities.PublicProfile.update(row.id,{is_artist:data.is_artist});
         }catch{}
       }
@@ -191,7 +192,7 @@ export const base44 = new Proxy(raw,{get(target,name) {
       if(data.featured_track_id!==undefined){
         const id=data.featured_track_id;
         if(typeof id!=='string'||id.length>100||(id&&!/^[a-zA-Z0-9_-]+$/.test(id)))throw new Error('Invalid profile song');
-        if(id){const page=await target.entities.Track.filter({id},'-created_date',1);const rows=Array.isArray(page)?page:page?.items||[];if(!rows.length)throw new Error('Song unavailable');}
+        if(id){const page=await target.entities.Track.filter({id},'-created_date',1);const rows=Array.isArray(page)?page:entityRows(page)||[];if(!rows.length)throw new Error('Song unavailable');}
       }
       const saved=await target.auth.updateMe(data);
       const publicAppearance=Object.fromEntries(['featured_track_id','profile_background_mode','profile_background_colors','profile_background_motion','profile_background_speed'].filter(key=>data[key]!==undefined).map(key=>[key,data[key]]));
@@ -199,7 +200,7 @@ export const base44 = new Proxy(raw,{get(target,name) {
         if(!Object.keys(publicAppearance).length)return saved;
         const uid=saved?.id || (await target.auth.me()).id;
         const page=await target.entities.PublicProfile.filter({user_id:uid},'-updated_date',1);
-        const row=(Array.isArray(page)?page:page?.items||[])[0];
+        const row=(Array.isArray(page)?page:entityRows(page)||[])[0];
         if(row)await target.entities.PublicProfile.update(row.id,publicAppearance);
       }catch{}
       return saved;

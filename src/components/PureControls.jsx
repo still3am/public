@@ -1,3 +1,4 @@
+import {entityRows} from "@/lib/entityRows";
 import {base44} from "@/api/base44Client";
 import {useAuth} from "@/lib/AuthContext";
 import {useEffect,useState,useRef} from "react";
@@ -8,7 +9,7 @@ import "./pure-controls.css";
 
 export default function PureControls({compact=false}){
  const {user}=useAuth(),[presets,setPresets]=useState([]),[presetName,setPresetName]=useState(""),[presetError,setPresetError]=useState(""),[saving,setSaving]=useState(false),presetLock=useRef(false);
- useEffect(()=>{let alive=true;setPresets([]);if(user?.id)base44.entities.PurePreset.filter({created_by_id:user.id},"-created_date",50).then(rows=>{if(alive)setPresets(Array.isArray(rows)?rows:rows?.items||[]);}).catch(()=>{if(alive)setPresetError("Saved presets couldn’t load.");});return()=>{alive=false;};},[user?.id]);
+ useEffect(()=>{let alive=true;setPresets([]);if(user?.id)base44.entities.PurePreset.filter({created_by_id:user.id},"-created_date",50).then(rows=>{if(alive)setPresets(Array.isArray(rows)?rows:entityRows(rows)||[]);}).catch(()=>{if(alive)setPresetError("Saved presets couldn’t load.");});return()=>{alive=false;};},[user?.id]);
  const p=usePlayer(),settings=p.pure||DEFAULT_PURE,enabled=settings.enabled,available=!p.pureSuspended,active=enabled&&available;
  const selected=PURE_PRESETS.find(preset=>["clarity","bass","balance"].every(key=>settings[key]===preset[key]));
  useEffect(()=>{const release=()=>p.comparePure(false),visibility=()=>{if(document.visibilityState==="hidden")release();};window.addEventListener("blur",release);document.addEventListener("visibilitychange",visibility);return()=>{window.removeEventListener("blur",release);document.removeEventListener("visibilitychange",visibility);release();};},[p.comparePure]);
