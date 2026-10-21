@@ -14,16 +14,28 @@ export default async function handleRequest(req) {
    const ticket=await s.entities.SupportTicket.create({user_id:u?.id||'',email,subject,message,access_hash:await hash(token),status:'open',reply:''});
    return Response.json({id:ticket.id,token,status:'open'});
   }
+  if(d.action==='myTickets'){
+   requireUser();
+   const page=await s.entities.SupportTicket.filter({user_id:u.id},{sort:'-created_date',limit:50,...(typeof d.cursor==='string'&&d.cursor?{cursor:d.cursor}:{}),fields:['id','subject','status','created_date']});
+   const rows=Array.isArray(page)?page:page?.items;if(!Array.isArray(rows))err('Requests could not load',503);
+   return Response.json({tickets:rows.map(t=>({id:t.id,subject:t.subject,status:t.status,created_date:t.created_date})),has_more:!!page.has_more,next_cursor:page.next_cursor||null});
+  }
   if(d.action==='ticket') {
-   if(typeof d.id!=='string'||typeof d.token!=='string')err('Ticket reference required');
+   if(typeof d.id!=='string')err('Ticket reference required');
    const t=await s.entities.SupportTicket.get(d.id);
-   if(t.access_hash!==await hash(d.token))err('Ticket access denied',403);
+   if(!(u&&!u.disabled&&!u.is_blocked&&t.user_id===u.id)&&!(typeof d.token==='string'&&t.access_hash===await hash(d.token)))err('Ticket access denied',403);
    return Response.json({ticket:{id:t.id,subject:t.subject,message:t.message,status:t.status,reply:t.reply,created_date:t.created_date}});
   }
   if(d.action==='reply') {
    admin();const reply=String(d.reply||'').trim();
    if(!reply||reply.length>5000)err('Reply must be 1–5000 characters');
-   await s.entities.SupportTicket.update(d.id,{reply,status:'answered'});
+   const original=await s.entities.SupportTicket.get(d.id);
+   const saved=await s.entities.SupportTicket.update(d.id,{reply,status:'answered'});
+   if(original.user_id){
+    const source_key='support:'+original.id+':'+await hash(reply);
+    const existing=await s.entities.Notification.filter({user_id:original.user_id,source_key},'-created_date',1);
+    if(!existing.length)await s.entities.Notification.create({user_id:original.user_id,type:'support_reply',actor_id:u.id,actor_name:'PUBLIC Support',source_key,target_path:'/support?ticket='+encodeURIComponent(original.id),comment:'There is a new reply to your support request.',read:false});
+   }
    return Response.json({success:true});
   }
   requireUser();

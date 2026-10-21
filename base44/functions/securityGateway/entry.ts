@@ -590,7 +590,18 @@ export default async function handleRequest(req) {
           data={...pick(data,['user_id','type','track_id','comment']),actor_id:user.id,actor_name:user.display_name||user.full_name||'',actor_avatar_url:user.avatar_url||'',read:false};
         }
       }
-      return kind==='create'?await handler.create(data):kind==='update'?await handler.update(id,data):await handler.delete(id);
+      const saved=kind==='create'?await handler.create(data):kind==='update'?await handler.update(id,data):await handler.delete(id);
+      if(entity==='Suggestion'&&kind==='update'&&data.status==='done'){
+        const audience=[...new Set([saved.user_id,...(saved.voter_ids||[])].filter(Boolean))];
+        for(const recipient of audience){
+          const source_key='suggestion:'+saved.id;
+          const existing=await svc.entities.Notification.filter({user_id:recipient,source_key},'-created_date',1);
+          if(existing.length)continue;
+          const member=await svc.entities.User.get(recipient).catch(()=>null);if(!member||member.disabled||member.is_blocked)continue;
+          await svc.entities.Notification.create({user_id:recipient,type:'suggestion_shipped',actor_id:user.id,actor_name:'PUBLIC',source_key,target_path:'/suggestions?idea='+encodeURIComponent(saved.id),comment:'Now available: '+String(saved.title||'Your supported idea').slice(0,120),read:false});
+        }
+      }
+      return saved;
     };
     let result;
     if(action==='create') result=await writeOne('create',null,args[0]||{});

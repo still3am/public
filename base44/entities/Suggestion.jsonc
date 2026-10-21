@@ -32,7 +32,8 @@
         "open",
         "reviewing",
         "planned",
-        "done"
+        "done",
+        "in_progress"
       ],
       "default": "open"
     },

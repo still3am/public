@@ -1,3 +1,4 @@
+import {useSearchParams} from "react-router-dom";
 import {readAllPages} from "@/lib/readPages";
 import LoadError from '@/components/LoadError';
 import { useEffect, useState, useRef } from "react";
@@ -25,6 +26,8 @@ const CATEGORIES = [
 
 export default function Suggestions() {
   const { user } = useAuth();
+  const [params]=useSearchParams();
+  const [statusFilter,setStatusFilter]=useState("all");
   const [items, setItems] = useState([]);
   const [error,setError]=useState(false);
   const [loading, setLoading] = useState(true);
@@ -112,7 +115,8 @@ export default function Suggestions() {
   ) :
   items;
 
-  const visibleItems=sortedItems.filter(item=>(filter==="all"||item.category===filter)&&(!query.trim()||[item.title,item.details,item.user_name].some(value=>(value||"").toLowerCase().includes(query.trim().toLowerCase()))));
+  useEffect(()=>{const id=params.get("idea");if(!id||loading)return;requestAnimationFrame(()=>document.getElementById("idea-"+id)?.scrollIntoView({block:"center",behavior:window.matchMedia("(prefers-reduced-motion:reduce)").matches?"auto":"smooth"}));},[params,loading]);
+  const visibleItems=sortedItems.filter(item=>(statusFilter==="all"||item.status===statusFilter)&&(filter==="all"||item.category===filter)&&(!query.trim()||[item.title,item.details,item.user_name].some(value=>(value||"").toLowerCase().includes(query.trim().toLowerCase()))));
 
   if(error&&!items.length)return <LoadError onRetry={load}/>;
   return (
@@ -201,6 +205,7 @@ export default function Suggestions() {
         </aside>
         <section className="suggestions-feed" aria-label="Community ideas">
         <div className="collection-tools"><input aria-label="Search suggestions" placeholder="Find an idea" value={query} onChange={e=>setQuery(e.target.value)} onKeyDown={e=>{if(e.key==="Escape")setQuery("");}}/><select aria-label="Filter suggestion category" value={filter} onChange={e=>setFilter(e.target.value)}><option value="all">All ideas</option>{CATEGORIES.map(category=><option key={category.id} value={category.id}>{category.label}</option>)}</select></div>
+        <div className="view-switch mb-4" role="group" aria-label="Idea status">{[["all","All statuses"],["planned","Planned"],["in_progress","In progress"],["done","Completed"]].map(([id,label])=><button key={id} aria-pressed={statusFilter===id} onClick={()=>setStatusFilter(id)}>{label}</button>)}</div>
         {items.length > 0 &&
         <div className="flex items-center gap-1.5 mb-4">
             {[
@@ -235,7 +240,7 @@ export default function Suggestions() {
 
 
         <div className="space-y-2">
-            {!visibleItems.length&&<div className="collection-empty"><h2>No matching ideas</h2><button className="playlist-action" onClick={()=>{setQuery("");setFilter("all");}}>Show all ideas</button></div>}
+            {!visibleItems.length&&<div className="collection-empty"><h2>No matching ideas</h2><button className="playlist-action" onClick={()=>{setQuery("");setFilter("all");setStatusFilter("all");}}>Show all ideas</button></div>}
             {visibleItems.map((s) =>
           <SuggestionCard
             key={s.id}

@@ -12,7 +12,8 @@ const STATUS_META = {
   open: "Open",
   reviewing: "Reviewing",
   planned: "Planned",
-  done: "Shipped",
+  in_progress: "In progress",
+  done: "Completed",
 };
 
 /** @param {any} props */
@@ -20,7 +21,7 @@ export default function SuggestionCard({ s, onVote, hasVoted }) {
   const meta = CATEGORY_META[s.category] || CATEGORY_META.other;
   const Icon = meta.icon;
   return (
-    <div className="flex items-start gap-3 p-4 rounded-2xl border border-border bg-card hover:bg-foreground/[0.02] transition">
+    <div id={"idea-"+s.id} className="scroll-mt-24 flex items-start gap-3 p-4 rounded-2xl border border-border bg-card hover:bg-foreground/[0.02] transition">
       <div className="flex flex-col items-center pt-1 shrink-0">
         <button
           onClick={onVote}
@@ -29,7 +30,7 @@ export default function SuggestionCard({ s, onVote, hasVoted }) {
               ? "bg-foreground text-background border-foreground"
               : "border-border text-foreground/60 hover:bg-foreground/5"
           }`}
-          aria-label="Vote"
+          aria-label={hasVoted?"Remove your vote":"Support this idea"} aria-pressed={hasVoted}
         >
           <ArrowBigUp size={18} />
         </button>

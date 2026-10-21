@@ -15,7 +15,9 @@
         "new_upload_from_followed",
         "track_liked",
         "profile_comment",
-        "track_shared"
+        "track_shared",
+        "suggestion_shipped",
+        "support_reply"
       ],
       "default": "track_liked",
       "rls": {
@@ -62,6 +64,20 @@
     "read": {
       "type": "boolean",
       "default": false
+    },
+    "source_key": {
+      "type": "string",
+      "default": "",
+      "rls": {
+        "write": false
+      }
+    },
+    "target_path": {
+      "type": "string",
+      "default": "",
+      "rls": {
+        "write": false
+      }
     }
   },
   "required": [

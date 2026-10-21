@@ -6,7 +6,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { Lightbulb, Loader2, Trash2 } from "lucide-react";
 import BottomSheetSelect from "@/components/BottomSheetSelect";
 
-const STATUSES = ["open", "reviewing", "planned", "done"];
+const STATUSES = ["open", "reviewing", "planned", "in_progress", "done"];
 
 export default function SuggestionsManager() {
   const { toast } = useToast();
