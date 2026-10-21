@@ -79,3 +79,11 @@
 }
 @media(max-width:359px){.public-app .profile-redesigned .profile-details{padding-inline:14px!important}.profile-section-nav>a{padding-inline:9px;font-size:11px}}
 @media(prefers-reduced-motion:reduce){.profile-section-nav{scroll-behavior:auto}}
+
+/* Discovery follows comments in the same responsive column. */
+.public-app .profile-redesigned .profile-community-column .profile-discover-section{padding-top:0;margin-top:22px;min-width:0}
+.public-app .profile-redesigned .profile-community-column .profile-people-shelf{padding:18px 0 8px;overflow:hidden;min-width:0}
+.public-app .profile-redesigned .profile-community-column .profile-people-shelf>header{padding-inline:16px;flex-wrap:wrap;gap:4px;margin-bottom:14px}
+.public-app .profile-redesigned .profile-community-column .profile-people-shelf h2{font-size:21px}
+.public-app .profile-redesigned .profile-community-column .profile-people-track{grid-auto-columns:140px;gap:10px;padding:2px 16px 14px;scroll-padding-inline:16px}
+.public-app .profile-redesigned .profile-community-column .profile-people-shelf .profile-discover-status{padding:16px}
