@@ -1,7 +1,7 @@
 /* Public profile collections share the profile's solid material. */
 .public-app .profile-redesigned .profile-public-playlists{min-width:0;margin:28px 0;padding:24px 0 16px;border:1px solid #00000012;border-radius:26px;background:#fafafa;overflow:hidden}
 html.dark .public-app .profile-redesigned .profile-public-playlists{background:#1b1b1b;border-color:#ffffff12}
-.profile-playlists-heading{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:0 24px;margin-bottom:22px}
+.profile-playlists-heading{display:flex;align-items:center;justify-content:center;text-align:center;gap:16px;padding:0 24px;margin-bottom:22px}
 .public-app .profile-redesigned .profile-playlists-heading h2{font-size:24px;line-height:1.2;font-weight:700;letter-spacing:-.04em;margin:0}
 .profile-playlists-heading>svg{color:hsl(var(--muted-foreground));flex-shrink:0}
 .public-app .profile-redesigned .profile-playlist-shelf{display:flex;gap:20px;padding:4px 24px 16px;scroll-padding-inline:24px;scroll-snap-type:x proximity;overscroll-behavior-x:contain}
