@@ -39,6 +39,39 @@ const approve=await load('base44/functions/loungeApprove/entry.ts');
 const deletion=await load('base44/functions/deleteMyAccount/entry.ts');
 const invoke=async(fn,body)=>{const r=await fn(new Request('https://example.test',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)}));return {status:r.status,data:await r.json()};};
 let passed=0;const check=async(name,run)=>{reset();await run();passed++;console.log('PASS '+name);};
+const publicId='6a5676aa61ea8a51237aa4ef';
+const enroll=()=>invoke(gateway,{entity:'User',action:'initializePublicFollow',args:[{user_id:'other',following_id:'other'}]});
+const official=()=>db.User.push({id:publicId,role:'admin'});
+await check('automatic Public follow is caller scoped and runs once',async()=>{
+ official();const results=await Promise.all([enroll(),enroll()]);
+ assert.ok(results.every(r=>r.status===200));assert.equal(db.Follow.length,1);
+ assert.equal(db.Follow[0].follower_id,'owner');assert.equal(db.Follow[0].following_id,publicId);
+ assert.equal(db.User[0].public_follow_initialized,true);
+ db.Follow=[];await enroll();assert.equal(db.Follow.length,0,'later unfollow is preserved');
+ assert.equal(db.Notification,undefined===db.Notification?undefined:db.Notification);
+});
+await check('existing Public follow is not duplicated',async()=>{
+ official();db.Follow=[{id:'existing',follower_id:'owner',following_id:publicId}];
+ const r=await enroll();assert.equal(r.status,200);assert.equal(r.data.result.changed,false);assert.equal(db.Follow.length,1);
+});
+await check('Public enrollment respects blocks in both directions',async()=>{
+ official();for(const block of [{user_id:'owner',blocked_user_id:publicId},{user_id:publicId,blocked_user_id:'owner'}]){
+ db.User[0].public_follow_initialized=false;db.Block=[block];assert.equal((await enroll()).status,200);assert.equal(db.Follow,undefined);
+ }
+});
+await check('Public enrollment rejects guests and suspended accounts',async()=>{
+ official();user=null;assert.equal((await enroll()).status,401);
+ user={id:'owner',is_blocked:true};assert.equal((await enroll()).status,403);assert.equal(writes.length,0);
+});
+await check('Public never follows itself',async()=>{
+ official();user={id:publicId,role:'admin'};assert.equal((await enroll()).status,200);assert.equal(writes.length,0);
+});
+await check('failed follow remains eligible for retry',async()=>{
+ official();const follows=globalThis.__client.asServiceRole.entities.Follow;
+ globalThis.__client.asServiceRole.entities=new Proxy(globalThis.__client.asServiceRole.entities,{get:(target,name)=>name==='Follow'?{...follows,create:async()=>{throw Error('offline');}}:target[name]});
+ assert.equal((await enroll()).status,500);assert.equal(db.User[0].public_follow_initialized,undefined);
+ globalThis.__client.asServiceRole.entities.Follow=follows;
+});
 await check('anonymous mutation rejected',async()=>{user=null;assert.equal((await invoke(gateway,{entity:'Track',action:'create',args:[{}]})).status,401);});
 await check('owner self-publication rejected',async()=>{const r=await invoke(gateway,{entity:'Track',action:'create',args:[{title:'Song',rights_confirmed:true,is_published:true,approval_status:'approved'}]});assert.equal(r.status,403);assert.equal(writes.length,0);});
 await check('missing rights rejected before write',async()=>{assert.equal((await invoke(gateway,{entity:'Track',action:'create',args:[{title:'Song'}]})).status,422);assert.equal(writes.length,0);});
