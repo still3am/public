@@ -1,6 +1,5 @@
 import FollowingReleases from "@/components/home/FollowingReleases";
 import {useDismissedRecommendations} from "@/hooks/useDismissedRecommendations";
-import ListeningRecap from "@/components/home/ListeningRecap";
 import ScrollShelf from "@/components/ScrollShelf";
 import HomeWeather from '@/components/HomeWeather';
 import MadeForYou from '@/components/home/MadeForYou';
@@ -295,7 +294,6 @@ export default function Home() {
               <CardRow tracks={sg.tracks} />
             </Section>
         )}
-        <ListeningRecap key={"recap:"+user?.id} catalog={personalCatalog}/>
         <SharedWithYou key={"shared:"+user?.id} catalog={personalCatalog} catalogReady={personal.uid===user?.id}/>
       </div>
     </PullToRefresh>);
