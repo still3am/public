@@ -1,0 +1,81 @@
+/* Profile page composition. Identity, music, community and discovery share one rhythm. */
+.public-app .profile-page.profile-redesigned{max-width:1200px;margin-inline:auto;padding-top:18px;padding-bottom:48px}
+.public-app .profile-redesigned .profile-overview{margin-bottom:0}
+.public-app .profile-redesigned .profile-identity{border-radius:32px}
+.public-app .profile-redesigned .profile-cover-stage{height:clamp(200px,22vw,300px)}
+.public-app .profile-redesigned .profile-details{padding:0 36px 30px!important}
+.public-app .profile-redesigned .profile-identity-row{gap:30px}
+.public-app .profile-redesigned .profile-avatar-notes{margin-top:-58px!important}
+.public-app .profile-redesigned .profile-avatar{width:132px!important;height:132px!important}
+.public-app .profile-redesigned .profile-info{padding-top:26px}
+.public-app .profile-redesigned .profile-info h1{font-size:clamp(36px,4vw,54px);font-weight:700;line-height:1.04;letter-spacing:-.055em}
+.public-app .profile-redesigned .profile-stats{margin:22px 0;gap:32px!important}
+.public-app .profile-redesigned .profile-stats .font-bold{font-size:23px;font-weight:650}
+.public-app .profile-redesigned .profile-info .selectable-content{font-size:14px;line-height:1.7;max-width:58ch}
+.public-app .profile-redesigned .profile-actions{border:0;padding-top:4px;margin-top:18px}
+.public-app .profile-redesigned .profile-actions>.profile-primary-action{padding:11px 24px;min-height:46px}
+.public-app .profile-redesigned .profile-section-nav{display:flex;align-items:center;gap:8px;margin:22px 0 32px;overflow-x:auto;scrollbar-width:none;padding:4px}
+.profile-section-nav>a{display:flex;align-items:center;justify-content:center;min-height:44px;padding:10px 20px;border-radius:999px;font-size:13px;font-weight:650;white-space:nowrap;color:hsl(var(--foreground));background:hsl(var(--card)/.84);border:1px solid hsl(var(--foreground)/.08);text-decoration:none}
+.profile-section-nav>a:first-child{background:hsl(var(--foreground));color:hsl(var(--background))}
+.profile-section-nav>a:focus-visible{outline:2px solid hsl(var(--foreground));outline-offset:3px}
+.public-app .profile-redesigned .profile-content{display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:32px;align-items:start}
+.public-app .profile-redesigned :is(#profile-music,#profile-community,#profile-discover){scroll-margin-top:100px;min-width:0}
+.profile-section-heading,.profile-community-heading{min-height:78px;margin-bottom:20px}
+.profile-section-heading h2,.profile-community-heading h2{font-size:27px!important;line-height:1.15;font-weight:650!important;letter-spacing:-.045em!important}
+.profile-section-heading p,.profile-community-heading p{font-size:12px;line-height:1.6;color:hsl(var(--muted-foreground));margin-top:7px}
+.public-app .profile-redesigned .profile-section-eyebrow{font-size:9px;font-weight:650;letter-spacing:.13em;margin-bottom:8px}
+.public-app .profile-redesigned .profile-song-spotlight{margin-bottom:24px}
+.public-app .profile-redesigned .profile-feature-song{padding:20px;border-radius:24px;gap:16px}
+.public-app .profile-redesigned .profile-feature-song>a:first-child{width:80px;height:80px;border-radius:16px}
+.public-app .profile-redesigned .profile-feature-meta{gap:5px}
+.public-app .profile-redesigned .profile-feature-meta>a:first-child{font-size:17px;font-weight:650;letter-spacing:-.025em}
+.public-app .profile-redesigned .profile-rotation{padding:24px;border-radius:26px;margin-bottom:28px}
+.public-app .profile-redesigned .profile-rotation .rotation-grid{gap:22px 16px;grid-template-columns:repeat(3,minmax(0,1fr))}
+.public-app .profile-redesigned .rotation-art{border-radius:16px;box-shadow:0 6px 16px -10px #0005}
+.public-app .profile-redesigned .rotation-caption strong{font-size:13px}
+.public-app .profile-redesigned .rotation-caption>span{font-size:11px}
+.public-app .profile-redesigned .profile-community-column{gap:0}
+.public-app .profile-redesigned .profile-conversation{padding:22px;border-radius:26px;max-height:none;overflow:visible}
+.public-app .profile-redesigned .profile-conversation h2{font-size:18px}
+.public-app .profile-redesigned .profile-conversation textarea{min-height:90px;font-size:13px}
+.public-app .profile-redesigned .profile-public-playlists{margin-top:28px}
+.public-app .profile-redesigned .profile-playlist-shelf{gap:18px}
+.public-app .profile-redesigned .profile-playlist-art{border-radius:18px}
+.profile-discover-section{padding-top:32px;margin-top:8px}
+.public-app .profile-redesigned .profile-people-shelf{margin-bottom:0;padding:26px;border-radius:28px}
+.public-app .profile-redesigned .profile-people-shelf h2{font-size:27px}
+.public-app .profile-redesigned .profile-people-track{grid-auto-columns:minmax(160px,calc((100% - 64px)/5));gap:16px}
+@media(min-width:1280px){.public-app .profile-redesigned .profile-content{grid-template-columns:minmax(0,1fr) 340px;gap:36px}.public-app .profile-redesigned .profile-rotation .rotation-grid{grid-template-columns:repeat(4,minmax(0,1fr))}}
+@media(min-width:768px) and (max-width:1023px){.public-app .profile-redesigned .profile-content{grid-template-columns:minmax(0,1fr)}.public-app .profile-redesigned .profile-rotation .rotation-grid{grid-template-columns:repeat(4,minmax(0,1fr))}}
+@media(max-width:767px){
+ .public-app .profile-page.profile-redesigned{padding-top:8px;padding-bottom:28px}
+ .public-app .profile-redesigned .profile-identity{border-radius:26px}
+ .public-app .profile-redesigned .profile-cover-stage{height:176px}
+ .public-app .profile-redesigned .profile-details{padding:0 20px 24px!important}
+ .public-app .profile-redesigned .profile-identity-row{gap:0}
+ .public-app .profile-redesigned .profile-avatar-notes{margin-top:-48px!important}
+ .public-app .profile-redesigned .profile-avatar{width:104px!important;height:104px!important}
+ .public-app .profile-redesigned .profile-info{padding-top:16px}
+ .public-app .profile-redesigned .profile-info h1{font-size:34px;line-height:1.1}
+ .public-app .profile-redesigned .profile-stats{gap:6px!important;margin:20px 0}
+ .public-app .profile-redesigned .profile-stats .font-bold{font-size:22px}
+ .public-app .profile-redesigned .profile-info .selectable-content{font-size:13px;max-width:34ch}
+ .public-app .profile-redesigned .profile-actions{margin-top:18px}
+ .public-app .profile-redesigned .profile-section-nav{gap:6px;margin:18px 0 24px;justify-content:center}
+ .profile-section-nav>a{padding:10px 14px;font-size:12px;flex:1}
+ .public-app .profile-redesigned .profile-content{grid-template-columns:minmax(0,1fr);gap:28px}
+ .profile-section-heading,.profile-community-heading{min-height:0;margin-bottom:16px;padding-inline:2px}
+ .profile-section-heading h2,.profile-community-heading h2{font-size:24px!important}
+ .public-app .profile-redesigned .profile-feature-song{padding:16px;border-radius:22px;gap:12px}
+ .public-app .profile-redesigned .profile-feature-song>a:first-child{width:64px;height:64px;border-radius:13px}
+ .public-app .profile-redesigned .profile-feature-meta>a:first-child{font-size:15px}
+ .public-app .profile-redesigned .profile-rotation{padding:18px;border-radius:24px;margin-bottom:24px}
+ .public-app .profile-redesigned .profile-rotation .rotation-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:20px 14px}
+ .public-app .profile-redesigned .profile-conversation{padding:18px;border-radius:24px}
+ .profile-discover-section{padding-top:28px;margin-top:0}
+ .public-app .profile-redesigned .profile-people-shelf{padding:20px 0 8px;border-radius:24px}
+ .public-app .profile-redesigned .profile-people-shelf h2{font-size:23px}
+ .public-app .profile-redesigned .profile-people-track{grid-auto-columns:148px;gap:12px}
+}
+@media(max-width:359px){.public-app .profile-redesigned .profile-details{padding-inline:14px!important}.profile-section-nav>a{padding-inline:9px;font-size:11px}}
+@media(prefers-reduced-motion:reduce){.profile-section-nav{scroll-behavior:auto}}
