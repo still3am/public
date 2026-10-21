@@ -35,7 +35,7 @@ export default function DiscoverProfileCard({ person, active, direction, childre
       try {
         const page = await base44.entities.Track.filter({ id: { $in: ids } }, { limit: 3 });
         const rows = Array.isArray(page) ? page : page?.items;if (!Array.isArray(rows)) throw Error("Invalid tracks");
-        const byId = new Map(rows.map((row) => [row.id, row]));
+        const byId = new Map();for(const row of rows)byId.set(row.id,row);
         if (!cancelled) setSongs(ids.map((id) => byId.get(id)).filter(Boolean));
       } catch {if (!cancelled) setFailed(true);} finally
       {if (!cancelled) setLoading(false);}
