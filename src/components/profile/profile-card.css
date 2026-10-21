@@ -65,3 +65,68 @@ html.dark[data-liquid-glass=tinted] .public-app .profile-redesigned .profile-ide
  html:is([data-liquid-glass=clear],[data-liquid-glass=tinted]) .public-app .profile-redesigned .profile-identity{background:#f6f7f9!important}
  html.dark:is([data-liquid-glass=clear],[data-liquid-glass=tinted]) .public-app .profile-redesigned .profile-identity{background:#191c22!important}
 }
+
+/* A shared palette keeps the profile readable over every artwork color. */
+.public-app .profile-redesigned{
+ --foreground:222 16% 12%;--muted-foreground:222 7% 40%;--card:220 16% 98%;--background:220 16% 98%;--border:220 10% 85%;
+ color:hsl(var(--foreground));width:100%;min-width:0;
+}
+html.dark .public-app .profile-redesigned{
+ --foreground:220 14% 95%;--muted-foreground:220 8% 68%;--card:222 14% 11%;--background:222 14% 11%;--border:220 8% 25%;
+}
+.public-app .profile-redesigned .profile-content{gap:24px;align-items:start}
+.public-app .profile-redesigned :is(.profile-conversation,.profile-rotation,.profile-feature-song){
+ background:rgb(246 247 249/.97)!important;background-image:none!important;
+ color:hsl(var(--foreground));border:1px solid rgb(255 255 255/.48)!important;border-radius:24px;
+ box-shadow:inset 0 1px 0 #fff9,0 10px 32px -22px #0005!important;
+}
+html.dark .public-app .profile-redesigned :is(.profile-conversation,.profile-rotation,.profile-feature-song){
+ background:rgb(25 28 34/.97)!important;border-color:#ffffff16!important;box-shadow:inset 0 1px 0 #ffffff0a,0 10px 32px -22px #0009!important;
+}
+html:is([data-liquid-glass=clear],[data-liquid-glass=tinted]) .public-app .profile-redesigned :is(.profile-conversation,.profile-rotation,.profile-feature-song){
+ background:rgb(246 247 249/.92)!important;-webkit-backdrop-filter:blur(24px) saturate(.85)!important;backdrop-filter:blur(24px) saturate(.85)!important;
+}
+html.dark:is([data-liquid-glass=clear],[data-liquid-glass=tinted]) .public-app .profile-redesigned :is(.profile-conversation,.profile-rotation,.profile-feature-song){background:rgb(25 28 34/.92)!important}
+html[data-liquid-glass=tinted] .public-app .profile-redesigned :is(.profile-conversation,.profile-rotation,.profile-feature-song){background:rgb(246 247 249/.98)!important}
+html.dark[data-liquid-glass=tinted] .public-app .profile-redesigned :is(.profile-conversation,.profile-rotation,.profile-feature-song){background:rgb(25 28 34/.98)!important}
+.public-app .profile-redesigned .profile-song-spotlight{max-width:none;margin-bottom:20px}
+.public-app .profile-redesigned .profile-song-spotlight>div{margin-bottom:0}
+.public-app .profile-redesigned .profile-feature-song{padding:18px;gap:16px}
+.public-app .profile-redesigned .profile-feature-meta{flex:1;min-width:0;display:grid;gap:4px}
+.public-app .profile-redesigned .profile-preview-button{width:44px;height:44px;min-width:44px;min-height:44px;border-radius:50%;background:hsl(var(--foreground));color:hsl(var(--background));border:none}
+.public-app .profile-redesigned .profile-conversation{padding:24px}
+.public-app .profile-redesigned .profile-conversation textarea{color:hsl(var(--foreground));background:hsl(var(--foreground)/.035)!important;border:1px solid hsl(var(--foreground)/.12);border-radius:16px}
+.public-app .profile-redesigned .profile-conversation textarea::placeholder{color:hsl(var(--muted-foreground))}
+.public-app .profile-redesigned :is(.profile-conversation,.profile-music) h2{font-size:20px;font-weight:650;letter-spacing:-.035em}
+.public-app .profile-redesigned .profile-stats{padding:14px 0;border-block:1px solid hsl(var(--foreground)/.08)}
+.public-app .profile-redesigned .profile-actions>button:not(.profile-primary-action),.public-app .profile-redesigned .profile-actions>a{background:transparent;border-color:transparent}
+.public-app .profile-redesigned .profile-info .selectable-content{font-size:14px;max-width:52ch}
+.public-app .profile-redesigned .profile-info h1{font-weight:650}
+@media(min-width:768px){
+ .public-app .profile-redesigned .profile-cover-stage{height:clamp(184px,17vw,232px)}
+ .public-app .profile-redesigned .profile-details{padding:0 32px 28px!important}
+ .public-app .profile-redesigned .profile-info{padding-top:24px}
+ .public-app .profile-redesigned .profile-avatar-notes{margin-top:-40px!important}
+ .public-app .profile-redesigned .profile-stats{width:fit-content;min-width:320px}
+ .public-app .profile-redesigned .profile-actions>.profile-primary-action{margin-right:8px}
+}
+@media(max-width:767px){
+ .public-app .profile-redesigned .profile-identity{border-radius:22px}
+ .public-app .profile-redesigned .profile-cover-stage{height:152px}
+ .public-app .profile-redesigned .profile-info h1{font-size:29px}
+ .public-app .profile-redesigned .profile-stats{margin:16px 0;padding:12px 0}
+ .public-app .profile-redesigned .profile-feature-song{padding:14px;gap:12px;border-radius:20px}
+ .public-app .profile-redesigned :is(.profile-conversation,.profile-rotation){border-radius:20px;padding:18px}
+ .public-app .profile-redesigned .profile-content{gap:20px}
+ .public-app .profile-redesigned .profile-actions{column-gap:6px!important;row-gap:6px!important}
+ .public-app .profile-redesigned .profile-actions>.profile-primary-action{max-width:320px;margin-inline:auto}
+ .public-app .profile-redesigned .profile-info .selectable-content{font-size:13px;max-width:34ch}
+}
+@media(prefers-reduced-transparency:reduce),(prefers-contrast:more){
+ html:is([data-liquid-glass=clear],[data-liquid-glass=tinted]) .public-app .profile-redesigned :is(.profile-conversation,.profile-rotation,.profile-feature-song){background:#f6f7f9!important;-webkit-backdrop-filter:none!important;backdrop-filter:none!important}
+ html.dark:is([data-liquid-glass=clear],[data-liquid-glass=tinted]) .public-app .profile-redesigned :is(.profile-conversation,.profile-rotation,.profile-feature-song){background:#191c22!important}
+}
+@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){
+ html:is([data-liquid-glass=clear],[data-liquid-glass=tinted]) .public-app .profile-redesigned :is(.profile-conversation,.profile-rotation,.profile-feature-song){background:#f6f7f9!important}
+ html.dark:is([data-liquid-glass=clear],[data-liquid-glass=tinted]) .public-app .profile-redesigned :is(.profile-conversation,.profile-rotation,.profile-feature-song){background:#191c22!important}
+}
