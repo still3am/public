@@ -69,7 +69,7 @@ export default function SettingsSheet({ onClose, onDeleteAccount }) {
   <div className="profile-settings-panel relative w-full md:max-w-lg max-h-[92dvh] md:max-h-[86dvh] flex flex-col bg-background text-foreground border border-border/70 rounded-t-[28px] md:rounded-[28px] shadow-2xl overflow-hidden animate-in slide-in-from-bottom-4 duration-200">
    <header className="shrink-0 px-5 pt-3 pb-4 border-b border-border/60 bg-background">
     <div aria-hidden="true" className="md:hidden mx-auto w-9 h-1 rounded-full bg-foreground/20 mb-3" />
-    <div className="flex justify-between items-center gap-3"><div className="flex items-center gap-3">{(pureOpen) && <button type="button" aria-label="Back to settings" onClick={() => {setPureOpen(false);}} className="w-11 h-11 rounded-full bg-foreground/[0.06] grid place-items-center shrink-0"><ArrowLeft size={19} /></button>}<div><h2 className="text-2xl font-bold tracking-tight">{pureOpen ? "PURE" : "Settings"}</h2><p className="text-xs text-muted-foreground mt-1 hidden">{pureOpen ? "Your sound, fine-tuned." : "Make PUBLIC feel right for you."}</p></div></div><button type="button" onClick={onClose} className="w-11 h-11 rounded-full bg-foreground/[0.06] grid place-items-center hover:bg-foreground/10 shrink-0" aria-label="Close settings"><X size={20} /></button></div>
+    <div className="flex justify-between items-center gap-3"><div className="flex items-center gap-3">{pureOpen && <button type="button" aria-label="Back to settings" onClick={() => {setPureOpen(false);}} className="w-11 h-11 rounded-full bg-foreground/[0.06] grid place-items-center shrink-0"><ArrowLeft size={19} /></button>}<div><h2 className="text-2xl font-bold tracking-tight">{pureOpen ? "PURE" : "Settings"}</h2><p className="text-xs text-muted-foreground mt-1 hidden">{pureOpen ? "Your sound, fine-tuned." : "Make PUBLIC feel right for you."}</p></div></div><button type="button" onClick={onClose} className="w-11 h-11 rounded-full bg-foreground/[0.06] grid place-items-center hover:bg-foreground/10 shrink-0" aria-label="Close settings"><X size={20} /></button></div>
    </header>
    <div className={"profile-settings-groups " + (pureOpen ? "settings-detail " : "") + "min-h-0 overflow-y-auto overscroll-contain px-4 md:px-5 pt-5 pb-[calc(1.5rem+env(safe-area-inset-bottom))] space-y-6"}>
     {pureOpen ? <div className="space-y-5">
@@ -98,7 +98,7 @@ export default function SettingsSheet({ onClose, onDeleteAccount }) {
      <SettingRow icon={loggingOut ? Loader2 : LogOut} title={loggingOut ? "Signing out…" : "Log out"} description="Sign out on this device" disabled={loggingOut || !!saving || !!unblocking} onClick={logout} />
      <SettingRow icon={Trash2} title="Delete account" description="Permanently remove your profile and uploads" danger disabled={loggingOut || !!saving || !!unblocking} onClick={() => {onClose();onDeleteAccount();}} />
     </SettingGroup>
-    <p className="text-center text-[11px] tracking-[.18em] text-muted-foreground/60 font-semibold">PUBLIC.</p>
+    <p className="text-center text-[11px] tracking-[.18em] text-muted-foreground/60 font-semibold hidden">PUBLIC.</p>
     </>}
    </div>
   </div>
