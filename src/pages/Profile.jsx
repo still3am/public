@@ -1,3 +1,4 @@
+import "@/components/profile/profile-card.css";
 import {entityRows} from "@/lib/entityRows";
 import ProfileMedia from "@/components/ProfileMedia";
 import {validateMotionFile} from "@/lib/profileMotion";

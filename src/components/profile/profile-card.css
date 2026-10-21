@@ -1,0 +1,67 @@
+/* Profile identity: one neutral glass layer, with artwork kept in the cover. */
+.public-app .profile-redesigned .profile-overview{margin:0 0 28px;display:block}
+.public-app .profile-redesigned .profile-identity{
+ --foreground:222 16% 12%;--muted-foreground:222 7% 40%;--card:220 16% 98%;--background:220 16% 98%;--border:220 10% 85%;
+ color:hsl(var(--foreground));border:1px solid rgb(255 255 255/.6);border-radius:28px;
+ background:#f6f7f9!important;background-image:none!important;
+ box-shadow:0 16px 48px -28px #0005,inset 0 1px 0 #fff!important;isolation:isolate;
+}
+html.dark .public-app .profile-redesigned .profile-identity{
+ --foreground:220 14% 95%;--muted-foreground:220 8% 68%;--card:222 14% 11%;--background:222 14% 11%;--border:220 8% 25%;
+ background:#191c22!important;border-color:#ffffff20;box-shadow:0 18px 48px -24px #0009,inset 0 1px 0 #ffffff12!important;
+}
+html:is([data-liquid-glass=clear],[data-liquid-glass=tinted]) .public-app .profile-redesigned .profile-identity{
+ background:rgb(246 247 249/.90)!important;
+ -webkit-backdrop-filter:blur(28px) saturate(.75)!important;backdrop-filter:blur(28px) saturate(.75)!important;
+}
+html.dark:is([data-liquid-glass=clear],[data-liquid-glass=tinted]) .public-app .profile-redesigned .profile-identity{background:rgb(25 28 34/.90)!important}
+html[data-liquid-glass=tinted] .public-app .profile-redesigned .profile-identity{background:rgb(246 247 249/.97)!important}
+html.dark[data-liquid-glass=tinted] .public-app .profile-redesigned .profile-identity{background:rgb(25 28 34/.97)!important}
+.public-app .profile-redesigned .profile-cover-stage{height:220px;background-color:#242730}
+.public-app .profile-redesigned .profile-cover-fade{background:linear-gradient(180deg,transparent 65%,rgb(0 0 0/.10))}
+.public-app .profile-redesigned .profile-details{padding:0 32px 30px!important}
+.public-app .profile-redesigned .profile-identity-row{gap:24px;align-items:flex-start}
+.public-app .profile-redesigned .profile-avatar-notes{flex:none;margin-top:-48px!important}
+.public-app .profile-redesigned .profile-avatar{width:112px!important;height:112px!important;border-radius:50%!important}
+.public-app .profile-redesigned .profile-info{padding-top:22px}
+.public-app .profile-redesigned .profile-info h1{font-size:clamp(30px,3vw,42px);font-weight:700;line-height:1.12;letter-spacing:-.045em;color:hsl(var(--foreground))}
+.public-app .profile-redesigned .profile-stats{display:flex;flex-wrap:wrap;width:auto;gap:24px!important;margin:18px 0}
+.public-app .profile-redesigned .profile-stats>button,.public-app .profile-redesigned .profile-stats>span{min-width:60px;padding:0;align-items:flex-start;flex-direction:column;gap:4px}
+.public-app .profile-redesigned .profile-stats .font-bold{font-size:20px;font-weight:650}
+.public-app .profile-redesigned .profile-stats button>span:last-child{font-size:11px;color:hsl(var(--muted-foreground))}
+.public-app .profile-redesigned .profile-info .selectable-content{max-width:58ch;color:hsl(var(--foreground)/.78);line-height:1.65}
+.public-app .profile-redesigned .profile-actions{gap:8px!important;margin-top:20px}
+.public-app .profile-redesigned .profile-actions>button:not(.profile-primary-action),.public-app .profile-redesigned .profile-actions>a{
+ width:44px;height:44px;min-height:44px;border:1px solid hsl(var(--foreground)/.10);border-radius:50%;
+ background:hsl(var(--foreground)/.045);color:hsl(var(--foreground));box-shadow:none;
+}
+.public-app .profile-redesigned .profile-actions>.profile-primary-action{min-height:44px;padding:10px 20px;border-radius:999px;background:hsl(var(--foreground));color:hsl(var(--background));border:1px solid transparent;font-weight:650}
+.public-app .profile-redesigned .profile-actions>button:focus-visible{outline:2px solid hsl(var(--foreground));outline-offset:3px}
+@media(hover:hover){.public-app .profile-redesigned .profile-actions>button:not(.profile-primary-action):hover{background:hsl(var(--foreground)/.09)}}
+@media(min-width:1280px){.public-app .profile-redesigned .profile-cover-stage{height:250px}.public-app .profile-redesigned .profile-details{padding-inline:40px!important}}
+@media(max-width:767px){
+ .public-app .profile-redesigned .profile-overview{margin:0 0 22px}
+ .public-app .profile-redesigned .profile-identity{border-radius:24px}
+ .public-app .profile-redesigned .profile-cover-stage{height:164px}
+ .public-app .profile-redesigned .profile-details{padding:0 18px 22px!important}
+ .public-app .profile-redesigned .profile-identity-row{flex-direction:column;align-items:center;gap:0}
+ .public-app .profile-redesigned .profile-avatar-notes{margin-top:-44px!important}
+ .public-app .profile-redesigned .profile-avatar{width:96px!important;height:96px!important}
+ .public-app .profile-redesigned .profile-info{padding-top:14px;text-align:center}
+ .public-app .profile-redesigned .profile-info h1{font-size:30px}
+ .public-app .profile-redesigned .profile-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:4px!important;width:100%;margin:18px 0}
+ .public-app .profile-redesigned .profile-stats>button,.public-app .profile-redesigned .profile-stats>span{min-width:0;padding:5px 0;align-items:center;justify-content:center}
+ .public-app .profile-redesigned .profile-stats .font-bold{font-size:19px}
+ .public-app .profile-redesigned .profile-stats button>span:last-child{font-size:10px}
+ .public-app .profile-redesigned .profile-actions{justify-content:center!important;gap:8px!important;margin-top:18px}
+ .public-app .profile-redesigned .profile-actions>.profile-primary-action{flex:0 0 100%;width:100%;margin-bottom:4px}
+ .public-app .profile-redesigned .profile-info .selectable-content{margin-inline:auto;font-size:13px}
+}
+@media(prefers-reduced-transparency:reduce),(prefers-contrast:more){
+ html:is([data-liquid-glass=clear],[data-liquid-glass=tinted]) .public-app .profile-redesigned .profile-identity{background:#f6f7f9!important;-webkit-backdrop-filter:none!important;backdrop-filter:none!important}
+ html.dark:is([data-liquid-glass=clear],[data-liquid-glass=tinted]) .public-app .profile-redesigned .profile-identity{background:#191c22!important}
+}
+@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){
+ html:is([data-liquid-glass=clear],[data-liquid-glass=tinted]) .public-app .profile-redesigned .profile-identity{background:#f6f7f9!important}
+ html.dark:is([data-liquid-glass=clear],[data-liquid-glass=tinted]) .public-app .profile-redesigned .profile-identity{background:#191c22!important}
+}
