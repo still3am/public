@@ -1,4 +1,4 @@
-import {setFollowState,followError} from "@/lib/followActions";
+import {setLikeState} from "@/lib/likeActions";
 import {useRef,useEffect} from "react";
 import {
   Play, Pause, ListPlus, Check, Plus, ListMusic, Download, Trash2, Loader2, Heart,
@@ -30,7 +30,7 @@ export function useTrackActions(track, menuState, ui) {
   const cache = useOfflineCache();
   const mixing=useRef(false),latestPlayer=useRef(p),account=useRef(user?.id),alive=useRef(true);latestPlayer.current=p;account.current=user?.id;
   useEffect(()=>{alive.current=true;return()=>{alive.current=false;};},[]);
-  const exporting=useRef(false),likeLock=useRef(false),followLock=useRef(false);
+  const exporting=useRef(false),likeLock=useRef(false);
   const actionKey=[user?.id,track.id,track.uploader_id].join(":"),latestAction=useRef(actionKey);latestAction.current=actionKey;
 
   useEffect(()=>{prepareTrackShare();},[track.id]);
@@ -48,16 +48,17 @@ export function useTrackActions(track, menuState, ui) {
   const offline = cache.isCached(track.id);
   const savingOffline = !!cache.downloading[track.id];
   const isOwner = track.uploader_id === user?.id;
-  const { liked, following, canFollow } = menuState;
-  const artistName = track.artist || track.uploader_name || "artist";
+  const { liked } = menuState;
+
 
   const toggleLike = async () => {
     if (!requireAuth()||!menuState.likeReady||likeLock.current) return;
     likeLock.current=true;const started=actionKey;
-    menuState.setLiked(!liked);
     try {
-      await base44.functions.invoke("toggleLike", { track_id: track.id, liked: !liked });
-      toast({ title: liked ? "Removed from liked" : "Liked" });
+      const result=await setLikeState(base44,user.id,track.id,!liked);
+      if(!alive.current||latestAction.current!==started)return;
+      menuState.setLiked(result.liked);
+      toast({ title: result.pending ? "Saved on this device · will sync when online" : result.liked ? "Liked" : "Removed from liked" });
     } catch {
       if(alive.current&&latestAction.current===started)menuState.setLiked(liked);
       toast({title:"Couldn’t update this song. Please try again.",variant:"destructive"});
