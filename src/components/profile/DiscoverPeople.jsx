@@ -92,11 +92,11 @@ export default function DiscoverPeople({ profileId, active = true, layout = "dec
   const following = !!local.following[person?.id],busy = !!local.busy[person?.id];
   const name = person?.display_name || person?.full_name || person?.username || "PUBLIC listener";
   if (layout === "shelf") return <section className="profile-people-shelf" aria-label="Discover people">
-    <header><div><h2>Discover People</h2><p>Find people through the music they love.</p></div><Link to="/search?type=people" aria-label="Find people" title="Find people" style={{ width: 44, height: 44, flexShrink: 0, justifyContent: "center", borderRadius: "50%" }}><Search size={20} aria-hidden="true" /></Link></header>
-    {!ready || state.loading && !people.length ? <p className="profile-discover-status" role="status"><Loader2 size={18} className="animate-spin" />Finding listeners…</p> :
+    <header><div><h2>Discover People</h2><p>Find people through the music they love.</p></div><Link to="/search?type=people" aria-label="Find people" title="Find people" className="profile-people-search"><Search size={20} aria-hidden="true" /></Link></header>
+    {!ready || state.loading && !people.length ? <div className="profile-people-skeleton" role="status" aria-label="Finding listeners">{[0, 1, 2, 3].map((item) => <div key={item} aria-hidden="true"><i /><span /><small /></div>)}</div> :
     state.error && !people.length ? <div className="profile-discover-status" role="status"><p>People couldn’t load.</p><button type="button" onClick={() => setRetry((n) => n + 1)}>Try again</button></div> :
     !people.length ? <div className="profile-discover-status"><p>You’re all caught up. Search for someone you know.</p><Link to="/search?type=people">Search people</Link></div> :
-    <><div className="profile-people-track" aria-label="Suggested listeners" tabIndex={0}>
+    <><div className="profile-people-track" aria-label="Suggested listeners">
       {people.slice(0, 6).map((candidate) => {
           const label = candidate.display_name || candidate.full_name || candidate.username || "PUBLIC listener";
           const isFollowing = !!local.following[candidate.id],pending = !!local.busy[candidate.id];
@@ -106,7 +106,7 @@ export default function DiscoverPeople({ profileId, active = true, layout = "dec
         {local.errors[candidate.id] && <p className="profile-discover-error" role="alert">{local.errors[candidate.id]}</p>}
        </article>;
         })}
-     </div>{state.error && <p className="profile-discover-status" role="status">Couldn’t refresh suggestions. Your current list is still here.</p>}</>}
+     </div><Link className="profile-people-browse" to="/search?type=people">Explore more people<ChevronRight size={15} aria-hidden="true" /></Link>{state.error && <p className="profile-discover-status" role="status">Couldn’t refresh suggestions. Your current list is still here.</p>}</>}
    </section>;
   return <section className="profile-discover profile-discover-deck" aria-label="Discover people">
     <header><div><h2>Discover People</h2><p>Different lives. Shared soundtracks.</p></div></header>
