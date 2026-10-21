@@ -123,3 +123,9 @@
  .profile-person-tile{padding:16px 12px 12px;border-radius:18px}
  .profile-people-shelf .profile-discover-status{padding:16px 18px}
 }
+
+/* A profile's own palette forms a thin ring with a quiet inset separator. */
+.public-app .profile-redesigned .profile-person-gradient-ring{padding:3px;box-sizing:border-box;background-color:hsl(var(--foreground)/.18)}
+.public-app .profile-redesigned .profile-person-gradient-ring>.profile-person-portrait-inner{display:block;box-sizing:border-box;padding:3px;background:hsl(var(--card));border-radius:50%;overflow:hidden}
+.public-app .profile-redesigned .profile-person-portrait-inner>*{display:block;width:100%!important;height:100%!important;max-width:none;aspect-ratio:1;object-fit:cover;border-radius:50%!important}
+.public-app .profile-redesigned .profile-person-portrait-inner>div{display:grid}
