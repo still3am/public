@@ -135,3 +135,13 @@
 @media(min-width:768px) and (max-width:1023px){
  .public-app .profile-redesigned .profile-community-column .profile-people-track{grid-template-columns:repeat(3,minmax(0,1fr));gap:28px 24px}
 }
+
+/* Desktop conversation sits beneath rotation; mobile keeps discovery first. */
+.public-app .profile-redesigned .profile-music>.profile-conversation{margin-bottom:28px}
+@media(max-width:1023px){
+ .public-app .profile-redesigned .profile-content{display:flex;flex-direction:column;align-items:stretch}
+ .public-app .profile-redesigned .profile-content>.profile-music,
+ .public-app .profile-redesigned .profile-content>.profile-community-column{display:contents}
+ .public-app .profile-redesigned .profile-music>.profile-conversation{order:2;margin-bottom:0}
+ .public-app .profile-redesigned .profile-community-column>.profile-discover-section{order:1;margin-bottom:0}
+}
