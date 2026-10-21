@@ -59,7 +59,7 @@ export default function TrackDetail() {
   const [editing, setEditing] = useState(false);
   const [generating, setGenerating] = useState(false);
   const [detecting, setDetecting] = useState(false);
-  const [syncing, setSyncing] = useState(false);
+  const [syncing, setSyncing] = useState(/** @type {boolean | "generated"} */ (false));
   const [moreTracks, setMoreTracks] = useState([]);
   const [recommended, setRecommended] = useState([]);
   useEffect(() => {
