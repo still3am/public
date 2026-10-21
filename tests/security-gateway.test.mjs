@@ -72,6 +72,33 @@ await check('failed follow remains eligible for retry',async()=>{
  assert.equal((await enroll()).status,500);assert.equal(db.User[0].public_follow_initialized,undefined);
  globalThis.__client.asServiceRole.entities.Follow=follows;
 });
+const followBack=()=>invoke(gateway,{entity:'User',action:'initializePublicFollower',args:[{user_id:'other'}]});
+await check('Public follows the authenticated member, never an arbitrary target',async()=>{
+ official();db.User[0].public_follow_initialized=true;
+ const responses=await Promise.all([followBack(),followBack()]);
+ assert.ok(responses.every(r=>r.status===200));assert.equal(db.Follow.length,1);
+ assert.equal(db.Follow[0].follower_id,publicId);assert.equal(db.Follow[0].following_id,'owner');
+ assert.equal(db.User[0].public_follower_initialized,true);
+ await followBack();assert.equal(db.Follow.length,1);
+ assert.equal(db.Notification.length,1,'enrollment does not send notifications');
+});
+await check('Public follow-back avoids an existing relationship',async()=>{
+ official();db.Follow=[{id:'existing',follower_id:publicId,following_id:'owner'}];
+ const r=await followBack();assert.equal(r.status,200);assert.equal(r.data.result.changed,false);assert.equal(db.Follow.length,1);
+});
+await check('Public follow-back respects blocks in both directions',async()=>{
+ official();for(const block of [{user_id:'owner',blocked_user_id:publicId},{user_id:publicId,blocked_user_id:'owner'}]){
+ db.User[0].public_follower_initialized=false;db.Block=[block];
+ assert.equal((await followBack()).status,200);assert.equal(db.Follow,undefined);
+ }
+});
+await check('Public follow-back rejects guest and suspended callers',async()=>{
+ official();user=null;assert.equal((await followBack()).status,401);
+ user={id:'owner',disabled:true};assert.equal((await followBack()).status,403);assert.equal(writes.length,0);
+});
+await check('Public follow-back never creates a self follow',async()=>{
+ official();user={id:publicId,role:'admin'};assert.equal((await followBack()).status,200);assert.equal(writes.length,0);
+});
 await check('anonymous mutation rejected',async()=>{user=null;assert.equal((await invoke(gateway,{entity:'Track',action:'create',args:[{}]})).status,401);});
 await check('owner self-publication rejected',async()=>{const r=await invoke(gateway,{entity:'Track',action:'create',args:[{title:'Song',rights_confirmed:true,is_published:true,approval_status:'approved'}]});assert.equal(r.status,403);assert.equal(writes.length,0);});
 await check('missing rights rejected before write',async()=>{assert.equal((await invoke(gateway,{entity:'Track',action:'create',args:[{title:'Song'}]})).status,422);assert.equal(writes.length,0);});
