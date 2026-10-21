@@ -161,6 +161,25 @@ await check('profile motion survives save and public mirror',async()=>{const pat
 await check('profile media rejects unsafe URLs, ambiguous sources and missing poster',async()=>{for(const patch of [{avatar_video_url:'javascript:bad'},{banner_gif_url:'data:text/html,bad'},{avatar_url:'https://test/poster.jpg',avatar_video_url:'https://test/a.mp4',avatar_gif_url:'https://test/a.gif'},{avatar_video_url:'https://test/clip.mp4'}]){const r=await invoke(gateway,{entity:'User',action:'update',args:['owner',patch]});assert.equal(r.status,422);assert.equal(writes.length,0);}});
 await check('static photo replacement clears prior animation',async()=>{user.avatar_video_url='https://test/old.mp4';user.avatar_url='https://test/old.jpg';const r=await invoke(gateway,{entity:'User',action:'update',args:['owner',{avatar_url:'https://test/new.jpg'}]});assert.equal(r.status,200);assert.equal(r.data.result.avatar_video_url,'');assert.equal(db.PublicProfile[0].avatar_gif_url,'');});
 await check('profile motion cannot modify another account',async()=>{const r=await invoke(gateway,{entity:'User',action:'update',args:['other',{avatar_url:'https://test/poster.jpg',avatar_video_url:'https://test/clip.mp4'}]});assert.equal(r.status,403);assert.equal(writes.length,0);});
+await check('support recovery is account scoped and excludes receipt secrets',async()=>{
+ db.SupportTicket=[{id:'mine',user_id:'owner',subject:'My request',access_hash:'secret',email:'private@example.test'},{id:'theirs',user_id:'other',subject:'Private'}];
+ let result=await invoke(safety,{action:'myTickets',user_id:'other'});assert.equal(result.status,200);assert.deepEqual(result.data.tickets.map(t=>t.id),['mine']);assert.equal(result.data.tickets[0].access_hash,undefined);assert.equal(result.data.tickets[0].email,undefined);
+ assert.equal((await invoke(safety,{action:'ticket',id:'mine'})).status,200);assert.equal((await invoke(safety,{action:'ticket',id:'theirs'})).status,403);user=null;assert.equal((await invoke(safety,{action:'myTickets'})).status,401);
+});
+await check('support reply notifies once and keeps private reply out of activity',async()=>{
+ db.SupportTicket=[{id:'ticket',user_id:'owner',subject:'Private topic',reply:''}];user={id:'other',role:'admin'};
+ for(let i=0;i<2;i++)assert.equal((await invoke(safety,{action:'reply',id:'ticket',reply:'Private answer'})).status,200);
+ const notes=db.Notification.filter(n=>n.type==='support_reply');assert.equal(notes.length,1);assert.equal(notes[0].user_id,'owner');assert.equal(notes[0].target_path,'/support?ticket=ticket');assert.ok(!JSON.stringify(notes).includes('Private answer'));
+ user={id:'owner',role:'user'};assert.equal((await invoke(safety,{action:'reply',id:'ticket',reply:'Untrusted answer'})).status,403);
+});
+await check('completed idea notifies author and supporters with retry deduplication',async()=>{
+ db.Suggestion=[{id:'idea',user_id:'owner',title:'Better music',status:'planned',voter_ids:['owner','other','other']}];
+ let result=await invoke(gateway,{entity:'Suggestion',action:'update',args:['idea',{status:'in_progress'}]});assert.equal(result.status,403);
+ user={id:'admin',role:'admin'};db.User.push(user);
+ result=await invoke(gateway,{entity:'Suggestion',action:'update',args:['idea',{status:'in_progress'}]});assert.equal(result.status,200);assert.equal(db.Notification.filter(n=>n.type==='suggestion_shipped').length,0);
+ for(let i=0;i<2;i++)assert.equal((await invoke(gateway,{entity:'Suggestion',action:'update',args:['idea',{status:'done'}]})).status,200);
+ const notes=db.Notification.filter(n=>n.type==='suggestion_shipped');assert.equal(notes.length,2);assert.deepEqual(notes.map(n=>n.user_id).sort(),['other','owner']);assert.equal(notes[0].target_path,'/suggestions?idea=idea');
+});
 console.log(JSON.stringify({passed,total:passed,environment:'isolated mocked SDK; no live data changed'}));
 
 let backendFiles=0,syntaxErrors=0;
