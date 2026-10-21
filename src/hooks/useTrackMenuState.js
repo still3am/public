@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react";
+import {readLikeState} from "@/lib/likeActions";
+import {entityRows} from "@/lib/entityRows";
 import { base44 } from "@/api/base44Client";
 import { useAuth } from "@/lib/AuthContext";
 
@@ -16,19 +18,24 @@ export function useTrackMenuState(track, open) {
     if(!open||!user?.id||!track?.id)return;
     let alive=true;
     Promise.allSettled([
-      base44.entities.Like.filter({user_id:user.id,track_id:track.id},'-created_date',1),
+      readLikeState(base44,user.id,track.id),
       canFollow?base44.entities.Follow.filter({follower_id:user.id,following_id:artistId},'-created_date',1):Promise.resolve([]),
     ]).then(([likes,follows])=>{
       if(!alive)return;
       setState(previous=>{
         const next=previous.key===key?{...previous}:{...empty};
-        if(likes.status==='fulfilled'){next.liked=likes.value.length>0;next.likeReady=true;}
-        if(follows.status==='fulfilled'){next.following=follows.value.length>0;next.followReady=true;}
+        if(likes.status==='fulfilled'){next.liked=likes.value;next.likeReady=true;}
+        if(follows.status==='fulfilled'){next.following=(entityRows(follows.value)||[]).length>0;next.followReady=true;}
         return next;
       });
     });
     return()=>{alive=false;};
   },[open,key,canFollow,retry]);
+  useEffect(()=>{
+    const changed=event=>{if(event.detail?.uid===user?.id&&event.detail?.trackId===track?.id)setState(previous=>({...previous,key,liked:event.detail.liked,likeReady:true}));};
+    window.addEventListener("likes:changed",changed);
+    return()=>window.removeEventListener("likes:changed",changed);
+  },[key,user?.id,track?.id]);
   const patch=change=>setState(previous=>previous.key===key?{...previous,...change}:previous);
   return {...current,reload:()=>setRetry(value=>value+1),ready:current.likeReady&&current.followReady,canFollow,
     setLiked:liked=>patch({liked}),setFollowing:following=>patch({following})};
