@@ -11,6 +11,28 @@ import Avatar from "@/components/Avatar";
 import ScrollShelf from "@/components/ScrollShelf";
 import { rankDiscoverPeople } from "@/lib/discoverPeople";
 import "./discover-people.css";
+import {useCoverPalette} from "@/hooks/useCoverPalette";
+import {useCoverUrl} from "@/hooks/useCoverUrl";
+
+function DiscoverAvatar({person,active}) {
+  const automatic=!["custom","off"].includes(person.profile_background_mode);
+  const trackId=automatic?person.featured_track_id:"";
+  const [art,setArt]=useState({id:"",url:""});
+  useEffect(()=>{
+    if(!active||!trackId)return;
+    let cancelled=false;
+    base44.entities.Track.get(trackId).then(track=>{
+      if(!cancelled)setArt({id:trackId,url:track?.cover_art_url||""});
+    }).catch(()=>{if(!cancelled)setArt({id:trackId,url:""});});
+    return()=>{cancelled=true;};
+  },[trackId,active]);
+  const cover=useCoverUrl(art.id===trackId?art.url:"");
+  const {colors}=useCoverPalette(cover);
+  const saved=(Array.isArray(person.profile_background_colors)?person.profile_background_colors:[]).filter(color=>/^#[0-9a-f]{6}$/i.test(color)).slice(0,3);
+  const palette=person.profile_background_mode==="off"?[]:automatic?colors.slice(0,3):saved;
+  const gradient=palette.length?"conic-gradient(from 35deg,"+[...palette,palette[0]].join(",")+")":undefined;
+  return <span className="profile-person-portrait profile-person-gradient-ring" style={gradient?{backgroundImage:gradient}:undefined}><span className="profile-person-portrait-inner"><Avatar user={person} size={144}/></span></span>;
+}
 
 /** Public suggestions only; follow changes use the same authorized path as profiles. */
 export default function DiscoverPeople({ profileId, active = true, layout = "deck" }) {
@@ -102,7 +124,7 @@ export default function DiscoverPeople({ profileId, active = true, layout = "dec
           const label = candidate.display_name || candidate.full_name || candidate.username || "PUBLIC listener";
           const isFollowing = !!local.following[candidate.id],pending = !!local.busy[candidate.id];
           return <article className="profile-person-tile" key={scope + ":" + candidate.id}>
-        <Link to={"/profile/" + encodeURIComponent(candidate.id)} className="profile-person-identity" aria-label={"Open " + label + " profile"}><span className="profile-person-portrait"><Avatar user={candidate} size={144} /></span><strong>{candidate.username ? "@" + candidate.username.replace(/^@/, "") : label}</strong><small>{candidate.is_artist ? "Artist" : "Listener"}</small></Link>
+        <Link to={"/profile/" + encodeURIComponent(candidate.id)} className="profile-person-identity" aria-label={"Open " + label + " profile"}><DiscoverAvatar person={candidate} active={active}/><strong>{candidate.username ? "@" + candidate.username.replace(/^@/, "") : label}</strong><small>{candidate.is_artist ? "Artist" : "Listener"}</small></Link>
         {uid ? <button type="button" className="profile-discover-follow" disabled={pending || state.loading} aria-label={(isFollowing ? "Unfollow " : "Follow ") + label} aria-pressed={isFollowing} onClick={() => follow(candidate)}>{pending ? <Loader2 size={14} className="animate-spin" /> : isFollowing ? <UserCheck size={14} /> : null}{pending ? "Saving…" : isFollowing ? "Following" : "Follow"}</button> : <Link className="profile-discover-follow" to="/login">Sign in to follow</Link>}
         {local.errors[candidate.id] && <p className="profile-discover-error" role="alert">{local.errors[candidate.id]}</p>}
        </article>;
