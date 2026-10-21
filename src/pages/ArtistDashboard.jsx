@@ -39,6 +39,7 @@ function StatCard({ icon: Icon, label, value }) {
 
 export default function ArtistDashboard() {
   const { user } = useAuth();
+  const [period,setPeriod]=useState("month"),[metrics,setMetrics]=useState(null),[metricsError,setMetricsError]=useState(false),[metricsLoading,setMetricsLoading]=useState(false);
   const [loading, setLoading] = useState(true);
   const [loaded,setLoaded]=useState(false);
   const [tracks, setTracks] = useState([]);
@@ -85,6 +86,11 @@ export default function ArtistDashboard() {
     };
   }, [user?.id,user?.is_artist,retry]);
 
+  useEffect(()=>{
+   if(!user?.is_artist)return;let alive=true;setMetrics(null);setMetricsError(false);setMetricsLoading(true);
+   base44.functions.invoke("musicInsights",{action:"artist",period}).then(response=>{if(!response?.data?.metrics)throw Error("Invalid analytics");if(alive)setMetrics(response.data.metrics);}).catch(()=>{if(alive)setMetricsError(true);}).finally(()=>{if(alive)setMetricsLoading(false);});
+   return()=>{alive=false;};
+  },[period,user?.id,user?.is_artist,retry]);
   if(error&&!loaded)return <LoadError onRetry={()=>setRetry(n=>n+1)}/>;
   if (loading&&!loaded) {
     return (
@@ -118,7 +124,7 @@ export default function ArtistDashboard() {
   totals?.sum_play_count ?? tracks.reduce((s, t) => s + (t.play_count || 0), 0);
   const totalLikes =
   totals?.sum_like_count ?? tracks.reduce((s, t) => s + (t.like_count || 0), 0);
-  const chartData = tracks.
+  const chartData = (metrics?tracks.map(t=>({...t,play_count:metrics.tracks.find(row=>row.track_id===t.id)?.plays||0})).sort((a,b)=>b.play_count-a.play_count):[]).
   slice(0, 10).
   map((t) => ({
     name: (t.title||"Untitled").length > 14 ? (t.title||"Untitled").slice(0, 14) + "…" : t.title||"Untitled",
@@ -144,6 +150,16 @@ export default function ArtistDashboard() {
         <button aria-label="Refresh artist analytics" className="playlist-action ml-auto text-xs" disabled={loading} onClick={()=>setRetry(value=>value+1)}>{loading?"Refreshing…":"Refresh"}</button>
       </div>
 
+      <div className="collection-tools mb-4"><label>Date range <select aria-label="Analytics date range" value={period} onChange={event=>setPeriod(event.target.value)}><option value="week">Last 7 days</option><option value="month">Last 30 days</option><option value="quarter">Last 90 days</option><option value="all">All recorded history</option></select></label></div>
+      {metricsError&&<p role="alert" className="text-sm mb-4">Listening analytics could not load. <button className="underline" onClick={()=>setRetry(n=>n+1)}>Retry</button></p>}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-3" aria-busy={metricsLoading}>
+       <StatCard icon={Play} label="Recorded plays" value={metrics?formatNumber(metrics.plays):"—"}/>
+       <StatCard icon={Users} label="Unique listeners" value={metrics?formatNumber(metrics.unique_listeners):"—"}/>
+       <StatCard icon={Heart} label="Library saves" value={metrics?formatNumber(metrics.saves):"—"}/>
+       <StatCard icon={Music} label="Completion rate" value={metrics?.completion_rate!=null?metrics.completion_rate+"%":"—"}/>
+      </div>
+      <p className="text-xs text-muted-foreground mb-6">{metricsLoading?"Loading listening analytics…":"Metrics use recorded listening in the selected range. Completion means at least 90% heard; "+(metrics?.measured_sessions||0)+" sessions have measurable duration. Saves count songs added in this range that remain in libraries."}</p>
+      <h2 className="text-sm font-bold mb-3">All-time overview</h2>
       {/* Stat cards */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
         <StatCard icon={Play} label="Total Plays" value={formatNumber(totalPlays)} />
@@ -155,7 +171,7 @@ export default function ArtistDashboard() {
       {/* Chart */}
       {chartData.length > 0 &&
       <div className="rounded-2xl bg-card ring-1 ring-inset ring-border p-4 mb-6">
-          <h2 className="text-sm font-bold mb-4">Plays by Track</h2>
+          <h2 className="text-sm font-bold mb-4">Recorded plays by track · selected range</h2>
           <ResponsiveContainer width="100%" height={260}>
             <BarChart data={chartData} margin={{ top: 5, right: 5, bottom: 5, left: -20 }}>
               <XAxis
@@ -206,7 +222,7 @@ export default function ArtistDashboard() {
                 </div>
                 <div className="flex items-center gap-3 text-xs shrink-0">
                   <span className="inline-flex items-center gap-1 text-foreground/60">
-                    <Play size={12} /> {formatNumber(t.play_count || 0)}
+                    <Play size={12} /> {metrics?formatNumber(metrics.tracks.find(row=>row.track_id===t.id)?.plays||0):"—"}
                   </span>
                   <span className="inline-flex items-center gap-1 text-foreground/60">
                     <Heart size={12} /> {formatNumber(t.like_count || 0)}
