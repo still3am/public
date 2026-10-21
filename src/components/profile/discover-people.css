@@ -129,3 +129,17 @@
 .public-app .profile-redesigned .profile-person-gradient-ring>.profile-person-portrait-inner{display:block;box-sizing:border-box;padding:3px;background:hsl(var(--card));border-radius:50%;overflow:hidden}
 .public-app .profile-redesigned .profile-person-portrait-inner>*{display:block;width:100%!important;height:100%!important;max-width:none;aspect-ratio:1;object-fit:cover;border-radius:50%!important}
 .public-app .profile-redesigned .profile-person-portrait-inner>div{display:grid}
+
+/* Crisp color rim, inset breathing room, and a restrained palette-colored halo. */
+.public-app .profile-redesigned .profile-community-column .profile-person-gradient-ring{padding:4px;background-clip:border-box}
+.public-app .profile-redesigned .profile-person-gradient-ring>.profile-person-portrait-inner{padding:4px;box-shadow:inset 0 0 0 1px hsl(var(--foreground)/.08)}
+.public-app .profile-redesigned .profile-person-portrait-inner>*{box-shadow:0 0 0 1px hsl(var(--foreground)/.08)}
+@media(hover:hover) and (prefers-reduced-motion:no-preference){
+ .public-app .profile-redesigned .profile-person-identity:hover .profile-person-gradient-ring{transform:translateY(-2px)}
+}
+@media(prefers-reduced-motion:no-preference){
+ .public-app .profile-redesigned .profile-person-gradient-ring{transition:transform .28s cubic-bezier(.2,.65,.3,1),box-shadow .28s ease}
+}
+@media(prefers-contrast:more){
+ .public-app .profile-redesigned .profile-person-gradient-ring{outline:1px solid hsl(var(--foreground));outline-offset:2px}
+}
