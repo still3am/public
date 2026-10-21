@@ -9,7 +9,7 @@ export default function Support(){
  const [form,setForm]=useState({subject:'',message:'',email:''}),[error,setError]=useState(''),[busy,setBusy]=useState(false),[ticket,setTicket]=useState(null),[receipt,setReceipt]=useState(null),[checking,setChecking]=useState(false);
  const [requests,setRequests]=useState({uid:null,rows:[],cursor:null,more:false}),[listError,setListError]=useState(''),[listing,setListing]=useState(false);
  const receiptVersion=useRef(0),listVersion=useRef(0),sending=useRef(false),account=useRef(uid);account.current=uid;
- useEffect(()=>{setTicket(null);setError('');let restored=null;try{restored=JSON.parse(localStorage.getItem(storageKey)||'null');}catch{}
+ useEffect(()=>{setTicket(null);setError('');setBusy(false);setForm({subject:'',message:'',email:''});let restored=null;try{restored=JSON.parse(localStorage.getItem(storageKey)||'null');}catch{}
  setReceipt(linked&&uid?{id:linked}:restored);return()=>{receiptVersion.current++;};},[storageKey,linked]);
  async function loadRequests(more=false){if(!uid)return;const request=++listVersion.current;setListing(true);setListError('');try{
  const response=await base44.functions.invoke('safety',{action:'myTickets',...(more&&requests.cursor?{cursor:requests.cursor}:{})});const data=response?.data;

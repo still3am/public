@@ -42,6 +42,7 @@ export default function ArtistDashboard() {
   const [period,setPeriod]=useState("month"),[metrics,setMetrics]=useState(null),[metricsError,setMetricsError]=useState(false),[metricsLoading,setMetricsLoading]=useState(false);
   const [loading, setLoading] = useState(true);
   const [loaded,setLoaded]=useState(false);
+  const [loadedUid,setLoadedUid]=useState(null);
   const [tracks, setTracks] = useState([]);
   const [totals, setTotals] = useState(null);
   const [followers, setFollowers] = useState(null);
@@ -72,7 +73,7 @@ export default function ArtistDashboard() {
         base44.entities.Follow.count({ following_id: user.id }).catch(()=>null)]
         );
         if (cancelled) return;
-        setTracks(t);setLoaded(true);
+        setTracks(t);setLoaded(true);setLoadedUid(user.id);
         setTotals(sums?.rows?.[0] || null);
         setFollowers(followerCount);
       } catch {if(!cancelled)setError(true);
@@ -92,7 +93,7 @@ export default function ArtistDashboard() {
    return()=>{alive=false;};
   },[period,user?.id,user?.is_artist,retry]);
   if(error&&!loaded)return <LoadError onRetry={()=>setRetry(n=>n+1)}/>;
-  if (loading&&!loaded) {
+  if (user?.is_artist&&loadedUid!==user.id||loading&&!loaded) {
     return (
       <div className="py-20 grid place-items-center">
         <Loader2 className="animate-spin" />
