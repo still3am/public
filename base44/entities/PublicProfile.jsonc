@@ -160,44 +160,80 @@
       "default": "",
       "rls": {
         "write": {
-          "user_condition": {
-            "role": "admin"
-          }
+          "$or": [
+            {
+              "data.user_id": "{{user.id}}"
+            },
+            {
+              "user_condition": {
+                "role": "admin"
+              }
+            }
+          ]
         }
-      }
+      },
+      "maxLength": 2048,
+      "pattern": "^(https?://[^\\s<>]+)?$"
     },
     "instagram": {
       "type": "string",
       "default": "",
       "rls": {
         "write": {
-          "user_condition": {
-            "role": "admin"
-          }
+          "$or": [
+            {
+              "data.user_id": "{{user.id}}"
+            },
+            {
+              "user_condition": {
+                "role": "admin"
+              }
+            }
+          ]
         }
-      }
+      },
+      "maxLength": 100,
+      "pattern": "^[a-zA-Z0-9_.]{0,100}$"
     },
     "twitter": {
       "type": "string",
       "default": "",
       "rls": {
         "write": {
-          "user_condition": {
-            "role": "admin"
-          }
+          "$or": [
+            {
+              "data.user_id": "{{user.id}}"
+            },
+            {
+              "user_condition": {
+                "role": "admin"
+              }
+            }
+          ]
         }
-      }
+      },
+      "maxLength": 100,
+      "pattern": "^[a-zA-Z0-9_.]{0,100}$"
     },
     "soundcloud": {
       "type": "string",
       "default": "",
       "rls": {
         "write": {
-          "user_condition": {
-            "role": "admin"
-          }
+          "$or": [
+            {
+              "data.user_id": "{{user.id}}"
+            },
+            {
+              "user_condition": {
+                "role": "admin"
+              }
+            }
+          ]
         }
-      }
+      },
+      "maxLength": 2048,
+      "pattern": "^(https?://[^\\s<>]+)?$"
     },
     "status_message": {
       "type": "string",

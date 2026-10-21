@@ -6,7 +6,9 @@
       "type": "boolean",
       "default": false,
       "description": "Server-managed official Public follow-back enrollment.",
-      "rls": {"write": false}
+      "rls": {
+        "write": false
+      }
     },
     "public_follow_initialized": {
       "type": "boolean",
@@ -139,32 +141,40 @@
       "default": "",
       "description": "User personal website URL",
       "rls": {
-        "write": false
-      }
+        "write": true
+      },
+      "maxLength": 2048,
+      "pattern": "^(https?://[^\\s<>]+)?$"
     },
     "instagram": {
       "type": "string",
       "default": "",
       "description": "Instagram handle or URL",
       "rls": {
-        "write": false
-      }
+        "write": true
+      },
+      "maxLength": 100,
+      "pattern": "^[a-zA-Z0-9_.]{0,100}$"
     },
     "twitter": {
       "type": "string",
       "default": "",
       "description": "Twitter / X handle or URL",
       "rls": {
-        "write": false
-      }
+        "write": true
+      },
+      "maxLength": 100,
+      "pattern": "^[a-zA-Z0-9_.]{0,100}$"
     },
     "soundcloud": {
       "type": "string",
       "default": "",
       "description": "SoundCloud handle or URL",
       "rls": {
-        "write": false
-      }
+        "write": true
+      },
+      "maxLength": 2048,
+      "pattern": "^(https?://[^\\s<>]+)?$"
     },
     "status_message": {
       "type": "string",

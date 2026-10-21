@@ -97,9 +97,62 @@ export async function saveManualLyrics(client,id,patch){
   if(typeof window!=="undefined")window.dispatchEvent(new Event("catalog:invalidate"));
   return confirmed;
 }
+export async function saveProfileLinks(client, uid, input) {
+  const keys=["website","instagram","twitter","soundcloud"];
+  const patch={};
+  for(const [key,rawValue] of Object.entries(input||{})) {
+    if(!keys.includes(key)||typeof rawValue!=="string")throw Error("Invalid profile link");
+    let value=rawValue.trim();
+    if(key==="instagram"||key==="twitter") {
+      value=value.replace(/^@/,"");
+      if(!/^[a-zA-Z0-9_.]{0,100}$/.test(value))throw Error("Enter a valid "+key+" username, without the full link.");
+    } else if(value) {
+      if(value.length>2048)throw Error("Profile link is too long.");
+      const url=new URL(/^[a-z][a-z0-9+.-]*:/i.test(value)?value:"https://"+value);
+      if(!["http:","https:"].includes(url.protocol)||url.username||url.password)throw Error("Use a valid http or https link.");
+      value=url.href;
+    }
+    if(value.length>(key==="instagram"||key==="twitter"?100:2048))throw Error("Profile link is too long.");
+    patch[key]=value;
+  }
+  if(!Object.keys(patch).length)throw Error("No profile links to save.");
+  const owner=async()=>{
+    const current=await client.auth.me();
+    if(!uid||current?.id!==uid||current.disabled||current.is_blocked)throw Error("Your account changed or is unavailable. Reopen your profile before saving.");
+    return current;
+  };
+  await owner();
+  const rows=page=>{if(Array.isArray(page))return page;if(Array.isArray(page?.items))return page.items;throw Error("Could not confirm your public profile.");};
+  const query={user_id:uid,visible:true};
+  const row=rows(await client.entities.PublicProfile.filter(query,"-updated_date",1))[0];
+  if(!row)throw Error("Your public profile could not be found. Please retry.");
+  let failure;
+  await owner();
+  try{await client.auth.updateMe(patch);}catch(error){failure=error;}
+  const confirmed=await owner();
+  if(Object.entries(patch).some(([key,value])=>confirmed[key]!==value))throw failure||Error("Your profile links were not confirmed. Your draft is still here.");
+  await owner();failure=null;
+  try{await client.entities.PublicProfile.update(row.id,patch);}catch(error){failure=error;}
+  await owner();
+  const publicRow=rows(await client.entities.PublicProfile.filter(query,"-updated_date",1))[0];
+  if(!publicRow||Object.entries(patch).some(([key,value])=>publicRow[key]!==value))throw failure||Error("Your public profile links were not confirmed. Please retry.");
+  return confirmed;
+}
+
 export const base44 = new Proxy(raw,{get(target,name) {
   if(name==='entities') return entities;
   if(name==='auth') return {...target.auth,me:async()=>withPresetAvatar(await target.auth.me()),updateMe:async data=>{
+    // Validated social identifiers/URLs do not need an AI/backend function.
+    const linkKeys=["website","instagram","twitter","soundcloud"];
+    const links=Object.fromEntries(Object.entries(data||{}).filter(([key])=>linkKeys.includes(key)));
+    if(Object.keys(links).length){
+      const current=await target.auth.me();
+      if(!current?.id||current.disabled||current.is_blocked)throw new Error("Account unavailable");
+      const remainder=Object.fromEntries(Object.entries(data).filter(([key])=>!linkKeys.includes(key)));
+      // Text/media retain their existing authorization and moderation path.
+      if(Object.keys(remainder).length)await base44.auth.updateMe(remainder);
+      return saveProfileLinks(target,current.id,links);
+    }
     if(Object.prototype.hasOwnProperty.call(data||{},"avatar_url")&&(data.avatar_url===""||AVATAR_PRESETS.some(item=>item.url===data.avatar_url))){
       const current=await target.auth.me();
       if(!current?.id||current.is_blocked||current.disabled)throw new Error('Account unavailable');
