@@ -106,7 +106,7 @@ export default function DiscoverPeople({ profileId, active = true, layout = "dec
         {local.errors[candidate.id] && <p className="profile-discover-error" role="alert">{local.errors[candidate.id]}</p>}
        </article>;
         })}
-     </div><Link className="profile-people-browse" to="/search?type=people">Explore more people<ChevronRight size={15} aria-hidden="true" /></Link>{state.error && <p className="profile-discover-status" role="status">Couldn’t refresh suggestions. Your current list is still here.</p>}</>}
+     </div><Link className="profile-people-browse hidden" to="/search?type=people">Explore more people<ChevronRight size={15} aria-hidden="true" /></Link>{state.error && <p className="profile-discover-status" role="status">Couldn’t refresh suggestions. Your current list is still here.</p>}</>}
    </section>;
   return <section className="profile-discover profile-discover-deck" aria-label="Discover people">
     <header><div><h2>Discover People</h2><p>Different lives. Shared soundtracks.</p></div></header>
