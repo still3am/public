@@ -145,3 +145,31 @@
  .public-app .profile-redesigned .profile-music>.profile-conversation{order:2;margin-bottom:0}
  .public-app .profile-redesigned .profile-community-column>.profile-discover-section{order:1;margin-bottom:0}
 }
+
+/* A calmer conversation panel beneath the music. */
+.public-app .profile-redesigned .profile-comments-body{margin:0}
+.profile-comments-heading{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:20px}
+.public-app .profile-redesigned .profile-comments-heading h2{font-size:24px;font-weight:650;letter-spacing:-.04em;line-height:1.2;margin:0}
+.profile-comments-heading p{font-size:12px;color:hsl(var(--muted-foreground));line-height:1.5;margin-top:6px}
+.profile-comments-heading>span{display:grid;place-items:center;min-width:30px;height:30px;padding-inline:8px;border-radius:999px;background:hsl(var(--foreground)/.055);font-size:11px;font-weight:600;color:hsl(var(--muted-foreground))}
+.public-app .profile-redesigned .profile-conversation .profile-comments-composer{display:flex;align-items:flex-end;gap:12px;margin-bottom:18px}
+.public-app .profile-redesigned .profile-comments-composer>div{flex:1;min-width:0}
+.public-app .profile-redesigned .profile-comments-composer textarea{width:100%;min-height:64px;max-height:160px;resize:none;padding:14px 16px;line-height:1.6;font-size:14px;border-radius:18px}
+.public-app .profile-redesigned .profile-comments-composer textarea:focus{outline:2px solid hsl(var(--foreground)/.25);outline-offset:2px}
+.public-app .profile-redesigned .profile-comments-composer small{display:block;text-align:right;margin:7px 4px 0;font-size:10px;color:hsl(var(--muted-foreground))}
+.public-app .profile-redesigned .profile-comments-composer>button{margin-bottom:23px;width:44px;height:44px;min-width:44px}
+.public-app .profile-redesigned .profile-comment-row{background:transparent;border-top:1px solid hsl(var(--foreground)/.07);border-radius:0;padding:18px 0}
+.public-app .profile-redesigned .profile-comment-row .selectable-content{line-height:1.65;white-space:pre-wrap;overflow-wrap:anywhere}
+.public-app .profile-redesigned .profile-comment-row>button{min-width:44px;min-height:44px;align-self:flex-start}
+.profile-comments-empty{text-align:center;padding:24px 12px 16px;border-top:1px solid hsl(var(--foreground)/.07);font-size:12px;line-height:1.6;color:hsl(var(--muted-foreground))}
+.profile-comment-signin{font-size:12px;color:hsl(var(--muted-foreground));margin-bottom:16px}
+.profile-comment-signin a{font-weight:600;color:hsl(var(--foreground));text-decoration:underline;text-underline-offset:3px}
+@media(min-width:1024px){
+ .public-app .profile-redesigned .profile-music>.profile-conversation{padding:28px;border-radius:26px;margin-top:0;margin-bottom:28px}
+ .public-app .profile-redesigned .profile-comments-composer textarea{min-height:76px}
+}
+@media(max-width:767px){
+ .public-app .profile-redesigned .profile-comments-heading h2{font-size:22px}
+ .profile-comments-heading{margin-bottom:18px}
+ .public-app .profile-redesigned .profile-conversation .profile-comments-composer{gap:10px}
+}
