@@ -120,11 +120,9 @@ export default function ProfileComments({ profileId, isOwn, active = true }) {
   }
 
   return (
-    <div className="mb-8">
+    <div className="profile-comments-body">
       {error && <div className="text-sm p-3 border rounded-xl mb-3"><button className="underline" onClick={load}>Refresh comments</button></div>}
-      <h2 className="text-lg font-extrabold tracking-tight mb-4 flex items-center gap-2">
-         Comments
-      </h2>
+      <header className="profile-comments-heading"><div><h2>Comments</h2><p>A little conversation around the music.</p></div>{!loading && <span aria-label="Comments count">{comments.filter((c) => !blocked.has(c.author_id)).length}</span>}</header>
 
       <form onSubmit={postComment} className="profile-comments-composer">
         <div><textarea ref={composerRef} rows={1} onInput={(e) => {e.currentTarget.style.height = "44px";e.currentTarget.style.height = Math.min(160, e.currentTarget.scrollHeight) + "px";}} onKeyDown={(e) => {if ((e.metaKey || e.ctrlKey) && e.key === "Enter") {e.preventDefault();postComment(e);}}}
@@ -145,18 +143,17 @@ export default function ProfileComments({ profileId, isOwn, active = true }) {
         </button>
       </form>
 
+      {!user?.id && <p className="profile-comment-signin"><Link to="/login">Sign in</Link> to join the conversation.</p>}
       {loading ?
       <div className="py-8 grid place-items-center">
           <Loader2 className="animate-spin text-foreground/40" />
         </div> :
-      comments.length === 0 ?
-      <p className="text-center text-sm text-foreground/40 py-8 hidden">
-          No comments yet. Be the first to leave one!
-        </p> :
+      comments.filter((c) => !blocked.has(c.author_id)).length === 0 ?
+      <p className="profile-comments-empty">No comments yet. Start the conversation.</p> :
 
       <div className="space-y-3">
           {comments.filter((c) => !blocked.has(c.author_id)).slice(0, visibleCount).map((c) =>
-        <div key={c.id} className="flex gap-3 p-3 rounded-2xl bg-foreground/[0.02]">
+        <div key={c.id} className="profile-comment-row flex gap-3 p-3 rounded-2xl bg-foreground/[0.02]">
               <Link to={`/profile/${c.author_id}`} aria-label={`View ${c.author_name || "user"} profile`} className="shrink-0"><Avatar user={{ avatar_url: c.author_avatar_url, full_name: c.author_name }} size={40} /></Link>
               <div className="flex-1 min-w-0">
                 <div className="flex items-center justify-between gap-2">
