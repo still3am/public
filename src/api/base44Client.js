@@ -1,4 +1,5 @@
 import {entityRows} from "@/lib/entityRows";
+import {followWrite} from "@/lib/followActions";
 import {loungeAction} from "@/lib/adminLounge";
 import {saveTimedLyrics} from "@/lib/saveTimedLyrics";
 import {AVATAR_PRESETS} from "@/lib/avatarPresets";
@@ -26,6 +27,7 @@ const entities = new Proxy(raw.entities,{get(target,name) {
   if(!handlers.has(name)) handlers.set(name,new Proxy(target[name],{get(h,method) {
     if(typeof method!=="string")return Reflect.get(h,method);
     if(lounge.has(name)&&["get","list","filter","create","update","delete"].includes(method))return (...args)=>loungeAction(raw,name,method,args,()=>gateway(name,["get","list","filter"].includes(method)?"read":method,["get","list","filter"].includes(method)?[method,...args]:args));
+    if(name==='Follow'&&['create','deleteMany'].includes(method))return (...args)=>followWrite(raw,method,args,()=>gateway(name,method,args));
     if(name==='Track'&&method==='update')return (id,patch)=>Object.keys(patch||{}).length===1&&Object.hasOwn(patch,"lyrics_text")?saveManualLyrics(raw,id,patch):gateway(name,method,[id,patch]);
     if(['create','update','delete','deleteMany','bulkUpdate'].includes(method)) return async (...args)=>{if(method==='bulkUpdate'&&Array.isArray(args[0])&&args[0].length>100){const results=[];for(let i=0;i<args[0].length;i+=100)results.push(...await gateway(name,method,[args[0].slice(i,i+100)]));return results;}return gateway(name,method,args);};
     if(name==='Track'&&['get','list','filter','count','aggregate'].includes(method)) return async (...args)=>{
