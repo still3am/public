@@ -7,11 +7,12 @@ import { useSafety } from "@/context/SafetyContext";
 import { readAllPages } from "@/lib/readPages";
 import { setFollowState, followError } from "@/lib/followActions";
 import DiscoverProfileCard from "./DiscoverProfileCard";
+import Avatar from "@/components/Avatar";
 import { rankDiscoverPeople } from "@/lib/discoverPeople";
 import "./discover-people.css";
 
 /** Public suggestions only; follow changes use the same authorized path as profiles. */
-export default function DiscoverPeople({ profileId, active = true }) {
+export default function DiscoverPeople({ profileId, active = true, layout = "deck" }) {
   const { user } = useAuth(),{ blocked } = useSafety();
   const uid = user?.id || "",scope = uid + ":" + profileId;
   const current = useRef(scope);current.current = scope;
@@ -90,6 +91,23 @@ export default function DiscoverPeople({ profileId, active = true }) {
   }
   const following=!!local.following[person?.id],busy=!!local.busy[person?.id];
   const name=person?.display_name||person?.full_name||person?.username||"PUBLIC listener";
+  if(layout === "shelf") return <section className="profile-people-shelf" aria-label="Discover people">
+    <header><div><span className="profile-section-eyebrow">Your next connection</span><h2>Discover People</h2><p>Find people through the music they love.</p></div><Link to="/search?type=people">Find someone</Link></header>
+    {!ready || state.loading && !people.length ? <p className="profile-discover-status" role="status"><Loader2 size={18} className="animate-spin"/>Finding listeners…</p> :
+     state.error && !people.length ? <div className="profile-discover-status" role="status"><p>People couldn’t load.</p><button type="button" onClick={()=>setRetry(n=>n+1)}>Try again</button></div> :
+     !people.length ? <div className="profile-discover-status"><p>You’re all caught up. Search for someone you know.</p><Link to="/search?type=people">Search people</Link></div> :
+     <><div className="profile-people-track" aria-label="Suggested listeners" tabIndex={0}>
+      {people.slice(0,12).map(candidate=>{
+       const label=candidate.display_name||candidate.full_name||candidate.username||"PUBLIC listener";
+       const isFollowing=!!local.following[candidate.id],pending=!!local.busy[candidate.id];
+       return <article className="profile-person-tile" key={scope+":"+candidate.id}>
+        <Link to={"/profile/"+encodeURIComponent(candidate.id)} className="profile-person-identity" aria-label={"Open "+label+" profile"}><Avatar user={candidate} size={64}/><strong>{label}</strong><small>{candidate.reason || (candidate.is_artist?"Artist on PUBLIC":"Listener on PUBLIC")}</small></Link>
+        {uid ? <button type="button" className="profile-discover-follow" disabled={pending||state.loading} aria-label={(isFollowing?"Unfollow ":"Follow ")+label} aria-pressed={isFollowing} onClick={()=>follow(candidate)}>{pending?<Loader2 size={14} className="animate-spin"/>:isFollowing?<UserCheck size={14}/>:null}{pending?"Saving…":isFollowing?"Following":"Follow"}</button> : <Link className="profile-discover-follow" to="/login">Sign in to follow</Link>}
+        {local.errors[candidate.id]&&<p className="profile-discover-error" role="alert">{local.errors[candidate.id]}</p>}
+       </article>;
+      })}
+     </div>{state.error&&<p className="profile-discover-status" role="status">Couldn’t refresh suggestions. Your current list is still here.</p>}</>}
+   </section>;
   return <section className="profile-discover profile-discover-deck" aria-label="Discover people">
     <header><div><h2>Discover People</h2><p>Different lives. Shared soundtracks.</p></div></header>
     {state.error&&people.length>0&&<p className="profile-discover-status" role="status">Couldn’t refresh suggestions. Your current list is still here.</p>}
