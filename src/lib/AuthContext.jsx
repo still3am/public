@@ -130,16 +130,17 @@ export const AuthProvider = ({ children }) => {
   useEffect(()=>{window.dispatchEvent(new Event("catalog:invalidate"));},[user?.id,user?.show_explicit,user?.adult_confirmed]);
 
   useEffect(() => {
-    if (!user?.id || user.public_follow_initialized) return;
+    if (!user?.id || (user.public_follow_initialized && user.public_follower_initialized)) return;
     let stopped = false, timer, attempts = 0, busy = false, complete = false;
     const initialize = async () => {
       if (stopped || busy || complete) return;
       busy = true;
       try {
-        const response = await base44.functions.invoke("securityGateway", {entity:"User",action:"initializePublicFollow",args:[]});
-        if (response?.data?.result?.initialized !== true) throw Error("Follow enrollment was not confirmed");
+        const actions = [!user.public_follow_initialized && "initializePublicFollow", !user.public_follower_initialized && "initializePublicFollower"].filter(Boolean);
+        const responses = await Promise.all(actions.map(action => base44.functions.invoke("securityGateway", {entity:"User",action,args:[]})));
+        if (responses.some(response => response?.data?.result?.initialized !== true)) throw Error("Follow enrollment was not confirmed");
         complete = true;
-        if (!stopped && response.data.result.changed) window.dispatchEvent(new Event("follows:changed"));
+        if (!stopped && responses.some(response => response.data.result.changed)) window.dispatchEvent(new Event("follows:changed"));
       } catch {
         if (!stopped && ++attempts < 3) timer = setTimeout(initialize, attempts * 5000);
       } finally {busy = false;}
@@ -147,7 +148,7 @@ export const AuthProvider = ({ children }) => {
     initialize();
     window.addEventListener("online", initialize);
     return () => {stopped = true;clearTimeout(timer);window.removeEventListener("online", initialize);};
-  }, [user?.id, user?.public_follow_initialized]);
+  }, [user?.id, user?.public_follow_initialized, user?.public_follower_initialized]);
 
   useEffect(()=>{
     if(!user?.id)return;

@@ -2,6 +2,12 @@
   "name": "User",
   "type": "object",
   "properties": {
+    "public_follower_initialized": {
+      "type": "boolean",
+      "default": false,
+      "description": "Server-managed official Public follow-back enrollment.",
+      "rls": {"write": false}
+    },
     "public_follow_initialized": {
       "type": "boolean",
       "default": false,
