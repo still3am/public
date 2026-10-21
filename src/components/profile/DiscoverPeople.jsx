@@ -92,7 +92,7 @@ export default function DiscoverPeople({ profileId, active = true, layout = "dec
   const following = !!local.following[person?.id],busy = !!local.busy[person?.id];
   const name = person?.display_name || person?.full_name || person?.username || "PUBLIC listener";
   if (layout === "shelf") return <section className="profile-people-shelf" aria-label="Discover people">
-    <header><div><span className="profile-section-eyebrow hidden">Your next connection</span><h2>Discover People</h2><p>Find people through the music they love.</p></div><Link to="/search?type=people">Find someone</Link></header>
+    <header><div><h2>Discover People</h2><p>Find people through the music they love.</p></div><Link to="/search?type=people">Find someone</Link></header>
     {!ready || state.loading && !people.length ? <p className="profile-discover-status" role="status"><Loader2 size={18} className="animate-spin" />Finding listeners…</p> :
     state.error && !people.length ? <div className="profile-discover-status" role="status"><p>People couldn’t load.</p><button type="button" onClick={() => setRetry((n) => n + 1)}>Try again</button></div> :
     !people.length ? <div className="profile-discover-status"><p>You’re all caught up. Search for someone you know.</p><Link to="/search?type=people">Search people</Link></div> :
