@@ -97,11 +97,11 @@ export default function DiscoverPeople({ profileId, active = true, layout = "dec
     state.error && !people.length ? <div className="profile-discover-status" role="status"><p>People couldn’t load.</p><button type="button" onClick={() => setRetry((n) => n + 1)}>Try again</button></div> :
     !people.length ? <div className="profile-discover-status"><p>You’re all caught up. Search for someone you know.</p><Link to="/search?type=people">Search people</Link></div> :
     <><div className="profile-people-track" aria-label="Suggested listeners" tabIndex={0}>
-      {people.slice(0, 12).map((candidate) => {
+      {people.slice(0, 6).map((candidate) => {
           const label = candidate.display_name || candidate.full_name || candidate.username || "PUBLIC listener";
           const isFollowing = !!local.following[candidate.id],pending = !!local.busy[candidate.id];
           return <article className="profile-person-tile" key={scope + ":" + candidate.id}>
-        <Link to={"/profile/" + encodeURIComponent(candidate.id)} className="profile-person-identity" aria-label={"Open " + label + " profile"}><Avatar user={candidate} size={64} /><strong>{label}</strong><small>{candidate.reason || (candidate.is_artist ? "Artist on PUBLIC" : "Listener on PUBLIC")}</small></Link>
+        <Link to={"/profile/" + encodeURIComponent(candidate.id)} className="profile-person-identity" aria-label={"Open " + label + " profile"}><span className="profile-person-portrait"><Avatar user={candidate} size={144} /></span><strong>{candidate.username ? "@" + candidate.username.replace(/^@/, "") : label}</strong><small>{candidate.is_artist ? "Artist" : "Listener"}</small></Link>
         {uid ? <button type="button" className="profile-discover-follow" disabled={pending || state.loading} aria-label={(isFollowing ? "Unfollow " : "Follow ") + label} aria-pressed={isFollowing} onClick={() => follow(candidate)}>{pending ? <Loader2 size={14} className="animate-spin" /> : isFollowing ? <UserCheck size={14} /> : null}{pending ? "Saving…" : isFollowing ? "Following" : "Follow"}</button> : <Link className="profile-discover-follow" to="/login">Sign in to follow</Link>}
         {local.errors[candidate.id] && <p className="profile-discover-error" role="alert">{local.errors[candidate.id]}</p>}
        </article>;
