@@ -205,11 +205,10 @@ export default function ProfileSong({
   return <div className="mb-6">
    <div ref={lp.ref} {...lp.handlers} className="profile-feature-song song-menu-surface group flex items-center gap-3 p-3 rounded-2xl border border-border bg-card">
     <Link to={'/track/' + track.id} className="w-14 h-14 sm:w-20 sm:h-20 rounded-xl overflow-hidden shrink-0" aria-label={'Open ' + track.title}>{coverUrl && <Image src={coverUrl} fittingType="fill" alt="" className="w-full h-full" />}</Link>
-    <div className="profile-feature-meta"><Link to={'/track/' + track.id}><OverflowText text={track.title} /></Link><ArtistLinks artist={track.artist || track.uploader_name} className="text-xs text-muted-foreground" /><span className="text-[10px] text-muted-foreground">Profile song</span></div>
+    <div className="profile-feature-meta"><Link to={'/track/' + track.id}><OverflowText text={track.title} /></Link><ArtistLinks artist={track.artist || track.uploader_name} className="text-xs text-muted-foreground" /></div>
     <button type="button" disabled={preview.loading} onClick={handlePlay} className="profile-preview-button" aria-label={(isPlaying ? 'Pause preview of ' : 'Preview ') + track.title} aria-pressed={isPlaying}><span>{isPlaying ? <Pause size={18} fill="currentColor" /> : <Play size={18} fill="currentColor" />}</span><span className="hidden">{preview.loading ? 'Loading…' : 'Preview'}</span></button>
     <HoverTrackMenu track={track} lp={lp} size={18} />
    </div>
-   {preview.trackId === trackId && <div className="flex items-center justify-end text-[11px] text-muted-foreground mt-2"><button type="button" className="underline min-h-10" onClick={preview.stop}>End preview</button></div>}
    {previewError && <p role="alert" className="profile-editor-error">{previewError}</p>}
   </div>;
 }
