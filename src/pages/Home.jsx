@@ -118,6 +118,7 @@ export default function Home() {
   useEffect(()=>{const update=event=>{if(event.detail?.uid===user?.id)load().catch(()=>{});};window.addEventListener("preferences:changed",update);return()=>window.removeEventListener("preferences:changed",update);},[user?.id]);
 
   const onUnpublished = useCallback((id) => {
+    setRecent(previous=>previous.filter(track=>track.id!==id));
     setPersonal(previous=>({...previous,catalog:previous.catalog.filter(t=>t.id!==id)}));
     setTrending((p) => p.filter((t) => t.id !== id));
     setNewReleases((p) => p.filter((t) => t.id !== id));
