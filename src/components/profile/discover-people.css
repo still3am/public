@@ -143,3 +143,11 @@
 @media(prefers-contrast:more){
  .public-app .profile-redesigned .profile-person-gradient-ring{outline:1px solid hsl(var(--foreground));outline-offset:2px}
 }
+
+/* Rotate only the color layer; the inset portrait stays still. */
+.public-app .profile-redesigned .profile-person-gradient-ring{position:relative;isolation:isolate}
+.public-app .profile-redesigned .profile-person-gradient-ring>.profile-person-portrait-inner{position:relative;z-index:1}
+@media(prefers-reduced-motion:no-preference){
+ .public-app .profile-redesigned .profile-person-gradient-ring.ring-is-flowing::before{content:"";position:absolute;inset:0;border-radius:50%;background-image:inherit;pointer-events:none;z-index:0;animation:public-avatar-ring-flow 9s linear infinite}
+}
+@keyframes public-avatar-ring-flow{to{transform:rotate(360deg)}}
