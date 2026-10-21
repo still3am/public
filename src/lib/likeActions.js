@@ -30,6 +30,7 @@ export function setLikeState(client,uid,id,liked) {
    remember(uid,id,{liked,pending:true,token:Date.now()+":"+Math.random()},true);
    changed(uid,id,liked);return {liked,pending:true};
   }
+  const initial=cache(uid)[id];
   await owner(client,uid);
   const query={user_id:uid,track_id:id};
   const read=async()=>rows(await client.entities.Like.filter(query,"-created_date",100));
@@ -42,10 +43,10 @@ export function setLikeState(client,uid,id,liked) {
   if(actual!==liked)throw Error("Like was not confirmed.");
   // Preserve a newer queued choice if another tab changed it during this save.
   const queued=cache(uid)[id];
-  if(!queued?.pending)remember(uid,id,{liked});
+  if(!queued?.pending || queued.token===initial?.token)remember(uid,id,{liked});
   changed(uid,id,liked);
   // Counter maintenance is optional; a backend outage cannot undo a saved like.
-  client.functions?.invoke("toggleLike",{track_id:id,liked}).catch(()=>{});
+  client.functions?.invoke("toggleLike",{track_id:id,recount_only:true}).catch(()=>{});
   return {liked,pending:false};
  })();
  jobs.set(jobKey,{liked,promise});
