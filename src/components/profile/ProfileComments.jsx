@@ -148,8 +148,8 @@ export default function ProfileComments({ profileId, isOwn, active = true }) {
       <div className="py-8 grid place-items-center">
           <Loader2 className="animate-spin text-foreground/40" />
         </div> :
-      comments.filter((c) => !blocked.has(c.author_id)).length === 0 ?
-      <p className="profile-comments-empty hidden">No comments yet. Start the conversation.</p> :
+      comments.filter((c) => !blocked.has(c.author_id)).length === 0 ? null :
+
 
       <div className="space-y-3">
           {comments.filter((c) => !blocked.has(c.author_id)).slice(0, visibleCount).map((c) =>
