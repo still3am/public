@@ -10,13 +10,6 @@ html.dark .public-app .profile-redesigned .profile-identity{
  --foreground:220 14% 95%;--muted-foreground:220 8% 68%;--card:222 14% 11%;--background:222 14% 11%;--border:220 8% 25%;
  background:#191c22!important;border-color:#ffffff20;box-shadow:0 18px 48px -24px #0009,inset 0 1px 0 #ffffff12!important;
 }
-html:is([data-liquid-glass=clear],[data-liquid-glass=tinted]) .public-app .profile-redesigned .profile-identity{
- background:rgb(246 247 249/.90)!important;
- -webkit-backdrop-filter:blur(28px) saturate(.75)!important;backdrop-filter:blur(28px) saturate(.75)!important;
-}
-html.dark:is([data-liquid-glass=clear],[data-liquid-glass=tinted]) .public-app .profile-redesigned .profile-identity{background:rgb(25 28 34/.90)!important}
-html[data-liquid-glass=tinted] .public-app .profile-redesigned .profile-identity{background:rgb(246 247 249/.97)!important}
-html.dark[data-liquid-glass=tinted] .public-app .profile-redesigned .profile-identity{background:rgb(25 28 34/.97)!important}
 .public-app .profile-redesigned .profile-cover-stage{height:220px;background-color:#242730}
 .public-app .profile-redesigned .profile-cover-fade{background:linear-gradient(180deg,transparent 65%,rgb(0 0 0/.10))}
 .public-app .profile-redesigned .profile-details{padding:0 32px 30px!important}
@@ -57,14 +50,6 @@ html.dark[data-liquid-glass=tinted] .public-app .profile-redesigned .profile-ide
  .public-app .profile-redesigned .profile-actions>.profile-primary-action{flex:0 0 100%;width:100%;margin-bottom:4px}
  .public-app .profile-redesigned .profile-info .selectable-content{margin-inline:auto;font-size:13px}
 }
-@media(prefers-reduced-transparency:reduce),(prefers-contrast:more){
- html:is([data-liquid-glass=clear],[data-liquid-glass=tinted]) .public-app .profile-redesigned .profile-identity{background:#f6f7f9!important;-webkit-backdrop-filter:none!important;backdrop-filter:none!important}
- html.dark:is([data-liquid-glass=clear],[data-liquid-glass=tinted]) .public-app .profile-redesigned .profile-identity{background:#191c22!important}
-}
-@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){
- html:is([data-liquid-glass=clear],[data-liquid-glass=tinted]) .public-app .profile-redesigned .profile-identity{background:#f6f7f9!important}
- html.dark:is([data-liquid-glass=clear],[data-liquid-glass=tinted]) .public-app .profile-redesigned .profile-identity{background:#191c22!important}
-}
 
 /* A shared palette keeps the profile readable over every artwork color. */
 .public-app .profile-redesigned{
@@ -76,19 +61,13 @@ html.dark .public-app .profile-redesigned{
 }
 .public-app .profile-redesigned .profile-content{gap:24px;align-items:start}
 .public-app .profile-redesigned :is(.profile-conversation,.profile-rotation,.profile-feature-song,.profile-people-shelf){
- background:rgb(246 247 249/.97)!important;background-image:none!important;
+ background:#f6f7f9!important;background-image:none!important;
  color:hsl(var(--foreground));border:1px solid rgb(255 255 255/.48)!important;border-radius:24px;
  box-shadow:inset 0 1px 0 #fff9,0 10px 32px -22px #0005!important;
 }
 html.dark .public-app .profile-redesigned :is(.profile-conversation,.profile-rotation,.profile-feature-song,.profile-people-shelf){
- background:rgb(25 28 34/.97)!important;border-color:#ffffff16!important;box-shadow:inset 0 1px 0 #ffffff0a,0 10px 32px -22px #0009!important;
+ background:#191c22!important;border-color:#ffffff16!important;box-shadow:inset 0 1px 0 #ffffff0a,0 10px 32px -22px #0009!important;
 }
-html:is([data-liquid-glass=clear],[data-liquid-glass=tinted]) .public-app .profile-redesigned :is(.profile-conversation,.profile-rotation,.profile-feature-song,.profile-people-shelf){
- background:rgb(246 247 249/.92)!important;-webkit-backdrop-filter:blur(24px) saturate(.85)!important;backdrop-filter:blur(24px) saturate(.85)!important;
-}
-html.dark:is([data-liquid-glass=clear],[data-liquid-glass=tinted]) .public-app .profile-redesigned :is(.profile-conversation,.profile-rotation,.profile-feature-song,.profile-people-shelf){background:rgb(25 28 34/.92)!important}
-html[data-liquid-glass=tinted] .public-app .profile-redesigned :is(.profile-conversation,.profile-rotation,.profile-feature-song,.profile-people-shelf){background:rgb(246 247 249/.98)!important}
-html.dark[data-liquid-glass=tinted] .public-app .profile-redesigned :is(.profile-conversation,.profile-rotation,.profile-feature-song,.profile-people-shelf){background:rgb(25 28 34/.98)!important}
 .public-app .profile-redesigned .profile-song-spotlight{max-width:none;margin-bottom:20px}
 .public-app .profile-redesigned .profile-song-spotlight>div{margin-bottom:0}
 .public-app .profile-redesigned .profile-feature-song{padding:18px;gap:16px}
@@ -122,36 +101,8 @@ html.dark[data-liquid-glass=tinted] .public-app .profile-redesigned :is(.profile
  .public-app .profile-redesigned .profile-actions>.profile-primary-action{max-width:320px;margin-inline:auto}
  .public-app .profile-redesigned .profile-info .selectable-content{font-size:13px;max-width:34ch}
 }
-@media(prefers-reduced-transparency:reduce),(prefers-contrast:more){
- html:is([data-liquid-glass=clear],[data-liquid-glass=tinted]) .public-app .profile-redesigned :is(.profile-conversation,.profile-rotation,.profile-feature-song,.profile-people-shelf){background:#f6f7f9!important;-webkit-backdrop-filter:none!important;backdrop-filter:none!important}
- html.dark:is([data-liquid-glass=clear],[data-liquid-glass=tinted]) .public-app .profile-redesigned :is(.profile-conversation,.profile-rotation,.profile-feature-song,.profile-people-shelf){background:#191c22!important}
-}
-@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){
- html:is([data-liquid-glass=clear],[data-liquid-glass=tinted]) .public-app .profile-redesigned :is(.profile-conversation,.profile-rotation,.profile-feature-song,.profile-people-shelf){background:#f6f7f9!important}
- html.dark:is([data-liquid-glass=clear],[data-liquid-glass=tinted]) .public-app .profile-redesigned :is(.profile-conversation,.profile-rotation,.profile-feature-song,.profile-people-shelf){background:#191c22!important}
-}
 
 /* Clear uses the moving artwork as its material, with just enough tint for text. */
-@supports ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){
- @media not (prefers-reduced-transparency:reduce){
-  html[data-liquid-glass=clear] .public-app .profile-redesigned :is(.profile-identity,.profile-conversation,.profile-rotation,.profile-feature-song,.profile-people-shelf){
-   background:rgb(248 250 255/.48)!important;
-   background-image:linear-gradient(145deg,#ffffff20,transparent 44%,#ffffff08)!important;
-   -webkit-backdrop-filter:blur(32px) saturate(1.12)!important;backdrop-filter:blur(32px) saturate(1.12)!important;
-   border:1px solid #ffffff60!important;
-   box-shadow:inset 0 1px 0 #ffffff90,inset 0 -1px 0 #ffffff20,0 12px 32px -18px #10182944!important;
-  }
-  html.dark[data-liquid-glass=clear] .public-app .profile-redesigned :is(.profile-identity,.profile-conversation,.profile-rotation,.profile-feature-song,.profile-people-shelf){
-   background-color:rgb(14 19 29/.48)!important;border-color:#ffffff30!important;
-   box-shadow:inset 0 1px 0 #ffffff40,inset 0 -1px 0 #ffffff10,0 12px 32px -18px #0008!important;
-  }
- }
-}
-
-@media(prefers-contrast:more){
- html[data-liquid-glass=clear] .public-app .profile-redesigned :is(.profile-identity,.profile-conversation,.profile-rotation,.profile-feature-song,.profile-people-shelf){background:#f6f7f9!important;-webkit-backdrop-filter:none!important;backdrop-filter:none!important}
- html.dark[data-liquid-glass=clear] .public-app .profile-redesigned :is(.profile-identity,.profile-conversation,.profile-rotation,.profile-feature-song,.profile-people-shelf){background:#191c22!important}
-}
 
 /* A more editorial identity, with music and community aligned below it. */
 .public-app .profile-redesigned .profile-info h1{font-size:clamp(32px,3.2vw,46px);letter-spacing:-.05em;font-weight:700}
