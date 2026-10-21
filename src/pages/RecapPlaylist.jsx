@@ -1,3 +1,4 @@
+import ShareRecap from "@/components/home/ShareRecap";
 import { useEffect, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { Loader2 } from 'lucide-react';
@@ -25,6 +26,6 @@ export default function RecapPlaylist() {
   if (history.loading || catalog.loading) return <div className="py-20 grid place-items-center" role="status" aria-label="Loading your recap"><Loader2 className="animate-spin" /></div>;
   if (history.error || catalog.error) return <div className="py-16 text-center"><p>Your recap could not load.</p><button className="playlist-action mt-4" onClick={() => {history.retry();setRevision((n) => n + 1);}}>Retry</button><Link to="/" className="block mt-4 underline">Back to Home</Link></div>;
   const recap = buildRecap(history.sessions, history.events, catalog.tracks.filter((t) => !blocked.has(t.uploader_id)), period, selection.date),mix = recapMix(selection, recap);
-  const controls = period === 'all' ? null : <label className="recap-period-control hidden">{period === 'month' ? 'Choose month' : 'Choose year'}<input aria-label={period === 'month' ? 'Recap month' : 'Recap year'} type={period === 'month' ? 'month' : 'number'} min={period === 'month' ? '2020-01' : '2020'} max={period === 'month' ? new Date().getFullYear() + '-' + String(new Date().getMonth() + 1).padStart(2, '0') : new Date().getFullYear()} value={value} onChange={(e) => {if (recapSelection(period, e.target.value)) nav('/recap/' + period + '/' + e.target.value, { replace: true });}} /></label>;
-  return <PersonalMixContent key={user.id + period + (value || '')} uid={user.id} mix={mix} onBack={back} headerExtra={controls} />;
+  const controls = period === 'all' ? null : <label className="recap-period-control">{period === 'month' ? 'Choose month' : 'Choose year'}<input aria-label={period === 'month' ? 'Recap month' : 'Recap year'} type={period === 'month' ? 'month' : 'number'} min={period === 'month' ? '2020-01' : '2020'} max={period === 'month' ? new Date().getFullYear() + '-' + String(new Date().getMonth() + 1).padStart(2, '0') : new Date().getFullYear()} value={value} onChange={(e) => {if (recapSelection(period, e.target.value)) nav('/recap/' + period + '/' + e.target.value, { replace: true });}} /></label>;
+  return <PersonalMixContent key={user.id + period + (value || '')} uid={user.id} mix={mix} onBack={back} headerExtra={<div className="flex flex-wrap justify-center items-center gap-3 mt-4">{controls}<ShareRecap key={user.id+period+(value||"")} mix={mix}/></div>} />;
 }

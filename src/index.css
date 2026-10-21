@@ -936,3 +936,18 @@ html:not(.dark) .profile-page .profile-identity,html:not(.dark) .profile-page .p
 /* Dialog autofocus should not draw a white ring around the More close control. */
 .mobile-more-close,.mobile-more-close:focus,.mobile-more-close:focus-visible{outline:none;box-shadow:none;border:0}
 .mobile-more-close:focus-visible{background:hsl(var(--foreground)/.12)}
+
+/* Shared collection controls and reliable space above fixed playback/navigation. */
+:root{--public-content-clearance:calc(12rem + env(safe-area-inset-bottom,0px));}
+.main-content{padding-bottom:var(--public-content-clearance);scroll-padding-bottom:var(--public-content-clearance);}
+.page-surface{min-width:0;}
+.page-surface .collection-tools{flex-wrap:wrap;gap:10px;}
+.page-surface .collection-tools input,.page-surface .collection-tools select{max-width:100%;min-width:0;}
+.page-surface textarea,.page-surface input,.page-surface select{scroll-margin-block:5rem var(--public-content-clearance);}
+.page-surface [role="alert"]{overflow-wrap:anywhere;}
+.recommendation-hide{display:block;min-height:44px;width:100%;font-size:12px;color:hsl(var(--muted-foreground));text-align:center;border-radius:12px;margin-top:4px;}
+.recommendation-hide:hover{background:hsl(var(--muted));color:hsl(var(--foreground));}
+.search-history .playlist-action{min-height:44px;max-width:100%;overflow-wrap:anywhere;}
+@media(min-width:768px){:root{--public-content-clearance:calc(8rem + env(safe-area-inset-bottom,0px));}}
+@media(max-width:767px){.support-page input,.support-page textarea,.collection-tools input,.collection-tools select{font-size:16px;}.collection-tools>label{width:100%;}.directory-page{padding-right:12px;}.directory-page .record-directory-card{min-height:72px;}}
+@media(prefers-reduced-motion:reduce){.page-surface [class*="scroll-smooth"]{scroll-behavior:auto;}}
