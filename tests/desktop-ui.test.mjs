@@ -48,7 +48,7 @@ html=renderToStaticMarkup(React.createElement(sidebar.default));
 for(const href of ["/library","/downloads","/artist-dashboard","/admin","/my-uploads","/playlist/mine"])assert.ok(html.includes('href="'+href+'"'));
 globalThis.__collapsed=true;assert.match(renderToStaticMarkup(React.createElement(sidebar.default)),/data-collapsed="true"/);
 let shelfState={overflow:false,start:true,end:false},moved,scrollListener;
-globalThis.__shelf={current:{scrollWidth:1200,clientWidth:400,scrollLeft:0,children:[],addEventListener:(name,fn)=>scrollListener=fn,removeEventListener(){},scrollBy:value=>moved=value,scrollTo:value=>moved=value}};
+globalThis.__shelf={current:{scrollWidth:1200,clientWidth:400,scrollLeft:0,children:[],addEventListener:(name,fn)=>{if(name==="scroll")scrollListener=fn;},removeEventListener(){},scrollBy:value=>moved=value,scrollTo:value=>moved=value}};
 globalThis.__setShelf=value=>shelfState=typeof value==="function"?value(shelfState):value;
 globalThis.__getShelf=()=>shelfState;globalThis.__effects=[];
 const shelf=await load("src/components/ScrollShelf.jsx",`
@@ -63,6 +63,34 @@ handled=false;region.props.onKeyDown({key:"ArrowRight",target:{},currentTarget:t
 globalThis.__shelf.current.scrollLeft=800;scrollListener();tree=shelf.default({children:"Music",label:"Mixes"});assert.equal(tree.props.children[0].props.children[1].props.disabled,true);
 window.matchMedia=()=>({matches:true});tree.props.children[0].props.children[0].props.onClick();assert.equal(moved.behavior,"auto");
 globalThis.__shelf.current.scrollWidth=400;scrollListener();assert.equal(shelf.default({children:"Music"}).props.children[0].props.hidden,true);
+// Exact-page navigation uses the actual card geometry, including rail padding.
+const pageEvents={};let pageState={overflow:false,start:true,end:false,index:0,count:0},pageMove,refIndex=0;
+const pageRail={scrollWidth:960,clientWidth:320,scrollLeft:0,getBoundingClientRect:()=>({left:100}),
+ children:[0,1,2].map(i=>({getBoundingClientRect:()=>({left:120+i*320-pageRail.scrollLeft})})),
+ addEventListener:(name,fn)=>pageEvents[name]=fn,removeEventListener(){},scrollTo:options=>pageMove=options};
+globalThis.__pageRefs=[{current:pageRail},{current:[]},{current:null},{current:null}];
+globalThis.__pageRef=()=>globalThis.__pageRefs[refIndex++];
+globalThis.__pageState=()=>pageState;
+globalThis.__setPage=fn=>pageState=typeof fn==="function"?fn(pageState):fn;
+globalThis.getComputedStyle=()=>({scrollPaddingLeft:"20px"});
+globalThis.cancelAnimationFrame=()=>{};
+const pages=await load("src/components/ScrollShelf.jsx", `
+const React=globalThis.__React,useRef=()=>globalThis.__pageRef(),useState=()=>[globalThis.__pageState(),globalThis.__setPage],useEffect=fn=>globalThis.__effects.push(fn),ChevronLeft=()=>null,ChevronRight=ChevronLeft;
+`);
+const renderPages=()=>{refIndex=0;return pages.default({paged:true,children:"Cards",label:"People"});};
+globalThis.__effects=[];renderPages();const cleanup=globalThis.__effects[0]();
+window.matchMedia=()=>({matches:false});
+let pageTree=renderPages();
+pageTree.props.children[2].props.children[2].props.onClick();
+assert.deepEqual(pageMove,{left:320,behavior:"smooth"},"next page lands exactly on the next card");
+pageTree.props.children[2].props.children[2].props.onClick();
+assert.equal(pageMove.left,640,"rapid next clicks preserve the requested destination");
+pageRail.scrollLeft=640;pageEvents.scroll();pageTree=renderPages();
+assert.equal(pageTree.props.children[2].props.children[2].props.disabled,true,"last card disables next");
+window.matchMedia=()=>({matches:true});
+pageTree.props.children[2].props.children[1].props.children[0].props.onClick();
+assert.deepEqual(pageMove,{left:0,behavior:"auto"},"page dots honor reduced motion");
+cleanup();
 const css=postcss.parse(source("src/desktop.css"));
 for(const node of css.nodes){if(node.type==="comment")continue;if(node.type==="rule"){assert.ok(node.selector===".desktop-header,.desktop-shelf-controls","only desktop chrome can have unscoped declarations");continue;}assert.equal(node.name,"media");assert.match(node.params,/min-width:768px|min-width:1024px|min-width:1280px|min-width:1440px/);}
 console.log("PASS all desktop route contexts, keyboard search, mobile shortcut isolation, role-aware navigation, shelf boundaries/reduced motion, and desktop-only CSS scope");
