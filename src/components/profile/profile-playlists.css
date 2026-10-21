@@ -1,0 +1,47 @@
+/* Public profile collections share the profile's solid material. */
+.public-app .profile-redesigned .profile-public-playlists{min-width:0;margin:28px 0;padding:24px 0 16px;border:1px solid #00000012;border-radius:26px;background:#fafafa;overflow:hidden}
+html.dark .public-app .profile-redesigned .profile-public-playlists{background:#1b1b1b;border-color:#ffffff12}
+.profile-playlists-heading{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:0 24px;margin-bottom:22px}
+.public-app .profile-redesigned .profile-playlists-heading h2{font-size:24px;line-height:1.2;font-weight:700;letter-spacing:-.04em;margin:0}
+.profile-playlists-heading>svg{color:hsl(var(--muted-foreground));flex-shrink:0}
+.public-app .profile-redesigned .profile-playlist-shelf{display:flex;gap:20px;padding:4px 24px 16px;scroll-padding-inline:24px;scroll-snap-type:x proximity;overscroll-behavior-x:contain}
+.public-app .profile-redesigned .profile-playlist-tile{flex:0 0 180px;min-width:0;text-decoration:none;scroll-snap-align:start;border-radius:18px;color:hsl(var(--foreground))}
+.public-app .profile-redesigned .profile-playlist-art{position:relative;width:100%;height:auto;aspect-ratio:1;border-radius:18px;overflow:hidden;background:hsl(var(--muted));box-shadow:0 8px 20px -14px #0008}
+.profile-playlist-art img{display:block;width:100%;height:100%;object-fit:cover}
+.profile-playlist-fallback{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;width:100%;height:100%;color:#ffffffd9}
+.profile-playlist-fallback>span{font-size:10px;font-weight:650;letter-spacing:.2em}
+.profile-playlist-open{position:absolute;bottom:10px;right:10px;width:32px;height:32px;border-radius:50%;display:grid;place-items:center;background:#f5f5f5;color:#18181b;box-shadow:0 3px 10px #0002}
+.public-app .profile-redesigned .profile-playlist-caption{padding:13px 2px 0}
+.public-app .profile-redesigned .profile-playlist-caption h3{margin:0;font-size:14px;font-weight:650;line-height:1.4;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.public-app .profile-redesigned .profile-playlist-caption p{margin-top:4px;font-size:12px;line-height:1.4;color:hsl(var(--muted-foreground))}
+.public-app .profile-redesigned .profile-public-playlists .profile-playlist-status{margin-inline:20px}
+.public-app .profile-redesigned .profile-public-playlists .profile-playlists-more{display:block;min-height:44px;margin:8px auto 0;padding:8px 16px;border:1px solid hsl(var(--foreground)/.12);border-radius:999px;text-decoration:none;font-size:12px;font-weight:600}
+.profile-public-playlists>.scroll-shelf>.desktop-shelf-controls{padding-inline:24px}
+.profile-playlist-loading{display:flex;gap:20px;padding:4px 24px 16px;overflow:hidden}
+.profile-playlist-loading>div{flex:0 0 180px;display:flex;flex-direction:column;gap:12px}
+.profile-playlist-loading i{display:block;aspect-ratio:1;border-radius:18px;background:hsl(var(--foreground)/.06)}
+.profile-playlist-loading span,.profile-playlist-loading small{display:block;width:70%;height:11px;border-radius:5px;background:hsl(var(--foreground)/.06)}
+.profile-playlist-loading small{width:35%;height:8px}
+.public-app .profile-redesigned .profile-playlist-tile:focus-visible{outline:2px solid hsl(var(--foreground));outline-offset:2px}
+@media(hover:hover){
+ .profile-playlist-tile:hover .profile-playlist-open{background:#18181b;color:#fff}
+ .profile-playlist-tile:hover h3{text-decoration:underline;text-underline-offset:3px}
+}
+@media(prefers-reduced-motion:no-preference){
+ .profile-playlist-open{transition:background .18s ease,color .18s ease}
+ .profile-playlist-loading{animation:discover-breathe 1.5s ease-in-out infinite}
+}
+@media(max-width:767px){
+ .public-app .profile-redesigned .profile-public-playlists{margin:0 0 24px;padding:22px 0 16px;border-radius:24px}
+ .profile-playlists-heading{padding-inline:20px;margin-bottom:20px}
+ .public-app .profile-redesigned .profile-playlist-shelf{gap:40px;padding:4px 20px 16px;scroll-padding-inline:20px;scroll-snap-type:x mandatory;scrollbar-width:none;touch-action:pan-x pan-y pinch-zoom;-webkit-overflow-scrolling:touch}
+ .public-app .profile-redesigned .profile-playlist-shelf::-webkit-scrollbar{display:none}
+ .public-app .profile-redesigned .profile-playlist-tile{flex:0 0 100%;scroll-snap-stop:always}
+ .public-app .profile-redesigned .profile-playlist-art{max-width:260px;margin-inline:auto;border-radius:18px}
+ .public-app .profile-redesigned .profile-playlist-caption{text-align:center;max-width:260px;margin-inline:auto;padding-top:14px}
+ .public-app .profile-redesigned .profile-playlist-caption h3{font-size:16px}
+ .public-app .profile-redesigned .profile-playlist-caption p{font-size:12px}
+ .profile-playlist-loading{padding-inline:20px;gap:40px}
+ .profile-playlist-loading>div{flex:0 0 100%;align-items:center}
+ .profile-playlist-loading i{width:100%;max-width:260px}
+}
