@@ -1,3 +1,4 @@
+import {readAllPages} from "@/lib/readPages";
 import {scoreTrack,searchScore} from "@/lib/searchMatching";
 import { base44 } from "@/api/base44Client";
 import { getPublishedTracks,getArtists,peekPublishedTracks } from "@/lib/catalogCache";
@@ -148,8 +149,13 @@ export async function searchPeople(q) {
   try{
     const pattern=escapeRegex(term);
     const page=await base44.entities.PublicProfile.filter({visible:true,$or:[contains("display_name",pattern),contains("full_name",pattern),contains("username",pattern)]},{sort:"-updated_date",limit:50,fields:["user_id","display_name","full_name","username","avatar_url"]});
-    const results=rows(page).map(row=>({id:row.user_id,username:row.username||"",display_name:row.display_name||row.full_name||"",avatar_url:row.avatar_url||""}));
-    results.sort((a,b)=>Number(b.display_name.toLowerCase()===term.toLowerCase())-Number(a.display_name.toLowerCase()===term.toLowerCase()));
+    let candidates=rows(page);
+    if(candidates.length<5&&term.length>=3){
+      const broader=await readAllPages(opts=>base44.entities.PublicProfile.filter({visible:true},{...opts,fields:["user_id","display_name","full_name","username","avatar_url"]}));
+      candidates=[...new Map([...candidates,...broader.filter(row=>Math.max(searchScore(row.username,term),searchScore(row.display_name,term),searchScore(row.full_name,term))>0)].map(row=>[row.user_id,row])).values()];
+    }
+    const results=candidates.map(row=>({id:row.user_id,username:row.username||"",display_name:row.display_name||row.full_name||"",avatar_url:row.avatar_url||""}));
+    results.sort((a,b)=>Math.max(searchScore(b.username,term),searchScore(b.display_name,term))-Math.max(searchScore(a.username,term),searchScore(a.display_name,term)));results.splice(50);
     return {data:{results}};
   }catch(primary){
     try{
@@ -252,7 +258,7 @@ async function runSearch(query,scope="all") {
 // answered from the last few seconds of results and simultaneous calls for the
 // same term share one request. A manual refresh passes `fresh` to go to the
 // server regardless.
-const RECENT_TTL = 20 * 1000;
+const RECENT_TTL = 5 * 60 * 1000;
 const recent = new Map();
 window.addEventListener("catalog:invalidate",()=>recent.clear());
 window.addEventListener("account:cleared",()=>recent.clear());
@@ -280,6 +286,8 @@ export function globalSearch(query, { fresh = false,scope="all" } = {}) {
   }
 
   const promise = runSearch(Q,scope).then(result=>{if(result.failed||result.peopleFailed)recent.delete(key);return result;}).catch(error=>{recent.delete(key);throw error;});
-  recent.set(key, { at: now, promise });
+  recent.set(key, { at: now, promise, result:null });
+  promise.then(result=>{const entry=recent.get(key);if(entry?.promise===promise)entry.result=result;}).catch(()=>{});
   return promise;
 }
+export function peekSearch(query,scope="all"){const entry=recent.get(scope+"::"+query.trim());return entry&&Date.now()-entry.at<RECENT_TTL?entry.result:null;}

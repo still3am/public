@@ -1,3 +1,5 @@
+import {useAuth} from "@/lib/AuthContext";
+import {readSearchHistory,rememberSearch,clearSearchHistory} from "@/lib/searchHistory";
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
   Search as SearchIcon,
@@ -18,6 +20,9 @@ import LoadError from "@/components/LoadError";
 import EmptyState from "@/components/EmptyState";
 
 export default function Search() {
+  const {user}=useAuth();
+  const [history,setHistory]=useState(()=>readSearchHistory(user?.id));
+  useEffect(()=>setHistory(readSearchHistory(user?.id)),[user?.id]);
   const [searchParams, setSearchParams] = useSearchParams();
   const urlQ = searchParams.get("q") || "";
   const scope = searchParams.get("type") === "people" ? "people" : "all";
@@ -61,6 +66,17 @@ export default function Search() {
     refresh } =
   useGlobalSearch(q, scope);
 
+  useEffect(()=>{
+    if(!hasQuery||searching||failed||peopleFailed)return;
+    const timer=setTimeout(()=>setHistory(rememberSearch(user?.id,q)),1400);
+    return()=>clearTimeout(timer);
+  },[q,hasQuery,searching,failed,peopleFailed,user?.id]);
+  useEffect(()=>{
+    const key="public:search-scroll:"+(user?.id||"guest");
+    let frame=0;try{const saved=JSON.parse(sessionStorage.getItem(key)||"null");if(saved?.query===window.location.search)frame=requestAnimationFrame(()=>window.scrollTo(0,saved.y));}catch{}
+    const save=()=>{try{sessionStorage.setItem(key,JSON.stringify({query:window.location.search,y:window.scrollY}));}catch{}};
+    window.addEventListener("scroll",save,{passive:true});return()=>{cancelAnimationFrame(frame);window.removeEventListener("scroll",save);};
+  },[user?.id]);
   // Keep the browse crate honest if an admin unpublishes a track mid-session.
   useUnpublishedSync((id) => {
     setAllTracks((prev) => prev.filter((t) => t.id !== id));
@@ -168,6 +184,7 @@ export default function Search() {
 
         
         {!hasQuery && !genre && !peopleMode && <div className="desktop-browse-label hidden md:flex"><h2>Browse by genre</h2><span>{genreList.length} genres to explore</span></div>}
+        {!hasQuery&&!genre&&history.length>0&&<section className="search-history mb-6" aria-label="Recent searches"><div className="flex justify-between items-center mb-3"><h2 className="font-semibold">Recent searches</h2><button className="playlist-action" onClick={()=>{clearSearchHistory(user?.id);setHistory([]);}}>Clear</button></div><div className="flex gap-2 flex-wrap">{history.map(term=><button key={term} className="playlist-action" onClick={()=>updateQuery(term)}>{term}</button>)}</div></section>}
         {/* Body */}
         {hasQuery ?
         firstSearchInFlight ? loader :

@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { globalSearch } from "@/lib/globalSearch";
+import { globalSearch,peekSearch } from "@/lib/globalSearch";
 import { useUnpublishedSync } from "@/hooks/useUnpublishedSync";
 
 // Long enough that a fast typist fires one server search per pause instead of
@@ -15,7 +15,7 @@ const EMPTY = { tracks: [], artists: [], people: [], playlists: [] };
  */
 export function useGlobalSearch(query,scope="all") {
   const term = query.trim();
-  const [results, setResults] = useState(EMPTY);
+  const [results, setResults] = useState(()=>peekSearch(term,scope)||EMPTY);
   const [searching, setSearching] = useState(false);
   const [failed, setFailed] = useState(false);
   const [peopleFailed,setPeopleFailed]=useState(false);
@@ -39,6 +39,7 @@ export function useGlobalSearch(query,scope="all") {
       return;
     }
 
+    const cached=peekSearch(term,scope);if(cached&&!forceFresh.current)setResults(cached);
     setSearching(true);
     const id = ++reqId.current;
     // An explicit refresh must bypass the short-lived result reuse below.
