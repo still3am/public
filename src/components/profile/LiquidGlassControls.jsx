@@ -1,5 +1,6 @@
 import { Check, Music, Play, Layers, SlidersHorizontal } from "lucide-react";
 import { useLiquidGlass } from "@/context/LiquidGlassContext";
+import MotionGradient from "@/components/MotionGradient";
 const modes = [
 { id: "clear", label: "Clear", description: "Light, translucent surfaces with a soft reflection." },
 { id: "tinted", label: "Tinted", description: "A deeper finish that keeps controls easy to read." },
@@ -9,7 +10,7 @@ export default function LiquidGlassControls() {
   const { mode, setMode, persisted } = useLiquidGlass();
   return <div className="liquid-glass-settings">
   <div className={"liquid-glass-demo glass-demo-" + mode} aria-label={"Preview of " + mode + " appearance"} role="img">
-   <div className="glass-demo-orb" /><span className="glass-demo-brand hidden">PUBLIC.</span><span className="glass-demo-live hidden">LIVE PREVIEW</span><div className="glass-demo-heading"><small>Made for your music.</small><strong>A softer kind of glass.</strong></div>
+   <MotionGradient colors={["#485cce","#c679b5","#67c3bf"]} speed={.65} className="glass-demo-gradient" /><span className="glass-demo-brand hidden">PUBLIC.</span><span className="glass-demo-live hidden">LIVE PREVIEW</span><div className="glass-demo-heading"><small>Made for your music.</small><strong>Your colors. In a new light.</strong></div>
    <div className="glass-demo-surface"><span className="glass-demo-cover"><Music size={22} /></span><span><strong>Your world.</strong><small>Through a different lens.</small></span><Play size={19} fill="currentColor" /></div>
    <div className="glass-demo-tools"><Layers size={18} /><SlidersHorizontal size={18} /><Music size={18} /></div>
   </div>
