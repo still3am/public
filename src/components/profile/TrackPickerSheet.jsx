@@ -13,7 +13,7 @@ function Cover({url}){
  const source=cdn?url:fixed;
  return source?<Image src={source} fittingType="fill" alt="" className="block w-full h-full" decoding="async"/>:<Music2 size={18}/>;
 }
-export default function TrackPickerSheet({title,description,className="",selectedIds=[],max=1,tracks=[],onToggle,onClose}){
+export default function TrackPickerSheet({title,description="",className="",selectedIds=[],max=1,tracks=[],onToggle,onClose}){
  const {user}=useAuth();
  const {ids:libraryIds}=useLibrary();
  const {blocked}=useSafety();
