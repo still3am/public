@@ -34,7 +34,7 @@ export default function ResetPassword() {
       const status=err.status??err.response?.status;
       const invalid=[400,401,404,410,422].includes(status)&&!/password.*(?:weak|short|length|character)/i.test(err.message||"");
       setExpired(invalid);
-      setError(invalid?"This reset link has expired or has already been used. Request a new link and open the newest email.":"Your password could not reset. Check your connection and try again.");
+      setError(invalid?"This reset link has expired or has already been used. Request a new link and open the newest email.":/password.*(?:weak|short|length|character)/i.test(err.message||"")?"Choose a stronger password and try again.":"Your password could not reset. Check your connection and try again.");
     } finally {
       setLoading(false);
     }

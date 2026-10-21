@@ -1,0 +1,23 @@
+import assert from "node:assert/strict";
+import fs from "node:fs";
+const source=fs.readFileSync("src/pages/ResetPassword.jsx","utf8");
+const begin=source.indexOf("  const handleSubmit = async"),end=source.indexOf("  if (!resetToken)",begin);let expired,error,loading=false;
+const make=(failure,newPassword="new-password",confirmPassword="new-password")=>{
+ const vars={base44:{auth:{resetPassword:async()=>{if(failure)throw failure;}}},loading,newPassword,confirmPassword,resetToken:"token",setLoading:value=>loading=value,setError:value=>error=value,setExpired:value=>expired=value,sessionStorage:{removeItem(){}},window:{location:{href:""}}};
+ return new Function(...Object.keys(vars),source.slice(begin,end)+";return handleSubmit;")(...Object.values(vars));
+};
+await make({status:400,message:"Reset token expired"})({preventDefault(){}});assert.equal(expired,true);assert.match(error,/newest email/);assert.equal(loading,false);
+expired=false;await make({status:400,message:"Password too short"})({preventDefault(){}});assert.equal(expired,false);assert.match(error,/stronger password/);
+await make(null,"one","two")({preventDefault(){}});assert.match(error,/do not match/);
+const chartSource=fs.readFileSync("src/pages/TopCharts.jsx","utf8"),start=chartSource.indexOf("  async function load()"),finish=chartSource.indexOf("  useEffect",start);
+let tracks,positions,failed=false;const version={current:0};
+const getLoad=(period,response)=>new Function("period","loadVersion","setLoading","setLoadError","getTopTracks","base44","setTracks","setPositions",chartSource.slice(start,finish)+";return load;")(period,version,()=>{},value=>failed=value,async()=>[{id:"a"},{id:"b"}],{functions:{invoke:async()=>({data:response})}},value=>tracks=value,value=>positions=value);
+await getLoad("week",{rows:[{track_id:"b",plays:7},{track_id:"a",plays:2}]})();assert.deepEqual(tracks.map(t=>t.id),["b","a"]);assert.equal(positions.length,2);
+await getLoad("all",null)();assert.deepEqual(tracks.map(t=>t.id),["a","b"]);
+const previous=tracks;await getLoad("month",{})();assert.equal(failed,true);assert.equal(tracks,previous,"invalid response cannot invent a chart or overwrite a confirmed list");
+const clearanceSource=fs.readFileSync("src/hooks/useContentClearance.js","utf8").replace(/^import[^;]+;/gm,"");
+const {contentClearance}=await import("data:text/javascript;base64,"+Buffer.from(clearanceSource).toString("base64"));
+assert.equal(contentClearance(844,[{width:350,height:72,top:740,bottom:812},{width:350,height:80,top:650,bottom:730}]),218);
+assert.equal(contentClearance(844,[{width:0,height:0,top:0,bottom:0}]),24);
+const fallback=fs.readFileSync("src/lib/PageNotFound.jsx","utf8");assert.match(fallback,/history.state\?\.idx>0/);assert.match(fallback,/to="\/search"/);assert.match(fallback,/to="\/"/);
+console.log("PASS expired-link recovery, password feedback, weekly chart ordering, invalid analytics responses, measured navigation/player clearance and safe missing-page navigation");
