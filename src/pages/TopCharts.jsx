@@ -6,8 +6,7 @@ import TrackRow from "@/components/TrackRow";
 import CollectionSpotlight from "@/components/CollectionSpotlight";
 import IncrementalList from "@/components/IncrementalList";
 import { useUnpublishedSync } from "@/hooks/useUnpublishedSync";
-import EmptyState from "@/components/EmptyState";
-import { Music, Loader2 } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import PullToRefresh from "@/components/PullToRefresh";
 
 export default function TopCharts() {
@@ -22,7 +21,7 @@ export default function TopCharts() {
 
   const onUnpublished = useCallback((id) => {
     setTracks((prev) => prev.filter((t) => t.id !== id));
-  }, [period]);
+  }, []);
   useUnpublishedSync(onUnpublished);
 
   async function load() {
@@ -66,7 +65,7 @@ export default function TopCharts() {
   return (
     <PullToRefresh onRefresh={load}>
       <div className="collection-page collection-refined charts-refined">
-        <div className="view-switch mb-5" aria-label="Chart period" role="group">{[["all","All time"],["week","Last 7 days"],["month","Last 30 days"]].map(([id,label])=><button key={id} aria-pressed={period===id} onClick={()=>{setPeriod(id);setRising(false);}}>{label}</button>)}</div>
+        <div className="view-switch mb-5" aria-label="Chart period" role="group">{[["all","All time"],["week","Last 7 days"],["month","Last 30 days"]].map(([id,label])=><button key={id} aria-pressed={period===id} onClick={()=>{setTracks([]);setPositions([]);setPeriod(id);setRising(false);setGenre("");}}>{label}</button>)}</div>
         <CollectionSpotlight title="Top Charts" eyebrow="On repeat" description={period==="all"?"Ranked by total plays on PUBLIC.":"Recorded plays over the last "+(period==="week"?"7":"30")+" days. Movement compares with the preceding period."} tracks={visible}/>
         <div className="collection-tools"><input aria-label="Search this music collection" placeholder="Find a song or artist" value={query} onChange={e=>setQuery(e.target.value)} onKeyDown={e=>{if(e.key==="Escape")setQuery("");}}/><select aria-label="Filter music genre" value={genre} onChange={e=>setGenre(e.target.value)}><option value="">All genres</option>{genres.map(name=><option key={name} value={name}>{name}</option>)}</select>{(query||genre)&&<button className="playlist-action" onClick={()=>{setQuery("");setGenre("");}}>Reset</button>}</div>
         {period!=="all"&&<button className="playlist-action mb-4" aria-pressed={rising} onClick={()=>setRising(value=>!value)}>{rising?"Show full chart":"Rising songs"}</button>}
