@@ -40,7 +40,7 @@ export function PersonalMixContent({ mix, uid, onBack, headerExtra = null }) {
   <section className="release-header release-header-full">
    <div className="personal-mix-open-art" aria-hidden="true" />
    <h1>{mix.title}</h1><p className="release-artist personal-mix-curator">{mix.kind === 'recap' ? 'Your music tells a story.' : 'A little more you.'}</p>
-   <p className="release-subtitle">{tracks.length} songs · {mix.kind === 'recap' ? 'Your most played' : 'Made for you'}</p>{headerExtra}
+   <p className="release-subtitle hidden">{tracks.length} songs · {mix.kind === 'recap' ? 'Your most played' : 'Made for you'}</p>{headerExtra}
    <div className="release-play-controls"><button type="button" className="release-play-button" disabled={busy || !tracks.length} onClick={() => play()}>{busy ? <Loader2 size={21} className="animate-spin" /> : playing ? <Pause size={21} fill="currentColor" /> : <Play size={21} fill="currentColor" />}{playing ? 'Pause' : 'Play'}</button><button type="button" className="release-add-button" aria-label="Shuffle mix" disabled={busy || !tracks.length} onClick={() => play(true)}><Shuffle size={22} /></button>{uid && <button type="button" className="release-add-button" disabled={saving || !!saved || !tracks.length} aria-label={saved ? 'Playlist saved' : 'Save playlist'} title={saved ? 'Playlist saved' : 'Save playlist'} onClick={save}>{saving ? <Loader2 size={22} className="animate-spin" /> : saved ? <Check size={24} /> : <Plus size={24} />}</button>}</div>
   </section>
   <div className="personal-mix-page-body">
