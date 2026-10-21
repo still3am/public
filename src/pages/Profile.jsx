@@ -1,5 +1,6 @@
 import "@/components/profile/profile-card.css";
 import "@/components/profile/profile-page-layout.css";
+import "@/components/profile/profile-mobile.css";
 import DiscoverPeople from "@/components/profile/DiscoverPeople";
 import { entityRows } from "@/lib/entityRows";
 import ProfileMedia from "@/components/ProfileMedia";
@@ -428,7 +429,7 @@ export default function Profile({ ownProfileTab = false }) {
             </div>
 
             <div className="profile-info flex-1 min-w-0 w-full md:w-auto text-center md:text-left">
-              <div className="flex items-baseline gap-2 flex-wrap justify-center md:justify-start">
+              <div className="profile-name-row flex items-baseline gap-2 flex-wrap justify-center md:justify-start">
                 {editMode ?
                     <input
                       disabled={saving}
@@ -450,7 +451,7 @@ export default function Profile({ ownProfileTab = false }) {
               </div>
 
               {!editMode &&
-                  <div className="flex flex-wrap items-center justify-center md:justify-start gap-x-3 gap-y-1 text-xs text-foreground/40 mt-1.5">
+                  <div className="profile-metadata flex flex-wrap items-center justify-center md:justify-start gap-x-3 gap-y-1 text-xs text-foreground/40 mt-1.5">
                   {profile.username && <span>@{profile.username}</span>}
                   {profile.location &&
                     <span className="inline-flex items-center gap-1">
@@ -476,8 +477,8 @@ export default function Profile({ ownProfileTab = false }) {
                 <button onClick={() => setFollowList("following")} className="hover:underline transition">
                   <span className="font-bold">{stats.following === null ? "—" : formatNumber(stats.following)}</span> <span className="text-foreground/50">following</span>
                 </button>
-                {(profile.is_artist || stats.plays > 0) && <span><span className="font-bold">{formatNumber(stats.plays)}</span> <span className="text-foreground/50 text-center">song plays</span></span>}
-                {stats.likes > 0 && <span><span className="font-bold">{formatNumber(stats.likes)}</span> <span className="text-foreground/50">likes</span></span>}
+                <span className={profile.is_artist || stats.plays > 0 ? "" : "profile-zero-stat"}><span className="font-bold">{formatNumber(stats.plays)}</span> <span className="text-foreground/50 text-center">song plays</span></span>
+                <span className={stats.likes > 0 ? "" : "profile-zero-stat"}><span className="font-bold">{formatNumber(stats.likes)}</span> <span className="text-foreground/50">likes</span></span>
               </div>
 
               {editMode ?
