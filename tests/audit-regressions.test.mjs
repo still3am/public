@@ -13,7 +13,8 @@ assert.equal(nodeParams.appParams.appId,'6a5676aa61ea8a51237aa4ee');
 
 // A response from the previous profile cannot unlock the current profile request.
 const text=fs.readFileSync('src/components/profile/ProfilePlaylists.jsx','utf8');
-const body=text.slice(text.indexOf(' async function load('),text.indexOf('\n useEffect(()=>{'));
+const start=text.search(/async function load\(/);
+const body=text.slice(start,start+text.slice(start).search(/\n\s*useEffect\s*\(/));
 const deferred=()=>{let resolve;const promise=new Promise(r=>resolve=r);return {promise,resolve};};
 const first=deferred(),second=deferred(),version={current:0},lock={current:false},owner={current:'old'},latest={current:{userId:'',rows:[]}},states=[];
 const api={entities:{Playlist:{filter:q=>q.creator_id==='old'?first.promise:second.promise}}};
