@@ -1,4 +1,5 @@
 import "@/components/profile/profile-card.css";
+import DiscoverPeople from "@/components/profile/DiscoverPeople";
 import {entityRows} from "@/lib/entityRows";
 import ProfileMedia from "@/components/ProfileMedia";
 import {validateMotionFile} from "@/lib/profileMotion";
@@ -612,6 +613,7 @@ export default function Profile({ ownProfileTab = false }) {
       </div>
       </div>
       {sectionError && <div className="flex items-center justify-between gap-3 text-xs text-muted-foreground mb-4"><span>Some profile details couldn’t refresh.</span><button type="button" disabled={followingBusy || loading || editMode || saving || uploadingAvatar} onClick={load} className="underline underline-offset-2">Retry</button></div>}
+      {!editMode && <DiscoverPeople profileId={targetId} active={isCurrentPage} layout="shelf" />}
       <div className="profile-content"><section className="profile-music" aria-label="Profile music">
       <div className="profile-song-spotlight">
       <ProfileSong
