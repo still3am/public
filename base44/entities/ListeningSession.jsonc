@@ -16,6 +16,11 @@
       "type": "number",
       "minimum": 0,
       "default": 0
+    },
+    "duration_seconds": {
+      "type": "number",
+      "minimum": 0,
+      "default": 0
     }
   },
   "required": [

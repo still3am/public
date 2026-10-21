@@ -32,7 +32,7 @@ export function sampleListening(uid,track,position,playing){
  current.position=position;current.now=now;
  if(current.seconds<5||now-current.lastSave<10000&&playing)return;
  current.lastSave=now;
- const row={session_key:current.key,track_id:track.id,started_at:current.start,listened_seconds:Math.round(current.seconds)};
+ const row={session_key:current.key,track_id:track.id,started_at:current.start,listened_seconds:Math.round(current.seconds),duration_seconds:Number.isFinite(Number(track.duration_seconds))?Math.max(0,Number(track.duration_seconds)):0};
  const rows=read(uid).filter(item=>item.session_key!==row.session_key);rows.push(row);save(uid,rows);
  syncListeningHistory(uid);
 }
