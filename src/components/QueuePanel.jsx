@@ -77,7 +77,7 @@ export default function QueuePanel({ open, onClose }) {
       <div className="top-bar-safe flex items-center justify-between px-4 pt-2 pb-3 shrink-0 border-b border-border">
         <div className="flex items-center gap-2 min-w-0">
           
-          <div className="leading-tight min-w-0"><h2 className="text-xl font-semibold tracking-tight">Your queue</h2><p className="text-xs text-muted-foreground mt-1">{upcoming.length} up next · {formatTime(upcoming.reduce((sum, { trk }) => sum + (trk.duration_seconds || 0), 0))}</p></div>
+          <div className="leading-tight min-w-0"><h2 className="text-xl font-semibold tracking-tight">Your queue</h2><p className="text-xs text-muted-foreground mt-1">{upcoming.length} up next{upcoming.length > 0 && upcoming.every(({trk}) => Number.isFinite(trk.duration_seconds) && trk.duration_seconds > 0) ? ` · ${formatTime(upcoming.reduce((sum, {trk}) => sum + trk.duration_seconds, 0))}` : ''}</p></div>
         </div>
         <div className="flex items-center gap-1.5">
           <button
@@ -219,7 +219,7 @@ export default function QueuePanel({ open, onClose }) {
                   </div>
                 </button>
                 <span className="hidden sm:block text-[11px] text-muted-foreground tabular-nums">
-                  {formatTime(tt.duration_seconds)}
+                  {Number.isFinite(tt.duration_seconds) && tt.duration_seconds > 0 ? formatTime(tt.duration_seconds) : '—'}
                 </span>
 
                 <TrackOptionsMenu
@@ -263,7 +263,7 @@ export default function QueuePanel({ open, onClose }) {
                     </div>
                   </div>
                   <span className="hidden sm:block text-[11px] text-muted-foreground tabular-nums">
-                    {formatTime(tt.duration_seconds)}
+                    {Number.isFinite(tt.duration_seconds) && tt.duration_seconds > 0 ? formatTime(tt.duration_seconds) : '—'}
                   </span>
                 </button>
             )}
