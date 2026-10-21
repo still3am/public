@@ -129,7 +129,7 @@ export default function DiscoverPeople({ profileId, active = true, layout = "dec
         {local.errors[candidate.id] && <p className="profile-discover-error" role="alert">{local.errors[candidate.id]}</p>}
        </article>;
         })}
-     </ScrollShelf>{state.error && <p className="profile-discover-status" role="status">Couldn’t refresh suggestions. Your current list is still here.</p>}</>}
+     </ScrollShelf>{state.error && <p className="profile-discover-status hidden" role="status">Couldn’t refresh suggestions. Your current list is still here.</p>}</>}
    </section>;
   return <section className="profile-discover profile-discover-deck" aria-label="Discover people">
     <header><div><h2>Discover People</h2><p>Different lives. Shared soundtracks.</p></div></header>
