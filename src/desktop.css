@@ -75,7 +75,8 @@
  .public-app .personal-mix-art{aspect-ratio:4/5}
  .public-app .personal-mix-art>strong{font-size:clamp(32px,3.1vw,44px)}
  .public-app .shared-song-shelf{grid-auto-columns:minmax(310px,calc(50% - 14px));gap:0 28px}
- .public-app .desktop-page-search{max-width:760px}
+ .public-app .search-page>.page-intro{max-width:none}
+ .public-app .desktop-page-search{width:100%;max-width:none}
  .public-app .search-results-workspace{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:32px 24px}
  .public-app .search-results-workspace>.search-result-section{margin:0;min-width:0}
  .public-app .search-result-section:only-child,.public-app .search-result-playlists,.public-app .search-result-tracks{grid-column:1/-1}
@@ -110,8 +111,12 @@
  .public-app .library-footer-links{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));max-width:none;margin-top:36px}
  .public-app .library-footer-links>*+*:before{content:none}
  .public-app .library-footer-links>*{border-bottom:1px solid hsl(var(--border)/.6);font-size:13px}
- .public-app .library-navigation{max-width:620px}
- .public-app .library-tools{max-width:none}
+ .public-app .library-heading>div:first-child{min-width:0}
+ .public-app .library-header-actions{justify-content:flex-end}
+ .public-app .library-navigation{width:100%;max-width:none}
+ .public-app .library-tools{width:100%;max-width:none;gap:12px}
+ .public-app .library-tools .library-search{flex:1 1 0%;max-width:none}
+ .public-app .library-tools .library-tool{min-height:48px}
  .public-app .library-music-grid,.public-app .library-apple .library-recently-added .library-music-grid,.public-app .library-playlist-grid,.public-app .collection-art-grid{grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:28px 22px}
  .public-app .collection-refined{max-width:1240px}
  .public-app .collection-spotlight{padding-top:12px;grid-template-columns:minmax(0,1fr) clamp(180px,20vw,250px);gap:36px}
