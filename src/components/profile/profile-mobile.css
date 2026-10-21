@@ -42,3 +42,44 @@
  .public-app .profile-redesigned .profile-info h1{font-size:32px}
  .public-app .profile-redesigned .profile-stats :is(button,span)>span:last-child:not(.font-bold){font-size:10px}
 }
+
+/* Native swipe shelves preserve vertical page scrolling and long-press menus. */
+@media(max-width:767px){
+ .public-app .profile-redesigned .profile-rotation,
+ .public-app .profile-redesigned .profile-community-column .profile-people-shelf{padding:22px 0 16px;border-radius:24px;overflow:hidden;box-shadow:none!important;background:#fafafa!important;border-color:#00000012!important}
+ html.dark .public-app .profile-redesigned .profile-rotation,
+ html.dark .public-app .profile-redesigned .profile-community-column .profile-people-shelf{background:#1b1b1b!important;border-color:#ffffff12!important}
+ .public-app .profile-redesigned .profile-rotation .profile-top8-heading{display:flex;align-items:center;justify-content:space-between;flex-wrap:nowrap;gap:12px;padding-inline:20px;margin:0 0 20px}
+ .public-app .profile-redesigned .profile-rotation .profile-top8-heading h2,
+ .public-app .profile-redesigned .profile-community-column .profile-people-shelf h2{font-size:24px;line-height:1.1;font-weight:700;letter-spacing:-.045em;max-width:none;margin:0}
+ .public-app .profile-redesigned .rotation-heading-actions>button{min-height:44px;padding:8px 12px;border-radius:999px;font-size:11px;display:flex;gap:5px;align-items:center;white-space:nowrap}
+ .public-app .profile-redesigned .profile-community-column .profile-people-shelf>header{padding-inline:20px;margin-bottom:20px;gap:12px;align-items:center}
+ .public-app .profile-redesigned .profile-rotation .rotation-grid,
+ .public-app .profile-redesigned .profile-community-column .profile-people-track{
+  display:grid;grid-template-columns:none;grid-template-rows:auto;grid-auto-flow:column;grid-auto-columns:clamp(140px,43vw,190px);gap:14px;
+  width:100%;min-width:0;box-sizing:border-box;overflow-x:auto;overflow-y:hidden;
+  padding:2px 20px 14px;margin:0;scroll-padding-inline:20px;scroll-snap-type:x proximity;
+  overscroll-behavior-x:contain;touch-action:pan-x pan-y pinch-zoom;-webkit-overflow-scrolling:touch;
+  scrollbar-width:thin;scrollbar-color:hsl(var(--foreground)/.15) transparent;
+ }
+ .public-app .profile-redesigned .rotation-grid>.rotation-card,
+ .public-app .profile-redesigned .profile-people-track>.profile-person-tile{scroll-snap-align:start;min-width:0}
+ .public-app .profile-redesigned .rotation-art{border-radius:16px;box-shadow:0 5px 14px -10px #0006}
+ .public-app .profile-redesigned .rotation-caption{padding-top:12px;gap:3px}
+ .public-app .profile-redesigned .rotation-caption strong{font-size:14px;line-height:1.4;-webkit-line-clamp:1}
+ .public-app .profile-redesigned .rotation-caption>span{font-size:12px;line-height:1.4}
+ .public-app .profile-redesigned .rotation-position{background:#18181b;color:#fff;border-color:#ffffff24;backdrop-filter:none;font-size:9px;padding:3px 5px}
+ .public-app .profile-redesigned .profile-person-tile{padding:0 4px;align-self:start}
+ .public-app .profile-redesigned .profile-person-portrait{width:100%;max-width:none;box-shadow:0 5px 14px -10px #0006,0 0 0 1px hsl(var(--foreground)/.08)}
+ .public-app .profile-redesigned .profile-person-identity{gap:7px}
+ .public-app .profile-redesigned .profile-person-identity>strong{font-size:14px;line-height:1.4;min-height:2.8em;align-items:center;margin-top:4px}
+ .public-app .profile-redesigned .profile-person-identity>small{font-size:9px;letter-spacing:.08em;padding:3px 7px}
+ .public-app .profile-redesigned .profile-person-tile .profile-discover-follow{max-width:132px;min-height:44px;margin-top:12px;font-size:12px;border-color:hsl(var(--foreground)/.12);background:hsl(var(--foreground)/.055)}
+ .public-app .profile-redesigned .profile-people-browse{margin-top:10px;padding-top:12px}
+ .public-app .profile-redesigned .profile-rotation .rotation-feedback,
+ .public-app .profile-redesigned .profile-rotation .profile-editor-error{margin-inline:18px}
+ .public-app .profile-redesigned.profile-is-editing .profile-rotation{padding:20px}
+ .public-app .profile-redesigned.profile-is-editing .profile-rotation .profile-top8-heading{padding-inline:0}
+ .public-app .profile-redesigned .profile-people-skeleton{grid-template-columns:none;grid-auto-flow:column;grid-auto-columns:clamp(140px,43vw,190px);overflow:hidden;gap:14px;padding-inline:20px}
+ .public-app .profile-redesigned :is(.rotation-grid,.profile-people-track):focus-visible{outline:2px solid hsl(var(--foreground)/.65);outline-offset:-2px;border-radius:12px}
+}
