@@ -108,3 +108,30 @@
  .public-app .profile-redesigned .profile-community-column .profile-people-track{gap:28px 18px;padding-inline:18px}
  .public-app .profile-redesigned .profile-person-identity>strong{font-size:16px}
 }
+
+/* Keep names, actions and loading portraits aligned as suggestions arrive. */
+.public-app .profile-redesigned .profile-community-column .profile-people-search{width:44px;height:44px;flex:0 0 44px;justify-content:center;border-radius:50%;background:hsl(var(--foreground)/.055);border:1px solid hsl(var(--foreground)/.08)}
+.public-app .profile-redesigned .profile-person-identity>strong{min-height:2.7em;display:flex;align-items:center;justify-content:center;overflow-wrap:anywhere}
+.public-app .profile-redesigned .profile-person-tile .profile-discover-follow{font-size:12px;font-weight:600}
+.public-app .profile-redesigned .profile-person-tile .profile-discover-follow:disabled{opacity:.5;cursor:wait}
+.public-app .profile-redesigned .profile-people-browse{display:flex;align-items:center;justify-content:center;gap:5px;min-height:48px;margin:22px 20px 0;border-top:1px solid hsl(var(--foreground)/.08);padding-top:12px;font-size:12px;font-weight:600;color:hsl(var(--muted-foreground))}
+.profile-people-skeleton{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:28px 18px;padding:0 18px 12px}
+.profile-people-skeleton>div{display:flex;flex-direction:column;align-items:center;gap:12px}
+.profile-people-skeleton i{width:100%;aspect-ratio:1;border-radius:50%;background:hsl(var(--foreground)/.07)}
+.profile-people-skeleton span,.profile-people-skeleton small{height:10px;width:65%;border-radius:5px;background:hsl(var(--foreground)/.07)}
+.profile-people-skeleton small{width:40%;height:8px}
+@media(hover:hover){
+ .public-app .profile-redesigned .profile-person-identity:hover>strong{text-decoration:none}
+ .public-app .profile-redesigned .profile-person-identity:hover .profile-person-portrait{box-shadow:0 10px 24px -12px #0008,0 0 0 2px hsl(var(--foreground)/.24)}
+ .public-app .profile-redesigned :is(.profile-people-search,.profile-person-tile .profile-discover-follow):hover:not(:disabled){background:hsl(var(--foreground)/.12)}
+ .public-app .profile-redesigned .profile-people-browse:hover{color:hsl(var(--foreground))}
+}
+@media(prefers-reduced-motion:no-preference){
+ .public-app .profile-redesigned .profile-person-portrait{transition:transform .24s ease,box-shadow .24s ease}
+ .public-app .profile-redesigned :is(.profile-people-search,.profile-discover-follow){transition:background .18s ease,transform .18s ease}
+ .public-app .profile-redesigned .profile-person-identity:active .profile-person-portrait{transform:scale(.97)}
+ .profile-people-skeleton{animation:discover-breathe 1.5s ease-in-out infinite}
+}
+@media(min-width:768px) and (max-width:1023px){
+ .public-app .profile-redesigned .profile-community-column .profile-people-track{grid-template-columns:repeat(3,minmax(0,1fr));gap:28px 24px}
+}
