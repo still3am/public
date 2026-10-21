@@ -150,7 +150,7 @@ export default function ProfileComments({ profileId, isOwn, active = true }) {
           <Loader2 className="animate-spin text-foreground/40" />
         </div> :
       comments.length === 0 ?
-      <p className="text-center text-sm text-foreground/40 py-8">
+      <p className="text-center text-sm text-foreground/40 py-8 hidden">
           No comments yet. Be the first to leave one!
         </p> :
 
