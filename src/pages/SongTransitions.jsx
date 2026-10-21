@@ -1,7 +1,6 @@
 import { useEffect, useRef } from "react";
-import { ArrowLeft, Check, Wand2, GitMerge, AlignHorizontalJustifyCenter } from "lucide-react";
+import { ArrowLeft, Check, GitMerge, AlignHorizontalJustifyCenter } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "@/lib/AuthContext";
 import { useTransitions } from "@/hooks/useTransitions";
 import {
   TRANSITION_MODES,
@@ -87,27 +86,16 @@ function CrossfadeSlider({ value, disabled, onChange }) {
 
 export default function SongTransitions() {
   const nav = useNavigate();
-  const { user } = useAuth();
   const t = useTransitions();
-  const isAdmin = !!user && user.role === "admin";
   const lastMode = useRef(t.mode !== TRANSITION_MODES.OFF ? t.mode : TRANSITION_MODES.CROSSFADE);
   useEffect(() => {if (t.mode !== TRANSITION_MODES.OFF) lastMode.current = t.mode;}, [t.mode]);
 
   const back = () =>
   window.history.length > 1 ? nav(-1) : nav("/profile");
 
-  const masterOn =
-  t.mode !== TRANSITION_MODES.OFF && (
-  t.isCrossfade || t.isGapless || t.isAutoMix && isAdmin);
+  const masterOn = t.isCrossfade || t.isGapless;
+  const toggleMaster = () => t.setMode(masterOn ? TRANSITION_MODES.OFF : lastMode.current);
 
-  const toggleMaster = () => {
-    t.setMode(masterOn ? TRANSITION_MODES.OFF : lastMode.current === TRANSITION_MODES.AUTOMIX && !isAdmin ? TRANSITION_MODES.CROSSFADE : lastMode.current);
-  };
-
-  const selectAutoMix = () => {
-    if (!isAdmin) return;
-    t.setMode(TRANSITION_MODES.AUTOMIX);
-  };
   const selectCrossfade = () => t.setMode(TRANSITION_MODES.CROSSFADE);
   const selectGapless = () => t.setMode(TRANSITION_MODES.GAPLESS);
 
@@ -152,14 +140,6 @@ export default function SongTransitions() {
           </h2>
           <div className="rounded-2xl bg-card border border-border overflow-hidden divide-y divide-border">
             <OptionTile
-              icon={Wand2}
-              title="AutoMix"
-              subtitle="A short 1.5-second crossfade, available during admin testing."
-              active={t.isAutoMix && isAdmin}
-              locked={!isAdmin}
-              onClick={selectAutoMix} />
-            
-            <OptionTile
               icon={AlignHorizontalJustifyCenter}
               title="Gapless"
               subtitle="Play songs in sequence without overlapping their endings. Ideal for albums and live sets."
@@ -175,13 +155,6 @@ export default function SongTransitions() {
             
           </div>
           <p className="text-[12px] text-muted-foreground px-4 mt-2.5">
-            {!isAdmin &&
-            <>
-                AutoMix is a{" "}
-                <span className="text-primary font-medium">testing</span>{" "}
-                feature, available to admins during testing.{" "}
-              </>
-            }
             <span>Crossfade blends two songs; Gapless joins them without a fade.</span>
           </p>
         </section>

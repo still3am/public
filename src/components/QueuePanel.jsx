@@ -16,7 +16,6 @@ import {
 import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
 import { useNavigate } from "react-router-dom";
 import { usePlayer } from "@/context/PlayerContext";
-import { useAuth } from "@/lib/AuthContext";
 import { formatTime } from "@/lib/audio-utils";
 import QueueLibraryPicker from "@/components/QueueLibraryPicker";
 import TrackOptionsMenu from "@/components/track/TrackOptionsMenu";
@@ -37,7 +36,6 @@ function QueueMenuRow({provided,dragging,children}){
 
 export default function QueuePanel({ open, onClose }) {
   const p = usePlayer();
-  const { user } = useAuth();
   const t = useTransitions();
   const nav = useNavigate();
   const [showPicker, setShowPicker] = useState(false);
@@ -59,12 +57,9 @@ export default function QueuePanel({ open, onClose }) {
 
   if (!open) return null;
 
-  const isAdmin = !!user && user.role === "admin";
   const transitionLabel =
   t.mode === TRANSITION_MODES.OFF ?
   null :
-  t.isAutoMix && isAdmin ?
-  "AutoMix" :
   t.isGapless ?
   "Gapless" :
   t.isCrossfade ?

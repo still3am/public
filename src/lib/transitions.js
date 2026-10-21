@@ -1,4 +1,4 @@
-// Shared song-transition preferences (AutoMix / Crossfade).
+// Shared song-transition preferences (Crossfade / Gapless).
 // Stored in localStorage so the player can read them synchronously
 // without reactive plumbing, and settings pages write through here.
 
@@ -6,7 +6,6 @@ const KEY = "public:transitions";
 
 export const TRANSITION_MODES = {
   OFF: "off",
-  AUTOMIX: "automix",
   CROSSFADE: "crossfade",
   GAPLESS: "gapless",
 };
@@ -22,7 +21,7 @@ const DEFAULTS = {
 let memory={...DEFAULTS},volatile=false;
 if(typeof window!=="undefined")window.addEventListener("account:cleared",()=>{memory={...DEFAULTS};volatile=false;});
 const normalize=v=>({
- mode:Object.values(TRANSITION_MODES).includes(v?.mode)?v.mode:DEFAULTS.mode,
+ mode:v?.mode==="automix"?TRANSITION_MODES.CROSSFADE:Object.values(TRANSITION_MODES).includes(v?.mode)?v.mode:DEFAULTS.mode,
  crossfadeSeconds:Number.isFinite(Number(v?.crossfadeSeconds))?Math.min(CROSSFADE_MAX,Math.max(CROSSFADE_MIN,Number(v.crossfadeSeconds))):DEFAULTS.crossfadeSeconds
 });
 export function getTransitionSettings(){
@@ -42,8 +41,7 @@ export function resetTransitionSettings(){return setTransitionSettings(DEFAULTS)
 // Gapless is deliberately excluded — it's a hard butt-join, not a fade.
 export function isTransitionActive(settings = getTransitionSettings()) {
   return (
-    settings.mode === TRANSITION_MODES.CROSSFADE ||
-    settings.mode === TRANSITION_MODES.AUTOMIX
+    settings.mode === TRANSITION_MODES.CROSSFADE
   );
 }
 

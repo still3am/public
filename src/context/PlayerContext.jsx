@@ -22,7 +22,6 @@ import {
   isTransitionActive,
   isGapless,
   shouldUseGapless,
-  TRANSITION_MODES,
 } from "@/lib/transitions";
 import { useAuth } from "@/lib/AuthContext";
 
@@ -293,7 +292,7 @@ export function PlayerProvider({ children }) {
     }
   }, [applyMixerToGraph]);
 
-  // Web Audio is only needed for blending transitions (crossfade/AutoMix/
+  // Web Audio is only needed for transitions (crossfade/
   // gapless) or the Color Pulse visualizer. When it's NOT needed we leave the
   // <audio> elements un-routed and play them natively — this is the workaround
   // for iOS backgrounding: a routed (MediaElementSource) element goes silent a
@@ -777,10 +776,7 @@ export function PlayerProvider({ children }) {
         // Hand off on ended, preserving the complete outgoing tail.
         return;
       }
-      // AutoMix: short, snappy mix (1.5s) so the song plays almost fully before
-      // transitioning — the long user crossfade duration drags songs out.
-      const isAutoMix = s.mode === TRANSITION_MODES.AUTOMIX;
-      const cf = isAutoMix ? 1.5 : s.crossfadeSeconds;
+      const cf = s.crossfadeSeconds;
       // Preload a little early so the crossfade can start on time.
       if (remaining <= cf + 3 && remaining > cf && preloadedTargetRef.current !== n) {
         preloadedTargetRef.current = n;
@@ -1121,7 +1117,7 @@ export function PlayerProvider({ children }) {
             ? a.duration - (a.currentTime || 0)
             : s.crossfadeSeconds;
         const expected=currentIndexRef.current;
-        beginCrossfade(targetIndex,s.mode===TRANSITION_MODES.AUTOMIX?1.5:s.crossfadeSeconds,remaining).then(ok=>{if(!ok&&currentIndexRef.current===expected&&!crossfadingRef.current)setCurrentIndex(targetIndex);});
+        beginCrossfade(targetIndex,s.crossfadeSeconds,remaining).then(ok=>{if(!ok&&currentIndexRef.current===expected&&!crossfadingRef.current)setCurrentIndex(targetIndex);});
       } else {
         autoPlayOnLoadRef.current=previewWasPlaying||(!!activeEl()&&!activeEl().paused);
         if(currentIndexRef.current===targetIndex)loadOnActive(target);else setCurrentIndex(targetIndex);

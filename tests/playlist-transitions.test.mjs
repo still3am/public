@@ -12,6 +12,7 @@ const values=new Map();let quota=false;globalThis.localStorage={getItem:k=>value
 const prefs=await import('../src/lib/transitions.js');
 await check('preferences sanitize mode and duration',async()=>{assert.deepEqual(prefs.setTransitionSettings({mode:'invalid',crossfadeSeconds:500}),{mode:'off',crossfadeSeconds:12});assert.equal(prefs.setTransitionSettings({crossfadeSeconds:-1}).crossfadeSeconds,1);});
 await check('storage failure retains transition choice for session',async()=>{quota=true;prefs.setTransitionSettings({mode:'gapless',crossfadeSeconds:6});assert.equal(prefs.getTransitionSettings().mode,'gapless');quota=false;});
+await check('removed AutoMix settings migrate to crossfade',async()=>{values.set('public:transitions',JSON.stringify({mode:'automix',crossfadeSeconds:6}));assert.deepEqual(prefs.getTransitionSettings(),{mode:'crossfade',crossfadeSeconds:6});assert.equal(prefs.isTransitionActive(),true);assert.ok(!Object.values(prefs.TRANSITION_MODES).includes('automix'));});
 await check('reset restores safe defaults',async()=>assert.deepEqual(prefs.resetTransitionSettings(),{mode:'off',crossfadeSeconds:4}));
 globalThis.__playlistSdk={functions:{invoke:async()=>({data:{result:{id:'playlist'}}})}};
 const code=fs.readFileSync('src/lib/playlistActions.js','utf8').replace(/^import[^;]+;/gm,'');
