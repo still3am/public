@@ -1,4 +1,53 @@
-// Follow writes remain behind server authorization (including block checks).
+// Regular-account writes remain behind server authorization.
+// Administrators may use their existing native RLS permission without a function call.
+export async function followWrite(client, method, args, fallback) {
+ const user=await client.auth.me();
+ if(user?.role!=="admin")return fallback();
+ const deny=message=>{throw Object.assign(Error(message),{status:403});};
+ if(!user.id||user.disabled||user.is_blocked)deny("Account unavailable.");
+ if(!["create","deleteMany"].includes(method))return fallback();
+ const query=args[0];
+ if(!query||Object.keys(query).some(k=>!["follower_id","following_id"].includes(k))||
+    query.follower_id!==user.id||typeof query.following_id!=="string"||
+    !query.following_id||query.following_id===user.id)deny("Invalid follow target.");
+ const current=async()=>{
+  const account=await client.auth.me();
+  if(account?.id!==user.id||account.role!=="admin"||account.disabled||account.is_blocked)deny("Account changed or unavailable.");
+ };
+ const available=async()=>{
+  await current();
+  const blocks=rows(await client.entities.Block.filter({$or:[
+   {user_id:user.id,blocked_user_id:query.following_id},
+   {user_id:query.following_id,blocked_user_id:user.id}
+  ]},"-created_date",1));
+  if(blocks.length)deny("Interaction is unavailable because a user is blocked.");
+  const target=await client.entities.User.get(query.following_id);
+  if(!target?.id||target.id!==query.following_id||target.disabled||target.is_blocked)deny("Account unavailable.");
+  await current();
+ };
+ await available();
+ const follows=client.entities.Follow;
+ if(method==="create"){
+  const existing=rows(await follows.filter(query,"-created_date",1));
+  if(existing.length)return existing[0];
+  await available();
+  return follows.create({follower_id:user.id,following_id:query.following_id});
+ }
+ // Fetch from offset zero after each batch so deletions cannot skip duplicates.
+ const removed=[];
+ for(;;){
+  const page=rows(await follows.filter(query,"-created_date",100));
+  if(!page.length)return removed;
+  for(const row of page){
+   if(!row.id||row.follower_id!==user.id||row.following_id!==query.following_id)deny("Invalid follow record.");
+   await available();
+   await follows.delete(row.id);
+   removed.push(row.id);
+  }
+  const remaining=rows(await follows.filter(query,"-created_date",1));
+  if(remaining.some(row=>removed.includes(row.id)))throw Error("Follow removal was not confirmed.");
+ }
+}
 // Confirm persistence before showing success; share a lock across all entry points.
 const pending=new Map();
 const rows=page=>{if(Array.isArray(page))return page;if(Array.isArray(page?.items))return page.items;throw Error('Could not confirm follow status.');};
