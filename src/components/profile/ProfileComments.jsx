@@ -122,7 +122,7 @@ export default function ProfileComments({ profileId, isOwn, active = true }) {
   return (
     <div className="profile-comments-body">
       {error && <div className="text-sm p-3 border rounded-xl mb-3"><button className="underline" onClick={load}>Refresh comments</button></div>}
-      <header className="profile-comments-heading"><div><h2>Comments</h2><p>A little conversation around the music.</p></div>{!loading && <span aria-label="Comments count">{comments.filter((c) => !blocked.has(c.author_id)).length}</span>}</header>
+      <header className="profile-comments-heading"><div><h2>Comments</h2><p>A little conversation around the music.</p></div></header>
 
       <form onSubmit={postComment} className="profile-comments-composer">
         <div><textarea ref={composerRef} rows={1} onInput={(e) => {e.currentTarget.style.height = "44px";e.currentTarget.style.height = Math.min(160, e.currentTarget.scrollHeight) + "px";}} onKeyDown={(e) => {if ((e.metaKey || e.ctrlKey) && e.key === "Enter") {e.preventDefault();postComment(e);}}}
@@ -131,7 +131,7 @@ export default function ProfileComments({ profileId, isOwn, active = true }) {
           onChange={(e) => {const value = e.target.value;setMessage(value);try {if (user?.id) {if (value) localStorage.setItem(draftKey, value);else localStorage.removeItem(draftKey);}} catch {}}}
           placeholder="Leave a comment..."
           maxLength={500}
-          className="profile-comment-input" /><small>{message.length}/500</small></div>
+          className="profile-comment-input" /></div>
         
         <button
           type="submit"
