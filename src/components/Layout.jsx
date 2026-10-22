@@ -1,5 +1,3 @@
-import PublicAppearance from "@/components/PublicAppearance";
-import "@/components/liquid-glass.css";
 import {useContentClearance} from "@/hooks/useContentClearance";
 import {usePlayer} from "@/context/PlayerContext";
 import { useRef } from "react";
@@ -51,7 +49,6 @@ export default function Layout() {
 
   return (
     <div className={`public-app flex min-h-screen bg-background text-foreground ${currentTrack?"has-player":""} ${momentsRoute?"moments-route":""}`}>
-      <PublicAppearance user={user}/>
       <div aria-hidden="true" className="public-status-bar-shield" />
       <a href="#main-content" className="public-skip-link">Skip to content</a>
       <Sidebar />

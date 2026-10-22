@@ -28,17 +28,10 @@ assert.equal(user.show_explicit,true);assert.equal(user.adult_confirmed,true);as
 await base44.auth.updateMe({show_explicit:false,adult_confirmed:true});
 assert.equal(user.show_explicit,false);assert.equal(user.adult_confirmed,true);
 await base44.auth.updateMe({is_artist:true});assert.equal(user.is_artist,true);assert.equal(mirrors[0].is_artist,true);
-await base44.auth.updateMe({liquid_glass_enabled:true});assert.equal(user.liquid_glass_enabled,true);
-assert.equal(mirrors.length,1,'private appearance choice must not write a public profile');
-await base44.auth.updateMe({liquid_glass_enabled:false});assert.equal(user.liquid_glass_enabled,false);
-await assert.rejects(base44.auth.updateMe({liquid_glass_enabled:'true'}),/Invalid/);
-
 assert.equal(gatewayCalls,0,'boolean settings must not require backend function availability');
 reset();fail=true;await assert.rejects(base44.auth.updateMe({show_explicit:true,adult_confirmed:true}),/unavailable/);assert.equal(user.show_explicit,false);
 reset();ignore=true;await assert.rejects(base44.auth.updateMe({show_explicit:true,adult_confirmed:true}),/not confirmed/);
 reset();swap=true;await assert.rejects(base44.auth.updateMe({is_artist:true}),/not confirmed/);
-reset();ignore=true;await assert.rejects(base44.auth.updateMe({liquid_glass_enabled:true}),/not confirmed/);
-reset();swap=true;await assert.rejects(base44.auth.updateMe({liquid_glass_enabled:true}),/not confirmed/);
 reset();user.role='admin';await assert.rejects(base44.auth.updateMe({is_artist:true}),/Administrators/);assert.equal(updates,0);
 reset();await assert.rejects(base44.auth.updateMe({show_explicit:'true'}),/Invalid/);
 reset();user.disabled=true;await assert.rejects(base44.auth.updateMe({show_explicit:true,adult_confirmed:true}),/unavailable/);assert.equal(updates,0);
@@ -52,19 +45,11 @@ const fn=new Function('user','lock','logoutLock','window','artist','explicit','s
 const ui=()=>fn({id:'listener',adult_confirmed:false},{current:false},{current:false},{confirm:()=>confirmed},checked,false,value=>{checked=value;},()=>{},value=>{busy=value;},{auth:{updateMe:async data=>{writes++;assert.equal(checked,false,'switch cannot turn on before confirmation');if(saveFails)throw Error('network');return {id:'listener',...data};}}},async()=>{},()=>{errors++;});
 saveFails=true;await ui()('is_artist',true);assert.equal(checked,false);assert.equal(errors,1);assert.equal(busy,'');
 saveFails=false;await ui()('is_artist',true);assert.equal(checked,true);assert.equal(busy,'');
-// The actual settings switch must remain off until a confirmed save succeeds.
-let glassChecked=false,glassWrites=0,glassFails=true;
-const glassFn=new Function('user','lock','logoutLock','artist','glass','setArtist','setGlass','setSaving','base44','checkUserAuth','reportActionError',handler+';return preference;');
-const glassUI=()=>glassFn({id:'listener'},{current:false},{current:false},false,glassChecked,()=>{},value=>glassChecked=value,()=>{},{auth:{updateMe:async data=>{glassWrites++;assert.equal(glassChecked,false);if(glassFails)throw Error('offline');return {id:'listener',...data};}}},async()=>{},()=>{});
-await glassUI()('liquid_glass_enabled',true);assert.equal(glassChecked,false);
-glassFails=false;await glassUI()('liquid_glass_enabled',true);assert.equal(glassChecked,true);assert.equal(glassWrites,2);
-assert.ok(sheet.includes('label="Liquid Glass"'));
 assert.ok(!sheet.includes('label="Show explicit music"'),'explicit visibility switch must not remain after opening the public catalog');
 
 // The mirror permission remains owner-scoped; unrelated roles/fields stay protected.
 const schema=JSON.parse(read('base44/entities/User.jsonc'));
 assert.equal(schema.properties.show_explicit.rls.write,true);
-assert.deepEqual(schema.properties.liquid_glass_enabled,{type:'boolean',default:false,description:'Optional Liquid Glass appearance for the signed-in account.',rls:{write:true}});
 assert.equal(schema.properties.adult_confirmed.rls.write,true);
 assert.deepEqual(schema.properties.is_artist.rls.write,{user_condition:{role:'user'}});
 assert.deepEqual(schema.properties.is_blocked.rls.write,{user_condition:{role:'admin'}});
