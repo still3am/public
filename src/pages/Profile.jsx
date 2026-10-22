@@ -384,6 +384,7 @@ export default function Profile({ ownProfileTab = false }) {
   const isAdminProfile = isOwn ? me?.role === "admin" : profile.is_public_admin === true;
   const displayName = profile.display_name || profile.full_name || "Unnamed";
   const avatarUrl = editMode ? form.avatar_url : profile.avatar_url;
+  const hasMotionBanner = !useDefaultBanner && !!(editMode ? form.banner_gif_url || form.banner_video_url : profile.banner_gif_url || profile.banner_video_url);
   const backgroundValue = { mode: profile.profile_background_mode || "auto", motion: profile.profile_background_motion === "still" ? "still" : "flow", speed: Math.max(.35, Math.min(1.6, Number(profile.profile_background_speed) || 1)), colors: (profile.profile_background_colors || []).filter((c) => /^#[0-9a-f]{6}$/i.test(c)).slice(0, 3) };
   const currentBackground = backgroundDraft || backgroundValue;
   const backgroundColors = currentBackground.mode === "off" ? [] : currentBackground.mode === "custom" ? currentBackground.colors : coverColors.slice(0, 3);
@@ -412,9 +413,9 @@ export default function Profile({ ownProfileTab = false }) {
       {editMode && <div className="profile-edit-toolbar" role="region" aria-label="Profile editing"><div><strong>Edit profile</strong><p>Changes apply when you save.</p></div><div><button type="button" className="playlist-action" disabled={saving} onClick={cancelEdit}>Cancel</button><button type="button" className="chrome-button" disabled={saving || uploadingAvatar || uploadingBanner} onClick={saveProfile}>{saving ? <Loader2 size={16} className="animate-spin" /> : <Save size={16} />} {saving ? 'Saving…' : 'Save changes'}</button></div></div>}
 
       <div className="profile-overview flex flex-col md:flex-row gap-4 md:gap-6 mb-8">
-      <div className="profile-identity relative rounded-2xl overflow-hidden ring-1 ring-inset ring-foreground/10 bg-card flex-1 min-w-0">
+      <div className={`profile-identity relative rounded-2xl overflow-hidden ring-1 ring-inset ring-foreground/10 bg-card flex-1 min-w-0 ${hasMotionBanner ? "profile-has-motion-banner" : ""}`}>
         <div className="profile-cover-stage" aria-hidden="true" style={backgroundColors.length ? { backgroundImage: profileGradient(backgroundColors) } : undefined}>
-          {(bannerUrl || currentBackground.mode === "auto" && coverUrl) && <ProfileMedia key={bannerUrl || coverUrl} src={bannerUrl || coverUrl} mobileSrc={bannerMobileUrl} videoSrc={!useDefaultBanner ? editMode ? form.banner_video_url : profile?.banner_video_url : ""} gifSrc={!useDefaultBanner ? editMode ? form.banner_gif_url : profile?.banner_gif_url : ""} active={isCurrentPage} style={{ width: "100%", height: "100%" }} />}
+          {(bannerUrl || currentBackground.mode === "auto" && coverUrl) && <ProfileMedia className="profile-banner-media" key={bannerUrl || coverUrl} src={bannerUrl || coverUrl} mobileSrc={bannerMobileUrl} videoSrc={!useDefaultBanner ? editMode ? form.banner_video_url : profile?.banner_video_url : ""} gifSrc={!useDefaultBanner ? editMode ? form.banner_gif_url : profile?.banner_gif_url : ""} active={isCurrentPage} style={{ width: "100%", height: "100%" }} />}
           <div className="profile-cover-fade" />
         </div>
         {editMode && <ProfileBannerEditor busy={uploadingBanner || saving} hasBanner={!!form.banner_url && !form.banner_use_default} onSelect={banner=>{if(uploadingBanner||saving)return;bannerVersion.current++;setForm(old=>({...old,banner_url:banner.url,banner_mobile_url:banner.url,banner_use_default:false,banner_video_url:"",banner_gif_url:banner.gifUrl||""}));}} onApply={uploadBanner} onMotionApply={(media) => uploadProfileMotion("banner", media)} onRemove={() => setForm((old) => ({ ...old, banner_use_default: true }))} />}
