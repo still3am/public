@@ -1,3 +1,4 @@
+import DiscoverMusic from "@/components/search/DiscoverMusic";
 import {useAuth} from "@/lib/AuthContext";
 import {readSearchHistory,rememberSearch,clearSearchHistory} from "@/lib/searchHistory";
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -183,6 +184,7 @@ export default function Search() {
         {!hasQuery && !genre && !peopleMode && <div className="desktop-browse-label hidden md:flex"><h2>Browse by genre</h2><span>{genreList.length} genres to explore</span></div>}
         {!hasQuery&&!genre&&history.length>0&&<section className="search-history mb-6" aria-label="Recent searches"><div className="flex justify-between items-center mb-3"><h2 className="font-semibold">Recent searches</h2><button className="playlist-action" onClick={()=>{clearSearchHistory(user?.id);setHistory([]);}}>Clear</button></div><div className="flex gap-2 flex-wrap">{history.map(term=><button key={term} className="playlist-action" onClick={()=>updateQuery(term)}>{term}</button>)}</div></section>}
         {/* Body */}
+        {hasQuery && !peopleMode && <h2 className="text-lg font-bold mb-4">On Public</h2>}
         {hasQuery ?
         firstSearchInFlight ? loader :
         anyResults === 0 ?
@@ -238,6 +240,7 @@ export default function Search() {
           title="Nothing published yet"
           description="No tracks have been published to the catalogue, so there are no genres to browse." />
         }
+        {active && hasQuery && !peopleMode && <DiscoverMusic query={q} tracks={trackResults} />}
       </div>
     </PullToRefresh>);
 

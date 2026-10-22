@@ -74,17 +74,22 @@ export function useUploadQueue({ user, isAdmin }) {
   const hit=hits[0];
   setDupes(prev=>[...(prev||[]).filter(d=>d.id!==item.id),{...item,existingId:hit.id,existingBy:hit.uploader_name||hit.artist||'',existingIsMine:hit.uploader_id===user?.id,reason:hit._match_reason,kind:hit._match_kind}]);
  };
- async function addFiles(fileList){
+ async function addFiles(fileList, discovery=null){
   if(!user?.id)return;const epoch=generation.current;
   const all=Array.from(fileList),files=all.filter(isAudioFile),coverFallback=all.find(f=>f.type.startsWith('image/')||IMAGE_EXT_RE.test(f.name||''));
   if(!files.length)return;
-  const batch=files.map(file=>({id:nextId(),file,title:deriveDefaultTitle(file),artist:'',album_name:'',album_artist:'',track_number:0,disc_number:0,release_year:0,genre:'',duration:0,explicit:false,aiLyrics:false,rightsConfirmed:false,allowDownloads:false,videoFile:null,coverFile:null,coverPreviewUrl:'',status:'analyzing',detecting:true,error:'',duplicateAcknowledged:false}));
+  const batch=files.map(file=>({id:nextId(),file,title:deriveDefaultTitle(file),artist:'',album_name:'',album_artist:'',track_number:0,disc_number:0,release_year:0,genre:'',duration:0,explicit:false,aiLyrics:false,rightsConfirmed:false,allowDownloads:false,videoFile:null,coverFile:null,coverPreviewUrl:'',status:'analyzing',detecting:!discovery,error:'',duplicateAcknowledged:false,...(discovery?{title:discovery.title,artist:discovery.artist,album_name:discovery.album_name||'',release_year:discovery.release_year||0,explicit:discovery.explicit===true}:{} )}));
+  if(discovery)for(const item of batch)metadataEdits.current.set(item.id,{title:true,artist:true,album_name:true,release_year:true,explicit:true});
   setItems(prev=>[...prev,...batch]);await refreshDuplicates();if(epoch!==generation.current)return;
   let cursor=0;
   const worker=async()=>{while(cursor<batch.length){const item=batch[cursor++];try{
    const [duration,tagTitle,tagArtist,embedded,sha,albumTags]=await Promise.all([getAudioDuration(item.file),extractEmbeddedTitle(item.file),extractEmbeddedArtist(item.file),extractEmbeddedCover(item.file),hashAudioFile(item.file),extractAlbumMetadata(item.file)]);
    if(epoch!==generation.current)return;if(!itemsRef.current.some(row=>row.id===item.id))continue;
-   const title=tagTitle||item.title,artist=tagArtist||'',rawCover=embedded||coverFallback||null,cover=rawCover?await ensureHighResCover(rawCover):null;
+   let discoveredCover=null;
+   if(discovery?.cover_art_url&&!embedded&&!coverFallback){
+    try{const response=await fetch(discovery.cover_art_url,{signal:AbortSignal.timeout(8000),referrerPolicy:'no-referrer'});if(response.ok&&/^image\//.test(response.headers.get('content-type')||'')&&Number(response.headers.get('content-length')||0)<5*1024*1024){const blob=await response.blob();if(blob.size<5*1024*1024)discoveredCover=new File([blob],'discovery-artwork.jpg',{type:blob.type});}}catch{}
+   }
+   const title=discovery?.title||tagTitle||item.title,artist=discovery?.artist||tagArtist||'',rawCover=embedded||coverFallback||discoveredCover||null,cover=rawCover?await ensureHighResCover(rawCover):null;
    if(epoch!==generation.current)return;if(!itemsRef.current.some(row=>row.id===item.id))continue;
    const coverPreviewUrl=cover?URL.createObjectURL(cover):'';
    const analyzed={...item,title,artist,duration,audio_sha256:sha,coverFile:cover,coverPreviewUrl,status:'ready'};
@@ -95,12 +100,12 @@ export function useUploadQueue({ user, isAdmin }) {
     return {...it,...Object.fromEntries(Object.entries(albumTags).filter(([key])=>!edited[key])),duration,audio_sha256:sha,
      title:edited.title?it.title:title,artist:edited.artist?it.artist:artist,
      coverFile:it.coverFile||cover,coverPreviewUrl:it.coverPreviewUrl||coverPreviewUrl,
-     status:'ready',detecting:true};
+     status:'ready',detecting:!discovery};
    }));
    // Include this batch in duplicate comparisons, not only persisted songs.
    const local=catalog.current.concat(batch.filter(t=>t.id!==item.id&&assets.current.get(t.id)?.sha).map(t=>({...t,audio_sha256:assets.current.get(t.id).sha})));
    const hits=findDuplicateTracks(local,analyzed);warn(analyzed,hits);
-   const meta=await detectMeta(title,artist);
+   const meta=discovery?null:await detectMeta(title,artist);
    if(epoch!==generation.current)return;
    setItems(prev=>prev.map(it=>{
     if(it.id!==item.id)return it;
