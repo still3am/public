@@ -4,10 +4,10 @@ let user={id:'listener',show_explicit:false,adult_confirmed:false},calls=[],matc
 globalThis.__discoveryClient=()=>({auth:{me:async()=>user},entities:{Track:{filter:async()=>matches}}});
 const realFetch=globalThis.fetch;
 const song=(id,explicit=false)=>({id,title:'Rain &amp; Sun',image:'https://c.saavncdn.com/123/cover-150x150.jpg',perma_url:'https://www.jiosaavn.com/song/rain/'+id,year:'2026',explicit_content:explicit?'1':'0',more_info:{album:'Seasons',duration:'180',encrypted_media_url:'must-not-leak',artistMap:{primary_artists:[{name:'Artist A'}]}}});
-let upstream={results:[song('clean'),song('adult',true)]},fail=false;
-globalThis.fetch=async(url,options)=>{calls.push(String(url));if(fail)throw Error('Network failed');assert.equal(options.redirect,'error');assert.equal(new URL(url).hostname,'www.jiosaavn.com');return new Response(JSON.stringify(upstream));};
+let upstream={results:[song('clean'),song('adult',true)]},appleResults=[],fail=false;
+globalThis.fetch=async(url,options)=>{calls.push(String(url));if(fail)throw Error('Network failed');assert.equal(options.redirect,'error');assert.ok(['www.jiosaavn.com','itunes.apple.com'].includes(new URL(url).hostname));return new Response(JSON.stringify(new URL(url).hostname==='itunes.apple.com'?{results:appleResults}:upstream));};
 const source=fs.readFileSync('base44/functions/musicDiscovery/entry.ts','utf8').replace(/import .*?;\n/,'const createClientFromRequest=globalThis.__discoveryClient;\n');
-const {default:handle,normalizeSong}=await import('data:text/javascript;base64,'+Buffer.from(source).toString('base64'));
+const {default:handle,normalizeSong,normalizeAppleSong}=await import('data:text/javascript;base64,'+Buffer.from(source).toString('base64'));
 const request=body=>handle(new Request('https://public.test/discovery',{method:'POST',body:JSON.stringify(body)}));
 try{
  user=null;assert.equal((await request({q:'rain'})).status,401);assert.equal(calls.length,0);
@@ -16,7 +16,7 @@ try{
  assert.equal((await request({id:'../../metadata'})).status,400);assert.equal(calls.length,0);
  let data=await (await request({q:'rain'})).json();assert.equal(data.results.length,1);assert.equal(data.results[0].title,'Rain & Sun');assert.match(data.results[0].cover_art_url,/500x500/);assert.equal(JSON.stringify(data).includes('must-not-leak'),false);assert.equal(data.audio_import_available,false);
  user={id:'adult',show_explicit:true,adult_confirmed:true};
- data=await (await request({q:'rain'})).json();assert.equal(data.results.length,2);assert.equal(calls.length,1,'cache reused without caching account preferences');
+ data=await (await request({q:'rain'})).json();assert.equal(data.results.length,2);assert.equal(calls.length,2,'cache reused without caching account preferences');
  user={id:'listener',show_explicit:true,adult_confirmed:false};
  assert.equal((await (await request({q:'rain'})).json()).results.length,1);
  matches=[{id:'private-other',title:'Rain & Sun',artist:'Artist A',uploader_id:'other',approval_status:'pending'}];
@@ -27,6 +27,11 @@ try{
  data=await (await request({q:'rain'})).json();assert.deepEqual(data.results[0].existing,{id:'released',status:'published'});
  matches=[];upstream={clean:song('clean')};data=await (await request({id:'clean'})).json();assert.equal(data.results[0].id,'clean');assert.match(calls.at(-1),/pids=clean/);
  const unsafe=normalizeSong({...song('unsafe'),image:'https://c.saavncdn.com.evil.test/a.jpg',perma_url:'javascript:alert(1)'});assert.equal(unsafe.cover_art_url,'');assert.equal(unsafe.source_url,'');
+ appleResults=[{kind:'song',trackId:123,trackName:'Dior',artistName:'Pop Smoke',collectionName:'Meet The Woo',trackTimeMillis:216000,trackExplicitness:'explicit',artworkUrl100:'https://is1-ssl.mzstatic.com/image/thumb/a/100x100bb.jpg',trackViewUrl:'https://music.apple.com/us/album/dior/123',releaseDate:'2019-01-01',trackNumber:2,discNumber:1}];
+ user={id:'adult',show_explicit:true,adult_confirmed:true};
+ data=await (await request({id:'itunes:123'})).json();assert.equal(data.results[0].title,'Dior');assert.equal(data.results[0].duration,216);assert.match(data.results[0].cover_art_url,/600x600bb/);assert.match(calls.at(-1),/lookup/);
+ assert.equal(normalizeAppleSong({trackId:1,trackName:'Video',kind:'music-video'}),null);
+ user={id:'listener'};assert.equal((await request({id:'itunes:123'})).status,404,'lookup honors explicit settings even when cached');
  fail=true;assert.equal((await request({q:'network outage'})).status,502);
  console.log('PASS discovery authentication, fixed upstream, privacy, explicit preferences, cache isolation, selection validation, URL restrictions, normalization and network failure');
 }finally{globalThis.fetch=realFetch;delete globalThis.__discoveryClient;}
