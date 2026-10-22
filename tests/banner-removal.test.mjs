@@ -1,0 +1,45 @@
+import assert from "node:assert/strict";
+import fs from "node:fs";
+import ts from "typescript";
+import * as React from "react";
+import {BANNER_PRESETS,withPresetBanner} from "../src/lib/bannerPresets.js";
+import {loadBannerGallery,removeGalleryBanner} from "../src/lib/bannerGallery.js";
+let role="user",records=[],writes=0,fail=false,lost=false,ignored=false,swap=false,authReads=0;
+const client={auth:{me:async()=>({id:swap&&++authReads>1?"other":"admin",role})},entities:{BannerRemoval:{
+ list:async()=>records,filter:async query=>records.filter(row=>row.banner_id===query.banner_id),
+ create:async row=>{writes++;if(fail)throw Error("offline");if(!ignored)records.push(row);if(lost)throw Error("lost response");}
+}}};
+const first=BANNER_PRESETS[0];
+await assert.rejects(removeGalleryBanner(client,first.id),/Only admins/);assert.equal(writes,0);
+role="admin";await assert.rejects(removeGalleryBanner(client,"unknown"),/Unknown/);
+await removeGalleryBanner(client,first.id);assert.equal((await loadBannerGallery(client)).some(item=>item.id===first.id),false);
+assert.equal(withPresetBanner({banner_preset:first.url}).banner_url,first.url,"existing profiles retain their selected artwork");
+await removeGalleryBanner(client,first.id);assert.equal(writes,1,"retry does not duplicate the removal record");
+lost=true;await removeGalleryBanner(client,BANNER_PRESETS[1].id);lost=false;
+ignored=true;await assert.rejects(removeGalleryBanner(client,BANNER_PRESETS[2].id),/confirmed/);ignored=false;
+fail=true;await assert.rejects(removeGalleryBanner(client,BANNER_PRESETS[2].id),/offline/);fail=false;
+swap=true;authReads=0;await assert.rejects(removeGalleryBanner(client,BANNER_PRESETS[2].id),/account changed/);swap=false;
+const schema=JSON.parse(fs.readFileSync("base44/entities/BannerRemoval.jsonc","utf8"));
+for(const action of ["create","update","delete"])assert.equal(schema.rls[action].user_condition.role,"admin");
+assert.equal(schema.rls.read,null);
+globalThis.__React=React;let states=[],cursor=0,pendingCalls=0,removalSuccess=false;
+globalThis.__state=initial=>{const i=cursor++;return [states[i]??initial,value=>states[i]=value];};
+globalThis.__role="user";globalThis.__banners=BANNER_PRESETS;
+globalThis.__remove=async()=>{pendingCalls++;return removalSuccess;};
+const source=fs.readFileSync("src/components/profile/BannerGallery.jsx","utf8").replace(/^import[^;]+;/gm,"");
+const stub='const React=globalThis.__React,useState=globalThis.__state,useAuth=()=>({user:{role:globalThis.__role}}),useBannerGallery=()=>({banners:globalThis.__banners,loading:false,error:"",deleting:"",remove:globalThis.__remove}),X="x",ProfileMedia="media",Dialog="dialog",DialogContent="content",DialogHeader="header",DialogTitle="h1",DialogDescription="p";';
+const code=ts.transpileModule(stub+source,{compilerOptions:{jsx:ts.JsxEmit.React,target:ts.ScriptTarget.ES2022,module:ts.ModuleKind.ESNext}}).outputText;
+const Gallery=(await import("data:text/javascript;base64,"+Buffer.from(code).toString("base64"))).default;
+const render=(props={})=>{cursor=0;return Gallery({onClose(){},onSelect(){},...props});};
+const find=(node,test)=>!node||typeof node!=="object"?[]:[...(test(node)?[node]:[]),...React.Children.toArray(node.props?.children).flatMap(child=>find(child,test))];
+const deletes=tree=>find(tree,node=>node.props?.className==="banner-gallery-delete");
+assert.equal(deletes(render()).length,0);
+globalThis.__role="admin";let tree=render();assert.equal(deletes(tree).length,BANNER_PRESETS.length);
+deletes(tree)[0].props.onClick();assert.equal(pendingCalls,0,"X only requests confirmation");
+tree=render();let confirm=find(tree,node=>node.props?.className==="banner-gallery-delete-confirm")[0];
+find(confirm,node=>node.type==="button")[0].props.onClick();assert.equal(pendingCalls,0);assert.equal(find(render(),node=>node.props?.className==="banner-gallery-delete-confirm").length,0);
+deletes(render())[0].props.onClick();tree=render();confirm=find(tree,node=>node.props?.className==="banner-gallery-delete-confirm")[0];
+await find(confirm,node=>node.type==="button")[1].props.onClick();assert.equal(pendingCalls,1);assert.equal(find(render(),node=>node.props?.className==="banner-gallery-delete-confirm").length,1,"failed delete retains confirmation");
+removalSuccess=true;await find(confirm,node=>node.type==="button")[1].props.onClick();assert.equal(find(render(),node=>node.props?.className==="banner-gallery-delete-confirm").length,0);
+assert.ok(deletes(render({busy:true})).every(node=>node.props.disabled));
+console.log("PASS admin banner deletion: RLS, confirmation, retries, lost response, failed writes, account change and saved-profile compatibility");
