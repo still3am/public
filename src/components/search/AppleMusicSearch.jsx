@@ -38,6 +38,7 @@ export default function AppleMusicSearch({query=''}){
   };
  },[user?.id]);
  useEffect(()=>{if(publicPlaying&&musicRef.current){Promise.resolve(musicRef.current.pause()).catch(()=>{});setPlaying(false);}},[publicPlaying]);
+ useEffect(()=>{if(now?.attributes.contentRating==='explicit'&&!(user?.show_explicit===true&&user?.adult_confirmed===true)){Promise.resolve(musicRef.current?.stop()).catch(()=>{});setNow(null);setPlaying(false);}},[user?.show_explicit,user?.adult_confirmed,now]);
  useEffect(()=>{
   let live=true;
   if(!ready||!query.trim()){setResult({key,songs:[],loading:false});return;}
@@ -65,6 +66,7 @@ export default function AppleMusicSearch({query=''}){
  }
  async function play(song){
   const music=musicRef.current;if(!music?.isAuthorized||busy)return;
+  if(song.attributes.contentRating==='explicit'&&!(user?.show_explicit===true&&user?.adult_confirmed===true))return;
   const seq=generation.current;setBusy(true);setError('');pausePlayback();
   try{
    if(now?.id!==song.id)await music.setQueue({song:song.id});
