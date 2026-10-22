@@ -116,7 +116,7 @@ export default function DiscoverPeople({ profileId, active = true, layout = "dec
   const name = person?.display_name || person?.full_name || person?.username || "PUBLIC listener";
   if (ready && !state.loading && !state.error && !people.length) return null;
   if (layout === "shelf") return <section className="profile-people-shelf" aria-label="Discover people">
-    <header><div><h2>Discover People</h2><p>Find people through the music they love.</p></div><Link to="/search?type=people" aria-label="Find people" title="Find people" className="profile-people-search"><Search size={20} aria-hidden="true" /></Link></header>
+    <header><div><h2>Discover People</h2><p>Find people through the music they love.</p></div><Link to="/search?type=people" aria-label="Find people" title="Find people" className="profile-people-search hidden"><Search size={20} aria-hidden="true" /></Link></header>
     {!ready || state.loading && !people.length ? <div className="profile-people-skeleton" role="status" aria-label="Finding listeners">{[0, 1, 2, 3].map((item) => <div key={item} aria-hidden="true"><i /><span /><small /></div>)}</div> :
     state.error && !people.length ? <div className="profile-discover-status" role="status"><p>People couldn’t load.</p><button type="button" onClick={() => setRetry((n) => n + 1)}>Try again</button></div> :
     <><ScrollShelf paged className="profile-people-track" label="Suggested listeners">
