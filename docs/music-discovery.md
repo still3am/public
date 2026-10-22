@@ -1,17 +1,18 @@
-# External music discovery
+# Direct music discovery
 
-Search displays Public results first, followed by Discover more. Upload has a Find music field. Every signed-in, unsuspended account can select a result and attach a full audio file in the existing upload queue. Upload pause settings remain effective.
+## Active path
+Search and Upload use src/lib/musicDiscovery.js to call Deezer's public search and track lookup endpoints directly using provider-supported JSONP. No Base44 function, AI integration, secret, or paid API key is used for these metadata requests. Existing itunes: selections remain supported via direct iTunes lookup; old bare JioSaavn IDs ask the user to select a song again.
 
-The musicDiscovery backend searches fixed Apple iTunes and JioSaavn metadata endpoints in parallel, ranks by query-word matches, removes repeated title/artist/explicit combinations, and looks up selected songs by provider ID. One provider failing does not erase the other provider’s results. It normalizes only public metadata and source links, caches up to 100 searches for five minutes, applies the caller's explicit/adult preferences on every response, and uses caller-scoped Track reads for existing published or own pending matches. No external audio URLs, encrypted media data, cookies or credentials are exposed.
+This replaces the original musicDiscovery function dependency. A real request to Public's hosted function endpoint returned HTTP 402 with reason integration_credits_limit_reached, even though upstream metadata searches worked from the sandbox. Thus changing only the server-side source would not fix discovery. The old function remains for compatibility but is no longer invoked by discovery UI.
 
-Selection is re-fetched server-side by provider ID. Metadata and available artwork prefill the ordinary upload review. Rights confirmation, exact-file verification, recording-match review, private audio storage and server-side publication permissions remain in the existing upload path. Selected metadata skips automatic AI detection; users can edit it and optionally request lyrics as before.
+Both search and selection filter explicit content against the active account's show_explicit and adult_confirmed preferences. Public metadata cache entries contain no user data; results are filtered separately for every caller. Requests are debounced, stale UI responses ignored, callbacks time out and clean up, and only fixed provider endpoints and normalized source/artwork hosts are accepted.
 
-## Current limitation
+Every signed-in, unsuspended account can select a result and attach an audio file in the existing upload queue. Metadata and available artwork prefill the ordinary review. Rights confirmation, exact-file verification, private storage, upload pause settings and server-side publication permissions remain in the existing path. Selected metadata skips AI detection.
 
-BhariyaMusic's documented bhindi1.ddns.net host did not resolve during implementation. saavn.dev did not resolve; saavn.sumit.co returned HTTP 403. Direct JioSaavn metadata search returned HTTP 200 but had weak matches for US catalog examples. Apple iTunes search returned correct Pop Smoke/Dior results, so it supplements discovery. No working full-audio import provider was verified. This version therefore explicitly asks for an audio file; it does not advertise automatic downloads or convert previews to full songs. It does not implement YouTube extraction or DRM decryption. Provider infrastructure remains unofficial and may change.
+## Limits
+Deezer's public API returns metadata and previews, not full-song audio imports. Preview files are deliberately not imported or represented as full songs. Users currently attach the full audio file they may share. No working free full-song import service was verified.
 
-The backend function uses Base44's normal authenticated invocation. Existing upload storage/integration usage still applies. No additional paid API or AI metadata lookup is introduced for discovery selections.
+The app's monthly integration credits are currently exhausted. This change removes the function gateway from discovery and lookup only. Existing audio storage, duplicate verification and publication operations may still be blocked by Base44's exhausted limit. These protections are not bypassed.
 
 ## Verification
-
-Run music-discovery.test.mjs for auth, privacy, content settings, response normalization and upstream errors; upload-queue.test.mjs for upload retries, duplicate safety and seeded metadata; the full test suite, typecheck, lint and production build. Actual signed-in browser upload/approval playback still requires verification with a permitted audio file.
+Deezer search and track lookup returned HTTP 200 with the correct Pop Smoke/Dior metadata. Unit tests exercise actual request construction, JSONP callbacks and cleanup, preference isolation, caching, lookup validation, provider failures and the normal upload review. Production typecheck, lint, build and the full suite are also required. A signed-in browser upload has not been verified.
