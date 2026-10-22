@@ -1,3 +1,4 @@
+import {BANNER_PRESETS,savePresetBanner} from "@/lib/bannerPresets";
 import {entityRows} from "@/lib/entityRows";
 import {followWrite} from "@/lib/followActions";
 import {loungeAction} from "@/lib/adminLounge";
@@ -18,7 +19,7 @@ const entities = new Proxy(raw.entities,{get(target,name) {
   if(typeof name!=='string')return Reflect.get(target,name);
   if(name==="PublicProfile"){
    if(!handlers.has(name))handlers.set(name,new Proxy(target[name],{get(h,method){
-    if(typeof method==="string" && ["get","list","filter"].includes(method))return async(...args)=>{const readArgs=args.map(arg=>arg&&typeof arg==="object"&&!Array.isArray(arg)&&Array.isArray(arg.fields)&&arg.fields.includes("avatar_url")?{...arg,fields:[...new Set([...arg.fields,"avatar_preset"])]}:arg);const page=await h[method](...readArgs);return Array.isArray(page)?page.map(withPresetAvatar):Array.isArray(page?.items)?{...page,items:page.items.map(withPresetAvatar)}:withPresetAvatar(page);};
+    if(typeof method==="string" && ["get","list","filter"].includes(method))return async(...args)=>{const readArgs=args.map(arg=>arg&&typeof arg==="object"&&!Array.isArray(arg)&&Array.isArray(arg.fields)&&(arg.fields.includes("avatar_url")||arg.fields.includes("banner_url"))?{...arg,fields:[...new Set([...arg.fields,"avatar_preset","banner_preset"])]}:arg);const page=await h[method](...readArgs);return Array.isArray(page)?page.map(withPresetAvatar):Array.isArray(page?.items)?{...page,items:page.items.map(withPresetAvatar)}:withPresetAvatar(page);};
     return h[method];
    }}));
    return handlers.get(name);
@@ -144,6 +145,13 @@ export async function saveProfileLinks(client, uid, input) {
 export const base44 = new Proxy(raw,{get(target,name) {
   if(name==='entities') return entities;
   if(name==='auth') return {...target.auth,me:async()=>withPresetAvatar(await target.auth.me()),updateMe:async data=>{
+    const galleryBanner=BANNER_PRESETS.find(item=>item.url===data?.banner_url);
+    if(galleryBanner&&data.banner_use_default!==true){
+      const {banner_url,banner_mobile_url,banner_video_url,banner_gif_url,banner_use_default,...remainder}=data;
+      if(banner_video_url||(banner_gif_url&&banner_gif_url!==galleryBanner.gifUrl)||(banner_mobile_url&&banner_mobile_url!==galleryBanner.url))throw Error("Choose a gallery banner or uploaded media, not both.");
+      if(Object.keys(remainder).length)await base44.auth.updateMe(remainder);
+      return savePresetBanner(target,banner_url);
+    }
     // Validated social identifiers/URLs do not need an AI/backend function.
     const linkKeys=["website","instagram","twitter","soundcloud"];
     const links=Object.fromEntries(Object.entries(data||{}).filter(([key])=>linkKeys.includes(key)));

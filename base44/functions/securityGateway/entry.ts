@@ -507,6 +507,7 @@ export default async function handleRequest(req) {
       } else if(entity==='User') {
         if(kind!=='update'||id!==user.id) fail('Profile access denied');
         data=pick(data,['username','display_name','bio','avatar_url','avatar_video_url','avatar_gif_url','banner_video_url','banner_gif_url','banner_url','banner_mobile_url','banner_use_default','top_tracks_label','location','pronouns','website','instagram','twitter','soundcloud','status_message','featured_track_id','top_track_ids','is_artist','show_explicit','adult_confirmed','profile_background_mode','profile_background_colors','profile_background_motion','profile_background_speed']);
+        if(data.banner_url!==undefined){data.banner_preset='';}
         if(data.avatar_url!==undefined){data.avatar_preset='';if(data.avatar_video_url===undefined)data.avatar_video_url='';if(data.avatar_gif_url===undefined)data.avatar_gif_url='';}
         if(data.banner_url!==undefined){if(data.banner_video_url===undefined)data.banner_video_url='';if(data.banner_gif_url===undefined)data.banner_gif_url='';}
         for(const key of ['avatar_video_url','avatar_gif_url','banner_video_url','banner_gif_url'])if(data[key]!==undefined&&(typeof data[key]!=='string'||data[key].length>4096||(data[key]&&!/^(https?:\/\/|\/(?!\/))/.test(data[key]))))fail('Invalid profile media URL',422);
@@ -542,7 +543,7 @@ export default async function handleRequest(req) {
         await moderate(svc,[data.username,data.display_name,data.bio,data.status_message,data.top_tracks_label,data.location,data.pronouns].filter(Boolean).join('\n'));
         for(const tid of [data.featured_track_id,...(data.top_track_ids||[])].filter(Boolean)) await requireTrack(tid);
         const saved=await handler.update(id,data);
-        const publicData={...pick(saved,["username","display_name","full_name","avatar_url","avatar_preset","avatar_video_url","avatar_gif_url","banner_video_url","banner_gif_url","banner_url","banner_mobile_url","banner_use_default","top_tracks_label","bio","location","pronouns","website","instagram","twitter","soundcloud","status_message","featured_track_id","profile_background_mode","profile_background_colors","profile_background_motion","profile_background_speed","top_track_ids","is_artist"]),is_public_admin:isAdmin,user_id:saved.id,joined_at:saved.created_date||"",visible:!saved.is_blocked&&!saved.disabled};
+        const publicData={...pick(saved,["username","display_name","full_name","avatar_url","avatar_preset","avatar_video_url","avatar_gif_url","banner_video_url","banner_gif_url","banner_preset","banner_url","banner_mobile_url","banner_use_default","top_tracks_label","bio","location","pronouns","website","instagram","twitter","soundcloud","status_message","featured_track_id","profile_background_mode","profile_background_colors","profile_background_motion","profile_background_speed","top_track_ids","is_artist"]),is_public_admin:isAdmin,user_id:saved.id,joined_at:saved.created_date||"",visible:!saved.is_blocked&&!saved.disabled};
         const mirrors=await svc.entities.PublicProfile.filter({user_id:saved.id},'-updated_date',1);
         if(mirrors[0])await svc.entities.PublicProfile.update(mirrors[0].id,publicData);
         else await svc.entities.PublicProfile.create(publicData);

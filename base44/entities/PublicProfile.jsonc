@@ -4540,6 +4540,29 @@
           ]
         }
       }
+    },
+    "banner_preset": {
+      "type": "string",
+      "enum": [
+        "",
+        "/banners/roshi-reflections.webp"
+      ],
+      "default": "",
+      "description": "Built-in banner choice; external uploads retain the existing moderated media path.",
+      "rls": {
+        "write": {
+          "$or": [
+            {
+              "data.user_id": "{{user.id}}"
+            },
+            {
+              "user_condition": {
+                "role": "admin"
+              }
+            }
+          ]
+        }
+      }
     }
   },
   "required": [
