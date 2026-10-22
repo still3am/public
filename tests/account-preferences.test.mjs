@@ -52,6 +52,13 @@ const fn=new Function('user','lock','logoutLock','window','artist','explicit','s
 const ui=()=>fn({id:'listener',adult_confirmed:false},{current:false},{current:false},{confirm:()=>confirmed},checked,false,value=>{checked=value;},()=>{},value=>{busy=value;},{auth:{updateMe:async data=>{writes++;assert.equal(checked,false,'switch cannot turn on before confirmation');if(saveFails)throw Error('network');return {id:'listener',...data};}}},async()=>{},()=>{errors++;});
 saveFails=true;await ui()('is_artist',true);assert.equal(checked,false);assert.equal(errors,1);assert.equal(busy,'');
 saveFails=false;await ui()('is_artist',true);assert.equal(checked,true);assert.equal(busy,'');
+// The actual settings switch must remain off until a confirmed save succeeds.
+let glassChecked=false,glassWrites=0,glassFails=true;
+const glassFn=new Function('user','lock','logoutLock','artist','glass','setArtist','setGlass','setSaving','base44','checkUserAuth','reportActionError',handler+';return preference;');
+const glassUI=()=>glassFn({id:'listener'},{current:false},{current:false},false,glassChecked,()=>{},value=>glassChecked=value,()=>{},{auth:{updateMe:async data=>{glassWrites++;assert.equal(glassChecked,false);if(glassFails)throw Error('offline');return {id:'listener',...data};}}},async()=>{},()=>{});
+await glassUI()('liquid_glass_enabled',true);assert.equal(glassChecked,false);
+glassFails=false;await glassUI()('liquid_glass_enabled',true);assert.equal(glassChecked,true);assert.equal(glassWrites,2);
+assert.ok(sheet.includes('label="Liquid Glass"'));
 assert.ok(!sheet.includes('label="Show explicit music"'),'explicit visibility switch must not remain after opening the public catalog');
 
 // The mirror permission remains owner-scoped; unrelated roles/fields stay protected.

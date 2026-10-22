@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
-import { Loader2, UserCheck, ChevronLeft, ChevronRight, Search } from "lucide-react";
+import { Loader2, UserCheck, ChevronLeft, ChevronRight } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 import { useAuth } from "@/lib/AuthContext";
 import { useSafety } from "@/context/SafetyContext";
