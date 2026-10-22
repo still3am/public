@@ -465,7 +465,8 @@
         "/banners/kirby-star-ride.webp",
         "/banners/flame-reflections.webp",
         "/banners/the-world-blimp.webp",
-        "/banners/south-park-movie-night.webp"
+        "/banners/south-park-movie-night.webp",
+        "/banners/pixel-mood.webp"
       ],
       "default": "",
       "description": "Built-in banner choice; external uploads retain the existing moderated media path.",
