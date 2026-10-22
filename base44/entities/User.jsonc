@@ -442,7 +442,13 @@
         "/banners/midnight-music-bar.webp",
         "/banners/ryu-and-ken.webp",
         "/banners/desert-rv.webp",
-        "/banners/golden-getaway.webp"
+        "/banners/golden-getaway.webp",
+        "/banners/midnight-drift.webp",
+        "/banners/forest-gnome.webp",
+        "/banners/neon-rain.webp",
+        "/banners/akira-unveiled.webp",
+        "/banners/cyberpunk-chase.webp",
+        "/banners/pixel-lightsabers.webp"
       ],
       "default": "",
       "description": "Built-in banner choice; external uploads retain the existing moderated media path.",
