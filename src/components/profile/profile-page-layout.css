@@ -221,14 +221,3 @@
  .public-app .profile-redesigned .paged-shelf-controls{gap:8px}
  .paged-shelf-controls .shelf-page-arrow{display:none}
 }
-
-/* Match the desktop banner to its animation: full width, full frame, no side gaps. */
-@media(min-width:768px){
- .public-app .profile-redesigned .profile-has-motion-banner .profile-cover-stage{height:auto}
- .public-app .profile-redesigned .profile-has-motion-banner .profile-banner-media{height:auto!important;aspect-ratio:var(--profile-media-ratio,16 / 9)}
- .public-app .profile-redesigned .profile-has-motion-banner .profile-banner-media>picture{position:absolute;inset:0}
- .public-app .profile-redesigned .profile-has-motion-banner .profile-banner-media :is(img,video){object-fit:contain!important;object-position:center!important}
- .public-app .profile-redesigned .profile-has-motion-banner .profile-cover-fade{display:none}
- .public-app .profile-redesigned .profile-has-motion-banner .profile-details{padding-top:24px!important}
- .public-app .profile-redesigned .profile-has-motion-banner .profile-avatar-notes{margin-top:0!important}
-}
