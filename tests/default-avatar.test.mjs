@@ -21,3 +21,8 @@ node.props.onError();assert.equal(render({user:{display_name:"Alice",avatar_url:
 assert.equal(render({user:null}),null);
 const asset=fs.readFileSync("public/avatars/default-headphones.webp");assert.equal(asset.toString("ascii",0,4),"RIFF");assert.equal(asset.toString("ascii",8,12),"WEBP");
 console.log("PASS default avatars for existing/new users, preserved selections, broken-image recovery and circular frame");
+
+states=[];const animated=render({user:{id:"listener"},motion:true,active:true});assert.equal(animated.type,"span");assert.equal(animated.props["data-active"],"true");assert.equal(React.Children.toArray(animated.props.children).filter(node=>node.props?.className==="pfp-boy-head").length,1);
+states=[];assert.equal(render({user:{id:"listener"},motion:true,active:false}).props["data-active"],"false");
+states=[];assert.equal(render({user:{avatar_url:"my-photo.jpg"},motion:true}).props.src,"my-photo.jpg");
+console.log("PASS PFP Boy animation opt-in, inactive state and custom-photo preservation");
