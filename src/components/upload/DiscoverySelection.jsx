@@ -39,7 +39,7 @@ export default function DiscoverySelection(){
   <div className="flex items-start justify-between gap-3"><h2>{song?song.title:'Add discovered music'}</h2><button className="playlist-action" onClick={cancel}>Cancel</button></div>
   {song&&<p>{song.artist}{song.album_name?' · '+song.album_name:''}</p>}
   {current&&state.error&&<p role="alert">{state.error}<button className="playlist-action" onClick={()=>setNonce(n=>n+1)}>Retry</button></p>}
-  {!current||state.busy?<p role="status">Preparing song…</p>:song&&queued?<p>This song is already in your upload queue.</p>:song&&<>
+  {!current||state.busy?<p role="status">Preparing song…</p>:song?.existing?<p>{song.existing.status==='pending'?'Your submission is awaiting approval.':<>This song is already <Link className="underline" to={'/track/'+song.existing.id}>on Public</Link>.</>}</p>:song&&queued?<p>This song is already in your upload queue.</p>:song&&<>
    <p>Attach the full audio file you have permission to share. We’ll fill in its title, artist, album, and available artwork for review.</p>
    {song.source_url&&<a href={song.source_url} target="_blank" rel="noopener noreferrer" className="playlist-action mr-2">View source</a>}
    <button className="playlist-action" onClick={()=>input.current?.click()}>Choose audio file</button>

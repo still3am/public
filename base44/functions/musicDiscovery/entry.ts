@@ -54,7 +54,25 @@ export default async function handleRequest(req) {
   }
   const results=entry.songs.filter(song=>!song.explicit||(user.show_explicit===true&&user.adult_confirmed===true));
   if(id&&!results.length)return Response.json({error:'This song is unavailable or hidden by your content settings.'},{status:404});
-  return Response.json({results,provider:'JioSaavn',audio_import_available:false});
+  // Caller-scoped reads honor Track RLS. Even admins only receive published
+  // matches or their own pending submissions; never another uploader's draft.
+  let matches=[],match_check_failed=false;
+  try {
+   const escape=value=>value.replace(/[.*+?^$\{\}()|[\]\\]/g,'\\$&');
+   const query={$or:results.map(song=>({title:{$regex:'^'+escape(song.title)+'$',$options:'i'}}))};
+   if(results.length){
+    const page=await base44.entities.Track.filter(query,'-created_date',100,0,['id','title','artist','duration_seconds','approval_status','is_published','uploader_id','explicit']);
+    matches=(Array.isArray(page)?page:page?.items||[]).filter(track=>
+     ((track.is_published===true&&track.approval_status==='approved')||(track.uploader_id===user.id&&track.approval_status==='pending'))&&
+     (!track.explicit||(user.show_explicit===true&&user.adult_confirmed===true)));
+   }
+  }catch{match_check_failed=true;}
+  const norm=value=>text(value).normalize('NFKD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^\p{L}\p{N}]+/gu,' ').trim();
+  const enriched=results.map(song=>{
+   const match=matches.find(track=>norm(track.title)===norm(song.title)&&norm(track.artist)===norm(song.artist)&&(!track.duration_seconds||!song.duration||Math.abs(track.duration_seconds-song.duration)<=4));
+   return {...song,existing:match?{id:match.id,status:match.approval_status==='pending'?'pending':'published'}:null};
+  });
+  return Response.json({results:enriched,provider:'JioSaavn',audio_import_available:false,match_check_failed});
  } catch {
   return Response.json({error:'External discovery is temporarily unavailable. Your Public search and file uploads still work.'},{status:502});
  }

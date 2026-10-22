@@ -37,13 +37,13 @@ export default function DiscoverMusic({query='',tracks=[],searchable=false}) {
   state.error?<div className="discovery-note" role="alert">{state.error}<button className="playlist-action" onClick={()=>setNonce(n=>n+1)}>Retry</button></div>:
   !songs.length?<p className="discovery-note">No external matches. Try another song or artist.</p>:
   <ul className="discovery-list">{songs.map(song=>{
-   const existing=findDuplicateTracks(tracks,song).find(hit=>hit._match_score>=0.85);
+   const existing=song.existing?.status==='published'?song.existing:findDuplicateTracks(tracks,song).find(hit=>hit._match_score>=0.85);
    const queued=queue?.items?.find(item=>findDuplicateTracks([item],song).some(hit=>hit._match_score>=0.85));
    const pending=queued?.status==='done'&&queued?.releaseStatus==='pending';
    return <li key={song.id}>
     {song.cover_art_url?<img src={song.cover_art_url} alt="" loading="lazy" referrerPolicy="no-referrer"/>:<span className="discovery-placeholder"><Music2 size={22}/></span>}
     <div className="discovery-details"><strong>{song.title}{song.explicit&&<span className="discovery-explicit" aria-label="Explicit">E</span>}</strong><span>{song.artist||'Unknown artist'}</span>{song.album_name&&<small>{song.album_name}</small>}</div>
-    {existing?<Link className="playlist-action discovery-action" to={'/track/'+existing.id}>On Public</Link>:
+    {song.existing?.status==='pending'?<span className="discovery-status">Awaiting approval</span>:existing?<Link className="playlist-action discovery-action" to={'/track/'+existing.id}>On Public</Link>:
      queued?<span className="discovery-status">{pending?'Awaiting approval':queued.status==='done'?'Submitted':'In upload queue'}</span>:
      <Link className="playlist-action discovery-action" to={'/upload?discovery='+encodeURIComponent(song.id)} aria-label={'Add '+song.title+' to Public'}><Plus size={15}/><span>Add to Public</span></Link>}
    </li>;
