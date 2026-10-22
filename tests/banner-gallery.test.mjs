@@ -21,3 +21,14 @@ console.log("PASS banner gallery native save, public resolution, default recover
 
 for(const item of BANNER_PRESETS){const result=await savePresetBanner(client,item.url);assert.equal(result.banner_url,item.url);assert.equal(result.banner_gif_url,item.gifUrl||"");assert.equal(withPresetAvatar(profile).banner_url,item.url);}
 assert.equal(BANNER_PRESETS.length,36);
+
+// These source GIFs lacked repeat metadata; moonwalk also had zero frame delays.
+for(const [id,frames,duration] of [["pixel-moonwalk",118,11.8],["kirby-star-ride",62,3.1]]){
+ const item=BANNER_PRESETS.find(item=>item.id===id);
+ assert.ok(item.gifUrl.endsWith(".loop.gif"),"fresh URL avoids stale nonlooping assets");
+ const data=fs.readFileSync("public"+item.gifUrl);
+ assert.ok(data.includes(Buffer.from("21ff0b4e45545343415045322e300301000000","hex")),"GIF must repeat indefinitely");
+ const {inspectGif}=await import("../src/lib/profileMotion.js");
+ const info=inspectGif(new Uint8Array(data),"banner");assert.equal(info.frames,frames);assert.equal(info.duration,duration);
+}
+console.log("PASS new GIF banners repeat with valid timing and all original frames");
