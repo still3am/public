@@ -4566,7 +4566,17 @@
         "/banners/cyberpunk-chase.webp",
         "/banners/pixel-lightsabers.webp",
         "/banners/saiyan-trio.webp",
-        "/banners/sunset-coast-drive.webp"
+        "/banners/sunset-coast-drive.webp",
+        "/banners/summer-throwback.webp",
+        "/banners/kermit-trio.webp",
+        "/banners/late-night-drive-thru.webp",
+        "/banners/blue-sky-blimp.webp",
+        "/banners/balcony-break.webp",
+        "/banners/spider-duo.webp",
+        "/banners/ascii-portrait.webp",
+        "/banners/bojack-nights.webp",
+        "/banners/scratch-off.webp",
+        "/banners/flaming-skull.webp"
       ],
       "default": "",
       "description": "Built-in banner choice; external uploads retain the existing moderated media path.",

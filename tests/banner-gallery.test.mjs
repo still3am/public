@@ -20,4 +20,4 @@ const editor=fs.readFileSync("src/components/profile/ProfileBannerEditor.jsx","u
 console.log("PASS banner gallery native save, public resolution, default recovery, uploads, failures, lost response, permissions and GIF assets");
 
 for(const item of BANNER_PRESETS){const result=await savePresetBanner(client,item.url);assert.equal(result.banner_url,item.url);assert.equal(result.banner_gif_url,item.gifUrl||"");assert.equal(withPresetAvatar(profile).banner_url,item.url);}
-assert.equal(BANNER_PRESETS.length,22);
+assert.equal(BANNER_PRESETS.length,32);
