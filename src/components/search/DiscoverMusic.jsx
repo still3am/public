@@ -48,6 +48,6 @@ export default function DiscoverMusic({query='',tracks=[],searchable=false}) {
      <Link className="playlist-action discovery-action" to={'/upload?discovery='+encodeURIComponent(song.id)} aria-label={'Add '+song.title+' to Public'}><Plus size={15}/><span>Add to Public</span></Link>}
    </li>;
   })}</ul>}
-  {songs.length>0&&<p className="discovery-note discovery-attribution">Results from JioSaavn. These songs become playable on Public after audio is uploaded and approved.</p>}
+  {songs.length>0&&<p className="discovery-note discovery-attribution">Metadata from Apple iTunes and JioSaavn. These songs become playable on Public after audio is uploaded and approved.</p>}
  </section>;
 }

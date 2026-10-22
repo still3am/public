@@ -78,8 +78,8 @@ export function useUploadQueue({ user, isAdmin }) {
   if(!user?.id)return;const epoch=generation.current;
   const all=Array.from(fileList),files=all.filter(isAudioFile),coverFallback=all.find(f=>f.type.startsWith('image/')||IMAGE_EXT_RE.test(f.name||''));
   if(!files.length)return;
-  const batch=files.map(file=>({id:nextId(),file,title:deriveDefaultTitle(file),artist:'',album_name:'',album_artist:'',track_number:0,disc_number:0,release_year:0,genre:'',duration:0,explicit:false,aiLyrics:false,rightsConfirmed:false,allowDownloads:false,videoFile:null,coverFile:null,coverPreviewUrl:'',status:'analyzing',detecting:!discovery,error:'',duplicateAcknowledged:false,...(discovery?{title:discovery.title,artist:discovery.artist,album_name:discovery.album_name||'',release_year:discovery.release_year||0,explicit:discovery.explicit===true}:{} )}));
-  if(discovery)for(const item of batch)metadataEdits.current.set(item.id,{title:true,artist:true,album_name:true,release_year:true,explicit:true});
+  const batch=files.map(file=>({id:nextId(),file,title:deriveDefaultTitle(file),artist:'',album_name:'',album_artist:'',track_number:0,disc_number:0,release_year:0,genre:'',duration:0,explicit:false,aiLyrics:false,rightsConfirmed:false,allowDownloads:false,videoFile:null,coverFile:null,coverPreviewUrl:'',status:'analyzing',detecting:!discovery,error:'',duplicateAcknowledged:false,...(discovery?{title:discovery.title,artist:discovery.artist,album_name:discovery.album_name||'',release_year:discovery.release_year||0,explicit:discovery.explicit===true,genre:GENRES.includes(discovery.genre)?discovery.genre:'',track_number:Number(discovery.track_number)||0,disc_number:Number(discovery.disc_number)||0}:{} )}));
+  if(discovery)for(const item of batch)metadataEdits.current.set(item.id,{title:true,artist:true,album_name:true,release_year:true,explicit:true,genre:!!discovery.genre,track_number:!!discovery.track_number,disc_number:!!discovery.disc_number});
   setItems(prev=>[...prev,...batch]);await refreshDuplicates();if(epoch!==generation.current)return;
   let cursor=0;
   const worker=async()=>{while(cursor<batch.length){const item=batch[cursor++];try{
