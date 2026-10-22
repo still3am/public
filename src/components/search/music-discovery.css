@@ -1,0 +1,26 @@
+
+.music-discovery{margin:28px 0;padding:20px;border:1px solid hsl(var(--border));border-radius:22px;min-width:0}
+.music-discovery header h2{font-size:22px;font-weight:750;letter-spacing:-.04em;margin:0}
+.music-discovery header p,.discovery-note{font-size:13px;opacity:.65;line-height:1.5}
+.music-discovery header p{margin:5px 0 16px}
+.discovery-query{width:100%;border:1px solid hsl(var(--border));border-radius:999px;background:transparent;padding:12px 16px;font-size:14px;margin-bottom:12px}
+.discovery-list{list-style:none;margin:0;padding:0}
+.discovery-list li{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid hsl(var(--border));min-width:0}
+.discovery-list li:last-child{border-bottom:0}
+.discovery-list img,.discovery-placeholder{width:56px;height:56px;border-radius:10px;object-fit:cover;flex:none;background:hsl(var(--muted))}
+.discovery-placeholder{display:grid;place-items:center}
+.discovery-details{display:flex;flex-direction:column;min-width:0;flex:1;gap:2px}
+.discovery-details strong,.discovery-details span,.discovery-details small{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.discovery-details strong{font-size:14px;font-weight:650}
+.discovery-details>span{font-size:12px;opacity:.7}
+.discovery-details small{font-size:11px;opacity:.5}
+.discovery-action{display:inline-flex;align-items:center;justify-content:center;gap:5px;min-height:44px;flex:none;font-size:12px}
+.discovery-status{font-size:11px;max-width:90px;text-align:center;opacity:.65}
+.discovery-note{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:12px 0 0}
+.discovery-attribution{font-size:11px}
+.discovery-explicit{display:inline-block;font-size:9px;margin-left:6px;padding:0 3px;border:1px solid currentColor;border-radius:2px;vertical-align:middle}
+.discovery-selection{margin-bottom:20px;padding:18px;border:1px solid hsl(var(--border));border-radius:20px}
+.discovery-selection h2{font-size:18px;font-weight:700}
+.discovery-selection p{font-size:13px;opacity:.65;margin:6px 0 12px}
+.discovery-selection .playlist-action{display:inline-flex;min-height:44px;align-items:center}
+@media(max-width:767px){.music-discovery{padding:16px;margin-block:22px}.music-discovery header h2{font-size:20px}.discovery-list li{gap:9px}.discovery-list img,.discovery-placeholder{width:44px;height:44px}.discovery-action{font-size:11px;padding-inline:10px;max-width:100px}.discovery-details strong{font-size:13px}}
