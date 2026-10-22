@@ -473,6 +473,14 @@
       "rls": {
         "write": true
       }
+    },
+    "liquid_glass_enabled": {
+      "type": "boolean",
+      "default": false,
+      "description": "Optional Liquid Glass appearance for the signed-in account.",
+      "rls": {
+        "write": true
+      }
     }
   },
   "required": []

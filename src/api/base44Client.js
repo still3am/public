@@ -221,7 +221,7 @@ export const base44 = new Proxy(raw,{get(target,name) {
 
     // Only these non-text own-account preferences use the SDK's own-account route.
     // All other profile fields keep the moderated security gateway.
-    const preferenceKeys=['is_artist','show_explicit','adult_confirmed'];
+    const preferenceKeys=['is_artist','show_explicit','adult_confirmed','liquid_glass_enabled'];
     const preferenceFields=Object.keys(data||{});
     if(preferenceFields.length&&preferenceFields.every(key=>preferenceKeys.includes(key))){
       if(preferenceFields.some(key=>typeof data[key]!=='boolean'))throw new Error('Invalid account preference');
