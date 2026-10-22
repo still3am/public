@@ -15,7 +15,7 @@ const load=async(source,stubs)=>{
 };
 const current={id:"listener",display_name:"Listener",created_date:"2026-10-17",onboarding_completed:false};
 globalThis.__user=current;
-const common=`const React=globalThis.__React;const {useEffect,useRef,useState,useMemo,useDeferredValue}=React;const useAuth=()=>({user:globalThis.__user,checkUserAuth:async()=>{}});const useSafety=()=>({blocked:globalThis.__blocked||new Set(),own:[]});`;
+const common=`const useAvatarGallery=()=>({avatars:globalThis.__avatars,error:""});const React=globalThis.__React;const {useEffect,useRef,useState,useMemo,useDeferredValue}=React;const useAuth=()=>({user:globalThis.__user,checkUserAuth:async()=>{}});const useSafety=()=>({blocked:globalThis.__blocked||new Set(),own:[]});`;
 const settings=await load(fs.readFileSync("src/components/profile/SettingsSheet.jsx","utf8"),common+`
 const usePlayer=()=>({}),PureControls=()=>null,useLiquidGlass=()=>({mode:"off"}),LiquidGlassControls=()=>null,ArrowLeft=()=>null,AudioLines=ArrowLeft,Play=ArrowLeft,Pause=ArrowLeft;
 const {onboardingComplete}=globalThis.__model;

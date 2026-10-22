@@ -1,3 +1,5 @@
+import {BANNER_PRESETS,savePresetBanner} from "../src/lib/bannerPresets.js";
+globalThis.BANNER_PRESETS=BANNER_PRESETS;globalThis.savePresetBanner=savePresetBanner;
 import assert from "node:assert/strict";
 import fs from "node:fs";
 let user,profile,writes,mode;

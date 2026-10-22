@@ -1,3 +1,5 @@
+import {AVATAR_PRESETS} from "../src/lib/avatarPresets.js";
+globalThis.AVATAR_PRESETS=AVATAR_PRESETS;
 import assert from "node:assert/strict";
 import fs from "node:fs";
 import ts from "typescript";
