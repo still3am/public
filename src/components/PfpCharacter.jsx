@@ -14,7 +14,7 @@ export default function PfpCharacter({src,design,active=true,className="",style=
   query.addEventListener?.("change",update);document.addEventListener("visibilitychange",update);
   return()=>{observer?.disconnect();query.removeEventListener?.("change",update);document.removeEventListener("visibilitychange",update);};
  },[active]);
- return <span ref={host} className={"pfp-character "+className} data-character={design.id} data-running={running?"true":"false"} style={{...style,"--pfp-duration":design.duration+"s","--pfp-delay":design.delay+"s","--pfp-ink":design.color}}>
+ return <span ref={host} className={"pfp-character "+className} data-character={design.id} data-running={running?"true":"false"} style={/** @type {import("react").CSSProperties} */({...style,"--pfp-duration":design.duration+"s","--pfp-delay":design.delay+"s","--pfp-ink":design.color})}>
   <img className="pfp-character-art" src={src} alt="" loading="lazy" onError={onError}/>
   <svg className="pfp-character-accent" viewBox="0 0 100 100" aria-hidden="true" focusable="false">
    <g className="pfp-character-mark" style={{transformOrigin:design.x+"px "+design.y+"px"}}><g transform={"translate("+(design.x-12)+" "+(design.y-12)+") scale(.67)"}><path d={design.path}/></g></g>
