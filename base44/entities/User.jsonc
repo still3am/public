@@ -448,7 +448,9 @@
         "/banners/neon-rain.webp",
         "/banners/akira-unveiled.webp",
         "/banners/cyberpunk-chase.webp",
-        "/banners/pixel-lightsabers.webp"
+        "/banners/pixel-lightsabers.webp",
+        "/banners/saiyan-trio.webp",
+        "/banners/sunset-coast-drive.webp"
       ],
       "default": "",
       "description": "Built-in banner choice; external uploads retain the existing moderated media path.",
