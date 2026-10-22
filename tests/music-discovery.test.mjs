@@ -1,0 +1,32 @@
+import fs from 'node:fs';
+import assert from 'node:assert/strict';
+let user={id:'listener',show_explicit:false,adult_confirmed:false},calls=[],matches=[];
+globalThis.__discoveryClient=()=>({auth:{me:async()=>user},entities:{Track:{filter:async()=>matches}}});
+const realFetch=globalThis.fetch;
+const song=(id,explicit=false)=>({id,title:'Rain &amp; Sun',image:'https://c.saavncdn.com/123/cover-150x150.jpg',perma_url:'https://www.jiosaavn.com/song/rain/'+id,year:'2026',explicit_content:explicit?'1':'0',more_info:{album:'Seasons',duration:'180',encrypted_media_url:'must-not-leak',artistMap:{primary_artists:[{name:'Artist A'}]}}});
+let upstream={results:[song('clean'),song('adult',true)]},fail=false;
+globalThis.fetch=async(url,options)=>{calls.push(String(url));if(fail)throw Error('Network failed');assert.equal(options.redirect,'error');assert.equal(new URL(url).hostname,'www.jiosaavn.com');return new Response(JSON.stringify(upstream));};
+const source=fs.readFileSync('base44/functions/musicDiscovery/entry.ts','utf8').replace(/import .*?;\n/,'const createClientFromRequest=globalThis.__discoveryClient;\n');
+const {default:handle,normalizeSong}=await import('data:text/javascript;base64,'+Buffer.from(source).toString('base64'));
+const request=body=>handle(new Request('https://public.test/discovery',{method:'POST',body:JSON.stringify(body)}));
+try{
+ user=null;assert.equal((await request({q:'rain'})).status,401);assert.equal(calls.length,0);
+ user={id:'blocked',is_blocked:true};assert.equal((await request({q:'rain'})).status,403);assert.equal(calls.length,0);
+ user={id:'listener'};assert.deepEqual((await (await request({q:'r'})).json()).results,[]);
+ assert.equal((await request({id:'../../metadata'})).status,400);assert.equal(calls.length,0);
+ let data=await (await request({q:'rain'})).json();assert.equal(data.results.length,1);assert.equal(data.results[0].title,'Rain & Sun');assert.match(data.results[0].cover_art_url,/500x500/);assert.equal(JSON.stringify(data).includes('must-not-leak'),false);assert.equal(data.audio_import_available,false);
+ user={id:'adult',show_explicit:true,adult_confirmed:true};
+ data=await (await request({q:'rain'})).json();assert.equal(data.results.length,2);assert.equal(calls.length,1,'cache reused without caching account preferences');
+ user={id:'listener',show_explicit:true,adult_confirmed:false};
+ assert.equal((await (await request({q:'rain'})).json()).results.length,1);
+ matches=[{id:'private-other',title:'Rain & Sun',artist:'Artist A',uploader_id:'other',approval_status:'pending'}];
+ data=await (await request({q:'rain'})).json();assert.equal(data.results[0].existing,null,'other users pending records stay private even if supplied by SDK');
+ matches=[{id:'my-pending',title:'Rain & Sun',artist:'Artist A',uploader_id:'listener',approval_status:'pending'}];
+ data=await (await request({q:'rain'})).json();assert.deepEqual(data.results[0].existing,{id:'my-pending',status:'pending'});
+ matches=[{id:'released',title:'Rain & Sun',artist:'Artist A',approval_status:'approved',is_published:true}];
+ data=await (await request({q:'rain'})).json();assert.deepEqual(data.results[0].existing,{id:'released',status:'published'});
+ matches=[];upstream={clean:song('clean')};data=await (await request({id:'clean'})).json();assert.equal(data.results[0].id,'clean');assert.match(calls.at(-1),/pids=clean/);
+ const unsafe=normalizeSong({...song('unsafe'),image:'https://c.saavncdn.com.evil.test/a.jpg',perma_url:'javascript:alert(1)'});assert.equal(unsafe.cover_art_url,'');assert.equal(unsafe.source_url,'');
+ fail=true;assert.equal((await request({q:'network outage'})).status,502);
+ console.log('PASS discovery authentication, fixed upstream, privacy, explicit preferences, cache isolation, selection validation, URL restrictions, normalization and network failure');
+}finally{globalThis.fetch=realFetch;delete globalThis.__discoveryClient;}
