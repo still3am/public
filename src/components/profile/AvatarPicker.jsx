@@ -15,6 +15,6 @@ export default function AvatarPicker({user,busy=false,onClose,onSelect,onUpload,
  <div className="avatar-picker-grid" role="group" aria-label="Profile avatar designs">{AVATAR_PRESETS.map(item=><button type="button" key={item.id} disabled={busy} aria-label={"Choose "+item.name+" avatar"} aria-pressed={selected===item.url} onClick={()=>setSelected(item.url)}><span className="avatar-picker-thumb"><img src={item.url} alt="" loading="lazy"/>{selected===item.url&&<span className="avatar-picker-check"><Check size={14}/></span>}</span><strong>{item.name}</strong></button>)}</div>
  <button type="button" disabled={busy} className="avatar-picker-initials" aria-pressed={!selected} onClick={()=>setSelected("")}>Use my initials instead</button>
  <div className="avatar-picker-footer"><button type="button" disabled={busy} onClick={onClose}>Cancel</button><button type="button" className="avatar-picker-confirm" disabled={busy} onClick={()=>onSelect(selected)}>Use {chosen?"avatar":selected?(selected===user?.avatar_url&&(user?.avatar_video_url||user?.avatar_gif_url)?"animation":"photo"):"initials"}</button></div>
- <p className="avatar-picker-hint">Artwork by mu.staffa · supplied by PUBLIC.<br/>Your choice is applied when you save your profile changes.</p>
+ <p className="avatar-picker-hint">{chosen?.credit||"Artwork by mu.staffa · supplied by PUBLIC."}<br/>Your choice is applied when you save your profile changes.</p>
  </DialogContent></Dialog>;
 }

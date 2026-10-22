@@ -4515,7 +4515,10 @@
         "/avatars/blue-code.webp",
         "/avatars/silver-thorns.webp",
         "/avatars/midnight-thorns.webp",
-        "/avatars/love-jesus.webp"
+        "/avatars/love-jesus.webp",
+        "/avatars/sticky-note.webp",
+        "/avatars/cereal.webp",
+        "/avatars/green-buckle.webp"
       ],
       "default": "",
       "description": "Preinstalled gallery choice only. External uploads remain in avatar_url.",
