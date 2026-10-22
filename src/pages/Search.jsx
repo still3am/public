@@ -1,4 +1,3 @@
-import AppleMusicSearch from "@/components/search/AppleMusicSearch";
 import {useAuth} from "@/lib/AuthContext";
 import {readSearchHistory,rememberSearch,clearSearchHistory} from "@/lib/searchHistory";
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -239,7 +238,6 @@ export default function Search() {
           title="Nothing published yet"
           description="No tracks have been published to the catalogue, so there are no genres to browse." />
         }
-        {active && !peopleMode && <AppleMusicSearch query={q} />}
       </div>
     </PullToRefresh>);
 
