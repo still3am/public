@@ -62,6 +62,7 @@ export function archiveTracks(identifier,data){
 }
 export async function searchArchiveMusic(query){
  const term=String(query||'').trim().slice(0,100);if(term.length<2)return [];
+ /** @type {string[]} */
  const words=term.match(/[\p{L}\p{N}]+/gu)||[];if(!words.length)return [];
  const url=new URL('https://archive.org/advancedsearch.php');
  url.searchParams.set('q','mediatype:audio AND collection:netlabels AND ('+words.slice(0,10).map(word=>'"'+word+'"').join(' AND ')+')');
@@ -85,6 +86,7 @@ export async function getArchiveSong(id){
  if(!track)throw Error('This full track is no longer available for import.');
  return track;
 }
+/** @param {any} selection @param {{signal?: AbortSignal, onProgress?: (bytes: number,total: number)=>void}} options */
 export async function downloadArchiveSong(selection,{signal,onProgress}={}){
  // Resolve again from metadata: never accept a caller-provided download URL.
  const song=await getArchiveSong(selection.id);
