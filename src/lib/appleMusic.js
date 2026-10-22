@@ -1,6 +1,6 @@
 // Apple-hosted MusicKit only. The developer JWT is public; its signing key
 // must stay outside the app repository. Individual Music User Tokens stay in MusicKit.
-let loading=null,configured=null;
+let loading=null,configured=null,disconnecting=Promise.resolve();
 export function validateAppleToken(token,origin,now=Date.now()){
  try{
   const [head,body,signature]=String(token||'').split('.');
@@ -19,11 +19,13 @@ export async function appleMusicReady(){
  return validateAppleToken(config.developerToken,window.location.origin);
 }
 export async function loadAppleMusic(){
+ await disconnecting;
  if(configured)return configured;
  if(loading)return loading;
  loading=(async()=>{
   const developerToken=await appleMusicReady();
   if(!window['MusicKit'])await new Promise((resolve,reject)=>{
+   /** @type {HTMLScriptElement|null} */
    let script=document.querySelector('script[data-public-musickit]');
    const timer=setTimeout(()=>{cleanup();script?.remove();reject(Error('Apple Music could not load. Try again.'));},15000);
    const ready=()=>{cleanup();resolve(null);};
@@ -54,5 +56,6 @@ export function appleArtwork(song){
  return u.protocol==='https:'&&u.hostname.endsWith('.mzstatic.com')&&!u.username&&!u.password?u.href:'';}catch{return '';}
 }
 export async function disconnectAppleMusic(){
- if(configured){try{await configured.stop();}finally{await configured.unauthorize();}}
+ disconnecting=disconnecting.catch(()=>{}).then(async()=>{if(configured){try{await configured.stop();}finally{await configured.unauthorize();}}});
+ return disconnecting;
 }
