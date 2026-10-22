@@ -1,0 +1,30 @@
+{
+  "name": "AvatarRemoval",
+  "type": "object",
+  "properties": {
+    "avatar_id": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "avatar_id"
+  ],
+  "rls": {
+    "read": null,
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}
