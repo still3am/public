@@ -85,3 +85,11 @@
  .public-app .profile-redesigned .profile-people-skeleton>div>i{max-width:200px}
  .public-app .profile-redesigned :is(.rotation-grid,.profile-people-track):focus-visible{outline:2px solid hsl(var(--foreground)/.65);outline-offset:-2px;border-radius:12px}
 }
+
+/* Center each discovery portrait and its nested avatar independently of card width. */
+@media(max-width:767px){
+ .public-app .profile-redesigned .profile-people-track .profile-person-identity{align-items:center;justify-items:center;text-align:center}
+ .public-app .profile-redesigned .profile-people-track .profile-person-portrait{margin-inline:auto;flex-shrink:0;align-self:center}
+ .public-app .profile-redesigned .profile-people-track .profile-person-portrait-inner{display:grid;place-items:center;width:100%;height:100%;box-sizing:border-box;aspect-ratio:1}
+ .public-app .profile-redesigned .profile-people-track .profile-person-portrait-inner>*{align-self:center;justify-self:center;margin:0;object-position:center center}
+}
