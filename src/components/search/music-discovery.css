@@ -24,3 +24,10 @@
 .discovery-selection p{font-size:13px;opacity:.65;margin:6px 0 12px}
 .discovery-selection .playlist-action{display:inline-flex;min-height:44px;align-items:center}
 @media(max-width:767px){.music-discovery{padding:16px;margin-block:22px}.music-discovery header h2{font-size:20px}.discovery-list li{gap:9px}.discovery-list img,.discovery-placeholder{width:44px;height:44px}.discovery-action{font-size:11px;padding-inline:10px;max-width:100px}.discovery-details strong{font-size:13px}}
+
+.discovery-sources{display:flex;gap:6px;margin:0 0 16px;flex-wrap:wrap}
+.discovery-sources button{min-height:44px;padding:8px 16px;border-radius:999px;border:1px solid hsl(var(--border));font-size:13px;font-weight:600}
+.discovery-sources button[aria-pressed="true"]{background:hsl(var(--foreground));color:hsl(var(--background))}
+.discovery-rights{display:flex;align-items:flex-start;gap:10px;margin:16px 0;font-size:13px;line-height:1.5}
+.discovery-rights input{margin-top:4px;flex:none;width:18px;height:18px}
+.discovery-selection button:disabled{opacity:.4;cursor:not-allowed}
