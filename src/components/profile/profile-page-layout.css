@@ -226,3 +226,7 @@
 @media(min-width:768px){
  .public-app .profile-redesigned .profile-cover-fade{background:linear-gradient(180deg,transparent 55%,var(--profile-hero-surface) 100%);pointer-events:none}
 }
+
+.public-app .profile-redesigned .profile-community-column .profile-people-shelf>header{justify-content:center;text-align:center}
+.public-app .profile-redesigned .profile-community-column .profile-people-shelf>header>div{width:100%;min-width:0}
+.public-app .profile-redesigned .profile-community-column .profile-people-shelf h2{max-width:none;text-align:center;margin-inline:auto}
