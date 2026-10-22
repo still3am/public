@@ -1,3 +1,4 @@
+import {searchArchiveMusic,getArchiveSong} from './archiveMusic.js';
 // Public metadata only. Direct provider JSONP avoids the app's credit-metered
 // function gateway. Uploads continue through the protected upload pipeline.
 const cache=new Map(),pending=new Map();
@@ -56,8 +57,9 @@ async function load(key,request){
  pending.set(key,job);return job;
 }
 const allowed=(song,user)=>song&&(!song.explicit||(user?.show_explicit===true&&user?.adult_confirmed===true));
-export async function searchDiscoveredMusic(query,user){
+export async function searchDiscoveredMusic(query,user,source='deezer'){
  const term=String(query||'').trim().slice(0,100);if(term.length<2)return [];
+ if(source==='archive')return searchArchiveMusic(term);
  const songs=await load('q:'+term.toLowerCase(),async()=>{
   const data=await jsonp('https://api.deezer.com/search',{q:term,limit:20,output:'jsonp'});
   if(data?.error||!Array.isArray(data?.data))throw Error('Music search is temporarily unavailable. Try again.');
@@ -66,6 +68,7 @@ export async function searchDiscoveredMusic(query,user){
  return songs.filter(song=>allowed(song,user));
 }
 export async function getDiscoveredSong(id,user){
+ if(String(id).startsWith('archive:'))return getArchiveSong(id);
  if(!/^(?:deezer|itunes):\d{1,20}$/.test(String(id)))throw Error('Search again to select a song from the new music provider.');
  const songs=await load('id:'+id,async()=>{
   const [provider,number]=id.split(':');
