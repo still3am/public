@@ -1,7 +1,7 @@
 import {useEffect,useState} from 'react';
 import {Link} from 'react-router-dom';
 import {Loader2,Music2,Plus} from 'lucide-react';
-import {base44} from '@/api/base44Client';
+import {searchDiscoveredMusic} from '@/lib/musicDiscovery';
 import {useAuth} from '@/lib/AuthContext';
 import {useUpload} from '@/context/UploadContext';
 import {findDuplicateTracks} from '@/lib/duplicateCheck';
@@ -20,9 +20,8 @@ export default function DiscoverMusic({query='',tracks=[],searchable=false}) {
   setState({key,songs:[],busy:true,error:''});
   const timer=setTimeout(async()=>{
    try{
-    const response=await base44.functions.invoke('musicDiscovery',{q:term});
-    if(!Array.isArray(response.data?.results))throw Error('Discovery returned no response.');
-    if(current)setState({key,songs:response.data.results,busy:false,error:''});
+    const songs=await searchDiscoveredMusic(term,user);
+    if(current)setState({key,songs,busy:false,error:''});
    }catch(e){if(current)setState({key,songs:[],busy:false,error:e?.response?.data?.error||'Discover more is unavailable. Try again.'});}
   },600);
   return()=>{current=false;clearTimeout(timer);};
@@ -48,6 +47,6 @@ export default function DiscoverMusic({query='',tracks=[],searchable=false}) {
      <Link className="playlist-action discovery-action" to={'/upload?discovery='+encodeURIComponent(song.id)} aria-label={'Add '+song.title+' to Public'}><Plus size={15}/><span>Add to Public</span></Link>}
    </li>;
   })}</ul>}
-  {songs.length>0&&<p className="discovery-note discovery-attribution">Metadata from Apple iTunes and JioSaavn. These songs become playable on Public after audio is uploaded and approved.</p>}
+  {songs.length>0&&<p className="discovery-note discovery-attribution">Metadata from Deezer. These songs become playable on Public after audio is uploaded and approved.</p>}
  </section>;
 }

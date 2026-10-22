@@ -1,6 +1,6 @@
 import {useEffect,useRef,useState} from 'react';
 import {useSearchParams} from 'react-router-dom';
-import {base44} from '@/api/base44Client';
+import {getDiscoveredSong} from '@/lib/musicDiscovery';
 import {useAuth} from '@/lib/AuthContext';
 import {useUpload} from '@/context/UploadContext';
 import {AUDIO_ACCEPT} from '@/lib/audio-utils';
@@ -16,8 +16,7 @@ export default function DiscoverySelection(){
   const seq=++request.current;
   if(!id||!user?.id)return;
   setState({key,song:null,error:'',busy:true});
-  base44.functions.invoke('musicDiscovery',{id}).then(response=>{
-   const song=response.data?.results?.[0];if(!song)throw Error('This song is unavailable.');
+  getDiscoveredSong(id,user).then(song=>{
    if(seq===request.current)setState({key,song,error:'',busy:false});
   }).catch(e=>{if(seq===request.current)setState({key,song:null,error:e?.response?.data?.error||e.message||'Could not load this song.',busy:false});});
   return()=>{request.current++;};
