@@ -1,13 +1,14 @@
+import {AVATAR_PRESETS} from "../src/lib/avatarPresets.js";
 import assert from "node:assert/strict";
 import fs from "node:fs";
 import ts from "typescript";
 import * as React from "react";
 import {withPresetAvatar} from "../src/lib/nativeAvatar.js";
-globalThis.__React=React;globalThis.__resolve=withPresetAvatar;
+globalThis.__presets=AVATAR_PRESETS;globalThis.__React=React;globalThis.__resolve=withPresetAvatar;
 let states=[],cursor=0;
 globalThis.__state=value=>{const i=cursor++;return [states[i]??value,next=>states[i]=next];};
 const source=fs.readFileSync("src/components/Avatar.jsx","utf8").replace(/^import[^;]+;/gm,"");
-const stub='const React=globalThis.__React,withPresetAvatar=globalThis.__resolve,useState=globalThis.__state,useEffect=()=>{},ProfileMedia="motion";';
+const stub='const AVATAR_PRESETS=globalThis.__presets,React=globalThis.__React,withPresetAvatar=globalThis.__resolve,useState=globalThis.__state,useEffect=()=>{},ProfileMedia="motion";';
 const code=ts.transpileModule(stub+source,{compilerOptions:{jsx:ts.JsxEmit.React,target:ts.ScriptTarget.ES2022,module:ts.ModuleKind.ESNext}}).outputText;
 const Avatar=(await import("data:text/javascript;base64,"+Buffer.from(code).toString("base64"))).default;
 const render=props=>{cursor=0;return Avatar(props);};
@@ -28,3 +29,5 @@ states=[];assert.equal(render({user:{avatar_url:"my-photo.jpg"},motion:true}).pr
 console.log("PASS PFP Boy animation opt-in, inactive state and custom-photo preservation");
 
 states=[];assert.equal(render({user:{avatar_url:"/avatars/default-headphones.webp?v=2"}}).props.className.includes("pfp-boy"),true);
+
+states=[];const gif=render({user:{avatar_preset:"/avatars/saiyan-power-up.webp"}});assert.equal(gif.type,"motion");assert.equal(gif.props.gifSrc,"/avatars/saiyan-power-up.gif");assert.equal(gif.props.src,"/avatars/saiyan-power-up.webp");

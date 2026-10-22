@@ -416,7 +416,8 @@
         "/avatars/green-buckle.webp",
         "/avatars/red-beanie.webp",
         "/avatars/box-logo.webp",
-        "/avatars/peeled-sticker.webp"
+        "/avatars/peeled-sticker.webp",
+        "/avatars/saiyan-power-up.webp"
       ],
       "default": "",
       "description": "Preinstalled gallery choice only. External uploads remain in avatar_url.",
