@@ -1,8 +1,8 @@
-export const BANNER_PRESETS=[{id:"roshi-reflections",name:"Roshi Reflections",url:"/banners/roshi-reflections.webp",gifUrl:"/banners/roshi-reflections.gif"}];
+export const BANNER_PRESETS=[{id:"roshi-reflections",name:"Roshi Reflections",url:"/banners/roshi-reflections.webp",gifUrl:"/banners/roshi-reflections.gif"},{"id":"neon-code","name":"Neon Code","url":"/banners/neon-code.webp","gifUrl":"/banners/neon-code.gif"},{"id":"matrix-rain","name":"Matrix Rain","url":"/banners/matrix-rain.webp"},{"id":"daffy-money","name":"Daffy Money","url":"/banners/daffy-money.webp","gifUrl":"/banners/daffy-money.gif"},{"id":"cartoon-roll","name":"Cartoon Roll","url":"/banners/cartoon-roll.webp","gifUrl":"/banners/cartoon-roll.gif"},{"id":"hadouken","name":"Hadouken","url":"/banners/hadouken.webp","gifUrl":"/banners/hadouken.gif"},{"id":"pixel-boxing","name":"Pixel Boxing","url":"/banners/pixel-boxing.webp","gifUrl":"/banners/pixel-boxing.gif"},{"id":"world-is-yours","name":"World Is Yours","url":"/banners/world-is-yours.webp"},{"id":"pokemon-friends","name":"Pok\u00e9mon Friends","url":"/banners/pokemon-friends.webp"},{"id":"roshi-reaction","name":"Roshi Reaction","url":"/banners/roshi-reaction.webp","gifUrl":"/banners/roshi-reaction.gif"}];
 export function withPresetBanner(row){
  if(!row||row.banner_use_default)return row;
  const banner=BANNER_PRESETS.find(item=>item.url===row.banner_preset);
- return banner?{...row,banner_url:banner.url,banner_mobile_url:banner.url,banner_video_url:"",banner_gif_url:banner.gifUrl}:row;
+ return banner?{...row,banner_url:banner.url,banner_mobile_url:banner.url,banner_video_url:"",banner_gif_url:banner.gifUrl||""}:row;
 }
 const rows=value=>Array.isArray(value)?value:value?.items||[];
 export async function savePresetBanner(client,url){

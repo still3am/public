@@ -4545,7 +4545,16 @@
       "type": "string",
       "enum": [
         "",
-        "/banners/roshi-reflections.webp"
+        "/banners/roshi-reflections.webp",
+        "/banners/neon-code.webp",
+        "/banners/matrix-rain.webp",
+        "/banners/daffy-money.webp",
+        "/banners/cartoon-roll.webp",
+        "/banners/hadouken.webp",
+        "/banners/pixel-boxing.webp",
+        "/banners/world-is-yours.webp",
+        "/banners/pokemon-friends.webp",
+        "/banners/roshi-reaction.webp"
       ],
       "default": "",
       "description": "Built-in banner choice; external uploads retain the existing moderated media path.",
