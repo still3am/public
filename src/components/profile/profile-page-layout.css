@@ -221,3 +221,8 @@
  .public-app .profile-redesigned .paged-shelf-controls{gap:8px}
  .paged-shelf-controls .shelf-page-arrow{display:none}
 }
+
+/* Blend the desktop cover into the exact identity-card surface, like mobile. */
+@media(min-width:768px){
+ .public-app .profile-redesigned .profile-cover-fade{background:linear-gradient(180deg,transparent 55%,var(--profile-hero-surface) 100%);pointer-events:none}
+}
