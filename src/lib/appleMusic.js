@@ -1,6 +1,6 @@
 // Apple-hosted MusicKit only. The developer JWT is public; its signing key
 // must stay outside the app repository. Individual Music User Tokens stay in MusicKit.
-let loading=null,configured=null,disconnecting=Promise.resolve();
+let loading=null,configured=null,disconnecting=Promise.resolve(),authorizing=null,session=0;
 export function validateAppleToken(token,origin,now=Date.now()){
  try{
   const [head,body,signature]=String(token||'').split('.');
@@ -55,7 +55,15 @@ export function appleArtwork(song){
  try{const u=new URL(artwork.replace('{w}','160').replace('{h}','160'));
  return u.protocol==='https:'&&u.hostname.endsWith('.mzstatic.com')&&!u.username&&!u.password?u.href:'';}catch{return '';}
 }
+export async function authorizeAppleMusic(music){
+ if(authorizing)throw Error('Finish or close the existing Apple Music sign-in window, then retry.');
+ const current=session;
+ const job=(async()=>{const token=await music.authorize();if(current!==session){await music.unauthorize();throw Error('Public account changed. Connect Apple Music again.');}return token;})();
+ authorizing=job;
+ try{return await job;}finally{if(authorizing===job)authorizing=null;}
+}
 export async function disconnectAppleMusic(){
+ session++;
  disconnecting=disconnecting.catch(()=>{}).then(async()=>{if(configured){try{await configured.stop();}finally{await configured.unauthorize();}}});
  return disconnecting;
 }

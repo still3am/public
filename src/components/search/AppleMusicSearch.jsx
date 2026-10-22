@@ -2,7 +2,7 @@ import {useEffect,useRef,useState} from 'react';
 import {Play,Pause,Music2,Loader2} from 'lucide-react';
 import {useAuth} from '@/lib/AuthContext';
 import {usePlayer} from '@/context/PlayerContext';
-import {loadAppleMusic,searchAppleMusic,appleArtwork,disconnectAppleMusic} from '@/lib/appleMusic';
+import {loadAppleMusic,searchAppleMusic,appleArtwork,disconnectAppleMusic,authorizeAppleMusic} from '@/lib/appleMusic';
 import './apple-music-search.css';
 
 /** @param {any} props */
@@ -52,7 +52,7 @@ export default function AppleMusicSearch({query=''}){
   const music=musicRef.current;if(!music||busy)return;
   const seq=generation.current;setBusy(true);setError('');
   try{
-   await music.authorize();
+   await authorizeAppleMusic(music);
    if(seq===generation.current)setConnected(!!music.isAuthorized);
   }catch{if(seq===generation.current)setError('Apple Music was not connected. Allow the Apple sign-in window and try again.');}
   finally{if(seq===generation.current)setBusy(false);}
