@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';import fs from 'node:fs';import ts from 'typescript';
 import {cropGeometry} from '../src/lib/profileCrop.js';
-import {validateMotionFile} from "../src/lib/profileMotion.js";
+import {validateMotionFile,validateMotionDuration} from "../src/lib/profileMotion.js";
 import {normalizeProfileDraft,reorderTopTracks} from '../src/lib/profileEditing.js';
 const source=fs.readFileSync('src/pages/Profile.jsx','utf8'),ast=ts.createSourceFile('profile.jsx',source,ts.ScriptTarget.Latest,true,ts.ScriptKind.JSX);
 function fn(name,env={}){let code;function visit(n){if(ts.isFunctionDeclaration(n)&&n.name?.text===name)code=n.getText(ast);ts.forEachChild(n,visit);}visit(ast);assert.ok(code);return new Function(...Object.keys(env),code+';return '+name)(...Object.values(env));}
@@ -70,7 +70,7 @@ function fixture(){
 }
 {
  const f=fixture();let uploads=0;
- Object.assign(f.env,{validateMotionFile,avatarBusy:{current:false},bannerBusy:{current:false},avatarVersion:{current:0},bannerVersion:{current:0}});
+ Object.assign(f.env,{validateMotionFile,validateMotionDuration,avatarBusy:{current:false},bannerBusy:{current:false},avatarVersion:{current:0},bannerVersion:{current:0}});
  f.env.base44.integrations={Core:{UploadFile:async({file})=>({file_url:++uploads%2?'https://test/'+file.name:'https://test/poster.jpg'})}};
  const media={file:{name:'clip.mp4',type:'video/mp4',size:100},poster:{name:'poster.jpg'},type:'video',duration:2};
  await fn('uploadProfileMotion',f.env)('avatar',media);
@@ -78,7 +78,7 @@ function fixture(){
  await fn('saveProfile',f.env)();assert.equal(f.writes[0].avatar_video_url,'https://test/clip.mp4');
 }
 {
- const f=fixture();Object.assign(f.env,{validateMotionFile,avatarBusy:{current:false},bannerBusy:{current:false},avatarVersion:{current:0},bannerVersion:{current:0}});
+ const f=fixture();Object.assign(f.env,{validateMotionFile,validateMotionDuration,avatarBusy:{current:false},bannerBusy:{current:false},avatarVersion:{current:0},bannerVersion:{current:0}});
  f.env.base44.integrations={Core:{UploadFile:async()=>{throw Error('Upload failed');}}};
  const ok=await fn('uploadProfileMotion',f.env)('banner',{file:{name:'loop.gif',type:'image/gif',size:100},poster:{},type:'gif',duration:1});
  assert.equal(ok,false);assert.equal(f.form.banner_gif_url,'');assert.equal(f.writes.length,0);
