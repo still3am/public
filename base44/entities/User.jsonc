@@ -438,7 +438,11 @@
         "/banners/pixel-boxing.webp",
         "/banners/world-is-yours.webp",
         "/banners/pokemon-friends.webp",
-        "/banners/roshi-reaction.webp"
+        "/banners/roshi-reaction.webp",
+        "/banners/midnight-music-bar.webp",
+        "/banners/ryu-and-ken.webp",
+        "/banners/desert-rv.webp",
+        "/banners/golden-getaway.webp"
       ],
       "default": "",
       "description": "Built-in banner choice; external uploads retain the existing moderated media path.",
