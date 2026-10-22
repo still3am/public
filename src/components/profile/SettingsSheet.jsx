@@ -4,7 +4,7 @@ import { createPortal } from "react-dom";
 import { Link } from "react-router-dom";
 import PureControls from "@/components/PureControls";
 import { usePlayer } from "@/context/PlayerContext";
-import { ArrowLeft, AudioLines, Play, Pause, X, Lightbulb, GitMerge, Trash2, ChevronRight, Sparkles, BarChart3, Loader2, LogOut, Sun, Moon, Shield, Headphones, FileText } from "lucide-react";
+import { ArrowLeft, AudioLines, Play, Pause, X, Lightbulb, GitMerge, Trash2, ChevronRight, Sparkles, Droplets, BarChart3, Loader2, LogOut, Sun, Moon, Shield, Headphones, FileText } from "lucide-react";
 import { reportActionError } from "@/lib/actionError";
 import { useTheme } from "@/lib/useTheme";
 import { useAuth } from "@/lib/AuthContext";
@@ -84,7 +84,7 @@ export default function SettingsSheet({ onClose, onDeleteAccount }) {
      {user && !onboardingComplete(user) && <SettingRow icon={Sparkles} title="Finish setting up PUBLIC" description="Your taste, people and profile colors" onClick={() => {onClose();window.dispatchEvent(new Event("onboarding:open"));}} />}
      <SettingRow icon={AudioLines} title="PURE" description="Clarity, body and balanced sound" onClick={() => setPureOpen(true)}>{player.pure?.enabled && !player.pureSuspended && <span className="w-1.5 h-1.5 rounded-full bg-foreground/60" aria-label="PURE enabled" />}<ChevronRight size={16} className="text-muted-foreground/60 shrink-0" /></SettingRow>
      <SettingRow icon={GitMerge} title="Song transitions" description="Crossfade and gapless playback" to="/settings/transitions" onClick={onClose} />
-     <SettingRow icon={Sparkles} title="Liquid Glass" description="Translucent panels, soft edges and profile colors"><SettingSwitch label="Liquid Glass" checked={glass} busy={!!saving || loggingOut} onChange={value=>preference("liquid_glass_enabled",value)}/></SettingRow>
+     <SettingRow icon={Droplets} title="Liquid Glass" description="Translucent panels, soft edges and profile colors"><SettingSwitch label="Liquid Glass" checked={glass} busy={!!saving || loggingOut} onChange={value=>preference("liquid_glass_enabled",value)}/></SettingRow>
      <SettingRow icon={theme.isDark ? Moon : Sun} title="Dark appearance" description={theme.isDark ? "Dark backgrounds, softer light" : "Light backgrounds, clear contrast"}><SettingSwitch label="Dark appearance" checked={theme.isDark} onChange={theme.toggle} /></SettingRow>
     </SettingGroup>
     {user?.role !== "admin" && <SettingGroup title="Creator">
