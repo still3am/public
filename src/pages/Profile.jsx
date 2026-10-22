@@ -415,6 +415,7 @@ export default function Profile({ ownProfileTab = false }) {
       <div className="profile-overview flex flex-col md:flex-row gap-4 md:gap-6 mb-8">
       <div className={`profile-identity relative rounded-2xl overflow-hidden ring-1 ring-inset ring-foreground/10 bg-card flex-1 min-w-0 ${hasMotionBanner ? "profile-has-motion-banner" : ""}`}>
         <div className="profile-cover-stage" aria-hidden="true" style={backgroundColors.length ? { backgroundImage: profileGradient(backgroundColors) } : undefined}>
+          {hasMotionBanner && bannerUrl && <div className="profile-banner-backdrop" style={{backgroundImage:`url(${JSON.stringify(bannerUrl)})`}} />}
           {(bannerUrl || currentBackground.mode === "auto" && coverUrl) && <ProfileMedia className="profile-banner-media" key={bannerUrl || coverUrl} src={bannerUrl || coverUrl} mobileSrc={bannerMobileUrl} videoSrc={!useDefaultBanner ? editMode ? form.banner_video_url : profile?.banner_video_url : ""} gifSrc={!useDefaultBanner ? editMode ? form.banner_gif_url : profile?.banner_gif_url : ""} active={isCurrentPage} style={{ width: "100%", height: "100%" }} />}
           <div className="profile-cover-fade" />
         </div>
