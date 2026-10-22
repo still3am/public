@@ -1,0 +1,7 @@
+.pfp-boy{display:block;position:relative;isolation:isolate;background:#000}
+.pfp-boy .pfp-boy-base,.pfp-boy .pfp-boy-head{display:block;position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.pfp-boy-head-clear{position:absolute;left:20%;right:20%;top:16%;bottom:31%;background:#000}
+.pfp-boy .pfp-boy-head{clip-path:inset(15% 18% 31% 18%);transform-origin:50% 65%;animation:pfp-boy-nod 2.4s ease-in-out infinite}
+.pfp-boy[data-active=false] .pfp-boy-head-clear,.pfp-boy[data-active=false] .pfp-boy-head{display:none}
+@keyframes pfp-boy-nod{0%,100%{transform:translateY(0) rotate(-1deg);filter:brightness(1)}25%{transform:translateY(.5%) rotate(.8deg);filter:brightness(1.025)}50%{transform:translateY(1.2%) rotate(1.4deg);filter:brightness(1.06)}75%{transform:translateY(.25%) rotate(.2deg);filter:brightness(1.015)}}
+@media(prefers-reduced-motion:reduce){.pfp-boy .pfp-boy-head-clear,.pfp-boy .pfp-boy-head{display:none}}
