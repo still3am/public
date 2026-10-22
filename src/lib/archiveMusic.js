@@ -90,7 +90,8 @@ export async function getArchiveSong(id){
 export async function downloadArchiveSong(selection,{signal,onProgress}={}){
  // Resolve again from metadata: never accept a caller-provided download URL.
  const song=await getArchiveSong(selection.id);
- const response=await fetch(song.download_url,{signal:signal||AbortSignal.timeout(60000),credentials:'omit',referrerPolicy:'no-referrer'});
+ const timeout=AbortSignal.timeout(60000),downloadSignal=signal?AbortSignal.any([signal,timeout]):timeout;
+ const response=await fetch(song.download_url,{signal:downloadSignal,credentials:'omit',referrerPolicy:'no-referrer'});
  if(!response.ok||response.status===206)throw Error('The complete audio file could not download. Try again.');
  const type=(response.headers.get('content-type')||'').split(';')[0].trim();
  if(!['audio/mpeg','audio/mp3','application/octet-stream'].includes(type))throw Error('The source did not return an MP3 audio file.');
