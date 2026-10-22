@@ -460,7 +460,11 @@
         "/banners/ascii-portrait.webp",
         "/banners/bojack-nights.webp",
         "/banners/scratch-off.webp",
-        "/banners/flaming-skull.webp"
+        "/banners/flaming-skull.webp",
+        "/banners/pixel-moonwalk.webp",
+        "/banners/kirby-star-ride.webp",
+        "/banners/flame-reflections.webp",
+        "/banners/the-world-blimp.webp"
       ],
       "default": "",
       "description": "Built-in banner choice; external uploads retain the existing moderated media path.",
