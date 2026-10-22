@@ -1,4 +1,10 @@
 export const PROFILE_VIDEO_SECONDS = 10;
+export const BANNER_VIDEO_SECONDS = 60;
+export const profileMotionSeconds = kind => kind === "banner" ? BANNER_VIDEO_SECONDS : PROFILE_VIDEO_SECONDS;
+export function validateMotionDuration(duration,kind="avatar"){
+ const limit=profileMotionSeconds(kind);
+ if(!Number.isFinite(duration)||duration<=0||duration>limit+.05)throw Error("Choose a video or GIF loop of "+limit+" seconds or less.");
+}
 export const PROFILE_VIDEO_BYTES = 25 * 1024 * 1024;
 export const PROFILE_GIF_BYTES = 10 * 1024 * 1024;
 export const PROFILE_MEDIA_ACCEPT = "image/*,video/mp4,video/webm,video/quicktime";
@@ -15,7 +21,8 @@ export function validateMotionFile(file) {
   return "video";
 }
 // Walk GIF blocks rather than searching compressed pixels for timing markers.
-export function inspectGif(bytes) {
+export function inspectGif(bytes,kind="avatar") {
+  const limit=profileMotionSeconds(kind);
   if (bytes.length < 13 || !["GIF87a","GIF89a"].includes(String.fromCharCode(...bytes.slice(0,6)))) throw Error("This GIF could not be read.");
   const word = at => bytes[at] + bytes[at+1] * 256;
   const width=word(6),height=word(8);
@@ -26,7 +33,7 @@ export function inspectGif(bytes) {
     const block=bytes[p++];
     if(block===0x3b)break;
     if(block===0x21){const label=bytes[p++];if(label===0xf9){if(bytes[p]!==4||p+5>=bytes.length)throw Error("Invalid GIF timing.");delay=Math.max(20,word(p+2)*10);p+=6;}else skip();}
-    else if(block===0x2c){if(p+9>bytes.length)throw Error("This GIF is incomplete.");const packed=bytes[p+8];p+=9;if(packed&128)p+=3*2**((packed&7)+1);p++;skip();duration+=delay;delay=100;frames++;if(frames>500||duration>PROFILE_VIDEO_SECONDS*1000)throw Error("Choose a GIF with a loop of 10 seconds or less.");}
+    else if(block===0x2c){if(p+9>bytes.length)throw Error("This GIF is incomplete.");const packed=bytes[p+8];p+=9;if(packed&128)p+=3*2**((packed&7)+1);p++;skip();duration+=delay;delay=100;frames++;if(duration>limit*1000)throw Error("Choose a GIF with a loop of "+limit+" seconds or less.");if(frames>limit*50)throw Error("This GIF has too many frames. Choose a GIF under "+(limit*50)+" frames.");}
     else throw Error("This GIF could not be read.");
   }
   if(!frames)throw Error("This GIF has no image frames.");
@@ -45,13 +52,13 @@ export async function prepareProfileMotion(file,kind="avatar") {
   try {
     let info;
     if(type==="gif") {
-      info=inspectGif(new Uint8Array(await file.arrayBuffer()));element=new Image();
+      info=inspectGif(new Uint8Array(await file.arrayBuffer()),kind);element=new Image();
       await new Promise((resolve,reject)=>{timer=setTimeout(()=>reject(Error("This GIF took too long to open.")),15000);element.onload=resolve;element.onerror=()=>reject(Error("This GIF could not be opened."));element.src=url;});
     } else {
       element=document.createElement("video");element.muted=true;element.playsInline=true;element.preload="auto";
       await new Promise((resolve,reject)=>{timer=setTimeout(()=>reject(Error("This video took too long to open. Try an MP4.")),15000);element.onloadeddata=resolve;element.onerror=()=>reject(Error("Your browser cannot play this video. Try an MP4."));element.src=url;element.load();});
       const {duration,videoWidth:width,videoHeight:height}=element;
-      if(!Number.isFinite(duration)||duration<=0||duration>PROFILE_VIDEO_SECONDS+.05)throw Error("Choose a video of 10 seconds or less.");
+      validateMotionDuration(duration,kind);
       if(!width||!height||width>8192||height>8192)throw Error("Choose a video no larger than 8192 pixels.");
       info={duration,width,height};
     }

@@ -4,7 +4,7 @@ import "@/components/profile/profile-mobile.css";
 import DiscoverPeople from "@/components/profile/DiscoverPeople";
 import { entityRows } from "@/lib/entityRows";
 import ProfileMedia from "@/components/ProfileMedia";
-import { validateMotionFile } from "@/lib/profileMotion";
+import { validateMotionFile,validateMotionDuration } from "@/lib/profileMotion";
 import ProfileBannerEditor from '@/components/profile/ProfileBannerEditor';
 import ProfileDetailsEditor from '@/components/profile/ProfileDetailsEditor';
 import { normalizeProfileDraft } from '@/lib/profileEditing';
@@ -308,7 +308,8 @@ export default function Profile({ ownProfileTab = false }) {
     const setBusy = avatar ? setUploadingAvatar : setUploadingBanner;setBusy(true);
     try {
       const type = validateMotionFile(media.file);
-      if (type !== media.type || !media.poster || !Number.isFinite(media.duration) || media.duration > 10.05) throw Error("Choose a video or GIF loop of 10 seconds or less.");
+      if (type !== media.type || !media.poster) throw Error("Choose a valid video or GIF with a preview.");
+      validateMotionDuration(media.duration,kind);
       const [source, poster] = await Promise.all([base44.integrations.Core.UploadFile({ file: media.file }), base44.integrations.Core.UploadFile({ file: media.poster })]);
       if (!source.file_url || !poster.file_url) throw Error("Your media did not upload. Please retry.");
       if (version !== versionRef.current || identity.current !== key) return false;

@@ -1,7 +1,7 @@
 import {useEffect,useRef,useState} from "react";
 import {Loader2} from "lucide-react";
 import {Dialog,DialogContent,DialogHeader,DialogTitle,DialogDescription} from "@/components/ui/dialog";
-import {prepareProfileMotion} from "@/lib/profileMotion";
+import {prepareProfileMotion,profileMotionSeconds} from "@/lib/profileMotion";
 import ProfileMedia from "@/components/ProfileMedia";
 import "./profile-upgrades.css";
 export default function ProfileMotionEditor({file,kind="avatar",onApply,onClose}) {
@@ -17,7 +17,7 @@ export default function ProfileMotionEditor({file,kind="avatar",onApply,onClose}
     catch(e){setError(e.message||"Could not upload. Please retry.");}finally{lock.current=false;setBusy(false);}
   }
   return <Dialog open onOpenChange={open=>{if(!open&&!busy)onClose();}}><DialogContent className="profile-image-editor" onEscapeKeyDown={e=>{if(busy)e.preventDefault();}} onPointerDownOutside={e=>{if(busy)e.preventDefault();}}>
-    <DialogHeader><DialogTitle>{kind==="banner"?"Bring your banner to life":"A little motion. All you."}</DialogTitle><DialogDescription>Videos and GIF loops up to 10 seconds. Videos play silently. Apply here, then save your profile.</DialogDescription></DialogHeader>
+    <DialogHeader><DialogTitle>{kind==="banner"?"Bring your banner to life":"A little motion. All you."}</DialogTitle><DialogDescription>Videos and GIF loops up to {profileMotionSeconds(kind)} seconds. Videos play silently. Apply here, then save your profile.</DialogDescription></DialogHeader>
     {kind==="banner"&&<div className="profile-crop-tabs" aria-label="Banner preview">{["mobile","desktop"].map(value=><button key={value} type="button" aria-pressed={tab===value} onClick={()=>setTab(value)}>{value==="mobile"?"Mobile":"Desktop"}</button>)}</div>}
     <div className={"profile-crop-stage "+(kind==="avatar"?"is-circle":"")} style={{aspectRatio:kind==="avatar"?1:tab==="desktop"?4.5:1.85}}>
       {prepared&&urls?<ProfileMedia src={urls.poster} gifSrc={prepared.type==="gif"?urls.source:""} videoSrc={prepared.type==="video"?urls.source:""} style={{width:"100%",height:"100%"}}/>:!error?<Loader2 className="animate-spin"/>:null}

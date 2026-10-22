@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import fs from "node:fs";
-import {isMotionFile,validateMotionFile,inspectGif,PROFILE_VIDEO_BYTES,PROFILE_GIF_BYTES} from "../src/lib/profileMotion.js";
+import {isMotionFile,validateMotionFile,inspectGif,validateMotionDuration,profileMotionSeconds,PROFILE_VIDEO_BYTES,PROFILE_GIF_BYTES} from "../src/lib/profileMotion.js";
 import {withPresetAvatar} from "../src/lib/nativeAvatar.js";
 import {AVATAR_PRESETS} from "../src/lib/avatarPresets.js";
 assert.equal(isMotionFile({name:"photo.png",type:"image/png"}),false);
@@ -19,3 +19,14 @@ for(const avatar_preset of ["initials",AVATAR_PRESETS[0].url]){const row=withPre
 assert.equal(withPresetAvatar({...motion,avatar_preset:""}).avatar_video_url,motion.avatar_video_url);
 for(const name of ["User","PublicProfile"]){const schema=JSON.parse(fs.readFileSync("base44/entities/"+name+".jsonc","utf8"));for(const key of ["avatar_video_url","avatar_gif_url","banner_video_url","banner_gif_url"])assert.equal(schema.properties[key].rls.write,false,"media metadata must keep the protected save route");}
 console.log("PASS file formats and byte limits; GIF block timing and excessive-loop rejection; gallery/initials stop old animations; protected media fields");
+
+assert.equal(profileMotionSeconds("banner"),60);assert.equal(profileMotionSeconds("avatar"),10);
+assert.equal(inspectGif(long,"banner").duration,11);
+const minute=Uint8Array.from([...gif.slice(0,19),...Array.from({length:60},()=>[...blocks]).flat(),0x3b]);
+assert.equal(inspectGif(minute,"banner").duration,60);
+const tooLong=Uint8Array.from([...gif.slice(0,19),...Array.from({length:61},()=>[...blocks]).flat(),0x3b]);
+assert.throws(()=>inspectGif(tooLong,"banner"),/60 seconds/);
+validateMotionDuration(45,"banner");validateMotionDuration(60,"banner");
+for(const duration of [0,-1,NaN,Infinity,61])assert.throws(()=>validateMotionDuration(duration,"banner"));
+assert.throws(()=>validateMotionDuration(11,"avatar"),/10 seconds/);
+console.log("PASS banners accept 60-second GIF/video durations and reject oversized loops; avatars retain their existing limit");
