@@ -12,12 +12,12 @@ const code=ts.transpileModule(stub+source,{compilerOptions:{jsx:ts.JsxEmit.React
 const Avatar=(await import("data:text/javascript;base64,"+Buffer.from(code).toString("base64"))).default;
 const render=props=>{cursor=0;return Avatar(props);};
 for(const user of [{id:"existing"},{id:"new",avatar_url:""},{avatar_url:"old.jpg",avatar_preset:"initials"}]){
- states=[];const node=render({user,size:96});assert.equal(node.type,"img");assert.equal(node.props.src,"/avatars/default-headphones.webp");assert.equal(node.props.style.borderRadius,"50%");
+ states=[];const node=render({user,size:96});assert.equal(node.type,"span");assert.equal(React.Children.toArray(node.props.children)[0].props.src,"/avatars/default-headphones.webp");assert.equal(node.props.style.borderRadius,"50%");
 }
 states=[];assert.equal(render({user:{avatar_url:"chosen.jpg"}}).props.src,"chosen.jpg");
 states=[];assert.equal(render({user:{avatar_preset:"/avatars/green-buckle.webp"}}).props.src,"/avatars/green-buckle.webp");
-states=[];let node=render({user:{avatar_url:"broken.jpg"}});node.props.onError();node=render({user:{avatar_url:"broken.jpg"}});assert.equal(node.props.src,"/avatars/default-headphones.webp");
-node.props.onError();assert.equal(render({user:{display_name:"Alice",avatar_url:"broken.jpg"}}).type,"div");
+states=[];let node=render({user:{avatar_url:"broken.jpg"}});node.props.onError();node=render({user:{avatar_url:"broken.jpg"}});assert.equal(React.Children.toArray(node.props.children)[0].props.src,"/avatars/default-headphones.webp");
+React.Children.toArray(node.props.children)[0].props.onError();assert.equal(render({user:{display_name:"Alice",avatar_url:"broken.jpg"}}).type,"div");
 assert.equal(render({user:null}),null);
 const asset=fs.readFileSync("public/avatars/default-headphones.webp");assert.equal(asset.toString("ascii",0,4),"RIFF");assert.equal(asset.toString("ascii",8,12),"WEBP");
 console.log("PASS default avatars for existing/new users, preserved selections, broken-image recovery and circular frame");
@@ -26,3 +26,5 @@ states=[];const animated=render({user:{id:"listener"},motion:true,active:true});
 states=[];assert.equal(render({user:{id:"listener"},motion:true,active:false}).props["data-active"],"false");
 states=[];assert.equal(render({user:{avatar_url:"my-photo.jpg"},motion:true}).props.src,"my-photo.jpg");
 console.log("PASS PFP Boy animation opt-in, inactive state and custom-photo preservation");
+
+states=[];assert.equal(render({user:{avatar_url:"/avatars/default-headphones.webp?v=2"}}).props.className.includes("pfp-boy"),true);
