@@ -1,0 +1,30 @@
+{
+  "name": "BannerRemoval",
+  "type": "object",
+  "properties": {
+    "banner_id": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "banner_id"
+  ],
+  "rls": {
+    "read": null,
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}
