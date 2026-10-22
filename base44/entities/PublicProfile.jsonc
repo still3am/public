@@ -4518,7 +4518,10 @@
         "/avatars/love-jesus.webp",
         "/avatars/sticky-note.webp",
         "/avatars/cereal.webp",
-        "/avatars/green-buckle.webp"
+        "/avatars/green-buckle.webp",
+        "/avatars/red-beanie.webp",
+        "/avatars/box-logo.webp",
+        "/avatars/peeled-sticker.webp"
       ],
       "default": "",
       "description": "Preinstalled gallery choice only. External uploads remain in avatar_url.",
