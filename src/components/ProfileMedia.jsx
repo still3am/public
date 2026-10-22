@@ -5,6 +5,7 @@ import {useCoverUrl} from "@/hooks/useCoverUrl";
 export default function ProfileMedia({src,videoSrc="",gifSrc="",mobileSrc="",motion=true,active=true,className="",style={},onError=undefined,alt=""}) {
   const host=useRef(null),video=useRef(null),[visible,setVisible]=useState(false),[reduced,setReduced]=useState(true),[failed,setFailed]=useState(false);
   const poster=useCoverUrl(src),mobile=useCoverUrl(mobileSrc);
+  const updateRatio=(width,height)=>{if(width>0&&height>0)host.current?.style.setProperty("--profile-media-ratio",`${width} / ${height}`);};
   useEffect(()=>{setFailed(false);},[videoSrc,gifSrc,src]);
   useEffect(()=>{
     const query=window.matchMedia("(prefers-reduced-motion: reduce)"),connection=/** @type {Navigator & {connection?: {saveData?: boolean,addEventListener?: Function,removeEventListener?: Function}}} */ (navigator).connection;
@@ -30,8 +31,8 @@ export default function ProfileMedia({src,videoSrc="",gifSrc="",mobileSrc="",mot
     return()=>{alive=false;el.pause();};
   },[play,videoSrc]);
   return <span ref={host} className={"public-profile-media "+className} style={{display:"block",position:"relative",overflow:"hidden",...style}}>
-    <picture style={{display:"block",width:"100%",height:"100%"}}>{mobile&&<source media="(max-width:767px)" srcSet={mobile}/>}<img src={poster||undefined} alt={alt} onError={onError} style={{display:"block",width:"100%",height:"100%",objectFit:"cover"}}/></picture>
-    {gifSrc&&animate&&<img src={gifSrc} alt="" aria-hidden="true" onError={()=>setFailed(true)} style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover",pointerEvents:"none"}}/>}
-    {play&&<video ref={video} src={videoSrc} poster={poster||undefined} muted loop playsInline autoPlay preload="metadata" aria-hidden="true" tabIndex={-1} onError={()=>setFailed(true)} style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover",pointerEvents:"none"}}/>}
+    <picture style={{display:"block",width:"100%",height:"100%"}}>{mobile&&<source media="(max-width:767px)" srcSet={mobile}/>}<img src={poster||undefined} alt={alt} onLoad={event=>updateRatio(event.currentTarget.naturalWidth,event.currentTarget.naturalHeight)} onError={onError} style={{display:"block",width:"100%",height:"100%",objectFit:"cover"}}/></picture>
+    {gifSrc&&animate&&<img src={gifSrc} alt="" aria-hidden="true" onLoad={event=>updateRatio(event.currentTarget.naturalWidth,event.currentTarget.naturalHeight)} onError={()=>setFailed(true)} style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover",pointerEvents:"none"}}/>}
+    {play&&<video ref={video} onLoadedMetadata={event=>updateRatio(event.currentTarget.videoWidth,event.currentTarget.videoHeight)} src={videoSrc} poster={poster||undefined} muted loop playsInline autoPlay preload="metadata" aria-hidden="true" tabIndex={-1} onError={()=>setFailed(true)} style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover",pointerEvents:"none"}}/>}
   </span>;
 }
