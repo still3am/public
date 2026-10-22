@@ -74,22 +74,17 @@ export function useUploadQueue({ user, isAdmin }) {
   const hit=hits[0];
   setDupes(prev=>[...(prev||[]).filter(d=>d.id!==item.id),{...item,existingId:hit.id,existingBy:hit.uploader_name||hit.artist||'',existingIsMine:hit.uploader_id===user?.id,reason:hit._match_reason,kind:hit._match_kind}]);
  };
- async function addFiles(fileList, discovery=null){
+ async function addFiles(fileList){
   if(!user?.id)return;const epoch=generation.current;
   const all=Array.from(fileList),files=all.filter(isAudioFile),coverFallback=all.find(f=>f.type.startsWith('image/')||IMAGE_EXT_RE.test(f.name||''));
   if(!files.length)return;
-  const batch=files.map(file=>({id:nextId(),file,title:deriveDefaultTitle(file),artist:'',album_name:'',album_artist:'',track_number:0,disc_number:0,release_year:0,genre:'',duration:0,explicit:false,aiLyrics:false,rightsConfirmed:false,allowDownloads:false,videoFile:null,coverFile:null,coverPreviewUrl:'',status:'analyzing',detecting:!discovery,error:'',duplicateAcknowledged:false,...(discovery?{title:discovery.title,artist:discovery.artist,album_name:discovery.album_name||'',release_year:discovery.release_year||0,sourceDescription:discovery.provider==='archive'?['Source: '+discovery.source_attribution,discovery.source_url,discovery.source_license_url?'License: '+discovery.source_license_url:'License: review source page'].filter(Boolean).join('\n').slice(0,1500):'',explicit:discovery.explicit===true,genre:GENRES.includes(discovery.genre)?discovery.genre:'',track_number:Number(discovery.track_number)||0,disc_number:Number(discovery.disc_number)||0}:{} )}));
-  if(discovery)for(const item of batch)metadataEdits.current.set(item.id,{title:true,artist:true,album_name:true,release_year:true,explicit:true,genre:!!discovery.genre,track_number:!!discovery.track_number,disc_number:!!discovery.disc_number});
+  const batch=files.map(file=>({id:nextId(),file,title:deriveDefaultTitle(file),artist:'',album_name:'',album_artist:'',track_number:0,disc_number:0,release_year:0,genre:'',duration:0,explicit:false,aiLyrics:false,rightsConfirmed:false,allowDownloads:false,videoFile:null,coverFile:null,coverPreviewUrl:'',status:'analyzing',detecting:true,error:'',duplicateAcknowledged:false}));
   setItems(prev=>[...prev,...batch]);await refreshDuplicates();if(epoch!==generation.current)return;
   let cursor=0;
   const worker=async()=>{while(cursor<batch.length){const item=batch[cursor++];try{
    const [duration,tagTitle,tagArtist,embedded,sha,albumTags]=await Promise.all([getAudioDuration(item.file),extractEmbeddedTitle(item.file),extractEmbeddedArtist(item.file),extractEmbeddedCover(item.file),hashAudioFile(item.file),extractAlbumMetadata(item.file)]);
    if(epoch!==generation.current)return;if(!itemsRef.current.some(row=>row.id===item.id))continue;
-   let discoveredCover=null;
-   if(discovery?.cover_art_url&&!embedded&&!coverFallback){
-    try{const response=await fetch(discovery.cover_art_url,{signal:AbortSignal.timeout(8000),referrerPolicy:'no-referrer'});if(response.ok&&/^image\//.test(response.headers.get('content-type')||'')&&Number(response.headers.get('content-length')||0)<5*1024*1024){const blob=await response.blob();if(blob.size<5*1024*1024)discoveredCover=new File([blob],'discovery-artwork.jpg',{type:blob.type});}}catch{}
-   }
-   const title=discovery?.title||tagTitle||item.title,artist=discovery?.artist||tagArtist||'',rawCover=embedded||coverFallback||discoveredCover||null,cover=rawCover?await ensureHighResCover(rawCover):null;
+   const title=tagTitle||item.title,artist=tagArtist||'',rawCover=embedded||coverFallback||null,cover=rawCover?await ensureHighResCover(rawCover):null;
    if(epoch!==generation.current)return;if(!itemsRef.current.some(row=>row.id===item.id))continue;
    const coverPreviewUrl=cover?URL.createObjectURL(cover):'';
    const analyzed={...item,title,artist,duration,audio_sha256:sha,coverFile:cover,coverPreviewUrl,status:'ready'};
@@ -100,12 +95,12 @@ export function useUploadQueue({ user, isAdmin }) {
     return {...it,...Object.fromEntries(Object.entries(albumTags).filter(([key])=>!edited[key])),duration,audio_sha256:sha,
      title:edited.title?it.title:title,artist:edited.artist?it.artist:artist,
      coverFile:it.coverFile||cover,coverPreviewUrl:it.coverPreviewUrl||coverPreviewUrl,
-     status:'ready',detecting:!discovery};
+     status:'ready',detecting:true};
    }));
    // Include this batch in duplicate comparisons, not only persisted songs.
    const local=catalog.current.concat(batch.filter(t=>t.id!==item.id&&assets.current.get(t.id)?.sha).map(t=>({...t,audio_sha256:assets.current.get(t.id).sha})));
    const hits=findDuplicateTracks(local,analyzed);warn(analyzed,hits);
-   const meta=discovery?null:await detectMeta(title,artist);
+   const meta=await detectMeta(title,artist);
    if(epoch!==generation.current)return;
    setItems(prev=>prev.map(it=>{
     if(it.id!==item.id)return it;
@@ -160,7 +155,7 @@ export function useUploadQueue({ user, isAdmin }) {
    }
    if(epoch!==generation.current)throw Error('Account changed. Start this upload again.');
    const ready=!!(item.artist.trim()&&item.genre&&memo.cover_art_url);
-   const track=await base44.entities.Track.create({...(item.sourceDescription?{description:item.sourceDescription}:{}),title:item.title.trim(),audio_url:'',audio_file_uri:memo.file_uri,...(item.videoFile?{music_video_file_uri:memo.video_uri,video_rights_confirmed:true}:{}),audio_sha256:memo.sha,upload_request_id:item.id,cover_art_url:memo.cover_art_url||'',artist:item.artist.trim(),album_name:(item.album_name||'').trim(),album_artist:(item.album_artist||'').trim(),track_number:Number(item.track_number)||0,disc_number:Number(item.disc_number)||0,release_year:Number(item.release_year)||0,genre:item.genre||'Other',duration_seconds:item.duration,explicit:item.explicit,rights_confirmed:true,is_downloadable:item.allowDownloads===true,approval_status:ready?(isAdmin?'approved':'pending'):'private',is_published:isAdmin&&ready});
+   const track=await base44.entities.Track.create({title:item.title.trim(),audio_url:'',audio_file_uri:memo.file_uri,...(item.videoFile?{music_video_file_uri:memo.video_uri,video_rights_confirmed:true}:{}),audio_sha256:memo.sha,upload_request_id:item.id,cover_art_url:memo.cover_art_url||'',artist:item.artist.trim(),album_name:(item.album_name||'').trim(),album_artist:(item.album_artist||'').trim(),track_number:Number(item.track_number)||0,disc_number:Number(item.disc_number)||0,release_year:Number(item.release_year)||0,genre:item.genre||'Other',duration_seconds:item.duration,explicit:item.explicit,rights_confirmed:true,is_downloadable:item.allowDownloads===true,approval_status:ready?(isAdmin?'approved':'pending'):'private',is_published:isAdmin&&ready});
    memo.track=track;catalog.current.push({...track,audio_sha256:memo.sha});
    let warning='';
    if(item.aiLyrics){updateItem(item.id,{status:'enhancing'});try{const lyrics=(await base44.functions.invoke('generateLyrics',{track_id:track.id})).data?.lyrics;if(!lyrics)throw Error();await base44.entities.Track.update(track.id,{lyrics_text:lyrics});}catch{warning='Audio saved. Lyrics could not generate; retry from the song page.';}}

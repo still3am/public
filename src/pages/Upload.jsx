@@ -1,5 +1,3 @@
-import DiscoverMusic from "@/components/search/DiscoverMusic";
-import DiscoverySelection from "@/components/upload/DiscoverySelection";
 import { useRef } from "react";
 import { Link } from "react-router-dom";
 import { UploadCloud, Loader2, CheckCheck, Ban } from "lucide-react";
@@ -49,8 +47,6 @@ export default function Upload() {
 
       {q.catalogError && <div role="alert" className="border rounded-xl p-3 mb-4 text-sm">{q.catalogError}<button className="underline ml-2" onClick={q.refreshDuplicates}>Retry check</button></div>}
       {doneCount > 0 && <button className="underline text-sm mb-3" onClick={q.clearFinished}>Clear completed uploads</button>}
-      <DiscoverySelection />
-      <DiscoverMusic searchable />
       <FileDropZone onFiles={q.addFiles} inputRef={inputRef} />
       <input
         ref={inputRef}
