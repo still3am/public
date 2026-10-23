@@ -1,3 +1,4 @@
+import {findLyricsCatalog} from '@/lib/lyricsCatalog';
 import PureBadge from "@/components/PureBadge";
 import DeviceConnect from "@/components/DeviceConnect";
 import OverflowText from "@/components/OverflowText";
@@ -100,6 +101,7 @@ export default function FullScreenPlayer({ onClose }) {
   // (approved timed lyrics, or plain-text lyrics_text on the track).
   useEffect(() => {
     let alive = true;
+    const controller = new AbortController();
     if (!t?.id) {
       setLyricsAvailability({ trackId: null, available: false });
       setLyricsMode(false);
@@ -113,17 +115,25 @@ export default function FullScreenPlayer({ onClose }) {
     filter({ track_id: t.id, status: "approved" }, "-updated_date", 5).
     catch(() => []),
     base44.entities.Track.get(t.id).catch(() => null)]
-    ).then(([lyricsRes, track]) => {
+    ).then(async ([lyricsRes, track]) => {
       if (!alive) return;
       const found = Array.isArray(lyricsRes) ? lyricsRes.find((record) => Array.isArray(record.lines) && record.lines.some((line) => (line.text?.trim() || line.words?.some((word) => word.text?.trim())) && (line.start_time_ms || line.end_time_ms))) : null;
       const lines = found?.lines || [];
       const hasTimed = lines.length && lines.some((l) => l.start_time_ms || l.end_time_ms);
       const text = typeof track?.lyrics_text === "string" ? track.lyrics_text.trim() : fallbackText;
+      if (!hasTimed && !text) {
+        try {
+          const external = await findLyricsCatalog({...t,...track},{signal:controller.signal});
+          if (!alive) return;
+          if (external?.available) {setLyricsAvailability({trackId:t.id,...external});return;}
+        } catch { /* Missing lyrics must never interrupt playback. */ }
+        if (!alive) return;
+      }
       const available = !!hasTimed || !!text;
       setLyricsAvailability({ trackId: t.id, available, record: found, text });
       if (!available) setLyricsMode(false);
     });
-    return () => {alive = false;};
+    return () => {alive = false;controller.abort();};
   }, [t?.id]);
 
   // keyboard shortcuts

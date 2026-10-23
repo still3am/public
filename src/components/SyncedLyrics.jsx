@@ -98,6 +98,7 @@ export default function SyncedLyrics({ trackId, position, fallbackText = "", res
   if (hasTimed) return (
     <div ref={scrollRef} onWheel={markUserScroll} onTouchStart={markUserScroll} onTouchMove={markUserScroll}
       className="public-lyrics-scroll no-scrollbar" aria-label="Synced song lyrics">
+      {resolvedLyrics?.source === 'LRCLIB' && <p className="public-lyrics-note"><a href="https://lrclib.net" target="_blank" rel="noopener noreferrer">Lyrics via LRCLIB</a></p>}
       {lines.map((line, index) => {
         const active = index === activeIdx;
         const distance = activeIdx < 0 ? index : Math.abs(index - activeIdx);
@@ -126,7 +127,7 @@ export default function SyncedLyrics({ trackId, position, fallbackText = "", res
   }
   return (
     <div className="public-lyrics-scroll no-scrollbar" aria-label="Song lyrics">
-      <p className="public-lyrics-note">Lyrics · not synced</p>
+      <p className="public-lyrics-note">Lyrics · not synced{resolvedLyrics?.source === "LRCLIB" && <> · <a href="https://lrclib.net" target="_blank" rel="noopener noreferrer">LRCLIB</a></>}</p>
       {text.replace(/\r\n?/g, "\n").split("\n").map((line, index) =>
         line.trim() ? <p key={index} className="public-lyric-line public-lyric-plain selectable-content">{line}</p>
           : <div key={index} className="h-6" aria-hidden="true" />)}
