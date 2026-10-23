@@ -39,7 +39,7 @@ const useReleaseTheme=()=>({style:{},colors:[]}),ReleaseAtmosphere=()=>null,Shuf
 const TrackMusicVideo="video",TrackCard="track-card",ScrollShelf="shelf",LibraryButton="library-button",CollapsibleText="copy",EmptyState="empty",EditTrackModal="edit",ArtistLinks="artist",TrackRow="track-row",TrackOptionsMenu="options",SyncLyricsModal="sync",GenerateLyricsModal="generate";
 const ChevronLeft=Loader2,Share2=Loader2,Music=Loader2,Play=Loader2,Pause=Loader2,Pencil=Loader2,Sparkles=Loader2,Timer=Loader2,Wand2=Loader2;
 `);
-const renderDetail=track=>{values=[track,false,false,null,false,false,false,false,[tracks[1]],[tracks[2]],false];index=0;return detail.default();};
+const renderDetail=track=>{values=[track,false,false,null,false,false,false,false,false,[tracks[1]],[tracks[2]],false];index=0;return detail.default();};
 calls=[];globalThis.__player.currentTrack=tracks[0];tree=renderDetail({...tracks[0],lyrics_text:"Lyrics",cover_art_url:"cover.jpg"});
 all(tree,n=>n.props?.className==="release-play-button")[0].props.onClick();assert.deepEqual(calls,["toggle"],"track hero preserves the current playback position");
 assert.equal(all(tree,n=>n.type==="shelf").length,2,"both recommendation collections retain scroll controls");
