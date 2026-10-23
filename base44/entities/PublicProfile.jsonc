@@ -4529,7 +4529,11 @@
         "/avatars/finn-adventure.webp",
         "/avatars/flame-princess.webp",
         "/avatars/stitch-love.webp",
-        "/avatars/mario-luigi-spin.webp"
+        "/avatars/mario-luigi-spin.webp",
+        "/avatars/dipper-gnome.webp",
+        "/avatars/pink-eye.webp",
+        "/avatars/rotating-eyeball.webp",
+        "/avatars/luffy-pixel.webp"
       ],
       "default": "",
       "description": "Preinstalled gallery choice only. External uploads remain in avatar_url.",
