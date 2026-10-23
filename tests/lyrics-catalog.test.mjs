@@ -11,7 +11,7 @@ assert.equal(selectLyricsMatch([{...sample,id:2,syncedLyrics:''},sample],song).i
 const lines=parseLrc('[ar:Example]\n[00:05.00]Next\n[00:01.5][00:03.00]First\n[00:04.00]\n[99:99.00]invalid\n[99:01.00]past end',10);
 assert.deepEqual(lines.map(l=>l.start_time_ms),[1500,3000,4000,5000]);assert.equal(lines[2].text,'♪');assert.equal(lines.at(-1).end_time_ms,10000);
 assert.equal(parseLrc('[offset:500]\n[00:01.00]A',10)[0].start_time_ms,500);
-assert.equal(lyricsResult(sample,180).record.lines.length,2);assert.equal(lyricsResult({...sample,syncedLyrics:''}).record,null);assert.equal(lyricsResult({instrumental:true}).available,false);
+assert.equal(lyricsResult(sample,180).record.lines.length,2);assert.equal(lyricsResult({...sample,syncedLyrics:''}).record,null);assert.equal(lyricsResult({instrumental:true}).available,false);assert.equal(lyricsResult({syncedLyrics:'[00:01]One'}).record,null);assert.equal(lyricsResult({syncedLyrics:'[00:01]\n[00:03]'}).available,false);
 assert.equal(cleanLyricsTitle('My Song (Official Audio)'),'My Song');
 assert.equal(cleanLyricsTitle('My Song (Live)'),'My Song (Live)','recording version labels must be preserved');
 assert.equal(selectLyricsMatch([sample],{...song,title:'My Song [Official Video]'}).id,1);

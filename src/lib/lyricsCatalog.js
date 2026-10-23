@@ -74,7 +74,8 @@ export function lyricsResult(row, duration = 0) {
   if(!row)return null;
   const lines=parseLrc(row.syncedLyrics,Number(duration)||Number(row.duration)||0);
   const plain=text(row.plainLyrics)||lines.filter(line=>line.text!=='♪').map(line=>line.text).join('\n');
-  return {text:plain,record:lines.length?{lines}:null,source:'LRCLIB',sourceId:row.id,instrumental:row.instrumental===true,available:lines.length>=2,syncUnavailable:!row.instrumental&&lines.length<2};
+  const synced=lines.length>=2&&lines.some(line=>line.text!=='♪')&&row.instrumental!==true;
+  return {text:plain,record:synced?{lines}:null,source:'LRCLIB',sourceId:row.id,instrumental:row.instrumental===true,available:synced,syncUnavailable:!row.instrumental&&!synced};
 }
 /** @param {any} track @param {{signal?:AbortSignal}} options */
 export async function findLyricsCatalog(track, options = {}) {

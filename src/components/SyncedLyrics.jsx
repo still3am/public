@@ -72,7 +72,8 @@ export default function SyncedLyrics({ trackId, position, resolvedLyrics, onSeek
   if (hasTimed) return (
     <div ref={scrollRef} onWheel={markUserScroll} onTouchStart={markUserScroll} onTouchMove={markUserScroll}
     className="public-lyrics-scroll no-scrollbar" aria-label="Synced song lyrics">
-      {resolvedLyrics?.source === 'LRCLIB' && <p className="public-lyrics-note"></p>}
+      {resolvedLyrics?.cacheStatus === 'unavailable' && <p role="status" className="public-lyrics-note">{resolvedLyrics.cacheMessage}</p>}
+      {resolvedLyrics?.cacheStatus === 'saving' && <p role="status" className="public-lyrics-note">Saving synced lyrics for everyone…</p>}
       {lines.map((line, index) => {
         const active = index === activeIdx;
         const distance = activeIdx < 0 ? index : Math.abs(index - activeIdx);

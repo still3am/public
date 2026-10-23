@@ -17,7 +17,9 @@ export function createSharedLyricsService(client,lookup,notify=(_detail)=>{}) {
   const playable={...result,cacheStatus:'saving'};memory.set(key,{until:Date.now()+120000,result:playable});
   Promise.resolve().then(()=>client.functions.invoke('cacheCatalogLyrics',{track_id:track.id,source_id:result.sourceId})).then(response=>{
    if(response?.data?.cached!==true)throw Error('Shared save was not confirmed');
-   emit(track,key,{...result,cacheStatus:'shared'});
+   const stored=response.data.record;
+   const verified=stored?.synced_lyrics?lyricsResult({id:stored.source_id,syncedLyrics:stored.synced_lyrics,duration:stored.duration_seconds},track.duration_seconds):result;
+   emit(track,key,{...verified,cacheStatus:'shared'});
   }).catch(()=>emit(track,key,{...result,cacheStatus:'unavailable',cacheMessage:'Lyrics loaded. Shared saving is unavailable; Public will retry on your next visit.'}));
   return playable;
  }

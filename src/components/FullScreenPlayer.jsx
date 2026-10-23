@@ -108,7 +108,7 @@ export default function FullScreenPlayer({ onClose }) {
       if(alive)setLyricsAvailability({trackId:t.id,available:false,loading:false,...result});
     }).catch(error=>{if(alive)setLyricsAvailability({trackId:t.id,available:false,loading:false,error:error.message||'Lyrics could not load.'});});
     return()=>{alive=false;controller.abort();};
-  },[t?.id,t?.title,t?.artist,t?.duration_seconds,lyricsRevision]);
+  },[t?.id,t?.title,t?.artist,t?.duration_seconds,t?.album_name,lyricsRevision]);
 
   // keyboard shortcuts
   useEffect(() => {
