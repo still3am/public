@@ -1,6 +1,6 @@
 import { useRef } from "react";
 import { Link } from "react-router-dom";
-import { UploadCloud, Loader2, CheckCheck, Ban } from "lucide-react";
+import { UploadCloud, Loader2, CheckCheck, Ban, ExternalLink } from "lucide-react";
 import { useUploadsEnabled } from "@/hooks/useUploadsEnabled";
 import { useAuth } from "@/lib/AuthContext";
 import FileDropZone from "@/components/upload/FileDropZone";
@@ -38,6 +38,11 @@ export default function Upload() {
     <div className="upload-page max-w-3xl mx-auto">
       <header className="page-intro"><h1>Upload music</h1><p>Add your audio, review its details, and publish to PUBLIC.</p></header>
       <Link to="/unfinished-uploads" className="playlist-action mb-5">Finish saved uploads</Link>
+      <section className="mb-5 rounded-2xl border border-border bg-card p-4" aria-label="Spotdown upload helper">
+        <div className="flex flex-wrap items-center justify-between gap-3"><div className="min-w-0"><h2 className="font-semibold text-sm">Have a Spotify link?</h2><p className="text-xs text-muted-foreground mt-1">Open Spotdown, then return here to select your audio file.</p></div>
+        <a href="https://spotdown.org/en2" target="_blank" rel="noopener noreferrer" className="playlist-action inline-flex items-center gap-2">Open Spotdown <ExternalLink size={14}/></a></div>
+        <p className="text-xs text-muted-foreground mt-3">Opens an external website. Only upload music you own or have permission to share.</p>
+      </section>
       
 
 

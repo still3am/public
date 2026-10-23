@@ -1,3 +1,4 @@
+import CatalogMetadataPicker from '@/components/upload/CatalogMetadataPicker';
 import {
   CheckCheck,
   X,
@@ -91,6 +92,7 @@ export default function UploadItem({
           </div>
 
           <AlbumMetadataFields value={item} onChange={onChange} disabled={locked}/>
+          {!done && <CatalogMetadataPicker item={item} onChange={onChange} disabled={locked || disabled}/>}
           <div className="flex items-center gap-3">
             <div className="w-full sm:max-w-[16rem] flex-1">
               <GenrePicker value={item.genre} onChange={(g) => onChange({ genre: g })} />
