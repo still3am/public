@@ -99,7 +99,7 @@ export default function SyncedLyrics({ trackId, position, resolvedLyrics, onSeek
 
   return (
     <div className="public-lyrics-scroll no-scrollbar" aria-label="Song lyrics">
-      <p className="public-lyrics-note hidden">Lyrics · not synced{resolvedLyrics?.source === "LRCLIB" && <> · <a href="https://lrclib.net" target="_blank" rel="noopener noreferrer">LRCLIB</a></>}</p>
+      
       {text.replace(/\r\n?/g, "\n").split("\n").map((line, index) =>
       line.trim() ? <p key={index} className="public-lyric-line public-lyric-plain selectable-content">{line}</p> :
       <div key={index} className="h-6" aria-hidden="true" />)}
