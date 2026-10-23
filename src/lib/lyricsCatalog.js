@@ -12,6 +12,11 @@ export function chooseLyricsCatalogMatch(track,row) {
 let queue = Promise.resolve(), nextRequest = 0, cooldown = 0;
 const cancelled = () => new DOMException('Cancelled', 'AbortError');
 const normalize = value => String(value || '').normalize('NFKC').toLowerCase().replace(/[’‘]/g,"'").replace(/[^\p{L}\p{N}]+/gu,' ').trim();
+export const cleanLyricsTitle = value => String(value||'').replace(/\s*[\[(](?:official\s+(?:audio|video|music\s+video|lyric\s+video)|lyrics?\s+video)[\])]\s*/gi,' ').replace(/\s+/g,' ').trim();
+export function rankLyricsCandidates(rows,track) {
+ const duration=Number(track.duration_seconds)||0;
+ return [...rows].sort((a,b)=>Number(normalize(b.trackName)===normalize(cleanLyricsTitle(track.title)))-Number(normalize(a.trackName)===normalize(cleanLyricsTitle(track.title)))||Number(normalize(b.artistName)===normalize(track.artist))-Number(normalize(a.artistName)===normalize(track.artist))||(duration?Number(Math.abs(b.duration-duration)<=2)-Number(Math.abs(a.duration-duration)<=2):0)||Number(!!b.syncedLyrics)-Number(!!a.syncedLyrics)||(duration?Math.abs(a.duration-duration)-Math.abs(b.duration-duration):0));
+}
 const text = value => typeof value === 'string' ? value.slice(0,100000).trim() : '';
 /** @param {string} path @param {{signal?:AbortSignal}} options */
 async function request(path, {signal} = {}) {
@@ -46,7 +51,7 @@ export function parseLrc(value, duration = 0) {
   return lines.sort((a,b)=>a.start_time_ms-b.start_time_ms).slice(0,2000).map((line,index,all)=>({...line,end_time_ms:all[index+1]?.start_time_ms??Math.max(line.start_time_ms+1000,Math.round(duration*1000)||line.start_time_ms+4000)}));
 }
 export function selectLyricsMatch(rows, track) {
-  const title=normalize(track.title),artist=normalize(track.artist),duration=Number(track.duration_seconds)||0;
+  const title=normalize(cleanLyricsTitle(track.title)),artist=normalize(track.artist),duration=Number(track.duration_seconds)||0;
   if(!title||!artist)return null;
   const matches=rows.filter(row=>normalize(row.trackName)===title&&normalize(row.artistName)===artist&&(row.instrumental||text(row.plainLyrics)||text(row.syncedLyrics))&&(!duration||Number.isFinite(Number(row.duration))&&Math.abs(Number(row.duration)-duration)<=2));
   matches.sort((a,b)=>(duration?Math.abs(a.duration-duration)-Math.abs(b.duration-duration):0)||(normalize(b.albumName)===normalize(track.album_name)?1:0)-(normalize(a.albumName)===normalize(track.album_name)?1:0)||Number(!!b.syncedLyrics)-Number(!!a.syncedLyrics));
@@ -55,7 +60,7 @@ export function selectLyricsMatch(rows, track) {
 }
 /** @param {any} track @param {{signal?:AbortSignal}} options @returns {Promise<any[]>} */
 export async function searchLyricsCatalog(track, {signal} = {}) {
-  const title=String(track.title||'').trim().slice(0,200),artist=String(track.artist||'').trim().slice(0,200);
+  const title=cleanLyricsTitle(track.title).slice(0,200),artist=String(track.artist||'').trim().slice(0,200);
   if(!title||!artist)return [];
   if(signal?.aborted)throw cancelled();
   const key=JSON.stringify([title,artist]);const saved=cache.get(key);

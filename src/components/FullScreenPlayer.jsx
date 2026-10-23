@@ -1,9 +1,10 @@
+import FindLyricsModal from '@/components/FindLyricsModal';
 import {findLyricsCatalog} from '@/lib/lyricsCatalog';
 import PureBadge from "@/components/PureBadge";
 import DeviceConnect from "@/components/DeviceConnect";
 import OverflowText from "@/components/OverflowText";
 import { copyText } from '@/lib/shareLink';
-import { useState, useRef, useEffect, useCallback } from "react";
+import { useState, useRef, useEffect } from "react";
 import { usePlayer } from "@/context/PlayerContext";
 import { useColorPalette } from "@/hooks/useColorPalette";
 import { useAuth } from "@/lib/AuthContext";
@@ -70,7 +71,8 @@ export default function FullScreenPlayer({ onClose }) {
   const [showVolHint, setShowVolHint] = useState(false);
   const [copied, setCopied] = useState(false);
   const [showQueue, setShowQueue] = useState(false);
-  const [showLyricsPanel, setShowLyricsPanel] = useState(true);
+  const [showLyricsPanel, setShowLyricsPanel] = useState(false);
+  const [findingLyrics,setFindingLyrics] = useState(false);
   const t = p.currentTrack;
   useEffect(()=>{if(t?.id)prepareTrackShare();},[t?.id]);
   const lounge = useLoungeHost();
@@ -88,24 +90,22 @@ export default function FullScreenPlayer({ onClose }) {
   const [lyricsRevision,setLyricsRevision] = useState(0);
   useEffect(()=>{const changed=event=>{if(event.detail?.trackId===t?.id)setLyricsRevision(value=>value+1);};window.addEventListener('lyrics:changed',changed);return()=>window.removeEventListener('lyrics:changed',changed);},[t?.id]);
   const hasLyrics = lyricsAvailability.trackId === t?.id && lyricsAvailability.available;
-  const showingLyrics = lyricsMode && hasLyrics;
-  const handleLyricsUnavailable = useCallback(() => {
-    setLyricsMode(false);
-    setLyricsAvailability((previous) => previous.trackId === t?.id && !previous.available ? previous : { trackId: t?.id, available: false });
-  }, [t?.id]);
+  const showingLyrics = lyricsMode;
   const [coverFailed, setCoverFailed] = useState(false);
 
   // Reset the broken-cover flag whenever the track (and thus its cover URL) changes.
   useEffect(() => {setCoverFailed(false);}, [coverUrl]);
 
+  useEffect(()=>{setLyricsMode(false);setFindingLyrics(false);},[t?.id]);
+
   // LRCLIB is the only playback lyrics provider. Older saved records are not used.
   useEffect(() => {
     let alive=true;const controller=new AbortController();
-    setLyricsMode(false);setLyricsAvailability({trackId:t?.id,available:false});
+    setLyricsAvailability({trackId:t?.id,available:false,loading:true});
     if(!t?.id)return()=>controller.abort();
     findLyricsCatalog(t,{signal:controller.signal}).then(result=>{
-      if(alive)setLyricsAvailability({trackId:t.id,available:false,...result});
-    }).catch(()=>{if(alive)setLyricsAvailability({trackId:t.id,available:false});});
+      if(alive)setLyricsAvailability({trackId:t.id,available:false,loading:false,...result});
+    }).catch(error=>{if(alive)setLyricsAvailability({trackId:t.id,available:false,loading:false,error:error.message||'Lyrics could not load.'});});
     return()=>{alive=false;controller.abort();};
   },[t?.id,t?.title,t?.artist,t?.duration_seconds,lyricsRevision]);
 
@@ -297,7 +297,7 @@ export default function FullScreenPlayer({ onClose }) {
           <div className="full-player-visual relative flex-1 xl:flex-none flex items-center justify-center min-h-0 py-4">
             {showingLyrics &&
             <div className="xl:hidden w-full h-full overflow-hidden flex flex-col min-h-0">
-                <SyncedLyrics key={t.id} trackId={t.id} position={p.position} resolvedLyrics={lyricsAvailability} onSeek={p.seek} onUnavailable={handleLyricsUnavailable} />
+                <SyncedLyrics key={t.id} trackId={t.id} position={p.position} resolvedLyrics={lyricsAvailability} onSeek={p.seek} onRetry={()=>setLyricsRevision(v=>v+1)} onFindMatch={()=>setFindingLyrics(true)} />
               </div>
             }
               <div
@@ -393,7 +393,7 @@ export default function FullScreenPlayer({ onClose }) {
           </div>
 
           <div className="full-player-actions flex items-center justify-center gap-6 shrink-0">
-            {hasLyrics && <>
+            {<>
               <button type="button" onClick={() => setLyricsMode(value => !value)} aria-label={showingLyrics ? "Hide lyrics" : "Show lyrics"} aria-pressed={showingLyrics} className="full-player-lyrics-toggle full-player-lyrics-mobile">
                 <MessageSquareText size={22} strokeWidth={1.8} aria-hidden="true"/>
               </button>
@@ -406,7 +406,7 @@ export default function FullScreenPlayer({ onClose }) {
         </div>
 
         {/* RIGHT (desktop): lyrics panel — only when this track has lyrics */}
-        <div className={`${hasLyrics && showLyricsPanel ? "hidden xl:flex" : "hidden"} full-player-lyrics flex-col min-h-0 w-[440px] 2xl:w-[480px] shrink-0 bg-white/[0.06] ring-1 ring-white/10 rounded-[2rem] overflow-hidden`}>
+        <div className={`${showLyricsPanel ? "hidden xl:flex" : "hidden"} full-player-lyrics flex-col min-h-0 w-[440px] 2xl:w-[480px] shrink-0 bg-white/[0.06] ring-1 ring-white/10 rounded-[2rem] overflow-hidden`}>
           <div className="flex items-center justify-between px-5 pt-4 pb-1 shrink-0">
             <span className="text-[10px] uppercase tracking-[0.25em] opacity-50 flex items-center gap-2">
               <MessageSquareText size={18} aria-hidden="true" />
@@ -429,11 +429,12 @@ export default function FullScreenPlayer({ onClose }) {
 
 
           <div className="flex-1 min-h-0 flex flex-col">
-            {hasLyrics && showLyricsPanel && <SyncedLyrics key={t.id} trackId={t.id} position={p.position} resolvedLyrics={lyricsAvailability} onSeek={p.seek} onUnavailable={handleLyricsUnavailable} />}
+            {showLyricsPanel && <SyncedLyrics key={t.id} trackId={t.id} position={p.position} resolvedLyrics={lyricsAvailability} onSeek={p.seek} onRetry={()=>setLyricsRevision(v=>v+1)} onFindMatch={()=>setFindingLyrics(true)} />}
           </div>
         </div>
       </div>
 
+      {findingLyrics && <FindLyricsModal key={t.id} track={t} onClose={()=>setFindingLyrics(false)} onSaved={()=>{setFindingLyrics(false);}}/>}
       <QueuePanel open={showQueue} onClose={() => setShowQueue(false)} />
       {loungeOpen &&
       <LoungeHostModal lounge={lounge} onClose={() => setLoungeOpen(false)} />

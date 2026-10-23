@@ -1,11 +1,8 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { Loader2 } from "lucide-react";
 
 /** @param {any} props */
-export default function SyncedLyrics({ trackId, position, resolvedLyrics, onSeek, onUnavailable }) {
-  const [lyrics, setLyrics] = useState(null);
-  const [trackLyrics, setTrackLyrics] = useState("");
-  const [loading, setLoading] = useState(true);
+export default function SyncedLyrics({ trackId, position, resolvedLyrics, onSeek, onRetry, onFindMatch }) {
   const lineRefs = useRef([]);
   const scrollRef = useRef(null);
   const activeRef = useRef(-1);
@@ -13,23 +10,12 @@ export default function SyncedLyrics({ trackId, position, resolvedLyrics, onSeek
   const resumeTimer = useRef(null);
 
   useEffect(() => {
-    let alive = true;
-    lineRefs.current = [];
-    userScrollUntil.current = 0;
-    clearTimeout(resumeTimer.current);
-    if (resolvedLyrics?.trackId === trackId && typeof resolvedLyrics.text === "string") {
-      setLyrics(resolvedLyrics.record || null);
-      setTrackLyrics(resolvedLyrics.text);
-      setLoading(false);
-      return () => {alive = false;};
-    }
-    setLoading(true);
-    setLyrics(null);
-    setTrackLyrics("");
-    // The player resolves LRCLIB records; do not fall back to legacy saved lyrics.
-    setLoading(false);
-    return () => {alive = false;};
-  }, [trackId, resolvedLyrics]);
+    lineRefs.current=[];userScrollUntil.current=0;clearTimeout(resumeTimer.current);
+  },[trackId,resolvedLyrics]);
+  const current=resolvedLyrics?.trackId===trackId?resolvedLyrics:null;
+  const lyrics=current?.record||null;
+  const trackLyrics=current?.text||'';
+  const loading=!current||current.loading===true;
 
   const ms = Math.max(0, Number(position) || 0) * 1000;
   const lines = (Array.isArray(lyrics?.lines) ? lyrics.lines : []).
@@ -81,10 +67,6 @@ export default function SyncedLyrics({ trackId, position, resolvedLyrics, onSeek
   };
 
   const text = typeof trackLyrics === "string" ? trackLyrics.trim() : "";
-  useEffect(() => {
-    if (!loading && !hasTimed && !text) onUnavailable?.();
-  }, [loading, hasTimed, text, onUnavailable]);
-
   if (loading) return <div className="flex-1 grid place-items-center text-white/60"><Loader2 className="animate-spin" size={22} /></div>;
 
   if (hasTimed) return (
@@ -113,10 +95,8 @@ export default function SyncedLyrics({ trackId, position, resolvedLyrics, onSeek
     </div>);
 
 
-  if (!text) {
-    if (onUnavailable) return null;
-    return <div className="flex-1 grid place-items-center px-6 text-white/60 text-sm">No lyrics available for this track yet.</div>;
-  }
+  if (!text) return <div className="flex-1 flex flex-col items-center justify-center px-6 text-center gap-4 text-white/70 text-sm" role="status"><p>{current?.error|| (current?.instrumental?'This recording is instrumental.':'No matching lyrics on LRCLIB yet.')}</p><div className="flex flex-wrap justify-center gap-2">{current?.error&&<button className="rounded-full border border-white/25 px-4 py-3" onClick={onRetry}>Retry</button>}<button className="rounded-full border border-white/25 px-4 py-3" onClick={onFindMatch}>Find another match</button></div></div>;
+
   return (
     <div className="public-lyrics-scroll no-scrollbar" aria-label="Song lyrics">
       <p className="public-lyrics-note">Lyrics · not synced{resolvedLyrics?.source === "LRCLIB" && <> · <a href="https://lrclib.net" target="_blank" rel="noopener noreferrer">LRCLIB</a></>}</p>
