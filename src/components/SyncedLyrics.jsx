@@ -67,7 +67,7 @@ export default function SyncedLyrics({ trackId, position, resolvedLyrics, onSeek
   };
 
   const text = typeof trackLyrics === "string" ? trackLyrics.trim() : "";
-  if (loading) return <div className="flex-1 grid place-items-center text-white/60"><Loader2 className="animate-spin" size={22} /></div>;
+  if (loading) return <div role="status" aria-label="Finding lyrics" className="flex-1 grid place-items-center text-white/60"><Loader2 className="animate-spin" size={22} /></div>;
 
   if (hasTimed) return (
     <div ref={scrollRef} onWheel={markUserScroll} onTouchStart={markUserScroll} onTouchMove={markUserScroll}

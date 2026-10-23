@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import {chooseLyricsCatalogMatch,parseLrc,selectLyricsMatch,lyricsResult,searchLyricsCatalog,findLyricsCatalog} from '../src/lib/lyricsCatalog.js';
+import {cleanLyricsTitle,rankLyricsCandidates,chooseLyricsCatalogMatch,parseLrc,selectLyricsMatch,lyricsResult,searchLyricsCatalog,findLyricsCatalog} from '../src/lib/lyricsCatalog.js';
 const sample={id:1,trackName:'My Song',artistName:'My Artist',albumName:'Album',duration:180,plainLyrics:'First line\nNext line',syncedLyrics:'[00:01.50]First line\n[00:05.00]Next line'};
 const song={title:'My Song',artist:'My Artist',album_name:'Album',duration_seconds:180};
 assert.equal(selectLyricsMatch([{...sample,duration:220},sample],song).id,1);
@@ -12,6 +12,10 @@ const lines=parseLrc('[ar:Example]\n[00:05.00]Next\n[00:01.5][00:03.00]First\n[0
 assert.deepEqual(lines.map(l=>l.start_time_ms),[1500,3000,4000,5000]);assert.equal(lines[2].text,'♪');assert.equal(lines.at(-1).end_time_ms,10000);
 assert.equal(parseLrc('[offset:500]\n[00:01.00]A',10)[0].start_time_ms,500);
 assert.equal(lyricsResult(sample,180).record.lines.length,2);assert.equal(lyricsResult({...sample,syncedLyrics:''}).record,null);assert.equal(lyricsResult({instrumental:true}).available,false);
+assert.equal(cleanLyricsTitle('My Song (Official Audio)'),'My Song');
+assert.equal(cleanLyricsTitle('My Song (Live)'),'My Song (Live)','recording version labels must be preserved');
+assert.equal(selectLyricsMatch([sample],{...song,title:'My Song [Official Video]'}).id,1);
+assert.equal(rankLyricsCandidates([{...sample,id:8,trackName:'Other song'},sample],song)[0].id,1);
 let calls=[];
 globalThis.fetch=async(url,options)=>{calls.push({url,options});const title=new URL(url).searchParams.get('track_name');if(title==='Rate limit')return {status:429,ok:false,headers:new Headers({'Retry-After':'10'})};if(title==='Failure')return {status:503,ok:false};return {status:200,ok:true,json:async()=>title==='Missing'?[]:[sample]};};
 let result=await findLyricsCatalog(song);assert.equal(result.source,'LRCLIB');assert.equal(result.record.lines[0].start_time_ms,1500);assert.equal(calls.length,1);assert.ok(calls[0].options.headers['Lrclib-Client'].includes('Public'));
