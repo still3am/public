@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import {parseLrc,selectLyricsMatch,lyricsResult,searchLyricsCatalog,findLyricsCatalog} from '../src/lib/lyricsCatalog.js';
+import {chooseLyricsCatalogMatch,parseLrc,selectLyricsMatch,lyricsResult,searchLyricsCatalog,findLyricsCatalog} from '../src/lib/lyricsCatalog.js';
 const sample={id:1,trackName:'My Song',artistName:'My Artist',albumName:'Album',duration:180,plainLyrics:'First line\nNext line',syncedLyrics:'[00:01.50]First line\n[00:05.00]Next line'};
 const song={title:'My Song',artist:'My Artist',album_name:'Album',duration_seconds:180};
 assert.equal(selectLyricsMatch([{...sample,duration:220},sample],song).id,1);
@@ -20,4 +20,7 @@ assert.equal(await findLyricsCatalog({...song,title:'Missing'}),null);
 await assert.rejects(searchLyricsCatalog({...song,title:'Failure'}),/could not load/);
 const controller=new AbortController();controller.abort();await assert.rejects(searchLyricsCatalog({...song,title:'Cancelled'},{signal:controller.signal}),{name:'AbortError'});
 await assert.rejects(searchLyricsCatalog({...song,title:'Rate limit'}),/busy/);const before=calls.length;await assert.rejects(searchLyricsCatalog({...song,title:'After rate limit'}),/busy/);assert.equal(calls.length,before,'provider Retry-After respected without extra calls');
+chooseLyricsCatalogMatch({...song,id:'public-song'},{...sample,id:42});
+const chosen=await findLyricsCatalog({...song,id:'public-song'});assert.equal(chosen.sourceId,42,'reviewed LRCLIB match applies for the session without database writes');
+await assert.rejects(findLyricsCatalog({...song,id:'public-song',title:'Changed title'}),/busy/,'changing metadata cannot reuse a different recording choice');
 console.log('PASS lyric matching, duration/version guards, LRC parsing, gaps, offsets, cache, identification, errors, cancellation and rate-limit cooldown');
