@@ -31,6 +31,20 @@ let queue = Promise.resolve(), nextRequest = 0, cooldown = 0;
 const cancelled = () => new DOMException('Cancelled', 'AbortError');
 const normalize = value => String(value || '').normalize('NFKC').toLowerCase().replace(/[’‘]/g,"'").replace(/[^\p{L}\p{N}]+/gu,' ').trim();
 export const cleanLyricsTitle = value => String(value||'').replace(/\s*[\[(](?:official\s+(?:audio|video|music\s+video|lyric\s+video)|lyrics?\s+video)[\])]\s*/gi,' ').replace(/\s+/g,' ').trim();
+export const primaryLyricsArtist = value => String(value||'').split(/\s+(?:feat\.?|ft\.?|featuring|with)\s+|,\s*|\s+&\s+|\s+x\s+/i)[0].trim();
+const baseTitle = value => cleanLyricsTitle(value).replace(/\s*[\[(](?:feat\.?|ft\.?|featuring)\s+[^\])]+[\])]/gi,'').replace(/\s+(?:feat\.?|ft\.?|featuring)\s+.+$/i,'').trim();
+const version = value => (normalize(value).match(/\b(?:live|remix|acoustic|instrumental|slowed|sped up|nightcore|karaoke|demo)\b/g)||[]).sort().join('|');
+function candidateScore(row,track) {
+ const title=normalize(baseTitle(track.title)),artist=normalize(track.artist),duration=Number(track.duration_seconds)||0;
+ if(!title||!artist||normalize(baseTitle(row.trackName))!==title||version(row.trackName)!==version(track.title))return -1;
+ const exactArtist=normalize(row.artistName)===artist;
+ if(!exactArtist||!artist){if(normalize(primaryLyricsArtist(row.artistName))!==normalize(primaryLyricsArtist(track.artist)))return -1;}
+ const difference=duration?Math.abs(Number(row.duration)-duration):0;
+ if(duration&&(!Number.isFinite(difference)||difference>Math.min(5,Math.max(2,duration*.012))))return -1;
+ const result=lyricsResult(row,Number(row.duration)||duration);
+ if(!result?.available&&!row.instrumental)return -1;
+ return 100+(exactArtist?30:20)+(result?.record?20:0)+(track.album_name&&normalize(row.albumName)===normalize(track.album_name)?8:0)-difference;
+}
 export function rankLyricsCandidates(rows,track) {
  const duration=Number(track.duration_seconds)||0;
  return [...rows].sort((a,b)=>Number(normalize(b.trackName)===normalize(cleanLyricsTitle(track.title)))-Number(normalize(a.trackName)===normalize(cleanLyricsTitle(track.title)))||Number(normalize(b.artistName)===normalize(track.artist))-Number(normalize(a.artistName)===normalize(track.artist))||(duration?Number(Math.abs(b.duration-duration)<=2)-Number(Math.abs(a.duration-duration)<=2):0)||Number(!!b.syncedLyrics)-Number(!!a.syncedLyrics)||(duration?Math.abs(a.duration-duration)-Math.abs(b.duration-duration):0));
@@ -74,27 +88,24 @@ export function parseLrc(value, duration = 0) {
   }
   return grouped.slice(0,2000).map((line,index,all)=>({...line,end_time_ms:all[index+1]?.start_time_ms??Math.max(line.start_time_ms+1000,Math.round(duration*1000)||line.start_time_ms+4000)}));
 }
-export function selectLyricsMatch(rows, track) {
-  const title=normalize(cleanLyricsTitle(track.title)),artist=normalize(track.artist),duration=Number(track.duration_seconds)||0;
-  if(!title||!artist)return null;
-  const matches=rows.filter(row=>normalize(row.trackName)===title&&normalize(row.artistName)===artist&&(row.instrumental||text(row.plainLyrics)||text(row.syncedLyrics))&&(!duration||Number.isFinite(Number(row.duration))&&Math.abs(Number(row.duration)-duration)<=2));
-  matches.sort((a,b)=>(duration?Math.abs(a.duration-duration)-Math.abs(b.duration-duration):0)||(normalize(b.albumName)===normalize(track.album_name)?1:0)-(normalize(a.albumName)===normalize(track.album_name)?1:0)||Number(!!b.syncedLyrics)-Number(!!a.syncedLyrics));
-  if(!duration&&new Set(matches.map(row=>Math.round(Number(row.duration)))).size>1)return null;
-  return matches[0]||null;
+export function selectLyricsMatch(rows,track) {
+ const matches=rows.map(row=>({row,score:candidateScore(row,track)})).filter(item=>item.score>=0).sort((a,b)=>b.score-a.score);
+ if(!Number(track.duration_seconds)&&new Set(matches.map(item=>Math.round(Number(item.row.duration)))).size>1)return null;
+ return matches[0]?.row||null;
 }
-/** @param {any} track @param {{signal?:AbortSignal}} options @returns {Promise<any[]>} */
-export async function searchLyricsCatalog(track, {signal} = {}) {
+/** @param {any} track @param {{signal?:AbortSignal,broad?:boolean}} options @returns {Promise<any[]>} */
+export async function searchLyricsCatalog(track, {signal,broad=false} = {}) {
   const title=cleanLyricsTitle(track.title).slice(0,200),artist=String(track.artist||'').trim().slice(0,200);
   if(!title||!artist)return [];
   if(signal?.aborted)throw cancelled();
-  const key=JSON.stringify([title,artist]);const saved=cache.get(key);
+  const key=JSON.stringify([title,artist,broad]);const saved=cache.get(key);
   if(saved&&saved.until>Date.now())return saved.rows;
   let entry=searches.get(key);
   if(!entry||entry.controller.signal.aborted){
     entry={controller:new AbortController(),consumers:0,promise:null};
     const current=entry;
     current.promise=(async()=>{
-      const result=await request('/api/search?'+new URLSearchParams({track_name:title,artist_name:artist}),{signal:current.controller.signal});
+      const result=await request('/api/search?'+new URLSearchParams(broad?{q:title+' '+artist}:{track_name:title,artist_name:artist}),{signal:current.controller.signal});
       if(!Array.isArray(result))throw new Error('Unexpected lyrics response. Please retry.');
       const rows=result.filter(row=>Number.isSafeInteger(row.id)&&row.id>0).slice(0,50).map(row=>({...row,plainLyrics:text(row.plainLyrics),syncedLyrics:text(row.syncedLyrics)}));
       if(cache.size>=50)cache.delete(cache.keys().next().value);
@@ -116,5 +127,15 @@ export async function findLyricsCatalog(track, options = {}) {
   if(options.signal?.aborted)throw cancelled();
   const chosen=choices.get(signature(track));
   if(chosen)return lyricsResult(chosen,chosen.duration);
-  const rows=await searchLyricsCatalog(track,options);return lyricsResult(selectLyricsMatch(rows,track),track.duration_seconds);
+  const rows=[...await searchLyricsCatalog(track,options)];
+  let best=selectLyricsMatch(rows,track);
+  if(lyricsResult(best,track.duration_seconds)?.record)return lyricsResult(best,track.duration_seconds);
+  const alternate={...track,title:baseTitle(track.title),artist:primaryLyricsArtist(track.artist)};
+  if(alternate.title!==cleanLyricsTitle(track.title)||alternate.artist!==track.artist){
+   rows.push(...await searchLyricsCatalog(alternate,options));best=selectLyricsMatch(rows,track);
+   if(lyricsResult(best,track.duration_seconds)?.record)return lyricsResult(best,track.duration_seconds);
+  }
+  rows.push(...await searchLyricsCatalog(alternate,{...options,broad:true}));
+  best=selectLyricsMatch(rows,track);
+  return lyricsResult(best,track.duration_seconds);
 }
