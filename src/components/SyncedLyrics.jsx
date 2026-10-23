@@ -10,12 +10,12 @@ export default function SyncedLyrics({ trackId, position, resolvedLyrics, onSeek
   const resumeTimer = useRef(null);
 
   useEffect(() => {
-    lineRefs.current=[];userScrollUntil.current=0;clearTimeout(resumeTimer.current);
-  },[trackId,resolvedLyrics]);
-  const current=resolvedLyrics?.trackId===trackId?resolvedLyrics:null;
-  const lyrics=current?.record||null;
-  const trackLyrics=current?.text||'';
-  const loading=!current||current.loading===true;
+    lineRefs.current = [];userScrollUntil.current = 0;clearTimeout(resumeTimer.current);
+  }, [trackId, resolvedLyrics]);
+  const current = resolvedLyrics?.trackId === trackId ? resolvedLyrics : null;
+  const lyrics = current?.record || null;
+  const trackLyrics = current?.text || '';
+  const loading = !current || current.loading === true;
 
   const ms = Math.max(0, Number(position) || 0) * 1000;
   const lines = (Array.isArray(lyrics?.lines) ? lyrics.lines : []).
@@ -95,11 +95,11 @@ export default function SyncedLyrics({ trackId, position, resolvedLyrics, onSeek
     </div>);
 
 
-  if (!text) return <div className="flex-1 flex flex-col items-center justify-center px-6 text-center gap-4 text-white/70 text-sm" role="status"><p>{current?.error|| (current?.instrumental?'This recording is instrumental.':'No matching lyrics on LRCLIB yet.')}</p><div className="flex flex-wrap justify-center gap-2">{current?.error&&<button className="rounded-full border border-white/25 px-4 py-3" onClick={onRetry}>Retry</button>}<button className="rounded-full border border-white/25 px-4 py-3" onClick={onFindMatch}>Find another match</button></div></div>;
+  if (!text) return <div className="flex-1 flex flex-col items-center justify-center px-6 text-center gap-4 text-white/70 text-sm" role="status"><p>{current?.error || (current?.instrumental ? 'This recording is instrumental.' : 'No matching lyrics on LRCLIB yet.')}</p><div className="flex flex-wrap justify-center gap-2">{current?.error && <button className="rounded-full border border-white/25 px-4 py-3" onClick={onRetry}>Retry</button>}<button className="rounded-full border border-white/25 px-4 py-3" onClick={onFindMatch}>Find another match</button></div></div>;
 
   return (
     <div className="public-lyrics-scroll no-scrollbar" aria-label="Song lyrics">
-      <p className="public-lyrics-note">Lyrics · not synced{resolvedLyrics?.source === "LRCLIB" && <> · <a href="https://lrclib.net" target="_blank" rel="noopener noreferrer">LRCLIB</a></>}</p>
+      <p className="public-lyrics-note hidden">Lyrics · not synced{resolvedLyrics?.source === "LRCLIB" && <> · <a href="https://lrclib.net" target="_blank" rel="noopener noreferrer">LRCLIB</a></>}</p>
       {text.replace(/\r\n?/g, "\n").split("\n").map((line, index) =>
       line.trim() ? <p key={index} className="public-lyric-line public-lyric-plain selectable-content">{line}</p> :
       <div key={index} className="h-6" aria-hidden="true" />)}
