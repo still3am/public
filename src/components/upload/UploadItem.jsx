@@ -48,6 +48,10 @@ export default function UploadItem({
       done ? "ring-emerald-500/40" : "ring-border"}`
       }>
       
+      <div className="upload-file-header">
+        <div><strong title={item.file?.name}>{item.file?.name || item.title || 'Audio file'}</strong><small>{item.file?.size ? `${(item.file.size / (1024 * 1024)).toFixed(1)} MB` : 'Audio'}{item.duration ? ` · ${Math.floor(item.duration / 60)}:${String(Math.floor(item.duration % 60)).padStart(2, '0')}` : ''}</small></div>
+        <span className={`upload-file-status ${!done && item.error ? 'has-error' : ''}`} role="status">{(uploading || enhancing || item.status === 'analyzing' || item.detecting) && !done ? <Loader2 size={12} className="animate-spin"/> : done ? <CheckCheck size={13}/> : null}{done ? 'Complete' : uploading ? 'Uploading' : enhancing ? 'Adding lyrics' : item.status === 'analyzing' ? 'Reading file' : item.error ? 'Needs attention' : item.detecting ? 'Finding details' : 'Review details'}</span>
+      </div>
       <div className="p-3 md:p-4 flex flex-col items-center sm:flex-row sm:items-start gap-3 md:gap-4">
         {/* Cover — auto-detected, tap to replace with your own image */}
         <CoverPicker

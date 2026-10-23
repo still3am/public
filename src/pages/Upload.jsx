@@ -1,129 +1,65 @@
-import { useRef } from "react";
-import { Link } from "react-router-dom";
-import { UploadCloud, Loader2, CheckCheck, Ban, ExternalLink } from "lucide-react";
-import { useUploadsEnabled } from "@/hooks/useUploadsEnabled";
-import { useAuth } from "@/lib/AuthContext";
-import FileDropZone from "@/components/upload/FileDropZone";
-import UploadItem from "@/components/upload/UploadItem";
-import DuplicateModal from "@/components/upload/DuplicateModal";
-import { useUpload } from "@/context/UploadContext";
-import { AUDIO_ACCEPT, IMAGE_ACCEPT } from "@/lib/audio-utils";
+import { useRef, useState } from 'react';
+import { Link } from 'react-router-dom';
+import { UploadCloud, Loader2, CheckCheck, Ban, ExternalLink, ArrowUpRight, Plus, AlertCircle } from 'lucide-react';
+import { useUploadsEnabled } from '@/hooks/useUploadsEnabled';
+import { useAuth } from '@/lib/AuthContext';
+import FileDropZone from '@/components/upload/FileDropZone';
+import UploadItem from '@/components/upload/UploadItem';
+import DuplicateModal from '@/components/upload/DuplicateModal';
+import { useUpload } from '@/context/UploadContext';
+import { AUDIO_ACCEPT, IMAGE_ACCEPT, isAudioFile } from '@/lib/audio-utils';
+import './upload.css';
 
 export default function Upload() {
   const { user } = useAuth();
-  const isAdmin = user?.role === "admin";
+  const isAdmin = user?.role === 'admin';
   const inputRef = useRef(null);
+  const [filter,setFilter] = useState('all');
+  const [fileNotice,setFileNotice] = useState('');
   const q = useUpload();
   const { loading: loadingSwitch, enabled: uploadsEnabled } = useUploadsEnabled();
-
-  if (!loadingSwitch && !uploadsEnabled && !isAdmin) {
-    return (
-      <div className="max-w-3xl mx-auto">
-        <div className="mt-20 text-center">
-          <Ban size={32} className="mx-auto mb-3 text-foreground/30" />
-          <h1 className="text-xl font-extrabold tracking-tight">Uploads are paused</h1>
-          <p className="text-sm text-foreground/50 mt-1.5">
-            New uploads are temporarily closed. Check back soon.
-          </p>
-        </div>
-      </div>);
-
+  const readyCount = q.items.filter(it=>it.status==='ready').length;
+  const completed = q.items.filter(it=>it.status==='done').length;
+  const needsAttention = it=>it.status!=='done' && (!!it.error || it.status==='error');
+  const attentionCount = q.items.filter(needsAttention).length;
+  const busy = q.items.some(it=>['uploading','enhancing'].includes(it.status));
+  const shownItems = q.items.filter(it=>filter==='done'?it.status==='done':filter==='attention'?needsAttention(it):true);
+  const pending = q.items.length-completed;
+  async function addFiles(fileList) {
+    const files=Array.from(fileList || []);
+    if (!files.some(isAudioFile)) {setFileNotice('Choose at least one audio file. Artwork can be selected together with your tracks.');return;}
+    setFilter('all');setFileNotice('');
+    try {await q.addFiles(files);} catch {setFileNotice('Those files could not be added. Please select them again.');}
   }
-
-  const readyCount = q.items.filter((it) => it.status === "ready").length;
-  const doneCount = q.uploadedCount;
-  const busy = q.items.some((it) => ["uploading", "enhancing"].includes(it.status));
-
-  return (
-    <div className="upload-page max-w-3xl mx-auto">
-      <header className="page-intro"><h1>Upload music</h1><p>Add your audio, review its details, and publish to PUBLIC.</p></header>
-      <Link to="/unfinished-uploads" className="playlist-action mb-5">Finish saved uploads</Link>
-      <section className="mb-5 rounded-2xl border border-border bg-card p-4" aria-label="Spotdown upload helper">
-        <div className="flex flex-wrap items-center justify-between gap-3"><div className="min-w-0"><h2 className="font-semibold text-sm">Have a Spotify link?</h2><p className="text-xs text-muted-foreground mt-1">Open Spotdown, then return here to select your audio file.</p></div>
-        <a href="https://spotdown.org/en2" target="_blank" rel="noopener noreferrer" className="playlist-action inline-flex items-center gap-2">Open Spotdown <ExternalLink size={14}/></a></div>
-        <p className="text-xs text-muted-foreground mt-3">Opens an external website. Only upload music you own or have permission to share.</p>
-      </section>
-      
-
-
-
-
-      
-
-      {q.catalogError && <div role="alert" className="border rounded-xl p-3 mb-4 text-sm">{q.catalogError}<button className="underline ml-2" onClick={q.refreshDuplicates}>Retry check</button></div>}
-      {doneCount > 0 && <button className="underline text-sm mb-3" onClick={q.clearFinished}>Clear completed uploads</button>}
-      <FileDropZone onFiles={q.addFiles} inputRef={inputRef} />
-      <input
-        ref={inputRef}
-        type="file"
-        accept={`${AUDIO_ACCEPT},${IMAGE_ACCEPT}`}
-        multiple
-        className="hidden"
-        onChange={(e) => {
-          if (e.target.files?.length) q.addFiles(e.target.files);
-          e.target.value = "";
-        }} />
-      
-
-      {q.items.length > 0 &&
-      <>
-          <div className="upload-queue-toolbar sticky top-[env(safe-area-inset-top)] md:top-0 z-20 px-3 py-2 mt-5 bg-background border border-border rounded-xl flex items-center justify-between gap-2">
-            <div className="min-w-0">
-              <div className="text-xs sm:text-sm font-bold tracking-tight">
-                {q.items.length} {q.items.length === 1 ? "track" : "tracks"} queued
-              </div>
-              {doneCount > 0 &&
-            <div className="text-[11px] font-semibold text-emerald-600 dark:text-emerald-400 flex items-center gap-1 mt-0.5">
-                  <CheckCheck size={11} /> {doneCount} uploaded
-                </div>
-            }
-            </div>
-            {readyCount > 0 &&
-          <button
-            onClick={q.uploadAll}
-            disabled={busy}
-            className="upload-batch-action shrink-0 inline-flex items-center justify-center gap-1.5 px-3 rounded-full bg-foreground text-background text-xs font-semibold disabled:opacity-50 active:scale-95 transition">
-            
-                {busy ?
-            <Loader2 size={14} className="animate-spin" /> :
-
-            <UploadCloud size={14} />
-            }
-                Upload all ({readyCount})
-              </button>
-          }
-          </div>
-
-          <div className="space-y-3 mt-4">
-            {q.items.map((item) =>
-          <div key={item.id} className="relative">
-                {(item.status === "analyzing" || item.detecting) && item.status !== "done" &&
-            <div className="absolute -top-2 left-4 z-10 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-foreground text-background text-[10px] font-bold shadow-lg">
-                    <Loader2 size={10} className="animate-spin" />
-                    {item.status === "analyzing" ? "Reading file…" : "Auto-detecting details…"}
-                  </div>
-            }
-                <UploadItem
-              item={item}
-              isAdmin={isAdmin}
-              onChange={(data) => q.patch(item.id, data)}
-              onRemove={() => q.remove(item.id)}
-              onUpload={() => q.uploadOne(item)}
-              disabled={item.status === "analyzing"} />
-            
-              </div>
-          )}
-          </div>
-        </>
-      }
-
-      {q.dupes?.length > 0 &&
-      <DuplicateModal
-        tracks={q.dupes}
-        onClose={() => q.setDupes(null)}
-        onRemove={(id) => q.remove(id)} />
-
-      }
-    </div>);
-
+  if (!loadingSwitch && !uploadsEnabled && !isAdmin) return <div className="upload-page upload-studio"><div className="upload-paused"><Ban size={32}/><h1>Uploads are paused</h1><p>New uploads are temporarily closed. Check back soon.</p><Link to="/library" className="playlist-action">Go to library</Link></div></div>;
+  return <div className="upload-page upload-studio">
+    <header className="upload-studio-header">
+      <div><span className="upload-eyebrow">YOUR MUSIC, ON PUBLIC.</span><h1>Upload music</h1><p>Bring your tracks. Make them yours.</p></div>
+      <Link to="/unfinished-uploads" className="upload-saved-link">Saved uploads <ArrowUpRight size={15}/></Link>
+    </header>
+    <ol className="upload-steps" aria-label="Upload steps"><li><span>1</span>Add audio</li><li><span>2</span>Review details</li><li><span>3</span>{isAdmin?'Save or publish':'Save or submit'}</li></ol>
+    <div className="upload-workspace">
+      <div>
+        <FileDropZone onFiles={addFiles} inputRef={inputRef} compact={q.items.length>0} disabled={loadingSwitch}/>
+        <input ref={inputRef} type="file" aria-label="Select audio and optional artwork" accept={`${AUDIO_ACCEPT},${IMAGE_ACCEPT}`} multiple className="hidden" disabled={loadingSwitch} onChange={e=>{if(e.target.files?.length)addFiles(e.target.files);e.target.value='';}}/>
+        {loadingSwitch && <p className="upload-file-notice" role="status">Checking upload availability…</p>}
+        {fileNotice && <p className="upload-file-notice" role="alert"><AlertCircle size={15}/>{fileNotice}</p>}
+      </div>
+      <aside className="upload-helpers" aria-label="Upload help">
+        <section className="upload-helper-card"><span className="upload-eyebrow">FROM A LINK</span><h2>Have a Spotify link?</h2><p>Open Spotdown, then come back and select your audio file.</p><a href="https://spotdown.org/en2" target="_blank" rel="noopener noreferrer" className="upload-helper-link">Open Spotdown <ExternalLink size={14}/></a><small>Opens an external website.</small></section>
+        <section className="upload-helper-note"><h2>A little help with the details</h2><p>We read tags and artwork from your files. Use “Find catalog metadata” on a track to look up missing details.</p><p>{isAdmin?'Tracks with an artist, genre, and artwork can be published.':'Tracks with an artist, genre, and artwork can be submitted for review.'} You can also save them privately to your library.</p></section>
+      </aside>
+    </div>
+    {q.catalogError && <div role="alert" className="upload-catalog-warning"><AlertCircle size={17}/><div>{q.catalogError}<button type="button" onClick={q.refreshDuplicates}>Retry check</button></div></div>}
+    {q.items.length>0 && <section className="upload-queue-section" aria-label="Upload queue">
+      <div className="upload-queue-toolbar">
+        <div><h2>Your tracks <span>{q.items.length}</span></h2><p aria-live="polite">{busy?'Uploading your music…':`${pending} remaining${completed?` · ${completed} completed`:''}`}</p></div>
+        <div className="upload-queue-actions"><button type="button" className="upload-add-more" onClick={()=>inputRef.current?.click()} disabled={loadingSwitch}><Plus size={16}/><span>Add files</span></button>{readyCount>0 && <button type="button" onClick={q.uploadAll} disabled={busy || loadingSwitch} className="upload-batch-action">{busy?<Loader2 size={15} className="animate-spin"/>:<UploadCloud size={15}/>}Upload all <span>{readyCount}</span></button>}</div>
+      </div>
+      <div className="upload-queue-filters"><div aria-label="Filter queued tracks">{[['all','All',q.items.length],['attention','Needs attention',attentionCount],['done','Completed',completed]].map(([key,label,count])=><button key={key} type="button" aria-pressed={filter===key} onClick={()=>setFilter(key)}>{label}<span>{count}</span></button>)}</div>{completed>0 && <button type="button" className="upload-clear" onClick={()=>{q.clearFinished();if(filter==='done')setFilter('all');}}>Clear completed</button>}</div>
+      <div className="upload-track-list">{shownItems.length?shownItems.map(item=><UploadItem key={item.id} item={item} isAdmin={isAdmin} onChange={data=>q.patch(item.id,data)} onRemove={()=>q.remove(item.id)} onUpload={()=>q.uploadOne(item)} disabled={item.status==='analyzing' || loadingSwitch}/>):<div className="upload-filter-empty"><CheckCheck size={24}/><p>{filter==='attention'?'No upload errors to review.':'No completed uploads yet.'}</p><button type="button" onClick={()=>setFilter('all')}>Show all tracks</button></div>}</div>
+    </section>}
+    <p className="upload-permission-note">Only upload audio, artwork, and videos you own or have permission to share.</p>
+    {q.dupes?.length>0 && <DuplicateModal tracks={q.dupes} onClose={()=>q.setDupes(null)} onRemove={id=>q.remove(id)}/>}
+  </div>;
 }
