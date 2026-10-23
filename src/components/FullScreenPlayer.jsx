@@ -1,5 +1,5 @@
 import FindLyricsModal from '@/components/FindLyricsModal';
-import {findLyricsCatalog} from '@/lib/lyricsCatalog';
+import {getPublicLyrics} from '@/lib/publicLyrics';
 import PureBadge from "@/components/PureBadge";
 import DeviceConnect from "@/components/DeviceConnect";
 import OverflowText from "@/components/OverflowText";
@@ -89,6 +89,7 @@ export default function FullScreenPlayer({ onClose }) {
   const [lyricsAvailability, setLyricsAvailability] = useState({ trackId: null, available: false });
   const [lyricsRevision,setLyricsRevision] = useState(0);
   useEffect(()=>{const changed=event=>{if(event.detail?.trackId===t?.id)setLyricsRevision(value=>value+1);};window.addEventListener('lyrics:changed',changed);return()=>window.removeEventListener('lyrics:changed',changed);},[t?.id]);
+  useEffect(()=>{const saved=event=>{if(event.detail?.trackId===t?.id)setLyricsAvailability({trackId:t.id,...event.detail.result});};window.addEventListener('lyrics:cache-status',saved);return()=>window.removeEventListener('lyrics:cache-status',saved);},[t?.id]);
   const hasLyrics = lyricsAvailability.trackId === t?.id && lyricsAvailability.available;
   const showingLyrics = lyricsMode;
   const [coverFailed, setCoverFailed] = useState(false);
@@ -103,7 +104,7 @@ export default function FullScreenPlayer({ onClose }) {
     let alive=true;const controller=new AbortController();
     setLyricsAvailability({trackId:t?.id,available:false,loading:true});
     if(!t?.id)return()=>controller.abort();
-    findLyricsCatalog(t,{signal:controller.signal}).then(result=>{
+    getPublicLyrics(t,{signal:controller.signal}).then(result=>{
       if(alive)setLyricsAvailability({trackId:t.id,available:false,loading:false,...result});
     }).catch(error=>{if(alive)setLyricsAvailability({trackId:t.id,available:false,loading:false,error:error.message||'Lyrics could not load.'});});
     return()=>{alive=false;controller.abort();};

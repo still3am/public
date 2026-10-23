@@ -53,8 +53,8 @@ export function parseLrc(value, duration = 0) {
 export function selectLyricsMatch(rows, track) {
   const title=normalize(cleanLyricsTitle(track.title)),artist=normalize(track.artist),duration=Number(track.duration_seconds)||0;
   if(!title||!artist)return null;
-  const matches=rows.filter(row=>normalize(row.trackName)===title&&normalize(row.artistName)===artist&&(row.instrumental||text(row.plainLyrics)||text(row.syncedLyrics))&&(!duration||Number.isFinite(Number(row.duration))&&Math.abs(Number(row.duration)-duration)<=2));
-  matches.sort((a,b)=>(duration?Math.abs(a.duration-duration)-Math.abs(b.duration-duration):0)||(normalize(b.albumName)===normalize(track.album_name)?1:0)-(normalize(a.albumName)===normalize(track.album_name)?1:0)||Number(!!b.syncedLyrics)-Number(!!a.syncedLyrics));
+  const matches=rows.filter(row=>normalize(row.trackName)===title&&normalize(row.artistName)===artist&&(row.instrumental||parseLrc(row.syncedLyrics,Number(row.duration)||duration).length>=2)&&(!duration||Number.isFinite(Number(row.duration))&&Math.abs(Number(row.duration)-duration)<=2));
+  matches.sort((a,b)=>Number(!!b.syncedLyrics)-Number(!!a.syncedLyrics)||(duration?Math.abs(a.duration-duration)-Math.abs(b.duration-duration):0)||(normalize(b.albumName)===normalize(track.album_name)?1:0)-(normalize(a.albumName)===normalize(track.album_name)?1:0)||Number(!!b.syncedLyrics)-Number(!!a.syncedLyrics));
   if(!duration&&new Set(matches.map(row=>Math.round(Number(row.duration)))).size>1)return null;
   return matches[0]||null;
 }
@@ -74,7 +74,7 @@ export function lyricsResult(row, duration = 0) {
   if(!row)return null;
   const lines=parseLrc(row.syncedLyrics,Number(duration)||Number(row.duration)||0);
   const plain=text(row.plainLyrics)||lines.filter(line=>line.text!=='♪').map(line=>line.text).join('\n');
-  return {text:plain,record:lines.length?{lines}:null,source:'LRCLIB',sourceId:row.id,instrumental:row.instrumental===true,available:!!plain||lines.length>0};
+  return {text:plain,record:lines.length?{lines}:null,source:'LRCLIB',sourceId:row.id,instrumental:row.instrumental===true,available:lines.length>=2,syncUnavailable:!row.instrumental&&lines.length<2};
 }
 /** @param {any} track @param {{signal?:AbortSignal}} options */
 export async function findLyricsCatalog(track, options = {}) {
