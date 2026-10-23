@@ -3,6 +3,7 @@ let sequence = 0;
 const cache = new Map();
 const routes = { song: '/search', artist: '/search/artist', album: '/search/album' };
 const abortError = () => new DOMException('Cancelled', 'AbortError');
+/** @param {string} path @param {{signal?: AbortSignal}} options */
 export function catalogRequest(path, { signal } = {}) {
   if (!/^\/(search(?:\/artist|\/album)?|track\/\d+|album\/\d+|artist\/\d+)(?:\?|$)/.test(path)) return Promise.reject(new Error('Unsupported catalog request'));
   if (signal?.aborted) return Promise.reject(abortError());

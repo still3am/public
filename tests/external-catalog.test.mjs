@@ -1,0 +1,22 @@
+import assert from 'node:assert/strict';
+import {catalogRequest, searchExternalCatalog, catalogDetails, catalogLink, uploadMetadata} from '../src/lib/externalCatalog.js';
+const scripts=[];
+globalThis.window={};
+globalThis.document={createElement:()=>({remove(){this.removed=true;}}),head:{appendChild(script){scripts.push(script);}}};
+const answer=(script,value)=>window[new URL(script.src).searchParams.get('callback')](value);
+let request=searchExternalCatalog('Dior & Pop Smoke','song');
+let script=scripts.at(-1);const url=new URL(script.src);
+assert.equal(url.origin,'https://api.deezer.com');assert.equal(url.searchParams.get('q'),'Dior & Pop Smoke');assert.equal(url.searchParams.get('output'),'jsonp');
+answer(script,{data:[{id:123,title:'Dior'}, {id:'bad'}]});assert.equal((await request).length,1);assert.ok(script.removed);assert.equal(Object.keys(window).length,0);
+const before=scripts.length;assert.equal((await searchExternalCatalog('Dior & Pop Smoke')).length,1);assert.equal(scripts.length,before,'short cache avoids duplicate traffic');
+for(const kind of ['artist','album']){request=searchExternalCatalog('test',kind);script=scripts.at(-1);assert.equal(new URL(script.src).pathname,'/search/'+kind);answer(script,{data:[]});assert.deepEqual(await request,[]);}
+request=catalogDetails('song',123);script=scripts.at(-1);assert.equal(new URL(script.src).pathname,'/track/123');answer(script,{id:123,title:'Track',artist:{name:'Artist'},album:{title:'Album'},release_date:'2025-03-01',track_position:2,disk_number:1,explicit_lyrics:true,audio_url:'never-copy'});const details=await request;
+assert.deepEqual(uploadMetadata(details),{title:'Track',artist:'Artist',album_name:'Album',album_artist:'Artist',release_year:2025,track_number:2,disc_number:1,explicit:true});assert.ok(!('audio_url' in uploadMetadata(details)));
+assert.equal(catalogLink('javascript:alert(1)'), '');assert.equal(catalogLink('https://evil.example/'), '');assert.equal(catalogLink('https://www.deezer.com/track/123'),'https://www.deezer.com/track/123');
+await assert.rejects(catalogRequest('//evil.example/search'));await assert.rejects(catalogDetails('song','../evil'));
+const controller=new AbortController();request=searchExternalCatalog('abort song','song',{signal:controller.signal});script=scripts.at(-1);controller.abort();await assert.rejects(request,{name:'AbortError'});assert.ok(script.removed);assert.equal(Object.keys(window).length,0);
+request=searchExternalCatalog('network failure');script=scripts.at(-1);script.onerror();await assert.rejects(request,/Could not reach/);assert.ok(script.removed);
+request=searchExternalCatalog('provider failure');script=scripts.at(-1);answer(script,{error:{code:4}});await assert.rejects(request,/unavailable/);
+request=searchExternalCatalog('bad response');script=scripts.at(-1);answer(script,{});await assert.rejects(request,/Unexpected/);
+assert.deepEqual(await searchExternalCatalog('a'),[]);
+console.log('PASS external search routes, encoding, cache, metadata mapping, safe links, cancellation, cleanup, and provider errors');
