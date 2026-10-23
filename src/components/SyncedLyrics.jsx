@@ -90,7 +90,7 @@ export default function SyncedLyrics({ trackId, position, resolvedLyrics, onSeek
   if (hasTimed) return (
     <div ref={scrollRef} onWheel={markUserScroll} onTouchStart={markUserScroll} onTouchMove={markUserScroll}
     className="public-lyrics-scroll no-scrollbar" aria-label="Synced song lyrics">
-      {resolvedLyrics?.source === 'LRCLIB' && <p className="public-lyrics-note"><a href="https://lrclib.net" target="_blank" rel="noopener noreferrer" className="hidden">Lyrics via LRCLIB</a></p>}
+      {resolvedLyrics?.source === 'LRCLIB' && <p className="public-lyrics-note"></p>}
       {lines.map((line, index) => {
         const active = index === activeIdx;
         const distance = activeIdx < 0 ? index : Math.abs(index - activeIdx);
