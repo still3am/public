@@ -144,7 +144,7 @@ export default function TrackDetail() {
   if (!track) return <EmptyState title="Track not found" />;
 
   const isCurrent = p.currentTrack?.id === track.id;
-  const isOwner = track.uploader_id === user?.id;
+  const isOwner = !!user?.id && track.uploader_id === user.id;
   const isPlaying = isCurrent && p.isPlaying;
   const hasLyricsAudio = !!(track.audio_url || track.audio_file_uri || track._private_audio);
   const displayArtist = track.artist || "";
