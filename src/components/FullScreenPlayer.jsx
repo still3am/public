@@ -86,6 +86,8 @@ export default function FullScreenPlayer({ onClose }) {
   const [dragging, setDragging] = useState(false);
   const dismissThreshold = 110;
   const [lyricsAvailability, setLyricsAvailability] = useState({ trackId: null, available: false });
+  const [lyricsRevision,setLyricsRevision] = useState(0);
+  useEffect(()=>{const changed=event=>{if(event.detail?.trackId===t?.id)setLyricsRevision(value=>value+1);};window.addEventListener('lyrics:changed',changed);return()=>window.removeEventListener('lyrics:changed',changed);},[t?.id]);
   const hasLyrics = lyricsAvailability.trackId === t?.id && lyricsAvailability.available;
   const showingLyrics = lyricsMode && hasLyrics;
   const handleLyricsUnavailable = useCallback(() => {
@@ -134,7 +136,7 @@ export default function FullScreenPlayer({ onClose }) {
       if (!available) setLyricsMode(false);
     });
     return () => {alive = false;controller.abort();};
-  }, [t?.id]);
+  }, [t?.id,lyricsRevision]);
 
   // keyboard shortcuts
   useEffect(() => {
