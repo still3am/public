@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { Loader2, X, Search, Check } from 'lucide-react';
-import { chooseLyricsCatalogMatch, lyricsResult, rankLyricsCandidates, searchLyricsCatalog } from '@/lib/lyricsCatalog';
+import { chooseLyricsCatalogMatch, clearLyricsCatalogMatch, lyricsResult, rankLyricsCandidates, searchLyricsCatalog } from '@/lib/lyricsCatalog';
 /** @param {any} props */
 export default function FindLyricsModal({track,onClose,onSaved}) {
   const [title,setTitle]=useState(track.title||''),[artist,setArtist]=useState(track.artist||'');
@@ -32,6 +32,7 @@ export default function FindLyricsModal({track,onClose,onSaved}) {
     <div className="bg-background w-full md:max-w-xl rounded-t-3xl md:rounded-3xl border border-border flex flex-col max-h-[92dvh]" onClick={e=>e.stopPropagation()}>
       <header className="flex justify-between items-center p-4 border-b"><h2 className="font-bold">Find lyrics · LRCLIB</h2><button className="p-3 rounded-full" onClick={close} disabled={saving} aria-label="Close"><X size={18}/></button></header>
       <div className="p-4 overflow-y-auto min-h-0 space-y-3"><p className="text-xs text-muted-foreground">Free catalog lookup. Choose the correct recording and review its words and timing. Your selection is used for this browsing session.</p>
+      <button type="button" className="text-xs underline py-2" disabled={loading||saving} onClick={()=>{clearLyricsCatalogMatch(track);onSaved?.();}}>Reset to automatic matching</button>
       <form onSubmit={e=>{e.preventDefault();search();}} className="space-y-2"><label className="block text-xs">Song title<input className="block w-full border rounded-xl bg-background px-3 py-2 mt-1" value={title} onChange={e=>setTitle(e.target.value)} maxLength={200} disabled={saving}/></label><label className="block text-xs">Artist<input className="block w-full border rounded-xl bg-background px-3 py-2 mt-1" value={artist} onChange={e=>setArtist(e.target.value)} maxLength={200} disabled={saving}/></label><button type="submit" className="playlist-action" disabled={loading||saving||!title.trim()||!artist.trim()}><Search size={14}/> Search lyrics</button></form>
       {loading&&<p role="status" className="flex gap-2 text-sm"><Loader2 size={15} className="animate-spin"/>Finding matches…</p>}{notice&&<p role="status" className="text-xs text-muted-foreground">{notice}</p>}
       {selected&&<div className="border rounded-xl p-3"><h3 className="text-sm font-semibold mb-2">Selected recording · preview</h3><pre className="selectable-content whitespace-pre-wrap text-sm font-sans leading-7 max-h-40 overflow-y-auto">{result?.text||(selected.instrumental?'Instrumental — no lyrics.':'No lyrics in this record.')}</pre></div>}
