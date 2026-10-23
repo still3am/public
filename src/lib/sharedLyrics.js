@@ -2,7 +2,7 @@ import {lyricsResult} from './lyricsCatalog.js';
 export const lyricsFingerprint = track => JSON.stringify([String(track.title||'').trim(),String(track.artist||'').trim(),Math.round((Number(track.duration_seconds)||0)*1000),String(track.album_name||'').trim()]);
 const rows=value=>Array.isArray(value)?value:value?.items||[];
 // Only the server writes shared records. No browser-supplied lyric text is saved.
-export function createSharedLyricsService(client,lookup,notify=()=>{}) {
+export function createSharedLyricsService(client,lookup,notify=(_detail)=>{}) {
  const memory=new Map(),pending=new Map();
  const emit=(track,key,result)=>{memory.set(key,{until:Date.now()+120000,result});notify({trackId:track.id,result});};
  async function load(track,key) {
@@ -21,11 +21,12 @@ export function createSharedLyricsService(client,lookup,notify=()=>{}) {
   }).catch(()=>emit(track,key,{...result,cacheStatus:'unavailable',cacheMessage:'Lyrics loaded. Shared saving is unavailable; Public will retry on your next visit.'}));
   return playable;
  }
+ /** @param {any} track @param {{signal?:AbortSignal}} options */
  return async function get(track,{signal}={}) {
   if(signal?.aborted)throw new DOMException('Cancelled','AbortError');
   if(!track?.id)return lookup(track,{signal});
   const key=track.id+':'+lyricsFingerprint(track),cached=memory.get(key);
-  if(cached&&cached.until>Date.now()&&cached.result?.cacheStatus!=='unavailable')return cached.result;
+  if(cached&&cached.until>Date.now())return cached.result;
   if(!pending.has(key)){
    const job=load(track,key).then(result=>{if(memory.size>=60)memory.delete(memory.keys().next().value);if(!memory.has(key))memory.set(key,{until:Date.now()+120000,result});return result;}).finally(()=>pending.delete(key));pending.set(key,job);
   }
