@@ -4523,7 +4523,13 @@
         "/avatars/box-logo.webp",
         "/avatars/peeled-sticker.webp",
         "/avatars/saiyan-power-up.webp",
-        "/avatars/sharingan-eye.webp"
+        "/avatars/sharingan-eye.webp",
+        "/avatars/pixel-zombie.webp",
+        "/avatars/rock-lee.webp",
+        "/avatars/finn-adventure.webp",
+        "/avatars/flame-princess.webp",
+        "/avatars/stitch-love.webp",
+        "/avatars/mario-luigi-spin.webp"
       ],
       "default": "",
       "description": "Preinstalled gallery choice only. External uploads remain in avatar_url.",
