@@ -1,4 +1,4 @@
-import FindLyricsModal from '@/components/FindLyricsModal';
+import TrackCatalogLyrics from '@/components/TrackCatalogLyrics';
 import {entityRows} from "@/lib/entityRows";
 import TrackMusicVideo from "@/components/TrackMusicVideo";
 import "./track-editorial.css";
@@ -33,14 +33,10 @@ import {
   Play,
   Pause,
   Pencil,
-  Sparkles,
-  Timer,
   Wand2 } from
 "lucide-react";
 import TrackRow from "@/components/TrackRow";
 import TrackOptionsMenu from "@/components/track/TrackOptionsMenu";
-import SyncLyricsModal from "@/components/SyncLyricsModal";
-import GenerateLyricsModal from "@/components/GenerateLyricsModal";
 import { useToast } from "@/components/ui/use-toast";
 import { fetchArtistTracks } from "@/lib/artistTracks";
 import { getUsersByIds } from "@/lib/userLookup";
@@ -59,10 +55,7 @@ export default function TrackDetail() {
   const [loading, setLoading] = useState(true);
   const [uploader, setUploader] = useState(null);
   const [editing, setEditing] = useState(false);
-  const [generating, setGenerating] = useState(false);
-  const [findingLyrics,setFindingLyrics] = useState(false);
   const [detecting, setDetecting] = useState(false);
-  const [syncing, setSyncing] = useState(/** @type {boolean | "generated"} */ (false));
   const [moreTracks, setMoreTracks] = useState([]);
   const [recommended, setRecommended] = useState([]);
   useEffect(() => {
@@ -108,7 +101,7 @@ export default function TrackDetail() {
   }
 
   useEffect(() => {
-    detectVersion.current++;setTrack(null);setUploader(null);setMoreTracks([]);setEditing(false);setGenerating(false);setFindingLyrics(false);setSyncing(false);setDetecting(false);load();
+    detectVersion.current++;setTrack(null);setUploader(null);setMoreTracks([]);setEditing(false);setDetecting(false);load();
     return () => {loadVersion.current++;};
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
@@ -146,7 +139,6 @@ export default function TrackDetail() {
   const isCurrent = p.currentTrack?.id === track.id;
   const isOwner = !!user?.id && track.uploader_id === user.id;
   const isPlaying = isCurrent && p.isPlaying;
-  const hasLyricsAudio = !!(track.audio_url || track.audio_file_uri || track._private_audio);
   const displayArtist = track.artist || "";
 
   const ownerItems = isOwner ?
@@ -161,19 +153,7 @@ export default function TrackDetail() {
     label: detecting ? "Detecting genre…" : "Detect genre (AI)",
     onClick: detectGenre
   },
-  ...(hasLyricsAudio ?
-  [{
-    icon: Sparkles,
-    label: track.lyrics_text?.trim() ? "Regenerate lyrics" : "Generate lyrics",
-    onClick: () => setGenerating(true)
-  },
-  {
-    icon: Timer,
-    label: "Sync lyrics",
-    onClick: () => setSyncing(true)
-  }] :
-  [])] :
-  [];
+  ] : [];
 
   return (
     <div className="track-page track-editorial release-page mx-auto" style={releaseTheme}>
@@ -205,33 +185,7 @@ export default function TrackDetail() {
       <div className="track-detail-columns">
 
 
-      {(isOwner || user?.role === 'admin') && <section className="track-page-section"><h2 className="font-bold mb-2">Lyrics catalog</h2><p className="text-xs text-muted-foreground mb-3">Find free lyrics and synced timing for this recording.</p><button className="playlist-action" onClick={()=>setFindingLyrics(true)}>Find lyrics · free</button></section>}
-      {track.lyrics_text && track.lyrics_text.trim() &&
-        <section className="track-page-section">
-          <h2 className="text-lg font-extrabold tracking-tight mb-3 flex items-center gap-2">
-             Lyrics
-          </h2>
-          <CollapsibleText text={track.lyrics_text} className="track-page-lyrics selectable-content whitespace-pre-line leading-relaxed" clampClass="max-h-64" />
-          {isOwner && hasLyricsAudio &&
-          <button
-            onClick={() => setGenerating(true)}
-            className="mt-3 inline-flex items-center gap-2 text-xs font-semibold text-foreground/60 hover:text-foreground">
-             Regenerate with AI
-          </button>}
-        </section>
-        }
-
-      {isOwner && !track.lyrics_text?.trim() && hasLyricsAudio &&
-        <section className="track-page-section rounded-2xl border border-dashed border-border p-5 text-center">
-          <Sparkles size={20} className="mx-auto text-foreground/40 mb-2" />
-          <p className="text-sm text-foreground/60 mb-3">No saved lyrics yet. Try the free lyrics catalog above, enter your own in Edit track, or use AI transcription.</p>
-          <button
-            onClick={() => setGenerating(true)}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-foreground text-background text-sm font-semibold">
-            <Sparkles size={14} /> Generate lyrics
-          </button>
-        </section>
-        }
+      <TrackCatalogLyrics key={track.id} track={track}/>
 
       {(track._has_music_video || track.music_video_file_uri) && <TrackMusicVideo key={track.id + ":" + (track.music_video_file_uri || "")} track={track} />}
       <section className="release-credits">
@@ -261,28 +215,6 @@ export default function TrackDetail() {
 
       }
 
-      {findingLyrics && <FindLyricsModal key={track.id} track={track} onClose={()=>setFindingLyrics(false)} onSaved={updated=>{setTrack(prev=>({...prev,...updated}));setFindingLyrics(false);}}/>}
-
-      {generating &&
-      <GenerateLyricsModal
-        track={track}
-        onClose={() => setGenerating(false)}
-        onSaved={(updated, options) => {
-          setTrack((prev) => ({ ...prev, ...updated }));
-          setGenerating(false);
-          if (options?.sync) setSyncing("generated");
-        }} />
-
-      }
-
-      {syncing &&
-      <SyncLyricsModal
-        track={track}
-        preferTrackLyrics={syncing === "generated"}
-        onClose={() => setSyncing(false)}
-        onSaved={() => setSyncing(false)} />
-
-      }
     </div>);
 
 }

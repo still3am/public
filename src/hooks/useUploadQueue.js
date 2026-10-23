@@ -78,7 +78,7 @@ export function useUploadQueue({ user, isAdmin }) {
   if(!user?.id)return;const epoch=generation.current;
   const all=Array.from(fileList),files=all.filter(isAudioFile),coverFallback=all.find(f=>f.type.startsWith('image/')||IMAGE_EXT_RE.test(f.name||''));
   if(!files.length)return;
-  const batch=files.map(file=>({id:nextId(),file,title:deriveDefaultTitle(file),artist:'',album_name:'',album_artist:'',track_number:0,disc_number:0,release_year:0,genre:'',duration:0,explicit:false,aiLyrics:false,rightsConfirmed:false,allowDownloads:false,videoFile:null,coverFile:null,coverPreviewUrl:'',status:'analyzing',detecting:true,error:'',duplicateAcknowledged:false}));
+  const batch=files.map(file=>({id:nextId(),file,title:deriveDefaultTitle(file),artist:'',album_name:'',album_artist:'',track_number:0,disc_number:0,release_year:0,genre:'',duration:0,explicit:false,rightsConfirmed:false,allowDownloads:false,videoFile:null,coverFile:null,coverPreviewUrl:'',status:'analyzing',detecting:true,error:'',duplicateAcknowledged:false}));
   setItems(prev=>[...prev,...batch]);await refreshDuplicates();if(epoch!==generation.current)return;
   let cursor=0;
   const worker=async()=>{while(cursor<batch.length){const item=batch[cursor++];try{
@@ -158,7 +158,6 @@ export function useUploadQueue({ user, isAdmin }) {
    const track=await base44.entities.Track.create({title:item.title.trim(),audio_url:'',audio_file_uri:memo.file_uri,...(item.videoFile?{music_video_file_uri:memo.video_uri,video_rights_confirmed:true}:{}),audio_sha256:memo.sha,upload_request_id:item.id,cover_art_url:memo.cover_art_url||'',artist:item.artist.trim(),album_name:(item.album_name||'').trim(),album_artist:(item.album_artist||'').trim(),track_number:Number(item.track_number)||0,disc_number:Number(item.disc_number)||0,release_year:Number(item.release_year)||0,genre:item.genre||'Other',duration_seconds:item.duration,explicit:item.explicit,rights_confirmed:true,is_downloadable:item.allowDownloads===true,approval_status:ready?(isAdmin?'approved':'pending'):'private',is_published:isAdmin&&ready});
    memo.track=track;catalog.current.push({...track,audio_sha256:memo.sha});
    let warning='';
-   if(item.aiLyrics){updateItem(item.id,{status:'enhancing'});try{const lyrics=(await base44.functions.invoke('generateLyrics',{track_id:track.id})).data?.lyrics;if(!lyrics)throw Error();await base44.entities.Track.update(track.id,{lyrics_text:lyrics});}catch{warning='Audio saved. Lyrics could not generate; retry from the song page.';}}
    if(epoch!==generation.current)return;
    updateItem(item.id,{status:'done',detecting:false,error:warning,releaseStatus:track.approval_status});setUploadedCount(n=>n+1);
   }catch(e){

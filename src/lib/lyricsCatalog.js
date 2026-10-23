@@ -1,6 +1,14 @@
 const ROOT = 'https://lrclib.net';
 const CLIENT = 'Public/1.0 (https://publicnet.base44.app)';
 const cache = new Map();
+const choices = new Map();
+const signature = track => JSON.stringify([track.id,track.title,track.artist,track.duration_seconds]);
+export function chooseLyricsCatalogMatch(track,row) {
+ if(!Number.isSafeInteger(row?.id)||!lyricsResult(row)?.available)throw new Error("Choose a lyrics record first.");
+ if(choices.size>=50)choices.delete(choices.keys().next().value);
+ choices.set(signature(track),row);
+ if(typeof window!=="undefined")window.dispatchEvent(new CustomEvent("lyrics:changed",{detail:{trackId:track.id}}));
+}
 let queue = Promise.resolve(), nextRequest = 0, cooldown = 0;
 const cancelled = () => new DOMException('Cancelled', 'AbortError');
 const normalize = value => String(value || '').normalize('NFKC').toLowerCase().replace(/[’‘]/g,"'").replace(/[^\p{L}\p{N}]+/gu,' ').trim();
@@ -65,5 +73,8 @@ export function lyricsResult(row, duration = 0) {
 }
 /** @param {any} track @param {{signal?:AbortSignal}} options */
 export async function findLyricsCatalog(track, options = {}) {
+  if(options.signal?.aborted)throw cancelled();
+  const chosen=choices.get(signature(track));
+  if(chosen)return lyricsResult(chosen,chosen.duration);
   const rows=await searchLyricsCatalog(track,options);return lyricsResult(selectLyricsMatch(rows,track),track.duration_seconds);
 }

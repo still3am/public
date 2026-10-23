@@ -39,7 +39,6 @@ import { useOfflineCache } from "@/hooks/useOfflineCache";
 import { useOfflineCoverUrl } from "@/hooks/useOfflineCoverUrl";
 import { useCoverUrl } from "@/hooks/useCoverUrl";
 import { useToast } from "@/components/ui/use-toast";
-import { base44 } from "@/api/base44Client";
 
 const clampVol = (v) => Math.max(0, Math.min(1, v));
 
@@ -99,44 +98,16 @@ export default function FullScreenPlayer({ onClose }) {
   // Reset the broken-cover flag whenever the track (and thus its cover URL) changes.
   useEffect(() => {setCoverFailed(false);}, [coverUrl]);
 
-  // Only show the Lyrics toggle when this track actually has lyrics available
-  // (approved timed lyrics, or plain-text lyrics_text on the track).
+  // LRCLIB is the only playback lyrics provider. Older saved records are not used.
   useEffect(() => {
-    let alive = true;
-    const controller = new AbortController();
-    if (!t?.id) {
-      setLyricsAvailability({ trackId: null, available: false });
-      setLyricsMode(false);
-      return;
-    }
-    setLyricsMode(false);
-    const fallbackText = typeof t.lyrics_text === "string" ? t.lyrics_text.trim() : "";
-    setLyricsAvailability({ trackId: t.id, available: !!fallbackText, record: null, text: fallbackText });
-    Promise.all([
-    base44.entities.Lyrics.
-    filter({ track_id: t.id, status: "approved" }, "-updated_date", 5).
-    catch(() => []),
-    base44.entities.Track.get(t.id).catch(() => null)]
-    ).then(async ([lyricsRes, track]) => {
-      if (!alive) return;
-      const found = Array.isArray(lyricsRes) ? lyricsRes.find((record) => Array.isArray(record.lines) && record.lines.some((line) => (line.text?.trim() || line.words?.some((word) => word.text?.trim())) && (line.start_time_ms || line.end_time_ms))) : null;
-      const lines = found?.lines || [];
-      const hasTimed = lines.length && lines.some((l) => l.start_time_ms || l.end_time_ms);
-      const text = typeof track?.lyrics_text === "string" ? track.lyrics_text.trim() : fallbackText;
-      if (!hasTimed && !text) {
-        try {
-          const external = await findLyricsCatalog({...t,...track},{signal:controller.signal});
-          if (!alive) return;
-          if (external?.available) {setLyricsAvailability({trackId:t.id,...external});return;}
-        } catch { /* Missing lyrics must never interrupt playback. */ }
-        if (!alive) return;
-      }
-      const available = !!hasTimed || !!text;
-      setLyricsAvailability({ trackId: t.id, available, record: found, text });
-      if (!available) setLyricsMode(false);
-    });
-    return () => {alive = false;controller.abort();};
-  }, [t?.id,lyricsRevision]);
+    let alive=true;const controller=new AbortController();
+    setLyricsMode(false);setLyricsAvailability({trackId:t?.id,available:false});
+    if(!t?.id)return()=>controller.abort();
+    findLyricsCatalog(t,{signal:controller.signal}).then(result=>{
+      if(alive)setLyricsAvailability({trackId:t.id,available:false,...result});
+    }).catch(()=>{if(alive)setLyricsAvailability({trackId:t.id,available:false});});
+    return()=>{alive=false;controller.abort();};
+  },[t?.id,t?.title,t?.artist,t?.duration_seconds,lyricsRevision]);
 
   // keyboard shortcuts
   useEffect(() => {
@@ -326,7 +297,7 @@ export default function FullScreenPlayer({ onClose }) {
           <div className="full-player-visual relative flex-1 xl:flex-none flex items-center justify-center min-h-0 py-4">
             {showingLyrics &&
             <div className="xl:hidden w-full h-full overflow-hidden flex flex-col min-h-0">
-                <SyncedLyrics key={t.id} trackId={t.id} position={p.position} fallbackText={t.lyrics_text} resolvedLyrics={lyricsAvailability} onSeek={p.seek} onUnavailable={handleLyricsUnavailable} />
+                <SyncedLyrics key={t.id} trackId={t.id} position={p.position} resolvedLyrics={lyricsAvailability} onSeek={p.seek} onUnavailable={handleLyricsUnavailable} />
               </div>
             }
               <div
@@ -458,7 +429,7 @@ export default function FullScreenPlayer({ onClose }) {
 
 
           <div className="flex-1 min-h-0 flex flex-col">
-            {hasLyrics && showLyricsPanel && <SyncedLyrics key={t.id} trackId={t.id} position={p.position} fallbackText={t.lyrics_text} resolvedLyrics={lyricsAvailability} onSeek={p.seek} onUnavailable={handleLyricsUnavailable} />}
+            {hasLyrics && showLyricsPanel && <SyncedLyrics key={t.id} trackId={t.id} position={p.position} resolvedLyrics={lyricsAvailability} onSeek={p.seek} onUnavailable={handleLyricsUnavailable} />}
           </div>
         </div>
       </div>

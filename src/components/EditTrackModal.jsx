@@ -15,7 +15,6 @@ export default function EditTrackModal({ track, onClose, onSaved, onDeleted }) {
     album_name:track.album_name||"",album_artist:track.album_artist||"",track_number:track.track_number||0,disc_number:track.disc_number||0,release_year:track.release_year||0,
     genre: track.genre || "Other",
     description: track.description || "",
-    lyrics_text: track.lyrics_text || "",
     explicit: !!track.explicit,
     is_downloadable: !!track.is_downloadable,
   });
@@ -185,19 +184,6 @@ export default function EditTrackModal({ track, onClose, onSaved, onDeleted }) {
             </label>
           </div>
 
-          <div>
-            <div className="text-xs font-semibold text-foreground/50 mb-1">
-              Lyrics
-            </div>
-            <textarea
-              aria-label="Lyrics" disabled={saving||deleting}
-              value={form.lyrics_text}
-              onChange={(e) => patch({ lyrics_text: e.target.value })}
-              placeholder="Paste full lyrics here (one line per lyric line)"
-              rows={6}
-              className="w-full px-3 py-2 rounded-lg border border-border bg-background text-sm focus:outline-none font-mono"
-            />
-          </div>
 
         </div>
           <footer className="edit-track-footer">

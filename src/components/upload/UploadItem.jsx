@@ -4,8 +4,7 @@ import {
   X,
   UploadCloud,
   Loader2,
-  AlertCircle,
-  Sparkles } from
+  AlertCircle } from
 "lucide-react";
 import MusicVideoPicker from "@/components/upload/MusicVideoPicker";
 import AlbumMetadataFields from "@/components/upload/AlbumMetadataFields";
@@ -38,8 +37,7 @@ export default function UploadItem({
   const toggles = [
   { key: "rightsConfirmed", label: "I own or have permission to distribute this audio, artwork, lyrics and any attached video", icon: null },
   { key: "allowDownloads", label: "Allow file downloads", icon: null },
-  { key: "explicit", label: "Explicit", icon: null },
-  { key: "aiLyrics", label: "AI lyrics", icon: Sparkles }];
+  { key: "explicit", label: "Explicit", icon: null }];
 
 
   return (

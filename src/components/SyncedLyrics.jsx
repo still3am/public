@@ -1,9 +1,8 @@
 import { useEffect, useRef, useState } from "react";
-import { base44 } from "@/api/base44Client";
 import { Loader2 } from "lucide-react";
 
 /** @param {any} props */
-export default function SyncedLyrics({ trackId, position, fallbackText = "", resolvedLyrics, onSeek, onUnavailable }) {
+export default function SyncedLyrics({ trackId, position, resolvedLyrics, onSeek, onUnavailable }) {
   const [lyrics, setLyrics] = useState(null);
   const [trackLyrics, setTrackLyrics] = useState("");
   const [loading, setLoading] = useState(true);
@@ -27,15 +26,8 @@ export default function SyncedLyrics({ trackId, position, fallbackText = "", res
     setLoading(true);
     setLyrics(null);
     setTrackLyrics("");
-    Promise.all([
-      base44.entities.Lyrics.filter({ track_id: trackId, status: "approved" }, "-updated_date", 5).catch(() => []),
-      base44.entities.Track.get(trackId).catch(() => null),
-    ]).then(([records, track]) => {
-      if (!alive) return;
-      const found = Array.isArray(records) ? records.find(record => Array.isArray(record.lines) && record.lines.some(line => (line.text?.trim() || line.words?.some(word => word.text?.trim())) && (line.start_time_ms || line.end_time_ms))) : null;
-      setLyrics(found || null);
-      setTrackLyrics(typeof track?.lyrics_text === "string" ? track.lyrics_text : "");
-    }).finally(() => { if (alive) setLoading(false); });
+    // The player resolves LRCLIB records; do not fall back to legacy saved lyrics.
+    setLoading(false);
     return () => { alive = false; };
   }, [trackId, resolvedLyrics]);
 
@@ -88,7 +80,7 @@ export default function SyncedLyrics({ trackId, position, fallbackText = "", res
     onSeek?.(Number(line.start_time_ms) / 1000);
   };
 
-  const text = (typeof trackLyrics === "string" ? trackLyrics.trim() : "") || (typeof fallbackText === "string" ? fallbackText.trim() : "");
+  const text = typeof trackLyrics === "string" ? trackLyrics.trim() : "";
   useEffect(() => {
     if (!loading && !hasTimed && !text) onUnavailable?.();
   }, [loading, hasTimed, text, onUnavailable]);
