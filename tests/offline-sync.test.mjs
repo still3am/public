@@ -102,3 +102,21 @@ uid='different';offlineOwner='different';window.dispatchEvent(new Event('offline
 assert.equal(q.records.length,0);assert.equal(q.isCached('remote'),false);
 globalThis.fetch=fetchBefore;
 console.log('PASS sync failure preserves device audio and account switching hides previous downloads');
+
+// Exercise the mounted coordinator's save event, including account isolation.
+let coordinatorEffect,startedDownloads=[];
+globalThis.CustomEvent=class extends Event{constructor(type,options){super(type);this.detail=options?.detail;}};
+globalThis.__coordinator={
+ useEffect:fn=>{coordinatorEffect=fn;},useAuth:()=>({user:{id:'owner'}}),
+ useOfflineCache:()=>({syncFromCloud(){},downloadTrack:async(track,options)=>{startedDownloads.push({track,options});return true;}}),
+ coalesce:()=>Object.assign(()=>{},{cancel(){}}),base44:{entities:{}}
+};
+const managerSource=fs.readFileSync('src/components/OfflineSyncManager.jsx','utf8').replace(/^import[^;]+;/gm,'');
+const {default:Coordinator}=await import(data('const {useEffect,useAuth,useOfflineCache,coalesce,base44}=globalThis.__coordinator;\n'+managerSource));
+Coordinator();const unmount=coordinatorEffect();
+window.dispatchEvent(new CustomEvent('library:added',{detail:{uid:'other',id:'foreign'}}));
+window.dispatchEvent(new CustomEvent('library:added',{detail:{uid:'owner',id:'just-saved'}}));
+assert.deepEqual(startedDownloads,[{track:{id:'just-saved'},options:{automatic:true}}]);
+unmount();window.dispatchEvent(new CustomEvent('library:added',{detail:{uid:'owner',id:'after-unmount'}}));
+assert.equal(startedDownloads.length,1);
+console.log('PASS confirmed library saves trigger immediate automatic download for the active account only');
