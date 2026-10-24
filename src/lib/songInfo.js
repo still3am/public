@@ -28,11 +28,13 @@ export async function findSongInfo(track){
  const match=selectRecording(track,found.recordings||[]);
  let value=null;
  if(match){
-  const record=await getMusicBrainz('recording/'+match.id+'?fmt=json&inc=artist-credits+releases+artist-rels');
+  const record=await getMusicBrainz('recording/'+match.id+'?fmt=json&inc=artist-credits+releases+artist-rels+release-groups');
   const releases=(record.releases||[]).filter(r=>r.status==='Official'&&r.title);
-  const release=releases.find(r=>norm(r.title)===norm(track.album))||releases.find(r=>r['release-group']?.['primary-type']==='Album')||releases[0];
+  const albumName=track.album_name||track.album_title||track.album;
+  const preferred=releases.filter(r=>!(r['release-group']?.['secondary-types']||[]).some(t=>['Compilation','Live','DJ-mix'].includes(t))).sort((a,b)=>String(a.date||'9999').localeCompare(String(b.date||'9999')));
+  const release=releases.find(r=>norm(r.title)===norm(albumName))||preferred.find(r=>r['release-group']?.['primary-type']==='Album')||preferred[0];
   const people=type=>[...new Set((record.relations||[]).filter(r=>r.type===type&&r.artist?.name).map(r=>r.artist.name))].join(', ');
-  value={id:match.id,artists:(record['artist-credit']||[]).map(a=>(a.name||a.artist?.name||'')+(a.joinphrase||'')).join(''),album:release?.title||'',releaseDate:release?.date||'',producer:people('producer'),mixer:people('mix'),engineer:people('engineer')};
+  value={id:match.id,artists:(record['artist-credit']||[]).map(a=>(a.name||a.artist?.name||'')+(a.joinphrase||'')).join(''),album:release?.title||'',albumArtist:(release?.['artist-credit']||record['artist-credit']||[]).map(a=>(a.name||a.artist?.name||'')+(a.joinphrase||'')).join(''),releaseDate:release?.date||'',producer:people('producer'),mixer:people('mix'),engineer:people('engineer')};
  }
  cache.set(key,{time:Date.now(),value});if(cache.size>50)cache.delete(cache.keys().next().value);return value;
 }
