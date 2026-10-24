@@ -4533,7 +4533,13 @@
         "/avatars/dipper-gnome.webp",
         "/avatars/pink-eye.webp",
         "/avatars/rotating-eyeball.webp",
-        "/avatars/luffy-pixel.webp"
+        "/avatars/luffy-pixel.webp",
+        "https://media.base44.com/images/public/6a5676aa61ea8a51237aa4ee/e3fb3291f_avatar-852658141979006028.webp",
+        "https://media.base44.com/images/public/6a5676aa61ea8a51237aa4ee/bb5f57750_avatar-819514463486919502.webp",
+        "https://media.base44.com/images/public/6a5676aa61ea8a51237aa4ee/0bc71f6a0_avatar-630926229026731627.webp",
+        "https://media.base44.com/images/public/6a5676aa61ea8a51237aa4ee/11f77387b_avatar-505106914429888719.webp",
+        "https://media.base44.com/images/public/6a5676aa61ea8a51237aa4ee/7e8ccfc38_avatar-505106914430917495.webp",
+        "https://media.base44.com/images/public/6a5676aa61ea8a51237aa4ee/870d7e5ab_avatar-926686061544965827.webp"
       ],
       "default": "",
       "description": "Preinstalled gallery choice only. External uploads remain in avatar_url.",
