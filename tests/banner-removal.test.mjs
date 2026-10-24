@@ -36,9 +36,9 @@ const deletes=tree=>find(tree,node=>node.props?.className==="banner-gallery-dele
 assert.equal(deletes(render()).length,0);
 const choices=tree=>find(tree,node=>node.props?.className==="banner-gallery-choice");
 const tabs=tree=>find(tree,node=>node.type==="button"&&node.props?.["aria-controls"]==="banner-gallery-results");
-assert.equal(choices(render()).length,BANNER_PRESETS.filter(item=>!item.gifUrl).length,"Images section excludes GIFs");
+assert.equal(choices(render()).length,BANNER_PRESETS.filter(item=>!(item.gifUrl||item.videoUrl)).length,"Images section excludes GIFs");
 tabs(render())[1].props.onClick();
-assert.equal(choices(render()).length,BANNER_PRESETS.filter(item=>!!item.gifUrl).length,"GIF section excludes static images");
+assert.equal(choices(render()).length,BANNER_PRESETS.filter(item=>!!(item.gifUrl||item.videoUrl)).length,"GIF section excludes static images");
 let chosen=null;
 choices(render())[0].props.onClick();assert.equal(chosen,null,"preview selection does not apply a banner");
 const selectedGif=BANNER_PRESETS.find(item=>item.gifUrl);
@@ -47,7 +47,7 @@ find(render({onSelect:value=>chosen=value}),node=>node.props?.className==="banne
 assert.equal(chosen.url,selectedGif.url,"selection persists when switching categories");
 states=[];
 
-globalThis.__role="admin";let tree=render();assert.equal(deletes(tree).length,BANNER_PRESETS.filter(item=>!item.gifUrl).length);
+globalThis.__role="admin";let tree=render();assert.equal(deletes(tree).length,BANNER_PRESETS.filter(item=>!(item.gifUrl||item.videoUrl)).length);
 deletes(tree)[0].props.onClick();assert.equal(pendingCalls,0,"X only requests confirmation");
 tree=render();let confirm=find(tree,node=>node.props?.className==="banner-gallery-delete-confirm")[0];
 find(confirm,node=>node.type==="button")[0].props.onClick();assert.equal(pendingCalls,0);assert.equal(find(render(),node=>node.props?.className==="banner-gallery-delete-confirm").length,0);
