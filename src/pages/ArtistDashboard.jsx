@@ -106,14 +106,14 @@ export default function ArtistDashboard() {
       <div className="max-w-md mx-auto pt-16">
         <EmptyState
           icon={Sparkles}
-          title="Artist mode is off"
-          description="Turn on Artist Mode in your profile settings to unlock analytics and artist tools."
+          title="Artist registration required"
+          description="Apply for artist verification. Approved artists receive access to analytics and uploads."
           action={
           <Link
-            to="/profile"
+            to="/artist-registration"
             className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-foreground text-background text-sm font-bold">
             
-              Go to Profile
+              Apply as an artist
             </Link>
           } />
         
@@ -139,7 +139,7 @@ export default function ArtistDashboard() {
       {/* Header */}
       <div className="flex items-center gap-3 mb-6">
         <Link
-          to="/profile"
+          to="/artist-registration"
           className="w-9 h-9 rounded-full border border-border grid place-items-center shrink-0 hover:bg-foreground/5 transition"
           aria-label="Back to profile">
           

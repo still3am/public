@@ -1,3 +1,4 @@
+import {canUploadMusic} from '@/lib/creatorAccess';
 import { NavLink } from "react-router-dom";
 import { Home, GalleryVerticalEnd, Search, TrendingUp, Clock, Library as LibraryIcon, Disc3, Upload, Bell, ChevronsLeft, ChevronsRight, ListMusic, CloudOff, FolderOpen, BarChart3, Shield, Lightbulb, LifeBuoy } from "lucide-react";
 import { useMyPlaylists } from "@/hooks/useMyPlaylists";
@@ -14,7 +15,7 @@ export default function Sidebar() {
   const groups = [
   { label: "Discover", links: [["/", "Home", Home, true], ["/search", "Search", Search], ["/moments", "Moments", GalleryVerticalEnd], ["/top", "Top charts", TrendingUp], ["/recent", "Recently added", Clock], ["/records", "Artists", Disc3]] },
   ...(user ? [{ label: "Your music", links: [["/library", "Library", LibraryIcon], ["/downloads", "Offline music", CloudOff], ["/notifications", "Notifications", Bell]] }] : []),
-  { label: "Create & connect", links: [["/upload", "Upload music", Upload], ...(user ? [["/my-uploads", "Your uploads", FolderOpen], ...(user.is_artist ? [["/artist-dashboard", "Artist dashboard", BarChart3]] : [])] : []), ["/suggestions", "Ideas", Lightbulb], ...(user?.role === "admin" ? [["/admin", "Admin", Shield]] : [])] }];
+  { label: "Create & connect", links: [...(canUploadMusic(user)?[["/upload", "Upload music", Upload]]:[]), ...(canUploadMusic(user) ? [["/my-uploads", "Your uploads", FolderOpen], ...(user.creator_role=== "artist" ? [["/artist-dashboard", "Artist dashboard", BarChart3]] : [])] : []), ["/suggestions", "Ideas", Lightbulb], ...(user?.role === "admin" ? [["/admin", "Admin", Shield]] : [])] }];
 
   const linkClass = ({ isActive }) => "desktop-nav-link " + (isActive ? "is-active" : "");
   return <aside data-collapsed={collapsed} className={"desktop-sidebar hidden md:flex flex-col shrink-0 relative isolate z-10 border-r border-border sidebar-surface bg-background h-dvh sticky top-0 overflow-hidden transition-[width] duration-300 ease-out " + (collapsed ? "w-[68px]" : "w-64")}>

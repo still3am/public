@@ -2,7 +2,7 @@ import { Ban, ShieldCheck, Trash2, Loader2 } from "lucide-react";
 import Avatar from "@/components/Avatar";
 
 /** @param {any} props */
-export default function UserRow({ u, uploads = 0, busy, onToggleBlock, onDelete }) {
+export default function UserRow({ u, uploads = 0, busy, onToggleBlock, onDelete, onCreatorRole }) {
   return (
     <div className="flex items-center gap-3 py-2.5 border-b border-border last:border-0">
       <Avatar user={u} size={36} />
@@ -24,6 +24,7 @@ export default function UserRow({ u, uploads = 0, busy, onToggleBlock, onDelete 
           {uploads === 1 ? "upload" : "uploads"}
         </div>
       </div>
+      {u.role!=="admin"&&<select aria-label={"Creator access for "+(u.display_name||u.full_name||u.email)} value={u.creator_role||"listener"} disabled={busy} onChange={e=>onCreatorRole(u,e.target.value)} className="max-w-28 rounded-lg bg-background border p-2 text-xs"><option value="listener">Listener</option><option value="uploader">Uploader</option><option value="artist" disabled={u.creator_role!=="artist"}>Artist · apply first</option></select>}
       {busy ? (
         <Loader2 size={16} className="animate-spin text-foreground/40 shrink-0" />
       ) : (

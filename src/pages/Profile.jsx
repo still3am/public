@@ -419,7 +419,8 @@ export default function Profile({ ownProfileTab = false }) {
         </div>
         {editMode && <ProfileBannerEditor busy={uploadingBanner || saving} hasBanner={!!form.banner_url && !form.banner_use_default} onSelect={banner=>{if(uploadingBanner||saving)return;bannerVersion.current++;setForm(old=>({...old,banner_url:banner.url,banner_mobile_url:banner.url,banner_use_default:false,banner_video_url:banner.videoUrl||"",banner_gif_url:banner.gifUrl||""}));}} onApply={uploadBanner} onMotionApply={(media) => uploadProfileMotion("banner", media)} onRemove={() => setForm((old) => ({ ...old, banner_use_default: true }))} />}
         {!editMode && isAdminProfile && <ProfileBadge variant="admin" />}
-        {!editMode && !isAdminProfile && profile.is_artist && <ProfileBadge variant="artist" />}
+        {!editMode && !isAdminProfile && profile.creator_role==="artist" && <ProfileBadge variant="artist" />}
+        {!editMode && !isAdminProfile && profile.creator_role==="uploader" && <ProfileBadge variant="uploader" />}
         
         {/* Identity, stats, actions */}
         <div className="profile-details relative z-10 px-5 md:px-10 pb-5 md:pb-8 pt-5 md:pt-8">

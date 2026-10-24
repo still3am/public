@@ -1,3 +1,5 @@
+import CreatorAccessManager from './CreatorAccessManager';
+import {setCreatorAccess} from '@/lib/creatorAccess';
 import {reportActionError} from "@/lib/actionError";
 import {readAllPages} from "@/lib/readPages";
 import { useEffect, useState, useRef } from "react";
@@ -39,6 +41,7 @@ export default function UsersManager() {
     catch(error){reportActionError(error,"Couldn’t delete this account. Please try again.");}finally{finish(user.id);}
   };
 
+  async function changeCreator(user,type){if(!begin(user.id))return;try{const saved=await setCreatorAccess(base44,user,type);setUsers(old=>old.map(row=>row.id===user.id?saved:row));}catch(error){reportActionError(error,"Role change could not be saved.");}finally{finish(user.id);}}
   const term = q.trim().toLowerCase();
   const filtered = (users || []).filter(
     (u) =>
@@ -58,6 +61,7 @@ export default function UsersManager() {
 
   return (
     <div>
+      <CreatorAccessManager/>
       <UserCountStat confirmedCount={users.length}/>
       <button className="playlist-action text-xs mb-3" onClick={load}>Refresh users</button>
       <div className="relative mb-2">
@@ -84,6 +88,7 @@ export default function UsersManager() {
               u={u}
               uploads={uploadCounts?uploadCounts[u.id]||0:null}
               busy={busyIds.has(u.id)}
+              onCreatorRole={changeCreator}
               onToggleBlock={toggleBlock}
               onDelete={remove}
             />

@@ -32,25 +32,11 @@ function SettingGroup({ title, children }) {
 export default function SettingsSheet({ onClose, onDeleteAccount }) {
   const player = usePlayer();
   const [pureOpen, setPureOpen] = useState(false);
-  const safety = useSafety(),{ user, checkUserAuth } = useAuth(),theme = useTheme();
-  const [artist, setArtist] = useState(!!user?.is_artist);
-  const [saving, setSaving] = useState(""),[unblocking, setUnblocking] = useState(""),[loggingOut, setLoggingOut] = useState(false);
-  const lock = useRef(false),logoutLock = useRef(false),blockedLock = useRef(false);
-  useEffect(() => {const previous = document.body.style.overflow;document.body.style.overflow = "hidden";return () => {document.body.style.overflow = previous;};}, []);
-  useEffect(() => {setArtist(!!user?.is_artist);}, [user?.id, user?.is_artist]);
-  async function preference(key, value) {
-    if (!user?.id || lock.current || logoutLock.current) return;
-    lock.current = true;setSaving(key);
-    const before = artist,set = setArtist;
-    try {
-      const saved = await base44.auth.updateMe({ is_artist: value });
-      if (saved?.id !== user.id || saved[key] !== value) throw new Error("This setting was not confirmed. Please retry.");
-      set(value);
-      await checkUserAuth({ silent: true });
-
-    } catch (error) {set(before);reportActionError(error, "Couldn’t save this setting. Please try again.");} finally
-    {lock.current = false;setSaving("");}
-  }
+  const safety = useSafety(),{ user } = useAuth(),theme = useTheme();
+  const artist=user?.creator_role==="artist";
+  const [saving] = useState("");const [unblocking,setUnblocking]=useState(""),[loggingOut,setLoggingOut]=useState(false);
+  const lock=useRef(false),logoutLock=useRef(false),blockedLock=useRef(false);
+  useEffect(()=>{const previous=document.body.style.overflow;document.body.style.overflow="hidden";return()=>{document.body.style.overflow=previous;};},[]);
   async function logout() {
     if (logoutLock.current || lock.current || blockedLock.current) return;
     logoutLock.current = true;setLoggingOut(true);
@@ -84,7 +70,7 @@ export default function SettingsSheet({ onClose, onDeleteAccount }) {
      <SettingRow icon={theme.isDark ? Moon : Sun} title="Dark appearance" description={theme.isDark ? "Dark backgrounds, softer light" : "Light backgrounds, clear contrast"}><SettingSwitch label="Dark appearance" checked={theme.isDark} onChange={theme.toggle} /></SettingRow>
     </SettingGroup>
     {user?.role !== "admin" && <SettingGroup title="Creator">
-     <SettingRow icon={Sparkles} title="Artist Mode" description="Artist badge and listening insights"><SettingSwitch label="Artist Mode" checked={artist} busy={!!saving || loggingOut} onChange={(v) => preference("is_artist", v)} /></SettingRow>
+     <SettingRow icon={Sparkles} title={artist?"Approved artist":user?.creator_role==="uploader"?"Uploader access":"Become an artist"} description={artist?"Verified by PUBLIC":user?.creator_role==="uploader"?"Music uploads approved by an admin":"Register your artist profile for admin review"} to="/artist-registration" onClick={onClose}/>
      {artist && <SettingRow icon={BarChart3} title="Artist dashboard" description="Plays, likes and followers" to="/artist-dashboard" onClick={onClose} />}
     </SettingGroup>}
     <SettingGroup title="Help & privacy">
