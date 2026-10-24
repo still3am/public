@@ -333,9 +333,8 @@ export default function PublicRecords({ id: propId, fallbackArtist = null }) {
             {artist.location && <div><dt>From</dt><dd>{artist.location}</dd></div>}
             {artist.formed_year && <div><dt>Formed</dt><dd>{artist.formed_year}</dd></div>}
             {artist.members && <div><dt>Members</dt><dd>{artist.members}</dd></div>}
-            {tracks.some((track) => track.genre) && <div><dt>Genre</dt><dd>{[...new Set(tracks.map((track) => track.genre).filter(Boolean))].slice(0, 4).join(" · ")}</dd></div>}
           </dl>
-          <ArtistCatalogInfo key={artist.id || artist.name} artist={artist}/>
+          <ArtistCatalogInfo key={artist.id || artist.name} artist={{...artist,catalogGenres:[...new Set(tracks.map(t=>t.genre).filter(g=>g&&g!=="Other"))].slice(0,4).join(" · ")}}/>
           {socials.length > 0 && <div className="flex flex-wrap gap-2 mt-4">{socials.map((s, i) => <SocialChip key={i} href={s.href} icon={s.icon} label={s.label} />)}</div>}
           {artist.history_text && <div className="mt-6"><h3 className="font-semibold mb-3">History</h3><CollapsibleText text={artist.history_text} className="selectable-content text-sm text-muted-foreground leading-relaxed whitespace-pre-line" /></div>}
         </section>}

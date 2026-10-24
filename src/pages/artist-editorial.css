@@ -60,3 +60,7 @@
 @media(min-width:1440px){.public-app .artwork-content .artist-page.artist-editorial .artist-hero .artist-hero-bottom{left:max(56px,calc((100% - 1120px)/2));right:max(56px,calc((100% - 1120px)/2))}}
 @media(hover:hover){.public-app .artist-page.artist-editorial .artist-more-button:hover{background:#ffffff18}}
 @media(prefers-reduced-motion:reduce){.public-app .artist-page.artist-editorial .artist-release-star{transition:none}}
+
+.catalog-about{max-width:72rem}.catalog-about .artist-about-copy{max-width:68ch}.catalog-about .artist-facts{gap:1.5rem 2rem}.catalog-about dt{font-size:.72rem;letter-spacing:.025em}.catalog-about dd{line-height:1.5;font-weight:500}
+.catalog-song-facts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1.25rem 2rem}.catalog-song-facts>div{min-width:0}.catalog-song-facts dt{font-size:.72rem;opacity:.65}.catalog-song-facts dd{font-size:.95rem;line-height:1.5;margin-top:.35rem;overflow-wrap:anywhere}
+@media(max-width:480px){.catalog-song-facts{grid-template-columns:1fr;gap:1rem}.catalog-about .artist-facts{grid-template-columns:repeat(2,minmax(0,1fr));gap:1.2rem}}
