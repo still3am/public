@@ -1,6 +1,6 @@
 import { useRef, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import ExternalCatalog from '@/components/catalog/ExternalCatalog';
+import ExternalCatalog from '@/components/catalog/MusicBrainzCatalog';
 import { UploadCloud, Loader2, CheckCheck, Ban, ExternalLink, ArrowUpRight, Plus, AlertCircle } from 'lucide-react';
 import { useUploadsEnabled } from '@/hooks/useUploadsEnabled';
 import { useAuth } from '@/lib/AuthContext';
@@ -54,8 +54,8 @@ export default function Upload() {
       </aside>
     </div>
     <section className="upload-catalog-search" aria-label="Find external music">
-      <label htmlFor="upload-catalog-query">Search the external catalog</label>
-      <div className="upload-catalog-field"><input id="upload-catalog-query" type="search" value={catalogQuery} maxLength={200} onChange={e=>setCatalogQuery(e.target.value)} placeholder="Search songs, artists, or albums…" autoComplete="off"/><button type="button" onClick={()=>setCatalogQuery('')} disabled={!catalogQuery} aria-label="Clear external catalog search">Clear</button></div>
+      <label htmlFor="upload-catalog-query">Search MusicBrainz</label>
+      <div className="upload-catalog-field"><input id="upload-catalog-query" type="search" value={catalogQuery} maxLength={200} onChange={e=>setCatalogQuery(e.target.value)} placeholder="Search a song title and artist…" autoComplete="off"/><button type="button" onClick={()=>setCatalogQuery('')} disabled={!catalogQuery} aria-label="Clear external catalog search">Clear</button></div>
       <ExternalCatalog query={catalogQuery} active={location.pathname === '/upload'} allowExplicit={user?.show_explicit === true && user?.adult_confirmed === true}/>
     </section>
     {q.catalogError && <div role="alert" className="upload-catalog-warning"><AlertCircle size={17}/><div>{q.catalogError}<button type="button" onClick={q.refreshDuplicates}>Retry check</button></div></div>}
