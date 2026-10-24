@@ -1,3 +1,4 @@
+import SongCatalogInfo from '@/components/SongCatalogInfo';
 import TrackCatalogLyrics from '@/components/TrackCatalogLyrics';
 import {entityRows} from "@/lib/entityRows";
 import TrackMusicVideo from "@/components/TrackMusicVideo";
@@ -190,6 +191,7 @@ export default function TrackDetail() {
       {(track._has_music_video || track.music_video_file_uri) && <TrackMusicVideo key={track.id + ":" + (track.music_video_file_uri || "")} track={track} />}
       <section className="release-credits">
         <h2 className="track-details-title">About this song</h2>
+        <SongCatalogInfo key={track.id} track={track}/>
         {track.created_date && Number.isFinite(Date.parse(track.created_date)) && <p>Added to PUBLIC {new Intl.DateTimeFormat(undefined, { month: "long", day: "numeric", year: "numeric" }).format(new Date(track.created_date))}</p>}
         <p>1 song{track.duration_seconds > 0 ? " · " + formatTime(track.duration_seconds) : ""}</p>
         {uploader && <p>Shared by <Link to={"/profile/" + uploader.id} className="hover:underline">{uploader.display_name || uploader.full_name || track.uploader_name || "PUBLIC member"}</Link></p>}
