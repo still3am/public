@@ -15,12 +15,13 @@ user.banner_preset="";drop=true;await assert.rejects(savePresetBanner(client,ban
 lost=true;await savePresetBanner(client,banner.url);lost=false;
 assert.equal(withPresetBanner({banner_preset:"",banner_url:"custom.jpg"}).banner_url,"custom.jpg");
 for(const name of ["User","PublicProfile"]){const schema=JSON.parse(fs.readFileSync("base44/entities/"+name+".jsonc","utf8"));assert.deepEqual(schema.properties.banner_preset.enum,["",...BANNER_PRESETS.map(item=>item.url)]);assert.deepEqual(schema.properties.banner_preset.rls,schema.properties.avatar_preset.rls);}
-for(const item of BANNER_PRESETS){if(item.gifUrl)assert.equal(fs.readFileSync("public"+item.gifUrl).toString("ascii",0,3),"GIF");assert.equal(fs.readFileSync("public"+item.url).toString("ascii",8,12),"WEBP");}
+for(const item of BANNER_PRESETS.filter(item=>item.url.startsWith("/"))){if(item.gifUrl)assert.equal(fs.readFileSync("public"+item.gifUrl).toString("ascii",0,3),"GIF");assert.equal(fs.readFileSync("public"+item.url).toString("ascii",8,12),"WEBP");}
 const editor=fs.readFileSync("src/components/profile/ProfileBannerEditor.jsx","utf8");assert.ok(editor.includes("<BannerGallery"));assert.ok(editor.includes("onSelect?.(banner)"));
 console.log("PASS banner gallery native save, public resolution, default recovery, uploads, failures, lost response, permissions and GIF assets");
 
 for(const item of BANNER_PRESETS){const result=await savePresetBanner(client,item.url);assert.equal(result.banner_url,item.url);assert.equal(result.banner_gif_url,item.gifUrl||"");assert.equal(withPresetAvatar(profile).banner_url,item.url);}
-assert.equal(BANNER_PRESETS.length,38);
+assert.equal(BANNER_PRESETS.length,46);
+for(const item of BANNER_PRESETS.slice(-8)){assert.ok(item.url.startsWith("https://media.base44.com/"));assert.ok(item.gifUrl||item.videoUrl);assert.equal(withPresetBanner({banner_preset:item.url}).banner_video_url,item.videoUrl||"");}
 
 // These source GIFs lacked repeat metadata; moonwalk also had zero frame delays.
 for(const [id,frames,duration] of [["pixel-moonwalk",118,11.8],["kirby-star-ride",62,3.1]]){

@@ -477,7 +477,15 @@
         "/banners/flame-reflections.webp",
         "/banners/the-world-blimp.webp",
         "/banners/south-park-movie-night.webp",
-        "/banners/pixel-mood.webp"
+        "/banners/pixel-mood.webp",
+        "https://media.base44.com/images/public/6a5676aa61ea8a51237aa4ee/3c54a711c_banner-852658141979006028.webp",
+        "https://media.base44.com/images/public/6a5676aa61ea8a51237aa4ee/b33ce7f6c_banner-986992074605390852.webp",
+        "https://media.base44.com/images/public/6a5676aa61ea8a51237aa4ee/b59c32d33_banner-1054546068975947980.webp",
+        "https://media.base44.com/images/public/6a5676aa61ea8a51237aa4ee/2ae86c28f_banner-725009240032924894.webp",
+        "https://media.base44.com/images/public/6a5676aa61ea8a51237aa4ee/e59c4719e_banner-890657263823646110.webp",
+        "https://media.base44.com/images/public/6a5676aa61ea8a51237aa4ee/5ad9ebe92_banner-940689440924747266.webp",
+        "https://media.base44.com/images/public/6a5676aa61ea8a51237aa4ee/dd04e6f83_banner-78039006032599533.webp",
+        "https://media.base44.com/images/public/6a5676aa61ea8a51237aa4ee/42882f207_banner-201606520796014409.webp"
       ],
       "default": "",
       "description": "Built-in banner choice; external uploads retain the existing moderated media path.",
