@@ -1,4 +1,3 @@
-import DiscoverMusicVideo from '@/components/DiscoverMusicVideo';
 import TrackCatalogLyrics from '@/components/TrackCatalogLyrics';
 import {entityRows} from "@/lib/entityRows";
 import TrackMusicVideo from "@/components/TrackMusicVideo";
@@ -189,7 +188,6 @@ export default function TrackDetail() {
       <TrackCatalogLyrics key={track.id} track={track}/>
 
       {(track._has_music_video || track.music_video_file_uri) && <TrackMusicVideo key={track.id + ":" + (track.music_video_file_uri || "")} track={track} />}
-      {!(track._has_music_video || track.music_video_file_uri) && <DiscoverMusicVideo key={track.id} track={track}/>}
       <section className="release-credits">
         <h2 className="track-details-title">About this song</h2>
         {track.created_date && Number.isFinite(Date.parse(track.created_date)) && <p>Added to PUBLIC {new Intl.DateTimeFormat(undefined, { month: "long", day: "numeric", year: "numeric" }).format(new Date(track.created_date))}</p>}

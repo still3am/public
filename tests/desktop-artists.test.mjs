@@ -36,7 +36,7 @@ const detail=await load("src/pages/TrackDetail.jsx",common+`
 const useParams=()=>({id:"song1"}),useNavigate=()=>()=>{},useAuth=()=>({user:null}),usePlayer=()=>globalThis.__player,useCoverUrl=url=>url,useToast=()=>({toast(){}});
 const base44={},formatTime=n=>String(n),prepareTrackShare=()=>{},shareTrack=async()=>{},getPublishedTracks=async()=>[],splitArtistNames=s=>[s],fetchArtistTracks=async()=>[],getUsersByIds=async()=>[];
 const useReleaseTheme=()=>({style:{},colors:[]}),ReleaseAtmosphere=()=>null,Shuffle=()=>null;
-const DiscoverMusicVideo="video-discovery",TrackCatalogLyrics="catalog-lyrics",TrackMusicVideo="video",TrackCard="track-card",ScrollShelf="shelf",LibraryButton="library-button",CollapsibleText="copy",EmptyState="empty",EditTrackModal="edit",ArtistLinks="artist",TrackRow="track-row",TrackOptionsMenu="options",SyncLyricsModal="sync",GenerateLyricsModal="generate";
+const TrackCatalogLyrics="catalog-lyrics",TrackMusicVideo="video",TrackCard="track-card",ScrollShelf="shelf",LibraryButton="library-button",CollapsibleText="copy",EmptyState="empty",EditTrackModal="edit",ArtistLinks="artist",TrackRow="track-row",TrackOptionsMenu="options",SyncLyricsModal="sync",GenerateLyricsModal="generate";
 const ChevronLeft=Loader2,Share2=Loader2,Music=Loader2,Play=Loader2,Pause=Loader2,Pencil=Loader2,Sparkles=Loader2,Timer=Loader2,Wand2=Loader2;
 `);
 const renderDetail=track=>{values=[track,false,false,null,false,false,[tracks[1]],[tracks[2]],false];index=0;return detail.default();};
@@ -45,6 +45,6 @@ all(tree,n=>n.props?.className==="release-play-button")[0].props.onClick();asser
 assert.equal(all(tree,n=>n.type==="shelf").length,2,"both recommendation collections retain scroll controls");
 globalThis.__player.currentTrack=null;tree=renderDetail({...tracks[0],created_date:"invalid"});
 all(tree,n=>n.props?.className==="release-play-button")[0].props.onClick();assert.equal(calls.at(-1).queue[0].id,"song1");
-assert.equal(all(tree,n=>n.props?.className==="track-detail-columns")[0].props.children.filter(Boolean).length,3,"lyrics, video discovery and credits remain available");
+assert.equal(all(tree,n=>n.props?.className==="track-detail-columns")[0].props.children.filter(Boolean).length,2,"lyrics and credits remain available without external video discovery");
 assert.equal(all(tree,n=>n.type==="img").length,0,"missing artwork uses the fallback");
 console.log("PASS artist and track playback, recommendation shelves, missing-content states and desktop alphabet");
