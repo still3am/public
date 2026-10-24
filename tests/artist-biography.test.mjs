@@ -1,0 +1,16 @@
+import fs from 'node:fs';
+import assert from 'node:assert/strict';
+const {biographyLink,loadArtistBiography}=await import('data:text/javascript;base64,'+Buffer.from(fs.readFileSync('src/lib/artistBiography.js','utf8')).toString('base64'));
+assert.equal(biographyLink([{url:{resource:'https://evil.example/wiki/Coldplay'}}]),null);
+assert.deepEqual(biographyLink([{url:{resource:'https://en.wikipedia.org/wiki/Coldplay'}}]),{title:'Coldplay'});
+assert.deepEqual(biographyLink([{url:{resource:'https://www.wikidata.org/wiki/Q45188'}}]),{wikidata:'Q45188'});
+let calls=0;
+globalThis.fetch=async url=>({ok:true,json:async()=>++calls===1?{entities:{Q45188:{sitelinks:{enwiki:{title:'Coldplay'}}}}}:{query:{pages:{1:{title:'Coldplay',extract:'A British band.'}}}}});
+const bio=await loadArtistBiography({wikidata:'Q45188'});
+assert.equal(bio.text,'A British band.');assert.equal(bio.url,'https://en.wikipedia.org/wiki/Coldplay');
+globalThis.fetch=async()=>({ok:true,json:async()=>({query:{pages:{1:{title:'Name',extract:'Other people',pageprops:{disambiguation:''}}}}})});
+assert.equal(await loadArtistBiography({title:'Name'}),null);
+assert.equal(await loadArtistBiography(null),null);
+const source=fs.readFileSync('src/lib/artistInfo.js','utf8');
+assert.ok(source.includes('!artist.bio?.trim()&&!artist.history_text?.trim()'),'preserve existing biographies');
+console.log('PASS linked biography resolution, host checks, disambiguation rejection and preservation');
