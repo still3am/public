@@ -18,7 +18,7 @@ export default function YouTubeMusicVideo({id,title,audioPlaying,onPlay,active=t
     onStateChange:event=>{if(!alive)return;if(event.data===1){if(!activeRef.current){event.target.pauseVideo();return;}onPlayRef.current();}},
     onError:event=>{if(alive){ready=true;setStatus('error');setError(youtubeErrorMessage(event.data));}}
    }});player.current=instance;
-  }).catch(reason=>{if(alive){setStatus('error');setError(reason.message);}});
+  }).catch(reason=>{if(alive){ready=true;setStatus('error');setError(reason.message);}});
   const timeout=setTimeout(()=>{if(alive&&!ready){setError('YouTube is taking too long to load. Retry or open on YouTube.');setStatus('error');}},16000);
   const pause=()=>player.current?.pauseVideo?.();
   const visibility=()=>{if(document.hidden)pause();};
