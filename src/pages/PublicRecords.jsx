@@ -1,3 +1,4 @@
+import ArtistCatalogInfo from '@/components/ArtistCatalogInfo';
 import ArtistAliases from "@/components/ArtistAliases";
 import ArtistAlbums from "@/components/ArtistAlbums";
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from "@/components/ui/dropdown-menu";
@@ -31,7 +32,6 @@ import {
   Loader2,
   Music,
   Mic2,
-  Sparkles,
   Globe,
   Calendar,
   Users,
@@ -147,7 +147,6 @@ export default function PublicRecords({ id: propId, fallbackArtist = null }) {
     return () => {active = false;};
   }, [artist?.name, tracks]);
   const [loading, setLoading] = useState(true);
-  const [generating, setGenerating] = useState(false);
   const [query, setQuery] = useState(""),[sort, setSort] = useState("recent");
   const [songsExpanded, setSongsExpanded] = useState(false);
   const songPreviewLimit = 6;
@@ -183,28 +182,6 @@ export default function PublicRecords({ id: propId, fallbackArtist = null }) {
     return () => window.removeEventListener("catalog:invalidate", refreshCatalog);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id, fallbackArtist?.name, user?.id, user?.show_explicit, user?.adult_confirmed]);
-
-  async function generateHistory() {
-    if (generating || !id || user?.role !== "admin") return;
-    setGenerating(true);
-    try {
-      const res = await base44.functions.invoke("generateArtistHistory", { artist_id: id });
-      const history = res?.data?.history;
-      if (history) {
-        setArtist((prev) => prev ? { ...prev, history_text: history } : prev);
-        toast({ title: "Artist history generated" });
-      } else {
-        toast({ title: "Couldn't generate history", variant: "destructive" });
-      }
-    } catch (e) {
-      toast({
-        title: e?.response?.data?.error || "Couldn't generate history",
-        variant: "destructive"
-      });
-    } finally {
-      setGenerating(false);
-    }
-  }
 
   if (loadError && !artist) return <LoadError onRetry={load} />;
   if (loading) {
@@ -250,7 +227,6 @@ export default function PublicRecords({ id: propId, fallbackArtist = null }) {
 
   const latestTrack = [...mainTracks].sort((a, b) => (Date.parse(b.created_date) || 0) - (Date.parse(a.created_date) || 0))[0];
   const topTracks = [...mainTracks].sort((a, b) => (b.play_count || 0) - (a.play_count || 0)).slice(0, 18);
-  const isAdmin = !!user && user.role === "admin";
   const artistQueue = visibleTracks.length ? visibleTracks : mainTracks.length ? mainTracks : appearanceTracks;
   const artistActive = artistQueue.length > 0 && p.queue?.length === artistQueue.length && artistQueue.every((track, index) => p.queue[index]?.id === track.id) && artistQueue.some((track) => track.id === p.currentTrack?.id);
   const artistPlaying = artistActive && p.isPlaying;
@@ -264,7 +240,7 @@ export default function PublicRecords({ id: propId, fallbackArtist = null }) {
     try {const result = await shareLink({ title: artist.name + " on PUBLIC", url: window.location.origin + (id ? "/records/" + encodeURIComponent(id) : "/artist?name=" + encodeURIComponent(artist.name)) });if (result === "copied") toast({ title: "Artist link copied" });}
     catch {toast({ title: "This artist link could not be shared. Please retry.", variant: "destructive" });}
   }
-  const hasAbout = !!(artist.bio || meta.length || socials.length || artist.history_text || tracks.some((track) => track.genre) || isAdmin);
+  const hasAbout = !!(artist.bio || meta.length || socials.length || artist.history_text || tracks.some((track) => track.genre) || artist.name);
   const aboutArtist = () => document.getElementById("artist-about")?.scrollIntoView({ behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
   const latestDate = latestTrack?.created_date && Number.isFinite(Date.parse(latestTrack.created_date)) ? new Date(latestTrack.created_date).toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" }) : "";
 
@@ -359,9 +335,9 @@ export default function PublicRecords({ id: propId, fallbackArtist = null }) {
             {artist.members && <div><dt>Members</dt><dd>{artist.members}</dd></div>}
             {tracks.some((track) => track.genre) && <div><dt>Genre</dt><dd>{[...new Set(tracks.map((track) => track.genre).filter(Boolean))].slice(0, 4).join(" · ")}</dd></div>}
           </dl>
+          <ArtistCatalogInfo key={artist.id || artist.name} artist={artist}/>
           {socials.length > 0 && <div className="flex flex-wrap gap-2 mt-4">{socials.map((s, i) => <SocialChip key={i} href={s.href} icon={s.icon} label={s.label} />)}</div>}
           {artist.history_text && <div className="mt-6"><h3 className="font-semibold mb-3">History</h3><CollapsibleText text={artist.history_text} className="selectable-content text-sm text-muted-foreground leading-relaxed whitespace-pre-line" /></div>}
-          {isAdmin && id && <button onClick={generateHistory} disabled={generating} className="playlist-action inline-flex items-center gap-2 px-4 py-2.5 mt-5 text-xs">{generating ? <Loader2 size={14} className="animate-spin" /> : <Sparkles size={14} />}{generating ? "Generating…" : artist.history_text ? "Regenerate history" : "Generate history"}</button>}
         </section>}
         {similarArtists.length > 0 && <section className="artist-similar">
           <SectionTitle icon={Users}>Similar Artists</SectionTitle>
