@@ -36,7 +36,6 @@ import LoungeHostModal from "@/components/LoungeHostModal";
 import StemMixer from "@/components/StemMixer";
 import { useLoungeHost } from "@/hooks/useLoungeHost";
 import { useLibrary } from "@/context/LibraryContext";
-import { useOfflineCache } from "@/hooks/useOfflineCache";
 import { useOfflineCoverUrl } from "@/hooks/useOfflineCoverUrl";
 import { useCoverUrl } from "@/hooks/useCoverUrl";
 import { useToast } from "@/components/ui/use-toast";
@@ -76,7 +75,6 @@ export default function FullScreenPlayer({ onClose }) {
   const t = p.currentTrack;
   useEffect(()=>{if(t?.id)prepareTrackShare();},[t?.id]);
   const lounge = useLoungeHost();
-  const cache = useOfflineCache();
   const { toast } = useToast();
   const [loungeOpen, setLoungeOpen] = useState(false);
   const [showMixer, setShowMixer] = useState(false);
@@ -103,11 +101,11 @@ export default function FullScreenPlayer({ onClose }) {
     let alive=true;const controller=new AbortController();
     setLyricsAvailability({trackId:t?.id,available:false,loading:true});
     if(!t?.id)return()=>controller.abort();
-    findLyricsCatalog(t,{signal:controller.signal}).then(result=>{
+    findLyricsCatalog({...t,duration_seconds:p.duration||t.duration_seconds},{signal:controller.signal}).then(result=>{
       if(alive)setLyricsAvailability({trackId:t.id,available:false,loading:false,...result});
     }).catch(error=>{if(alive)setLyricsAvailability({trackId:t.id,available:false,loading:false,error:error.message||'Lyrics could not load.'});});
     return()=>{alive=false;controller.abort();};
-  },[t?.id,t?.title,t?.artist,t?.duration_seconds,lyricsRevision]);
+  },[t?.id,t?.title,t?.artist,t?.duration_seconds,p.duration,lyricsRevision]);
 
   // keyboard shortcuts
   useEffect(() => {
@@ -193,20 +191,6 @@ export default function FullScreenPlayer({ onClose }) {
     if (event.currentTarget.hasPointerCapture?.(event.pointerId)) event.currentTarget.releasePointerCapture(event.pointerId);
     flashHint();
   };
-
-  async function toggleOffline() {
-    if (!t) return;
-    if (cache.isCached(t.id)) {
-      if (await cache.removeTrack(t.id)) toast({ title: "Removed from offline music" });
-      return;
-    }
-    const ok = await cache.downloadTrack(t);
-    toast(
-      ok ?
-      { title: "Saved for offline" } :
-      { title: "Couldn't save offline", variant: "destructive" }
-    );
-  }
 
   async function shareNow(copyOnly = false) {
     if (!t) return;

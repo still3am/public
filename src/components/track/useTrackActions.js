@@ -1,15 +1,14 @@
 import {setLikeState} from "@/lib/likeActions";
 import {useRef,useEffect} from "react";
 import {
-  Play, Pause, ListPlus, Check, Plus, ListMusic, Download, Trash2, Loader2, Heart,
-  CloudOff, RefreshCw, Music2, User, UserPlus, UserCheck, Radio, Smartphone, Share2, Flag, EyeOff, Send,
+  Play, Pause, ListPlus, Check, Plus, ListMusic, Download, Heart,
+  RefreshCw, Music2, User, UserPlus, UserCheck, Radio, Smartphone, Share2, Flag, EyeOff, Send,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import { useAuth } from "@/lib/AuthContext";
 import { usePlayer } from "@/context/PlayerContext";
 import { useLibrary } from "@/context/LibraryContext";
-import { useOfflineCache } from "@/hooks/useOfflineCache";
 import { useToast } from "@/components/ui/use-toast";
 import { buildAutoQueue } from "@/lib/autoQueue";
 import {downloadTrackFile} from "@/lib/downloadTrackFile";
@@ -27,7 +26,6 @@ export function useTrackActions(track, menuState, ui) {
   const nav = useNavigate();
   const { toast } = useToast();
   const { isInLibrary, isPending, toggle } = useLibrary();
-  const cache = useOfflineCache();
   const mixing=useRef(false),latestPlayer=useRef(p),account=useRef(user?.id),alive=useRef(true);latestPlayer.current=p;account.current=user?.id;
   useEffect(()=>{alive.current=true;return()=>{alive.current=false;};},[]);
   const exporting=useRef(false),likeLock=useRef(false);
@@ -45,8 +43,6 @@ export function useTrackActions(track, menuState, ui) {
   const isCurrent = p.currentTrack?.id === track.id;
   const playingNow = isCurrent && p.isPlaying;
   const inLib = isInLibrary(track.id);
-  const offline = cache.isCached(track.id);
-  const savingOffline = !!cache.downloading[track.id];
   const isOwner = track.uploader_id === user?.id;
   const { liked } = menuState;
 
@@ -63,16 +59,6 @@ export function useTrackActions(track, menuState, ui) {
       if(alive.current&&latestAction.current===started)menuState.setLiked(liked);
       toast({title:"Couldn’t update this song. Please try again.",variant:"destructive"});
     } finally{likeLock.current=false;}
-  };
-
-  const toggleOffline = async () => {
-    if(!requireAuth()) return;
-    if (offline) {
-      const ok=await cache.removeTrack(track.id);toast(ok?{title:"Removed from offline music"}:{title:"Couldn’t remove offline music. Try again.",variant:"destructive"});
-      return;
-    }
-    const ok = await cache.saveForOffline(track);
-    toast(ok ? { title: "Saved for offline" } : { title: "Couldn't save offline", variant: "destructive" });
   };
 
   const startMix = async () => {
@@ -138,13 +124,6 @@ export function useTrackActions(track, menuState, ui) {
     },
     { icon: ListMusic, label: "Add to playlist", onClick: () => requireAuth() && ui.openPicker() },
     {
-      icon: savingOffline ? Loader2 : offline ? Trash2 : CloudOff,
-      label: savingOffline ? "Saving to offline…" : offline ? "Remove from offline" : "Add to offline",
-      spin: savingOffline,
-      disabled: savingOffline,
-      onClick: toggleOffline,
-    },
-    {
       icon:Download,label:"Download to device",disabled:track.is_downloadable!==true,
       onClick:async()=>{
         if(!requireAuth()||exporting.current)return;
@@ -183,7 +162,7 @@ export function useTrackActions(track, menuState, ui) {
   // Visual dividers: playback | your stuff | navigate/follow | extras | report
   const GROUPS = [
     [Play, Pause, ListPlus],
-    [Check, Plus, ListMusic, Download, CloudOff, Trash2, Loader2, Heart],
+    [Check, Plus, ListMusic, Download, CloudOff, Heart],
     [Music2, User, UserPlus, UserCheck],
     [Radio, Smartphone, Share2, Send, RefreshCw],
     [Flag],

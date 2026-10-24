@@ -1,3 +1,4 @@
+import {readLibraryRows} from '@/lib/libraryRows';
 import {base44} from '@/api/base44Client';
 import {readAllPages} from '@/lib/readPages';
 // Built-in User access is own-account only. These two offline preference fields
@@ -34,8 +35,10 @@ async function ready(userId){
 }
 export async function getCloudList(userId){
  if(!userId)return [];
- const user=await ready(userId);
- return ids(user.offline_track_ids).map(id=>({id}));
+ const current=await owner(userId);
+ const library=await readLibraryRows(base44.entities.LibraryItem,{user_id:userId});
+ let user=current;try{user=await ready(userId);}catch{/* Library selections work even when legacy offline migration is unavailable. */}
+ return ids([...(user.offline_track_ids||[]),...library.map(row=>row.track_id)]).map(id=>({id}));
 }
 async function write(userId,operation,selection){
  await ready(userId);

@@ -37,7 +37,8 @@ const version = value => (normalize(value).match(/\b(?:live|remix|acoustic|instr
 function candidateScore(row,track) {
  const title=normalize(baseTitle(track.title)),artist=normalize(track.artist),duration=Number(track.duration_seconds)||0;
  if(!title||!artist||normalize(baseTitle(row.trackName))!==title||version(row.trackName)!==version(track.title))return -1;
- const exactArtist=normalize(row.artistName)===artist;
+ const artistKey=value=>normalize(value).replace(/\b(?:and|feat|ft|featuring)\b/g,' ').replace(/\s+/g,' ').trim();
+ const exactArtist=artistKey(row.artistName)===artistKey(track.artist);
  if(!exactArtist||!artist){if(normalize(primaryLyricsArtist(row.artistName))!==normalize(primaryLyricsArtist(track.artist)))return -1;}
  const difference=duration?Math.abs(Number(row.duration)-duration):0;
  if(duration&&(!Number.isFinite(difference)||difference>Math.min(5,Math.max(2,duration*.012))))return -1;
