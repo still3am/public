@@ -1,3 +1,4 @@
+import './catalog-about.css';
 import CollapsibleText from '@/components/CollapsibleText';
 import { useEffect, useState } from 'react';
 import { findArtistInfo } from '@/lib/artistInfo';

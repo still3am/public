@@ -20,7 +20,7 @@ export async function getMusicBrainz(path){
 /** @param {any} track */
 export async function findSongInfo(track){
  if(!track.title||!track.artist)return null;
- const key=[track.title,track.artist,track.duration_seconds].join('|'),old=cache.get(key);
+ const key=[track.title,track.artist,track.duration_seconds,track.album_name||track.album_title||track.album].join('|'),old=cache.get(key);
  if(old&&Date.now()-old.time<600000)return old.value;
  const quote=s=>'"'+String(s).replace(/[\\"]/g,' ').slice(0,180)+'"';
  const query='recording:'+quote(track.title)+' AND artist:'+quote(String(track.artist).split(/,| feat\.? | ft\.? /i)[0]);

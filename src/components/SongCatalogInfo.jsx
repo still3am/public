@@ -1,3 +1,4 @@
+import './catalog-about.css';
 import { useEffect, useState } from 'react';
 import { findSongInfo } from '@/lib/songInfo';
 /** @param {{track:any}} props */
