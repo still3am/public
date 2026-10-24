@@ -13,7 +13,7 @@ let result=await call({action:"charts",period:"week"});assert.equal(result.statu
 user={id:"viewer"};db.Block=[{user_id:"other",blocked_user_id:"viewer"}];result=await call({action:"charts",period:"month"});assert.deepEqual(result.data.rows.map(row=>row.track_id),["a"]);
 assert.equal((await call({action:"artist",period:"week",user_id:"artist"})).status,403);
 user=null;assert.equal((await call({action:"artist",period:"week"})).status,401);
-user={id:"artist",is_artist:true};queries=[];result=await call({action:"artist",period:"week",user_id:"other"});assert.equal(result.status,200);assert.equal(result.data.metrics.plays,2);assert.equal(result.data.metrics.unique_listeners,2);assert.equal(result.data.metrics.saves,1);assert.equal(result.data.metrics.completion_rate,100);assert.deepEqual(queries.find(q=>q.name==="Track").query,{uploader_id:"artist"});assert.ok(!JSON.stringify(result.data).includes('"user_id"'));
+user={id:"artist",is_artist:true,creator_role:"artist"};queries=[];result=await call({action:"artist",period:"week",user_id:"other"});assert.equal(result.status,200);assert.equal(result.data.metrics.plays,2);assert.equal(result.data.metrics.unique_listeners,2);assert.equal(result.data.metrics.saves,1);assert.equal(result.data.metrics.completion_rate,100);assert.deepEqual(queries.find(q=>q.name==="Track").query,{uploader_id:"artist"});assert.ok(!JSON.stringify(result.data).includes('"user_id"'));
 user.disabled=true;assert.equal((await call({action:"artist",period:"week"})).status,403);user.disabled=false;
 assert.equal((await call({action:"charts",period:"bogus"})).status,400);
 assert.equal((await call({action:"artist",period:"bogus"})).status,400);

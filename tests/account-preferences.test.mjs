@@ -27,34 +27,18 @@ await base44.auth.updateMe({show_explicit:true,adult_confirmed:true});
 assert.equal(user.show_explicit,true);assert.equal(user.adult_confirmed,true);assert.equal(gatewayCalls,0);
 await base44.auth.updateMe({show_explicit:false,adult_confirmed:true});
 assert.equal(user.show_explicit,false);assert.equal(user.adult_confirmed,true);
-await base44.auth.updateMe({is_artist:true});assert.equal(user.is_artist,true);assert.equal(mirrors[0].is_artist,true);
+await assert.rejects(base44.auth.updateMe({is_artist:true}),/administrator approval/);assert.equal(user.is_artist,false);
 assert.equal(gatewayCalls,0,'boolean settings must not require backend function availability');
 reset();fail=true;await assert.rejects(base44.auth.updateMe({show_explicit:true,adult_confirmed:true}),/unavailable/);assert.equal(user.show_explicit,false);
 reset();ignore=true;await assert.rejects(base44.auth.updateMe({show_explicit:true,adult_confirmed:true}),/not confirmed/);
-reset();swap=true;await assert.rejects(base44.auth.updateMe({is_artist:true}),/not confirmed/);
-reset();user.role='admin';await assert.rejects(base44.auth.updateMe({is_artist:true}),/Administrators/);assert.equal(updates,0);
+reset();swap=true;await assert.rejects(base44.auth.updateMe({is_artist:true}),/administrator approval/);
+reset();user.role='admin';await assert.rejects(base44.auth.updateMe({is_artist:true}),/administrator approval/);assert.equal(updates,0);
 reset();await assert.rejects(base44.auth.updateMe({show_explicit:'true'}),/Invalid/);
 reset();user.disabled=true;await assert.rejects(base44.auth.updateMe({show_explicit:true,adult_confirmed:true}),/unavailable/);assert.equal(updates,0);
 reset();await assert.rejects(base44.auth.updateMe({bio:'changed'}),/unavailable/);assert.equal(gatewayCalls,1,'text changes must retain gateway moderation');
 
-// Run the actual Settings handler, without rendering its JSX.
-const sheet=read('src/components/profile/SettingsSheet.jsx');
-const handler=sheet.slice(sheet.indexOf(' async function preference('),sheet.indexOf(' async function logout('));
-let checked=false,busy='',errors=0,confirmed=true,saveFails=false,writes=0;
-const fn=new Function('user','lock','logoutLock','window','artist','explicit','setArtist','setExplicit','setSaving','base44','checkUserAuth','reportActionError',handler+';return preference;');
-const ui=()=>fn({id:'listener',adult_confirmed:false},{current:false},{current:false},{confirm:()=>confirmed},checked,false,value=>{checked=value;},()=>{},value=>{busy=value;},{auth:{updateMe:async data=>{writes++;assert.equal(checked,false,'switch cannot turn on before confirmation');if(saveFails)throw Error('network');return {id:'listener',...data};}}},async()=>{},()=>{errors++;});
-saveFails=true;await ui()('is_artist',true);assert.equal(checked,false);assert.equal(errors,1);assert.equal(busy,'');
-saveFails=false;await ui()('is_artist',true);assert.equal(checked,true);assert.equal(busy,'');
-assert.ok(!sheet.includes('label="Show explicit music"'),'explicit visibility switch must not remain after opening the public catalog');
-
-// The mirror permission remains owner-scoped; unrelated roles/fields stay protected.
-const schema=JSON.parse(read('base44/entities/User.jsonc'));
-assert.equal(schema.properties.show_explicit.rls.write,true);
-assert.equal(schema.properties.adult_confirmed.rls.write,true);
-assert.deepEqual(schema.properties.is_artist.rls.write,{user_condition:{role:'user'}});
-assert.deepEqual(schema.properties.is_blocked.rls.write,{user_condition:{role:'admin'}});
-const publicSchema=JSON.parse(read('base44/entities/PublicProfile.jsonc'));
-const ownerRule=publicSchema.properties.is_artist.rls.write.$or[1].$and;
-assert.ok(ownerRule.some(r=>r['data.user_id']==='{{user.id}}'));
-assert.ok(ownerRule.some(r=>r.user_condition?.role==='user'));
-console.log('PASS confirmed boolean saves without backend functions, consent, disable, failed/ignored saves, account races, admin/suspension guards, settings UI and owner-only mirror permissions');
+const sheet=read('src/components/profile/SettingsSheet.jsx');assert.ok(!sheet.includes('title="Artist Mode"'));assert.ok(sheet.includes('/artist-registration'));
+const schema=JSON.parse(read('base44/entities/User.jsonc')),publicSchema=JSON.parse(read('base44/entities/PublicProfile.jsonc'));
+for(const item of [schema,publicSchema]){assert.deepEqual(item.properties.is_artist.rls.write,{user_condition:{role:'admin'}});assert.deepEqual(item.properties.creator_role.rls.write,{user_condition:{role:'admin'}});}
+assert.equal(schema.properties.show_explicit.rls.write,true);assert.equal(schema.properties.adult_confirmed.rls.write,true);
+console.log('PASS preferences and admin-only creator access; self-serve artist toggle removed');

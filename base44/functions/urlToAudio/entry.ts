@@ -9,6 +9,7 @@ export default async function handleRequest(req) {
   try {
     const base44 = createClientFromRequest(req);
     const user = await base44.auth.me();
+    if(!user||user.disabled||user.is_blocked||user.role!=="admin"&&!["artist","uploader"].includes(user.creator_role))return Response.json({error:"Approved creator access required"},{status:403});
     if (!user) return Response.json({ error: 'Unauthorized' }, { status: 401 });
     if(user.is_blocked || user.disabled) return Response.json({error:'Account suspended'},{status:403});
 

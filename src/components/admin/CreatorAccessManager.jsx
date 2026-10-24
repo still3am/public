@@ -4,7 +4,7 @@ import {base44} from '@/api/base44Client';
 import {setCreatorAccess} from '@/lib/creatorAccess';
 export default function CreatorAccessManager(){
  const [rows,setRows]=useState([]),[loading,setLoading]=useState(true),[error,setError]=useState(''),[busy,setBusy]=useState('');const lock=useRef(false);
- async function load(){setLoading(true);setError('');try{const result=await base44.entities.ArtistApplication.filter({status:'pending'},'-created_date',100);setRows(Array.isArray(result)?result:result.items||[]);}catch{setError('Applications could not load.');}finally{setLoading(false);}}
+ async function load(){setLoading(true);setError('');try{const result=await base44.entities.ArtistApplication.filter({status:'pending'},'-created_date',100);setRows(Array.isArray(result)?result:[]);}catch{setError('Applications could not load.');}finally{setLoading(false);}}
  useEffect(()=>{load();},[]);
  async function review(row,approved){
  if(lock.current)return;lock.current=true;setBusy(row.id);setError('');
