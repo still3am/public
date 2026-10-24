@@ -10,7 +10,7 @@ export function selectRecording(track,rows){
  if(!duration&&new Set(matches.map(r=>Math.round((r.length||0)/10000))).size>1)return null;
  return ranked[0]||null;
 }
-async function get(path){
+export async function getMusicBrainz(path){
  const task=queue.catch(()=>{}).then(async()=>{
   await new Promise(resolve=>setTimeout(resolve,Math.max(0,1100-(Date.now()-last))));last=Date.now();
   const controller=new AbortController(),timeout=setTimeout(()=>controller.abort(),12000);
@@ -24,11 +24,11 @@ export async function findSongInfo(track){
  if(old&&Date.now()-old.time<600000)return old.value;
  const quote=s=>'"'+String(s).replace(/[\\"]/g,' ').slice(0,180)+'"';
  const query='recording:'+quote(track.title)+' AND artist:'+quote(String(track.artist).split(/,| feat\.? | ft\.? /i)[0]);
- const found=await get('recording/?'+new URLSearchParams({query,fmt:'json',limit:'20'}));
+ const found=await getMusicBrainz('recording/?'+new URLSearchParams({query,fmt:'json',limit:'20'}));
  const match=selectRecording(track,found.recordings||[]);
  let value=null;
  if(match){
-  const record=await get('recording/'+match.id+'?fmt=json&inc=artist-credits+releases+artist-rels');
+  const record=await getMusicBrainz('recording/'+match.id+'?fmt=json&inc=artist-credits+releases+artist-rels');
   const releases=(record.releases||[]).filter(r=>r.status==='Official'&&r.title);
   const release=releases.find(r=>norm(r.title)===norm(track.album))||releases.find(r=>r['release-group']?.['primary-type']==='Album')||releases[0];
   const people=type=>[...new Set((record.relations||[]).filter(r=>r.type===type&&r.artist?.name).map(r=>r.artist.name))].join(', ');
