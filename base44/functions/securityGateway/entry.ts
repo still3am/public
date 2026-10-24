@@ -367,7 +367,7 @@ export default async function handleRequest(req) {
     const writeOne=async (kind,id,input) => {
       let data={...input},old=kind==='create'?null:await get(id);
       if(entity==='Track') {
-        if(kind==='create'){const current=await svc.entities.User.get(user.id);if(current.disabled||current.is_blocked||current.role!=='admin'&&!['artist','uploader'].includes(current.creator_role))fail('Only approved artists, uploaders, and admins can upload music',403);}
+        if(kind==='create'||input.audio_file_uri!==undefined||input.audio_url!==undefined||input.music_video_file_uri!==undefined){const current=await svc.entities.User.get(user.id);if(current.disabled||current.is_blocked||current.role!=='admin'&&!['artist','uploader'].includes(current.creator_role))fail('Only approved artists, uploaders, and admins can upload music',403);}
         if(old && !mine(old,'uploader_id')) fail('Only the owner can change this track');
         if(kind==='delete') {
           // Keep the track until cleanup succeeds so a failed request remains retryable.

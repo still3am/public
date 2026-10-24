@@ -1,0 +1,22 @@
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import {canUploadMusic,creatorType,setCreatorAccess} from '../src/lib/creatorAccess.js';
+assert.equal(canUploadMusic({id:'u',is_artist:true}),false);
+for(const creator_role of ['artist','uploader'])assert.equal(canUploadMusic({id:'u',creator_role}),true);
+assert.equal(canUploadMusic({id:'u',role:'admin'}),true);
+assert.equal(canUploadMusic({id:'u',creator_role:'artist',disabled:true}),false);
+assert.equal(creatorType({role:'admin',creator_role:'artist'}),'admin');
+let role='user',writes=0,member={id:'u',role:'user',creator_role:'listener'},apps=[];
+const client={auth:{me:async()=>({id:'a',role})},entities:{User:{update:async(id,data)=>{writes++;Object.assign(member,data);},get:async()=>({...member})},PublicProfile:{filter:async()=>[{id:'p'}],update:async()=>{writes++;}},ArtistApplication:{filter:async()=>apps}}};
+await assert.rejects(setCreatorAccess(client,member,'uploader'),/Administrator/);assert.equal(writes,0);
+role='admin';await setCreatorAccess(client,member,'uploader');assert.equal(member.creator_role,'uploader');assert.equal(member.is_artist,false);
+await assert.rejects(setCreatorAccess(client,member,'artist'),/application/);
+apps=[{status:'pending'}];await setCreatorAccess(client,member,'artist');assert.equal(member.is_artist,true);
+await setCreatorAccess(client,member,'listener');assert.equal(member.is_artist,false);
+await assert.rejects(setCreatorAccess(client,{id:'admin',role:'admin'},'uploader'),/existing access/);
+for(const name of ['User','PublicProfile']){const schema=JSON.parse(fs.readFileSync('base44/entities/'+name+'.jsonc','utf8'));assert.deepEqual(schema.properties.creator_role.rls.write,{user_condition:{role:'admin'}});assert.deepEqual(schema.properties.is_artist.rls.write,{user_condition:{role:'admin'}});}
+const schema=JSON.parse(fs.readFileSync('base44/entities/ArtistApplication.jsonc','utf8'));
+assert.deepEqual(schema.rls.update,{user_condition:{role:'admin'}});
+assert.ok(schema.rls.create.$and.some(rule=>rule['data.user_id']==='{{user.id}}'));
+assert.ok(schema.rls.create.$and.some(rule=>rule['data.status']==='pending'));
+console.log('PASS listener denial, approved creator access, admin-only grants and revocation, registration requirement and schema protection');
