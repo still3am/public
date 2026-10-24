@@ -23,7 +23,7 @@ window.addEventListener("account:cleared",invalidate);
 window.addEventListener("offlinecache:account",invalidate);
 const suppressedFor=uid=>{try{return new Set(JSON.parse(localStorage.getItem("public:offline:suppressed:"+uid)||"[]"));}catch{return new Set();}};
 function suppress(uid,ids,remove=false){if(!uid)return;try{const set=suppressedFor(uid);ids.forEach(id=>remove?set.delete(id):set.add(id));localStorage.setItem("public:offline:suppressed:"+uid,JSON.stringify([...set]));}catch{}}
-window.addEventListener("library:added",event=>{if(event.detail?.uid&&event.detail?.id){suppress(event.detail.uid,[event.detail.id],true);emit(EVT);}});
+window.addEventListener("library:added",event=>{const detail=/** @type {CustomEvent} */ (event).detail;if(detail?.uid&&detail?.id){suppress(detail.uid,[detail.id],true);emit(EVT);}});
 async function toImageBlob(res) {
   const raw = await res.blob();
   if (raw.type && raw.type.startsWith("image/")) return raw;

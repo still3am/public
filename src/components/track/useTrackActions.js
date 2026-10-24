@@ -162,7 +162,7 @@ export function useTrackActions(track, menuState, ui) {
   // Visual dividers: playback | your stuff | navigate/follow | extras | report
   const GROUPS = [
     [Play, Pause, ListPlus],
-    [Check, Plus, ListMusic, Download, CloudOff, Heart],
+    [Check, Plus, ListMusic, Download, Heart],
     [Music2, User, UserPlus, UserCheck],
     [Radio, Smartphone, Share2, Send, RefreshCw],
     [Flag],

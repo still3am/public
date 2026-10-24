@@ -4,7 +4,7 @@ import {readAllPages} from '../src/lib/readPages.js';
 const data=source=>'data:text/javascript;base64,'+Buffer.from(source).toString('base64');
 let user={id:'owner',offline_track_ids:['existing'],offline_migrated:false},legacy=[{tracks:JSON.stringify([{id:'legacy'},{id:'existing'}])}],writes=0,lost=false,ignore=false;
 globalThis.__offlineDeps={
- readAllPages,
+ readAllPages,readLibraryRows:async()=>[],
  base44:{
   auth:{me:async()=>structuredClone(user)},
   functions:{invoke(){throw Error('Offline selections must not invoke a backend function');}},
@@ -24,7 +24,7 @@ globalThis.__offlineDeps={
  }
 };
 const src=fs.readFileSync('src/lib/offlineSync.js','utf8').replace(/^import[^;]+;/gm,'');
-const sync=await import(data('const {base44,readAllPages}=globalThis.__offlineDeps;\n'+src));
+const sync=await import(data('const {base44,readAllPages,readLibraryRows}=globalThis.__offlineDeps;\n'+src));
 let cloud=await sync.getCloudList('owner');
 assert.deepEqual(cloud.map(t=>t.id).sort(),['existing','legacy']);assert.equal(user.offline_migrated,true);
 await Promise.all([sync.addCloudTrack('owner',{id:'phone'}),sync.addCloudTrack('owner',{id:'laptop'})]);

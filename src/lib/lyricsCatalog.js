@@ -3,7 +3,7 @@ const CLIENT = 'Public/1.0 (https://publicnet.base44.app)';
 const cache = new Map();
 const choices = new Map();
 const searches = new Map();
-const signature = track => JSON.stringify([track.id,track.title,track.artist,track.duration_seconds]);
+const signature = track => JSON.stringify([track.id,track.title,track.artist]);
 export function chooseLyricsCatalogMatch(track,row) {
  if(!Number.isSafeInteger(row?.id)||!lyricsResult(row)?.available)throw new Error("Choose a lyrics record first.");
  if(choices.size>=50)choices.delete(choices.keys().next().value);

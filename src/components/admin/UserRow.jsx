@@ -4,7 +4,7 @@ import Avatar from "@/components/Avatar";
 /** @param {any} props */
 export default function UserRow({ u, uploads = 0, busy, onToggleBlock, onDelete, onCreatorRole }) {
   return (
-    <div className="flex items-center gap-3 py-2.5 border-b border-border last:border-0">
+    <div className="flex flex-wrap sm:flex-nowrap items-center gap-3 py-2.5 border-b border-border last:border-0">
       <Avatar user={u} size={36} />
       <div className="min-w-0 flex-1">
         <div className="text-sm font-semibold truncate flex items-center gap-1.5">

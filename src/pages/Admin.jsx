@@ -1,3 +1,5 @@
+import {loadAdminMembers} from '@/lib/adminMembers';
+import {adminDatabase} from '@/api/base44Client';
 import {lazy,Suspense,useEffect,useRef,useState} from "react";
 import {Link,useSearchParams} from "react-router-dom";
 import {LayoutDashboard,Music2,Flag,Users,LifeBuoy,Settings2,ChevronRight,RefreshCw,Loader2,ArrowUpRight,ShieldCheck} from "lucide-react";
@@ -32,7 +34,7 @@ function Dashboard(){
  const choose=id=>{setParams(id==="overview"?{}:{section:id});};
  async function refresh(){
   const request=++version.current;setLoading(true);setFailed(false);
-  const results=await Promise.allSettled([base44.entities.Track.count({approval_status:"pending"}),base44.entities.Report.count({status:"pending"}),base44.entities.SupportTicket.count({status:"open"}),base44.entities.User.count({})]);
+  const results=await Promise.allSettled([base44.entities.Track.count({approval_status:"pending"}),base44.entities.Report.count({status:"pending"}),base44.entities.SupportTicket.count({status:"open"}),loadAdminMembers(adminDatabase).then(rows=>rows.length)]);
   if(request!==version.current)return;
   setStats(previous=>{const next={...previous};results.forEach((result,index)=>{if(result.status==="fulfilled"&&typeof result.value==="number")next[METRICS[index].key]=result.value;});return next;});
   setFailed(results.some(result=>result.status==="rejected"));setLoading(false);

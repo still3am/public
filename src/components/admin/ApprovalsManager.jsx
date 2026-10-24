@@ -2,7 +2,7 @@ import {moderateAdminTrack} from '@/lib/adminData';
 import {readAdminRows} from "@/lib/adminData";
 import IncrementalList from "@/components/IncrementalList";
 import { useEffect, useState, useRef } from "react";
-import { base44,adminDatabase } from "@/api/base44Client";
+import { adminDatabase } from "@/api/base44Client";
 import { useToast } from "@/components/ui/use-toast";
 import { ShieldCheck, EyeOff, RefreshCw, Loader2 } from "lucide-react";
 import ApprovalRow from "@/components/admin/ApprovalRow";

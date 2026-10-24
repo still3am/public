@@ -1,7 +1,7 @@
 import {reportActionError} from "@/lib/actionError";
 import {readAdminRows} from "@/lib/adminData";
 import { useEffect, useState } from "react";
-import { base44,adminDatabase } from "@/api/base44Client";
+import { adminDatabase } from "@/api/base44Client";
 import { useToast } from "@/components/ui/use-toast";
 import { Lightbulb, Loader2, Trash2 } from "lucide-react";
 import BottomSheetSelect from "@/components/BottomSheetSelect";
