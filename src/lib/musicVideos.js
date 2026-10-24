@@ -7,8 +7,9 @@ export function youtubeVideoId(value){
  return /^[A-Za-z0-9_-]{11}$/.test(id)?id:'';
  }catch{return '';}
 }
+const cleanTitle=value=>String(value||'').replace(/\s*[\[(]official\s+(?:audio|video)[\])]\s*/gi,' ').trim();
 export function selectMusicVideo(rows,track){
- return rows.find(row=>normalized(row.strTrack)===normalized(track.title)&&normalized(row.strArtist)===normalized(track.artist)&&youtubeVideoId(row.strMusicVid))||null;
+ return rows.find(row=>normalized(cleanTitle(row.strTrack))===normalized(cleanTitle(track.title))&&normalized(row.strArtist)===normalized(track.artist)&&youtubeVideoId(row.strMusicVid))||null;
 }
 /** @param {any} track @param {{signal?:AbortSignal}} options */
 export async function findMusicVideo(track,{signal}={}){
@@ -17,7 +18,10 @@ export async function findMusicVideo(track,{signal}={}){
  if(!title||!artist)return null;
  const key=JSON.stringify([title,artist]),hit=cache.get(key);if(hit&&hit.until>Date.now())return hit.value;
  if(Date.now()<cooldown)throw new Error('Video search is busy. Please retry in a minute.');
- if(Date.now()-lastRequest<2000)throw new Error('Please wait a moment before searching again.');lastRequest=Date.now();
+ const wait=Math.max(0,2000-(Date.now()-lastRequest));
+ if(wait)await new Promise(resolve=>setTimeout(resolve,wait));
+ if(signal?.aborted)throw new DOMException('Cancelled','AbortError');
+ lastRequest=Date.now();
  const controller=new AbortController(),abort=()=>controller.abort();signal?.addEventListener('abort',abort,{once:true});const timer=setTimeout(()=>controller.abort(),10000);
  try{
   const url=new URL('https://www.theaudiodb.com/api/v1/json/123/searchtrack.php');url.searchParams.set('s',artist);url.searchParams.set('t',title);
