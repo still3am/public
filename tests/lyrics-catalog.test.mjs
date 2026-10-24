@@ -44,3 +44,5 @@ chooseLyricsCatalogMatch({...song,id:'public-song'},{...sample,id:42});
 const chosen=await findLyricsCatalog({...song,id:'public-song'});assert.equal(chosen.sourceId,42,'reviewed LRCLIB match applies for the session without database writes');clearLyricsCatalogMatch({...song,id:'public-song'});assert.equal((await findLyricsCatalog({...song,id:'public-song'})).sourceId,1,'reset restores the automatic match without a save');
 await assert.rejects(findLyricsCatalog({...song,id:'public-song',title:'Changed title'}),/busy/,'changing metadata cannot reuse a different recording choice');
 console.log('PASS lyric matching, duration/version guards, LRC parsing, gaps, offsets, cache, identification, errors, cancellation and rate-limit cooldown');
+
+assert.equal(selectLyricsMatch([{...sample,artistName:'My Artist and Guest',duration:183}],{...song,artist:'My Artist, Guest',duration_seconds:182.8}).id,1,'collaboration separators and measured playback duration match automatically');

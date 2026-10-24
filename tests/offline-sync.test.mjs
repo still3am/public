@@ -2,9 +2,10 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import {readAllPages} from '../src/lib/readPages.js';
 const data=source=>'data:text/javascript;base64,'+Buffer.from(source).toString('base64');
+let libraryRows=[];
 let user={id:'owner',offline_track_ids:['existing'],offline_migrated:false},legacy=[{tracks:JSON.stringify([{id:'legacy'},{id:'existing'}])}],writes=0,lost=false,ignore=false;
 globalThis.__offlineDeps={
- readAllPages,readLibraryRows:async()=>[],
+ readAllPages,readLibraryRows:async()=>libraryRows,
  base44:{
   auth:{me:async()=>structuredClone(user)},
   functions:{invoke(){throw Error('Offline selections must not invoke a backend function');}},
@@ -30,6 +31,8 @@ assert.deepEqual(cloud.map(t=>t.id).sort(),['existing','legacy']);assert.equal(u
 await Promise.all([sync.addCloudTrack('owner',{id:'phone'}),sync.addCloudTrack('owner',{id:'laptop'})]);
 assert.deepEqual(user.offline_track_ids.sort(),['existing','laptop','legacy','phone']);
 console.log('PASS legacy account/device migration and simultaneous device additions preserve every selection');
+libraryRows=[{track_id:'library-song'}];assert.ok((await sync.getCloudList('owner')).some(t=>t.id==='library-song'));assert.ok(!user.offline_track_ids.includes('library-song'),'library selections need no duplicate offline preference write');libraryRows=[];
+
 await sync.removeCloudTrack('owner','legacy');assert.ok(!(await sync.getCloudList('owner')).some(t=>t.id==='legacy'),'legacy data cannot resurrect removed selections');
 lost=true;await sync.addCloudTrack('owner',{id:'committed'});lost=false;assert.ok(user.offline_track_ids.includes('committed'));
 ignore=true;await assert.rejects(sync.addCloudTrack('owner',{id:'ignored'}),/changed|retry/);ignore=false;
