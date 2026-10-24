@@ -1,0 +1,14 @@
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+const {selectRecording,findSongInfo}=await import('data:text/javascript;base64,'+Buffer.from(fs.readFileSync('src/lib/songInfo.js','utf8')).toString('base64'));
+const id='fc64447c-0e19-4d2f-aa70-6397380fc163';
+const record={id,title:'Yellow',length:269000,score:100,'artist-credit':[{name:'Coldplay'}]};
+const track={title:'Yellow',artist:'Coldplay',duration_seconds:269};
+assert.equal(selectRecording(track,[record]).id,id);
+assert.equal(selectRecording({...track,artist:'Other'},[record]),null);
+assert.equal(selectRecording({...track,title:'Yellow (Live)'},[record]),null);
+assert.equal(selectRecording({...track,duration_seconds:180},[record]),null);
+assert.equal(selectRecording({...track,duration_seconds:0},[record,{...record,id:'ac64447c-0e19-4d2f-aa70-6397380fc163',length:300000}]),null);
+let calls=0;globalThis.fetch=async()=>({ok:true,json:async()=>++calls===1?{recordings:[record]}:{...record,releases:[{status:'Official',title:'Parachutes',date:'2000-07-10'}],relations:[{type:'producer',artist:{name:'Ken Nelson'}}]}});
+const info=await findSongInfo(track);assert.equal(info.album,'Parachutes');assert.equal(info.producer,'Ken Nelson');await findSongInfo(track);assert.equal(calls,2);
+console.log('PASS song matching rejects wrong artists, versions, duration and ambiguity; metadata cache');
