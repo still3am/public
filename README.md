@@ -75,3 +75,9 @@ Documentation: [https://docs.base44.com/Integrations/Using-GitHub](https://docs.
 Base44 CLI command reference: [https://docs.base44.com/developers/references/cli/commands/introduction](https://docs.base44.com/developers/references/cli/commands/introduction)
 
 Support: [https://app.base44.com/support](https://app.base44.com/support)
+
+## YouTube music videos
+
+Enable YouTube Data API v3 in a Google Cloud project. Configure a browser API key restricted to YouTube Data API v3 and HTTP referrers for the actual Public production and preview domains. Set `VITE_YOUTUBE_API_KEY` in the frontend build environment, then rebuild/publish. VITE values are public in the browser bundle: never use an unrestricted or server credential here. Do not commit the key.
+
+Until configured, video discovery is hidden. Users explicitly search for song/artist matches and select a video. Search filters for music, embedding and playback outside YouTube; video metadata rechecks public/embeddable status. Playback uses the official YouTube player, pauses Public audio on play, and offers an external link if embedding fails. Availability can still vary by country, account and uploader restrictions. Requests go directly to Google, with its quota, rather than Base44 functions. Uploaded music videos remain separate.
