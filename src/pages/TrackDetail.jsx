@@ -1,9 +1,9 @@
 import SongCatalogInfo from '@/components/SongCatalogInfo';
 import TrackCatalogLyrics from '@/components/TrackCatalogLyrics';
-import {entityRows} from "@/lib/entityRows";
+import { entityRows } from "@/lib/entityRows";
 import TrackMusicVideo from "@/components/TrackMusicVideo";
 import "./track-editorial.css";
-import {useReleaseTheme} from "@/hooks/useReleaseTheme";
+import { useReleaseTheme } from "@/hooks/useReleaseTheme";
 import ReleaseAtmosphere from "@/components/ReleaseAtmosphere";
 import { shareTrack } from "@/lib/shareTrack";
 import { prepareTrackShare } from "@/lib/trackShareUrl";
@@ -153,12 +153,12 @@ export default function TrackDetail() {
     icon: detecting ? Loader2 : Wand2,
     label: detecting ? "Detecting genre…" : "Detect genre (AI)",
     onClick: detectGenre
-  },
-  ] : [];
+  }] :
+  [];
 
   return (
     <div className="track-page track-editorial release-page mx-auto" style={releaseTheme}>
-      <ReleaseAtmosphere theme={releaseTheme}/>
+      <ReleaseAtmosphere theme={releaseTheme} />
       <div className="release-toolbar">
         <button onClick={() => window.history.state?.idx > 0 ? nav(-1) : nav("/search")} className="release-round" aria-label="Back"><ChevronLeft size={26} /></button>
         <div className="release-toolbar-actions">
@@ -174,7 +174,7 @@ export default function TrackDetail() {
         <div className="release-artist">{displayArtist ? <ArtistLinks artist={displayArtist} maxShown={8} linkClassName="hover:underline" /> : uploader && <Link to={"/profile/" + uploader.id}>{uploader.display_name || uploader.full_name || track.uploader_name}</Link>}</div>
         <p className="release-subtitle">{[track.genre, track.release_year || null, track.duration_seconds > 0 ? formatTime(track.duration_seconds) : null].filter(Boolean).join(" · ")}{track.explicit && <span className="release-explicit" aria-label="Explicit">E</span>}</p>
         <div className="release-play-controls">
-          <button className="release-add-button release-shuffle-button" aria-label="Shuffle playback" aria-pressed={p.shuffle} onClick={() => {p.setShuffle(!p.shuffle);if (!isCurrent) p.playTrackAt([track]);}}><Shuffle size={22}/></button>
+          <button className="release-add-button release-shuffle-button" aria-label="Shuffle playback" aria-pressed={p.shuffle} onClick={() => {p.setShuffle(!p.shuffle);if (!isCurrent) p.playTrackAt([track]);}}><Shuffle size={22} /></button>
           <button className="release-play-button" onClick={() => isCurrent ? p.togglePlay() : p.playTrackAt([track])}>{isPlaying ? <Pause size={22} fill="currentColor" /> : <Play size={22} fill="currentColor" />}{isPlaying ? "Pause" : "Play"}</button>
           <LibraryButton track={track} size={24} className="release-add-button" />
         </div>
@@ -186,15 +186,15 @@ export default function TrackDetail() {
       <div className="track-detail-columns">
 
 
-      <TrackCatalogLyrics key={track.id} track={track}/>
+      <TrackCatalogLyrics key={track.id} track={track} />
 
       {(track._has_music_video || track.music_video_file_uri) && <TrackMusicVideo key={track.id + ":" + (track.music_video_file_uri || "")} track={track} />}
       <section className="release-credits">
         <h2 className="track-details-title">About this song</h2>
-        <SongCatalogInfo key={track.id} track={track}/>
-        {track.created_date && Number.isFinite(Date.parse(track.created_date)) && <p>Added to PUBLIC {new Intl.DateTimeFormat(undefined, { month: "long", day: "numeric", year: "numeric" }).format(new Date(track.created_date))}</p>}
-        <p>1 song{track.duration_seconds > 0 ? " · " + formatTime(track.duration_seconds) : ""}</p>
-        {uploader && <p>Shared by <Link to={"/profile/" + uploader.id} className="hover:underline">{uploader.display_name || uploader.full_name || track.uploader_name || "PUBLIC member"}</Link></p>}
+        <SongCatalogInfo key={track.id} track={track} />
+        {track.created_date && Number.isFinite(Date.parse(track.created_date)) && <p className="hidden">Added to PUBLIC {new Intl.DateTimeFormat(undefined, { month: "long", day: "numeric", year: "numeric" }).format(new Date(track.created_date))}</p>}
+        <p className="hidden">1 song{track.duration_seconds > 0 ? " · " + formatTime(track.duration_seconds) : ""}</p>
+        {uploader && <p className="hidden">Shared by <Link to={"/profile/" + uploader.id} className="hover:underline">{uploader.display_name || uploader.full_name || track.uploader_name || "PUBLIC member"}</Link></p>}
         {track.description && <div className="mt-4"><CollapsibleText text={track.description} className="selectable-content leading-relaxed" /></div>}
       </section>
       </div>
