@@ -1,3 +1,4 @@
+import {findSongInfo} from '@/lib/songInfo';
 import { useEffect, useRef, useState } from "react";
 import { base44 } from "@/api/base44Client";
 import {extractAlbumMetadata} from "@/lib/albumMetadata";
@@ -20,35 +21,13 @@ import { ensureHighResCover } from "@/lib/coverImage";
 let uid = 0;
 const nextId = () => `u${Date.now()}_${uid++}`;
 
-// Auto-detects explicit flag + cleans up title/artist using AI (internet context).
-/** @returns {Promise<any>} */
-async function detectMeta(title, artist) {
-  try {
-    const res = await base44.integrations.Core.InvokeLLM({
-      prompt:
-        `A user is uploading a song. Filename-derived / tag metadata:\n` +
-        `Title: "${title}"\nArtist: "${artist || "unknown"}"\n\n` +
-        `Using knowledge of this song (search the web if needed):\n` +
-        `1. Is this song explicit (contains profanity / adult content)? If you can't identify the song, assume false.\n` +
-        `2. Give the properly formatted song title (no file junk like "official audio", track numbers, underscores).\n` +
-        `3. Give the artist name if identifiable, else keep the provided artist or empty string.\n` +
-        `4. Choose the single most accurate genre from this exact list (use "Other" if unsure):\n${GENRES.join(", ")}`,
-      add_context_from_internet: true,
-      response_json_schema: {
-        type: "object",
-        properties: {
-          explicit: { type: "boolean" },
-          title: { type: "string" },
-          artist: { type: "string" },
-          genre: { type: "string" },
-        },
-        required: ["explicit"],
-      },
-    });
-    return typeof res==="string" ? JSON.parse(res) : res || null;
-  } catch {
-    return null;
-  }
+// Catalog lookup never guesses explicit status or overwrites user edits.
+async function detectMeta(title,artist,duration,albumTags){
+ try{
+ const info=await findSongInfo({title,artist,duration_seconds:duration,...albumTags});
+ if(!info)return null;
+ return {artist:info.artists,album_name:info.album,album_artist:info.albumArtist,release_year:Number(info.releaseDate?.slice(0,4))||0};
+ }catch{return null;}
 }
 
 export function useUploadQueue({ user, isAdmin }) {
@@ -100,14 +79,18 @@ export function useUploadQueue({ user, isAdmin }) {
    // Include this batch in duplicate comparisons, not only persisted songs.
    const local=catalog.current.concat(batch.filter(t=>t.id!==item.id&&assets.current.get(t.id)?.sha).map(t=>({...t,audio_sha256:assets.current.get(t.id).sha})));
    const hits=findDuplicateTracks(local,analyzed);warn(analyzed,hits);
-   const meta=await detectMeta(title,artist);
+   const meta=await detectMeta(title,artist,duration,albumTags);
    if(epoch!==generation.current)return;
    setItems(prev=>prev.map(it=>{
     if(it.id!==item.id)return it;
     if(it.status!=='ready')return {...it,detecting:false};
     const edited=metadataEdits.current.get(item.id)||{};
     const text=key=>typeof meta?.[key]==='string'?meta[key].trim():'';
+    const missingAlbum=!it.album_name||/^(unknown(?: album)?|untitled|n\/a)$/i.test(it.album_name.trim());
     return {...it,detecting:false,
+     album_name:!edited.album_name&&missingAlbum?(text('album_name')||it.album_name):it.album_name,
+     album_artist:!edited.album_artist&&!it.album_artist?(text('album_artist')||it.album_artist):it.album_artist,
+     release_year:!edited.release_year&&!it.release_year?(meta?.release_year||0):it.release_year,
      explicit:edited.explicit?it.explicit:it.explicit||meta?.explicit===true,
      title:!edited.title&&it.title===title?(text('title')||it.title):it.title,
      artist:edited.artist?it.artist:it.artist||text('artist'),

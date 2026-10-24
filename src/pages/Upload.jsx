@@ -50,7 +50,7 @@ export default function Upload() {
       </div>
       <aside className="upload-helpers" aria-label="Upload help">
         <section className="upload-helper-card"><span className="upload-eyebrow">FROM A LINK</span><h2>Have a Spotify link?</h2><p>Open Spotdown, then come back and select your audio file.</p><a href="https://spotdown.org/en2" target="_blank" rel="noopener noreferrer" className="upload-helper-link">Open Spotdown <ExternalLink size={14}/></a><small>Opens an external website.</small></section>
-        <section className="upload-helper-note"><h2>A little help with the details</h2><p>We read tags and artwork from your files. Use “Find catalog metadata” on a track to look up missing details.</p><p>{isAdmin?'Tracks with an artist, genre, and artwork can be published.':'Tracks with an artist, genre, and artwork can be submitted for review.'} You can also save them privately to your library.</p></section>
+        <section className="upload-helper-note"><h2>A little help with the details</h2><p>We read tags and artwork from your files. MusicBrainz automatically fills missing details when the recording matches. Use “Find catalog metadata” to review another match.</p><p>{isAdmin?'Tracks with an artist, genre, and artwork can be published.':'Tracks with an artist, genre, and artwork can be submitted for review.'} You can also save them privately to your library.</p></section>
       </aside>
     </div>
     <section className="upload-catalog-search" aria-label="Find external music">
