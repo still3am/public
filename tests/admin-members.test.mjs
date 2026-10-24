@@ -1,0 +1,12 @@
+import assert from 'node:assert/strict';
+import {loadAdminMembers} from '../src/lib/adminMembers.js';
+const rows=Array.from({length:237},(_,i)=>({id:'member-'+i,creator_role:'listener'}));
+let role='admin',calls=[];
+const client={auth:{me:async()=>({role})},entities:{User:{list:async(sort,limit,skip)=>{calls.push({sort,limit,skip});return rows.slice(skip,skip+limit);}}}};
+assert.equal((await loadAdminMembers(client)).length,237);
+assert.deepEqual(calls.map(c=>c.skip),[0,100,200]);
+assert.ok(calls.every(c=>c.sort==='-created_date'&&c.limit===100));
+role='user';await assert.rejects(loadAdminMembers(client),/Administrator/);
+role='admin';client.entities.User.list=async()=>({invalid:true});await assert.rejects(loadAdminMembers(client),/invalid response/);
+client.entities.User.list=async()=>rows.slice(0,100);await assert.rejects(loadAdminMembers(client),/pagination/);
+console.log('PASS admin member authorization, built-in User endpoint, full pagination, invalid responses and pagination loops');
