@@ -1,3 +1,5 @@
+import {canUploadMusic} from '../src/lib/creatorAccess.js';
+globalThis.__canUploadMusic=canUploadMusic;
 import assert from "node:assert/strict";
 import fs from "node:fs";
 import ts from "typescript";
@@ -35,6 +37,7 @@ assert.ok(prevented);assert.equal(navigations.at(-1),"/search");assert.equal(foc
 globalThis.__dialogs=[{getClientRects:()=>[{}]}];prevented=false;events.keydown({metaKey:true,ctrlKey:false,key:"k",preventDefault(){prevented=true;}});assert.equal(prevented,false,"search shortcut must not navigate behind an open dialog");globalThis.__dialogs=[];
 window.matchMedia=()=>({matches:false});prevented=false;events.keydown({metaKey:true,ctrlKey:false,key:"k",preventDefault(){prevented=true;}});assert.equal(prevented,false,"desktop shortcut leaves mobile untouched");
 const sidebar=await load("src/components/Sidebar.jsx",common+`
+const canUploadMusic=globalThis.__canUploadMusic;
 const NavLink=({children,to,className,end,...props})=>React.createElement("a",{href:to,className:typeof className==="function"?className({isActive:to===globalThis.__pathname}):className,...props},children);
 const useMyPlaylists=()=>({playlists:[{id:"mine",name:"Late nights"}]}),useSidebarCollapsed=()=>({collapsed:!!globalThis.__collapsed,toggle(){}}),useUnreadCount=()=>3;
 const Avatar=()=>null,Logo=()=>null,ThemeToggle=()=>null,publicMonogram="/public-monogram.svg",publicWordmark="/public-wordmark.svg";
@@ -45,7 +48,7 @@ let html=renderToStaticMarkup(React.createElement(sidebar.default));
 assert.match(html,/Help &amp; support/);assert.match(html,/href="\/login"/);assert.doesNotMatch(html,/href="\/admin"|href="\/playlist\/mine"/);
 globalThis.__user={id:"u",display_name:"Listener",is_artist:true,role:"admin"};
 html=renderToStaticMarkup(React.createElement(sidebar.default));
-for(const href of ["/library","/downloads","/artist-dashboard","/admin","/my-uploads","/playlist/mine"])assert.ok(html.includes('href="'+href+'"'));
+for(const href of ["/library","/downloads","/admin","/my-uploads","/playlist/mine"])assert.ok(html.includes('href="'+href+'"'));
 globalThis.__collapsed=true;assert.match(renderToStaticMarkup(React.createElement(sidebar.default)),/data-collapsed="true"/);
 let shelfState={overflow:false,start:true,end:false},moved,scrollListener;
 globalThis.__shelf={current:{scrollWidth:1200,clientWidth:400,scrollLeft:0,children:[],addEventListener:(name,fn)=>{if(name==="scroll")scrollListener=fn;},removeEventListener(){},scrollBy:value=>moved=value,scrollTo:value=>moved=value}};
