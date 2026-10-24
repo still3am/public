@@ -26,7 +26,9 @@ async function detectMeta(title,artist,duration,albumTags){
  try{
  const info=await findSongInfo({title,artist,duration_seconds:duration,...albumTags});
  if(!info)return null;
- return {artist:info.artists,album_name:info.album,album_artist:info.albumArtist,release_year:Number(info.releaseDate?.slice(0,4))||0};
+ const normalize=value=>String(value).toLowerCase().replace(/[^a-z0-9]/g,'');
+ const genre=GENRES.find(g=>(info.genres||[]).some(name=>normalize(name)===normalize(g)))||'';
+ return {title:info.title,genre,artist:info.artists,album_name:info.album,album_artist:info.albumArtist,release_year:Number(info.releaseDate?.slice(0,4))||0};
  }catch{return null;}
 }
 
