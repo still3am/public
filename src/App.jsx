@@ -110,6 +110,8 @@ const AuthenticatedApp = () => {
           <Route path="/profile" element={<Profile />} />
           <Route path="/profile/:id" element={<Profile />} />
           <Route path="/upload" element={<Upload />} />
+          <Route path="/upload/review" element={<Upload />} />
+          <Route path="/upload/publish" element={<Upload />} />
           <Route path="/lounge/:code" element={<Lounge />} />
           <Route path="/library" element={<Library />} />
           <Route path="/downloads" element={<Downloads />} />
