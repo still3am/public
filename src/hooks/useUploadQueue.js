@@ -1,3 +1,4 @@
+import {canUploadMusic} from '@/lib/creatorAccess';
 import {findSongInfo} from '@/lib/songInfo';
 import { useEffect, useRef, useState } from "react";
 import { base44 } from "@/api/base44Client";
@@ -56,7 +57,7 @@ export function useUploadQueue({ user, isAdmin }) {
   setDupes(prev=>[...(prev||[]).filter(d=>d.id!==item.id),{...item,existingId:hit.id,existingBy:hit.uploader_name||hit.artist||'',existingIsMine:hit.uploader_id===user?.id,reason:hit._match_reason,kind:hit._match_kind}]);
  };
  async function addFiles(fileList){
-  if(!user?.id)return;const epoch=generation.current;
+  if(!canUploadMusic(user))return;const epoch=generation.current;
   const all=Array.from(fileList),files=all.filter(isAudioFile),coverFallback=all.find(f=>f.type.startsWith('image/')||IMAGE_EXT_RE.test(f.name||''));
   if(!files.length)return;
   const batch=files.map(file=>({id:nextId(),file,title:deriveDefaultTitle(file),artist:'',album_name:'',album_artist:'',track_number:0,disc_number:0,release_year:0,genre:'',duration:0,explicit:false,rightsConfirmed:false,allowDownloads:false,videoFile:null,coverFile:null,coverPreviewUrl:'',status:'analyzing',detecting:true,error:'',duplicateAcknowledged:false}));
@@ -107,7 +108,7 @@ export function useUploadQueue({ user, isAdmin }) {
  }
  async function uploadOne(given){
   const item=itemsRef.current.find(it=>it.id===given.id)||given;
-  if(!user?.id||busy.current.has(item.id)||['done','analyzing','error'].includes(item.status))return;
+  if(!canUploadMusic(user)||busy.current.has(item.id)||['done','analyzing','error'].includes(item.status))return;
   busy.current.add(item.id);const epoch=generation.current;updateItem(item.id,{status:'uploading',error:''});
   try{
    if(!item.rightsConfirmed)throw Error('Confirm your rights to this audio, artwork, lyrics and any attached video.');
@@ -119,6 +120,7 @@ export function useUploadQueue({ user, isAdmin }) {
    // Reserve before the first server request: two manual upload clicks must
    // not both pass the same local-file check while awaiting verification.
    claimedHashes.current.set(memo.sha,item.id);
+   const current=await base44.auth.me();if(!canUploadMusic(current))throw Error('Upload access requires administrator approval.');
    const candidate={...item,audio_sha256:memo.sha};
    const check=(await base44.functions.invoke('securityGateway',{entity:'Track',action:'checkDuplicate',args:[{audio_sha256:memo.sha,upload_request_id:item.id}]})).data;
    if(epoch!==generation.current)throw Error('Account changed. Start this upload again.');

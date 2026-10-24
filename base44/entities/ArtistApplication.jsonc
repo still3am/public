@@ -1,0 +1,84 @@
+{
+  "name": "ArtistApplication",
+  "type": "object",
+  "properties": {
+    "user_id": {
+      "type": "string"
+    },
+    "artist_name": {
+      "type": "string",
+      "minLength": 2,
+      "maxLength": 100
+    },
+    "bio": {
+      "type": "string",
+      "maxLength": 2000
+    },
+    "music_url": {
+      "type": "string",
+      "maxLength": 1000
+    },
+    "genre": {
+      "type": "string",
+      "maxLength": 100
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "approved",
+        "rejected"
+      ],
+      "default": "pending"
+    },
+    "review_note": {
+      "type": "string",
+      "maxLength": 1000
+    }
+  },
+  "required": [
+    "user_id",
+    "artist_name",
+    "bio",
+    "music_url"
+  ],
+  "rls": {
+    "create": {
+      "$and": [
+        {
+          "data.user_id": "{{user.id}}"
+        },
+        {
+          "data.status": "pending"
+        },
+        {
+          "user_condition": {
+            "role": "user"
+          }
+        }
+      ]
+    },
+    "read": {
+      "$or": [
+        {
+          "data.user_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

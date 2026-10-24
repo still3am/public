@@ -209,11 +209,11 @@
     "is_artist": {
       "type": "boolean",
       "default": false,
-      "description": "Self-selected artist mode for regular users; never grants administrator access.",
+      "description": "Compatibility flag for admin-approved artists.",
       "rls": {
         "write": {
           "user_condition": {
-            "role": "user"
+            "role": "admin"
           }
         }
       }
@@ -497,6 +497,23 @@
       "description": "Built-in banner choice; external uploads retain the existing moderated media path.",
       "rls": {
         "write": true
+      }
+    },
+    "creator_role": {
+      "type": "string",
+      "enum": [
+        "listener",
+        "uploader",
+        "artist"
+      ],
+      "default": "listener",
+      "description": "Admin-approved creator access. Legacy artist toggles do not grant access.",
+      "rls": {
+        "write": {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
       }
     }
   },

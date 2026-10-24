@@ -318,6 +318,7 @@ export default async function handleRequest(req) {
       }
 
       if(entity==='Track') {
+        if(kind==='create'){const current=await svc.entities.User.get(user.id);if(current.disabled||current.is_blocked||current.role!=='admin'&&!['artist','uploader'].includes(current.creator_role))fail('Only approved artists, uploaders, and admins can upload music',403);}
         const [method,...params]=args;
         if(!['get','list','filter','count','aggregate'].includes(method)) fail('Unsupported track read',400);
         if(method==='get') return Response.json({result:await requireTrack(params[0])});
@@ -506,6 +507,7 @@ export default async function handleRequest(req) {
         }
       } else if(entity==='User') {
         if(kind!=='update'||id!==user.id) fail('Profile access denied');
+        if(data.is_artist!==undefined||data.creator_role!==undefined)fail('Creator access requires administrator approval',403);
         data=pick(data,['username','display_name','bio','avatar_url','avatar_video_url','avatar_gif_url','banner_video_url','banner_gif_url','banner_url','banner_mobile_url','banner_use_default','top_tracks_label','location','pronouns','website','instagram','twitter','soundcloud','status_message','featured_track_id','top_track_ids','is_artist','show_explicit','adult_confirmed','profile_background_mode','profile_background_colors','profile_background_motion','profile_background_speed']);
         if(data.banner_url!==undefined){data.banner_preset='';}
         if(data.avatar_url!==undefined){data.avatar_preset='';if(data.avatar_video_url===undefined)data.avatar_video_url='';if(data.avatar_gif_url===undefined)data.avatar_gif_url='';}
@@ -543,7 +545,7 @@ export default async function handleRequest(req) {
         await moderate(svc,[data.username,data.display_name,data.bio,data.status_message,data.top_tracks_label,data.location,data.pronouns].filter(Boolean).join('\n'));
         for(const tid of [data.featured_track_id,...(data.top_track_ids||[])].filter(Boolean)) await requireTrack(tid);
         const saved=await handler.update(id,data);
-        const publicData={...pick(saved,["username","display_name","full_name","avatar_url","avatar_preset","avatar_video_url","avatar_gif_url","banner_video_url","banner_gif_url","banner_preset","banner_url","banner_mobile_url","banner_use_default","top_tracks_label","bio","location","pronouns","website","instagram","twitter","soundcloud","status_message","featured_track_id","profile_background_mode","profile_background_colors","profile_background_motion","profile_background_speed","top_track_ids","is_artist"]),is_public_admin:isAdmin,user_id:saved.id,joined_at:saved.created_date||"",visible:!saved.is_blocked&&!saved.disabled};
+        const publicData={...pick(saved,["username","display_name","full_name","avatar_url","avatar_preset","avatar_video_url","avatar_gif_url","banner_video_url","banner_gif_url","banner_preset","banner_url","banner_mobile_url","banner_use_default","top_tracks_label","bio","location","pronouns","website","instagram","twitter","soundcloud","status_message","featured_track_id","profile_background_mode","profile_background_colors","profile_background_motion","profile_background_speed","top_track_ids","is_artist","creator_role"]),is_public_admin:isAdmin,user_id:saved.id,joined_at:saved.created_date||"",visible:!saved.is_blocked&&!saved.disabled};
         const mirrors=await svc.entities.PublicProfile.filter({user_id:saved.id},'-updated_date',1);
         if(mirrors[0])await svc.entities.PublicProfile.update(mirrors[0].id,publicData);
         else await svc.entities.PublicProfile.create(publicData);

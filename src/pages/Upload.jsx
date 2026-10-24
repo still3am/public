@@ -1,3 +1,4 @@
+import {canUploadMusic} from '@/lib/creatorAccess';
 import { useEffect, useRef, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { ArrowUpRight, ArrowUp, ArrowRight, ArrowLeft, Plus, Music2, Check, Loader2 } from 'lucide-react';

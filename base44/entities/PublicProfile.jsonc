@@ -4409,27 +4409,12 @@
       "default": false,
       "rls": {
         "write": {
-          "$or": [
-            {
-              "user_condition": {
-                "role": "admin"
-              }
-            },
-            {
-              "$and": [
-                {
-                  "data.user_id": "{{user.id}}"
-                },
-                {
-                  "user_condition": {
-                    "role": "user"
-                  }
-                }
-              ]
-            }
-          ]
+          "user_condition": {
+            "role": "admin"
+          }
         }
-      }
+      },
+      "description": "Compatibility flag for admin-approved artists."
     },
     "user_id": {
       "type": "string",
@@ -4623,6 +4608,23 @@
               }
             }
           ]
+        }
+      }
+    },
+    "creator_role": {
+      "type": "string",
+      "enum": [
+        "listener",
+        "uploader",
+        "artist"
+      ],
+      "default": "listener",
+      "description": "Admin-approved creator access. Legacy artist toggles do not grant access.",
+      "rls": {
+        "write": {
+          "user_condition": {
+            "role": "admin"
+          }
         }
       }
     }

@@ -19,7 +19,7 @@ const entities = new Proxy(raw.entities,{get(target,name) {
   if(typeof name!=='string')return Reflect.get(target,name);
   if(name==="PublicProfile"){
    if(!handlers.has(name))handlers.set(name,new Proxy(target[name],{get(h,method){
-    if(typeof method==="string" && ["get","list","filter"].includes(method))return async(...args)=>{const readArgs=args.map(arg=>arg&&typeof arg==="object"&&!Array.isArray(arg)&&Array.isArray(arg.fields)&&(arg.fields.includes("avatar_url")||arg.fields.includes("banner_url"))?{...arg,fields:[...new Set([...arg.fields,"avatar_preset","banner_preset"])]}:arg);const page=await h[method](...readArgs);return Array.isArray(page)?page.map(withPresetAvatar):Array.isArray(page?.items)?{...page,items:page.items.map(withPresetAvatar)}:withPresetAvatar(page);};
+    if(typeof method==="string" && ["get","list","filter"].includes(method))return async(...args)=>{const readArgs=args.map(arg=>arg&&typeof arg==="object"&&!Array.isArray(arg)&&Array.isArray(arg.fields)&&(arg.fields.includes("avatar_url")||arg.fields.includes("banner_url"))?{...arg,fields:[...new Set([...arg.fields,"avatar_preset","banner_preset","creator_role"])]}:arg);const page=await h[method](...readArgs);return Array.isArray(page)?page.map(withPresetAvatar):Array.isArray(page?.items)?{...page,items:page.items.map(withPresetAvatar)}:withPresetAvatar(page);};
     return h[method];
    }}));
    return handlers.get(name);
@@ -221,7 +221,8 @@ export const base44 = new Proxy(raw,{get(target,name) {
 
     // Only these non-text own-account preferences use the SDK's own-account route.
     // All other profile fields keep the moderated security gateway.
-    const preferenceKeys=['is_artist','show_explicit','adult_confirmed'];
+    if(data.is_artist!==undefined||data.creator_role!==undefined)throw new Error('Creator access requires administrator approval');
+    const preferenceKeys=['show_explicit','adult_confirmed'];
     const preferenceFields=Object.keys(data||{});
     if(preferenceFields.length&&preferenceFields.every(key=>preferenceKeys.includes(key))){
       if(preferenceFields.some(key=>typeof data[key]!=='boolean'))throw new Error('Invalid account preference');

@@ -41,7 +41,7 @@ export default async function handleRequest(req){try{
  return Response.json({rows:rankPeriods(tracks,events,days,now),updated_at:new Date(now).toISOString(),days});
  }
  if(input.action!=="artist")fail("Unknown analytics request");
- if(!user)fail("Sign in required",401);if(!user.is_artist&&user.role!=="admin")fail("Artist access required",403);
+ if(!user)fail("Sign in required",401);if(user.creator_role!=="artist"&&user.role!=="admin")fail("Artist access required",403);
  const days={week:7,month:30,quarter:90,all:0}[input.period];if(days===undefined)fail("Invalid date range");
  const tracks=await all(svc.entities.Track,{uploader_id:user.id},["id","duration_seconds"]),ids=tracks.map(t=>t.id);
  let events=[],sessions=[],saves=[];

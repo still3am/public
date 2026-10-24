@@ -4,6 +4,7 @@ export const PRESET_AVATAR_VALUES=["","initials",...AVATAR_PRESETS.map(item=>ite
 export function withPresetAvatar(row){
  row=withPresetBanner(row);
  if(!row)return row;
+ row={...row,is_artist:row.role!=="admin"&&row.creator_role==="artist"};
  if(row.avatar_preset==="initials")return {...row,avatar_url:"",avatar_video_url:"",avatar_gif_url:""};
  if(AVATAR_PRESETS.some(item=>item.url===row.avatar_preset))return {...row,avatar_url:row.avatar_preset,avatar_video_url:"",avatar_gif_url:""};
  return row;
