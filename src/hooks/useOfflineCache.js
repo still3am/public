@@ -95,7 +95,7 @@ export function useOfflineCache(){
    const existing=await getRecord(id,uid);
    if(!valid())return false;
    if(existing?._blob?.size){if(!automatic)suppress(uid,[id],true);return true;}
-   if(!automatic)requestPersistentStorage();
+   requestPersistentStorage();
    const authorized=await base44.entities.Track.get(id);
    if(!valid()||authorized?.id!==id||!authorized.audio_url)return false;
    track=authorized;
@@ -113,7 +113,7 @@ export function useOfflineCache(){
    if(!automatic)suppress(uid,[id],true);
    if(valid()&&!automatic)addCloudTrack(uid,track).catch(()=>{if(valid())setSyncState(reportSync(uid,{error:true}));});
    emit(EVT);return true;
-  }catch(error){if((error?.status??error?.response?.status)===402)downloadPause.set(uid,Date.now()+60000);return false;}
+  }catch(error){if((error?.status??error?.response?.status)===402)downloadPause.set(uid,Date.now()+60000);if(valid())setSyncState(reportSync(uid,{error:true}));return false;}
   finally{if(jobs.get(key)===job){jobs.delete(key);emit(STATUS);}}
  },[uid,active]);
 
@@ -124,7 +124,12 @@ export function useOfflineCache(){
    let cloud=await getCloudList(uid);if(started!==generation||!active())return;
    const known=new Set(cloud.map(track=>track?.id).filter(Boolean));
    const local=recordsRef.current.filter(row=>row._blob?.size&&!known.has(row.id)&&!suppressedFor(uid).has(row.id));
-   if(local.length){cloud=await addCloudTracks(uid,local);if(started!==generation||!active())return;}
+   if(local.length){
+    // Backfill returns legacy offline preferences, not the library union.
+    // Never replace the current library selections with that narrower list.
+    try{const backfilled=await addCloudTracks(uid,local);cloud=[...new Map([...cloud,...backfilled].map(track=>[track.id,track])).values()];}catch{/* Local preference migration must not block library downloads. */}
+    if(started!==generation||!active())return;
+   }
    cloudKnown.set(uid,new Set(cloud.map(track=>track?.id).filter(Boolean)));
    setSyncState(reportSync(uid,{error:false,pending:cloud.filter(row=>!cachedIds.has(row.id)&&!suppressedFor(uid).has(row.id)).length}));
    let cursor=0;
@@ -142,7 +147,8 @@ export function useOfflineCache(){
    const [device]=await readDevice(uid);
    if(started!==generation||!active())return;
    const saved=new Set(device.filter(row=>row._blob?.size).map(row=>row.id));
-   setSyncState(reportSync(uid,{error:false,pending:cloud.filter(row=>!saved.has(row.id)&&!suppressedFor(uid).has(row.id)).length}));
+   const remaining=cloud.filter(row=>!saved.has(row.id)&&!suppressedFor(uid).has(row.id)).length;
+   setSyncState(reportSync(uid,{error:remaining>0,pending:remaining}));
   }catch{if(started===generation&&active())setSyncState(reportSync(uid,{error:true}));/* Keep this device's files. */}
   finally{if(cloudJobs.get(uid)===token){cloudJobs.delete(uid);emit(STATUS);}}
  },[uid,active,cachedIds,downloadTrack]);
