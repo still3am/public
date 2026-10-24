@@ -19,7 +19,7 @@ const View=(await import('data:text/javascript;base64,'+Buffer.from(code).toStri
 const all=(node,test)=>!node||typeof node!=='object'?[]:[...(test(node)?[node]:[]),...React.Children.toArray(node.props?.children).flatMap(child=>all(child,test))];
 const text=node=>typeof node==='string'?node:!node||typeof node!=='object'?'':React.Children.toArray(node.props?.children).map(text).join(' ');
 let props={id:'yKNxeF4KMsY',title:'Yellow',audioPlaying:false,active:true,onPlay:()=>plays++};
-function render(){cursor=0;const tree=View(props);for(const node of all(tree,n=>n.props?.ref))node.props.ref.current??={children:[],replaceChildren(...children){this.children=children;}};const jobs=effects;effects=[];jobs.forEach(fn=>fn());return tree;}
+function render(){cursor=0;const tree=View(props);for(const node of all(tree,n=>n.ref))node.ref.current??={children:[],replaceChildren(...children){this.children=children;}};const jobs=effects;effects=[];jobs.forEach(fn=>fn());return tree;}
 try{
  render();await new Promise(r=>setImmediate(r));const player=instances[0];assert.equal(player.iframe.referrerPolicy,'strict-origin-when-cross-origin');player.options.events.onReady({target:player});player.options.events.onStateChange({data:1,target:player});assert.equal(plays,1);
  props={...props,audioPlaying:true};render();assert.equal(player.pauses,1);assert.equal(player.destroyed,false,'resuming Public audio pauses rather than destroys the video');
