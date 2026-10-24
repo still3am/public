@@ -37,3 +37,12 @@ export async function reviewAdminReport(client,row,remove=false,dismiss=false){
  const status=dismiss?'dismissed':'reviewed',saved=await client.entities.Report.update(row.id,{status});
  if(saved.status!==status)throw Error('Report review was not confirmed.');
 }
+
+export async function suspendAdminMember(client,id,blocked){
+ const user=await requireAdmin(client);if(user.id===id)throw Error('You cannot suspend your own account.');
+ await client.entities.User.update(id,{is_blocked:blocked});
+ await client.entities.PublicProfile.updateMany({user_id:id},{$set:{visible:!blocked}});
+ if(blocked){await client.entities.Track.updateMany({uploader_id:id},{$set:{is_published:false,approval_status:'rejected'}});await client.entities.LoungeSession.updateMany({host_id:id},{$set:{is_active:false}});}
+ const confirmed=await client.entities.User.get(id);if(confirmed.is_blocked!==blocked)throw Error('Account access change was not confirmed.');
+ if(typeof window!=='undefined')window.dispatchEvent(new Event('catalog:invalidate'));return confirmed;
+}

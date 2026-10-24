@@ -1,3 +1,5 @@
+import {suspendAdminMember} from '@/lib/adminData';
+import {adminDatabase} from '@/api/base44Client';
 import CreatorAccessManager from './CreatorAccessManager';
 import {setCreatorAccess} from '@/lib/creatorAccess';
 import {reportActionError} from "@/lib/actionError";
@@ -28,7 +30,7 @@ export default function UsersManager() {
   const finish=id=>{writes.current.delete(id);setBusyIds(new Set(writes.current));};
   const toggleBlock=async user=>{
     if(!begin(user.id))return;
-    try{await base44.functions.invoke("safety",{action:"suspend",user_id:user.id,blocked:!user.is_blocked});setUsers(previous=>previous.map(row=>row.id===user.id?{...row,is_blocked:!user.is_blocked}:row));}
+    try{await suspendAdminMember(adminDatabase,user.id,!user.is_blocked);setUsers(previous=>previous.map(row=>row.id===user.id?{...row,is_blocked:!user.is_blocked}:row));}
     catch(error){reportActionError(error,"Couldn’t change this account’s access. Try again.");}finally{finish(user.id);}
   };
   const remove=async user=>{
