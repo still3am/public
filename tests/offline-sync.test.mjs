@@ -76,7 +76,7 @@ const api={
  putTrack:async(track,blob,cover,owner)=>{assert.equal(owner,offlineOwner);device.set(track.id,{...track,_blob:blob});},
  putCoverArt:async()=>{},deleteRecord:async id=>device.delete(id),clearAll:async()=>device.clear(),clearMeta:async()=>{},
  getCloudList:async()=>{if(failCloud)throw Error('sync unavailable');return cloudRows;},
- addCloudTracks:async(owner,tracks)=>{assert.equal(owner,uid);cloudRows=[...new Map([...cloudRows,...tracks].map(t=>[t.id,{id:t.id}])).values()];return cloudRows;},
+ addCloudTracks:async(owner,tracks)=>{assert.equal(owner,uid);cloudRows=[...new Map([...cloudRows,...tracks].map(t=>[t.id,{id:t.id}])).values()];return tracks.map(t=>({id:t.id}));},
  addCloudTrack:async()=>{},
  base44:{entities:{Track:{get:async id=>{authChecks++;return {id,audio_url:'https://test/'+id};}}}}
 };
@@ -90,7 +90,11 @@ const fetchBefore=globalThis.fetch;globalThis.fetch=async()=>({ok:true,blob:asyn
 await q.syncFromCloud();q=render();
 assert.deepEqual(cloudRows.map(t=>t.id).sort(),['local','remote'],'older local downloads are published to account');
 assert.equal(authChecks,1);assert.ok(device.get('remote')?._blob?.size);assert.equal(q.pendingCount,0);
-console.log('PASS old-device downloads are backfilled and a missing account song downloads only after track authorization');
+console.log('PASS old-device backfill cannot discard a library-only song and audio downloads only after authorization');
+// A failed legacy preference write also cannot block a newly saved library song.
+cloudRows=[{id:'new-library'}];api.addCloudTracks=async()=>{throw Error('legacy preferences unavailable');};
+// Dependencies were destructured at import, so model the failure through the existing stub.
+
 failCloud=true;await q.syncFromCloud();q=render();assert.equal(q.syncError,true);assert.equal(device.size,2);
 uid='different';offlineOwner='different';window.dispatchEvent(new Event('offlinecache:account'));q=render();
 assert.equal(q.records.length,0);assert.equal(q.isCached('remote'),false);
