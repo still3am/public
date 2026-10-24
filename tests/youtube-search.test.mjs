@@ -9,6 +9,7 @@ globalThis.fetch=async url=>{
  {id:'ABCDEFGHIJK',status:{embeddable:false,privacyStatus:'public'},snippet:{}},
  {id:'12345678901',status:{embeddable:true,privacyStatus:'private'},snippet:{}}
  ]}};
+};
 const track={artist:'Artist',title:'Song'};
 const result=await searchMusicVideos(track,'test-key');
 assert.equal(result.length,1);
