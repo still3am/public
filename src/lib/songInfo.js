@@ -5,7 +5,7 @@ const primary=s=>norm(String(s||'').split(/\s+(?:feat\.?|ft\.?|featuring|with|&)
 const uuid=s=>/^[a-f0-9-]{36}$/.test(s||'');
 export function selectRecording(track,rows){
  const duration=Number(track.duration_seconds);
- const matches=rows.filter(r=>uuid(r.id)&&(!/\\b(live|remix|acoustic|demo|karaoke|instrumental)\\b/i.test(r.disambiguation||'')||norm(track.title).includes(norm(r.disambiguation)))&&title(r.title)===title(track.title)&&(r['artist-credit']||[]).some(a=>norm(a.name||a.artist?.name)===primary(track.artist))&&(!duration||Number(r.length)>0&&Math.abs(r.length/1000-duration)<=4));
+ const matches=rows.filter(r=>uuid(r.id)&&(!/\b(live|remix|acoustic|demo|karaoke|instrumental)\b/i.test(r.disambiguation||'')||norm(track.title).includes(norm(r.disambiguation)))&&title(r.title)===title(track.title)&&(r['artist-credit']||[]).some(a=>norm(a.name||a.artist?.name)===primary(track.artist))&&(!duration||Number(r.length)>0&&Math.abs(r.length/1000-duration)<=4));
  const ranked=matches.sort((a,b)=>(Number(b.score)||0)-(Number(a.score)||0)||String(a['first-release-date']||'9999').localeCompare(String(b['first-release-date']||'9999'))||Math.abs(a.length/1000-duration)-Math.abs(b.length/1000-duration));
  if(!duration&&new Set(matches.map(r=>Math.round((r.length||0)/10000))).size>1)return null;
  return ranked[0]||null;
