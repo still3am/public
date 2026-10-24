@@ -1,7 +1,7 @@
 import CreatorAccessManager from './CreatorAccessManager';
 import {setCreatorAccess} from '@/lib/creatorAccess';
 import {reportActionError} from "@/lib/actionError";
-import {readAllPages} from "@/lib/readPages";
+import {loadAdminMembers} from "@/lib/adminMembers";
 import { useEffect, useState, useRef } from "react";
 import { Loader2, Search, Users } from "lucide-react";
 import { base44 } from "@/api/base44Client";
@@ -19,13 +19,9 @@ export default function UsersManager() {
 
   const load=async()=>{
     const request=++version.current;setFailed(false);
-    const [list,groups]=await Promise.allSettled([
-      readAllPages(opts=>base44.entities.User.filter({},{sort:"-created_date",...opts})),
-      base44.entities.Track.aggregate({groupBy:"uploader_id"})
-    ]);
-    if(request!==version.current)return;
-    if(list.status==="fulfilled")setUsers(list.value);else setFailed(true);
-    if(groups.status==="fulfilled"){const counts={};(groups.value?.rows||[]).forEach(row=>{if(row.uploader_id)counts[row.uploader_id]=row.count;});setUploadCounts(counts);}
+    // Member loading must not wait for optional track statistics or functions.
+    base44.entities.Track.aggregate({groupBy:"uploader_id"}).then(groups=>{if(request!==version.current)return;const counts={};(groups?.rows||[]).forEach(row=>{if(row.uploader_id)counts[row.uploader_id]=row.count;});setUploadCounts(counts);}).catch(()=>{});
+    try{const list=await loadAdminMembers(base44);if(request===version.current)setUsers(list);}catch{if(request===version.current)setFailed(true);}
   };
   useEffect(()=>{load();return()=>{version.current++;};},[]);
   const begin=id=>{if(writes.current.has(id))return false;writes.current.add(id);setBusyIds(new Set(writes.current));return true;};
@@ -51,18 +47,10 @@ export default function UsersManager() {
       (u.email || "").toLowerCase().includes(term)
   );
 
-  if (!users) {
-    return (
-      <div className="py-16 grid place-items-center">
-        {failed?<button className="playlist-action" onClick={load}>Refresh users</button>:<Loader2 size={20} className="animate-spin text-foreground/40" />}
-      </div>
-    );
-  }
-
   return (
     <div>
       <CreatorAccessManager/>
-      <UserCountStat confirmedCount={users.length}/>
+      {users&&<UserCountStat confirmedCount={users.length}/>}
       <button className="playlist-action text-xs mb-3" onClick={load}>Refresh users</button>
       <div className="relative mb-2">
         <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-foreground/40" />
@@ -75,7 +63,8 @@ export default function UsersManager() {
         />
       </div>
 
-      {filtered.length === 0 ? (
+      {failed&&<p role="alert" className="rounded-xl border p-4 text-sm mb-4">Registered members could not load. Your accounts have not been removed. Use Refresh users to retry.</p>}
+      {!users?<div className="py-10 text-sm text-muted-foreground">{failed?"Member list unavailable.":<><Loader2 size={18} className="animate-spin inline mr-2"/>Loading registered members…</>}</div>:filtered.length === 0 ? (
         <div className="py-14 text-center text-foreground/50">
           <Users size={26} className="mx-auto mb-2 opacity-40" />
           <p className="text-sm">No users found.</p>
