@@ -6,7 +6,7 @@ const client={auth:{me:async()=>user},entities:{
  User:{get:async()=>account,update:async(id,patch)=>{Object.assign(account,patch);writes.push(['account']);}},
  PublicProfile:{updateMany:async()=>{writes.push(['profile']);}},
  LoungeSession:{updateMany:async()=>{writes.push(['lounge']);}},
- SupportTicket:{update:async(id,patch)=>({id,...patch})},
+ SupportTicket:{get:async()=>({id:'ticket'}),update:async(id,patch)=>({id,...patch})},
  Report:{filter:async(q,sort,limit,skip)=>skip?[]:Array.from({length:100},(_,i)=>({id:String(i)})),update:async(id,patch)=>({id,...patch})}
 }};
 assert.equal((await readAdminRows(client,'Report')).length,100);

@@ -22,8 +22,15 @@ export async function moderateAdminTrack(client,id,status){
 }
 export async function saveAdminReply(client,id,text){
  await requireAdmin(client);const reply=String(text||'').trim();if(!reply||reply.length>5000)throw Error('Reply must be 1–5000 characters.');
+ const original=await client.entities.SupportTicket.get(id);
  const saved=await client.entities.SupportTicket.update(id,{reply,status:'answered'});
- if(saved.reply!==reply||saved.status!=='answered')throw Error('Reply was not confirmed.');return saved;
+ if(saved.reply!==reply||saved.status!=='answered')throw Error('Reply was not confirmed.');
+ if(original.user_id){try{
+ const hash=Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',new TextEncoder().encode(reply)))).map(n=>n.toString(16).padStart(2,'0')).join('');
+ const source_key='support:'+id+':'+hash;const found=await client.entities.Notification.filter({user_id:original.user_id,source_key},'-created_date',1);
+ if(!found.length)await client.entities.Notification.create({user_id:original.user_id,type:'support_reply',actor_id:(await client.auth.me()).id,actor_name:'PUBLIC Support',source_key,target_path:'/support?ticket='+encodeURIComponent(id),comment:'There is a new reply to your support request.',read:false});
+ }catch{return {...saved,notificationPending:true};}}
+ return saved;
 }
 export async function reviewAdminReport(client,row,remove=false,dismiss=false){
  await requireAdmin(client);
