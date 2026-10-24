@@ -1,7 +1,7 @@
 import {reportActionError} from "@/lib/actionError";
-import {readAllPages} from "@/lib/readPages";
+import {readAdminRows} from "@/lib/adminData";
 import { useEffect, useState } from "react";
-import { base44 } from "@/api/base44Client";
+import { base44,adminDatabase } from "@/api/base44Client";
 import { useToast } from "@/components/ui/use-toast";
 import { Lightbulb, Loader2, Trash2 } from "lucide-react";
 import BottomSheetSelect from "@/components/BottomSheetSelect";
@@ -11,14 +11,15 @@ const STATUSES = ["open", "reviewing", "planned", "in_progress", "done"];
 export default function SuggestionsManager() {
   const { toast } = useToast();
   const [items, setItems] = useState(null);
+  const [error,setError]=useState(false);
   const [busy, setBusy] = useState("");
 
   async function load() {
-    try {
-      const r=await readAllPages(opts=>base44.entities.Suggestion.filter({},{sort:"-created_date",...opts}));
+    setError(false);try {
+      const r=await readAdminRows(adminDatabase,"Suggestion",{},"-created_date");
       setItems(r);
     } catch {
-      setItems(previous=>previous===null?[]:previous);
+      setError(true);setItems(previous=>previous===null?[]:previous);
     }
   }
 
@@ -28,7 +29,7 @@ export default function SuggestionsManager() {
     if(busy)return;
     setBusy(id);
     try {
-      await base44.entities.Suggestion.update(id, { status });
+      await adminDatabase.entities.Suggestion.update(id, { status });
       setItems((prev) => (prev || []).map((s) => (s.id === id ? { ...s, status } : s)));
       toast({ title: "Status updated" });
     } catch(error) {reportActionError(error,"Couldn’t update this suggestion. Please try again.");} finally {
@@ -40,7 +41,7 @@ export default function SuggestionsManager() {
     if(busy||!window.confirm("Delete this completed suggestion?"))return;
     setBusy(id);
     try {
-      await base44.entities.Suggestion.delete(id);
+      await adminDatabase.entities.Suggestion.delete(id);
       setItems((prev) => (prev || []).filter((s) => s.id !== id));
       toast({ title: "Suggestion deleted" });
     } catch(error) {reportActionError(error,"Couldn’t update this suggestion. Please try again.");} finally {
@@ -58,10 +59,11 @@ export default function SuggestionsManager() {
         </div>
         <button onClick={load} className="text-xs text-foreground/50 hover:text-foreground">Refresh</button>
       </div>
+      {error&&<p role="alert" className="text-sm mb-4">Suggestions could not load. Use Refresh to retry.</p>}
       {items === null ? (
         <div className="flex justify-center py-6"><Loader2 className="animate-spin text-foreground/40" /></div>
       ) : list.length === 0 ? (
-        <div className="text-xs text-foreground/50 py-6 text-center">No suggestions yet.</div>
+        <div className="text-xs text-foreground/50 py-6 text-center">{error?"Suggestions unavailable.":"No suggestions yet."}</div>
       ) : (
         <div className="space-y-2">
           {list.map((s) => (

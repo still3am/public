@@ -53,6 +53,7 @@ export function LibraryProvider({children}){
    if(saved?.success===false)throw Error("Library save was not confirmed");
    if(!wasSaved&&!saved?.id)throw Error("Library save was not confirmed");
    if(account.current!==uid)return false;
+   if(!wasSaved)window.dispatchEvent(new CustomEvent("library:added",{detail:{uid,id:trackId}}));
    setRevision(v=>v+1);
    return true;
   }catch(error){

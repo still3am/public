@@ -1,7 +1,8 @@
-import {readAllPages} from "@/lib/readPages";
+import {moderateAdminTrack} from '@/lib/adminData';
+import {readAdminRows} from "@/lib/adminData";
 import IncrementalList from "@/components/IncrementalList";
 import { useEffect, useState, useRef } from "react";
-import { base44 } from "@/api/base44Client";
+import { base44,adminDatabase } from "@/api/base44Client";
 import { useToast } from "@/components/ui/use-toast";
 import { ShieldCheck, EyeOff, RefreshCw, Loader2 } from "lucide-react";
 import ApprovalRow from "@/components/admin/ApprovalRow";
@@ -21,13 +22,13 @@ export default function ApprovalsManager() {
 
   async function load(){
     const request=++pendingVersion.current;setLoading(true);setPendingFailed(false);
-    try{const rows=await readAllPages(opts=>base44.entities.Track.filter({approval_status:"pending"},{sort:"-created_date",...opts}));if(request===pendingVersion.current)setTracks(rows);}
+    try{const rows=await readAdminRows(adminDatabase,"Track",{approval_status:"pending"},"-created_date");if(request===pendingVersion.current)setTracks(rows);}
     catch{if(request===pendingVersion.current)setPendingFailed(true);}
     finally{if(request===pendingVersion.current)setLoading(false);}
   }
   async function loadLive(){
     const request=++liveVersion.current;setLiveLoading(true);setLiveFailed(false);
-    try{const rows=await readAllPages(opts=>base44.entities.Track.filter({is_published:true},{sort:"-play_count",...opts}));if(request===liveVersion.current)setLive(rows);}
+    try{const rows=await readAdminRows(adminDatabase,"Track",{is_published:true},"-play_count");if(request===liveVersion.current)setLive(rows);}
     catch{if(request===liveVersion.current)setLiveFailed(true);}
     finally{if(request===liveVersion.current)setLiveLoading(false);}
   }
@@ -36,10 +37,7 @@ export default function ApprovalsManager() {
   async function approve(track) {
     if(!begin(track.id))return;
     try {
-      await base44.entities.Track.update(track.id, {
-        is_published: true,
-        approval_status: "approved",
-      });
+      await moderateAdminTrack(adminDatabase,track.id,"approved");
       setTracks((prev) => (prev || []).filter((t) => t.id !== track.id));
       loadLive();
       toast({ title: `"${track.title}" is now live on PUBLIC` });
@@ -54,10 +52,7 @@ export default function ApprovalsManager() {
     if (!window.confirm(`Remove "${track.title}" from PUBLIC? It stays in the uploader's library and profile.`)) return;
     if(!begin(track.id))return;
     try {
-      await base44.entities.Track.update(track.id, {
-        is_published: false,
-        approval_status: "rejected",
-      });
+      await moderateAdminTrack(adminDatabase,track.id,"rejected");
       setLive((prev) => (prev || []).filter((t) => t.id !== track.id));
       toast({ title: "Removed from PUBLIC" });
     } catch (e) {
@@ -70,10 +65,7 @@ export default function ApprovalsManager() {
   async function reject(track) {
     if(!begin(track.id))return;
     try {
-      await base44.entities.Track.update(track.id, {
-        is_published: false,
-        approval_status: "rejected",
-      });
+      await moderateAdminTrack(adminDatabase,track.id,"rejected");
       setTracks((prev) => (prev || []).filter((t) => t.id !== track.id));
       toast({ title: "Track rejected" });
     } catch (e) {

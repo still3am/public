@@ -40,7 +40,7 @@ export default function UploadSwitch() {
       </div>
       <p className="text-xs text-foreground/55 leading-relaxed">
         {enabled
-          ? "Anyone can upload music right now. Stop uploads to temporarily close the upload page for all non-admin users."
+          ? "Approved artists and uploaders can upload. Listeners cannot upload. Stop uploads to pause all non-admin creators."
           : "Uploading is closed — non-admin users can't add new music until you reopen it. Admins can still upload."}
       </p>
       <button

@@ -275,3 +275,6 @@ export const base44 = new Proxy(raw,{get(target,name) {
   return target[name];
 }});
 
+
+// Native admin operations remain protected by entity and field permissions.
+export const adminDatabase={auth:{me:()=>raw.auth.me()},entities:raw.entities};
