@@ -14,7 +14,7 @@ async function get(path){
  const task=queue.catch(()=>{}).then(async()=>{
   await new Promise(resolve=>setTimeout(resolve,Math.max(0,1100-(Date.now()-last))));last=Date.now();
   const controller=new AbortController(),timeout=setTimeout(()=>controller.abort(),12000);
-  try{const r=await fetch('https://musicbrainz.org/ws/2/'+path,{signal:controller.signal});if(!r.ok)throw Error('Song details are temporarily unavailable.');return await r.json();}finally{clearTimeout(timeout);}
+  try{const r=await fetch('https://musicbrainz.org/ws/2/'+path,{signal:controller.signal,headers:{'User-Agent':'PUBLIC/1.0 (https://publicnet.base44.app)'}});if(!r.ok)throw Error('Song details are temporarily unavailable.');return await r.json();}finally{clearTimeout(timeout);}
  });queue=task.then(()=>{},()=>{});return task;
 }
 /** @param {any} track */
