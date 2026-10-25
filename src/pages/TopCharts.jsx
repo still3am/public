@@ -45,7 +45,9 @@ export default function TopCharts() {
   }
 
   useEffect(() => {
-    load();return () => {loadVersion.current++;};
+    const refresh=()=>{setTracks([]);setPositions([]);load();};
+    load();window.addEventListener('catalog:invalidate',refresh);
+    return () => {loadVersion.current++;window.removeEventListener('catalog:invalidate',refresh);};
   }, [period]);
 
   if (loading && !tracks.length)
