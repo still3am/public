@@ -1,4 +1,4 @@
-import React, { createContext, useState, useContext, useEffect } from 'react';
+import React, { createContext, useState, useContext, useEffect, useRef } from 'react';
 import { base44 } from '@/api/base44Client';
 import {syncPendingLikes} from "@/lib/likeActions";
 import {clearPersonalData} from '@/lib/clearPersonalData';
@@ -11,6 +11,7 @@ const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
+  const authVersion=useRef(0),account=useRef(null);account.current=user?.id||null;
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLoadingAuth, setIsLoadingAuth] = useState(true);
   const [isLoadingPublicSettings, setIsLoadingPublicSettings] = useState(true);
@@ -89,14 +90,17 @@ export const AuthProvider = ({ children }) => {
   };
 
   const checkUserAuth = async ({ silent = false } = {}) => {
+    const request=++authVersion.current;
     try {
       // Settings refreshes keep the current page mounted.
       if(!silent)setIsLoadingAuth(true);
       const currentUser = await base44.auth.me();
-      if(currentUser?.is_blocked || currentUser?.disabled) { await clearPersonalData();setUser(null); setIsAuthenticated(false); setAuthError({type:'suspended',message:'Your account is suspended. Contact PUBLIC support.'}); setIsLoadingAuth(false); setAuthChecked(true); return; }
+      if(request!==authVersion.current)return;
+      if(currentUser?.is_blocked || currentUser?.disabled) { await clearPersonalData();if(request!==authVersion.current)return;setUser(null); setIsAuthenticated(false); setAuthError({type:'suspended',message:'Your account is suspended. Contact PUBLIC support.'}); setIsLoadingAuth(false); setAuthChecked(true); return; }
       let previous;try{previous=localStorage.getItem("public:active-account");}catch{}
       if(previous && previous!==currentUser.id)await clearPersonalData();
       await migrateLegacyOffline(currentUser.id,previous).catch(()=>{});
+      if(request!==authVersion.current)return;
       setOfflineAccount(currentUser.id);
       try{localStorage.setItem("public:active-account",currentUser.id);}catch{}
       setUser(currentUser);
@@ -105,6 +109,7 @@ export const AuthProvider = ({ children }) => {
       setIsLoadingAuth(false);
       setAuthChecked(true);
     } catch (error) {
+      if(request!==authVersion.current)return;
       console.error('User auth check failed:', error);
       setIsLoadingAuth(false);
       setAuthChecked(true);
@@ -112,6 +117,7 @@ export const AuthProvider = ({ children }) => {
       // An unavailable connection must not make an existing account look new.
       if (status === 401 || status === 403) {
         await clearPersonalData();
+        if(request!==authVersion.current)return;
         setUser(null);
         setIsAuthenticated(false);
         setAuthError(null);
@@ -123,10 +129,27 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(()=>{
     if(!authChecked)return;
-    const verify=async()=>{if(!isAuthenticated)return;try{const current=await base44.auth.me();if(current.is_blocked||current.disabled){await clearPersonalData();setUser(null);setIsAuthenticated(false);setAuthError({type:'suspended',message:'Your account is suspended. Contact PUBLIC support.'});}}catch(error){if(error.status===401){await clearPersonalData();setUser(null);setIsAuthenticated(false);setAuthError(null);}}};
-    const timer=setInterval(verify,60000);window.addEventListener('focus',verify);
-    return()=>{clearInterval(timer);window.removeEventListener('focus',verify);};
-  },[authChecked,isAuthenticated]);
+    let stopped=false,busy=false;const uid=user?.id;
+    const verify=async()=>{
+      if(!isAuthenticated||!uid||stopped||busy)return;
+      busy=true;const version=authVersion.current;
+      const active=()=>!stopped&&version===authVersion.current&&account.current===uid;
+      try{
+        const current=await base44.auth.me();if(!active())return;
+        if(current.id!==uid||current.is_blocked||current.disabled){
+          await clearPersonalData();if(!active())return;
+          setUser(null);setIsAuthenticated(false);
+          setAuthError(current.id===uid?{type:'suspended',message:'Your account is suspended. Contact PUBLIC support.'}:null);
+        }else{
+          // Admin grants/revocations and profile preferences reach open sessions.
+          setUser(previous=>previous?.id===uid?current:previous);
+        }
+      }catch(error){if(active()&&(error.status??error.response?.status)===401){await clearPersonalData();if(active()){setUser(null);setIsAuthenticated(false);setAuthError(null);}}}
+      finally{busy=false;}
+    };
+    const timer=setInterval(verify,60000);window.addEventListener('focus',verify);window.addEventListener('online',verify);
+    return()=>{stopped=true;clearInterval(timer);window.removeEventListener('focus',verify);window.removeEventListener('online',verify);};
+  },[authChecked,isAuthenticated,user?.id]);
   useEffect(()=>{window.dispatchEvent(new Event("catalog:invalidate"));},[user?.id,user?.show_explicit,user?.adult_confirmed]);
 
   useEffect(() => {
@@ -159,6 +182,7 @@ export const AuthProvider = ({ children }) => {
   },[user?.id]);
 
   const logout = async (shouldRedirect = true) => {
+    authVersion.current++;
     await clearPersonalData();
     setUser(null);
     setIsAuthenticated(false);
