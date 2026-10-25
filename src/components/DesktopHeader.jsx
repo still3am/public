@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 
 
 export const DESKTOP_PAGES = {
+  "music-requests": {label:"Music Requests",section:"Community"},
   "artist-registration": {label:"Artist registration",section:"Create"},
   "": { label: "Home", section: "Discover" }, search: { label: "Search", section: "Discover" }, top: { label: "Top charts", section: "Discover" }, recent: { label: "Recently added", section: "Discover" },
   moments: { label: "Moments", section: "Community" },
