@@ -117,7 +117,8 @@ export function useOfflineCache(){
   finally{if(jobs.get(key)===job){jobs.delete(key);emit(STATUS);}}
  },[uid,active]);
 
- const syncFromCloud=useCallback(async()=>{
+ const syncFromCloud=useCallback(async({retry=false}={})=>{
+  if(retry)for(const key of retryAfter.keys())if(key.startsWith(uid+':'))retryAfter.delete(key);
   if(!active()||loadedFor.current!==uid||!cachedIds||cloudJobs.has(uid)||!navigator.onLine)return;
   const token=Symbol(uid),started=generation;cloudJobs.set(uid,token);emit(STATUS);
   try{
