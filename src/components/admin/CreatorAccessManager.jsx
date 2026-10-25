@@ -1,13 +1,15 @@
 import {useEffect,useRef,useState} from 'react';
 import {Link} from 'react-router-dom';
 import {base44} from '@/api/base44Client';
+import {readAdminRows} from '@/lib/adminData';
+import {adminDatabase} from '@/api/base44Client';
 import {setCreatorAccess} from '@/lib/creatorAccess';
 export default function CreatorAccessManager(){
- const [rows,setRows]=useState([]),[loading,setLoading]=useState(true),[error,setError]=useState(''),[busy,setBusy]=useState('');const lock=useRef(false);
- async function load(){setLoading(true);setError('');try{const result=await base44.entities.ArtistApplication.filter({status:'pending'},'-created_date',100);setRows(Array.isArray(result)?result:[]);}catch{setError('Applications could not load.');}finally{setLoading(false);}}
- useEffect(()=>{load();},[]);
+ const [rows,setRows]=useState([]),[loading,setLoading]=useState(true),[error,setError]=useState(''),[busy,setBusy]=useState('');const lock=useRef(false),version=useRef(0);
+ async function load(){const request=++version.current;setLoading(true);setError('');try{const result=await readAdminRows(adminDatabase,'ArtistApplication',{status:'pending'});if(request===version.current)setRows(result);}catch{if(request===version.current)setError('Applications could not load.');}finally{if(request===version.current)setLoading(false);}}
+ useEffect(()=>{load();return()=>{version.current++;};},[]);
  async function review(row,approved){
- if(lock.current)return;lock.current=true;setBusy(row.id);setError('');
+ if(lock.current)return;lock.current=true;version.current++;setLoading(false);setBusy(row.id);setError('');
  try{const member=await base44.entities.User.get(row.user_id);if(approved)await setCreatorAccess(base44,member,'artist');const status=approved?'approved':'rejected';const saved=await base44.entities.ArtistApplication.update(row.id,{status});if(saved.status!==status)throw Error('Application review was not confirmed.');setRows(old=>old.filter(a=>a.id!==row.id));}
  catch(e){setError(e.message||'Review could not be saved.');}finally{lock.current=false;setBusy('');}
  }
