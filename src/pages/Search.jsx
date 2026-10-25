@@ -7,7 +7,7 @@ import {
   X,
   ArrowLeft } from
 "lucide-react";
-import { useSearchParams,useLocation } from "react-router-dom";
+import { useSearchParams,useLocation,Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { getPublishedTracks, peekPublishedTracks } from "@/lib/catalogCache";
 import { useGlobalSearch } from "@/hooks/useGlobalSearch";
@@ -147,6 +147,7 @@ export default function Search() {
     <PullToRefresh onRefresh={handleRefresh}>
       <div className="search-page">
         <div className="page-intro"><h1>Search</h1><p>Explore music, artists, playlists, and people.</p></div>
+        {!peopleMode&&<Link className="playlist-action mb-5" to={"/music-requests"+(q.trim()?"?title="+encodeURIComponent(q.trim()):"")}>Missing a song? Request on PUBLIC</Link>
         
         
 
