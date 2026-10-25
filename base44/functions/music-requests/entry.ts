@@ -57,6 +57,29 @@ async function previewPlaylist(value){
   const data=parseApplePlaylist(html);if(playlistCache.size>=50)playlistCache.delete(playlistCache.keys().next().value);playlistCache.set(source.id,{at:Date.now(),data});return {...data,source_url:source.url};
  }catch(error){if(error.status)throw error;fail('The public playlist could not load. Please retry or check its sharing settings.',502);}finally{clearTimeout(timer);}
 }
+const songCache=new Map();
+export function appleSongSource(value){
+ const clean=sourceLink(value);if(!clean)fail('Paste an Apple Music song link, or enter the song details.',422);
+ const url=new URL(clean);if(url.hostname!=='music.apple.com')fail('Automatic song details currently support Apple Music links. You can enter other songs manually.',422);
+ const id=url.searchParams.get('i')||(/\/song\//.test(url.pathname)?url.pathname.match(/\/(\d+)\/?$/)?.[1]:null);
+ if(!id||!/^\d{1,20}$/.test(id))fail('Paste a song link rather than an album or artist link.',422);
+ const country=url.pathname.split('/')[1];return {url:clean,id,country:/^[a-z]{2}$/.test(country)?country:'us'};
+}
+async function previewSong(value){
+ const source=appleSongSource(value),key=source.country+':'+source.id,cached=songCache.get(key);if(cached&&Date.now()-cached.at<300000)return {...cached.data,source_url:source.url};
+ const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),8000);
+ try{
+  const response=await fetch('https://itunes.apple.com/lookup?id='+source.id+'&entity=song&country='+source.country,{redirect:'error',signal:controller.signal,headers:{Accept:'application/json'}});
+  if(!response.ok||!response.body)fail('Song details could not load. Try again or enter the title and artist.',502);
+  const reader=response.body.getReader(),decoder=new TextDecoder();let size=0,raw='';
+  try{while(true){const part=await reader.read();if(part.done)break;size+=part.value.length;if(size>500000)fail('Song details could not load. Enter the title and artist instead.',502);raw+=decoder.decode(part.value,{stream:true});}raw+=decoder.decode();}finally{await reader.cancel().catch(()=>{});}
+  let data;try{data=JSON.parse(raw);}catch{fail('Song details could not load. Enter the title and artist instead.',502);}
+  const track=Array.isArray(data?.results)?data.results.find(t=>t.kind==='song'&&String(t.trackId)===source.id):null;
+  if(!track)fail('This song was not found in Apple’s lookup catalog. Enter its title and artist instead.',422);
+  const title=text(track.trackName,'song title',200),artist=text(track.artistName,'artist',200);let artwork_url='';try{artwork_url=artworkLink(track.artworkUrl100||'');}catch{}
+  const result={title,artist,artwork_url};if(songCache.size>=50)songCache.delete(songCache.keys().next().value);songCache.set(key,{at:Date.now(),data:result});return {...result,source_url:source.url};
+ }catch(error){if(error.status)throw error;fail('Song details could not load. Try again or enter the title and artist.',502);}finally{clearTimeout(timer);}
+}
 async function playlistProgress(svc,request,uid){
  const items=request.playlist_tracks||[],tracks=[];
  for(let i=0;i<items.length;i+=40){const batch=items.slice(i,i+40);if(batch.length)tracks.push(...await all(svc.entities.Track,{is_published:true,approval_status:'approved',$or:batch.flatMap(r=>[r.title.trim().split(/\s+/).map(escape).join('\\s+'),normalizeMusic(r.title).split(' ').map(escape).join('[\\W_]+')].map(pattern=>({title:{$regex:'^'+pattern+'$',$options:'i'}})))},['id','title','artist','uploader_id','duration_seconds','explicit','is_published','approval_status']));}
@@ -105,7 +128,8 @@ export default async function handleRequest(req){
    const result=[];for(const r of requests){if(r.status==='closed'&&user.role!=='admin')continue;const progress=r.request_kind==='playlist'?await playlistProgress(svc,r,user.id):null;let available=progress?.available||false;const track=tracks.get(r.available_track_id);if(track&&recordingIdentity(track.title,track.artist)===recordingIdentity(r.title,r.artist))available=await canHear(svc,user.id,track);result.push({...(progress||{}),request_kind:r.request_kind||'song',id:r.id,request_key:r.request_key,title:r.title,artist:r.artist,source_url:r.source_url||'',artwork_url:r.artwork_url||'',created_date:r.created_date,status:r.status==='closed'?'closed':available?'available':'open',available_track_id:available?r.available_track_id:'',support_count:r.supporter_ids.length,supported:r.supporter_ids.includes(user.id),mine:r.requester_id===user.id});}
    return Response.json({requests:result,can_manage:creators(user),is_admin:user.role==='admin'});
   }
-  if(action==='preview_playlist'){const preview=await previewPlaylist(body.source_url);return Response.json({success:true,preview});}
+  if(action==='preview_playlist'){const preview=await previewPlaylist(body.source_url),progress=await playlistProgress(svc,preview,user.id);return Response.json({success:true,preview:{...preview,...progress}});}
+  if(action==='preview_song'){const preview=await previewSong(body.source_url);return Response.json({success:true,preview});}
   if(action==='create'){
    if(body.request_kind!=null&&!['song','playlist'].includes(body.request_kind))fail('Choose song or playlist.',422);
    const playlist=body.request_kind==='playlist'?await previewPlaylist(body.source_url):null;
