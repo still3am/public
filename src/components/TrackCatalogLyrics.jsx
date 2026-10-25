@@ -15,7 +15,7 @@ export default function TrackCatalogLyrics({ track }) {
   }, [track.id, track.title, track.artist, track.duration_seconds, measuredDuration, revision]);
   return <section className="track-page-section" aria-label="LRCLIB lyrics"><h2 className="text-lg font-extrabold tracking-tight mb-3">Lyrics</h2>
   {state.loading ? <p role="status" className="text-sm text-muted-foreground">Finding lyrics on LRCLIB…</p> : state.error ? <p role="status" className="text-sm text-muted-foreground">{state.error} <button className="underline" onClick={() => setRevision((v) => v + 1)}>Retry</button></p> : state.result?.available ? <><p className="text-xs text-muted-foreground mb-3 hidden">{state.result.record ? 'Synced lyrics available in the player' : 'Plain lyrics · timing unavailable'}</p><CollapsibleText text={state.result.text} className="track-page-lyrics selectable-content whitespace-pre-line leading-relaxed" clampClass="max-h-64" /></> : <p className="text-sm text-muted-foreground">{state.result?.instrumental ? 'This recording is marked instrumental.' : 'No matching lyrics on LRCLIB yet.'}</p>}
-  <div className="flex flex-wrap items-center gap-3 mt-3"></div>
+  <div className="flex flex-wrap items-center gap-3 mt-3"><button type="button" className="text-sm underline underline-offset-4 min-h-11" onClick={()=>setFinding(true)}>{state.result?.available?'Find another match':'Find lyrics'}</button></div>
   {finding && <FindLyricsModal track={track} onClose={() => setFinding(false)} onSaved={() => {setFinding(false);}} />}
  </section>;
 }
