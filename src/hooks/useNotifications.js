@@ -93,12 +93,14 @@ export function useNotifications(){
   return()=>{epoch.current++;clearInterval(timer);reload.cancel();unsub();};
  },[load,user?.id]);
  async function markAllAsRead(){
-  const startedUid=user?.id;
-  try{await releases.markRead();}catch(error){reportActionError(error,"Release notifications couldn’t be marked read.");}
-  if(!user?.id||account.current!==startedUid||!unreadCount||markingAll.current||readingIds.current.size)return;
-  markingAll.current=true;const uid=user.id,count=unreadCount,unread=new Set(notifications.filter(n=>!n.read).map(n=>n.id));
+  const uid=user?.id;if(!uid||account.current!==uid||markingAll.current||readingIds.current.size)return;
+  markingAll.current=true;const count=unreadCount,unread=new Set(notifications.filter(n=>!n.read).map(n=>n.id));
   setNotifications(prev=>prev.map(n=>({...n,read:true})));setUnreadCount(0);
-  try{await markAllNotificationsRead(notificationReadDatabase,uid);}
+  try{
+   try{await releases.markRead();}catch(error){if(account.current===uid)reportActionError(error,"Release notifications couldn’t be marked read.");}
+   if(account.current!==uid)return;
+   if(count)await markAllNotificationsRead(notificationReadDatabase,uid);
+  }
   catch(error){if(account.current===uid){setNotifications(prev=>prev.map(n=>unread.has(n.id)?{...n,read:false}:n));setUnreadCount(count);reportActionError(error,"Notifications could not be marked as read. Please retry.");}}
   finally{if(account.current===uid){markingAll.current=false;window.dispatchEvent(new Event("notifications:changed"));load(true);}}
  }
