@@ -7,7 +7,7 @@ const code=fs.readFileSync('src/lib/musicRequests.js','utf8').replace(/^import[^
 const mod=await import('data:text/javascript;base64,'+Buffer.from(code).toString('base64'));
 await assert.rejects(mod.musicRequestAction('list'),error=>error===limit);assert.equal(count,1);
 for(const action of ['list','reconcile','preview_song','create'])await assert.rejects(mod.musicRequestAction(action),error=>error===limit);assert.equal(count,1,'paused background calls do not hit the hosting service');
-assert.ok(mod.musicRequestError(limit).includes('credit or plan limit'));assert.ok(!mod.musicRequestError(limit).includes('status code 402'));
+assert.equal(mod.musicRequestError(limit),'Not available at the moment.');assert.ok(!mod.musicRequestError(limit).includes('status code 402'));
 await assert.rejects(mod.musicRequestAction('list',{}, {retry:true}));assert.equal(count,2,'manual Retry probes service once');
 mode='malformed';await assert.rejects(mod.musicRequestAction('list',{}, {retry:true}));const malformedCount=count;await assert.rejects(mod.musicRequestAction('reconcile'));assert.equal(count,malformedCount,'a malformed success cannot falsely clear the paused state');
 mode='ok';await mod.musicRequestAction('list',{}, {retry:true});await mod.musicRequestAction('reconcile');assert.equal(count,malformedCount+2,'successful manual retry resumes background activity');

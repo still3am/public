@@ -254,8 +254,6 @@ export default function Home() {
   const featured = newReleases[0] || trending[0] || byGenre.find((section) => section.tracks.length)?.tracks[0];
   const visibleDiscover=discover.filter(track=>!dismissed.ids.has(track.id));
   const discoveryQueue = (visibleDiscover.length ? visibleDiscover : trending.filter(track=>!dismissed.ids.has(track.id)));
-  const featuredPlaying = p.currentTrack?.id === featured?.id && p.isPlaying;
-  const playFeatured = () => {if (!featured) return;if (p.currentTrack?.id === featured.id) p.togglePlay();else {p.setShuffle(false);p.playTrackAt(newReleases.length ? newReleases : [featured], 0);}};
   return (
     <PullToRefresh onRefresh={() => load(true)}>
       <div className="home-page home-redesigned">
@@ -263,7 +261,7 @@ export default function Home() {
         
         
         {(loadError||preferencesError)&&<div role="alert" className="border border-border rounded-2xl p-4 mb-4 text-sm"><p>{loadError||"Your music preferences could not load. Discovery is using your listening history for now."}</p><button disabled={loading} className="playlist-action mt-2" onClick={()=>load(true)}>Retry</button></div>}
-        <HomeSpotlight track={featured} playing={featuredPlaying} onPlay={playFeatured} discoveryQueue={discoveryQueue} onDiscover={()=>{p.setShuffle(false);p.playTrackAt(discoveryQueue,0);}}/>
+        <HomeSpotlight track={featured} tracks={discoveryQueue.length ? discoveryQueue : newReleases} currentTrackId={p.currentTrack?.id} isPlaying={p.isPlaying} onSelect={(queue,index)=>{if(p.currentTrack?.id===queue[index]?.id)p.togglePlay();else{p.setShuffle(false);p.playTrackAt(queue,index);}}/>
         
         
         {genreList.length > 0 && <nav className="home-genre-links" aria-label="Browse genres">{genreList.map((genre) => <Link key={genre} to={`/search?genre=${encodeURIComponent(genre)}`}>{genre}</Link>)}</nav>}

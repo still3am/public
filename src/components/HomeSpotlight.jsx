@@ -1,26 +1,35 @@
-import {Link,useLocation} from "react-router-dom";
-import {Play,Pause,ArrowUpRight,Music} from "lucide-react";
-import MotionGradient from "@/components/MotionGradient";
-import ArtistLinks from "@/components/ArtistLinks";
-import {Image} from "@/components/ui/image";
-import TrackOptionsMenu from "@/components/track/TrackOptionsMenu";
-import {useLongPressMenu} from "@/hooks/useLongPressMenu";
-import {useColorPalette} from "@/hooks/useColorPalette";
-import {useCoverUrl} from "@/hooks/useCoverUrl";
-import "./home-spotlight.css";
+import {useState} from 'react';
+import {Link} from 'react-router-dom';
+import {Play,Pause,ChevronLeft,ChevronRight,Music} from 'lucide-react';
+import {Image} from '@/components/ui/image';
+import {useCoverUrl} from '@/hooks/useCoverUrl';
+import './home-spotlight.css';
 
-export default function HomeSpotlight({track,playing,onPlay,discoveryQueue,onDiscover}){
- const menu=useLongPressMenu(false,{allowButtons:true}),location=useLocation();
- const cover=useCoverUrl(track.cover_art_url),colors=useColorPalette(cover,true);
- return <section className="home-editorial" aria-label="Featured music">
-  <MotionGradient colors={colors} speed={.5} active={location.pathname==="/"} pauseWhenCovered className="absolute inset-0"/>
-  <div className="home-editorial-shade" aria-hidden="true"/>
-  <div className="home-editorial-copy"><p className="home-editorial-kicker">THE LATEST ON PUBLIC</p><h2><Link to={`/track/${track.id}`}>{track.title}</Link></h2><div className="home-editorial-artist"><ArtistLinks artist={track.artist||track.uploader_name} maxShown={3} linkClassName="hover:underline"/></div><p className="home-editorial-caption">A new addition. Your next repeat.</p>
-   <div className="home-editorial-actions"><button type="button" className="home-editorial-play" onClick={onPlay}>{playing?<Pause size={18} fill="currentColor"/>:<Play size={18} fill="currentColor"/>}{playing?"Pause":"Play now"}</button><button type="button" disabled={!discoveryQueue.length} onClick={onDiscover}>Discover<ArrowUpRight size={17}/></button></div>
+function DiscoveryCover({track,offset,selected,playing,onChoose}) {
+ const cover=useCoverUrl(track.cover_art_url);
+ const distance=Math.abs(offset);
+ const style={zIndex:10-distance,'--offset':offset,'--distance':distance,'--cover-scale':1-distance*.07};
+ return <li className={'home-discovery-cover'+(selected?' is-selected':'')} style={style}>
+  <button type="button" className="home-discovery-art" onClick={onChoose} aria-label={(selected&&playing?'Pause ':'Play ')+track.title+' by '+(track.artist||'Unknown artist')} aria-current={selected?'true':undefined}>
+   {cover?<Image src={cover} alt="" fittingType="fill" className="w-full h-full"/>:<Music size={48}/>}
+   <span className="home-discovery-play" aria-hidden="true">{selected&&playing?<Pause size={22} fill="currentColor"/>:<Play size={22} fill="currentColor"/>}</span>
+  </button>
+  <div className="home-discovery-label"><Link to={'/track/'+track.id} tabIndex={selected?0:-1}>{track.title}</Link><p>{track.artist||track.uploader_name||'PUBLIC artist'}</p></div>
+ </li>;
+}
+
+export default function HomeSpotlight({track,tracks=[],currentTrackId,isPlaying,onSelect}) {
+ const unique=new Map();for(const item of tracks.length?tracks:track?[track]:[])if(item?.id&&!unique.has(item.id))unique.set(item.id,item);
+ const queue=[...unique.values()].slice(0,24),[selectedId,setSelectedId]=useState(null);
+ if(!queue.length)return null;
+ const found=queue.findIndex(item=>item.id===selectedId),active=found>=0?found:0,selected=queue[active];
+ const move=direction=>setSelectedId(queue[(active+direction+queue.length)%queue.length].id);
+ const visible=queue.map((item,index)=>{let offset=(index-active+queue.length)%queue.length;if(offset>queue.length/2)offset-=queue.length;return {item,index,offset};}).filter(item=>Math.abs(item.offset)<=3);
+ return <section className="home-discovery" aria-labelledby="home-discovery-title">
+  <div className="home-discovery-intro"><p>DISCOVER FEED</p><h2 id="home-discovery-title">Find your next<br/>favorite sound.</h2><span>Something for your mood. A little beyond your usual.</span></div>
+  <div className={'home-discovery-stage'+(queue.length<3?' is-small':'')} role="region" aria-label="Discover music carousel" tabIndex={0} onKeyDown={event=>{if(event.key==='ArrowLeft'||event.key==='ArrowRight'){event.preventDefault();move(event.key==='ArrowLeft'?-1:1);}}}>
+   <ol className="home-discovery-covers">{visible.map(({item,index,offset})=><DiscoveryCover key={item.id} track={item} offset={offset} selected={index===active} playing={currentTrackId===item.id&&isPlaying} onChoose={()=>{setSelectedId(item.id);onSelect(queue,index);}}/>)}</ol>
   </div>
-  <div ref={menu.ref} {...menu.handlers} onClickCapture={event=>{if(menu.consumeLongPress()){event.preventDefault();event.stopPropagation();}}} className="home-editorial-art song-menu-surface group">
-   <Link to={`/track/${track.id}`} aria-label={`View ${track.title}`}>{cover?<Image src={cover} fittingType="fill" alt={`${track.title} cover`} className="w-full h-full"/>:<Music size={56}/>}</Link>
-   <div className="home-editorial-menu song-menu-reveal"><TrackOptionsMenu track={track} openSignal={menu.signal} anchorRef={menu.ref}/></div>
-  </div>
+  <footer className="home-discovery-controls"><div className="home-discovery-arrows"><button type="button" aria-label="Previous discovery" disabled={queue.length<2} onClick={()=>move(-1)}><ChevronLeft size={19}/></button><button type="button" aria-label="Next discovery" disabled={queue.length<2} onClick={()=>move(1)}><ChevronRight size={19}/></button></div><p aria-live="polite" aria-atomic="true">{selected.title}<span>{active+1} / {queue.length}</span></p><Link to="/search">Explore music</Link></footer>
  </section>;
 }

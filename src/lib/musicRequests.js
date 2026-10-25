@@ -25,7 +25,7 @@ export async function musicRequestAction(action,values={},options={retry:false})
  return data;
 }
 export function musicRequestError(error) {
- if(isMusicRequestServiceLimit(error))return 'Music Requests is temporarily paused by PUBLIC’s hosting service. An administrator needs to check its credit or plan limit in Base44. Please retry after service is restored.';
+ if(isMusicRequestServiceLimit(error))return 'Not available at the moment.';
  const detail=error?.response?.data?.error;
  if(typeof detail==='string'&&detail.trim())return detail;
  if(typeof detail?.message==='string'&&detail.message.trim())return detail.message;
