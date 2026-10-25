@@ -51,7 +51,7 @@ export default function HomeSpotlight({ track, tracks = [], currentTrackId, isPl
   };
   const visible = queue.map((item, index) => {let offset = (index - active + queue.length) % queue.length;if (offset > queue.length / 2) offset -= queue.length;return { item, index, offset };}).filter((item) => Math.abs(item.offset) <= 3);
   return <section className="home-discovery" aria-labelledby="home-discovery-title">
-  <div className="home-discovery-intro"><p className="hidden">DISCOVER FEED</p><h2 id="home-discovery-title">Curated soundscapes<br />for your mind.</h2><span>Something for your mood. A little beyond your usual.</span></div>
+  <div className="home-discovery-intro"><h2 id="home-discovery-title">Curated soundscapes<br />for your mind.</h2><span>Something for your mood. A little beyond your usual.</span></div>
   <div ref={stageRef} className={'home-discovery-stage' + (queue.length < 3 ? ' is-small' : '')} role="region" aria-label="Discover music carousel" tabIndex={0}
     onPointerDown={(event) => {if (event.isPrimary === false || event.button !== 0) return;suppressClickUntil.current = 0;gesture.current = { id: event.pointerId, x: event.clientX, y: event.clientY, axis: '' };}}
     onPointerMove={(event) => {const start = gesture.current;if (!start || start.id !== event.pointerId) return;const dx = Math.abs(event.clientX - start.x),dy = Math.abs(event.clientY - start.y);if (!start.axis && Math.max(dx, dy) > 10) {if (dx > dy * 1.25) {start.axis = 'horizontal';event.currentTarget.setPointerCapture?.(event.pointerId);} else if (dy > dx * 1.25) start.axis = 'vertical';}if (start.axis === 'horizontal' && event.cancelable) event.preventDefault();}}
