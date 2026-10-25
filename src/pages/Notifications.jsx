@@ -41,6 +41,7 @@ function getMessage(n) {
     profile_comment:"commented on your profile",
     suggestion_shipped:"shipped an idea you supported",
     support_reply:"replied to your support request",
+    music_request_available:"made a requested song available",
     track_shared:"sent you a song"
   })[n.type] || "sent you a notification";
 }
@@ -105,7 +106,7 @@ export default function Notifications() {
       <div className="notifications-grid space-y-1.5" data-view={view} role="list">
           {visibleNotifications.map((n) => {
           const Icon = ICONS[n.type] || Bell;
-          const serviceNotice=["suggestion_shipped","support_reply"].includes(n.type);
+          const serviceNotice=["suggestion_shipped","support_reply","music_request_available"].includes(n.type);
           const profileLink = serviceNotice?null:n.subscription_id ? `/artist?name=${encodeURIComponent(n.actor_name)}` : n.actor_id ? `/profile/${encodeURIComponent(n.actor_id)}` : null;
           const handle = () => {if (!n.read) markAsRead(n.id);};
           const content =
