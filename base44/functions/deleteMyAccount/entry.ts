@@ -66,6 +66,9 @@ export async function deleteAccountData(b,u){
   LoungeMember:{user_id:id},LoungeQueueItem:{added_by_id:id},
   Block:{$or:[{user_id:id},{blocked_user_id:id}]},SupportTicket:{user_id:id}
  };
+ await s.entities.MusicRequest.updateMany({supporter_ids:{$in:[id]}},{$pull:{supporter_ids:id}});
+ await s.entities.MusicRequest.updateMany({requester_id:id},{$set:{requester_id:''}});
+ await s.entities.MusicRequest.updateMany({resolved_by:id},{$set:{resolved_by:''}});
  await s.entities.Suggestion.updateMany({voter_ids:{$in:[id]}},{$pull:{voter_ids:id}});
  for(const [name,query] of Object.entries(queries))await erase(s,name,query);
  // These are deleted only after reference cleanup, so retries retain their IDs.
