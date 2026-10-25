@@ -10,6 +10,10 @@ export async function saveAlbumToLibrary(handler,userId,tracks,isCurrent=()=>tru
   const row=await handler.create({user_id:userId,track_id:track.id});
   if(!row?.id)throw Error('The library save was not confirmed');
   added++;
+  if(isCurrent()&&typeof window!=='undefined'){
+   window.dispatchEvent(new CustomEvent('library:added',{detail:{uid:userId,id:track.id}}));
+   window.dispatchEvent(new Event('library:changed'));
+  }
  }
  return {added,cancelled:!isCurrent()};
 }
