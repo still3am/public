@@ -22,7 +22,7 @@ export default function HomeSpotlight({ track, tracks = [], currentTrackId, isPl
   const unique = new Map();for (const item of tracks.length ? tracks : track ? [track] : []) if (item?.id && !unique.has(item.id)) unique.set(item.id, item);
   const queue = [...unique.values()].slice(0, 24),[selectedId, setSelectedId] = useState(null);
   const gesture = useRef(null),suppressClickUntil = useRef(0);
-  const stageRef = useRef(null),wheelMove = useRef(null),wheelState = useRef({ total: 0, last: 0, direction: 0, moved: false, timer: null });
+  const stageRef = useRef(null),wheelMove = useRef(null),wheelState = useRef({ total: 0, last: 0, direction: 0, moved: false, timer: null, step: 215 });
   const dragFrame = useRef(null),dragValue = useRef(0),dragSpacing = useRef(215);
   function coverStep() {const stage = stageRef.current,value = stage && typeof getComputedStyle === 'function' ? parseFloat(getComputedStyle(stage).getPropertyValue('--cover-step')) : 0;return value > 0 ? value : 215;}
   function paintDrag(distance, spacing = 0) {
