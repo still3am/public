@@ -120,7 +120,7 @@ export function useUploadQueue({ user, isAdmin }) {
    // Reserve before the first server request: two manual upload clicks must
    // not both pass the same local-file check while awaiting verification.
    claimedHashes.current.set(memo.sha,item.id);
-   const current=await base44.auth.me();if(!canUploadMusic(current))throw Error('Upload access requires administrator approval.');
+   const current=await base44.auth.me();if(current?.id!==user?.id)throw Error('Your account changed. Start this upload again.');if(!canUploadMusic(current))throw Error('Upload access requires administrator approval.');
    const candidate={...item,audio_sha256:memo.sha};
    const check=(await base44.functions.invoke('securityGateway',{entity:'Track',action:'checkDuplicate',args:[{audio_sha256:memo.sha,upload_request_id:item.id}]})).data;
    if(epoch!==generation.current)throw Error('Account changed. Start this upload again.');
