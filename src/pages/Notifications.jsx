@@ -30,6 +30,7 @@ const ICONS = {
 function activityTime(value){const date=new Date(value);return Number.isNaN(date.getTime())?"":formatDistanceToNow(date,{addSuffix:true});}
 
 function actorName(n) {
+  if(n.type==='music_request_available')return 'PUBLIC';
   return n.actor?.display_name || n.actor?.full_name || n.actor_name || "PUBLIC member";
 }
 function getMessage(n) {
@@ -55,7 +56,7 @@ export default function Notifications() {
   const { notifications, loading, error, hasMore, reload, loadMore, unreadCount, markAllAsRead, markAsRead } =
   useNotifications();
 
-  const visibleNotifications=notifications.filter(n=>!blocked.has(n.actor_id)&&(view!=="unread"||!n.read)&&(view!=="music"||n.type==="track_shared"||n.type==="new_upload_from_followed")&&(view!=="shared"||n.type==="track_shared")&&(!query.trim()||[actorName(n),n.track?.title,n.track?.artist,n.comment,getMessage(n)].some(value=>String(value||"").toLowerCase().includes(query.trim().toLowerCase()))));
+  const visibleNotifications=notifications.filter(n=>!blocked.has(n.actor_id)&&(view!=="unread"||!n.read)&&(view!=="music"||n.type==="track_shared"||n.type==="new_upload_from_followed"||n.type==="music_request_available")&&(view!=="shared"||n.type==="track_shared")&&(!query.trim()||[actorName(n),n.track?.title,n.track?.artist,n.comment,getMessage(n)].some(value=>String(value||"").toLowerCase().includes(query.trim().toLowerCase()))));
 
   if (loading && !notifications.length) {
     return (
