@@ -185,7 +185,7 @@ export const AuthProvider = ({ children }) => {
     authVersion.current++;
     await clearPersonalData();
     setUser(null);
-    setIsAuthenticated(false);
+    setIsAuthenticated(false);setIsLoadingAuth(false);setAuthChecked(true);setAuthError(null);
     
     if (shouldRedirect) {
       // Use the SDK's logout method which handles token cleanup and redirect
