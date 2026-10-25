@@ -10,3 +10,5 @@ console.log('PASS music availability notices open the song and existing service 
 
 assert.deepEqual(serviceNotificationLink({type:'music_request_available',target_path:'/music-requests#request-abc'}),{to:'/music-requests?view=following#request-abc',label:'View playlist songs'});
 assert.equal(serviceNotificationLink({type:'music_request_available',target_path:'https://evil.test/'}).to,'/music-requests');
+
+assert.equal(serviceNotificationLink({type:'music_request_available',target_path:'/music-requests?view=following#request-abc'}).to,'/music-requests?view=following#request-abc');
