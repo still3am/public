@@ -83,8 +83,14 @@ export default async function handleRequest(req){
   if(!u)return Response.json({error:'Sign in required'},{status:401});
   const body=await req.json().catch(()=>({}));
   if(body.confirmation!=='DELETE')return Response.json({error:'Type DELETE to confirm account deletion.'},{status:422});
-  if(body.user_id&&body.user_id!==u.id)return Response.json({error:'You can only delete your own account.'},{status:403});
-  await deleteAccountData(b,u);
+  if(body.user_id&&body.user_id!==u.id){
+   if(u.role!=='admin'||u.is_blocked||u.disabled)return Response.json({error:'Administrator access required to remove another account.'},{status:403});
+   if(typeof body.user_id!=='string'||!/^[a-zA-Z0-9_-]{1,100}$/.test(body.user_id))return Response.json({error:'Choose a valid account.'},{status:422});
+   const service=b.asServiceRole,target=await service.entities.User.get(body.user_id);
+   if(!target?.id)return Response.json({error:'Account unavailable.'},{status:404});
+   // Admin deletion performs the same ordered reference cleanup as self deletion.
+   await deleteAccountData({asServiceRole:service,entities:service.entities},target);
+  }else await deleteAccountData(b,u);
   return Response.json({success:true,deleted:true});
  }catch(error){
   console.error('Account deletion did not finish:',error?.message||'Unknown error');
