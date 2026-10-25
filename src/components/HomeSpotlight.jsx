@@ -42,10 +42,12 @@ export default function HomeSpotlight({ track, tracks = [], currentTrackId, isPl
       const now = Date.now(),direction = Math.sign(dx),wheel = wheelState.current;
       if (now - wheel.last > 160 || direction !== wheel.direction) {wheel.total = 0;wheel.moved = false;wheel.step = coverStep();}
       wheel.last = now;wheel.direction = direction;
-      if (wheel.moved) return;
-      const step = wheel.step || 215;wheel.total += dx * (event.deltaMode === 1 ? 16 : event.deltaMode === 2 ? stage.clientWidth || 300 : 1);
-      wheel.total = Math.max(-step * 1.15, Math.min(step * 1.15, wheel.total));paintDrag(-wheel.total, step);
-      clearTimeout(wheel.timer);wheel.timer = setTimeout(() => {wheel.moved = true;paintDrag(0);if (Math.abs(wheel.total) >= Math.max(20, step * .18)) wheelMove.current?.(Math.sign(wheel.total));}, 90);
+      const step = wheel.step || 215;wheel.total += Math.max(-step * 3, Math.min(step * 3, dx * (event.deltaMode === 1 ? 16 : event.deltaMode === 2 ? stage.clientWidth || 300 : 1)));
+      // Consume complete cover widths immediately; keep the residual under the fingers.
+      const crossings = Math.trunc(wheel.total / step);
+      if (crossings) {wheelMove.current?.(crossings);wheel.total -= crossings * step;}
+      paintDrag(-wheel.total, step);
+      clearTimeout(wheel.timer);wheel.timer = setTimeout(() => {const remaining = wheel.total;wheel.total = 0;wheel.timer = null;paintDrag(0);if (Math.abs(remaining) >= Math.max(24, step * .18)) wheelMove.current?.(Math.sign(remaining));}, 80);
     };
     stage.addEventListener('wheel', onWheel, { passive: false });
     return () => {stage.removeEventListener('wheel', onWheel);clearTimeout(wheelState.current.timer);wheelState.current.total = 0;paintDrag(0);};
@@ -66,7 +68,7 @@ export default function HomeSpotlight({ track, tracks = [], currentTrackId, isPl
   };
   const visible = queue.map((item, index) => {let offset = (index - active + queue.length) % queue.length;if (offset > queue.length / 2) offset -= queue.length;return { item, index, offset };}).filter((item) => Math.abs(item.offset) <= 3);
   return <section className="home-discovery" aria-labelledby="home-discovery-title">
-  <div className="home-discovery-intro"><p className="home-discovery-eyebrow">DISCOVER ON PUBLIC</p><h2 id="home-discovery-title">Curated soundscapes<br /><em>for your mind.</em></h2><span>Something for your mood. A little beyond your usual.</span></div>
+  <div className="home-discovery-intro"><p className="home-discovery-eyebrow">DISCOVER ON PUBLIC</p><h2 id="home-discovery-title">Find your next<br /><em>favorite.</em></h2><span>Fresh finds from the music on PUBLIC.</span></div>
   <div ref={stageRef} className={'home-discovery-stage' + (queue.length < 3 ? ' is-small' : '')} role="region" aria-label="Discover music carousel" tabIndex={0}
     onPointerDown={(event) => {if (event.isPrimary === false || event.button !== 0) return;clearTimeout(wheelState.current.timer);paintDrag(0);suppressClickUntil.current = 0;gesture.current = { id: event.pointerId, x: event.clientX, y: event.clientY, axis: '', sampleX: event.clientX, sampleTime: Date.now(), step: coverStep() };}}
     onPointerMove={(event) => {const start = gesture.current;if (!start || start.id !== event.pointerId) return;const dx = Math.abs(event.clientX - start.x),dy = Math.abs(event.clientY - start.y);if (!start.axis && Math.max(dx, dy) > 10) {if (dx > dy * 1.25) {start.axis = 'horizontal';event.currentTarget.setPointerCapture?.(event.pointerId);} else if (dy > dx * 1.25) start.axis = 'vertical';}if (start.axis === 'horizontal') {if (event.cancelable) event.preventDefault();const step = start.step;paintDrag(Math.max(-step * 2.5, Math.min(step * 2.5, event.clientX - start.x)), step);if (Date.now() - start.sampleTime > 80) {start.sampleX = event.clientX;start.sampleTime = Date.now();}}}}
