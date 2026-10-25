@@ -68,7 +68,22 @@ async function playlistProgress(svc,request,uid){
  const available=result.filter(t=>t.available_track_id).length;
  return {playlist_tracks:result,playlist_available:available,playlist_total:request.playlist_total||0,playlist_complete:!!request.playlist_complete,available:!!request.playlist_complete&&result.length>0&&available===result.length};
 }
-async function notifyPlaylist(svc,request,actor){let pending=false;for(const uid of request.supporter_ids||[]){try{const member=await svc.entities.User.get(uid);if(!member||member.is_blocked||member.disabled||!(await playlistProgress(svc,request,uid)).available)continue;if(uid!==actor.id&&rows(await svc.entities.Block.filter({$or:[{user_id:uid,blocked_user_id:actor.id},{user_id:actor.id,blocked_user_id:uid}]},'id',1)).length)continue;const source_key='music-request:'+request.request_key+':playlist';if(!rows(await svc.entities.Notification.filter({user_id:uid,source_key},'id',1)).length){const saved=await svc.entities.Notification.create({user_id:uid,type:'music_request_available',actor_id:actor.id,actor_name:'PUBLIC',target_path:'/music-requests?view=following#request-'+request.id,source_key,comment:'Playlist songs now on PUBLIC: '+request.title,read:false});if(!saved?.id)throw Error('Notification was not confirmed.');}}catch(error){if((error.status??error.response?.status)!==404)pending=true;}}return pending;}
+async function notifyPlaylist(svc,request,actor){
+ let pending=false;
+ const snapshot=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(JSON.stringify((request.playlist_tracks||[]).map(t=>recordingIdentity(t.title,t.artist)))));
+ const source_key='music-request:'+request.request_key+':playlist:'+Array.from(new Uint8Array(snapshot)).map(n=>n.toString(16).padStart(2,'0')).join('');
+ for(const uid of request.supporter_ids||[]){
+  try{
+   if(rows(await svc.entities.Notification.filter({user_id:uid,source_key},'id',1)).length)continue;
+   const member=await svc.entities.User.get(uid);
+   if(!member||member.is_blocked||member.disabled||!(await playlistProgress(svc,request,uid)).available)continue;
+   if(uid!==actor.id&&rows(await svc.entities.Block.filter({$or:[{user_id:uid,blocked_user_id:actor.id},{user_id:actor.id,blocked_user_id:uid}]},'id',1)).length)continue;
+   const saved=await svc.entities.Notification.create({user_id:uid,type:'music_request_available',actor_id:actor.id,actor_name:'PUBLIC',target_path:'/music-requests?view=following#request-'+request.id,source_key,comment:'Playlist songs now on PUBLIC: '+request.title,read:false});
+   if(!saved?.id)throw Error('Notification was not confirmed.');
+  }catch(error){if((error.status??error.response?.status)!==404)pending=true;}
+ }
+ return pending;
+}
 
 async function all(entity,query={},fields){const result=new Map();for(let skip=0;skip<50000;skip+=500){const page=rows(await entity.filter(query,'created_date',500,skip,fields));let added=0;for(const row of page)if(row?.id&&!result.has(row.id)){result.set(row.id,row);added++;}if(page.length<500)return [...result.values()];if(!added)fail('Music requests could not finish loading. Please retry.',503);}fail('Too many requests to load. Please contact support.',503);}
 function grouped(records){const map=new Map();for(const row of records){if(!row?.request_key)continue;const old=map.get(row.request_key);if(!old)map.set(row.request_key,{...row,supporter_ids:[...new Set(row.supporter_ids||[])]});else{old.supporter_ids=[...new Set([...old.supporter_ids,...(row.supporter_ids||[])])];if(row.status==='available'&&(row.available_track_id||row.request_kind==='playlist')){old.status='available';old.available_track_id=row.available_track_id;}else if(row.status==='closed'&&old.status==='open')old.status='closed';}}return [...map.values()];}
