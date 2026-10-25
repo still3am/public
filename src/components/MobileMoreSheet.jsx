@@ -1,3 +1,4 @@
+import {Music2} from 'lucide-react';
 import { useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import {
@@ -18,6 +19,7 @@ const ITEMS = [
 { to: "/top", icon: BarChart3, label: "Top Charts" },
 { to: "/recent", icon: Clock, label: "Recently Added" },
 { to: "/notifications", icon: Bell, label: "Notifications" },
+{ to: "/music-requests", icon: Music2, label: "Music Requests" },
 { to: "/suggestions", icon: Lightbulb, label: "Suggestions" }];
 
 
