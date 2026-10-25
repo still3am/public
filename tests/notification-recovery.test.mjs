@@ -1,12 +1,14 @@
+import {markNotificationRead,markAllNotificationsRead} from '../src/lib/notificationRead.js';
 import fs from 'node:fs';import assert from 'node:assert/strict';
 globalThis.window={dispatchEvent(){}};
 let slots=[],index=0,state={},failRead=false,failWrite=false,allAction='',failActors=false;
-const records=Array.from({length:120},(_,i)=>({id:String(i),user_id:'owner',actor_id:'actor',read:false}));
-const sdk={entities:{Notification:{filter:async(q,opts)=>{if(failRead)throw Error('Offline');const start=Number(opts.cursor)||0;return {items:records.slice(start,start+50),has_more:start+50<records.length,next_cursor:start+50<records.length?String(start+50):null};},count:async()=>records.filter(n=>!n.read).length,update:async()=>{if(failWrite)throw Error('Offline');},subscribe:()=>()=>{}},Track:{}},functions:{invoke:async(name,body)=>{allAction=body.action;if(body.action==='markAllRead')records.forEach(n=>n.read=true);return {data:{success:true}};}}};
-globalThis.__deps={base44:sdk,useAuth:()=>({user:{id:'owner'}}),getUsersByIds:async()=>{if(failActors)throw Error("Profile lookup unavailable");return [{id:"actor",display_name:"Sender"}];},coalesce:fn=>Object.assign(fn,{cancel(){}})};
+const records=Array.from({length:120},(_,i)=>({id:String(i),user_id:'owner',actor_id:'actor',read:false,created_date:'2026-01-01T00:00:00Z'}));
+const matches=(row,q)=>Object.entries(q).every(([key,value])=>value&&typeof value==='object'&&'$lte' in value?row[key]<=value.$lte:row[key]===value);
+const sdk={auth:{me:async()=>({id:'owner'})},entities:{Notification:{get:async id=>structuredClone(records.find(row=>row.id===id)),updateMany:async(q,patch)=>{if(failWrite)throw Error('Offline');allAction=q.created_date?'nativeAll':'nativeOne';records.filter(row=>matches(row,q)).forEach(row=>Object.assign(row,patch.$set));},filter:async(q,opts)=>{if(failRead)throw Error('Offline');if(typeof opts==='string')return records.filter(row=>matches(row,q)).slice(0,1);const start=Number(opts.cursor)||0;return {items:records.slice(start,start+50),has_more:start+50<records.length,next_cursor:start+50<records.length?String(start+50):null};},count:async()=>records.filter(n=>!n.read).length,update:async()=>{if(failWrite)throw Error('Offline');},subscribe:()=>()=>{}},Track:{}},functions:{invoke:async(name,body)=>{allAction=body.action;if(body.action==='markAllRead')records.forEach(n=>n.read=true);return {data:{success:true}};}}};
+globalThis.__deps={base44:sdk,notificationReadDatabase:sdk,markNotificationRead,markAllNotificationsRead,useAuth:()=>({user:{id:'owner'}}),getUsersByIds:async()=>{if(failActors)throw Error("Profile lookup unavailable");return [{id:"actor",display_name:"Sender"}];},coalesce:fn=>Object.assign(fn,{cancel(){}})};
 globalThis.__hooks={useRef:v=>{const i=index++;return slots[i]??=({current:v});},useState:v=>{const i=index++;if(!(i in state))state[i]=v;return [state[i],next=>state[i]=typeof next==='function'?next(state[i]):next];},useCallback:fn=>fn,useEffect:()=>{}};
 let code=fs.readFileSync('src/hooks/useNotifications.js','utf8').replace(/import[\s\S]*?from\s*["'][^"']+["'];?/g,'');
-code='const useArtistReleases=()=>({items:[],unread:0,error:false,markRead:async()=>{},refresh(){}});const reportActionError=()=>{};const {useCallback,useEffect,useRef,useState}=globalThis.__hooks;const {base44,useAuth,getUsersByIds,coalesce}=globalThis.__deps;\n'+code;
+code='const useArtistReleases=()=>({items:[],unread:0,error:false,markRead:async()=>{},refresh(){}});const reportActionError=()=>{};const {useCallback,useEffect,useRef,useState}=globalThis.__hooks;const {base44,notificationReadDatabase,markNotificationRead,markAllNotificationsRead,useAuth,getUsersByIds,coalesce}=globalThis.__deps;\n'+code;
 const {useNotifications}=await import('data:text/javascript;base64,'+Buffer.from(code).toString('base64'));
 const render=()=>{index=0;return useNotifications();};
 let n=render();await n.reload();n=render();assert.equal(n.notifications.length,50);assert.equal(n.unreadCount,120);await n.loadMore();n=render();assert.equal(n.notifications.length,100);await n.loadMore();n=render();assert.equal(n.notifications.length,120);assert.equal(n.hasMore,false);
@@ -18,6 +20,6 @@ console.log('PASS failed refresh keeps loaded notifications');
 assert.equal(n.notifications[0].actor.display_name,'Sender');failActors=true;await n.reload();n=render();assert.equal(n.notifications[0].actor.display_name,'Sender');failActors=false;
 console.log('PASS transient profile lookup failure preserves notification sender');
 
-await n.markAllAsRead();n=render();assert.equal(allAction,'markAllRead');assert.equal(n.unreadCount,0);assert(n.notifications.every(n=>n.read));
-console.log('PASS mark-all calls server action and updates visible inbox');
+await n.markAllAsRead();n=render();assert.equal(allAction,'nativeAll');assert.equal(n.unreadCount,0);assert(n.notifications.every(n=>n.read));
+console.log('PASS mark-all confirms native read flags and updates visible inbox');
 console.log(JSON.stringify({passed:5,environment:'actual notification hook with isolated React/SDK dependencies; no live data changed'}));
