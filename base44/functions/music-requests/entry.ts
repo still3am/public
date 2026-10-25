@@ -57,6 +57,45 @@ async function previewPlaylist(value){
   const data=parseApplePlaylist(html);if(playlistCache.size>=50)playlistCache.delete(playlistCache.keys().next().value);playlistCache.set(source.id,{at:Date.now(),data});return {...data,source_url:source.url};
  }catch(error){if(error.status)throw error;fail('The public playlist could not load. Please retry or check its sharing settings.',502);}finally{clearTimeout(timer);}
 }
+export function spotifySongSource(value){
+ const clean=sourceLink(value);if(!clean)fail('Paste a Spotify song link.',422);const url=new URL(clean);
+ const id=url.pathname.match(/^\/(?:intl-[a-z]{2}\/)?track\/([a-zA-Z0-9]{22})\/?$/)?.[1];
+ if(url.hostname!=='open.spotify.com'||!id)fail('Use an open.spotify.com/track/… song link.',422);
+ return {id,url:'https://open.spotify.com/track/'+id};
+}
+const spotifyCache=new Map(),spotifyLookups=[];
+async function previewSpotifySong(value){
+ const source=spotifySongSource(value),cached=spotifyCache.get(source.id);if(cached&&Date.now()-cached.at<300000)return {...cached.data,source_url:source.url};
+ const now=Date.now();while(spotifyLookups.length&&spotifyLookups[0]<now-60000)spotifyLookups.shift();if(spotifyLookups.length>=20)fail('Spotify previews are busy. Enter the song title and artist instead.',429);spotifyLookups.push(now);
+ const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),8000);
+ try{
+  const response=await fetch('https://open.spotify.com/oembed?url='+encodeURIComponent(source.url),{redirect:'error',signal:controller.signal,headers:{Accept:'application/json'}});
+  if(!response.ok||!response.body)fail('Spotify could not preview this song. You can still enter its title and artist.',502);
+  const reader=response.body.getReader(),decoder=new TextDecoder();let size=0,raw='';
+  try{while(true){const part=await reader.read();if(part.done)break;size+=part.value.length;if(size>100000)fail('Spotify preview could not load. Enter the title and artist instead.',502);raw+=decoder.decode(part.value,{stream:true});}raw+=decoder.decode();}finally{await reader.cancel().catch(()=>{});}
+  let data;try{data=JSON.parse(raw);}catch{fail('Spotify preview could not load. Enter the title and artist instead.',502);}
+  if(data?.provider_name!=='Spotify'||typeof data.title!=='string'||!normalizeMusic(data.title))fail('Spotify did not return song details. Enter the title and artist instead.',502);
+  const title=text(data.title,'song title',200);let artwork_url='';try{artwork_url=artworkLink(data.thumbnail_url||'');}catch{}
+  // oEmbed does not provide track artist credits. The listener confirms them.
+  const result={title,artist:'',artwork_url,needs_artist:true,provider:'Spotify'};
+  if(spotifyCache.size>=50)spotifyCache.delete(spotifyCache.keys().next().value);spotifyCache.set(source.id,{at:Date.now(),data:result});return {...result,source_url:source.url};
+ }catch(error){if(error.status)throw error;fail('Spotify preview could not load. Enter the title and artist instead.',502);}finally{clearTimeout(timer);}
+}
+async function notifyUploaders(svc,request,actor){
+ const spotify_url=request.spotify_url;if(!spotify_url||request.status!=='open')return {pending:false,count:0};
+ const recipients=await all(svc.entities.User,{$or:[{role:'admin'},{creator_role:{$in:['uploader','artist']}}]},['id','role','creator_role','is_blocked','disabled']);let pending=false,count=0;
+ for(const member of recipients){
+  if(!member?.id||member.id===actor.id||member.is_blocked||member.disabled||!creators(member))continue;
+  try{
+   if(rows(await svc.entities.Block.filter({$or:[{user_id:actor.id,blocked_user_id:member.id},{user_id:member.id,blocked_user_id:actor.id}]},'id',1)).length)continue;
+   const source_key='music-request-new:'+request.request_key;
+   if(rows(await svc.entities.Notification.filter({user_id:member.id,source_key},'id',1)).length)continue;
+   const saved=await svc.entities.Notification.create({user_id:member.id,type:'music_request_new',actor_id:actor.id,actor_name:'PUBLIC',target_path:'/music-requests?request='+request.request_key,source_key,comment:request.title+' — '+request.artist,read:false});
+   if(!saved?.id)throw Error('Uploader notification was not confirmed.');count++;
+  }catch(error){if((error.status??error.response?.status)!==404)pending=true;}
+ }
+ return {pending,count};
+}
 const songCache=new Map(),songRequests=[];
 export function appleSongSource(value){
  const clean=sourceLink(value);if(!clean)fail('Paste an Apple Music song link, or enter the song details.',422);
@@ -126,25 +165,27 @@ export default async function handleRequest(req){
   if(action==='list'){
    const requests=grouped(await all(svc.entities.MusicRequest)),trackIds=[...new Set(requests.map(r=>r.available_track_id).filter(Boolean))],tracks=new Map();
    for(let i=0;i<trackIds.length;i+=100)for(const track of await all(svc.entities.Track,{id:{$in:trackIds.slice(i,i+100)},is_published:true,approval_status:'approved'},['id','title','artist','uploader_id','is_published','approval_status']))tracks.set(track.id,track);
-   const result=[];for(const r of requests){if(r.status==='closed'&&user.role!=='admin')continue;const progress=r.request_kind==='playlist'?await playlistProgress(svc,r,user.id):null;let available=progress?.available||false;const track=tracks.get(r.available_track_id);if(track&&recordingIdentity(track.title,track.artist)===recordingIdentity(r.title,r.artist))available=await canHear(svc,user.id,track);result.push({...(progress||{}),request_kind:r.request_kind||'song',id:r.id,request_key:r.request_key,title:r.title,artist:r.artist,source_url:r.source_url||'',artwork_url:r.artwork_url||'',created_date:r.created_date,status:r.status==='closed'?'closed':available?'available':'open',available_track_id:available?r.available_track_id:'',support_count:r.supporter_ids.length,supported:r.supporter_ids.includes(user.id),mine:r.requester_id===user.id});}
+   const result=[];for(const r of requests){if(r.status==='closed'&&user.role!=='admin')continue;const progress=r.request_kind==='playlist'?await playlistProgress(svc,r,user.id):null;let available=progress?.available||false;const track=tracks.get(r.available_track_id);if(track&&recordingIdentity(track.title,track.artist)===recordingIdentity(r.title,r.artist))available=await canHear(svc,user.id,track);result.push({...(progress||{}),request_kind:r.request_kind||'song',id:r.id,request_key:r.request_key,title:r.title,artist:r.artist,source_url:r.source_url||'',spotify_url:r.spotify_url||'',artwork_url:r.artwork_url||'',created_date:r.created_date,status:r.status==='closed'?'closed':available?'available':'open',available_track_id:available?r.available_track_id:'',support_count:r.supporter_ids.length,supported:r.supporter_ids.includes(user.id),mine:r.requester_id===user.id});}
    return Response.json({requests:result,can_manage:creators(user),is_admin:user.role==='admin'});
   }
   if(action==='preview_playlist'){const preview=await previewPlaylist(body.source_url),progress=await playlistProgress(svc,preview,user.id);return Response.json({success:true,preview:{...preview,...progress}});}
-  if(action==='preview_song'){const preview=await previewSong(body.source_url);return Response.json({success:true,preview});}
+  if(action==='preview_song'){const preview=typeof body.source_url==='string'&&new URL(sourceLink(body.source_url)).hostname==='open.spotify.com'?await previewSpotifySong(body.source_url):await previewSong(body.source_url);return Response.json({success:true,preview});}
   if(action==='create'){
    if(body.request_kind!=null&&!['song','playlist'].includes(body.request_kind))fail('Choose song or playlist.',422);
    const playlist=body.request_kind==='playlist'?await previewPlaylist(body.source_url):null;
    const title=playlist?.title||text(body.title,'song title',200),artist=playlist?.artist||text(body.artist,'artist',200);if(!normalizeMusic(title)||!normalizeMusic(artist))fail('Enter a song title and artist.',422);
-   const source_url=playlist?.source_url||sourceLink(body.source_url),artwork_url=playlist?.artwork_url||artworkLink(body.artwork_url),key=playlist?await keyFor('playlist',playlistSource(source_url).id):await keyFor(title,artist);
+   const rawSource=playlist?.source_url||sourceLink(body.source_url),spotify_url=rawSource&&new URL(rawSource).hostname==='open.spotify.com'?spotifySongSource(rawSource).url:'',source_url=spotify_url||rawSource,artwork_url=playlist?.artwork_url||artworkLink(body.artwork_url),key=playlist?await keyFor('playlist',playlistSource(source_url).id):await keyFor(title,artist);
    return await serialized(key,async()=>{
     let found=grouped(await all(svc.entities.MusicRequest,{request_key:key}));
-    if(!found.length){const recent=rows(await svc.entities.MusicRequest.filter({requester_id:user.id,created_date:{$gte:new Date(Date.now()-86400000).toISOString()}},'-created_date',10));if(recent.length>=10)fail('You can request up to 10 new song or playlist requests per day. You can still support existing requests.',429);const saved=await svc.entities.MusicRequest.create({...(playlist?{request_kind:'playlist',playlist_tracks:playlist.playlist_tracks,playlist_total:playlist.playlist_total,playlist_complete:playlist.playlist_complete}:{request_kind:'song'}),request_key:key,title,artist,source_url,artwork_url,requester_id:user.id,supporter_ids:[user.id],status:'open',available_track_id:''});if(!saved?.id)fail('Your request was not confirmed. Please retry.',503);}
+    if(!found.length){const recent=rows(await svc.entities.MusicRequest.filter({requester_id:user.id,created_date:{$gte:new Date(Date.now()-86400000).toISOString()}},'-created_date',10));if(recent.length>=10)fail('You can request up to 10 new song or playlist requests per day. You can still support existing requests.',429);const saved=await svc.entities.MusicRequest.create({...(playlist?{request_kind:'playlist',playlist_tracks:playlist.playlist_tracks,playlist_total:playlist.playlist_total,playlist_complete:playlist.playlist_complete}:{request_kind:'song'}),request_key:key,title,artist,source_url,spotify_url,artwork_url,requester_id:user.id,supporter_ids:[user.id],status:'open',available_track_id:''});if(!saved?.id)fail('Your request was not confirmed. Please retry.',503);}
     else if(found[0].status==='closed')fail('This request is closed. Please contact support if it needs another review.',409);
-    await svc.entities.MusicRequest.updateMany({request_key:key},{$addToSet:{supporter_ids:user.id}});
+    await svc.entities.MusicRequest.updateMany({request_key:key},{$addToSet:{supporter_ids:user.id},...(spotify_url?{$set:{spotify_url}}:{})});
     const confirmed=await canonical(svc,key);if(!confirmed.supporter_ids.includes(user.id))fail('Your request was not confirmed. Please retry.',503);
-    return Response.json({success:true,id:confirmed.id,request_key:key,combined:found.length>0});
+    let delivery={pending:false,count:0};if(spotify_url){try{delivery=await notifyUploaders(svc,confirmed,user);}catch{delivery.pending=true;}}
+    return Response.json({success:true,id:confirmed.id,request_key:key,combined:found.length>0,uploaders_notified:delivery.count,notification_pending:delivery.pending});
    });
   }
+  if(action==='notify_uploaders'){return await serialized(body.request_key,async()=>{const request=await canonical(svc,body.request_key);if(!creators(user)&&request.requester_id!==user.id)fail('Only the requester or approved creators can resend this request.',403);if(request.status!=='open'||!request.spotify_url)fail('Choose an open Spotify song request.',422);const delivery=await notifyUploaders(svc,request,user);return Response.json({success:true,uploaders_notified:delivery.count,notification_pending:delivery.pending});});}
   if(action==='refresh_playlist'){
    if(!creators(user))fail('Approved creator access is required.',403);return await serialized(body.request_key,async()=>{const request=await canonical(svc,body.request_key);if(request.request_kind!=='playlist'||request.status==='closed')fail('Choose an open playlist request.',422);playlistCache.delete(playlistSource(request.source_url).id);const preview=await previewPlaylist(request.source_url);await svc.entities.MusicRequest.updateMany({request_key:request.request_key},{$set:{...preview,status:'open',available_track_id:''}});const confirmed=await canonical(svc,request.request_key);if(confirmed.status!=='open'||JSON.stringify(confirmed.playlist_tracks)!==JSON.stringify(preview.playlist_tracks))fail('The refreshed playlist was not confirmed. Please retry.',503);return Response.json({success:true});});
   }
