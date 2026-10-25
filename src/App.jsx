@@ -1,3 +1,5 @@
+import MusicRequests from '@/pages/MusicRequests';
+import MusicRequestSync from '@/components/MusicRequestSync';
 import ArtistRegistration from '@/pages/ArtistRegistration';
 import { Toaster } from "@/components/ui/toaster"
 import { QueryClientProvider } from '@tanstack/react-query'
@@ -110,6 +112,7 @@ const AuthenticatedApp = () => {
           <Route path="/recap/:period/:value?" element={<RecapPlaylist />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/profile/:id" element={<Profile />} />
+          <Route path="/music-requests" element={<MusicRequests />} />
           <Route path="/artist-registration" element={<ArtistRegistration />} />
           <Route path="/upload" element={<Upload />} />
           <Route path="/upload/review" element={<Upload />} />
@@ -137,7 +140,7 @@ function App() {
     <AuthProvider>
       <QueryClientProvider client={queryClientInstance}>
         <Router>
-          <ErrorBoundary><GlobalStatus/><DialogFocusManager/><SafetyProvider><PlayerProvider><OfflineSyncManager/>
+          <ErrorBoundary><GlobalStatus/><DialogFocusManager/><SafetyProvider><PlayerProvider><OfflineSyncManager/><MusicRequestSync/>
             <LibraryProvider>
               <UploadProvider>
                 <LoungeHostProvider><AuthenticatedApp /></LoungeHostProvider>
