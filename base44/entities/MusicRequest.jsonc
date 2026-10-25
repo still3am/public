@@ -93,6 +93,11 @@
     "playlist_complete": {
       "type": "boolean",
       "default": false
+    },
+    "spotify_url": {
+      "type": "string",
+      "maxLength": 2048,
+      "default": ""
     }
   },
   "required": [
