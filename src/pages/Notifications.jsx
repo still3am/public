@@ -25,13 +25,14 @@ const ICONS = {
   track_liked: Heart,
   new_upload_from_followed: Music,
   profile_comment: MessageCircle,
+  music_request_new: Send,
   track_shared: Send
 };
 
 function activityTime(value){const date=new Date(value);return Number.isNaN(date.getTime())?"":formatDistanceToNow(date,{addSuffix:true});}
 
 function actorName(n) {
-  if(n.type==='music_request_available')return 'PUBLIC';
+  if(n.type==='music_request_available'||n.type==='music_request_new')return 'PUBLIC';
   return n.actor?.display_name || n.actor?.full_name || n.actor_name || "PUBLIC member";
 }
 function getMessage(n) {
@@ -44,6 +45,7 @@ function getMessage(n) {
     suggestion_shipped:"shipped an idea you supported",
     support_reply:"replied to your support request",
     music_request_available:"made requested music available",
+    music_request_new:"has a new song request for uploaders",
     track_shared:"sent you a song"
   })[n.type] || "sent you a notification";
 }
@@ -57,7 +59,7 @@ export default function Notifications() {
   const { notifications, loading, error, hasMore, reload, loadMore, unreadCount, markAllAsRead, markAsRead } =
   useNotifications();
 
-  const visibleNotifications=notifications.filter(n=>!blocked.has(n.actor_id)&&(view!=="unread"||!n.read)&&(view!=="music"||n.type==="track_shared"||n.type==="new_upload_from_followed"||n.type==="music_request_available")&&(view!=="shared"||n.type==="track_shared")&&(!query.trim()||[actorName(n),n.track?.title,n.track?.artist,n.comment,getMessage(n)].some(value=>String(value||"").toLowerCase().includes(query.trim().toLowerCase()))));
+  const visibleNotifications=notifications.filter(n=>!blocked.has(n.actor_id)&&(view!=="unread"||!n.read)&&(view!=="music"||n.type==="track_shared"||n.type==="new_upload_from_followed"||n.type==="music_request_available"||n.type==="music_request_new")&&(view!=="shared"||n.type==="track_shared")&&(!query.trim()||[actorName(n),n.track?.title,n.track?.artist,n.comment,getMessage(n)].some(value=>String(value||"").toLowerCase().includes(query.trim().toLowerCase()))));
 
   if (loading && !notifications.length) {
     return (

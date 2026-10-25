@@ -85,9 +85,9 @@ async function notifyUploaders(svc,request,actor){
  const spotify_url=request.spotify_url;if(!spotify_url||request.status!=='open')return {pending:false,count:0};
  const recipients=await all(svc.entities.User,{$or:[{role:'admin'},{creator_role:{$in:['uploader','artist']}}]},['id','role','creator_role','is_blocked','disabled']);let pending=false,count=0;
  for(const member of recipients){
-  if(!member?.id||member.id===actor.id||member.is_blocked||member.disabled||!creators(member))continue;
+  if(!member?.id||member.id===actor.id||member.id===request.requester_id||member.is_blocked||member.disabled||!creators(member))continue;
   try{
-   if(rows(await svc.entities.Block.filter({$or:[{user_id:actor.id,blocked_user_id:member.id},{user_id:member.id,blocked_user_id:actor.id}]},'id',1)).length)continue;
+   if(rows(await svc.entities.Block.filter({$or:[{user_id:request.requester_id||actor.id,blocked_user_id:member.id},{user_id:member.id,blocked_user_id:request.requester_id||actor.id},{user_id:actor.id,blocked_user_id:member.id},{user_id:member.id,blocked_user_id:actor.id}]},'id',1)).length)continue;
    const source_key='music-request-new:'+request.request_key;
    if(rows(await svc.entities.Notification.filter({user_id:member.id,source_key},'id',1)).length)continue;
    const saved=await svc.entities.Notification.create({user_id:member.id,type:'music_request_new',actor_id:actor.id,actor_name:'PUBLIC',target_path:'/music-requests?request='+request.request_key,source_key,comment:request.title+' — '+request.artist,read:false});
@@ -169,7 +169,7 @@ export default async function handleRequest(req){
    return Response.json({requests:result,can_manage:creators(user),is_admin:user.role==='admin'});
   }
   if(action==='preview_playlist'){const preview=await previewPlaylist(body.source_url),progress=await playlistProgress(svc,preview,user.id);return Response.json({success:true,preview:{...preview,...progress}});}
-  if(action==='preview_song'){const preview=typeof body.source_url==='string'&&new URL(sourceLink(body.source_url)).hostname==='open.spotify.com'?await previewSpotifySong(body.source_url):await previewSong(body.source_url);return Response.json({success:true,preview});}
+  if(action==='preview_song'){const source=sourceLink(body.source_url),preview=source&&new URL(source).hostname==='open.spotify.com'?await previewSpotifySong(source):await previewSong(source);return Response.json({success:true,preview});}
   if(action==='create'){
    if(body.request_kind!=null&&!['song','playlist'].includes(body.request_kind))fail('Choose song or playlist.',422);
    const playlist=body.request_kind==='playlist'?await previewPlaylist(body.source_url):null;
