@@ -35,7 +35,9 @@ export default function RecentlyAdded() {
   }
 
   useEffect(() => {
-    load();return () => {loadVersion.current++;};
+    const refresh=()=>{setTracks([]);load();};
+    load();window.addEventListener('catalog:invalidate',refresh);
+    return () => {loadVersion.current++;window.removeEventListener('catalog:invalidate',refresh);};
   }, []);
 
   if (loading && !tracks.length)
