@@ -50,6 +50,49 @@
     "resolved_by": {
       "type": "string",
       "default": ""
+    },
+    "request_kind": {
+      "type": "string",
+      "enum": [
+        "song",
+        "playlist"
+      ],
+      "default": "song"
+    },
+    "playlist_tracks": {
+      "type": "array",
+      "maxItems": 500,
+      "items": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "maxLength": 200
+          },
+          "artist": {
+            "type": "string",
+            "maxLength": 200
+          },
+          "source_url": {
+            "type": "string",
+            "maxLength": 2048
+          }
+        },
+        "required": [
+          "title",
+          "artist"
+        ]
+      },
+      "default": []
+    },
+    "playlist_total": {
+      "type": "integer",
+      "minimum": 0,
+      "default": 0
+    },
+    "playlist_complete": {
+      "type": "boolean",
+      "default": false
     }
   },
   "required": [

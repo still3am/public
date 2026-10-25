@@ -17,7 +17,7 @@ function artworkLink(value){if(!value)return '';if(typeof value!=='string'||valu
 async function keyFor(title,artist){const bytes=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(recordingIdentity(title,artist)));return Array.from(new Uint8Array(bytes)).map(n=>n.toString(16).padStart(2,'0')).join('');}
 
 export function playlistSource(value){
- const url=new URL(sourceLink(value));
+ const clean=sourceLink(value);if(!clean)fail('Use a public Apple Music playlist link.',422);const url=new URL(clean);
  const id=url.pathname.match(/\/playlist\/(?:[^/]+\/)?(pl\.[a-zA-Z0-9-]+)\/?$/)?.[1];
  if(url.hostname!=='music.apple.com'||!id)fail('Use a public Apple Music playlist link.',422);
  return {url:url.href,id};
@@ -104,6 +104,9 @@ export default async function handleRequest(req){
     const confirmed=await canonical(svc,key);if(!confirmed.supporter_ids.includes(user.id))fail('Your request was not confirmed. Please retry.',503);
     return Response.json({success:true,id:confirmed.id,request_key:key,combined:found.length>0});
    });
+  }
+  if(action==='refresh_playlist'){
+   if(!creators(user))fail('Approved creator access is required.',403);return await serialized(body.request_key,async()=>{const request=await canonical(svc,body.request_key);if(request.request_kind!=='playlist'||request.status==='closed')fail('Choose an open playlist request.',422);playlistCache.delete(playlistSource(request.source_url).id);const preview=await previewPlaylist(request.source_url);await svc.entities.MusicRequest.updateMany({request_key:request.request_key},{$set:{...preview,status:'open',available_track_id:''}});const confirmed=await canonical(svc,request.request_key);if(confirmed.status!=='open'||JSON.stringify(confirmed.playlist_tracks)!==JSON.stringify(preview.playlist_tracks))fail('The refreshed playlist was not confirmed. Please retry.',503);return Response.json({success:true});});
   }
   if(action==='support'){
    if(typeof body.request_key!=='string'||!/^[0-9a-f]{64}$/.test(body.request_key)||typeof body.support!=='boolean')fail('Choose a valid music request.');
