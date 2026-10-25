@@ -1,16 +1,16 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import ts from 'typescript';
-let state=null,calls=[],refs=[],ri=0;
+let state=null,calls=[],refs=[],ri=0,effects=[];
 const createElement=(type,props,...children)=>({type,props:{...props,children:children.flat(Infinity)}});
-const deps={React:{createElement},useRef:initial=>refs[ri++]??(refs[ri-1]={current:initial}),useState:()=>[state,next=>{state=typeof next==='function'?next(state):next;}],Link:'a',Play:'play',Pause:'pause',ChevronLeft:'left',ChevronRight:'right',Music:'music',Image:'img',useCoverUrl:value=>value||''};
+const deps={React:{createElement},useEffect:fn=>effects.push(fn),useRef:initial=>refs[ri++]??(refs[ri-1]={current:initial}),useState:()=>[state,next=>{state=typeof next==='function'?next(state):next;}],Link:'a',Play:'play',Pause:'pause',ChevronLeft:'left',ChevronRight:'right',Music:'music',Image:'img',useCoverUrl:value=>value||''};
 globalThis.__homeDiscovery=deps;
 let source=fs.readFileSync('src/components/HomeSpotlight.jsx','utf8').replace(/^import[^;]+;/gm,'');source=ts.transpileModule(source,{compilerOptions:{jsx:ts.JsxEmit.React,target:ts.ScriptTarget.ES2022,module:ts.ModuleKind.ESNext}}).outputText;
 const {default:Carousel}=await import('data:text/javascript;base64,'+Buffer.from('const {'+Object.keys(deps).join(',')+'}=globalThis.__homeDiscovery;\n'+source).toString('base64'));
 const nodes=n=>n&&typeof n==='object'?[n,...(n.props?.children||[]).flatMap(nodes)]:[];
 const tracks=Array.from({length:12},(_,i)=>({id:'song'+i,title:'Song '+i,artist:'Artist '+i,cover_art_url:i?'https://example.test/'+i+'.jpg':''}));
 const props={tracks:[...tracks,tracks[0]],currentTrackId:'song0',isPlaying:true,onSelect:(queue,index)=>calls.push({queue,index})};
-const render=options=>{ri=0;return Carousel(options);};
+const render=options=>{ri=0;effects=[];return Carousel(options);};
 let tree=render(props);const cards=()=>nodes(tree).filter(n=>typeof n.type==='function'&&n.props.track&&typeof n.props.onChoose==='function');assert.equal(cards().length,7);assert.equal(cards().find(n=>n.props.selected).props.track.id,'song0');
 let selected=cards().find(n=>n.props.selected);let cover=selected.type(selected.props);assert.equal(nodes(cover).find(n=>n.type==='button').props['aria-label'],'Pause Song 0 by Artist 0');assert.ok(nodes(cover).some(n=>n.type==='music'),'missing artwork has a music fallback');
 selected.props.onChoose();assert.equal(calls[0].index,0);assert.equal(calls[0].queue.length,12,'duplicate catalog rows do not duplicate the playback queue');
@@ -32,3 +32,6 @@ stage().props.onPointerDown(pointer(100));stage().props.onPointerMove(pointer(10
 stage().props.onPointerDown(pointer(100));stage().props.onPointerUp(pointer(110));tree=render(props);assert.equal(cards().find(n=>n.props.selected).props.track.id,'song0','small taps are not swipes');
 stage().props.onPointerDown(pointer(100));stage().props.onPointerMove(pointer(180));stage().props.onPointerCancel(pointer(180));tree=render(props);assert.equal(cards().find(n=>n.props.selected).props.track.id,'song0','cancelled gestures do not move the carousel');
 assert.ok(css.includes('touch-action:pan-y pinch-zoom'));console.log('PASS left/right swipes, desktop dragging, vertical scrolling, tap threshold, cancellation and post-swipe click protection');
+
+state='song0';tree=render(props);const wheelStage=stage();let handleWheel,removed=false;const element={clientWidth:800,addEventListener(name,handler,options){assert.equal(name,'wheel');assert.equal(options.passive,false);handleWheel=handler;},removeEventListener(){removed=true;}};wheelStage.props.ref.current=element;const cleanupWheel=effects[0]();
+const wheel=(dx,dy=0,extra={})=>({deltaX:dx,deltaY:dy,deltaMode:0,cancelable:true,preventDefault(){},...extra});handleWheel(wheel(20));handleWheel(wheel(30));tree=render(props);assert.equal(cards().find(n=>n.props.selected).props.track.id,'song1');handleWheel(wheel(120));tree=render(props);assert.equal(cards().find(n=>n.props.selected).props.track.id,'song1','trackpad momentum does not skip multiple covers');handleWheel(wheel(-60));tree=render(props);assert.equal(cards().find(n=>n.props.selected).props.track.id,'song0');handleWheel(wheel(0,150));tree=render(props);assert.equal(cards().find(n=>n.props.selected).props.track.id,'song0','vertical scrolling stays on the page');handleWheel(wheel(0,80,{shiftKey:true}));tree=render(props);assert.equal(cards().find(n=>n.props.selected).props.track.id,'song1','shift-wheel also browses covers');handleWheel(wheel(-100,0,{ctrlKey:true}));tree=render(props);assert.equal(cards().find(n=>n.props.selected).props.track.id,'song1','pinch zoom does not browse');cleanupWheel();assert.equal(removed,true);assert.ok(nodes(tree).some(n=>n.type==='h2'&&n.props.id==='home-discovery-title'));console.log('PASS desktop trackpad swipes, momentum protection, shift-wheel, vertical-scroll/pinch preservation and restored heading');
