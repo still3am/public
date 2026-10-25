@@ -3,12 +3,13 @@ import {Link} from 'react-router-dom';
 import {ArrowRight,ArrowLeft,Check,Mic2,Loader2} from 'lucide-react';
 import {useAuth} from '@/lib/AuthContext';
 import {base44} from '@/api/base44Client';
+import {entityRows} from '@/lib/entityRows';
 import {creatorType} from '@/lib/creatorAccess';
 import './upload-studio.css';
 export default function ArtistRegistration(){
  const {user}=useAuth(),[step,setStep]=useState(0),[name,setName]=useState(''),[genre,setGenre]=useState(''),[bio,setBio]=useState(''),[url,setUrl]=useState(''),[confirm,setConfirm]=useState(false),[application,setApplication]=useState(null),[loading,setLoading]=useState(true),[busy,setBusy]=useState(false),[error,setError]=useState('');const lock=useRef(false);
  const [loadFailed,setLoadFailed]=useState(false),[retry,setRetry]=useState(0);
- useEffect(()=>{let alive=true;setLoading(true);setLoadFailed(false);setError('');setApplication(null);if(!user?.id){setLoading(false);return;}base44.entities.ArtistApplication.filter({user_id:user.id},'-created_date',1).then(result=>{const rows=Array.isArray(result)?result:result?.items;if(!Array.isArray(rows))throw Error('Invalid application response');if(alive)setApplication(rows[0]||null);}).catch(()=>{if(alive){setLoadFailed(true);setError('Could not load your application. Retry before applying.');}}).finally(()=>{if(alive)setLoading(false);});return()=>{alive=false;};},[user?.id,retry]);
+ useEffect(()=>{let alive=true;setLoading(true);setLoadFailed(false);setError('');setApplication(null);if(!user?.id){setLoading(false);return;}base44.entities.ArtistApplication.filter({user_id:user.id},'-created_date',1).then(result=>{const rows=entityRows(result);if(!Array.isArray(rows))throw Error('Invalid application response');if(alive)setApplication(rows[0]||null);}).catch(()=>{if(alive){setLoadFailed(true);setError('Could not load your application. Retry before applying.');}}).finally(()=>{if(alive)setLoading(false);});return()=>{alive=false;};},[user?.id,retry]);
  let validUrl=false;try{validUrl=new URL(url).protocol==='https:';}catch{}
  async function submit(){
  if(lock.current||loading||loadFailed||!confirm||!validUrl||name.trim().length<2||bio.trim().length<30)return;
