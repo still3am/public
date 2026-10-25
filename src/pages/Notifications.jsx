@@ -1,3 +1,4 @@
+import {serviceNotificationLink} from '@/lib/serviceNotificationLink';
 import {useState} from "react";
 import LoadError from '@/components/LoadError';
 import SafetyControls from '@/components/SafetyControls';
@@ -107,7 +108,7 @@ export default function Notifications() {
       <div className="notifications-grid space-y-1.5" data-view={view} role="list">
           {visibleNotifications.map((n) => {
           const Icon = ICONS[n.type] || Bell;
-          const serviceNotice=["suggestion_shipped","support_reply","music_request_available"].includes(n.type);
+          const serviceLink=serviceNotificationLink(n),serviceNotice=!!serviceLink;
           const profileLink = serviceNotice?null:n.subscription_id ? `/artist?name=${encodeURIComponent(n.actor_name)}` : n.actor_id ? `/profile/${encodeURIComponent(n.actor_id)}` : null;
           const handle = () => {if (!n.read) markAsRead(n.id);};
           const content =
@@ -147,7 +148,7 @@ export default function Notifications() {
                       </div>
                     </Link>
                   }
-                  {serviceNotice&&<Link className="block mt-2 text-sm underline" onClick={handle} to={n.type==="support_reply"&&/^\/support\?ticket=/.test(n.target_path||"")?n.target_path:n.type==="suggestion_shipped"&&/^\/suggestions\?idea=/.test(n.target_path||"")?n.target_path:n.type==="support_reply"?"/support":"/suggestions"}>{n.type==="support_reply"?"Read reply":"View completed idea"}</Link>}
+                  {serviceNotice&&<Link className="block mt-2 text-sm underline" onClick={handle} to={serviceLink.to}>{serviceLink.label}</Link>}
                   {n.comment &&
                   <p className="mt-1.5 text-xs italic text-foreground/70 break-words">
                       "{n.comment}"
