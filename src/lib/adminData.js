@@ -53,3 +53,23 @@ export async function suspendAdminMember(client,id,blocked){
  const confirmed=await client.entities.User.get(id);if(confirmed.is_blocked!==blocked)throw Error('Account access change was not confirmed.');
  if(typeof window!=='undefined')window.dispatchEvent(new Event('catalog:invalidate'));return confirmed;
 }
+
+export async function setAdminSuggestionStatus(client,id,status){
+ const admin=await requireAdmin(client);
+ if(!['open','reviewing','planned','in_progress','done'].includes(status))throw Error('Invalid suggestion status.');
+ const saved=await client.entities.Suggestion.update(id,{status});
+ if(saved?.status!==status)throw Error('Suggestion status was not confirmed.');
+ let notificationPending=false;
+ if(status==='done')for(const recipient of [...new Set([saved.user_id,...(saved.voter_ids||[])].filter(Boolean))]){
+  try{
+   const source_key='suggestion:'+id;
+   const response=await client.entities.Notification.filter({user_id:recipient,source_key},'-created_date',1);
+   const found=Array.isArray(response)?response:response?.items;if(!Array.isArray(found))throw Error('Notification lookup failed.');
+   if(found.length)continue;
+   const member=await client.entities.User.get(recipient);
+   if(!member||member.disabled||member.is_blocked)continue;
+   await client.entities.Notification.create({user_id:recipient,type:'suggestion_shipped',actor_id:admin.id,actor_name:'PUBLIC',source_key,target_path:'/suggestions?idea='+encodeURIComponent(id),comment:'Now available: '+String(saved.title||'Your supported idea').slice(0,120),read:false});
+  }catch{notificationPending=true;}
+ }
+ return {...saved,notificationPending};
+}

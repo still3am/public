@@ -1,6 +1,7 @@
 import {reportActionError} from "@/lib/actionError";
+import {setAdminSuggestionStatus} from '@/lib/adminData';
 import {readAdminRows} from "@/lib/adminData";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { adminDatabase } from "@/api/base44Client";
 import { useToast } from "@/components/ui/use-toast";
 import { Lightbulb, Loader2, Trash2 } from "lucide-react";
@@ -13,39 +14,40 @@ export default function SuggestionsManager() {
   const [items, setItems] = useState(null);
   const [error,setError]=useState(false);
   const [busy, setBusy] = useState("");
+  const lock=useRef(false),version=useRef(0);
 
   async function load() {
-    setError(false);try {
+    const request=++version.current;setError(false);try {
       const r=await readAdminRows(adminDatabase,"Suggestion",{},"-created_date");
-      setItems(r);
+      if(request===version.current)setItems(r);
     } catch {
-      setError(true);setItems(previous=>previous===null?[]:previous);
+      if(request===version.current){setError(true);setItems(previous=>previous===null?[]:previous);}
     }
   }
 
-  useEffect(() => { load(); }, []);
+  useEffect(() => { load();return()=>{version.current++;}; }, []);
 
   async function setStatus(id, status) {
-    if(busy)return;
-    setBusy(id);
+    if(lock.current)return;
+    lock.current=true;version.current++;setBusy(id);
     try {
-      await adminDatabase.entities.Suggestion.update(id, { status });
-      setItems((prev) => (prev || []).map((s) => (s.id === id ? { ...s, status } : s)));
-      toast({ title: "Status updated" });
+      const saved=await setAdminSuggestionStatus(adminDatabase,id,status);
+      setItems((prev) => (prev || []).map((s) => (s.id === id ? { ...s,...saved } : s)));
+      toast({ title: saved.notificationPending ? 'Status saved · some notifications need a retry' : 'Status updated' });
     } catch(error) {reportActionError(error,"Couldn’t update this suggestion. Please try again.");} finally {
-      setBusy("");
+      lock.current=false;setBusy("");
     }
   }
 
   async function remove(id) {
-    if(busy||!window.confirm("Delete this completed suggestion?"))return;
-    setBusy(id);
+    if(lock.current||!window.confirm("Delete this completed suggestion?"))return;
+    lock.current=true;version.current++;setBusy(id);
     try {
       await adminDatabase.entities.Suggestion.delete(id);
       setItems((prev) => (prev || []).filter((s) => s.id !== id));
       toast({ title: "Suggestion deleted" });
     } catch(error) {reportActionError(error,"Couldn’t update this suggestion. Please try again.");} finally {
-      setBusy("");
+      lock.current=false;setBusy("");
     }
   }
 
@@ -57,7 +59,7 @@ export default function SuggestionsManager() {
         <div className="text-sm font-semibold flex items-center gap-2">
           <Lightbulb size={15} /> Suggestions
         </div>
-        <button onClick={load} className="text-xs text-foreground/50 hover:text-foreground">Refresh</button>
+        <button disabled={!!busy} onClick={load} className="text-xs text-foreground/50 hover:text-foreground">Refresh</button>
       </div>
       {error&&<p role="alert" className="text-sm mb-4">Suggestions could not load. Use Refresh to retry.</p>}
       {items === null ? (
@@ -71,6 +73,7 @@ export default function SuggestionsManager() {
               <div className="flex items-start justify-between gap-2">
                 <div className="min-w-0">
                   <div className="text-sm font-medium truncate">{s.title}</div>
+                  {s.notificationPending&&<button className="text-xs underline min-h-11" disabled={!!busy} onClick={()=>setStatus(s.id,s.status)}>Retry completion notifications</button>}
                   {s.details && <div className="text-xs text-foreground/50 mt-0.5 line-clamp-2">{s.details}</div>}
                   <div className="text-[11px] text-foreground/40 mt-1">
                     {s.user_name || "Anonymous"} · {s.category} · {s.voter_ids?.length || 0} votes
