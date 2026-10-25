@@ -1,0 +1,115 @@
+{
+  "name": "MusicRequest",
+  "type": "object",
+  "properties": {
+    "request_key": {
+      "type": "string",
+      "maxLength": 64
+    },
+    "title": {
+      "type": "string",
+      "maxLength": 200
+    },
+    "artist": {
+      "type": "string",
+      "maxLength": 200
+    },
+    "source_url": {
+      "type": "string",
+      "maxLength": 2048,
+      "default": ""
+    },
+    "artwork_url": {
+      "type": "string",
+      "maxLength": 2048,
+      "default": ""
+    },
+    "requester_id": {
+      "type": "string"
+    },
+    "supporter_ids": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "default": []
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "open",
+        "available",
+        "closed"
+      ],
+      "default": "open"
+    },
+    "available_track_id": {
+      "type": "string",
+      "default": ""
+    },
+    "resolved_by": {
+      "type": "string",
+      "default": ""
+    },
+    "request_kind": {
+      "type": "string",
+      "enum": [
+        "song",
+        "playlist"
+      ],
+      "default": "song"
+    },
+    "playlist_tracks": {
+      "type": "array",
+      "maxItems": 500,
+      "items": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "maxLength": 200
+          },
+          "artist": {
+            "type": "string",
+            "maxLength": 200
+          },
+          "source_url": {
+            "type": "string",
+            "maxLength": 2048
+          }
+        },
+        "required": [
+          "title",
+          "artist"
+        ]
+      },
+      "default": []
+    },
+    "playlist_total": {
+      "type": "integer",
+      "minimum": 0,
+      "default": 0
+    },
+    "playlist_complete": {
+      "type": "boolean",
+      "default": false
+    },
+    "spotify_url": {
+      "type": "string",
+      "maxLength": 2048,
+      "default": ""
+    }
+  },
+  "required": [
+    "request_key",
+    "title",
+    "artist",
+    "requester_id"
+  ],
+  "rls": {
+    "create": false,
+    "read": false,
+    "update": false,
+    "delete": false
+  }
+}
