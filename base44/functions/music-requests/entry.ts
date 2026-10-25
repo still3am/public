@@ -57,7 +57,7 @@ async function previewPlaylist(value){
   const data=parseApplePlaylist(html);if(playlistCache.size>=50)playlistCache.delete(playlistCache.keys().next().value);playlistCache.set(source.id,{at:Date.now(),data});return {...data,source_url:source.url};
  }catch(error){if(error.status)throw error;fail('The public playlist could not load. Please retry or check its sharing settings.',502);}finally{clearTimeout(timer);}
 }
-const songCache=new Map();
+const songCache=new Map(),songRequests=[];
 export function appleSongSource(value){
  const clean=sourceLink(value);if(!clean)fail('Paste an Apple Music song link, or enter the song details.',422);
  const url=new URL(clean);if(url.hostname!=='music.apple.com')fail('Automatic song details currently support Apple Music links. You can enter other songs manually.',422);
@@ -67,6 +67,7 @@ export function appleSongSource(value){
 }
 async function previewSong(value){
  const source=appleSongSource(value),key=source.country+':'+source.id,cached=songCache.get(key);if(cached&&Date.now()-cached.at<300000)return {...cached.data,source_url:source.url};
+ const now=Date.now();while(songRequests.length&&songRequests[0]<now-60000)songRequests.shift();if(songRequests.length>=18)fail('Automatic song lookup is busy. Try again shortly or enter the title and artist.',429);songRequests.push(now);
  const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),8000);
  try{
   const response=await fetch('https://itunes.apple.com/lookup?id='+source.id+'&entity=song&country='+source.country,{redirect:'error',signal:controller.signal,headers:{Accept:'application/json'}});
