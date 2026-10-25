@@ -1,3 +1,4 @@
+import {useAuth} from '@/lib/AuthContext';
 import {suspendAdminMember} from '@/lib/adminData';
 import {adminDatabase} from '@/api/base44Client';
 import CreatorAccessManager from './CreatorAccessManager';
@@ -12,6 +13,7 @@ import UserRow from "@/components/admin/UserRow";
 import UserCountStat from "@/components/admin/UserCountStat";
 
 export default function UsersManager() {
+  const {user:admin}=useAuth();
   const [users, setUsers] = useState(null);
   const [uploadCounts, setUploadCounts] = useState(null);
   const [q, setQ] = useState("");
@@ -34,8 +36,9 @@ export default function UsersManager() {
     catch(error){reportActionError(error,"Couldn’t change this account’s access. Try again.");}finally{finish(user.id);}
   };
   const remove=async user=>{
+    if(user.id===admin?.id){reportActionError(new Error('Use Profile settings to delete your own account.'),'Use Profile settings to delete your own account.');return;}
     if(writes.current.has(user.id)||!window.confirm(`Delete ${user.display_name||user.full_name||user.email}? This cannot be undone.`)||!begin(user.id))return;
-    try{await base44.entities.User.delete(user.id);setUsers(previous=>previous.filter(row=>row.id!==user.id));}
+    try{const result=await base44.functions.invoke('deleteMyAccount',{confirmation:'DELETE',user_id:user.id});if(result?.data?.deleted!==true)throw Error('Account deletion was not confirmed.');setUsers(previous=>previous.filter(row=>row.id!==user.id));window.dispatchEvent(new Event('catalog:invalidate'));}
     catch(error){reportActionError(error,"Couldn’t delete this account. Please try again.");}finally{finish(user.id);}
   };
 
