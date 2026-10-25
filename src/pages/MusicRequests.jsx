@@ -11,7 +11,7 @@ function RequestArtwork({ url }) {const [failed, setFailed] = useState(false);us
 /** @param {{embedded?:boolean}} props */
 export default function MusicRequests({ embedded = false }) {
   const { user } = useAuth(),[params] = useSearchParams(),uid = user?.id,creator = canUploadMusic(user);
-  const [state, setState] = useState({ uid: null, rows: [], loading: true, error: '' }),[query, setQuery] = useState(''),[view, setView] = useState('open'),[sort, setSort] = useState('wanted'),[limit, setLimit] = useState(30);
+  const [state, setState] = useState({ uid: null, rows: [], loading: true, error: '' }),[query, setQuery] = useState(''),[view, setView] = useState(['following', 'available', 'all'].includes(params.get('view')) ? params.get('view') : 'open'),[sort, setSort] = useState('wanted'),[limit, setLimit] = useState(30);
   const [showForm, setShowForm] = useState(!!params.get('title')),[title, setTitle] = useState(params.get('title') || ''),[artist, setArtist] = useState(''),[source, setSource] = useState(''),[artwork, setArtwork] = useState('');
   const [kind, setKind] = useState('song'),[preview, setPreview] = useState(null),[previewSource, setPreviewSource] = useState('');
   const [busy, setBusy] = useState(''),[notice, setNotice] = useState(''),[actionError, setActionError] = useState(''),[catalog, setCatalog] = useState([]),[catalogError, setCatalogError] = useState(false),[selected, setSelected] = useState({});
