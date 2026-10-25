@@ -97,7 +97,14 @@ await q.refresh();await new Promise(r=>setImmediate(r));q=render();await q.syncF
 assert.ok(device.get('new-library')?._blob?.size);assert.equal(q.pendingCount,0);failBackfill=false;
 console.log('PASS failed legacy backfill cannot block a new library song');
 
-failCloud=true;await q.syncFromCloud();q=render();assert.equal(q.syncError,true);assert.equal(device.size,3);
+cloudRows=[{id:'retry-song'}];
+let attempts=0;globalThis.fetch=async()=>{attempts++;throw Error('Network interrupted');};
+await q.syncFromCloud();q=render();assert.equal(q.pendingCount,1);assert.equal(q.syncError,true);assert.equal(attempts,1);
+globalThis.fetch=async()=>{attempts++;return {ok:true,blob:async()=>new Blob(['audio'],{type:'audio/mpeg'})};};
+await q.syncFromCloud();assert.equal(attempts,1,'background sync respects retry backoff');
+await q.syncFromCloud({retry:true});q=render();assert.equal(attempts,2);assert.ok(device.get('retry-song')?._blob?.size);assert.equal(q.pendingCount,0);
+console.log('PASS explicit retry resumes failed offline audio without waiting for background backoff');
+failCloud=true;await q.syncFromCloud();q=render();assert.equal(q.syncError,true);assert.equal(device.size,4);
 uid='different';offlineOwner='different';window.dispatchEvent(new Event('offlinecache:account'));q=render();
 assert.equal(q.records.length,0);assert.equal(q.isCached('remote'),false);
 globalThis.fetch=fetchBefore;

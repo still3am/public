@@ -1,5 +1,7 @@
 import assert from 'node:assert/strict';
 import {saveAlbumToLibrary} from '../src/lib/saveAlbumToLibrary.js';
+globalThis.window=new EventTarget();globalThis.CustomEvent=class extends Event{constructor(type,options){super(type);this.detail=options.detail;}};
+const events=[];window.addEventListener('library:added',event=>events.push(event.detail));
 const rows=[{id:'old',user_id:'owner',track_id:'a'}],created=[];
 let fail=true;
 const handler={
@@ -16,3 +18,5 @@ assert.equal(cancelled.cancelled,true);assert.deepEqual(created,['b','c']);
 let current=true;
 await saveAlbumToLibrary({filter:async()=>{current=false;return [];},create:()=>{throw Error('Must not save after account change');}},'owner',[{id:'e'}],()=>current);
 console.log('PASS album library saves preserve existing songs, deduplicate input, safely retry partial failures and stop on account changes');
+
+assert.deepEqual(events,[{uid:'owner',id:'b'},{uid:'owner',id:'c'}],'confirmed partial saves trigger offline downloads exactly once per new song');

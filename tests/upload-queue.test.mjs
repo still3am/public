@@ -40,3 +40,9 @@ slow=q.items.find(row=>row.id===slow.id);
 assert.equal(slow.album_name,'Corrected Album');assert.equal(slow.track_number,7);assert.equal(slow.disc_number,1);assert.equal(slow.title,'Final title');assert.equal(slow.artist,'My artist');assert.equal(slow.duration,123);assert.equal(slow.explicit,false);assert.equal(slow.detecting,false);
 console.log('PASS manual edits survive embedded-tag reading and delayed automatic AI results');
 console.log(JSON.stringify({passed:5,environment:'actual upload hook with isolated React/SDK dependencies; no live data changed'}));
+
+q=await prepare([file('Switched.mp3',[91,92,93])]);it=q.items.find(it=>it.title==='Switched');
+const beforeUpload=uploads,beforeCreate=creates;
+sdk.auth.me=async()=>({id:'another-account',creator_role:'uploader'});
+await q.uploadOne(it);q=render();assert.equal(uploads,beforeUpload);assert.equal(creates,beforeCreate);assert.match(q.items.find(t=>t.id===it.id).error,/account changed/i);
+console.log('PASS changed authenticated account stops a queued upload before any file transfer');
