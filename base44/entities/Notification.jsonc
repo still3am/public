@@ -17,7 +17,8 @@
         "profile_comment",
         "track_shared",
         "suggestion_shipped",
-        "support_reply"
+        "support_reply",
+        "music_request_available"
       ],
       "default": "track_liked",
       "rls": {
