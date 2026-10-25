@@ -6,8 +6,10 @@ export async function readLibraryRows(handler,query,{one=false}={}){
   const result=await handler.filter(query,'id',limit,page*limit,['id','track_id']);
   const rows=Array.isArray(result)?result:result?.items;
   if(!Array.isArray(rows))throw Error("Saved songs could not be read");
-  for(const row of rows)if(row?.id&&!seen.has(row.id)){seen.add(row.id);out.push(row);}
+  let added=0;
+  for(const row of rows)if(row?.id&&!seen.has(row.id)){seen.add(row.id);out.push(row);added++;}
   if(one||rows.length<limit)return out;
+  if(!added)throw Error('Your library pagination stalled. Please retry.');
  }
  throw Error("Your library could not finish loading. Please try again.");
 }
