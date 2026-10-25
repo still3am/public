@@ -235,6 +235,20 @@ export default async function handleRequest(req) {
       const ms=await svc.entities.LoungeMember.filter({session_id:sid,user_id:user.id},'-created_date',1);
       return {s,m:ms[0],host:isAdmin||s.host_id===user.id};
     };
+    if(entity==='Playlist'&&action==='collaborationList'){
+      const legacy=await all(svc.entities.PlaylistCollaboration,{member_ids:user.id});
+      const legacyIds=[...new Set(legacy.map(row=>row.playlist_id).filter(Boolean))];
+      const candidates=await all(handler,{$or:[{collaborator_ids:{$in:[user.id]}},...(legacyIds.length?[{id:{$in:legacyIds}}]:[])]});
+      const result=[];
+      for(const playlist of candidates){
+        if(playlist.creator_id===user.id)continue;
+        const members=Array.isArray(playlist.collaborator_ids)?playlist.collaborator_ids:[...new Set(legacy.filter(row=>row.playlist_id===playlist.id).flatMap(row=>row.member_ids||[]))];
+        if(!members.includes(user.id))continue;
+        try{await relation(playlist.creator_id);}catch(error){if([403,404].includes(error.status??error.response?.status))continue;throw error;}
+        result.push({...playlist,collaboration_enabled:true,collaborator_ids:members});
+      }
+      return Response.json({result});
+    }
     if(entity==='Playlist' && ['collaborators','collaborationDetail','playlistAdd','playlistRemove','playlistReorder'].includes(action)){
       const [id,ids,expected]=args,pl=await handler.get(id),collabHandler=svc.entities.PlaylistCollaboration;
       const mergeCollab=rows=>rows.length?{...rows[0],member_ids:[...new Set(rows.flatMap(row=>row.member_ids||[]))],track_contributors:Object.assign({},...rows.map(row=>row.track_contributors||{}))}:null;
