@@ -1,0 +1,23 @@
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import {readAllPages} from '../src/lib/readPages.js';
+import {releaseNotifications} from '../src/lib/artistReleaseModel.js';
+import {markArtistReleasesRead} from '../src/lib/artistReleaseRead.js';
+globalThis.window=new EventTarget();globalThis.document={visibilityState:'visible'};
+let state=[],refs=[],si=0,ri=0,effects=[],gate=null;
+const subscription={id:'sub',created_by_id:'owner',artist_name:'Artist',artist_key:'artist',created_date:'2026-01-01',read_track_ids:[]};
+const track={id:'song',uploader_id:'artist-user',artist:'Artist',is_published:true,approval_status:'approved',created_date:'2026-02-01'};
+const clone=value=>structuredClone(value);
+const client={auth:{me:async()=>({id:'owner'})},entities:{ArtistSubscription:{filter:async()=>[clone(subscription)],get:async()=>clone(subscription),updateMany:async(q,patch)=>{assert.equal(q.created_by_id,'owner');subscription.read_track_ids=[...new Set([...subscription.read_track_ids,...patch.$addToSet.read_track_ids.$each])];}}}};
+const deps={useCallback:fn=>fn,useState:initial=>{const i=si++;if(!(i in state))state[i]=typeof initial==='function'?initial():initial;return [state[i],value=>{state[i]=typeof value==='function'?value(state[i]):value;}];},useRef:initial=>refs[ri++]??(refs[ri-1]={current:initial}),useEffect:fn=>effects.push(fn),useAuth:()=>({user:{id:'owner'}}),base44:client,readAllPages,getPublishedTracks:async()=>gate||[clone(track)],releaseNotifications,markArtistReleasesRead};
+globalThis.__releaseRace=deps;
+const code=fs.readFileSync('src/hooks/useArtistReleases.js','utf8').replace(/^import[^;]+;/gm,'');
+const {useArtistReleases}=await import('data:text/javascript;base64,'+Buffer.from('const {'+Object.keys(deps).join(',')+'}=globalThis.__releaseRace;\n'+code).toString('base64'));
+const render=()=>{si=0;ri=0;effects=[];return useArtistReleases();};
+const flush=()=>new Promise(resolve=>setImmediate(resolve));
+let hook=render(),cleanup=effects[0]();await flush();hook=render();assert.equal(hook.unread,1);
+let resolve;gate=new Promise(r=>{resolve=r;});hook.refresh();cleanup();hook=render();cleanup=effects[0]();await flush();
+// The pending catalog lookup captured an unread subscription before this save.
+await hook.markRead();hook=render();assert.equal(hook.unread,0);resolve([clone(track)]);await flush();hook=render();assert.equal(hook.unread,0,'an older lookup cannot resurrect a confirmed unread alert');
+cleanup();gate=Promise.resolve([]);window.dispatchEvent(new Event('catalog:invalidate'));hook=render();cleanup=effects[0]();await flush();hook=render();assert.equal(hook.items.length,0,'catalog invalidation removes withdrawn releases');cleanup();
+console.log('PASS late release reads cannot undo confirmed flags and catalog invalidation removes stale alerts');
