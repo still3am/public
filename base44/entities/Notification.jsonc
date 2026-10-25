@@ -18,7 +18,8 @@
         "track_shared",
         "suggestion_shipped",
         "support_reply",
-        "music_request_available"
+        "music_request_available",
+        "music_request_new"
       ],
       "default": "track_liked",
       "rls": {
