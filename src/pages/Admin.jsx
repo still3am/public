@@ -43,7 +43,7 @@ function Dashboard() {
   }
   useEffect(() => {if (section.id === "overview") refresh();return () => {version.current++;};}, [section.id]);
   return <div className="admin-workspace">
-  <header className="admin-workspace-header"><div><p className="eyebrow"><ShieldCheck size={13} className="hidden" />PUBLIC ADMIN</p><h1>Keep PUBLIC moving.</h1><p>Your community. The essentials, in one place.</p></div><Link to="/">View PUBLIC<ArrowUpRight size={16} /></Link></header>
+  <header className="admin-workspace-header"><div><p className="eyebrow">PUBLIC ADMIN</p><h1>Keep PUBLIC moving.</h1><p>Your community. The essentials, in one place.</p></div><Link to="/">View PUBLIC<ArrowUpRight size={16} /></Link></header>
   <div className="admin-workspace-layout"><nav className="admin-section-nav" aria-label="Admin sections">{SECTIONS.map((item) => <button type="button" key={item.id} onClick={() => choose(item.id)} aria-current={section.id === item.id ? "page" : undefined}><item.icon size={18} /><span>{item.label}</span></button>)}</nav>
    <div className="admin-workspace-main"><header className="admin-section-heading"><div><h2>{section.label}</h2><p>{section.description}</p></div>{section.id === "overview" && <button type="button" onClick={refresh} disabled={loading} aria-label="Refresh dashboard counts"><RefreshCw size={17} className={loading ? "animate-spin" : ""} /></button>}</header>
     {section.id === "overview" ? <>
