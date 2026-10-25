@@ -261,7 +261,7 @@ export default function Home() {
         
         
         {(loadError||preferencesError)&&<div role="alert" className="border border-border rounded-2xl p-4 mb-4 text-sm"><p>{loadError||"Your music preferences could not load. Discovery is using your listening history for now."}</p><button disabled={loading} className="playlist-action mt-2" onClick={()=>load(true)}>Retry</button></div>}
-        <HomeSpotlight track={featured} tracks={discoveryQueue.length ? discoveryQueue : newReleases} currentTrackId={p.currentTrack?.id} isPlaying={p.isPlaying} onSelect={(queue,index)=>{if(p.currentTrack?.id===queue[index]?.id)p.togglePlay();else{p.setShuffle(false);p.playTrackAt(queue,index);}}/>
+        <HomeSpotlight track={featured} tracks={discoveryQueue.length ? discoveryQueue : newReleases} currentTrackId={p.currentTrack?.id} isPlaying={p.isPlaying} onSelect={(queue,index)=>{if(p.currentTrack?.id===queue[index]?.id)p.togglePlay();else{p.setShuffle(false);p.playTrackAt(queue,index);}}}/>
         
         
         {genreList.length > 0 && <nav className="home-genre-links" aria-label="Browse genres">{genreList.map((genre) => <Link key={genre} to={`/search?genre=${encodeURIComponent(genre)}`}>{genre}</Link>)}</nav>}
