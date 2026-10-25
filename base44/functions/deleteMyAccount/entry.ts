@@ -56,7 +56,7 @@ export async function deleteAccountData(b,u){
  await s.entities.Moment.updateMany({liker_ids:{$in:[id]}},{$pull:{liker_ids:id}});
  await s.entities.PlaylistCollaboration.updateMany({member_ids:{$in:[id]}},{$pull:{member_ids:id}});
  const queries={
-  RecommendationDismissal:{user_id:id},ListeningSession:{created_by_id:id},PurePreset:{created_by_id:id},ArtistSubscription:{created_by_id:id},PlaylistCollaboration:{owner_id:id},
+  ArtistApplication:{user_id:id},RecommendationDismissal:{user_id:id},ListeningSession:{created_by_id:id},PurePreset:{created_by_id:id},ArtistSubscription:{created_by_id:id},PlaylistCollaboration:{owner_id:id},
   Moment:{user_id:id},MomentComment:{user_id:id},
   PlayEvent:{user_id:id},Lyrics:{uploader_id:id},Like:{user_id:id},
   NoteReaction:{$or:[{user_id:id},{profile_id:id}]},PublicNote:{user_id:id},ProfileComment:{$or:[{author_id:id},{profile_id:id}]},TrackAnnotation:{author_id:id},
