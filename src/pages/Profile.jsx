@@ -255,8 +255,8 @@ export default function Profile({ ownProfileTab = false }) {
   }, [editMode, isCurrentPage]);
 
   useEffect(() => {
-    if (isOwn && me?.id === targetId) setProfile((previous) => previous ? { ...previous, is_artist: !!me.is_artist } : previous);
-  }, [isOwn, targetId, me?.id, me?.is_artist]);
+    if (isOwn && me?.id === targetId) setProfile((previous) => previous ? { ...previous, is_artist: !!me.is_artist, creator_role: me.creator_role, role: me.role } : previous);
+  }, [isOwn, targetId, me?.id, me?.is_artist, me?.creator_role, me?.role]);
 
   async function toggleFollow() {
     if (!profile || !me?.id || !followReady || followBusyRef.current) return;
