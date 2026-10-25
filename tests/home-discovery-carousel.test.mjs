@@ -5,7 +5,7 @@ let state=null,calls=[];
 const createElement=(type,props,...children)=>({type,props:{...props,children:children.flat(Infinity)}});
 const deps={React:{createElement},useState:()=>[state,next=>{state=typeof next==='function'?next(state):next;}],Link:'a',Play:'play',Pause:'pause',ChevronLeft:'left',ChevronRight:'right',Music:'music',Image:'img',useCoverUrl:value=>value||''};
 globalThis.__homeDiscovery=deps;
-let source=fs.readFileSync('src/components/HomeSpotlight.jsx','utf8').replace(/^import[^;]+;/gm,'');source=ts.transpileModule(source,{compilerOptions:{jsx:ts.JsxEmit.React,module:ts.ModuleKind.ESNext}}).outputText;
+let source=fs.readFileSync('src/components/HomeSpotlight.jsx','utf8').replace(/^import[^;]+;/gm,'');source=ts.transpileModule(source,{compilerOptions:{jsx:ts.JsxEmit.React,target:ts.ScriptTarget.ES2022,module:ts.ModuleKind.ESNext}}).outputText;
 const {default:Carousel}=await import('data:text/javascript;base64,'+Buffer.from('const {'+Object.keys(deps).join(',')+'}=globalThis.__homeDiscovery;\n'+source).toString('base64'));
 const nodes=n=>n&&typeof n==='object'?[n,...(n.props?.children||[]).flatMap(nodes)]:[];
 const tracks=Array.from({length:12},(_,i)=>({id:'song'+i,title:'Song '+i,artist:'Artist '+i,cover_art_url:i?'https://example.test/'+i+'.jpg':''}));
