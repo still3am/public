@@ -10,7 +10,7 @@ const {default:Carousel}=await import('data:text/javascript;base64,'+Buffer.from
 const nodes=n=>n&&typeof n==='object'?[n,...(n.props?.children||[]).flatMap(nodes)]:[];
 const tracks=Array.from({length:12},(_,i)=>({id:'song'+i,title:'Song '+i,artist:'Artist '+i,cover_art_url:i?'https://example.test/'+i+'.jpg':''}));
 const props={tracks:[...tracks,tracks[0]],currentTrackId:'song0',isPlaying:true,onSelect:(queue,index)=>calls.push({queue,index})};
-let tree=Carousel(props);const cards=()=>nodes(tree).filter(n=>typeof n.type==='function'&&n.type.name==='DiscoveryCover');assert.equal(cards().length,7);assert.equal(cards().find(n=>n.props.selected).props.track.id,'song0');
+let tree=Carousel(props);const cards=()=>nodes(tree).filter(n=>typeof n.type==='function'&&n.props.track&&typeof n.props.onChoose==='function');assert.equal(cards().length,7);assert.equal(cards().find(n=>n.props.selected).props.track.id,'song0');
 let selected=cards().find(n=>n.props.selected);let cover=selected.type(selected.props);assert.equal(nodes(cover).find(n=>n.type==='button').props['aria-label'],'Pause Song 0 by Artist 0');assert.ok(nodes(cover).some(n=>n.type==='music'),'missing artwork has a music fallback');
 selected.props.onChoose();assert.equal(calls[0].index,0);assert.equal(calls[0].queue.length,12,'duplicate catalog rows do not duplicate the playback queue');
 nodes(tree).find(n=>n.type==='button'&&n.props['aria-label']==='Next discovery').props.onClick();tree=Carousel(props);assert.equal(cards().find(n=>n.props.selected).props.track.id,'song1');selected=cards().find(n=>n.props.selected);selected.props.onChoose();assert.equal(calls.at(-1).index,1,'playback uses the absolute queue index');
