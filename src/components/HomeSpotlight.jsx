@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Play, Pause, ChevronLeft, ChevronRight, Music } from 'lucide-react';
 import { Image } from '@/components/ui/image';
@@ -21,9 +21,16 @@ function DiscoveryCover({ track, offset, selected, playing, onChoose }) {
 export default function HomeSpotlight({ track, tracks = [], currentTrackId, isPlaying, onSelect }) {
   const unique = new Map();for (const item of tracks.length ? tracks : track ? [track] : []) if (item?.id && !unique.has(item.id)) unique.set(item.id, item);
   const queue = [...unique.values()].slice(0, 24),[selectedId, setSelectedId] = useState(null);
+  const gesture = useRef(null),suppressClickUntil = useRef(0);
   if (!queue.length) return null;
   const found = queue.findIndex((item) => item.id === selectedId),active = found >= 0 ? found : 0,selected = queue[active];
   const move = (direction) => setSelectedId(queue[(active + direction + queue.length) % queue.length].id);
+  const finishGesture = (event, cancelled = false) => {
+    const start = gesture.current;if (!start || start.id !== event.pointerId) return;gesture.current = null;
+    const dx = event.clientX - start.x,dy = event.clientY - start.y,horizontal = start.axis === 'horizontal' || (!start.axis && Math.abs(dx) > Math.abs(dy) * 1.25);
+    if (start.axis === 'horizontal' || horizontal && Math.abs(dx) > 10) suppressClickUntil.current = Date.now() + 500;
+    if (!cancelled && queue.length > 1 && horizontal && Math.abs(dx) >= 40) move(dx < 0 ? 1 : -1);
+  };
   const visible = queue.map((item, index) => {let offset = (index - active + queue.length) % queue.length;if (offset > queue.length / 2) offset -= queue.length;return { item, index, offset };}).filter((item) => Math.abs(item.offset) <= 3);
   return <section className="home-discovery" aria-labelledby="home-discovery-title">
   <div className="home-discovery-intro"><span>Something for your mood. A little beyond your usual.</span></div>
