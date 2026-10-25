@@ -22,7 +22,7 @@ export default function ArtistAlbums({tracks,artistName}){
  const [recoveredRevision,setRecoveredRevision]=useState(0),[identifying,setIdentifying]=useState(false);
  useEffect(()=>{let active=true;
  const missing=tracks.filter(t=>unknownAlbum(t.album_name||t.album_title||t.album));
- if(!missing.length)return;
+ if(!missing.length){setIdentifying(false);return;}
  setIdentifying(true);
  (async()=>{for(const track of missing){if(!active)break;try{const info=await findSongInfo(track);if(active&&rememberAlbumInfo(track,info))setRecoveredRevision(n=>n+1);}catch{break;}}if(active)setIdentifying(false);})();
  return()=>{active=false;};
