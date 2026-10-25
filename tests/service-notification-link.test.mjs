@@ -12,3 +12,6 @@ assert.deepEqual(serviceNotificationLink({type:'music_request_available',target_
 assert.equal(serviceNotificationLink({type:'music_request_available',target_path:'https://evil.test/'}).to,'/music-requests');
 
 assert.equal(serviceNotificationLink({type:'music_request_available',target_path:'/music-requests?view=following#request-abc'}).to,'/music-requests?view=following#request-abc');
+
+assert.deepEqual(serviceNotificationLink({type:'music_request_new',target_path:'/music-requests?request='+'a'.repeat(64)}),{to:'/music-requests?request='+'a'.repeat(64),label:'View music request'});
+assert.equal(serviceNotificationLink({type:'music_request_new',target_path:'https://evil.test'}).to,'/music-requests');
