@@ -2,7 +2,7 @@ import { loadAdminMembers } from '@/lib/adminMembers';
 import { adminDatabase } from '@/api/base44Client';
 import { lazy, Suspense, useEffect, useRef, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
-import { LayoutDashboard, Music2, Flag, Users, LifeBuoy, Settings2, ChevronRight, RefreshCw, Loader2, ArrowUpRight, ShieldCheck } from "lucide-react";
+import { LayoutDashboard, Music2, Flag, Users, LifeBuoy, Settings2, ChevronRight, RefreshCw, Loader2, ArrowUpRight } from "lucide-react";
 import { useAuth } from "@/lib/AuthContext";
 import { base44 } from "@/api/base44Client";
 import "@/components/admin/admin-dashboard.css";
