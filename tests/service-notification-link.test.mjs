@@ -7,3 +7,6 @@ assert.equal(serviceNotificationLink({type:'support_reply',target_path:'//evil.e
 assert.equal(serviceNotificationLink({type:'suggestion_shipped',target_path:'/suggestions?idea=id'}).to,'/suggestions?idea=id');
 assert.equal(serviceNotificationLink({type:'track_shared',track_id:'song'}),null);
 console.log('PASS music availability notices open the song and existing service notices preserve safe destinations');
+
+assert.deepEqual(serviceNotificationLink({type:'music_request_available',target_path:'/music-requests#request-abc'}),{to:'/music-requests#request-abc',label:'View playlist songs'});
+assert.equal(serviceNotificationLink({type:'music_request_available',target_path:'https://evil.test/'}).to,'/music-requests');
