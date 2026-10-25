@@ -41,7 +41,7 @@ export default function MusicRequests({ embedded = false }) {
   }, [uid]);
   useEffect(() => {
     if (!showForm || !requestLinkType(source.trim())) return;
-    const timer = setTimeout(() => inspectLink(source.trim()), 650);
+    const scheduled = lookupVersion.current;const timer = setTimeout(() => {if (lookupVersion.current === scheduled) inspectLink(source.trim());}, 650);
     return () => {clearTimeout(timer);lookupVersion.current++;};
   }, [source, showForm, inspectLink]);
   function changeSource(value) {lookupVersion.current++;sourceValue.current = value;setSource(value);setKind(requestLinkType(value.trim()) === 'playlist' ? 'playlist' : 'song');if (preview && kind === 'song') {setTitle('');setArtist('');setArtwork('');}setPreview(null);setPreviewSource('');setLookupError('');setLookupLoading(false);}
