@@ -187,3 +187,17 @@ for(const name of fs.readdirSync(new URL('../base44/functions/',import.meta.url)
 assert.equal(syntaxErrors,0);console.log(JSON.stringify({backend_files:backendFiles,syntax_errors:syntaxErrors}));
 await check('listeners and legacy artist toggles cannot create music',async()=>{db.User[0].creator_role='listener';db.User[0].is_artist=true;const result=await invoke(gateway,{entity:'Track',action:'create',args:[{title:'Song',rights_confirmed:true}]});assert.equal(result.status,403);assert.equal(writes.length,0);});
 await check('creator access cannot be self-assigned through profile updates',async()=>{for(const patch of [{is_artist:true},{creator_role:'artist'},{creator_role:'uploader'}]){const result=await invoke(gateway,{entity:'User',action:'update',args:['owner',patch]});assert.equal(result.status,403);}assert.equal(writes.length,0);});
+
+await check('regular and suspended admin callers cannot delete another account',async()=>{
+ assert.equal((await invoke(deletion,{confirmation:'DELETE',user_id:'other'})).status,403);assert.equal(deleted,false);assert.equal(writes.length,0);
+ user={id:'owner',role:'admin',is_blocked:true};assert.equal((await invoke(deletion,{confirmation:'DELETE',user_id:'other'})).status,403);assert.equal(deleted,false);
+});
+await check('admin deletion cleans target data and retains the acting account',async()=>{
+ user={id:'owner',role:'admin'};db.ArtistApplication=[{id:'target-app',user_id:'other'},{id:'my-app',user_id:'owner'}];
+ db.LibraryItem=[{user_id:'other',track_id:'foreign'},{user_id:'owner',track_id:'public'}];
+ const result=await invoke(deletion,{confirmation:'DELETE',user_id:'other'});assert.equal(result.status,200);assert.equal(result.data.deleted,true);
+ assert.ok(db.User.some(row=>row.id==='owner'));assert.ok(!db.User.some(row=>row.id==='other'));assert.ok(db.Track.every(row=>row.uploader_id!=='other'));assert.deepEqual(db.ArtistApplication.map(row=>row.id),['my-app']);assert.deepEqual(db.LibraryItem.map(row=>row.user_id),['owner']);
+});
+await check('failed admin cleanup keeps identity available for retry',async()=>{
+ user={id:'owner',role:'admin'};failCleanup=true;const result=await invoke(deletion,{confirmation:'DELETE',user_id:'other'});assert.equal(result.status,500);assert.equal(deleted,false);assert.ok(db.User.some(row=>row.id==='other'));
+});
