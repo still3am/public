@@ -42,3 +42,4 @@
 @media(min-width:768px) and (pointer:fine){.home-discovery-stage{perspective:none;mask-image:none;contain:layout style}.home-discovery-cover{transform:translate3d(calc(-50% + var(--offset)*var(--cover-step) + var(--drag-px,0px)),calc(var(--visual-distance)*var(--arc-rise)),0) scale(max(.58,calc(1 - var(--visual-distance)*.075)));will-change:transform}.home-discovery-covers{transform-style:flat}}
 
 .home-discovery .hidden{display:none}.home-discovery-cover.is-selected .home-discovery-label>a{font-weight:650}.home-discovery-cover:not(.is-selected) .home-discovery-label{opacity:.65}.home-discovery-label>a{max-width:100%;text-wrap:nowrap}.home-discovery-arrows{justify-self:auto}.home-discovery-progress{width:120px;flex-shrink:0}
+@media(max-width:767px){.home-discovery-arrows>button{width:44px;height:44px}}
