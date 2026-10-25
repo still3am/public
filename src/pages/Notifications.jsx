@@ -43,7 +43,7 @@ function getMessage(n) {
     profile_comment:"commented on your profile",
     suggestion_shipped:"shipped an idea you supported",
     support_reply:"replied to your support request",
-    music_request_available:"made a requested song available",
+    music_request_available:"made requested music available",
     track_shared:"sent you a song"
   })[n.type] || "sent you a notification";
 }
