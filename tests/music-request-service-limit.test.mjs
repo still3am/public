@@ -1,0 +1,18 @@
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+let count=0,mode='limit';
+const limit=Object.assign(Error('Request failed with status code 402'),{response:{status:402,data:{code:'CREDITS_EXHAUSTED'}}});
+globalThis.__requestServiceClient={functions:{invoke:async()=>{count++;if(mode==='limit')throw limit;if(mode==='forbidden')throw Object.assign(Error('No permission'),{response:{status:403}});if(mode==='malformed')return {data:{success:true}};return {data:{requests:[],success:true}};}};
+const code=fs.readFileSync('src/lib/musicRequests.js','utf8').replace(/^import[^;]+;/m,'const base44=globalThis.__requestServiceClient;');
+const mod=await import('data:text/javascript;base64,'+Buffer.from(code).toString('base64'));
+await assert.rejects(mod.musicRequestAction('list'),error=>error===limit);assert.equal(count,1);
+for(const action of ['list','reconcile','preview_song','create'])await assert.rejects(mod.musicRequestAction(action),error=>error===limit);assert.equal(count,1,'paused background calls do not hit the hosting service');
+assert.ok(mod.musicRequestError(limit).includes('credit or plan limit'));assert.ok(!mod.musicRequestError(limit).includes('status code 402'));
+await assert.rejects(mod.musicRequestAction('list',{}, {retry:true}));assert.equal(count,2,'manual Retry probes service once');
+mode='malformed';await assert.rejects(mod.musicRequestAction('list',{}, {retry:true}));const malformedCount=count;await assert.rejects(mod.musicRequestAction('reconcile'));assert.equal(count,malformedCount,'a malformed success cannot falsely clear the paused state');
+mode='ok';await mod.musicRequestAction('list',{}, {retry:true});await mod.musicRequestAction('reconcile');assert.equal(count,malformedCount+2,'successful manual retry resumes background activity');
+mode='forbidden';await assert.rejects(mod.musicRequestAction('list'));await assert.rejects(mod.musicRequestAction('list'));assert.equal(count,malformedCount+4,'permission errors are not mistaken for billing restrictions');
+assert.equal(mod.isMusicRequestServiceLimit({response:{data:{error:{code:'INTEGRATION_CREDITS_LIMIT_REACHED'}}}}),true);assert.equal(mod.isMusicRequestServiceLimit({status:429}),false);
+assert.equal(mod.musicRequestError({response:{data:{error:{message:'Choose a song.'}}}}),'Choose a song.');assert.equal(typeof mod.musicRequestError({response:{data:{error:{code:'UNKNOWN'}}}}),'string');
+mod.resetMusicRequestService();
+console.log('PASS 402 service pause, no automatic network retries, explicit recovery, malformed responses, permission errors and safe error text');
