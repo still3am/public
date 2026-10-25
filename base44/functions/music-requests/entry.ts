@@ -63,7 +63,7 @@ export default async function handleRequest(req){
    if(!creators(user))fail('Approved creator access is required.',403);
    const requests=grouped(await all(svc.entities.MusicRequest,{status:'open'}));let matched=0,pending=false;
    for(let i=0;i<requests.length;i+=40){
-    const batch=requests.slice(i,i+40),tracks=await all(svc.entities.Track,{is_published:true,approval_status:'approved',$or:batch.map(r=>({title:{$regex:'^'+normalizeMusic(r.title).split(' ').map(escape).join('[\\W_]+')+'$',$options:'i'}}))},['id','title','artist','uploader_id','duration_seconds','explicit','is_published','approval_status']);
+    const batch=requests.slice(i,i+40),tracks=await all(svc.entities.Track,{is_published:true,approval_status:'approved',$or:batch.flatMap(r=>[r.title.trim().split(/\s+/).map(escape).join('\\s+'),normalizeMusic(r.title).split(' ').map(escape).join('[\\W_]+')].map(pattern=>({title:{$regex:'^'+pattern+'$',$options:'i'}})))},['id','title','artist','uploader_id','duration_seconds','explicit','is_published','approval_status']);
     for(const request of batch){const candidates=tracks.filter(t=>recordingIdentity(t.title,t.artist)===recordingIdentity(request.title,request.artist));if(!candidates.length)continue;
      // Ambiguous lengths or clean/explicit editions require creator review.
      if(candidates.length>1&&(new Set(candidates.map(t=>!!t.explicit)).size>1||Math.max(...candidates.map(t=>t.duration_seconds||0))-Math.min(...candidates.map(t=>t.duration_seconds||0))>3))continue;

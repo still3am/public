@@ -53,3 +53,6 @@ for(let i=1;i<10;i++)assert.equal((await f.call('create',{title:'Song '+i,artist
 const schema=JSON.parse(fs.readFileSync('base44/entities/music-request.jsonc','utf8'));for(const action of ['create','read','update','delete'])assert.equal(schema.rls[action],false);
 assert.equal(mod.recordingIdentity('Song (Live)','Artist')===mod.recordingIdentity('Song','Artist'),false);assert.equal(mod.recordingIdentity('Song','Drake, Future'),mod.recordingIdentity('SONG','Future & Drake'));
 console.log('PASS automatic exact matching, edition ambiguity, concurrency, daily limit and server-only entity access');
+
+f=fixture();await f.call('create',{title:'Déjà Vu',artist:'Beyoncé'});f.db.Track.push({id:'accent',title:'Déjà Vu',artist:'Beyoncé',uploader_id:'artist-owner',is_published:true,approval_status:'approved'});f.user('creator');assert.equal((await f.call('reconcile')).data.matched,1);assert.equal((await f.call('close')).status,422);
+console.log('PASS accented titles match automatically and missing request keys cannot close another request');
