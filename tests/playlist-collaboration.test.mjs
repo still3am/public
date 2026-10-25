@@ -9,7 +9,7 @@ function fixture(uid="owner"){
  const tracks={a:{id:"a",is_published:true,approval_status:"approved",uploader_id:"artist"},b:{id:"b",is_published:true,approval_status:"approved",uploader_id:"artist"},private:{id:"private",is_published:false,uploader_id:"someone"}};
  const patch=(obj,update)=>{for(const [path,value] of Object.entries(update.$set||{})){const keys=path.split(".");let node=obj;for(const key of keys.slice(0,-1))node=node[key]??={};node[keys.at(-1)]=copy(value);}for(const [key,value] of Object.entries(update.$addToSet||{}))obj[key]=[...new Set([...(obj[key]||[]),...(value?.$each||[value])])];for(const [key,value] of Object.entries(update.$pull||{}))obj[key]=(obj[key]||[]).filter(v=>!(value?.$in||[value]).includes(v));};
  const client={auth:{me:async()=>uid?{...users[uid],role:"user"}:null},asServiceRole:{entities:{
-  Playlist:{get:async()=>copy(playlist),updateMany:async(query,data)=>{if(query.track_ids&&JSON.stringify(query.track_ids.$eq)!==JSON.stringify(playlist.track_ids))return;if(query.updated_date&&query.updated_date!==playlist.updated_date)return;if(query.collaborator_ids?.$exists===false&&Array.isArray(playlist.collaborator_ids))return;patch(playlist,data);}},
+  Playlist:{filter:async()=>[copy(playlist)],get:async()=>copy(playlist),updateMany:async(query,data)=>{if(query.track_ids&&JSON.stringify(query.track_ids.$eq)!==JSON.stringify(playlist.track_ids))return;if(query.updated_date&&query.updated_date!==playlist.updated_date)return;if(query.collaborator_ids?.$exists===false&&Array.isArray(playlist.collaborator_ids))return;patch(playlist,data);}},
   PlaylistCollaboration:{filter:async()=>collaboration?[copy(collaboration)]:[],create:async data=>collaboration={id:"c",...data},updateMany:async(query,data)=>patch(collaboration,data),get:async()=>copy(collaboration)},
   Block:{filter:async()=>blocked?[{id:"block"}]:[]},User:{get:async id=>users[id]||{id}},
   Track:{get:async id=>copy(tracks[id])}
@@ -25,3 +25,11 @@ assert.equal((await f.call("playlistAdd",["p",["private"]])).status,404);assert.
 f.block(true);assert.equal((await f.call("playlistRemove",["p",["a"]])).status,403);f.block(false);
 f.setUser("owner");assert.equal((await f.call("collaborators",["p","editor",false])).status,200);f.setUser("editor");assert.equal((await f.call("playlistRemove",["p",["a"]])).status,403);f.getCollab().member_ids=["editor"];assert.equal((await f.call("playlistAdd",["p",["b"]])).status,403,"legacy membership cannot restore revoked access");f.setUser(null);assert.equal((await f.call("collaborationDetail",["p"])).status,401);
 console.log("PASS real gateway enforces owner invitations, private membership, verified credits, unavailable-track checks, stale reorder protection, blocks and revocation");
+
+const listing=fixture();await listing.call('collaborators',['p','editor',true]);listing.setUser('editor');
+let listed=await listing.call('collaborationList',[]);assert.equal(listed.status,200);assert.deepEqual(listed.data.result.map(row=>row.id),['p'],'canonical invitations need no legacy record');
+listing.block(true);assert.deepEqual((await listing.call('collaborationList',[])).data.result,[]);listing.block(false);
+listing.setUser('outsider');assert.deepEqual((await listing.call('collaborationList',[])).data.result,[]);
+listing.setUser('owner');await listing.call('collaborators',['p','editor',false]);listing.setUser('editor');assert.deepEqual((await listing.call('collaborationList',[])).data.result,[]);
+listing.setUser(null);assert.equal((await listing.call('collaborationList',[])).status,401);
+console.log('PASS private shared-playlist listing finds new invitations and excludes removed, blocked and unrelated users');
