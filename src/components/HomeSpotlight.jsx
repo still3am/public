@@ -26,7 +26,7 @@ export default function HomeSpotlight({ track, tracks = [], currentTrackId, isPl
   const move = (direction) => setSelectedId(queue[(active + direction + queue.length) % queue.length].id);
   const visible = queue.map((item, index) => {let offset = (index - active + queue.length) % queue.length;if (offset > queue.length / 2) offset -= queue.length;return { item, index, offset };}).filter((item) => Math.abs(item.offset) <= 3);
   return <section className="home-discovery" aria-labelledby="home-discovery-title">
-  <div className="home-discovery-intro"><p className="hidden">DISCOVER FEED</p><h2 id="home-discovery-title">Curated soundscapes<br />for your mind.</h2><span>Something for your mood. A little beyond your usual.</span></div>
+  <div className="home-discovery-intro"><h2 id="home-discovery-title">Curated soundscapes<br />for your mind.</h2><span>Something for your mood. A little beyond your usual.</span></div>
   <div className={'home-discovery-stage' + (queue.length < 3 ? ' is-small' : '')} role="region" aria-label="Discover music carousel" tabIndex={0} onKeyDown={(event) => {if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') {event.preventDefault();move(event.key === 'ArrowLeft' ? -1 : 1);}}}>
    <ol className="home-discovery-covers">{visible.map(({ item, index, offset }) => <DiscoveryCover key={item.id} track={item} offset={offset} selected={index === active} playing={currentTrackId === item.id && isPlaying} onChoose={() => {setSelectedId(item.id);onSelect(queue, index);}} />)}</ol>
   </div>
