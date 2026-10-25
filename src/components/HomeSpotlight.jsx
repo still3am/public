@@ -22,7 +22,7 @@ export default function HomeSpotlight({ track, tracks = [], currentTrackId, isPl
   const unique = new Map();for (const item of tracks.length ? tracks : track ? [track] : []) if (item?.id && !unique.has(item.id)) unique.set(item.id, item);
   const queue = [...unique.values()].slice(0, 24),[selectedId, setSelectedId] = useState(null);
   const gesture = useRef(null),suppressClickUntil = useRef(0);
-  const stageRef = useRef(null),wheelMove = useRef(null),wheelState = useRef({total:0,last:0,direction:0,moved:false});
+  const stageRef = useRef(null),wheelMove = useRef(null),wheelState = useRef({ total: 0, last: 0, direction: 0, moved: false });
   useEffect(() => {
     const stage = stageRef.current;if (!stage || queue.length < 2) return;
     const onWheel = (event) => {
@@ -36,7 +36,7 @@ export default function HomeSpotlight({ track, tracks = [], currentTrackId, isPl
       wheel.total += dx * (event.deltaMode === 1 ? 16 : event.deltaMode === 2 ? stage.clientWidth || 300 : 1);
       if (!wheel.moved && Math.abs(wheel.total) >= 42) {wheel.moved = true;wheelMove.current?.(direction);}
     };
-    stage.addEventListener('wheel', onWheel, {passive:false});
+    stage.addEventListener('wheel', onWheel, { passive: false });
     return () => stage.removeEventListener('wheel', onWheel);
   }, [queue.length]);
   if (!queue.length) return null;
@@ -45,13 +45,13 @@ export default function HomeSpotlight({ track, tracks = [], currentTrackId, isPl
   wheelMove.current = move;
   const finishGesture = (event, cancelled = false) => {
     const start = gesture.current;if (!start || start.id !== event.pointerId) return;gesture.current = null;
-    const dx = event.clientX - start.x,dy = event.clientY - start.y,horizontal = start.axis === 'horizontal' || (!start.axis && Math.abs(dx) > Math.abs(dy) * 1.25);
+    const dx = event.clientX - start.x,dy = event.clientY - start.y,horizontal = start.axis === 'horizontal' || !start.axis && Math.abs(dx) > Math.abs(dy) * 1.25;
     if (start.axis === 'horizontal' || horizontal && Math.abs(dx) > 10) suppressClickUntil.current = Date.now() + 500;
     if (!cancelled && queue.length > 1 && horizontal && Math.abs(dx) >= 40) move(dx < 0 ? 1 : -1);
   };
   const visible = queue.map((item, index) => {let offset = (index - active + queue.length) % queue.length;if (offset > queue.length / 2) offset -= queue.length;return { item, index, offset };}).filter((item) => Math.abs(item.offset) <= 3);
   return <section className="home-discovery" aria-labelledby="home-discovery-title">
-  <div className="home-discovery-intro"><p>DISCOVER FEED</p><h2 id="home-discovery-title">Curated soundscapes<br />for your mind.</h2><span>Something for your mood. A little beyond your usual.</span></div>
+  <div className="home-discovery-intro"><p className="hidden">DISCOVER FEED</p><h2 id="home-discovery-title">Curated soundscapes<br />for your mind.</h2><span>Something for your mood. A little beyond your usual.</span></div>
   <div ref={stageRef} className={'home-discovery-stage' + (queue.length < 3 ? ' is-small' : '')} role="region" aria-label="Discover music carousel" tabIndex={0}
     onPointerDown={(event) => {if (event.isPrimary === false || event.button !== 0) return;suppressClickUntil.current = 0;gesture.current = { id: event.pointerId, x: event.clientX, y: event.clientY, axis: '' };}}
     onPointerMove={(event) => {const start = gesture.current;if (!start || start.id !== event.pointerId) return;const dx = Math.abs(event.clientX - start.x),dy = Math.abs(event.clientY - start.y);if (!start.axis && Math.max(dx, dy) > 10) {if (dx > dy * 1.25) {start.axis = 'horizontal';event.currentTarget.setPointerCapture?.(event.pointerId);} else if (dy > dx * 1.25) start.axis = 'vertical';}if (start.axis === 'horizontal' && event.cancelable) event.preventDefault();}}
