@@ -1,3 +1,4 @@
+import {coalesce} from '@/lib/coalesce';
 import {getPlaylist} from "@/lib/collaborativePlaylists";
 import {loadMyPlaylistList} from '@/lib/myPlaylistList';
 import {useCallback,useEffect,useRef,useState} from 'react';
@@ -35,10 +36,10 @@ export function useMyPlaylists(){
  },[uid]);
  useEffect(()=>{
   owner.current=uid;setPlaylists(cache.get(uid)?.rows||null);reload(false);
-  const refresh=()=>reload(true);window.addEventListener('playlists:changed',refresh);window.addEventListener('focus',refresh);
+  const refresh=coalesce(()=>reload(true),600);window.addEventListener('playlists:changed',refresh);window.addEventListener('focus',refresh);
   let stop=()=>{};try{if(uid)stop=base44.entities.PlaylistCollaboration.subscribe(refresh);}catch{}
   let stopPlaylists=()=>{};try{if(uid)stopPlaylists=base44.entities.Playlist.subscribe(refresh);}catch{}
-  return()=>{version.current++;stop();stopPlaylists();window.removeEventListener('playlists:changed',refresh);window.removeEventListener('focus',refresh);};
+  return()=>{version.current++;refresh.cancel();stop();stopPlaylists();window.removeEventListener('playlists:changed',refresh);window.removeEventListener('focus',refresh);};
  },[uid,reload]);
  return {playlists:owner.current===uid?playlists:cache.get(uid)?.rows||null,error,loading,reload};
 }
