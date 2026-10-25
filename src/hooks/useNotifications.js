@@ -1,3 +1,5 @@
+import {notificationReadDatabase} from '@/api/base44Client';
+import {markNotificationRead,markAllNotificationsRead} from '@/lib/notificationRead';
 import {useArtistReleases} from "@/hooks/useArtistReleases";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { base44 } from "@/api/base44Client";
@@ -91,11 +93,12 @@ export function useNotifications(){
   return()=>{epoch.current++;clearInterval(timer);reload.cancel();unsub();};
  },[load,user?.id]);
  async function markAllAsRead(){
+  const startedUid=user?.id;
   try{await releases.markRead();}catch(error){reportActionError(error,"Release notifications couldn’t be marked read.");}
-  if(!user?.id||!unreadCount||markingAll.current||readingIds.current.size)return;
+  if(!user?.id||account.current!==startedUid||!unreadCount||markingAll.current||readingIds.current.size)return;
   markingAll.current=true;const uid=user.id,count=unreadCount,unread=new Set(notifications.filter(n=>!n.read).map(n=>n.id));
   setNotifications(prev=>prev.map(n=>({...n,read:true})));setUnreadCount(0);
-  try{const r=await base44.functions.invoke('safety',{action:'markAllRead'});if(r.data?.success!==true)throw Error();}
+  try{await markAllNotificationsRead(notificationReadDatabase,uid);}
   catch(error){if(account.current===uid){setNotifications(prev=>prev.map(n=>unread.has(n.id)?{...n,read:false}:n));setUnreadCount(count);reportActionError(error,"Notifications could not be marked as read. Please retry.");}}
   finally{if(account.current===uid){markingAll.current=false;window.dispatchEvent(new Event("notifications:changed"));load(true);}}
  }
@@ -105,7 +108,7 @@ export function useNotifications(){
   if(!uid||!wasUnread||markingAll.current||readingIds.current.has(id))return;
   readingIds.current.add(id);
   setNotifications(prev=>prev.map(n=>n.id===id?{...n,read:true}:n));setUnreadCount(n=>Math.max(0,n-1));
-  try{await base44.entities.Notification.update(id,{read:true});}
+  try{await markNotificationRead(notificationReadDatabase,uid,id);}
   catch(error){if(account.current===uid){setNotifications(prev=>prev.map(n=>n.id===id?{...n,read:false}:n));setUnreadCount(n=>n+1);reportActionError(error,"This notification could not be marked as read. Please retry.");}}
   finally{if(account.current===uid){readingIds.current.delete(id);window.dispatchEvent(new Event("notifications:changed"));}}
  }
