@@ -147,7 +147,7 @@ export default function Search() {
     <PullToRefresh onRefresh={handleRefresh}>
       <div className="search-page">
         <div className="page-intro"><h1>Search</h1><p>Explore music, artists, playlists, and people.</p></div>
-        {!peopleMode&&<Link className="playlist-action mb-5" to={"/music-requests"+(q.trim()?"?title="+encodeURIComponent(q.trim()):"")}>Missing a song? Request on PUBLIC</Link>
+        {!peopleMode&&<Link className="playlist-action mb-5" to={"/music-requests"+(q.trim()?"?title="+encodeURIComponent(q.trim()):"")}>Missing a song? Request on PUBLIC</Link>}
         
         
 
