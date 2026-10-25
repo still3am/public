@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 let count=0,mode='limit';
 const limit=Object.assign(Error('Request failed with status code 402'),{response:{status:402,data:{code:'CREDITS_EXHAUSTED'}}});
-globalThis.__requestServiceClient={functions:{invoke:async()=>{count++;if(mode==='limit')throw limit;if(mode==='forbidden')throw Object.assign(Error('No permission'),{response:{status:403}});if(mode==='malformed')return {data:{success:true}};return {data:{requests:[],success:true}};}};
+globalThis.__requestServiceClient={functions:{invoke:async()=>{count++;if(mode==='limit')throw limit;if(mode==='forbidden')throw Object.assign(Error('No permission'),{response:{status:403}});if(mode==='malformed')return {data:{success:true}};return {data:{requests:[],success:true}};}}};
 const code=fs.readFileSync('src/lib/musicRequests.js','utf8').replace(/^import[^;]+;/m,'const base44=globalThis.__requestServiceClient;');
 const mod=await import('data:text/javascript;base64,'+Buffer.from(code).toString('base64'));
 await assert.rejects(mod.musicRequestAction('list'),error=>error===limit);assert.equal(count,1);
