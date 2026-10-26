@@ -49,3 +49,42 @@ stage().props.onPointerMove(pointer(150));stage().props.onPointerCancel(pointer(
 console.log('PASS animation-frame batching, continuous curved positions and cancellation cleanup');
 
 state='song0';tree=render(props);let progress=nodes(tree).find(n=>n.props.role==='progressbar');assert.equal(progress.props['aria-valuenow'],1);assert.equal(progress.props['aria-valuemax'],12);nodes(tree).find(n=>n.type==='button'&&n.props['aria-label']==='Next discovery').props.onClick();tree=render(props);progress=nodes(tree).find(n=>n.props.role==='progressbar');assert.equal(progress.props['aria-valuenow'],2);console.log('PASS discovery position indicator stays in sync with carousel controls');
+
+// iOS touch events must work independently of the pointer stream that Safari cancels.
+state='song0';tree=render(props);
+const touchListeners=new Map(),removedTouch=[];
+stage().props.ref.current={
+ style:{setProperty:(key,value)=>dragStyles.set(key,value)},
+ classList:{toggle:(key,on)=>on?dragClasses.add(key):dragClasses.delete(key)},
+ addEventListener(name,handler,options){touchListeners.set(name,handler);if(name==='touchmove'||name==='touchend')assert.equal(options.passive,false);},
+ removeEventListener(name){removedTouch.push(name);}
+};
+const cleanupTouch=effects[1]();
+const finger=(x,y=100,id=7)=>({identifier:id,clientX:x,clientY:y});
+let touchPrevented=false;
+const touchEvent=(touches,changedTouches=touches)=>({touches,changedTouches,cancelable:true,preventDefault(){touchPrevented=true;}});
+const touchCall=(name,touches,changed)=>touchListeners.get(name)(touchEvent(touches,changed));
+const playbackBeforeTouch=calls.length;
+stage().props.onPointerDown({...pointer(240),pointerType:'touch'});
+touchCall('touchstart',[finger(240)]);
+touchCall('touchmove',[finger(140)]);
+assert.equal(touchPrevented,true,'horizontal mobile movement prevents browser scrolling');
+assert.equal(dragStyles.get('--drag-px'),'-100px','native touch moves the artwork');
+stage().props.onPointerCancel({...pointer(140),pointerType:'touch'});
+touchCall('touchend',[],[finger(120)]);
+tree=render(props);
+assert.equal(cards().find(n=>n.props.selected).props.track.id,'song1','Safari pointer cancellation does not cancel the touch swipe');
+assert.equal(calls.length,playbackBeforeTouch,'touch browsing never starts playback');
+touchPrevented=false;touchCall('touchstart',[finger(100)]);touchCall('touchmove',[finger(105,190)]);touchCall('touchend',[],[finger(108,230)]);
+tree=render(props);assert.equal(state,'song1');assert.equal(touchPrevented,false,'vertical page scrolling remains available');
+touchCall('touchstart',[finger(100)]);touchCall('touchmove',[finger(180)]);touchCall('touchend',[],[finger(200)]);
+tree=render(props);assert.equal(state,'song0','rightward mobile swipes browse backward');
+touchPrevented=false;touchCall('touchstart',[finger(100)]);touchCall('touchend',[],[finger(102)]);
+assert.equal(state,'song0');assert.equal(touchPrevented,false,'a cover tap remains available for playback');
+touchCall('touchstart',[finger(240)]);touchCall('touchmove',[finger(140)]);touchCall('touchcancel',[]);
+assert.equal(state,'song0');assert.equal(dragStyles.get('--drag-px'),'0px','touch cancellation settles the artwork');
+touchCall('touchstart',[finger(240)]);touchCall('touchmove',[finger(140),finger(260,100,8)]);
+touchCall('touchend',[],[finger(100)]);assert.equal(state,'song0','multi-touch zoom does not navigate');
+assert.equal(stage().props['data-horizontal-scroll'],'true','pull-to-refresh excludes the carousel');
+cleanupTouch();assert.deepEqual(removedTouch,['touchstart','touchmove','touchend','touchcancel']);
+console.log('PASS native mobile touch swipes, cancelled pointer isolation, vertical scrolling, taps, pinch, cleanup and pull-to-refresh isolation');
