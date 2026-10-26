@@ -27,6 +27,6 @@ const catalog=[{id:"saved",artist:"Alias",cover_art_url:"cover"},{id:"unsaved",a
 const load=view=>getLoad({id:"me"},new Set(["saved"]),view,{current:0},async()=>records,async()=>catalog,async fn=>fn({}),{entities:{ArtistSubscription:{filter:async()=>[{artist_name:"Followed",artist_key:"followed"}]}}},value=>value.toLowerCase(),value=>(value||"").trim().toLowerCase(),value=>[value],()=>{},()=>{},value=>directory=value,()=>{});
 await load("library")();assert.equal(directory.length,1);assert.equal(directory[0].display,"Artist");assert.equal(directory[0].count,1);
 await load("followed")();assert.equal(directory.length,1);assert.equal(directory[0].display,"Followed");
-assert.match(fs.readFileSync("src/pages/Search.jsx","utf8"),/if\(active\)setQ\(urlQ\)/);
+assert.match(fs.readFileSync("src/pages/Search.jsx","utf8"),/if\s*\(\s*active\s*\)\s*setQ\(urlQ\)/);
 assert.match(fs.readFileSync("src/components/Layout.jsx","utf8"),/useContentClearance/);
 console.log("PASS persistent recommendation hiding, undo, lost responses, account isolation, private recent searches, recap card composition and library-only/followed artist selection");
