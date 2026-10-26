@@ -31,7 +31,7 @@ function bubbleInk(colors) {
   const light=values.length?values.reduce((sum,color)=>sum+[.299,.587,.114].reduce((n,weight,i)=>n+weight*parseInt(color.slice(1+i*2,3+i*2),16),0),0)/values.length:110;
   return light>150?"#111111":"#ffffff";
 }
-export default function PublicNotes({ profileId, isOwn, active = true, userTracks = [] }) {
+export default function PublicNotes({ profileId, isOwn, active = true, userTracks = [], presentation = "avatar", onView }) {
   const { user } = useAuth();
   const [note, setNote] = useState(null), [loading, setLoading] = useState(true), [error, setError] = useState("");
   const [editing, setEditing] = useState(false), [picker, setPicker] = useState(false), [draft, setDraft] = useState(null), [caption, setCaption] = useState("");
@@ -96,7 +96,7 @@ export default function PublicNotes({ profileId, isOwn, active = true, userTrack
   }
   async function viewNote() {
     if(!valid || Date.parse(note.expires_at)<=Date.now())return;
-    setPlaybackError("");setViewing(true);
+    onView?.();setPlaybackError("");setViewing(true);
     if(!isOwn && note.track)await playNote(true);
   }
   async function playDraft() {
@@ -120,12 +120,15 @@ export default function PublicNotes({ profileId, isOwn, active = true, userTrack
   }
   if (!user?.id || (!isOwn && !valid)) return null;
   const playing = valid && preview.trackId === note.track_id && preview.playing;
-  return <div className={"public-notes public-notes-on-avatar" + (!valid ? " public-notes-empty" : "")} aria-label="PUBLIC Notes">
+  return <div className={"public-notes " + (presentation === "popup" ? "public-notes-in-popup" : "public-notes-on-avatar") + (!valid ? " public-notes-empty" : "")} aria-label="PUBLIC Notes">
+    {presentation === "popup" && valid && <p className="public-note-popup-label">PUBLIC Note</p>}
+    {presentation === "popup" && loading && user?.id && <p className="public-note-popup-status" role="status">Loading note…</p>}
+    {presentation === "popup" && error && !editing && <p className="public-note-error" role="alert">{error} <button type="button" className="underline" onClick={load}>Retry</button></p>}
     {valid ? <button type="button" className={"public-note-avatar-bubble" + (note.track && note.appearance === "cover_flow" ? " is-flow" : "")} style={note.track && note.appearance === "cover_flow" ? {color:bubbleInk(flowColors),"--note-tail":flowColors[0],"--note-shadow":bubbleInk(flowColors)==="#ffffff"?"#000b":"#fffb"} : undefined} aria-label={"View PUBLIC Note: " + (note.emoji ? note.emoji+" " : "") + (note.track ? note.track.title + " by " + (note.track.artist || note.track.uploader_name || "PUBLIC artist") + (note.caption ? ". "+note.caption : "") : note.caption)} onClick={viewNote}>
       {note.track && note.appearance === "cover_flow" && <MotionGradient className="public-note-bubble-flow" colors={flowColors} active={active && !viewing && !editing} />}
       {note.emoji && <span className="public-note-emoji-badge" aria-hidden="true">{note.emoji}</span>}
       {note.track ? <SongNoteContent track={note.track} caption={note.caption} /> : <span className="public-note-text-only">{note.caption}</span>}
-    </button> : isOwn ? <button type="button" className="public-note-create-dot" disabled={busy || loading} aria-label="Add a PUBLIC Note" onClick={open}>{loading ? <Loader2 size={14} className="animate-spin" /> : <Plus size={16} />}</button> : null}
+    </button> : isOwn && presentation !== "popup" ? <button type="button" className="public-note-create-dot" disabled={busy || loading} aria-label="Add a PUBLIC Note" onClick={open}>{loading ? <Loader2 size={14} className="animate-spin" /> : <Plus size={16} />}</button> : null}
     {viewing && valid && <Dialog open onOpenChange={setViewing}><DialogContent className="public-note-dialog public-note-viewer"><DialogHeader><DialogTitle>PUBLIC Note</DialogTitle><DialogDescription>{Date.parse(note.expires_at)-now<3600000 ? Math.max(1,Math.ceil((Date.parse(note.expires_at)-now)/60000))+"m left" : Math.ceil((Date.parse(note.expires_at)-now)/3600000)+"h left"} · A moment in music</DialogDescription></DialogHeader>
       <div className="public-note-card">
         {note.track && <div className="public-note-art"><MotionGradient className="public-note-flow" colors={flowColors} motion={note.appearance === "cover_flow" ? "flow" : "still"} active={active && viewing} /><div className="public-note-cover"><Cover url={note.track.cover_art_url} /></div></div>}
