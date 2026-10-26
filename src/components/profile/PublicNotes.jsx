@@ -103,7 +103,7 @@ export default function PublicNotes({ profileId, isOwn, active = true, userTrack
   async function playDraft() {
     if(!draft||playLock.current)return;
     playLock.current=true;setDraftPlaybackError("");
-    try{await preview.play(draft,false,{playback_mode:playbackMode,clip_start:clipStart,clip_length:selectedLength});}
+    try{await preview.play(draft,false,{playback_mode:playbackMode,clip_start:Math.min(clipStart,maxStart),clip_length:selectedLength});}
     catch{if(alive.current)setDraftPlaybackError("Couldn’t preview this song. Try again.");}
     finally{playLock.current=false;}
   }
@@ -112,7 +112,7 @@ export default function PublicNotes({ profileId, isOwn, active = true, userTrack
     if (lock.current || !isOwn || !user?.id || user.id !== profileId || (!remove && !draft && !caption.trim())) return;
     lock.current = true; version.current++; setBusy(true); setError("");
     try {
-      const saved = remove ? await request("removeNote", [profileId]) : await savePublicNote(base44, profileId, { emoji, track_id: draft?.id || "", caption: songOnly ? "" : caption, appearance: draft ? appearance : "classic",playback_mode:draft?playbackMode:"full",clip_start:clipStart,clip_length:selectedLength }, publicNoteDatabase);
+      const saved = remove ? await request("removeNote", [profileId]) : await savePublicNote(base44, profileId, { emoji, track_id: draft?.id || "", caption: songOnly ? "" : caption, appearance: draft ? appearance : "classic",playback_mode:draft?playbackMode:"full",clip_start:Math.min(clipStart,maxStart),clip_length:selectedLength }, publicNoteDatabase);
       if (!remove && (!saved?.id || (saved.track_id ? !saved.track : !saved.caption?.trim()) || !saved.expires_at)) throw Error("Note not confirmed");
       if (alive.current) { setNote(remove ? null : saved); setNow(Date.now()); setEditing(false); }
     } catch (e) {
