@@ -5,6 +5,7 @@ import { useCoverUrl } from "@/hooks/useCoverUrl";
 import { usePlayer } from "@/context/PlayerContext";
 import { profileViewerMedia, profileMediaKey } from "@/lib/profileViewerMedia";
 import ProfileComments from "./ProfileComments";
+import PublicNotes from "./PublicNotes";
 import "./profile-media-viewer.css";
 
 export default function ProfileMediaViewer({ profile, profileId, isOwn, onClose, onReturnFocus }) {
@@ -52,6 +53,7 @@ export default function ProfileMediaViewer({ profile, profileId, isOwn, onClose,
           <DialogTitle>{name}</DialogTitle>
           <DialogDescription className="sr-only">View {name}’s profile {media.type === "video" ? "clip. Use the play and sound controls." : media.type === "gif" ? "GIF." : "photo."}</DialogDescription>
         </DialogHeader>
+        <PublicNotes key={profileId} profileId={profileId} isOwn={isOwn} presentation="popup" onView={() => video.current?.pause()} />
         <section className="profile-media-viewer-conversation" aria-label="Profile comments">
           <ProfileComments key={mediaKey} profileId={profileId} mediaKey={mediaKey} isOwn={isOwn} description="" emptyMessage="Start the conversation." onNavigate={onClose} presentation="media" />
         </section>
