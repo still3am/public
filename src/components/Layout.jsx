@@ -4,7 +4,6 @@ import { useRef } from "react";
 import { Outlet, useLocation } from "react-router-dom";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import DesktopHeader from "@/components/DesktopHeader";
-import PublicFooter from "@/components/PublicFooter";
 
 import Sidebar from "@/components/Sidebar";
 import MobileTabBar from "@/components/MobileTabBar";
@@ -81,7 +80,6 @@ export default function Layout() {
               </motion.div>
             }
           </AnimatePresence>
-          {!momentsRoute && <PublicFooter/>}
         </main>
       </div>
       <ResumePlaybackBanner />
