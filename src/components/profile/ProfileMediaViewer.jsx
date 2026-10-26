@@ -50,7 +50,7 @@ export default function ProfileMediaViewer({ profile, profileId, isOwn, onClose,
         </div>
         <DialogHeader className="profile-media-viewer-identity">
           <DialogTitle>{name}</DialogTitle>
-          <DialogDescription>Profile media{media.type === "video" ? " · Tap play for sound" : ""}</DialogDescription>
+          <DialogDescription className="sr-only">View {name}’s profile {media.type === "video" ? "clip. Use the play and sound controls." : media.type === "gif" ? "GIF." : "photo."}</DialogDescription>
         </DialogHeader>
         <section className="profile-media-viewer-conversation" aria-label="Profile comments">
           <ProfileComments profileId={profileId} isOwn={isOwn} description="" emptyMessage="Start the conversation." onNavigate={onClose} presentation="media" />
