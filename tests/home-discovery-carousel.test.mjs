@@ -71,6 +71,7 @@ touchCall('touchmove',[finger(140)]);
 assert.equal(touchPrevented,true,'horizontal mobile movement prevents browser scrolling');
 assert.equal(dragStyles.get('--drag-px'),'-100px','native touch moves the artwork');
 stage().props.onPointerCancel({...pointer(140),pointerType:'touch'});
+const touchStageTarget={};stage().props.onLostPointerCapture({pointerId:7,pointerType:'touch',target:touchStageTarget,currentTarget:touchStageTarget});
 touchCall('touchend',[],[finger(120)]);
 tree=render(props);
 assert.equal(cards().find(n=>n.props.selected).props.track.id,'song1','Safari pointer cancellation does not cancel the touch swipe');
