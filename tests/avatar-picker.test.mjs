@@ -14,11 +14,11 @@ const Picker=(await import("data:text/javascript;base64,"+Buffer.from(code).toSt
 const find=(node,test)=>!node||typeof node!=="object"?[]:[...(test(node)?[node]:[]),...React.Children.toArray(node.props?.children).flatMap(child=>find(child,test))];
 const props={user:{avatar_url:""},onSelect:value=>{saved=value;},onClose:()=>closed++,onUpload:()=>uploads++};
 let tree=Picker(props);
-assert.equal(find(tree,node=>node.type==="button"&&node.props["aria-label"]?.startsWith("Choose ")).length,AVATAR_PRESETS.filter(item=>!item.gifUrl).length);
+assert.equal(find(tree,node=>node.type==="button"&&node.props["aria-label"]?.startsWith("Choose ")).length,AVATAR_PRESETS.filter(item=>!item.gifUrl&&!item.videoUrl).length);
 const gifTab=find(tree,node=>node.type==="button"&&node.props["aria-controls"]==="avatar-picker-results")[1];
 gifTab.props.onClick();tree=Picker(props);
-assert.equal(find(tree,node=>node.type==="button"&&node.props["aria-label"]?.startsWith("Choose ")).length,AVATAR_PRESETS.filter(item=>item.gifUrl).length);
-assert.equal(find(tree,node=>node.props?.["aria-label"]==="GIF avatars").length,1);
+assert.equal(find(tree,node=>node.type==="button"&&node.props["aria-label"]?.startsWith("Choose ")).length,AVATAR_PRESETS.filter(item=>item.gifUrl||item.videoUrl).length);
+assert.equal(find(tree,node=>node.props?.["aria-label"]==="GIF and clip avatars").length,1);
 const gif=AVATAR_PRESETS.find(item=>item.gifUrl);
 find(tree,node=>node.props?.["aria-label"]==="Choose "+gif.name+" avatar")[0].props.onClick();
 find(tree,node=>node.type==="button"&&node.props["aria-controls"]==="avatar-picker-results")[0].props.onClick();tree=Picker(props);

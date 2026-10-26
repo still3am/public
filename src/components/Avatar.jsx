@@ -13,8 +13,9 @@ export default function Avatar({user,size=40,className="",motion=false,active=tr
  const style={width:size,height:size,flexShrink:0,aspectRatio:"1 / 1",borderRadius:"50%",overflow:"hidden"};
  const name=user.display_name||user.full_name||"?";
  const isHeadphones=typeof user.avatar_url==="string"&&user.avatar_url.split(/[?#]/)[0].endsWith("/avatars/default-headphones.webp");
- const galleryGif=AVATAR_PRESETS.find(item=>item.url===user.avatar_url)?.gifUrl;
- if(galleryGif&&!failed)return <ProfileMedia src={user.avatar_url} gifSrc={galleryGif} active={active} style={style} className={"rounded-full "+className} onError={()=>setFailed(true)}/>;
+ const gallery=AVATAR_PRESETS.find(item=>item.url===user.avatar_url);
+ const galleryGif=gallery?.gifUrl,galleryVideo=gallery?.videoUrl;
+ if((galleryGif||galleryVideo)&&!failed)return <ProfileMedia src={user.avatar_url} gifSrc={galleryGif} videoSrc={galleryVideo} active={active} style={style} className={"rounded-full "+className} onError={()=>setFailed(true)}/>;
  if(user.avatar_url&&!isHeadphones&&!failed&&motion&&(user.avatar_video_url||user.avatar_gif_url))return <ProfileMedia src={user.avatar_url} videoSrc={user.avatar_video_url} gifSrc={user.avatar_gif_url} active={active} style={style} className={"rounded-full "+className} onError={()=>setFailed(true)}/>;
  if(user.avatar_url&&!isHeadphones&&!failed)return <img src={user.avatar_url} alt="" onError={()=>setFailed(true)} style={{...style,objectFit:"cover"}} className={"rounded-full "+className}/>;
  if(!defaultFailed)return <span style={style} className={"pfp-boy rounded-full "+className} data-active={active?"true":"false"}><img className="pfp-boy-base" src="/avatars/default-headphones.webp" alt="" onError={()=>setDefaultFailed(true)}/><span className="pfp-boy-head-clear" aria-hidden="true"/><img className="pfp-boy-head" src="/avatars/default-headphones.webp" alt="" aria-hidden="true"/></span>;
