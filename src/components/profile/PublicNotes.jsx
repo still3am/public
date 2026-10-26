@@ -14,7 +14,7 @@ import NoteEmojiPicker from "./NoteEmojiPicker";
 import NoteReactions from "./NoteReactions";
 import TrackPickerSheet from "@/components/profile/TrackPickerSheet";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
-import { Image as ImageIcon, Plus, Play, Pause, Loader2 } from "lucide-react";
+import { Image as ImageIcon, Music2, Plus, Play, Pause, Loader2 } from "lucide-react";
 
 async function request(action, args) {
   return requestPublicNote(base44, action, args, publicNoteDatabase);
@@ -149,7 +149,7 @@ export default function PublicNotes({ profileId, isOwn, active = true, userTrack
       <NoteReactions key={[user.id,note.id,note.expires_at].join(":")} profileId={profileId} note={note} canReact={!isOwn} active={active && viewing}/>
       {isOwn && <button type="button" className="public-note-post" onClick={open}>Edit note</button>}
     </DialogContent></Dialog>}
-    {editing && <Dialog open={!picker} onOpenChange={value => { if (!value && !busy && !picker) { setEditing(false); setPicker(false); } }}><DialogContent className="public-note-dialog public-note-composer public-note-studio" onOpenAutoFocus={event=>event.preventDefault()} onEscapeKeyDown={event=>{if(busy)event.preventDefault();}} onInteractOutside={event=>{if(busy)event.preventDefault();}}>
+    {editing && <Dialog open={!picker} onOpenChange={value => { if (!value && !busy && !picker) { setEditing(false); setPicker(false); } }}><DialogContent className="public-note-dialog public-note-composer public-note-studio" onOpenAutoFocus={event=>{event.preventDefault();event.target?.querySelector?.(":scope > button:last-child")?.focus();}} onEscapeKeyDown={event=>{if(busy)event.preventDefault();}} onInteractOutside={event=>{if(busy)event.preventDefault();}}>
       <DialogHeader className="note-studio-heading"><DialogTitle>Your note</DialogTitle><DialogDescription>A little moment. Shared for 24 hours.</DialogDescription></DialogHeader>
       <div className="note-studio-scroll">
         <div className="note-studio-stage">
@@ -161,7 +161,7 @@ export default function PublicNotes({ profileId, isOwn, active = true, userTrack
           </div>
           <Avatar user={user} size={88} active={active && !picker}/>
           <div className="note-studio-tools">
-            <button type="button" disabled={busy} onClick={()=>setPicker(true)} aria-label={draft?"Change note song":"Add a song"}><ImageIcon size={17}/><span>{draft?"Change song":"Add music"}</span></button>
+            <button type="button" disabled={busy} onClick={()=>{preview.stop();setPicker(true);}} aria-label={draft?"Change note song":"Add a song"}><Music2 size={17}/><span>{draft?"Change song":"Add music"}</span></button>
             <button type="button" ref={emojiTrigger} disabled={busy} aria-expanded={emojiOpen} aria-label="Choose note emoji" onClick={()=>setEmojiOpen(!emojiOpen)}><span aria-hidden="true">{emoji||"☺"}</span><span>Emoji</span></button>
           </div>
         </div>
