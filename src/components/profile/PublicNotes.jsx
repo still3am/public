@@ -31,7 +31,7 @@ function bubbleInk(colors) {
   const light=values.length?values.reduce((sum,color)=>sum+[.299,.587,.114].reduce((n,weight,i)=>n+weight*parseInt(color.slice(1+i*2,3+i*2),16),0),0)/values.length:110;
   return light>150?"#111111":"#ffffff";
 }
-export default function PublicNotes({ profileId, isOwn, active = true, userTracks = [], presentation = "avatar", onView }) {
+export default function PublicNotes({ profileId, isOwn, active = true, userTracks = [], presentation = "avatar", onView = undefined }) {
   const { user } = useAuth();
   const [note, setNote] = useState(null), [loading, setLoading] = useState(true), [error, setError] = useState("");
   const [editing, setEditing] = useState(false), [picker, setPicker] = useState(false), [draft, setDraft] = useState(null), [caption, setCaption] = useState("");
@@ -118,7 +118,7 @@ export default function PublicNotes({ profileId, isOwn, active = true, userTrack
       if (alive.current) setError(publicNoteError(e, remove));
     } finally { lock.current = false; if (alive.current) { setBusy(false); setLoading(false); } }
   }
-  if (!user?.id || (!isOwn && !valid)) return null;
+  if (!user?.id || (!isOwn && !valid && !(presentation === "popup" && (loading || error)))) return null;
   const playing = valid && preview.trackId === note.track_id && preview.playing;
   return <div className={"public-notes " + (presentation === "popup" ? "public-notes-in-popup" : "public-notes-on-avatar") + (!valid ? " public-notes-empty" : "")} aria-label="PUBLIC Notes">
     {presentation === "popup" && valid && <p className="public-note-popup-label">PUBLIC Note</p>}
