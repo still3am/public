@@ -48,7 +48,7 @@ function WeatherIndicator({owner}){
  const label=weather?`${city?.label}: ${condition.label}, ${weatherTemperature(weather.temperature,unit)}${error?', last update':''}`:city?(loading?'Loading weather for '+city.label:'Weather unavailable for '+city.label):'Choose a city for local weather';
  function clearCity(){request.current++;controller.current?.abort();setPreferences(previous=>({...previous,city:null}));setWeather(null);setLoading(false);setError('');}
  return <Dialog open={open} onOpenChange={setOpen}>
-  <DialogTrigger asChild><button type="button" className="home-weather-chip" aria-label={label} title={label}>{loading&&!weather?<Loader2 size={20} className="animate-spin"/>:<Icon size={21} strokeWidth={1.6}/>}<span>{weather?weatherTemperature(weather.temperature,unit):'Weather'}</span></button></DialogTrigger>
+  <DialogTrigger asChild><button type="button" className="home-weather-chip" aria-label={label} title={label}>{loading&&!weather?<Loader2 size={20} className="animate-spin"/>:<Icon size={21} strokeWidth={1.6}/>}<span className={weather?'home-weather-reading':'home-weather-placeholder'}>{weather?weatherTemperature(weather.temperature,unit):'Weather'}</span></button></DialogTrigger>
   {open&&<DialogContent className="home-weather-dialog weather-experience" data-public-dialog>
    <WeatherMusic weather={weather} city={city} unit={unit} loading={loading} error={error} onRefresh={()=>refresh(true)} onUnitChange={value=>setPreferences(previous=>({...previous,unit:value}))}>
    <section className="atmosphere-city-picker">
