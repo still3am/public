@@ -42,6 +42,7 @@ export default function PublicNotes({ profileId, isOwn, active = true, userTrack
   const [emoji,setEmoji]=useState(""),[emojiOpen,setEmojiOpen]=useState(false);
   const [draftPlaybackError,setDraftPlaybackError]=useState("");
   const [playbackMode,setPlaybackMode]=useState("full"),[clipStart,setClipStart]=useState(0),[clipLength,setClipLength]=useState(30);
+  const [measuredDuration,setMeasuredDuration]=useState({trackId:"",seconds:0});
   const preview=useNotePreview({active:active&&(viewing||editing)&&(!viewing||!!(note&&Date.parse(note.expires_at)>now)),accountId:user?.id,scope:profileId});
   const emojiTrigger = useRef(null);
   const editingRef = useRef(false), playLock = useRef(false), noteRef = useRef(null);
@@ -119,7 +120,8 @@ export default function PublicNotes({ profileId, isOwn, active = true, userTrack
       if (alive.current) setError(publicNoteError(e, remove));
     } finally { lock.current = false; if (alive.current) { setBusy(false); setLoading(false); } }
   }
-  const draftDuration=Number(draft?.duration_seconds)||(preview.trackId===draft?.id?Number(preview.duration):0)||0;
+  useEffect(()=>{if(preview.trackId&&Number(preview.duration)>0)setMeasuredDuration({trackId:preview.trackId,seconds:Number(preview.duration)});},[preview.trackId,preview.duration]);
+  const draftDuration=Number(draft?.duration_seconds)||(measuredDuration.trackId===draft?.id?measuredDuration.seconds:0)||0;
   const selectedLength=draftDuration>0?Math.min(clipLength,draftDuration):clipLength;
   const maxStart=Math.max(0,draftDuration-selectedLength);
   const timeLabel=value=>{const seconds=Math.max(0,Math.floor(Number(value)||0));return Math.floor(seconds/60)+":"+String(seconds%60).padStart(2,"0");};

@@ -41,6 +41,14 @@ for(const path of ["base44/entities/PublicNote.jsonc","base44/entities/PublicPro
  const props=JSON.parse(fs.readFileSync(path,"utf8")).properties;
  assert.deepEqual((props.public_song_note?.properties||props).emoji.enum,NOTE_EMOJI_VALUES,"schema accepts every catalog emoji");
 }
+await savePublicNote(client,"me",{track_id:"song",playback_mode:"clip",clip_start:45.5,clip_length:30},db);
+const clipNote=await requestPublicNote(client,"readNote",["me"],db);
+assert.equal(clipNote.playback_mode,"clip");assert.equal(clipNote.clip_start,45.5);assert.equal(clipNote.clip_length,30);
+assert.equal(calls,0,"clip timing persists for other listeners without integrations");
+await assert.rejects(savePublicNote(client,"me",{track_id:"song",playback_mode:"clip",clip_start:-2,clip_length:30},db),/valid part/);
+await assert.rejects(savePublicNote(client,"me",{track_id:"song",playback_mode:"clip",clip_start:0,clip_length:90},db),/valid part/);
+await savePublicNote(client,"me",{track_id:"song",playback_mode:"full"},db);
+assert.equal((await requestPublicNote(client,"readNote",["me"],db)).playback_mode,"full");
 await requestPublicNote(client,"removeNote",["me"],db);
 assert.equal(await requestPublicNote(client,"readNote",["me"],db),null);
 assert.equal(row.public_song_note.mode,"none","removal masks an older gateway note so it cannot reappear");

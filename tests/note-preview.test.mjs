@@ -38,3 +38,17 @@ console.log('PASS isolated note audio, queue preservation, paused-session restor
  await controller.play({id:'song'});audio.onended();assert.equal(restored,1);controller.stop();assert.equal(restored,1,'ending and closing cannot resume twice');
  console.log('PASS featured-song previews restore the original session automatically at the end');
 }
+{
+ const f=fixture(),selection={playback_mode:'clip',clip_start:45,clip_length:15};
+ await f.controller.play({id:'clip'},false,selection);
+ const audio=f.audios[0];assert.equal(audio.currentTime,45,'clip begins at the selected offset');
+ audio.duration=200;audio.onloadedmetadata();assert.equal(audio.currentTime,45,'metadata preserves the start');
+ audio.currentTime=59;audio.ontimeupdate();assert.equal(audio.paused,false);
+ audio.currentTime=60;audio.ontimeupdate();assert.equal(audio.paused,true,'clip stops at the selected end');
+ await f.controller.play({id:'clip'},false,selection);assert.equal(audio.currentTime,45,'replaying a finished clip starts at its selection');
+ await f.controller.play({id:'clip'},false,{playback_mode:'clip',clip_start:80,clip_length:30});
+ assert.equal(f.audios[1].currentTime,80,'changing the range of the same song restarts the correct selection');
+ f.controller.stop();assert.equal(f.restores,1,'closing restores the original music exactly once');
+ assert.equal(audio.onloadedmetadata,null);assert.equal(audio.ontimeupdate,null);
+}
+console.log('PASS clip seeking, bounded playback, replay, range changes and audio cleanup');
