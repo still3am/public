@@ -185,6 +185,7 @@ export default function PublicNotes({ profileId, isOwn, active = true, userTrack
             <div className="note-studio-timeline">
               {highlights.profile?.waveform?.length ? <div className="note-studio-waveform" aria-hidden="true">{highlights.profile.waveform.map((level,index)=><i key={index} style={{height:Math.max(3,level*38)+"px"}}/>)}</div> : <div className="note-studio-ticks" aria-hidden="true"/>}
               <div className="note-studio-selection" aria-hidden="true" style={{left:(draftDuration>0?Math.min(clipStart,maxStart)/draftDuration*100:0)+"%",width:(draftDuration>0?selectedLength/draftDuration*100:100)+"%"}}/>
+              {preview.trackId===draft.id&&preview.playing&&draftDuration>0&&<span className="note-studio-playhead" aria-hidden="true" style={{left:Math.min(100,(preview.position||0)/draftDuration*100)+"%"}}/>}
               <input type="range" min="0" max={maxStart} step="0.1" value={Math.min(clipStart,maxStart)} disabled={!draftDuration||busy} aria-label="Choose clip start" aria-valuetext={"From "+timeLabel(clipStart)+" to "+timeLabel(clipStart+selectedLength)} onChange={event=>{preview.pause();setClipStart(Number(event.target.value));}}/>
             </div>
             <div className="note-studio-time"><strong>{timeLabel(Math.min(clipStart,maxStart))} — {timeLabel(Math.min(clipStart,maxStart)+selectedLength)}</strong><span>{draftDuration>0?timeLabel(draftDuration):"Tap play to load timing"}</span></div>

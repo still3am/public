@@ -96,3 +96,4 @@
 .note-studio-analysis-error{font-size:10px;line-height:1.6;color:hsl(var(--muted-foreground))}
 .note-studio-analysis-error button{min-height:36px;text-decoration:underline;padding:4px 0}
 .note-studio-timeline:has(input:disabled){opacity:.55}
+.note-studio-playhead{position:absolute;top:4px;bottom:4px;width:2px;background:#bf72ed;pointer-events:none;box-shadow:0 0 6px #bf72ed66}

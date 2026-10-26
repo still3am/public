@@ -1,4 +1,5 @@
 import {useEffect,useState} from 'react';
+import {withReadTimeout} from '@/lib/readTimeout';
 import {base44} from '@/api/base44Client';
 import {measureNoteAudio,readNoteAudioBytes,suggestedNoteMoments} from '@/lib/noteHighlights';
 const cache=new Map();
@@ -15,7 +16,7 @@ export function useNoteHighlights({track,accountId,active,length=30}) {
     const Decoder=globalThis.OfflineAudioContext||Reflect.get(globalThis,'webkitOfflineAudioContext');
     if(!Decoder)throw Error('Audio analysis isn’t supported by this browser.');
     // The same authorized Track read used for playback resolves private audio.
-    const fresh=await base44.entities.Track.get(track.id);
+    const fresh=await withReadTimeout(()=>base44.entities.Track.get(track.id),15000);
     if(cancelled||controller.signal.aborted)return;
     if(!fresh?.audio_url)throw Error('This song’s audio is unavailable.');
     if(Number(fresh.duration_seconds)>600)throw Error('This song is too long to analyze on this device.');
