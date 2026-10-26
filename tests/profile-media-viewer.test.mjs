@@ -20,7 +20,7 @@ assert.equal(profileViewerMedia(null).source,"/avatars/default-headphones.webp")
 
 let states=[],si=0,refs=[],ri=0,effects=[],musicPauses=0,closed=0,restored=0;
 const useState=initial=>{const i=si++;if(!(i in states))states[i]=initial;return [states[i],next=>{states[i]=typeof next==="function"?next(states[i]):next;}];};
-const deps={React,useState,useRef:initial=>refs[ri++]??(refs[ri-1]={current:initial}),useEffect:effect=>effects.push(effect),useCoverUrl:url=>url,usePlayer:()=>({isPlaying:false,pausePlayback:()=>musicPauses++}),profileViewerMedia,profileMediaKey,Dialog:"dialog-root",DialogContent:"dialog-content",DialogHeader:"header",DialogTitle:"h2",DialogDescription:"p",ImageOff:"image-off",RotateCcw:"retry-icon",Play:"play-icon",Pause:"pause-icon",Volume2:"volume-icon",VolumeX:"muted-icon",ProfileComments:"comments"};
+const deps={React,useState,useRef:initial=>refs[ri++]??(refs[ri-1]={current:initial}),useEffect:effect=>effects.push(effect),useCoverUrl:url=>url,usePlayer:()=>({isPlaying:false,pausePlayback:()=>musicPauses++}),profileViewerMedia,profileMediaKey,Dialog:"dialog-root",DialogContent:"dialog-content",DialogHeader:"header",DialogTitle:"h2",DialogDescription:"p",ImageOff:"image-off",RotateCcw:"retry-icon",Play:"play-icon",Pause:"pause-icon",Volume2:"volume-icon",VolumeX:"muted-icon",ProfileComments:"comments",PublicNotes:"public-notes"};
 globalThis.__profileMediaViewer=deps;
 const source=ts.transpileModule(fs.readFileSync("src/components/profile/ProfileMediaViewer.jsx","utf8").replace(/^import[^;]+;/gm,""),{compilerOptions:{jsx:ts.JsxEmit.React,target:ts.ScriptTarget.ES2022,module:ts.ModuleKind.ESNext}}).outputText;
 const {default:Viewer}=await import("data:text/javascript;base64,"+Buffer.from("const {"+Object.keys(deps).join(",")+"}=globalThis.__profileMediaViewer;\n"+source).toString("base64"));
@@ -30,6 +30,7 @@ let tree=render(clip),nodes=all(tree),video=nodes.find(node=>node.type==="video"
 assert.equal(video.props.src,"/original.mp4");assert.equal(video.props.controls,false);assert.equal(video.props.playsInline,true);assert.equal(video.props.autoPlay,undefined,"sound does not autoplay");assert.equal(video.props.muted,false,"explicit playback can retain source sound");
 video.props.onPlay();assert.equal(musicPauses,1,"clip playback pauses music");
 video.props.onVolumeChange({currentTarget:{muted:false,paused:false}});assert.equal(musicPauses,2);
+const notes=nodes.find(node=>node.type==="public-notes");assert.equal(notes.props.profileId,"person");assert.equal(notes.props.presentation,"popup");
 const comments=nodes.find(node=>node.type==="comments");assert.equal(comments.props.profileId,"person");assert.equal(comments.props.isOwn,false);assert.equal(comments.props.presentation,"media");comments.props.onNavigate();assert.equal(closed,1);
 tree.props.onOpenChange(false);assert.equal(closed,2);
 let prevented=false;nodes.find(node=>node.type==="dialog-content").props.onCloseAutoFocus({preventDefault(){prevented=true;}});assert.equal(restored,1);assert.ok(prevented);
@@ -37,6 +38,7 @@ let prevented=false;nodes.find(node=>node.type==="dialog-content").props.onClose
 let mediaPauses=0,visibility;
 globalThis.document={hidden:false,addEventListener:(name,handler)=>{if(name==="visibilitychange")visibility=handler;},removeEventListener:(name,handler)=>{assert.equal(handler,visibility);}};
 refs[0].current={pause:()=>mediaPauses++};
+notes.props.onView();assert.equal(mediaPauses,1,"opening a note pauses the profile clip");mediaPauses=0;
 const cleanup=effects[0]();document.hidden=true;visibility();assert.equal(mediaPauses,1);cleanup();assert.equal(mediaPauses,2,"closing pauses media");delete globalThis.document;
 video.props.onError();tree=render(clip);assert.ok(all(tree).some(node=>node.props?.role==="alert"));
 all(tree).find(node=>node.type==="button" && !node.props["aria-label"]).props.onClick();tree=render(clip);assert.ok(!all(tree).some(node=>node.props?.role==="alert"),"failed media can retry");
