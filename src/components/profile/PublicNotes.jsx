@@ -1,3 +1,4 @@
+import {useNoteHighlights} from "@/hooks/useNoteHighlights";
 import Avatar from "@/components/Avatar";
 import OverflowText from "@/components/OverflowText";
 import { useEffect, useRef, useState } from "react";
@@ -46,6 +47,7 @@ export default function PublicNotes({ profileId, isOwn, active = true, userTrack
   const [playbackMode,setPlaybackMode]=useState("full"),[clipStart,setClipStart]=useState(0),[clipLength,setClipLength]=useState(30);
   const [measuredDuration,setMeasuredDuration]=useState({trackId:"",seconds:0});
   const preview=useNotePreview({active:active&&(viewing||editing)&&(!viewing||!!(note&&Date.parse(note.expires_at)>now)),accountId:user?.id,scope:profileId});
+  const highlights=useNoteHighlights({track:draft,accountId:user?.id,active:active&&editing&&!picker&&!!draft&&playbackMode==="clip",length:clipLength});
   const emojiTrigger = useRef(null);
   const editingRef = useRef(false), playLock = useRef(false), noteRef = useRef(null);
   editingRef.current = editing; noteRef.current = note;
@@ -110,6 +112,13 @@ export default function PublicNotes({ profileId, isOwn, active = true, userTrack
     catch{if(alive.current)setDraftPlaybackError("Couldn’t preview this song. Try again.");}
     finally{playLock.current=false;}
   }
+  async function selectMoment(seconds) {
+    if(!draft||busy)return;
+    const start=Math.max(0,Math.min(seconds,maxStart));
+    preview.pause();setClipStart(start);setDraftPlaybackError("");
+    try{await preview.play(draft,true,{playback_mode:"clip",clip_start:start,clip_length:selectedLength});}
+    catch{if(alive.current)setDraftPlaybackError("Couldn’t preview this moment. Tap play to retry.");}
+  }
   function open() { setPlaybackMode(valid ? note.playback_mode || "full" : "full");setClipStart(valid ? note.clip_start || 0 : 0);setClipLength(valid ? note.clip_length || 30 : 30);setDraftPlaybackError(""); setEmoji(valid ? note.emoji || "" : ""); setEmojiOpen(false); setViewing(false); setDraft(valid ? note.track : null); setCaption(valid ? note.caption || "" : ""); setAppearance(valid ? note.appearance || "classic" : "classic"); setError(""); setEditing(true); }
   async function save(remove = false, songOnly = false) {
     if (lock.current || !isOwn || !user?.id || user.id !== profileId || (!remove && !draft && !caption.trim())) return;
@@ -123,7 +132,7 @@ export default function PublicNotes({ profileId, isOwn, active = true, userTrack
     } finally { lock.current = false; if (alive.current) { setBusy(false); setLoading(false); } }
   }
   useEffect(()=>{if(preview.trackId&&Number(preview.duration)>0)setMeasuredDuration({trackId:preview.trackId,seconds:Number(preview.duration)});},[preview.trackId,preview.duration]);
-  const draftDuration=Number(draft?.duration_seconds)||(measuredDuration.trackId===draft?.id?measuredDuration.seconds:0)||0;
+  const draftDuration=Number(highlights.profile?.duration)||Number(draft?.duration_seconds)||(measuredDuration.trackId===draft?.id?measuredDuration.seconds:0)||0;
   const selectedLength=draftDuration>0?Math.min(clipLength,draftDuration):clipLength;
   const maxStart=draftDuration>0?Math.max(0,draftDuration-selectedLength):clipStart;
   const timeLabel=value=>{const seconds=Math.max(0,Math.floor(Number(value)||0));return Math.floor(seconds/60)+":"+String(seconds%60).padStart(2,"0");};
@@ -145,7 +154,7 @@ export default function PublicNotes({ profileId, isOwn, active = true, userTrack
         {note.track && <button type="button" className="public-note-play" aria-label={(playing ? "Pause " : "Play ") + note.track.title} onClick={() => playNote()}>{playing ? <Pause size={20} fill="currentColor" /> : <Play size={20} fill="currentColor" />}</button>}
       </div>
       {note.track && <p className="public-note-listening-hint">{note.playback_mode === "clip" ? timeLabel(note.clip_start) + "–" + timeLabel((note.clip_start||0)+(note.clip_length||30)) + " · Selected clip" : "Full song"} · Your music resumes when you close.</p>}
-      {playbackError && <p className="public-note-error" role="alert">{playbackError}</p>}
+      {(playbackError||preview.error) && <p className="public-note-error" role="alert">{playbackError||preview.error}</p>}
       <NoteReactions key={[user.id,note.id,note.expires_at].join(":")} profileId={profileId} note={note} canReact={!isOwn} active={active && viewing}/>
       {isOwn && <button type="button" className="public-note-post" onClick={open}>Edit note</button>}
     </DialogContent></Dialog>}
@@ -169,19 +178,22 @@ export default function PublicNotes({ profileId, isOwn, active = true, userTrack
         {draft && <section className="note-studio-song" aria-label="Song and clip selection">
           <div className="note-studio-song-top"><span>YOUR SOUNDTRACK</span><button type="button" className="public-note-clear-song" disabled={busy} onClick={()=>{preview.stop();setDraft(null);setDraftPlaybackError("");}}>Remove</button></div>
           <div className="note-studio-song-info"><span className="public-note-choice-art"><Cover url={draft.cover_art_url}/></span><div><strong><OverflowText text={draft.title}/></strong><small><OverflowText text={draft.artist||draft.uploader_name||"PUBLIC artist"}/></small></div><button type="button" className="public-note-preview-play" disabled={busy||preview.loading} aria-label={(preview.trackId===draft.id&&preview.playing?"Pause preview of ":"Preview ")+draft.title} onClick={playDraft}>{preview.loading?<Loader2 size={20} className="animate-spin"/>:preview.trackId===draft.id&&preview.playing?<Pause size={20} fill="currentColor"/>:<Play size={20} fill="currentColor"/>}</button></div>
-          <div className="public-note-audio-modes" role="group" aria-label="Note playback"><button type="button" disabled={busy} aria-pressed={playbackMode==="full"} onClick={()=>{preview.stop();setPlaybackMode("full");}}>Full song</button><button type="button" disabled={busy} aria-pressed={playbackMode==="clip"} onClick={()=>{preview.stop();setPlaybackMode("clip");setClipStart(Math.min(clipStart,maxStart));}}>Choose a clip</button></div>
+          <div className="public-note-audio-modes" role="group" aria-label="Note playback"><button type="button" disabled={busy} aria-pressed={playbackMode==="full"} onClick={()=>{preview.pause();setPlaybackMode("full");}}>Full song</button><button type="button" disabled={busy} aria-pressed={playbackMode==="clip"} onClick={()=>{preview.pause();setPlaybackMode("clip");setClipStart(Math.min(clipStart,maxStart));}}>Choose a clip</button></div>
           {playbackMode==="clip" && <div className="note-studio-trimmer">
-            <div className="note-studio-durations" role="group" aria-label="Note clip length">{[15,30,60].map(length=><button type="button" key={length} disabled={busy} aria-pressed={clipLength===length} onClick={()=>{preview.stop();setClipLength(length);setClipStart(Math.min(clipStart,Math.max(0,draftDuration-length)));}}>{length}s</button>)}</div>
+            <div className="note-studio-durations" role="group" aria-label="Note clip length">{[15,30,60].map(length=><button type="button" key={length} disabled={busy} aria-pressed={clipLength===length} onClick={()=>{preview.pause();setClipLength(length);setClipStart(Math.min(clipStart,Math.max(0,draftDuration-length)));}}>{length}s</button>)}</div>
+            {highlights.moments.length>0 && <div className="note-studio-moments" aria-label="Suggested clip starts"><span>Suggested moments</span><div className="note-studio-moment-rail">{highlights.moments.map(seconds=><button key={seconds} type="button" disabled={busy} style={{left:"clamp(12px, "+(seconds/draftDuration*100)+"%, calc(100% - 12px))"}} aria-label={"Preview suggested moment at "+timeLabel(seconds)} aria-pressed={Math.abs(clipStart-seconds)<.5} onClick={()=>selectMoment(seconds)}><span/></button>)}</div><small>Based on the song’s energy. Tap a dot to listen.</small></div>}
             <div className="note-studio-timeline">
-              <div className="note-studio-ticks" aria-hidden="true"/>
+              {highlights.profile?.waveform?.length ? <div className="note-studio-waveform" aria-hidden="true">{highlights.profile.waveform.map((level,index)=><i key={index} style={{height:Math.max(3,level*38)+"px"}}/>)}</div> : <div className="note-studio-ticks" aria-hidden="true"/>}
               <div className="note-studio-selection" aria-hidden="true" style={{left:(draftDuration>0?Math.min(clipStart,maxStart)/draftDuration*100:0)+"%",width:(draftDuration>0?selectedLength/draftDuration*100:100)+"%"}}/>
-              <input type="range" min="0" max={maxStart} step="0.1" value={Math.min(clipStart,maxStart)} disabled={!draftDuration||busy} aria-label="Choose clip start" aria-valuetext={"From "+timeLabel(clipStart)+" to "+timeLabel(clipStart+selectedLength)} onChange={event=>{preview.stop();setClipStart(Number(event.target.value));}}/>
+              <input type="range" min="0" max={maxStart} step="0.1" value={Math.min(clipStart,maxStart)} disabled={!draftDuration||busy} aria-label="Choose clip start" aria-valuetext={"From "+timeLabel(clipStart)+" to "+timeLabel(clipStart+selectedLength)} onChange={event=>{preview.pause();setClipStart(Number(event.target.value));}}/>
             </div>
             <div className="note-studio-time"><strong>{timeLabel(Math.min(clipStart,maxStart))} — {timeLabel(Math.min(clipStart,maxStart)+selectedLength)}</strong><span>{draftDuration>0?timeLabel(draftDuration):"Tap play to load timing"}</span></div>
-            <p>Slide to your favorite part. Tap play to preview.</p>
+            <p>{highlights.loading?"Finding suggested moments…":"Slide to your favorite part. Tap play to preview."}</p>
+            {highlights.error&&<p className="note-studio-analysis-error" role="status">Suggestions unavailable. You can still choose a clip. <button type="button" disabled={busy} onClick={highlights.retry}>Retry suggestions</button></p>}
+            {!highlights.loading&&!highlights.error&&highlights.profile&&!highlights.moments.length&&<p>No clear highlights found. Choose the part you like.</p>}
           </div>}
           {playbackMode==="full" && <p className="note-studio-full-hint">Listeners hear the whole song from the beginning.</p>}
-          {draftPlaybackError&&<p className="public-note-error" role="alert">{draftPlaybackError}</p>}
+          {(draftPlaybackError||preview.error)&&<p className="public-note-error" role="alert">{draftPlaybackError||preview.error}</p>}
           <details className="note-studio-style"><summary>Bubble style <span>{appearance==="cover_flow"?"Cover Flow":"Classic"}</span></summary><div className="public-note-appearance" role="group" aria-label="Song note appearance"><button type="button" disabled={busy} aria-pressed={appearance==="classic"} onClick={()=>setAppearance("classic")}>Classic</button><button type="button" disabled={busy} aria-pressed={appearance==="cover_flow"} onClick={()=>setAppearance("cover_flow")}>Cover Flow</button></div><div className={"public-note-avatar-bubble public-note-preview"+(appearance==="cover_flow"?" is-flow":"")} style={appearance==="cover_flow"?{color:bubbleInk(draftFlowColors),background:draftFlowColors[0]}:undefined}><SongNoteContent track={draft} caption={caption}/></div></details>
         </section>}
         {error&&<p role="alert" className="public-note-error">{error}</p>}

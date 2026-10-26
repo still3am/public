@@ -77,3 +77,22 @@
 }
 @media(max-height:620px){.note-studio-stage{min-height:0;padding-block:12px}.note-studio-stage>.pfp-boy,.note-studio-stage>img{width:64px!important;height:64px!important}.note-studio-tools{margin-top:12px}}
 @media(prefers-reduced-motion:reduce){.public-note-studio *{scroll-behavior:auto!important}}
+
+/* Equal width and height remain circular even when global button sizing applies. */
+.public-note-dialog[role=dialog]>button:last-child{box-sizing:border-box;width:44px!important;height:44px!important;min-width:44px!important;max-width:44px!important;min-height:44px!important;max-height:44px!important;flex:0 0 44px;aspect-ratio:1;padding:0!important;border-radius:50%!important;display:grid;place-items:center;background:hsl(var(--foreground)/.06);border:1px solid hsl(var(--border));opacity:1;line-height:1}
+.public-note-dialog[role=dialog]>button:last-child svg{width:19px;height:19px;stroke-width:1.75}
+.public-note-dialog[role=dialog]>button:last-child:focus:not(:focus-visible){box-shadow:none;outline:0}
+.public-note-dialog[role=dialog]>button:last-child:focus-visible{outline:2px solid hsl(var(--ring));outline-offset:3px}
+.note-studio-waveform{position:absolute;inset:6px 3px;display:flex;align-items:center;gap:2px;overflow:hidden;pointer-events:none}
+.note-studio-waveform i{flex:1;min-width:1px;border-radius:3px;background:hsl(var(--foreground)/.48)}
+.note-studio-moments{margin-bottom:12px}
+.note-studio-moments>span{font-size:10px;font-weight:600}
+.note-studio-moment-rail{position:relative;height:32px;margin:4px 0}
+.note-studio-moment-rail::before{content:"";position:absolute;left:0;right:0;top:15px;height:2px;background:hsl(var(--foreground)/.13);border-radius:2px}
+.note-studio-moment-rail button{position:absolute;top:0;width:32px;height:32px;min-width:32px;min-height:32px;transform:translateX(-50%);display:grid;place-items:center;border-radius:50%;padding:0}
+.note-studio-moment-rail button span{width:8px;height:8px;border-radius:50%;background:#bf72ed;box-shadow:0 0 0 3px hsl(var(--card))}
+.note-studio-moment-rail button[aria-pressed=true] span{background:#d9a5ff;box-shadow:0 0 0 4px #bf72ed35}
+.note-studio-moments small{font-size:10px;color:hsl(var(--muted-foreground));line-height:1.5}
+.note-studio-analysis-error{font-size:10px;line-height:1.6;color:hsl(var(--muted-foreground))}
+.note-studio-analysis-error button{min-height:36px;text-decoration:underline;padding:4px 0}
+.note-studio-timeline:has(input:disabled){opacity:.55}
