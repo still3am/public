@@ -3,17 +3,13 @@ import { ImageOff, RotateCcw, Play, Pause, Volume2, VolumeX } from "lucide-react
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { useCoverUrl } from "@/hooks/useCoverUrl";
 import { usePlayer } from "@/context/PlayerContext";
-import MotionGradient from "@/components/MotionGradient";
-import { useCoverPalette } from "@/hooks/useCoverPalette";
 import { profileViewerMedia, profileMediaKey } from "@/lib/profileViewerMedia";
 import ProfileComments from "./ProfileComments";
 import "./profile-media-viewer.css";
 
-export default function ProfileMediaViewer({ profile, profileId, isOwn, onClose, onReturnFocus, colors = [], motion = "flow", speed = .7 }) {
+export default function ProfileMediaViewer({ profile, profileId, isOwn, onClose, onReturnFocus }) {
   const media = profileViewerMedia(profile);
   const poster = useCoverUrl(media.poster);
-  const { colors: artworkColors } = useCoverPalette(colors.length || profile?.profile_background_mode === "off" ? "" : poster);
-  const gradientColors = (colors.length ? colors : artworkColors).filter(color => /^#[0-9a-f]{6}$/i.test(color)).slice(0,3);
   const mediaKey = profileMediaKey(media);
   const player = usePlayer();
   const video = useRef(null), content = useRef(null);
@@ -39,8 +35,6 @@ export default function ProfileMediaViewer({ profile, profileId, isOwn, onClose,
 
   return <Dialog open onOpenChange={(open) => { if (!open) onClose(); }}>
     <DialogContent ref={content} className="profile-media-viewer" onOpenAutoFocus={(event) => { event.preventDefault();content.current?.querySelector(":scope > button:last-child")?.focus(); }} onCloseAutoFocus={(event) => { event.preventDefault();onReturnFocus?.(); }}>
-      {gradientColors.length > 0 && <MotionGradient colors={gradientColors} motion={motion} speed={speed} className="profile-media-viewer-gradient" />}
-      <div className="profile-media-viewer-backdrop" aria-hidden="true" style={poster ? { backgroundImage: `url(${JSON.stringify(poster)})` } : undefined} />
       <div className="profile-media-viewer-topbar"><span className="profile-media-viewer-brand">PUBLIC.</span></div>
       <div className="profile-media-viewer-layout">
         <div className="profile-media-viewer-stage">

@@ -713,7 +713,7 @@ export default function Profile({ ownProfileTab = false }) {
         </div>
         }
 
-      {showMedia && isCurrentPage && !editMode && <ProfileMediaViewer key={targetId} profile={profile} profileId={targetId} isOwn={isOwn} colors={backgroundColors} motion={currentBackground.motion} speed={currentBackground.speed} onClose={() => setShowMedia(false)} onReturnFocus={() => avatarTrigger.current?.focus()} />}
+      {showMedia && isCurrentPage && !editMode && <ProfileMediaViewer key={targetId} profile={profile} profileId={targetId} isOwn={isOwn} onClose={() => setShowMedia(false)} onReturnFocus={() => avatarTrigger.current?.focus()} />}
 
       {showQR &&
         <ProfileQRModal

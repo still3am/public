@@ -20,7 +20,7 @@ assert.equal(profileViewerMedia(null).source,"/avatars/default-headphones.webp")
 
 let states=[],si=0,refs=[],ri=0,effects=[],musicPauses=0,closed=0,restored=0;
 const useState=initial=>{const i=si++;if(!(i in states))states[i]=initial;return [states[i],next=>{states[i]=typeof next==="function"?next(states[i]):next;}];};
-const deps={React,useState,useRef:initial=>refs[ri++]??(refs[ri-1]={current:initial}),useEffect:effect=>effects.push(effect),useCoverUrl:url=>url,usePlayer:()=>({isPlaying:false,pausePlayback:()=>musicPauses++}),profileViewerMedia,profileMediaKey,useCoverPalette:()=>({colors:["#ff5522","#6644aa","#334499"]}),MotionGradient:"gradient",Dialog:"dialog-root",DialogContent:"dialog-content",DialogHeader:"header",DialogTitle:"h2",DialogDescription:"p",ImageOff:"image-off",RotateCcw:"retry-icon",Play:"play-icon",Pause:"pause-icon",Volume2:"volume-icon",VolumeX:"muted-icon",ProfileComments:"comments"};
+const deps={React,useState,useRef:initial=>refs[ri++]??(refs[ri-1]={current:initial}),useEffect:effect=>effects.push(effect),useCoverUrl:url=>url,usePlayer:()=>({isPlaying:false,pausePlayback:()=>musicPauses++}),profileViewerMedia,profileMediaKey,Dialog:"dialog-root",DialogContent:"dialog-content",DialogHeader:"header",DialogTitle:"h2",DialogDescription:"p",ImageOff:"image-off",RotateCcw:"retry-icon",Play:"play-icon",Pause:"pause-icon",Volume2:"volume-icon",VolumeX:"muted-icon",ProfileComments:"comments"};
 globalThis.__profileMediaViewer=deps;
 const source=ts.transpileModule(fs.readFileSync("src/components/profile/ProfileMediaViewer.jsx","utf8").replace(/^import[^;]+;/gm,""),{compilerOptions:{jsx:ts.JsxEmit.React,target:ts.ScriptTarget.ES2022,module:ts.ModuleKind.ESNext}}).outputText;
 const {default:Viewer}=await import("data:text/javascript;base64,"+Buffer.from("const {"+Object.keys(deps).join(",")+"}=globalThis.__profileMediaViewer;\n"+source).toString("base64"));
@@ -106,5 +106,5 @@ assert.equal(isProfileCommentThread({profile_id:"other",media_key:avatarKey},"pe
 assert.equal(created[0].media_key,avatarKey,"new image comments save to their own thread");
 tree=render(clip);nodes=all(tree);
 assert.equal(nodes.find(node=>node.type==="comments").props.mediaKey,avatarKey);
-assert.ok(nodes.some(node=>node.type==="gradient"),"viewer renders an animated color gradient");
-console.log("PASS separate image/page threads, legacy page comments, per-asset identity and animated gradient");
+assert.ok(!fs.readFileSync("src/components/profile/ProfileMediaViewer.jsx","utf8").includes("MotionGradient"),"viewer uses a plain dark surface");
+console.log("PASS separate image/page threads, legacy page comments, per-asset identity and plain dark viewer");
