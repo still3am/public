@@ -77,7 +77,7 @@ export default function ProfileComments({ profileId, isOwn, active = true, descr
         message: text,
         request_id: commentRequest.current.id
       });
-      if (!saved?.id) throw Error("Comment save was not confirmed");
+      if (!saved?.id || (saved.media_key || "") !== mediaKey) throw Error("Comment save was not confirmed for this conversation");
       if (alive.current && identity.current === scope) {
         requestVersion.current++;
         confirmed.current.set(saved.id, saved);
