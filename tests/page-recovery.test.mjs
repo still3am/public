@@ -8,7 +8,7 @@ await assert.rejects(withReadTimeout(Promise.reject(original),20),error=>error==
 let late;
 const pending=new Promise(resolve=>late=resolve);
 await assert.rejects(withReadTimeout(pending,5),error=>error.status===408&&error.code==="READ_TIMEOUT");
-late("late response");
+late("late response");await Promise.resolve();
 let timers=0,cleared=0;
 const originalSet=globalThis.setTimeout,originalClear=globalThis.clearTimeout;
 globalThis.setTimeout=(...args)=>{timers++;return originalSet(...args);};
