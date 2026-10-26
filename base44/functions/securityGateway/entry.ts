@@ -195,7 +195,7 @@ export default async function handleRequest(req) {
         let track=null;
         if(note.track_id){try{track=await requireTrack(note.track_id,false);}catch(e){if([403,404].includes(e.status)){if(!note.caption?.trim())return Response.json({result:null});}else throw e;}}
         if(!track&&!note.caption?.trim())return Response.json({result:null});
-        return Response.json({result:{...pick(note,['id','user_id','caption','expires_at','appearance','emoji']),track_id:track?.id||'',track}});
+        return Response.json({result:{...pick(note,['id','user_id','caption','expires_at','appearance','emoji','playback_mode','clip_start','clip_length']),track_id:track?.id||'',track}});
       }
       if(action==='removeNote'){
         await handler.deleteMany({user_id:user.id});
@@ -217,9 +217,11 @@ export default async function handleRequest(req) {
         // Existing catalog audio/artwork is never sent to an integration.
         // Only a new, non-empty caption needs a content review.
         if(caption&&caption!==previous?.caption)await moderate(svc,caption);
-        const data={user_id:user.id,track_id:track?.id||'',caption,emoji,appearance:track?appearance:'classic',expires_at:new Date(Date.now()+24*60*60*1000).toISOString()};
+        const playback_mode=track?(input.playback_mode??'full'):'full',clip_start=playback_mode==='clip'?input.clip_start:0,clip_length=playback_mode==='clip'?input.clip_length:30;
+        if(!['full','clip'].includes(playback_mode)||!Number.isFinite(clip_start)||clip_start<0||clip_start>86400||!Number.isFinite(clip_length)||clip_length<1||clip_length>60||(playback_mode==='clip'&&Number(track?.duration_seconds)>0&&clip_start+clip_length>Number(track.duration_seconds)+.1))fail('Choose a valid part of the song',422);
+        const data={user_id:user.id,track_id:track?.id||'',caption,emoji,playback_mode,clip_start,clip_length,appearance:track?appearance:'classic',expires_at:new Date(Date.now()+24*60*60*1000).toISOString()};
         const saved=previous?await handler.update(previous.id,data):await handler.create(data);
-        return Response.json({result:{...pick(saved,['id','user_id','track_id','caption','expires_at','appearance','emoji']),track}});
+        return Response.json({result:{...pick(saved,['id','user_id','track_id','caption','expires_at','appearance','emoji','playback_mode','clip_start','clip_length']),track}});
       }
       fail('Unsupported note action',400);
     }

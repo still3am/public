@@ -35,21 +35,23 @@ async function writeState(db,owner,state) {
  try{await db.entities.PublicProfile.update(row.id,{public_song_note:state});}catch(error){original=error;}
  // Read after write also recovers a response lost after the database committed.
  const confirmed=await profileRow(db,owner);
- if((confirmed?.public_song_note?.emoji||"")!==(state.emoji||"")||!confirmed||confirmed.public_song_note?.mode!==state.mode||confirmed.public_song_note?.track_id!==state.track_id||Date.parse(confirmed.public_song_note?.expires_at)!==Date.parse(state.expires_at)||(confirmed.public_song_note?.appearance||"classic")!==(state.appearance||"classic")){
+ if((confirmed?.public_song_note?.playback_mode||"full")!==(state.playback_mode||"full")||(confirmed?.public_song_note?.clip_start||0)!==(state.clip_start||0)||(confirmed?.public_song_note?.clip_length||30)!==(state.clip_length||30)||(confirmed?.public_song_note?.emoji||"")!==(state.emoji||"")||!confirmed||confirmed.public_song_note?.mode!==state.mode||confirmed.public_song_note?.track_id!==state.track_id||Date.parse(confirmed.public_song_note?.expires_at)!==Date.parse(state.expires_at)||(confirmed.public_song_note?.appearance||"classic")!==(state.appearance||"classic")){
   if(original)throw original;fail("Song note was not confirmed. Please retry.",503);
  }
  if(state.mode==="song" && (!Number.isFinite(Date.parse(confirmed.updated_date)) && !Number.isFinite(Date.parse(confirmed.created_date))))fail("Song note time was not confirmed. Please retry.",503);
  if(typeof window!=="undefined")window.dispatchEvent(new Event("profiles:changed"));
  return confirmed;
 }
-export async function saveNativeSongNote(db,owner,trackId,appearance="classic",emoji="") {
+export async function saveNativeSongNote(db,owner,trackId,appearance="classic",emoji="",playback={}) {
  if(!NOTE_EMOJI_VALUES.includes(emoji))fail("Choose an emoji from the picker",422);
  if(!["classic","cover_flow"].includes(appearance))fail("Invalid note style",422);
  if(typeof trackId!=="string"||!trackId||trackId.length>100||!/^[a-zA-Z0-9_-]+$/.test(trackId))fail("Choose a song",422);
  const user=await currentUser(db);
  if(user.id!==owner)fail("Your account changed. Reopen your profile.",409);
  const track=await publicTrack(db,user,trackId);
- const row=await writeState(db,owner,{mode:"song",track_id:trackId,appearance,emoji,expires_at:new Date(Date.now()+DAY).toISOString()});
+ const playback_mode=playback.playback_mode||"full",clip_start=playback_mode==="clip"?playback.clip_start:0,clip_length=playback_mode==="clip"?playback.clip_length:30;
+ if(!["full","clip"].includes(playback_mode)||!Number.isFinite(clip_start)||clip_start<0||clip_start>86400||!Number.isFinite(clip_length)||clip_length<1||clip_length>60||(playback_mode==="clip"&&Number(track.duration_seconds)>0&&clip_start+clip_length>Number(track.duration_seconds)+.1))fail("Choose a valid part of the song",422);
+ const row=await writeState(db,owner,{mode:"song",track_id:trackId,appearance,emoji,playback_mode,clip_start,clip_length,expires_at:new Date(Date.now()+DAY).toISOString()});
  return songFromRow(row,track);
 }
 function songFromRow(row,track) {
@@ -57,7 +59,7 @@ function songFromRow(row,track) {
  const serverTime=Date.parse(row.updated_date||row.created_date);
  const until=Math.min(Date.parse(state.expires_at),serverTime+DAY);
  if(!Number.isFinite(until)||until<=Date.now())return null;
- return {id:"native:"+row.id,user_id:row.user_id,track_id:track.id,track,caption:"",emoji:NOTE_EMOJI_VALUES.includes(state.emoji)?state.emoji:"",appearance:state.appearance||"classic",expires_at:new Date(until).toISOString(),_native:true};
+ return {id:"native:"+row.id,user_id:row.user_id,track_id:track.id,track,caption:"",emoji:NOTE_EMOJI_VALUES.includes(state.emoji)?state.emoji:"",appearance:state.appearance||"classic",playback_mode:state.playback_mode||"full",clip_start:state.clip_start||0,clip_length:state.clip_length||30,expires_at:new Date(until).toISOString(),_native:true};
 }
 export async function readNativeSongNote(db,owner) {
  const user=await currentUser(db);

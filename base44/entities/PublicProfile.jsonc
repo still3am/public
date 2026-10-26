@@ -250,6 +250,9 @@
       "type": "object",
       "description": "Native song-only note state. Contains no user-authored text.",
       "properties": {
+        "playback_mode": {"type": "string", "enum": ["full", "clip"], "default": "full"},
+        "clip_start": {"type": "number", "minimum": 0, "maximum": 86400, "default": 0},
+        "clip_length": {"type": "number", "minimum": 1, "maximum": 60, "default": 30},
         "emoji": {
           "type": "string",
           "enum": [
