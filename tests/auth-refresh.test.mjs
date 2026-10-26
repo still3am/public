@@ -27,3 +27,14 @@ let resolve;pending=new Promise(r=>{resolve=r;});window.dispatchEvent(new Event(
 let finish;pending=new Promise(r=>{finish=r;});const check=ctx.checkUserAuth();await ctx.logout(false);finish(current);await check;ctx=render();assert.equal(ctx.user,null);assert.equal(ctx.isAuthenticated,false);pending=null;
 assert.ok(clears>=2);
 console.log('PASS open-session creator grant/revocation and stale auth responses after logout');
+
+// Background and explicit refreshes preserve a confirmed account on connection failures.
+await ctx.checkUserAuth();ctx=render();assert.equal(ctx.user.id,current.id);
+pending=Promise.reject(Object.assign(new Error("Network unavailable"),{status:503}));
+await ctx.checkUserAuth({silent:true});ctx=render();
+assert.equal(ctx.user.id,current.id);assert.equal(ctx.authError,null);assert.equal(ctx.isLoadingAuth,false);
+pending=Promise.reject(Object.assign(new Error("Session expired"),{status:401}));
+await ctx.checkUserAuth({silent:true});ctx=render();
+assert.equal(ctx.user,null);assert.equal(ctx.isAuthenticated,false,"a real expired session still signs out");
+pending=null;
+console.log("PASS transient refresh failures retain open sessions while expired sessions still sign out");
