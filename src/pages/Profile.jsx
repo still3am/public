@@ -25,6 +25,7 @@ import { clearPersonalData } from '@/lib/clearPersonalData';
 import EmptyState from "@/components/EmptyState";
 import TrackCard from "@/components/TrackCard";
 import ProfileAvatar from "@/components/profile/ProfileAvatar";
+import ProfileMediaViewer from "@/components/profile/ProfileMediaViewer";
 import PullToRefresh from "@/components/PullToRefresh";
 import ProfileQRModal from "@/components/ProfileQRModal";
 import { formatNumber } from "@/lib/audio-utils";
@@ -117,6 +118,9 @@ export default function Profile({ ownProfileTab = false }) {
   const [editMode, setEditMode] = useState(false);
   const [copied, setCopied] = useState(false);
   const [showQR, setShowQR] = useState(false);
+  const [showMedia, setShowMedia] = useState(false);
+  const avatarTrigger = useRef(null);
+  useEffect(() => { setShowMedia(false); }, [targetId, isCurrentPage, editMode]);
   const [showDelete, setShowDelete] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
   const [showColors, setShowColors] = useState(false);
@@ -404,7 +408,7 @@ export default function Profile({ ownProfileTab = false }) {
 
 
   return (
-    <PullToRefresh onRefresh={load} disabled={followingBusy || editMode || saving || uploadingAvatar || uploadingBanner || showSettings || showDelete || showQR || showColors || !!followList}>
+    <PullToRefresh onRefresh={load} disabled={followingBusy || editMode || showMedia || saving || uploadingAvatar || uploadingBanner || showSettings || showDelete || showQR || showColors || !!followList}>
 
     {backgroundColors.length > 0 && <MotionGradient colors={backgroundColors} motion={currentBackground.motion} speed={currentBackground.speed} active={isCurrentPage && !showColors && !showSettings && !showQR && !showDelete && !followList} pauseWhenCovered className="profile-artwork-background fixed inset-0 pointer-events-none z-0" style={{ opacity: 1 }} />}
     {!backgroundColors.length && currentBackground.mode === "auto" && coverUrl && <div aria-hidden="true" className="profile-artwork-background fixed inset-0 pointer-events-none z-0" style={{ backgroundImage: `url(${JSON.stringify(coverUrl)})`, backgroundSize: "cover", backgroundPosition: "center", filter: "blur(45px) saturate(1.35)", transform: "scale(1.12)", opacity: 1 }} />}
@@ -427,7 +431,7 @@ export default function Profile({ ownProfileTab = false }) {
           <div className="profile-identity-row flex flex-col items-center md:flex-row md:items-center md:justify-center gap-4 md:gap-8">
             <div className="profile-avatar-notes">
               {!editMode && <PublicNotes key={[targetId, me?.id].join(":")} profileId={targetId} isOwn={isOwn} active={isCurrentPage} userTracks={tracks} />}
-              <ProfileAvatar user={{ ...profile, ...(editMode ? { avatar_video_url: form.avatar_video_url, avatar_gif_url: form.avatar_gif_url } : {}), avatar_url: avatarUrl, avatar_preset: editMode ? "" : profile.avatar_preset }} active={isCurrentPage} editing={editMode} busy={uploadingAvatar || saving} onUpload={uploadAvatar} onMotionUpload={(media) => uploadProfileMotion("avatar", media)} onSelect={(url) => {if (!isOwn || uploadingAvatar || saving) return;avatarVersion.current++;setForm((previous) => ({ ...previous, avatar_url: url, ...(url !== previous.avatar_url || !url ? { avatar_video_url: "", avatar_gif_url: "" } : {}) }));}} />
+              <ProfileAvatar user={{ ...profile, ...(editMode ? { avatar_video_url: form.avatar_video_url, avatar_gif_url: form.avatar_gif_url } : {}), avatar_url: avatarUrl, avatar_preset: editMode ? "" : profile.avatar_preset }} active={isCurrentPage && !showMedia} onView={(event) => { avatarTrigger.current = event.currentTarget;setShowMedia(true); }} editing={editMode} busy={uploadingAvatar || saving} onUpload={uploadAvatar} onMotionUpload={(media) => uploadProfileMotion("avatar", media)} onSelect={(url) => {if (!isOwn || uploadingAvatar || saving) return;avatarVersion.current++;setForm((previous) => ({ ...previous, avatar_url: url, ...(url !== previous.avatar_url || !url ? { avatar_video_url: "", avatar_gif_url: "" } : {}) }));}} />
             </div>
 
             <div className="profile-info flex-1 min-w-0 w-full md:w-auto text-center md:text-left">
@@ -655,7 +659,7 @@ export default function Profile({ ownProfileTab = false }) {
         </div>
             }
 
-      <aside className="profile-conversation" aria-label="Profile conversation"><ProfileComments profileId={targetId} isOwn={isOwn} active={isCurrentPage} /><SafetyControls type="user" id={targetId} userId={targetId} label="profile" /></aside>
+      <aside className="profile-conversation" aria-label="Profile conversation"><ProfileComments profileId={targetId} isOwn={isOwn} active={isCurrentPage && !showMedia} /><SafetyControls type="user" id={targetId} userId={targetId} label="profile" /></aside>
       </section><div id="profile-community" className="profile-community-column">
       {!editMode && <div id="profile-discover" className="profile-discover-section"><DiscoverPeople profileId={targetId} active={isCurrentPage} layout="shelf" /></div>}
       <ProfilePlaylists userId={targetId} active={isCurrentPage} />
@@ -708,6 +712,8 @@ export default function Profile({ ownProfileTab = false }) {
           </div>
         </div>
         }
+
+      {showMedia && isCurrentPage && !editMode && <ProfileMediaViewer key={targetId} profile={profile} profileId={targetId} isOwn={isOwn} onClose={() => setShowMedia(false)} onReturnFocus={() => avatarTrigger.current?.focus()} />}
 
       {showQR &&
         <ProfileQRModal

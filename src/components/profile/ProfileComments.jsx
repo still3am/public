@@ -11,7 +11,7 @@ import Avatar from "@/components/Avatar";
 import { Loader2, Send, Trash2 } from "lucide-react";
 
 /** @param {any} props */
-export default function ProfileComments({ profileId, isOwn, active = true }) {
+export default function ProfileComments({ profileId, isOwn, active = true, description = "A little conversation around the music.", emptyMessage = "", onNavigate }) {
   const { user } = useAuth();
   const { blocked } = useSafety();
 
@@ -122,7 +122,7 @@ export default function ProfileComments({ profileId, isOwn, active = true }) {
   return (
     <div className="profile-comments-body">
       {error && <div className="text-sm p-3 border rounded-xl mb-3"><button className="underline" onClick={load}>Refresh comments</button></div>}
-      <header className="profile-comments-heading"><div><h2>Comments</h2><p>A little conversation around the music.</p></div></header>
+      <header className="profile-comments-heading"><div><h2>Comments</h2><p>{description}</p></div></header>
 
       <form onSubmit={postComment} className="profile-comments-composer">
         <div><textarea ref={composerRef} rows={1} onInput={(e) => {e.currentTarget.style.height = "44px";e.currentTarget.style.height = Math.min(160, e.currentTarget.scrollHeight) + "px";}} onKeyDown={(e) => {if ((e.metaKey || e.ctrlKey) && e.key === "Enter") {e.preventDefault();postComment(e);}}}
@@ -148,16 +148,16 @@ export default function ProfileComments({ profileId, isOwn, active = true }) {
       <div className="py-8 grid place-items-center">
           <Loader2 className="animate-spin text-foreground/40" />
         </div> :
-      comments.filter((c) => !blocked.has(c.author_id)).length === 0 ? null :
+      comments.filter((c) => !blocked.has(c.author_id)).length === 0 ? (emptyMessage ? <p className="profile-media-viewer-empty">{emptyMessage}</p> : null) :
 
 
       <div className="space-y-3">
           {comments.filter((c) => !blocked.has(c.author_id)).slice(0, visibleCount).map((c) =>
         <div key={c.id} className="profile-comment-row flex gap-3 p-3 rounded-2xl bg-foreground/[0.02]">
-              <Link to={`/profile/${c.author_id}`} aria-label={`View ${c.author_name || "user"} profile`} className="shrink-0"><Avatar user={{ avatar_url: c.author_avatar_url, full_name: c.author_name }} size={40} /></Link>
+              <Link to={`/profile/${c.author_id}`} onClick={onNavigate} aria-label={`View ${c.author_name || "user"} profile`} className="shrink-0"><Avatar user={{ avatar_url: c.author_avatar_url, full_name: c.author_name }} size={40} /></Link>
               <div className="flex-1 min-w-0">
                 <div className="flex items-center justify-between gap-2">
-                  <Link to={`/profile/${c.author_id}`} className="text-sm font-semibold truncate hover:underline">{c.author_name || "PUBLIC member"}</Link>
+                  <Link to={`/profile/${c.author_id}`} onClick={onNavigate} className="text-sm font-semibold truncate hover:underline">{c.author_name || "PUBLIC member"}</Link>
                   <span className="text-[10px] text-foreground/40 shrink-0">
                     {new Date(c.created_date).toLocaleDateString(undefined, { month: "short", day: "numeric" })}
                   </span>
