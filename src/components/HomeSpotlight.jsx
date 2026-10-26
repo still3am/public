@@ -21,7 +21,7 @@ function DiscoveryCover({ track, offset, selected, playing, onChoose }) {
 export default function HomeSpotlight({ track, tracks = [], currentTrackId, isPlaying, onSelect }) {
   const unique = new Map();for (const item of tracks.length ? tracks : track ? [track] : []) if (item?.id && !unique.has(item.id)) unique.set(item.id, item);
   const queue = [...unique.values()].slice(0, 24),[selectedId, setSelectedId] = useState(null);
-  const gesture = useRef(null),suppressClickUntil = useRef(0);
+  const gesture = useRef(null),suppressClickUntil = useRef(0),touchHandlers = useRef(null);
   const stageRef = useRef(null),wheelMove = useRef(null),wheelState = useRef({ total: 0, last: 0, direction: 0, timer: null, step: 215 });
   const dragFrame = useRef(null),dragValue = useRef(0),dragSpacing = useRef(215);
   function coverStep() {const stage = stageRef.current,value = stage && typeof getComputedStyle === 'function' ? parseFloat(getComputedStyle(stage).getPropertyValue('--cover-step')) : 0;return value > 0 ? value : 215;}
@@ -52,6 +52,34 @@ export default function HomeSpotlight({ track, tracks = [], currentTrackId, isPl
     stage.addEventListener('wheel', onWheel, { passive: false });
     return () => {stage.removeEventListener('wheel', onWheel);clearTimeout(wheelState.current.timer);wheelState.current.total = 0;paintDrag(0);};
   }, [queue.length]);
+  // Native, non-passive touch movement keeps Safari from taking over horizontal
+  // swipes. Touch and mouse/pen use the same gesture logic without double firing.
+  useEffect(() => {
+    const stage = stageRef.current;if (!stage || queue.length < 2) return;
+    const pointer = (touch, event) => ({ pointerId: touch.identifier, pointerType: 'touch', button: 0, isPrimary: true, clientX: touch.clientX, clientY: touch.clientY, currentTarget: stage, cancelable: event.cancelable, preventDefault: () => event.preventDefault() });
+    const cancel = () => {const start = gesture.current;if (start) touchHandlers.current?.end({pointerId: start.id, clientX: start.x, clientY: start.y}, true);};
+    const onStart = (event) => {if (event.touches.length !== 1) {cancel();return;}touchHandlers.current?.start(pointer(event.touches[0], event));};
+    const onMove = (event) => {
+      if (event.touches.length !== 1) {cancel();return;}
+      const touch = Array.from(event.touches).find((item) => item.identifier === gesture.current?.id);
+      if (touch) touchHandlers.current?.move(pointer(touch, event));
+    };
+    const onEnd = (event) => {
+      const touch = Array.from(event.changedTouches).find((item) => item.identifier === gesture.current?.id);
+      if (!touch) return;
+      // Cancel the compatibility click only for a horizontal drag, never a tap.
+      if (gesture.current?.axis === 'horizontal' && event.cancelable) event.preventDefault();
+      touchHandlers.current?.end(pointer(touch, event));
+    };
+    stage.addEventListener('touchstart', onStart, {passive: true});
+    stage.addEventListener('touchmove', onMove, {passive: false});
+    stage.addEventListener('touchend', onEnd, {passive: false});
+    stage.addEventListener('touchcancel', cancel, {passive: true});
+    return () => {
+      stage.removeEventListener('touchstart', onStart);stage.removeEventListener('touchmove', onMove);
+      stage.removeEventListener('touchend', onEnd);stage.removeEventListener('touchcancel', cancel);cancel();
+    };
+  }, [queue.length]);
   if (!queue.length) return null;
   const found = queue.findIndex((item) => item.id === selectedId),active = found >= 0 ? found : 0,selected = queue[active];
   const move = (direction) => setSelectedId((previous) => {const index = queue.findIndex((item) => item.id === previous),start = index >= 0 ? index : 0;return queue[(start + direction + queue.length) % queue.length].id;});
@@ -66,13 +94,16 @@ export default function HomeSpotlight({ track, tracks = [], currentTrackId, isPl
     const flick = Math.abs(velocity) > .45 && distance > 18;
     if (distance >= Math.max(30, step * .22) || flick) {const count = Math.min(3, Math.max(1, Math.round(distance / step)));move((dx < 0 ? 1 : -1) * count);}
   };
+  const beginGesture = (event) => {if (event.isPrimary === false || event.button !== 0) return;clearTimeout(wheelState.current.timer);paintDrag(0);suppressClickUntil.current = 0;gesture.current = { id: event.pointerId, x: event.clientX, y: event.clientY, axis: '', sampleX: event.clientX, sampleTime: Date.now(), step: coverStep() };};
+  const updateGesture = (event) => {const start = gesture.current;if (!start || start.id !== event.pointerId) return;const dx = Math.abs(event.clientX - start.x),dy = Math.abs(event.clientY - start.y);if (!start.axis && Math.max(dx, dy) > 10) {if (dx > dy * 1.25) {start.axis = 'horizontal';if (event.pointerType !== 'touch') event.currentTarget.setPointerCapture?.(event.pointerId);} else if (dy > dx * 1.25) start.axis = 'vertical';}if (start.axis === 'horizontal') {if (event.cancelable) event.preventDefault();const step = start.step;paintDrag(Math.max(-step * 2.5, Math.min(step * 2.5, event.clientX - start.x)), step);if (Date.now() - start.sampleTime > 80) {start.sampleX = event.clientX;start.sampleTime = Date.now();}}};
+  touchHandlers.current = { start: beginGesture, move: updateGesture, end: finishGesture };
   const visible = queue.map((item, index) => {let offset = (index - active + queue.length) % queue.length;if (offset > queue.length / 2) offset -= queue.length;return { item, index, offset };}).filter((item) => Math.abs(item.offset) <= 3);
   return <section className="home-discovery" aria-labelledby="home-discovery-title">
   <div className="home-discovery-intro"><h2 id="home-discovery-title"><span>Find your next</span>{' '}<em>favorite.</em></h2></div>
-  <div ref={stageRef} className={'home-discovery-stage' + (queue.length < 3 ? ' is-small' : '')} role="region" aria-label="Discover music carousel" tabIndex={0}
-    onPointerDown={(event) => {if (event.isPrimary === false || event.button !== 0) return;clearTimeout(wheelState.current.timer);paintDrag(0);suppressClickUntil.current = 0;gesture.current = { id: event.pointerId, x: event.clientX, y: event.clientY, axis: '', sampleX: event.clientX, sampleTime: Date.now(), step: coverStep() };}}
-    onPointerMove={(event) => {const start = gesture.current;if (!start || start.id !== event.pointerId) return;const dx = Math.abs(event.clientX - start.x),dy = Math.abs(event.clientY - start.y);if (!start.axis && Math.max(dx, dy) > 10) {if (dx > dy * 1.25) {start.axis = 'horizontal';event.currentTarget.setPointerCapture?.(event.pointerId);} else if (dy > dx * 1.25) start.axis = 'vertical';}if (start.axis === 'horizontal') {if (event.cancelable) event.preventDefault();const step = start.step;paintDrag(Math.max(-step * 2.5, Math.min(step * 2.5, event.clientX - start.x)), step);if (Date.now() - start.sampleTime > 80) {start.sampleX = event.clientX;start.sampleTime = Date.now();}}}}
-    onPointerUp={(event) => finishGesture(event)} onPointerCancel={(event) => finishGesture(event, true)} onLostPointerCapture={(event) => {if (event.target === event.currentTarget && gesture.current?.id === event.pointerId) {gesture.current = null;paintDrag(0);}}}
+  <div ref={stageRef} className={'home-discovery-stage' + (queue.length < 3 ? ' is-small' : '')} data-horizontal-scroll="true" role="region" aria-label="Discover music carousel" tabIndex={0}
+    onPointerDown={(event) => {if (event.pointerType !== 'touch') beginGesture(event);}}
+    onPointerMove={(event) => {if (event.pointerType !== 'touch') updateGesture(event);}}
+    onPointerUp={(event) => {if (event.pointerType !== 'touch') finishGesture(event);}} onPointerCancel={(event) => {if (event.pointerType !== 'touch') finishGesture(event, true);}} onLostPointerCapture={(event) => {if (event.target === event.currentTarget && gesture.current?.id === event.pointerId) {gesture.current = null;paintDrag(0);}}}
     onClickCapture={(event) => {if (event.detail !== 0 && Date.now() < suppressClickUntil.current) {event.preventDefault();event.stopPropagation();}}}
     onDragStart={(event) => event.preventDefault()} onKeyDown={(event) => {if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') {event.preventDefault();move(event.key === 'ArrowLeft' ? -1 : 1);}}}>
    <ol className="home-discovery-covers">{visible.map(({ item, index, offset }) => <DiscoveryCover key={item.id} track={item} offset={offset} selected={index === active} playing={currentTrackId === item.id && isPlaying} onChoose={() => {setSelectedId(item.id);onSelect(queue, index);}} />)}</ol>
