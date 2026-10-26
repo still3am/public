@@ -201,3 +201,19 @@ await check('admin deletion cleans target data and retains the acting account',a
 await check('failed admin cleanup keeps identity available for retry',async()=>{
  user={id:'owner',role:'admin'};failCleanup=true;const result=await invoke(deletion,{confirmation:'DELETE',user_id:'other'});assert.equal(result.status,500);assert.equal(deleted,false);assert.ok(db.User.some(row=>row.id==='other'));
 });
+
+await check('profile image comments have a separate validated immutable thread',async()=>{
+ const mediaKey='avatar:gif:1234567812345678';
+ const request={entity:'ProfileComment',action:'create',args:[{profile_id:'other',message:'Image comment',media_key:mediaKey,request_id:'request-one'}]};
+ let result=await invoke(gateway,request);
+ assert.equal(result.status,200);assert.equal(result.data.result.media_key,mediaKey);
+ assert.equal(result.data.result.author_id,'owner');
+ const id=result.data.result.id;
+ result=await invoke(gateway,request);assert.equal(result.status,200);assert.equal(db.ProfileComment.length,1,'retry is idempotent within the media thread');
+ result=await invoke(gateway,{entity:'ProfileComment',action:'update',args:[id,{message:'Updated',media_key:''}]});
+ assert.equal(result.status,422,'comments cannot be moved into page comments');
+ result=await invoke(gateway,{entity:'ProfileComment',action:'create',args:[{profile_id:'other',message:'Page comment',request_id:'page-one'}]});
+ assert.equal(result.status,200);assert.equal(result.data.result.media_key,'');
+ result=await invoke(gateway,{entity:'ProfileComment',action:'create',args:[{profile_id:'other',message:'Bad scope',media_key:'arbitrary'}]});
+ assert.equal(result.status,422);
+});

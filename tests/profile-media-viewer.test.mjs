@@ -2,7 +2,8 @@ import assert from "node:assert/strict";
 import fs from "node:fs";
 import ts from "typescript";
 import * as React from "react";
-import { profileViewerMedia } from "../src/lib/profileViewerMedia.js";
+import { profileViewerMedia, profileMediaKey } from "../src/lib/profileViewerMedia.js";
+import { profileCommentFilter, isProfileCommentThread } from "../src/lib/profileCommentThread.js";
 import { AVATAR_PRESETS } from "../src/lib/avatarPresets.js";
 
 assert.deepEqual(profileViewerMedia({avatar_url:"/photo.jpg"}),{poster:"/photo.jpg",source:"/photo.jpg",type:"image"});
@@ -19,7 +20,7 @@ assert.equal(profileViewerMedia(null).source,"/avatars/default-headphones.webp")
 
 let states=[],si=0,refs=[],ri=0,effects=[],musicPauses=0,closed=0,restored=0;
 const useState=initial=>{const i=si++;if(!(i in states))states[i]=initial;return [states[i],next=>{states[i]=typeof next==="function"?next(states[i]):next;}];};
-const deps={React,useState,useRef:initial=>refs[ri++]??(refs[ri-1]={current:initial}),useEffect:effect=>effects.push(effect),useCoverUrl:url=>url,usePlayer:()=>({isPlaying:false,pausePlayback:()=>musicPauses++}),profileViewerMedia,Dialog:"dialog-root",DialogContent:"dialog-content",DialogHeader:"header",DialogTitle:"h2",DialogDescription:"p",ImageOff:"image-off",RotateCcw:"retry-icon",Play:"play-icon",Pause:"pause-icon",Volume2:"volume-icon",VolumeX:"muted-icon",ProfileComments:"comments"};
+const deps={React,useState,useRef:initial=>refs[ri++]??(refs[ri-1]={current:initial}),useEffect:effect=>effects.push(effect),useCoverUrl:url=>url,usePlayer:()=>({isPlaying:false,pausePlayback:()=>musicPauses++}),profileViewerMedia,profileMediaKey,useCoverPalette:()=>({colors:["#ff5522","#6644aa","#334499"]}),MotionGradient:"gradient",Dialog:"dialog-root",DialogContent:"dialog-content",DialogHeader:"header",DialogTitle:"h2",DialogDescription:"p",ImageOff:"image-off",RotateCcw:"retry-icon",Play:"play-icon",Pause:"pause-icon",Volume2:"volume-icon",VolumeX:"muted-icon",ProfileComments:"comments"};
 globalThis.__profileMediaViewer=deps;
 const source=ts.transpileModule(fs.readFileSync("src/components/profile/ProfileMediaViewer.jsx","utf8").replace(/^import[^;]+;/gm,""),{compilerOptions:{jsx:ts.JsxEmit.React,target:ts.ScriptTarget.ES2022,module:ts.ModuleKind.ESNext}}).outputText;
 const {default:Viewer}=await import("data:text/javascript;base64,"+Buffer.from("const {"+Object.keys(deps).join(",")+"}=globalThis.__profileMediaViewer;\n"+source).toString("base64"));
@@ -65,13 +66,13 @@ refs[0].current.paused=false;
 nodes.find(node=>node.type==="button" && node.props["aria-label"]==="Play profile clip").props.onClick();
 assert.equal(paused,1);
 assert.ok(css.includes("width:min(500px"));
-assert.ok(css.includes("aspect-ratio:4/5"));
+assert.ok(css.includes("aspect-ratio:auto;min-height:0"));
 console.log("PASS profile image/GIF/video source selection, original sound, music handoff, media cleanup, comments, focus return, retry and mobile layout");
 
 // The viewer composer is after real comments in both DOM and keyboard order.
 let commentStates=[],commentRefs=[],ci=0,cri=0,created=[];
-const viewerComment={id:"comment-1",author_id:"other",author_name:"Other member",message:"Great photo",created_date:"2026-10-26T01:00:00Z"};
-const commentDeps={React,
+const viewerComment={profile_id:"person",media_key:profileMediaKey(profileViewerMedia(clip)),id:"comment-1",author_id:"other",author_name:"Other member",message:"Great photo",created_date:"2026-10-26T01:00:00Z"};
+const commentDeps={React,profileCommentFilter,isProfileCommentThread,
  useState:initial=>{const i=ci++;if(!(i in commentStates))commentStates[i]=initial;return [commentStates[i],next=>commentStates[i]=typeof next==="function"?next(commentStates[i]):next];},
  useRef:initial=>commentRefs[cri++]??(commentRefs[cri-1]={current:initial}),useEffect:()=>{},useCallback:fn=>fn,
  useAuth:()=>({user:{id:"listener",display_name:"Listener",avatar_url:"/avatar.jpg"}}),
@@ -82,7 +83,7 @@ globalThis.__mediaComments=commentDeps;
 const commentSource=ts.transpileModule(fs.readFileSync("src/components/profile/ProfileComments.jsx","utf8").replace(/^import[^;]+;/gm,""),{compilerOptions:{jsx:ts.JsxEmit.React,target:ts.ScriptTarget.ES2022,module:ts.ModuleKind.ESNext}}).outputText;
 const {default:Comments}=await import("data:text/javascript;base64,"+Buffer.from("const {"+Object.keys(commentDeps).join(",")+"}=globalThis.__mediaComments;\n"+commentSource).toString("base64"));
 commentStates=[[viewerComment],false,false,"Hello!",false,10];
-const renderComments=presentation=>{ci=cri=0;return Comments({profileId:"person",isOwn:false,presentation,description:""});};
+const renderComments=presentation=>{ci=cri=0;return Comments({profileId:"person",isOwn:false,presentation,description:"",mediaKey:presentation==="media"?profileMediaKey(profileViewerMedia(clip)):""});};
 let commentTree=renderComments("media"),commentNodes=all(commentTree);
 assert.ok(commentNodes.findIndex(node=>node.props?.className?.includes("profile-comment-row")) < commentNodes.findIndex(node=>node.type==="form"),"media comments precede the composer");
 assert.ok(commentNodes.some(node=>node.type==="avatar" && node.props.className==="profile-comment-composer-avatar"));
@@ -90,6 +91,20 @@ assert.equal(commentNodes.filter(node=>node.type==="form").length,1);
 await commentNodes.find(node=>node.type==="form").props.onSubmit({preventDefault(){}});
 assert.equal(created.length,1);assert.equal(created[0].message,"Hello!");assert.equal(created[0].profile_id,"person");assert.equal(created[0].author_id,"listener");
 assert.equal(commentStates[3],"","confirmed save clears the composer");
-commentTree=renderComments("profile");commentNodes=all(commentTree);
+commentStates[0]=[{...viewerComment,media_key:""}];commentTree=renderComments("profile");commentNodes=all(commentTree);
 assert.ok(commentNodes.findIndex(node=>node.type==="form") < commentNodes.findIndex(node=>node.props?.className?.includes("profile-comment-row")),"normal profile conversation keeps its original composer placement");
 console.log("PASS reference-style comments layout, one bottom composer, current-user avatar and confirmed comment persistence");
+
+const avatarKey=profileMediaKey(profileViewerMedia(clip));
+assert.match(avatarKey,/^avatar:video:[a-f0-9]{16}$/);
+assert.notEqual(avatarKey,profileMediaKey(profileViewerMedia({...clip,avatar_video_url:"/new.mp4"})));
+assert.deepEqual(profileCommentFilter("person",avatarKey),{profile_id:"person",media_key:avatarKey});
+assert.ok(isProfileCommentThread({profile_id:"person"},"person"),"legacy comments remain on the page");
+assert.equal(isProfileCommentThread({profile_id:"person"},"person",avatarKey),false);
+assert.equal(isProfileCommentThread({profile_id:"person",media_key:avatarKey},"person"),false);
+assert.equal(isProfileCommentThread({profile_id:"other",media_key:avatarKey},"person",avatarKey),false);
+assert.equal(created[0].media_key,avatarKey,"new image comments save to their own thread");
+tree=render(clip);nodes=all(tree);
+assert.equal(nodes.find(node=>node.type==="comments").props.mediaKey,avatarKey);
+assert.ok(nodes.some(node=>node.type==="gradient"),"viewer renders an animated color gradient");
+console.log("PASS separate image/page threads, legacy page comments, per-asset identity and animated gradient");
