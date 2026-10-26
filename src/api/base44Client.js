@@ -148,7 +148,7 @@ export const base44 = new Proxy(raw,{get(target,name) {
     const galleryBanner=BANNER_PRESETS.find(item=>item.url===data?.banner_url);
     if(galleryBanner&&data.banner_use_default!==true){
       const {banner_url,banner_mobile_url,banner_video_url,banner_gif_url,banner_use_default,...remainder}=data;
-      if(banner_video_url||(banner_gif_url&&banner_gif_url!==galleryBanner.gifUrl)||(banner_mobile_url&&banner_mobile_url!==galleryBanner.url))throw Error("Choose a gallery banner or uploaded media, not both.");
+      if((banner_video_url&&banner_video_url!==galleryBanner.videoUrl)||(banner_gif_url&&banner_gif_url!==galleryBanner.gifUrl)||(banner_mobile_url&&banner_mobile_url!==galleryBanner.url))throw Error("Choose a gallery banner or uploaded media, not both.");
       if(Object.keys(remainder).length)await base44.auth.updateMe(remainder);
       return savePresetBanner(target,banner_url);
     }

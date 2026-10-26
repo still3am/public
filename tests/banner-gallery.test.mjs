@@ -20,8 +20,8 @@ const editor=fs.readFileSync("src/components/profile/ProfileBannerEditor.jsx","u
 console.log("PASS banner gallery native save, public resolution, default recovery, uploads, failures, lost response, permissions and GIF assets");
 
 for(const item of BANNER_PRESETS){const result=await savePresetBanner(client,item.url);assert.equal(result.banner_url,item.url);assert.equal(result.banner_gif_url,item.gifUrl||"");assert.equal(withPresetAvatar(profile).banner_url,item.url);}
-assert.equal(BANNER_PRESETS.length,46);
-for(const item of BANNER_PRESETS.slice(-8)){assert.ok(item.url.startsWith("https://media.base44.com/"));assert.ok(item.gifUrl||item.videoUrl);assert.equal(withPresetBanner({banner_preset:item.url}).banner_video_url,item.videoUrl||"");}
+assert.equal(BANNER_PRESETS.length,54);
+for(const item of BANNER_PRESETS.filter(item=>["852658141979006028","986992074605390852","1054546068975947980","725009240032924894","890657263823646110","940689440924747266","78039006032599533","201606520796014409"].some(id=>item.id==="pin-"+id))){assert.ok(item.url.startsWith("https://media.base44.com/"));assert.ok(item.gifUrl||item.videoUrl);assert.equal(withPresetBanner({banner_preset:item.url}).banner_video_url,item.videoUrl||"");}
 
 // These source GIFs lacked repeat metadata; moonwalk also had zero frame delays.
 for(const [id,frames,duration] of [["pixel-moonwalk",118,11.8],["kirby-star-ride",62,3.1]]){
@@ -33,3 +33,19 @@ for(const [id,frames,duration] of [["pixel-moonwalk",118,11.8],["kirby-star-ride
  const info=inspectGif(new Uint8Array(data),"banner");assert.equal(info.frames,frames);assert.equal(info.duration,duration);
 }
 console.log("PASS new GIF banners repeat with valid timing and all original frames");
+
+// Gallery videos must pass the actual client save dispatch, without permitting arbitrary media.
+const source=fs.readFileSync("src/api/base44Client.js","utf8");
+const begin=source.indexOf("    const galleryBanner="),end=source.indexOf("    // Validated social identifiers",begin);
+const AsyncFunction=Object.getPrototypeOf(async function(){}).constructor;
+let saves=0;
+const dispatch=new AsyncFunction("data","BANNER_PRESETS","base44","savePresetBanner","target",source.slice(begin,end));
+const existingVideo=BANNER_PRESETS.find(item=>item.videoUrl);
+await dispatch({banner_url:existingVideo.url,banner_mobile_url:existingVideo.url,banner_video_url:existingVideo.videoUrl,banner_gif_url:"",banner_use_default:false},BANNER_PRESETS,{},async(client,url)=>{saves++;assert.equal(url,existingVideo.url);return {saved:true};},{});
+assert.equal(saves,1,"gallery clip saves through the preset route");
+await assert.rejects(dispatch({banner_url:existingVideo.url,banner_video_url:"https://unlisted.example/clip.mp4"},BANNER_PRESETS,{},async()=>{saves++;},{}),/gallery banner/);
+assert.equal(saves,1,"unlisted media never bypasses the protected upload path");
+const added=BANNER_PRESETS.filter(item=>["431430839295075315","590675307396485707","1087830484963583904","775111785907189689","831899362434343112","642677809369761874","62346776087723715","1147714286316835382"].some(id=>item.id==="pin-"+id));
+assert.equal(added.length,8);assert.equal(added.filter(item=>item.gifUrl).length,1);assert.equal(added.filter(item=>item.videoUrl).length,2);
+for(const item of added){assert.ok(item.url.startsWith("https://media.base44.com/"));const resolved=withPresetBanner({banner_preset:item.url});assert.equal(resolved.banner_video_url,item.videoUrl||"");assert.equal(resolved.banner_gif_url,item.gifUrl||"");}
+console.log("PASS eight new hosted banners and validated gallery video saves");
