@@ -15,3 +15,13 @@ const schema=JSON.parse(fs.readFileSync("base44/entities/AvatarRemoval.jsonc","u
 for(const action of ["create","update","delete"])assert.equal(schema.rls[action].user_condition.role,"admin");
 assert.equal(schema.rls.read,null);
 console.log("PASS gallery removal: admin authorization, persisted filtering, saved-avatar compatibility, lost response and failed writes");
+
+const clips=AVATAR_PRESETS.filter(row=>row.videoUrl);
+assert.equal(clips.length,7,"all seven requested clips are included");
+const {profileViewerMedia}=await import("../src/lib/profileViewerMedia.js");
+for(const clip of clips){
+ assert.match(clip.videoUrl,/^https:\/\/media\.base44\.com\/videos\/public\//);
+ assert.equal(profileViewerMedia({avatar_preset:clip.url}).source,clip.videoUrl,"saved gallery clip resolves to the actual video");
+ assert.equal(profileViewerMedia({avatar_preset:clip.url}).type,"video");
+}
+console.log("PASS seven hosted gallery clips and saved-avatar video playback resolution");
