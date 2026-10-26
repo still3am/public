@@ -11,7 +11,7 @@ import Avatar from "@/components/Avatar";
 import { Loader2, Send, Trash2 } from "lucide-react";
 
 /** @param {any} props */
-export default function ProfileComments({ profileId, isOwn, active = true, description = "A little conversation around the music.", emptyMessage = "", onNavigate }) {
+export default function ProfileComments({ profileId, isOwn, active = true, description = "A little conversation around the music.", emptyMessage = "", onNavigate, presentation = "profile" }) {
   const { user } = useAuth();
   const { blocked } = useSafety();
 
@@ -119,12 +119,9 @@ export default function ProfileComments({ profileId, isOwn, active = true, descr
     }
   }
 
-  return (
-    <div className="profile-comments-body">
-      {error && <div className="text-sm p-3 border rounded-xl mb-3"><button className="underline" onClick={load}>Refresh comments</button></div>}
-      <header className="profile-comments-heading"><div><h2>Comments</h2><p>{description}</p></div></header>
-
+  const composer = (
       <form onSubmit={postComment} className="profile-comments-composer">
+        {presentation === "media" && user && <Avatar user={user} size={36} className="profile-comment-composer-avatar" />}
         <div><textarea ref={composerRef} rows={1} onInput={(e) => {e.currentTarget.style.height = "44px";e.currentTarget.style.height = Math.min(160, e.currentTarget.scrollHeight) + "px";}} onKeyDown={(e) => {if ((e.metaKey || e.ctrlKey) && e.key === "Enter") {e.preventDefault();postComment(e);}}}
           aria-label="Leave a profile comment"
           value={message}
@@ -142,6 +139,14 @@ export default function ProfileComments({ profileId, isOwn, active = true, descr
           {posting ? <Loader2 size={16} className="animate-spin" /> : <Send size={16} />}
         </button>
       </form>
+  );
+
+  return (
+    <div className={"profile-comments-body" + (presentation === "media" ? " is-media-conversation" : "")}>
+      {error && <div className="text-sm p-3 border rounded-xl mb-3"><button className="underline" onClick={load}>Refresh comments</button></div>}
+      <header className="profile-comments-heading"><div><h2>Comments</h2>{description && <p>{description}</p>}</div></header>
+
+      {presentation !== "media" && composer}
 
       {!user?.id && <p className="profile-comment-signin"><Link to="/login">Sign in</Link> to join the conversation.</p>}
       {loading ?
@@ -179,6 +184,7 @@ export default function ProfileComments({ profileId, isOwn, active = true, descr
       }
       {!loading && comments.filter((c) => !blocked.has(c.author_id)).length > visibleCount && <button type="button" className="playlist-action mt-4 w-full" onClick={() => setVisibleCount((n) => n + 10)}>Show older comments</button>}
       {visibleCount > 10 && <button type="button" className="text-xs underline min-h-11 mt-2" onClick={(e) => {setVisibleCount(10);e.currentTarget.closest('.profile-conversation')?.scrollTo({ top: 0, behavior: 'smooth' });composerRef.current?.focus({ preventScroll: true });}}>Back to latest comments</button>}
+      {presentation === "media" && composer}
     </div>);
 
 }
