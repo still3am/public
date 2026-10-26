@@ -35,7 +35,7 @@ let prevented=false;nodes.find(node=>node.type==="dialog-content").props.onClose
 
 let mediaPauses=0,visibility;
 globalThis.document={hidden:false,addEventListener:(name,handler)=>{if(name==="visibilitychange")visibility=handler;},removeEventListener:(name,handler)=>{assert.equal(handler,visibility);}};
-video.props.ref.current={pause:()=>mediaPauses++};
+refs[0].current={pause:()=>mediaPauses++};
 const cleanup=effects[0]();document.hidden=true;visibility();assert.equal(mediaPauses,1);cleanup();assert.equal(mediaPauses,2,"closing pauses media");delete globalThis.document;
 video.props.onError();tree=render(clip);assert.ok(all(tree).some(node=>node.props?.role==="alert"));
 all(tree).find(node=>node.type==="button").props.onClick();tree=render(clip);assert.ok(!all(tree).some(node=>node.props?.role==="alert"),"failed media can retry");
