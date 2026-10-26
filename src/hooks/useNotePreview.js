@@ -11,5 +11,5 @@ export function useNotePreview({active,accountId,scope,resumeOnEnd=false}){
  useEffect(()=>{if(!active)controller.current.stop();},[active]);
  useEffect(()=>()=>controller.current.stop(),[accountId,scope]);
  useEffect(()=>{controller.current.setOutput(player.volume,player.muted,player.audioOutput?.state?.sinkId);},[player.volume,player.muted,player.audioOutput?.state?.sinkId,state.trackId]);
- return {...state,play:(track,ensure)=>controller.current.play(track,ensure),stop:()=>controller.current.stop()};
+ return {...state,play:(track,ensure,selection)=>controller.current.play(track,ensure,selection),stop:()=>controller.current.stop()};
 }
