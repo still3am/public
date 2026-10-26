@@ -17,12 +17,12 @@ export default function ProfileMotionEditor({file,kind="avatar",onApply,onClose}
     catch(e){setError(e.message||"Could not upload. Please retry.");}finally{lock.current=false;setBusy(false);}
   }
   return <Dialog open onOpenChange={open=>{if(!open&&!busy)onClose();}}><DialogContent className="profile-image-editor" onEscapeKeyDown={e=>{if(busy)e.preventDefault();}} onPointerDownOutside={e=>{if(busy)e.preventDefault();}}>
-    <DialogHeader><DialogTitle>{kind==="banner"?"Bring your banner to life":"A little motion. All you."}</DialogTitle><DialogDescription>Videos and GIF loops up to {profileMotionSeconds(kind)} seconds. Profile previews are silent. Open an avatar clip to play its original audio. Apply here, then save your profile.</DialogDescription></DialogHeader>
+    <DialogHeader><DialogTitle>{kind==="banner"?"Bring your banner to life":"A little motion. All you."}</DialogTitle><DialogDescription>Videos and GIF loops up to {profileMotionSeconds(kind)} seconds. Previews play silently.{kind === "avatar" ? " Visitors can open your avatar clip to play its original audio." : ""} Apply here, then save your profile.</DialogDescription></DialogHeader>
     {kind==="banner"&&<div className="profile-crop-tabs" aria-label="Banner preview">{["mobile","desktop"].map(value=><button key={value} type="button" aria-pressed={tab===value} onClick={()=>setTab(value)}>{value==="mobile"?"Mobile":"Desktop"}</button>)}</div>}
     <div className={"profile-crop-stage "+(kind==="avatar"?"is-circle":"")} style={{aspectRatio:kind==="avatar"?1:tab==="desktop"?4.5:1.85}}>
       {prepared&&urls?<ProfileMedia src={urls.poster} gifSrc={prepared.type==="gif"?urls.source:""} videoSrc={prepared.type==="video"?urls.source:""} style={{width:"100%",height:"100%"}}/>:!error?<Loader2 className="animate-spin"/>:null}
     </div>
-    {prepared&&<p className="text-xs text-muted-foreground">{prepared.type==="gif"?"Animated GIF":"Muted video"} · {prepared.duration.toFixed(1)} sec · {(file.size/1024/1024).toFixed(1)} MB</p>}
+    {prepared&&<p className="text-xs text-muted-foreground">{prepared.type==="gif"?"Animated GIF":"Video clip"} · {prepared.duration.toFixed(1)} sec · {(file.size/1024/1024).toFixed(1)} MB</p>}
     {error&&<p role="alert" className="profile-editor-error">{error}</p>}
     <div className="profile-crop-footer"><button type="button" disabled={busy} onClick={onClose}>Cancel</button><button type="button" disabled={!prepared||busy} onClick={apply}>{busy?<Loader2 size={17} className="animate-spin"/>:null}{busy?"Uploading…":"Apply to draft"}</button></div>
   </DialogContent></Dialog>;
