@@ -4607,7 +4607,10 @@
         "https://media.base44.com/images/public/6a5676aa61ea8a51237aa4ee/cdc819e54_banner-831899362434343112.webp",
         "https://media.base44.com/images/public/6a5676aa61ea8a51237aa4ee/627a33b48_banner-642677809369761874.webp",
         "https://media.base44.com/images/public/6a5676aa61ea8a51237aa4ee/40acc4453_banner-62346776087723715.webp",
-        "https://media.base44.com/images/public/6a5676aa61ea8a51237aa4ee/96a117d88_banner-1147714286316835382.webp"
+        "https://media.base44.com/images/public/6a5676aa61ea8a51237aa4ee/96a117d88_banner-1147714286316835382.webp",
+        "https://media.base44.com/images/public/6a5676aa61ea8a51237aa4ee/e5438fd6f_banner-831899362434343112-landscape.png",
+        "https://media.base44.com/images/public/6a5676aa61ea8a51237aa4ee/0a6fb23e1_banner-642677809369761874-landscape.png",
+        "https://media.base44.com/images/public/6a5676aa61ea8a51237aa4ee/5326e2951_banner-1147714286316835382-landscape.png"
       ],
       "default": "",
       "description": "Built-in banner choice; external uploads retain the existing moderated media path.",

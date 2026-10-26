@@ -145,12 +145,12 @@ export async function saveProfileLinks(client, uid, input) {
 export const base44 = new Proxy(raw,{get(target,name) {
   if(name==='entities') return entities;
   if(name==='auth') return {...target.auth,me:async()=>withPresetAvatar(await target.auth.me()),updateMe:async data=>{
-    const galleryBanner=BANNER_PRESETS.find(item=>item.url===data?.banner_url);
+    const galleryBanner=BANNER_PRESETS.find(item=>item.url===data?.banner_url||item.legacyUrls?.includes(data?.banner_url));
     if(galleryBanner&&data.banner_use_default!==true){
       const {banner_url,banner_mobile_url,banner_video_url,banner_gif_url,banner_use_default,...remainder}=data;
-      if((banner_video_url&&banner_video_url!==galleryBanner.videoUrl)||(banner_gif_url&&banner_gif_url!==galleryBanner.gifUrl)||(banner_mobile_url&&banner_mobile_url!==galleryBanner.url))throw Error("Choose a gallery banner or uploaded media, not both.");
+      if((banner_video_url&&banner_video_url!==galleryBanner.videoUrl)||(banner_gif_url&&banner_gif_url!==galleryBanner.gifUrl)||(banner_mobile_url&&banner_mobile_url!==galleryBanner.url&&banner_mobile_url!==banner_url))throw Error("Choose a gallery banner or uploaded media, not both.");
       if(Object.keys(remainder).length)await base44.auth.updateMe(remainder);
-      return savePresetBanner(target,banner_url);
+      return savePresetBanner(target,galleryBanner.url);
     }
     // Validated social identifiers/URLs do not need an AI/backend function.
     const linkKeys=["website","instagram","twitter","soundcloud"];

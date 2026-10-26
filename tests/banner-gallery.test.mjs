@@ -14,7 +14,7 @@ await assert.rejects(savePresetBanner(client,"https://unlisted"),/gallery/);
 user.banner_preset="";drop=true;await assert.rejects(savePresetBanner(client,banner.url),/confirmed/);drop=false;
 lost=true;await savePresetBanner(client,banner.url);lost=false;
 assert.equal(withPresetBanner({banner_preset:"",banner_url:"custom.jpg"}).banner_url,"custom.jpg");
-for(const name of ["User","PublicProfile"]){const schema=JSON.parse(fs.readFileSync("base44/entities/"+name+".jsonc","utf8"));assert.deepEqual(schema.properties.banner_preset.enum,["",...BANNER_PRESETS.map(item=>item.url)]);assert.deepEqual(schema.properties.banner_preset.rls,schema.properties.avatar_preset.rls);}
+for(const name of ["User","PublicProfile"]){const schema=JSON.parse(fs.readFileSync("base44/entities/"+name+".jsonc","utf8"));assert.deepEqual(new Set(schema.properties.banner_preset.enum),new Set(["",...BANNER_PRESETS.flatMap(item=>[item.url,...(item.legacyUrls||[])])]));assert.deepEqual(schema.properties.banner_preset.rls,schema.properties.avatar_preset.rls);}
 for(const item of BANNER_PRESETS.filter(item=>item.url.startsWith("/"))){if(item.gifUrl)assert.equal(fs.readFileSync("public"+item.gifUrl).toString("ascii",0,3),"GIF");assert.equal(fs.readFileSync("public"+item.url).toString("ascii",8,12),"WEBP");}
 const editor=fs.readFileSync("src/components/profile/ProfileBannerEditor.jsx","utf8");assert.ok(editor.includes("<BannerGallery"));assert.ok(editor.includes("onSelect?.(banner)"));
 console.log("PASS banner gallery native save, public resolution, default recovery, uploads, failures, lost response, permissions and GIF assets");
@@ -49,3 +49,12 @@ const added=BANNER_PRESETS.filter(item=>["431430839295075315","59067530739648570
 assert.equal(added.length,8);assert.equal(added.filter(item=>item.gifUrl).length,1);assert.equal(added.filter(item=>item.videoUrl).length,2);
 for(const item of added){assert.ok(item.url.startsWith("https://media.base44.com/"));const resolved=withPresetBanner({banner_preset:item.url});assert.equal(resolved.banner_video_url,item.videoUrl||"");assert.equal(resolved.banner_gif_url,item.gifUrl||"");}
 console.log("PASS eight new hosted banners and validated gallery video saves");
+
+for(const id of ["831899362434343112","642677809369761874","1147714286316835382"]){
+ const item=BANNER_PRESETS.find(row=>row.id==="pin-"+id);assert.ok(item.url.endsWith("-landscape.png"));
+ for(const old of item.legacyUrls){
+  assert.equal(withPresetBanner({banner_preset:old}).banner_url,item.url,"existing selections resolve to the landscape version");
+  const saved=await savePresetBanner(client,old);assert.equal(saved.banner_preset,item.url,"saving an old selection upgrades to the current image");
+ }
+}
+console.log("PASS landscape banner replacements preserve saved selections and upgrade legacy artwork");
