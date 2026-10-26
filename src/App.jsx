@@ -1,3 +1,4 @@
+import {useEffect} from "react";
 import MusicRequests from '@/pages/MusicRequests';
 import MusicRequestSync from '@/components/MusicRequestSync';
 import ArtistRegistration from '@/pages/ArtistRegistration';
@@ -55,6 +56,8 @@ import UnfinishedUploads from '@/pages/UnfinishedUploads';
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin, checkAppState } = useAuth();
 
+  useEffect(()=>{if(authError?.type==="auth_required")navigateToLogin();},[authError?.type,navigateToLogin]);
+
   // Show loading spinner while checking app public settings or auth
   if (isLoadingPublicSettings || isLoadingAuth) {
     return (
@@ -72,7 +75,6 @@ const AuthenticatedApp = () => {
       return <UserNotRegisteredError />;
     } else if (authError.type === 'auth_required') {
       // Redirect to login automatically
-      navigateToLogin();
       return null;
     }
   }

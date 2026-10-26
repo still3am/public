@@ -3,6 +3,7 @@ import {usePlayer} from "@/context/PlayerContext";
 import { useRef } from "react";
 import { Outlet, useLocation } from "react-router-dom";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
+import ErrorBoundary from "@/components/ErrorBoundary";
 import DesktopHeader from "@/components/DesktopHeader";
 
 import Sidebar from "@/components/Sidebar";
@@ -60,7 +61,7 @@ export default function Layout() {
           {TABS.map(({ path, Page, requiresAuth }) =>
           mountedTabs.current.has(path) && (!requiresAuth || user) ?
           <div key={`${path}:${requiresAuth?user?.id:"public"}`} data-page={path === "/" ? "home" : path.slice(1)} className={activeTab?.path === path ? "page-surface block public-page-enter" : "page-surface hidden"}>
-              <Page ownProfileTab={path === "/profile"} />
+              <ErrorBoundary scope="page" resetKey={`${user?.id||"guest"}:${activeTab?.path===path?location.key:"inactive"}`}><Page ownProfileTab={path === "/profile"} /></ErrorBoundary>
             </div> :
           null
           )}
@@ -76,7 +77,7 @@ export default function Layout() {
               exit={{ opacity: 0 }}
               transition={{ duration: reducedMotion?0:0.18, ease: "easeInOut" }}>
 
-                <Outlet />
+                <ErrorBoundary scope="page" resetKey={`${location.pathname}:${location.search}:${user?.id||"guest"}`}><Outlet /></ErrorBoundary>
               </motion.div>
             }
           </AnimatePresence>

@@ -1,10 +1,11 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import ts from 'typescript';
+import {withReadTimeout} from '../src/lib/readTimeout.js';
 let states=[],refs=[],si=0,ri=0,effects=[],current={id:'member',role:'user',creator_role:'listener'},pending=null,clears=0;
 globalThis.window=new EventTarget();globalThis.localStorage={getItem:()=>null,setItem(){}};
 const flush=()=>new Promise(resolve=>setImmediate(resolve));
-const deps={
+const deps={withReadTimeout,
  React:{createElement:(type,props)=>({type,props})},createContext:()=>({Provider:'provider'}),useContext:()=>null,
  useState:initial=>{const i=si++;if(!(i in states))states[i]=typeof initial==='function'?initial():initial;return [states[i],value=>{states[i]=typeof value==='function'?value(states[i]):value;}];},
  useRef:initial=>refs[ri++]??(refs[ri-1]={current:initial}),useEffect:fn=>effects.push(fn),

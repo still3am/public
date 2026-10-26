@@ -1,4 +1,5 @@
 import React, { createContext, useState, useContext, useEffect, useRef } from 'react';
+import {withReadTimeout} from "./readTimeout.js";
 import { base44 } from '@/api/base44Client';
 import {syncPendingLikes} from "@/lib/likeActions";
 import {clearPersonalData} from '@/lib/clearPersonalData';
@@ -11,6 +12,7 @@ const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
+  const appVersion=useRef(0);
   const authVersion=useRef(0),account=useRef(null);account.current=user?.id||null;
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLoadingAuth, setIsLoadingAuth] = useState(true);
@@ -24,6 +26,7 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   const checkAppState = async () => {
+    const request=++appVersion.current;
     try {
       setIsLoadingPublicSettings(true);
       setAuthError(null);
@@ -40,14 +43,17 @@ export const AuthProvider = ({ children }) => {
       });
       
       try {
-        const publicSettings = await appClient.get(`/prod/public-settings/by-id/${appParams.appId}`);
+        const publicSettings = await withReadTimeout(appClient.get(`/prod/public-settings/by-id/${appParams.appId}`, {timeout:15000}));
+        if(request!==appVersion.current)return;
         setAppPublicSettings(publicSettings);
         
         // If we got the app public settings successfully, check if user is authenticated
         // Check cookies as well as stored bearer tokens, including OAuth returns.
         await checkUserAuth();
+        if(request!==appVersion.current)return;
         setIsLoadingPublicSettings(false);
       } catch (appError) {
+        if(request!==appVersion.current)return;
         console.error('App state check failed:', appError);
         
         // Handle app-level errors
@@ -79,6 +85,7 @@ export const AuthProvider = ({ children }) => {
         setIsLoadingAuth(false);
       }
     } catch (error) {
+      if(request!==appVersion.current)return;
       console.error('Unexpected error:', error);
       setAuthError({
         type: 'unknown',
@@ -90,12 +97,13 @@ export const AuthProvider = ({ children }) => {
   };
 
   const checkUserAuth = async ({ silent = false } = {}) => {
-    const request=++authVersion.current;
+    const request=++authVersion.current,knownAccount=account.current;
     try {
       // Settings refreshes keep the current page mounted.
       if(!silent)setIsLoadingAuth(true);
-      const currentUser = await base44.auth.me();
+      const currentUser = await withReadTimeout(base44.auth.me());
       if(request!==authVersion.current)return;
+      if(!currentUser?.id)throw Error("Your account response was incomplete. Please retry.");
       if(currentUser?.is_blocked || currentUser?.disabled) { await clearPersonalData();if(request!==authVersion.current)return;setUser(null); setIsAuthenticated(false); setAuthError({type:'suspended',message:'Your account is suspended. Contact PUBLIC support.'}); setIsLoadingAuth(false); setAuthChecked(true); return; }
       let previous;try{previous=localStorage.getItem("public:active-account");}catch{}
       if(previous && previous!==currentUser.id)await clearPersonalData();
@@ -110,7 +118,6 @@ export const AuthProvider = ({ children }) => {
       setAuthChecked(true);
     } catch (error) {
       if(request!==authVersion.current)return;
-      console.error('User auth check failed:', error);
       setIsLoadingAuth(false);
       setAuthChecked(true);
       const status=error.status ?? error.response?.status;
@@ -121,6 +128,10 @@ export const AuthProvider = ({ children }) => {
         setUser(null);
         setIsAuthenticated(false);
         setAuthError(null);
+      } else if(knownAccount && account.current===knownAccount) {
+        // A failed preference/profile refresh must not unmount every open page.
+        setAuthError(null);
+        if(!silent)window.dispatchEvent(new CustomEvent('public:error',{detail:{message:'Could not refresh your account. Your current session and saved data are unchanged.'}}));
       } else {
         setAuthError({type:'connection',message:'Could not reconnect to your account. Your data has not been reset.'});
       }
@@ -135,7 +146,7 @@ export const AuthProvider = ({ children }) => {
       busy=true;const version=authVersion.current;
       const active=()=>!stopped&&version===authVersion.current&&account.current===uid;
       try{
-        const current=await base44.auth.me();if(!active())return;
+        const current=await withReadTimeout(base44.auth.me());if(!active())return;
         if(current.id!==uid||current.is_blocked||current.disabled){
           await clearPersonalData();if(!active())return;
           setUser(null);setIsAuthenticated(false);
@@ -182,7 +193,7 @@ export const AuthProvider = ({ children }) => {
   },[user?.id]);
 
   const logout = async (shouldRedirect = true) => {
-    authVersion.current++;
+    authVersion.current++;appVersion.current++;
     await clearPersonalData();
     setUser(null);
     setIsAuthenticated(false);setIsLoadingAuth(false);setAuthChecked(true);setAuthError(null);
