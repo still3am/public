@@ -133,7 +133,7 @@ assert.equal(autoStarts,2,"text-only notes never change playback");
 tree=render([null,false,"",true,false,{...note.track,duration_seconds:180},"",false,Date.now(),false,"classic","","",false,"","clip",45,30]);
 const range=find(tree,n=>n.type==="input"&&n.props.type==="range")[0];assert.equal(range.props.max,150);assert.equal(range.props.value,45);
 range.props.onChange({target:{value:"60"}});assert.equal(values[16],60,"timeline updates the saved clip start");
-find(tree,n=>n.type==="button"&&n.props.children==="15s")[0].props.onClick();assert.equal(values[17],15,"clip length controls update the selection");
+find(tree,n=>n.type==="button"&&React.Children.toArray(n.props.children).join("")==="15s")[0].props.onClick();assert.equal(values[17],15,"clip length controls update the selection");
 find(tree,n=>n.type==="button"&&n.props.children==="Full song")[0].props.onClick();assert.equal(values[15],"full");
 assert.equal(find(tree,n=>n.type==="details")[0].props.open,undefined,"bubble styling is collapsed by default");
 globalThis.__user=null;
