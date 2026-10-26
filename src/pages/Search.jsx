@@ -1,5 +1,5 @@
-import {useAuth} from "@/lib/AuthContext";
-import {readSearchHistory,rememberSearch,clearSearchHistory} from "@/lib/searchHistory";
+import { useAuth } from "@/lib/AuthContext";
+import { readSearchHistory, rememberSearch, clearSearchHistory } from "@/lib/searchHistory";
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
   Search as SearchIcon,
@@ -7,7 +7,7 @@ import {
   X,
   ArrowLeft } from
 "lucide-react";
-import { useSearchParams,useLocation,Link } from "react-router-dom";
+import { useSearchParams, useLocation, Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { getPublishedTracks, peekPublishedTracks } from "@/lib/catalogCache";
 import { useGlobalSearch } from "@/hooks/useGlobalSearch";
@@ -20,15 +20,15 @@ import LoadError from "@/components/LoadError";
 import EmptyState from "@/components/EmptyState";
 
 export default function Search() {
-  const {user}=useAuth();
-  const location=useLocation(),active=location.pathname==="/search";
-  const [history,setHistory]=useState(()=>readSearchHistory(user?.id));
-  useEffect(()=>setHistory(readSearchHistory(user?.id)),[user?.id]);
+  const { user } = useAuth();
+  const location = useLocation(),active = location.pathname === "/search";
+  const [history, setHistory] = useState(() => readSearchHistory(user?.id));
+  useEffect(() => setHistory(readSearchHistory(user?.id)), [user?.id]);
   const [searchParams, setSearchParams] = useSearchParams();
   const urlQ = searchParams.get("q") || "";
-  const lastScope=useRef("all");
-  const scope = active?(searchParams.get("type") === "people" ? "people" : "all"):lastScope.current;
-  if(active)lastScope.current=scope;
+  const lastScope = useRef("all");
+  const scope = active ? searchParams.get("type") === "people" ? "people" : "all" : lastScope.current;
+  if (active) lastScope.current = scope;
   const peopleMode = scope === "people";
   function chooseScope(next) {const params = new URLSearchParams(searchParams);params.delete("genre");if (next === "people") params.set("type", "people");else params.delete("type");setSearchParams(params, { replace: true });setGenre(null);}
   const [q, setQ] = useState(urlQ);
@@ -40,9 +40,9 @@ export default function Search() {
   // The desktop sidebar field drives this page through the same ?q= parameter,
   // so results follow it as the user types there.
   useEffect(() => {
-    if(active)setQ(urlQ);
-  }, [urlQ,active]);
-  useEffect(() => {if(active)setGenre(searchParams.get("genre") || null);}, [searchParams,active]);
+    if (active) setQ(urlQ);
+  }, [urlQ, active]);
+  useEffect(() => {if (active) setGenre(searchParams.get("genre") || null);}, [searchParams, active]);
 
   const updateQuery = (next) => {
     setQ(next);
@@ -69,11 +69,11 @@ export default function Search() {
     refresh } =
   useGlobalSearch(q, scope);
 
-  useEffect(()=>{
-    if(!active||!hasQuery||searching||failed||peopleFailed)return;
-    const timer=setTimeout(()=>setHistory(rememberSearch(user?.id,q)),1400);
-    return()=>clearTimeout(timer);
-  },[q,hasQuery,searching,failed,peopleFailed,user?.id,active]);
+  useEffect(() => {
+    if (!active || !hasQuery || searching || failed || peopleFailed) return;
+    const timer = setTimeout(() => setHistory(rememberSearch(user?.id, q)), 1400);
+    return () => clearTimeout(timer);
+  }, [q, hasQuery, searching, failed, peopleFailed, user?.id, active]);
   // Keep the browse crate honest if an admin unpublishes a track mid-session.
   useUnpublishedSync((id) => {
     setAllTracks((prev) => prev.filter((t) => t.id !== id));
@@ -147,7 +147,7 @@ export default function Search() {
     <PullToRefresh onRefresh={handleRefresh}>
       <div className="search-page">
         <div className="page-intro"><h1>Search</h1><p>Explore music, artists, playlists, and people.</p></div>
-        {!peopleMode&&<Link className="playlist-action mb-5" to={"/music-requests"+(q.trim()?"?title="+encodeURIComponent(q.trim()):"")}>Missing a song? Request on PUBLIC</Link>}
+        {!peopleMode && <Link className="playlist-action mb-5 hidden" to={"/music-requests" + (q.trim() ? "?title=" + encodeURIComponent(q.trim()) : "")}>Missing a song? Request on PUBLIC</Link>}
         
         
 
@@ -182,7 +182,7 @@ export default function Search() {
 
         
         {!hasQuery && !genre && !peopleMode && <div className="desktop-browse-label hidden md:flex"><h2>Browse by genre</h2><span>{genreList.length} genres to explore</span></div>}
-        {!hasQuery&&!genre&&history.length>0&&<section className="search-history mb-6" aria-label="Recent searches"><div className="flex justify-between items-center mb-3"><h2 className="font-semibold">Recent searches</h2><button className="playlist-action" onClick={()=>{clearSearchHistory(user?.id);setHistory([]);}}>Clear</button></div><div className="flex gap-2 flex-wrap">{history.map(term=><button key={term} className="playlist-action" onClick={()=>updateQuery(term)}>{term}</button>)}</div></section>}
+        {!hasQuery && !genre && history.length > 0 && <section className="search-history mb-6" aria-label="Recent searches"><div className="flex justify-between items-center mb-3"><h2 className="font-semibold">Recent searches</h2><button className="playlist-action" onClick={() => {clearSearchHistory(user?.id);setHistory([]);}}>Clear</button></div><div className="flex gap-2 flex-wrap">{history.map((term) => <button key={term} className="playlist-action" onClick={() => updateQuery(term)}>{term}</button>)}</div></section>}
         {/* Body */}
         {hasQuery ?
         firstSearchInFlight ? loader :
@@ -231,7 +231,7 @@ export default function Search() {
             description="No published tracks in this genre." />
           }
           </div> :
-        browseError ? <LoadError message={browseError} onRetry={()=>loadCatalogue(true)} /> : loadingAll ? loader :
+        browseError ? <LoadError message={browseError} onRetry={() => loadCatalogue(true)} /> : loadingAll ? loader :
         genreList.length ?
         <VinylCrate genres={genreList} onPick={chooseGenre} /> :
 
