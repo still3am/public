@@ -2,6 +2,7 @@ import Avatar from "@/components/Avatar";
 import OverflowText from "@/components/OverflowText";
 import { useEffect, useRef, useState } from "react";
 import "./public-notes.css";
+import "./notes-studio.css";
 import { base44, publicNoteDatabase } from "@/api/base44Client";
 import { requestPublicNote, savePublicNote, publicNoteError } from "@/lib/publicNoteActions";
 import { useAuth } from "@/lib/AuthContext";

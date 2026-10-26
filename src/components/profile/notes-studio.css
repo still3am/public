@@ -1,0 +1,79 @@
+/* PUBLIC Notes: a small stage and one focused music sheet. */
+.public-note-dialog.public-note-composer.public-note-studio{display:flex;flex-direction:column;gap:0;width:min(480px,calc(100vw - 40px));max-width:480px!important;max-height:90dvh;padding:24px 0 0;border-radius:30px!important;background:hsl(var(--background));overflow:hidden}
+.note-studio-heading{padding:0 58px 18px 24px;text-align:left;flex:none}
+.note-studio-heading h2{font-size:24px;letter-spacing:-.045em;line-height:1.15}
+.note-studio-heading p{font-size:12px;color:hsl(var(--muted-foreground));margin-top:5px;line-height:1.5}
+.note-studio-scroll{min-height:0;overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin;padding:0 20px 16px}
+.note-studio-stage{display:flex;flex-direction:column;align-items:center;padding:18px 12px 24px;min-height:246px}
+.note-studio-bubble{position:relative;width:min(240px,100%);padding:14px 16px 7px;border:1px solid hsl(var(--border));border-radius:24px;background:hsl(var(--card));margin-bottom:14px;box-shadow:0 10px 30px #0000000a}
+.note-studio-bubble::after{content:"";position:absolute;width:12px;height:12px;bottom:-7px;left:calc(50% - 6px);transform:rotate(45deg);border-right:1px solid hsl(var(--border));border-bottom:1px solid hsl(var(--border));background:hsl(var(--card));border-bottom-right-radius:4px}
+.public-note-studio .note-studio-bubble textarea{display:block;border:0;border-radius:0;padding:0;background:transparent;min-height:54px;height:54px;max-height:110px;resize:none;text-align:center;font-size:17px;font-weight:550;line-height:1.45;box-shadow:none;outline:none;color:hsl(var(--foreground))}
+.note-studio-bubble:focus-within{outline:2px solid hsl(var(--ring)/.45);outline-offset:3px}
+.note-studio-bubble textarea::placeholder{color:hsl(var(--muted-foreground));font-weight:450}
+.note-studio-count{display:block;font-size:9px;text-align:right;color:hsl(var(--muted-foreground));font-variant-numeric:tabular-nums}
+.note-studio-emoji{position:absolute;top:-15px;left:-8px;font-size:29px;transform:rotate(-12deg);line-height:1;filter:drop-shadow(0 2px 3px #0002)}
+.note-studio-tools{display:flex;gap:8px;margin-top:18px}
+.note-studio-tools button{display:flex;align-items:center;justify-content:center;gap:7px;border:1px solid hsl(var(--border));border-radius:999px;min-height:40px;padding:8px 13px;font-size:11px;font-weight:550}
+.note-studio-tools button>span:first-child:not(:last-child){font-size:18px;line-height:1}
+.note-studio-emoji-panel{padding:16px;border:1px solid hsl(var(--border));border-radius:22px;margin-bottom:16px;background:hsl(var(--card))}
+.note-studio-emoji-panel>div:first-child{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px;font-size:12px}
+.note-studio-emoji-panel>div:first-child button{min-height:36px;font-size:11px;text-decoration:underline}
+.note-studio-song{padding:16px;border:1px solid hsl(var(--border));border-radius:24px;background:hsl(var(--card));min-width:0}
+.note-studio-song-top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px}
+.note-studio-song-top>span{font-size:9px;letter-spacing:.12em;font-weight:650;color:hsl(var(--muted-foreground))}
+.note-studio-song-top .public-note-clear-song{font-size:10px;min-height:28px;padding:0;text-decoration:none}
+.note-studio-song-info{display:flex;align-items:center;gap:12px;margin-bottom:18px;min-width:0}
+.note-studio-song-info>.public-note-choice-art{width:52px;height:52px;flex-basis:52px;border-radius:13px}
+.note-studio-song-info>div{flex:1;min-width:0;display:grid;gap:4px}
+.note-studio-song-info strong{display:block;font-size:14px;line-height:1.3;font-weight:650;min-width:0}
+.note-studio-song-info small{display:block;font-size:12px;color:hsl(var(--muted-foreground));min-width:0}
+.note-studio-song-info .public-note-preview-play{display:grid;place-items:center;flex:0 0 44px;width:44px;height:44px;padding:0;border-radius:50%;background:hsl(var(--foreground));color:hsl(var(--background));border:0}
+.public-note-studio .public-note-audio-modes{display:flex;border:1px solid hsl(var(--border));padding:4px;gap:4px;border-radius:999px;background:hsl(var(--background)/.5)}
+.public-note-studio .public-note-audio-modes button{flex:1;border:0;min-height:36px;padding:7px 10px;font-size:11px}
+.public-note-studio .public-note-audio-modes button[aria-pressed=true]{box-shadow:0 2px 8px #0001}
+.note-studio-trimmer{margin-top:16px}
+.note-studio-durations{display:flex;justify-content:center;gap:8px;margin-bottom:16px}
+.note-studio-durations button{min-width:44px;min-height:36px;padding:6px 10px;border-radius:999px;border:1px solid hsl(var(--border));font-size:11px;font-variant-numeric:tabular-nums}
+.note-studio-durations button[aria-pressed=true]{background:hsl(var(--foreground)/.12);border-color:hsl(var(--foreground)/.55);font-weight:650}
+.note-studio-timeline{height:58px;position:relative;isolation:isolate;margin:0 0 10px;border-radius:12px;overflow:hidden;background:hsl(var(--foreground)/.035)}
+.note-studio-ticks{position:absolute;inset:16px 3px;background:repeating-linear-gradient(90deg,hsl(var(--foreground)/.3) 0 2px,transparent 2px 9px);border-radius:3px}
+.note-studio-selection{position:absolute;top:4px;bottom:4px;min-width:5px;border:2px solid hsl(var(--foreground));border-radius:8px;background:hsl(var(--foreground)/.13);pointer-events:none;box-sizing:border-box}
+.note-studio-timeline input[type=range]{position:absolute;inset:0;width:100%;height:100%;margin:0;opacity:0;cursor:ew-resize;touch-action:pan-y}
+.note-studio-timeline:focus-within{outline:2px solid hsl(var(--ring));outline-offset:3px}
+.note-studio-time{display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;font-size:11px;font-variant-numeric:tabular-nums}
+.note-studio-time span{color:hsl(var(--muted-foreground))}
+.note-studio-trimmer>p,.note-studio-full-hint{font-size:10px;line-height:1.6;color:hsl(var(--muted-foreground));margin-top:10px}
+.note-studio-style{margin-top:16px;border-top:1px solid hsl(var(--border));padding-top:5px}
+.note-studio-style summary{display:flex;align-items:center;justify-content:space-between;gap:10px;cursor:pointer;min-height:38px;font-size:11px;list-style:none}
+.note-studio-style summary::-webkit-details-marker{display:none}
+.note-studio-style summary span{color:hsl(var(--muted-foreground))}
+.note-studio-style summary span::after{content:" +"}
+.note-studio-style[open] summary span::after{content:" −"}
+.note-studio-style .public-note-appearance{display:flex;gap:8px;margin:8px 0 16px}
+.note-studio-style .public-note-appearance button{flex:1;min-height:38px;font-size:11px}
+.note-studio-style .public-note-preview{width:min(180px,100%);margin:0 auto 8px}
+.public-note-studio .public-note-composer-actions{position:relative;bottom:auto;flex:none;margin:0;padding:14px 20px 18px;background:hsl(var(--background));border-top:1px solid hsl(var(--border))}
+.public-note-studio .public-note-composer-actions button{min-height:44px;font-size:12px}
+.public-note-studio .public-note-post{min-width:130px}
+.note-studio-song-only{display:block;font-size:12px;text-decoration:underline;margin:12px 0;min-height:44px}
+.public-note-studio>button:last-child{top:16px;right:16px;width:36px;height:36px;border:1px solid hsl(var(--border));border-radius:50%;display:grid;place-items:center;opacity:1}
+/* Viewer uses the same quiet sheet and one clear playback control. */
+.public-note-dialog.public-note-viewer{background:hsl(var(--background));gap:18px;padding:26px}
+.public-note-viewer .public-note-art{width:min(168px,42vw);border-radius:24px}
+.public-note-viewer .public-note-card{gap:16px}
+.public-note-viewer .public-note-copy>strong{font-size:19px}
+.public-note-viewer .public-note-bubble{background:hsl(var(--card));border:1px solid hsl(var(--border));border-radius:20px 20px 20px 5px;padding:12px 16px;font-size:16px}
+.public-note-viewer .public-note-reactions{padding-top:16px}
+@media(max-width:767px){
+ .public-note-dialog.public-note-composer.public-note-studio{width:100%;max-width:none!important;left:0;right:0;bottom:0;top:auto;transform:none;max-height:94dvh;border-radius:28px 28px 0 0!important;padding:28px 0 0}
+ .note-studio-heading{padding-left:20px;padding-bottom:8px}
+ .note-studio-heading h2{font-size:23px}
+ .note-studio-scroll{padding:0 16px 16px}
+ .note-studio-stage{min-height:230px;padding-top:20px;padding-bottom:22px}
+ .note-studio-song{border-radius:24px;padding:16px}
+ .public-note-studio .public-note-composer-actions{padding:12px 20px calc(14px + env(safe-area-inset-bottom,0px))}
+ .public-note-studio>button:last-child{top:23px;right:16px}
+ .public-note-dialog.public-note-viewer{padding:30px 22px calc(20px + env(safe-area-inset-bottom,0px))}
+}
+@media(max-height:620px){.note-studio-stage{min-height:0;padding-block:12px}.note-studio-stage>.pfp-boy,.note-studio-stage>img{width:64px!important;height:64px!important}.note-studio-tools{margin-top:12px}}
+@media(prefers-reduced-motion:reduce){.public-note-studio *{scroll-behavior:auto!important}}
