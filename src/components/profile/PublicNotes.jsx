@@ -202,6 +202,6 @@ export default function PublicNotes({ profileId, isOwn, active = true, userTrack
       </div>
       <div className="public-note-composer-actions">{valid?<button type="button" className="public-note-remove" disabled={busy} onClick={()=>save(true)}>Remove note</button>:<button type="button" className="public-note-cancel" disabled={busy} onClick={()=>setEditing(false)}>Cancel</button>}<button type="button" className="public-note-post" disabled={busy||(!draft&&!caption.trim())} onClick={()=>save()}>{busy?<Loader2 size={18} className="animate-spin"/>:valid?"Update note":"Share note"}</button></div>
     </DialogContent></Dialog>}
-    {editing && picker && <TrackPickerSheet title="Choose your note’s song" tracks={userTracks.filter(track => track.is_published && track.approval_status === "approved")} selectedIds={draft ? [draft.id] : []} onToggle={(_id, track) => { preview.stop();setDraft(track);setClipStart(0); setDraftPlaybackError(""); setPicker(false); }} onClose={() => setPicker(false)} />}
+    {editing && picker && <TrackPickerSheet title="Choose your note’s song" description="Pick a song, then choose the full track or your favorite moment." className="note-studio-picker" tracks={userTracks.filter(track => track.is_published && track.approval_status === "approved")} selectedIds={draft ? [draft.id] : []} onToggle={(_id, track) => { preview.stop();setDraft(track);setClipStart(0); setDraftPlaybackError(""); setPicker(false); }} onClose={() => setPicker(false)} />}
   </div>;
 }
