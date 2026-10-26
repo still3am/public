@@ -1,3 +1,4 @@
+import { profileCommentFilter, isProfileCommentThread } from "@/lib/profileCommentThread";
 import { reportActionError } from "@/lib/actionError";
 import { readAllPages } from '@/lib/readPages';
 import { useEffect, useState, useCallback, useRef } from "react";
@@ -11,7 +12,7 @@ import Avatar from "@/components/Avatar";
 import { Loader2, Send, Trash2 } from "lucide-react";
 
 /** @param {any} props */
-export default function ProfileComments({ profileId, isOwn, active = true, description = "A little conversation around the music.", emptyMessage = "", onNavigate, presentation = "profile" }) {
+export default function ProfileComments({ profileId, isOwn, active = true, description = "A little conversation around the music.", emptyMessage = "", onNavigate, presentation = "profile", mediaKey = "" }) {
   const { user } = useAuth();
   const { blocked } = useSafety();
 
@@ -24,9 +25,9 @@ export default function ProfileComments({ profileId, isOwn, active = true, descr
   const composerRef = useRef(null);
   const commentRequest = useRef({ text: "", key: "", id: "" });
   const identity = useRef(null);
-  if (!identity.current || identity.current.uid !== user?.id || identity.current.profileId !== profileId) identity.current = { uid: user?.id, profileId };
+  if (!identity.current || identity.current.uid !== user?.id || identity.current.profileId !== profileId || identity.current.mediaKey !== mediaKey) identity.current = { uid: user?.id, profileId, mediaKey };
   const scope = identity.current;
-  const draftKey = `public:comment-draft:${user?.id || "guest"}:${profileId || ""}`;
+  const draftKey = `public:comment-draft:${user?.id || "guest"}:${profileId || ""}${mediaKey ? ":" + mediaKey : ""}`;
   const requestVersion = useRef(0),postingRef = useRef(false),currentProfile = useRef(profileId),confirmed = useRef(new Map()),deleting = useRef(new Set()),alive = useRef(true);currentProfile.current = profileId;
   useEffect(() => {alive.current = true;return () => {alive.current = false;requestVersion.current++;};}, []);
 
@@ -35,19 +36,19 @@ export default function ProfileComments({ profileId, isOwn, active = true, descr
     const request = ++requestVersion.current;
     setError(false);
     try {
-      const items = await readAllPages((options) => base44.entities.ProfileComment.filter({ profile_id: profileId }, { sort: "-created_date", ...options }));
+      const items = await readAllPages((options) => base44.entities.ProfileComment.filter(profileCommentFilter(profileId, mediaKey), { sort: "-created_date", ...options }));
       if (request !== requestVersion.current || identity.current !== scope || currentProfile.current !== profileId || !alive.current) return;
       items.forEach((row) => confirmed.current.delete(row.id));
-      const merged = new Map([...items, ...confirmed.current.values()].filter((row) => !deleting.current.has(row.id)).map((row) => [row.id, row]));
+      const merged = new Map([...items, ...confirmed.current.values()].filter((row) => !deleting.current.has(row.id) && isProfileCommentThread(row, profileId, mediaKey)).map((row) => [row.id, row]));
       setComments([...merged.values()].sort((a, b) => (b.created_date || '').localeCompare(a.created_date || '')));
     } catch {
       if (request === requestVersion.current && identity.current === scope) setError(true);
     } finally {
       if (request === requestVersion.current && identity.current === scope) setLoading(false);
     }
-  }, [profileId, user?.id]);
+  }, [profileId, user?.id, mediaKey]);
 
-  useEffect(() => {requestVersion.current++;confirmed.current.clear();deleting.current.clear();setComments([]);setPosting(false);setVisibleCount(10);try {setMessage(user?.id ? localStorage.getItem(draftKey) || "" : "");} catch {setMessage("");}setLoading(true);}, [profileId, user?.id]);
+  useEffect(() => {requestVersion.current++;confirmed.current.clear();deleting.current.clear();setComments([]);setPosting(false);setVisibleCount(10);try {setMessage(user?.id ? localStorage.getItem(draftKey) || "" : "");} catch {setMessage("");}setLoading(true);}, [profileId, user?.id, mediaKey]);
   useEffect(() => {
     if (!active) return;
     load();
@@ -69,6 +70,7 @@ export default function ProfileComments({ profileId, isOwn, active = true, descr
     try {
       const saved = await base44.entities.ProfileComment.create({
         profile_id: profileId,
+        media_key: mediaKey,
         author_id: user.id,
         author_name: user.display_name || user.full_name || "",
         author_avatar_url: user.avatar_url || "",

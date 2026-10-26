@@ -24,6 +24,12 @@
     },
     "message": {
       "type": "string"
+    },
+    "media_key": {
+      "type": "string",
+      "default": "",
+      "maxLength": 100,
+      "description": "Empty for page comments; stable avatar asset key for a separate image/GIF/clip conversation"
     }
   },
   "required": [

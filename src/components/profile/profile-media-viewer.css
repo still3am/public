@@ -50,3 +50,11 @@
 .profile-media-viewer-controls>button{display:grid;place-items:center;width:46px;height:46px;border-radius:50%;background:#171717b3;color:#fff;border:1px solid #ffffff29;backdrop-filter:blur(12px)}
 .profile-media-viewer-controls>button:focus-visible{outline:2px solid #fff;outline-offset:3px}
 .profile-media-viewer-play-error{position:absolute;bottom:68px;left:12px;right:12px;padding:10px 12px;border-radius:12px;background:#111e;color:#fff;font-size:12px}
+
+/* Size the frame from the original media instead of forcing a portrait crop. */
+.profile-media-viewer-stage>img,.profile-media-viewer-stage>video{aspect-ratio:auto;min-height:0;max-height:56dvh;width:100%;height:auto;object-fit:contain}
+.profile-media-viewer-stage{background:transparent}
+.profile-media-viewer-gradient{position:fixed;inset:0;z-index:-2;opacity:.85}
+.profile-media-viewer-backdrop{z-index:-1;opacity:.12}
+.profile-media-viewer[role="dialog"]::before{z-index:-1;background:linear-gradient(180deg,#10101030,#10101065 45%,#101010b3 100%)}
+.profile-media-viewer .profile-comments-composer{background:linear-gradient(180deg,#111d,#111e 24%)}

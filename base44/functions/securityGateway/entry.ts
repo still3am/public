@@ -577,14 +577,17 @@ export default async function handleRequest(req) {
           if(kind!=='delete'){
             const message=String(data.message||'').trim();
             if(!message||message.length>500)fail('Comment must contain 1–500 characters',422);
+            const mediaKey=kind==='create' ? (input.media_key ?? '') : (old?.media_key || '');
+            if(typeof mediaKey!=='string'||mediaKey.length>100||(mediaKey&&!/^avatar:(image|gif|video):[a-f0-9]{16}$/.test(mediaKey)))fail('Invalid media comment thread',422);
+            if(kind==='update'&&input.media_key!==undefined&&input.media_key!==mediaKey)fail('Comments cannot move between threads',422);
             const requestId=typeof input.request_id==='string'?input.request_id:'';
             if(requestId.length>100)fail('Invalid comment request',400);
             if(kind==='create'&&requestId){
-              const existing=await handler.filter({author_id:user.id,profile_id:data.profile_id,request_id:requestId},'-created_date',1);
+              const existing=await handler.filter({author_id:user.id,profile_id:data.profile_id,request_id:requestId,...(mediaKey?{media_key:mediaKey}:{$or:[{media_key:{$exists:false}},{media_key:''},{media_key:null}]})},'-created_date',1);
               if(existing[0])return existing[0];
             }
             await moderate(svc,message);
-            data={profile_id:data.profile_id||old?.profile_id,author_id:user.id,author_name:user.display_name||user.full_name||'',author_avatar_url:user.avatar_url||'',message,...(requestId?{request_id:requestId}:{})};
+            data={profile_id:data.profile_id||old?.profile_id,author_id:user.id,author_name:user.display_name||user.full_name||'',author_avatar_url:user.avatar_url||'',message,media_key:mediaKey,...(requestId?{request_id:requestId}:{})};
           }
         }
         if(entity==='TrackAnnotation') {await requireTrack(data.track_id||old?.track_id);await moderate(svc,String(data.body||''));}
