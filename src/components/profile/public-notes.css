@@ -181,3 +181,15 @@
  .public-note-dialog.public-note-viewer{padding:30px 22px calc(20px + env(safe-area-inset-bottom));gap:16px;max-height:90dvh}
  .public-note-viewer .public-note-art{width:min(196px,43vw)}
 }
+
+/* The profile pop-up uses a full-width note without the avatar speech tail. */
+.public-notes.public-notes-in-popup{width:100%;margin:16px 0 4px;min-width:0}
+.public-notes-in-popup.public-notes-empty:empty{display:none}
+.public-note-popup-label{margin-bottom:10px;font-size:11px;font-weight:650;letter-spacing:.06em;color:hsl(var(--muted-foreground))}
+.public-notes-in-popup .public-note-avatar-bubble{padding:14px 16px;min-height:60px;border-radius:18px}
+.public-notes-in-popup .public-note-avatar-bubble::after{display:none}
+.public-notes-in-popup .public-note-mini-cover{width:42px;height:42px;flex-basis:42px;border-radius:10px}
+.public-notes-in-popup .public-note-mini-meta>strong{font-size:14px}
+.public-notes-in-popup .public-note-mini-meta>small,.public-notes-in-popup .public-note-mini-meta>span{font-size:12px}
+.public-notes-in-popup .public-note-avatar-bubble>.public-note-text-only{display:block;font-size:14px;line-height:1.5;white-space:pre-wrap;overflow-wrap:anywhere}
+.public-note-popup-status{font-size:12px;color:hsl(var(--muted-foreground))}
