@@ -67,3 +67,29 @@ assert.equal(paused,1);
 assert.ok(css.includes("width:min(500px"));
 assert.ok(css.includes("aspect-ratio:4/5"));
 console.log("PASS profile image/GIF/video source selection, original sound, music handoff, media cleanup, comments, focus return, retry and mobile layout");
+
+// The viewer composer is after real comments in both DOM and keyboard order.
+let commentStates=[],commentRefs=[],ci=0,cri=0,created=[];
+const viewerComment={id:"comment-1",author_id:"other",author_name:"Other member",message:"Great photo",created_date:"2026-10-26T01:00:00Z"};
+const commentDeps={React,
+ useState:initial=>{const i=ci++;if(!(i in commentStates))commentStates[i]=initial;return [commentStates[i],next=>commentStates[i]=typeof next==="function"?next(commentStates[i]):next];},
+ useRef:initial=>commentRefs[cri++]??(commentRefs[cri-1]={current:initial}),useEffect:()=>{},useCallback:fn=>fn,
+ useAuth:()=>({user:{id:"listener",display_name:"Listener",avatar_url:"/avatar.jpg"}}),
+ useSafety:()=>({blocked:new Set()}),coalesce:fn=>fn,reportActionError:()=>assert.fail("Unexpected comment error"),
+ readAllPages:async()=>[viewerComment],base44:{entities:{ProfileComment:{create:async data=>{created.push(data);return {...data,id:"saved",created_date:"2026-10-26T02:00:00Z"};}},Notification:{create:async()=>({})}}},
+ Link:"a",Avatar:"avatar",SafetyControls:"safety",Loader2:"loading",Send:"send",Trash2:"trash"};
+globalThis.__mediaComments=commentDeps;
+const commentSource=ts.transpileModule(fs.readFileSync("src/components/profile/ProfileComments.jsx","utf8").replace(/^import[^;]+;/gm,""),{compilerOptions:{jsx:ts.JsxEmit.React,target:ts.ScriptTarget.ES2022,module:ts.ModuleKind.ESNext}}).outputText;
+const {default:Comments}=await import("data:text/javascript;base64,"+Buffer.from("const {"+Object.keys(commentDeps).join(",")+"}=globalThis.__mediaComments;\n"+commentSource).toString("base64"));
+commentStates=[[viewerComment],false,false,"Hello!",false,10];
+const renderComments=presentation=>{ci=cri=0;return Comments({profileId:"person",isOwn:false,presentation,description:""});};
+let commentTree=renderComments("media"),commentNodes=all(commentTree);
+assert.ok(commentNodes.findIndex(node=>node.props?.className?.includes("profile-comment-row")) < commentNodes.findIndex(node=>node.type==="form"),"media comments precede the composer");
+assert.ok(commentNodes.some(node=>node.type==="avatar" && node.props.className==="profile-comment-composer-avatar"));
+assert.equal(commentNodes.filter(node=>node.type==="form").length,1);
+await commentNodes.find(node=>node.type==="form").props.onSubmit({preventDefault(){}});
+assert.equal(created.length,1);assert.equal(created[0].message,"Hello!");assert.equal(created[0].profile_id,"person");assert.equal(created[0].author_id,"listener");
+assert.equal(commentStates[3],"","confirmed save clears the composer");
+commentTree=renderComments("profile");commentNodes=all(commentTree);
+assert.ok(commentNodes.findIndex(node=>node.type==="form") < commentNodes.findIndex(node=>node.props?.className?.includes("profile-comment-row")),"normal profile conversation keeps its original composer placement");
+console.log("PASS reference-style comments layout, one bottom composer, current-user avatar and confirmed comment persistence");
