@@ -15,7 +15,7 @@ const stubs=`
 const {requestPublicNote,savePublicNote,publicNoteError}=globalThis.__noteActions;
 const React=globalThis.__React,useState=globalThis.__state,useEffect=()=>{},useRef=initial=>({current:initial});
 const publicNoteDatabase=undefined;
-const base44={functions:{invoke:(...args)=>globalThis.__api(...args)}},useAuth=()=>({user:globalThis.__user}),useNotePreview=()=>({trackId:globalThis.__player.currentTrack?.id,playing:globalThis.__player.isPlaying,pause:()=>globalThis.__noteCalls.push("pause"),stop:()=>globalThis.__noteCalls.push("stop"),play:(track,ensure)=>ensure&&globalThis.__player.currentTrack?.id===track.id&&globalThis.__player.isPlaying?undefined:globalThis.__player.currentTrack?.id===track.id?globalThis.__player.togglePlay():globalThis.__player.playTrackAt([track])}),useNoteHighlights=()=>({profile:null,moments:[],loading:false,error:"",retry(){}}),useCoverUrl=x=>x,useCoverPalette=()=>({colors:[]});
+const base44={functions:{invoke:(...args)=>globalThis.__api(...args)}},useAuth=()=>({user:globalThis.__user}),useNotePreview=()=>({trackId:globalThis.__player.currentTrack?.id,playing:globalThis.__player.isPlaying,pause:()=>globalThis.__noteCalls.push("pause"),stop:()=>globalThis.__noteCalls.push("stop"),play:(track,ensure)=>ensure&&globalThis.__player.currentTrack?.id===track.id&&globalThis.__player.isPlaying?undefined:globalThis.__player.currentTrack?.id===track.id?globalThis.__player.togglePlay():globalThis.__player.playTrackAt([track])}),useNoteHighlights=()=>globalThis.__noteHighlights||({profile:null,moments:[],loading:false,error:"",retry(){}}),useCoverUrl=x=>x,useCoverPalette=()=>({colors:[]});
 const Avatar="avatar",OverflowText="overflow-text",NoteEmojiPicker="emoji-picker",NoteReactions="note-reactions",MotionGradient="gradient",TrackPickerSheet="picker",Dialog="dialog",DialogContent="content",DialogHeader="header",DialogTitle="h1",DialogDescription="p";
 const Music2=()=>null,ImageIcon=Music2,Plus=Music2,Play=Music2,Pause=Music2,Loader2=Music2;
 `;
@@ -136,6 +136,12 @@ range.props.onChange({target:{value:"60"}});assert.equal(values[16],60,"timeline
 find(tree,n=>n.type==="button"&&React.Children.toArray(n.props.children).join("")==="15s")[0].props.onClick();assert.equal(values[17],15,"clip length controls update the selection");
 find(tree,n=>n.type==="button"&&n.props.children==="Full song")[0].props.onClick();assert.equal(values[15],"full");
 assert.equal(find(tree,n=>n.type==="details")[0].props.open,undefined,"bubble styling is collapsed by default");
+globalThis.__noteHighlights={profile:{duration:180,waveform:[.2,.8,.5]},moments:[40,90],loading:false,error:"",retry(){}};
+tree=render([null,false,"",true,false,{...note.track,duration_seconds:180},"",false,Date.now(),false,"classic","","",false,"","clip",0,30]);
+assert.equal(find(tree,n=>n.props?.className==="note-studio-waveform").length,1,"measured waveform replaces decorative ticks");
+const dot=find(tree,n=>n.props?.["aria-label"]==="Preview suggested moment at 0:40")[0];assert.ok(dot);
+await dot.props.onClick();assert.equal(values[16],40,"suggested moment sets the actual clip start");
+delete globalThis.__noteHighlights;
 globalThis.__user=null;
 assert.equal(render([note,false,""]),null,"signed-out session does not leak a previously loaded note");
 console.log("PASS PUBLIC Notes playback, expiry, failed-save draft preservation, confirmed posting and session isolation");

@@ -52,3 +52,12 @@ console.log('PASS isolated note audio, queue preservation, paused-session restor
  assert.equal(audio.onloadedmetadata,null);assert.equal(audio.ontimeupdate,null);
 }
 console.log('PASS clip seeking, bounded playback, replay, range changes and audio cleanup');
+{
+ const f=fixture();await f.controller.play({id:'song'});f.controller.pause();
+ assert.equal(f.audios[0].paused,true);assert.equal(f.restores,0,'editing timing keeps the main player paused');
+ await f.controller.play({id:'song'},false,{playback_mode:'clip',clip_start:20,clip_length:15});
+ assert.equal(f.acquisitions,1,'editing and previewing share the same lease');
+ f.audios[1].onerror();assert.match(f.states.at(-1).error,/Couldn’t play/,'media errors reach the UI');
+ assert.equal(f.restores,1);assert.equal(f.audios[1].ontimeupdate,null);
+}
+console.log('PASS timing edits preserve the main audio session and media load failures reach the UI');
