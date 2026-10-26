@@ -123,7 +123,7 @@ export default function PublicNotes({ profileId, isOwn, active = true, userTrack
   useEffect(()=>{if(preview.trackId&&Number(preview.duration)>0)setMeasuredDuration({trackId:preview.trackId,seconds:Number(preview.duration)});},[preview.trackId,preview.duration]);
   const draftDuration=Number(draft?.duration_seconds)||(measuredDuration.trackId===draft?.id?measuredDuration.seconds:0)||0;
   const selectedLength=draftDuration>0?Math.min(clipLength,draftDuration):clipLength;
-  const maxStart=Math.max(0,draftDuration-selectedLength);
+  const maxStart=draftDuration>0?Math.max(0,draftDuration-selectedLength):clipStart;
   const timeLabel=value=>{const seconds=Math.max(0,Math.floor(Number(value)||0));return Math.floor(seconds/60)+":"+String(seconds%60).padStart(2,"0");};
   if (!user?.id || (!isOwn && !valid && !(presentation === "popup" && (loading || error)))) return null;
   const playing = valid && preview.trackId === note.track_id && preview.playing;

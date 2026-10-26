@@ -47,6 +47,13 @@ assert.equal(result.data.result.user_id,'owner','caller controls ownership');
 assert.equal(result.data.result.caption,'On repeat');
 assert.ok(Math.abs(Date.parse(result.data.result.expires_at)-Date.now()-86400000)<5000,'server sets 24-hour lifetime');
 assert.equal((await call('readNote',['owner'])).data.result.track.id,'public');
+result=await call('saveNote',[{track_id:'public',caption:'On repeat',playback_mode:'clip',clip_start:42,clip_length:15}]);
+assert.equal(result.status,200);assert.equal(result.data.result.clip_start,42);
+const selected=(await call('readNote',['owner'])).data.result;
+assert.equal(selected.playback_mode,'clip');assert.equal(selected.clip_length,15);
+assert.equal((await call('saveNote',[{track_id:'public',playback_mode:'clip',clip_start:-1,clip_length:30}])).status,422);
+assert.equal((await call('saveNote',[{track_id:'public',playback_mode:'clip',clip_start:10,clip_length:61}])).status,422);
+
 await call('saveNote',[{track_id:'public',caption:'New thought'}]);
 assert.equal(db.PublicNote.length,1,'replacement reuses current note');
 assert.equal(db.PublicNote[0].caption,'New thought');
