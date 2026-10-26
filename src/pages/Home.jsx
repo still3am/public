@@ -1,5 +1,5 @@
 import FollowingReleases from "@/components/home/FollowingReleases";
-import {useDismissedRecommendations} from "@/hooks/useDismissedRecommendations";
+import { useDismissedRecommendations } from "@/hooks/useDismissedRecommendations";
 import ScrollShelf from "@/components/ScrollShelf";
 import HomeWeather from '@/components/HomeWeather';
 import MadeForYou from '@/components/home/MadeForYou';
@@ -64,7 +64,7 @@ function CardRow({ tracks, onHide = null, hideBusy = false }) {
       {tracks.map((t) =>
       <div key={t.id} className="home-shelf-card snap-start shrink-0">
           <TrackCard track={t} queue={tracks} />
-          {onHide&&<button type="button" disabled={hideBusy} className="recommendation-hide" aria-label={"Hide recommendation "+t.title} onClick={()=>onHide(t)}>Not for me</button>}
+          {onHide && <button type="button" disabled={hideBusy} className="recommendation-hide" aria-label={"Hide recommendation " + t.title} onClick={() => onHide(t)}>Not for me</button>}
         </div>
       )}
     </ScrollShelf>);
@@ -95,13 +95,13 @@ function Skeleton() {
 export default function Home() {
   const { user } = useAuth();
   const p = usePlayer();
-  const dismissed=useDismissedRecommendations(user?.id);
+  const dismissed = useDismissedRecommendations(user?.id);
   const loadVersion = useRef(0);
   const followedIds = useRef({ uid: user?.id, ids: new Set() });
   const [recent, setRecent] = useState(() => getRecentPlays().slice(0, 8));
   const [genreList, setGenreList] = useState([]);
   const [loadError, setLoadError] = useState("");
-  const [preferencesError,setPreferencesError]=useState(false);
+  const [preferencesError, setPreferencesError] = useState(false);
   const [loading, setLoading] = useState(true);
   const [trending, setTrending] = useState(() => [...peekPublishedTracks()].sort((a, b) => (b.play_count || 0) - (a.play_count || 0)).slice(0, 10));
   const [newReleases, setNewReleases] = useState(() => peekPublishedTracks().slice(0, 36));
@@ -109,17 +109,17 @@ export default function Home() {
   const [fromFollowing, setFromFollowing] = useState([]);
   const [discover, setDiscover] = useState([]);
 
-  const [personal,setPersonal]=useState({uid:null,catalog:[],genres:[],taste:null});
-  const personalCatalog=personal.uid===user?.id?personal.catalog:[];
-  const personalGenres=personal.uid===user?.id?personal.genres:[];
+  const [personal, setPersonal] = useState({ uid: null, catalog: [], genres: [], taste: null });
+  const personalCatalog = personal.uid === user?.id ? personal.catalog : [];
+  const personalGenres = personal.uid === user?.id ? personal.genres : [];
   const greeting = greetingByHour();
   const homeName = String(user?.display_name || user?.full_name?.trim().split(/\s+/)[0] || '').trim().slice(0, 40);
 
-  useEffect(()=>{const update=event=>{if(event.detail?.uid===user?.id)load().catch(()=>{});};window.addEventListener("preferences:changed",update);return()=>window.removeEventListener("preferences:changed",update);},[user?.id]);
+  useEffect(() => {const update = (event) => {if (event.detail?.uid === user?.id) load().catch(() => {});};window.addEventListener("preferences:changed", update);return () => window.removeEventListener("preferences:changed", update);}, [user?.id]);
 
   const onUnpublished = useCallback((id) => {
-    setRecent(previous=>previous.filter(track=>track.id!==id));
-    setPersonal(previous=>({...previous,catalog:previous.catalog.filter(t=>t.id!==id)}));
+    setRecent((previous) => previous.filter((track) => track.id !== id));
+    setPersonal((previous) => ({ ...previous, catalog: previous.catalog.filter((t) => t.id !== id) }));
     setTrending((p) => p.filter((t) => t.id !== id));
     setNewReleases((p) => p.filter((t) => t.id !== id));
     setFromFollowing((p) => p.filter((t) => t.id !== id));
@@ -186,10 +186,10 @@ export default function Home() {
       }
       // Merge saved genre picks with listening history — saved genres seed
       // personalization, recent plays refine it over time.
-      const taste = await getUserMusicPreferences(user?.id).catch(()=>{if(request===loadVersion.current)setPreferencesError(true);return {genres:[],favorite_track_ids:[],favorite_artists:[]};});
-      const savedGenres=taste.genres;
+      const taste = await getUserMusicPreferences(user?.id).catch(() => {if (request === loadVersion.current) setPreferencesError(true);return { genres: [], favorite_track_ids: [], favorite_artists: [] };});
+      const savedGenres = taste.genres;
       if (request !== loadVersion.current) return;
-      setPersonal({uid:user?.id,catalog:published,genres:savedGenres,taste});
+      setPersonal({ uid: user?.id, catalog: published, genres: savedGenres, taste });
       const genreSet = new Set(savedGenres);
       const userGenres = Object.entries(genreFreq).
       sort((a, b) => b[1] - a[1]).
@@ -207,10 +207,10 @@ export default function Home() {
       }
       setDiscover(pool.slice(0, 12));
     } catch {if (request === loadVersion.current) {
-      const available=peekPublishedTracks();
-      if(available.length){setNewReleases(available.slice(0,36));setTrending([...available].sort((a,b)=>(b.play_count||0)-(a.play_count||0)).slice(0,10));}
-      setLoadError("Music could not refresh. Please try again shortly.");
-    }} finally {
+        const available = peekPublishedTracks();
+        if (available.length) {setNewReleases(available.slice(0, 36));setTrending([...available].sort((a, b) => (b.play_count || 0) - (a.play_count || 0)).slice(0, 10));}
+        setLoadError("Music could not refresh. Please try again shortly.");
+      }} finally {
       if (request === loadVersion.current) setLoading(false);
     }
   }
@@ -253,32 +253,32 @@ export default function Home() {
   }
 
   const featured = newReleases[0] || trending[0] || byGenre.find((section) => section.tracks.length)?.tracks[0];
-  const visibleDiscover=discover.filter(track=>!dismissed.ids.has(track.id));
-  const discoveryQueue = (visibleDiscover.length ? visibleDiscover : trending.filter(track=>!dismissed.ids.has(track.id)));
+  const visibleDiscover = discover.filter((track) => !dismissed.ids.has(track.id));
+  const discoveryQueue = visibleDiscover.length ? visibleDiscover : trending.filter((track) => !dismissed.ids.has(track.id));
   return (
     <PullToRefresh onRefresh={() => load(true)}>
       <div className="home-page home-redesigned">
-        <header className="home-welcome"><div className="home-welcome-copy"><p className="home-welcome-greeting">Home</p><h1>{greeting}{homeName && <span><span className="home-greeting-comma">, </span>{homeName}</span>}</h1></div><div className="home-header-actions"><HomeWeather/><Link to={user?"/profile":"/login"} aria-label={user?"Your profile":"Sign in"}><Avatar user={user} size={44}/></Link></div></header>
+        <header className="home-welcome"><div className="home-welcome-copy"><p className="home-welcome-greeting hidden">Home</p><h1>{greeting}{homeName && <span><span className="home-greeting-comma">, </span>{homeName}</span>}</h1></div><div className="home-header-actions"><HomeWeather /><Link to={user ? "/profile" : "/login"} aria-label={user ? "Your profile" : "Sign in"}><Avatar user={user} size={44} /></Link></div></header>
         
         
-        {(loadError||preferencesError)&&<div role="alert" className="border border-border rounded-2xl p-4 mb-4 text-sm"><p>{loadError||"Your music preferences could not load. Discovery is using your listening history for now."}</p><button disabled={loading} className="playlist-action mt-2" onClick={()=>load(true)}>Retry</button></div>}
-        <HomeSpotlight track={featured} tracks={discoveryQueue.length ? discoveryQueue : newReleases} currentTrackId={p.currentTrack?.id} isPlaying={p.isPlaying} onSelect={(queue,index)=>{if(p.currentTrack?.id===queue[index]?.id)p.togglePlay();else{p.setShuffle(false);p.playTrackAt(queue,index);}}}/>
+        {(loadError || preferencesError) && <div role="alert" className="border border-border rounded-2xl p-4 mb-4 text-sm"><p>{loadError || "Your music preferences could not load. Discovery is using your listening history for now."}</p><button disabled={loading} className="playlist-action mt-2" onClick={() => load(true)}>Retry</button></div>}
+        <HomeSpotlight track={featured} tracks={discoveryQueue.length ? discoveryQueue : newReleases} currentTrackId={p.currentTrack?.id} isPlaying={p.isPlaying} onSelect={(queue, index) => {if (p.currentTrack?.id === queue[index]?.id) p.togglePlay();else {p.setShuffle(false);p.playTrackAt(queue, index);}}} />
         
         
         {genreList.length > 0 && <nav className="home-genre-links" aria-label="Browse genres">{genreList.map((genre) => <Link key={genre} to={`/search?genre=${encodeURIComponent(genre)}`}>{genre}</Link>)}</nav>}
         <Section title="New on PUBLIC" icon={Sparkles} seeAllTo="/recent"><ReleaseList tracks={newReleases} /></Section>
-        <MadeForYou key={"mixes:"+user?.id} catalog={personalCatalog} genres={personalGenres} taste={personal.uid===user?.id?personal.taste:null}/>
-        {recent.length>0&&<Section title="Continue Listening"><CardRow tracks={recent}/></Section>}
-        <FollowingReleases/>
+        <MadeForYou key={"mixes:" + user?.id} catalog={personalCatalog} genres={personalGenres} taste={personal.uid === user?.id ? personal.taste : null} />
+        {recent.length > 0 && <Section title="Continue Listening"><CardRow tracks={recent} /></Section>}
+        <FollowingReleases />
         <Section title="Trending" icon={TrendingUp} seeAllTo="/top">
           <CardRow tracks={trending} />
         </Section>
 
-        {(visibleDiscover.length > 0||dismissed.last||dismissed.error) &&
+        {(visibleDiscover.length > 0 || dismissed.last || dismissed.error) &&
         <Section title="Discover" icon={Sparkles}>
-            <CardRow tracks={visibleDiscover} onHide={user?.id?dismissed.hide:null} hideBusy={dismissed.busy}/>
-            {dismissed.last&&<p className="text-sm mt-3" role="status">Recommendation hidden. <button className="underline" disabled={dismissed.busy} onClick={dismissed.undo}>Undo</button></p>}
-            {dismissed.error&&<p role="alert" className="text-sm mt-3">{dismissed.error} <button className="underline" onClick={dismissed.retry}>Retry</button></p>}
+            <CardRow tracks={visibleDiscover} onHide={user?.id ? dismissed.hide : null} hideBusy={dismissed.busy} />
+            {dismissed.last && <p className="text-sm mt-3" role="status">Recommendation hidden. <button className="underline" disabled={dismissed.busy} onClick={dismissed.undo}>Undo</button></p>}
+            {dismissed.error && <p role="alert" className="text-sm mt-3">{dismissed.error} <button className="underline" onClick={dismissed.retry}>Retry</button></p>}
           </Section>
         }
         {fromFollowing.length > 0 &&
@@ -293,7 +293,7 @@ export default function Home() {
               <CardRow tracks={sg.tracks} />
             </Section>
         )}
-        <SharedWithYou key={"shared:"+user?.id} catalog={personalCatalog} catalogReady={personal.uid===user?.id}/>
+        <SharedWithYou key={"shared:" + user?.id} catalog={personalCatalog} catalogReady={personal.uid === user?.id} />
       </div>
     </PullToRefresh>);
 
