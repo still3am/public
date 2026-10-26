@@ -11,7 +11,7 @@ export default function ProfileMediaViewer({ profile, profileId, isOwn, onClose,
   const media = profileViewerMedia(profile);
   const poster = useCoverUrl(media.poster);
   const player = usePlayer();
-  const video = useRef(null);
+  const video = useRef(null), content = useRef(null);
   const [failed, setFailed] = useState(false), [attempt, setAttempt] = useState(0);
   const name = profile?.display_name || profile?.full_name || profile?.username || "PUBLIC member";
 
@@ -25,7 +25,7 @@ export default function ProfileMediaViewer({ profile, profileId, isOwn, onClose,
   useEffect(() => { setFailed(false); }, [media.source]);
 
   return <Dialog open onOpenChange={(open) => { if (!open) onClose(); }}>
-    <DialogContent className="profile-media-viewer" onOpenAutoFocus={(event) => { event.preventDefault(); }} onCloseAutoFocus={(event) => { event.preventDefault();onReturnFocus?.(); }}>
+    <DialogContent ref={content} className="profile-media-viewer" onOpenAutoFocus={(event) => { event.preventDefault();content.current?.querySelector(":scope > button:last-child")?.focus(); }} onCloseAutoFocus={(event) => { event.preventDefault();onReturnFocus?.(); }}>
       <div className="profile-media-viewer-backdrop" aria-hidden="true" style={poster ? { backgroundImage: `url(${JSON.stringify(poster)})` } : undefined} />
       <DialogHeader className="profile-media-viewer-header">
         <span className="profile-media-viewer-brand">PUBLIC.</span>
