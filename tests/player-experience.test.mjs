@@ -30,3 +30,11 @@ const begin=new Function(...Object.keys(env),'return ('+crossfade+')')(...Object
 for(let i=0;i<20;i++)assert.equal(await begin(1,4,4),false);assert.equal(preloads,0,'waiting for readiness must not restart an in-flight preload');
 env.preloadedTargetRef.current=null;await begin(1,4,4);assert.equal(preloads,1);await begin(1,4,4);assert.equal(preloads,1);
 console.log('PASS equal-power smooth fades, failed handoff cleanup, equalizer controls/presets/bypass, and stable crossfade preloading');
+globalThis.__gradient={React,useEffect:()=>{},useRef:value=>({current:value}),useState:value=>[value,()=>{}]};
+const gradientSource=ts.transpileModule(fs.readFileSync('src/components/MotionGradient.jsx','utf8').replace(/^import[^;]+;/gm,''),{compilerOptions:{jsx:ts.JsxEmit.React,target:ts.ScriptTarget.ES2022,module:ts.ModuleKind.ESNext}}).outputText;
+const Gradient=(await import('data:text/javascript;base64,'+Buffer.from('const {'+Object.keys(globalThis.__gradient).join(',')+'}=globalThis.__gradient;\n'+gradientSource).toString('base64'))).default;
+for(const [active,motion,expected] of [[true,'flow','running'],[false,'flow','paused'],[true,'still','paused']]){
+ const surface=Gradient({colors:['#ff5500','#4400aa','#ffe000'],active,motion});
+ const fallback=nodes(surface).find(n=>n.props?.className==='motion-gradient-fallback');assert.equal(fallback.props.style.animationPlayState,expected,'fallback follows the same motion and activity setting');
+}
+console.log('PASS gradient fallback honors active, paused and still modes');

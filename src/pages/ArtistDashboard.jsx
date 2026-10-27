@@ -152,7 +152,7 @@ export default function ArtistDashboard() {
       </div>
 
       <div className="collection-tools mb-4"><label>Date range <select aria-label="Analytics date range" value={period} onChange={event=>setPeriod(event.target.value)}><option value="week">Last 7 days</option><option value="month">Last 30 days</option><option value="quarter">Last 90 days</option><option value="all">All recorded history</option></select></label></div>
-      {metricsError&&<p role="alert" className="text-sm mb-4">Listening analytics could not load. <button className="underline" onClick={()=>setRetry(n=>n+1)}>Retry</button></p>}
+      {metricsError&&!metrics&&<p role="alert" className="text-sm mb-4">Listening analytics could not load. <button className="underline" onClick={()=>setRetry(n=>n+1)}>Retry</button></p>}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-3" aria-busy={metricsLoading}>
        <StatCard icon={Play} label="Recorded plays" value={metrics?formatNumber(metrics.plays):"—"}/>
        <StatCard icon={Users} label="Unique listeners" value={metrics?formatNumber(metrics.unique_listeners):"—"}/>
