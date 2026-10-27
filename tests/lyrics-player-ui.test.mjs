@@ -4,7 +4,7 @@ import ts from 'typescript';
 import * as React from 'react';
 globalThis.__lyricsReact=React;
 const source=fs.readFileSync('src/components/SyncedLyrics.jsx','utf8').replace(/^import[^;]+;/gm,'');
-const stubs='const React=globalThis.__lyricsReact,useState=value=>[value,()=>{}],useMemo=fn=>fn(),LyricInterlude="interlude",useEffect=()=>{},useRef=value=>({current:value}),Loader2="loader";';
+const stubs='const React=globalThis.__lyricsReact,useState=value=>[globalThis.__lyricsBrowsing??value,()=>{}],useMemo=fn=>fn(),LyricInterlude="interlude",useEffect=()=>{},useRef=value=>({current:value}),Loader2="loader";';
 const code=ts.transpileModule(stubs+source,{compilerOptions:{jsx:ts.JsxEmit.React,target:ts.ScriptTarget.ES2022,module:ts.ModuleKind.ESNext}}).outputText;
 const View=(await import('data:text/javascript;base64,'+Buffer.from(code).toString('base64'))).default;
 const all=(node,predicate)=>!node||typeof node!=='object'?[]:[...(predicate(node)?[node]:[]),...React.Children.toArray(node.props?.children).flatMap(child=>all(child,predicate))];
@@ -29,3 +29,15 @@ assert.ok(all(tree,node=>node.type==='interlude').some(node=>node.props.active==
 tree=View({...props,position:13,resolvedLyrics:introLyrics});
 const firstVocal=all(tree,node=>node.type==='button'&&contents(node)==='First vocal')[0];
 assert.equal(firstVocal.props['aria-current'],'true');firstVocal.props.onClick();assert.equal(sought,12,'intro keeps vocal seeking aligned');
+
+assert.ok(contents(tree).includes('Synced lyrics'),'timed view identifies synchronized lyrics');
+const beforeFollow=sought;
+globalThis.__lyricsBrowsing=true;
+tree=View({...props,position:13,resolvedLyrics:introLyrics});
+const follow=all(tree,node=>node.props?.className==='public-lyrics-follow')[0];
+assert.ok(follow,'browsing exposes a return-to-current-line control');follow.props.onClick();
+assert.equal(sought,beforeFollow,'returning to current line must not seek the song');
+globalThis.__lyricsBrowsing=false;
+tree=View({...props,resolvedLyrics:{trackId:'new',text:'Untimed words'}});
+assert.ok(contents(tree).includes('no timing available'),'plain lyrics are never presented as synchronized');
+const matchButton=all(tree,node=>node.type==='button')[0];matchButton.props.onClick();assert.equal(searched,2,'plain lyrics can be corrected without leaving the player');
