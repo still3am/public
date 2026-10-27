@@ -1,0 +1,12 @@
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import {updateInterludeWave} from '../src/lib/interludeWave.js';
+const wave=new Float32Array(72),silence=new Uint8Array(256).fill(128);
+assert.equal(updateInterludeWave(silence,wave),0,'silence cannot create invented beats');
+const samples=new Uint8Array(256);for(let i=0;i<256;i++)samples[i]=Math.round(128+90*Math.sin(i*.15));
+const energy=updateInterludeWave(samples,wave);assert.ok(energy>0);assert.ok(wave.some(x=>x>0)&&wave.some(x=>x<0),'ribbon follows both sides of the waveform');
+assert.ok(wave.every(x=>x>=-1&&x<=1));
+let last=energy;for(let i=0;i<25;i++){const next=updateInterludeWave(null,wave,false);assert.ok(next<=last);last=next;}assert.ok(last<.001,'paused audio settles to a still line');
+const context=fs.readFileSync('src/context/PlayerContext.jsx','utf8');assert.ok(!context.includes('createBiquadFilter'),'removed equalizer contributes no filters');assert.ok(context.includes('analyser.connect(pureGraph.input)'),'audio still reaches PURE and the volume output');
+for(const path of ['src/components/PlayerBar.jsx','src/components/FullScreenPlayer.jsx'])assert.ok(!fs.readFileSync(path,'utf8').includes('StemMixer'),'no equalizer entry point remains');
+console.log('PASS real audio ribbon, silence, smoothing, paused settling, and equalizer removal without breaking audio routing');
