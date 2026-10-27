@@ -22,3 +22,10 @@ console.log('PASS immediate track isolation, loading/error/instrumental states, 
 
 tree=View({...props,resolvedLyrics:{trackId:'new',record:{lines:[{text:'♪',start_time_ms:1000,end_time_ms:5000}]}}});
 assert.ok(all(tree,node=>node.type==='interlude').some(node=>node.props.active===true),'instrumental markers render an active reactive animation');
+
+const introLyrics={trackId:'new',record:{lines:[{text:'First vocal',start_time_ms:12000,end_time_ms:18000},{text:'Next vocal',start_time_ms:18000,end_time_ms:24000}]}};
+tree=View({...props,position:2,resolvedLyrics:introLyrics});
+assert.ok(all(tree,node=>node.type==='interlude').some(node=>node.props.active===true),'timed intro displays dots before the first vocal');
+tree=View({...props,position:13,resolvedLyrics:introLyrics});
+const firstVocal=all(tree,node=>node.type==='button'&&contents(node)==='First vocal')[0];
+assert.equal(firstVocal.props['aria-current'],'true');firstVocal.props.onClick();assert.equal(sought,12,'intro keeps vocal seeking aligned');

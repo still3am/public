@@ -49,3 +49,6 @@ console.log('PASS lyric matching, duration/version guards, LRC parsing, gaps, of
 assert.equal(selectLyricsMatch([{...sample,artistName:'My Artist and Guest',duration:183}],{...song,artist:'My Artist, Guest',duration_seconds:182.8}).id,1,'collaboration separators and measured playback duration match automatically');
 
 assert.equal(selectLyricsMatch([{...sample,artistName:'Guest & My Artist'}],{...song,artist:'My Artist, Guest'}).id,1,'collaborator order does not hide a valid lyric match');
+
+assert.equal(selectLyricsMatch([{...sample,artistName:'Beyoncé',trackName:'Déjà Vu'}],{...song,artist:'Beyonce',title:'Deja Vu'}).id,1,'accent formatting does not hide the correct recording');
+assert.equal(selectLyricsMatch([{...sample,trackName:'My Song (Radio Edit)'}],song),null,'a different edit cannot silently replace the recording');
