@@ -61,3 +61,13 @@ console.log('PASS clip seeking, bounded playback, replay, range changes and audi
  assert.equal(f.restores,1);assert.equal(f.audios[1].ontimeupdate,null);
 }
 console.log('PASS timing edits preserve the main audio session and media load failures reach the UI');
+{
+ const f=fixture(),pending=f.controller.play({id:'loading'});f.controller.pause();await pending;
+ assert.equal(f.audios[0].paused,true,'pausing during source loading prevents late playback');
+ assert.equal(f.states.at(-1).loading,false);assert.equal(f.restores,0);
+ await f.controller.play({id:'loading'});assert.equal(f.audios[0].paused,false,'paused startup can be resumed');
+ f.audios[0].currentTime=45;await f.controller.play({id:'loading'},true,{restart:true});
+ assert.equal(f.audios[0].currentTime,0,'restart returns to the beginning without a new source');
+ assert.equal(f.audios.length,1);f.controller.stop();
+}
+console.log('PASS pause during startup and restart without redundant audio loading');

@@ -15,7 +15,7 @@ export function createNotePreview({acquire,createAudio=()=>new Audio(),onChange=
   if(session?.signature===signature){
    if(session.loading)return;
    session.requestedPause=false;
-   if(selection.restart){session.audio.currentTime=start;await session.audio.play();notify();return;}
+   if(selection.restart){try{session.audio.currentTime=start;await session.audio.play();notify();}catch(e){stop();throw e;}return;}
    if(!session.audio.paused){if(!ensure)session.audio.pause();notify();return;}
    try{if(length&&session.audio.currentTime>=start+length-.05)session.audio.currentTime=start;await session.audio.play();notify();}catch(e){stop();throw e;}return;
   }
