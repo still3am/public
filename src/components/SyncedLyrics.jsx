@@ -88,7 +88,7 @@ export default function SyncedLyrics({ trackId, position, resolvedLyrics, onSeek
 
   if (hasTimed) return (
     <div className="public-lyrics-view">
-    <div className="public-lyrics-toolbar hidden"><span>Synced lyrics</span>{onFindMatch && <button type="button" onClick={onFindMatch}>Find another match</button>}</div>
+    
     <div ref={scrollRef} onWheel={markUserScroll} onTouchStart={markUserScroll} onTouchMove={markUserScroll}
       onKeyDown={(event) => {if (["ArrowUp", "ArrowDown", "PageUp", "PageDown", "Home", "End"].includes(event.key)) markUserScroll();}}
       className="public-lyrics-scroll no-scrollbar" aria-label="Synced song lyrics">
