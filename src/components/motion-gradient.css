@@ -1,0 +1,4 @@
+.public-motion-gradient{isolation:isolate}
+.motion-gradient-fallback{transform:scale(1.25);transform-origin:center;animation:public-gradient-drift 24s ease-in-out infinite alternate;will-change:transform}
+@keyframes public-gradient-drift{0%{transform:scale(1.25) translate(-3%,-2%) rotate(-7deg)}50%{transform:scale(1.4) translate(3%,-3%) rotate(5deg)}100%{transform:scale(1.3) translate(-1%,4%) rotate(12deg)}}
+@media(prefers-reduced-motion:reduce){.motion-gradient-fallback{animation:none!important;will-change:auto}}

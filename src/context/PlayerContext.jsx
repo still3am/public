@@ -1,6 +1,6 @@
 import {sampleListening} from "@/lib/listeningHistory";
 import {DEFAULT_MIXER,normalizeMixer,mixerHeadroom,smoothAudioParam} from "@/lib/equalizer";
-import {commitAudioHandoff,transitionDuration} from "@/lib/audioHandoff";
+import {commitAudioHandoff,transitionDuration,equalPowerTransitionCurve} from "@/lib/audioHandoff";
 import {DEFAULT_PURE,normalizePure,readPure,createPureGraph} from "@/lib/pureAudio";
 import {useAudioOutput} from "@/hooks/useAudioOutput";
 import {useSafety} from '@/context/SafetyContext';
@@ -392,13 +392,7 @@ export function PlayerProvider({ children }) {
     const ctx = audioCtxRef.current;
     const g = gainRefs[side].current;
     if (!ctx || !g || dur <= 0) return;
-    const steps = Math.max(2, Math.min(64, Math.round(dur * 24)));
-    const curve = new Float32Array(steps);
-    for (let i = 0; i < steps; i++) {
-      const f = i / (steps - 1);
-      const v = fadeIn ? Math.sin((f * Math.PI) / 2) : Math.cos((f * Math.PI) / 2);
-      curve[i] = Math.max(0.0001, v);
-    }
+    const curve=equalPowerTransitionCurve(fadeIn,dur);
     const t = ctx.currentTime;
     g.gain.cancelScheduledValues(t);
     g.gain.setValueCurveAtTime(curve, t, dur);
@@ -527,7 +521,7 @@ export function PlayerProvider({ children }) {
     const q = queueRef.current;
     if (ci < 0 || !q.length) return;
     let n = -1;
-    if(shuffleRef.current && q.length>1){do{n=Math.floor(Math.random()*q.length);}while(n===ci);}
+    if(shuffleRef.current && q.length>1){const held=preloadedTargetRef.current;if(Number.isInteger(held)&&held>=0&&held<q.length&&held!==ci)n=held;else do{n=Math.floor(Math.random()*q.length);}while(n===ci);}
     else if (ci + 1 < q.length) n = ci + 1;
     else if (repeatRef.current === "all" && q.length) n = 0;
     if (n === -1 || !q[n]) return;
@@ -548,7 +542,7 @@ export function PlayerProvider({ children }) {
     if(crossfadingRef.current||pureRemoteRef.current)return false;
     const oldSide=activeIdxRef.current,side=inactiveIdx(),el=els()[side],track=queueRef.current[targetIndex];
     if(!el||!track)return false;
-    if(sideLoadedIdRef[side].current!==track.id||!sideReadyRef[side].current){preloadedTargetRef.current=targetIndex;preloadSide(targetIndex);return false;}
+    if(sideLoadedIdRef[side].current!==track.id||!sideReadyRef[side].current){if(preloadedTargetRef.current!==targetIndex){preloadedTargetRef.current=targetIndex;preloadSide(targetIndex);}return false;}
     const token=++transitionVersionRef.current,valid=()=>token===transitionVersionRef.current&&activeIdxRef.current===oldSide&&queueRef.current[targetIndex]?.id===track.id;
     const ctx=ensureGraph();if(!ctx)return false;
     crossfadingRef.current=true;

@@ -476,7 +476,7 @@ export default function Profile({ ownProfileTab = false }) {
                 </div>
                   }
 
-              <div className="profile-stats flex flex-wrap items-center justify-center md:justify-start gap-x-4 gap-y-1 mt-2.5 text-sm md:text-base">
+              <div data-creator={isAdminProfile||["artist","uploader"].includes(profile.creator_role)?"true":"false"} className="profile-stats flex flex-wrap items-center justify-center md:justify-start gap-x-4 gap-y-1 mt-2.5 text-sm md:text-base">
                 <button onClick={() => setFollowList("followers")} className="hover:underline transition">
                   <span className="font-bold">{stats.followers === null ? "—" : formatNumber(stats.followers)}</span> <span className="text-foreground/50">followers</span>
                 </button>

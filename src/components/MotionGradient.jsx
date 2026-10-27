@@ -1,3 +1,4 @@
+import "./motion-gradient.css";
 import {useEffect,useRef,useState} from "react";
 
 // Original, lightweight WebGL surface. No video download or audio graph.
@@ -16,18 +17,20 @@ uniform vec3 u_b;
 uniform vec3 u_c;
 void main(){
  vec2 p=v_uv;
- float t=u_time;
- // Smooth domain warping gives broad, folding ribbons rather than zoom pulses.
- vec2 q=vec2(p.x*min(u_aspect,1.6),p.y);
- q+=.20*vec2(sin(q.y*3.8+t*.43),cos(q.x*3.4-t*.31));
- float wave=sin(q.x*3.2+q.y*2.1+t*.29);
- float fold=sin(q.y*4.1-q.x*1.8-t*.38+wave*.8);
- float ribbon=.5+.5*sin(q.x*2.9+fold*1.7+t*.22);
- vec3 color=mix(u_a,u_b,smoothstep(.12,.88,ribbon));
- float pool=.5+.5*sin(q.y*3.3+wave*1.6-t*.27);
- color=mix(color,u_c,smoothstep(.28,.92,pool)*.88);
- float light=.90+.10*sin(q.x*2.0+q.y*2.6+fold);
- color*=light;
+ float t=u_time*.28;
+ vec2 q=p;
+ q.x+=.12*sin(p.y*4.4+t*.8)+.05*cos(p.y*7.0-t*.43);
+ q.y+=.13*cos(p.x*4.0-t*.65)+.04*sin(p.x*6.2+t*.51);
+ vec2 a=vec2(.28+.22*sin(t*.72),.30+.23*cos(t*.61));
+ vec2 b=vec2(.72+.22*cos(t*.57),.44+.27*sin(t*.68));
+ vec2 c=vec2(.45+.30*sin(t*.46+2.0),.76+.18*cos(t*.79));
+ vec2 scale=vec2(clamp(u_aspect,.65,1.5),1.0);
+ float wa=exp(-3.5*dot((q-a)*scale,(q-a)*scale));
+ float wb=exp(-3.5*dot((q-b)*scale,(q-b)*scale));
+ float wc=exp(-3.5*dot((q-c)*scale,(q-c)*scale));
+ vec3 color=(u_a*wa+u_b*wb+u_c*wc)/max(.001,wa+wb+wc);
+ float silk=.97+.045*sin(q.x*3.6-q.y*2.7+t*.35);
+ color=clamp(color*silk,0.0,1.0);
  gl_FragColor=vec4(color,1.);
 }
 `;
@@ -71,12 +74,14 @@ export default function MotionGradient({colors=DEFAULT,motion="flow",speed=1,act
   }catch{if(buffer)gl?.deleteBuffer(buffer);if(program)gl?.deleteProgram(program);if(vertex)gl?.deleteShader(vertex);if(fragment)gl?.deleteShader(fragment);return;}
   const uniforms=Object.fromEntries(["time","aspect","a","b","c"].map(name=>[name,gl.getUniformLocation(program,"u_"+name)]));
   const stop=()=>{if(raf)cancelAnimationFrame(raf);raf=0;last=0;painted=0;};
+  let bounds=element.getBoundingClientRect();
+  const measure=()=>{bounds=element.getBoundingClientRect();};
   const draw=(dt,animate)=>{
    const {palette,speed}=settings.current;
    const target=palette.map(rgb),blend=animate?1-Math.exp(-dt/1100):1;
    current=current.map((c,i)=>c.map((v,j)=>v+(target[i][j]-v)*blend));
    if(animate)phase.current+=dt*.001*speed;
-   const rect=element.getBoundingClientRect(),scale=Math.min(1.25,window.devicePixelRatio||1,1100/Math.max(1,rect.width,rect.height));
+   const rect=bounds,scale=Math.min(1.25,window.devicePixelRatio||1,1100/Math.max(1,rect.width,rect.height));
    const w=Math.max(1,Math.round(rect.width*scale)),h=Math.max(1,Math.round(rect.height*scale));
    if(element.width!==w||element.height!==h){element.width=w;element.height=h;}
    gl.viewport(0,0,w,h);gl.uniform1f(uniforms.time,phase.current);gl.uniform1f(uniforms.aspect,w/h);
@@ -94,7 +99,7 @@ export default function MotionGradient({colors=DEFAULT,motion="flow",speed=1,act
    draw(dt,animate);
    if(animate)raf=requestAnimationFrame(tick);
   };
-  const resume=()=>{stop();if(!disposed&&!lost&&!document.hidden&&visible&&settings.current.active&&!covered())raf=requestAnimationFrame(tick);};
+  const resume=()=>{stop();measure();if(!disposed&&!lost&&!document.hidden&&visible&&settings.current.active&&!covered())raf=requestAnimationFrame(tick);};
   wake.current=resume;
   const onLost=event=>{event.preventDefault();lost=true;stop();setReady(false);};
   const onRestored=()=>{if(!disposed)setVersion(v=>v+1);};
@@ -115,8 +120,8 @@ export default function MotionGradient({colors=DEFAULT,motion="flow",speed=1,act
   };
  },[version]);
  useEffect(()=>{wake.current?.();},[key,motion,speed,active,pauseWhenCovered]);
- return <div aria-hidden="true" className={className} style={{pointerEvents:"none",overflow:"hidden",...style}}>
-  <div style={{position:"absolute",inset:0,backgroundColor:palette[0],backgroundImage:`radial-gradient(ellipse at 15% 25%, ${palette[1]}, transparent 70%),radial-gradient(ellipse at 85% 80%, ${palette[2]}, transparent 75%)`}}/>
+ return <div aria-hidden="true" className={"public-motion-gradient "+className} style={{pointerEvents:"none",overflow:"hidden",...style}}>
+  <div className="motion-gradient-fallback" style={{animationDuration:(24/Math.max(.35,Math.min(1.6,Number(speed)||1)))+"s",animationPlayState:!ready&&active&&motion==="flow"?"running":"paused",position:"absolute",inset:0,backgroundColor:palette[0],backgroundImage:`radial-gradient(ellipse at 15% 25%, ${palette[1]}, transparent 70%),radial-gradient(ellipse at 85% 80%, ${palette[2]}, transparent 75%)`}}/>
   <canvas ref={canvas} style={{position:"absolute",inset:0,width:"100%",height:"100%",display:"block",opacity:ready?1:0,transition:"opacity .5s ease"}}/>
  </div>;
 }

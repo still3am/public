@@ -117,3 +117,4 @@
  .public-app .profile-page.profile-redesigned .profile-playlist-loading i{max-width:190px}
  .public-app .profile-page.profile-redesigned .profile-people-skeleton>div>i{max-width:144px}
 }
+@media(max-width:767px){.public-app .profile-redesigned .profile-stats[data-creator=false]{grid-template-columns:repeat(3,minmax(0,1fr))}}
