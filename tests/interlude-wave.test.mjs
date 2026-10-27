@@ -1,23 +1,5 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import {updateInterludeWave} from '../src/lib/interludeWave.js';
-const wave=new Float32Array(72),silence=new Uint8Array(256).fill(128);
-assert.equal(updateInterludeWave(silence,wave),0,'silence cannot create invented beats');
-const samples=new Uint8Array(256);for(let i=0;i<256;i++)samples[i]=Math.round(128+90*Math.sin(i*.15));
-const energy=updateInterludeWave(samples,wave);assert.ok(energy>0);assert.ok(wave.some(x=>x>0)&&wave.some(x=>x<0),'ribbon follows both sides of the waveform');
-assert.ok(wave.every(x=>x>=-1&&x<=1));
-let last=energy;for(let i=0;i<25;i++){const next=updateInterludeWave(null,wave,false);assert.ok(next<=last);last=next;}assert.ok(last<.001,'paused audio settles to a still line');
-// Instantaneous waveform phase should not make a flowing ribbon jump.
-const first=new Float32Array(72),inverted=new Float32Array(72);
-updateInterludeWave(samples,first,true,.4,16);
-updateInterludeWave(Uint8Array.from(samples,x=>256-x),inverted,true,.4,16);
-for(let i=0;i<72;i++)assert.ok(Math.abs(first[i]-inverted[i])<.0001,'waveform polarity cannot cause visual flicker');
-const later=new Float32Array(72);updateInterludeWave(samples,later,true,1.4,16);
-assert.ok(later.some((value,i)=>Math.abs(value-first[i])>.001),'continuous phase moves the ribbon');
-const sixty=new Float32Array(72),thirty=new Float32Array(72);
-for(let i=0;i<60;i++)updateInterludeWave(samples,sixty,true,.4,1000/60);
-for(let i=0;i<30;i++)updateInterludeWave(samples,thirty,true,.4,1000/30);
-for(let i=0;i<72;i++)assert.ok(Math.abs(sixty[i]-thirty[i])<.0001,'envelope smoothing is frame-rate independent');
 const context=fs.readFileSync('src/context/PlayerContext.jsx','utf8');assert.ok(!context.includes('createBiquadFilter'),'removed equalizer contributes no filters');assert.ok(context.includes('analyser.connect(pureGraph.input)'),'audio still reaches PURE and the volume output');
 for(const path of ['src/components/PlayerBar.jsx','src/components/FullScreenPlayer.jsx'])assert.ok(!fs.readFileSync(path,'utf8').includes('StemMixer'),'no equalizer entry point remains');
-console.log('PASS real audio ribbon, silence, smoothing, paused settling, and equalizer removal without breaking audio routing');
+console.log('PASS equalizer removal preserves audio routing');

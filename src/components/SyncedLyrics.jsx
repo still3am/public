@@ -22,11 +22,12 @@ export default function SyncedLyrics({ trackId, position, resolvedLyrics, onSeek
   const lines = useMemo(() => (Array.isArray(lyrics?.lines) ? lyrics.lines : []).
   filter((line) => Number.isFinite(Number(line.start_time_ms)) && Number(line.start_time_ms) >= 0).
   slice().sort((a, b) => Number(a.start_time_ms) - Number(b.start_time_ms)),[lyrics?.lines]);
-  const hasTimed = lines.length > 0 && lines.some((line) => Number(line.start_time_ms) > 0 || Number(line.end_time_ms) > 0);
+  const displayLines=useMemo(()=>lines.length&&Number(lines[0].start_time_ms)>=3000?[{text:'♪',start_time_ms:0,end_time_ms:Number(lines[0].start_time_ms)},...lines]:lines,[lines]);
+  const hasTimed = displayLines.length > 0 && displayLines.some((line) => Number(line.start_time_ms) > 0 || Number(line.end_time_ms) > 0);
   let activeIdx = -1;
   if (hasTimed) {
-    for (let index = 0; index < lines.length; index++) {
-      if (ms >= Number(lines[index].start_time_ms)) activeIdx = index;else
+    for (let index = 0; index < displayLines.length; index++) {
+      if (ms >= Number(displayLines[index].start_time_ms)) activeIdx = index;else
       break;
     }
   }
@@ -73,8 +74,7 @@ export default function SyncedLyrics({ trackId, position, resolvedLyrics, onSeek
   if (hasTimed) return (
     <div ref={scrollRef} onWheel={markUserScroll} onTouchStart={markUserScroll} onTouchMove={markUserScroll}
     className="public-lyrics-scroll no-scrollbar" aria-label="Synced song lyrics">
-      {resolvedLyrics?.source === 'LRCLIB' && <p className="public-lyrics-note"></p>}
-      {lines.map((line, index) => {
+      {displayLines.map((line, index) => {
         const active = index === activeIdx;
         const distance = activeIdx < 0 ? index : Math.abs(index - activeIdx);
         const opacity = active ? 1 : distance <= 1 ? 0.72 : distance === 2 ? 0.52 : 0.36;

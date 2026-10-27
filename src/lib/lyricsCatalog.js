@@ -29,11 +29,11 @@ function joinSearch(entry,signal) {
 }
 let queue = Promise.resolve(), nextRequest = 0, cooldown = 0;
 const cancelled = () => new DOMException('Cancelled', 'AbortError');
-const normalize = value => String(value || '').normalize('NFKC').toLowerCase().replace(/[’‘]/g,"'").replace(/[^\p{L}\p{N}]+/gu,' ').trim();
+const normalize = value => String(value || '').normalize('NFKD').replace(/\p{M}/gu,'').toLowerCase().replace(/[’‘]/g,"'").replace(/[^\p{L}\p{N}]+/gu,' ').trim();
 export const cleanLyricsTitle = value => String(value||'').replace(/\s*[\[(](?:official\s+(?:audio|video|music\s+video|lyric\s+video)|lyrics?\s+video)[\])]\s*/gi,' ').replace(/\s+/g,' ').trim();
 export const primaryLyricsArtist = value => String(value||'').split(/\s+(?:feat\.?|ft\.?|featuring|with)\s+|,\s*|\s+&\s+|\s+x\s+/i)[0].trim();
 const baseTitle = value => cleanLyricsTitle(value).replace(/\s*[\[(](?:feat\.?|ft\.?|featuring)\s+[^\])]+[\])]/gi,'').replace(/\s+(?:feat\.?|ft\.?|featuring)\s+.+$/i,'').trim();
-const version = value => (normalize(value).match(/\b(?:live|remix|acoustic|instrumental|slowed|sped up|nightcore|karaoke|demo)\b/g)||[]).sort().join('|');
+const version = value => (normalize(value).match(/\b(?:live|remix|acoustic|instrumental|slowed|sped up|nightcore|karaoke|demo|radio edit|extended|edit|remastered)\b/g)||[]).sort().join('|');
 function candidateScore(row,track) {
  const title=normalize(baseTitle(track.title)),artist=normalize(track.artist),duration=Number(track.duration_seconds)||0;
  if(!title||!artist||normalize(baseTitle(row.trackName))!==title||version(row.trackName)!==version(track.title))return -1;
