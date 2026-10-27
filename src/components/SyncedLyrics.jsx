@@ -1,9 +1,10 @@
 import LyricInterlude from "@/components/LyricInterlude";
-import { useEffect, useRef, useMemo } from "react";
-import { Loader2 } from "lucide-react";
+import { useEffect, useRef, useMemo, useState } from "react";
+
 
 /** @param {any} props */
 export default function SyncedLyrics({ trackId, position, resolvedLyrics, onSeek, onRetry, onFindMatch }) {
+  const [browsing,setBrowsing]=useState(false);
   const lineRefs = useRef([]);
   const scrollRef = useRef(null);
   const activeRef = useRef(-1);
@@ -12,7 +13,7 @@ export default function SyncedLyrics({ trackId, position, resolvedLyrics, onSeek
   const lastCentered = useRef({trackId:null,index:-1});
 
   useEffect(() => {
-    userScrollUntil.current=0;clearTimeout(resumeTimer.current);
+    setBrowsing(false);userScrollUntil.current=0;clearTimeout(resumeTimer.current);
     lastCentered.current={trackId:null,index:-1};
   },[trackId,resolvedLyrics?.record]);
   const current=resolvedLyrics?.trackId===trackId?resolvedLyrics:null;
@@ -59,24 +60,35 @@ export default function SyncedLyrics({ trackId, position, resolvedLyrics, onSeek
   }, [activeIdx, loading, trackId, displayLines]);
 
   useEffect(() => () => clearTimeout(resumeTimer.current), []);
+  const followCurrent=()=>{
+    clearTimeout(resumeTimer.current);userScrollUntil.current=0;setBrowsing(false);centerActive();
+  };
   const markUserScroll = () => {
+    setBrowsing(true);
     userScrollUntil.current = Date.now() + 4000;
     clearTimeout(resumeTimer.current);
     resumeTimer.current = setTimeout(() => {
-      userScrollUntil.current = 0;
+      userScrollUntil.current = 0;setBrowsing(false);
       centerActive();
     }, 4100);
   };
   const seekLine = (line) => {
     clearTimeout(resumeTimer.current);
     userScrollUntil.current = 0;
+    setBrowsing(false);
     onSeek?.(Number(line.start_time_ms) / 1000);
   };
 
   const text = typeof trackLyrics === "string" ? trackLyrics.trim() : "";
-  if (loading) return <div role="status" aria-label="Finding lyrics" className="flex-1 grid place-items-center text-white/60"><Loader2 className="animate-spin" size={22} /></div>;
+  if (loading) return <div role="status" aria-label="Finding lyrics" className="public-lyrics-loading">
+    <div className="public-lyrics-skeleton" aria-hidden="true"><span/><span/><span/></div>
+    <p>Finding lyrics…</p>
+  </div>;
+
 
   if (hasTimed) return (
+    <div className="public-lyrics-view">
+    <div className="public-lyrics-toolbar"><span>Synced lyrics</span>{onFindMatch&&<button type="button" onClick={onFindMatch}>Find another match</button>}</div>
     <div ref={scrollRef} onWheel={markUserScroll} onTouchStart={markUserScroll} onTouchMove={markUserScroll}
     onKeyDown={event=>{if(["ArrowUp","ArrowDown","PageUp","PageDown","Home","End"].includes(event.key))markUserScroll();}}
     className="public-lyrics-scroll no-scrollbar" aria-label="Synced song lyrics">
@@ -85,7 +97,8 @@ export default function SyncedLyrics({ trackId, position, resolvedLyrics, onSeek
         const distance = activeIdx < 0 ? index : Math.abs(index - activeIdx);
         const opacity = active ? 1 : distance <= 1 ? 0.72 : distance === 2 ? 0.52 : 0.36;
         return <button type="button" key={index} ref={(element) => {lineRefs.current[index] = element;}}
-        onClick={() => seekLine(line)} aria-current={active ? "true" : undefined}
+        onClick={() => seekLine(line)} title="Play from this line"
+        aria-label={(line.text==='♪'?'Instrumental passage':line.text||'Instrumental passage')+' · Play from '+Math.floor(Number(line.start_time_ms)/60000)+':'+String(Math.floor(Number(line.start_time_ms)/1000)%60).padStart(2,'0')} aria-current={active ? "true" : undefined}
         className="public-lyric-line selectable-content"
         style={{ opacity, filter: "none" }}>
           {/^(?:[♪♫]+|\[?(?:instrumental|music|interlude|solo)\]?)$/i.test(line.text?.trim()||"") ? <LyricInterlude active={active}/> : Array.isArray(line.words) && line.words.length ? line.words.map((word, wordIndex) => {
@@ -99,16 +112,26 @@ export default function SyncedLyrics({ trackId, position, resolvedLyrics, onSeek
           }) : line.text?.trim() || <LyricInterlude active={active}/>}
         </button>;
       })}
+    </div>
+    {browsing&&activeIdx>=0&&<button type="button" className="public-lyrics-follow" onClick={followCurrent}>↓ Current line</button>}
     </div>);
 
 
-  if (!text) return <div className="flex-1 flex flex-col items-center justify-center px-6 text-center gap-4 text-white/70 text-sm" role="status"><p>{current?.error|| (current?.instrumental?'This recording is instrumental.':'No matching lyrics on LRCLIB yet.')}</p><div className="flex flex-wrap justify-center gap-2">{current?.error&&<button className="rounded-full border border-white/25 px-4 py-3" onClick={onRetry}>Retry</button>}<button className="rounded-full border border-white/25 px-4 py-3" onClick={onFindMatch}>Find another match</button></div></div>;
+  if (!text) return <div className="public-lyrics-empty" role="status">
+    <div className="public-lyrics-empty-mark" aria-hidden="true"><span/><span/><span/></div>
+    <h3>{current?.error?'Lyrics couldn’t load':current?.instrumental?'An instrumental moment':'Lyrics aren’t here yet'}</h3>
+    <p>{current?.error|| (current?.instrumental?'This recording is instrumental.':'We couldn’t find a confident match for this recording.')}</p>
+    <div className="public-lyrics-actions">{current?.error&&<button type="button" onClick={onRetry}>Retry</button>}{onFindMatch&&<button type="button" onClick={onFindMatch}>Find another match</button>}</div>
+  </div>;
+
 
   return (
+    <div className="public-lyrics-view">
+    <div className="public-lyrics-toolbar"><span>Lyrics · no timing available</span>{onFindMatch&&<button type="button" onClick={onFindMatch}>Find another match</button>}</div>
     <div className="public-lyrics-scroll no-scrollbar" aria-label="Song lyrics">
       {text.replace(/\r\n?/g, "\n").split("\n").map((line, index) =>
       line.trim() ? <p key={index} className="public-lyric-line public-lyric-plain selectable-content">{line}</p> :
       <div key={index} className="h-6" aria-hidden="true" />)}
-    </div>);
+    </div></div>);
 
 }
