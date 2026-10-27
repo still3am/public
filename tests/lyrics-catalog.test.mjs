@@ -25,7 +25,7 @@ assert.equal(selectLyricsMatch([{...sample,trackName:'My Song (Remix)'}],song),n
 assert.equal(selectLyricsMatch([{...sample,trackName:'My Song (Slowed)'}],song),null);
 let sharedResolve;const sharedResponse=new Promise(resolve=>{sharedResolve=resolve;});
 let calls=[];
-globalThis.fetch=async(url,options)=>{calls.push({url,options});const params=new URL(url).searchParams;const title=params.get('track_name');if(title==='Recovered lookup')return {status:503,ok:false};if(params.get('q')==='Recovered lookup My Artist')return {status:200,ok:true,json:async()=>[{...sample,id:88,trackName:'Recovered lookup'}]};if(title==='Fallback Song')return {status:200,ok:true,json:async()=>[]};if(params.get('q')==='Fallback Song My Artist')return {status:200,ok:true,json:async()=>[{...sample,id:77,trackName:'Fallback Song'}]};if(title==='Shared lookup')return sharedResponse;if(title==='Rate limit')return {status:429,ok:false,headers:new Headers({'Retry-After':'10'})};if(title==='Failure')return {status:503,ok:false};return {status:200,ok:true,json:async()=>title==='Missing'?[]:[sample]};};
+globalThis.fetch=async(url,options)=>{calls.push({url,options});const params=new URL(url).searchParams;const title=params.get('track_name');if(title==='Tresor')return {status:200,ok:true,json:async()=>[{...sample,id:91,trackName:'Trésor'}]};if(title==='Recovered lookup')return {status:503,ok:false};if(params.get('q')==='Recovered lookup My Artist')return {status:200,ok:true,json:async()=>[{...sample,id:88,trackName:'Recovered lookup'}]};if(title==='Fallback Song')return {status:200,ok:true,json:async()=>[]};if(params.get('q')==='Fallback Song My Artist')return {status:200,ok:true,json:async()=>[{...sample,id:77,trackName:'Fallback Song'}]};if(title==='Shared lookup')return sharedResponse;if(title==='Rate limit')return {status:429,ok:false,headers:new Headers({'Retry-After':'10'})};if(title==='Failure')return {status:503,ok:false};return {status:200,ok:true,json:async()=>title==='Missing'?[]:[sample]};};
 const firstController=new AbortController(),secondController=new AbortController();
 const first=searchLyricsCatalog({...song,title:'Shared lookup'},{signal:firstController.signal});
 const second=searchLyricsCatalog({...song,title:'Shared lookup'},{signal:secondController.signal});
@@ -40,6 +40,7 @@ await assert.rejects(searchLyricsCatalog({...song,title:'Failure'}),/could not l
 const controller=new AbortController();controller.abort();await assert.rejects(searchLyricsCatalog({...song,title:'Cancelled'},{signal:controller.signal}),{name:'AbortError'});
 assert.equal((await findLyricsCatalog({...song,title:'Fallback Song'})).sourceId,77,'automatic broad fallback finds a verified synced match');
 assert.equal((await findLyricsCatalog({...song,title:'Recovered lookup'})).sourceId,88,'a failed strict lookup still tries the broader verified search');
+assert.equal((await findLyricsCatalog({...song,title:'Trésor'})).sourceId,91,'accent-free search fallback still verifies original recording metadata');
 await assert.rejects(searchLyricsCatalog({...song,title:'Rate limit'}),/busy/);const before=calls.length;await assert.rejects(searchLyricsCatalog({...song,title:'After rate limit'}),/busy/);assert.equal(calls.length,before,'provider Retry-After respected without extra calls');
 chooseLyricsCatalogMatch({...song,id:'public-song'},{...sample,id:42});
 const chosen=await findLyricsCatalog({...song,id:'public-song'});assert.equal(chosen.sourceId,42,'reviewed LRCLIB match applies for the session without database writes');clearLyricsCatalogMatch({...song,id:'public-song'});assert.equal((await findLyricsCatalog({...song,id:'public-song'})).sourceId,1,'reset restores the automatic match without a save');
@@ -52,3 +53,5 @@ assert.equal(selectLyricsMatch([{...sample,artistName:'Guest & My Artist'}],{...
 
 assert.equal(selectLyricsMatch([{...sample,artistName:'Beyoncé',trackName:'Déjà Vu'}],{...song,artist:'Beyonce',title:'Deja Vu'}).id,1,'accent formatting does not hide the correct recording');
 assert.equal(selectLyricsMatch([{...sample,trackName:'My Song (Radio Edit)'}],song),null,'a different edit cannot silently replace the recording');
+
+assert.equal(selectLyricsMatch([{...sample,trackName:"Don't Stop"}],{...song,title:'Dont Stop'}).id,1,'apostrophe formatting matches the same song');
