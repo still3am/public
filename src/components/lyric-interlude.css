@@ -15,9 +15,8 @@
 .public-lyrics-toolbar>span{font-weight:650}
 .public-lyrics-toolbar button{min-height:40px;padding:6px 0 6px 8px;border:0;background:none;color:rgba(255,255,255,.8);font-size:11px;cursor:pointer;white-space:nowrap}
 .public-lyrics-toolbar button:hover{color:#fff}
-.public-lyrics-follow{position:absolute;z-index:2;bottom:16px;left:50%;transform:translateX(-50%);min-height:44px;padding:10px 20px;white-space:nowrap;border:1px solid #ffffff38;border-radius:999px;background:rgba(20,20,20,.88);color:#fff;box-shadow:0 4px 20px #0002;font-size:13px;font-weight:650;cursor:pointer}
 .public-lyrics-view .public-lyric-line{max-width:42ch;line-height:1.4;margin-bottom:clamp(18px,3.4vh,28px);text-wrap:pretty}
-.public-lyrics-toolbar button:focus-visible,.public-lyrics-follow:focus-visible,.public-lyrics-actions button:focus-visible{outline:2px solid white;outline-offset:3px}
+.public-lyrics-toolbar button:focus-visible,.public-lyrics-actions button:focus-visible{outline:2px solid white;outline-offset:3px}
 .public-lyrics-loading,.public-lyrics-empty{display:flex;flex:1;min-height:0;flex-direction:column;align-items:center;justify-content:center;width:100%;padding:24px;text-align:center;color:rgba(255,255,255,.75);gap:14px}
 .public-lyrics-loading p{font-size:13px}
 .public-lyrics-skeleton{display:flex;flex-direction:column;gap:16px;width:min(300px,85%);margin-bottom:12px;opacity:.6;animation:public-lyrics-breathe 2s ease-in-out infinite}

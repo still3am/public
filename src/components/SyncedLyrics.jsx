@@ -1,10 +1,9 @@
 import LyricInterlude from "@/components/LyricInterlude";
-import { useEffect, useRef, useMemo, useState } from "react";
+import { useEffect, useRef, useMemo } from "react";
 
 
 /** @param {any} props */
 export default function SyncedLyrics({ trackId, position, resolvedLyrics, onSeek, onRetry, onFindMatch }) {
-  const [browsing, setBrowsing] = useState(false);
   const lineRefs = useRef([]);
   const scrollRef = useRef(null);
   const activeRef = useRef(-1);
@@ -12,8 +11,7 @@ export default function SyncedLyrics({ trackId, position, resolvedLyrics, onSeek
   const resumeTimer = useRef(null);
   const lastCentered = useRef({ trackId: null, index: -1 });
 
-  useEffect(() => {
-    setBrowsing(false);userScrollUntil.current = 0;clearTimeout(resumeTimer.current);
+  useEffect(() => {userScrollUntil.current = 0;clearTimeout(resumeTimer.current);
     lastCentered.current = { trackId: null, index: -1 };
   }, [trackId, resolvedLyrics?.record]);
   const current = resolvedLyrics?.trackId === trackId ? resolvedLyrics : null;
@@ -60,22 +58,17 @@ export default function SyncedLyrics({ trackId, position, resolvedLyrics, onSeek
   }, [activeIdx, loading, trackId, displayLines]);
 
   useEffect(() => () => clearTimeout(resumeTimer.current), []);
-  const followCurrent = () => {
-    clearTimeout(resumeTimer.current);userScrollUntil.current = 0;setBrowsing(false);centerActive();
-  };
   const markUserScroll = () => {
-    setBrowsing(true);
     userScrollUntil.current = Date.now() + 4000;
     clearTimeout(resumeTimer.current);
     resumeTimer.current = setTimeout(() => {
-      userScrollUntil.current = 0;setBrowsing(false);
+      userScrollUntil.current = 0;
       centerActive();
     }, 4100);
   };
   const seekLine = (line) => {
     clearTimeout(resumeTimer.current);
     userScrollUntil.current = 0;
-    setBrowsing(false);
     onSeek?.(Number(line.start_time_ms) / 1000);
   };
 
@@ -113,7 +106,6 @@ export default function SyncedLyrics({ trackId, position, resolvedLyrics, onSeek
         </button>;
         })}
     </div>
-    {browsing && activeIdx >= 0 && <button type="button" className="public-lyrics-follow" onClick={followCurrent}>↓ Current line</button>}
     </div>);
 
 
