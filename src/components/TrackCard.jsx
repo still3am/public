@@ -8,7 +8,7 @@ import { Image } from "@/components/ui/image";
 import { useCoverUrl } from "@/hooks/useCoverUrl";
 
 /** @param {any} props */
-function EqualizerBars({ active }) {
+function PlayingBars({ active }) {
   if (!active) return null;
   return (
     <div className="flex items-end gap-0.5 h-4 px-1">
@@ -99,7 +99,7 @@ export default function TrackCard({ track, selectable = false, selected = false,
 
         {!selectable && isPlayingNow && (
           <div className="absolute bottom-2 right-2 w-8 h-8 md:bottom-2.5 md:right-2.5 md:w-12 md:h-12 rounded-full bg-background/85 backdrop-blur grid place-items-center text-foreground shadow-xl">
-            <EqualizerBars active={isPlayingNow} />
+            <PlayingBars active={isPlayingNow} />
           </div>
         )}
 
