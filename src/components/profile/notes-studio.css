@@ -70,3 +70,4 @@
 :is(.public-note-dialog,.note-studio-picker)[role=dialog]>button:last-child:focus-visible{outline:2px solid hsl(var(--ring));outline-offset:3px}
 .note-studio-playback-status{display:flex;justify-content:space-between;align-items:center;gap:12px;min-height:32px;margin:-8px 0 10px;font-size:10px;color:hsl(var(--muted-foreground))}
 .note-studio-playback-status button{display:flex;align-items:center;gap:5px;min-height:32px;padding:4px 6px;font-size:10px}
+.note-studio-full-hint{font-size:10px;line-height:1.6;color:hsl(var(--muted-foreground));margin-top:10px}

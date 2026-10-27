@@ -15,7 +15,7 @@ const stubs=`
 const {requestPublicNote,savePublicNote,publicNoteError}=globalThis.__noteActions;
 const React=globalThis.__React,useState=globalThis.__state,useEffect=()=>{},useRef=initial=>({current:initial});
 const publicNoteDatabase=undefined;
-const base44={functions:{invoke:(...args)=>globalThis.__api(...args)}},useAuth=()=>({user:globalThis.__user}),useNotePreview=()=>({trackId:globalThis.__player.currentTrack?.id,playing:globalThis.__player.isPlaying,pause:()=>globalThis.__noteCalls.push("pause"),stop:()=>globalThis.__noteCalls.push("stop"),play:(track,ensure)=>ensure&&globalThis.__player.currentTrack?.id===track.id&&globalThis.__player.isPlaying?undefined:globalThis.__player.currentTrack?.id===track.id?globalThis.__player.togglePlay():globalThis.__player.playTrackAt([track])}),useNoteHighlights=()=>globalThis.__noteHighlights||({profile:null,moments:[],loading:false,error:"",retry(){}}),useCoverUrl=x=>x,useCoverPalette=()=>({colors:[]});
+const base44={functions:{invoke:(...args)=>globalThis.__api(...args)}},useAuth=()=>({user:globalThis.__user}),useNotePreview=()=>({trackId:globalThis.__player.currentTrack?.id,playing:globalThis.__player.isPlaying,pause:()=>globalThis.__noteCalls.push("pause"),stop:()=>globalThis.__noteCalls.push("stop"),play:(track,ensure,selection)=>(globalThis.__noteSelection=selection,ensure&&globalThis.__player.currentTrack?.id===track.id&&globalThis.__player.isPlaying?undefined:globalThis.__player.currentTrack?.id===track.id?globalThis.__player.togglePlay():globalThis.__player.playTrackAt([track]))}),useCoverUrl=x=>x,useCoverPalette=()=>({colors:[]});
 const Avatar="avatar",OverflowText="overflow-text",NoteEmojiPicker="emoji-picker",NoteReactions="note-reactions",MotionGradient="gradient",TrackPickerSheet="picker",Dialog="dialog",DialogContent="content",DialogHeader="header",DialogTitle="h1",DialogDescription="p";
 const Music2=()=>null,ImageIcon=Music2,RotateCcw=Music2,Plus=Music2,Play=Music2,Pause=Music2,Loader2=Music2;
 `;
@@ -134,6 +134,9 @@ tree=render([null,false,"",true,false,note.track,"",false,Date.now()]);
 assert.equal(find(tree,n=>n.type==="input"&&n.props.type==="range").length,0,"notes have no clip trimmer");
 assert.equal(find(tree,n=>n.props?.className==="note-studio-moments").length,0,"notes have no audio highlight controls");
 assert.ok(!find(tree,n=>n.type==="button").some(n=>n.props.children==="Choose a clip"));
+tree=render([{...note,playback_mode:"clip",clip_start:45,clip_length:15},false,"",false,false,null,"",false,Date.now(),true]);
+await find(tree,n=>n.props?.className==="public-note-play")[0].props.onClick();
+assert.deepEqual(globalThis.__noteSelection,{playback_mode:"full"},"previously clipped notes now play the full song");
 globalThis.__user=null;
 assert.equal(render([note,false,""]),null,"signed-out session does not leak a previously loaded note");
 console.log("PASS PUBLIC Notes playback, expiry, failed-save draft preservation, confirmed posting and session isolation");
