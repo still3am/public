@@ -101,7 +101,7 @@ export default function SyncedLyrics({ trackId, position, resolvedLyrics, onSeek
               return <span key={wordIndex} style={active && valid ? {
                 backgroundImage: "linear-gradient(to right,#fff " + progress * 100 + "%,rgba(255,255,255,.4) " + progress * 100 + "%)",
                 backgroundClip: "text", WebkitBackgroundClip: "text", color: "transparent"
-              } : undefined}>{word.text}{wordIndex < line.words.length - 1 ? " " : ""}</span>;
+              } : undefined}>{word.text}{!line.preserve_word_spacing && wordIndex < line.words.length - 1 ? " " : ""}</span>;
             }) : line.text?.trim() || <LyricInterlude active={active} />}
         </button>;
         })}

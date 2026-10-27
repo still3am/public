@@ -71,6 +71,22 @@ async function request(path, {signal} = {}) {
   });
   queue=job.then(()=>{},()=>{});return job;
 }
+// Keep provider word timing when enhanced LRC supplies it; never estimate it.
+function parseWordStamps(row,offset) {
+ const body=row.replace(/\[\d{1,3}:\d{2}(?:[.:]\d{1,3})?\]/g,'');
+ const marks=[...body.matchAll(/<(\d{1,3}):(\d{2})(?:[.:](\d{1,3}))?>/g)];
+ if(!marks.length||body.slice(0,marks[0].index).trim())return null;
+ const words=[];
+ for(let i=0;i<marks.length;i++){
+  const mark=marks[i];if(Number(mark[2])>=60)return null;
+  const start=Math.max(0,Math.round((Number(mark[1])*60+Number(mark[2])+Number('0.'+(mark[3]||'0')))*1000-offset));
+  if(i&&start<=words.at(-1)?.start_time_ms)return null;
+  const value=body.slice(mark.index+mark[0].length,marks[i+1]?.index??body.length);
+  if(words.length)words[words.length-1].end_time_ms=start;
+  if(value.trim())words.push({text:value,start_time_ms:start});
+ }
+ return words.length?words:null;
+}
 export function parseLrc(value, duration = 0) {
   if(typeof value!=='string')return [];
   const offset=Number(value.match(/\[offset:([+-]?\d+)\]/i)?.[1])||0;
@@ -78,16 +94,23 @@ export function parseLrc(value, duration = 0) {
   for(const row of value.slice(0,100000).replace(/\r/g,'').split('\n')){
     const stamps=[...row.matchAll(/\[(\d{1,3}):(\d{2})(?:[.:](\d{1,3}))?\]/g)];
     const lyric=row.replace(/\[\d{1,3}:\d{2}(?:[.:]\d{1,3})?\]/g,'').replace(/<\d{1,3}:\d{2}(?:[.:]\d{1,3})?>/g,'').trim();
-    for(const stamp of stamps){if(Number(stamp[2])>=60)continue;const ms=Math.max(0,Math.round((Number(stamp[1])*60+Number(stamp[2])+Number('0.'+(stamp[3]||'0')))*1000-offset));if(duration>0&&ms>duration*1000+2000)continue;lines.push({text:lyric||'♪',start_time_ms:ms});}
+    const words=stamps.length===1?parseWordStamps(row,offset):null;
+    for(const stamp of stamps){if(Number(stamp[2])>=60)continue;const ms=Math.max(0,Math.round((Number(stamp[1])*60+Number(stamp[2])+Number('0.'+(stamp[3]||'0')))*1000-offset));if(duration>0&&ms>duration*1000+2000)continue;lines.push({text:lyric||'♪',start_time_ms:ms,...(words?{words}: {})});}
     if(lines.length>=2000)break;
   }
   const grouped=[];
   for(const line of lines.sort((a,b)=>a.start_time_ms-b.start_time_ms)){
    const previous=grouped.at(-1);
-   if(previous?.start_time_ms===line.start_time_ms){if(previous.text!==line.text){if(previous.text==='♪')previous.text=line.text;else if(line.text!=='♪')previous.text+=' / '+line.text;}continue;}
+   if(previous?.start_time_ms===line.start_time_ms){if(previous.text!==line.text){if(previous.text==='♪')previous.text=line.text;else if(line.text!=='♪'){previous.text+=' / '+line.text;delete previous.words;}}continue;}
    grouped.push({...line});
   }
-  return grouped.slice(0,2000).map((line,index,all)=>({...line,end_time_ms:all[index+1]?.start_time_ms??Math.max(line.start_time_ms+1000,Math.round(duration*1000)||line.start_time_ms+4000)}));
+  return grouped.slice(0,2000).map((line,index,all)=>{
+   const end=all[index+1]?.start_time_ms??Math.max(line.start_time_ms+1000,Math.round(duration*1000)||line.start_time_ms+4000);
+   const words=line.words?.map(word=>({...word,end_time_ms:word.end_time_ms??end}));
+   const valid=words?.every(word=>word.start_time_ms>=line.start_time_ms&&word.end_time_ms>word.start_time_ms&&word.end_time_ms<=end);
+   const rest={...line};delete rest.words;
+   return {...rest,end_time_ms:end,...(valid?{words,preserve_word_spacing:true}:{})};
+  });
 }
 export function selectLyricsMatch(rows,track) {
  const matches=rows.map(row=>({row,score:candidateScore(row,track)})).filter(item=>item.score>=0).sort((a,b)=>b.score-a.score);
