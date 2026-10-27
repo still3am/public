@@ -97,3 +97,13 @@
 .note-studio-analysis-error button{min-height:36px;text-decoration:underline;padding:4px 0}
 .note-studio-timeline:has(input:disabled){opacity:.55}
 .note-studio-playhead{position:absolute;top:4px;bottom:4px;width:2px;background:#bf72ed;pointer-events:none;box-shadow:0 0 6px #bf72ed66}
+.note-studio-playback-status{display:flex;justify-content:space-between;align-items:center;gap:12px;min-height:32px;margin:-8px 0 10px;font-size:10px;color:hsl(var(--muted-foreground))}
+.note-studio-playback-status button{display:flex;align-items:center;gap:5px;min-height:32px;padding:4px 6px;font-size:10px}
+.note-studio-fine-tune{display:flex;align-items:center;justify-content:center;gap:18px;margin:12px 0 16px}
+.note-studio-fine-tune button{width:44px;height:44px;border:1px solid hsl(var(--border));border-radius:50%;font-size:11px;font-variant-numeric:tabular-nums}
+.note-studio-fine-tune>span{min-width:60px;text-align:center;font-size:17px;font-weight:600;font-variant-numeric:tabular-nums;line-height:1.2}
+.note-studio-fine-tune small{display:block;letter-spacing:.1em;font-size:8px;font-weight:500;color:hsl(var(--muted-foreground));margin-top:4px}
+.note-studio-timeline{height:68px}
+.note-studio-selection::before,.note-studio-selection::after{content:"";position:absolute;top:calc(50% - 9px);height:18px;width:2px;border-radius:2px;background:hsl(var(--foreground))}
+.note-studio-selection::before{left:3px}.note-studio-selection::after{right:3px}
+@media(pointer:coarse){.note-studio-tools button{min-height:44px}.note-studio-moment-rail{height:44px}.note-studio-moment-rail::before{top:21px}.note-studio-moment-rail button{width:44px;height:44px;min-width:44px;min-height:44px}.note-studio-song-top .public-note-clear-song{min-height:36px}}

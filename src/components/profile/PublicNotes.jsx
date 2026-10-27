@@ -15,7 +15,7 @@ import NoteEmojiPicker from "./NoteEmojiPicker";
 import NoteReactions from "./NoteReactions";
 import TrackPickerSheet from "@/components/profile/TrackPickerSheet";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
-import { Image as ImageIcon, Music2, Plus, Play, Pause, Loader2 } from "lucide-react";
+import { Image as ImageIcon, Music2, RotateCcw, Plus, Play, Pause, Loader2 } from "lucide-react";
 
 async function request(action, args) {
   return requestPublicNote(base44, action, args, publicNoteDatabase);
@@ -105,10 +105,10 @@ export default function PublicNotes({ profileId, isOwn, active = true, userTrack
     onView?.();setPlaybackError("");setViewing(true);
     if(!isOwn && note.track)await playNote(true);
   }
-  async function playDraft() {
+  async function playDraft(restart = false) {
     if(!draft||playLock.current)return;
     playLock.current=true;setDraftPlaybackError("");
-    try{await preview.play(draft,false,{playback_mode:playbackMode,clip_start:Math.min(clipStart,maxStart),clip_length:selectedLength});}
+    try{await preview.play(draft,false,{playback_mode:playbackMode,clip_start:Math.min(clipStart,maxStart),clip_length:selectedLength,restart});}
     catch{if(alive.current)setDraftPlaybackError("Couldn’t preview this song. Try again.");}
     finally{playLock.current=false;}
   }
@@ -177,7 +177,8 @@ export default function PublicNotes({ profileId, isOwn, active = true, userTrack
         {emojiOpen && <div className="note-studio-emoji-panel"><div><strong>Make it yours</strong>{emoji&&<button type="button" disabled={busy} onClick={()=>{setEmoji("");setEmojiOpen(false);}}>Remove emoji</button>}</div><NoteEmojiPicker selected={emoji} disabled={busy} onSelect={value=>{setEmoji(value);setEmojiOpen(false);emojiTrigger.current?.focus();}}/></div>}
         {draft && <section className="note-studio-song" aria-label="Song and clip selection">
           <div className="note-studio-song-top"><span>YOUR SOUNDTRACK</span><button type="button" className="public-note-clear-song" disabled={busy} onClick={()=>{preview.stop();setDraft(null);setDraftPlaybackError("");}}>Remove</button></div>
-          <div className="note-studio-song-info"><span className="public-note-choice-art"><Cover url={draft.cover_art_url}/></span><div><strong><OverflowText text={draft.title}/></strong><small><OverflowText text={draft.artist||draft.uploader_name||"PUBLIC artist"}/></small></div><button type="button" className="public-note-preview-play" disabled={busy||preview.loading} aria-label={(preview.trackId===draft.id&&preview.playing?"Pause preview of ":"Preview ")+draft.title} onClick={playDraft}>{preview.loading?<Loader2 size={20} className="animate-spin"/>:preview.trackId===draft.id&&preview.playing?<Pause size={20} fill="currentColor"/>:<Play size={20} fill="currentColor"/>}</button></div>
+          <div className="note-studio-song-info"><span className="public-note-choice-art"><Cover url={draft.cover_art_url}/></span><div><strong><OverflowText text={draft.title}/></strong><small><OverflowText text={draft.artist||draft.uploader_name||"PUBLIC artist"}/></small></div><button type="button" className="public-note-preview-play" disabled={busy||preview.loading} aria-label={(preview.trackId===draft.id&&preview.playing?"Pause preview of ":"Preview ")+draft.title} onClick={()=>playDraft()}>{preview.loading?<Loader2 size={20} className="animate-spin"/>:preview.trackId===draft.id&&preview.playing?<Pause size={20} fill="currentColor"/>:<Play size={20} fill="currentColor"/>}</button></div>
+          <div className="note-studio-playback-status"><span role="status">{preview.loading?"Loading preview…":preview.trackId===draft.id&&preview.playing?(playbackMode==="clip"?"Playing clip":"Playing song"):"Tap play to preview"}</span>{preview.trackId===draft.id&&<button type="button" disabled={busy||preview.loading} aria-label="Restart note preview" onClick={()=>playDraft(true)}><RotateCcw size={13}/>Restart</button>}</div>
           <div className="public-note-audio-modes" role="group" aria-label="Note playback"><button type="button" disabled={busy} aria-pressed={playbackMode==="full"} onClick={()=>{preview.pause();setPlaybackMode("full");}}>Full song</button><button type="button" disabled={busy} aria-pressed={playbackMode==="clip"} onClick={()=>{preview.pause();setPlaybackMode("clip");setClipStart(Math.min(clipStart,maxStart));}}>Choose a clip</button></div>
           {playbackMode==="clip" && <div className="note-studio-trimmer">
             <div className="note-studio-durations" role="group" aria-label="Note clip length">{[15,30,60].map(length=><button type="button" key={length} disabled={busy} aria-pressed={clipLength===length} onClick={()=>{preview.pause();setClipLength(length);setClipStart(Math.min(clipStart,Math.max(0,draftDuration-length)));}}>{length}s</button>)}</div>
@@ -188,6 +189,7 @@ export default function PublicNotes({ profileId, isOwn, active = true, userTrack
               {preview.trackId===draft.id&&preview.playing&&draftDuration>0&&<span className="note-studio-playhead" aria-hidden="true" style={{left:Math.min(100,(preview.position||0)/draftDuration*100)+"%"}}/>}
               <input type="range" min="0" max={maxStart} step="0.1" value={Math.min(clipStart,maxStart)} disabled={!draftDuration||busy} aria-label="Choose clip start" aria-valuetext={"From "+timeLabel(clipStart)+" to "+timeLabel(clipStart+selectedLength)} onChange={event=>{preview.pause();setClipStart(Number(event.target.value));}}/>
             </div>
+            <div className="note-studio-fine-tune" role="group" aria-label="Fine tune clip start"><button type="button" disabled={busy||!draftDuration||clipStart<=0} aria-label="Start clip one second earlier" onClick={()=>{preview.pause();setClipStart(Math.max(0,Math.min(clipStart,maxStart)-1));}}>−1s</button><span>{timeLabel(Math.min(clipStart,maxStart))}<small>START</small></span><button type="button" disabled={busy||!draftDuration||clipStart>=maxStart} aria-label="Start clip one second later" onClick={()=>{preview.pause();setClipStart(Math.min(maxStart,clipStart+1));}}>+1s</button></div>
             <div className="note-studio-time"><strong>{timeLabel(Math.min(clipStart,maxStart))} — {timeLabel(Math.min(clipStart,maxStart)+selectedLength)}</strong><span>{draftDuration>0?timeLabel(draftDuration):"Tap play to load timing"}</span></div>
             <p>{highlights.loading?"Finding suggested moments…":"Slide to your favorite part. Tap play to preview."}</p>
             {highlights.error&&<p className="note-studio-analysis-error" role="status">Suggestions unavailable. You can still choose a clip. <button type="button" disabled={busy} onClick={highlights.retry}>Retry suggestions</button></p>}

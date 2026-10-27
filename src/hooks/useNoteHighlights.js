@@ -1,4 +1,4 @@
-import {useEffect,useState} from 'react';
+import {useEffect,useMemo,useState} from 'react';
 import {withReadTimeout} from '@/lib/readTimeout';
 import {base44} from '@/api/base44Client';
 import {measureNoteAudio,readNoteAudioBytes,suggestedNoteMoments} from '@/lib/noteHighlights';
@@ -23,7 +23,7 @@ export function useNoteHighlights({track,accountId,active,length=30}) {
     const response=await fetch(fresh.audio_url,{signal:controller.signal});
     const bytes=await readNoteAudioBytes(response,controller.signal);
     if(cancelled||controller.signal.aborted)return;
-    const decoder=new Decoder(1,1,11025),audio=await decoder.decodeAudioData(bytes);
+    const decoder=new Decoder(1,1,11025),audio=await withReadTimeout(()=>decoder.decodeAudioData(bytes),20000,"Audio analysis took too long. Try again.");
     if(cancelled||controller.signal.aborted)return;
     const profile=measureNoteAudio(audio);
     cache.set(key,profile);if(cache.size>8)cache.delete(cache.keys().next().value);
@@ -34,5 +34,6 @@ export function useNoteHighlights({track,accountId,active,length=30}) {
   return()=>{cancelled=true;clearTimeout(timer);controller.abort();};
  },[active,key,retry]);
  const current=state.key===key?state:null;
- return {profile:current?.profile||null,loading:current?.loading||false,error:current?.error||'',moments:suggestedNoteMoments(current?.profile,length),retry:()=>setRetry(value=>value+1)};
+ const moments=useMemo(()=>suggestedNoteMoments(current?.profile,length),[current?.profile,length]);
+ return {profile:current?.profile||null,loading:current?.loading||false,error:current?.error||'',moments,retry:()=>setRetry(value=>value+1)};
 }

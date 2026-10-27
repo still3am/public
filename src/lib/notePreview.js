@@ -14,13 +14,15 @@ export function createNotePreview({acquire,createAudio=()=>new Audio(),onChange=
   const signature=JSON.stringify([track.id,start,length]);
   if(session?.signature===signature){
    if(session.loading)return;
+   session.requestedPause=false;
+   if(selection.restart){session.audio.currentTime=start;await session.audio.play();notify();return;}
    if(!session.audio.paused){if(!ensure)session.audio.pause();notify();return;}
    try{if(length&&session.audio.currentTime>=start+length-.05)session.audio.currentTime=start;await session.audio.play();notify();}catch(e){stop();throw e;}return;
   }
   const held=session?.lease;
   stop(false);const token=++version,audio=createAudio();
   const lease=held||acquire(()=>stop(false));
-  const current={id:track.id,signature,audio,lease,source:null,loading:true,timer:null,deadline:null};session=current;notify();
+  const current={id:track.id,signature,audio,lease,source:null,loading:true,timer:null,deadline:null,requestedPause:false};session=current;notify();
   const valid=()=>session===current&&version===token&&lease.isCurrent();
   const failed=message=>{if(valid()){lastError=message;stop();}};
   current.deadline=setTimeout(()=>failed("This song is taking too long to load. Tap play to retry."),15000);
@@ -39,10 +41,12 @@ export function createNotePreview({acquire,createAudio=()=>new Audio(),onChange=
    if(audio.readyState>=1)seekStart();
    audio.onended=finish;
    audio.onerror=()=>failed("Couldn’t play this audio. Check your connection and tap play to retry.");
+   if(current.requestedPause){clearTimeout(current.deadline);current.loading=false;notify();return;}
    await audio.play();
+   if(current.requestedPause)audio.pause();
    if(!valid()){audio.pause();return;}
    clearTimeout(current.deadline);current.loading=false;notify();
-  }catch(e){if(valid()){stop();throw e;}}
+  }catch(e){if(valid()){if(current.requestedPause){clearTimeout(current.deadline);current.loading=false;notify();return;}stop();throw e;}}
  }
- return {play,stop,pause(){if(session){session.audio.pause();notify();}},setOutput(volume,muted,sinkId){if(session){session.audio.volume=volume;session.audio.muted=muted;if(sinkId&&session.audio.setSinkId)session.audio.setSinkId(sinkId).catch(()=>{});}}};
+ return {play,stop,pause(){if(session){session.requestedPause=true;session.audio.pause();notify();}},setOutput(volume,muted,sinkId){if(session){session.audio.volume=volume;session.audio.muted=muted;if(sinkId&&session.audio.setSinkId)session.audio.setSinkId(sinkId).catch(()=>{});}}};
 }
