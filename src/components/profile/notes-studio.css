@@ -71,3 +71,14 @@
 .note-studio-playback-status{display:flex;justify-content:space-between;align-items:center;gap:12px;min-height:32px;margin:-8px 0 10px;font-size:10px;color:hsl(var(--muted-foreground))}
 .note-studio-playback-status button{display:flex;align-items:center;gap:5px;min-height:32px;padding:4px 6px;font-size:10px}
 .note-studio-full-hint{font-size:10px;line-height:1.6;color:hsl(var(--muted-foreground));margin-top:10px}
+
+/* Keep the selected Cover Flow style live in both composer previews. */
+.note-studio-bubble{isolation:isolate}
+.note-studio-bubble-flow{position:absolute;inset:0;z-index:0;border-radius:inherit}
+.note-studio-bubble>textarea,.note-studio-bubble>.note-studio-count{position:relative;z-index:1}
+.note-studio-bubble>.note-studio-emoji{z-index:2}
+.note-studio-bubble[data-flow=true]{border-color:transparent}
+.note-studio-bubble[data-flow=true]::after{background:var(--note-tail);border-color:transparent;z-index:-1}
+.public-note-studio .note-studio-bubble[data-flow=true] textarea{color:inherit;text-shadow:0 1px 3px #0003}
+.note-studio-bubble[data-flow=true] textarea::placeholder{color:inherit;opacity:.7}
+.note-studio-bubble[data-flow=true] .note-studio-count{color:inherit;opacity:.75}

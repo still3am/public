@@ -137,6 +137,12 @@ assert.ok(!find(tree,n=>n.type==="button").some(n=>n.props.children==="Choose a 
 tree=render([{...note,playback_mode:"clip",clip_start:45,clip_length:15},false,"",false,false,null,"",false,Date.now(),true]);
 await find(tree,n=>n.props?.className==="public-note-play")[0].props.onClick();
 assert.deepEqual(globalThis.__noteSelection,{playback_mode:"full"},"previously clipped notes now play the full song");
+tree=render([null,false,"",true,false,note.track,"Flow preview",false,Date.now(),false,"cover_flow"]);
+const animated=find(tree,n=>n.type==="gradient"&&["note-studio-bubble-flow","public-note-bubble-flow"].includes(n.props.className));
+assert.equal(animated.length,2,"Cover Flow renders animation in the live note bubble and the style preview");
+assert.ok(animated.every(n=>n.props.active===true&&n.props.motion==="flow"));
+tree=render([null,false,"",true,false,note.track,"Classic",false,Date.now(),false,"classic"]);
+assert.equal(find(tree,n=>n.props?.className==="note-studio-bubble-flow").length,0,"Classic stays unanimated");
 globalThis.__user=null;
 assert.equal(render([note,false,""]),null,"signed-out session does not leak a previously loaded note");
 console.log("PASS PUBLIC Notes playback, expiry, failed-save draft preservation, confirmed posting and session isolation");
