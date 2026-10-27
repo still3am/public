@@ -29,7 +29,7 @@ function joinSearch(entry,signal) {
 }
 let queue = Promise.resolve(), nextRequest = 0, cooldown = 0;
 const cancelled = () => new DOMException('Cancelled', 'AbortError');
-const normalize = value => String(value || '').normalize('NFKD').replace(/\p{M}/gu,'').toLowerCase().replace(/[’‘]/g,"'").replace(/[^\p{L}\p{N}]+/gu,' ').trim();
+const normalize = value => String(value || '').normalize('NFKD').replace(/\p{M}/gu,'').toLowerCase().replace(/[’‘']/g,'').replace(/[^\p{L}\p{N}]+/gu,' ').trim();
 export const cleanLyricsTitle = value => String(value||'').replace(/\s*[\[(](?:official\s+(?:audio|video|music\s+video|lyric\s+video)|lyrics?\s+video)[\])]\s*/gi,' ').replace(/\s+/g,' ').trim();
 export const primaryLyricsArtist = value => String(value||'').split(/\s+(?:feat\.?|ft\.?|featuring|with)\s+|,\s*|\s+&\s+|\s+x\s+/i)[0].trim();
 const baseTitle = value => cleanLyricsTitle(value).replace(/\s*[\[(](?:feat\.?|ft\.?|featuring)\s+[^\])]+[\])]/gi,'').replace(/\s+(?:feat\.?|ft\.?|featuring)\s+.+$/i,'').trim();
@@ -140,6 +140,13 @@ export async function findLyricsCatalog(track, options = {}) {
   }
   rows.push(...await lookup(alternate,{...options,broad:true}));
   best=selectLyricsMatch(rows,track);
+  // Some catalog searches index names without accents. Try that spelling only
+  // after the original queries, then validate against the original recording.
+  const unaccent=value=>String(value||'').normalize('NFD').replace(/\p{M}/gu,'');
+  const spelling={...alternate,title:unaccent(alternate.title),artist:unaccent(alternate.artist)};
+  if(!lyricsResult(best,track.duration_seconds)?.record&&(spelling.title!==alternate.title||spelling.artist!==alternate.artist)){
+   rows.push(...await lookup(spelling,options));best=selectLyricsMatch(rows,track);
+  }
   const result=lyricsResult(best,track.duration_seconds);
   if(!result&&failure)throw failure;
   return result;

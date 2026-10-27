@@ -9,10 +9,12 @@ export default function SyncedLyrics({ trackId, position, resolvedLyrics, onSeek
   const activeRef = useRef(-1);
   const userScrollUntil = useRef(0);
   const resumeTimer = useRef(null);
+  const lastCentered = useRef({trackId:null,index:-1});
 
   useEffect(() => {
-    lineRefs.current=[];userScrollUntil.current=0;clearTimeout(resumeTimer.current);
-  },[trackId,resolvedLyrics]);
+    userScrollUntil.current=0;clearTimeout(resumeTimer.current);
+    lastCentered.current={trackId:null,index:-1};
+  },[trackId,resolvedLyrics?.record]);
   const current=resolvedLyrics?.trackId===trackId?resolvedLyrics:null;
   const lyrics=current?.record||null;
   const trackLyrics=current?.text||'';
@@ -41,9 +43,12 @@ export default function SyncedLyrics({ trackId, position, resolvedLyrics, onSeek
     const top = container.scrollTop + line.getBoundingClientRect().top - container.getBoundingClientRect().top -
     container.clientHeight * 0.32;
     const target = Math.max(0, Math.min(container.scrollHeight - container.clientHeight, top));
+    const previous=lastCentered.current;
+    const jump=previous.trackId!==trackId||Math.abs(previous.index-activeRef.current)>3;
+    lastCentered.current={trackId,index:activeRef.current};
     if (Math.abs(container.scrollTop - target) > 2) container.scrollTo({
       top: target,
-      behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth"
+      behavior: jump || window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth"
     });
   };
 
@@ -51,7 +56,7 @@ export default function SyncedLyrics({ trackId, position, resolvedLyrics, onSeek
     if (loading || activeIdx < 0) return;
     const frame = requestAnimationFrame(centerActive);
     return () => cancelAnimationFrame(frame);
-  }, [activeIdx, loading, trackId]);
+  }, [activeIdx, loading, trackId, displayLines]);
 
   useEffect(() => () => clearTimeout(resumeTimer.current), []);
   const markUserScroll = () => {
@@ -73,6 +78,7 @@ export default function SyncedLyrics({ trackId, position, resolvedLyrics, onSeek
 
   if (hasTimed) return (
     <div ref={scrollRef} onWheel={markUserScroll} onTouchStart={markUserScroll} onTouchMove={markUserScroll}
+    onKeyDown={event=>{if(["ArrowUp","ArrowDown","PageUp","PageDown","Home","End"].includes(event.key))markUserScroll();}}
     className="public-lyrics-scroll no-scrollbar" aria-label="Synced song lyrics">
       {displayLines.map((line, index) => {
         const active = index === activeIdx;
