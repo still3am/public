@@ -17,20 +17,18 @@ uniform vec3 u_b;
 uniform vec3 u_c;
 void main(){
  vec2 p=v_uv;
- float t=u_time*.28;
- vec2 q=p;
- q.x+=.12*sin(p.y*4.4+t*.8)+.05*cos(p.y*7.0-t*.43);
- q.y+=.13*cos(p.x*4.0-t*.65)+.04*sin(p.x*6.2+t*.51);
- vec2 a=vec2(.28+.22*sin(t*.72),.30+.23*cos(t*.61));
- vec2 b=vec2(.72+.22*cos(t*.57),.44+.27*sin(t*.68));
- vec2 c=vec2(.45+.30*sin(t*.46+2.0),.76+.18*cos(t*.79));
- vec2 scale=vec2(clamp(u_aspect,.65,1.5),1.0);
- float wa=exp(-6.0*dot((q-a)*scale,(q-a)*scale));
- float wb=exp(-6.0*dot((q-b)*scale,(q-b)*scale));
- float wc=exp(-6.0*dot((q-c)*scale,(q-c)*scale));
- vec3 color=(u_a*wa+u_b*wb+u_c*wc)/max(.001,wa+wb+wc);
- float silk=.97+.045*sin(q.x*3.6-q.y*2.7+t*.35);
- color=clamp(color*silk,0.0,1.0);
+ float t=u_time;
+ // Smooth domain warping gives broad, folding ribbons rather than zoom pulses.
+ vec2 q=vec2(p.x*min(u_aspect,1.6),p.y);
+ q+=.20*vec2(sin(q.y*3.8+t*.43),cos(q.x*3.4-t*.31));
+ float wave=sin(q.x*3.2+q.y*2.1+t*.29);
+ float fold=sin(q.y*4.1-q.x*1.8-t*.38+wave*.8);
+ float ribbon=.5+.5*sin(q.x*2.9+fold*1.7+t*.22);
+ vec3 color=mix(u_a,u_b,smoothstep(.12,.88,ribbon));
+ float pool=.5+.5*sin(q.y*3.3+wave*1.6-t*.27);
+ color=mix(color,u_c,smoothstep(.28,.92,pool)*.88);
+ float light=.90+.10*sin(q.x*2.0+q.y*2.6+fold);
+ color*=light;
  gl_FragColor=vec4(color,1.);
 }
 `;

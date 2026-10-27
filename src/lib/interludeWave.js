@@ -1,11 +1,16 @@
-// Downsample real time-domain audio into a stable ribbon without invented beats.
-export function updateInterludeWave(samples,previous,playing=true) {
- const count=previous.length;let energy=0;
+// A slow ribbon whose envelope follows real audio energy, rather than redrawing
+// unrelated waveform snapshots on every frame. Phase is continuous while playing.
+export function updateInterludeWave(samples,previous,playing=true,phase=0,dt=33) {
+ const count=previous.length;let power=0;
+ if(playing&&samples?.length){for(const sample of samples){const v=(sample-128)/128;power+=v*v;}power=Math.sqrt(power/samples.length);}
+ const amplitude=Math.min(.85,power*1.7);
+ const blend=1-Math.exp(-Math.max(0,Math.min(80,dt))/(playing?280:100));
+ let energy=0;
  for(let i=0;i<count;i++){
-  const from=samples?Math.floor(i*samples.length/count):0,to=samples?Math.max(from+1,Math.floor((i+1)*samples.length/count)):0;
-  let sum=0,n=0;for(let j=from;j<to&&j<samples.length;j++){sum+=(samples[j]-128)/128;n++;}
-  const target=playing&&n?Math.max(-1,Math.min(1,sum/n*1.8)):0;
-  previous[i]+=(target-previous[i])*.32;energy+=previous[i]*previous[i];
+  const x=i/Math.max(1,count-1);
+  const shape=.72*Math.sin(x*Math.PI*2-phase)+.28*Math.sin(x*Math.PI*4-phase*.65);
+  const target=amplitude*shape;
+  previous[i]+=(target-previous[i])*blend;energy+=previous[i]*previous[i];
  }
  return Math.sqrt(energy/Math.max(1,count));
 }
