@@ -14,7 +14,7 @@ export default function LyricInterlude({active=false}) {
    if(analyser&&active&&p.isPlaying&&!reduced.matches){if(!values||values.length!==analyser.frequencyBinCount)values=new Uint8Array(analyser.frequencyBinCount);analyser.getByteFrequencyData(values);}
    for(let i=0;i<9;i++){
     const target=values&&active&&p?.isPlaying&&!reduced.matches?values[Math.min(values.length-1,Math.floor(Math.pow(i/9,1.8)*values.length*.6))]/255:0;
-    levels[i]+=(target-levels[i])*(target>levels[i]?.5:.18);
+    levels[i]+=(target-levels[i])*(target>levels[i] ? .5 : .18);
     if(bars.current[i])bars.current[i].style.transform='scaleY('+(.12+levels[i]*.88)+')';
    }
    if(active&&p?.isPlaying&&!reduced.matches)frame=requestAnimationFrame(draw);
