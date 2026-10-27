@@ -19,3 +19,6 @@ assert.match(contents(tree),/Connection failed/);const actions=all(tree,node=>no
 tree=View({...props,resolvedLyrics:{trackId:'new',loading:false,instrumental:true}});assert.match(contents(tree),/instrumental/);
 tree=View({...props,resolvedLyrics:{trackId:'new',text:'A new line',record:{lines:[{text:'A new line',start_time_ms:1000,end_time_ms:5000}]}}});const line=all(tree,node=>node.type==='button')[0];assert.equal(line.props['aria-current'],'true');line.props.onClick();assert.equal(sought,1);
 console.log('PASS immediate track isolation, loading/error/instrumental states, retry, alternate search and timed-line seeking');
+
+tree=View({...props,resolvedLyrics:{trackId:'new',record:{lines:[{text:'♪',start_time_ms:1000,end_time_ms:5000}]}}});
+assert.ok(all(tree,node=>node.type==='interlude').some(node=>node.props.active===true),'instrumental markers render an active reactive animation');

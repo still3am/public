@@ -30,7 +30,7 @@ globalThis.__query="unknown";assert.match(html(),/No matching activity/);assert.
 function all(node,predicate){if(!node||typeof node!=="object")return [];return [...(predicate(node)?[node]:[]),...React.Children.toArray(node.props?.children).flatMap(child=>all(child,predicate))];}
 let tree=Activity();all(tree,n=>n.type==="input")[0].props.onKeyDown({key:"Escape"});assert.equal(globalThis.__query,"");
 tree=Activity();all(tree,n=>n.props?.to==="/track/song")[0].props.onClick();assert.equal(globalThis.__read,"share","opening a shared song marks its activity read");
-globalThis.__activity.error=true;assert.match(html(),/Couldn’t refresh activity/);assert.match(html(),/Night Drive/,"refresh failure keeps loaded activity");
+globalThis.__activity.error=true;assert.doesNotMatch(html(),/Couldn’t refresh activity/,"loaded activity is not covered by a refresh banner");assert.match(html(),/Night Drive/,"refresh failure keeps loaded activity");
 globalThis.__activity.notifications=[];assert.match(html(),/Loading failed/);assert.doesNotMatch(html(),/No notifications yet|No shared songs/,"load failure never claims an empty inbox");
 console.log("PASS desktop Activity search, shared filtering, blocked users, pagination, read actions and error recovery");
 

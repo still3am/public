@@ -25,7 +25,7 @@ assert.equal(selectLyricsMatch([{...sample,trackName:'My Song (Remix)'}],song),n
 assert.equal(selectLyricsMatch([{...sample,trackName:'My Song (Slowed)'}],song),null);
 let sharedResolve;const sharedResponse=new Promise(resolve=>{sharedResolve=resolve;});
 let calls=[];
-globalThis.fetch=async(url,options)=>{calls.push({url,options});const params=new URL(url).searchParams;const title=params.get('track_name');if(title==='Fallback Song')return {status:200,ok:true,json:async()=>[]};if(params.get('q')==='Fallback Song My Artist')return {status:200,ok:true,json:async()=>[{...sample,id:77,trackName:'Fallback Song'}]};if(title==='Shared lookup')return sharedResponse;if(title==='Rate limit')return {status:429,ok:false,headers:new Headers({'Retry-After':'10'})};if(title==='Failure')return {status:503,ok:false};return {status:200,ok:true,json:async()=>title==='Missing'?[]:[sample]};};
+globalThis.fetch=async(url,options)=>{calls.push({url,options});const params=new URL(url).searchParams;const title=params.get('track_name');if(title==='Recovered lookup')return {status:503,ok:false};if(params.get('q')==='Recovered lookup My Artist')return {status:200,ok:true,json:async()=>[{...sample,id:88,trackName:'Recovered lookup'}]};if(title==='Fallback Song')return {status:200,ok:true,json:async()=>[]};if(params.get('q')==='Fallback Song My Artist')return {status:200,ok:true,json:async()=>[{...sample,id:77,trackName:'Fallback Song'}]};if(title==='Shared lookup')return sharedResponse;if(title==='Rate limit')return {status:429,ok:false,headers:new Headers({'Retry-After':'10'})};if(title==='Failure')return {status:503,ok:false};return {status:200,ok:true,json:async()=>title==='Missing'?[]:[sample]};};
 const firstController=new AbortController(),secondController=new AbortController();
 const first=searchLyricsCatalog({...song,title:'Shared lookup'},{signal:firstController.signal});
 const second=searchLyricsCatalog({...song,title:'Shared lookup'},{signal:secondController.signal});
@@ -39,6 +39,7 @@ assert.equal(await findLyricsCatalog({...song,title:'Missing'}),null);
 await assert.rejects(searchLyricsCatalog({...song,title:'Failure'}),/could not load/);
 const controller=new AbortController();controller.abort();await assert.rejects(searchLyricsCatalog({...song,title:'Cancelled'},{signal:controller.signal}),{name:'AbortError'});
 assert.equal((await findLyricsCatalog({...song,title:'Fallback Song'})).sourceId,77,'automatic broad fallback finds a verified synced match');
+assert.equal((await findLyricsCatalog({...song,title:'Recovered lookup'})).sourceId,88,'a failed strict lookup still tries the broader verified search');
 await assert.rejects(searchLyricsCatalog({...song,title:'Rate limit'}),/busy/);const before=calls.length;await assert.rejects(searchLyricsCatalog({...song,title:'After rate limit'}),/busy/);assert.equal(calls.length,before,'provider Retry-After respected without extra calls');
 chooseLyricsCatalogMatch({...song,id:'public-song'},{...sample,id:42});
 const chosen=await findLyricsCatalog({...song,id:'public-song'});assert.equal(chosen.sourceId,42,'reviewed LRCLIB match applies for the session without database writes');clearLyricsCatalogMatch({...song,id:'public-song'});assert.equal((await findLyricsCatalog({...song,id:'public-song'})).sourceId,1,'reset restores the automatic match without a save');
@@ -46,3 +47,5 @@ await assert.rejects(findLyricsCatalog({...song,id:'public-song',title:'Changed 
 console.log('PASS lyric matching, duration/version guards, LRC parsing, gaps, offsets, cache, identification, errors, cancellation and rate-limit cooldown');
 
 assert.equal(selectLyricsMatch([{...sample,artistName:'My Artist and Guest',duration:183}],{...song,artist:'My Artist, Guest',duration_seconds:182.8}).id,1,'collaboration separators and measured playback duration match automatically');
+
+assert.equal(selectLyricsMatch([{...sample,artistName:'Guest & My Artist'}],{...song,artist:'My Artist, Guest'}).id,1,'collaborator order does not hide a valid lyric match');
