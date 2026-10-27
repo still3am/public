@@ -72,7 +72,7 @@ export default function TopCharts() {
         <CollectionSpotlight title="Top Charts" eyebrow="On repeat" description={period === "all" ? "Ranked by total plays on PUBLIC." : "Recorded plays over the last " + (period === "week" ? "7" : "30") + " days. Movement compares with the preceding period."} tracks={visible} />
         
         {period !== "all" && <button className="playlist-action mb-4" aria-pressed={rising} onClick={() => setRising((value) => !value)}>{rising ? "Show full chart" : "Rising songs"}</button>}
-        {loadError && <LoadError onRetry={load} />}
+        {loadError && !tracks.length && <LoadError onRetry={load} />}
         {!tracks.length && !loadError && <p className="py-8 text-muted-foreground" role="status">No recorded plays for this period yet. Try another period.</p>}
         {!!tracks.length && !shown.length && <div className="collection-empty"><h2>No matching songs</h2><p>Try another title, artist, or genre.</p></div>}
 

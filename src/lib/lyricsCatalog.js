@@ -1,5 +1,5 @@
 const ROOT = 'https://lrclib.net';
-const CLIENT = 'Public/1.0 (https://publicnet.base44.app)';
+const CLIENT = 'Public/1.0 (https://publicmusic.base44.app)';
 const cache = new Map();
 const choices = new Map();
 const searches = new Map();
@@ -38,7 +38,7 @@ function candidateScore(row,track) {
  const title=normalize(baseTitle(track.title)),artist=normalize(track.artist),duration=Number(track.duration_seconds)||0;
  if(!title||!artist||normalize(baseTitle(row.trackName))!==title||version(row.trackName)!==version(track.title))return -1;
  const artistKey=value=>normalize(value).replace(/\b(?:and|feat|ft|featuring)\b/g,' ').replace(/\s+/g,' ').trim();
- const exactArtist=artistKey(row.artistName)===artistKey(track.artist);
+ const exactArtist=artistKey(row.artistName).split(" ").sort().join(" ")===artistKey(track.artist).split(" ").sort().join(" ");
  if(!exactArtist||!artist){if(normalize(primaryLyricsArtist(row.artistName))!==normalize(primaryLyricsArtist(track.artist)))return -1;}
  const difference=duration?Math.abs(Number(row.duration)-duration):0;
  if(duration&&(!Number.isFinite(difference)||difference>Math.min(5,Math.max(2,duration*.012))))return -1;
@@ -128,15 +128,19 @@ export async function findLyricsCatalog(track, options = {}) {
   if(options.signal?.aborted)throw cancelled();
   const chosen=choices.get(signature(track));
   if(chosen)return lyricsResult(chosen,chosen.duration);
-  const rows=[...await searchLyricsCatalog(track,options)];
+  const rows=[];let failure=null;
+  const lookup=async(input,settings)=>{try{return await searchLyricsCatalog(input,settings);}catch(error){if(options.signal?.aborted||error.name==='AbortError')throw error;failure=error;return [];}};
+  rows.push(...await lookup(track,options));
   let best=selectLyricsMatch(rows,track);
   if(lyricsResult(best,track.duration_seconds)?.record)return lyricsResult(best,track.duration_seconds);
   const alternate={...track,title:baseTitle(track.title),artist:primaryLyricsArtist(track.artist)};
   if(alternate.title!==cleanLyricsTitle(track.title)||alternate.artist!==track.artist){
-   rows.push(...await searchLyricsCatalog(alternate,options));best=selectLyricsMatch(rows,track);
+   rows.push(...await lookup(alternate,options));best=selectLyricsMatch(rows,track);
    if(lyricsResult(best,track.duration_seconds)?.record)return lyricsResult(best,track.duration_seconds);
   }
-  rows.push(...await searchLyricsCatalog(alternate,{...options,broad:true}));
+  rows.push(...await lookup(alternate,{...options,broad:true}));
   best=selectLyricsMatch(rows,track);
-  return lyricsResult(best,track.duration_seconds);
+  const result=lyricsResult(best,track.duration_seconds);
+  if(!result&&failure)throw failure;
+  return result;
 }

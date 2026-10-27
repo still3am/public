@@ -253,7 +253,6 @@ export default function PublicRecordsIndex() {
       
 
       <div className="view-switch mb-5" role="group" aria-label="Your artists"><button aria-pressed={view==="library"} onClick={()=>setView("library")}>Library</button><button aria-pressed={view==="followed"} onClick={()=>setView("followed")}>Followed{ subscriptions.length ? " · "+subscriptions.length : ""}</button></div>
-      {loadError&&artists!==null&&<LoadError onRetry={()=>load(true)}/>}
       <div className="directory-toolbar">
       <div className="collection-tools"><input aria-label="Search the artist directory" placeholder="Find an artist" value={query} onChange={e=>setQuery(e.target.value)} onKeyDown={e=>{if(e.key==="Escape")setQuery("");}}/>{query&&<button className="playlist-action" onClick={()=>setQuery("")}>Clear search</button>}</div>
       {!!groups.length&&<nav className="directory-desktop-alphabet hidden md:flex" aria-label="Jump to artist letter">{allLetters.map(letter=><button type="button" key={letter} disabled={!letters.includes(letter)} aria-label={`Artists starting with ${letter}`} aria-current={activeKey===letter&&letters.includes(letter)?"location":undefined} onClick={()=>scrollToLetter(letter)}>{letter}</button>)}</nav>}

@@ -38,5 +38,5 @@ export default function PersonalMix(){
  if(data.error)return <div className="py-16 text-center"><p>This mix could not load.</p><button className="playlist-action mt-4" onClick={()=>load(true)}>Retry</button><Link className="block mt-4 text-sm underline" to="/">Back to Home</Link></div>;
  if(!data.mix)return <div className="py-16 text-center"><h1 className="text-2xl font-bold">This mix is not ready yet</h1><p className="text-sm text-muted-foreground mt-3">Save or play more music to build this selection.</p>{data.warning&&<button className="playlist-action mt-4" onClick={()=>load(true)}>Retry your preferences</button>}<Link className="block mt-5 text-sm underline" to="/">Back to Home</Link></div>;
  const mix={...data.mix,tracks:data.mix.tracks.filter(t=>!blocked.has(t.uploader_id))};
- return <>{data.warning&&<p className="personal-mix-note" role="alert">Some music preferences could not refresh. <button onClick={()=>load(true)}>Retry</button></p>}<PersonalMixContent key={user.id+id} mix={mix} uid={user.id} onBack={back}/></>;
+ return <><PersonalMixContent key={user.id+id} mix={mix} uid={user.id} onBack={back}/></>;
 }

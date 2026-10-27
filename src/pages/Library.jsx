@@ -209,9 +209,6 @@ export default function Library() {
         <div>{libraryView!=="overview"&&<button className="library-back" onClick={()=>chooseView("overview")}><ChevronLeft size={17}/>Library</button>}<h1>{({overview:"Library",songs:"Songs",playlists:"Playlists",recent:"Recently played"})[libraryView]}</h1></div>
         <div className="library-header-actions"><button onClick={() => setShowCreate(true)} className="library-create chrome-button" aria-label="Create playlist"><ListPlus size={22}/><span>New playlist</span></button>{user&&<Link to="/profile" aria-label="Your profile"><Avatar user={user} size={42}/></Link>}</div>
       </header>
-      {loadError&&tracks!==null&&<div role="alert" className="border border-border rounded-2xl p-4 mb-4 text-sm"><p>Your songs could not refresh. Showing the last loaded list.</p><button disabled={loading} className="playlist-action mt-2" onClick={load}>Retry songs</button></div>}
-      {savedPlaylistError&&<div role="alert" className="border border-border rounded-2xl p-4 mb-4 text-sm"><p>Saved playlists could not refresh. Your saved playlists have not been removed.</p><button className="playlist-action mt-2" onClick={loadSavedPlaylists}>Retry saved playlists</button></div>}
-      {playlistError&&playlists!==null&&<div role="alert" className="border border-border rounded-2xl p-4 mb-4 text-sm"><p>Your playlists could not refresh.</p><button className="playlist-action mt-2" onClick={()=>reloadPlaylists()}>Retry your playlists</button></div>}
       {libraryView==="overview"&&<nav className="library-collection-rows" aria-label="Your collections">
         <button onClick={()=>chooseView("playlists")}><ListMusic size={26}/><span>Playlists</span><ChevronRight size={21}/></button>
         <button onClick={()=>chooseView("songs")}><Music2 size={26}/><span>Songs</span><ChevronRight size={21}/></button>

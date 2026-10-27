@@ -261,7 +261,6 @@ export default function Home() {
         <header className="home-welcome"><div className="home-welcome-copy"><h1>{greeting}{homeName && <span><span className="home-greeting-comma">, </span>{homeName}</span>}</h1></div><div className="home-header-actions"><HomeWeather /><Link to={user ? "/profile" : "/login"} aria-label={user ? "Your profile" : "Sign in"}><Avatar user={user} size={44} /></Link></div></header>
         
         
-        {(loadError || preferencesError) && <div role="alert" className="border border-border rounded-2xl p-4 mb-4 text-sm"><p>{loadError || "Your music preferences could not load. Discovery is using your listening history for now."}</p><button disabled={loading} className="playlist-action mt-2" onClick={() => load(true)}>Retry</button></div>}
         <HomeSpotlight track={featured} tracks={discoveryQueue.length ? discoveryQueue : newReleases} currentTrackId={p.currentTrack?.id} isPlaying={p.isPlaying} onSelect={(queue, index) => {if (p.currentTrack?.id === queue[index]?.id) p.togglePlay();else {p.setShuffle(false);p.playTrackAt(queue, index);}}} />
         
         

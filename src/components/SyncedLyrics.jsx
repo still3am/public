@@ -1,4 +1,5 @@
-import { useEffect, useRef } from "react";
+import LyricInterlude from "@/components/LyricInterlude";
+import { useEffect, useRef, useMemo } from "react";
 import { Loader2 } from "lucide-react";
 
 /** @param {any} props */
@@ -18,9 +19,9 @@ export default function SyncedLyrics({ trackId, position, resolvedLyrics, onSeek
   const loading=!current||current.loading===true;
 
   const ms = Math.max(0, Number(position) || 0) * 1000;
-  const lines = (Array.isArray(lyrics?.lines) ? lyrics.lines : []).
+  const lines = useMemo(() => (Array.isArray(lyrics?.lines) ? lyrics.lines : []).
   filter((line) => Number.isFinite(Number(line.start_time_ms)) && Number(line.start_time_ms) >= 0).
-  slice().sort((a, b) => Number(a.start_time_ms) - Number(b.start_time_ms));
+  slice().sort((a, b) => Number(a.start_time_ms) - Number(b.start_time_ms)),[lyrics?.lines]);
   const hasTimed = lines.length > 0 && lines.some((line) => Number(line.start_time_ms) > 0 || Number(line.end_time_ms) > 0);
   let activeIdx = -1;
   if (hasTimed) {
@@ -76,12 +77,12 @@ export default function SyncedLyrics({ trackId, position, resolvedLyrics, onSeek
       {lines.map((line, index) => {
         const active = index === activeIdx;
         const distance = activeIdx < 0 ? index : Math.abs(index - activeIdx);
-        const opacity = active ? 1 : distance <= 1 ? 0.58 : distance === 2 ? 0.4 : 0.28;
+        const opacity = active ? 1 : distance <= 1 ? 0.72 : distance === 2 ? 0.52 : 0.36;
         return <button type="button" key={index} ref={(element) => {lineRefs.current[index] = element;}}
         onClick={() => seekLine(line)} aria-current={active ? "true" : undefined}
         className="public-lyric-line selectable-content"
-        style={{ opacity, filter: active ? "none" : "blur(" + (distance <= 1 ? 0.4 : distance === 2 ? 0.8 : 1.2) + "px)" }}>
-          {Array.isArray(line.words) && line.words.length ? line.words.map((word, wordIndex) => {
+        style={{ opacity, filter: "none" }}>
+          {/^(?:[♪♫]+|\[?(?:instrumental|music|interlude|solo)\]?)$/i.test(line.text?.trim()||"") ? <LyricInterlude active={active}/> : Array.isArray(line.words) && line.words.length ? line.words.map((word, wordIndex) => {
             const start = Number(word.start_time_ms),end = Number(word.end_time_ms);
             const valid = Number.isFinite(start) && Number.isFinite(end) && end > start;
             const progress = valid ? Math.max(0, Math.min(1, (ms - start) / (end - start))) : 1;
@@ -89,7 +90,7 @@ export default function SyncedLyrics({ trackId, position, resolvedLyrics, onSeek
               backgroundImage: "linear-gradient(to right,#fff " + progress * 100 + "%,rgba(255,255,255,.4) " + progress * 100 + "%)",
               backgroundClip: "text", WebkitBackgroundClip: "text", color: "transparent"
             } : undefined}>{word.text}{wordIndex < line.words.length - 1 ? " " : ""}</span>;
-          }) : line.text?.trim() || "♪"}
+          }) : line.text?.trim() || <LyricInterlude active={active}/>}
         </button>;
       })}
     </div>);

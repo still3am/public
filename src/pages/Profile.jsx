@@ -483,7 +483,7 @@ export default function Profile({ ownProfileTab = false }) {
                 <button onClick={() => setFollowList("following")} className="hover:underline transition">
                   <span className="font-bold">{stats.following === null ? "—" : formatNumber(stats.following)}</span> <span className="text-foreground/50">following</span>
                 </button>
-                <span className={profile.is_artist || stats.plays > 0 ? "" : "profile-zero-stat"}><span className="font-bold">{formatNumber(stats.plays)}</span> <span className="text-foreground/50 text-center">song plays</span></span>
+                {(isAdminProfile || ["artist","uploader"].includes(profile.creator_role)) && <span><span className="font-bold">{formatNumber(stats.plays)}</span> <span className="text-foreground/50 text-center">song plays</span></span>}
                 <span className={stats.likes > 0 ? "" : "profile-zero-stat"}><span className="font-bold">{formatNumber(stats.likes)}</span> <span className="text-foreground/50">likes</span></span>
               </div>
 
@@ -620,7 +620,6 @@ export default function Profile({ ownProfileTab = false }) {
         </div>
       </div>
       </div>
-      {sectionError && <div className="flex items-center justify-between gap-3 text-xs text-muted-foreground mb-4"><span>Some profile details couldn’t refresh.</span><button type="button" disabled={followingBusy || loading || editMode || saving || uploadingAvatar} onClick={load} className="underline underline-offset-2">Retry</button></div>}
       
       <div className="profile-content"><section id="profile-music" className="profile-music" aria-label="Profile music">
       

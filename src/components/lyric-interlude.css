@@ -1,0 +1,7 @@
+.lyric-interlude{display:inline-flex;align-items:center;min-height:54px;max-width:190px;vertical-align:middle}
+.lyric-interlude-bars{display:flex;align-items:center;gap:5px;height:42px}
+.lyric-interlude-bars i{display:block;width:5px;height:40px;background:currentColor;border-radius:999px;transform:scaleY(.12);transform-origin:center;opacity:.9;will-change:transform}
+.public-lyric-line{line-height:1.38;text-shadow:0 2px 16px #00000016}
+.public-lyric-line[aria-current=true]{font-weight:750}
+.public-lyrics-scroll{scroll-padding-block:25%;}
+@media(prefers-reduced-motion:reduce){.lyric-interlude-bars i{will-change:auto}.public-lyric-line{transition:none}}
