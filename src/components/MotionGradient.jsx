@@ -25,9 +25,9 @@ void main(){
  vec2 b=vec2(.72+.22*cos(t*.57),.44+.27*sin(t*.68));
  vec2 c=vec2(.45+.30*sin(t*.46+2.0),.76+.18*cos(t*.79));
  vec2 scale=vec2(clamp(u_aspect,.65,1.5),1.0);
- float wa=exp(-3.5*dot((q-a)*scale,(q-a)*scale));
- float wb=exp(-3.5*dot((q-b)*scale,(q-b)*scale));
- float wc=exp(-3.5*dot((q-c)*scale,(q-c)*scale));
+ float wa=exp(-6.0*dot((q-a)*scale,(q-a)*scale));
+ float wb=exp(-6.0*dot((q-b)*scale,(q-b)*scale));
+ float wc=exp(-6.0*dot((q-c)*scale,(q-c)*scale));
  vec3 color=(u_a*wa+u_b*wb+u_c*wc)/max(.001,wa+wb+wc);
  float silk=.97+.045*sin(q.x*3.6-q.y*2.7+t*.35);
  color=clamp(color*silk,0.0,1.0);
