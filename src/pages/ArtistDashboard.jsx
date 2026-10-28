@@ -1,3 +1,4 @@
+import {withReadTimeout} from "@/lib/readTimeout";
 import LoadError from '@/components/LoadError';
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
@@ -66,11 +67,11 @@ export default function ArtistDashboard() {
         ),
         // Plays and likes are summed on the server over ALL of the artist's
         // songs, so the headline numbers don't stop at the first page either.
-        base44.entities.Track.aggregate({
+        withReadTimeout(base44.entities.Track.aggregate({
           query: { uploader_id: user.id },
           sum: ["play_count", "like_count"]
-        }).catch(()=>null),
-        base44.entities.Follow.count({ following_id: user.id }).catch(()=>null)]
+        })).catch(()=>null),
+        withReadTimeout(base44.entities.Follow.count({ following_id: user.id })).catch(()=>null)]
         );
         if (cancelled) return;
         setTracks(t);setLoaded(true);setLoadedUid(user.id);
@@ -89,7 +90,7 @@ export default function ArtistDashboard() {
 
   useEffect(()=>{
    if(!user?.is_artist)return;let alive=true;setMetrics(null);setMetricsError(false);setMetricsLoading(true);
-   base44.functions.invoke("musicInsights",{action:"artist",period}).then(response=>{if(!response?.data?.metrics)throw Error("Invalid analytics");if(alive)setMetrics(response.data.metrics);}).catch(()=>{if(alive)setMetricsError(true);}).finally(()=>{if(alive)setMetricsLoading(false);});
+   withReadTimeout(base44.functions.invoke("musicInsights",{action:"artist",period})).then(response=>{if(!response?.data?.metrics)throw Error("Invalid analytics");if(alive)setMetrics(response.data.metrics);}).catch(()=>{if(alive)setMetricsError(true);}).finally(()=>{if(alive)setMetricsLoading(false);});
    return()=>{alive=false;};
   },[period,user?.id,user?.is_artist,retry]);
   if(error&&(!loaded||loadedUid!==user?.id))return <LoadError onRetry={()=>setRetry(n=>n+1)}/>;

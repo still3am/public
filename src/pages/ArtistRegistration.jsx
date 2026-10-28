@@ -1,3 +1,4 @@
+import {withReadTimeout} from "@/lib/readTimeout";
 import {useEffect,useRef,useState} from 'react';
 import {Link} from 'react-router-dom';
 import {ArrowRight,ArrowLeft,Check,Mic2,Loader2} from 'lucide-react';
@@ -14,12 +15,12 @@ function applicationRows(value){
 export default function ArtistRegistration(){
  const {user}=useAuth(),[step,setStep]=useState(0),[name,setName]=useState(''),[genre,setGenre]=useState(''),[bio,setBio]=useState(''),[url,setUrl]=useState(''),[confirm,setConfirm]=useState(false),[application,setApplication]=useState(null),[loading,setLoading]=useState(true),[busy,setBusy]=useState(false),[error,setError]=useState('');const lock=useRef(false);
  const [loadFailed,setLoadFailed]=useState(false),[retry,setRetry]=useState(0);
- useEffect(()=>{let alive=true;setLoading(true);setLoadFailed(false);setError('');setApplication(null);if(!user?.id){setLoading(false);return;}base44.entities.ArtistApplication.filter({user_id:user.id},'-created_date',1).then(result=>{const rows=applicationRows(result);if(alive)setApplication(rows[0]||null);}).catch(()=>{if(alive){setLoadFailed(true);setError('Could not load your application. Retry before applying.');}}).finally(()=>{if(alive)setLoading(false);});return()=>{alive=false;};},[user?.id,retry]);
+ useEffect(()=>{let alive=true;setLoading(true);setLoadFailed(false);setError('');setApplication(null);if(!user?.id){setLoading(false);return;}withReadTimeout(base44.entities.ArtistApplication.filter({user_id:user.id},'-created_date',1)).then(result=>{const rows=applicationRows(result);if(alive)setApplication(rows[0]||null);}).catch(()=>{if(alive){setLoadFailed(true);setError('Could not load your application. Retry before applying.');}}).finally(()=>{if(alive)setLoading(false);});return()=>{alive=false;};},[user?.id,retry]);
  let validUrl=false;try{validUrl=new URL(url).protocol==='https:';}catch{}
  async function submit(){
  if(lock.current||loading||loadFailed||!confirm||!validUrl||name.trim().length<2||bio.trim().length<30)return;
  lock.current=true;setBusy(true);setError('');
- try{const current=await base44.auth.me();if(current.id!==user.id)throw Error('Your account changed. Refresh this page.');const existing=applicationRows(await base44.entities.ArtistApplication.filter({user_id:user.id,status:'pending'},'-created_date',1));if(existing.length){setApplication(existing[0]);return;}const row=await base44.entities.ArtistApplication.create({user_id:user.id,artist_name:name.trim(),bio:bio.trim(),music_url:url.trim(),genre:genre.trim(),status:'pending'});if(!row?.id)throw Error('Application was not confirmed.');setApplication(row);}
+ try{const current=await withReadTimeout(base44.auth.me());if(current.id!==user.id)throw Error('Your account changed. Refresh this page.');const existing=applicationRows(await withReadTimeout(base44.entities.ArtistApplication.filter({user_id:user.id,status:'pending'},'-created_date',1)));if(existing.length){setApplication(existing[0]);return;}const row=await base44.entities.ArtistApplication.create({user_id:user.id,artist_name:name.trim(),bio:bio.trim(),music_url:url.trim(),genre:genre.trim(),status:'pending'});if(!row?.id)throw Error('Application was not confirmed.');setApplication(row);}
  catch(e){setError(e.message||'Application could not be sent. Try again.');}finally{setBusy(false);lock.current=false;}
  }
  if(!user)return <div className="upload-redesign upload-empty"><h1>Join PUBLIC as an artist.</h1><p>Sign in before applying.</p><Link to="/profile">Go to profile</Link></div>;

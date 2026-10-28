@@ -1,3 +1,5 @@
+import {withReadTimeout} from '../src/lib/readTimeout.js';
+globalThis.__preferenceTimeout=withReadTimeout;
 import assert from "node:assert/strict";
 import {readFileSync} from "node:fs";
 const read=p=>readFileSync(p,"utf8");
@@ -23,7 +25,7 @@ globalThis.__b={auth:{me:async()=>({id:uid})},entities:{UserGenre:{
  update:async(id,data)=>{writes++;if(fail)throw Error("offline");if(!ignore)Object.assign(records[uid],data);return structuredClone(records[uid]);},
  create:async data=>{writes++;return records[uid]={id:"new",...data};}
 }}};
-const prefs=await load("const base44=globalThis.__b;const GENRES=[\"Pop\",\"Jazz\"];"+read("src/lib/userGenres.js").replace(/import[^;]+;/g,""));
+const prefs=await load("const withReadTimeout=globalThis.__preferenceTimeout;const base44=globalThis.__b;const GENRES=[\"Pop\",\"Jazz\"];"+read("src/lib/userGenres.js").replace(/import[^;]+;/g,""));
 
 await prefs.saveUserGenres(["Jazz"],"a");
 assert.deepEqual(records.a.favorite_track_ids,["song"],"genre save must preserve favorites");

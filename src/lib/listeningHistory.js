@@ -2,7 +2,7 @@ import {entityRows} from "@/lib/entityRows";
 import {base44} from "@/api/base44Client";
 const prefix="public:listening:";
 let current=null,busy=false;
-function read(uid){try{return JSON.parse(localStorage.getItem(prefix+uid)||"[]");}catch{return [];}}
+function read(uid){try{const rows=JSON.parse(localStorage.getItem(prefix+uid)||"[]");return Array.isArray(rows)?rows.filter(row=>row&&typeof row.session_key==="string"&&typeof row.track_id==="string"&&Number.isFinite(row.listened_seconds)&&row.listened_seconds>=0):[];}catch{return [];}}
 function save(uid,rows){try{localStorage.setItem(prefix+uid,JSON.stringify(rows));}catch{}}
 export async function syncListeningHistory(uid){
  if(!uid||busy||!navigator.onLine)return;

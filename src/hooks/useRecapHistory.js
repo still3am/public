@@ -9,7 +9,8 @@ export function useRecapHistory(uid) {
   let alive=true;
   setState({owner:uid,sessions:[],events:[],loading:true,error:false});
   (async()=>{try{
-   await syncListeningHistory(uid);
+   // Sync is an outbox write; it must not block read-only recap rendering.
+   void syncListeningHistory(uid);
    const [sessions,events]=await Promise.all([
     readAllPages(opts=>base44.entities.ListeningSession.filter({created_by_id:uid},{sort:'-started_at',...opts})),
     readAllPages(opts=>base44.entities.PlayEvent.filter({user_id:uid},{sort:'-created_date',...opts}))

@@ -1,3 +1,4 @@
+import {withReadTimeout} from "@/lib/readTimeout";
 import {base44} from "@/api/base44Client";
 import {GENRES} from "@/lib/audio-utils";
 let cache=null,owner=null,generation=0,revision=0;
@@ -8,7 +9,7 @@ export async function getUserMusicPreferences(userId){
  if(!uid)return normalized(null);
  if(cache&&owner===uid)return cache;
  const request=generation,startedRevision=revision;
- const records=rows(await base44.entities.UserGenre.filter({user_id:uid},"-created_date",1));
+ const records=rows(await withReadTimeout(base44.entities.UserGenre.filter({user_id:uid},"-created_date",1)));
  if(request!==generation)throw Error("Account changed. Please retry.");
  if(startedRevision!==revision&&owner===uid&&cache)return cache;
  owner=uid;cache=normalized(records[0]);return cache;
