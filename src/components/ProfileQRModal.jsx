@@ -1,121 +1,44 @@
-import {reportActionError} from '@/lib/actionError';
+import {useEffect,useRef,useState} from 'react';
+import {X,Share2,ScanLine,Copy,Check,RefreshCw} from 'lucide-react';
 import {copyText,shareLink} from '@/lib/shareLink';
-import { useState } from "react";
-import { X, Share2, ScanLine } from "lucide-react";
-import MotionGradient from "@/components/MotionGradient";
-import QRScannerModal from "@/components/QRScannerModal";
+import {actionError} from '@/lib/actionError';
+import MotionGradient from '@/components/MotionGradient';
+import QRScannerModal from '@/components/QRScannerModal';
+import './profile-qr.css';
 
 /** @param {any} props */
-export default function ProfileQRModal({ url, name, avatar, onClose }) {
-  const [scanning, setScanning] = useState(false);
-  const [copied, setCopied] = useState(false);
-  const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=480x480&margin=2&color=000000&bgcolor=FFFFFF&qzone=2&data=${encodeURIComponent(
-    url
-  )}`;
-
-  async function copy() {
-    try{await copyText(url);setCopied(true);setTimeout(()=>setCopied(false),1500);}catch(error){reportActionError(error,'Couldn’t share or copy this profile link. Please try again.');}
-  }
-  async function share() {
-    try{const result=await shareLink({title:name+' on PUBLIC.',text:'Listen to '+name+' on PUBLIC.',url});if(result==='copied'){setCopied(true);setTimeout(()=>setCopied(false),1500);}}catch(error){reportActionError(error,'Couldn’t share or copy this profile link. Please try again.');}
-  }
-
-  function download() {
-    const a = document.createElement("a");
-    a.href = qrUrl;
-    a.download = `${name}-public-qr.png`;
-    a.target = "_blank";
-    a.click();
-  }
-
-  return (
-    <div role="dialog" aria-modal="true" aria-label="Profile QR code" data-public-dialog tabIndex={-1} onKeyDown={event=>{if(event.key==="Escape"){event.stopPropagation();if(!scanning)onClose();}}}
-      className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm grid place-items-center p-4"
-      onClick={onClose}>
-      
-      <div
-        className="bg-card isolate rounded-3xl w-full max-w-sm p-6 shadow-2xl text-center text-white relative max-h-[90dvh] overflow-y-auto overscroll-contain"
-        onClick={(e) => e.stopPropagation()}>
-        
-        <div className="absolute inset-0 -z-10 overflow-hidden rounded-3xl pointer-events-none" aria-hidden="true">
-          <MotionGradient colors={['#ff3b30','#b527ed','#ffbf27']} speed={.65} className="absolute inset-0" />
-          <div className="absolute inset-0 bg-black/60" />
-        </div>
-        <button
-          onClick={onClose}
-          className="absolute right-4 top-4 p-2 rounded-full bg-black/25 hover:bg-black/40"
-          aria-label="Close">
-          
-          <X size={18} />
-        </button>
-
-        <div className="flex flex-col items-center mb-4">
-          {avatar ?
-          <img
-            src={avatar}
-            alt=""
-            className="w-16 h-16 rounded-full object-cover mb-2 ring-2 ring-foreground/10" /> :
-
-
-          <div className="w-16 h-16 rounded-full bg-foreground/10 grid place-items-center text-2xl font-extrabold mb-2">
-              {(name || "?").charAt(0)}
-            </div>
-          }
-          <h3 className="text-lg font-extrabold tracking-tight">{name}</h3>
-          <p className="text-xs text-white/70">Scan to view on PUBLIC.</p>
-        </div>
-
-        <div
-          className="inline-block p-4 rounded-3xl shadow-xl mb-4"
-          style={{ backgroundColor: "white" }}>
-          
-          <img
-            src={qrUrl}
-            alt={`QR code for ${name}`}
-            width="240"
-            height="240"
-            className="rounded-xl w-full max-w-[240px] h-auto" />
-          
-        </div>
-
-        <div className="grid grid-cols-2 gap-2 mb-2">
-          <button onClick={copy} className="col-span-2 px-4 py-2.5 rounded-full border text-sm font-semibold">{copied?'Link copied':'Copy profile link'}</button>
-          {navigator.share ?
-          <button
-            onClick={share}
-            className="col-span-2 px-4 py-2.5 rounded-full bg-foreground text-background text-sm font-semibold flex items-center justify-center gap-2">
-            
-              <Share2 size={14} /> Share profile
-            </button> :
-          null}
-          
-
-
-
-
-
-
-
-
-
-
-          
-          
-
-
-
-
-          
-        </div>
-
-        <button
-          onClick={() => setScanning(true)}
-          className="w-full px-4 py-2.5 rounded-full border border-dashed border-border text-sm font-semibold flex items-center justify-center gap-2 mt-1">
-          
-          <ScanLine size={14} /> Scan someone else's code
-        </button>
-      </div>
-      {scanning && <QRScannerModal onClose={() => setScanning(false)} />}
-    </div>);
-
+export default function ProfileQRModal({url,name,avatar,username,colors=[],motion='flow',speed=1,onClose}){
+ const [scanning,setScanning]=useState(false),[copied,setCopied]=useState(false),[error,setError]=useState(''),[qrFailed,setQrFailed]=useState(false),[attempt,setAttempt]=useState(0);
+ const timer=useRef(null),close=useRef(null);
+ useEffect(()=>{close.current?.focus();return()=>clearTimeout(timer.current);},[]);
+ useEffect(()=>{setQrFailed(false);},[url]);
+ const palette=colors.filter(c=>/^#[0-9a-f]{6}$/i.test(c)).slice(0,3);
+ const qrUrl=`https://api.qrserver.com/v1/create-qr-code/?size=600x600&margin=0&color=000000&bgcolor=FFFFFF&qzone=4&data=${encodeURIComponent(url)}`;
+ function showCopied(){setCopied(true);clearTimeout(timer.current);timer.current=setTimeout(()=>setCopied(false),1800);}
+ async function copy(){setError('');try{await copyText(url);showCopied();}catch(e){setError(actionError(e,'Couldn’t copy the link. Please retry.'));}}
+ async function share(){setError('');try{const result=await shareLink({title:`${name} on PUBLIC.`,text:`Listen with ${name} on PUBLIC.`,url});if(result==='copied')showCopied();}catch(e){setError(actionError(e,'Couldn’t share the profile. Please retry.'));}}
+ return <div role="dialog" aria-modal="true" aria-label="Profile QR code" data-public-dialog tabIndex={-1} className="profile-qr-overlay" onClick={()=>{if(!scanning)onClose();}} onKeyDown={e=>{if(e.key==='Escape'){e.stopPropagation();if(!scanning)onClose();}}}>
+  <section className="profile-qr-shell" onClick={e=>e.stopPropagation()}>
+   <div className="profile-qr-art" aria-hidden="true">
+    {palette.length>0&&<MotionGradient colors={palette} motion={motion} speed={speed} active={!scanning} className="absolute inset-0"/>}
+    <div className="profile-qr-shade"/>
+   </div>
+   <header className="profile-qr-header"><span>PUBLIC.</span><button ref={close} type="button" onClick={onClose} aria-label="Close QR code" className="profile-qr-close"><X size={20}/></button></header>
+   <div className="profile-qr-identity">
+    {avatar?<img src={avatar} alt="" className="profile-qr-avatar"/>:<div className="profile-qr-avatar profile-qr-initial">{(name||'?').charAt(0)}</div>}
+    <h2>{name}</h2>{username&&<p>@{username.replace(/^@/,'')}</p>}
+   </div>
+   <div className="profile-qr-code">
+    {qrFailed?<div className="profile-qr-retry"><p>Code couldn’t load</p><button type="button" onClick={()=>{setQrFailed(false);setAttempt(n=>n+1);}}><RefreshCw size={16}/>Retry</button></div>:<img key={`${url}:${attempt}`} src={qrUrl} alt={`Scan to open ${name} on PUBLIC`} width="280" height="280" onError={()=>setQrFailed(true)}/>}
+   </div>
+   <p className="profile-qr-caption">Your music. Your people.<span>Scan to open this profile.</span></p>
+   <div className="profile-qr-actions">
+    <button type="button" className="profile-qr-share" onClick={share}><Share2 size={18}/>Share profile</button>
+    <button type="button" onClick={copy} aria-label={copied?'Profile link copied':'Copy profile link'}>{copied?<Check size={18}/>:<Copy size={18}/>}<span>{copied?'Copied':'Copy link'}</span></button>
+   </div>
+   {error&&<p className="profile-qr-error" role="alert">{error}</p>}
+   <button type="button" className="profile-qr-scan" onClick={()=>setScanning(true)}><ScanLine size={18}/>Scan a PUBLIC code</button>
+  </section>
+  {scanning&&<QRScannerModal onClose={()=>setScanning(false)}/>}
+ </div>;
 }

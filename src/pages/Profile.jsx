@@ -720,6 +720,10 @@ export default function Profile({ ownProfileTab = false }) {
         <ProfileQRModal
           url={`${window.location.origin}/profile/${targetId}`}
           name={displayName}
+          username={profile.username}
+          colors={backgroundColors}
+          motion={currentBackground.motion}
+          speed={currentBackground.speed}
           avatar={profile.avatar_url}
           onClose={() => setShowQR(false)} />
 
