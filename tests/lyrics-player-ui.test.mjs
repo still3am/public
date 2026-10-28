@@ -45,3 +45,8 @@ const nextTrack={id:'new',title:'New song',artist:'New artist',duration_seconds:
 let page=Page({track:nextTrack});assert.ok(!contents(page).includes('STALE SONG PAGE WORDS'));assert.ok(contents(page).includes('Finding lyrics'),'song page hides old lyrics before effects run');
 globalThis.__trackLyricsState={...globalThis.__trackLyricsState,identity:JSON.stringify(['new','New song','New artist',180]),result:{available:true,text:'Correct song page words'}};
 page=Page({track:nextTrack});assert.equal(all(page,node=>node.type==='text')[0].props.text,'Correct song page words');
+
+tree=View({...props,position:2,resolvedLyrics:{trackId:'new',record:{lines:[{text:'Past Now Future',start_time_ms:0,end_time_ms:6000,words:[{text:'Past',start_time_ms:0,end_time_ms:1000},{text:'Now',start_time_ms:1000,end_time_ms:3000},{text:'Future',start_time_ms:3000,end_time_ms:6000}]}]}}});
+const singing=all(tree,n=>n.props?.['data-singing']==='true');assert.equal(singing.length,1);assert.match(contents(singing[0]),/Now/);
+const future=all(tree,n=>n.props?.className==='public-lyric-word'&&contents(n).includes('Future'))[0];assert.equal(future.props.style.color,'rgba(255,255,255,.28)');assert.equal(future.props.style.backgroundImage,undefined);
+console.log('PASS only current word receives fill; future words stay dim');

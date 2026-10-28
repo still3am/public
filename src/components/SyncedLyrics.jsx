@@ -99,11 +99,12 @@ export default function SyncedLyrics({ trackId, position, resolvedLyrics, onSeek
               const start = Number(word.start_time_ms),end = Number(word.end_time_ms);
               const valid = Number.isFinite(start) && Number.isFinite(end) && end > start;
               const progress = valid ? Math.max(0, Math.min(1, (ms - start) / (end - start))) : 1;
-              return <span key={wordIndex} style={active && valid ? {
-                backgroundImage: "linear-gradient(to right,#fff " + Math.max(0,progress*100-5) + "%,rgba(255,255,255,.35) " + Math.min(100,progress*100+5) + "%)",
-                backgroundClip: "text", WebkitBackgroundClip: "text", color: "transparent"
-              } : undefined}>{word.text}{!line.preserve_word_spacing && wordIndex < line.words.length - 1 ? " " : ""}</span>;
-            }) : line.text?.trim() ? <span className="public-lyric-sweep" style={active&&progress!==null?{backgroundImage:'linear-gradient(to right,#fff '+Math.max(0,progress*100-5)+'%,rgba(255,255,255,.35) '+Math.min(100,progress*100+5)+'%)',backgroundClip:'text',WebkitBackgroundClip:'text',color:'transparent'}:undefined}>{line.text}</span> : <LyricInterlude active={active} progress={progress} />}
+              const singing=active&&valid&&ms>=start&&ms<end;
+              return <span key={wordIndex} className="public-lyric-word" data-singing={singing?"true":undefined} style={active&&valid?(singing?{
+                backgroundImage: "linear-gradient(to right,#fff " + progress*100 + "%,rgba(255,255,255,.28) " + progress*100 + "%)",
+                backgroundClip: "text", WebkitBackgroundClip: "text", color: "transparent",WebkitTextFillColor:"transparent"
+              }:{color:ms<start?"rgba(255,255,255,.28)":"rgba(255,255,255,.65)",WebkitTextFillColor:ms<start?"rgba(255,255,255,.28)":"rgba(255,255,255,.65)"}):undefined}>{word.text}{!line.preserve_word_spacing && wordIndex < line.words.length - 1 ? " " : ""}</span>;
+            }) : line.text?.trim() || <LyricInterlude active={active} progress={progress} />}
         </button>;
         })}
     </div>

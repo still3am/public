@@ -40,4 +40,4 @@
 
 /* Known instrumental timing fills the dots in sequence from media position. */
 .lyric-interlude[data-timed=true] .lyric-interlude-dot{animation:none;transform:none;opacity:1;background-color:transparent;box-shadow:inset 0 0 0 1px #ffffff55;overflow:hidden}
-.public-lyric-sweep{box-decoration-break:clone;-webkit-box-decoration-break:clone}
+.public-lyric-word{display:inline-block;white-space:pre-wrap}
