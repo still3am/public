@@ -1,0 +1,38 @@
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import ts from 'typescript';
+import ReactBase from 'react';
+let state,cursor=0;
+const React={...ReactBase,forwardRef:f=>f,useState:init=>{const i=cursor++;if(!state)state=[];if(!(i in state))state[i]=typeof init==='function'?init():init;return[state[i],v=>state[i]=v];},useEffect:()=>{}};
+let source=fs.readFileSync('src/components/ui/image.jsx','utf8').replace(/^import .*$/gm,'').replace('export { Image }','');
+source+='\nexport {Image as TestedImage};';
+const output=ts.transpileModule(source,{compilerOptions:{jsx:ts.JsxEmit.React,module:ts.ModuleKind.ESNext}}).outputText;
+globalThis.__coverTestReact=React;
+const {TestedImage}=await import('data:text/javascript;base64,'+Buffer.from('const React=globalThis.__coverTestReact;const cn=(...a)=>a.join(" ");const useSize=()=>null;\n'+output).toString('base64'));
+const render=props=>{cursor=0;return TestedImage(props,null);};
+let errors=0;
+const src='https://media.base44.com/images/cover.';
+let tree=render({src,onError:()=>errors++});
+assert.equal(typeof tree.type,'function');
+tree.props.onError({});
+tree=render({src,onError:()=>errors++});
+assert.equal(tree.type,'img');assert.equal(tree.props.src,src);assert.equal(errors,0);
+tree.props.onError({});tree=render({src,onError:()=>errors++});
+assert.equal(tree.props['data-error-image'],true);assert.equal(errors,1);
+tree.props.onError({});assert.equal(errors,1,'fallback errors must not loop');
+tree=render({src:'https://example.org/new.jpg'});assert.equal(tree.props.src,'https://example.org/new.jpg','new source must never show old fallback');
+delete globalThis.__coverTestReact;
+let hook=fs.readFileSync('src/hooks/useCoverUrl.js','utf8').replace(/^import .*$/gm,'');
+hook+='\nexport {load,immediate};';
+globalThis.window={location:{origin:'https://example.org'}};
+const {load,immediate}=await import('data:text/javascript;base64,'+Buffer.from(hook).toString('base64'));
+assert.equal(immediate(src),src,'do not invent a filename');
+const originalFetch=globalThis.fetch;let calls=0;
+try{
+ globalThis.fetch=async()=>{calls++;return new Response(new Uint8Array([255,216,255,224,0,0]),{headers:{'content-type':'application/octet-stream'}});};
+ const [a,b]=await Promise.all([load(src),load(src)]);assert.equal(a,b);assert.equal(calls,1);assert.equal((await originalFetch(a)).headers.get('content-type'),'image/jpeg');
+ globalThis.fetch=async()=>new Response('<html>error</html>',{headers:{'content-type':'text/html'}});
+ await assert.rejects(load('https://example.org/bad-cover'),/not an image/);
+ URL.revokeObjectURL(a);
+}finally{globalThis.fetch=originalFetch;delete globalThis.window;}
+console.log('PASS original artwork recovery, source changes, bounded fallback, shared MIME repair and invalid response rejection');

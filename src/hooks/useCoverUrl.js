@@ -1,12 +1,8 @@
 import { useEffect, useState } from "react";
 
-// URLs with a valid image extension load fine in the browser. The old
-// base44.app file host stored some covers with a trailing dot and no
-// extension (e.g. "...cover.") — those files are valid JPEGs but browsers
-// can't render them (trailing dot gets stripped → 403, and the response is
-// served as application/octet-stream). This hook detects those broken URLs,
-// fetches the bytes, and returns a blob: object URL the browser CAN render.
-// Results are cached so scrolling doesn't re-fetch the same cover twice.
+// Some older covers have no extension and use a generic content type.
+// Keep their original URL while repairing the MIME type from image bytes.
+// Shared requests and a bounded idle cache avoid repeated downloads.
 
 const IMAGE_EXT_RE = /\.(jpe?g|png|gif|webp|avif|bmp|tiff?|svg)$/i;
 const blobCache=new Map(),inflight=new Map(),users=new Map();
