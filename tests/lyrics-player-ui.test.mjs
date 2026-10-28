@@ -50,3 +50,9 @@ tree=View({...props,position:2,resolvedLyrics:{trackId:'new',record:{lines:[{tex
 const singing=all(tree,n=>n.props?.['data-singing']==='true');assert.equal(singing.length,1);assert.match(contents(singing[0]),/Now/);
 const future=all(tree,n=>n.props?.className==='public-lyric-word'&&contents(n).includes('Future'))[0];assert.equal(future.props.style.color,'rgba(255,255,255,.28)');assert.equal(future.props.style.backgroundImage,undefined);
 console.log('PASS only current word receives fill; future words stay dim');
+
+const fills=all(tree,n=>n.props?.className==='public-lyric-word-fill');
+assert.equal(fills[0].props.style.clipPath,'inset(0 0% 0 0)','completed words stay filled instead of changing text paint');
+assert.equal(fills[1].props.style.clipPath,'inset(0 50% 0 0)','active word has partial fill');
+assert.equal(fills[2].props.style.clipPath,'inset(0 100% 0 0)','future word remains unfilled');
+console.log('PASS stable karaoke layers preserve completed words and continuous active fill');

@@ -100,10 +100,11 @@ export default function SyncedLyrics({ trackId, position, resolvedLyrics, onSeek
               const valid = Number.isFinite(start) && Number.isFinite(end) && end > start;
               const progress = valid ? Math.max(0, Math.min(1, (ms - start) / (end - start))) : 1;
               const singing=active&&valid&&ms>=start&&ms<end;
-              return <span key={wordIndex} className="public-lyric-word" data-singing={singing?"true":undefined} style={active&&valid?(singing?{
-                backgroundImage: "linear-gradient(to right,#fff " + progress*100 + "%,rgba(255,255,255,.28) " + progress*100 + "%)",
-                backgroundClip: "text", WebkitBackgroundClip: "text", color: "transparent",WebkitTextFillColor:"transparent"
-              }:{color:ms<start?"rgba(255,255,255,.28)":"rgba(255,255,255,.65)",WebkitTextFillColor:ms<start?"rgba(255,255,255,.28)":"rgba(255,255,255,.65)"}):undefined}>{word.text}{!line.preserve_word_spacing && wordIndex < line.words.length - 1 ? " " : ""}</span>;
+              const fill=valid?(active?progress:index<activeIdx?1:0):0;
+              const content=word.text+(!line.preserve_word_spacing&&wordIndex<line.words.length-1?" ":"");
+              return <span key={wordIndex} className="public-lyric-word" data-singing={singing?"true":undefined} style={{color:"rgba(255,255,255,.28)"}}>
+                {content}<span aria-hidden="true" className="public-lyric-word-fill" style={{clipPath:'inset(0 '+(100-fill*100)+'% 0 0)'}}>{content}</span>
+              </span>;
             }) : line.text?.trim() || <LyricInterlude active={active} progress={progress} />}
         </button>;
         })}

@@ -10,7 +10,8 @@ export function useLyricClock({trackId,position,enabled,readPosition,viewport,li
    frame=0;if(disposed||document.hidden||!visible)return;
    if(now-last>=50){last=now;const value=readLyricClock(latest.current.readPosition,trackId,latest.current.position);
     const timeline=latest.current.lines,segment=timeline.length?findLyricIndex(timeline,value):-2;
-    const precise=latest.current.continuous||segment===-2||!!timeline[segment]?.words?.length;
+    const instrumental=/^(?:[♪♫]+|\[?(?:instrumental|music|interlude|solo)\]?)$/i.test(timeline[segment]?.text?.trim()||'');
+    const precise=segment===-2||!!timeline[segment]?.words?.length||latest.current.continuous&&instrumental;
     setSample(previous=>previous.trackId===trackId&&(previous.position===value||(!precise&&previous.segment===segment))?previous:{trackId,position:value,segment});}
    frame=requestAnimationFrame(tick);
   };
