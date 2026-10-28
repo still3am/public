@@ -1,3 +1,4 @@
+import {withReadTimeout} from '../src/lib/readTimeout.js';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import ts from 'typescript';
@@ -82,6 +83,8 @@ function fixture(){
 // Execute the actual offline-artwork hook with controlled async storage reads.
 let state,scheduled,cleanup,previousDeps,uid='first-user',pending=new Map(),revoked=[];
 const hooks={
+ withReadTimeout,
+ Image:class{set src(value){queueMicrotask(()=>this.onload?.());}},
  useAuth:()=>({user:{id:uid}}),
  useState:initial=>{state??=typeof initial==='function'?initial():initial;return [state,value=>{state=value;}];},
  useEffect:(fn,deps)=>{if(!previousDeps||deps.some((v,i)=>v!==previousDeps[i])){scheduled=fn;previousDeps=deps;}},
@@ -90,17 +93,17 @@ const hooks={
 };
 globalThis.__coverLifecycle=hooks;
 const hookSource=fs.readFileSync('src/hooks/useOfflineCoverUrl.js','utf8').replace(/^import[^;]+;/gm,'');
-const {useOfflineCoverUrl}=await import('data:text/javascript;base64,'+Buffer.from('const {useAuth,useState,useEffect,getRecord,URL}=globalThis.__coverLifecycle;\n'+hookSource).toString('base64'));
+const {useOfflineCoverUrl}=await import('data:text/javascript;base64,'+Buffer.from('const {useAuth,useState,useEffect,getRecord,URL,Image,withReadTimeout}=globalThis.__coverLifecycle;\n'+hookSource).toString('base64'));
 const runEffects=()=>{if(scheduled){cleanup?.();const fn=scheduled;scheduled=null;cleanup=fn();}};
 assert.equal(useOfflineCoverUrl('one','one.jpg'),'one.jpg');runEffects();
-pending.get('first-user:one').resolve({_coverBlob:{id:'one'}});await Promise.resolve();
+pending.get('first-user:one').resolve({_coverBlob:{id:'one',size:12}});await new Promise(resolve=>setImmediate(resolve));
 assert.equal(useOfflineCoverUrl('one','one.jpg'),'blob:one');
 assert.equal(useOfflineCoverUrl('two','two.jpg'),'two.jpg','new track never renders old artwork');runEffects();
 uid='second-user';
 assert.equal(useOfflineCoverUrl('two','second.jpg'),'second.jpg','account switch never renders previous account artwork');runEffects();
-pending.get('first-user:two').resolve({_coverBlob:{id:'stale'}});await Promise.resolve();
+pending.get('first-user:two').resolve({_coverBlob:{id:'stale'}});await new Promise(resolve=>setImmediate(resolve));
 assert.equal(useOfflineCoverUrl('two','second.jpg'),'second.jpg','late old-account read cannot commit');
-pending.get('second-user:two').resolve({_coverBlob:{id:'two'}});await Promise.resolve();
+pending.get('second-user:two').resolve({_coverBlob:{id:'two',size:12}});await new Promise(resolve=>setImmediate(resolve));
 assert.equal(useOfflineCoverUrl('two','second.jpg'),'blob:two');assert.ok(revoked.includes('blob:one'));cleanup();
 console.log('PASS offline artwork follows track/account identity and ignores stale storage reads');
 {

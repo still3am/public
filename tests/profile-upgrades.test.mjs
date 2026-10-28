@@ -23,7 +23,7 @@ function fixture(){
  let profile={id:'me',...base,featured_track_id:'old'},form={...base,featured_track_id:'old'},edit=true,writes=[],errors=[],saving=false;
  const env={formFromProfile,normalizeProfileDraft,isOwn:true,editMode:true,saving:false,uploadingAvatar:false,uploadingBanner:false,me:{id:'me'},targetId:'me',identity:{current:'me:me'},saveLock:{current:false},avatarBusy:{current:false},bannerBusy:{current:false},avatarVersion:{current:0},bannerVersion:{current:0},chosenProfileSong:{current:null},
  setForm:value=>{form=typeof value==='function'?value(form):value;env.form=form;},setProfile:value=>{profile=value;env.profile=profile;},setEditMode:value=>edit=value,setBackgroundDraft(){},setUploadingAvatar(){},setUploadingBanner(){},setSaving:value=>saving=value,
- reportActionError:(e,m)=>errors.push(e?.message||m),window:{dispatchEvent(){}},Event:class{},checkUserAuth:async()=>{},base44:{auth:{updateMe:async patch=>{writes.push(patch);Object.assign(profile,patch);},me:async()=>({...profile})}}};
+ setSaveError:m=>{if(m)errors.push(m);},actionError:e=>e?.message||'Failed',reportActionError:(e,m)=>errors.push(e?.message||m),window:{dispatchEvent(){}},Event:class{},checkUserAuth:async()=>{},base44:{auth:{updateMe:async patch=>{writes.push(patch);Object.assign(profile,patch);},me:async()=>({...profile})}}};
  env.form=form;env.profile=profile;
  return {env,get form(){return form;},get edit(){return edit;},get writes(){return writes;},get errors(){return errors;},get saving(){return saving;}};
 }
