@@ -37,7 +37,7 @@ export default function TrackFavoriteButton({trackId,className=''}){
  }
  const label=current.error&&!current.ready?'Retry favorite status':current.liked?'Remove from favorites':'Add to favorites';
  return <span className={'track-favorite '+className}>
-  <button type="button" className="track-favorite-button" disabled={!trackId||current.loading||current.busy} aria-label={label} title={label} aria-pressed={current.ready?current.liked:false} aria-busy={current.loading||current.busy} onClick={toggle}><Star size={22} strokeWidth={2} fill={current.liked?'currentColor':'none'}/></button>
+  <button type="button" className="track-favorite-button" disabled={!trackId||current.loading||current.busy} aria-label={label} title={label} aria-pressed={current.ready?current.liked:false} aria-busy={current.loading||current.busy} onClick={toggle}><Star size={18} strokeWidth={1.8} fill={current.liked?'currentColor':'none'}/></button>
   {current.error&&<span className="track-favorite-error" role="status">{current.error}</span>}
  </span>;
 }
