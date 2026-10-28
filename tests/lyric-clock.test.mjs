@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import ts from 'typescript';
-import {readLyricClock,findLyricIndex} from '../src/lib/lyricClock.js';
+import {readLyricClock,findLyricIndex,prepareLyricTimeline} from '../src/lib/lyricClock.js';
 let media=1.125;
 assert.equal(readLyricClock(()=>media,'a',1),1.125,'uses fine-grained media time');
 for(let i=0;i<10;i++)assert.equal(readLyricClock(()=>media,'a',2),1.125,'buffering cannot advance lyrics with wall time');
@@ -46,3 +46,8 @@ assert.equal(state,sameLine,'line-only timing avoids redrawing all lyrics betwee
 media=2.6;pump(480);assert.equal(state.segment,1,'line boundary triggers an update');
 media=4.1;pump(540);media=4.2;pump(600);assert.equal(state.position,4.2,'word timing retains fine media-clock updates');
 stopLineClock();
+
+const gapped=prepareLyricTimeline([{text:'First',start_time_ms:1000,end_time_ms:15000,words:[{text:'First',start_time_ms:1000,end_time_ms:4000}]},{text:'Next',start_time_ms:15000,end_time_ms:20000}]);
+assert.deepEqual(gapped.map(line=>line.start_time_ms),[1000,4000,15000]);assert.equal(gapped[1].text,'♪');assert.equal(findLyricIndex(gapped,8),1,'explicit instrumental gap uses dots instead of holding the old lyric');assert.equal(findLyricIndex(gapped,15),2);
+assert.equal(prepareLyricTimeline([{text:'Long line',start_time_ms:1000,end_time_ms:15000},{text:'Next',start_time_ms:15000,end_time_ms:20000}]).length,2,'a long line without explicit word ending does not invent an instrumental gap');
+assert.equal(prepareLyricTimeline([{text:'Intro follows',start_time_ms:5000,end_time_ms:10000}])[0].text,'♪');
