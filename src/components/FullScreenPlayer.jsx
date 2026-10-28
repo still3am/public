@@ -26,8 +26,7 @@ import {
   Repeat,
   Repeat1,
   Shuffle,
-  Disc3,
-  X } from
+  Disc3 } from
 "lucide-react";
 import MotionGradient from "@/components/MotionGradient";
 import PlayPauseButton from "@/components/PlayPauseButton";
