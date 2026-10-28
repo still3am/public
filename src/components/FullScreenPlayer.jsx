@@ -91,7 +91,7 @@ export default function FullScreenPlayer({ onClose }) {
   // Reset the broken-cover flag whenever the track (and thus its cover URL) changes.
   useEffect(() => {setCoverFailed(false);}, [coverUrl]);
 
-  useEffect(() => {setLyricsMode(false);setFindingLyrics(false);}, [t?.id]);
+  useEffect(() => {setFindingLyrics(false);}, [t?.id]);
 
   // LRCLIB is the only playback lyrics provider. Older saved records are not used.
   useEffect(() => {
@@ -136,7 +136,7 @@ export default function FullScreenPlayer({ onClose }) {
           p.setMuted(!p.muted);
           break;
         case "KeyL":
-          if (hasLyrics) setLyricsMode((v) => !v);
+          setLyricsMode((v) => !v);
           break;
         case "Escape":
           onClose();

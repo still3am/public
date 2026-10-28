@@ -5,7 +5,7 @@ const choices = new Map();
 const searches = new Map();
 const signature = track => JSON.stringify([track.id,track.title,track.artist]);
 export function chooseLyricsCatalogMatch(track,row) {
- if(!Number.isSafeInteger(row?.id)||!lyricsResult(row)?.available)throw new Error("Choose a lyrics record first.");
+ if(!Number.isSafeInteger(row?.id)||!(lyricsResult(row)?.available||row?.instrumental===true))throw new Error("Choose a lyrics record first.");
  if(choices.size>=50)choices.delete(choices.keys().next().value);
  choices.set(signature(track),row);
  if(typeof window!=="undefined")window.dispatchEvent(new CustomEvent("lyrics:changed",{detail:{trackId:track.id}}));
@@ -48,7 +48,7 @@ function candidateScore(row,track) {
 }
 export function rankLyricsCandidates(rows,track) {
  const duration=Number(track.duration_seconds)||0;
- return [...rows].sort((a,b)=>Number(normalize(b.trackName)===normalize(cleanLyricsTitle(track.title)))-Number(normalize(a.trackName)===normalize(cleanLyricsTitle(track.title)))||Number(normalize(b.artistName)===normalize(track.artist))-Number(normalize(a.artistName)===normalize(track.artist))||(duration?Number(Math.abs(b.duration-duration)<=2)-Number(Math.abs(a.duration-duration)<=2):0)||Number(!!b.syncedLyrics)-Number(!!a.syncedLyrics)||(duration?Math.abs(a.duration-duration)-Math.abs(b.duration-duration):0));
+ return [...rows].sort((a,b)=>candidateScore(b,track)-candidateScore(a,track)||Number(normalize(b.trackName)===normalize(cleanLyricsTitle(track.title)))-Number(normalize(a.trackName)===normalize(cleanLyricsTitle(track.title)))||Number(normalize(b.artistName)===normalize(track.artist))-Number(normalize(a.artistName)===normalize(track.artist))||(duration?Number(Math.abs(b.duration-duration)<=2)-Number(Math.abs(a.duration-duration)<=2):0)||Number(!!b.syncedLyrics)-Number(!!a.syncedLyrics)||(duration?Math.abs(a.duration-duration)-Math.abs(b.duration-duration):0));
 }
 const text = value => typeof value === 'string' ? value.slice(0,100000).trim() : '';
 /** @param {string} path @param {{signal?:AbortSignal}} options */
@@ -132,13 +132,24 @@ export async function searchLyricsCatalog(track, {signal,broad=false} = {}) {
     current.promise=(async()=>{
       const result=await request('/api/search?'+new URLSearchParams(broad?{q:title+' '+artist}:{track_name:title,artist_name:artist}),{signal:current.controller.signal});
       if(!Array.isArray(result))throw new Error('Unexpected lyrics response. Please retry.');
-      const rows=result.filter(row=>Number.isSafeInteger(row.id)&&row.id>0).slice(0,50).map(row=>({...row,plainLyrics:text(row.plainLyrics),syncedLyrics:text(row.syncedLyrics)}));
+      const rows=result.filter(row=>row&&typeof row==='object'&&Number.isSafeInteger(row.id)&&row.id>0).slice(0,50).map(row=>({...row,plainLyrics:text(row.plainLyrics),syncedLyrics:text(row.syncedLyrics)}));
       if(cache.size>=50)cache.delete(cache.keys().next().value);
       cache.set(key,{until:Date.now()+(rows.length?600000:30000),rows});return rows;
     })().finally(()=>{if(searches.get(key)===current)searches.delete(key);});
     searches.set(key,current);
   }
   return joinSearch(entry,signal);
+}
+/** Manual search uses a broad fallback too, without hiding a provider failure. */
+export async function searchLyricsOptions(track,{signal}={}) {
+ let rows=[],failure=null;
+ try{rows=await searchLyricsCatalog(track,{signal});}catch(error){if(signal?.aborted||error.name==='AbortError')throw error;failure=error;}
+ if(!rows.some(row=>lyricsResult(row)?.available||row.instrumental===true)){
+  try{rows.push(...await searchLyricsCatalog({...track,title:baseTitle(track.title),artist:primaryLyricsArtist(track.artist)},{signal,broad:true}));}
+  catch(error){if(signal?.aborted||error.name==='AbortError')throw error;failure=error;}
+ }
+ if(!rows.length&&failure)throw failure;
+ return rankLyricsCandidates([...new Map(rows.map(row=>[row.id,row])).values()],track);
 }
 export function lyricsResult(row, duration = 0) {
   if(!row)return null;
