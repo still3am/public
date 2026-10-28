@@ -55,3 +55,11 @@ assert.equal(selectLyricsMatch([{...sample,artistName:'Beyoncé',trackName:'Déj
 assert.equal(selectLyricsMatch([{...sample,trackName:'My Song (Radio Edit)'}],song),null,'a different edit cannot silently replace the recording');
 
 assert.equal(selectLyricsMatch([{...sample,trackName:"Don't Stop"}],{...song,title:'Dont Stop'}).id,1,'apostrophe formatting matches the same song');
+
+const enhanced=parseLrc('[00:01.00]<00:01.20>One <00:02.10>two<00:02.60>\n[00:03.00]Next',5);
+assert.equal(enhanced[0].text,'One two');assert.equal(enhanced[0].preserve_word_spacing,true);
+assert.deepEqual(enhanced[0].words,[{text:'One ',start_time_ms:1200,end_time_ms:2100},{text:'two',start_time_ms:2100,end_time_ms:2600}]);
+assert.equal(parseLrc('[offset:500]\n[00:01.00]<00:01.20>One <00:02.10>two\n[00:03.00]Next',5)[0].words[0].start_time_ms,700,'offset applies equally to words and lines');
+assert.equal(parseLrc('[00:01.00]<00:02.00>One <00:01.20>two\n[00:03.00]Next',5)[0].words,undefined,'non-monotonic word timing falls back to line sync');
+assert.equal(parseLrc('[00:01.00]<00:01.20>One <00:04.20>two\n[00:03.00]Next',5)[0].words,undefined,'word timestamps cannot spill into the next line');
+assert.equal(parseLrc('[00:01.00][00:05.00]<00:01.20>One <00:02.20>two',8)[1].words,undefined,'repeated chorus tags do not reuse absolute word timings');
