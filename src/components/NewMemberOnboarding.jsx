@@ -124,7 +124,7 @@ export function WelcomeFlow({user,onDone}){
    }
    if(!skip&&step===2)await saveUserMusicPreferences({genres:draft.genres},user.id);
    if(!skip&&step===3){if(loading||!musicReady)throw Error("Retry loading your music choices, or skip this step.");await saveUserMusicPreferences({favorite_track_ids:draft.trackIds.filter(id=>byId.has(id)),favorite_artists:draft.artists.filter(name=>artistOptions.some(a=>a.name===name))},user.id);}
-   if(!skip&&step===5){const patch={profile_background_mode:draft.mode,profile_background_colors:draft.colors,profile_background_motion:draft.motion,profile_background_speed:draft.speed,featured_track_id:draft.profileTrack};await base44.auth.updateMe(patch);const saved=await owner();if(saved.featured_track_id!==draft.profileTrack||saved.profile_background_mode!==draft.mode||JSON.stringify(saved.profile_background_colors)!==JSON.stringify(draft.colors))throw Error("Profile style was not confirmed.");await checkUserAuth({silent:true});}
+   if(!skip&&step===5){const patch={profile_background_mode:draft.mode,profile_background_colors:draft.colors,profile_background_motion:draft.motion||"flow",profile_background_speed:draft.speed||1,featured_track_id:draft.profileTrack};await base44.auth.updateMe(patch);const saved=await owner();if(saved.featured_track_id!==draft.profileTrack||saved.profile_background_mode!==draft.mode||JSON.stringify(saved.profile_background_colors)!==JSON.stringify(draft.colors))throw Error("Profile style was not confirmed.");await checkUserAuth({silent:true});}
    if(alive.current)setDraft(old=>({...old,step:step+1}));
   }catch(e){if(alive.current)setError(errorText(e));}
   finally{lock.current=false;if(alive.current)setBusy(false);}

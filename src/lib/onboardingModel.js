@@ -29,7 +29,7 @@ export function readOnboardingDraft(uid){
   if(["auto","custom","off"].includes(raw.mode))clean.mode=raw.mode;
   if(["flow","still"].includes(raw.motion))clean.motion=raw.motion;
   if(Number.isFinite(raw.speed)&&raw.speed>=.35&&raw.speed<=1.6)clean.speed=raw.speed;
-  if(Array.isArray(raw.colors)&&raw.colors.length===3&&raw.colors.every(c=>/^#[0-9a-f]{6}$/i.test(c)))clean.colors=raw.colors;
+  if(Array.isArray(raw.colors)&&raw.colors.length>=1&&raw.colors.length<=3&&raw.colors.every(c=>/^#[0-9a-f]{6}$/i.test(c)))clean.colors=raw.colors;
   for(const key of ["shareFavorites","sharingChanged"])if(typeof raw[key]==="boolean")clean[key]=raw[key];
   if(Array.isArray(raw.editedFields))clean.editedFields=raw.editedFields.filter(key=>["genres","trackIds","artists"].includes(key));
   else clean.editedFields=["genres","trackIds","artists"].filter(key=>Array.isArray(raw[key]));
@@ -44,7 +44,7 @@ export function onboardingComplete(user){
 }
 export function normalizeOnboardingColors(colors){
  const valid=Array.isArray(colors)?colors.filter(c=>/^#[0-9a-f]{6}$/i.test(c)):[];
- return [valid[0]||"#000000",valid[1]||"#ffffff",valid[2]||"#303030"];
+ return valid.length?valid.slice(0,3):["#000000","#45454b","#202025"];
 }
 export function mergeOnboardingTaste(draft,taste){
  const edited=new Set(draft.editedFields||[]),next={...draft};

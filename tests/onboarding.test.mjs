@@ -61,7 +61,7 @@ let hydrated=model.mergeOnboardingTaste({genres:["Jazz"],artists:[],trackIds:[],
 assert.deepEqual(hydrated.genres,["Jazz"]);assert.deepEqual(hydrated.artists,["Artist"]);
 hydrated=model.mergeOnboardingTaste({...hydrated,artists:["New artist"],editedFields:["genres","artists"]},{genres:[],favorite_artists:["Old artist"]});
 assert.deepEqual(hydrated.artists,["New artist"]);
-assert.deepEqual(model.normalizeOnboardingColors(["bad","#123456"]),["#123456","#ffffff","#303030"]);
+assert.deepEqual(model.normalizeOnboardingColors(["bad","#123456"]),["#123456"]);
 assert.equal(await model.withOnboardingDeadline(Promise.resolve("ready"),5),"ready");
 await assert.rejects(model.withOnboardingDeadline(new Promise(()=>{}),5),/too long/);
 storage.set("public:onboarded:a","1");assert.equal(model.onboardingComplete({id:"a",onboarding_completed:false}),true);assert.equal(model.onboardingComplete({id:"b",onboarding_completed:false}),false);storage.delete("public:onboarded:a");
@@ -103,3 +103,9 @@ f=flow(1,{avatar:AVATAR_PRESETS[0].url,avatarFailure:true});await f.api.next();a
 f=flow(1,{avatar:AVATAR_PRESETS[0].url});await f.api.next(true);assert.equal(f.state.patches.length,0);assert.equal(f.state.step,2);
 f=flow(1,{avatar:AVATAR_PRESETS[0].url,ignored:true});await f.api.next();assert.equal(f.state.step,undefined);
 console.log('PASS onboarding avatar and name saves, gallery choices, failures, unconfirmed saves and skip');
+
+storage.set(model.draftKey("palette"),JSON.stringify({uid:"palette",colors:["#112233"],motion:"still",speed:.6}));
+const restored=model.readOnboardingDraft("palette");
+assert.deepEqual(restored.colors,["#112233"]);assert.equal(restored.motion,"still");assert.equal(restored.speed,.6);
+assert.ok(!model.normalizeOnboardingColors([]).includes("#ffffff"));
+console.log('PASS one-color palettes, movement and speed survive onboarding draft restoration');
