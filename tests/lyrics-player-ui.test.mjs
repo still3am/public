@@ -1,3 +1,5 @@
+import {prepareVocalLines} from '../src/lib/lyricVoices.js';
+globalThis.__prepareVocalLines=prepareVocalLines;
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import ts from 'typescript';
@@ -6,7 +8,7 @@ import {findLyricIndex,prepareLyricTimeline} from '../src/lib/lyricClock.js';
 globalThis.__findLyricIndex=findLyricIndex;globalThis.__prepareLyricTimeline=prepareLyricTimeline;
 globalThis.__lyricsReact=React;
 const source=fs.readFileSync('src/components/SyncedLyrics.jsx','utf8').replace(/^import[^;]+;/gm,'');
-const stubs='const prepareLyricTimeline=globalThis.__prepareLyricTimeline,findLyricIndex=globalThis.__findLyricIndex,useLyricClock=({position})=>position,React=globalThis.__lyricsReact,useState=value=>[globalThis.__lyricsBrowsing??value,()=>{}],useMemo=fn=>fn(),LyricInterlude="interlude",useEffect=()=>{},useRef=value=>({current:value}),Loader2="loader";';
+const stubs='const prepareVocalLines=globalThis.__prepareVocalLines,prepareLyricTimeline=globalThis.__prepareLyricTimeline,findLyricIndex=globalThis.__findLyricIndex,useLyricClock=({position})=>position,React=globalThis.__lyricsReact,useState=value=>[globalThis.__lyricsBrowsing??value,()=>{}],useMemo=fn=>fn(),LyricInterlude="interlude",useEffect=()=>{},useRef=value=>({current:value}),Loader2="loader";';
 const code=ts.transpileModule(stubs+source,{compilerOptions:{jsx:ts.JsxEmit.React,target:ts.ScriptTarget.ES2022,module:ts.ModuleKind.ESNext}}).outputText;
 const View=(await import('data:text/javascript;base64,'+Buffer.from(code).toString('base64'))).default;
 const all=(node,predicate)=>!node||typeof node!=='object'?[]:[...(predicate(node)?[node]:[]),...React.Children.toArray(node.props?.children).flatMap(child=>all(child,predicate))];
@@ -45,3 +47,7 @@ const nextTrack={id:'new',title:'New song',artist:'New artist',duration_seconds:
 let page=Page({track:nextTrack});assert.ok(!contents(page).includes('STALE SONG PAGE WORDS'));assert.ok(contents(page).includes('Finding lyrics'),'song page hides old lyrics before effects run');
 globalThis.__trackLyricsState={...globalThis.__trackLyricsState,identity:JSON.stringify(['new','New song','New artist',180]),result:{available:true,text:'Correct song page words'}};
 page=Page({track:nextTrack});assert.equal(all(page,node=>node.type==='text')[0].props.text,'Correct song page words');
+
+tree=View({...props,resolvedLyrics:{trackId:'new',record:{lines:[{text:'v1: First voice',start_time_ms:1000,end_time_ms:2000},{text:'v2: Second voice',start_time_ms:2000,end_time_ms:3000}]}}});
+assert.equal(all(tree,n=>n.type==='button'&&n.props.className?.includes('public-lyric-secondary')).length,1);
+assert.match(contents(tree),/Vocal 2/);
