@@ -2,6 +2,7 @@ import {reportActionError} from '@/lib/actionError';
 import {copyText,shareLink} from '@/lib/shareLink';
 import { useState } from "react";
 import { X, Share2, ScanLine } from "lucide-react";
+import MotionGradient from "@/components/MotionGradient";
 import QRScannerModal from "@/components/QRScannerModal";
 
 /** @param {any} props */
@@ -33,12 +34,16 @@ export default function ProfileQRModal({ url, name, avatar, onClose }) {
       onClick={onClose}>
       
       <div
-        className="bg-card rounded-3xl w-full max-w-sm p-6 shadow-2xl text-center relative max-h-[90dvh] overflow-y-auto overscroll-contain"
+        className="bg-card isolate rounded-3xl w-full max-w-sm p-6 shadow-2xl text-center text-white relative max-h-[90dvh] overflow-y-auto overscroll-contain"
         onClick={(e) => e.stopPropagation()}>
         
+        <div className="absolute inset-0 -z-10 overflow-hidden rounded-3xl pointer-events-none" aria-hidden="true">
+          <MotionGradient colors={['#ff3b30','#b527ed','#ffbf27']} speed={.65} className="absolute inset-0" />
+          <div className="absolute inset-0 bg-black/60" />
+        </div>
         <button
           onClick={onClose}
-          className="absolute right-4 top-4 p-2 rounded-full hover:bg-foreground/5"
+          className="absolute right-4 top-4 p-2 rounded-full bg-black/25 hover:bg-black/40"
           aria-label="Close">
           
           <X size={18} />
@@ -57,11 +62,11 @@ export default function ProfileQRModal({ url, name, avatar, onClose }) {
             </div>
           }
           <h3 className="text-lg font-extrabold tracking-tight">{name}</h3>
-          <p className="text-xs text-foreground/50">Scan to view on PUBLIC.</p>
+          <p className="text-xs text-white/70">Scan to view on PUBLIC.</p>
         </div>
 
         <div
-          className="inline-block p-4 rounded-3xl shadow-sm mb-4"
+          className="inline-block p-4 rounded-3xl shadow-xl mb-4"
           style={{ backgroundColor: "white" }}>
           
           <img

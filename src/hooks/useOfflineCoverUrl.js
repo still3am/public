@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import {useAuth} from "@/lib/AuthContext";
+import {withReadTimeout} from "@/lib/readTimeout";
 import { getRecord } from "@/lib/offlineCache";
 
 // Resolves a track's cover art to a local blob: URL when the track is in the
@@ -21,12 +22,20 @@ export function useOfflineCoverUrl(trackId, fallbackUrl) {
         return;
       }
       try {
-        const rec = await getRecord(trackId,user?.id||null);
+        const rec = await withReadTimeout(getRecord(trackId,user?.id||null),2500);
         if (cancelled) return;
-        if (rec?._coverBlob) {
+        if (rec?._coverBlob?.size > 0) {
           blobUrl = URL.createObjectURL(rec._coverBlob);
-          setUrl(blobUrl);
-          return;
+          const image = new Image();
+          const decoded = new Promise((resolve,reject)=>{image.onload=resolve;image.onerror=()=>reject(new Error('Cached cover is invalid'));image.src=blobUrl;});
+          try {
+            await withReadTimeout(decoded,2500);
+            if (!cancelled) setUrl(blobUrl);
+            return;
+          } catch {
+            if(blobUrl)URL.revokeObjectURL(blobUrl);
+            blobUrl=null;
+          } finally {image.onload=null;image.onerror=null;}
         }
       } catch {
         /* ignore — fall through to remote url */
