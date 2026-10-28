@@ -7,7 +7,7 @@ import FindLyricsModal from '@/components/FindLyricsModal';
 export default function TrackCatalogLyrics({ track }) {
   const player=usePlayer(),measuredDuration=player.currentTrack?.id===track.id&&player.duration>0?player.duration:track.duration_seconds;
   const identity=JSON.stringify([track.id,track.title,track.artist,measuredDuration]);
-  const [storedState, setState] = useState({ loading: true, result: null, error: '' }),[revision, setRevision] = useState(0),[finding, setFinding] = useState(false);
+  const [storedState, setState] = useState({ identity: '', loading: true, result: null, error: '' }),[revision, setRevision] = useState(0),[finding, setFinding] = useState(false);
   const state=storedState.identity===identity?storedState:{loading:true,result:null,error:''};
   useEffect(()=>{const changed=event=>{if(event.detail?.trackId===track.id)setRevision(v=>v+1);};window.addEventListener('lyrics:changed',changed);return()=>window.removeEventListener('lyrics:changed',changed);},[track.id]);
   useEffect(() => {

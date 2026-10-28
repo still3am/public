@@ -76,6 +76,7 @@ function parseWordStamps(row,offset) {
  const body=row.replace(/\[\d{1,3}:\d{2}(?:[.:]\d{1,3})?\]/g,'');
  const marks=[...body.matchAll(/<(\d{1,3}):(\d{2})(?:[.:](\d{1,3}))?>/g)];
  if(!marks.length||body.slice(0,marks[0].index).trim())return null;
+ /** @type {Array<{text:string,start_time_ms:number,end_time_ms?:number}>} */
  const words=[];
  for(let i=0;i<marks.length;i++){
   const mark=marks[i];if(Number(mark[2])>=60)return null;
