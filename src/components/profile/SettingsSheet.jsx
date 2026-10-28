@@ -73,6 +73,7 @@ export default function SettingsSheet({ onClose, onDeleteAccount }) {
      <SettingRow icon={Sparkles} title={artist?"Approved artist":user?.creator_role==="uploader"?"Uploader access":"Become an artist"} description={artist?"Verified by PUBLIC":user?.creator_role==="uploader"?"Music uploads approved by an admin":"Register your artist profile for admin review"} to="/artist-registration" onClick={onClose}/>
      {artist && <SettingRow icon={BarChart3} title="Artist dashboard" description="Plays, likes and followers" to="/artist-dashboard" onClick={onClose} />}
     </SettingGroup>}
+    {user?.role==="admin"&&<SettingGroup title="Preview lab"><SettingRow icon={Sparkles} title="Community preview" description="Explore five styled profile concepts" to="/community-preview" onClick={onClose}/></SettingGroup>}
     <SettingGroup title="Help & privacy">
      <SettingRow icon={Headphones} title="Support & copyright" description="Get help or send a copyright request" to="/support" onClick={onClose} />
      <SettingRow icon={Lightbulb} title="Ideas & suggestions" to="/suggestions" onClick={onClose} />

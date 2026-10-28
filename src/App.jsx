@@ -28,6 +28,7 @@ import Register from '@/pages/Register';
 import ForgotPassword from '@/pages/ForgotPassword';
 import ResetPassword from '@/pages/ResetPassword';
 import Home from '@/pages/Home';
+import CommunityPreview from '@/pages/CommunityPreview';
 import Moments from '@/pages/Moments';
 import PersonalMix from '@/pages/PersonalMix';
 import RecapPlaylist from '@/pages/RecapPlaylist';
@@ -93,6 +94,7 @@ const AuthenticatedApp = () => {
         {/* Public browsing — no login required */}
         <Route path="/" element={<Home />} />
         <Route path="/search" element={<Search />} />
+        <Route path="/community-preview" element={<CommunityPreview />} />
         <Route path="/moments" element={<Moments />} />
         <Route path="/moments/:id" element={<Moments />} />
         <Route path="/top" element={<TopCharts />} />
