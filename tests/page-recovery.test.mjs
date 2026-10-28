@@ -43,3 +43,12 @@ const auth=fs.readFileSync("src/lib/AuthContext.jsx","utf8");
 assert.ok(auth.includes("withReadTimeout(base44.auth.me())"));
 assert.ok(auth.includes("if(request!==appVersion.current)return;"));
 console.log("PASS read deadlines, timer cleanup, page-only retry, navigation recovery and retained-tab isolation");
+
+const {readAllPages}=await import('../src/lib/readPages.js');
+const {readLibraryRows}=await import('../src/lib/libraryRows.js');
+const realTimeout=globalThis.setTimeout;
+globalThis.setTimeout=(fn,ms)=>realTimeout(fn,Math.min(ms,5));
+try{
+ await assert.rejects(readAllPages(()=>new Promise(()=>{})),error=>error.code==='READ_TIMEOUT','catalog list cannot remain pending forever');
+ await assert.rejects(readLibraryRows({filter:()=>new Promise(()=>{})},{user_id:'owner'}),error=>error.code==='READ_TIMEOUT','saved library reads have a recoverable deadline');
+}finally{globalThis.setTimeout=realTimeout;}
