@@ -1,15 +1,21 @@
-import {useId,useState} from "react";
-import "./admin-profile-badge.css";
+import {useId,useState} from 'react';
+import './admin-profile-badge.css';
 
-export default function ProfileBadge({variant="admin"}){
- const artist=variant==="artist",uploader=variant==="uploader",label=artist?"PUBLIC Artist":uploader?"PUBLIC Uploader":"PUBLIC Admin";
- const gradient=useId().replace(/:/g,""),[open,setOpen]=useState(false);
- return <button type="button" className={`profile-admin-badge ${artist?"profile-monochrome-badge":""} absolute top-3 right-3 md:top-5 md:right-5 z-20`} title={label} aria-label={label} aria-expanded={open} onClick={()=>setOpen(v=>!v)} onBlur={()=>setOpen(false)} onKeyDown={event=>{if(event.key==="Escape"){event.stopPropagation();setOpen(false);}}}>
-  <svg width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true">
-   <defs><linearGradient id={gradient} x1="3" y1="2" x2="29" y2="30" gradientUnits="userSpaceOnUse"><stop stopColor="#eef5ff"/><stop offset=".30" stopColor="#a794f4"/><stop offset=".64" stopColor="#6ebeed"/><stop offset="1" stopColor="#e4eaf4"/></linearGradient></defs>
-   <path d="M16 2 20 4.5 24.7 4.7 26.8 9 30 12.5 29 17.2 29.2 22 25.2 24.7 22.5 28.5 17.7 28.4 13 30 9.3 27 4.8 25.5 4.3 20.7 2 16.5 4.1 12.2 4.5 7.4 9 5.5 12.5 2.2Z" fill={uploader?"#e8b758":artist?"#ffffff":`url(#${gradient})`} stroke="#ffffff" strokeOpacity=".5" strokeWidth=".7" strokeLinejoin="round"/>
-   <path d="m10 16 4 4 8-9" stroke={artist?"#101010":"#17213b"} strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round"/>
+const ROLES={
+ admin:{label:'PUBLIC Admin',detail:'Manages and moderates PUBLIC.',colors:['#e0edff','#a99bff','#65bde9'],ink:'#17213b'},
+ artist:{label:'PUBLIC Artist',detail:'Artist approved by PUBLIC.',colors:['#ffffff','#edf0f5','#c4cbd6'],ink:'#171a20'},
+ uploader:{label:'PUBLIC Uploader',detail:'Approved to upload music to PUBLIC.',colors:['#fff0bb','#edc568','#c89035'],ink:'#38270d'},
+};
+export default function ProfileBadge({variant='admin'}){
+ const role=ROLES[variant]||ROLES.admin;
+ const id=useId().replace(/:/g,''),[open,setOpen]=useState(false);
+ return <button type="button" className={`profile-admin-badge profile-role-${variant} absolute top-3 right-3 md:top-5 md:right-5 z-20`} title={role.label} aria-label={role.label} aria-expanded={open} aria-describedby={open?`${id}-label`:undefined} onClick={()=>setOpen(v=>!v)} onBlur={()=>setOpen(false)} onKeyDown={e=>{if(e.key==='Escape'){e.stopPropagation();setOpen(false);}}}>
+  <svg width="40" height="40" viewBox="0 0 40 40" fill="none" aria-hidden="true">
+   <defs><linearGradient id={`${id}-fill`} x1="8" y1="2" x2="31" y2="39" gradientUnits="userSpaceOnUse">{role.colors.map((color,i)=><stop key={color} offset={i/2} stopColor={color}/>)}</linearGradient><linearGradient id={`${id}-edge`} x1="8" y1="3" x2="30" y2="36" gradientUnits="userSpaceOnUse"><stop stopColor="#fff" stopOpacity=".95"/><stop offset="1" stopColor="#fff" stopOpacity=".15"/></linearGradient></defs>
+   <path d="m20 2.5 4.5 2.7 5.2.2 2.8 4.4 4.3 2.9.1 5.2 2.6 4.6-2.6 4.5-.1 5.2-4.3 2.9-2.8 4.4-5.2.2L20 37.5l-4.5-2.7-5.2-.2-2.8-4.4-4.3-2.9-.1-5.2L.5 17.5l2.6-4.5.1-5.2 4.3-2.9 2.8-4.4 5.2-.2Z" transform="translate(2 3) scale(.9)" fill={`url(#${id}-fill)`} stroke={`url(#${id}-edge)`} strokeWidth="1.1" strokeLinejoin="round"/>
+   <circle cx="20" cy="20" r="11.8" stroke={role.ink} strokeOpacity=".13" strokeWidth=".8"/>
+   <path d="m13.5 20 4.3 4.2 8.7-9" stroke={role.ink} strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
   </svg>
-  {open&&<span className="profile-admin-label" role="status">{label}</span>}
+  {open&&<span id={`${id}-label`} className="profile-admin-label" role="status"><strong>{role.label}</strong><span>{role.detail}</span></span>}
  </button>;
 }
