@@ -32,3 +32,8 @@
 @media(min-width:1280px){.public-lyrics-toolbar{padding-inline:24px}}
 @media(max-height:650px){.public-lyrics-toolbar{min-height:32px}.public-lyrics-empty{padding:12px;gap:10px}.public-lyrics-view .public-lyric-line{margin-bottom:16px}}
 @media(prefers-reduced-motion:reduce){.public-lyrics-skeleton{animation:none;opacity:.6}}
+
+.public-lyrics-scroll{touch-action:pan-y;overflow-anchor:none}
+.public-lyric-line{-webkit-tap-highlight-color:transparent}
+@media(hover:hover){.public-lyrics-view .public-lyric-line:hover{opacity:1!important}}
+@media(max-width:400px){.public-lyrics-view .public-lyric-line{font-size:clamp(23px,6.7vw,28px);letter-spacing:-.025em}}

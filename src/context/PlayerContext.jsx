@@ -1273,6 +1273,15 @@ export function PlayerProvider({ children }) {
 
   useEffect(()=>()=>{cancelNotePreviewRef.current();els().forEach(a=>a?.pause());if(crossfadeTimerRef.current)clearTimeout(crossfadeTimerRef.current);if(sleepTimerRef.current)clearTimeout(sleepTimerRef.current);audioCtxRef.current?.close().catch(()=>{});},[]);
 
+  // Read the actual active media clock for lyrics without updating the entire
+  // player tree at animation-frame frequency. Never expose the outgoing side.
+  const getPlaybackPosition=useCallback((trackId)=>{
+    const side=activeIdxRef.current;
+    if(queueRef.current[currentIndexRef.current]?.id!==trackId||sideLoadedIdRef[side].current!==trackId)return null;
+    const time=els()[side]?.currentTime;
+    return Number.isFinite(time)?Math.max(0,time):null;
+  },[]);
+
   const value = {
     queue,
     setQueue,
@@ -1280,6 +1289,7 @@ export function PlayerProvider({ children }) {
     setCurrentIndex,
     isPlaying,
     position,
+    getPlaybackPosition,
     duration,
     volume,
     muted,

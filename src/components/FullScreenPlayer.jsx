@@ -274,7 +274,7 @@ export default function FullScreenPlayer({ onClose }) {
           <div className="full-player-visual relative flex-1 xl:flex-none flex items-center justify-center min-h-0 py-4">
             {showingLyrics &&
             <div className="xl:hidden w-full h-full overflow-hidden flex flex-col min-h-0">
-                <SyncedLyrics key={t.id} trackId={t.id} position={p.position} resolvedLyrics={lyricsAvailability} onSeek={p.seek} onRetry={() => setLyricsRevision((v) => v + 1)} />
+                <SyncedLyrics key={t.id} trackId={t.id} position={p.position} getPlaybackPosition={p.getPlaybackPosition} resolvedLyrics={lyricsAvailability} onSeek={p.seek} onRetry={() => setLyricsRevision((v) => v + 1)} />
               </div>
             }
               <div
@@ -406,7 +406,7 @@ export default function FullScreenPlayer({ onClose }) {
 
 
           <div className="flex-1 min-h-0 flex flex-col">
-            {showLyricsPanel && <SyncedLyrics key={t.id} trackId={t.id} position={p.position} resolvedLyrics={lyricsAvailability} onSeek={p.seek} onRetry={() => setLyricsRevision((v) => v + 1)} />}
+            {showLyricsPanel && <SyncedLyrics key={t.id} trackId={t.id} position={p.position} getPlaybackPosition={p.getPlaybackPosition} resolvedLyrics={lyricsAvailability} onSeek={p.seek} onRetry={() => setLyricsRevision((v) => v + 1)} />}
           </div>
         </div>
       </div>

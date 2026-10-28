@@ -1,14 +1,16 @@
+import {useLyricClock} from '@/hooks/useLyricClock';
 import LyricInterlude from "@/components/LyricInterlude";
 import { useEffect, useRef, useMemo } from "react";
 
 
 /** @param {any} props */
-export default function SyncedLyrics({ trackId, position, resolvedLyrics, onSeek, onRetry }) {
+export default function SyncedLyrics({ trackId, position, resolvedLyrics, onSeek, onRetry, getPlaybackPosition }) {
   const lineRefs = useRef([]);
   const scrollRef = useRef(null);
   const activeRef = useRef(-1);
   const userScrollUntil = useRef(0);
   const resumeTimer = useRef(null);
+  const touching=useRef(false);
   const lastCentered = useRef({ trackId: null, index: -1 });
 
   useEffect(() => {userScrollUntil.current = 0;clearTimeout(resumeTimer.current);
@@ -19,7 +21,8 @@ export default function SyncedLyrics({ trackId, position, resolvedLyrics, onSeek
   const trackLyrics = current?.text || '';
   const loading = !current || current.loading === true;
 
-  const ms = Math.max(0, Number(position) || 0) * 1000;
+  const clock=useLyricClock({trackId,position,enabled:!!lyrics?.lines?.length,readPosition:getPlaybackPosition,viewport:scrollRef});
+  const ms = Math.max(0, Number(clock) || 0) * 1000;
   const lines = useMemo(() => (Array.isArray(lyrics?.lines) ? lyrics.lines : []).
   filter((line) => Number.isFinite(Number(line.start_time_ms)) && Number(line.start_time_ms) >= 0).
   slice().sort((a, b) => Number(a.start_time_ms) - Number(b.start_time_ms)), [lyrics?.lines]);
@@ -37,7 +40,7 @@ export default function SyncedLyrics({ trackId, position, resolvedLyrics, onSeek
   const centerActive = () => {
     const container = scrollRef.current;
     const line = lineRefs.current[activeRef.current];
-    if (!container || !line || Date.now() < userScrollUntil.current) return;
+    if (!container || !line || touching.current || Date.now() < userScrollUntil.current) return;
     // Bounding rectangles use the actual scroll viewport, not an outer positioned ancestor.
     const top = container.scrollTop + line.getBoundingClientRect().top - container.getBoundingClientRect().top -
     container.clientHeight * 0.32;
@@ -82,13 +85,14 @@ export default function SyncedLyrics({ trackId, position, resolvedLyrics, onSeek
   if (hasTimed) return (
     <div className="public-lyrics-view">
     
-    <div ref={scrollRef} onWheel={markUserScroll} onTouchStart={markUserScroll} onTouchMove={markUserScroll}
+    <div ref={scrollRef} onWheel={markUserScroll} onTouchStart={()=>{touching.current=true;markUserScroll();}} onTouchMove={markUserScroll}
+      onTouchEnd={()=>{touching.current=false;markUserScroll();}} onTouchCancel={()=>{touching.current=false;markUserScroll();}}
       onKeyDown={(event) => {if (["ArrowUp", "ArrowDown", "PageUp", "PageDown", "Home", "End"].includes(event.key)) markUserScroll();}}
       className="public-lyrics-scroll no-scrollbar" aria-label="Synced song lyrics">
       {displayLines.map((line, index) => {
           const active = index === activeIdx;
           const distance = activeIdx < 0 ? index : Math.abs(index - activeIdx);
-          const opacity = active ? 1 : distance <= 1 ? 0.72 : distance === 2 ? 0.52 : 0.36;
+          const opacity = active ? 1 : distance <= 1 ? 0.72 : distance === 2 ? 0.56 : 0.44;
           return <button type="button" key={index} ref={(element) => {lineRefs.current[index] = element;}}
           onClick={() => seekLine(line)} title="Play from this line"
           aria-label={(line.text === '♪' ? 'Instrumental passage' : line.text || 'Instrumental passage') + ' · Play from ' + Math.floor(Number(line.start_time_ms) / 60000) + ':' + String(Math.floor(Number(line.start_time_ms) / 1000) % 60).padStart(2, '0')} aria-current={active ? "true" : undefined}

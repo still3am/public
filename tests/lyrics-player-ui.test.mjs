@@ -4,7 +4,7 @@ import ts from 'typescript';
 import * as React from 'react';
 globalThis.__lyricsReact=React;
 const source=fs.readFileSync('src/components/SyncedLyrics.jsx','utf8').replace(/^import[^;]+;/gm,'');
-const stubs='const React=globalThis.__lyricsReact,useState=value=>[globalThis.__lyricsBrowsing??value,()=>{}],useMemo=fn=>fn(),LyricInterlude="interlude",useEffect=()=>{},useRef=value=>({current:value}),Loader2="loader";';
+const stubs='const useLyricClock=({position})=>position,React=globalThis.__lyricsReact,useState=value=>[globalThis.__lyricsBrowsing??value,()=>{}],useMemo=fn=>fn(),LyricInterlude="interlude",useEffect=()=>{},useRef=value=>({current:value}),Loader2="loader";';
 const code=ts.transpileModule(stubs+source,{compilerOptions:{jsx:ts.JsxEmit.React,target:ts.ScriptTarget.ES2022,module:ts.ModuleKind.ESNext}}).outputText;
 const View=(await import('data:text/javascript;base64,'+Buffer.from(code).toString('base64'))).default;
 const all=(node,predicate)=>!node||typeof node!=='object'?[]:[...(predicate(node)?[node]:[]),...React.Children.toArray(node.props?.children).flatMap(child=>all(child,predicate))];
@@ -15,7 +15,7 @@ let tree=View({...props,resolvedLyrics:{trackId:'old',text:'STALE LYRICS',record
 assert.equal(tree.props['aria-label'],'Finding lyrics');assert.ok(!contents(tree).includes('STALE'));
 tree=View({...props,resolvedLyrics:{trackId:'new',loading:true}});assert.equal(tree.props['aria-label'],'Finding lyrics');
 tree=View({...props,resolvedLyrics:{trackId:'new',loading:false,error:'Connection failed'}});
-assert.match(contents(tree),/Connection failed/);const actions=all(tree,node=>node.type==='button');actions[0].props.onClick();assert.equal(retried,1);assert.equal(actions.length,1,'only inline retry remains');
+assert.match(contents(tree),/Lyrics couldn’t load/);const actions=all(tree,node=>node.type==='button');actions[0].props.onClick();assert.equal(retried,1);assert.equal(actions.length,1,'only inline retry remains');
 tree=View({...props,resolvedLyrics:{trackId:'new',loading:false,instrumental:true}});assert.match(contents(tree),/instrumental/);
 tree=View({...props,resolvedLyrics:{trackId:'new',text:'A new line',record:{lines:[{text:'A new line',start_time_ms:1000,end_time_ms:5000}]}}});const line=all(tree,node=>node.props?.className==='public-lyric-line selectable-content')[0];assert.equal(line.props['aria-current'],'true');line.props.onClick();assert.equal(sought,1);
 console.log('PASS immediate track isolation, loading/error/instrumental states, retry, alternate search and timed-line seeking');
