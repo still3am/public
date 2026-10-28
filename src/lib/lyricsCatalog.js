@@ -92,12 +92,18 @@ function parseWordStamps(row,offset) {
 export function parseLrc(value, duration = 0) {
   if(typeof value!=='string')return [];
   const offset=Number(value.match(/\[offset:([+-]?\d+)\]/i)?.[1])||0;
-  const lines=[];
+  const lines=[];let vocalist="";
   for(const row of value.slice(0,100000).replace(/\r\n?/g,'\n').split('\n')){
     const stamps=[...row.matchAll(/\[(\d{1,3}):(\d{2})(?:[.:](\d{1,3}))?\]/g)];
-    const lyric=row.replace(/\[\d{1,3}:\d{2}(?:[.:]\d{1,3})?\]/g,'').replace(/<\d{1,3}:\d{2}(?:[.:]\d{1,3})?>/g,'').trim();
-    const words=stamps.length===1?parseWordStamps(row,offset):null;
-    for(const stamp of stamps){if(Number(stamp[2])>=60)continue;const ms=Math.max(0,Math.round((Number(stamp[1])*60+Number(stamp[2])+Number('0.'+(stamp[3]||'0')))*1000-offset));if(duration>0&&ms>duration*1000+2000)continue;lines.push({text:lyric||'♪',start_time_ms:ms,...(words?{words}: {})});}
+    let lyric=row.replace(/\[\d{1,3}:\d{2}(?:[.:]\d{1,3})?\]/g,'').replace(/<\d{1,3}:\d{2}(?:[.:]\d{1,3})?>/g,'').trim();
+    // Section headings are often untimed. Preserve their singer instead of
+    // discarding them before the renderer can align the following verse.
+    const section=/^\[(?:verse(?:\s+\d+)?|chorus|bridge|intro|outro|pre-chorus|refrain)\s*:\s*([^\]]+)\]\s*(.*)$/i.exec(lyric);
+    if(section){vocalist=section[1].trim().slice(0,80);lyric=section[2].trim();if(!lyric)continue;}
+    const duet=/^(?:\[v([12])\]|v([12]):)\s*/i.exec(lyric);
+    if(duet){vocalist='Vocal '+(duet[1]||duet[2]);lyric=lyric.slice(duet[0].length);}
+    const words=!section&&!duet&&stamps.length===1?parseWordStamps(row,offset):null;
+    for(const stamp of stamps){if(Number(stamp[2])>=60)continue;const ms=Math.max(0,Math.round((Number(stamp[1])*60+Number(stamp[2])+Number('0.'+(stamp[3]||'0')))*1000-offset));if(duration>0&&ms>duration*1000+2000)continue;lines.push({text:lyric||'♪',start_time_ms:ms,...(vocalist&&lyric?{speaker:vocalist}:{}),...(words?{words}: {})});}
     if(lines.length>=2000)break;
   }
   const grouped=[];

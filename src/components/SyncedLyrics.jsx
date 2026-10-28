@@ -122,8 +122,9 @@ export default function SyncedLyrics({ trackId, position, resolvedLyrics, onSeek
     <div className="public-lyrics-view">
     <div className="public-lyrics-toolbar"><span>Lyrics · no timing available</span></div>
     <div className="public-lyrics-scroll no-scrollbar" aria-label="Song lyrics">
-      {text.replace(/\r\n?/g, "\n").split("\n").map((line, index) =>
-        line.trim() ? <p key={index} className="public-lyric-line public-lyric-plain selectable-content">{line}</p> :
+      {prepareVocalLines(text.replace(/\r\n?/g, "\n").split("\n").map(text=>({text}))).map((line,index,all)=>
+        line.text.trim() ? <p key={index} className={"public-lyric-line public-lyric-plain selectable-content"+(line.vocal_side==="right"?" public-lyric-secondary":"")}>
+          {line.speaker&&all[index-1]?.speaker!==line.speaker&&<span className="public-lyric-speaker">{line.speaker}</span>}{line.text}</p> :
         <div key={index} className="h-6" aria-hidden="true" />)}
     </div></div>);
 
