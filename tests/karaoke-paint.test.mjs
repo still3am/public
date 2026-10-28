@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';import fs from 'node:fs';
 let effect,media=1.5,frames=new Map(),id=0,writes=0;
-const parent={setAttribute(){},removeAttribute(){}};
+let singingValue=null,attributeWrites=0;const parent={getAttribute:()=>singingValue,setAttribute(){singingValue='true';attributeWrites++;},removeAttribute(){singingValue=null;attributeWrites++;}};
 const node={dataset:{karaokeStart:'1000',karaokeEnd:'2000'},parentElement:parent,style:{get clipPath(){return this.clip;},set clipPath(v){this.clip=v;writes++;}}};
 const listeners=new Map();globalThis.document={hidden:false,addEventListener:(k,v)=>listeners.set(k,v),removeEventListener:k=>listeners.delete(k)};
 globalThis.requestAnimationFrame=f=>{frames.set(++id,f);return id;};globalThis.cancelAnimationFrame=i=>frames.delete(i);
@@ -10,6 +10,7 @@ const {useKaraokePaint}=await import('data:text/javascript;base64,'+Buffer.from(
 useKaraokePaint({viewport:{current:{querySelectorAll:()=>[node]}},trackId:'song',activeIndex:0,readPosition:()=>media,lines:[]});const cleanup=effect();
 const pump=()=>{const f=[...frames.values()];frames.clear();f.forEach(f=>f());};
 pump();assert.equal(node.style.clipPath,'inset(0 50.000% 0 0)');media=1.516;pump();assert.equal(node.style.clipPath,'inset(0 48.400% 0 0)');
+const attrs=attributeWrites;media=1.53;pump();assert.equal(attributeWrites,attrs,'active-word attribute is not rewritten every animation frame');
 const paused=writes;pump();assert.equal(writes,paused,'stationary media does not repaint');
 media=.5;pump();assert.equal(node.style.clipPath,'inset(0 100.000% 0 0)','backward seek resets fill immediately');media=3;pump();assert.equal(node.style.clipPath,'inset(0 0.000% 0 0)');
 document.hidden=true;listeners.get('visibilitychange')();assert.equal(frames.size,0);cleanup();assert.equal(frames.size,0);assert.equal(listeners.size,0);

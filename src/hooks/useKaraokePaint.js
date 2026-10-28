@@ -20,8 +20,9 @@ export function useKaraokePaint({viewport,trackId,activeIndex,readPosition,lines
      const clip='inset(0 '+((1-progress)*100).toFixed(3)+'% 0 0)';
      if(node.style.clipPath!==clip)node.style.clipPath=clip;
      const singing=ms>=start&&ms<end;
-     if(singing)node.parentElement?.setAttribute('data-singing','true');
-     else node.parentElement?.removeAttribute('data-singing');
+     const parent=node.parentElement;
+     if(singing){if(parent?.getAttribute?.('data-singing')!=='true')parent?.setAttribute('data-singing','true');}
+     else if(parent?.getAttribute?.('data-singing')==='true')parent?.removeAttribute('data-singing');
     }
    }
    frame=requestAnimationFrame(tick);

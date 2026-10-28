@@ -116,7 +116,7 @@ export function parseLrc(value, duration = 0) {
   });
 }
 export function selectLyricsMatch(rows,track) {
- const matches=rows.map(row=>({row,score:candidateScore(row,track)})).filter(item=>item.score>=0).sort((a,b)=>b.score-a.score);
+ const matches=rows.map(row=>({row,score:candidateScore(row,track)})).filter(item=>item.score>=0).map(item=>({...item,aligned:track.audio_url?applyAlignedLyrics(lyricsResult(item.row,track.duration_seconds),track)?.wordTimedLines||0:0})).sort((a,b)=>b.aligned-a.aligned||b.score-a.score);
  if(!Number(track.duration_seconds)&&new Set(matches.map(item=>Math.round(Number(item.row.duration)))).size>1)return null;
  return matches[0]?.row||null;
 }
