@@ -3,7 +3,7 @@ import { useEffect, useRef, useMemo } from "react";
 
 
 /** @param {any} props */
-export default function SyncedLyrics({ trackId, position, resolvedLyrics, onSeek, onRetry, onFindMatch }) {
+export default function SyncedLyrics({ trackId, position, resolvedLyrics, onSeek, onRetry }) {
   const lineRefs = useRef([]);
   const scrollRef = useRef(null);
   const activeRef = useRef(-1);
@@ -113,13 +113,13 @@ export default function SyncedLyrics({ trackId, position, resolvedLyrics, onSeek
     <div className="public-lyrics-empty-mark" aria-hidden="true"><span /><span /><span /></div>
     <h3>{current?.error ? 'Lyrics couldn’t load' : current?.instrumental ? 'An instrumental moment' : 'Lyrics aren’t here yet'}</h3>
     <p>{current?.error || (current?.instrumental ? 'This recording is instrumental.' : 'We couldn’t find a confident match for this recording.')}</p>
-    <div className="public-lyrics-actions">{current?.error && <button type="button" onClick={onRetry}>Retry</button>}{onFindMatch && <button type="button" onClick={onFindMatch}>Find another match</button>}</div>
+    <div className="public-lyrics-actions">{current?.error && <button type="button" onClick={onRetry}>Retry</button>}</div>
   </div>;
 
 
   return (
     <div className="public-lyrics-view">
-    <div className="public-lyrics-toolbar"><span>Lyrics · no timing available</span>{onFindMatch && <button type="button" onClick={onFindMatch}>Find another match</button>}</div>
+    <div className="public-lyrics-toolbar"><span>Lyrics · no timing available</span></div>
     <div className="public-lyrics-scroll no-scrollbar" aria-label="Song lyrics">
       {text.replace(/\r\n?/g, "\n").split("\n").map((line, index) =>
         line.trim() ? <p key={index} className="public-lyric-line public-lyric-plain selectable-content">{line}</p> :

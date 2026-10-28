@@ -1,4 +1,3 @@
-import FindLyricsModal from '@/components/FindLyricsModal';
 import { findLyricsCatalog } from '@/lib/lyricsCatalog';
 import PureBadge from "@/components/PureBadge";
 import DeviceConnect from "@/components/DeviceConnect";
@@ -69,7 +68,6 @@ export default function FullScreenPlayer({ onClose }) {
   const [copied, setCopied] = useState(false);
   const [showQueue, setShowQueue] = useState(false);
   const [showLyricsPanel, setShowLyricsPanel] = useState(false);
-  const [findingLyrics, setFindingLyrics] = useState(false);
   const t = p.currentTrack;
   useEffect(() => {if (t?.id) prepareTrackShare();}, [t?.id]);
   const lounge = useLoungeHost();
@@ -91,7 +89,6 @@ export default function FullScreenPlayer({ onClose }) {
   // Reset the broken-cover flag whenever the track (and thus its cover URL) changes.
   useEffect(() => {setCoverFailed(false);}, [coverUrl]);
 
-  useEffect(() => {setFindingLyrics(false);}, [t?.id]);
 
   // LRCLIB is the only playback lyrics provider. Older saved records are not used.
   useEffect(() => {
@@ -277,7 +274,7 @@ export default function FullScreenPlayer({ onClose }) {
           <div className="full-player-visual relative flex-1 xl:flex-none flex items-center justify-center min-h-0 py-4">
             {showingLyrics &&
             <div className="xl:hidden w-full h-full overflow-hidden flex flex-col min-h-0">
-                <SyncedLyrics key={t.id} trackId={t.id} position={p.position} resolvedLyrics={lyricsAvailability} onSeek={p.seek} onRetry={() => setLyricsRevision((v) => v + 1)} onFindMatch={() => setFindingLyrics(true)} />
+                <SyncedLyrics key={t.id} trackId={t.id} position={p.position} resolvedLyrics={lyricsAvailability} onSeek={p.seek} onRetry={() => setLyricsRevision((v) => v + 1)} />
               </div>
             }
               <div
@@ -409,12 +406,11 @@ export default function FullScreenPlayer({ onClose }) {
 
 
           <div className="flex-1 min-h-0 flex flex-col">
-            {showLyricsPanel && <SyncedLyrics key={t.id} trackId={t.id} position={p.position} resolvedLyrics={lyricsAvailability} onSeek={p.seek} onRetry={() => setLyricsRevision((v) => v + 1)} onFindMatch={() => setFindingLyrics(true)} />}
+            {showLyricsPanel && <SyncedLyrics key={t.id} trackId={t.id} position={p.position} resolvedLyrics={lyricsAvailability} onSeek={p.seek} onRetry={() => setLyricsRevision((v) => v + 1)} />}
           </div>
         </div>
       </div>
 
-      {findingLyrics && <FindLyricsModal key={t.id} track={t} onClose={() => setFindingLyrics(false)} onSaved={() => {setFindingLyrics(false);}} />}
       <QueuePanel open={showQueue} onClose={() => setShowQueue(false)} />
       {loungeOpen &&
       <LoungeHostModal lounge={lounge} onClose={() => setLoungeOpen(false)} />

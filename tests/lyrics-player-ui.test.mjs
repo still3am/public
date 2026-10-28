@@ -15,7 +15,7 @@ let tree=View({...props,resolvedLyrics:{trackId:'old',text:'STALE LYRICS',record
 assert.equal(tree.props['aria-label'],'Finding lyrics');assert.ok(!contents(tree).includes('STALE'));
 tree=View({...props,resolvedLyrics:{trackId:'new',loading:true}});assert.equal(tree.props['aria-label'],'Finding lyrics');
 tree=View({...props,resolvedLyrics:{trackId:'new',loading:false,error:'Connection failed'}});
-assert.match(contents(tree),/Connection failed/);const actions=all(tree,node=>node.type==='button');actions[0].props.onClick();actions[1].props.onClick();assert.equal(retried,1);assert.equal(searched,1);
+assert.match(contents(tree),/Connection failed/);const actions=all(tree,node=>node.type==='button');actions[0].props.onClick();assert.equal(retried,1);assert.equal(actions.length,1,'only inline retry remains');
 tree=View({...props,resolvedLyrics:{trackId:'new',loading:false,instrumental:true}});assert.match(contents(tree),/instrumental/);
 tree=View({...props,resolvedLyrics:{trackId:'new',text:'A new line',record:{lines:[{text:'A new line',start_time_ms:1000,end_time_ms:5000}]}}});const line=all(tree,node=>node.props?.className==='public-lyric-line selectable-content')[0];assert.equal(line.props['aria-current'],'true');line.props.onClick();assert.equal(sought,1);
 console.log('PASS immediate track isolation, loading/error/instrumental states, retry, alternate search and timed-line seeking');
@@ -33,7 +33,7 @@ assert.equal(firstVocal.props['aria-current'],'true');firstVocal.props.onClick()
 assert.equal(all(tree,node=>node.props?.className==='public-lyrics-follow').length,0,'current-line button is removed');
 tree=View({...props,resolvedLyrics:{trackId:'new',text:'Untimed words'}});
 assert.ok(contents(tree).includes('no timing available'),'plain lyrics are never presented as synchronized');
-const matchButton=all(tree,node=>node.type==='button')[0];matchButton.props.onClick();assert.equal(searched,2,'plain lyrics can be corrected without leaving the player');
+assert.equal(all(tree,node=>node.type==='button').length,0,'plain lyrics have no search popup button');
 
 globalThis.__trackLyricsState={identity:JSON.stringify(['old','Old song','Old artist',180]),loading:false,result:{available:true,text:'STALE SONG PAGE WORDS'},error:''};
 const pageSource=ts.transpileModule(fs.readFileSync('src/components/TrackCatalogLyrics.jsx','utf8').replace(/^import[^;]+;/gm,''),{compilerOptions:{jsx:ts.JsxEmit.React,target:ts.ScriptTarget.ES2022,module:ts.ModuleKind.ESNext}}).outputText;
