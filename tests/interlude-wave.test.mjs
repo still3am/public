@@ -17,6 +17,6 @@ console.log('PASS three dots follow active and paused playback');
 
 for(const [progress,expected]of [[0,[0,0,0]],[.5,[100,50,0]],[1,[100,100,100]]]){
  const tree=Dots({active:true,progress});assert.equal(tree.props['data-timed'],'true');
- const dots=React.Children.toArray(tree.props.children);dots.forEach((dot,i)=>assert.ok(dot.props.style.backgroundImage.includes(expected[i]+'%')));
+ const dots=React.Children.toArray(tree.props.children);dots.forEach((dot,i)=>assert.equal(dot.props['data-fill'],expected[i]/100));
 }
 console.log('PASS timed dots fill sequentially from media progress, including seek-back reset');
