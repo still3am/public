@@ -12,6 +12,6 @@ export default function LyricInterlude({active=false}) {
  },[]);
  const moving=active&&player?.isPlaying&&visible&&foreground;
  return <span ref={root} className="lyric-interlude" data-active={active?'true':'false'} data-moving={moving?'true':'false'} role="img" aria-label="Instrumental passage">
-  {[0,1,2].map(i=><span key={i} className="lyric-interlude-dot" aria-hidden="true" style={{animationDelay:(i*-.24)+'s'}}/>)}
+  {[0,1,2].map(i=><span key={i} className="lyric-interlude-dot" aria-hidden="true" style={{animationDelay:(i*-.3)+'s'}}/>)}
  </span>;
 }

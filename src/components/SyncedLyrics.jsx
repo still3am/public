@@ -109,7 +109,7 @@ export default function SyncedLyrics({ trackId, position, resolvedLyrics, onSeek
 
 
   if (!text) return <div className="public-lyrics-empty" role="status">
-    <div className="public-lyrics-empty-mark" aria-hidden="true"><span /><span /><span /></div>
+    <div className="public-lyrics-empty-mark" aria-hidden="true"><LyricInterlude active /></div>
     <h3>{current?.error ? 'Lyrics couldn’t load' : current?.instrumental ? 'An instrumental moment' : 'Lyrics aren’t here yet'}</h3>
     
     <div className="public-lyrics-actions">{current?.error && <button type="button" onClick={onRetry}>Retry</button>}</div>

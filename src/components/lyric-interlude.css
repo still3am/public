@@ -1,9 +1,9 @@
-.lyric-interlude{display:inline-flex;align-items:center;gap:10px;width:76px;height:56px;vertical-align:middle;opacity:.45;transition:opacity .4s ease}
+.lyric-interlude{display:inline-flex;align-items:center;justify-content:center;gap:10px;width:76px;height:56px;vertical-align:middle;opacity:.45;transition:opacity .4s ease}
 .lyric-interlude[data-active=true]{opacity:1}
-.lyric-interlude-dot{display:block;flex:none;width:10px;height:10px;border-radius:50%;background:currentColor;opacity:.5;animation:public-lyric-dots 2.1s cubic-bezier(.45,0,.55,1) infinite;animation-play-state:paused;transform:translateY(0) scale(.85)}
+.lyric-interlude-dot{display:block;flex:none;width:10px;height:10px;border-radius:50%;background:currentColor;opacity:.5;animation:public-lyric-dots 1.8s cubic-bezier(.45,0,.55,1) infinite;animation-play-state:paused;transform:translateY(0) scale(.85)}
 .lyric-interlude[data-moving=true] .lyric-interlude-dot{animation-play-state:running}
 .lyric-interlude[data-moving=false] .lyric-interlude-dot{animation:none;transform:translateY(0) scale(.9);opacity:.6}
-@keyframes public-lyric-dots{0%,100%{transform:translateY(0) scale(.85);opacity:.45}50%{transform:translateY(-4px) scale(1.05);opacity:1}}
+@keyframes public-lyric-dots{0%,100%{transform:translateY(0) scale(.85);opacity:.45}50%{transform:translateY(-7px) scale(1.12);opacity:1}}
 @media(prefers-reduced-motion:reduce){.lyric-interlude-dot{animation:none;transform:none;opacity:.7}}
 .public-lyric-line{line-height:1.38;text-shadow:0 2px 16px #00000016}
 .public-lyric-line[aria-current=true]{font-weight:750}
@@ -24,7 +24,7 @@
 .public-lyrics-skeleton span:nth-child(2){width:86%}.public-lyrics-skeleton span:nth-child(3){width:62%}
 .public-lyrics-empty h3{font-size:clamp(20px,4vw,26px);font-weight:750;letter-spacing:-.025em;color:white;margin:0}
 .public-lyrics-empty p{max-width:32ch;font-size:14px;line-height:1.6;margin:0;overflow-wrap:anywhere}
-.public-lyrics-empty-mark{display:flex;gap:8px;margin-bottom:6px}.public-lyrics-empty-mark span{width:8px;height:8px;border-radius:50%;background:#fff8}
+.public-lyrics-empty-mark{display:flex;gap:8px;margin-bottom:6px}
 .public-lyrics-actions{display:flex;flex-wrap:wrap;justify-content:center;gap:10px;margin-top:8px}
 .public-lyrics-actions button{min-height:44px;padding:10px 18px;background:#ffffff14;border:1px solid #ffffff30;border-radius:999px;color:#fff;font-size:13px;cursor:pointer}
 .public-lyrics-actions button:hover{background:#ffffff25}
