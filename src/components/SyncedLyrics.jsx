@@ -1,4 +1,3 @@
-import {useKaraokePaint} from '@/hooks/useKaraokePaint';
 import {findLyricIndex,prepareLyricTimeline} from '@/lib/lyricClock';
 import {useLyricClock} from '@/hooks/useLyricClock';
 import LyricInterlude from "@/components/LyricInterlude";
@@ -32,7 +31,6 @@ export default function SyncedLyrics({ trackId, position, resolvedLyrics, onSeek
   const ms = Math.max(0, Number(clock) || 0) * 1000;
   const activeIdx=hasTimed?findLyricIndex(displayLines,clock):-1;
   activeRef.current = activeIdx;
-  useKaraokePaint({viewport:scrollRef,trackId,activeIndex:activeIdx,readPosition:getPlaybackPosition,lines:displayLines});
 
   const centerActive = () => {
     const container = scrollRef.current;
@@ -97,17 +95,7 @@ export default function SyncedLyrics({ trackId, position, resolvedLyrics, onSeek
           aria-label={(line.text === '♪' ? 'Instrumental passage' : line.text || 'Instrumental passage') + ' · Play from ' + Math.floor(Number(line.start_time_ms) / 60000) + ':' + String(Math.floor(Number(line.start_time_ms) / 1000) % 60).padStart(2, '0')} aria-current={active ? "true" : undefined}
           className="public-lyric-line selectable-content"
           style={{ opacity, filter: "none" }}>
-          {/^(?:[♪♫]+|\[?(?:instrumental|music|interlude|solo)\]?)$/i.test(line.text?.trim() || "") ? <LyricInterlude active={active} progress={progress} /> : Array.isArray(line.words) && line.words.length ? line.words.map((word, wordIndex) => {
-              const start = Number(word.start_time_ms),end = Number(word.end_time_ms);
-              const valid = Number.isFinite(start) && Number.isFinite(end) && end > start;
-              const progress = valid ? Math.max(0, Math.min(1, (ms - start) / (end - start))) : 1;
-              const singing=active&&valid&&ms>=start&&ms<end;
-              const fill=valid?(active?progress:index<activeIdx?1:0):0;
-              const content=word.text+(!line.preserve_word_spacing&&wordIndex<line.words.length-1?" ":"");
-              return <span key={wordIndex} className="public-lyric-word" data-singing={singing?"true":undefined} style={{color:"rgba(255,255,255,.28)"}}>
-                {content}<span aria-hidden="true" className="public-lyric-word-fill" data-karaoke-start={start} data-karaoke-end={end} style={{clipPath:'inset(0 '+(100-fill*100)+'% 0 0)'}}>{content}</span>
-              </span>;
-            }) : line.text?.trim() || <LyricInterlude active={active} progress={progress} />}
+          {/^(?:[♪♫]+|\[?(?:instrumental|music|interlude|solo)\]?)$/i.test(line.text?.trim() || "") ? <LyricInterlude active={active} progress={progress} /> : line.text?.trim() || <LyricInterlude active={active} progress={progress} />}
         </button>;
         })}
     </div>
