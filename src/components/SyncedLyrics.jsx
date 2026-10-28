@@ -1,4 +1,3 @@
-import {prepareVocalLines} from '@/lib/lyricVoices';
 import {findLyricIndex,prepareLyricTimeline} from '@/lib/lyricClock';
 import {useLyricClock} from '@/hooks/useLyricClock';
 import LyricInterlude from "@/components/LyricInterlude";
@@ -26,7 +25,7 @@ export default function SyncedLyrics({ trackId, position, resolvedLyrics, onSeek
   const lines = useMemo(() => (Array.isArray(lyrics?.lines) ? lyrics.lines : []).
   filter((line) => Number.isFinite(Number(line.start_time_ms)) && Number(line.start_time_ms) >= 0).
   slice().sort((a, b) => Number(a.start_time_ms) - Number(b.start_time_ms)), [lyrics?.lines]);
-  const displayLines = useMemo(()=>prepareLyricTimeline(prepareVocalLines(lines)),[lines]);
+  const displayLines = useMemo(()=>prepareLyricTimeline(lines),[lines]);
   const hasTimed = displayLines.length > 0 && displayLines.some((line) => Number(line.start_time_ms) > 0 || Number(line.end_time_ms) > 0);
   const clock=useLyricClock({trackId,position,enabled:!!lyrics?.lines?.length,readPosition:getPlaybackPosition,viewport:scrollRef,lines:displayLines});
   const ms = Math.max(0, Number(clock) || 0) * 1000;
@@ -92,9 +91,8 @@ export default function SyncedLyrics({ trackId, position, resolvedLyrics, onSeek
           return <button type="button" key={index} ref={(element) => {lineRefs.current[index] = element;}}
           onClick={() => seekLine(line)} title="Play from this line"
           aria-label={(line.text === '♪' ? 'Instrumental passage' : line.text || 'Instrumental passage') + ' · Play from ' + Math.floor(Number(line.start_time_ms) / 60000) + ':' + String(Math.floor(Number(line.start_time_ms) / 1000) % 60).padStart(2, '0')} aria-current={active ? "true" : undefined}
-          className={"public-lyric-line selectable-content"+(line.vocal_side==="right"?" public-lyric-secondary":"")}
+          className="public-lyric-line selectable-content"
           style={{ opacity, filter: "none" }}>
-          {line.speaker&&displayLines[index-1]?.speaker!==line.speaker&&<span className="public-lyric-speaker">{line.speaker}</span>}
           {/^(?:[♪♫]+|\[?(?:instrumental|music|interlude|solo)\]?)$/i.test(line.text?.trim() || "") ? <LyricInterlude active={active} /> : Array.isArray(line.words) && line.words.length ? line.words.map((word, wordIndex) => {
               const start = Number(word.start_time_ms),end = Number(word.end_time_ms);
               const valid = Number.isFinite(start) && Number.isFinite(end) && end > start;
@@ -122,9 +120,8 @@ export default function SyncedLyrics({ trackId, position, resolvedLyrics, onSeek
     <div className="public-lyrics-view">
     <div className="public-lyrics-toolbar"><span>Lyrics · no timing available</span></div>
     <div className="public-lyrics-scroll no-scrollbar" aria-label="Song lyrics">
-      {prepareVocalLines(text.replace(/\r\n?/g, "\n").split("\n").map(text=>({text}))).map((line,index,all)=>
-        line.text.trim() ? <p key={index} className={"public-lyric-line public-lyric-plain selectable-content"+(line.vocal_side==="right"?" public-lyric-secondary":"")}>
-          {line.speaker&&all[index-1]?.speaker!==line.speaker&&<span className="public-lyric-speaker">{line.speaker}</span>}{line.text}</p> :
+      {text.replace(/\r\n?/g, "\n").split("\n").map((line, index) =>
+        line.trim() ? <p key={index} className="public-lyric-line public-lyric-plain selectable-content">{line}</p> :
         <div key={index} className="h-6" aria-hidden="true" />)}
     </div></div>);
 

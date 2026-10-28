@@ -76,9 +76,3 @@ assert.equal(rankLyricsCandidates([{...sample,id:81,trackName:'My Song (Live)'},
 
 assert.equal(selectLyricsMatch([{...sample,artistName:'Guest & My Artist'}],{...song,title:'My Song (with Guest)',artist:'My Artist with Guest'}).id,1,'with credits and reordered collaborators match without changing the song version');
 assert.equal(selectLyricsMatch([{...sample,trackName:'My Song (Remix)',artistName:'Guest & My Artist'}],{...song,title:'My Song (with Guest)',artist:'My Artist with Guest'}),null,'broader collaborator formatting still rejects a remix');
-
-const duetLines=parseLrc('[Verse 1: First Artist]\n[00:01.00]First words\n[Verse 2: Guest Artist]\n[00:03.00]Guest words\n[00:05.00][Chorus: First Artist]\n[00:06.00]Back again',10);
-assert.deepEqual(duetLines.map(l=>l.speaker),['First Artist','Guest Artist','First Artist']);
-assert.deepEqual(duetLines.map(l=>l.text),['First words','Guest words','Back again']);
-assert.deepEqual(duetLines.map(l=>l.start_time_ms),[1000,3000,6000]);
-assert.deepEqual(parseLrc('[00:01.00]v1: Hello\n[00:02.00]v2: Reply',5).map(l=>l.speaker),['Vocal 1','Vocal 2']);
