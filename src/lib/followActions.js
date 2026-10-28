@@ -55,7 +55,12 @@ export function followError(error){
  const status=error?.response?.status??error?.status;
  if(status===402)return 'Couldn’t save this follow right now. Please try again later.';
  if(status===401)return 'Sign in again to follow this listener.';
- if(status===403)return 'This follow change is not allowed. The account may be unavailable or blocked.';
+ if(status===403){
+  const reason=String(error?.response?.data?.error||error?.response?.data?.message||error?.message||'');
+  if(/user is blocked|account is unavailable|account unavailable|suspended/i.test(reason))return 'This account is unavailable for following.';
+  if(/platform domain/i.test(reason))return 'Following is unavailable in this preview. Open the published PUBLIC site and retry.';
+  return 'PUBLIC could not authorize this follow. Please sign in again and retry.';
+ }
  return error?.message==='Follow change already in progress.'?error.message:'Your follow change could not be confirmed. Refresh the profile and try again.';
 }
 export function setFollowState(client,uid,target,desired){

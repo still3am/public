@@ -954,3 +954,7 @@ html:not(.dark) .profile-page .profile-identity,html:not(.dark) .profile-page .p
 
 .main-content{padding-bottom:max(var(--public-content-clearance),var(--public-measured-clearance,0px));}
 @media(max-width:767px){html[data-public-editing-keyboard]:not([data-mobile-search-keyboard]) .public-app .mobile-tab-bar,html[data-public-editing-keyboard] .public-app .player-surface{visibility:hidden;pointer-events:none;}}
+
+/* Duet alignment comes from explicit source vocal labels only. */
+.public-lyric-line.public-lyric-secondary{text-align:right;margin-left:auto;padding-left:12%;padding-right:0}
+.public-lyric-speaker{display:block;font-size:12px;font-weight:650;letter-spacing:.02em;line-height:1.4;opacity:.75;margin-bottom:10px}

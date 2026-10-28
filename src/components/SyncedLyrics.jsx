@@ -1,3 +1,4 @@
+import {prepareVocalLines} from '@/lib/lyricVoices';
 import {findLyricIndex,prepareLyricTimeline} from '@/lib/lyricClock';
 import {useLyricClock} from '@/hooks/useLyricClock';
 import LyricInterlude from "@/components/LyricInterlude";
@@ -25,7 +26,7 @@ export default function SyncedLyrics({ trackId, position, resolvedLyrics, onSeek
   const lines = useMemo(() => (Array.isArray(lyrics?.lines) ? lyrics.lines : []).
   filter((line) => Number.isFinite(Number(line.start_time_ms)) && Number(line.start_time_ms) >= 0).
   slice().sort((a, b) => Number(a.start_time_ms) - Number(b.start_time_ms)), [lyrics?.lines]);
-  const displayLines = useMemo(()=>prepareLyricTimeline(lines),[lines]);
+  const displayLines = useMemo(()=>prepareLyricTimeline(prepareVocalLines(lines)),[lines]);
   const hasTimed = displayLines.length > 0 && displayLines.some((line) => Number(line.start_time_ms) > 0 || Number(line.end_time_ms) > 0);
   const clock=useLyricClock({trackId,position,enabled:!!lyrics?.lines?.length,readPosition:getPlaybackPosition,viewport:scrollRef,lines:displayLines});
   const ms = Math.max(0, Number(clock) || 0) * 1000;
@@ -91,8 +92,9 @@ export default function SyncedLyrics({ trackId, position, resolvedLyrics, onSeek
           return <button type="button" key={index} ref={(element) => {lineRefs.current[index] = element;}}
           onClick={() => seekLine(line)} title="Play from this line"
           aria-label={(line.text === '♪' ? 'Instrumental passage' : line.text || 'Instrumental passage') + ' · Play from ' + Math.floor(Number(line.start_time_ms) / 60000) + ':' + String(Math.floor(Number(line.start_time_ms) / 1000) % 60).padStart(2, '0')} aria-current={active ? "true" : undefined}
-          className="public-lyric-line selectable-content"
+          className={"public-lyric-line selectable-content"+(line.vocal_side==="right"?" public-lyric-secondary":"")}
           style={{ opacity, filter: "none" }}>
+          {line.speaker&&displayLines[index-1]?.speaker!==line.speaker&&<span className="public-lyric-speaker">{line.speaker}</span>}
           {/^(?:[♪♫]+|\[?(?:instrumental|music|interlude|solo)\]?)$/i.test(line.text?.trim() || "") ? <LyricInterlude active={active} /> : Array.isArray(line.words) && line.words.length ? line.words.map((word, wordIndex) => {
               const start = Number(word.start_time_ms),end = Number(word.end_time_ms);
               const valid = Number.isFinite(start) && Number.isFinite(end) && end > start;
