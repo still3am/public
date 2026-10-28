@@ -1,3 +1,4 @@
+import {useKaraokePaint} from '@/hooks/useKaraokePaint';
 import {findLyricIndex,prepareLyricTimeline} from '@/lib/lyricClock';
 import {useLyricClock} from '@/hooks/useLyricClock';
 import LyricInterlude from "@/components/LyricInterlude";
@@ -27,10 +28,11 @@ export default function SyncedLyrics({ trackId, position, resolvedLyrics, onSeek
   slice().sort((a, b) => Number(a.start_time_ms) - Number(b.start_time_ms)), [lyrics?.lines]);
   const displayLines = useMemo(()=>prepareLyricTimeline(lines),[lines]);
   const hasTimed = displayLines.length > 0 && displayLines.some((line) => Number(line.start_time_ms) > 0 || Number(line.end_time_ms) > 0);
-  const clock=useLyricClock({trackId,position,enabled:!!lyrics?.lines?.length,readPosition:getPlaybackPosition,viewport:scrollRef,lines:displayLines,continuous:true});
+  const clock=useLyricClock({trackId,position,enabled:!!lyrics?.lines?.length,readPosition:getPlaybackPosition,viewport:scrollRef,lines:displayLines,continuous:true,paintWords:false});
   const ms = Math.max(0, Number(clock) || 0) * 1000;
   const activeIdx=hasTimed?findLyricIndex(displayLines,clock):-1;
   activeRef.current = activeIdx;
+  useKaraokePaint({viewport:scrollRef,trackId,activeIndex:activeIdx,readPosition:getPlaybackPosition,lines:displayLines});
 
   const centerActive = () => {
     const container = scrollRef.current;
@@ -103,7 +105,7 @@ export default function SyncedLyrics({ trackId, position, resolvedLyrics, onSeek
               const fill=valid?(active?progress:index<activeIdx?1:0):0;
               const content=word.text+(!line.preserve_word_spacing&&wordIndex<line.words.length-1?" ":"");
               return <span key={wordIndex} className="public-lyric-word" data-singing={singing?"true":undefined} style={{color:"rgba(255,255,255,.28)"}}>
-                {content}<span aria-hidden="true" className="public-lyric-word-fill" style={{clipPath:'inset(0 '+(100-fill*100)+'% 0 0)'}}>{content}</span>
+                {content}<span aria-hidden="true" className="public-lyric-word-fill" data-karaoke-start={start} data-karaoke-end={end} style={{clipPath:'inset(0 '+(100-fill*100)+'% 0 0)'}}>{content}</span>
               </span>;
             }) : line.text?.trim() || <LyricInterlude active={active} progress={progress} />}
         </button>;

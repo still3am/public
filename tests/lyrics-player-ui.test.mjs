@@ -6,7 +6,7 @@ import {findLyricIndex,prepareLyricTimeline} from '../src/lib/lyricClock.js';
 globalThis.__findLyricIndex=findLyricIndex;globalThis.__prepareLyricTimeline=prepareLyricTimeline;
 globalThis.__lyricsReact=React;
 const source=fs.readFileSync('src/components/SyncedLyrics.jsx','utf8').replace(/^import[^;]+;/gm,'');
-const stubs='const prepareLyricTimeline=globalThis.__prepareLyricTimeline,findLyricIndex=globalThis.__findLyricIndex,useLyricClock=({position})=>position,React=globalThis.__lyricsReact,useState=value=>[globalThis.__lyricsBrowsing??value,()=>{}],useMemo=fn=>fn(),LyricInterlude="interlude",useEffect=()=>{},useRef=value=>({current:value}),Loader2="loader";';
+const stubs='const useKaraokePaint=()=>{},prepareLyricTimeline=globalThis.__prepareLyricTimeline,findLyricIndex=globalThis.__findLyricIndex,useLyricClock=({position})=>position,React=globalThis.__lyricsReact,useState=value=>[globalThis.__lyricsBrowsing??value,()=>{}],useMemo=fn=>fn(),LyricInterlude="interlude",useEffect=()=>{},useRef=value=>({current:value}),Loader2="loader";';
 const code=ts.transpileModule(stubs+source,{compilerOptions:{jsx:ts.JsxEmit.React,target:ts.ScriptTarget.ES2022,module:ts.ModuleKind.ESNext}}).outputText;
 const View=(await import('data:text/javascript;base64,'+Buffer.from(code).toString('base64'))).default;
 const all=(node,predicate)=>!node||typeof node!=='object'?[]:[...(predicate(node)?[node]:[]),...React.Children.toArray(node.props?.children).flatMap(child=>all(child,predicate))];
