@@ -259,7 +259,7 @@ export default function PublicRecordsIndex() {
       </div>
       <PullToRefresh onRefresh={()=>load(true)}>
         {artists === null||owner!==user?.id ?
-        <div className="flex justify-center py-20">
+        <div role="status" aria-label="Loading artists" className="flex justify-center py-20">
             <Loader2 className="animate-spin text-foreground/40" />
           </div> :
         artists.length === 0 ?
@@ -267,9 +267,9 @@ export default function PublicRecordsIndex() {
             <div className="w-16 h-16 rounded-full bg-foreground/[0.05] grid place-items-center mx-auto mb-4">
               <Mic2 size={28} className="text-foreground/40" />
             </div>
-            <h2 className="text-lg font-extrabold tracking-tight mb-1">No artists here yet</h2>
+            <h2 className="text-lg font-extrabold tracking-tight mb-1">{user?"No artists here yet":"Your artists, in one place"}</h2>
             <p className="text-sm text-foreground/50 max-w-xs mx-auto">
-              {view==="library"?"Save songs to your library to see their artists here.":"Follow an artist from their page to keep them here."} <Link to="/search" className="block underline mt-3">Find music</Link>
+              {!user?"Sign in to see artists from your library and the artists you follow.":view==="library"?"Save songs to your library to see their artists here.":"Follow an artist from their page to keep them here."} <Link to={user?"/search":"/login?returnTo=%2Frecords"} className="block underline mt-3 min-h-11 inline-flex items-center">{user?"Find music":"Sign in"}</Link>
             </p>
           </div> :
 
