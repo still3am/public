@@ -75,7 +75,7 @@ export default function SyncedLyrics({ trackId, position, resolvedLyrics, onSeek
   const text = typeof trackLyrics === "string" ? trackLyrics.trim() : "";
   if (loading) return <div role="status" aria-label="Finding lyrics" className="public-lyrics-loading">
     <div className="public-lyrics-skeleton" aria-hidden="true"><span /><span /><span /></div>
-    <p className="hidden">Finding lyrics…</p>
+    
   </div>;
 
 
