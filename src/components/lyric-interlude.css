@@ -46,3 +46,7 @@
 @media(prefers-reduced-motion:reduce){.public-lyric-line[aria-current=true] .public-lyric-word-fill{transition:none}}
 
 @media(prefers-reduced-motion:reduce){.lyric-interlude[data-timed=true] .lyric-interlude-dot{transform:none!important;transition:none}}
+
+/* Keep the playing line crisp; inspection by pointer/keyboard stays readable. */
+.public-lyrics-view .public-lyric-line:focus-visible{filter:none!important;opacity:1!important}
+@media(hover:hover){.public-lyrics-view .public-lyric-line:hover{filter:none!important;opacity:1!important}}

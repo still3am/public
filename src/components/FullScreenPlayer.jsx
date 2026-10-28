@@ -1,5 +1,6 @@
 import { findLyricsCatalog } from '@/lib/lyricsCatalog';
 import PureBadge from "@/components/PureBadge";
+import TrackFavoriteButton from "@/components/track/TrackFavoriteButton";
 import DeviceConnect from "@/components/DeviceConnect";
 import OverflowText from "@/components/OverflowText";
 import { copyText } from '@/lib/shareLink';
@@ -254,11 +255,12 @@ export default function FullScreenPlayer({ onClose }) {
 
           </button>}
         </div>
+        {showingLyrics&&<TrackFavoriteButton trackId={t.id} className="xl:hidden mr-2"/>}
         <TrackOptionsMenu
           track={t}
-          variant="plus"
+          variant="icon"
           size={20}
-          buttonClassName="w-9 h-9 rounded-full grid place-items-center bg-white/10 hover:bg-white/20 active:scale-90 transition"
+          buttonClassName="w-11 h-11 min-w-11 min-h-11 shrink-0 aspect-square p-0 rounded-full grid place-items-center bg-white/10 hover:bg-white/20 active:scale-90 transition"
           items={[
           { icon: ListMusic, label: "View queue", onClick: () => setShowQueue(true) }]
 
@@ -322,7 +324,7 @@ export default function FullScreenPlayer({ onClose }) {
               </Link>
               <PureBadge className="mt-2" />
             </div>
-
+            <TrackFavoriteButton trackId={t.id}/>
           </div>
 
           {/* scrubber */}

@@ -38,6 +38,7 @@ import {
 "lucide-react";
 import TrackRow from "@/components/TrackRow";
 import TrackOptionsMenu from "@/components/track/TrackOptionsMenu";
+import TrackFavoriteButton from "@/components/track/TrackFavoriteButton";
 import { useToast } from "@/components/ui/use-toast";
 import { fetchArtistTracks } from "@/lib/artistTracks";
 import { getUsersByIds } from "@/lib/userLookup";
@@ -163,6 +164,7 @@ export default function TrackDetail() {
         <button onClick={() => window.history.state?.idx > 0 ? nav(-1) : nav("/search")} className="release-round" aria-label="Back"><ChevronLeft size={26} /></button>
         <div className="release-toolbar-actions">
           <button className="release-round" aria-label="Share song" onClick={async () => {try {const result = await shareTrack(track);if (result === "copied") toast({ title: "Song link copied" });} catch {toast({ title: "Couldn’t share this song. Please try again.", variant: "destructive" });}}}><Share2 size={21} /></button>
+          <TrackFavoriteButton trackId={track.id}/>
           <TrackOptionsMenu track={track} size={22} buttonClassName="release-round" items={ownerItems} />
         </div>
       </div>

@@ -89,12 +89,13 @@ export default function SyncedLyrics({ trackId, position, resolvedLyrics, onSeek
           const start=Number(line.start_time_ms),end=Number(line.end_time_ms);
           const progress=Number.isFinite(end)&&end>start?Math.max(0,Math.min(1,(ms-start)/(end-start))):null;
           const distance = activeIdx < 0 ? index : Math.abs(index - activeIdx);
-          const opacity = active ? 1 : distance <= 1 ? 0.72 : distance === 2 ? 0.56 : 0.44;
+          const opacity = active ? 1 : distance <= 1 ? 0.52 : distance === 2 ? 0.4 : 0.3;
+          const blur = active ? 0 : distance <= 1 ? 1.8 : distance === 2 ? 2.8 : 3.5;
           return <button type="button" key={index} ref={(element) => {lineRefs.current[index] = element;}}
           onClick={() => seekLine(line)} title="Play from this line"
           aria-label={(line.text === '♪' ? 'Instrumental passage' : line.text || 'Instrumental passage') + ' · Play from ' + Math.floor(Number(line.start_time_ms) / 60000) + ':' + String(Math.floor(Number(line.start_time_ms) / 1000) % 60).padStart(2, '0')} aria-current={active ? "true" : undefined}
           className="public-lyric-line selectable-content"
-          style={{ opacity, filter: "none" }}>
+          style={{ opacity, filter: blur ? `blur(${blur}px)` : "none" }}>
           {/^(?:[♪♫]+|\[?(?:instrumental|music|interlude|solo)\]?)$/i.test(line.text?.trim() || "") ? <LyricInterlude active={active} progress={progress} /> : line.text?.trim() || <LyricInterlude active={active} progress={progress} />}
         </button>;
         })}
