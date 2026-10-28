@@ -9,7 +9,6 @@ import { useEffect, useState } from "react";
 // Results are cached so scrolling doesn't re-fetch the same cover twice.
 
 const IMAGE_EXT_RE = /\.(jpe?g|png|gif|webp|avif|bmp|tiff?|svg)$/i;
-const WIX_MEDIA_HOSTS = ["media.base44.com", "static.wixstatic.com"];
 const blobCache=new Map(),inflight=new Map(),users=new Map();
 const MAX_IDLE_COVERS=96;
 function trim(){let idle=[...blobCache.keys()].filter(key=>!users.get(key));while(idle.length>MAX_IDLE_COVERS){const key=idle.shift();URL.revokeObjectURL(blobCache.get(key));blobCache.delete(key);}}
@@ -21,31 +20,12 @@ function needsFix(url) {
   return true;
 }
 
-// Normalize Wix Media URLs that lack a file extension (e.g. trailing-dot
-// URLs from the old file host) by stripping the trailing dot and appending
-// .webp. This lets the Image component's transform pipeline resize and
-// serve them via CDN instead of falling through to the slow blob-fetch.
-function fixWixMediaUrl(url) {
-  try {
-    const u = new URL(url);
-    if (!WIX_MEDIA_HOSTS.includes(u.hostname)) return null;
-    const segments = u.pathname.split("/");
-    const last = segments[segments.length - 1];
-    if (!last) return null;
-    const cleaned = last.replace(/\.+$/, "");
-    if (IMAGE_EXT_RE.test(cleaned)) return null;
-    segments[segments.length - 1] = cleaned + ".webp";
-    return `${u.origin}${segments.join("/")}${u.search}${u.hash}`;
-  } catch {
-    return null;
-  }
-}
-
+// Preserve the stored asset path. Adding an extension changes the filename
+// and can turn a working extensionless image into a missing file.
 function immediate(url){
  if(!url)return '';
- const wix=fixWixMediaUrl(url);if(wix)return wix;
  if(!needsFix(url))return url;
- return blobCache.get(url)||'';
+ return blobCache.get(url)||url;
 }
 function load(url){
  if(blobCache.has(url)){const value=blobCache.get(url);blobCache.delete(url);blobCache.set(url,value);return Promise.resolve(value);}
@@ -64,6 +44,7 @@ function load(url){
     else if(bytes[0]===0x52&&bytes[1]===0x49&&bytes[2]===0x46&&bytes[8]===0x57&&bytes[9]===0x45)mime='image/webp';
     if(mime)blob=new Blob([blob],{type:mime});
    }
+   if(!blob.size||!blob.type.startsWith('image/'))throw Error('Cover response was not an image');
    const value=URL.createObjectURL(blob);blobCache.set(url,value);trim();return value;
   }finally{clearTimeout(timer);}
  })().finally(()=>{if(inflight.get(url)===request)inflight.delete(url);});
@@ -73,7 +54,7 @@ export function useCoverUrl(url){
  const [fixed,setFixed]=useState(()=>({source:url,value:immediate(url)}));
  useEffect(()=>{
   const ready=immediate(url);
-  if(!url||fixWixMediaUrl(url)||!needsFix(url)){setFixed({source:url,value:ready});return;}
+  if(!url||!needsFix(url)){setFixed({source:url,value:ready});return;}
   let alive=true;users.set(url,(users.get(url)||0)+1);setFixed({source:url,value:ready});
   load(url).then(value=>{if(alive)setFixed({source:url,value});}).catch(()=>{if(alive)setFixed({source:url,value:url});});
   return()=>{alive=false;const count=(users.get(url)||1)-1;if(count)users.set(url,count);else users.delete(url);trim();};

@@ -187,15 +187,32 @@ const Image = React.forwardRef(
     },
     ref
   ) => {
-    const [imgSrc, setImgSrc] = React.useState(src)
+    const [state, setState] = React.useState({source:src,value:src,direct:false})
+    const current=state.source===src?state:{source:src,value:src,direct:false}
+    const imgSrc=current.value
 
     React.useEffect(() => {
-      setImgSrc(src)
+      setState({source:src,value:src,direct:false})
     }, [src])
+
+    React.useEffect(()=>{
+      if(imgSrc!==FALLBACK_IMAGE_URL||!src)return;
+      const retry=()=>setState({source:src,value:src,direct:false});
+      window.addEventListener('online',retry);return()=>window.removeEventListener('online',retry);
+    },[imgSrc,src]);
 
     const imageProps = {
       ...props,
-      onError: () => setImgSrc(FALLBACK_IMAGE_URL),
+      onError: (event) => {
+        if(imgSrc===FALLBACK_IMAGE_URL)return;
+        // CDN transforms can fail while the original image still works.
+        // Retry the unchanged original before displaying a placeholder.
+        if(!current.direct&&parseWixMediaUrl(imgSrc)){
+          setState({source:src,value:src,direct:true});return;
+        }
+        setState({source:src,value:FALLBACK_IMAGE_URL,direct:true});
+        props.onError?.(event);
+      },
     }
 
     if (!src) {
@@ -208,7 +225,7 @@ const Image = React.forwardRef(
 
     // The fallback renders as a plain <img> so a broken upload can't cascade
     // into a second (transformed) failing request.
-    const parsed = imgSrc === FALLBACK_IMAGE_URL ? null : parseWixMediaUrl(imgSrc)
+    const parsed = current.direct || imgSrc === FALLBACK_IMAGE_URL ? null : parseWixMediaUrl(imgSrc)
 
     if (!parsed) {
       const isErrorUrl = imgSrc === FALLBACK_IMAGE_URL
