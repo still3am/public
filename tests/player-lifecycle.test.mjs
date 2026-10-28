@@ -124,3 +124,20 @@ console.log('PASS offline artwork follows track/account identity and ignores sta
  pending.resolve('buffered');await first;assert.equal(env.sideReadyRef[0].current,true);
  console.log('PASS actual crossfade preloader deduplicates slow requests and reaches ready state');
 }
+
+{
+ const {env,state,audio}=fixture(),pending=deferred();
+ Object.assign(env,{activeEl:()=>audio,syncPositionState:()=>{},crossfadingRef:{current:false},navigator:{userAgent:'Chrome'},playbackErrorMessage:()=> 'Try again'});
+ audio.play=()=>pending.promise;
+ const resume=callback('resumeAndPlay',env),request=resume(audio);
+ env.loadTokenRef.current++;state.playing=false;pending.resolve();await request;
+ assert.equal(state.playing,false,'a stale resume cannot mark a newer track playing');
+ console.log('PASS delayed resume cannot overwrite a newer playback request');
+}
+{
+ const {env,audio}=fixture();let reloads=0,resumes=0;
+ Object.assign(env,{activeEl:()=>audio,currentTrack:{id:'song'},retryRef:{current:new Map([['song',1]])},loadOnActive:()=>reloads++,resumeAndPlay:()=>resumes++});
+ audio.paused=true;audio.error={code:4};callback('togglePlay',env)();
+ assert.equal(reloads,1);assert.equal(resumes,0);assert.equal(env.retryRef.current.has('song'),false,'explicit retry resets recovery cooldown');
+ console.log('PASS pressing Play on a failed source reloads it instead of repeating a failed play');
+}

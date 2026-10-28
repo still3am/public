@@ -1,0 +1,14 @@
+import assert from 'node:assert/strict';
+import {recoverPlaybackSource,playbackErrorMessage} from '../src/lib/playbackRecovery.js';
+const track={id:'song'},base={track,online:true,failedUrl:'https://old.example/song',getCached:async()=>null,getFresh:async()=>({audio_url:'https://fresh.example/song'}),isCurrent:()=>true,createObjectURL:()=> 'blob:cached'};
+assert.deepEqual(await recoverPlaybackSource(base),{url:'https://fresh.example/song',blobUrl:null},'ordinary failed URLs are refreshed, not only private audio');
+let cachedReads=0,freshReads=0;
+const failLocal={...base,failedUrl:'blob:bad',getCached:async()=>{cachedReads++;return {_blob:new Blob(['broken'])};},getFresh:async()=>{freshReads++;return {audio_url:'https://fresh.example/song'};}};
+assert.equal((await recoverPlaybackSource(failLocal)).url,'https://fresh.example/song');assert.equal(cachedReads,0,'failed cache is not retried from the same bytes');assert.equal(freshReads,1);
+assert.equal((await recoverPlaybackSource({...base,online:false,getCached:async()=>({_blob:new Blob(['audio'])}),getFresh:()=>assert.fail('offline network')})).url,'blob:cached','failed stream can recover from a downloaded copy');
+assert.equal(await recoverPlaybackSource({...failLocal,online:false}),null,'failed local audio does not start an offline request');
+assert.equal(await recoverPlaybackSource({...base,getFresh:async()=>{throw Object.assign(Error('Forbidden'),{status:403});}}),null,'authorization denial cannot return the old stream');
+let resolve;const pending=new Promise(done=>resolve=done);let current=true;
+const lookup=recoverPlaybackSource({...base,failedUrl:'blob:bad',getFresh:()=>pending,isCurrent:()=>current});current=false;resolve({audio_url:'https://stale.example/song'});assert.equal(await lookup,null,'late source refresh cannot replace a new song');
+assert.match(playbackErrorMessage({name:'NotAllowedError'}),/Tap Play/);assert.match(playbackErrorMessage({name:'NotSupportedError'}),/audio file/);
+console.log('PASS fresh stream recovery, failed-cache fallback, offline operation, authorization, cancellation and clear playback errors');
