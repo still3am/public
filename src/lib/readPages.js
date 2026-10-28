@@ -1,3 +1,4 @@
+import {withReadTimeout} from './readTimeout.js';
 // The app never wants half a list: every catalogue read follows the server's
 // cursor until the collection is exhausted, so nothing is silently cut off at
 // one page. Callers pass a page fetcher that receives the per-request options.
@@ -9,9 +10,9 @@ export async function readAllPages(fetchPage) {
   let cursor;
   const seenCursors = new Set();
   for (let page = 0; page < MAX_PAGES; page++) {
-    const res = await fetchPage(
+    const res = await withReadTimeout(fetchPage(
       cursor ? { limit: PAGE_SIZE, cursor } : { limit: PAGE_SIZE }
-    );
+    ),15000,"This list took too long to load. Please retry.");
     // A page object carries { items, has_more, next_cursor }; anything else
     // (a plain array) is already the whole answer.
     if (Array.isArray(res)) {

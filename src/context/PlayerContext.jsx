@@ -1,3 +1,5 @@
+import {recoverPlaybackSource,playbackErrorMessage} from '@/lib/playbackRecovery';
+import {withReadTimeout} from '@/lib/readTimeout';
 import {sampleListening} from "@/lib/listeningHistory";
 import {commitAudioHandoff,transitionDuration,equalPowerTransitionCurve} from "@/lib/audioHandoff";
 import {DEFAULT_PURE,normalizePure,readPure,createPureGraph} from "@/lib/pureAudio";
@@ -288,9 +290,9 @@ export function PlayerProvider({ children }) {
   const resolveUrl = useCallback(async (track, side, valid=/** @type {()=>boolean} */ (()=>true)) => {
     if(blockedRef.current.has(track.uploader_id))throw Error('This uploader is blocked.');
     let url=track.audio_url,blobUrl=null;
-    try{const rec=await getRecord(track.id,offlineAccountRef.current||null);if(rec?._blob)blobUrl=URL.createObjectURL(rec._blob);}catch{}
+    try{const rec=await withReadTimeout(getRecord(track.id,offlineAccountRef.current||null),2500);if(rec?._blob?.size>0)blobUrl=URL.createObjectURL(rec._blob);}catch{}
     if(!blobUrl && navigator.onLine && (track._private_audio || !url)){
-      const fresh=await base44.entities.Track.get(track.id);url=fresh.audio_url;
+      const fresh=await withReadTimeout(base44.entities.Track.get(track.id),12000);url=fresh.audio_url;
     }
     if(!valid()||blockedRef.current.has(track.uploader_id)){if(blobUrl)URL.revokeObjectURL(blobUrl);throw Error("Playback request was replaced");}
     if(!blobUrl && (!url || typeof url!=="string"))throw Error("No playable audio source is available.");
@@ -368,7 +370,7 @@ export function PlayerProvider({ children }) {
         el
           .play()
           .then(() => {if(token===loadTokenRef.current&&side===activeIdxRef.current)setIsPlaying(true);})
-          .catch(() => {if(token===loadTokenRef.current&&side===activeIdxRef.current)setIsPlaying(false);});
+          .catch(error => {if(token===loadTokenRef.current&&side===activeIdxRef.current){setIsPlaying(false);if(error?.name==='NotAllowedError')window.dispatchEvent(new CustomEvent("player:error",{detail:playbackErrorMessage(error)}));}});
       } else {
         setIsPlaying(false);
       }
@@ -582,11 +584,11 @@ export function PlayerProvider({ children }) {
         const track=queueRef.current[currentIndexRef.current],side=activeIdxRef.current,token=loadTokenRef.current;
         if(track && Date.now()-(retryRef.current.get(track.id)||0)>60000){
           retryRef.current.set(track.id,Date.now());
-          const at=a.currentTime||position;let url=null,retryBlob=null;
+          const at=Number.isFinite(a.currentTime)?a.currentTime:0;
           const valid=()=>token===loadTokenRef.current&&side===activeIdxRef.current&&queueRef.current[currentIndexRef.current]?.id===track.id&&!blockedRef.current.has(track.uploader_id);
-          try{if(navigator.onLine&&track._private_audio)url=(await base44.entities.Track.get(track.id)).audio_url;
-            else{const rec=await getRecord(track.id,offlineAccountRef.current||null);if(rec?._blob){retryBlob=URL.createObjectURL(rec._blob);url=retryBlob;}}
-          }catch{}
+          const recovered=await recoverPlaybackSource({track,failedUrl:a.currentSrc||a.src,online:navigator.onLine,
+            getCached:()=>getRecord(track.id,offlineAccountRef.current||null),getFresh:()=>base44.entities.Track.get(track.id),isCurrent:valid,createObjectURL:blob=>URL.createObjectURL(blob)});
+          const url=recovered?.url,retryBlob=recovered?.blobUrl||null;
           if(!valid()){if(retryBlob)URL.revokeObjectURL(retryBlob);return;}
           if(url){
             const previous=blobUrlRefs[side].current;
@@ -857,13 +859,18 @@ export function PlayerProvider({ children }) {
   // silent — the "volume disappears after pause" bug. await resume, then play.
   const resumeAndPlay = useCallback(
     (a) => {
+      const token=loadTokenRef.current,side=activeIdxRef.current;
+      const valid=()=>token===loadTokenRef.current&&side===activeIdxRef.current&&a===activeEl();
+      const failed=error=>{if(valid()){setIsPlaying(false);window.dispatchEvent(new CustomEvent('player:error',{detail:playbackErrorMessage(error)}));}};
       configurePlaybackSession();
       const ctx = audioCtxRef.current;
       const run = () => {
+        if(!valid())return;
         if (!crossfadingRef.current) setGainImmediate(activeIdxRef.current, 1);
         return a
           .play()
           .then(() => {
+            if(!valid())return;
             setIsPlaying(true);
             syncPositionState(a);
             // iOS WebKit leaves a MediaElementSource-routed element SILENT
@@ -882,10 +889,10 @@ export function PlayerProvider({ children }) {
               } catch {}
             }
           })
-          .catch(() => {});
+          .catch(failed);
       };
       if (ctx && (ctx.state === "suspended" || ctx.state === "interrupted")) {
-        return ctx.resume().then(run).catch(() => {});
+        return ctx.resume().then(run).catch(failed);
       }
       return run();
     },
@@ -925,13 +932,14 @@ export function PlayerProvider({ children }) {
     const a = activeEl();
     if (!a || !currentTrack) return;
     if (a.paused) {
+      if(a.error||!a.src){retryRef.current.delete(currentTrack.id);autoPlayOnLoadRef.current=true;loadOnActive(currentTrack);return;}
       if (graphNeeded()) ensureGraph();
       resumeAndPlay(a);
     } else {
       cancelCrossfade();els().forEach(el=>el?.pause());
       setIsPlaying(false);
     }
-  }, [currentTrack, ensureGraph, graphNeeded, resumeAndPlay,cancelCrossfade]);
+  }, [currentTrack, ensureGraph, graphNeeded, resumeAndPlay,cancelCrossfade,loadOnActive]);
 
   const seek=useCallback(value=>{
     const time=Number(value);if(!Number.isFinite(time))return;
