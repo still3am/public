@@ -38,7 +38,6 @@ export default function ProfileMedia({src,videoSrc="",gifSrc="",mobileSrc="",mot
   return <span onPointerDown={retryAnimation} onKeyDown={event=>{if(event.key==="Enter"||event.key===" ")retryAnimation();}} ref={host} className={"public-profile-media "+className} style={{display:"block",position:"relative",overflow:"hidden",...style}}>
     <picture style={{display:"block",width:"100%",height:"100%"}}>{mobile&&<source media="(max-width:767px)" srcSet={mobile}/>}<img src={poster||undefined} alt={alt} onError={onError} style={{display:"block",width:"100%",height:"100%",objectFit:"cover"}}/></picture>
     {gifSrc&&animate&&<img src={gifSrc} alt="" aria-hidden="true" onError={()=>setFailed(true)} style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover",pointerEvents:"none"}}/>}
-    {autoplayBlocked&&play&&<span aria-hidden="true" style={{position:"absolute",bottom:8,left:"50%",transform:"translateX(-50%)",zIndex:1,whiteSpace:"nowrap",padding:"4px 7px",borderRadius:999,background:"#080809db",color:"white",fontSize:9,pointerEvents:"none"}}>Tap to animate</span>}
     {play&&<video ref={video} src={videoSrc} poster={poster||undefined} muted loop playsInline autoPlay preload="metadata" aria-hidden="true" tabIndex={-1} onError={()=>setFailed(true)} style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover",pointerEvents:"none"}}/>}
   </span>;
 }
