@@ -52,7 +52,7 @@
 .onboarding-artist-grid button[aria-pressed=true] .onboarding-pick-check{background:#fff;color:#111}
 .onboarding-music-row,.onboarding-person{display:flex;align-items:center;width:100%;gap:12px;min-height:74px;padding:12px 0;text-align:left}
 .onboarding-music-row+ .onboarding-music-row,.onboarding-person+ .onboarding-person{border-top:1px solid #ffffff10}
-.onboarding-music-row>span:nth-child(2),.onboarding-person>span{min-width:0;flex:1}
+.onboarding-music-row>span:nth-child(2),.onboarding-person>.onboarding-person-copy{min-width:0;flex:1}
 .onboarding-music-row strong,.onboarding-person strong{display:block;font-size:14px;font-weight:550;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .onboarding-music-row small,.onboarding-person small{display:block;font-size:11px;color:#ffffff80;margin-top:5px}
 .onboarding-row-check{display:grid;place-items:center;width:30px;height:30px;border-radius:50%;background:#ffffff0c;color:#ffffff9c;flex-shrink:0}
@@ -203,3 +203,32 @@
 .onboarding-avatar-grid button:disabled{opacity:.5}
 .onboarding-upload-photo{display:flex;align-items:center;justify-content:center;gap:9px;min-height:48px;padding:12px 18px;border:1px solid #ffffff24;background:#ffffff08;border-radius:999px;font-size:13px}
 @media(min-width:600px){.onboarding-avatar-grid{grid-template-columns:repeat(4,minmax(0,1fr))}}
+
+/* Keep readable surfaces and fixed-size controls throughout setup. */
+.new-member-onboarding>.onboarding-contrast{position:absolute;inset:0;z-index:-1;pointer-events:none;background:linear-gradient(180deg,#080809b8,#080809aa 48%,#080809d9)}
+.new-member-onboarding .onboarding-header{background:#09090970}
+.new-member-onboarding .onboarding-footer{background:#090909d9;border-top:1px solid #ffffff12}
+.new-member-onboarding .onboarding-later,.new-member-onboarding .onboarding-skip{color:#ededf0}
+.new-member-onboarding .onboarding-form label>input,.new-member-onboarding .onboarding-handle,.new-member-onboarding .onboarding-search,.new-member-onboarding .onboarding-avatar-gallery,.new-member-onboarding .onboarding-person{background:#141416e6}
+.new-member-onboarding .onboarding-upload-photo{background:#202023;border-color:#ffffff40}
+.new-member-onboarding .onboarding-search>button{width:44px;min-width:44px;max-width:44px;height:44px;min-height:44px;max-height:44px;aspect-ratio:1;flex:0 0 44px;padding:0;box-sizing:border-box;border-radius:50%;margin:-6px;background:#303034;color:#fff}
+.new-member-onboarding .onboarding-photo{width:80px;height:80px;min-width:80px;min-height:80px;padding:0;aspect-ratio:1;box-sizing:border-box}
+.new-member-onboarding .onboarding-person-avatar{width:48px;height:48px;min-width:48px;max-width:48px;flex:0 0 48px;aspect-ratio:1;overflow:hidden;border-radius:50%}
+.new-member-onboarding .onboarding-person-copy{flex:1;min-width:0}
+.new-member-onboarding .onboarding-person>button{flex:0 0 auto;max-width:110px}
+.new-member-onboarding .onboarding-avatar-grid>button>span{height:auto;aspect-ratio:1;flex:none}
+.new-member-onboarding .onboarding-avatar-grid>button>span> :first-child{position:absolute!important;inset:0;width:100%!important;height:100%!important}
+.new-member-onboarding .onboarding-avatar-grid .public-profile-media button{min-height:44px}
+.new-member-onboarding .onboarding-back,.new-member-onboarding .onboarding-song-play{flex:0 0 44px;max-width:44px;max-height:44px;aspect-ratio:1;box-sizing:border-box}
+.new-member-onboarding[data-onboarding-step="0"] .onboarding-content{display:flex;flex-direction:column;justify-content:center;padding-block:36px}
+.new-member-onboarding[data-onboarding-step="0"] .onboarding-page-intro{margin-bottom:32px}
+.new-member-onboarding .onboarding-record{width:clamp(130px,38vw,180px);flex:none}
+.new-member-onboarding .onboarding-record-stage{margin:0}
+.onboarding-color-launch{display:flex;align-items:center;gap:14px;padding:16px;width:100%;min-width:0;min-height:76px;text-align:left;background:#17171be6;border:1px solid #ffffff38;border-radius:20px}
+.onboarding-color-launch>span:nth-child(2){flex:1;min-width:0}
+.onboarding-color-launch strong,.onboarding-color-launch small{display:block}
+.onboarding-color-launch strong{font-size:14px;font-weight:600}
+.onboarding-color-launch small{font-size:11px;color:#ffffffb8;margin-top:5px}
+.onboarding-color-mini{display:flex;flex:0 0 55px;width:55px;padding-left:4px}
+.onboarding-color-mini i{display:block;width:25px;height:25px;flex:0 0 25px;margin-left:-5px;border-radius:50%;border:2px solid #222}
+@media(max-height:600px){.new-member-onboarding[data-onboarding-step="0"] .onboarding-content{justify-content:flex-start;padding-block:20px}.new-member-onboarding .onboarding-record{width:120px}}

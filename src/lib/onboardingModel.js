@@ -27,6 +27,8 @@ export function readOnboardingDraft(uid){
   for(const key of ["name","username","avatar","profileTrack"])if(typeof raw[key]==="string")clean[key]=raw[key].slice(0,key==="avatar"?2048:160);
   for(const [key,max] of [["genres",300],["artists",5],["trackIds",8]])if(Array.isArray(raw[key]))clean[key]=[...new Set(raw[key].filter(v=>typeof v==="string"&&v.length<=160))].slice(0,Number(max));
   if(["auto","custom","off"].includes(raw.mode))clean.mode=raw.mode;
+  if(["flow","still"].includes(raw.motion))clean.motion=raw.motion;
+  if(Number.isFinite(raw.speed)&&raw.speed>=.35&&raw.speed<=1.6)clean.speed=raw.speed;
   if(Array.isArray(raw.colors)&&raw.colors.length===3&&raw.colors.every(c=>/^#[0-9a-f]{6}$/i.test(c)))clean.colors=raw.colors;
   for(const key of ["shareFavorites","sharingChanged"])if(typeof raw[key]==="boolean")clean[key]=raw[key];
   if(Array.isArray(raw.editedFields))clean.editedFields=raw.editedFields.filter(key=>["genres","trackIds","artists"].includes(key));
