@@ -29,7 +29,7 @@
  .public-app .profile-redesigned .profile-actions>button:not(.profile-primary-action),.public-app .profile-redesigned .profile-actions>a{width:46px;height:46px;min-width:46px;min-height:46px;flex:0 0 46px;border:0;border-radius:50%;background:hsl(var(--foreground)/.045);color:hsl(var(--foreground));display:grid;place-items:center;padding:0}
  .public-app .profile-redesigned .profile-actions svg{width:19px;height:19px}
  .public-app .profile-redesigned .profile-actions :is(button,a):focus-visible{outline:2px solid hsl(var(--foreground));outline-offset:3px}
- .public-app .profile-redesigned .profile-admin-badge{top:14px;right:14px;width:46px;height:46px;background:#17181c;border-color:#ffffff38}
+ .public-app .profile-redesigned .profile-admin-badge{top:14px;right:14px;width:46px;height:46px;background:transparent;border:0}
  .public-app .profile-redesigned .profile-admin-badge>svg{width:32px;height:32px}
  .public-app .profile-redesigned.profile-is-editing .profile-avatar-notes{margin-top:-42px!important}
  .public-app .profile-redesigned.profile-is-editing .profile-cover-stage{height:190px}

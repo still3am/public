@@ -1,7 +1,14 @@
 .profile-admin-badge{width:48px;height:48px;display:grid;place-items:center;border:0;border-radius:50%;background:transparent;color:#fff;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:background .18s ease,transform .18s ease}
 .profile-admin-badge>svg{display:block;overflow:visible;filter:drop-shadow(0 2px 2px #0004) drop-shadow(0 5px 12px #0003);transition:transform .18s ease}
-.profile-admin-badge:hover{background:#0002}.profile-admin-badge:hover>svg{transform:translateY(-1px)}.profile-admin-badge:active>svg{transform:scale(.94)}
-.profile-admin-badge:focus-visible{outline:2px solid #fff;outline-offset:3px;background:#0003}
+.profile-admin-badge:hover{background:transparent}.profile-admin-badge:hover>svg{transform:translateY(-1px)}.profile-admin-badge:active>svg{transform:scale(.94)}
+.profile-admin-badge:focus-visible{outline:2px solid #fff;outline-offset:3px;background:transparent}
 .profile-admin-label{position:absolute;top:calc(100% + 6px);right:0;width:224px;max-width:calc(100vw - 48px);text-align:left;padding:13px 15px;border-radius:16px;background:#17181df5;color:#fff;border:1px solid #ffffff26;box-shadow:0 10px 32px #0004;pointer-events:none;line-height:1.4}
 .profile-admin-label strong{display:block;font-size:12px;font-weight:750;letter-spacing:.01em}.profile-admin-label>span{display:block;font-size:11px;font-weight:400;color:#bfc1cb;margin-top:3px}
 @media(prefers-reduced-motion:reduce){.profile-admin-badge,.profile-admin-badge>svg{transition:none}.profile-admin-badge:hover>svg,.profile-admin-badge:active>svg{transform:none}}
+
+/* Animate the admin seal's colors, keeping the dark check stable and readable. */
+.profile-role-admin .profile-badge-fill stop{animation:public-admin-colors 9s ease-in-out infinite}
+.profile-role-admin .profile-badge-fill stop:nth-child(2){animation-delay:-3s}
+.profile-role-admin .profile-badge-fill stop:nth-child(3){animation-delay:-6s}
+@keyframes public-admin-colors{0%,100%{stop-color:#b7dfff}25%{stop-color:#c0a0ff}50%{stop-color:#f6b1de}75%{stop-color:#8edfe8}}
+@media(prefers-reduced-motion:reduce){.profile-role-admin .profile-badge-fill stop{animation:none}}

@@ -31,7 +31,7 @@ function DiscoverAvatar({ person, active }) {
   const saved = (Array.isArray(person.profile_background_colors) ? person.profile_background_colors : []).filter((color) => /^#[0-9a-f]{6}$/i.test(color)).slice(0, 3);
   const palette = person.profile_background_mode === "off" ? [] : automatic ? colors.slice(0, 3) : saved;
   const gradient = palette.length ? "conic-gradient(from 40deg," + [...palette, palette[0]].map((color, index) => color + " " + Math.round(index * 360 / palette.length) + "deg").join(",") + ")" : undefined;
-  return <span className={"profile-person-portrait profile-person-gradient-ring" + (gradient && active && person.profile_background_motion !== "still" ? " ring-is-flowing" : "")} style={gradient ? { backgroundImage: gradient, boxShadow: "0 0 0 1px " + palette[0] + "40,0 3px 18px -5px " + palette[0] + "55" } : undefined}><span className="profile-person-portrait-inner"><Avatar user={person} size={144} /></span></span>;
+  return <span className={"profile-person-portrait profile-person-gradient-ring" + (gradient && active && person.profile_background_motion !== "still" ? " ring-is-flowing" : "")} style={gradient ? { backgroundImage: gradient, boxShadow: "0 0 0 1px " + palette[0] + "40,0 3px 18px -5px " + palette[0] + "55" } : undefined}><span className="profile-person-portrait-inner"><Avatar user={person} size={144} motion active={active} /></span></span>;
 }
 
 /** Public suggestions only; follow changes use the same authorized path as profiles. */
