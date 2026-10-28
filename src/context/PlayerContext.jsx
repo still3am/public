@@ -367,10 +367,9 @@ export function PlayerProvider({ children }) {
           try{await ctx.resume();}catch{}
           if(token!==loadTokenRef.current)return;
         }
-        el
-          .play()
+        withReadTimeout(el.play(),15000,'This song took too long to start. Tap Play to retry.')
           .then(() => {if(token===loadTokenRef.current&&side===activeIdxRef.current)setIsPlaying(true);})
-          .catch(error => {if(token===loadTokenRef.current&&side===activeIdxRef.current){setIsPlaying(false);if(error?.name==='NotAllowedError')window.dispatchEvent(new CustomEvent("player:error",{detail:playbackErrorMessage(error)}));}});
+          .catch(error => {if(token===loadTokenRef.current&&side===activeIdxRef.current){setIsPlaying(false);if(error?.code==='READ_TIMEOUT')el.pause();if(error?.name==='NotAllowedError'||error?.code==='READ_TIMEOUT')window.dispatchEvent(new CustomEvent("player:error",{detail:error?.code==='READ_TIMEOUT'?error.message:playbackErrorMessage(error)}));}});
       } else {
         setIsPlaying(false);
       }
@@ -861,14 +860,13 @@ export function PlayerProvider({ children }) {
     (a) => {
       const token=loadTokenRef.current,side=activeIdxRef.current;
       const valid=()=>token===loadTokenRef.current&&side===activeIdxRef.current&&a===activeEl();
-      const failed=error=>{if(valid()){setIsPlaying(false);window.dispatchEvent(new CustomEvent('player:error',{detail:playbackErrorMessage(error)}));}};
+      const failed=error=>{if(valid()){setIsPlaying(false);if(error?.code==='READ_TIMEOUT')a.pause();window.dispatchEvent(new CustomEvent('player:error',{detail:error?.code==='READ_TIMEOUT'?error.message:playbackErrorMessage(error)}));}};
       configurePlaybackSession();
       const ctx = audioCtxRef.current;
       const run = () => {
         if(!valid())return;
         if (!crossfadingRef.current) setGainImmediate(activeIdxRef.current, 1);
-        return a
-          .play()
+        return withReadTimeout(a.play(),15000,'This song took too long to start. Tap Play to retry.')
           .then(() => {
             if(!valid())return;
             setIsPlaying(true);
