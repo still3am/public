@@ -40,7 +40,7 @@ const Dialog=({children})=>React.createElement(React.Fragment,null,children);
 const DialogContent=({children,...props})=>React.createElement("section",{"data-step":props["data-onboarding-step"]},children);
 const DialogTitle=React.forwardRef(({children},ref)=>React.createElement("h2",{ref},children));
 const DialogDescription=({children})=>React.createElement("p",null,children);
-const MotionGradient=props=>{globalThis.__gradientColors=props.colors;return null;},Logo=()=>null,ProfileColorWheel=()=>null,TrackPickerSheet=()=>null;
+const MotionGradient=props=>{globalThis.__gradientColors=props.colors;return null;},Logo=()=>null,ProfileColorPicker=()=>null,TrackPickerSheet=()=>null;
 const AVATAR_PRESETS=globalThis.__avatars;
 const Avatar=()=>React.createElement("span");
 `);
@@ -53,7 +53,7 @@ for(let step=0;step<7;step++){
  assert.match(html,step===6?/Start listening/:step===0?/Let’s go/:/Continue/);
  if(step===1){assert.match(html,/Choose an avatar/);assert.match(html,/Upload a photo/);assert.equal((html.match(/aria-label="Choose [^"]+ avatar"/g)||[]).length,AVATAR_PRESETS.length,"onboarding offers the complete gallery");}
  if(step===2){assert.equal((html.match(/aria-pressed=/g)||[]).length,12,"genres begin with a short selection");assert.match(html,/More genres/);}
- if(step===5){assert.match(html,/<details/,"custom color wheel is collapsed");assert.match(html,/Add a profile song/);}
+ if(step===5){assert.match(html,/Choose profile colors/,"opens the shared PUBLIC color editor");assert.match(html,/Add a profile song/);}
  if(step===6){assert.match(html,/Share my favorite songs/);assert.match(html,/<details/,"additional privacy detail is collapsed");}
 }
 console.log("PASS all seven onboarding screens render; concise genre choices, progressive controls, and completion-aware Settings");
@@ -92,3 +92,11 @@ globalThis.__artColors=[];
 renderToStaticMarkup(React.createElement(ui.WelcomeFlow,{user:current,onDone(){}}));
 assert.deepEqual(globalThis.__gradientColors,model.ONBOARDING_PALETTES[0].colors,"unavailable colors use a stable brand fallback");
 console.log("PASS automatic artwork choice, matching live palette and extraction fallback");
+
+storage.set(model.draftKey(current.id),JSON.stringify({uid:current.id,step:0}));
+const welcomeHtml=renderToStaticMarkup(React.createElement(ui.WelcomeFlow,{user:current,onDone(){}}));
+assert.doesNotMatch(welcomeHtml,/A SOUND OF YOUR OWN|Your taste\.|Your PUBLIC\./,"welcome has one headline and a short introduction");
+storage.set(model.draftKey(current.id),JSON.stringify({uid:current.id,step:5,mode:"off"}));
+renderToStaticMarkup(React.createElement(ui.WelcomeFlow,{user:current,onDone(){}}));
+assert.deepEqual(globalThis.__gradientColors,[],"no-color mode actually stops rendering the gradient");
+console.log('PASS simplified welcome and no-color onboarding preview');
