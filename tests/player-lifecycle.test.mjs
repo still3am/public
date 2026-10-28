@@ -141,3 +141,11 @@ console.log('PASS offline artwork follows track/account identity and ignores sta
  assert.equal(reloads,1);assert.equal(resumes,0);assert.equal(env.retryRef.current.has('song'),false,'explicit retry resets recovery cooldown');
  console.log('PASS pressing Play on a failed source reloads it instead of repeating a failed play');
 }
+
+{
+ const {env,calls,state,audio}=fixture();env.resolveUrl=async()=> 'https://test/slow';audio.play=()=>new Promise(()=>{});
+ env.withReadTimeout=()=>Promise.reject(Object.assign(Error('start timeout'),{code:'READ_TIMEOUT'}));
+ await callback('loadOnActive',env)({id:'song'});await Promise.resolve();await Promise.resolve();
+ assert.equal(state.playing,false);assert.ok(calls.includes('pause'),'a stalled startup is stopped before a late play can begin');assert.ok(calls.includes('error'),'user receives a recoverable startup error');
+ console.log('PASS stalled song startup exits pending playback and provides retry feedback');
+}
