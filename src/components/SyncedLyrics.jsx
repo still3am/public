@@ -112,7 +112,7 @@ export default function SyncedLyrics({ trackId, position, resolvedLyrics, onSeek
   if (!text) return <div className="public-lyrics-empty" role="status">
     <div className="public-lyrics-empty-mark" aria-hidden="true"><span /><span /><span /></div>
     <h3>{current?.error ? 'Lyrics couldn’t load' : current?.instrumental ? 'An instrumental moment' : 'Lyrics aren’t here yet'}</h3>
-    <p>{current?.error || (current?.instrumental ? 'This recording is instrumental.' : 'We couldn’t find a confident match for this recording.')}</p>
+    <p className="hidden">{current?.error || (current?.instrumental ? 'This recording is instrumental.' : 'We couldn’t find a confident match for this recording.')}</p>
     <div className="public-lyrics-actions">{current?.error && <button type="button" onClick={onRetry}>Retry</button>}</div>
   </div>;
 
