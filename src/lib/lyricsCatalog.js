@@ -1,3 +1,4 @@
+import {applyAlignedLyrics} from './alignedLyrics.js';
 const ROOT = 'https://lrclib.net';
 const CLIENT = 'Public/1.0 (https://publicmusic.base44.app)';
 const cache = new Map();
@@ -160,7 +161,7 @@ export function lyricsResult(row, duration = 0) {
   return {text:plain,record:timed?{lines}:null,source:'LRCLIB',sourceId:row.id,instrumental:row.instrumental===true,available:!!plain||lines.length>0};
 }
 /** @param {any} track @param {{signal?:AbortSignal}} options */
-export async function findLyricsCatalog(track, options = {}) {
+async function findLyricsCatalogRaw(track, options = {}) {
   if(options.signal?.aborted)throw cancelled();
   const chosen=choices.get(signature(track));
   if(chosen)return lyricsResult(chosen,chosen.duration);
@@ -198,4 +199,9 @@ export async function findLyricsCatalog(track, options = {}) {
   const result=lyricsResult(best,track.duration_seconds);
   if(!result&&failure)throw failure;
   return result;
+}
+
+export async function findLyricsCatalog(track,options={}){
+ const result=await findLyricsCatalogRaw(track,options);
+ return applyAlignedLyrics(result,track);
 }
