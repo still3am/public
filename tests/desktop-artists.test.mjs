@@ -36,7 +36,7 @@ const detail=await load("src/pages/TrackDetail.jsx",common+`
 const useParams=()=>({id:"song1"}),useNavigate=()=>()=>{},useAuth=()=>({user:null}),usePlayer=()=>globalThis.__player,useCoverUrl=url=>url,useToast=()=>({toast(){}});
 const base44={},formatTime=n=>String(n),prepareTrackShare=()=>{},shareTrack=async()=>{},getPublishedTracks=async()=>[],splitArtistNames=s=>[s],fetchArtistTracks=async()=>[],getUsersByIds=async()=>[];
 const useReleaseTheme=()=>({style:{},colors:[]}),ReleaseAtmosphere=()=>null,Shuffle=()=>null;
-const SongCatalogInfo="song-info",TrackCatalogLyrics="catalog-lyrics",TrackMusicVideo="video",TrackCard="track-card",ScrollShelf="shelf",LibraryButton="library-button",CollapsibleText="copy",EmptyState="empty",EditTrackModal="edit",ArtistLinks="artist",TrackRow="track-row",TrackOptionsMenu="options",SyncLyricsModal="sync",GenerateLyricsModal="generate";
+const SongCatalogInfo="song-info",TrackCatalogLyrics="catalog-lyrics",TrackMusicVideo="video",TrackCard="track-card",ScrollShelf="shelf",LibraryButton="library-button",CollapsibleText="copy",EmptyState="empty",EditTrackModal="edit",ArtistLinks="artist",TrackRow="track-row",TrackOptionsMenu="options",TrackFavoriteButton="favorite",SyncLyricsModal="sync",GenerateLyricsModal="generate";
 const ChevronLeft=Loader2,Share2=Loader2,Music=Loader2,Play=Loader2,Pause=Loader2,Pencil=Loader2,Sparkles=Loader2,Timer=Loader2,Wand2=Loader2;
 `);
 const renderDetail=track=>{values=[track,false,false,null,false,false,[tracks[1]],[tracks[2]],false];index=0;return detail.default();};
