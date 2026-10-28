@@ -87,7 +87,7 @@ export default function FullScreenPlayer({ onClose }) {
   const [coverFailed, setCoverFailed] = useState(false);
 
   // Reset the broken-cover flag whenever the track (and thus its cover URL) changes.
-  useEffect(() => {setCoverFailed(false);}, [coverUrl]);
+  useEffect(() => {setCoverFailed(false);const retry=()=>setCoverFailed(false);window.addEventListener('online',retry);return()=>window.removeEventListener('online',retry);}, [coverUrl]);
 
 
   // LRCLIB is the only playback lyrics provider. Older saved records are not used.

@@ -73,3 +73,6 @@ assert.equal(parseLrc('[00:01.00][00:05.00]<00:01.20>One <00:02.20>two',8)[1].wo
 
 assert.deepEqual(parseLrc('[00:01.00]One\r[00:02.00]Two',5).map(line=>line.text),['One','Two'],'legacy CR line endings preserve distinct lyric lines');
 assert.equal(rankLyricsCandidates([{...sample,id:81,trackName:'My Song (Live)'},sample],song)[0].id,1,'verified recording ranks above a different live version');
+
+assert.equal(selectLyricsMatch([{...sample,artistName:'Guest & My Artist'}],{...song,title:'My Song (with Guest)',artist:'My Artist with Guest'}).id,1,'with credits and reordered collaborators match without changing the song version');
+assert.equal(selectLyricsMatch([{...sample,trackName:'My Song (Remix)',artistName:'Guest & My Artist'}],{...song,title:'My Song (with Guest)',artist:'My Artist with Guest'}),null,'broader collaborator formatting still rejects a remix');

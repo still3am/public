@@ -66,7 +66,7 @@ export default function PlayerBar() {
 
   const offlineCover = useOfflineCoverUrl(p.currentTrack?.id, p.currentTrack?.cover_art_url);
   const coverUrl = useCoverUrl(offlineCover);
-  useEffect(() => { setCoverFailed(false); }, [coverUrl]);
+  useEffect(() => {setCoverFailed(false);const retry=()=>setCoverFailed(false);window.addEventListener('online',retry);return()=>window.removeEventListener('online',retry);}, [coverUrl]);
   if (!p.currentTrack) return null;
   const t = p.currentTrack;
   const pct = p.duration ? p.position / p.duration * 100 : 0;

@@ -52,7 +52,7 @@ export default function TrackDetail() {
   const coverUrl = useCoverUrl(track?.cover_art_url);
   const releaseTheme = useReleaseTheme(coverUrl);
   const [coverFailed, setCoverFailed] = useState(false);
-  useEffect(() => setCoverFailed(false), [coverUrl]);
+  useEffect(() => {setCoverFailed(false);const retry=()=>setCoverFailed(false);window.addEventListener('online',retry);return()=>window.removeEventListener('online',retry);}, [coverUrl]);
   const [loading, setLoading] = useState(true);
   const [uploader, setUploader] = useState(null);
   const [editing, setEditing] = useState(false);
