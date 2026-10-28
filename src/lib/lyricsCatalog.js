@@ -119,21 +119,21 @@ export function selectLyricsMatch(rows,track) {
  if(!Number(track.duration_seconds)&&new Set(matches.map(item=>Math.round(Number(item.row.duration)))).size>1)return null;
  return matches[0]?.row||null;
 }
-/** @param {any} track @param {{signal?:AbortSignal,broad?:boolean}} options @returns {Promise<any[]>} */
-export async function searchLyricsCatalog(track, {signal,broad=false} = {}) {
+/** @param {any} track @param {{signal?:AbortSignal,broad?:boolean,titleOnly?:boolean}} options @returns {Promise<any[]>} */
+export async function searchLyricsCatalog(track, {signal,broad=false,titleOnly=false} = {}) {
   const title=cleanLyricsTitle(track.title).slice(0,200),artist=String(track.artist||'').trim().slice(0,200);
   if(!title||!artist)return [];
   if(signal?.aborted)throw cancelled();
-  const key=JSON.stringify([title,artist,broad]);const saved=cache.get(key);
+  const key=JSON.stringify([title,artist,broad,titleOnly]);const saved=cache.get(key);
   if(saved&&saved.until>Date.now())return saved.rows;
   let entry=searches.get(key);
   if(!entry||entry.controller.signal.aborted){
     entry={controller:new AbortController(),consumers:0,promise:null};
     const current=entry;
     current.promise=(async()=>{
-      const result=await request('/api/search?'+new URLSearchParams(broad?{q:title+' '+artist}:{track_name:title,artist_name:artist}),{signal:current.controller.signal});
+      const result=await request('/api/search?'+new URLSearchParams(titleOnly?{q:title}:broad?{q:title+' '+artist}:{track_name:title,artist_name:artist}),{signal:current.controller.signal});
       if(!Array.isArray(result))throw new Error('Unexpected lyrics response. Please retry.');
-      const rows=result.filter(row=>row&&typeof row==='object'&&Number.isSafeInteger(row.id)&&row.id>0).slice(0,50).map(row=>({...row,plainLyrics:text(row.plainLyrics),syncedLyrics:text(row.syncedLyrics)}));
+      const rows=result.filter(row=>row&&typeof row==='object'&&Number.isSafeInteger(row.id)&&row.id>0).slice(0,200).map(row=>({...row,plainLyrics:text(row.plainLyrics),syncedLyrics:text(row.syncedLyrics)}));
       if(cache.size>=50)cache.delete(cache.keys().next().value);
       cache.set(key,{until:Date.now()+(rows.length?600000:30000),rows});return rows;
     })().finally(()=>{if(searches.get(key)===current)searches.delete(key);});
@@ -182,6 +182,18 @@ export async function findLyricsCatalog(track, options = {}) {
   const spelling={...alternate,title:unaccent(alternate.title),artist:unaccent(alternate.artist)};
   if(!lyricsResult(best,track.duration_seconds)?.record&&(spelling.title!==alternate.title||spelling.artist!==alternate.artist)){
    rows.push(...await lookup(spelling,options));best=selectLyricsMatch(rows,track);
+  }
+  // A punctuation-neutral query finds uploads whose artist/title formatting
+  // differs from the catalog. A final title-only query recovers collaborations
+  // indexed under a different lead artist. Both retain original match guards.
+  if(!lyricsResult(best,track.duration_seconds)?.record){
+   const simple={...alternate,title:normalize(alternate.title),artist:normalize(alternate.artist)};
+   if(simple.title!==alternate.title||simple.artist!==alternate.artist){
+    rows.push(...await lookup(simple,{...options,broad:true}));best=selectLyricsMatch(rows,track);
+   }
+  }
+  if(!lyricsResult(best,track.duration_seconds)?.record){
+   rows.push(...await lookup(alternate,{...options,titleOnly:true}));best=selectLyricsMatch(rows,track);
   }
   const result=lyricsResult(best,track.duration_seconds);
   if(!result&&failure)throw failure;

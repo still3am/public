@@ -1,4 +1,4 @@
-import {findLyricIndex} from '@/lib/lyricClock';
+import {findLyricIndex,prepareLyricTimeline} from '@/lib/lyricClock';
 import {useLyricClock} from '@/hooks/useLyricClock';
 import LyricInterlude from "@/components/LyricInterlude";
 import { useEffect, useRef, useMemo } from "react";
@@ -25,7 +25,7 @@ export default function SyncedLyrics({ trackId, position, resolvedLyrics, onSeek
   const lines = useMemo(() => (Array.isArray(lyrics?.lines) ? lyrics.lines : []).
   filter((line) => Number.isFinite(Number(line.start_time_ms)) && Number(line.start_time_ms) >= 0).
   slice().sort((a, b) => Number(a.start_time_ms) - Number(b.start_time_ms)), [lyrics?.lines]);
-  const displayLines = useMemo(() => lines.length && Number(lines[0].start_time_ms) >= 3000 ? [{ text: '♪', start_time_ms: 0, end_time_ms: Number(lines[0].start_time_ms) }, ...lines] : lines, [lines]);
+  const displayLines = useMemo(()=>prepareLyricTimeline(lines),[lines]);
   const hasTimed = displayLines.length > 0 && displayLines.some((line) => Number(line.start_time_ms) > 0 || Number(line.end_time_ms) > 0);
   const clock=useLyricClock({trackId,position,enabled:!!lyrics?.lines?.length,readPosition:getPlaybackPosition,viewport:scrollRef,lines:displayLines});
   const ms = Math.max(0, Number(clock) || 0) * 1000;
