@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import {clearLyricsCatalogMatch,cleanLyricsTitle,rankLyricsCandidates,chooseLyricsCatalogMatch,parseLrc,selectLyricsMatch,lyricsResult,searchLyricsCatalog,findLyricsCatalog} from '../src/lib/lyricsCatalog.js';
+import {clearLyricsCatalogMatch,cleanLyricsTitle,rankLyricsCandidates,chooseLyricsCatalogMatch,parseLrc,selectLyricsMatch,lyricsResult,searchLyricsCatalog,findLyricsCatalog,searchLyricsOptions} from '../src/lib/lyricsCatalog.js';
 const sample={id:1,trackName:'My Song',artistName:'My Artist',albumName:'Album',duration:180,plainLyrics:'First line\nNext line',syncedLyrics:'[00:01.50]First line\n[00:05.00]Next line'};
 const song={title:'My Song',artist:'My Artist',album_name:'Album',duration_seconds:180};
 assert.equal(selectLyricsMatch([{...sample,duration:220},sample],song).id,1);
@@ -41,6 +41,11 @@ const controller=new AbortController();controller.abort();await assert.rejects(s
 assert.equal((await findLyricsCatalog({...song,title:'Fallback Song'})).sourceId,77,'automatic broad fallback finds a verified synced match');
 assert.equal((await findLyricsCatalog({...song,title:'Recovered lookup'})).sourceId,88,'a failed strict lookup still tries the broader verified search');
 assert.equal((await findLyricsCatalog({...song,title:'Trésor'})).sourceId,91,'accent-free search fallback still verifies original recording metadata');
+assert.equal((await searchLyricsOptions({...song,title:'Fallback Song'}))[0].id,77,'manual searches use broad fallback too');
+assert.equal((await searchLyricsOptions({...song,title:'Recovered lookup'}))[0].id,88,'manual lookup recovers from strict search failures');
+chooseLyricsCatalogMatch({...song,id:'instrumental-choice'},{id:99,instrumental:true});
+assert.equal((await findLyricsCatalog({...song,id:'instrumental-choice'})).instrumental,true,'instrumental choices can be reviewed without invented lyrics');
+clearLyricsCatalogMatch({...song,id:'instrumental-choice'});
 await assert.rejects(searchLyricsCatalog({...song,title:'Rate limit'}),/busy/);const before=calls.length;await assert.rejects(searchLyricsCatalog({...song,title:'After rate limit'}),/busy/);assert.equal(calls.length,before,'provider Retry-After respected without extra calls');
 chooseLyricsCatalogMatch({...song,id:'public-song'},{...sample,id:42});
 const chosen=await findLyricsCatalog({...song,id:'public-song'});assert.equal(chosen.sourceId,42,'reviewed LRCLIB match applies for the session without database writes');clearLyricsCatalogMatch({...song,id:'public-song'});assert.equal((await findLyricsCatalog({...song,id:'public-song'})).sourceId,1,'reset restores the automatic match without a save');
@@ -63,3 +68,6 @@ assert.equal(parseLrc('[offset:500]\n[00:01.00]<00:01.20>One <00:02.10>two\n[00:
 assert.equal(parseLrc('[00:01.00]<00:02.00>One <00:01.20>two\n[00:03.00]Next',5)[0].words,undefined,'non-monotonic word timing falls back to line sync');
 assert.equal(parseLrc('[00:01.00]<00:01.20>One <00:04.20>two\n[00:03.00]Next',5)[0].words,undefined,'word timestamps cannot spill into the next line');
 assert.equal(parseLrc('[00:01.00][00:05.00]<00:01.20>One <00:02.20>two',8)[1].words,undefined,'repeated chorus tags do not reuse absolute word timings');
+
+assert.deepEqual(parseLrc('[00:01.00]One\r[00:02.00]Two',5).map(line=>line.text),['One','Two'],'legacy CR line endings preserve distinct lyric lines');
+assert.equal(rankLyricsCandidates([{...sample,id:81,trackName:'My Song (Live)'},sample],song)[0].id,1,'verified recording ranks above a different live version');

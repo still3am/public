@@ -48,7 +48,8 @@ function candidateScore(row,track) {
 }
 export function rankLyricsCandidates(rows,track) {
  const duration=Number(track.duration_seconds)||0;
- return [...rows].sort((a,b)=>candidateScore(b,track)-candidateScore(a,track)||Number(normalize(b.trackName)===normalize(cleanLyricsTitle(track.title)))-Number(normalize(a.trackName)===normalize(cleanLyricsTitle(track.title)))||Number(normalize(b.artistName)===normalize(track.artist))-Number(normalize(a.artistName)===normalize(track.artist))||(duration?Number(Math.abs(b.duration-duration)<=2)-Number(Math.abs(a.duration-duration)<=2):0)||Number(!!b.syncedLyrics)-Number(!!a.syncedLyrics)||(duration?Math.abs(a.duration-duration)-Math.abs(b.duration-duration):0));
+ const scores=new Map(rows.map(row=>[row,candidateScore(row,track)]));
+ return [...rows].sort((a,b)=>scores.get(b)-scores.get(a)||Number(normalize(b.trackName)===normalize(cleanLyricsTitle(track.title)))-Number(normalize(a.trackName)===normalize(cleanLyricsTitle(track.title)))||Number(normalize(b.artistName)===normalize(track.artist))-Number(normalize(a.artistName)===normalize(track.artist))||(duration?Number(Math.abs(b.duration-duration)<=2)-Number(Math.abs(a.duration-duration)<=2):0)||Number(!!b.syncedLyrics)-Number(!!a.syncedLyrics)||(duration?Math.abs(a.duration-duration)-Math.abs(b.duration-duration):0));
 }
 const text = value => typeof value === 'string' ? value.slice(0,100000).trim() : '';
 /** @param {string} path @param {{signal?:AbortSignal}} options */
@@ -92,7 +93,7 @@ export function parseLrc(value, duration = 0) {
   if(typeof value!=='string')return [];
   const offset=Number(value.match(/\[offset:([+-]?\d+)\]/i)?.[1])||0;
   const lines=[];
-  for(const row of value.slice(0,100000).replace(/\r/g,'').split('\n')){
+  for(const row of value.slice(0,100000).replace(/\r\n?/g,'\n').split('\n')){
     const stamps=[...row.matchAll(/\[(\d{1,3}):(\d{2})(?:[.:](\d{1,3}))?\]/g)];
     const lyric=row.replace(/\[\d{1,3}:\d{2}(?:[.:]\d{1,3})?\]/g,'').replace(/<\d{1,3}:\d{2}(?:[.:]\d{1,3})?>/g,'').trim();
     const words=stamps.length===1?parseWordStamps(row,offset):null;
@@ -140,7 +141,7 @@ export async function searchLyricsCatalog(track, {signal,broad=false} = {}) {
   }
   return joinSearch(entry,signal);
 }
-/** Manual search uses a broad fallback too, without hiding a provider failure. */
+/** @param {any} track @param {{signal?:AbortSignal}} options */
 export async function searchLyricsOptions(track,{signal}={}) {
  let rows=[],failure=null;
  try{rows=await searchLyricsCatalog(track,{signal});}catch(error){if(signal?.aborted||error.name==='AbortError')throw error;failure=error;}
