@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import ts from 'typescript';
-import {readLyricClock} from '../src/lib/lyricClock.js';
+import {readLyricClock,findLyricIndex} from '../src/lib/lyricClock.js';
 let media=1.125;
 assert.equal(readLyricClock(()=>media,'a',1),1.125,'uses fine-grained media time');
 for(let i=0;i<10;i++)assert.equal(readLyricClock(()=>media,'a',2),1.125,'buffering cannot advance lyrics with wall time');
@@ -20,7 +20,7 @@ globalThis.document={hidden:false,addEventListener:(type,fn)=>listeners.set(type
 globalThis.requestAnimationFrame=fn=>{frames.set(++sequence,fn);return sequence;};
 globalThis.cancelAnimationFrame=id=>frames.delete(id);
 globalThis.IntersectionObserver=class{constructor(fn){intersection=fn;}observe(){}disconnect(){}};
-globalThis.__clockHooks={useEffect:fn=>effects.push(fn),useRef:value=>({current:value}),useState:()=>[state,update=>{state=update(state);}],readLyricClock};
+globalThis.__clockHooks={useEffect:fn=>effects.push(fn),useRef:value=>({current:value}),useState:()=>[state,update=>{state=update(state);}],readLyricClock,findLyricIndex};
 const hookSource=ts.transpileModule(fs.readFileSync('src/hooks/useLyricClock.js','utf8').replace(/^import[^;]+;/gm,''),{compilerOptions:{target:ts.ScriptTarget.ES2022,module:ts.ModuleKind.ESNext}}).outputText;
 const {useLyricClock}=await import('data:text/javascript;base64,'+Buffer.from('const {'+Object.keys(globalThis.__clockHooks).join(',')+'}=globalThis.__clockHooks;'+hookSource).toString('base64'));
 media=2.1;useLyricClock({trackId:'b',position:2,enabled:true,readPosition:()=>media,viewport:{current:{}}});
@@ -34,3 +34,6 @@ intersection([{isIntersecting:false}]);assert.equal(frames.size,0,'offscreen lyr
 intersection([{isIntersecting:true}]);media=9.5;pump(300);assert.equal(state.position,9.5,'returning to lyrics resyncs to the song');
 cleanup();assert.equal(frames.size,0);assert.equal(listeners.size,0,'unmount releases listeners and animation work');
 console.log('PASS precise media clock, buffering, seeks, crossfade isolation, visibility, stable pause, and cleanup');
+
+const timeline=[{start_time_ms:1000},{start_time_ms:2500},{start_time_ms:4000}];
+assert.equal(findLyricIndex(timeline,.9),-1);assert.equal(findLyricIndex(timeline,2.5),1);assert.equal(findLyricIndex(timeline,5),2);assert.equal(findLyricIndex(timeline,1),0);assert.equal(findLyricIndex([],3),-1);

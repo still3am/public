@@ -1,15 +1,17 @@
 import {useEffect,useRef,useState} from 'react';
-import {readLyricClock} from '@/lib/lyricClock';
-export function useLyricClock({trackId,position,enabled,readPosition,viewport}) {
- const [sample,setSample]=useState({trackId:null,position:0});
- const latest=useRef({position,readPosition});latest.current={position,readPosition};
+import {readLyricClock,findLyricIndex} from '@/lib/lyricClock';
+export function useLyricClock({trackId,position,enabled,readPosition,viewport,lines=[]}) {
+ const [sample,setSample]=useState({trackId:null,position:0,segment:-2});
+ const latest=useRef({position,readPosition,lines});latest.current={position,readPosition,lines};
  useEffect(()=>{
   if(!enabled||!readPosition)return;
   let frame=0,last=0,visible=true,disposed=false;
   const tick=now=>{
    frame=0;if(disposed||document.hidden||!visible)return;
    if(now-last>=50){last=now;const value=readLyricClock(latest.current.readPosition,trackId,latest.current.position);
-    setSample(previous=>previous.trackId===trackId&&previous.position===value?previous:{trackId,position:value});}
+    const timeline=latest.current.lines,segment=timeline.length?findLyricIndex(timeline,value):-2;
+    const precise=segment===-2||!!timeline[segment]?.words?.length;
+    setSample(previous=>previous.trackId===trackId&&(previous.position===value||(!precise&&previous.segment===segment))?previous:{trackId,position:value,segment});}
    frame=requestAnimationFrame(tick);
   };
   const wake=()=>{cancelAnimationFrame(frame);last=0;if(!disposed&&!document.hidden&&visible)frame=requestAnimationFrame(tick);};
