@@ -37,3 +37,12 @@ console.log('PASS precise media clock, buffering, seeks, crossfade isolation, vi
 
 const timeline=[{start_time_ms:1000},{start_time_ms:2500},{start_time_ms:4000}];
 assert.equal(findLyricIndex(timeline,.9),-1);assert.equal(findLyricIndex(timeline,2.5),1);assert.equal(findLyricIndex(timeline,5),2);assert.equal(findLyricIndex(timeline,1),0);assert.equal(findLyricIndex([],3),-1);
+
+state={trackId:null,position:0,segment:-2};media=1.1;
+const timedLines=[...timeline];timedLines[2]={...timedLines[2],words:[{text:'timed'}]};
+useLyricClock({trackId:'c',position:1,enabled:true,readPosition:()=>media,viewport:{current:{}},lines:timedLines});
+const stopLineClock=effects[1]();pump(360);const sameLine=state;media=1.3;pump(420);
+assert.equal(state,sameLine,'line-only timing avoids redrawing all lyrics between boundaries');
+media=2.6;pump(480);assert.equal(state.segment,1,'line boundary triggers an update');
+media=4.1;pump(540);media=4.2;pump(600);assert.equal(state.position,4.2,'word timing retains fine media-clock updates');
+stopLineClock();
