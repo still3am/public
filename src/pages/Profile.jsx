@@ -11,7 +11,7 @@ import { normalizeProfileDraft } from '@/lib/profileEditing';
 import '@/components/profile/profile-upgrades.css';
 import { setFollowState, followError } from '@/lib/followActions';
 import { shareLink } from '@/lib/shareLink';
-import { reportActionError } from '@/lib/actionError';
+import { actionError, reportActionError } from '@/lib/actionError';
 import LoadError from '@/components/LoadError';
 import { useRef } from 'react';
 import { readAllPages } from '@/lib/readPages';
@@ -130,6 +130,7 @@ export default function Profile({ ownProfileTab = false }) {
   const [deleteError, setDeleteError] = useState("");
   const deleteLock = useRef(false);
   const [saving, setSaving] = useState(false);
+  const [saveError,setSaveError]=useState("");
   const [uploadingAvatar, setUploadingAvatar] = useState(false);
   const [uploadingBanner, setUploadingBanner] = useState(false);
   const bannerVersion = useRef(0),bannerBusy = useRef(false),saveLock = useRef(false);
@@ -336,7 +337,7 @@ export default function Profile({ ownProfileTab = false }) {
     let draft;try {draft = normalizeProfileDraft(form, baseline);} catch (error) {reportActionError(error, error.message);return;}
     const changes = Object.fromEntries(Object.entries(draft).filter(([key, value]) => JSON.stringify(value) !== JSON.stringify(baseline[key])));
     if (!Object.keys(changes).length) {setEditMode(false);return;}
-    const key = identity.current;saveLock.current = true;setSaving(true);
+    const key = identity.current;saveLock.current = true;setSaving(true);setSaveError("");
     try {
       await base44.auth.updateMe(changes);
       const confirmed = await base44.auth.me();
@@ -345,7 +346,7 @@ export default function Profile({ ownProfileTab = false }) {
       if (Object.entries(changes).some(([field, value]) => JSON.stringify(saved[field]) !== JSON.stringify(value))) throw Error('Some changes were not confirmed. Your draft is still here.');
       setProfile(confirmed);setForm(saved);setBackgroundDraft(null);setEditMode(false);
       window.dispatchEvent(new Event('profiles:changed'));await checkUserAuth({ silent: true });
-    } catch (error) {if (identity.current === key) reportActionError(error, 'Your profile changes could not save. Your draft is still here. Please retry.');} finally
+    } catch (error) {if (identity.current === key) setSaveError(actionError(error, 'Your profile changes could not save.')+' Your draft is still here. Retry Save changes.');} finally
     {saveLock.current = false;if (identity.current === key) setSaving(false);}
   }
   function cancelEdit() {
@@ -413,6 +414,7 @@ export default function Profile({ ownProfileTab = false }) {
     {backgroundColors.length > 0 && <MotionGradient colors={backgroundColors} motion={currentBackground.motion} speed={currentBackground.speed} active={isCurrentPage && !showColors && !showSettings && !showQR && !showDelete && !followList} pauseWhenCovered className="profile-artwork-background fixed inset-0 pointer-events-none z-0" style={{ opacity: 1 }} />}
     {!backgroundColors.length && currentBackground.mode === "auto" && coverUrl && <div aria-hidden="true" className="profile-artwork-background fixed inset-0 pointer-events-none z-0" style={{ backgroundImage: `url(${JSON.stringify(coverUrl)})`, backgroundSize: "cover", backgroundPosition: "center", filter: "blur(45px) saturate(1.35)", transform: "scale(1.12)", opacity: 1 }} />}
     <div className={`profile-page profile-redesigned max-w-6xl mx-auto relative z-10 ${editMode ? "profile-is-editing" : ""}`}>
+      {editMode && saveError && <p role="alert" className="rounded-2xl border border-red-400/30 bg-card px-4 py-3 text-sm mb-3">{saveError}</p>}
       {editMode && <div className="profile-edit-toolbar" role="region" aria-label="Profile editing"><div><strong>Edit profile</strong><p>Changes apply when you save.</p></div><div><button type="button" className="playlist-action" disabled={saving} onClick={cancelEdit}>Cancel</button><button type="button" className="chrome-button" disabled={saving || uploadingAvatar || uploadingBanner} onClick={saveProfile}>{saving ? <Loader2 size={16} className="animate-spin" /> : <Save size={16} />} {saving ? 'Saving…' : 'Save changes'}</button></div></div>}
 
       <div className="profile-overview flex flex-col md:flex-row gap-4 md:gap-6 mb-8">
