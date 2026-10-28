@@ -27,7 +27,7 @@ export default function SyncedLyrics({ trackId, position, resolvedLyrics, onSeek
   slice().sort((a, b) => Number(a.start_time_ms) - Number(b.start_time_ms)), [lyrics?.lines]);
   const displayLines = useMemo(()=>prepareLyricTimeline(lines),[lines]);
   const hasTimed = displayLines.length > 0 && displayLines.some((line) => Number(line.start_time_ms) > 0 || Number(line.end_time_ms) > 0);
-  const clock=useLyricClock({trackId,position,enabled:!!lyrics?.lines?.length,readPosition:getPlaybackPosition,viewport:scrollRef,lines:displayLines});
+  const clock=useLyricClock({trackId,position,enabled:!!lyrics?.lines?.length,readPosition:getPlaybackPosition,viewport:scrollRef,lines:displayLines,continuous:true});
   const ms = Math.max(0, Number(clock) || 0) * 1000;
   const activeIdx=hasTimed?findLyricIndex(displayLines,clock):-1;
   activeRef.current = activeIdx;
@@ -86,6 +86,8 @@ export default function SyncedLyrics({ trackId, position, resolvedLyrics, onSeek
       className="public-lyrics-scroll no-scrollbar" aria-label="Synced song lyrics">
       {displayLines.map((line, index) => {
           const active = index === activeIdx;
+          const start=Number(line.start_time_ms),end=Number(line.end_time_ms);
+          const progress=Number.isFinite(end)&&end>start?Math.max(0,Math.min(1,(ms-start)/(end-start))):null;
           const distance = activeIdx < 0 ? index : Math.abs(index - activeIdx);
           const opacity = active ? 1 : distance <= 1 ? 0.72 : distance === 2 ? 0.56 : 0.44;
           return <button type="button" key={index} ref={(element) => {lineRefs.current[index] = element;}}
@@ -93,15 +95,15 @@ export default function SyncedLyrics({ trackId, position, resolvedLyrics, onSeek
           aria-label={(line.text === '♪' ? 'Instrumental passage' : line.text || 'Instrumental passage') + ' · Play from ' + Math.floor(Number(line.start_time_ms) / 60000) + ':' + String(Math.floor(Number(line.start_time_ms) / 1000) % 60).padStart(2, '0')} aria-current={active ? "true" : undefined}
           className="public-lyric-line selectable-content"
           style={{ opacity, filter: "none" }}>
-          {/^(?:[♪♫]+|\[?(?:instrumental|music|interlude|solo)\]?)$/i.test(line.text?.trim() || "") ? <LyricInterlude active={active} /> : Array.isArray(line.words) && line.words.length ? line.words.map((word, wordIndex) => {
+          {/^(?:[♪♫]+|\[?(?:instrumental|music|interlude|solo)\]?)$/i.test(line.text?.trim() || "") ? <LyricInterlude active={active} progress={progress} /> : Array.isArray(line.words) && line.words.length ? line.words.map((word, wordIndex) => {
               const start = Number(word.start_time_ms),end = Number(word.end_time_ms);
               const valid = Number.isFinite(start) && Number.isFinite(end) && end > start;
               const progress = valid ? Math.max(0, Math.min(1, (ms - start) / (end - start))) : 1;
               return <span key={wordIndex} style={active && valid ? {
-                backgroundImage: "linear-gradient(to right,#fff " + progress * 100 + "%,rgba(255,255,255,.4) " + progress * 100 + "%)",
+                backgroundImage: "linear-gradient(to right,#fff " + Math.max(0,progress*100-5) + "%,rgba(255,255,255,.35) " + Math.min(100,progress*100+5) + "%)",
                 backgroundClip: "text", WebkitBackgroundClip: "text", color: "transparent"
               } : undefined}>{word.text}{!line.preserve_word_spacing && wordIndex < line.words.length - 1 ? " " : ""}</span>;
-            }) : line.text?.trim() || <LyricInterlude active={active} />}
+            }) : line.text?.trim() ? <span className="public-lyric-sweep" style={active&&progress!==null?{backgroundImage:'linear-gradient(to right,#fff '+Math.max(0,progress*100-5)+'%,rgba(255,255,255,.35) '+Math.min(100,progress*100+5)+'%)',backgroundClip:'text',WebkitBackgroundClip:'text',color:'transparent'}:undefined}>{line.text}</span> : <LyricInterlude active={active} progress={progress} />}
         </button>;
         })}
     </div>

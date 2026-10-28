@@ -37,3 +37,7 @@
 .public-lyric-line{-webkit-tap-highlight-color:transparent}
 @media(hover:hover){.public-lyrics-view .public-lyric-line:hover{opacity:1!important}}
 @media(max-width:400px){.public-lyrics-view .public-lyric-line{font-size:clamp(23px,6.7vw,28px);letter-spacing:-.025em}}
+
+/* Known instrumental timing fills the dots in sequence from media position. */
+.lyric-interlude[data-timed=true] .lyric-interlude-dot{animation:none;transform:none;opacity:1;background-color:transparent;box-shadow:inset 0 0 0 1px #ffffff55;overflow:hidden}
+.public-lyric-sweep{box-decoration-break:clone;-webkit-box-decoration-break:clone}
