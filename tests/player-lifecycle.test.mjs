@@ -105,6 +105,9 @@ pending.get('first-user:two').resolve({_coverBlob:{id:'stale'}});await new Promi
 assert.equal(useOfflineCoverUrl('two','second.jpg'),'second.jpg','late old-account read cannot commit');
 pending.get('second-user:two').resolve({_coverBlob:{id:'two',size:12}});await new Promise(resolve=>setImmediate(resolve));
 assert.equal(useOfflineCoverUrl('two','second.jpg'),'blob:two');assert.ok(revoked.includes('blob:one'));cleanup();
+assert.equal(useOfflineCoverUrl('empty','empty.jpg'),'empty.jpg');runEffects();
+pending.get('second-user:empty').resolve({_coverBlob:{id:'empty',size:0}});await new Promise(resolve=>setImmediate(resolve));
+assert.equal(useOfflineCoverUrl('empty','empty.jpg'),'empty.jpg','empty cached covers use remote artwork');cleanup();
 console.log('PASS offline artwork follows track/account identity and ignores stale storage reads');
 {
  const {env,state,audio}=fixture();audio.paused=false;audio.currentTime=73;audio.pause=function(){this.paused=true;};
