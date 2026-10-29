@@ -53,7 +53,7 @@ function Dashboard() {
     </> : <Suspense fallback={<div className="admin-panel-loading"><Loader2 size={22} className="animate-spin" /><span>Opening {section.label.toLowerCase()}…</span></div>}>
      {section.id === "music" && <Music />}{section.id === "requests" && <MusicRequests embedded />}{section.id === "reports" && <Reports />}{section.id === "members" && <Members />}
      {section.id === "support" && <><div className="admin-support-switch" role="group" aria-label="Support view"><button aria-pressed={!feedback} onClick={() => setFeedback(false)}>Requests</button><button aria-pressed={feedback} onClick={() => setFeedback(true)}>Suggestions</button></div>{feedback ? <Feedback /> : <Support />}</>}
-     {section.id === "settings" && <div className="admin-settings-grid"><section><h3>Upload access</h3><Uploads /></section><section><h3>Announcements</h3><Banner /></section></div>}
+     {section.id === "settings" && <div className="admin-settings-grid"><section><h3>Community preview</h3><Link className="admin-recovery-link" to="/community-preview"><Users size={19}/><span><strong>View the 5 preview profiles</strong><small>Explore avatars, banners, gradients and Top 8 songs.</small></span><ArrowUpRight size={18}/></Link></section><section><h3>Upload access</h3><Uploads /></section><section><h3>Announcements</h3><Banner /></section></div>}
     </Suspense>}
    </div>
   </div>
