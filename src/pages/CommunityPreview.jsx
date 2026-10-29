@@ -34,14 +34,16 @@ export default function CommunityPreview(){
  }
  return <div className="community-preview-page">
   <MotionGradient key={selected.id} colors={selected.colors} speed={.65} className="community-preview-background"/>
-  <header className="community-preview-heading"><Link to="/" aria-label="Back to PUBLIC"><ArrowLeft size={20}/></Link><div><p>PUBLIC · DESIGN PREVIEW</p><h1>Your people. Your sound.</h1><span>Five profiles to explore. No changes to real accounts.</span></div></header>
+  <header className="community-preview-heading"><Link to="/" aria-label="Back to PUBLIC"><ArrowLeft size={20}/></Link><div><h1>Profiles</h1></div></header>
   <div className="community-preview-layout">
-   <nav className="community-preview-people" aria-label="Choose a preview profile">{profiles.map(profile=>{const a=AVATAR_PRESETS.find(row=>row.id===profile.avatar);return <button key={profile.id} type="button" aria-pressed={selected.id===profile.id} onClick={()=>{setParams({profile:profile.id},{replace:true});setError('');}}><Avatar user={{avatar_url:a?.url,display_name:profile.name}} size={48} motion/><span><strong>{profile.name}</strong><small>@{profile.handle}</small></span>{selected.id===profile.id?<Check size={17}/>:<ArrowRight size={17}/>}</button>;})}</nav>
+   <nav className="community-preview-people" aria-label="Choose a profile">{profiles.map(profile=>{const a=AVATAR_PRESETS.find(row=>row.id===profile.avatar);return <button key={profile.id} type="button" aria-pressed={selected.id===profile.id} onClick={()=>{setParams({profile:profile.id},{replace:true});setError('');}}><Avatar user={{avatar_url:a?.url,display_name:profile.name}} size={48} motion/><span><strong>{profile.name}</strong><small>@{profile.handle}</small></span>{selected.id===profile.id?<Check size={17}/>:<ArrowRight size={17}/>}</button>;})}</nav>
    <section className="community-preview-profile" aria-label={selected.name+' profile'}>
+    <div className="community-preview-hero">
     <div className="community-preview-banner">{banner&&<ProfileMedia key={selected.id} src={banner.url} gifSrc={banner.gifUrl} videoSrc={banner.videoUrl} style={{width:'100%',height:'100%'}}/>}<span/></div>
     <section className="community-preview-identity"><Avatar user={{avatar_url:avatar?.url,display_name:selected.name}} size={104} motion/><div><p>@{selected.handle}</p><h2>{selected.name}</h2><p>{selected.bio}</p></div></section>
     <div className="community-preview-taste">{selected.genres.slice(0,3).map(genre=><span key={genre}>{genre}</span>)}</div>
     {selected.featured&&<button type="button" className="community-preview-featured" onClick={()=>play(selected.featured,0)} aria-label={(player.currentTrack?.id===selected.featured.id&&player.isPlaying?'Pause ':'Play ')+selected.featured.title}><span>{player.currentTrack?.id===selected.featured.id&&player.isPlaying?<Pause size={20}/>:<Play size={20} fill="currentColor"/>}</span><div><small>PROFILE SONG</small><strong>{selected.featured.title}</strong><p>{selected.featured.artist}</p></div></button>}
+    </div>
     <section className="community-preview-rotation"><header><h3>Top 8</h3><span>On repeat</span></header>{loading?<p role="status">Loading music…</p>:<div className="community-preview-songs">{selected.songs.map((track,index)=><PreviewSong key={track.id} track={track} index={index} onPlay={()=>play(track,index)} playing={player.currentTrack?.id===track.id&&player.isPlaying}/>)}</div>}{!loading&&!selected.songs.length&&!error&&<p>No available songs right now.</p>}</section>
     {error&&<div className="community-preview-error" role="status"><p>{error}</p>{!catalog.length&&<button type="button" onClick={()=>setRevision(v=>v+1)}>Retry</button>}</div>}
    </section>
