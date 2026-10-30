@@ -260,7 +260,7 @@ export default function FullScreenPlayer({ onClose }) {
           track={t}
           variant="icon"
           size={20}
-          buttonClassName="w-11 h-11 min-w-11 min-h-11 shrink-0 aspect-square p-0 rounded-full grid place-items-center bg-white/10 hover:bg-white/20 active:scale-90 transition"
+          appearance="glass"
           items={[
           { icon: ListMusic, label: "View queue", onClick: () => setShowQueue(true) }]
 

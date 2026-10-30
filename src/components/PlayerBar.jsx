@@ -126,7 +126,7 @@ export default function PlayerBar() {
             </div>
           </button>
 
-          <div className="hidden md:block"><TrackOptionsMenu track={t} size={18} buttonClassName="p-2 rounded-full hover:bg-foreground/5 active:scale-90 transition" /></div>
+          <div className="hidden md:block"><TrackOptionsMenu track={t} size={18} appearance="glass" /></div>
 
           {/* compact mobile controls; full controls remain in Now Playing */}
           <div className="flex items-center gap-1 shrink-0 md:hidden">

@@ -1,3 +1,4 @@
+import './player-menu-glass.css';
 import {reportActionError} from "@/lib/actionError";
 import ArtistReleaseFollow from "@/components/ArtistReleaseFollow";
 import {artistKey,artistReleaseNames} from "@/lib/artistReleaseModel";
@@ -45,6 +46,7 @@ export default function TrackOptionsMenu({
   onReport,
   variant = "icon",
   buttonClassName,
+  appearance = "default",
   align = "right",
   size = 16,
   className = "",
@@ -137,10 +139,10 @@ export default function TrackOptionsMenu({
     <div className={`relative shrink-0 ${className}`} onClick={(e) => e.stopPropagation()}>
       <button
         data-song-menu-trigger
-        style={{width:36,height:36,minWidth:36,minHeight:36,padding:0,borderRadius:"50%",display:"grid",placeItems:"center",flexShrink:0}}
+        style={{width:appearance==="glass"?44:36,height:appearance==="glass"?44:36,minWidth:appearance==="glass"?44:36,minHeight:appearance==="glass"?44:36,padding:0,borderRadius:"50%",display:"grid",placeItems:"center",flexShrink:0}}
         ref={btnRef}
         onClick={toggleOpen}
-        className={buttonClassName || "p-2 rounded-full hover:bg-accent"}
+        className={appearance === "glass" ? `player-menu-glass ${buttonClassName || ""}` : buttonClassName || "p-2 rounded-full hover:bg-accent"}
         aria-label="Track options"
         aria-haspopup="menu"
         aria-expanded={open}
