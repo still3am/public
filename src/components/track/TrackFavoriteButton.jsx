@@ -1,5 +1,5 @@
 import {useEffect,useRef,useState} from 'react';
-import {Star} from 'lucide-react';
+import {Heart} from 'lucide-react';
 import {useAuth} from '@/lib/AuthContext';
 import {base44} from '@/api/base44Client';
 import {readLikeState,setLikeState} from '@/lib/likeActions';
@@ -18,7 +18,7 @@ export default function TrackFavoriteButton({trackId,className=''}){
    setState({key,liked:false,ready:!uid,loading:!!uid,busy:false,error:''});
    if(!uid||!trackId)return;
    try{const liked=await withReadTimeout(readLikeState(base44,uid,trackId));if(live&&request===version)setState({key,liked,ready:true,loading:false,busy:false,error:''});}
-   catch{if(live&&request===version)setState({key,liked:false,ready:false,loading:false,busy:false,error:'Favorites couldn’t load. Tap the star to retry.'});}
+   catch{if(live&&request===version)setState({key,liked:false,ready:false,loading:false,busy:false,error:'Favorites couldn’t load. Tap the heart to retry.'});}
   };
   const changed=event=>{if(event.detail?.uid!==uid||event.detail?.trackId!==trackId||typeof event.detail?.liked!=='boolean')return;version++;if(live)setState({key,liked:event.detail.liked,ready:true,loading:false,busy:false,error:''});};
   load();window.addEventListener('likes:changed',changed);window.addEventListener('online',load);
@@ -37,7 +37,7 @@ export default function TrackFavoriteButton({trackId,className=''}){
  }
  const label=current.error&&!current.ready?'Retry favorite status':current.liked?'Remove from favorites':'Add to favorites';
  return <span className={'track-favorite '+className}>
-  <button type="button" className="track-favorite-button" disabled={!trackId||current.loading||current.busy} aria-label={label} title={label} aria-pressed={current.ready?current.liked:false} aria-busy={current.loading||current.busy} onClick={toggle}><Star size={18} strokeWidth={1.8} fill={current.liked?'currentColor':'none'}/></button>
+  <button type="button" className="track-favorite-button" disabled={!trackId||current.loading||current.busy} aria-label={label} title={label} aria-pressed={current.ready?current.liked:false} aria-busy={current.loading||current.busy} onClick={toggle}><Heart size={18} strokeWidth={1.8} fill={current.liked?'currentColor':'none'}/></button>
   {current.error&&<span className="track-favorite-error" role="status">{current.error}</span>}
  </span>;
 }
