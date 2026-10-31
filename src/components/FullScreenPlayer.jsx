@@ -259,7 +259,7 @@ export default function FullScreenPlayer({ onClose }) {
         <TrackOptionsMenu
           track={t}
           variant="icon"
-          size={20}
+          size={18}
           appearance="glass"
           items={[
           { icon: ListMusic, label: "View queue", onClick: () => setShowQueue(true) }]
