@@ -120,28 +120,33 @@ export default function PublicRecords({ id: propId, fallbackArtist = null }) {
     setSimilarArtists([]);
     if (!artist?.name || !tracks.length) return;
     const normalize = (value) => String(value || "").trim().replace(/\s+/g, " ").toLowerCase();
-    const genres = new Set(tracks.map((track) => normalize(track.genre)).filter(Boolean));
+    const validGenre = (genre) => genre && !["other", "unknown", "unknown genre"].includes(genre);
+    const genreLabels = new Map(tracks.map((track) => [normalize(track.genre), track.genre]));
+    const genres = new Set([...genreLabels.keys()].filter(validGenre));
     if (!genres.size) return;
     Promise.all([getArtists(), getPublishedTracks()]).then(([artists, catalog]) => {
       const byName = new Map();
       for (const track of catalog) {
         const key = normalize(track.artist);
         if (!key || key === normalize(artist.name)) continue;
-        if (!byName.has(key)) byName.set(key, { name: track.artist, genres: new Set(), cover: track.cover_art_url, plays: 0 });
+        if (!byName.has(key)) byName.set(key, { name: track.artist, genres: new Set(), cover: track.cover_art_url, plays: 0, songs: 0 });
         const row = byName.get(key);
-        if (track.genre) row.genres.add(normalize(track.genre));
+        if (validGenre(normalize(track.genre))) row.genres.add(normalize(track.genre));
+        row.songs++;
         if (!row.cover && track.cover_art_url) row.cover = track.cover_art_url;
         row.plays += Number(track.play_count) || 0;
       }
       const seen = new Set(),picks = [];
       for (const candidate of artists) {
         const key = normalize(candidate.name),row = byName.get(key);
-        if (!row || seen.has(key)) continue;
+        if (!row || !candidate.id || seen.has(key)) continue;
         seen.add(key);
-        const shared = [...row.genres].filter((genre) => genres.has(genre)).length;
-        if (shared) picks.push({ ...candidate, image: candidate.avatar_url || candidate.cover_art_url || row.cover, shared, plays: row.plays });
+        const sharedGenres = [...row.genres].filter((genre) => genres.has(genre));
+        const shared = sharedGenres.length;
+        const affinity = shared / Math.sqrt(genres.size * row.genres.size);
+        if (shared) picks.push({ ...candidate, image: candidate.avatar_url || candidate.cover_art_url || row.cover, shared, affinity, genre: sharedGenres.slice(0, 2).map((genre) => genreLabels.get(genre)).join(" · "), songs: row.songs, plays: row.plays });
       }
-      picks.sort((a, b) => b.shared - a.shared || b.plays - a.plays || a.name.localeCompare(b.name));
+      picks.sort((a, b) => b.affinity - a.affinity || b.shared - a.shared || b.plays - a.plays || a.name.localeCompare(b.name));
       if (active) setSimilarArtists(picks.slice(0, 12));
     }).catch(() => {});
     return () => {active = false;};
@@ -340,9 +345,9 @@ export default function PublicRecords({ id: propId, fallbackArtist = null }) {
         </section>}
         {similarArtists.length > 0 && <section className="artist-similar">
           <SectionTitle icon={Users}>Similar Artists</SectionTitle>
-          <p className="text-xs text-muted-foreground mb-4">More artists in the same genres.</p>
+          <p className="artist-similar-intro">If you like {artist.name}, try these.</p>
           {similarArtists.length > 0 && <ScrollShelf className="artist-similar-list" label="Similar artists">
-            {similarArtists.map((candidate) => <Link className="artist-similar-card" key={candidate.id} to={"/records/" + candidate.id}><ArtistArtwork source={candidate.image} className="artist-similar-image" /><span>{candidate.name}</span></Link>)}
+            {similarArtists.map((candidate) => <Link className="artist-similar-card" key={candidate.id} to={"/records/" + encodeURIComponent(candidate.id)}><div className="artist-similar-portrait"><ArtistArtwork source={candidate.image} className="artist-similar-image" /><span className="artist-similar-open" aria-hidden="true"><ChevronRight size={18}/></span></div><span>{candidate.name}</span><small className="artist-similar-genre">{candidate.genre}</small><small className="artist-similar-count">{candidate.songs} {candidate.songs === 1 ? "song" : "songs"}</small></Link>)}
           </ScrollShelf>}
         </section>}
         {id && <SafetyControls type="artist" id={id} label="artist page" />}
