@@ -6,6 +6,7 @@ const rows = page => Array.isArray(page) ? page : page?.items || [];
 const aborted = signal => {if(signal?.aborted)throw new DOMException('Cancelled','AbortError');};
 
 // Only the existing permission-filtered, approved records may supplement LRCLIB.
+/** @param {any} track @param {{signal?:AbortSignal}} options @param {any} client @param {typeof findLyricsCatalog} lookup */
 export async function resolveLyrics(track,{signal}={},client=base44,lookup=findLyricsCatalog){
  aborted(signal);
  let saved=null;
