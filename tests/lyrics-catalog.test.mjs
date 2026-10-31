@@ -33,7 +33,7 @@ await new Promise(resolve=>setTimeout(resolve,20));assert.equal(calls.length,1,'
 firstController.abort();await assert.rejects(first,{name:'AbortError'});
 sharedResolve({status:200,ok:true,json:async()=>[sample]});assert.equal((await second).length,1,'one cancelled view does not cancel the other');
 calls=[];
-let result=await findLyricsCatalog(song);assert.equal(result.source,'LRCLIB');assert.equal(result.record.lines[0].start_time_ms,1500);assert.equal(calls.length,1);assert.equal(calls[0].options.headers,undefined,'browser lookup uses a simple GET without custom-header preflight');
+let result=await findLyricsCatalog(song);assert.equal(result.source,'LRCLIB');assert.equal(result.record.lines[0].start_time_ms,1500);assert.equal(calls.length,1);assert.ok(calls[0].options.headers['Lrclib-Client'].includes('Public'),'identify Public as required by LRCLIB browser integration');
 await findLyricsCatalog(song);assert.equal(calls.length,1,'cached public metadata reused');
 assert.equal(await findLyricsCatalog({...song,title:'Missing'}),null);
 await assert.rejects(searchLyricsCatalog({...song,title:'Failure'}),/could not load/);
