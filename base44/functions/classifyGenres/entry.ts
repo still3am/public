@@ -171,7 +171,7 @@ export function selectGenreRecording(track,recordings){
  const expected=normalize(cleanTitle(track.title)),artists=artistNames(track.artist),duration=Number(track.duration_seconds);
  if(!expected||!artists.length)return null;
  const matches=(recordings||[]).filter(row=>{
-  if(!uuid(row.id)||Number(row.score)<95||normalize(cleanTitle(row.title))!==expected)return false;
+  if(!uuid(row.id)||(Number(row.score)||0)<95||normalize(cleanTitle(row.title))!==expected)return false;
   const names=(row['artist-credit']||[]).map(a=>normalize(a.artist?.name||a.name));
   if(!artists.every(a=>names.includes(a)))return false;
   const version=String(row.disambiguation||'');

@@ -1,0 +1,26 @@
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import ts from 'typescript';
+let user={id:'owner',role:'user'},track={id:'song',uploader_id:'owner',title:'A Song',artist:'Artist',duration_seconds:180,genre:'Soul'},writes=[],calls=0,mode='match';
+const entities={Track:{get:async()=>track,filter:async()=>[track],update:async(id,patch)=>{writes.push({id,patch});return{...track,...patch};}}};
+globalThis.__genreClient={auth:{me:async()=>user},entities,asServiceRole:{entities}};
+globalThis.fetch=async url=>{calls++;if(mode==='fail')throw Error('offline');return{ok:true,json:async()=>String(url).includes('recording/?')?{recordings:mode==='none'?[]:[recording]}:{genres:[{name:'hip hop',count:7}]}};};
+const id='12345678-1234-1234-1234-123456789abc';
+const recording={id,title:'A Song',score:100,length:180000,'artist-credit':[{artist:{name:'Artist'}}]};
+async function load(name){let s=fs.readFileSync('base44/functions/'+name+'/entry.ts','utf8');assert.ok(!s.includes('InvokeLLM'),'no built-in AI call');s=s.replace(/import\s*\{\s*createClientFromRequest\s*\}\s*from\s*[^;]+;/,'const createClientFromRequest=()=>globalThis.__genreClient;');const code=ts.transpileModule(s,{compilerOptions:{target:ts.ScriptTarget.ES2022,module:ts.ModuleKind.ESNext}}).outputText;return import('data:text/javascript;base64,'+Buffer.from(code).toString('base64'));}
+const single=await load('detectGenre'),bulk=await load('classifyGenres');
+const request=body=>new Request('https://example.test',{method:'POST',body:JSON.stringify(body)});
+assert.equal(single.catalogGenre([{name:'unlisted',count:20},{name:'hip hop',count:3}]),'Hip-Hop');
+assert.equal(single.catalogGenre([{name:'not a genre'}]),null);
+assert.equal(single.selectGenreRecording(track,[recording]).id,id);
+for(const bad of [{...recording,score:undefined},{...recording,length:210000},{...recording,title:'Other'},{...recording,disambiguation:'live'},{...recording,'artist-credit':[{artist:{name:'Someone Else'}}]}])assert.equal(single.selectGenreRecording(track,[bad]),null);
+assert.equal(single.selectGenreRecording({...track,artist:'Artist, Featured'},[recording]),null,'every named artist must match');
+user=null;assert.equal((await single.default(request({track_id:'song'}))).status,401);assert.equal(calls,0);
+user={id:'other',role:'user'};assert.equal((await single.default(request({track_id:'song'}))).status,403);assert.equal(calls,0);
+user={id:'owner',role:'user'};let result=await single.default(request({track_id:'song'}));assert.equal(result.status,200);assert.equal((await result.json()).genre,'Hip-Hop');assert.deepEqual(writes,[{id:'song',patch:{genre:'Hip-Hop'}}]);
+track={...track,title:'No match'};mode='none';writes=[];result=await single.default(request({track_id:'song'}));assert.equal((await result.json()).matched,false);assert.equal(writes.length,0);assert.equal(track.genre,'Soul');
+track={...track,title:'Network failure'};mode='fail';result=await single.default(request({track_id:'song'}));assert.equal(result.status,503);assert.equal(writes.length,0);
+assert.equal((await bulk.default(request({force:true}))).status,403,'bulk matching is admin only');
+user={id:'owner',role:'admin'};track={...track,title:'A Song'};mode='match';writes=[];result=await bulk.default(request({force:true}));const data=await result.json();assert.equal(data.processed,1);assert.equal(data.skip,1);assert.equal(data.has_more,false);
+mode='none';track={...track,title:'Unknown recording'};writes=[];result=await bulk.default(request({force:true}));assert.equal((await result.json()).unmatched,1);assert.equal(writes.length,0,'bulk leaves unmatched songs intact');
+console.log('PASS catalog genre identity, artist/version/duration checks, no-AI matching, authorization, failure preservation and bulk cursor behavior');

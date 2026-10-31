@@ -18,13 +18,13 @@ export default function GenreTool() {
         const res = await base44.functions.invoke("classifyGenres", { force,skip });
         const d = res?.data || {};
         total += d.processed || 0;unmatched += d.unmatched || 0;
-        if(d.retry_required)throw new Error(d.error||"Catalog lookup paused. Retry shortly.");
+        if(d.retry_required){setInfo({total,unmatched,done:false});throw new Error(d.error||"Catalog lookup paused. Retry shortly.");}
         if(d.has_more&&(!Number.isInteger(d.skip)||d.skip<=skip))throw new Error("Classifier did not advance");
         skip=d.skip||skip;
         setInfo({ total, unmatched, done: !d.has_more });
         if (!d.has_more) break;
       }
-      toast({ title: `Classified ${total} track${total !== 1 ? "s" : ""}` });
+      toast({ title: `Matched ${total} track${total !== 1 ? "s" : ""}` });
     } catch (error) {
       toast({ title: error.message || "Catalog lookup failed", variant: "destructive" });
     } finally {
@@ -64,9 +64,9 @@ export default function GenreTool() {
       {info && (
         <div className="text-xs text-foreground/50 mt-2">
           {busy
-            ? `Classified ${info.total} so far…`
+            ? `Matched ${info.total} so far…`
             : info.total
-              ? `Done — ${info.total} track${info.total !== 1 ? "s" : ""} updated.`
+              ? `Done — ${info.total} track${info.total !== 1 ? "s" : ""} updated.${info.unmatched ? ` ${info.unmatched} kept without a confident match.` : ""}`
               : "No confident updates found. Existing genres were kept."}
         </div>
       )}
