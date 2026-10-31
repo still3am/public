@@ -1,3 +1,4 @@
+import ArtistDiscovery, {ArtistShows} from '@/components/ArtistDiscovery';
 import ArtistCatalogInfo from '@/components/ArtistCatalogInfo';
 import ArtistAliases from "@/components/ArtistAliases";
 import ArtistAlbums from "@/components/ArtistAlbums";
@@ -338,13 +339,15 @@ export default function PublicRecords({ id: propId, fallbackArtist = null }) {
           {socials.length > 0 && <div className="flex flex-wrap gap-2 mt-4">{socials.map((s, i) => <SocialChip key={i} href={s.href} icon={s.icon} label={s.label} />)}</div>}
           {artist.history_text && <div className="mt-6"><h3 className="font-semibold mb-3">History</h3><CollapsibleText text={artist.history_text} className="selectable-content text-sm text-muted-foreground leading-relaxed whitespace-pre-line" /></div>}
         </section>}
-        {similarArtists.length > 0 && <section className="artist-similar">
+        {artist.name && <section className="artist-similar">
           <SectionTitle icon={Users}>Similar Artists</SectionTitle>
           <p className="text-xs text-muted-foreground mb-4">More artists in the same genres.</p>
-          <ScrollShelf className="artist-similar-list" label="Similar artists">
+          {similarArtists.length > 0 && <ScrollShelf className="artist-similar-list" label="Similar artists">
             {similarArtists.map((candidate) => <Link className="artist-similar-card" key={candidate.id} to={"/records/" + candidate.id}><ArtistArtwork source={candidate.image} className="artist-similar-image" /><span>{candidate.name}</span></Link>)}
-          </ScrollShelf>
+          </ScrollShelf>}
+          <ArtistDiscovery key={artist.name} artist={{...artist,catalogGenres:[...new Set(tracks.map(t=>t.genre).filter(g=>g&&g!=="Other"))].slice(0,4).join(" · ")}} existingNames={similarArtists.map(a=>a.name)}/>
         </section>}
+        <ArtistShows key={'shows:'+artist.name} artist={artist}/>
         {id && <SafetyControls type="artist" id={id} label="artist page" />}
       </div>
     </PullToRefresh>);
