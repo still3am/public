@@ -23,13 +23,13 @@ let uid = 0;
 const nextId = () => `u${Date.now()}_${uid++}`;
 
 // Catalog lookup never guesses explicit status or overwrites user edits.
-async function detectMeta(title,artist,duration,albumTags){
+async function detectMeta(title,artist,duration,albumTags,includeArtwork=false){
  try{
- const info=await findSongInfo({title,artist,duration_seconds:duration,...albumTags});
+ const info=await findSongInfo({title,artist,duration_seconds:duration,...albumTags},{includeArtwork});
  if(!info)return null;
  const normalize=value=>String(value).toLowerCase().replace(/[^a-z0-9]/g,'');
  const genre=GENRES.find(g=>(info.genres||[]).some(name=>normalize(name)===normalize(g)))||'';
- return {title:info.title,genre,artist:info.artists,album_name:info.album,album_artist:info.albumArtist,release_year:Number(info.releaseDate?.slice(0,4))||0};
+ return {title:info.title,genre,artist:info.artists,album_name:info.album,album_artist:info.albumArtist,release_year:Number(info.releaseDate?.slice(0,4))||0,catalogCoverUrl:info.coverUrl||''};
  }catch{return null;}
 }
 
@@ -43,7 +43,7 @@ export function useUploadQueue({ user, isAdmin }) {
  const updateItem=(id,data)=>setItems(prev=>prev.map(it=>it.id===id?{...it,...data}:it));
  const patch=(id,data)=>{
   const edited=metadataEdits.current.get(id)||{};
-  for(const key of ['title','artist','genre','explicit','album_name','album_artist','track_number','disc_number','release_year'])if(Object.hasOwn(data,key))edited[key]=true;
+  for(const key of ['title','artist','genre','explicit','album_name','album_artist','track_number','disc_number','release_year','coverFile'])if(Object.hasOwn(data,key))edited[key]=true;
   metadataEdits.current.set(id,edited);updateItem(id,data);
  };
  async function refreshDuplicates(){
@@ -82,7 +82,7 @@ export function useUploadQueue({ user, isAdmin }) {
    // Include this batch in duplicate comparisons, not only persisted songs.
    const local=catalog.current.concat(batch.filter(t=>t.id!==item.id&&assets.current.get(t.id)?.sha).map(t=>({...t,audio_sha256:assets.current.get(t.id).sha})));
    const hits=findDuplicateTracks(local,analyzed);warn(analyzed,hits);
-   const meta=await detectMeta(title,artist,duration,albumTags);
+   const meta=await detectMeta(title,artist,duration,albumTags,!cover);
    if(epoch!==generation.current)return;
    setItems(prev=>prev.map(it=>{
     if(it.id!==item.id)return it;
@@ -91,6 +91,8 @@ export function useUploadQueue({ user, isAdmin }) {
     const text=key=>typeof meta?.[key]==='string'?meta[key].trim():'';
     const missingAlbum=!it.album_name||/^(unknown(?: album)?|untitled|n\/a)$/i.test(it.album_name.trim());
     return {...it,detecting:false,
+     catalogCoverUrl:!it.coverFile&&!edited.coverFile?(meta?.catalogCoverUrl||''):'',
+     coverPreviewUrl:!it.coverFile&&!edited.coverFile&&!it.coverPreviewUrl?(meta?.catalogCoverUrl||''):it.coverPreviewUrl,
      album_name:!edited.album_name&&missingAlbum?(text('album_name')||it.album_name):it.album_name,
      album_artist:!edited.album_artist&&!it.album_artist?(text('album_artist')||it.album_artist):it.album_artist,
      release_year:!edited.release_year&&!it.release_year?(meta?.release_year||0):it.release_year,
@@ -135,6 +137,7 @@ export function useUploadQueue({ user, isAdmin }) {
    }
    if(!memo.file_uri){memo.file_uri=(await base44.integrations.Core.UploadPrivateFile({file:item.file})).file_uri;if(!memo.file_uri)throw Error('Audio upload did not return a file.');}
    if(item.coverFile&&memo.coverFile!==item.coverFile){memo.cover_art_url=(await base44.integrations.Core.UploadFile({file:item.coverFile})).file_url;memo.coverFile=item.coverFile;if(!memo.cover_art_url)throw Error('Artwork could not upload. Retry without re-uploading your audio.');}
+   if(!item.coverFile&&item.catalogCoverUrl)memo.cover_art_url=item.catalogCoverUrl;
    if(epoch!==generation.current)throw Error('Account changed. Start this upload again.');
    if(item.videoFile){
     if(!/\.(mp4|webm)$/i.test(item.videoFile.name)||item.videoFile.size>100*1024*1024)throw Error('Choose an MP4 or WebM video under 100 MB.');
