@@ -347,7 +347,7 @@ export default function PublicRecords({ id: propId, fallbackArtist = null }) {
           <SectionTitle icon={Users}>Similar Artists</SectionTitle>
           <p className="artist-similar-intro">If you like {artist.name}, try these.</p>
           {similarArtists.length > 0 && <ScrollShelf className="artist-similar-list" label="Similar artists">
-            {similarArtists.map((candidate) => <Link className="artist-similar-card" key={candidate.id} to={"/records/" + encodeURIComponent(candidate.id)}><div className="artist-similar-portrait"><ArtistArtwork source={candidate.image} className="artist-similar-image" /><span className="artist-similar-open" aria-hidden="true"><ChevronRight size={18}/></span></div><span>{candidate.name}</span><small className="artist-similar-genre">{candidate.genre}</small><small className="artist-similar-count">{candidate.songs} {candidate.songs === 1 ? "song" : "songs"}</small></Link>)}
+            {similarArtists.map((candidate) => <Link className="artist-similar-card" key={candidate.id} to={"/records/" + encodeURIComponent(candidate.id)}><div className="artist-similar-portrait"><ArtistArtwork source={candidate.image} className="artist-similar-image" /></div><span>{candidate.name}</span></Link>)}
           </ScrollShelf>}
         </section>}
         {id && <SafetyControls type="artist" id={id} label="artist page" />}
