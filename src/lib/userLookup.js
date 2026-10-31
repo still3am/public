@@ -12,15 +12,16 @@ for(const event of ['catalog:invalidate','account:cleared','profiles:changed'])w
 const TTL=120000;
 const CHUNK = 100;
 
-function fetchChunk(ids) {
-  const key = ids.join(",");
+function fetchChunk(ids, fresh = false) {
+  const key = ids.join(",") + (fresh ? ":fresh" : "");
   if (inflight.has(key)) return inflight.get(key);
   let req;
   req = (async()=>{
     let profiles=[];
     try{
       const page=await base44.entities.PublicProfile.filter({user_id:{$in:ids},visible:true},{limit:200,sort:"-updated_date"});
-      profiles=(Array.isArray(page)?page:page?.items||[]).map(row=>({...row,id:row.user_id,created_date:row.joined_at||""}));
+      const seen = new Set();
+      profiles=(Array.isArray(page)?page:page?.items||[]).filter(row=>{if(seen.has(row.user_id))return false;seen.add(row.user_id);return true;}).map(row=>({...row,id:row.user_id,created_date:row.joined_at||""}));
     }catch{/* Fall back only for members whose public record is not available yet. */}
     const found=new Set(profiles.map(row=>row.id)),missing=ids.filter(id=>!found.has(id));
     if(!missing.length)return profiles;
@@ -44,13 +45,13 @@ function fetchChunk(ids) {
  * Resolve user details for a list of ids, preserving input order.
  * Unknown/blocked users are simply omitted.
  */
-export async function getUsersByIds(ids = []) {
+export async function getUsersByIds(ids = [], { fresh = false } = {}) {
   const unique = [...new Set((ids || []).filter(Boolean))];
   const started=generation;
-  const missing = unique.filter((id) => !cache.has(id)||(expires.get(id)||0)<=Date.now());
+  const missing = unique.filter((id) => fresh||!cache.has(id)||(expires.get(id)||0)<=Date.now());
   for (let i = 0; i < missing.length; i += CHUNK) {
     const chunk=missing.slice(i,i+CHUNK);
-    const users = await fetchChunk(chunk);
+    const users = await fetchChunk(chunk, fresh);
     if(started!==generation)throw Error("Profile lookup changed while loading");
     chunk.forEach(id=>{cache.delete(id);expires.delete(id);});
     users.forEach((u) => {
