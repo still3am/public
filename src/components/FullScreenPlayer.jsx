@@ -1,4 +1,4 @@
-import { findLyricsCatalog } from '@/lib/lyricsCatalog';
+import { resolveLyrics as findLyricsCatalog } from '@/lib/resolveLyrics';
 import PureBadge from "@/components/PureBadge";
 import TrackFavoriteButton from "@/components/track/TrackFavoriteButton";
 import DeviceConnect from "@/components/DeviceConnect";
@@ -83,6 +83,15 @@ export default function FullScreenPlayer({ onClose }) {
   const [lyricsAvailability, setLyricsAvailability] = useState({ trackId: null, available: false });
   const [lyricsRevision, setLyricsRevision] = useState(0);
   useEffect(() => {const changed = (event) => {if (event.detail?.trackId === t?.id) setLyricsRevision((value) => value + 1);};window.addEventListener('lyrics:changed', changed);return () => window.removeEventListener('lyrics:changed', changed);}, [t?.id]);
+  const lyricsRetries = useRef(0);
+  useEffect(() => {lyricsRetries.current=0;},[t?.id]);
+  useEffect(() => {
+    if(!lyricsAvailability.error || lyricsAvailability.trackId!==t?.id || lyricsRetries.current>=3)return;
+    const retry=()=>{if(document.visibilityState!=='hidden'){lyricsRetries.current++;setLyricsRevision(v=>v+1);}};
+    const timer=setTimeout(retry,60000);
+    window.addEventListener('online',retry);
+    return()=>{clearTimeout(timer);window.removeEventListener('online',retry);};
+  },[lyricsAvailability.error,lyricsAvailability.trackId,t?.id,lyricsRevision]);
   const hasLyrics = lyricsAvailability.trackId === t?.id && lyricsAvailability.available;
   const showingLyrics = lyricsMode;
   const [coverFailed, setCoverFailed] = useState(false);
@@ -91,7 +100,7 @@ export default function FullScreenPlayer({ onClose }) {
   useEffect(() => {setCoverFailed(false);const retry=()=>setCoverFailed(false);window.addEventListener('online',retry);return()=>window.removeEventListener('online',retry);}, [coverUrl]);
 
 
-  // LRCLIB is the only playback lyrics provider. Older saved records are not used.
+  // Prefer valid saved timing; LRCLIB fills gaps and saved text survives provider outages.
   useEffect(() => {
     let alive = true;const controller = new AbortController();
     setLyricsAvailability({ trackId: t?.id, available: false, loading: true });
