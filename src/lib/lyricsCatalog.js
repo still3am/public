@@ -1,6 +1,5 @@
 import {applyAlignedLyrics} from './alignedLyrics.js';
 const ROOT = 'https://lrclib.net';
-const CLIENT = 'Public/1.0 (https://publicmusic.base44.app)';
 const cache = new Map();
 const choices = new Map();
 const searches = new Map();
@@ -64,11 +63,11 @@ async function request(path, {signal} = {}) {
     const abort=()=>controller.abort();signal?.addEventListener('abort',abort,{once:true});
     const timer=setTimeout(()=>controller.abort(),12000);
     try {
-      const response=await fetch(ROOT+path,{headers:{'Lrclib-Client':CLIENT},signal:controller.signal});
+      const response=await fetch(ROOT+path,{signal:controller.signal});
       if(response.status===429){const delay=Number(response.headers.get('Retry-After'));cooldown=Date.now()+Math.max(1,Number.isFinite(delay)&&delay>0?delay:60)*1000;throw new Error('Lyrics service is busy. Please retry later.');}
       if(!response.ok)throw Object.assign(new Error(response.status>=500?'Lyrics could not load: the lyrics service is temporarily unavailable. Please retry.':'Lyrics could not load. Please retry.'),{stopLookup:response.status===502||response.status===504});
       return await response.json();
-    } catch(error){if(signal?.aborted)throw cancelled();if(error.name==='AbortError')throw new Error('Lyrics lookup timed out. Please retry.');if(error instanceof TypeError)throw Object.assign(new Error('The lyrics service could not be reached. Retrying shortly.'),{stopLookup:true});throw error;}
+    } catch(error){if(signal?.aborted)throw cancelled();if(error.name==='AbortError')throw Object.assign(new Error('Lyrics lookup timed out. Please retry.'),{stopLookup:true});if(error instanceof TypeError)throw Object.assign(new Error('The lyrics service could not be reached. Retrying shortly.'),{stopLookup:true});throw error;}
     finally{clearTimeout(timer);signal?.removeEventListener('abort',abort);nextRequest=Date.now()+300;}
   });
   queue=job.then(()=>{},()=>{});return job;
