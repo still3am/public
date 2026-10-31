@@ -181,31 +181,50 @@ export function selectGenreRecording(track,recordings){
  if(!duration&&matches.length>1){const lengths=matches.map(r=>Number(r.length)).filter(n=>n>0);if(lengths.length!==matches.length||Math.max(...lengths)-Math.min(...lengths)>4000)return null;}
  return matches[0]||null;
 }
-async function catalogJson(path,deadline){
+
+export function selectAppleGenre(track,results){
+ const expected=normalize(cleanTitle(track.title)),artists=artistNames(track.artist),duration=Number(track.duration_seconds);
+ const matches=(results||[]).filter(row=>row.kind==='song'&&Number.isSafeInteger(row.trackId)&&row.trackId>0&&normalize(cleanTitle(row.trackName))===expected&&artists.length&&artists.every(a=>artistNames(row.artistName).includes(a))&&(!duration||(Number(row.trackTimeMillis)>0&&Math.abs(row.trackTimeMillis/1000-duration)<=4)));
+ if(!duration&&matches.length>1){const lengths=matches.map(r=>Number(r.trackTimeMillis));if(lengths.some(n=>!n)||Math.max(...lengths)-Math.min(...lengths)>4000)return null;}
+ const genres=[...new Set(matches.map(r=>catalogGenre([{name:r.primaryGenreName,count:1}])).filter(Boolean))];
+ return genres.length===1?genres[0]:null;
+}
+
+async function catalogJson(path,deadline,provider='musicbrainz'){
  const task=catalogQueue.catch(()=>{}).then(async()=>{
-  const wait=Math.max(0,1100-(Date.now()-lastCatalogRequest));
+  const wait=Math.max(0,(provider==='itunes'?3200:1100)-(Date.now()-lastCatalogRequest));
   if(Date.now()+wait>=deadline)throw Error('Catalog lookup timed out. Retry shortly.');
   if(wait)await new Promise(resolve=>setTimeout(resolve,wait));lastCatalogRequest=Date.now();
   const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),Math.max(1,Math.min(7000,deadline-Date.now())));
   try{
-   const response=await fetch('https://musicbrainz.org/ws/2/'+path,{signal:controller.signal,headers:{Accept:'application/json','User-Agent':'PUBLIC/1.0 (https://publicmusic.base44.app)'}});
+   const response=await fetch((provider==='itunes'?'https://itunes.apple.com/':'https://musicbrainz.org/ws/2/')+path,{signal:controller.signal,headers:{Accept:'application/json','User-Agent':'PUBLIC/1.0 (https://publicmusic.base44.app)'}});
    if(!response.ok)throw Error('Music catalog is temporarily unavailable. Retry shortly.');
    return await response.json();
   }finally{clearTimeout(timer);}
  });catalogQueue=task.then(()=>{},()=>{});return task;
 }
+
 export async function lookupCatalogGenre(track,deadline=Date.now()+20000){
  const key=JSON.stringify([track.title,track.artist,track.duration_seconds]),cached=genreCache.get(key);
  if(cached&&cached.until>Date.now())return cached.value;
  if(!track.title||!track.artist)return null;
- const quote=value=>'"'+String(value).replace(/[\\"]/g,' ').slice(0,180)+'"';
- const primary=String(track.artist).split(/\s*(?:,|&|;)\s*|\s+(?:feat\.?|ft\.?|featuring|with|and)\s+/i)[0];
- const query='recording:'+quote(cleanTitle(track.title))+' AND artist:'+quote(primary);
- const result=await catalogJson('recording/?'+new URLSearchParams({query,fmt:'json',limit:'15'}),deadline);
- const selected=selectGenreRecording(track,result.recordings);
- let value=null;
- if(selected){const recording=await catalogJson('recording/'+selected.id+'?fmt=json&inc=genres',deadline);value=catalogGenre(recording.genres);}
- genreCache.set(key,{value,until:Date.now()+(value?86400000:3600000)});if(genreCache.size>500)genreCache.delete(genreCache.keys().next().value);
+ let value=null,available=false,hadFailure=false;
+ try{
+  const apple=await catalogJson('search?'+new URLSearchParams({term:(cleanTitle(track.title)+' '+track.artist).slice(0,350),entity:'song',media:'music',country:'US',limit:'25'}),deadline,'itunes');
+  available=true;value=selectAppleGenre(track,apple.results);
+ }catch{hadFailure=true;}
+ if(!value){
+  try{
+   const quote=value=>'"'+String(value).replace(/[\\"]/g,' ').slice(0,180)+'"';
+   const primary=String(track.artist).split(/\s*(?:,|&|;)\s*|\s+(?:feat\.?|ft\.?|featuring|with|and)\s+/i)[0];
+   const query='recording:'+quote(cleanTitle(track.title))+' AND artist:'+quote(primary);
+   const result=await catalogJson('recording/?'+new URLSearchParams({query,fmt:'json',limit:'15'}),deadline);
+   available=true;const selected=selectGenreRecording(track,result.recordings);
+   if(selected){const recording=await catalogJson('recording/'+selected.id+'?fmt=json&inc=genres',deadline);value=catalogGenre(recording.genres);}
+  }catch{hadFailure=true;}
+ }
+ if(!available)throw Error('Music catalogs are temporarily unavailable.');
+ genreCache.set(key,{value,until:Date.now()+(value?86400000:hadFailure?60000:3600000)});if(genreCache.size>500)genreCache.delete(genreCache.keys().next().value);
  return value;
 }
 
@@ -220,9 +239,9 @@ export default async function handleRequest(req){
   if(!track)return Response.json({error:'Track not found'},{status:404});
   if(track.uploader_id!==user.id)return Response.json({error:'Only the track owner can match its genre'},{status:403});
   const genre=await lookupCatalogGenre(track);
-  if(!genre)return Response.json({genre:track.genre||null,matched:false,source:'musicbrainz'});
+  if(!genre)return Response.json({genre:track.genre||null,matched:false,source:'catalog'});
   await client.asServiceRole.entities.Track.update(track.id,{genre});
-  return Response.json({genre,matched:true,source:'musicbrainz'});
+  return Response.json({genre,matched:true,source:'catalog'});
  }catch{return Response.json({error:'Catalog genre lookup is temporarily unavailable. Your genre has not been changed.'},{status:503});}
 }
 if(typeof Deno!=='undefined')Deno.serve(handleRequest);

@@ -9,6 +9,13 @@ const id='12345678-1234-1234-1234-123456789abc';
 const recording={id,title:'A Song',score:100,length:180000,'artist-credit':[{artist:{name:'Artist'}}]};
 async function load(name){let s=fs.readFileSync('base44/functions/'+name+'/entry.ts','utf8');assert.ok(!s.includes('InvokeLLM'),'no built-in AI call');s=s.replace(/import\s*\{\s*createClientFromRequest\s*\}\s*from\s*[^;]+;/,'const createClientFromRequest=()=>globalThis.__genreClient;');const code=ts.transpileModule(s,{compilerOptions:{target:ts.ScriptTarget.ES2022,module:ts.ModuleKind.ESNext}}).outputText;return import('data:text/javascript;base64,'+Buffer.from(code).toString('base64'));}
 const single=await load('detectGenre'),bulk=await load('classifyGenres');
+const apple={kind:'song',trackId:123,trackName:'A Song',artistName:'Artist',trackTimeMillis:180000,primaryGenreName:'Hip-Hop/Rap'};
+assert.equal(single.selectAppleGenre(track,[apple]),'Hip-Hop');
+assert.equal(single.selectAppleGenre(track,[{...apple,trackName:'A Song (Live)'}]),null);
+assert.equal(single.selectAppleGenre(track,[{...apple,artistName:'Someone'}]),null);
+assert.equal(single.selectAppleGenre(track,[{...apple,trackTimeMillis:220000}]),null);
+assert.equal(single.selectAppleGenre(track,[apple,{...apple,trackId:124,primaryGenreName:'Rock'}]),null);
+
 const request=body=>new Request('https://example.test',{method:'POST',body:JSON.stringify(body)});
 assert.equal(single.catalogGenre([{name:'unlisted',count:20},{name:'hip hop',count:3}]),'Hip-Hop');
 assert.equal(single.catalogGenre([{name:'not a genre'}]),null);
