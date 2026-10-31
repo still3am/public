@@ -1,5 +1,6 @@
 import {applyAlignedLyrics} from './alignedLyrics.js';
 const ROOT = 'https://lrclib.net';
+const CLIENT = 'Public/1.0 (https://publicmusic.base44.app)';
 const cache = new Map();
 const choices = new Map();
 const searches = new Map();
@@ -63,7 +64,7 @@ async function request(path, {signal} = {}) {
     const abort=()=>controller.abort();signal?.addEventListener('abort',abort,{once:true});
     const timer=setTimeout(()=>controller.abort(),12000);
     try {
-      const response=await fetch(ROOT+path,{signal:controller.signal});
+      const response=await fetch(ROOT+path,{headers:{'Lrclib-Client':CLIENT},signal:controller.signal});
       if(response.status===429){const delay=Number(response.headers.get('Retry-After'));cooldown=Date.now()+Math.max(1,Number.isFinite(delay)&&delay>0?delay:60)*1000;throw new Error('Lyrics service is busy. Please retry later.');}
       if(!response.ok)throw Object.assign(new Error(response.status>=500?'Lyrics could not load: the lyrics service is temporarily unavailable. Please retry.':'Lyrics could not load. Please retry.'),{stopLookup:response.status===502||response.status===504});
       return await response.json();
