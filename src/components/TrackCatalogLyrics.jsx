@@ -1,6 +1,6 @@
 import {usePlayer} from '@/context/PlayerContext';
 import { useEffect, useState, useRef } from 'react';
-import { resolveLyrics as findLyricsCatalog } from '@/lib/resolveLyrics';
+import { findLyricsCatalog } from '@/lib/lyricsCatalog';
 import CollapsibleText from '@/components/CollapsibleText';
 /** @param {{track:any}} props */
 export default function TrackCatalogLyrics({ track }) {
