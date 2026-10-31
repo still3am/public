@@ -1,4 +1,4 @@
-import { resolveLyrics as findLyricsCatalog } from '@/lib/resolveLyrics';
+import { findLyricsCatalog } from '@/lib/lyricsCatalog';
 import PureBadge from "@/components/PureBadge";
 import TrackFavoriteButton from "@/components/track/TrackFavoriteButton";
 import DeviceConnect from "@/components/DeviceConnect";
@@ -100,7 +100,7 @@ export default function FullScreenPlayer({ onClose }) {
   useEffect(() => {setCoverFailed(false);const retry=()=>setCoverFailed(false);window.addEventListener('online',retry);return()=>window.removeEventListener('online',retry);}, [coverUrl]);
 
 
-  // Prefer valid saved timing; LRCLIB fills gaps and saved text survives provider outages.
+  // Playback lyrics come directly from LRCLIB; manual records do not replace them.
   useEffect(() => {
     let alive = true;const controller = new AbortController();
     setLyricsAvailability({ trackId: t?.id, available: false, loading: true });
