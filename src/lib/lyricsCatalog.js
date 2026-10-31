@@ -66,9 +66,9 @@ async function request(path, {signal} = {}) {
     try {
       const response=await fetch(ROOT+path,{headers:{'Lrclib-Client':CLIENT},signal:controller.signal});
       if(response.status===429){const delay=Number(response.headers.get('Retry-After'));cooldown=Date.now()+Math.max(1,Number.isFinite(delay)&&delay>0?delay:60)*1000;throw new Error('Lyrics service is busy. Please retry later.');}
-      if(!response.ok)throw new Error('Lyrics could not load. Please retry.');
+      if(!response.ok)throw Object.assign(new Error(response.status>=500?'Lyrics could not load: the lyrics service is temporarily unavailable. Please retry.':'Lyrics could not load. Please retry.'),{stopLookup:response.status===502||response.status===504});
       return await response.json();
-    } catch(error){if(signal?.aborted)throw cancelled();if(error.name==='AbortError')throw new Error('Lyrics lookup timed out. Please retry.');throw error;}
+    } catch(error){if(signal?.aborted)throw cancelled();if(error.name==='AbortError')throw new Error('Lyrics lookup timed out. Please retry.');if(error instanceof TypeError)throw Object.assign(new Error('The lyrics service could not be reached. Retrying shortly.'),{stopLookup:true});throw error;}
     finally{clearTimeout(timer);signal?.removeEventListener('abort',abort);nextRequest=Date.now()+300;}
   });
   queue=job.then(()=>{},()=>{});return job;
@@ -166,7 +166,7 @@ async function findLyricsCatalogRaw(track, options = {}) {
   const chosen=choices.get(signature(track));
   if(chosen)return lyricsResult(chosen,chosen.duration);
   const rows=[];let failure=null;
-  const lookup=async(input,settings)=>{try{return await searchLyricsCatalog(input,settings);}catch(error){if(options.signal?.aborted||error.name==='AbortError')throw error;failure=error;return [];}};
+  const lookup=async(input,settings)=>{try{return await searchLyricsCatalog(input,settings);}catch(error){if(options.signal?.aborted||error.name==='AbortError'||error.stopLookup)throw error;failure=error;return [];}};
   rows.push(...await lookup(track,options));
   let best=selectLyricsMatch(rows,track);
   if(lyricsResult(best,track.duration_seconds)?.record)return lyricsResult(best,track.duration_seconds);
