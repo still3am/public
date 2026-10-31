@@ -215,20 +215,20 @@ export default async function handleRequest(req){
   if(!user)return Response.json({error:'Unauthorized'},{status:401});
   if(user.is_blocked||user.disabled||user.role!=='admin')return Response.json({error:'Administrator access required'},{status:403});
   const body=await req.json().catch(()=>({})),force=body.force===true;
-  let skip=Number.isInteger(body.skip)?Math.max(0,body.skip):0,processed=0,unmatched=0,scanned=0;
-  const page=await client.asServiceRole.entities.Track.filter({},'-created_date',6,skip);
+  let skip=Number.isInteger(body.skip)?Math.max(0,body.skip):0,processed=0,unmatched=0,scanned=0,lookups=0;
+  const page=await client.asServiceRole.entities.Track.filter({},'-created_date',60,skip);
   const tracks=Array.isArray(page)?page:page?.items;
   if(!Array.isArray(tracks))throw Error('Invalid track page');
   const deadline=Date.now()+42000;
   for(const track of tracks){
    if(!force&&track.genre&&track.genre!=='Other'){skip++;scanned++;continue;}
-   if(Date.now()>deadline-1500)return Response.json({processed,unmatched,scanned,skip,has_more:true});
+   if(lookups>=6||Date.now()>deadline-1500)return Response.json({processed,unmatched,scanned,skip,has_more:true});
    let genre;
-   try{genre=await lookupCatalogGenre(track,deadline);}catch{return Response.json({processed,unmatched,scanned,skip,has_more:true,retry_required:true,error:'Catalog lookup paused. Retry shortly; existing genres were kept.'});}
+   try{lookups++;genre=await lookupCatalogGenre(track,deadline);}catch{return Response.json({processed,unmatched,scanned,skip,has_more:true,retry_required:true,error:'Catalog lookup paused. Retry shortly; existing genres were kept.'});}
    if(genre){await client.asServiceRole.entities.Track.update(track.id,{genre});processed++;}else unmatched++;
    skip++;scanned++;
   }
-  return Response.json({processed,unmatched,scanned,skip,has_more:tracks.length===6});
+  return Response.json({processed,unmatched,scanned,skip,has_more:tracks.length===60});
  }catch{return Response.json({error:'Catalog genre matching could not finish. Please retry.'},{status:503});}
 }
 if(typeof Deno!=='undefined')Deno.serve(handleRequest);
