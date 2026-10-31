@@ -152,53 +152,77 @@ const GENRES = [
   "Other"
 ];
 
-export default async function handleRequest(req) {
-  try {
-    const base44 = createClientFromRequest(req);
-    const user = await base44.auth.me();
-    if (!user) return Response.json({ error: 'Unauthorized' }, { status: 401 });
-    if(user.is_blocked || user.disabled) return Response.json({error:'Account suspended'},{status:403});
 
-    const body = await req.json().catch(() => ({}));
-    const trackId = body?.track_id;
-    if (!trackId) return Response.json({ error: 'track_id is required' }, { status: 400 });
-
-    const track = await base44.entities.Track.get(trackId).catch(() => null);
-    if (!track) return Response.json({ error: 'Track not found' }, { status: 404 });
-    if (track.uploader_id !== user.id) {
-      return Response.json({ error: 'Only the track owner can detect genre' }, { status: 403 });
-    }
-
-    const info = [];
-    if (track.title) info.push(`Title: ${track.title}`);
-    if (track.artist) info.push(`Artist: ${track.artist}`);
-    if (track.description) info.push(`Description: ${track.description}`);
-    if (track.lyrics_text) info.push(`Lyrics excerpt: ${track.lyrics_text.slice(0, 1500)}`);
-    const context = info.join('\n') || 'No metadata available.';
-
-    const res = await base44.asServiceRole.integrations.Core.InvokeLLM({
-      prompt:
-        "You are a music genre classifier. Based on the track metadata below, choose the single most accurate genre from this exact list:\n" +
-        GENRES.join(', ') +
-        "\n\nReply with ONLY a JSON object of the form {\"genre\": \"<one genre from the list>\"}. " +
-        "If you cannot confidently determine the genre, use \"Other\".\n\nMetadata:\n" +
-        context,
-      response_json_schema: {
-        type: "object",
-        properties: { genre: { type: "string" } },
-        required: ["genre"],
-      },
-    });
-
-    let genre = typeof res === 'string' ? (() => { try { return JSON.parse(res)?.genre; } catch { return undefined; } })() : res?.genre;
-    if (typeof genre === 'string') genre = genre.trim();
-    if (!genre || !GENRES.includes(genre)) genre = 'Other';
-
-    await base44.asServiceRole.entities.Track.update(trackId, { genre });
-    return Response.json({ genre });
-  } catch (error) {
-    return Response.json({ error: error?.message || 'Failed to detect genre' }, { status: 500 });
-  }
+// Catalog metadata replaces text-generating AI. Unknown matches never overwrite a genre.
+const genreCache=new Map();let catalogQueue=Promise.resolve(),lastCatalogRequest=0;
+const normalize=value=>String(value||'').normalize('NFKD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]/g,'');
+const cleanTitle=value=>String(value||'').replace(/\s*[([](?:feat\.?|ft\.?|featuring)\s+[^)\]]*[)\]]/gi,'').trim();
+const artistNames=value=>String(value||'').split(/\s*(?:,|&|;)\s*|\s+(?:feat\.?|ft\.?|featuring|with|and)\s+/i).map(normalize).filter(Boolean);
+const uuid=value=>/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/i.test(value||'');
+const genreAliases={hiphoprap:'Hip-Hop',contemporaryrb:'R&B',rnb:'R&B',alternativerock:'Alternative',singersongwriter:'Singer/Songwriter',electronicadance:'Electronic',childrens:'Children\'s Music'};
+export function catalogGenre(genres){
+ for(const genre of [...(genres||[])].sort((a,b)=>(Number(b.count)||0)-(Number(a.count)||0))){
+  const key=normalize(genre.name),mapped=GENRES.find(g=>normalize(g)===key)||genreAliases[key];
+  if(mapped&&mapped!=='Other'&&GENRES.includes(mapped))return mapped;
+ }
+ return null;
 }
-// Register the HTTP handler in Base44’s Deno runtime.
-if (typeof Deno !== "undefined") Deno.serve(handleRequest);
+export function selectGenreRecording(track,recordings){
+ const expected=normalize(cleanTitle(track.title)),artists=artistNames(track.artist),duration=Number(track.duration_seconds);
+ if(!expected||!artists.length)return null;
+ const matches=(recordings||[]).filter(row=>{
+  if(!uuid(row.id)||Number(row.score)<95||normalize(cleanTitle(row.title))!==expected)return false;
+  const names=(row['artist-credit']||[]).map(a=>normalize(a.artist?.name||a.name));
+  if(!artists.every(a=>names.includes(a)))return false;
+  const version=String(row.disambiguation||'');
+  if(/\b(live|remix|acoustic|demo|karaoke|instrumental)\b/i.test(version)&&!normalize(track.title).includes(normalize(version)))return false;
+  return !duration||(Number(row.length)>0&&Math.abs(row.length/1000-duration)<=4);
+ }).sort((a,b)=>Number(b.score)-Number(a.score)||Math.abs(Number(a.length||0)/1000-duration)-Math.abs(Number(b.length||0)/1000-duration));
+ if(!duration&&matches.length>1){const lengths=matches.map(r=>Number(r.length)).filter(n=>n>0);if(lengths.length!==matches.length||Math.max(...lengths)-Math.min(...lengths)>4000)return null;}
+ return matches[0]||null;
+}
+async function catalogJson(path,deadline){
+ const task=catalogQueue.catch(()=>{}).then(async()=>{
+  const wait=Math.max(0,1100-(Date.now()-lastCatalogRequest));
+  if(Date.now()+wait>=deadline)throw Error('Catalog lookup timed out. Retry shortly.');
+  if(wait)await new Promise(resolve=>setTimeout(resolve,wait));lastCatalogRequest=Date.now();
+  const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),Math.max(1,Math.min(7000,deadline-Date.now())));
+  try{
+   const response=await fetch('https://musicbrainz.org/ws/2/'+path,{signal:controller.signal,headers:{Accept:'application/json','User-Agent':'PUBLIC/1.0 (https://publicmusic.base44.app)'}});
+   if(!response.ok)throw Error('Music catalog is temporarily unavailable. Retry shortly.');
+   return await response.json();
+  }finally{clearTimeout(timer);}
+ });catalogQueue=task.then(()=>{},()=>{});return task;
+}
+export async function lookupCatalogGenre(track,deadline=Date.now()+20000){
+ const key=JSON.stringify([track.title,track.artist,track.duration_seconds]),cached=genreCache.get(key);
+ if(cached&&cached.until>Date.now())return cached.value;
+ if(!track.title||!track.artist)return null;
+ const quote=value=>'"'+String(value).replace(/[\\"]/g,' ').slice(0,180)+'"';
+ const primary=String(track.artist).split(/\s*(?:,|&|;)\s*|\s+(?:feat\.?|ft\.?|featuring|with|and)\s+/i)[0];
+ const query='recording:'+quote(cleanTitle(track.title))+' AND artist:'+quote(primary);
+ const result=await catalogJson('recording/?'+new URLSearchParams({query,fmt:'json',limit:'15'}),deadline);
+ const selected=selectGenreRecording(track,result.recordings);
+ let value=null;
+ if(selected){const recording=await catalogJson('recording/'+selected.id+'?fmt=json&inc=genres',deadline);value=catalogGenre(recording.genres);}
+ genreCache.set(key,{value,until:Date.now()+(value?86400000:3600000)});if(genreCache.size>500)genreCache.delete(genreCache.keys().next().value);
+ return value;
+}
+
+export default async function handleRequest(req){
+ try{
+  const client=createClientFromRequest(req),user=await client.auth.me();
+  if(!user)return Response.json({error:'Unauthorized'},{status:401});
+  if(user.is_blocked||user.disabled)return Response.json({error:'Account suspended'},{status:403});
+  const body=await req.json().catch(()=>({}));
+  if(typeof body.track_id!=='string'||!body.track_id)return Response.json({error:'track_id is required'},{status:400});
+  const track=await client.entities.Track.get(body.track_id).catch(()=>null);
+  if(!track)return Response.json({error:'Track not found'},{status:404});
+  if(track.uploader_id!==user.id)return Response.json({error:'Only the track owner can match its genre'},{status:403});
+  const genre=await lookupCatalogGenre(track);
+  if(!genre)return Response.json({genre:track.genre||null,matched:false,source:'musicbrainz'});
+  await client.asServiceRole.entities.Track.update(track.id,{genre});
+  return Response.json({genre,matched:true,source:'musicbrainz'});
+ }catch{return Response.json({error:'Catalog genre lookup is temporarily unavailable. Your genre has not been changed.'},{status:503});}
+}
+if(typeof Deno!=='undefined')Deno.serve(handleRequest);

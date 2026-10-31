@@ -115,7 +115,9 @@ export default function TrackDetail() {
     try {
       const res = await base44.functions.invoke("detectGenre", { track_id: track.id });
       const genre = res?.data?.genre;
-      if (genre) {
+      if (res?.data?.matched === false) {
+        toast({ title: "No confident catalog match. Your existing genre was kept." });
+      } else if (genre) {
         setTrack((previous) => previous?.id === trackId ? { ...previous, genre } : previous);
         toast({ title: `Genre set to ${genre}` });
       } else {
