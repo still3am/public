@@ -176,7 +176,7 @@ export default function Profile({ ownProfileTab = false }) {
       // Another member's profile comes from the public-profiles endpoint: the
       // built-in User rules only let admins read other users, so a direct
       // User.get left every other profile showing as "not found".
-      let prof = isOwn ? await base44.auth.me() : (await getUsersByIds([targetId]))[0] || null;
+      let prof = isOwn ? await base44.auth.me() : (await getUsersByIds([targetId], { fresh: true }))[0] || null;
       if (!prof) {
         request === loadVersion.current && setProfile(null);
         return;
@@ -223,6 +223,38 @@ export default function Profile({ ownProfileTab = false }) {
     return () => {loadVersion.current++;};
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [targetId, me?.id]);
+
+  // Kept-alive visitor pages must refresh across devices as well as on navigation.
+  useEffect(() => {
+    if (isOwn || !targetId || !isCurrentPage) return;
+    let active = true, busy = false;
+    const refresh = async () => {
+      if (busy || document.visibilityState === "hidden") return;
+      busy = true;
+      try {
+        const next = (await getUsersByIds([targetId], { fresh: true }))[0] || null;
+        if (active) setProfile(next);
+      } catch { /* Keep the last confirmed profile during a temporary outage. */ }
+      finally { busy = false; }
+    };
+    void refresh();
+    const timer = window.setInterval(refresh, 30000);
+    window.addEventListener("focus", refresh);
+    document.addEventListener("visibilitychange", refresh);
+    let unsubscribe;
+    try {
+      unsubscribe = base44.entities.PublicProfile.subscribe(event => {
+        if (event?.data?.user_id === targetId) void refresh();
+      });
+    } catch { /* Focus and periodic refresh also cover unavailable realtime. */ }
+    return () => {
+      active = false;
+      window.clearInterval(timer);
+      window.removeEventListener("focus", refresh);
+      document.removeEventListener("visibilitychange", refresh);
+      if (typeof unsubscribe === "function") unsubscribe();
+    };
+  }, [targetId, isOwn, isCurrentPage]);
 
   // Other entry points (song menus/onboarding) refresh mounted profile counts.
   useEffect(() => {
