@@ -20,7 +20,7 @@ function loadAddedSet() {
 
 // Host-side manager for a Lounge session: creates/reuses the host's active
 // session, surfaces members + pending join requests, hands the host approve /
-// reject actions (via the loungeApprove backend function), and pipes_guest
+// reject actions through the shared authorization gateway, and pipes guest
 // queue submissions straight into the host's local PlayerContext queue.
 function useLoungeHostState() {
   const { user } = useAuth();

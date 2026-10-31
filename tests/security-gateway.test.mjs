@@ -35,7 +35,6 @@ const load=async path=>{
  return (await import('data:text/javascript;base64,'+Buffer.from(code).toString('base64'))).default;
 };
 const gateway=await load('base44/functions/securityGateway/entry.ts');
-const approve=await load('base44/functions/loungeApprove/entry.ts');
 const deletion=await load('base44/functions/deleteMyAccount/entry.ts');
 const invoke=async(fn,body)=>{const r=await fn(new Request('https://example.test',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)}));return {status:r.status,data:await r.json()};};
 let passed=0;const check=async(name,run)=>{reset();await run();passed++;console.log('PASS '+name);};
@@ -116,7 +115,7 @@ await check('new synced lyric text retains moderation',async()=>{globalThis.__cl
 await check('lyrics require track ownership',async()=>{assert.equal((await invoke(gateway,{entity:'Lyrics',action:'create',args:[{track_id:'foreign',lines:[]}]})).status,403);});
 await check('guests cannot self-approve lounge membership',async()=>{const r=await invoke(gateway,{entity:'LoungeMember',action:'create',args:[{session_id:'room',role:'host',status:'approved'}]});assert.equal(r.status,200);assert.equal(r.data.result.role,'guest');assert.equal(r.data.result.status,'pending');});
 await check('unapproved guest cannot insert queue items',async()=>{assert.equal((await invoke(gateway,{entity:'LoungeQueueItem',action:'create',args:[{session_id:'room',track_id:'public'}]})).status,403);});
-await check('host cannot approve foreign-session member',async()=>{assert.equal((await invoke(approve,{session_id:'owned-room',member_id:'other-room-member',action:'approve'})).status,403);});
+await check('host cannot approve foreign-session member',async()=>{assert.equal((await invoke(gateway,{entity:'LoungeMember',action:'update',args:['other-room-member',{session_id:'owned-room',status:'approved'}]})).status,403);});
 await check('explicit catalog is visible without adult declaration',async()=>{user.show_explicit=true;user.adult_confirmed=false;const r=await invoke(gateway,{entity:'Track',action:'read',args:['filter',{is_published:true},{}]});assert.equal(r.status,200);assert.ok(r.data.result.items.some(t=>t.id==='explicit'));});
 await check('confirmed explicit listener sees explicit published catalog',async()=>{user.show_explicit=true;user.adult_confirmed=true;const r=await invoke(gateway,{entity:'Track',action:'read',args:['filter',{is_published:true},{}]});assert.equal(r.status,200);assert.ok(r.data.result.items.some(t=>t.id==='explicit'));});
 await check('legacy disabled explicit preference cannot hide published songs',async()=>{user.show_explicit=false;user.adult_confirmed=true;const r=await invoke(gateway,{entity:'Track',action:'read',args:['filter',{is_published:true},{}]});assert.ok(r.data.result.items.some(t=>t.id==='explicit'));});

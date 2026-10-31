@@ -35,7 +35,6 @@ const load=async path=>{
  return (await import('data:text/javascript;base64,'+Buffer.from(code).toString('base64'))).default;
 };
 const gateway=await load('base44/functions/securityGateway/entry.ts');
-const approve=await load('base44/functions/loungeApprove/entry.ts');
 const deletion=await load('base44/functions/deleteMyAccount/entry.ts');
 const invoke=async(fn,body)=>{const r=await fn(new Request('https://example.test',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)}));return {status:r.status,data:await r.json()};};
 

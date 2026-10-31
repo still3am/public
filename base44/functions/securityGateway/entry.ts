@@ -487,7 +487,8 @@ export default async function handleRequest(req) {
         data={...pick(data,['name','code','is_active','is_playing','position_seconds','current_track_id','current_track','sync_anchor_at']),...(kind==='create'?{host_id:user.id,host_name:user.display_name||user.full_name||''}:{})};
         if(data.current_track_id) data.current_track=JSON.stringify(await requireTrack(data.current_track_id,false));
       } else if(entity==='LoungeMember') {
-        const a=await member(data.session_id||old?.session_id);
+        if(old && data.session_id!==undefined && data.session_id!==old.session_id)fail('Members cannot move between lounges');
+        const a=await member(old?.session_id||data.session_id);
         if(kind==='create') {
           if(!a.s.is_active) fail('Lounge ended',410);
           await relation(a.s.host_id);
@@ -497,10 +498,12 @@ export default async function handleRequest(req) {
         } else {
           if(kind==='delete' && (a.host||old.user_id===user.id)) return await handler.delete(id);
           if(!a.host) fail('Only the host can approve members');
+          if(!['approved','rejected'].includes(data.status))fail('Choose approve or decline',422);
           data=pick(data,['status']);
         }
       } else if(entity==='LoungeQueueItem') {
-        const a=await member(data.session_id||old?.session_id);
+        if(old && data.session_id!==undefined && data.session_id!==old.session_id)fail('Queue items cannot move between lounges');
+        const a=await member(old?.session_id||data.session_id);
         if(!a.s.is_active || (!a.host&&a.m?.status!=='approved')) fail('Host approval required');
         if(old && !a.host && old.added_by_id!==user.id) fail('Queue access denied');
         if(kind!=='delete') {
