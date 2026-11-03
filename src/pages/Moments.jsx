@@ -72,4 +72,4 @@ export function MomentsExperience() {
   {composer && <MomentComposer seedTrack={seed} onClose={() => setComposer(false)} onPublished={(post) => {setComposer(false);setNotice('Your moment is live.');if (id || scope === 'following' || trackFilter) {nav('/moments?view=mine');} else setPosts((old) => [post, ...old.filter((x) => x.id !== post.id)]);}} />}{report && <ReportMoment target={report} onClose={() => setReport(null)} />}
  </div>;
 }
-function CameraMark() {return <><Music2 size={36} /><span>PUBLIC MOMENTS</span></>;}
+function CameraMark() {return <><Music2 size={36} className="hidden" /><span className="hidden">PUBLIC MOMENTS</span></>;}
