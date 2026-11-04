@@ -26,8 +26,8 @@
     "test:moments": "node tests/moments.test.mjs && node tests/moments-ui.test.mjs && node tests/moments-playback.test.mjs"
   },
   "dependencies": {
-    "@base44/sdk": "^0.8.57",
-    "@base44/vite-plugin": "^1.0.50",
+    "@base44/sdk": "^0.8.59",
+    "@base44/vite-plugin": "^1.0.52",
     "@hello-pangea/dnd": "^17.0.0",
     "@hookform/resolvers": "^4.1.2",
     "@radix-ui/react-accordion": "^1.2.3",
