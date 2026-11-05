@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom';
-import { Plus, Heart, MessageCircle, Share2, Music2, MoreHorizontal, Trash2, Flag, ShieldOff, ArrowUpRight, Loader2, ArrowLeft, Send } from 'lucide-react';
+import { Plus, Heart, MessageCircle, Share2, Music2, MoreHorizontal, Trash2, Flag, ShieldOff, ArrowUpRight, Loader2, ArrowLeft, ChevronUp, ChevronDown, Send } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { useAuth } from '@/lib/AuthContext';
 import { useSafety } from '@/context/SafetyContext';
@@ -46,7 +46,7 @@ export function MomentsExperience() {
   useEffect(() => {live.current = true;return () => {live.current = false;generation.current++;};}, []);
   const login = () => {nav('/login?returnTo=' + encodeURIComponent('/moments' + (id ? '/' + id : '')));};
   const load = useCallback(async (append = false) => {if (append && loadLock.current) return;const version = append ? generation.current : ++generation.current;loadLock.current = true;setLoading(true);setError('');try {const result = id ? await momentsApi('get', { id }) : await momentsApi('feed', { scope, track_id: trackFilter, offset: append ? offset : 0 });if (!live.current || version !== generation.current) return;const items = id ? [result.post] : result.items;setPosts((old) => append ? [...old, ...items.filter((x) => !old.some((y) => x.id === y.id))] : items);setMore(!!result.has_more);setOffset(result.next_offset || 0);} catch (e) {if (live.current && version === generation.current) setError(momentError(e));} finally {if (version === generation.current) {loadLock.current = false;if (live.current) setLoading(false);}}}, [id, scope, trackFilter, offset]);
-  useEffect(() => {setPosts([]);setOffset(0);setActive(null);setComments(new Set());if (feed.current) feed.current.scrollTop = 0;load(false);}, [id, scope, trackFilter, user?.id, safety.blocked]);
+  useEffect(() => {setPosts([]);setOffset(0);setActive(null);setComments(new Set());if (feed.current) feed.current.scrollTop = 0;setReelIndex(0);load(false);}, [id, scope, trackFilter, user?.id, safety.blocked]);
   useEffect(() => {const version = ++followingVersion.current;setFollowing(new Set());if (!user) return;readAllPages((opts) => base44.entities.Follow.filter({ follower_id: user.id }, { sort: '-created_date', ...opts })).then((rows) => {if (live.current && version === followingVersion.current) setFollowing(new Set(rows.map((r) => r.following_id)));}).catch(() => {});}, [user?.id]);
   useEffect(() => {if (composer || report) setActive(null);}, [composer, report]);
   useEffect(() => {const el = sentinel.current;if (!el || !more || loading || error) return;const observer = new IntersectionObserver((entries) => {if (entries[0]?.isIntersecting) load(true);}, { root: feed.current, rootMargin: '300px' });observer.observe(el);return () => observer.disconnect();}, [more, loading, error, load]);
@@ -58,6 +58,31 @@ export function MomentsExperience() {
   function block(p) {if (!user) {login();return;}if (!window.confirm('Block this creator and hide their content?')) return;action(p.id, async () => {await base44.functions.invoke('safety', { action: 'block', user_id: p.user_id, blocked: true });await safety.reload();setPosts((old) => old.filter((x) => x.user_id !== p.user_id));});}
   function share(p) {action(p.id, async () => {const result = await shareLink({ title: 'A moment on PUBLIC', text: p.caption || 'Life sounds better together.', url: window.location.origin + '/moments/' + encodeURIComponent(p.id) });if (result === 'copied') setNotice('Moment link copied.');});}
   const visiblePosts = posts.filter((post) => !safety.blocked.has(post.user_id));
+  const [reelIndex, setReelIndex] = useState(0);
+  const currentReel = Math.min(reelIndex, Math.max(0, visiblePosts.length - 1));
+
+  function updateReelIndex() {
+    const list = feed.current;
+    if (list?.clientHeight) setReelIndex(Math.round(list.scrollTop / list.clientHeight));
+  }
+
+  function moveReel(direction) {
+    const list = feed.current;
+    if (!list?.clientHeight) return;
+    const index = Math.round(list.scrollTop / list.clientHeight);
+    const next = Math.max(0, Math.min(visiblePosts.length - 1, index + direction));
+    if (next === index) return;
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    list.scrollTo({ top: next * list.clientHeight, behavior: reduceMotion ? 'auto' : 'smooth' });
+  }
+
+  function handleFeedKeys(event) {
+    if (event.target !== event.currentTarget || event.altKey || event.ctrlKey || event.metaKey) return;
+    if (event.key === 'ArrowUp' || event.key === 'ArrowDown') {
+      event.preventDefault();
+      moveReel(event.key === 'ArrowUp' ? -1 : 1);
+    }
+  }
   function dismissComments(postId) {
     setComments((old) => {
       const next = new Set(old);
@@ -80,7 +105,7 @@ export function MomentsExperience() {
     </header>
     {trackFilter && <div className="reels-filter">Moments using this song<button type="button" onClick={() => setParams({ view: scope })}>Clear</button></div>}
     {notice && <div className="reels-notice" role="status">{notice}<button type="button" onClick={() => setNotice('')} aria-label="Dismiss message">×</button></div>}
-    <div className="reels-feed" ref={feed} tabIndex={0} role="region" aria-label="Scroll to browse Moments">
+    <div className="reels-feed" ref={feed} tabIndex={0} role="region" aria-label="Moments feed" onScroll={updateReelIndex} onKeyDown={handleFeedKeys}>
       {visiblePosts.map((post) => <article key={post.id} className="reel">
         <MomentMedia post={post} active={active === post.id} onActive={(value) => setActive((old) => value ? post.id : old === post.id ? null : old)} />
         <div className="reel-shade" aria-hidden="true" />
@@ -96,7 +121,9 @@ export function MomentsExperience() {
             <button type="button" aria-pressed={post.liked} disabled={busy === post.id} onClick={() => like(post)} aria-label={post.liked ? 'Unlike moment' : 'Like moment'}><Heart size={26} fill={post.liked ? 'currentColor' : 'none'} /><span>{post.like_count || 0}</span></button>
             <button type="button" aria-label="Comments" aria-expanded={comments.has(post.id)} onClick={() => {setActive(null);setComments((old) => new Set(old).add(post.id));}}><MessageCircle size={25} /></button>
             <button type="button" disabled={busy === post.id} onClick={() => share(post)} aria-label="Share moment"><Share2 size={24} /></button>
-            <details className="reel-menu">
+            <details className="reel-menu" onBlur={(event) => {
+              if (!event.currentTarget.contains(event.relatedTarget)) event.currentTarget.open = false;
+            }}>
               <summary aria-label="More moment options"><MoreHorizontal size={25} /></summary>
               <div>
                 {post.track && <>
@@ -131,12 +158,17 @@ export function MomentsExperience() {
       <div ref={sentinel} className="reels-sentinel" />
       {more && !loading && !error && <div className="reels-footer"><button type="button" onClick={() => load(true)}>Load more moments</button></div>}
     </div>
+    {visiblePosts.length > 1 && <nav className="reels-stepper" aria-label="Browse Moments">
+      <button type="button" aria-label="Previous moment" disabled={currentReel === 0} onClick={() => moveReel(-1)}><ChevronUp size={22} /></button>
+      <span aria-hidden="true">{currentReel + 1} / {visiblePosts.length}</span>
+      <button type="button" aria-label="Next moment" disabled={currentReel >= visiblePosts.length - 1} onClick={() => moveReel(1)}><ChevronDown size={22} /></button>
+    </nav>}
     {visiblePosts.filter((post) => comments.has(post.id)).map((post) => <Dialog key={post.id} open onOpenChange={(open) => { if (!open) dismissComments(post.id); }}>
       <DialogContent className={mobile ? 'moment-comments-sheet' : 'reels-comments'}>
         <DialogHeader><DialogTitle>Comments</DialogTitle><DialogDescription>Join the conversation around this moment.</DialogDescription></DialogHeader>
         <MomentComments post={post} onReport={setReport} />
       </DialogContent>
     </Dialog>)}
-  {composer && <MomentComposer seedTrack={seed} onClose={() => setComposer(false)} onPublished={(post) => {setComposer(false);setNotice('Your moment is live.');if (id || scope === 'following' || trackFilter) {nav('/moments?view=mine');} else {setPosts((old) => [post, ...old.filter((x) => x.id !== post.id)]);if (feed.current) feed.current.scrollTop = 0;}}} />}{report && <ReportMoment target={report} onClose={() => setReport(null)} />}
+  {composer && <MomentComposer seedTrack={seed} onClose={() => setComposer(false)} onPublished={(post) => {setComposer(false);setNotice('Your moment is live.');if (id || scope === 'following' || trackFilter) {nav('/moments?view=mine');} else {setPosts((old) => [post, ...old.filter((x) => x.id !== post.id)]);if (feed.current) feed.current.scrollTop = 0;setReelIndex(0);}}} />}{report && <ReportMoment target={report} onClose={() => setReport(null)} />}
  </div>;
 }

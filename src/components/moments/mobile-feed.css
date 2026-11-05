@@ -323,3 +323,60 @@
   .reel-overlay { bottom: 8px; gap: 4px; }
   .public-reels .reel .moment-media-play { width: 48px; height: 48px; top: 42%; }
 }
+
+/* The feed remains the same width when desktop navigation appears. */
+.reels-stepper { display: none; }
+@media (min-width: 1024px) {
+  .reels-stepper {
+    position: absolute;
+    inset: 50% auto auto calc(100% + 16px);
+    transform: translateY(-50%);
+    display: grid;
+    justify-items: center;
+    gap: 7px;
+    color: hsl(var(--foreground));
+    font-size: 11px;
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+  }
+  .reels-stepper > button {
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    border: 1px solid hsl(var(--border));
+    border-radius: 50%;
+    background: hsl(var(--card));
+    color: hsl(var(--foreground));
+  }
+  .reels-stepper > button:hover:not(:disabled) { background: hsl(var(--muted)); }
+  .reels-stepper > button:disabled { opacity: .42; }
+  .public-reels .reels-stepper > button:focus-visible { outline-color: hsl(var(--foreground)); }
+}
+.reel-menu > div > :is(a, button):is(:hover, :focus-visible) {
+  background: #ffffff18;
+  border-radius: 8px;
+}
+.reel-follow {
+  border-radius: 999px;
+  background: #0006;
+  box-shadow: inset 0 0 0 1px #ffffff50;
+  min-height: 44px;
+}
+.reel-caption { scrollbar-width: thin; }
+@media (max-width: 767px) {
+  .moments-route .reels-header {
+    gap: 2px 8px;
+    padding-top: calc(env(safe-area-inset-top) + 6px);
+  }
+  .reels-header h1 { font-size: clamp(23px, 6.4vw, 27px); }
+  .reels-tabs > :is(button, a) { min-height: 36px; }
+  .reel-overlay { bottom: 10px; gap: 7px 10px; }
+  .reel-song { padding: 5px 8px; }
+}
+@media (max-width: 360px) {
+  .reel-overlay { gap: 5px 4px; }
+  .reel-creator, .reel-author { gap: 6px; }
+  .reel-author { font-size: 13px; }
+  .public-reels .reel-song .moment-use-song { padding-inline: 7px; }
+}
