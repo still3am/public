@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom';
-import { Plus, Heart, MessageCircle, Share2, Music2, MoreHorizontal, Trash2, Flag, ShieldOff, ArrowUpRight, Loader2, RefreshCw, ArrowLeft, Send, Check } from 'lucide-react';
+import { Plus, Heart, MessageCircle, Share2, Music2, MoreHorizontal, Trash2, Flag, ShieldOff, ArrowUpRight, Loader2, ArrowLeft, Send } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { useAuth } from '@/lib/AuthContext';
 import { useSafety } from '@/context/SafetyContext';
@@ -42,14 +42,14 @@ export function MomentsExperience() {
   const [posts, setPosts] = useState([]),[loading, setLoading] = useState(true),[more, setMore] = useState(false),[offset, setOffset] = useState(0),[error, setError] = useState(''),[notice, setNotice] = useState(''),[composer, setComposer] = useState(false),[seed, setSeed] = useState(null),[active, setActive] = useState(null),[comments, setComments] = useState(new Set()),[report, setReport] = useState(null),[busy, setBusy] = useState(''),[following, setFollowing] = useState(new Set());
   const [mobile, setMobile] = useState(() => typeof window !== 'undefined' && window.matchMedia('(max-width: 767px)').matches);
   useEffect(() => {const mq = window.matchMedia('(max-width: 767px)');const update = () => setMobile(mq.matches);update();mq.addEventListener('change', update);return () => mq.removeEventListener('change', update);}, []);
-  const generation = useRef(0),loadLock = useRef(false),actionLock = useRef(false),sentinel = useRef(null),live = useRef(true),followingVersion = useRef(0);
+  const generation = useRef(0),loadLock = useRef(false),actionLock = useRef(false),sentinel = useRef(null),feed = useRef(null),live = useRef(true),followingVersion = useRef(0);
   useEffect(() => {live.current = true;return () => {live.current = false;generation.current++;};}, []);
   const login = () => {nav('/login?returnTo=' + encodeURIComponent('/moments' + (id ? '/' + id : '')));};
   const load = useCallback(async (append = false) => {if (append && loadLock.current) return;const version = append ? generation.current : ++generation.current;loadLock.current = true;setLoading(true);setError('');try {const result = id ? await momentsApi('get', { id }) : await momentsApi('feed', { scope, track_id: trackFilter, offset: append ? offset : 0 });if (!live.current || version !== generation.current) return;const items = id ? [result.post] : result.items;setPosts((old) => append ? [...old, ...items.filter((x) => !old.some((y) => x.id === y.id))] : items);setMore(!!result.has_more);setOffset(result.next_offset || 0);} catch (e) {if (live.current && version === generation.current) setError(momentError(e));} finally {if (version === generation.current) {loadLock.current = false;if (live.current) setLoading(false);}}}, [id, scope, trackFilter, offset]);
-  useEffect(() => {setPosts([]);setOffset(0);setActive(null);setComments(new Set());load(false);}, [id, scope, trackFilter, user?.id, safety.blocked]);
+  useEffect(() => {setPosts([]);setOffset(0);setActive(null);setComments(new Set());if (feed.current) feed.current.scrollTop = 0;load(false);}, [id, scope, trackFilter, user?.id, safety.blocked]);
   useEffect(() => {const version = ++followingVersion.current;setFollowing(new Set());if (!user) return;readAllPages((opts) => base44.entities.Follow.filter({ follower_id: user.id }, { sort: '-created_date', ...opts })).then((rows) => {if (live.current && version === followingVersion.current) setFollowing(new Set(rows.map((r) => r.following_id)));}).catch(() => {});}, [user?.id]);
   useEffect(() => {if (composer || report) setActive(null);}, [composer, report]);
-  useEffect(() => {const el = sentinel.current;if (!el || !more || loading || error) return;const observer = new IntersectionObserver((entries) => {if (entries[0]?.isIntersecting) load(true);}, { rootMargin: '300px' });observer.observe(el);return () => observer.disconnect();}, [more, loading, error, load]);
+  useEffect(() => {const el = sentinel.current;if (!el || !more || loading || error) return;const observer = new IntersectionObserver((entries) => {if (entries[0]?.isIntersecting) load(true);}, { root: feed.current, rootMargin: '300px' });observer.observe(el);return () => observer.disconnect();}, [more, loading, error, load]);
   function create(track = null) {if (!user) {login();return;}setActive(null);player.pausePlayback?.();setSeed(track);setComposer(true);}
   async function action(key, fn) {if (actionLock.current) return;actionLock.current = true;setBusy(key);setNotice('');try {await fn();} catch (e) {if (live.current) setNotice(momentError(e));} finally {actionLock.current = false;if (live.current) setBusy('');}}
   function like(p) {if (!user) {login();return;}action(p.id, async () => {const result = await momentsApi('like', { id: p.id, liked: !p.liked });if (live.current) setPosts((old) => old.map((x) => x.id === p.id ? { ...x, ...result } : x));});}
@@ -57,20 +57,86 @@ export function MomentsExperience() {
   function remove(p) {if (!window.confirm('Delete this moment?')) return;action(p.id, async () => {await momentsApi('delete', { id: p.id });setPosts((old) => old.filter((x) => x.id !== p.id));setActive(null);if (id) nav('/moments');});}
   function block(p) {if (!user) {login();return;}if (!window.confirm('Block this creator and hide their content?')) return;action(p.id, async () => {await base44.functions.invoke('safety', { action: 'block', user_id: p.user_id, blocked: true });await safety.reload();setPosts((old) => old.filter((x) => x.user_id !== p.user_id));});}
   function share(p) {action(p.id, async () => {const result = await shareLink({ title: 'A moment on PUBLIC', text: p.caption || 'Life sounds better together.', url: window.location.origin + '/moments/' + encodeURIComponent(p.id) });if (result === 'copied') setNotice('Moment link copied.');});}
-  return <div className="moments-page moments-mobile-feed"><header className="moments-header"><div><p className="moments-eyebrow">LIFE, SET TO MUSIC</p><h1>Moments<span>.</span></h1><p>A little of your world. A song that says it.</p></div><button type="button" className="moment-primary" aria-label="Post a moment" onClick={() => create()}><Plus size={19} /><span>Post a moment</span></button></header>
-  <div className="moments-layout"><aside className="moments-intro"><span className="moments-intro-mark hidden"><Music2 size={34} /></span><h2>Your life has<br />a soundtrack.</h2><p>The late nights. The little wins. The songs that make ordinary days feel like something.</p><p>Share yours. Find a new sound. Meet the people behind it.</p><button type="button" onClick={() => create()}>Make your first moment <ArrowUpRight size={17} /></button></aside>
-  <div className="moments-feed"><nav className="moments-tabs" aria-label="Moments feed">{id ? <Link to="/moments"><ArrowLeft size={16} />All moments</Link> : ['discover', 'following', 'mine'].map((tab) => <button key={tab} type="button" aria-pressed={scope === tab} onClick={() => {if (tab !== 'discover' && !user) {login();return;}setParams({ ...Object.fromEntries(params), view: tab });}}>{tab === 'mine' ? 'My moments' : tab === 'following' ? 'Following' : 'Discover'}</button>)}<button type="button" onClick={() => load(false)} disabled={loading} aria-label="Refresh moments"><RefreshCw size={17} className={loading ? 'animate-spin' : ''} /></button></nav>
-   {trackFilter && <div className="moment-filter">Moments using this song<button type="button" onClick={() => setParams({ view: scope })}>Clear</button></div>}
-   {notice && <p className="moment-notice" role="status">{notice}<button type="button" onClick={() => setNotice('')} aria-label="Dismiss message">×</button></p>}
-   {posts.filter((p) => !safety.blocked.has(p.user_id)).map((p) => <article key={p.id} className="moment-card"><MomentMedia post={p} active={active === p.id} onActive={(value) => setActive((old) => value ? p.id : old === p.id ? null : old)} /><div className="moment-details"><header className="moment-card-header"><Link to={'/profile/' + p.user_id} className="moment-author"><Avatar user={p.author} size={40} /><span><strong>{name(p.author)}</strong><small>{new Date(p.created_date).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}{p.author?.is_artist ? ' · Artist' : ''}</small></span></Link>{user?.id !== p.user_id && <button type="button" disabled={busy === p.id} className="moment-follow" onClick={() => follow(p)}>{following.has(p.user_id) ? <><Check size={14} />Following</> : 'Follow'}</button>}<details className="moment-more"><summary aria-label="More moment options"><MoreHorizontal size={21} /></summary><div>{p.can_delete && <button type="button" disabled={!!busy} onClick={() => remove(p)}><Trash2 size={15} />Delete moment</button>}{user && user.id !== p.user_id && <><button type="button" onClick={() => setReport({ type: 'moment', id: p.id, userId: p.user_id })}><Flag size={15} />Report moment</button><button type="button" disabled={!!busy} onClick={() => block(p)}><ShieldOff size={15} />Block creator</button></>}<Link to={'/moments/' + p.id}><ArrowUpRight size={15} />Open moment</Link></div></details></header>
-    <div className="moment-card-body">{p.caption && <p className="moment-caption">{p.caption}</p>}<div className="moment-actions"><button type="button" aria-pressed={p.liked} disabled={busy === p.id} onClick={() => like(p)} aria-label={p.liked ? 'Unlike moment' : 'Like moment'}><Heart size={22} fill={p.liked ? 'currentColor' : 'none'} /><span>{p.like_count || 0}</span></button><button type="button" aria-expanded={comments.has(p.id)} onClick={() => {setActive(null);setComments((old) => {const next = new Set(old);if (next.has(p.id)) next.delete(p.id);else next.add(p.id);return next;});}}><MessageCircle size={22} /><span className="moment-comments-label">Comments</span></button><button type="button" disabled={busy === p.id} onClick={() => share(p)} aria-label="Share moment"><Share2 size={21} /></button></div>
-     {p.track ? <div className="moment-song-card"><Link to={'/track/' + p.track.id} className="moment-song-info"><span className="moment-song-art"><SongArtwork url={p.track.cover_art_url} /></span><span><strong>{p.track.title}</strong><small>{p.track.artist}</small></span></Link><LibraryButton track={p.track} className="moment-song-save" /><button type="button" className="moment-use-song" onClick={() => create(p.track)}>Use song</button></div> : <p className="moment-inline-message">This song is no longer available.</p>}
-     {p.track && <div className="moment-song-links"><Link to={'/artist?name=' + encodeURIComponent(p.track.artist.split(/,|&| feat\.| ft\./i)[0].trim())}>Explore artist <ArrowUpRight size={13} /></Link><Link to={'/moments?song=' + encodeURIComponent(p.track.id)}>More with this song</Link></div>}
-    </div></div>{comments.has(p.id) && (mobile ? <Dialog open onOpenChange={(open) => {if (!open) setComments((old) => {const next = new Set(old);next.delete(p.id);return next;});}}><DialogContent className="moment-comments-sheet"><DialogHeader><DialogTitle>Comments</DialogTitle><DialogDescription>Join the conversation around this moment.</DialogDescription></DialogHeader><MomentComments post={p} onReport={setReport} /></DialogContent></Dialog> : <MomentComments post={p} onReport={setReport} />)}</article>)}
-   {!loading && !posts.length && !error && <section className="moments-empty"><h2>{scope === 'following' ? 'Your people, your soundtrack.' : scope === 'mine' ? 'This is your space.' : 'Every moment starts somewhere.'}</h2><p>{scope === 'following' ? 'Follow creators to see their moments here.' : 'Share a photo or short video with a song from PUBLIC. Make the everyday worth remembering.'}</p><button className="moment-primary" type="button" onClick={() => create()}><Plus size={18} />Post a moment</button></section>}
-   {loading && <p className="moments-loading" role="status"><Loader2 size={20} className="animate-spin" />Finding moments…</p>}{error && <div className="moment-load-error" role="alert"><p>{error}</p><button type="button" onClick={() => load(false)}>Try again</button></div>}<div ref={sentinel} />{more && !loading && !error && <button type="button" className="moment-load-more" onClick={() => load(true)}>Load more moments</button>}
-  </div></div>
-  {composer && <MomentComposer seedTrack={seed} onClose={() => setComposer(false)} onPublished={(post) => {setComposer(false);setNotice('Your moment is live.');if (id || scope === 'following' || trackFilter) {nav('/moments?view=mine');} else setPosts((old) => [post, ...old.filter((x) => x.id !== post.id)]);}} />}{report && <ReportMoment target={report} onClose={() => setReport(null)} />}
+  const visiblePosts = posts.filter((post) => !safety.blocked.has(post.user_id));
+  function dismissComments(postId) {
+    setComments((old) => {
+      const next = new Set(old);
+      next.delete(postId);
+      return next;
+    });
+  }
+  return <div className="public-reels">
+    <header className="reels-header">
+      <h1>Moments<span>.</span></h1>
+      <nav className="reels-tabs" aria-label="Moments feed">
+        {id ? <Link to="/moments"><ArrowLeft size={16} />All moments</Link> :
+          [['discover', 'Discover'], ['following', 'Following'], ['mine', 'My moments']].map(([tab, label]) =>
+            <button key={tab} type="button" aria-pressed={scope === tab} onClick={() => {
+              if (tab !== 'discover' && !user) { login(); return; }
+              setParams({ ...Object.fromEntries(params), view: tab });
+            }}>{label}</button>)}
+      </nav>
+      <button type="button" className="moment-primary" aria-label="Post a moment" onClick={() => create()}><Plus size={22} /></button>
+    </header>
+    {trackFilter && <div className="reels-filter">Moments using this song<button type="button" onClick={() => setParams({ view: scope })}>Clear</button></div>}
+    {notice && <div className="reels-notice" role="status">{notice}<button type="button" onClick={() => setNotice('')} aria-label="Dismiss message">×</button></div>}
+    <div className="reels-feed" ref={feed} tabIndex={0} role="region" aria-label="Scroll to browse Moments">
+      {visiblePosts.map((post) => <article key={post.id} className="reel">
+        <MomentMedia post={post} active={active === post.id} onActive={(value) => setActive((old) => value ? post.id : old === post.id ? null : old)} />
+        <div className="reel-shade" aria-hidden="true" />
+        <div className="reel-overlay">
+          <div className="reel-info">
+            <div className="reel-creator">
+              <Link to={'/profile/' + post.user_id} className="reel-author"><Avatar user={post.author} size={34} /><span>{name(post.author)}</span></Link>
+              {user?.id !== post.user_id && <button type="button" disabled={busy === post.id} className="reel-follow" onClick={() => follow(post)}>{following.has(post.user_id) ? 'Following' : 'Follow'}</button>}
+            </div>
+            {post.caption && <p className="reel-caption" tabIndex={0}>{post.caption}</p>}
+          </div>
+          <div className="reel-actions" role="group" aria-label="Moment actions">
+            <button type="button" aria-pressed={post.liked} disabled={busy === post.id} onClick={() => like(post)} aria-label={post.liked ? 'Unlike moment' : 'Like moment'}><Heart size={26} fill={post.liked ? 'currentColor' : 'none'} /><span>{post.like_count || 0}</span></button>
+            <button type="button" aria-label="Comments" aria-expanded={comments.has(post.id)} onClick={() => {setActive(null);setComments((old) => new Set(old).add(post.id));}}><MessageCircle size={25} /></button>
+            <button type="button" disabled={busy === post.id} onClick={() => share(post)} aria-label="Share moment"><Share2 size={24} /></button>
+            <details className="reel-menu">
+              <summary aria-label="More moment options"><MoreHorizontal size={25} /></summary>
+              <div>
+                {post.track && <>
+                  <Link to={'/artist?name=' + encodeURIComponent(post.track.artist.split(/,|&| feat\.| ft\./i)[0].trim())}><ArrowUpRight size={16} />Explore artist</Link>
+                  <Link to={'/moments?song=' + encodeURIComponent(post.track.id)}><Music2 size={16} />More with this song</Link>
+                </>}
+                {post.can_delete && <button type="button" disabled={!!busy} onClick={() => remove(post)}><Trash2 size={16} />Delete moment</button>}
+                {user && user.id !== post.user_id && <>
+                  <button type="button" onClick={() => setReport({ type: 'moment', id: post.id, userId: post.user_id })}><Flag size={16} />Report moment</button>
+                  <button type="button" disabled={!!busy} onClick={() => block(post)}><ShieldOff size={16} />Block creator</button>
+                </>}
+                <Link to={'/moments/' + post.id}><ArrowUpRight size={16} />Open moment</Link>
+              </div>
+            </details>
+          </div>
+          {post.track ? <div className="reel-song">
+            <Link to={'/track/' + post.track.id} className="reel-song-info">
+              <span className="reel-art"><SongArtwork url={post.track.cover_art_url} /></span><span><strong>{post.track.title}</strong><small>{post.track.artist}</small></span>
+            </Link>
+            <LibraryButton track={post.track} className="reel-song-save" />
+            <button type="button" className="moment-use-song" onClick={() => create(post.track)}>Use song</button>
+          </div> : <p className="reel-song reel-unavailable">This song is no longer available.</p>}
+        </div>
+      </article>)}
+      {!loading && !visiblePosts.length && !error && <section className="reels-state">
+        <Music2 size={34} /><h2>{scope === 'following' ? 'Your people, your soundtrack.' : scope === 'mine' ? 'This is your space.' : 'Every moment starts somewhere.'}</h2>
+        <p>{scope === 'following' ? 'Follow creators to see their moments here.' : 'Share a photo or video with a song from PUBLIC.'}</p>
+        <button className="moment-primary" type="button" onClick={() => create()}><Plus size={18} />Post a moment</button>
+      </section>}
+      {loading && <p className={visiblePosts.length ? 'reels-footer' : 'reels-state'} role="status"><Loader2 size={20} className="animate-spin" />Finding moments…</p>}
+      {error && <div className={visiblePosts.length ? 'reels-footer' : 'reels-state'} role="alert"><p>{error}</p><button type="button" onClick={() => load(visiblePosts.length > 0)}>Try again</button></div>}
+      <div ref={sentinel} className="reels-sentinel" />
+      {more && !loading && !error && <div className="reels-footer"><button type="button" onClick={() => load(true)}>Load more moments</button></div>}
+    </div>
+    {visiblePosts.filter((post) => comments.has(post.id)).map((post) => <Dialog key={post.id} open onOpenChange={(open) => { if (!open) dismissComments(post.id); }}>
+      <DialogContent className={mobile ? 'moment-comments-sheet' : 'reels-comments'}>
+        <DialogHeader><DialogTitle>Comments</DialogTitle><DialogDescription>Join the conversation around this moment.</DialogDescription></DialogHeader>
+        <MomentComments post={post} onReport={setReport} />
+      </DialogContent>
+    </Dialog>)}
+  {composer && <MomentComposer seedTrack={seed} onClose={() => setComposer(false)} onPublished={(post) => {setComposer(false);setNotice('Your moment is live.');if (id || scope === 'following' || trackFilter) {nav('/moments?view=mine');} else {setPosts((old) => [post, ...old.filter((x) => x.id !== post.id)]);if (feed.current) feed.current.scrollTop = 0;}}} />}{report && <ReportMoment target={report} onClose={() => setReport(null)} />}
  </div>;
 }
-function CameraMark() {return <><span className="hidden">PUBLIC MOMENTS</span></>;}

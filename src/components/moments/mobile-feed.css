@@ -1,262 +1,325 @@
-@media (max-width: 767px) {
-  .moments-route .moments-page.moments-mobile-feed {
-    --moments-top: calc(env(safe-area-inset-top) + 8px);
-    --moments-gutter: clamp(10px, 3.5vw, 18px);
-    --moments-nav: calc(var(--mobile-nav-bottom, 8px) + var(--mobile-nav-height, 64px) + 6px);
-    padding: 0 0 var(--moments-nav);
-    min-height: 100svh;
-  }
-
-  .moments-route .moments-mobile-feed .moments-header > .moment-primary {
-    top: var(--moments-top);
-    right: var(--moments-gutter);
-    background: #101010c7;
-    backdrop-filter: none;
-  }
-
-  .moments-route .moments-mobile-feed .moments-tabs {
-    top: var(--moments-top);
-    left: var(--moments-gutter);
-    right: calc(var(--moments-gutter) + 52px);
-    max-width: 360px;
-    background: #101010c7;
-    backdrop-filter: none;
-  }
-
-  .moments-route .moments-mobile-feed .moments-tabs > :is(button, a) {
-    flex: 1 1 auto;
-    min-width: 0;
-    justify-content: center;
-    white-space: nowrap;
-    padding: 0 clamp(5px, 2vw, 12px);
-    font-size: clamp(11px, 3.2vw, 13px);
-  }
-
-  .moments-route .moments-mobile-feed .moment-card {
-    height: calc(100svh - var(--moments-nav));
-    height: calc(100dvh - var(--moments-nav));
-    min-height: calc(var(--moments-top) + 360px);
-    overflow: clip;
-  }
-
-  .moments-route .moments-mobile-feed .moment-card .moment-media > :is(img, video) {
-    object-fit: cover;
-    object-position: center;
-  }
-
-  .moments-route .moments-mobile-feed .moment-card .moment-media.is-wide-photo::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background: center / cover no-repeat var(--moment-photo);
-    filter: blur(24px) brightness(.62);
-    transform: scale(1.12);
-    pointer-events: none;
-  }
-
-  .moments-route .moments-mobile-feed .moment-card .moment-media.is-wide-photo > img {
-    position: relative;
-    object-fit: contain;
-  }
-
-  .moments-route .moments-mobile-feed .moment-card::after {
-    background:
-      linear-gradient(180deg, #0008, transparent 22%, transparent 44%, #0005 62%, #000e 100%),
-      linear-gradient(270deg, #0005, transparent 25%);
-  }
-
-  .moments-route .moments-mobile-feed :is(.moment-media-play, .moment-media-mute) {
-    left: 50%;
-    right: auto;
-    bottom: auto;
-    transform: translate(-50%, -50%);
-    border: 1px solid #ffffff45;
-    background: #151515c9;
-  }
-
-  .moments-route .moments-mobile-feed .moment-media-play {
-    top: 43%;
-    width: 64px;
-    height: 64px;
-  }
-
-  .moments-route .moments-mobile-feed .moment-media-play svg {
-    width: 26px;
-    height: 26px;
-  }
-
-  .moments-route .moments-mobile-feed .moment-media-mute {
-    top: calc(43% - 62px);
-    width: 44px;
-    height: 44px;
-  }
-
-  .moments-route .moments-mobile-feed .moment-photo-controls {
-    top: calc(var(--moments-top) + 54px);
-    bottom: auto;
-  }
-
-  .moments-route .moments-mobile-feed .moment-details {
-    inset: auto var(--moments-gutter) 0;
-  }
-
-  .moments-route .moments-mobile-feed .moment-card-header {
-    margin: 0 54px 8px 0;
-    min-height: 40px;
-  }
-
-  .moments-route .moments-mobile-feed .moment-author > span,
-  .moments-route .moments-mobile-feed .moment-song-info > span:last-child {
-    min-width: 0;
-  }
-
-  .moments-route .moments-mobile-feed .moment-author strong {
-    display: block;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    font-size: clamp(13px, 4vw, 17px);
-  }
-
-  .moments-route .moments-mobile-feed .moment-caption {
-    margin: 0 54px 9px 0;
-    max-height: 4.5em;
-    overflow-wrap: anywhere;
-  }
-
-  .moments-route .moments-mobile-feed .moment-actions {
-    right: 0;
-    bottom: 132px;
-    width: 46px;
-    gap: clamp(3px, 1.35dvh, 12px);
-  }
-
-  .moments-route .moments-mobile-feed .moment-actions > button {
-    min-height: 44px;
-    width: 46px;
-    gap: 3px;
-    padding: 3px 0;
-    border: 0;
-    color: white;
-  }
-
-  .moments-route .moments-mobile-feed .moment-actions > button[aria-pressed=true] {
-    color: #ff5978;
-  }
-
-  .moments-route .moments-mobile-feed .moment-comments-label {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    overflow: hidden;
-    clip-path: inset(50%);
-    white-space: nowrap;
-  }
-
-  .moments-route .moments-mobile-feed .moment-more {
-    right: 0;
-    bottom: 87px;
-    width: 46px;
-  }
-
-  .moments-route .moments-mobile-feed .moment-more > summary {
-    background: transparent;
-    filter: drop-shadow(0 1px 4px #0009);
-  }
-
-  .moments-route .moments-mobile-feed .moment-song-card {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) 44px auto;
-    gap: 5px;
-    padding: 5px 8px;
-    background: #181818ed;
-    backdrop-filter: none;
-  }
-
-  .moments-route .moments-mobile-feed .moment-song-info strong { font-size: 13px; }
-  .moments-route .moments-mobile-feed .moment-song-info small { font-size: 11px; }
-  .moments-route .moments-mobile-feed .moment-song-save { width: 44px; min-height: 44px; }
-
-  .moments-route .moments-mobile-feed .moment-use-song {
-    min-height: 44px;
-    padding: 0 10px;
-    font-size: 11px;
-    white-space: nowrap;
-  }
-
-  .moments-route .moments-mobile-feed .moment-song-links {
-    margin: 0;
-    gap: 4px 10px;
-  }
-
-  .moments-route .moments-mobile-feed .moment-song-links > a {
-    min-height: 34px;
-    font-size: 11px;
-  }
+.public-reels {
+  --reel-height: clamp(460px, calc(100dvh - 112px), 860px);
+  --reel-gutter: 14px;
+  position: relative;
+  width: min(100%, 480px);
+  margin: 0 auto;
+  color: #fff;
+  background: #090909;
+  border: 1px solid #ffffff24;
+  border-radius: 24px;
+  isolation: isolate;
+  color-scheme: dark;
 }
-
-.moment-playback-progress { display: none; }
-
+.public-reels :is(button, a, summary):focus-visible { outline: 2px solid white; outline-offset: 2px; }
+.public-reels .reels-header {
+  position: absolute;
+  z-index: 8;
+  inset: 0 0 auto;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 44px;
+  align-items: start;
+  gap: 5px 8px;
+  padding: 10px var(--reel-gutter) 0;
+  pointer-events: none;
+}
+.reels-header h1 {
+  margin: 0;
+  font-size: 27px;
+  line-height: 44px;
+  font-weight: 800;
+  letter-spacing: -.055em;
+  text-shadow: 0 1px 8px #000c;
+}
+.reels-header h1 span { color: #d7d7d7; }
+.public-reels .reels-header > .moment-primary {
+  grid-column: 2;
+  grid-row: 1;
+  width: 44px;
+  min-height: 44px;
+  padding: 0;
+  justify-content: center;
+  border: 1px solid #ffffff45;
+  background: #151515d9;
+  color: #fff;
+  pointer-events: auto;
+}
+.reels-tabs {
+  display: flex;
+  width: fit-content;
+  max-width: 100%;
+  gap: 2px;
+  padding: 2px;
+  border: 1px solid #ffffff38;
+  border-radius: 99px;
+  background: #141414dc;
+  pointer-events: auto;
+}
+.reels-tabs > :is(button, a) {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  min-height: 40px;
+  padding: 0 clamp(9px, 2.6vw, 14px);
+  border-radius: 99px;
+  color: #eee;
+  font-size: 12px;
+  white-space: nowrap;
+}
+.reels-tabs > button[aria-pressed=true] { background: #fff; color: #090909; font-weight: 700; }
+.reels-feed {
+  height: var(--reel-height);
+  overflow: hidden auto;
+  overscroll-behavior-y: contain;
+  scroll-snap-type: y mandatory;
+  scrollbar-width: none;
+  border-radius: inherit;
+}
+.reels-feed::-webkit-scrollbar { display: none; }
+.reels-feed:focus-visible { outline: 2px solid white; outline-offset: -3px; }
+.reel {
+  position: relative;
+  height: 100%;
+  overflow: hidden;
+  isolation: isolate;
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+  background: #101010;
+}
+.public-reels .reel > .moment-media-wrap { position: absolute; inset: 0; }
+.public-reels .reel .moment-media {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  max-height: none;
+  aspect-ratio: auto;
+  border-radius: 0;
+  background: #0b0b0b;
+}
+.public-reels .reel .moment-media > :is(img, video) { width: 100%; height: 100%; object-fit: cover; }
+.public-reels .reel .moment-media.is-wide-photo::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: center / cover no-repeat var(--moment-photo);
+  transform: scale(1.1);
+  filter: blur(20px) brightness(.65);
+}
+.public-reels .reel .moment-media.is-wide-photo > img { position: relative; object-fit: contain; }
+.reel-shade {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: linear-gradient(180deg, #000b, transparent 26%, transparent 45%, #000d 100%),
+    linear-gradient(270deg, #0004, transparent 24%);
+  pointer-events: none;
+}
+.public-reels .reel .moment-media-play {
+  inset: 46% auto auto 50%;
+  transform: translate(-50%, -50%);
+  width: 58px;
+  height: 58px;
+  z-index: 3;
+  background: #111b;
+  border: 1px solid #ffffff60;
+}
+.public-reels .reel .moment-media[data-playing=true] .moment-media-play { opacity: .38; }
+.public-reels .reel .moment-media[data-playing=true] .moment-media-play:is(:hover,:focus-visible) { opacity: 1; }
+.public-reels .reel .moment-media-mute {
+  inset: 63px var(--reel-gutter) auto auto;
+  z-index: 3;
+  background: #111b;
+  border: 1px solid #ffffff60;
+}
+.public-reels .reel .moment-photo-controls { top: 111px; bottom: auto; z-index: 3; }
+.public-reels .moment-media-wrap > .moment-inline-message {
+  position: absolute;
+  z-index: 5;
+  inset: 110px var(--reel-gutter) auto;
+  margin: 0;
+  background: #181818f0;
+}
+.public-reels .moment-playback-progress {
+  position: absolute;
+  z-index: 6;
+  inset: auto 0 0;
+  height: 2px;
+  background: #ffffff45;
+  pointer-events: none;
+}
+.moment-playback-progress > span {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: #fff;
+  transform: scaleX(0);
+  transform-origin: left;
+}
+.reel-overlay {
+  position: absolute;
+  z-index: 4;
+  inset: auto var(--reel-gutter) 12px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 46px;
+  grid-template-rows: auto auto;
+  align-items: end;
+  gap: 8px;
+  pointer-events: none;
+}
+.reel-overlay :is(a, button, summary, .reel-caption) { pointer-events: auto; }
+.reel-info { min-width: 0; grid-area: 1 / 1; text-shadow: 0 1px 6px #000d; }
+.reel-creator, .reel-author { display: flex; align-items: center; min-width: 0; gap: 8px; }
+.reel-author { font-size: 15px; font-weight: 750; }
+.reel-author > :first-child { flex: none; }
+.reel-author > span, .reel-song-info :is(strong, small) { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.reel-follow {
+  flex: none;
+  min-height: 44px;
+  padding: 0 9px;
+  font-size: 12px;
+  font-weight: 650;
+}
+.reel-caption {
+  max-height: 4.2em;
+  margin: 6px 0 2px;
+  overflow: auto;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+  font-size: 13px;
+  line-height: 1.4;
+}
+.reel-actions { grid-area: 1 / 2; display: grid; gap: 5px; }
+.reel-actions > button, .reel-menu > summary {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 46px;
+  min-height: 44px;
+  gap: 2px;
+  color: #fff;
+  filter: drop-shadow(0 1px 5px #000a);
+  font-size: 11px;
+  line-height: 1;
+}
+.reel-actions > button[aria-pressed=true] { color: #ff5978; }
+.reel-menu { position: relative; }
+.reel-menu > summary { cursor: pointer; list-style: none; }
+.reel-menu > summary::-webkit-details-marker { display: none; }
+.reel-menu > div {
+  position: absolute;
+  z-index: 2;
+  inset: auto 0 calc(100% + 6px) auto;
+  width: min(208px, 70vw);
+  max-height: 54dvh;
+  overflow-y: auto;
+  padding: 4px;
+  border-radius: 14px;
+  border: 1px solid #ffffff33;
+  background: #151515;
+  pointer-events: auto;
+}
+.reel-menu > div > :is(a, button) {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  min-height: 44px;
+  padding: 0 8px;
+  color: #fff;
+  font-size: 12px;
+  text-align: left;
+}
+.reel-song {
+  grid-area: 2 / 1 / 3 / -1;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 44px auto;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 7px;
+  border: 1px solid #ffffff35;
+  border-radius: 15px;
+  background: #151515ee;
+}
+.reel-song-info { display: flex; min-width: 0; gap: 8px; align-items: center; }
+.reel-song-info > :last-child { min-width: 0; }
+.reel-song-info strong { color: #fff; font-size: 13px; }
+.reel-song-info small { color: #ccc; font-size: 11px; }
+.reel-art {
+  display: grid;
+  width: 36px;
+  height: 36px;
+  flex: none;
+  place-items: center;
+  overflow: hidden;
+  border-radius: 7px;
+  background: #333;
+}
+.reel-art > img { width: 100%; height: 100%; object-fit: cover; }
+.public-reels .reel-song-save { width: 44px; min-height: 44px; color: #fff; }
+.public-reels .reel-song .moment-use-song {
+  min-height: 44px;
+  padding: 0 10px;
+  border-color: #ffffff38;
+  color: #fff;
+  font-size: 11px;
+  white-space: nowrap;
+}
+.reel-unavailable { display: block; padding: 12px; color: #ddd; font-size: 12px; }
+.reels-filter, .reels-notice {
+  position: absolute;
+  z-index: 7;
+  top: 108px;
+  inset-inline: var(--reel-gutter);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  border-radius: 12px;
+  padding: 4px 10px;
+  background: #151515ee;
+  font-size: 12px;
+}
+.reels-filter + .reels-notice { top: 156px; }
+.reels-filter > button, .reels-notice > button { min-height: 36px; min-width: 44px; }
+.reels-state, .reels-footer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 16px;
+  text-align: center;
+  scroll-snap-align: start;
+}
+.reels-state { flex-direction: column; min-height: 100%; padding: 116px 24px 24px; }
+.reels-state h2 { font-size: 23px; font-weight: 750; }
+.reels-state p { color: #ccc; }
+.reels-sentinel { height: 1px; margin-top: -1px; pointer-events: none; }
+.reels-comments { max-height: 80dvh; overflow-y: auto; }
 @media (max-width: 767px) {
-  .moments-route .moments-mobile-feed .moment-media[data-playing=true] .moment-media-play {
-    opacity: .45;
-  }
-
-  .moments-route .moments-mobile-feed .moment-media[data-playing=true] .moment-media-play:focus-visible {
-    opacity: 1;
-  }
-
-  .moments-route .moments-mobile-feed .moment-playback-progress {
-    display: block;
-    position: absolute;
-    inset: auto 0 0;
-    z-index: 5;
-    height: 2px;
-    background: #ffffff40;
-    pointer-events: none;
-  }
-
-  .moments-route .moments-mobile-feed .moment-playback-progress > span {
-    display: block;
+  .moments-route .public-reels {
+    --reel-bottom: calc(var(--mobile-nav-bottom, 8px) + var(--mobile-nav-height, 64px) + 4px);
+    --reel-height: calc(100svh - var(--reel-bottom));
+    --reel-height: calc(100dvh - var(--reel-bottom));
+    --reel-gutter: clamp(10px, 3.5vw, 17px);
     width: 100%;
-    height: 100%;
-    background: #fff;
-    transform: scaleX(0);
-    transform-origin: left;
+    border: 0;
+    border-radius: 0;
   }
-
-  .moments-route .moments-mobile-feed .moment-media-wrap > .moment-inline-message {
-    position: absolute;
-    z-index: 6;
-    top: calc(var(--moments-top) + 57px);
-    inset-inline: var(--moments-gutter);
-    margin: 0;
-    background: #141414eb;
-  }
-
-  .moments-route .moments-mobile-feed .moment-song-info :is(strong, small) {
-    display: block;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
+  .moments-route .reels-header { padding-top: calc(env(safe-area-inset-top) + 5px); }
+  .moments-route .reel .moment-media-mute { top: calc(env(safe-area-inset-top) + 58px); }
+  .moments-route .reel .moment-photo-controls { top: calc(env(safe-area-inset-top) + 106px); }
+  .moments-route .reel .moment-media-wrap > .moment-inline-message,
+  .moments-route :is(.reels-filter, .reels-notice) { top: calc(env(safe-area-inset-top) + 102px); }
+  .moments-route .reels-filter + .reels-notice { top: calc(env(safe-area-inset-top) + 148px); }
+  .moments-route .reels-feed { min-height: 320px; }
+  .moments-route .public-reels { margin-bottom: var(--reel-bottom); }
 }
-
-@media (max-width: 767px) and (max-height: 650px) {
-  .moments-route .moments-mobile-feed .moment-media-play {
-    width: 54px;
-    height: 54px;
-  }
-
-  .moments-route .moments-mobile-feed .moment-media-mute {
-    top: calc(43% - 52px);
-  }
-
-  .moments-route .moments-mobile-feed .moment-actions {
-    gap: 2px;
-  }
-
-  .moments-route .moments-mobile-feed .moment-caption {
-    max-height: 3em;
-  }
+@media (max-height: 620px) {
+  .reel-actions { gap: 0; }
+  .reel-caption { max-height: 2.8em; }
+  .reel-overlay { bottom: 8px; gap: 4px; }
+  .public-reels .reel .moment-media-play { width: 48px; height: 48px; top: 42%; }
 }

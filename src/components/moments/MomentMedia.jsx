@@ -18,7 +18,7 @@ export default function MomentMedia({post,active,onActive}){
  useEffect(()=>{
   const node=box.current;if(!node)return;let cancelled=false,started=false;
   const prepare=async()=>{if(started||!post.track?.id)return;started=true;setLoading(true);try{const t=post.track.audio_url?post.track:await base44.entities.Track.get(post.track.id);if(!t.audio_url)throw Error('Song unavailable.');if(!cancelled)setSource(t.audio_url);}catch(e){if(!cancelled)setError(e?.response?.data?.error||'Song preview unavailable. You can still open the full song.');}finally{if(!cancelled)setLoading(false);}};
-  const observer=new IntersectionObserver(entries=>{const visible=entries[0]?.isIntersecting;if(visible)prepare();else{stop();onActive(false);}},{threshold:.15});observer.observe(node);
+  const observer=new IntersectionObserver(entries=>{const visible=(entries[0]?.intersectionRatio??0)>=.6;if(visible)prepare();else{stop();onActive(false);}},{threshold:.6});observer.observe(node);
   return()=>{cancelled=true;observer.disconnect();stop();};
  },[post.id,post.track?.id]);
  useEffect(()=>{if(!active)stop();},[active]);
