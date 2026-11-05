@@ -121,8 +121,10 @@ export function MomentsExperience() {
             <button type="button" aria-pressed={post.liked} disabled={busy === post.id} onClick={() => like(post)} aria-label={post.liked ? 'Unlike moment' : 'Like moment'}><Heart size={26} fill={post.liked ? 'currentColor' : 'none'} /><span>{post.like_count || 0}</span></button>
             <button type="button" aria-label="Comments" aria-expanded={comments.has(post.id)} onClick={() => {setActive(null);setComments((old) => new Set(old).add(post.id));}}><MessageCircle size={25} /></button>
             <button type="button" disabled={busy === post.id} onClick={() => share(post)} aria-label="Share moment"><Share2 size={24} /></button>
-            <details className="reel-menu" onBlur={(event) => {
-              if (!event.currentTarget.contains(event.relatedTarget)) event.currentTarget.open = false;
+            <details className="reel-menu" onKeyDown={(event) => {
+              if (event.key !== 'Escape' || !event.currentTarget.open) return;
+              event.currentTarget.open = false;
+              event.currentTarget.querySelector('summary')?.focus();
             }}>
               <summary aria-label="More moment options"><MoreHorizontal size={25} /></summary>
               <div>
