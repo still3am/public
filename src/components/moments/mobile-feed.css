@@ -44,6 +44,21 @@
     object-position: center;
   }
 
+  .moments-route .moments-mobile-feed .moment-card .moment-media.is-wide-photo::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: center / cover no-repeat var(--moment-photo);
+    filter: blur(24px) brightness(.62);
+    transform: scale(1.12);
+    pointer-events: none;
+  }
+
+  .moments-route .moments-mobile-feed .moment-card .moment-media.is-wide-photo > img {
+    position: relative;
+    object-fit: contain;
+  }
+
   .moments-route .moments-mobile-feed .moment-card::after {
     background:
       linear-gradient(180deg, #0008, transparent 22%, transparent 44%, #0005 62%, #000e 100%),
@@ -60,7 +75,7 @@
   }
 
   .moments-route .moments-mobile-feed .moment-media-play {
-    top: 49%;
+    top: 43%;
     width: 64px;
     height: 64px;
   }
@@ -71,7 +86,7 @@
   }
 
   .moments-route .moments-mobile-feed .moment-media-mute {
-    top: calc(49% - 62px);
+    top: calc(43% - 62px);
     width: 44px;
     height: 44px;
   }
@@ -177,5 +192,71 @@
   .moments-route .moments-mobile-feed .moment-song-links > a {
     min-height: 34px;
     font-size: 11px;
+  }
+}
+
+.moment-playback-progress { display: none; }
+
+@media (max-width: 767px) {
+  .moments-route .moments-mobile-feed .moment-media[data-playing=true] .moment-media-play {
+    opacity: .45;
+  }
+
+  .moments-route .moments-mobile-feed .moment-media[data-playing=true] .moment-media-play:focus-visible {
+    opacity: 1;
+  }
+
+  .moments-route .moments-mobile-feed .moment-playback-progress {
+    display: block;
+    position: absolute;
+    inset: auto 0 0;
+    z-index: 5;
+    height: 2px;
+    background: #ffffff40;
+    pointer-events: none;
+  }
+
+  .moments-route .moments-mobile-feed .moment-playback-progress > span {
+    display: block;
+    width: 100%;
+    height: 100%;
+    background: #fff;
+    transform: scaleX(0);
+    transform-origin: left;
+  }
+
+  .moments-route .moments-mobile-feed .moment-media-wrap > .moment-inline-message {
+    position: absolute;
+    z-index: 6;
+    top: calc(var(--moments-top) + 57px);
+    inset-inline: var(--moments-gutter);
+    margin: 0;
+    background: #141414eb;
+  }
+
+  .moments-route .moments-mobile-feed .moment-song-info :is(strong, small) {
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+
+@media (max-width: 767px) and (max-height: 650px) {
+  .moments-route .moments-mobile-feed .moment-media-play {
+    width: 54px;
+    height: 54px;
+  }
+
+  .moments-route .moments-mobile-feed .moment-media-mute {
+    top: calc(43% - 52px);
+  }
+
+  .moments-route .moments-mobile-feed .moment-actions {
+    gap: 2px;
+  }
+
+  .moments-route .moments-mobile-feed .moment-caption {
+    max-height: 3em;
   }
 }
