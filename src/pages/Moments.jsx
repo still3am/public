@@ -92,7 +92,7 @@ export function MomentsExperience() {
   }
   return <div className="public-reels">
     <header className="reels-header">
-      <h1>Moments<span>.</span></h1>
+      <h1 className="sr-only">Moments</h1>
       <nav className="reels-tabs" aria-label="Moments feed">
         {id ? <Link to="/moments"><ArrowLeft size={16} />All moments</Link> :
           [['discover', 'Discover'], ['following', 'Following'], ['mine', 'My moments']].map(([tab, label]) =>

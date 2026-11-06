@@ -18,20 +18,11 @@
   inset: 0 0 auto;
   display: grid;
   grid-template-columns: minmax(0, 1fr) 44px;
-  align-items: start;
-  gap: 5px 8px;
+  align-items: center;
+  gap: 8px;
   padding: 10px var(--reel-gutter) 0;
   pointer-events: none;
 }
-.reels-header h1 {
-  margin: 0;
-  font-size: 27px;
-  line-height: 44px;
-  font-weight: 800;
-  letter-spacing: -.055em;
-  text-shadow: 0 1px 8px #000c;
-}
-.reels-header h1 span { color: #d7d7d7; }
 .public-reels .reels-header > .moment-primary {
   grid-column: 2;
   grid-row: 1;
@@ -45,6 +36,7 @@
   pointer-events: auto;
 }
 .reels-tabs {
+  grid-area: 1 / 1;
   display: flex;
   width: fit-content;
   max-width: 100%;
@@ -271,8 +263,8 @@
 .reels-filter, .reels-notice {
   position: absolute;
   z-index: 7;
-  top: 108px;
-  inset-inline: var(--reel-gutter);
+  top: 62px;
+  inset-inline: var(--reel-gutter) calc(var(--reel-gutter) + 52px);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -282,7 +274,7 @@
   background: #151515ee;
   font-size: 12px;
 }
-.reels-filter + .reels-notice { top: 156px; }
+.reels-filter + .reels-notice { top: 108px; }
 .reels-filter > button, .reels-notice > button { min-height: 36px; min-width: 44px; }
 .reels-state, .reels-footer {
   display: flex;
@@ -311,9 +303,9 @@
   .moments-route .reels-header { padding-top: calc(env(safe-area-inset-top) + 5px); }
   .moments-route .reel .moment-media-mute { top: calc(env(safe-area-inset-top) + 58px); }
   .moments-route .reel .moment-photo-controls { top: calc(env(safe-area-inset-top) + 106px); }
-  .moments-route .reel .moment-media-wrap > .moment-inline-message,
-  .moments-route :is(.reels-filter, .reels-notice) { top: calc(env(safe-area-inset-top) + 102px); }
-  .moments-route .reels-filter + .reels-notice { top: calc(env(safe-area-inset-top) + 148px); }
+  .moments-route .reel .moment-media-wrap > .moment-inline-message { top: calc(env(safe-area-inset-top) + 102px); }
+  .moments-route :is(.reels-filter, .reels-notice) { top: calc(env(safe-area-inset-top) + 58px); }
+  .moments-route .reels-filter + .reels-notice { top: calc(env(safe-area-inset-top) + 104px); }
   .moments-route .reels-feed { min-height: 320px; }
   .moments-route .public-reels { margin-bottom: var(--reel-bottom); }
 }
@@ -369,7 +361,6 @@
     gap: 2px 8px;
     padding-top: calc(env(safe-area-inset-top) + 6px);
   }
-  .reels-header h1 { font-size: clamp(23px, 6.4vw, 27px); }
   .reel-overlay { bottom: 10px; gap: 7px 10px; }
   .reel-song { padding: 5px 8px; }
 }
