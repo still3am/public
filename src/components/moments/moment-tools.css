@@ -10,13 +10,11 @@
 .moment-waveform-inputs input { width: 100%; min-width: 0; }
 .moment-waveform-hint { font-size: 12px; opacity: .8; }
 .moment-media-wrap[data-photo-swipe=true] img[data-photo-motion] {
-  --photo-entry: 10px;
   animation: public-moment-photo-in 220ms cubic-bezier(.2,.72,.3,1) both;
 }
-.moment-media-wrap[data-photo-swipe=true] img[data-photo-motion=backward] { --photo-entry: -10px; }
 @keyframes public-moment-photo-in {
-  from { opacity: .65; transform: translateX(var(--photo-entry)); }
-  to { opacity: 1; transform: translateX(0); }
+  from { transform: scale(1.018); }
+  to { transform: scale(1); }
 }
 @media (prefers-reduced-motion: reduce) {
   .moment-media-wrap[data-photo-swipe=true] img[data-photo-motion] { animation: none; }
