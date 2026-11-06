@@ -9,13 +9,15 @@ export default function MomentMedia({post,active,onActive,muted=false,onToggleMu
  const audio=useRef(null),video=useRef(null),box=useRef(null),progressBar=useRef(null),player=usePlayer(),alive=useRef(true),request=useRef(0);
  const [source,setSource]=useState(''),[loading,setLoading]=useState(false),[error,setError]=useState(''),[index,setIndex]=useState(0);
  const [inView,setInView]=useState(false),[controls,setControls]=useState(false),[needsTap,setNeedsTap]=useState(false);
- const touch=useRef(null),manualPhoto=useRef(false),lastSwipe=useRef(0);
+ const touch=useRef(null),lastSwipe=useRef(0),direction=useRef(1),photoSizes=useRef(new Map());
+ const [touching,setTouching]=useState(false),[photoChanged,setPhotoChanged]=useState(false);
  const hideTimer=useRef(null),photo=useRef(null),still=useRef(null);
  const [pausedGif,setPausedGif]=useState(false);
  const [widePhoto,setWidePhoto]=useState('');
+ const photoCount=post.media?.length||0;
  const photoUrl=post.media?.[index]?.url;
  const isGif=/\.gif(?:[?#]|$)/i.test(photoUrl||'');
- const showPhotoBackdrop=!pausedGif&&!!photoUrl&&widePhoto===photoUrl;
+ const showPhotoBackdrop=!pausedGif&&!!photoUrl&&(widePhoto===photoUrl||photoSizes.current.get(photoUrl)===true);
  const isVideo=post.media?.[0]?.type==='video',start=Number(post.clip_start)||0,length=Number(post.clip_duration)||30;
  const playerRef=useRef(player);playerRef.current=player;
  const stop=()=>{request.current++;audio.current?.pause();video.current?.pause();};
@@ -74,29 +76,54 @@ export default function MomentMedia({post,active,onActive,muted=false,onToggleMu
  function updateProgress(fraction){
   if(progressBar.current)progressBar.current.style.transform='scaleX('+Math.max(0,Math.min(1,fraction||0))+')';
  }
- function tick(){const a=audio.current;if(!a)return;if(a.currentTime>=start+length){a.currentTime=start;if(!isVideo&&!manualPhoto.current)setIndex(0);}updateProgress((a.currentTime-start)/length);if(!isVideo&&active&&!manualPhoto.current)setIndex(Math.min(post.media.length-1,Math.floor(Math.max(0,a.currentTime-start)/length*post.media.length)));}
+ useEffect(()=>{
+  if(isVideo||photoCount<2||!inView||(!active&&!needsTap)||touching||document.hidden)return;
+  const timer=setTimeout(()=>{
+   if(document.hidden||document.querySelector('[role="dialog"][data-state="open"]')&&!draftPreview)return;
+   direction.current=1;
+   setPhotoChanged(true);
+   setPausedGif(false);
+   setIndex((current)=>(current+1)%photoCount);
+  },Math.max(2800,Math.min(4800,length*1000/photoCount)));
+  return()=>clearTimeout(timer);
+ },[active,needsTap,inView,isVideo,photoCount,touching,index,length,draftPreview]);
+ useEffect(()=>{
+  if(isVideo||!inView||photoCount<2)return;
+  const next=post.media[(index+1)%photoCount]?.url;
+  if(!next||photoSizes.current.has(next))return;
+  const image=new Image();
+  image.onload=()=>{photoSizes.current.set(next,!!image.naturalHeight&&image.naturalWidth/image.naturalHeight>=.82);};
+  image.src=next;
+  return()=>{image.onload=null;};
+ },[post.media,photoCount,inView,isVideo,index]);
+ function tick(){
+  const a=audio.current;
+  if(!a)return;
+  if(a.currentTime>=start+length)a.currentTime=start;
+  updateProgress((a.currentTime-start)/length);
+ }
  function videoTick(){const a=audio.current,v=video.current;if(!v||!active)return;if(!a||!source){updateProgress(v.currentTime/v.duration);return;}const desired=start+(v.currentTime%length);if(Math.abs(a.currentTime-desired)>.6)a.currentTime=desired;}
  function end(){stop();onActive(false);updateProgress(0);if(video.current)video.current.currentTime=0;if(audio.current)audio.current.currentTime=start;}
  function movePhoto(step){
-  manualPhoto.current=true;setPausedGif(false);
+  direction.current=step;setPhotoChanged(true);setPausedGif(false);
   setIndex(current=>Math.max(0,Math.min(post.media.length-1,current+step)));
  }
  function startSwipe(event){
   const point=event.touches[0];
   if(isVideo||post.media.length<2||event.touches.length!==1||event.target.closest('.moment-photo-controls, .moment-media-play, .moment-media-mute')){touch.current=null;return;}
-  touch.current={x:point.clientX,y:point.clientY};
+  touch.current={x:point.clientX,y:point.clientY};setTouching(true);
  }
  function finishSwipe(event){
   const origin=touch.current,point=event.changedTouches[0];
-  touch.current=null;
+  touch.current=null;setTouching(false);
   if(!origin||!point)return;
   const x=point.clientX-origin.x,y=point.clientY-origin.y;
   if(Math.abs(x)<44||Math.abs(x)<Math.abs(y)*1.35)return;
   lastSwipe.current=Date.now();movePhoto(x<0?1:-1);
  }
- return <div ref={box} className="moment-media-wrap" data-photo-swipe={!isVideo&&post.media.length>1} onTouchStart={startSwipe} onTouchEnd={finishSwipe} onTouchCancel={()=>{touch.current=null;}}>
+ return <div ref={box} className="moment-media-wrap" data-photo-swipe={!isVideo&&post.media.length>1} onTouchStart={startSwipe} onTouchEnd={finishSwipe} onTouchCancel={()=>{touch.current=null;setTouching(false);}}>
   <div className={'moment-media'+(!isVideo&&showPhotoBackdrop?' is-wide-photo':'')} data-playing={active} data-controls={controls||needsTap} style={!isVideo&&showPhotoBackdrop?{'--moment-photo':'url('+JSON.stringify(photoUrl)+')'}:undefined}>
-   {isVideo?<video ref={video} src={post.media[0].url} playsInline preload="metadata" muted={muted||Number(post.original_volume??0)===0} onTimeUpdate={videoTick} onEnded={end} onError={()=>setError('This video cannot play in this browser.')} aria-label="Moment video"/>:<img ref={photo} hidden={pausedGif} src={photoUrl} alt={post.caption||'Photo shared in a Moment'} loading="lazy" onLoad={(event)=>{const {naturalWidth,naturalHeight}=event.currentTarget;setWidePhoto(naturalHeight&&naturalWidth/naturalHeight>=.82?photoUrl:'');}}/>}
+   {isVideo?<video ref={video} src={post.media[0].url} playsInline preload="metadata" muted={muted||Number(post.original_volume??0)===0} onTimeUpdate={videoTick} onEnded={end} onError={()=>setError('This video cannot play in this browser.')} aria-label="Moment video"/>:<img key={photoUrl} ref={photo} data-photo-motion={photoChanged?(direction.current<0?'backward':'forward'):undefined} hidden={pausedGif} src={photoUrl} alt={post.caption||'Photo shared in a Moment'} loading="lazy" onLoad={(event)=>{const {naturalWidth,naturalHeight}=event.currentTarget;setWidePhoto(naturalHeight&&naturalWidth/naturalHeight>=.82?photoUrl:'');}}/>}
    {isGif&&<canvas ref={still} className={showPhotoBackdrop||widePhoto===photoUrl?'moment-gif-still is-wide':'moment-gif-still'} hidden={!pausedGif} aria-hidden="true" />}
    {!draftPreview&&<button type="button" className="moment-tap-surface" onClick={tapSurface} aria-label={needsTap?'Tap to start playback':'Toggle playback controls'} />}
    <button type="button" className="moment-media-play" onClick={play} disabled={loading||(!source&&!isVideo)} aria-label={active?'Pause moment':'Play moment'}>{loading?<Loader2 size={20} className="animate-spin"/>:active?<Pause size={20}/>:<Play size={20} fill="currentColor"/>}</button>
