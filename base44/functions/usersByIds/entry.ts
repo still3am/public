@@ -13,14 +13,26 @@ export default async function handleRequest(req) {
     const body = await req.json().catch(() => ({}));
     if (body.action === 'set_friends_family_badge') {
       if (user.role !== 'admin') return Response.json({ error: 'Administrator access required.' }, { status: 403 });
-      if (typeof body.user_id !== 'string' || !/^[a-zA-Z0-9_-]{1,100}$/.test(body.user_id) || typeof body.enabled !== 'boolean') {
+      if (typeof body.user_id !== 'string' || !/^[a-zA-Z0-9_-]{1,100}$/.test(body.user_id) || !['friends_family','listener','uploader','artist'].includes(body.creator_role)) {
         return Response.json({ error: 'Choose a member and badge state.' }, { status: 400 });
       }
       const entities = base44.asServiceRole.entities;
-      const patch = { friends_family_badge: body.enabled };
-      await entities.User.update(body.user_id, patch);
-      await entities.PublicProfile.updateMany({ user_id: body.user_id }, { $set: patch });
-      return Response.json({ friends_family_badge: body.enabled });
+      const target = await entities.User.get(body.user_id);
+      if (!target || target.role === 'admin') return Response.json({ error: 'Administrators keep their existing role.' }, { status: 400 });
+      const friendsFamily = body.creator_role === 'friends_family';
+      if (body.creator_role === 'artist') {
+        const result = await entities.ArtistApplication.filter({ user_id: target.id }, '-created_date', 100);
+        const applications = Array.isArray(result) ? result : result?.items || [];
+        if (!applications.some((application) => ['pending', 'approved'].includes(application.status))) {
+          return Response.json({ error: 'An artist application is required.' }, { status: 422 });
+        }
+      }
+      // Friends & Family uses the existing non-admin creator permissions.
+      const creatorRole = friendsFamily ? 'artist' : body.creator_role;
+      const patch = { friends_family_badge: friendsFamily, creator_role: creatorRole, is_artist: creatorRole === 'artist' };
+      await entities.User.update(target.id, patch);
+      await entities.PublicProfile.updateMany({ user_id: target.id }, { $set: patch });
+      return Response.json(patch);
     }
     const ids = Array.isArray(body?.ids)
       ? [...new Set(body.ids.filter((i) => typeof i === 'string' && i))].slice(0, 200)
