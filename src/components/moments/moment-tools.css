@@ -9,27 +9,11 @@
 .moment-waveform-inputs { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
 .moment-waveform-inputs input { width: 100%; min-width: 0; }
 .moment-waveform-hint { font-size: 12px; opacity: .8; }
-.reels-discussion-panel { position: relative; }
-.moment-threads-trigger { position: absolute; z-index: 1; top: 8px; left: 8px; min-height: 44px; display: flex; align-items: center; gap: 4px; padding: 0 6px; font-size: 11px; }
-.reels-discussion-panel:has(> .moment-threads) > .discussion-comments { display: none; }
-.moment-threads { display: flex; flex-direction: column; min-height: 0; outline: none; padding: 0 12px 10px; }
-.moment-thread-heading { display: flex; align-items: center; gap: 8px; }
-.moment-thread-heading button, .moment-thread-row > button, .moment-threads form > button { min-width: 44px; min-height: 44px; display: grid; place-items: center; }
-.moment-thread-scroll { flex: 1 1 0; overflow: auto; overscroll-behavior: contain; }
-.moment-thread-scroll > p, .moment-thread-error { padding: 8px; font-size: 13px; }
-.moment-thread-row { display: grid; grid-template-columns: minmax(0,1fr) auto; gap: 8px; align-items: start; padding: 8px 0; }
-.moment-thread-row > button { font-size: 12px; }
-.moment-thread-comment { display: grid; grid-template-columns: 30px minmax(0,1fr); gap: 8px; font-size: 13px; overflow-wrap: anywhere; }
-.moment-thread-comment p { white-space: pre-wrap; margin-top: 3px; }
-.moment-thread-parent { padding: 8px; border-radius: 10px; background: #ffffff12; }
-.moment-threads form { display: grid; grid-template-columns: minmax(0,1fr) 44px; gap: 8px; margin-top: 5px; padding-bottom: env(safe-area-inset-bottom); }
-.moment-threads input { min-width: 0; min-height: 44px; border: 1px solid #ffffff40; border-radius: 20px; padding-inline: 12px; background: #101113; font-size: 16px; }
-
 .moment-media-wrap[data-photo-swipe=true] img[data-photo-motion] {
-  --photo-entry: 14px;
-  animation: public-moment-photo-in 250ms cubic-bezier(.2,.65,.3,1) both;
+  --photo-entry: 10px;
+  animation: public-moment-photo-in 220ms cubic-bezier(.2,.72,.3,1) both;
 }
-.moment-media-wrap[data-photo-swipe=true] img[data-photo-motion=backward] { --photo-entry: -14px; }
+.moment-media-wrap[data-photo-swipe=true] img[data-photo-motion=backward] { --photo-entry: -10px; }
 @keyframes public-moment-photo-in {
   from { opacity: .65; transform: translateX(var(--photo-entry)); }
   to { opacity: 1; transform: translateX(0); }
@@ -37,3 +21,21 @@
 @media (prefers-reduced-motion: reduce) {
   .moment-media-wrap[data-photo-swipe=true] img[data-photo-motion] { animation: none; }
 }
+
+.reel-actions:has(.moment-photo-track) > .reel-track-art:not(.moment-photo-track) { display: none; }
+.reel-actions > .moment-photo-track { pointer-events: auto; }
+.moment-photo-songs { display: grid; gap: 6px; margin-top: 8px; }
+.moment-photo-songs > div { display: flex; gap: 8px; align-items: center; }
+.moment-photo-songs img { width: 35px; height: 35px; border-radius: 6px; object-fit: cover; }
+.moment-photo-songs button { min-height: 44px; text-align: left; font-size: 12px; }
+.moment-photo-songs button:first-of-type { flex: 1; min-width: 0; }
+.moment-photo-songs button span { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; opacity: .8; }
+.moment-inline-replies { font-size: 12px; }
+.moment-inline-replies button { min-height: 36px; }
+.moment-inline-replies > button { font-weight: 650; color: #c9cad0; }
+.moment-reply-body { border-inline-start: 1px solid #ffffff29; padding-inline-start: 8px; }
+.moment-reply-row { display: grid; grid-template-columns: 24px minmax(0,1fr) auto; gap: 6px; margin-bottom: 6px; }
+.moment-reply-row p { font-size: 13px; }
+.moment-inline-replies form { display: grid; grid-template-columns: minmax(0,1fr) 36px; gap: 4px; }
+.moment-inline-replies form input { width: 100%; min-width: 0; min-height: 38px; padding: 0 8px; border: 1px solid #ffffff40; border-radius: 14px; background: #101113; font-size: 16px; }
+.moment-inline-replies form button { display: grid; place-items: center; }

@@ -6,6 +6,8 @@ import {withPresetAvatar} from "@/lib/nativeAvatar";
 import {useEffect,useState} from "react";
 /** @param {any} props */
 export default function Avatar(props) {
+ const commentId=props.user?.moment_comment_id;
+ if(commentId)return <span data-moment-comment-id={commentId} style={{display:'contents'}}><AvatarPicture {...props}/></span>;
  const badge=props.user?.moment_badge;
  if(!badge)return <AvatarPicture {...props}/>;
  return <span className="moment-author-avatar"><AvatarPicture {...props}/><ProfileBadge variant={badge} compact/></span>;

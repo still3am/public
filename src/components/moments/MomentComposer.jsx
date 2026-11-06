@@ -10,6 +10,7 @@ import {momentsApi,momentError} from '@/lib/momentsApi';
 const seconds=n=>`${Math.floor(n/60)}:${String(Math.floor(n%60)).padStart(2,'0')}`;
 export default function MomentComposer({seedTrack,onClose,onPublished}){
  const [media,setMedia]=useState([]),[track,setTrack]=useState(seedTrack||null),[caption,setCaption]=useState(''),[start,setStart]=useState(0),[duration,setDuration]=useState(15),[musicVolume,setMusicVolume]=useState(.8),[originalVolume,setOriginalVolume]=useState(0),[rights,setRights]=useState(false),[picker,setPicker]=useState(false),[busy,setBusy]=useState(false),[progress,setProgress]=useState(''),[error,setError]=useState(''),[preview,setPreview]=useState(false);
+ const [photoPicker,setPhotoPicker]=useState(null);
  const input=useRef(null),live=useRef(true),mediaRef=useRef([]),lock=useRef(false),uploadCache=useRef(new Map()),requestId=useRef(crypto.randomUUID());const player=usePlayer();
  useEffect(()=>{live.current=true;return()=>{live.current=false;mediaRef.current.forEach(m=>URL.revokeObjectURL(m.url));};},[]);
  useEffect(()=>{mediaRef.current=media;},[media]);
@@ -27,7 +28,7 @@ export default function MomentComposer({seedTrack,onClose,onPublished}){
  }
  async function publish(){
   if(lock.current||!media.length||!track||!rights)return;lock.current=true;setBusy(true);setPreview(false);setError('');
-  try{const uploaded=[];for(let i=0;i<media.length;i++){setProgress(`Uploading ${i+1} of ${media.length}…`);const m=media[i];let url=uploadCache.current.get(m.file);if(!url){const r=await base44.integrations.Core.UploadFile({file:m.file});if(!r?.file_url)throw Error('Your upload was not confirmed. Please retry.');url=r.file_url;uploadCache.current.set(m.file,url);}uploaded.push({url,type:m.type,size:m.size,duration:m.duration});}
+  try{const uploaded=[];for(let i=0;i<media.length;i++){setProgress(`Uploading ${i+1} of ${media.length}…`);const m=media[i];let url=uploadCache.current.get(m.file);if(!url){const r=await base44.integrations.Core.UploadFile({file:m.file});if(!r?.file_url)throw Error('Your upload was not confirmed. Please retry.');url=r.file_url;uploadCache.current.set(m.file,url);}uploaded.push({url,type:m.type,size:m.size,duration:m.duration,...(m.track?.id?{track_id:m.track.id}:{})});}
    setProgress('Publishing your moment…');const result=await momentsApi('publish',{media:uploaded,caption,track_id:track.id,clip_start:start,clip_duration:duration,music_volume:musicVolume,original_volume:originalVolume,rights_confirmed:rights,request_id:requestId.current});if(!result.post?.id)throw Error('Your post was not confirmed. Please retry.');if(live.current)onPublished(result.post);
   }catch(e){if(live.current)setError(momentError(e));}finally{lock.current=false;if(live.current){setBusy(false);setProgress('');}}
  }
@@ -37,7 +38,16 @@ export default function MomentComposer({seedTrack,onClose,onPublished}){
   <input ref={input} type="file" className="hidden" accept="image/jpeg,image/png,image/webp,image/gif,video/mp4,video/quicktime,video/webm" multiple disabled={busy} onChange={e=>{choose(e.target.files||[]);e.target.value='';}}/>
   {!media.length?<button type="button" className="moment-upload-zone" disabled={busy} onClick={()=>input.current?.click()}><Camera size={32}/><strong>Add photos or a video</strong><span>Up to 6 photos, or a video up to 60 seconds</span></button>:<><MomentMedia key={draft.id} post={draft} active={preview} onActive={setPreview} draftPreview/><div className="moment-composer-media-actions"><button type="button" disabled={busy} onClick={()=>input.current?.click()}>Change media</button><button type="button" disabled={busy} onClick={()=>{setPreview(false);media.forEach(m=>URL.revokeObjectURL(m.url));setMedia([]);}}><Trash2 size={15}/>Remove</button></div></>}
   </section><section className="moment-compose-fields" aria-label="Moment soundtrack and caption"><div className="moment-compose-step"><span>02</span>Your soundtrack</div>
-  <button type="button" className="moment-song-choice" disabled={busy} onClick={()=>{setPreview(false);player.pausePlayback?.();setPicker(true);}}><Music2 size={22}/><span><strong>{track?.title||'Choose your song'}</strong><small>{track?.artist||'Find a song on PUBLIC'}</small></span><Plus size={18}/></button>
+  <button type="button" className="moment-song-choice" disabled={busy} onClick={()=>{setPreview(false);player.pausePlayback?.();setPhotoPicker(null);setPicker(true);}}><Music2 size={22}/><span><strong>{track?.title||'Choose your song'}</strong><small>{track?.artist||'Find a song on PUBLIC'}</small></span><Plus size={18}/></button>
+  {media.length>1&&<details className="moment-sound-options"><summary>Photo songs<span>Optional</span></summary><div className="moment-photo-songs">
+    {media.map((item,index)=><div key={item.url}>
+      <img src={item.url} alt="" />
+      <button type="button" disabled={busy} onClick={()=>{setPreview(false);setPhotoPicker(index);setPicker(true);}}>
+        <strong>Photo {index+1}</strong><span>{item.track?.title||'Use the Moment song'}</span>
+      </button>
+      {item.track&&<button type="button" disabled={busy} aria-label={'Use Moment song for photo '+(index+1)} onClick={()=>{setPreview(false);setMedia(old=>old.map((row,i)=>i===index?{...row,track:null}:row));}}>Reset</button>}
+    </div>)}
+  </div></details>}
   {track&&<details className="moment-sound-options"><summary>Trim & mix<span>{seconds(start)} · {duration}s</span></summary><div className="moment-audio-editor"><MomentWaveform track={track} start={start} duration={duration} maxDuration={maxDuration} disabled={busy} onChange={(nextStart,nextDuration)=>{setPreview(false);setStart(nextStart);setDuration(nextDuration);}} />
   {media.length>0&&<p className="moment-waveform-hint">Tap play on your preview to hear the selected clip with your media.</p>}<label>Music volume <input aria-label="Music volume" type="range" min="0" max="1" step=".05" value={musicVolume} disabled={busy} onChange={e=>setMusicVolume(Number(e.target.value))}/></label>{video&&<label>Original video sound<input aria-label="Original video volume" type="range" min="0" max="1" step=".05" value={originalVolume} disabled={busy} onChange={e=>setOriginalVolume(Number(e.target.value))}/></label>}</div></details>}
   <label className="moment-caption-label">Caption<textarea placeholder="What does this moment sound like?" maxLength={1000} rows={3} value={caption} disabled={busy} onChange={e=>setCaption(e.target.value)}/><small>{caption.length} / 1,000</small></label>
@@ -45,6 +55,6 @@ export default function MomentComposer({seedTrack,onClose,onPublished}){
   {error&&<p className="moment-inline-message" role="alert">{error}</p>}
   </section></div><footer className="moment-composer-footer"><button type="button" disabled={busy} onClick={onClose}>Cancel</button><button type="button" className="moment-primary" disabled={busy||!media.length||!track||!rights} onClick={publish}>{busy?<Loader2 size={17} className="animate-spin"/>:<Plus size={17}/>} {busy?progress:'Post moment'}</button></footer>
  </DialogContent></Dialog>
-  {picker&&<TrackPickerSheet title="Find your soundtrack." description="Choose a song from PUBLIC to bring your moment to life." className="moment-track-picker" selectedIds={track?[track.id]:[]} onClose={()=>setPicker(false)} onToggle={async(id,song)=>{if(Number(song.duration_seconds)>0&&Number(song.duration_seconds)<3)throw Error("Choose a song longer than three seconds.");setError("");setTrack(song);setStart(0);setPicker(false);}}/>}
+  {picker&&<TrackPickerSheet title="Find your soundtrack." description="Choose a song from PUBLIC to bring your moment to life." className="moment-track-picker" selectedIds={photoPicker===null?(track?[track.id]:[]):(media[photoPicker]?.track?[media[photoPicker].track.id]:[])} onClose={()=>{setPhotoPicker(null);setPicker(false);}} onToggle={async(id,song)=>{if(Number(song.duration_seconds)>0&&Number(song.duration_seconds)<3)throw Error("Choose a song longer than three seconds.");setError("");if(photoPicker===null){setTrack(song);setStart(0);}else{setMedia(old=>old.map((item,i)=>i===photoPicker?{...item,track:song}:item));}setPhotoPicker(null);setPicker(false);}}/>}
  </>;
 }
