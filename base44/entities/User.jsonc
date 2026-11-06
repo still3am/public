@@ -533,6 +533,18 @@
           }
         }
       }
+    },
+    "friends_family_badge": {
+      "type": "boolean",
+      "default": false,
+      "description": "Decorative Friends & Family badge granted by a PUBLIC administrator.",
+      "rls": {
+        "write": {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      }
     }
   },
   "required": []
