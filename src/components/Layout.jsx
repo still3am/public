@@ -6,6 +6,7 @@ import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import ErrorBoundary from "@/components/ErrorBoundary";
 import DesktopHeader from "@/components/DesktopHeader";
 import MomentsChrome from "@/components/moments/MomentsChrome";
+import FriendsFamilyProfileBadge from "@/components/profile/FriendsFamilyProfileBadge";
 
 import Sidebar from "@/components/Sidebar";
 import MobileTabBar from "@/components/MobileTabBar";
@@ -37,7 +38,7 @@ export default function Layout() {
   const reducedMotion=useReducedMotion();
   const artworkPage = /^\/(?:track\/[^/]+|album\/[^/]+|playlist\/[^/]+|mix\/[^/]+|recap\/[^/]+(?:\/[^/]+)?|records\/[^/]+|artist|profile(?:\/[^/]+)?)\/?$/.test(location.pathname);
   const { user } = useAuth();
-  const momentsRoute = user?.role === "admin" && /^\/moments(?:\/[^/]+)?\/?$/.test(location.pathname);
+  const momentsRoute = (user?.role === "admin" || user?.friends_family_badge === true) && !user?.disabled && !user?.is_blocked && /^\/moments(?:\/[^/]+)?\/?$/.test(location.pathname);
   const {currentTrack}=usePlayer();
   useScrollRestore();
   useContentClearance(currentTrack?.id,location.pathname);
@@ -85,6 +86,7 @@ export default function Layout() {
         </main>
       </div>
       {momentsRoute && <MomentsChrome key={location.pathname} />}
+      {/^\/profile(?:\/[^/]+)?\/?$/.test(location.pathname) && <FriendsFamilyProfileBadge key={location.pathname} />}
       <ResumePlaybackBanner />
       <PlayerBar />
       <MobileTabBar />

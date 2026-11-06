@@ -42,21 +42,16 @@ export default function UsersManager() {
     catch(error){reportActionError(error,"Couldn’t delete this account. Please try again.");}finally{finish(user.id);}
   };
 
-  async function changeCreator(user,type){if(!begin(user.id))return;try{const saved=await setCreatorAccess(base44,user,type);setUsers(old=>old.map(row=>row.id===user.id?saved:row));}catch(error){reportActionError(error,"Role change could not be saved.");}finally{finish(user.id);}}
-  async function changeFriendsFamily(user) {
-    if (!begin(user.id)) return;
-    const enabled = user.friends_family_badge !== true;
-    try {
-      const result = await base44.functions.invoke('usersByIds', { action: 'set_friends_family_badge', user_id: user.id, enabled });
-      if (result?.data?.friends_family_badge !== enabled) throw Error('Badge change could not be confirmed.');
-      setUsers((previous) => previous.map((row) => row.id === user.id ? { ...row, friends_family_badge: enabled } : row));
-      window.dispatchEvent(new Event('profiles:changed'));
-    } catch (error) {
-      reportActionError(error, 'Couldn’t update the Friends & Family badge. Please try again.');
-    } finally {
-      finish(user.id);
+  async function setFriendsFamilyRole(member, type) {
+    const response = await base44.functions.invoke('usersByIds', { action: 'set_friends_family_badge', user_id: member.id, creator_role: type });
+    const expectedRole = type === 'friends_family' ? 'artist' : type;
+    if (response?.data?.friends_family_badge !== (type === 'friends_family') || response?.data?.creator_role !== expectedRole) {
+      throw Error('Role change could not be confirmed.');
     }
+    window.dispatchEvent(new Event('profiles:changed'));
+    return { ...member, ...response.data };
   }
+  async function changeCreator(user,type){if(!begin(user.id))return;try{const saved=type==='friends_family'||user.friends_family_badge===true?await setFriendsFamilyRole(user,type):await setCreatorAccess(base44,user,type);setUsers(old=>old.map(row=>row.id===user.id?saved:row));}catch(error){reportActionError(error,"Role change could not be saved.");}finally{finish(user.id);}}
   const term = q.trim().toLowerCase();
   const filtered = (users || []).filter(
     (u) =>
@@ -97,7 +92,6 @@ export default function UsersManager() {
               uploads={uploadCounts?uploadCounts[u.id]||0:null}
               busy={busyIds.has(u.id)}
               onCreatorRole={changeCreator}
-              onFriendsFamily={changeFriendsFamily}
               onToggleBlock={toggleBlock}
               onDelete={remove}
             />

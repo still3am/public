@@ -21,10 +21,12 @@
   33% { stop-color: #ff5066; }
   67% { stop-color: #c3153d; }
 }
-.friends-family-avatar { position: relative; display: inline-flex; flex-shrink: 0; }
-.friends-family-avatar > .profile-role-friends_family { position: absolute; inset: auto -3px -2px auto; }
 .profile-admin-badge.moment-compact-badge.profile-role-friends_family { width: 15px; height: 15px; pointer-events: none; }
 .reel-author .profile-admin-badge.moment-compact-badge.profile-role-friends_family { position: static; }
 @media (prefers-reduced-motion: reduce) {
   .profile-role-friends_family .profile-badge-fill stop { animation: none; }
 }
+
+.profile-cover-stage + .profile-role-friends_family { z-index: 21; }
+:has(> .profile-cover-stage):has(> .profile-role-friends_family) > :is(.profile-role-artist,.profile-role-uploader) { display: none; }
+.profile-is-editing .profile-role-friends_family { display: none; }
