@@ -483,3 +483,20 @@
   .moment-comments-sheet[data-keyboard]:has(.reels-discussion-panel) > button:last-child { top: 6px; }
   .moment-comments-sheet[data-keyboard] .discussion-composer { padding-bottom: 8px; }
 }
+
+.public-reels .reel .moment-tap-surface {
+  position: absolute; inset: 0; z-index: 2; width: 100%; border: 0; background: transparent;
+}
+.public-reels .reel .moment-media[data-playing=true] .moment-media-play { opacity: 1; }
+.public-reels .reel .moment-media-mute {
+  inset: calc(46% + 56px) auto auto 50%;
+  transform: translate(-50%, -50%);
+  width: 36px; height: 36px; min-width: 0; min-height: 0;
+}
+.public-reels .reel .moment-media-mute svg { width: 15px; height: 15px; }
+.public-reels .reel .moment-media[data-controls=false] :is(.moment-media-play, .moment-media-mute) {
+  visibility: hidden; pointer-events: none;
+}
+@media (max-height: 620px) {
+  .public-reels .reel .moment-media-mute { top: calc(42% + 49px); }
+}

@@ -3,22 +3,24 @@ import {Play,Pause,Volume2,VolumeX,ChevronLeft,ChevronRight,Loader2} from 'lucid
 import {base44} from '@/api/base44Client';
 import {usePlayer} from '@/context/PlayerContext';
 
-// One explicit sound source at a time. Scrolling away, opening a dialog, hiding
+// One audible Moment at a time. Scrolling away, opening a dialog, hiding
 // the app or starting the regular player releases both audio and video.
 export default function MomentMedia({post,active,onActive}){
  const audio=useRef(null),video=useRef(null),box=useRef(null),progressBar=useRef(null),player=usePlayer(),alive=useRef(true),request=useRef(0);
  const [source,setSource]=useState(''),[loading,setLoading]=useState(false),[error,setError]=useState(''),[muted,setMuted]=useState(false),[index,setIndex]=useState(0);
+ const [inView,setInView]=useState(false),[controls,setControls]=useState(false),[needsTap,setNeedsTap]=useState(false);
+ const hideTimer=useRef(null);
  const [widePhoto,setWidePhoto]=useState('');
  const photoUrl=post.media?.[index]?.url;
  const showPhotoBackdrop=!!photoUrl&&widePhoto===photoUrl;
  const isVideo=post.media?.[0]?.type==='video',start=Number(post.clip_start)||0,length=Number(post.clip_duration)||30;
  const playerRef=useRef(player);playerRef.current=player;
  const stop=()=>{request.current++;audio.current?.pause();video.current?.pause();};
- useEffect(()=>{alive.current=true;return()=>{alive.current=false;stop();};},[]);
+ useEffect(()=>{alive.current=true;return()=>{alive.current=false;clearTimeout(hideTimer.current);stop();};},[]);
  useEffect(()=>{
   const node=box.current;if(!node)return;let cancelled=false,started=false;
   const prepare=async()=>{if(started||!post.track?.id)return;started=true;setLoading(true);try{const t=post.track.audio_url?post.track:await base44.entities.Track.get(post.track.id);if(!t.audio_url)throw Error('Song unavailable.');if(!cancelled)setSource(t.audio_url);}catch(e){if(!cancelled)setError(e?.response?.data?.error||'Song preview unavailable. You can still open the full song.');}finally{if(!cancelled)setLoading(false);}};
-  const observer=new IntersectionObserver(entries=>{const visible=(entries[0]?.intersectionRatio??0)>=.6;if(visible)prepare();else{stop();onActive(false);}},{threshold:.6});observer.observe(node);
+  const observer=new IntersectionObserver(entries=>{const visible=(entries[0]?.intersectionRatio??0)>=.6;setInView(visible);if(visible)prepare();else{clearTimeout(hideTimer.current);setControls(false);setNeedsTap(false);stop();onActive(false);}},{threshold:.6});observer.observe(node);
   return()=>{cancelled=true;observer.disconnect();stop();};
  },[post.id,post.track?.id]);
  useEffect(()=>{if(!active)stop();},[active]);
@@ -26,15 +28,31 @@ export default function MomentMedia({post,active,onActive}){
  useEffect(()=>{if(player.isPlaying){stop();onActive(false);}},[player.isPlaying]);
  useEffect(()=>{const hide=()=>{if(document.hidden){stop();onActive(false);}};document.addEventListener('visibilitychange',hide);return()=>document.removeEventListener('visibilitychange',hide);},[]);
  useEffect(()=>{if(audio.current){audio.current.volume=Number(post.music_volume??.8);audio.current.muted=muted;}if(video.current){video.current.volume=Number(post.original_volume??0);video.current.muted=muted||Number(post.original_volume??0)===0;}},[muted,post.music_volume,post.original_volume]);
- async function play(){
+ useEffect(()=>{
+  if(inView&&source&&!player.isPlaying&&!document.hidden&&!document.querySelector('[role="dialog"][data-state="open"]')) startPlayback();
+ },[inView,source]);
+ function revealControls(){
+  clearTimeout(hideTimer.current);
+  setControls(true);
+  hideTimer.current=setTimeout(()=>setControls(false),3200);
+ }
+ function tapSurface(){
+  if(needsTap&&source){startPlayback();return;}
+  if(controls){clearTimeout(hideTimer.current);setControls(false);}else revealControls();
+ }
+ function play(){
+  revealControls();
   if(active){stop();onActive(false);return;}
+  startPlayback();
+ }
+ async function startPlayback(){
   if(!source&&!isVideo){setError('The music is still loading. Please try again.');return;}
-  setError('');playerRef.current.pausePlayback?.();onActive(true);const version=++request.current;
+  setError('');setNeedsTap(false);playerRef.current.pausePlayback?.();onActive(true);const version=++request.current;
   try{
    const a=audio.current,v=video.current;if(a&&source){if(a.currentTime<start||a.currentTime>=start+length)a.currentTime=start;}
    const promises=[];if(v)promises.push(v.play());if(a&&source)promises.push(a.play());await Promise.all(promises);
-   if(version!==request.current||!alive.current){a?.pause();v?.pause();}
-  }catch{stop();onActive(false);setError('Tap play again to start this moment.');}
+   if(!alive.current){a?.pause();v?.pause();}
+  }catch(e){if(version!==request.current||!alive.current)return;stop();onActive(false);setNeedsTap(true);if(e?.name!=='NotAllowedError'&&e?.name!=='AbortError')setError('Could not start playback. Tap play to retry.');}
  }
  function updateProgress(fraction){
   if(progressBar.current)progressBar.current.style.transform='scaleX('+Math.max(0,Math.min(1,fraction||0))+')';
@@ -43,10 +61,11 @@ export default function MomentMedia({post,active,onActive}){
  function videoTick(){const a=audio.current,v=video.current;if(!v||!active)return;if(!a||!source){updateProgress(v.currentTime/v.duration);return;}const desired=start+(v.currentTime%length);if(Math.abs(a.currentTime-desired)>.6)a.currentTime=desired;}
  function end(){stop();onActive(false);updateProgress(0);if(video.current)video.current.currentTime=0;if(audio.current)audio.current.currentTime=start;}
  return <div ref={box} className="moment-media-wrap">
-  <div className={'moment-media'+(!isVideo&&showPhotoBackdrop?' is-wide-photo':'')} data-playing={active} style={!isVideo&&showPhotoBackdrop?{'--moment-photo':'url('+JSON.stringify(photoUrl)+')'}:undefined}>
+  <div className={'moment-media'+(!isVideo&&showPhotoBackdrop?' is-wide-photo':'')} data-playing={active} data-controls={controls||needsTap} style={!isVideo&&showPhotoBackdrop?{'--moment-photo':'url('+JSON.stringify(photoUrl)+')'}:undefined}>
    {isVideo?<video ref={video} src={post.media[0].url} playsInline preload="metadata" muted={muted||Number(post.original_volume??0)===0} onTimeUpdate={videoTick} onEnded={end} onError={()=>setError('This video cannot play in this browser.')} aria-label="Moment video"/>:<img src={photoUrl} alt={post.caption||'Photo shared in a Moment'} loading="lazy" onLoad={(event)=>{const {naturalWidth,naturalHeight}=event.currentTarget;setWidePhoto(naturalHeight&&naturalWidth/naturalHeight>=.82?photoUrl:'');}}/>}
+   <button type="button" className="moment-tap-surface" onClick={tapSurface} aria-label={needsTap?'Tap to start playback':'Toggle playback controls'} />
    <button type="button" className="moment-media-play" onClick={play} disabled={loading||(!source&&!isVideo)} aria-label={active?'Pause moment':'Play moment'}>{loading?<Loader2 size={20} className="animate-spin"/>:active?<Pause size={20}/>:<Play size={20} fill="currentColor"/>}</button>
-   <button type="button" className="moment-media-mute" onClick={()=>setMuted(v=>!v)} aria-label={muted?'Unmute moment':'Mute moment'}>{muted?<VolumeX size={18}/>:<Volume2 size={18}/>}</button>
+   <button type="button" className="moment-media-mute" onClick={()=>{setMuted(v=>!v);revealControls();}} aria-label={muted?'Unmute moment':'Mute moment'}>{muted?<VolumeX size={18}/>:<Volume2 size={18}/>}</button>
    {!isVideo&&post.media.length>1&&<div className="moment-photo-controls"><button type="button" aria-label="Previous photo" disabled={index===0} onClick={()=>setIndex(n=>n-1)}><ChevronLeft size={20}/></button><span>{index+1} / {post.media.length}</span><button type="button" aria-label="Next photo" disabled={index===post.media.length-1} onClick={()=>setIndex(n=>n+1)}><ChevronRight size={20}/></button></div>}
    <div className="moment-playback-progress" aria-hidden="true"><span ref={progressBar}/></div>
    <audio ref={audio} src={source||undefined} preload="metadata" onLoadedMetadata={()=>{if(audio.current)audio.current.currentTime=start;}} onTimeUpdate={tick} onEnded={()=>{if(active){audio.current.currentTime=start;audio.current.play().catch(end);}}} onError={()=>{setError('This song preview could not load.');end();}}/>
