@@ -20,12 +20,67 @@ import '@/components/moments/mobile-feed.css';
 const name = (p) => p?.display_name || p?.username || 'PUBLIC listener';
 function SongArtwork({ url }) {const fixed = useCoverUrl(url);return fixed ? <img src={fixed} alt="" loading="lazy" /> : <Music2 size={22} />;}
 function MomentComments({ post, onReport }) {
-  const { user } = useAuth(),nav = useNavigate();const [rows, setRows] = useState([]),[body, setBody] = useState(''),[busy, setBusy] = useState(false),[loading, setLoading] = useState(true),[error, setError] = useState(''),[page, setPage] = useState({ offset: 0, more: false });const live = useRef(true),lock = useRef(false),token = useRef(crypto.randomUUID());
+  const { user } = useAuth(),nav = useNavigate();const [rows, setRows] = useState([]),[body, setBody] = useState(''),[busy, setBusy] = useState(false),[loading, setLoading] = useState(true),[error, setError] = useState(''),[page, setPage] = useState({ offset: 0, more: false });const section = useRef(null),live = useRef(true),lock = useRef(false),token = useRef(crypto.randomUUID());
   const load = async (more = false) => {setLoading(true);setError('');try {const result = await momentsApi('comments', { id: post.id, offset: more ? page.offset : 0 });if (!live.current) return;setRows((old) => more ? [...old, ...result.items.filter((x) => !old.some((y) => y.id === x.id))] : result.items);setPage({ offset: result.next_offset, more: result.has_more });} catch (e) {if (live.current) setError(momentError(e));} finally {if (live.current) setLoading(false);}};
   useEffect(() => {live.current = true;if (user) load();else setLoading(false);return () => {live.current = false;};}, [post.id, user?.id]);
+  useEffect(() => {
+    const sheet = section.current?.closest('.moment-comments-sheet');
+    const viewport = window.visualViewport;
+    if (!sheet || !viewport) return;
+    function fitViewport() {
+      sheet.style.setProperty('--discussion-height', viewport.height + 'px');
+      sheet.style.setProperty('--discussion-lift', Math.max(0, window.innerHeight - viewport.height - viewport.offsetTop) + 'px');
+      sheet.toggleAttribute('data-keyboard', window.innerHeight - viewport.height > 120);
+    }
+    fitViewport();
+    viewport.addEventListener('resize', fitViewport);
+    viewport.addEventListener('scroll', fitViewport);
+    return () => {
+      viewport.removeEventListener('resize', fitViewport);
+      viewport.removeEventListener('scroll', fitViewport);
+    };
+  }, []);
   async function submit(e) {e.preventDefault();if (!user) {nav('/login?returnTo=' + encodeURIComponent('/moments/' + post.id));return;}if (lock.current || !body.trim()) return;lock.current = true;setBusy(true);setError('');try {await momentsApi('comment', { id: post.id, body, request_id: token.current });if (live.current) {setBody('');token.current = crypto.randomUUID();await load();}} catch (e) {if (live.current) setError(momentError(e));} finally {lock.current = false;if (live.current) setBusy(false);}}
   async function remove(c) {if (lock.current) return;lock.current = true;setBusy(true);try {await momentsApi('delete_comment', { id: post.id, comment_id: c.id });setRows((old) => old.filter((x) => x.id !== c.id));} catch (e) {setError(momentError(e));} finally {lock.current = false;setBusy(false);}}
-  return <section className="moment-comments" aria-label="Moment comments"><h3>In the conversation</h3>{!user ? <p><Link to={'/login?returnTo=' + encodeURIComponent('/moments/' + post.id)}>Sign in to read and join the conversation.</Link></p> : <>{!rows.length && !loading && !error && <p>Be the first to say something.</p>}{rows.map((c) => <div className="moment-comment" key={c.id}><Link to={'/profile/' + c.author.user_id}><Avatar user={c.author} size={30} /></Link><div><Link to={'/profile/' + c.author.user_id}><strong>{name(c.author)}</strong></Link><p>{c.body}</p><small>{new Date(c.created_date).toLocaleDateString()}</small></div>{c.can_delete ? <button type="button" disabled={busy} aria-label="Delete comment" onClick={() => remove(c)}><Trash2 size={15} /></button> : <button type="button" aria-label="Report comment" onClick={() => onReport({ type: 'moment_comment', id: c.id, userId: c.author.user_id })}><Flag size={14} /></button>}</div>)}{loading && <p role="status">Loading comments…</p>}{page.more && !loading && <button type="button" onClick={() => load(true)}>More comments</button>}<form onSubmit={submit}><input aria-label="Write a comment" placeholder="Add to the moment…" maxLength={1000} value={body} disabled={busy} onChange={(e) => setBody(e.target.value)} /><button type="submit" disabled={busy || !body.trim()} aria-label="Post comment">{busy ? <Loader2 size={18} className="animate-spin" /> : <Send size={18} />}</button></form></>}{error && <p className="moment-inline-message" role="alert">{error}<button type="button" onClick={() => load()}>Retry</button></p>}</section>;
+  return <section ref={section} className="discussion-comments" aria-label="Moment comments">
+    <div className="discussion-list" aria-busy={loading}>
+      {!user && <p className="discussion-empty"><Link to={'/login?returnTo=' + encodeURIComponent('/moments/' + post.id)}>Sign in to join the conversation.</Link></p>}
+      {user && !rows.length && !loading && !error && <p className="discussion-empty">Be the first to comment.</p>}
+      {rows.map((comment) => {
+        const author = comment.author;
+        const profile = author?.user_id ? '/profile/' + author.user_id : null;
+        const date = new Date(comment.created_date);
+        return <article className="discussion-comment" key={comment.id}>
+          {profile ? <Link to={profile} aria-label={name(author)}><Avatar user={author} size={34} /></Link> : <Avatar user={author ?? {}} size={34} />}
+          <div>
+            <div className="discussion-byline">
+              {profile ? <Link to={profile}><strong>{name(author)}</strong></Link> : <strong>{name(author)}</strong>}
+              {!Number.isNaN(date.getTime()) && <time dateTime={date.toISOString()}>{date.toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}</time>}
+            </div>
+            <p>{comment.body}</p>
+          </div>
+          {comment.can_delete ?
+            <button type="button" disabled={busy} aria-label="Delete comment" onClick={() => remove(comment)}><Trash2 size={16} /></button> :
+            <button type="button" aria-label="Report comment" onClick={() => onReport({ type: 'moment_comment', id: comment.id, userId: author?.user_id })}><Flag size={15} /></button>}
+        </article>;
+      })}
+      {loading && <p className="discussion-empty" role="status">Loading comments…</p>}
+      {page.more && !loading && <button className="discussion-more" type="button" onClick={() => load(true)}>Load more comments</button>}
+    </div>
+    {error && <p className="discussion-error" role="alert">{error}</p>}
+    {error && !rows.length && !loading && <button className="discussion-more" type="button" disabled={busy} onClick={() => load()}>Retry loading comments</button>}
+    {user && <div className="discussion-composer">
+      <div className="discussion-reactions" role="group" aria-label="Quick reactions">
+        {[['❤️','Heart'],['🙌','Celebrate'],['🔥','Fire'],['👏','Clap'],['😢','Sad'],['😍','Love'],['😮','Surprised'],['😂','Laugh']].map(([emoji, label]) =>
+          <button type="button" key={label} aria-label={'Add ' + label + ' reaction'} disabled={busy || body.length + emoji.length > 1000} onClick={() => setBody((value) => value.length + emoji.length <= 1000 ? value + emoji : value)}>{emoji}</button>)}
+      </div>
+      <form onSubmit={submit}>
+        <Avatar user={user} size={32} />
+        <input aria-label="Write a comment" placeholder="Add a comment…" maxLength={1000} value={body} disabled={busy} onChange={(event) => setBody(event.target.value)} />
+        <button type="submit" disabled={busy || !body.trim()} aria-label="Post comment">{busy ? <Loader2 size={18} className="animate-spin" /> : <Send size={18} />}</button>
+      </form>
+    </div>}
+  </section>;
 }
 function ReportMoment({ target, onClose }) {
   const [reason, setReason] = useState(''),[busy, setBusy] = useState(false),[sent, setSent] = useState(false),[error, setError] = useState('');
@@ -119,7 +174,7 @@ export function MomentsExperience() {
           </div>
           <div className="reel-actions" role="group" aria-label="Moment actions">
             <button type="button" aria-pressed={post.liked} disabled={busy === post.id} onClick={() => like(post)} aria-label={post.liked ? 'Unlike moment' : 'Like moment'}><Heart size={26} fill={post.liked ? 'currentColor' : 'none'} /><span>{post.like_count || 0}</span></button>
-            <button type="button" aria-label="Comments" aria-expanded={comments.has(post.id)} onClick={() => {setActive(null);setComments((old) => new Set(old).add(post.id));}}><MessageCircle size={25} /></button>
+            <button type="button" id={'discussion-trigger-' + post.id} aria-label="Comments" aria-expanded={comments.has(post.id)} onClick={() => {setActive(null);setComments((old) => new Set(old).add(post.id));}}><MessageCircle size={25} /></button>
             <button type="button" disabled={busy === post.id} onClick={() => share(post)} aria-label="Share moment"><Share2 size={24} /></button>
             <details className="reel-menu" onKeyDown={(event) => {
               if (event.key !== 'Escape' || !event.currentTarget.open) return;
@@ -129,8 +184,10 @@ export function MomentsExperience() {
               <summary aria-label="More moment options"><MoreHorizontal size={25} /></summary>
               <div>
                 {post.track && <>
-                  <Link to={'/artist?name=' + encodeURIComponent(post.track.artist.split(/,|&| feat\.| ft\./i)[0].trim())}><ArrowUpRight size={16} />Explore artist</Link>
+                  <Link to={'/artist?name=' + encodeURIComponent((post.track.artist || '').split(/,|&| feat\.| ft\./i)[0].trim())}><ArrowUpRight size={16} />Explore artist</Link>
                   <Link to={'/moments?song=' + encodeURIComponent(post.track.id)}><Music2 size={16} />More with this song</Link>
+                  <LibraryButton track={post.track} label />
+                  <button type="button" className="moment-use-song" onClick={() => create(post.track)}><Plus size={16} />Use song</button>
                 </>}
                 {post.can_delete && <button type="button" disabled={!!busy} onClick={() => remove(post)}><Trash2 size={16} />Delete moment</button>}
                 {user && user.id !== post.user_id && <>
@@ -140,14 +197,10 @@ export function MomentsExperience() {
                 <Link to={'/moments/' + post.id}><ArrowUpRight size={16} />Open moment</Link>
               </div>
             </details>
+            {post.track && <Link className="reel-track-art" to={'/track/' + post.track.id} aria-label={'Open ' + post.track.title + (post.track.artist ? ' by ' + post.track.artist : '')} title={post.track.title}>
+              <SongArtwork url={post.track.cover_art_url} />
+            </Link>}
           </div>
-          {post.track ? <div className="reel-song">
-            <Link to={'/track/' + post.track.id} className="reel-song-info">
-              <span className="reel-art"><SongArtwork url={post.track.cover_art_url} /></span><span><strong>{post.track.title}</strong><small>{post.track.artist}</small></span>
-            </Link>
-            <LibraryButton track={post.track} className="reel-song-save" />
-            <button type="button" className="moment-use-song" onClick={() => create(post.track)}>Use song</button>
-          </div> : <p className="reel-song reel-unavailable">This song is no longer available.</p>}
         </div>
       </article>)}
       {!loading && !visiblePosts.length && !error && <section className="reels-state">
@@ -166,9 +219,25 @@ export function MomentsExperience() {
       <button type="button" aria-label="Next moment" disabled={currentReel >= visiblePosts.length - 1} onClick={() => moveReel(1)}><ChevronDown size={22} /></button>
     </nav>}
     {visiblePosts.filter((post) => comments.has(post.id)).map((post) => <Dialog key={post.id} open onOpenChange={(open) => { if (!open) dismissComments(post.id); }}>
-      <DialogContent className={mobile ? 'moment-comments-sheet' : 'reels-comments'}>
-        <DialogHeader><DialogTitle>Comments</DialogTitle><DialogDescription>Join the conversation around this moment.</DialogDescription></DialogHeader>
-        <MomentComments post={post} onReport={setReport} />
+      <DialogContent className={mobile ? 'moment-comments-sheet' : 'reels-comments'} onOpenAutoFocus={(event) => {
+        event.preventDefault();
+        document.getElementById('discussion-title-' + post.id)?.focus();
+      }} onCloseAutoFocus={(event) => {
+        event.preventDefault();
+        if (!report) document.getElementById('discussion-trigger-' + post.id)?.focus();
+      }}>
+        {mobile && post.media?.[0]?.url && <div className="discussion-preview" aria-hidden="true">
+          {post.media[0].type === 'video' ?
+            <video src={post.media[0].url + '#t=0.1'} preload="metadata" muted playsInline /> :
+            <img src={post.media[0].url} alt="" />}
+        </div>}
+        <div className="reels-discussion-panel">
+          <DialogHeader className="discussion-header">
+            <DialogTitle id={'discussion-title-' + post.id} tabIndex={-1}>Comments</DialogTitle>
+            <DialogDescription className="sr-only">Comments on this Moment.</DialogDescription>
+          </DialogHeader>
+          <MomentComments post={post} onReport={(target) => { dismissComments(post.id); setReport(target); }} />
+        </div>
       </DialogContent>
     </Dialog>)}
   {composer && <MomentComposer seedTrack={seed} onClose={() => setComposer(false)} onPublished={(post) => {setComposer(false);setNotice('Your moment is live.');if (id || scope === 'following' || trackFilter) {nav('/moments?view=mine');} else {setPosts((old) => [post, ...old.filter((x) => x.id !== post.id)]);if (feed.current) feed.current.scrollTop = 0;setReelIndex(0);}}} />}{report && <ReportMoment target={report} onClose={() => setReport(null)} />}
