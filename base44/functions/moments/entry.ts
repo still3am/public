@@ -14,7 +14,7 @@ export async function momentsAction(b,u,d){
  if(!d||typeof d!=='object'||Array.isArray(d))fail('Choose a Moments action.');
  // The launch preview is restricted on the server as well as in the UI.
  if(!u?.id)fail('Moments is coming soon.',401);
- if(u.role!=='admin')fail('Moments is coming soon.',403);
+ if(u.role!=='admin'&&u.friends_family_badge!==true)fail('Moments is coming soon.',403);
  const s=b.asServiceRole,admin=u?.role==='admin';
  const auth=()=>{if(!u?.id)fail('Sign in to join Moments.',401);if(u.disabled||u.is_blocked)fail('Account unavailable.',403);};
  if(u&&(u.disabled||u.is_blocked))fail('Account unavailable.',403);
@@ -48,7 +48,7 @@ export async function momentsAction(b,u,d){
  auth();const p=await post(d.id);
  if(d.action==='share_people'){
   const people=[];
-  for(const account of await all(s.entities.User,{role:'admin'})){
+  for(const account of await all(s.entities.User,{$or:[{role:'admin'},{friends_family_badge:true}]})){
    if(account.id===u.id||account.disabled||account.is_blocked)continue;
    const recipient=await person(account.id);
    if(recipient)people.push(recipient);
@@ -60,7 +60,7 @@ export async function momentsAction(b,u,d){
   if(typeof recipientId!=='string'||!/^[a-zA-Z0-9_-]{1,100}$/.test(recipientId)||recipientId===u.id)fail('Choose a recipient.');
   const [sender,recipient]=await Promise.all([person(u.id),person(recipientId)]);
   const account=recipient&&await s.entities.User.get(recipientId);
-  if(!sender||!recipient||account?.role!=='admin')fail('This person cannot receive Moments.',403);
+  if(!sender||!recipient||(account?.role!=='admin'&&account?.friends_family_badge!==true))fail('This person cannot receive Moments.',403);
   if(p.user_id!==u.id&&rows(await s.entities.Block.filter({$or:[{user_id:recipientId,blocked_user_id:p.user_id},{user_id:p.user_id,blocked_user_id:recipientId}]},'-created_date',1)).length)fail('This person cannot open the Moment.',403);
   const source_key='moment-share:'+u.id+':'+p.id+':'+recipientId;
   const prior=rows(await s.entities.Notification.filter({source_key},'-created_date',1))[0];
