@@ -86,6 +86,11 @@
       ],
       "default": "normal",
       "description": "Creator-selected timing for advancing photos."
+    },
+    "sample_author_name": {
+      "type": "string",
+      "maxLength": 45,
+      "description": "Fictional byline for staff-created sample Moments."
     }
   },
   "required": [
