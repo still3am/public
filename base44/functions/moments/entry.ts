@@ -41,6 +41,30 @@ export async function momentsAction(b,u,d){
   await moderate(s,caption);const p=await s.entities.Moment.create({user_id:u.id,caption,media:media.map(m=>({url:m.url,type:m.type,size:m.size,duration:m.duration||0})),track_id:song.id,clip_start:start,clip_duration:duration,music_volume:volumes[0],original_volume:video?volumes[1]:0,rights_confirmed:true,status:'published',liker_ids:[],request_id:d.request_id});return {post:await present(p)};
  }
  auth();const p=await post(d.id);
+ if(d.action==='share_people'){
+  const people=[];
+  for(const account of await all(s.entities.User,{role:'admin'})){
+   if(account.id===u.id||account.disabled||account.is_blocked)continue;
+   const recipient=await person(account.id);
+   if(recipient)people.push(recipient);
+  }
+  return {people};
+ }
+ if(d.action==='share'){
+  const recipientId=d.recipient_id;
+  if(typeof recipientId!=='string'||!/^[a-zA-Z0-9_-]{1,100}$/.test(recipientId)||recipientId===u.id)fail('Choose a recipient.');
+  const [sender,recipient]=await Promise.all([person(u.id),person(recipientId)]);
+  const account=recipient&&await s.entities.User.get(recipientId);
+  if(!sender||!recipient||account?.role!=='admin')fail('This person cannot receive Moments.',403);
+  if(p.user_id!==u.id&&rows(await s.entities.Block.filter({$or:[{user_id:recipientId,blocked_user_id:p.user_id},{user_id:p.user_id,blocked_user_id:recipientId}]},'-created_date',1)).length)fail('This person cannot open the Moment.',403);
+  const source_key='moment-share:'+u.id+':'+p.id+':'+recipientId;
+  const prior=rows(await s.entities.Notification.filter({source_key},'-created_date',1))[0];
+  if(prior)return {success:true};
+  if(rows(await s.entities.Notification.filter({actor_id:u.id,type:'moment_shared',created_date:{$gte:new Date(Date.now()-60000).toISOString()}},'-created_date',8)).length>=8)fail('Give it a moment, then try again.',429);
+  const saved=await s.entities.Notification.create({user_id:recipientId,type:'moment_shared',actor_id:u.id,actor_name:sender.display_name,actor_avatar_url:sender.avatar_url,target_path:'/moments/'+encodeURIComponent(p.id),source_key,read:false});
+  if(!saved?.id)fail('Could not confirm delivery. Try again.',503);
+  return {success:true};
+ }
  if(d.action==='like'){if(typeof d.liked!=='boolean')fail('Choose a like state.');await s.entities.Moment.updateMany({id:p.id,status:'published'},d.liked?{$addToSet:{liker_ids:u.id}}:{$pull:{liker_ids:u.id}});const saved=await post(p.id);return {liked:saved.liker_ids?.includes(u.id)||false,like_count:saved.liker_ids?.length||0};}
  if(d.action==='delete'){if(p.user_id!==u.id&&!admin)fail('Only the creator can delete this Moment.',403);await s.entities.Moment.update(p.id,{status:'deleted',media:[],caption:'',liker_ids:[]});await s.entities.MomentComment.deleteMany({moment_id:p.id});return {success:true};}
  if(d.action==='comments'){const offset=Math.max(0,Math.floor(Number(d.offset)||0)),page=rows(await s.entities.MomentComment.filter({moment_id:p.id,status:'published',...(blocked.size?{user_id:{$nin:[...blocked]}}:{})},'-created_date',21,offset));const items=[];for(const c of page.slice(0,20)){const author=await person(c.user_id);if(author)items.push({id:c.id,body:c.body,created_date:c.created_date,author,can_delete:admin||c.user_id===u.id||p.user_id===u.id});}return {items,has_more:page.length>20,next_offset:offset+Math.min(20,page.length)};}
