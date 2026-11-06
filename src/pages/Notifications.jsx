@@ -26,6 +26,7 @@ const ICONS = {
   new_upload_from_followed: Music,
   profile_comment: MessageCircle,
   music_request_new: Send,
+  moment_shared: Send,
   track_shared: Send
 };
 
@@ -46,6 +47,7 @@ function getMessage(n) {
     support_reply:"replied to your support request",
     music_request_available:"made requested music available",
     music_request_new:"has a new song request for uploaders",
+    moment_shared:"sent you a Moment",
     track_shared:"sent you a song"
   })[n.type] || "sent you a notification";
 }
@@ -59,7 +61,7 @@ export default function Notifications() {
   const { notifications, loading, error, hasMore, reload, loadMore, unreadCount, markAllAsRead, markAsRead } =
   useNotifications();
 
-  const visibleNotifications=notifications.filter(n=>!blocked.has(n.actor_id)&&(view!=="unread"||!n.read)&&(view!=="music"||n.type==="track_shared"||n.type==="new_upload_from_followed"||n.type==="music_request_available"||n.type==="music_request_new")&&(view!=="shared"||n.type==="track_shared")&&(!query.trim()||[actorName(n),n.track?.title,n.track?.artist,n.comment,getMessage(n)].some(value=>String(value||"").toLowerCase().includes(query.trim().toLowerCase()))));
+  const visibleNotifications=notifications.filter(n=>!blocked.has(n.actor_id)&&(view!=="unread"||!n.read)&&(view!=="music"||n.type==="track_shared"||n.type==="new_upload_from_followed"||n.type==="music_request_available"||n.type==="music_request_new")&&(view!=="shared"||n.type==="track_shared"||n.type==="moment_shared")&&(!query.trim()||[actorName(n),n.track?.title,n.track?.artist,n.comment,getMessage(n)].some(value=>String(value||"").toLowerCase().includes(query.trim().toLowerCase()))));
 
   if (loading && !notifications.length) {
     return (

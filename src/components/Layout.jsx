@@ -5,6 +5,7 @@ import { Outlet, useLocation } from "react-router-dom";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import ErrorBoundary from "@/components/ErrorBoundary";
 import DesktopHeader from "@/components/DesktopHeader";
+import MomentsChrome from "@/components/moments/MomentsChrome";
 
 import Sidebar from "@/components/Sidebar";
 import MobileTabBar from "@/components/MobileTabBar";
@@ -83,6 +84,7 @@ export default function Layout() {
           </AnimatePresence>
         </main>
       </div>
+      {momentsRoute && <MomentsChrome key={location.pathname} />}
       <ResumePlaybackBanner />
       <PlayerBar />
       <MobileTabBar />
