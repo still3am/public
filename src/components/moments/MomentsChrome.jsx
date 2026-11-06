@@ -13,6 +13,15 @@ export default function MomentsChrome() {
     const root = document.querySelector('.moments-route');
     if (!root) return;
     let idle;
+    // The feed owns follow state. Hide its already-followed control after each render.
+    function hideFollowing() {
+      root.querySelectorAll('.reel-follow').forEach((button) => {
+        button.hidden = button.textContent.trim() === 'Following';
+      });
+    }
+    const followObserver = new MutationObserver(hideFollowing);
+    followObserver.observe(root, { subtree: true, childList: true, characterData: true });
+    hideFollowing();
     function reveal() {
       delete root.dataset.momentsIdle;
       clearTimeout(idle);
@@ -32,6 +41,7 @@ export default function MomentsChrome() {
     window.addEventListener('public:share-moment', openShare);
     return () => {
       clearTimeout(idle);
+      followObserver.disconnect();
       delete root.dataset.momentsIdle;
       root.removeEventListener('pointerdown', reveal, true);
       root.removeEventListener('pointermove', pointerMove);
