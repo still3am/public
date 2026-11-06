@@ -94,8 +94,29 @@ export async function momentsAction(b,u,d){
   }
   return {items,has_more:page.length>20,next_offset:offset+Math.min(20,page.length)};
  }
- if(d.action==='comments'){const offset=Math.max(0,Math.floor(Number(d.offset)||0)),page=rows(await s.entities.MomentComment.filter({moment_id:p.id,status:'published',$or:[{parent_id:{$exists:false}},{parent_id:null},{parent_id:''}],...(blocked.size?{user_id:{$nin:[...blocked]}}:{})},'-created_date',21,offset));const items=[];for(const c of page.slice(0,20)){const author=await person(c.user_id);if(author)items.push({id:c.id,body:c.body,created_date:c.created_date,author:{...author,moment_comment_id:c.id},can_delete:admin||c.user_id===u.id||p.user_id===u.id});}return {items,has_more:page.length>20,next_offset:offset+Math.min(20,page.length)};}
- if(d.action==='comment'){if(!await person(u.id))fail('Finish setting up your public profile before commenting.',422);await rate(s.entities.MomentComment,'user_id',20);const parent=d.parent_id===undefined?null:await rootComment(d.parent_id);const body=text(d.body||'',1000);if(!body)fail('Write a comment first.');if(!/^[a-zA-Z0-9-]{8,100}$/.test(d.request_id||''))fail('Please retry your comment.');const prior=rows(await s.entities.MomentComment.filter({user_id:u.id,request_id:d.request_id},'-created_date',1))[0];if(!prior){await moderate(s,body);await s.entities.MomentComment.create({moment_id:p.id,user_id:u.id,body,parent_id:parent?.id||'',status:'published',request_id:d.request_id});}return {success:true};}
+ if(d.action==='comments'){
+  let cursor=Math.max(0,Math.min(100000,Math.floor(Number(d.offset)||0)));
+  const items=[];
+  const batchSize=50;
+  // Older comments omit parent_id. Treat missing, null, and empty values as roots
+  // without relying on compound filters for legacy records.
+  for(let batch=0;batch<6;batch++){
+   const page=rows(await s.entities.MomentComment.filter({moment_id:p.id,status:'published'},'-created_date',batchSize,cursor));
+   for(const c of page){
+    if(!c.parent_id&&!blocked.has(c.user_id)){
+     const author=await person(c.user_id);
+     if(author){
+      if(items.length===20)return {items,has_more:true,next_offset:cursor};
+      items.push({id:c.id,body:c.body,created_date:c.created_date,author:{...author,moment_comment_id:c.id},can_delete:admin||c.user_id===u.id||p.user_id===u.id});
+     }
+    }
+    cursor++;
+   }
+   if(page.length<batchSize)return {items,has_more:false,next_offset:cursor};
+  }
+  return {items,has_more:true,next_offset:cursor};
+ }
+ if(d.action==='comment'){if(!await person(u.id))fail('Finish setting up your public profile before commenting.',422);const parent=d.parent_id===undefined?null:await rootComment(d.parent_id);const body=text(d.body||'',1000);if(!body)fail('Write a comment first.');if(!/^[a-zA-Z0-9-]{8,100}$/.test(d.request_id||''))fail('Please retry your comment.');const prior=rows(await s.entities.MomentComment.filter({user_id:u.id,request_id:d.request_id},'-created_date',1))[0];if(!prior){await rate(s.entities.MomentComment,'user_id',20);await moderate(s,body);await s.entities.MomentComment.create({moment_id:p.id,user_id:u.id,body,parent_id:parent?.id||'',status:'published',request_id:d.request_id});}return {success:true};}
  if(d.action==='delete_comment'){const c=await s.entities.MomentComment.get(d.comment_id);if(c.moment_id!==p.id||(!admin&&c.user_id!==u.id&&p.user_id!==u.id))fail('Comment access denied.',403);await s.entities.MomentComment.update(c.id,{status:'deleted',body:''});return {success:true};}
  fail('Unknown Moments action.');
 }
