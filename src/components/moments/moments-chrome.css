@@ -1,7 +1,6 @@
 .moments-route .reels-header { transition: opacity .2s ease, transform .2s ease; }
 .moments-route[data-moments-idle=true] .reels-header:not(:focus-within):not(:hover) { opacity: 0; transform: translateY(-5px); }
 .moments-route[data-moments-idle=true] .reels-header:not(:focus-within):not(:hover) > :is(.reels-tabs,.moment-primary) { pointer-events: none; }
-.moments-route .reel-actions { margin-bottom: clamp(10px, 2.2dvh, 21px); }
 @media (prefers-reduced-motion:reduce) { .moments-route .reels-header { transition: none; } }
 .moment-share-dialog { background: #161719; color: #fff; color-scheme: dark; }
 .moment-share-dialog p, .moment-share-person small { color: #bec0c7; }
@@ -29,3 +28,21 @@
   pointer-events: none;
 }
 .reel-author .moment-compact-badge svg { width: 15px; height: 15px; }
+
+/* Match the two playback positions while keeping play the larger control. */
+.moments-route .public-reels .reel .moment-media {
+  --moment-control-center: 46%;
+  --moment-control-gap: 56px;
+}
+.moments-route .public-reels .reel .moment-media-play {
+  top: calc(var(--moment-control-center) + var(--moment-control-gap));
+}
+.moments-route .public-reels .reel .moment-media-mute {
+  top: var(--moment-control-center);
+}
+@media (max-height: 620px) {
+  .moments-route .public-reels .reel .moment-media {
+    --moment-control-center: 42%;
+    --moment-control-gap: 48px;
+  }
+}
