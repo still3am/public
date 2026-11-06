@@ -9,16 +9,6 @@
 .moment-waveform-inputs { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
 .moment-waveform-inputs input { width: 100%; min-width: 0; }
 .moment-waveform-hint { font-size: 12px; opacity: .8; }
-.moment-media-wrap[data-photo-swipe=true] img[data-photo-motion] {
-  animation: public-moment-photo-in 220ms cubic-bezier(.2,.72,.3,1) both;
-}
-@keyframes public-moment-photo-in {
-  from { transform: scale(1.018); }
-  to { transform: scale(1); }
-}
-@media (prefers-reduced-motion: reduce) {
-  .moment-media-wrap[data-photo-swipe=true] img[data-photo-motion] { animation: none; }
-}
 
 .reel-actions:has(.moment-photo-track) > .reel-track-art:not(.moment-photo-track) { display: none; }
 .reel-actions > .moment-photo-track { pointer-events: auto; }
@@ -43,4 +33,14 @@
 @media (pointer: fine) {
   .moment-media-wrap[data-photo-swipe=true] .moment-tap-surface { cursor: grab; }
   .moment-media-wrap[data-photo-swipe=true] .moment-tap-surface:active { cursor: grabbing; }
+}
+
+.public-reels .reel .moment-media > img[data-held-photo=true],
+.moment-composer .moment-media > img[data-held-photo=true] {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  pointer-events: none;
 }

@@ -24,6 +24,8 @@ export default function MomentMedia({ post, active, onActive, muted = false, onT
   const hideTimer = useRef(null),photo = useRef(null),still = useRef(null);
   const [pausedGif, setPausedGif] = useState(false);
   const [widePhoto, setWidePhoto] = useState('');
+  const [heldPhoto, setHeldPhoto] = useState(null);
+  const visiblePhoto = useRef(null);
   const photoCount = post.media?.length || 0;
   const slide = post.media?.[index];
   const photoUrl = slide?.url;
@@ -89,7 +91,7 @@ export default function MomentMedia({ post, active, onActive, muted = false, onT
     return () => { cancelled = true; };
   }, [inView, currentTrack?.id, currentTrack?.audio_url]);
   useEffect(() => {if (!active) stop();}, [active]);
-  useEffect(() => {stop();onActive(false);photoRequest.current++;desiredPhoto.current=0;setIndex(0);if (audio.current) audio.current.currentTime = start;if (video.current) video.current.currentTime = 0;updateProgress(0);}, [post.clip_start, post.clip_duration]);
+  useEffect(() => {stop();onActive(false);photoRequest.current++;desiredPhoto.current=0;setHeldPhoto(null);setIndex(0);if (audio.current) audio.current.currentTime = start;if (video.current) video.current.currentTime = 0;updateProgress(0);}, [post.clip_start, post.clip_duration]);
   useEffect(() => {if (player.isPlaying) {stop();onActive(false);}}, [player.isPlaying]);
   useEffect(() => {const hide = () => {if (document.hidden) {stop();onActive(false);}};document.addEventListener('visibilitychange', hide);return () => document.removeEventListener('visibilitychange', hide);}, []);
   useEffect(() => {if (audio.current) {audio.current.volume = Number(post.music_volume ?? .8);audio.current.muted = muted;}if (video.current) {video.current.volume = Number(post.original_volume ?? 0);video.current.muted = muted || Number(post.original_volume ?? 0) === 0;}}, [muted, post.music_volume, post.original_volume]);
@@ -179,6 +181,7 @@ export default function MomentMedia({ post, active, onActive, muted = false, onT
         desiredPhoto.current = next;
         direction.current = step;
         setPhotoChanged(true);
+        setHeldPhoto(visiblePhoto.current);
         setPausedGif(false);
         setIndex(next);
         return;
@@ -280,7 +283,22 @@ export default function MomentMedia({ post, active, onActive, muted = false, onT
   }, [isVideo, photoCount]);
   return <div ref={box} className="moment-media-wrap" data-photo-swipe={!isVideo && post.media.length > 1} onPointerDown={mouseDown} onPointerMove={mouseMove} onPointerUp={mouseEnd} onPointerCancel={mouseEnd} onLostPointerCapture={mouseEnd} onPointerLeave={(event) => { if (!mouse.current?.dragging) mouseEnd(event); }} onTouchStart={startSwipe} onTouchEnd={finishSwipe} onTouchCancel={() => {touch.current = null;setTouching(false);}}>
   <div className={'moment-media' + (!isVideo && showPhotoBackdrop ? ' is-wide-photo' : '')} data-playing={active} data-controls={controls || needsTap} style={!isVideo && showPhotoBackdrop ? { '--moment-photo': 'url(' + JSON.stringify(photoUrl) + ')' } : undefined}>
-   {isVideo ? <video ref={video} src={post.media[0].url} playsInline preload="metadata" muted={muted || Number(post.original_volume ?? 0) === 0} onTimeUpdate={videoTick} onEnded={end} onError={() => setError('This video cannot play in this browser.')} aria-label="Moment video" /> : <img draggable={false} key={photoUrl} ref={photo} data-photo-motion={photoChanged ? direction.current < 0 ? 'backward' : 'forward' : undefined} hidden={pausedGif} src={photoUrl} alt={post.caption || 'Photo shared in a Moment'} loading={photoChanged ? "eager" : "lazy"} onLoad={(event) => {const { naturalWidth, naturalHeight } = event.currentTarget;setWidePhoto(naturalHeight && naturalWidth / naturalHeight >= .82 ? photoUrl : '');}} />}
+   {isVideo ? <video ref={video} src={post.media[0].url} playsInline preload="metadata" muted={muted || Number(post.original_volume ?? 0) === 0} onTimeUpdate={videoTick} onEnded={end} onError={() => setError('This video cannot play in this browser.')} aria-label="Moment video" /> : [
+    { url: photoUrl, held: false },
+    ...(heldPhoto?.url && heldPhoto.url !== photoUrl ? [{ ...heldPhoto, held: true }] : []),
+   ].map(({ url, held, wide }) => <img key={url} ref={held ? null : photo} draggable={false}
+      data-held-photo={held ? 'true' : undefined}
+      style={held ? {objectFit: wide ? 'contain' : 'cover'} : undefined}
+      hidden={!held && pausedGif} src={url} alt={held ? '' : post.caption || 'Photo shared in a Moment'}
+      aria-hidden={held || undefined} loading={held || photoChanged ? 'eager' : 'lazy'}
+      onLoad={held ? undefined : (event) => {
+        const { naturalWidth, naturalHeight } = event.currentTarget;
+        const wide = !!naturalHeight && naturalWidth / naturalHeight >= .82;
+        visiblePhoto.current = { url, wide };
+        setWidePhoto(wide ? url : '');
+        setHeldPhoto(null);
+      }} />)}
+
    {isGif && <canvas ref={still} className={showPhotoBackdrop || widePhoto === photoUrl ? 'moment-gif-still is-wide' : 'moment-gif-still'} hidden={!pausedGif} aria-hidden="true" />}
    {!draftPreview && <button type="button" className="moment-tap-surface" onClick={tapSurface} aria-label={needsTap ? 'Tap to start playback' : 'Toggle playback controls'} />}
    <button type="button" className="moment-media-play" onClick={play} disabled={loading || !source && !isVideo} aria-label={active ? 'Pause moment' : 'Play moment'}>{loading ? <Loader2 size={20} className="animate-spin" /> : active ? <Pause size={20} /> : <Play size={20} fill="currentColor" />}</button>
