@@ -9,6 +9,7 @@ export default function MomentMedia({ post, active, onActive, muted = false, onT
   const audio = useRef(null),video = useRef(null),box = useRef(null),progressBar = useRef(null),player = usePlayer(),alive = useRef(true),request = useRef(0);
   const [source, setSource] = useState(''),[loading, setLoading] = useState(false),[error, setError] = useState(''),[index, setIndex] = useState(0);
   const [inView, setInView] = useState(false),[controls, setControls] = useState(false),[needsTap, setNeedsTap] = useState(false);
+  const mouse = useRef(null);
   const touch = useRef(null),lastSwipe = useRef(0),direction = useRef(1),photoSizes = useRef(new Map());
   const [touching, setTouching] = useState(false),[photoChanged, setPhotoChanged] = useState(false);
   const hideTimer = useRef(null),photo = useRef(null),still = useRef(null);
@@ -121,9 +122,50 @@ export default function MomentMedia({ post, active, onActive, muted = false, onT
     if (Math.abs(x) < 44 || Math.abs(x) < Math.abs(y) * 1.35) return;
     lastSwipe.current = Date.now();movePhoto(x < 0 ? 1 : -1);
   }
-  return <div ref={box} className="moment-media-wrap" data-photo-swipe={!isVideo && post.media.length > 1} onTouchStart={startSwipe} onTouchEnd={finishSwipe} onTouchCancel={() => {touch.current = null;setTouching(false);}}>
+  function mouseDown(event) {
+    if (event.pointerType !== 'mouse' || event.button !== 0 || isVideo || photoCount < 2 || event.target.closest('.moment-photo-controls, .moment-media-play, .moment-media-mute')) return;
+    mouse.current = { id: event.pointerId, x: event.clientX, y: event.clientY, dragging: false };
+  }
+  function mouseMove(event) {
+    const drag = mouse.current;
+    if (!drag || drag.id !== event.pointerId || drag.dragging) return;
+    const dx = event.clientX - drag.x, dy = event.clientY - drag.y;
+    if (Math.abs(dx) > 12 && Math.abs(dx) > Math.abs(dy) * 1.35) {
+      drag.dragging = true;
+      setTouching(true);
+      event.currentTarget.setPointerCapture(event.pointerId);
+    }
+  }
+  function mouseEnd(event) {
+    const drag = mouse.current;
+    if (!drag || drag.id !== event.pointerId) return;
+    mouse.current = null;
+    if (!drag.dragging) return;
+    setTouching(false);
+    lastSwipe.current = Date.now();
+    const dx = event.clientX - drag.x;
+    if (event.type === 'pointerup' && Math.abs(dx) >= 40) movePhoto(dx < 0 ? 1 : -1);
+  }
+  useEffect(() => {
+    const surface = box.current;
+    if (!surface || isVideo || photoCount < 2) return;
+    let distance = 0, used = false, previous = 0;
+    function onWheel(event) {
+      if (event.ctrlKey || Math.abs(event.deltaX) <= Math.abs(event.deltaY) * 1.35) return;
+      if (event.cancelable) event.preventDefault();
+      const now = Date.now();
+      if (now - previous > 170) { distance = 0; used = false; }
+      previous = now;
+      if (used) return;
+      distance += event.deltaX * (event.deltaMode === 1 ? 16 : event.deltaMode === 2 ? surface.clientWidth : 1);
+      if (Math.abs(distance) >= 38) { used = true; movePhoto(distance > 0 ? 1 : -1); }
+    }
+    surface.addEventListener('wheel', onWheel, { passive: false });
+    return () => surface.removeEventListener('wheel', onWheel);
+  }, [isVideo, photoCount]);
+  return <div ref={box} className="moment-media-wrap" data-photo-swipe={!isVideo && post.media.length > 1} onPointerDown={mouseDown} onPointerMove={mouseMove} onPointerUp={mouseEnd} onPointerCancel={mouseEnd} onLostPointerCapture={mouseEnd} onPointerLeave={(event) => { if (!mouse.current?.dragging) mouseEnd(event); }} onTouchStart={startSwipe} onTouchEnd={finishSwipe} onTouchCancel={() => {touch.current = null;setTouching(false);}}>
   <div className={'moment-media' + (!isVideo && showPhotoBackdrop ? ' is-wide-photo' : '')} data-playing={active} data-controls={controls || needsTap} style={!isVideo && showPhotoBackdrop ? { '--moment-photo': 'url(' + JSON.stringify(photoUrl) + ')' } : undefined}>
-   {isVideo ? <video ref={video} src={post.media[0].url} playsInline preload="metadata" muted={muted || Number(post.original_volume ?? 0) === 0} onTimeUpdate={videoTick} onEnded={end} onError={() => setError('This video cannot play in this browser.')} aria-label="Moment video" /> : <img key={photoUrl} ref={photo} data-photo-motion={photoChanged ? direction.current < 0 ? 'backward' : 'forward' : undefined} hidden={pausedGif} src={photoUrl} alt={post.caption || 'Photo shared in a Moment'} loading="lazy" onLoad={(event) => {const { naturalWidth, naturalHeight } = event.currentTarget;setWidePhoto(naturalHeight && naturalWidth / naturalHeight >= .82 ? photoUrl : '');}} />}
+   {isVideo ? <video ref={video} src={post.media[0].url} playsInline preload="metadata" muted={muted || Number(post.original_volume ?? 0) === 0} onTimeUpdate={videoTick} onEnded={end} onError={() => setError('This video cannot play in this browser.')} aria-label="Moment video" /> : <img draggable={false} key={photoUrl} ref={photo} data-photo-motion={photoChanged ? direction.current < 0 ? 'backward' : 'forward' : undefined} hidden={pausedGif} src={photoUrl} alt={post.caption || 'Photo shared in a Moment'} loading="lazy" onLoad={(event) => {const { naturalWidth, naturalHeight } = event.currentTarget;setWidePhoto(naturalHeight && naturalWidth / naturalHeight >= .82 ? photoUrl : '');}} />}
    {isGif && <canvas ref={still} className={showPhotoBackdrop || widePhoto === photoUrl ? 'moment-gif-still is-wide' : 'moment-gif-still'} hidden={!pausedGif} aria-hidden="true" />}
    {!draftPreview && <button type="button" className="moment-tap-surface" onClick={tapSurface} aria-label={needsTap ? 'Tap to start playback' : 'Toggle playback controls'} />}
    <button type="button" className="moment-media-play" onClick={play} disabled={loading || !source && !isVideo} aria-label={active ? 'Pause moment' : 'Play moment'}>{loading ? <Loader2 size={20} className="animate-spin" /> : active ? <Pause size={20} /> : <Play size={20} fill="currentColor" />}</button>
