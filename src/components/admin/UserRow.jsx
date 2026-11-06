@@ -2,7 +2,7 @@ import { Ban, ShieldCheck, Trash2, Loader2 } from "lucide-react";
 import Avatar from "@/components/Avatar";
 
 /** @param {any} props */
-export default function UserRow({ u, uploads = 0, busy, onToggleBlock, onDelete, onCreatorRole }) {
+export default function UserRow({ u, uploads = 0, busy, onToggleBlock, onDelete, onCreatorRole, onFriendsFamily }) {
   return (
     <div className="flex flex-wrap sm:flex-nowrap items-center gap-3 py-2.5 border-b border-border last:border-0">
       <Avatar user={u} size={36} />
@@ -25,6 +25,11 @@ export default function UserRow({ u, uploads = 0, busy, onToggleBlock, onDelete,
         </div>
       </div>
       {u.role!=="admin"&&<select aria-label={"Creator access for "+(u.display_name||u.full_name||u.email)} value={u.creator_role||"listener"} disabled={busy} onChange={e=>onCreatorRole(u,e.target.value)} className="max-w-28 rounded-lg bg-background border p-2 text-xs"><option value="listener">Listener</option><option value="uploader">Uploader</option><option value="artist" disabled={u.creator_role!=="artist"}>Artist · apply first</option></select>}
+      {onFriendsFamily && <button type="button" disabled={busy} aria-pressed={u.friends_family_badge === true}
+        aria-label={(u.friends_family_badge ? "Remove" : "Grant") + " Friends & Family badge for " + (u.display_name || u.full_name || u.email)}
+        onClick={() => onFriendsFamily(u)} className="rounded-lg border px-2.5 py-2 text-xs disabled:opacity-50">
+        {u.friends_family_badge ? "Remove Friends & Family" : "Grant Friends & Family"}
+      </button>}
       {busy ? (
         <Loader2 size={16} className="animate-spin text-foreground/40 shrink-0" />
       ) : (

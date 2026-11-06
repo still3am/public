@@ -12,3 +12,19 @@
 .profile-role-admin .profile-badge-fill stop:nth-child(3){animation-delay:-6s}
 @keyframes public-admin-colors{0%,100%{stop-color:#b7dfff}25%{stop-color:#c0a0ff}50%{stop-color:#f6b1de}75%{stop-color:#8edfe8}}
 @media(prefers-reduced-motion:reduce){.profile-role-admin .profile-badge-fill stop{animation:none}}
+
+.profile-role-friends_family .profile-badge-fill stop { animation: public-friends-family-colors 7s ease-in-out infinite; }
+.profile-role-friends_family .profile-badge-fill stop:nth-child(2) { animation-delay: -2.3s; }
+.profile-role-friends_family .profile-badge-fill stop:nth-child(3) { animation-delay: -4.6s; }
+@keyframes public-friends-family-colors {
+  0%,100% { stop-color: #ffd0d4; }
+  33% { stop-color: #ff5066; }
+  67% { stop-color: #c3153d; }
+}
+.friends-family-avatar { position: relative; display: inline-flex; flex-shrink: 0; }
+.friends-family-avatar > .profile-role-friends_family { position: absolute; inset: auto -3px -2px auto; }
+.profile-admin-badge.moment-compact-badge.profile-role-friends_family { width: 15px; height: 15px; pointer-events: none; }
+.reel-author .profile-admin-badge.moment-compact-badge.profile-role-friends_family { position: static; }
+@media (prefers-reduced-motion: reduce) {
+  .profile-role-friends_family .profile-badge-fill stop { animation: none; }
+}

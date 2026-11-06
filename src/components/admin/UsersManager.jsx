@@ -43,6 +43,20 @@ export default function UsersManager() {
   };
 
   async function changeCreator(user,type){if(!begin(user.id))return;try{const saved=await setCreatorAccess(base44,user,type);setUsers(old=>old.map(row=>row.id===user.id?saved:row));}catch(error){reportActionError(error,"Role change could not be saved.");}finally{finish(user.id);}}
+  async function changeFriendsFamily(user) {
+    if (!begin(user.id)) return;
+    const enabled = user.friends_family_badge !== true;
+    try {
+      const result = await base44.functions.invoke('usersByIds', { action: 'set_friends_family_badge', user_id: user.id, enabled });
+      if (result?.data?.friends_family_badge !== enabled) throw Error('Badge change could not be confirmed.');
+      setUsers((previous) => previous.map((row) => row.id === user.id ? { ...row, friends_family_badge: enabled } : row));
+      window.dispatchEvent(new Event('profiles:changed'));
+    } catch (error) {
+      reportActionError(error, 'Couldn’t update the Friends & Family badge. Please try again.');
+    } finally {
+      finish(user.id);
+    }
+  }
   const term = q.trim().toLowerCase();
   const filtered = (users || []).filter(
     (u) =>
@@ -83,6 +97,7 @@ export default function UsersManager() {
               uploads={uploadCounts?uploadCounts[u.id]||0:null}
               busy={busyIds.has(u.id)}
               onCreatorRole={changeCreator}
+              onFriendsFamily={changeFriendsFamily}
               onToggleBlock={toggleBlock}
               onDelete={remove}
             />
