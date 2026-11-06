@@ -25,7 +25,21 @@ export default function UsersManager() {
     const request=++version.current;setFailed(false);
     // Member loading must not wait for optional track statistics or functions.
     base44.entities.Track.aggregate({groupBy:"uploader_id"}).then(groups=>{if(request!==version.current)return;const counts={};(groups?.rows||[]).forEach(row=>{if(row.uploader_id)counts[row.uploader_id]=row.count;});setUploadCounts(counts);}).catch(()=>{});
-    try{const list=await loadAdminMembers(base44);if(request===version.current)setUsers(list);}catch{if(request===version.current)setFailed(true);}
+    try {
+      const list = await loadAdminMembers(base44);
+      if (request !== version.current) return;
+      setUsers(list);
+      // Upgrade members who received the badge before it included creator access.
+      for (const member of list.filter((row) => row.role !== 'admin' && row.friends_family_badge === true && row.creator_role !== 'artist')) {
+        if (request !== version.current || !begin(member.id)) continue;
+        try {
+          const saved = await setFriendsFamilyRole(member, 'friends_family');
+          if (request === version.current) setUsers((rows) => rows.map((row) => row.id === member.id ? saved : row));
+        } catch (error) {
+          if (request === version.current) reportActionError(error, 'Couldn’t finish updating a Friends & Family member. Refresh users to retry.');
+        } finally { finish(member.id); }
+      }
+    } catch { if (request === version.current) setFailed(true); }
   };
   useEffect(()=>{load();return()=>{version.current++;};},[]);
   const begin=id=>{if(writes.current.has(id))return false;writes.current.add(id);setBusyIds(new Set(writes.current));return true;};
