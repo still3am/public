@@ -6,7 +6,6 @@ import { copyText, shareOutsidePublic } from '@/lib/shareLink';
 import { momentsApi, momentError } from '@/lib/momentsApi';
 import './moments-chrome.css';
 import MomentReplies from './MomentReplies';
-import MomentSpeedControl from './MomentSpeedControl';
 
 export default function MomentsChrome() {
   const [share, setShare] = useState(null);
@@ -52,7 +51,7 @@ export default function MomentsChrome() {
     };
   }, []);
 
-  return <><MomentSpeedControl /><MomentReplies />{share && <ShareMoment key={share.id} share={share} close={() => setShare(null)} />}</>;
+  return <><MomentReplies />{share && <ShareMoment key={share.id} share={share} close={() => setShare(null)} />}</>;
 }
 
 function ShareMoment({ share, close }) {

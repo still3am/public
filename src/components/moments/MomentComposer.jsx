@@ -6,11 +6,13 @@ import {Dialog,DialogContent,DialogHeader,DialogTitle,DialogDescription} from '@
 import TrackPickerSheet from '@/components/profile/TrackPickerSheet';
 import MomentMedia from './MomentMedia';
 import MomentWaveform from './MomentWaveform';
+import { PHOTO_AUTOPLAY } from './momentSwipePreferences';
 import {momentsApi,momentError} from '@/lib/momentsApi';
 const seconds=n=>`${Math.floor(n/60)}:${String(Math.floor(n%60)).padStart(2,'0')}`;
 export default function MomentComposer({seedTrack,onClose,onPublished}){
  const [media,setMedia]=useState([]),[track,setTrack]=useState(seedTrack||null),[caption,setCaption]=useState(''),[start,setStart]=useState(0),[duration,setDuration]=useState(15),[musicVolume,setMusicVolume]=useState(.8),[originalVolume,setOriginalVolume]=useState(0),[rights,setRights]=useState(false),[picker,setPicker]=useState(false),[busy,setBusy]=useState(false),[progress,setProgress]=useState(''),[error,setError]=useState(''),[preview,setPreview]=useState(false);
  const [photoPicker,setPhotoPicker]=useState(null);
+ const [photoAutoplay,setPhotoAutoplay]=useState('normal');
  const input=useRef(null),live=useRef(true),mediaRef=useRef([]),lock=useRef(false),uploadCache=useRef(new Map()),requestId=useRef(crypto.randomUUID());const player=usePlayer();
  useEffect(()=>{live.current=true;return()=>{live.current=false;mediaRef.current.forEach(m=>URL.revokeObjectURL(m.url));};},[]);
  useEffect(()=>{mediaRef.current=media;},[media]);
@@ -29,16 +31,23 @@ export default function MomentComposer({seedTrack,onClose,onPublished}){
  async function publish(){
   if(lock.current||!media.length||!track||!rights)return;lock.current=true;setBusy(true);setPreview(false);setError('');
   try{const uploaded=[];for(let i=0;i<media.length;i++){setProgress(`Uploading ${i+1} of ${media.length}…`);const m=media[i];let url=uploadCache.current.get(m.file);if(!url){const r=await base44.integrations.Core.UploadFile({file:m.file});if(!r?.file_url)throw Error('Your upload was not confirmed. Please retry.');url=r.file_url;uploadCache.current.set(m.file,url);}uploaded.push({url,type:m.type,size:m.size,duration:m.duration,...(m.track?.id?{track_id:m.track.id}:{})});}
-   setProgress('Publishing your moment…');const result=await momentsApi('publish',{media:uploaded,caption,track_id:track.id,clip_start:start,clip_duration:duration,music_volume:musicVolume,original_volume:originalVolume,rights_confirmed:rights,request_id:requestId.current});if(!result.post?.id)throw Error('Your post was not confirmed. Please retry.');if(live.current)onPublished(result.post);
+   setProgress('Publishing your moment…');const result=await momentsApi('publish',{media:uploaded,caption,photo_autoplay:photoAutoplay,track_id:track.id,clip_start:start,clip_duration:duration,music_volume:musicVolume,original_volume:originalVolume,rights_confirmed:rights,request_id:requestId.current});if(!result.post?.id)throw Error('Your post was not confirmed. Please retry.');if(live.current)onPublished(result.post);
   }catch(e){if(live.current)setError(momentError(e));}finally{lock.current=false;if(live.current){setBusy(false);setProgress('');}}
  }
- const draft={id:'draft-'+(media[0]?.url||'')+(track?.id||''),caption,media,track,clip_start:start,clip_duration:duration,music_volume:musicVolume,original_volume:originalVolume};
+ const draft={id:'draft-'+(media[0]?.url||'')+(track?.id||''),caption,media,track,photo_autoplay:photoAutoplay,clip_start:start,clip_duration:duration,music_volume:musicVolume,original_volume:originalVolume};
  return <><Dialog open={!picker} onOpenChange={open=>{if(!open&&!busy)onClose();}}><DialogContent className="moment-composer" onEscapeKeyDown={e=>{if(busy)e.preventDefault();}} onPointerDownOutside={e=>{if(busy)e.preventDefault();}}><DialogHeader><p className="moments-eyebrow">YOUR LIFE. YOUR SOUND.</p><DialogTitle>Make a moment.</DialogTitle><DialogDescription>A little of your world, with a song that says it.</DialogDescription></DialogHeader>
   <div className="moment-compose-workspace"><section className="moment-compose-media" aria-label="Moment photos or video"><div className="moment-compose-step"><span>01</span>Your moment</div>
   <input ref={input} type="file" className="hidden" accept="image/jpeg,image/png,image/webp,image/gif,video/mp4,video/quicktime,video/webm" multiple disabled={busy} onChange={e=>{choose(e.target.files||[]);e.target.value='';}}/>
   {!media.length?<button type="button" className="moment-upload-zone" disabled={busy} onClick={()=>input.current?.click()}><Camera size={32}/><strong>Add photos or a video</strong><span>Up to 6 photos, or a video up to 60 seconds</span></button>:<><MomentMedia key={draft.id} post={draft} active={preview} onActive={setPreview} draftPreview/><div className="moment-composer-media-actions"><button type="button" disabled={busy} onClick={()=>input.current?.click()}>Change media</button><button type="button" disabled={busy} onClick={()=>{setPreview(false);media.forEach(m=>URL.revokeObjectURL(m.url));setMedia([]);}}><Trash2 size={15}/>Remove</button></div></>}
   </section><section className="moment-compose-fields" aria-label="Moment soundtrack and caption"><div className="moment-compose-step"><span>02</span>Your soundtrack</div>
   <button type="button" className="moment-song-choice" disabled={busy} onClick={()=>{setPreview(false);player.pausePlayback?.();setPhotoPicker(null);setPicker(true);}}><Music2 size={22}/><span><strong>{track?.title||'Choose your song'}</strong><small>{track?.artist||'Find a song on PUBLIC'}</small></span><Plus size={18}/></button>
+  {media.length>1&&<label className="moment-caption-label">
+    Photo autoplay speed
+    <select className="min-h-11 rounded-lg border bg-background px-3 text-sm" value={photoAutoplay} disabled={busy} onChange={(event)=>setPhotoAutoplay(event.target.value)}>
+      {PHOTO_AUTOPLAY.map(({id,label,delay})=><option key={id} value={id}>{label}{delay?' · '+delay/1000+' seconds per photo':''}</option>)}
+    </select>
+    <small>Controls how your photos advance for viewers. They can still swipe manually.</small>
+  </label>}
   {media.length>1&&<details className="moment-sound-options"><summary>Photo songs<span>Optional</span></summary><div className="moment-photo-songs">
     {media.map((item,index)=><div key={item.url}>
       <img src={item.url} alt="" />

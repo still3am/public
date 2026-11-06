@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { useMomentSwipePreferences } from './momentSwipePreferences';
+import { photoAutoplayDelay } from './momentSwipePreferences';
 import { createPortal } from 'react-dom';
 import { Link } from 'react-router-dom';
 import { useCoverUrl } from '@/hooks/useCoverUrl';
@@ -10,7 +10,7 @@ import { usePlayer } from '@/context/PlayerContext';
 // One audible Moment at a time. Scrolling away, opening a dialog, hiding
 // the app or starting the regular player releases both audio and video.
 export default function MomentMedia({ post, active, onActive, muted = false, onToggleMute, draftPreview = false }) {
-  const { delay, menuOpen } = useMomentSwipePreferences();
+  const delay = photoAutoplayDelay(post.photo_autoplay);
   const audio = useRef(null),video = useRef(null),box = useRef(null),progressBar = useRef(null),player = usePlayer(),alive = useRef(true),request = useRef(0);
   const [loadedSong, setLoadedSong] = useState(null),[loading, setLoading] = useState(false),[error, setError] = useState(''),[index, setIndex] = useState(0);
   const [inView, setInView] = useState(false),[controls, setControls] = useState(false),[needsTap, setNeedsTap] = useState(false);
@@ -190,11 +190,11 @@ export default function MomentMedia({ post, active, onActive, muted = false, onT
   }
 
   useEffect(() => {
-    if (isVideo || photoCount < 2 || !inView || (!active && !needsTap) || touching || document.hidden || (!draftPreview && (menuOpen || !delay))) return;
+    if (isVideo || photoCount < 2 || !inView || (!active && !needsTap) || touching || document.hidden || !delay) return;
     const timer = setTimeout(() => {
       if (document.hidden || (document.querySelector('[role="dialog"][data-state="open"]') && !draftPreview)) return;
       showPhoto((currentPhoto.current + 1) % photoCount, 1, true);
-    }, draftPreview ? Math.max(2800, Math.min(4800, (Number(post.clip_duration) || 30) * 1000 / photoCount)) : delay);
+    }, delay);
     return () => {
       clearTimeout(timer);
       if (autoRequest.current === photoRequest.current) {
@@ -203,7 +203,7 @@ export default function MomentMedia({ post, active, onActive, muted = false, onT
         autoRequest.current = null;
       }
     };
-  }, [active, needsTap, inView, isVideo, photoCount, touching, index, post.clip_duration, draftPreview, delay, menuOpen]);
+  }, [active, needsTap, inView, isVideo, photoCount, touching, index, draftPreview, delay]);
 
   useEffect(() => {
     if (isVideo || !inView || photoCount < 2) return;
