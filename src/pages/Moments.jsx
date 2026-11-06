@@ -140,6 +140,7 @@ export function MomentsExperience() {
   function share(p) {action(p.id, async () => {const result = await shareLink({ title: 'A moment on PUBLIC', text: p.caption || 'Life sounds better together.', url: window.location.origin + '/moments/' + encodeURIComponent(p.id) });if (result === 'copied') setNotice('Moment link copied.');});}
   const visiblePosts = posts.filter((post) => !safety.blocked.has(post.user_id));
   const [reelIndex, setReelIndex] = useState(0);
+  const [momentsMuted, setMomentsMuted] = useState(false);
   const currentReel = Math.min(reelIndex, Math.max(0, visiblePosts.length - 1));
 
   useEffect(() => {
@@ -204,7 +205,7 @@ export function MomentsExperience() {
     {notice && <div className="reels-notice" role="status">{notice}<button type="button" onClick={() => setNotice('')} aria-label="Dismiss message">×</button></div>}
     <div className="reels-feed" ref={feed} tabIndex={0} role="region" aria-label="Moments feed" onScroll={updateReelIndex} onKeyDown={handleFeedKeys}>
       {visiblePosts.map((post) => <article key={post.id} className="reel">
-        <MomentMedia post={post} active={active === post.id} onActive={(value) => setActive((old) => value ? post.id : old === post.id ? null : old)} />
+        <MomentMedia post={post} muted={momentsMuted} onToggleMute={() => setMomentsMuted((value) => !value)} active={active === post.id} onActive={(value) => setActive((old) => value ? post.id : old === post.id ? null : old)} />
         <div className="reel-shade" aria-hidden="true" />
         <div className="reel-overlay">
           <div className="reel-info">

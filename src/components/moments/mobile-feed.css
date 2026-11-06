@@ -556,3 +556,10 @@
   font-weight: 700;
   color: #fff;
 }
+
+.public-reels .reel .moment-media > img[hidden],
+.public-reels .reel .moment-gif-still[hidden] { display: none; }
+.public-reels .reel .moment-gif-still {
+  width: 100%; height: 100%; object-fit: cover;
+}
+.public-reels .reel .moment-gif-still.is-wide { object-fit: contain; }
