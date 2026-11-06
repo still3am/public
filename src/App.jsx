@@ -13,7 +13,6 @@ import ProtectedRoute from '@/components/ProtectedRoute';
 import { PlayerProvider } from '@/context/PlayerContext';
 import { LibraryProvider } from '@/context/LibraryContext';
 import { UploadProvider } from '@/context/UploadContext';
-import { LoungeHostProvider } from '@/hooks/useLoungeHost';
 import Layout from '@/components/Layout';
 import DialogFocusManager from '@/components/DialogFocusManager';
 import GlobalStatus from '@/components/GlobalStatus';
@@ -43,7 +42,6 @@ import PublicRecordsIndex from '@/pages/PublicRecordsIndex';
 import ArtistByName from '@/pages/ArtistByName';
 import Suggestions from '@/pages/Suggestions';
 import Upload from '@/pages/Upload';
-import Lounge from '@/pages/Lounge';
 import Library from '@/pages/Library';
 import Downloads from '@/pages/Downloads';
 import Admin from '@/pages/Admin';
@@ -121,7 +119,7 @@ const AuthenticatedApp = () => {
           <Route path="/upload" element={<Upload />} />
           <Route path="/upload/review" element={<Upload />} />
           <Route path="/upload/publish" element={<Upload />} />
-          <Route path="/lounge/:code" element={<Lounge />} />
+
           <Route path="/library" element={<Library />} />
           <Route path="/downloads" element={<Downloads />} />
           <Route path="/admin" element={<Admin />} />
@@ -147,7 +145,7 @@ function App() {
           <ErrorBoundary><GlobalStatus/><DialogFocusManager/><SafetyProvider><PlayerProvider><OfflineSyncManager/><MusicRequestSync/>
             <LibraryProvider>
               <UploadProvider>
-                <LoungeHostProvider><AuthenticatedApp /></LoungeHostProvider>
+                <AuthenticatedApp />
               </UploadProvider>
             </LibraryProvider>
           </PlayerProvider></SafetyProvider></ErrorBoundary>

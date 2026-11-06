@@ -1,10 +1,17 @@
 import {AVATAR_PRESETS} from "@/lib/avatarPresets";
 import "./pfp-boy.css";
+import ProfileBadge from "@/components/profile/AdminProfileBadge";
 import ProfileMedia from "@/components/ProfileMedia";
 import {withPresetAvatar} from "@/lib/nativeAvatar";
 import {useEffect,useState} from "react";
 /** @param {any} props */
-export default function Avatar({user,size=40,className="",motion=false,active=true}){
+export default function Avatar(props) {
+ const badge=props.user?.moment_badge;
+ if(!badge)return <AvatarPicture {...props}/>;
+ return <span className="moment-author-avatar"><AvatarPicture {...props}/><ProfileBadge variant={badge} compact/></span>;
+}
+
+function AvatarPicture({user,size=40,className="",motion=false,active=true}){
  user=withPresetAvatar(user);
  const [failed,setFailed]=useState(false);
  const [defaultFailed,setDefaultFailed]=useState(false);

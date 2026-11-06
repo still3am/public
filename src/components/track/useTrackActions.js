@@ -2,7 +2,7 @@ import {setLikeState} from "@/lib/likeActions";
 import {useRef,useEffect} from "react";
 import {
   Play, Pause, ListPlus, Check, Plus, ListMusic, Download, Heart,
-  RefreshCw, Music2, User, UserPlus, UserCheck, Radio, Smartphone, Share2, Flag, EyeOff, Send,
+  RefreshCw, Music2, User, UserPlus, UserCheck, Radio, Share2, Flag, EyeOff, Send,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
@@ -144,7 +144,7 @@ export function useTrackActions(track, menuState, ui) {
     { icon: User, label: "Go to artist", onClick: () => nav(artistPath) },
     user&&!menuState.likeReady&&{icon:RefreshCw,label:"Refresh song actions",keepOpen:true,onClick:menuState.reload},
     { icon: Radio, label: "Mix", onClick: startMix },
-    { icon: Smartphone, label: "Lounge", onClick: () => requireAuth() && ui.openLounge() },
+
     { icon: Share2, label: "Share", onClick: share },
     {
       icon: Send,
@@ -164,7 +164,7 @@ export function useTrackActions(track, menuState, ui) {
     [Play, Pause, ListPlus],
     [Check, Plus, ListMusic, Download, Heart],
     [Music2, User, UserPlus, UserCheck],
-    [Radio, Smartphone, Share2, Send, RefreshCw],
+    [Radio, Share2, Send, RefreshCw],
     [Flag],
   ];
   standard.forEach((item) => {

@@ -31,8 +31,6 @@ import {
 import MotionGradient from "@/components/MotionGradient";
 import PlayPauseButton from "@/components/PlayPauseButton";
 import QueuePanel from "@/components/QueuePanel";
-import LoungeHostModal from "@/components/LoungeHostModal";
-import { useLoungeHost } from "@/hooks/useLoungeHost";
 import { useLibrary } from "@/context/LibraryContext";
 import { useOfflineCoverUrl } from "@/hooks/useOfflineCoverUrl";
 import { useCoverUrl } from "@/hooks/useCoverUrl";
@@ -71,9 +69,7 @@ export default function FullScreenPlayer({ onClose }) {
   const [showLyricsPanel, setShowLyricsPanel] = useState(false);
   const t = p.currentTrack;
   useEffect(() => {if (t?.id) prepareTrackShare();}, [t?.id]);
-  const lounge = useLoungeHost();
   const { toast } = useToast();
-  const [loungeOpen, setLoungeOpen] = useState(false);
   const volDrag = useRef({ startY: 0, start: 0, active: false });
   const hintTimer = useRef(null);
   const dismissDrag = useRef({ startY: 0, active: false, moved: false });
@@ -114,7 +110,7 @@ export default function FullScreenPlayer({ onClose }) {
   // keyboard shortcuts
   useEffect(() => {
     const onKey = (e) => {
-      if (showQueue || loungeOpen || e.metaKey || e.ctrlKey || e.altKey || e.defaultPrevented || e.target?.closest?.("button,a,input,textarea,select,[contenteditable=true],[role=menu],[data-public-menu]")) return;
+      if (showQueue || e.metaKey || e.ctrlKey || e.altKey || e.defaultPrevented || e.target?.closest?.("button,a,input,textarea,select,[contenteditable=true],[role=menu],[data-public-menu]")) return;
       if (e.repeat && e.code === "Space") return;
       switch (e.code) {
         case "Space":
@@ -152,7 +148,7 @@ export default function FullScreenPlayer({ onClose }) {
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [p, onClose, hasLyrics, showQueue, loungeOpen]);
+  }, [p, onClose, hasLyrics, showQueue]);
 
   // Lock the background page while the full-screen player is open so the drag-
   // to-dismiss gesture can't scroll / overscroll the Home feed behind it.
@@ -222,7 +218,7 @@ export default function FullScreenPlayer({ onClose }) {
       transition: dragging ? "none" : "transform .32s cubic-bezier(.22,1,.36,1), opacity .28s ease-out"
     }}>
 
-      <MotionGradient colors={playerPalette} speed={.85} active={!showQueue && !loungeOpen} className="absolute inset-0 z-0" />
+      <MotionGradient colors={playerPalette} speed={.85} active={!showQueue} className="absolute inset-0 z-0" />
 
 
 
@@ -423,9 +419,6 @@ export default function FullScreenPlayer({ onClose }) {
       </div>
 
       <QueuePanel open={showQueue} onClose={() => setShowQueue(false)} />
-      {loungeOpen &&
-      <LoungeHostModal lounge={lounge} onClose={() => setLoungeOpen(false)} />
-      }
 
       {/* copied toast */}
       {copied &&

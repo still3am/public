@@ -11,7 +11,6 @@ import { useTrackMenuState } from "@/hooks/useTrackMenuState";
 import { useTrackActions } from "@/components/track/useTrackActions";
 import TrackMenuList from "@/components/track/TrackMenuList";
 import ReportTrackDialog from "@/components/track/ReportTrackDialog";
-import TrackLoungeAction from "@/components/track/TrackLoungeAction";
 import SendTrackModal from "@/components/track/SendTrackModal";
 import PlaylistPickerModal from "@/components/playlist/PlaylistPickerModal";
 
@@ -67,7 +66,6 @@ export default function TrackOptionsMenu({
     {
       openPicker: () => setModal("picker"),
       openReport: () => setModal("report"),
-      openLounge: () => setModal("lounge"),
       openSend: () => setModal("send"),
       onReport,
     }
@@ -186,7 +184,6 @@ export default function TrackOptionsMenu({
 
       {modal === "picker" && <PlaylistPickerModal track={track} onClose={() => setModal(null)} />}
       {modal === "report" && <ReportTrackDialog track={track} onClose={() => setModal(null)} />}
-      {modal === "lounge" && <TrackLoungeAction track={track} onClose={() => setModal(null)} />}
       {modal === "send" && <SendTrackModal track={track} onClose={() => setModal(null)} />}
     </div>
   );
