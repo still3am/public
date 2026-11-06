@@ -258,7 +258,7 @@ export function MomentsExperience() {
     </div>
     {visiblePosts.length > 1 && <nav className="reels-stepper" aria-label="Browse Moments">
       <button type="button" aria-label="Previous moment" disabled={currentReel === 0} onClick={() => moveReel(-1)}><ChevronUp size={22} /></button>
-      <span aria-hidden="true" className="hidden">{currentReel + 1} / {visiblePosts.length}</span>
+      
       <button type="button" aria-label="Next moment" disabled={currentReel >= visiblePosts.length - 1} onClick={() => moveReel(1)}><ChevronDown size={22} /></button>
     </nav>}
     {visiblePosts.filter((post) => comments.has(post.id)).map((post) => <Dialog key={post.id} open onOpenChange={(open) => {if (!open) dismissComments(post.id);}}>
