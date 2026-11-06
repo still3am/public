@@ -75,6 +75,17 @@
           "type"
         ]
       }
+    },
+    "photo_autoplay": {
+      "type": "string",
+      "enum": [
+        "fast",
+        "normal",
+        "slow",
+        "off"
+      ],
+      "default": "normal",
+      "description": "Creator-selected timing for advancing photos."
     }
   },
   "required": [
