@@ -21,6 +21,11 @@
         "deleted"
       ],
       "default": "published"
+    },
+    "parent_id": {
+      "type": "string",
+      "default": "",
+      "description": "Root comment ID for a one-level reply. Empty for a root comment."
     }
   },
   "required": [
