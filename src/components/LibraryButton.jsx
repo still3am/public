@@ -7,7 +7,7 @@ import {useAuth} from "@/lib/AuthContext";
 import {useToast} from "@/components/ui/use-toast";
 
 /** @param {any} props */
-export default function LibraryButton({track,className="",size=16,label=false}){
+export default function LibraryButton({track,className="",size=16,label=false,icon:Icon=Plus}){
  const {isInLibrary,isPending,toggle}=useLibrary(),{user}=useAuth(),nav=useNavigate(),{toast}=useToast();
  const [busy,setBusy]=useState(false),lock=useRef(false);
  const inLib=isInLibrary(track?.id),saving=busy||isPending(track?.id);
@@ -24,7 +24,7 @@ export default function LibraryButton({track,className="",size=16,label=false}){
  }
  return <button type="button" disabled={saving||!track?.id} onClick={save} className={className} aria-busy={saving} aria-pressed={inLib}
   aria-label={saving?"Updating library":inLib?"Remove from library":"Add to library"} title={inLib?"In your library":"Add to library"}>
-  {saving?<Loader2 size={size} className="animate-spin"/>:inLib?<Check size={size}/>:<Plus size={size}/>}
+  {saving?<Loader2 size={size} className="animate-spin"/>:inLib?<Check size={size}/>:<Icon size={size}/>}
   {label&&<span className="truncate">{saving?"Saving…":inLib?"In library":"Add to library"}</span>}
  </button>;
 }

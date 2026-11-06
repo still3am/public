@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom';
-import { Plus, Heart, MessageCircle, Share2, Music2, MoreHorizontal, Trash2, Flag, ShieldOff, ArrowUpRight, Loader2, ArrowLeft, ChevronUp, ChevronDown, Send } from 'lucide-react';
+import { Plus, Heart, MessageCircle, Share2, Music2, MoreHorizontal, Trash2, Flag, ShieldOff, Loader2, ArrowLeft, ChevronUp, ChevronDown, Send, UserRound, Disc3, Bookmark, Clapperboard, ExternalLink } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { useAuth } from '@/lib/AuthContext';
 import { useSafety } from '@/context/SafetyContext';
@@ -21,6 +21,8 @@ const name = (p) => p?.display_name || p?.username || 'PUBLIC listener';
 function SongArtwork({ url }) {const fixed = useCoverUrl(url);return fixed ? <img src={fixed} alt="" loading="lazy" /> : <Music2 size={22} />;}
 function MomentComments({ post, onReport }) {
   const { user } = useAuth(),nav = useNavigate();const [rows, setRows] = useState([]),[body, setBody] = useState(''),[busy, setBusy] = useState(false),[loading, setLoading] = useState(true),[error, setError] = useState(''),[page, setPage] = useState({ offset: 0, more: false });const section = useRef(null),live = useRef(true),lock = useRef(false),token = useRef(crypto.randomUUID());
+  const [showEmojis, setShowEmojis] = useState(false);
+  const addEmoji = (emoji) => setBody((value) => value.length + emoji.length <= 1000 ? value + emoji : value);
   const load = async (more = false) => {setLoading(true);setError('');try {const result = await momentsApi('comments', { id: post.id, offset: more ? page.offset : 0 });if (!live.current) return;setRows((old) => more ? [...old, ...result.items.filter((x) => !old.some((y) => y.id === x.id))] : result.items);setPage({ offset: result.next_offset, more: result.has_more });} catch (e) {if (live.current) setError(momentError(e));} finally {if (live.current) setLoading(false);}};
   useEffect(() => {live.current = true;if (user) load();else setLoading(false);return () => {live.current = false;};}, [post.id, user?.id]);
   useEffect(() => {
@@ -72,7 +74,12 @@ function MomentComments({ post, onReport }) {
     {user && <div className="discussion-composer">
       <div className="discussion-reactions" role="group" aria-label="Quick reactions">
         {[['❤️','Heart'],['🙌','Celebrate'],['🔥','Fire'],['👏','Clap'],['😢','Sad'],['😍','Love'],['😮','Surprised'],['😂','Laugh']].map(([emoji, label]) =>
-          <button type="button" key={label} aria-label={'Add ' + label + ' reaction'} disabled={busy || body.length + emoji.length > 1000} onClick={() => setBody((value) => value.length + emoji.length <= 1000 ? value + emoji : value)}>{emoji}</button>)}
+          <button type="button" key={label} aria-label={'Add ' + label + ' reaction'} disabled={busy || body.length + emoji.length > 1000} onClick={() => addEmoji(emoji)}>{emoji}</button>)}
+        <button type="button" className="discussion-emoji-more" aria-label={showEmojis ? 'Hide more emojis' : 'Show more emojis'} aria-expanded={showEmojis} aria-controls={'discussion-emoji-picker-' + post.id} onClick={() => setShowEmojis((value) => !value)}><Plus size={19} /></button>
+      </div>
+      <div id={'discussion-emoji-picker-' + post.id} className="discussion-emoji-picker" role="group" aria-label="More emojis" hidden={!showEmojis}>
+        {[['🎶','Music'],['🎧','Headphones'],['🎤','Microphone'],['💿','Record'],['✨','Sparkles'],['💯','Hundred'],['🫶','Heart hands'],['💜','Purple heart'],['🤍','White heart'],['😎','Cool'],['🥹','Holding back tears'],['😭','Crying'],['🤩','Starstruck'],['😂','Laughing'],['👀','Eyes'],['🤔','Thinking'],['🙃','Upside down'],['🤯','Mind blown'],['👍','Thumbs up'],['🙏','Thanks'],['💃','Dancing'],['🕺','Dancer'],['⚡','Lightning'],['🎉','Party']].map(([emoji, label]) =>
+          <button type="button" key={label} aria-label={'Add ' + label} disabled={busy || body.length + emoji.length > 1000} onClick={() => addEmoji(emoji)}>{emoji}</button>)}
       </div>
       <form onSubmit={submit}>
         <Avatar user={user} size={32} />
@@ -184,17 +191,17 @@ export function MomentsExperience() {
               <summary aria-label="More moment options"><MoreHorizontal size={25} /></summary>
               <div>
                 {post.track && <>
-                  <Link to={'/artist?name=' + encodeURIComponent((post.track.artist || '').split(/,|&| feat\.| ft\./i)[0].trim())}><ArrowUpRight size={16} />Explore artist</Link>
-                  <Link to={'/moments?song=' + encodeURIComponent(post.track.id)}><Music2 size={16} />More with this song</Link>
-                  <LibraryButton track={post.track} label />
-                  <button type="button" className="moment-use-song" onClick={() => create(post.track)}><Plus size={16} />Use song</button>
+                  <Link to={'/artist?name=' + encodeURIComponent((post.track.artist || '').split(/,|&| feat\.| ft\./i)[0].trim())}><UserRound size={17} />Explore artist</Link>
+                  <Link to={'/moments?song=' + encodeURIComponent(post.track.id)}><Disc3 size={17} />More with this song</Link>
+                  <LibraryButton track={post.track} label icon={Bookmark} size={17} />
+                  <button type="button" className="moment-use-song" onClick={() => create(post.track)}><Clapperboard size={17} />Use song</button>
                 </>}
                 {post.can_delete && <button type="button" disabled={!!busy} onClick={() => remove(post)}><Trash2 size={16} />Delete moment</button>}
                 {user && user.id !== post.user_id && <>
                   <button type="button" onClick={() => setReport({ type: 'moment', id: post.id, userId: post.user_id })}><Flag size={16} />Report moment</button>
                   <button type="button" disabled={!!busy} onClick={() => block(post)}><ShieldOff size={16} />Block creator</button>
                 </>}
-                <Link to={'/moments/' + post.id}><ArrowUpRight size={16} />Open moment</Link>
+                <Link to={'/moments/' + post.id}><ExternalLink size={17} />Open moment</Link>
               </div>
             </details>
             {post.track && <Link className="reel-track-art" to={'/track/' + post.track.id} aria-label={'Open ' + post.track.title + (post.track.artist ? ' by ' + post.track.artist : '')} title={post.track.title}>
@@ -226,11 +233,11 @@ export function MomentsExperience() {
         event.preventDefault();
         if (!report) document.getElementById('discussion-trigger-' + post.id)?.focus();
       }}>
-        {mobile && post.media?.[0]?.url && <div className="discussion-preview" aria-hidden="true">
+        {mobile && post.media?.[0]?.url && <button type="button" className="discussion-preview" aria-label="Close comments and return to Moment" onClick={() => dismissComments(post.id)}>
           {post.media[0].type === 'video' ?
             <video src={post.media[0].url + '#t=0.1'} preload="metadata" muted playsInline /> :
             <img src={post.media[0].url} alt="" />}
-        </div>}
+        </button>}
         <div className="reels-discussion-panel">
           <DialogHeader className="discussion-header">
             <DialogTitle id={'discussion-title-' + post.id} tabIndex={-1}>Comments</DialogTitle>

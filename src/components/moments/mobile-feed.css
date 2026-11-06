@@ -500,3 +500,36 @@
 @media (max-height: 620px) {
   .public-reels .reel .moment-media-mute { top: calc(42% + 49px); }
 }
+
+.public-reels .reel-menu > div { padding: 6px; }
+.public-reels .reel-menu > div > :is(a, button) {
+  gap: 10px;
+  padding-inline: 9px;
+  font-size: 13px;
+  font-weight: 500;
+}
+.public-reels .reel-menu > div > :is(a, button) svg { flex: none; opacity: .86; }
+.public-reels .reel-menu > div > button:has(svg.lucide-trash-2) { color: #ffabb6; }
+.discussion-reactions { grid-template-columns: repeat(9, minmax(0, 1fr)); }
+.discussion-emoji-more { display: grid; place-items: center; color: #eee; }
+.discussion-emoji-more svg { padding: 4px; box-sizing: content-box; border: 1px solid #ffffff36; border-radius: 50%; }
+.discussion-emoji-more[aria-expanded=true] svg { transform: rotate(45deg); background: #ffffff18; }
+.discussion-emoji-picker:not([hidden]) {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(40px, 1fr));
+  max-height: min(124px, 22dvh);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  margin-bottom: 8px;
+  padding: 3px;
+  border: 1px solid #ffffff24;
+  border-radius: 12px;
+  background: #101113;
+}
+.discussion-emoji-picker > button { min-height: 40px; font-size: 22px; }
+.discussion-emoji-picker > button:is(:hover,:focus-visible) { border-radius: 8px; background: #ffffff18; }
+@media (max-width: 767px) {
+  .moment-comments-sheet .discussion-preview { width: 100%; overflow: hidden; cursor: pointer; }
+  .moment-comments-sheet .discussion-preview > :is(img, video) { pointer-events: none; }
+  .moment-comments-sheet .discussion-preview:focus-visible { outline: 2px solid #fff; outline-offset: -4px; }
+}
