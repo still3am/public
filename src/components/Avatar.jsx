@@ -7,13 +7,8 @@ import {useEffect,useState} from "react";
 /** @param {any} props */
 export default function Avatar(props) {
  const badge=props.user?.moment_badge;
- const friendsFamily=props.user?.friends_family_badge===true;
- if(!badge&&!props.user?.moment_author||!badge&&!friendsFamily)return <AvatarPicture {...props}/>;
- return <span className={'moment-author-avatar'}>
-  <AvatarPicture {...props}/>
-  {badge&&<ProfileBadge variant={badge} compact/>}
-  {friendsFamily&&<ProfileBadge variant="friends_family" compact/>}
- </span>;
+ if(!badge)return <AvatarPicture {...props}/>;
+ return <span className="moment-author-avatar"><AvatarPicture {...props}/><ProfileBadge variant={badge} compact/></span>;
 }
 
 function AvatarPicture({user,size=40,className="",motion=false,active=true}){
