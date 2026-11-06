@@ -72,8 +72,25 @@ export async function momentsAction(b,u,d){
  }
  if(d.action==='like'){if(typeof d.liked!=='boolean')fail('Choose a like state.');await s.entities.Moment.updateMany({id:p.id,status:'published'},d.liked?{$addToSet:{liker_ids:u.id}}:{$pull:{liker_ids:u.id}});const saved=await post(p.id);return {liked:saved.liker_ids?.includes(u.id)||false,like_count:saved.liker_ids?.length||0};}
  if(d.action==='delete'){if(p.user_id!==u.id&&!admin)fail('Only the creator can delete this Moment.',403);await s.entities.Moment.update(p.id,{status:'deleted',media:[],caption:'',liker_ids:[]});await s.entities.MomentComment.deleteMany({moment_id:p.id});return {success:true};}
- if(d.action==='comments'){const offset=Math.max(0,Math.floor(Number(d.offset)||0)),page=rows(await s.entities.MomentComment.filter({moment_id:p.id,status:'published',...(blocked.size?{user_id:{$nin:[...blocked]}}:{})},'-created_date',21,offset));const items=[];for(const c of page.slice(0,20)){const author=await person(c.user_id);if(author)items.push({id:c.id,body:c.body,created_date:c.created_date,author,can_delete:admin||c.user_id===u.id||p.user_id===u.id});}return {items,has_more:page.length>20,next_offset:offset+Math.min(20,page.length)};}
- if(d.action==='comment'){if(!await person(u.id))fail('Finish setting up your public profile before commenting.',422);await rate(s.entities.MomentComment,'user_id',20);const body=text(d.body||'',1000);if(!body)fail('Write a comment first.');if(!/^[a-zA-Z0-9-]{8,100}$/.test(d.request_id||''))fail('Please retry your comment.');const prior=rows(await s.entities.MomentComment.filter({user_id:u.id,request_id:d.request_id},'-created_date',1))[0];if(!prior){await moderate(s,body);await s.entities.MomentComment.create({moment_id:p.id,user_id:u.id,body,status:'published',request_id:d.request_id});}return {success:true};}
+ async function rootComment(id){
+  if(typeof id!=='string'||!/^[a-zA-Z0-9_-]{1,100}$/.test(id))fail('Comment unavailable.',404);
+  const row=await s.entities.MomentComment.get(id).catch(e=>{if((e.status||e.response?.status)===404)fail('Comment unavailable.',404);throw e;});
+  if(!row||row.moment_id!==p.id||row.status!=='published'||row.parent_id||!await person(row.user_id))fail('Comment unavailable.',404);
+  return row;
+ }
+ if(d.action==='replies'){
+  const parent=await rootComment(d.parent_id);
+  const offset=Math.max(0,Math.min(100000,Math.floor(Number(d.offset)||0)));
+  const page=rows(await s.entities.MomentComment.filter({moment_id:p.id,parent_id:parent.id,status:'published',...(blocked.size?{user_id:{$nin:[...blocked]}}:{})},'created_date',21,offset));
+  const items=[];
+  for(const row of page.slice(0,20)){
+   const author=await person(row.user_id);
+   if(author)items.push({id:row.id,body:row.body,created_date:row.created_date,author,can_delete:admin||row.user_id===u.id||p.user_id===u.id});
+  }
+  return {items,has_more:page.length>20,next_offset:offset+Math.min(20,page.length)};
+ }
+ if(d.action==='comments'){const offset=Math.max(0,Math.floor(Number(d.offset)||0)),page=rows(await s.entities.MomentComment.filter({moment_id:p.id,status:'published',$or:[{parent_id:{$exists:false}},{parent_id:null},{parent_id:''}],...(blocked.size?{user_id:{$nin:[...blocked]}}:{})},'-created_date',21,offset));const items=[];for(const c of page.slice(0,20)){const author=await person(c.user_id);if(author)items.push({id:c.id,body:c.body,created_date:c.created_date,author,can_delete:admin||c.user_id===u.id||p.user_id===u.id});}return {items,has_more:page.length>20,next_offset:offset+Math.min(20,page.length)};}
+ if(d.action==='comment'){if(!await person(u.id))fail('Finish setting up your public profile before commenting.',422);await rate(s.entities.MomentComment,'user_id',20);const parent=d.parent_id===undefined?null:await rootComment(d.parent_id);const body=text(d.body||'',1000);if(!body)fail('Write a comment first.');if(!/^[a-zA-Z0-9-]{8,100}$/.test(d.request_id||''))fail('Please retry your comment.');const prior=rows(await s.entities.MomentComment.filter({user_id:u.id,request_id:d.request_id},'-created_date',1))[0];if(!prior){await moderate(s,body);await s.entities.MomentComment.create({moment_id:p.id,user_id:u.id,body,parent_id:parent?.id||'',status:'published',request_id:d.request_id});}return {success:true};}
  if(d.action==='delete_comment'){const c=await s.entities.MomentComment.get(d.comment_id);if(c.moment_id!==p.id||(!admin&&c.user_id!==u.id&&p.user_id!==u.id))fail('Comment access denied.',403);await s.entities.MomentComment.update(c.id,{status:'deleted',body:''});return {success:true};}
  fail('Unknown Moments action.');
 }
