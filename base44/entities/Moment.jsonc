@@ -64,6 +64,10 @@
           },
           "duration": {
             "type": "number"
+          },
+          "track_id": {
+            "type": "string",
+            "description": "Optional song for this photo; defaults to the Moment song."
           }
         },
         "required": [
