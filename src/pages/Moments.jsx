@@ -81,8 +81,8 @@ function MomentComments({ post, onReport }) {
             <p>{comment.body}</p>
           </div>
           {comment.can_delete ?
-            <button type="button" disabled={busy} aria-label="Delete comment" onClick={() => remove(comment)}><Trash2 size={16} /></button> :
-            <button type="button" aria-label="Report comment" onClick={() => onReport({ type: 'moment_comment', id: comment.id, userId: author?.user_id })}><Flag size={15} /></button>}
+          <button type="button" disabled={busy} aria-label="Delete comment" onClick={() => remove(comment)}><Trash2 size={16} /></button> :
+          <button type="button" aria-label="Report comment" onClick={() => onReport({ type: 'moment_comment', id: comment.id, userId: author?.user_id })}><Flag size={15} /></button>}
         </article>;
       })}
       {loading && <p className="discussion-empty" role="status">Loading comments…</p>}
@@ -92,13 +92,13 @@ function MomentComments({ post, onReport }) {
     {error && !rows.length && !loading && <button className="discussion-more" type="button" disabled={busy} onClick={() => load()}>Retry loading comments</button>}
     {user && <div className="discussion-composer">
       <div className="discussion-reactions" role="group" aria-label="Quick reactions">
-        {[['❤️','Heart'],['🙌','Celebrate'],['🔥','Fire'],['👏','Clap'],['😢','Sad'],['😍','Love'],['😮','Surprised'],['😂','Laugh']].map(([emoji, label]) =>
-          <button type="button" key={label} aria-label={'Add ' + label + ' reaction'} disabled={busy || body.length + emoji.length > 1000} onClick={() => addEmoji(emoji)}>{emoji}</button>)}
+        {[['❤️', 'Heart'], ['🙌', 'Celebrate'], ['🔥', 'Fire'], ['👏', 'Clap'], ['😢', 'Sad'], ['😍', 'Love'], ['😮', 'Surprised'], ['😂', 'Laugh']].map(([emoji, label]) =>
+        <button type="button" key={label} aria-label={'Add ' + label + ' reaction'} disabled={busy || body.length + emoji.length > 1000} onClick={() => addEmoji(emoji)}>{emoji}</button>)}
         <button type="button" className="discussion-emoji-more" aria-label={showEmojis ? 'Hide more emojis' : 'Show more emojis'} aria-expanded={showEmojis} aria-controls={'discussion-emoji-picker-' + post.id} onClick={() => setShowEmojis((value) => !value)}><Plus size={19} /></button>
       </div>
       <div id={'discussion-emoji-picker-' + post.id} className="discussion-emoji-picker" role="group" aria-label="More emojis" hidden={!showEmojis}>
-        {[['🎶','Music'],['🎧','Headphones'],['🎤','Microphone'],['💿','Record'],['✨','Sparkles'],['💯','Hundred'],['🫶','Heart hands'],['💜','Purple heart'],['🤍','White heart'],['😎','Cool'],['🥹','Holding back tears'],['😭','Crying'],['🤩','Starstruck'],['😂','Laughing'],['👀','Eyes'],['🤔','Thinking'],['🙃','Upside down'],['🤯','Mind blown'],['👍','Thumbs up'],['🙏','Thanks'],['💃','Dancing'],['🕺','Dancer'],['⚡','Lightning'],['🎉','Party']].map(([emoji, label]) =>
-          <button type="button" key={label} aria-label={'Add ' + label} disabled={busy || body.length + emoji.length > 1000} onClick={() => addEmoji(emoji)}>{emoji}</button>)}
+        {[['🎶', 'Music'], ['🎧', 'Headphones'], ['🎤', 'Microphone'], ['💿', 'Record'], ['✨', 'Sparkles'], ['💯', 'Hundred'], ['🫶', 'Heart hands'], ['💜', 'Purple heart'], ['🤍', 'White heart'], ['😎', 'Cool'], ['🥹', 'Holding back tears'], ['😭', 'Crying'], ['🤩', 'Starstruck'], ['😂', 'Laughing'], ['👀', 'Eyes'], ['🤔', 'Thinking'], ['🙃', 'Upside down'], ['🤯', 'Mind blown'], ['👍', 'Thumbs up'], ['🙏', 'Thanks'], ['💃', 'Dancing'], ['🕺', 'Dancer'], ['⚡', 'Lightning'], ['🎉', 'Party']].map(([emoji, label]) =>
+        <button type="button" key={label} aria-label={'Add ' + label} disabled={busy || body.length + emoji.length > 1000} onClick={() => addEmoji(emoji)}>{emoji}</button>)}
       </div>
       <form onSubmit={submit}>
         <Avatar user={user} size={32} />
@@ -156,7 +156,7 @@ export function MomentsExperience() {
   }, []);
 
   useEffect(() => {
-    feed.current?.querySelectorAll('.reel-menu[open]').forEach((menu) => { menu.open = false; });
+    feed.current?.querySelectorAll('.reel-menu[open]').forEach((menu) => {menu.open = false;});
   }, [currentReel]);
 
   function updateReelIndex() {
@@ -193,11 +193,11 @@ export function MomentsExperience() {
       <h1 className="sr-only">Moments</h1>
       <nav className="reels-tabs" aria-label="Moments feed">
         {id ? <Link to="/moments"><ArrowLeft size={16} />All moments</Link> :
-          [['discover', 'Discover'], ['following', 'Following'], ['mine', 'My moments']].map(([tab, label]) =>
-            <button key={tab} type="button" aria-pressed={scope === tab} onClick={() => {
-              if (tab !== 'discover' && !user) { login(); return; }
-              setParams({ ...Object.fromEntries(params), view: tab });
-            }}>{label}</button>)}
+        [['discover', 'Discover'], ['following', 'Following'], ['mine', 'My moments']].map(([tab, label]) =>
+        <button key={tab} type="button" aria-pressed={scope === tab} onClick={() => {
+          if (tab !== 'discover' && !user) {login();return;}
+          setParams({ ...Object.fromEntries(params), view: tab });
+        }}>{label}</button>)}
       </nav>
       <button type="button" className="moment-primary" aria-label="Post a moment" onClick={() => create()}><Plus size={22} /></button>
     </header>
@@ -258,10 +258,10 @@ export function MomentsExperience() {
     </div>
     {visiblePosts.length > 1 && <nav className="reels-stepper" aria-label="Browse Moments">
       <button type="button" aria-label="Previous moment" disabled={currentReel === 0} onClick={() => moveReel(-1)}><ChevronUp size={22} /></button>
-      <span aria-hidden="true">{currentReel + 1} / {visiblePosts.length}</span>
+      <span aria-hidden="true" className="hidden">{currentReel + 1} / {visiblePosts.length}</span>
       <button type="button" aria-label="Next moment" disabled={currentReel >= visiblePosts.length - 1} onClick={() => moveReel(1)}><ChevronDown size={22} /></button>
     </nav>}
-    {visiblePosts.filter((post) => comments.has(post.id)).map((post) => <Dialog key={post.id} open onOpenChange={(open) => { if (!open) dismissComments(post.id); }}>
+    {visiblePosts.filter((post) => comments.has(post.id)).map((post) => <Dialog key={post.id} open onOpenChange={(open) => {if (!open) dismissComments(post.id);}}>
       <DialogContent className={mobile ? 'moment-comments-sheet' : 'reels-comments'} onOpenAutoFocus={(event) => {
         event.preventDefault();
         document.getElementById('discussion-title-' + post.id)?.focus();
@@ -271,15 +271,15 @@ export function MomentsExperience() {
       }}>
         {mobile && post.media?.[0]?.url && <button type="button" className="discussion-preview" aria-label="Close comments and return to Moment" onClick={() => dismissComments(post.id)}>
           {post.media[0].type === 'video' ?
-            <video src={post.media[0].url + '#t=0.1'} preload="metadata" muted playsInline /> :
-            <img src={post.media[0].url} alt="" />}
+          <video src={post.media[0].url + '#t=0.1'} preload="metadata" muted playsInline /> :
+          <img src={post.media[0].url} alt="" />}
         </button>}
         <div className="reels-discussion-panel">
           <DialogHeader className="discussion-header">
             <DialogTitle id={'discussion-title-' + post.id} tabIndex={-1}>Comments</DialogTitle>
             <DialogDescription className="sr-only">Comments on this Moment.</DialogDescription>
           </DialogHeader>
-          <MomentComments post={post} onReport={(target) => { dismissComments(post.id); setReport(target); }} />
+          <MomentComments post={post} onReport={(target) => {dismissComments(post.id);setReport(target);}} />
         </div>
       </DialogContent>
     </Dialog>)}
