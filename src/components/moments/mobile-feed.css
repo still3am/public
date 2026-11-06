@@ -533,3 +533,26 @@
   .moment-comments-sheet .discussion-preview > :is(img, video) { pointer-events: none; }
   .moment-comments-sheet .discussion-preview:focus-visible { outline: 2px solid #fff; outline-offset: -4px; }
 }
+
+.reel-caption-wrap .reel-caption[data-expanded=false] {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  max-height: 2.8em;
+  overflow: hidden;
+}
+.reel-caption-wrap .reel-caption[data-expanded=true] {
+  max-height: min(11em, 25dvh);
+  overflow-y: auto;
+  overscroll-behavior-y: contain;
+  padding: 6px 7px;
+  border-radius: 7px;
+  background: #101010e8;
+}
+.reel-caption-toggle {
+  min-height: 32px;
+  padding: 2px 6px 2px 0;
+  font-size: 12px;
+  font-weight: 700;
+  color: #fff;
+}

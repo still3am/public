@@ -19,6 +19,25 @@ import '@/components/moments/moments.css';
 import '@/components/moments/mobile-feed.css';
 const name = (p) => p?.display_name || p?.username || 'PUBLIC listener';
 function SongArtwork({ url }) {const fixed = useCoverUrl(url);return fixed ? <img src={fixed} alt="" loading="lazy" /> : <Music2 size={22} />;}
+function ReelCaption({ text }) {
+  const caption = useRef(null);
+  const [canExpand, setCanExpand] = useState(false);
+  const [expanded, setExpanded] = useState(false);
+  useEffect(() => {
+    const element = caption.current;
+    if (!element || expanded) return;
+    const measure = () => setCanExpand(element.scrollHeight > element.clientHeight + 1);
+    measure();
+    if (typeof ResizeObserver === 'undefined') return;
+    const observer = new ResizeObserver(measure);
+    observer.observe(element);
+    return () => observer.disconnect();
+  }, [text, expanded]);
+  return <div className="reel-caption-wrap">
+    <p ref={caption} className="reel-caption" data-expanded={expanded} tabIndex={expanded ? 0 : undefined}>{text}</p>
+    {canExpand && <button className="reel-caption-toggle" type="button" aria-expanded={expanded} onClick={() => setExpanded((value) => !value)}>{expanded ? 'Show less' : 'Read more'}</button>}
+  </div>;
+}
 function MomentComments({ post, onReport }) {
   const { user } = useAuth(),nav = useNavigate();const [rows, setRows] = useState([]),[body, setBody] = useState(''),[busy, setBusy] = useState(false),[loading, setLoading] = useState(true),[error, setError] = useState(''),[page, setPage] = useState({ offset: 0, more: false });const section = useRef(null),live = useRef(true),lock = useRef(false),token = useRef(crypto.randomUUID());
   const [showEmojis, setShowEmojis] = useState(false);
@@ -123,6 +142,22 @@ export function MomentsExperience() {
   const [reelIndex, setReelIndex] = useState(0);
   const currentReel = Math.min(reelIndex, Math.max(0, visiblePosts.length - 1));
 
+  useEffect(() => {
+    const list = feed.current;
+    if (!list) return;
+    function closeOutside(event) {
+      list.querySelectorAll('.reel-menu[open]').forEach((menu) => {
+        if (!menu.contains(event.target)) menu.open = false;
+      });
+    }
+    document.addEventListener('pointerdown', closeOutside);
+    return () => document.removeEventListener('pointerdown', closeOutside);
+  }, []);
+
+  useEffect(() => {
+    feed.current?.querySelectorAll('.reel-menu[open]').forEach((menu) => { menu.open = false; });
+  }, [currentReel]);
+
   function updateReelIndex() {
     const list = feed.current;
     if (list?.clientHeight) setReelIndex(Math.round(list.scrollTop / list.clientHeight));
@@ -177,7 +212,7 @@ export function MomentsExperience() {
               <Link to={'/profile/' + post.user_id} className="reel-author"><Avatar user={post.author} size={34} /><span>{name(post.author)}</span></Link>
               {user?.id !== post.user_id && <button type="button" disabled={busy === post.id} className="reel-follow" onClick={() => follow(post)}>{following.has(post.user_id) ? 'Following' : 'Follow'}</button>}
             </div>
-            {post.caption && <p className="reel-caption" tabIndex={0}>{post.caption}</p>}
+            {post.caption && <ReelCaption text={post.caption} />}
           </div>
           <div className="reel-actions" role="group" aria-label="Moment actions">
             <button type="button" aria-pressed={post.liked} disabled={busy === post.id} onClick={() => like(post)} aria-label={post.liked ? 'Unlike moment' : 'Like moment'}><Heart size={26} fill={post.liked ? 'currentColor' : 'none'} /><span>{post.like_count || 0}</span></button>
