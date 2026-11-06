@@ -1,6 +1,6 @@
 .moments-route .reels-header { transition: opacity .2s ease, transform .2s ease; }
-.moments-route[data-moments-idle=true] .reels-header:not(:focus-within):not(:hover) { opacity: 0; transform: translateY(-5px); }
-.moments-route[data-moments-idle=true] .reels-header:not(:focus-within):not(:hover) > :is(.reels-tabs,.moment-primary) { pointer-events: none; }
+.moments-route[data-moments-idle=true] .reels-header:not(:focus-within):not(:hover):not(:has(.moment-speed-control[open])) { opacity: 0; transform: translateY(-5px); }
+.moments-route[data-moments-idle=true] .reels-header:not(:focus-within):not(:hover):not(:has(.moment-speed-control[open])) > :is(.reels-tabs,.moment-primary,.moment-speed-control) { pointer-events: none; }
 @media (prefers-reduced-motion:reduce) { .moments-route .reels-header { transition: none; } }
 .moment-share-dialog { background: #161719; color: #fff; color-scheme: dark; }
 .moment-share-dialog p, .moment-share-person small { color: #bec0c7; }
@@ -68,3 +68,25 @@
   background: #101010b0;
 }
 .moments-route .public-reels .reel-follow[hidden] { display: none; }
+
+.moments-route .public-reels .reels-header:has(.moment-speed-control) {
+  grid-template-columns: minmax(0,1fr) 44px 44px;
+  column-gap: 6px;
+}
+.moments-route .public-reels .reels-header:has(.moment-speed-control) > .moment-primary { grid-column: 3; }
+.moment-speed-control { position: relative; grid-area: 1 / 2; pointer-events: auto; }
+.moment-speed-control > summary {
+  display: grid; place-items: center; width: 44px; height: 44px;
+  list-style: none; border: 1px solid #ffffff45; border-radius: 50%; background: #151515d9; cursor: pointer;
+}
+.moment-speed-control > summary::-webkit-details-marker { display: none; }
+.moment-speed-control fieldset {
+  position: absolute; top: calc(100% + 8px); right: 0; min-width: 182px;
+  padding: 6px 8px 8px; border: 1px solid #ffffff40; border-radius: 13px; background: #171717; color: #fff;
+}
+.moment-speed-control legend { padding: 0 5px; font-size: 12px; font-weight: 700; }
+.moment-speed-control label { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 7px; min-height: 42px; font-size: 12px; cursor: pointer; }
+.moment-speed-control small { opacity: .75; white-space: nowrap; }
+@media (max-width: 420px) {
+  .public-reels .reels-header:has(.moment-speed-control) .reels-tabs > :is(button,a) { padding-inline: clamp(6px, 2vw, 9px); font-size: 11px; }
+}

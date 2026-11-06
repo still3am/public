@@ -37,3 +37,10 @@
 .moment-inline-replies form { display: grid; grid-template-columns: minmax(0,1fr) 36px; gap: 4px; }
 .moment-inline-replies form input { width: 100%; min-width: 0; min-height: 38px; padding: 0 8px; border: 1px solid #ffffff40; border-radius: 14px; background: #101113; font-size: 16px; }
 .moment-inline-replies form button { display: grid; place-items: center; }
+
+.reels-feed { overscroll-behavior-x: contain; }
+.moment-media-wrap[data-photo-swipe=true] .moment-tap-surface { user-select: none; -webkit-user-select: none; }
+@media (pointer: fine) {
+  .moment-media-wrap[data-photo-swipe=true] .moment-tap-surface { cursor: grab; }
+  .moment-media-wrap[data-photo-swipe=true] .moment-tap-surface:active { cursor: grabbing; }
+}

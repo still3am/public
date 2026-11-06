@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { useMomentSwipePreferences } from './momentSwipePreferences';
 import { createPortal } from 'react-dom';
 import { Link } from 'react-router-dom';
 import { useCoverUrl } from '@/hooks/useCoverUrl';
@@ -9,11 +10,13 @@ import { usePlayer } from '@/context/PlayerContext';
 // One audible Moment at a time. Scrolling away, opening a dialog, hiding
 // the app or starting the regular player releases both audio and video.
 export default function MomentMedia({ post, active, onActive, muted = false, onToggleMute, draftPreview = false }) {
+  const { delay, menuOpen } = useMomentSwipePreferences();
   const audio = useRef(null),video = useRef(null),box = useRef(null),progressBar = useRef(null),player = usePlayer(),alive = useRef(true),request = useRef(0);
   const [loadedSong, setLoadedSong] = useState(null),[loading, setLoading] = useState(false),[error, setError] = useState(''),[index, setIndex] = useState(0);
   const [inView, setInView] = useState(false),[controls, setControls] = useState(false),[needsTap, setNeedsTap] = useState(false);
   const mouse = useRef(null), manuallyPaused = useRef(false), songUrls = useRef(new Map());
   const [artHost, setArtHost] = useState(null);
+  const autoRequest = useRef(null);
   const photoLoads = useRef(new Map()), photoRequest = useRef(0), desiredPhoto = useRef(0), currentPhoto = useRef(0);
   currentPhoto.current = index;
   const touch = useRef(null),lastSwipe = useRef(0),direction = useRef(1),photoSizes = useRef(new Map());
@@ -166,11 +169,13 @@ export default function MomentMedia({ post, active, onActive, muted = false, onT
 
   async function showPhoto(next, step, automatic = false) {
     const request = ++photoRequest.current;
+    autoRequest.current = automatic ? request : null;
     desiredPhoto.current = next;
     const count = post.media.length;
     for (let attempt = 0; attempt < (automatic ? count - 1 : 1); attempt++) {
       if (await preparePhoto(post.media[next]?.url)) {
         if (request !== photoRequest.current || !alive.current || (automatic && document.hidden)) return;
+        autoRequest.current = null;
         desiredPhoto.current = next;
         direction.current = step;
         setPhotoChanged(true);
@@ -185,13 +190,20 @@ export default function MomentMedia({ post, active, onActive, muted = false, onT
   }
 
   useEffect(() => {
-    if (isVideo || photoCount < 2 || !inView || (!active && !needsTap) || touching || document.hidden) return;
+    if (isVideo || photoCount < 2 || !inView || (!active && !needsTap) || touching || document.hidden || (!draftPreview && (menuOpen || !delay))) return;
     const timer = setTimeout(() => {
       if (document.hidden || (document.querySelector('[role="dialog"][data-state="open"]') && !draftPreview)) return;
       showPhoto((currentPhoto.current + 1) % photoCount, 1, true);
-    }, Math.max(2800, Math.min(4800, (Number(post.clip_duration) || 30) * 1000 / photoCount)));
-    return () => { clearTimeout(timer); };
-  }, [active, needsTap, inView, isVideo, photoCount, touching, index, post.clip_duration, draftPreview]);
+    }, draftPreview ? Math.max(2800, Math.min(4800, (Number(post.clip_duration) || 30) * 1000 / photoCount)) : delay);
+    return () => {
+      clearTimeout(timer);
+      if (autoRequest.current === photoRequest.current) {
+        photoRequest.current++;
+        desiredPhoto.current = currentPhoto.current;
+        autoRequest.current = null;
+      }
+    };
+  }, [active, needsTap, inView, isVideo, photoCount, touching, index, post.clip_duration, draftPreview, delay, menuOpen]);
 
   useEffect(() => {
     if (isVideo || !inView || photoCount < 2) return;
@@ -214,14 +226,15 @@ export default function MomentMedia({ post, active, onActive, muted = false, onT
   function startSwipe(event) {
     const point = event.touches[0];
     if (isVideo || post.media.length < 2 || event.touches.length !== 1 || event.target.closest('.moment-photo-controls, .moment-media-play, .moment-media-mute')) {touch.current = null;return;}
-    touch.current = { x: point.clientX, y: point.clientY };setTouching(true);
+    touch.current = { x: point.clientX, y: point.clientY, time: performance.now() };setTouching(true);
   }
   function finishSwipe(event) {
     const origin = touch.current,point = event.changedTouches[0];
     touch.current = null;setTouching(false);
     if (!origin || !point) return;
     const x = point.clientX - origin.x,y = point.clientY - origin.y;
-    if (Math.abs(x) < 44 || Math.abs(x) < Math.abs(y) * 1.35) return;
+    const quickFlick = performance.now() - origin.time < 240 && Math.abs(x) >= 25;
+    if ((!quickFlick && Math.abs(x) < 42) || Math.abs(x) < Math.abs(y) * 1.4) return;
     lastSwipe.current = Date.now();movePhoto(x < 0 ? 1 : -1);
   }
   function mouseDown(event) {
@@ -256,7 +269,7 @@ export default function MomentMedia({ post, active, onActive, muted = false, onT
       if (event.ctrlKey || Math.abs(event.deltaX) <= Math.abs(event.deltaY) * 1.35) return;
       if (event.cancelable) event.preventDefault();
       const now = Date.now();
-      if (now - previous > 170) { distance = 0; used = false; }
+      if (now - previous > 210) { distance = 0; used = false; }
       previous = now;
       if (used) return;
       distance += event.deltaX * (event.deltaMode === 1 ? 16 : event.deltaMode === 2 ? surface.clientWidth : 1);
