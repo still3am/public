@@ -11,6 +11,17 @@ export default async function handleRequest(req) {
     if(user.is_blocked || user.disabled) return Response.json({error:'Account suspended'},{status:403});
 
     const body = await req.json().catch(() => ({}));
+    if (body.action === 'set_friends_family_badge') {
+      if (user.role !== 'admin') return Response.json({ error: 'Administrator access required.' }, { status: 403 });
+      if (typeof body.user_id !== 'string' || !/^[a-zA-Z0-9_-]{1,100}$/.test(body.user_id) || typeof body.enabled !== 'boolean') {
+        return Response.json({ error: 'Choose a member and badge state.' }, { status: 400 });
+      }
+      const entities = base44.asServiceRole.entities;
+      const patch = { friends_family_badge: body.enabled };
+      await entities.User.update(body.user_id, patch);
+      await entities.PublicProfile.updateMany({ user_id: body.user_id }, { $set: patch });
+      return Response.json({ friends_family_badge: body.enabled });
+    }
     const ids = Array.isArray(body?.ids)
       ? [...new Set(body.ids.filter((i) => typeof i === 'string' && i))].slice(0, 200)
       : [];
@@ -67,10 +78,11 @@ export default async function handleRequest(req) {
       is_artist: u.role!=='admin' && u.creator_role==='artist',
       creator_role: u.role==='admin'?'listener':['artist','uploader'].includes(u.creator_role)?u.creator_role:'listener',
       is_public_admin: u.role==='admin',
+      friends_family_badge: u.friends_family_badge === true,
       created_date: u.created_date || '',
     }));
 
-    const publicFields=["username","display_name","full_name","avatar_url","avatar_preset","avatar_video_url","avatar_gif_url","banner_video_url","banner_gif_url","banner_url","banner_mobile_url","banner_use_default","top_tracks_label","bio","location","pronouns","website","instagram","twitter","soundcloud","status_message","featured_track_id","profile_background_mode","profile_background_colors","profile_background_motion","profile_background_speed","top_track_ids","is_artist","creator_role","is_public_admin"];
+    const publicFields=["username","display_name","full_name","avatar_url","avatar_preset","avatar_video_url","avatar_gif_url","banner_video_url","banner_gif_url","banner_url","banner_mobile_url","banner_use_default","top_tracks_label","bio","location","pronouns","website","instagram","twitter","soundcloud","status_message","featured_track_id","profile_background_mode","profile_background_colors","profile_background_motion","profile_background_speed","top_track_ids","is_artist","creator_role","is_public_admin","friends_family_badge"];
     await Promise.allSettled(users.map(async profile=>{
       const page=await base44.asServiceRole.entities.PublicProfile.filter({user_id:profile.id},'-updated_date',1);
       const data={...Object.fromEntries(publicFields.filter(key=>profile[key]!==undefined).map(key=>[key,profile[key]])),user_id:profile.id,joined_at:profile.created_date||"",visible:true};
