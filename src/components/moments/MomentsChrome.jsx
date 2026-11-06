@@ -5,6 +5,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 import { copyText, shareOutsidePublic } from '@/lib/shareLink';
 import { momentsApi, momentError } from '@/lib/momentsApi';
 import './moments-chrome.css';
+import MomentThreads from './MomentThreads';
 
 export default function MomentsChrome() {
   const [share, setShare] = useState(null);
@@ -50,7 +51,7 @@ export default function MomentsChrome() {
     };
   }, []);
 
-  return share ? <ShareMoment key={share.id} share={share} close={() => setShare(null)} /> : null;
+  return <><MomentThreads />{share && <ShareMoment key={share.id} share={share} close={() => setShare(null)} />}</>;
 }
 
 function ShareMoment({ share, close }) {

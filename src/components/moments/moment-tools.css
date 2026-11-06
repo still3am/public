@@ -1,0 +1,26 @@
+.moment-media-wrap[data-photo-swipe=true] { touch-action: pan-y pinch-zoom; }
+.moment-waveform-editor { display: grid; gap: 8px; min-width: 0; }
+.moment-waveform-times { display: flex; justify-content: space-between; gap: 8px; font-size: 12px; }
+.moment-waveform { height: 66px; position: relative; margin-inline: 8px; border-radius: 9px; background: #ffffff12; }
+.moment-waveform svg { width: 100%; height: 100%; fill: currentColor; opacity: .62; }
+.moment-waveform-selection { position: absolute; inset-block: 0; border-block: 1px solid currentColor; background: #ffffff20; pointer-events: none; }
+.moment-waveform-handle { position: absolute; z-index: 1; inset-block: 0; width: 24px; transform: translateX(-50%); touch-action: none; cursor: ew-resize; }
+.moment-waveform-handle::after { content: ""; position: absolute; inset: 0 9px; border-radius: 4px; background: #fff; }
+.moment-waveform-inputs { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.moment-waveform-inputs input { width: 100%; min-width: 0; }
+.moment-waveform-hint { font-size: 12px; opacity: .8; }
+.reels-discussion-panel { position: relative; }
+.moment-threads-trigger { position: absolute; z-index: 1; top: 8px; left: 8px; min-height: 44px; display: flex; align-items: center; gap: 4px; padding: 0 6px; font-size: 11px; }
+.reels-discussion-panel:has(> .moment-threads) > .discussion-comments { display: none; }
+.moment-threads { display: flex; flex-direction: column; min-height: 0; outline: none; padding: 0 12px 10px; }
+.moment-thread-heading { display: flex; align-items: center; gap: 8px; }
+.moment-thread-heading button, .moment-thread-row > button, .moment-threads form > button { min-width: 44px; min-height: 44px; display: grid; place-items: center; }
+.moment-thread-scroll { flex: 1 1 0; overflow: auto; overscroll-behavior: contain; }
+.moment-thread-scroll > p, .moment-thread-error { padding: 8px; font-size: 13px; }
+.moment-thread-row { display: grid; grid-template-columns: minmax(0,1fr) auto; gap: 8px; align-items: start; padding: 8px 0; }
+.moment-thread-row > button { font-size: 12px; }
+.moment-thread-comment { display: grid; grid-template-columns: 30px minmax(0,1fr); gap: 8px; font-size: 13px; overflow-wrap: anywhere; }
+.moment-thread-comment p { white-space: pre-wrap; margin-top: 3px; }
+.moment-thread-parent { padding: 8px; border-radius: 10px; background: #ffffff12; }
+.moment-threads form { display: grid; grid-template-columns: minmax(0,1fr) 44px; gap: 8px; margin-top: 5px; padding-bottom: env(safe-area-inset-bottom); }
+.moment-threads input { min-width: 0; min-height: 44px; border: 1px solid #ffffff40; border-radius: 20px; padding-inline: 12px; background: #101113; font-size: 16px; }

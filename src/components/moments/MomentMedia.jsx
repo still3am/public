@@ -5,10 +5,11 @@ import {usePlayer} from '@/context/PlayerContext';
 
 // One audible Moment at a time. Scrolling away, opening a dialog, hiding
 // the app or starting the regular player releases both audio and video.
-export default function MomentMedia({post,active,onActive,muted=false,onToggleMute}){
+export default function MomentMedia({post,active,onActive,muted=false,onToggleMute,draftPreview=false}){
  const audio=useRef(null),video=useRef(null),box=useRef(null),progressBar=useRef(null),player=usePlayer(),alive=useRef(true),request=useRef(0);
  const [source,setSource]=useState(''),[loading,setLoading]=useState(false),[error,setError]=useState(''),[index,setIndex]=useState(0);
  const [inView,setInView]=useState(false),[controls,setControls]=useState(false),[needsTap,setNeedsTap]=useState(false);
+ const touch=useRef(null),manualPhoto=useRef(false),lastSwipe=useRef(0);
  const hideTimer=useRef(null),photo=useRef(null),still=useRef(null);
  const [pausedGif,setPausedGif]=useState(false);
  const [widePhoto,setWidePhoto]=useState('');
@@ -31,7 +32,7 @@ export default function MomentMedia({post,active,onActive,muted=false,onToggleMu
  useEffect(()=>{const hide=()=>{if(document.hidden){stop();onActive(false);}};document.addEventListener('visibilitychange',hide);return()=>document.removeEventListener('visibilitychange',hide);},[]);
  useEffect(()=>{if(audio.current){audio.current.volume=Number(post.music_volume??.8);audio.current.muted=muted;}if(video.current){video.current.volume=Number(post.original_volume??0);video.current.muted=muted||Number(post.original_volume??0)===0;}},[muted,post.music_volume,post.original_volume]);
  useEffect(()=>{
-  if(inView&&source&&!player.isPlaying&&!document.hidden&&!document.querySelector('[role="dialog"][data-state="open"]')) startPlayback();
+  if(!draftPreview&&inView&&source&&!player.isPlaying&&!document.hidden&&!document.querySelector('[role="dialog"][data-state="open"]')) startPlayback();
  },[inView,source]);
  function revealControls(){
   clearTimeout(hideTimer.current);
@@ -39,6 +40,7 @@ export default function MomentMedia({post,active,onActive,muted=false,onToggleMu
   hideTimer.current=setTimeout(()=>setControls(false),3200);
  }
  function tapSurface(){
+  if(Date.now()-lastSwipe.current<350)return;
   if(needsTap&&source){startPlayback();return;}
   if(controls){clearTimeout(hideTimer.current);setControls(false);}else revealControls();
  }
@@ -72,17 +74,34 @@ export default function MomentMedia({post,active,onActive,muted=false,onToggleMu
  function updateProgress(fraction){
   if(progressBar.current)progressBar.current.style.transform='scaleX('+Math.max(0,Math.min(1,fraction||0))+')';
  }
- function tick(){const a=audio.current;if(!a)return;if(a.currentTime>=start+length){a.currentTime=start;if(!isVideo)setIndex(0);}updateProgress((a.currentTime-start)/length);if(!isVideo&&active)setIndex(Math.min(post.media.length-1,Math.floor(Math.max(0,a.currentTime-start)/length*post.media.length)));}
+ function tick(){const a=audio.current;if(!a)return;if(a.currentTime>=start+length){a.currentTime=start;if(!isVideo&&!manualPhoto.current)setIndex(0);}updateProgress((a.currentTime-start)/length);if(!isVideo&&active&&!manualPhoto.current)setIndex(Math.min(post.media.length-1,Math.floor(Math.max(0,a.currentTime-start)/length*post.media.length)));}
  function videoTick(){const a=audio.current,v=video.current;if(!v||!active)return;if(!a||!source){updateProgress(v.currentTime/v.duration);return;}const desired=start+(v.currentTime%length);if(Math.abs(a.currentTime-desired)>.6)a.currentTime=desired;}
  function end(){stop();onActive(false);updateProgress(0);if(video.current)video.current.currentTime=0;if(audio.current)audio.current.currentTime=start;}
- return <div ref={box} className="moment-media-wrap">
+ function movePhoto(step){
+  manualPhoto.current=true;setPausedGif(false);
+  setIndex(current=>Math.max(0,Math.min(post.media.length-1,current+step)));
+ }
+ function startSwipe(event){
+  const point=event.touches[0];
+  if(isVideo||post.media.length<2||event.touches.length!==1||event.target.closest('.moment-photo-controls, .moment-media-play, .moment-media-mute')){touch.current=null;return;}
+  touch.current={x:point.clientX,y:point.clientY};
+ }
+ function finishSwipe(event){
+  const origin=touch.current,point=event.changedTouches[0];
+  touch.current=null;
+  if(!origin||!point)return;
+  const x=point.clientX-origin.x,y=point.clientY-origin.y;
+  if(Math.abs(x)<44||Math.abs(x)<Math.abs(y)*1.35)return;
+  lastSwipe.current=Date.now();movePhoto(x<0?1:-1);
+ }
+ return <div ref={box} className="moment-media-wrap" data-photo-swipe={!isVideo&&post.media.length>1} onTouchStart={startSwipe} onTouchEnd={finishSwipe} onTouchCancel={()=>{touch.current=null;}}>
   <div className={'moment-media'+(!isVideo&&showPhotoBackdrop?' is-wide-photo':'')} data-playing={active} data-controls={controls||needsTap} style={!isVideo&&showPhotoBackdrop?{'--moment-photo':'url('+JSON.stringify(photoUrl)+')'}:undefined}>
    {isVideo?<video ref={video} src={post.media[0].url} playsInline preload="metadata" muted={muted||Number(post.original_volume??0)===0} onTimeUpdate={videoTick} onEnded={end} onError={()=>setError('This video cannot play in this browser.')} aria-label="Moment video"/>:<img ref={photo} hidden={pausedGif} src={photoUrl} alt={post.caption||'Photo shared in a Moment'} loading="lazy" onLoad={(event)=>{const {naturalWidth,naturalHeight}=event.currentTarget;setWidePhoto(naturalHeight&&naturalWidth/naturalHeight>=.82?photoUrl:'');}}/>}
    {isGif&&<canvas ref={still} className={showPhotoBackdrop||widePhoto===photoUrl?'moment-gif-still is-wide':'moment-gif-still'} hidden={!pausedGif} aria-hidden="true" />}
-   <button type="button" className="moment-tap-surface" onClick={tapSurface} aria-label={needsTap?'Tap to start playback':'Toggle playback controls'} />
+   {!draftPreview&&<button type="button" className="moment-tap-surface" onClick={tapSurface} aria-label={needsTap?'Tap to start playback':'Toggle playback controls'} />}
    <button type="button" className="moment-media-play" onClick={play} disabled={loading||(!source&&!isVideo)} aria-label={active?'Pause moment':'Play moment'}>{loading?<Loader2 size={20} className="animate-spin"/>:active?<Pause size={20}/>:<Play size={20} fill="currentColor"/>}</button>
-   <button type="button" className="moment-media-mute" onClick={()=>{onToggleMute?.();revealControls();}} aria-label={muted?'Unmute moment':'Mute moment'}>{muted?<VolumeX size={18}/>:<Volume2 size={18}/>}</button>
-   {!isVideo&&post.media.length>1&&<div className="moment-photo-controls"><button type="button" aria-label="Previous photo" disabled={index===0} onClick={()=>setIndex(n=>n-1)}><ChevronLeft size={20}/></button><span>{index+1} / {post.media.length}</span><button type="button" aria-label="Next photo" disabled={index===post.media.length-1} onClick={()=>setIndex(n=>n+1)}><ChevronRight size={20}/></button></div>}
+   {!draftPreview&&<button type="button" className="moment-media-mute" onClick={()=>{onToggleMute?.();revealControls();}} aria-label={muted?'Unmute moment':'Mute moment'}>{muted?<VolumeX size={18}/>:<Volume2 size={18}/>}</button>}
+   {!isVideo&&post.media.length>1&&<div className="moment-photo-controls"><button type="button" aria-label="Previous photo" disabled={index===0} onClick={()=>movePhoto(-1)}><ChevronLeft size={20}/></button><span>{index+1} / {post.media.length}</span><button type="button" aria-label="Next photo" disabled={index===post.media.length-1} onClick={()=>movePhoto(1)}><ChevronRight size={20}/></button></div>}
    <div className="moment-playback-progress" aria-hidden="true"><span ref={progressBar}/></div>
    <audio ref={audio} src={source||undefined} preload="metadata" onLoadedMetadata={()=>{if(audio.current)audio.current.currentTime=start;}} onTimeUpdate={tick} onEnded={()=>{if(active){audio.current.currentTime=start;audio.current.play().catch(end);}}} onError={()=>{setError('This song preview could not load.');end();}}/>
   </div>
