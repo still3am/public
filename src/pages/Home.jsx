@@ -258,6 +258,7 @@ export default function Home() {
   return (
     <PullToRefresh onRefresh={() => load(true)}>
       <div className="home-page home-redesigned">
+        {loadError && <LoadError message={loadError} onRetry={() => load(true)} />}
         <header className="home-welcome"><div className="home-welcome-copy"><h1>{greeting}{homeName && <span><span className="home-greeting-comma">, </span>{homeName}</span>}</h1></div><div className="home-header-actions"><HomeWeather /><Link to={user ? "/profile" : "/login"} aria-label={user ? "Your profile" : "Sign in"}><Avatar user={user} size={44} /></Link></div></header>
         
         

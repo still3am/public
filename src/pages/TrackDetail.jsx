@@ -81,7 +81,10 @@ export default function TrackDetail() {
       let t;
       try {t = await base44.entities.Track.get(id);} catch (original) {
         const status = original?.status ?? original?.response?.status;
-        if (status === 403 || status === 404) throw original;
+        if ([403, 404].includes(Number(status))) {
+          if (request === loadVersion.current) setTrack(null);
+          return;
+        }
         const rows = await base44.entities.Track.filter({ id }, "-created_date", 1);
         t = (Array.isArray(rows) ? rows : entityRows(rows) || [])[0];if (!t) throw original;
       }
@@ -137,7 +140,7 @@ export default function TrackDetail() {
       </div>);
 
   }
-  if (!track) return <EmptyState title="Track not found" />;
+  if (!track) return <EmptyState title="Track unavailable" />;
 
   const isCurrent = p.currentTrack?.id === track.id;
   const isOwner = !!user?.id && track.uploader_id === user.id;

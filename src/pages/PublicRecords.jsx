@@ -189,7 +189,7 @@ export default function PublicRecords({ id: propId, fallbackArtist = null }) {
   }, [id, fallbackArtist?.name, user?.id, user?.show_explicit, user?.adult_confirmed]);
 
   if (loadError && !artist) return <LoadError onRetry={load} />;
-  if (loading) {
+  if (loading && !artist) {
     return (
       <div className="py-24 grid place-items-center">
         <Loader2 className="animate-spin text-foreground/40" />
@@ -252,6 +252,7 @@ export default function PublicRecords({ id: propId, fallbackArtist = null }) {
   return (
     <PullToRefresh onRefresh={load}>
       <div className="artist-page artist-editorial mx-auto pb-12">
+        {loadError && <LoadError message="This artist page couldn’t refresh." onRetry={load} />}
         <section className="artist-hero">
           <ArtistArtwork source={artist.cover_art_url || artist.avatar_url || topCover} className="artist-hero-image" />
           <div className="artist-hero-shade" />
