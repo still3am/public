@@ -65,7 +65,7 @@ export default function Downloads() {
 
 
     
-  {(downloading > 0 || cache.syncing) && <div role="status" className="flex items-center gap-3 rounded-2xl bg-foreground/[0.04] border px-4 py-3 mb-5 text-sm"><Loader2 size={16} className="animate-spin shrink-0" /><span>{downloading ? "Saving " + downloading + " " + (downloading === 1 ? "song" : "songs") + " to this device…" : "Checking saved music…"}</span></div>}
+  {downloading > 0 && <div role="status" className="flex items-center gap-3 rounded-2xl bg-foreground/[0.04] border px-4 py-3 mb-5 text-sm"><Loader2 size={16} className="animate-spin shrink-0" /><span>Saving {downloading} {downloading === 1 ? "song" : "songs"} to this device…</span></div>}
   
   {cache.pendingCount > 0 && !downloading && !cache.syncing && <div role="status" className="border rounded-2xl p-4 mb-5 text-sm"><p>{cache.pendingCount} {cache.pendingCount === 1 ? "song is" : "songs are"} waiting to download on this device.</p><button type="button" onClick={() => cache.syncFromCloud({retry:true})} className="min-h-11 mt-2 underline">Retry downloads</button></div>}
   {cache.syncError && !tracks.length && !cache.pendingCount && !cache.syncing && <div role="alert" className="border rounded-2xl p-4 mb-5 text-sm"><p>Offline music couldn’t finish syncing. Your saved files are still on this device.</p><button type="button" disabled={!online} onClick={() => cache.syncFromCloud({retry:true})} className="min-h-11 mt-2 underline">Retry sync</button></div>}
