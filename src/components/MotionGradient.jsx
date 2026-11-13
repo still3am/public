@@ -27,15 +27,14 @@ void main(){
  float wave=sin(q.x*3.2+q.y*2.1+t*.29);
  float fold=sin(q.y*4.1-q.x*1.8-t*.38+wave*.8);
  float ribbon=.5+.5*sin(q.x*2.9+fold*1.7+t*.22);
- vec3 color=mix(u_a,u_b,smoothstep(.29,.71,ribbon));
+ vec3 color=mix(u_a,u_b,smoothstep(.12,.88,ribbon));
  float pool=.5+.5*sin(q.y*3.3+wave*1.6-t*.27);
- color=mix(color,u_c,smoothstep(.43,.77,pool)*.94);
+ color=mix(color,u_c,smoothstep(.28,.92,pool)*.88);
  if(u_count>3.5){
   // All stops travel along the same warped ribbon, including the last-to-first blend.
   float ribbonPath=q.x*.60+q.y*.40+wave*.14+fold*.12;
   float stop=fract(ribbonPath+t*.046)*u_count;
-  // Hold each color across the ribbon core and soften only the boundary.
-  float blend=smoothstep(.32,.68,fract(stop));
+  float blend=smoothstep(0.,1.,fract(stop));
   if(stop<1.) color=mix(u_a,u_b,blend);
   else if(stop<2.) color=mix(u_b,u_c,blend);
   else if(stop<3.) color=mix(u_c,u_d,blend);
