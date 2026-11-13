@@ -54,7 +54,6 @@ console.log('PASS lyrics use normal synced lines without karaoke word timing');
 
 tree=View({...props,position:2,resolvedLyrics:{trackId:'new',record:{lines:[{text:'Current verse',start_time_ms:1000},{text:'Next verse',start_time_ms:5000},{text:'Later verse',start_time_ms:9000}]}}});
 const focusLines=all(tree,n=>n.type==='button');
-assert.equal(focusLines[0].props.style.filter,'none');assert.equal(focusLines[0].props.style.opacity,1);
-assert.match(focusLines[1].props.style.filter,/blur\(/);assert.match(focusLines[2].props.style.filter,/blur\(/);
+assert.ok(focusLines.every(line=>line.props.style.filter===undefined));assert.equal(focusLines[0].props.style.opacity,1);
 assert.ok(focusLines[1].props.style.opacity<focusLines[0].props.style.opacity);
-console.log('PASS current lyrics remain crisp while surrounding synced lines soften');
+console.log('PASS current lyrics remain highlighted without per-line blur');
