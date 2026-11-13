@@ -15,7 +15,7 @@ assert.equal(model.readOnboardingDraft("b"),null);
 assert.equal(model.validHandle("bad name"),false);
 assert.equal(model.cleanHandle("@My_Sound"),"my_sound");
 const catalog=[{id:"song",artist:"Artist",genre:"Pop",uploader_id:"creator",is_published:true,audio_url:"audio"}];
-const people=model.recommendPeople([{user_id:"a"},{user_id:"blocked"},{user_id:"fan",top_track_ids:["song"]},{user_id:"creator"}],catalog,{uid:"a",blocked:new Set(["blocked"]),artists:["Artist"]});
+const people=model.recommendPeople([{user_id:"a"},{user_id:"blocked"},{user_id:"fan",username:"fan",top_track_ids:["song"]},{user_id:"creator",full_name:"Creator"},{user_id:"unnamed",display_name:" "}],catalog,{uid:"a",blocked:new Set(["blocked"]),artists:["Artist"]});
 assert.deepEqual(people.map(p=>p.user_id),["fan","creator"]);
 assert.equal(people[0].reason,"Shares your favorites");
 
