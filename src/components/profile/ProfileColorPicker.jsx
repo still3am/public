@@ -1,8 +1,8 @@
 import {useRef,useState} from "react";
-import {Check,Loader2,Plus,Shuffle,X} from "lucide-react";
+import {Check,Loader2,Plus,Shuffle,Undo2,X} from "lucide-react";
 import {Dialog,DialogContent,DialogHeader,DialogTitle,DialogDescription} from "@/components/ui/dialog";
 import MotionGradient from "@/components/MotionGradient";
-import ProfileColorWheel from "./ProfileColorWheel";
+import ProfileColorWheel,{hexToHsv,hsvToHex} from "./ProfileColorWheel";
 import "./profile-colors.css";
 
 const PRESETS=[
@@ -24,8 +24,8 @@ const PRESETS=[
 const presetGradient=([a,b,c])=>
  `radial-gradient(ellipse at 12% 12%, ${b} 0%, ${b}00 64%),radial-gradient(ellipse at 90% 85%, ${c} 0%, ${c}00 68%),linear-gradient(135deg, ${a} 15%, ${a} 55%, ${c} 100%)`;
 const MAX_COLORS=5;
-const EXTRA_COLORS=["#e879ae","#ffc179"];
-const randomColor=()=>"#"+Math.floor(Math.random()*0x1000000).toString(16).padStart(6,"0");
+const PALETTE_HUES=[[0,24,48,-20,70],[0,165,195,28,138],[0,115,238,18,264]];
+const PALETTE_TONES=[[.76,.43],[.70,.86],[.37,.97],[.55,.69],[.43,.91]];
 const valid=color=>/^#[0-9a-f]{6}$/i.test(color);
 const normalize=text=>"#"+text.replace(/^#/,"").toLowerCase();
 
@@ -33,27 +33,40 @@ export default function ProfileColorPicker({coverUrl,colors,loading,value,onPrev
  const [draft,setDraft]=useState(()=>({mode:value.mode,colors:[...value.colors],motion:value.motion||"flow",speed:value.speed||1}));
  const [saving,setSaving]=useState(false),[error,setError]=useState("");
  const saveLock=useRef(false);
+ const [beforeRandomize,setBeforeRandomize]=useState(null);
  const [activeColor,setActiveColor]=useState(0);
  const activeIndex=Math.min(activeColor,Math.max(0,draft.colors.length-1));
- const update=next=>{if(saveLock.current)return;setError("");setDraft(next);onPreview({...next,colors:next.colors.filter(valid)});};
+ const update=next=>{if(saveLock.current)return;setError("");setBeforeRandomize(null);setDraft(next);onPreview({...next,colors:next.colors.filter(valid)});};
  const customColors=draft.colors.length?draft.colors:colors.slice(0,3).length?colors.slice(0,3):PRESETS[0].colors;
  const setColors=next=>update({...draft,mode:"custom",colors:next.slice(0,MAX_COLORS)});
  const toggle=color=>setColors(draft.mode==="custom"&&draft.colors.includes(color)?draft.colors.filter(c=>c!==color):[...(draft.mode==="custom"?draft.colors:[]),color].slice(-MAX_COLORS));
  const addColor=()=>{
   const index=draft.colors.length;
+  const base=draft.colors.find(valid)||PRESETS[0].colors[0];
+  const {h}=hexToHsv(base);
+  const tone=PALETTE_TONES[index];
+  const color=[45,75,110,155,200,250].map(offset=>hsvToHex((h+offset+index*23)%360,...tone))
+   .find(candidate=>!draft.colors.some(existing=>existing.toLowerCase()===candidate));
   setActiveColor(index);
-  setColors([...draft.colors, [...PRESETS[0].colors,...EXTRA_COLORS][index]]);
+  setColors([...draft.colors,color]);
  };
  const randomize=()=>{
-  const palette=new Set(draft.colors.map(color=>color.toLowerCase()));
-  const next=[];
+  const hue=Math.floor(Math.random()*360);
+  const offsets=PALETTE_HUES[Math.floor(Math.random()*PALETTE_HUES.length)];
   const count=draft.mode==="custom"?draft.colors.length||3:customColors.length;
-  while(next.length<count){
-   const color=randomColor();
-   if(!palette.has(color)){palette.add(color);next.push(color);}
-  }
-  setActiveColor(0);
+  const next=offsets.slice(0,count).map((offset,index)=>{
+   const [saturation,brightness]=PALETTE_TONES[index];
+   return hsvToHex((hue+offset+360)%360,saturation,brightness);
+  });
+  if(saveLock.current)return;
   setColors(next);
+  setBeforeRandomize(beforeRandomize||{draft,activeIndex});
+  setActiveColor(0);
+ };
+ const undoRandomize=()=>{
+  if(!beforeRandomize||saveLock.current)return;
+  update(beforeRandomize.draft);
+  setActiveColor(beforeRandomize.activeIndex);
  };
  const preview=draft.mode==="off"?[]:draft.mode==="custom"?draft.colors.filter(valid):colors.slice(0,3);
  const invalid=draft.mode==="custom"&&(!draft.colors.length||draft.colors.some(color=>!valid(color)));
@@ -78,9 +91,12 @@ export default function ProfileColorPicker({coverUrl,colors,loading,value,onPrev
     </div>
     <p className="profile-color-hint">{draft.mode==="auto"?(coverUrl?"Colors update with your profile song.":"Add a profile song for automatic colors, or choose Custom now."):draft.mode==="off"?"Use PUBLIC’s clean background. Your custom palette is kept.":"Your custom colors stay the same when you change your profile song."}</p>
     {draft.mode!=="custom"&&<button type="button" className="profile-color-create" disabled={saving} onClick={()=>{setActiveColor(0);setColors(customColors);}}><Plus size={16}/>Create your own palette</button>}
-    <button type="button" className="profile-color-create" disabled={saving} onClick={randomize}><Shuffle size={16}/>Randomize colors</button>
+    <div className="profile-color-random-actions">
+     <button type="button" className="profile-color-create" disabled={saving} onClick={randomize}><Shuffle size={16}/>Randomize colors</button>
+     {beforeRandomize&&<button type="button" className="profile-color-create" disabled={saving} onClick={undoRandomize}><Undo2 size={16}/>Undo shuffle</button>}
+    </div>
     {draft.mode==="custom"&&<>
-     <section className="profile-color-section"><h3>Your colors <span>Tap one, then drag</span></h3><div className="profile-color-quick-stops" role="group" aria-label="Choose gradient color to edit">{draft.colors.map((color,index)=><button type="button" key={index} disabled={saving} aria-label={`Edit gradient color ${index+1}`} aria-pressed={activeIndex===index} onClick={()=>setActiveColor(index)}><span style={{background:valid(color)?color:"#777777"}}>{activeIndex===index&&<Check size={16}/>}</span><small>Color {index+1}</small></button>)}{draft.colors.length<MAX_COLORS&&<button type="button" disabled={saving} aria-label="Add gradient color" onClick={addColor}><span><Plus size={18}/></span><small>Add color</small></button>}</div></section>
+     <section className="profile-color-section"><h3>Your colors <span>{draft.colors.length} / {MAX_COLORS}</span></h3><div className="profile-color-quick-stops" role="group" aria-label="Choose gradient color to edit">{draft.colors.map((color,index)=><button type="button" key={index} disabled={saving} aria-label={`Edit gradient color ${index+1}`} aria-pressed={activeIndex===index} onClick={()=>setActiveColor(index)}><span style={{background:valid(color)?color:"#777777"}}>{activeIndex===index&&<Check size={16}/>}</span><small>Color {index+1}</small></button>)}{draft.colors.length<MAX_COLORS&&<button type="button" disabled={saving} aria-label="Add gradient color" onClick={addColor}><span><Plus size={18}/></span><small>Add color</small></button>}</div></section>
      {draft.colors.length>0&&<ProfileColorWheel key={activeIndex} colorNumber={activeIndex+1} value={valid(draft.colors[activeIndex])?draft.colors[activeIndex]:"#777777"} disabled={saving} onChange={color=>setColors(draft.colors.map((c,i)=>i===activeIndex?color:c))}/>}
      <details className="profile-color-section profile-color-details"><summary>Hex codes &amp; remove colors</summary>
       <div className="profile-color-stops">{draft.colors.map((color,index)=><div className="profile-color-stop" key={index}>
