@@ -15,7 +15,7 @@ export default function GenreTool() {
     let total = 0,skip=0,unmatched=0;
     try {
       while (true) {
-        const res = await base44.functions.invoke("classifyGenres", { force,skip });
+        const res = await base44.functions.invoke("classifyGenres", { force:false,skip,published_only:true });
         const d = res?.data || {};
         total += d.processed || 0;unmatched += d.unmatched || 0;
         if(d.retry_required){setInfo({total,unmatched,done:false});throw new Error(d.error||"Catalog lookup paused. Retry shortly.");}
@@ -40,7 +40,7 @@ export default function GenreTool() {
             <Wand2 size={15} /> Match catalog genres
           </div>
           <div className="text-xs text-foreground/50 mt-0.5">
-            Matches catalog genres. Songs without a confident match stay unchanged.
+            Matches published songs tagged Other. Songs without a confident catalog match stay Other.
           </div>
         </div>
         <div className="flex items-center gap-2">
@@ -57,7 +57,7 @@ export default function GenreTool() {
             className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-foreground text-background text-sm font-semibold disabled:opacity-50 active:scale-95 transition"
           >
             {busy ? <Loader2 size={15} className="animate-spin" /> : <Wand2 size={15} />}
-            {busy ? "Classifying…" : "Match missing genres"}
+            {busy ? "Classifying…" : "Match published Other songs"}
           </button>
         </div>
       </div>
