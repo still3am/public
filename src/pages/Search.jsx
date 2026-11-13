@@ -225,6 +225,7 @@ export default function Search() {
             )}
               </div> :
 
+          browseError ? <LoadError message={browseError} onRetry={() => loadCatalogue(true)} /> : loadingAll ? loader :
           <EmptyState
             title="Nothing here yet"
             description="No published tracks in this genre." />

@@ -11,7 +11,7 @@ const source=fs.readFileSync("src/components/Avatar.jsx","utf8").replace(/^impor
 const stub='const AVATAR_PRESETS=globalThis.__presets,React=globalThis.__React,withPresetAvatar=globalThis.__resolve,useState=globalThis.__state,useEffect=()=>{},ProfileMedia="motion";';
 const code=ts.transpileModule(stub+source,{compilerOptions:{jsx:ts.JsxEmit.React,target:ts.ScriptTarget.ES2022,module:ts.ModuleKind.ESNext}}).outputText;
 const Avatar=(await import("data:text/javascript;base64,"+Buffer.from(code).toString("base64"))).default;
-const render=props=>{cursor=0;return Avatar(props);};
+const render=props=>{cursor=0;const node=Avatar(props);return node.type(node.props);};
 for(const user of [{id:"existing"},{id:"new",avatar_url:""},{avatar_url:"old.jpg",avatar_preset:"initials"}]){
  states=[];const node=render({user,size:96});assert.equal(node.type,"span");assert.equal(React.Children.toArray(node.props.children)[0].props.src,"/avatars/default-headphones.webp");assert.equal(node.props.style.borderRadius,"50%");
 }

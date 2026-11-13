@@ -34,12 +34,13 @@ tree=render({...props,editing:false});assert.equal(nodes(tree,"button").length,0
 const motionUploads=[];tree=render({...props,onMotionUpload:media=>motionUploads.push(media)});const motionInput=nodes(tree,"input")[0];assert.ok(motionInput.props.accept.includes("video/mp4"));
 motionInput.props.onChange({target:{files:[{name:"clip.mp4",type:"video/mp4"}],value:""}});tree=render({...props,onMotionUpload:media=>motionUploads.push(media)});const motionPreview=findCrop(tree);assert.equal(motionPreview.props.file.name,"clip.mp4");const prepared={type:"video",duration:2};motionPreview.props.onApply(prepared);assert.equal(motionUploads[0],prepared);
 assert.equal(nodes(render(props),"input")[0].props.accept,"image/*","photo-only consumers keep their existing picker");
-let failed=false;
-globalThis.__avatarFailure=()=>[failed,next=>failed=next];
+let failedIndex=0;const failures=[];
+globalThis.__avatarFailure=initial=>{const index=failedIndex++;return [failures[index]??initial,next=>failures[index]=next];};
 const {default:Avatar}=await load("src/components/Avatar.jsx",`
-const React=globalThis.__React,useState=globalThis.__avatarFailure,useEffect=()=>{},withPresetAvatar=value=>value,ProfileMedia=props=>React.createElement("span",props);
+const React=globalThis.__React,useState=globalThis.__avatarFailure,useEffect=()=>{},AVATAR_PRESETS=[],withPresetAvatar=value=>value,ProfileMedia=props=>React.createElement("span",props);
 `);
-let avatar=Avatar({user:props.user,size:96,className:"profile-desktop-avatar"});assert.equal(avatar.type,"img");
-assert.equal(avatar.props.style.objectFit,"cover");avatar.props.onError();avatar=Avatar({user:{...props.user,display_name:"Listener"},size:96,className:"profile-desktop-avatar"});
+const renderAvatar=props=>{failedIndex=0;const node=Avatar(props);return node.type(node.props);};
+let avatar=renderAvatar({user:props.user,size:96,className:"profile-desktop-avatar"});assert.equal(avatar.type,"img");
+assert.equal(avatar.props.style.objectFit,"cover");avatar.props.onError();renderAvatar({user:props.user}).props.children[0].props.onError();avatar=renderAvatar({user:{...props.user,display_name:"Listener"},size:96,className:"profile-desktop-avatar"});
 assert.equal(avatar.type,"div");assert.equal(avatar.props.children,"L");assert.ok(avatar.props.className.includes("profile-desktop-avatar"),"image failure retains the same frame sizing class");
 console.log("PASS accessible profile upload, busy state, same-file retry, cancellation and initials fallback");

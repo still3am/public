@@ -68,8 +68,7 @@ export default function Layout() {
           null
           )}
 
-          <AnimatePresence mode="wait" initial={false}>
-            {!activeTab &&
+          {!activeTab && <AnimatePresence mode="wait" initial={false}>
             <motion.div
               key={`${location.pathname}:${user?.id||"guest"}`}
               className="page-surface"
@@ -81,8 +80,7 @@ export default function Layout() {
 
                 <ErrorBoundary scope="page" resetKey={`${location.pathname}:${location.search}:${user?.id||"guest"}`}><Outlet /></ErrorBoundary>
               </motion.div>
-            }
-          </AnimatePresence>
+          </AnimatePresence>}
         </main>
       </div>
       {momentsRoute && <MomentsChrome key={location.pathname} />}

@@ -1,12 +1,12 @@
 import assert from 'node:assert/strict';import fs from 'node:fs';import ts from 'typescript';import * as React from 'react';
-let states=['https://media.base44.com/song.mp3',false,'',false,0],refs=[],effects=[],si=0,ri=0,active=false,mainPaused=0,observer,events={};
+let states=[{id:'song',url:'https://media.base44.com/song.mp3'},false,'',0],refs=[],effects=[],si=0,ri=0,active=false,mainPaused=0,observer,events={};
 const media=()=>({currentTime:0,paused:true,volume:1,muted:false,plays:0,play(){this.paused=false;this.plays++;return Promise.resolve();},pause(){this.paused=true;}});
-const audio=media(),video=media();refs=[{current:audio},{current:video},{current:{}}];
+const audio=media(),video=media();refs=[{current:audio},{current:video},{current:{closest:()=>null}}];
 globalThis.__ctx={React,useState:initial=>{const i=si++;if(!(i in states))states[i]=initial;return [states[i],v=>states[i]=typeof v==='function'?v(states[i]):v];},useRef:initial=>{const i=ri++;if(!refs[i])refs[i]={current:initial};return refs[i];},useEffect:fn=>effects.push(fn),player:{isPlaying:false,pausePlayback(){mainPaused++;}}};
 globalThis.IntersectionObserver=class{constructor(fn){observer=fn;}observe(){}disconnect(){}};
-globalThis.document={hidden:false,addEventListener:(name,fn)=>events[name]=fn,removeEventListener(){}};
+globalThis.document={hidden:false,querySelector:()=>null,addEventListener:(name,fn)=>events[name]=fn,removeEventListener(){}};
 const source=fs.readFileSync('src/components/moments/MomentMedia.jsx','utf8').replace(/^import[^;]+;/gm,'');
-const prelude='const {React,useState,useRef,useEffect,player}=globalThis.__ctx;const usePlayer=()=>player;const base44={entities:{Track:{get:async()=>({audio_url:"https://media.base44.com/song.mp3"})}}};const Play=()=>null,Pause=Play,Volume2=Play,VolumeX=Play,ChevronLeft=Play,ChevronRight=Play,Loader2=Play;';
+const prelude='const photoAutoplayDelay=()=>4000,useCoverUrl=url=>url,Music2=()=>null,Link=()=>null,createPortal=()=>null;const {React,useState,useRef,useEffect,player}=globalThis.__ctx;const usePlayer=()=>player;const base44={entities:{Track:{get:async()=>({audio_url:"https://media.base44.com/song.mp3"})}}};const Play=()=>null,Pause=Play,Volume2=Play,VolumeX=Play,ChevronLeft=Play,ChevronRight=Play,Loader2=Play;';
 const js=ts.transpileModule(prelude+source,{compilerOptions:{jsx:ts.JsxEmit.React,target:ts.ScriptTarget.ES2022,module:ts.ModuleKind.ESNext}}).outputText;
 const Media=(await import('data:text/javascript;base64,'+Buffer.from(js).toString('base64'))).default;
 const find=(n,test)=>!n||typeof n!=='object'?[]:[...(test(n)?[n]:[]),...React.Children.toArray(n.props?.children).flatMap(c=>find(c,test))];
@@ -19,5 +19,5 @@ tree=render();video.currentTime=20;audio.currentTime=10;find(tree,n=>n.type==='v
 audio.currentTime=26;find(tree,n=>n.type==='audio')[0].props.onTimeUpdate();assert.equal(audio.currentTime,10,'song segment loops at its selected end');
 observer([{isIntersecting:false}]);assert.equal(audio.paused,true);assert.equal(video.paused,true);assert.equal(active,false,'scrolling offscreen releases playback');
 tree=render();await find(tree,n=>n.props?.className==='moment-media-play')[0].props.onClick();document.hidden=true;events.visibilitychange();assert.equal(audio.paused,true);assert.equal(active,false,'backgrounding the app releases playback');
-post.track=null;states[0]='';tree=render();await find(tree,n=>n.props?.className==='moment-media-play')[0].props.onClick();assert.equal(video.paused,false,'video remains viewable when a song becomes unavailable');
+post.track=null;states[0]=null;tree=render();await find(tree,n=>n.props?.className==='moment-media-play')[0].props.onClick();assert.equal(video.paused,false,'video remains viewable when a song becomes unavailable');
 console.log('PASS selected music section, independent volumes, main-player coordination, video synchronization, clip loop, scroll/background pause and silent video fallback');
