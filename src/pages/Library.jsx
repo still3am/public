@@ -90,15 +90,16 @@ export default function Library() {
     request === loadVersion.current && setLoading(true);
     try {
       const items = await readAllPages((opts) => base44.entities.LibraryItem.filter({ user_id: user.id }, { sort: "-created_date", ...opts }));
-      request === loadVersion.current && setEntryMap(Object.fromEntries(items.map((r) => [r.track_id, r])));
-      request === loadVersion.current && setFolders([...new Set(items.map((r) => r.folder).filter(Boolean))]);
       const trackIds = (items || []).
       map((i) => i.track_id).
       filter(Boolean);
       const uniqueIds=[...new Set(trackIds)],list=[];
       for(let start=0;start<uniqueIds.length;start+=200){list.push(...await readAllPages(opts=>base44.entities.Track.filter({id:{$in:uniqueIds.slice(start,start+200)}},{sort:"-created_date",...opts})));}
       const order = new Map(trackIds.map((id, i) => [id, i]));
-      request === loadVersion.current && setTracks(
+      if (request !== loadVersion.current) return;
+      setEntryMap(Object.fromEntries(items.map((r) => [r.track_id, r])));
+      setFolders([...new Set(items.map((r) => r.folder).filter(Boolean))]);
+      setTracks(
         (list || []).
         slice().
         sort((a, b) => (order.get(a.id) ?? 0) - (order.get(b.id) ?? 0))
@@ -238,6 +239,7 @@ export default function Library() {
       <LibraryBulkBar playlistMode={libraryView==="playlists"} visible={libraryView==="songs"?!!tracks?.length:libraryView==="playlists"&&!!savedPlaylists?.length} active={editMode} count={selected.size} canRemove={removableIds.length > 0} busy={bulkBusy} onOrganize={() => setShowOrganize(true)} onStart={() => setEditMode(true)} onExit={exitEditMode} onAddToPlaylist={() => setShowBulkPlaylist(true)} onRemove={removeFromLibrary} />
       </>}
       <PullToRefresh onRefresh={async () => {await refresh();await load();await reloadPlaylists();await loadSavedPlaylists();}}>
+        {loadError && <LoadError message="Your saved songs couldn’t refresh." onRetry={load} />}
         {loading && tracks === null ? <div className="flex justify-center py-20"><Loader2 className="animate-spin text-muted-foreground" /></div> : <>
           {libraryView==="overview"&&<>
             <section className="library-recently-added"><div className="library-section-heading"><h2>Recently Added</h2>{tracks?.length>12&&<button className="library-see-all" onClick={()=>chooseView("songs")}>See all<ChevronRight size={16}/></button>}</div>

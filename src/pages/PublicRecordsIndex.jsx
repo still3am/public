@@ -258,6 +258,7 @@ export default function PublicRecordsIndex() {
       {!!groups.length&&<nav className="directory-desktop-alphabet hidden md:flex" aria-label="Jump to artist letter">{allLetters.map(letter=><button type="button" key={letter} disabled={!letters.includes(letter)} aria-label={`Artists starting with ${letter}`} aria-current={activeKey===letter&&letters.includes(letter)?"location":undefined} onClick={()=>scrollToLetter(letter)}>{letter}</button>)}</nav>}
       </div>
       <PullToRefresh onRefresh={()=>load(true)}>
+        {loadError && <LoadError message="Your artist directory couldn’t refresh." onRetry={() => load(true)} />}
         {artists === null||owner!==user?.id ?
         <div role="status" aria-label="Loading artists" className="flex justify-center py-20">
             <Loader2 className="animate-spin text-foreground/40" />
