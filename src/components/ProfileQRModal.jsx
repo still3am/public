@@ -27,9 +27,9 @@ export default function ProfileQRModal({ url, name, avatar, username, colors = [
     {avatar ? <img src={avatar} alt="" className="profile-qr-avatar" /> : <div className="profile-qr-avatar profile-qr-initial">{(name || '?').charAt(0)}</div>}
     <h2>{name}</h2>{username && <p>@{username.replace(/^@/, '')}</p>}
    </div>
-   {colors.length > 0 && <div className="profile-qr-palette hidden" aria-hidden="true">
-    {colors.map((color, index) => <span key={index} style={{ backgroundColor: color }} className="hidden" />)}
-   </div>}
+   
+
+      
    <div className="profile-qr-code">
     {qrFailed ? <div className="profile-qr-retry"><p>Code couldn’t load</p><button type="button" onClick={() => {setQrFailed(false);setAttempt((n) => n + 1);}}><RefreshCw size={16} />Retry</button></div> : <img key={`${url}:${attempt}`} src={qrUrl} alt={`Scan to open ${name} on PUBLIC`} width="280" height="280" onError={() => setQrFailed(true)} />}
    </div>
