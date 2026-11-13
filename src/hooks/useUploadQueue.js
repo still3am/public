@@ -99,7 +99,7 @@ export function useUploadQueue({ user, isAdmin }) {
      explicit:edited.explicit?it.explicit:it.explicit||meta?.explicit===true,
      title:!edited.title&&it.title===title?(text('title')||it.title):it.title,
      artist:edited.artist?it.artist:it.artist||text('artist'),
-     genre:edited.genre?it.genre:it.genre||(GENRES.includes(text('genre'))?text('genre'):'')};
+     genre:edited.genre||edited.title||edited.artist||edited.album_name?it.genre:it.genre||(GENRES.includes(text('genre'))?text('genre'):'')};
    }));
   }catch(e){if(epoch===generation.current)updateItem(item.id,{status:'error',detecting:false,error:e.message||'File analysis failed. Remove this file and try again.'});}}};
   await Promise.all(Array.from({length:Math.min(2,batch.length)},worker));
