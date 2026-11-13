@@ -92,3 +92,10 @@ All 99 regression suites passed after lint and the production build. Signed-in m
 - Upload batch rate limits — Done in code. Base44 throttling during duplicate checks or track saves previously failed the song immediately. These requests now wait and retry with a shared cooldown, retaining uploaded files and the original request ID. If retries run out, the song remains queued. Upload tests, lint, and build passed. A live rate-limited batch remains unverified.
 
 - Synced lyrics pink line — Removed per-line blur from the masked lyrics scroller as a likely rendering artifact. The active lyric still uses full opacity. Lyrics UI and clock tests and build passed. Visual confirmation remains open.
+
+## November 13, 2026 — page load and refresh follow-up
+
+- Track details — Done in code. Missing or inaccessible tracks returned a generic retry screen. They now show “Track unavailable.” Temporary read failures still offer Retry.
+- Home, Profile, and artist details — Done in code. Refresh errors could be hidden behind loaded content. These pages now show Retry alongside the last loaded content, and artist details retain content while refreshing.
+
+All 99 test suites, lint, and production build passed. Signed-in mobile and desktop visual checks remain open.
