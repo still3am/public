@@ -11,7 +11,7 @@ export const validHandle=value=>!value||/^[a-z0-9_]{3,24}$/.test(cleanHandle(val
 export const credits=track=>String(track?.artist||"").split(/\s*(?:,|&| feat\.| ft\.|;|\/)\s*/i).map(s=>s.trim()).filter(Boolean);
 export function recommendPeople(profiles,catalog,{uid=undefined,blocked=new Set(),genres=[],artists=[],trackIds=[]}={}){
  const wanted=new Set(artists.map(s=>s.toLowerCase())),selected=new Set(trackIds),byId=new Map(catalog.map(t=>[t.id,t]));
- return profiles.filter(p=>p.user_id&&p.user_id!==uid&&p.visible!==false&&!blocked.has(p.user_id)).map(p=>{
+ return profiles.filter(p=>p.user_id&&p.user_id!==uid&&p.visible!==false&&!blocked.has(p.user_id)&&[p.display_name,p.username,p.full_name].some(name=>typeof name==="string"&&name.trim())).map(p=>{
   const publicSongs=(p.top_track_ids||[]).map(id=>byId.get(id)).filter(Boolean);
   const shared=publicSongs.filter(t=>selected.has(t.id)||credits(t).some(a=>wanted.has(a.toLowerCase()))).length;
   const uploads=catalog.filter(t=>t.uploader_id===p.user_id);

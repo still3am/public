@@ -67,7 +67,7 @@ export function WelcomeFlow({user,onDone}){
   const result=await Promise.allSettled([
    withOnboardingDeadline(getPublishedTracks()),
    withOnboardingDeadline(getUserMusicPreferences(user.id)),
-   withOnboardingDeadline(base44.entities.PublicProfile.filter({visible:true},{sort:"-updated_date",limit:100,fields:["user_id","display_name","username","avatar_url","top_track_ids","is_artist","visible"]})),
+   withOnboardingDeadline(base44.entities.PublicProfile.filter({visible:true},{sort:"-updated_date",limit:100,fields:["user_id","display_name","username","full_name","avatar_url","top_track_ids","is_artist","visible"]})),
    withOnboardingDeadline(base44.entities.Follow.filter({follower_id:user.id},"-created_date",500))
   ]);
   if(!alive.current||version!==request.current)return;
@@ -185,7 +185,7 @@ export function WelcomeFlow({user,onDone}){
      <p className="onboarding-note">A few picks help shape your first mixes.</p>
     </>}
     {step===4&&<div className="onboarding-people">
-     {suggestions.slice(0,limit).map(profile=><div className="onboarding-person" key={profile.user_id}><div className="onboarding-person-avatar"><Avatar user={profile} size={48} motion/></div><span className="onboarding-person-copy"><strong>{profile.display_name||profile.username||"PUBLIC listener"}</strong><small>{profile.reason}</small></span><button type="button" disabled={busy||!!followBusy} aria-pressed={following.has(profile.user_id)} onClick={()=>follow(profile)}>{followBusy===profile.user_id?<Loader2 size={16} className="animate-spin"/>:following.has(profile.user_id)?<><Check size={14}/>Following</>:"Follow"}</button></div>)}
+     {suggestions.slice(0,limit).map(profile=><div className="onboarding-person" key={profile.user_id}><div className="onboarding-person-avatar"><Avatar user={profile} size={48} motion/></div><span className="onboarding-person-copy"><strong>{profile.display_name?.trim()||profile.username?.trim()||profile.full_name?.trim()}</strong><small>{profile.reason}</small></span><button type="button" disabled={busy||!!followBusy} aria-pressed={following.has(profile.user_id)} onClick={()=>follow(profile)}>{followBusy===profile.user_id?<Loader2 size={16} className="animate-spin"/>:following.has(profile.user_id)?<><Check size={14}/>Following</>:"Follow"}</button></div>)}
      {!suggestions.length&&<p className="onboarding-note">{loading?"Finding your people…":"Find friends in Search whenever you’re ready."}</p>}
      {suggestions.length>limit&&<button type="button" className="onboarding-text-button" onClick={()=>setLimit(n=>n+8)}>More people</button>}
      <p className="onboarding-note">Follow anyone you like, or keep exploring solo.</p>

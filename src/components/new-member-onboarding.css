@@ -229,6 +229,6 @@
 .onboarding-color-launch strong,.onboarding-color-launch small{display:block}
 .onboarding-color-launch strong{font-size:14px;font-weight:600}
 .onboarding-color-launch small{font-size:11px;color:#ffffffb8;margin-top:5px}
-.onboarding-color-mini{display:flex;flex:0 0 55px;width:55px;padding-left:4px}
-.onboarding-color-mini i{display:block;width:25px;height:25px;flex:0 0 25px;margin-left:-5px;border-radius:50%;border:2px solid #222}
+.onboarding-color-mini{display:flex;flex:0 0 auto;align-items:center;padding-left:4px}
+.onboarding-color-mini i{display:block;width:18px;height:18px;flex:0 0 18px;margin-left:-4px;border-radius:50%;border:2px solid #222}
 @media(max-height:600px){.new-member-onboarding[data-onboarding-step="0"] .onboarding-content{justify-content:flex-start;padding-block:20px}.new-member-onboarding .onboarding-record{width:120px}}
