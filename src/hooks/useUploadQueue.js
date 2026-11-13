@@ -28,7 +28,17 @@ async function detectMeta(title,artist,duration,albumTags,includeArtwork=false){
  const info=await findSongInfo({title,artist,duration_seconds:duration,...albumTags},{includeArtwork,includeAlbumGenres:true});
  if(!info)return null;
  const normalize=value=>String(value).toLowerCase().replace(/[^a-z0-9]/g,'');
- const genre=(info.genres||[]).map(name=>GENRES.find(g=>normalize(name)===normalize(g))).find(Boolean)||'';
+ const aliases = new Map([
+  ['rap','Hip-Hop'], ['hiphopmusic','Hip-Hop'], ['alternativerap','Hip-Hop'],
+  ['alternativehiphop','Hip-Hop'], ['contemporaryrnb','R&B'], ['rhythmandblues','R&B'],
+  ['alternativernb','R&B'], ['neosoul','Soul'], ['indiepop','Indie'],
+  ['indierock','Indie'], ['alternativerock','Alternative'],
+  ['electropop','Pop'], ['electronica','Electronic'], ['edm','Electronic']
+ ]);
+ const genre=(info.genres||[]).map(name=>{
+  const key=normalize(name);
+  return GENRES.find(g=>normalize(g)===key)||aliases.get(key);
+ }).find(name=>name&&name!=='Other')||'';
  return {title:info.title,genre,artist:info.artists,album_name:info.album,album_artist:info.albumArtist,release_year:Number(info.releaseDate?.slice(0,4))||0,catalogCoverUrl:info.coverUrl||''};
  }catch{return null;}
 }

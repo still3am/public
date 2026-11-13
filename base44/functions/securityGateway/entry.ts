@@ -423,9 +423,11 @@ export default async function handleRequest(req) {
           await base44.integrations.Core.CreateFileSignedUrl({file_uri:content.music_video_file_uri,expires_in:60});
         }
         if(content.audio_file_uri){
-          if(typeof content.audio_file_uri!=='string'||!content.audio_file_uri.startsWith('private/'))fail('Invalid private audio file',422);
-          // Use the caller's storage permissions when attaching an uploaded file.
-          await base44.integrations.Core.CreateFileSignedUrl({file_uri:content.audio_file_uri,expires_in:60});
+          const fileUri=content.audio_file_uri;
+          if(typeof fileUri!=='string'||!fileUri.trim()||/^https?:/i.test(fileUri.trim()))fail('Invalid private audio file',422);
+          // The authenticated storage API validates the opaque reference and caller access.
+          const signed=await base44.integrations.Core.CreateFileSignedUrl({file_uri:fileUri,expires_in:60});
+          if(typeof signed?.signed_url!=='string'||!signed.signed_url.startsWith('https://'))fail('Invalid private audio file',422);
           content.audio_url='';
         }
         for(const key of ['audio_url','cover_art_url'])if(content[key]){try{const url=new URL(content[key]);if(url.protocol!=='https:')fail('Use a secure HTTPS media URL',422);}catch{fail('Invalid media URL',422);}}
