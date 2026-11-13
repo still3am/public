@@ -526,7 +526,8 @@ html.dark {
 .home-genre-links a:hover { background:hsl(var(--accent)); }
 .home-redesigned .home-section { margin-bottom:34px; }
 .home-redesigned .home-section h2 { font-size:24px;font-weight:700; }
-.home-card-shelf { gap:18px;overscroll-behavior-x:contain; }
+.home-redesigned .scroll-shelf { min-width:0;max-width:100%; }
+.home-card-shelf { max-width:100%;gap:18px;overscroll-behavior-x:contain; }
 .home-shelf-card { width:190px; }
 .home-redesigned .home-card-shelf .music-card { padding:0; }
 .home-redesigned .home-section>[role=region]>div,.home-redesigned .home-section>.scroll-shelf>[role=region]>div { border:0;background:transparent;padding:0; }
