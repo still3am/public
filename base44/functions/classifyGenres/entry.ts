@@ -212,7 +212,7 @@ export async function lookupCatalogGenre(track,deadline=Date.now()+20000){
  try{
   const apple=await catalogJson('search?'+new URLSearchParams({term:(cleanTitle(track.title)+' '+track.artist).slice(0,350),entity:'song',media:'music',country:'US',limit:'25'}),deadline,'itunes');
   available=true;value=selectAppleGenre(track,apple.results);
- }catch(error){console.log('Catalog provider error',JSON.stringify({provider:++i,error:String(error)}));hadFailure=true;}
+ }catch(error){console.log('Apple catalog error',String(error));hadFailure=true;}
  if(!value){
   try{
    const quote=value=>'"'+String(value).replace(/[\\"]/g,' ').slice(0,180)+'"';
