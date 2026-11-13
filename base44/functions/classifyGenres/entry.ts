@@ -198,7 +198,7 @@ async function catalogJson(path,deadline,provider='musicbrainz'){
   const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),Math.max(1,Math.min(7000,deadline-Date.now())));
   try{
    const response=await fetch((provider==='itunes'?'https://itunes.apple.com/':'https://musicbrainz.org/ws/2/')+path,{signal:controller.signal,headers:{Accept:'application/json','User-Agent':'PUBLIC/1.0 (https://publicmusic.base44.app)'}});
-   if(!response.ok)throw Error('Music catalog is temporarily unavailable. Retry shortly.');
+   if(!response.ok)throw Error(provider+' HTTP '+response.status);
    return await response.json();
   }finally{clearTimeout(timer);}
  });catalogQueue=task.then(()=>{},()=>{});return task;
@@ -221,7 +221,7 @@ export async function lookupCatalogGenre(track,deadline=Date.now()+20000){
    const result=await catalogJson('recording/?'+new URLSearchParams({query,fmt:'json',limit:'15'}),deadline);
    available=true;const selected=selectGenreRecording(track,result.recordings);
    if(selected){const recording=await catalogJson('recording/'+selected.id+'?fmt=json&inc=genres',deadline);value=catalogGenre(recording.genres);}
-  }catch{hadFailure=true;}
+  }catch(error){console.log('MusicBrainz catalog error',String(error));hadFailure=true;}
  }
  if(!available)throw Error('Music catalogs are temporarily unavailable.');
  genreCache.set(key,{value,until:Date.now()+(value?86400000:hadFailure?60000:3600000)});if(genreCache.size>500)genreCache.delete(genreCache.keys().next().value);
