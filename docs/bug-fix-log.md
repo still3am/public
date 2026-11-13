@@ -101,3 +101,5 @@ All 99 regression suites passed after lint and the production build. Signed-in m
 All 99 test suites, lint, and production build passed. Signed-in mobile and desktop visual checks remain open.
 
 - Profile QR palette — Done in code. Removed the three-color cap so the QR card uses the same palette as the profile. Lint and production build passed.
+
+- Onboarding names and mood swatches — Done in code. Find your people now falls back to the public full name and skips nameless suggestions. The swatch row reserves space for all five colors so it cannot overlap the label. Onboarding tests and build passed.
