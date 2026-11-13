@@ -12,7 +12,6 @@ export default function ProfileQRModal({url,name,avatar,username,colors=[],motio
  const timer=useRef(null),close=useRef(null);
  useEffect(()=>{close.current?.focus();return()=>clearTimeout(timer.current);},[]);
  useEffect(()=>{setQrFailed(false);},[url]);
- const palette=colors.filter(c=>/^#[0-9a-f]{6}$/i.test(c)).slice(0,3);
  const qrUrl=`https://api.qrserver.com/v1/create-qr-code/?size=600x600&margin=0&color=000000&bgcolor=FFFFFF&qzone=4&data=${encodeURIComponent(url)}`;
  function showCopied(){setCopied(true);clearTimeout(timer.current);timer.current=setTimeout(()=>setCopied(false),1800);}
  async function copy(){setError('');try{await copyText(url);showCopied();}catch(e){setError(actionError(e,'Couldn’t copy the link. Please retry.'));}}
@@ -20,7 +19,7 @@ export default function ProfileQRModal({url,name,avatar,username,colors=[],motio
  return <div role="dialog" aria-modal="true" aria-label="Profile QR code" data-public-dialog tabIndex={-1} className="profile-qr-overlay" onClick={()=>{if(!scanning)onClose();}} onKeyDown={e=>{if(e.key==='Escape'){e.stopPropagation();if(!scanning)onClose();}}}>
   <section className="profile-qr-shell" onClick={e=>e.stopPropagation()}>
    <div className="profile-qr-art" aria-hidden="true">
-    {palette.length>0&&<MotionGradient colors={palette} motion={motion} speed={speed} active={!scanning} className="absolute inset-0"/>}
+    {colors.length>0&&<MotionGradient colors={colors} motion={motion} speed={speed} active={!scanning} className="absolute inset-0"/>}
     <div className="profile-qr-shade"/>
    </div>
    <header className="profile-qr-header"><span>PUBLIC.</span><button ref={close} type="button" onClick={onClose} aria-label="Close QR code" className="profile-qr-close"><X size={20}/></button></header>
