@@ -96,3 +96,10 @@
 .profile-color-harmony{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px;margin-top:16px;font-size:13px;font-weight:600;}
 .profile-color-harmony select{min-height:44px;max-width:100%;border:1px solid hsl(var(--border));border-radius:12px;padding:0 10px;background:hsl(var(--background));color:hsl(var(--foreground));}
 .profile-color-harmony+.profile-color-random-actions{margin-top:8px;}
+
+.profile-accent-setting{display:grid;gap:8px;margin-top:12px}
+.profile-accent-preview{display:grid;gap:4px;border:1px solid hsl(var(--border));border-radius:14px;padding:10px 12px}
+.profile-accent-preview span{font-size:12px;color:hsl(var(--muted-foreground))}
+.profile-accent-setting .profile-color-cover-swatches{flex-wrap:wrap;align-items:center}
+.profile-accent-setting input[type=color]{width:36px;height:36px;cursor:pointer}
+.profile-accent-setting .profile-accent-reset{width:auto;padding-inline:10px;border-radius:8px}

@@ -4350,6 +4350,24 @@
         }
       }
     },
+    "profile_card_color": {
+      "type": "string",
+      "pattern": "^(#[0-9a-fA-F]{6})?$",
+      "rls": {
+        "write": {
+          "$or": [
+            {
+              "data.user_id": "{{user.id}}"
+            },
+            {
+              "user_condition": {
+                "role": "admin"
+              }
+            }
+          ]
+        }
+      }
+    },
     "profile_background_speed": {
       "type": "number",
       "minimum": 0.35,

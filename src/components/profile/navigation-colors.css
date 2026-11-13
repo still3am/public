@@ -1,0 +1,9 @@
+.public-app[data-navigation-color] .desktop-sidebar,
+.public-app[data-navigation-color] .mobile-nav-pill {
+  background-image: linear-gradient(color-mix(in srgb, var(--navigation-accent) 12%, transparent), color-mix(in srgb, var(--navigation-accent) 12%, transparent));
+}
+.public-app[data-navigation-color] .desktop-sidebar .desktop-nav-link.is-active,
+.public-app[data-navigation-color] .mobile-nav-pill .mobile-nav-tab.is-active {
+  background: var(--navigation-accent);
+  color: var(--navigation-ink);
+}

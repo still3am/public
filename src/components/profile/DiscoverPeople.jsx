@@ -30,8 +30,8 @@ function DiscoverAvatar({ person, active }) {
   const { colors } = useCoverPalette(cover);
   const saved = (Array.isArray(person.profile_background_colors) ? person.profile_background_colors : []).filter((color) => /^#[0-9a-f]{6}$/i.test(color)).slice(0, 5);
   const palette = person.profile_background_mode === "off" ? [] : automatic ? colors.slice(0, 3) : saved;
-  const gradient = palette.length ? "conic-gradient(from 40deg," + [...palette, palette[0]].map((color, index) => color + " " + Math.round(index * 360 / palette.length) + "deg").join(",") + ")" : undefined;
-  return <span className={"profile-person-portrait profile-person-gradient-ring" + (gradient && active && person.profile_background_motion !== "still" ? " ring-is-flowing" : "")} style={gradient ? { backgroundImage: gradient, boxShadow: "0 0 0 1px " + palette[0] + "40,0 3px 18px -5px " + palette[0] + "55" } : undefined}><span className="profile-person-portrait-inner"><Avatar user={person} size={144} motion active={active} /></span></span>;
+  const gradient = /^#[0-9a-f]{6}$/i.test(person.profile_card_color || "") ? "linear-gradient(" + person.profile_card_color + "," + person.profile_card_color + ")" : palette.length ? "conic-gradient(from 40deg," + [...palette, palette[0]].map((color, index) => color + " " + Math.round(index * 360 / palette.length) + "deg").join(",") + ")" : undefined;
+  return <span className={"profile-person-portrait profile-person-gradient-ring" + (gradient && active && person.profile_background_motion !== "still" ? " ring-is-flowing" : "")} style={gradient ? { backgroundImage: gradient, boxShadow: "0 0 0 1px " + (person.profile_card_color || palette[0]) + "40,0 3px 18px -5px " + (person.profile_card_color || palette[0]) + "55" } : undefined}><span className="profile-person-portrait-inner"><Avatar user={person} size={144} motion active={active} /></span></span>;
 }
 
 /** Public suggestions only; follow changes use the same authorized path as profiles. */
@@ -55,7 +55,7 @@ export default function DiscoverPeople({ profileId, active = true, layout = "dec
     (async () => {
       try {
         const [page, follows] = await Promise.all([
-        base44.entities.PublicProfile.filter({ visible: true }, { sort: "-updated_date", limit: 80, fields: ["visible", "user_id", "display_name", "full_name", "username", "avatar_url", "bio", "is_artist", "top_track_ids", "featured_track_id", "banner_url", "banner_mobile_url", "banner_use_default", "banner_video_url", "banner_gif_url", "avatar_video_url", "avatar_gif_url", "location", "pronouns", "top_tracks_label", "profile_background_mode", "profile_background_colors", "profile_background_motion", "profile_background_speed"] }),
+        base44.entities.PublicProfile.filter({ visible: true }, { sort: "-updated_date", limit: 80, fields: ["visible", "user_id", "display_name", "full_name", "username", "avatar_url", "bio", "is_artist", "top_track_ids", "featured_track_id", "banner_url", "banner_mobile_url", "banner_use_default", "banner_video_url", "banner_gif_url", "avatar_video_url", "avatar_gif_url", "location", "pronouns", "top_tracks_label", "profile_background_mode", "profile_background_colors", "profile_background_motion", "profile_background_speed", "profile_card_color"] }),
         uid ? readAllPages((options) => base44.entities.Follow.filter({ follower_id: uid }, { sort: "-created_date", ...options })) : Promise.resolve([])]
         );
         const profiles = Array.isArray(page) ? page : page?.items;

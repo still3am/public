@@ -554,6 +554,9 @@ export default async function handleRequest(req) {
         if(data.profile_background_mode!==undefined&&!['auto','custom','off'].includes(data.profile_background_mode))fail('Invalid background mode',422);
         if(data.profile_background_motion!==undefined&&!['flow','still'].includes(data.profile_background_motion))fail('Invalid background motion',422);
         if(data.profile_background_speed!==undefined&&(typeof data.profile_background_speed!=='number'||!Number.isFinite(data.profile_background_speed)||data.profile_background_speed<.35||data.profile_background_speed>1.6))fail('Invalid background speed',422);
+        for(const key of ['profile_card_color','navigation_color']){
+          if(data[key]!==undefined&&(typeof data[key]!=='string'||! /^(#[0-9a-f]{6})?$/i.test(data[key])))fail('Invalid appearance color',422);
+        }
         if(data.profile_background_colors!==undefined){
           if(!Array.isArray(data.profile_background_colors)||data.profile_background_colors.length>5||data.profile_background_colors.some(c=>typeof c!=='string'||!/^#[0-9a-f]{6}$/i.test(c)))fail('Invalid profile colors',422);
           data.profile_background_colors=[...new Set(data.profile_background_colors.map(c=>c.toLowerCase()))];
@@ -564,7 +567,7 @@ export default async function handleRequest(req) {
         await moderate(svc,[data.username,data.display_name,data.bio,data.status_message,data.top_tracks_label,data.location,data.pronouns].filter(Boolean).join('\n'));
         for(const tid of [data.featured_track_id,...(data.top_track_ids||[])].filter(Boolean)) await requireTrack(tid);
         const saved=await handler.update(id,data);
-        const publicData={...pick(saved,["username","display_name","full_name","avatar_url","avatar_preset","avatar_video_url","avatar_gif_url","banner_video_url","banner_gif_url","banner_preset","banner_url","banner_mobile_url","banner_use_default","top_tracks_label","bio","location","pronouns","website","instagram","twitter","soundcloud","status_message","featured_track_id","profile_background_mode","profile_background_colors","profile_background_motion","profile_background_speed","top_track_ids","is_artist","creator_role"]),is_public_admin:isAdmin,user_id:saved.id,joined_at:saved.created_date||"",visible:!saved.is_blocked&&!saved.disabled};
+        const publicData={...pick(saved,["username","display_name","full_name","avatar_url","avatar_preset","avatar_video_url","avatar_gif_url","banner_video_url","banner_gif_url","banner_preset","banner_url","banner_mobile_url","banner_use_default","top_tracks_label","bio","location","pronouns","website","instagram","twitter","soundcloud","status_message","featured_track_id","profile_background_mode","profile_background_colors","profile_background_motion","profile_card_color","profile_background_speed","top_track_ids","is_artist","creator_role"]),is_public_admin:isAdmin,user_id:saved.id,joined_at:saved.created_date||"",visible:!saved.is_blocked&&!saved.disabled};
         const mirrors=await svc.entities.PublicProfile.filter({user_id:saved.id},'-updated_date',1);
         if(mirrors[0])await svc.entities.PublicProfile.update(mirrors[0].id,publicData);
         else await svc.entities.PublicProfile.create(publicData);

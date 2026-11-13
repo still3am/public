@@ -244,13 +244,16 @@ export const base44 = new Proxy(raw,{get(target,name) {
       }
       return confirmed;
     }
-    const colorKeys=['profile_background_mode','profile_background_colors','profile_background_motion','profile_background_speed','featured_track_id','onboarding_completed'];
+    const colorKeys=['profile_card_color','navigation_color','profile_background_mode','profile_background_colors','profile_background_motion','profile_background_speed','featured_track_id','onboarding_completed'];
     const keys=Object.keys(data||{});
     if(keys.length&&keys.every(key=>colorKeys.includes(key))){
       if(data.onboarding_completed!==undefined&&typeof data.onboarding_completed!=='boolean')throw new Error('Invalid onboarding preference');
       if(data.profile_background_mode!==undefined&&!['auto','custom','off'].includes(data.profile_background_mode))throw new Error('Invalid background mode');
       if(data.profile_background_motion!==undefined&&!['flow','still'].includes(data.profile_background_motion))throw new Error('Invalid background motion');
       if(data.profile_background_speed!==undefined&&(typeof data.profile_background_speed!=='number'||!Number.isFinite(data.profile_background_speed)||data.profile_background_speed<.35||data.profile_background_speed>1.6))throw new Error('Invalid background speed');
+      for(const key of ['profile_card_color','navigation_color']){
+        if(data[key]!==undefined&&(typeof data[key]!=='string'||! /^(#[0-9a-f]{6})?$/i.test(data[key])))throw new Error('Invalid appearance color');
+      }
       const colors=data.profile_background_colors;
       if(colors!==undefined&&(!Array.isArray(colors)||colors.length>5||colors.some(c=>typeof c!=='string'||!/^#[0-9a-f]{6}$/i.test(c))))throw new Error('Invalid profile colors');
       if(data.featured_track_id!==undefined){
@@ -259,7 +262,7 @@ export const base44 = new Proxy(raw,{get(target,name) {
         if(id){const page=await target.entities.Track.filter({id},'-created_date',1);const rows=Array.isArray(page)?page:entityRows(page)||[];if(!rows.length)throw new Error('Song unavailable');}
       }
       const saved=await target.auth.updateMe(data);
-      const publicAppearance=Object.fromEntries(['featured_track_id','profile_background_mode','profile_background_colors','profile_background_motion','profile_background_speed'].filter(key=>data[key]!==undefined).map(key=>[key,data[key]]));
+      const publicAppearance=Object.fromEntries(['profile_card_color','featured_track_id','profile_background_mode','profile_background_colors','profile_background_motion','profile_background_speed'].filter(key=>data[key]!==undefined).map(key=>[key,data[key]]));
       try{
         if(!Object.keys(publicAppearance).length)return saved;
         const uid=saved?.id || (await target.auth.me()).id;

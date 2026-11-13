@@ -328,6 +328,20 @@
         "write": true
       }
     },
+    "profile_card_color": {
+      "type": "string",
+      "pattern": "^(#[0-9a-fA-F]{6})?$",
+      "rls": {
+        "write": true
+      }
+    },
+    "navigation_color": {
+      "type": "string",
+      "pattern": "^(#[0-9a-fA-F]{6})?$",
+      "rls": {
+        "write": true
+      }
+    },
     "profile_background_speed": {
       "type": "number",
       "minimum": 0.35,

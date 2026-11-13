@@ -55,13 +55,14 @@ export default function DiscoverProfileCard({ person, active, direction, childre
   const palette = person.profile_background_mode === "off" ? [] : automatic ? coverColors.slice(0, 3) : (Array.isArray(person.profile_background_colors) ? person.profile_background_colors : []).filter((color) => /^#[0-9a-f]{6}$/i.test(color)).slice(0, 5);
   const hasGradient = palette.length > 0 || automatic && !!cover;
   const gradientStyle = hasGradient ? { "--foreground": "0 0% 100%", "--background": "240 6% 8%", "--card": "240 6% 8%", "--muted-foreground": "0 0% 88%", "--border": "0 0% 100% / .22" } : undefined;
-  return <article style={gradientStyle} className={"discover-mini-profile " + (hasGradient ? "has-profile-gradient " : "") + (direction < 0 ? "from-previous" : "from-next")} aria-label={"Suggested profile: " + name}>
+  const accent = /^#[0-9a-f]{6}$/i.test(person.profile_card_color || "") ? person.profile_card_color : "";
+  return <article style={{...gradientStyle,...(accent?{boxShadow:"inset 0 0 0 2px "+accent, backgroundColor:accent+"24"}:{})}} className={"discover-mini-profile " + (hasGradient ? "has-profile-gradient " : "") + (direction < 0 ? "from-previous" : "from-next")} aria-label={"Suggested profile: " + name}>
   {palette.length > 0 ? <MotionGradient className="discover-profile-gradient" colors={palette} motion={person.profile_background_motion === "still" ? "still" : "flow"} speed={Math.max(.35, Math.min(1.6, Number(person.profile_background_speed) || 1))} active={active} pauseWhenCovered /> : automatic && cover ? <div aria-hidden="true" className="discover-profile-gradient" style={{ backgroundImage: `url(${JSON.stringify(cover)})`, backgroundSize: "cover", backgroundPosition: "center", filter: "blur(35px) saturate(1.35)", transform: "scale(1.12)" }} /> : null}
   <div className={"discover-mini-banner " + (!hasBanner ? "is-default" : "")}>
    {hasBanner ? <ProfileMedia src={person.banner_url} mobileSrc={person.banner_mobile_url} videoSrc={person.banner_video_url} gifSrc={person.banner_gif_url} active={active} /> : <Music size={48} strokeWidth={1} aria-hidden="true" className="hidden" />}
   </div>
   <div className="discover-mini-body">
-   <Link className="discover-mini-avatar" to={"/profile/" + encodeURIComponent(person.id)} aria-label={"Open " + name + " profile"}><Avatar user={person} size={76} motion active={active} /></Link>
+   <Link style={accent ? {outline:"2px solid "+accent} : undefined} className="discover-mini-avatar" to={"/profile/" + encodeURIComponent(person.id)} aria-label={"Open " + name + " profile"}><Avatar user={person} size={76} motion active={active} /></Link>
    {person.shared > 0 && <span className="discover-shared"><Music size={12} />{person.reason}</span>}
    <h3><Link to={"/profile/" + encodeURIComponent(person.id)}>{name}</Link></h3>
    
