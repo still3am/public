@@ -86,3 +86,5 @@ All 99 regression suites passed after lint and the production build. Signed-in m
 - Home, From artists you follow — Done in code. The shelf reused notification results, which exclude tracks released before the artist was followed. Home now includes existing releases, while notification counts use post-follow releases. Matching also recognizes full artist credits for names containing separators. Release regression tests, notification tests, and build passed.
 
 - Home mobile overflow — Done in code. The followed-artist shelf was missing horizontal overflow containment. Matched the other Home shelves so swiping stays inside the row. Carousel and release tests and build passed. iPhone visual verification remains open.
+
+- Home mobile shelf sizing — Done in code. A broad mobile rule set shelf cards to 90% of the row, overriding their intended widths. Scope sizing to music cards and align Home section headings and See all links. Home carousel and release tests and build passed. iPhone visual check remains open.
