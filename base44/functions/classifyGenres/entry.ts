@@ -238,6 +238,7 @@ export default async function handleRequest(req){
   const query=publishedOnly?{approval_status:'approved',is_published:true}:{};
   const page=await client.asServiceRole.entities.Track.filter(query,'-created_date',60,skip);
   const tracks=Array.isArray(page)?page:page?.items;
+  console.log('Genre batch',JSON.stringify({publishedOnly,skip,pageArray:Array.isArray(page),pageKeys:page&&typeof page==='object'?Object.keys(page):[],trackCount:Array.isArray(page)?page.length:page?.items?.length||0}));
   if(!Array.isArray(tracks))throw Error('Invalid track page');
   const deadline=Date.now()+42000;
   for(const track of tracks){
