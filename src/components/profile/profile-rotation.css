@@ -53,3 +53,8 @@
 .rotation-carousel .rotation-manage{display:block;margin-inline:auto}
 .rotation-carousel .home-discovery-stage.is-dragging .rotation-play>span{opacity:0}
 @media(max-width:767px){.rotation-carousel .home-discovery-stage{--cover-size:min(208px,65vw);--cover-step:194px;height:300px}}
+
+.public-app .profile-page.profile-redesigned .profile-rotation .rotation-phone-grid{
+ grid-template-columns:repeat(2,minmax(0,1fr));grid-auto-flow:row;grid-auto-columns:auto;
+ gap:20px 14px;padding:0;overflow:visible;scroll-snap-type:none;
+}
