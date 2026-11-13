@@ -9,11 +9,11 @@ const make=(failure,newPassword="new-password",confirmPassword="new-password")=>
 await make({status:400,message:"Reset token expired"})({preventDefault(){}});assert.equal(expired,true);assert.match(error,/newest email/);assert.equal(loading,false);
 expired=false;await make({status:400,message:"Password too short"})({preventDefault(){}});assert.equal(expired,false);assert.match(error,/stronger password/);
 await make(null,"one","two")({preventDefault(){}});assert.match(error,/do not match/);
-const chartSource=fs.readFileSync("src/pages/TopCharts.jsx","utf8"),start=chartSource.indexOf("  async function load()"),finish=chartSource.indexOf("  useEffect",start);
-let tracks,positions,failed=false;const version={current:0};
-const getLoad=(period,response)=>new Function("period","loadVersion","setLoading","setLoadError","getTopTracks","base44","setTracks","setPositions",chartSource.slice(start,finish)+";return load;")(period,version,()=>{},value=>failed=value,async()=>[{id:"a"},{id:"b"}],{functions:{invoke:async()=>({data:response})}},value=>tracks=value,value=>positions=value);
+const chartSource=fs.readFileSync("src/pages/TopCharts.jsx","utf8"),start=chartSource.indexOf("  async function load("),finish=chartSource.indexOf("  useEffect",start);
+let tracks,positions,failed=false;const catalogFresh=[];const version={current:0};
+const getLoad=(period,response)=>new Function("period","loadVersion","setLoading","setLoadError","getTopTracks","base44","setTracks","setPositions",chartSource.slice(start,finish)+";return load;")(period,version,()=>{},value=>failed=value,async fresh=>{catalogFresh.push(fresh);return [{id:"a"},{id:"b"}];},{functions:{invoke:async()=>({data:response})}},value=>tracks=value,value=>positions=value);
 await getLoad("week",{rows:[{track_id:"b",plays:7},{track_id:"a",plays:2}]})();assert.deepEqual(tracks.map(t=>t.id),["b","a"]);assert.equal(positions.length,2);
-await getLoad("all",null)();assert.deepEqual(tracks.map(t=>t.id),["a","b"]);
+await getLoad("all",null)(true);assert.deepEqual(catalogFresh,[false,true]);assert.deepEqual(tracks.map(t=>t.id),["a","b"]);
 const previous=tracks;await getLoad("month",{})();assert.equal(failed,true);assert.equal(tracks,previous,"invalid response cannot invent a chart or overwrite a confirmed list");
 const clearanceSource=fs.readFileSync("src/hooks/useContentClearance.js","utf8").replace(/^import[^;]+;/gm,"");
 const {contentClearance}=await import("data:text/javascript;base64,"+Buffer.from(clearanceSource).toString("base64"));

@@ -46,7 +46,7 @@ export default function RecentlyAdded() {
         <Loader2 className="animate-spin" />
       </div>);
 
-  if (loadError) return <LoadError onRetry={() => load(true)} />;
+  if (loadError && !tracks.length) return <LoadError onRetry={() => load(true)} />;
   if (!tracks.length) return <EmptyState icon={Music} title="No tracks yet" />;
 
   return (
@@ -54,6 +54,7 @@ export default function RecentlyAdded() {
     <div className="collection-page collection-refined recent-refined">
         <CollectionSpotlight title="Recently Added" eyebrow="Fresh on PUBLIC" description="The latest music added by the PUBLIC community." tracks={visible} />
         
+        {loadError && <LoadError message="The latest songs could not refresh." onRetry={() => load(true)} />}
         {!visible.length && <div className="collection-empty"><h2>No matching songs</h2><p>Try another title, artist, or genre.</p></div>}
       <div className="collection-results-heading"><h2>{query || genre ? "Matching songs" : "Explore the latest"}</h2><span>{visible.length} songs</span></div>
       <IncrementalList
