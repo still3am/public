@@ -3,7 +3,7 @@ import './admin-profile-badge.css';
 
 const ROLES={
  friends_family:{label:'PUBLIC Friends & Family',detail:'Recognized by PUBLIC.',colors:['#ffd0d4','#ff536b','#ba1639'],ink:'#49071a'},
- admin:{label:'PUBLIC Admin',detail:'Manages and moderates PUBLIC.',colors:['#4169ef','#2449d8','#1636a6'],ink:'#ffffff'},
+ admin:{label:'PUBLIC Admin',detail:'Manages and moderates PUBLIC.',colors:['#e0edff','#a99bff','#65bde9'],ink:'#17213b'},
  artist:{label:'PUBLIC Artist',detail:'Artist approved by PUBLIC.',colors:['#ffffff','#edf0f5','#c4cbd6'],ink:'#171a20'},
  uploader:{label:'PUBLIC Uploader',detail:'Approved to upload music to PUBLIC.',colors:['#fff0bb','#edc568','#c89035'],ink:'#38270d'},
 };
