@@ -91,18 +91,33 @@ export default function Search() {
     }
   }
 
-  // The browse crate is only fetched when it is actually shown. Landing here with
-  // a term already typed (e.g. from the sidebar field) no longer pulls the whole
-  // catalogue at the same moment as the search, which is the heaviest read in the
-  // app and the main source of rate-limit errors.
+  // Defer full catalog reads until the browse screen is visible.
   const catalogueLoaded = useRef(false);
+  const [catalogueRevision, setCatalogueRevision] = useState(0);
   useEffect(() => {
-    if (peopleMode || hasQuery || catalogueLoaded.current) return;
+    const invalidate = () => {
+      catalogueRequest.current += 1;
+      catalogueLoaded.current = false;
+      setAllTracks([]);
+      setBrowseError("");
+      setLoadingAll(true);
+      setCatalogueRevision((revision) => revision + 1);
+    };
+    window.addEventListener("catalog:invalidate", invalidate);
+    window.addEventListener("account:cleared", invalidate);
+    return () => {
+      catalogueRequest.current += 1;
+      catalogueLoaded.current = false;
+      window.removeEventListener("catalog:invalidate", invalidate);
+      window.removeEventListener("account:cleared", invalidate);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!active || peopleMode || hasQuery || catalogueLoaded.current) return;
     catalogueLoaded.current = true;
     loadCatalogue();
-  }, [hasQuery, peopleMode]);
-
-  useEffect(() => {const change = () => {setAllTracks([]);loadCatalogue();};window.addEventListener('catalog:invalidate', change);return () => {catalogueRequest.current += 1;window.removeEventListener('catalog:invalidate', change);};}, []);
+  }, [active, hasQuery, peopleMode, catalogueRevision]);
 
   // Pulling down re-runs whatever the page is currently showing: the live
   // search when a term is typed, otherwise the genre crate.
@@ -144,7 +159,7 @@ export default function Search() {
 
 
   return (
-    <PullToRefresh onRefresh={handleRefresh} showRefreshIndicator={false}>
+    <PullToRefresh onRefresh={handleRefresh} disabled={peopleMode && !hasQuery} showRefreshIndicator={false}>
       <div className="search-page">
         <div className="page-intro"><h1>Search</h1><p>Explore music, artists, playlists, and people.</p></div>
         
