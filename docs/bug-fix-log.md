@@ -90,3 +90,5 @@ All 99 regression suites passed after lint and the production build. Signed-in m
 - Home mobile shelf sizing — Done in code. A broad mobile rule set shelf cards to 90% of the row, overriding their intended widths. Scope sizing to music cards and align Home section headings and See all links. Home carousel and release tests and build passed. iPhone visual check remains open.
 
 - Upload batch rate limits — Done in code. Base44 throttling during duplicate checks or track saves previously failed the song immediately. These requests now wait and retry with a shared cooldown, retaining uploaded files and the original request ID. If retries run out, the song remains queued. Upload tests, lint, and build passed. A live rate-limited batch remains unverified.
+
+- Synced lyrics pink line — Removed per-line blur from the masked lyrics scroller as a likely rendering artifact. The active lyric still uses full opacity. Lyrics UI and clock tests and build passed. Visual confirmation remains open.
