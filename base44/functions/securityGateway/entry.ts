@@ -527,7 +527,7 @@ export default async function handleRequest(req) {
       } else if(entity==='User') {
         if(kind!=='update'||id!==user.id) fail('Profile access denied');
         if(data.is_artist!==undefined||data.creator_role!==undefined)fail('Creator access requires administrator approval',403);
-        data=pick(data,['username','display_name','bio','avatar_url','avatar_video_url','avatar_gif_url','banner_video_url','banner_gif_url','banner_url','banner_mobile_url','banner_use_default','top_tracks_label','location','pronouns','website','instagram','twitter','soundcloud','status_message','featured_track_id','top_track_ids','is_artist','show_explicit','adult_confirmed','profile_background_mode','profile_background_colors','profile_background_motion','profile_background_speed']);
+        data=pick(data,['username','display_name','bio','avatar_url','avatar_video_url','avatar_gif_url','banner_video_url','banner_gif_url','banner_url','banner_mobile_url','banner_use_default','top_tracks_label','location','pronouns','website','instagram','twitter','soundcloud','status_message','featured_track_id','top_track_ids','is_artist','show_explicit','adult_confirmed','profile_background_mode','profile_background_colors','profile_background_motion','profile_background_speed','profile_card_color','navigation_color']);
         if(data.banner_url!==undefined){data.banner_preset='';}
         if(data.avatar_url!==undefined){data.avatar_preset='';if(data.avatar_video_url===undefined)data.avatar_video_url='';if(data.avatar_gif_url===undefined)data.avatar_gif_url='';}
         if(data.banner_url!==undefined){if(data.banner_video_url===undefined)data.banner_video_url='';if(data.banner_gif_url===undefined)data.banner_gif_url='';}
