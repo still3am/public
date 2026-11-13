@@ -80,9 +80,9 @@
 .profile-spectrum-editor>.profile-color-hint{text-align:center!important;margin-top:18px;}
 @media(max-width:359px){.profile-spectrum-editor{padding:16px;}.profile-spectrum-cursor{width:22px;height:22px;}}
 .profile-color-quick-stops{display:grid;grid-template-columns:repeat(auto-fit,minmax(60px,1fr));gap:8px;align-items:center;}
-.profile-color-quick-stops>button{min-width:0;flex:1;display:flex;flex-direction:column;align-items:center;gap:8px;padding:10px 4px;border:1px solid hsl(var(--border));border-radius:17px;}
-.profile-color-quick-stops>button[aria-pressed=true]{border-color:hsl(var(--foreground));background:hsl(var(--muted));}
-.profile-color-quick-stops>button>span{width:42px;height:42px;border:1px solid #8885;border-radius:50%;display:grid;place-items:center;}
+:is(.profile-color-quick-stops>button,.profile-color-slot>button:first-child){min-width:0;flex:1;display:flex;flex-direction:column;align-items:center;gap:8px;padding:10px 4px;border:1px solid hsl(var(--border));border-radius:17px;}
+:is(.profile-color-quick-stops>button,.profile-color-slot>button:first-child)[aria-pressed=true]{border-color:hsl(var(--foreground));background:hsl(var(--muted));}
+:is(.profile-color-quick-stops>button,.profile-color-slot>button:first-child)>span{width:42px;height:42px;border:1px solid #8885;border-radius:50%;display:grid;place-items:center;}
 .profile-color-quick-stops svg{color:#111;background:white;border-radius:50%;padding:2px;box-sizing:content-box;}
 .profile-color-quick-stops small{font-size:11px;font-weight:550;}
 .profile-color-details{border-top:1px solid hsl(var(--border));padding-top:4px;}
@@ -92,3 +92,9 @@
 
 .profile-color-random-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px;}
 .profile-color-random-actions>.profile-color-create{flex:1 1 130px;width:auto;margin-top:0;}
+
+.profile-color-slot{min-width:0;display:grid;gap:2px;border-radius:17px;}
+.profile-color-slot[data-drop-target=true]{outline:2px solid hsl(var(--foreground));outline-offset:2px;}
+.profile-color-grip{display:grid;place-items:center;min-height:36px;touch-action:none;cursor:grab;border-radius:8px;}
+.profile-color-grip:active{cursor:grabbing;}
+.profile-color-grip svg{background:none;color:inherit;}
