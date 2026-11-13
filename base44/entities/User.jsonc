@@ -348,7 +348,7 @@
       "rls": {
         "write": true
       },
-      "maxItems": 3
+      "maxItems": 5
     },
     "username": {
       "type": "string",

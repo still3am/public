@@ -555,7 +555,7 @@ export default async function handleRequest(req) {
         if(data.profile_background_motion!==undefined&&!['flow','still'].includes(data.profile_background_motion))fail('Invalid background motion',422);
         if(data.profile_background_speed!==undefined&&(typeof data.profile_background_speed!=='number'||!Number.isFinite(data.profile_background_speed)||data.profile_background_speed<.35||data.profile_background_speed>1.6))fail('Invalid background speed',422);
         if(data.profile_background_colors!==undefined){
-          if(!Array.isArray(data.profile_background_colors)||data.profile_background_colors.length>3||data.profile_background_colors.some(c=>typeof c!=='string'||!/^#[0-9a-f]{6}$/i.test(c)))fail('Invalid profile colors',422);
+          if(!Array.isArray(data.profile_background_colors)||data.profile_background_colors.length>5||data.profile_background_colors.some(c=>typeof c!=='string'||!/^#[0-9a-f]{6}$/i.test(c)))fail('Invalid profile colors',422);
           data.profile_background_colors=[...new Set(data.profile_background_colors.map(c=>c.toLowerCase()))];
         }
         if(data.is_artist!==undefined&&typeof data.is_artist!=='boolean')fail('Invalid artist preference',422);

@@ -52,7 +52,7 @@ export default function DiscoverProfileCard({ person, active, direction, childre
   const featured = songs.find((song) => song.id === person.featured_track_id);
   const cover = useCoverUrl(automatic ? featured?.cover_art_url : "");
   const { colors: coverColors } = useCoverPalette(cover);
-  const palette = person.profile_background_mode === "off" ? [] : automatic ? coverColors.slice(0, 3) : (Array.isArray(person.profile_background_colors) ? person.profile_background_colors : []).filter((color) => /^#[0-9a-f]{6}$/i.test(color)).slice(0, 3);
+  const palette = person.profile_background_mode === "off" ? [] : automatic ? coverColors.slice(0, 3) : (Array.isArray(person.profile_background_colors) ? person.profile_background_colors : []).filter((color) => /^#[0-9a-f]{6}$/i.test(color)).slice(0, 5);
   const hasGradient = palette.length > 0 || automatic && !!cover;
   const gradientStyle = hasGradient ? { "--foreground": "0 0% 100%", "--background": "240 6% 8%", "--card": "240 6% 8%", "--muted-foreground": "0 0% 88%", "--border": "0 0% 100% / .22" } : undefined;
   return <article style={gradientStyle} className={"discover-mini-profile " + (hasGradient ? "has-profile-gradient " : "") + (direction < 0 ? "from-previous" : "from-next")} aria-label={"Suggested profile: " + name}>

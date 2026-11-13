@@ -252,7 +252,7 @@ export const base44 = new Proxy(raw,{get(target,name) {
       if(data.profile_background_motion!==undefined&&!['flow','still'].includes(data.profile_background_motion))throw new Error('Invalid background motion');
       if(data.profile_background_speed!==undefined&&(typeof data.profile_background_speed!=='number'||!Number.isFinite(data.profile_background_speed)||data.profile_background_speed<.35||data.profile_background_speed>1.6))throw new Error('Invalid background speed');
       const colors=data.profile_background_colors;
-      if(colors!==undefined&&(!Array.isArray(colors)||colors.length>3||colors.some(c=>typeof c!=='string'||!/^#[0-9a-f]{6}$/i.test(c))))throw new Error('Invalid profile colors');
+      if(colors!==undefined&&(!Array.isArray(colors)||colors.length>5||colors.some(c=>typeof c!=='string'||!/^#[0-9a-f]{6}$/i.test(c))))throw new Error('Invalid profile colors');
       if(data.featured_track_id!==undefined){
         const id=data.featured_track_id;
         if(typeof id!=='string'||id.length>100||(id&&!/^[a-zA-Z0-9_-]+$/.test(id)))throw new Error('Invalid profile song');

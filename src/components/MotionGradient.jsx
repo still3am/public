@@ -15,6 +15,9 @@ uniform float u_aspect;
 uniform vec3 u_a;
 uniform vec3 u_b;
 uniform vec3 u_c;
+uniform vec3 u_d;
+uniform vec3 u_e;
+uniform float u_count;
 void main(){
  vec2 p=v_uv;
  float t=u_time;
@@ -27,6 +30,10 @@ void main(){
  vec3 color=mix(u_a,u_b,smoothstep(.12,.88,ribbon));
  float pool=.5+.5*sin(q.y*3.3+wave*1.6-t*.27);
  color=mix(color,u_c,smoothstep(.28,.92,pool)*.88);
+ float fourth=1.-smoothstep(.06,.58,length(p-vec2(.78+.14*sin(t*.31),.72+.12*cos(t*.28))));
+ float fifth=1.-smoothstep(.06,.58,length(p-vec2(.22+.12*cos(t*.29),.26+.14*sin(t*.33))));
+ color=mix(color,u_d,fourth*.92*step(4.,u_count));
+ color=mix(color,u_e,fifth*.92*step(5.,u_count));
  float light=.90+.10*sin(q.x*2.0+q.y*2.6+fold);
  color*=light;
  gl_FragColor=vec4(color,1.);
@@ -39,10 +46,10 @@ function rgb(value){
  return m?m.slice(1).map(n=>Math.min(255,Number(n))/255):null;
 }
 function paletteOf(colors){
- const values=[...new Set((colors||[]).filter(c=>rgb(c)))].slice(0,3);
+ const values=[...new Set((colors||[]).filter(c=>rgb(c)))].slice(0,5);
  if(!values.length)return DEFAULT;
  const shade=(color,factor)=>"rgb("+rgb(color).map(v=>Math.round(Math.min(255,v*255*factor))).join(", ")+")";
- return [values[0],values[1]||shade(values[0],.62),values[2]||values[1]||shade(values[0],1.3)];
+ return [values[0],values[1]||shade(values[0],.62),values[2]||values[1]||shade(values[0],1.3),...values.slice(3)];
 }
 export default function MotionGradient({colors=DEFAULT,motion="flow",speed=1,active=true,pauseWhenCovered=false,className="",style={}}){
  const canvas=useRef(null),settings=useRef(null),wake=useRef(null),phase=useRef(4.6);
@@ -53,7 +60,8 @@ export default function MotionGradient({colors=DEFAULT,motion="flow",speed=1,act
   const element=canvas.current;
   let gl,program,buffer,vertex,fragment,raf=0,last=0,painted=0,visible=true,disposed=false,lost=false;
   const reduced=window.matchMedia("(prefers-reduced-motion: reduce)");
-  let current=settings.current.palette.map(rgb);
+  const channels=palette=>Array.from({length:5},(_,i)=>rgb(palette[i]||palette[0]));
+  let current=channels(settings.current.palette);
   setReady(false);
   const compile=(type,source)=>{
    const shader=gl.createShader(type);gl.shaderSource(shader,source);gl.compileShader(shader);
@@ -70,20 +78,21 @@ export default function MotionGradient({colors=DEFAULT,motion="flow",speed=1,act
    gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([-1,-1,1,-1,-1,1,-1,1,1,-1,1,1]),gl.STATIC_DRAW);
    const position=gl.getAttribLocation(program,"a_position");gl.enableVertexAttribArray(position);gl.vertexAttribPointer(position,2,gl.FLOAT,false,0,0);
   }catch{if(buffer)gl?.deleteBuffer(buffer);if(program)gl?.deleteProgram(program);if(vertex)gl?.deleteShader(vertex);if(fragment)gl?.deleteShader(fragment);return;}
-  const uniforms=Object.fromEntries(["time","aspect","a","b","c"].map(name=>[name,gl.getUniformLocation(program,"u_"+name)]));
+  const uniforms=Object.fromEntries(["time","aspect","count","a","b","c","d","e"].map(name=>[name,gl.getUniformLocation(program,"u_"+name)]));
   const stop=()=>{if(raf)cancelAnimationFrame(raf);raf=0;last=0;painted=0;};
   let bounds=element.getBoundingClientRect();
   const measure=()=>{bounds=element.getBoundingClientRect();};
   const draw=(dt,animate)=>{
    const {palette,speed}=settings.current;
-   const target=palette.map(rgb),blend=animate?1-Math.exp(-dt/1100):1;
+   const target=channels(palette),blend=animate?1-Math.exp(-dt/1100):1;
    current=current.map((c,i)=>c.map((v,j)=>v+(target[i][j]-v)*blend));
    if(animate)phase.current+=dt*.001*speed;
    const rect=bounds,scale=Math.min(1.25,window.devicePixelRatio||1,1100/Math.max(1,rect.width,rect.height));
    const w=Math.max(1,Math.round(rect.width*scale)),h=Math.max(1,Math.round(rect.height*scale));
    if(element.width!==w||element.height!==h){element.width=w;element.height=h;}
    gl.viewport(0,0,w,h);gl.uniform1f(uniforms.time,phase.current);gl.uniform1f(uniforms.aspect,w/h);
-   ["a","b","c"].forEach((name,i)=>gl.uniform3fv(uniforms[name],current[i]));
+   gl.uniform1f(uniforms.count,palette.length);
+   ["a","b","c","d","e"].forEach((name,i)=>gl.uniform3fv(uniforms[name],current[i]));
    gl.drawArrays(gl.TRIANGLES,0,6);
   };
   const covered=()=>settings.current.pauseWhenCovered&&!element.closest("[role=dialog]")&&!!document.querySelector("[data-public-dialog], [role=dialog][aria-modal=true]");
@@ -119,7 +128,7 @@ export default function MotionGradient({colors=DEFAULT,motion="flow",speed=1,act
  },[version]);
  useEffect(()=>{wake.current?.();},[key,motion,speed,active,pauseWhenCovered]);
  return <div aria-hidden="true" className={"public-motion-gradient "+className} style={{pointerEvents:"none",overflow:"hidden",...style}}>
-  <div className="motion-gradient-fallback" style={{animationDuration:(24/Math.max(.35,Math.min(1.6,Number(speed)||1)))+"s",animationPlayState:!ready&&active&&motion==="flow"?"running":"paused",position:"absolute",inset:0,backgroundColor:palette[0],backgroundImage:`radial-gradient(ellipse at 15% 25%, ${palette[1]}, transparent 70%),radial-gradient(ellipse at 85% 80%, ${palette[2]}, transparent 75%)`}}/>
+  <div className="motion-gradient-fallback" style={{animationDuration:(24/Math.max(.35,Math.min(1.6,Number(speed)||1)))+"s",animationPlayState:!ready&&active&&motion==="flow"?"running":"paused",position:"absolute",inset:0,backgroundColor:palette[0],backgroundImage:`${palette[4]?`radial-gradient(ellipse at 22% 74%, ${palette[4]}, transparent 54%),`:""}${palette[3]?`radial-gradient(ellipse at 78% 28%, ${palette[3]}, transparent 54%),`:""}radial-gradient(ellipse at 15% 25%, ${palette[1]}, transparent 70%),radial-gradient(ellipse at 85% 80%, ${palette[2]}, transparent 75%)`}}/>
   <canvas ref={canvas} style={{position:"absolute",inset:0,width:"100%",height:"100%",display:"block",opacity:ready?1:0,transition:"opacity .5s ease"}}/>
  </div>;
 }
