@@ -42,3 +42,14 @@ The Base44 editor preview still stalled at “Loading app data.” Signed-in mob
 | Community Preview | Done in code | Retry reran the effect but reused the regular catalog cache policy. | Explicit retry requests a fresh catalog read. |
 
 All 99 suites passed, along with lint and the production build. Device-level verification remains open.
+
+## November 13, 2026 — Upload Studio
+
+| Area | Status | Cause and fix |
+| --- | --- | --- |
+| Upload availability | Done in code | A settings read failure looked like an admin pause. Approved creators now get a distinct error and Retry button. |
+| Upload wizard navigation | Done in code | A trailing slash selected the wrong step, and empty-session and add-more links dropped the song request. Normalize the path and retain the validated request context. |
+| Publish summary | Done in code | The page only counted a local cover file toward release readiness. Catalog artwork now counts too, matching the upload queue. |
+| Artwork upload retry | Done in code | A storage response without an artwork URL still marked the file as uploaded. Only confirmed cover URLs are cached. A retry can reuse uploaded audio and retry the artwork. Clearing artwork also stops the prior cover from carrying into a retry. |
+
+Upload queue tests, Spotify request handoff tests, lint, and production build passed. Live uploads and mobile and desktop visual checks were not performed.
