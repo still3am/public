@@ -99,3 +99,5 @@ All 99 regression suites passed after lint and the production build. Signed-in m
 - Home, Profile, and artist details — Done in code. Refresh errors could be hidden behind loaded content. These pages now show Retry alongside the last loaded content, and artist details retain content while refreshing.
 
 All 99 test suites, lint, and production build passed. Signed-in mobile and desktop visual checks remain open.
+
+- Profile QR palette — Done in code. Removed the three-color cap so the QR card uses the same palette as the profile. Lint and production build passed.
