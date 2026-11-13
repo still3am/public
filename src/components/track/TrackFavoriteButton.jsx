@@ -18,7 +18,7 @@ export default function TrackFavoriteButton({trackId,className=''}){
    setState({key,liked:false,ready:!uid,loading:!!uid,busy:false,error:''});
    if(!uid||!trackId)return;
    try{const liked=await withReadTimeout(readLikeState(base44,uid,trackId));if(live&&request===version)setState({key,liked,ready:true,loading:false,busy:false,error:''});}
-   catch{if(live&&request===version)setState({key,liked:false,ready:false,loading:false,busy:false,error:'Favorites couldn’t load. Tap the heart to retry.'});}
+   catch{if(live&&request===version)setState({key,liked:false,ready:false,loading:false,busy:false,error:''});}
   };
   const changed=event=>{if(event.detail?.uid!==uid||event.detail?.trackId!==trackId||typeof event.detail?.liked!=='boolean')return;version++;if(live)setState({key,liked:event.detail.liked,ready:true,loading:false,busy:false,error:''});};
   load();window.addEventListener('likes:changed',changed);window.addEventListener('online',load);
@@ -35,7 +35,7 @@ export default function TrackFavoriteButton({trackId,className=''}){
   catch{if(alive.current&&identity.current===started)setState(old=>({...old,busy:false,error:'Couldn’t save your favorite. Please try again.'}));}
   finally{if(lock.current===started)lock.current='';}
  }
- const label=current.error&&!current.ready?'Retry favorite status':current.liked?'Remove from favorites':'Add to favorites';
+ const label=uid&&!current.loading&&!current.ready?'Retry favorite status':current.liked?'Remove from favorites':'Add to favorites';
  return <span className={'track-favorite '+className}>
   <button type="button" className="track-favorite-button" disabled={!trackId||current.loading||current.busy} aria-label={label} title={label} aria-pressed={current.ready?current.liked:false} aria-busy={current.loading||current.busy} onClick={toggle}><Heart size={18} strokeWidth={1.8} fill={current.liked?'currentColor':'none'}/></button>
   {current.error&&<span className="track-favorite-error" role="status">{current.error}</span>}
