@@ -8,7 +8,7 @@ import {releaseNotifications} from "@/lib/artistReleaseModel";
 const cache=new Map();
 async function load(uid){
  let entry=cache.get(uid);if(entry&&Date.now()-entry.time<45000)return entry.promise;
- const promise=Promise.all([readAllPages(opts=>base44.entities.ArtistSubscription.filter({created_by_id:uid},{...opts})),getPublishedTracks()]).then(([s,t])=>releaseNotifications(s,t));
+ const promise=Promise.all([readAllPages(opts=>base44.entities.ArtistSubscription.filter({created_by_id:uid},{...opts})),getPublishedTracks()]).then(([subscriptions,tracks])=>({items:releaseNotifications(subscriptions,tracks),feed:releaseNotifications(subscriptions,tracks,{includeEarlier:true})}));
  entry={time:Date.now(),promise};cache.set(uid,entry);try{return await promise;}catch(e){if(cache.get(uid)===entry)cache.delete(uid);throw e;}
 }
 export function useArtistReleases(){
@@ -17,7 +17,7 @@ export function useArtistReleases(){
  const refresh=useCallback(()=>{readVersion.current++;cache.delete(user?.id);setVersion(n=>n+1);},[user?.id]);
  useEffect(()=>{
   setError(false);if(!user?.id)return;let alive=true;
-  const read=()=>{if(document.visibilityState==="hidden")return;const request=++readVersion.current;load(user.id).then(items=>{if(alive&&request===readVersion.current&&account.current===user.id){setState({uid:user.id,items});setError(false);}}).catch(()=>{if(alive&&request===readVersion.current)setError(true);});};
+  const read=()=>{if(document.visibilityState==="hidden")return;const request=++readVersion.current;load(user.id).then(result=>{if(alive&&request===readVersion.current&&account.current===user.id){setState({uid:user.id,...result});setError(false);}}).catch(()=>{if(alive&&request===readVersion.current)setError(true);});};
   read();const timer=setInterval(read,60000);
   for(const event of ["artist-follows:changed","notifications:changed","catalog:invalidate"])window.addEventListener(event,refresh);
   window.addEventListener("focus",read);
@@ -34,6 +34,6 @@ export function useArtistReleases(){
    const ids=new Set(targets.map(n=>n.id));setState(s=>s.uid===uid?{...s,items:s.items.map(n=>ids.has(n.id)?{...n,read:true}:n)}:s);
   }finally{cache.delete(uid);if(account.current===uid)window.dispatchEvent(new Event("notifications:changed"));}
  }
- return {items,error,refresh,markRead,unread:items.filter(n=>!n.read).length};
+ return {items,feed:state.uid===user?.id?state.feed||[]:[],error,refresh,markRead,unread:items.filter(n=>!n.read).length};
 }
 for(const event of ["account:cleared","catalog:invalidate"])window.addEventListener(event,()=>cache.clear());

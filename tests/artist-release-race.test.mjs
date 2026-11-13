@@ -21,3 +21,8 @@ let resolve;gate=new Promise(r=>{resolve=r;});hook.refresh();cleanup();hook=rend
 await hook.markRead();hook=render();assert.equal(hook.unread,0);resolve([clone(track)]);await flush();hook=render();assert.equal(hook.unread,0,'an older lookup cannot resurrect a confirmed unread alert');
 cleanup();gate=Promise.resolve([]);window.dispatchEvent(new Event('catalog:invalidate'));hook=render();cleanup=effects[0]();await flush();hook=render();assert.equal(hook.items.length,0,'catalog invalidation removes withdrawn releases');cleanup();
 console.log('PASS late release reads cannot undo confirmed flags and catalog invalidation removes stale alerts');
+const duo={...track,artist:'Simon & Garfunkel'};
+const recentFollow={...subscription,artist_key:'simon & garfunkel',created_date:'2026-03-01'};
+assert.equal(releaseNotifications([recentFollow],[duo]).length,0);
+assert.equal(releaseNotifications([recentFollow],[duo],{includeEarlier:true})[0].track_id,duo.id);
+assert.equal(releaseNotifications([{...recentFollow,created_date:'2026-01-01'}],[duo]).length,1);
