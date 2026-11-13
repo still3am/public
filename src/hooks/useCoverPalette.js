@@ -20,7 +20,8 @@ export function useCoverPalette(url){
  },[url]);return state.url===url?state:{colors:[],loading:!!url};
 }
 export function profileGradient(colors){
- const safe=(colors||[]).filter(c=>/^#[0-9a-f]{6}$/i.test(c)).slice(0,3);
+ const positions=["15% 25%","85% 75%","50% 95%","90% 15%","10% 85%"];
+ const safe=(colors||[]).filter(c=>/^#[0-9a-f]{6}$/i.test(c)).slice(0,5);
  if(!safe.length)return undefined;
- return safe.map((c,i)=>`radial-gradient(ellipse at ${[15,85,50][i]}% ${[25,75,95][i]}%, ${c} 0%, transparent 70%)`).join(",");
+ return safe.map((c,i)=>`radial-gradient(ellipse at ${positions[i]}, ${c} 0%, transparent 70%)`).join(",");
 }

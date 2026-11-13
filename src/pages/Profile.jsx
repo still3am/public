@@ -423,7 +423,7 @@ export default function Profile({ ownProfileTab = false }) {
   const avatarUrl = editMode ? form.avatar_url : profile.avatar_url;
   const backgroundValue = { mode: profile.profile_background_mode || "auto", motion: profile.profile_background_motion === "still" ? "still" : "flow", speed: Math.max(.35, Math.min(1.6, Number(profile.profile_background_speed) || 1)), colors: (profile.profile_background_colors || []).filter((c) => /^#[0-9a-f]{6}$/i.test(c)).slice(0, 5) };
   const currentBackground = backgroundDraft || backgroundValue;
-  const backgroundColors = currentBackground.mode === "off" ? [] : currentBackground.mode === "custom" ? currentBackground.colors : coverColors.slice(0, 3);
+  const backgroundColors = currentBackground.mode === "off" ? [] : currentBackground.mode === "custom" ? currentBackground.colors : coverColors.slice(0, 5);
   const closeColors = () => {setShowColors(false);setBackgroundDraft(null);};
   const saveColors = async (value) => {
     if (!isOwn) return;
