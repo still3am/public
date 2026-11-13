@@ -35,6 +35,7 @@ export default function ProfileColorPicker({coverUrl,colors,loading,value,onPrev
  const [beforeRandomize,setBeforeRandomize]=useState(null);
  const [activeColor,setActiveColor]=useState(0);
  const drag=useRef(null);
+ const ignoreClick=useRef(false);
  const [dropIndex,setDropIndex]=useState(null);
  const activeIndex=Math.min(activeColor,Math.max(0,draft.colors.length-1));
  const update=next=>{if(saveLock.current)return;setError("");setBeforeRandomize(null);setDraft(next);onPreview({...next,colors:next.colors.filter(valid)});};
@@ -48,8 +49,12 @@ export default function ProfileColorPicker({coverUrl,colors,loading,value,onPrev
   setColors(next);
  };
  const targetAt=event=>{
-  const slot=document.elementFromPoint(event.clientX,event.clientY)?.closest("[data-profile-color-slot]");
-  return slot&&event.currentTarget.parentElement.parentElement.contains(slot)?Number(slot.dataset.profileColorSlot):null;
+  const slots=event.currentTarget.parentElement.parentElement.querySelectorAll("[data-profile-color-slot]");
+  for(const slot of slots){
+   const box=slot.getBoundingClientRect();
+   if(event.clientX>=box.left&&event.clientX<=box.right&&event.clientY>=box.top&&event.clientY<=box.bottom)return Number(slot.dataset.profileColorSlot);
+  }
+  return null;
  };
  const endDrag=event=>{
   if(drag.current?.pointer!==event.pointerId)return;
@@ -57,8 +62,23 @@ export default function ProfileColorPicker({coverUrl,colors,loading,value,onPrev
   const to=event.type==="pointerup"?targetAt(event):null;
   drag.current=null;
   setDropIndex(null);
-  if(to!==null)moveColor(from,to);
+  if(to!==null&&to!==from){ignoreClick.current=true;moveColor(from,to);}
  };
+ const dragHandlers=index=>({
+  onPointerDown:event=>{
+   if(event.button!==0||drag.current||draft.colors.length<2)return;
+   ignoreClick.current=false;
+   drag.current={pointer:event.pointerId,index};
+   event.currentTarget.setPointerCapture(event.pointerId);
+   setDropIndex(index);
+  },
+  onPointerMove:event=>{
+   if(drag.current?.pointer===event.pointerId)setDropIndex(targetAt(event));
+  },
+  onPointerUp:endDrag,
+  onPointerCancel:endDrag,
+  onLostPointerCapture:endDrag
+ });
  const toggle=color=>setColors(draft.mode==="custom"&&draft.colors.includes(color)?draft.colors.filter(c=>c!==color):[...(draft.mode==="custom"?draft.colors:[]),color].slice(-MAX_COLORS));
  const addColor=()=>{
   const index=draft.colors.length;
@@ -117,21 +137,14 @@ export default function ProfileColorPicker({coverUrl,colors,loading,value,onPrev
     {draft.mode==="custom"&&<>
      <section className="profile-color-section">
       <h3>Your colors <span>{draft.colors.length} / {MAX_COLORS}</span></h3>
-      {draft.colors.length>1&&<p className="profile-color-hint" id="profile-color-reorder">Drag a handle or press Left or Right on it to reorder.</p>}
+      {draft.colors.length>1&&<p className="profile-color-hint" id="profile-color-reorder">Drag a color to another slot. With a keyboard, focus its handle and press Left or Right.</p>}
       <div className="profile-color-quick-stops" role="group" aria-label="Gradient colors">
        {draft.colors.map((color,index)=><div className="profile-color-slot" data-profile-color-slot={index} data-drop-target={dropIndex===index} key={index}>
-        <button type="button" disabled={saving} aria-label={`Edit gradient color ${index+1}`} aria-pressed={activeIndex===index} onClick={()=>setActiveColor(index)}>
+        <button type="button" disabled={saving} aria-label={`Edit gradient color ${index+1}`} aria-pressed={activeIndex===index} {...dragHandlers(index)} onClick={event=>{if(!event.detail||!ignoreClick.current)setActiveColor(index);ignoreClick.current=false;}}>
          <span style={{background:valid(color)?color:"#777777"}}>{activeIndex===index&&<Check size={16}/>}</span><small>Color {index+1}</small>
         </button>
         {draft.colors.length>1&&<button type="button" className="profile-color-grip" disabled={saving} aria-label={`Reorder color ${index+1}`} aria-describedby="profile-color-reorder"
-         onPointerDown={event=>{
-          if(event.button!==0||drag.current)return;
-          drag.current={pointer:event.pointerId,index};
-          event.currentTarget.setPointerCapture(event.pointerId);
-          setDropIndex(index);
-         }}
-         onPointerMove={event=>{if(drag.current?.pointer===event.pointerId)setDropIndex(targetAt(event));}}
-         onPointerUp={endDrag} onPointerCancel={endDrag} onLostPointerCapture={endDrag}
+         {...dragHandlers(index)}
          onKeyDown={event=>{
           if(event.key!=="ArrowLeft"&&event.key!=="ArrowRight")return;
           event.preventDefault();

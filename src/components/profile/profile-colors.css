@@ -98,3 +98,5 @@
 .profile-color-grip{display:grid;place-items:center;min-height:36px;touch-action:none;cursor:grab;border-radius:8px;}
 .profile-color-grip:active{cursor:grabbing;}
 .profile-color-grip svg{background:none;color:inherit;}
+
+.profile-color-slot>button:first-child{touch-action:none;user-select:none;cursor:grab;}
