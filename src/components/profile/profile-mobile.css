@@ -118,3 +118,23 @@
  .public-app .profile-page.profile-redesigned .profile-people-skeleton>div>i{max-width:144px}
 }
 @media(max-width:767px){.public-app .profile-redesigned .profile-stats[data-creator=false]{grid-template-columns:repeat(3,minmax(0,1fr))}}
+
+.profile-gradient-layout{display:contents}
+@media(max-width:767px){
+ .public-app .profile-gradient-layout{display:block;position:relative;isolation:isolate;min-height:100dvh}
+ .public-app .profile-gradient-layout>.profile-artwork-background{position:absolute}
+ .public-app .profile-gradient-layout .profile-redesigned:not(.profile-is-editing) .profile-overview{margin-bottom:28px}
+ html .public-app .profile-gradient-layout .profile-redesigned:not(.profile-is-editing) .profile-identity{
+  background:transparent!important;--profile-hero-surface:#17181d;
+  --foreground:0 0% 100%;--muted-foreground:0 0% 85%;
+ }
+ .public-app .profile-gradient-layout .profile-redesigned:not(.profile-is-editing) .profile-cover-stage{background:transparent!important;height:clamp(180px,53vw,260px)}
+ .public-app .profile-gradient-layout .profile-redesigned:not(.profile-is-editing) .profile-cover-fade{background:linear-gradient(transparent 70%,#12131866)}
+ .public-app .profile-gradient-layout .profile-redesigned:not(.profile-is-editing) .profile-details{background:linear-gradient(#12131866,#121318d9);padding-bottom:24px!important}
+ html .public-app .profile-gradient-layout .profile-redesigned:not(.profile-is-editing) :is(.profile-feature-song,.profile-rotation,.profile-public-playlists,.profile-conversation,.profile-community-column .profile-people-shelf){
+  background:color-mix(in srgb,hsl(var(--card)) 85%,transparent)!important;
+  border:1px solid hsl(var(--foreground)/.14)!important;
+  border-radius:22px;box-shadow:none;
+ }
+ .public-app .profile-gradient-layout .profile-redesigned:not(.profile-is-editing) .profile-content{row-gap:24px}
+}
