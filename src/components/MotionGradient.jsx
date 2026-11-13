@@ -30,10 +30,17 @@ void main(){
  vec3 color=mix(u_a,u_b,smoothstep(.12,.88,ribbon));
  float pool=.5+.5*sin(q.y*3.3+wave*1.6-t*.27);
  color=mix(color,u_c,smoothstep(.28,.92,pool)*.88);
- float fourth=1.-smoothstep(.06,.58,length(p-vec2(.78+.14*sin(t*.31),.72+.12*cos(t*.28))));
- float fifth=1.-smoothstep(.06,.58,length(p-vec2(.22+.12*cos(t*.29),.26+.14*sin(t*.33))));
- color=mix(color,u_d,fourth*.92*step(4.,u_count));
- color=mix(color,u_e,fifth*.92*step(5.,u_count));
+ if(u_count>3.5){
+  // All stops travel along the same warped ribbon, including the last-to-first blend.
+  float ribbonPath=q.x*.60+q.y*.40+wave*.14+fold*.12;
+  float stop=fract(ribbonPath+t*.046)*u_count;
+  float blend=smoothstep(0.,1.,fract(stop));
+  if(stop<1.) color=mix(u_a,u_b,blend);
+  else if(stop<2.) color=mix(u_b,u_c,blend);
+  else if(stop<3.) color=mix(u_c,u_d,blend);
+  else if(stop<4.) color=mix(u_d,u_count>4.5?u_e:u_a,blend);
+  else color=mix(u_e,u_a,blend);
+ }
  float light=.90+.10*sin(q.x*2.0+q.y*2.6+fold);
  color*=light;
  gl_FragColor=vec4(color,1.);
@@ -128,7 +135,7 @@ export default function MotionGradient({colors=DEFAULT,motion="flow",speed=1,act
  },[version]);
  useEffect(()=>{wake.current?.();},[key,motion,speed,active,pauseWhenCovered]);
  return <div aria-hidden="true" className={"public-motion-gradient "+className} style={{pointerEvents:"none",overflow:"hidden",...style}}>
-  <div className="motion-gradient-fallback" style={{animationDuration:(24/Math.max(.35,Math.min(1.6,Number(speed)||1)))+"s",animationPlayState:!ready&&active&&motion==="flow"?"running":"paused",position:"absolute",inset:0,backgroundColor:palette[0],backgroundImage:`${palette[4]?`radial-gradient(ellipse at 22% 74%, ${palette[4]}, transparent 54%),`:""}${palette[3]?`radial-gradient(ellipse at 78% 28%, ${palette[3]}, transparent 54%),`:""}radial-gradient(ellipse at 15% 25%, ${palette[1]}, transparent 70%),radial-gradient(ellipse at 85% 80%, ${palette[2]}, transparent 75%)`}}/>
+  <div className="motion-gradient-fallback" style={{animationDuration:(24/Math.max(.35,Math.min(1.6,Number(speed)||1)))+"s",animationPlayState:!ready&&active&&motion==="flow"?"running":"paused",position:"absolute",inset:0,backgroundColor:palette[0],backgroundImage:palette.length>3?`linear-gradient(135deg, ${[...palette,palette[0]].join(", ")})`:`radial-gradient(ellipse at 15% 25%, ${palette[1]}, transparent 70%),radial-gradient(ellipse at 85% 80%, ${palette[2]}, transparent 75%)`}}/>
   <canvas ref={canvas} style={{position:"absolute",inset:0,width:"100%",height:"100%",display:"block",opacity:ready?1:0,transition:"opacity .5s ease"}}/>
  </div>;
 }
