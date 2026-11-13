@@ -65,3 +65,12 @@ Upload queue tests, Spotify request handoff tests, lint, and production build pa
 All 99 suites, lint, and production build passed. Signed-in mobile and desktop visual checks remain open.
 
 - Notifications — Done in code. Failed reloads were only visible when the inbox was empty. The inbox now shows a retry alongside existing activity. Notification recovery and link tests, lint, and production build passed after this change.
+
+## November 13, 2026 — Library and Public Record
+
+| Area | Status | Cause and fix |
+| --- | --- | --- |
+| Library song filters | Done in code | Library committed folder and tag metadata before fetching song rows. If a song fetch failed, retained rows could be shown with filters from a different snapshot. Commit metadata and rows together after the full read succeeds. |
+| Library and Public Record refresh | Done in code | A failed refresh could be hidden behind existing results. Keep those results visible and show a retry. |
+
+All 99 regression suites passed after lint and the production build. Signed-in mobile and desktop checks remain open.
