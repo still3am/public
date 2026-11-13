@@ -24,7 +24,7 @@ function PreviewSong({track,index,onPlay,playing}){
 export default function CommunityPreview(){
  const [params,setParams]=useSearchParams(),[catalog,setCatalog]=useState([]),[loading,setLoading]=useState(true),[error,setError]=useState(''),[revision,setRevision]=useState(0);
  const player=usePlayer(),{blocked}=useSafety(),{user}=useAuth();
- useEffect(()=>{let alive=true;setLoading(true);setError('');getPublishedTracks().then(rows=>{if(alive)setCatalog(rows);}).catch(()=>{if(alive)setError('Music couldn’t load. Please retry.');}).finally(()=>{if(alive)setLoading(false);});return()=>{alive=false;};},[revision]);
+ useEffect(()=>{let alive=true;setLoading(true);setError('');getPublishedTracks(revision > 0).then(rows=>{if(alive)setCatalog(rows);}).catch(()=>{if(alive)setError('Music couldn’t load. Please retry.');}).finally(()=>{if(alive)setLoading(false);});return()=>{alive=false;};},[revision]);
  const profiles=useMemo(()=>buildCommunityPreviews(catalog,{blocked,showExplicit:user?.show_explicit!==false}),[catalog,blocked,user?.show_explicit]);
  const selected=profiles.find(p=>p.id===params.get('profile'))||profiles[0];
  const avatar=AVATAR_PRESETS.find(a=>a.id===selected.avatar),banner=BANNER_PRESETS.find(b=>b.id===selected.banner);

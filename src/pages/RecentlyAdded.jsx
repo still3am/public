@@ -23,10 +23,10 @@ export default function RecentlyAdded() {
   }, []);
   useUnpublishedSync(onUnpublished);
 
-  async function load() {
+  async function load(fresh = false) {
     const request = ++loadVersion.current;setLoading(true);setLoadError(false);
     try {
-      const rows = await getPublishedTracks(true);if (request === loadVersion.current) setTracks(rows);
+      const rows = await getPublishedTracks(fresh === true);if (request === loadVersion.current) setTracks(rows);
     } catch {
       if (request === loadVersion.current) setLoadError(true);
     } finally {
@@ -46,11 +46,11 @@ export default function RecentlyAdded() {
         <Loader2 className="animate-spin" />
       </div>);
 
-  if (loadError && !tracks.length) return <LoadError onRetry={load} />;
+  if (loadError) return <LoadError onRetry={() => load(true)} />;
   if (!tracks.length) return <EmptyState icon={Music} title="No tracks yet" />;
 
   return (
-    <PullToRefresh onRefresh={load}>
+    <PullToRefresh onRefresh={() => load(true)}>
     <div className="collection-page collection-refined recent-refined">
         <CollectionSpotlight title="Recently Added" eyebrow="Fresh on PUBLIC" description="The latest music added by the PUBLIC community." tracks={visible} />
         

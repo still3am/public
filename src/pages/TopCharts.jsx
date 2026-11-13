@@ -24,10 +24,10 @@ export default function TopCharts() {
   }, []);
   useUnpublishedSync(onUnpublished);
 
-  async function load() {
+  async function load(fresh = false) {
     const request = ++loadVersion.current;setLoading(true);setLoadError(false);
     try {
-      const rows = await getTopTracks(true);
+      const rows = await getTopTracks(fresh === true);
       let chart = [];
       if (period !== "all") {
         const response = await base44.functions.invoke("musicInsights", { action: "charts", period });
@@ -65,16 +65,16 @@ export default function TopCharts() {
   const shown = rising && period !== "all" ? visible.filter((track) => (movements.get(track.id)?.growth || 0) > 0).sort((a, b) => movements.get(b.id).growth - movements.get(a.id).growth) : visible;
 
   return (
-    <PullToRefresh onRefresh={load}>
+    <PullToRefresh onRefresh={() => load(true)}>
       <div className="collection-page collection-refined charts-refined">
         <div className="view-switch mb-5" aria-label="Chart period" role="group">{[["all", "All time"], ["week", "Last 7 days"], ["month", "Last 30 days"]].map(([id, label]) => <button key={id} aria-pressed={period === id} onClick={() => {if (period === id) return;setTracks([]);setPositions([]);setPeriod(id);setRising(false);setGenre("");}}>{label}</button>)}</div>
-        {loading && <p role="status" className="text-sm mb-3">Updating chart…</p>}
+
         <CollectionSpotlight title="Top Charts" eyebrow="On repeat" description={period === "all" ? "Ranked by total plays on PUBLIC." : "Recorded plays over the last " + (period === "week" ? "7" : "30") + " days. Movement compares with the preceding period."} tracks={visible} />
         
         {period !== "all" && <button className="playlist-action mb-4" aria-pressed={rising} onClick={() => setRising((value) => !value)}>{rising ? "Show full chart" : "Rising songs"}</button>}
-        {loadError && !tracks.length && <LoadError onRetry={load} />}
+        {loadError && <LoadError onRetry={() => load(true)} />}
         {!tracks.length && !loadError && <p className="py-8 text-muted-foreground" role="status">No recorded plays for this period yet. Try another period.</p>}
-        {!!tracks.length && !shown.length && <div className="collection-empty"><h2>No matching songs</h2><p>Try another title, artist, or genre.</p></div>}
+        {!!tracks.length && !shown.length && <div className="collection-empty"><h2>{rising && !filtering ? "No rising songs yet" : "No matching songs"}</h2><p>{rising && !filtering ? "Show the full chart to see this period’s rankings." : "Try another title, artist, or genre."}</p></div>}
 
         <div className="collection-results-heading"><h2>{filtering ? "Matching tracks" : "The chart"}</h2><span>{shown.length} songs</span></div>
         <IncrementalList resetKey={JSON.stringify([query, genre, period, rising])} items={shown} className="chart-ranked-list" renderItem={(track, index) => <div key={track.id} className="chart-ranked-row"><span className="chart-position">{ranks.get(track.id)}{period !== "all" && <small className="block text-[10px] leading-tight" aria-label={movements.get(track.id)?.movement === null ? "New this period" : "Position change " + movements.get(track.id)?.movement}>{movements.get(track.id)?.movement === null ? "NEW" : movements.get(track.id)?.movement > 0 ? "↑" + movements.get(track.id).movement : movements.get(track.id)?.movement < 0 ? "↓" + Math.abs(movements.get(track.id).movement) : "—"}</small>}</span><div className="min-w-0 flex-1"><TrackRow track={track} queue={shown} queueIndex={index} showArt /></div></div>} />
