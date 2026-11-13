@@ -232,6 +232,6 @@
 .public-app .profile-redesigned .profile-community-column .profile-people-shelf h2{max-width:none;text-align:center;margin-inline:auto}
 
 /* Let the profile palette show through the main cards. */
-html .public-app .profile-redesigned .profile-content :is(.profile-feature-song,.profile-rotation,.profile-public-playlists,.profile-conversation){
- background-color:hsl(var(--card)/.46);
+html .public-app .profile-redesigned :is(.profile-feature-song,.profile-rotation,.profile-public-playlists,.profile-conversation){
+ background:transparent !important;
 }
