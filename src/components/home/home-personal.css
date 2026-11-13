@@ -108,3 +108,5 @@
  .home-shared-section .shared-song{flex:0 0 calc(100% - 28px);width:calc(100% - 28px);min-width:0;min-height:118px;border:0;border-radius:18px;background:hsl(var(--muted)/.45);padding:14px;scroll-snap-align:start;scroll-snap-stop:normal;}
  .home-shared-section .shared-song-shelf::-webkit-scrollbar{display:none;}
 }
+
+.shared-song-cover.shared-song-art-link{display:none}
