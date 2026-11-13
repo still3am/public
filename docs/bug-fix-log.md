@@ -78,3 +78,5 @@ All 99 regression suites passed after lint and the production build. Signed-in m
 - Admin Upload Studio — Done in code. Complete admin tracks previously required advancing to the final upload screen. Review now offers Upload to PUBLIC for tracks with artwork, artist, genre, a title, and confirmed rights. The existing upload queue publishes eligible admin tracks immediately. Upload queue and request handoff tests, lint, and build passed.
 
 - Upload audio retry — Done in code. The server rejected the private audio reference, and retry reused it. Retry now requests a new audio upload, the editor replaces the raw error with recovery instructions, and the ready label is suppressed during an error. Upload tests, lint, and build passed. The live storage response that triggered the original rejection remains unverified.
+
+- Upload genre fallback — Done in code. Blank genres could block public release even though the save payload defaulted to Other. Metadata detection now fills Other when no genre is available, and release eligibility uses that same fallback. Upload and request handoff tests and build passed.
