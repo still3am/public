@@ -231,7 +231,13 @@
 .public-app .profile-redesigned .profile-community-column .profile-people-shelf>header>div{width:100%;min-width:0}
 .public-app .profile-redesigned .profile-community-column .profile-people-shelf h2{max-width:none;text-align:center;margin-inline:auto}
 
-/* Let the profile palette show through the main cards. */
+/* Keep a readable surface over the moving profile background. */
 html .public-app .profile-redesigned :is(.profile-feature-song,.profile-rotation,.profile-public-playlists,.profile-conversation){
- background:transparent !important;
+ background:hsl(var(--card)/.56) !important;
+ border-color:hsl(var(--foreground)/.16);
+}
+@media(prefers-contrast:more){
+ html .public-app .profile-redesigned :is(.profile-feature-song,.profile-rotation,.profile-public-playlists,.profile-conversation){
+  background:hsl(var(--card)/.88) !important;
+ }
 }
