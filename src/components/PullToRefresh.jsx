@@ -7,6 +7,7 @@ const THRESHOLD = 70;
 export default function PullToRefresh({
   onRefresh,
   disabled = false,
+  showRefreshIndicator = true,
   children,
   className = "",
 }) {
@@ -64,7 +65,7 @@ export default function PullToRefresh({
 
   return (
     <div ref={rootRef} className={`relative ${className}`}>
-      {!disabled&&(pull > 0 || refreshing) && (
+      {!disabled && (refreshing ? showRefreshIndicator : pull > 0) && (
         <div
           className="grid place-items-center text-foreground/60 overflow-hidden transition-[height] duration-150 ease-out"
           style={{

@@ -138,13 +138,13 @@ export default function Search() {
   const firstSearchInFlight = hasQuery && searching && anyResults === 0;
 
   const loader =
-  <div className="py-16 text-center">
+  <div className="py-16 text-center" role="status" aria-label="Loading search content">
       <Loader2 className="animate-spin inline text-foreground/40" size={22} />
     </div>;
 
 
   return (
-    <PullToRefresh onRefresh={handleRefresh}>
+    <PullToRefresh onRefresh={handleRefresh} showRefreshIndicator={false}>
       <div className="search-page">
         <div className="page-intro"><h1>Search</h1><p>Explore music, artists, playlists, and people.</p></div>
         
@@ -162,7 +162,7 @@ export default function Search() {
             aria-label={peopleMode ? "Search people by name" : "Search tracks, artists, people"} placeholder={peopleMode ? "Search people by name…" : "Search tracks, artists, people…"}
             className="w-full pl-11 pr-20 py-3.5 rounded-full border border-border bg-background text-sm font-medium focus:outline-none focus:ring-2 focus:ring-foreground/10 transition shadow-sm" />
 
-          {searching &&
+          {searching && !firstSearchInFlight &&
           <Loader2
             size={15}
             className="hidden md:block animate-spin absolute right-11 top-1/2 -translate-y-1/2 text-foreground/40 pointer-events-none" />
