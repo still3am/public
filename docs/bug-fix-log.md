@@ -107,3 +107,5 @@ All 99 test suites, lint, and production build passed. Signed-in mobile and desk
 - Profile QR five-color follow-up — Done in code. The QR card accepted the full palette, but Profile still supplied only three artwork colors in Automatic mode. Automatic mode and the static profile gradient now support five colors. Profile regression tests, lint, and build passed. Visual verification remains open.
 
 - QR card palette visibility — Added a strip above the QR code showing each available profile color in order. Gradient blending and shading could make individual colors hard to distinguish. Lint and build passed.
+
+- Shared with You desktop — Done in code. The shelf stacked three messages per column. Desktop now uses a horizontal cover-card row with sender and message below the artwork. Desktop Activity test and build passed. Visual verification remains open.
