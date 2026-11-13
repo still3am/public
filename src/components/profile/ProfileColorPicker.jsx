@@ -40,10 +40,12 @@ export default function ProfileColorPicker({coverUrl,colors,loading,value,onPrev
  const [saving,setSaving]=useState(false),[error,setError]=useState("");
  const saveLock=useRef(false);
  const [harmony,setHarmony]=useState("Surprise me");
+ const [keepFirst,setKeepFirst]=useState(false);
+ const [appliedHarmony,setAppliedHarmony]=useState("");
  const [beforeRandomize,setBeforeRandomize]=useState(null);
  const [activeColor,setActiveColor]=useState(0);
  const activeIndex=Math.min(activeColor,Math.max(0,draft.colors.length-1));
- const update=next=>{if(saveLock.current)return;setError("");setBeforeRandomize(null);setDraft(next);onPreview({...next,colors:next.colors.filter(valid)});};
+ const update=next=>{if(saveLock.current)return;setError("");setBeforeRandomize(null);setAppliedHarmony("");setDraft(next);onPreview({...next,colors:next.colors.filter(valid)});};
  const customColors=draft.colors.length?draft.colors:colors.slice(0,3).length?colors.slice(0,3):PRESETS[0].colors;
  const setColors=next=>update({...draft,mode:"custom",colors:next.slice(0,MAX_COLORS)});
  const toggle=color=>setColors(draft.mode==="custom"&&draft.colors.includes(color)?draft.colors.filter(c=>c!==color):[...(draft.mode==="custom"?draft.colors:[]),color].slice(-MAX_COLORS));
@@ -58,15 +60,18 @@ export default function ProfileColorPicker({coverUrl,colors,loading,value,onPrev
   setColors([...draft.colors,color]);
  };
  const randomize=()=>{
-  const hue=Math.floor(Math.random()*360);
-  const {offsets}=HARMONIES.find(option=>option.name===harmony)||HARMONIES[Math.floor(Math.random()*HARMONIES.length)];
+  const anchor=draft.mode==="custom"&&draft.colors.length>1&&valid(draft.colors[0])&&keepFirst?draft.colors[0]:null;
+  const hue=anchor?hexToHsv(anchor).h:Math.floor(Math.random()*360);
+  const {name,offsets}=HARMONIES.find(option=>option.name===harmony)||HARMONIES[Math.floor(Math.random()*HARMONIES.length)];
   const count=draft.mode==="custom"?draft.colors.length||3:customColors.length;
   const next=offsets.slice(0,count).map((offset,index)=>{
+   if(index===0&&anchor)return anchor;
    const [saturation,brightness]=PALETTE_TONES[index];
    return hsvToHex((hue+offset+360)%360,saturation,brightness);
   });
   if(saveLock.current)return;
   setColors(next);
+  setAppliedHarmony(name);
   setBeforeRandomize(beforeRandomize||{draft,activeIndex});
   setActiveColor(0);
  };
@@ -105,10 +110,16 @@ export default function ProfileColorPicker({coverUrl,colors,loading,value,onPrev
       {HARMONIES.map(option=><option key={option.name}>{option.name}</option>)}
      </select>
     </label>
+    {draft.mode==="custom"&&draft.colors.length>1&&valid(draft.colors[0])&&
+     <label className="profile-color-harmony">
+      <span>Keep Color 1 when shuffling</span>
+      <input type="checkbox" checked={keepFirst} disabled={saving} onChange={event=>setKeepFirst(event.target.checked)}/>
+     </label>}
     <div className="profile-color-random-actions">
      <button type="button" className="profile-color-create" disabled={saving} onClick={randomize}><Shuffle size={16}/>Randomize colors</button>
      {beforeRandomize&&<button type="button" className="profile-color-create" disabled={saving} onClick={undoRandomize}><Undo2 size={16}/>Undo shuffle</button>}
     </div>
+    {appliedHarmony&&<p className="profile-color-hint" role="status">{appliedHarmony} palette</p>}
     {draft.mode==="custom"&&<>
      <section className="profile-color-section"><h3>Your colors <span>{draft.colors.length} / {MAX_COLORS}</span></h3><div className="profile-color-quick-stops" role="group" aria-label="Choose gradient color to edit">{draft.colors.map((color,index)=><button type="button" key={index} disabled={saving} aria-label={`Edit gradient color ${index+1}`} aria-pressed={activeIndex===index} onClick={()=>setActiveColor(index)}><span style={{background:valid(color)?color:"#777777"}}>{activeIndex===index&&<Check size={16}/>}</span><small>Color {index+1}</small></button>)}{draft.colors.length<MAX_COLORS&&<button type="button" disabled={saving} aria-label="Add gradient color" onClick={addColor}><span><Plus size={18}/></span><small>Add color</small></button>}</div></section>
      {draft.colors.length>0&&<ProfileColorWheel key={activeIndex} colorNumber={activeIndex+1} value={valid(draft.colors[activeIndex])?draft.colors[activeIndex]:"#777777"} disabled={saving} onChange={color=>setColors(draft.colors.map((c,i)=>i===activeIndex?color:c))}/>}
