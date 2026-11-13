@@ -16,3 +16,10 @@ globalThis.__prefAudit={withReadTimeout:p=>withReadTimeout(p,5),base44:{entities
 const pref=await load('const {withReadTimeout,base44}=globalThis.__prefAudit;const GENRES=[];'+fs.readFileSync('src/lib/userGenres.js','utf8').replace(/^import[^;]+;/gm,''));
 await assert.rejects(pref.getUserMusicPreferences('owner'),e=>e.code==='READ_TIMEOUT');
 console.log('PASS malformed listening cache recovery, nonblocking recap outbox and preference timeout');
+
+const search = fs.readFileSync('src/pages/Search.jsx', 'utf8');
+const genreBody = search.slice(search.indexOf('{genreTracks.length ?'), search.indexOf('genreList.length ?', search.indexOf('{genreTracks.length ?')));
+assert.match(genreBody, /browseError \? <LoadError[^\n]+: loadingAll \? loader :\s+<EmptyState\s+title="Nothing here yet"/);
+const layout = fs.readFileSync('src/components/Layout.jsx', 'utf8');
+assert.match(layout, /\{!activeTab && <AnimatePresence[\s\S]+?<Outlet \/>[\s\S]+?<\/AnimatePresence>\}/);
+console.log('PASS direct genre links wait for catalog and persistent tabs exclude the animated outlet');
