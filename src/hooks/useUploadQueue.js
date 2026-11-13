@@ -136,16 +136,21 @@ export function useUploadQueue({ user, isAdmin }) {
     if(hits.length&&!item.duplicateAcknowledged){warn(candidate,hits);throw Error('Review the possible match below, then confirm this is a different recording to continue.');}
    }
    if(!memo.file_uri){memo.file_uri=(await base44.integrations.Core.UploadPrivateFile({file:item.file})).file_uri;if(!memo.file_uri)throw Error('Audio upload did not return a file.');}
-   if(item.coverFile&&memo.coverFile!==item.coverFile){memo.cover_art_url=(await base44.integrations.Core.UploadFile({file:item.coverFile})).file_url;memo.coverFile=item.coverFile;if(!memo.cover_art_url)throw Error('Artwork could not upload. Retry without re-uploading your audio.');}
-   if(!item.coverFile&&item.catalogCoverUrl)memo.cover_art_url=item.catalogCoverUrl;
+   if(item.coverFile&&(memo.coverFile!==item.coverFile||!memo.cover_art_url)){
+    const uploadedCover=(await base44.integrations.Core.UploadFile({file:item.coverFile})).file_url;
+    if(!uploadedCover)throw Error('Artwork could not upload. Retry without re-uploading your audio.');
+    memo.cover_art_url=uploadedCover;
+    memo.coverFile=item.coverFile;
+   }
+   const coverUrl=item.coverFile?memo.cover_art_url:item.catalogCoverUrl||'';
    if(epoch!==generation.current)throw Error('Account changed. Start this upload again.');
    if(item.videoFile){
     if(!/\.(mp4|webm)$/i.test(item.videoFile.name)||item.videoFile.size>100*1024*1024)throw Error('Choose an MP4 or WebM video under 100 MB.');
     if(memo.videoFile!==item.videoFile){memo.video_uri=(await base44.integrations.Core.UploadPrivateFile({file:item.videoFile})).file_uri;if(!memo.video_uri)throw Error('Video upload did not finish. Retry to resume.');memo.videoFile=item.videoFile;}
    }
    if(epoch!==generation.current)throw Error('Account changed. Start this upload again.');
-   const ready=!!(item.artist.trim()&&item.genre&&memo.cover_art_url);
-   const track=await base44.entities.Track.create({title:item.title.trim(),audio_url:'',audio_file_uri:memo.file_uri,...(item.videoFile?{music_video_file_uri:memo.video_uri,video_rights_confirmed:true}:{}),audio_sha256:memo.sha,upload_request_id:item.id,cover_art_url:memo.cover_art_url||'',artist:item.artist.trim(),album_name:(item.album_name||'').trim(),album_artist:(item.album_artist||'').trim(),track_number:Number(item.track_number)||0,disc_number:Number(item.disc_number)||0,release_year:Number(item.release_year)||0,genre:item.genre||'Other',duration_seconds:item.duration,explicit:item.explicit,rights_confirmed:true,is_downloadable:item.allowDownloads===true,approval_status:ready?(isAdmin?'approved':'pending'):'private',is_published:isAdmin&&ready});
+   const ready=!!(item.artist.trim()&&item.genre&&coverUrl);
+   const track=await base44.entities.Track.create({title:item.title.trim(),audio_url:'',audio_file_uri:memo.file_uri,...(item.videoFile?{music_video_file_uri:memo.video_uri,video_rights_confirmed:true}:{}),audio_sha256:memo.sha,upload_request_id:item.id,cover_art_url:coverUrl,artist:item.artist.trim(),album_name:(item.album_name||'').trim(),album_artist:(item.album_artist||'').trim(),track_number:Number(item.track_number)||0,disc_number:Number(item.disc_number)||0,release_year:Number(item.release_year)||0,genre:item.genre||'Other',duration_seconds:item.duration,explicit:item.explicit,rights_confirmed:true,is_downloadable:item.allowDownloads===true,approval_status:ready?(isAdmin?'approved':'pending'):'private',is_published:isAdmin&&ready});
    memo.track=track;catalog.current.push({...track,audio_sha256:memo.sha});
    let warning='';
    if(epoch!==generation.current)return;

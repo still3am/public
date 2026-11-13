@@ -25,11 +25,11 @@ const presetGradient=([a,b,c])=>
  `radial-gradient(ellipse at 12% 12%, ${b} 0%, ${b}00 64%),radial-gradient(ellipse at 90% 85%, ${c} 0%, ${c}00 68%),linear-gradient(135deg, ${a} 15%, ${a} 55%, ${c} 100%)`;
 const MAX_COLORS=5;
 const HARMONIES=[
- {name:"Analogous",offsets:[0,30,-30,15,-15]},
- {name:"Complementary",offsets:[0,180,0,180,0]},
- {name:"Split complementary",offsets:[0,150,210,150,210]},
- {name:"Triadic",offsets:[0,120,240,120,240]},
- {name:"Monochromatic",offsets:[0,0,0,0,0]}
+ [0,30,-30,15,-15],
+ [0,180,0,180,0],
+ [0,150,210,150,210],
+ [0,120,240,120,240],
+ [0,0,0,0,0]
 ];
 const PALETTE_TONES=[[.76,.43],[.70,.86],[.37,.97],[.55,.69],[.43,.91]];
 const valid=color=>/^#[0-9a-f]{6}$/i.test(color);
@@ -39,12 +39,10 @@ export default function ProfileColorPicker({coverUrl,colors,loading,value,onPrev
  const [draft,setDraft]=useState(()=>({mode:value.mode,colors:[...value.colors],motion:value.motion||"flow",speed:value.speed||1}));
  const [saving,setSaving]=useState(false),[error,setError]=useState("");
  const saveLock=useRef(false);
- const [harmony,setHarmony]=useState("Surprise me");
- const [appliedHarmony,setAppliedHarmony]=useState("");
  const [beforeRandomize,setBeforeRandomize]=useState(null);
  const [activeColor,setActiveColor]=useState(0);
  const activeIndex=Math.min(activeColor,Math.max(0,draft.colors.length-1));
- const update=next=>{if(saveLock.current)return;setError("");setBeforeRandomize(null);setAppliedHarmony("");setDraft(next);onPreview({...next,colors:next.colors.filter(valid)});};
+ const update=next=>{if(saveLock.current)return;setError("");setBeforeRandomize(null);setDraft(next);onPreview({...next,colors:next.colors.filter(valid)});};
  const customColors=draft.colors.length?draft.colors:colors.slice(0,3).length?colors.slice(0,3):PRESETS[0].colors;
  const setColors=next=>update({...draft,mode:"custom",colors:next.slice(0,MAX_COLORS)});
  const toggle=color=>setColors(draft.mode==="custom"&&draft.colors.includes(color)?draft.colors.filter(c=>c!==color):[...(draft.mode==="custom"?draft.colors:[]),color].slice(-MAX_COLORS));
@@ -60,7 +58,7 @@ export default function ProfileColorPicker({coverUrl,colors,loading,value,onPrev
  };
  const randomize=()=>{
   const hue=Math.floor(Math.random()*360);
-  const {name,offsets}=HARMONIES.find(option=>option.name===harmony)||HARMONIES[Math.floor(Math.random()*HARMONIES.length)];
+  const offsets=HARMONIES[Math.floor(Math.random()*HARMONIES.length)];
   const count=draft.mode==="custom"?draft.colors.length||3:customColors.length;
   const next=offsets.slice(0,count).map((offset,index)=>{
    const [saturation,brightness]=PALETTE_TONES[index];
@@ -68,7 +66,6 @@ export default function ProfileColorPicker({coverUrl,colors,loading,value,onPrev
   });
   if(saveLock.current)return;
   setColors(next);
-  setAppliedHarmony(name);
   setBeforeRandomize(beforeRandomize||{draft,activeIndex});
   setActiveColor(0);
  };
@@ -100,19 +97,11 @@ export default function ProfileColorPicker({coverUrl,colors,loading,value,onPrev
     </div>
     <p className="profile-color-hint">{draft.mode==="auto"?(coverUrl?"Colors update with your profile song.":"Add a profile song for automatic colors, or choose Custom now."):draft.mode==="off"?"Use PUBLIC’s clean background. Your custom palette is kept.":"Your custom colors stay the same when you change your profile song."}</p>
     {draft.mode!=="custom"&&<button type="button" className="profile-color-create" disabled={saving} onClick={()=>{setActiveColor(0);setColors(customColors);}}><Plus size={16}/>Create your own palette</button>}
-    <label className="profile-color-harmony">
-     <span>Color harmony</span>
-     <select value={harmony} disabled={saving} onChange={event=>setHarmony(event.target.value)}>
-      <option>Surprise me</option>
-      {HARMONIES.map(option=><option key={option.name}>{option.name}</option>)}
-     </select>
-    </label>
 
     <div className="profile-color-random-actions">
      <button type="button" className="profile-color-create" disabled={saving} onClick={randomize}><Shuffle size={16}/>Randomize colors</button>
      {beforeRandomize&&<button type="button" className="profile-color-create" disabled={saving} onClick={undoRandomize}><Undo2 size={16}/>Undo shuffle</button>}
     </div>
-    {appliedHarmony&&<p className="profile-color-hint" role="status">{appliedHarmony} palette</p>}
     {draft.mode==="custom"&&<>
      <section className="profile-color-section"><h3>Your colors <span>{draft.colors.length} / {MAX_COLORS}</span></h3><div className="profile-color-quick-stops" role="group" aria-label="Choose gradient color to edit">{draft.colors.map((color,index)=><button type="button" key={index} disabled={saving} aria-label={`Edit gradient color ${index+1}`} aria-pressed={activeIndex===index} onClick={()=>setActiveColor(index)}><span style={{background:valid(color)?color:"#777777"}}>{activeIndex===index&&<Check size={16}/>}</span><small>Color {index+1}</small></button>)}{draft.colors.length<MAX_COLORS&&<button type="button" disabled={saving} aria-label="Add gradient color" onClick={addColor}><span><Plus size={18}/></span><small>Add color</small></button>}</div></section>
      {draft.colors.length>0&&<ProfileColorWheel key={activeIndex} colorNumber={activeIndex+1} value={valid(draft.colors[activeIndex])?draft.colors[activeIndex]:"#777777"} disabled={saving} onChange={color=>setColors(draft.colors.map((c,i)=>i===activeIndex?color:c))}/>}
