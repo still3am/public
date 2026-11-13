@@ -24,13 +24,6 @@ const PRESETS=[
 const presetGradient=([a,b,c])=>
  `radial-gradient(ellipse at 12% 12%, ${b} 0%, ${b}00 64%),radial-gradient(ellipse at 90% 85%, ${c} 0%, ${c}00 68%),linear-gradient(135deg, ${a} 15%, ${a} 55%, ${c} 100%)`;
 const MAX_COLORS=5;
-const HARMONIES=[
- [0,30,-30,15,-15],
- [0,180,0,180,0],
- [0,150,210,150,210],
- [0,120,240,120,240],
- [0,0,0,0,0]
-];
 const PALETTE_TONES=[[.76,.43],[.70,.86],[.37,.97],[.55,.69],[.43,.91]];
 const valid=color=>/^#[0-9a-f]{6}$/i.test(color);
 const normalize=text=>"#"+text.replace(/^#/,"").toLowerCase();
@@ -57,15 +50,13 @@ export default function ProfileColorPicker({coverUrl,colors,loading,value,onPrev
   setColors([...draft.colors,color]);
  };
  const randomize=()=>{
-  const hue=Math.floor(Math.random()*360);
-  const offsets=HARMONIES[Math.floor(Math.random()*HARMONIES.length)];
   const count=draft.mode==="custom"?draft.colors.length||3:customColors.length;
-  const next=offsets.slice(0,count).map((offset,index)=>{
-   const [saturation,brightness]=PALETTE_TONES[index];
-   return hsvToHex((hue+offset+360)%360,saturation,brightness);
-  });
+  const next=new Set();
+  while(next.size<count){
+   next.add("#"+Math.floor(Math.random()*0x1000000).toString(16).padStart(6,"0"));
+  }
   if(saveLock.current)return;
-  setColors(next);
+  setColors([...next]);
   setBeforeRandomize(beforeRandomize||{draft,activeIndex});
   setActiveColor(0);
  };
