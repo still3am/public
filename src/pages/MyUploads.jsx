@@ -27,7 +27,9 @@ export default function MyUploads() {
   const { playlists,error:playlistError,reload:reloadPlaylists } = useMyPlaylists();
   const { toast } = useToast();
 
-  const [uploads, setUploads] = useState(null);
+  const [uploadData, setUploadData] = useState({ owner: null, rows: null });
+  const owner = user?.id;
+  const uploads = uploadData.owner === owner ? uploadData.rows : null;
   const [editMode, setEditMode] = useState(false);
   const [selected, setSelected] = useState(() => new Set());
   const [showBulkPlaylist, setShowBulkPlaylist] = useState(false);
@@ -46,7 +48,7 @@ export default function MyUploads() {
   const load = useCallback(async () => {
     const request = ++loadVersion.current;request === loadVersion.current && setLoadError(false);
     if (!user?.id) {
-      request === loadVersion.current && setUploads([]);
+      request === loadVersion.current && setUploadData({ owner, rows: [] });
       return;
     }
     try {
@@ -57,11 +59,11 @@ export default function MyUploads() {
         { sort: "-created_date", ...options }
       )
       );
-      request === loadVersion.current && setUploads(rows);
+      request === loadVersion.current && setUploadData({ owner, rows });
     } catch {
       request === loadVersion.current && setLoadError(true);
     }
-  }, [user?.id]);
+  }, [owner]);
 
   useEffect(() => {
     setSelected(new Set());setEditMode(false);load();return()=>{loadVersion.current++;};
@@ -132,13 +134,13 @@ export default function MyUploads() {
   // swaps to the sent-for-review state without reloading the page.
   const markSubmitted = (ids) => {
     const isAdmin = user?.role === "admin";
-    setUploads((prev) =>
-    (prev || []).map((t) =>
+    setUploadData((prev) => prev.owner !== owner ? prev : { ...prev, rows:
+    (prev.rows || []).map((t) =>
     ids.includes(t.id) ?
     { ...t, approval_status: isAdmin ? "approved" : "pending", is_published: isAdmin } :
     t
     )
-    );
+    });
   };
 
   if (loadError&&uploads===null) return <LoadError onRetry={load} />;
@@ -169,6 +171,7 @@ export default function MyUploads() {
 
       <div className="collection-tools"><input aria-label="Search your uploads" placeholder="Search songs, artists, or genres" value={query} onChange={e=>setQuery(e.target.value)} onKeyDown={e=>{if(e.key==="Escape")setQuery("");}}/>{query&&<button type="button" className="playlist-action" onClick={()=>setQuery("")}>Clear search</button>}<select aria-label="Upload status" value={status} onChange={e=>setStatus(e.target.value)}><option value="all">All uploads</option><option value="approved">Published</option><option value="pending">Pending review</option><option value="private">Private</option><option value="rejected">Needs changes</option></select><select aria-label="Sort uploads" value={sort} onChange={e=>setSort(e.target.value)}><option value="newest">Newest first</option><option value="title">Title A–Z</option><option value="plays">Most played</option></select></div>
       <PullToRefresh onRefresh={load}>
+        {loadError && <LoadError message="Your uploads couldn’t refresh." onRetry={load} />}
         {uploads === null ?
         <div className="flex justify-center py-20">
             <Loader2 className="animate-spin text-foreground/40" />

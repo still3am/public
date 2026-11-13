@@ -67,6 +67,7 @@ export default function Suggestions() {
         details: details.trim(),
         voter_ids: [user?.id].filter(Boolean)
       });
+      if (!created?.id) throw Error("Suggestion save was not confirmed.");
       setTitle("");
       setDetails("");
       setCategory("feature");
@@ -85,7 +86,6 @@ export default function Suggestions() {
     const next = voted ?
     (s.voter_ids || []).filter((x) => x !== meId) :
     [...(s.voter_ids || []), meId];
-    const prevItems = items;
     setItems((prev) =>
     prev.map((x) => x.id === s.id ? { ...x, voter_ids: next } : x)
     );
@@ -93,7 +93,8 @@ export default function Suggestions() {
       const res = await base44.functions.invoke("voteSuggestion", {
         suggestion_id: s.id
       });
-      if (res?.data?.voter_ids) {
+      if (!Array.isArray(res?.data?.voter_ids)) throw Error("Vote was not confirmed.");
+      {
         setItems((prev) =>
         prev.map((x) =>
         x.id === s.id ? { ...x, voter_ids: res.data.voter_ids } : x
@@ -102,6 +103,7 @@ export default function Suggestions() {
       }
     } catch {
       setItems(current=>current.map(row=>row.id===s.id?{...row,voter_ids:s.voter_ids||[]}:row));
+      window.dispatchEvent(new CustomEvent("public:error", { detail: { message: "Your vote couldn’t be saved. Please try again." } }));
     }finally{voteLocks.current.delete(s.id);}
   }
 
@@ -122,6 +124,7 @@ export default function Suggestions() {
   return (
     <PullToRefresh onRefresh={load}>
       <div className="collection-page suggestions-page">
+        {error && <LoadError message="Suggestions couldn’t refresh." onRetry={load} />}
         <header className="page-intro"><p className="eyebrow">PUBLIC</p><h1>Make PUBLIC better</h1><p>Share an idea. Support the ones you want to see.</p></header>
 
         
