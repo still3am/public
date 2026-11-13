@@ -12,9 +12,9 @@ function boost([r, g, b]) {
   return `rgb(${clamp(r * k)}, ${clamp(g * k)}, ${clamp(b * k)})`;
 }
 
-// Samples an image and returns three vivid colors [primary, secondary, accent]
+// Samples an image and returns three colors by default
 // for gradient use. Falls back to neutral greys on CORS taint or failure.
-export function useColorPalette(url, vivid = false) {
+export function useColorPalette(url, vivid = false, maxColors = 3) {
   const [palette, setPalette] = useState(FALLBACK);
 
   useEffect(() => {
@@ -61,11 +61,11 @@ export function useColorPalette(url, vivid = false) {
         const distinct=[];
         for(const candidate of ranked){
           if(distinct.every(previous=>Math.hypot(...previous.map((value,index)=>value-candidate.rgb[index]))>70))distinct.push(candidate.rgb);
-          if(distinct.length===3)break;
+          if(distinct.length===maxColors)break;
         }
-        // Distinct artwork colors make the flowing bands visible instead of picking three almost identical buckets.
+        // Distinct artwork colors make the flowing bands visible instead of picking almost identical buckets.
         const sampled=distinct.map(color=>boost(color));
-        setPalette([sampled[0],sampled[1]||sampled[0],sampled[2]||sampled[1]||sampled[0]]);
+        setPalette([sampled[0],sampled[1]||sampled[0],sampled[2]||sampled[1]||sampled[0],...sampled.slice(3)]);
       } catch {
         setPalette(FALLBACK);
       }
@@ -78,7 +78,7 @@ export function useColorPalette(url, vivid = false) {
     return () => {
       cancelled = true;
     };
-  }, [url, vivid]);
+  }, [url, vivid, maxColors]);
 
   return palette;
 }

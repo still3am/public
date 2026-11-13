@@ -61,7 +61,7 @@ export default function FullScreenPlayer({ onClose }) {
   const { isInLibrary, toggle: toggleLibrary } = useLibrary();
   const offlineCover = useOfflineCoverUrl(p.currentTrack?.id, p.currentTrack?.cover_art_url);
   const coverUrl = useCoverUrl(offlineCover);
-  const playerPalette = useColorPalette(coverUrl, true);
+  const playerPalette = useColorPalette(coverUrl, true, 5);
   const [lyricsMode, setLyricsMode] = useState(false);
   const [showVolHint, setShowVolHint] = useState(false);
   const [copied, setCopied] = useState(false);
