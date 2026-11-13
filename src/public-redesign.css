@@ -560,7 +560,7 @@ html.dark {
  .home-redesigned .home-section h2 { font-size:22px; }
  .home-shelf-card { width:43vw;max-width:190px; }
  .home-card-shelf { gap:14px; }
- .home-redesigned .home-section>[role=region]>div,.home-redesigned .home-section>.scroll-shelf>[role=region]>div { width:90%; }
+ .home-redesigned .home-card-shelf > .home-shelf-card { flex:0 0 clamp(132px,43vw,190px);min-width:0; }
  .library-redesigned .library-create { width:44px;height:44px;min-height:44px;padding:0;display:grid;place-items:center;margin:0; }
  .library-redesigned .library-create span { display:none; }
  .library-redesigned .library-shortcuts { grid-template-columns:1fr;gap:0;margin-bottom:22px; }

@@ -40,13 +40,13 @@ const greetingByHour = () => {
 function Section({ title, icon: Icon, children, seeAllTo }) {
   return (
     <section className="home-section mb-10 md:mb-12">
-      <div className="flex items-end justify-between mb-4 px-1 md:px-0">
+      <div className="flex items-center justify-between gap-3 mb-4">
         <h2 className="text-xl md:text-2xl font-bold tracking-tight flex items-center gap-2.5">
           
           {title}
         </h2>
         {seeAllTo &&
-        <Link to={seeAllTo} className="text-xs font-semibold text-foreground/50 hover:text-foreground transition shrink-0 inline-flex items-center gap-0.5">
+        <Link to={seeAllTo} className="text-xs font-semibold text-foreground/50 hover:text-foreground transition shrink-0 inline-flex items-center gap-0.5 min-h-11">
             See all <ChevronRight size={13} />
           </Link>
         }
