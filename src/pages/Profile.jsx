@@ -116,6 +116,8 @@ export default function Profile({ ownProfileTab = false }) {
   const identity = useRef("");identity.current = [me?.id, targetId].join(":");
   const [stats, setStats] = useState({ followers: null, following: null, plays: 0, likes: 0 });
   const [editMode, setEditMode] = useState(false);
+  const [gallery, setGallery] = useState(null);
+  useEffect(() => { if (!editMode) setGallery(null); }, [editMode]);
   const [copied, setCopied] = useState(false);
   const [showQR, setShowQR] = useState(false);
   const [showMedia, setShowMedia] = useState(false);
@@ -456,7 +458,7 @@ export default function Profile({ ownProfileTab = false }) {
           {(bannerUrl || currentBackground.mode === "auto" && coverUrl) && <ProfileMedia key={bannerUrl || coverUrl} src={bannerUrl || coverUrl} mobileSrc={bannerMobileUrl} videoSrc={!useDefaultBanner ? editMode ? form.banner_video_url : profile?.banner_video_url : ""} gifSrc={!useDefaultBanner ? editMode ? form.banner_gif_url : profile?.banner_gif_url : ""} active={isCurrentPage} style={{ width: "100%", height: "100%" }} />}
           <div className="profile-cover-fade" />
         </div>
-        {editMode && <ProfileBannerEditor busy={uploadingBanner || saving} hasBanner={!!form.banner_url && !form.banner_use_default} onSelect={banner=>{if(uploadingBanner||saving)return;bannerVersion.current++;setForm(old=>({...old,banner_url:banner.url,banner_mobile_url:banner.url,banner_use_default:false,banner_video_url:banner.videoUrl||"",banner_gif_url:banner.gifUrl||""}));}} onApply={uploadBanner} onMotionApply={(media) => uploadProfileMotion("banner", media)} onRemove={() => setForm((old) => ({ ...old, banner_use_default: true }))} />}
+        {editMode && <ProfileBannerEditor gallery={gallery} setGallery={setGallery} busy={uploadingAvatar || uploadingBanner || saving} hasBanner={!!form.banner_url && !form.banner_use_default} onSelect={banner=>{if(uploadingBanner||saving)return;bannerVersion.current++;setForm(old=>({...old,banner_url:banner.url,banner_mobile_url:banner.url,banner_use_default:false,banner_video_url:banner.videoUrl||"",banner_gif_url:banner.gifUrl||""}));}} onApply={uploadBanner} onMotionApply={(media) => uploadProfileMotion("banner", media)} onRemove={() => setForm((old) => ({ ...old, banner_use_default: true }))} />}
         {!editMode && isAdminProfile && <ProfileBadge variant="admin" />}
         {!editMode && !isAdminProfile && profile.creator_role==="artist" && <ProfileBadge variant="artist" />}
         {!editMode && !isAdminProfile && profile.creator_role==="uploader" && <ProfileBadge variant="uploader" />}
@@ -466,7 +468,7 @@ export default function Profile({ ownProfileTab = false }) {
           <div className="profile-identity-row flex flex-col items-center md:flex-row md:items-center md:justify-center gap-4 md:gap-8">
             <div className="profile-avatar-notes">
               {!editMode && <PublicNotes key={[targetId, me?.id].join(":")} profileId={targetId} isOwn={isOwn} active={isCurrentPage} userTracks={tracks} />}
-              <ProfileAvatar user={{ ...profile, ...(editMode ? { avatar_video_url: form.avatar_video_url, avatar_gif_url: form.avatar_gif_url } : {}), avatar_url: avatarUrl, avatar_preset: editMode ? "" : profile.avatar_preset }} active={isCurrentPage && !showMedia} onView={(event) => { avatarTrigger.current = event.currentTarget;setShowMedia(true); }} editing={editMode} busy={uploadingAvatar || saving} onUpload={uploadAvatar} onMotionUpload={(media) => uploadProfileMotion("avatar", media)} onSelect={(url) => {if (!isOwn || uploadingAvatar || saving) return;avatarVersion.current++;setForm((previous) => ({ ...previous, avatar_url: url, ...(url !== previous.avatar_url || !url ? { avatar_video_url: "", avatar_gif_url: "" } : {}) }));}} />
+              <ProfileAvatar gallery={gallery} setGallery={setGallery} user={{ ...profile, ...(editMode ? { avatar_video_url: form.avatar_video_url, avatar_gif_url: form.avatar_gif_url } : {}), avatar_url: avatarUrl, avatar_preset: editMode ? "" : profile.avatar_preset }} active={isCurrentPage && !showMedia} onView={(event) => { avatarTrigger.current = event.currentTarget;setShowMedia(true); }} editing={editMode} busy={uploadingAvatar || uploadingBanner || saving} onUpload={uploadAvatar} onMotionUpload={(media) => uploadProfileMotion("avatar", media)} onSelect={(url) => {if (!isOwn || uploadingAvatar || saving) return;avatarVersion.current++;setForm((previous) => ({ ...previous, avatar_url: url, ...(url !== previous.avatar_url || !url ? { avatar_video_url: "", avatar_gif_url: "" } : {}) }));}} />
             </div>
 
             <div className="profile-info flex-1 min-w-0 w-full md:w-auto text-center md:text-left">
