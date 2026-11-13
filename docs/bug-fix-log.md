@@ -74,3 +74,5 @@ All 99 suites, lint, and production build passed. Signed-in mobile and desktop v
 | Library and Public Record refresh | Done in code | A failed refresh could be hidden behind existing results. Keep those results visible and show a retry. |
 
 All 99 regression suites passed after lint and the production build. Signed-in mobile and desktop checks remain open.
+
+- Admin Upload Studio — Done in code. Complete admin tracks previously required advancing to the final upload screen. Review now offers Upload to PUBLIC for tracks with artwork, artist, genre, a title, and confirmed rights. The existing upload queue publishes eligible admin tracks immediately. Upload queue and request handoff tests, lint, and build passed.
