@@ -43,6 +43,15 @@ async function detectMeta(title,artist,duration,albumTags,includeArtwork=false){
  }catch{return null;}
 }
 
+function rateLimitDelay(error) {
+ const message=String(error?.response?.data?.error||error?.message||'');
+ if(Number(error?.response?.status||error?.status)!==429&&!/rate limit exceeded/i.test(message))return null;
+ const headers=error?.response?.headers;
+ const hint=headers?.get?.('retry-after')??headers?.['retry-after']??message.match(/retry after (\d+(?:\.\d+)?)s/i)?.[1];
+ const seconds=Number(hint);
+ return Number.isFinite(seconds)&&seconds>0?Math.max(1000,seconds*1000):5000;
+}
+
 export function useUploadQueue({ user, isAdmin }) {
  const [items,setItems]=useState([]),[dupes,setDupes]=useState(null),[uploadedCount,setUploadedCount]=useState(0);
  const [catalogError,setCatalogError]=useState('');
@@ -118,6 +127,22 @@ export function useUploadQueue({ user, isAdmin }) {
   const item=itemsRef.current.find(it=>it.id===id);if(item?.coverPreviewUrl)URL.revokeObjectURL(item.coverPreviewUrl);
   assets.current.delete(id);metadataEdits.current.delete(id);setItems(prev=>prev.filter(it=>it.id!==id));setDupes(prev=>prev?.filter(it=>it.id!==id));
  }
+ const uploadCooldown=useRef(0);
+ async function retryUploadRequest(request,epoch){
+  for(let attempt=0;;attempt++){
+   const wait=uploadCooldown.current-Date.now();
+   if(wait>60000)throw Object.assign(Error('Upload rate limit'),{status:429});
+   if(wait>0)await new Promise(resolve=>setTimeout(resolve,wait));
+   if(epoch!==generation.current)throw Error('Account changed. Start this upload again.');
+   try{return await request();}
+   catch(error){
+    const delay=rateLimitDelay(error);
+    if(delay===null)throw error;
+    uploadCooldown.current=Math.max(uploadCooldown.current,Date.now()+delay*(attempt+1)+250);
+    if(attempt>=3)throw error;
+   }
+  }
+ }
  async function uploadOne(given){
   const item=itemsRef.current.find(it=>it.id===given.id)||given;
   if(!canUploadMusic(user)||busy.current.has(item.id)||['done','analyzing','error'].includes(item.status))return;
@@ -134,7 +159,7 @@ export function useUploadQueue({ user, isAdmin }) {
    claimedHashes.current.set(memo.sha,item.id);
    const current=await base44.auth.me();if(current?.id!==user?.id)throw Error('Your account changed. Start this upload again.');if(!canUploadMusic(current))throw Error('Upload access requires administrator approval.');
    const candidate={...item,audio_sha256:memo.sha};
-   const check=(await base44.functions.invoke('securityGateway',{entity:'Track',action:'checkDuplicate',args:[{audio_sha256:memo.sha,upload_request_id:item.id}]})).data;
+   const check=(await retryUploadRequest(()=>base44.functions.invoke('securityGateway',{entity:'Track',action:'checkDuplicate',args:[{audio_sha256:memo.sha,upload_request_id:item.id}]}),epoch)).data;
    if(epoch!==generation.current)throw Error('Account changed. Start this upload again.');
    if(check?.result?.duplicate)throw Error('This identical file already exists. Use the existing song.');
    if(!check?.result)throw Error('File verification is unavailable. Retry before uploading.');
@@ -160,7 +185,7 @@ export function useUploadQueue({ user, isAdmin }) {
    }
    if(epoch!==generation.current)throw Error('Account changed. Start this upload again.');
    const ready=!!(item.artist.trim()&&coverUrl);
-   const track=await base44.entities.Track.create({title:item.title.trim(),audio_url:'',audio_file_uri:memo.file_uri,...(item.videoFile?{music_video_file_uri:memo.video_uri,video_rights_confirmed:true}:{}),audio_sha256:memo.sha,upload_request_id:item.id,cover_art_url:coverUrl,artist:item.artist.trim(),album_name:(item.album_name||'').trim(),album_artist:(item.album_artist||'').trim(),track_number:Number(item.track_number)||0,disc_number:Number(item.disc_number)||0,release_year:Number(item.release_year)||0,genre:item.genre?.trim()||'Other',duration_seconds:item.duration,explicit:item.explicit,rights_confirmed:true,is_downloadable:item.allowDownloads===true,approval_status:ready?(isAdmin?'approved':'pending'):'private',is_published:isAdmin&&ready});
+   const track=await retryUploadRequest(()=>base44.entities.Track.create({title:item.title.trim(),audio_url:'',audio_file_uri:memo.file_uri,...(item.videoFile?{music_video_file_uri:memo.video_uri,video_rights_confirmed:true}:{}),audio_sha256:memo.sha,upload_request_id:item.id,cover_art_url:coverUrl,artist:item.artist.trim(),album_name:(item.album_name||'').trim(),album_artist:(item.album_artist||'').trim(),track_number:Number(item.track_number)||0,disc_number:Number(item.disc_number)||0,release_year:Number(item.release_year)||0,genre:item.genre?.trim()||'Other',duration_seconds:item.duration,explicit:item.explicit,rights_confirmed:true,is_downloadable:item.allowDownloads===true,approval_status:ready?(isAdmin?'approved':'pending'):'private',is_published:isAdmin&&ready}),epoch);
    memo.track=track;catalog.current.push({...track,audio_sha256:memo.sha});
    let warning='';
    if(epoch!==generation.current)return;
@@ -174,7 +199,7 @@ export function useUploadQueue({ user, isAdmin }) {
      const memo=assets.current.get(item.id);
      if(memo)delete memo.file_uri;
     }
-    updateItem(item.id,{status:'ready',error:invalidAudio?'The audio upload couldn’t be verified. Retry to upload the audio again.':Number(e?.response?.status||e?.status)===402?'Upload paused: the app needs available integration credits. Your file is still queued.':message||'Upload did not finish. Retry to resume.'});
+    updateItem(item.id,{status:'ready',error:rateLimitDelay(e)!==null?'Uploads are temporarily rate limited. Your song is still queued. Try again shortly.':invalidAudio?'The audio upload couldn’t be verified. Retry to upload the audio again.':Number(e?.response?.status||e?.status)===402?'Upload paused: the app needs available integration credits. Your file is still queued.':message||'Upload did not finish. Retry to resume.'});
    }
   }finally{busy.current.delete(item.id);}
  }
