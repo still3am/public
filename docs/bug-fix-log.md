@@ -103,3 +103,5 @@ All 99 test suites, lint, and production build passed. Signed-in mobile and desk
 - Profile QR palette — Done in code. Removed the three-color cap so the QR card uses the same palette as the profile. Lint and production build passed.
 
 - Onboarding names and mood swatches — Done in code. Find your people now falls back to the public full name and skips nameless suggestions. The swatch row reserves space for all five colors so it cannot overlap the label. Onboarding tests and build passed.
+
+- Profile QR five-color follow-up — Done in code. The QR card accepted the full palette, but Profile still supplied only three artwork colors in Automatic mode. Automatic mode and the static profile gradient now support five colors. Profile regression tests, lint, and build passed. Visual verification remains open.
