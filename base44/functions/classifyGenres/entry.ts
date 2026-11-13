@@ -233,9 +233,10 @@ export default async function handleRequest(req){
   const client=createClientFromRequest(req),user=await client.auth.me();
   if(!user)return Response.json({error:'Unauthorized'},{status:401});
   if(user.is_blocked||user.disabled||user.role!=='admin')return Response.json({error:'Administrator access required'},{status:403});
-  const body=await req.json().catch(()=>({})),force=body.force===true;
+  const body=await req.json().catch(()=>({})),force=body.force===true,publishedOnly=body.published_only===true;
   let skip=Number.isInteger(body.skip)?Math.max(0,body.skip):0,processed=0,unmatched=0,scanned=0,lookups=0;
-  const page=await client.asServiceRole.entities.Track.filter({},'-created_date',60,skip);
+  const query=publishedOnly?{approval_status:'approved',is_published:true}:{};
+  const page=await client.asServiceRole.entities.Track.filter(query,'-created_date',60,skip);
   const tracks=Array.isArray(page)?page:page?.items;
   if(!Array.isArray(tracks))throw Error('Invalid track page');
   const deadline=Date.now()+42000;
