@@ -84,7 +84,6 @@ export default async function handleRequest(req) {
       featured_track_id: u.featured_track_id || '',
       profile_background_mode: u.profile_background_mode || 'auto',
       profile_background_motion: u.profile_background_motion === 'still' ? 'still' : 'flow',
-      profile_card_color: u.profile_card_color || "",
       profile_background_speed: typeof u.profile_background_speed === 'number' ? Math.max(.35,Math.min(1.6,u.profile_background_speed)) : 1,
       profile_background_colors: Array.isArray(u.profile_background_colors) ? u.profile_background_colors : [],
       top_track_ids: Array.isArray(u.top_track_ids) ? u.top_track_ids : [],
@@ -95,7 +94,7 @@ export default async function handleRequest(req) {
       created_date: u.created_date || '',
     }));
 
-    const publicFields=["username","display_name","full_name","avatar_url","avatar_preset","avatar_video_url","avatar_gif_url","banner_video_url","banner_gif_url","banner_url","banner_mobile_url","banner_use_default","top_tracks_label","bio","location","pronouns","website","instagram","twitter","soundcloud","status_message","featured_track_id","profile_background_mode","profile_background_colors","profile_background_motion","profile_card_color","profile_background_speed","top_track_ids","is_artist","creator_role","is_public_admin","friends_family_badge"];
+    const publicFields=["username","display_name","full_name","avatar_url","avatar_preset","avatar_video_url","avatar_gif_url","banner_video_url","banner_gif_url","banner_url","banner_mobile_url","banner_use_default","top_tracks_label","bio","location","pronouns","website","instagram","twitter","soundcloud","status_message","featured_track_id","profile_background_mode","profile_background_colors","profile_background_motion","profile_background_speed","top_track_ids","is_artist","creator_role","is_public_admin","friends_family_badge"];
     await Promise.allSettled(users.map(async profile=>{
       const page=await base44.asServiceRole.entities.PublicProfile.filter({user_id:profile.id},'-updated_date',1);
       const data={...Object.fromEntries(publicFields.filter(key=>profile[key]!==undefined).map(key=>[key,profile[key]])),user_id:profile.id,joined_at:profile.created_date||"",visible:true};

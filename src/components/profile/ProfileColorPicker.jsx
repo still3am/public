@@ -36,7 +36,7 @@ const valid=color=>/^#[0-9a-f]{6}$/i.test(color);
 const normalize=text=>"#"+text.replace(/^#/,"").toLowerCase();
 
 export default function ProfileColorPicker({coverUrl,colors,loading,value,onPreview,onSave,onClose}){
- const [draft,setDraft]=useState(()=>({mode:value.mode,colors:[...value.colors],motion:value.motion||"flow",speed:value.speed||1,cardColor:value.cardColor||"",navigationColor:value.navigationColor||""}));
+ const [draft,setDraft]=useState(()=>({mode:value.mode,colors:[...value.colors],motion:value.motion||"flow",speed:value.speed||1}));
  const [saving,setSaving]=useState(false),[error,setError]=useState("");
  const saveLock=useRef(false);
  const [harmony,setHarmony]=useState("Surprise me");
@@ -128,19 +128,6 @@ export default function ProfileColorPicker({coverUrl,colors,loading,value,onPrev
      <section className="profile-color-section"><h3>Ready-made palettes</h3><div className="profile-color-presets">{PRESETS.map(preset=><button type="button" key={preset.name} disabled={saving} aria-pressed={draft.colors.join(",").toLowerCase()===preset.colors.join(",")} onClick={()=>setColors([...preset.colors])}><span className="profile-color-preset-art" style={{backgroundImage:presetGradient(preset.colors),backgroundColor:preset.colors[0]}}>{draft.colors.join(",").toLowerCase()===preset.colors.join(",")&&<span className="profile-color-preset-check"><Check size={14}/></span>}</span><span>{preset.name}</span></button>)}</div></section>
      {(colors.length>0||loading)&&<section className="profile-color-section"><h3>From your song cover</h3>{loading?<p className="profile-color-hint">Reading cover colors…</p>:<div className="profile-color-cover-swatches">{colors.map(color=><button type="button" key={color} disabled={saving} aria-label={`Use cover color ${color}`} aria-pressed={draft.colors.includes(color)} onClick={()=>toggle(color)} style={{backgroundColor:color}}>{draft.colors.includes(color)&&<Check size={16}/>}</button>)}</div>}</section>}
     </>}
-    {value.navigationColor!==undefined&&<section className="profile-color-section">
-     <h3>Accent colors</h3>
-     {[["cardColor","Profile card","Visitors see this in Discover People."],["navigationColor","Navigation","Applies to your mobile tabs and desktop sidebar."]].map(([key,label,description])=><div key={key} className="profile-accent-setting">
-      <div className="profile-accent-preview" style={draft[key]?{borderColor:draft[key],backgroundColor:draft[key]+"22"}:undefined}>
-       <strong>{label}</strong><span>{description}</span>
-      </div>
-      <div className="profile-color-cover-swatches" role="group" aria-label={label+" palette"}>
-       {[...new Set(customColors.filter(valid))].map(color=><button type="button" key={color} aria-label={label+" "+color} aria-pressed={draft[key]===color} disabled={saving} style={{backgroundColor:color}} onClick={()=>update({...draft,[key]:color})}>{draft[key]===color&&<Check size={16}/>}</button>)}
-       <input type="color" aria-label={"Custom "+label.toLowerCase()+" color"} value={draft[key]||"#777777"} disabled={saving} onChange={event=>update({...draft,[key]:event.target.value})}/>
-       <button type="button" className="profile-accent-reset" disabled={saving||!draft[key]} onClick={()=>update({...draft,[key]:""})}>Reset</button>
-      </div>
-     </div>)}
-    </section>}
     {draft.mode!=="off"&&<details className="profile-color-section profile-color-details"><summary>Movement &amp; speed</summary>
      <div className="profile-color-modes profile-motion-modes" role="group" aria-label="Gradient movement">{[["still","Still"],["flow","Flowing"]].map(([motion,label])=><button key={motion} type="button" disabled={saving} aria-pressed={draft.motion===motion} onClick={()=>update({...draft,motion})}>{label}</button>)}</div>
      {draft.motion==="flow"&&<label className="profile-motion-speed"><span>Speed <span>{draft.speed<.75?"Slow":draft.speed>1.2?"Lively":"Gentle"}</span></span><input type="range" min=".35" max="1.6" step=".05" value={draft.speed} disabled={saving} aria-label="Gradient movement speed" onChange={event=>update({...draft,speed:Number(event.target.value)})}/></label>}

@@ -1,6 +1,5 @@
 import {useContentClearance} from "@/hooks/useContentClearance";
 import {usePlayer} from "@/context/PlayerContext";
-import "@/components/profile/navigation-colors.css";
 import { useRef } from "react";
 import { Outlet, useLocation } from "react-router-dom";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
@@ -39,10 +38,6 @@ export default function Layout() {
   const reducedMotion=useReducedMotion();
   const artworkPage = /^\/(?:track\/[^/]+|album\/[^/]+|playlist\/[^/]+|mix\/[^/]+|recap\/[^/]+(?:\/[^/]+)?|records\/[^/]+|artist|profile(?:\/[^/]+)?)\/?$/.test(location.pathname);
   const { user } = useAuth();
-  const navigationColor = /^#[0-9a-f]{6}$/i.test(user?.navigation_color || "") ? user.navigation_color : "";
-  const rgb = navigationColor ? [1,3,5].map(index => parseInt(navigationColor.slice(index,index+2),16)/255) : [];
-  const luminance = rgb.map(value => value <= .04045 ? value / 12.92 : ((value+.055)/1.055)**2.4)
-    .reduce((sum,value,index) => sum + value * [.2126,.7152,.0722][index],0);
   const momentsRoute = (user?.role === "admin" || user?.friends_family_badge === true) && !user?.disabled && !user?.is_blocked && /^\/moments(?:\/[^/]+)?\/?$/.test(location.pathname);
   const {currentTrack}=usePlayer();
   useScrollRestore();
@@ -56,7 +51,7 @@ export default function Layout() {
   if (activeTab) mountedTabs.current.add(activeTab.path);
 
   return (
-    <div data-navigation-color={navigationColor || undefined} style={navigationColor ? {"--navigation-accent":navigationColor,"--navigation-ink":luminance>.179?"#000":"#fff"} : undefined} className={`public-app flex min-h-screen bg-background text-foreground ${currentTrack?"has-player":""} ${momentsRoute?"moments-route":""}`}>
+    <div className={`public-app flex min-h-screen bg-background text-foreground ${currentTrack?"has-player":""} ${momentsRoute?"moments-route":""}`}>
       <div aria-hidden="true" className="public-status-bar-shield" />
       <a href="#main-content" className="public-skip-link">Skip to content</a>
       <Sidebar />

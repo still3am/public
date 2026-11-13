@@ -421,18 +421,17 @@ export default function Profile({ ownProfileTab = false }) {
   const isAdminProfile = isOwn ? me?.role === "admin" : profile.is_public_admin === true;
   const displayName = profile.display_name || profile.full_name || "Unnamed";
   const avatarUrl = editMode ? form.avatar_url : profile.avatar_url;
-  const backgroundValue = { cardColor: profile.profile_card_color || "", navigationColor: me?.navigation_color || "", mode: profile.profile_background_mode || "auto", motion: profile.profile_background_motion === "still" ? "still" : "flow", speed: Math.max(.35, Math.min(1.6, Number(profile.profile_background_speed) || 1)), colors: (profile.profile_background_colors || []).filter((c) => /^#[0-9a-f]{6}$/i.test(c)).slice(0, 5) };
+  const backgroundValue = { mode: profile.profile_background_mode || "auto", motion: profile.profile_background_motion === "still" ? "still" : "flow", speed: Math.max(.35, Math.min(1.6, Number(profile.profile_background_speed) || 1)), colors: (profile.profile_background_colors || []).filter((c) => /^#[0-9a-f]{6}$/i.test(c)).slice(0, 5) };
   const currentBackground = backgroundDraft || backgroundValue;
   const backgroundColors = currentBackground.mode === "off" ? [] : currentBackground.mode === "custom" ? currentBackground.colors : coverColors.slice(0, 3);
   const closeColors = () => {setShowColors(false);setBackgroundDraft(null);};
   const saveColors = async (value) => {
     if (!isOwn) return;
     const update = { profile_background_mode: value.mode, profile_background_colors: value.colors, profile_background_motion: value.motion, profile_background_speed: value.speed };
-    Object.assign(update, { profile_card_color: value.cardColor, navigation_color: value.navigationColor });
     await base44.auth.updateMe(update);
     const confirmed = await base44.auth.me();
     const actualColors = confirmed.profile_background_colors || [];
-    if ((confirmed.profile_card_color || "") !== value.cardColor || (confirmed.navigation_color || "") !== value.navigationColor || confirmed.profile_background_mode !== value.mode || actualColors.join(",").toLowerCase() !== value.colors.join(",").toLowerCase() || confirmed.profile_background_motion !== value.motion || Number(confirmed.profile_background_speed) !== value.speed) throw new Error("Colors have not saved yet");
+    if (confirmed.profile_background_mode !== value.mode || actualColors.join(",").toLowerCase() !== value.colors.join(",").toLowerCase() || confirmed.profile_background_motion !== value.motion || Number(confirmed.profile_background_speed) !== value.speed) throw new Error("Colors have not saved yet");
     setProfile((previous) => ({ ...previous, ...update, profile_background_colors: actualColors }));
     window.dispatchEvent(new Event("profiles:changed"));
     await checkUserAuth({ silent: true });
