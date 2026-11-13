@@ -24,7 +24,13 @@ const PRESETS=[
 const presetGradient=([a,b,c])=>
  `radial-gradient(ellipse at 12% 12%, ${b} 0%, ${b}00 64%),radial-gradient(ellipse at 90% 85%, ${c} 0%, ${c}00 68%),linear-gradient(135deg, ${a} 15%, ${a} 55%, ${c} 100%)`;
 const MAX_COLORS=5;
-const PALETTE_HUES=[[0,24,48,-20,70],[0,165,195,28,138],[0,115,238,18,264]];
+const HARMONIES=[
+ {name:"Analogous",offsets:[0,30,-30,15,-15]},
+ {name:"Complementary",offsets:[0,180,0,180,0]},
+ {name:"Split complementary",offsets:[0,150,210,150,210]},
+ {name:"Triadic",offsets:[0,120,240,120,240]},
+ {name:"Monochromatic",offsets:[0,0,0,0,0]}
+];
 const PALETTE_TONES=[[.76,.43],[.70,.86],[.37,.97],[.55,.69],[.43,.91]];
 const valid=color=>/^#[0-9a-f]{6}$/i.test(color);
 const normalize=text=>"#"+text.replace(/^#/,"").toLowerCase();
@@ -33,6 +39,7 @@ export default function ProfileColorPicker({coverUrl,colors,loading,value,onPrev
  const [draft,setDraft]=useState(()=>({mode:value.mode,colors:[...value.colors],motion:value.motion||"flow",speed:value.speed||1}));
  const [saving,setSaving]=useState(false),[error,setError]=useState("");
  const saveLock=useRef(false);
+ const [harmony,setHarmony]=useState("Surprise me");
  const [beforeRandomize,setBeforeRandomize]=useState(null);
  const [activeColor,setActiveColor]=useState(0);
  const activeIndex=Math.min(activeColor,Math.max(0,draft.colors.length-1));
@@ -52,7 +59,7 @@ export default function ProfileColorPicker({coverUrl,colors,loading,value,onPrev
  };
  const randomize=()=>{
   const hue=Math.floor(Math.random()*360);
-  const offsets=PALETTE_HUES[Math.floor(Math.random()*PALETTE_HUES.length)];
+  const {offsets}=HARMONIES.find(option=>option.name===harmony)||HARMONIES[Math.floor(Math.random()*HARMONIES.length)];
   const count=draft.mode==="custom"?draft.colors.length||3:customColors.length;
   const next=offsets.slice(0,count).map((offset,index)=>{
    const [saturation,brightness]=PALETTE_TONES[index];
@@ -91,6 +98,13 @@ export default function ProfileColorPicker({coverUrl,colors,loading,value,onPrev
     </div>
     <p className="profile-color-hint">{draft.mode==="auto"?(coverUrl?"Colors update with your profile song.":"Add a profile song for automatic colors, or choose Custom now."):draft.mode==="off"?"Use PUBLIC’s clean background. Your custom palette is kept.":"Your custom colors stay the same when you change your profile song."}</p>
     {draft.mode!=="custom"&&<button type="button" className="profile-color-create" disabled={saving} onClick={()=>{setActiveColor(0);setColors(customColors);}}><Plus size={16}/>Create your own palette</button>}
+    <label className="profile-color-harmony">
+     <span>Color harmony</span>
+     <select value={harmony} disabled={saving} onChange={event=>setHarmony(event.target.value)}>
+      <option>Surprise me</option>
+      {HARMONIES.map(option=><option key={option.name}>{option.name}</option>)}
+     </select>
+    </label>
     <div className="profile-color-random-actions">
      <button type="button" className="profile-color-create" disabled={saving} onClick={randomize}><Shuffle size={16}/>Randomize colors</button>
      {beforeRandomize&&<button type="button" className="profile-color-create" disabled={saving} onClick={undoRandomize}><Undo2 size={16}/>Undo shuffle</button>}

@@ -92,3 +92,7 @@
 
 .profile-color-random-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px;}
 .profile-color-random-actions>.profile-color-create{flex:1 1 130px;width:auto;margin-top:0;}
+
+.profile-color-harmony{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px;margin-top:16px;font-size:13px;font-weight:600;}
+.profile-color-harmony select{min-height:44px;max-width:100%;border:1px solid hsl(var(--border));border-radius:12px;padding:0 10px;background:hsl(var(--background));color:hsl(var(--foreground));}
+.profile-color-harmony+.profile-color-random-actions{margin-top:8px;}
