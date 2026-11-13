@@ -53,3 +53,13 @@ All 99 suites passed, along with lint and the production build. Device-level ver
 | Artwork upload retry | Done in code | A storage response without an artwork URL still marked the file as uploaded. Only confirmed cover URLs are cached. A retry can reuse uploaded audio and retry the artwork. Clearing artwork also stops the prior cover from carrying into a retry. |
 
 Upload queue tests, Spotify request handoff tests, lint, and production build passed. Live uploads and mobile and desktop visual checks were not performed.
+
+## November 13, 2026 — Suggestions and My Uploads
+
+| Area | Status | Cause and fix |
+| --- | --- | --- |
+| Suggestions | Done in code | An unconfirmed submission could clear the form. An unconfirmed vote could leave a changed count visible. Require confirmation before clearing the form or keeping a vote. Restore the prior vote and show an error when saving fails. |
+| Suggestions and My Uploads refresh | Done in code | A failed refresh was hidden when existing rows were visible. Keep those rows visible and provide a retry. |
+| My Uploads account switching | Done in code | The page kept the prior list while loading a new account. Associate results with their owner and render them only for that account. |
+
+All 99 suites, lint, and production build passed. Signed-in mobile and desktop visual checks remain open.
