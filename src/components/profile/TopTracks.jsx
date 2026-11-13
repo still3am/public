@@ -7,7 +7,6 @@ import { useEffect, useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { usePlayer } from "@/context/PlayerContext";
 import { useCoverUrl } from "@/hooks/useCoverUrl";
-import { useIsMobile } from "@/hooks/use-mobile";
 import HomeSpotlight from "@/components/HomeSpotlight";
 import TrackPickerSheet from "./TrackPickerSheet";
 import HoverTrackMenu from "@/components/track/HoverTrackMenu";
@@ -30,7 +29,6 @@ function PinnedTrackCard({ track, queue, index, position, onError, onSelect }) {
 }
 export default function TopTracks({ trackIds = [], editMode, userTracks, onChange, label, onLabelChange, onEdit, disabled = false }) {
   const p = usePlayer(),[loaded, setLoaded] = useState({ key: "", tracks: [] }),[pickerOpen, setPickerOpen] = useState(false),[replaceId, setReplaceId] = useState(""),[error, setError] = useState(""),[revision, setRevision] = useState(0),[pending, setPending] = useState(false);
-  const isMobile = useIsMobile();
   const idsKey = trackIds.join(",");
   useEffect(() => {let active = true;setPending(true);
     Promise.all(trackIds.map((id) => base44.entities.Track.get(id).catch(() => null))).then((results) => {if (active) {setLoaded({ key: idsKey, tracks: results.filter((t) => t?.id) });setPending(false);}});
@@ -62,11 +60,9 @@ export default function TopTracks({ trackIds = [], editMode, userTracks, onChang
  <DragDropContext onDragEnd={({ source, destination }) => {if (destination && !disabled) onChange(reorderTopTracks(trackIds, source.index, destination.index));}}>
  <Droppable droppableId="profile-top-eight">{(provided) => <div className="profile-top8-edit-list" ref={provided.innerRef} {...provided.droppableProps}>{trackIds.map((id, index) => {const t = byId.get(id);return <Draggable key={id} draggableId={id} index={index} isDragDisabled={disabled}>{(drag) => <div ref={drag.innerRef} {...drag.draggableProps} className="profile-top8-edit-row"><div className="profile-top8-handle" aria-label={"Move " + (t?.title || "unavailable song")} {...drag.dragHandleProps}><GripVertical size={19} /></div><Cover url={t?.cover_art_url} className="rotation-edit-cover" /><div className="profile-top8-edit-meta"><strong>{index + 1}. {t?.title || (loading ? "Loading song…" : "Unavailable song")}</strong><small>{t?.artist || (loading ? "Finding this song…" : "This spot can be replaced or removed")}</small></div><div className="rotation-edit-actions"><button type="button" disabled={disabled || loading} className="rotation-replace" aria-label={"Replace " + (t?.title || "unavailable song")} onClick={() => replace(id)}><ArrowLeftRight size={16} /><span>Replace</span></button><button type="button" disabled={disabled} className="profile-edit-circle profile-edit-circle-small" aria-label={"Remove " + (t?.title || "unavailable song")} onClick={() => onChange(trackIds.filter((tid) => tid !== id))}><X size={16} /></button></div></div>}</Draggable>;})}{provided.placeholder}</div>}</Droppable></DragDropContext>
  <button type="button" disabled={disabled || trackIds.length >= 8} onClick={() => {setReplaceId("");setPickerOpen(true);}} className="playlist-action"><Plus size={16} />Add songs · {trackIds.length}/8</button></>}
- {!editMode && (isMobile
-  ? <div className="rotation-grid rotation-phone-grid" aria-busy={loading}>{rotationItems.map((item) => renderCover(item))}</div>
-  : <div className="rotation-carousel" aria-busy={loading}>
-     <HomeSpotlight carouselLabel={(label || "My rotation") + " carousel"} tracks={rotationItems} renderCover={renderCover} />
-    </div>)}
+ {!editMode && <div className="rotation-carousel" aria-busy={loading}>
+  <HomeSpotlight carouselLabel={(label || "My rotation") + " carousel"} tracks={rotationItems} renderCover={renderCover} />
+ </div>}
  {missing.length > 0 && <div className="rotation-feedback" role="status"><span>{missing.length} {missing.length === 1 ? "song couldn’t" : "songs couldn’t"} load. {onEdit || editMode ? "You can retry, replace or remove them." : "Try again later."}</span><button type="button" disabled={pending} onClick={() => setRevision((v) => v + 1)}><RefreshCw size={14} />Retry</button></div>}
  {error && <p role="alert" className="profile-editor-error">{error}</p>}
  {pickerOpen && <TrackPickerSheet title={replaceId ? "Replace this song" : "Choose your Top 8"} description={replaceId ? "Choose a different song. Your replacement stays in the same spot until you save." : undefined} selectedIds={trackIds} max={replaceId ? 1 : 8} tracks={userTracks} onToggle={toggle} onClose={() => {setPickerOpen(false);setReplaceId("");}} />}
