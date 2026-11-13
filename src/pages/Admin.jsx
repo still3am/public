@@ -9,6 +9,7 @@ import "@/components/admin/admin-dashboard.css";
 
 const MusicRequests = lazy(() => import("@/pages/MusicRequests"));
 const Music = lazy(() => import("@/components/admin/ApprovalsManager"));
+const GenreTool = lazy(() => import("@/components/admin/GenreTool"));
 const Reports = lazy(() => import("@/components/admin/ReportsManager"));
 const Members = lazy(() => import("@/components/admin/UsersManager"));
 const Support = lazy(() => import("@/components/admin/SupportInbox"));
@@ -51,7 +52,7 @@ function Dashboard() {
      <section className="admin-quick-actions"><h3>Start here</h3>{[{ id: "music", title: "Review music", copy: "Approve submissions or take a release off PUBLIC." }, { id: "reports", title: "Review reports", copy: "Investigate reported tracks, artists, and profiles." }, { id: "support", title: "Help a member", copy: "Read requests and post private replies." }].map((action) => <button key={action.id} onClick={() => choose(action.id)}><span><strong>{action.title}</strong><small>{action.copy}</small></span><ChevronRight size={18} /></button>)}</section>
      <Link className="admin-recovery-link" to="/unfinished-uploads"><Music2 size={19} /><span><strong>Unfinished uploads</strong><small>Find music that still needs release details.</small></span><ArrowUpRight size={18} /></Link>
     </> : <Suspense fallback={<div className="admin-panel-loading"><Loader2 size={22} className="animate-spin" /><span>Opening {section.label.toLowerCase()}…</span></div>}>
-     {section.id === "music" && <Music />}{section.id === "requests" && <MusicRequests embedded />}{section.id === "reports" && <Reports />}{section.id === "members" && <Members />}
+     {section.id === "music" && <><Music /><GenreTool /></>}{section.id === "requests" && <MusicRequests embedded />{section.id === "reports" && <Reports />}{section.id === "members" && <Members />}
      {section.id === "support" && <><div className="admin-support-switch" role="group" aria-label="Support view"><button aria-pressed={!feedback} onClick={() => setFeedback(false)}>Requests</button><button aria-pressed={feedback} onClick={() => setFeedback(true)}>Suggestions</button></div>{feedback ? <Feedback /> : <Support />}</>}
      {section.id === "settings" && <div className="admin-settings-grid"><section><h3>Community preview</h3><Link className="admin-recovery-link" to="/community-preview"><Users size={19}/><span><strong>View the 5 preview profiles</strong><small>Explore avatars, banners, gradients and Top 8 songs.</small></span><ArrowUpRight size={18}/></Link></section><section><h3>Upload access</h3><Uploads /></section><section><h3>Announcements</h3><Banner /></section></div>}
     </Suspense>}
