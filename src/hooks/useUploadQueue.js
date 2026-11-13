@@ -157,7 +157,15 @@ export function useUploadQueue({ user, isAdmin }) {
    updateItem(item.id,{status:'done',detecting:false,error:warning,releaseStatus:track.approval_status});setUploadedCount(n=>n+1);
   }catch(e){
    if(!assets.current.get(item.id)?.track&&claimedHashes.current.get(assets.current.get(item.id)?.sha)===item.id)claimedHashes.current.delete(assets.current.get(item.id)?.sha);
-   if(epoch===generation.current)updateItem(item.id,{status:'ready',error:Number(e?.response?.status||e?.status)===402?'Upload paused: the app needs available integration credits. Your file is still queued.':e?.response?.data?.error||e.message||'Upload did not finish. Retry to resume.'});
+   const message=e?.response?.data?.error||e.message;
+   const invalidAudio=message==='Invalid private audio file';
+   if(epoch===generation.current){
+    if(invalidAudio){
+     const memo=assets.current.get(item.id);
+     if(memo)delete memo.file_uri;
+    }
+    updateItem(item.id,{status:'ready',error:invalidAudio?'The audio upload couldn’t be verified. Retry to upload the audio again.':Number(e?.response?.status||e?.status)===402?'Upload paused: the app needs available integration credits. Your file is still queued.':message||'Upload did not finish. Retry to resume.'});
+   }
   }finally{busy.current.delete(item.id);}
  }
  async function uploadAll(){
