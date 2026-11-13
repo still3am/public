@@ -245,11 +245,12 @@ export default async function handleRequest(req){
    if(!force&&track.genre&&track.genre!=='Other'){skip++;scanned++;continue;}
    if(lookups>=6||Date.now()>deadline-1500)return Response.json({processed,unmatched,scanned,skip,has_more:true});
    let genre;
-   try{lookups++;genre=await lookupCatalogGenre(track,deadline);}catch{return Response.json({processed,unmatched,scanned,skip,has_more:true,retry_required:true,error:'Catalog lookup paused. Retry shortly; existing genres were kept.'});}
+   try{lookups++;genre=await lookupCatalogGenre(track,deadline);}catch(error){console.log('Genre catalog retry',JSON.stringify({skip,error:String(error)}));return Response.json({processed,unmatched,scanned,skip,has_more:true,retry_required:true,error:'Catalog lookup paused. Retry shortly; existing genres were kept.'});}
    if(genre){await client.asServiceRole.entities.Track.update(track.id,{genre});processed++;}else unmatched++;
    skip++;scanned++;
   }
+  console.log('Genre batch complete',JSON.stringify({processed,unmatched,scanned,skip,hasMore:tracks.length===60}));
   return Response.json({processed,unmatched,scanned,skip,has_more:tracks.length===60});
- }catch{return Response.json({error:'Catalog genre matching could not finish. Please retry.'},{status:503});}
+ }catch(error){console.log('Genre matcher error',String(error));return Response.json({error:'Catalog genre matching could not finish. Please retry.'},{status:503});}
 }
 if(typeof Deno!=='undefined')Deno.serve(handleRequest);
