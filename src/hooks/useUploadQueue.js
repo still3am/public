@@ -99,7 +99,7 @@ export function useUploadQueue({ user, isAdmin }) {
      explicit:edited.explicit?it.explicit:it.explicit||meta?.explicit===true,
      title:!edited.title&&it.title===title?(text('title')||it.title):it.title,
      artist:edited.artist?it.artist:it.artist||text('artist'),
-     genre:edited.genre||edited.title||edited.artist||edited.album_name?it.genre:it.genre||(GENRES.includes(text('genre'))?text('genre'):'')};
+     genre:it.genre?.trim() || (!edited.genre && !edited.title && !edited.artist && !edited.album_name && GENRES.includes(text('genre')) ? text('genre') : 'Other')};
    }));
   }catch(e){if(epoch===generation.current)updateItem(item.id,{status:'error',detecting:false,error:e.message||'File analysis failed. Remove this file and try again.'});}}};
   await Promise.all(Array.from({length:Math.min(2,batch.length)},worker));
@@ -149,8 +149,8 @@ export function useUploadQueue({ user, isAdmin }) {
     if(memo.videoFile!==item.videoFile){memo.video_uri=(await base44.integrations.Core.UploadPrivateFile({file:item.videoFile})).file_uri;if(!memo.video_uri)throw Error('Video upload did not finish. Retry to resume.');memo.videoFile=item.videoFile;}
    }
    if(epoch!==generation.current)throw Error('Account changed. Start this upload again.');
-   const ready=!!(item.artist.trim()&&item.genre&&coverUrl);
-   const track=await base44.entities.Track.create({title:item.title.trim(),audio_url:'',audio_file_uri:memo.file_uri,...(item.videoFile?{music_video_file_uri:memo.video_uri,video_rights_confirmed:true}:{}),audio_sha256:memo.sha,upload_request_id:item.id,cover_art_url:coverUrl,artist:item.artist.trim(),album_name:(item.album_name||'').trim(),album_artist:(item.album_artist||'').trim(),track_number:Number(item.track_number)||0,disc_number:Number(item.disc_number)||0,release_year:Number(item.release_year)||0,genre:item.genre||'Other',duration_seconds:item.duration,explicit:item.explicit,rights_confirmed:true,is_downloadable:item.allowDownloads===true,approval_status:ready?(isAdmin?'approved':'pending'):'private',is_published:isAdmin&&ready});
+   const ready=!!(item.artist.trim()&&coverUrl);
+   const track=await base44.entities.Track.create({title:item.title.trim(),audio_url:'',audio_file_uri:memo.file_uri,...(item.videoFile?{music_video_file_uri:memo.video_uri,video_rights_confirmed:true}:{}),audio_sha256:memo.sha,upload_request_id:item.id,cover_art_url:coverUrl,artist:item.artist.trim(),album_name:(item.album_name||'').trim(),album_artist:(item.album_artist||'').trim(),track_number:Number(item.track_number)||0,disc_number:Number(item.disc_number)||0,release_year:Number(item.release_year)||0,genre:item.genre?.trim()||'Other',duration_seconds:item.duration,explicit:item.explicit,rights_confirmed:true,is_downloadable:item.allowDownloads===true,approval_status:ready?(isAdmin?'approved':'pending'):'private',is_published:isAdmin&&ready});
    memo.track=track;catalog.current.push({...track,audio_sha256:memo.sha});
    let warning='';
    if(epoch!==generation.current)return;

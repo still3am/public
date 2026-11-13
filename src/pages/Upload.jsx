@@ -10,7 +10,7 @@ import UploadTrackEditor from '@/components/upload/UploadTrackEditor';
 import DuplicateModal from '@/components/upload/DuplicateModal';
 import './upload-studio.css';
 function hasReleaseMetadata(item) {
-  return !!(item.artist?.trim() && item.genre && (item.coverFile || item.catalogCoverUrl));
+  return !!(item.artist?.trim() && (item.coverFile || item.catalogCoverUrl));
 }
 
 export default function Upload() {
