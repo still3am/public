@@ -100,3 +100,9 @@
 .profile-color-grip svg{background:none;color:inherit;}
 
 .profile-color-slot>button:first-child{touch-action:none;user-select:none;cursor:grab;}
+
+.profile-color-slot[data-drag-source=true]{opacity:.55;}
+.profile-color-slot[data-drop-target=true]{background:hsl(var(--muted));}
+.profile-color-order{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:6px;margin-top:10px;font-size:12px;}
+.profile-color-order button{display:inline-flex;align-items:center;justify-content:center;gap:4px;min-height:44px;padding:0 8px;border:1px solid hsl(var(--border));border-radius:10px;}
+.profile-color-order button:disabled{opacity:.45;}

@@ -1,5 +1,5 @@
 import {useRef,useState} from "react";
-import {Check,GripHorizontal,Loader2,Plus,Shuffle,Undo2,X} from "lucide-react";
+import {ArrowLeft,ArrowRight,Check,GripHorizontal,Loader2,Plus,Shuffle,Undo2,X} from "lucide-react";
 import {Dialog,DialogContent,DialogHeader,DialogTitle,DialogDescription} from "@/components/ui/dialog";
 import MotionGradient from "@/components/MotionGradient";
 import ProfileColorWheel,{hexToHsv,hsvToHex} from "./ProfileColorWheel";
@@ -36,6 +36,7 @@ export default function ProfileColorPicker({coverUrl,colors,loading,value,onPrev
  const [activeColor,setActiveColor]=useState(0);
  const drag=useRef(null);
  const ignoreClick=useRef(false);
+ const [dragIndex,setDragIndex]=useState(null);
  const [dropIndex,setDropIndex]=useState(null);
  const activeIndex=Math.min(activeColor,Math.max(0,draft.colors.length-1));
  const update=next=>{if(saveLock.current)return;setError("");setBeforeRandomize(null);setDraft(next);onPreview({...next,colors:next.colors.filter(valid)});};
@@ -61,6 +62,7 @@ export default function ProfileColorPicker({coverUrl,colors,loading,value,onPrev
   const from=drag.current.index;
   const to=event.type==="pointerup"?targetAt(event):null;
   drag.current=null;
+  setDragIndex(null);
   setDropIndex(null);
   if(to!==null&&to!==from){ignoreClick.current=true;moveColor(from,to);}
  };
@@ -70,6 +72,7 @@ export default function ProfileColorPicker({coverUrl,colors,loading,value,onPrev
    ignoreClick.current=false;
    drag.current={pointer:event.pointerId,index};
    event.currentTarget.setPointerCapture(event.pointerId);
+   setDragIndex(index);
    setDropIndex(index);
   },
   onPointerMove:event=>{
@@ -137,9 +140,9 @@ export default function ProfileColorPicker({coverUrl,colors,loading,value,onPrev
     {draft.mode==="custom"&&<>
      <section className="profile-color-section">
       <h3>Your colors <span>{draft.colors.length} / {MAX_COLORS}</span></h3>
-      {draft.colors.length>1&&<p className="profile-color-hint" id="profile-color-reorder">Drag a color to another slot. With a keyboard, focus its handle and press Left or Right.</p>}
+      {draft.colors.length>1&&<p className="profile-color-hint" id="profile-color-reorder">Drag a swatch or select it and use the arrows below.</p>}
       <div className="profile-color-quick-stops" role="group" aria-label="Gradient colors">
-       {draft.colors.map((color,index)=><div className="profile-color-slot" data-profile-color-slot={index} data-drop-target={dropIndex===index} key={index}>
+       {draft.colors.map((color,index)=><div className="profile-color-slot" data-profile-color-slot={index} data-drag-source={dragIndex===index} data-drop-target={dropIndex===index&&dragIndex!==index} key={index}>
         <button type="button" disabled={saving} aria-label={`Edit gradient color ${index+1}`} aria-pressed={activeIndex===index} {...dragHandlers(index)} onClick={event=>{if(!event.detail||!ignoreClick.current)setActiveColor(index);ignoreClick.current=false;}}>
          <span style={{background:valid(color)?color:"#777777"}}>{activeIndex===index&&<Check size={16}/>}</span><small>Color {index+1}</small>
         </button>
@@ -155,6 +158,11 @@ export default function ProfileColorPicker({coverUrl,colors,loading,value,onPrev
        </div>)}
        {draft.colors.length<MAX_COLORS&&<button type="button" disabled={saving} aria-label="Add gradient color" onClick={addColor}><span><Plus size={18}/></span><small>Add color</small></button>}
       </div>
+      {draft.colors.length>1&&<div className="profile-color-order" role="group" aria-label="Move selected color">
+       <button type="button" aria-label="Move selected color earlier" disabled={saving||activeIndex===0} onClick={()=>moveColor(activeIndex,activeIndex-1)}><ArrowLeft size={16}/> Move earlier</button>
+       <span aria-live="polite">Color {activeIndex+1} of {draft.colors.length}</span>
+       <button type="button" aria-label="Move selected color later" disabled={saving||activeIndex===draft.colors.length-1} onClick={()=>moveColor(activeIndex,activeIndex+1)}>Move later <ArrowRight size={16}/></button>
+      </div>}
      </section>
      {draft.colors.length>0&&<ProfileColorWheel key={activeIndex} colorNumber={activeIndex+1} value={valid(draft.colors[activeIndex])?draft.colors[activeIndex]:"#777777"} disabled={saving} onChange={color=>setColors(draft.colors.map((c,i)=>i===activeIndex?color:c))}/>}
      <details className="profile-color-section profile-color-details"><summary>Hex codes &amp; remove colors</summary>
