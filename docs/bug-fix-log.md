@@ -63,3 +63,5 @@ Upload queue tests, Spotify request handoff tests, lint, and production build pa
 | My Uploads account switching | Done in code | The page kept the prior list while loading a new account. Associate results with their owner and render them only for that account. |
 
 All 99 suites, lint, and production build passed. Signed-in mobile and desktop visual checks remain open.
+
+- Notifications — Done in code. Failed reloads were only visible when the inbox was empty. The inbox now shows a retry alongside existing activity. Notification recovery and link tests, lint, and production build passed after this change.
