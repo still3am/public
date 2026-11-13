@@ -24,3 +24,11 @@ Live mobile and desktop checks remain open. The Base44 browser preview stayed on
 | Favorites load popup | Done in code | A failed status read displayed an inline alert at the heart button. Removed the load alert and retained tap-to-retry. |
 | Standalone offline page | Done in code | The old service worker responded to failed navigations with a cached standalone page. Its replacement clears that page's cache and stops intercepting navigation. Existing installations receive the change when the replacement worker updates. |
 | Checking saved music banner | Done in code | The Offline library shared a banner for background checks and active downloads. Only active downloads show the progress banner. |
+
+## November 13, 2026 — Search catalog follow-up
+
+| Area | Status | Cause | Fix and verification |
+| --- | --- | --- | --- |
+| Search Browse catalog refresh | Done in code | The kept-mounted Search page fetched the entire catalog on every invalidation, including when hidden or showing people or query results. Its local catalog snapshot also survived the account-clear event. | Clear stale data and invalidate pending responses on either event. Defer the full read until Browse is visible and skip pull-to-refresh on the idle People screen. Lint, build, and all 99 suites passed. |
+
+The Base44 editor preview still stalled at “Loading app data.” Signed-in mobile and desktop checks remain open.
