@@ -25,10 +25,10 @@ const nextId = () => `u${Date.now()}_${uid++}`;
 // Catalog lookup never guesses explicit status or overwrites user edits.
 async function detectMeta(title,artist,duration,albumTags,includeArtwork=false){
  try{
- const info=await findSongInfo({title,artist,duration_seconds:duration,...albumTags},{includeArtwork});
+ const info=await findSongInfo({title,artist,duration_seconds:duration,...albumTags},{includeArtwork,includeAlbumGenres:true});
  if(!info)return null;
  const normalize=value=>String(value).toLowerCase().replace(/[^a-z0-9]/g,'');
- const genre=GENRES.find(g=>(info.genres||[]).some(name=>normalize(name)===normalize(g)))||'';
+ const genre=(info.genres||[]).map(name=>GENRES.find(g=>normalize(name)===normalize(g))).find(Boolean)||'';
  return {title:info.title,genre,artist:info.artists,album_name:info.album,album_artist:info.albumArtist,release_year:Number(info.releaseDate?.slice(0,4))||0,catalogCoverUrl:info.coverUrl||''};
  }catch{return null;}
 }

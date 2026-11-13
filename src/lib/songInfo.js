@@ -18,9 +18,9 @@ export async function getMusicBrainz(path){
  });queue=task.then(()=>{},()=>{});return task;
 }
 /** @param {any} track */
-export async function findSongInfo(track,{includeArtwork=false}={}){
+export async function findSongInfo(track,{includeArtwork=false,includeAlbumGenres=false}={}){
  if(!track.title||!track.artist)return null;
- const key=[track.title,track.artist,track.duration_seconds,track.album_name||track.album_title||track.album,includeArtwork].join('|'),old=cache.get(key);
+ const key=[track.title,track.artist,track.duration_seconds,track.album_name||track.album_title||track.album,includeArtwork,includeAlbumGenres].join('|'),old=cache.get(key);
  if(old&&Date.now()-old.time<600000)return old.value;
  const quote=s=>'"'+String(s).replace(/[\\"]/g,' ').slice(0,180)+'"';
  const query='recording:'+quote(track.title)+' AND artist:'+quote(String(track.artist).split(/,| feat\.? | ft\.? /i)[0]);
@@ -38,7 +38,14 @@ export async function findSongInfo(track,{includeArtwork=false}={}){
   const performers=[...new Set((record.relations||[]).filter(r=>['vocal','instrument','performer'].includes(r.type)&&r.artist?.name).map(r=>r.artist.name+((r.attributes||[]).length?' ('+r.attributes.join(', ')+')':'')))].join(', ');
   const cover=includeArtwork&&release?.id?await lookupReleaseCover(release.id).catch(()=>null):null;
   const people=type=>[...new Set((record.relations||[]).filter(r=>r.type===type&&r.artist?.name).map(r=>r.artist.name))].join(', ');
-  value={id:match.id,title:record.title,genres:(record.genres||[]).sort((a,b)=>(b.count||0)-(a.count||0)).map(g=>g.name),artists:(record['artist-credit']||[]).map(a=>(a.name||a.artist?.name||'')+(a.joinphrase||'')).join(''),album:release?.title||'',albumArtist:(release?.['artist-credit']||record['artist-credit']||[]).map(a=>(a.name||a.artist?.name||'')+(a.joinphrase||'')).join(''),releaseDate:release?.date||'',producer:people('producer'),mixer:people('mix'),engineer:people('engineer'),composer:writers(['composer']),lyricist:writers(['lyricist']),writer:writers(['writer']),arranger:writers(['arranger']),performers,releaseId:release?.id||'',coverUrl:cover?.url||'',coverSource:cover?.source||''};
+  const rankGenres=rows=>[...(rows||[])].filter(g=>g.name&&Number(g.count??1)>0).sort((a,b)=>(b.count||0)-(a.count||0)).map(g=>g.name);
+  const genres=rankGenres(record.genres);
+  const groupId=release?.['release-group']?.id;
+  if(includeAlbumGenres&&uuid(groupId)){
+   const album=await getMusicBrainz('release-group/'+groupId+'?fmt=json&inc=genres').catch(()=>null);
+   genres.push(...rankGenres(album?.genres));
+  }
+  value={id:match.id,title:record.title,genres,artists:(record['artist-credit']||[]).map(a=>(a.name||a.artist?.name||'')+(a.joinphrase||'')).join(''),album:release?.title||'',albumArtist:(release?.['artist-credit']||record['artist-credit']||[]).map(a=>(a.name||a.artist?.name||'')+(a.joinphrase||'')).join(''),releaseDate:release?.date||'',producer:people('producer'),mixer:people('mix'),engineer:people('engineer'),composer:writers(['composer']),lyricist:writers(['lyricist']),writer:writers(['writer']),arranger:writers(['arranger']),performers,releaseId:release?.id||'',coverUrl:cover?.url||'',coverSource:cover?.source||''};
  }
  cache.set(key,{time:Date.now(),value});if(cache.size>50)cache.delete(cache.keys().next().value);return value;
 }
