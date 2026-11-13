@@ -32,3 +32,13 @@ Live mobile and desktop checks remain open. The Base44 browser preview stayed on
 | Search Browse catalog refresh | Done in code | The kept-mounted Search page fetched the entire catalog on every invalidation, including when hidden or showing people or query results. Its local catalog snapshot also survived the account-clear event. | Clear stale data and invalidate pending responses on either event. Defer the full read until Browse is visible and skip pull-to-refresh on the idle People screen. Lint, build, and all 99 suites passed. |
 
 The Base44 editor preview still stalled at “Loading app data.” Signed-in mobile and desktop checks remain open.
+
+## November 13, 2026 — catalog and refresh follow-up
+
+| Area | Status | Cause | Fix and verification |
+| --- | --- | --- | --- |
+| Recently Added and Top Charts | Done in code | Page visits and chart-period changes always bypassed the shared music catalog cache, repeating a full paginated catalog read. Refresh failures were hidden when rows remained visible. | Ordinary reads reuse the shared cache. Pull-to-refresh and retry ask for fresh data. Failed refreshes show a retry alongside any retained rows. The navigation regression test checks ordinary and forced chart reads. |
+| Top Charts, Rising Songs | Done in code | The no-results message assumed a filter caused the empty list even when the period had no rising songs. | Show “No rising songs yet” and point to the full chart when no search or genre filter is active. |
+| Community Preview | Done in code | Retry reran the effect but reused the regular catalog cache policy. | Explicit retry requests a fresh catalog read. |
+
+All 99 suites passed, along with lint and the production build. Device-level verification remains open.
