@@ -42,7 +42,7 @@ export default function ApprovalsManager() {
       loadLive();
       toast({ title: `"${track.title}" is now live on PUBLIC` });
     } catch (e) {
-      toast({ title: "Couldn't approve track", variant: "destructive" });
+      toast({ title: "Couldn't approve track", description: e?.message || "Please refresh and retry.", variant: "destructive" });
     } finally {
       finish(track.id);
     }
@@ -56,7 +56,7 @@ export default function ApprovalsManager() {
       setLive((prev) => (prev || []).filter((t) => t.id !== track.id));
       toast({ title: "Removed from PUBLIC" });
     } catch (e) {
-      toast({ title: "Couldn't remove track", variant: "destructive" });
+      toast({ title: "Couldn't remove track", description: e?.message || "Please refresh and retry.", variant: "destructive" });
     } finally {
       finish(track.id);
     }
@@ -69,7 +69,7 @@ export default function ApprovalsManager() {
       setTracks((prev) => (prev || []).filter((t) => t.id !== track.id));
       toast({ title: "Track rejected" });
     } catch (e) {
-      toast({ title: "Couldn't reject track", variant: "destructive" });
+      toast({ title: "Couldn't reject track", description: e?.message || "Please refresh and retry.", variant: "destructive" });
     } finally {
       finish(track.id);
     }
