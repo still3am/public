@@ -166,17 +166,23 @@
 .reel-author-details {
   --reel-avatar-size: 42px;
   --reel-author-gap: 8px;
-  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
   min-width: 0;
 }
-.reel-author-details > .reel-author { gap: var(--reel-author-gap); }
+.reel-author-details > .reel-author {
+  grid-area: 1 / 1;
+  gap: var(--reel-author-gap);
+}
 .reel-author-details:has(.reel-music-credit) .reel-author :is(.reel-author-name, .moment-compact-badge) {
   translate: 0 -7px;
 }
 .reel-music-credit-slot:not(:empty) {
-  position: absolute;
-  inset-inline: calc(var(--reel-avatar-size) + var(--reel-author-gap)) 0;
-  top: 50%;
+  grid-area: 1 / 1;
+  align-self: end;
+  min-width: 0;
+  padding-inline-start: calc(var(--reel-avatar-size) + var(--reel-author-gap));
+  margin-bottom: 5px;
 }
 .reel-music-credit {
   display: flex;
