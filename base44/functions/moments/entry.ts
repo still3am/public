@@ -74,18 +74,6 @@ export async function momentsAction(b,u,d){
   if(!['fast','normal','slow','off'].includes(photoAutoplay))fail('Choose a photo autoplay speed.');
   await moderate(s,caption);const p=await s.entities.Moment.create({user_id:u.id,caption,photo_autoplay:video||media.length<2?'normal':photoAutoplay,media:media.map(m=>({url:m.url,type:m.type,size:m.size,duration:m.duration||0,...(m.track_id?{track_id:m.track_id}:{})})),track_id:song.id,clip_start:start,clip_duration:duration,music_volume:volumes[0],original_volume:video?volumes[1]:0,rights_confirmed:true,status:'published',liker_ids:[],request_id:d.request_id});return {post:await present(p)};
  }
- if(d.action==='gif_search'){
-  auth();
-  const key=Deno.env.get('GIPHY_API_KEY');
-  if(!key)fail('GIF search is not configured yet.',503);
-  const query=text(d.query||'',80);
-  const params=new URLSearchParams({api_key:key,rating:'g',limit:'24',...(query?{q:query}:{})});
-  const endpoint=query?'search':'trending';
-  const response=await fetch('https://api.giphy.com/v1/gifs/'+endpoint+'?'+params,{signal:AbortSignal.timeout(8000)});
-  if(!response.ok)fail('GIF search is temporarily unavailable.',503);
-  const result=await response.json();
-  return {items:(result.data||[]).filter(g=>g.rating==='g'&&/^[a-zA-Z0-9]{1,64}$/.test(g.id||'')).map(g=>({id:g.id,title:String(g.title||'GIF').slice(0,100),preview:g.images?.fixed_width_small?.url||''})).filter(g=>g.preview)};
- }
  auth();const p=await post(d.id);
  if(d.action==='share_people'){
   const people=[];
