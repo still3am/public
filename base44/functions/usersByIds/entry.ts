@@ -12,8 +12,8 @@ export default async function handleRequest(req) {
 
     const body = await req.json().catch(() => ({}));
     if (body.action === 'giphy_search' || body.action === 'add_giphy_to_marketplace') {
-      const key = Deno.env.get('GIPHY_MARKETPLACE_API_KEY');
-      if (!key) return Response.json({ error: 'Marketplace GIPHY search needs its own API key.' }, { status: 503 });
+      const key = Deno.env.get('GIPHY_API_KEY');
+      if (!key) return Response.json({ error: 'GIPHY search is not configured yet.' }, { status: 503 });
       const gifId = typeof body.id === 'string' ? body.id.trim() : '';
       if (body.action === 'add_giphy_to_marketplace' && (!/^[a-zA-Z0-9]{1,64}$/.test(gifId) || !['avatar','banner'].includes(body.kind))) {
         return Response.json({ error: 'Choose a valid GIPHY GIF and profile type.' }, { status: 400 });
