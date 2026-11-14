@@ -93,7 +93,7 @@ function MomentComments({ post, onReport, mobile = true }) {
           </div>
           {comment.can_delete ?
           activeCommentId===comment.id && <button type="button" className="comment-delete-action" disabled={busy} aria-label="Delete comment" onClick={(event) => {event.stopPropagation();remove(comment);}}><X size={18} /></button> :
-          <button type="button" aria-label="Report comment" onClick={() => onReport({ type: 'moment_comment', id: comment.id, userId: author?.user_id })}><Flag size={15} /></button>
+          <button type="button" aria-label="Report comment" onClick={() => onReport({ type: 'moment_comment', id: comment.id, userId: author?.user_id })}><Flag size={15} /></button>}
         </article>;
       })}
       {loading && <p className="discussion-empty" role="status">Loading comments…</p>}
