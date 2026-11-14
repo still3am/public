@@ -425,6 +425,7 @@ export default function Profile({ ownProfileTab = false }) {
   const avatarUrl = editMode ? form.avatar_url : profile.avatar_url;
   const backgroundValue = { mode: profile.profile_background_mode || "auto", motion: profile.profile_background_motion === "still" ? "still" : "flow", speed: Math.max(.35, Math.min(1.6, Number(profile.profile_background_speed) || 1)), colors: (profile.profile_background_colors || []).filter((c) => /^#[0-9a-f]{6}$/i.test(c)).slice(0, 5) };
   const currentBackground = backgroundDraft || backgroundValue;
+  const gradientActive = isCurrentPage && !showColors && !showSettings && !showQR && !showDelete && !followList;
   const backgroundColors = currentBackground.mode === "off" ? [] : currentBackground.mode === "custom" ? currentBackground.colors : coverColors.slice(0, 5);
   const closeColors = () => {setShowColors(false);setBackgroundDraft(null);};
   const saveColors = async (value) => {
@@ -445,7 +446,7 @@ export default function Profile({ ownProfileTab = false }) {
   return (
     <PullToRefresh onRefresh={load} disabled={followingBusy || editMode || showMedia || saving || uploadingAvatar || uploadingBanner || showSettings || showDelete || showQR || showColors || !!followList}>
 
-    {backgroundColors.length > 0 && <MotionGradient colors={backgroundColors} motion={currentBackground.motion} speed={currentBackground.speed} active={isCurrentPage && !showColors && !showSettings && !showQR && !showDelete && !followList} pauseWhenCovered className="profile-artwork-background fixed inset-0 pointer-events-none z-0" style={{ opacity: 1 }} />}
+    {backgroundColors.length > 0 && <MotionGradient colors={backgroundColors} motion={currentBackground.motion} speed={currentBackground.speed} active={gradientActive} pauseWhenCovered className="profile-artwork-background fixed inset-0 pointer-events-none z-0" style={{ opacity: 1 }} />}
     {!backgroundColors.length && currentBackground.mode === "auto" && coverUrl && <div aria-hidden="true" className="profile-artwork-background fixed inset-0 pointer-events-none z-0" style={{ backgroundImage: `url(${JSON.stringify(coverUrl)})`, backgroundSize: "cover", backgroundPosition: "center", filter: "blur(45px) saturate(1.35)", transform: "scale(1.12)", opacity: 1 }} />}
     <div className={`profile-page profile-redesigned max-w-6xl mx-auto relative z-10 ${editMode ? "profile-is-editing" : ""}`}>
       {!editMode && loadError && <LoadError message="This profile couldn’t refresh." onRetry={load} />}
@@ -459,7 +460,7 @@ export default function Profile({ ownProfileTab = false }) {
           <div className="profile-cover-fade" />
         </div>
         {editMode && <ProfileBannerEditor gallery={gallery} setGallery={setGallery} busy={uploadingAvatar || uploadingBanner || saving} hasBanner={!!form.banner_url && !form.banner_use_default} onSelect={banner=>{if(uploadingBanner||saving)return;bannerVersion.current++;setForm(old=>({...old,banner_url:banner.url,banner_mobile_url:banner.url,banner_use_default:false,banner_video_url:banner.videoUrl||"",banner_gif_url:banner.gifUrl||""}));}} onApply={uploadBanner} onMotionApply={(media) => uploadProfileMotion("banner", media)} onRemove={() => setForm((old) => ({ ...old, banner_use_default: true }))} />}
-        {!editMode && isAdminProfile && <ProfileBadge variant="admin" colors={backgroundColors} motion={currentBackground.motion} speed={currentBackground.speed} />}
+        {!editMode && isAdminProfile && <ProfileBadge variant="admin" colors={backgroundColors} motion={currentBackground.motion} speed={currentBackground.speed} active={gradientActive} />}
         {!editMode && !isAdminProfile && profile.creator_role==="artist" && <ProfileBadge variant="artist" />}
         {!editMode && !isAdminProfile && profile.creator_role==="uploader" && <ProfileBadge variant="uploader" />}
         
