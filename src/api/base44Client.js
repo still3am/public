@@ -277,5 +277,5 @@ export const base44 = new Proxy(raw,{get(target,name) {
 
 
 // Native admin operations remain protected by entity and field permissions.
-export const adminDatabase={auth:{me:()=>raw.auth.me()},entities:raw.entities};
+export const adminDatabase={auth:{me:()=>raw.auth.me()},entities:raw.entities,functions:{invoke:(name,args)=>raw.functions.invoke(name,args)}};
 export const notificationReadDatabase={auth:{me:()=>raw.auth.me()},entities:{Notification:raw.entities.Notification}};
