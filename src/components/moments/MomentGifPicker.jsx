@@ -10,7 +10,7 @@ export function MomentGif({id, label="GIF reaction"}){
 
 const GIF_CATEGORIES = ["Trending", "Laugh", "Love", "Celebrate", "Surprised", "Music"];
 
-export default function MomentGifPicker({onSelect,onClose,inline=false}){
+export default function MomentGifPicker({onSelect,onClose,inline=false,id}){
  const [query,setQuery]=useState(''),[items,setItems]=useState([]),[status,setStatus]=useState('');
  const [activeTerm,setActiveTerm]=useState(''),[failed,setFailed]=useState(false),[moreLoading,setMoreLoading]=useState(false),[hasMore,setHasMore]=useState(false),[moreFailed,setMoreFailed]=useState(false);
  const request=useRef(null),itemsRef=useRef([]),loadingMore=useRef(false),canLoadMore=useRef(false);
@@ -55,16 +55,16 @@ export default function MomentGifPicker({onSelect,onClose,inline=false}){
    })}
   </div>
   {status&&<p role="status">{status} {failed&&<button type="button" className="underline" onClick={()=>search(activeTerm)}>Retry</button>}</p>}
-  <div className="moment-gif-results" role="list" aria-label="GIF results" tabIndex={0} onScroll={handleResultsScroll}>{items.map(item=><button type="button" role="listitem" key={item.id} aria-label={'Choose '+item.title} onClick={()=>onSelect(item.id)}>
+  <div className="moment-gif-results" role="region" aria-label="GIF results" tabIndex={0} onScroll={handleResultsScroll}>{items.map(item=><button type="button" key={item.id} aria-label={'Choose '+item.title} onClick={()=>onSelect(item.id)}>
    <img src={item.preview} alt="" loading="lazy" draggable="false"/>
   </button>)}{moreLoading&&<p className="moment-gif-loading" role="status">Loading more GIFs…</p>}{moreFailed&&<button type="button" className="moment-gif-retry" onClick={loadMore}>Retry loading GIFs</button>}</div>
   <small>Powered by GIPHY{hasMore?' · Scroll for more':''}</small>
  </>;
- if(inline)return <section className="moment-gif-picker moment-gif-inline" aria-label="Choose a GIF">
+ if(inline)return <section id={id} className="moment-gif-picker moment-gif-inline" aria-label="Choose a GIF">
   {content}
  </section>;
  return <Dialog open onOpenChange={open=>{if(!open)onClose?.();}}>
-  <DialogContent className="moment-gif-picker" onOpenAutoFocus={event=>event.preventDefault()}>
+  <DialogContent id={id} className="moment-gif-picker" onOpenAutoFocus={event=>event.preventDefault()}>
    <span className="moment-gif-handle" aria-hidden="true"/>
    <DialogTitle className="sr-only">Choose a GIF</DialogTitle>
    <DialogDescription className="sr-only">Browse trending GIFs or search GIPHY.</DialogDescription>
