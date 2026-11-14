@@ -13,7 +13,7 @@ import { setFollowState } from '@/lib/followActions';
 import { shareLink } from '@/lib/shareLink';
 import Avatar from '@/components/Avatar';
 import LibraryButton from '@/components/LibraryButton';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
+import { Dialog, DialogClose, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import MomentMedia from '@/components/moments/MomentMedia';
 import MomentComposer from '@/components/moments/MomentComposer';
 import { momentsApi, momentError } from '@/lib/momentsApi';
@@ -277,7 +277,7 @@ export function MomentsExperience() {
       <button type="button" aria-label="Next moment" disabled={currentReel >= visiblePosts.length - 1} onClick={() => moveReel(1)}><ChevronDown size={22} /></button>
     </nav>}
     {visiblePosts.filter((post) => comments.has(post.id)).map((post) => <Dialog key={post.id} open onOpenChange={(open) => {if (!open) dismissComments(post.id);}}>
-      <DialogContent className={'moment-discussion-dialog ' + (mobile ? 'moment-comments-sheet' : 'reels-comments')} onOpenAutoFocus={(event) => {
+      <DialogContent showClose={false} className={'moment-discussion-dialog ' + (mobile ? 'moment-comments-sheet' : 'reels-comments')} onOpenAutoFocus={(event) => {
         event.preventDefault();
         document.getElementById('discussion-title-' + post.id)?.focus();
       }} onCloseAutoFocus={(event) => {
@@ -293,6 +293,7 @@ export function MomentsExperience() {
           <DialogHeader className="discussion-header">
             <DialogTitle id={'discussion-title-' + post.id} tabIndex={-1}>Comments</DialogTitle>
             <DialogDescription className="sr-only">Comments on this Moment.</DialogDescription>
+            <DialogClose className="moment-comments-close" aria-label="Close comments"><X size={20} /></DialogClose>
           </DialogHeader>
           <MomentComments mobile={mobile} post={post} onReport={(target) => {dismissComments(post.id);setReport(target);}} />
         </div>
