@@ -23,23 +23,20 @@ export async function momentsAction(b,u,d){
  async function person(id){
   if(blocked.has(id))return null;
   if(profileCache.has(id))return profileCache.get(id);
-  const profile=rows(await s.entities.PublicProfile.filter({user_id:id,visible:true},'-updated_date',1))[0];
-  const result=profile?{
-   user_id:id,display_name:profile.display_name||profile.full_name||'PUBLIC listener',
-   username:profile.username||'',avatar_url:profile.avatar_url||'',avatar_preset:profile.avatar_preset||'',
-   is_artist:!!profile.is_artist,friends_family_badge:profile.friends_family_badge===true,
-   profile_badge:profile.is_public_admin?'admin':profile.is_artist||profile.creator_role==='artist'?'artist':profile.creator_role==='uploader'?'uploader':null
-  }:null;
-  profileCache.set(id,result);
-  return result;
+  await people([id]);
+  return profileCache.get(id) || null;
  }
  async function people(ids){
   const unique=[...new Set(ids.filter(id=>typeof id==='string'&&!blocked.has(id)&&!profileCache.has(id)))];
   if(!unique.length)return;
-  const profiles=await all(s.entities.PublicProfile,{user_id:{$in:unique},visible:true});
+  const [profiles,restricted]=await Promise.all([
+   all(s.entities.PublicProfile,{user_id:{$in:unique},visible:true}),
+   all(s.entities.User,{id:{$in:unique},$or:[{disabled:true},{is_blocked:true}]})
+  ]);
+  const restrictedIds=new Set(restricted.map(account=>account.id));
   const byId=new Map(profiles.map(profile=>[profile.user_id,profile]));
   for(const id of unique){
-   const profile=byId.get(id);
+   const profile=restrictedIds.has(id)?null:byId.get(id);
    profileCache.set(id,profile?{
     user_id:id,display_name:profile.display_name||profile.full_name||'PUBLIC listener',
     username:profile.username||'',avatar_url:profile.avatar_url||'',avatar_preset:profile.avatar_preset||'',
