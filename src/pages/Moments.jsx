@@ -70,7 +70,7 @@ function MomentComments({ post, onReport, mobile = true }) {
     };
   }, []);
   async function submit(e) {e.preventDefault();if (!user) {nav('/login?returnTo=' + encodeURIComponent('/moments/' + post.id));return;}if (lock.current || (!body.trim() && !gif)) return;lock.current = true;setBusy(true);setError('');try {await momentsApi('comment', { id: post.id, body, ...(gif?{gif_id:gif}:{}), ...(reply?{parent_id:reply.parent}:{}), request_id: token.current });if (live.current) {setBody('');setGif('');setShowGifs(false);setReply(null);token.current = crypto.randomUUID();if(reply)setUpdatedThread({id:reply.parent});else await load();}} catch (e) {if (live.current) setError(momentError(e));} finally {lock.current = false;if (live.current) setBusy(false);}}
-  async function remove(c) {if (lock.current) return;lock.current = true;setBusy(true);try {await momentsApi('delete_comment', { id: post.id, comment_id: c.id });setRows((old) => old.filter((x) => x.id !== c.id));} catch (e) {setError(momentError(e));} finally {lock.current = false;setBusy(false);}}
+  async function remove(c) {if (lock.current) return;lock.current = true;setBusy(true);try {await momentsApi('delete_comment', { id: post.id, comment_id: c.id });setRows((old) => old.filter((x) => x.id !== c.id));setActiveCommentId(null);} catch (e) {setError(momentError(e));} finally {lock.current = false;setBusy(false);}}
   return <section ref={section} className="discussion-comments" aria-label="Moment comments" onClick={(event)=>{if(!event.target.closest('.discussion-comment'))setActiveCommentId(null);}}>
     <div className="discussion-list" aria-busy={loading}>
       {!user && <p className="discussion-empty"><Link to={'/login?returnTo=' + encodeURIComponent('/moments/' + post.id)}>Sign in to join the conversation.</Link></p>}
@@ -79,7 +79,7 @@ function MomentComments({ post, onReport, mobile = true }) {
         const author = comment.author;
         const profile = author?.user_id ? '/profile/' + author.user_id : null;
         const date = new Date(comment.created_date);
-        return <article className="discussion-comment" key={comment.id} data-active={activeCommentId===comment.id?'true':undefined} onClick={()=>setActiveCommentId(comment.id)}>
+        return <article className="discussion-comment" key={comment.id} data-active={activeCommentId===comment.id?'true':undefined} tabIndex={comment.can_delete?0:undefined} onClick={()=>setActiveCommentId(comment.id)}>
           {profile ? <Link to={profile} aria-label={name(author)}><Avatar user={author} size={34} /></Link> : <Avatar user={author ?? {}} size={34} />}
           <div>
             <div className="discussion-byline">
@@ -92,7 +92,7 @@ function MomentComments({ post, onReport, mobile = true }) {
             <MomentThread moment={post.id} parent={comment.id} hasReplies={comment.has_replies} updated={updatedThread?.id===comment.id?updatedThread:null} onReply={child=>chooseReply(child,comment.id)} onReport={onReport}/>
           </div>
           {comment.can_delete ?
-          <button type="button" className="comment-delete-action" disabled={busy} aria-label="Delete comment" onClick={() => remove(comment)}><X size={18} /></button> :
+          <button type="button" className="comment-delete-action" disabled={busy} aria-label="Delete comment" onClick={(event) => {event.stopPropagation();remove(comment);}}><X size={18} /></button> :
           <button type="button" aria-label="Report comment" onClick={() => onReport({ type: 'moment_comment', id: comment.id, userId: author?.user_id })}><Flag size={15} /></button>}
         </article>;
       })}
