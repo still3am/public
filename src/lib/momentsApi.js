@@ -9,4 +9,11 @@ export async function momentsApi(action,data={}){
  if(!valid)throw Error('Moments returned an incomplete response. Please retry.');
  return result;
 }
-export const momentError=e=>(e?.status??e?.response?.status)===402?'Moments is temporarily unavailable. Please try again later.':e?.response?.data?.error||e?.message||'Please try again.';
+export const momentError = (error) => {
+ const message = error?.response?.data?.error || error?.message;
+ if (Number(error?.status ?? error?.response?.status) === 402 ||
+     /Not available for the User entity/i.test(String(message || ''))) {
+  return 'Moments is temporarily unavailable. Please try again later.';
+ }
+ return message || 'Please try again.';
+};
