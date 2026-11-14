@@ -25,7 +25,7 @@ globalThis.window={matchMedia:()=>({matches:true})};
 reset([[sample],false]);tree=render(Moments);
 nodes(tree,n=>n.type==='button'&&n.props['aria-expanded']===false)[0].props.onClick();
 tree=render(Moments);
-assert.equal(nodes(tree,n=>n.props?.className==='moment-comments-sheet').length,1);
+assert.equal(nodes(tree,n=>n.props?.className?.split(' ').includes('moment-comments-sheet')).length,1);
 const commentsDialog=nodes(tree,n=>n.props?.open===true&&typeof n.props?.onOpenChange==='function')[0];
 commentsDialog.props.onOpenChange(false);
 assert.equal(states[9].size,0,'dismissing mobile comments leaves no open comment state');
