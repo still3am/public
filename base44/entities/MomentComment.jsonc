@@ -8,6 +8,7 @@
     "user_id": {
       "type": "string"
     },
+    "gif_id": {"type":"string"},
     "body": {
       "type": "string"
     },

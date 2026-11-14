@@ -92,7 +92,7 @@ export async function momentsAction(b,u,d){
   const items=[];
   for(const row of page.slice(0,20)){
    const author=await person(row.user_id);
-   if(author)items.push({id:row.id,body:row.body,created_date:row.created_date,author,can_delete:admin||row.user_id===u.id||p.user_id===u.id});
+   if(author)items.push({id:row.id,body:row.body,gif_id:row.gif_id,created_date:row.created_date,author,can_delete:admin||row.user_id===u.id||p.user_id===u.id});
   }
   return {items,has_more:page.length>20,next_offset:offset+Math.min(20,page.length)};
  }
@@ -109,7 +109,7 @@ export async function momentsAction(b,u,d){
      const author=await person(c.user_id);
      if(author){
       if(items.length===20)return {items,has_more:true,next_offset:cursor};
-      items.push({id:c.id,body:c.body,created_date:c.created_date,author:{...author,moment_comment_id:c.id},can_delete:admin||c.user_id===u.id||p.user_id===u.id});
+      items.push({id:c.id,body:c.body,gif_id:c.gif_id,created_date:c.created_date,author:{...author,moment_comment_id:c.id},can_delete:admin||c.user_id===u.id||p.user_id===u.id});
      }
     }
     cursor++;
@@ -118,8 +118,15 @@ export async function momentsAction(b,u,d){
   }
   return {items,has_more:true,next_offset:cursor};
  }
- if(d.action==='comment'){if(!await person(u.id))fail('Finish setting up your public profile before commenting.',422);const parent=d.parent_id===undefined?null:await rootComment(d.parent_id);const body=text(d.body||'',1000);if(!body)fail('Write a comment first.');if(!/^[a-zA-Z0-9-]{8,100}$/.test(d.request_id||''))fail('Please retry your comment.');const prior=rows(await s.entities.MomentComment.filter({user_id:u.id,request_id:d.request_id},'-created_date',1))[0];if(!prior){await rate(s.entities.MomentComment,'user_id',20);await moderate(s,body);await s.entities.MomentComment.create({moment_id:p.id,user_id:u.id,body,parent_id:parent?.id||'',status:'published',request_id:d.request_id});}return {success:true};}
- if(d.action==='delete_comment'){const c=await s.entities.MomentComment.get(d.comment_id);if(c.moment_id!==p.id||(!admin&&c.user_id!==u.id&&p.user_id!==u.id))fail('Comment access denied.',403);await s.entities.MomentComment.update(c.id,{status:'deleted',body:''});return {success:true};}
+ if(d.action==='comment'){if(!await person(u.id))fail('Finish setting up your public profile before commenting.',422);const parent=d.parent_id===undefined?null:await rootComment(d.parent_id);const body=text(d.body||'',1000);const gif=d.gif_id||'';if(gif&&(typeof gif!=='string'||!/^[a-zA-Z0-9]{1,64}$/.test(gif)))fail('Choose a valid GIF.');if(!body&&!gif)fail('Write a comment or choose a GIF.');if(!/^[a-zA-Z0-9-]{8,100}$/.test(d.request_id||''))fail('Please retry your comment.');const prior=rows(await s.entities.MomentComment.filter({user_id:u.id,request_id:d.request_id},'-created_date',1))[0];if(!prior){await rate(s.entities.MomentComment,'user_id',20);await moderate(s,body);if(gif){
+ const key=Deno.env.get('GIPHY_API_KEY');
+ if(!key)fail('GIF comments are currently unavailable.',503);
+ const response=await fetch('https://api.giphy.com/v1/gifs/'+gif+'?'+new URLSearchParams({api_key:key}),{signal:AbortSignal.timeout(5000)});
+ if(!response.ok)fail('Could not verify this GIF. Try again.',503);
+ const {data}=await response.json();
+ if(data?.id!==gif||data?.rating!=='g')fail('Choose a different GIF.',422);
+ }await s.entities.MomentComment.create({moment_id:p.id,user_id:u.id,body,...(gif?{gif_id:gif}:{}),parent_id:parent?.id||'',status:'published',request_id:d.request_id});}return {success:true};}
+ if(d.action==='delete_comment'){const c=await s.entities.MomentComment.get(d.comment_id);if(c.moment_id!==p.id||(!admin&&c.user_id!==u.id&&p.user_id!==u.id))fail('Comment access denied.',403);await s.entities.MomentComment.update(c.id,{status:'deleted',body:'',gif_id:''});return {success:true};}
  fail('Unknown Moments action.');
 }
 export default async function handleRequest(req){try{const b=createClientFromRequest(req);let u;try{u=await b.auth.me();}catch(e){if(![401,403].includes(e.status||e.response?.status))throw e;u=null;}const d=await req.json();return Response.json(await momentsAction(b,u,d));}catch(e){return Response.json({error:e.message||'Moments could not finish this request.'},{status:e.status||500});}}
