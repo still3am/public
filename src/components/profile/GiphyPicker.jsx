@@ -23,7 +23,7 @@ export default function GiphyPicker({kind,onSelect,onClose,disabled=false}){
    if(result?.data?.error)throw Error(result.data.error);
    if(!result?.data?.id)throw Error("The GIF could not be added to the Marketplace.");
    window.dispatchEvent(new Event(kind==="avatar"?"avatar-gallery:changed":"banner-gallery:changed"));
-   onSelect?.({...item,source:"giphy",kind});
+   onSelect?.({...item,url:item.gifUrl,source:"giphy",kind});
   }catch(error){setStatus(error?.response?.data?.error||error?.message||"Couldn’t add this GIF. Try again.");}
   finally{setBusy(false);}
  }
@@ -38,7 +38,7 @@ export default function GiphyPicker({kind,onSelect,onClose,disabled=false}){
       <button type="submit" aria-label="Search GIFs" disabled={busy}><Search size={19}/></button>
      </form>
     </div>
-    {status&&<p className="px-5 py-3 text-sm text-muted-foreground" role="status">{busy&&<Loader2 className="inline mr-2 animate-spin" size={15}/ >}{status}</p>}
+    {status&&<p className="px-5 py-3 text-sm text-muted-foreground" role="status">{busy&&<Loader2 className="inline mr-2 animate-spin" size={15}/>}{status}</p>}
     <div className="grid flex-1 min-h-0 grid-cols-2 sm:grid-cols-3 gap-2 overflow-y-auto p-3">
      {items.map(item=><button key={item.id} type="button" disabled={busy||disabled} onClick={()=>choose(item)} aria-label={"Use "+item.title+" as "+kind} className="group relative overflow-hidden rounded-xl bg-muted focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary">
       <img className={kind==="avatar"?"aspect-square w-full object-cover":"aspect-[16/9] w-full object-cover"} src={item.preview} alt={item.title} loading="lazy"/>
