@@ -195,7 +195,7 @@
   font-size: 10px;
   line-height: 1.2;
 }
-.reel-music-credit svg { flex: none; width: 10px; height: 10px; }
+.reel-music-credit svg { flex: none; width: 8px; height: 8px; }
 .reel-music-credit span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 @media (max-width: 767px) {
   .reel-author-details { --reel-author-gap: 6px; }
