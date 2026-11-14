@@ -2,7 +2,7 @@ import MomentGifPicker, { MomentGif } from '@/components/moments/MomentGifPicker
 import { MomentThread } from '@/components/moments/MomentReplies';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom';
-import { Plus, Heart, MessageCircle, Share2, Music2, MoreHorizontal, Trash2, Flag, ShieldOff, Loader2, ArrowLeft, ChevronUp, ChevronDown, Send, UserRound, Disc3, Bookmark, Clapperboard, ExternalLink } from 'lucide-react';
+import { Plus, Heart, MessageCircle, Share2, Music2, MoreHorizontal, Trash2, Flag, ShieldOff, Loader2, ArrowLeft, ChevronUp, ChevronDown, Send, UserRound, Disc3, Bookmark, Clapperboard, ExternalLink, Images } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { useAuth } from '@/lib/AuthContext';
 import { useSafety } from '@/context/SafetyContext';
@@ -117,7 +117,7 @@ function MomentComments({ post, onReport, mobile = true }) {
       <form onSubmit={submit}>
         <Avatar user={user} size={40} />
         <input ref={composerInput} aria-label={reply?"Write a reply":"Write a comment"} placeholder={reply?"Write a reply…":"Add a comment…"} maxLength={1000} value={body} disabled={busy} onChange={(event) => setBody(event.target.value)} />
-        <button type="button" className="discussion-gif-button" aria-label={gif?"Change GIF":"Add a GIF"} aria-expanded={showGifs} disabled={busy} onClick={()=>setShowGifs(value=>!value)}><span>GIF</span></button>
+        <button type="button" className="discussion-gif-button" aria-label={gif?"Change GIF":"Add a GIF"} aria-expanded={showGifs} aria-controls={"moment-gif-picker-"+post.id} disabled={busy} onClick={()=>setShowGifs(value=>!value)}><Images size={19} aria-hidden="true"/><span>GIF</span></button>
         <button type="submit" disabled={busy || (!body.trim() && !gif)} aria-label="Post comment">{busy ? <Loader2 size={18} className="animate-spin" /> : <Send size={18} />}</button>
       </form>
     </div>}
