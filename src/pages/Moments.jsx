@@ -71,8 +71,8 @@ function MomentComments({ post, onReport, mobile = true }) {
   }, []);
   async function submit(e) {e.preventDefault();if (!user) {nav('/login?returnTo=' + encodeURIComponent('/moments/' + post.id));return;}if (lock.current || (!body.trim() && !gif)) return;lock.current = true;setBusy(true);setError('');try {await momentsApi('comment', { id: post.id, body, ...(gif?{gif_id:gif}:{}), ...(reply?{parent_id:reply.parent}:{}), request_id: token.current });if (live.current) {setBody('');setGif('');setShowGifs(false);setReply(null);token.current = crypto.randomUUID();if(reply)setUpdatedThread({id:reply.parent});else await load();}} catch (e) {if (live.current) setError(momentError(e));} finally {lock.current = false;if (live.current) setBusy(false);}}
   async function remove(c) {if (lock.current) return;lock.current = true;setBusy(true);try {await momentsApi('delete_comment', { id: post.id, comment_id: c.id });setRows((old) => old.filter((x) => x.id !== c.id));} catch (e) {setError(momentError(e));} finally {lock.current = false;setBusy(false);}}
-  return <section ref={section} className="discussion-comments" aria-label="Moment comments">
-    <div className="discussion-list" aria-busy={loading} onClick={(event)=>{if(!event.target.closest('.discussion-comment'))setActiveCommentId(null);}}>
+  return <section ref={section} className="discussion-comments" aria-label="Moment comments" onClick={(event)=>{if(!event.target.closest('.discussion-comment'))setActiveCommentId(null);}}>
+    <div className="discussion-list" aria-busy={loading}>
       {!user && <p className="discussion-empty"><Link to={'/login?returnTo=' + encodeURIComponent('/moments/' + post.id)}>Sign in to join the conversation.</Link></p>}
       {user && !rows.length && !loading && !error && <p className="discussion-empty">Be the first to comment.</p>}
       {rows.map((comment) => {
