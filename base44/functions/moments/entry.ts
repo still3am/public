@@ -73,7 +73,8 @@ export async function momentsAction(b,u,d){
     profile_background_colors:colors,profile_background_motion:current.profile_background_motion==='still'?'still':'flow',
     profile_background_speed:typeof current.profile_background_speed==='number'?Math.max(.35,Math.min(1.6,current.profile_background_speed)):1,
     is_artist:isArtist,friends_family_badge:(user?user.friends_family_badge:profile.friends_family_badge)===true,
-    profile_badge:isAdmin?'admin':isArtist||creatorRole==='artist'?'artist':creatorRole==='uploader'?'uploader':null
+    profile_badge:isAdmin?'admin':isArtist||creatorRole==='artist'?'artist':creatorRole==='uploader'?'uploader':null,
+    moment_badge:(user?user.friends_family_badge:profile.friends_family_badge)===true?'friends_family':isAdmin?'admin':isArtist||creatorRole==='artist'?'artist':creatorRole==='uploader'?'uploader':null
    });
   }
  }
