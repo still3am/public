@@ -29,14 +29,12 @@ export async function momentsAction(b,u,d){
  async function people(ids){
   const unique=[...new Set(ids.filter(id=>typeof id==='string'&&!blocked.has(id)&&!profileCache.has(id)))];
   if(!unique.length)return;
-  const [profiles,restricted]=await Promise.all([
-   all(s.entities.PublicProfile,{user_id:{$in:unique},visible:true}),
-   all(s.entities.User,{id:{$in:unique},$or:[{disabled:true},{is_blocked:true}]})
-  ]);
-  const restrictedIds=new Set(restricted.map(account=>account.id));
+  // The suspension workflow hides the public profile. The built-in User entity
+  // does not support this bulk lookup on the deployed runtime.
+  const profiles=await all(s.entities.PublicProfile,{user_id:{$in:unique},visible:true});
   const byId=new Map(profiles.map(profile=>[profile.user_id,profile]));
   for(const id of unique){
-   const profile=restrictedIds.has(id)?null:byId.get(id);
+   const profile=byId.get(id);
    profileCache.set(id,profile?{
     user_id:id,display_name:profile.display_name||profile.full_name||'PUBLIC listener',
     username:profile.username||'',avatar_url:profile.avatar_url||'',avatar_preset:profile.avatar_preset||'',
@@ -54,7 +52,7 @@ export async function momentsAction(b,u,d){
   if(d.scope==='mine')query.user_id=u.id;
   if(d.scope==='following'){const following=await all(s.entities.Follow,{follower_id:u.id});query.user_id={$in:following.map(x=>x.following_id).filter(id=>!blocked.has(id))};}
   if(d.track_id)query.track_id=String(d.track_id).slice(0,100);
-  const offset=Math.max(0,Math.min(100000,Math.floor(Number(d.offset)||0)));const page=rows(await s.entities.Moment.filter(query,'-created_date',13,offset));const items=[];for(const p of page.slice(0,12)){const value=await present(p);if(value)items.push(value);}return {items,next_offset:offset+Math.min(12,page.length),has_more:page.length>12};
+  const offset=Math.max(0,Math.min(100000,Math.floor(Number(d.offset)||0)));const page=rows(await s.entities.Moment.filter(query,'-created_date',13,offset));const items=[];await people(page.slice(0,12).map(p=>p.user_id));for(const p of page.slice(0,12)){const value=await present(p);if(value)items.push(value);}return {items,next_offset:offset+Math.min(12,page.length),has_more:page.length>12};
  }
  if(d.action==='get'){return {post:await present(await post(d.id))};}
  if(d.action==='publish'){
@@ -102,7 +100,7 @@ export async function momentsAction(b,u,d){
   const recipientId=d.recipient_id;
   if(typeof recipientId!=='string'||!/^[a-zA-Z0-9_-]{1,100}$/.test(recipientId)||recipientId===u.id)fail('Choose a recipient.');
   const [sender,recipient]=await Promise.all([person(u.id),person(recipientId)]);
-  if(!sender||!recipient||(!recipient.is_public_admin&&!recipient.friends_family_badge))fail('This person cannot receive Moments.',403);
+  if(!sender||!recipient||(recipient.profile_badge!=='admin'&&!recipient.friends_family_badge))fail('This person cannot receive Moments.',403);
   if(p.user_id!==u.id&&rows(await s.entities.Block.filter({$or:[{user_id:recipientId,blocked_user_id:p.user_id},{user_id:p.user_id,blocked_user_id:recipientId}]},'-created_date',1)).length)fail('This person cannot open the Moment.',403);
   const source_key='moment-share:'+u.id+':'+p.id+':'+recipientId;
   const prior=rows(await s.entities.Notification.filter({source_key},'-created_date',1))[0];
