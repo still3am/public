@@ -3,13 +3,13 @@ import ProfileMotionEditor from "./ProfileMotionEditor";
 import {isMotionFile,PROFILE_MEDIA_ACCEPT} from "@/lib/profileMotion";
 import ProfileImageEditor from "./ProfileImageEditor";
 import {useCoverUrl} from "@/hooks/useCoverUrl";
-import AvatarPicker from "./AvatarPicker";
+import ProfileMarketplace from "./ProfileMarketplace";
 import {useRef,useState} from "react";
 import {Camera,Loader2} from "lucide-react";
 import Avatar from "@/components/Avatar";
 
 /** One frame for both uploaded images and initials, with an accessible upload control. */
-export default function ProfileAvatar({user,editing=false,busy=false,onUpload,onMotionUpload,onSelect,active=true,onView,gallery,setGallery}){
+export default function ProfileAvatar({user,editing=false,busy=false,onUpload,onMotionUpload,onSelect,onSelectBanner,active=true,onView,gallery,setGallery}){
  const input=useRef(null);
  const [file,setFile]=useState(null),[error,setError]=useState("");
  const source=useCoverUrl(user?.avatar_url);
@@ -21,7 +21,7 @@ export default function ProfileAvatar({user,editing=false,busy=false,onUpload,on
    <button type="button" aria-label={busy?"Uploading profile image":"Choose profile image"} disabled={busy} onClick={()=>setGallery("avatars")} className="profile-edit-circle profile-avatar-upload absolute bottom-1 right-1 w-10 h-10 rounded-full bg-foreground text-background grid place-items-center border-2 border-card shadow-sm disabled:opacity-60" title="Change profile image">
     {busy?<Loader2 size={16} className="animate-spin"/>:<Camera size={17}/>}
    </button>
-   {gallery==="avatars"&&<AvatarPicker onBrowseBanners={()=>setGallery("banners")} allowMotion={!!onMotionUpload} user={user} busy={busy} onEditPhoto={editPhoto} error={error} onClose={()=>setGallery(null)} onSelect={value=>{onSelect?.(value);setGallery(null);}} onUpload={()=>{setGallery(null);input.current?.click();}}/>}
+   {gallery&&<ProfileMarketplace kind={gallery} user={user} busy={busy} allowMotion={!!onMotionUpload} error={error} onClose={()=>setGallery(null)} onSelectAvatar={value=>onSelect?.(value)} onSelectBanner={onSelectBanner} onEditPhoto={editPhoto} onAvatarUpload={()=>{setGallery(null);input.current?.click();}}/>}
    {file&&(isMotionFile(file)&&onMotionUpload?<ProfileMotionEditor file={file} onClose={()=>setFile(null)} onApply={onMotionUpload}/>:<ProfileImageEditor file={file} onClose={()=>setFile(null)} onApply={files=>onUpload?.(files.avatar)}/>)}
    <input ref={input} disabled={busy} type="file" accept={onMotionUpload?PROFILE_MEDIA_ACCEPT:"image/*"} className="hidden" aria-label="Profile image file" onChange={event=>{const file=event.target.files?.[0];event.target.value="";if(file)setFile(file);}}/>
   </>}
