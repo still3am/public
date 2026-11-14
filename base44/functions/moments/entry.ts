@@ -73,6 +73,18 @@ export async function momentsAction(b,u,d){
   if(!['fast','normal','slow','off'].includes(photoAutoplay))fail('Choose a photo autoplay speed.');
   await moderate(s,caption);const p=await s.entities.Moment.create({user_id:u.id,caption,photo_autoplay:video||media.length<2?'normal':photoAutoplay,media:media.map(m=>({url:m.url,type:m.type,size:m.size,duration:m.duration||0,...(m.track_id?{track_id:m.track_id}:{})})),track_id:song.id,clip_start:start,clip_duration:duration,music_volume:volumes[0],original_volume:video?volumes[1]:0,rights_confirmed:true,status:'published',liker_ids:[],request_id:d.request_id});return {post:await present(p)};
  }
+ if(d.action==='gif_search'){
+  auth();
+  const key=Deno.env.get('GIPHY_API_KEY');
+  if(!key)fail('GIF search is not configured yet.',503);
+  const query=text(d.query||'',80);
+  const params=new URLSearchParams({api_key:key,rating:'g',limit:'24',...(query?{q:query}:{})});
+  const endpoint=query?'search':'trending';
+  const response=await fetch('https://api.giphy.com/v1/gifs/'+endpoint+'?'+params,{signal:AbortSignal.timeout(8000)});
+  if(!response.ok)fail('GIF search is temporarily unavailable.',503);
+  const result=await response.json();
+  return {items:(result.data||[]).filter(g=>g.rating==='g'&&/^[a-zA-Z0-9]{1,64}$/.test(g.id||'')).map(g=>({id:g.id,title:String(g.title||'GIF').slice(0,100),preview:g.images?.fixed_width_small?.url||''})).filter(g=>g.preview)};
+ }
  auth();const p=await post(d.id);
  if(d.action==='share_people'){
   const people=[];
@@ -141,18 +153,7 @@ export async function momentsAction(b,u,d){
   }
   return {items,has_more:true,next_offset:cursor};
  }
- if(d.action==='gif_search'){
-  auth();
-  const key=Deno.env.get('GIPHY_API_KEY');
-  if(!key)fail('GIF search is not configured yet.',503);
-  const query=text(d.query||'',80);
-  const params=new URLSearchParams({api_key:key,rating:'g',limit:'24',...(query?{q:query}:{})});
-  const endpoint=query?'search':'trending';
-  const response=await fetch('https://api.giphy.com/v1/gifs/'+endpoint+'?'+params,{signal:AbortSignal.timeout(8000)});
-  if(!response.ok)fail('GIF search is temporarily unavailable.',503);
-  const result=await response.json();
-  return {items:(result.data||[]).filter(g=>g.rating==='g'&&/^[a-zA-Z0-9]{1,64}$/.test(g.id||'')).map(g=>({id:g.id,title:String(g.title||'GIF').slice(0,100),preview:g.images?.fixed_width_small?.url||''})).filter(g=>g.preview)};
- }
+
  if(d.action==='comment'){if(!await person(u.id))fail('Finish setting up your public profile before commenting.',422);const parent=d.parent_id===undefined?null:await rootComment(d.parent_id);const body=text(d.body||'',1000);const gif=d.gif_id||'';if(gif&&(typeof gif!=='string'||!/^[a-zA-Z0-9]{1,64}$/.test(gif)))fail('Choose a valid GIF.');if(!body&&!gif)fail('Write a comment or choose a GIF.');if(!/^[a-zA-Z0-9-]{8,100}$/.test(d.request_id||''))fail('Please retry your comment.');const prior=rows(await s.entities.MomentComment.filter({user_id:u.id,request_id:d.request_id},'-created_date',1))[0];if(!prior){await rate(s.entities.MomentComment,'user_id',20);await moderate(s,body);if(gif){
  const key=Deno.env.get('GIPHY_API_KEY');
  if(!key)fail('GIF comments are currently unavailable.',503);
