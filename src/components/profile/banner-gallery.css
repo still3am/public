@@ -1,6 +1,8 @@
 .public-banner-gallery{display:flex!important;flex-direction:column;width:calc(100vw - 24px)!important;max-width:760px!important;max-height:min(88dvh,860px);overflow:hidden;border-radius:28px!important;padding:26px;gap:18px}
 .public-banner-gallery>div:first-child{padding-right:26px}
 .public-banner-gallery h2{font-size:27px;letter-spacing:-.04em}
+.banner-gallery-giphy{display:flex;flex-direction:column;align-items:flex-start;gap:4px;flex-shrink:0;padding:12px 15px;border:1px solid hsl(var(--border));border-radius:16px;font-size:13px;font-weight:600;text-align:left}.banner-gallery-giphy small{font-size:10px;font-weight:400;color:hsl(var(--muted-foreground))}
+.banner-gallery-caption small{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:9px;color:hsl(var(--muted-foreground))}
 .banner-gallery-tabs{display:flex;gap:4px;flex-shrink:0;padding:4px;border-radius:999px;background:hsl(var(--muted)/.65)}
 .banner-gallery-tabs button{display:flex;align-items:center;justify-content:center;gap:9px;flex:1;min-height:44px;padding:9px 16px;border-radius:999px;font-size:14px;font-weight:600;color:hsl(var(--muted-foreground));transition:background .18s,color .18s,box-shadow .18s}
 .banner-gallery-tabs button[aria-pressed=true]{background:hsl(var(--card));color:hsl(var(--foreground));box-shadow:0 2px 6px #00000012}
