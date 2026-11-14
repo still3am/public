@@ -10,7 +10,7 @@ export async function loadAvatarGallery(client){
 export async function removeGalleryAvatar(client,id){
  const user=await client.auth.me();
  if(user?.role!=="admin"||user.disabled||user.is_blocked)throw Error("Only admins can remove gallery avatars.");
- if(!AVATAR_PRESETS.some(item=>item.id===id))throw Error("Unknown avatar.");
+ if(!(await loadAvatarGallery(client)).some(item=>item.id===id))throw Error("Unknown avatar.");
  let failure;
  try{await client.entities.AvatarRemoval.create({avatar_id:id});}catch(error){failure=error;}
  const confirmed=rows(await client.entities.AvatarRemoval.filter({avatar_id:id},"-created_date",1));

@@ -22,7 +22,7 @@ export default async function handleRequest(req) {
       const name = typeof body.name === 'string' ? body.name.trim().slice(0,80) : '';
       const url = typeof body.url === 'string' && body.url.length <= 2048 ? new URL(body.url) : null;
       const prefix = '/api/apps/6a5676aa61ea8a51237aa4ee/files/public/';
-      if (!name || !['avatar','banner'].includes(body.kind) || !url || url.protocol !== 'https:' || !['base44.app','publicnet.base44.app','media.base44.com'].includes(url.hostname) || !url.pathname.startsWith(prefix)) {
+      if (body.rightsConfirmed !== true || !name || !['avatar','banner'].includes(body.kind) || !url || url.protocol !== 'https:' || !['base44.app','publicnet.base44.app','media.base44.com'].includes(url.hostname) || !(url.hostname === 'media.base44.com' ? url.pathname.startsWith('/images/public/6a5676aa61ea8a51237aa4ee/') : url.pathname.startsWith(prefix))) {
         return Response.json({error:'Choose a valid gallery image.'},{status:400});
       }
       const item = await base44.asServiceRole.entities.GallerySubmission.create({uploader_id:user.id,name,url:url.href,kind:body.kind,status:'pending'});

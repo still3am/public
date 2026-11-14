@@ -10,7 +10,7 @@ export async function loadBannerGallery(client){
 export async function removeGalleryBanner(client,id){
  const user=await client.auth.me();
  if(user?.role!=="admin"||user.disabled||user.is_blocked)throw Error("Only admins can delete gallery banners.");
- if(!BANNER_PRESETS.some(item=>item.id===id))throw Error("Unknown banner.");
+ if(!(await loadBannerGallery(client)).some(item=>item.id===id))throw Error("Unknown banner.");
  const existing=rows(await client.entities.BannerRemoval.filter({banner_id:id},"-created_date",1));
  if(!existing.length){
   const current=await client.auth.me();

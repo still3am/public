@@ -14,7 +14,7 @@ export default function GalleryContribute({kind,onBusy}){
   setBusy(true);onBusy?.(true);setMessage("");
   try{
    const {file_url}=await base44.integrations.Core.UploadFile({file});
-   const result=await base44.functions.invoke("usersByIds",{action:"submit_gallery_design",kind,name:data.get("name"),url:file_url});
+   const result=await base44.functions.invoke("usersByIds",{action:"submit_gallery_design",kind,name:data.get("name"),rightsConfirmed:data.get("rights")==="on",url:file_url});
    if(!result?.data?.id)throw Error("Submission could not be confirmed.");
    form.reset();setMessage("Submitted for admin review.");
   }catch{setMessage("Couldn’t submit this design. Try again.");}
@@ -26,7 +26,7 @@ export default function GalleryContribute({kind,onBusy}){
    <p className="text-sm">Earn $0.10 when PUBLIC publishes an approved design.</p>
    <label>Design name<input className="block w-full rounded border p-2" name="name" maxLength={80} required disabled={busy}/></label>
    <label>Image or GIF<input className="block w-full" type="file" name="design" accept="image/png,image/jpeg,image/webp,image/gif" required disabled={busy}/></label>
-   <label><input type="checkbox" required disabled={busy}/> I have permission to share this design in the public gallery.</label>
+   <label><input type="checkbox" name="rights" required disabled={busy}/> I have permission to share this design in the public gallery.</label>
    <button type="submit" className="playlist-action" disabled={busy}>{busy?"Submitting…":"Submit "+kind}</button>
    {message&&<p role="status">{message}</p>}
   </form>
