@@ -16,8 +16,11 @@ export async function moderateAdminTrack(client,id,status){
  await requireAdmin(client);if(!['approved','rejected','pending','private'].includes(status))throw Error('Invalid release status.');
  const track=await client.entities.Track.get(id);
  if(status==='approved'&&!(track.artist?.trim()&&track.genre&&track.cover_art_url&&track.rights_confirmed))throw Error('Artist, genre, artwork and confirmed rights are required.');
- const saved=await client.entities.Track.update(id,{approval_status:status,is_published:status==='approved',...(status==='approved'&&!track.published_at?{published_at:new Date().toISOString()}: {})});
- if(saved.approval_status!==status||saved.is_published!==(status==='approved'))throw Error('Release change was not confirmed.');
+ if(!client.functions?.invoke)throw Error('Track moderation is unavailable. Please refresh and retry.');
+ const response=await client.functions.invoke('securityGateway',{entity:'Track',action:'update',args:[id,{approval_status:status,is_published:status==='approved'}]});
+ if(!response?.data||!Object.prototype.hasOwnProperty.call(response.data,'result'))throw Error(response?.data?.error||'The release change could not be saved.');
+ const saved=response.data.result;
+ if(saved?.approval_status!==status||saved?.is_published!==(status==='approved'))throw Error('Release change was not confirmed.');
  if(typeof window!=='undefined')window.dispatchEvent(new Event('catalog:invalidate'));return saved;
 }
 export async function saveAdminReply(client,id,text){
