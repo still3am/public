@@ -11,6 +11,43 @@ export default async function handleRequest(req) {
     if(user.is_blocked || user.disabled) return Response.json({error:'Account suspended'},{status:403});
 
     const body = await req.json().catch(() => ({}));
+    if (body.action === 'giphy_search' || body.action === 'add_giphy_to_marketplace') {
+      const key = Deno.env.get('GIPHY_API_KEY');
+      if (!key) return Response.json({ error: 'GIPHY is temporarily unavailable.' }, { status: 503 });
+      const gifId = typeof body.id === 'string' ? body.id.trim() : '';
+      if (body.action === 'add_giphy_to_marketplace' && (!/^[a-zA-Z0-9]{1,64}$/.test(gifId) || !['avatar','banner'].includes(body.kind))) {
+        return Response.json({ error: 'Choose a valid GIPHY GIF and profile type.' }, { status: 400 });
+      }
+      if (body.action === 'add_giphy_to_marketplace') {
+        const existing = await base44.asServiceRole.entities.GallerySubmission.filter({ kind: body.kind, source: 'giphy', source_id: gifId }, '-created_date', 1);
+        const prior = Array.isArray(existing) ? existing[0] : existing?.items?.[0];
+        if (prior) return Response.json({ id: prior.id, item: prior, alreadyAdded: true });
+      }
+      const endpoint = body.action === 'giphy_search' ? (typeof body.query === 'string' && body.query.trim() ? 'search' : 'trending') : encodeURIComponent(gifId);
+      const params = new URLSearchParams({ api_key: key, rating: 'g', limit: '24' });
+      if (body.action === 'giphy_search' && endpoint === 'search') params.set('q', body.query.trim().slice(0,80));
+      const response = await fetch('https://api.giphy.com/v1/gifs/' + endpoint + '?' + params, { signal: AbortSignal.timeout(8000) });
+      if (!response.ok) return Response.json({ error: 'GIPHY is temporarily unavailable.' }, { status: 503 });
+      const payload = await response.json();
+      const cleanGif = gif => {
+        const id = String(gif?.id || '');
+        const originalUrl = gif?.images?.original?.url || '';
+        const preview = gif?.images?.fixed_width_small?.url || gif?.images?.fixed_width?.url || '';
+        let media, source;
+        try { media = new URL(originalUrl); source = new URL(gif?.url || ''); } catch { return null; }
+        if (!/^[a-zA-Z0-9]{1,64}$/.test(id) || gif.rating !== 'g' || media.protocol !== 'https:' || !media.hostname.endsWith('.giphy.com') || source.protocol !== 'https:' || !source.hostname.endsWith('.giphy.com') || !preview.startsWith('https://')) return null;
+        return { id, title: String(gif.title || 'GIPHY GIF').slice(0,100), preview, gifUrl: originalUrl, creatorName: String(gif.username || '').slice(0,80), sourceUrl: source.href };
+      };
+      if (body.action === 'giphy_search') return Response.json({ items: (payload.data || []).map(cleanGif).filter(Boolean) });
+      const gif = cleanGif(payload.data);
+      if (!gif || gif.id !== gifId) return Response.json({ error: 'That GIPHY item is unavailable or not rated for general audiences.' }, { status: 422 });
+      const kind = body.kind;
+      const item = await base44.asServiceRole.entities.GallerySubmission.create({
+        uploader_id: user.id, name: gif.title, url: gif.gifUrl, gif_url: gif.gifUrl, kind, status: 'approved',
+        source: 'giphy', source_id: gif.id, creator_name: gif.creatorName, source_url: gif.sourceUrl
+      });
+      return Response.json({ id: item.id, item, alreadyAdded: false });
+    }
     if (body.action === 'set_gallery_uploader') {
       if (user.role !== 'admin') return Response.json({error:'Administrator access required.'},{status:403});
       if (typeof body.enabled !== 'boolean' || !/^[a-zA-Z0-9_-]{1,100}$/.test(body.user_id || '')) return Response.json({error:'Invalid member or role.'},{status:400});
