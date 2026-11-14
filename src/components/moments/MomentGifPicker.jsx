@@ -1,4 +1,4 @@
-import {Search,X,Clapperboard} from 'lucide-react';
+import {Search,X} from 'lucide-react';
 import {Dialog,DialogContent,DialogTitle,DialogDescription,DialogClose} from '@/components/ui/dialog';
 import {useEffect,useRef,useState} from 'react';
 import {momentsApi,momentError} from '@/lib/momentsApi';
