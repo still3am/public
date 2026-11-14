@@ -28,7 +28,7 @@ import ForgotPassword from '@/pages/ForgotPassword';
 import ResetPassword from '@/pages/ResetPassword';
 import Home from '@/pages/Home';
 import CommunityPreview from '@/pages/CommunityPreview';
-import Moments, { MomentsExperience } from '@/pages/Moments';
+import Moments from '@/pages/Moments';
 import PersonalMix from '@/pages/PersonalMix';
 import RecapPlaylist from '@/pages/RecapPlaylist';
 import Search from '@/pages/Search';
@@ -93,8 +93,8 @@ const AuthenticatedApp = () => {
         <Route path="/" element={<Home />} />
         <Route path="/search" element={<Search />} />
         <Route path="/community-preview" element={<CommunityPreview />} />
-        <Route path="/moments" element={<MomentsAccess />} />
-        <Route path="/moments/:id" element={<MomentsAccess />} />
+        <Route path="/moments" element={<Moments />} />
+        <Route path="/moments/:id" element={<Moments />} />
         <Route path="/top" element={<TopCharts />} />
         <Route path="/recent" element={<RecentlyAdded />} />
         <Route path="/track/:id" element={<TrackDetail />} />
@@ -135,12 +135,6 @@ const AuthenticatedApp = () => {
   );
 };
 
-
-function MomentsAccess() {
-  const { user } = useAuth();
-  if (user?.friends_family_badge === true && !user.disabled && !user.is_blocked) return <MomentsExperience />;
-  return <Moments />;
-}
 
 function App() {
 
