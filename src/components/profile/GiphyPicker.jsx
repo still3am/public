@@ -12,8 +12,8 @@ export default function GiphyPicker({kind="avatar",onSelect,onClose,disabled=fal
  useEffect(()=>setTarget(initialKind),[initialKind]);
  async function search(term="",offset=0){
   const request=++requestId.current;
-  setActiveTerm(term);setFailed(false);setMoreLoading(false);loadingMore.current=false;
-  if(!offset){itemsRef.current=[];setItems([]);setHasMore(false);setStatus("Loading GIFs…");}
+  setActiveTerm(term);setFailed(false);
+  if(!offset){setMoreLoading(false);loadingMore.current=false;itemsRef.current=[];setItems([]);setHasMore(false);setStatus("Loading GIFs…");}
   try{
    const result=await base44.functions.invoke("usersByIds",{action:"giphy_search",query:term,offset});
    if(request!==requestId.current)return;
@@ -25,7 +25,7 @@ export default function GiphyPicker({kind="avatar",onSelect,onClose,disabled=fal
    if(request!==requestId.current)return;
    if(!offset){itemsRef.current=[];setItems([]);}
    setFailed(true);setStatus(error?.response?.data?.error||error?.message||"GIPHY is temporarily unavailable.");
-  }finally{if(request===requestId.current){setBusy(false);loadingMore.current=false;setMoreLoading(false);}}
+  }finally{if(request===requestId.current){setBusy(false);if(offset){loadingMore.current=false;setMoreLoading(false);}}}
  }
  useEffect(()=>{void search("");return()=>{requestId.current++;};},[]);
  async function loadMore(){
