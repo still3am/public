@@ -50,27 +50,30 @@
 .moment-reply-context{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:6px 12px;font-size:.8rem}
 .moment-comment-gif{display:block;max-width:min(180px,100%);max-height:150px;object-fit:contain;border-radius:10px;margin-block:5px}
 .moment-gif-picker[role=dialog]{
- top:auto;bottom:max(8px,env(safe-area-inset-bottom));translate:0;transform:translateX(-50%);
- z-index:110;display:flex;flex-direction:column;gap:10px;width:calc(100% - 20px);max-width:480px;
- height:min(69dvh,680px);max-height:calc(100dvh - 20px);overflow:hidden;
- border:0;border-radius:30px;background:#181d21;color:#f6f7f9;padding:14px 14px 10px;
+ top:auto;bottom:max(0px,env(safe-area-inset-bottom));left:50%;translate:0;transform:translateX(-50%);
+ z-index:110;box-sizing:border-box;display:flex;flex-direction:column;gap:10px;width:calc(100% - 16px);max-width:520px;
+ height:min(82dvh,820px);max-height:calc(100dvh - env(safe-area-inset-top) - 8px);min-height:0;overflow:hidden;
+ border:0;border-radius:30px;background:#181d21;color:#f6f7f9;padding:10px 14px max(10px,env(safe-area-inset-bottom));
 }
-.moment-gif-handle{flex:none;width:36px;height:3px;border-radius:99px;background:#9ba3b0;margin:1px auto 8px}
+.moment-gif-picker[role=dialog]>button:last-child{display:none}
+.moment-gif-handle{flex:none;width:40px;height:4px;border-radius:99px;background:#9ba3b0;margin:2px auto 5px}
+.moment-gif-header{display:flex;align-items:center;justify-content:space-between;flex:none;min-height:44px;padding-inline:4px;font-size:17px;font-weight:700}
+.moment-gif-close{display:grid;place-items:center;flex:none;width:44px;height:44px;border-radius:50%;background:#ffffff12;color:#f6f7f9}
 .moment-gif-picker form{display:flex;flex-direction:row-reverse;align-items:center;gap:6px;border-radius:999px;background:#292e35;padding:0 12px;flex:none}
-.moment-gif-picker form input{flex:1;min-width:0;min-height:46px;background:transparent;color:inherit;font-size:16px}
-.moment-gif-picker form button{display:grid;place-items:center;min-width:34px;min-height:44px;color:#aeb6c3}
+.moment-gif-picker form input{flex:1;min-width:0;min-height:48px;background:transparent;color:inherit;font-size:16px}
+.moment-gif-picker form button{display:grid;place-items:center;min-width:40px;min-height:44px;color:#aeb6c3}
 .moment-gif-picker form input::placeholder{color:#aeb6c3}
-.moment-gif-results{flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;columns:2;column-gap:8px}
-.moment-gif-results button{display:block;width:100%;break-inside:avoid;margin-bottom:8px}
-.moment-gif-results img{display:block;width:100%;height:auto;border-radius:9px}
-.moment-gif-picker>small{color:#aeb6c3;text-align:center}
+.moment-gif-results{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));align-content:start;gap:8px;flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;touch-action:pan-y;-webkit-overflow-scrolling:touch;padding:2px}
+.moment-gif-results button{display:block;align-self:start;min-width:0;width:100%;overflow:hidden;border-radius:10px;background:#242a31}
+.moment-gif-results img{display:block;width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:9px}
+.moment-gif-picker>small{flex:none;color:#aeb6c3;text-align:center}
 .discussion-composer>form{grid-template-columns:auto minmax(0,1fr) auto auto}
 
-.reels-comments .moment-gif-inline{display:flex;flex-direction:column;gap:8px;height:min(34dvh,300px);min-width:0;margin-block:6px 10px;padding:10px;border:1px solid #ffffff20;border-radius:16px;background:#181d21}
-.reels-comments .moment-gif-inline header{display:flex;align-items:center;justify-content:space-between;font-size:14px}
-.reels-comments .moment-gif-inline header button{display:grid;place-items:center;width:32px;height:32px}
+.reels-comments .moment-gif-inline{display:flex;flex-direction:column;gap:8px;height:min(44dvh,360px);min-height:220px;min-width:0;overflow:hidden;margin-block:6px 10px;padding:10px;border:1px solid #ffffff20;border-radius:16px;background:#181d21}
+.reels-comments .moment-gif-inline .moment-gif-header{font-size:14px}
 .reels-comments .moment-gif-inline form{display:flex;flex-direction:row-reverse}
-.reels-comments .moment-gif-inline .moment-gif-results{flex:1}
+.reels-comments .moment-gif-inline .moment-gif-results{flex:1;min-height:0}
+.reels-comments .moment-gif-inline .moment-gif-results img{aspect-ratio:4/3;object-fit:cover}
 .moment-gif-categories{display:flex;gap:6px;overflow-x:auto;overscroll-behavior-inline:contain;flex:none;padding:2px}
 .moment-gif-categories button{flex:none;min-height:32px;padding:4px 10px;border-radius:999px;background:#ffffff12;font-size:12px}
 .moment-gif-categories button[aria-pressed=true]{background:#8e9cff;color:#10131b}
