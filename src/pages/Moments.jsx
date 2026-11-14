@@ -224,7 +224,7 @@ export function MomentsExperience() {
           <div className="reel-info">
             <div className="reel-creator">
               <div className="reel-author-details">
-                <Link to={'/profile/' + post.user_id} className="reel-author"><Avatar user={post.author} size={34} /><span>{name(post.author)}</span></Link>
+                <Link to={'/profile/' + post.user_id} className="reel-author"><Avatar user={post.author} size={42} /><span className="reel-author-name">{name(post.author)}</span></Link>
                 <div className="reel-music-credit-slot" />
               </div>
               {user?.id !== post.user_id && <button type="button" disabled={busy === post.id} className="reel-follow" onClick={() => follow(post)}>{following.has(post.user_id) ? 'Following' : 'Follow'}</button>}
