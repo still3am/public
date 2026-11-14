@@ -10,10 +10,39 @@
 .marketplace-kind-tabs button[aria-selected=true]{background:hsl(var(--card));color:hsl(var(--foreground));box-shadow:0 2px 6px #00000012}
 .marketplace-inner{display:flex!important;flex:1 1 0%;flex-direction:column;gap:14px;min-width:0;min-height:0;width:100%;max-width:none!important;height:auto!important;max-height:none!important;overflow-y:auto!important;overscroll-behavior:contain;padding:0!important;border:0!important;border-radius:0!important;background:transparent!important}
 .public-marketplace-unified .marketplace-inner{flex:1 1 0%;min-height:0;max-height:none!important;overflow-y:auto!important}
-.public-marketplace-unified .public-avatar-picker.marketplace-inner{width:100%;height:auto!important;padding:0!important;gap:14px}
-.public-marketplace-unified .public-banner-gallery.marketplace-inner{width:100%;height:auto!important;padding:0!important;gap:14px}
-.public-marketplace-unified .banner-gallery-scroll{flex:1 1 0%;height:0;min-height:100px}
-.public-marketplace-unified .banner-gallery-footer{padding-top:12px}
+.public-marketplace-unified :is(.public-avatar-picker,.public-banner-gallery).marketplace-inner {
+ width:100%!important;
+ box-sizing:border-box;
+}
+.public-marketplace-unified .public-banner-gallery.marketplace-inner {
+ gap:12px;
+}
+.public-marketplace-unified .banner-gallery-scroll {
+ flex:1 1 0%;
+ min-height:140px;
+}
+.public-marketplace-unified :is(.banner-gallery-grid,.banner-gallery-skeletons) {
+ grid-template-columns:repeat(auto-fit,minmax(min(100%,155px),1fr));
+ gap:10px;
+}
+.public-marketplace-unified .banner-gallery-caption {
+ min-height:36px;
+ padding:6px 8px;
+}
+.public-marketplace-unified .banner-gallery-footer {
+ padding-top:10px;
+ gap:8px;
+}
+.public-marketplace-unified .banner-gallery-actions button {
+ min-width:0;
+ padding-inline:clamp(10px,4vw,20px);
+}
+@media(max-height:600px) {
+ .public-marketplace-unified .banner-gallery-scroll {
+  flex:0 0 auto;
+  overflow:visible;
+ }
+}
 @media(max-width:600px){
  .public-marketplace-dialog{width:calc(100vw - 16px)!important;height:min(88dvh,820px);max-height:calc(100dvh - 16px);padding:20px 16px!important;gap:13px!important;border-radius:24px!important}
  .public-marketplace-unified .marketplace-header h2{font-size:22px}
