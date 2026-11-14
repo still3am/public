@@ -44,7 +44,7 @@ export default function MomentGifPicker({onSelect,onClose,inline=false,id}){
   if(node.scrollHeight-node.scrollTop-node.clientHeight<240)loadMore();
  }
  const content=<>
-  <header className="moment-gif-header"><strong>GIFs</strong>{inline?<button type="button" className="moment-gif-close" aria-label="Close GIF picker" onClick={onClose}><X size={20}/></button>:<DialogClose className="moment-gif-close" aria-label="Close GIF picker"><X size={20}/></DialogClose>}</header>
+  <header className="moment-gif-header"><strong>GIFs</strong>{inline?<button type="button" className="moment-gif-close" aria-label="Close GIF picker" onClick={onClose}><X size={18}/></button>:<DialogClose className="moment-gif-close" aria-label="Close GIF picker"><X size={18}/></DialogClose>}</header>
   <form onSubmit={event=>{event.preventDefault();search(query.trim());}}>
    <button type="submit" aria-label="Search GIFs"><Search size={20}/></button><input placeholder="Search GIPHY" aria-label="Search GIPHY" value={query} maxLength={80} onChange={event=>setQuery(event.target.value)}/>
   </form>
