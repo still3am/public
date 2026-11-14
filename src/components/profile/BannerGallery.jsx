@@ -29,7 +29,7 @@ export default function BannerGallery({busy=false,onClose,onSelect,onBrowseAvata
  {user?.role==="admin"&&pending===item.id&&<div className="banner-gallery-delete-confirm" role="group" aria-label={"Confirm deletion of "+item.name}><strong>Delete {item.name}?</strong><p>Remove from the gallery? Existing profile banners stay.</p><div><button type="button" disabled={locked} onClick={()=>setPending("")}>Cancel</button><button type="button" disabled={locked} onClick={async()=>{if(await remove(item.id)){if(selected===item.url)setSelected("");setPending("");}}}>{deleting===item.id?"Deleting…":"Delete banner"}</button></div></div>}
  </div>)}</div>}
  </div>
- {showGiphy&&<GiphyPicker kind="banner" disabled={locked} onClose={()=>setShowGiphy(false)} onSelect={item=>{setSelected(item.url);setSelectedGiphy(item);setCategory("gifs");}}/>}
+ {showGiphy&&<GiphyPicker kind="banner" disabled={locked} onClose={()=>setShowGiphy(false)} onSelect={item=>{setSelected(item.url);setSelectedGiphy(item);setCategory("gifs");setShowGiphy(false);}}/>}
  <div className="banner-gallery-footer">{banner?<div className="banner-gallery-current"><img src={banner.url} alt=""/><span><strong>{banner.name}</strong><small>{banner.videoUrl?"Looping video":banner.gifUrl?"Animated GIF":"Image"} · applies when you save your profile</small></span></div>:<p className="banner-gallery-prompt">Choose an image or animation to preview on your profile.</p>}
  <div className="banner-gallery-actions"><button type="button" disabled={locked} onClick={onClose}>Cancel</button><button type="button" className="banner-gallery-confirm" disabled={locked||!banner} onClick={()=>onSelect(banner)}>Use banner</button></div></div>
  <GalleryContribute kind="banner"/>
