@@ -9,7 +9,7 @@ import Avatar from "@/components/Avatar";
 import {Dialog,DialogContent,DialogHeader,DialogTitle,DialogDescription} from "@/components/ui/dialog";
 import "./avatar-picker.css";
 import "./marketplace-dialog.css";
-export default function AvatarPicker({user,busy=false,onClose,onSelect,onUpload,onEditPhoto,error,allowMotion=false,onBrowseBanners}){
+export default function AvatarPicker({user,busy=false,onClose,onSelect,onUpload,onEditPhoto,error,allowMotion=false,onBrowseBanners,onOpenGiphy,onGiphySelect}){
  const {user:viewer}=useAuth();
  const {avatars,loading,error:galleryError,deleting,remove}=useAvatarGallery();
  const [pendingDelete,setPendingDelete]=useState(null);
@@ -17,11 +17,11 @@ export default function AvatarPicker({user,busy=false,onClose,onSelect,onUpload,
  const [category,setCategory]=useState(AVATAR_PRESETS.some(item=>item.url===user?.avatar_url&&(item.gifUrl||item.videoUrl))?"gifs":"pfp");
  const visibleAvatars=avatars.filter(item=>category==="gifs"?!!(item.gifUrl||item.videoUrl):!(item.gifUrl||item.videoUrl));
  const chosen=AVATAR_PRESETS.find(item=>item.url===selected);
- return <Dialog open onOpenChange={open=>{if(!open&&!busy)onClose();}}><DialogContent className="public-avatar-picker public-marketplace-dialog"><DialogHeader><DialogTitle>PUBLIC Marketplace</DialogTitle><DialogDescription>{allowMotion?"Choose a gallery avatar or upload a photo, short video or GIF.":"Choose a gallery avatar or upload your own photo."}</DialogDescription></DialogHeader>
- {onBrowseBanners&&<div className="avatar-picker-categories" role="group" aria-label="Gallery type"><button type="button" aria-pressed="true">Avatars</button><button type="button" aria-pressed="false" disabled={busy||!!deleting} onClick={onBrowseBanners}>Banners</button></div>}
+ return <div className="public-avatar-picker marketplace-inner">
+ {!onBrowseBanners&&<div className="sr-only">{allowMotion?"Choose a gallery avatar or upload a photo, short video or GIF.":"Choose a gallery avatar or upload your own photo."}</div>
  <div className="avatar-picker-preview"><Avatar user={{...user,avatar_url:selected,avatar_preset:"",avatar_video_url:selected===user?.avatar_url?user?.avatar_video_url:"",avatar_gif_url:selectedGiphy?.gifUrl||(selected===user?.avatar_url?user?.avatar_gif_url:"")}} size={100} motion/><div><strong>{chosen?.name||(selected?(selected===user?.avatar_url&&user?.avatar_video_url?"Your video":selected===user?.avatar_url&&user?.avatar_gif_url?"Your GIF":"Your photo"):"Default avatar")}</strong><p>Made to fit your circle.</p></div></div>
  <button type="button" className="avatar-picker-upload" disabled={busy} onClick={onUpload}><Upload size={18}/><span>{allowMotion?"Upload photo, video or GIF":"Upload a photo"}<small>{allowMotion?"10-second loops · video up to 25 MB · images up to 10 MB":"Choose an image from your device · up to 10 MB"}</small></span></button>
- {allowMotion&&<button type="button" className="avatar-picker-upload" disabled={busy} onClick={()=>setShowGiphy(true)}><span>Find a GIF on GIPHY<small>Use it as your avatar and add it to the Marketplace</small></span></button>}
+ {allowMotion&&<button type="button" className="avatar-picker-upload" disabled={busy} onClick={()=>onOpenGiphy?onOpenGiphy():setShowGiphy(true)}><span>Find a GIF on GIPHY<small>Use it as your avatar and add it to the Marketplace</small></span></button>}
  {onEditPhoto&&!user?.avatar_video_url&&!user?.avatar_gif_url&&selected===user?.avatar_url&&selected&&!chosen&&<button type="button" className="avatar-picker-upload" disabled={busy} onClick={onEditPhoto}>Adjust current photo</button>}
  {selectedGiphy&&<p className="text-xs text-muted-foreground">Powered by GIPHY{selectedGiphy.creatorName?" · "+selectedGiphy.creatorName:""}</p>}
  {(error||galleryError)&&<p role="alert" className="profile-editor-error">{error||galleryError}</p>}
@@ -33,7 +33,7 @@ export default function AvatarPicker({user,busy=false,onClose,onSelect,onUpload,
  <button type="button" disabled={busy} className="avatar-picker-initials" aria-pressed={!selected} onClick={()=>{setSelected("");setSelectedGiphy(null);}}>Use default avatar</button>
  <div className="avatar-picker-footer"><button type="button" disabled={busy} onClick={onClose}>Cancel</button><button type="button" className="avatar-picker-confirm" disabled={busy} onClick={()=>onSelect(selectedGiphy||selected)}>Use {chosen?"avatar":selected?(selected===user?.avatar_url&&(user?.avatar_video_url||user?.avatar_gif_url)?"animation":"photo"):"default avatar"}</button></div>
  <p className="avatar-picker-hint">{chosen?.credit||"Artwork by mu.staffa · supplied by PUBLIC."}<br/>Your choice is applied when you save your profile changes.</p>
- {showGiphy&&<GiphyPicker kind="avatar" disabled={busy} onClose={()=>setShowGiphy(false)} onSelect={item=>{setSelected(item.gifUrl);setSelectedGiphy(item);setCategory("gifs");setShowGiphy(false);}}/>}
+ {showGiphy&&<GiphyPicker kind="avatar" disabled={busy} onClose={()=>setShowGiphy(false)} onSelect={item=>{if(onGiphySelect){onGiphySelect(item);return;}setSelected(item.gifUrl);setSelectedGiphy(item);setCategory("gifs");setShowGiphy(false);}}/>}
  <GalleryContribute kind="avatar"/>
- </DialogContent></Dialog>;
+ </div>;
 }
