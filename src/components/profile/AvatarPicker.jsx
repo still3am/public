@@ -33,7 +33,7 @@ export default function AvatarPicker({user,busy=false,onClose,onSelect,onUpload,
  <button type="button" disabled={busy} className="avatar-picker-initials" aria-pressed={!selected} onClick={()=>{setSelected("");setSelectedGiphy(null);}}>Use default avatar</button>
  <div className="avatar-picker-footer"><button type="button" disabled={busy} onClick={onClose}>Cancel</button><button type="button" className="avatar-picker-confirm" disabled={busy} onClick={()=>onSelect(selectedGiphy||selected)}>Use {chosen?"avatar":selected?(selected===user?.avatar_url&&(user?.avatar_video_url||user?.avatar_gif_url)?"animation":"photo"):"default avatar"}</button></div>
  <p className="avatar-picker-hint">{chosen?.credit||"Artwork by mu.staffa · supplied by PUBLIC."}<br/>Your choice is applied when you save your profile changes.</p>
- {showGiphy&&<GiphyPicker kind="avatar" disabled={busy} onClose={()=>setShowGiphy(false)} onSelect={item=>{setSelected(item.gifUrl);setSelectedGiphy(item);setCategory("gifs");}}/>}
+ {showGiphy&&<GiphyPicker kind="avatar" disabled={busy} onClose={()=>setShowGiphy(false)} onSelect={item=>{setSelected(item.gifUrl);setSelectedGiphy(item);setCategory("gifs");setShowGiphy(false);}}/>}
  <GalleryContribute kind="avatar"/>
  </DialogContent></Dialog>;
 }
