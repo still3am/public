@@ -154,10 +154,21 @@ export default async function handleRequest(req) {
     }));
 
     const publicFields=["username","display_name","full_name","avatar_url","avatar_preset","avatar_video_url","avatar_gif_url","banner_video_url","banner_gif_url","banner_url","banner_mobile_url","banner_use_default","top_tracks_label","bio","location","pronouns","website","instagram","twitter","soundcloud","status_message","featured_track_id","profile_background_mode","profile_background_colors","profile_background_motion","profile_background_speed","top_track_ids","is_artist","creator_role","is_public_admin","friends_family_badge"];
+    const sourceById=new Map(rows.filter(Boolean).map(row=>[row.id,row]));
     await Promise.allSettled(users.map(async profile=>{
       const page=await base44.asServiceRole.entities.PublicProfile.filter({user_id:profile.id},'-updated_date',1);
+      const existing=Array.isArray(page)?page[0]:page?.items?.[0];
+      const source=sourceById.get(profile.id)||{};
+      // Some built-in User records omit animation fields entirely. Preserve the
+      // saved public-profile media when its poster still matches; an explicit
+      // empty value on User remains an intentional clear.
+      if(existing?.avatar_url&&profile.avatar_url===existing.avatar_url){
+        for(const key of ["avatar_gif_url","avatar_video_url"]){
+          if(!Object.prototype.hasOwnProperty.call(source,key)&&typeof existing[key]==="string"&&existing[key].trim())profile[key]=existing[key];
+        }
+      }
       const data={...Object.fromEntries(publicFields.filter(key=>profile[key]!==undefined).map(key=>[key,profile[key]])),user_id:profile.id,joined_at:profile.created_date||"",visible:true};
-      if(page[0])await base44.asServiceRole.entities.PublicProfile.update(page[0].id,data);
+      if(existing)await base44.asServiceRole.entities.PublicProfile.update(existing.id,data);
       else await base44.asServiceRole.entities.PublicProfile.create(data);
     }));
     return Response.json({ users });
