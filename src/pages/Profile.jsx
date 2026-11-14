@@ -179,6 +179,21 @@ export default function Profile({ ownProfileTab = false }) {
       // built-in User rules only let admins read other users, so a direct
       // User.get left every other profile showing as "not found".
       let prof = isOwn ? await base44.auth.me() : (await getUsersByIds([targetId], { fresh: true }))[0] || null;
+      if (isOwn && prof?.id) {
+        // The built-in User record can omit the GIF field even when it is saved
+        // on PublicProfile. Merge that animation when the profile poster matches.
+        try {
+          const result = await base44.entities.PublicProfile.filter({ user_id: prof.id, visible: true }, "-updated_date", 1);
+          const publicProfile = (Array.isArray(result) ? result : result?.items || [])[0];
+          if (publicProfile?.avatar_url && publicProfile.avatar_url === prof.avatar_url) {
+            prof = {
+              ...prof,
+              avatar_gif_url: prof.avatar_gif_url || publicProfile.avatar_gif_url || "",
+              avatar_video_url: prof.avatar_video_url || publicProfile.avatar_video_url || ""
+            };
+          }
+        } catch {}
+      }
       if (!prof) {
         request === loadVersion.current && setProfile(null);
         return;
