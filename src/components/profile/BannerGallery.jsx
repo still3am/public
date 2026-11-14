@@ -6,6 +6,7 @@ import {useBannerGallery} from "@/hooks/useBannerGallery";
 import ProfileMedia from "@/components/ProfileMedia";
 import {Dialog,DialogContent,DialogHeader,DialogTitle,DialogDescription} from "@/components/ui/dialog";
 import "./banner-gallery.css";
+import "./marketplace-dialog.css";
 export default function BannerGallery({busy=false,onClose,onSelect,onBrowseAvatars}){
  const {user}=useAuth();
  const {banners,loading,error,deleting,remove}=useBannerGallery();
@@ -14,7 +15,7 @@ export default function BannerGallery({busy=false,onClose,onSelect,onBrowseAvata
  const locked=busy||!!deleting;
  const visible=banners.filter(item=>category==="gifs"?!!(item.gifUrl||item.videoUrl):!(item.gifUrl||item.videoUrl));
  const categories=[{id:"images",label:"Images",count:banners.filter(item=>!(item.gifUrl||item.videoUrl)).length},{id:"gifs",label:"Animated",count:banners.filter(item=>!!(item.gifUrl||item.videoUrl)).length}];
- return <Dialog open onOpenChange={open=>{if(!open&&!locked)onClose();}}><DialogContent className="public-banner-gallery"><DialogHeader><DialogTitle>PUBLIC Marketplace</DialogTitle><DialogDescription>Find a scene for your profile.</DialogDescription></DialogHeader>
+ return <Dialog open onOpenChange={open=>{if(!open&&!locked)onClose();}}><DialogContent className="public-banner-gallery public-marketplace-dialog"><DialogHeader><DialogTitle>PUBLIC Marketplace</DialogTitle><DialogDescription>Find a scene for your profile.</DialogDescription></DialogHeader>
  {onBrowseAvatars&&<div className="banner-gallery-tabs" role="group" aria-label="Gallery type"><button type="button" aria-pressed="false" disabled={locked} onClick={onBrowseAvatars}>Avatars</button><button type="button" aria-pressed="true">Banners</button></div>}
  <div className="banner-gallery-tabs" role="group" aria-label="Banner type">{categories.map(tab=><button key={tab.id} type="button" disabled={locked} aria-pressed={category===tab.id} aria-controls="banner-gallery-results" onClick={()=>{setCategory(tab.id);setPending("");}}>{tab.label}{!loading&&<span>{tab.count}</span>}</button>)}</div>
  {error&&<p role="alert" className="banner-gallery-error">{error}</p>}

@@ -1,0 +1,18 @@
+.public-marketplace-dialog:is(.public-avatar-picker,.public-banner-gallery){
+ width:calc(100vw - 24px)!important;
+ max-width:760px!important;
+ height:min(88dvh,860px);
+ max-height:calc(100dvh - 24px);
+ box-sizing:border-box;
+ display:flex!important;
+ flex-direction:column;
+ overflow-y:auto;
+ overscroll-behavior:contain;
+ padding:26px;
+ gap:18px;
+}
+.public-marketplace-dialog > *{flex-shrink:0}
+.public-marketplace-dialog > .banner-gallery-scroll{flex:1 1 auto;min-height:120px}
+@media(max-width:480px){
+ .public-marketplace-dialog:is(.public-avatar-picker,.public-banner-gallery){padding:20px 16px;gap:14px;border-radius:24px!important}
+}
