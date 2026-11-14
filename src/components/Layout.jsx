@@ -38,7 +38,7 @@ export default function Layout() {
   const reducedMotion=useReducedMotion();
   const artworkPage = /^\/(?:track\/[^/]+|album\/[^/]+|playlist\/[^/]+|mix\/[^/]+|recap\/[^/]+(?:\/[^/]+)?|records\/[^/]+|artist|profile(?:\/[^/]+)?)\/?$/.test(location.pathname);
   const { user } = useAuth();
-  const momentsRoute = (user?.role === "admin" || user?.friends_family_badge === true) && !user?.disabled && !user?.is_blocked && /^\/moments(?:\/[^/]+)?\/?$/.test(location.pathname);
+  const momentsRoute = !user?.disabled && !user?.is_blocked && /^\/moments(?:\/[^/]+)?\/?$/.test(location.pathname);
   const {currentTrack}=usePlayer();
   useScrollRestore();
   useContentClearance(currentTrack?.id,location.pathname);
