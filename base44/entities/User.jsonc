@@ -517,6 +517,7 @@
         "write": true
       }
     },
+    "gallery_uploader": {"type":"boolean","default":false,"rls":{"write":{"user_condition":{"role":"admin"}}}},
     "creator_role": {
       "type": "string",
       "enum": [

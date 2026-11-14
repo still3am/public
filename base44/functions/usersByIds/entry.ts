@@ -11,6 +11,23 @@ export default async function handleRequest(req) {
     if(user.is_blocked || user.disabled) return Response.json({error:'Account suspended'},{status:403});
 
     const body = await req.json().catch(() => ({}));
+    if (body.action === 'set_gallery_uploader') {
+      if (user.role !== 'admin') return Response.json({error:'Administrator access required.'},{status:403});
+      if (typeof body.enabled !== 'boolean' || !/^[a-zA-Z0-9_-]{1,100}$/.test(body.user_id || '')) return Response.json({error:'Invalid member or role.'},{status:400});
+      const target = await base44.asServiceRole.entities.User.update(body.user_id,{gallery_uploader:body.enabled});
+      return Response.json({gallery_uploader:target.gallery_uploader});
+    }
+    if (body.action === 'submit_gallery_design') {
+      if (user.gallery_uploader !== true) return Response.json({error:'Gallery Uploader access required.'},{status:403});
+      const name = typeof body.name === 'string' ? body.name.trim().slice(0,80) : '';
+      const url = typeof body.url === 'string' && body.url.length <= 2048 ? new URL(body.url) : null;
+      const prefix = '/api/apps/6a5676aa61ea8a51237aa4ee/files/public/';
+      if (!name || !['avatar','banner'].includes(body.kind) || !url || url.protocol !== 'https:' || !['base44.app','publicnet.base44.app'].includes(url.hostname) || !url.pathname.startsWith(prefix)) {
+        return Response.json({error:'Choose a valid gallery image.'},{status:400});
+      }
+      const item = await base44.asServiceRole.entities.GallerySubmission.create({uploader_id:user.id,name,url:url.href,kind:body.kind,status:'pending'});
+      return Response.json({id:item.id});
+    }
     if (body.action === 'set_friends_family_badge') {
       if (user.role !== 'admin') return Response.json({ error: 'Administrator access required.' }, { status: 403 });
       if (typeof body.user_id !== 'string' || !/^[a-zA-Z0-9_-]{1,100}$/.test(body.user_id) || !['friends_family','listener','uploader','artist'].includes(body.creator_role)) {
