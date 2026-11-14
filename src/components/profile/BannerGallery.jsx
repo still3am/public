@@ -5,7 +5,6 @@ import {X,Check} from "lucide-react";
 import {useAuth} from "@/lib/AuthContext";
 import {useBannerGallery} from "@/hooks/useBannerGallery";
 import ProfileMedia from "@/components/ProfileMedia";
-import {Dialog,DialogContent,DialogHeader,DialogTitle,DialogDescription} from "@/components/ui/dialog";
 import "./banner-gallery.css";
 import "./marketplace-dialog.css";
 export default function BannerGallery({busy=false,onClose,onSelect,onBrowseAvatars,onOpenGiphy,onGiphySelect}){
