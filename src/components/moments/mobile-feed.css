@@ -600,3 +600,12 @@
 .moment-comments-sheet.moment-discussion-dialog[data-keyboard]:has(.reels-discussion-panel) {
  height:var(--discussion-height,100dvh);grid-template-rows:minmax(0,1fr);
 }
+
+.moment-discussion-dialog .discussion-comment{grid-template-columns:40px minmax(0,1fr) 44px;gap:12px}
+.moment-discussion-dialog .discussion-composer form{grid-template-columns:40px minmax(0,1fr) 58px 44px;gap:8px}
+.moment-discussion-dialog .discussion-gif-button{display:flex!important;flex-direction:column;align-items:center;justify-content:center;gap:1px;width:58px!important;height:44px!important;border-radius:12px!important;background:#ffffff0a!important;color:#f6f7f9!important;border:1px solid #ffffff24;font-size:12px}
+.moment-discussion-dialog .discussion-gif-button span{font-weight:800;letter-spacing:-.04em;border:1.5px solid currentColor;border-radius:4px;padding:1px 4px;font-size:11px;line-height:1.2}
+.moment-discussion-dialog .discussion-gif-button small{font-size:9px;line-height:1;color:#adb5c2}
+.moment-discussion-dialog .discussion-composer form>button[type=submit]{background:#8e9cff;color:#10131b;border-radius:50%}
+.moment-gif-picker form{grid-template-columns:22px minmax(0,1fr)!important}
+.moment-gif-picker .moment-gif-results{columns:2}
