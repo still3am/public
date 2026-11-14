@@ -42,7 +42,7 @@ export default async function handleRequest(req) {
       if (body.action === 'giphy_search') {
         const items = (payload.data || []).map(cleanGif).filter(Boolean);
         const total = Number(payload.pagination?.total_count || 0);
-        return Response.json({ items, has_more: total > offset + items.length });
+        return Response.json({ items, has_more: offset + items.length < 500 && total > offset + items.length });
       }
       const gif = cleanGif(payload.data);
       if (!gif || gif.id !== gifId) return Response.json({ error: 'That GIPHY item is unavailable or not rated for general audiences.' }, { status: 422 });
