@@ -16,15 +16,32 @@ export default function MomentGifPicker({onSelect,onClose,inline=false}){
  const request=useRef(null),itemsRef=useRef([]),loadingMore=useRef(false),canLoadMore=useRef(false);
  useEffect(()=>{search('');return ()=>request.current?.abort();},[]);
  async function search(term){
-  request.current?.abort();
+  request.current?.abort();loadingMore.current=false;canLoadMore.current=false;itemsRef.current=[];
   const controller=new AbortController();request.current=controller;
-  setActiveTerm(term);setFailed(false);
+  setActiveTerm(term);setFailed(false);setMoreFailed(false);setMoreLoading(false);setHasMore(false);
   setStatus('Loading GIFs…');setItems([]);
   try{
-   const result=await momentsApi('gif_search',{query:term||''});
+   const result=await momentsApi('gif_search',{query:term||'',offset:0});
    if(controller.signal.aborted)return;
-   setItems(result.items||[]);setStatus(result.items?.length?'':'No GIFs found.');
+   const next=result.items||[];itemsRef.current=next;canLoadMore.current=Boolean(result.has_more);setHasMore(Boolean(result.has_more));setItems(next);setStatus(next.length?'':'No GIFs found.');
   }catch(error){if(!controller.signal.aborted){setFailed(true);setStatus(momentError(error));}}
+ }
+ async function loadMore(){
+  if(!canLoadMore.current||loadingMore.current)return;
+  loadingMore.current=true;setMoreLoading(true);setMoreFailed(false);
+  const controller=new AbortController();request.current=controller;
+  try{
+   const result=await momentsApi('gif_search',{query:activeTerm||'',offset:itemsRef.current.length});
+   if(controller.signal.aborted)return;
+   const current=itemsRef.current,known=new Set(current.map(item=>item.id));
+   const next=current.concat((result.items||[]).filter(item=>!known.has(item.id)));
+   itemsRef.current=next;canLoadMore.current=Boolean(result.has_more);setHasMore(Boolean(result.has_more));setItems(next);
+  }catch(error){if(!controller.signal.aborted){setMoreFailed(true);setStatus(momentError(error));}}
+  finally{loadingMore.current=false;setMoreLoading(false);}
+ }
+ function handleResultsScroll(event){
+  const node=event.currentTarget;
+  if(node.scrollHeight-node.scrollTop-node.clientHeight<240)loadMore();
  }
  const content=<>
   <header className="moment-gif-header"><strong>GIFs</strong>{inline?<button type="button" className="moment-gif-close" aria-label="Close GIF picker" onClick={onClose}><X size={20}/></button>:<DialogClose className="moment-gif-close" aria-label="Close GIF picker"><X size={20}/></DialogClose>}</header>
