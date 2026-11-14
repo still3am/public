@@ -94,10 +94,10 @@ export async function momentsAction(b,u,d){
  auth();const p=await post(d.id);
  if(d.action==='share_people'){
   const people=[];
-  for(const account of await all(s.entities.User,{$or:[{role:'admin'},{friends_family_badge:true}]})){
-   if(account.id===u.id||account.disabled||account.is_blocked)continue;
-   const recipient=await person(account.id);
-   if(recipient)people.push(recipient);
+  for(const recipient of await all(s.entities.PublicProfile,{$or:[{is_public_admin:true},{friends_family_badge:true}],visible:true})){
+   if(recipient.user_id===u.id)continue;
+   const publicPerson=await person(recipient.user_id);
+   if(publicPerson)people.push(publicPerson);
   }
   return {people};
  }
