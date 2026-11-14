@@ -2,7 +2,7 @@ import MomentGifPicker, { MomentGif } from '@/components/moments/MomentGifPicker
 import { MomentThread } from '@/components/moments/MomentReplies';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom';
-import { Plus, Heart, MessageCircle, Share2, Music2, MoreHorizontal, Trash2, Flag, ShieldOff, Loader2, ArrowLeft, ChevronUp, ChevronDown, Send, UserRound, Disc3, Bookmark, Clapperboard, ExternalLink } from 'lucide-react';
+import { Plus, Heart, MessageCircle, Share2, Music2, MoreHorizontal, Trash2, X, Flag, ShieldOff, Loader2, ArrowLeft, ChevronUp, ChevronDown, Send, UserRound, Disc3, Bookmark, Clapperboard, ExternalLink } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { useAuth } from '@/lib/AuthContext';
 import { useSafety } from '@/context/SafetyContext';
@@ -42,7 +42,7 @@ function ReelCaption({ text }) {
 }
 function MomentComments({ post, onReport, mobile = true }) {
   const { user } = useAuth(),nav = useNavigate();const [rows, setRows] = useState([]),[body, setBody] = useState(''),[busy, setBusy] = useState(false),[loading, setLoading] = useState(true),[error, setError] = useState(''),[page, setPage] = useState({ offset: 0, more: false });const section = useRef(null),live = useRef(true),lock = useRef(false),token = useRef(crypto.randomUUID());
-  const [reply,setReply]=useState(null),[gif,setGif]=useState(''),[showGifs,setShowGifs]=useState(false),[updatedThread,setUpdatedThread]=useState(null);
+  const [reply,setReply]=useState(null),[gif,setGif]=useState(''),[showGifs,setShowGifs]=useState(false),[updatedThread,setUpdatedThread]=useState(null),[activeCommentId,setActiveCommentId]=useState(null);
   const composerInput=useRef(null);
   function chooseReply(comment, parent=comment.id){
     setReply({parent,label:name(comment.author)});
@@ -72,14 +72,14 @@ function MomentComments({ post, onReport, mobile = true }) {
   async function submit(e) {e.preventDefault();if (!user) {nav('/login?returnTo=' + encodeURIComponent('/moments/' + post.id));return;}if (lock.current || (!body.trim() && !gif)) return;lock.current = true;setBusy(true);setError('');try {await momentsApi('comment', { id: post.id, body, ...(gif?{gif_id:gif}:{}), ...(reply?{parent_id:reply.parent}:{}), request_id: token.current });if (live.current) {setBody('');setGif('');setShowGifs(false);setReply(null);token.current = crypto.randomUUID();if(reply)setUpdatedThread({id:reply.parent});else await load();}} catch (e) {if (live.current) setError(momentError(e));} finally {lock.current = false;if (live.current) setBusy(false);}}
   async function remove(c) {if (lock.current) return;lock.current = true;setBusy(true);try {await momentsApi('delete_comment', { id: post.id, comment_id: c.id });setRows((old) => old.filter((x) => x.id !== c.id));} catch (e) {setError(momentError(e));} finally {lock.current = false;setBusy(false);}}
   return <section ref={section} className="discussion-comments" aria-label="Moment comments">
-    <div className="discussion-list" aria-busy={loading}>
+    <div className="discussion-list" aria-busy={loading} onClick={(event)=>{if(!event.target.closest('.discussion-comment'))setActiveCommentId(null);}}>
       {!user && <p className="discussion-empty"><Link to={'/login?returnTo=' + encodeURIComponent('/moments/' + post.id)}>Sign in to join the conversation.</Link></p>}
       {user && !rows.length && !loading && !error && <p className="discussion-empty">Be the first to comment.</p>}
       {rows.map((comment) => {
         const author = comment.author;
         const profile = author?.user_id ? '/profile/' + author.user_id : null;
         const date = new Date(comment.created_date);
-        return <article className="discussion-comment" key={comment.id}>
+        return <article className="discussion-comment" key={comment.id} data-active={activeCommentId===comment.id?'true':undefined} onClick={()=>setActiveCommentId(comment.id)}>
           {profile ? <Link to={profile} aria-label={name(author)}><Avatar user={author} size={34} /></Link> : <Avatar user={author ?? {}} size={34} />}
           <div>
             <div className="discussion-byline">
@@ -92,7 +92,7 @@ function MomentComments({ post, onReport, mobile = true }) {
             <MomentThread moment={post.id} parent={comment.id} hasReplies={comment.has_replies} updated={updatedThread?.id===comment.id?updatedThread:null} onReply={child=>chooseReply(child,comment.id)} onReport={onReport}/>
           </div>
           {comment.can_delete ?
-          <button type="button" disabled={busy} aria-label="Delete comment" onClick={() => remove(comment)}><Trash2 size={16} /></button> :
+          <button type="button" className="comment-delete-action" disabled={busy} aria-label="Delete comment" onClick={() => remove(comment)}><X size={18} /></button> :
           <button type="button" aria-label="Report comment" onClick={() => onReport({ type: 'moment_comment', id: comment.id, userId: author?.user_id })}><Flag size={15} /></button>}
         </article>;
       })}
