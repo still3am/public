@@ -71,3 +71,7 @@
 .reels-comments .moment-gif-inline header button{display:grid;place-items:center;width:32px;height:32px}
 .reels-comments .moment-gif-inline form{display:flex;flex-direction:row-reverse}
 .reels-comments .moment-gif-inline .moment-gif-results{flex:1}
+.moment-gif-categories{display:flex;gap:6px;overflow-x:auto;overscroll-behavior-inline:contain;flex:none;padding:2px}
+.moment-gif-categories button{flex:none;min-height:32px;padding:4px 10px;border-radius:999px;background:#ffffff12;font-size:12px}
+.moment-gif-categories button[aria-pressed=true]{background:#8e9cff;color:#10131b}
+.reels-comments .moment-gif-inline{height:min(44dvh,340px)}

@@ -117,7 +117,7 @@ function MomentComments({ post, onReport, mobile = true }) {
       <form onSubmit={submit}>
         <Avatar user={user} size={40} />
         <input ref={composerInput} aria-label={reply?"Write a reply":"Write a comment"} placeholder={reply?"Write a reply…":"Add a comment…"} maxLength={1000} value={body} disabled={busy} onChange={(event) => setBody(event.target.value)} />
-        <button type="button" className="discussion-gif-button" aria-label="Add a GIF" aria-expanded={showGifs} disabled={busy} onClick={()=>setShowGifs(true)}><span>GIF</span><small>Add GIF</small></button>
+        <button type="button" className="discussion-gif-button" aria-label={gif?"Change GIF":"Add a GIF"} aria-expanded={showGifs} disabled={busy} onClick={()=>setShowGifs(value=>!value)}><span>GIF</span></button>
         <button type="submit" disabled={busy || (!body.trim() && !gif)} aria-label="Post comment">{busy ? <Loader2 size={18} className="animate-spin" /> : <Send size={18} />}</button>
       </form>
     </div>}
