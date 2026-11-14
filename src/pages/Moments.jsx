@@ -113,7 +113,7 @@ function MomentComments({ post, onReport }) {
       </div>
       {reply&&<div className="moment-reply-context"><span>Replying to {reply.label}</span><button type="button" disabled={busy} onClick={()=>setReply(null)}>Cancel reply</button></div>}
       {gif&&<div className="moment-reply-context"><MomentGif id={gif}/><button type="button" disabled={busy} onClick={()=>setGif('')}>Remove GIF</button></div>}
-      {showGifs&&<MomentGifPicker onSelect={id=>{setGif(id);setShowGifs(false);}}/>}
+      {showGifs&&<MomentGifPicker onClose={()=>setShowGifs(false)} onSelect={id=>{setGif(id);setShowGifs(false);}}/>}
       <form onSubmit={submit}>
         <Avatar user={user} size={32} />
         <input ref={composerInput} aria-label={reply?"Write a reply":"Write a comment"} placeholder={reply?"Write a reply…":"Add a comment…"} maxLength={1000} value={body} disabled={busy} onChange={(event) => setBody(event.target.value)} />
