@@ -119,3 +119,4 @@ All 99 test suites, lint, and production build passed. Signed-in mobile and desk
 - Moments feed regression — The unsupported bulk User lookup broke the live feed. The feed uses PublicProfile visibility set by the suspension workflow. Tests now reject bulk User lookups and verify hidden authors are excluded from feed and direct links. Moments tests, lint and build passed.
 
 - Moments replies and GIF close — Comments now show View replies only for visible replies. Removing the last reply hides the control. The GIF picker uses its dedicated header close button with the shared dialog close disabled. Moments tests and build passed.
+- Moments comment delete control — Done in code. The delete affordance used a trash icon and was always visible. It now uses an X, appears after tapping its comment, and hides when the user taps elsewhere in the discussion. Build verification pending.
