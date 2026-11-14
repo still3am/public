@@ -9,6 +9,9 @@
 .marketplace-kind-tabs button{flex:1;min-height:44px;padding:9px 16px;border-radius:999px;font-size:14px;font-weight:600;color:hsl(var(--muted-foreground));transition:background .18s,color .18s}
 .marketplace-kind-tabs button[aria-selected=true]{background:hsl(var(--card));color:hsl(var(--foreground));box-shadow:0 2px 6px #00000012}
 .marketplace-inner{display:flex!important;flex:1 1 0%;flex-direction:column;gap:14px;min-width:0;min-height:0;width:100%;max-width:none!important;height:auto!important;max-height:none!important;overflow-y:auto!important;overscroll-behavior:contain;padding:0!important;border:0!important;border-radius:0!important;background:transparent!important}
+.public-marketplace-unified .marketplace-inner{flex:1 1 0%;min-height:0;max-height:none!important;overflow-y:auto!important}
+.public-marketplace-unified .public-avatar-picker.marketplace-inner{width:100%;height:auto!important;padding:0!important;gap:14px}
+.public-marketplace-unified .public-banner-gallery.marketplace-inner{width:100%;height:auto!important;padding:0!important;gap:14px}
 .public-marketplace-unified .banner-gallery-scroll{flex:1 1 0%;height:0;min-height:100px}
 .public-marketplace-unified .banner-gallery-footer{padding-top:12px}
 @media(max-width:600px){
