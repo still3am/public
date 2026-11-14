@@ -79,7 +79,7 @@ function MomentComments({ post, onReport, mobile = true }) {
         const author = comment.author;
         const profile = author?.user_id ? '/profile/' + author.user_id : null;
         const date = new Date(comment.created_date);
-        return <article className="discussion-comment" key={comment.id} data-active={activeCommentId===comment.id?'true':undefined} tabIndex={comment.can_delete?0:undefined} onClick={()=>setActiveCommentId(comment.id)}>
+        return <article className="discussion-comment" key={comment.id} data-active={activeCommentId===comment.id?'true':undefined} tabIndex={comment.can_delete?0:undefined} onFocus={()=>setActiveCommentId(comment.id)} onClick={()=>setActiveCommentId(comment.id)}>
           {profile ? <Link to={profile} aria-label={name(author)}><Avatar user={author} size={34} /></Link> : <Avatar user={author ?? {}} size={34} />}
           <div>
             <div className="discussion-byline">
@@ -92,8 +92,8 @@ function MomentComments({ post, onReport, mobile = true }) {
             <MomentThread moment={post.id} parent={comment.id} hasReplies={comment.has_replies} updated={updatedThread?.id===comment.id?updatedThread:null} onReply={child=>chooseReply(child,comment.id)} onReport={onReport}/>
           </div>
           {comment.can_delete ?
-          <button type="button" className="comment-delete-action" disabled={busy} aria-label="Delete comment" onClick={(event) => {event.stopPropagation();remove(comment);}}><X size={18} /></button> :
-          <button type="button" aria-label="Report comment" onClick={() => onReport({ type: 'moment_comment', id: comment.id, userId: author?.user_id })}><Flag size={15} /></button>}
+          activeCommentId===comment.id && <button type="button" className="comment-delete-action" disabled={busy} aria-label="Delete comment" onClick={(event) => {event.stopPropagation();remove(comment);}}><X size={18} /></button> :
+          <button type="button" aria-label="Report comment" onClick={() => onReport({ type: 'moment_comment', id: comment.id, userId: author?.user_id })}><Flag size={15} /></button>
         </article>;
       })}
       {loading && <p className="discussion-empty" role="status">Loading comments…</p>}
