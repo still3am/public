@@ -111,3 +111,5 @@ All 99 test suites, lint, and production build passed. Signed-in mobile and desk
 - Shared with You desktop — Done in code. The shelf stacked three messages per column. Desktop now uses a horizontal cover-card row with sender and message below the artwork. Desktop Activity test and build passed. Visual verification remains open.
 
 - Shared with You desktop covers now open the song page. Removed the play overlay from the desktop cards. Production build passed.
+
+- Moments desktop GIF picker — Done in code. The mobile sheet floated over the desktop discussion. Desktop now embeds the picker above the comment field with scrollable results. Build passed.
