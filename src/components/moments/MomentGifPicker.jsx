@@ -1,5 +1,5 @@
 import {Search,X} from 'lucide-react';
-import {Dialog,DialogContent,DialogTitle,DialogDescription} from '@/components/ui/dialog';
+import {Dialog,DialogContent,DialogTitle,DialogDescription,DialogClose} from '@/components/ui/dialog';
 import {useEffect,useRef,useState} from 'react';
 import {momentsApi,momentError} from '@/lib/momentsApi';
 
@@ -27,6 +27,7 @@ export default function MomentGifPicker({onSelect,onClose,inline=false}){
   }catch(error){if(!controller.signal.aborted){setFailed(true);setStatus(momentError(error));}}
  }
  const content=<>
+  <header className="moment-gif-header"><strong>GIFs</strong>{inline?<button type="button" className="moment-gif-close" aria-label="Close GIF picker" onClick={onClose}><X size={20}/></button>:<DialogClose className="moment-gif-close" aria-label="Close GIF picker"><X size={20}/></DialogClose>}</header>
   <form onSubmit={event=>{event.preventDefault();search(query.trim());}}>
    <button type="submit" aria-label="Search GIFs"><Search size={20}/></button><input placeholder="Search GIPHY" aria-label="Search GIPHY" value={query} maxLength={80} onChange={event=>setQuery(event.target.value)}/>
   </form>
@@ -43,7 +44,6 @@ export default function MomentGifPicker({onSelect,onClose,inline=false}){
   <small>Powered by GIPHY</small>
  </>;
  if(inline)return <section className="moment-gif-picker moment-gif-inline" aria-label="Choose a GIF">
-  <header><strong>Choose a GIF</strong><button type="button" aria-label="Close GIF picker" onClick={onClose}><X size={18}/></button></header>
   {content}
  </section>;
  return <Dialog open onOpenChange={open=>{if(!open)onClose?.();}}>
