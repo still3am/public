@@ -24,7 +24,8 @@ export default async function handleRequest(req) {
         if (prior) return Response.json({ id: prior.id, item: prior, alreadyAdded: true });
       }
       const endpoint = body.action === 'giphy_search' ? (typeof body.query === 'string' && body.query.trim() ? 'search' : 'trending') : encodeURIComponent(gifId);
-      const params = new URLSearchParams({ api_key: key, rating: 'g', limit: '24' });
+      const offset = Number.isInteger(body.offset) ? Math.max(0, Math.min(500, body.offset)) : 0;
+      const params = new URLSearchParams({ api_key: key, rating: 'g', limit: '24', offset: String(offset) });
       if (body.action === 'giphy_search' && endpoint === 'search') params.set('q', body.query.trim().slice(0,80));
       const response = await fetch('https://api.giphy.com/v1/gifs/' + endpoint + '?' + params, { signal: AbortSignal.timeout(8000) });
       if (!response.ok) return Response.json({ error: 'GIPHY is temporarily unavailable.' }, { status: 503 });
@@ -38,7 +39,11 @@ export default async function handleRequest(req) {
         if (!/^[a-zA-Z0-9]{1,64}$/.test(id) || gif.rating !== 'g' || media.protocol !== 'https:' || !media.hostname.endsWith('.giphy.com') || source.protocol !== 'https:' || !(source.hostname === 'giphy.com' || source.hostname.endsWith('.giphy.com')) || !/^https:\/\/[^/]+\.giphy\.com\//i.test(preview)) return null;
         return { id, title: String(gif.title || 'GIPHY GIF').slice(0,100), preview, gifUrl: originalUrl, creatorName: String(gif.username || '').slice(0,80), sourceUrl: source.href };
       };
-      if (body.action === 'giphy_search') return Response.json({ items: (payload.data || []).map(cleanGif).filter(Boolean) });
+      if (body.action === 'giphy_search') {
+        const items = (payload.data || []).map(cleanGif).filter(Boolean);
+        const total = Number(payload.pagination?.total_count || 0);
+        return Response.json({ items, has_more: total > offset + items.length });
+      }
       const gif = cleanGif(payload.data);
       if (!gif || gif.id !== gifId) return Response.json({ error: 'That GIPHY item is unavailable or not rated for general audiences.' }, { status: 422 });
       const kind = body.kind;
