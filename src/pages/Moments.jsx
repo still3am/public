@@ -1,3 +1,5 @@
+import MomentGifPicker, { MomentGif } from '@/components/moments/MomentGifPicker';
+import { MomentThread } from '@/components/moments/MomentReplies';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { Plus, Heart, MessageCircle, Share2, Music2, MoreHorizontal, Trash2, Flag, ShieldOff, Loader2, ArrowLeft, ChevronUp, ChevronDown, Send, UserRound, Disc3, Bookmark, Clapperboard, ExternalLink } from 'lucide-react';
@@ -40,6 +42,12 @@ function ReelCaption({ text }) {
 }
 function MomentComments({ post, onReport }) {
   const { user } = useAuth(),nav = useNavigate();const [rows, setRows] = useState([]),[body, setBody] = useState(''),[busy, setBusy] = useState(false),[loading, setLoading] = useState(true),[error, setError] = useState(''),[page, setPage] = useState({ offset: 0, more: false });const section = useRef(null),live = useRef(true),lock = useRef(false),token = useRef(crypto.randomUUID());
+  const [reply,setReply]=useState(null),[gif,setGif]=useState(''),[showGifs,setShowGifs]=useState(false),[updatedThread,setUpdatedThread]=useState(null);
+  const composerInput=useRef(null);
+  function chooseReply(comment, parent=comment.id){
+    setReply({parent,label:name(comment.author)});
+    composerInput.current?.focus({preventScroll:true});
+  }
   const [showEmojis, setShowEmojis] = useState(false);
   const addEmoji = (emoji) => setBody((value) => value.length + emoji.length <= 1000 ? value + emoji : value);
   const load = async (more = false) => {setLoading(true);setError('');try {const result = await momentsApi('comments', { id: post.id, offset: more ? page.offset : 0 });if (!live.current) return;setRows((old) => more ? [...old, ...result.items.filter((x) => !old.some((y) => y.id === x.id))] : result.items);setPage({ offset: result.next_offset, more: result.has_more });} catch (e) {if (live.current) setError(momentError(e));} finally {if (live.current) setLoading(false);}};
@@ -61,7 +69,7 @@ function MomentComments({ post, onReport }) {
       viewport.removeEventListener('scroll', fitViewport);
     };
   }, []);
-  async function submit(e) {e.preventDefault();if (!user) {nav('/login?returnTo=' + encodeURIComponent('/moments/' + post.id));return;}if (lock.current || !body.trim()) return;lock.current = true;setBusy(true);setError('');try {await momentsApi('comment', { id: post.id, body, request_id: token.current });if (live.current) {setBody('');token.current = crypto.randomUUID();await load();}} catch (e) {if (live.current) setError(momentError(e));} finally {lock.current = false;if (live.current) setBusy(false);}}
+  async function submit(e) {e.preventDefault();if (!user) {nav('/login?returnTo=' + encodeURIComponent('/moments/' + post.id));return;}if (lock.current || (!body.trim() && !gif)) return;lock.current = true;setBusy(true);setError('');try {await momentsApi('comment', { id: post.id, body, ...(gif?{gif_id:gif}:{}), ...(reply?{parent_id:reply.parent}:{}), request_id: token.current });if (live.current) {setBody('');setGif('');setShowGifs(false);setReply(null);token.current = crypto.randomUUID();if(reply)setUpdatedThread({id:reply.parent});else await load();}} catch (e) {if (live.current) setError(momentError(e));} finally {lock.current = false;if (live.current) setBusy(false);}}
   async function remove(c) {if (lock.current) return;lock.current = true;setBusy(true);try {await momentsApi('delete_comment', { id: post.id, comment_id: c.id });setRows((old) => old.filter((x) => x.id !== c.id));} catch (e) {setError(momentError(e));} finally {lock.current = false;setBusy(false);}}
   return <section ref={section} className="discussion-comments" aria-label="Moment comments">
     <div className="discussion-list" aria-busy={loading}>
@@ -78,7 +86,10 @@ function MomentComments({ post, onReport }) {
               {profile ? <Link to={profile}><strong>{name(author)}</strong></Link> : <strong>{name(author)}</strong>}
               {!Number.isNaN(date.getTime()) && <time dateTime={date.toISOString()}>{date.toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}</time>}
             </div>
-            <p>{comment.body}</p>
+            {comment.body&&<p>{comment.body}</p>}
+            <MomentGif id={comment.gif_id}/>
+            <button type="button" className="moment-thread-action" disabled={busy} onClick={()=>chooseReply(comment)}>Reply</button>
+            <MomentThread moment={post.id} parent={comment.id} updated={updatedThread?.id===comment.id?updatedThread:null} onReply={child=>chooseReply(child,comment.id)} onReport={onReport}/>
           </div>
           {comment.can_delete ?
           <button type="button" disabled={busy} aria-label="Delete comment" onClick={() => remove(comment)}><Trash2 size={16} /></button> :
@@ -100,10 +111,14 @@ function MomentComments({ post, onReport }) {
         {[['🎶', 'Music'], ['🎧', 'Headphones'], ['🎤', 'Microphone'], ['💿', 'Record'], ['✨', 'Sparkles'], ['💯', 'Hundred'], ['🫶', 'Heart hands'], ['💜', 'Purple heart'], ['🤍', 'White heart'], ['😎', 'Cool'], ['🥹', 'Holding back tears'], ['😭', 'Crying'], ['🤩', 'Starstruck'], ['😂', 'Laughing'], ['👀', 'Eyes'], ['🤔', 'Thinking'], ['🙃', 'Upside down'], ['🤯', 'Mind blown'], ['👍', 'Thumbs up'], ['🙏', 'Thanks'], ['💃', 'Dancing'], ['🕺', 'Dancer'], ['⚡', 'Lightning'], ['🎉', 'Party']].map(([emoji, label]) =>
         <button type="button" key={label} aria-label={'Add ' + label} disabled={busy || body.length + emoji.length > 1000} onClick={() => addEmoji(emoji)}>{emoji}</button>)}
       </div>
+      {reply&&<div className="moment-reply-context"><span>Replying to {reply.label}</span><button type="button" disabled={busy} onClick={()=>setReply(null)}>Cancel reply</button></div>}
+      {gif&&<div className="moment-reply-context"><MomentGif id={gif}/><button type="button" disabled={busy} onClick={()=>setGif('')}>Remove GIF</button></div>}
+      {showGifs&&<MomentGifPicker onSelect={id=>{setGif(id);setShowGifs(false);}}/>}
       <form onSubmit={submit}>
         <Avatar user={user} size={32} />
-        <input aria-label="Write a comment" placeholder="Add a comment…" maxLength={1000} value={body} disabled={busy} onChange={(event) => setBody(event.target.value)} />
-        <button type="submit" disabled={busy || !body.trim()} aria-label="Post comment">{busy ? <Loader2 size={18} className="animate-spin" /> : <Send size={18} />}</button>
+        <input ref={composerInput} aria-label={reply?"Write a reply":"Write a comment"} placeholder={reply?"Write a reply…":"Add a comment…"} maxLength={1000} value={body} disabled={busy} onChange={(event) => setBody(event.target.value)} />
+        <button type="button" aria-label="Choose a GIF" aria-expanded={showGifs} disabled={busy} onClick={()=>setShowGifs(value=>!value)}>GIF</button>
+        <button type="submit" disabled={busy || (!body.trim() && !gif)} aria-label="Post comment">{busy ? <Loader2 size={18} className="animate-spin" /> : <Send size={18} />}</button>
       </form>
     </div>}
   </section>;

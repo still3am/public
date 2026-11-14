@@ -44,3 +44,12 @@
   z-index: 1;
   pointer-events: none;
 }
+
+.moment-thread-action{font-size:.8rem;font-weight:650;min-height:32px;color:inherit;opacity:.75}
+.moment-reply-body{margin-block:4px 8px;padding-inline-start:12px}
+.moment-reply-context{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:6px 12px;font-size:.8rem}
+.moment-comment-gif{display:block;max-width:min(180px,100%);max-height:150px;object-fit:contain;border-radius:10px;margin-block:5px}
+.moment-gif-picker{padding:8px 12px}
+.moment-gif-results{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;max-height:24dvh;overflow-y:auto}
+.moment-gif-results img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:8px}
+.discussion-composer>form{grid-template-columns:auto minmax(0,1fr) auto auto}
