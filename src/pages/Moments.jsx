@@ -277,18 +277,18 @@ export function MomentsExperience() {
       <button type="button" aria-label="Next moment" disabled={currentReel >= visiblePosts.length - 1} onClick={() => moveReel(1)}><ChevronDown size={22} /></button>
     </nav>}
     {visiblePosts.filter((post) => comments.has(post.id)).map((post) => <Dialog key={post.id} open onOpenChange={(open) => {if (!open) dismissComments(post.id);}}>
-      <DialogContent className={mobile ? 'moment-comments-sheet' : 'reels-comments'} onOpenAutoFocus={(event) => {
+      <DialogContent className={'moment-discussion-dialog ' + (mobile ? 'moment-comments-sheet' : 'reels-comments')} onOpenAutoFocus={(event) => {
         event.preventDefault();
         document.getElementById('discussion-title-' + post.id)?.focus();
       }} onCloseAutoFocus={(event) => {
         event.preventDefault();
         if (!report) document.getElementById('discussion-trigger-' + post.id)?.focus();
       }}>
-        {mobile && post.media?.[0]?.url && <button type="button" className="discussion-preview" aria-label="Close comments and return to Moment" onClick={() => dismissComments(post.id)}>
+        {!mobile && post.media?.[0]?.url && <div className="moment-discussion-media">
           {post.media[0].type === 'video' ?
           <video src={post.media[0].url + '#t=0.1'} preload="metadata" muted playsInline /> :
           <img src={post.media[0].url} alt="" />}
-        </button>}
+        </div>}
         <div className="reels-discussion-panel">
           <DialogHeader className="discussion-header">
             <DialogTitle id={'discussion-title-' + post.id} tabIndex={-1}>Comments</DialogTitle>

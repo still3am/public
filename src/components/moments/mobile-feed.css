@@ -563,3 +563,40 @@
   width: 100%; height: 100%; object-fit: cover;
 }
 .public-reels .reel .moment-gif-still.is-wide { object-fit: contain; }
+
+/* The discussion list scrolls independently of the header and composer. */
+.moment-discussion-dialog:has(.reels-discussion-panel),
+.moment-discussion-dialog .reels-discussion-panel { background:#181d21; }
+.moment-discussion-dialog .discussion-header h2 { font-size:19px; letter-spacing:-.02em; }
+.moment-discussion-dialog .discussion-comment + .discussion-comment { border-top:1px solid #ffffff0c; }
+.moment-discussion-dialog .discussion-byline strong { font-size:14px; }
+.moment-discussion-dialog .discussion-comment p { line-height:1.5; }
+.moment-discussion-dialog .discussion-composer { background:#181d21; }
+.moment-discussion-dialog .discussion-composer > form { grid-template-columns:32px minmax(0,1fr) 44px 44px; gap:6px; }
+.moment-discussion-dialog .discussion-composer > form > button[type=button] {
+ background:#ffffff0a;color:#f5f7fa;border:1px solid #ffffff24;font-size:11px;font-weight:750;
+}
+.moment-discussion-dialog .discussion-reactions > button:is(:hover,:focus-visible) { background:#ffffff10;border-radius:12px; }
+.moment-discussion-dialog .moment-reply-context { background:#ffffff0a;border-radius:10px;margin:4px 0; }
+
+.moment-discussion-dialog.reels-comments:has(.reels-discussion-panel) {
+ width:min(940px,calc(100vw - 48px));max-width:none;
+ grid-template-columns:minmax(0,1fr) minmax(360px,420px);grid-template-rows:minmax(0,1fr);
+}
+.moment-discussion-dialog.reels-comments:not(:has(.moment-discussion-media)) {
+ width:min(520px,calc(100vw - 48px));grid-template-columns:minmax(0,1fr);
+}
+.moment-discussion-media { display:grid;place-items:center;background:#0c0e11;min-width:0;min-height:0;overflow:hidden; }
+.moment-discussion-media > :is(img,video) { width:100%;height:100%;min-height:0;object-fit:contain; }
+.reels-comments.moment-discussion-dialog .discussion-list { padding-inline:18px; }
+.reels-comments.moment-discussion-dialog .discussion-header { justify-items:start;padding-inline:18px 48px; }
+
+.moment-comments-sheet.moment-discussion-dialog:has(.reels-discussion-panel) {
+ height:min(calc(var(--discussion-height,100dvh) * .72),680px);
+ grid-template-rows:minmax(0,1fr);border-radius:28px 28px 0 0!important;
+}
+.moment-comments-sheet.moment-discussion-dialog .reels-discussion-panel { grid-row:1;border-radius:inherit; }
+.moment-comments-sheet.moment-discussion-dialog:has(.reels-discussion-panel) > button:last-child { top:14px; }
+.moment-comments-sheet.moment-discussion-dialog[data-keyboard]:has(.reels-discussion-panel) {
+ height:var(--discussion-height,100dvh);grid-template-rows:minmax(0,1fr);
+}
