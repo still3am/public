@@ -136,9 +136,12 @@ export default function TrackOptionsMenu({
   return (
     <div className={`relative shrink-0 ${className}`} onClick={(e) => e.stopPropagation()}>
       <button
+        type="button"
         data-song-menu-trigger
         style={{width:appearance==="glass"?44:36,height:appearance==="glass"?44:36,minWidth:appearance==="glass"?44:36,minHeight:appearance==="glass"?44:36,padding:0,borderRadius:"50%",display:"grid",placeItems:"center",flexShrink:0}}
         ref={btnRef}
+        onPointerDown={(event) => event.stopPropagation()}
+        onTouchStart={(event) => event.stopPropagation()}
         onClick={toggleOpen}
         className={appearance === "glass" ? `player-menu-glass ${buttonClassName || ""}` : buttonClassName || "p-2 rounded-full hover:bg-accent"}
         aria-label="Track options"
