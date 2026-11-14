@@ -25,6 +25,25 @@
         "approved",
         "rejected"
       ]
+    },
+    "gif_url": {
+      "type": "string"
+    },
+    "source": {
+      "type": "string",
+      "enum": [
+        "community",
+        "giphy"
+      ]
+    },
+    "source_id": {
+      "type": "string"
+    },
+    "creator_name": {
+      "type": "string"
+    },
+    "source_url": {
+      "type": "string"
     }
   },
   "required": [
