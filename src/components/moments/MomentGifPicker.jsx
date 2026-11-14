@@ -8,7 +8,7 @@ export function MomentGif({id, label="GIF reaction"}){
  return <img className="moment-comment-gif" src={'https://media.giphy.com/media/'+id+'/giphy.gif'} alt={label} loading="lazy" referrerPolicy="no-referrer"/>;
 }
 
-export default function MomentGifPicker({onSelect}){
+export default function MomentGifPicker({onSelect,onClose}){
  const [query,setQuery]=useState(''),[items,setItems]=useState([]),[status,setStatus]=useState('');
  const request=useRef(null);
  useEffect(()=>{search('');return ()=>request.current?.abort();},[]);
@@ -22,7 +22,7 @@ export default function MomentGifPicker({onSelect}){
    setItems(result.items||[]);setStatus(result.items?.length?'':'No GIFs found.');
   }catch(error){if(!controller.signal.aborted)setStatus(momentError(error));}
  }
- return <Dialog open onOpenChange={open=>{if(!open)onSelect(null);}}>
+ return <Dialog open onOpenChange={open=>{if(!open)onClose?.();}}>
  <DialogContent className="moment-gif-picker" onOpenAutoFocus={event=>event.preventDefault()}>
   <span className="moment-gif-handle" aria-hidden="true"/>
   <DialogTitle className="sr-only">Choose a GIF</DialogTitle>
