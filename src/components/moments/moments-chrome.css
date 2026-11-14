@@ -29,6 +29,10 @@
 }
 .reel-author .moment-compact-badge svg { width: 15px; height: 15px; }
 
+.moment-comment-avatar { position: relative; display: inline-flex; flex: 0 0 auto; width: max-content; height: max-content; vertical-align: middle; }
+.moment-comment-avatar > .moment-compact-badge { position: absolute; right: -3px; bottom: -3px; width: 15px; height: 15px; flex: 0 0 15px; pointer-events: none; }
+.moment-comment-avatar > .moment-compact-badge svg { width: 15px; height: 15px; }
+
 /* Match the two playback positions while keeping play the larger control. */
 .moments-route .public-reels .reel .moment-media {
   --moment-control-center: 46%;
