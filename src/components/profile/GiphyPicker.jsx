@@ -2,6 +2,7 @@ import {useEffect,useRef,useState} from "react";
 import {Loader2,Search,X} from "lucide-react";
 import {base44} from "@/api/base44Client";
 import {Dialog,DialogContent,DialogDescription,DialogTitle} from "@/components/ui/dialog";
+import "./marketplace-giphy.css";
 
 const CATEGORIES=["Trending","Laugh","Love","Celebrate","Surprised","Music"];
 export default function GiphyPicker({kind="avatar",onSelect,onClose,disabled=false}){
