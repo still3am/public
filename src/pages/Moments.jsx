@@ -40,7 +40,7 @@ function ReelCaption({ text }) {
     {canExpand && <button className="reel-caption-toggle" type="button" aria-expanded={expanded} onClick={() => setExpanded((value) => !value)}>{expanded ? 'Show less' : 'Read more'}</button>}
   </div>;
 }
-function MomentComments({ post, onReport }) {
+function MomentComments({ post, onReport, mobile = true }) {
   const { user } = useAuth(),nav = useNavigate();const [rows, setRows] = useState([]),[body, setBody] = useState(''),[busy, setBusy] = useState(false),[loading, setLoading] = useState(true),[error, setError] = useState(''),[page, setPage] = useState({ offset: 0, more: false });const section = useRef(null),live = useRef(true),lock = useRef(false),token = useRef(crypto.randomUUID());
   const [reply,setReply]=useState(null),[gif,setGif]=useState(''),[showGifs,setShowGifs]=useState(false),[updatedThread,setUpdatedThread]=useState(null);
   const composerInput=useRef(null);
@@ -113,7 +113,7 @@ function MomentComments({ post, onReport }) {
       </div>
       {reply&&<div className="moment-reply-context"><span>Replying to {reply.label}</span><button type="button" disabled={busy} onClick={()=>setReply(null)}>Cancel reply</button></div>}
       {gif&&<div className="moment-reply-context"><MomentGif id={gif}/><button type="button" disabled={busy} onClick={()=>setGif('')}>Remove GIF</button></div>}
-      {showGifs&&<MomentGifPicker onClose={()=>setShowGifs(false)} onSelect={id=>{if(id){setGif(id);setShowGifs(false);}}}/>}
+      {showGifs&&<MomentGifPicker inline={!mobile} onClose={()=>setShowGifs(false)} onSelect={id=>{if(id){setGif(id);setShowGifs(false);}}}/>}
       <form onSubmit={submit}>
         <Avatar user={user} size={40} />
         <input ref={composerInput} aria-label={reply?"Write a reply":"Write a comment"} placeholder={reply?"Write a reply…":"Add a comment…"} maxLength={1000} value={body} disabled={busy} onChange={(event) => setBody(event.target.value)} />
@@ -294,7 +294,7 @@ export function MomentsExperience() {
             <DialogTitle id={'discussion-title-' + post.id} tabIndex={-1}>Comments</DialogTitle>
             <DialogDescription className="sr-only">Comments on this Moment.</DialogDescription>
           </DialogHeader>
-          <MomentComments post={post} onReport={(target) => {dismissComments(post.id);setReport(target);}} />
+          <MomentComments mobile={mobile} post={post} onReport={(target) => {dismissComments(post.id);setReport(target);}} />
         </div>
       </DialogContent>
     </Dialog>)}

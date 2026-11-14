@@ -65,3 +65,9 @@
 .moment-gif-results img{display:block;width:100%;height:auto;border-radius:9px}
 .moment-gif-picker>small{color:#aeb6c3;text-align:center}
 .discussion-composer>form{grid-template-columns:auto minmax(0,1fr) auto auto}
+
+.reels-comments .moment-gif-inline{display:flex;flex-direction:column;gap:8px;height:min(34dvh,300px);min-width:0;margin-block:6px 10px;padding:10px;border:1px solid #ffffff20;border-radius:16px;background:#181d21}
+.reels-comments .moment-gif-inline header{display:flex;align-items:center;justify-content:space-between;font-size:14px}
+.reels-comments .moment-gif-inline header button{display:grid;place-items:center;width:32px;height:32px}
+.reels-comments .moment-gif-inline form{display:flex;flex-direction:row-reverse}
+.reels-comments .moment-gif-inline .moment-gif-results{flex:1}
