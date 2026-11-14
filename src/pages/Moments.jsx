@@ -293,7 +293,7 @@ export function MomentsExperience() {
           <DialogHeader className="discussion-header">
             <DialogTitle id={'discussion-title-' + post.id} tabIndex={-1}>Comments</DialogTitle>
             <DialogDescription className="sr-only">Comments on this Moment.</DialogDescription>
-            <DialogClose className="moment-gif-close moment-comments-close" aria-label="Close comments"><X size={20} /></DialogClose>
+            <DialogClose className="moment-gif-close moment-comments-close" aria-label="Close comments"><X size={18} /></DialogClose>
           </DialogHeader>
           <MomentComments mobile={mobile} post={post} onReport={(target) => {dismissComments(post.id);setReport(target);}} />
         </div>
