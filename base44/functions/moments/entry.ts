@@ -18,6 +18,23 @@ export async function momentsAction(b,u,d){
  const s=b.asServiceRole,admin=u?.role==='admin';
  const auth=()=>{if(!u?.id)fail('Sign in to join Moments.',401);if(u.disabled||u.is_blocked)fail('Account unavailable.',403);};
  if(u&&(u.disabled||u.is_blocked))fail('Account unavailable.',403);
+ if(d.action==='gif_search'){
+  auth();
+  const key=Deno.env.get('GIPHY_API_KEY');
+  if(!key)fail('GIF search is not configured yet.',503);
+  const query=text(d.query||'',80);
+  const offset=Math.max(0,Math.min(4999,Math.floor(Number(d.offset)||0)));
+  const params=new URLSearchParams({api_key:key,rating:'g',limit:'24',offset:String(offset),...(query?{q:query}:{})});
+  const endpoint=query?'search':'trending';
+  const response=await fetch('https://api.giphy.com/v1/gifs/'+endpoint+'?'+params,{signal:AbortSignal.timeout(8000)});
+  if(!response.ok)fail('GIF search is temporarily unavailable.',503);
+  const result=await response.json();
+  const items=(result.data||[]).filter(g=>g.rating==='g'&&/^[a-zA-Z0-9]{1,64}$/.test(g.id||'')).map(g=>({id:g.id,title:String(g.title||'GIF').slice(0,100),preview:g.images?.fixed_width_small?.url||''})).filter(g=>g.preview);
+  const page=result.pagination||{};
+  const nextOffset=Number(page.offset||offset)+Number(page.count||items.length);
+  return {items,next_offset:nextOffset,has_more:nextOffset<Number(page.total_count||0)};
+ }
+
  const blocked=u?new Set((await all(s.entities.Block,{$or:[{user_id:u.id},{blocked_user_id:u.id}]})).map(x=>x.user_id===u.id?x.blocked_user_id:x.user_id)):new Set();
  const profileCache=new Map(),trackCache=new Map();
  async function person(id){
