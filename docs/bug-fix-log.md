@@ -117,3 +117,5 @@ All 99 test suites, lint, and production build passed. Signed-in mobile and desk
 - Moments GIF picker — Added reaction categories, search retry, and a compact toggle. Scoped the comment form styles so they do not affect GIF search. Fixed suspended authors appearing in the feed. Also fixed an AvatarPicker JSX error that blocked the build. Moments tests, lint, and build passed. Live GIPHY and device layout checks remain open.
 
 - Moments feed regression — The unsupported bulk User lookup broke the live feed. The feed uses PublicProfile visibility set by the suspension workflow. Tests now reject bulk User lookups and verify hidden authors are excluded from feed and direct links. Moments tests, lint and build passed.
+
+- Moments replies and GIF close — Comments now show View replies only for visible replies. Removing the last reply hides the control. The GIF picker uses its dedicated header close button with the shared dialog close disabled. Moments tests and build passed.
