@@ -8,7 +8,7 @@ import ProfileMedia from "@/components/ProfileMedia";
 import {Dialog,DialogContent,DialogHeader,DialogTitle,DialogDescription} from "@/components/ui/dialog";
 import "./banner-gallery.css";
 import "./marketplace-dialog.css";
-export default function BannerGallery({busy=false,onClose,onSelect,onBrowseAvatars}){
+export default function BannerGallery({busy=false,onClose,onSelect,onBrowseAvatars,onOpenGiphy,onGiphySelect}){
  const {user}=useAuth();
  const {banners,loading,error,deleting,remove}=useBannerGallery();
  const [selected,setSelected]=useState(""),[pending,setPending]=useState(""),[category,setCategory]=useState("images"),[showGiphy,setShowGiphy]=useState(false),[selectedGiphy,setSelectedGiphy]=useState(null);
@@ -16,9 +16,9 @@ export default function BannerGallery({busy=false,onClose,onSelect,onBrowseAvata
  const locked=busy||!!deleting;
  const visible=banners.filter(item=>category==="gifs"?!!(item.gifUrl||item.videoUrl):!(item.gifUrl||item.videoUrl));
  const categories=[{id:"images",label:"Images",count:banners.filter(item=>!(item.gifUrl||item.videoUrl)).length},{id:"gifs",label:"Animated",count:banners.filter(item=>!!(item.gifUrl||item.videoUrl)).length}];
- return <Dialog open onOpenChange={open=>{if(!open&&!locked)onClose();}}><DialogContent className="public-banner-gallery public-marketplace-dialog"><DialogHeader><DialogTitle>PUBLIC Marketplace</DialogTitle><DialogDescription>Find a scene for your profile.</DialogDescription></DialogHeader>
- {onBrowseAvatars&&<div className="banner-gallery-tabs" role="group" aria-label="Gallery type"><button type="button" aria-pressed="false" disabled={locked} onClick={onBrowseAvatars}>Avatars</button><button type="button" aria-pressed="true">Banners</button></div>}
- <button type="button" className="banner-gallery-giphy" disabled={locked} onClick={()=>setShowGiphy(true)}>Find a GIF on GIPHY <small>Use it as a banner and add it to the Marketplace</small></button>
+ return <div className="public-banner-gallery marketplace-inner">
+ <div className="sr-only">Find a scene for your profile.</div>
+ <button type="button" className="banner-gallery-giphy" disabled={locked} onClick={()=>onOpenGiphy?onOpenGiphy():setShowGiphy(true)}>Find a GIF on GIPHY <small>Use it as a banner and add it to the Marketplace</small></button>
  <div className="banner-gallery-tabs" role="group" aria-label="Banner type">{categories.map(tab=><button key={tab.id} type="button" disabled={locked} aria-pressed={category===tab.id} aria-controls="banner-gallery-results" onClick={()=>{setCategory(tab.id);setPending("");}}>{tab.label}{!loading&&<span>{tab.count}</span>}</button>)}</div>
  {error&&<p role="alert" className="banner-gallery-error">{error}</p>}
  <div className="banner-gallery-scroll" id="banner-gallery-results" aria-label={category==="gifs"?"Animated banners":"Image banners"} aria-busy={loading}>
@@ -29,9 +29,9 @@ export default function BannerGallery({busy=false,onClose,onSelect,onBrowseAvata
  {user?.role==="admin"&&pending===item.id&&<div className="banner-gallery-delete-confirm" role="group" aria-label={"Confirm deletion of "+item.name}><strong>Delete {item.name}?</strong><p>Remove from the gallery? Existing profile banners stay.</p><div><button type="button" disabled={locked} onClick={()=>setPending("")}>Cancel</button><button type="button" disabled={locked} onClick={async()=>{if(await remove(item.id)){if(selected===item.url)setSelected("");setPending("");}}}>{deleting===item.id?"Deleting…":"Delete banner"}</button></div></div>}
  </div>)}</div>}
  </div>
- {showGiphy&&<GiphyPicker kind="banner" disabled={locked} onClose={()=>setShowGiphy(false)} onSelect={item=>{setSelected(item.url);setSelectedGiphy(item);setCategory("gifs");setShowGiphy(false);}}/>}
+ {showGiphy&&<GiphyPicker kind="banner" disabled={locked} onClose={()=>setShowGiphy(false)} onSelect={item=>{if(onGiphySelect){onGiphySelect(item);return;}setSelected(item.url);setSelectedGiphy(item);setCategory("gifs");setShowGiphy(false);}}/>}
  <div className="banner-gallery-footer">{banner?<div className="banner-gallery-current"><img src={banner.url} alt=""/><span><strong>{banner.name}</strong><small>{banner.videoUrl?"Looping video":banner.gifUrl?"Animated GIF":"Image"} · applies when you save your profile</small></span></div>:<p className="banner-gallery-prompt">Choose an image or animation to preview on your profile.</p>}
  <div className="banner-gallery-actions"><button type="button" disabled={locked} onClick={onClose}>Cancel</button><button type="button" className="banner-gallery-confirm" disabled={locked||!banner} onClick={()=>onSelect(banner)}>Use banner</button></div></div>
  <GalleryContribute kind="banner"/>
- </DialogContent></Dialog>;
+ </div>;
 }
