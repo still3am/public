@@ -89,7 +89,7 @@ function MomentComments({ post, onReport, mobile = true }) {
             {comment.body&&<p>{comment.body}</p>}
             <MomentGif id={comment.gif_id}/>
             <button type="button" className="moment-thread-action" disabled={busy} onClick={()=>chooseReply(comment)}>Reply</button>
-            <MomentThread moment={post.id} parent={comment.id} updated={updatedThread?.id===comment.id?updatedThread:null} onReply={child=>chooseReply(child,comment.id)} onReport={onReport}/>
+            <MomentThread moment={post.id} parent={comment.id} hasReplies={comment.has_replies} updated={updatedThread?.id===comment.id?updatedThread:null} onReply={child=>chooseReply(child,comment.id)} onReport={onReport}/>
           </div>
           {comment.can_delete ?
           <button type="button" disabled={busy} aria-label="Delete comment" onClick={() => remove(comment)}><Trash2 size={16} /></button> :

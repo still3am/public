@@ -139,6 +139,15 @@ export async function momentsAction(b,u,d){
   let cursor=Math.max(0,Math.min(100000,Math.floor(Number(d.offset)||0)));
   const items=[];
   const batchSize=50;
+  async function finish(has_more){
+   if(items.length){
+    const replies=await all(s.entities.MomentComment,{moment_id:p.id,status:'published',parent_id:{$in:items.map(item=>item.id)}});
+    await people(replies.map(reply=>reply.user_id));
+    const parents=new Set(replies.filter(reply=>profileCache.get(reply.user_id)).map(reply=>reply.parent_id));
+    for(const item of items)item.has_replies=parents.has(item.id);
+   }
+   return {items,has_more,next_offset:cursor};
+  }
   // Older comments omit parent_id. Treat missing, null, and empty values as roots
   // without relying on compound filters for legacy records.
   for(let batch=0;batch<6;batch++){
@@ -148,15 +157,15 @@ export async function momentsAction(b,u,d){
     if(!c.parent_id&&!blocked.has(c.user_id)){
      const author=profileCache.get(c.user_id)||null;
      if(author){
-      if(items.length===20)return {items,has_more:true,next_offset:cursor};
+      if(items.length===20)return finish(true);
       items.push({id:c.id,body:c.body,gif_id:c.gif_id,created_date:c.created_date,author:{...author,moment_comment_id:c.id},can_delete:admin||c.user_id===u.id||p.user_id===u.id});
      }
     }
     cursor++;
    }
-   if(page.length<batchSize)return {items,has_more:false,next_offset:cursor};
+   if(page.length<batchSize)return finish(false);
   }
-  return {items,has_more:true,next_offset:cursor};
+  return finish(true);
  }
 
  if(d.action==='comment'){if(!await person(u.id))fail('Finish setting up your public profile before commenting.',422);const parent=d.parent_id===undefined?null:await rootComment(d.parent_id);const body=text(d.body||'',1000);const gif=d.gif_id||'';if(gif&&(typeof gif!=='string'||!/^[a-zA-Z0-9]{1,64}$/.test(gif)))fail('Choose a valid GIF.');if(!body&&!gif)fail('Write a comment or choose a GIF.');if(!/^[a-zA-Z0-9-]{8,100}$/.test(d.request_id||''))fail('Please retry your comment.');const prior=rows(await s.entities.MomentComment.filter({user_id:u.id,request_id:d.request_id},'-created_date',1))[0];if(!prior){await rate(s.entities.MomentComment,'user_id',20);await moderate(s,body);if(gif){

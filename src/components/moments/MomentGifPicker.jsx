@@ -64,7 +64,7 @@ export default function MomentGifPicker({onSelect,onClose,inline=false,id}){
   {content}
  </section>;
  return <Dialog open onOpenChange={open=>{if(!open)onClose?.();}}>
-  <DialogContent id={id} className="moment-gif-picker" onOpenAutoFocus={event=>event.preventDefault()}>
+  <DialogContent showClose={false} id={id} className="moment-gif-picker" onOpenAutoFocus={event=>event.preventDefault()}>
    <span className="moment-gif-handle" aria-hidden="true"/>
    <DialogTitle className="sr-only">Choose a GIF</DialogTitle>
    <DialogDescription className="sr-only">Browse trending GIFs or search GIPHY.</DialogDescription>

@@ -5,9 +5,10 @@ import {momentsApi,momentError} from '@/lib/momentsApi';
 import {MomentGif} from './MomentGifPicker';
 import './moment-tools.css';
 
-export function MomentThread({moment,parent,updated,onReply,onReport}){
+export function MomentThread({moment,parent,hasReplies,updated,onReply,onReport}){
  const [open,setOpen]=useState(false),[items,setItems]=useState([]),[next,setNext]=useState(null);
  const [loading,setLoading]=useState(false),[error,setError]=useState('');
+ const [loaded,setLoaded]=useState(false);
  const sequence=useRef(0);
  useEffect(()=>()=>{sequence.current++;},[]);
  async function load(offset=0){
@@ -18,6 +19,7 @@ export function MomentThread({moment,parent,updated,onReply,onReport}){
    if(sequence.current!==version)return;
    setItems(old=>offset?[...old,...result.items.filter(item=>!old.some(row=>row.id===item.id))]:result.items);
    setNext(result.has_more?result.next_offset:null);
+   setLoaded(true);
   }catch(error){if(sequence.current===version)setError(momentError(error));}
   finally{if(sequence.current===version)setLoading(false);}
  }
@@ -27,6 +29,7 @@ export function MomentThread({moment,parent,updated,onReply,onReport}){
   try{await momentsApi('delete_comment',{id:moment,comment_id:item.id});await load();}
   catch(error){setError(momentError(error));}
  }
+ if(!(loaded ? items.length || next!==null : hasReplies) && !(open && (loading || error)))return null;
  return <div className="moment-inline-replies">
   <button type="button" className="moment-thread-action" aria-expanded={open} onClick={()=>{setOpen(!open);if(!open)load();}}>{open?'Hide replies':'View replies'}</button>
   {open&&<div className="moment-reply-body">
