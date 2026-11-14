@@ -6,7 +6,6 @@ import {useState} from "react";
 import {Upload,Check,X} from "lucide-react";
 import {AVATAR_PRESETS} from "@/lib/avatarPresets";
 import Avatar from "@/components/Avatar";
-import {Dialog,DialogContent,DialogHeader,DialogTitle,DialogDescription} from "@/components/ui/dialog";
 import "./avatar-picker.css";
 import "./marketplace-dialog.css";
 export default function AvatarPicker({user,busy=false,onClose,onSelect,onUpload,onEditPhoto,error,allowMotion=false,onBrowseBanners,onOpenGiphy,onGiphySelect}){
@@ -18,7 +17,7 @@ export default function AvatarPicker({user,busy=false,onClose,onSelect,onUpload,
  const visibleAvatars=avatars.filter(item=>category==="gifs"?!!(item.gifUrl||item.videoUrl):!(item.gifUrl||item.videoUrl));
  const chosen=AVATAR_PRESETS.find(item=>item.url===selected);
  return <div className="public-avatar-picker marketplace-inner">
- {!onBrowseBanners&&<div className="sr-only">{allowMotion?"Choose a gallery avatar or upload a photo, short video or GIF.":"Choose a gallery avatar or upload your own photo."}</div>
+ <div className="sr-only">{allowMotion?"Choose a gallery avatar or upload a photo, short video or GIF.":"Choose a gallery avatar or upload your own photo."}</div>
  <div className="avatar-picker-preview"><Avatar user={{...user,avatar_url:selected,avatar_preset:"",avatar_video_url:selected===user?.avatar_url?user?.avatar_video_url:"",avatar_gif_url:selectedGiphy?.gifUrl||(selected===user?.avatar_url?user?.avatar_gif_url:"")}} size={100} motion/><div><strong>{chosen?.name||(selected?(selected===user?.avatar_url&&user?.avatar_video_url?"Your video":selected===user?.avatar_url&&user?.avatar_gif_url?"Your GIF":"Your photo"):"Default avatar")}</strong><p>Made to fit your circle.</p></div></div>
  <button type="button" className="avatar-picker-upload" disabled={busy} onClick={onUpload}><Upload size={18}/><span>{allowMotion?"Upload photo, video or GIF":"Upload a photo"}<small>{allowMotion?"10-second loops · video up to 25 MB · images up to 10 MB":"Choose an image from your device · up to 10 MB"}</small></span></button>
  {allowMotion&&<button type="button" className="avatar-picker-upload" disabled={busy} onClick={()=>onOpenGiphy?onOpenGiphy():setShowGiphy(true)}><span>Find a GIF on GIPHY<small>Use it as your avatar and add it to the Marketplace</small></span></button>}
