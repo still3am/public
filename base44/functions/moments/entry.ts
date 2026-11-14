@@ -68,8 +68,8 @@ export async function momentsAction(b,u,d){
    const creatorRole=user?(isAdmin?'':user.creator_role):profile.creator_role;
    profileCache.set(id,{
     user_id:id,display_name:current.display_name||current.full_name||profile.display_name||profile.full_name||'PUBLIC listener',
-    username:current.username||profile.username||'',avatar_url:current.avatar_url||'',avatar_preset:current.avatar_preset||'',
-    avatar_video_url:current.avatar_video_url||'',avatar_gif_url:current.avatar_gif_url||'',
+    username:current.username||profile.username||'',avatar_url:profile.avatar_url||current.avatar_url||'',avatar_preset:profile.avatar_preset||current.avatar_preset||'',
+    avatar_video_url:profile.avatar_video_url||current.avatar_video_url||'',avatar_gif_url:profile.avatar_gif_url||current.avatar_gif_url||'',
     profile_background_colors:colors,profile_background_motion:current.profile_background_motion==='still'?'still':'flow',
     profile_background_speed:typeof current.profile_background_speed==='number'?Math.max(.35,Math.min(1.6,current.profile_background_speed)):1,
     is_artist:isArtist,friends_family_badge:(user?user.friends_family_badge:profile.friends_family_badge)===true,
