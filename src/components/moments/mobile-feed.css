@@ -177,6 +177,7 @@
 .reel-author-details:has(.reel-music-credit) .reel-author :is(.reel-author-name, .moment-compact-badge) {
   translate: 0 -7px;
 }
+.reel-music-credit-slot:empty { display: none; }
 .reel-music-credit-slot:not(:empty) {
   grid-area: 1 / 1;
   align-self: end;
