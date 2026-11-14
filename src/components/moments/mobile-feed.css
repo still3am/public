@@ -374,6 +374,7 @@
   background: #161719;
 }
 .discussion-header {
+  position: relative;
   display: grid;
   place-items: center;
   min-height: 60px;
@@ -382,6 +383,25 @@
 }
 .discussion-header h2 { font-size: 17px; }
 .discussion-header h2:focus { outline: none; }
+.discussion-header .moment-comments-close {
+  position: absolute;
+  top: 8px;
+  right: 10px;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border: 1px solid #ffffff16;
+  border-radius: 50%;
+  background: #252a31;
+  color: #f6f7f9;
+  opacity: 1;
+  transition: background .16s, transform .16s;
+}
+.discussion-header .moment-comments-close:hover { background: #333a43; }
+.discussion-header .moment-comments-close:active { transform: scale(.94); }
+.discussion-header .moment-comments-close:focus-visible { outline: 2px solid #f6f7f9; outline-offset: 2px; }
 .discussion-comments {
   display: flex;
   flex-direction: column;
@@ -451,12 +471,6 @@
     grid-template-rows: minmax(0, 1fr) minmax(0, 61%);
     background: #080808;
   }
-  .moment-comments-sheet:has(.reels-discussion-panel) > button:last-child {
-    top: calc(env(safe-area-inset-top) + 8px);
-    color: white;
-    background: #242528;
-    opacity: 1;
-  }
   .discussion-preview {
     min-height: 0;
     display: grid;
@@ -480,7 +494,6 @@
   .moment-comments-sheet .discussion-composer { padding-bottom: calc(10px + env(safe-area-inset-bottom)); }
   .moment-comments-sheet[data-keyboard]:has(.reels-discussion-panel) { grid-template-rows: 0 minmax(0, 1fr); }
   .moment-comments-sheet[data-keyboard] .discussion-preview { visibility: hidden; padding: 0; }
-  .moment-comments-sheet[data-keyboard]:has(.reels-discussion-panel) > button:last-child { top: 6px; }
   .moment-comments-sheet[data-keyboard] .discussion-composer { padding-bottom: 8px; }
 }
 
@@ -596,7 +609,6 @@
  grid-template-rows:minmax(0,1fr);border-radius:28px 28px 0 0!important;
 }
 .moment-comments-sheet.moment-discussion-dialog .reels-discussion-panel { grid-row:1;border-radius:inherit; }
-.moment-comments-sheet.moment-discussion-dialog:has(.reels-discussion-panel) > button:last-child { top:14px; }
 .moment-comments-sheet.moment-discussion-dialog[data-keyboard]:has(.reels-discussion-panel) {
  height:var(--discussion-height,100dvh);grid-template-rows:minmax(0,1fr);
 }
