@@ -6,6 +6,17 @@
 .profile-admin-label strong{display:block;font-size:12px;font-weight:750;letter-spacing:.01em}.profile-admin-label>span{display:block;font-size:11px;font-weight:400;color:#bfc1cb;margin-top:3px}
 @media(prefers-reduced-motion:reduce){.profile-admin-badge,.profile-admin-badge>svg{transition:none}.profile-admin-badge:hover>svg,.profile-admin-badge:active>svg{transform:none}}
 
+.profile-badge-flow-stop {
+  animation: profile-badge-palette-flow var(--badge-flow-duration) ease-in-out infinite alternate;
+}
+@keyframes profile-badge-palette-flow {
+  from { stop-color: var(--badge-stop-start); }
+  to { stop-color: var(--badge-stop-end); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .profile-badge-flow-stop { animation: none; }
+}
+
 /* Animate the admin seal's colors, keeping the dark check stable and readable. */
 .profile-role-admin:where(:not(.profile-badge-custom-fill)) .profile-badge-fill stop{animation:public-admin-colors 9s ease-in-out infinite}
 .profile-role-admin .profile-badge-fill stop:nth-child(2){animation-delay:-3s}
