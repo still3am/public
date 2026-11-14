@@ -57,8 +57,9 @@
 }
 .moment-gif-handle{flex:none;width:40px;height:4px;border-radius:99px;background:#9ba3b0;margin:2px auto 5px}
 .moment-gif-header{display:flex;align-items:center;justify-content:space-between;flex:none;min-height:44px;padding-inline:4px;font-size:17px;font-weight:700}
-.moment-gif-close{position:relative;inset:auto;display:grid;place-items:center;flex:none;width:44px;height:44px;border:1px solid #ffffff16;border-radius:50%;background:#252a31;color:#f6f7f9;opacity:1}
-.moment-gif-close:hover{background:#333a43}
+.moment-gif-close{position:relative;inset:auto;display:grid;place-items:center;flex:none;width:36px;height:36px;padding:0;border:0;border-radius:0;background:transparent;color:#f6f7f9;opacity:1}
+.moment-gif-close svg{width:18px;height:18px}
+.moment-gif-close:hover{background:transparent;opacity:.75}
 .moment-gif-picker form{display:flex;flex-direction:row-reverse;align-items:center;gap:6px;border-radius:999px;background:#292e35;padding:0 12px;flex:none}
 .moment-gif-picker form input{flex:1;min-width:0;min-height:48px;background:transparent;color:inherit;font-size:16px}
 .moment-gif-picker form button{display:grid;place-items:center;min-width:40px;min-height:44px;color:#aeb6c3}
