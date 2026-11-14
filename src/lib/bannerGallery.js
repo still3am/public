@@ -5,7 +5,7 @@ export async function loadBannerGallery(client){
  const submitted=client.entities.GallerySubmission
   ? rows(await client.entities.GallerySubmission.filter({kind:"banner",status:"approved"},"-created_date",1000).catch(()=>[]))
   : [];
- return [...BANNER_PRESETS,...submitted.map(item=>({...item,gifUrl:/\.gif(?:$|\?)/i.test(item.url)?item.url:undefined}))].filter(item=>!removed.has(item.id));
+ return [...BANNER_PRESETS,...submitted.map(item=>({...item,gifUrl:item.gif_url||(/\.gif(?:$|\?)/i.test(item.url)?item.url:undefined),source:item.source,creatorName:item.creator_name,sourceUrl:item.source_url}))].filter(item=>!removed.has(item.id));
 }
 export async function removeGalleryBanner(client,id){
  const user=await client.auth.me();
