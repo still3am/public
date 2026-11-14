@@ -1,3 +1,4 @@
+import GalleryContribute from "./GalleryContribute";
 import {useState} from "react";
 import {X,Check} from "lucide-react";
 import {useAuth} from "@/lib/AuthContext";
@@ -27,5 +28,6 @@ export default function BannerGallery({busy=false,onClose,onSelect,onBrowseAvata
  </div>
  <div className="banner-gallery-footer">{banner?<div className="banner-gallery-current"><img src={banner.url} alt=""/><span><strong>{banner.name}</strong><small>{banner.videoUrl?"Looping video":banner.gifUrl?"Animated GIF":"Image"} · applies when you save your profile</small></span></div>:<p className="banner-gallery-prompt">Choose an image or animation to preview on your profile.</p>}
  <div className="banner-gallery-actions"><button type="button" disabled={locked} onClick={onClose}>Cancel</button><button type="button" className="banner-gallery-confirm" disabled={locked||!banner} onClick={()=>onSelect(banner)}>Use banner</button></div></div>
+ <GalleryContribute kind="banner"/>
  </DialogContent></Dialog>;
 }

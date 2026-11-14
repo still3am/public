@@ -2,7 +2,10 @@ import {BANNER_PRESETS} from "./bannerPresets.js";
 const rows=value=>Array.isArray(value)?value:value?.items||[];
 export async function loadBannerGallery(client){
  const removed=new Set(rows(await client.entities.BannerRemoval.list("-created_date",1000)).map(row=>row.banner_id));
- return BANNER_PRESETS.filter(item=>!removed.has(item.id));
+ const submitted=client.entities.GallerySubmission
+  ? rows(await client.entities.GallerySubmission.filter({kind:"banner",status:"approved"},"-created_date",1000).catch(()=>[]))
+  : [];
+ return [...BANNER_PRESETS,...submitted.map(item=>({...item,gifUrl:/\.gif(?:$|\?)/i.test(item.url)?item.url:undefined}))].filter(item=>!removed.has(item.id));
 }
 export async function removeGalleryBanner(client,id){
  const user=await client.auth.me();

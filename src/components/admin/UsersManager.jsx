@@ -1,3 +1,4 @@
+import GalleryReviews from "./GalleryReviews";
 import {useAuth} from '@/lib/AuthContext';
 import {suspendAdminMember} from '@/lib/adminData';
 import {adminDatabase} from '@/api/base44Client';
@@ -66,6 +67,16 @@ export default function UsersManager() {
     return { ...member, ...response.data };
   }
   async function changeCreator(user,type){if(!begin(user.id))return;try{const saved=type==='friends_family'||user.friends_family_badge===true?await setFriendsFamilyRole(user,type):await setCreatorAccess(base44,user,type);setUsers(old=>old.map(row=>row.id===user.id?saved:row));}catch(error){reportActionError(error,"Role change could not be saved.");}finally{finish(user.id);}}
+  async function changeGalleryAccess(member){
+    if(!begin(member.id))return;
+    try{
+      const enabled=!member.gallery_uploader;
+      const response=await base44.functions.invoke("usersByIds",{action:"set_gallery_uploader",user_id:member.id,enabled});
+      if(response?.data?.gallery_uploader!==enabled)throw Error("Role change could not be confirmed.");
+      setUsers(old=>old.map(row=>row.id===member.id?{...row,gallery_uploader:enabled}:row));
+    }catch(error){reportActionError(error,"Gallery Uploader access could not be saved.");}
+    finally{finish(member.id);}
+  }
   const term = q.trim().toLowerCase();
   const filtered = (users || []).filter(
     (u) =>
@@ -78,6 +89,7 @@ export default function UsersManager() {
   return (
     <div>
       <CreatorAccessManager/>
+      <GalleryReviews/>
       {users&&<UserCountStat confirmedCount={users.length}/>}
       <button className="playlist-action text-xs mb-3" onClick={load}>Refresh users</button>
       <div className="relative mb-2">
@@ -100,8 +112,7 @@ export default function UsersManager() {
       ) : (
         <div>
           {filtered.map((u) => (
-            <UserRow
-              key={u.id}
+            <div key={u.id}><UserRow
               u={u}
               uploads={uploadCounts?uploadCounts[u.id]||0:null}
               busy={busyIds.has(u.id)}
@@ -109,6 +120,7 @@ export default function UsersManager() {
               onToggleBlock={toggleBlock}
               onDelete={remove}
             />
+            <button type="button" className="playlist-action mb-3" disabled={busyIds.has(u.id)} onClick={()=>changeGalleryAccess(u)}>{u.gallery_uploader?"Remove Gallery Uploader access":"Grant Gallery Uploader access"}</button></div>
           ))}
         </div>
       )}

@@ -2,7 +2,10 @@ import {AVATAR_PRESETS} from "./avatarPresets.js";
 const rows=value=>Array.isArray(value)?value:value?.items||[];
 export async function loadAvatarGallery(client){
  const removed=new Set(rows(await client.entities.AvatarRemoval.list("-created_date",1000)).map(row=>row.avatar_id));
- return AVATAR_PRESETS.filter(item=>!removed.has(item.id));
+ const submitted=client.entities.GallerySubmission
+  ? rows(await client.entities.GallerySubmission.filter({kind:"avatar",status:"approved"},"-created_date",1000).catch(()=>[]))
+  : [];
+ return [...AVATAR_PRESETS,...submitted.map(item=>({...item,gifUrl:/\.gif(?:$|\?)/i.test(item.url)?item.url:undefined}))].filter(item=>!removed.has(item.id));
 }
 export async function removeGalleryAvatar(client,id){
  const user=await client.auth.me();
