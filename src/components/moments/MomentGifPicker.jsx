@@ -12,8 +12,8 @@ const GIF_CATEGORIES = ["Trending", "Laugh", "Love", "Celebrate", "Surprised", "
 
 export default function MomentGifPicker({onSelect,onClose,inline=false}){
  const [query,setQuery]=useState(''),[items,setItems]=useState([]),[status,setStatus]=useState('');
- const [activeTerm,setActiveTerm]=useState(''),[failed,setFailed]=useState(false);
- const request=useRef(null);
+ const [activeTerm,setActiveTerm]=useState(''),[failed,setFailed]=useState(false),[moreLoading,setMoreLoading]=useState(false),[hasMore,setHasMore]=useState(false),[moreFailed,setMoreFailed]=useState(false);
+ const request=useRef(null),itemsRef=useRef([]),loadingMore=useRef(false),canLoadMore=useRef(false);
  useEffect(()=>{search('');return ()=>request.current?.abort();},[]);
  async function search(term){
   request.current?.abort();
