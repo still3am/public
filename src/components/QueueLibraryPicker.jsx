@@ -17,7 +17,7 @@ export default function QueueLibraryPicker({ open, onClose }) {
   const [loading, setLoading] = useState(false);
   const [loadError, setLoadError] = useState(false);
   const [query, setQuery] = useState("");
-  const [justAdded, setJustAdded] = useState(new Set());
+  const [addedIds, setAddedIds] = useState(new Set());
   const addedRef = useRef(new Set()),loadVersion = useRef(0);
 
   const load = useCallback(async () => {
@@ -47,7 +47,17 @@ export default function QueueLibraryPicker({ open, onClose }) {
     }
   }, [user?.id]);
 
-  useEffect(() => {addedRef.current = new Set();setJustAdded(new Set());setQuery("");}, [open, user?.id]);
+  useEffect(() => {addedRef.current = new Set();setAddedIds(new Set());setQuery("");}, [open, user?.id]);
+  useEffect(() => {
+    if (!open) return;
+    const queued = new Set((p.queue || []).map((track) => track?.id).filter(Boolean));
+    queued.forEach((id) => addedRef.current.add(id));
+    setAddedIds((previous) => {
+      const next = new Set(previous);
+      queued.forEach((id) => next.add(id));
+      return next;
+    });
+  }, [open, p.queue]);
   useEffect(() => {setTracks(null);loadVersion.current++;}, [user?.id]);
   useEffect(() => {if (open) load();return () => {loadVersion.current++;};}, [open, load, ids]);
 
@@ -67,10 +77,10 @@ export default function QueueLibraryPicker({ open, onClose }) {
   const addOne = (track) => {
     if (addedRef.current.has(track.id)) return;
     addedRef.current.add(track.id);p.addToQueue(track);
-    setJustAdded((prev) => new Set(prev).add(track.id));
+    setAddedIds((prev) => new Set(prev).add(track.id));
   };
 
-  const addAll = () => {const remaining = filtered.filter((track) => !addedRef.current.has(track.id));if (!remaining.length) return;remaining.forEach((track) => addedRef.current.add(track.id));p.addManyToQueue(remaining);setJustAdded(new Set(addedRef.current));};
+  const addAll = () => {const remaining = filtered.filter((track) => !addedRef.current.has(track.id));if (!remaining.length) return;remaining.forEach((track) => addedRef.current.add(track.id));p.addManyToQueue(remaining);setAddedIds(new Set(addedRef.current));};
 
   return (
     <div role="dialog" aria-modal="true" aria-label="Add music from your library" onKeyDown={(e) => {if (e.key === "Escape") {e.stopPropagation();onClose();}}} data-public-dialog tabIndex={-1} className="queue-library-picker absolute inset-0 z-[60] bg-card text-foreground flex flex-col animate-[fadeIn_.2s_ease-out]">
@@ -104,10 +114,11 @@ export default function QueueLibraryPicker({ open, onClose }) {
         </div>
         {filtered.length > 0 &&
         <button
-          onClick={addAll} disabled={filtered.every((track) => justAdded.has(track.id))}
+          type="button"
+          onClick={addAll} disabled={filtered.every((track) => addedIds.has(track.id))}
           className="mt-2 text-xs font-semibold px-3 py-1.5 rounded-full bg-muted hover:bg-accent active:scale-95 transition">
           
-            Add remaining ({filtered.filter((track) => !justAdded.has(track.id)).length})
+            Add remaining ({filtered.filter((track) => !addedIds.has(track.id)).length})
           </button>
         }
       </div>
@@ -126,7 +137,7 @@ export default function QueueLibraryPicker({ open, onClose }) {
           </div> :
 
         <IncrementalList items={filtered} resetKey={query} className="space-y-0.5" renderItem={(t) => {
-          const added = justAdded.has(t.id);
+          const added = addedIds.has(t.id);
           return (
             <div
               key={t.id}
@@ -144,14 +155,16 @@ export default function QueueLibraryPicker({ open, onClose }) {
                     </div>
                   </div>
                   <button
+                type="button"
                 onClick={() => addOne(t)}
                 disabled={added}
-                className={`shrink-0 w-9 h-9 rounded-full grid place-items-center active:scale-90 transition ${
+                className={`shrink-0 w-11 h-11 min-w-11 min-h-11 rounded-full grid place-items-center active:scale-90 transition ${
                 added ?
                 "bg-foreground text-background" :
                 "bg-muted hover:bg-accent"}`
                 }
-                aria-label={added ? "Added to queue" : "Add to queue"}>
+                aria-pressed={added}
+                aria-label={added ? `${t.title} is in the queue` : `Add ${t.title} to queue`}>
                 
                     {added ? <Check size={16} /> : <Plus size={16} />}
                   </button>
