@@ -5,6 +5,7 @@ import { base44 } from "@/api/base44Client";
 import { useAuth } from "@/lib/AuthContext";
 import { X, Loader2, ImagePlus } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
+import "./create-playlist-modal.css";
 
 /** @param {any} props */
 export default function CreatePlaylistModal({ onClose, onCreated }) {
@@ -54,20 +55,20 @@ export default function CreatePlaylistModal({ onClose, onCreated }) {
   }
 
   return createPortal(
-    <div role="dialog" aria-modal="true" aria-label="New playlist" data-public-dialog tabIndex={-1} onKeyDown={e=>{if(e.key==="Escape"){e.stopPropagation();onClose();}}} className="fixed inset-0 z-[70] flex items-end md:items-center justify-center">
+    <div role="dialog" aria-modal="true" aria-label="New playlist" data-public-dialog tabIndex={-1} onKeyDown={e=>{if(e.key==="Escape"){e.stopPropagation();onClose();}}} className="playlist-create-overlay fixed inset-0 z-[70] flex items-end md:items-center justify-center">
       <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={onClose} />
-      <div className="relative w-full md:max-w-md bg-card border rounded-t-3xl md:rounded-3xl p-5 pb-[calc(1.25rem+env(safe-area-inset-bottom))] max-h-[85dvh] overflow-y-auto overscroll-contain">
+      <div className="playlist-create-panel relative w-full bg-card border rounded-t-3xl md:rounded-3xl p-5 pb-[calc(1.25rem+env(safe-area-inset-bottom))] max-h-[88dvh] overflow-y-auto overscroll-contain">
         <div className="md:hidden w-10 h-1 bg-foreground/20 rounded-full mx-auto mb-4" />
-        <div className="flex items-center justify-between mb-5">
-          <h2 className="text-lg font-extrabold tracking-tight">New Playlist</h2>
+        <div className="playlist-create-header flex items-center justify-between mb-5">
+          <h2 className="text-xl font-extrabold tracking-tight">New Playlist</h2>
           <button onClick={onClose} className="p-2 rounded-full hover:bg-foreground/10" aria-label="Close">
             <X size={18} />
           </button>
         </div>
 
-        <form className="space-y-4" onSubmit={event=>{event.preventDefault();save();}}>
-          <div className="flex items-center gap-4">
-            <label className="relative w-24 h-24 rounded-xl overflow-hidden bg-foreground/[0.06] grid place-items-center cursor-pointer shrink-0 ring-1 ring-inset ring-border">
+        <form className="playlist-create-form space-y-4" onSubmit={event=>{event.preventDefault();save();}}>
+          <div className="playlist-create-main flex items-center gap-4">
+            <label className="playlist-create-cover relative w-24 h-24 rounded-xl overflow-hidden bg-foreground/[0.06] grid place-items-center cursor-pointer shrink-0 ring-1 ring-inset ring-border">
               {coverPreview ? (
                 <img src={coverPreview} alt="" className="w-full h-full object-cover" />
               ) : (
@@ -90,7 +91,7 @@ export default function CreatePlaylistModal({ onClose, onCreated }) {
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 placeholder="Playlist name"
-                className="w-full px-3 py-2.5 rounded-lg border border-border bg-background text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-ring"
+                className="playlist-create-name w-full px-4 py-3 rounded-xl border border-border bg-background text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-ring"
                 autoFocus
               />
             </div>
@@ -102,11 +103,11 @@ export default function CreatePlaylistModal({ onClose, onCreated }) {
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             placeholder="Add a description…"
-            className="w-full px-3 py-2.5 rounded-lg border border-border bg-background text-sm resize-none"
+            className="playlist-create-description w-full px-4 py-3 rounded-xl border border-border bg-background text-sm resize-none"
             rows={2}
           />
 
-          <div className="flex items-center justify-between p-3 rounded-xl bg-foreground/[0.03]">
+          <div className="playlist-create-visibility flex items-center justify-between p-4 rounded-2xl bg-foreground/[0.04]">
             <div>
               <div className="text-sm font-semibold">Public</div>
               <div className="text-xs text-foreground/50">Anyone can find and listen</div>
@@ -117,7 +118,7 @@ export default function CreatePlaylistModal({ onClose, onCreated }) {
           <button
             type="submit"
             disabled={!user?.id || !name.trim() || saving}
-            className="w-full h-12 rounded-full bg-foreground text-background text-sm font-bold disabled:opacity-40 active:scale-95 transition flex items-center justify-center gap-2"
+            className="playlist-create-submit w-full h-12 rounded-full bg-foreground text-background text-sm font-bold disabled:opacity-40 active:scale-95 transition flex items-center justify-center gap-2"
           >
             {saving && <Loader2 size={16} className="animate-spin" />}
             {saving ? "Creating…" : "Create"}
