@@ -55,10 +55,10 @@ export default function MomentGifPicker({onSelect,onClose,inline=false}){
    })}
   </div>
   {status&&<p role="status">{status} {failed&&<button type="button" className="underline" onClick={()=>search(activeTerm)}>Retry</button>}</p>}
-  <div className="moment-gif-results">{items.map(item=><button type="button" key={item.id} aria-label={'Choose '+item.title} onClick={()=>onSelect(item.id)}>
-   <img src={item.preview} alt={item.title} loading="lazy"/>
-  </button>)}</div>
-  <small>Powered by GIPHY</small>
+  <div className="moment-gif-results" role="list" aria-label="GIF results" tabIndex={0} onScroll={handleResultsScroll}>{items.map(item=><button type="button" role="listitem" key={item.id} aria-label={'Choose '+item.title} onClick={()=>onSelect(item.id)}>
+   <img src={item.preview} alt="" loading="lazy" draggable="false"/>
+  </button>)}{moreLoading&&<p className="moment-gif-loading" role="status">Loading more GIFs…</p>}{moreFailed&&<button type="button" className="moment-gif-retry" onClick={loadMore}>Retry loading GIFs</button>}</div>
+  <small>Powered by GIPHY{hasMore?' · Scroll for more':''}</small>
  </>;
  if(inline)return <section className="moment-gif-picker moment-gif-inline" aria-label="Choose a GIF">
   {content}
