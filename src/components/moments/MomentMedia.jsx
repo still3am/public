@@ -16,6 +16,7 @@ export default function MomentMedia({ post, active, onActive, muted = false, onT
   const [inView, setInView] = useState(false),[controls, setControls] = useState(false),[needsTap, setNeedsTap] = useState(false);
   const mouse = useRef(null), manuallyPaused = useRef(false), songUrls = useRef(new Map());
   const [artHost, setArtHost] = useState(null);
+  const [creditHost, setCreditHost] = useState(null);
   const autoRequest = useRef(null);
   const photoLoads = useRef(new Map()), photoRequest = useRef(0), desiredPhoto = useRef(0), currentPhoto = useRef(0);
   currentPhoto.current = index;
@@ -41,7 +42,9 @@ export default function MomentMedia({ post, active, onActive, muted = false, onT
   useEffect(() => {
     const node = box.current;
     if (!node) return;
-    setArtHost(node.closest('.reel')?.querySelector('.reel-actions') || null);
+    const reel = node.closest('.reel');
+    setArtHost(reel?.querySelector('.reel-actions') || null);
+    setCreditHost(reel?.querySelector('.reel-music-credit-slot') || null);
     const observer = new IntersectionObserver((entries) => {
       const visible = (entries[0]?.intersectionRatio ?? 0) >= .6;
       setInView(visible);
@@ -307,9 +310,17 @@ export default function MomentMedia({ post, active, onActive, muted = false, onT
    <div className="moment-playback-progress" aria-hidden="true"><span ref={progressBar} /></div>
    <audio ref={audio} src={source || undefined} preload="metadata" onLoadedMetadata={() => {if (audio.current) audio.current.currentTime = start;}} onTimeUpdate={tick} onEnded={() => {if (active) {audio.current.currentTime = start;audio.current.play().catch(end);}}} onError={() => {setError('This song preview could not load.');end();}} />
   </div>
+  {currentTrack?.title && creditHost && !draftPreview && createPortal(<TrackCredit track={currentTrack} />, creditHost)}
   {slideTrack && artHost && !draftPreview && createPortal(<SlideTrackArtwork track={slideTrack} />, artHost)}
   {error && <p className="moment-inline-message" role="status">{error}</p>}
  </div>;
+}
+function TrackCredit({ track }) {
+  const credit = [track.artist, track.title].filter(Boolean).join(' · ');
+  return <Link className="reel-music-credit" to={'/track/' + encodeURIComponent(track.id)} title={credit}>
+    <Music2 size={13} aria-hidden="true" />
+    <span>{credit}</span>
+  </Link>;
 }
 function SlideTrackArtwork({ track }) {
   const cover = useCoverUrl(track.cover_art_url);
