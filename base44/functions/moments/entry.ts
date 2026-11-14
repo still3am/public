@@ -43,18 +43,38 @@ export async function momentsAction(b,u,d){
  async function people(ids){
   const unique=[...new Set(ids.filter(id=>typeof id==='string'&&!blocked.has(id)&&!profileCache.has(id)))];
   if(!unique.length)return;
-  // The suspension workflow hides the public profile. The built-in User entity
-  // does not support this bulk lookup on the deployed runtime.
+  // PublicProfile is the visibility gate. User records supply the latest role,
+  // avatar animation, and palette so Moments does not render a stale snapshot.
   const profiles=await all(s.entities.PublicProfile,{user_id:{$in:unique},visible:true});
   const byId=new Map(profiles.map(profile=>[profile.user_id,profile]));
+  let userRows=[];
+  try{userRows=rows(await s.entities.User.filter({id:{$in:unique}},'-created_date',unique.length));}catch{}
+  const found=new Set(userRows.map(row=>row.id));
+  const missing=unique.filter(id=>!found.has(id));
+  for(let index=0;index<missing.length;index+=4){
+   const recovered=await Promise.all(missing.slice(index,index+4).map(async id=>{
+    try{return await s.entities.User.get(id);}catch{return null;}
+   }));
+   userRows.push(...recovered.filter(Boolean));
+  }
+  const usersById=new Map(userRows.map(row=>[row.id,row]));
   for(const id of unique){
-   const profile=byId.get(id);
-   profileCache.set(id,profile?{
-    user_id:id,display_name:profile.display_name||profile.full_name||'PUBLIC listener',
-    username:profile.username||'',avatar_url:profile.avatar_url||'',avatar_preset:profile.avatar_preset||'',
-    is_artist:!!profile.is_artist,friends_family_badge:profile.friends_family_badge===true,
-    profile_badge:profile.is_public_admin?'admin':profile.is_artist||profile.creator_role==='artist'?'artist':profile.creator_role==='uploader'?'uploader':null
-   }:null);
+   const profile=byId.get(id),user=usersById.get(id);
+   if(!profile){profileCache.set(id,null);continue;}
+   const current=user||profile;
+   const colors=Array.isArray(current.profile_background_colors)?current.profile_background_colors.filter(color=>typeof color==='string'&&/^#[0-9a-f]{6}$/i.test(color)).slice(0,5):[];
+   const isAdmin=user?user.role==='admin':profile.is_public_admin===true;
+   const isArtist=!isAdmin&&(user?user.creator_role==='artist':profile.is_artist||profile.creator_role==='artist');
+   const creatorRole=user?(isAdmin?'':user.creator_role):profile.creator_role;
+   profileCache.set(id,{
+    user_id:id,display_name:current.display_name||current.full_name||profile.display_name||profile.full_name||'PUBLIC listener',
+    username:current.username||profile.username||'',avatar_url:current.avatar_url||'',avatar_preset:current.avatar_preset||'',
+    avatar_video_url:current.avatar_video_url||'',avatar_gif_url:current.avatar_gif_url||'',
+    profile_background_colors:colors,profile_background_motion:current.profile_background_motion==='still'?'still':'flow',
+    profile_background_speed:typeof current.profile_background_speed==='number'?Math.max(.35,Math.min(1.6,current.profile_background_speed)):1,
+    is_artist:isArtist,friends_family_badge:(user?user.friends_family_badge:profile.friends_family_badge)===true,
+    profile_badge:isAdmin?'admin':isArtist||creatorRole==='artist'?'artist':creatorRole==='uploader'?'uploader':null
+   });
   }
  }
  async function track(id){if(trackCache.has(id))return trackCache.get(id);const t=await s.entities.Track.get(id).catch(e=>{if((e.status||e.response?.status)===404)return null;throw e;});const result=t&&t.is_published===true&&t.approval_status==='approved'&&!blocked.has(t.uploader_id)&&await person(t.uploader_id)?{id:t.id,title:t.title,artist:t.artist||t.uploader_name||'',uploader_id:t.uploader_id,cover_art_url:t.cover_art_url||'',duration_seconds:t.duration_seconds||0}:null;trackCache.set(id,result);return result;}
