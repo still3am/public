@@ -21,6 +21,27 @@ export async function momentsAction(b,u,d){
  const blocked=u?new Set((await all(s.entities.Block,{$or:[{user_id:u.id},{blocked_user_id:u.id}]})).map(x=>x.user_id===u.id?x.blocked_user_id:x.user_id)):new Set();
  const profileCache=new Map(),trackCache=new Map();
  async function person(id){if(blocked.has(id))return null;if(profileCache.has(id))return profileCache.get(id);const account=await s.entities.User.get(id).catch(e=>{if((e.status||e.response?.status)===404)return null;throw e;});if(!account||account.disabled||account.is_blocked){profileCache.set(id,null);return null;}const p=rows(await s.entities.PublicProfile.filter({user_id:id,visible:true},'-updated_date',1))[0];const result=p?{user_id:id,display_name:p.display_name||p.full_name||'PUBLIC listener',username:p.username||'',avatar_url:p.avatar_url||'',avatar_preset:p.avatar_preset||'',is_artist:!!p.is_artist,friends_family_badge:account.friends_family_badge===true,profile_badge:account.role==='admin'?'admin':p.is_artist||p.creator_role==='artist'?'artist':p.creator_role==='uploader'?'uploader':null}:null;profileCache.set(id,result);return result;}
+ async function people(ids){
+  const unique=[...new Set(ids.filter(id=>typeof id==='string'&&!blocked.has(id)&&!profileCache.has(id)))];
+  if(!unique.length)return;
+  const [accounts,profiles]=await Promise.all([
+   all(s.entities.User,{id:{$in:unique}}),
+   all(s.entities.PublicProfile,{user_id:{$in:unique},visible:true})
+  ]);
+  const accountById=new Map(accounts.map(account=>[account.id,account]));
+  const profileById=new Map(profiles.map(profile=>[profile.user_id,profile]));
+  for(const id of unique){
+   const account=accountById.get(id),profile=profileById.get(id);
+   const value=!account||account.disabled||account.is_blocked||!profile?null:{
+    user_id:id,display_name:profile.display_name||profile.full_name||'PUBLIC listener',
+    username:profile.username||'',avatar_url:profile.avatar_url||'',avatar_preset:profile.avatar_preset||'',
+    is_artist:!!profile.is_artist,friends_family_badge:account.friends_family_badge===true,
+    profile_badge:account.role==='admin'?'admin':profile.is_artist||profile.creator_role==='artist'?'artist':profile.creator_role==='uploader'?'uploader':null
+   };
+   profileCache.set(id,value);
+  }
+ }
+
  async function track(id){if(trackCache.has(id))return trackCache.get(id);const t=await s.entities.Track.get(id).catch(e=>{if((e.status||e.response?.status)===404)return null;throw e;});const result=t&&t.is_published===true&&t.approval_status==='approved'&&!blocked.has(t.uploader_id)&&await person(t.uploader_id)?{id:t.id,title:t.title,artist:t.artist||t.uploader_name||'',uploader_id:t.uploader_id,cover_art_url:t.cover_art_url||'',duration_seconds:t.duration_seconds||0}:null;trackCache.set(id,result);return result;}
  async function post(id){if(typeof id!=='string'||id.length>100)fail('Moment unavailable.',404);const p=await s.entities.Moment.get(id).catch(e=>{if((e.status||e.response?.status)===404)fail('Moment unavailable.',404);throw e;});if(p.status!=='published'||!await person(p.user_id))fail('Moment unavailable.',404);return p;}
  async function present(p){const owner=await person(p.user_id);if(!owner)return null;const sample=typeof p.sample_author_name==='string'&&p.sample_author_name.trim()&&/^public-moments-demo-feed-/.test(p.request_id||'');const author=sample?{user_id:owner.user_id,display_name:p.sample_author_name.trim().slice(0,45)+' · Demo',avatar_url:'',is_artist:false,friends_family_badge:false,profile_badge:null}:owner;const song=await track(p.track_id);const media=await Promise.all((p.media||[]).map(async item=>{const selected=item.type==='image'&&item.track_id&&item.track_id!==p.track_id?await track(item.track_id):null;return selected?{...item,track:selected}:item;}));return {id:p.id,user_id:p.user_id,caption:p.caption,media,photo_autoplay:p.photo_autoplay||'normal',track_id:p.track_id,clip_start:p.clip_start,clip_duration:p.clip_duration,music_volume:p.music_volume,original_volume:p.original_volume,created_date:p.created_date,author:{...author,moment_badge:author.friends_family_badge?'friends_family':author.profile_badge},track:song,liked:!!u&&(p.liker_ids||[]).includes(u.id),like_count:(p.liker_ids||[]).length,can_delete:admin||u?.id===p.user_id};}
@@ -90,8 +111,9 @@ export async function momentsAction(b,u,d){
   const offset=Math.max(0,Math.min(100000,Math.floor(Number(d.offset)||0)));
   const page=rows(await s.entities.MomentComment.filter({moment_id:p.id,parent_id:parent.id,status:'published',...(blocked.size?{user_id:{$nin:[...blocked]}}:{})},'created_date',21,offset));
   const items=[];
+  await people(page.slice(0,20).map(row=>row.user_id));
   for(const row of page.slice(0,20)){
-   const author=await person(row.user_id);
+   const author=profileCache.get(row.user_id)||null;
    if(author)items.push({id:row.id,body:row.body,gif_id:row.gif_id,created_date:row.created_date,author,can_delete:admin||row.user_id===u.id||p.user_id===u.id});
   }
   return {items,has_more:page.length>20,next_offset:offset+Math.min(20,page.length)};
@@ -104,9 +126,10 @@ export async function momentsAction(b,u,d){
   // without relying on compound filters for legacy records.
   for(let batch=0;batch<6;batch++){
    const page=rows(await s.entities.MomentComment.filter({moment_id:p.id,status:'published'},'-created_date',batchSize,cursor));
+   await people(page.filter(c=>!c.parent_id&&!blocked.has(c.user_id)).map(c=>c.user_id));
    for(const c of page){
     if(!c.parent_id&&!blocked.has(c.user_id)){
-     const author=await person(c.user_id);
+     const author=profileCache.get(c.user_id)||null;
      if(author){
       if(items.length===20)return {items,has_more:true,next_offset:cursor};
       items.push({id:c.id,body:c.body,gif_id:c.gif_id,created_date:c.created_date,author:{...author,moment_comment_id:c.id},can_delete:admin||c.user_id===u.id||p.user_id===u.id});
