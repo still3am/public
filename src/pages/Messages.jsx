@@ -31,7 +31,7 @@ export default function Messages() {
     setThread(null);setDraft('');setError('');
     if(!id)return;
     let active=true;
-    const refresh=()=>messages('read',{id}).then(data=>{if(active)setThread(data);}).catch(error=>{if(active)setError(error.message);});
+    const refresh=()=>messages('read',{id}).then(data=>{if(active){setThread(data);setInbox(previous=>previous.map(chat=>chat.id===id?{...chat,unread:false}:chat));}}).catch(error=>{if(active)setError(error.message);});
     void refresh();
     const timer=setInterval(refresh,8000);
     return ()=>{active=false;clearInterval(timer);};
@@ -63,7 +63,7 @@ export default function Messages() {
         </div>
         {inbox.filter(chat=>requests===(chat.dm_status==='pending'&&chat.dm_requester!==user?.id)&&chat.dm_status!=='declined'&&(chat.last_message_at||chat.dm_requester===user?.id)).map(chat=>
           <button key={chat.id} onClick={()=>setParams({chat:chat.id})} aria-current={id===chat.id} className="block w-full rounded-xl border p-3 text-left">
-            <strong>{peerName(chat)}</strong><p className="truncate text-sm opacity-70">{chat.last_message_text||'New conversation'}</p>
+            <strong>{peerName(chat)}</strong>{chat.unread&&<small className="ml-2 font-semibold">Unread</small>}<p className="truncate text-sm opacity-70">{chat.last_message_text||'New conversation'}</p>
           </button>
         )}
       </aside>

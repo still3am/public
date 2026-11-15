@@ -18,7 +18,12 @@ Deno.serve(async req => {
     if (action === 'inbox') {
       const conversations = rows(await db.Conversation.filter({participant_ids:uid, dm_enabled:true}, '-updated_date', 100));
       const visible = await Promise.all(conversations.map(async chat => await blocked(chat.participant_ids.find(member => member !== uid)) ? null : chat));
-      return Response.json({conversations:visible.filter(Boolean)});
+      const chats = visible.filter(Boolean);
+      const unread = chats.length ? rows(await db.Message.filter({
+        conversation_id:{$in:chats.map(chat=>chat.id)},recipient_id:uid,read:false,
+      }, '-created_date', 500)) : [];
+      const unreadChats = new Set(unread.map(message=>message.conversation_id));
+      return Response.json({conversations:chats.map(chat=>({...chat,unread:unreadChats.has(chat.id)}))});
     }
 
     if (action === 'start') {
@@ -49,7 +54,8 @@ Deno.serve(async req => {
 
     if (action === 'read') {
       const messages = rows(await db.Message.filter({conversation_id:id}, '-created_date', 100));
-      if (messages.length) await db.Message.updateMany({id:{$in:messages.map(message=>message.id)},recipient_id:uid,read:false},{$set:{read:true}});
+      const unreadIds = messages.filter(message=>message.recipient_id===uid&&!message.read).map(message=>message.id);
+      if (unreadIds.length) await db.Message.updateMany({id:{$in:unreadIds},recipient_id:uid,read:false},{$set:{read:true}});
       return Response.json({chat,messages:messages.reverse()});
     }
     if (action === 'respond' && chat.dm_status === 'pending' && chat.dm_requester !== uid && typeof accept === 'boolean') {
