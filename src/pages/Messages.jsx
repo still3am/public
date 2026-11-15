@@ -400,11 +400,72 @@ function MessagesPage({ user }) {
           {reply && <button type="button" className="public-message-close-reply" aria-label="Cancel reply" disabled={busy} onClick={() => setReply(null)}><X size={23} /></button>}
           <button className="public-messages-back" onClick={() => setParams({})} aria-label="Back to inbox"><ChevronLeft size={23} /></button>
           {readError?.id === id ? <p role="alert" className="public-messages-list-empty">{readError.message} <button type="button" className="underline" onClick={() => loadThread(id)}>Retry</button></p> : !thread && <p role="status" className="public-messages-list-empty">Loading conversation…</p>}
-        {thread && currentPeer && <Link to={"/profile/" + encodeURIComponent(currentPeer)} className="public-messages-peer" aria-label={"View " + peerName(thread.chat) + "’s profile"}>
+        {thread && currentPeer && <button type="button" className="public-messages-peer" aria-label={"Conversation details for " + peerName(thread.chat)} onClick={() => {
+          setDetailsTab('backgrounds');
+          setDraftBackgroundColor(activeBackground.type === 'color' ? activeBackground.value : '#275dad');
+          setBackgroundError('');
+          setChatDetailsOpen(true);
+        }}>
           <PersonAvatar person={peerFor(thread.chat)} />
           <h2>{peerName(thread.chat)}</h2>
-        </Link>}
+        </button>}
         </header>
+        {thread && currentPeer && <Dialog open={chatDetailsOpen} onOpenChange={setChatDetailsOpen}>
+          <DialogContent className="public-chat-details" showClose={false}>
+            <header className="public-chat-details-header">
+              <button type="button" aria-label="Close conversation details" onClick={() => setChatDetailsOpen(false)}><ChevronLeft size={22} /></button>
+              <span>Conversation</span>
+              <button type="button" className="public-chat-details-done" onClick={() => setChatDetailsOpen(false)}>Done</button>
+            </header>
+            <div className="public-chat-details-person">
+              <PersonAvatar person={peerFor(thread.chat)} />
+              <DialogTitle>{peerName(thread.chat)}</DialogTitle>
+              <DialogDescription>Make this conversation feel like yours.</DialogDescription>
+              <Link to={"/profile/" + encodeURIComponent(currentPeer)} onClick={() => setChatDetailsOpen(false)}>View profile</Link>
+            </div>
+            <div className="public-chat-details-tabs" role="tablist" aria-label="Conversation details">
+              <button type="button" role="tab" aria-selected={detailsTab === 'info'} onClick={() => setDetailsTab('info')}>Info</button>
+              <button type="button" role="tab" aria-selected={detailsTab === 'backgrounds'} onClick={() => setDetailsTab('backgrounds')}>Backgrounds</button>
+            </div>
+            {detailsTab === 'backgrounds' ? <section className="public-chat-backgrounds" aria-label="Conversation backgrounds">
+              <div className="public-chat-background-tools">
+                <button type="button" aria-pressed={activeBackground.type === 'none'} disabled={savingBackground} onClick={() => void saveChatBackground({ type: 'none' })}>
+                  <span className="public-chat-background-sample public-chat-background-none"><X size={22} /></span><span>None</span>
+                </button>
+                <button type="button" disabled={savingBackground} onClick={() => backgroundFile.current?.click()}>
+                  <span className="public-chat-background-sample public-chat-background-photo"><ImagePlus size={24} /></span><span>{savingBackground ? 'Saving…' : 'Photo'}</span>
+                </button>
+                <label className="public-chat-background-color">
+                  <span className="public-chat-background-sample"><Palette size={23} /></span><span>Color</span>
+                  <input type="color" aria-label="Choose a conversation background color" value={draftBackgroundColor} disabled={savingBackground} onChange={(event) => setDraftBackgroundColor(event.target.value)} />
+                </label>
+                <button type="button" aria-pressed={activeBackground.value === 'flow'} disabled={savingBackground} onClick={() => void saveChatBackground({ type: 'preset', value: 'flow' })}>
+                  <span className="public-chat-background-sample" style={{ backgroundImage: CHAT_BACKGROUND_PRESETS.find((item) => item.id === 'flow').background }}><span className="public-chat-background-glow" /></span><span>Flow</span>
+                </button>
+              </div>
+              <div className="public-chat-background-color-apply">
+                <span>Choose a color for this chat</span>
+                <button type="button" disabled={savingBackground || (activeBackground.type === 'color' && activeBackground.value === draftBackgroundColor)} onClick={() => void saveChatBackground({ type: 'color', value: draftBackgroundColor })}>{savingBackground ? 'Saving…' : 'Apply color'}</button>
+              </div>
+              <h3>Suggestions</h3>
+              <div className="public-chat-background-grid">
+                {CHAT_BACKGROUND_PRESETS.filter((item) => item.id !== 'flow').map((item) => {
+                  const selected = activeBackground.type === 'preset' && activeBackground.value === item.id;
+                  return <button type="button" key={item.id} className="public-chat-background-tile" aria-pressed={selected} disabled={savingBackground} style={{ backgroundImage: item.background }} onClick={() => void saveChatBackground({ type: 'preset', value: item.id })}>
+                    <span>{item.name}</span>{selected && <span className="public-chat-background-check"><Check size={16} /></span>}
+                  </button>;
+                })}
+              </div>
+              <input ref={backgroundFile} type="file" accept="image/jpeg,image/png,image/webp" className="sr-only" onChange={(event) => { void uploadChatBackground(event.target.files?.[0]);event.target.value = ''; }} />
+              {backgroundError && <p className="public-chat-background-error" role="alert">{backgroundError}</p>}
+              <p className="public-chat-background-note">Only you can see your conversation background.</p>
+            </section> : <section className="public-chat-info">
+              <h3>Conversation info</h3>
+              <p>Your messages stay in this conversation. Background choices are saved to your account and are only visible to you.</p>
+              <Link to={"/profile/" + encodeURIComponent(currentPeer)} onClick={() => setChatDetailsOpen(false)}>View {peerName(thread.chat)}’s profile</Link>
+            </section>}
+          </DialogContent>
+        </Dialog>}
         {thread && <>
           <div ref={scroll} className="public-messages-history" aria-label="Conversation messages" onScroll={() => {
             const node = scroll.current;
