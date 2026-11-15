@@ -6,6 +6,7 @@ import {ArrowUp,ChevronLeft,ChevronRight,MessageCircle,Music2,Pause,Play,Reply,S
 import TrackPickerSheet from '@/components/profile/TrackPickerSheet';
 import {usePlayer} from '@/context/PlayerContext';
 import Avatar from '@/components/Avatar';
+import {useCoverUrl} from '@/hooks/useCoverUrl';
 import './messages.css';
 
 async function messages(action, data = {}) {
@@ -286,12 +287,22 @@ function MessagesPage({user}) {
 function SharedSong({message,onPlay,busy,playing}){
   let song;
   try{song=JSON.parse(message.track);}catch{}
+  const cover = useCoverUrl(typeof song?.cover_art_url === 'string' ? song.cover_art_url : '');
+  const [failedCover,setFailedCover]=useState(null);
+  const title = typeof song?.title === 'string' && song.title ? song.title : 'Shared song';
+  const artist = typeof song?.artist === 'string' ? song.artist : '';
   return <div className="public-message-song">
-    <button type="button" onClick={onPlay} disabled={busy} aria-label={(playing?"Pause ":"Play ")+(song?.title||"shared song")}>{playing?<Pause size={18} fill="currentColor"/>:<Play size={18} fill="currentColor"/>}</button>
-    <Link className="min-w-0" to={"/track/"+encodeURIComponent(message.track_id)}>
-      <strong className="block truncate">{song?.title||"Shared song"}</strong>
-      {song?.artist&&<span className="block truncate text-xs text-muted-foreground">{song.artist}</span>}
+    <Link className="public-message-song-link" to={"/track/"+encodeURIComponent(message.track_id)}>
+      <span className="public-message-song-cover" aria-hidden="true">
+        {cover && failedCover!==cover ? <img src={cover} alt="" loading="lazy" onError={()=>setFailedCover(cover)}/> : <Music2 size={21}/>}
+      </span>
+      <span className="min-w-0">
+        <strong className="block truncate">{title}</strong>
+        {artist&&<span className="public-message-song-artist block truncate">{artist}</span>}
+        <span className="public-message-song-brand">PUBLIC.</span>
+      </span>
     </Link>
+    <button type="button" onClick={onPlay} disabled={busy} aria-label={(playing?"Pause ":"Play ")+title}>{playing?<Pause size={17} fill="currentColor"/>:<Play size={17} fill="currentColor"/>}</button>
   </div>;
 }
 
