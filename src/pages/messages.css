@@ -544,3 +544,12 @@
 @media (prefers-reduced-motion: reduce) {
   .public-message-typing-dots i { animation: none; }
 }
+
+.public-message-typing {
+  flex: 0 0 auto;
+  align-self: stretch;
+  min-height: 34px;
+  padding: 4px 20px 6px;
+  border-top: 1px solid hsl(var(--border) / .45);
+  background: hsl(var(--background));
+}
