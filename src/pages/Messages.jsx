@@ -72,6 +72,7 @@ function MessagesPage({user}) {
   const draftInput=useRef(null);
   const [inboxQuery,setInboxQuery]=useState('');
   const player=usePlayer();
+  const [musicMenu,setMusicMenu]=useState(false);
   const [songPicker,setSongPicker]=useState(false),[attachment,setAttachment]=useState(null);
   async function playSharedSong(message){
     const trackId=message.track_id;
@@ -120,7 +121,7 @@ function MessagesPage({user}) {
     return ()=>clearInterval(timer);
   },[loadInbox]);
   useEffect(()=>{
-    setThread(null);setDraft('');setReply(null);setAttachment(id?lyricShare:null);setSelectingLyrics(false);setSongPicker(false);setError('');setReadError(null);
+    setThread(null);setDraft('');setReply(null);setAttachment(id?lyricShare:null);setSelectingLyrics(false);setMusicMenu(false);setSongPicker(false);setError('');setReadError(null);
     if(!id)return;
     let pending=false;
     const refresh=async(initial=false)=>{
@@ -333,7 +334,15 @@ function MessagesPage({user}) {
           {canSend&&selectingLyrics&&attachment&&<LyricSharePicker track={attachment} onClose={()=>setSelectingLyrics(false)} onSelect={lyrics=>{
             setAttachment({...attachment,lyrics});setSelectingLyrics(false);
           }}/>}
-          {canSend&&songPicker&&<TrackPickerSheet title="Share a song" description="Choose a song to send in this conversation." selectedIds={attachment?[attachment.id]:[]} onClose={()=>setSongPicker(false)} onToggle={(_,song)=>{setAttachment(song);setSongPicker(false);}}/>}
+          {canSend&&musicMenu&&<Dialog open onOpenChange={open=>{if(!open)setMusicMenu(false);}}>
+            <DialogContent className="public-message-actions">
+              <DialogTitle>Share music</DialogTitle>
+              <DialogDescription className="sr-only">Choose a song or a lyric excerpt.</DialogDescription>
+              <button type="button" onClick={()=>{setMusicMenu(false);setSongPicker("song");}}>Share song</button>
+              <button type="button" onClick={()=>{setMusicMenu(false);setSongPicker("lyrics");}}>Share lyrics</button>
+            </DialogContent>
+          </Dialog>}
+          {canSend&&songPicker&&<TrackPickerSheet title={songPicker==="lyrics"?"Choose a song for your lyrics":"Share a song"} description="Choose a song to send in this conversation." selectedIds={[]} onClose={()=>setSongPicker(false)} onToggle={(_,song)=>{setAttachment(song);if(songPicker==="lyrics")setSelectingLyrics(true);setSongPicker(false);}}/>}
           {canSend&&<form className="public-messages-compose" onSubmit={event=>{event.preventDefault();void perform(async()=>{
             const text=draft.trim();
             const trackId=attachment?.id||'',replyId=reply?.id||'',lyrics=attachment?.lyrics||null;
@@ -354,7 +363,7 @@ function MessagesPage({user}) {
             }
             await loadInbox();
           });}}>
-            <button type="button" aria-label="Attach a song" disabled={busy} onClick={()=>setSongPicker(true)}><Music2 size={19}/></button>
+            <button type="button" aria-label="Share song or lyrics" disabled={busy} onClick={()=>setMusicMenu(true)}><Music2 size={19}/></button>
             <textarea ref={draftInput} rows={1} aria-label="Message" placeholder={pending?'Write a message request…':'Write a message…'} className="min-w-0 flex-1 rounded-lg border bg-background p-2" value={draft} maxLength={2000} onChange={event=>setDraft(event.target.value)} onKeyDown={event=>{
               if(event.key!=='Enter'||event.shiftKey||event.nativeEvent.isComposing||event.keyCode===229||!window.matchMedia('(pointer: fine)').matches)return;
               event.preventDefault();

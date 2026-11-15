@@ -5,7 +5,44 @@ import { useEffect, useRef, useMemo } from "react";
 
 
 /** @param {any} props */
-export default function SyncedLyrics({ trackId, position, resolvedLyrics, onSeek, onRetry, getPlaybackPosition }) {
+export default function SyncedLyrics({ trackId, position, resolvedLyrics, onSeek, onRetry, getPlaybackPosition, onShareLine }) {
+  const hold=useRef(null);
+  const handled=useRef(false);
+  function cancelHold(){
+    clearTimeout(hold.current?.timer);
+    hold.current=null;
+  }
+  useEffect(()=>()=>clearTimeout(hold.current?.timer),[trackId]);
+  function holdHandlers(line){
+    if(!onShareLine||!line.text?.trim()||line.text==='♪')return {};
+    return {
+      onPointerDown(event){
+        if(event.button!==0)return;
+        cancelHold();
+        handled.current=false;
+        const {clientX:x,clientY:y,pointerId:id}=event;
+        hold.current={x,y,id,timer:setTimeout(()=>{
+          handled.current=true;
+          cancelHold();
+          onShareLine(line);
+        },450)};
+      },
+      onPointerMove(event){
+        const press=hold.current;
+        if(press?.id===event.pointerId&&Math.hypot(event.clientX-press.x,event.clientY-press.y)>10)cancelHold();
+      },
+      onPointerUp:cancelHold,
+      onPointerCancel:cancelHold,
+      onPointerLeave:cancelHold,
+      onContextMenu(event){
+        event.preventDefault();
+        if(handled.current)return;
+        cancelHold();
+        handled.current=true;
+        onShareLine(line);
+      },
+    };
+  }
   const lineRefs = useRef([]);
   const scrollRef = useRef(null);
   const activeRef = useRef(-1);
@@ -91,7 +128,8 @@ export default function SyncedLyrics({ trackId, position, resolvedLyrics, onSeek
           const distance = activeIdx < 0 ? index : Math.abs(index - activeIdx);
           const opacity = active ? 1 : distance <= 1 ? 0.52 : distance === 2 ? 0.4 : 0.3;
           return <button type="button" key={index} ref={(element) => {lineRefs.current[index] = element;}}
-          onClick={() => seekLine(line)} title="Play from this line"
+          {...holdHandlers(line)}
+          onClick={event => {if(handled.current&&event.detail){handled.current=false;return;}seekLine(line);}} title="Tap to play · hold to share"
           aria-label={(line.text === '♪' ? 'Instrumental passage' : line.text || 'Instrumental passage') + ' · Play from ' + Math.floor(Number(line.start_time_ms) / 60000) + ':' + String(Math.floor(Number(line.start_time_ms) / 1000) % 60).padStart(2, '0')} aria-current={active ? "true" : undefined}
           className="public-lyric-line selectable-content"
           style={{ opacity }}>
@@ -115,7 +153,7 @@ export default function SyncedLyrics({ trackId, position, resolvedLyrics, onSeek
     <div className="public-lyrics-toolbar"><span>Lyrics · no timing available</span></div>
     <div className="public-lyrics-scroll no-scrollbar" aria-label="Song lyrics">
       {text.replace(/\r\n?/g, "\n").split("\n").map((line, index) =>
-        line.trim() ? <p key={index} className="public-lyric-line public-lyric-plain selectable-content">{line}</p> :
+        line.trim() ? <p key={index} {...holdHandlers({text:line})} className="public-lyric-line public-lyric-plain selectable-content">{line}</p> :
         <div key={index} className="h-6" aria-hidden="true" />)}
     </div></div>);
 

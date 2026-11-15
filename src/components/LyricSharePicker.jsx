@@ -2,11 +2,13 @@ import {useEffect,useState} from 'react';
 import {Dialog,DialogContent,DialogTitle,DialogDescription} from '@/components/ui/dialog';
 import {findLyricsCatalog} from '@/lib/lyricsCatalog';
 
-export default function LyricSharePicker({track,result,onClose,onSelect}){
+export default function LyricSharePicker({track,result,initialLine,onClose,onSelect}){
   const [resolved,setResolved]=useState(result||null);
   const [error,setError]=useState('');
-  const [start,setStart]=useState(null);
-  const [end,setEnd]=useState(null);
+  const initialLines=result?.record?.lines?.length?result.record.lines:(result?.text||"").split(/\r?\n/).map(text=>({text}));
+  const initialIndex=initialLine?initialLines.filter(line=>line.text.trim()&&line.text!=="♪").findIndex(line=>line.text.trim()===initialLine.text.trim()&&line.start_time_ms===initialLine.start_time_ms):-1;
+  const [start,setStart]=useState(initialIndex<0?null:initialIndex);
+  const [end,setEnd]=useState(initialIndex<0?null:initialIndex);
   useEffect(()=>{
     if(result)return;
     const controller=new AbortController();
@@ -36,7 +38,7 @@ export default function LyricSharePicker({track,result,onClose,onSelect}){
         {!resolved&&!error&&<p role="status">Finding lyrics…</p>}
         {error&&<p role="alert">{error}</p>}
         {resolved&&!lyrics.length&&<p>No lyrics available for this song.</p>}
-        {lyrics.map((line,index)=><button key={index} type="button" aria-pressed={start!==null&&index>=start&&index<=end}
+        {lyrics.map((line,index)=><button key={index} type="button" ref={index===initialIndex?node=>node?.scrollIntoView({block:"nearest"}):undefined} aria-pressed={start!==null&&index>=start&&index<=end}
           className="block w-full rounded-lg px-3 py-2 text-left aria-pressed:bg-primary aria-pressed:text-primary-foreground"
           onClick={()=>choose(index)}>{line.text}</button>)}
       </div>
