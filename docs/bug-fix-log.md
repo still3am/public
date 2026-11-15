@@ -135,3 +135,5 @@ All 99 test suites, lint, and production build passed. Signed-in mobile and desk
 - Send a song to a friend — Fixed in code. The picker only searched after typing and relied on a capped global people search, so it didn’t show the listener’s existing follow list and could omit followed accounts from search results. It now loads every followed account with paginated Follow reads, shows that list immediately, merges followed matches into name searches, and offers retry while preserving followed matches if global search fails. Production build and diff checks passed; live send and device checks remain open.
 
 - Moments author names — Fixed in code. The author lookup preferred the account name over the public profile name. Moments now uses the public display name, then the public username or full name. Live Ads verification remains open.
+
+- Profile picture badges — Reused the Moments comment badge across shared avatars. Search, discovery, and onboarding now pass public badge fields, and profile comments load visible authors in batches. The full profile header keeps its existing badge. Production build passed. Live layout verification remains open.
