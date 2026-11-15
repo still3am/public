@@ -197,3 +197,5 @@ All 99 automated suites passed, including repaired fixtures for current admin mo
 - Messages — Removed the three-dot buttons beneath messages. Touch hold, right-click, and keyboard context-menu access remain available.
 
 - Message reaction placement — Removed the circular chip and placed emoji at the top corner of each message.
+
+- Message reaction placement follow-up — Matched the Notes style with an unframed emoji overlapping the upper-left corner on both sides of the chat.
