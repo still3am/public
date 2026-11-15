@@ -35,7 +35,7 @@ export default function LyricSharePicker({track,result,initialLine,onClose,onSel
   const timestamp=lyrics[start]?.start_time_ms;
   const valid=excerpt.length>0&&excerpt.join('\n').length<=400;
   return <Dialog open onOpenChange={open=>{if(!open)onClose();}}>
-    <DialogContent data-public-dialog className="grid max-h-[85dvh] grid-rows-[auto_auto_minmax(0,1fr)_auto] overflow-hidden">
+    <DialogContent data-public-dialog className="public-lyric-share-dialog grid max-h-[85dvh] grid-rows-[auto_auto_minmax(0,1fr)_auto] overflow-hidden">
       <DialogTitle>Share lyrics</DialogTitle>
       <DialogDescription>Choose a starting line and up to three more consecutive lines.</DialogDescription>
       <div className="min-h-0 overflow-auto overscroll-contain">

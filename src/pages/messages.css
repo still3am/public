@@ -476,3 +476,34 @@
   width: 16px;
   height: 16px;
 }
+
+.public-messages-compose .public-message-input-pill .public-message-song-draft button {
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  opacity: .78;
+}
+
+.public-messages-compose .public-message-input-pill .public-message-song-draft button:hover,
+.public-messages-compose .public-message-input-pill .public-message-song-draft button:focus-visible {
+  background: hsl(var(--muted));
+  opacity: 1;
+}
+
+.public-lyric-share-dialog > button[aria-label="Close"] {
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  background: transparent !important;
+  opacity: .8;
+}
+
+.public-lyric-share-dialog > button[aria-label="Close"]:hover {
+  opacity: 1;
+  color: hsl(var(--foreground));
+}
+
+.public-lyric-share-dialog > button[aria-label="Close"]:focus-visible {
+  outline: 2px solid hsl(var(--ring));
+  outline-offset: 2px;
+}
