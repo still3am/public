@@ -20,7 +20,7 @@ Deno.serve(async req => {
     const client = createClientFromRequest(req);
     const user = await client.auth.me().catch(() => null);
     if (!user?.id || user.disabled || user.is_blocked) fail('Sign in to use Messages.', 401);
-    const {action, id, username, recipientId, offset, text, trackId, accept, requestId, replyId, messageId, lyrics, gifId} = await req.json();
+    const {action, id, username, recipientId, offset, text, trackId, accept, requestId, replyId, messageId, lyrics, gifId, emoji} = await req.json();
     const db = client.asServiceRole.entities;
     const uid = user.id;
     const blocked = async peer => rows(await db.Block.filter({
