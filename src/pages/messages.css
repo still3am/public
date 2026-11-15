@@ -69,7 +69,7 @@
 .public-message-reply-action{display:flex;align-items:center;gap:3px;min-height:28px;padding-inline:8px;font-size:11px;color:hsl(var(--muted-foreground))}
 .public-message-group[data-own=true] .public-message-reply-action{align-self:flex-end}
 
-.public-message-song{width:274px;max-width:100%;padding:10px;gap:8px;border-radius:20px 20px 20px 5px;background:hsl(var(--card))}
+.public-message-song{width:300px;max-width:100%;padding:10px;gap:8px;border-radius:20px 20px 20px 5px;background:hsl(var(--card))}
 .public-message-group[data-own=true] .public-message-song{border-radius:20px 20px 5px 20px;background:hsl(var(--muted))}
 .public-message-song-link{display:grid;grid-template-columns:clamp(36px,12vw,54px) minmax(0,1fr);align-items:center;gap:9px;min-width:0;flex:1}
 .public-message-song-cover{display:grid;place-items:center;aspect-ratio:1;overflow:hidden;border-radius:9px;background:hsl(var(--foreground)/.08);color:hsl(var(--muted-foreground))}
@@ -77,3 +77,13 @@
 .public-message-song-link strong{font-size:14px;line-height:1.25}
 .public-message-song-artist{font-size:12px;color:hsl(var(--muted-foreground))}
 .public-message-song-brand{display:block;margin-top:3px;font-size:10px;font-weight:800;letter-spacing:.08em;color:hsl(var(--muted-foreground))}
+
+.public-message-group:has(>.public-message-song){width:min(92%,300px);max-width:100%}
+.public-message-song-link{min-height:54px;border-radius:9px}
+.public-message-song-title{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden;overflow-wrap:anywhere}
+.public-message-song-link:hover .public-message-song-title{text-decoration:underline;text-underline-offset:2px}
+.public-message-song .public-message-song-play{border:1px solid transparent;transition:transform .15s ease,opacity .15s ease}
+.public-message-song .public-message-song-play[data-playing=true]{border-color:hsl(var(--border));background:hsl(var(--background));color:hsl(var(--foreground))}
+.public-message-song .public-message-song-play:disabled{opacity:.45}
+.public-message-song .public-message-song-play:active:not(:disabled){transform:scale(.94)}
+@media(prefers-reduced-motion:reduce){.public-message-song .public-message-song-play{transition:none}}

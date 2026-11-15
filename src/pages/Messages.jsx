@@ -297,12 +297,12 @@ function SharedSong({message,onPlay,busy,playing}){
         {cover && failedCover!==cover ? <img src={cover} alt="" loading="lazy" onError={()=>setFailedCover(cover)}/> : <Music2 size={21}/>}
       </span>
       <span className="min-w-0">
-        <strong className="block truncate">{title}</strong>
+        <strong className="public-message-song-title">{title}</strong>
         {artist&&<span className="public-message-song-artist block truncate">{artist}</span>}
         <span className="public-message-song-brand">PUBLIC.</span>
       </span>
     </Link>
-    <button type="button" onClick={onPlay} disabled={busy} aria-label={(playing?"Pause ":"Play ")+title}>{playing?<Pause size={17} fill="currentColor"/>:<Play size={17} fill="currentColor"/>}</button>
+    <button type="button" className="public-message-song-play" data-playing={playing} onClick={onPlay} disabled={busy} aria-label={(playing?"Pause ":"Play ")+title}>{playing?<Pause size={17} fill="currentColor"/>:<Play size={17} fill="currentColor"/>}</button>
   </div>;
 }
 
