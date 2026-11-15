@@ -67,7 +67,7 @@ export function WelcomeFlow({user,onDone}){
   const result=await Promise.allSettled([
    withOnboardingDeadline(getPublishedTracks()),
    withOnboardingDeadline(getUserMusicPreferences(user.id)),
-   withOnboardingDeadline(base44.entities.PublicProfile.filter({visible:true},{sort:"-updated_date",limit:100,fields:["user_id","display_name","username","full_name","avatar_url","top_track_ids","is_artist","visible"]})),
+   withOnboardingDeadline(base44.entities.PublicProfile.filter({visible:true},{sort:"-updated_date",limit:100,fields:["user_id","display_name","username","full_name","avatar_url","top_track_ids","is_artist","visible","is_public_admin","friends_family_badge","creator_role","profile_background_colors","profile_background_motion","profile_background_speed"]})),
    withOnboardingDeadline(base44.entities.Follow.filter({follower_id:user.id},"-created_date",500))
   ]);
   if(!alive.current||version!==request.current)return;

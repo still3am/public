@@ -152,13 +152,13 @@ export async function searchPeople(q) {
   if(term.length<2)return {data:{results:[]}};
   try{
     const pattern=escapeRegex(term);
-    const page=await base44.entities.PublicProfile.filter({visible:true,$or:[contains("display_name",pattern),contains("full_name",pattern),contains("username",pattern)]},{sort:"-updated_date",limit:50,fields:["user_id","display_name","full_name","username","avatar_url"]});
+    const page=await base44.entities.PublicProfile.filter({visible:true,$or:[contains("display_name",pattern),contains("full_name",pattern),contains("username",pattern)]},{sort:"-updated_date",limit:50,fields:["user_id","display_name","full_name","username","avatar_url","is_public_admin","friends_family_badge","is_artist","creator_role","profile_background_colors","profile_background_motion","profile_background_speed"]});
     let candidates=rows(page);
     if(candidates.length<5&&term.length>=3){
-      const broader=await readAllPages(opts=>base44.entities.PublicProfile.filter({visible:true},{...opts,fields:["user_id","display_name","full_name","username","avatar_url"]}));
+      const broader=await readAllPages(opts=>base44.entities.PublicProfile.filter({visible:true},{...opts,fields:["user_id","display_name","full_name","username","avatar_url","is_public_admin","friends_family_badge","is_artist","creator_role","profile_background_colors","profile_background_motion","profile_background_speed"]}));
       candidates=[...new Map([...candidates,...broader.filter(row=>Math.max(searchScore(row.username,term),searchScore(row.display_name,term),searchScore(row.full_name,term))>0)].map(row=>[row.user_id,row])).values()];
     }
-    const results=candidates.map(row=>({id:row.user_id,username:row.username||"",display_name:row.display_name||row.full_name||"",avatar_url:row.avatar_url||""}));
+    const results=candidates.map(row=>({id:row.user_id,username:row.username||"",display_name:row.display_name||row.full_name||"",avatar_url:row.avatar_url||"",is_public_admin:row.is_public_admin,friends_family_badge:row.friends_family_badge,is_artist:row.is_artist,creator_role:row.creator_role,profile_background_colors:row.profile_background_colors,profile_background_motion:row.profile_background_motion,profile_background_speed:row.profile_background_speed}));
     results.sort((a,b)=>Math.max(searchScore(b.username,term),searchScore(b.display_name,term))-Math.max(searchScore(a.username,term),searchScore(a.display_name,term)));results.splice(50);
     return {data:{results}};
   }catch(primary){

@@ -7,11 +7,17 @@ import {useEffect,useState} from "react";
 /** @param {any} props */
 export default function Avatar(props) {
  const commentId=props.user?.moment_comment_id;
- const badge=props.user?.moment_badge;
+ const { user } = props;
+ const badge = props.showBadge === false ? null : user?.moment_badge || (
+   user?.friends_family_badge === true ? "friends_family" :
+   user?.is_public_admin === true || user?.role === "admin" ? "admin" :
+   user?.is_artist === true || user?.creator_role === "artist" ? "artist" :
+   user?.creator_role === "uploader" ? "uploader" : null
+ );
  const badgeProps=badge?{variant:badge,compact:true,colors:props.user.profile_background_colors,motion:props.user.profile_background_motion,speed:props.user.profile_background_speed,active:props.active!==false}:null;
  if(commentId)return <span data-moment-comment-id={commentId} className={badge?"moment-author-avatar moment-comment-avatar":""} style={badge?undefined:{display:'contents'}}><AvatarPicture {...props}/>{badge&&<ProfileBadge {...badgeProps}/>}</span>;
  if(!badge)return <AvatarPicture {...props}/>;
- return <span className="moment-author-avatar"><AvatarPicture {...props}/><ProfileBadge {...badgeProps}/></span>;
+ return <span className={props.user?.moment_badge ? "moment-author-avatar public-badged-avatar" : "public-badged-avatar"}><AvatarPicture {...props}/><ProfileBadge {...badgeProps}/></span>;
 }
 
 function AvatarPicture({user,size=40,className="",motion=false,active=true}){

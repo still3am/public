@@ -5,3 +5,23 @@
 .pfp-boy[data-active=false] .pfp-boy-head-clear,.pfp-boy[data-active=false] .pfp-boy-head{display:none}
 @keyframes pfp-boy-nod{0%,100%{transform:translateY(0) rotate(-3deg);filter:brightness(1)}25%{transform:translateY(1.2%) rotate(1deg);filter:brightness(1.025)}50%{transform:translateY(2.5%) rotate(3deg);filter:brightness(1.06)}75%{transform:translateY(.8%) rotate(0deg);filter:brightness(1.015)}}
 @media(prefers-reduced-motion:reduce){.pfp-boy .pfp-boy-head-clear,.pfp-boy .pfp-boy-head{display:none}}
+
+/* Match the badge placement on Moments comments. */
+.public-badged-avatar {
+  position: relative;
+  display: inline-flex;
+  flex: 0 0 auto;
+  vertical-align: middle;
+}
+.public-badged-avatar > .moment-compact-badge {
+  position: absolute;
+  right: -3px;
+  bottom: -3px;
+  width: 15px;
+  height: 15px;
+  pointer-events: none;
+}
+.public-badged-avatar > .moment-compact-badge svg {
+  width: 15px;
+  height: 15px;
+}
