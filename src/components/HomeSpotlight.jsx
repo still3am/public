@@ -21,9 +21,8 @@ function DiscoveryCover({ track, offset, selected, playing, onChoose, reposition
 export default function HomeSpotlight({ track, tracks = [], currentTrackId, isPlaying, onSelect, renderCover, carouselLabel, autoRotate = false }) {
   const unique = new Map();for (const item of tracks.length ? tracks : track ? [track] : []) if (item?.id && !unique.has(item.id)) unique.set(item.id, item);
   const queue = [...unique.values()].slice(0, 24),[selectedId, setSelectedId] = useState(null);
-  const [rotationPaused,setRotationPaused]=useState(false);
   const carouselRef=useRef(null);
-  const rotating=autoRotate&&!rotationPaused&&!isPlaying;
+  const rotating=autoRotate&&!isPlaying;
   useEffect(()=>{
     const stage=stageRef.current;
     const section=carouselRef.current;
@@ -148,6 +147,6 @@ export default function HomeSpotlight({ track, tracks = [], currentTrackId, isPl
     </li>;
    })}</ol>
   </div>
-  <footer className="home-discovery-controls"><div className="home-discovery-progress hidden" role="progressbar" aria-label="Discovery position" aria-valuemin={1} aria-valuemax={queue.length} aria-valuenow={active + 1}><span style={{ width: (active + 1) / queue.length * 100 + '%' }} /></div><div className="home-discovery-arrows"><button type="button" aria-label={carouselLabel ? "Previous song" : "Previous discovery"} disabled={queue.length < 2} onClick={() => move(-1)}><ChevronLeft size={19} /></button><button type="button" aria-label={carouselLabel ? "Next song" : "Next discovery"} disabled={queue.length < 2} onClick={() => move(1)}><ChevronRight size={19} /></button></div>{autoRotate&&queue.length>1&&<button className="home-discovery-rotate" type="button" onClick={()=>setRotationPaused(value=>!value)}>{rotationPaused?'Resume rotation':'Pause rotation'}</button>}<p className="sr-only" aria-live={rotating?"off":"polite"}>{selected.title} by {selected.artist || selected.uploader_name || 'PUBLIC artist'}</p></footer>
+  <footer className="home-discovery-controls"><div className="home-discovery-progress hidden" role="progressbar" aria-label="Discovery position" aria-valuemin={1} aria-valuemax={queue.length} aria-valuenow={active + 1}><span style={{ width: (active + 1) / queue.length * 100 + '%' }} /></div><div className="home-discovery-arrows"><button type="button" aria-label={carouselLabel ? "Previous song" : "Previous discovery"} disabled={queue.length < 2} onClick={() => move(-1)}><ChevronLeft size={19} /></button><button type="button" aria-label={carouselLabel ? "Next song" : "Next discovery"} disabled={queue.length < 2} onClick={() => move(1)}><ChevronRight size={19} /></button></div><p className="sr-only" aria-live={rotating?"off":"polite"}>{selected.title} by {selected.artist || selected.uploader_name || 'PUBLIC artist'}</p></footer>
  </section>;
 }
