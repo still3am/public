@@ -3,6 +3,8 @@ import {Link,useLocation,useSearchParams} from 'react-router-dom';
 import {base44} from '@/api/base44Client';
 import {useAuth} from '@/lib/AuthContext';
 import {ArrowUp,ChevronLeft,ChevronRight,MessageCircle,MoreHorizontal,Music2,Pause,Play,Reply,Search,SquarePen,X} from 'lucide-react';
+import LyricSharePicker from '@/components/LyricSharePicker';
+import {useCoverPalette} from '@/hooks/useCoverPalette';
 import TrackPickerSheet from '@/components/profile/TrackPickerSheet';
 import {usePlayer} from '@/context/PlayerContext';
 import Avatar from '@/components/Avatar';
@@ -60,18 +62,29 @@ function MessagesPage({user}) {
   const operation=useRef(false);
   const pendingSends=useRef(new Map());
   const to=params.get('to'),recipient=params.get('recipient');
-  const recipientName=useLocation().state?.recipientName;
+  const location=useLocation();
+  const recipientName=location.state?.recipientName;
+  const [lyricShare,setLyricShare]=useState(location.state?.lyricShare||null);
+  const [selectingLyrics,setSelectingLyrics]=useState(false);
+  const lyricPlayback=useRef(null);
   const [draft,setDraft]=useState('');
   const [reply,setReply]=useState(null);
   const draftInput=useRef(null);
   const [inboxQuery,setInboxQuery]=useState('');
   const player=usePlayer();
   const [songPicker,setSongPicker]=useState(false),[attachment,setAttachment]=useState(null);
-  async function playSharedSong(trackId){
-    if(player.currentTrack?.id===trackId){await player.togglePlay();return;}
+  async function playSharedSong(message){
+    const trackId=message.track_id;
+    const lyrics=songData(message)?.lyrics;
+    if(player.currentTrack?.id===trackId&&(!lyrics||lyricPlayback.current===message.id)){
+      await player.togglePlay();
+      return;
+    }
     const song=await base44.entities.Track.get(trackId);
     if(!song?.is_published||song.approval_status!=='approved'||(!song.audio_url&&!song._private_audio))throw Error('This song is unavailable.');
-    await player.playTrackAt([song],0);
+    lyricPlayback.current=lyrics?message.id:null;
+    if(lyrics)player.resumeTrack(song,(lyrics.startMs??0)/1000,true);
+    else await player.playTrackAt([song],0);
   }
   const [contacts,setContacts]=useState(null),[contactQuery,setContactQuery]=useState(''),[contactError,setContactError]=useState(false),[retry,setRetry]=useState(0);
   const [error,setError]=useState(''),[busy,setBusy]=useState(false);
@@ -107,7 +120,7 @@ function MessagesPage({user}) {
     return ()=>clearInterval(timer);
   },[loadInbox]);
   useEffect(()=>{
-    setThread(null);setDraft('');setReply(null);setAttachment(null);setSongPicker(false);setError('');setReadError(null);
+    setThread(null);setDraft('');setReply(null);setAttachment(id?lyricShare:null);setSelectingLyrics(false);setSongPicker(false);setError('');setReadError(null);
     if(!id)return;
     let pending=false;
     const refresh=async(initial=false)=>{
@@ -199,6 +212,10 @@ function MessagesPage({user}) {
           {searching&&!contacts&&!contactError&&<p role="status" className="text-sm">Searching…</p>}
           {searching&&contactError&&<button type="button" className="text-sm underline" onClick={()=>setRetry(value=>value+1)}>Search failed. Try again.</button>}
         </div>}
+        {lyricShare&&!id&&<div className="public-message-attachment">
+          <div className="min-w-0"><strong className="block truncate">{lyricShare.title}</strong><span className="text-xs">Choose a conversation to share lyrics.</span></div>
+          <button type="button" aria-label="Cancel lyric share" onClick={()=>setLyricShare(null)}><X size={18}/></button>
+        </div>}
         <div className="public-messages-tabs">
           <button aria-pressed={!requests} onClick={()=>setRequests(false)}>Inbox</button>
           <button aria-pressed={requests} onClick={()=>setRequests(true)}>Requests</button>
@@ -245,7 +262,7 @@ function MessagesPage({user}) {
               onPointerCancel={cancelHold} onPointerUp={cancelHold} onPointerLeave={cancelHold}
               onContextMenu={event=>{event.preventDefault();cancelHold();setMenu({chatId:id,message});}}>
               {message.reply_preview&&<ReplyQuote preview={message.reply_preview}/>}
-              {message.track_id&&<SharedSong message={message} playing={player.currentTrack?.id===message.track_id&&player.isPlaying} onPlay={()=>void perform(()=>playSharedSong(message.track_id))} busy={busy}/>}
+              {message.track_id&&<SharedSong message={message} playing={player.currentTrack?.id===message.track_id&&player.isPlaying&&(!songData(message)?.lyrics||lyricPlayback.current===message.id)} onPlay={()=>void perform(()=>playSharedSong(message))} busy={busy}/>}
               {message.text&&<p className="public-message-bubble" data-own={message.sender_id===user?.id}>{message.text}</p>}
               {[message.sender_reaction,message.recipient_reaction].some(emoji=>REACTIONS.includes(emoji))&&
                 <span className="public-message-reaction-badge" aria-label="Message reactions">
@@ -277,7 +294,7 @@ function MessagesPage({user}) {
               }}><Reply size={17}/> Reply</button>}
               {activeMenu.text&&<button type="button" onClick={()=>{setMenu(null);void perform(()=>navigator.clipboard.writeText(activeMenu.text));}}>Copy text</button>}
               {activeMenu.track_id&&<Link to={'/track/'+encodeURIComponent(activeMenu.track_id)} onClick={()=>setMenu(null)}>Open song</Link>}
-              {activeMenu.track_id&&<button type="button" onClick={()=>{setMenu(null);void perform(()=>playSharedSong(activeMenu.track_id));}}>{player.currentTrack?.id===activeMenu.track_id&&player.isPlaying?'Pause song':'Play song'}</button>}
+              {activeMenu.track_id&&<button type="button" onClick={()=>{setMenu(null);void perform(()=>playSharedSong(activeMenu));}}>{player.currentTrack?.id===activeMenu.track_id&&player.isPlaying?'Pause song':'Play song'}</button>}
               {activeMenu.sender_id===user?.id&&<button type="button" className="text-destructive" disabled={busy} onClick={()=>{
                 if(!window.confirm('Delete this message for both people?'))return;
                 setMenu(null);
@@ -310,17 +327,24 @@ function MessagesPage({user}) {
             <div className="min-w-0"><strong className="block truncate">Replying to {reply.name}</strong><span className="block truncate">{reply.text}</span></div>
             <button type="button" aria-label="Cancel reply" disabled={busy} onClick={()=>setReply(null)}><X size={18}/></button>
           </div>}
-          {canSend&&attachment&&<div className="public-message-attachment"><Music2 size={17}/><span className="truncate">{attachment.title}</span><button type="button" aria-label="Remove song" disabled={busy} onClick={()=>setAttachment(null)}><X size={18}/></button></div>}
+          {canSend&&attachment&&<div className="public-message-attachment"><Music2 size={17}/><span className="truncate">{attachment.title}</span><button type="button" aria-label="Remove song" disabled={busy} onClick={()=>{setAttachment(null);setLyricShare(null);}}><X size={18}/></button></div>}
+          {canSend&&attachment&&!attachment.lyrics&&<button type="button" className="public-messages-latest" disabled={busy} onClick={()=>setSelectingLyrics(true)}>Choose lyric lines</button>}
+          {canSend&&attachment?.lyrics&&<div className="public-message-lyric-draft">{attachment.lyrics.lines.join('\n')}</div>}
+          {canSend&&selectingLyrics&&attachment&&<LyricSharePicker track={attachment} onClose={()=>setSelectingLyrics(false)} onSelect={lyrics=>{
+            setAttachment({...attachment,lyrics});setSelectingLyrics(false);
+          }}/>}
           {canSend&&songPicker&&<TrackPickerSheet title="Share a song" description="Choose a song to send in this conversation." selectedIds={attachment?[attachment.id]:[]} onClose={()=>setSongPicker(false)} onToggle={(_,song)=>{setAttachment(song);setSongPicker(false);}}/>}
           {canSend&&<form className="public-messages-compose" onSubmit={event=>{event.preventDefault();void perform(async()=>{
             const text=draft.trim();
-            const trackId=attachment?.id||'',replyId=reply?.id||'';
+            const trackId=attachment?.id||'',replyId=reply?.id||'',lyrics=attachment?.lyrics||null;
+            const lyricKey=JSON.stringify(lyrics);
             if(!text&&!trackId)return;
             const existing=pendingSends.current.get(id);
-            const requestId=existing?.text===text&&existing?.trackId===trackId&&existing?.replyId===replyId?existing.requestId:globalThis.crypto?.randomUUID?.();
-            pendingSends.current.set(id,{text,trackId,replyId,requestId});
-            await messages('send',{id,text,trackId,replyId,requestId});
+            const requestId=existing?.text===text&&existing?.trackId===trackId&&existing?.replyId===replyId&&existing?.lyricKey===lyricKey?existing.requestId:globalThis.crypto?.randomUUID?.();
+            pendingSends.current.set(id,{text,trackId,replyId,lyricKey,requestId});
+            await messages('send',{id,text,trackId,replyId,requestId,lyrics});
             pendingSends.current.delete(id);
+            if(lyrics)setLyricShare(null);
             if(currentChat.current===id){
               followLatest.current=true;
               setDraft(previous=>previous===draft?'':previous);
@@ -345,14 +369,24 @@ function MessagesPage({user}) {
   </main>;
 }
 
+function songData(message){
+  try{return JSON.parse(message.track);}catch{return null;}
+}
 function SharedSong({message,onPlay,busy,playing}){
-  let song;
-  try{song=JSON.parse(message.track);}catch{}
+  const song=songData(message);
+  const lyrics=Array.isArray(song?.lyrics?.lines)?song.lyrics:null;
   const cover = useCoverUrl(typeof song?.cover_art_url === 'string' ? song.cover_art_url : '');
+  const {colors}=useCoverPalette(lyrics?cover:"");
   const [failedCover,setFailedCover]=useState(null);
   const title = typeof song?.title === 'string' && song.title ? song.title : 'Shared song';
   const artist = typeof song?.artist === 'string' ? song.artist : '';
-  return <div className="public-message-song">
+  const seconds=Number.isSafeInteger(lyrics?.startMs)?Math.floor(lyrics.startMs/1000):null;
+  return <div className={lyrics?"public-message-lyric-card":undefined} style={lyrics?{"--lyric-color-a":colors[0]||"#263350","--lyric-color-b":colors[1]||"#513657"}:undefined}>
+    {lyrics&&<div className="public-message-lyric-lines">
+      {lyrics.lines.map((line,index)=><div key={index}>{line}</div>)}
+      {seconds!==null&&<span>{Math.floor(seconds/60)}:{String(seconds%60).padStart(2,"0")}</span>}
+    </div>}
+    <div className="public-message-song">
     <Link className="public-message-song-link" to={"/track/"+encodeURIComponent(message.track_id)}>
       <span className="public-message-song-cover" aria-hidden="true">
         {cover && failedCover!==cover ? <img src={cover} alt="" loading="lazy" onError={()=>setFailedCover(cover)}/> : <Music2 size={21}/>}
@@ -364,6 +398,7 @@ function SharedSong({message,onPlay,busy,playing}){
       </span>
     </Link>
     <button type="button" className="public-message-song-play" data-playing={playing} onClick={onPlay} disabled={busy} aria-label={(playing?"Pause ":"Play ")+title}>{playing?<Pause size={17} fill="currentColor"/>:<Play size={17} fill="currentColor"/>}</button>
+    </div>
   </div>;
 }
 
