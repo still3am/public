@@ -4,7 +4,7 @@ import {base44} from '@/api/base44Client';
 import {useAuth} from '@/lib/AuthContext';
 import {ArrowUp,ChevronLeft,ChevronRight,Copy,ExternalLink,Trash2,MessageCircle,MoreHorizontal,Music2,Pause,Play,Reply,Search,SquarePen,X} from 'lucide-react';
 import LyricSharePicker from '@/components/LyricSharePicker';
-import {useCoverPalette} from '@/hooks/useCoverPalette';
+import LyricCoverGradient from '@/components/LyricCoverGradient';
 import TrackPickerSheet from '@/components/profile/TrackPickerSheet';
 import {usePlayer} from '@/context/PlayerContext';
 import Avatar from '@/components/Avatar';
@@ -425,12 +425,12 @@ function SharedSong({message,onPlay,busy,playing}){
   const song=songData(message);
   const lyrics=Array.isArray(song?.lyrics?.lines)?song.lyrics:null;
   const cover = useCoverUrl(typeof song?.cover_art_url === 'string' ? song.cover_art_url : '');
-  const {colors}=useCoverPalette(lyrics?cover:"");
   const [failedCover,setFailedCover]=useState(null);
   const title = typeof song?.title === 'string' && song.title ? song.title : 'Shared song';
   const artist = typeof song?.artist === 'string' ? song.artist : '';
   const seconds=Number.isSafeInteger(lyrics?.startMs)?Math.floor(lyrics.startMs/1000):null;
-  return <div className={lyrics?"public-message-lyric-card public-lyric-gradient":undefined} data-animated={lyrics?.animated===true} style={lyrics?{"--lyric-color-a":colors[0]||"#263350","--lyric-color-b":colors[1]||"#513657"}:undefined}>
+  return <div className={lyrics?"public-message-lyric-card public-lyric-gradient":undefined}>
+    {lyrics&&<LyricCoverGradient cover={cover} animated={lyrics.animated===true}/>}
     {lyrics&&<div className="public-message-lyric-lines">
       {lyrics.lines.map((line,index)=><div key={index}>{line}</div>)}
       {seconds!==null&&<span>{Math.floor(seconds/60)}:{String(seconds%60).padStart(2,"0")}</span>}

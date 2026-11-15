@@ -1,6 +1,5 @@
-import {useCoverPalette} from '@/hooks/useCoverPalette';
+import LyricCoverGradient from '@/components/LyricCoverGradient';
 import {useCoverUrl} from '@/hooks/useCoverUrl';
-import './lyric-card-motion.css';
 import {useEffect,useState} from 'react';
 import {Dialog,DialogContent,DialogTitle,DialogDescription} from '@/components/ui/dialog';
 import {findLyricsCatalog} from '@/lib/lyricsCatalog';
@@ -8,7 +7,6 @@ import {findLyricsCatalog} from '@/lib/lyricsCatalog';
 export default function LyricSharePicker({track,result,initialLine,onClose,onSelect}){
   const [animated,setAnimated]=useState(false);
   const cover=useCoverUrl(track.cover_art_url);
-  const {colors}=useCoverPalette(cover);
   const [resolved,setResolved]=useState(result||null);
   const [error,setError]=useState('');
   const initialLines=result?.record?.lines?.length?result.record.lines:(result?.text||"").split(/\r?\n/).map(text=>({text}));
@@ -49,7 +47,10 @@ export default function LyricSharePicker({track,result,initialLine,onClose,onSel
           onClick={()=>choose(index)}>{line.text}</button>)}
       </div>
       <div>
-        {excerpt.length>0&&<p className="public-lyric-gradient mb-3 whitespace-pre-line rounded-xl p-3 font-semibold text-white" data-animated={animated} style={{"--lyric-color-a":colors[0]||"#263350","--lyric-color-b":colors[1]||"#513657"}} aria-label="Lyric preview">{excerpt.join('\n')}</p>}
+        {excerpt.length>0&&<div className="public-lyric-gradient mb-3 whitespace-pre-line rounded-xl p-3 font-semibold text-white" aria-label="Lyric preview">
+          <LyricCoverGradient cover={cover} animated={animated}/>
+          {excerpt.join('\n')}
+        </div>}
         {excerpt.length>0&&!valid&&<p className="mb-2 text-sm">Choose a shorter excerpt.</p>}
         {excerpt.length>0&&<label className="mb-3 flex min-h-10 items-center gap-3 text-sm">
           <input type="checkbox" role="switch" checked={animated} onChange={event=>setAnimated(event.target.checked)} />
