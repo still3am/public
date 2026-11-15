@@ -8,7 +8,7 @@ export const DESKTOP_PAGES = {
   "": { label: "Home", section: "Discover" }, search: { label: "Search", section: "Discover" }, top: { label: "Top charts", section: "Discover" }, recent: { label: "Recently added", section: "Discover" },
   moments: { label: "Moments", section: "Community" },
   album: { label: "Album", section: "Music" }, recap: { label: "Your recap", section: "Your music" }, track: { label: "Song", section: "Music" }, playlist: { label: "Playlist", section: "Your music" }, mix: { label: "Made for you", section: "Your music" },
-  library: { label: "Library", section: "Your music" }, downloads: { label: "Offline music", section: "Your music" }, profile: { label: "Profile", section: "Community" },
+  library: { label: "Library", section: "Your music" }, downloads: { label: "Offline music", section: "Your music" }, messages: { label: "Messages", section: "Community" }, profile: { label: "Profile", section: "Community" },
   artist: { label: "Artist", section: "Discover" }, records: { label: "Artists", section: "Discover" }, notifications: { label: "Notifications", section: "Community" },
   "community-preview": { label: "Community preview", section: "Community" }, suggestions: { label: "Ideas", section: "Community" }, lounge: { label: "Listening room", section: "Community" }, upload: { label: "Upload music", section: "Create" },
   "my-uploads": { label: "Your uploads", section: "Create" }, "unfinished-uploads": { label: "Unfinished uploads", section: "Create" }, "artist-dashboard": { label: "Artist dashboard", section: "Create" },
