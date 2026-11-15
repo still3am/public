@@ -66,8 +66,6 @@
 .public-message-reply-quote{margin-bottom:3px}
 .public-message-reply-draft{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:6px 16px 0}
 .public-message-reply-draft button{flex:none;display:grid;place-items:center;width:44px;height:44px}
-.public-message-reply-action{display:flex;align-items:center;gap:3px;min-height:28px;padding-inline:8px;font-size:11px;color:hsl(var(--muted-foreground))}
-.public-message-group[data-own=true] .public-message-reply-action{align-self:flex-end}
 
 .public-message-song{width:300px;max-width:100%;padding:10px;gap:8px;border-radius:20px 20px 20px 5px;background:hsl(var(--card))}
 .public-message-group[data-own=true] .public-message-song{border-radius:20px 20px 5px 20px;background:hsl(var(--muted))}
@@ -89,12 +87,10 @@
 @media(prefers-reduced-motion:reduce){.public-message-song .public-message-song-play{transition:none}}
 
 .public-message-group{ -webkit-touch-callout:none }
-.public-message-reply-action{min-width:44px;min-height:32px;justify-content:center}
 .public-message-actions{width:min(calc(100% - 28px),300px);gap:4px;border-radius:20px}
 .public-message-actions h2{padding-bottom:8px}
 .public-message-actions > :is(button:not([aria-label]),a){display:flex;align-items:center;gap:8px;min-height:44px;border-radius:9px;padding-inline:10px;text-align:start}
 .public-message-actions > :is(button:not([aria-label]),a):hover{background:hsl(var(--muted))}
-@media(pointer:coarse){.public-message-reply-action{min-height:44px}}
 
 .public-message-actions{width:min(calc(100% - 24px),370px);padding:0;gap:10px;background:transparent;border:0;box-shadow:none}
 .public-message-actions > button[aria-label]{display:none}
@@ -169,3 +165,5 @@
 .public-message-context .public-message-reactions button[aria-pressed=true]{box-shadow:inset 0 0 0 1px hsl(var(--foreground)/.45)}
 .public-message-context .public-message-reactions button[data-saving=true]{opacity:.55}
 .public-message-reaction-status{justify-self:start;padding:4px 10px;border-radius:999px;background:hsl(var(--popover));color:hsl(var(--popover-foreground));font-size:12px}
+
+.public-message-group:focus-visible{outline:2px solid hsl(var(--ring));outline-offset:3px;border-radius:12px}

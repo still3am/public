@@ -4,7 +4,7 @@ import {useCallback,useEffect,useLayoutEffect,useRef,useState} from 'react';
 import {Link,useLocation,useSearchParams} from 'react-router-dom';
 import {base44} from '@/api/base44Client';
 import {useAuth} from '@/lib/AuthContext';
-import {ArrowUp,ChevronLeft,ChevronRight,Clapperboard,Copy,ExternalLink,Trash2,MessageCircle,MoreHorizontal,Music2,Pause,Play,Reply,Search,SquarePen,X} from 'lucide-react';
+import {ArrowUp,ChevronLeft,ChevronRight,Clapperboard,Copy,ExternalLink,Trash2,MessageCircle,Music2,Pause,Play,Reply,Search,SquarePen,X} from 'lucide-react';
 import LyricSharePicker from '@/components/LyricSharePicker';
 import LyricCoverGradient from '@/components/LyricCoverGradient';
 import TrackPickerSheet from '@/components/profile/TrackPickerSheet';
@@ -305,13 +305,18 @@ function MessagesPage({user}) {
               }}
               onPointerMove={event=>{if(hold.current&&Math.hypot(event.clientX-hold.current.x,event.clientY-hold.current.y)>9)cancelHold();}}
               onPointerCancel={cancelHold} onPointerUp={cancelHold} onPointerLeave={cancelHold}
+              tabIndex={0}
+              onKeyDown={event=>{
+                if(event.target!==event.currentTarget||!(event.key==='ContextMenu'||(event.shiftKey&&event.key==='F10')))return;
+                event.preventDefault();
+                openMessageMenu(message,event.currentTarget);
+              }}
               onContextMenu={event=>{event.preventDefault();cancelHold();openMessageMenu(message,event.currentTarget);}}>
               {message.reply_preview&&<ReplyQuote preview={message.reply_preview}/>}
               {message.track_id&&<SharedSong message={message} playing={player.currentTrack?.id===message.track_id&&player.isPlaying&&(!songData(message)?.lyrics||lyricPlayback.current===message.id)} onPlay={()=>void perform(()=>playSharedSong(message))} busy={busy}/>}
               {messageGifId(message)&&<MomentGif id={messageGifId(message)} label="Shared GIF"/>}
               {message.text&&<p className="public-message-bubble" data-own={message.sender_id===user?.id}>{message.text}</p>}
               <MessageReactions message={message} userId={user?.id}/>
-              <button type="button" className="public-message-reply-action" aria-label="Message options" onClick={event=>openMessageMenu(message,event.currentTarget.parentElement)}><MoreHorizontal size={17}/></button>
               {messageTime(message.created_date)&&<time dateTime={message.created_date}>{messageTime(message.created_date)}</time>}
             </div>)}
           </div>

@@ -193,3 +193,5 @@ All 99 automated suites passed, including repaired fixtures for current admin mo
 - Message reaction crash — The request parser omitted emoji, so the handler threw before saving. Read emoji from the request payload. Exercised add, second participant, removal, and invalid requests against the real handler with a stubbed database.
 
 - Message reaction feedback — Distinguish your reaction, group matching emoji with a count, and show when a selection is saving. Production build passed.
+
+- Messages — Removed the three-dot buttons beneath messages. Touch hold, right-click, and keyboard context-menu access remain available.
