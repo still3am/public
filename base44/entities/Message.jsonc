@@ -12,6 +12,9 @@
       "type": "string",
       "description": "The other participant \u2014 enables direct RLS without a join"
     },
+    "send_request_id": {
+      "type": "string"
+    },
     "sender_name": {
       "type": "string",
       "default": ""

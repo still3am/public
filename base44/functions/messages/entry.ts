@@ -8,7 +8,7 @@ Deno.serve(async req => {
     const client = createClientFromRequest(req);
     const user = await client.auth.me().catch(() => null);
     if (!user?.id || user.disabled || user.is_blocked) fail('Sign in to use Messages.', 401);
-    const {action, id, username, recipientId, offset, text, accept} = await req.json();
+    const {action, id, username, recipientId, offset, text, accept, requestId} = await req.json();
     const db = client.asServiceRole.entities;
     const uid = user.id;
     const blocked = async peer => rows(await db.Block.filter({
@@ -115,12 +115,22 @@ Deno.serve(async req => {
       return Response.json({ok:true});
     }
     if (action !== 'send' || typeof text !== 'string' || !text.trim() || text.length > 2000) fail('Write a message of up to 2,000 characters.');
-    if (chat.dm_status !== 'accepted' && (chat.dm_status !== 'pending' || chat.dm_requester !== uid)) fail('This conversation is awaiting approval.',403);
-    if (chat.dm_status === 'pending' && rows(await db.Message.filter({conversation_id:id}, '-created_date', 1)).length) fail('Wait for this person to accept your request.',403);
-    const recent = rows(await db.Message.filter({sender_id:uid,created_date:{$gte:new Date(Date.now()-60000).toISOString()}}, '-created_date', 25));
-    if (recent.length >= 25) fail('Give it a moment before sending again.',429);
-    await db.Message.create({conversation_id:id,sender_id:uid,recipient_id:peer,text:text.trim()});
-    await db.Conversation.update(id,{last_message_text:text.trim(),last_message_at:new Date().toISOString(),last_sender_id:uid});
+    if (requestId !== undefined && (typeof requestId !== 'string' || !/^[a-f0-9-]{36}$/i.test(requestId))) fail('Invalid message request.');
+    const previous = requestId ? rows(await db.Message.filter({
+      conversation_id:id,sender_id:uid,send_request_id:requestId,
+    }, '-created_date', 1))[0] : null;
+    if (previous && previous.text !== text.trim()) fail('This request already sent a different message.',409);
+    if (!previous) {
+      if (chat.dm_status !== 'accepted' && (chat.dm_status !== 'pending' || chat.dm_requester !== uid)) fail('This conversation is awaiting approval.',403);
+      if (chat.dm_status === 'pending' && rows(await db.Message.filter({conversation_id:id}, '-created_date', 1)).length) fail('Wait for this person to accept your request.',403);
+      const recent = rows(await db.Message.filter({sender_id:uid,created_date:{$gte:new Date(Date.now()-60000).toISOString()}}, '-created_date', 25));
+      if (recent.length >= 25) fail('Give it a moment before sending again.',429);
+      await db.Message.create({conversation_id:id,sender_id:uid,recipient_id:peer,text:text.trim(),...(requestId?{send_request_id:requestId}:{})});
+    }
+    const latest = rows(await db.Message.filter({conversation_id:id}, '-created_date', 1))[0];
+    if (latest) await db.Conversation.update(id,{
+      last_message_text:latest.text,last_message_at:latest.created_date||new Date().toISOString(),last_sender_id:latest.sender_id,
+    });
     return Response.json({ok:true});
   } catch (error) {
     return Response.json({error:error.status ? error.message : 'Messages are temporarily unavailable.'},{status:error.status || 500});

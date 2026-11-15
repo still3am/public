@@ -43,6 +43,7 @@ function MessagesPage({user}) {
   const currentChat=useRef(id);
   currentChat.current=id;
   const operation=useRef(false);
+  const pendingSends=useRef(new Map());
   const to=params.get('to'),recipient=params.get('recipient');
   const recipientName=useLocation().state?.recipientName;
   const [draft,setDraft]=useState('');
@@ -219,7 +220,13 @@ function MessagesPage({user}) {
             })}>{accept?'Accept request':'Decline'}</button>)}
           </div>}
           {canSend&&<form className="public-messages-compose" onSubmit={event=>{event.preventDefault();void perform(async()=>{
-            await messages('send',{id,text:draft});
+            const text=draft.trim();
+            if(!text)return;
+            const existing=pendingSends.current.get(id);
+            const requestId=existing?.text===text?existing.requestId:globalThis.crypto?.randomUUID?.();
+            pendingSends.current.set(id,{text,requestId});
+            await messages('send',{id,text,requestId});
+            pendingSends.current.delete(id);
             if(currentChat.current===id){
               followLatest.current=true;
               setDraft(previous=>previous===draft?'':previous);
