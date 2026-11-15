@@ -119,9 +119,6 @@
 .public-message-context{
   --context-width:min(342px,calc(100vw - 24px));
   position:fixed;
-  inset:auto;
-  left:clamp(12px,var(--message-anchor-x),calc(100vw - var(--context-width) - 12px));
-  top:clamp(12px,var(--message-anchor-y),max(12px,calc(100dvh - 320px)));
   width:var(--context-width);
   max-height:calc(100dvh - 24px);
   transform:none!important;
@@ -134,7 +131,9 @@
   overflow:auto;
   gap:8px;
 }
-.public-message-context[data-own=true]{left:clamp(12px,calc(var(--message-anchor-x) - var(--context-width)),calc(100vw - var(--context-width) - 12px))}
 .public-message-context[data-own=true] :is(.public-message-menu-preview,.public-message-menu-items){justify-self:end}
 .public-message-context .public-message-menu-items{width:min(224px,100%)}
 .public-message-context .public-message-menu-preview{max-width:90%;text-align:start}
+
+.public-message-context{box-sizing:border-box;max-width:none;overflow-x:hidden;overscroll-behavior:contain}
+.public-message-context .public-message-reactions button{padding:0;font-size:clamp(16px,5vw,23px)}

@@ -1,4 +1,4 @@
-import {useCallback,useEffect,useRef,useState} from 'react';
+import {useCallback,useEffect,useLayoutEffect,useRef,useState} from 'react';
 import {Link,useLocation,useSearchParams} from 'react-router-dom';
 import {base44} from '@/api/base44Client';
 import {useAuth} from '@/lib/AuthContext';
@@ -50,9 +50,10 @@ function MessagesPage({user}) {
   const [inbox,setInbox]=useState(null),[loadedThread,setThread]=useState(null),[requests,setRequests]=useState(false);
   const thread=loadedThread?.chat.id===id?loadedThread:null;
   const [menu,setMenu]=useState(null);
+  const menuPanel=useRef(null);
   function openMessageMenu(message,group){
     const bubble=group.querySelector('.public-message-bubble,.public-message-song')||group;
-    const anchor=bubble.getBoundingClientRect();
+    const anchor=bubble;
     setMenu({chatId:id,message,anchor});
   }
   const hold=useRef(null);
@@ -62,6 +63,38 @@ function MessagesPage({user}) {
   }
   useEffect(()=>()=>cancelHold(),[id]);
   const activeMenu=menu?.chatId===id?thread?.messages.find(message=>message.id===menu.message.id):null;
+  useLayoutEffect(()=>{
+    const panel=menuPanel.current;
+    if(!activeMenu||!panel||!menu?.anchor)return;
+    function position(){
+      const viewport=window.visualViewport;
+      const x=viewport?.offsetLeft||0,y=viewport?.offsetTop||0;
+      const width=viewport?.width||document.documentElement.clientWidth;
+      const height=viewport?.height||document.documentElement.clientHeight;
+      const inset=12;
+      const bounds=menu.anchor.getBoundingClientRect();
+      panel.style.width=Math.min(342,Math.max(0,width-inset*2))+'px';
+      panel.style.maxHeight=Math.max(0,height-inset*2)+'px';
+      const box=panel.getBoundingClientRect();
+      const own=activeMenu.sender_id===user?.id;
+      const clamp=(value,min,max)=>Math.max(min,Math.min(value,max));
+      panel.style.left=clamp(own?bounds.right-box.width:bounds.left,x+inset,x+width-box.width-inset)+'px';
+      const reactionHeight=panel.querySelector('.public-message-reactions')?.offsetHeight||52;
+      panel.style.top=clamp(bounds.top-reactionHeight-8,y+inset,y+height-box.height-inset)+'px';
+    }
+    position();
+    const observer=typeof ResizeObserver==='undefined'?null:new ResizeObserver(position);
+    observer?.observe(panel);
+    window.addEventListener('resize',position);
+    window.visualViewport?.addEventListener('resize',position);
+    window.visualViewport?.addEventListener('scroll',position);
+    return ()=>{
+      observer?.disconnect();
+      window.removeEventListener('resize',position);
+      window.visualViewport?.removeEventListener('resize',position);
+      window.visualViewport?.removeEventListener('scroll',position);
+    };
+  },[menu,activeMenu?.id,user?.id]);
   const currentChat=useRef(id);
   currentChat.current=id;
   const operation=useRef(false);
@@ -279,12 +312,8 @@ function MessagesPage({user}) {
             </div>)}
           </div>
           {activeMenu&&<Dialog open onOpenChange={open=>{if(!open)setMenu(null);}}>
-            <DialogContent showClose={false} className="public-message-actions public-message-context"
-              data-own={activeMenu.sender_id===user?.id}
-              style={{
-                '--message-anchor-x':(activeMenu.sender_id===user?.id?menu.anchor.right:menu.anchor.left)+'px',
-                '--message-anchor-y':(menu.anchor.top-58)+'px',
-              }}>
+            <DialogContent ref={menuPanel} showClose={false} className="public-message-actions public-message-context"
+              data-own={activeMenu.sender_id===user?.id}>
               <DialogTitle className="sr-only">Message options</DialogTitle>
               <DialogDescription className="sr-only">React or choose an action for this message.</DialogDescription>
               <div className="public-message-reactions" role="group" aria-label="Emoji reactions">

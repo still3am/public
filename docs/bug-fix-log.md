@@ -167,3 +167,5 @@ All 99 automated suites passed, including repaired fixtures for current admin mo
 - Messages action menu — Added touch hold, right-click and an options button. Supports replies, copying text, opening and playing shared songs, and confirmed deletion of messages you sent. The server checks conversation and sender and refreshes the inbox preview. Production build passed. Live touch and deletion checks remain open.
 
 - Messages emoji reactions — Added a reaction strip, selected-message preview, and separate action panel. Each participant can set, replace, or remove their own reaction. Build passed. Live reaction sync and layout remain unverified.
+
+- Messages menu clipping — Position the reaction strip and actions using the measured panel and visible viewport, including resize and zoom. Production build passed. Live iPad check pending.
