@@ -94,7 +94,6 @@ export default function FullScreenPlayer({ onClose }) {
     return()=>{clearTimeout(timer);window.removeEventListener('online',retry);};
   },[lyricsAvailability.error,lyricsAvailability.trackId,t?.id,lyricsRevision]);
   const hasLyrics = lyricsAvailability.trackId === t?.id && lyricsAvailability.available;
-  const shareLyricsButton=hasLyrics&&<button type="button" className="mx-auto my-2 shrink-0 rounded-full border border-current/20 px-4 py-2 text-xs font-semibold" onClick={()=>openLyricShare()}>Share lyrics</button>;
   const showingLyrics = lyricsMode;
   const [coverFailed, setCoverFailed] = useState(false);
 
@@ -287,7 +286,6 @@ export default function FullScreenPlayer({ onClose }) {
           <div className="full-player-visual relative flex-1 xl:flex-none flex items-center justify-center min-h-0 py-4">
             {showingLyrics &&
             <div className="xl:hidden w-full h-full overflow-hidden flex flex-col min-h-0">
-                {shareLyricsButton}
                 <SyncedLyrics key={t.id} trackId={t.id} position={p.position} getPlaybackPosition={p.getPlaybackPosition} resolvedLyrics={lyricsAvailability} onShareLine={hasLyrics?openLyricShare:undefined} onSeek={p.seek} onRetry={() => setLyricsRevision((v) => v + 1)} />
               </div>
             }
@@ -420,7 +418,6 @@ export default function FullScreenPlayer({ onClose }) {
 
 
           <div className="flex-1 min-h-0 flex flex-col">
-            {showLyricsPanel&&shareLyricsButton}
             {showLyricsPanel && <SyncedLyrics key={t.id} trackId={t.id} position={p.position} getPlaybackPosition={p.getPlaybackPosition} resolvedLyrics={lyricsAvailability} onShareLine={hasLyrics?openLyricShare:undefined} onSeek={p.seek} onRetry={() => setLyricsRevision((v) => v + 1)} />}
           </div>
         </div>
@@ -429,7 +426,7 @@ export default function FullScreenPlayer({ onClose }) {
       {sharingLyrics&&hasLyrics&&<LyricSharePicker key={t.id} track={t} result={lyricsAvailability} initialLine={shareLine} onClose={()=>setSharingLyrics(false)} onSelect={lyrics=>{
         setSharingLyrics(false);
         onClose?.();
-        navigate("/messages",{state:{lyricShare:{id:t.id,title:t.title,artist:t.artist,lyrics}}});
+        navigate("/messages",{state:{lyricShare:{id:t.id,title:t.title,artist:t.artist,cover_art_url:t.cover_art_url,lyrics}}});
       }}/>}
       <QueuePanel open={showQueue} onClose={() => setShowQueue(false)} />
 

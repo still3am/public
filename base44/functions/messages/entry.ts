@@ -149,7 +149,7 @@ Deno.serve(async req => {
           lyrics.lines.some(line=>typeof line!=='string'||!line.trim()||/[\r\n]/.test(line)) ||
           lyrics.lines.join('\n').length > 400 ||
           (lyrics.startMs != null && (!Number.isSafeInteger(lyrics.startMs)||lyrics.startMs<0||lyrics.startMs>36000000))) fail('Choose up to four lyric lines.');
-      lyricCard = {lines:lyrics.lines.map(line=>line.trim()),startMs:lyrics.startMs??null};
+      lyricCard = {lines:lyrics.lines.map(line=>line.trim()),startMs:lyrics.startMs??null,...(lyrics.animated===true?{animated:true}:{})};
     }
     const previous = requestId ? rows(await db.Message.filter({
       conversation_id:id,sender_id:uid,send_request_id:requestId,

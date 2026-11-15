@@ -400,7 +400,7 @@ function SharedSong({message,onPlay,busy,playing}){
   const title = typeof song?.title === 'string' && song.title ? song.title : 'Shared song';
   const artist = typeof song?.artist === 'string' ? song.artist : '';
   const seconds=Number.isSafeInteger(lyrics?.startMs)?Math.floor(lyrics.startMs/1000):null;
-  return <div className={lyrics?"public-message-lyric-card":undefined} style={lyrics?{"--lyric-color-a":colors[0]||"#263350","--lyric-color-b":colors[1]||"#513657"}:undefined}>
+  return <div className={lyrics?"public-message-lyric-card public-lyric-gradient":undefined} data-animated={lyrics?.animated===true} style={lyrics?{"--lyric-color-a":colors[0]||"#263350","--lyric-color-b":colors[1]||"#513657"}:undefined}>
     {lyrics&&<div className="public-message-lyric-lines">
       {lyrics.lines.map((line,index)=><div key={index}>{line}</div>)}
       {seconds!==null&&<span>{Math.floor(seconds/60)}:{String(seconds%60).padStart(2,"0")}</span>}

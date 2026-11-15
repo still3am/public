@@ -32,7 +32,7 @@ export default function TrackCatalogLyrics({ track }) {
   {state.result?.available&&<button type="button" className="playlist-action mt-3" onClick={()=>setSharing(true)}>Share lyrics</button>}
   {sharing&&state.result&&<LyricSharePicker track={track} result={state.result} onClose={()=>setSharing(false)} onSelect={lyrics=>{
     setSharing(false);
-    navigate("/messages",{state:{lyricShare:{id:track.id,title:track.title,artist:track.artist,lyrics}}});
+    navigate("/messages",{state:{lyricShare:{id:track.id,title:track.title,artist:track.artist,cover_art_url:track.cover_art_url,lyrics}}});
   }}/>}
  </section>;
 }
