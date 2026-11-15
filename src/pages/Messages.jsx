@@ -57,7 +57,7 @@ export default function Messages() {
       <aside className="public-messages-inbox">
         <header className="public-messages-inbox-header">
           <Link to="/" className="public-messages-back"><ChevronLeft size={17}/> PUBLIC</Link>
-          <div><h1><MessageCircle size={28} aria-hidden="true"/><span className="sr-only">Messages</span></h1><button type="button" aria-label="New message" aria-expanded={composing} onClick={()=>setComposing(value=>!value)}><SquarePen size={20}/></button></div>
+          <div><h1>Messages</h1><button type="button" aria-label="New message" aria-expanded={composing} onClick={()=>setComposing(value=>!value)}><SquarePen size={20}/></button></div>
         </header>
         {composing&&<form className="flex gap-2 px-4 pb-3" onSubmit={event=>{event.preventDefault();void perform(async()=>{
           const target=await messages('start',{username:username.trim().replace(/^@/,'').toLowerCase()});
