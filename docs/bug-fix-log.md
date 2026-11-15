@@ -173,3 +173,5 @@ All 99 automated suites passed, including repaired fixtures for current admin mo
 - Messages narrow layout — Position the reaction menu after its portal mounts and constrain the emoji grid, chat, and composer to their available space. Production build passed. Live iPad verification remains open.
 
 - GIF picker pagination — Use GIPHY’s returned offset rather than counting visible results, and ignore stale pagination cleanup after changing searches. Build passed.
+
+- Profile Discover People — Removed the opaque shelf background and border from the carousel, including the dark theme card override. Build passed.
