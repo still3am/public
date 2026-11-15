@@ -3,6 +3,18 @@ import {createClientFromRequest} from 'npm:@base44/sdk';
 const rows = page => Array.isArray(page) ? page : page?.items || [];
 const fail = (message, status = 400) => { throw Object.assign(new Error(message), {status}); };
 
+function savedReactions(message) {
+  try { return JSON.parse(message.reactions || '{}') || {}; } catch { return {}; }
+}
+
+function reactionFields(message) {
+  const saved = savedReactions(message);
+  return {
+    sender_reaction: saved[message.sender_id] ?? message.sender_reaction ?? '',
+    recipient_reaction: saved[message.recipient_id] ?? message.recipient_reaction ?? '',
+  };
+}
+
 Deno.serve(async req => {
   try {
     const client = createClientFromRequest(req);
@@ -105,9 +117,11 @@ Deno.serve(async req => {
       const source = rows(await db.Message.filter({id:messageId,conversation_id:id}, '-created_date', 1))[0];
       if (!source || (source.sender_id !== uid && source.recipient_id !== uid)) fail('Message unavailable.',404);
       const field = source.sender_id === uid ? 'sender_reaction' : 'recipient_reaction';
-      const saved = await db.Message.update(source.id,{[field]:emoji});
-      if (saved?.[field] !== emoji) fail('Reaction could not be confirmed. Try again.',503);
-      return Response.json({ok:true});
+      const reactions = {...savedReactions(source), [uid]:emoji};
+      await db.Message.update(source.id,{reactions:JSON.stringify(reactions)});
+      const confirmed = await db.Message.get(source.id);
+      if (!confirmed || reactionFields(confirmed)[field] !== emoji) fail('Reaction could not be confirmed. Try again.',503);
+      return Response.json({ok:true, messageId:source.id, ...reactionFields(confirmed)});
     }
 
     if (action === 'delete_message') {
@@ -133,7 +147,7 @@ Deno.serve(async req => {
       const messages = rows(page);
       const unreadIds = messages.filter(message=>message.recipient_id===uid&&!message.read).map(message=>message.id);
       if (unreadIds.length) await db.Message.updateMany({id:{$in:unreadIds},recipient_id:uid,read:false},{$set:{read:true}});
-      return Response.json({chat:{...chat,peer:profile?publicPerson(profile):null},messages:messages.reverse()});
+      return Response.json({chat:{...chat,peer:profile?publicPerson(profile):null},messages:messages.reverse().map(message=>({...message,...reactionFields(message)}))});
     }
     if (action === 'respond' && chat.dm_status === 'pending' && chat.dm_requester !== uid && typeof accept === 'boolean') {
       await db.Conversation.update(id,{dm_status:accept?'accepted':'declined'});

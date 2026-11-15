@@ -325,8 +325,14 @@ function MessagesPage({user}) {
                 {REACTIONS.map((emoji,index)=>{
                   const selected=(activeMenu.sender_id===user?.id?activeMenu.sender_reaction:activeMenu.recipient_reaction)===emoji;
                   return <button key={emoji} type="button" aria-label={REACTION_LABELS[index]} aria-pressed={selected} disabled={busy} onClick={()=>void perform(async()=>{
-                    await messages('react',{id,messageId:activeMenu.id,emoji:selected?'':emoji});
-                    if(currentChat.current===id){setMenu(null);await loadThread(id);}
+                    const saved=await messages('react',{id,messageId:activeMenu.id,emoji:selected?'':emoji});
+                    if(currentChat.current===id){
+                      readVersion.current++;
+                      setThread(previous=>previous?.chat.id===id?{...previous,messages:previous.messages.map(message=>message.id===saved.messageId?{
+                        ...message,sender_reaction:saved.sender_reaction,recipient_reaction:saved.recipient_reaction,
+                      }:message)}:previous);
+                      setMenu(null);
+                    }
                   })}>{emoji}</button>;
                 })}
               </div>

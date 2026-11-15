@@ -185,3 +185,5 @@ All 99 automated suites passed, including repaired fixtures for current admin mo
 - Discover People mobile badge — Moved the checkmark from inside the photo to overlap the lower-right ring. The ring and its inset no longer clip the badge.
 
 - Profile Playlists — Removed the outer carousel background and border in light and dark themes.
+
+- Message reaction persistence — Store selections in the existing reactions field, verify the saved record, and apply the confirmed result to the open chat. Reloads normalize saved and legacy reactions. Production build passed. Live two-account verification remains open.
