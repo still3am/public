@@ -20,7 +20,7 @@ Deno.serve(async req => {
     const client = createClientFromRequest(req);
     const user = await client.auth.me().catch(() => null);
     if (!user?.id || user.disabled || user.is_blocked) fail('Sign in to use Messages.', 401);
-    const {action, id, username, recipientId, offset, text, trackId, accept, requestId, replyId, messageId, lyrics, gifId, emoji, media} = await req.json();
+    const {action, id, username, recipientId, offset, text, trackId, accept, requestId, replyId, messageId, lyrics, gifId, emoji, media, typing} = await req.json();
     const db = client.asServiceRole.entities;
     const uid = user.id;
     const blocked = async peer => rows(await db.Block.filter({
@@ -110,6 +110,22 @@ Deno.serve(async req => {
     if (!chat?.dm_enabled || !chat.participant_ids.includes(uid)) fail('Conversation unavailable.', 404);
     const peer = chat.participant_ids.find(member => member !== uid);
     if (!peer || await blocked(peer)) fail('Conversation unavailable.', 404);
+
+    if (action === 'typing') {
+      const active = typing === true;
+      const matches = rows(await db.MessageTyping.filter({conversation_id:id,user_id:uid}, '-updated_date', 1));
+      const record = matches[0];
+      const updatedAt = new Date().toISOString();
+      if (record) await db.MessageTyping.update(record.id,{typing:active,updated_at:updatedAt});
+      else await db.MessageTyping.create({conversation_id:id,user_id:uid,typing:active,updated_at:updatedAt});
+      return Response.json({ok:true});
+    }
+
+    if (action === 'typing_status') {
+      const records = rows(await db.MessageTyping.filter({conversation_id:id,user_id:peer,typing:true}, '-updated_date', 1));
+      const lastUpdate = Date.parse(records[0]?.updated_at||'');
+      return Response.json({typing:Number.isFinite(lastUpdate)&&Date.now()-lastUpdate<5000});
+    }
 
     if (action === 'open_media') {
       if (typeof messageId !== 'string' || !/^[a-zA-Z0-9_-]{1,100}$/.test(messageId)) fail('Choose an attachment.');

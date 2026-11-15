@@ -1,0 +1,17 @@
+{
+  "name": "MessageTyping",
+  "type": "object",
+  "properties": {
+    "conversation_id": {"type":"string"},
+    "user_id": {"type":"string"},
+    "typing": {"type":"boolean","default":false},
+    "updated_at": {"type":"string","format":"date-time"}
+  },
+  "required": ["conversation_id","user_id","typing","updated_at"],
+  "rls": {
+    "create": {"user_condition":{"role":"admin"}},
+    "read": {"user_condition":{"role":"admin"}},
+    "update": {"user_condition":{"role":"admin"}},
+    "delete": {"user_condition":{"role":"admin"}}
+  }
+}
