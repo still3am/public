@@ -4,7 +4,7 @@ import {useCallback,useEffect,useLayoutEffect,useRef,useState} from 'react';
 import {Link,useLocation,useSearchParams} from 'react-router-dom';
 import {base44} from '@/api/base44Client';
 import {useAuth} from '@/lib/AuthContext';
-import {ArrowUp,ChevronLeft,ChevronRight,Clapperboard,Copy,ExternalLink,Trash2,MessageCircle,Music2,Pause,Play,Reply,Search,SquarePen,X} from 'lucide-react';
+import {ArrowUp,ChevronLeft,ChevronRight,Clapperboard,Copy,ExternalLink,Trash2,MessageCircle,ImagePlus,Music2,Pause,Play,Reply,Search,SquarePen,X} from 'lucide-react';
 import LyricSharePicker from '@/components/LyricSharePicker';
 import LyricCoverGradient from '@/components/LyricCoverGradient';
 import TrackPickerSheet from '@/components/profile/TrackPickerSheet';
@@ -117,6 +117,23 @@ function MessagesPage({user}) {
   const [inboxQuery,setInboxQuery]=useState('');
   const player=usePlayer();
   const [musicMenu,setMusicMenu]=useState(false);
+  const [mediaDraft,setMediaDraft]=useState(null);
+  const mediaInput=useRef(null);
+  const uploadedMedia=useRef(new WeakMap());
+  const selectedMedia=mediaDraft?.chatId===id?mediaDraft:null;
+  useEffect(()=>()=>{if(mediaDraft)URL.revokeObjectURL(mediaDraft.preview);},[mediaDraft]);
+  function selectMedia(file){
+    if(!file)return;
+    const type=['image/jpeg','image/png','image/webp'].includes(file.type)?'image':
+      ['video/mp4','video/webm','video/quicktime'].includes(file.type)?'video':'';
+    if(!type||!file.size||file.size>(type==='image'?10:50)*1024*1024){
+      setError('Choose a JPG, PNG or WebP up to 10 MB, or an MP4, MOV or WebM up to 50 MB.');
+      return;
+    }
+    setError('');
+    setGif('');
+    setMediaDraft({chatId:id,file,type,preview:URL.createObjectURL(file)});
+  }
   const [gif,setGif]=useState(""),[showGifs,setShowGifs]=useState(false);
   const [songPicker,setSongPicker]=useState(false),[attachment,setAttachment]=useState(null);
   async function playSharedSong(message){
@@ -315,6 +332,7 @@ function MessagesPage({user}) {
               onContextMenu={event=>{event.preventDefault();cancelHold();openMessageMenu(message,event.currentTarget);}}>
               {message.reply_preview&&<ReplyQuote preview={message.reply_preview}/>}
               {message.track_id&&<SharedSong message={message} playing={player.currentTrack?.id===message.track_id&&player.isPlaying&&(!songData(message)?.lyrics||lyricPlayback.current===message.id)} onPlay={()=>void perform(()=>playSharedSong(message))} busy={busy}/>}
+              {message.media_url&&!messageGifId(message)&&['image','video'].includes(message.media_type)&&<ChatMedia key={message.id} chatId={id} message={message}/>}
               {messageGifId(message)&&<MomentGif id={messageGifId(message)} label="Shared GIF"/>}
               {message.text&&<p className="public-message-bubble" data-own={message.sender_id===user?.id}>{message.text}</p>}
               <MessageReactions message={message} userId={user?.id}/>
@@ -407,18 +425,35 @@ function MessagesPage({user}) {
             </DialogContent>
           </Dialog>}
           {canSend&&songPicker&&<TrackPickerSheet title={songPicker==="lyrics"?"Choose a song for your lyrics":"Share a song"} description="Choose a song to send in this conversation." selectedIds={[]} onClose={()=>setSongPicker(false)} onToggle={(_,song)=>{setAttachment(song);if(songPicker==="lyrics")setSelectingLyrics(true);setSongPicker(false);}}/>}
-          {canSend&&showGifs&&<MomentGifPicker onClose={()=>setShowGifs(false)} onSelect={id=>{setGif(id);setShowGifs(false);}}/>}
+          {canSend&&showGifs&&<MomentGifPicker onClose={()=>setShowGifs(false)} onSelect={id=>{setMediaDraft(null);setGif(id);setShowGifs(false);}}/>}
           {canSend&&gif&&<div className="public-message-attachment public-message-gif-draft"><MomentGif id={gif} label="Selected GIF"/><button type="button" aria-label="Remove GIF" disabled={busy} onClick={()=>setGif("")}><X size={18}/></button></div>}
+          {canSend&&selectedMedia&&<div className="public-message-attachment public-message-upload-preview">
+            {selectedMedia.type==='image'?<img src={selectedMedia.preview} alt="Selected photo"/>:<video src={selectedMedia.preview} muted playsInline preload="metadata"/>}
+            <span className="truncate">{selectedMedia.file.name}</span>
+            <button type="button" aria-label="Remove attachment" disabled={busy} onClick={()=>setMediaDraft(null)}><X size={18}/></button>
+          </div>}
           {canSend&&<form className="public-messages-compose" onSubmit={event=>{event.preventDefault();void perform(async()=>{
             const text=draft.trim();
             const trackId=attachment?.id||'',replyId=reply?.id||'',lyrics=attachment?.lyrics||null;
             const lyricKey=JSON.stringify(lyrics);
-            if(!text&&!trackId&&!gif)return;
+            if(!text&&!trackId&&!gif&&!selectedMedia)return;
+            let media;
+            if(selectedMedia){
+              const file=selectedMedia.file;
+              let uri=uploadedMedia.current.get(file);
+              if(!uri){
+                uri=(await base44.integrations.Core.UploadPrivateFile({file}))?.file_uri;
+                if(!uri)throw Error('Attachment upload could not be confirmed. Try again.');
+                uploadedMedia.current.set(file,uri);
+              }
+              media={uri,type:selectedMedia.type};
+            }
             const existing=pendingSends.current.get(id);
-            const requestId=existing?.text===text&&existing?.trackId===trackId&&existing?.replyId===replyId&&existing?.lyricKey===lyricKey&&existing?.gifId===gif?existing.requestId:globalThis.crypto?.randomUUID?.();
-            pendingSends.current.set(id,{text,trackId,replyId,lyricKey,gifId:gif,requestId});
-            await messages('send',{id,text,trackId,replyId,requestId,lyrics,gifId:gif});
+            const requestId=existing?.text===text&&existing?.trackId===trackId&&existing?.replyId===replyId&&existing?.lyricKey===lyricKey&&existing?.gifId===gif&&existing?.mediaUri===media?.uri?existing.requestId:globalThis.crypto?.randomUUID?.();
+            pendingSends.current.set(id,{text,trackId,replyId,lyricKey,gifId:gif,mediaUri:media?.uri,requestId});
+            await messages('send',{id,text,trackId,replyId,requestId,lyrics,gifId:gif,media});
             pendingSends.current.delete(id);
+            setMediaDraft(previous=>previous===selectedMedia?null:previous);
             setDrafts(previous=>{
               if(previous.get(id)!==draft)return previous;
               const next=new Map(previous);
@@ -437,6 +472,8 @@ function MessagesPage({user}) {
           });}}>
             <button type="button" aria-label="Share song or lyrics" disabled={busy} onClick={()=>setMusicMenu(true)}><Music2 size={19}/></button>
             <button type="button" className="public-message-gif-button" aria-label={gif?"Change GIF":"Add a GIF"} aria-expanded={showGifs} disabled={busy} onClick={()=>setShowGifs(true)}><Clapperboard size={20} aria-hidden="true"/><span aria-hidden="true">GIF</span></button>
+            <input hidden ref={mediaInput} type="file" accept="image/jpeg,image/png,image/webp,video/mp4,video/quicktime,video/webm" aria-label="Choose photo or video" onChange={event=>{const file=event.currentTarget.files?.[0];event.currentTarget.value='';selectMedia(file);}}/>
+            <button type="button" aria-label="Add photo or video" disabled={busy} onClick={()=>mediaInput.current?.click()}><ImagePlus size={19}/></button>
             <textarea ref={draftInput} rows={1} aria-label="Message" placeholder={pending?'Write a message request…':'Write a message…'} className="min-w-0 flex-1 rounded-lg border bg-background p-2" value={draft} maxLength={2000} onChange={event=>{
               const value=event.target.value;
               setDrafts(previous=>{
@@ -448,9 +485,9 @@ function MessagesPage({user}) {
             }} onKeyDown={event=>{
               if(event.key!=='Enter'||event.shiftKey||event.nativeEvent.isComposing||event.keyCode===229||!window.matchMedia('(pointer: fine)').matches)return;
               event.preventDefault();
-              if(!busy&&(draft.trim()||attachment||gif))event.currentTarget.form?.requestSubmit();
+              if(!busy&&(draft.trim()||attachment||gif||selectedMedia))event.currentTarget.form?.requestSubmit();
             }} />
-            <button aria-label="Send message" disabled={busy||(!draft.trim()&&!attachment&&!gif)}><ArrowUp size={19}/></button>
+            <button aria-label="Send message" disabled={busy||(!draft.trim()&&!attachment&&!gif&&!selectedMedia)}><ArrowUp size={19}/></button>
           </form>}
           {pending&&!incoming&&!canSend&&<p className="text-sm">Waiting for them to accept your request.</p>}
         </>}
@@ -520,4 +557,24 @@ function MessageReactions({message,userId}){
       </span>;
     })}
   </div>;
+}
+
+function ChatMedia({chatId,message}){
+  const [url,setUrl]=useState('');
+  const [loading,setLoading]=useState(false);
+  const [error,setError]=useState(false);
+  const image=message.media_type==='image';
+  async function open(){
+    setLoading(true);setError(false);
+    try{
+      const result=await messages('open_media',{id:chatId,messageId:message.id});
+      if(!result.url?.startsWith('https://'))throw Error();
+      setUrl(result.url);
+    }catch{setError(true);}finally{setLoading(false);}
+  }
+  const fail=()=>{setUrl('');setError(true);};
+  if(url)return image?<img className="public-message-upload" src={url} alt="Shared photo" onError={fail}/>:<video className="public-message-upload" src={url} controls playsInline preload="metadata" onError={fail}/>;
+  return <button type="button" className="public-message-open-media" disabled={loading} onClick={open}>
+    {loading?'Opening…':error?'Couldn’t open. Retry':image?'View photo':'Open video'}
+  </button>;
 }

@@ -20,7 +20,7 @@ Deno.serve(async req => {
     const client = createClientFromRequest(req);
     const user = await client.auth.me().catch(() => null);
     if (!user?.id || user.disabled || user.is_blocked) fail('Sign in to use Messages.', 401);
-    const {action, id, username, recipientId, offset, text, trackId, accept, requestId, replyId, messageId, lyrics, gifId, emoji} = await req.json();
+    const {action, id, username, recipientId, offset, text, trackId, accept, requestId, replyId, messageId, lyrics, gifId, emoji, media} = await req.json();
     const db = client.asServiceRole.entities;
     const uid = user.id;
     const blocked = async peer => rows(await db.Block.filter({
@@ -111,6 +111,16 @@ Deno.serve(async req => {
     const peer = chat.participant_ids.find(member => member !== uid);
     if (!peer || await blocked(peer)) fail('Conversation unavailable.', 404);
 
+    if (action === 'open_media') {
+      if (typeof messageId !== 'string' || !/^[a-zA-Z0-9_-]{1,100}$/.test(messageId)) fail('Choose an attachment.');
+      const item = rows(await db.Message.filter({id:messageId,conversation_id:id}, '-created_date', 1))[0];
+      if (!item || item.id!==messageId || item.conversation_id!==id || ![item.sender_id,item.recipient_id].includes(uid) ||
+          !['image','video'].includes(item.media_type) || !item.media_url || /^https?:/i.test(item.media_url)) fail('Attachment unavailable.',404);
+      const signed = await client.asServiceRole.integrations.Core.CreateFileSignedUrl({file_uri:item.media_url,expires_in:900});
+      if (!signed?.signed_url?.startsWith('https://')) fail('Attachment could not open. Try again.',503);
+      return Response.json({url:signed.signed_url});
+    }
+
     if (action === 'react') {
       if (typeof messageId !== 'string' || !/^[a-zA-Z0-9_-]{1,100}$/.test(messageId)) fail('Choose a message.');
       if (emoji !== '' && !["❤️","👍","👎","😂","‼️","❓","🔥"].includes(emoji)) fail('Choose a reaction.');
@@ -157,7 +167,7 @@ Deno.serve(async req => {
       if (source) await db.Message.delete(source.id);
       const latest = rows(await db.Message.filter({conversation_id:id}, '-created_date', 1))[0];
       await db.Conversation.update(id,{
-        last_message_text:latest?.text || (latest?.track_id ? 'Shared a song' : latest?.media_type==='image' ? 'Sent a GIF' : ''),
+        last_message_text:latest?.text || (latest?.track_id ? 'Shared a song' : latest?.media_type==='video' ? 'Sent a video' : latest?.media_type==='image' ? (latest.media_url?.startsWith('https://media.giphy.com/')?'Sent a GIF':'Sent a photo') : ''),
         last_message_at:latest?.created_date || null,
         last_sender_id:latest?.sender_id || '',
       });
@@ -179,8 +189,10 @@ Deno.serve(async req => {
       await db.Conversation.update(id,{dm_status:accept?'accepted':'declined'});
       return Response.json({ok:true});
     }
-    if (action !== 'send' || typeof text !== 'string' || (!text.trim() && !trackId && !gifId) || text.length > 2000) fail('Write a message or attach a song or GIF.');
+    if (action !== 'send' || typeof text !== 'string' || (!text.trim() && !trackId && !gifId && !media) || text.length > 2000) fail('Write a message or add an attachment.');
     if(gifId && (typeof gifId!=='string'||!/^[a-zA-Z0-9]{1,64}$/.test(gifId)))fail('Choose a valid GIF.');
+    if (media && (gifId || !['image','video'].includes(media.type) || typeof media.uri!=='string' ||
+        !media.uri.trim() || media.uri.length>2048 || /^[a-z][a-z0-9+.-]*:/i.test(media.uri))) fail('Choose a valid photo or video.');
     const gifUrl=gifId?'https://media.giphy.com/media/'+gifId+'/giphy.gif':'';
     if (trackId && (typeof trackId !== 'string' || !/^[a-zA-Z0-9_-]{1,100}$/.test(trackId))) fail('Choose a valid song.');
     if (requestId !== undefined && (typeof requestId !== 'string' || !/^[a-f0-9-]{36}$/i.test(requestId))) fail('Invalid message request.');
@@ -197,6 +209,7 @@ Deno.serve(async req => {
       conversation_id:id,sender_id:uid,send_request_id:requestId,
     }, '-created_date', 1))[0] : null;
     if (previous && (previous.text !== text.trim() || (previous.track_id||"") !== (trackId||"") || (previous.reply_to_id||"") !== (replyId||"") || (gifUrl && previous.media_url!==gifUrl) || (!gifUrl && previous.media_type==="image" && previous.media_url?.startsWith("https://media.giphy.com/media/")))) fail('This request already sent a different message.',409);
+    if (previous && (media ? previous.media_url!==media.uri || previous.media_type!==media.type : previous.media_url && !/^https?:/i.test(previous.media_url))) fail('This request already sent a different attachment.',409);
     if(previous){
       let previousLyrics = null;
       try{previousLyrics = JSON.parse(previous.track)?.lyrics??null;}catch{}
@@ -236,11 +249,16 @@ Deno.serve(async req => {
         if(data?.id!==gifId||data?.rating!=='g')fail('Choose a different GIF.',422);
         Object.assign(attachment,{media_type:'image',media_url:gifUrl});
       }
+      if (media) {
+        const signed = await client.integrations.Core.CreateFileSignedUrl({file_uri:media.uri,expires_in:60});
+        if (!signed?.signed_url?.startsWith('https://')) fail('Could not verify this attachment.',422);
+        Object.assign(attachment,{media_type:media.type,media_url:media.uri});
+      }
       await db.Message.create({conversation_id:id,sender_id:uid,recipient_id:peer,text:text.trim(),...attachment,...quote,...(requestId?{send_request_id:requestId}:{})});
     }
     const latest = rows(await db.Message.filter({conversation_id:id}, '-created_date', 1))[0];
     if (latest) await db.Conversation.update(id,{
-      last_message_text:latest.text || (latest.track_id ? "Shared a song" : latest.media_type==="image" ? "Sent a GIF" : ""),last_message_at:latest.created_date||new Date().toISOString(),last_sender_id:latest.sender_id,
+      last_message_text:latest.text || (latest.track_id ? "Shared a song" : latest.media_type==="video" ? "Sent a video" : latest.media_type==="image" ? (latest.media_url?.startsWith("https://media.giphy.com/")?"Sent a GIF":"Sent a photo") : ""),last_message_at:latest.created_date||new Date().toISOString(),last_sender_id:latest.sender_id,
     });
     return Response.json({ok:true});
   } catch (error) {
