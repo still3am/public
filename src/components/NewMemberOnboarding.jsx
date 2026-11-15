@@ -1,16 +1,13 @@
-import {useAvatarGallery} from "@/hooks/useAvatarGallery";
 import {setFollowState,followError} from "@/lib/followActions";
 import {useEffect,useMemo,useRef,useState} from "react";
 import {useNavigate} from "react-router-dom";
-import {ArrowRight,ArrowLeft,Check,Loader2,Camera,Search,Music2,ShieldCheck,Plus,Play,Pause} from "lucide-react";
+import {ArrowRight,ArrowLeft,Check,Loader2,Camera,Search,Music2,ShieldCheck,Plus} from "lucide-react";
 import {Dialog,DialogContent,DialogTitle,DialogDescription} from "@/components/ui/dialog";
 import MotionGradient from "@/components/MotionGradient";
 import Logo from "@/components/Logo";
 import Avatar from "@/components/Avatar";
-import {AVATAR_PRESETS} from "@/lib/avatarPresets";
-import {usePlayer} from "@/context/PlayerContext";
 import ProfileColorPicker from "@/components/profile/ProfileColorPicker";
-import TrackPickerSheet from "@/components/profile/TrackPickerSheet";
+import ProfileMarketplace from "@/components/profile/ProfileMarketplace";
 import {useCoverUrl} from "@/hooks/useCoverUrl";
 import {useCoverPalette} from "@/hooks/useCoverPalette";
 import {useAuth} from "@/lib/AuthContext";
@@ -35,25 +32,13 @@ function OnboardingLetters({text,delay=0,className=""}){
  return <span className={"onboarding-letter-text "+className}><span className="sr-only">{text}</span><span aria-hidden="true">{text.split(/(\s+)/).map((word,wordIndex)=>/\s/.test(word)?word:<span className="onboarding-word" key={wordIndex}>{Array.from(word).map((letter,letterIndex)=><span key={letterIndex} className="onboarding-letter" style={{"--letter-delay":(delay+Math.min(index++*11,220))+"ms"}}>{letter}</span>)}</span>)}</span></span>;
 }
 function SongCover({url}){const cover=useCoverUrl(url);return <span className="onboarding-cover">{cover?<img src={cover} alt="" loading="lazy"/>:<Music2 size={20}/>}</span>;}
-export function OnboardingProfileSong({track,onChange,onError,disabled=false}){
- const player=usePlayer();
- const playing=player?.currentTrack?.id===track?.id&&player?.isPlaying;
- async function play(){
-  if(!track||disabled||!player)return;
-  try{if(player.currentTrack?.id===track.id)await player.togglePlay();else await player.playTrackAt([track]);}
-  catch(error){onError?.(errorText(error));}
- }
- if(!track)return <button type="button" className="onboarding-profile-song" disabled={disabled} onClick={onChange}><Music2 size={16}/><span>Add a profile song</span><Plus size={16}/></button>;
- return <div className="onboarding-song-preview"><SongCover url={track.cover_art_url}/><button type="button" className="onboarding-song-details" disabled={disabled} onClick={onChange} aria-label={"Change profile song: "+track.title}><strong>{track.title}</strong><span>{track.artist||track.uploader_name||"PUBLIC"}</span><small>Change song</small></button><button type="button" className="onboarding-song-play" disabled={disabled||!player} onClick={play} aria-label={(playing?"Pause ":"Play ")+track.title}>{playing?<Pause size={19} fill="currentColor"/>:<Play size={19} fill="currentColor"/>}</button></div>;
-}
 function initialDraft(user){
  const previous=readOnboardingDraft(user.id);
  return {step:0,name:user.display_name||user.full_name||"",username:user.username||"",avatar:user.avatar_url||"",genres:[],trackIds:[],artists:[],profileTrack:user.featured_track_id||"",motion:user.profile_background_motion||"flow",speed:user.profile_background_speed||1,mode:user.profile_background_mode||"custom",colors:normalizeOnboardingColors(user.profile_background_colors),editedFields:[],shareFavorites:!!user.top_track_ids?.length,sharingChanged:false,...previous};
 }
 export function WelcomeFlow({user,onDone}){
- const {avatars:galleryAvatars,error:galleryError}=useAvatarGallery();
  const nav=useNavigate(),{checkUserAuth}=useAuth(),{blocked}=useSafety();
- const [draft,setDraft]=useState(()=>initialDraft(user)),[busy,setBusy]=useState(false),[error,setError]=useState(""),[catalog,setCatalog]=useState([]),[profiles,setProfiles]=useState([]),[following,setFollowing]=useState(new Set()),[loading,setLoading]=useState(true),[musicReady,setMusicReady]=useState(false),[loadError,setLoadError]=useState(""),[followBusy,setFollowBusy]=useState(""),[query,setQuery]=useState(""),[genreQuery,setGenreQuery]=useState(""),[musicTab,setMusicTab]=useState("artists"),[limit,setLimit]=useState(8),[allGenres,setAllGenres]=useState(false),[colorEditor,setColorEditor]=useState(false),[colorPreview,setColorPreview]=useState(null),[galleryOpen,setGalleryOpen]=useState(false),[picker,setPicker]=useState(false),[pickedTrack,setPickedTrack]=useState(null);
+ const [draft,setDraft]=useState(()=>initialDraft(user)),[busy,setBusy]=useState(false),[error,setError]=useState(""),[catalog,setCatalog]=useState([]),[profiles,setProfiles]=useState([]),[following,setFollowing]=useState(new Set()),[loading,setLoading]=useState(true),[musicReady,setMusicReady]=useState(false),[loadError,setLoadError]=useState(""),[followBusy,setFollowBusy]=useState(""),[query,setQuery]=useState(""),[genreQuery,setGenreQuery]=useState(""),[musicTab,setMusicTab]=useState("artists"),[limit,setLimit]=useState(8),[allGenres,setAllGenres]=useState(false),[colorEditor,setColorEditor]=useState(false),[colorPreview,setColorPreview]=useState(null),[market,setMarket]=useState(null);
  const lock=useRef(false),alive=useRef(true),content=useRef(null),fileInput=useRef(null),heading=useRef(null),request=useRef(0),followLock=useRef(false);
 
  const step=Math.max(0,Math.min(6,Number(draft.step)||0));
@@ -82,7 +67,7 @@ export function WelcomeFlow({user,onDone}){
  useEffect(()=>{load();},[user.id]);
  const visibleCatalog=useMemo(()=>catalog.filter(t=>t.is_published===true&&!blocked.has(t.uploader_id)),[catalog,blocked]);
  const byId=useMemo(()=>new Map(visibleCatalog.map(t=>[t.id,t])),[visibleCatalog]);
- const previewTrack=byId.get(draft.profileTrack)||(pickedTrack?.id===draft.profileTrack&&!blocked.has(pickedTrack.uploader_id)?pickedTrack:null);
+ const previewTrack=byId.get(user.featured_track_id);
  const artworkUrl=useCoverUrl(step===5?previewTrack?.cover_art_url:"");
  const {colors:artworkColors,loading:artworkLoading}=useCoverPalette(artworkUrl);
  const artistOptions=useMemo(()=>{
@@ -119,12 +104,21 @@ export function WelcomeFlow({user,onDone}){
     const current=await owner(),patch={};if(name!==(current.display_name||current.full_name||""))patch.display_name=name;if(username!==(current.username||""))patch.username=username;
     let changed=false;
     if(Object.keys(patch).length){const saved=await base44.auth.updateMe(patch);if(saved?.id!==user.id||Object.keys(patch).some(key=>saved[key]!==patch[key]))throw Error("Profile was not confirmed. Please retry.");changed=true;}
-    if(draft.avatar!==(current.avatar_url||"")){await owner();const saved=await base44.auth.updateMe({avatar_url:draft.avatar});if(saved?.id!==user.id||saved.avatar_url!==draft.avatar)throw Error("Avatar was not confirmed. Please retry.");changed=true;}
+    if(draft.avatar!==(current.avatar_url||"")||draft.avatarGif){await owner();const saved=await base44.auth.updateMe({avatar_url:draft.avatar,avatar_video_url:"",avatar_gif_url:draft.avatarGif||""});if(saved?.id!==user.id||saved.avatar_url!==draft.avatar)throw Error("Avatar was not confirmed. Please retry.");changed=true;}
+    if(draft.banner){
+     const banner=draft.banner;
+     const bannerPatch={banner_url:banner.url,banner_mobile_url:banner.url,banner_use_default:false,banner_gif_url:banner.gifUrl||"",banner_video_url:banner.videoUrl||""};
+     await owner();
+     await base44.auth.updateMe(bannerPatch);
+     const saved=await owner();
+     if(Object.keys(bannerPatch).some(key=>saved[key]!==bannerPatch[key]))throw Error("Banner was not confirmed. Please retry.");
+     changed=true;
+    }
     if(changed){await checkUserAuth({silent:true});window.dispatchEvent(new Event("profiles:changed"));}
    }
    if(!skip&&step===2)await saveUserMusicPreferences({genres:draft.genres},user.id);
    if(!skip&&step===3){if(loading||!musicReady)throw Error("Retry loading your music choices, or skip this step.");await saveUserMusicPreferences({favorite_track_ids:draft.trackIds.filter(id=>byId.has(id)),favorite_artists:draft.artists.filter(name=>artistOptions.some(a=>a.name===name))},user.id);}
-   if(!skip&&step===5){const patch={profile_background_mode:draft.mode,profile_background_colors:draft.colors,profile_background_motion:draft.motion||"flow",profile_background_speed:draft.speed||1,featured_track_id:draft.profileTrack};await base44.auth.updateMe(patch);const saved=await owner();if(saved.featured_track_id!==draft.profileTrack||saved.profile_background_mode!==draft.mode||JSON.stringify(saved.profile_background_colors)!==JSON.stringify(draft.colors))throw Error("Profile style was not confirmed.");await checkUserAuth({silent:true});}
+   if(!skip&&step===5){const patch={profile_background_mode:draft.mode,profile_background_colors:draft.colors,profile_background_motion:draft.motion||"flow",profile_background_speed:draft.speed||1};await base44.auth.updateMe(patch);const saved=await owner();if(saved.profile_background_mode!==draft.mode||JSON.stringify(saved.profile_background_colors)!==JSON.stringify(draft.colors))throw Error("Profile style was not confirmed.");await checkUserAuth({silent:true});}
    if(alive.current)setDraft(old=>({...old,step:step+1}));
   }catch(e){if(alive.current)setError(errorText(e));}
   finally{lock.current=false;if(alive.current)setBusy(false);}
@@ -133,7 +127,7 @@ export function WelcomeFlow({user,onDone}){
   if(!file||lock.current)return;
   if(!["image/jpeg","image/png","image/webp"].includes(file.type)||file.size>5*1024*1024){setError("Choose a JPG, PNG or WebP photo under 5 MB.");return;}
   lock.current=true;setBusy(true);setError("");
-  try{await owner();const result=await base44.integrations.Core.UploadFile({file});await owner();if(!result?.file_url)throw Error("Photo upload was not confirmed.");if(alive.current)setDraft(old=>({...old,avatar:result.file_url}));}
+  try{await owner();const result=await base44.integrations.Core.UploadFile({file});await owner();if(!result?.file_url)throw Error("Photo upload was not confirmed.");if(alive.current)setDraft(old=>({...old,avatar:result.file_url,avatarGif:""}));}
   catch(e){if(alive.current)setError(errorText(e));}finally{lock.current=false;if(alive.current)setBusy(false);}
  }
  async function follow(profile){
@@ -149,7 +143,7 @@ export function WelcomeFlow({user,onDone}){
  const styleDraft=colorPreview||draft;
  const colors=step===5?(styleDraft.mode==="off"?[]:styleDraft.mode==="auto"?automaticColors:styleDraft.colors):["#090909","#45454b","#202025"];
  return <Dialog open>
-  <DialogContent className="new-member-onboarding onboarding-identity" data-public-dialog data-onboarding-step={step} onPointerDownOutside={e=>e.preventDefault()} onOpenAutoFocus={e=>{e.preventDefault();heading.current?.focus({preventScroll:true});}} onEscapeKeyDown={e=>{e.preventDefault();if(!picker&&!colorEditor)defer();}}>
+  <DialogContent className="new-member-onboarding onboarding-identity" data-public-dialog data-onboarding-step={step} onPointerDownOutside={e=>e.preventDefault()} onOpenAutoFocus={e=>{e.preventDefault();heading.current?.focus({preventScroll:true});}} onEscapeKeyDown={e=>{e.preventDefault();if(!market&&!colorEditor)defer();}}>
    <MotionGradient colors={colors} motion={step===5?styleDraft.motion:"flow"} speed={step===5?styleDraft.speed:.65} className="onboarding-background"/><div className="onboarding-contrast" aria-hidden="true"/>
    <header className="onboarding-header">
     <div className="onboarding-topbar"><div className="onboarding-nav-start">{step>0&&<button type="button" className="onboarding-back" disabled={busy||!!followBusy} aria-label="Previous step" onClick={()=>update({step:step-1})}><ArrowLeft size={18}/></button>}</div><Logo width="82px" className="onboarding-logo"/><button type="button" className="onboarding-later" disabled={busy||!!followBusy} onClick={defer}>Finish later</button></div>
@@ -157,10 +151,10 @@ export function WelcomeFlow({user,onDone}){
    </header>
    <main ref={content} className="onboarding-content" key={step}>
     <div className="onboarding-page-intro"><p className="onboarding-step-label">Step {step+1} of {TITLES.length}</p><DialogTitle ref={heading} tabIndex={-1}><OnboardingLetters text={TITLES[step]}/></DialogTitle><DialogDescription>{DESCRIPTIONS[step]}</DialogDescription></div>
-    {step===0&&<div className="onboarding-welcome"><div className="onboarding-record-stage" aria-hidden="true"><div className="onboarding-record"><span className="onboarding-record-grooves"/><span className="onboarding-record-light"/><div className="onboarding-record-label"><Logo width="65px" className="onboarding-logo"/></div></div></div></div>}
     {step===1&&<form className="onboarding-form" onSubmit={e=>{e.preventDefault();next();}}>
      <div className="onboarding-photo-area"><button className="onboarding-photo" type="button" disabled={busy} onClick={()=>fileInput.current?.click()} aria-label="Choose your profile photo"><Avatar user={{display_name:draft.name,avatar_url:draft.avatar}} size={80}/><span><Camera size={15}/></span></button><span className="onboarding-note">Choose an avatar or add a photo · optional</span>{draft.avatar&&<button type="button" className="onboarding-remove-photo" disabled={busy} onClick={()=>update({avatar:""})}>Remove photo</button>}</div>
-     <details className="onboarding-avatar-gallery" onToggle={event=>setGalleryOpen(event.currentTarget.open)}><summary>Choose an avatar</summary>{galleryError&&<p role="alert">{galleryError}</p>}<div className="onboarding-avatar-grid" role="group" aria-label="Profile avatar gallery">{galleryAvatars.map(item=><button type="button" key={item.id} disabled={busy} aria-label={"Choose "+item.name+" avatar"} aria-pressed={draft.avatar===item.url} onClick={()=>update({avatar:item.url})}><span><Avatar user={{avatar_url:item.url}} size="100%" motion active={galleryOpen}/>{draft.avatar===item.url&&<i aria-hidden="true"><Check size={14}/></i>}</span><strong>{item.name}</strong></button>)}</div><p className="onboarding-note">{AVATAR_PRESETS.find(item=>item.url===draft.avatar)?.credit||"Artwork by mu.staffa · supplied by PUBLIC."}</p></details>
+     <button type="button" className="onboarding-upload-photo" disabled={busy} onClick={()=>setMarket("avatars")}>PUBLIC Marketplace <ArrowRight size={16}/></button>
+     {draft.banner&&<p className="onboarding-note">Banner selected</p>}
      <button type="button" className="onboarding-upload-photo" disabled={busy} onClick={()=>fileInput.current?.click()}><Camera size={16}/>Upload a photo</button>
      <input ref={fileInput} type="file" accept="image/jpeg,image/png,image/webp" className="hidden" onChange={e=>{upload(e.target.files?.[0]);e.target.value="";}}/>
      <label>Display name<input value={draft.name} maxLength={60} autoComplete="nickname" disabled={busy} placeholder="What should we call you?" onChange={e=>update({name:e.target.value})}/></label>
@@ -191,10 +185,9 @@ export function WelcomeFlow({user,onDone}){
      <p className="onboarding-note">Follow anyone you like, or keep exploring solo.</p>
     </div>}
     {step===5&&<div className="onboarding-mood">
-     <div className="onboarding-profile-preview mood-preview"><Avatar user={{display_name:draft.name,avatar_url:draft.avatar}} size={64}/><strong>{draft.name||"Your PUBLIC"}</strong><OnboardingProfileSong track={previewTrack} disabled={busy} onChange={()=>setPicker(true)} onError={setError}/></div>
-     <button type="button" className="onboarding-auto-color" disabled={busy} aria-pressed={draft.mode==="auto"} onClick={()=>update({mode:"auto"})}><span className="onboarding-auto-swatch" aria-hidden="true" style={{background:"linear-gradient(135deg,"+automaticColors.join(",")+")"}}><Music2 size={19}/></span><span className="onboarding-auto-copy"><strong>Automatic · From your song</strong><small>{!draft.profileTrack?"Choose a profile song to match its artwork.":artworkLoading?"Finding your artwork colors…":artworkColors.length?"Changes with your profile song.":"Choose a palette if artwork colors aren’t available."}</small></span><span className="onboarding-auto-check">{draft.mode==="auto"&&<Check size={18}/>}</span></button>
+     <div className="onboarding-profile-preview mood-preview"><Avatar user={{display_name:draft.name,avatar_url:draft.avatar}} size={64}/><strong>{draft.name||"Your PUBLIC"}</strong></div>
+     {previewTrack&&<button type="button" className="onboarding-auto-color" disabled={busy} aria-pressed={draft.mode==="auto"} onClick={()=>update({mode:"auto"})}><span className="onboarding-auto-swatch" aria-hidden="true" style={{background:"linear-gradient(135deg,"+automaticColors.join(",")+")"}}><Music2 size={19}/></span><span className="onboarding-auto-copy"><strong>Automatic · From your song</strong><small>{!previewTrack?"Choose a profile song to match its artwork.":artworkLoading?"Finding your artwork colors…":artworkColors.length?"Changes with your profile song.":"Choose a palette if artwork colors aren’t available."}</small></span><span className="onboarding-auto-check">{draft.mode==="auto"&&<Check size={18}/>}</span></button>}
      <button type="button" className="onboarding-color-launch" disabled={busy} onClick={()=>setColorEditor(true)}><span className="onboarding-color-mini" aria-hidden="true">{draft.colors.map((color,index)=><i key={index} style={{background:color}}/>)}</span><span><strong>Choose profile colors</strong><small>Palettes, color wheel &amp; movement</small></span><ArrowRight size={18}/></button>
-     {draft.profileTrack&&<button type="button" className="onboarding-text-button" onClick={()=>update({profileTrack:""})}>Remove profile song</button>}
     </div>}
     {step===6&&<div className="onboarding-privacy">
      <div className="onboarding-ready-card"><Avatar user={user} size={52}/><div><small>Your profile</small><strong>{user.display_name||user.full_name||"Your PUBLIC"}</strong></div><Check size={20}/></div>
@@ -208,7 +201,11 @@ export function WelcomeFlow({user,onDone}){
    </main>
    <footer className="onboarding-footer">{error&&<p role="alert">{error}</p>}<div className="onboarding-buttons">{step>0&&step<6&&<button className="onboarding-skip" type="button" disabled={busy||!!followBusy} onClick={()=>next(true)}>Skip</button>}<button type="button" className="onboarding-next" disabled={busy||!!followBusy} onClick={()=>next()}>{busy?<Loader2 size={18} className="animate-spin"/>:null}{busy?"Saving…":step===0?"Let’s go":step===6?"Start listening":"Continue"}{!busy&&<ArrowRight size={18}/>}</button></div></footer>
    {colorEditor&&<ProfileColorPicker coverUrl={artworkUrl} colors={artworkColors} loading={artworkLoading} value={{mode:draft.mode,colors:draft.colors,motion:draft.motion,speed:draft.speed}} onPreview={setColorPreview} onSave={async value=>update({mode:value.mode,colors:value.colors,motion:value.motion,speed:value.speed})} onClose={()=>{setColorEditor(false);setColorPreview(null);}}/>}
-   {picker&&<TrackPickerSheet title="Your profile song" tracks={visibleCatalog.filter(t=>t.uploader_id===user.id)} selectedIds={draft.profileTrack?[draft.profileTrack]:[]} onToggle={(id,track)=>{setPickedTrack(track);update({profileTrack:id});setPicker(false);}} onClose={()=>setPicker(false)}/>}
+   {market&&<ProfileMarketplace kind={market} user={{...user,avatar_url:draft.avatar,avatar_gif_url:draft.avatarGif||""}} busy={busy}
+     onClose={()=>setMarket(null)}
+     onSelectAvatar={value=>update({avatar:typeof value==="string"?value:value.url,avatarGif:value?.gifUrl||""})}
+     onSelectBanner={banner=>update({banner})}
+     onAvatarUpload={()=>fileInput.current?.click()}/> }
   </DialogContent>
  </Dialog>;
 }
