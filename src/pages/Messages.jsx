@@ -1,5 +1,5 @@
 import {useCallback,useEffect,useRef,useState} from 'react';
-import {Link,useSearchParams} from 'react-router-dom';
+import {Link,useLocation,useSearchParams} from 'react-router-dom';
 import {base44} from '@/api/base44Client';
 import {useAuth} from '@/lib/AuthContext';
 import {ArrowUp,ChevronLeft,ChevronRight,MessageCircle,SquarePen} from 'lucide-react';
@@ -21,8 +21,9 @@ export default function Messages() {
   const id=params.get('chat');
   const [inbox,setInbox]=useState([]),[thread,setThread]=useState(null),[requests,setRequests]=useState(false);
   const to=params.get('to'),recipient=params.get('recipient');
+  const recipientName=useLocation().state?.recipientName;
   const [draft,setDraft]=useState('');
-  const [contacts,setContacts]=useState(null),[nextOffset,setNextOffset]=useState(null),[loadingContacts,setLoadingContacts]=useState(false);
+  const [contacts,setContacts]=useState(null),[contactQuery,setContactQuery]=useState(''),[contactError,setContactError]=useState(false),[retry,setRetry]=useState(0);
   const [error,setError]=useState(''),[busy,setBusy]=useState(false);
   const loadInbox=useCallback(async()=>setInbox((await messages('inbox')).conversations),[]);
   useEffect(()=>{
@@ -50,20 +51,33 @@ export default function Messages() {
   const incoming=pending&&thread?.chat.dm_requester!==user?.id;
   const canSend=thread?.chat.dm_status==='accepted'||(pending&&!incoming&&!thread.messages.length);
   const [composing,setComposing]=useState(Boolean(to||recipient));
-  async function loadContacts(offset=0){
-    setLoadingContacts(true);
-    try{
-      const result=await messages('contacts',{offset});
-      setContacts(previous=>offset?[...previous,...result.people.filter(person=>!previous.some(old=>old.id===person.id))]:result.people);
-      setNextOffset(result.nextOffset);
-    }catch(error){setError(error.message);}
-    finally{setLoadingContacts(false);}
-  }
+  const searchTerm=contactQuery.trim().toLocaleLowerCase();
+  const searching=composing&&Boolean(searchTerm);
+  useEffect(()=>{
+    if(!searching||contacts)return;
+    let active=true;
+    setContactError(false);
+    async function loadFollowedPeople(){
+      const people=new Map();
+      let offset=0;
+      do{
+        const page=await messages('contacts',{offset});
+        if(!active)return;
+        for(const person of page.people)people.set(person.id,person);
+        offset=Number.isSafeInteger(page.nextOffset)&&page.nextOffset>offset?page.nextOffset:null;
+      }while(offset!==null);
+      if(active)setContacts([...people.values()]);
+    }
+    void loadFollowedPeople().catch(()=>{if(active)setContactError(true);});
+    return()=>{active=false;};
+  },[searching,contacts,retry]);
+  const matches=searching&&contacts?contacts.filter(person=>person.name.toLocaleLowerCase().includes(searchTerm)):[];
   function startChat(target){
     void perform(async()=>{
       const chat=await messages('start',target);
       setParams({chat:chat.id});
       setComposing(false);
+      setContactQuery('');
       await loadInbox();
     });
   }
@@ -76,19 +90,18 @@ export default function Messages() {
       <aside className="public-messages-inbox">
         <header className="public-messages-inbox-header">
           <Link to="/" className="public-messages-back"><ChevronLeft size={17}/> PUBLIC</Link>
-          <div><h1>Messages</h1><button type="button" aria-label="New message" aria-expanded={composing} onClick={()=>{setComposing(!composing);if(!composing&&!contacts&&!loadingContacts)void loadContacts();}}><SquarePen size={20}/></button></div>
+          <div><h1>Messages</h1><button type="button" aria-label="New message" aria-expanded={composing} onClick={()=>{setComposing(!composing);setContactQuery('');setContacts(null);}}><SquarePen size={20}/></button></div>
         </header>
         {composing&&<div className="px-4 pb-3">
-          {(recipient||to)&&<button className="mb-3 rounded-lg border px-3 py-2" type="button" disabled={busy} onClick={()=>startChat(recipient?{recipientId:recipient}:{username:to})}>Start message</button>}
-          {contacts&&<p className="pb-2 text-sm font-semibold">People you follow</p>}
-          {contacts?.map(person=><button type="button" className="public-messages-row" key={person.id} disabled={busy} onClick={()=>startChat({recipientId:person.id})}>
+          {(recipient||to)&&<button className="mb-3 rounded-lg border px-3 py-2" type="button" disabled={busy} onClick={()=>startChat(recipient?{recipientId:recipient}:{username:to})}>{recipientName?`Message ${recipientName}`:"Start message"}</button>}
+          <input type="search" aria-label="Search people you follow by name" placeholder="Search by name" className="mb-2 w-full rounded-xl border bg-muted px-3 py-2 text-base" maxLength={80} value={contactQuery} onChange={event=>setContactQuery(event.target.value)} />
+          {matches.map(person=><button type="button" className="public-messages-row" key={person.id} disabled={busy} onClick={()=>startChat({recipientId:person.id})}>
             <span className="public-messages-avatar overflow-hidden" aria-hidden="true">{person.avatar?<img className="h-full w-full object-cover" src={person.avatar} alt=""/>:person.name.charAt(0).toUpperCase()}</span>
             <span className="truncate font-semibold">{person.name}</span><ChevronRight size={14} aria-hidden="true"/>
           </button>)}
-          {contacts?.length===0&&!loadingContacts&&<p className="text-sm text-muted-foreground">No contacts on this page. You can also start a message from someone’s profile.</p>}
-          {loadingContacts&&<p role="status" className="text-sm">Loading people you follow…</p>}
-          {!contacts&&!loadingContacts&&!recipient&&!to&&<button type="button" onClick={()=>void loadContacts()}>Load people you follow</button>}
-          {nextOffset!==null&&<button type="button" disabled={loadingContacts} onClick={()=>void loadContacts(nextOffset)}>Show more</button>}
+          {searching&&contacts&&matches.length===0&&<p role="status" className="text-sm text-muted-foreground">No matching people you follow.</p>}
+          {searching&&!contacts&&!contactError&&<p role="status" className="text-sm">Searching…</p>}
+          {searching&&contactError&&<button type="button" className="text-sm underline" onClick={()=>setRetry(value=>value+1)}>Search failed. Try again.</button>}
         </div>}
         <div className="public-messages-tabs">
           <button aria-pressed={!requests} onClick={()=>setRequests(false)}>Inbox</button>

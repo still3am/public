@@ -440,7 +440,7 @@ export default function Profile({ ownProfileTab = false }) {
     <h1 className="text-xl font-bold">{profile.display_name}</h1>
     {profile.username && <p className="text-sm text-muted-foreground">@{profile.username}</p>}
     <p className="mt-5 text-sm">This profile is private.</p>
-    <Link className="playlist-action mt-3 inline-flex" to={"/messages?recipient="+encodeURIComponent(profile.id)}><MessageCircle size={16} aria-hidden="true"/>Request to message</Link>
+    <Link className="playlist-action mt-3 inline-flex" state={{recipientName:profile.display_name}} to={"/messages?recipient="+encodeURIComponent(profile.id)}><MessageCircle size={16} aria-hidden="true"/>Request to message</Link>
   </section>;
 
   const isAdminProfile = isOwn ? me?.role === "admin" : profile.is_public_admin === true;
@@ -637,7 +637,7 @@ export default function Profile({ ownProfileTab = false }) {
                     {followingBusy ? <Loader2 size={16} className="animate-spin" /> : following ? <UserCheck size={16} /> : <UserPlus size={16} />}<span>{followingBusy ? "Saving…" : following ? "Following" : "Follow"}</span>
                   </button>
                     }
-                {!editMode && (isOwn || profile.id) && <Link className="w-10 h-10 md:w-12 md:h-12 rounded-full border border-border grid place-items-center" aria-label={isOwn ? "Open Messages" : "Send a message"} title={isOwn ? "Messages" : "Message"} to={isOwn ? "/messages" : "/messages?recipient=" + encodeURIComponent(profile.id)}><MessageCircle size={16} aria-hidden="true" /></Link>}
+                {!editMode && (isOwn || profile.id) && <Link className="w-10 h-10 md:w-12 md:h-12 rounded-full border border-border grid place-items-center" aria-label={isOwn ? "Open Messages" : "Send a message"} title={isOwn ? "Messages" : "Message"} state={isOwn ? undefined : {recipientName:profile.display_name}} to={isOwn ? "/messages" : "/messages?recipient=" + encodeURIComponent(profile.id)}><MessageCircle size={16} aria-hidden="true" /></Link>}
                 {!isOwn && followMessage && <p id="profile-follow-message" role="status" className="basis-full text-xs text-muted-foreground leading-relaxed text-center">{followMessage} <button type="button" onClick={() => setFollowMessage("")} className="underline underline-offset-2" aria-label="Dismiss follow message">Dismiss</button></p>}
                 {!editMode &&
                     <button
