@@ -240,6 +240,11 @@
     max-height: 440px;
   }
 
+  .profile-cover-stage > .public-profile-media {
+    position: absolute !important;
+    inset: 0;
+  }
+
   .profile-cover-stage > .public-profile-media :is(img, video) {
     object-position: center;
   }
