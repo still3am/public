@@ -18,32 +18,31 @@ uniform vec3 u_c;
 uniform vec3 u_d;
 uniform vec3 u_e;
 uniform float u_count;
+vec3 paletteStop(float index){
+ if(index<.5)return u_a;
+ if(index<1.5)return u_b;
+ if(index<2.5)return u_c;
+ if(index<3.5)return u_d;
+ return u_e;
+}
 void main(){
  vec2 p=v_uv;
- float t=u_time;
- // Smooth domain warping gives broad, folding ribbons rather than zoom pulses.
- vec2 q=vec2(p.x*min(u_aspect,1.6),p.y);
- q+=.20*vec2(sin(q.y*3.8+t*.43),cos(q.x*3.4-t*.31));
- float wave=sin(q.x*3.2+q.y*2.1+t*.29);
- float fold=sin(q.y*4.1-q.x*1.8-t*.38+wave*.8);
- float ribbon=.5+.5*sin(q.x*2.9+fold*1.7+t*.22);
- vec3 color=mix(u_a,u_b,smoothstep(.12,.88,ribbon));
- float pool=.5+.5*sin(q.y*3.3+wave*1.6-t*.27);
- color=mix(color,u_c,smoothstep(.28,.92,pool)*.88);
- if(u_count>3.5){
-  // All stops travel along the same warped ribbon, including the last-to-first blend.
-  float ribbonPath=q.x*.60+q.y*.40+wave*.14+fold*.12;
-  float stop=fract(ribbonPath+t*.046)*u_count;
-  float blend=smoothstep(0.,1.,fract(stop));
-  if(stop<1.) color=mix(u_a,u_b,blend);
-  else if(stop<2.) color=mix(u_b,u_c,blend);
-  else if(stop<3.) color=mix(u_c,u_d,blend);
-  else if(stop<4.) color=mix(u_d,u_count>4.5?u_e:u_a,blend);
-  else color=mix(u_e,u_a,blend);
- }
- float light=.90+.10*sin(q.x*2.0+q.y*2.6+fold);
- color*=light;
- gl_FragColor=vec4(color,1.);
+ float phase=mod(u_time,48.)*6.2831853/48.;
+ vec2 q=(p-.5)*vec2(clamp(u_aspect,.7,1.6),1.);
+ // Move the warp in a closed loop, keeping color movement continuous.
+ vec2 drift=vec2(cos(phase),sin(phase))*.25;
+ vec2 flow=q+drift;
+ float broad=sin(flow.x*4.2+flow.y*2.6);
+ float fold=cos(flow.y*4.5-flow.x*1.9+broad*.8);
+ float ripple=sin(flow.x*6.0+flow.y*5.1+fold*.9);
+ float field=dot(q,vec2(.83,.54))+.33*(broad*.48+fold*.36+ripple*.16);
+ float path=fract(field+.55+.13*sin(phase-.6))*u_count;
+ float index=floor(path);
+ float blend=smoothstep(0.,1.,fract(path));
+ vec3 color=mix(paletteStop(index),paletteStop(mod(index+1.,u_count)),blend);
+ // A little fixed grain helps break up visible bands on dark displays.
+ float grain=fract(sin(dot(mod(gl_FragCoord.xy,256.),vec2(12.9898,78.233)))*437.585)-.5;
+ gl_FragColor=vec4(clamp(color+grain*.022,0.,1.),1.);
 }
 `;
 const DEFAULT=["#334c78","#70528c","#246c75"];
