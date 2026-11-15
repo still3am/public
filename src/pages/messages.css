@@ -652,15 +652,42 @@
   }
 
   .public-message-group {
+    box-sizing: border-box;
     width: fit-content;
-    max-width: min(76%, 680px);
+    max-width: min(76%, 720px);
+    min-width: 0;
   }
 
   .public-message-group > .public-message-bubble {
-    max-width: 100%;
+    box-sizing: border-box;
+    width: fit-content;
+    max-width: min(68ch, 100%);
+    min-width: 0;
     font-size: 15px;
     line-height: 1.5;
     letter-spacing: -0.01em;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    word-break: normal;
+  }
+
+  .public-messages-history :is(.public-message-reply-quote, .public-message-menu-preview) {
+    min-width: 0;
+    max-width: min(68ch, 100%);
+    overflow-wrap: anywhere;
+    word-break: normal;
+  }
+
+  .public-messages-compose .public-message-input-pill {
+    flex: 1 1 auto;
+    width: auto;
+    min-width: 0;
+  }
+
+  .public-messages-compose .public-message-input-pill textarea {
+    flex: 1 1 auto;
+    width: 100%;
+    min-width: 0;
     overflow-wrap: anywhere;
     word-break: normal;
   }
