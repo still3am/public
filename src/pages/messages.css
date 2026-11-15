@@ -39,3 +39,25 @@
 .public-messages-peer:focus-visible{outline:2px solid hsl(var(--ring));outline-offset:4px}
 .public-messages-row-title{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
 .public-messages-row-title time{flex:none;color:hsl(var(--muted-foreground));font-size:11px}
+
+.public-message-song,.public-message-attachment{display:flex;align-items:center;gap:10px;padding:8px 12px;background:hsl(var(--muted));border:1px solid hsl(var(--border));border-radius:14px;min-width:0}
+.public-message-song button,.public-message-attachment button{display:grid;place-items:center;width:44px;height:44px;flex:none;border-radius:50%;background:hsl(var(--primary));color:hsl(var(--primary-foreground))}
+.public-message-attachment{margin:6px 16px 0}
+.public-message-attachment button{margin-inline-start:auto}
+.public-message-song+.public-message-bubble{margin-top:4px}
+
+.public-messages-search{display:flex;align-items:center;gap:9px;margin:0 16px 10px;padding:0 12px;min-height:44px;border-radius:12px;background:hsl(var(--muted));color:hsl(var(--muted-foreground))}
+.public-messages-search input{width:100%;min-width:0;background:transparent;color:hsl(var(--foreground));font-size:16px}
+.public-messages-search:focus-within{outline:2px solid hsl(var(--ring));outline-offset:2px}
+.public-messages-search input:focus{outline:none}
+.public-messages :is(button,a):focus-visible{outline:2px solid hsl(var(--ring));outline-offset:-2px}
+.public-messages-tabs button{min-height:40px}
+.public-messages-row[aria-current=true]{box-shadow:inset 3px 0 hsl(var(--foreground)/.7)}
+.public-messages-history{overscroll-behavior:contain;scrollbar-gutter:stable}
+.public-messages-compose{align-items:flex-end;padding-inline:clamp(12px,4vw,38px)}
+.public-messages-compose textarea{min-height:44px;max-height:120px;field-sizing:content;resize:none;border-radius:21px;padding:11px 15px;font-size:16px;line-height:20px}
+.public-messages-compose button{flex:none}
+.public-messages-empty h2{font-size:20px;font-weight:700;color:hsl(var(--foreground))}
+.public-messages-empty p{font-size:14px}
+.public-messages-empty button{display:flex;align-items:center;gap:8px;margin-top:8px;min-height:44px;padding:0 16px;border-radius:999px;background:hsl(var(--primary));color:hsl(var(--primary-foreground));font-size:14px;font-weight:650}
+@media(max-width:767px){.public-messages-row{padding-inline:16px}.public-messages-history{scrollbar-gutter:auto}}

@@ -2,7 +2,9 @@ import {useCallback,useEffect,useRef,useState} from 'react';
 import {Link,useLocation,useSearchParams} from 'react-router-dom';
 import {base44} from '@/api/base44Client';
 import {useAuth} from '@/lib/AuthContext';
-import {ArrowUp,ChevronLeft,ChevronRight,MessageCircle,SquarePen} from 'lucide-react';
+import {ArrowUp,ChevronLeft,ChevronRight,MessageCircle,Music2,Play,SquarePen,X} from 'lucide-react';
+import TrackPickerSheet from '@/components/profile/TrackPickerSheet';
+import {usePlayer} from '@/context/PlayerContext';
 import Avatar from '@/components/Avatar';
 import './messages.css';
 
@@ -47,6 +49,14 @@ function MessagesPage({user}) {
   const to=params.get('to'),recipient=params.get('recipient');
   const recipientName=useLocation().state?.recipientName;
   const [draft,setDraft]=useState('');
+  const [inboxQuery,setInboxQuery]=useState('');
+  const player=usePlayer();
+  const [songPicker,setSongPicker]=useState(false),[attachment,setAttachment]=useState(null);
+  async function playSharedSong(trackId){
+    const song=await base44.entities.Track.get(trackId);
+    if(!song?.is_published||song.approval_status!=='approved'||!song.audio_url)throw Error('This song is unavailable.');
+    await player.playTrackAt([song],0);
+  }
   const [contacts,setContacts]=useState(null),[contactQuery,setContactQuery]=useState(''),[contactError,setContactError]=useState(false),[retry,setRetry]=useState(0);
   const [error,setError]=useState(''),[busy,setBusy]=useState(false);
   const [inboxError,setInboxError]=useState('');
@@ -81,7 +91,7 @@ function MessagesPage({user}) {
     return ()=>clearInterval(timer);
   },[loadInbox]);
   useEffect(()=>{
-    setThread(null);setDraft('');setError('');setReadError(null);
+    setThread(null);setDraft('');setAttachment(null);setSongPicker(false);setError('');setReadError(null);
     if(!id)return;
     let pending=false;
     const refresh=async(initial=false)=>{
@@ -139,7 +149,9 @@ function MessagesPage({user}) {
   const scroll=useRef(null);
   const followLatest=useRef(true);
   const [showLatest,setShowLatest]=useState(false);
-  const visibleChats=inbox?.filter(chat=>requests===(chat.dm_status==='pending'&&chat.dm_requester!==user?.id)&&chat.dm_status!=='declined'&&(chat.last_message_at||chat.dm_requester===user?.id));
+  const tabChats=inbox?.filter(chat=>requests===(chat.dm_status==='pending'&&chat.dm_requester!==user?.id)&&chat.dm_status!=='declined'&&(chat.last_message_at||chat.dm_requester===user?.id));
+  const inboxTerm=inboxQuery.trim().toLocaleLowerCase();
+  const visibleChats=tabChats?.filter(chat=>!inboxTerm||peerName(chat).toLocaleLowerCase().includes(inboxTerm));
   useEffect(()=>{followLatest.current=true;setShowLatest(false);},[id]);
   function jumpToLatest(){
     followLatest.current=true;
@@ -175,8 +187,12 @@ function MessagesPage({user}) {
           <button aria-pressed={!requests} onClick={()=>setRequests(false)}>Inbox</button>
           <button aria-pressed={requests} onClick={()=>setRequests(true)}>Requests</button>
         </div>
+        {tabChats?.length>0&&<label className="public-messages-search">
+          <Search size={16} aria-hidden="true"/>
+          <input type="search" aria-label="Find a conversation by name" placeholder="Find a conversation" value={inboxQuery} onChange={event=>setInboxQuery(event.target.value)}/>
+        </label>}
         {inboxError ? <p role="alert" className="public-messages-list-empty">Inbox couldn’t refresh. <button type="button" className="underline" onClick={loadInbox}>Retry</button></p> : inbox===null && <p role="status" className="public-messages-list-empty">Loading conversations…</p>}
-        {visibleChats?.length===0&&<p className="public-messages-list-empty">{requests?"No message requests.":"No conversations yet. Tap the compose icon to start one."}</p>}
+        {visibleChats?.length===0&&<p className="public-messages-list-empty">{inboxTerm&&tabChats?.length?"No conversations match that name.":requests?"No message requests.":"No conversations yet. Tap the compose icon to start one."}</p>}
         {visibleChats?.map(chat=>
           <button key={chat.id} onClick={()=>setParams({chat:chat.id})} aria-current={id===chat.id} className="public-messages-row">
             <PersonAvatar person={peerFor(chat)}/>
@@ -203,7 +219,8 @@ function MessagesPage({user}) {
           }}>
             {thread.messages.length===0&&<p className="public-messages-list-empty">{pending?"Send a message request to start the conversation.":"Send the first message."}</p>}
             {thread.messages.map(message=><div key={message.id} className="public-message-group" data-own={message.sender_id===user?.id}>
-              <p className="public-message-bubble" data-own={message.sender_id===user?.id}>{message.text}</p>
+              {message.track_id&&<SharedSong message={message} onPlay={()=>void perform(()=>playSharedSong(message.track_id))} busy={busy}/>}
+              {message.text&&<p className="public-message-bubble" data-own={message.sender_id===user?.id}>{message.text}</p>}
               {messageTime(message.created_date)&&<time dateTime={message.created_date}>{messageTime(message.created_date)}</time>}
             </div>)}
           </div>
@@ -219,27 +236,48 @@ function MessagesPage({user}) {
               await loadInbox();
             })}>{accept?'Accept request':'Decline'}</button>)}
           </div>}
+          {canSend&&attachment&&<div className="public-message-attachment"><Music2 size={17}/><span className="truncate">{attachment.title}</span><button type="button" aria-label="Remove song" disabled={busy} onClick={()=>setAttachment(null)}><X size={18}/></button></div>}
+          {canSend&&songPicker&&<TrackPickerSheet title="Share a song" description="Choose a song to send in this conversation." selectedIds={attachment?[attachment.id]:[]} onClose={()=>setSongPicker(false)} onToggle={(_,song)=>{setAttachment(song);setSongPicker(false);}}/>}
           {canSend&&<form className="public-messages-compose" onSubmit={event=>{event.preventDefault();void perform(async()=>{
             const text=draft.trim();
-            if(!text)return;
+            const trackId=attachment?.id||'';
+            if(!text&&!trackId)return;
             const existing=pendingSends.current.get(id);
-            const requestId=existing?.text===text?existing.requestId:globalThis.crypto?.randomUUID?.();
-            pendingSends.current.set(id,{text,requestId});
-            await messages('send',{id,text,requestId});
+            const requestId=existing?.text===text&&existing?.trackId===trackId?existing.requestId:globalThis.crypto?.randomUUID?.();
+            pendingSends.current.set(id,{text,trackId,requestId});
+            await messages('send',{id,text,trackId,requestId});
             pendingSends.current.delete(id);
             if(currentChat.current===id){
               followLatest.current=true;
               setDraft(previous=>previous===draft?'':previous);
+              setAttachment(previous=>previous?.id===trackId?null:previous);
               await loadThread(id);
             }
             await loadInbox();
           });}}>
-            <input aria-label="Message" placeholder={pending?'Write a message request…':'Write a message…'} className="min-w-0 flex-1 rounded-lg border bg-background p-2" value={draft} maxLength={2000} onChange={event=>setDraft(event.target.value)} />
-            <button aria-label="Send message" disabled={busy||!draft.trim()}><ArrowUp size={19}/></button>
+            <button type="button" aria-label="Attach a song" disabled={busy} onClick={()=>setSongPicker(true)}><Music2 size={19}/></button>
+            <textarea rows={1} aria-label="Message" placeholder={pending?'Write a message request…':'Write a message…'} className="min-w-0 flex-1 rounded-lg border bg-background p-2" value={draft} maxLength={2000} onChange={event=>setDraft(event.target.value)} onKeyDown={event=>{
+              if(event.key!=='Enter'||event.shiftKey||event.nativeEvent.isComposing||event.keyCode===229||!window.matchMedia('(pointer: fine)').matches)return;
+              event.preventDefault();
+              if(!busy&&draft.trim())event.currentTarget.form?.requestSubmit();
+            }} />
+            <button aria-label="Send message" disabled={busy||(!draft.trim()&&!attachment)}><ArrowUp size={19}/></button>
           </form>}
           {pending&&!incoming&&!canSend&&<p className="text-sm">Waiting for them to accept your request.</p>}
         </>}
-      </section>:<div className="public-messages-empty"><MessageCircle size={38}/><p>Select a conversation to start chatting.</p></div>}
+      </section>:<div className="public-messages-empty"><MessageCircle size={32} aria-hidden="true"/><h2>Your conversations</h2><p>Choose a chat or start a new message.</p><button type="button" onClick={()=>setComposing(true)}><SquarePen size={16}/> New message</button></div>}
     </div>
   </main>;
+}
+
+function SharedSong({message,onPlay,busy}){
+  let song;
+  try{song=JSON.parse(message.track);}catch{}
+  return <div className="public-message-song">
+    <button type="button" onClick={onPlay} disabled={busy} aria-label={"Play "+(song?.title||"shared song")}><Play size={18} fill="currentColor"/></button>
+    <Link className="min-w-0" to={"/track/"+encodeURIComponent(message.track_id)}>
+      <strong className="block truncate">{song?.title||"Shared song"}</strong>
+      {song?.artist&&<span className="block truncate text-xs text-muted-foreground">{song.artist}</span>}
+    </Link>
+  </div>;
 }
