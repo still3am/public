@@ -5,7 +5,7 @@ import {Dialog,DialogContent,DialogDescription,DialogTitle} from "@/components/u
 import "./marketplace-giphy.css";
 
 const CATEGORIES=["Trending","Laugh","Love","Celebrate","Surprised","Music"];
-export default function GiphyPicker({kind="avatar",onSelect,onClose,disabled=false}){
+export default function GiphyPicker({kind="avatar",onSelect,onClose,disabled=false,background=false}){
  const initialKind=kind==="banner"?"banner":"avatar";
  const [target,setTarget]=useState(initialKind),[query,setQuery]=useState(""),[activeTerm,setActiveTerm]=useState(""),[items,setItems]=useState([]),[status,setStatus]=useState("Loading GIFs…"),[busy,setBusy]=useState(false),[moreLoading,setMoreLoading]=useState(false),[hasMore,setHasMore]=useState(false),[failed,setFailed]=useState(false);
  const requestId=useRef(0),itemsRef=useRef([]),loadingMore=useRef(false);
@@ -39,6 +39,11 @@ export default function GiphyPicker({kind="avatar",onSelect,onClose,disabled=fal
  }
  async function choose(item){
   if(busy||disabled)return;
+  if(background){
+   if(!item.still){setStatus("This GIF has no still preview. Choose another.");return;}
+   onSelect?.(item);
+   return;
+  }
   setBusy(true);
   try{
    const result=await base44.functions.invoke("usersByIds",{action:"add_giphy_to_marketplace",id:item.id,kind:target});
@@ -53,20 +58,20 @@ export default function GiphyPicker({kind="avatar",onSelect,onClose,disabled=fal
   <DialogContent showClose={false} className="public-marketplace-giphy" onOpenAutoFocus={event=>event.preventDefault()}>
    <span className="public-marketplace-giphy-handle" aria-hidden="true"/>
    <DialogTitle className="sr-only">Choose a GIPHY</DialogTitle>
-   <DialogDescription className="sr-only">Search GIPHY and select whether to use a GIF as your avatar or banner.</DialogDescription>
+   <DialogDescription className="sr-only">Search GIPHY for an animated image.</DialogDescription>
    <header className="public-marketplace-giphy-header"><strong>GIPHY</strong><button type="button" className="public-marketplace-giphy-close" aria-label="Close GIPHY picker" disabled={busy} onClick={onClose}><X size={18}/></button></header>
    <form className="public-marketplace-giphy-search" onSubmit={event=>{event.preventDefault();void search(query.trim());}}>
     <Search size={20} aria-hidden="true"/><input placeholder="Search GIPHY" aria-label="Search GIPHY" value={query} maxLength={80} onChange={event=>setQuery(event.target.value)}/><button type="submit" aria-label="Search GIFs" disabled={busy}><Search size={20}/></button>
    </form>
-   <div className="public-marketplace-giphy-target" role="group" aria-label="Use GIF as">
+   {!background&&<div className="public-marketplace-giphy-target" role="group" aria-label="Use GIF as">
     <span>Use as</span><button type="button" aria-pressed={target==="avatar"} onClick={()=>setTarget("avatar")}>Avatar</button><button type="button" aria-pressed={target==="banner"} onClick={()=>setTarget("banner")}>Banner</button>
-   </div>
+   </div>}
    <div className="public-marketplace-giphy-categories" role="group" aria-label="GIF categories">
     {CATEGORIES.map(category=>{const term=category==="Trending"?"":category.toLowerCase();return <button type="button" key={category} aria-pressed={activeTerm===term} onClick={()=>{setQuery(term);void search(term);}}>{category}</button>;})}
    </div>
    {status&&<p className="public-marketplace-giphy-status" role="status">{busy&&<Loader2 className="animate-spin" size={15}/>}<span>{status}</span>{failed&&<button type="button" onClick={()=>void search(activeTerm)}>Retry</button>}</p>}
    <div className="public-marketplace-giphy-results" role="region" aria-label="GIF results" aria-busy={status==="Loading GIFs…"} onScroll={onScroll} tabIndex={0}>
-    {items.map(item=><button type="button" key={item.id} disabled={busy||disabled} onClick={()=>choose(item)} aria-label={"Use "+item.title+" as "+target} className={target==="banner"?"is-banner":""}>
+    {items.map(item=><button type="button" key={item.id} disabled={busy||disabled} onClick={()=>choose(item)} aria-label={"Use "+item.title+" as "+(background?"background":target)} className={target==="banner"?"is-banner":""}>
      <img src={item.preview} alt={item.title||"GIPHY result"} loading="lazy" draggable="false"/><span>{item.title}{item.creatorName?" · "+item.creatorName:""}</span>
     </button>)}
     {moreLoading&&<p className="public-marketplace-giphy-loading" role="status">Loading more GIFs…</p>}

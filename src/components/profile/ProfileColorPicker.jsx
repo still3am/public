@@ -1,6 +1,9 @@
 import {useEffect,useRef,useState} from "react";
 import {ArrowLeft,ArrowRight,Check,GripHorizontal,Loader2,Plus,Shuffle,Undo2,X} from "lucide-react";
 import {Dialog,DialogContent,DialogHeader,DialogTitle,DialogDescription} from "@/components/ui/dialog";
+import GiphyPicker from "./GiphyPicker";
+import {AVATAR_PRESETS} from "@/lib/avatarPresets";
+import {BANNER_PRESETS} from "@/lib/bannerPresets";
 import MotionGradient from "@/components/MotionGradient";
 import ProfileMedia from "@/components/ProfileMedia";
 import {base44} from "@/api/base44Client";
@@ -37,6 +40,13 @@ export default function ProfileColorPicker({coverUrl,colors,loading,value,onPrev
  const saveLock=useRef(false);
  const fileInput=useRef(null), fileLock=useRef(false);
  const [mediaTab,setMediaTab]=useState(allowMedia&&Boolean(value.media?.src));
+ const [showGiphy,setShowGiphy]=useState(false),[gallery,setGallery]=useState("");
+ function selectBackground(media){
+  setPending(null);
+  setDraft(current=>({...current,media}));
+  setMediaTab(true);
+  setError("");
+ }
  const [pending,setPending]=useState(null),[localMedia,setLocalMedia]=useState(null),[preparing,setPreparing]=useState(false);
  useEffect(()=>{
   if(!pending){setLocalMedia(null);return;}
@@ -170,12 +180,24 @@ export default function ProfileColorPicker({coverUrl,colors,loading,value,onPrev
     </div>
     {allowMedia&&<div className="profile-color-modes" role="group" aria-label="Profile background type">
      <button type="button" disabled={saving||preparing} aria-pressed={!mediaTab} onClick={()=>{setError("");setMediaTab(false);onPreview({...draft,media:null,colors:draft.colors.filter(valid)});}}>Colors</button>
-     <button type="button" disabled={saving||preparing} aria-pressed={mediaTab} onClick={()=>{setError("");setMediaTab(true);}}>Photo, GIF or video</button>
+     <button type="button" disabled={saving||preparing} aria-pressed={mediaTab} onClick={()=>{setError("");setMediaTab(true);}}>Photos &amp; videos</button>
+     <button type="button" disabled={saving||preparing} onClick={()=>setShowGiphy(true)}>GIFs</button>
     </div>}
     {mediaTab?<section className="profile-color-section">
      <h3>Background media</h3>
      <p className="profile-color-hint">GIFs and videos loop silently for up to {profileMotionSeconds("background")} seconds per loop. Your profile song can still play.</p>
-     <input ref={fileInput} hidden type="file" accept="image/jpeg,image/png,image/webp,image/avif,image/gif,video/mp4,video/quicktime,video/webm" onChange={event=>{chooseMedia(event.target.files?.[0]);event.target.value="";}} />
+     <div className="profile-color-modes" role="group" aria-label="PUBLIC backgrounds">
+      <button type="button" disabled={saving||preparing} aria-pressed={gallery==="avatars"} onClick={()=>setGallery(gallery==="avatars"?"":"avatars")}>PUBLIC avatars</button>
+      <button type="button" disabled={saving||preparing} aria-pressed={gallery==="banners"} onClick={()=>setGallery(gallery==="banners"?"":"banners")}>PUBLIC banners</button>
+     </div>
+     {gallery&&<div className="profile-background-gallery">
+      {(gallery==="avatars"?AVATAR_PRESETS:BANNER_PRESETS).map(item=><button type="button" key={item.id} disabled={saving||preparing} aria-label={item.name} aria-pressed={draft.media?.src===new URL(item.url,window.location.origin).href&&!pending} onClick={()=>selectBackground({
+       src:new URL(item.url,window.location.origin).href,
+       gifSrc:item.gifUrl?new URL(item.gifUrl,window.location.origin).href:"",
+       videoSrc:item.videoUrl?new URL(item.videoUrl,window.location.origin).href:"",
+      })}><img src={item.url} alt="" loading="lazy"/><span>{item.name}</span></button>)}
+     </div>}
+     <input ref={fileInput} hidden type="file" accept="image/jpeg,image/png,image/webp,image/avif,video/mp4,video/quicktime,video/webm" onChange={event=>{chooseMedia(event.target.files?.[0]);event.target.value="";}} />
      <button type="button" className="profile-color-create" disabled={saving||preparing} onClick={()=>fileInput.current?.click()}><Plus size={16}/>{preparing?"Preparing preview…":mediaPreview?.src?"Replace background":"Choose a file"}</button>
     </section>:<>
     <div className="profile-color-modes" role="group" aria-label="Profile background mode">
@@ -241,6 +263,10 @@ export default function ProfileColorPicker({coverUrl,colors,loading,value,onPrev
     <button type="button" disabled={saving||preparing} onClick={onClose} className="playlist-action">Cancel</button>
     <button type="button" disabled={saving||preparing||invalid||(mediaTab&&!pending&&!draft.media?.src)} onClick={save} className="chrome-button">{saving&&<Loader2 size={16} className="animate-spin"/>}{saving?"Saving…":"Save background"}</button>
    </footer>
+   {showGiphy&&<GiphyPicker background onClose={()=>setShowGiphy(false)} onSelect={item=>{
+    selectBackground({src:item.still,gifSrc:item.gifUrl,videoSrc:""});
+    setShowGiphy(false);
+   }}/>}
   </DialogContent>
  </Dialog>;
 }

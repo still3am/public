@@ -37,7 +37,7 @@ export default async function handleRequest(req) {
         let media, source;
         try { media = new URL(originalUrl); source = new URL(gif?.url || ''); } catch { return null; }
         if (!/^[a-zA-Z0-9]{1,64}$/.test(id) || gif.rating !== 'g' || media.protocol !== 'https:' || !media.hostname.endsWith('.giphy.com') || source.protocol !== 'https:' || !(source.hostname === 'giphy.com' || source.hostname.endsWith('.giphy.com')) || !/^https:\/\/[^/]+\.giphy\.com\//i.test(preview)) return null;
-        return { id, title: String(gif.title || 'GIPHY GIF').slice(0,100), preview, gifUrl: originalUrl, creatorName: String(gif.username || '').slice(0,80), sourceUrl: source.href };
+        return { id, title: String(gif.title || 'GIPHY GIF').slice(0,100), preview, still: gif.images?.fixed_width_still?.url || gif.images?.original_still?.url || "", gifUrl: originalUrl, creatorName: String(gif.username || '').slice(0,80), sourceUrl: source.href };
       };
       if (body.action === 'giphy_search') {
         const items = (payload.data || []).map(cleanGif).filter(Boolean);

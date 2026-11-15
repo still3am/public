@@ -116,3 +116,16 @@
   background: linear-gradient(180deg, #0005, #0008);
   pointer-events: none;
 }
+
+.profile-background-gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fit,minmax(94px,1fr));
+  max-height: 320px;
+  overflow: auto;
+  gap: 8px;
+  padding: 4px;
+}
+.profile-background-gallery button { min-width: 0; text-align: left; }
+.profile-background-gallery button[aria-pressed=true] { outline: 2px solid currentColor; border-radius: 8px; }
+.profile-background-gallery img { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; border-radius: 8px; }
+.profile-background-gallery span { display: block; font-size: 11px; }
