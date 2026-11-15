@@ -114,6 +114,9 @@ function MessagesPage({user}) {
   const lyricPlayback=useRef(null);
   const [drafts,setDrafts]=useState(()=>new Map());
   const draft=drafts.get(id)||'';
+  const draftText=useRef(draft);
+  draftText.current=draft;
+  const typingMisses=useRef(0);
   const [reply,setReply]=useState(null);
   const [peerTyping,setPeerTyping]=useState(false);
   const typingPollLock=useRef(false);
