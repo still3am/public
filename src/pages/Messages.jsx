@@ -19,6 +19,16 @@ import './messages.css';
 const REACTIONS = ["❤️", "👍", "👎", "😂", "‼️", "❓", "🔥"];
 const REACTION_LABELS = ['Love', 'Like', 'Dislike', 'Laugh', 'Emphasize', 'Question', 'Fire'];
 
+const CHAT_BACKGROUND_PRESETS = [
+  { id: 'sky', name: 'Sky', background: 'linear-gradient(165deg, #173453 0%, #367b9d 48%, #f0a56e 100%)' },
+  { id: 'water', name: 'Water', background: 'linear-gradient(160deg, #b5e4ef 0%, #80b7c6 48%, #315a70 100%)' },
+  { id: 'aurora', name: 'Aurora', background: 'radial-gradient(ellipse at 22% 60%, #15c8e7b8 0%, transparent 38%), radial-gradient(ellipse at 80% 32%, #8946d58c 0%, transparent 42%), linear-gradient(145deg, #071122, #123653 55%, #171335)' },
+  { id: 'dawn', name: 'Dawn', background: 'linear-gradient(160deg, #d8b8ce 0%, #f3b8a9 54%, #e98c85 100%)' },
+  { id: 'sunset', name: 'Sunset', background: 'linear-gradient(165deg, #14344b 0%, #d76d5f 57%, #f4b079 100%)' },
+  { id: 'dusk', name: 'Dusk', background: 'linear-gradient(165deg, #101226 0%, #20285a 48%, #bc523e 100%)' },
+  { id: 'flow', name: 'Flow', background: 'radial-gradient(ellipse at 25% 68%, #00d6d6aa 0%, transparent 35%), radial-gradient(ellipse at 78% 32%, #bd38a8aa 0%, transparent 42%), linear-gradient(145deg, #080c1b, #073e58 52%, #34204e)' },
+];
+
 async function messages(action, data = {}) {
   try {
     const result = await base44.functions.invoke('messages', { action, ...data });
