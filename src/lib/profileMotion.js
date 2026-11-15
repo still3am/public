@@ -1,6 +1,6 @@
 export const PROFILE_VIDEO_SECONDS = 10;
 export const BANNER_VIDEO_SECONDS = 60;
-export const profileMotionSeconds = kind => kind === "banner" ? BANNER_VIDEO_SECONDS : PROFILE_VIDEO_SECONDS;
+export const profileMotionSeconds = kind => kind === "banner" ? BANNER_VIDEO_SECONDS : kind === "background" ? 15 : PROFILE_VIDEO_SECONDS;
 export function validateMotionDuration(duration,kind="avatar"){
  const limit=profileMotionSeconds(kind);
  if(!Number.isFinite(duration)||duration<=0||duration>limit+.05)throw Error("Choose a video or GIF loop of "+limit+" seconds or less.");

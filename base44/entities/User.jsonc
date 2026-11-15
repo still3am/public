@@ -305,6 +305,27 @@
         "write": true
       }
     },
+    "profile_background_url": {
+      "type": "string",
+      "default": "",
+      "rls": {
+        "write": true
+      }
+    },,
+    "profile_background_gif_url": {
+      "type": "string",
+      "default": "",
+      "rls": {
+        "write": true
+      }
+    },,
+    "profile_background_video_url": {
+      "type": "string",
+      "default": "",
+      "rls": {
+        "write": true
+      }
+    },,
     "profile_background_mode": {
       "type": "string",
       "enum": [
