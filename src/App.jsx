@@ -14,7 +14,6 @@ import { PlayerProvider } from '@/context/PlayerContext';
 import { LibraryProvider } from '@/context/LibraryContext';
 import { UploadProvider } from '@/context/UploadContext';
 import Layout from '@/components/Layout';
-import Logo from '@/components/Logo';
 import DialogFocusManager from '@/components/DialogFocusManager';
 import GlobalStatus from '@/components/GlobalStatus';
 import OfflineSyncManager from '@/components/OfflineSyncManager';
@@ -59,20 +58,11 @@ const AuthenticatedApp = () => {
 
   useEffect(()=>{if(authError?.type==="auth_required")navigateToLogin();},[authError?.type,navigateToLogin]);
 
-  // Show PUBLIC's animated P while checking app settings or authentication.
+  // Show loading spinner while checking app public settings or auth
   if (isLoadingPublicSettings || isLoadingAuth) {
     return (
-      <div className="fixed inset-0 z-[100] flex min-h-[100dvh] flex-col items-center justify-center gap-4 overflow-hidden bg-background text-foreground" role="status" aria-label="Loading PUBLIC">
-        <div aria-hidden="true" className="absolute h-48 w-48 rounded-full bg-primary/15 blur-3xl" />
-        <img
-          src="https://media.base44.com/images/public/6a5676aa61ea8a51237aa4ee/15cebc067_PUBLIC-P-Prism-Trip.gif"
-          alt=""
-          className="relative h-28 w-28 object-contain drop-shadow-[0_0_24px_rgba(112,75,255,0.34)] motion-reduce:hidden"
-          draggable={false}
-        />
-        <Logo width="76px" className="relative hidden motion-reduce:block" />
-        <span className="relative text-xs font-semibold tracking-[0.24em] text-foreground/55">LOADING PUBLIC</span>
-        <span className="sr-only">Loading PUBLIC…</span>
+      <div className="fixed inset-0 flex items-center justify-center">
+        <div className="w-8 h-8 border-4 border-slate-200 border-t-slate-800 rounded-full animate-spin"></div>
       </div>
     );
   }
