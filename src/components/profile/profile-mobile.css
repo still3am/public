@@ -116,3 +116,24 @@
  .public-app .profile-page.profile-redesigned .profile-people-skeleton>div>i{max-width:144px}
 }
 @media(max-width:767px){.public-app .profile-redesigned .profile-stats[data-creator=false]{grid-template-columns:repeat(3,minmax(0,1fr))}}
+
+/* Use the ring as the fixed center, independent of the image's intrinsic size. */
+@media (max-width: 767px) {
+  .public-app .profile-redesigned .profile-people-track .profile-person-gradient-ring > .profile-person-portrait-inner {
+    position: absolute;
+    inset: 4px;
+    width: auto !important;
+    height: auto !important;
+    padding: 0;
+    aspect-ratio: auto;
+  }
+  .public-app .profile-redesigned .profile-people-track .profile-person-portrait-inner > * {
+    position: absolute !important;
+    inset: 4px;
+    width: calc(100% - 8px) !important;
+    height: calc(100% - 8px) !important;
+  }
+  .public-app .profile-redesigned .profile-people-track .profile-person-portrait-inner :is(img, video) {
+    object-position: center;
+  }
+}
