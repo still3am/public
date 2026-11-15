@@ -54,3 +54,12 @@
 
 .home-discovery-rotate{display:block;min-height:44px;margin:4px auto 0;padding-inline:10px;color:hsl(var(--muted-foreground));font-size:12px}
 @media(prefers-reduced-motion:reduce){.home-discovery-rotate{display:none}}
+
+@media(prefers-reduced-motion:no-preference){
+ .home-discovery-flow .home-discovery-stage:not(.is-dragging) .home-discovery-cover{
+   transition:transform 620ms cubic-bezier(.22,.72,.21,1),opacity 520ms ease;
+ }
+ .home-discovery-flow .home-discovery-stage:not(.is-dragging) .home-discovery-cover.is-repositioning{
+   transition:opacity 520ms ease;
+ }
+}

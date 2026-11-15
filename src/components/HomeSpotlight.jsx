@@ -1,15 +1,15 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Play, Pause, ChevronLeft, ChevronRight, Music } from 'lucide-react';
 import { Image } from '@/components/ui/image';
 import { useCoverUrl } from '@/hooks/useCoverUrl';
 import './home-spotlight.css';
 
-function DiscoveryCover({ track, offset, selected, playing, onChoose }) {
+function DiscoveryCover({ track, offset, selected, playing, onChoose, repositioning }) {
   const cover = useCoverUrl(track.cover_art_url);
   const distance = Math.abs(offset);
   const style = { zIndex: 10 - distance, '--offset': offset, '--distance': distance, '--cover-scale': 1 - distance * .07 };
-  return <li className={'home-discovery-cover' + (selected ? ' is-selected' : '')} style={style}>
+  return <li className={'home-discovery-cover' + (selected ? ' is-selected' : '') + (repositioning ? ' is-repositioning' : '')} style={style}>
   <button type="button" className="home-discovery-art" onClick={onChoose} aria-label={(selected && playing ? 'Pause ' : 'Play ') + track.title + ' by ' + (track.artist || 'Unknown artist')} aria-current={selected ? 'true' : undefined}>
    {cover ? <Image src={cover} alt="" fittingType="fill" className="w-full h-full" /> : <Music size={48} />}
    <span className="home-discovery-play" aria-hidden="true">{selected && playing ? <Pause size={22} fill="currentColor" /> : <Play size={22} fill="currentColor" />}</span>
@@ -101,6 +101,14 @@ export default function HomeSpotlight({ track, tracks = [], currentTrackId, isPl
       stage.removeEventListener('touchend', onEnd);stage.removeEventListener('touchcancel', cancel);cancel();
     };
   }, [queue.length]);
+  const lastOffsets=useRef(new Map());
+  const offsets=new Map();
+  const selectedIndex=Math.max(0,queue.findIndex(item=>item.id===selectedId));
+  queue.forEach((item,index)=>{
+    const forward=(index-selectedIndex+queue.length)%queue.length;
+    offsets.set(item.id,forward>queue.length/2?forward-queue.length:forward);
+  });
+  useLayoutEffect(()=>{lastOffsets.current=offsets;});
   if (!queue.length) return null;
   const found = queue.findIndex((item) => item.id === selectedId),active = found >= 0 ? found : 0,selected = queue[active];
   const move = (direction) => setSelectedId((previous) => {const index = queue.findIndex((item) => item.id === previous),start = index >= 0 ? index : 0;return queue[(start + direction + queue.length) % queue.length].id;});
@@ -118,8 +126,13 @@ export default function HomeSpotlight({ track, tracks = [], currentTrackId, isPl
   const beginGesture = (event) => {if (event.isPrimary === false || event.button !== 0) return;clearTimeout(wheelState.current.timer);paintDrag(0);suppressClickUntil.current = 0;gesture.current = { id: event.pointerId, x: event.clientX, y: event.clientY, axis: '', sampleX: event.clientX, sampleTime: Date.now(), step: coverStep() };};
   const updateGesture = (event) => {const start = gesture.current;if (!start || start.id !== event.pointerId) return;const dx = Math.abs(event.clientX - start.x),dy = Math.abs(event.clientY - start.y);if (!start.axis && Math.max(dx, dy) > 10) {if (dx > dy * 1.25) {start.axis = 'horizontal';if (event.pointerType !== 'touch') event.currentTarget.setPointerCapture?.(event.pointerId);} else if (dy > dx * 1.25) start.axis = 'vertical';}if (start.axis === 'horizontal') {if (event.cancelable) event.preventDefault();const step = start.step;paintDrag(Math.max(-step * 2.5, Math.min(step * 2.5, event.clientX - start.x)), step);if (Date.now() - start.sampleTime > 80) {start.sampleX = event.clientX;start.sampleTime = Date.now();}}};
   touchHandlers.current = { start: beginGesture, move: updateGesture, end: finishGesture };
-  const visible = queue.map((item, index) => {let offset = (index - active + queue.length) % queue.length;if (offset > queue.length / 2) offset -= queue.length;return { item, index, offset };}).filter((item) => Math.abs(item.offset) <= 3);
-  return <section ref={carouselRef} className="home-discovery" aria-labelledby={carouselLabel ? undefined : "home-discovery-title"} aria-label={carouselLabel}>
+  const visible = queue.map((item,index)=>{
+    const offset=offsets.get(item.id);
+    const before=lastOffsets.current.get(item.id);
+    const repositioning=autoRotate&&queue.length>2&&before!=null&&Math.abs(offset-before)>1&&offset*before<0;
+    return {item,index,offset,repositioning};
+  }).filter(item=>Math.abs(item.offset)<=(autoRotate?4:3));
+  return <section ref={carouselRef} className={autoRotate?"home-discovery home-discovery-flow":"home-discovery"} aria-labelledby={carouselLabel ? undefined : "home-discovery-title"} aria-label={carouselLabel}>
   {!carouselLabel && <div className="home-discovery-intro"><h2 id="home-discovery-title"><span>Find your next</span>{' '}<em>favorite.</em></h2></div>}
   <div ref={stageRef} className={'home-discovery-stage' + (queue.length < 3 ? ' is-small' : '')} data-horizontal-scroll="true" role="region" aria-label={carouselLabel || "Discover music carousel"} tabIndex={0}
     onPointerDown={(event) => {if (event.pointerType !== 'touch') beginGesture(event);}}
@@ -127,8 +140,8 @@ export default function HomeSpotlight({ track, tracks = [], currentTrackId, isPl
     onPointerUp={(event) => {if (event.pointerType !== 'touch') finishGesture(event);}} onPointerCancel={(event) => {if (event.pointerType !== 'touch') finishGesture(event, true);}} onLostPointerCapture={(event) => {if (event.pointerType !== 'touch' && event.target === event.currentTarget && gesture.current?.id === event.pointerId) {gesture.current = null;paintDrag(0);}}}
     onClickCapture={(event) => {if (event.detail !== 0 && Date.now() < suppressClickUntil.current) {event.preventDefault();event.stopPropagation();}}}
     onDragStart={(event) => event.preventDefault()} onKeyDown={(event) => {if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') {event.preventDefault();move(event.key === 'ArrowLeft' ? -1 : 1);}}}>
-   <ol className="home-discovery-covers">{visible.map(({ item, index, offset }) => {
-    if (!renderCover) return <DiscoveryCover key={item.id} track={item} offset={offset} selected={index === active} playing={currentTrackId === item.id && isPlaying} onChoose={() => {setSelectedId(item.id);onSelect(queue, index);}} />;
+   <ol className="home-discovery-covers">{visible.map(({ item, index, offset, repositioning }) => {
+    if (!renderCover) return <DiscoveryCover key={item.id} track={item} offset={offset} repositioning={repositioning} selected={index === active} playing={currentTrackId === item.id && isPlaying} onChoose={() => {setSelectedId(item.id);onSelect(queue, index);}} />;
     const distance = Math.abs(offset);
     return <li key={item.id} className={"home-discovery-cover" + (index === active ? " is-selected" : "")} style={{ zIndex: 10 - distance, "--offset": offset, "--distance": distance, "--cover-scale": 1 - distance * .07 }}>
      {renderCover(item, () => setSelectedId(item.id))}
