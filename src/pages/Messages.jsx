@@ -83,12 +83,12 @@ function MessagesPage({user}) {
     setThread(null);setDraft('');setError('');setReadError(null);
     if(!id)return;
     let pending=false;
-    const refresh=async()=>{
-      if(pending||operation.current)return;
+    const refresh=async(initial=false)=>{
+      if(pending||(!initial&&operation.current))return;
       pending=true;
       try{await loadThread(id);}finally{pending=false;}
     };
-    void refresh();
+    void refresh(true);
     const timer=setInterval(refresh,8000);
     return ()=>{readVersion.current++;clearInterval(timer);};
   },[id,loadThread]);
