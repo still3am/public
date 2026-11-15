@@ -4,7 +4,7 @@ import {useEffect,useState} from 'react';
 import {Dialog,DialogContent,DialogTitle,DialogDescription} from '@/components/ui/dialog';
 import {findLyricsCatalog} from '@/lib/lyricsCatalog';
 
-export default function LyricSharePicker({track,result,initialLine,onClose,onSelect}){
+export default function LyricSharePicker({track,result=null,initialLine=null,onClose,onSelect}){
   const [animated,setAnimated]=useState(false);
   const cover=useCoverUrl(track.cover_art_url);
   const [resolved,setResolved]=useState(result||null);
