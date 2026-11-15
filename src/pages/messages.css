@@ -434,3 +434,45 @@
   border-radius: 50%;
   background: transparent;
 }
+
+.public-message-song-draft {
+  grid-template-columns: 58px minmax(0, 1fr) 36px;
+  gap: 12px;
+  padding: 6px 4px 12px;
+}
+
+.public-message-song-draft > :is(img, svg) {
+  width: 58px;
+  height: 58px;
+  border-radius: 9px;
+}
+
+.public-message-song-draft strong {
+  font-size: 14px;
+  line-height: 1.25;
+}
+
+.public-message-song-draft small {
+  margin-top: 2px;
+}
+
+.public-message-song-draft .public-message-song-brand {
+  letter-spacing: .08em;
+  font-size: 10px;
+  font-weight: 700;
+  color: hsl(var(--muted-foreground));
+}
+
+.public-messages-compose .public-message-input-pill .public-message-song-draft button {
+  width: 36px;
+  height: 36px;
+  border: 1px solid hsl(var(--border));
+  border-radius: 50%;
+  background: hsl(var(--muted));
+  color: hsl(var(--foreground));
+}
+
+.public-messages-compose .public-message-input-pill .public-message-song-draft button svg {
+  width: 16px;
+  height: 16px;
+}

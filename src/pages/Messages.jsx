@@ -5,7 +5,7 @@ import {useCallback,useEffect,useLayoutEffect,useRef,useState} from 'react';
 import {Link,useLocation,useSearchParams} from 'react-router-dom';
 import {base44} from '@/api/base44Client';
 import {useAuth} from '@/lib/AuthContext';
-import {ArrowUp,ChevronLeft,ChevronRight,Clapperboard,Copy,ExternalLink,Trash2,MessageCircle,ImagePlus,Music2,Pause,Play,Plus,Reply,Search,SquarePen,X} from 'lucide-react';
+import {ArrowUp,ChevronLeft,ChevronRight,Clapperboard,Copy,Disc3,ExternalLink,Library,Trash2,MessageCircle,ImagePlus,Music2,Pause,Play,Plus,Reply,Search,SquarePen,TextQuote,X} from 'lucide-react';
 import LyricSharePicker from '@/components/LyricSharePicker';
 import LyricCoverGradient from '@/components/LyricCoverGradient';
 import TrackPickerSheet from '@/components/profile/TrackPickerSheet';
@@ -468,9 +468,9 @@ function MessagesPage({user}) {
                 aria-label={musicMenu==="music"?"Share music":"Add to message"} className="public-message-attachment-menu">
                 {musicMenu==="music"?<>
                   <button type="button" onClick={()=>setMusicMenu("attachments")}><ChevronLeft size={19}/> Attachments</button>
-                  <button type="button" onClick={()=>{setMusicMenu(false);setSongPicker("recent");}}><Music2 size={19}/> Share recently played</button>
-                  <button type="button" onClick={()=>{setMusicMenu(false);setSongPicker("song");}}><Music2 size={19}/> Share song</button>
-                  <button type="button" onClick={()=>{setMusicMenu(false);setSongPicker("lyrics");}}><Music2 size={19}/> Share lyrics</button>
+                  <button type="button" onClick={()=>{setMusicMenu(false);setSongPicker("recent");}}><Disc3 size={19}/> Share recently played</button>
+                  <button type="button" onClick={()=>{setMusicMenu(false);setSongPicker("song");}}><Library size={19}/> Share song</button>
+                  <button type="button" onClick={()=>{setMusicMenu(false);setSongPicker("lyrics");}}><TextQuote size={19}/> Share lyrics</button>
                 </>:<>
                   <button type="button" onClick={()=>{mediaInput.current?.click();setMusicMenu(false);}}><ImagePlus size={19}/> Photo or video</button>
                   <button type="button" onClick={()=>setMusicMenu("music")}><Music2 size={19}/> Music</button>
@@ -595,7 +595,7 @@ function SongDraftPreview({track,onRemove,disabled}){
   const cover=useCoverUrl(track.cover_art_url);
   return <div className="public-message-song-draft">
     {cover?<img src={cover} alt="" loading="lazy"/>:<Music2 size={20} aria-hidden="true"/>}
-    <span className="min-w-0"><strong className="block truncate">{track.title}</strong><small className="block truncate">{track.artist||track.uploader_name||"PUBLIC"}</small><small className="public-message-song-brand">♫ Music</small></span>
+    <span className="min-w-0"><strong className="block truncate">{track.title}</strong><small className="block truncate">{track.artist||track.uploader_name||"PUBLIC"}</small><small className="public-message-song-brand">PUBLIC.</small></span>
     <button type="button" aria-label="Remove song" disabled={disabled} onClick={onRemove}><X size={17}/></button>
   </div>;
 }
@@ -609,7 +609,7 @@ function LyricDraftPreview({track,onRemove,disabled}){
       <div className="public-message-lyric-lines">{lines.map((line,index)=><div key={index}>{line}</div>)}</div>
       <div className="public-message-song">
         <span className="public-message-song-cover" aria-hidden="true">{cover&&<img src={cover} alt=""/>}</span>
-        <span className="min-w-0"><strong className="public-message-song-title">{track.title}</strong><span className="public-message-song-artist block truncate">{track.artist||track.uploader_name||"PUBLIC"}</span><span className="public-message-song-brand">♫ Music</span></span>
+        <span className="min-w-0"><strong className="public-message-song-title">{track.title}</strong><span className="public-message-song-artist block truncate">{track.artist||track.uploader_name||"PUBLIC"}</span><span className="public-message-song-brand">PUBLIC.</span></span>
       </div>
       <button type="button" className="public-message-lyric-remove" aria-label="Remove lyric card" disabled={disabled} onClick={onRemove}><X size={17}/></button>
     </div>
