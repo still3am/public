@@ -51,7 +51,6 @@ import ProfilePlaylists from "@/components/profile/ProfilePlaylists";
 import ProfileSong from "@/components/profile/ProfileSong";
 import PublicNotes from "@/components/profile/PublicNotes";
 import TopTracks from "@/components/profile/TopTracks";
-import ProfileComments from "@/components/profile/ProfileComments";
 import FollowListModal from "@/components/profile/FollowListModal";
 import StatusMessage from "@/components/profile/StatusMessage";
 import { useCoverPalette, profileGradient } from "@/hooks/useCoverPalette";
@@ -711,11 +710,12 @@ export default function Profile({ ownProfileTab = false }) {
         </div>
             }
 
-      <aside className="profile-conversation" aria-label="Profile conversation"><ProfileComments profileId={targetId} isOwn={isOwn} active={isCurrentPage && !showMedia} /><SafetyControls type="user" id={targetId} userId={targetId} label="profile" /></aside>
       </section><div id="profile-community" className="profile-community-column">
       {!editMode && <div id="profile-discover" className="profile-discover-section"><DiscoverPeople profileId={targetId} active={isCurrentPage} layout="shelf" /></div>}
       <ProfilePlaylists userId={targetId} active={isCurrentPage} />
       </div></div>
+
+      <SafetyControls type="user" id={targetId} userId={targetId} label="profile" />
 
       {showColors && isOwn && <ProfileColorPicker coverUrl={coverUrl} colors={coverColors} loading={colorsLoading} value={backgroundValue} onPreview={setBackgroundDraft} onSave={saveColors} onClose={closeColors} />}
 
