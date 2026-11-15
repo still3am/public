@@ -41,6 +41,7 @@ import {
   AtSign,
   Calendar,
   Share2,
+  MessageCircle,
   QrCode,
   BarChart2,
   Palette,
@@ -628,7 +629,7 @@ export default function Profile({ ownProfileTab = false }) {
                     {followingBusy ? <Loader2 size={16} className="animate-spin" /> : following ? <UserCheck size={16} /> : <UserPlus size={16} />}<span>{followingBusy ? "Saving…" : following ? "Following" : "Follow"}</span>
                   </button>
                     }
-                {!editMode && (isOwn || profile.username) && <Link className="playlist-action" to={isOwn ? "/messages" : "/messages?to=" + encodeURIComponent(profile.username)}>{isOwn ? "Messages" : "Message"}</Link>}
+                {!editMode && (isOwn || profile.username) && <Link className="w-10 h-10 md:w-12 md:h-12 rounded-full border border-border grid place-items-center" aria-label={isOwn ? "Open Messages" : "Send a message"} title={isOwn ? "Messages" : "Message"} to={isOwn ? "/messages" : "/messages?to=" + encodeURIComponent(profile.username)}><MessageCircle size={16} aria-hidden="true" /></Link>}
                 {!isOwn && followMessage && <p id="profile-follow-message" role="status" className="basis-full text-xs text-muted-foreground leading-relaxed text-center">{followMessage} <button type="button" onClick={() => setFollowMessage("")} className="underline underline-offset-2" aria-label="Dismiss follow message">Dismiss</button></p>}
                 {!editMode &&
                     <button
