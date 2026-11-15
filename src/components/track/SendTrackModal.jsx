@@ -92,7 +92,11 @@ export default function SendTrackModal({ track, onClose }) {
           setResults([...merged.values()]);
         }
       } catch {
-        if(id===request.current){setResults([]);setSearchFailed(true);}
+        if(id===request.current){
+          const term=q.replace(/^@/, "");
+          setResults(followingPeople.filter((person)=>person.id!==user?.id&&[person.display_name,person.full_name,person.username].some((value)=>String(value||"").toLowerCase().includes(term))));
+          setSearchFailed(true);
+        }
       } finally {
         if(id===request.current)setSearching(false);
       }
@@ -251,7 +255,11 @@ export default function SendTrackModal({ track, onClose }) {
                     {followingFailed ? "Couldn’t load people you follow. Tap Refresh people to try again." : "Type at least two letters to search all PUBLIC listeners."}
                   </p>
                 )
-              ) : results.length === 0 && !searchFailed ? (
+              ) : results.length === 0 && searchFailed ? (
+                <p className="text-center text-xs text-foreground/50 py-8 px-4">
+                  Search couldn’t load. Tap Refresh people to retry.
+                </p>
+              ) : results.length === 0 ? (
                 <p className="text-center text-xs text-foreground/50 py-8 px-4">
                   No one matches that name.
                 </p>
