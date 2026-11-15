@@ -64,6 +64,15 @@ function MessagesPage({ user }) {
   const [inbox, setInbox] = useState(null),[loadedThread, setThread] = useState(null),[requests, setRequests] = useState(false);
   const thread = loadedThread?.chat.id === id ? loadedThread : null;
   const [menu, setMenu] = useState(null);
+  const [chatBackgrounds, setChatBackgrounds] = useState(() =>
+    user?.message_backgrounds && typeof user.message_backgrounds === 'object' ? user.message_backgrounds : {}
+  );
+  const [chatDetailsOpen, setChatDetailsOpen] = useState(false);
+  const [detailsTab, setDetailsTab] = useState('backgrounds');
+  const [savingBackground, setSavingBackground] = useState(false);
+  const [backgroundError, setBackgroundError] = useState('');
+  const [draftBackgroundColor, setDraftBackgroundColor] = useState('#275dad');
+  const backgroundFile = useRef(null);
   const [savingReaction, setSavingReaction] = useState(null);
   const [menuPanel, setMenuPanel] = useState(null);
   function openMessageMenu(message, group) {
@@ -245,6 +254,54 @@ function MessagesPage({ user }) {
   const peerName = (chat) => chat.peer?.display_name || chat.participant_names?.[chat.participant_ids.findIndex((member) => member !== user?.id)] || 'PUBLIC listener';
   const peerFor = (chat) => chat.peer || inbox?.find((row) => row.id === chat.id)?.peer || { display_name: peerName(chat) };
   const currentPeer = thread?.chat.participant_ids.find((member) => member !== user?.id);
+  const activeBackground = id ? chatBackgrounds[id] || { type: 'none' } : { type: 'none' };
+  const backgroundStyle = activeBackground.type === 'preset'
+    ? { backgroundImage: CHAT_BACKGROUND_PRESETS.find((item) => item.id === activeBackground.value)?.background }
+    : activeBackground.type === 'color'
+      ? { backgroundImage: 'none', backgroundColor: activeBackground.value }
+      : activeBackground.type === 'photo'
+        ? { backgroundImage: 'url("' + activeBackground.value + '")' }
+        : undefined;
+  async function saveChatBackground(nextBackground) {
+    if (!user?.id || !id || savingBackground) return;
+    const next = { ...chatBackgrounds, [id]: nextBackground };
+    setSavingBackground(true);
+    setBackgroundError('');
+    try {
+      const saved = await base44.auth.updateMe({ message_backgrounds: next });
+      if (saved?.id !== user.id || JSON.stringify(saved.message_backgrounds) !== JSON.stringify(next)) {
+        throw new Error('The background could not be confirmed. Please try again.');
+      }
+      setChatBackgrounds(next);
+    } catch (saveError) {
+      setBackgroundError(saveError.message || 'Could not save this background. Please try again.');
+    } finally {
+      setSavingBackground(false);
+    }
+  }
+  async function uploadChatBackground(file) {
+    if (!file) return;
+    if (!['image/jpeg', 'image/png', 'image/webp'].includes(file.type) || file.size > 8 * 1024 * 1024) {
+      setBackgroundError('Choose a JPG, PNG, or WebP photo up to 8 MB.');
+      return;
+    }
+    setSavingBackground(true);
+    setBackgroundError('');
+    try {
+      const result = await base44.integrations.Core.UploadFile({ file });
+      if (!result?.file_url) throw new Error('Photo upload was not confirmed. Please retry.');
+      const next = { ...chatBackgrounds, [id]: { type: 'photo', value: result.file_url } };
+      const saved = await base44.auth.updateMe({ message_backgrounds: next });
+      if (saved?.id !== user.id || JSON.stringify(saved.message_backgrounds) !== JSON.stringify(next)) {
+        throw new Error('The photo uploaded, but its background setting could not be confirmed. Please retry.');
+      }
+      setChatBackgrounds(next);
+    } catch (uploadError) {
+      setBackgroundError(uploadError.message || 'Could not upload this photo. Please try again.');
+    } finally {
+      setSavingBackground(false);
+    }
+  }
   const pending = thread?.chat.dm_status === 'pending';
   const incoming = pending && thread?.chat.dm_requester !== user?.id;
   const canSend = thread?.chat.dm_status === 'accepted' || pending && !incoming && !thread.messages.length;
