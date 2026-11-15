@@ -175,3 +175,16 @@
 .public-message-attachment-menu h2{min-height:44px;display:flex;align-items:center;padding-inline-end:44px}
 .public-message-attachment-menu>button:not([aria-label]):not(:has(.sr-only)){display:flex;align-items:center;gap:12px;min-height:44px;padding:8px 10px;border-radius:10px;text-align:start}
 .public-message-attachment-menu>button:not(:has(.sr-only)):hover{background:hsl(var(--muted))}
+
+.public-messages-compose{gap:9px;align-items:flex-end;border-top:0;background:hsl(var(--background)/.9)}
+.public-messages-compose .public-message-add{background:hsl(var(--muted));color:hsl(var(--foreground));border:1px solid hsl(var(--border))}
+.public-message-add svg{transition:transform .16s ease}
+.public-message-add[data-state=open] svg{transform:rotate(45deg)}
+.public-message-input-pill{display:flex;align-items:flex-end;min-width:0;flex:1;border:1px solid hsl(var(--border));border-radius:24px;background:hsl(var(--muted)/.7);padding-inline-end:3px}
+.public-messages-compose .public-message-input-pill textarea{border:0;background:transparent;outline:none}
+.public-message-input-pill:focus-within{border-color:hsl(var(--ring))}
+.public-messages-compose .public-message-input-pill button{width:44px;height:44px;background:transparent;color:hsl(var(--foreground))}
+.public-messages-compose .public-message-input-pill button:enabled{background:hsl(var(--primary));color:hsl(var(--primary-foreground))}
+.public-message-attachment-menu{box-sizing:border-box;z-index:90;width:min(252px,var(--radix-popover-content-available-width,calc(100vw - 24px)));max-height:var(--radix-popover-content-available-height,70dvh);overflow:auto;display:grid;gap:2px;padding:8px;border-radius:23px;background:hsl(var(--popover)/.94);backdrop-filter:blur(18px);box-shadow:0 14px 36px #0003}
+.public-message-attachment-menu>button>svg{box-sizing:content-box;padding:8px;border-radius:50%;background:hsl(var(--muted));flex:none}
+@media(prefers-reduced-motion:reduce){.public-message-add svg{transition:none}}

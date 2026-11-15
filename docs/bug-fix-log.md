@@ -205,3 +205,5 @@ All 99 automated suites passed, including repaired fixtures for current admin mo
 - Messages photo and video attachments — Added local previews, private uploads, and temporary attachment links after conversation access is checked. Build and backend syntax checks passed. Live sending and playback remain unverified.
 
 - Messages composer — Combined music, GIF, and photo or video attachments under one plus button.
+
+- Messages composer — Restyled the composer with a round plus and integrated send control. Attachments now open in a popover anchored above the plus button with viewport collision handling. Production build passed.

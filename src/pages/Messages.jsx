@@ -12,6 +12,7 @@ import {usePlayer} from '@/context/PlayerContext';
 import Avatar from '@/components/Avatar';
 import {useCoverUrl} from '@/hooks/useCoverUrl';
 import {Dialog,DialogContent,DialogTitle,DialogDescription} from '@/components/ui/dialog';
+import {Popover,PopoverTrigger,PopoverContent} from '@/components/ui/popover';
 import './messages.css';
 
 const REACTIONS = ["❤️","👍","👎","😂","‼️","❓","🔥"];
@@ -416,23 +417,6 @@ function MessagesPage({user}) {
           {canSend&&selectingLyrics&&attachment&&<LyricSharePicker track={attachment} onClose={()=>setSelectingLyrics(false)} onSelect={lyrics=>{
             setAttachment({...attachment,lyrics});setSelectingLyrics(false);
           }}/>}
-          {canSend&&musicMenu==="attachments"&&<Dialog open onOpenChange={open=>{if(!open)setMusicMenu(false);}}>
-            <DialogContent className="public-message-attachment-menu">
-              <DialogTitle>Add to message</DialogTitle>
-              <DialogDescription className="sr-only">Choose what to attach.</DialogDescription>
-              <button type="button" onClick={()=>setMusicMenu("music")}><Music2 size={19}/> Music</button>
-              <button type="button" onClick={()=>{setMusicMenu(false);setShowGifs(true);}}><Clapperboard size={19}/> {gif?"Change GIF":"GIF"}</button>
-              <button type="button" onClick={()=>{mediaInput.current?.click();setMusicMenu(false);}}><ImagePlus size={19}/> Photo or video</button>
-            </DialogContent>
-          </Dialog>}
-          {canSend&&musicMenu==="music"&&<Dialog open onOpenChange={open=>{if(!open)setMusicMenu(false);}}>
-            <DialogContent className="public-message-actions">
-              <DialogTitle>Share music</DialogTitle>
-              <DialogDescription className="sr-only">Choose a song or a lyric excerpt.</DialogDescription>
-              <button type="button" onClick={()=>{setMusicMenu(false);setSongPicker("song");}}>Share song</button>
-              <button type="button" onClick={()=>{setMusicMenu(false);setSongPicker("lyrics");}}>Share lyrics</button>
-            </DialogContent>
-          </Dialog>}
           {canSend&&songPicker&&<TrackPickerSheet title={songPicker==="lyrics"?"Choose a song for your lyrics":"Share a song"} description="Choose a song to send in this conversation." selectedIds={[]} onClose={()=>setSongPicker(false)} onToggle={(_,song)=>{setAttachment(song);if(songPicker==="lyrics")setSelectingLyrics(true);setSongPicker(false);}}/>}
           {canSend&&showGifs&&<MomentGifPicker onClose={()=>setShowGifs(false)} onSelect={id=>{setMediaDraft(null);setGif(id);setShowGifs(false);}}/>}
           {canSend&&gif&&<div className="public-message-attachment public-message-gif-draft"><MomentGif id={gif} label="Selected GIF"/><button type="button" aria-label="Remove GIF" disabled={busy} onClick={()=>setGif("")}><X size={18}/></button></div>}
@@ -479,8 +463,25 @@ function MessagesPage({user}) {
             }
             await loadInbox();
           });}}>
-            <button type="button" aria-label="Add attachment" aria-haspopup="dialog" aria-expanded={Boolean(musicMenu)} disabled={busy} onClick={()=>setMusicMenu("attachments")}><Plus size={22}/></button>
+            <Popover open={Boolean(musicMenu)} onOpenChange={open=>setMusicMenu(open?"attachments":false)}>
+              <PopoverTrigger asChild>
+                <button type="button" className="public-message-add" aria-label="Add attachment" disabled={busy}><Plus size={22}/></button>
+              </PopoverTrigger>
+              <PopoverContent side="top" align="start" sideOffset={9} collisionPadding={12}
+                aria-label={musicMenu==="music"?"Share music":"Add to message"} className="public-message-attachment-menu">
+                {musicMenu==="music"?<>
+                  <button type="button" onClick={()=>setMusicMenu("attachments")}><ChevronLeft size={19}/> Attachments</button>
+                  <button type="button" onClick={()=>{setMusicMenu(false);setSongPicker("song");}}><Music2 size={19}/> Share song</button>
+                  <button type="button" onClick={()=>{setMusicMenu(false);setSongPicker("lyrics");}}><Music2 size={19}/> Share lyrics</button>
+                </>:<>
+                  <button type="button" onClick={()=>{mediaInput.current?.click();setMusicMenu(false);}}><ImagePlus size={19}/> Photo or video</button>
+                  <button type="button" onClick={()=>setMusicMenu("music")}><Music2 size={19}/> Music</button>
+                  <button type="button" onClick={()=>{setMusicMenu(false);setShowGifs(true);}}><Clapperboard size={19}/> {gif?"Change GIF":"GIF"}</button>
+                </>}
+              </PopoverContent>
+            </Popover>
             <input hidden ref={mediaInput} type="file" accept="image/jpeg,image/png,image/webp,video/mp4,video/quicktime,video/webm" aria-label="Choose photo or video" onChange={event=>{const file=event.currentTarget.files?.[0];event.currentTarget.value='';selectMedia(file);}}/>
+            <div className="public-message-input-pill">
             <textarea ref={draftInput} rows={1} aria-label="Message" placeholder={pending?'Write a message request…':'Write a message…'} className="min-w-0 flex-1 rounded-lg border bg-background p-2" value={draft} maxLength={2000} onChange={event=>{
               const value=event.target.value;
               setDrafts(previous=>{
@@ -494,7 +495,8 @@ function MessagesPage({user}) {
               event.preventDefault();
               if(!busy&&(draft.trim()||attachment||gif||selectedMedia))event.currentTarget.form?.requestSubmit();
             }} />
-            <button aria-label="Send message" disabled={busy||(!draft.trim()&&!attachment&&!gif&&!selectedMedia)}><ArrowUp size={19}/></button>
+            <button type="submit" aria-label="Send message" disabled={busy||(!draft.trim()&&!attachment&&!gif&&!selectedMedia)}><ArrowUp size={17}/></button>
+            </div>
           </form>}
           {pending&&!incoming&&!canSend&&<p className="text-sm">Waiting for them to accept your request.</p>}
         </>}
