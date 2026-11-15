@@ -14,9 +14,15 @@ html.dark .public-app .profile-redesigned .profile-identity{
 }
 /* Leave the controls above the fade and blend the card into the profile backdrop. */
 .public-app .profile-redesigned:not(.profile-is-editing) .profile-identity{
- padding-bottom:24px;
- -webkit-mask-image:linear-gradient(to bottom,#000 calc(100% - 44px),transparent 100%);
- mask-image:linear-gradient(to bottom,#000 calc(100% - 44px),transparent 100%);
+ --profile-bottom-fade:linear-gradient(to bottom,
+   #000 calc(100% - 56px),
+   #000e calc(100% - 43px),
+   #0009 calc(100% - 28px),
+   #0003 calc(100% - 12px),
+   transparent 100%);
+ padding-bottom:32px;
+ -webkit-mask-image:var(--profile-bottom-fade);
+ mask-image:var(--profile-bottom-fade);
 }
 .public-app .profile-redesigned .profile-cover-stage{height:220px;background-color:#242730}
 .public-app .profile-redesigned .profile-cover-fade{background:linear-gradient(180deg,transparent 65%,rgb(0 0 0/.10))}
