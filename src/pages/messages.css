@@ -154,3 +154,7 @@
   .public-message-lyric-lines{padding:12px}
   .public-message-song-link{grid-template-columns:clamp(28px,11vw,44px) minmax(0,1fr);gap:7px}
 }
+
+.public-messages-compose .public-message-gif-button{flex:none;font-size:11px;font-weight:800;letter-spacing:.02em}
+.public-message-gif-draft .moment-comment-gif{max-height:76px}
+.public-message-group .moment-comment-gif{width:auto;max-width:min(240px,100%);max-height:220px;border-radius:14px}

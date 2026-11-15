@@ -8,7 +8,7 @@ Deno.serve(async req => {
     const client = createClientFromRequest(req);
     const user = await client.auth.me().catch(() => null);
     if (!user?.id || user.disabled || user.is_blocked) fail('Sign in to use Messages.', 401);
-    const {action, id, username, recipientId, offset, text, trackId, accept, requestId, replyId, messageId, lyrics} = await req.json();
+    const {action, id, username, recipientId, offset, text, trackId, accept, requestId, replyId, messageId, lyrics, gifId} = await req.json();
     const db = client.asServiceRole.entities;
     const uid = user.id;
     const blocked = async peer => rows(await db.Block.filter({
@@ -117,7 +117,7 @@ Deno.serve(async req => {
       if (source) await db.Message.delete(source.id);
       const latest = rows(await db.Message.filter({conversation_id:id}, '-created_date', 1))[0];
       await db.Conversation.update(id,{
-        last_message_text:latest?.text || (latest?.track_id ? 'Shared a song' : ''),
+        last_message_text:latest?.text || (latest?.track_id ? 'Shared a song' : latest?.media_type==='image' ? 'Sent a GIF' : ''),
         last_message_at:latest?.created_date || null,
         last_sender_id:latest?.sender_id || '',
       });
@@ -139,7 +139,9 @@ Deno.serve(async req => {
       await db.Conversation.update(id,{dm_status:accept?'accepted':'declined'});
       return Response.json({ok:true});
     }
-    if (action !== 'send' || typeof text !== 'string' || (!text.trim() && !trackId) || text.length > 2000) fail('Write a message or attach a song.');
+    if (action !== 'send' || typeof text !== 'string' || (!text.trim() && !trackId && !gifId) || text.length > 2000) fail('Write a message or attach a song or GIF.');
+    if(gifId && (typeof gifId!=='string'||!/^[a-zA-Z0-9]{1,64}$/.test(gifId)))fail('Choose a valid GIF.');
+    const gifUrl=gifId?'https://media.giphy.com/media/'+gifId+'/giphy.gif':'';
     if (trackId && (typeof trackId !== 'string' || !/^[a-zA-Z0-9_-]{1,100}$/.test(trackId))) fail('Choose a valid song.');
     if (requestId !== undefined && (typeof requestId !== 'string' || !/^[a-f0-9-]{36}$/i.test(requestId))) fail('Invalid message request.');
     if (replyId && (typeof replyId !== 'string' || !/^[a-zA-Z0-9_-]{1,100}$/.test(replyId))) fail('Choose a valid message to reply to.');
@@ -154,7 +156,7 @@ Deno.serve(async req => {
     const previous = requestId ? rows(await db.Message.filter({
       conversation_id:id,sender_id:uid,send_request_id:requestId,
     }, '-created_date', 1))[0] : null;
-    if (previous && (previous.text !== text.trim() || (previous.track_id||"") !== (trackId||"") || (previous.reply_to_id||"") !== (replyId||""))) fail('This request already sent a different message.',409);
+    if (previous && (previous.text !== text.trim() || (previous.track_id||"") !== (trackId||"") || (previous.reply_to_id||"") !== (replyId||"") || (gifUrl && previous.media_url!==gifUrl) || (!gifUrl && previous.media_type==="image" && previous.media_url?.startsWith("https://media.giphy.com/media/")))) fail('This request already sent a different message.',409);
     if(previous){
       let previousLyrics = null;
       try{previousLyrics = JSON.parse(previous.track)?.lyrics??null;}catch{}
@@ -174,7 +176,7 @@ Deno.serve(async req => {
           reply_to_id:source.id,
           reply_preview:JSON.stringify({
             sender_name:chat.participant_names?.[senderIndex]||'PUBLIC listener',
-            text:(source.text|| (source.track_id?'Shared music':'Message')).slice(0,180),
+            text:(source.text|| (source.track_id?'Shared music':source.media_type==='image'?'Sent a GIF':'Message')).slice(0,180),
           }),
         };
       }
@@ -185,11 +187,20 @@ Deno.serve(async req => {
         if(lyricCard?.startMs!=null && song.duration_seconds>0 && lyricCard.startMs>=song.duration_seconds*1000)fail("This lyric timestamp is outside the song.");
         attachment = {track_id:song.id,track:JSON.stringify({title:song.title,artist:song.artist||song.uploader_name,cover_art_url:song.cover_art_url, ...(lyricCard?{lyrics:lyricCard}:{})})};
       }
+      if(gifUrl){
+        const key=Deno.env.get('GIPHY_API_KEY');
+        if(!key)fail('GIFs are temporarily unavailable.',503);
+        const response=await fetch('https://api.giphy.com/v1/gifs/'+gifId+'?'+new URLSearchParams({api_key:key}),{signal:AbortSignal.timeout(5000)});
+        if(!response.ok)fail('Could not verify this GIF. Try again.',503);
+        const {data}=await response.json();
+        if(data?.id!==gifId||data?.rating!=='g')fail('Choose a different GIF.',422);
+        Object.assign(attachment,{media_type:'image',media_url:gifUrl});
+      }
       await db.Message.create({conversation_id:id,sender_id:uid,recipient_id:peer,text:text.trim(),...attachment,...quote,...(requestId?{send_request_id:requestId}:{})});
     }
     const latest = rows(await db.Message.filter({conversation_id:id}, '-created_date', 1))[0];
     if (latest) await db.Conversation.update(id,{
-      last_message_text:latest.text || (latest.track_id ? "Shared a song" : ""),last_message_at:latest.created_date||new Date().toISOString(),last_sender_id:latest.sender_id,
+      last_message_text:latest.text || (latest.track_id ? "Shared a song" : latest.media_type==="image" ? "Sent a GIF" : ""),last_message_at:latest.created_date||new Date().toISOString(),last_sender_id:latest.sender_id,
     });
     return Response.json({ok:true});
   } catch (error) {

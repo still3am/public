@@ -1,3 +1,5 @@
+import MomentGifPicker,{MomentGif} from '@/components/moments/MomentGifPicker';
+import '@/components/moments/moment-tools.css';
 import {useCallback,useEffect,useLayoutEffect,useRef,useState} from 'react';
 import {Link,useLocation,useSearchParams} from 'react-router-dom';
 import {base44} from '@/api/base44Client';
@@ -112,6 +114,7 @@ function MessagesPage({user}) {
   const [inboxQuery,setInboxQuery]=useState('');
   const player=usePlayer();
   const [musicMenu,setMusicMenu]=useState(false);
+  const [gif,setGif]=useState(""),[showGifs,setShowGifs]=useState(false);
   const [songPicker,setSongPicker]=useState(false),[attachment,setAttachment]=useState(null);
   async function playSharedSong(message){
     const trackId=message.track_id;
@@ -160,7 +163,7 @@ function MessagesPage({user}) {
     return ()=>clearInterval(timer);
   },[loadInbox]);
   useEffect(()=>{
-    setThread(null);setDraft('');setReply(null);setAttachment(id?lyricShare:null);setSelectingLyrics(false);setMusicMenu(false);setSongPicker(false);setError('');setReadError(null);
+    setThread(null);setDraft('');setGif('');setShowGifs(false);setReply(null);setAttachment(id?lyricShare:null);setSelectingLyrics(false);setMusicMenu(false);setSongPicker(false);setError('');setReadError(null);
     if(!id)return;
     let pending=false;
     const refresh=async(initial=false)=>{
@@ -303,6 +306,7 @@ function MessagesPage({user}) {
               onContextMenu={event=>{event.preventDefault();cancelHold();openMessageMenu(message,event.currentTarget);}}>
               {message.reply_preview&&<ReplyQuote preview={message.reply_preview}/>}
               {message.track_id&&<SharedSong message={message} playing={player.currentTrack?.id===message.track_id&&player.isPlaying&&(!songData(message)?.lyrics||lyricPlayback.current===message.id)} onPlay={()=>void perform(()=>playSharedSong(message))} busy={busy}/>}
+              {messageGifId(message)&&<MomentGif id={messageGifId(message)} label="Shared GIF"/>}
               {message.text&&<p className="public-message-bubble" data-own={message.sender_id===user?.id}>{message.text}</p>}
               {[message.sender_reaction,message.recipient_reaction].some(emoji=>REACTIONS.includes(emoji))&&
                 <span className="public-message-reaction-badge" aria-label="Message reactions">
@@ -326,10 +330,10 @@ function MessagesPage({user}) {
                   })}>{emoji}</button>;
                 })}
               </div>
-              <div className="public-message-menu-preview">{activeMenu.text || (activeMenu.track_id?'Shared a song':'Message')}</div>
+              <div className="public-message-menu-preview">{activeMenu.text || (activeMenu.track_id?'Shared a song':messageGifId(activeMenu)?'Sent a GIF':'Message')}</div>
               <div className="public-message-menu-items">
               {canSend&&<button type="button" onClick={()=>{
-                setReply({id:activeMenu.id,name:activeMenu.sender_id===user?.id?'You':peerName(thread.chat),text:activeMenu.text||(activeMenu.track_id?'Shared a song':'Message')});
+                setReply({id:activeMenu.id,name:activeMenu.sender_id===user?.id?'You':peerName(thread.chat),text:activeMenu.text||(activeMenu.track_id?'Shared a song':messageGifId(activeMenu)?'Sent a GIF':'Message')});
                 setMenu(null);
                 requestAnimationFrame(()=>draftInput.current?.focus());
               }}><Reply size={17}/> Reply</button>}
@@ -383,33 +387,37 @@ function MessagesPage({user}) {
             </DialogContent>
           </Dialog>}
           {canSend&&songPicker&&<TrackPickerSheet title={songPicker==="lyrics"?"Choose a song for your lyrics":"Share a song"} description="Choose a song to send in this conversation." selectedIds={[]} onClose={()=>setSongPicker(false)} onToggle={(_,song)=>{setAttachment(song);if(songPicker==="lyrics")setSelectingLyrics(true);setSongPicker(false);}}/>}
+          {canSend&&showGifs&&<MomentGifPicker onClose={()=>setShowGifs(false)} onSelect={id=>{setGif(id);setShowGifs(false);}}/>}
+          {canSend&&gif&&<div className="public-message-attachment public-message-gif-draft"><MomentGif id={gif} label="Selected GIF"/><button type="button" aria-label="Remove GIF" disabled={busy} onClick={()=>setGif("")}><X size={18}/></button></div>}
           {canSend&&<form className="public-messages-compose" onSubmit={event=>{event.preventDefault();void perform(async()=>{
             const text=draft.trim();
             const trackId=attachment?.id||'',replyId=reply?.id||'',lyrics=attachment?.lyrics||null;
             const lyricKey=JSON.stringify(lyrics);
-            if(!text&&!trackId)return;
+            if(!text&&!trackId&&!gif)return;
             const existing=pendingSends.current.get(id);
-            const requestId=existing?.text===text&&existing?.trackId===trackId&&existing?.replyId===replyId&&existing?.lyricKey===lyricKey?existing.requestId:globalThis.crypto?.randomUUID?.();
-            pendingSends.current.set(id,{text,trackId,replyId,lyricKey,requestId});
-            await messages('send',{id,text,trackId,replyId,requestId,lyrics});
+            const requestId=existing?.text===text&&existing?.trackId===trackId&&existing?.replyId===replyId&&existing?.lyricKey===lyricKey&&existing?.gifId===gif?existing.requestId:globalThis.crypto?.randomUUID?.();
+            pendingSends.current.set(id,{text,trackId,replyId,lyricKey,gifId:gif,requestId});
+            await messages('send',{id,text,trackId,replyId,requestId,lyrics,gifId:gif});
             pendingSends.current.delete(id);
             if(lyrics)setLyricShare(null);
             if(currentChat.current===id){
               followLatest.current=true;
               setDraft(previous=>previous===draft?'':previous);
               setReply(previous=>previous?.id===replyId?null:previous);
+              setGif(previous=>previous===gif?"":previous);
               setAttachment(previous=>previous?.id===trackId?null:previous);
               await loadThread(id);
             }
             await loadInbox();
           });}}>
             <button type="button" aria-label="Share song or lyrics" disabled={busy} onClick={()=>setMusicMenu(true)}><Music2 size={19}/></button>
+            <button type="button" className="public-message-gif-button" aria-label={gif?"Change GIF":"Add a GIF"} aria-expanded={showGifs} disabled={busy} onClick={()=>setShowGifs(true)}>GIF</button>
             <textarea ref={draftInput} rows={1} aria-label="Message" placeholder={pending?'Write a message request…':'Write a message…'} className="min-w-0 flex-1 rounded-lg border bg-background p-2" value={draft} maxLength={2000} onChange={event=>setDraft(event.target.value)} onKeyDown={event=>{
               if(event.key!=='Enter'||event.shiftKey||event.nativeEvent.isComposing||event.keyCode===229||!window.matchMedia('(pointer: fine)').matches)return;
               event.preventDefault();
-              if(!busy&&(draft.trim()||attachment))event.currentTarget.form?.requestSubmit();
+              if(!busy&&(draft.trim()||attachment||gif))event.currentTarget.form?.requestSubmit();
             }} />
-            <button aria-label="Send message" disabled={busy||(!draft.trim()&&!attachment)}><ArrowUp size={19}/></button>
+            <button aria-label="Send message" disabled={busy||(!draft.trim()&&!attachment&&!gif)}><ArrowUp size={19}/></button>
           </form>}
           {pending&&!incoming&&!canSend&&<p className="text-sm">Waiting for them to accept your request.</p>}
         </>}
@@ -459,4 +467,8 @@ function ReplyQuote({preview}){
     <strong className="block truncate">{quote.sender_name||"Reply"}</strong>
     <span className="block truncate">{quote.text}</span>
   </blockquote>;
+}
+
+function messageGifId(message){
+  return message.media_type==="image"?message.media_url?.match(/^https:\/\/media\.giphy\.com\/media\/([a-zA-Z0-9]{1,64})\/giphy\.gif$/)?.[1]:null;
 }
