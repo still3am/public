@@ -5,9 +5,9 @@
 .profile-color-editor .profile-color-body {overflow-y:auto;overscroll-behavior:contain;padding:0 24px 22px;min-height:0;}
 .profile-color-editor .profile-color-preview {min-height:116px;display:flex;align-items:center;gap:14px;padding:20px;border-radius:18px;background-color:#171921;color:#fff;position:relative;isolation:isolate;}
 .profile-color-preview:before {content:"";position:absolute;inset:0;background:transparent;border-radius:inherit;z-index:-1;}
-.profile-color-editor .profile-color-preview img {width:56px;height:56px!important;object-fit:cover;border-radius:10px;box-shadow:0 5px 18px #0003;}
+.profile-color-editor .profile-color-preview > img {width:56px;height:56px!important;object-fit:cover;border-radius:10px;box-shadow:0 5px 18px #0003;}
 .profile-color-preview strong {display:block;font-size:20px;letter-spacing:-.03em;}
-.profile-color-preview span {display:block;font-size:12px;opacity:.8;margin-top:3px;}
+.profile-color-preview > div > span {display:block;font-size:12px;opacity:.8;margin-top:3px;}
 .profile-color-modes {display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:4px;background:hsl(var(--muted));padding:4px;border-radius:14px;margin-top:16px;}
 .profile-color-modes button {min-width:0;min-height:44px;padding:8px 3px;border-radius:10px;font-size:12px;font-weight:650;line-height:1.2;}
 .profile-color-modes button[aria-pressed=true] {background:hsl(var(--card));box-shadow:0 1px 5px #0002;color:hsl(var(--foreground));}
@@ -106,3 +106,13 @@
 .profile-color-order{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:6px;margin-top:10px;font-size:12px;}
 .profile-color-order button{display:inline-flex;align-items:center;justify-content:center;gap:4px;min-height:44px;padding:0 8px;border:1px solid hsl(var(--border));border-radius:10px;}
 .profile-color-order button:disabled{opacity:.45;}
+
+.profile-photo-background { background: #171921; }
+.profile-photo-background::after,
+.profile-background-preview-media::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, #0005, #0008);
+  pointer-events: none;
+}

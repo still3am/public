@@ -439,15 +439,29 @@ export default function Profile({ ownProfileTab = false }) {
   const displayName = profile.display_name || profile.full_name || "Unnamed";
   const avatarUrl = editMode ? form.avatar_url : profile.avatar_url;
   const backgroundValue = { mode: profile.profile_background_mode || "auto", motion: profile.profile_background_motion === "still" ? "still" : "flow", speed: Math.max(.35, Math.min(1.6, Number(profile.profile_background_speed) || 1)), colors: (profile.profile_background_colors || []).filter((c) => /^#[0-9a-f]{6}$/i.test(c)).slice(0, 5) };
+  backgroundValue.media = {
+    src: profile.profile_background_url || "",
+    gifSrc: profile.profile_background_gif_url || "",
+    videoSrc: profile.profile_background_video_url || "",
+  };
   const currentBackground = backgroundDraft || backgroundValue;
+  const backgroundMedia = currentBackground.media?.src ? currentBackground.media : null;
   const gradientActive = isCurrentPage && !showColors && !showSettings && !showQR && !showDelete && !followList;
   const backgroundColors = currentBackground.mode === "off" ? [] : currentBackground.mode === "custom" ? currentBackground.colors : coverColors.slice(0, 5);
   const closeColors = () => {setShowColors(false);setBackgroundDraft(null);};
   const saveColors = async (value) => {
-    if (!isOwn) return;
+    if (!isOwn || identity.current !== [me?.id, targetId].join(":") || (await base44.auth.me()).id !== targetId) throw Error("Reopen your profile before saving.");
     const update = { profile_background_mode: value.mode, profile_background_colors: value.colors, profile_background_motion: value.motion, profile_background_speed: value.speed };
+    const media = {
+      profile_background_url: value.media?.src || "",
+      profile_background_gif_url: value.media?.gifSrc || "",
+      profile_background_video_url: value.media?.videoSrc || "",
+    };
+    if (Object.entries(media).some(([key, url]) => (profile[key] || "") !== url)) Object.assign(update, media);
     await base44.auth.updateMe(update);
     const confirmed = await base44.auth.me();
+    if (confirmed.id !== targetId || identity.current !== [me?.id, targetId].join(":")) throw Error("Reopen your profile before saving.");
+    if (Object.entries(media).some(([key, url]) => (confirmed[key] || "") !== url)) throw Error("Background media was not confirmed.");
     const actualColors = confirmed.profile_background_colors || [];
     if (confirmed.profile_background_mode !== value.mode || actualColors.join(",").toLowerCase() !== value.colors.join(",").toLowerCase() || confirmed.profile_background_motion !== value.motion || Number(confirmed.profile_background_speed) !== value.speed) throw new Error("Colors have not saved yet");
     setProfile((previous) => ({ ...previous, ...update, profile_background_colors: actualColors }));
@@ -461,8 +475,11 @@ export default function Profile({ ownProfileTab = false }) {
   return (
     <PullToRefresh onRefresh={load} disabled={followingBusy || editMode || showMedia || saving || uploadingAvatar || uploadingBanner || showSettings || showDelete || showQR || showColors || !!followList}>
 
-    {backgroundColors.length > 0 && <MotionGradient colors={backgroundColors} motion={currentBackground.motion} speed={currentBackground.speed} active={gradientActive} pauseWhenCovered className="profile-artwork-background fixed inset-0 pointer-events-none z-0" style={{ opacity: 1 }} />}
-    {!backgroundColors.length && currentBackground.mode === "auto" && coverUrl && <div aria-hidden="true" className="profile-artwork-background fixed inset-0 pointer-events-none z-0" style={{ backgroundImage: `url(${JSON.stringify(coverUrl)})`, backgroundSize: "cover", backgroundPosition: "center", filter: "blur(45px) saturate(1.35)", transform: "scale(1.12)", opacity: 1 }} />}
+    {backgroundMedia && <div className="profile-artwork-background profile-photo-background fixed inset-0 pointer-events-none z-0" aria-hidden="true">
+      <ProfileMedia {...backgroundMedia} active={gradientActive} style={{ width: "100%", height: "100%" }} />
+    </div>}
+    {!backgroundMedia && backgroundColors.length > 0 && <MotionGradient colors={backgroundColors} motion={currentBackground.motion} speed={currentBackground.speed} active={gradientActive} pauseWhenCovered className="profile-artwork-background fixed inset-0 pointer-events-none z-0" style={{ opacity: 1 }} />}
+    {!backgroundMedia && !backgroundColors.length && currentBackground.mode === "auto" && coverUrl && <div aria-hidden="true" className="profile-artwork-background fixed inset-0 pointer-events-none z-0" style={{ backgroundImage: `url(${JSON.stringify(coverUrl)})`, backgroundSize: "cover", backgroundPosition: "center", filter: "blur(45px) saturate(1.35)", transform: "scale(1.12)", opacity: 1 }} />}
     <div className={`profile-page profile-redesigned max-w-6xl mx-auto relative z-10 ${editMode ? "profile-is-editing" : ""}`}>
       {!editMode && loadError && <LoadError message="This profile couldn’t refresh." onRetry={load} />}
       {editMode && saveError && <p role="alert" className="rounded-2xl border border-red-400/30 bg-card px-4 py-3 text-sm mb-3">{saveError}</p>}

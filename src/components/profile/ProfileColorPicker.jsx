@@ -1,7 +1,10 @@
-import {useRef,useState} from "react";
+import {useEffect,useRef,useState} from "react";
 import {ArrowLeft,ArrowRight,Check,GripHorizontal,Loader2,Plus,Shuffle,Undo2,X} from "lucide-react";
 import {Dialog,DialogContent,DialogHeader,DialogTitle,DialogDescription} from "@/components/ui/dialog";
 import MotionGradient from "@/components/MotionGradient";
+import ProfileMedia from "@/components/ProfileMedia";
+import {base44} from "@/api/base44Client";
+import {isMotionFile,prepareProfileMotion,profileMotionSeconds} from "@/lib/profileMotion";
 import ProfileColorWheel,{hexToHsv,hsvToHex} from "./ProfileColorWheel";
 import "./profile-colors.css";
 
@@ -29,9 +32,44 @@ const valid=color=>/^#[0-9a-f]{6}$/i.test(color);
 const normalize=text=>"#"+text.replace(/^#/,"").toLowerCase();
 
 export default function ProfileColorPicker({coverUrl,colors,loading,value,onPreview,onSave,onClose}){
- const [draft,setDraft]=useState(()=>({mode:value.mode,colors:[...value.colors],motion:value.motion||"flow",speed:value.speed||1}));
+ const [draft,setDraft]=useState(()=>({mode:value.mode,colors:[...value.colors],motion:value.motion||"flow",speed:value.speed||1,media:value.media}));
  const [saving,setSaving]=useState(false),[error,setError]=useState("");
  const saveLock=useRef(false);
+ const fileInput=useRef(null), fileLock=useRef(false);
+ const [mediaTab,setMediaTab]=useState(Boolean(value.media?.src));
+ const [pending,setPending]=useState(null),[localMedia,setLocalMedia]=useState(null),[preparing,setPreparing]=useState(false);
+ useEffect(()=>{
+  if(!pending){setLocalMedia(null);return;}
+  const src=URL.createObjectURL(pending.poster||pending.file);
+  const motionUrl=pending.poster?URL.createObjectURL(pending.file):"";
+  setLocalMedia({src,gifSrc:pending.type==="gif"?motionUrl:"",videoSrc:pending.type==="video"?motionUrl:""});
+  return()=>{URL.revokeObjectURL(src);if(motionUrl)URL.revokeObjectURL(motionUrl);};
+ },[pending]);
+ async function chooseMedia(file){
+  if(!file||fileLock.current||saveLock.current)return;
+  fileLock.current=true;setPreparing(true);setError("");
+  try{
+   if(isMotionFile(file))setPending(await prepareProfileMotion(file,"background"));
+   else {
+    if(!/^image\/(jpeg|png|webp|avif)$/.test(file.type)||!file.size||file.size>10*1024*1024)throw Error("Choose a JPG, PNG, WebP or AVIF photo under 10 MB.");
+    const preview=await createImageBitmap(file);
+    preview.close();
+    setPending({file});
+   }
+  }catch(error){setError(error.message||"This file could not be opened.");}
+  finally{fileLock.current=false;setPreparing(false);}
+ }
+ async function uploadMedia(selection){
+  if(selection.uploaded)return selection.uploaded;
+  const upload=async file=>{
+   const result=await base44.integrations.Core.UploadFile({file});
+   if(!result?.file_url)throw Error("Your background did not upload. Please retry.");
+   return result.file_url;
+  };
+  const [src,motionUrl]=await Promise.all([upload(selection.poster||selection.file),selection.poster?upload(selection.file):""]);
+  selection.uploaded={src,gifSrc:selection.type==="gif"?motionUrl:"",videoSrc:selection.type==="video"?motionUrl:""};
+  return selection.uploaded;
+ }
  const [beforeRandomize,setBeforeRandomize]=useState(null);
  const [activeColor,setActiveColor]=useState(0);
  const drag=useRef(null);
@@ -110,23 +148,38 @@ export default function ProfileColorPicker({coverUrl,colors,loading,value,onPrev
   setActiveColor(beforeRandomize.activeIndex);
  };
  const preview=draft.mode==="off"?[]:draft.mode==="custom"?draft.colors.filter(valid):colors.slice(0,3);
- const invalid=draft.mode==="custom"&&(!draft.colors.length||draft.colors.some(color=>!valid(color)));
+ const invalid=!mediaTab&&draft.mode==="custom"&&(!draft.colors.length||draft.colors.some(color=>!valid(color)));
  const save=async()=>{
-  if(saveLock.current||invalid)return;
+  if(saveLock.current||fileLock.current||invalid||mediaTab&&!pending&&!draft.media?.src)return;
   saveLock.current=true;setSaving(true);setError("");
-  try{await onSave({...draft,colors:[...new Set(draft.colors.filter(valid).map(c=>c.toLowerCase()))]});onClose();}
-  catch{setError("Your colors couldn’t save. Try again; your choices are still here.");}
+  try{
+   const media=mediaTab?(pending?await uploadMedia(pending):draft.media):null;
+   await onSave({...draft,media,colors:[...new Set(draft.colors.filter(valid).map(c=>c.toLowerCase()))]});
+   onClose();
+  }catch(error){setError(error.message||"Your background couldn’t save. Please retry.");}
   finally{saveLock.current=false;setSaving(false);}
  };
- return <Dialog open onOpenChange={open=>{if(!open&&!saveLock.current)onClose();}}>
+ const mediaPreview=mediaTab?(pending?localMedia:draft.media):null;
+ return <Dialog open onOpenChange={open=>{if(!open&&!saveLock.current&&!fileLock.current)onClose();}}>
   <DialogContent className="profile-palette-dialog profile-color-editor" data-public-dialog>
-   <DialogHeader><DialogTitle>Your profile colors</DialogTitle><DialogDescription>Build your gradient with the color wheel, choose a palette, or follow your song.</DialogDescription></DialogHeader>
+   <DialogHeader><DialogTitle>Your profile colors</DialogTitle><DialogDescription>Choose a gradient, photo, GIF, or short video for your profile background.</DialogDescription></DialogHeader>
    <div className="profile-color-body">
     <div className="profile-color-preview">
-     {preview.length>0&&<MotionGradient colors={preview} motion={draft.motion} speed={draft.speed} className="absolute inset-0" style={{borderRadius:"inherit",zIndex:-2}}/>}
-     {coverUrl&&<img src={coverUrl} alt="" onError={event=>{event.currentTarget.style.display="none";}}/>}
+     {mediaPreview?.src&&<ProfileMedia {...mediaPreview} className="profile-background-preview-media" style={{position:"absolute",inset:0,zIndex:-2}} />}
+     {!mediaTab&&preview.length>0&&<MotionGradient colors={preview} motion={draft.motion} speed={draft.speed} className="absolute inset-0" style={{borderRadius:"inherit",zIndex:-2}}/>}
+     {!mediaTab&&coverUrl&&<img src={coverUrl} alt="" onError={event=>{event.currentTarget.style.display="none";}}/>}
      <div><strong>Make it yours</strong><span>Live profile preview</span></div>
     </div>
+    <div className="profile-color-modes" role="group" aria-label="Profile background type">
+     <button type="button" disabled={saving||preparing} aria-pressed={!mediaTab} onClick={()=>{setError("");setMediaTab(false);update({...draft,media:null});}}>Colors</button>
+     <button type="button" disabled={saving||preparing} aria-pressed={mediaTab} onClick={()=>{setError("");setMediaTab(true);}}>Photo, GIF or video</button>
+    </div>
+    {mediaTab?<section className="profile-color-section">
+     <h3>Background media</h3>
+     <p className="profile-color-hint">GIFs and videos loop silently for up to {profileMotionSeconds("background")} seconds per loop. Your profile song can still play.</p>
+     <input ref={fileInput} hidden type="file" accept="image/jpeg,image/png,image/webp,image/avif,image/gif,video/mp4,video/quicktime,video/webm" onChange={event=>{chooseMedia(event.target.files?.[0]);event.target.value="";}} />
+     <button type="button" className="profile-color-create" disabled={saving||preparing} onClick={()=>fileInput.current?.click()}><Plus size={16}/>{preparing?"Preparing preview…":mediaPreview?.src?"Replace background":"Choose a file"}</button>
+    </section>:<>
     <div className="profile-color-modes" role="group" aria-label="Profile background mode">
      {[["auto","Automatic"],["custom","Custom"],["off","No color"]].map(([mode,label])=><button type="button" key={mode} disabled={saving} aria-pressed={draft.mode===mode} onClick={()=>update({...draft,mode,colors:mode==="custom"?customColors:draft.colors})}>{label}</button>)}
     </div>
@@ -182,12 +235,13 @@ export default function ProfileColorPicker({coverUrl,colors,loading,value,onPrev
      {draft.motion==="flow"&&<label className="profile-motion-speed"><span>Speed <span>{draft.speed<.75?"Slow":draft.speed>1.2?"Lively":"Gentle"}</span></span><input type="range" min=".35" max="1.6" step=".05" value={draft.speed} disabled={saving} aria-label="Gradient movement speed" onChange={event=>update({...draft,speed:Number(event.target.value)})}/></label>}
      <p className="profile-color-hint">Motion follows each viewer’s Reduce Motion setting.</p>
     </details>}
+    </>}
    </div>
    <footer className="profile-color-footer">
     {error&&<p role="alert">{error}</p>}
     {invalid&&<p role="status">Add at least one valid color. Check Hex codes for incomplete entries.</p>}
-    <button type="button" disabled={saving} onClick={onClose} className="playlist-action">Cancel</button>
-    <button type="button" disabled={saving||invalid} onClick={save} className="chrome-button">{saving&&<Loader2 size={16} className="animate-spin"/>}{saving?"Saving…":"Save colors"}</button>
+    <button type="button" disabled={saving||preparing} onClick={onClose} className="playlist-action">Cancel</button>
+    <button type="button" disabled={saving||preparing||invalid||(mediaTab&&!pending&&!draft.media?.src)} onClick={save} className="chrome-button">{saving&&<Loader2 size={16} className="animate-spin"/>}{saving?"Saving…":"Save background"}</button>
    </footer>
   </DialogContent>
  </Dialog>;
