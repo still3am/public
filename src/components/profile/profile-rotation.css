@@ -54,3 +54,5 @@
 .rotation-carousel .rotation-manage{display:block;margin-inline:auto}
 .rotation-carousel .home-discovery-stage.is-dragging .rotation-play>span{opacity:0}
 @media(max-width:767px){.rotation-carousel .home-discovery-stage{--cover-size:min(208px,65vw);--cover-step:194px;height:300px}}
+
+.public-app .profile-page.profile-redesigned .profile-rotation.profile-rotation-carousel-only{padding:0;border:0;border-radius:0;background:none;box-shadow:none}
