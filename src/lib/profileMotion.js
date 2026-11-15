@@ -1,6 +1,6 @@
 export const PROFILE_VIDEO_SECONDS = 10;
 export const BANNER_VIDEO_SECONDS = 60;
-export const profileMotionSeconds = kind => kind === "banner" ? BANNER_VIDEO_SECONDS : kind === "background" ? 15 : PROFILE_VIDEO_SECONDS;
+export const profileMotionSeconds = kind => kind === "banner" ? BANNER_VIDEO_SECONDS : PROFILE_VIDEO_SECONDS;
 export function validateMotionDuration(duration,kind="avatar"){
  const limit=profileMotionSeconds(kind);
  if(!Number.isFinite(duration)||duration<=0||duration>limit+.05)throw Error("Choose a video or GIF loop of "+limit+" seconds or less.");
@@ -40,19 +40,11 @@ export function inspectGif(bytes,kind="avatar") {
   return {width,height,duration:duration/1000,frames};
 }
 function posterFile(element,width,height,kind) {
-  const max=kind==="banner"||kind==="background"?1600:768,scale=Math.min(1,max/Math.max(width,height));
+  const max=kind==="banner"?1600:768,scale=Math.min(1,max/Math.max(width,height));
   const canvas=document.createElement("canvas");canvas.width=Math.max(1,Math.round(width*scale));canvas.height=Math.max(1,Math.round(height*scale));
   const ctx=canvas.getContext("2d");if(!ctx)throw Error("Your browser could not prepare this media.");
   ctx.drawImage(element,0,0,canvas.width,canvas.height);
   return new Promise((resolve,reject)=>canvas.toBlob(blob=>blob?resolve(new File([blob],"profile-motion-poster.jpg",{type:"image/jpeg"})):reject(Error("Could not prepare the preview.")),"image/jpeg",.88));
-}
-export async function prepareBackgroundPhoto(file) {
- const image=await createImageBitmap(file);
- try {
-  return await posterFile(image,image.width,image.height,"background");
- } finally {
-  image.close();
- }
 }
 export async function prepareProfileMotion(file,kind="avatar") {
   const type=validateMotionFile(file),url=URL.createObjectURL(file);

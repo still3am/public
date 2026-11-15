@@ -244,23 +244,13 @@ export const base44 = new Proxy(raw,{get(target,name) {
       }
       return confirmed;
     }
-    const colorKeys=['profile_background_mode','profile_background_colors','profile_background_motion','profile_background_speed','profile_background_url','profile_background_gif_url','profile_background_video_url','featured_track_id','onboarding_completed'];
+    const colorKeys=['profile_background_mode','profile_background_colors','profile_background_motion','profile_background_speed','featured_track_id','onboarding_completed'];
     const keys=Object.keys(data||{});
     if(keys.length&&keys.every(key=>colorKeys.includes(key))){
       if(data.onboarding_completed!==undefined&&typeof data.onboarding_completed!=='boolean')throw new Error('Invalid onboarding preference');
       if(data.profile_background_mode!==undefined&&!['auto','custom','off'].includes(data.profile_background_mode))throw new Error('Invalid background mode');
       if(data.profile_background_motion!==undefined&&!['flow','still'].includes(data.profile_background_motion))throw new Error('Invalid background motion');
       if(data.profile_background_speed!==undefined&&(typeof data.profile_background_speed!=='number'||!Number.isFinite(data.profile_background_speed)||data.profile_background_speed<.35||data.profile_background_speed>1.6))throw new Error('Invalid background speed');
-      const mediaKeys=['profile_background_url','profile_background_gif_url','profile_background_video_url'];
-      const changingMedia=mediaKeys.some(key=>data[key]!==undefined);
-      if(changingMedia){
-        for(const key of mediaKeys){
-          const value=data[key];
-          if(typeof value!=='string'||value.length>4096)throw Error('Invalid background media URL');
-          if(value){const url=new URL(value);if(url.protocol!=='https:'||url.username||url.password)throw Error('Invalid background media URL');}
-        }
-        if((data.profile_background_video_url&&data.profile_background_gif_url)||((data.profile_background_video_url||data.profile_background_gif_url)&&!data.profile_background_url))throw Error('Choose one background with a still preview');
-      }
       const colors=data.profile_background_colors;
       if(colors!==undefined&&(!Array.isArray(colors)||colors.length>5||colors.some(c=>typeof c!=='string'||!/^#[0-9a-f]{6}$/i.test(c))))throw new Error('Invalid profile colors');
       if(data.featured_track_id!==undefined){
@@ -269,24 +259,14 @@ export const base44 = new Proxy(raw,{get(target,name) {
         if(id){const page=await target.entities.Track.filter({id},'-created_date',1);const rows=Array.isArray(page)?page:entityRows(page)||[];if(!rows.length)throw new Error('Song unavailable');}
       }
       const saved=await target.auth.updateMe(data);
-      if(changingMedia){
-        const confirmed=await target.auth.me();
-        if(mediaKeys.some(key=>(confirmed[key]||'')!==data[key]))throw Error('Background was not saved. Please retry.');
-      }
-      const publicAppearance=Object.fromEntries(['featured_track_id','profile_background_mode','profile_background_colors','profile_background_motion','profile_background_speed',...mediaKeys].filter(key=>data[key]!==undefined).map(key=>[key,data[key]]));
+      const publicAppearance=Object.fromEntries(['featured_track_id','profile_background_mode','profile_background_colors','profile_background_motion','profile_background_speed'].filter(key=>data[key]!==undefined).map(key=>[key,data[key]]));
       try{
         if(!Object.keys(publicAppearance).length)return saved;
         const uid=saved?.id || (await target.auth.me()).id;
         const page=await target.entities.PublicProfile.filter({user_id:uid},'-updated_date',1);
         const row=(Array.isArray(page)?page:entityRows(page)||[])[0];
         if(row)await target.entities.PublicProfile.update(row.id,publicAppearance);
-        else if(changingMedia)throw Error('Your public profile could not be found');
-        if(changingMedia){
-          const page=await target.entities.PublicProfile.filter({user_id:uid},'-updated_date',1);
-          const publicRow=(Array.isArray(page)?page:entityRows(page)||[])[0];
-          if(!publicRow||mediaKeys.some(key=>(publicRow[key]||'')!==data[key]))throw Error('Public background could not be confirmed');
-        }
-      }catch(error){if(changingMedia)throw error;}
+      }catch{}
       return saved;
     }
     const user=await target.auth.me();

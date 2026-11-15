@@ -37,7 +37,7 @@ export default async function handleRequest(req) {
         let media, source;
         try { media = new URL(originalUrl); source = new URL(gif?.url || ''); } catch { return null; }
         if (!/^[a-zA-Z0-9]{1,64}$/.test(id) || gif.rating !== 'g' || media.protocol !== 'https:' || !media.hostname.endsWith('.giphy.com') || source.protocol !== 'https:' || !(source.hostname === 'giphy.com' || source.hostname.endsWith('.giphy.com')) || !/^https:\/\/[^/]+\.giphy\.com\//i.test(preview)) return null;
-        return { id, title: String(gif.title || 'GIPHY GIF').slice(0,100), preview, still: gif.images?.fixed_width_still?.url || gif.images?.original_still?.url || "", gifUrl: originalUrl, creatorName: String(gif.username || '').slice(0,80), sourceUrl: source.href };
+        return { id, title: String(gif.title || 'GIPHY GIF').slice(0,100), preview, gifUrl: originalUrl, creatorName: String(gif.username || '').slice(0,80), sourceUrl: source.href };
       };
       if (body.action === 'giphy_search') {
         const items = (payload.data || []).map(cleanGif).filter(Boolean);
@@ -145,9 +145,6 @@ export default async function handleRequest(req) {
       profile_background_motion: u.profile_background_motion === 'still' ? 'still' : 'flow',
       profile_background_speed: typeof u.profile_background_speed === 'number' ? Math.max(.35,Math.min(1.6,u.profile_background_speed)) : 1,
       profile_background_colors: Array.isArray(u.profile_background_colors) ? u.profile_background_colors : [],
-      profile_background_url: u.profile_background_url || '',
-      profile_background_gif_url: u.profile_background_gif_url || '',
-      profile_background_video_url: u.profile_background_video_url || '',
       top_track_ids: Array.isArray(u.top_track_ids) ? u.top_track_ids : [],
       is_artist: u.role!=='admin' && u.creator_role==='artist',
       creator_role: u.role==='admin'?'listener':['artist','uploader'].includes(u.creator_role)?u.creator_role:'listener',
@@ -156,7 +153,7 @@ export default async function handleRequest(req) {
       created_date: u.created_date || '',
     }));
 
-    const publicFields=["username","display_name","full_name","avatar_url","avatar_preset","avatar_video_url","avatar_gif_url","banner_video_url","banner_gif_url","banner_url","banner_mobile_url","banner_use_default","top_tracks_label","bio","location","pronouns","website","instagram","twitter","soundcloud","status_message","featured_track_id","profile_background_mode","profile_background_colors","profile_background_motion","profile_background_speed","profile_background_url","profile_background_gif_url","profile_background_video_url","top_track_ids","is_artist","creator_role","is_public_admin","friends_family_badge"];
+    const publicFields=["username","display_name","full_name","avatar_url","avatar_preset","avatar_video_url","avatar_gif_url","banner_video_url","banner_gif_url","banner_url","banner_mobile_url","banner_use_default","top_tracks_label","bio","location","pronouns","website","instagram","twitter","soundcloud","status_message","featured_track_id","profile_background_mode","profile_background_colors","profile_background_motion","profile_background_speed","top_track_ids","is_artist","creator_role","is_public_admin","friends_family_badge"];
     const sourceById=new Map(rows.filter(Boolean).map(row=>[row.id,row]));
     await Promise.allSettled(users.map(async profile=>{
       const page=await base44.asServiceRole.entities.PublicProfile.filter({user_id:profile.id},'-updated_date',1);
