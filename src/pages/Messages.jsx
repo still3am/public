@@ -268,11 +268,13 @@ function MessagesPage({ user }) {
     setSavingBackground(true);
     setBackgroundError('');
     try {
-      const saved = await base44.auth.updateMe({ message_backgrounds: next });
-      if (saved?.id !== user.id || JSON.stringify(saved.message_backgrounds) !== JSON.stringify(next)) {
-        throw new Error('The background could not be confirmed. Please try again.');
-      }
-      setChatBackgrounds(next);
+      await base44.auth.updateMe({ message_backgrounds: next });
+      // Base44's update response may omit custom profile fields. A successful
+      // update is authoritative; refresh the user record when it is available.
+      const confirmed = await base44.auth.me().catch(() => null);
+      const stored = confirmed?.id === user.id && confirmed.message_backgrounds &&
+        typeof confirmed.message_backgrounds === 'object' ? confirmed.message_backgrounds : next;
+      setChatBackgrounds(stored);
     } catch (saveError) {
       setBackgroundError(saveError.message || 'Could not save this background. Please try again.');
     } finally {
@@ -291,11 +293,11 @@ function MessagesPage({ user }) {
       const result = await base44.integrations.Core.UploadFile({ file });
       if (!result?.file_url) throw new Error('Photo upload was not confirmed. Please retry.');
       const next = { ...chatBackgrounds, [id]: { type: 'photo', value: result.file_url } };
-      const saved = await base44.auth.updateMe({ message_backgrounds: next });
-      if (saved?.id !== user.id || JSON.stringify(saved.message_backgrounds) !== JSON.stringify(next)) {
-        throw new Error('The photo uploaded, but its background setting could not be confirmed. Please retry.');
-      }
-      setChatBackgrounds(next);
+      await base44.auth.updateMe({ message_backgrounds: next });
+      const confirmed = await base44.auth.me().catch(() => null);
+      const stored = confirmed?.id === user.id && confirmed.message_backgrounds &&
+        typeof confirmed.message_backgrounds === 'object' ? confirmed.message_backgrounds : next;
+      setChatBackgrounds(stored);
     } catch (uploadError) {
       setBackgroundError(uploadError.message || 'Could not upload this photo. Please try again.');
     } finally {
@@ -411,7 +413,7 @@ function MessagesPage({ user }) {
         </button>}
         </header>
         {thread && currentPeer && <Dialog open={chatDetailsOpen} onOpenChange={setChatDetailsOpen}>
-          <DialogContent className="public-chat-details" showClose={false}>
+          <DialogContent className="public-chat-details" data-tab={detailsTab} showClose={false}>
             <header className="public-chat-details-header">
               <button type="button" aria-label="Close conversation details" onClick={() => setChatDetailsOpen(false)}><ChevronLeft size={22} /></button>
               <span>Conversation</span>
