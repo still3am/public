@@ -157,3 +157,5 @@ All 99 automated suites passed, including repaired fixtures for current admin mo
 - Messages refresh recovery — Inbox and conversation reads now have separate retry states that clear on a successful refresh. Polls no longer stack when a read is slow, and the latest chat read wins after sending or switching threads. Lint and production build passed during the audit. Signed-in verification remains open.
 
 - Messages send retries — A send could save the message and then lose the response or fail while updating the inbox preview. The composer reuses the same request ID when retrying the same text, and the server checks for the saved message before creating another. Retries can repair the conversation preview. Lint and frontend build passed. Live network interruption and schema verification remain open.
+
+- Messages layout — Added conversation search, clearer active and keyboard focus states, larger tab targets, a multiline composer, and a New message action on the desktop empty screen. Lint and frontend build passed. Live device layout verification remains open.
