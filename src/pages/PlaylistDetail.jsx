@@ -32,6 +32,8 @@ export default function PlaylistDetail() {
   const [query, setQuery] = useState(''),[sort, setSort] = useState('custom'),[selected, setSelected] = useState(new Set());
   const [form, setForm] = useState({ name: '', description: '', is_public: true }),[coverFile, setCoverFile] = useState(null),[preview, setPreview] = useState('');
   const version = useRef(0),writeLock = useRef(false),imageMemo = useRef(null),baseline = useRef(null),savedRead = useRef(0),dragSnapshot=useRef(null);
+  const [loadedScope, setLoadedScope] = useState(null);
+  const savedScope = JSON.stringify([user?.id, id]);
   const load = useCallback(async () => {
     const v = ++version.current;setLoading(true);setError(false);
     try {
@@ -39,11 +41,10 @@ export default function PlaylistDetail() {
       for (let start = 0; start < ids.length; start += 200) list.push(...(await readAllPages((opts) => base44.entities.Track.filter({ id: { $in: ids.slice(start, start + 200) } }, { ...opts }))));
       if (v !== version.current) return;
       const order = new Map(ids.map((id, i) => [id, i]));list.sort((a, b) => order.get(a.id) - order.get(b.id));
-      setPlaylist(pl);setTracks(list);baseline.current = pl;setForm({ name: pl.name || '', description: pl.description || '', is_public: !!pl.is_public });
+      setPlaylist(pl);setLoadedScope(savedScope);setTracks(list);baseline.current = pl;setForm({ name: pl.name || '', description: pl.description || '', is_public: !!pl.is_public });
     } catch {if (v === version.current) setError(true);} finally {if (v === version.current) setLoading(false);}
-  }, [id]);
+  }, [id, savedScope]);
   useEffect(() => {setSelected(new Set());setManaging(false);setEditing(false);setShowAdd(false);setCoverFile(null);setPreview('');setQuery('');setSort('custom');setShowMore(false);setShowCollaborators(false);dragSnapshot.current=null;load();return () => {version.current++;};}, [load]);
-  const savedScope = JSON.stringify([user?.id, id]);
   const saved = savedState?.scope === savedScope && savedState.value;
   useEffect(() => {
     if (!user?.id) return;
@@ -133,6 +134,7 @@ export default function PlaylistDetail() {
   }
   async function toggleSaved() {
     if (!user) {nav('/login?returnTo=' + encodeURIComponent(window.location.pathname));return;}
+    if (writeLock.current) return;
     const request = ++savedRead.current;
     await write(async () => {
       const filter = { user_id: user.id, playlist_id: id };
@@ -158,7 +160,7 @@ export default function PlaylistDetail() {
     });
   }
   const playAll = (shuffle) => {if (!tracks.length) return;p.setShuffle(false);p.playTrackAt(shuffle ? shufflePlaylist(tracks) : tracks, 0);};
-  if (playlist && playlist.id !== id) return error ? <LoadError onRetry={load} /> : <div className="py-16 grid place-items-center"><Loader2 className="animate-spin" /></div>;
+  if (playlist && (playlist.id !== id || loadedScope !== savedScope)) return error ? <LoadError onRetry={load} /> : <div className="py-16 grid place-items-center"><Loader2 className="animate-spin" /></div>;
   if (error && !playlist) return <LoadError onRetry={load} />;
   if (loading && !playlist) return <div className="py-16 grid place-items-center"><Loader2 className="animate-spin" /></div>;
   if (!playlist) return <EmptyState title="Playlist unavailable" />;
