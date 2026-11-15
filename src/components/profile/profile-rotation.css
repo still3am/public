@@ -48,6 +48,12 @@
 @media(prefers-reduced-motion:reduce){.rotation-play,.rotation-play>span,.rotation-menu-button{transition:none}}
 
 .rotation-carousel .home-discovery{margin:0;padding:0;border:0}
+.public-app .profile-redesigned .profile-rotation-carousel-only :is(.rotation-carousel,.home-discovery,.home-discovery-stage,.home-discovery-controls,.home-discovery-covers){
+ background:transparent!important;
+ border:0;
+ box-shadow:none!important;
+ backdrop-filter:none;
+}
 .rotation-carousel .home-discovery-stage{--cover-size:min(240px,72vw);--cover-step:220px;height:340px}
 .rotation-carousel .rotation-caption{text-align:center}
 .rotation-carousel .rotation-caption strong{display:block;white-space:nowrap;text-overflow:ellipsis}
