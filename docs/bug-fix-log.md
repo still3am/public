@@ -201,3 +201,5 @@ All 99 automated suites passed, including repaired fixtures for current admin mo
 - Message reaction placement follow-up — Matched the Notes style with an unframed emoji overlapping the upper-left corner on both sides of the chat.
 
 - Messages drafts — Preserve unsent text separately for each conversation while Messages is open. A confirmed send clears only the matching draft, even after switching chats. Build passed.
+
+- Messages photo and video attachments — Added local previews, private uploads, and temporary attachment links after conversation access is checked. Build and backend syntax checks passed. Live sending and playback remain unverified.
