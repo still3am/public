@@ -107,7 +107,7 @@
 .public-message-lyric-card{width:min(330px,100%);overflow:hidden;border-radius:20px;color:white;border:1px solid #ffffff26}
 .public-message-lyric-lines{padding:16px;font-size:clamp(16px,4vw,22px);font-weight:750;line-height:1.35;overflow-wrap:anywhere}
 .public-message-lyric-lines>span{display:block;padding-top:6px;text-align:right;font-size:12px;font-weight:500;opacity:.85}
-.public-message-lyric-card .public-message-song{background:#0004;border:0;border-top:1px solid #ffffff25;border-radius:0;color:inherit;width:100%;min-width:0}
+.public-message-lyric-card .public-message-song{background:rgba(12,12,15,.88);border:0;border-top:1px solid #ffffff25;border-radius:0;color:#fff;width:100%;min-width:0;backdrop-filter:blur(12px)}
 .public-message-lyric-card :is(.public-message-song-artist,.public-message-song-brand){color:#ffffffe0}
 .public-message-lyric-draft{margin:6px 16px 0;padding:8px 12px;border-radius:12px;background:hsl(var(--muted));white-space:pre-line;overflow-wrap:anywhere;font-size:13px}
 
