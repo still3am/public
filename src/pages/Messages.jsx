@@ -115,6 +115,10 @@ function MessagesPage({user}) {
   const [drafts,setDrafts]=useState(()=>new Map());
   const draft=drafts.get(id)||'';
   const [reply,setReply]=useState(null);
+  const [peerTyping,setPeerTyping]=useState(false);
+  const typingTimer=useRef(null);
+  const typingStopTimer=useRef(null);
+  const typingPollLock=useRef(false);
   const draftInput=useRef(null);
   const [inboxQuery,setInboxQuery]=useState('');
   const player=usePlayer();
@@ -197,6 +201,28 @@ function MessagesPage({user}) {
     const timer=setInterval(refresh,8000);
     return ()=>{readVersion.current++;clearInterval(timer);};
   },[id,loadThread]);
+  function noteTyping(value){
+    if(!id)return;
+    clearTimeout(typingTimer.current);
+    clearTimeout(typingStopTimer.current);
+    typingTimer.current=setTimeout(()=>void messages('typing',{id,typing:Boolean(value.trim())}).catch(()=>{}),350);
+    if(value.trim())typingStopTimer.current=setTimeout(()=>void messages('typing',{id,typing:false}).catch(()=>{}),2200);
+  }
+  useEffect(()=>{
+    setPeerTyping(false);
+    if(!id)return;
+    let active=true;
+    const poll=async()=>{
+      if(typingPollLock.current)return;
+      typingPollLock.current=true;
+      try{const result=await messages('typing_status',{id});if(active)setPeerTyping(result.typing===true);}
+      catch{if(active)setPeerTyping(false);}
+      finally{typingPollLock.current=false;}
+    };
+    void poll();
+    const timer=setInterval(poll,1800);
+    return()=>{active=false;clearInterval(timer);clearTimeout(typingTimer.current);clearTimeout(typingStopTimer.current);};
+  },[id]);
   async function perform(work) {
     if(operation.current)return;
     operation.current=true;
@@ -442,6 +468,7 @@ function MessagesPage({user}) {
             const requestId=existing?.text===text&&existing?.trackId===trackId&&existing?.replyId===replyId&&existing?.lyricKey===lyricKey&&existing?.gifId===gif&&existing?.mediaUri===media?.uri?existing.requestId:globalThis.crypto?.randomUUID?.();
             pendingSends.current.set(id,{text,trackId,replyId,lyricKey,gifId:gif,mediaUri:media?.uri,requestId});
             await messages('send',{id,text,trackId,replyId,requestId,lyrics,gifId:gif,media});
+            clearTimeout(typingTimer.current);clearTimeout(typingStopTimer.current);void messages('typing',{id,typing:false}).catch(()=>{});
             pendingSends.current.delete(id);
             setMediaDraft(previous=>previous===selectedMedia?null:previous);
             setDrafts(previous=>{
@@ -482,8 +509,10 @@ function MessagesPage({user}) {
             <div className="public-message-input-pill" data-has-gif={Boolean(gif)} data-has-lyrics={Boolean(attachment?.lyrics)} data-has-song={Boolean(attachment&&!attachment.lyrics)}>
             {attachment&&!attachment.lyrics&&<SongDraftPreview track={attachment} disabled={busy} onRemove={()=>{setAttachment(null);setLyricShare(null);}}/>}
             {gif&&<div className="public-message-gif-draft"><MomentGif id={gif} label="Selected GIF"/><button type="button" aria-label="Remove GIF" disabled={busy} onClick={()=>setGif("")}><X size={15}/></button></div>}
+            {peerTyping&&<div className="public-message-typing" role="status" aria-live="polite"><span className="public-message-typing-dots" aria-hidden="true"><i/><i/><i/></span><span>{peerName(thread.chat)} is typing</span></div>}
             <textarea ref={draftInput} rows={1} aria-label={reply?"Reply":"Message"} placeholder={attachment&&!attachment.lyrics?"Add a comment or send":gif?"Add a comment or send":reply?"Reply":pending?'Write a message request…':'Write a message…'} className="min-w-0 flex-1 rounded-lg border bg-background p-2" value={draft} maxLength={2000} onChange={event=>{
               const value=event.target.value;
+              noteTyping(value);
               setDrafts(previous=>{
                 const next=new Map(previous);
                 if(value)next.set(id,value);
