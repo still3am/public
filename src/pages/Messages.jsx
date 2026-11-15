@@ -52,6 +52,7 @@ function MessagesPage({user}) {
   const [inbox,setInbox]=useState(null),[loadedThread,setThread]=useState(null),[requests,setRequests]=useState(false);
   const thread=loadedThread?.chat.id===id?loadedThread:null;
   const [menu,setMenu]=useState(null);
+  const [savingReaction,setSavingReaction]=useState(null);
   const [menuPanel,setMenuPanel]=useState(null);
   function openMessageMenu(message,group){
     const bubble=group.querySelector('.public-message-bubble,.public-message-song')||group;
@@ -309,10 +310,7 @@ function MessagesPage({user}) {
               {message.track_id&&<SharedSong message={message} playing={player.currentTrack?.id===message.track_id&&player.isPlaying&&(!songData(message)?.lyrics||lyricPlayback.current===message.id)} onPlay={()=>void perform(()=>playSharedSong(message))} busy={busy}/>}
               {messageGifId(message)&&<MomentGif id={messageGifId(message)} label="Shared GIF"/>}
               {message.text&&<p className="public-message-bubble" data-own={message.sender_id===user?.id}>{message.text}</p>}
-              {[message.sender_reaction,message.recipient_reaction].some(emoji=>REACTIONS.includes(emoji))&&
-                <span className="public-message-reaction-badge" aria-label="Message reactions">
-                  {[message.sender_reaction,message.recipient_reaction].filter(emoji=>REACTIONS.includes(emoji)).join(' ')}
-                </span>}
+              <MessageReactions message={message} userId={user?.id}/>
               <button type="button" className="public-message-reply-action" aria-label="Message options" onClick={event=>openMessageMenu(message,event.currentTarget.parentElement)}><MoreHorizontal size={17}/></button>
               {messageTime(message.created_date)&&<time dateTime={message.created_date}>{messageTime(message.created_date)}</time>}
             </div>)}
@@ -322,11 +320,17 @@ function MessagesPage({user}) {
               data-own={activeMenu.sender_id===user?.id}>
               <DialogTitle className="sr-only">Message options</DialogTitle>
               <DialogDescription className="sr-only">React or choose an action for this message.</DialogDescription>
-              <div className="public-message-reactions" role="group" aria-label="Emoji reactions">
+              <div className="public-message-reactions" role="group" aria-label="Emoji reactions" aria-busy={savingReaction!==null}>
                 {REACTIONS.map((emoji,index)=>{
                   const selected=(activeMenu.sender_id===user?.id?activeMenu.sender_reaction:activeMenu.recipient_reaction)===emoji;
-                  return <button key={emoji} type="button" aria-label={REACTION_LABELS[index]} aria-pressed={selected} disabled={busy} onClick={()=>void perform(async()=>{
-                    const saved=await messages('react',{id,messageId:activeMenu.id,emoji:selected?'':emoji});
+                  return <button key={emoji} type="button" aria-label={REACTION_LABELS[index]} aria-pressed={selected} data-saving={savingReaction===emoji} disabled={busy} onClick={()=>void perform(async()=>{
+                    setSavingReaction(emoji);
+                    let saved;
+                    try {
+                      saved=await messages('react',{id,messageId:activeMenu.id,emoji:selected?'':emoji});
+                    } finally {
+                      setSavingReaction(null);
+                    }
                     if(saved.messageId!==activeMenu.id)throw Error('Reaction could not be confirmed. Try again.');
                     if(currentChat.current===id){
                       readVersion.current++;
@@ -338,6 +342,7 @@ function MessagesPage({user}) {
                   })}>{emoji}</button>;
                 })}
               </div>
+              {savingReaction&&<p role="status" className="public-message-reaction-status">Saving reaction…</p>}
               {error&&<p role="alert" className="rounded-xl border bg-card p-3 text-sm">{error}</p>}
               <div className="public-message-menu-preview">{activeMenu.text || (activeMenu.track_id?'Shared a song':messageGifId(activeMenu)?'Sent a GIF':'Message')}</div>
               <div className="public-message-menu-items">
@@ -480,4 +485,20 @@ function ReplyQuote({preview}){
 
 function messageGifId(message){
   return message.media_type==="image"?message.media_url?.match(/^https:\/\/media\.giphy\.com\/media\/([a-zA-Z0-9]{1,64})\/giphy\.gif$/)?.[1]:null;
+}
+
+function MessageReactions({message,userId}){
+  const own=message.sender_id===userId?message.sender_reaction:message.recipient_reaction;
+  const reactions=[message.sender_reaction,message.recipient_reaction].filter(emoji=>REACTIONS.includes(emoji));
+  if(!reactions.length)return null;
+  return <div className="public-message-reaction-group" role="group" aria-label="Message reactions">
+    {[...new Set(reactions)].map(emoji=>{
+      const count=reactions.filter(value=>value===emoji).length;
+      const label=REACTION_LABELS[REACTIONS.indexOf(emoji)];
+      return <span className="public-message-reaction-badge" data-mine={own===emoji} key={emoji} role="img"
+        aria-label={label+', '+count+(own===emoji?', including you':'')}>
+        <span aria-hidden="true">{emoji}{count>1&&<small>{count}</small>}</span>
+      </span>;
+    })}
+  </div>;
 }

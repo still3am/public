@@ -160,3 +160,12 @@
 .public-message-gif-button>span{position:absolute;inset:auto 2px 3px auto;padding:2px 3px;border-radius:5px;background:hsl(var(--background));color:hsl(var(--foreground));font-size:8px;font-weight:800;line-height:1;letter-spacing:.02em}
 .public-message-gif-draft .moment-comment-gif{max-height:76px}
 .public-message-group .moment-comment-gif{width:auto;max-width:min(240px,100%);max-height:220px;border-radius:14px}
+
+.public-message-reaction-group{display:flex;gap:4px;align-self:flex-start;margin:4px 0 0 4px}
+.public-message-group[data-own=true]>.public-message-reaction-group{align-self:flex-end;margin-inline:0 4px}
+.public-message-reaction-group .public-message-reaction-badge{margin:0;line-height:1.25;padding:3px 7px}
+.public-message-reaction-badge[data-mine=true]{border-color:hsl(var(--foreground)/.45);background:hsl(var(--accent))}
+.public-message-reaction-badge small{margin-inline-start:4px;font-size:10px;font-weight:700}
+.public-message-context .public-message-reactions button[aria-pressed=true]{box-shadow:inset 0 0 0 1px hsl(var(--foreground)/.45)}
+.public-message-context .public-message-reactions button[data-saving=true]{opacity:.55}
+.public-message-reaction-status{justify-self:start;padding:4px 10px;border-radius:999px;background:hsl(var(--popover));color:hsl(var(--popover-foreground));font-size:12px}

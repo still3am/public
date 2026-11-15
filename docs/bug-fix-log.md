@@ -191,3 +191,5 @@ All 99 automated suites passed, including repaired fixtures for current admin mo
 - Message reaction write follow-up — Switched to the scoped partial update used by message read receipts and re-read the saved value. Concurrent changes retry against the latest record. Live persistence remains unverified.
 
 - Message reaction crash — The request parser omitted emoji, so the handler threw before saving. Read emoji from the request payload. Exercised add, second participant, removal, and invalid requests against the real handler with a stubbed database.
+
+- Message reaction feedback — Distinguish your reaction, group matching emoji with a count, and show when a selection is saving. Production build passed.
