@@ -195,3 +195,5 @@ All 99 automated suites passed, including repaired fixtures for current admin mo
 - Message reaction feedback — Distinguish your reaction, group matching emoji with a count, and show when a selection is saving. Production build passed.
 
 - Messages — Removed the three-dot buttons beneath messages. Touch hold, right-click, and keyboard context-menu access remain available.
+
+- Message reaction placement — Removed the circular chip and placed emoji at the top corner of each message.
