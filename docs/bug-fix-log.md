@@ -183,3 +183,5 @@ All 99 automated suites passed, including repaired fixtures for current admin mo
 - Discover People mobile photo centering — Anchor the image and badge wrapper to equal insets inside the gradient ring, independent of media dimensions. Live iPad verification remains open.
 
 - Discover People mobile badge — Moved the checkmark from inside the photo to overlap the lower-right ring. The ring and its inset no longer clip the badge.
+
+- Profile Playlists — Removed the outer carousel background and border in light and dark themes.
