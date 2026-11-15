@@ -137,3 +137,5 @@ All 99 test suites, lint, and production build passed. Signed-in mobile and desk
 - Moments author names — Fixed in code. The author lookup preferred the account name over the public profile name. Moments now uses the public display name, then the public username or full name. Live Ads verification remains open.
 
 - Profile picture badges — Reused the Moments comment badge across shared avatars. Search, discovery, and onboarding now pass public badge fields, and profile comments load visible authors in batches. The full profile header keeps its existing badge. Production build passed. Live layout verification remains open.
+
+- Profile comments section — Removed the conversation panel from the main profile page. The profile media viewer still opens its own comment thread. Production build and diff checks passed.
