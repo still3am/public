@@ -169,3 +169,5 @@ All 99 automated suites passed, including repaired fixtures for current admin mo
 - Messages emoji reactions — Added a reaction strip, selected-message preview, and separate action panel. Each participant can set, replace, or remove their own reaction. Build passed. Live reaction sync and layout remain unverified.
 
 - Messages menu clipping — Position the reaction strip and actions using the measured panel and visible viewport, including resize and zoom. Production build passed. Live iPad check pending.
+
+- Messages narrow layout — Position the reaction menu after its portal mounts and constrain the emoji grid, chat, and composer to their available space. Production build passed. Live iPad verification remains open.

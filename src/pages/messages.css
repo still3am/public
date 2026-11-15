@@ -137,3 +137,20 @@
 
 .public-message-context{box-sizing:border-box;max-width:none;overflow-x:hidden;overscroll-behavior:contain}
 .public-message-context .public-message-reactions button{padding:0;font-size:clamp(16px,5vw,23px)}
+
+/* The dialog portal mounts separately from the chat. Show it once positioned. */
+.public-message-context{visibility:hidden;grid-template-columns:minmax(0,1fr);min-width:0}
+.public-message-context .public-message-reactions{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));min-width:0;width:100%}
+.public-message-context .public-message-menu-items{max-width:100%;min-width:0}
+.public-messages-layout{grid-template-rows:minmax(0,1fr);min-width:0}
+.public-messages-inbox{min-width:0;overscroll-behavior:contain}
+.public-messages-thread{overflow:hidden}
+.public-messages-compose{flex:none;min-width:0}
+.public-messages-compose textarea{width:0}
+.public-message-lyric-draft,.public-message-reply-draft,.public-message-attachment{max-height:20dvh;overflow:auto}
+@media(max-width:767px){
+  .public-messages-compose{gap:6px;padding-inline:10px}
+  .public-messages-thread-header{padding-inline:56px}
+  .public-message-lyric-lines{padding:12px}
+  .public-message-song-link{grid-template-columns:clamp(28px,11vw,44px) minmax(0,1fr);gap:7px}
+}

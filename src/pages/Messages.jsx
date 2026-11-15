@@ -50,7 +50,7 @@ function MessagesPage({user}) {
   const [inbox,setInbox]=useState(null),[loadedThread,setThread]=useState(null),[requests,setRequests]=useState(false);
   const thread=loadedThread?.chat.id===id?loadedThread:null;
   const [menu,setMenu]=useState(null);
-  const menuPanel=useRef(null);
+  const [menuPanel,setMenuPanel]=useState(null);
   function openMessageMenu(message,group){
     const bubble=group.querySelector('.public-message-bubble,.public-message-song')||group;
     const anchor=bubble;
@@ -64,7 +64,7 @@ function MessagesPage({user}) {
   useEffect(()=>()=>cancelHold(),[id]);
   const activeMenu=menu?.chatId===id?thread?.messages.find(message=>message.id===menu.message.id):null;
   useLayoutEffect(()=>{
-    const panel=menuPanel.current;
+    const panel=menuPanel;
     if(!activeMenu||!panel||!menu?.anchor)return;
     function position(){
       const viewport=window.visualViewport;
@@ -81,6 +81,7 @@ function MessagesPage({user}) {
       panel.style.left=clamp(own?bounds.right-box.width:bounds.left,x+inset,x+width-box.width-inset)+'px';
       const reactionHeight=panel.querySelector('.public-message-reactions')?.offsetHeight||52;
       panel.style.top=clamp(bounds.top-reactionHeight-8,y+inset,y+height-box.height-inset)+'px';
+      panel.style.visibility='visible';
     }
     position();
     const observer=typeof ResizeObserver==='undefined'?null:new ResizeObserver(position);
@@ -94,7 +95,7 @@ function MessagesPage({user}) {
       window.visualViewport?.removeEventListener('resize',position);
       window.visualViewport?.removeEventListener('scroll',position);
     };
-  },[menu,activeMenu?.id,user?.id]);
+  },[menu,menuPanel,activeMenu?.id,user?.id]);
   const currentChat=useRef(id);
   currentChat.current=id;
   const operation=useRef(false);
@@ -312,7 +313,7 @@ function MessagesPage({user}) {
             </div>)}
           </div>
           {activeMenu&&<Dialog open onOpenChange={open=>{if(!open)setMenu(null);}}>
-            <DialogContent ref={menuPanel} showClose={false} className="public-message-actions public-message-context"
+            <DialogContent ref={setMenuPanel} showClose={false} className="public-message-actions public-message-context"
               data-own={activeMenu.sender_id===user?.id}>
               <DialogTitle className="sr-only">Message options</DialogTitle>
               <DialogDescription className="sr-only">React or choose an action for this message.</DialogDescription>
