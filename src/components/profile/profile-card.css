@@ -12,6 +12,12 @@ html.dark .public-app .profile-redesigned .profile-identity{
  --profile-hero-surface:#191c22;
  background:#191c22!important;border-color:#ffffff20;box-shadow:0 18px 48px -24px #0009,inset 0 1px 0 #ffffff12!important;
 }
+/* Leave the controls above the fade and blend the card into the profile backdrop. */
+.public-app .profile-redesigned:not(.profile-is-editing) .profile-identity{
+ padding-bottom:24px;
+ -webkit-mask-image:linear-gradient(to bottom,#000 calc(100% - 44px),transparent 100%);
+ mask-image:linear-gradient(to bottom,#000 calc(100% - 44px),transparent 100%);
+}
 .public-app .profile-redesigned .profile-cover-stage{height:220px;background-color:#242730}
 .public-app .profile-redesigned .profile-cover-fade{background:linear-gradient(180deg,transparent 65%,rgb(0 0 0/.10))}
 .public-app .profile-redesigned .profile-details{padding:0 32px 30px!important}
