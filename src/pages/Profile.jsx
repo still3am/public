@@ -199,6 +199,7 @@ export default function Profile({ ownProfileTab = false }) {
         return;
       }
       request === loadVersion.current && setProfile(prof);
+      if(!isOwn && prof.profile_private === true)return;
       request === loadVersion.current && setForm(formFromProfile(prof));
       // Owners see all their own tracks (pending/private/approved); others only see approved ones.
       const trackFilter = isOwn ?
@@ -434,6 +435,12 @@ export default function Profile({ ownProfileTab = false }) {
       </div>);
 
   if (!profile) return <EmptyState title="User not found" />;
+  if (!isOwn && profile.profile_private === true) return <section className="mx-auto max-w-md rounded-2xl border bg-card p-8 text-center">
+    {profile.avatar_url && <img src={profile.avatar_url} alt="" className="mx-auto mb-3 h-16 w-16 rounded-full object-cover" />}
+    <h1 className="text-xl font-bold">{profile.display_name}</h1>
+    {profile.username && <p className="text-sm text-muted-foreground">@{profile.username}</p>}
+    <p className="mt-5 text-sm">This profile is private.</p>
+  </section>;
 
   const isAdminProfile = isOwn ? me?.role === "admin" : profile.is_public_admin === true;
   const displayName = profile.display_name || profile.full_name || "Unnamed";

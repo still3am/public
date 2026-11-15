@@ -36,6 +36,28 @@ export default function SettingsSheet({ onClose, onDeleteAccount }) {
   const artist=user?.creator_role==="artist";
   const [saving] = useState("");const [unblocking,setUnblocking]=useState(""),[loggingOut,setLoggingOut]=useState(false);
   const lock=useRef(false),logoutLock=useRef(false),blockedLock=useRef(false);
+  const [privateProfile,setPrivateProfile]=useState(null);
+  const [privacyBusy,setPrivacyBusy]=useState(false),[privacyError,setPrivacyError]=useState("");
+  async function savePrivacy(enabled){
+    if(lock.current||logoutLock.current)return;
+    lock.current=true;setPrivacyBusy(true);setPrivacyError("");
+    try{
+      const result=await base44.functions.invoke("usersByIds",{action:"profile_privacy",enabled});
+      if(result.data?.enabled!==enabled)throw Error("Privacy update failed.");
+      setPrivateProfile(enabled);
+      window.dispatchEvent(new Event("profiles:changed"));
+    }catch{setPrivacyError("Could not save privacy. Try again.");}
+    finally{lock.current=false;setPrivacyBusy(false);}
+  }
+  useEffect(()=>{
+    let active=true;
+    base44.functions.invoke("usersByIds",{action:"profile_privacy"}).then(result=>{
+      if(typeof result.data?.enabled!=="boolean")throw Error("Privacy unavailable.");
+      if(active)setPrivateProfile(result.data.enabled);
+    }).catch(()=>{if(active)setPrivacyError("Could not load privacy. Reopen Settings to retry.");});
+    return()=>{active=false;};
+  },[user?.id]);
+
   useEffect(()=>{const previous=document.body.style.overflow;document.body.style.overflow="hidden";return()=>{document.body.style.overflow=previous;};},[]);
   async function logout() {
     if (logoutLock.current || lock.current || blockedLock.current) return;
@@ -75,6 +97,10 @@ export default function SettingsSheet({ onClose, onDeleteAccount }) {
     </SettingGroup>}
     {user?.role==="admin"&&<SettingGroup title="Preview lab"><SettingRow icon={Sparkles} title="Community preview" description="Explore five styled profile concepts" to="/community-preview" onClick={onClose}/></SettingGroup>}
     <SettingGroup title="Help & privacy">
+     <SettingRow icon={Shield} title="Private profile" description="Only you can see your full profile.">
+      {privateProfile===null ? <span className="text-xs">{privacyError?"Unavailable":"Loading…"}</span> : <SettingSwitch label="Private profile" checked={privateProfile} onChange={savePrivacy} busy={privacyBusy}/>}
+     </SettingRow>
+     {privacyError&&<p role="status" className="px-4 py-2 text-xs">{privacyError}</p>}
      <SettingRow icon={Headphones} title="Support & copyright" description="Get help or send a copyright request" to="/support" onClick={onClose} />
      <SettingRow icon={Lightbulb} title="Ideas & suggestions" to="/suggestions" onClick={onClose} />
      <SettingRow icon={Shield} title="Privacy" to="/privacy" onClick={onClose} />

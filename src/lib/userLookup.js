@@ -29,13 +29,7 @@ function fetchChunk(ids, fresh = false) {
       const res=await base44.functions.invoke("usersByIds",{ids:missing});
       if(!Array.isArray(res?.data?.users))throw Error("Profile lookup unavailable");
       return [...profiles,...res.data.users];
-    }catch(primary){
-      try{
-        const res=await base44.functions.invoke("securityGateway",{entity:"User",action:"lookupPublic",args:[missing]});
-        if(!Array.isArray(res?.data?.result))throw primary;
-        return [...profiles,...res.data.result];
-      }catch{if(profiles.length)return profiles;throw primary;}
-    }
+    }catch(error){if(profiles.length)return profiles;throw error;}
   })().finally(()=>{if(inflight.get(key)===req)inflight.delete(key);});
   inflight.set(key, req);
   return req;

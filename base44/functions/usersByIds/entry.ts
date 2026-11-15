@@ -11,6 +11,17 @@ export default async function handleRequest(req) {
     if(user.is_blocked || user.disabled) return Response.json({error:'Account suspended'},{status:403});
 
     const body = await req.json().catch(() => ({}));
+    if (body.action === "profile_privacy") {
+      const profiles = base44.asServiceRole.entities.PublicProfile;
+      const page = await profiles.filter({user_id:user.id,visible:true}, "-updated_date", 1);
+      const own = (Array.isArray(page) ? page : page?.items || [])[0];
+      if (!own) return Response.json({error:"Your profile is unavailable."},{status:404});
+      if (body.enabled === undefined) return Response.json({enabled:own.profile_private === true});
+      if (typeof body.enabled !== "boolean") return Response.json({error:"Invalid privacy setting."},{status:400});
+      await profiles.updateMany({user_id:user.id}, {$set:{profile_private:body.enabled}});
+      return Response.json({enabled:body.enabled});
+    }
+
     if (body.action === 'giphy_search' || body.action === 'add_giphy_to_marketplace') {
       const key = Deno.env.get('GIPHY_API_KEY');
       if (!key) return Response.json({ error: 'GIPHY search is not configured yet.' }, { status: 503 });
@@ -155,9 +166,13 @@ export default async function handleRequest(req) {
 
     const publicFields=["username","display_name","full_name","avatar_url","avatar_preset","avatar_video_url","avatar_gif_url","banner_video_url","banner_gif_url","banner_url","banner_mobile_url","banner_use_default","top_tracks_label","bio","location","pronouns","website","instagram","twitter","soundcloud","status_message","featured_track_id","profile_background_mode","profile_background_colors","profile_background_motion","profile_background_speed","top_track_ids","is_artist","creator_role","is_public_admin","friends_family_badge"];
     const sourceById=new Map(rows.filter(Boolean).map(row=>[row.id,row]));
-    await Promise.allSettled(users.map(async profile=>{
+    const resolved = await Promise.all(users.map(async profile=>{
       const page=await base44.asServiceRole.entities.PublicProfile.filter({user_id:profile.id},'-updated_date',1);
       const existing=Array.isArray(page)?page[0]:page?.items?.[0];
+      if(existing?.profile_private === true && profile.id !== user.id){
+        const {id,username,display_name,avatar_url}=profile;
+        return {id,username,display_name,avatar_url,profile_private:true};
+      }
       const source=sourceById.get(profile.id)||{};
       // Some built-in User records omit animation fields entirely. Preserve the
       // saved public-profile media when its poster still matches; an explicit
@@ -170,8 +185,9 @@ export default async function handleRequest(req) {
       const data={...Object.fromEntries(publicFields.filter(key=>profile[key]!==undefined).map(key=>[key,profile[key]])),user_id:profile.id,joined_at:profile.created_date||"",visible:true};
       if(existing)await base44.asServiceRole.entities.PublicProfile.update(existing.id,data);
       else await base44.asServiceRole.entities.PublicProfile.create(data);
+      return profile;
     }));
-    return Response.json({ users });
+    return Response.json({users:resolved});
   } catch (error) {
     return Response.json({ error: error?.message || 'Server error' }, { status: 500 });
   }
