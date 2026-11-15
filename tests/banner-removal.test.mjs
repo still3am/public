@@ -27,7 +27,7 @@ globalThis.__state=initial=>{const i=cursor++;return [states[i]??initial,value=>
 globalThis.__role="user";globalThis.__banners=BANNER_PRESETS;
 globalThis.__remove=async()=>{pendingCalls++;return removalSuccess;};
 const source=fs.readFileSync("src/components/profile/BannerGallery.jsx","utf8").replace(/^import[^;]+;/gm,"");
-const stub='const React=globalThis.__React,useState=globalThis.__state,useAuth=()=>({user:{role:globalThis.__role}}),useBannerGallery=()=>({banners:globalThis.__banners,loading:false,error:"",deleting:"",remove:globalThis.__remove}),X="x",Check="check",ProfileMedia="media",Dialog="dialog",DialogContent="content",DialogHeader="header",DialogTitle="h1",DialogDescription="p";';
+const stub='const GiphyPicker=()=>null,GalleryContribute=()=>null;const React=globalThis.__React,useState=globalThis.__state,useAuth=()=>({user:{role:globalThis.__role}}),useBannerGallery=()=>({banners:globalThis.__banners,loading:false,error:"",deleting:"",remove:globalThis.__remove}),X="x",Check="check",ProfileMedia="media",Dialog="dialog",DialogContent="content",DialogHeader="header",DialogTitle="h1",DialogDescription="p";';
 const code=ts.transpileModule(stub+source,{compilerOptions:{jsx:ts.JsxEmit.React,target:ts.ScriptTarget.ES2022,module:ts.ModuleKind.ESNext}}).outputText;
 const Gallery=(await import("data:text/javascript;base64,"+Buffer.from(code).toString("base64"))).default;
 const render=(props={})=>{cursor=0;return Gallery({onClose(){},onSelect(){},...props});};

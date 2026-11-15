@@ -7,7 +7,7 @@ globalThis.__React=React;globalThis.__presets=AVATAR_PRESETS;
 let selection="",saved=null,closed=0,uploads=0;
 let category="pfp";
 globalThis.__state=initial=>initial===null?[null,()=>{}]:initial==="pfp"||initial==="gifs"?[category,value=>{category=value;}]:[selection||initial,value=>{selection=value;}];
-const stub='const GalleryContribute=()=>null;const React=globalThis.__React,useState=globalThis.__state,AVATAR_PRESETS=globalThis.__presets,useAuth=()=>({user:{role:"user"}}),useAvatarGallery=()=>({avatars:AVATAR_PRESETS,loading:false,error:"",deleting:"",remove:async()=>true}),Avatar="avatar",Upload="upload",Check="check",Dialog="dialog",DialogContent="content",DialogHeader="header",DialogTitle="h1",DialogDescription="p";';
+const stub='const GiphyPicker=()=>null;const GalleryContribute=()=>null;const React=globalThis.__React,useState=globalThis.__state,AVATAR_PRESETS=globalThis.__presets,useAuth=()=>({user:{role:"user"}}),useAvatarGallery=()=>({avatars:AVATAR_PRESETS,loading:false,error:"",deleting:"",remove:async()=>true}),Avatar="avatar",Upload="upload",Check="check",Dialog="dialog",DialogContent="content",DialogHeader="header",DialogTitle="h1",DialogDescription="p";';
 const source=fs.readFileSync("src/components/profile/AvatarPicker.jsx","utf8").replace(/^import[^;]+;/gm,"");
 const code=ts.transpileModule(stub+source,{compilerOptions:{jsx:ts.JsxEmit.React,target:ts.ScriptTarget.ES2022,module:ts.ModuleKind.ESNext}}).outputText;
 const Picker=(await import("data:text/javascript;base64,"+Buffer.from(code).toString("base64"))).default;
