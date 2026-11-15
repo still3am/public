@@ -2,7 +2,7 @@ import {useCallback,useEffect,useRef,useState} from 'react';
 import {Link,useLocation,useSearchParams} from 'react-router-dom';
 import {base44} from '@/api/base44Client';
 import {useAuth} from '@/lib/AuthContext';
-import {ArrowUp,ChevronLeft,ChevronRight,MessageCircle,Music2,Pause,Play,Reply,SquarePen,X} from 'lucide-react';
+import {ArrowUp,ChevronLeft,ChevronRight,MessageCircle,Music2,Pause,Play,Reply,Search,SquarePen,X} from 'lucide-react';
 import TrackPickerSheet from '@/components/profile/TrackPickerSheet';
 import {usePlayer} from '@/context/PlayerContext';
 import Avatar from '@/components/Avatar';

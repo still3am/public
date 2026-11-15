@@ -161,3 +161,5 @@ All 99 automated suites passed, including repaired fixtures for current admin mo
 - Messages layout — Added conversation search, clearer active and keyboard focus states, larger tab targets, a multiline composer, and a New message action on the desktop empty screen. Lint and frontend build passed. Live device layout verification remains open.
 
 - Messages replies and song playback — Fixed in code. Reply now focuses the attached composer ref. Desktop Enter submits song-only messages, and playback accepts published tracks served through private audio storage. Lint and frontend build passed. Live playback and touch checks remain open.
+
+- Messages render crash — The inbox search icon was referenced without an import after the song and reply controls were added. Restored the import so an inbox with conversations can render. Lint and build passed.
