@@ -137,3 +137,15 @@
     object-position: center;
   }
 }
+
+@media (max-width: 767px) {
+  .public-app .profile-redesigned .profile-people-track .profile-person-gradient-ring,
+  .public-app .profile-redesigned .profile-people-track .profile-person-gradient-ring > .profile-person-portrait-inner {
+    overflow: visible;
+  }
+  .public-app .profile-redesigned .profile-people-track .profile-person-portrait-inner .public-badged-avatar > .moment-compact-badge {
+    inset: auto 2% 2% auto;
+    background: hsl(var(--background));
+    box-shadow: 0 0 0 2px hsl(var(--background));
+  }
+}

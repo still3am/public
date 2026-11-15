@@ -181,3 +181,5 @@ All 99 automated suites passed, including repaired fixtures for current admin mo
 - Discover People mobile card follow-up — Removed the light and dark mobile overrides that still forced an opaque carousel background. Production build passed. Windowed iPad navigation positioning remains unverified.
 
 - Discover People mobile photo centering — Anchor the image and badge wrapper to equal insets inside the gradient ring, independent of media dimensions. Live iPad verification remains open.
+
+- Discover People mobile badge — Moved the checkmark from inside the photo to overlap the lower-right ring. The ring and its inset no longer clip the badge.
