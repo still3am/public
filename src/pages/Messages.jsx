@@ -15,11 +15,21 @@ async function messages(action, data = {}) {
   }
 }
 
+function messageTime(value) {
+  if (!value) return "";
+  const date = new Date(value);
+  if (!Number.isFinite(date.getTime())) return "";
+  const today = date.toDateString() === new Date().toDateString();
+  return new Intl.DateTimeFormat(undefined, today
+    ? {hour:"numeric",minute:"2-digit"}
+    : {month:"short",day:"numeric",hour:"numeric",minute:"2-digit"}).format(date);
+}
+
 export default function Messages() {
   const {user}=useAuth();
   const [params,setParams]=useSearchParams();
   const id=params.get('chat');
-  const [inbox,setInbox]=useState([]),[thread,setThread]=useState(null),[requests,setRequests]=useState(false);
+  const [inbox,setInbox]=useState(null),[thread,setThread]=useState(null),[requests,setRequests]=useState(false);
   const to=params.get('to'),recipient=params.get('recipient');
   const recipientName=useLocation().state?.recipientName;
   const [draft,setDraft]=useState('');
@@ -36,7 +46,7 @@ export default function Messages() {
     setThread(null);setDraft('');setError('');
     if(!id)return;
     let active=true;
-    const refresh=()=>messages('read',{id}).then(data=>{if(active){setThread(data);setInbox(previous=>previous.map(chat=>chat.id===id?{...chat,unread:false}:chat));}}).catch(error=>{if(active)setError(error.message);});
+    const refresh=()=>messages('read',{id}).then(data=>{if(active){setThread(data);setInbox(previous=>previous?.map(chat=>chat.id===id?{...chat,unread:false}:chat)??null);}}).catch(error=>{if(active)setError(error.message);});
     void refresh();
     const timer=setInterval(refresh,8000);
     return ()=>{active=false;clearInterval(timer);};
@@ -82,8 +92,21 @@ export default function Messages() {
     });
   }
   const scroll=useRef(null);
+  const followLatest=useRef(true);
+  const [showLatest,setShowLatest]=useState(false);
+  const visibleChats=inbox?.filter(chat=>requests===(chat.dm_status==='pending'&&chat.dm_requester!==user?.id)&&chat.dm_status!=='declined'&&(chat.last_message_at||chat.dm_requester===user?.id));
+  useEffect(()=>{followLatest.current=true;setShowLatest(false);},[id]);
+  function jumpToLatest(){
+    followLatest.current=true;
+    setShowLatest(false);
+    if(scroll.current)scroll.current.scrollTop=scroll.current.scrollHeight;
+  }
   const lastMessage=thread?.messages.at(-1)?.id;
-  useEffect(()=>{if(scroll.current)scroll.current.scrollTop=scroll.current.scrollHeight;},[id,lastMessage]);
+  useEffect(()=>{
+    if(!lastMessage)return;
+    if(followLatest.current)jumpToLatest();
+    else setShowLatest(true);
+  },[id,lastMessage]);
   return <main className="public-messages" data-thread={Boolean(id)}>
     {error&&<p role="alert" className="rounded-lg border p-3">{error}</p>}
     <div className="public-messages-layout">
@@ -107,7 +130,8 @@ export default function Messages() {
           <button aria-pressed={!requests} onClick={()=>setRequests(false)}>Inbox</button>
           <button aria-pressed={requests} onClick={()=>setRequests(true)}>Requests</button>
         </div>
-        {inbox.filter(chat=>requests===(chat.dm_status==='pending'&&chat.dm_requester!==user?.id)&&chat.dm_status!=='declined'&&(chat.last_message_at||chat.dm_requester===user?.id)).map(chat=>
+        {visibleChats?.length===0&&<p className="public-messages-list-empty">{requests?"No message requests.":"No conversations yet. Tap the compose icon to start one."}</p>}
+        {visibleChats?.map(chat=>
           <button key={chat.id} onClick={()=>setParams({chat:chat.id})} aria-current={id===chat.id} className="public-messages-row">
             <span className="public-messages-avatar" aria-hidden="true">{peerName(chat).charAt(0).toUpperCase()}</span>
             <span className="min-w-0"><strong className="block truncate">{peerName(chat)}</strong><span className="block truncate text-sm opacity-70">{chat.last_message_text||'New conversation'}</span></span>
@@ -121,16 +145,26 @@ export default function Messages() {
           {thread&&<><span className="public-messages-avatar" aria-hidden="true">{peerName(thread.chat).charAt(0).toUpperCase()}</span><h2>{peerName(thread.chat)}</h2></>}
         </header>
         {thread&&<>
-          <div ref={scroll} className="public-messages-history" aria-label="Conversation messages">
-            {thread.messages.map(message=><p key={message.id} className="public-message-bubble" data-own={message.sender_id===user?.id}>{message.text}</p>)}
+          <div ref={scroll} className="public-messages-history" aria-label="Conversation messages" onScroll={()=>{
+            const node=scroll.current;
+            if(!node)return;
+            followLatest.current=node.scrollHeight-node.scrollTop-node.clientHeight<72;
+            if(followLatest.current)setShowLatest(false);
+          }}>
+            {thread.messages.length===0&&<p className="public-messages-list-empty">{pending?"Send a message request to start the conversation.":"Send the first message."}</p>}
+            {thread.messages.map(message=><div key={message.id} className="public-message-group" data-own={message.sender_id===user?.id}>
+              <p className="public-message-bubble" data-own={message.sender_id===user?.id}>{message.text}</p>
+              {messageTime(message.created_date)&&<time dateTime={message.created_date}>{messageTime(message.created_date)}</time>}
+            </div>)}
           </div>
-          {incoming&&thread.messages.length>0&&<div className="flex gap-3">
+          {showLatest&&<button type="button" className="public-messages-latest" onClick={jumpToLatest}>Jump to latest</button>}
+          {incoming&&thread.messages.length>0&&<div className="flex gap-3 p-3">
             {[true,false].map(accept=><button className="rounded-lg border px-3 py-2" key={String(accept)} disabled={busy} onClick={()=>void perform(async()=>{
               await messages('respond',{id,accept});if(accept)setThread(await messages('read',{id}));else setParams({});await loadInbox();
             })}>{accept?'Accept request':'Decline'}</button>)}
           </div>}
           {canSend&&<form className="public-messages-compose" onSubmit={event=>{event.preventDefault();void perform(async()=>{
-            await messages('send',{id,text:draft});setDraft('');setThread(await messages('read',{id}));await loadInbox();
+            await messages('send',{id,text:draft});followLatest.current=true;setDraft('');setThread(await messages('read',{id}));await loadInbox();
           });}}>
             <input aria-label="Message" placeholder={pending?'Write a message request…':'Write a message…'} className="min-w-0 flex-1 rounded-lg border bg-background p-2" value={draft} maxLength={2000} onChange={event=>setDraft(event.target.value)} />
             <button aria-label="Send message" disabled={busy||!draft.trim()}><ArrowUp size={19}/></button>

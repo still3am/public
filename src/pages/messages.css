@@ -26,3 +26,11 @@
 .public-messages-compose button:disabled{opacity:.35}
 .public-messages-empty{display:grid;place-content:center;justify-items:center;gap:9px;color:hsl(var(--muted-foreground))}
 @media(max-width:767px){.public-messages-layout{grid-template-columns:minmax(0,1fr)}.public-messages-inbox{border:0}.public-messages[data-thread=true] .public-messages-inbox,.public-messages-empty{display:none}}
+
+.public-messages-list-empty{padding:20px;text-align:center;font-size:13px;color:hsl(var(--muted-foreground))}
+.public-message-group{display:flex;flex-direction:column;align-self:flex-start;max-width:min(82%,560px);min-width:0}
+.public-message-group[data-own=true]{align-self:flex-end}
+.public-message-group>.public-message-bubble{max-width:100%}
+.public-message-group>time{font-size:10px;color:hsl(var(--muted-foreground));margin:2px 8px 5px}
+.public-message-group[data-own=true]>time{text-align:right}
+.public-messages-latest{align-self:center;min-height:40px;border:1px solid hsl(var(--border));border-radius:999px;padding:0 14px;font-size:12px;margin:4px}
