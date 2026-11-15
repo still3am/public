@@ -16,6 +16,7 @@ const source=fs.readFileSync('src/pages/PlaylistDetail.jsx','utf8').replace(/^im
  .replace('[tracks,setTracks]=useState([])','[tracks,setTracks]=useState(globalThis.__tracks)')
  .replace('[managing,setManaging]=useState(false)','[managing,setManaging]=useState(globalThis.__managing||false)')
  .replace("[query,setQuery]=useState('')","[query,setQuery]=useState(globalThis.__query||'')")
+ .replace('[loadedScope, setLoadedScope] = useState(null)', '[loadedScope, setLoadedScope] = useState(globalThis.__loadedScope ?? JSON.stringify([user?.id, id]))')
  .replace('[error,setError]=useState(false)','[error,setError]=useState(globalThis.__error||false)');
 const stubs=`
 const React=globalThis.__React;
@@ -39,6 +40,9 @@ assert.match(html,/aria-label="Select First song"/);assert.match(html,/Reorder F
 globalThis.__viewer='visitor';html=render();
 assert.doesNotMatch(html,/aria-label="Select First song"|Move First song|Remove First song|Edit songs/);
 assert.match(html,/Save playlist to library/);
+globalThis.__loadedScope=JSON.stringify(['owner','p1']);
+assert.doesNotMatch(render(),/Night drive/,'switching accounts hides the prior playlist while rechecking access');
+delete globalThis.__loadedScope;
 globalThis.__viewer='owner';globalThis.__managing=false;globalThis.__query='Second';html=render();
 assert.doesNotMatch(html,/First song/);assert.match(html,/Second song/);
 assert.deepEqual(globalThis.__rows,[{id:'b',queue:['a','b'],queueIndex:1}],'search keeps the original playback queue and song position');
