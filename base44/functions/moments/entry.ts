@@ -67,8 +67,9 @@ export async function momentsAction(b,u,d){
    const isArtist=!isAdmin&&(user?user.creator_role==='artist':profile.is_artist||profile.creator_role==='artist');
    const creatorRole=user?(isAdmin?'':user.creator_role):profile.creator_role;
    profileCache.set(id,{
-    user_id:id,display_name:current.display_name||current.full_name||profile.display_name||profile.full_name||'PUBLIC listener',
-    username:current.username||profile.username||'',avatar_url:profile.avatar_url||current.avatar_url||'',avatar_preset:profile.avatar_preset||current.avatar_preset||'',
+    user_id:id,
+    display_name:profile.display_name?.trim()||profile.username?.trim()||profile.full_name?.trim()||'PUBLIC listener',
+    username:profile.username||'',avatar_url:profile.avatar_url||current.avatar_url||'',avatar_preset:profile.avatar_preset||current.avatar_preset||'',
     avatar_video_url:profile.avatar_video_url||current.avatar_video_url||'',avatar_gif_url:profile.avatar_gif_url||current.avatar_gif_url||'',
     profile_background_colors:colors,profile_background_motion:current.profile_background_motion==='still'?'still':'flow',
     profile_background_speed:typeof current.profile_background_speed==='number'?Math.max(.35,Math.min(1.6,current.profile_background_speed)):1,
@@ -80,7 +81,7 @@ export async function momentsAction(b,u,d){
  }
  async function track(id){if(trackCache.has(id))return trackCache.get(id);const t=await s.entities.Track.get(id).catch(e=>{if((e.status||e.response?.status)===404)return null;throw e;});const result=t&&t.is_published===true&&t.approval_status==='approved'&&!blocked.has(t.uploader_id)&&await person(t.uploader_id)?{id:t.id,title:t.title,artist:t.artist||t.uploader_name||'',uploader_id:t.uploader_id,cover_art_url:t.cover_art_url||'',duration_seconds:t.duration_seconds||0}:null;trackCache.set(id,result);return result;}
  async function post(id){if(typeof id!=='string'||id.length>100)fail('Moment unavailable.',404);const p=await s.entities.Moment.get(id).catch(e=>{if((e.status||e.response?.status)===404)fail('Moment unavailable.',404);throw e;});if(p.status!=='published'||!await person(p.user_id))fail('Moment unavailable.',404);return p;}
- async function present(p){const owner=await person(p.user_id);if(!owner)return null;const sample=typeof p.sample_author_name==='string'&&p.sample_author_name.trim()&&/^public-moments-demo-feed-/.test(p.request_id||'');const author=sample?{user_id:owner.user_id,display_name:p.sample_author_name.trim().slice(0,45)+' · Demo',avatar_url:'',is_artist:false,friends_family_badge:false,profile_badge:null}:owner;const song=await track(p.track_id);const media=await Promise.all((p.media||[]).map(async item=>{const selected=item.type==='image'&&item.track_id&&item.track_id!==p.track_id?await track(item.track_id):null;return selected?{...item,track:selected}:item;}));return {id:p.id,user_id:p.user_id,caption:p.caption,media,photo_autoplay:p.photo_autoplay||'normal',track_id:p.track_id,clip_start:p.clip_start,clip_duration:p.clip_duration,music_volume:p.music_volume,original_volume:p.original_volume,created_date:p.created_date,author:{...author,moment_badge:author.friends_family_badge?'friends_family':author.profile_badge},track:song,liked:!!u&&(p.liker_ids||[]).includes(u.id),like_count:(p.liker_ids||[]).length,can_delete:admin||u?.id===p.user_id};}
+ async function present(p){const owner=await person(p.user_id);if(!owner)return null;const sample=typeof p.sample_author_name==='string'&&p.sample_author_name.trim()&&/^public-moments-demo-feed-/.test(p.request_id||'');const author=sample?{user_id:owner.user_id,display_name:p.sample_author_name.trim().slice(0,45)+' · Demo',avatar_url:'',is_artist:false,friends_family_badge:false,profile_badge:null}:owner;const song=await track(p.track_id);const media=await Promise.all((p.media||[]).map(async item=>{const selected=item.type==='image'&&item.track_id&&item.track_id!==p.track_id?await track(item.track_id):null;return selected?{...item,track:selected}:item;}));return {id:p.id,user_id:p.user_id,caption:p.caption,artist_promotion:p.artist_promotion===true,media,photo_autoplay:p.photo_autoplay||'normal',track_id:p.track_id,clip_start:p.clip_start,clip_duration:p.clip_duration,music_volume:p.music_volume,original_volume:p.original_volume,created_date:p.created_date,author:{...author,moment_badge:author.friends_family_badge?'friends_family':author.profile_badge},track:song,liked:!!u&&(p.liker_ids||[]).includes(u.id),like_count:(p.liker_ids||[]).length,can_delete:admin||u?.id===p.user_id};}
  const rate=async(entity,field,max)=>{if(rows(await entity.filter({[field]:u.id,created_date:{$gte:new Date(Date.now()-60000).toISOString()}},'-created_date',max)).length>=max)fail('Give it a moment, then try again.',429);};
  if(d.action==='feed'){
   if(['following','mine'].includes(d.scope))auth();const query={status:'published',...(blocked.size?{user_id:{$nin:[...blocked]}}:{})};
@@ -93,6 +94,7 @@ export async function momentsAction(b,u,d){
  if(d.action==='publish'){
   auth();if(!await person(u.id))fail('Finish setting up your public profile before posting.',422);if(!/^[a-zA-Z0-9-]{8,100}$/.test(d.request_id||''))fail('Reopen the composer and try again.');
   const existing=rows(await s.entities.Moment.filter({user_id:u.id,request_id:d.request_id},'-created_date',1))[0];if(existing)return {post:await present(await post(existing.id))};
+  if(d.artist_promotion===true && (u.creator_role!=='artist'||(await track(d.track_id))?.uploader_id!==u.id))fail('Choose one of your published artist songs.',403);
   await rate(s.entities.Moment,'user_id',5);if(d.rights_confirmed!==true)fail('Confirm you can share this media.');
   const caption=text(d.caption||'',1000),media=d.media;if(!Array.isArray(media)||!media.length||media.length>6)fail('Choose one video or up to six photos.');
   const video=media.some(m=>m.type==='video');if(video&&(media.length!==1||media[0].type!=='video'))fail('Post one video at a time.');
@@ -107,7 +109,7 @@ export async function momentsAction(b,u,d){
   const volumes=[Number(d.music_volume),Number(d.original_volume)];if(volumes.some(v=>!Number.isFinite(v)||v<0||v>1))fail('Check the audio levels.');
   const photoAutoplay=d.photo_autoplay??'normal';
   if(!['fast','normal','slow','off'].includes(photoAutoplay))fail('Choose a photo autoplay speed.');
-  await moderate(s,caption);const p=await s.entities.Moment.create({user_id:u.id,caption,photo_autoplay:video||media.length<2?'normal':photoAutoplay,media:media.map(m=>({url:m.url,type:m.type,size:m.size,duration:m.duration||0,...(m.track_id?{track_id:m.track_id}:{})})),track_id:song.id,clip_start:start,clip_duration:duration,music_volume:volumes[0],original_volume:video?volumes[1]:0,rights_confirmed:true,status:'published',liker_ids:[],request_id:d.request_id});return {post:await present(p)};
+  await moderate(s,caption);const p=await s.entities.Moment.create({user_id:u.id,caption,artist_promotion:d.artist_promotion===true,photo_autoplay:video||media.length<2?'normal':photoAutoplay,media:media.map(m=>({url:m.url,type:m.type,size:m.size,duration:m.duration||0,...(m.track_id?{track_id:m.track_id}:{})})),track_id:song.id,clip_start:start,clip_duration:duration,music_volume:volumes[0],original_volume:video?volumes[1]:0,rights_confirmed:true,status:'published',liker_ids:[],request_id:d.request_id});return {post:await present(p)};
  }
  if(!['comments','replies'].includes(d.action))auth();
  const p=await post(d.id);

@@ -9,7 +9,7 @@ import MomentWaveform from './MomentWaveform';
 import { PHOTO_AUTOPLAY } from './momentSwipePreferences';
 import {momentsApi,momentError} from '@/lib/momentsApi';
 const seconds=n=>`${Math.floor(n/60)}:${String(Math.floor(n%60)).padStart(2,'0')}`;
-export default function MomentComposer({seedTrack,onClose,onPublished}){
+export default function MomentComposer({seedTrack,onClose,onPublished,artistId}){
  const [media,setMedia]=useState([]),[track,setTrack]=useState(seedTrack||null),[caption,setCaption]=useState(''),[start,setStart]=useState(0),[duration,setDuration]=useState(15),[musicVolume,setMusicVolume]=useState(.8),[originalVolume,setOriginalVolume]=useState(0),[rights,setRights]=useState(false),[picker,setPicker]=useState(false),[busy,setBusy]=useState(false),[progress,setProgress]=useState(''),[error,setError]=useState(''),[preview,setPreview]=useState(false);
  const [photoPicker,setPhotoPicker]=useState(null);
  const [photoAutoplay,setPhotoAutoplay]=useState('normal');
@@ -28,10 +28,12 @@ export default function MomentComposer({seedTrack,onClose,onPublished}){
    if(!live.current){next.forEach(m=>URL.revokeObjectURL(m.url));return;}mediaRef.current.forEach(m=>URL.revokeObjectURL(m.url));setMedia(next);requestId.current=crypto.randomUUID();uploadCache.current.clear();
   }catch(e){next.forEach(m=>URL.revokeObjectURL(m.url));if(live.current)setError(momentError(e));}finally{lock.current=false;if(live.current)setBusy(false);}
  }
+ const [promotion,setPromotion]=useState(false);
+ const canPromote=Boolean(artistId&&track?.uploader_id===artistId);
  async function publish(){
   if(lock.current||!media.length||!track||!rights)return;lock.current=true;setBusy(true);setPreview(false);setError('');
   try{const uploaded=[];for(let i=0;i<media.length;i++){setProgress(`Uploading ${i+1} of ${media.length}…`);const m=media[i];let url=uploadCache.current.get(m.file);if(!url){const r=await base44.integrations.Core.UploadFile({file:m.file});if(!r?.file_url)throw Error('Your upload was not confirmed. Please retry.');url=r.file_url;uploadCache.current.set(m.file,url);}uploaded.push({url,type:m.type,size:m.size,duration:m.duration,...(m.track?.id?{track_id:m.track.id}:{})});}
-   setProgress('Publishing your moment…');const result=await momentsApi('publish',{media:uploaded,caption,photo_autoplay:photoAutoplay,track_id:track.id,clip_start:start,clip_duration:duration,music_volume:musicVolume,original_volume:originalVolume,rights_confirmed:rights,request_id:requestId.current});if(!result.post?.id)throw Error('Your post was not confirmed. Please retry.');if(live.current)onPublished(result.post);
+   setProgress('Publishing your moment…');const result=await momentsApi('publish',{media:uploaded,caption,artist_promotion:canPromote&&promotion,photo_autoplay:photoAutoplay,track_id:track.id,clip_start:start,clip_duration:duration,music_volume:musicVolume,original_volume:originalVolume,rights_confirmed:rights,request_id:requestId.current});if(!result.post?.id)throw Error('Your post was not confirmed. Please retry.');if(live.current)onPublished(result.post);
   }catch(e){if(live.current)setError(momentError(e));}finally{lock.current=false;if(live.current){setBusy(false);setProgress('');}}
  }
  const draft={id:'draft-'+(media[0]?.url||'')+(track?.id||''),caption,media,track,photo_autoplay:photoAutoplay,clip_start:start,clip_duration:duration,music_volume:musicVolume,original_volume:originalVolume};
@@ -60,6 +62,7 @@ export default function MomentComposer({seedTrack,onClose,onPublished}){
   {track&&<details className="moment-sound-options"><summary>Trim & mix<span>{seconds(start)} · {duration}s</span></summary><div className="moment-audio-editor"><MomentWaveform track={track} start={start} duration={duration} maxDuration={maxDuration} disabled={busy} onChange={(nextStart,nextDuration)=>{setPreview(false);setStart(nextStart);setDuration(nextDuration);}} />
   {media.length>0&&<p className="moment-waveform-hint">Tap play on your preview to hear the selected clip with your media.</p>}<label>Music volume <input aria-label="Music volume" type="range" min="0" max="1" step=".05" value={musicVolume} disabled={busy} onChange={e=>setMusicVolume(Number(e.target.value))}/></label>{video&&<label>Original video sound<input aria-label="Original video volume" type="range" min="0" max="1" step=".05" value={originalVolume} disabled={busy} onChange={e=>setOriginalVolume(Number(e.target.value))}/></label>}</div></details>}
   <label className="moment-caption-label">Caption<textarea placeholder="What does this moment sound like?" maxLength={1000} rows={3} value={caption} disabled={busy} onChange={e=>setCaption(e.target.value)}/><small>{caption.length} / 1,000</small></label>
+  {canPromote&&<label className="moment-rights"><input type="checkbox" checked={promotion} disabled={busy} onChange={event=>setPromotion(event.target.checked)}/><span>Post as an artist promotion with a Play button</span></label>}
   <label className="moment-rights"><input type="checkbox" checked={rights} disabled={busy} onChange={e=>setRights(e.target.checked)}/><span>I can share this media and any original audio. My moment will be public.</span></label>
   {error&&<p className="moment-inline-message" role="alert">{error}</p>}
   </section></div><footer className="moment-composer-footer"><button type="button" disabled={busy} onClick={onClose}>Cancel</button><button type="button" className="moment-primary" disabled={busy||!media.length||!track||!rights} onClick={publish}>{busy?<Loader2 size={17} className="animate-spin"/>:<Plus size={17}/>} {busy?progress:'Post moment'}</button></footer>

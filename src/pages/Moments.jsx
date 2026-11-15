@@ -229,6 +229,15 @@ export function MomentsExperience() {
               </div>
               {user?.id !== post.user_id && <button type="button" disabled={busy === post.id} className="reel-follow" onClick={() => follow(post)}>{following.has(post.user_id) ? 'Following' : 'Follow'}</button>}
             </div>
+            {post.artist_promotion && post.track && <>
+              <button type="button" className="mt-2 flex min-h-11 w-full items-center justify-between rounded-lg bg-white px-3 text-sm font-bold text-black" disabled={busy===post.id} onClick={()=>action(post.id, async()=>{
+                const song=await base44.entities.Track.get(post.track.id);
+                if(!song?.audio_url)throw Error('This song is unavailable.');
+                setActive(null);
+                player.playTrackAt([song],0);
+              })}>Play <ChevronUp size={16} className="rotate-90" aria-hidden="true" /></button>
+              <small className="text-xs">Artist promotion</small>
+            </>}
             {post.caption && <ReelCaption text={post.caption} />}
           </div>
           <div className="reel-actions" role="group" aria-label="Moment actions">
@@ -300,6 +309,6 @@ export function MomentsExperience() {
         </div>
       </DialogContent>
     </Dialog>)}
-  {composer && <MomentComposer seedTrack={seed} onClose={() => setComposer(false)} onPublished={(post) => {setComposer(false);setNotice('Your moment is live.');if (id || scope === 'following' || trackFilter) {nav('/moments?view=mine');} else {setPosts((old) => [post, ...old.filter((x) => x.id !== post.id)]);if (feed.current) feed.current.scrollTop = 0;setReelIndex(0);}}} />}{report && <ReportMoment target={report} onClose={() => setReport(null)} />}
+  {composer && <MomentComposer seedTrack={seed} artistId={user?.creator_role==="artist"?user.id:undefined} onClose={() => setComposer(false)} onPublished={(post) => {setComposer(false);setNotice('Your moment is live.');if (id || scope === 'following' || trackFilter) {nav('/moments?view=mine');} else {setPosts((old) => [post, ...old.filter((x) => x.id !== post.id)]);if (feed.current) feed.current.scrollTop = 0;setReelIndex(0);}}} />}{report && <ReportMoment target={report} onClose={() => setReport(null)} />}
  </div>;
 }
