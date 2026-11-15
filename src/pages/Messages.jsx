@@ -593,7 +593,7 @@ function ChatMedia({chatId,message}){
 }
 
 function RecentlyPlayedPicker({onClose,onSelect}){
-  const tracks=getRecentPlays().filter(track=>track.is_published&&!track._private_audio);
+  const tracks=getRecentPlays().filter(track=>track.is_published);
   return <section className="public-message-recent" aria-label="Share recently played">
     <header><h3>Share recently played</h3><button type="button" aria-label="Close recently played" onClick={onClose}><X size={18}/></button></header>
     {tracks.length?<div className="public-message-recent-grid">{tracks.map(track=><RecentTrack key={track.id} track={track} onSelect={onSelect}/>)}</div>
