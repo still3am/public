@@ -39,6 +39,17 @@ async function messages(action, data = {}) {
   }
 }
 
+function createSendRequestId() {
+  if (typeof globalThis.crypto?.randomUUID === 'function') return globalThis.crypto.randomUUID();
+  const bytes = new Uint8Array(16);
+  if (typeof globalThis.crypto?.getRandomValues === 'function') globalThis.crypto.getRandomValues(bytes);
+  else for (let index = 0; index < bytes.length; index++) bytes[index] = Math.floor(Math.random() * 256);
+  bytes[6] = (bytes[6] & 0x0f) | 0x40;
+  bytes[8] = (bytes[8] & 0x3f) | 0x80;
+  const hex = [...bytes].map((value) => value.toString(16).padStart(2, '0')).join('');
+  return hex.slice(0, 8) + '-' + hex.slice(8, 12) + '-' + hex.slice(12, 16) + '-' + hex.slice(16, 20) + '-' + hex.slice(20);
+}
+
 function messageTime(value) {
   if (!value) return "";
   const date = new Date(value);
@@ -610,7 +621,7 @@ function MessagesPage({ user }) {
                 media = { uri, type: selectedMedia.type };
               }
               const existing = pendingSends.current.get(id);
-              const requestId = existing?.text === text && existing?.trackId === trackId && existing?.replyId === replyId && existing?.lyricKey === lyricKey && existing?.gifId === gif && existing?.mediaUri === media?.uri ? existing.requestId : globalThis.crypto?.randomUUID?.();
+              const requestId = existing?.text === text && existing?.trackId === trackId && existing?.replyId === replyId && existing?.lyricKey === lyricKey && existing?.gifId === gif && existing?.mediaUri === media?.uri ? existing.requestId : createSendRequestId();
               pendingSends.current.set(id, { text, trackId, replyId, lyricKey, gifId: gif, mediaUri: media?.uri, requestId });
               await messages('send', { id, text, trackId, replyId, requestId, lyrics, gifId: gif, media });
               void messages('typing', { id, typing: false }).catch(() => {});
