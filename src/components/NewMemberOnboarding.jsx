@@ -16,7 +16,7 @@ import {base44} from "@/api/base44Client";
 import {GENRES} from "@/lib/audio-utils";
 import {getPublishedTracks} from "@/lib/catalogCache";
 import {getUserMusicPreferences,saveUserMusicPreferences} from "@/lib/userGenres";
-import {ONBOARDING_PALETTES,cleanHandle,validHandle,credits,recommendPeople,readOnboardingDraft,draftKey,onboardingComplete,normalizeOnboardingColors,mergeOnboardingTaste,withOnboardingDeadline,onboardingSearchMatch} from "@/lib/onboardingModel";
+import {ONBOARDING_PALETTES,credits,recommendPeople,readOnboardingDraft,draftKey,onboardingComplete,normalizeOnboardingColors,mergeOnboardingTaste,withOnboardingDeadline,onboardingSearchMatch} from "@/lib/onboardingModel";
 import "./new-member-onboarding.css";
 import "./profile/profile-colors.css";
 
@@ -34,7 +34,7 @@ function OnboardingLetters({text,delay=0,className=""}){
 function SongCover({url}){const cover=useCoverUrl(url);return <span className="onboarding-cover">{cover?<img src={cover} alt="" loading="lazy"/>:<Music2 size={20}/>}</span>;}
 function initialDraft(user){
  const previous=readOnboardingDraft(user.id);
- return {step:0,name:user.display_name||user.full_name||"",username:user.username||"",avatar:user.avatar_url||"",genres:[],trackIds:[],artists:[],profileTrack:user.featured_track_id||"",motion:user.profile_background_motion||"flow",speed:user.profile_background_speed||1,mode:user.profile_background_mode||"custom",colors:normalizeOnboardingColors(user.profile_background_colors),editedFields:[],shareFavorites:!!user.top_track_ids?.length,sharingChanged:false,...previous};
+ return {step:0,name:user.display_name||user.full_name||"",avatar:user.avatar_url||"",genres:[],trackIds:[],artists:[],profileTrack:user.featured_track_id||"",motion:user.profile_background_motion||"flow",speed:user.profile_background_speed||1,mode:user.profile_background_mode||"custom",colors:normalizeOnboardingColors(user.profile_background_colors),editedFields:[],shareFavorites:!!user.top_track_ids?.length,sharingChanged:false,...previous};
 }
 export function WelcomeFlow({user,onDone}){
  const nav=useNavigate(),{checkUserAuth}=useAuth(),{blocked}=useSafety();
@@ -98,10 +98,9 @@ export function WelcomeFlow({user,onDone}){
   try{
    await owner();
    if(!skip&&step===1){
-    const name=draft.name.trim(),username=cleanHandle(draft.username);
+    const name=draft.name.trim();
     if(name.length<2||name.length>60)throw Error("Use a display name between 2 and 60 characters.");
-    if(!validHandle(username))throw Error("Use 3–24 letters, numbers or underscores for your username.");
-    const current=await owner(),patch={};if(name!==(current.display_name||current.full_name||""))patch.display_name=name;if(username!==(current.username||""))patch.username=username;
+    const current=await owner(),patch={};if(name!==(current.display_name||current.full_name||""))patch.display_name=name;
     let changed=false;
     if(Object.keys(patch).length){const saved=await base44.auth.updateMe(patch);if(saved?.id!==user.id||Object.keys(patch).some(key=>saved[key]!==patch[key]))throw Error("Profile was not confirmed. Please retry.");changed=true;}
     if(draft.avatar!==(current.avatar_url||"")||draft.avatarGif){await owner();const saved=await base44.auth.updateMe({avatar_url:draft.avatar,avatar_video_url:"",avatar_gif_url:draft.avatarGif||""});if(saved?.id!==user.id||saved.avatar_url!==draft.avatar)throw Error("Avatar was not confirmed. Please retry.");changed=true;}
@@ -158,7 +157,6 @@ export function WelcomeFlow({user,onDone}){
      <button type="button" className="onboarding-upload-photo" disabled={busy} onClick={()=>fileInput.current?.click()}><Camera size={16}/>Upload a photo</button>
      <input ref={fileInput} type="file" accept="image/jpeg,image/png,image/webp" className="hidden" onChange={e=>{upload(e.target.files?.[0]);e.target.value="";}}/>
      <label>Display name<input value={draft.name} maxLength={60} autoComplete="nickname" disabled={busy} placeholder="What should we call you?" onChange={e=>update({name:e.target.value})}/></label>
-     <label>Username <small>Optional</small><div className="onboarding-handle"><span>@</span><input value={draft.username} maxLength={24} autoCapitalize="none" autoCorrect="off" spellCheck={false} autoComplete="off" disabled={busy} placeholder="your_sound" onChange={e=>update({username:cleanHandle(e.target.value)})}/></div></label>
      <p className="onboarding-note">Shown on your public profile. You can edit this later.</p><button type="submit" hidden disabled={busy}>Continue</button>
     </form>}
     {step===2&&<>
