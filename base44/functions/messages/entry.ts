@@ -8,7 +8,7 @@ Deno.serve(async req => {
     const client = createClientFromRequest(req);
     const user = await client.auth.me().catch(() => null);
     if (!user?.id || user.disabled || user.is_blocked) fail('Sign in to use Messages.', 401);
-    const {action, id, username, recipientId, offset, text, trackId, accept, requestId, replyId} = await req.json();
+    const {action, id, username, recipientId, offset, text, trackId, accept, requestId, replyId, messageId} = await req.json();
     const db = client.asServiceRole.entities;
     const uid = user.id;
     const blocked = async peer => rows(await db.Block.filter({
@@ -98,6 +98,20 @@ Deno.serve(async req => {
     if (!chat?.dm_enabled || !chat.participant_ids.includes(uid)) fail('Conversation unavailable.', 404);
     const peer = chat.participant_ids.find(member => member !== uid);
     if (!peer || await blocked(peer)) fail('Conversation unavailable.', 404);
+
+    if (action === 'delete_message') {
+      if (typeof messageId !== 'string' || !/^[a-zA-Z0-9_-]{1,100}$/.test(messageId)) fail('Choose a message.');
+      const source = rows(await db.Message.filter({id:messageId,conversation_id:id}, '-created_date', 1))[0];
+      if (source && source.sender_id !== uid) fail('You can only delete messages you sent.',403);
+      if (source) await db.Message.delete(source.id);
+      const latest = rows(await db.Message.filter({conversation_id:id}, '-created_date', 1))[0];
+      await db.Conversation.update(id,{
+        last_message_text:latest?.text || (latest?.track_id ? 'Shared a song' : ''),
+        last_message_at:latest?.created_date || null,
+        last_sender_id:latest?.sender_id || '',
+      });
+      return Response.json({ok:true});
+    }
 
     if (action === 'read') {
       const [page, profiles] = await Promise.all([

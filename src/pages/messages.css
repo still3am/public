@@ -87,3 +87,11 @@
 .public-message-song .public-message-song-play:disabled{opacity:.45}
 .public-message-song .public-message-song-play:active:not(:disabled){transform:scale(.94)}
 @media(prefers-reduced-motion:reduce){.public-message-song .public-message-song-play{transition:none}}
+
+.public-message-group{ -webkit-touch-callout:none }
+.public-message-reply-action{min-width:44px;min-height:32px;justify-content:center}
+.public-message-actions{width:min(calc(100% - 28px),300px);gap:4px;border-radius:20px}
+.public-message-actions h2{padding-bottom:8px}
+.public-message-actions > :is(button:not([aria-label]),a){display:flex;align-items:center;gap:8px;min-height:44px;border-radius:9px;padding-inline:10px;text-align:start}
+.public-message-actions > :is(button:not([aria-label]),a):hover{background:hsl(var(--muted))}
+@media(pointer:coarse){.public-message-reply-action{min-height:44px}}

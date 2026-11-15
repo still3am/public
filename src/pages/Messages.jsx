@@ -2,11 +2,12 @@ import {useCallback,useEffect,useRef,useState} from 'react';
 import {Link,useLocation,useSearchParams} from 'react-router-dom';
 import {base44} from '@/api/base44Client';
 import {useAuth} from '@/lib/AuthContext';
-import {ArrowUp,ChevronLeft,ChevronRight,MessageCircle,Music2,Pause,Play,Reply,Search,SquarePen,X} from 'lucide-react';
+import {ArrowUp,ChevronLeft,ChevronRight,MessageCircle,MoreHorizontal,Music2,Pause,Play,Reply,Search,SquarePen,X} from 'lucide-react';
 import TrackPickerSheet from '@/components/profile/TrackPickerSheet';
 import {usePlayer} from '@/context/PlayerContext';
 import Avatar from '@/components/Avatar';
 import {useCoverUrl} from '@/hooks/useCoverUrl';
+import {Dialog,DialogContent,DialogTitle,DialogDescription} from '@/components/ui/dialog';
 import './messages.css';
 
 async function messages(action, data = {}) {
@@ -43,6 +44,14 @@ function MessagesPage({user}) {
   const id=params.get('chat');
   const [inbox,setInbox]=useState(null),[loadedThread,setThread]=useState(null),[requests,setRequests]=useState(false);
   const thread=loadedThread?.chat.id===id?loadedThread:null;
+  const [menu,setMenu]=useState(null);
+  const hold=useRef(null);
+  function cancelHold(){
+    clearTimeout(hold.current?.timer);
+    hold.current=null;
+  }
+  useEffect(()=>()=>cancelHold(),[id]);
+  const activeMenu=menu?.chatId===id?menu.message:null;
   const currentChat=useRef(id);
   currentChat.current=id;
   const operation=useRef(false);
@@ -222,17 +231,50 @@ function MessagesPage({user}) {
             if(followLatest.current)setShowLatest(false);
           }}>
             {thread.messages.length===0&&<p className="public-messages-list-empty">{pending?"Send a message request to start the conversation.":"Send the first message."}</p>}
-            {thread.messages.map(message=><div key={message.id} className="public-message-group" data-own={message.sender_id===user?.id}>
+            {thread.messages.map(message=><div key={message.id} className="public-message-group" data-own={message.sender_id===user?.id}
+              onPointerDown={event=>{
+                if(event.pointerType==='mouse'||event.target.closest('button,a'))return;
+                cancelHold();
+                const {clientX:x,clientY:y}=event;
+                hold.current={x,y,timer:setTimeout(()=>{hold.current=null;setMenu({chatId:id,message});},480)};
+              }}
+              onPointerMove={event=>{if(hold.current&&Math.hypot(event.clientX-hold.current.x,event.clientY-hold.current.y)>9)cancelHold();}}
+              onPointerCancel={cancelHold} onPointerUp={cancelHold} onPointerLeave={cancelHold}
+              onContextMenu={event=>{event.preventDefault();cancelHold();setMenu({chatId:id,message});}}>
               {message.reply_preview&&<ReplyQuote preview={message.reply_preview}/>}
               {message.track_id&&<SharedSong message={message} playing={player.currentTrack?.id===message.track_id&&player.isPlaying} onPlay={()=>void perform(()=>playSharedSong(message.track_id))} busy={busy}/>}
               {message.text&&<p className="public-message-bubble" data-own={message.sender_id===user?.id}>{message.text}</p>}
-              {canSend&&<button type="button" className="public-message-reply-action" aria-label="Reply to message" disabled={busy} onClick={()=>{
-                setReply({id:message.id,name:message.sender_id===user?.id?"You":peerName(thread.chat),text:message.text||(message.track_id?"Shared a song":"Message")});
-                draftInput.current?.focus();
-              }}><Reply size={14}/>Reply</button>}
+              <button type="button" className="public-message-reply-action" aria-label="Message options" onClick={()=>setMenu({chatId:id,message})}><MoreHorizontal size={17}/></button>
               {messageTime(message.created_date)&&<time dateTime={message.created_date}>{messageTime(message.created_date)}</time>}
             </div>)}
           </div>
+          {activeMenu&&<Dialog open onOpenChange={open=>{if(!open)setMenu(null);}}>
+            <DialogContent className="public-message-actions">
+              <DialogTitle>Message options</DialogTitle>
+              <DialogDescription className="sr-only">Actions for this message.</DialogDescription>
+              {canSend&&<button type="button" onClick={()=>{
+                setReply({id:activeMenu.id,name:activeMenu.sender_id===user?.id?'You':peerName(thread.chat),text:activeMenu.text||(activeMenu.track_id?'Shared a song':'Message')});
+                setMenu(null);
+                requestAnimationFrame(()=>draftInput.current?.focus());
+              }}><Reply size={17}/> Reply</button>}
+              {activeMenu.text&&<button type="button" onClick={()=>{setMenu(null);void perform(()=>navigator.clipboard.writeText(activeMenu.text));}}>Copy text</button>}
+              {activeMenu.track_id&&<Link to={'/track/'+encodeURIComponent(activeMenu.track_id)} onClick={()=>setMenu(null)}>Open song</Link>}
+              {activeMenu.track_id&&<button type="button" onClick={()=>{setMenu(null);void perform(()=>playSharedSong(activeMenu.track_id));}}>{player.currentTrack?.id===activeMenu.track_id&&player.isPlaying?'Pause song':'Play song'}</button>}
+              {activeMenu.sender_id===user?.id&&<button type="button" className="text-destructive" disabled={busy} onClick={()=>{
+                if(!window.confirm('Delete this message for both people?'))return;
+                setMenu(null);
+                void perform(async()=>{
+                  await messages('delete_message',{id,messageId:activeMenu.id});
+                  if(currentChat.current===id){
+                    setThread(previous=>previous?.chat.id===id?{...previous,messages:previous.messages.filter(message=>message.id!==activeMenu.id)}:previous);
+                    setReply(previous=>previous?.id===activeMenu.id?null:previous);
+                    await loadThread(id);
+                  }
+                  await loadInbox();
+                });
+              }}>Delete message</button>}
+            </DialogContent>
+          </Dialog>}
           {showLatest&&<button type="button" className="public-messages-latest" onClick={jumpToLatest}>Jump to latest</button>}
           {incoming&&thread.messages.length>0&&<div className="flex gap-3 p-3">
             {[true,false].map(accept=><button className="rounded-lg border px-3 py-2" key={String(accept)} disabled={busy} onClick={()=>void perform(async()=>{
