@@ -18,9 +18,29 @@ function DiscoveryCover({ track, offset, selected, playing, onChoose }) {
  </li>;
 }
 
-export default function HomeSpotlight({ track, tracks = [], currentTrackId, isPlaying, onSelect, renderCover, carouselLabel }) {
+export default function HomeSpotlight({ track, tracks = [], currentTrackId, isPlaying, onSelect, renderCover, carouselLabel, autoRotate = false }) {
   const unique = new Map();for (const item of tracks.length ? tracks : track ? [track] : []) if (item?.id && !unique.has(item.id)) unique.set(item.id, item);
   const queue = [...unique.values()].slice(0, 24),[selectedId, setSelectedId] = useState(null);
+  const [rotationPaused,setRotationPaused]=useState(false);
+  const carouselRef=useRef(null);
+  const rotating=autoRotate&&!rotationPaused&&!isPlaying;
+  useEffect(()=>{
+    const stage=stageRef.current;
+    const section=carouselRef.current;
+    if(!rotating||queue.length<2||!section||!stage)return;
+    const reduced=window.matchMedia('(prefers-reduced-motion: reduce)');
+    let visible=false;
+    const observer=typeof IntersectionObserver==='undefined'?null:new IntersectionObserver(([entry])=>{
+      visible=entry.isIntersecting;
+    },{threshold:.25});
+    if(observer)observer.observe(stage);
+    else visible=true;
+    const timer=window.setInterval(()=>{
+      if(!visible||document.hidden||reduced.matches||gesture.current||wheelState.current.timer||section.matches(':hover, :focus-within'))return;
+      wheelMove.current?.(1);
+    },6000);
+    return()=>{observer?.disconnect();window.clearInterval(timer);};
+  },[rotating,queue.length,selectedId]);
   const gesture = useRef(null),suppressClickUntil = useRef(0),touchHandlers = useRef(null);
   const stageRef = useRef(null),wheelMove = useRef(null),wheelState = useRef({ total: 0, last: 0, direction: 0, timer: null, step: 215 });
   const dragFrame = useRef(null),dragValue = useRef(0),dragSpacing = useRef(215);
@@ -98,7 +118,7 @@ export default function HomeSpotlight({ track, tracks = [], currentTrackId, isPl
   const updateGesture = (event) => {const start = gesture.current;if (!start || start.id !== event.pointerId) return;const dx = Math.abs(event.clientX - start.x),dy = Math.abs(event.clientY - start.y);if (!start.axis && Math.max(dx, dy) > 10) {if (dx > dy * 1.25) {start.axis = 'horizontal';if (event.pointerType !== 'touch') event.currentTarget.setPointerCapture?.(event.pointerId);} else if (dy > dx * 1.25) start.axis = 'vertical';}if (start.axis === 'horizontal') {if (event.cancelable) event.preventDefault();const step = start.step;paintDrag(Math.max(-step * 2.5, Math.min(step * 2.5, event.clientX - start.x)), step);if (Date.now() - start.sampleTime > 80) {start.sampleX = event.clientX;start.sampleTime = Date.now();}}};
   touchHandlers.current = { start: beginGesture, move: updateGesture, end: finishGesture };
   const visible = queue.map((item, index) => {let offset = (index - active + queue.length) % queue.length;if (offset > queue.length / 2) offset -= queue.length;return { item, index, offset };}).filter((item) => Math.abs(item.offset) <= 3);
-  return <section className="home-discovery" aria-labelledby={carouselLabel ? undefined : "home-discovery-title"} aria-label={carouselLabel}>
+  return <section ref={carouselRef} className="home-discovery" aria-labelledby={carouselLabel ? undefined : "home-discovery-title"} aria-label={carouselLabel}>
   {!carouselLabel && <div className="home-discovery-intro"><h2 id="home-discovery-title"><span>Find your next</span>{' '}<em>favorite.</em></h2></div>}
   <div ref={stageRef} className={'home-discovery-stage' + (queue.length < 3 ? ' is-small' : '')} data-horizontal-scroll="true" role="region" aria-label={carouselLabel || "Discover music carousel"} tabIndex={0}
     onPointerDown={(event) => {if (event.pointerType !== 'touch') beginGesture(event);}}
@@ -114,6 +134,6 @@ export default function HomeSpotlight({ track, tracks = [], currentTrackId, isPl
     </li>;
    })}</ol>
   </div>
-  <footer className="home-discovery-controls"><div className="home-discovery-progress hidden" role="progressbar" aria-label="Discovery position" aria-valuemin={1} aria-valuemax={queue.length} aria-valuenow={active + 1}><span style={{ width: (active + 1) / queue.length * 100 + '%' }} /></div><div className="home-discovery-arrows"><button type="button" aria-label={carouselLabel ? "Previous song" : "Previous discovery"} disabled={queue.length < 2} onClick={() => move(-1)}><ChevronLeft size={19} /></button><button type="button" aria-label={carouselLabel ? "Next song" : "Next discovery"} disabled={queue.length < 2} onClick={() => move(1)}><ChevronRight size={19} /></button></div><p className="sr-only" aria-live="polite">{selected.title} by {selected.artist || selected.uploader_name || 'PUBLIC artist'}</p></footer>
+  <footer className="home-discovery-controls"><div className="home-discovery-progress hidden" role="progressbar" aria-label="Discovery position" aria-valuemin={1} aria-valuemax={queue.length} aria-valuenow={active + 1}><span style={{ width: (active + 1) / queue.length * 100 + '%' }} /></div><div className="home-discovery-arrows"><button type="button" aria-label={carouselLabel ? "Previous song" : "Previous discovery"} disabled={queue.length < 2} onClick={() => move(-1)}><ChevronLeft size={19} /></button><button type="button" aria-label={carouselLabel ? "Next song" : "Next discovery"} disabled={queue.length < 2} onClick={() => move(1)}><ChevronRight size={19} /></button></div>{autoRotate&&queue.length>1&&<button className="home-discovery-rotate" type="button" onClick={()=>setRotationPaused(value=>!value)}>{rotationPaused?'Resume rotation':'Pause rotation'}</button>}<p className="sr-only" aria-live={rotating?"off":"polite"}>{selected.title} by {selected.artist || selected.uploader_name || 'PUBLIC artist'}</p></footer>
  </section>;
 }

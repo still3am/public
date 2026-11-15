@@ -51,3 +51,6 @@
 
 /* Covers and their controls share the carousel's vertical-scroll allowance. */
 .home-discovery-stage button,.home-discovery-stage a{touch-action:pan-y pinch-zoom}
+
+.home-discovery-rotate{display:block;min-height:44px;margin:4px auto 0;padding-inline:10px;color:hsl(var(--muted-foreground));font-size:12px}
+@media(prefers-reduced-motion:reduce){.home-discovery-rotate{display:none}}

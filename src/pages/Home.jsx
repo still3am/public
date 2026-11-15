@@ -262,7 +262,7 @@ export default function Home() {
         <header className="home-welcome"><div className="home-welcome-copy"><h1>{greeting}{homeName && <span><span className="home-greeting-comma">, </span>{homeName}</span>}</h1></div><div className="home-header-actions"><HomeWeather /><Link to={user ? "/profile" : "/login"} aria-label={user ? "Your profile" : "Sign in"}><Avatar user={user} size={44} /></Link></div></header>
         
         
-        <HomeSpotlight track={featured} tracks={discoveryQueue.length ? discoveryQueue : newReleases} currentTrackId={p.currentTrack?.id} isPlaying={p.isPlaying} onSelect={(queue, index) => {if (p.currentTrack?.id === queue[index]?.id) p.togglePlay();else {p.setShuffle(false);p.playTrackAt(queue, index);}}} />
+        <HomeSpotlight autoRotate track={featured} tracks={discoveryQueue.length ? discoveryQueue : newReleases} currentTrackId={p.currentTrack?.id} isPlaying={p.isPlaying} onSelect={(queue, index) => {if (p.currentTrack?.id === queue[index]?.id) p.togglePlay();else {p.setShuffle(false);p.playTrackAt(queue, index);}}} />
         
         
         {genreList.length > 0 && <nav className="home-genre-links" aria-label="Browse genres">{genreList.map((genre) => <Link key={genre} to={`/search?genre=${encodeURIComponent(genre)}`}>{genre}</Link>)}</nav>}
