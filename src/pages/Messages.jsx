@@ -20,7 +20,9 @@ export default function Messages() {
   const [params,setParams]=useSearchParams();
   const id=params.get('chat');
   const [inbox,setInbox]=useState([]),[thread,setThread]=useState(null),[requests,setRequests]=useState(false);
-  const [username,setUsername]=useState(params.get('to')||''),[draft,setDraft]=useState('');
+  const to=params.get('to'),recipient=params.get('recipient');
+  const [draft,setDraft]=useState('');
+  const [contacts,setContacts]=useState(null),[nextOffset,setNextOffset]=useState(null),[loadingContacts,setLoadingContacts]=useState(false);
   const [error,setError]=useState(''),[busy,setBusy]=useState(false);
   const loadInbox=useCallback(async()=>setInbox((await messages('inbox')).conversations),[]);
   useEffect(()=>{
@@ -47,7 +49,24 @@ export default function Messages() {
   const pending=thread?.chat.dm_status==='pending';
   const incoming=pending&&thread?.chat.dm_requester!==user?.id;
   const canSend=thread?.chat.dm_status==='accepted'||(pending&&!incoming&&!thread.messages.length);
-  const [composing,setComposing]=useState(Boolean(params.get('to')));
+  const [composing,setComposing]=useState(Boolean(to||recipient));
+  async function loadContacts(offset=0){
+    setLoadingContacts(true);
+    try{
+      const result=await messages('contacts',{offset});
+      setContacts(previous=>offset?[...previous,...result.people.filter(person=>!previous.some(old=>old.id===person.id))]:result.people);
+      setNextOffset(result.nextOffset);
+    }catch(error){setError(error.message);}
+    finally{setLoadingContacts(false);}
+  }
+  function startChat(target){
+    void perform(async()=>{
+      const chat=await messages('start',target);
+      setParams({chat:chat.id});
+      setComposing(false);
+      await loadInbox();
+    });
+  }
   const scroll=useRef(null);
   const lastMessage=thread?.messages.at(-1)?.id;
   useEffect(()=>{if(scroll.current)scroll.current.scrollTop=scroll.current.scrollHeight;},[id,lastMessage]);
@@ -57,15 +76,20 @@ export default function Messages() {
       <aside className="public-messages-inbox">
         <header className="public-messages-inbox-header">
           <Link to="/" className="public-messages-back"><ChevronLeft size={17}/> PUBLIC</Link>
-          <div><h1>Messages</h1><button type="button" aria-label="New message" aria-expanded={composing} onClick={()=>setComposing(value=>!value)}><SquarePen size={20}/></button></div>
+          <div><h1>Messages</h1><button type="button" aria-label="New message" aria-expanded={composing} onClick={()=>{setComposing(!composing);if(!composing&&!contacts&&!loadingContacts)void loadContacts();}}><SquarePen size={20}/></button></div>
         </header>
-        {composing&&<form className="flex gap-2 px-4 pb-3" onSubmit={event=>{event.preventDefault();void perform(async()=>{
-          const target=await messages('start',{username:username.trim().replace(/^@/,'').toLowerCase()});
-          setParams({chat:target.id});setUsername('');setComposing(false);await loadInbox();
-        });}}>
-          <input aria-label="Username" placeholder="@username" className="min-w-0 flex-1 rounded-lg border bg-background p-2" value={username} onChange={event=>setUsername(event.target.value)} required />
-          <button className="rounded-lg border px-3" disabled={busy}>Chat</button>
-        </form>}
+        {composing&&<div className="px-4 pb-3">
+          {(recipient||to)&&<button className="mb-3 rounded-lg border px-3 py-2" type="button" disabled={busy} onClick={()=>startChat(recipient?{recipientId:recipient}:{username:to})}>Start message</button>}
+          {contacts&&<p className="pb-2 text-sm font-semibold">People you follow</p>}
+          {contacts?.map(person=><button type="button" className="public-messages-row" key={person.id} disabled={busy} onClick={()=>startChat({recipientId:person.id})}>
+            <span className="public-messages-avatar overflow-hidden" aria-hidden="true">{person.avatar?<img className="h-full w-full object-cover" src={person.avatar} alt=""/>:person.name.charAt(0).toUpperCase()}</span>
+            <span className="truncate font-semibold">{person.name}</span><ChevronRight size={14} aria-hidden="true"/>
+          </button>)}
+          {contacts?.length===0&&!loadingContacts&&<p className="text-sm text-muted-foreground">No contacts on this page. You can also start a message from someone’s profile.</p>}
+          {loadingContacts&&<p role="status" className="text-sm">Loading people you follow…</p>}
+          {!contacts&&!loadingContacts&&!recipient&&!to&&<button type="button" onClick={()=>void loadContacts()}>Load people you follow</button>}
+          {nextOffset!==null&&<button type="button" disabled={loadingContacts} onClick={()=>void loadContacts(nextOffset)}>Show more</button>}
+        </div>}
         <div className="public-messages-tabs">
           <button aria-pressed={!requests} onClick={()=>setRequests(false)}>Inbox</button>
           <button aria-pressed={requests} onClick={()=>setRequests(true)}>Requests</button>

@@ -8,7 +8,7 @@ Deno.serve(async req => {
     const client = createClientFromRequest(req);
     const user = await client.auth.me().catch(() => null);
     if (!user?.id || user.disabled || user.is_blocked) fail('Sign in to use Messages.', 401);
-    const {action, id, username, text, accept} = await req.json();
+    const {action, id, username, recipientId, offset, text, accept} = await req.json();
     const db = client.asServiceRole.entities;
     const uid = user.id;
     const blocked = async peer => rows(await db.Block.filter({
@@ -26,9 +26,29 @@ Deno.serve(async req => {
       return Response.json({conversations:chats.map(chat=>({...chat,unread:unreadChats.has(chat.id)}))});
     }
 
+    if (action === 'contacts') {
+      const start = Number.isSafeInteger(offset) && offset >= 0 ? offset : 0;
+      const followed = rows(await db.Follow.filter({follower_id:uid}, '-created_date', 51, start));
+      const ids = [...new Set(followed.slice(0,50).map(follow=>follow.following_id))].filter(peer=>peer!==uid);
+      const profiles = ids.length ? rows(await db.PublicProfile.filter({user_id:{$in:ids},visible:true}, '-updated_date', 100)) : [];
+      const blocks = ids.length ? rows(await db.Block.filter({
+        $or:[{user_id:uid,blocked_user_id:{$in:ids}},{blocked_user_id:uid,user_id:{$in:ids}}],
+      }, '-created_date', 500)) : [];
+      const denied = new Set(blocks.map(row=>row.user_id===uid?row.blocked_user_id:row.user_id));
+      const byId = new Map(profiles.map(profile=>[profile.user_id,profile]));
+      const people = ids.filter(peer=>byId.has(peer)&&!denied.has(peer)).map(peer=>{
+        const profile = byId.get(peer);
+        return {id:peer,name:profile.display_name||profile.username||'PUBLIC listener',avatar:profile.avatar_url||''};
+      });
+      return Response.json({people,nextOffset:followed.length>50?start+50:null});
+    }
+
     if (action === 'start') {
-      if (typeof username !== 'string' || !/^[a-z0-9_]{3,24}$/.test(username)) fail('Enter a valid username.');
-      const peer = rows(await db.PublicProfile.filter({username,visible:true}, '-updated_date', 1))[0];
+      const target = typeof recipientId === 'string' && /^[a-zA-Z0-9_-]{1,100}$/.test(recipientId)
+        ? {user_id:recipientId}
+        : typeof username === 'string' && /^[a-z0-9_]{3,24}$/.test(username) ? {username} : null;
+      if (!target) fail('Choose someone to message.');
+      const peer = rows(await db.PublicProfile.filter({...target,visible:true}, '-updated_date', 1))[0];
       if (!peer?.user_id || peer.user_id === uid || await blocked(peer.user_id)) fail('This person is unavailable.', 404);
       const participants = [uid,peer.user_id].sort();
       const pair = participants.join(':');
@@ -41,7 +61,7 @@ Deno.serve(async req => {
       const chat = await db.Conversation.create({
         dm_enabled:true, dm_key:pair, participant_ids:participants,
         participant_names:participants.map(member => member === uid ? user.display_name || user.username || 'PUBLIC listener' : peer.display_name || peer.username),
-        dm_requester:uid, dm_status:follows.every(page => rows(page).length) ? 'accepted' : 'pending',
+        dm_requester:uid, dm_status:peer.profile_private!==true && follows.every(page => rows(page).length) ? 'accepted' : 'pending',
       });
       return Response.json({id:chat.id});
     }
