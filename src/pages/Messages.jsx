@@ -56,6 +56,7 @@ function MessagesPage({user}) {
   function openMessageMenu(message,group){
     const bubble=group.querySelector('.public-message-bubble,.public-message-song')||group;
     const anchor=bubble;
+    setError('');
     setMenu({chatId:id,message,anchor});
   }
   const hold=useRef(null);
@@ -326,6 +327,7 @@ function MessagesPage({user}) {
                   const selected=(activeMenu.sender_id===user?.id?activeMenu.sender_reaction:activeMenu.recipient_reaction)===emoji;
                   return <button key={emoji} type="button" aria-label={REACTION_LABELS[index]} aria-pressed={selected} disabled={busy} onClick={()=>void perform(async()=>{
                     const saved=await messages('react',{id,messageId:activeMenu.id,emoji:selected?'':emoji});
+                    if(saved.messageId!==activeMenu.id)throw Error('Reaction could not be confirmed. Try again.');
                     if(currentChat.current===id){
                       readVersion.current++;
                       setThread(previous=>previous?.chat.id===id?{...previous,messages:previous.messages.map(message=>message.id===saved.messageId?{
@@ -336,6 +338,7 @@ function MessagesPage({user}) {
                   })}>{emoji}</button>;
                 })}
               </div>
+              {error&&<p role="alert" className="rounded-xl border bg-card p-3 text-sm">{error}</p>}
               <div className="public-message-menu-preview">{activeMenu.text || (activeMenu.track_id?'Shared a song':messageGifId(activeMenu)?'Sent a GIF':'Message')}</div>
               <div className="public-message-menu-items">
               {canSend&&<button type="button" onClick={()=>{

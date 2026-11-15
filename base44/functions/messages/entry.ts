@@ -114,14 +114,14 @@ Deno.serve(async req => {
     if (action === 'react') {
       if (typeof messageId !== 'string' || !/^[a-zA-Z0-9_-]{1,100}$/.test(messageId)) fail('Choose a message.');
       if (emoji !== '' && !["❤️","👍","👎","😂","‼️","❓","🔥"].includes(emoji)) fail('Choose a reaction.');
-      const source = rows(await db.Message.filter({id:messageId,conversation_id:id}, '-created_date', 1))[0];
-      if (!source || (source.sender_id !== uid && source.recipient_id !== uid)) fail('Message unavailable.',404);
+      const source = await db.Message.get(messageId);
+      if (!source || source.conversation_id !== id || (source.sender_id !== uid && source.recipient_id !== uid)) fail('Message unavailable.',404);
       const field = source.sender_id === uid ? 'sender_reaction' : 'recipient_reaction';
       const reactions = {...savedReactions(source), [uid]:emoji};
-      await db.Message.update(source.id,{reactions:JSON.stringify(reactions)});
-      const confirmed = await db.Message.get(source.id);
-      if (!confirmed || reactionFields(confirmed)[field] !== emoji) fail('Reaction could not be confirmed. Try again.',503);
-      return Response.json({ok:true, messageId:source.id, ...reactionFields(confirmed)});
+      const updated = await db.Message.update(source.id,{reactions:JSON.stringify(reactions)});
+      const confirmed = updated?.reactions === JSON.stringify(reactions) ? updated : await db.Message.get(source.id);
+      if (!confirmed || reactionFields({...source,...confirmed})[field] !== emoji) fail('Reaction could not be confirmed. Try again.',503);
+      return Response.json({ok:true, messageId:source.id, ...reactionFields({...source,...confirmed})});
     }
 
     if (action === 'delete_message') {
