@@ -10,7 +10,7 @@ export function MomentGif({id, label="GIF reaction"}){
 
 const GIF_CATEGORIES = ["Trending", "Laugh", "Love", "Celebrate", "Surprised", "Music"];
 
-export default function MomentGifPicker({onSelect,onClose,inline=false,id}){
+export default function MomentGifPicker({onSelect,onClose,inline=false,id=""}){
  const [query,setQuery]=useState(''),[items,setItems]=useState([]),[status,setStatus]=useState('');
  const [activeTerm,setActiveTerm]=useState(''),[failed,setFailed]=useState(false),[moreLoading,setMoreLoading]=useState(false),[hasMore,setHasMore]=useState(false),[moreFailed,setMoreFailed]=useState(false);
  const request=useRef(null),itemsRef=useRef([]),loadingMore=useRef(false),canLoadMore=useRef(false),nextOffset=useRef(0);
