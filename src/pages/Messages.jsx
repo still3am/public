@@ -1,3 +1,4 @@
+import {getRecentPlays} from '@/lib/recentPlays';
 import MomentGifPicker,{MomentGif} from '@/components/moments/MomentGifPicker';
 import '@/components/moments/moment-tools.css';
 import {useCallback,useEffect,useLayoutEffect,useRef,useState} from 'react';
@@ -415,7 +416,7 @@ function MessagesPage({user}) {
           {canSend&&selectingLyrics&&attachment&&<LyricSharePicker track={attachment} onClose={()=>setSelectingLyrics(false)} onSelect={lyrics=>{
             setAttachment({...attachment,lyrics});setSelectingLyrics(false);
           }}/>}
-          {canSend&&songPicker&&<TrackPickerSheet title={songPicker==="lyrics"?"Choose a song for your lyrics":"Share a song"} description="Choose a song to send in this conversation." selectedIds={[]} onClose={()=>setSongPicker(false)} onToggle={(_,song)=>{setAttachment(song);if(songPicker==="lyrics")setSelectingLyrics(true);setSongPicker(false);}}/>}
+          {canSend&&songPicker&&songPicker!=="recent"&&<TrackPickerSheet title={songPicker==="lyrics"?"Choose a song for your lyrics":"Share a song"} description="Choose a song to send in this conversation." selectedIds={[]} onClose={()=>setSongPicker(false)} onToggle={(_,song)=>{setAttachment(song);if(songPicker==="lyrics")setSelectingLyrics(true);setSongPicker(false);}}/>}
           {canSend&&showGifs&&<MomentGifPicker onClose={()=>setShowGifs(false)} onSelect={id=>{setMediaDraft(null);setGif(id);setShowGifs(false);}}/>}
 
           {canSend&&selectedMedia&&<div className="public-message-attachment public-message-upload-preview">
@@ -469,6 +470,7 @@ function MessagesPage({user}) {
                 aria-label={musicMenu==="music"?"Share music":"Add to message"} className="public-message-attachment-menu">
                 {musicMenu==="music"?<>
                   <button type="button" onClick={()=>setMusicMenu("attachments")}><ChevronLeft size={19}/> Attachments</button>
+                  <button type="button" onClick={()=>{setMusicMenu(false);setSongPicker("recent");}}><Music2 size={19}/> Share recently played</button>
                   <button type="button" onClick={()=>{setMusicMenu(false);setSongPicker("song");}}><Music2 size={19}/> Share song</button>
                   <button type="button" onClick={()=>{setMusicMenu(false);setSongPicker("lyrics");}}><Music2 size={19}/> Share lyrics</button>
                 </>:<>
@@ -497,6 +499,9 @@ function MessagesPage({user}) {
             <button type="submit" aria-label="Send message" disabled={busy||(!draft.trim()&&!attachment&&!gif&&!selectedMedia)}><ArrowUp size={17}/></button>
             </div>
           </form>}
+          {canSend&&songPicker==="recent"&&<RecentlyPlayedPicker
+            onClose={()=>setSongPicker(false)}
+            onSelect={song=>{setAttachment(song);setSongPicker(false);}}/>}
           {pending&&!incoming&&!canSend&&<p className="text-sm">Waiting for them to accept your request.</p>}
         </>}
       </section>:<div className="public-messages-empty"><MessageCircle size={32} aria-hidden="true"/><h2>Your conversations</h2><p>Choose a chat or start a new message.</p><button type="button" onClick={()=>setComposing(true)}><SquarePen size={16}/> New message</button></div>}
@@ -584,5 +589,22 @@ function ChatMedia({chatId,message}){
   if(url)return image?<img className="public-message-upload" src={url} alt="Shared photo" onError={fail}/>:<video className="public-message-upload" src={url} controls playsInline preload="metadata" onError={fail}/>;
   return <button type="button" className="public-message-open-media" disabled={loading} onClick={open}>
     {loading?'Opening…':error?'Couldn’t open. Retry':image?'View photo':'Open video'}
+  </button>;
+}
+
+function RecentlyPlayedPicker({onClose,onSelect}){
+  const tracks=getRecentPlays().filter(track=>track.is_published&&!track._private_audio);
+  return <section className="public-message-recent" aria-label="Share recently played">
+    <header><h3>Share recently played</h3><button type="button" aria-label="Close recently played" onClick={onClose}><X size={18}/></button></header>
+    {tracks.length?<div className="public-message-recent-grid">{tracks.map(track=><RecentTrack key={track.id} track={track} onSelect={onSelect}/>)}</div>
+      :<p>No shareable songs in your recent plays yet.</p>}
+  </section>;
+}
+
+function RecentTrack({track,onSelect}){
+  const cover=useCoverUrl(track.cover_art_url);
+  return <button type="button" onClick={()=>onSelect(track)}>
+    {cover?<img src={cover} alt="" loading="lazy"/>:<Music2 size={20} aria-hidden="true"/>}
+    <span className="min-w-0"><strong className="block truncate">{track.title}</strong><small className="block truncate">{track.artist}</small></span>
   </button>;
 }
