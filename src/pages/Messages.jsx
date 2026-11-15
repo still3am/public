@@ -4,7 +4,7 @@ import {useCallback,useEffect,useLayoutEffect,useRef,useState} from 'react';
 import {Link,useLocation,useSearchParams} from 'react-router-dom';
 import {base44} from '@/api/base44Client';
 import {useAuth} from '@/lib/AuthContext';
-import {ArrowUp,ChevronLeft,ChevronRight,Clapperboard,Copy,ExternalLink,Trash2,MessageCircle,ImagePlus,Music2,Pause,Play,Reply,Search,SquarePen,X} from 'lucide-react';
+import {ArrowUp,ChevronLeft,ChevronRight,Clapperboard,Copy,ExternalLink,Trash2,MessageCircle,ImagePlus,Music2,Pause,Play,Plus,Reply,Search,SquarePen,X} from 'lucide-react';
 import LyricSharePicker from '@/components/LyricSharePicker';
 import LyricCoverGradient from '@/components/LyricCoverGradient';
 import TrackPickerSheet from '@/components/profile/TrackPickerSheet';
@@ -416,7 +416,16 @@ function MessagesPage({user}) {
           {canSend&&selectingLyrics&&attachment&&<LyricSharePicker track={attachment} onClose={()=>setSelectingLyrics(false)} onSelect={lyrics=>{
             setAttachment({...attachment,lyrics});setSelectingLyrics(false);
           }}/>}
-          {canSend&&musicMenu&&<Dialog open onOpenChange={open=>{if(!open)setMusicMenu(false);}}>
+          {canSend&&musicMenu==="attachments"&&<Dialog open onOpenChange={open=>{if(!open)setMusicMenu(false);}}>
+            <DialogContent className="public-message-attachment-menu">
+              <DialogTitle>Add to message</DialogTitle>
+              <DialogDescription className="sr-only">Choose what to attach.</DialogDescription>
+              <button type="button" onClick={()=>setMusicMenu("music")}><Music2 size={19}/> Music</button>
+              <button type="button" onClick={()=>{setMusicMenu(false);setShowGifs(true);}}><Clapperboard size={19}/> {gif?"Change GIF":"GIF"}</button>
+              <button type="button" onClick={()=>{mediaInput.current?.click();setMusicMenu(false);}}><ImagePlus size={19}/> Photo or video</button>
+            </DialogContent>
+          </Dialog>}
+          {canSend&&musicMenu==="music"&&<Dialog open onOpenChange={open=>{if(!open)setMusicMenu(false);}}>
             <DialogContent className="public-message-actions">
               <DialogTitle>Share music</DialogTitle>
               <DialogDescription className="sr-only">Choose a song or a lyric excerpt.</DialogDescription>
@@ -470,10 +479,8 @@ function MessagesPage({user}) {
             }
             await loadInbox();
           });}}>
-            <button type="button" aria-label="Share song or lyrics" disabled={busy} onClick={()=>setMusicMenu(true)}><Music2 size={19}/></button>
-            <button type="button" className="public-message-gif-button" aria-label={gif?"Change GIF":"Add a GIF"} aria-expanded={showGifs} disabled={busy} onClick={()=>setShowGifs(true)}><Clapperboard size={20} aria-hidden="true"/><span aria-hidden="true">GIF</span></button>
+            <button type="button" aria-label="Add attachment" aria-haspopup="dialog" aria-expanded={Boolean(musicMenu)} disabled={busy} onClick={()=>setMusicMenu("attachments")}><Plus size={22}/></button>
             <input hidden ref={mediaInput} type="file" accept="image/jpeg,image/png,image/webp,video/mp4,video/quicktime,video/webm" aria-label="Choose photo or video" onChange={event=>{const file=event.currentTarget.files?.[0];event.currentTarget.value='';selectMedia(file);}}/>
-            <button type="button" aria-label="Add photo or video" disabled={busy} onClick={()=>mediaInput.current?.click()}><ImagePlus size={19}/></button>
             <textarea ref={draftInput} rows={1} aria-label="Message" placeholder={pending?'Write a message request…':'Write a message…'} className="min-w-0 flex-1 rounded-lg border bg-background p-2" value={draft} maxLength={2000} onChange={event=>{
               const value=event.target.value;
               setDrafts(previous=>{

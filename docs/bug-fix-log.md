@@ -203,3 +203,5 @@ All 99 automated suites passed, including repaired fixtures for current admin mo
 - Messages drafts — Preserve unsent text separately for each conversation while Messages is open. A confirmed send clears only the matching draft, even after switching chats. Build passed.
 
 - Messages photo and video attachments — Added local previews, private uploads, and temporary attachment links after conversation access is checked. Build and backend syntax checks passed. Live sending and playback remain unverified.
+
+- Messages composer — Combined music, GIF, and photo or video attachments under one plus button.
