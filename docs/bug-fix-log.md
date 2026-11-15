@@ -139,3 +139,12 @@ All 99 test suites, lint, and production build passed. Signed-in mobile and desk
 - Profile picture badges — Reused the Moments comment badge across shared avatars. Search, discovery, and onboarding now pass public badge fields, and profile comments load visible authors in batches. The full profile header keeps its existing badge. Production build passed. Live layout verification remains open.
 
 - Profile comments section — Removed the conversation panel from the main profile page. The profile media viewer still opens its own comment thread. Production build and diff checks passed.
+
+## November 14, 2026 — PUBLIC route and regression audit
+
+- Moments — The outside tap handler could skip registration before the feed loaded. It now reads the current feed at tap time. Automatic pagination checks that IntersectionObserver exists so the manual load button can work in older browsers.
+- Artist Dashboard — A failed upload and totals refresh was hidden after the first successful load. Retained rows now appear alongside a retry.
+- Policies — The Privacy route matched trailing slashes and mixed case, but the page chose its content using an exact pathname. It now normalizes the path.
+- Marketplace — Removal retries validated the item against the gallery after it was already hidden. Avatar and banner removals now recognize an existing removal before checking gallery membership. Avatar removal also confirms the admin session before writing.
+
+All 99 automated suites passed, including repaired fixtures for current admin moderation, public Moments access, and profile media. Lint and production build passed. Static navigation checked 39 route patterns and 24 literal links, with no unmatched links. Live signed-in workflows and mobile and desktop layouts still need verification.
