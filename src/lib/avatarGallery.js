@@ -10,10 +10,15 @@ export async function loadAvatarGallery(client){
 export async function removeGalleryAvatar(client,id){
  const user=await client.auth.me();
  if(user?.role!=="admin"||user.disabled||user.is_blocked)throw Error("Only admins can remove gallery avatars.");
- if(!(await loadAvatarGallery(client)).some(item=>item.id===id))throw Error("Unknown avatar.");
- let failure;
- try{await client.entities.AvatarRemoval.create({avatar_id:id});}catch(error){failure=error;}
- const confirmed=rows(await client.entities.AvatarRemoval.filter({avatar_id:id},"-created_date",1));
- if(!confirmed.length)throw failure||Error("Deletion was not confirmed. Please retry.");
+ const existing=rows(await client.entities.AvatarRemoval.filter({avatar_id:id},"-created_date",1));
+ if(!existing.length){
+  if(!(await loadAvatarGallery(client)).some(item=>item.id===id))throw Error("Unknown avatar.");
+  const current=await client.auth.me();
+  if(current?.id!==user.id||current.role!=="admin"||current.disabled||current.is_blocked)throw Error("Your account changed. Reopen the gallery.");
+  let failure;
+  try{await client.entities.AvatarRemoval.create({avatar_id:id});}catch(error){failure=error;}
+  const confirmed=rows(await client.entities.AvatarRemoval.filter({avatar_id:id},"-created_date",1));
+  if(!confirmed.length)throw failure||Error("Deletion was not confirmed. Please retry.");
+ }
  if(typeof window!=="undefined")window.dispatchEvent(new Event("avatar-gallery:changed"));
 }

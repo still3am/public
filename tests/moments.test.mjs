@@ -43,6 +43,11 @@ actor=other;store.MomentComment.push({id:'reported-comment',moment_id:'post-1',u
 result=await safetyCall({action:'report',target_type:'moment_comment',target_id:'reported-comment',reason:'Harassment'});assert.equal(result.status,200);const report=store.Report.at(-1);assert.equal(report.moment_id,'post-1');actor={id:'admin',role:'admin'};result=await safetyCall({action:'moderate',id:report.id,remove:true});assert.equal(result.status,200);assert.equal(store.MomentComment.at(-1).status,'deleted');
 console.log('PASS Moments reports enter the existing inbox, comment reports link to their parent, non-admin moderation is denied and admin removal hides posts/comments');
 
-// Every Moments action is gated before accessing data, including direct IDs.
-for(const action of ['feed','get','publish','like','comments','comment','delete','delete_comment']){await assert.rejects(momentsAction({},null,{action,id:'post-1'}),e=>e.status===401);for(const role of ['user','artist'])await assert.rejects(momentsAction({},{id:'listener',role},{action,id:'post-1'}),e=>e.status===403);}
-console.log('PASS admin-only preview: guests, listeners and artists cannot access any Moments API action');
+// Public browsing and private actions have different access rules.
+reset();
+assert.deepEqual((await call(null,{action:'feed'})).items,[]);
+await rejects(null,{action:'feed',scope:'following'},401);
+await rejects(null,{action:'feed',scope:'mine'},401);
+await rejects(null,input(),401);
+await rejects({...me,disabled:true},{action:'feed'},403);
+console.log('PASS public Moments browsing and authenticated personal feeds');

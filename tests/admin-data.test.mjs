@@ -9,6 +9,10 @@ const client={auth:{me:async()=>user},entities:{
  SupportTicket:{get:async()=>({id:'ticket'}),update:async(id,patch)=>({id,...patch})},
  Report:{filter:async(q,sort,limit,skip)=>skip?[]:Array.from({length:100},(_,i)=>({id:String(i)})),update:async(id,patch)=>({id,...patch})}
 }};
+client.functions={invoke:async(name,{entity,action,args})=>{
+ assert.equal(name,'securityGateway');assert.equal(entity,'Track');assert.equal(action,'update');
+ return {data:{result:await client.entities.Track.update(...args)}};
+}};
 assert.equal((await readAdminRows(client,'Report')).length,100);
 assert.equal((await moderateAdminTrack(client,'t','approved')).is_published,true);
 track.rights_confirmed=false;await assert.rejects(moderateAdminTrack(client,'t','approved'),/rights/);
