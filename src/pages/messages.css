@@ -641,3 +641,66 @@
     transform: none;
   }
 }
+
+/* Desktop message text should use a readable measure and never force overflow. */
+@media (min-width: 768px) {
+  .public-messages-layout {
+    grid-template-columns: clamp(280px, 27vw, 360px) minmax(0, 1fr);
+  }
+
+  .public-messages-inbox-header {
+    padding: 22px 24px 14px;
+  }
+
+  .public-messages-history {
+    gap: 8px;
+    padding: 24px clamp(24px, 4vw, 64px);
+  }
+
+  .public-message-group {
+    width: fit-content;
+    max-width: min(76%, 680px);
+  }
+
+  .public-message-group > .public-message-bubble {
+    max-width: 100%;
+    font-size: 15px;
+    line-height: 1.5;
+    letter-spacing: -0.01em;
+    overflow-wrap: anywhere;
+    word-break: normal;
+  }
+
+  .public-message-group:has(> .public-message-song) {
+    width: min(360px, 76%);
+  }
+
+  .public-message-lyric-card {
+    width: min(380px, 100%);
+  }
+
+  .public-message-lyric-lines {
+    padding: 18px;
+    font-size: clamp(17px, 1.25vw, 22px);
+    line-height: 1.42;
+  }
+
+  .public-messages-compose {
+    gap: 12px;
+    padding: 14px clamp(20px, 4vw, 56px) max(14px, env(safe-area-inset-bottom));
+  }
+
+  .public-messages-compose .public-message-input-pill textarea {
+    min-height: 48px;
+    max-height: 160px;
+    padding: 13px 16px;
+    font-size: 16px;
+    line-height: 1.45;
+    overflow-wrap: anywhere;
+  }
+
+  .public-message-song-draft strong,
+  .public-message-song-draft small {
+    overflow-wrap: anywhere;
+  }
+}
