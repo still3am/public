@@ -45,9 +45,9 @@
 
 /* Native swipe shelves preserve vertical page scrolling and long-press menus. */
 @media(max-width:767px){
- .public-app .profile-redesigned .profile-rotation,
+ .public-app .profile-redesigned.profile-is-editing .profile-rotation,
  .public-app .profile-redesigned .profile-community-column .profile-people-shelf{padding:22px 0 16px;border-radius:24px;overflow:hidden;box-shadow:none!important;background:#fafafa!important;border-color:#00000012!important}
- html.dark .public-app .profile-redesigned .profile-rotation,
+ html.dark .public-app .profile-redesigned.profile-is-editing .profile-rotation,
  html.dark .public-app .profile-redesigned .profile-community-column .profile-people-shelf{background:#1b1b1b!important;border-color:#ffffff12!important}
  .public-app .profile-redesigned .profile-rotation .profile-top8-heading{display:flex;align-items:center;justify-content:space-between;flex-wrap:nowrap;gap:12px;padding-inline:20px;margin:0 0 20px}
  .public-app .profile-redesigned .profile-rotation .profile-top8-heading h2,
