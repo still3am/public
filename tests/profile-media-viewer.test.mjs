@@ -74,7 +74,7 @@ console.log("PASS profile image/GIF/video source selection, original sound, musi
 // The viewer composer is after real comments in both DOM and keyboard order.
 let commentStates=[],commentRefs=[],ci=0,cri=0,created=[];
 const viewerComment={profile_id:"person",media_key:profileMediaKey(profileViewerMedia(clip)),id:"comment-1",author_id:"other",author_name:"Other member",message:"Great photo",created_date:"2026-10-26T01:00:00Z"};
-const commentDeps={React,profileCommentFilter,isProfileCommentThread,
+const commentDeps={React,profileCommentFilter,isProfileCommentThread,getUsersByIds:async()=>[],
  useState:initial=>{const i=ci++;if(!(i in commentStates))commentStates[i]=initial;return [commentStates[i],next=>commentStates[i]=typeof next==="function"?next(commentStates[i]):next];},
  useRef:initial=>commentRefs[cri++]??(commentRefs[cri-1]={current:initial}),useEffect:()=>{},useCallback:fn=>fn,
  useAuth:()=>({user:{id:"listener",display_name:"Listener",avatar_url:"/avatar.jpg"}}),
@@ -84,7 +84,7 @@ const commentDeps={React,profileCommentFilter,isProfileCommentThread,
 globalThis.__mediaComments=commentDeps;
 const commentSource=ts.transpileModule(fs.readFileSync("src/components/profile/ProfileComments.jsx","utf8").replace(/^import[^;]+;/gm,""),{compilerOptions:{jsx:ts.JsxEmit.React,target:ts.ScriptTarget.ES2022,module:ts.ModuleKind.ESNext}}).outputText;
 const {default:Comments}=await import("data:text/javascript;base64,"+Buffer.from("const {"+Object.keys(commentDeps).join(",")+"}=globalThis.__mediaComments;\n"+commentSource).toString("base64"));
-commentStates=[[viewerComment],false,false,"Hello!",false,10];
+commentStates=[[viewerComment],null,false,false,"Hello!",false,10];
 const renderComments=presentation=>{ci=cri=0;return Comments({profileId:"person",isOwn:false,presentation,description:"",mediaKey:presentation==="media"?profileMediaKey(profileViewerMedia(clip)):""});};
 let commentTree=renderComments("media"),commentNodes=all(commentTree);
 assert.ok(commentNodes.findIndex(node=>node.props?.className?.includes("profile-comment-row")) < commentNodes.findIndex(node=>node.type==="form"),"media comments precede the composer");
@@ -92,7 +92,7 @@ assert.ok(commentNodes.some(node=>node.type==="avatar" && node.props.className==
 assert.equal(commentNodes.filter(node=>node.type==="form").length,1);
 await commentNodes.find(node=>node.type==="form").props.onSubmit({preventDefault(){}});
 assert.equal(created.length,1);assert.equal(created[0].message,"Hello!");assert.equal(created[0].profile_id,"person");assert.equal(created[0].author_id,"listener");
-assert.equal(commentStates[3],"","confirmed save clears the composer");
+assert.equal(commentStates[4],"","confirmed save clears the composer");
 commentStates[0]=[{...viewerComment,media_key:""}];commentTree=renderComments("profile");commentNodes=all(commentTree);
 assert.ok(commentNodes.findIndex(node=>node.type==="form") < commentNodes.findIndex(node=>node.props?.className?.includes("profile-comment-row")),"normal profile conversation keeps its original composer placement");
 console.log("PASS reference-style comments layout, one bottom composer, current-user avatar and confirmed comment persistence");

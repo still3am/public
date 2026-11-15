@@ -4,7 +4,7 @@ import {Link,useLocation} from 'react-router-dom';
 export default function Policies() {
  const [operator,setOperator]=useState('PUBLIC');
  useEffect(()=>{base44.entities.AppSetting.list('-created_date',1).then(rows=>setOperator(rows[0]?.operator_name||'PUBLIC')).catch(()=>{});},[]);
- const privacy=useLocation().pathname==='/privacy';
+ const privacy=useLocation().pathname.replace(/\/+$/, '').toLowerCase()==='/privacy';
  const contents=privacy?[["information","Information used"],["visibility","Public & private"],["providers","Providers & AI"],["storage","Device storage"],["deletion","Deletion & retention"],["contact","Young users & contact"]]:[["rights","Music rights"],["community","Community standards"],["reports","Reports & copyright"],["controls","Account controls"]];
  return <article className="policy-page selectable-content max-w-2xl mx-auto pb-10 space-y-5"><h1 className="text-3xl font-extrabold">{privacy?'PUBLIC Privacy Policy':'PUBLIC Terms & Community Standards'}</h1><p className="text-sm text-muted-foreground">Updated October 25, 2026 · Operated by {operator}</p>
  <details className="policy-contents border rounded-2xl p-4 bg-card"><summary className="font-semibold text-sm cursor-pointer">On this page</summary><nav aria-label="Policy contents" className="grid sm:grid-cols-2 gap-2 mt-3">{contents.map(([id,label])=><a key={id} href={`#policy-${id}`} className="text-sm text-muted-foreground underline underline-offset-4 hover:text-foreground">{label}</a>)}</nav></details>

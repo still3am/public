@@ -13,17 +13,18 @@ globalThis.__avatarInput={current:{click(){clicked++;}}};
 const load=async(path,stubs)=>import("data:text/javascript;base64,"+Buffer.from(ts.transpileModule(stubs+fs.readFileSync(path,"utf8").replace(/^import[^;]+;/gm,""),{compilerOptions:{jsx:ts.JsxEmit.React,target:ts.ScriptTarget.ES2022,module:ts.ModuleKind.ESNext}}).outputText).toString("base64"));
 const {default:ProfileAvatar}=await load("src/components/profile/ProfileAvatar.jsx",`
 const React=globalThis.__React,useRef=()=>globalThis.__avatarInput,useState=globalThis.__avatarState,useCoverUrl=url=>url,Camera=()=>null,Loader2=Camera,Avatar=()=>null;
-const AvatarPicker=props=>React.createElement("section",props),ProfileImageEditor=props=>React.createElement("article",props),ProfileMotionEditor=props=>React.createElement("aside",props);
+const ProfileMarketplace=props=>React.createElement("section",props),ProfileImageEditor=props=>React.createElement("article",props),ProfileMotionEditor=props=>React.createElement("aside",props);
 const {isMotionFile,PROFILE_MEDIA_ACCEPT}=globalThis.__motionHelpers;
 `);
 function render(props){stateIndex=0;return ProfileAvatar(props);}
 function nodes(tree,type){if(!tree||typeof tree!=="object")return [];return [...(tree.type===type?[tree]:[]),...React.Children.toArray(tree.props?.children).flatMap(child=>nodes(child,type))];}
-const props={user:{id:"listener",avatar_url:"portrait.jpg"},editing:true,onUpload:file=>files.push(file)};
+let gallery=null;
+const props={get gallery(){return gallery;},setGallery:value=>{gallery=value;},user:{id:"listener",avatar_url:"portrait.jpg"},editing:true,onUpload:file=>files.push(file)};
 let tree=render(props);
 const button=nodes(tree,"button")[0],input=nodes(tree,"input")[0];
-assert.equal(button.props["aria-label"],"Choose profile image");button.props.onClick();assert.equal(states[0],true,"keyboard/button activation opens the avatar gallery");
-tree=render(props);const picker=nodes(tree,"section");const findPicker=n=>!n||typeof n!=="object"?null:typeof n.type==="function"&&n.props?.onSelect?n:React.Children.toArray(n.props?.children).map(findPicker).find(Boolean);
-findPicker(tree).props.onUpload();assert.equal(clicked,1,"gallery upload opens the native file picker");
+assert.equal(button.props["aria-label"],"Choose profile image");button.props.onClick();assert.equal(gallery,"avatars","keyboard/button activation opens the avatar gallery");
+tree=render(props);const picker=nodes(tree,"section");const findPicker=n=>!n||typeof n!=="object"?null:typeof n.type==="function"&&n.props?.onSelectAvatar?n:React.Children.toArray(n.props?.children).map(findPicker).find(Boolean);
+findPicker(tree).props.onAvatarUpload();assert.equal(clicked,1,"gallery upload opens the native file picker");
 const file={name:"portrait.jpg",type:"image/jpeg"},target={files:[file],value:"portrait.jpg"};
 input.props.onChange({target});assert.equal(target.value,"","same-file retry is enabled");assert.equal(files.length,0,"selecting a file stages the crop before upload");
 tree=render(props);const findCrop=n=>!n||typeof n!=="object"?null:typeof n.type==="function"&&n.props?.onApply?n:React.Children.toArray(n.props?.children).map(findCrop).find(Boolean);

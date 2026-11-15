@@ -143,7 +143,7 @@ export function MomentsExperience() {
   useEffect(() => {setPosts([]);setOffset(0);setActive(null);setComments(new Set());if (feed.current) feed.current.scrollTop = 0;setReelIndex(0);load(false);}, [id, scope, trackFilter, user?.id, safety.blocked]);
   useEffect(() => {const version = ++followingVersion.current;setFollowing(new Set());if (!user) return;readAllPages((opts) => base44.entities.Follow.filter({ follower_id: user.id }, { sort: '-created_date', ...opts })).then((rows) => {if (live.current && version === followingVersion.current) setFollowing(new Set(rows.map((r) => r.following_id)));}).catch(() => {});}, [user?.id]);
   useEffect(() => {if (composer || report) setActive(null);}, [composer, report]);
-  useEffect(() => {const el = sentinel.current;if (!el || !more || loading || error) return;const observer = new IntersectionObserver((entries) => {if (entries[0]?.isIntersecting) load(true);}, { root: feed.current, rootMargin: '300px' });observer.observe(el);return () => observer.disconnect();}, [more, loading, error, load]);
+  useEffect(() => {const el = sentinel.current;if (!el || !more || loading || error || typeof IntersectionObserver === 'undefined') return;const observer = new IntersectionObserver((entries) => {if (entries[0]?.isIntersecting) load(true);}, { root: feed.current, rootMargin: '300px' });observer.observe(el);return () => observer.disconnect();}, [more, loading, error, load]);
   function create(track = null) {if (!user) {login();return;}setActive(null);player.pausePlayback?.();setSeed(track);setComposer(true);}
   async function action(key, fn) {if (actionLock.current) return;actionLock.current = true;setBusy(key);setNotice('');try {await fn();} catch (e) {if (live.current) setNotice(momentError(e));} finally {actionLock.current = false;if (live.current) setBusy('');}}
   function like(p) {if (!user) {login();return;}action(p.id, async () => {const result = await momentsApi('like', { id: p.id, liked: !p.liked });if (live.current) setPosts((old) => old.map((x) => x.id === p.id ? { ...x, ...result } : x));});}
@@ -157,10 +157,8 @@ export function MomentsExperience() {
   const currentReel = Math.min(reelIndex, Math.max(0, visiblePosts.length - 1));
 
   useEffect(() => {
-    const list = feed.current;
-    if (!list) return;
     function closeOutside(event) {
-      list.querySelectorAll('.reel-menu[open]').forEach((menu) => {
+      feed.current?.querySelectorAll('.reel-menu[open]').forEach((menu) => {
         if (!menu.contains(event.target)) menu.open = false;
       });
     }
