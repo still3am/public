@@ -116,7 +116,6 @@ function MessagesPage({user}) {
   const draft=drafts.get(id)||'';
   const [reply,setReply]=useState(null);
   const [peerTyping,setPeerTyping]=useState(false);
-  const typingTimer=useRef(null);
   const typingPollLock=useRef(false);
   const draftInput=useRef(null);
   const [inboxQuery,setInboxQuery]=useState('');
@@ -223,7 +222,7 @@ function MessagesPage({user}) {
     };
     void poll();
     const timer=setInterval(poll,1800);
-    return()=>{active=false;clearInterval(timer);clearTimeout(typingTimer.current);};
+    return()=>{active=false;clearInterval(timer);};
   },[id]);
   async function perform(work) {
     if(operation.current)return;
@@ -471,7 +470,7 @@ function MessagesPage({user}) {
             const requestId=existing?.text===text&&existing?.trackId===trackId&&existing?.replyId===replyId&&existing?.lyricKey===lyricKey&&existing?.gifId===gif&&existing?.mediaUri===media?.uri?existing.requestId:globalThis.crypto?.randomUUID?.();
             pendingSends.current.set(id,{text,trackId,replyId,lyricKey,gifId:gif,mediaUri:media?.uri,requestId});
             await messages('send',{id,text,trackId,replyId,requestId,lyrics,gifId:gif,media});
-            clearTimeout(typingTimer.current);void messages('typing',{id,typing:false}).catch(()=>{});
+            void messages('typing',{id,typing:false}).catch(()=>{});
             pendingSends.current.delete(id);
             setMediaDraft(previous=>previous===selectedMedia?null:previous);
             setDrafts(previous=>{

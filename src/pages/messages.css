@@ -553,3 +553,35 @@
   border-top: 1px solid hsl(var(--border) / .45);
   background: hsl(var(--background));
 }
+
+.public-message-typing {
+  animation: public-typing-enter .22s ease-out both;
+}
+
+.public-message-typing-dots {
+  gap: 4px;
+}
+
+.public-message-typing-dots i {
+  width: 6px;
+  height: 6px;
+  animation: public-typing-flow 1.15s cubic-bezier(.4, 0, .2, 1) infinite;
+  will-change: transform, opacity;
+}
+
+.public-message-typing-dots i:nth-child(2) { animation-delay: .16s; }
+.public-message-typing-dots i:nth-child(3) { animation-delay: .32s; }
+
+@keyframes public-typing-flow {
+  0%, 55%, 100% { opacity: .35; transform: translateY(1px) scale(.86); }
+  25% { opacity: 1; transform: translateY(-3px) scale(1); }
+}
+
+@keyframes public-typing-enter {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .public-message-typing { animation: none; }
+}
