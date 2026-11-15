@@ -114,7 +114,16 @@ Deno.serve(async req => {
     if (action === 'react') {
       if (typeof messageId !== 'string' || !/^[a-zA-Z0-9_-]{1,100}$/.test(messageId)) fail('Choose a message.');
       if (emoji !== '' && !["❤️","👍","👎","😂","‼️","❓","🔥"].includes(emoji)) fail('Choose a reaction.');
-      const source = await db.Message.get(messageId);
+      const findMessage = async () => {
+        try {
+          return rows(await db.Message.filter({conversation_id:id,id:messageId}, '-created_date', 1))
+            .find(message=>message.id===messageId&&message.conversation_id===id);
+        } catch (error) {
+          console.error('Message reaction lookup failed', {status:error?.response?.status ?? error?.status ?? null});
+          fail('Could not load this message for a reaction. Please try again.',503);
+        }
+      };
+      const source = await findMessage();
       if (!source || source.conversation_id !== id || (source.sender_id !== uid && source.recipient_id !== uid)) fail('Message unavailable.',404);
       const field = source.sender_id === uid ? 'sender_reaction' : 'recipient_reaction';
       let current = source;
@@ -127,11 +136,12 @@ Deno.serve(async req => {
           await db.Message.updateMany({id:source.id,conversation_id:id,...match},{
             $set:{reactions:JSON.stringify(reactions)},
           });
-          current = await db.Message.get(source.id);
+
         } catch (error) {
-          console.error('Message reaction write/read failed', {status:error?.response?.status ?? error?.status ?? null});
+          console.error('Message reaction write failed', {status:error?.response?.status ?? error?.status ?? null});
           fail('Could not save the reaction. Please try again.',503);
         }
+        current = await findMessage();
         if (!current || current.conversation_id !== id) fail('Message unavailable.',404);
         if (reactionFields(current)[field] === emoji) {
           return Response.json({ok:true,messageId:source.id,...reactionFields(current)});
