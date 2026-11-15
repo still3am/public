@@ -49,8 +49,8 @@ function messageTime(value) {
   { month: "short", day: "numeric", hour: "numeric", minute: "2-digit" }).format(date);
 }
 
-function PersonAvatar({ person }) {
-  return <span className="public-messages-avatar"><Avatar user={person} size={40} motion /></span>;
+function PersonAvatar({ person, size = 40 }) {
+  return <span className="public-messages-avatar"><Avatar user={person} size={size} motion /></span>;
 }
 
 export default function Messages() {
@@ -420,7 +420,7 @@ function MessagesPage({ user }) {
               <button type="button" className="public-chat-details-done" onClick={() => setChatDetailsOpen(false)}>Done</button>
             </header>
             <div className="public-chat-details-person">
-              <PersonAvatar person={peerFor(thread.chat)} />
+              <PersonAvatar person={peerFor(thread.chat)} size={76} />
               <DialogTitle>{peerName(thread.chat)}</DialogTitle>
               <DialogDescription>Make this conversation feel like yours.</DialogDescription>
               <Link to={"/profile/" + encodeURIComponent(currentPeer)} onClick={() => setChatDetailsOpen(false)}>View profile</Link>
