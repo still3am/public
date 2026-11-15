@@ -230,3 +230,17 @@
 .public-app .profile-redesigned .profile-community-column .profile-people-shelf>header{justify-content:center;text-align:center}
 .public-app .profile-redesigned .profile-community-column .profile-people-shelf>header>div{width:100%;min-width:0}
 .public-app .profile-redesigned .profile-community-column .profile-people-shelf h2{max-width:none;text-align:center;margin-inline:auto}
+
+@media (min-width: 768px) {
+  .public-app .profile-redesigned .profile-identity > .profile-cover-stage {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 3 / 1;
+    min-height: 200px;
+    max-height: 440px;
+  }
+
+  .profile-cover-stage > .public-profile-media :is(img, video) {
+    object-position: center;
+  }
+}

@@ -232,3 +232,127 @@
 .onboarding-color-mini{display:flex;flex:0 0 auto;align-items:center;padding-left:4px}
 .onboarding-color-mini i{display:block;width:18px;height:18px;flex:0 0 18px;margin-left:-4px;border-radius:50%;border:2px solid #222}
 @media(max-height:600px){.new-member-onboarding[data-onboarding-step="0"] .onboarding-content{justify-content:flex-start;padding-block:20px}.new-member-onboarding .onboarding-record{width:120px}}
+
+/* Shared setup layout, with a scrollable body between persistent controls. */
+.new-member-onboarding {
+  --setup-gutter: clamp(16px, 5vw, 36px);
+  --setup-surface: #1d1d22;
+  --setup-border: #ffffff26;
+}
+
+.new-member-onboarding > :is(.onboarding-header, .onboarding-content, .onboarding-footer) {
+  padding-inline: var(--setup-gutter);
+}
+
+.new-member-onboarding > .onboarding-header {
+  padding-bottom: 12px;
+}
+
+.new-member-onboarding .onboarding-progress {
+  margin-top: 10px;
+}
+
+.new-member-onboarding .onboarding-progress > span {
+  height: 3px;
+}
+
+.new-member-onboarding > .onboarding-content {
+  padding-block: clamp(16px, 3dvh, 30px) 24px;
+}
+
+.new-member-onboarding .onboarding-page-intro {
+  margin-bottom: 20px;
+}
+
+.new-member-onboarding .onboarding-step-label {
+  margin: 0 0 8px;
+  font-size: 12px;
+  letter-spacing: 0;
+  color: #cccbd3;
+}
+
+.new-member-onboarding > .onboarding-footer {
+  padding-top: 10px;
+  padding-bottom: max(12px, env(safe-area-inset-bottom));
+}
+
+.new-member-onboarding .onboarding-buttons > button {
+  min-height: 48px;
+}
+
+.new-member-onboarding :is(button, input, summary):focus-visible {
+  outline: 2px solid #c5bbff;
+  outline-offset: 2px;
+}
+
+.new-member-onboarding[data-onboarding-step="0"] .onboarding-page-intro {
+  margin-bottom: 20px;
+}
+
+.new-member-onboarding[data-onboarding-step="0"] .onboarding-record-stage {
+  padding: clamp(12px, 4dvh, 32px);
+  border-radius: 50%;
+  background: radial-gradient(circle, #8979ee50, transparent 72%);
+}
+
+.new-member-onboarding .onboarding-form {
+  gap: 12px;
+}
+
+.new-member-onboarding .onboarding-photo-area {
+  padding-block: 12px;
+  border-radius: 18px;
+  background: var(--setup-surface);
+}
+
+.new-member-onboarding .onboarding-genres > button {
+  min-height: 48px;
+  padding: 8px 12px;
+  border-radius: 12px;
+  overflow-wrap: anywhere;
+}
+
+.new-member-onboarding .onboarding-artist-grid {
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 80px), 1fr));
+  gap: 16px 12px;
+}
+
+.new-member-onboarding .onboarding-people {
+  display: grid;
+  gap: 8px;
+}
+
+.new-member-onboarding .onboarding-person {
+  padding: 8px 10px;
+  border-radius: 14px;
+}
+
+.new-member-onboarding :is(.onboarding-mood, .onboarding-privacy) {
+  gap: 12px;
+}
+
+.new-member-onboarding .onboarding-profile-preview {
+  padding: 16px;
+  border: 1px solid var(--setup-border);
+  border-radius: 18px;
+}
+
+.new-member-onboarding .onboarding-privacy-heading {
+  padding: 4px 0;
+}
+
+.new-member-onboarding .onboarding-ready-card {
+  padding: 12px;
+  border-radius: 16px;
+  background: var(--setup-surface);
+}
+
+@media (min-width: 601px) {
+  [role=dialog].new-member-onboarding {
+    max-width: 640px;
+  }
+
+  .new-member-onboarding .onboarding-genres {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}

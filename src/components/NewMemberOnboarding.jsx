@@ -156,7 +156,7 @@ export function WelcomeFlow({user,onDone}){
     <div className="onboarding-progress" role="progressbar" aria-label="Setup progress" aria-valuemin={1} aria-valuemax={7} aria-valuenow={step+1}>{TITLES.map((title,index)=><span key={title} className={index<=step?"active":""}/>)}</div>
    </header>
    <main ref={content} className="onboarding-content" key={step}>
-    <div className="onboarding-page-intro">{step>0&&<p className="onboarding-step-label">{"YOUR PUBLIC · "+step+" OF 6"}</p>}<DialogTitle ref={heading} tabIndex={-1}><OnboardingLetters text={TITLES[step]}/></DialogTitle><DialogDescription>{DESCRIPTIONS[step]}</DialogDescription></div>
+    <div className="onboarding-page-intro"><p className="onboarding-step-label">Step {step+1} of {TITLES.length}</p><DialogTitle ref={heading} tabIndex={-1}><OnboardingLetters text={TITLES[step]}/></DialogTitle><DialogDescription>{DESCRIPTIONS[step]}</DialogDescription></div>
     {step===0&&<div className="onboarding-welcome"><div className="onboarding-record-stage" aria-hidden="true"><div className="onboarding-record"><span className="onboarding-record-grooves"/><span className="onboarding-record-light"/><div className="onboarding-record-label"><Logo width="65px" className="onboarding-logo"/></div></div></div></div>}
     {step===1&&<form className="onboarding-form" onSubmit={e=>{e.preventDefault();next();}}>
      <div className="onboarding-photo-area"><button className="onboarding-photo" type="button" disabled={busy} onClick={()=>fileInput.current?.click()} aria-label="Choose your profile photo"><Avatar user={{display_name:draft.name,avatar_url:draft.avatar}} size={80}/><span><Camera size={15}/></span></button><span className="onboarding-note">Choose an avatar or add a photo · optional</span>{draft.avatar&&<button type="button" className="onboarding-remove-photo" disabled={busy} onClick={()=>update({avatar:""})}>Remove photo</button>}</div>
@@ -197,7 +197,7 @@ export function WelcomeFlow({user,onDone}){
      {draft.profileTrack&&<button type="button" className="onboarding-text-button" onClick={()=>update({profileTrack:""})}>Remove profile song</button>}
     </div>}
     {step===6&&<div className="onboarding-privacy">
-     <div className="onboarding-ready-card"><Avatar user={user} size={52}/><div><small>YOUR PLACE ON PUBLIC</small><strong>{user.display_name||user.full_name||"Your PUBLIC"}</strong><span>Music. People. Possibilities.</span></div><Check size={20}/></div>
+     <div className="onboarding-ready-card"><Avatar user={user} size={52}/><div><small>Your profile</small><strong>{user.display_name||user.full_name||"Your PUBLIC"}</strong></div><Check size={20}/></div>
      <div className="onboarding-privacy-heading"><ShieldCheck size={24} strokeWidth={1.5}/><span>Your listening stays yours.</span></div>
      <label className="onboarding-sharing"><span><strong>Share my favorite songs</strong><small>Show your picks in your profile’s Top 8.</small></span><input type="checkbox" checked={draft.shareFavorites} onChange={e=>update({shareFavorites:e.target.checked,sharingChanged:true})}/></label>
      {!draft.trackIds.length&&<button type="button" className="onboarding-text-button" disabled={busy} onClick={()=>{update({step:3});setMusicTab("songs");}}>Choose favorite songs</button>}
