@@ -125,13 +125,13 @@ const AuthenticatedApp = () => {
           <Route path="/downloads" element={<Downloads />} />
           <Route path="/admin" element={<Admin />} />
           <Route path="/settings/transitions" element={<SongTransitions />} />
-          <Route path="/messages" element={<Messages />} />
           <Route path="/notifications" element={<Notifications />} />
           <Route path="/artist-dashboard" element={<ArtistDashboard />} />
           <Route path="/my-uploads" element={<MyUploads />} />
           <Route path="/unfinished-uploads" element={<UnfinishedUploads />} />
         </Route>
       </Route>
+      <Route element={<ProtectedRoute />}><Route path="/messages" element={<Messages />} /></Route>
       <Route path="*" element={<PageNotFound />} />
     </Routes>
   );

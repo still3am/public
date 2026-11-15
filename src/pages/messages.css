@@ -1,0 +1,28 @@
+.public-messages{height:100dvh;display:flex;flex-direction:column;background:hsl(var(--background));color:hsl(var(--foreground));padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bottom)}
+.public-messages-layout{flex:1;min-height:0;display:grid;grid-template-columns:minmax(270px,345px) minmax(0,1fr)}
+.public-messages-inbox{min-height:0;overflow:auto;border-inline-end:1px solid hsl(var(--border))}
+.public-messages-inbox-header{padding:16px 20px 10px}
+.public-messages-inbox-header>div{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.public-messages-inbox-header h1{font-size:clamp(28px,5vw,38px);font-weight:750;letter-spacing:-.045em}
+.public-messages-inbox-header button{display:grid;place-items:center;width:44px;height:44px;border-radius:50%;background:hsl(var(--muted))}
+.public-messages-back{display:inline-flex;align-items:center;gap:4px;min-height:44px;font-size:13px;font-weight:650}
+.public-messages-tabs{display:flex;gap:4px;margin:0 16px 10px;padding:4px;background:hsl(var(--muted));border-radius:12px}
+.public-messages-tabs button{flex:1;padding:7px;border-radius:9px;font-size:13px}
+.public-messages-tabs button[aria-pressed=true]{background:hsl(var(--background));font-weight:700}
+.public-messages-row{display:grid;grid-template-columns:44px minmax(0,1fr) 15px;align-items:center;gap:12px;width:100%;min-height:68px;padding:8px 20px;text-align:left;border-bottom:1px solid hsl(var(--border))}
+.public-messages-row:is(:hover,[aria-current=true]){background:hsl(var(--muted))}
+.public-messages-avatar{display:grid;place-items:center;width:42px;height:42px;border-radius:50%;background:hsl(var(--muted));border:1px solid hsl(var(--border));font-weight:700}
+.public-messages-dot{width:8px;height:8px;border-radius:50%;background:currentColor}
+.public-messages-thread{display:flex;flex-direction:column;min-height:0;min-width:0}
+.public-messages-thread-header{position:relative;flex:none;display:grid;justify-items:center;gap:4px;padding:10px 50px;border-bottom:1px solid hsl(var(--border));background:hsl(var(--background))}
+.public-messages-thread-header h2{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:13px;font-weight:700}
+.public-messages-thread-header .public-messages-back{position:absolute;left:12px;top:50%;translate:0 -50%;width:44px;justify-content:center}
+.public-messages-history{flex:1;min-height:0;overflow:auto;display:flex;flex-direction:column;gap:5px;padding:16px clamp(12px,4vw,38px)}
+.public-message-bubble{align-self:flex-start;max-width:min(82%,560px);white-space:pre-wrap;overflow-wrap:anywhere;padding:9px 14px;border-radius:19px 19px 19px 5px;background:hsl(var(--muted))}
+.public-message-bubble[data-own=true]{align-self:flex-end;border-radius:19px 19px 5px 19px;background:hsl(var(--primary));color:hsl(var(--primary-foreground))}
+.public-messages-compose{display:flex;align-items:center;gap:8px;padding:10px 16px;border-top:1px solid hsl(var(--border))}
+.public-messages-compose input{min-height:44px;border-radius:999px;padding-inline:15px;font-size:16px}
+.public-messages-compose button{display:grid;place-items:center;width:44px;height:44px;border-radius:50%;background:hsl(var(--primary));color:hsl(var(--primary-foreground))}
+.public-messages-compose button:disabled{opacity:.35}
+.public-messages-empty{display:grid;place-content:center;justify-items:center;gap:9px;color:hsl(var(--muted-foreground))}
+@media(max-width:767px){.public-messages-layout{grid-template-columns:minmax(0,1fr)}.public-messages-inbox{border:0}.public-messages[data-thread=true] .public-messages-inbox,.public-messages-empty{display:none}}
