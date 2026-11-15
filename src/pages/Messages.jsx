@@ -395,7 +395,7 @@ function MessagesPage({ user }) {
           </button>
         )}
       </aside>
-      {id ? <section className="public-messages-thread" aria-label="Conversation" data-replying={Boolean(reply)} onKeyDown={(event) => {if (event.key === "Escape" && reply && !busy && !showGifs && !musicMenu && !songPicker) setReply(null);}}>
+      {id ? <section className="public-messages-thread" aria-label="Conversation" data-replying={Boolean(reply)} data-wallpaper={activeBackground.type !== 'none'} style={backgroundStyle} onKeyDown={(event) => {if (event.key === "Escape" && reply && !busy && !showGifs && !musicMenu && !songPicker) setReply(null);}}>
         <header className="public-messages-thread-header">
           {reply && <button type="button" className="public-message-close-reply" aria-label="Cancel reply" disabled={busy} onClick={() => setReply(null)}><X size={23} /></button>}
           <button className="public-messages-back" onClick={() => setParams({})} aria-label="Back to inbox"><ChevronLeft size={23} /></button>
