@@ -110,7 +110,8 @@ function MessagesPage({user}) {
   const [lyricShare,setLyricShare]=useState(location.state?.lyricShare||null);
   const [selectingLyrics,setSelectingLyrics]=useState(false);
   const lyricPlayback=useRef(null);
-  const [draft,setDraft]=useState('');
+  const [drafts,setDrafts]=useState(()=>new Map());
+  const draft=drafts.get(id)||'';
   const [reply,setReply]=useState(null);
   const draftInput=useRef(null);
   const [inboxQuery,setInboxQuery]=useState('');
@@ -165,7 +166,7 @@ function MessagesPage({user}) {
     return ()=>clearInterval(timer);
   },[loadInbox]);
   useEffect(()=>{
-    setThread(null);setDraft('');setGif('');setShowGifs(false);setReply(null);setAttachment(id?lyricShare:null);setSelectingLyrics(false);setMusicMenu(false);setSongPicker(false);setError('');setReadError(null);
+    setThread(null);setGif('');setShowGifs(false);setReply(null);setAttachment(id?lyricShare:null);setSelectingLyrics(false);setMusicMenu(false);setSongPicker(false);setError('');setReadError(null);
     if(!id)return;
     let pending=false;
     const refresh=async(initial=false)=>{
@@ -418,10 +419,15 @@ function MessagesPage({user}) {
             pendingSends.current.set(id,{text,trackId,replyId,lyricKey,gifId:gif,requestId});
             await messages('send',{id,text,trackId,replyId,requestId,lyrics,gifId:gif});
             pendingSends.current.delete(id);
+            setDrafts(previous=>{
+              if(previous.get(id)!==draft)return previous;
+              const next=new Map(previous);
+              next.delete(id);
+              return next;
+            });
             if(lyrics)setLyricShare(null);
             if(currentChat.current===id){
               followLatest.current=true;
-              setDraft(previous=>previous===draft?'':previous);
               setReply(previous=>previous?.id===replyId?null:previous);
               setGif(previous=>previous===gif?"":previous);
               setAttachment(previous=>previous?.id===trackId?null:previous);
@@ -431,7 +437,15 @@ function MessagesPage({user}) {
           });}}>
             <button type="button" aria-label="Share song or lyrics" disabled={busy} onClick={()=>setMusicMenu(true)}><Music2 size={19}/></button>
             <button type="button" className="public-message-gif-button" aria-label={gif?"Change GIF":"Add a GIF"} aria-expanded={showGifs} disabled={busy} onClick={()=>setShowGifs(true)}><Clapperboard size={20} aria-hidden="true"/><span aria-hidden="true">GIF</span></button>
-            <textarea ref={draftInput} rows={1} aria-label="Message" placeholder={pending?'Write a message request…':'Write a message…'} className="min-w-0 flex-1 rounded-lg border bg-background p-2" value={draft} maxLength={2000} onChange={event=>setDraft(event.target.value)} onKeyDown={event=>{
+            <textarea ref={draftInput} rows={1} aria-label="Message" placeholder={pending?'Write a message request…':'Write a message…'} className="min-w-0 flex-1 rounded-lg border bg-background p-2" value={draft} maxLength={2000} onChange={event=>{
+              const value=event.target.value;
+              setDrafts(previous=>{
+                const next=new Map(previous);
+                if(value)next.set(id,value);
+                else next.delete(id);
+                return next;
+              });
+            }} onKeyDown={event=>{
               if(event.key!=='Enter'||event.shiftKey||event.nativeEvent.isComposing||event.keyCode===229||!window.matchMedia('(pointer: fine)').matches)return;
               event.preventDefault();
               if(!busy&&(draft.trim()||attachment||gif))event.currentTarget.form?.requestSubmit();

@@ -199,3 +199,5 @@ All 99 automated suites passed, including repaired fixtures for current admin mo
 - Message reaction placement — Removed the circular chip and placed emoji at the top corner of each message.
 
 - Message reaction placement follow-up — Matched the Notes style with an unframed emoji overlapping the upper-left corner on both sides of the chat.
+
+- Messages drafts — Preserve unsent text separately for each conversation while Messages is open. A confirmed send clears only the matching draft, even after switching chats. Build passed.
