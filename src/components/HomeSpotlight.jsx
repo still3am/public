@@ -29,6 +29,7 @@ export default function HomeSpotlight({ track, tracks = [], currentTrackId, isPl
     const section=carouselRef.current;
     if(!rotating||queue.length<2||!section||!stage)return;
     const reduced=window.matchMedia('(prefers-reduced-motion: reduce)');
+    const hover=window.matchMedia('(hover: hover)');
     let visible=false;
     const observer=typeof IntersectionObserver==='undefined'?null:new IntersectionObserver(([entry])=>{
       visible=entry.isIntersecting;
@@ -36,7 +37,7 @@ export default function HomeSpotlight({ track, tracks = [], currentTrackId, isPl
     if(observer)observer.observe(stage);
     else visible=true;
     const timer=window.setInterval(()=>{
-      if(!visible||document.hidden||reduced.matches||gesture.current||wheelState.current.timer||section.matches(':hover, :focus-within'))return;
+      if(!visible||document.hidden||reduced.matches||gesture.current||wheelState.current.timer||(hover.matches&&section.matches(':hover'))||section.querySelector(':focus-visible'))return;
       wheelMove.current?.(1);
     },6000);
     return()=>{observer?.disconnect();window.clearInterval(timer);};
