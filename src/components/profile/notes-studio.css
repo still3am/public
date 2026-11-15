@@ -123,3 +123,8 @@
 .note-viewer-react-trigger{display:grid;place-items:center;width:44px;height:44px;border-radius:50%;background:hsl(var(--card));border:1px solid hsl(var(--border))}
 .note-viewer-reaction-picker{z-index:95;max-width:var(--radix-popover-content-available-width);max-height:var(--radix-popover-content-available-height);overflow:auto}
 .note-viewer-reaction-retry{font-size:11px;background:hsl(var(--card));padding:4px 6px;border-radius:8px}
+
+.public-note-viewer .public-note-art{overflow:visible}
+.public-note-viewer .public-note-art>.public-note-flow{border-radius:inherit;overflow:hidden}
+.public-note-art>.note-viewer-corner{top:-10px;left:-9px;max-width:none}
+.note-studio-stage>.public-badged-avatar>.moment-compact-badge{right:2px;bottom:2px;z-index:2}

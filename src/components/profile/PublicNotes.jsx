@@ -122,6 +122,10 @@ export default function PublicNotes({ profileId, isOwn, active = true, userTrack
   }
   if (!user?.id || (!isOwn && !valid && !(presentation === "popup" && (loading || error)))) return null;
   const playing = valid && preview.trackId === note.track_id && preview.playing;
+  const viewerCorner = valid && (<div className="note-viewer-corner">
+        {note.emoji&&<span className="note-viewer-corner-emoji" aria-label={"Note emoji "+note.emoji}>{note.emoji}</span>}
+        <NoteReactions corner key={[user.id,note.id,note.expires_at].join(":")} profileId={profileId} note={note} canReact={!isOwn} active={active && viewing}/>
+      </div>);
   return <div className={"public-notes " + (presentation === "popup" ? "public-notes-in-popup" : "public-notes-on-avatar") + (!valid ? " public-notes-empty" : "")} aria-label="PUBLIC Notes">
     {presentation === "popup" && valid && <p className="public-note-popup-label">PUBLIC Note</p>}
     {presentation === "popup" && loading && user?.id && <p className="public-note-popup-status" role="status">Loading note…</p>}
@@ -134,15 +138,13 @@ export default function PublicNotes({ profileId, isOwn, active = true, userTrack
     {viewing && valid && <Dialog open onOpenChange={setViewing}><DialogContent className="public-note-dialog public-note-viewer"><DialogHeader><DialogTitle>PUBLIC Note</DialogTitle><DialogDescription>{Date.parse(note.expires_at)-now<3600000 ? Math.max(1,Math.ceil((Date.parse(note.expires_at)-now)/60000))+"m left" : Math.ceil((Date.parse(note.expires_at)-now)/3600000)+"h left"}</DialogDescription></DialogHeader>
       <div className="note-viewer-scroll">
       <div className="note-viewer-card-frame">
+      {!note.track&&viewerCorner}
       <div className="public-note-card">
-        {note.track && <div className="public-note-art"><MotionGradient className="public-note-flow" colors={flowColors} motion={note.appearance === "cover_flow" ? "flow" : "still"} active={active && viewing} /><div className="public-note-cover"><Cover url={note.track.cover_art_url} /></div></div>}
+        {note.track && <div className="public-note-art"><MotionGradient className="public-note-flow" colors={flowColors} motion={note.appearance === "cover_flow" ? "flow" : "still"} active={active && viewing} /><div className="public-note-cover"><Cover url={note.track.cover_art_url} /></div>{viewerCorner}</div>}
         <div className="public-note-copy">{note.caption && <div className="public-note-bubble">{note.caption}</div>}{note.track && <><strong>{note.track.title}</strong><span>{note.track.artist || note.track.uploader_name}</span></>}</div>
         {note.track && <button type="button" className="public-note-play" aria-label={(playing ? "Pause " : "Play ") + note.track.title} onClick={() => playNote()}>{playing ? <Pause size={20} fill="currentColor" /> : <Play size={20} fill="currentColor" />}</button>}
       </div>
-      <div className="note-viewer-corner">
-        {note.emoji&&<span className="note-viewer-corner-emoji" aria-label={"Note emoji "+note.emoji}>{note.emoji}</span>}
-        <NoteReactions corner key={[user.id,note.id,note.expires_at].join(":")} profileId={profileId} note={note} canReact={!isOwn} active={active && viewing}/>
-      </div>
+
       </div>
       {(playbackError||preview.error) && <p className="public-note-error" role="alert">{playbackError||preview.error}</p>}
       </div>
