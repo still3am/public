@@ -163,3 +163,5 @@ All 99 automated suites passed, including repaired fixtures for current admin mo
 - Messages replies and song playback — Fixed in code. Reply now focuses the attached composer ref. Desktop Enter submits song-only messages, and playback accepts published tracks served through private audio storage. Lint and frontend build passed. Live playback and touch checks remain open.
 
 - Messages render crash — The inbox search icon was referenced without an import after the song and reply controls were added. Restored the import so an inbox with conversations can render. Lint and build passed.
+
+- Messages action menu — Added touch hold, right-click and an options button. Supports replies, copying text, opening and playing shared songs, and confirmed deletion of messages you sent. The server checks conversation and sender and refreshes the inbox preview. Production build passed. Live touch and deletion checks remain open.
