@@ -103,6 +103,33 @@ export default function Profile({ ownProfileTab = false }) {
   const { pathname } = useLocation();
   const { user: me, checkUserAuth } = useAuth();
   const isOwn = !id || id === me?.id;
+  const [unreadMessageOwner,setUnreadMessageOwner]=useState(null);
+  const hasUnreadMessages=isOwn&&Boolean(me?.id)&&unreadMessageOwner===me.id;
+  useEffect(()=>{
+    if(!isOwn||!me?.id)return;
+    const owner=me.id;
+    let active=true,loadingUnread=false;
+    async function refreshUnread(){
+      if(document.hidden||loadingUnread)return;
+      loadingUnread=true;
+      try{
+        const response=await base44.functions.invoke("messages",{action:"inbox"});
+        const chats=response.data?.conversations;
+        if(active&&Array.isArray(chats))setUnreadMessageOwner(chats.some(chat=>chat.unread&&chat.dm_status!=="declined")?owner:null);
+      }catch{}finally{loadingUnread=false;}
+    }
+    void refreshUnread();
+    const timer=window.setInterval(refreshUnread,15000);
+    document.addEventListener("visibilitychange",refreshUnread);
+    window.addEventListener("focus",refreshUnread);
+    return()=>{
+      active=false;
+      window.clearInterval(timer);
+      document.removeEventListener("visibilitychange",refreshUnread);
+      window.removeEventListener("focus",refreshUnread);
+    };
+  },[isOwn,me?.id]);
+
   // This page can stay mounted in the background as a kept-alive tab.
   const isCurrentPage = pathname === (id ? `/profile/${id}` : "/profile");
   const targetId = isOwn ? me?.id : id;
@@ -637,7 +664,7 @@ export default function Profile({ ownProfileTab = false }) {
                     {followingBusy ? <Loader2 size={16} className="animate-spin" /> : following ? <UserCheck size={16} /> : <UserPlus size={16} />}<span>{followingBusy ? "Saving…" : following ? "Following" : "Follow"}</span>
                   </button>
                     }
-                {!editMode && (isOwn || profile.id) && <Link className="w-10 h-10 md:w-12 md:h-12 rounded-full border border-border grid place-items-center" aria-label={isOwn ? "Open Messages" : "Send a message"} title={isOwn ? "Messages" : "Message"} state={isOwn ? undefined : {recipientName:profile.display_name}} to={isOwn ? "/messages" : "/messages?recipient=" + encodeURIComponent(profile.id)}><MessageCircle size={16} aria-hidden="true" /></Link>}
+                {!editMode && (isOwn || profile.id) && <Link className="w-10 h-10 md:w-12 md:h-12 rounded-full border border-border grid place-items-center" aria-label={isOwn ? (hasUnreadMessages ? "Open Messages, unread messages" : "Open Messages") : "Send a message"} title={isOwn ? "Messages" : "Message"} state={isOwn ? undefined : {recipientName:profile.display_name}} to={isOwn ? "/messages" : "/messages?recipient=" + encodeURIComponent(profile.id)}><span className="relative grid place-items-center"><MessageCircle size={16} aria-hidden="true" />{hasUnreadMessages&&<span aria-hidden="true" className="absolute -right-1 -top-1 h-2 w-2 rounded-full bg-current ring-2 ring-background" />}</span></Link>}
                 {!isOwn && followMessage && <p id="profile-follow-message" role="status" className="basis-full text-xs text-muted-foreground leading-relaxed text-center">{followMessage} <button type="button" onClick={() => setFollowMessage("")} className="underline underline-offset-2" aria-label="Dismiss follow message">Dismiss</button></p>}
                 {!editMode &&
                     <button
