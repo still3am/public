@@ -592,3 +592,52 @@
 
 .public-message-typing-dots i:nth-child(2) { animation-delay: .24s; }
 .public-message-typing-dots i:nth-child(3) { animation-delay: .48s; }
+
+.public-message-typing {
+  align-self: flex-start;
+  display: inline-flex;
+  width: fit-content;
+  min-height: 34px;
+  margin: 0 16px 6px;
+  padding: 7px 12px;
+  border: 1px solid hsl(var(--border) / .65);
+  border-radius: 18px 18px 18px 6px;
+  background: hsl(var(--muted));
+  animation: public-typing-enter .32s cubic-bezier(.2, .8, .2, 1) both;
+}
+
+.public-message-typing[data-own="true"] {
+  align-self: flex-end;
+  margin-inline-start: 16px;
+  margin-inline-end: 16px;
+  border-radius: 18px 18px 6px 18px;
+}
+
+.public-message-typing-dots {
+  gap: 4px;
+}
+
+.public-message-typing-dots i {
+  animation: public-typing-flow 1.9s cubic-bezier(.22, .68, .32, 1) infinite;
+  will-change: transform, opacity;
+}
+
+.public-message-typing-dots i:nth-child(2) { animation-delay: .18s; }
+.public-message-typing-dots i:nth-child(3) { animation-delay: .36s; }
+
+@keyframes public-typing-flow {
+  0%, 60%, 100% { opacity: .38; transform: translate3d(0, 0, 0) scale(.88); }
+  28% { opacity: 1; transform: translate3d(0, -2px, 0) scale(1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .public-message-typing {
+    animation: none;
+  }
+
+  .public-message-typing-dots i {
+    animation: none;
+    opacity: .8;
+    transform: none;
+  }
+}
