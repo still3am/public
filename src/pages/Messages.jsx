@@ -202,26 +202,24 @@ function MessagesPage({user}) {
   useEffect(()=>{
     if(!id)return;
     let active=true;
-    const isTyping=Boolean(draft.trim());
-    const updateTyping=()=>{if(active)void messages('typing',{id,typing:isTyping}).catch(()=>{});};
-    updateTyping();
-    if(!isTyping)return()=>{active=false;};
-    const heartbeat=setInterval(updateTyping,2000);
-    return()=>{active=false;clearInterval(heartbeat);};
-  },[id,draft]);
-  useEffect(()=>{
-    setPeerTyping(false);
-    if(!id)return;
-    let active=true;
-    const poll=async()=>{
-      if(typingPollLock.current)return;
+    const refreshTyping=async()=>{
+      if(!active||typingPollLock.current)return;
       typingPollLock.current=true;
-      try{const result=await messages('typing_status',{id});if(active)setPeerTyping(result.typing===true);}
-      catch{if(active)setPeerTyping(false);}
-      finally{typingPollLock.current=false;}
+      try{
+        await messages('typing',{id,typing:Boolean(draftText.current.trim())});
+        const result=await messages('typing_status',{id});
+        if(active){
+          if(result.typing){typingMisses.current=0;setPeerTyping(true);}
+          else if(++typingMisses.current>=2)setPeerTyping(false);
+        }
+      }catch{
+        if(active&&++typingMisses.current>=3)setPeerTyping(false);
+      }finally{typingPollLock.current=false;}
     };
-    void poll();
-    const timer=setInterval(poll,1800);
+    typingMisses.current=0;
+    setPeerTyping(false);
+    void refreshTyping();
+    const timer=setInterval(refreshTyping,2500);
     return()=>{active=false;clearInterval(timer);};
   },[id]);
   async function perform(work) {
