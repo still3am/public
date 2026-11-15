@@ -19,9 +19,9 @@ function SettingRow({ icon: Icon, title, description, children, to, onClick, dan
   return to ? <Link to={to} onClick={onClick} className={cls + " hover:bg-foreground/[0.04] transition-colors"}>{content}</Link> : onClick ? <button type="button" disabled={disabled} onClick={onClick} className={cls + " hover:bg-foreground/[0.04] transition-colors disabled:opacity-50"}>{content}</button> : <div className={cls}>{content}</div>;
 }
 /** @param {any} props */
-function SettingSwitch({ checked, onChange, busy, label }) {
+function SettingSwitch({ checked, onChange, busy, label, showSpinner = true }) {
   return <button type="button" role="switch" aria-label={label} aria-checked={checked} aria-busy={busy} disabled={busy} onClick={() => onChange(!checked)} className="w-14 h-11 shrink-0 grid place-items-center focus-visible:ring-2 focus-visible:ring-ring rounded-xl disabled:opacity-50">
-  <span className={"relative w-12 h-7 rounded-full transition-colors " + (checked ? "bg-foreground" : "bg-foreground/20")}><span className={"absolute top-1 left-1 w-5 h-5 rounded-full shadow-sm transition-transform " + (checked ? "translate-x-5 bg-background" : "translate-x-0 bg-background")}>{busy && <Loader2 size={12} className="absolute inset-1 animate-spin text-foreground" />}</span></span>
+  <span className={"relative w-12 h-7 rounded-full transition-colors " + (checked ? "bg-foreground" : "bg-foreground/20")}><span className={"absolute top-1 left-1 w-5 h-5 rounded-full shadow-sm transition-transform " + (checked ? "translate-x-5 bg-background" : "translate-x-0 bg-background")}>{busy && showSpinner && <Loader2 size={12} className="absolute inset-1 animate-spin text-foreground" />}</span></span>
  </button>;
 }
 /** @param {any} props */
@@ -98,7 +98,7 @@ export default function SettingsSheet({ onClose, onDeleteAccount }) {
     {user?.role==="admin"&&<SettingGroup title="Preview lab"><SettingRow icon={Sparkles} title="Community preview" description="Explore five styled profile concepts" to="/community-preview" onClick={onClose}/></SettingGroup>}
     <SettingGroup title="Help & privacy">
      <SettingRow icon={Shield} title="Private profile" description="Only you can see your full profile.">
-      {privateProfile===null ? <span className="text-xs">{privacyError?"Unavailable":"Loading…"}</span> : <SettingSwitch label="Private profile" checked={privateProfile} onChange={savePrivacy} busy={privacyBusy}/>}
+      <SettingSwitch label="Private profile" checked={privateProfile===true} onChange={savePrivacy} busy={privacyBusy||privateProfile===null} showSpinner={false}/>
      </SettingRow>
      {privacyError&&<p role="status" className="px-4 py-2 text-xs">{privacyError}</p>}
      <SettingRow icon={Headphones} title="Support & copyright" description="Get help or send a copyright request" to="/support" onClick={onClose} />
