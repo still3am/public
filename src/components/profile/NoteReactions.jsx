@@ -3,9 +3,10 @@ import {SmilePlus,Loader2} from 'lucide-react';
 import {base44} from '@/api/base44Client';
 import {useAuth} from '@/lib/AuthContext';
 import {requestPublicNote} from '@/lib/publicNoteActions';
+import {Popover,PopoverContent,PopoverTrigger} from '@/components/ui/popover';
 import NoteEmojiPicker from './NoteEmojiPicker';
 const quick=['❤️','🔥','😂','😍','👏','🥹'];
-export default function NoteReactions({profileId,note,canReact,active=true}){
+export default function NoteReactions({profileId,note,canReact,active=true,corner=false}){
  const {user}=useAuth(),key=JSON.stringify([note.id,note.expires_at]);
  const [data,setData]=useState({counts:[],mine:'',total:0}),[loading,setLoading]=useState(true),[busy,setBusy]=useState(false),[error,setError]=useState(''),[picker,setPicker]=useState(false);
  const version=useRef(0),lock=useRef(false),account=useRef(user?.id),alive=useRef(true);
@@ -31,6 +32,20 @@ export default function NoteReactions({profileId,note,canReact,active=true}){
    if(alive.current&&current===version.current&&account.current===uid)setData(result);
   }catch(e){if(alive.current&&current===version.current)setError(e?.response?.status===409||e?.response?.status===404?'This note changed or expired. Close it and open the latest note.':'Couldn’t save your reaction. Please try again.');}
   finally{lock.current=false;if(alive.current&&current===version.current){setBusy(false);setLoading(false);}}
+ }
+ if(corner){
+  const reactions=data.counts.slice(0,3).map(({emoji,count})=><span key={emoji} role="img" aria-label={emoji+' '+count}>{emoji}{count>1&&<small>{count}</small>}</span>);
+  if(!canReact&&!reactions.length&&!error)return null;
+  return <div className="note-viewer-corner-reactions" aria-label="Note reactions" aria-busy={busy}>
+    {reactions}
+    {canReact&&<Popover open={picker} onOpenChange={setPicker}>
+      <PopoverTrigger asChild><button type="button" className="note-viewer-react-trigger" aria-label="React to note" disabled={busy||loading}><SmilePlus size={18}/></button></PopoverTrigger>
+      <PopoverContent side="bottom" align="start" collisionPadding={12} aria-label="Choose a reaction" className="note-viewer-reaction-picker">
+        <NoteEmojiPicker selected={data.mine} disabled={busy} onSelect={react}/>
+      </PopoverContent>
+    </Popover>}
+    {error&&<button type="button" className="note-viewer-reaction-retry" title={error} onClick={load}>Retry reactions</button>}
+  </div>;
  }
  return <section className="public-note-reactions" aria-label="Note reactions" aria-busy={busy}>
   <div className="public-note-reaction-heading"><strong>Reactions{data.total>0?' · '+data.total:''}</strong>{(loading||busy)&&<Loader2 size={14} className="animate-spin"/>}</div>

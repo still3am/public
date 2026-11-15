@@ -133,14 +133,18 @@ export default function PublicNotes({ profileId, isOwn, active = true, userTrack
     </button> : isOwn && presentation !== "popup" ? <button type="button" className="public-note-create-dot" disabled={busy || loading} aria-label="Add a PUBLIC Note" onClick={open}>{loading ? <Loader2 size={14} className="animate-spin" /> : <Plus size={16} />}</button> : null}
     {viewing && valid && <Dialog open onOpenChange={setViewing}><DialogContent className="public-note-dialog public-note-viewer"><DialogHeader><DialogTitle>PUBLIC Note</DialogTitle><DialogDescription>{Date.parse(note.expires_at)-now<3600000 ? Math.max(1,Math.ceil((Date.parse(note.expires_at)-now)/60000))+"m left" : Math.ceil((Date.parse(note.expires_at)-now)/3600000)+"h left"}</DialogDescription></DialogHeader>
       <div className="note-viewer-scroll">
+      <div className="note-viewer-card-frame">
       <div className="public-note-card">
         {note.track && <div className="public-note-art"><MotionGradient className="public-note-flow" colors={flowColors} motion={note.appearance === "cover_flow" ? "flow" : "still"} active={active && viewing} /><div className="public-note-cover"><Cover url={note.track.cover_art_url} /></div></div>}
-        <div className="public-note-copy">{note.emoji && <span className="public-note-viewer-emoji">{note.emoji}</span>}{note.caption && <div className="public-note-bubble">{note.caption}</div>}{note.track && <><strong>{note.track.title}</strong><span>{note.track.artist || note.track.uploader_name}</span></>}</div>
+        <div className="public-note-copy">{note.caption && <div className="public-note-bubble">{note.caption}</div>}{note.track && <><strong>{note.track.title}</strong><span>{note.track.artist || note.track.uploader_name}</span></>}</div>
         {note.track && <button type="button" className="public-note-play" aria-label={(playing ? "Pause " : "Play ") + note.track.title} onClick={() => playNote()}>{playing ? <Pause size={20} fill="currentColor" /> : <Play size={20} fill="currentColor" />}</button>}
       </div>
-      {note.track && <p className="public-note-listening-hint">Full song · Your music resumes when you close.</p>}
+      <div className="note-viewer-corner">
+        {note.emoji&&<span className="note-viewer-corner-emoji" aria-label={"Note emoji "+note.emoji}>{note.emoji}</span>}
+        <NoteReactions corner key={[user.id,note.id,note.expires_at].join(":")} profileId={profileId} note={note} canReact={!isOwn} active={active && viewing}/>
+      </div>
+      </div>
       {(playbackError||preview.error) && <p className="public-note-error" role="alert">{playbackError||preview.error}</p>}
-      <NoteReactions key={[user.id,note.id,note.expires_at].join(":")} profileId={profileId} note={note} canReact={!isOwn} active={active && viewing}/>
       </div>
       {isOwn && <footer className="note-viewer-footer"><button type="button" className="public-note-post" onClick={open}>Edit note</button></footer>}
     </DialogContent></Dialog>}
