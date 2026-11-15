@@ -211,3 +211,5 @@ All 99 automated suites passed, including repaired fixtures for current admin mo
 - Notes editor and viewer — Tightened sizing and spacing, capped portrait and artwork sizes, and gave the viewer a scrolling body with its edit action in a fixed footer. Production build passed. Live iPad layout remains unverified.
 
 - Notes viewer — Moved the note emoji and reactions to the card corner and removed the playback hint and bottom reaction section. Build passed.
+
+- Profile editor — Removed the mood and pronouns controls and their display on the profile page. Existing stored values were preserved.

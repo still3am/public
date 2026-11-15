@@ -53,7 +53,6 @@ import ProfileSong from "@/components/profile/ProfileSong";
 import PublicNotes from "@/components/profile/PublicNotes";
 import TopTracks from "@/components/profile/TopTracks";
 import FollowListModal from "@/components/profile/FollowListModal";
-import StatusMessage from "@/components/profile/StatusMessage";
 import { useCoverPalette, profileGradient } from "@/hooks/useCoverPalette";
 import ProfileColorPicker from "@/components/profile/ProfileColorPicker";
 import ProfileBadge from "@/components/profile/AdminProfileBadge";
@@ -86,12 +85,10 @@ function formFromProfile(prof) {
     banner_mobile_url: prof.banner_mobile_url || "",
     top_tracks_label: prof.top_tracks_label || "",
     location: prof.location || "",
-    pronouns: prof.pronouns || "",
     website: prof.website || "",
     instagram: prof.instagram || "",
     twitter: prof.twitter || "",
     soundcloud: prof.soundcloud || "",
-    status_message: prof.status_message || "",
     featured_track_id: prof.featured_track_id || "",
     top_track_ids: prof.top_track_ids || []
   };
@@ -538,9 +535,6 @@ export default function Profile({ ownProfileTab = false }) {
                     {displayName}
                   </h1>
                     }
-                {!editMode && profile.pronouns &&
-                    <span className="text-sm text-foreground/40">{profile.pronouns}</span>
-                    }
 
               </div>
 
@@ -593,18 +587,6 @@ export default function Profile({ ownProfileTab = false }) {
                   </p>
 
                   }
-
-              {editMode ?
-                  <StatusMessage
-                    disabled={saving}
-                    value={form.status_message}
-                    editMode
-                    onChange={(v) => setForm((f) => ({ ...f, status_message: v }))} /> :
-
-                  <StatusMessage value={profile.status_message} />
-                  }
-
-
 
               {!editMode && (
                   profile.website || profile.instagram || profile.twitter || profile.soundcloud) &&
