@@ -152,7 +152,7 @@ export function WelcomeFlow({user,onDone}){
    <main ref={content} className="onboarding-content" key={step}>
     <div className="onboarding-page-intro"><p className="onboarding-step-label">Step {step+1} of {TITLES.length}</p><DialogTitle ref={heading} tabIndex={-1}><OnboardingLetters text={TITLES[step]}/></DialogTitle><DialogDescription>{DESCRIPTIONS[step]}</DialogDescription></div>
     {step===1&&<form className="onboarding-form" onSubmit={e=>{e.preventDefault();next();}}>
-     <div className="onboarding-photo-area"><button className="onboarding-photo" type="button" disabled={busy} onClick={()=>fileInput.current?.click()} aria-label="Choose your profile photo"><Avatar user={{display_name:draft.name,avatar_url:draft.avatar}} size={80}/><span><Camera size={15}/></span></button><span className="onboarding-note">Choose an avatar or add a photo · optional</span>{draft.avatar&&<button type="button" className="onboarding-remove-photo" disabled={busy} onClick={()=>update({avatar:""})}>Remove photo</button>}</div>
+     <div className="onboarding-photo-area"><button className="onboarding-photo" type="button" disabled={busy} onClick={()=>fileInput.current?.click()} aria-label="Choose your profile photo"><Avatar user={{display_name:draft.name,avatar_url:draft.avatar}} size={80}/><span><Camera size={15}/></span></button><span className="onboarding-note">Choose an avatar or add a photo · optional</span>{draft.avatar&&<button type="button" className="onboarding-remove-photo" disabled={busy} onClick={()=>update({avatar:"",avatarGif:""})}>Remove photo</button>}</div>
      <button type="button" className="onboarding-upload-photo" disabled={busy} onClick={()=>setMarket("avatars")}>PUBLIC Marketplace <ArrowRight size={16}/></button>
      {draft.banner&&<p className="onboarding-note">Banner selected</p>}
      <button type="button" className="onboarding-upload-photo" disabled={busy} onClick={()=>fileInput.current?.click()}><Camera size={16}/>Upload a photo</button>
@@ -186,7 +186,7 @@ export function WelcomeFlow({user,onDone}){
     </div>}
     {step===5&&<div className="onboarding-mood">
      <div className="onboarding-profile-preview mood-preview"><Avatar user={{display_name:draft.name,avatar_url:draft.avatar}} size={64}/><strong>{draft.name||"Your PUBLIC"}</strong></div>
-     {previewTrack&&<button type="button" className="onboarding-auto-color" disabled={busy} aria-pressed={draft.mode==="auto"} onClick={()=>update({mode:"auto"})}><span className="onboarding-auto-swatch" aria-hidden="true" style={{background:"linear-gradient(135deg,"+automaticColors.join(",")+")"}}><Music2 size={19}/></span><span className="onboarding-auto-copy"><strong>Automatic · From your song</strong><small>{!previewTrack?"Choose a profile song to match its artwork.":artworkLoading?"Finding your artwork colors…":artworkColors.length?"Changes with your profile song.":"Choose a palette if artwork colors aren’t available."}</small></span><span className="onboarding-auto-check">{draft.mode==="auto"&&<Check size={18}/>}</span></button>}
+     {previewTrack&&<button type="button" className="onboarding-auto-color" disabled={busy} aria-pressed={draft.mode==="auto"} onClick={()=>update({mode:"auto"})}><span className="onboarding-auto-swatch" aria-hidden="true" style={{background:"linear-gradient(135deg,"+automaticColors.join(",")+")"}}><Music2 size={19}/></span><span className="onboarding-auto-copy"><strong>Automatic · From your song</strong><small>{artworkLoading?"Finding your artwork colors…":artworkColors.length?"Changes with your profile song.":"Choose a palette if artwork colors aren’t available."}</small></span><span className="onboarding-auto-check">{draft.mode==="auto"&&<Check size={18}/>}</span></button>}
      <button type="button" className="onboarding-color-launch" disabled={busy} onClick={()=>setColorEditor(true)}><span className="onboarding-color-mini" aria-hidden="true">{draft.colors.map((color,index)=><i key={index} style={{background:color}}/>)}</span><span><strong>Choose profile colors</strong><small>Palettes, color wheel &amp; movement</small></span><ArrowRight size={18}/></button>
     </div>}
     {step===6&&<div className="onboarding-privacy">
@@ -203,9 +203,9 @@ export function WelcomeFlow({user,onDone}){
    {colorEditor&&<ProfileColorPicker coverUrl={artworkUrl} colors={artworkColors} loading={artworkLoading} value={{mode:draft.mode,colors:draft.colors,motion:draft.motion,speed:draft.speed}} onPreview={setColorPreview} onSave={async value=>update({mode:value.mode,colors:value.colors,motion:value.motion,speed:value.speed})} onClose={()=>{setColorEditor(false);setColorPreview(null);}}/>}
    {market&&<ProfileMarketplace kind={market} user={{...user,avatar_url:draft.avatar,avatar_gif_url:draft.avatarGif||""}} busy={busy}
      onClose={()=>setMarket(null)}
-     onSelectAvatar={value=>update({avatar:typeof value==="string"?value:value.url,avatarGif:value?.gifUrl||""})}
+     onSelectAvatar={value=>update({avatar:typeof value==="string"?value:value.url,avatarGif:value?.source==="giphy"?value.gifUrl:""})}
      onSelectBanner={banner=>update({banner})}
-     onAvatarUpload={()=>fileInput.current?.click()}/> }
+     onAvatarUpload={()=>{setMarket(null);fileInput.current?.click();}}/> }
   </DialogContent>
  </Dialog>;
 }
