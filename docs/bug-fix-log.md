@@ -207,3 +207,5 @@ All 99 automated suites passed, including repaired fixtures for current admin mo
 - Messages composer — Combined music, GIF, and photo or video attachments under one plus button.
 
 - Messages composer — Restyled the composer with a round plus and integrated send control. Attachments now open in a popover anchored above the plus button with viewport collision handling. Production build passed.
+
+- Notes editor and viewer — Tightened sizing and spacing, capped portrait and artwork sizes, and gave the viewer a scrolling body with its edit action in a fixed footer. Production build passed. Live iPad layout remains unverified.

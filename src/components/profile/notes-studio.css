@@ -82,3 +82,34 @@
 .public-note-studio .note-studio-bubble[data-flow=true] textarea{color:inherit;text-shadow:0 1px 3px #0003}
 .note-studio-bubble[data-flow=true] textarea::placeholder{color:inherit;opacity:.7}
 .note-studio-bubble[data-flow=true] .note-studio-count{color:inherit;opacity:.75}
+
+/* A single scroll area keeps the header and primary actions within reach. */
+.public-note-dialog.public-note-viewer{display:flex;flex-direction:column;gap:0;padding:0;overflow:hidden}
+.public-note-viewer>div:first-child{flex:none;padding:20px 72px 12px 20px;text-align:start}
+.note-viewer-scroll{min-height:0;overflow:auto;overscroll-behavior:contain;padding:0 20px 18px}
+.note-viewer-footer{flex:none;padding:12px 20px 16px;border-top:1px solid hsl(var(--border))}
+.public-note-viewer .public-note-card{grid-template-columns:minmax(0,1fr) 44px;align-items:center;gap:10px 12px}
+.public-note-viewer .public-note-art{width:min(148px,42vw);margin-block:3px 6px;border-radius:18px}
+.public-note-viewer .public-note-art>.public-note-cover{border-radius:inherit}
+.public-note-viewer .public-note-copy{min-width:0;overflow-wrap:anywhere}
+.public-note-viewer .public-note-play{width:44px;height:44px}
+.public-note-viewer .public-note-copy>strong{font-size:17px}
+.public-note-viewer .public-note-reactions{padding-top:12px}
+.note-studio-stage{min-height:0;padding:14px 10px 16px}
+.note-studio-stage > :is(img,.pfp-boy,.public-profile-media,.public-badged-avatar),
+.note-studio-stage > .public-badged-avatar > :first-child{width:60px!important;height:60px!important}
+.note-studio-tools{margin-top:12px;flex-wrap:wrap;justify-content:center}
+.note-studio-tools button{min-height:44px}
+.note-studio-song{padding:12px;border-radius:18px}
+.note-studio-song-top{margin-bottom:6px}
+.note-studio-song-top .public-note-clear-song{min-height:44px}
+.note-studio-song-info{gap:9px;margin-bottom:6px}
+.note-studio-song-info>.public-note-choice-art{width:44px;height:44px;flex-basis:44px}
+.note-studio-playback-status{min-height:26px;margin:0}
+.note-studio-style{margin-top:8px}
+.note-studio-style summary,.note-studio-style .public-note-appearance button{min-height:44px}
+@media(max-width:767px){
+  .public-note-dialog.public-note-viewer{padding-top:12px}
+  .note-viewer-footer{padding-bottom:calc(12px + env(safe-area-inset-bottom,0px))}
+  .public-note-viewer:not(:has(.note-viewer-footer)) .note-viewer-scroll{padding-bottom:calc(16px + env(safe-area-inset-bottom,0px))}
+}
