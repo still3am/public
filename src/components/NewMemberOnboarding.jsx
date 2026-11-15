@@ -71,9 +71,22 @@ export function WelcomeFlow({user,onDone}){
  const artworkUrl=useCoverUrl(step===5?previewTrack?.cover_art_url:"");
  const {colors:artworkColors,loading:artworkLoading}=useCoverPalette(artworkUrl);
  const artistOptions=useMemo(()=>{
-  const map=new Map();for(const track of visibleCatalog)for(const name of credits(track)){const key=name.toLowerCase();if(!map.has(key))map.set(key,{name,cover:track.cover_art_url,genre:track.genre});}
-  return [...map.values()].sort((a,b)=>Number(draft.genres.includes(b.genre))-Number(draft.genres.includes(a.genre))||a.name.localeCompare(b.name));
- },[visibleCatalog,draft.genres]);
+  const artistsByName=new Map();
+  for(const track of visibleCatalog){
+   const plays=Number(track.play_count)||0;
+   const names=new Map(credits(track).map(name=>[name.toLowerCase(),name]));
+   for(const [key,name] of names){
+    const artist=artistsByName.get(key)||{name,cover:"",coverPlays:-1,totalPlays:0};
+    artist.totalPlays+=plays;
+    if(track.cover_art_url&&plays>artist.coverPlays){
+     artist.cover=track.cover_art_url;
+     artist.coverPlays=plays;
+    }
+    artistsByName.set(key,artist);
+   }
+  }
+  return [...artistsByName.values()].sort((a,b)=>b.totalPlays-a.totalPlays||a.name.localeCompare(b.name));
+ },[visibleCatalog]);
  const songs=useMemo(()=>visibleCatalog.filter(t=>!query.trim()||onboardingSearchMatch([t.title,t.artist].join(" "),query)).sort((a,b)=>Number(draft.genres.includes(b.genre))-Number(draft.genres.includes(a.genre))),[visibleCatalog,query,draft.genres]);
  const artists=artistOptions.filter(a=>onboardingSearchMatch(a.name,query));
  const suggestions=useMemo(()=>recommendPeople(profiles,visibleCatalog,{uid:user.id,blocked,genres:draft.genres,artists:draft.artists,trackIds:draft.trackIds}),[profiles,visibleCatalog,user.id,blocked,draft.genres,draft.artists,draft.trackIds]);
