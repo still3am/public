@@ -14,7 +14,8 @@ import { getTrackShareUrl, prepareTrackShare } from "@/lib/trackShareUrl";
 import SyncedLyrics from "@/components/SyncedLyrics";
 import TrackOptionsMenu from "@/components/track/TrackOptionsMenu";
 import { ListMusic } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import LyricSharePicker from "@/components/LyricSharePicker";
 import {
   SkipBack,
   SkipForward,
@@ -56,6 +57,8 @@ function IconButton({ icon: Icon, onClick, active, size = 22, label, disabled = 
 
 /** @param {any} props */
 export default function FullScreenPlayer({ onClose }) {
+  const navigate = useNavigate();
+  const [sharingLyrics,setSharingLyrics]=useState(false);
   const p = usePlayer();
   const { user } = useAuth();
   const { isInLibrary, toggle: toggleLibrary } = useLibrary();
@@ -89,6 +92,7 @@ export default function FullScreenPlayer({ onClose }) {
     return()=>{clearTimeout(timer);window.removeEventListener('online',retry);};
   },[lyricsAvailability.error,lyricsAvailability.trackId,t?.id,lyricsRevision]);
   const hasLyrics = lyricsAvailability.trackId === t?.id && lyricsAvailability.available;
+  const shareLyricsButton=hasLyrics&&<button type="button" className="mx-auto my-2 shrink-0 rounded-full border border-current/20 px-4 py-2 text-xs font-semibold" onClick={()=>setSharingLyrics(true)}>Share lyrics</button>;
   const showingLyrics = lyricsMode;
   const [coverFailed, setCoverFailed] = useState(false);
 
@@ -281,6 +285,7 @@ export default function FullScreenPlayer({ onClose }) {
           <div className="full-player-visual relative flex-1 xl:flex-none flex items-center justify-center min-h-0 py-4">
             {showingLyrics &&
             <div className="xl:hidden w-full h-full overflow-hidden flex flex-col min-h-0">
+                {shareLyricsButton}
                 <SyncedLyrics key={t.id} trackId={t.id} position={p.position} getPlaybackPosition={p.getPlaybackPosition} resolvedLyrics={lyricsAvailability} onSeek={p.seek} onRetry={() => setLyricsRevision((v) => v + 1)} />
               </div>
             }
@@ -413,11 +418,17 @@ export default function FullScreenPlayer({ onClose }) {
 
 
           <div className="flex-1 min-h-0 flex flex-col">
+            {showLyricsPanel&&shareLyricsButton}
             {showLyricsPanel && <SyncedLyrics key={t.id} trackId={t.id} position={p.position} getPlaybackPosition={p.getPlaybackPosition} resolvedLyrics={lyricsAvailability} onSeek={p.seek} onRetry={() => setLyricsRevision((v) => v + 1)} />}
           </div>
         </div>
       </div>
 
+      {sharingLyrics&&hasLyrics&&<LyricSharePicker key={t.id} track={t} result={lyricsAvailability} onClose={()=>setSharingLyrics(false)} onSelect={lyrics=>{
+        setSharingLyrics(false);
+        onClose?.();
+        navigate("/messages",{state:{lyricShare:{id:t.id,title:t.title,artist:t.artist,lyrics}}});
+      }}/>}
       <QueuePanel open={showQueue} onClose={() => setShowQueue(false)} />
 
       {/* copied toast */}
