@@ -117,11 +117,27 @@ Deno.serve(async req => {
       const source = await db.Message.get(messageId);
       if (!source || source.conversation_id !== id || (source.sender_id !== uid && source.recipient_id !== uid)) fail('Message unavailable.',404);
       const field = source.sender_id === uid ? 'sender_reaction' : 'recipient_reaction';
-      const reactions = {...savedReactions(source), [uid]:emoji};
-      const updated = await db.Message.update(source.id,{reactions:JSON.stringify(reactions)});
-      const confirmed = updated?.reactions === JSON.stringify(reactions) ? updated : await db.Message.get(source.id);
-      if (!confirmed || reactionFields({...source,...confirmed})[field] !== emoji) fail('Reaction could not be confirmed. Try again.',503);
-      return Response.json({ok:true, messageId:source.id, ...reactionFields({...source,...confirmed})});
+      let current = source;
+      for (let attempt=0; attempt<3; attempt++) {
+        const reactions = {...savedReactions(current), [uid]:emoji};
+        const match = current.reactions == null
+          ? {$or:[{reactions:{$exists:false}},{reactions:null}]}
+          : {reactions:current.reactions};
+        try {
+          await db.Message.updateMany({id:source.id,conversation_id:id,...match},{
+            $set:{reactions:JSON.stringify(reactions)},
+          });
+          current = await db.Message.get(source.id);
+        } catch (error) {
+          console.error('Message reaction write/read failed', {status:error?.response?.status ?? error?.status ?? null});
+          fail('Could not save the reaction. Please try again.',503);
+        }
+        if (!current || current.conversation_id !== id) fail('Message unavailable.',404);
+        if (reactionFields(current)[field] === emoji) {
+          return Response.json({ok:true,messageId:source.id,...reactionFields(current)});
+        }
+      }
+      fail('Reaction could not be confirmed. Try again.',503);
     }
 
     if (action === 'delete_message') {

@@ -187,3 +187,5 @@ All 99 automated suites passed, including repaired fixtures for current admin mo
 - Profile Playlists — Removed the outer carousel background and border in light and dark themes.
 
 - Message reaction persistence — Store selections in the existing reactions field, verify the saved record, and apply the confirmed result to the open chat. Reloads normalize saved and legacy reactions. Production build passed. Live two-account verification remains open.
+
+- Message reaction write follow-up — Switched to the scoped partial update used by message read receipts and re-read the saved value. Concurrent changes retry against the latest record. Live persistence remains unverified.
