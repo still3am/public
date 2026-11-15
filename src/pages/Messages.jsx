@@ -298,8 +298,9 @@ function MessagesPage({user}) {
           </button>
         )}
       </aside>
-      {id?<section className="public-messages-thread" aria-label="Conversation">
+      {id?<section className="public-messages-thread" aria-label="Conversation" data-replying={Boolean(reply)} onKeyDown={event=>{if(event.key==="Escape"&&reply&&!busy&&!showGifs&&!musicMenu&&!songPicker)setReply(null);}}>
         <header className="public-messages-thread-header">
+          {reply&&<button type="button" className="public-message-close-reply" aria-label="Cancel reply" disabled={busy} onClick={()=>setReply(null)}><X size={23}/></button>}
           <button className="public-messages-back" onClick={()=>setParams({})} aria-label="Back to inbox"><ChevronLeft size={23}/></button>
           {readError?.id===id ? <p role="alert" className="public-messages-list-empty">{readError.message} <button type="button" className="underline" onClick={()=>loadThread(id)}>Retry</button></p> : !thread && <p role="status" className="public-messages-list-empty">Loading conversation…</p>}
         {thread&&currentPeer&&<Link to={"/profile/"+encodeURIComponent(currentPeer)} className="public-messages-peer" aria-label={"View "+peerName(thread.chat)+"’s profile"}>
@@ -315,7 +316,7 @@ function MessagesPage({user}) {
             if(followLatest.current)setShowLatest(false);
           }}>
             {thread.messages.length===0&&<p className="public-messages-list-empty">{pending?"Send a message request to start the conversation.":"Send the first message."}</p>}
-            {thread.messages.map(message=><div key={message.id} className="public-message-group" data-own={message.sender_id===user?.id}
+            {thread.messages.map(message=><div key={message.id} className="public-message-group" data-own={message.sender_id===user?.id} data-reply-target={reply?.id===message.id}
               onPointerDown={event=>{
                 if(event.pointerType==='mouse'||event.target.closest('button,a'))return;
                 cancelHold();
@@ -374,7 +375,7 @@ function MessagesPage({user}) {
               {canSend&&<button type="button" onClick={()=>{
                 setReply({id:activeMenu.id,name:activeMenu.sender_id===user?.id?'You':peerName(thread.chat),text:activeMenu.text||(activeMenu.track_id?'Shared a song':messageGifId(activeMenu)?'Sent a GIF':'Message')});
                 setMenu(null);
-                requestAnimationFrame(()=>draftInput.current?.focus());
+                requestAnimationFrame(()=>{scroll.current?.querySelector('[data-reply-target="true"]')?.scrollIntoView({block:"center"});draftInput.current?.focus({preventScroll:true});});
               }}><Reply size={17}/> Reply</button>}
               {activeMenu.text&&<button type="button" onClick={()=>{setMenu(null);void perform(()=>navigator.clipboard.writeText(activeMenu.text));}}><Copy size={17}/> Copy</button>}
               {activeMenu.track_id&&<Link to={'/track/'+encodeURIComponent(activeMenu.track_id)} onClick={()=>setMenu(null)}><ExternalLink size={17}/> Open song</Link>}
@@ -407,10 +408,7 @@ function MessagesPage({user}) {
               await loadInbox();
             })}>{accept?'Accept request':'Decline'}</button>)}
           </div>}
-          {canSend&&reply&&<div className="public-message-reply-draft">
-            <div className="min-w-0"><strong className="block truncate">Replying to {reply.name}</strong><span className="block truncate">{reply.text}</span></div>
-            <button type="button" aria-label="Cancel reply" disabled={busy} onClick={()=>setReply(null)}><X size={18}/></button>
-          </div>}
+
           {canSend&&attachment&&<div className="public-message-attachment"><Music2 size={17}/><span className="truncate">{attachment.title}</span><button type="button" aria-label="Remove song" disabled={busy} onClick={()=>{setAttachment(null);setLyricShare(null);}}><X size={18}/></button></div>}
           {canSend&&attachment&&!attachment.lyrics&&<button type="button" className="public-messages-latest" disabled={busy} onClick={()=>setSelectingLyrics(true)}>Choose lyric lines</button>}
           {canSend&&attachment?.lyrics&&<div className="public-message-lyric-draft">{attachment.lyrics.lines.join('\n')}</div>}
@@ -419,7 +417,7 @@ function MessagesPage({user}) {
           }}/>}
           {canSend&&songPicker&&<TrackPickerSheet title={songPicker==="lyrics"?"Choose a song for your lyrics":"Share a song"} description="Choose a song to send in this conversation." selectedIds={[]} onClose={()=>setSongPicker(false)} onToggle={(_,song)=>{setAttachment(song);if(songPicker==="lyrics")setSelectingLyrics(true);setSongPicker(false);}}/>}
           {canSend&&showGifs&&<MomentGifPicker onClose={()=>setShowGifs(false)} onSelect={id=>{setMediaDraft(null);setGif(id);setShowGifs(false);}}/>}
-          {canSend&&gif&&<div className="public-message-attachment public-message-gif-draft"><MomentGif id={gif} label="Selected GIF"/><button type="button" aria-label="Remove GIF" disabled={busy} onClick={()=>setGif("")}><X size={18}/></button></div>}
+
           {canSend&&selectedMedia&&<div className="public-message-attachment public-message-upload-preview">
             {selectedMedia.type==='image'?<img src={selectedMedia.preview} alt="Selected photo"/>:<video src={selectedMedia.preview} muted playsInline preload="metadata"/>}
             <span className="truncate">{selectedMedia.file.name}</span>
@@ -481,8 +479,9 @@ function MessagesPage({user}) {
               </PopoverContent>
             </Popover>
             <input hidden ref={mediaInput} type="file" accept="image/jpeg,image/png,image/webp,video/mp4,video/quicktime,video/webm" aria-label="Choose photo or video" onChange={event=>{const file=event.currentTarget.files?.[0];event.currentTarget.value='';selectMedia(file);}}/>
-            <div className="public-message-input-pill">
-            <textarea ref={draftInput} rows={1} aria-label="Message" placeholder={pending?'Write a message request…':'Write a message…'} className="min-w-0 flex-1 rounded-lg border bg-background p-2" value={draft} maxLength={2000} onChange={event=>{
+            <div className="public-message-input-pill" data-has-gif={Boolean(gif)}>
+            {gif&&<div className="public-message-gif-draft"><MomentGif id={gif} label="Selected GIF"/><button type="button" aria-label="Remove GIF" disabled={busy} onClick={()=>setGif("")}><X size={15}/></button></div>}
+            <textarea ref={draftInput} rows={1} aria-label={reply?"Reply":"Message"} placeholder={gif?"Add a comment or send":reply?"Reply":pending?'Write a message request…':'Write a message…'} className="min-w-0 flex-1 rounded-lg border bg-background p-2" value={draft} maxLength={2000} onChange={event=>{
               const value=event.target.value;
               setDrafts(previous=>{
                 const next=new Map(previous);
