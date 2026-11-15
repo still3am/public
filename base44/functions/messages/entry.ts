@@ -8,7 +8,7 @@ Deno.serve(async req => {
     const client = createClientFromRequest(req);
     const user = await client.auth.me().catch(() => null);
     if (!user?.id || user.disabled || user.is_blocked) fail('Sign in to use Messages.', 401);
-    const {action, id, username, recipientId, offset, text, trackId, accept, requestId} = await req.json();
+    const {action, id, username, recipientId, offset, text, trackId, accept, requestId, replyId} = await req.json();
     const db = client.asServiceRole.entities;
     const uid = user.id;
     const blocked = async peer => rows(await db.Block.filter({
@@ -117,22 +117,36 @@ Deno.serve(async req => {
     if (action !== 'send' || typeof text !== 'string' || (!text.trim() && !trackId) || text.length > 2000) fail('Write a message or attach a song.');
     if (trackId && (typeof trackId !== 'string' || !/^[a-zA-Z0-9_-]{1,100}$/.test(trackId))) fail('Choose a valid song.');
     if (requestId !== undefined && (typeof requestId !== 'string' || !/^[a-f0-9-]{36}$/i.test(requestId))) fail('Invalid message request.');
+    if (replyId && (typeof replyId !== 'string' || !/^[a-zA-Z0-9_-]{1,100}$/.test(replyId))) fail('Choose a valid message to reply to.');
     const previous = requestId ? rows(await db.Message.filter({
       conversation_id:id,sender_id:uid,send_request_id:requestId,
     }, '-created_date', 1))[0] : null;
-    if (previous && (previous.text !== text.trim() || (previous.track_id||"") !== (trackId||""))) fail('This request already sent a different message.',409);
+    if (previous && (previous.text !== text.trim() || (previous.track_id||"") !== (trackId||"") || (previous.reply_to_id||"") !== (replyId||""))) fail('This request already sent a different message.',409);
     if (!previous) {
       if (chat.dm_status !== 'accepted' && (chat.dm_status !== 'pending' || chat.dm_requester !== uid)) fail('This conversation is awaiting approval.',403);
       if (chat.dm_status === 'pending' && rows(await db.Message.filter({conversation_id:id}, '-created_date', 1)).length) fail('Wait for this person to accept your request.',403);
       const recent = rows(await db.Message.filter({sender_id:uid,created_date:{$gte:new Date(Date.now()-60000).toISOString()}}, '-created_date', 25));
       if (recent.length >= 25) fail('Give it a moment before sending again.',429);
+      let quote = {};
+      if (replyId) {
+        const source = rows(await db.Message.filter({id:replyId,conversation_id:id}, '-created_date', 1))[0];
+        if (!source) fail('That message is unavailable.',404);
+        const senderIndex = chat.participant_ids.indexOf(source.sender_id);
+        quote = {
+          reply_to_id:source.id,
+          reply_preview:JSON.stringify({
+            sender_name:chat.participant_names?.[senderIndex]||'PUBLIC listener',
+            text:(source.text|| (source.track_id?'Shared a song':'Message')).slice(0,180),
+          }),
+        };
+      }
       let attachment = {};
       if (trackId) {
         const song = rows(await db.Track.filter({id:trackId,is_published:true,approval_status:'approved'}, '-created_date', 1))[0];
         if (!song || (song.uploader_id && await blocked(song.uploader_id))) fail('This song is unavailable.',404);
         attachment = {track_id:song.id,track:JSON.stringify({title:song.title,artist:song.artist||song.uploader_name,cover_art_url:song.cover_art_url})};
       }
-      await db.Message.create({conversation_id:id,sender_id:uid,recipient_id:peer,text:text.trim(),...attachment,...(requestId?{send_request_id:requestId}:{})});
+      await db.Message.create({conversation_id:id,sender_id:uid,recipient_id:peer,text:text.trim(),...attachment,...quote,...(requestId?{send_request_id:requestId}:{})});
     }
     const latest = rows(await db.Message.filter({conversation_id:id}, '-created_date', 1))[0];
     if (latest) await db.Conversation.update(id,{

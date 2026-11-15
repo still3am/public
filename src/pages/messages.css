@@ -61,3 +61,10 @@
 .public-messages-empty p{font-size:14px}
 .public-messages-empty button{display:flex;align-items:center;gap:8px;margin-top:8px;min-height:44px;padding:0 16px;border-radius:999px;background:hsl(var(--primary));color:hsl(var(--primary-foreground));font-size:14px;font-weight:650}
 @media(max-width:767px){.public-messages-row{padding-inline:16px}.public-messages-history{scrollbar-gutter:auto}}
+
+.public-message-reply-quote,.public-message-reply-draft{border-inline-start:3px solid hsl(var(--muted-foreground));border-radius:8px;background:hsl(var(--muted));padding:6px 10px;font-size:12px;min-width:0}
+.public-message-reply-quote{margin-bottom:3px}
+.public-message-reply-draft{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:6px 16px 0}
+.public-message-reply-draft button{flex:none;display:grid;place-items:center;width:44px;height:44px}
+.public-message-reply-action{display:flex;align-items:center;gap:3px;min-height:28px;padding-inline:8px;font-size:11px;color:hsl(var(--muted-foreground))}
+.public-message-group[data-own=true] .public-message-reply-action{align-self:flex-end}

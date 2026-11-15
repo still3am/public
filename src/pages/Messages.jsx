@@ -2,7 +2,7 @@ import {useCallback,useEffect,useRef,useState} from 'react';
 import {Link,useLocation,useSearchParams} from 'react-router-dom';
 import {base44} from '@/api/base44Client';
 import {useAuth} from '@/lib/AuthContext';
-import {ArrowUp,ChevronLeft,ChevronRight,MessageCircle,Music2,Pause,Play,SquarePen,X} from 'lucide-react';
+import {ArrowUp,ChevronLeft,ChevronRight,MessageCircle,Music2,Pause,Play,Reply,SquarePen,X} from 'lucide-react';
 import TrackPickerSheet from '@/components/profile/TrackPickerSheet';
 import {usePlayer} from '@/context/PlayerContext';
 import Avatar from '@/components/Avatar';
@@ -49,6 +49,8 @@ function MessagesPage({user}) {
   const to=params.get('to'),recipient=params.get('recipient');
   const recipientName=useLocation().state?.recipientName;
   const [draft,setDraft]=useState('');
+  const [reply,setReply]=useState(null);
+  const draftInput=useRef(null);
   const [inboxQuery,setInboxQuery]=useState('');
   const player=usePlayer();
   const [songPicker,setSongPicker]=useState(false),[attachment,setAttachment]=useState(null);
@@ -92,7 +94,7 @@ function MessagesPage({user}) {
     return ()=>clearInterval(timer);
   },[loadInbox]);
   useEffect(()=>{
-    setThread(null);setDraft('');setAttachment(null);setSongPicker(false);setError('');setReadError(null);
+    setThread(null);setDraft('');setReply(null);setAttachment(null);setSongPicker(false);setError('');setReadError(null);
     if(!id)return;
     let pending=false;
     const refresh=async(initial=false)=>{
@@ -220,8 +222,13 @@ function MessagesPage({user}) {
           }}>
             {thread.messages.length===0&&<p className="public-messages-list-empty">{pending?"Send a message request to start the conversation.":"Send the first message."}</p>}
             {thread.messages.map(message=><div key={message.id} className="public-message-group" data-own={message.sender_id===user?.id}>
+              {message.reply_preview&&<ReplyQuote preview={message.reply_preview}/>}
               {message.track_id&&<SharedSong message={message} playing={player.currentTrack?.id===message.track_id&&player.isPlaying} onPlay={()=>void perform(()=>playSharedSong(message.track_id))} busy={busy}/>}
               {message.text&&<p className="public-message-bubble" data-own={message.sender_id===user?.id}>{message.text}</p>}
+              {canSend&&<button type="button" className="public-message-reply-action" aria-label="Reply to message" disabled={busy} onClick={()=>{
+                setReply({id:message.id,name:message.sender_id===user?.id?"You":peerName(thread.chat),text:message.text||(message.track_id?"Shared a song":"Message")});
+                draftInput.current?.focus();
+              }}><Reply size={14}/>Reply</button>}
               {messageTime(message.created_date)&&<time dateTime={message.created_date}>{messageTime(message.created_date)}</time>}
             </div>)}
           </div>
@@ -237,20 +244,25 @@ function MessagesPage({user}) {
               await loadInbox();
             })}>{accept?'Accept request':'Decline'}</button>)}
           </div>}
+          {canSend&&reply&&<div className="public-message-reply-draft">
+            <div className="min-w-0"><strong className="block truncate">Replying to {reply.name}</strong><span className="block truncate">{reply.text}</span></div>
+            <button type="button" aria-label="Cancel reply" disabled={busy} onClick={()=>setReply(null)}><X size={18}/></button>
+          </div>}
           {canSend&&attachment&&<div className="public-message-attachment"><Music2 size={17}/><span className="truncate">{attachment.title}</span><button type="button" aria-label="Remove song" disabled={busy} onClick={()=>setAttachment(null)}><X size={18}/></button></div>}
           {canSend&&songPicker&&<TrackPickerSheet title="Share a song" description="Choose a song to send in this conversation." selectedIds={attachment?[attachment.id]:[]} onClose={()=>setSongPicker(false)} onToggle={(_,song)=>{setAttachment(song);setSongPicker(false);}}/>}
           {canSend&&<form className="public-messages-compose" onSubmit={event=>{event.preventDefault();void perform(async()=>{
             const text=draft.trim();
-            const trackId=attachment?.id||'';
+            const trackId=attachment?.id||'',replyId=reply?.id||'';
             if(!text&&!trackId)return;
             const existing=pendingSends.current.get(id);
-            const requestId=existing?.text===text&&existing?.trackId===trackId?existing.requestId:globalThis.crypto?.randomUUID?.();
-            pendingSends.current.set(id,{text,trackId,requestId});
-            await messages('send',{id,text,trackId,requestId});
+            const requestId=existing?.text===text&&existing?.trackId===trackId&&existing?.replyId===replyId?existing.requestId:globalThis.crypto?.randomUUID?.();
+            pendingSends.current.set(id,{text,trackId,replyId,requestId});
+            await messages('send',{id,text,trackId,replyId,requestId});
             pendingSends.current.delete(id);
             if(currentChat.current===id){
               followLatest.current=true;
               setDraft(previous=>previous===draft?'':previous);
+              setReply(previous=>previous?.id===replyId?null:previous);
               setAttachment(previous=>previous?.id===trackId?null:previous);
               await loadThread(id);
             }
@@ -281,4 +293,14 @@ function SharedSong({message,onPlay,busy,playing}){
       {song?.artist&&<span className="block truncate text-xs text-muted-foreground">{song.artist}</span>}
     </Link>
   </div>;
+}
+
+function ReplyQuote({preview}){
+  let quote;
+  try{quote=JSON.parse(preview);}catch{return null;}
+  if(typeof quote?.text!=="string")return null;
+  return <blockquote className="public-message-reply-quote">
+    <strong className="block truncate">{quote.sender_name||"Reply"}</strong>
+    <span className="block truncate">{quote.text}</span>
+  </blockquote>;
 }
