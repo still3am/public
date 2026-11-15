@@ -606,12 +606,6 @@
   animation: public-typing-enter .32s cubic-bezier(.2, .8, .2, 1) both;
 }
 
-.public-message-typing[data-own="true"] {
-  align-self: flex-end;
-  margin-inline-start: 16px;
-  margin-inline-end: 16px;
-  border-radius: 18px 18px 6px 18px;
-}
 
 .public-message-typing-dots {
   gap: 4px;
