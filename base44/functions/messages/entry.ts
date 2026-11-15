@@ -15,15 +15,41 @@ Deno.serve(async req => {
       $or:[{user_id:uid,blocked_user_id:peer},{user_id:peer,blocked_user_id:uid}],
     }, '-created_date', 1)).length > 0;
 
+    const peerId = chat => chat.participant_ids.find(member => member !== uid);
+    const publicPerson = profile => ({
+      id:profile.user_id,
+      display_name:profile.display_name||profile.full_name||profile.username||'PUBLIC listener',
+      avatar_url:profile.avatar_url||'',
+      avatar_preset:profile.avatar_preset||'',
+      avatar_gif_url:profile.avatar_gif_url||'',
+      avatar_video_url:profile.avatar_video_url||'',
+      is_public_admin:profile.is_public_admin===true,
+      is_artist:profile.is_artist===true,
+      creator_role:profile.creator_role,
+      friends_family_badge:profile.friends_family_badge===true,
+      profile_background_colors:profile.profile_background_colors,
+      profile_background_motion:profile.profile_background_motion,
+      profile_background_speed:profile.profile_background_speed,
+    });
+
     if (action === 'inbox') {
       const conversations = rows(await db.Conversation.filter({participant_ids:uid, dm_enabled:true}, '-updated_date', 100));
-      const visible = await Promise.all(conversations.map(async chat => await blocked(chat.participant_ids.find(member => member !== uid)) ? null : chat));
-      const chats = visible.filter(Boolean);
+      const ids = [...new Set(conversations.map(peerId).filter(Boolean))];
+      const [profiles, blocks] = ids.length ? await Promise.all([
+        db.PublicProfile.filter({user_id:{$in:ids},visible:true}, '-updated_date', 200),
+        db.Block.filter({$or:[{user_id:uid,blocked_user_id:{$in:ids}},{blocked_user_id:uid,user_id:{$in:ids}}]}, '-created_date', 500),
+      ]) : [[], []];
+      const denied = new Set(rows(blocks).map(row=>row.user_id===uid?row.blocked_user_id:row.user_id));
+      const people = new Map();
+      for (const profile of rows(profiles)) {
+        if (!people.has(profile.user_id)) people.set(profile.user_id,publicPerson(profile));
+      }
+      const chats = conversations.filter(chat=>peerId(chat)&&!denied.has(peerId(chat)));
       const unread = chats.length ? rows(await db.Message.filter({
         conversation_id:{$in:chats.map(chat=>chat.id)},recipient_id:uid,read:false,
       }, '-created_date', 500)) : [];
       const unreadChats = new Set(unread.map(message=>message.conversation_id));
-      return Response.json({conversations:chats.map(chat=>({...chat,unread:unreadChats.has(chat.id)}))});
+      return Response.json({conversations:chats.map(chat=>({...chat,peer:people.get(peerId(chat))||null,unread:unreadChats.has(chat.id)}))});
     }
 
     if (action === 'contacts') {
@@ -38,7 +64,8 @@ Deno.serve(async req => {
       const byId = new Map(profiles.map(profile=>[profile.user_id,profile]));
       const people = ids.filter(peer=>byId.has(peer)&&!denied.has(peer)).map(peer=>{
         const profile = byId.get(peer);
-        return {id:peer,name:profile.display_name||profile.username||'PUBLIC listener',avatar:profile.avatar_url||''};
+        const person = publicPerson(profile);
+        return {...person,name:person.display_name};
       });
       return Response.json({people,nextOffset:followed.length>50?start+50:null});
     }
@@ -73,10 +100,15 @@ Deno.serve(async req => {
     if (!peer || await blocked(peer)) fail('Conversation unavailable.', 404);
 
     if (action === 'read') {
-      const messages = rows(await db.Message.filter({conversation_id:id}, '-created_date', 100));
+      const [page, profiles] = await Promise.all([
+        db.Message.filter({conversation_id:id}, '-created_date', 100),
+        db.PublicProfile.filter({user_id:peer,visible:true}, '-updated_date', 1),
+      ]);
+      const profile = rows(profiles)[0];
+      const messages = rows(page);
       const unreadIds = messages.filter(message=>message.recipient_id===uid&&!message.read).map(message=>message.id);
       if (unreadIds.length) await db.Message.updateMany({id:{$in:unreadIds},recipient_id:uid,read:false},{$set:{read:true}});
-      return Response.json({chat,messages:messages.reverse()});
+      return Response.json({chat:{...chat,peer:profile?publicPerson(profile):null},messages:messages.reverse()});
     }
     if (action === 'respond' && chat.dm_status === 'pending' && chat.dm_requester !== uid && typeof accept === 'boolean') {
       await db.Conversation.update(id,{dm_status:accept?'accepted':'declined'});

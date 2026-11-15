@@ -3,6 +3,7 @@ import {Link,useLocation,useSearchParams} from 'react-router-dom';
 import {base44} from '@/api/base44Client';
 import {useAuth} from '@/lib/AuthContext';
 import {ArrowUp,ChevronLeft,ChevronRight,MessageCircle,SquarePen} from 'lucide-react';
+import Avatar from '@/components/Avatar';
 import './messages.css';
 
 async function messages(action, data = {}) {
@@ -25,11 +26,23 @@ function messageTime(value) {
     : {month:"short",day:"numeric",hour:"numeric",minute:"2-digit"}).format(date);
 }
 
+function PersonAvatar({person}) {
+  return <span className="public-messages-avatar"><Avatar user={person} size={40} motion /></span>;
+}
+
 export default function Messages() {
   const {user}=useAuth();
+  return <MessagesPage key={user?.id} user={user} />;
+}
+
+function MessagesPage({user}) {
   const [params,setParams]=useSearchParams();
   const id=params.get('chat');
-  const [inbox,setInbox]=useState(null),[thread,setThread]=useState(null),[requests,setRequests]=useState(false);
+  const [inbox,setInbox]=useState(null),[loadedThread,setThread]=useState(null),[requests,setRequests]=useState(false);
+  const thread=loadedThread?.chat.id===id?loadedThread:null;
+  const currentChat=useRef(id);
+  currentChat.current=id;
+  const operation=useRef(false);
   const to=params.get('to'),recipient=params.get('recipient');
   const recipientName=useLocation().state?.recipientName;
   const [draft,setDraft]=useState('');
@@ -52,11 +65,13 @@ export default function Messages() {
     return ()=>{active=false;clearInterval(timer);};
   },[id]);
   async function perform(work) {
-    if(busy)return;
+    if(operation.current)return;
+    operation.current=true;
     setBusy(true);setError('');
-    try{await work();}catch(error){setError(error.message);}finally{setBusy(false);}
+    try{await work();}catch(error){setError(error.message);}finally{operation.current=false;setBusy(false);}
   }
-  const peerName=chat=>chat.participant_names?.[chat.participant_ids.findIndex(member=>member!==user?.id)]||'PUBLIC listener';
+  const peerName=chat=>chat.peer?.display_name||chat.participant_names?.[chat.participant_ids.findIndex(member=>member!==user?.id)]||'PUBLIC listener';
+  const peerFor=chat=>chat.peer||{display_name:peerName(chat)};
   const pending=thread?.chat.dm_status==='pending';
   const incoming=pending&&thread?.chat.dm_requester!==user?.id;
   const canSend=thread?.chat.dm_status==='accepted'||(pending&&!incoming&&!thread.messages.length);
@@ -119,7 +134,7 @@ export default function Messages() {
           {(recipient||to)&&<button className="mb-3 rounded-lg border px-3 py-2" type="button" disabled={busy} onClick={()=>startChat(recipient?{recipientId:recipient}:{username:to})}>{recipientName?`Message ${recipientName}`:"Start message"}</button>}
           <input type="search" aria-label="Search people you follow by name" placeholder="Search by name" className="mb-2 w-full rounded-xl border bg-muted px-3 py-2 text-base" maxLength={80} value={contactQuery} onChange={event=>setContactQuery(event.target.value)} />
           {matches.map(person=><button type="button" className="public-messages-row" key={person.id} disabled={busy} onClick={()=>startChat({recipientId:person.id})}>
-            <span className="public-messages-avatar overflow-hidden" aria-hidden="true">{person.avatar?<img className="h-full w-full object-cover" src={person.avatar} alt=""/>:person.name.charAt(0).toUpperCase()}</span>
+            <PersonAvatar person={person}/>
             <span className="truncate font-semibold">{person.name}</span><ChevronRight size={14} aria-hidden="true"/>
           </button>)}
           {searching&&contacts&&matches.length===0&&<p role="status" className="text-sm text-muted-foreground">No matching people you follow.</p>}
@@ -133,7 +148,7 @@ export default function Messages() {
         {visibleChats?.length===0&&<p className="public-messages-list-empty">{requests?"No message requests.":"No conversations yet. Tap the compose icon to start one."}</p>}
         {visibleChats?.map(chat=>
           <button key={chat.id} onClick={()=>setParams({chat:chat.id})} aria-current={id===chat.id} className="public-messages-row">
-            <span className="public-messages-avatar" aria-hidden="true">{peerName(chat).charAt(0).toUpperCase()}</span>
+            <PersonAvatar person={peerFor(chat)}/>
             <span className="min-w-0"><strong className="block truncate">{peerName(chat)}</strong><span className="block truncate text-sm opacity-70">{chat.last_message_text||'New conversation'}</span></span>
             {chat.unread?<span className="public-messages-dot" aria-label="Unread"/>:<ChevronRight size={14} aria-hidden="true" />}
           </button>
@@ -142,7 +157,7 @@ export default function Messages() {
       {id?<section className="public-messages-thread" aria-label="Conversation">
         <header className="public-messages-thread-header">
           <button className="public-messages-back" onClick={()=>setParams({})} aria-label="Back to inbox"><ChevronLeft size={23}/></button>
-          {thread&&<><span className="public-messages-avatar" aria-hidden="true">{peerName(thread.chat).charAt(0).toUpperCase()}</span><h2>{peerName(thread.chat)}</h2></>}
+          {thread&&<><PersonAvatar person={peerFor(thread.chat)}/><h2>{peerName(thread.chat)}</h2></>}
         </header>
         {thread&&<>
           <div ref={scroll} className="public-messages-history" aria-label="Conversation messages" onScroll={()=>{
@@ -160,11 +175,25 @@ export default function Messages() {
           {showLatest&&<button type="button" className="public-messages-latest" onClick={jumpToLatest}>Jump to latest</button>}
           {incoming&&thread.messages.length>0&&<div className="flex gap-3 p-3">
             {[true,false].map(accept=><button className="rounded-lg border px-3 py-2" key={String(accept)} disabled={busy} onClick={()=>void perform(async()=>{
-              await messages('respond',{id,accept});if(accept)setThread(await messages('read',{id}));else setParams({});await loadInbox();
+              await messages('respond',{id,accept});
+              if(currentChat.current===id){
+                if(accept){
+                  const next=await messages('read',{id});
+                  if(currentChat.current===id)setThread(next);
+                }else setParams({});
+              }
+              await loadInbox();
             })}>{accept?'Accept request':'Decline'}</button>)}
           </div>}
           {canSend&&<form className="public-messages-compose" onSubmit={event=>{event.preventDefault();void perform(async()=>{
-            await messages('send',{id,text:draft});followLatest.current=true;setDraft('');setThread(await messages('read',{id}));await loadInbox();
+            await messages('send',{id,text:draft});
+            if(currentChat.current===id){
+              followLatest.current=true;
+              setDraft(previous=>previous===draft?'':previous);
+              const next=await messages('read',{id});
+              if(currentChat.current===id)setThread(next);
+            }
+            await loadInbox();
           });}}>
             <input aria-label="Message" placeholder={pending?'Write a message request…':'Write a message…'} className="min-w-0 flex-1 rounded-lg border bg-background p-2" value={draft} maxLength={2000} onChange={event=>setDraft(event.target.value)} />
             <button aria-label="Send message" disabled={busy||!draft.trim()}><ArrowUp size={19}/></button>
