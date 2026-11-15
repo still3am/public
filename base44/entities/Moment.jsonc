@@ -34,6 +34,7 @@
     "request_id": {
       "type": "string"
     },
+    "artist_promotion": {"type":"boolean","default":false},
     "rights_confirmed": {
       "type": "boolean"
     },
