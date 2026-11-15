@@ -95,3 +95,16 @@
 .public-message-actions > :is(button:not([aria-label]),a){display:flex;align-items:center;gap:8px;min-height:44px;border-radius:9px;padding-inline:10px;text-align:start}
 .public-message-actions > :is(button:not([aria-label]),a):hover{background:hsl(var(--muted))}
 @media(pointer:coarse){.public-message-reply-action{min-height:44px}}
+
+.public-message-actions{width:min(calc(100% - 24px),370px);padding:0;gap:10px;background:transparent;border:0;box-shadow:none}
+.public-message-actions > button[aria-label]{display:none}
+.public-message-actions :is(.public-message-reactions,.public-message-menu-items){background:hsl(var(--popover));color:hsl(var(--popover-foreground));border:1px solid hsl(var(--border));box-shadow:0 12px 32px #0004}
+.public-message-reactions{display:flex;justify-content:space-between;padding:4px;border-radius:999px;gap:2px}
+.public-message-reactions button{flex:1;min-width:0;height:44px;border-radius:50%;font-size:clamp(18px,5vw,24px);line-height:1}
+.public-message-reactions button:is(:hover,[aria-pressed=true]){background:hsl(var(--accent))}
+.public-message-menu-preview{justify-self:start;padding:8px 12px;border-radius:15px;background:hsl(var(--muted));white-space:pre-wrap;overflow-wrap:anywhere;max-height:84px;overflow:auto;font-size:14px}
+.public-message-menu-items{width:min(240px,100%);padding:6px;border-radius:18px;display:grid}
+.public-message-menu-items > :is(button,a){display:flex;align-items:center;gap:9px;min-height:44px;border-radius:9px;padding-inline:12px;text-align:start}
+.public-message-menu-items > :is(button,a):hover{background:hsl(var(--muted))}
+.public-message-menu-items > .text-destructive{border-top:1px solid hsl(var(--border))}
+.public-message-reaction-badge{align-self:flex-end;margin:-4px 4px 0 0;z-index:1;padding:2px 6px;border-radius:999px;background:hsl(var(--popover));border:1px solid hsl(var(--border));font-size:13px}

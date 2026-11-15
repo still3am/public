@@ -10,6 +10,9 @@ import {useCoverUrl} from '@/hooks/useCoverUrl';
 import {Dialog,DialogContent,DialogTitle,DialogDescription} from '@/components/ui/dialog';
 import './messages.css';
 
+const REACTIONS = ["❤️","👍","👎","😂","‼️","❓","🔥"];
+const REACTION_LABELS = ['Love','Like','Dislike','Laugh','Emphasize','Question','Fire'];
+
 async function messages(action, data = {}) {
   try {
     const result = await base44.functions.invoke('messages',{action,...data});
@@ -51,7 +54,7 @@ function MessagesPage({user}) {
     hold.current=null;
   }
   useEffect(()=>()=>cancelHold(),[id]);
-  const activeMenu=menu?.chatId===id?menu.message:null;
+  const activeMenu=menu?.chatId===id?thread?.messages.find(message=>message.id===menu.message.id):null;
   const currentChat=useRef(id);
   currentChat.current=id;
   const operation=useRef(false);
@@ -244,14 +247,29 @@ function MessagesPage({user}) {
               {message.reply_preview&&<ReplyQuote preview={message.reply_preview}/>}
               {message.track_id&&<SharedSong message={message} playing={player.currentTrack?.id===message.track_id&&player.isPlaying} onPlay={()=>void perform(()=>playSharedSong(message.track_id))} busy={busy}/>}
               {message.text&&<p className="public-message-bubble" data-own={message.sender_id===user?.id}>{message.text}</p>}
+              {[message.sender_reaction,message.recipient_reaction].some(emoji=>REACTIONS.includes(emoji))&&
+                <span className="public-message-reaction-badge" aria-label="Message reactions">
+                  {[message.sender_reaction,message.recipient_reaction].filter(emoji=>REACTIONS.includes(emoji)).join(' ')}
+                </span>}
               <button type="button" className="public-message-reply-action" aria-label="Message options" onClick={()=>setMenu({chatId:id,message})}><MoreHorizontal size={17}/></button>
               {messageTime(message.created_date)&&<time dateTime={message.created_date}>{messageTime(message.created_date)}</time>}
             </div>)}
           </div>
           {activeMenu&&<Dialog open onOpenChange={open=>{if(!open)setMenu(null);}}>
             <DialogContent className="public-message-actions">
-              <DialogTitle>Message options</DialogTitle>
-              <DialogDescription className="sr-only">Actions for this message.</DialogDescription>
+              <DialogTitle className="sr-only">Message options</DialogTitle>
+              <DialogDescription className="sr-only">React or choose an action for this message.</DialogDescription>
+              <div className="public-message-reactions" role="group" aria-label="Emoji reactions">
+                {REACTIONS.map((emoji,index)=>{
+                  const selected=(activeMenu.sender_id===user?.id?activeMenu.sender_reaction:activeMenu.recipient_reaction)===emoji;
+                  return <button key={emoji} type="button" aria-label={REACTION_LABELS[index]} aria-pressed={selected} disabled={busy} onClick={()=>void perform(async()=>{
+                    await messages('react',{id,messageId:activeMenu.id,emoji:selected?'':emoji});
+                    if(currentChat.current===id){setMenu(null);await loadThread(id);}
+                  })}>{emoji}</button>;
+                })}
+              </div>
+              <div className="public-message-menu-preview">{activeMenu.text || (activeMenu.track_id?'Shared a song':'Message')}</div>
+              <div className="public-message-menu-items">
               {canSend&&<button type="button" onClick={()=>{
                 setReply({id:activeMenu.id,name:activeMenu.sender_id===user?.id?'You':peerName(thread.chat),text:activeMenu.text||(activeMenu.track_id?'Shared a song':'Message')});
                 setMenu(null);
@@ -273,6 +291,7 @@ function MessagesPage({user}) {
                   await loadInbox();
                 });
               }}>Delete message</button>}
+              </div>
             </DialogContent>
           </Dialog>}
           {showLatest&&<button type="button" className="public-messages-latest" onClick={jumpToLatest}>Jump to latest</button>}

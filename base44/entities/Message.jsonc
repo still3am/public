@@ -61,6 +61,8 @@
       "default": "",
       "description": "JSON of {sender_name, text, media_type} for the quoted message"
     },
+    "sender_reaction": { "type": "string", "default": "" },
+    "recipient_reaction": { "type": "string", "default": "" },
     "reactions": {
       "type": "string",
       "default": "",
