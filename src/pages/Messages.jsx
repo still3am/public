@@ -123,6 +123,7 @@ function MessagesPage({ user }) {
   const draftInput = useRef(null);
   const [inboxQuery, setInboxQuery] = useState('');
   const player = usePlayer();
+  /** @type {[false | "attachments" | "music", (value: false | "attachments" | "music") => void]} */
   const [musicMenu, setMusicMenu] = useState(false);
   const [mediaDraft, setMediaDraft] = useState(null);
   const mediaInput = useRef(null);
@@ -142,7 +143,9 @@ function MessagesPage({ user }) {
     setMediaDraft({ chatId: id, file, type, preview: URL.createObjectURL(file) });
   }
   const [gif, setGif] = useState(""),[showGifs, setShowGifs] = useState(false);
-  const [songPicker, setSongPicker] = useState(false),[attachment, setAttachment] = useState(null);
+  /** @type {[false | "recent" | "song" | "lyrics", (value: false | "recent" | "song" | "lyrics") => void]} */
+  const [songPicker, setSongPicker] = useState(false);
+  const [attachment, setAttachment] = useState(null);
   async function playSharedSong(message) {
     const trackId = message.track_id;
     const lyrics = songData(message)?.lyrics;
@@ -347,7 +350,7 @@ function MessagesPage({ user }) {
             {thread.messages.length === 0 && <p className="public-messages-list-empty">{pending ? "Send a message request to start the conversation." : "Send the first message."}</p>}
             {thread.messages.map((message) => <div key={message.id} className="public-message-group" data-own={message.sender_id === user?.id} data-reply-target={reply?.id === message.id}
             onPointerDown={(event) => {
-              if (event.pointerType === 'mouse' || event.target.closest('button,a')) return;
+              if (event.pointerType === 'mouse' || (event.target instanceof Element && event.target.closest('button,a'))) return;
               cancelHold();
               const { clientX: x, clientY: y, currentTarget: group } = event;
               hold.current = { x, y, timer: setTimeout(() => {hold.current = null;openMessageMenu(message, group);}, 480) };
@@ -440,11 +443,11 @@ function MessagesPage({ user }) {
           </div>}
 
           {canSend && attachment?.lyrics && <LyricDraftPreview track={attachment} onRemove={() => {setAttachment(null);setLyricShare(null);}} disabled={busy} />}
-          {canSend && selectingLyrics && attachment && <LyricSharePicker track={attachment} onClose={() => setSelectingLyrics(false)} onSelect={(lyrics) => {
+          {canSend && selectingLyrics && attachment && <LyricSharePicker track={attachment} result={null} initialLine={null} onClose={() => setSelectingLyrics(false)} onSelect={(lyrics) => {
             setAttachment({ ...attachment, lyrics });setSelectingLyrics(false);
           }} />}
           {canSend && songPicker && songPicker !== "recent" && <TrackPickerSheet title={songPicker === "lyrics" ? "Choose a song for your lyrics" : "Share a song"} description="Choose a song to send in this conversation." selectedIds={[]} onClose={() => setSongPicker(false)} onToggle={(_, song) => {setAttachment(song);if (songPicker === "lyrics") setSelectingLyrics(true);setSongPicker(false);}} />}
-          {canSend && showGifs && <MomentGifPicker onClose={() => setShowGifs(false)} onSelect={(id) => {setMediaDraft(null);setGif(id);setShowGifs(false);}} />}
+          {canSend && showGifs && <MomentGifPicker id={undefined} onClose={() => setShowGifs(false)} onSelect={(id) => {setMediaDraft(null);setGif(id);setShowGifs(false);}} />}
 
           {canSend && selectedMedia && <div className="public-message-attachment public-message-upload-preview">
             {selectedMedia.type === 'image' ? <img src={selectedMedia.preview} alt="Selected photo" /> : <video src={selectedMedia.preview} muted playsInline preload="metadata" />}
