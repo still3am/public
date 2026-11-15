@@ -2,7 +2,7 @@ import {useCallback,useEffect,useRef,useState} from 'react';
 import {Link,useLocation,useSearchParams} from 'react-router-dom';
 import {base44} from '@/api/base44Client';
 import {useAuth} from '@/lib/AuthContext';
-import {ArrowUp,ChevronLeft,ChevronRight,MessageCircle,MoreHorizontal,Music2,Pause,Play,Reply,Search,SquarePen,X} from 'lucide-react';
+import {ArrowUp,ChevronLeft,ChevronRight,Copy,ExternalLink,Trash2,MessageCircle,MoreHorizontal,Music2,Pause,Play,Reply,Search,SquarePen,X} from 'lucide-react';
 import LyricSharePicker from '@/components/LyricSharePicker';
 import {useCoverPalette} from '@/hooks/useCoverPalette';
 import TrackPickerSheet from '@/components/profile/TrackPickerSheet';
@@ -50,6 +50,11 @@ function MessagesPage({user}) {
   const [inbox,setInbox]=useState(null),[loadedThread,setThread]=useState(null),[requests,setRequests]=useState(false);
   const thread=loadedThread?.chat.id===id?loadedThread:null;
   const [menu,setMenu]=useState(null);
+  function openMessageMenu(message,group){
+    const bubble=group.querySelector('.public-message-bubble,.public-message-song')||group;
+    const anchor=bubble.getBoundingClientRect();
+    setMenu({chatId:id,message,anchor});
+  }
   const hold=useRef(null);
   function cancelHold(){
     clearTimeout(hold.current?.timer);
@@ -256,12 +261,12 @@ function MessagesPage({user}) {
               onPointerDown={event=>{
                 if(event.pointerType==='mouse'||event.target.closest('button,a'))return;
                 cancelHold();
-                const {clientX:x,clientY:y}=event;
-                hold.current={x,y,timer:setTimeout(()=>{hold.current=null;setMenu({chatId:id,message});},480)};
+                const {clientX:x,clientY:y,currentTarget:group}=event;
+                hold.current={x,y,timer:setTimeout(()=>{hold.current=null;openMessageMenu(message,group);},480)};
               }}
               onPointerMove={event=>{if(hold.current&&Math.hypot(event.clientX-hold.current.x,event.clientY-hold.current.y)>9)cancelHold();}}
               onPointerCancel={cancelHold} onPointerUp={cancelHold} onPointerLeave={cancelHold}
-              onContextMenu={event=>{event.preventDefault();cancelHold();setMenu({chatId:id,message});}}>
+              onContextMenu={event=>{event.preventDefault();cancelHold();openMessageMenu(message,event.currentTarget);}}>
               {message.reply_preview&&<ReplyQuote preview={message.reply_preview}/>}
               {message.track_id&&<SharedSong message={message} playing={player.currentTrack?.id===message.track_id&&player.isPlaying&&(!songData(message)?.lyrics||lyricPlayback.current===message.id)} onPlay={()=>void perform(()=>playSharedSong(message))} busy={busy}/>}
               {message.text&&<p className="public-message-bubble" data-own={message.sender_id===user?.id}>{message.text}</p>}
@@ -269,12 +274,17 @@ function MessagesPage({user}) {
                 <span className="public-message-reaction-badge" aria-label="Message reactions">
                   {[message.sender_reaction,message.recipient_reaction].filter(emoji=>REACTIONS.includes(emoji)).join(' ')}
                 </span>}
-              <button type="button" className="public-message-reply-action" aria-label="Message options" onClick={()=>setMenu({chatId:id,message})}><MoreHorizontal size={17}/></button>
+              <button type="button" className="public-message-reply-action" aria-label="Message options" onClick={event=>openMessageMenu(message,event.currentTarget.parentElement)}><MoreHorizontal size={17}/></button>
               {messageTime(message.created_date)&&<time dateTime={message.created_date}>{messageTime(message.created_date)}</time>}
             </div>)}
           </div>
           {activeMenu&&<Dialog open onOpenChange={open=>{if(!open)setMenu(null);}}>
-            <DialogContent className="public-message-actions">
+            <DialogContent showClose={false} className="public-message-actions public-message-context"
+              data-own={activeMenu.sender_id===user?.id}
+              style={{
+                '--message-anchor-x':(activeMenu.sender_id===user?.id?menu.anchor.right:menu.anchor.left)+'px',
+                '--message-anchor-y':(menu.anchor.top-58)+'px',
+              }}>
               <DialogTitle className="sr-only">Message options</DialogTitle>
               <DialogDescription className="sr-only">React or choose an action for this message.</DialogDescription>
               <div className="public-message-reactions" role="group" aria-label="Emoji reactions">
@@ -293,8 +303,8 @@ function MessagesPage({user}) {
                 setMenu(null);
                 requestAnimationFrame(()=>draftInput.current?.focus());
               }}><Reply size={17}/> Reply</button>}
-              {activeMenu.text&&<button type="button" onClick={()=>{setMenu(null);void perform(()=>navigator.clipboard.writeText(activeMenu.text));}}>Copy text</button>}
-              {activeMenu.track_id&&<Link to={'/track/'+encodeURIComponent(activeMenu.track_id)} onClick={()=>setMenu(null)}>Open song</Link>}
+              {activeMenu.text&&<button type="button" onClick={()=>{setMenu(null);void perform(()=>navigator.clipboard.writeText(activeMenu.text));}}><Copy size={17}/> Copy</button>}
+              {activeMenu.track_id&&<Link to={'/track/'+encodeURIComponent(activeMenu.track_id)} onClick={()=>setMenu(null)}><ExternalLink size={17}/> Open song</Link>}
               {activeMenu.track_id&&<button type="button" onClick={()=>{setMenu(null);void perform(()=>playSharedSong(activeMenu));}}>{player.currentTrack?.id===activeMenu.track_id&&player.isPlaying?'Pause song':'Play song'}</button>}
               {activeMenu.sender_id===user?.id&&<button type="button" className="text-destructive" disabled={busy} onClick={()=>{
                 if(!window.confirm('Delete this message for both people?'))return;
@@ -308,7 +318,7 @@ function MessagesPage({user}) {
                   }
                   await loadInbox();
                 });
-              }}>Delete message</button>}
+              }}><Trash2 size={17}/> Delete message</button>}
               </div>
             </DialogContent>
           </Dialog>}
