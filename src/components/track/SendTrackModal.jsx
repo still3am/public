@@ -74,42 +74,40 @@ export default function SendTrackModal({ track, onClose }) {
 
   useEffect(() => {
     const id=++request.current;setSearchFailed(false);
-    const q = query.trim().toLowerCase();
-    if (q.length < MIN_QUERY) {
-      setResults([]);
+    const q = query.trim().toLowerCase().replace(/^@/, "");
+    setResults([]);
+    if (q.length < MIN_QUERY || !user?.id) {
       setSearching(false);
       return;
     }
     setSearching(true);
     const timer = setTimeout(async () => {
       try {
-        const res = await searchPeople(q);
-        if(id===request.current){
-          const term=q.replace(/^@/, "");
-          const followedMatches=followingPeople.filter((person)=>[person.display_name,person.full_name,person.username].some((value)=>String(value||"").toLowerCase().includes(term)));
-          const merged=new Map();
-          [...followedMatches,...(res?.data?.results||[])].filter(person=>person.id!==user?.id).forEach(person=>merged.set(person.id,person));
-          setResults([...merged.values()]);
-        }
+        const response = await searchPeople(q);
+        if (id === request.current) setResults(response?.data?.results || []);
       } catch {
-        if(id===request.current){
-          const term=q.replace(/^@/, "");
-          setResults(followingPeople.filter((person)=>person.id!==user?.id&&[person.display_name,person.full_name,person.username].some((value)=>String(value||"").toLowerCase().includes(term))));
-          setSearchFailed(true);
-        }
+        if (id === request.current) setSearchFailed(true);
       } finally {
-        if(id===request.current)setSearching(false);
+        if (id === request.current) setSearching(false);
       }
     }, 300);
-    return () => {request.current++;clearTimeout(timer);};
-  }, [query,retry,user?.id,followingPeople]);
+    return () => { request.current++; clearTimeout(timer); };
+  }, [query, retry, user?.id]);
+
+  const term = query.trim().toLowerCase().replace(/^@/, "");
+  const eligible = (person) => person?.id && person.id !== user?.id && !blocked.has(person.id);
+  const following = followingPeople.filter(eligible);
+  const localMatches = following.filter((person) =>
+    [person.display_name, person.full_name, person.username].some((value) => String(value || "").toLowerCase().includes(term))
+  );
+  const visibleResults = [...new Map([...results.filter(eligible), ...localMatches].map((person) => [person.id, person])).values()];
 
   useEffect(()=>{setPicked(null);setSent(null);setNote("");setQuery("");setResults([]);},[track?.id,user?.id]);
 
   if (!track) return null;
 
   const send = async () => {
-    if (!picked || !user?.id || sendingRef.current) return;
+    if (!eligible(picked) || !user?.id || sendingRef.current) return;
     sendingRef.current=true;setSending(true);const started=seed.current;
     try {
       const saved=await base44.entities.Notification.create({
@@ -222,7 +220,6 @@ export default function SendTrackModal({ track, onClose }) {
             <div className="relative mb-3">
               <Search size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-foreground/40" />
               <input
-                autoFocus
                 aria-label="Search friends"
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
@@ -232,17 +229,17 @@ export default function SendTrackModal({ track, onClose }) {
             </div>
 
             <div className="flex-1 overflow-y-auto overscroll-contain -mx-1 px-1 min-h-[7rem]">
-              {searching ? (
+              {searching && !localMatches.length ? (
                 <div className="grid place-items-center py-8">
                   <Loader2 size={18} className="animate-spin text-foreground/40" />
                 </div>
-              ) : query.trim().length < MIN_QUERY ? (
+              ) : term.length < MIN_QUERY ? (
                 followingLoading ? (
                   <div className="grid place-items-center py-8"><Loader2 size={18} className="animate-spin text-foreground/40" /></div>
-                ) : followingPeople.filter((person)=>!blocked.has(person.id)).length ? (
+                ) : localMatches.length ? (
                   <div className="space-y-1">
                     <p className="px-2 pb-1 text-[11px] font-semibold uppercase tracking-wide text-foreground/40">People you follow</p>
-                    {followingPeople.filter((person)=>!blocked.has(person.id)).map((person)=>(
+                    {localMatches.map((person)=>(
                       <button key={person.id} type="button" onClick={()=>setPicked(person)} className="w-full flex items-center gap-3 p-2.5 rounded-xl hover:bg-foreground/[0.04] transition text-left">
                         <Avatar user={person} size={40} />
                         <span className="flex-1 min-w-0 text-sm font-semibold truncate">{nameOf(person)}</span>
@@ -255,17 +252,17 @@ export default function SendTrackModal({ track, onClose }) {
                     {followingFailed ? "Couldn’t load people you follow. Tap Refresh people to try again." : "Type at least two letters to search all PUBLIC listeners."}
                   </p>
                 )
-              ) : results.length === 0 && searchFailed ? (
+              ) : visibleResults.length === 0 && searchFailed ? (
                 <p className="text-center text-xs text-foreground/50 py-8 px-4">
                   Search couldn’t load. Tap Refresh people to retry.
                 </p>
-              ) : results.length === 0 ? (
+              ) : visibleResults.length === 0 ? (
                 <p className="text-center text-xs text-foreground/50 py-8 px-4">
                   No one matches that name.
                 </p>
               ) : (
                 <div className="space-y-1">
-                  {results.filter(person=>!blocked.has(person.id)).map((person) => (
+                  {visibleResults.map((person) => (
                     <button
                       type="button"
                       key={person.id}
@@ -301,7 +298,7 @@ export default function SendTrackModal({ track, onClose }) {
         ) : picked ? (
           <button
             onClick={send}
-            disabled={sending}
+            disabled={sending || !eligible(picked)}
             className="mt-3 w-full py-3 rounded-2xl bg-foreground text-background text-sm font-bold active:scale-[0.99] transition disabled:opacity-60 inline-flex items-center justify-center gap-2"
           >
             {sending ? <Loader2 size={16} className="animate-spin" /> : <Send size={15} />}
