@@ -99,7 +99,8 @@ function MessagesPage({user}) {
     try{await work();}catch(error){setError(error.message);}finally{operation.current=false;setBusy(false);}
   }
   const peerName=chat=>chat.peer?.display_name||chat.participant_names?.[chat.participant_ids.findIndex(member=>member!==user?.id)]||'PUBLIC listener';
-  const peerFor=chat=>chat.peer||{display_name:peerName(chat)};
+  const peerFor=chat=>chat.peer||inbox?.find(row=>row.id===chat.id)?.peer||{display_name:peerName(chat)};
+  const currentPeer=thread?.chat.participant_ids.find(member=>member!==user?.id);
   const pending=thread?.chat.dm_status==='pending';
   const incoming=pending&&thread?.chat.dm_requester!==user?.id;
   const canSend=thread?.chat.dm_status==='accepted'||(pending&&!incoming&&!thread.messages.length);
@@ -178,7 +179,7 @@ function MessagesPage({user}) {
         {visibleChats?.map(chat=>
           <button key={chat.id} onClick={()=>setParams({chat:chat.id})} aria-current={id===chat.id} className="public-messages-row">
             <PersonAvatar person={peerFor(chat)}/>
-            <span className="min-w-0"><strong className="block truncate">{peerName(chat)}</strong><span className="block truncate text-sm opacity-70">{chat.last_message_text||'New conversation'}</span></span>
+            <span className="min-w-0"><span className="public-messages-row-title"><strong className="truncate">{peerName(chat)}</strong>{chat.last_message_at&&<time dateTime={chat.last_message_at}>{messageTime(chat.last_message_at)}</time>}</span><span className="block truncate text-sm opacity-70">{chat.last_message_text||'New conversation'}</span></span>
             {chat.unread?<span className="public-messages-dot" aria-label="Unread"/>:<ChevronRight size={14} aria-hidden="true" />}
           </button>
         )}
@@ -187,7 +188,10 @@ function MessagesPage({user}) {
         <header className="public-messages-thread-header">
           <button className="public-messages-back" onClick={()=>setParams({})} aria-label="Back to inbox"><ChevronLeft size={23}/></button>
           {readError?.id===id ? <p role="alert" className="public-messages-list-empty">{readError.message} <button type="button" className="underline" onClick={()=>loadThread(id)}>Retry</button></p> : !thread && <p role="status" className="public-messages-list-empty">Loading conversation…</p>}
-        {thread&&<><PersonAvatar person={peerFor(thread.chat)}/><h2>{peerName(thread.chat)}</h2></>}
+        {thread&&currentPeer&&<Link to={"/profile/"+encodeURIComponent(currentPeer)} className="public-messages-peer" aria-label={"View "+peerName(thread.chat)+"’s profile"}>
+          <PersonAvatar person={peerFor(thread.chat)}/>
+          <h2>{peerName(thread.chat)}</h2>
+        </Link>}
         </header>
         {thread&&<>
           <div ref={scroll} className="public-messages-history" aria-label="Conversation messages" onScroll={()=>{
