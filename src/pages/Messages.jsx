@@ -62,7 +62,7 @@ function MessagesPage({ user }) {
   const [params, setParams] = useSearchParams();
   const id = params.get('chat');
   const [inbox, setInbox] = useState(null),[loadedThread, setThread] = useState(null),[requests, setRequests] = useState(false);
-  const thread = loadedThread?.chat.id === id ? loadedThread : null;
+  const thread = loadedThread?.chat?.id === id ? loadedThread : null;
   const [menu, setMenu] = useState(null);
   const [chatBackgrounds, setChatBackgrounds] = useState(() =>
     user?.message_backgrounds && typeof user.message_backgrounds === 'object' ? user.message_backgrounds : {}
@@ -187,7 +187,7 @@ function MessagesPage({ user }) {
     inboxPending.current = true;
     try {
       const data = await messages('inbox');
-      setInbox(data.conversations);
+      setInbox(Array.isArray(data.conversations) ? data.conversations.filter((chat) => chat && typeof chat.id === 'string') : []);
       setInboxError('');
     } catch (error) {setInboxError(error.message);} finally
     {inboxPending.current = false;}
@@ -197,7 +197,16 @@ function MessagesPage({ user }) {
     try {
       const data = await messages('read', { id: chatId });
       if (version !== readVersion.current || currentChat.current !== chatId) return;
-      setThread(data);
+      if (!data?.chat || typeof data.chat.id !== 'string' || !Array.isArray(data.messages)) {
+        throw new Error('This conversation could not be loaded. Please try again.');
+      }
+      const safeChat = {
+        ...data.chat,
+        participant_ids: Array.isArray(data.chat.participant_ids) ? data.chat.participant_ids : [],
+        participant_names: Array.isArray(data.chat.participant_names) ? data.chat.participant_names : [],
+      };
+      const safeMessages = data.messages.filter((message) => message && typeof message.id === 'string');
+      setThread({ chat: safeChat, messages: safeMessages });
       setReadError(null);
       setInbox((previous) => previous?.map((chat) => chat.id === chatId ? { ...chat, unread: false } : chat) ?? null);
     } catch (error) {
@@ -251,9 +260,14 @@ function MessagesPage({ user }) {
     setBusy(true);setError('');
     try {await work();} catch (error) {setError(error.message);} finally {operation.current = false;setBusy(false);}
   }
-  const peerName = (chat) => chat.peer?.display_name || chat.participant_names?.[chat.participant_ids.findIndex((member) => member !== user?.id)] || 'PUBLIC listener';
+  const peerName = (chat) => {
+    const ids = Array.isArray(chat?.participant_ids) ? chat.participant_ids : [];
+    const names = Array.isArray(chat?.participant_names) ? chat.participant_names : [];
+    const peerIndex = ids.findIndex((member) => member !== user?.id);
+    return chat?.peer?.display_name || names[peerIndex] || 'PUBLIC listener';
+  };
   const peerFor = (chat) => chat.peer || inbox?.find((row) => row.id === chat.id)?.peer || { display_name: peerName(chat) };
-  const currentPeer = thread?.chat.participant_ids.find((member) => member !== user?.id);
+  const currentPeer = Array.isArray(thread?.chat?.participant_ids) ? thread.chat.participant_ids.find((member) => member !== user?.id) : null;
   const activeBackground = id ? chatBackgrounds[id] || { type: 'none' } : { type: 'none' };
   const backgroundStyle = activeBackground.type === 'preset'
     ? { backgroundImage: CHAT_BACKGROUND_PRESETS.find((item) => item.id === activeBackground.value)?.background }
@@ -269,12 +283,10 @@ function MessagesPage({ user }) {
     setBackgroundError('');
     try {
       await base44.auth.updateMe({ message_backgrounds: next });
-      // Base44's update response may omit custom profile fields. A successful
-      // update is authoritative; refresh the user record when it is available.
-      const confirmed = await base44.auth.me().catch(() => null);
-      const stored = confirmed?.id === user.id && confirmed.message_backgrounds &&
-        typeof confirmed.message_backgrounds === 'object' ? confirmed.message_backgrounds : next;
-      setChatBackgrounds(stored);
+      // updateMe resolves only after the account write succeeds. Avoid an
+      // immediate profile read here: it can return a stale cached value and
+      // incorrectly revert the freshly saved selection.
+      setChatBackgrounds(next);
     } catch (saveError) {
       setBackgroundError(saveError.message || 'Could not save this background. Please try again.');
     } finally {
@@ -294,10 +306,9 @@ function MessagesPage({ user }) {
       if (!result?.file_url) throw new Error('Photo upload was not confirmed. Please retry.');
       const next = { ...chatBackgrounds, [id]: { type: 'photo', value: result.file_url } };
       await base44.auth.updateMe({ message_backgrounds: next });
-      const confirmed = await base44.auth.me().catch(() => null);
-      const stored = confirmed?.id === user.id && confirmed.message_backgrounds &&
-        typeof confirmed.message_backgrounds === 'object' ? confirmed.message_backgrounds : next;
-      setChatBackgrounds(stored);
+      // Keep the confirmed selection immediately; a profile refresh can still
+      // be briefly stale after an upload.
+      setChatBackgrounds(next);
     } catch (uploadError) {
       setBackgroundError(uploadError.message || 'Could not upload this photo. Please try again.');
     } finally {
@@ -350,7 +361,7 @@ function MessagesPage({ user }) {
     setShowLatest(false);
     if (scroll.current) scroll.current.scrollTop = scroll.current.scrollHeight;
   }
-  const lastMessage = thread?.messages.at(-1)?.id;
+  const lastMessage = Array.isArray(thread?.messages) ? thread.messages.at(-1)?.id : null;
   useEffect(() => {
     if (!lastMessage) return;
     if (followLatest.current) jumpToLatest();else
@@ -737,18 +748,24 @@ function ChatMedia({ chatId, message }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
   const image = message.media_type === 'image';
-  async function open() {
-    setLoading(true);setError(false);
+  const open = useCallback(async () => {
+    setLoading(true);
+    setError(false);
     try {
       const result = await messages('open_media', { id: chatId, messageId: message.id });
       if (!result.url?.startsWith('https://')) throw Error();
       setUrl(result.url);
-    } catch {setError(true);} finally {setLoading(false);}
-  }
+    } catch {
+      setError(true);
+    } finally {
+      setLoading(false);
+    }
+  }, [chatId, message.id]);
+  useEffect(() => { void open(); }, [open]);
   const fail = () => {setUrl('');setError(true);};
   if (url) return image ? <img className="public-message-upload" src={url} alt="Shared photo" onError={fail} /> : <video className="public-message-upload" src={url} controls playsInline preload="metadata" onError={fail} />;
-  return <button type="button" className="public-message-open-media" disabled={loading} onClick={open}>
-    {loading ? 'Opening…' : error ? 'Couldn’t open. Retry' : image ? 'View photo' : 'Open video'}
+  return <button type="button" className="public-message-open-media" disabled={loading} onClick={() => void open()}>
+    {loading ? 'Loading attachment…' : error ? 'Couldn’t open. Tap to retry' : 'Loading attachment…'}
   </button>;
 }
 
