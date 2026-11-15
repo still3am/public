@@ -4,7 +4,7 @@ import {useCallback,useEffect,useLayoutEffect,useRef,useState} from 'react';
 import {Link,useLocation,useSearchParams} from 'react-router-dom';
 import {base44} from '@/api/base44Client';
 import {useAuth} from '@/lib/AuthContext';
-import {ArrowUp,ChevronLeft,ChevronRight,Copy,ExternalLink,Trash2,MessageCircle,MoreHorizontal,Music2,Pause,Play,Reply,Search,SquarePen,X} from 'lucide-react';
+import {ArrowUp,ChevronLeft,ChevronRight,Clapperboard,Copy,ExternalLink,Trash2,MessageCircle,MoreHorizontal,Music2,Pause,Play,Reply,Search,SquarePen,X} from 'lucide-react';
 import LyricSharePicker from '@/components/LyricSharePicker';
 import LyricCoverGradient from '@/components/LyricCoverGradient';
 import TrackPickerSheet from '@/components/profile/TrackPickerSheet';
@@ -411,7 +411,7 @@ function MessagesPage({user}) {
             await loadInbox();
           });}}>
             <button type="button" aria-label="Share song or lyrics" disabled={busy} onClick={()=>setMusicMenu(true)}><Music2 size={19}/></button>
-            <button type="button" className="public-message-gif-button" aria-label={gif?"Change GIF":"Add a GIF"} aria-expanded={showGifs} disabled={busy} onClick={()=>setShowGifs(true)}>GIF</button>
+            <button type="button" className="public-message-gif-button" aria-label={gif?"Change GIF":"Add a GIF"} aria-expanded={showGifs} disabled={busy} onClick={()=>setShowGifs(true)}><Clapperboard size={20} aria-hidden="true"/><span aria-hidden="true">GIF</span></button>
             <textarea ref={draftInput} rows={1} aria-label="Message" placeholder={pending?'Write a message request…':'Write a message…'} className="min-w-0 flex-1 rounded-lg border bg-background p-2" value={draft} maxLength={2000} onChange={event=>setDraft(event.target.value)} onKeyDown={event=>{
               if(event.key!=='Enter'||event.shiftKey||event.nativeEvent.isComposing||event.keyCode===229||!window.matchMedia('(pointer: fine)').matches)return;
               event.preventDefault();
