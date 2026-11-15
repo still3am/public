@@ -367,7 +367,7 @@ function MessagesPage({user}) {
               {messageTime(message.created_date)&&<time dateTime={message.created_date}>{messageTime(message.created_date)}</time>}
             </div>)}
           </div>
-          {peerTyping&&<div className="public-message-typing" role="status" aria-live="polite"><span className="public-message-typing-dots" aria-hidden="true"><i/><i/><i/></span><span>{peerName(thread.chat)} is typing</span></div>}
+          {(peerTyping||Boolean(draft.trim()))&&<div className="public-message-typing" role="status" aria-live="polite"><span className="public-message-typing-dots" aria-hidden="true"><i/><i/><i/></span><span>{draft.trim()?"You’re typing":peerName(thread.chat)+" is typing"}</span></div>}
           {activeMenu&&<Dialog open onOpenChange={open=>{if(!open)setMenu(null);}}>
             <DialogContent ref={setMenuPanel} showClose={false} className="public-message-actions public-message-context"
               data-own={activeMenu.sender_id===user?.id}>
