@@ -48,22 +48,50 @@ function MessagesPage({user}) {
   const [draft,setDraft]=useState('');
   const [contacts,setContacts]=useState(null),[contactQuery,setContactQuery]=useState(''),[contactError,setContactError]=useState(false),[retry,setRetry]=useState(0);
   const [error,setError]=useState(''),[busy,setBusy]=useState(false);
-  const loadInbox=useCallback(async()=>setInbox((await messages('inbox')).conversations),[]);
+  const [inboxError,setInboxError]=useState('');
+  const [readError,setReadError]=useState(null);
+  const inboxPending=useRef(false);
+  const readVersion=useRef(0);
+  const loadInbox=useCallback(async()=>{
+    if(inboxPending.current)return;
+    inboxPending.current=true;
+    try{
+      const data=await messages('inbox');
+      setInbox(data.conversations);
+      setInboxError('');
+    }catch(error){setInboxError(error.message);}
+    finally{inboxPending.current=false;}
+  },[]);
+  const loadThread=useCallback(async (chatId)=>{
+    const version=++readVersion.current;
+    try{
+      const data=await messages('read',{id:chatId});
+      if(version!==readVersion.current||currentChat.current!==chatId)return;
+      setThread(data);
+      setReadError(null);
+      setInbox(previous=>previous?.map(chat=>chat.id===chatId?{...chat,unread:false}:chat)??null);
+    }catch(error){
+      if(version===readVersion.current&&currentChat.current===chatId)setReadError({id:chatId,message:error.message});
+    }
+  },[]);
   useEffect(()=>{
-    const refresh=()=>loadInbox().catch(error=>setError(error.message));
-    void refresh();
-    const timer=setInterval(refresh,15000);
+    void loadInbox();
+    const timer=setInterval(()=>void loadInbox(),15000);
     return ()=>clearInterval(timer);
   },[loadInbox]);
   useEffect(()=>{
-    setThread(null);setDraft('');setError('');
+    setThread(null);setDraft('');setError('');setReadError(null);
     if(!id)return;
-    let active=true;
-    const refresh=()=>messages('read',{id}).then(data=>{if(active){setThread(data);setInbox(previous=>previous?.map(chat=>chat.id===id?{...chat,unread:false}:chat)??null);}}).catch(error=>{if(active)setError(error.message);});
+    let pending=false;
+    const refresh=async()=>{
+      if(pending||operation.current)return;
+      pending=true;
+      try{await loadThread(id);}finally{pending=false;}
+    };
     void refresh();
     const timer=setInterval(refresh,8000);
-    return ()=>{active=false;clearInterval(timer);};
-  },[id]);
+    return ()=>{readVersion.current++;clearInterval(timer);};
+  },[id,loadThread]);
   async function perform(work) {
     if(operation.current)return;
     operation.current=true;
@@ -145,6 +173,7 @@ function MessagesPage({user}) {
           <button aria-pressed={!requests} onClick={()=>setRequests(false)}>Inbox</button>
           <button aria-pressed={requests} onClick={()=>setRequests(true)}>Requests</button>
         </div>
+        {inboxError ? <p role="alert" className="public-messages-list-empty">Inbox couldn’t refresh. <button type="button" className="underline" onClick={loadInbox}>Retry</button></p> : inbox===null && <p role="status" className="public-messages-list-empty">Loading conversations…</p>}
         {visibleChats?.length===0&&<p className="public-messages-list-empty">{requests?"No message requests.":"No conversations yet. Tap the compose icon to start one."}</p>}
         {visibleChats?.map(chat=>
           <button key={chat.id} onClick={()=>setParams({chat:chat.id})} aria-current={id===chat.id} className="public-messages-row">
@@ -157,7 +186,8 @@ function MessagesPage({user}) {
       {id?<section className="public-messages-thread" aria-label="Conversation">
         <header className="public-messages-thread-header">
           <button className="public-messages-back" onClick={()=>setParams({})} aria-label="Back to inbox"><ChevronLeft size={23}/></button>
-          {thread&&<><PersonAvatar person={peerFor(thread.chat)}/><h2>{peerName(thread.chat)}</h2></>}
+          {readError?.id===id ? <p role="alert" className="public-messages-list-empty">{readError.message} <button type="button" className="underline" onClick={()=>loadThread(id)}>Retry</button></p> : !thread && <p role="status" className="public-messages-list-empty">Loading conversation…</p>}
+        {thread&&<><PersonAvatar person={peerFor(thread.chat)}/><h2>{peerName(thread.chat)}</h2></>}
         </header>
         {thread&&<>
           <div ref={scroll} className="public-messages-history" aria-label="Conversation messages" onScroll={()=>{
@@ -178,8 +208,7 @@ function MessagesPage({user}) {
               await messages('respond',{id,accept});
               if(currentChat.current===id){
                 if(accept){
-                  const next=await messages('read',{id});
-                  if(currentChat.current===id)setThread(next);
+                  await loadThread(id);
                 }else setParams({});
               }
               await loadInbox();
@@ -190,8 +219,7 @@ function MessagesPage({user}) {
             if(currentChat.current===id){
               followLatest.current=true;
               setDraft(previous=>previous===draft?'':previous);
-              const next=await messages('read',{id});
-              if(currentChat.current===id)setThread(next);
+              await loadThread(id);
             }
             await loadInbox();
           });}}>
