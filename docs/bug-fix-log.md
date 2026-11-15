@@ -175,3 +175,5 @@ All 99 automated suites passed, including repaired fixtures for current admin mo
 - GIF picker pagination — Use GIPHY’s returned offset rather than counting visible results, and ignore stale pagination cleanup after changing searches. Build passed.
 
 - Profile Discover People — Removed the opaque shelf background and border from the carousel, including the dark theme card override. Build passed.
+
+- Discover People avatar alignment — Size the portrait inside its badge wrapper so it stays centered in the ring. Inset the badge at the lower-right edge of the portrait. Live iPad verification remains open.

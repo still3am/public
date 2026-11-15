@@ -151,3 +151,27 @@
  .public-app .profile-redesigned .profile-person-gradient-ring.ring-is-flowing::before{content:"";position:absolute;inset:0;border-radius:50%;background-image:inherit;pointer-events:none;z-index:0;animation:public-avatar-ring-flow 9s linear infinite}
 }
 @keyframes public-avatar-ring-flow{to{transform:rotate(360deg)}}
+
+/* Size the image itself as well as the optional badge wrapper. */
+.public-app .profile-redesigned .profile-person-portrait-inner > .public-badged-avatar {
+  position: relative;
+  display: grid;
+  place-items: center;
+}
+.public-app .profile-redesigned .profile-person-portrait-inner > .public-badged-avatar > :not(.moment-compact-badge) {
+  width: 100% !important;
+  height: 100% !important;
+  max-width: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+.public-app .profile-redesigned .profile-person-portrait-inner .public-badged-avatar > .moment-compact-badge {
+  inset: auto 10% 10% auto;
+  z-index: 2;
+  width: 22px;
+  height: 22px;
+}
+.public-app .profile-redesigned .profile-person-portrait-inner .moment-compact-badge > svg {
+  width: 20px;
+  height: 20px;
+}
