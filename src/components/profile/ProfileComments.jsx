@@ -1,5 +1,6 @@
 import { profileCommentFilter, isProfileCommentThread } from "@/lib/profileCommentThread";
 import { reportActionError } from "@/lib/actionError";
+import { getUsersByIds } from "@/lib/userLookup";
 import { readAllPages } from '@/lib/readPages';
 import { useEffect, useState, useCallback, useRef } from "react";
 import { base44 } from "@/api/base44Client";
@@ -17,6 +18,7 @@ export default function ProfileComments({ profileId, isOwn, active = true, descr
   const { blocked } = useSafety();
 
   const [comments, setComments] = useState([]);
+  const [authors, setAuthors] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const [message, setMessage] = useState("");
@@ -60,6 +62,17 @@ export default function ProfileComments({ profileId, isOwn, active = true, descr
       unsub();
     };
   }, [load, active]);
+
+  const visibleComments = comments.filter((comment) => !blocked.has(comment.author_id)).slice(0, visibleCount);
+  const authorIds = JSON.stringify([...new Set(visibleComments.map((comment) => comment.author_id).filter(Boolean))]);
+  useEffect(() => {
+    if (!active) return;
+    let cancelled = false;
+    getUsersByIds(JSON.parse(authorIds)).then((people) => {
+      if (!cancelled) setAuthors({ scope, byId: new Map(people.map((person) => [person.id, person])) });
+    }).catch(() => {});
+    return () => { cancelled = true; };
+  }, [active, authorIds, scope]);
 
   async function postComment(e) {
     e.preventDefault();
@@ -159,9 +172,9 @@ export default function ProfileComments({ profileId, isOwn, active = true, descr
 
 
       <div className="space-y-3">
-          {comments.filter((c) => !blocked.has(c.author_id)).slice(0, visibleCount).map((c) =>
+          {visibleComments.map((c) =>
         <div key={c.id} className="profile-comment-row flex gap-3 p-3 rounded-2xl bg-foreground/[0.02]">
-              <Link to={`/profile/${c.author_id}`} onClick={onNavigate} aria-label={`View ${c.author_name || "user"} profile`} className="shrink-0"><Avatar user={{ avatar_url: c.author_avatar_url, full_name: c.author_name }} size={40} /></Link>
+              <Link to={`/profile/${c.author_id}`} onClick={onNavigate} aria-label={`View ${c.author_name || "user"} profile`} className="shrink-0"><Avatar user={(authors?.scope === scope && authors.byId.get(c.author_id)) || { avatar_url: c.author_avatar_url, full_name: c.author_name }} size={40} /></Link>
               <div className="flex-1 min-w-0">
                 <div className="flex items-center justify-between gap-2">
                   <Link to={`/profile/${c.author_id}`} onClick={onNavigate} className="text-sm font-semibold truncate hover:underline">{c.author_name || "PUBLIC member"}</Link>

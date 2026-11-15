@@ -7,13 +7,13 @@
 @media(prefers-reduced-motion:reduce){.pfp-boy .pfp-boy-head-clear,.pfp-boy .pfp-boy-head{display:none}}
 
 /* Match the badge placement on Moments comments. */
-.public-badged-avatar {
+.public-badged-avatar:not(:where(.reel-author *)) {
   position: relative;
   display: inline-flex;
   flex: 0 0 auto;
   vertical-align: middle;
 }
-.public-badged-avatar > .moment-compact-badge {
+.public-badged-avatar:not(:where(.reel-author *)) > .moment-compact-badge {
   position: absolute;
   right: -3px;
   bottom: -3px;
@@ -21,7 +21,7 @@
   height: 15px;
   pointer-events: none;
 }
-.public-badged-avatar > .moment-compact-badge svg {
+.public-badged-avatar:not(:where(.reel-author *)) > .moment-compact-badge svg {
   width: 15px;
   height: 15px;
 }
