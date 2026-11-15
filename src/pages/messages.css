@@ -1094,7 +1094,7 @@
     overflow-y: auto;
     overscroll-behavior: contain;
     border-radius: 26px 26px 0 0;
-    padding-bottom: calc(env(safe-area-inset-bottom) + 12px);
+    padding-bottom: calc(env(safe-area-inset-bottom) + 20px);
     transform: none !important;
     translate: 0 0 !important;
   }
@@ -1131,7 +1131,7 @@
   }
 
   .public-chat-backgrounds {
-    padding: 14px 14px 24px;
+    padding: 14px 14px max(32px, env(safe-area-inset-bottom));
   }
 
   .public-chat-background-tools {
