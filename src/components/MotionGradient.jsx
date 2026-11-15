@@ -21,24 +21,28 @@ uniform float u_count;
 void main(){
  vec2 p=v_uv;
  float t=u_time;
+ // Smooth domain warping gives broad, folding ribbons rather than zoom pulses.
  vec2 q=vec2(p.x*min(u_aspect,1.6),p.y);
- // Two slow, differently directed waves bend the color bands without mixing their identity.
- float driftA=sin(q.y*2.25+t*.18)+cos(q.x*1.85-t*.14);
- float driftB=sin((q.x+q.y)*2.05-t*.105)+cos((q.x-q.y)*1.7+t*.085);
- vec2 warped=q+vec2(driftA*.105+driftB*.045,driftB*.09-driftA*.035);
- float field=warped.x*.66+warped.y*.40;
- field+=.065*sin(warped.y*3.1+t*.12)+.045*cos(warped.x*2.7-t*.09);
- // Keep each chosen color as a readable region; soften only the narrow edge between stops.
- float position=fract(field*1.12+t*.034)*u_count;
- float stop=floor(position);
- float edge=smoothstep(.38,.62,fract(position));
- vec3 color=u_a;
- if(u_count<1.5) color=u_a;
- else if(stop<1.0) color=mix(u_a,u_count>1.5?u_b:u_a,edge);
- else if(stop<2.0) color=mix(u_b,u_count>2.5?u_c:u_a,edge);
- else if(stop<3.0) color=mix(u_c,u_count>3.5?u_d:u_a,edge);
- else if(stop<4.0) color=mix(u_d,u_count>4.5?u_e:u_a,edge);
- else color=mix(u_e,u_a,edge);
+ q+=.20*vec2(sin(q.y*3.8+t*.43),cos(q.x*3.4-t*.31));
+ float wave=sin(q.x*3.2+q.y*2.1+t*.29);
+ float fold=sin(q.y*4.1-q.x*1.8-t*.38+wave*.8);
+ float ribbon=.5+.5*sin(q.x*2.9+fold*1.7+t*.22);
+ vec3 color=mix(u_a,u_b,smoothstep(.12,.88,ribbon));
+ float pool=.5+.5*sin(q.y*3.3+wave*1.6-t*.27);
+ color=mix(color,u_c,smoothstep(.28,.92,pool)*.88);
+ if(u_count>3.5){
+  // All stops travel along the same warped ribbon, including the last-to-first blend.
+  float ribbonPath=q.x*.60+q.y*.40+wave*.14+fold*.12;
+  float stop=fract(ribbonPath+t*.046)*u_count;
+  float blend=smoothstep(0.,1.,fract(stop));
+  if(stop<1.) color=mix(u_a,u_b,blend);
+  else if(stop<2.) color=mix(u_b,u_c,blend);
+  else if(stop<3.) color=mix(u_c,u_d,blend);
+  else if(stop<4.) color=mix(u_d,u_count>4.5?u_e:u_a,blend);
+  else color=mix(u_e,u_a,blend);
+ }
+ float light=.90+.10*sin(q.x*2.0+q.y*2.6+fold);
+ color*=light;
  gl_FragColor=vec4(color,1.);
 }
 `;
