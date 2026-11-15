@@ -269,6 +269,10 @@ export const base44 = new Proxy(raw,{get(target,name) {
         if(id){const page=await target.entities.Track.filter({id},'-created_date',1);const rows=Array.isArray(page)?page:entityRows(page)||[];if(!rows.length)throw new Error('Song unavailable');}
       }
       const saved=await target.auth.updateMe(data);
+      if(changingMedia){
+        const confirmed=await target.auth.me();
+        if(mediaKeys.some(key=>(confirmed[key]||'')!==data[key]))throw Error('Background was not saved. Please retry.');
+      }
       const publicAppearance=Object.fromEntries(['featured_track_id','profile_background_mode','profile_background_colors','profile_background_motion','profile_background_speed',...mediaKeys].filter(key=>data[key]!==undefined).map(key=>[key,data[key]]));
       try{
         if(!Object.keys(publicAppearance).length)return saved;

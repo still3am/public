@@ -450,17 +450,19 @@ export default function Profile({ ownProfileTab = false }) {
   const backgroundColors = currentBackground.mode === "off" ? [] : currentBackground.mode === "custom" ? currentBackground.colors : coverColors.slice(0, 5);
   const closeColors = () => {setShowColors(false);setBackgroundDraft(null);};
   const saveColors = async (value) => {
-    if (!isOwn || identity.current !== [me?.id, targetId].join(":") || (await base44.auth.me()).id !== targetId) throw Error("Reopen your profile before saving.");
+    const key = [me?.id, targetId].join(":");
+    const owner = await base44.auth.me();
+    if (!isOwn || identity.current !== key || owner.id !== targetId || owner.disabled || owner.is_blocked) throw Error("Reopen your profile before saving.");
     const update = { profile_background_mode: value.mode, profile_background_colors: value.colors, profile_background_motion: value.motion, profile_background_speed: value.speed };
     const media = {
       profile_background_url: value.media?.src || "",
       profile_background_gif_url: value.media?.gifSrc || "",
       profile_background_video_url: value.media?.videoSrc || "",
     };
-    if (Object.entries(media).some(([key, url]) => (profile[key] || "") !== url)) Object.assign(update, media);
+    if (Object.entries(media).some(([key, url]) => ((profile[key] || "") !== url || (owner[key] || "") !== url))) Object.assign(update, media);
     await base44.auth.updateMe(update);
     const confirmed = await base44.auth.me();
-    if (confirmed.id !== targetId || identity.current !== [me?.id, targetId].join(":")) throw Error("Reopen your profile before saving.");
+    if (confirmed.id !== targetId || identity.current !== key) throw Error("Reopen your profile before saving.");
     if (Object.entries(media).some(([key, url]) => (confirmed[key] || "") !== url)) throw Error("Background media was not confirmed.");
     const actualColors = confirmed.profile_background_colors || [];
     if (confirmed.profile_background_mode !== value.mode || actualColors.join(",").toLowerCase() !== value.colors.join(",").toLowerCase() || confirmed.profile_background_motion !== value.motion || Number(confirmed.profile_background_speed) !== value.speed) throw new Error("Colors have not saved yet");
@@ -734,7 +736,7 @@ export default function Profile({ ownProfileTab = false }) {
       <ProfilePlaylists userId={targetId} active={isCurrentPage} />
       </div></div>
 
-      {showColors && isOwn && <ProfileColorPicker coverUrl={coverUrl} colors={coverColors} loading={colorsLoading} value={backgroundValue} onPreview={setBackgroundDraft} onSave={saveColors} onClose={closeColors} />}
+      {showColors && isOwn && <ProfileColorPicker allowMedia coverUrl={coverUrl} colors={coverColors} loading={colorsLoading} value={backgroundValue} onPreview={setBackgroundDraft} onSave={saveColors} onClose={closeColors} />}
 
       {showSettings && isOwn &&
         <SettingsSheet

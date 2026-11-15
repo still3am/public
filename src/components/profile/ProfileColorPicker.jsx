@@ -4,7 +4,7 @@ import {Dialog,DialogContent,DialogHeader,DialogTitle,DialogDescription} from "@
 import MotionGradient from "@/components/MotionGradient";
 import ProfileMedia from "@/components/ProfileMedia";
 import {base44} from "@/api/base44Client";
-import {isMotionFile,prepareProfileMotion,profileMotionSeconds} from "@/lib/profileMotion";
+import {isMotionFile,prepareProfileMotion,profileMotionSeconds,prepareBackgroundPhoto} from "@/lib/profileMotion";
 import ProfileColorWheel,{hexToHsv,hsvToHex} from "./ProfileColorWheel";
 import "./profile-colors.css";
 
@@ -31,12 +31,12 @@ const PALETTE_TONES=[[.76,.43],[.70,.86],[.37,.97],[.55,.69],[.43,.91]];
 const valid=color=>/^#[0-9a-f]{6}$/i.test(color);
 const normalize=text=>"#"+text.replace(/^#/,"").toLowerCase();
 
-export default function ProfileColorPicker({coverUrl,colors,loading,value,onPreview,onSave,onClose}){
+export default function ProfileColorPicker({coverUrl,colors,loading,value,onPreview,onSave,onClose,allowMedia=false}){
  const [draft,setDraft]=useState(()=>({mode:value.mode,colors:[...value.colors],motion:value.motion||"flow",speed:value.speed||1,media:value.media}));
  const [saving,setSaving]=useState(false),[error,setError]=useState("");
  const saveLock=useRef(false);
  const fileInput=useRef(null), fileLock=useRef(false);
- const [mediaTab,setMediaTab]=useState(Boolean(value.media?.src));
+ const [mediaTab,setMediaTab]=useState(allowMedia&&Boolean(value.media?.src));
  const [pending,setPending]=useState(null),[localMedia,setLocalMedia]=useState(null),[preparing,setPreparing]=useState(false);
  useEffect(()=>{
   if(!pending){setLocalMedia(null);return;}
@@ -52,9 +52,7 @@ export default function ProfileColorPicker({coverUrl,colors,loading,value,onPrev
    if(isMotionFile(file))setPending(await prepareProfileMotion(file,"background"));
    else {
     if(!/^image\/(jpeg|png|webp|avif)$/.test(file.type)||!file.size||file.size>10*1024*1024)throw Error("Choose a JPG, PNG, WebP or AVIF photo under 10 MB.");
-    const preview=await createImageBitmap(file);
-    preview.close();
-    setPending({file});
+    setPending({file:await prepareBackgroundPhoto(file)});
    }
   }catch(error){setError(error.message||"This file could not be opened.");}
   finally{fileLock.current=false;setPreparing(false);}
@@ -77,7 +75,7 @@ export default function ProfileColorPicker({coverUrl,colors,loading,value,onPrev
  const [dragIndex,setDragIndex]=useState(null);
  const [dropIndex,setDropIndex]=useState(null);
  const activeIndex=Math.min(activeColor,Math.max(0,draft.colors.length-1));
- const update=next=>{if(saveLock.current)return;setError("");setBeforeRandomize(null);setDraft(next);onPreview({...next,colors:next.colors.filter(valid)});};
+ const update=next=>{if(saveLock.current)return;setError("");setBeforeRandomize(null);setDraft(next);onPreview({...next,media:mediaTab?next.media:null,colors:next.colors.filter(valid)});};
  const customColors=draft.colors.length?draft.colors:colors.slice(0,3).length?colors.slice(0,3):PRESETS[0].colors;
  const setColors=next=>update({...draft,mode:"custom",colors:next.slice(0,MAX_COLORS)});
  const moveColor=(from,to)=>{
@@ -170,10 +168,10 @@ export default function ProfileColorPicker({coverUrl,colors,loading,value,onPrev
      {!mediaTab&&coverUrl&&<img src={coverUrl} alt="" onError={event=>{event.currentTarget.style.display="none";}}/>}
      <div><strong>Make it yours</strong><span>Live profile preview</span></div>
     </div>
-    <div className="profile-color-modes" role="group" aria-label="Profile background type">
-     <button type="button" disabled={saving||preparing} aria-pressed={!mediaTab} onClick={()=>{setError("");setMediaTab(false);update({...draft,media:null});}}>Colors</button>
+    {allowMedia&&<div className="profile-color-modes" role="group" aria-label="Profile background type">
+     <button type="button" disabled={saving||preparing} aria-pressed={!mediaTab} onClick={()=>{setError("");setMediaTab(false);onPreview({...draft,media:null,colors:draft.colors.filter(valid)});}}>Colors</button>
      <button type="button" disabled={saving||preparing} aria-pressed={mediaTab} onClick={()=>{setError("");setMediaTab(true);}}>Photo, GIF or video</button>
-    </div>
+    </div>}
     {mediaTab?<section className="profile-color-section">
      <h3>Background media</h3>
      <p className="profile-color-hint">GIFs and videos loop silently for up to {profileMotionSeconds("background")} seconds per loop. Your profile song can still play.</p>
