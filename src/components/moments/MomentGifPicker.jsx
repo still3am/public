@@ -13,17 +13,17 @@ const GIF_CATEGORIES = ["Trending", "Laugh", "Love", "Celebrate", "Surprised", "
 export default function MomentGifPicker({onSelect,onClose,inline=false,id}){
  const [query,setQuery]=useState(''),[items,setItems]=useState([]),[status,setStatus]=useState('');
  const [activeTerm,setActiveTerm]=useState(''),[failed,setFailed]=useState(false),[moreLoading,setMoreLoading]=useState(false),[hasMore,setHasMore]=useState(false),[moreFailed,setMoreFailed]=useState(false);
- const request=useRef(null),itemsRef=useRef([]),loadingMore=useRef(false),canLoadMore=useRef(false);
+ const request=useRef(null),itemsRef=useRef([]),loadingMore=useRef(false),canLoadMore=useRef(false),nextOffset=useRef(0);
  useEffect(()=>{search('');return ()=>request.current?.abort();},[]);
  async function search(term){
-  request.current?.abort();loadingMore.current=false;canLoadMore.current=false;itemsRef.current=[];
+  request.current?.abort();loadingMore.current=false;canLoadMore.current=false;itemsRef.current=[];nextOffset.current=0;
   const controller=new AbortController();request.current=controller;
   setActiveTerm(term);setFailed(false);setMoreFailed(false);setMoreLoading(false);setHasMore(false);
   setStatus('Loading GIFs…');setItems([]);
   try{
    const result=await momentsApi('gif_search',{query:term||'',offset:0});
    if(controller.signal.aborted)return;
-   const next=result.items||[];itemsRef.current=next;canLoadMore.current=Boolean(result.has_more);setHasMore(Boolean(result.has_more));setItems(next);setStatus(next.length?'':'No GIFs found.');
+   const next=result.items||[];itemsRef.current=next;nextOffset.current=Number(result.next_offset)||0;canLoadMore.current=Boolean(result.has_more)&&nextOffset.current>0;setHasMore(canLoadMore.current);setItems(next);setStatus(next.length?'':'No GIFs found.');
   }catch(error){if(!controller.signal.aborted){setFailed(true);setStatus(momentError(error));}}
  }
  async function loadMore(){
@@ -31,13 +31,13 @@ export default function MomentGifPicker({onSelect,onClose,inline=false,id}){
   loadingMore.current=true;setMoreLoading(true);setMoreFailed(false);
   const controller=new AbortController();request.current=controller;
   try{
-   const result=await momentsApi('gif_search',{query:activeTerm||'',offset:itemsRef.current.length});
+   const result=await momentsApi('gif_search',{query:activeTerm||'',offset:nextOffset.current});
    if(controller.signal.aborted)return;
    const current=itemsRef.current,known=new Set(current.map(item=>item.id));
-   const next=current.concat((result.items||[]).filter(item=>!known.has(item.id)));
-   itemsRef.current=next;canLoadMore.current=Boolean(result.has_more);setHasMore(Boolean(result.has_more));setItems(next);
+   const next=current.concat((result.items||[]).filter(item=>!known.has(item.id)&&known.add(item.id)));
+   itemsRef.current=next;const offset=Number(result.next_offset);canLoadMore.current=Boolean(result.has_more)&&offset>nextOffset.current;nextOffset.current=offset;setHasMore(canLoadMore.current);setItems(next);
   }catch(error){if(!controller.signal.aborted){setMoreFailed(true);setStatus(momentError(error));}}
-  finally{loadingMore.current=false;setMoreLoading(false);}
+  finally{if(request.current===controller&&!controller.signal.aborted){loadingMore.current=false;setMoreLoading(false);}}
  }
  function handleResultsScroll(event){
   const node=event.currentTarget;

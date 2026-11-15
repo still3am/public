@@ -171,3 +171,5 @@ All 99 automated suites passed, including repaired fixtures for current admin mo
 - Messages menu clipping — Position the reaction strip and actions using the measured panel and visible viewport, including resize and zoom. Production build passed. Live iPad check pending.
 
 - Messages narrow layout — Position the reaction menu after its portal mounts and constrain the emoji grid, chat, and composer to their available space. Production build passed. Live iPad verification remains open.
+
+- GIF picker pagination — Use GIPHY’s returned offset rather than counting visible results, and ignore stale pagination cleanup after changing searches. Build passed.
