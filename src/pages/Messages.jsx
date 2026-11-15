@@ -123,8 +123,7 @@ function MessagesPage({ user }) {
   const draftInput = useRef(null);
   const [inboxQuery, setInboxQuery] = useState('');
   const player = usePlayer();
-  /** @type {[false | "attachments" | "music", (value: false | "attachments" | "music") => void]} */
-  const [musicMenu, setMusicMenu] = useState(false);
+  const [musicMenu, setMusicMenu] = useState(/** @type {false | "attachments" | "music"} */ (false));
   const [mediaDraft, setMediaDraft] = useState(null);
   const mediaInput = useRef(null);
   const uploadedMedia = useRef(new WeakMap());
@@ -143,8 +142,7 @@ function MessagesPage({ user }) {
     setMediaDraft({ chatId: id, file, type, preview: URL.createObjectURL(file) });
   }
   const [gif, setGif] = useState(""),[showGifs, setShowGifs] = useState(false);
-  /** @type {[false | "recent" | "song" | "lyrics", (value: false | "recent" | "song" | "lyrics") => void]} */
-  const [songPicker, setSongPicker] = useState(false);
+  const [songPicker, setSongPicker] = useState(/** @type {false | "recent" | "song" | "lyrics"} */ (false));
   const [attachment, setAttachment] = useState(null);
   async function playSharedSong(message) {
     const trackId = message.track_id;
