@@ -159,3 +159,5 @@ All 99 automated suites passed, including repaired fixtures for current admin mo
 - Messages send retries — A send could save the message and then lose the response or fail while updating the inbox preview. The composer reuses the same request ID when retrying the same text, and the server checks for the saved message before creating another. Retries can repair the conversation preview. Lint and frontend build passed. Live network interruption and schema verification remain open.
 
 - Messages layout — Added conversation search, clearer active and keyboard focus states, larger tab targets, a multiline composer, and a New message action on the desktop empty screen. Lint and frontend build passed. Live device layout verification remains open.
+
+- Messages replies and song playback — Fixed in code. Reply now focuses the attached composer ref. Desktop Enter submits song-only messages, and playback accepts published tracks served through private audio storage. Lint and frontend build passed. Live playback and touch checks remain open.

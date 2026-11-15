@@ -57,7 +57,7 @@ function MessagesPage({user}) {
   async function playSharedSong(trackId){
     if(player.currentTrack?.id===trackId){await player.togglePlay();return;}
     const song=await base44.entities.Track.get(trackId);
-    if(!song?.is_published||song.approval_status!=='approved'||!song.audio_url)throw Error('This song is unavailable.');
+    if(!song?.is_published||song.approval_status!=='approved'||(!song.audio_url&&!song._private_audio))throw Error('This song is unavailable.');
     await player.playTrackAt([song],0);
   }
   const [contacts,setContacts]=useState(null),[contactQuery,setContactQuery]=useState(''),[contactError,setContactError]=useState(false),[retry,setRetry]=useState(0);
@@ -269,10 +269,10 @@ function MessagesPage({user}) {
             await loadInbox();
           });}}>
             <button type="button" aria-label="Attach a song" disabled={busy} onClick={()=>setSongPicker(true)}><Music2 size={19}/></button>
-            <textarea rows={1} aria-label="Message" placeholder={pending?'Write a message request…':'Write a message…'} className="min-w-0 flex-1 rounded-lg border bg-background p-2" value={draft} maxLength={2000} onChange={event=>setDraft(event.target.value)} onKeyDown={event=>{
+            <textarea ref={draftInput} rows={1} aria-label="Message" placeholder={pending?'Write a message request…':'Write a message…'} className="min-w-0 flex-1 rounded-lg border bg-background p-2" value={draft} maxLength={2000} onChange={event=>setDraft(event.target.value)} onKeyDown={event=>{
               if(event.key!=='Enter'||event.shiftKey||event.nativeEvent.isComposing||event.keyCode===229||!window.matchMedia('(pointer: fine)').matches)return;
               event.preventDefault();
-              if(!busy&&draft.trim())event.currentTarget.form?.requestSubmit();
+              if(!busy&&(draft.trim()||attachment))event.currentTarget.form?.requestSubmit();
             }} />
             <button aria-label="Send message" disabled={busy||(!draft.trim()&&!attachment)}><ArrowUp size={19}/></button>
           </form>}
