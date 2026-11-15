@@ -46,6 +46,7 @@ import Library from '@/pages/Library';
 import Downloads from '@/pages/Downloads';
 import Admin from '@/pages/Admin';
 import SongTransitions from '@/pages/SongTransitions';
+import Messages from '@/pages/Messages';
 import Notifications from '@/pages/Notifications';
 import ArtistDashboard from '@/pages/ArtistDashboard';
 import PlaylistDetail from '@/pages/PlaylistDetail';
@@ -124,6 +125,7 @@ const AuthenticatedApp = () => {
           <Route path="/downloads" element={<Downloads />} />
           <Route path="/admin" element={<Admin />} />
           <Route path="/settings/transitions" element={<SongTransitions />} />
+          <Route path="/messages" element={<Messages />} />
           <Route path="/notifications" element={<Notifications />} />
           <Route path="/artist-dashboard" element={<ArtistDashboard />} />
           <Route path="/my-uploads" element={<MyUploads />} />

@@ -15,7 +15,7 @@ export default function Sidebar() {
   const { user } = useAuth(),{ collapsed, toggle } = useSidebarCollapsed(),unread = useUnreadCount(),{ playlists } = useMyPlaylists();
   const groups = [
   { label: "Discover", links: [["/", "Home", Home, true], ["/search", "Search", Search], ["/moments", "Moments", GalleryVerticalEnd], ["/top", "Top charts", TrendingUp], ["/recent", "Recently added", Clock], ["/records", "Artists", Disc3]] },
-  ...(user ? [{ label: "Your music", links: [["/library", "Library", LibraryIcon], ["/downloads", "Offline music", CloudOff], ["/notifications", "Notifications", Bell]] }] : []),
+  ...(user ? [{ label: "Your music", links: [["/library", "Library", LibraryIcon], ["/downloads", "Offline music", CloudOff], ["/notifications", "Notifications", Bell], ["/messages", "Messages", Bell]] }] : []),
   { label: "Create & connect", links: [...(canUploadMusic(user)?[["/upload", "Upload music", Upload]]:[]), ...(canUploadMusic(user) ? [["/my-uploads", "Your uploads", FolderOpen], ...(user.creator_role=== "artist" ? [["/artist-dashboard", "Artist dashboard", BarChart3]] : [])] : []), ["/music-requests", "Music Requests", Music2], ["/suggestions", "Ideas", Lightbulb], ...(user?.role === "admin" ? [["/admin", "Admin", Shield]] : [])] }];
 
   const linkClass = ({ isActive }) => "desktop-nav-link " + (isActive ? "is-active" : "");
