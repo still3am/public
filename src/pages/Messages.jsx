@@ -2,7 +2,7 @@ import {useCallback,useEffect,useRef,useState} from 'react';
 import {Link,useLocation,useSearchParams} from 'react-router-dom';
 import {base44} from '@/api/base44Client';
 import {useAuth} from '@/lib/AuthContext';
-import {ArrowUp,ChevronLeft,ChevronRight,MessageCircle,Music2,Play,SquarePen,X} from 'lucide-react';
+import {ArrowUp,ChevronLeft,ChevronRight,MessageCircle,Music2,Pause,Play,SquarePen,X} from 'lucide-react';
 import TrackPickerSheet from '@/components/profile/TrackPickerSheet';
 import {usePlayer} from '@/context/PlayerContext';
 import Avatar from '@/components/Avatar';
@@ -53,6 +53,7 @@ function MessagesPage({user}) {
   const player=usePlayer();
   const [songPicker,setSongPicker]=useState(false),[attachment,setAttachment]=useState(null);
   async function playSharedSong(trackId){
+    if(player.currentTrack?.id===trackId){await player.togglePlay();return;}
     const song=await base44.entities.Track.get(trackId);
     if(!song?.is_published||song.approval_status!=='approved'||!song.audio_url)throw Error('This song is unavailable.');
     await player.playTrackAt([song],0);
@@ -219,7 +220,7 @@ function MessagesPage({user}) {
           }}>
             {thread.messages.length===0&&<p className="public-messages-list-empty">{pending?"Send a message request to start the conversation.":"Send the first message."}</p>}
             {thread.messages.map(message=><div key={message.id} className="public-message-group" data-own={message.sender_id===user?.id}>
-              {message.track_id&&<SharedSong message={message} onPlay={()=>void perform(()=>playSharedSong(message.track_id))} busy={busy}/>}
+              {message.track_id&&<SharedSong message={message} playing={player.currentTrack?.id===message.track_id&&player.isPlaying} onPlay={()=>void perform(()=>playSharedSong(message.track_id))} busy={busy}/>}
               {message.text&&<p className="public-message-bubble" data-own={message.sender_id===user?.id}>{message.text}</p>}
               {messageTime(message.created_date)&&<time dateTime={message.created_date}>{messageTime(message.created_date)}</time>}
             </div>)}
@@ -270,11 +271,11 @@ function MessagesPage({user}) {
   </main>;
 }
 
-function SharedSong({message,onPlay,busy}){
+function SharedSong({message,onPlay,busy,playing}){
   let song;
   try{song=JSON.parse(message.track);}catch{}
   return <div className="public-message-song">
-    <button type="button" onClick={onPlay} disabled={busy} aria-label={"Play "+(song?.title||"shared song")}><Play size={18} fill="currentColor"/></button>
+    <button type="button" onClick={onPlay} disabled={busy} aria-label={(playing?"Pause ":"Play ")+(song?.title||"shared song")}>{playing?<Pause size={18} fill="currentColor"/>:<Play size={18} fill="currentColor"/>}</button>
     <Link className="min-w-0" to={"/track/"+encodeURIComponent(message.track_id)}>
       <strong className="block truncate">{song?.title||"Shared song"}</strong>
       {song?.artist&&<span className="block truncate text-xs text-muted-foreground">{song.artist}</span>}
