@@ -1,0 +1,52 @@
+import {useEffect,useState} from 'react';
+import {Dialog,DialogContent,DialogTitle,DialogDescription} from '@/components/ui/dialog';
+import {findLyricsCatalog} from '@/lib/lyricsCatalog';
+
+export default function LyricSharePicker({track,result,onClose,onSelect}){
+  const [resolved,setResolved]=useState(result||null);
+  const [error,setError]=useState('');
+  const [start,setStart]=useState(null);
+  const [end,setEnd]=useState(null);
+  useEffect(()=>{
+    if(result)return;
+    const controller=new AbortController();
+    findLyricsCatalog(track,{signal:controller.signal}).then(value=>{
+      if(!controller.signal.aborted)setResolved(value||{});
+    }).catch(()=>{
+      if(!controller.signal.aborted)setError('Could not load lyrics. Close and try again.');
+    });
+    return()=>controller.abort();
+  },[result,track]);
+  const timed=resolved?.record?.lines;
+  const lines=timed?.length?timed:(resolved?.text||'').split(/\r?\n/).map(text=>({text}));
+  const lyrics=lines.filter(line=>line.text.trim()&&line.text!=='♪');
+  const excerpt=start===null?[]:lyrics.slice(start,end+1).map(line=>line.text.trim());
+  function choose(index){
+    if(start===null||index<start||index>start+3||index===start){
+      setStart(index);setEnd(index);
+    }else setEnd(index);
+  }
+  const timestamp=lyrics[start]?.start_time_ms;
+  const valid=excerpt.length>0&&excerpt.join('\n').length<=400;
+  return <Dialog open onOpenChange={open=>{if(!open)onClose();}}>
+    <DialogContent data-public-dialog className="grid max-h-[85dvh] grid-rows-[auto_auto_minmax(0,1fr)_auto] overflow-hidden">
+      <DialogTitle>Share lyrics</DialogTitle>
+      <DialogDescription>Choose a starting line and up to three more consecutive lines.</DialogDescription>
+      <div className="min-h-0 overflow-auto overscroll-contain">
+        {!resolved&&!error&&<p role="status">Finding lyrics…</p>}
+        {error&&<p role="alert">{error}</p>}
+        {resolved&&!lyrics.length&&<p>No lyrics available for this song.</p>}
+        {lyrics.map((line,index)=><button key={index} type="button" aria-pressed={start!==null&&index>=start&&index<=end}
+          className="block w-full rounded-lg px-3 py-2 text-left aria-pressed:bg-primary aria-pressed:text-primary-foreground"
+          onClick={()=>choose(index)}>{line.text}</button>)}
+      </div>
+      <div>
+        {excerpt.length>0&&<p className="mb-3 whitespace-pre-line rounded-xl bg-muted p-3 font-semibold" aria-label="Lyric preview">{excerpt.join('\n')}</p>}
+        {excerpt.length>0&&!valid&&<p className="mb-2 text-sm">Choose a shorter excerpt.</p>}
+        <button type="button" disabled={!valid} className="chrome-button disabled:opacity-40" onClick={()=>onSelect({
+          lines:excerpt,startMs:Number.isFinite(timestamp)?timestamp:null,
+        })}>Continue</button>
+      </div>
+    </DialogContent>
+  </Dialog>;
+}

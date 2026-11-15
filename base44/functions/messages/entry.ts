@@ -8,7 +8,7 @@ Deno.serve(async req => {
     const client = createClientFromRequest(req);
     const user = await client.auth.me().catch(() => null);
     if (!user?.id || user.disabled || user.is_blocked) fail('Sign in to use Messages.', 401);
-    const {action, id, username, recipientId, offset, text, trackId, accept, requestId, replyId, messageId} = await req.json();
+    const {action, id, username, recipientId, offset, text, trackId, accept, requestId, replyId, messageId, lyrics} = await req.json();
     const db = client.asServiceRole.entities;
     const uid = user.id;
     const blocked = async peer => rows(await db.Block.filter({
@@ -132,10 +132,23 @@ Deno.serve(async req => {
     if (trackId && (typeof trackId !== 'string' || !/^[a-zA-Z0-9_-]{1,100}$/.test(trackId))) fail('Choose a valid song.');
     if (requestId !== undefined && (typeof requestId !== 'string' || !/^[a-f0-9-]{36}$/i.test(requestId))) fail('Invalid message request.');
     if (replyId && (typeof replyId !== 'string' || !/^[a-zA-Z0-9_-]{1,100}$/.test(replyId))) fail('Choose a valid message to reply to.');
+    let lyricCard = null;
+    if (lyrics != null) {
+      if (!trackId || !Array.isArray(lyrics.lines) || lyrics.lines.length < 1 || lyrics.lines.length > 4 ||
+          lyrics.lines.some(line=>typeof line!=='string'||!line.trim()||/[\r\n]/.test(line)) ||
+          lyrics.lines.join('\n').length > 400 ||
+          (lyrics.startMs != null && (!Number.isSafeInteger(lyrics.startMs)||lyrics.startMs<0||lyrics.startMs>36000000))) fail('Choose up to four lyric lines.');
+      lyricCard = {lines:lyrics.lines.map(line=>line.trim()),startMs:lyrics.startMs??null};
+    }
     const previous = requestId ? rows(await db.Message.filter({
       conversation_id:id,sender_id:uid,send_request_id:requestId,
     }, '-created_date', 1))[0] : null;
     if (previous && (previous.text !== text.trim() || (previous.track_id||"") !== (trackId||"") || (previous.reply_to_id||"") !== (replyId||""))) fail('This request already sent a different message.',409);
+    if(previous){
+      let previousLyrics = null;
+      try{previousLyrics = JSON.parse(previous.track)?.lyrics??null;}catch{}
+      if(JSON.stringify(previousLyrics)!==JSON.stringify(lyricCard))fail('This request already sent a different lyric card.',409);
+    }
     if (!previous) {
       if (chat.dm_status !== 'accepted' && (chat.dm_status !== 'pending' || chat.dm_requester !== uid)) fail('This conversation is awaiting approval.',403);
       if (chat.dm_status === 'pending' && rows(await db.Message.filter({conversation_id:id}, '-created_date', 1)).length) fail('Wait for this person to accept your request.',403);
@@ -150,7 +163,7 @@ Deno.serve(async req => {
           reply_to_id:source.id,
           reply_preview:JSON.stringify({
             sender_name:chat.participant_names?.[senderIndex]||'PUBLIC listener',
-            text:(source.text|| (source.track_id?'Shared a song':'Message')).slice(0,180),
+            text:(source.text|| (source.track_id?'Shared music':'Message')).slice(0,180),
           }),
         };
       }
@@ -158,7 +171,8 @@ Deno.serve(async req => {
       if (trackId) {
         const song = rows(await db.Track.filter({id:trackId,is_published:true,approval_status:'approved'}, '-created_date', 1))[0];
         if (!song || (song.uploader_id && await blocked(song.uploader_id))) fail('This song is unavailable.',404);
-        attachment = {track_id:song.id,track:JSON.stringify({title:song.title,artist:song.artist||song.uploader_name,cover_art_url:song.cover_art_url})};
+        if(lyricCard?.startMs!=null && song.duration_seconds>0 && lyricCard.startMs>=song.duration_seconds*1000)fail("This lyric timestamp is outside the song.");
+        attachment = {track_id:song.id,track:JSON.stringify({title:song.title,artist:song.artist||song.uploader_name,cover_art_url:song.cover_art_url, ...(lyricCard?{lyrics:lyricCard}:{})})};
       }
       await db.Message.create({conversation_id:id,sender_id:uid,recipient_id:peer,text:text.trim(),...attachment,...quote,...(requestId?{send_request_id:requestId}:{})});
     }
