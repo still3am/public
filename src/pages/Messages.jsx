@@ -410,8 +410,6 @@ function MessagesPage({user}) {
             })}>{accept?'Accept request':'Decline'}</button>)}
           </div>}
 
-          {canSend&&attachment&&<div className="public-message-attachment"><Music2 size={17}/><span className="truncate">{attachment.title}</span><button type="button" aria-label="Remove song" disabled={busy} onClick={()=>{setAttachment(null);setLyricShare(null);}}><X size={18}/></button></div>}
-          {canSend&&attachment&&!attachment.lyrics&&<button type="button" className="public-messages-latest" disabled={busy} onClick={()=>setSelectingLyrics(true)}>Choose lyric lines</button>}
           {canSend&&attachment?.lyrics&&<LyricDraftPreview track={attachment} onRemove={()=>{setAttachment(null);setLyricShare(null);}} disabled={busy}/>}
           {canSend&&selectingLyrics&&attachment&&<LyricSharePicker track={attachment} onClose={()=>setSelectingLyrics(false)} onSelect={lyrics=>{
             setAttachment({...attachment,lyrics});setSelectingLyrics(false);
@@ -481,9 +479,10 @@ function MessagesPage({user}) {
               </PopoverContent>
             </Popover>
             <input hidden ref={mediaInput} type="file" accept="image/jpeg,image/png,image/webp,video/mp4,video/quicktime,video/webm" aria-label="Choose photo or video" onChange={event=>{const file=event.currentTarget.files?.[0];event.currentTarget.value='';selectMedia(file);}}/>
-            <div className="public-message-input-pill" data-has-gif={Boolean(gif)} data-has-lyrics={Boolean(attachment?.lyrics)}>
+            <div className="public-message-input-pill" data-has-gif={Boolean(gif)} data-has-lyrics={Boolean(attachment?.lyrics)} data-has-song={Boolean(attachment&&!attachment.lyrics)}>
+            {attachment&&!attachment.lyrics&&<SongDraftPreview track={attachment} disabled={busy} onRemove={()=>{setAttachment(null);setLyricShare(null);}}/>}
             {gif&&<div className="public-message-gif-draft"><MomentGif id={gif} label="Selected GIF"/><button type="button" aria-label="Remove GIF" disabled={busy} onClick={()=>setGif("")}><X size={15}/></button></div>}
-            <textarea ref={draftInput} rows={1} aria-label={reply?"Reply":"Message"} placeholder={gif?"Add a comment or send":reply?"Reply":pending?'Write a message request…':'Write a message…'} className="min-w-0 flex-1 rounded-lg border bg-background p-2" value={draft} maxLength={2000} onChange={event=>{
+            <textarea ref={draftInput} rows={1} aria-label={reply?"Reply":"Message"} placeholder={attachment&&!attachment.lyrics?"Add a comment or send":gif?"Add a comment or send":reply?"Reply":pending?'Write a message request…':'Write a message…'} className="min-w-0 flex-1 rounded-lg border bg-background p-2" value={draft} maxLength={2000} onChange={event=>{
               const value=event.target.value;
               setDrafts(previous=>{
                 const next=new Map(previous);
@@ -590,6 +589,15 @@ function ChatMedia({chatId,message}){
   return <button type="button" className="public-message-open-media" disabled={loading} onClick={open}>
     {loading?'Opening…':error?'Couldn’t open. Retry':image?'View photo':'Open video'}
   </button>;
+}
+
+function SongDraftPreview({track,onRemove,disabled}){
+  const cover=useCoverUrl(track.cover_art_url);
+  return <div className="public-message-song-draft">
+    {cover?<img src={cover} alt="" loading="lazy"/>:<Music2 size={20} aria-hidden="true"/>}
+    <span className="min-w-0"><strong className="block truncate">{track.title}</strong><small className="block truncate">{track.artist||track.uploader_name||"PUBLIC"}</small><small className="public-message-song-brand">♫ Music</small></span>
+    <button type="button" aria-label="Remove song" disabled={disabled} onClick={onRemove}><X size={17}/></button>
+  </div>;
 }
 
 function LyricDraftPreview({track,onRemove,disabled}){
