@@ -4666,6 +4666,11 @@
         }
       }
     },
+    "profile_private": {
+      "type": "boolean",
+      "default": false,
+      "rls": {"write":{"user_condition":{"role":"admin"}}}
+    },
     "friends_family_badge": {
       "type": "boolean",
       "default": false,
@@ -4684,7 +4689,10 @@
   ],
   "rls": {
     "read": {
-      "data.visible": true
+      "$and": [
+        {"data.visible":true},
+        {"$or":[{"data.profile_private":{"$ne":true}},{"data.user_id":"{{user.id}}"}]}
+      ]
     },
     "create": {
       "user_condition": {
