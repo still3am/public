@@ -1329,6 +1329,26 @@ html:not(.dark) .public-messages-thread[data-wallpaper="true"] .public-message-b
   margin-inline: auto;
 }
 
+.public-chat-details-person .public-messages-avatar > .public-badged-avatar {
+  position: relative;
+  display: block;
+  width: 76px !important;
+  height: 76px !important;
+  flex: 0 0 76px;
+}
+
+.public-chat-details-person .public-messages-avatar .profile-admin-badge.moment-compact-badge {
+  position: absolute !important;
+  top: auto !important;
+  right: -4px !important;
+  bottom: -2px !important;
+  z-index: 2;
+  width: 18px !important;
+  height: 18px !important;
+  padding: 0 !important;
+}
+
+
 @media (max-width: 560px) {
   .public-chat-details {
     height: min(90dvh, 900px);
