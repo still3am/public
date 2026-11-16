@@ -22,11 +22,6 @@ import './messages.css';
 const REACTIONS = ["❤️", "👍", "👎", "😂", "‼️", "❓", "🔥"];
 const REACTION_LABELS = ['Love', 'Like', 'Dislike', 'Laugh', 'Emphasize', 'Question', 'Fire'];
 
-const EARTH_WALLPAPERS = [
-  { id: 'earth-zoom', title: 'Earth zoom', src: 'https://svs.gsfc.nasa.gov/vis/a000000/a002000/a002255/a002255.webmhd.webm', poster: 'https://svs.gsfc.nasa.gov/vis/a000000/a002000/a002255/a002255_pre_searchweb.jpg' },
-  { id: 'orlando', title: 'Orlando flyover', src: 'https://svs.gsfc.nasa.gov/vis/a000000/a002000/a002111/hd002111_720p.webmhd.webm', poster: 'https://svs.gsfc.nasa.gov/vis/a000000/a002000/a002111/hd002111_720p_pre_searchweb.jpg' },
-  { id: 'pacific', title: 'Pacific flyover', src: 'https://svs.gsfc.nasa.gov/vis/a000000/a000000/a000304/a000304.webmhd.webm', poster: 'https://svs.gsfc.nasa.gov/vis/a000000/a000000/a000304/a000304_pre_searchweb.jpg' },
-];
 
 async function messages(action, data = {}) {
   try {
@@ -532,17 +527,6 @@ function MessagesPage({ user }) {
                   <button type="button" aria-pressed={showChatMarketplace} disabled={savingBackground || uploadingBackground} onClick={() => setShowChatMarketplace(true)}>
                     <span className="public-chat-background-sample public-chat-background-market"><ShoppingBag size={22} /></span><span>PUBLIC Market</span>
                   </button>
-                </div>
-                <h3>Earth clips</h3>
-                <p className="public-chat-earth-intro">Real NASA Earth flyovers. Tap one to set it for both of you.</p>
-                <div className="public-chat-earth-grid">
-                  {EARTH_WALLPAPERS.map((clip) => {
-                    const selected = videoWallpaper?.src === clip.src;
-                    return <button type="button" key={clip.id} className="public-chat-earth-tile" aria-pressed={selected} disabled={savingBackground || uploadingBackground} onClick={() => void saveChatBackground({ type: 'video', value: JSON.stringify(clip) })}>
-                      <video src={clip.src} poster={clip.poster} muted autoPlay loop playsInline preload="metadata" aria-hidden="true" />
-                      <span className="public-chat-earth-tile-overlay"><strong>{clip.title}</strong>{selected && <span className="public-chat-background-check"><Check size={16} /></span>}</span>
-                    </button>;
-                  })}
                 </div>
                 {backgroundError && <p className="public-chat-background-error" role="alert">{backgroundError}</p>}
                 <p className="public-chat-background-note">Background changes are shared with everyone in this conversation.</p>
