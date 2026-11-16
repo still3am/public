@@ -1033,6 +1033,23 @@
   font-size: 13px;
 }
 
+.public-chat-background-sync {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 34px;
+  margin: 0 0 12px;
+  padding: 7px 12px;
+  border: 1px solid hsl(var(--border) / .72);
+  border-radius: 999px;
+  background: hsl(var(--muted) / .65);
+  color: hsl(var(--muted-foreground));
+  font-size: 12px;
+  font-weight: 600;
+  text-align: center;
+  animation: public-typing-enter .24s ease-out both;
+}
+
 .public-chat-background-note {
   margin-top: 14px;
   text-align: center;
