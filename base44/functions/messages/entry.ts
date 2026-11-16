@@ -31,6 +31,7 @@ Deno.serve(async req => {
     const publicPerson = profile => ({
       id:profile.user_id,
       display_name:profile.display_name||profile.full_name||profile.username||'PUBLIC listener',
+      username:typeof profile.username==='string'?profile.username:'',
       avatar_url:profile.avatar_url||'',
       avatar_preset:profile.avatar_preset||'',
       avatar_gif_url:profile.avatar_gif_url||'',
