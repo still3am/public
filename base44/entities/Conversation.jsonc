@@ -15,7 +15,9 @@
             "none",
             "preset",
             "color",
-            "photo"
+            "photo",
+            "video",
+            "gradient"
           ]
         },
         "value": {
