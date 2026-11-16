@@ -294,11 +294,13 @@ function MessagesPage({ user }) {
     : activeBackground.type === 'photo'
       ? { backgroundImage: 'url("' + activeBackground.value + '")' }
       : undefined;
+  // Conversation backgrounds stay independent from profile appearance.
+  // Start with no colors until the user adds them in this editor.
   const savedPalette = gradientWallpaper || {
     mode: 'custom',
-    colors: (user?.profile_background_colors || ['#172768', '#9854ef', '#56c9e2']).filter((color) => /^#[0-9a-f]{6}$/i.test(color)).slice(0, 5),
-    motion: user?.profile_background_motion === 'still' ? 'still' : 'flow',
-    speed: Math.max(0.35, Math.min(1.6, Number(user?.profile_background_speed) || 1)),
+    colors: [],
+    motion: 'flow',
+    speed: 1,
   };
   async function saveConversationPalette(value) {
     if (!id || !thread?.chat?.id) throw new Error('Choose a conversation first.');
@@ -575,7 +577,7 @@ function MessagesPage({ user }) {
         {showChatColorEditor && <ProfileColorPicker
           colors={savedPalette.colors}
           loading={false}
-          value={{ ...savedPalette, mode: 'custom', colors: savedPalette.colors?.length ? savedPalette.colors : ['#172768', '#9854ef', '#56c9e2'] }}
+          value={{ ...savedPalette, mode: 'custom' }}
           title="Your conversation colors"
           description="Create a moving gradient for this chat. Your choice is shared with both people."
           availableModes={[["custom", "Custom"], ["off", "No color"]]}
