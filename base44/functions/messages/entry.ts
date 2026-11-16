@@ -144,7 +144,7 @@ Deno.serve(async req => {
         try { photoUrl = new URL(background.value); } catch {}
       }
       const validPhoto = photoUrl?.protocol === 'https:' &&
-        ['media.base44.com','media.giphy.com','i.giphy.com'].includes(photoUrl.hostname) &&
+        (photoUrl.hostname === 'media.base44.com' || photoUrl.hostname === 'giphy.com' || photoUrl.hostname.endsWith('.giphy.com')) &&
         !photoUrl.username && !photoUrl.password;
       if (!valid && !validGradient && !validVideo && !validPhoto) fail('Choose a valid conversation background.');
       await db.Conversation.update(id, {background});
