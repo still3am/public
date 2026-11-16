@@ -1812,6 +1812,34 @@ html:not(.dark) .public-messages-thread .public-messages-compose {
   .public-chat-tab-icon { width: 26px; height: 24px; }
 }
 
+/* Use one shared content rhythm across all conversation detail tabs. */
+.public-chat-background-scroll,
+.public-chat-info,
+.public-chat-shared-items {
+  box-sizing: border-box;
+  width: 100%;
+  padding-inline: 22px;
+}
+.public-chat-background-scroll { padding-top: 18px; padding-bottom: 28px; }
+.public-chat-info,
+.public-chat-shared-items { padding-top: 18px; padding-bottom: 28px; }
+.public-chat-panel-heading { margin: 0 0 16px; }
+.public-chat-panel-heading h3,
+.public-chat-shared-items > h3,
+.public-chat-info > h3 {
+  margin: 0 0 8px;
+  font-size: 18px;
+  font-weight: 750;
+  line-height: 1.25;
+}
+.public-chat-panel-heading p { margin: 0; color: hsl(var(--muted-foreground)); font-size: 13px; line-height: 1.45; }
+.public-chat-shared-items > h3 { margin-bottom: 14px; }
+.public-chat-info > p { margin-bottom: 16px; }
+.public-chat-details[data-tab="backgrounds"] .public-chat-background-tools button[aria-pressed="true"] .public-chat-background-sample:is(.public-chat-background-your-color, .public-chat-background-market)::after,
+.public-chat-background-tools button[aria-pressed="true"] .public-chat-background-sample:is(.public-chat-background-your-color, .public-chat-background-market)::after {
+  display: none !important;
+  content: none !important;
+}
 @media (max-width: 560px) {
   .public-chat-details:is([data-tab="photos"], [data-tab="gifs"], [data-tab="music"]) {
     inset: 8px !important;
