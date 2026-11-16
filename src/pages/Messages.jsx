@@ -478,19 +478,6 @@ function MessagesPage({ user }) {
             {detailsTab === 'backgrounds' ? <section className="public-chat-backgrounds" aria-label="Conversation backgrounds">
               <div className="public-chat-background-scroll">
                 {(savingBackground || uploadingBackground) && <p className="public-chat-background-sync" role="status">{uploadingBackground ? "Uploading your shared photo…" : "Saving for both of you…"}</p>}
-                <h3>Suggestions</h3>
-                <div className="public-chat-background-grid">
-                  {CHAT_BACKGROUND_PRESETS.filter((item) => item.id !== 'flow').map((item) => {
-                    const selected = activeBackground.type === 'preset' && activeBackground.value === item.id;
-                    return <button type="button" key={item.id} className="public-chat-background-tile" aria-pressed={selected} disabled={uploadingBackground} style={{ backgroundImage: item.background }} onClick={() => void saveChatBackground({ type: 'preset', value: item.id })}>
-                      <span>{item.name}</span>{selected && <span className="public-chat-background-check"><Check size={16} /></span>}
-                    </button>;
-                  })}
-                </div>
-                {backgroundError && <p className="public-chat-background-error" role="alert">{backgroundError}</p>}
-                <p className="public-chat-background-note">Background changes are shared with everyone in this conversation.</p>
-              </div>
-              <div className="public-chat-background-dock">
                 <div className="public-chat-background-tools">
                   <button type="button" aria-pressed={activeBackground.type === 'none'} disabled={uploadingBackground} onClick={() => void saveChatBackground({ type: 'none' })}>
                     <span className="public-chat-background-sample public-chat-background-none"><X size={22} /></span><span>None</span>
@@ -510,6 +497,17 @@ function MessagesPage({ user }) {
                     <span className="public-chat-background-sample" style={{ backgroundImage: CHAT_BACKGROUND_PRESETS.find((item) => item.id === 'flow').background }}><span className="public-chat-background-glow" />{activeBackground.type === 'preset' && activeBackground.value === 'flow' && <span className="public-chat-background-check"><Check size={16} /></span>}</span><span>Flow</span>
                   </button>
                 </div>
+                <h3>Suggestions</h3>
+                <div className="public-chat-background-grid">
+                  {CHAT_BACKGROUND_PRESETS.filter((item) => item.id !== 'flow').map((item) => {
+                    const selected = activeBackground.type === 'preset' && activeBackground.value === item.id;
+                    return <button type="button" key={item.id} className="public-chat-background-tile" aria-pressed={selected} disabled={uploadingBackground} style={{ backgroundImage: item.background }} onClick={() => void saveChatBackground({ type: 'preset', value: item.id })}>
+                      <span>{item.name}</span>{selected && <span className="public-chat-background-check"><Check size={16} /></span>}
+                    </button>;
+                  })}
+                </div>
+                {backgroundError && <p className="public-chat-background-error" role="alert">{backgroundError}</p>}
+                <p className="public-chat-background-note">Background changes are shared with everyone in this conversation.</p>
               </div>
               <input ref={backgroundFile} type="file" accept="image/jpeg,image/png,image/webp" className="sr-only" onChange={(event) => { void uploadChatBackground(event.target.files?.[0]);event.target.value = ''; }} />
             </section> : <section className="public-chat-info">
