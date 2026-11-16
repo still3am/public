@@ -430,7 +430,7 @@ function MessagesPage({ user }) {
   }
   const lastMessage = Array.isArray(thread?.messages) ? thread.messages.at(-1)?.id : null;
   const conversationMessages = Array.isArray(thread?.messages) ? thread.messages : [];
-  const sharedPhotos = conversationMessages.filter((message) => message.media_type === 'image' && message.media_url && !messageGifId(message)).slice().reverse();
+  const sharedPhotos = conversationMessages.filter((message) => ['image', 'video'].includes(message.media_type) && message.media_url && !messageGifId(message)).slice().reverse();
   const sharedGifs = conversationMessages.filter((message) => Boolean(messageGifId(message))).slice().reverse();
   const sharedMusic = conversationMessages.filter((message) => Boolean(message.track_id)).slice().reverse();
   useEffect(() => {
@@ -512,14 +512,15 @@ function MessagesPage({ user }) {
               <Link to={"/profile/" + encodeURIComponent(currentPeer)} onClick={() => setChatDetailsOpen(false)}>View profile</Link>
             </div>
             <div className="public-chat-details-tabs" role="tablist" aria-label="Conversation details">
-              <button type="button" role="tab" aria-selected={detailsTab === 'info'} onClick={() => setDetailsTab('info')}>Info</button>
-              <button type="button" role="tab" aria-selected={detailsTab === 'backgrounds'} onClick={() => setDetailsTab('backgrounds')}>Backgrounds</button>
+              {[
+                ['info', 'Info'], ['backgrounds', 'Backgrounds'], ['photos', 'Photos'], ['gifs', 'GIFs'], ['music', 'Music'],
+              ].map(([tab, label]) => <button key={tab} type="button" role="tab" aria-selected={detailsTab === tab} onClick={() => setDetailsTab(tab)}>{label}</button>)}
             </div>
             {detailsTab === 'backgrounds' ? <section className="public-chat-backgrounds" aria-label="Conversation backgrounds">
               <div className="public-chat-background-scroll">
                 {(savingBackground || uploadingBackground) && <p className="public-chat-background-sync" role="status">{uploadingBackground ? "Uploading your shared photo…" : "Saving for both of you…"}</p>}
                 <div className="public-chat-background-tools">
-                  <button type="button" aria-pressed={activeBackground.type === 'none'} disabled={uploadingBackground} onClick={() => void saveChatBackground({ type: 'none' })}>
+                  <button type="button" aria-pressed={activeBackground.type === 'none'} disabled={savingBackground || uploadingBackground} onClick={() => void saveChatBackground({ type: 'none' })}>
                     <span className="public-chat-background-sample public-chat-background-none"><X size={22} /></span><span>None</span>
                   </button>
                   <button type="button" disabled={savingBackground || uploadingBackground} onClick={() => backgroundFile.current?.click()}>
@@ -536,10 +537,19 @@ function MessagesPage({ user }) {
                 <p className="public-chat-background-note">Background changes are shared with everyone in this conversation.</p>
               </div>
               <input ref={backgroundFile} type="file" accept="image/jpeg,image/png,image/webp" className="sr-only" onChange={(event) => { void uploadChatBackground(event.target.files?.[0]);event.target.value = ''; }} />
-            </section> : <section className="public-chat-info">
+            </section> : detailsTab === 'info' ? <section className="public-chat-info">
               <h3>Conversation info</h3>
-              <p>Your messages stay in this conversation. Background changes are shared with everyone here.</p>
+              <p>Messages, photos, GIFs, and music shared here stay available to both people in this conversation.</p>
               <Link to={"/profile/" + encodeURIComponent(currentPeer)} onClick={() => setChatDetailsOpen(false)}>View {peerName(thread.chat)}’s profile</Link>
+            </section> : detailsTab === 'photos' ? <section className="public-chat-shared-items" aria-label="Shared photos and videos">
+              <h3>Photos &amp; videos</h3>
+              {sharedPhotos.length ? <div className="public-chat-shared-grid">{sharedPhotos.slice(0, 40).map((message) => <article key={message.id} className="public-chat-shared-tile"><ChatMedia chatId={id} message={message} /><time dateTime={message.created_date}>{messageTime(message.created_date)}</time></article>)}</div> : <p className="public-chat-shared-empty">Photos and videos shared in this conversation will appear here.</p>}
+            </section> : detailsTab === 'gifs' ? <section className="public-chat-shared-items" aria-label="Shared GIFs">
+              <h3>GIFs</h3>
+              {sharedGifs.length ? <div className="public-chat-shared-grid">{sharedGifs.slice(0, 40).map((message) => <article key={message.id} className="public-chat-shared-tile public-chat-shared-gif"><MomentGif id={messageGifId(message)} label="Shared GIF" /><time dateTime={message.created_date}>{messageTime(message.created_date)}</time></article>)}</div> : <p className="public-chat-shared-empty">GIFs shared in this conversation will appear here.</p>}
+            </section> : <section className="public-chat-shared-items" aria-label="Shared music">
+              <h3>Music</h3>
+              {sharedMusic.length ? <div className="public-chat-shared-music">{sharedMusic.slice(0, 40).map((message) => <article key={message.id} className="public-chat-shared-track"><SharedSong message={message} playing={player.currentTrack?.id === message.track_id && player.isPlaying && (!songData(message)?.lyrics || lyricPlayback.current === message.id)} onPlay={() => void perform(() => playSharedSong(message))} busy={busy} /><time dateTime={message.created_date}>{messageTime(message.created_date)}</time></article>)}</div> : <p className="public-chat-shared-empty">Songs shared in this conversation will appear here.</p>}
             </section>}
           </DialogContent>
         </Dialog>}
