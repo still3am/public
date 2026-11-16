@@ -473,7 +473,7 @@ function MessagesPage({ user }) {
                 <div className="public-chat-background-grid">
                   {CHAT_BACKGROUND_PRESETS.filter((item) => item.id !== 'flow').map((item) => {
                     const selected = activeBackground.type === 'preset' && activeBackground.value === item.id;
-                    return <button type="button" key={item.id} className="public-chat-background-tile" aria-pressed={selected} disabled={savingBackground} style={{ backgroundImage: item.background }} onClick={() => void saveChatBackground({ type: 'preset', value: item.id })}>
+                    return <button type="button" key={item.id} className="public-chat-background-tile" aria-pressed={selected} style={{ backgroundImage: item.background }} onClick={() => void saveChatBackground({ type: 'preset', value: item.id })}>
                       <span>{item.name}</span>{selected && <span className="public-chat-background-check"><Check size={16} /></span>}
                     </button>;
                   })}
@@ -483,7 +483,7 @@ function MessagesPage({ user }) {
               </div>
               <div className="public-chat-background-dock">
                 <div className="public-chat-background-tools">
-                  <button type="button" aria-pressed={activeBackground.type === 'none'} disabled={savingBackground} onClick={() => void saveChatBackground({ type: 'none' })}>
+                  <button type="button" aria-pressed={activeBackground.type === 'none'} onClick={() => void saveChatBackground({ type: 'none' })}>
                     <span className="public-chat-background-sample public-chat-background-none"><X size={22} /></span><span>None</span>
                   </button>
                   <button type="button" disabled={savingBackground} onClick={() => backgroundFile.current?.click()}>
@@ -491,13 +491,13 @@ function MessagesPage({ user }) {
                   </button>
                   <label className="public-chat-background-color">
                     <span className="public-chat-background-sample"><Palette size={23} /></span><span>Color</span>
-                    <input type="color" aria-label="Choose and apply a conversation background color" value={draftBackgroundColor} disabled={savingBackground} onChange={(event) => {
+                    <input type="color" aria-label="Choose and apply a conversation background color" value={draftBackgroundColor} onChange={(event) => {
                       const color = event.target.value;
                       setDraftBackgroundColor(color);
                       void saveChatBackground({ type: 'color', value: color });
                     }} />
                   </label>
-                  <button type="button" aria-pressed={activeBackground.type === 'preset' && activeBackground.value === 'flow'} disabled={savingBackground} onClick={() => void saveChatBackground({ type: 'preset', value: 'flow' })}>
+                  <button type="button" aria-pressed={activeBackground.type === 'preset' && activeBackground.value === 'flow'} onClick={() => void saveChatBackground({ type: 'preset', value: 'flow' })}>
                     <span className="public-chat-background-sample" style={{ backgroundImage: CHAT_BACKGROUND_PRESETS.find((item) => item.id === 'flow').background }}><span className="public-chat-background-glow" /></span><span>Flow</span>
                   </button>
                 </div>
