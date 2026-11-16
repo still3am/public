@@ -1697,15 +1697,6 @@ html:not(.dark) .public-messages-thread .public-messages-compose {
 .public-chat-shared-track .public-message-song { width: 100%; min-width: 0; }
 .public-chat-shared-track > time { color: hsl(var(--muted-foreground)); font-size: 11px; white-space: nowrap; }
 .public-chat-shared-empty { margin: 0; padding: 22px 16px; border: 1px solid hsl(var(--border) / .65); border-radius: 18px; color: hsl(var(--muted-foreground)); text-align: center; line-height: 1.5; }
-.public-chat-earth-section { margin-top: 22px; }
-.public-chat-earth-section > h3 { margin: 0 0 4px; font-size: 17px; font-weight: 750; }
-.public-chat-earth-section > p { margin: 0 0 12px; color: hsl(var(--muted-foreground)); font-size: 12px; line-height: 1.4; }
-.public-chat-earth-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
-.public-chat-earth-tile { position: relative; min-width: 0; min-height: 140px; overflow: hidden; border: 1px solid hsl(var(--border) / .5); border-radius: 18px; background: hsl(var(--muted)); color: white; text-align: left; }
-.public-chat-earth-tile > video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
-.public-chat-earth-tile-overlay { position: absolute; inset: auto 0 0; display: flex; align-items: end; justify-content: space-between; gap: 8px; padding: 22px 10px 10px; background: linear-gradient(transparent, rgb(0 0 0 / .7)); font-size: 12px; }
-.public-chat-earth-tile[aria-pressed="true"] { outline: 2px solid hsl(var(--primary)); outline-offset: 2px; }
-.public-chat-earth-tile:disabled { opacity: .65; }
 /* The two utility actions use the same neutral control treatment as the other options. */
 .public-chat-background-your-color,
 .public-chat-background-market { color: hsl(var(--foreground)) !important; background: hsl(var(--muted)) !important; }
@@ -1725,6 +1716,5 @@ html:not(.dark) .public-messages-thread .public-messages-compose {
   .public-chat-shared-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
   .public-chat-shared-track { grid-template-columns: minmax(0, 1fr); }
   .public-chat-shared-track > time { justify-self: end; margin-top: -6px; }
-  .public-chat-earth-tile { min-height: 118px; }
 }
 
