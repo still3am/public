@@ -429,6 +429,10 @@ function MessagesPage({ user }) {
     if (scroll.current) scroll.current.scrollTop = scroll.current.scrollHeight;
   }
   const lastMessage = Array.isArray(thread?.messages) ? thread.messages.at(-1)?.id : null;
+  const conversationMessages = Array.isArray(thread?.messages) ? thread.messages : [];
+  const sharedPhotos = conversationMessages.filter((message) => message.media_type === 'image' && message.media_url && !messageGifId(message)).slice().reverse();
+  const sharedGifs = conversationMessages.filter((message) => Boolean(messageGifId(message))).slice().reverse();
+  const sharedMusic = conversationMessages.filter((message) => Boolean(message.track_id)).slice().reverse();
   useEffect(() => {
     if (!lastMessage) return;
     if (followLatest.current) jumpToLatest();else
