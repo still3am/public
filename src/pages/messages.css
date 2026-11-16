@@ -1432,3 +1432,152 @@ html:not(.dark) .public-messages-thread[data-wallpaper="true"] .public-message-b
   }
 }
 
+/* Conversation details follow the full-height contact panel from the reference. */
+.public-chat-details[data-tab="backgrounds"] {
+  display: flex !important;
+  flex-direction: column !important;
+  width: min(620px, calc(100vw - 32px)) !important;
+  max-width: 620px !important;
+  height: min(94dvh, 960px) !important;
+  max-height: min(94dvh, 960px) !important;
+  overflow: hidden !important;
+  border-radius: 28px !important;
+  background: hsl(var(--card) / .78) !important;
+  -webkit-backdrop-filter: blur(34px) saturate(1.35) !important;
+  backdrop-filter: blur(34px) saturate(1.35) !important;
+}
+
+.public-chat-details[data-tab="backgrounds"] .public-chat-details-header {
+  flex: none;
+  background: hsl(var(--card) / .62);
+}
+
+.public-chat-details[data-tab="backgrounds"] .public-chat-details-person {
+  flex: none;
+  padding: 18px 20px 14px;
+}
+
+.public-chat-details[data-tab="backgrounds"] .public-chat-details-person .public-messages-avatar {
+  width: 82px;
+  height: 82px;
+  margin-bottom: 0;
+}
+
+.public-chat-details[data-tab="backgrounds"] .public-chat-details-tabs {
+  flex: none;
+  justify-content: flex-start;
+  padding-inline: 22px;
+  background: transparent;
+}
+
+.public-chat-details[data-tab="backgrounds"] .public-chat-backgrounds {
+  display: flex;
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: hidden;
+  padding: 0;
+}
+
+.public-chat-details[data-tab="backgrounds"] .public-chat-background-scroll {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: auto;
+  overscroll-behavior: contain;
+  padding: 18px 22px 28px;
+}
+
+.public-chat-details[data-tab="backgrounds"] .public-chat-background-tools {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+  margin-bottom: 26px;
+}
+
+.public-chat-details[data-tab="backgrounds"] .public-chat-background-sample {
+  width: clamp(64px, 12vw, 88px);
+}
+
+.public-chat-details[data-tab="backgrounds"] .public-chat-background-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.public-chat-details[data-tab="backgrounds"] .public-chat-background-tile {
+  min-height: clamp(150px, 23vw, 220px);
+  border-radius: 22px;
+}
+
+.public-chat-details[data-tab="backgrounds"] .public-chat-background-tile > .public-chat-background-check {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 30px;
+  height: 30px;
+  border: 2px solid white;
+}
+
+.public-chat-details[data-tab="backgrounds"] .public-chat-background-tools button[aria-pressed="true"] .public-chat-background-sample::after,
+.public-chat-details[data-tab="backgrounds"] .public-chat-background-color[data-selected="true"] .public-chat-background-sample::after {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  display: grid;
+  width: 24px;
+  height: 24px;
+  place-items: center;
+  border: 2px solid hsl(var(--card));
+  border-radius: 50%;
+  background: white;
+  color: #10202e;
+  content: "✓";
+  font-size: 15px;
+  font-weight: 800;
+}
+
+.public-chat-details[data-tab="backgrounds"] .public-chat-background-note {
+  margin: 18px 0 0;
+  text-align: left;
+}
+
+@media (max-width: 560px) {
+  .public-chat-details[data-tab="backgrounds"] {
+    inset: 8px !important;
+    width: auto !important;
+    height: calc(100dvh - 16px) !important;
+    max-height: calc(100dvh - 16px) !important;
+    border-radius: 26px !important;
+    padding-bottom: env(safe-area-inset-bottom) !important;
+  }
+
+  .public-chat-details[data-tab="backgrounds"] .public-chat-details-person {
+    padding-top: 12px;
+    padding-bottom: 12px;
+  }
+
+  .public-chat-details[data-tab="backgrounds"] .public-chat-details-person .public-messages-avatar {
+    width: 68px;
+    height: 68px;
+  }
+
+  .public-chat-details[data-tab="backgrounds"] .public-chat-background-scroll {
+    padding: 14px 16px 24px;
+  }
+
+  .public-chat-details[data-tab="backgrounds"] .public-chat-background-tools {
+    gap: 4px;
+    margin-bottom: 22px;
+  }
+
+  .public-chat-details[data-tab="backgrounds"] .public-chat-background-sample {
+    width: clamp(54px, 16vw, 72px);
+  }
+
+  .public-chat-details[data-tab="backgrounds"] .public-chat-background-grid {
+    gap: 10px;
+  }
+
+  .public-chat-details[data-tab="backgrounds"] .public-chat-background-tile {
+    min-height: clamp(124px, 35vw, 172px);
+    border-radius: 18px;
+  }
+}
+
