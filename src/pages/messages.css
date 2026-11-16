@@ -1719,7 +1719,17 @@ html:not(.dark) .public-messages-thread .public-messages-compose {
   backdrop-filter: blur(34px) saturate(1.35) !important;
 }
 .public-chat-details[data-tab="info"] .public-chat-details-header { flex: 0 0 auto; }
-.public-chat-details[data-tab="info"] .public-chat-details-person { flex: 0 0 auto; padding: 18px 20px 14px; }
+.public-chat-details[data-tab="info"] .public-chat-details-person { flex: 0 0 auto; padding: 16px 20px 12px; gap: 5px; }
+.public-chat-details-person .public-chat-details-username {
+  margin: -3px 0 0;
+  color: hsl(var(--muted-foreground));
+  font-size: 13px;
+  font-weight: 550;
+  line-height: 1.25;
+}
+.public-chat-details-person h2 { margin: 0; }
+.public-chat-details-person [data-slot="dialog-description"] { margin: 1px 0 0; }
+.public-chat-details-person > a { margin-top: 2px; }
 .public-chat-details[data-tab="info"] .public-chat-details-tabs {
   display: grid !important;
   grid-template-columns: repeat(5, minmax(0, 1fr));
