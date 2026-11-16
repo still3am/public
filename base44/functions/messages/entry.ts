@@ -143,7 +143,9 @@ Deno.serve(async req => {
       if (background.type === 'photo' && typeof background.value === 'string' && background.value.length <= 4096) {
         try { photoUrl = new URL(background.value); } catch {}
       }
-      const validPhoto = photoUrl?.protocol === 'https:' &&
+      const localGalleryAsset = typeof background.value === 'string' &&
+        /^\/(?:avatars|banners)\/[a-zA-Z0-9._-]+$/.test(background.value);
+      const validPhoto = localGalleryAsset || photoUrl?.protocol === 'https:' &&
         (photoUrl.hostname === 'media.base44.com' || photoUrl.hostname === 'giphy.com' || photoUrl.hostname.endsWith('.giphy.com')) &&
         !photoUrl.username && !photoUrl.password;
       if (!valid && !validGradient && !validVideo && !validPhoto) fail('Choose a valid conversation background.');
