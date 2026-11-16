@@ -475,15 +475,15 @@ function MessagesPage({ user }) {
                   </button>
                   <label className="public-chat-background-color">
                     <span className="public-chat-background-sample"><Palette size={23} /></span><span>Color</span>
-                    <input type="color" aria-label="Choose a conversation background color" value={draftBackgroundColor} disabled={savingBackground} onChange={(event) => setDraftBackgroundColor(event.target.value)} />
+                    <input type="color" aria-label="Choose and apply a conversation background color" value={draftBackgroundColor} disabled={savingBackground} onChange={(event) => {
+                      const color = event.target.value;
+                      setDraftBackgroundColor(color);
+                      void saveChatBackground({ type: 'color', value: color });
+                    }} />
                   </label>
                   <button type="button" aria-pressed={activeBackground.type === 'preset' && activeBackground.value === 'flow'} disabled={savingBackground} onClick={() => void saveChatBackground({ type: 'preset', value: 'flow' })}>
                     <span className="public-chat-background-sample" style={{ backgroundImage: CHAT_BACKGROUND_PRESETS.find((item) => item.id === 'flow').background }}><span className="public-chat-background-glow" /></span><span>Flow</span>
                   </button>
-                </div>
-                <div className="public-chat-background-color-apply">
-                  <span>Choose a color for this chat</span>
-                  <button type="button" disabled={savingBackground || (activeBackground.type === 'color' && activeBackground.value === draftBackgroundColor)} onClick={() => void saveChatBackground({ type: 'color', value: draftBackgroundColor })}>{savingBackground ? 'Saving…' : 'Apply color'}</button>
                 </div>
               </div>
               <input ref={backgroundFile} type="file" accept="image/jpeg,image/png,image/webp" className="sr-only" onChange={(event) => { void uploadChatBackground(event.target.files?.[0]);event.target.value = ''; }} />
