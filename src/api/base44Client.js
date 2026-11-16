@@ -227,8 +227,8 @@ export const base44 = new Proxy(raw,{get(target,name) {
       const presetIds=new Set(["sky","water","aurora","dawn","sunset","dusk","flow"]);
       if(!backgrounds||typeof backgrounds!=="object"||Array.isArray(backgrounds)||Object.keys(backgrounds).length>200)throw new Error("Invalid conversation backgrounds");
       for(const [chatId,background] of Object.entries(backgrounds)){
-        if(!/^[a-zA-Z0-9_-]{1,100}$/.test(chatId)||!background||typeof background!=="object"||Array.isArray(background))throw new Error("Invalid conversation background");
-        if(background.type==="none")continue;
+        if(!/^[a-zA-Z0-9_-]{1,100}$/.test(chatId)||!background||typeof background!=="object"||Array.isArray(background)||Object.keys(background).some(key=>!["type","value"].includes(key)))throw new Error("Invalid conversation background");
+        if(background.type==="none"&&background.value===undefined)continue;
         if(background.type==="preset"&&presetIds.has(background.value))continue;
         if(background.type==="color"&&typeof background.value==="string"&&/^#[0-9a-f]{6}$/i.test(background.value))continue;
         if(background.type==="photo"&&typeof background.value==="string"&&background.value.length<=4096){
@@ -243,7 +243,11 @@ export const base44 = new Proxy(raw,{get(target,name) {
       let failure;
       try{await target.auth.updateMe({message_backgrounds:backgrounds});}catch(error){failure=error;}
       const confirmed=await target.auth.me();
-      if(confirmed?.id!==current.id||JSON.stringify(confirmed.message_backgrounds||{})!==JSON.stringify(backgrounds))
+      const savedBackgrounds=confirmed?.message_backgrounds||{};
+      const matches=Object.keys(savedBackgrounds).length===Object.keys(backgrounds).length&&
+        Object.entries(backgrounds).every(([chatId,background])=>savedBackgrounds[chatId]?.type===background.type&&
+          (background.type==="none"||savedBackgrounds[chatId]?.value===background.value));
+      if(confirmed?.id!==current.id||!matches)
         throw failure||new Error("Your conversation background was not confirmed. Please retry.");
       return confirmed;
     }
