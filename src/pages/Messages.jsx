@@ -525,6 +525,7 @@ function MessagesPage({ user }) {
             </div>
             {detailsTab === 'backgrounds' ? <section className="public-chat-backgrounds" aria-label="Conversation backgrounds">
               <div className="public-chat-background-scroll">
+                <div className="public-chat-panel-heading"><h3>Conversation background</h3><p>Choose a look that both people will see.</p></div>
                 {(savingBackground || uploadingBackground) && <p className="public-chat-background-sync" role="status">{uploadingBackground ? "Uploading your shared photo…" : "Saving for both of you…"}</p>}
                 <div className="public-chat-background-tools">
                   <button type="button" aria-pressed={activeBackground.type === 'none'} disabled={savingBackground || uploadingBackground} onClick={() => void saveChatBackground({ type: 'none' })}>
