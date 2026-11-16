@@ -482,6 +482,11 @@ function MessagesPage({ user }) {
         )}
       </aside>
       {id ? <section className="public-messages-thread" aria-label="Conversation" data-replying={Boolean(reply)} data-wallpaper={activeBackground.type !== 'none'} style={backgroundStyle} onKeyDown={(event) => {if (event.key === "Escape" && reply && !busy && !showGifs && !musicMenu && !songPicker) setReply(null);}}>
+        {(videoWallpaper?.src || gradientWallpaper?.colors?.length > 1) && <div className="public-chat-wallpaper-layer" aria-hidden="true">
+          {videoWallpaper?.src
+            ? <video src={videoWallpaper.src} poster={videoWallpaper.poster} muted autoPlay loop playsInline />
+            : <MotionGradient colors={gradientWallpaper.colors} motion={gradientWallpaper.motion === 'still' ? 'still' : 'flow'} speed={gradientWallpaper.speed || 1} />}
+        </div>}
         <header className="public-messages-thread-header">
           {reply && <button type="button" className="public-message-close-reply" aria-label="Cancel reply" disabled={busy} onClick={() => setReply(null)}><X size={23} /></button>}
           <button className="public-messages-back" onClick={() => setParams({})} aria-label="Back to inbox"><ChevronLeft size={23} /></button>
