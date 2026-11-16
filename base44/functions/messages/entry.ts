@@ -118,13 +118,35 @@ Deno.serve(async req => {
       const valid = background.type === 'none' && background.value === undefined ||
         background.type === 'preset' && presetIds.has(background.value) ||
         background.type === 'color' && typeof background.value === 'string' && /^#[0-9a-f]{6}$/i.test(background.value);
+      let palette, video;
+      if (background.type === 'gradient' && typeof background.value === 'string' && background.value.length <= 1024) {
+        try { palette = JSON.parse(background.value); } catch {}
+      }
+      const validGradient = background.type === 'gradient' && palette && Array.isArray(palette.colors) &&
+        palette.colors.length >= 2 && palette.colors.length <= 5 &&
+        palette.colors.every(color => typeof color === 'string' && /^#[0-9a-f]{6}$/i.test(color)) &&
+        ['flow','still'].includes(palette.motion) && Number.isFinite(palette.speed) && palette.speed >= 0.35 && palette.speed <= 1.6;
+      if (background.type === 'video' && typeof background.value === 'string' && background.value.length <= 4096) {
+        try { video = JSON.parse(background.value); } catch {}
+      }
+      const videoHost = url => {
+        try {
+          const parsed = new URL(url);
+          return parsed.protocol === 'https:' && ['svs.gsfc.nasa.gov','media.base44.com'].includes(parsed.hostname) &&
+            !parsed.username && !parsed.password;
+        } catch { return false; }
+      };
+      const validVideo = background.type === 'video' && video && videoHost(video.src) &&
+        (video.poster === undefined || videoHost(video.poster)) &&
+        (video.title === undefined || (typeof video.title === 'string' && video.title.length <= 80));
       let photoUrl;
       if (background.type === 'photo' && typeof background.value === 'string' && background.value.length <= 4096) {
         try { photoUrl = new URL(background.value); } catch {}
       }
-      const validPhoto = photoUrl?.protocol === 'https:' && photoUrl.hostname === 'media.base44.com' &&
+      const validPhoto = photoUrl?.protocol === 'https:' &&
+        ['media.base44.com','media.giphy.com','i.giphy.com'].includes(photoUrl.hostname) &&
         !photoUrl.username && !photoUrl.password;
-      if (!valid && !validPhoto) fail('Choose a valid conversation background.');
+      if (!valid && !validGradient && !validVideo && !validPhoto) fail('Choose a valid conversation background.');
       await db.Conversation.update(id, {background});
       const saved = await db.Conversation.get(id);
       if (!saved || saved.id !== id || saved.background?.type !== background.type ||
