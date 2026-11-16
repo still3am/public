@@ -929,7 +929,8 @@
   outline-offset: 3px;
 }
 
-.public-chat-background-tools button[aria-pressed="true"] .public-chat-background-sample {
+.public-chat-background-tools button[aria-pressed="true"] .public-chat-background-sample,
+.public-chat-background-color[data-selected="true"] .public-chat-background-sample {
   box-shadow: 0 0 0 3px hsl(var(--card)), 0 0 0 5px hsl(var(--primary));
 }
 
