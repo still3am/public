@@ -523,24 +523,21 @@ function MessagesPage({ user }) {
                   <button type="button" disabled={savingBackground || uploadingBackground} onClick={() => backgroundFile.current?.click()}>
                     <span className="public-chat-background-sample public-chat-background-photo"><ImagePlus size={24} /></span><span>{uploadingBackground ? 'Uploading…' : savingBackground ? 'Saving…' : 'Photo'}</span>
                   </button>
-                  <label className="public-chat-background-color" data-selected={activeBackground.type === 'color'}>
-                    <span className="public-chat-background-sample"><Palette size={23} /></span><span>Color</span>
-                    <input type="color" aria-label="Choose and apply a conversation background color" value={draftBackgroundColor} disabled={uploadingBackground} onChange={(event) => {
-                      const color = event.target.value;
-                      setDraftBackgroundColor(color);
-                      void saveChatBackground({ type: 'color', value: color });
-                    }} />
-                  </label>
-                  <button type="button" aria-pressed={activeBackground.type === 'preset' && activeBackground.value === 'flow'} disabled={uploadingBackground} onClick={() => void saveChatBackground({ type: 'preset', value: 'flow' })}>
-                    <span className="public-chat-background-sample" style={{ backgroundImage: CHAT_BACKGROUND_PRESETS.find((item) => item.id === 'flow').background }}><span className="public-chat-background-glow" />{activeBackground.type === 'preset' && activeBackground.value === 'flow' && <span className="public-chat-background-check"><Check size={16} /></span>}</span><span>Playground</span>
+                  <button type="button" aria-pressed={activeBackground.type === 'gradient'} disabled={savingBackground || uploadingBackground} onClick={() => setShowChatColorEditor(true)}>
+                    <span className="public-chat-background-sample public-chat-background-your-color"><Palette size={23} /></span><span>Your color</span>
+                  </button>
+                  <button type="button" aria-pressed={showChatMarketplace} disabled={savingBackground || uploadingBackground} onClick={() => setShowChatMarketplace(true)}>
+                    <span className="public-chat-background-sample public-chat-background-market"><ShoppingBag size={22} /></span><span>PUBLIC Market</span>
                   </button>
                 </div>
-                <h3>Suggestions</h3>
-                <div className="public-chat-background-grid">
-                  {CHAT_BACKGROUND_PRESETS.filter((item) => item.id !== 'flow').map((item) => {
-                    const selected = activeBackground.type === 'preset' && activeBackground.value === item.id;
-                    return <button type="button" key={item.id} className="public-chat-background-tile" aria-pressed={selected} disabled={uploadingBackground} style={{ backgroundImage: item.background }} onClick={() => void saveChatBackground({ type: 'preset', value: item.id })}>
-                      <span>{item.name}</span>{selected && <span className="public-chat-background-check"><Check size={16} /></span>}
+                <h3>Earth clips</h3>
+                <p className="public-chat-earth-intro">Real NASA Earth flyovers. Tap one to set it for both of you.</p>
+                <div className="public-chat-earth-grid">
+                  {EARTH_WALLPAPERS.map((clip) => {
+                    const selected = videoWallpaper?.src === clip.src;
+                    return <button type="button" key={clip.id} className="public-chat-earth-tile" aria-pressed={selected} disabled={savingBackground || uploadingBackground} onClick={() => void saveChatBackground({ type: 'video', value: JSON.stringify(clip) })}>
+                      <video src={clip.src} poster={clip.poster} muted autoPlay loop playsInline preload="metadata" aria-hidden="true" />
+                      <span className="public-chat-earth-tile-overlay"><strong>{clip.title}</strong>{selected && <span className="public-chat-background-check"><Check size={16} /></span>}</span>
                     </button>;
                   })}
                 </div>
@@ -555,6 +552,24 @@ function MessagesPage({ user }) {
             </section>}
           </DialogContent>
         </Dialog>}
+        {showChatColorEditor && <ProfileColorPicker
+          colors={savedPalette.colors}
+          loading={false}
+          value={{ ...savedPalette, mode: 'custom', colors: savedPalette.colors?.length ? savedPalette.colors : ['#172768', '#9854ef', '#56c9e2'] }}
+          title="Your conversation colors"
+          description="Create a moving gradient for this chat. Your choice is shared with both people."
+          onPreview={() => {}}
+          onSave={saveConversationPalette}
+          onClose={() => setShowChatColorEditor(false)}
+        />}
+        {showChatMarketplace && <ProfileMarketplace
+          user={user}
+          backgroundMode
+          allowMotion
+          busy={savingBackground}
+          onClose={() => setShowChatMarketplace(false)}
+          onSelectBackground={chooseMarketBackground}
+        />}
         {thread && <>
           <div ref={scroll} className="public-messages-history" aria-label="Conversation messages" onScroll={() => {
             const node = scroll.current;
