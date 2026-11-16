@@ -279,7 +279,9 @@ function MessagesPage({ user }) {
   };
   const peerFor = (chat) => chat.peer || inbox?.find((row) => row.id === chat.id)?.peer || { display_name: peerName(chat) };
   const currentPeer = Array.isArray(thread?.chat?.participant_ids) ? thread.chat.participant_ids.find((member) => member !== user?.id) : null;
-  const activeBackground = id ? chatBackgrounds[id] || { type: 'none' } : { type: 'none' };
+  const activeBackground = id ? thread?.chat?.background || chatBackgrounds[id] || { type: 'none' } : { type: 'none' };
+  const backgroundSaveQueue = useRef(Promise.resolve());
+  const backgroundSaveVersion = useRef(0);
   const backgroundStyle = activeBackground.type === 'preset'
     ? { backgroundImage: CHAT_BACKGROUND_PRESETS.find((item) => item.id === activeBackground.value)?.background }
     : activeBackground.type === 'color'
@@ -288,20 +290,37 @@ function MessagesPage({ user }) {
         ? { backgroundImage: 'url("' + activeBackground.value + '")' }
         : undefined;
   async function saveChatBackground(nextBackground) {
-    if (!user?.id || !id || savingBackground) return;
-    const next = { ...chatBackgrounds, [id]: nextBackground };
-    setSavingBackground(true);
+    if (!user?.id || !id || !thread?.chat?.id) return;
+    const chatId = id;
+    const previous = thread.chat.background || chatBackgrounds[chatId] || { type: 'none' };
+    const version = ++backgroundSaveVersion.current;
     setBackgroundError('');
+    setChatBackgrounds((current) => ({ ...current, [chatId]: nextBackground }));
+    setThread((current) => current?.chat?.id === chatId
+      ? { ...current, chat: { ...current.chat, background: nextBackground } }
+      : current);
+    setSavingBackground(true);
+    const save = backgroundSaveQueue.current.catch(() => {}).then(() =>
+      messages('set_background', { id: chatId, background: nextBackground })
+    );
+    backgroundSaveQueue.current = save;
     try {
-      await base44.auth.updateMe({ message_backgrounds: next });
-      // updateMe resolves only after the account write succeeds. Avoid an
-      // immediate profile read here: it can return a stale cached value and
-      // incorrectly revert the freshly saved selection.
-      setChatBackgrounds(next);
+      const result = await save;
+      if (version === backgroundSaveVersion.current && result?.background) {
+        setThread((current) => current?.chat?.id === chatId
+          ? { ...current, chat: { ...current.chat, background: result.background } }
+          : current);
+      }
     } catch (saveError) {
-      setBackgroundError(saveError.message || 'Could not save this background. Please try again.');
+      if (version === backgroundSaveVersion.current) {
+        setChatBackgrounds((current) => ({ ...current, [chatId]: previous }));
+        setThread((current) => current?.chat?.id === chatId
+          ? { ...current, chat: { ...current.chat, background: previous } }
+          : current);
+        setBackgroundError(saveError.message || 'Could not save this background. Please try again.');
+      }
     } finally {
-      setSavingBackground(false);
+      if (version === backgroundSaveVersion.current) setSavingBackground(false);
     }
   }
   async function uploadChatBackground(file) {
@@ -315,11 +334,7 @@ function MessagesPage({ user }) {
     try {
       const result = await base44.integrations.Core.UploadFile({ file });
       if (!result?.file_url) throw new Error('Photo upload was not confirmed. Please retry.');
-      const next = { ...chatBackgrounds, [id]: { type: 'photo', value: result.file_url } };
-      await base44.auth.updateMe({ message_backgrounds: next });
-      // Keep the confirmed selection immediately; a profile refresh can still
-      // be briefly stale after an upload.
-      setChatBackgrounds(next);
+      await saveChatBackground({ type: 'photo', value: result.file_url });
     } catch (uploadError) {
       setBackgroundError(uploadError.message || 'Could not upload this photo. Please try again.');
     } finally {
@@ -453,6 +468,7 @@ function MessagesPage({ user }) {
             </div>
             {detailsTab === 'backgrounds' ? <section className="public-chat-backgrounds" aria-label="Conversation backgrounds">
               <div className="public-chat-background-scroll">
+                {savingBackground && <p className="public-chat-background-sync" role="status">Saving for both of you…</p>}
                 <h3>Suggestions</h3>
                 <div className="public-chat-background-grid">
                   {CHAT_BACKGROUND_PRESETS.filter((item) => item.id !== 'flow').map((item) => {
@@ -463,7 +479,7 @@ function MessagesPage({ user }) {
                   })}
                 </div>
                 {backgroundError && <p className="public-chat-background-error" role="alert">{backgroundError}</p>}
-                <p className="public-chat-background-note">Only you can see your conversation background.</p>
+                <p className="public-chat-background-note">Background changes are shared with everyone in this conversation.</p>
               </div>
               <div className="public-chat-background-dock">
                 <div className="public-chat-background-tools">
@@ -489,7 +505,7 @@ function MessagesPage({ user }) {
               <input ref={backgroundFile} type="file" accept="image/jpeg,image/png,image/webp" className="sr-only" onChange={(event) => { void uploadChatBackground(event.target.files?.[0]);event.target.value = ''; }} />
             </section> : <section className="public-chat-info">
               <h3>Conversation info</h3>
-              <p>Your messages stay in this conversation. Background choices are saved to your account and are only visible to you.</p>
+              <p>Your messages stay in this conversation. Background changes are shared with everyone here.</p>
               <Link to={"/profile/" + encodeURIComponent(currentPeer)} onClick={() => setChatDetailsOpen(false)}>View {peerName(thread.chat)}’s profile</Link>
             </section>}
           </DialogContent>
