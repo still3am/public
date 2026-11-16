@@ -5,7 +5,7 @@ import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react
 import { Link, useLocation, useSearchParams } from 'react-router-dom';
 import { base44 } from '@/api/base44Client';
 import { useAuth } from '@/lib/AuthContext';
-import { ArrowUp, Check, ChevronLeft, ChevronRight, Clapperboard, Copy, Disc3, ExternalLink, Library, Trash2, MessageCircle, ImagePlus, Music2, Palette, Pause, Play, Plus, Reply, Search, ShoppingBag, SquarePen, TextQuote, X } from 'lucide-react';
+import { ArrowUp, Check, ChevronLeft, ChevronRight, Clapperboard, Copy, Disc3, ExternalLink, Library, Trash2, MessageCircle, Image, ImagePlus, Music2, Palette, Pause, Play, Plus, Reply, Search, ShoppingBag, SquarePen, TextQuote, UserRound, X } from 'lucide-react';
 import LyricSharePicker from '@/components/LyricSharePicker';
 import LyricCoverGradient from '@/components/LyricCoverGradient';
 import TrackPickerSheet from '@/components/profile/TrackPickerSheet';
@@ -521,8 +521,12 @@ function MessagesPage({ user }) {
             </div>
             <div className="public-chat-details-tabs" role="tablist" aria-label="Conversation details">
               {[
-                ['info', 'Info'], ['backgrounds', 'Backgrounds'], ['photos', 'Photos'], ['gifs', 'GIFs'], ['music', 'Music'],
-              ].map(([tab, label]) => <button key={tab} type="button" role="tab" aria-selected={detailsTab === tab} onClick={() => setDetailsTab(tab)}>{label}</button>)}
+                ['info', 'Info', <UserRound size={16} aria-hidden="true" />],
+                ['backgrounds', 'Backgrounds', <Palette size={16} aria-hidden="true" />],
+                ['photos', 'Photos', <Image size={16} aria-hidden="true" />],
+                ['gifs', 'GIFs', <Clapperboard size={16} aria-hidden="true" />],
+                ['music', 'Music', <Music2 size={16} aria-hidden="true" />],
+              ].map(([tab, label, icon]) => <button key={tab} type="button" role="tab" aria-selected={detailsTab === tab} aria-label={label} onClick={() => setDetailsTab(tab)}><span className="public-chat-tab-icon">{icon}</span><span className="public-chat-tab-label">{label}</span></button>)}
             </div>
             {detailsTab === 'backgrounds' ? <section className="public-chat-backgrounds" aria-label="Conversation backgrounds">
               <div className="public-chat-background-scroll">
@@ -558,10 +562,10 @@ function MessagesPage({ user }) {
                 <p className="public-chat-background-note">Background changes are shared with everyone in this conversation.</p>
               </div>
               <input ref={backgroundFile} type="file" accept="image/jpeg,image/png,image/webp" className="sr-only" onChange={(event) => { void uploadChatBackground(event.target.files?.[0]);event.target.value = ''; }} />
-            </section> : detailsTab === 'info' ? <section className="public-chat-info">
+            </section> : detailsTab === 'info' ? <section className="public-chat-info" aria-label="Conversation info">
               <h3>Conversation info</h3>
               <p>Messages, photos, GIFs, and music shared here stay available to both people in this conversation.</p>
-              <Link to={"/profile/" + encodeURIComponent(currentPeer)} onClick={() => setChatDetailsOpen(false)}>View {peerName(thread.chat)}’s profile</Link>
+              <Link to={"/profile/" + encodeURIComponent(currentPeer)} onClick={() => setChatDetailsOpen(false)}><UserRound size={16} aria-hidden="true" /> View {peerName(thread.chat)}’s profile</Link>
             </section> : detailsTab === 'photos' ? <section className="public-chat-shared-items" aria-label="Shared photos and videos">
               <h3>Photos &amp; videos</h3>
               {sharedPhotos.length ? <div className="public-chat-shared-grid">{sharedPhotos.slice(0, 40).map((message) => <article key={message.id} className="public-chat-shared-tile"><ChatMedia chatId={id} message={message} /><time dateTime={message.created_date}>{messageTime(message.created_date)}</time></article>)}</div> : <p className="public-chat-shared-empty">Photos and videos shared in this conversation will appear here.</p>}
