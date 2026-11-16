@@ -1623,53 +1623,7 @@ html:not(.dark) .public-messages-thread .public-messages-compose {
   -webkit-backdrop-filter: blur(16px) !important;
   backdrop-filter: blur(16px) !important;
 }
-.public-chat-details[data-tab="backgrounds"] .public-chat-earth-intro {
-  margin: -16px 0 14px;
-  color: hsl(var(--muted-foreground));
-  font-size: 12px;
-  line-height: 1.45;
-}
-.public-chat-details[data-tab="backgrounds"] .public-chat-earth-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 12px;
-}
-.public-chat-details[data-tab="backgrounds"] .public-chat-earth-tile {
-  position: relative;
-  display: block;
-  aspect-ratio: 1.42;
-  min-width: 0;
-  overflow: hidden;
-  border: 1px solid hsl(var(--border) / .8);
-  border-radius: 16px;
-  background: #101722;
-  text-align: left;
-}
-.public-chat-details[data-tab="backgrounds"] .public-chat-earth-tile[aria-pressed="true"] {
-  border: 2px solid hsl(var(--primary));
-  box-shadow: 0 0 0 2px hsl(var(--primary) / .22);
-}
-.public-chat-details[data-tab="backgrounds"] .public-chat-earth-tile > video {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-.public-chat-earth-tile-overlay {
-  position: absolute;
-  inset: auto 0 0;
-  display: flex;
-  min-height: 58px;
-  align-items: flex-end;
-  justify-content: space-between;
-  gap: 8px;
-  padding: 22px 12px 11px;
-  color: white;
-  background: linear-gradient(transparent, #000b);
-  font-size: 13px;
-  font-weight: 650;
-}
+
 .public-chat-background-your-color {
   color: white;
   background: conic-gradient(from 210deg, #ff6a85, #ffce6b, #69e0c3, #7668ff, #ff6a85);
@@ -1686,14 +1640,5 @@ html:not(.dark) .public-messages-thread .public-messages-compose {
   max-width: 100%;
   font-size: 11px;
   line-height: 1.2;
-}
-@media (max-width: 560px) {
-  .public-chat-details[data-tab="backgrounds"] .public-chat-earth-grid {
-    gap: 8px;
-  }
-  .public-chat-details[data-tab="backgrounds"] .public-chat-earth-tile {
-    aspect-ratio: 1.2;
-    border-radius: 13px;
-  }
 }
 
