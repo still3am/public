@@ -8,10 +8,28 @@
       "description": "Private per-conversation wallpaper preferences for the signed-in account.",
       "rls": {
         "read": {
-          "id": "{{user.id}}"
+          "data.id": "{{user.id}}"
         },
         "write": {
-          "id": "{{user.id}}"
+          "$and": [
+            {
+              "data.id": "{{user.id}}"
+            },
+            {
+              "$nor": [
+                {
+                  "user_condition": {
+                    "is_blocked": true
+                  }
+                },
+                {
+                  "user_condition": {
+                    "disabled": true
+                  }
+                }
+              ]
+            }
+          ]
         }
       }
     },
