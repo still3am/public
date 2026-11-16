@@ -1538,6 +1538,18 @@ html:not(.dark) .public-messages-thread[data-wallpaper="true"] .public-message-b
   text-align: left;
 }
 
+/* Remove the header/footer slabs while preserving the controls inside them. */
+.public-messages-thread .public-messages-thread-header,
+.public-messages-thread .public-messages-compose,
+html:not(.dark) .public-messages-thread .public-messages-thread-header,
+html:not(.dark) .public-messages-thread .public-messages-compose {
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+}
+
 @media (max-width: 560px) {
   .public-chat-details[data-tab="backgrounds"] {
     inset: 8px !important;
