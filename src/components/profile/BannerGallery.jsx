@@ -7,7 +7,7 @@ import {useBannerGallery} from "@/hooks/useBannerGallery";
 import ProfileMedia from "@/components/ProfileMedia";
 import "./banner-gallery.css";
 import "./marketplace-dialog.css";
-export default function BannerGallery({busy=false,onClose,onSelect,onBrowseAvatars,onOpenGiphy,onGiphySelect}){
+export default function BannerGallery({busy=false,onClose,onSelect,onBrowseAvatars,onOpenGiphy,onGiphySelect,backgroundMode=false}){
  const {user}=useAuth();
  const {banners,loading,error,deleting,remove}=useBannerGallery();
  const [selected,setSelected]=useState(""),[pending,setPending]=useState(""),[category,setCategory]=useState("images"),[showGiphy,setShowGiphy]=useState(false),[selectedGiphy,setSelectedGiphy]=useState(null);
@@ -16,8 +16,8 @@ export default function BannerGallery({busy=false,onClose,onSelect,onBrowseAvata
  const visible=banners.filter(item=>category==="gifs"?!!(item.gifUrl||item.videoUrl):!(item.gifUrl||item.videoUrl));
  const categories=[{id:"images",label:"Images",count:banners.filter(item=>!(item.gifUrl||item.videoUrl)).length},{id:"gifs",label:"Animated",count:banners.filter(item=>!!(item.gifUrl||item.videoUrl)).length}];
  return <div className="public-banner-gallery marketplace-inner">
- <div className="sr-only">Find a scene for your profile.</div>
- <button type="button" className="banner-gallery-giphy" disabled={locked} onClick={()=>onOpenGiphy?onOpenGiphy():setShowGiphy(true)}>Find a GIF on GIPHY <small>Use it as a banner and add it to the Marketplace</small></button>
+ <div className="sr-only">{backgroundMode?"Find an image or animation for this conversation.":"Find a scene for your profile."}</div>
+ <button type="button" className="banner-gallery-giphy" disabled={locked} onClick={()=>onOpenGiphy?onOpenGiphy():setShowGiphy(true)}>Find a GIF on GIPHY <small>{backgroundMode?"Use it as this conversation’s background":"Use it as a banner and add it to the Marketplace"}</small></button>
  <div className="banner-gallery-tabs" role="group" aria-label="Banner type">{categories.map(tab=><button key={tab.id} type="button" disabled={locked} aria-pressed={category===tab.id} aria-controls="banner-gallery-results" onClick={()=>{setCategory(tab.id);setPending("");}}>{tab.label}{!loading&&<span>{tab.count}</span>}</button>)}</div>
  {error&&<p role="alert" className="banner-gallery-error">{error}</p>}
  <div className="banner-gallery-scroll" id="banner-gallery-results" aria-label={category==="gifs"?"Animated banners":"Image banners"} aria-busy={loading}>
@@ -29,8 +29,8 @@ export default function BannerGallery({busy=false,onClose,onSelect,onBrowseAvata
  </div>)}</div>}
  </div>
  {showGiphy&&<GiphyPicker kind="banner" disabled={locked} onClose={()=>setShowGiphy(false)} onSelect={item=>{if(onGiphySelect){onGiphySelect(item);return;}setSelected(item.url);setSelectedGiphy(item);setCategory("gifs");setShowGiphy(false);}}/>}
- <div className="banner-gallery-footer">{banner?<div className="banner-gallery-current"><img src={banner.url} alt=""/><span><strong>{banner.name}</strong><small>{banner.videoUrl?"Looping video":banner.gifUrl?"Animated GIF":"Image"} · applies when you save your profile</small></span></div>:<p className="banner-gallery-prompt">Choose an image or animation to preview on your profile.</p>}
- <div className="banner-gallery-actions"><button type="button" disabled={locked} onClick={onClose}>Cancel</button><button type="button" className="banner-gallery-confirm" disabled={locked||!banner} onClick={()=>onSelect(banner)}>Use banner</button></div></div>
- <GalleryContribute kind="banner"/>
+ <div className="banner-gallery-footer">{banner?<div className="banner-gallery-current"><img src={banner.url} alt=""/><span><strong>{banner.name}</strong><small>{banner.videoUrl?"Looping video":banner.gifUrl?"Animated GIF":"Image"}{backgroundMode?" · applies to this conversation":" · applies when you save your profile"}</small></span></div>:<p className="banner-gallery-prompt">{backgroundMode?"Choose an image or animation for both people in this conversation.":"Choose an image or animation to preview on your profile."}</p>}
+ <div className="banner-gallery-actions"><button type="button" disabled={locked} onClick={onClose}>Cancel</button><button type="button" className="banner-gallery-confirm" disabled={locked||!banner} onClick={()=>onSelect(banner)}>{backgroundMode?"Use as background":"Use banner"}</button></div></div>
+ {!backgroundMode&&<GalleryContribute kind="banner"/>}
  </div>;
 }
