@@ -341,6 +341,14 @@ function MessagesPage({ user }) {
       setSavingBackground(false);
     }
   }
+  const migratedBackgrounds = useRef(new Set());
+  useEffect(() => {
+    const legacy = id ? chatBackgrounds[id] : null;
+    if (!id || !thread?.chat?.id || thread.chat.background || !legacy || migratedBackgrounds.current.has(id)) return;
+    migratedBackgrounds.current.add(id);
+    void saveChatBackground(legacy);
+  }, [id, thread?.chat?.id, thread?.chat?.background, chatBackgrounds]);
+
   const pending = thread?.chat.dm_status === 'pending';
   const incoming = pending && thread?.chat.dm_requester !== user?.id;
   const canSend = thread?.chat.dm_status === 'accepted' || pending && !incoming && !thread.messages.length;
