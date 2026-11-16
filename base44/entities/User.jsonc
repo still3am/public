@@ -2,6 +2,19 @@
   "name": "User",
   "type": "object",
   "properties": {
+    "message_backgrounds": {
+      "type": "object",
+      "default": {},
+      "description": "Private per-conversation wallpaper preferences for the signed-in account.",
+      "rls": {
+        "read": {
+          "id": "{{user.id}}"
+        },
+        "write": {
+          "id": "{{user.id}}"
+        }
+      }
+    },
     "public_follower_initialized": {
       "type": "boolean",
       "default": false,
@@ -517,7 +530,17 @@
         "write": true
       }
     },
-    "gallery_uploader": {"type":"boolean","default":false,"rls":{"write":{"user_condition":{"role":"admin"}}}},
+    "gallery_uploader": {
+      "type": "boolean",
+      "default": false,
+      "rls": {
+        "write": {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      }
+    },
     "creator_role": {
       "type": "string",
       "enum": [
