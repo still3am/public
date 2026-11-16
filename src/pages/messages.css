@@ -1028,6 +1028,14 @@
   text-shadow: none;
 }
 
+.public-chat-background-sample .public-chat-background-check {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  width: 24px;
+  height: 24px;
+}
+
 .public-chat-background-error {
   margin-top: 12px;
   color: hsl(var(--destructive));
