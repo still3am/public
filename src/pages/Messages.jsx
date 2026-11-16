@@ -5,10 +5,13 @@ import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react
 import { Link, useLocation, useSearchParams } from 'react-router-dom';
 import { base44 } from '@/api/base44Client';
 import { useAuth } from '@/lib/AuthContext';
-import { ArrowUp, Check, ChevronLeft, ChevronRight, Clapperboard, Copy, Disc3, ExternalLink, Library, Trash2, MessageCircle, ImagePlus, Music2, Palette, Pause, Play, Plus, Reply, Search, SquarePen, TextQuote, X } from 'lucide-react';
+import { ArrowUp, Check, ChevronLeft, ChevronRight, Clapperboard, Copy, Disc3, ExternalLink, Library, Trash2, MessageCircle, ImagePlus, Music2, Palette, Pause, Play, Plus, Reply, Search, ShoppingBag, SquarePen, TextQuote, X } from 'lucide-react';
 import LyricSharePicker from '@/components/LyricSharePicker';
 import LyricCoverGradient from '@/components/LyricCoverGradient';
 import TrackPickerSheet from '@/components/profile/TrackPickerSheet';
+import ProfileColorPicker from '@/components/profile/ProfileColorPicker';
+import ProfileMarketplace from '@/components/profile/ProfileMarketplace';
+import MotionGradient from '@/components/MotionGradient';
 import { usePlayer } from '@/context/PlayerContext';
 import Avatar from '@/components/Avatar';
 import { useCoverUrl } from '@/hooks/useCoverUrl';
@@ -19,14 +22,10 @@ import './messages.css';
 const REACTIONS = ["❤️", "👍", "👎", "😂", "‼️", "❓", "🔥"];
 const REACTION_LABELS = ['Love', 'Like', 'Dislike', 'Laugh', 'Emphasize', 'Question', 'Fire'];
 
-const CHAT_BACKGROUND_PRESETS = [
-  { id: 'sky', name: 'Sky', background: 'linear-gradient(165deg, #173453 0%, #367b9d 48%, #f0a56e 100%)' },
-  { id: 'water', name: 'Water', background: 'linear-gradient(160deg, #b5e4ef 0%, #80b7c6 48%, #315a70 100%)' },
-  { id: 'aurora', name: 'Aurora', background: 'radial-gradient(ellipse at 22% 60%, #15c8e7b8 0%, transparent 38%), radial-gradient(ellipse at 80% 32%, #8946d58c 0%, transparent 42%), linear-gradient(145deg, #071122, #123653 55%, #171335)' },
-  { id: 'dawn', name: 'Dawn', background: 'linear-gradient(160deg, #d8b8ce 0%, #f3b8a9 54%, #e98c85 100%)' },
-  { id: 'sunset', name: 'Sunset', background: 'linear-gradient(165deg, #14344b 0%, #d76d5f 57%, #f4b079 100%)' },
-  { id: 'dusk', name: 'Dusk', background: 'linear-gradient(165deg, #101226 0%, #20285a 48%, #bc523e 100%)' },
-  { id: 'flow', name: 'Flow', background: 'radial-gradient(ellipse at 25% 68%, #00d6d6aa 0%, transparent 35%), radial-gradient(ellipse at 78% 32%, #bd38a8aa 0%, transparent 42%), linear-gradient(145deg, #080c1b, #073e58 52%, #34204e)' },
+const EARTH_WALLPAPERS = [
+  { id: 'earth-zoom', title: 'Earth zoom', src: 'https://svs.gsfc.nasa.gov/vis/a000000/a002000/a002255/a002255.webmhd.webm', poster: 'https://svs.gsfc.nasa.gov/vis/a000000/a002000/a002255/a002255_pre_searchweb.jpg' },
+  { id: 'orlando', title: 'Orlando flyover', src: 'https://svs.gsfc.nasa.gov/vis/a000000/a002000/a002111/hd002111_720p.webmhd.webm', poster: 'https://svs.gsfc.nasa.gov/vis/a000000/a002000/a002111/hd002111_720p_pre_searchweb.jpg' },
+  { id: 'pacific', title: 'Pacific flyover', src: 'https://svs.gsfc.nasa.gov/vis/a000000/a000000/a000304/a000304.webmhd.webm', poster: 'https://svs.gsfc.nasa.gov/vis/a000000/a000000/a000304/a000304_pre_searchweb.jpg' },
 ];
 
 async function messages(action, data = {}) {
@@ -84,6 +83,8 @@ function MessagesPage({ user }) {
   const [uploadingBackground, setUploadingBackground] = useState(false);
   const [backgroundError, setBackgroundError] = useState('');
   const [draftBackgroundColor, setDraftBackgroundColor] = useState('#275dad');
+  const [showChatColorEditor, setShowChatColorEditor] = useState(false);
+  const [showChatMarketplace, setShowChatMarketplace] = useState(false);
   const backgroundFile = useRef(null);
   const [savingReaction, setSavingReaction] = useState(null);
   const [menuPanel, setMenuPanel] = useState(null);
@@ -283,13 +284,50 @@ function MessagesPage({ user }) {
   const activeBackground = id ? thread?.chat?.background || chatBackgrounds[id] || { type: 'none' } : { type: 'none' };
   const backgroundSaveQueue = useRef(Promise.resolve());
   const backgroundSaveVersion = useRef(0);
-  const backgroundStyle = activeBackground.type === 'preset'
-    ? { backgroundImage: CHAT_BACKGROUND_PRESETS.find((item) => item.id === activeBackground.value)?.background }
-    : activeBackground.type === 'color'
-      ? { backgroundImage: 'none', backgroundColor: activeBackground.value }
-      : activeBackground.type === 'photo'
-        ? { backgroundImage: 'url("' + activeBackground.value + '")' }
-        : undefined;
+  const parseBackgroundValue = (value) => {
+    try { return JSON.parse(value || ''); } catch { return null; }
+  };
+  const gradientWallpaper = activeBackground.type === 'gradient' ? parseBackgroundValue(activeBackground.value) : null;
+  const videoWallpaper = activeBackground.type === 'video' ? parseBackgroundValue(activeBackground.value) : null;
+  const backgroundStyle = activeBackground.type === 'color'
+    ? { backgroundImage: 'none', backgroundColor: activeBackground.value }
+    : activeBackground.type === 'photo'
+      ? { backgroundImage: 'url("' + activeBackground.value + '")' }
+      : undefined;
+  const savedPalette = gradientWallpaper || {
+    mode: 'custom',
+    colors: (user?.profile_background_colors || ['#172768', '#9854ef', '#56c9e2']).filter((color) => /^#[0-9a-f]{6}$/i.test(color)).slice(0, 5),
+    motion: user?.profile_background_motion === 'still' ? 'still' : 'flow',
+    speed: Math.max(0.35, Math.min(1.6, Number(user?.profile_background_speed) || 1)),
+  };
+  async function saveConversationPalette(value) {
+    if (!id || !thread?.chat?.id) throw new Error('Choose a conversation first.');
+    const background = { type: 'gradient', value: JSON.stringify({
+      colors: value.colors.slice(0, 5), motion: value.motion === 'still' ? 'still' : 'flow',
+      speed: Math.max(0.35, Math.min(1.6, Number(value.speed) || 1)),
+    }) };
+    setSavingBackground(true);
+    setBackgroundError('');
+    try {
+      const result = await messages('set_background', { id, background });
+      setThread((current) => current?.chat?.id === id ? { ...current, chat: { ...current.chat, background: result.background } } : current);
+      setChatBackgrounds((current) => ({ ...current, [id]: result.background }));
+    } catch (error) {
+      setBackgroundError(error.message || 'Could not save this gradient.');
+      throw error;
+    } finally {
+      setSavingBackground(false);
+    }
+  }
+  function chooseMarketBackground(asset) {
+    const src = typeof asset === 'string' ? asset : asset?.videoUrl || asset?.gifUrl || asset?.url;
+    if (!src) { setBackgroundError('This marketplace item has no usable media.'); return; }
+    if (asset && typeof asset === 'object' && asset.videoUrl) {
+      void saveChatBackground({ type: 'video', value: JSON.stringify({ src: asset.videoUrl, poster: asset.url, title: asset.name || 'PUBLIC Market clip' }) });
+    } else {
+      void saveChatBackground({ type: 'photo', value: src });
+    }
+  }
   async function saveChatBackground(nextBackground) {
     if (!user?.id || !id || !thread?.chat?.id) return;
     const chatId = id;
