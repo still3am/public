@@ -28,7 +28,7 @@ const PALETTE_TONES=[[.76,.43],[.70,.86],[.37,.97],[.55,.69],[.43,.91]];
 const valid=color=>/^#[0-9a-f]{6}$/i.test(color);
 const normalize=text=>"#"+text.replace(/^#/,"").toLowerCase();
 
-export default function ProfileColorPicker({coverUrl,colors,loading,value,onPreview,onSave,onClose}){
+export default function ProfileColorPicker({coverUrl,colors,loading,value,onPreview,onSave,onClose,title="Your profile colors",description="Build your gradient with the color wheel, choose a palette, or follow your song."}){
  const [draft,setDraft]=useState(()=>({mode:value.mode,colors:[...value.colors],motion:value.motion||"flow",speed:value.speed||1}));
  const [saving,setSaving]=useState(false),[error,setError]=useState("");
  const saveLock=useRef(false);
@@ -120,12 +120,12 @@ export default function ProfileColorPicker({coverUrl,colors,loading,value,onPrev
  };
  return <Dialog open onOpenChange={open=>{if(!open&&!saveLock.current)onClose();}}>
   <DialogContent className="profile-palette-dialog profile-color-editor" data-public-dialog>
-   <DialogHeader><DialogTitle>Your profile colors</DialogTitle><DialogDescription>Build your gradient with the color wheel, choose a palette, or follow your song.</DialogDescription></DialogHeader>
+   <DialogHeader><DialogTitle>{title}</DialogTitle><DialogDescription>{description}</DialogDescription></DialogHeader>
    <div className="profile-color-body">
     <div className="profile-color-preview">
      {preview.length>0&&<MotionGradient colors={preview} motion={draft.motion} speed={draft.speed} className="absolute inset-0" style={{borderRadius:"inherit",zIndex:-2}}/>}
      {coverUrl&&<img src={coverUrl} alt="" onError={event=>{event.currentTarget.style.display="none";}}/>}
-     <div><strong>Make it yours</strong><span>Live profile preview</span></div>
+     <div><strong>Make it yours</strong><span>{title.includes("conversation")?"Live conversation preview":"Live profile preview"}</span></div>
     </div>
     <div className="profile-color-modes" role="group" aria-label="Profile background mode">
      {[["auto","Automatic"],["custom","Custom"],["off","No color"]].map(([mode,label])=><button type="button" key={mode} disabled={saving} aria-pressed={draft.mode===mode} onClick={()=>update({...draft,mode,colors:mode==="custom"?customColors:draft.colors})}>{label}</button>)}
