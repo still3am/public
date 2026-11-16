@@ -510,6 +510,7 @@ function MessagesPage({ user }) {
             <div className="public-chat-details-person">
               <PersonAvatar person={peerFor(thread.chat)} size={76} />
               <DialogTitle>{peerName(thread.chat)}</DialogTitle>
+              {peerFor(thread.chat)?.username && <p className="public-chat-details-username">@{String(peerFor(thread.chat).username).replace(/^@/, '')}</p>}
               <DialogDescription>Make this conversation feel like yours.</DialogDescription>
               <Link to={"/profile/" + encodeURIComponent(currentPeer)} onClick={() => setChatDetailsOpen(false)}>View profile</Link>
             </div>
