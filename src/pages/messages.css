@@ -1908,6 +1908,13 @@ html:not(.dark) .public-messages-thread .public-messages-compose {
   .public-chat-details[data-tab="info"] .public-chat-info,
   .public-chat-details:is([data-tab="photos"], [data-tab="gifs"], [data-tab="music"]) .public-chat-shared-items { padding-inline: 16px; }
 }
+/* The thread composer owns the device safe area; don't reserve it twice on the page. */
+.public-messages[data-thread="true"] {
+  padding-bottom: 0 !important;
+}
+.public-messages[data-thread="true"] .public-messages-compose {
+  padding-bottom: max(10px, env(safe-area-inset-bottom)) !important;
+}
 @media (max-width: 560px) {
   .public-chat-details:is([data-tab="photos"], [data-tab="gifs"], [data-tab="music"]) {
     inset: 8px !important;
