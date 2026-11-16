@@ -28,7 +28,7 @@ const PALETTE_TONES=[[.76,.43],[.70,.86],[.37,.97],[.55,.69],[.43,.91]];
 const valid=color=>/^#[0-9a-f]{6}$/i.test(color);
 const normalize=text=>"#"+text.replace(/^#/,"").toLowerCase();
 
-export default function ProfileColorPicker({coverUrl,colors,loading,value,onPreview,onSave,onClose,title="Your profile colors",description="Build your gradient with the color wheel, choose a palette, or follow your song."}){
+export default function ProfileColorPicker({coverUrl,colors,loading,value,onPreview,onSave,onClose,title="Your profile colors",description="Build your gradient with the color wheel, choose a palette, or follow your song.",availableModes=[["auto","Automatic"],["custom","Custom"],["off","No color"]],conversationMode=false}){
  const [draft,setDraft]=useState(()=>({mode:value.mode,colors:[...value.colors],motion:value.motion||"flow",speed:value.speed||1}));
  const [saving,setSaving]=useState(false),[error,setError]=useState("");
  const saveLock=useRef(false);
@@ -128,9 +128,9 @@ export default function ProfileColorPicker({coverUrl,colors,loading,value,onPrev
      <div><strong>Make it yours</strong><span>{title.includes("conversation")?"Live conversation preview":"Live profile preview"}</span></div>
     </div>
     <div className="profile-color-modes" role="group" aria-label="Profile background mode">
-     {[["auto","Automatic"],["custom","Custom"],["off","No color"]].map(([mode,label])=><button type="button" key={mode} disabled={saving} aria-pressed={draft.mode===mode} onClick={()=>update({...draft,mode,colors:mode==="custom"?customColors:draft.colors})}>{label}</button>)}
+     {availableModes.map(([mode,label])=><button type="button" key={mode} disabled={saving} aria-pressed={draft.mode===mode} onClick={()=>update({...draft,mode,colors:mode==="custom"?customColors:draft.colors})}>{label}</button>)}
     </div>
-    <p className="profile-color-hint">{draft.mode==="auto"?(coverUrl?"Colors update with your profile song.":"Add a profile song for automatic colors, or choose Custom now."):draft.mode==="off"?"Use PUBLIC’s clean background. Your custom palette is kept.":"Your custom colors stay the same when you change your profile song."}</p>
+    <p className="profile-color-hint">{conversationMode?(draft.mode==="off"?"This conversation will use its default background.":"Your animated gradient will be shared with both people in this conversation."):draft.mode==="auto"?(coverUrl?"Colors update with your profile song.":"Add a profile song for automatic colors, or choose Custom now."):draft.mode==="off"?"Use PUBLIC’s clean background. Your custom palette is kept.":"Your custom colors stay the same when you change your profile song."}</p>
     {draft.mode!=="custom"&&<button type="button" className="profile-color-create" disabled={saving} onClick={()=>{setActiveColor(0);setColors(customColors);}}><Plus size={16}/>Create your own palette</button>}
 
     <div className="profile-color-random-actions">
