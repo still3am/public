@@ -494,7 +494,7 @@ function MessagesPage({ user }) {
                     }} />
                   </label>
                   <button type="button" aria-pressed={activeBackground.type === 'preset' && activeBackground.value === 'flow'} disabled={uploadingBackground} onClick={() => void saveChatBackground({ type: 'preset', value: 'flow' })}>
-                    <span className="public-chat-background-sample" style={{ backgroundImage: CHAT_BACKGROUND_PRESETS.find((item) => item.id === 'flow').background }}><span className="public-chat-background-glow" />{activeBackground.type === 'preset' && activeBackground.value === 'flow' && <span className="public-chat-background-check"><Check size={16} /></span>}</span><span>Flow</span>
+                    <span className="public-chat-background-sample" style={{ backgroundImage: CHAT_BACKGROUND_PRESETS.find((item) => item.id === 'flow').background }}><span className="public-chat-background-glow" />{activeBackground.type === 'preset' && activeBackground.value === 'flow' && <span className="public-chat-background-check"><Check size={16} /></span>}</span><span>Playground</span>
                   </button>
                 </div>
                 <h3>Suggestions</h3>
