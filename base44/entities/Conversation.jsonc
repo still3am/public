@@ -2,10 +2,49 @@
   "name": "Conversation",
   "type": "object",
   "properties": {
-    "dm_enabled": {"type":"boolean","default":false},
-    "dm_key": {"type":"string"},
-    "dm_requester": {"type":"string"},
-    "dm_status": {"type":"string","enum":["pending","accepted","declined"]},
+    "background": {
+      "type": "object",
+      "default": {
+        "type": "none"
+      },
+      "description": "Shared wallpaper selected by conversation participants.",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "none",
+            "preset",
+            "color",
+            "photo"
+          ]
+        },
+        "value": {
+          "type": "string",
+          "maxLength": 4096
+        }
+      },
+      "rls": {
+        "write": false
+      }
+    },
+    "dm_enabled": {
+      "type": "boolean",
+      "default": false
+    },
+    "dm_key": {
+      "type": "string"
+    },
+    "dm_requester": {
+      "type": "string"
+    },
+    "dm_status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "accepted",
+        "declined"
+      ]
+    },
     "participant_ids": {
       "type": "array",
       "items": {
