@@ -302,7 +302,7 @@ function MessagesPage({ user }) {
   };
   async function saveConversationPalette(value) {
     if (!id || !thread?.chat?.id) throw new Error('Choose a conversation first.');
-    const background = { type: 'gradient', value: JSON.stringify({
+    const background = value.mode === 'off' ? { type: 'none' } : { type: 'gradient', value: JSON.stringify({
       colors: value.colors.slice(0, 5), motion: value.motion === 'still' ? 'still' : 'flow',
       speed: Math.max(0.35, Math.min(1.6, Number(value.speed) || 1)),
     }) };
@@ -563,6 +563,8 @@ function MessagesPage({ user }) {
           value={{ ...savedPalette, mode: 'custom', colors: savedPalette.colors?.length ? savedPalette.colors : ['#172768', '#9854ef', '#56c9e2'] }}
           title="Your conversation colors"
           description="Create a moving gradient for this chat. Your choice is shared with both people."
+          availableModes={[["custom", "Custom"], ["off", "No color"]]}
+          conversationMode
           onPreview={() => {}}
           onSave={saveConversationPalette}
           onClose={() => setShowChatColorEditor(false)}
