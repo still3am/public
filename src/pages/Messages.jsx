@@ -82,7 +82,6 @@ function MessagesPage({ user }) {
   const [savingBackground, setSavingBackground] = useState(false);
   const [uploadingBackground, setUploadingBackground] = useState(false);
   const [backgroundError, setBackgroundError] = useState('');
-  const [draftBackgroundColor, setDraftBackgroundColor] = useState('#275dad');
   const [showChatColorEditor, setShowChatColorEditor] = useState(false);
   const [showChatMarketplace, setShowChatMarketplace] = useState(false);
   const backgroundFile = useRef(null);
@@ -493,7 +492,6 @@ function MessagesPage({ user }) {
           {readError?.id === id ? <p role="alert" className="public-messages-list-empty">{readError.message} <button type="button" className="underline" onClick={() => loadThread(id)}>Retry</button></p> : !thread && <p role="status" className="public-messages-list-empty">Loading conversation…</p>}
         {thread && currentPeer && <button type="button" className="public-messages-peer" aria-label={"Conversation details for " + peerName(thread.chat)} onClick={() => {
           setDetailsTab('backgrounds');
-          setDraftBackgroundColor(activeBackground.type === 'color' ? activeBackground.value : '#275dad');
           setBackgroundError('');
           setChatDetailsOpen(true);
         }}>
