@@ -222,6 +222,31 @@ export const base44 = new Proxy(raw,{get(target,name) {
     // Only these non-text own-account preferences use the SDK's own-account route.
     // All other profile fields keep the moderated security gateway.
     if(data.is_artist!==undefined||data.creator_role!==undefined)throw new Error('Creator access requires administrator approval');
+    if(Object.keys(data||{}).length===1&&Object.hasOwn(data,"message_backgrounds")){
+      const backgrounds=data.message_backgrounds;
+      const presetIds=new Set(["sky","water","aurora","dawn","sunset","dusk","flow"]);
+      if(!backgrounds||typeof backgrounds!=="object"||Array.isArray(backgrounds)||Object.keys(backgrounds).length>200)throw new Error("Invalid conversation backgrounds");
+      for(const [chatId,background] of Object.entries(backgrounds)){
+        if(!/^[a-zA-Z0-9_-]{1,100}$/.test(chatId)||!background||typeof background!=="object"||Array.isArray(background))throw new Error("Invalid conversation background");
+        if(background.type==="none")continue;
+        if(background.type==="preset"&&presetIds.has(background.value))continue;
+        if(background.type==="color"&&typeof background.value==="string"&&/^#[0-9a-f]{6}$/i.test(background.value))continue;
+        if(background.type==="photo"&&typeof background.value==="string"&&background.value.length<=4096){
+          let photo;
+          try{photo=new URL(background.value);}catch{}
+          if(photo?.protocol==="https:"&&!photo.username&&!photo.password)continue;
+        }
+        throw new Error("Choose a valid background for this conversation.");
+      }
+      const current=await target.auth.me();
+      if(!current?.id||current.is_blocked||current.disabled)throw new Error("Account unavailable");
+      let failure;
+      try{await target.auth.updateMe({message_backgrounds:backgrounds});}catch(error){failure=error;}
+      const confirmed=await target.auth.me();
+      if(confirmed?.id!==current.id||JSON.stringify(confirmed.message_backgrounds||{})!==JSON.stringify(backgrounds))
+        throw failure||new Error("Your conversation background was not confirmed. Please retry.");
+      return confirmed;
+    }
     const preferenceKeys=['show_explicit','adult_confirmed'];
     const preferenceFields=Object.keys(data||{});
     if(preferenceFields.length&&preferenceFields.every(key=>preferenceKeys.includes(key))){
