@@ -20,7 +20,7 @@ Deno.serve(async req => {
     const client = createClientFromRequest(req);
     const user = await client.auth.me().catch(() => null);
     if (!user?.id || user.disabled || user.is_blocked) fail('Sign in to use Messages.', 401);
-    const {action, id, username, recipientId, offset, text, trackId, accept, requestId, replyId, messageId, lyrics, gifId, emoji, media, typing} = await req.json();
+    const {action, id, username, recipientId, offset, text, trackId, accept, requestId, replyId, messageId, lyrics, gifId, emoji, media, typing, background} = await req.json();
     const db = client.asServiceRole.entities;
     const uid = user.id;
     const blocked = async peer => rows(await db.Block.filter({
@@ -110,6 +110,27 @@ Deno.serve(async req => {
     if (!chat?.dm_enabled || !chat.participant_ids.includes(uid)) fail('Conversation unavailable.', 404);
     const peer = chat.participant_ids.find(member => member !== uid);
     if (!peer || await blocked(peer)) fail('Conversation unavailable.', 404);
+
+    if (action === 'set_background') {
+      if (!background || typeof background !== 'object' || Array.isArray(background) ||
+          Object.keys(background).some(key => !['type','value'].includes(key))) fail('Choose a valid conversation background.');
+      const presetIds = new Set(['sky','water','aurora','dawn','sunset','dusk','flow']);
+      const valid = background.type === 'none' && background.value === undefined ||
+        background.type === 'preset' && presetIds.has(background.value) ||
+        background.type === 'color' && typeof background.value === 'string' && /^#[0-9a-f]{6}$/i.test(background.value);
+      let photoUrl;
+      if (background.type === 'photo' && typeof background.value === 'string' && background.value.length <= 4096) {
+        try { photoUrl = new URL(background.value); } catch {}
+      }
+      const validPhoto = photoUrl?.protocol === 'https:' && photoUrl.hostname === 'media.base44.com' &&
+        !photoUrl.username && !photoUrl.password;
+      if (!valid && !validPhoto) fail('Choose a valid conversation background.');
+      await db.Conversation.update(id, {background});
+      const saved = await db.Conversation.get(id);
+      if (!saved || saved.id !== id || saved.background?.type !== background.type ||
+          (background.type !== 'none' && saved.background?.value !== background.value)) fail('Background could not be saved. Please try again.', 503);
+      return Response.json({ok:true, background:saved.background});
+    }
 
     if (action === 'typing') {
       const active = typing === true;
