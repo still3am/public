@@ -206,7 +206,7 @@ html.modal-open .mobile-tab-bar { display: none !important; }
 /* Shared icon-only actions leave room for artwork, lyrics, and playback. */
 .full-player-screen { height: 100dvh; }
 .full-player-actions { position:relative; min-height:52px; padding-block: 4px max(8px, env(safe-area-inset-bottom)); }
-.full-player-actions .full-player-lyrics-mobile,.full-player-actions .full-player-lyrics-desktop{position:absolute;left:calc(50% - 68px);top:50%;margin-top:-22px;}
+.full-player-actions .full-player-lyrics-mobile,.full-player-actions .full-player-lyrics-desktop{position:absolute;left:calc(50% - 90px);top:50%;margin-top:-22px;}
 .full-player-actions .full-player-queue-toggle{position:absolute;left:50%;top:50%;margin-top:-22px;margin-left:-22px;}
 .full-player-lyrics-toggle {
   align-items: center; justify-content: center;
