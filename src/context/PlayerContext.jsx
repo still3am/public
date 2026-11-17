@@ -730,7 +730,8 @@ export function PlayerProvider({ children }) {
       );
       if (!valid() || !picks.length) return false;
       const start = queueRef.current.length;
-      setQueue((prev) => [...prev, ...picks]);
+      const autoplayPicks = picks.map((pick) => ({ ...pick, _publicAutoplay: true }));
+      setQueue((prev) => [...prev, ...autoplayPicks]);
       setCurrentIndex(start);
       return true;
     } finally {
