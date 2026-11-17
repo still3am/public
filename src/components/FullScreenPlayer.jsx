@@ -36,22 +36,6 @@ import { useToast } from "@/components/ui/use-toast";
 const clampVol = (v) => Math.max(0, Math.min(1, v));
 
 /** @param {any} props */
-function IconButton({ icon: Icon, onClick, active, size = 22, label, disabled = false, className = "" }) {
-  return (
-    <button
-      onClick={onClick}
-      aria-label={label}
-      disabled={disabled}
-      className={`disabled:opacity-25 disabled:cursor-default p-2.5 rounded-full active:scale-90 hover:bg-white/10 transition ${
-      active ? "opacity-100" : "opacity-50"} ${
-      className}`}>
-
-      <Icon size={size} />
-    </button>);
-
-}
-
-/** @param {any} props */
 export default function FullScreenPlayer({ onClose }) {
   const navigate = useNavigate();
   const [sharingLyrics,setSharingLyrics]=useState(false);
