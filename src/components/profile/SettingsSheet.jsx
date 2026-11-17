@@ -92,7 +92,7 @@ export default function SettingsSheet({ onClose, onDeleteAccount }) {
      <SettingRow icon={theme.isDark ? Moon : Sun} title="Appearance" description={theme.isDark ? "Dark backgrounds, softer light" : "Light backgrounds, clear contrast"}><SettingSwitch label="Appearance" checked={theme.isDark} onChange={theme.toggle} /></SettingRow>
      <div className="px-4 py-4" aria-label="Accent color choices">
       <div className="flex items-center gap-3 mb-3"><span className="w-9 h-9 rounded-xl grid place-items-center shrink-0 bg-foreground/[0.06] text-foreground/75"><Palette size={18}/></span><div className="min-w-0"><p className="text-sm font-semibold">Accent color</p><p className="text-xs text-muted-foreground mt-0.5">Buttons, highlights, and selected states · {theme.accentOptions.find(option=>option.id===theme.accent)?.name||"PUBLIC blue"}</p></div></div>
-      <div role="group" aria-label="Choose an accent color" className="flex flex-wrap gap-3 pl-12">
+      <div role="group" aria-label="Choose an accent color" className="flex flex-wrap items-center justify-between gap-2">
        {theme.accentOptions.map(option=>{const selected=theme.accent===option.id;return <button key={option.id} type="button" aria-label={option.name} aria-pressed={selected} title={option.name} onClick={()=>theme.setAccent(option.id)} className="w-8 h-8 shrink-0 rounded-full transition-transform hover:scale-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-background" style={{backgroundColor:`hsl(${option.hue} ${option.saturation}% 39%)`,outline:selected?`2px solid hsl(${option.hue} ${option.saturation}% ${theme.isDark?68:42}%)`:"none",outlineOffset:3}} />;})}
       </div>
      </div>
