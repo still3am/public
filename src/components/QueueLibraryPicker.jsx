@@ -83,7 +83,7 @@ export default function QueueLibraryPicker({ open, onClose }) {
   const addAll = () => {const remaining = filtered.filter((track) => !addedRef.current.has(track.id));if (!remaining.length) return;remaining.forEach((track) => addedRef.current.add(track.id));p.addManyToQueue(remaining);setAddedIds(new Set(addedRef.current));};
 
   return (
-    <div role="dialog" aria-modal="true" aria-label="Add music from your library" onKeyDown={(e) => {if (e.key === "Escape") {e.stopPropagation();onClose();}}} data-public-dialog tabIndex={-1} className="queue-library-picker absolute inset-0 z-[60] bg-card text-foreground flex flex-col animate-[fadeIn_.2s_ease-out]">
+    <div role="dialog" aria-modal="true" aria-label="Add music from your library" onKeyDown={(e) => {if (e.key === "Escape") {e.stopPropagation();onClose();}}} data-public-dialog tabIndex={-1} className="queue-library-picker absolute inset-0 z-[60] text-white flex flex-col animate-[fadeIn_.2s_ease-out]">
       <div className="flex items-center justify-between px-5 pt-8 pb-3 shrink-0">
         <div className="flex items-center gap-2 min-w-0">
           
@@ -109,14 +109,14 @@ export default function QueueLibraryPicker({ open, onClose }) {
             onChange={(e) => setQuery(e.target.value)}
             autoFocus onKeyDown={(e) => {if (e.key === "Escape") {e.stopPropagation();onClose();}}}
             aria-label="Search songs to add to queue" placeholder="Search your library"
-            className="w-full pl-10 pr-3 py-2.5 rounded-full bg-muted border border-border text-sm placeholder:text-muted-foreground focus:outline-none focus:bg-accent transition" />
+            className="queue-library-search w-full pl-10 pr-3 py-2.5 rounded-full border text-sm placeholder:text-white/55 focus:outline-none transition" />
           
         </div>
         {filtered.length > 0 &&
         <button
           type="button"
           onClick={addAll} disabled={filtered.every((track) => addedIds.has(track.id))}
-          className="mt-2 text-xs font-semibold px-3 py-1.5 rounded-full bg-muted hover:bg-accent active:scale-95 transition">
+          className="queue-library-add-all mt-2 text-xs font-semibold px-3 py-1.5 rounded-full active:scale-95 transition">
           
             Add remaining ({filtered.filter((track) => !addedIds.has(track.id)).length})
           </button>
@@ -141,7 +141,7 @@ export default function QueueLibraryPicker({ open, onClose }) {
           return (
             <div
               key={t.id}
-              className="flex items-center gap-3 px-2 py-2 rounded-lg hover:bg-accent transition">
+              className="queue-library-track-row flex items-center gap-3 px-2 py-2 rounded-lg transition">
               
                   <div className="w-10 h-10 rounded overflow-hidden bg-muted shrink-0">
                     {t.cover_art_url &&
@@ -158,7 +158,7 @@ export default function QueueLibraryPicker({ open, onClose }) {
                 type="button"
                 onClick={() => addOne(t)}
                 disabled={added}
-                className={`shrink-0 w-11 h-11 min-w-11 min-h-11 rounded-full grid place-items-center active:scale-90 transition ${
+                className={`queue-library-add-song shrink-0 w-11 h-11 min-w-11 min-h-11 rounded-full grid place-items-center active:scale-90 transition ${
                 added ?
                 "bg-foreground text-background" :
                 "bg-muted hover:bg-accent"}`
