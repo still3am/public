@@ -1,5 +1,6 @@
-.connect-qr-overlay{z-index:110;display:grid;place-items:center;padding:24px;background:rgba(5,6,10,.34);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px)}
-.connect-qr-shell{position:relative;isolation:isolate;width:min(100%,480px);height:auto;max-height:min(88dvh,900px);min-height:0;display:flex;flex-direction:column;overflow-y:auto;overscroll-behavior:contain;padding:22px 28px 20px;background:rgba(16,18,24,.3);backdrop-filter:blur(26px);-webkit-backdrop-filter:blur(26px);border-color:rgba(255,255,255,.28);color:#fff}
+.connect-qr-overlay{position:fixed;inset:0;z-index:110;isolation:isolate;display:grid;place-items:center;overflow:hidden;padding:24px;background:rgba(5,6,10,.3);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px)}
+.connect-qr-ambient{position:absolute!important;inset:0;z-index:0;width:100%;height:100%;pointer-events:none}
+.connect-qr-shell{position:relative;z-index:1;isolation:isolate;box-sizing:border-box;width:min(100%,480px);height:auto;max-height:min(88dvh,900px);min-height:0;display:flex;flex-direction:column;overflow-y:auto;overscroll-behavior:contain;padding:22px 28px 20px;background:rgba(16,18,24,.3);backdrop-filter:blur(26px);-webkit-backdrop-filter:blur(26px);border-color:rgba(255,255,255,.28);color:#fff}
 .connect-qr-shade{background:linear-gradient(180deg,rgba(8,10,16,.2),rgba(8,10,16,.12) 36%,rgba(8,10,16,.36))}
 .connect-qr-identity{margin:12px 0 18px;gap:0;flex:none}
 .connect-qr-identity h2{margin:0;font-size:24px}
@@ -32,7 +33,7 @@
 }
 @media(max-width:767px){
  .connect-qr-overlay{place-items:stretch center;padding:env(safe-area-inset-top,0px) 0 env(safe-area-inset-bottom,0px);background:rgba(5,6,10,.16)}
- .connect-qr-shell{width:min(100%,520px);height:100%;max-height:none;border-radius:28px 28px 0 0;padding:17px 20px calc(14px + env(safe-area-inset-bottom,0px));}
+ .connect-qr-shell{width:min(100%,520px);height:calc(100dvh - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px));max-height:none;border-radius:28px 28px 0 0;padding:17px 20px 14px;}
  .connect-qr-header{padding-top:2px}
  .connect-qr-identity{margin:7px 0 14px}
  .connect-qr-code{width:min(100%,min(62vw,280px))}
