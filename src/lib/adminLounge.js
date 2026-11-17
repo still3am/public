@@ -20,7 +20,8 @@ export async function loungeAction(client, entity, method, args, protectedCall) 
   let data;
   if (entity === "LoungeSession") {
     if (old?.host_id && old.host_id !== user.id) return protectedCall();
-    data = pick(input, ["name","code","is_active","is_playing","position_seconds","current_track_id","current_track","sync_anchor_at"]);
+    data = pick(input, ["name","code","is_active","is_playing","position_seconds","current_track_id","current_track","sync_anchor_at","join_approval_mode"]);
+    if (data.join_approval_mode !== undefined && !["manual","auto"].includes(data.join_approval_mode)) invalid("Choose manual or automatic guest approval.");
     if (data.name !== undefined && (typeof data.name !== "string" || data.name.length > 60)) invalid("Keep the lounge name under 60 characters.");
     if (data.code !== undefined && (typeof data.code !== "string" || !/^[A-Z2-9]{5,12}$/.test(data.code))) invalid("Invalid lounge code.");
     for (const key of ["is_active","is_playing"]) if (data[key] !== undefined && typeof data[key] !== "boolean") invalid("Invalid lounge playback state.");
