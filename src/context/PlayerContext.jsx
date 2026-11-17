@@ -132,6 +132,10 @@ export function PlayerProvider({ children }) {
   });
   const [repeat, setRepeat] = useState("off"); // off | all | one
   const [shuffle, setShuffle] = useState(false);
+  const [autoPlayNext, setAutoPlayNext] = useState(() => {
+    try { return localStorage.getItem("public:player_autoplay_next") !== "false"; } catch { return true; }
+  });
+  useEffect(() => { try { localStorage.setItem("public:player_autoplay_next", String(autoPlayNext)); } catch {} }, [autoPlayNext]);
   const shuffleRef=useRef(false);
   useEffect(()=>{shuffleRef.current=shuffle;preloadedTargetRef.current=null;},[shuffle]);
   // True when the user explicitly dismissed the player (clearQueue / drag-down).
@@ -807,13 +811,13 @@ export function PlayerProvider({ children }) {
         autoPlayOnLoadRef.current=true;setCurrentIndex(n);
         return;
       }
-      if (repeat === "off" && currentTrack) {
+      if (repeat === "off" && currentTrack && autoPlayNext) {
         const ok = await extendWithGenreRadio(currentTrack);
         if (token!==loadTokenRef.current||ok) return;
       }
       setIsPlaying(false);
     };
-  }, [repeat, nextIndex, currentTrack, extendWithGenreRadio, advanceOffline,beginGapless]);
+  }, [repeat, nextIndex, currentTrack, extendWithGenreRadio, advanceOffline,beginGapless,autoPlayNext]);
 
   // volume / mute / rate apply to both elements
   useEffect(() => {
@@ -1310,6 +1314,8 @@ export function PlayerProvider({ children }) {
     muted,
     repeat,
     shuffle,
+    autoPlayNext,
+    setAutoPlayNext,
     currentTrack,
     togglePlay,
     pausePlayback,
