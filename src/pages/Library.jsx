@@ -12,7 +12,7 @@ import { base44 } from "@/api/base44Client";
 import { useAuth } from "@/lib/AuthContext";
 import { useLibrary } from "@/context/LibraryContext";
 import { useOfflineCache } from "@/hooks/useOfflineCache";
-import { Library as LibIcon, Loader2, Plus, ListMusic, Disc3, X, Upload, CloudOff, Search, SlidersHorizontal, LayoutGrid, ListPlus, Play, History, ChevronLeft, ChevronRight, Music2 } from "lucide-react";
+import { Library as LibIcon, Loader2, Plus, ListMusic, Disc3, X, Upload, CloudOff, Search, SlidersHorizontal, LayoutGrid, ArrowUpDown, ListPlus, Play, History, ChevronLeft, ChevronRight, Music2 } from "lucide-react";
 import TrackCard from "@/components/TrackCard";
 import EmptyState from "@/components/EmptyState";
 import PullToRefresh from "@/components/PullToRefresh";
@@ -20,6 +20,7 @@ import PlaylistCard from "@/components/playlist/PlaylistCard";
 import CreatePlaylistModal from "@/components/playlist/CreatePlaylistModal";
 import LibraryBulkBar from "@/components/library/LibraryBulkBar";
 import BulkAddToPlaylistSheet from "@/components/library/BulkAddToPlaylistSheet";
+import LibraryRotation from "@/components/library/LibraryRotation";
 import { useToast } from "@/components/ui/use-toast";
 import { getRecentPlays } from "@/lib/recentPlays";
 import { useMyPlaylists } from "@/hooks/useMyPlaylists";
@@ -189,6 +190,7 @@ export default function Library() {
   const [showFilters, setShowFilters] = useState(false);
   const [sort, setSort] = useState("saved");
   const [display, setDisplay] = useState("grid");
+  const [rotationMode, setRotationMode] = useState(false);
   const p = usePlayer();
   const visibleTracks = useMemo(() => {
     const term = search.trim().toLowerCase();
@@ -225,7 +227,8 @@ export default function Library() {
         <div className="library-search"><Search size={17} aria-hidden="true" /><input aria-label="Search your library" placeholder={libraryView === "playlists" ? "Search playlists" : "Search saved music"} value={search} onChange={(e) => setSearch(e.target.value)} onKeyDown={(e) => {if (e.key === "Escape") setSearch("");}} />{search && <button aria-label="Clear library search" onClick={() => setSearch("")}><X size={16} /></button>}</div>
         {libraryView === "songs" && <>
           <button className={`library-tool ${activeFilters ? "active" : ""}`} aria-label="Library filters" aria-expanded={showFilters} aria-controls="library-filters" onClick={() => setShowFilters((value) => !value)}><SlidersHorizontal size={17} /><span className="hidden sm:inline">Filters</span>{activeFilters && <span className="w-1.5 h-1.5 rounded-full bg-current" />}</button>
-          <button className="library-tool" aria-pressed={display==="list"} title={display==="list"?"Switch to cards":"Switch to song list"} aria-label={display === "list" ? "Show music as cards" : "Show music as a list"} onClick={() => setDisplay((value) => value === "list" ? "grid" : "list")}>{display === "list" ? <LayoutGrid size={17} /> : <ListMusic size={17} />}</button>
+          <button className="library-tool" aria-pressed={display==="list"} title={display==="list"?"Switch to cards":"Switch to song list"} aria-label={display === "list" ? "Show music as cards" : "Show music as a list"} onClick={() => {setRotationMode(false);setDisplay((value) => value === "list" ? "grid" : "list");}}>{display === "list" ? <LayoutGrid size={17} /> : <ListMusic size={17} />}</button>
+          <button className={"library-tool " + (rotationMode ? "active" : "")} aria-pressed={rotationMode} title={rotationMode ? "Show saved songs as cards" : "Show saved songs in vertical rotation"} aria-label={rotationMode ? "Show saved songs as cards" : "Show saved songs in vertical rotation"} onClick={() => setRotationMode(value => !value)}><ArrowUpDown size={17} /></button>
         </>}
       </div>
       {libraryView === "songs" && showFilters && <div id="library-filters" className="library-filters">
@@ -236,7 +239,7 @@ export default function Library() {
         <label>Sort<select value={sort} onChange={(e) => setSort(e.target.value)}><option value="saved">Recently saved</option><option value="title">Title A–Z</option><option value="artist">Artist A–Z</option></select></label>
         {activeFilters && <button className="text-xs underline underline-offset-4" onClick={() => {setFolder("");setTagQuery("");setSort("saved");}}>Reset filters</button>}
       </div>}
-      <LibraryBulkBar playlistMode={libraryView==="playlists"} visible={libraryView==="songs"?!!tracks?.length:libraryView==="playlists"&&!!savedPlaylists?.length} active={editMode} count={selected.size} canRemove={removableIds.length > 0} busy={bulkBusy} onOrganize={() => setShowOrganize(true)} onStart={() => setEditMode(true)} onExit={exitEditMode} onAddToPlaylist={() => setShowBulkPlaylist(true)} onRemove={removeFromLibrary} />
+      <LibraryBulkBar playlistMode={libraryView==="playlists"} visible={libraryView==="songs"?!!tracks?.length:libraryView==="playlists"&&!!savedPlaylists?.length} active={editMode} count={selected.size} canRemove={removableIds.length > 0} busy={bulkBusy} onOrganize={() => setShowOrganize(true)} onStart={() => {setRotationMode(false);setEditMode(true);}} onExit={exitEditMode} onAddToPlaylist={() => setShowBulkPlaylist(true)} onRemove={removeFromLibrary} />
       </>}
       <PullToRefresh onRefresh={async () => {await refresh();await load();await reloadPlaylists();await loadSavedPlaylists();}}>
         {loadError && <LoadError message="Your saved songs couldn’t refresh." onRetry={load} />}
@@ -258,6 +261,7 @@ export default function Library() {
 
             
             {!visibleTracks.length ? <EmptyState icon={LibIcon} title={tracks?.length ? "No matching songs" : "Make this space yours"} description={tracks?.length ? "Try another search or reset your filters." : "Save songs from anywhere on PUBLIC to find them here."} action={tracks?.length ? <button className="playlist-action" onClick={() => {setSearch("");setFolder("");setTagQuery("");}}>Clear filters</button> : <Link className="chrome-button" to="/search">Find music</Link>} /> :
+            rotationMode && sort === "saved" && !editMode ? <LibraryRotation tracks={visibleTracks}/> :
             display === "grid" ? <IncrementalList resetKey={JSON.stringify([search,folder,tagQuery,sort,display])} items={visibleTracks} className="library-music-grid" renderItem={t=><TrackCard key={t.id} track={t} queue={visibleTracks} selectable={editMode} selected={selected.has(t.id)} onToggleSelect={toggleSelect}/>}/> :
             <IncrementalList resetKey={JSON.stringify([search,folder,tagQuery,sort,display])} items={visibleTracks} className="library-song-list" renderItem={(t,i)=><div key={t.id} className="library-song-item">{editMode&&<input type="checkbox" aria-label={"Select "+t.title} checked={selected.has(t.id)} onChange={()=>toggleSelect(t)}/>}<div className="min-w-0 flex-1"><TrackRow track={t} index={i} queue={visibleTracks} queueIndex={i}/></div></div>}/>}
           </section>}
