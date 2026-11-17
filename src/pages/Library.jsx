@@ -236,7 +236,7 @@ export default function Library() {
         
         {folders.length>0&&<label>Folder<select value={folder} onChange={e=>setFolder(e.target.value)}><option value="">All folders</option>{folders.map(name=><option key={name} value={name}>{name}</option>)}</select></label>}
         <label>Tag<input aria-label="Filter saved songs by tag" placeholder="Any tag" value={tagQuery} onChange={e=>setTagQuery(e.target.value)}/></label>
-        <label>Sort<select value={sort} onChange={(e) => setSort(e.target.value)}><option value="saved">Recently saved</option><option value="title">Title A–Z</option><option value="artist">Artist A–Z</option></select></label>
+        <label>Sort<select value={sort} onChange={(e) => {const value=e.target.value;setSort(value);if(value!=="saved")setRotationMode(false);}}><option value="saved">Recently saved</option><option value="title">Title A–Z</option><option value="artist">Artist A–Z</option></select></label>
         {activeFilters && <button className="text-xs underline underline-offset-4" onClick={() => {setFolder("");setTagQuery("");setSort("saved");}}>Reset filters</button>}
       </div>}
       <LibraryBulkBar playlistMode={libraryView==="playlists"} visible={libraryView==="songs"?!!tracks?.length:libraryView==="playlists"&&!!savedPlaylists?.length} active={editMode} count={selected.size} canRemove={removableIds.length > 0} busy={bulkBusy} onOrganize={() => setShowOrganize(true)} onStart={() => {setRotationMode(false);setEditMode(true);}} onExit={exitEditMode} onAddToPlaylist={() => setShowBulkPlaylist(true)} onRemove={removeFromLibrary} />
