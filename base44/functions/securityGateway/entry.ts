@@ -485,9 +485,18 @@ export default async function handleRequest(req) {
           data={...pick(data,['track_id','language_code','lines','out_of_sync']),uploader_id:user.id,status:'approved'};
         }
       } else if(entity==='LoungeSession') {
-        if(old&&!mine(old,'host_id')) fail('Host access required');
-        data={...pick(data,['name','code','is_active','is_playing','position_seconds','current_track_id','current_track','sync_anchor_at']),...(kind==='create'?{host_id:user.id,host_name:user.display_name||user.full_name||''}:{})};
-        if(data.current_track_id) data.current_track=JSON.stringify(await requireTrack(data.current_track_id,false));
+        if(old&&!mine(old,'host_id')) {
+          const a=await member(old.id);
+          if(kind!=='update'||!a.s.is_active||a.m?.status!=='approved') fail('Connect host approval required');
+          if(Object.keys(input).length!==1||input.skip_request_id!==(Number(old.skip_request_id)||0)+1) fail('Invalid skip request',422);
+          data={skip_request_id:input.skip_request_id,skip_requested_by:user.id,skip_requested_at:new Date().toISOString()};
+        } else {
+          data={...pick(data,['name','code','is_active','is_playing','position_seconds','current_track_id','current_track','sync_anchor_at','join_approval_mode','skip_request_id','skip_requested_by','skip_requested_at']),...(kind==='create'?{host_id:user.id,host_name:user.display_name||user.full_name||''}:{})};
+          if(data.join_approval_mode!==undefined&&!['manual','auto'].includes(data.join_approval_mode))fail('Choose manual or automatic guest approval',422);
+          if(data.current_track_id) data.current_track=JSON.stringify(await requireTrack(data.current_track_id,false));
+          else if(data.current_track_id==='')data.current_track='';
+          if(data.skip_request_id!==undefined&&(!Number.isSafeInteger(data.skip_request_id)||data.skip_request_id<0))fail('Invalid skip request',422);
+        }
       } else if(entity==='LoungeMember') {
         if(old && data.session_id!==undefined && data.session_id!==old.session_id)fail('Members cannot move between lounges');
         const a=await member(old?.session_id||data.session_id);
@@ -496,7 +505,7 @@ export default async function handleRequest(req) {
           await relation(a.s.host_id);
           const existing=await handler.filter({session_id:a.s.id,user_id:user.id},'-created_date',1);
           if(existing[0]) return existing[0];
-          data={session_id:a.s.id,user_id:user.id,name:user.display_name||user.full_name||'',role:a.host?'host':'guest',status:a.host?'approved':'pending'};
+          data={session_id:a.s.id,user_id:user.id,name:user.display_name||user.full_name||'',role:a.host?'host':'guest',status:a.host?'approved':a.s.join_approval_mode==='auto'?'approved':'pending'};
         } else {
           if(kind==='delete' && (a.host||old.user_id===user.id)) return await handler.delete(id);
           if(!a.host) fail('Only the host can approve members');
@@ -504,15 +513,21 @@ export default async function handleRequest(req) {
           data=pick(data,['status']);
         }
       } else if(entity==='LoungeQueueItem') {
-        if(old && data.session_id!==undefined && data.session_id!==old.session_id)fail('Queue items cannot move between lounges');
+        if(old && data.session_id!==undefined && data.session_id!==old.session_id)fail('Queue items cannot move between Connect sessions');
         const a=await member(old?.session_id||data.session_id);
-        if(!a.s.is_active || (!a.host&&a.m?.status!=='approved')) fail('Host approval required');
-        if(old && !a.host && old.added_by_id!==user.id) fail('Queue access denied');
-        if(kind!=='delete') {
-          const track=await requireTrack(data.track_id||old?.track_id,false);
+        if(!a.s.is_active || (!a.host&&a.m?.status!=='approved')) fail('Connect approval required');
+        if(kind==='delete') {
+          if(!a.host&&old.added_by_id!==user.id)fail('Only the host or the person who added this song can remove it');
+        } else if(old && kind==='update') {
+          if(Object.keys(input).length!==1||!Number.isFinite(input.position)||input.position<0||input.position>1000000000)fail('Invalid queue position',422);
+          data={position:input.position};
+        } else if(kind==='create') {
+          const track=await requireTrack(data.track_id,false);
           if(track.uploader_id!==a.s.host_id&&!(track.is_published&&track.approval_status==='approved'))fail('Choose a published song the host can play',422);
-          data={session_id:a.s.id,track_id:track.id,track:JSON.stringify(track),added_by_id:user.id,added_by_name:user.display_name||user.full_name||''};
-        }
+          const rows=await all(handler,{session_id:a.s.id});
+          const maxPosition=rows.reduce((max,row)=>Math.max(max,Number(row.position)||0),-1);
+          data={session_id:a.s.id,track_id:track.id,track:JSON.stringify(track),added_by_id:user.id,added_by_name:user.display_name||user.full_name||'',position:maxPosition+1};
+        } else fail('Unsupported queue action',400);
       } else if(entity==='Playlist') {
         if(old&&!mine(old,'creator_id'))fail('Playlist access denied');
         if(kind==='delete'){await svc.entities.SavedPlaylist.deleteMany({playlist_id:id});await svc.entities.PlaylistCollaboration.deleteMany({playlist_id:id});return await handler.delete(id);}
