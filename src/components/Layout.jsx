@@ -20,7 +20,6 @@ import Search from "@/pages/Search";
 import Library from "@/pages/Library";
 import Profile from "@/pages/Profile";
 import NewMemberOnboarding from "@/components/NewMemberOnboarding";
-import NotificationPermissionPrompt from "@/components/notifications/NotificationPermissionPrompt";
 
 /**
  * The mobile tab destinations. Each is mounted the first time it is opened and
@@ -90,7 +89,6 @@ export default function Layout() {
       <PlayerBar />
       <MobileTabBar />
       <NewMemberOnboarding/>
-      <NotificationPermissionPrompt/>
     </div>
   );
 }
