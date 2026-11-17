@@ -91,7 +91,7 @@ export default function QueueLibraryPicker({ open, onClose }) {
         </div>
         <button
           onClick={onClose}
-          className="p-2 -mr-2 rounded-full hover:bg-muted active:scale-90 transition"
+          className="queue-library-close -mr-2 active:scale-90 transition"
           aria-label="Close">
           
           <X size={22} />
