@@ -206,7 +206,7 @@ html.modal-open .mobile-tab-bar { display: none !important; }
 /* Shared icon-only actions leave room for artwork, lyrics, and playback. */
 .full-player-screen { height: 100dvh; }
 .full-player-actions { display:grid!important; width:100%; min-height:52px; grid-template-columns:minmax(0,1fr) repeat(3,44px) minmax(0,1fr); column-gap:4px; align-items:center; justify-items:center; padding-block:4px max(8px,env(safe-area-inset-bottom)); }
-.full-player-actions .full-player-lyrics-mobile,.full-player-actions .full-player-lyrics-desktop{position:static;grid-column:2;justify-self:center;margin:0;display:inline-flex;}
+.full-player-actions .full-player-lyrics-mobile,.full-player-actions .full-player-lyrics-desktop{position:static;grid-column:2;justify-self:center;margin:0;}
 .full-player-actions .full-player-queue-toggle{position:static;grid-column:3;justify-self:center;align-self:center;display:inline-flex;margin:0;}
 .full-player-actions .full-player-connect-toggle{position:static;grid-column:4;justify-self:center;align-self:center;display:inline-flex;align-items:center;justify-content:center;margin:0;}
 .full-player-actions .full-player-connect-toggle svg{display:block;width:22px;height:22px;flex:none;}
@@ -216,11 +216,11 @@ html.modal-open .mobile-tab-bar { display: none !important; }
   border: 0; border-radius: 12px; background: transparent; color: inherit;
   opacity: .65; transition: opacity .2s, background-color .2s;
 }
-.full-player-lyrics-mobile { display: inline-flex; }
-.full-player-lyrics-desktop { display: none; }
+.full-player-actions .full-player-lyrics-mobile { display: inline-flex; }
+.full-player-actions .full-player-lyrics-desktop { display: none; }
 @media (min-width:1280px) {
-  .full-player-lyrics-mobile { display: none; }
-  .full-player-lyrics-desktop { display: inline-flex; }
+  .full-player-actions .full-player-lyrics-mobile { display: none; }
+  .full-player-actions .full-player-lyrics-desktop { display: inline-flex; }
 }
 .full-player-lyrics-toggle:hover { opacity: 1; background: rgba(255,255,255,.08); }
 .full-player-lyrics-toggle[aria-pressed=true] { opacity: 1; background: rgba(255,255,255,.18); }
