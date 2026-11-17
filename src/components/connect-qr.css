@@ -1,5 +1,5 @@
 .connect-qr-overlay{z-index:110;align-items:stretch;padding:env(safe-area-inset-top,0px) 0 env(safe-area-inset-bottom,0px);background:rgba(5,6,10,.12);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px)}
-.connect-qr-shell{width:min(100%,460px);height:100%;max-height:none;padding:20px 24px calc(18px + env(safe-area-inset-bottom,0px));background:rgba(16,18,24,.3);backdrop-filter:blur(26px);-webkit-backdrop-filter:blur(26px);border-color:rgba(255,255,255,.28);color:#fff}
+.connect-qr-shell{width:min(100%,460px);height:100%;max-height:none;display:flex;flex-direction:column;padding:20px 24px calc(18px + env(safe-area-inset-bottom,0px));background:rgba(16,18,24,.3);backdrop-filter:blur(26px);-webkit-backdrop-filter:blur(26px);border-color:rgba(255,255,255,.28);color:#fff}
 .connect-qr-shade{background:linear-gradient(180deg,rgba(8,10,16,.2),rgba(8,10,16,.12) 36%,rgba(8,10,16,.36))}
 .connect-qr-identity{margin:12px 0 18px;gap:0}
 .connect-qr-identity h2{margin:0;font-size:24px}
