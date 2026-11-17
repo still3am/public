@@ -82,7 +82,7 @@ export default function QueuePanel({ open, onClose, embedded = false }) {
   };
 
   const panel = (
-    <div role={embedded ? "region" : "dialog"} aria-modal={embedded ? undefined : "true"} aria-label="Playback queue" data-public-dialog={!embedded || undefined} tabIndex={embedded ? undefined : -1}
+    <div role={embedded ? "region" : "dialog"} aria-modal={embedded ? undefined : "true"} aria-label="Playback queue" data-public-dialog={embedded ? undefined : true} tabIndex={embedded ? undefined : -1}
       onKeyDown={(e) => { if (e.key === "Escape") { e.stopPropagation(); if (showPicker) setShowPicker(false); else onClose?.(); } }}
       className={`queue-panel ${embedded ? "queue-panel-embedded" : "fixed inset-0 z-[60] animate-[fadeIn_.22s_ease-out]"} bg-card text-foreground flex flex-col`}>
       <header className="queue-header top-bar-safe flex items-center justify-between px-4 pt-2 pb-3 shrink-0">
