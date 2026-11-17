@@ -87,7 +87,7 @@ export default function QueuePanel({ open, onClose, embedded = false }) {
   className={`queue-panel ${embedded ? "queue-panel-embedded" : "fixed inset-0 z-[60] animate-[fadeIn_.22s_ease-out]"} bg-card text-foreground flex flex-col`}>
       <header className="queue-header top-bar-safe flex items-center justify-between px-4 pt-2 pb-3 shrink-0">
         <div className="queue-heading min-w-0">
-          <span className="queue-eyebrow">PUBLIC. / NOW PLAYING</span>
+          <span className="queue-eyebrow hidden">PUBLIC. / NOW PLAYING</span>
           <h2 className="text-xl font-semibold tracking-tight">Queue</h2>
           <p className="text-xs text-muted-foreground mt-1">
             {upcoming.length} {upcoming.length === 1 ? "song" : "songs"} up next{totalSeconds ? " · " + formatTime(totalSeconds) : ""}
