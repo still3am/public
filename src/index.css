@@ -1017,3 +1017,29 @@ html:not(.dark) .profile-page .profile-identity,html:not(.dark) .profile-page .p
 .main-content{padding-bottom:max(var(--public-content-clearance),var(--public-measured-clearance,0px));}
 @media(max-width:767px){html[data-public-editing-keyboard]:not([data-mobile-search-keyboard]) .public-app .mobile-tab-bar,html[data-public-editing-keyboard] .public-app .player-surface{visibility:hidden;pointer-events:none;}}
 
+/* Inline queue mode inside Now Playing, beside the lyrics view. */
+.queue-panel-embedded{position:relative;width:100%;height:100%;min-height:0;overflow:hidden;background:transparent!important;border:0;box-shadow:none;}
+.queue-panel-embedded>.queue-header{min-height:58px;padding:5px 10px 9px;border-bottom:1px solid rgb(255 255 255/.12);}
+.queue-panel-embedded .queue-heading .queue-eyebrow{font-size:8px;letter-spacing:.18em;}
+.queue-panel-embedded .queue-heading h2{font-size:17px;line-height:1.1;}
+.queue-panel-embedded .queue-heading p{margin-top:3px;font-size:10px;}
+.queue-panel-embedded .queue-header-actions{gap:4px;}
+.queue-panel-embedded .queue-close-button{width:34px;height:34px;}
+.queue-panel-embedded>.queue-body{min-height:0;padding:10px 8px 14px;overscroll-behavior:contain;}
+.queue-panel-embedded .queue-current-section{margin-bottom:10px;}
+.queue-panel-embedded .queue-current-section .queue-section-heading{font-size:10px;margin-bottom:6px;}
+.queue-panel-embedded .queue-now-playing{padding:9px;gap:9px;background:rgb(255 255 255/.08);border-color:rgb(255 255 255/.12);}
+.queue-panel-embedded .queue-current-art{width:46px;height:46px;flex-basis:46px;}
+.queue-panel-embedded .queue-current-copy strong{font-size:12px;}
+.queue-panel-embedded .queue-list-heading{min-height:38px;margin:0 0 4px;}
+.queue-panel-embedded .queue-list-heading h3{font-size:14px;}
+.queue-panel-embedded .queue-upcoming-row{min-height:58px;padding-block:5px;}
+.queue-panel-embedded .queue-track-art{width:38px;height:38px;flex-basis:38px;}
+.queue-panel-embedded .queue-track-copy strong{font-size:12px;}
+.queue-panel-embedded .queue-track-copy span{font-size:10px;}
+.queue-panel-embedded .queue-drag-handle{min-width:22px;}
+.queue-panel-embedded .queue-history{margin-top:10px;}
+.queue-panel-embedded .queue-history>summary{min-height:36px;}
+@media(min-width:1280px){.queue-panel-embedded>.queue-header{padding-inline:14px;}.queue-panel-embedded>.queue-body{padding:12px 14px;}}
+
+
