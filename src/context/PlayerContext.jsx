@@ -1065,6 +1065,17 @@ export function PlayerProvider({ children }) {
     setQueue((prev) => [...prev, track]);
   }, []);
 
+  const addNextToQueue = useCallback((track) => {
+    if (!track) return;
+    setDismissed(false);
+    setQueue((prev) => {
+      const insertAt = Math.max(0, Math.min(currentIndex + 1, prev.length));
+      const next = [...prev];
+      next.splice(insertAt, 0, track);
+      return next;
+    });
+  }, [currentIndex]);
+
   const addManyToQueue = useCallback((tracks) => {
     setDismissed(false);
     setQueue((prev) => [...prev, ...tracks]);
@@ -1317,6 +1328,7 @@ export function PlayerProvider({ children }) {
     setPlaybackRate,
     skipBy,
     addToQueue,
+    addNextToQueue,
     addManyToQueue,
     removeFromQueue,
     moveInQueue,
