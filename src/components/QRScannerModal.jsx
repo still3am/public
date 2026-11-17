@@ -86,7 +86,13 @@ export default function QRScannerModal({ onClose }) {
       const scanner = scannerRef.current;
       scannerRef.current = null;
       if (scanner) {
-        Promise.resolve(scanner.stop()).catch(() => {}).finally(() => {
+        let stopped;
+        try {
+          stopped = scanner.isScanning ? scanner.stop() : Promise.resolve();
+        } catch {
+          stopped = Promise.resolve();
+        }
+        Promise.resolve(stopped).catch(() => {}).finally(() => {
           try { scanner.clear(); } catch {}
         });
       }
