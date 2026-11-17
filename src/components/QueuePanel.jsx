@@ -54,8 +54,6 @@ export default function QueuePanel({ open, onClose, embedded = false }) {
   );
   const displayUpcoming = dragRows || upcoming;
   const visibleUpcoming = displayUpcoming.filter(({ trk }) => !query.trim() || [trk.title, trk.artist, trk.uploader_name].some((value) => (value || "").toLowerCase().includes(query.trim().toLowerCase())));
-  const totalSeconds = upcoming.every(({ trk }) => Number.isFinite(trk.duration_seconds) && trk.duration_seconds > 0) ?
-  upcoming.reduce((sum, { trk }) => sum + trk.duration_seconds, 0) : 0;
 
   if (!open) return null;
 
@@ -89,9 +87,6 @@ export default function QueuePanel({ open, onClose, embedded = false }) {
         <div className="queue-heading min-w-0">
           
           <h2 className="text-xl font-semibold tracking-tight">Queue</h2>
-          <p className="text-xs text-muted-foreground mt-1">
-            {upcoming.length} {upcoming.length === 1 ? "song" : "songs"} up next{totalSeconds ? " · " + formatTime(totalSeconds) : ""}
-          </p>
         </div>
         <div className="queue-header-actions flex items-center gap-1.5">
           <button type="button" onClick={() => setShowPicker(true)} className="queue-add-button chrome-button" aria-label="Add from library">
