@@ -42,14 +42,11 @@ export default function LibraryRotation({ tracks }) {
     if (player.currentTrack?.id === activeTrack.id) player.togglePlay();
     else player.playTrackAt(tracks, activeIndex);
   };
-  const visible = [];
-  const used = new Set();
-  for (let offset = -2; offset <= 2; offset++) {
+  const offsets = tracks.length === 1 ? [0] : tracks.length === 2 ? [0, 1] : tracks.length === 3 ? [-1, 0, 1] : [-2, -1, 0, 1, 2];
+  const visible = offsets.map(offset => {
     const index = (activeIndex + offset + tracks.length) % tracks.length;
-    if (used.has(index)) continue;
-    used.add(index);
-    visible.push({ track: tracks[index], index, offset });
-  }
+    return { track: tracks[index], index, offset };
+  });
   const onPointerDown = event => {
     if (event.button !== 0 || tracks.length < 2) return;
     gesture.current = { id: event.pointerId, y: event.clientY, x: event.clientX, lastY: event.clientY, time: Date.now(), axis: "" };
