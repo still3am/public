@@ -1,0 +1,144 @@
+.notification-prompt {
+  position: fixed;
+  inset: 0;
+  z-index: 120;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+}
+.notification-prompt-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgb(0 0 0 / 0.55);
+  backdrop-filter: blur(3px);
+}
+.notification-prompt-card {
+  position: relative;
+  width: min(100%, 360px);
+  padding: 30px 24px 22px;
+  border: 1px solid hsl(var(--border));
+  border-radius: 28px;
+  background: hsl(var(--card));
+  box-shadow: 0 30px 80px -30px rgb(0 0 0 / 0.55);
+  text-align: center;
+}
+.notification-prompt-close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  min-height: 36px;
+  border-radius: 50%;
+  color: hsl(var(--muted-foreground));
+}
+.notification-prompt-close:hover {
+  background: hsl(var(--accent));
+  color: hsl(var(--foreground));
+}
+
+.notification-prompt-tile {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  margin: 0 auto 22px;
+  padding: 14px 14px 16px;
+  border: 1px solid hsl(var(--border) / 0.8);
+  border-radius: 18px;
+  background: linear-gradient(140deg, hsl(var(--muted) / 0.75), hsl(var(--background)));
+}
+.notification-prompt-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.notification-prompt-icon {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  flex-shrink: 0;
+  border-radius: 9px;
+  background: hsl(var(--foreground));
+  color: hsl(var(--background));
+}
+.notification-prompt-app {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: hsl(var(--foreground));
+}
+.notification-prompt-switch {
+  position: relative;
+  margin-left: auto;
+  width: 38px;
+  height: 22px;
+  flex-shrink: 0;
+  border-radius: 999px;
+  background: hsl(var(--muted-foreground) / 0.35);
+}
+.notification-prompt-switch > span {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 1px 3px rgb(0 0 0 / 0.3);
+  animation: notification-prompt-nudge 3.2s ease-in-out infinite;
+}
+.notification-prompt-line {
+  display: block;
+  height: 6px;
+  border-radius: 999px;
+  background: hsl(var(--muted-foreground) / 0.2);
+}
+.notification-prompt-line.short {
+  width: 62%;
+}
+@keyframes notification-prompt-nudge {
+  0%, 55%, 100% { transform: translateX(0); }
+  70%, 92% { transform: translateX(4px); }
+}
+
+.notification-prompt-card h2 {
+  font-size: 20px;
+  line-height: 1.25;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  color: hsl(var(--foreground));
+}
+.notification-prompt-card p {
+  margin: 9px auto 22px;
+  max-width: 19rem;
+  font-size: 13.5px;
+  line-height: 1.6;
+  color: hsl(var(--muted-foreground));
+}
+.notification-prompt-cta {
+  width: 100%;
+  min-height: 48px;
+  padding: 12px 20px;
+  border-radius: 999px;
+  background: hsl(var(--foreground));
+  color: hsl(var(--background));
+  font-size: 14px;
+  font-weight: 650;
+}
+.notification-prompt-cta:disabled {
+  opacity: 0.6;
+}
+.notification-prompt-cta:focus-visible {
+  outline: 2px solid hsl(var(--ring));
+  outline-offset: 3px;
+}
+@media (max-width: 400px) {
+  .notification-prompt { padding: 18px; }
+  .notification-prompt-card { padding: 26px 18px 18px; border-radius: 24px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .notification-prompt-switch > span { animation: none; }
+}
