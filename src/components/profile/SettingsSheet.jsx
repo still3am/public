@@ -3,7 +3,7 @@ import { createPortal } from "react-dom";
 import { Link } from "react-router-dom";
 import PureControls from "@/components/PureControls";
 import { usePlayer } from "@/context/PlayerContext";
-import { ArrowLeft, AudioLines, Play, Pause, X, Lightbulb, GitMerge, Trash2, ChevronRight, Sparkles, BarChart3, Loader2, LogOut, Sun, Moon, Palette, Shield, Headphones, FileText } from "lucide-react";
+import { ArrowLeft, AudioLines, Play, Pause, X, Lightbulb, GitMerge, Trash2, ChevronRight, Sparkles, BarChart3, Loader2, LogOut, Sun, Moon, Shield, Headphones, FileText } from "lucide-react";
 import { reportActionError } from "@/lib/actionError";
 import { useTheme } from "@/lib/useTheme";
 import { useAuth } from "@/lib/AuthContext";
@@ -90,12 +90,6 @@ export default function SettingsSheet({ onClose, onDeleteAccount }) {
      <SettingRow icon={AudioLines} title="PURE" description="Clarity, body and balanced sound" onClick={() => setPureOpen(true)}>{player.pure?.enabled && !player.pureSuspended && <span className="w-1.5 h-1.5 rounded-full bg-foreground/60" aria-label="PURE enabled" />}<ChevronRight size={16} className="text-muted-foreground/60 shrink-0" /></SettingRow>
      <SettingRow icon={GitMerge} title="Song transitions" description="Crossfade and gapless playback" to="/settings/transitions" onClick={onClose} />
      <SettingRow icon={theme.isDark ? Moon : Sun} title="Appearance" description={theme.isDark ? "Dark backgrounds, softer light" : "Light backgrounds, clear contrast"}><SettingSwitch label="Appearance" checked={theme.isDark} onChange={theme.toggle} /></SettingRow>
-     <div className="px-4 py-4" aria-label="Accent color choices">
-      <div className="flex items-center gap-3 mb-3"><span className="w-9 h-9 rounded-xl grid place-items-center shrink-0 bg-foreground/[0.06] text-foreground/75"><Palette size={18}/></span><div className="min-w-0"><p className="text-sm font-semibold">Accent color</p><p className="text-xs text-muted-foreground mt-0.5">Buttons, highlights, and selected states · {theme.accentOptions.find(option=>option.id===theme.accent)?.name||"PUBLIC blue"}</p></div></div>
-      <div role="group" aria-label="Choose an accent color" className="flex flex-wrap items-center justify-between gap-2">
-       {theme.accentOptions.map(option=>{const selected=theme.accent===option.id;return <button key={option.id} type="button" aria-label={option.name} aria-pressed={selected} title={option.name} onClick={()=>theme.setAccent(option.id)} className="w-8 h-8 shrink-0 rounded-full transition-transform hover:scale-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-background" style={{backgroundColor:`hsl(${option.hue} ${option.saturation}% 39%)`,outline:selected?`2px solid hsl(${option.hue} ${option.saturation}% ${theme.isDark?68:42}%)`:"none",outlineOffset:3}} />;})}
-      </div>
-     </div>
     </SettingGroup>
     {user?.role !== "admin" && <SettingGroup title="Creator">
      <SettingRow icon={Sparkles} title={artist?"Approved artist":user?.creator_role==="uploader"?"Uploader access":"Become an artist"} description={artist?"Verified by PUBLIC":user?.creator_role==="uploader"?"Music uploads approved by an admin":"Register your artist profile for admin review"} to="/artist-registration" onClick={onClose}/>
