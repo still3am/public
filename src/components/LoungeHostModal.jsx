@@ -25,7 +25,7 @@ export default function LoungeHostModal({ lounge, onClose }) {
   }, [session?.id, session?.name, session?.host_name]);
 
   function cacheName(s) {
-    return s && s.host_name ? `${s.host_name}'s Lounge` : "My Lounge";
+    return s && s.host_name ? `${s.host_name}'s Connect` : "Connect";
   }
 
   async function saveName() {
@@ -35,7 +35,7 @@ export default function LoungeHostModal({ lounge, onClose }) {
     setSavingName(false);
     if (ok) {
       setEditingName(false);
-      toast({ title: "Lounge name updated" });
+      toast({ title: "Connect name updated" });
     } else {
       toast({ title: "Couldn't update name", variant: "destructive" });
     }
@@ -43,10 +43,10 @@ export default function LoungeHostModal({ lounge, onClose }) {
 
   if (loading && !session) {
     return (
-      <div role="dialog" aria-modal="true" aria-label="LoungeHost" data-public-dialog tabIndex={-1} onKeyDown={e=>{if(e.key==="Escape"){e.stopPropagation();onClose?.();}}} className="fixed inset-0 z-[110] bg-black/70 backdrop-blur-sm grid place-items-center p-4" onClick={onClose}>
+      <div role="dialog" aria-modal="true" aria-label="Connect"  data-public-dialog tabIndex={-1} onKeyDown={e=>{if(e.key==="Escape"){e.stopPropagation();onClose?.();}}} className="fixed inset-0 z-[110] bg-black/70 backdrop-blur-sm grid place-items-center p-4" onClick={onClose}>
         <div className="bg-card rounded-3xl w-full max-w-sm p-8 text-center" onClick={(e) => e.stopPropagation()}>
           <Loader2 className="animate-spin mx-auto mb-3" />
-          <p className="text-sm text-foreground/60">Starting your lounge…</p>
+          <p className="text-sm text-foreground/60">Starting Connect…</p>
         </div>
       </div>);
 
@@ -54,13 +54,13 @@ export default function LoungeHostModal({ lounge, onClose }) {
 
   if (!session) {
     return (
-      <div role="dialog" aria-modal="true" aria-label="Start your lounge" data-public-dialog tabIndex={-1} onKeyDown={event=>{if(event.key==="Escape"){event.stopPropagation();onClose();}}} className="fixed inset-0 z-[110] bg-black/70 backdrop-blur-sm grid place-items-center p-4" onClick={onClose}>
+      <div role="dialog" aria-modal="true" aria-label="Start Connect"  data-public-dialog tabIndex={-1} onKeyDown={event=>{if(event.key==="Escape"){event.stopPropagation();onClose();}}} className="fixed inset-0 z-[110] bg-black/70 backdrop-blur-sm grid place-items-center p-4" onClick={onClose}>
         <div className="bg-card rounded-3xl w-full max-w-sm p-8 text-center" onClick={(e) => e.stopPropagation()}>
           <Users size={28} className="mx-auto mb-4 text-foreground/60" />
-          <h2 className="text-xl font-semibold mb-2">Your Lounge</h2>
-          <p className="text-sm text-foreground/60 mb-5">Listen together and let friends add songs to your queue.</p>
+          <h2 className="text-xl font-semibold mb-2">Connect</h2>
+          <p className="text-sm text-foreground/60 mb-5">Share this QR code to invite people into your shared music session.</p>
           {error && <p role="alert" className="text-sm text-destructive mb-5">{error}</p>}
-          <div className="flex justify-center gap-2"><button className="chrome-button" disabled={loading} onClick={()=>ensureSession()}>{error ? "Try again" : "Start lounge"}</button><button className="playlist-action" onClick={onClose}>Close</button></div>
+          <div className="flex justify-center gap-2"><button className="chrome-button" disabled={loading} onClick={()=>ensureSession()}>{error ? "Try again" : "Start Connect"}</button><button className="playlist-action" onClick={onClose}>Close</button></div>
         </div>
       </div>);
 
@@ -74,11 +74,11 @@ export default function LoungeHostModal({ lounge, onClose }) {
     try {
       await copyText(url);
       setCopied(true);setTimeout(()=>setCopied(false),1500);
-    } catch {toast({title:"Couldn’t copy the lounge invite. Please try again.",variant:"destructive"});}
+    } catch {toast({title:"Couldn’t copy the Connect invite. Please try again.",variant:"destructive"});}
   }
 
   return (
-    <div role="dialog" aria-modal="true" aria-label="Your lounge" data-public-dialog tabIndex={-1} onKeyDown={e=>{if(e.key==="Escape"){e.stopPropagation();onClose?.();}}} className="fixed inset-0 z-[110] bg-black/80 backdrop-blur-md flex items-center justify-center p-4" onClick={onClose}>
+    <div role="dialog" aria-modal="true" aria-label="Connect invite"  data-public-dialog tabIndex={-1} onKeyDown={e=>{if(e.key==="Escape"){e.stopPropagation();onClose?.();}}} className="fixed inset-0 z-[110] bg-black/80 backdrop-blur-md flex items-center justify-center p-4" onClick={onClose}>
       <div
         className="bg-card text-foreground rounded-3xl w-full max-w-md max-h-[90vh] overflow-y-auto p-6 relative shadow-2xl"
         onClick={(e) => e.stopPropagation()}>
@@ -106,7 +106,7 @@ export default function LoungeHostModal({ lounge, onClose }) {
                 if (e.key === "Enter") saveName();
                 if (e.key === "Escape") setEditingName(false);
               }}
-              placeholder="Lounge name"
+              placeholder="Connect name"
               className="text-base font-extrabold tracking-tight text-center bg-transparent border-b border-border focus:outline-none focus:border-foreground px-1 py-0.5 max-w-[15rem]" />
             
               <button
@@ -137,7 +137,7 @@ export default function LoungeHostModal({ lounge, onClose }) {
                 setEditingName(true);
               }}
               className="p-1.5 rounded-full hover:bg-foreground/5 active:scale-90 transition shrink-0"
-              aria-label="Rename lounge">
+              aria-label="Rename Connect">
               
                   <Pencil size={14} />
                 </button>
@@ -152,7 +152,7 @@ export default function LoungeHostModal({ lounge, onClose }) {
         {/* QR */}
         <div className="flex flex-col items-center mb-4">
           <div className="inline-block p-4 rounded-3xl shadow-sm" style={{ backgroundColor: "white" }}>
-            <img src={qrImageUrl(url, 480)} alt="Lounge QR" width="240" height="240" className="rounded-xl" />
+            <img src={qrImageUrl(url, 480)} alt="Connect QR code" width="240" height="240" className="rounded-xl" />
           </div>
           <div className="mt-3 flex items-center gap-2">
             <span className="text-sm font-bold tracking-[0.2em]">{session.code}</span>
@@ -204,7 +204,7 @@ export default function LoungeHostModal({ lounge, onClose }) {
         {/* Approved guests */}
         {approvedGuests.length > 0 &&
         <div className="mb-4">
-            <div className="text-[11px] uppercase tracking-wider text-foreground/40 mb-2">In the lounge</div>
+            <div className="text-[11px] uppercase tracking-wider text-foreground/40 mb-2">In Connect</div>
             <div className="flex flex-wrap gap-2">
               {approvedGuests.map((m) =>
             <span
@@ -222,7 +222,7 @@ export default function LoungeHostModal({ lounge, onClose }) {
           onClick={() => setScanning(true)}
           className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-2xl border border-border text-sm font-semibold mb-3">
           
-          <ScanLine size={15} /> Scan to join a lounge
+          <ScanLine size={15} /> Scan to join Connect
         </button>
 
         <button
@@ -234,7 +234,7 @@ export default function LoungeHostModal({ lounge, onClose }) {
           disabled={ending}
           className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-2xl border border-dashed border-border text-sm font-semibold text-foreground/70 hover:text-red-600 hover:border-red-600/40 transition">
           
-          <Power size={15} /> {ending?"Ending lounge…":"End lounge"}
+          <Power size={15} /> {ending?"Ending Connect…":"End Connect"}
         </button>
       </div>
       {scanning && <QRScannerModal onClose={() => setScanning(false)} />}
