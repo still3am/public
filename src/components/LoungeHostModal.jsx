@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import { usePlayer } from "@/context/PlayerContext";
+import { useAuth } from "@/lib/AuthContext";
+import Avatar from "@/components/Avatar";
 import { useCoverUrl } from "@/hooks/useCoverUrl";
 import { useColorPalette } from "@/hooks/useColorPalette";
 import { copyText, shareLink } from "@/lib/shareLink";
@@ -15,6 +17,7 @@ import { useToast } from "@/components/ui/use-toast";
 export default function LoungeHostModal({ lounge, onClose }) {
   const { session, members, loading, error, ensureSession, approve, approveAll, updateApprovalMode, reject, endSession, updateName } = lounge;
   const { toast } = useToast();
+  const { user } = useAuth();
   const p = usePlayer();
   const songArt = useCoverUrl(p.currentTrack?.cover_art_url);
   const songColors = useColorPalette(songArt, true, 5);
@@ -112,6 +115,7 @@ export default function LoungeHostModal({ lounge, onClose }) {
         </header>
 
         <div className="profile-qr-identity connect-qr-identity">
+          {user && <div className="connect-host-identity"><Avatar user={user} size={48} active={!scanning} /><span>{user.display_name || user.full_name || "Host"}</span></div>}
           {songArt ? <img src={songArt} alt="" className="profile-qr-avatar connect-qr-avatar" /> : <div className="profile-qr-avatar connect-qr-avatar connect-qr-placeholder"><Music2 size={25} /></div>}
           <p className="connect-qr-track">
             {p.currentTrack ?
