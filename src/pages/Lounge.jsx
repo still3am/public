@@ -77,7 +77,7 @@ export default function Lounge() {
             user_id: user.id,
             name: user.display_name || user.full_name || "",
             role: "guest",
-            status: "pending"
+            status: s.join_approval_mode === "auto" ? "approved" : "pending"
           });
           if (!cancelled) setMember(m);
         }
