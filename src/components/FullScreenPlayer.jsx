@@ -23,9 +23,6 @@ import {
   Volume2,
   VolumeX,
   Volume1,
-  Repeat,
-  Repeat1,
-  Shuffle,
   Disc3 } from
 "lucide-react";
 import MotionGradient from "@/components/MotionGradient";
@@ -208,7 +205,6 @@ export default function FullScreenPlayer({ onClose }) {
   const progress = p.duration ? p.position / p.duration * 100 : 0;
   const remaining = Math.max(0, (p.duration || 0) - (p.position || 0));
   const volPct = (p.muted ? 0 : p.volume) * 100;
-  const repeatOff = p.repeat === "off";
   const isMutedLow = p.muted || p.volume === 0;
   const VolIcon = isMutedLow ? VolumeX : p.volume < 0.5 ? Volume1 : Volume2;
 
@@ -359,8 +355,7 @@ export default function FullScreenPlayer({ onClose }) {
           </div>
 
           {/* controls */}
-          <div className={`full-player-transport flex items-center ${showQueue ? "justify-center gap-12" : "justify-between gap-2"} my-4 shrink-0`}>
-            {!showQueue && <IconButton icon={Shuffle} onClick={() => p.setShuffle(!p.shuffle)} active={p.shuffle} label="Shuffle" size={20} />}
+          <div className="full-player-transport flex items-center justify-center gap-12 my-4 shrink-0">
             <button onClick={() => p.prev()} className="p-2 active:scale-90 transition disabled:opacity-25 disabled:cursor-default" aria-label="Previous">
               <SkipBack size={30} fill="white" strokeWidth={1.5} />
             </button>
@@ -368,13 +363,6 @@ export default function FullScreenPlayer({ onClose }) {
             <button onClick={() => p.next()} className="p-2 active:scale-90 transition disabled:opacity-25 disabled:cursor-default" aria-label="Next">
               <SkipForward size={30} fill="white" strokeWidth={1.5} />
             </button>
-            {!showQueue && <IconButton
-              icon={repeatOff ? Repeat : Repeat1}
-              onClick={() => p.setRepeat(p.repeat === "off" ? "all" : p.repeat === "all" ? "one" : "off")}
-              active={!repeatOff}
-              label="Repeat"
-              size={20} />}
-
           </div>
 
           <div className="full-player-actions flex items-center justify-center gap-6 shrink-0">
