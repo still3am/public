@@ -255,7 +255,7 @@ export default function FullScreenPlayer({ onClose }) {
           <ChevronDown size={26} />
         </button>
         <div className="flex-1 min-w-0 px-3">
-          {showingLyrics && <button type="button" onClick={() => setLyricsMode(false)} aria-label="Return to artwork and playback controls" title="Show artwork" className="xl:hidden flex items-center gap-3 min-w-0 w-full text-left bg-transparent rounded-lg">
+          {(showingLyrics || showQueue) && <button type="button" onClick={() => { setLyricsMode(false); setShowQueue(false); }} aria-label="Return to artwork and playback controls" title="Show artwork" className="xl:hidden flex items-center gap-3 min-w-0 w-full text-left bg-transparent rounded-lg">
             {coverUrl && !coverFailed && <img src={coverUrl} alt="" className="w-10 h-10 rounded-lg object-cover shrink-0" />}
             <div className="min-w-0 flex-1">
               <p className="text-sm font-bold truncate"><OverflowText text={t.title} /></p>
@@ -264,7 +264,7 @@ export default function FullScreenPlayer({ onClose }) {
 
           </button>}
         </div>
-        {showingLyrics&&<TrackFavoriteButton trackId={t.id} className="xl:hidden mr-2"/>}
+        {(showingLyrics || showQueue)&&<TrackFavoriteButton trackId={t.id} className="xl:hidden mr-2"/>
         <TrackOptionsMenu
           track={t}
           variant="icon"
