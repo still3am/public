@@ -13,7 +13,7 @@ import { useToast } from "@/components/ui/use-toast";
 
 /** @param {any} props */
 export default function LoungeHostModal({ lounge, onClose }) {
-  const { session, members, loading, error, ensureSession, approve, reject, endSession, updateName } = lounge;
+  const { session, members, loading, error, ensureSession, approve, approveAll, updateApprovalMode, reject, endSession, updateName } = lounge;
   const { toast } = useToast();
   const p = usePlayer();
   const songArt = useCoverUrl(p.currentTrack?.cover_art_url);
@@ -26,6 +26,7 @@ export default function LoungeHostModal({ lounge, onClose }) {
   const [nameDraft, setNameDraft] = useState("");
   const [savingName, setSavingName] = useState(false);
   const [ending, setEnding] = useState(false);
+  const [approvalBusy, setApprovalBusy] = useState(false);
 
   useEffect(() => {
     ensureSession();
@@ -134,12 +135,26 @@ export default function LoungeHostModal({ lounge, onClose }) {
         </div>
 
         {/* Pending requests */}
-        <div className="connect-qr-members hidden">
+        <section className="connect-approval" aria-label="Connect join approval">
+          <div className="connect-approval-heading"><div><strong>Who can join?</strong><span>Choose how guests enter your shared session.</span></div></div>
+          <div className="connect-approval-options">
+            <button type="button" aria-pressed={(session.join_approval_mode || "manual") === "auto"} disabled={approvalBusy} onClick={async () => {setApprovalBusy(true);const ok=await updateApprovalMode("auto");setApprovalBusy(false);toast(ok?{title:"Anyone with the invite can join"}:{title:"Couldn’t update approval",variant:"destructive"});}}>
+              <Check size={15} /><span><b>Approve everyone</b><small>Let invitees join right away</small></span>
+            </button>
+            <button type="button" aria-pressed={(session.join_approval_mode || "manual") === "manual"} disabled={approvalBusy} onClick={async () => {setApprovalBusy(true);const ok=await updateApprovalMode("manual");setApprovalBusy(false);toast(ok?{title:"Join requests need your approval"}:{title:"Couldn’t update approval",variant:"destructive"});}}>
+              <Users size={15} /><span><b>Ask for approval</b><small>Review each join request</small></span>
+            </button>
+          </div>
+        </section>
+
+        {/* Pending requests */}
+        <div className="connect-qr-members">
           <div className="flex items-center gap-2 text-[11px] uppercase tracking-wider text-foreground/40 mb-2">
             <Users size={12} /> Join requests {pending.length ? `· ${pending.length}` : ""}
           </div>
           {pending.length === 0 ?
           <p className="text-xs text-white/70 px-1">No one waiting. Share your QR to invite friends.</p> :
+          <div className="connect-approve-all-row"><span>{pending.length} waiting for access</span><button type="button" disabled={approvalBusy} onClick={async () => {setApprovalBusy(true);const count=await approveAll();setApprovalBusy(false);toast(count===pending.length?{title:"Approved "+count+" "+(count===1?"person":"people")}:{title:"Some requests couldn’t be approved",variant:"destructive"});}}>Approve all</button></div>
 
           <div className="space-y-2">
               {pending.map((m) =>
