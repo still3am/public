@@ -279,7 +279,9 @@
  .public-app .profile-page.profile-redesigned .profile-name-row,
  .public-app .profile-page.profile-redesigned .profile-metadata,
  .public-app .profile-page.profile-redesigned .profile-stats,
- .public-app .profile-page.profile-redesigned .profile-actions{justify-content:flex-start!important}
+ .public-app .profile-page.profile-redesigned .profile-actions,
+ .public-app .profile-page.profile-redesigned .profile-info>div.flex.flex-wrap{justify-content:flex-start!important}
+ .public-app .profile-page.profile-redesigned .profile-info .selectable-content{max-width:58ch;margin:12px 0 0!important;text-align:left!important}
  .public-app .profile-page.profile-redesigned .profile-stats{margin:14px 0}
  .public-app .profile-page.profile-redesigned .profile-actions{margin-top:12px;padding-top:12px}
  .public-app .profile-page.profile-redesigned .profile-section-heading,
