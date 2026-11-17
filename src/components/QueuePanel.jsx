@@ -87,7 +87,7 @@ export default function QueuePanel({ open, onClose, embedded = false }) {
   className={`queue-panel ${embedded ? "queue-panel-embedded" : "fixed inset-0 z-[60] animate-[fadeIn_.22s_ease-out]"} bg-card text-foreground flex flex-col`}>
       <header className="queue-header top-bar-safe flex items-center justify-between px-4 pt-2 pb-3 shrink-0">
         <div className="queue-heading min-w-0">
-          <span className="queue-eyebrow hidden">PUBLIC. / NOW PLAYING</span>
+          
           <h2 className="text-xl font-semibold tracking-tight">Queue</h2>
           <p className="text-xs text-muted-foreground mt-1">
             {upcoming.length} {upcoming.length === 1 ? "song" : "songs"} up next{totalSeconds ? " · " + formatTime(totalSeconds) : ""}
@@ -134,7 +134,7 @@ export default function QueuePanel({ open, onClose, embedded = false }) {
 
         <section className="queue-next-section">
           <div className="queue-list-heading">
-            <div className="hidden"><h3>Playing Next</h3><span>{upcoming.length} {upcoming.length === 1 ? "song" : "songs"}</span></div>
+            
             {upcoming.length > 5 && <div className="queue-search-wrap"><Search size={15} aria-hidden="true" /><input aria-label="Search upcoming songs" placeholder="Search queue" value={query} disabled={!!dragRows} onChange={(e) => setQuery(e.target.value)} />{query && <button type="button" onClick={() => setQuery("")} aria-label="Clear search"><X size={14} /></button>}</div>}
           </div>
 
