@@ -364,7 +364,7 @@ export default async function handleRequest(req) {
       if(entity==='LoungeSession') {
         if(query.code) {
           rows=await handler.filter({code:String(query.code).toUpperCase(),is_active:true},'-created_date',1);
-          rows=rows.map(s=>pick(s,['id','code','host_id','host_name','name','is_active','created_date']));
+          rows=rows.map(s=>pick(s,['id','code','host_id','host_name','name','is_active','created_date','join_approval_mode','current_track_id','current_track','position_seconds','is_playing','sync_anchor_at','skip_request_id','skip_requested_by','skip_requested_at']));
         } else {
           rows=await handler.filter({...query,host_id:user.id},'-created_date',50);
         }
