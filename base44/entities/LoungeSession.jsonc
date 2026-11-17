@@ -9,7 +9,7 @@
     "name": {
       "type": "string",
       "default": "",
-      "description": "Display name for the lounge; falls back to \"{host_name} Lounge\" when empty"
+      "description": "Display name for the lounge"
     },
     "host_id": {
       "type": "string"
@@ -22,14 +22,22 @@
       "type": "boolean",
       "default": true
     },
+    "join_approval_mode": {
+      "type": "string",
+      "enum": [
+        "manual",
+        "auto"
+      ],
+      "default": "manual",
+      "description": "Whether guests require host approval to join"
+    },
     "current_track_id": {
       "type": "string",
       "default": ""
     },
     "current_track": {
       "type": "string",
-      "default": "",
-      "description": "JSON-serialized minimal track object the host is currently playing"
+      "default": ""
     },
     "position_seconds": {
       "type": "number",
@@ -41,8 +49,7 @@
     },
     "sync_anchor_at": {
       "type": "string",
-      "default": "",
-      "description": "ISO timestamp recorded at the moment position_seconds was sampled"
+      "default": ""
     }
   },
   "required": [
