@@ -131,6 +131,25 @@ function useLoungeHostState() {
     [session?.id, refreshMembers]
   );
 
+  const approveAll = useCallback(async () => {
+    const waiting = members.filter((m) => m.status === "pending" && m.role !== "host");
+    const results = await Promise.all(waiting.map((m) => approve(m)));
+    return results.filter(Boolean).length;
+  }, [members, approve]);
+
+  const updateApprovalMode = useCallback(async (mode) => {
+    if (!session?.id || !["manual", "auto"].includes(mode)) return false;
+    try {
+      const saved = await base44.entities.LoungeSession.update(session.id, { join_approval_mode: mode });
+      if (saved?.join_approval_mode !== mode) throw new Error("Approval preference was not saved.");
+      setSession((prev) => prev?.id === session.id ? { ...prev, join_approval_mode: mode } : prev);
+      return true;
+    } catch (error) {
+      if (sessionKey.current === session.id) reportActionError(error, "Couldn’t update Connect approval settings. Please retry.");
+      return false;
+    }
+  }, [session?.id]);
+
   const reject = useCallback(
     async (m) => {
       if (!session?.id || !m || memberLocks.current.has(m.id)) return false;
@@ -212,6 +231,8 @@ function useLoungeHostState() {
     error,
     ensureSession,
     approve,
+    approveAll,
+    updateApprovalMode,
     reject,
     endSession,
     updateName,
