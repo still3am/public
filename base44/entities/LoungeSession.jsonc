@@ -4,12 +4,12 @@
   "properties": {
     "code": {
       "type": "string",
-      "description": "Short shareable code used in the QR link"
+      "description": "Short shareable code used by Connect sessions"
     },
     "name": {
       "type": "string",
       "default": "",
-      "description": "Display name for the lounge"
+      "description": "Display name for the Connect session"
     },
     "host_id": {
       "type": "string"
@@ -28,8 +28,19 @@
         "manual",
         "auto"
       ],
-      "default": "manual",
-      "description": "Whether guests require host approval to join"
+      "default": "manual"
+    },
+    "skip_request_id": {
+      "type": "number",
+      "default": 0
+    },
+    "skip_requested_by": {
+      "type": "string",
+      "default": ""
+    },
+    "skip_requested_at": {
+      "type": "string",
+      "default": ""
     },
     "current_track_id": {
       "type": "string",
