@@ -19,6 +19,10 @@
     "added_by_name": {
       "type": "string",
       "default": ""
+    },
+    "position": {
+      "type": "number",
+      "default": 0
     }
   },
   "required": [
