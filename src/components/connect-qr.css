@@ -3,6 +3,10 @@
 .connect-qr-shell{position:relative;z-index:1;isolation:isolate;box-sizing:border-box;width:min(100%,480px);height:auto;max-height:min(88dvh,900px);min-height:0;display:flex;flex-direction:column;overflow-y:auto;overscroll-behavior:contain;padding:22px 28px 20px;background:transparent;backdrop-filter:blur(26px);-webkit-backdrop-filter:blur(26px);border-color:rgba(255,255,255,.28);color:#fff}
 .connect-qr-shade{background:rgba(8,10,16,.12)}
 .connect-qr-identity{margin:12px 0 18px;gap:0;flex:none}
+.connect-host-identity{display:flex;flex-direction:column;align-items:center;gap:6px;margin:0 0 10px;color:#fff;font-size:12px;font-weight:700;line-height:1.2}
+.connect-host-identity>.public-badged-avatar{width:48px;height:48px}
+.connect-host-identity>.public-badged-avatar>.moment-compact-badge{right:-2px;bottom:-2px;width:17px;height:17px}
+.connect-host-identity>.public-badged-avatar>.moment-compact-badge svg{width:17px;height:17px}
 .connect-qr-identity h2{margin:0;font-size:24px}
 .connect-qr-identity p{max-width:31ch;line-height:1.45;color:rgba(255,255,255,.76);margin:7px 0 0}
 .connect-qr-avatar{width:62px;height:62px;border-radius:18px;margin:0 0 12px;border:1px solid rgba(255,255,255,.6)}
