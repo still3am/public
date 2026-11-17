@@ -108,7 +108,7 @@ export default function QueuePanel({ open, onClose, embedded = false }) {
       </div>}
 
       <div className="queue-body flex-1 min-h-0 overflow-y-auto">
-        {p.currentTrack && <section className="queue-current-section">
+        {!embedded && p.currentTrack && <section className="queue-current-section">
           <div className="queue-section-heading"><span>Now playing</span><span className="queue-live-dot" aria-hidden="true" /></div>
           <div className="queue-now-playing">
             <div className="queue-current-art"><QueueCover url={p.currentTrack.cover_art_url} /></div>
