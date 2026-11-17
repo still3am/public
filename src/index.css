@@ -1018,28 +1018,47 @@ html:not(.dark) .profile-page .profile-identity,html:not(.dark) .profile-page .p
 @media(max-width:767px){html[data-public-editing-keyboard]:not([data-mobile-search-keyboard]) .public-app .mobile-tab-bar,html[data-public-editing-keyboard] .public-app .player-surface{visibility:hidden;pointer-events:none;}}
 
 /* Inline queue mode inside Now Playing, beside the lyrics view. */
-.queue-panel-embedded{position:relative;width:100%;height:100%;min-height:0;overflow:hidden;background:transparent!important;border:0;box-shadow:none;}
-.queue-panel-embedded>.queue-header{min-height:58px;padding:5px 10px 9px;border-bottom:1px solid rgb(255 255 255/.12);}
-.queue-panel-embedded .queue-heading .queue-eyebrow{font-size:8px;letter-spacing:.18em;}
-.queue-panel-embedded .queue-heading h2{font-size:17px;line-height:1.1;}
-.queue-panel-embedded .queue-heading p{margin-top:3px;font-size:10px;}
+.queue-panel-embedded{position:relative;width:100%;height:100%;min-height:0;overflow:hidden;background:transparent!important;border:0;box-shadow:none;color:#fff;}
+.queue-panel-embedded>.queue-header{min-height:58px;padding:5px 10px 9px;border-bottom:1px solid rgb(255 255 255/.13);background:transparent;backdrop-filter:none;}
+.queue-panel-embedded .queue-heading .queue-eyebrow{font-size:8px;letter-spacing:.18em;color:rgb(255 255 255/.58);}
+.queue-panel-embedded .queue-heading h2{font-size:17px;line-height:1.1;color:#fff;}
+.queue-panel-embedded .queue-heading p{margin-top:3px;font-size:10px;color:rgb(255 255 255/.65);}
 .queue-panel-embedded .queue-header-actions{gap:4px;}
-.queue-panel-embedded .queue-close-button{width:34px;height:34px;}
-.queue-panel-embedded>.queue-body{min-height:0;padding:10px 8px 14px;overscroll-behavior:contain;}
-.queue-panel-embedded .queue-current-section{margin-bottom:10px;}
-.queue-panel-embedded .queue-current-section .queue-section-heading{font-size:10px;margin-bottom:6px;}
-.queue-panel-embedded .queue-now-playing{padding:9px;gap:9px;background:rgb(255 255 255/.08);border-color:rgb(255 255 255/.12);}
-.queue-panel-embedded .queue-current-art{width:46px;height:46px;flex-basis:46px;}
-.queue-panel-embedded .queue-current-copy strong{font-size:12px;}
+.queue-panel-embedded .queue-add-button{min-height:36px;padding:6px 10px;background:rgb(255 255 255/.92);color:#17171b;border:0;}
+.queue-panel-embedded .queue-clear-button{min-height:36px;padding-inline:9px;color:rgb(255 255 255/.75);}
+.queue-panel-embedded>.queue-body{min-height:0;padding:10px 8px 14px;overscroll-behavior:contain;color:#fff;}
+.queue-panel-embedded .queue-current-section{margin-bottom:10px;padding:2px 0 10px;border-bottom:1px solid rgb(255 255 255/.14);}
+.queue-panel-embedded .queue-current-section .queue-section-heading{font-size:10px;margin-bottom:5px;padding-bottom:2px;color:rgb(255 255 255/.62);}
+.queue-panel-embedded .queue-live-dot{background:#fff;box-shadow:0 0 0 3px rgb(255 255 255/.12);}
+.queue-panel-embedded .queue-now-playing{padding:6px 2px;gap:10px;border:0;border-radius:0;background:transparent;box-shadow:none;}
+.queue-panel-embedded .queue-current-art{width:42px;height:42px;flex-basis:42px;border-radius:7px;}
+.queue-panel-embedded .queue-current-copy strong{font-size:12px;color:#fff;}
+.queue-panel-embedded .queue-current-copy>span{font-size:10px;color:rgb(255 255 255/.68);}
 .queue-panel-embedded .queue-list-heading{min-height:38px;margin:0 0 4px;}
-.queue-panel-embedded .queue-list-heading h3{font-size:14px;}
-.queue-panel-embedded .queue-upcoming-row{min-height:58px;padding-block:5px;}
-.queue-panel-embedded .queue-track-art{width:38px;height:38px;flex-basis:38px;}
-.queue-panel-embedded .queue-track-copy strong{font-size:12px;}
-.queue-panel-embedded .queue-track-copy span{font-size:10px;}
+.queue-panel-embedded .queue-list-heading h3{font-size:14px;color:#fff;}
+.queue-panel-embedded .queue-list-heading>div:first-child>span{font-size:10px;color:rgb(255 255 255/.62);}
+.queue-panel-embedded .queue-search-wrap{border-color:rgb(255 255 255/.2);background:rgb(0 0 0/.12);color:rgb(255 255 255/.66);}
+.queue-panel-embedded .queue-search-wrap input{color:#fff;}
+.queue-panel-embedded .queue-search-wrap input::placeholder{color:rgb(255 255 255/.55);}
+.queue-panel-embedded .queue-upcoming-row{min-height:58px;padding-block:5px;border-color:rgb(255 255 255/.14);}
+.queue-panel-embedded .queue-track-art{width:38px;height:38px;flex-basis:38px;border-radius:7px;}
+.queue-panel-embedded .queue-track-copy strong{font-size:12px;color:#fff;}
+.queue-panel-embedded .queue-track-copy span{font-size:10px;color:rgb(255 255 255/.66);}
+.queue-panel-embedded .queue-track-duration,.queue-panel-embedded .queue-drag-handle{color:rgb(255 255 255/.58);}
 .queue-panel-embedded .queue-drag-handle{min-width:22px;}
-.queue-panel-embedded .queue-history{margin-top:10px;}
-.queue-panel-embedded .queue-history>summary{min-height:36px;}
+.queue-panel-embedded .queue-track-menu{color:rgb(255 255 255/.62);}
+.queue-panel-embedded .queue-track-menu:hover{background:rgb(255 255 255/.12);color:#fff;}
+.queue-panel-embedded .queue-history{margin-top:10px;border-color:rgb(255 255 255/.14);}
+.queue-panel-embedded .queue-history>summary,.queue-panel-embedded .queue-history-row{color:#fff;}
+.queue-panel-embedded .queue-history>summary span,.queue-panel-embedded .queue-history-row small{color:rgb(255 255 255/.62);}
+.queue-panel-embedded .queue-history-row:hover{background:rgb(255 255 255/.1);}
+.queue-panel-embedded .queue-empty,.queue-panel-embedded .queue-no-matches{color:rgb(255 255 255/.75);}
+.queue-panel-embedded .queue-empty>strong{color:#fff;}
+.queue-panel-embedded .queue-empty-icon{background:rgb(255 255 255/.1);border-color:rgb(255 255 255/.18);color:#fff;}
+.queue-panel-embedded .queue-empty>.chrome-button{background:#fff;color:#17171b;border:0;}
+.queue-panel-embedded .queue-transition{background:rgb(255 255 255/.08);border-color:rgb(255 255 255/.15);color:rgb(255 255 255/.75);}
+.queue-panel-embedded .queue-transition span:last-child{color:#fff;}
 @media(min-width:1280px){.queue-panel-embedded>.queue-header{padding-inline:14px;}.queue-panel-embedded>.queue-body{padding:12px 14px;}}
+@media(max-width:380px){.queue-panel-embedded .queue-header{padding-inline:7px;}.queue-panel-embedded .queue-heading h2{font-size:16px;}.queue-panel-embedded .queue-add-button{padding-inline:8px;}.queue-panel-embedded .queue-clear-button{padding-inline:6px;}}
 
 
