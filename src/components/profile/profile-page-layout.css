@@ -272,7 +272,16 @@
 .public-app .profile-page.profile-redesigned :is(.profile-music,.profile-community-column){display:flex;flex-direction:column;gap:24px}
 .public-app .profile-page.profile-redesigned .profile-community-column>.profile-public-playlists{margin-top:0}
 .public-app .profile-page.profile-redesigned :is(.profile-feature-song,.profile-rotation,.profile-conversation,.profile-people-shelf,.profile-public-playlists){min-width:0}
-@media(min-width:1024px){
+@media(min-width:768px){
+ .public-app .profile-page.profile-redesigned .profile-identity-row{display:grid!important;grid-template-columns:132px minmax(0,1fr);align-items:end;gap:26px}
+ .public-app .profile-page.profile-redesigned .profile-avatar-notes{width:132px;flex:none;margin-top:-54px!important}
+ .public-app .profile-page.profile-redesigned .profile-info{width:auto!important;min-width:0;align-self:end;padding:0 0 8px;text-align:left}
+ .public-app .profile-page.profile-redesigned .profile-name-row,
+ .public-app .profile-page.profile-redesigned .profile-metadata,
+ .public-app .profile-page.profile-redesigned .profile-stats,
+ .public-app .profile-page.profile-redesigned .profile-actions{justify-content:flex-start!important}
+ .public-app .profile-page.profile-redesigned .profile-stats{margin:14px 0}
+ .public-app .profile-page.profile-redesigned .profile-actions{margin-top:12px;padding-top:12px}
  .public-app .profile-page.profile-redesigned .profile-section-heading,
  .public-app .profile-page.profile-redesigned .profile-community-heading{min-height:0}
 }
