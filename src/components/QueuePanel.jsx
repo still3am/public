@@ -63,15 +63,15 @@ export default function QueuePanel({ open, onClose, embedded = false }) {
   <div role={embedded ? "region" : "dialog"} aria-modal={embedded ? undefined : "true"} aria-label="Playback queue" data-public-dialog={embedded ? undefined : true} tabIndex={embedded ? undefined : -1}
   onKeyDown={(e) => {if (e.key === "Escape") {e.stopPropagation();if (showPicker) setShowPicker(false);else onClose?.();}}}
   className={`queue-panel ${embedded ? "queue-panel-embedded" : "fixed inset-0 z-[60] animate-[fadeIn_.22s_ease-out]"} bg-card text-foreground flex flex-col`}>
-      <header className="queue-header top-bar-safe flex items-center justify-between px-4 pt-2 pb-3 shrink-0 hidden">
-        <div className="queue-heading min-w-0">
-          
-          
-        </div>
-        <div className="queue-header-actions flex items-center gap-1.5">
-          {!embedded && <button type="button" onClick={onClose} className="queue-close-button" aria-label="Close queue" title="Close queue"><X size={20} /></button>}
-        </div>
-      </header>
+      
+
+
+
+
+
+
+
+    
 
       <div className="queue-playback-modes" role="group" aria-label="Playback modes">
         <button type="button" aria-label={p.shuffle ? "Turn shuffle off" : "Turn shuffle on"} title="Shuffle" aria-pressed={p.shuffle} onClick={() => p.setShuffle(!p.shuffle)}><Shuffle size={18} /></button>
