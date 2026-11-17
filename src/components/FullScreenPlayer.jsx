@@ -360,7 +360,7 @@ export default function FullScreenPlayer({ onClose }) {
 
           {/* controls */}
           <div className={`full-player-transport flex items-center ${showQueue ? "justify-center gap-12" : "justify-between gap-2"} my-4 shrink-0`}>
-            {!showQueue && <IconButton icon={Shuffle} onClick={() => p.setShuffle(!p.shuffle)} active={p.shuffle} label="Shuffle" size={20} />
+            {!showQueue && <IconButton icon={Shuffle} onClick={() => p.setShuffle(!p.shuffle)} active={p.shuffle} label="Shuffle" size={20} />}
             <button onClick={() => p.prev()} className="p-2 active:scale-90 transition disabled:opacity-25 disabled:cursor-default" aria-label="Previous">
               <SkipBack size={30} fill="white" strokeWidth={1.5} />
             </button>
